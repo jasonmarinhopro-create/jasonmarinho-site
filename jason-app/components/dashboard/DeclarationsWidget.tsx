@@ -56,6 +56,12 @@ export default function DeclarationsWidget({ declarations }: { declarations: Pen
           nationalite: ctx.voyageur.nationalite ? nationaliteName(ctx.voyageur.nationalite) : null,
           pays: ctx.voyageur.pays ? nationaliteName(ctx.voyageur.pays) : null,
         },
+        // Accompagnants du check-in : <15 ans sur la fiche du principal,
+        // 15+ = une page de fiche chacun (générées dans le même PDF)
+        companions: ctx.companions.map(c => ({
+          ...c,
+          nationalite: c.nationalite ? nationaliteName(c.nationalite) : null,
+        })),
         sejour: { dateArrivee: ctx.dateArrivee, dateDepart: ctx.dateDepart },
         logement: ctx.logement,
         hoteName: ctx.hoteName,

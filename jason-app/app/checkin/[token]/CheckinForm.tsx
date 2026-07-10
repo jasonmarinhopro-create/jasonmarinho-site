@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from 'react'
 import {
   IdentificationCard, CheckCircle, CalendarBlank, House,
   User, MapPin, Globe, PaperPlaneTilt, WarningCircle,
-  Signature, Eraser,
+  Signature, Eraser, UsersThree, Plus, Trash,
 } from '@phosphor-icons/react/dist/ssr'
 import Select from '@/components/ui/Select'
 import { NATIONALITES } from '@/lib/nationalites'
@@ -36,12 +36,43 @@ export interface CheckinInitial {
   id_pays_emetteur: string
 }
 
+export interface Companion {
+  prenom: string
+  nom: string
+  date_naissance: string
+  lieu_naissance: string
+  nationalite: string
+  id_type: string
+  id_numero: string
+  id_pays_emetteur: string
+}
+
+const EMPTY_COMPANION: Companion = {
+  prenom: '', nom: '', date_naissance: '', lieu_naissance: '',
+  nationalite: '', id_type: '', id_numero: '', id_pays_emetteur: '',
+}
+
+const MAX_COMPANIONS = 8
+
+/** Âge à aujourd'hui — pour distinguer les moins de 15 ans (document facultatif) */
+function ageOf(dateNaissance: string): number | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateNaissance)) return null
+  const d = new Date(dateNaissance + 'T12:00:00')
+  if (isNaN(d.getTime())) return null
+  const now = new Date()
+  let age = now.getFullYear() - d.getFullYear()
+  const m = now.getMonth() - d.getMonth()
+  if (m < 0 || (m === 0 && now.getDate() < d.getDate())) age--
+  return age
+}
+
 interface Props {
   token: string
   hostName: string | null
   sejour: SejourInfo | null
   alreadyCompletedAt: string | null
   initial: CheckinInitial
+  initialCompanions?: Companion[]
 }
 
 type Lang = 'fr' | 'en'
@@ -80,6 +111,12 @@ const T: Record<Lang, Record<string, string>> = {
     signatureHint: 'Signez dans le cadre ci-dessous (au doigt ou à la souris) pour certifier l\'exactitude de vos informations.',
     signatureClear: 'Effacer',
     errSignature: 'Merci de signer dans le cadre.',
+    companions: 'Autres voyageurs',
+    companionsHint: 'La réglementation impose de déclarer CHAQUE voyageur (enfants compris). Ajoutez ici les personnes qui séjournent avec vous — inutile de leur transférer le lien.',
+    companionN: 'Voyageur',
+    addCompanion: 'Ajouter un voyageur',
+    removeCompanion: 'Retirer',
+    docOptionalChild: 'Document facultatif pour les moins de 15 ans',
     submit: 'Envoyer mes informations',
     submitting: 'Envoi…',
     successTitle: 'Merci, tout est bon !',
@@ -127,6 +164,12 @@ const T: Record<Lang, Record<string, string>> = {
     signatureHint: 'Sign in the frame below (finger or mouse) to certify that your details are accurate.',
     signatureClear: 'Clear',
     errSignature: 'Please sign in the frame.',
+    companions: 'Other travellers',
+    companionsHint: 'Regulations require EVERY traveller to be declared (children included). Add the people staying with you here — no need to forward the link.',
+    companionN: 'Traveller',
+    addCompanion: 'Add a traveller',
+    removeCompanion: 'Remove',
+    docOptionalChild: 'Document optional for children under 15',
     submit: 'Send my details',
     submitting: 'Sending…',
     successTitle: 'Thank you, all set!',
@@ -155,7 +198,7 @@ function nights(a: string, b: string) {
   return Math.max(1, Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86400000))
 }
 
-export default function CheckinForm({ token, hostName, sejour, alreadyCompletedAt, initial }: Props) {
+export default function CheckinForm({ token, hostName, sejour, alreadyCompletedAt, initial, initialCompanions }: Props) {
   const [lang, setLang] = useState<Lang>('fr')
   const [form, setForm] = useState<CheckinInitial>(initial)
   const [consent, setConsent] = useState(false)
@@ -166,6 +209,10 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
   // Signature électronique (même mécanique que la page contrat /sign)
   const sigCanvasRef = useRef<HTMLCanvasElement>(null)
   const [hasSignature, setHasSignature] = useState(false)
+  // Accompagnants — la réglementation impose de déclarer chaque voyageur
+  // (SIBA : un boletim par personne, mineurs inclus ; FR : une fiche par
+  // voyageur, enfants <15 ans sur la fiche d'un adulte).
+  const [companions, setCompanions] = useState<Companion[]>(initialCompanions ?? [])
 
   // Auto-détection langue navigateur (une seule fois, modifiable via toggle)
   useEffect(() => {
@@ -178,13 +225,31 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
   const set = (k: keyof CheckinInitial, v: string) => setForm(f => ({ ...f, [k]: v }))
 
   const missing = (v: string) => touched && !v.trim()
+
+  function setCompanion(i: number, k: keyof Companion, v: string) {
+    setCompanions(prev => prev.map((c, idx) => idx === i ? { ...c, [k]: v } : c))
+  }
+
+  // Requis par accompagnant : identité toujours ; document + lieu de
+  // naissance seulement à partir de 15 ans (les enfants figurent sur la
+  // fiche de l'adulte en FR, et peuvent ne pas avoir de document).
+  function companionOk(c: Companion): boolean {
+    if (!c.prenom.trim() || !c.nom.trim() || !c.date_naissance.trim() || !c.nationalite.trim()) return false
+    const age = ageOf(c.date_naissance)
+    if (age !== null && age >= 15) {
+      if (!c.lieu_naissance.trim() || !c.id_type.trim() || !c.id_numero.trim()) return false
+    }
+    return true
+  }
+
   // Ville requise : c'est le Local_Residencia_Origem du boletim SIBA — sans
   // elle l'envoi automatique à l'État ne peut pas partir.
   const requiredOk =
     form.prenom.trim() && form.nom.trim() && form.date_naissance.trim() &&
     form.lieu_naissance.trim() &&
     form.nationalite.trim() && form.id_type.trim() && form.id_numero.trim() &&
-    form.ville.trim()
+    form.ville.trim() &&
+    companions.every(companionOk)
 
   async function submit() {
     setTouched(true)
@@ -211,7 +276,7 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
       const res = await fetch('/api/checkin/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, ...form, signature_image: signatureImage }),
+        body: JSON.stringify({ token, ...form, signature_image: signatureImage, companions }),
       })
       const json = await res.json().catch(() => ({}))
       if (!res.ok || json.error) {
@@ -384,6 +449,94 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
               />
             </div>
           </div>
+        </div>
+
+        {/* Autres voyageurs (groupe sur le même lien) */}
+        <div style={s.section}>
+          <div style={s.sectionLabel}><UsersThree size={13} weight="fill" /> {t.companions}</div>
+          <p style={s.note}>{t.companionsHint}</p>
+          {companions.map((c, i) => {
+            const age = ageOf(c.date_naissance)
+            const isChild = age !== null && age < 15
+            const cMissing = (v: string, req: boolean) => touched && req && !v.trim()
+            return (
+              <div key={i} style={s.companionCard}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-2)' }}>
+                    {t.companionN} {i + 2}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setCompanions(prev => prev.filter((_, idx) => idx !== i))}
+                    style={s.removeBtn}
+                  >
+                    <Trash size={11} /> {t.removeCompanion}
+                  </button>
+                </div>
+                <div style={s.row2} className="ck-row">
+                  <Field label={t.firstName} required value={c.prenom} onChange={v => setCompanion(i, 'prenom', v)} invalid={cMissing(c.prenom, true)} msg={t.required} />
+                  <Field label={t.lastName} required value={c.nom} onChange={v => setCompanion(i, 'nom', v)} invalid={cMissing(c.nom, true)} msg={t.required} />
+                </div>
+                <div style={s.row2} className="ck-row">
+                  <Field label={t.birthDate} required type="date" value={c.date_naissance} onChange={v => setCompanion(i, 'date_naissance', v)} invalid={cMissing(c.date_naissance, true)} msg={t.required} />
+                  <Field label={t.birthPlace} required={!isChild} value={c.lieu_naissance} onChange={v => setCompanion(i, 'lieu_naissance', v)} invalid={cMissing(c.lieu_naissance, !isChild)} msg={t.required} />
+                </div>
+                <div style={s.fieldWrap}>
+                  <label style={s.fieldLabel}>{t.nationality} *</label>
+                  <Select
+                    value={c.nationalite}
+                    onChange={v => setCompanion(i, 'nationalite', v)}
+                    options={NAT_OPTIONS}
+                    placeholder={t.select}
+                    ariaLabel={`${t.nationality} ${t.companionN} ${i + 2}`}
+                    triggerStyle={{ ...s.input, ...(cMissing(c.nationalite, true) ? s.inputInvalid : {}) }}
+                  />
+                  {cMissing(c.nationalite, true) && <span style={s.errMsg}>{t.required}</span>}
+                </div>
+                {isChild && <p style={{ ...s.note, fontStyle: 'italic' }}>{t.docOptionalChild}</p>}
+                <div style={s.row3} className="ck-row">
+                  <div style={s.fieldWrap}>
+                    <label style={s.fieldLabel}>{t.docType}{isChild ? '' : ' *'}</label>
+                    <Select
+                      value={c.id_type}
+                      onChange={v => setCompanion(i, 'id_type', v)}
+                      options={[
+                        { value: 'cni', label: t.docTypeCni },
+                        { value: 'passeport', label: t.docTypePasseport },
+                        { value: 'permis', label: t.docTypePermis },
+                        { value: 'autre', label: t.docTypeAutre },
+                      ]}
+                      placeholder={t.select}
+                      ariaLabel={`${t.docType} ${t.companionN} ${i + 2}`}
+                      triggerStyle={{ ...s.input, ...(cMissing(c.id_type, !isChild) ? s.inputInvalid : {}) }}
+                    />
+                    {cMissing(c.id_type, !isChild) && <span style={s.errMsg}>{t.required}</span>}
+                  </div>
+                  <Field label={t.docNumber} required={!isChild} value={c.id_numero} onChange={v => setCompanion(i, 'id_numero', v)} invalid={cMissing(c.id_numero, !isChild)} msg={t.required} />
+                  <div style={s.fieldWrap}>
+                    <label style={s.fieldLabel}>{t.docCountry}</label>
+                    <Select
+                      value={c.id_pays_emetteur}
+                      onChange={v => setCompanion(i, 'id_pays_emetteur', v)}
+                      options={NAT_OPTIONS}
+                      placeholder={t.select}
+                      ariaLabel={`${t.docCountry} ${t.companionN} ${i + 2}`}
+                      triggerStyle={s.input}
+                    />
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+          {companions.length < MAX_COMPANIONS && (
+            <button
+              type="button"
+              onClick={() => setCompanions(prev => [...prev, { ...EMPTY_COMPANION }])}
+              style={s.addCompanionBtn}
+            >
+              <Plus size={13} weight="bold" /> {t.addCompanion}
+            </button>
+          )}
         </div>
 
         {/* Signature électronique */}
@@ -727,6 +880,44 @@ const s: Record<string, React.CSSProperties> = {
   },
   inputInvalid: { borderColor: 'var(--danger, #dc2626)' },
   errMsg: { fontSize: '11px', color: 'var(--danger, #dc2626)' },
+  companionCard: {
+    background: 'var(--bg)',
+    border: '1px solid var(--border-2)',
+    borderRadius: '12px',
+    padding: '14px',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: '10px',
+  },
+  removeBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    padding: '4px 9px',
+    fontSize: '11.5px',
+    fontWeight: 500,
+    color: 'var(--text-muted)',
+    background: 'transparent',
+    border: '1px solid var(--border-2)',
+    borderRadius: '7px',
+    cursor: 'pointer',
+    fontFamily: 'var(--font-outfit), sans-serif',
+  },
+  addCompanionBtn: {
+    alignSelf: 'flex-start',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '9px 14px',
+    fontSize: '13px',
+    fontWeight: 600,
+    color: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    border: '1px dashed var(--accent-border)',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontFamily: 'var(--font-outfit), sans-serif',
+  },
   consentRow: {
     display: 'flex',
     alignItems: 'flex-start',

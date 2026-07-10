@@ -85,6 +85,33 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Champs requis manquants ou invalides.' }, { status: 400 })
   }
 
+  // Accompagnants (groupe sur le même lien) — max 8, champs nettoyés.
+  // Identité requise ; document facultatif (les <15 ans peuvent ne pas en avoir).
+  const companionsRaw = Array.isArray(body.companions) ? body.companions.slice(0, 8) : []
+  const companions: Array<Record<string, string | null>> = []
+  for (const c of companionsRaw) {
+    if (typeof c !== 'object' || c === null) continue
+    const cc = c as Record<string, unknown>
+    const cPrenom = clean(cc.prenom, 80)
+    const cNom = clean(cc.nom, 80)
+    const cNaissance = cleanDate(cc.date_naissance)
+    const cNat = cleanCountry(cc.nationalite)
+    if (!cPrenom || !cNom || !cNaissance || !cNat) {
+      return NextResponse.json({ error: 'Accompagnant incomplet (prénom, nom, naissance, nationalité requis).' }, { status: 400 })
+    }
+    const cIdTypeRaw = clean(cc.id_type, 20)
+    companions.push({
+      prenom: cPrenom,
+      nom: cNom,
+      date_naissance: cNaissance,
+      lieu_naissance: clean(cc.lieu_naissance, 120),
+      nationalite: cNat,
+      id_type: cIdTypeRaw && ID_TYPES.has(cIdTypeRaw) ? cIdTypeRaw : null,
+      id_numero: clean(cc.id_numero, 40),
+      id_pays_emetteur: cleanCountry(cc.id_pays_emetteur),
+    })
+  }
+
   // Signature électronique (mêmes garde-fous que /api/contracts/sign)
   const signatureImage = body.signature_image
   if (!signatureImage || typeof signatureImage !== 'string') {
@@ -127,6 +154,19 @@ export async function POST(req: Request) {
   if (error) {
     console.error('[checkin/submit] update failed:', error.message)
     return NextResponse.json({ error: 'Enregistrement impossible, réessayez.' }, { status: 500 })
+  }
+
+  // Accompagnants : remplacement complet — la dernière soumission fait foi.
+  const { error: delErr } = await supabase
+    .from('checkin_companions')
+    .delete()
+    .eq('voyageur_id', voyageur.id)
+    .eq('user_id', voyageur.user_id)
+  if (!delErr && companions.length > 0) {
+    const { error: insErr } = await supabase
+      .from('checkin_companions')
+      .insert(companions.map(c => ({ ...c, voyageur_id: voyageur.id, user_id: voyageur.user_id })))
+    if (insErr) console.error('[checkin/submit] companions insert failed:', insErr.message)
   }
 
   // Best-effort : la nationalité vient (peut-être) d'arriver → recalcule les
