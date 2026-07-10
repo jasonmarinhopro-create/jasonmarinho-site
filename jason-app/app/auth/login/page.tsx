@@ -222,6 +222,20 @@ function LoginInner() {
         if (error.message.includes('Email not confirmed') || error.message.includes('email_not_confirmed')) {
           isUnconfirmed = true
         } else {
+          // ERREUR RÉSEAU ≠ mauvais mot de passe. Sur mobile (4G instable,
+          // wifi faible), un fetch qui échoue affichait « Email ou mot de
+          // passe incorrect » et brûlait une tentative → blocage 10 min à
+          // tort. On détecte le cas réseau et on n'incrémente RIEN.
+          const msg = error.message.toLowerCase()
+          const isNetwork =
+            error.name === 'AuthRetryableFetchError' ||
+            (error as { status?: number }).status === 0 ||
+            msg.includes('fetch') || msg.includes('network') || msg.includes('load failed')
+          if (isNetwork) {
+            setError('Impossible de joindre le serveur. Vérifie ta connexion internet et réessaie.')
+            setLoading(false)
+            return
+          }
           signInError = error
         }
       }
