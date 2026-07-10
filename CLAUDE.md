@@ -187,7 +187,7 @@ Setup via intégration Vercel (méthode recommandée) :
 3. Prefix `UPSTASH_REDIS_REST` → variables auto-injectées en Production + Preview
 4. Redeploy automatique
 
-Routes protégées : `/api/login`, `/api/register`, `/api/send-reset-email`, `/api/contracts/sign`, `/api/ideas/submit`, `/api/ideas/vote`.
+Routes protégées : `/api/login`, `/api/register`, `/api/send-reset-email`, `/api/contracts/sign`, `/api/ideas/submit`, `/api/ideas/vote`, `/api/checkin/submit`.
 
 ---
 

@@ -8,7 +8,7 @@ import {
   CurrencyEur, Seal, Link as LinkIcon, ShieldWarning, Star, FileText, Lock,
   ListChecks, CheckSquare, Square, Bandaids, DownloadSimple,
 } from '@phosphor-icons/react/dist/ssr'
-import { updateVoyageur, addSejour, updateSejour, deleteSejour, type VoyageurData, type SejourData } from '../actions'
+import { updateVoyageur, addSejour, updateSejour, deleteSejour, generateCheckinLink, type VoyageurData, type SejourData } from '../actions'
 import { updateContractChecklist } from '../../calendrier/actions'
 import { reportGuest } from '../../securite/actions'
 import IncidentsPanel from './IncidentsPanel'
@@ -60,6 +60,10 @@ type Voyageur = {
   note_privee?: number | null
   bloque?: boolean | null
   bloque_motif?: string | null
+  // Check-in en ligne
+  checkin_token?: string | null
+  checkin_sent_at?: string | null
+  checkin_completed_at?: string | null
 }
 
 const SOURCE_LABELS: Record<string, { label: string; emoji: string }> = {
@@ -460,6 +464,41 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   const [source, setSource] = useState<string | null>(voyageur.source ?? null)
   const [nationalite, setNationalite] = useState<string | null>(voyageur.nationalite ?? null)
   const [idVerifie, setIdVerifie] = useState<boolean>(voyageur.id_verifie ?? false)
+
+  // ── Check-in en ligne (lien public à envoyer au voyageur)
+  const [checkinUrl, setCheckinUrl] = useState<string | null>(
+    voyageur.checkin_token
+      ? `${typeof window !== 'undefined' ? window.location.origin : 'https://app.jasonmarinho.com'}/checkin/${voyageur.checkin_token}`
+      : null
+  )
+  const [checkinCopied, setCheckinCopied] = useState(false)
+  const [checkinLoading, setCheckinLoading] = useState(false)
+
+  async function handleCheckinLink() {
+    // Lien déjà connu → copie directe
+    if (checkinUrl) {
+      try {
+        await navigator.clipboard.writeText(checkinUrl)
+        setCheckinCopied(true)
+        setTimeout(() => setCheckinCopied(false), 2000)
+      } catch { /* clipboard bloqué : l'URL reste affichée, copiable à la main */ }
+      return
+    }
+    setCheckinLoading(true)
+    try {
+      const res = await generateCheckinLink(voyageur.id)
+      if (res.url) {
+        setCheckinUrl(res.url)
+        try {
+          await navigator.clipboard.writeText(res.url)
+          setCheckinCopied(true)
+          setTimeout(() => setCheckinCopied(false), 2000)
+        } catch { /* idem */ }
+      }
+    } finally {
+      setCheckinLoading(false)
+    }
+  }
   const [idType, setIdType] = useState<string | null>(voyageur.id_type ?? null)
   const [idUrl, setIdUrl] = useState<string>(voyageur.id_url ?? '')
   const [bloque, setBloque] = useState<boolean>(voyageur.bloque ?? false)
@@ -1514,6 +1553,75 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                 }}
               />
             </div>
+          )}
+        </div>
+
+        {/* ── Check-in en ligne (inspiré Partee) ─────────────────────────
+              Lien public à envoyer au voyageur : il remplit lui-même son
+              identité (nationalité, date de naissance, document…) et la
+              fiche + les déclarations obligatoires se mettent à jour. */}
+        <div style={{
+          padding: '12px 14px',
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: '10px',
+          marginBottom: '12px',
+          display: 'flex', flexDirection: 'column' as const, gap: '8px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' as const }}>
+            <span style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--text-2)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <LinkIcon size={13} weight="bold" />
+              Check-in en ligne
+            </span>
+            {voyageur.checkin_completed_at ? (
+              <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--success-1, #34d399)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <Check size={11} weight="bold" />
+                Complété le {new Date(voyageur.checkin_completed_at).toLocaleDateString('fr-FR')}
+              </span>
+            ) : voyageur.checkin_sent_at ? (
+              <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--warning, #f59e0b)' }}>
+                En attente du voyageur
+              </span>
+            ) : null}
+          </div>
+          <p style={{ fontSize: '11.5px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
+            Envoie ce lien au voyageur : il remplit lui-même son identité (nationalité,
+            date de naissance, pièce d&apos;identité…) — la fiche et les déclarations
+            obligatoires se mettent à jour automatiquement.
+          </p>
+          <button
+            onClick={handleCheckinLink}
+            disabled={checkinLoading}
+            style={{
+              alignSelf: 'flex-start',
+              display: 'inline-flex', alignItems: 'center', gap: '6px',
+              padding: '7px 12px', fontSize: '12px', fontWeight: 600,
+              background: checkinCopied ? 'var(--success-bg, rgba(52,211,153,0.12))' : 'var(--accent-bg)',
+              color: checkinCopied ? 'var(--success-1, #34d399)' : 'var(--accent-text)',
+              border: `1px solid ${checkinCopied ? 'rgba(52,211,153,0.3)' : 'var(--accent-border)'}`,
+              borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit',
+              opacity: checkinLoading ? 0.6 : 1,
+            }}
+          >
+            {checkinCopied
+              ? <><Check size={12} weight="bold" /> Lien copié !</>
+              : checkinLoading
+                ? 'Génération…'
+                : checkinUrl ? <><LinkIcon size={12} weight="bold" /> Copier le lien</> : <><Plus size={12} weight="bold" /> Générer le lien</>}
+          </button>
+          {checkinUrl && (
+            <input
+              readOnly
+              value={checkinUrl}
+              onFocus={e => e.currentTarget.select()}
+              style={{
+                padding: '7px 10px', fontSize: '11px',
+                fontFamily: 'monospace', color: 'var(--text-3)',
+                background: 'var(--bg)',
+                border: '1px solid var(--border)', borderRadius: '7px', outline: 'none',
+                width: '100%', boxSizing: 'border-box' as const,
+              }}
+            />
           )}
         </div>
 
