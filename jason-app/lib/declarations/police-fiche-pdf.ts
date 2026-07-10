@@ -37,6 +37,9 @@ export interface PoliceFicheInput {
     dateNaissance: string | null
     lieuNaissance: string | null
     nationalite: string | null      // libellé lisible
+    /** Signature de l'accompagnant qui s'est ajouté lui-même (lien partagé) */
+    signatureDataUrl?: string | null
+    signedAt?: string | null
   }>
   sejour: {
     dateArrivee: string               // yyyy-mm-dd
@@ -83,10 +86,16 @@ export function buildPoliceFichePdf(input: PoliceFicheInput): jsPDF {
     .join(' · ')
 
   // Page 1 : voyageur principal (avec enfants + signature électronique)
-  renderFichePage(doc, input, input.voyageur, { childrenLine, withSignature: true })
+  renderFichePage(doc, input, input.voyageur, {
+    childrenLine,
+    signatureDataUrl: input.signatureDataUrl,
+    signedAt: input.signedAt,
+  })
 
   // Pages suivantes : un accompagnant adulte par page. Domicile = celui du
-  // principal (ils voyagent ensemble) ; signature manuscrite à l'arrivée.
+  // principal (ils voyagent ensemble). Signature : la sienne s'il s'est
+  // ajouté lui-même via le lien partagé, sinon cadre vide (manuscrite à
+  // l'arrivée).
   for (const a of adults) {
     doc.addPage()
     renderFichePage(doc, input, {
@@ -101,7 +110,11 @@ export function buildPoliceFichePdf(input: PoliceFicheInput): jsPDF {
       pays: input.voyageur.pays,
       telephone: null,
       email: null,
-    }, { childrenLine: '', withSignature: false })
+    }, {
+      childrenLine: '',
+      signatureDataUrl: a.signatureDataUrl ?? null,
+      signedAt: a.signedAt ?? null,
+    })
   }
 
   return doc
@@ -111,7 +124,7 @@ function renderFichePage(
   doc: jsPDF,
   input: PoliceFicheInput,
   person: PoliceFichePerson,
-  opts: { childrenLine: string; withSignature: boolean },
+  opts: { childrenLine: string; signatureDataUrl: string | null; signedAt: string | null },
 ): void {
   const W = 210
   const M = 20
@@ -202,12 +215,13 @@ function renderFichePage(
 
   doc.setFontSize(8.5)
   doc.setTextColor(...MUTED)
-  const signDate = opts.withSignature && input.signedAt ? fmtDay(input.signedAt.slice(0, 10)) : ''
+  const signDate = opts.signedAt ? fmtDay(opts.signedAt.slice(0, 10)) : ''
   doc.text(`FAIT LE : ${signDate}`, M, y)
   doc.text('SIGNATURE DU VOYAGEUR :', W / 2 + 4, y)
 
-  // Cadre signature : image du check-in pour le voyageur principal, vide
-  // pour les accompagnants (signature manuscrite à l'arrivée).
+  // Cadre signature : l'image électronique de la personne (principal OU
+  // accompagnant qui s'est ajouté lui-même) — sinon cadre vide, signature
+  // manuscrite à l'arrivée.
   const boxX = W / 2 + 4
   const boxY = y + 3
   const boxW = 60
@@ -215,9 +229,9 @@ function renderFichePage(
   doc.setDrawColor(...LINE)
   doc.setLineWidth(0.4)
   doc.rect(boxX, boxY, boxW, boxH)
-  if (opts.withSignature && input.signatureDataUrl) {
+  if (opts.signatureDataUrl) {
     try {
-      doc.addImage(input.signatureDataUrl, 'PNG', boxX + 2, boxY + 2, boxW - 4, boxH - 4)
+      doc.addImage(opts.signatureDataUrl, 'PNG', boxX + 2, boxY + 2, boxW - 4, boxH - 4)
       doc.setFontSize(7)
       doc.text('Signé électroniquement via le check-in en ligne', boxX, boxY + boxH + 4)
     } catch { /* image illisible : le cadre reste vide, signature manuscrite */ }

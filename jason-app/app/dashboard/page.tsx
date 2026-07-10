@@ -698,36 +698,6 @@ export default async function DashboardPage() {
           </div>
         </section>
 
-        {/* ── Actualités du secteur (remontées en 2e position) ──────────
-              Placées juste sous le bonjour : les arrivées/actions du jour
-              sont déjà résumées dans les pills du hero, donc les actus
-              deviennent le 1er vrai bloc de contenu sans masquer l'urgent.
-              Badge « N nouvelle(s) » (depuis last_seen_actualites_at) pour
-              donner une raison de cliquer à chaque visite. */}
-        {latestNews.length > 0 && (
-          <section style={s.section} className="fade-up d1">
-            <div style={s.sectionHead}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Newspaper size={16} color="var(--accent-text)" weight="duotone" />
-                <h3 style={s.sectionTitle}>Actualités du secteur</h3>
-                {freshNewsCount > 0 && (
-                  <span style={s.newsFreshBadge}>
-                    {freshNewsCount} nouvelle{freshNewsCount > 1 ? 's' : ''}
-                  </span>
-                )}
-              </div>
-              <Link href="/dashboard/actualites" style={s.seeAll}>
-                Tout voir <ArrowRight size={12} weight="bold" />
-              </Link>
-            </div>
-            <div style={s.newsGrid}>
-              {latestNews.map(article => (
-                <NewsCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
-
         {/* ── Quick actions RETIRÉES (Étape 7/7) ────────────────────────
               Les 5 quick actions (Nouveau séjour, Nouveau voyageur, Saisir
               revenu, Signaler voyageur, Voir calendrier) sont accessibles
@@ -917,6 +887,36 @@ export default async function DashboardPage() {
 
         {/* ── (Entre Hôtes a été remonté plus haut après Quick actions
               pour plus de visibilité — voir commentaire ci-dessus.) */}
+
+        {/* ── Actualités du secteur (en bas de page) ────────────────────
+              L'entrée « Actualités » de la sidebar est passée en 2e
+              position avec point pulsant : la découverte se fait par le
+              menu, la home garde son focus opérationnel. Le badge
+              « N nouvelle(s) » (last_seen_actualites_at) reste ici pour
+              donner une raison de cliquer en fin de parcours. */}
+        {latestNews.length > 0 && (
+          <section style={s.section} className="fade-up d3">
+            <div style={s.sectionHead}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Newspaper size={16} color="var(--accent-text)" weight="duotone" />
+                <h3 style={s.sectionTitle}>Actualités du secteur</h3>
+                {freshNewsCount > 0 && (
+                  <span style={s.newsFreshBadge}>
+                    {freshNewsCount} nouvelle{freshNewsCount > 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
+              <Link href="/dashboard/actualites" style={s.seeAll}>
+                Tout voir <ArrowRight size={12} weight="bold" />
+              </Link>
+            </div>
+            <div style={s.newsGrid}>
+              {latestNews.map(article => (
+                <NewsCard key={article.id} article={article} />
+              ))}
+            </div>
+          </section>
+        )}
 
       </div>
     </>

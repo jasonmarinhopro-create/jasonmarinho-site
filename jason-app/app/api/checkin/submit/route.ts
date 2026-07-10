@@ -85,6 +85,16 @@ export async function POST(req: Request) {
     if (!cPrenom || !cNom || !cNaissance || !cNat) {
       return NextResponse.json({ error: 'Prénom, nom, naissance et nationalité sont requis.' }, { status: 400 })
     }
+    // Signature de l'accompagnant (mêmes garde-fous que le mode principal)
+    const cSig = body.signature_image
+    if (!cSig || typeof cSig !== 'string') {
+      return NextResponse.json({ error: 'Signature requise.' }, { status: 400 })
+    }
+    const sigPrefixes = ['data:image/png;base64,', 'data:image/jpeg;base64,', 'data:image/webp;base64,']
+    if (!sigPrefixes.some(p => cSig.startsWith(p)) || cSig.length > 5_000_000) {
+      return NextResponse.json({ error: 'Format de signature invalide.' }, { status: 400 })
+    }
+
     const cIdTypeRaw = clean(c.id_type, 20)
     const row = {
       prenom: cPrenom,
@@ -95,6 +105,8 @@ export async function POST(req: Request) {
       id_type: cIdTypeRaw && ID_TYPES.has(cIdTypeRaw) ? cIdTypeRaw : null,
       id_numero: clean(c.id_numero, 40),
       id_pays_emetteur: cleanCountry(c.id_pays_emetteur),
+      checkin_signature: cSig,
+      signed_at: new Date().toISOString(),
     }
 
     // Upsert applicatif : même personne (re-soumission pour corriger) → update.
@@ -225,20 +237,20 @@ export async function POST(req: Request) {
   }
 
   // Accompagnants : remplacement complet — la dernière soumission fait foi.
-  // On PRÉSERVE siba_sent_at pour les personnes déjà déclarées (match nom +
-  // prénom + naissance) : sinon une re-soumission du principal effacerait le
-  // marqueur et re-déclarerait tout le monde au SIBA.
+  // On PRÉSERVE siba_sent_at (sinon re-déclaration SIBA en double) et la
+  // signature d'un accompagnant qui s'est ajouté lui-même (match nom +
+  // prénom + naissance) : une re-soumission du principal ne doit rien effacer.
   const { data: prevComps } = await supabase
     .from('checkin_companions')
-    .select('prenom, nom, date_naissance, siba_sent_at')
+    .select('prenom, nom, date_naissance, siba_sent_at, checkin_signature, signed_at')
     .eq('voyageur_id', voyageur.id)
     .eq('user_id', voyageur.user_id)
-  const prevSentAt = (c: Record<string, string | null>) =>
+  const prevOf = (c: Record<string, string | null>) =>
     (prevComps ?? []).find(p =>
       (p.nom ?? '').trim().toLowerCase() === (c.nom ?? '').toLowerCase() &&
       (p.prenom ?? '').trim().toLowerCase() === (c.prenom ?? '').toLowerCase() &&
       p.date_naissance === c.date_naissance
-    )?.siba_sent_at ?? null
+    )
 
   const { error: delErr } = await supabase
     .from('checkin_companions')
@@ -248,12 +260,17 @@ export async function POST(req: Request) {
   if (!delErr && companions.length > 0) {
     const { error: insErr } = await supabase
       .from('checkin_companions')
-      .insert(companions.map(c => ({
-        ...c,
-        siba_sent_at: prevSentAt(c),
-        voyageur_id: voyageur.id,
-        user_id: voyageur.user_id,
-      })))
+      .insert(companions.map(c => {
+        const prev = prevOf(c)
+        return {
+          ...c,
+          siba_sent_at: prev?.siba_sent_at ?? null,
+          checkin_signature: prev?.checkin_signature ?? null,
+          signed_at: prev?.signed_at ?? null,
+          voyageur_id: voyageur.id,
+          user_id: voyageur.user_id,
+        }
+      }))
     if (insErr) console.error('[checkin/submit] companions insert failed:', insErr.message)
   }
 
