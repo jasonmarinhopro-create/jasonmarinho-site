@@ -72,6 +72,74 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Lien invalide ou expiré.' }, { status: 404 })
   }
 
+  // ── Mode « je m'ajoute au groupe » : le lien a été partagé, un membre du
+  // groupe remplit SA fiche. On ajoute (ou met à jour, match nom + prénom +
+  // naissance) UN accompagnant — sans toucher à la fiche du voyageur
+  // principal ni aux autres membres.
+  if (body.mode === 'companion') {
+    const c = (typeof body.companion === 'object' && body.companion !== null ? body.companion : {}) as Record<string, unknown>
+    const cPrenom = clean(c.prenom, 80)
+    const cNom = clean(c.nom, 80)
+    const cNaissance = cleanDate(c.date_naissance)
+    const cNat = cleanCountry(c.nationalite)
+    if (!cPrenom || !cNom || !cNaissance || !cNat) {
+      return NextResponse.json({ error: 'Prénom, nom, naissance et nationalité sont requis.' }, { status: 400 })
+    }
+    const cIdTypeRaw = clean(c.id_type, 20)
+    const row = {
+      prenom: cPrenom,
+      nom: cNom,
+      date_naissance: cNaissance,
+      lieu_naissance: clean(c.lieu_naissance, 120),
+      nationalite: cNat,
+      id_type: cIdTypeRaw && ID_TYPES.has(cIdTypeRaw) ? cIdTypeRaw : null,
+      id_numero: clean(c.id_numero, 40),
+      id_pays_emetteur: cleanCountry(c.id_pays_emetteur),
+    }
+
+    // Upsert applicatif : même personne (re-soumission pour corriger) → update.
+    const { data: existing } = await supabase
+      .from('checkin_companions')
+      .select('id, prenom, nom, date_naissance')
+      .eq('voyageur_id', voyageur.id)
+      .eq('user_id', voyageur.user_id)
+    const match = (existing ?? []).find(e =>
+      (e.nom ?? '').trim().toLowerCase() === cNom.toLowerCase() &&
+      (e.prenom ?? '').trim().toLowerCase() === cPrenom.toLowerCase() &&
+      e.date_naissance === cNaissance
+    )
+    if (match) {
+      const { error } = await supabase
+        .from('checkin_companions')
+        .update(row)
+        .eq('id', match.id)
+        .eq('user_id', voyageur.user_id)
+      if (error) {
+        console.error('[checkin/submit] companion update failed:', error.message)
+        return NextResponse.json({ error: 'Enregistrement impossible, réessayez.' }, { status: 500 })
+      }
+    } else {
+      if ((existing ?? []).length >= 12) {
+        return NextResponse.json({ error: 'Nombre maximum de voyageurs atteint pour ce lien.' }, { status: 400 })
+      }
+      const { error } = await supabase
+        .from('checkin_companions')
+        .insert({ ...row, voyageur_id: voyageur.id, user_id: voyageur.user_id })
+      if (error) {
+        console.error('[checkin/submit] companion insert failed:', error.message)
+        return NextResponse.json({ error: 'Enregistrement impossible, réessayez.' }, { status: 500 })
+      }
+    }
+
+    // Un retardataire vient d'arriver : tente son envoi SIBA (les personnes
+    // déjà déclarées sont tracées par siba_sent_at et ne repartent pas).
+    try {
+      await autoSendSibaForVoyageur(supabase, voyageur.user_id, voyageur.id)
+    } catch { /* best-effort */ }
+
+    return NextResponse.json({ ok: true })
+  }
+
   // Champs requis
   const prenom = clean(body.prenom, 80)
   const nom = clean(body.nom, 80)
@@ -157,6 +225,21 @@ export async function POST(req: Request) {
   }
 
   // Accompagnants : remplacement complet — la dernière soumission fait foi.
+  // On PRÉSERVE siba_sent_at pour les personnes déjà déclarées (match nom +
+  // prénom + naissance) : sinon une re-soumission du principal effacerait le
+  // marqueur et re-déclarerait tout le monde au SIBA.
+  const { data: prevComps } = await supabase
+    .from('checkin_companions')
+    .select('prenom, nom, date_naissance, siba_sent_at')
+    .eq('voyageur_id', voyageur.id)
+    .eq('user_id', voyageur.user_id)
+  const prevSentAt = (c: Record<string, string | null>) =>
+    (prevComps ?? []).find(p =>
+      (p.nom ?? '').trim().toLowerCase() === (c.nom ?? '').toLowerCase() &&
+      (p.prenom ?? '').trim().toLowerCase() === (c.prenom ?? '').toLowerCase() &&
+      p.date_naissance === c.date_naissance
+    )?.siba_sent_at ?? null
+
   const { error: delErr } = await supabase
     .from('checkin_companions')
     .delete()
@@ -165,7 +248,12 @@ export async function POST(req: Request) {
   if (!delErr && companions.length > 0) {
     const { error: insErr } = await supabase
       .from('checkin_companions')
-      .insert(companions.map(c => ({ ...c, voyageur_id: voyageur.id, user_id: voyageur.user_id })))
+      .insert(companions.map(c => ({
+        ...c,
+        siba_sent_at: prevSentAt(c),
+        voyageur_id: voyageur.id,
+        user_id: voyageur.user_id,
+      })))
     if (insErr) console.error('[checkin/submit] companions insert failed:', insErr.message)
   }
 
