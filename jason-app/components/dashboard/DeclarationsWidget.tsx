@@ -6,10 +6,11 @@
 // lien vers le portail officiel, récap copiable et bouton « Fait ».
 
 import { useState, useTransition } from 'react'
-import { Warning, ArrowSquareOut, Check, Copy, X, PaperPlaneTilt } from '@phosphor-icons/react/dist/ssr'
+import { Warning, ArrowSquareOut, Check, Copy, X, PaperPlaneTilt, FilePdf } from '@phosphor-icons/react/dist/ssr'
 import { getCountry } from '@/lib/countries'
 import { nationaliteName } from '@/lib/nationalites'
 import { markDeclarationDone, ignoreDeclaration } from '@/lib/declarations/actions'
+import { getPoliceFicheContext } from '@/lib/declarations/police-actions'
 import SibaSendModal from './SibaSendModal'
 
 export interface PendingDeclaration {
@@ -35,7 +36,40 @@ export default function DeclarationsWidget({ declarations }: { declarations: Pen
   const [hidden, setHidden] = useState<Set<string>>(new Set())
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [sibaModalId, setSibaModalId] = useState<string | null>(null)
+  const [ficheLoadingId, setFicheLoadingId] = useState<string | null>(null)
+  const [ficheError, setFicheError] = useState('')
   const [, startTransition] = useTransition()
+
+  // France : génère la fiche individuelle de police PDF pré-remplie
+  // (+ signature électronique du check-in si le voyageur l'a complété).
+  async function downloadPoliceFiche(d: PendingDeclaration) {
+    setFicheError('')
+    setFicheLoadingId(d.id)
+    try {
+      const ctx = await getPoliceFicheContext(d.id)
+      if ('error' in ctx) { setFicheError(ctx.error); return }
+      // Import dynamique : jsPDF (~350 Ko) ne doit pas alourdir la home
+      const { buildPoliceFichePdf } = await import('@/lib/declarations/police-fiche-pdf')
+      const doc = buildPoliceFichePdf({
+        voyageur: {
+          ...ctx.voyageur,
+          nationalite: ctx.voyageur.nationalite ? nationaliteName(ctx.voyageur.nationalite) : null,
+          pays: ctx.voyageur.pays ? nationaliteName(ctx.voyageur.pays) : null,
+        },
+        sejour: { dateArrivee: ctx.dateArrivee, dateDepart: ctx.dateDepart },
+        logement: ctx.logement,
+        hoteName: ctx.hoteName,
+        signatureDataUrl: ctx.signatureDataUrl,
+        signedAt: ctx.signedAt,
+      })
+      const slug = d.voyageur_nom.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+      doc.save(`fiche-police-${slug || 'voyageur'}.pdf`)
+    } catch {
+      setFicheError('Génération du PDF impossible, réessaie.')
+    } finally {
+      setFicheLoadingId(null)
+    }
+  }
 
   const visible = declarations.filter(d => !hidden.has(d.id))
   if (visible.length === 0) return null
@@ -105,6 +139,21 @@ export default function DeclarationsWidget({ declarations }: { declarations: Pen
                     <PaperPlaneTilt size={12} weight="bold" /> Envoyer à SIBA
                   </button>
                 )}
+                {/* France : fiche individuelle de police PDF pré-remplie
+                    (signée électroniquement si check-in en ligne complété).
+                    Pas de télé-service national : le PDF conservé 6 mois
+                    EST la conformité. */}
+                {d.logement_pays === 'FR' && (
+                  <button
+                    onClick={() => downloadPoliceFiche(d)}
+                    disabled={ficheLoadingId === d.id}
+                    style={{ ...s.sibaBtn, opacity: ficheLoadingId === d.id ? 0.6 : 1 }}
+                    title="Télécharger la fiche individuelle de police pré-remplie"
+                  >
+                    <FilePdf size={12} weight="bold" />
+                    {ficheLoadingId === d.id ? 'Génération…' : 'Fiche de police PDF'}
+                  </button>
+                )}
                 {decl.portalUrl && (
                   <a href={decl.portalUrl} target="_blank" rel="noopener noreferrer"
                      style={d.logement_pays === 'PT' ? s.portalLinkSmall : s.portalBtn}
@@ -127,6 +176,10 @@ export default function DeclarationsWidget({ declarations }: { declarations: Pen
           )
         })}
       </div>
+
+      {ficheError && (
+        <p style={{ fontSize: '12px', color: 'var(--danger)', margin: '8px 0 0' }}>{ficheError}</p>
+      )}
 
       {sibaModalId && (
         <SibaSendModal
