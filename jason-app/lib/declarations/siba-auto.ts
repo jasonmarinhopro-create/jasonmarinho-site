@@ -45,25 +45,26 @@ export async function autoSendSibaForVoyageur(
       return 0
     }
 
-    // SIBA exige un boletim PAR voyageur (mineurs inclus) : on déclare le
-    // principal + chaque accompagnant du check-in disposant d'un document.
-    // Un accompagnant sans document (jeune enfant) reste à la charge du
-    // flux manuel — la déclaration n'est PAS marquée faite dans ce cas.
+    // SIBA exige un boletim PAR voyageur (mineurs inclus) : envoi
+    // INCRÉMENTAL — le lien étant partageable, les membres du groupe
+    // arrivent au fil de l'eau. siba_sent_at (par accompagnant) évite les
+    // doublons ; un retardataire est envoyé même si la déclaration est
+    // déjà 'faite'.
     const { data: comps } = await supabase
       .from('checkin_companions')
-      .select('prenom, nom, date_naissance, lieu_naissance, nationalite, id_type, id_numero, id_pays_emetteur')
+      .select('id, prenom, nom, date_naissance, lieu_naissance, nationalite, id_type, id_numero, id_pays_emetteur, siba_sent_at')
       .eq('voyageur_id', voyageurId)
       .eq('user_id', userId)
     const companions = comps ?? []
 
-    // ── Déclarations PT en attente pour ce voyageur ───────────────────────
+    // ── Déclarations PT pour ce voyageur ('faite' incluse : retardataires) ─
     const { data: decls } = await supabase
       .from('guest_declarations')
-      .select('id, sejour_id, contract_id, logement_nom, date_arrivee')
+      .select('id, sejour_id, contract_id, logement_nom, date_arrivee, statut, siba_sent_at')
       .eq('user_id', userId)
       .eq('voyageur_id', voyageurId)
       .eq('logement_pays', 'PT')
-      .eq('statut', 'a_faire')
+      .in('statut', ['a_faire', 'faite'])
     if (!decls || decls.length === 0) return 0
 
     // ── Contact hôte (Nome/Email_Contacto du XML) ─────────────────────────
@@ -119,33 +120,59 @@ export async function autoSendSibaForVoyageur(
         emailContacto: email,
       }
 
-      // Boletins du groupe : principal + accompagnants. Résidence des
-      // accompagnants : celle du principal (ils voyagent ensemble).
-      const groupGuests: SibaGuest[] = [{
-        apelido: v.nom.trim(),
-        nome: (v.prenom ?? '').trim() || ' ',
-        nacionalidade,
-        dataNascimento: v.date_naissance,
-        documentoNumero: v.id_numero.trim(),
-        paisEmissorDocumento: paisEmissor,
-        tipoDocumento: idTypeToDocType(v.id_type),
-        dataEntrada: decl.date_arrivee,
-        dataSaida: dateDepart,
-        paisResidencia,
-        localResidencia,
-      }]
-      // Si un accompagnant n'a pas les données minimales (document, etc.),
-      // on n'envoie RIEN automatiquement : un envoi partiel marquerait la
-      // déclaration "faite" alors que le groupe n'est pas déclaré en entier.
-      let groupComplete = true
+      // Numéro de fichier dérivé du temps (secondes depuis 2020) + index :
+      // unique, sans collision avec la numérotation count+1 du flux manuel
+      // (valeurs bien plus petites).
+      const fileBase = Math.floor(Date.now() / 1000) - 1_577_836_800
+      let fileIdx = 0
+      let sentInGroup = 0
+      let anyFailure = false
+
+      // 1. Le voyageur PRINCIPAL — une seule fois (decl.siba_sent_at le trace).
+      if (decl.statut === 'a_faire' && !decl.siba_sent_at) {
+        const mainGuest: SibaGuest = {
+          apelido: v.nom.trim(),
+          nome: (v.prenom ?? '').trim() || ' ',
+          nacionalidade,
+          dataNascimento: v.date_naissance,
+          documentoNumero: v.id_numero.trim(),
+          paisEmissorDocumento: paisEmissor,
+          tipoDocumento: idTypeToDocType(v.id_type),
+          dataEntrada: decl.date_arrivee,
+          dataSaida: dateDepart,
+          paisResidencia,
+          localResidencia,
+        }
+        const result = await submitToSiba(unit, mainGuest, fileBase + fileIdx++)
+        if (result.ok) {
+          await supabase
+            .from('guest_declarations')
+            .update({ siba_sent_at: new Date().toISOString(), siba_file_number: fileBase })
+            .eq('id', decl.id)
+            .eq('user_id', userId)
+          decl.siba_sent_at = new Date().toISOString()
+          sentInGroup++
+        } else {
+          console.error(`[siba-auto] envoi refusé (decl ${decl.id}, principal, code ${result.code}): ${result.errorMessage}`)
+          anyFailure = true
+        }
+      }
+
+      // 2. Chaque ACCOMPAGNANT pas encore envoyé (le lien partagé fait
+      // arriver les membres au fil de l'eau — envoi incrémental, même si
+      // la déclaration est déjà 'faite'). Résidence : celle du principal.
+      let allCompanionsCovered = true
       for (const c of companions) {
+        if (c.siba_sent_at) continue
         const cNac = toIso3(c.nationalite)
         const cEmissor = toIso3(c.id_pays_emetteur ?? c.nationalite)
         if (!c.nom || !c.date_naissance || !c.id_numero || !cNac || !cEmissor) {
-          groupComplete = false
-          break
+          // Données incomplètes (jeune enfant sans document…) → reste à la
+          // charge du flux manuel, la déclaration n'est pas marquée faite.
+          allCompanionsCovered = false
+          continue
         }
-        groupGuests.push({
+        const guest: SibaGuest = {
           apelido: c.nom.trim(),
           nome: (c.prenom ?? '').trim() || ' ',
           nacionalidade: cNac,
@@ -157,43 +184,33 @@ export async function autoSendSibaForVoyageur(
           dataSaida: dateDepart,
           paisResidencia,
           localResidencia,
-        })
-      }
-      if (!groupComplete) {
-        console.error(`[siba-auto] accompagnant sans document (decl ${decl.id}) — flux manuel conservé`)
-        continue
-      }
-
-      // Un boletim par voyageur. Numéro de fichier dérivé du temps
-      // (secondes depuis 2020) + index : unique, sans collision avec la
-      // numérotation count+1 du flux manuel (valeurs bien plus petites).
-      const fileBase = Math.floor(Date.now() / 1000) - 1_577_836_800
-      let allOk = true
-      let sentInGroup = 0
-      for (const guest of groupGuests) {
-        const fileNumber = fileBase + sentInGroup
-        const result = await submitToSiba(unit, guest, fileNumber)
-        if (!result.ok) {
-          // Refus SIBA → la déclaration reste 'a_faire', l'hôte la traitera
-          // depuis le dashboard avec le message d'erreur du flux manuel.
-          console.error(`[siba-auto] envoi refusé (decl ${decl.id}, ${guest.apelido}, code ${result.code}): ${result.errorMessage}`)
-          allOk = false
-          break
         }
-        sentInGroup++
+        const result = await submitToSiba(unit, guest, fileBase + fileIdx++)
+        if (result.ok) {
+          await supabase
+            .from('checkin_companions')
+            .update({ siba_sent_at: new Date().toISOString() })
+            .eq('id', c.id)
+            .eq('user_id', userId)
+          c.siba_sent_at = new Date().toISOString()
+          sentInGroup++
+        } else {
+          console.error(`[siba-auto] envoi refusé (decl ${decl.id}, ${guest.apelido}, code ${result.code}): ${result.errorMessage}`)
+          anyFailure = true
+          allCompanionsCovered = false
+        }
       }
-      if (!allOk) continue
 
-      await supabase
-        .from('guest_declarations')
-        .update({
-          statut: 'faite',
-          declared_at: new Date().toISOString(),
-          siba_sent_at: new Date().toISOString(),
-          siba_file_number: fileBase,
-        })
-        .eq('id', decl.id)
-        .eq('user_id', userId)
+      // 3. Déclaration 'faite' quand le principal ET tous les accompagnants
+      // connus sont partis. Sinon elle reste visible dans le widget (flux
+      // manuel) — sans jamais renvoyer ceux déjà déclarés.
+      if (decl.statut === 'a_faire' && decl.siba_sent_at && allCompanionsCovered && !anyFailure) {
+        await supabase
+          .from('guest_declarations')
+          .update({ statut: 'faite', declared_at: new Date().toISOString() })
+          .eq('id', decl.id)
+          .eq('user_id', userId)
+      }
       sent += sentInGroup
     }
     return sent

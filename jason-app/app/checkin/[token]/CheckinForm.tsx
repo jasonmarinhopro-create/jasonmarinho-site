@@ -54,6 +54,24 @@ const EMPTY_COMPANION: Companion = {
 
 const MAX_COMPANIONS = 8
 
+const CK_CSS = `
+  @media (max-width: 560px) {
+    .ck-row { grid-template-columns: 1fr !important; }
+  }
+  /* iOS Safari : input[type=date] a une largeur intrinsèque qui fait
+     déborder la carte (grid blowout). appearance:none + min-width:0
+     le force à respecter width:100%. text-align pour garder la valeur
+     à gauche une fois l'apparence native retirée. */
+  .ckin-page input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+    min-width: 0;
+    max-width: 100%;
+    text-align: left;
+    min-height: 42px;
+  }
+`
+
 /** Âge à aujourd'hui — pour distinguer les moins de 15 ans (document facultatif) */
 function ageOf(dateNaissance: string): number | null {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(dateNaissance)) return null
@@ -112,7 +130,7 @@ const T: Record<Lang, Record<string, string>> = {
     signatureClear: 'Effacer',
     errSignature: 'Merci de signer dans le cadre.',
     companions: 'Autres voyageurs',
-    companionsHint: 'La réglementation impose de déclarer CHAQUE voyageur (enfants compris). Ajoutez ici les personnes qui séjournent avec vous — inutile de leur transférer le lien.',
+    companionsHint: 'La réglementation impose de déclarer CHAQUE voyageur (enfants compris). Ajoutez ici les personnes qui séjournent avec vous — ou partagez-leur ce lien : chacun peut s\'y ajouter lui-même.',
     companionN: 'Voyageur',
     addCompanion: 'Ajouter un voyageur',
     removeCompanion: 'Retirer',
@@ -121,6 +139,13 @@ const T: Record<Lang, Record<string, string>> = {
     submitting: 'Envoi…',
     successTitle: 'Merci, tout est bon !',
     successBody: 'Vos informations ont bien été transmises. Bon séjour !',
+    successCompanion: 'Vos informations ont été ajoutées au groupe. Bon séjour !',
+    notYou: 'Vous n\'êtes pas',
+    notYouCta: 'Je m\'ajoute comme voyageur du groupe',
+    companionModeTitle: 'Je m\'ajoute au groupe',
+    companionModeHint: 'Remplissez votre identité : elle sera ajoutée au groupe de',
+    backToMain: 'Revenir à la fiche principale',
+    submitCompanion: 'M\'ajouter au groupe',
     alreadyDone: 'Fiche déjà complétée le',
     alreadyDoneEdit: 'Vous pouvez corriger vos informations ci-dessous si besoin.',
     required: 'Ce champ est requis',
@@ -165,7 +190,7 @@ const T: Record<Lang, Record<string, string>> = {
     signatureClear: 'Clear',
     errSignature: 'Please sign in the frame.',
     companions: 'Other travellers',
-    companionsHint: 'Regulations require EVERY traveller to be declared (children included). Add the people staying with you here — no need to forward the link.',
+    companionsHint: 'Regulations require EVERY traveller to be declared (children included). Add the people staying with you here — or share this link with them: each person can add themselves.',
     companionN: 'Traveller',
     addCompanion: 'Add a traveller',
     removeCompanion: 'Remove',
@@ -174,6 +199,13 @@ const T: Record<Lang, Record<string, string>> = {
     submitting: 'Sending…',
     successTitle: 'Thank you, all set!',
     successBody: 'Your details have been sent. Enjoy your stay!',
+    successCompanion: 'Your details have been added to the group. Enjoy your stay!',
+    notYou: 'Not',
+    notYouCta: 'Add myself as a traveller of this group',
+    companionModeTitle: 'Add myself to the group',
+    companionModeHint: 'Fill in your identity: it will be added to the group of',
+    backToMain: 'Back to the main form',
+    submitCompanion: 'Add me to the group',
     alreadyDone: 'Form already completed on',
     alreadyDoneEdit: 'You can correct your details below if needed.',
     required: 'This field is required',
@@ -213,6 +245,14 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
   // (SIBA : un boletim par personne, mineurs inclus ; FR : une fiche par
   // voyageur, enfants <15 ans sur la fiche d'un adulte).
   const [companions, setCompanions] = useState<Companion[]>(initialCompanions ?? [])
+  // Mode « je m'ajoute au groupe » : le lien est partageable — un ami du
+  // groupe l'ouvre et remplit SA fiche, ajoutée côté serveur sans toucher
+  // à la fiche du voyageur principal (sinon il l'écraserait).
+  const [mode, setMode] = useState<'main' | 'companion'>('main')
+  const [selfC, setSelfC] = useState<Companion>({ ...EMPTY_COMPANION })
+  const [selfConsent, setSelfConsent] = useState(false)
+  const [companionDone, setCompanionDone] = useState(false)
+  const setSelf = (k: keyof Companion, v: string) => setSelfC(c => ({ ...c, [k]: v }))
 
   // Auto-détection langue navigateur (une seule fois, modifiable via toggle)
   useEffect(() => {
@@ -292,14 +332,42 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
     }
   }
 
+  // Soumission du mode « je m'ajoute au groupe » : n'écrit QUE l'accompagnant.
+  async function submitCompanionSelf() {
+    setTouched(true)
+    setError('')
+    if (!companionOk(selfC)) return
+    if (!selfConsent) { setError(t.errConsent); return }
+    setSubmitting(true)
+    try {
+      const res = await fetch('/api/checkin/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, mode: 'companion', companion: selfC }),
+      })
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok || json.error) {
+        setError(typeof json.error === 'string' ? json.error : t.errGeneric)
+        return
+      }
+      setCompanionDone(true)
+      setDone(true)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } catch {
+      setError(t.errGeneric)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   if (done) {
     return (
-      <div style={s.page}>
+      <div className="ckin-page" style={s.page}>
         <div style={s.card}>
           <div style={{ textAlign: 'center', padding: '32px 8px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
             <CheckCircle size={56} weight="fill" color="var(--success-1, #34d399)" />
             <h1 style={{ ...s.title, margin: 0 }}>{t.successTitle}</h1>
-            <p style={s.introText}>{t.successBody}</p>
+            <p style={s.introText}>{companionDone ? t.successCompanion : t.successBody}</p>
           </div>
         </div>
         <Footer />
@@ -307,8 +375,127 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
     )
   }
 
+  // ── Mode « je m'ajoute au groupe » (lien partagé par l'organisateur) ──
+  if (mode === 'companion') {
+    const age = ageOf(selfC.date_naissance)
+    const isChild = age !== null && age < 15
+    const cMissing = (v: string, req: boolean) => touched && req && !v.trim()
+    return (
+      <div className="ckin-page" style={s.page}>
+        <div style={s.card}>
+          <div style={s.header}>
+            <div style={s.headBadge}>
+              <UsersThree size={13} weight="fill" />
+              {t.companionModeTitle}
+            </div>
+            <div style={s.langToggle}>
+              <button onClick={() => setLang('fr')} style={{ ...s.langBtn, ...(lang === 'fr' ? s.langBtnActive : {}) }}>FR</button>
+              <button onClick={() => setLang('en')} style={{ ...s.langBtn, ...(lang === 'en' ? s.langBtnActive : {}) }}>EN</button>
+            </div>
+          </div>
+          <p style={s.introText}>
+            {t.companionModeHint} <strong style={{ color: 'var(--text)' }}>{initial.prenom} {initial.nom}</strong>.
+          </p>
+
+          <div style={s.section}>
+            <div style={s.sectionLabel}><User size={13} weight="fill" /> {t.identity}</div>
+            <div style={s.row2} className="ck-row">
+              <Field label={t.firstName} required value={selfC.prenom} onChange={v => setSelf('prenom', v)} invalid={cMissing(selfC.prenom, true)} msg={t.required} />
+              <Field label={t.lastName} required value={selfC.nom} onChange={v => setSelf('nom', v)} invalid={cMissing(selfC.nom, true)} msg={t.required} />
+            </div>
+            <div style={s.row2} className="ck-row">
+              <Field label={t.birthDate} required type="date" value={selfC.date_naissance} onChange={v => setSelf('date_naissance', v)} invalid={cMissing(selfC.date_naissance, true)} msg={t.required} />
+              <Field label={t.birthPlace} required={!isChild} value={selfC.lieu_naissance} onChange={v => setSelf('lieu_naissance', v)} invalid={cMissing(selfC.lieu_naissance, !isChild)} msg={t.required} />
+            </div>
+            <div style={s.fieldWrap}>
+              <label style={s.fieldLabel}>{t.nationality} *</label>
+              <Select
+                value={selfC.nationalite}
+                onChange={v => setSelf('nationalite', v)}
+                options={NAT_OPTIONS}
+                placeholder={t.select}
+                ariaLabel={t.nationality}
+                triggerStyle={{ ...s.input, ...(cMissing(selfC.nationalite, true) ? s.inputInvalid : {}) }}
+              />
+              {cMissing(selfC.nationalite, true) && <span style={s.errMsg}>{t.required}</span>}
+            </div>
+          </div>
+
+          <div style={s.section}>
+            <div style={s.sectionLabel}><IdentificationCard size={13} weight="fill" /> {t.document}</div>
+            <p style={s.note}>{t.docNote}</p>
+            {isChild && <p style={{ ...s.note, fontStyle: 'italic' }}>{t.docOptionalChild}</p>}
+            <div style={s.row3} className="ck-row">
+              <div style={s.fieldWrap}>
+                <label style={s.fieldLabel}>{t.docType}{isChild ? '' : ' *'}</label>
+                <Select
+                  value={selfC.id_type}
+                  onChange={v => setSelf('id_type', v)}
+                  options={[
+                    { value: 'cni', label: t.docTypeCni },
+                    { value: 'passeport', label: t.docTypePasseport },
+                    { value: 'permis', label: t.docTypePermis },
+                    { value: 'autre', label: t.docTypeAutre },
+                  ]}
+                  placeholder={t.select}
+                  ariaLabel={t.docType}
+                  triggerStyle={{ ...s.input, ...(cMissing(selfC.id_type, !isChild) ? s.inputInvalid : {}) }}
+                />
+                {cMissing(selfC.id_type, !isChild) && <span style={s.errMsg}>{t.required}</span>}
+              </div>
+              <Field label={t.docNumber} required={!isChild} value={selfC.id_numero} onChange={v => setSelf('id_numero', v)} invalid={cMissing(selfC.id_numero, !isChild)} msg={t.required} />
+              <div style={s.fieldWrap}>
+                <label style={s.fieldLabel}>{t.docCountry}</label>
+                <Select
+                  value={selfC.id_pays_emetteur}
+                  onChange={v => setSelf('id_pays_emetteur', v)}
+                  options={NAT_OPTIONS}
+                  placeholder={t.select}
+                  ariaLabel={t.docCountry}
+                  triggerStyle={s.input}
+                />
+              </div>
+            </div>
+          </div>
+
+          <label style={s.consentRow}>
+            <input
+              type="checkbox"
+              checked={selfConsent}
+              onChange={e => setSelfConsent(e.target.checked)}
+              style={{ marginTop: '3px', accentColor: 'var(--accent-text)' }}
+            />
+            <span style={s.consentText}>{t.consent}</span>
+          </label>
+
+          {error && (
+            <div style={s.errorBanner}>
+              <WarningCircle size={15} weight="fill" />
+              {error}
+            </div>
+          )}
+
+          <button onClick={submitCompanionSelf} disabled={submitting} style={{ ...s.submitBtn, opacity: submitting ? 0.6 : 1 }}>
+            <PaperPlaneTilt size={16} weight="fill" />
+            {submitting ? t.submitting : t.submitCompanion}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setMode('main'); setError(''); setTouched(false) }}
+            style={s.backLink}
+          >
+            ← {t.backToMain}
+          </button>
+        </div>
+        <Footer />
+        <style dangerouslySetInnerHTML={{ __html: CK_CSS }} />
+      </div>
+    )
+  }
+
   return (
-    <div style={s.page}>
+    <div className="ckin-page" style={s.page}>
       <div style={s.card}>
         {/* Header */}
         <div style={s.header}>
@@ -327,6 +514,18 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
             ? <><strong style={{ color: 'var(--text)' }}>{hostName}</strong> {t.intro}</>
             : t.introNoHost}
         </p>
+
+        {/* Lien partagé par l'organisateur : un membre du groupe s'ajoute
+            lui-même sans toucher à la fiche du voyageur principal. */}
+        {(initial.prenom || initial.nom) && (
+          <button type="button" onClick={() => { setMode('companion'); setError(''); setTouched(false) }} style={s.notYouBanner}>
+            <UsersThree size={15} weight="fill" style={{ flexShrink: 0 }} />
+            <span>
+              {t.notYou} <strong>{initial.prenom} {initial.nom}</strong> ?{' '}
+              <span style={{ textDecoration: 'underline', textUnderlineOffset: '2px' }}>{t.notYouCta}</span> →
+            </span>
+          </button>
+        )}
 
         {alreadyCompletedAt && (
           <div style={s.alreadyBanner}>
@@ -576,11 +775,7 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
         </button>
       </div>
       <Footer />
-      <style>{`
-        @media (max-width: 560px) {
-          .ck-row { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
+      <style dangerouslySetInnerHTML={{ __html: CK_CSS }} />
     </div>
   )
 }
@@ -880,6 +1075,31 @@ const s: Record<string, React.CSSProperties> = {
   },
   inputInvalid: { borderColor: 'var(--danger, #dc2626)' },
   errMsg: { fontSize: '11px', color: 'var(--danger, #dc2626)' },
+  notYouBanner: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '9px',
+    fontSize: '12.5px',
+    color: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    border: '1px dashed var(--accent-border)',
+    borderRadius: '10px',
+    padding: '10px 12px',
+    lineHeight: 1.5,
+    cursor: 'pointer',
+    textAlign: 'left' as const,
+    fontFamily: 'var(--font-outfit), sans-serif',
+  },
+  backLink: {
+    alignSelf: 'center',
+    background: 'transparent',
+    border: 'none',
+    color: 'var(--text-muted)',
+    fontSize: '12.5px',
+    cursor: 'pointer',
+    fontFamily: 'var(--font-outfit), sans-serif',
+    padding: '4px 8px',
+  },
   companionCard: {
     background: 'var(--bg)',
     border: '1px solid var(--border-2)',
