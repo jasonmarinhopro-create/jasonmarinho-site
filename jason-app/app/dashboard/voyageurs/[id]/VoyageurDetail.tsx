@@ -64,6 +64,7 @@ type Voyageur = {
   checkin_token?: string | null
   checkin_sent_at?: string | null
   checkin_completed_at?: string | null
+  checkin_signature?: string | null
 }
 
 const SOURCE_LABELS: Record<string, { label: string; emoji: string }> = {
@@ -1622,6 +1623,24 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                 width: '100%', boxSizing: 'border-box' as const,
               }}
             />
+          )}
+          {/* Signature électronique du voyageur (preuve du check-in) */}
+          {voyageur.checkin_completed_at && voyageur.checkin_signature && (
+            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '4px' }}>
+              <span style={{ fontSize: '10.5px', fontWeight: 600, letterSpacing: '0.4px', textTransform: 'uppercase' as const, color: 'var(--text-muted)' }}>
+                Signature du voyageur
+              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element -- data URL, next/image inutile */}
+              <img
+                src={voyageur.checkin_signature}
+                alt="Signature électronique du voyageur"
+                style={{
+                  width: '160px', height: 'auto',
+                  background: '#fff', borderRadius: '7px',
+                  border: '1px solid var(--border)',
+                }}
+              />
+            </div>
           )}
         </div>
 

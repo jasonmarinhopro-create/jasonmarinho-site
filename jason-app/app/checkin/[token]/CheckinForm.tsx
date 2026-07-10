@@ -4,10 +4,11 @@
 // son identité avant l'arrivée. Mobile-first, FR/EN, aucune auth requise —
 // le token du lien fait office de clé.
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   IdentificationCard, CheckCircle, CalendarBlank, House,
   User, MapPin, Globe, PaperPlaneTilt, WarningCircle,
+  Signature, Eraser,
 } from '@phosphor-icons/react/dist/ssr'
 import Select from '@/components/ui/Select'
 import { NATIONALITES } from '@/lib/nationalites'
@@ -73,6 +74,10 @@ const T: Record<Lang, Record<string, string>> = {
     docNumber: 'Numéro du document',
     docCountry: "Pays d'émission",
     consent: "J'accepte que ces informations soient transmises à mon hôte pour la gestion de mon séjour et les déclarations légales obligatoires.",
+    signature: 'Signature',
+    signatureHint: 'Signez dans le cadre ci-dessous (au doigt ou à la souris) pour certifier l\'exactitude de vos informations.',
+    signatureClear: 'Effacer',
+    errSignature: 'Merci de signer dans le cadre.',
     submit: 'Envoyer mes informations',
     submitting: 'Envoi…',
     successTitle: 'Merci, tout est bon !',
@@ -115,6 +120,10 @@ const T: Record<Lang, Record<string, string>> = {
     docNumber: 'Document number',
     docCountry: 'Issuing country',
     consent: 'I agree that this information is shared with my host for the management of my stay and mandatory legal declarations.',
+    signature: 'Signature',
+    signatureHint: 'Sign in the frame below (finger or mouse) to certify that your details are accurate.',
+    signatureClear: 'Clear',
+    errSignature: 'Please sign in the frame.',
     submit: 'Send my details',
     submitting: 'Sending…',
     successTitle: 'Thank you, all set!',
@@ -151,6 +160,9 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
   const [touched, setTouched] = useState(false)
+  // Signature électronique (même mécanique que la page contrat /sign)
+  const sigCanvasRef = useRef<HTMLCanvasElement>(null)
+  const [hasSignature, setHasSignature] = useState(false)
 
   // Auto-détection langue navigateur (une seule fois, modifiable via toggle)
   useEffect(() => {
@@ -174,13 +186,28 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
     setTouched(true)
     setError('')
     if (!requiredOk) return
+    if (!hasSignature) { setError(t.errSignature); return }
     if (!consent) { setError(t.errConsent); return }
+
+    // Export de la signature avec fond blanc (visible sur tous les fonds),
+    // même mécanique que la page contrat.
+    const canvas = sigCanvasRef.current
+    if (!canvas || canvas.width === 0) { setError(t.errSignature); return }
+    const ctx = canvas.getContext('2d')
+    if (!ctx) { setError(t.errSignature); return }
+    ctx.save()
+    ctx.globalCompositeOperation = 'destination-over'
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.restore()
+    const signatureImage = canvas.toDataURL('image/png')
+
     setSubmitting(true)
     try {
       const res = await fetch('/api/checkin/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, ...form }),
+        body: JSON.stringify({ token, ...form, signature_image: signatureImage }),
       })
       const json = await res.json().catch(() => ({}))
       if (!res.ok || json.error) {
@@ -353,6 +380,19 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
           </div>
         </div>
 
+        {/* Signature électronique */}
+        <div style={s.section}>
+          <div style={s.sectionLabel}><Signature size={13} weight="fill" /> {t.signature} *</div>
+          <p style={s.note}>{t.signatureHint}</p>
+          <SignaturePad
+            canvasRef={sigCanvasRef}
+            onInk={() => setHasSignature(true)}
+            onClear={() => setHasSignature(false)}
+            clearLabel={t.signatureClear}
+            invalid={touched && !hasSignature}
+          />
+        </div>
+
         {/* Consentement + submit */}
         <label style={s.consentRow}>
           <input
@@ -405,6 +445,127 @@ function Field({ label, value, onChange, type = 'text', required = false, invali
         style={{ ...s.input, ...(invalid ? s.inputInvalid : {}) }}
       />
       {invalid && msg && <span style={s.errMsg}>{msg}</span>}
+    </div>
+  )
+}
+
+// Pad de signature tactile/souris — même mécanique éprouvée que la page
+// contrat /sign/[token] (ratio Retina, touch + mouse, trait arrondi).
+// Fond blanc visuel : une signature s'écrit sur du papier, pas sur du sombre.
+function SignaturePad({ canvasRef, onInk, onClear, clearLabel, invalid }: {
+  canvasRef: React.RefObject<HTMLCanvasElement>
+  onInk: () => void
+  onClear: () => void
+  clearLabel: string
+  invalid: boolean
+}) {
+  const [isDrawing, setIsDrawing] = useState(false)
+  const lastPos = useRef<{ x: number; y: number } | null>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    const dpr = window.devicePixelRatio || 1
+    const rect = canvas.getBoundingClientRect()
+    canvas.width = rect.width * dpr
+    canvas.height = rect.height * dpr
+    ctx.scale(dpr, dpr)
+    // Couleur fixe : canvas ne résout pas les variables CSS
+    ctx.strokeStyle = '#14532d'
+    ctx.lineWidth = 2.5
+    ctx.lineCap = 'round'
+    ctx.lineJoin = 'round'
+  }, [canvasRef])
+
+  function getPos(e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) {
+    const rect = canvas.getBoundingClientRect()
+    if ('touches' in e) {
+      const touch = e.touches[0]
+      return { x: touch.clientX - rect.left, y: touch.clientY - rect.top }
+    }
+    return { x: (e as React.MouseEvent).clientX - rect.left, y: (e as React.MouseEvent).clientY - rect.top }
+  }
+
+  function startDraw(e: React.MouseEvent | React.TouchEvent) {
+    e.preventDefault()
+    const canvas = canvasRef.current
+    if (!canvas) return
+    setIsDrawing(true)
+    lastPos.current = getPos(e, canvas)
+  }
+
+  function draw(e: React.MouseEvent | React.TouchEvent) {
+    e.preventDefault()
+    if (!isDrawing) return
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    const pos = getPos(e, canvas)
+    if (lastPos.current) {
+      ctx.beginPath()
+      ctx.moveTo(lastPos.current.x, lastPos.current.y)
+      ctx.lineTo(pos.x, pos.y)
+      ctx.stroke()
+    }
+    lastPos.current = pos
+    onInk()
+  }
+
+  function stopDraw(e: React.MouseEvent | React.TouchEvent) {
+    e.preventDefault()
+    setIsDrawing(false)
+    lastPos.current = null
+  }
+
+  function clear() {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    onClear()
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+      <canvas
+        ref={canvasRef}
+        onMouseDown={startDraw}
+        onMouseMove={draw}
+        onMouseUp={stopDraw}
+        onMouseLeave={stopDraw}
+        onTouchStart={startDraw}
+        onTouchMove={draw}
+        onTouchEnd={stopDraw}
+        style={{
+          width: '100%',
+          height: '140px',
+          background: '#ffffff',
+          border: `1.5px ${invalid ? 'solid var(--danger, #dc2626)' : 'dashed var(--border-2)'}`,
+          borderRadius: '12px',
+          touchAction: 'none',
+          cursor: 'crosshair',
+          boxSizing: 'border-box' as const,
+        }}
+      />
+      <button
+        type="button"
+        onClick={clear}
+        style={{
+          alignSelf: 'flex-end',
+          display: 'inline-flex', alignItems: 'center', gap: '5px',
+          padding: '5px 10px', fontSize: '12px', fontWeight: 500,
+          color: 'var(--text-muted)', background: 'transparent',
+          border: '1px solid var(--border-2)', borderRadius: '8px',
+          cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
+        }}
+      >
+        <Eraser size={12} />
+        {clearLabel}
+      </button>
     </div>
   )
 }

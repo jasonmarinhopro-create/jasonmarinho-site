@@ -15,7 +15,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
   const [voyageurRes, sejoursRes, authRes, profileDataRes, logementsRes] = await Promise.all([
     supabase
       .from('voyageurs')
-      .select('id, prenom, nom, email, telephone, nationalite, source, tags, notes, note_privee, id_type, id_url, id_verifie, bloque, bloque_motif, created_at, checkin_token, checkin_sent_at, checkin_completed_at')
+      .select('id, prenom, nom, email, telephone, nationalite, source, tags, notes, note_privee, id_type, id_url, id_verifie, bloque, bloque_motif, created_at, checkin_token, checkin_sent_at, checkin_completed_at, checkin_signature')
       .eq('id', id)
       .eq('user_id', profile.userId)
       .single(),
