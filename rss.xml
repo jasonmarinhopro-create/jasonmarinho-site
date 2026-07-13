@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Fri, 10 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 13 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Voyageurs surnuméraires en LCD : 6 actions pour repérer, encadrer et facturer les personnes en plus non déclarées</title>
+      <link>https://jasonmarinho.com/blog/voyageurs-surnumeraires-lcd-6-actions-personnes-en-plus-non-declarees</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/voyageurs-surnumeraires-lcd-6-actions-personnes-en-plus-non-declarees</guid>
+      <pubDate>Mon, 13 Jul 2026 08:00:00 GMT</pubDate>
+      <description>Réservation à 2 qui arrive à 6, fêtes non annoncées, matelas gonflables cachés : 6 actions concrètes pour prévenir, détecter et facturer les voyageurs surnuméraires en location courte durée.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Compte bancaire pro pour hôte LCD : 6 raisons de le séparer et comment le choisir en 2026</title>
       <link>https://jasonmarinho.com/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026</link>
@@ -398,14 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>En 2026, l&apos;algorithme Airbnb et les voyageurs ne lisent que les 500 premiers caractères de ta description. Voici la structure exacte qui convertit, testée sur 250 hôtes.</description>
       <category>Visibilité</category>
-    </item>
-    <item>
-      <title>Diversifier ses revenus LCD : 7 sources au-delà du tarif nuitée</title>
-      <link>https://jasonmarinho.com/blog/diversifier-revenus-lcd-au-dela-nuitees</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/diversifier-revenus-lcd-au-dela-nuitees</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Au-delà du tarif à la nuit, un hôte LCD a 7 leviers pour augmenter son revenu sans augmenter son taux d&apos;occupation. Liste des plus rentables et comment les activer.</description>
-      <category>Revenus</category>
     </item>
   </channel>
 </rss>
