@@ -85,6 +85,7 @@ export async function getDashboardPrefill(userId: string): Promise<LogementPrefi
           .from('sejours')
           .select('logement, date_arrivee, date_depart, montant')
           .eq('user_id', uid)
+          .is('annule_at', null)
           .gte('date_arrivee', new Date(Date.now() - 365 * 86400000).toISOString().slice(0, 10))
           .not('montant', 'is', null)
           .gt('montant', 0),

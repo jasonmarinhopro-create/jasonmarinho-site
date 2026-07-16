@@ -110,6 +110,7 @@ export default async function CalendrierPage() {
       .from('sejours')
       .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut, contrat_plateforme, voyageurs(prenom, nom, source)')
       .eq('user_id', userId)
+      .is('annule_at', null)
       .not('date_arrivee', 'is', null)
       .not('date_depart', 'is', null),
     supabase

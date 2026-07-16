@@ -7,8 +7,9 @@ import {
   Envelope, Phone, Note, CalendarBlank, House,
   CurrencyEur, Seal, Link as LinkIcon, ShieldWarning, Star, FileText, Lock,
   ListChecks, CheckSquare, Square, Bandaids, DownloadSimple,
+  Prohibit, ArrowCounterClockwise,
 } from '@phosphor-icons/react/dist/ssr'
-import { updateVoyageur, addSejour, updateSejour, deleteSejour, generateCheckinLink, type VoyageurData, type SejourData } from '../actions'
+import { updateVoyageur, addSejour, updateSejour, deleteSejour, cancelSejour, restoreSejour, generateCheckinLink, type VoyageurData, type SejourData } from '../actions'
 import { updateContractChecklist } from '../../calendrier/actions'
 import { reportGuest } from '../../securite/actions'
 import IncidentsPanel from './IncidentsPanel'
@@ -87,6 +88,8 @@ type Sejour = {
   contrat_date_signature: string | null; contrat_lien: string | null
   contrat_plateforme: string | null
   commission_montant: number | null
+  /** Séjour annulé (non supprimé) : exclu des stats, badge sur la carte */
+  annule_at?: string | null
 }
 
 type DepositContract = {
@@ -613,18 +616,20 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 
   // ─── Stats voyageur (CA, séjours, durée moyenne, dernière venue, statut auto) ──
   const todayISO = new Date().toISOString().slice(0, 10)
+  // Les séjours annulés restent visibles (badge) mais sortent des décomptes
+  const activeSejours = sejours.filter(s => !s.annule_at)
   const stats = (() => {
-    const totalCA = sejours.reduce((sum, s) => sum + (s.montant ?? 0), 0)
-    const nbSejours = sejours.length
-    const totalNuits = sejours.reduce((sum, s) => sum + nights(s.date_arrivee, s.date_depart), 0)
+    const totalCA = activeSejours.reduce((sum, s) => sum + (s.montant ?? 0), 0)
+    const nbSejours = activeSejours.length
+    const totalNuits = activeSejours.reduce((sum, s) => sum + nights(s.date_arrivee, s.date_depart), 0)
     const dureeMoyenne = nbSejours > 0 ? Math.round(totalNuits / nbSejours) : 0
 
     // Dernière venue = date_depart la plus récente parmi les séjours passés
-    const past = sejours.filter(s => s.date_depart < todayISO).sort((a, b) => b.date_depart.localeCompare(a.date_depart))
+    const past = activeSejours.filter(s => s.date_depart < todayISO).sort((a, b) => b.date_depart.localeCompare(a.date_depart))
     const lastVisit = past[0]?.date_depart ?? null
 
     // Prochain séjour à venir
-    const upcoming = sejours.filter(s => s.date_arrivee >= todayISO).sort((a, b) => a.date_arrivee.localeCompare(b.date_arrivee))
+    const upcoming = activeSejours.filter(s => s.date_arrivee >= todayISO).sort((a, b) => a.date_arrivee.localeCompare(b.date_arrivee))
     const nextStay = upcoming[0] ?? null
 
     // Statut auto
@@ -647,7 +652,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   // ─── Logements fréquentés (pour bouton "Voir le logement") ──
   const logementsFrequentes = (() => {
     const counts = new Map<string, number>()
-    sejours.forEach(sj => {
+    activeSejours.forEach(sj => {
       if (sj.logement) counts.set(sj.logement, (counts.get(sj.logement) ?? 0) + 1)
     })
     const sorted = Array.from(counts.entries()).sort((a, b) => b[1] - a[1])
@@ -661,8 +666,8 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   const trustScore = (() => {
     let score = 50 // base neutre
     if (idVerifie) score += 25
-    if (sejours.length >= 2) score += 10
-    if (sejours.length >= 4) score += 15
+    if (activeSejours.length >= 2) score += 10
+    if (activeSejours.length >= 4) score += 15
     if (notePrivee && notePrivee >= 4) score += 10
     if (isFlagged) score -= 60
     if (bloque) score -= 100
@@ -682,6 +687,18 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     sejours.forEach(sj => {
       const tone = (d: string): TimelineEvent['tone'] =>
         d < todayISO ? 'past' : d === todayISO ? 'today' : 'future'
+
+      // Séjour annulé : un seul événement, pas d'arrivée/départ fantômes
+      if (sj.annule_at) {
+        events.push({
+          date: sj.annule_at.slice(0, 10),
+          icon: '🚫',
+          label: 'Séjour annulé',
+          subtitle: `${formatDate(sj.date_arrivee)} → ${formatDate(sj.date_depart)}${sj.logement ? ` · ${sj.logement}` : ''}`,
+          tone: 'past',
+        })
+        return
+      }
 
       // Création (contrat envoyé / signé)
       if (sj.contrat_statut === 'signe' && sj.contrat_date_signature) {
@@ -841,6 +858,21 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     if (!confirm('Supprimer ce séjour ?')) return
     startTransition(async () => {
       await deleteSejour(id, voyageur.id)
+      router.refresh()
+    })
+  }
+
+  function handleCancelSejour(id: string) {
+    if (!confirm('Annuler ce séjour ? Il restera visible dans l\u2019historique mais sortira du calendrier, du CA et des déclarations.')) return
+    startTransition(async () => {
+      await cancelSejour(id, voyageur.id)
+      router.refresh()
+    })
+  }
+
+  function handleRestoreSejour(id: string) {
+    startTransition(async () => {
+      await restoreSejour(id, voyageur.id)
       router.refresh()
     })
   }
@@ -1764,14 +1796,20 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
             // Détermine le pays du logement de ce séjour (pour l'alerte voyageur étranger)
             const sejourLogement = sj.logement ? logements.find(l => l.nom === sj.logement) : undefined
             const sejourLogementPays = sejourLogement?.pays ?? 'FR'
+            const isCancelled = !!sj.annule_at
 
             return (
               <div key={sj.id}>
               <div style={s.sejourRow} className="sejour-row-mobile jm-sejour-row">
-                <div style={s.sejourLeft}>
-                  <div style={s.sejourDates}>
+                <div style={{ ...s.sejourLeft, ...(isCancelled ? { opacity: 0.55 } : {}) }}>
+                  <div style={{ ...s.sejourDates, ...(isCancelled ? { textDecoration: 'line-through' } : {}) }}>
                     {formatDate(sj.date_arrivee)} → {formatDate(sj.date_depart)}
                     <span style={s.nightsBadge}>{n} nuit{n > 1 ? 's' : ''}</span>
+                    {isCancelled && (
+                      <span style={{ ...s.nightsBadge, color: 'var(--danger)', background: 'rgba(239,68,68,0.10)', border: '1px solid rgba(239,68,68,0.30)', textDecoration: 'none' }}>
+                        <Prohibit size={11} style={{ verticalAlign: '-1px' }} /> Annulé le {formatDate(sj.annule_at!.slice(0, 10))}
+                      </span>
+                    )}
                   </div>
                   <div style={s.sejourMeta}>
                     {sj.logement && (
@@ -1796,6 +1834,21 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   </div>
                 </div>
                 <div className="sejour-actions">
+                  {isCancelled ? (
+                    <>
+                      <button
+                        onClick={() => handleRestoreSejour(sj.id)}
+                        style={s.contractBtn}
+                        title="Rétablir ce séjour (il réintègre le calendrier, le CA et les déclarations)"
+                      >
+                        <ArrowCounterClockwise size={13} weight="bold" /> Rétablir
+                      </button>
+                      <button onClick={() => handleDeleteSejour(sj.id)} style={{ ...s.sejourActionBtn, color: 'var(--danger)' }} className="jm-sejour-action" title="Supprimer définitivement">
+                        <X size={14} />
+                      </button>
+                    </>
+                  ) : (
+                  <>
                   {/* Contrat géré par une plateforme externe : pas de bouton contrat/paiement */}
                   {sj.contrat_plateforme ? (
                     <span style={{ ...s.metaChip, color: 'var(--text-muted)', background: 'var(--surface-2)', fontSize: '11px' }} title="Géré par la plateforme">
@@ -1844,6 +1897,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   <button onClick={() => openEditSejour(sj)} style={s.sejourActionBtn} className="jm-sejour-action" title="Modifier">
                     <Pencil size={14} />
                   </button>
+                  <button onClick={() => handleCancelSejour(sj.id)} style={{ ...s.sejourActionBtn, color: 'var(--warning)' }} className="jm-sejour-action" title="Annuler ce séjour (conserve l'historique)">
+                    <Prohibit size={14} />
+                  </button>
                   <button onClick={() => handleDeleteSejour(sj.id)} style={{ ...s.sejourActionBtn, color: 'var(--danger)' }} className="jm-sejour-action" title="Supprimer">
                     <X size={14} />
                   </button>
@@ -1878,16 +1934,21 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                       </button>
                     )
                   })()}
+                  </>
+                  )}
                 </div>
               </div>
 
-              {/* Alerte légale voyageur étranger (SIBA PT, fiche police FR, etc.) */}
-              <ForeignGuestAlert
-                logementPays={sejourLogementPays}
-                voyageurNationalite={voyageur.nationalite}
-                dateArrivee={sj.date_arrivee}
-                voyageurNom={`${voyageur.prenom} ${voyageur.nom}`}
-              />
+              {/* Alerte légale voyageur étranger (SIBA PT, fiche police FR, etc.)
+                  — pas pour un séjour annulé : plus rien à déclarer. */}
+              {!isCancelled && (
+                <ForeignGuestAlert
+                  logementPays={sejourLogementPays}
+                  voyageurNationalite={voyageur.nationalite}
+                  dateArrivee={sj.date_arrivee}
+                  voyageurNom={`${voyageur.prenom} ${voyageur.nom}`}
+                />
+              )}
 
               {/* ── Checklist panel ────────────────────────────── */}
               {isExpanded && (

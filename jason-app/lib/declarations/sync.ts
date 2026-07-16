@@ -40,6 +40,7 @@ export async function syncDeclarationsForVoyageur(
     .select('id, logement, date_arrivee')
     .eq('user_id', userId)
     .eq('voyageur_id', voyageurId)
+    .is('annule_at', null)
     .gte('date_arrivee', cutoff)
   if (!sejours || sejours.length === 0) return 0
 

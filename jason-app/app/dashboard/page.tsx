@@ -147,6 +147,7 @@ export default async function DashboardPage() {
       .from('sejours')
       .select('montant, date_arrivee')
       .eq('user_id', userId)
+      .is('annule_at', null)
       .not('montant', 'is', null)
       .gt('montant', 0)
       .gte('date_arrivee', `${yearPfx}-01-01`)
@@ -172,6 +173,7 @@ export default async function DashboardPage() {
       .from('sejours')
       .select('id, voyageur_id, logement, date_arrivee, date_depart, voyageurs(prenom, nom)')
       .eq('user_id', userId)
+      .is('annule_at', null)
       .not('date_arrivee', 'is', null)
       .not('date_depart', 'is', null)
       .order('date_arrivee'),
