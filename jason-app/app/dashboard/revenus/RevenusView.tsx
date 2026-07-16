@@ -115,6 +115,28 @@ function isPaid(c: Contract): boolean {
     (!c.stripe_payment_enabled && c.statut === 'signe')
 }
 
+// Date de VERSEMENT estimée d'un séjour plateforme (≠ date d'arrivée) :
+// Airbnb verse le jour de l'arrivée, Booking 5 à 10 jours après (on
+// retient +7 j en estimation médiane). Les autres plateformes versent
+// autour de l'arrivée. Séjour direct/manuel : encaissé à la saisie
+// (comportement historique — l'hôte tient sa compta lui-même).
+function expectedPayoutDate(plateforme: string, dateArrivee: string): string {
+  if (plateforme === 'booking') {
+    const d = new Date(dateArrivee + 'T12:00:00')
+    d.setDate(d.getDate() + 7)
+    return d.toISOString().slice(0, 10)
+  }
+  return dateArrivee
+}
+
+/** Statut de paiement réel d'une entrée du journal (séjour plateforme :
+ *  « en attente » tant que la date de versement estimée n'est pas passée). */
+function entryStatut(e: RevenusEntry): 'encaisse' | 'attente' {
+  if (!e.id.startsWith('sejour:') || !e.contrat_plateforme) return 'encaisse'
+  const todayISO = new Date().toISOString().slice(0, 10)
+  return todayISO >= expectedPayoutDate(e.contrat_plateforme, e.date_paiement) ? 'encaisse' : 'attente'
+}
+
 function isPending(c: Contract): boolean {
   if (isPaid(c)) return false
   if (!c.date_arrivee || (c.montant_loyer ?? 0) <= 0) return false
@@ -447,6 +469,9 @@ export default function RevenusView({
     })
 
     entries.forEach(e => {
+      // Séjour plateforme pas encore versé (Airbnb = jour d'arrivée,
+      // Booking = arrivée + ~7 j) → « En attente », pas « Encaissé ».
+      if (entryStatut(e) === 'attente') { enAttente += e.montant; return }
       const d = new Date(e.date_paiement)
       if (d.getFullYear() === thisYear) {
         cetteAnneeEnc += e.montant
@@ -574,8 +599,10 @@ export default function RevenusView({
       entries.forEach(e => {
         const de = new Date(e.date_paiement)
         const dKey = `${de.getFullYear()}-${String(de.getMonth() + 1).padStart(2, '0')}`
-        if (dKey === key) encaisse += e.montant
-        else if (dKey === n1Key) n1 += e.montant
+        if (dKey === key) {
+          if (entryStatut(e) === 'encaisse') encaisse += e.montant
+          else prevu += e.montant
+        } else if (dKey === n1Key) n1 += e.montant
       })
 
       return { ...month, encaisse, prevu, n1, total: encaisse + prevu }
@@ -606,7 +633,8 @@ export default function RevenusView({
     })
     entries.forEach(e => {
       if (!stats[e.logement_nom]) stats[e.logement_nom] = { nom: e.logement_nom, encaisse: 0, pending: 0, charges: 0, logement_id: null }
-      stats[e.logement_nom].encaisse += e.montant
+      if (entryStatut(e) === 'encaisse') stats[e.logement_nom].encaisse += e.montant
+      else stats[e.logement_nom].pending += e.montant
     })
     charges.forEach(c => {
       if (!stats[c.logement_nom]) stats[c.logement_nom] = { nom: c.logement_nom, encaisse: 0, pending: 0, charges: 0, logement_id: c.logement_id ?? null }
@@ -655,6 +683,8 @@ export default function RevenusView({
     label: string; mode: string; montant: number
     statut: 'encaisse' | 'attente'; source: 'contrat' | 'manuel' | 'sejour'
     aDeclarer: boolean
+    /** Versement estimé (séjour plateforme en attente) — affiché sur le badge */
+    payoutDate?: string
   }
 
   const allTx = useMemo((): Tx[] => {
@@ -676,8 +706,13 @@ export default function RevenusView({
       id: e.id, date: e.date_paiement, logement: e.logement_nom,
       label: TYPE_LABELS[e.type_paiement ?? 'loyer'] ?? 'Paiement',
       mode: MODE_LABELS[e.mode_paiement] ?? e.mode_paiement,
-      montant: e.montant, statut: 'encaisse', source: e.id.startsWith('sejour:') ? 'sejour' : 'manuel',
+      // Séjour plateforme : « en attente » tant que le versement estimé
+      // n'est pas passé (Airbnb = jour d'arrivée, Booking = arrivée + ~7 j)
+      montant: e.montant, statut: entryStatut(e), source: e.id.startsWith('sejour:') ? 'sejour' : 'manuel',
       aDeclarer: e.a_declarer !== false,
+      payoutDate: entryStatut(e) === 'attente' && e.contrat_plateforme
+        ? expectedPayoutDate(e.contrat_plateforme, e.date_paiement)
+        : undefined,
     }))
     return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   }, [contracts, entries])
@@ -1646,7 +1681,11 @@ export default function RevenusView({
                     ...s.txBadge,
                     ...(tx.statut === 'encaisse' ? s.badgeGreen : s.badgeYellow),
                   }}>
-                    {tx.statut === 'encaisse' ? '✓ Encaissé' : '⏳ Attente'}
+                    {tx.statut === 'encaisse'
+                      ? '✓ Encaissé'
+                      : tx.payoutDate
+                        ? `⏳ Vers. ~${tx.payoutDate.slice(8, 10)}/${tx.payoutDate.slice(5, 7)}`
+                        : '⏳ Attente'}
                   </span>
                   {canToggle && (
                     <button
