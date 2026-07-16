@@ -1,0 +1,69 @@
+# Auto-merge des PRs d'articles de blog.
+#
+# Pourquoi : la Routine « Rédaction article » (lun/mer/ven 7h) ne peut pas
+# pousser sur main — son travail atterrit sur une branche claude/* avec une
+# PR que personne ne merge. Les articles s'empilaient et finissaient en
+# conflit (articles-data.mjs, blog/index.html, rss.xml, sitemap.xml sont
+# modifiés par CHAQUE publication).
+#
+# Ce workflow merge automatiquement une PR si — et seulement si :
+#   1. la branche vient d'une session Claude (claude/*)
+#   2. l'auteur est le propriétaire du dépôt
+#   3. TOUS les fichiers modifiés sont des fichiers d'article/publication
+#      (aucun code applicatif, workflow, config…)
+#
+# Une PR qui touche quoi que ce soit d'autre est ignorée (revue humaine).
+# NB : le merge est fait avec GITHUB_TOKEN — le déploiement Vercel part
+# quand même (intégration Git Vercel, pas une Action).
+
+name: Auto-merge articles blog
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  automerge:
+    if: startsWith(github.head_ref, 'claude/') && github.event.pull_request.user.login == 'jasonmarinhopro-create'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vérifier que la PR ne touche que des fichiers d'article
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          FILES=$(gh api "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --paginate --jq '.[].filename')
+          echo "Fichiers modifiés :"
+          echo "$FILES"
+          SAFE=true
+          while IFS= read -r f; do
+            case "$f" in
+              blog/*|scripts/articles/*|rss.xml|sitemap.xml|data/actualites-queue/*) ;;
+              *) SAFE=false; echo "→ Hors périmètre article : $f" ;;
+            esac
+          done <<< "$FILES"
+          echo "safe=$SAFE" >> "$GITHUB_OUTPUT"
+
+      - name: Merger la PR
+        if: steps.check.outputs.safe == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh pr merge "${{ github.event.pull_request.number }}" \
+               --repo "${{ github.repository }}" \
+               --squash --delete-branch; then
+            echo "PR d'article mergée automatiquement ✅"
+          else
+            # Conflit (article précédent pas encore déployé au moment de la
+            # génération) ou merge impossible : on prévient au lieu d'échouer
+            # en silence — l'humain tranche.
+            gh pr comment "${{ github.event.pull_request.number }}" \
+              --repo "${{ github.repository }}" \
+              --body "🤖 Auto-merge impossible (probablement un conflit avec un article publié entre-temps). Résous les conflits ou demande à Claude : « répare les conflits de la PR #${{ github.event.pull_request.number }} »."
+            exit 1
+          fi
