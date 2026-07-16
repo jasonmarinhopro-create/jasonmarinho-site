@@ -1,6 +1,6 @@
 import { cache } from 'react'
 import { unstable_cache, revalidateTag } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { getAuthUser } from '@/lib/supabase/auth-user'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 
 const ADMIN_EMAIL = 'djason.marinho@gmail.com'
@@ -56,8 +56,8 @@ function getCachedProfileData(userId: string) {
  *   (fini le re-fetch Supabase à chaque navigation pour des données quasi-statiques)
  */
 export const getProfile = cache(async () => {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  // getAuthUser : dédupliqué par rendu (partagé avec spaces/activeProperty)
+  const user = await getAuthUser()
   if (!user) return null
 
   const isAdmin = user.email === ADMIN_EMAIL

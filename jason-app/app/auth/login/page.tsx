@@ -10,7 +10,6 @@ import {
   Camera, Sparkle, ChartBar, CreditCard, PencilSimple, Image as ImageIcon, Broom, Tag,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
-import { getPostLoginPathAction } from './actions'
 
 type Profile = 'host' | 'photographe' | 'menage'
 
@@ -136,13 +135,10 @@ function LoginInner() {
     const redirect = () => {
       if (redirected) return
       redirected = true
-      // refresh() purge le Router Cache client : sans ca, une entree
-      // /dashboard mise en cache AVANT l'auth (redirect anonyme) ferait
-      // rebondir la navigation vers /auth/login.
-      router.refresh()
-      router.replace('/dashboard')
-      // Trigger le multi-espace redirect en arriere-plan (non bloquant)
-      resolveOptimalDestination()
+      // Navigation document : bypasse le Router Cache (pas de pollution
+      // possible) et l'aiguillage pro/investisseur est fait côté serveur
+      // par la page /dashboard.
+      window.location.assign('/dashboard')
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
@@ -157,20 +153,6 @@ function LoginInner() {
 
     return () => subscription.unsubscribe()
   }, [])
-
-  // Determine la vraie page d'atterrissage APRES la redirection optimiste.
-  // Si l'utilisateur est pro-only (aucun logement, une fiche photo/menage),
-  // on ajuste vers sa fiche. Sinon on reste sur /dashboard.
-  async function resolveOptimalDestination() {
-    try {
-      const path = await getPostLoginPathAction()
-      if (path !== '/dashboard' && typeof window !== 'undefined' && window.location.pathname === '/dashboard') {
-        router.replace(path)
-      }
-    } catch {
-      // Ignore : l'utilisateur reste sur /dashboard, c'est un fallback safe
-    }
-  }
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -268,19 +250,16 @@ function LoginInner() {
     }
 
     // NB : on garde loading=true pendant la redirection — le bouton reste
-    // sur "Connexion..." jusqu'au changement de page. Avant, il repassait
-    // a "Se connecter" alors que la nav etait en cours → sensation d'echec
-    // sur mobile (l'utilisateur re-tapait le bouton).
+    // sur "Connexion..." jusqu'au changement de page.
     //
-    // refresh() purge le Router Cache : une visite anonyme de /dashboard
-    // (ou un ancien prefetch) y avait mis en cache le redirect vers
-    // /auth/login — router.replace reutilisait cette entree polluee et
-    // ramenait l'utilisateur sur la page de connexion.
-    router.refresh()
-    router.replace('/dashboard')
-    // Le multi-espace redirect (getPostLoginPathAction, 500-1500ms) tourne
-    // en arriere-plan et n'attend PAS avant de rediriger.
-    resolveOptimalDestination()
+    // PERF : window.location.assign = UNE navigation document, au lieu de
+    // l'ancien trio refresh() (re-fetch RSC de la page de LOGIN, gaspillé)
+    // + replace() (2e fetch RSC) + getPostLoginPathAction (server action
+    // parasite en parallèle). La navigation document bypasse totalement le
+    // Router Cache (la pollution que refresh() devait purger n'existe plus
+    // par construction). L'aiguillage pro/investisseur est désormais fait
+    // CÔTÉ SERVEUR par la page /dashboard (redirect immédiat, zéro flash).
+    window.location.assign('/dashboard')
   }
 
   async function handleResendConfirmation() {

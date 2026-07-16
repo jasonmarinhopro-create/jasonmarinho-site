@@ -26,11 +26,16 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const hdrs = await headers()
   const pathname = hdrs.get('x-pathname') ?? '/dashboard'
 
-  // PERF : detectTracksProgress (7 tests d'existence, ~200-500ms, non
-  // cachable) ne dépend QUE du profil — pas des 3 autres requêtes. Avant, il
-  // s'exécutait EN SÉRIE après le Promise.all (waterfall qui alourdissait
-  // chaque nav, dont le login → dashboard). On le lance dès que le profil est
-  // prêt, EN PARALLÈLE d'actualites / spaces / activeProperty.
+  // PERF : les 3 requêtes indépendantes du profil démarrent AVANT l'await
+  // du profil (sinon un étage réseau complet s'ajoute en série : getUser
+  // du profil PUIS le reste). getAuthUser étant dédupliqué par rendu, le
+  // RTT d'auth est payé UNE fois, partagé par les 4.
+  const actualitesPromise = getCachedPublishedActualites()
+  const spacesPromise = getUserSpaces()
+  const activePropertyPromise = getActiveProperty()
+
+  // detectTracksProgress (7 tests d'existence, ~200-500ms, non cachable)
+  // dépend du profil : lancé juste après, en parallèle des 3 autres.
   const profile = await getProfile()
   if (!profile) redirect('/auth/login')
 
@@ -57,9 +62,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const emptyOnboarding = { totalDone: 1, totalSteps: 1, tracks: [] as Array<{ key: string; doneSteps: Set<string> }> }
 
   const [cachedActualites, spacesResult, activeProperty, onboardingState] = await Promise.all([
-    getCachedPublishedActualites(),
-    getUserSpaces(),
-    getActiveProperty(),
+    actualitesPromise,
+    spacesPromise,
+    activePropertyPromise,
     onboardingOff
       ? Promise.resolve(emptyOnboarding)
       : detectTracksProgress({
