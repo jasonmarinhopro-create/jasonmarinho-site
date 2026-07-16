@@ -1,4 +1,6 @@
 import { getProfile } from '@/lib/queries/profile'
+import { getUserSpaces } from '@/lib/queries/spaces'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
@@ -51,6 +53,22 @@ function monthPrefix(offset = 0) {
 
 export default async function DashboardPage() {
   const profile  = await getProfile()
+
+  // ── Aiguillage post-login côté SERVEUR ────────────────────────────────
+  // Remplace getPostLoginPathAction (server action appelée par la page de
+  // login APRÈS la navigation : un aller-retour de plus + un flash du
+  // dashboard hôte chez les pros). getUserSpaces est déjà appelée par le
+  // layout dans CE MÊME rendu → React cache() dédupe, coût zéro.
+  const { spaces, primary } = await getUserSpaces()
+  const hostSpace = spaces.find(sp => sp.key === 'host')
+  if (hostSpace && !hostSpace.active) {
+    // Pro pur (photographe/ménage sans logement) → direct sur sa fiche
+    const target = spaces.find(sp => sp.key !== 'host' && sp.active)
+    if (target) redirect(target.href)
+  }
+  // Investisseur pur → son espace (le dashboard hôte serait vide)
+  if (primary.key === 'investor') redirect(primary.href)
+
   const supabase = await createClient()
   const userId   = profile?.userId ?? ''
   const completedSteps = profile?.onboarding_completed_steps ?? []
