@@ -1710,7 +1710,7 @@
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/experience</loc>
-    <lastmod>2026-07-05</lastmod>
+    <lastmod>2026-07-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -1753,6 +1753,12 @@
   <url>
     <loc>https://jasonmarinho.com/blog/caution-lcd-5-regles-juridiques-2026-prelever-sans-risque</loc>
     <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/voyageurs-surnumeraires-lcd-6-actions-personnes-en-plus-non-declarees</loc>
+    <lastmod>2026-07-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
