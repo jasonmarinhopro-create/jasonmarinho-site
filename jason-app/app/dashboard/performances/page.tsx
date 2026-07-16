@@ -53,6 +53,7 @@ export default async function PerformancesPage() {
       .from('sejours')
       .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, commission_montant, contrat_plateforme, created_at')
       .eq('user_id', profile.userId)
+      .is('annule_at', null)
       .order('date_arrivee', { ascending: false }),
     // Les contrats signés sans séjour lié comptent aussi pour l'occupation/revenus.
     // On les fusionne pour que la vue Performances reflète l'activité réelle même

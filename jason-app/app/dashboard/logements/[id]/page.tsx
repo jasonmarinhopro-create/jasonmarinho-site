@@ -41,6 +41,7 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
       .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut, contrat_date_signature, contrat_lien, voyageurs(id, prenom, nom, email, telephone)')
       .eq('user_id', profile.userId)
       .eq('logement', logement.nom)
+      .is('annule_at', null)
       .order('date_arrivee', { ascending: false }),
     getLogementIcalStatus(id),
     supabase

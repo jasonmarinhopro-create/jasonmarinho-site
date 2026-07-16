@@ -192,6 +192,68 @@ export async function deleteSejour(id: string, voyageurId: string): Promise<{ er
   return {}
 }
 
+// ─── Annulation de séjour (sans suppression) ─────────────────────────────────
+// Le séjour reste dans l'historique du voyageur avec un badge « Annulé »,
+// mais sort de tous les décomptes (CA, calendrier, iCal, notifications).
+
+export async function cancelSejour(id: string, voyageurId: string): Promise<{ error?: string }> {
+  const { supabase, session } = await getSession()
+  if (!session) return { error: 'Non authentifié.' }
+
+  const { error } = await supabase
+    .from('sejours')
+    .update({ annule_at: new Date().toISOString() })
+    .eq('id', id)
+    .eq('user_id', session.user.id)
+  if (error) return { error: error.message }
+
+  // La déclaration voyageur en attente pour ce séjour n'a plus lieu d'être
+  // (best-effort — statut réversible en DB si le séjour est rétabli).
+  try {
+    await supabase
+      .from('guest_declarations')
+      .update({ statut: 'ignoree' })
+      .eq('sejour_id', id)
+      .eq('user_id', session.user.id)
+      .eq('statut', 'a_faire')
+  } catch { /* best-effort */ }
+
+  revalidatePath(`/dashboard/voyageurs/${voyageurId}`)
+  revalidatePath('/dashboard')
+  return {}
+}
+
+export async function restoreSejour(id: string, voyageurId: string): Promise<{ error?: string }> {
+  const { supabase, session } = await getSession()
+  if (!session) return { error: 'Non authentifié.' }
+
+  const { error } = await supabase
+    .from('sejours')
+    .update({ annule_at: null })
+    .eq('id', id)
+    .eq('user_id', session.user.id)
+  if (error) return { error: error.message }
+
+  // Réactive la déclaration ignorée à l'annulation (l'index unique par
+  // sejour_id empêche syncDeclarations d'en recréer une) — uniquement si
+  // l'arrivée n'est pas passée.
+  try {
+    const today = new Date().toISOString().split('T')[0]
+    await supabase
+      .from('guest_declarations')
+      .update({ statut: 'a_faire' })
+      .eq('sejour_id', id)
+      .eq('user_id', session.user.id)
+      .eq('statut', 'ignoree')
+      .gte('date_arrivee', today)
+  } catch { /* best-effort */ }
+  // Et couvre le cas où aucune déclaration n'existait encore
+  await syncDeclarations(supabase, session.user.id, voyageurId)
+  revalidatePath(`/dashboard/voyageurs/${voyageurId}`)
+  revalidatePath('/dashboard')
+  return {}
+}
+
 // ─── Check-in en ligne (inspiré Partee) ──────────────────────────────────────
 // Génère (idempotent) le lien public /checkin/[token] que l'hôte envoie au
 // voyageur pour qu'il remplisse lui-même son identité avant l'arrivée.

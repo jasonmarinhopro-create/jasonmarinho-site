@@ -62,6 +62,7 @@ export default async function RevenusPage() {
       .from('sejours')
       .select('id, logement, date_arrivee, date_depart, montant, contrat_plateforme, commission_montant, a_declarer')
       .eq('user_id', userId)
+      .is('annule_at', null)
       .not('montant', 'is', null)
       .gt('montant', 0)
       .order('date_arrivee', { ascending: false }),

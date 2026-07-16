@@ -41,6 +41,7 @@ async function ruleArriveeDemain(userId: string): Promise<number> {
     .from('sejours')
     .select('id, logement, date_arrivee, voyageur_id, voyageurs(prenom, nom)')
     .eq('user_id', userId)
+    .is('annule_at', null)
     .gte('date_arrivee', tomorrow.toISOString().split('T')[0])
     .lte('date_arrivee', tomorrowEnd.toISOString().split('T')[0])
 
@@ -95,6 +96,7 @@ async function ruleDepartAujourdhui(userId: string): Promise<number> {
     .from('sejours')
     .select('id, logement, date_depart, voyageur_id, voyageurs(prenom, nom)')
     .eq('user_id', userId)
+    .is('annule_at', null)
     .gte('date_depart', todayStart)
     .lte('date_depart', tomorrowEnd.toISOString().split('T')[0])
 

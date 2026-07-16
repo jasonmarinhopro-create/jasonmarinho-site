@@ -53,6 +53,7 @@ export async function GET(req: NextRequest) {
       .from('sejours')
       .select('id, logement, date_arrivee, date_depart, voyageurs(prenom, nom)')
       .eq('user_id', uid)
+      .is('annule_at', null)
       .not('date_arrivee', 'is', null)
       .not('date_depart', 'is', null),
     supabase

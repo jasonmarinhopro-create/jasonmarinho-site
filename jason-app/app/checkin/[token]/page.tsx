@@ -63,6 +63,7 @@ export default async function CheckinPage({
       .select('logement, date_arrivee, date_depart')
       .eq('voyageur_id', voyageur.id)
       .eq('user_id', voyageur.user_id)
+      .is('annule_at', null)
       .gte('date_depart', today)
       .order('date_arrivee')
       .limit(1)
