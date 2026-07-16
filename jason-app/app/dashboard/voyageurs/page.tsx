@@ -15,6 +15,9 @@ export default async function VoyageursPage() {
       .from('voyageurs')
       .select('id, prenom, nom, email, telephone, notes, tags, source, bloque, id_verifie, note_privee, created_at, updated_at, sejours(id, date_arrivee, date_depart, montant)')
       .eq('user_id', profile.userId)
+      // Filtre la relation IMBRIQUÉE : les séjours annulés sortent des
+      // compteurs de la liste (nb séjours, CA cumulé, filtre « À venir »)
+      .is('sejours.annule_at', null)
       .order('updated_at', { ascending: false })
       .limit(500),
     supabase
