@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 15 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 17 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Louer une chambre chez toi en LCD : 7 règles pour cohabiter avec tes voyageurs sans stress</title>
+      <link>https://jasonmarinho.com/blog/louer-chambre-chez-habitant-lcd-7-regles-cohabiter-voyageurs</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/louer-chambre-chez-habitant-lcd-7-regles-cohabiter-voyageurs</guid>
+      <pubDate>Fri, 17 Jul 2026 08:00:00 GMT</pubDate>
+      <description>Résidence principale, espaces communs, règles de vie, fiscalité, plafond 120 jours : les 7 règles concrètes pour louer une chambre chez toi en location courte durée sans transformer ton quotidien en cauchemar.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Caution en LCD : les 5 règles juridiques à respecter en 2026 pour la prélever sans risque</title>
       <link>https://jasonmarinho.com/blog/caution-lcd-5-regles-juridiques-2026-prelever-sans-risque</link>
@@ -398,22 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>En LCD, 30-50% de tes voyageurs sont étrangers. Voici les 5 règles concrètes pour les rassurer, les guider et obtenir des avis 5 étoiles malgré la barrière linguistique.</description>
       <category>Expérience</category>
-    </item>
-    <item>
-      <title>Contrat de mandat conciergerie LCD : les 8 clauses indispensables en 2026</title>
-      <link>https://jasonmarinho.com/blog/contrat-mandat-conciergerie-lcd-modele-clauses</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/contrat-mandat-conciergerie-lcd-modele-clauses</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Un contrat de mandat solide te protège des litiges propriétaires. Voici les 8 clauses essentielles à intégrer, modèle commenté et pièges à éviter.</description>
-      <category>Conciergerie</category>
-    </item>
-    <item>
-      <title>Description Airbnb : les 500 premiers caractères qui décident de la réservation</title>
-      <link>https://jasonmarinho.com/blog/description-airbnb-500-caracteres-convertit-2026</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/description-airbnb-500-caracteres-convertit-2026</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>En 2026, l&apos;algorithme Airbnb et les voyageurs ne lisent que les 500 premiers caractères de ta description. Voici la structure exacte qui convertit, testée sur 250 hôtes.</description>
-      <category>Visibilité</category>
     </item>
   </channel>
 </rss>
