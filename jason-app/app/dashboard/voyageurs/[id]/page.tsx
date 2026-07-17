@@ -12,7 +12,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
   const supabase = await createClient()
 
   // Phase A : toutes les queries indépendantes en parallèle
-  const [voyageurRes, sejoursRes, authRes, profileDataRes, logementsRes] = await Promise.all([
+  const [voyageurRes, sejoursRes, authRes, profileDataRes, logementsRes, companionsRes] = await Promise.all([
     supabase
       .from('voyageurs')
       .select('id, prenom, nom, email, telephone, nationalite, source, tags, notes, note_privee, id_type, id_url, id_verifie, bloque, bloque_motif, created_at, checkin_token, checkin_sent_at, checkin_completed_at, checkin_signature')
@@ -36,6 +36,13 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
       .select('id, nom, adresse, telephone, description, capacite_max, reglement_interieur, conditions_annulation, animaux_acceptes, fumeur_accepte, methodes_paiement, pays, numero_al')
       .eq('user_id', profile.userId)
       .order('created_at', { ascending: false }),
+    // Groupe déclaré via le check-in en ligne (accompagnants)
+    supabase
+      .from('checkin_companions')
+      .select('id, prenom, nom, date_naissance, nationalite, id_numero, signed_at')
+      .eq('voyageur_id', id)
+      .eq('user_id', profile.userId)
+      .order('created_at'),
   ])
 
   const voyageur = voyageurRes.data
@@ -83,6 +90,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
         bailleur={bailleur}
         logements={(logements ?? []) as any[]}
         plan={profile.plan ?? 'decouverte'}
+        checkinCompanions={companionsRes.data ?? []}
       />
     </>
   )

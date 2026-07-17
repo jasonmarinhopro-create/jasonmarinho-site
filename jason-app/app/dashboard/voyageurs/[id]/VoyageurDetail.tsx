@@ -359,6 +359,16 @@ type LogementOption = {
   numero_al?: string | null
 }
 
+type CheckinCompanion = {
+  id: string
+  prenom: string
+  nom: string
+  date_naissance: string | null
+  nationalite: string | null
+  id_numero: string | null
+  signed_at: string | null
+}
+
 interface Props {
   voyageur: Voyageur
   sejours: Sejour[]
@@ -366,9 +376,11 @@ interface Props {
   bailleur: BailleurProfile
   logements?: LogementOption[]
   plan?: string
+  /** Groupe déclaré via le check-in en ligne (accompagnants) */
+  checkinCompanions?: CheckinCompanion[]
 }
 
-export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur, logements = [], plan = 'decouverte' }: Props) {
+export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur, logements = [], plan = 'decouverte', checkinCompanions = [] }: Props) {
   const isDecouverte = plan === 'decouverte'
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -1656,6 +1668,58 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               }}
             />
           )}
+          {/* Groupe déclaré via le check-in : l'hôte voit qui est déclaré
+              sans avoir à ouvrir le lien public. */}
+          {checkinCompanions.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '5px' }}>
+              <span style={{ fontSize: '10.5px', fontWeight: 600, letterSpacing: '0.4px', textTransform: 'uppercase' as const, color: 'var(--text-muted)' }}>
+                Groupe déclaré · {checkinCompanions.length + 1} voyageur{checkinCompanions.length + 1 > 1 ? 's' : ''} (dont {voyageur.prenom})
+              </span>
+              {checkinCompanions.map(c => {
+                const age = (() => {
+                  if (!c.date_naissance) return null
+                  const d = new Date(c.date_naissance + 'T12:00:00')
+                  if (isNaN(d.getTime())) return null
+                  const now = new Date()
+                  let a = now.getFullYear() - d.getFullYear()
+                  const m = now.getMonth() - d.getMonth()
+                  if (m < 0 || (m === 0 && now.getDate() < d.getDate())) a--
+                  return a
+                })()
+                return (
+                  <div key={c.id} style={{
+                    display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const,
+                    fontSize: '12px', color: 'var(--text-2)',
+                    background: 'var(--bg)', border: '1px solid var(--border)',
+                    borderRadius: '8px', padding: '6px 10px',
+                  }}>
+                    <strong style={{ color: 'var(--text)' }}>{c.prenom} {c.nom}</strong>
+                    {age !== null && (
+                      <span style={{ color: age < 15 ? 'var(--warning)' : 'var(--text-muted)' }}>
+                        {age} an{age > 1 ? 's' : ''}{age < 15 ? ' · enfant' : ''}
+                      </span>
+                    )}
+                    {c.nationalite && <span style={{ color: 'var(--text-muted)' }}>{c.nationalite}</span>}
+                    <span style={{ marginLeft: 'auto', display: 'inline-flex', gap: '8px', fontSize: '11px' }}>
+                      <span style={{ color: c.id_numero ? 'var(--success-1)' : 'var(--text-muted)' }} title="Pièce d'identité">
+                        {c.id_numero ? '✓ doc' : '– doc'}
+                      </span>
+                      <span style={{ color: c.signed_at ? 'var(--success-1)' : 'var(--text-muted)' }} title="Signature électronique">
+                        {c.signed_at ? '✓ signé' : '– signé'}
+                      </span>
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+          {voyageur.checkin_completed_at && checkinCompanions.length === 0 && (
+            <p style={{ fontSize: '11.5px', color: 'var(--warning)', margin: 0, lineHeight: 1.5 }}>
+              Check-in complété SANS accompagnant : {voyageur.prenom} a déclaré voyager seul.
+              S'il vient accompagné, renvoie-lui le lien pour ajouter le reste du groupe.
+            </p>
+          )}
+
           {/* Signature électronique du voyageur (preuve du check-in) */}
           {voyageur.checkin_completed_at && voyageur.checkin_signature && (
             <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '4px' }}>
