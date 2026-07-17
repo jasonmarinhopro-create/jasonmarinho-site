@@ -1,6 +1,6 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getProfile } from '@/lib/queries/profile'
 import { syncLogementIcalUrls } from '@/lib/ical/sync'
@@ -146,6 +146,21 @@ export async function updateLogement(id: string, data: Partial<LogementData>): P
   if (!profile) return { error: 'Non authentifié.' }
 
   const supabase = await createClient()
+
+  // Le nom du logement est la CLÉ de liaison de toute l'app (séjours,
+  // contrats, déclarations, revenus, charges sont reliés par nom, pas par
+  // id). Avant un renommage, on capture l'ancien nom pour propager.
+  let oldNom: string | null = null
+  if (typeof data.nom === 'string') {
+    const { data: cur } = await supabase
+      .from('logements')
+      .select('nom')
+      .eq('id', id)
+      .eq('user_id', profile.userId)
+      .maybeSingle()
+    oldNom = cur?.nom ?? null
+  }
+
   const { error } = await supabase
     .from('logements')
     .update({ ...data, updated_at: new Date().toISOString() })
@@ -153,6 +168,43 @@ export async function updateLogement(id: string, data: Partial<LogementData>): P
     .eq('user_id', profile.userId)
 
   if (error) return { error: error.message }
+
+  // ── Cascade de renommage ─────────────────────────────────────────────
+  // Sans elle, renommer la fiche orphelinait tout l'historique : séjours,
+  // contrats, déclarations, revenus et charges pointaient encore vers
+  // l'ancien nom (stats à zéro, calendrier vide, SIBA sans config…).
+  const newNom = typeof data.nom === 'string' ? data.nom.trim() : null
+  if (oldNom && newNom && newNom !== oldNom) {
+    const uid = profile.userId
+    await Promise.all([
+      supabase.from('sejours').update({ logement: newNom }).eq('user_id', uid).eq('logement', oldNom),
+      supabase.from('contracts').update({ logement_nom: newNom }).eq('user_id', uid).eq('logement_nom', oldNom),
+      supabase.from('guest_declarations').update({ logement_nom: newNom }).eq('user_id', uid).eq('logement_nom', oldNom),
+      supabase.from('revenus_entries').update({ logement_nom: newNom }).eq('user_id', uid).eq('logement_nom', oldNom),
+      supabase.from('revenus_charges').update({ logement_nom: newNom }).eq('user_id', uid).eq('logement_nom', oldNom),
+    ])
+    // Libellés des feeds iCal (« Airbnb — Ancien Nom ») — cosmétique, best-effort
+    try {
+      const { data: feeds } = await supabase
+        .from('ical_feeds')
+        .select('id, name')
+        .eq('user_id', uid)
+        .like('name', `%— ${oldNom}`)
+      await Promise.all((feeds ?? []).map(f =>
+        supabase.from('ical_feeds')
+          .update({ name: String(f.name).replace(`— ${oldNom}`, `— ${newNom}`) })
+          .eq('id', f.id)
+      ))
+    } catch { /* best-effort */ }
+    revalidatePath('/dashboard')
+    revalidatePath('/dashboard/calendrier')
+    revalidatePath('/dashboard/voyageurs')
+    revalidatePath('/dashboard/finances/revenus')
+  }
+
+  // Sélecteur de logement de la sidebar (fetchAllPropertiesForUser, cache
+  // 5 min taggé) : sans invalidation, l'ancien nom restait affiché.
+  revalidateTag(`logements:${profile.userId}`)
 
   // Bridge iCal : si l'update touche au moins une URL iCal, on resync
   const touchesIcal =
