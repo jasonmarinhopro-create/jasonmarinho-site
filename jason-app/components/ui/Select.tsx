@@ -75,7 +75,7 @@ export default function Select<T extends string = string>({
       >
         <span style={s.triggerLabel}>
           {selected?.hint && <span style={s.triggerHint}>{selected.hint}</span>}
-          <span>{selected?.label ?? placeholder ?? 'Choisir…'}</span>
+          <span style={s.triggerText}>{selected?.label ?? placeholder ?? 'Choisir…'}</span>
         </span>
         <CaretDown size={12} weight="bold" style={{ color: 'var(--text-3)', transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.18s', flexShrink: 0 }} />
       </button>
@@ -125,7 +125,10 @@ const s: Record<string, React.CSSProperties> = {
     borderColor: 'var(--accent-border)',
     color: 'var(--text)',
   },
-  triggerLabel: { display: 'inline-flex', alignItems: 'center', gap: 7, minWidth: 0 },
+  triggerLabel: { display: 'inline-flex', alignItems: 'center', gap: 7, minWidth: 0, overflow: 'hidden' },
+  // Libellé long (ex. « DNI / documento de identidad ») : ellipse au lieu de
+  // déborder du champ
+  triggerText: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   triggerHint: { display: 'inline-flex', alignItems: 'center', flexShrink: 0 },
   panel: {
     position: 'absolute',
