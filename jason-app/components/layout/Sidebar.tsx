@@ -368,7 +368,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                Volontairement minimale (on l'enrichira) : le cœur du parcours
                pré-achat (estimer → prévisionnel PDF → projets) reste ici. */
             <div>
-              <div style={styles.sectionLabel}>Mon espace investisseur</div>
+              {!collapsed && <div style={styles.sectionLabel}>Mon espace investisseur</div>}
               <div style={styles.navSection}>
                 <NavItem href="/dashboard/investir" label="Accueil" Icon={HouseLine} />
                 <NavItem href="/dashboard/investir/estimateur" label="Estimer un bien + PDF" Icon={ChartLineUp} />
@@ -379,7 +379,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
           ) : proRole ? (
             /* Sidebar minimale pour les pros annuaire (photographe / ménage) */
             <div>
-              <div style={styles.sectionLabel}>Mon annuaire</div>
+              {!collapsed && <div style={styles.sectionLabel}>Mon annuaire</div>}
               <div style={styles.navSection}>
                 <NavItem
                   href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe' : '/dashboard/ma-fiche-menage'}
@@ -455,8 +455,11 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
           {/* Section admin, visible UNIQUEMENT quand adminMode est actif
               (bascule via le menu user en bas-gauche). Avant l'Étape 3, elle
               était toujours affichée pour les admins — trop de bruit visuel
-              pour l'usage quotidien hôte. */}
-          {isAdmin && adminMode && (
+              pour l'usage quotidien hôte. Masquée aussi dans les espaces
+              pro (photographe/ménage) et investisseur : ces sidebars sont
+              volontairement détachées, les entrées admin n'y ont pas leur
+              place même quand le mode admin est resté actif. */}
+          {isAdmin && adminMode && !proRole && !investorMode && (
             <>
               {/* Divider "Admin" retire quand on est deja en mode admin :
                   le header "Mode admin" au-dessus + le bouton retour hote
