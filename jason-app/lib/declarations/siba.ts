@@ -75,6 +75,39 @@ function escXml(s: string): string {
     .replace(/"/g, '&quot;').replace(/'/g, '&apos;')
 }
 
+// ── Limites de longueur du schéma officiel bal.xsd ──────────────────────────
+// SIBA rejette tout champ trop long (erreur 75 « greater than the MaxLength »).
+// On tronque défensivement ICI, au seul point de construction du XML, pour
+// couvrir l'envoi manuel ET l'envoi automatique post-check-in.
+
+function trunc(s: string, max: number): string {
+  const v = s.trim()
+  return v.length <= max ? v : v.slice(0, max).trimEnd()
+}
+
+/** Adresse : coupe aux virgules pour rester lisible (« 15 rua da Eira, Granja »
+ *  plutôt qu'une coupure en plein mot), fallback troncature brute. */
+function fitMorada(s: string, max = 40): string {
+  const v = s.trim()
+  if (v.length <= max) return v
+  const parts = v.split(',').map(p => p.trim()).filter(Boolean)
+  let out = ''
+  for (const p of parts) {
+    const next = out ? `${out}, ${p}` : p
+    if (next.length > max) break
+    out = next
+  }
+  return out || trunc(v, max)
+}
+
+/** Téléphone : chiffres uniquement, max 10 (garde la fin = numéro national
+ *  quand un indicatif pays fait dépasser, ex. +33 6 30 21 25 92). */
+function fitPhone(s: string, max = 10): string {
+  const digits = s.replace(/\D/g, '')
+  if (!digits) return ''
+  return digits.length <= max ? digits : digits.slice(-9)
+}
+
 /** Date jour → ISO datetime midi UTC (SIBA accepte le format ISO complet). */
 function dayToIso(day: string): string {
   return new Date(day + 'T12:00:00.000Z').toISOString()
@@ -87,30 +120,30 @@ export function buildMovimentoBalXml(unit: SibaUnit, guest: SibaGuest, fileNumbe
     '<?xml version="1.0" encoding="utf-8"?>' +
     '<MovimentoBAL xmlns="http://sef.pt/BAws">' +
       '<Unidade_Hoteleira>' +
-        `<Codigo_Unidade_Hoteleira>${e(unit.nipc)}</Codigo_Unidade_Hoteleira>` +
-        `<Estabelecimento>${e(unit.estabelecimento)}</Estabelecimento>` +
-        `<Nome>${e(unit.nome)}</Nome>` +
-        `<Abreviatura>${e(unit.abreviatura)}</Abreviatura>` +
-        `<Morada>${e(unit.morada)}</Morada>` +
-        `<Localidade>${e(unit.localidade)}</Localidade>` +
-        `<Codigo_Postal>${e(unit.codigoPostal)}</Codigo_Postal>` +
-        `<Zona_Postal>${e(unit.zonaPostal)}</Zona_Postal>` +
-        `<Telefone>${e(unit.telefone)}</Telefone>` +
-        `<Nome_Contacto>${e(unit.nomeContacto)}</Nome_Contacto>` +
-        `<Email_Contacto>${e(unit.emailContacto)}</Email_Contacto>` +
+        `<Codigo_Unidade_Hoteleira>${e(trunc(unit.nipc, 9))}</Codigo_Unidade_Hoteleira>` +
+        `<Estabelecimento>${e(trunc(unit.estabelecimento, 2))}</Estabelecimento>` +
+        `<Nome>${e(trunc(unit.nome, 40))}</Nome>` +
+        `<Abreviatura>${e(trunc(unit.abreviatura, 15))}</Abreviatura>` +
+        `<Morada>${e(fitMorada(unit.morada))}</Morada>` +
+        `<Localidade>${e(trunc(unit.localidade, 30))}</Localidade>` +
+        `<Codigo_Postal>${e(trunc(unit.codigoPostal, 4))}</Codigo_Postal>` +
+        `<Zona_Postal>${e(trunc(unit.zonaPostal, 3))}</Zona_Postal>` +
+        `<Telefone>${e(fitPhone(unit.telefone))}</Telefone>` +
+        `<Nome_Contacto>${e(trunc(unit.nomeContacto, 40))}</Nome_Contacto>` +
+        `<Email_Contacto>${e(trunc(unit.emailContacto, 140))}</Email_Contacto>` +
       '</Unidade_Hoteleira>' +
       '<Boletim_Alojamento>' +
-        `<Apelido>${e(guest.apelido)}</Apelido>` +
-        `<Nome>${e(guest.nome || ' ')}</Nome>` +
+        `<Apelido>${e(trunc(guest.apelido, 40))}</Apelido>` +
+        `<Nome>${e(trunc(guest.nome, 40) || ' ')}</Nome>` +
         `<Nacionalidade>${e(guest.nacionalidade)}</Nacionalidade>` +
         `<Data_Nascimento>${dayToIso(guest.dataNascimento)}</Data_Nascimento>` +
-        `<Documento_Identificacao>${e(guest.documentoNumero)}</Documento_Identificacao>` +
+        `<Documento_Identificacao>${e(trunc(guest.documentoNumero, 16))}</Documento_Identificacao>` +
         `<Pais_Emissor_Documento>${e(guest.paisEmissorDocumento)}</Pais_Emissor_Documento>` +
         `<Tipo_Documento>${e(guest.tipoDocumento)}</Tipo_Documento>` +
         `<Data_Entrada>${dayToIso(guest.dataEntrada)}</Data_Entrada>` +
         (guest.dataSaida ? `<Data_Saida>${dayToIso(guest.dataSaida)}</Data_Saida>` : '') +
         `<Pais_Residencia_Origem>${e(guest.paisResidencia)}</Pais_Residencia_Origem>` +
-        `<Local_Residencia_Origem>${e(guest.localResidencia)}</Local_Residencia_Origem>` +
+        `<Local_Residencia_Origem>${e(trunc(guest.localResidencia, 30))}</Local_Residencia_Origem>` +
       '</Boletim_Alojamento>' +
       '<Envio>' +
         `<Numero_Ficheiro>${fileNumber}</Numero_Ficheiro>` +
