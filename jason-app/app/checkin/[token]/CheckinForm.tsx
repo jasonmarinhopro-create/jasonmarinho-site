@@ -134,7 +134,12 @@ const T: Record<Lang, Record<string, string>> = {
     companionN: 'Voyageur',
     addCompanion: 'Ajouter un voyageur',
     removeCompanion: 'Retirer',
-    docOptionalChild: 'Document facultatif pour les moins de 15 ans',
+    docOptionalChild: 'Document facultatif pour les moins de 15 ans — votre signature couvre la déclaration de cet enfant.',
+    adultCompanionHint: 'Adulte : l\'idéal est qu\'il s\'ajoute lui-même en ouvrant ce lien (bouton « Je m\'ajoute au groupe ») pour signer sa propre fiche. Si vous l\'ajoutez ici, il signera à l\'arrivée.',
+    shareTitle: 'Les autres voyageurs peuvent s\'ajouter',
+    shareBody: 'Partagez ce lien : chaque adulte du groupe s\'y ajoute et signe sa propre fiche en 1 minute.',
+    shareBtn: 'Partager le lien du groupe',
+    shareCopied: 'Lien copié !',
     submit: 'Envoyer mes informations',
     submitting: 'Envoi…',
     successTitle: 'Merci, tout est bon !',
@@ -194,7 +199,12 @@ const T: Record<Lang, Record<string, string>> = {
     companionN: 'Traveller',
     addCompanion: 'Add a traveller',
     removeCompanion: 'Remove',
-    docOptionalChild: 'Document optional for children under 15',
+    docOptionalChild: 'Document optional for children under 15 — your signature covers this child\'s declaration.',
+    adultCompanionHint: 'Adult: ideally they should add themselves by opening this link ("Add myself to the group") to sign their own form. If you add them here, they will sign on arrival.',
+    shareTitle: 'Other travellers can add themselves',
+    shareBody: 'Share this link: each adult in the group adds themselves and signs their own form in 1 minute.',
+    shareBtn: 'Share the group link',
+    shareCopied: 'Link copied!',
     submit: 'Send my details',
     submitting: 'Sending…',
     successTitle: 'Thank you, all set!',
@@ -238,6 +248,22 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
   const [touched, setTouched] = useState(false)
+  // Partage du lien de groupe depuis l'écran de succès
+  const [shareCopied, setShareCopied] = useState(false)
+  async function shareGroupLink() {
+    const url = typeof window !== 'undefined' ? window.location.href : ''
+    if (!url) return
+    // navigator.share : natif mobile (WhatsApp, SMS…) ; repli presse-papiers
+    if (navigator.share) {
+      try { await navigator.share({ url }); return } catch { /* annulé */ }
+    }
+    try {
+      await navigator.clipboard.writeText(url)
+      setShareCopied(true)
+      setTimeout(() => setShareCopied(false), 2000)
+    } catch { /* clipboard bloqué */ }
+  }
+
   // Signature électronique (même mécanique que la page contrat /sign)
   const sigCanvasRef = useRef<HTMLCanvasElement>(null)
   const [hasSignature, setHasSignature] = useState(false)
@@ -386,6 +412,21 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
             <CheckCircle size={56} weight="fill" color="var(--success-1, #34d399)" />
             <h1 style={{ ...s.title, margin: 0 }}>{t.successTitle}</h1>
             <p style={s.introText}>{companionDone ? t.successCompanion : t.successBody}</p>
+            {!companionDone && (
+              <div style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
+                background: 'var(--accent-bg)', border: '1px dashed var(--accent-border)',
+                borderRadius: '12px', padding: '16px', marginTop: '6px', maxWidth: '420px',
+              }}>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent-text)', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                  <UsersThree size={15} weight="fill" /> {t.shareTitle}
+                </span>
+                <p style={{ ...s.introText, fontSize: '12.5px', textAlign: 'center' }}>{t.shareBody}</p>
+                <button onClick={shareGroupLink} style={{ ...s.submitBtn, padding: '10px 18px', fontSize: '13.5px' }}>
+                  {shareCopied ? <><CheckCircle size={15} weight="fill" /> {t.shareCopied}</> : <><PaperPlaneTilt size={15} weight="fill" /> {t.shareBtn}</>}
+                </button>
+              </div>
+            )}
           </div>
         </div>
         <Footer />
@@ -724,6 +765,9 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
                   {cMissing(c.nationalite, true) && <span style={s.errMsg}>{t.required}</span>}
                 </div>
                 {isChild && <p style={{ ...s.note, fontStyle: 'italic' }}>{t.docOptionalChild}</p>}
+                {!isChild && age !== null && (
+                  <p style={{ ...s.note, fontStyle: 'italic' }}>{t.adultCompanionHint}</p>
+                )}
                 <div style={s.row3} className="ck-row">
                   <div style={s.fieldWrap}>
                     <label style={s.fieldLabel}>{t.docType}{isChild ? '' : ' *'}</label>
