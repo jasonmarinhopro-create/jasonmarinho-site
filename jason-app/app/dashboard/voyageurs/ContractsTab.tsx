@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import Select from '@/components/ui/Select'
 import { FileText, MagnifyingGlass, CheckCircle, Clock, X, House, CurrencyEur, ArrowSquareOut, Plus, Info, Funnel } from '@phosphor-icons/react/dist/ssr'
 import type { ContractRow } from './VoyageursView'
 
@@ -167,14 +168,15 @@ export default function ContractsTab({ contracts }: Props) {
           onChange={v => setPeriodFilter(v as PeriodFilter)}
         />
         {logements.length > 1 && (
-          <select
+          <Select
             value={logementFilter}
-            onChange={e => setLogementFilter(e.target.value)}
-            style={s.select}
-          >
-            <option value="tous">Tous logements</option>
-            {logements.map(l => <option key={l} value={l}>{l}</option>)}
-          </select>
+            onChange={v => setLogementFilter(v)}
+            options={[
+              { value: 'tous', label: 'Tous logements' },
+              ...logements.map(l => ({ value: l, label: l })),
+            ]}
+            ariaLabel="Filtrer par logement"
+          />
         )}
       </div>
 

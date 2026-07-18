@@ -1,13 +1,14 @@
 'use client'
 
-import { useState, useTransition, useMemo, useEffect } from 'react'
+import { useState, useTransition, useMemo, useEffect, useRef } from 'react'
 import { NATIONALITES } from '@/lib/nationalites'
 import ContractsTab from './ContractsTab'
+import Select from '@/components/ui/Select'
 import { useRouter } from 'next/navigation'
 import {
   Plus, MagnifyingGlass, Warning,
   X, User, Envelope, Phone, Note,
-  Users, ShieldCheck, CurrencyEur, Star, SquaresFour, Rows, ProhibitInset, FileText,
+  Users, ShieldCheck, CurrencyEur, Star, SquaresFour, Rows, ProhibitInset, FileText, Faders,
 } from '@phosphor-icons/react/dist/ssr'
 import { addVoyageur, updateVoyageur, deleteVoyageur, checkVoyageurSignale, type VoyageurData } from './actions'
 import TourTrigger from '@/components/dashboard/TourTrigger'
@@ -39,6 +40,25 @@ function lastStay(sejours: Sejour[]): string | null {
 const COUNTRIES = NATIONALITES
 
 const EMPTY_FORM: VoyageurData = { prenom: '', nom: '', email: '', telephone: '', notes: '', nationalite: null }
+
+// ─── Filtres personnalisables ────────────────────────────────────────────────
+// L'hôte choisit lesquels afficher (persisté en localStorage). « Tous » est
+// toujours présent.
+
+type FilterKey = 'a-venir' | 'sur-place' | 'recurrents' | 'fideles' | 'signales' | 'bloques' | 'sans-contact'
+
+const FILTER_DEFS: { key: FilterKey; label: string; desc: string; test: (v: Voyageur, today: string) => boolean }[] = [
+  { key: 'a-venir',      label: 'À venir',      desc: 'Ont un séjour à venir',      test: (v, t) => v.sejours.some(sj => sj.date_arrivee >= t) },
+  { key: 'sur-place',    label: 'Sur place',    desc: 'Actuellement en séjour',     test: (v, t) => v.sejours.some(sj => sj.date_arrivee <= t && sj.date_depart >= t) },
+  { key: 'recurrents',   label: 'Récurrents',   desc: '2 séjours ou plus',          test: v => v.sejours.length >= 2 },
+  { key: 'fideles',      label: 'Fidèles',      desc: '4 séjours ou plus',          test: v => v.sejours.length >= 4 },
+  { key: 'signales',     label: 'Signalés',     desc: 'Signalés par un autre hôte', test: v => v.is_flagged },
+  { key: 'bloques',      label: 'Bloqués',      desc: 'Que vous avez bloqués',      test: v => v.bloque === true },
+  { key: 'sans-contact', label: 'Sans contact', desc: 'Ni email ni téléphone',      test: v => !v.email && !v.telephone },
+]
+
+const DEFAULT_VISIBLE_FILTERS: FilterKey[] = ['a-venir', 'recurrents', 'signales', 'bloques']
+const FILTERS_LS_KEY = 'jm-voyageurs-filters'
 
 export type ContractRow = {
   id: string
@@ -98,15 +118,48 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
   const [natSearch, setNatSearch] = useState('')
 
   // Filtres + tri + vue
-  const [filter, setFilter] = useState<'all' | 'recurrents' | 'a-venir' | 'signales' | 'bloques'>('all')
+  const [filter, setFilter] = useState<'all' | FilterKey>('all')
   const [sortBy, setSortBy] = useState<'recent' | 'name' | 'sejours' | 'ca'>('recent')
   const [viewMode, setViewMode] = useState<'cards' | 'table'>(voyageurs.length >= 10 ? 'table' : 'cards')
+
+  // Filtres visibles, choisis par l'hôte (persistés en localStorage)
+  const [visibleFilters, setVisibleFilters] = useState<FilterKey[]>(DEFAULT_VISIBLE_FILTERS)
+  const [filterConfigOpen, setFilterConfigOpen] = useState(false)
+  const filterConfigRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(FILTERS_LS_KEY)
+      if (raw) {
+        const arr = JSON.parse(raw)
+        if (Array.isArray(arr)) {
+          setVisibleFilters(arr.filter((k): k is FilterKey => FILTER_DEFS.some(d => d.key === k)))
+        }
+      }
+    } catch { /* localStorage indisponible : on garde le défaut */ }
+  }, [])
+
+  useEffect(() => {
+    if (!filterConfigOpen) return
+    function handler(e: MouseEvent) {
+      if (filterConfigRef.current && !filterConfigRef.current.contains(e.target as Node)) setFilterConfigOpen(false)
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [filterConfigOpen])
+
+  function toggleVisibleFilter(key: FilterKey) {
+    const next = visibleFilters.includes(key) ? visibleFilters.filter(k => k !== key) : [...visibleFilters, key]
+    setVisibleFilters(next)
+    try { localStorage.setItem(FILTERS_LS_KEY, JSON.stringify(next)) } catch { /* noop */ }
+    // Si le filtre actif vient d'être masqué, retour à « Tous »
+    if (!next.includes(key) && filter === key) setFilter('all')
+  }
 
   const todayISO = new Date().toISOString().slice(0, 10)
 
   // Helper : CA d'un voyageur
   const caOf = (v: Voyageur) => v.sejours.reduce((sum, s) => sum + (s.montant ?? 0), 0)
-  const hasUpcoming = (v: Voyageur) => v.sejours.some(s => s.date_arrivee >= todayISO)
   const isRecurrent = (v: Voyageur) => v.sejours.length >= 2
 
   // ─── Stats globales ─────────────────────────────────────────────
@@ -124,10 +177,10 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
     const q = search.toLowerCase()
     let list = voyageurs.filter(v => {
       // Filtre par catégorie
-      if (filter === 'recurrents' && !isRecurrent(v)) return false
-      if (filter === 'a-venir' && !hasUpcoming(v)) return false
-      if (filter === 'signales' && !v.is_flagged) return false
-      if (filter === 'bloques' && !v.bloque) return false
+      if (filter !== 'all') {
+        const def = FILTER_DEFS.find(d => d.key === filter)
+        if (def && !def.test(v, todayISO)) return false
+      }
 
       // Recherche
       if (q) {
@@ -338,34 +391,63 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
                   <button onClick={() => setFilter('all')} style={{ ...s.filterChip, ...(filter === 'all' ? s.filterChipActive : {}) }}>
                     Tous <span style={s.chipCount}>{voyageurs.length}</span>
                   </button>
-                  {globalStats.recurrents > 0 && (
-                    <button onClick={() => setFilter('recurrents')} style={{ ...s.filterChip, ...(filter === 'recurrents' ? s.filterChipActive : {}) }}>
-                      Récurrents <span style={s.chipCount}>{globalStats.recurrents}</span>
+                  {FILTER_DEFS.filter(d => visibleFilters.includes(d.key)).map(d => {
+                    const count = voyageurs.filter(v => d.test(v, todayISO)).length
+                    return (
+                      <button
+                        key={d.key}
+                        onClick={() => setFilter(d.key)}
+                        title={d.desc}
+                        style={{ ...s.filterChip, ...(filter === d.key ? s.filterChipActive : {}), opacity: count === 0 && filter !== d.key ? 0.55 : 1 }}
+                      >
+                        {d.label} <span style={s.chipCount}>{count}</span>
+                      </button>
+                    )
+                  })}
+                  {/* Choix des filtres affichés */}
+                  <div ref={filterConfigRef} style={{ position: 'relative' }}>
+                    <button
+                      onClick={() => setFilterConfigOpen(o => !o)}
+                      style={{ ...s.filterChip, ...(filterConfigOpen ? s.filterChipActive : {}), padding: '7px 11px' }}
+                      title="Choisir les filtres affichés"
+                      aria-label="Choisir les filtres affichés"
+                      aria-expanded={filterConfigOpen}
+                    >
+                      <Faders size={13} weight="bold" />
                     </button>
-                  )}
-                  {voyageurs.some(hasUpcoming) && (
-                    <button onClick={() => setFilter('a-venir')} style={{ ...s.filterChip, ...(filter === 'a-venir' ? s.filterChipActive : {}) }}>
-                      À venir <span style={s.chipCount}>{voyageurs.filter(hasUpcoming).length}</span>
-                    </button>
-                  )}
-                  {voyageurs.some(v => v.is_flagged) && (
-                    <button onClick={() => setFilter('signales')} style={{ ...s.filterChip, ...(filter === 'signales' ? s.filterChipActive : {}) }}>
-                      Signalés <span style={s.chipCount}>{voyageurs.filter(v => v.is_flagged).length}</span>
-                    </button>
-                  )}
-                  {voyageurs.some(v => v.bloque) && (
-                    <button onClick={() => setFilter('bloques')} style={{ ...s.filterChip, ...(filter === 'bloques' ? s.filterChipActive : {}) }}>
-                      Bloqués <span style={s.chipCount}>{voyageurs.filter(v => v.bloque).length}</span>
-                    </button>
-                  )}
+                    {filterConfigOpen && (
+                      <div style={s.filterConfigPanel}>
+                        <div style={s.filterConfigTitle}>Filtres affichés</div>
+                        {FILTER_DEFS.map(d => (
+                          <label key={d.key} style={s.filterConfigRow}>
+                            <input
+                              type="checkbox"
+                              checked={visibleFilters.includes(d.key)}
+                              onChange={() => toggleVisibleFilter(d.key)}
+                              style={{ accentColor: 'var(--accent-text)', flexShrink: 0, marginTop: '2px' }}
+                            />
+                            <span style={{ flex: 1 }}>
+                              <span style={s.filterConfigLabel}>{d.label}</span>
+                              <span style={s.filterConfigDesc}>{d.desc}</span>
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div style={s.filterRight}>
-                  <select value={sortBy} onChange={(e) => setSortBy(e.target.value as any)} style={s.sortSelect}>
-                    <option value="recent">Plus récents</option>
-                    <option value="name">Nom (A–Z)</option>
-                    <option value="sejours">Plus de séjours</option>
-                    <option value="ca">CA décroissant</option>
-                  </select>
+                  <Select
+                    value={sortBy}
+                    onChange={v => setSortBy(v)}
+                    options={[
+                      { value: 'recent', label: 'Plus récents' },
+                      { value: 'name', label: 'Nom (A–Z)' },
+                      { value: 'sejours', label: 'Plus de séjours' },
+                      { value: 'ca', label: 'CA décroissant' },
+                    ]}
+                    ariaLabel="Trier les voyageurs"
+                  />
                   <div style={s.viewToggle}>
                     <button onClick={() => setViewMode('cards')} style={{ ...s.viewBtn, ...(viewMode === 'cards' ? s.viewBtnActive : {}) }} title="Vue cards">
                       <SquaresFour size={13} weight="fill" />
@@ -1097,6 +1179,9 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
     gap: '12px', flexWrap: 'wrap' as const,
     marginBottom: '10px',
+    // L'animation fade-up crée un contexte d'empilement par section : sans
+    // z-index ici, le popover des filtres passerait SOUS les cartes voyageurs.
+    position: 'relative' as const, zIndex: 70,
   },
   filterChips: {
     display: 'flex', flexWrap: 'wrap' as const, gap: '6px',
@@ -1123,16 +1208,31 @@ const s: Record<string, React.CSSProperties> = {
   filterRight: {
     display: 'flex', alignItems: 'center', gap: '8px',
   },
-  sortSelect: {
-    padding: '7px 12px',
-    fontSize: '12.5px',
-    fontFamily: 'inherit',
-    color: 'var(--text-2)',
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
-    borderRadius: '9px',
+  filterConfigPanel: {
+    position: 'absolute', top: 'calc(100% + 6px)', left: 0,
+    minWidth: '240px',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border-2)',
+    borderRadius: '10px',
+    padding: '8px',
+    boxShadow: '0 20px 40px rgba(0,0,0,0.35)',
+    zIndex: 60,
+    display: 'flex', flexDirection: 'column' as const, gap: '2px',
+  },
+  filterConfigTitle: {
+    fontSize: '10.5px', fontWeight: 700,
+    textTransform: 'uppercase' as const, letterSpacing: '0.5px',
+    color: 'var(--text-muted)',
+    padding: '4px 8px 6px',
+  },
+  filterConfigRow: {
+    display: 'flex', alignItems: 'flex-start', gap: '9px',
+    padding: '6px 8px',
+    borderRadius: '7px',
     cursor: 'pointer',
   },
+  filterConfigLabel: { display: 'block', fontSize: '12.5px', fontWeight: 600, color: 'var(--text)' },
+  filterConfigDesc: { display: 'block', fontSize: '11px', color: 'var(--text-muted)' },
   viewToggle: {
     display: 'inline-flex', gap: '2px',
     padding: '3px',

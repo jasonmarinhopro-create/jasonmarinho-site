@@ -390,12 +390,20 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               style={{ objectFit: 'cover' }}
             />
             <div style={s.heroOverlay} />
+            <Link href={`/dashboard/logements?edit=${l.id}&from=detail`} style={s.photoEditBtn} title="Modifier les photos">
+              <PencilSimple size={12} weight="bold" />
+              Photos
+            </Link>
           </div>
         ) : (
           <div style={{ ...s.heroImageWrap, background: 'var(--bg-2)' }}>
             <div style={s.heroFallback}>
               <House size={48} weight="thin" color="var(--accent-text)" />
             </div>
+            <Link href={`/dashboard/logements?edit=${l.id}&from=detail`} style={s.photoEditBtn} title="Ajouter des photos">
+              <PencilSimple size={12} weight="bold" />
+              Photos
+            </Link>
           </div>
         )}
 
@@ -427,10 +435,6 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
             {l.adresse}
           </p>
           <div style={s.heroActions}>
-            <Link href={`/dashboard/logements?edit=${l.id}&from=detail`} style={s.btnPrimary}>
-              <PencilSimple size={14} weight="bold" />
-              Modifier la fiche
-            </Link>
             <button
               type="button"
               onClick={() => setShowQuickSejour(true)}
@@ -1321,6 +1325,20 @@ const s: Record<string, React.CSSProperties> = {
     position: 'absolute' as const,
     inset: 0,
     background: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.55) 100%)',
+  },
+  // Petit bouton discret sur la couverture : les photos restent la seule
+  // chose gérée dans l'ancien panneau (tout le reste s'édite par section)
+  photoEditBtn: {
+    position: 'absolute' as const,
+    top: '12px', right: '12px',
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    padding: '6px 12px',
+    fontSize: '11.5px', fontWeight: 600,
+    background: 'rgba(0,0,0,0.55)', color: '#fff',
+    border: '1px solid rgba(255,255,255,0.18)',
+    borderRadius: '100px',
+    textDecoration: 'none' as const,
+    backdropFilter: 'blur(4px)',
   },
   heroFallback: {
     position: 'absolute' as const,

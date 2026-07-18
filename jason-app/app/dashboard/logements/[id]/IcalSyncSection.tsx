@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ArrowsClockwise, CheckCircle, Warning, CalendarBlank, Link as LinkIcon } from '@phosphor-icons/react/dist/ssr'
 import type { LogementIcalFeedStatus } from '../actions'
@@ -60,9 +61,14 @@ export default function IcalSyncSection({ logementId, status }: Props) {
               Aucune URL iCal configurée
             </div>
             <div style={{ fontSize: '12px', color: 'var(--text-2)', lineHeight: 1.5 }}>
-              Ajoute le lien iCal de ton annonce Airbnb, Booking ou Vrbo via{' '}
-              <span style={{ color: 'var(--accent-text)', fontWeight: 500 }}>« Modifier la fiche »</span>{' '}
-              pour importer automatiquement les dates réservées.
+              <Link
+                href={`/dashboard/logements?edit=${logementId}&from=detail`}
+                style={{ color: 'var(--accent-text)', fontWeight: 500 }}
+              >
+                Ajoute le lien iCal
+              </Link>{' '}
+              de ton annonce Airbnb, Booking ou Vrbo pour importer
+              automatiquement les dates réservées.
             </div>
           </div>
         </div>

@@ -389,7 +389,7 @@ export async function getFullMemberProfile(memberId: string) {
   ] = await Promise.all([
     adminClient
       .from('profiles')
-      .select('id, email, full_name, role, driing_status, plan, created_at, admin_notes')
+      .select('id, email, full_name, role, driing_status, plan, is_investor, created_at, admin_notes')
       .eq('id', memberId)
       .single(),
     adminClient

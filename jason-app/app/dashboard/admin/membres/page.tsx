@@ -28,7 +28,7 @@ export default async function MembresPage() {
   const { data: members } = await adminClient
     .from('profiles')
     .select(`
-      id, email, full_name, role, driing_status, plan, is_contributor, created_at,
+      id, email, full_name, role, driing_status, plan, is_contributor, is_investor, created_at,
       user_formations(id, progress, enrolled_at, formation:formations(id, title, slug))
     `)
     // Exclut les comptes pros annuaire qui ont leur propre admin
