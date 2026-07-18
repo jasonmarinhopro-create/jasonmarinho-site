@@ -280,5 +280,33 @@ module.exports = async function handler(req, res) {
     })
   }
 
+  // 6. Notifie Jason de l'inscription — awaité : la lambda Vercel gèle
+  //    après res.json(), un fire-and-forget ne partirait jamais.
+  const RESEND_KEY = process.env.RESEND_API_KEY
+  if (RESEND_KEY) {
+    const esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'Jason Marinho <noreply@jasonmarinho.com>',
+        to: 'contact@jasonmarinho.com',
+        subject: `Nouvelle inscription Photographe — ${esc(fullName)}`,
+        html: `<div style="font-family:-apple-system,Segoe UI,Helvetica,sans-serif;max-width:560px;padding:24px;background:#f7f5f0;border-radius:12px">
+<h2 style="font-family:Georgia,serif;color:#0F1A0D;margin:0 0 14px">📸 Nouvelle inscription Photographe</h2>
+<div style="background:#fff;padding:16px;border-radius:8px;font-size:13.5px;line-height:1.9;color:#3D5038;border-left:3px solid #63D683">
+<strong>Profil :</strong> Photographe LCD (annuaire)<br>
+<strong>Nom :</strong> ${esc(fullName)}<br>
+<strong>Email :</strong> ${esc(email)}<br>
+<strong>Ville :</strong> ${esc(ville)}<br>
+<strong>Tier :</strong> ${esc(tier)}<br>
+<strong>Statut :</strong> paiement Stripe en cours (fiche activée au paiement)
+</div>
+<p style="margin:18px 0 0"><a href="https://app.jasonmarinho.com/dashboard/admin/photographes" style="display:inline-block;background:#FFD56B;color:#003329;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">Voir les photographes →</a></p>
+</div>`,
+      }),
+    }).catch(err => console.warn('[photographer/signup] notify email failed', err))
+  }
+
   return res.status(200).json({ ok: true, checkoutUrl: stripeResult.url, tier })
 }

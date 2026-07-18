@@ -189,16 +189,18 @@ export async function POST(req: NextRequest) {
         weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
         hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris',
       })
+      const profilLabel = isInvestor ? 'Investisseur' : 'Hôte'
       void getResend().emails.send({
         from: 'Jason Marinho <noreply@jasonmarinho.com>',
         to: 'contact@jasonmarinho.com',
-        subject: `Nouvelle inscription, ${fullName || normalized}`,
+        subject: `Nouvelle inscription ${profilLabel} — ${fullName || normalized}`,
         html: buildEmail({
           title: 'Une nouvelle personne vient de rejoindre !',
-          preview: `${fullName || normalized} vient de créer un compte sur ta plateforme.`,
+          preview: `${fullName || normalized} vient de créer un compte ${profilLabel.toLowerCase()} sur ta plateforme.`,
           body: `
             ${emailP(`<strong style="color:#e8ede8;">Bonne nouvelle !</strong> Une nouvelle personne vient de rejoindre ta communauté. C'est la preuve que ton travail attire et convainc, continue comme ça, tu construis quelque chose de solide.`)}
             ${emailInfoBlock([
+              { label: 'Profil', value: isInvestor ? '💼 Investisseur' : '🏠 Hôte' },
               { label: 'Prénom / Nom', value: escHtml(fullName || '-') },
               { label: 'Email', value: escHtml(normalized) },
               { label: 'Membre Driing', value: isDriingMember ? 'Oui ✓' : 'Non' },

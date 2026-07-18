@@ -6,7 +6,7 @@ import {
   ArrowLeft, GraduationCap, UsersFour, CalendarBlank,
   BookmarkSimple, PencilSimple, Flag, Lightbulb, Lightning,
   Pencil, Check, X, Note, SpinnerGap, EnvelopeSimple,
-  ArrowClockwise, FacebookLogo, MagnifyingGlass, Trophy,
+  ArrowClockwise, FacebookLogo, MagnifyingGlass, Trophy, Briefcase,
 } from '@phosphor-icons/react/dist/ssr'
 import { updateAdminNotes, changeUserPlan } from '../../actions'
 
@@ -18,6 +18,7 @@ interface MemberProfile {
   role: string
   driing_status: string
   plan: string
+  is_investor: boolean | null
   created_at: string
   admin_notes: string | null
 }
@@ -210,6 +211,12 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
             {planCfg.mrr > 0 && (
               <span style={{ ...s.pill, background: 'rgba(52,211,153,0.1)', color: 'var(--success-1)' }}>
                 + {planCfg.mrr.toFixed(2)} € / mois
+              </span>
+            )}
+            {profile.is_investor && (
+              <span style={{ ...s.pill, background: 'rgba(96,190,255,0.12)', color: '#60BEFF' }}>
+                <Briefcase size={11} weight="fill" />
+                Investisseur
               </span>
             )}
             <span style={s.memberSince}>Membre depuis le {formatDate(profile.created_at)}</span>

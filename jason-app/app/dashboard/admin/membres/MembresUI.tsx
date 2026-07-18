@@ -7,7 +7,7 @@ import {
   GraduationCap, Lightning, Users, X, Heart,
   House, BookmarkSimple, PencilSimple, Flag, Lightbulb,
   CalendarBlank, SpinnerGap, UsersFour, ArrowSquareOut,
-  Crown, Star, TextAa, CurrencyEur, DownloadSimple,
+  Crown, Star, TextAa, CurrencyEur, DownloadSimple, Briefcase,
 } from '@phosphor-icons/react/dist/ssr'
 import {
   changeUserPlan, deleteUser, deleteAllBots,
@@ -24,7 +24,7 @@ interface UserFormation {
 interface Member {
   id: string; email: string; full_name: string | null
   role: string; driing_status: string; plan: string
-  is_contributor: boolean; created_at: string
+  is_contributor: boolean; is_investor: boolean | null; created_at: string
   user_formations: UserFormation[]
 }
 
@@ -122,11 +122,12 @@ export default function MembresUI({ members }: { members: Member[] }) {
     const planLabel = (p: string) =>
       p === 'driing' ? 'Driing' : p === 'standard' ? 'Standard' : 'Découverte'
     const escape = (v: string) => `"${(v ?? '').replace(/"/g, '""')}"`
-    const header = ['Nom', 'Email', 'Plan', 'Contributeur', 'Formations', 'Inscrit le']
+    const header = ['Nom', 'Email', 'Plan', 'Investisseur', 'Contributeur', 'Formations', 'Inscrit le']
     const rows = filtered.map(m => [
       m.full_name || '',
       m.email,
       planLabel(m.plan),
+      m.is_investor ? 'Oui' : 'Non',
       m.is_contributor ? 'Oui' : 'Non',
       String(m.user_formations?.length ?? 0),
       new Date(m.created_at).toISOString().slice(0, 10),
@@ -161,15 +162,17 @@ export default function MembresUI({ members }: { members: Member[] }) {
       filterPlan === 'all' ||
       (filterPlan === 'decouverte' && m.plan !== 'driing' && m.plan !== 'standard') ||
       (filterPlan === 'standard'   && m.plan === 'standard') ||
-      (filterPlan === 'driing'     && m.plan === 'driing')
+      (filterPlan === 'driing'     && m.plan === 'driing') ||
+      (filterPlan === 'investor'   && !!m.is_investor)
     return matchSearch && matchPlan
   })
 
-  const totalBots     = members.filter(m => isBotLike(m.full_name, m.email)).length
-  const totalDriing   = members.filter(m => m.plan === 'driing').length
-  const totalStandard = members.filter(m => m.plan === 'standard').length
-  const totalDecouv   = members.filter(m => m.plan !== 'driing' && m.plan !== 'standard').length
-  const totalContrib  = members.filter(m => m.is_contributor).length
+  const totalBots      = members.filter(m => isBotLike(m.full_name, m.email)).length
+  const totalDriing    = members.filter(m => m.plan === 'driing').length
+  const totalStandard  = members.filter(m => m.plan === 'standard').length
+  const totalDecouv    = members.filter(m => m.plan !== 'driing' && m.plan !== 'standard').length
+  const totalContrib   = members.filter(m => m.is_contributor).length
+  const totalInvestors = members.filter(m => m.is_investor).length
 
   return (
     <div style={s.wrap}>
@@ -196,6 +199,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
           { icon: <Star size={16} weight="fill" />, value: totalStandard, label: 'Standard',    color: '#15803d' },
           { icon: <Lightning size={16} weight="fill" />, value: totalDriing, label: 'Driing',  color: '#7c3aed' },
           { icon: <Heart size={16} weight="fill" />, value: totalContrib,  label: 'contributeurs', color: '#db2777' },
+          { icon: <Briefcase size={16} weight="fill" />, value: totalInvestors, label: 'investisseurs', color: '#60BEFF' },
           { icon: <CurrencyEur size={16} />, value: `${(totalStandard * 1.98).toFixed(2)} €`, label: 'MRR estimé', color: '#15803d' },
         ].map(({ icon, value, label, color }) => (
           <div key={label} style={s.statChip}>
@@ -246,6 +250,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
             { v: 'decouverte', l: 'Découverte',   count: totalDecouv },
             { v: 'standard',   l: 'Standard',     count: totalStandard },
             { v: 'driing',     l: 'Driing',       count: totalDriing },
+            { v: 'investor',   l: 'Investisseur', count: totalInvestors },
           ].map(f => (
             <button
               key={f.v}
@@ -404,6 +409,9 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
 
       {/* ── Chips row ── */}
       <div style={s.chipsRow}>
+        {m.is_investor && (
+          <span style={s.investorChip}><Briefcase size={10} weight="fill" /> Investisseur</span>
+        )}
         {m.is_contributor && (
           <span style={s.contribChip}><Heart size={10} weight="fill" /> Contributeur</span>
         )}
@@ -413,7 +421,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
             {formations} formation{formations > 1 ? 's' : ''}
           </button>
         )}
-        {formations === 0 && !m.is_contributor && (
+        {formations === 0 && !m.is_contributor && !m.is_investor && (
           <span style={s.emptyChip}>Aucune formation commencée</span>
         )}
       </div>
@@ -590,6 +598,9 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                     </span>
                     {member.role === 'admin' && (
                       <span style={{ ...ps.planPill, background: 'rgba(192,132,252,0.12)', color: '#C084FC' }}>Admin</span>
+                    )}
+                    {member.is_investor && (
+                      <span style={{ ...ps.planPill, background: 'rgba(96,190,255,0.12)', color: '#60BEFF' }}>Investisseur</span>
                     )}
                     {member.is_contributor && (
                       <span style={{ ...ps.planPill, background: 'rgba(244,114,182,0.1)', color: '#f472b6' }}>Contributeur</span>
@@ -878,6 +889,12 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
     background: 'rgba(244,114,182,0.1)', color: '#f472b6',
     border: '1px solid rgba(244,114,182,0.22)',
+  },
+  investorChip: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
+    background: 'rgba(96,190,255,0.10)', color: '#60BEFF',
+    border: '1px solid rgba(96,190,255,0.25)',
   },
   formChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
