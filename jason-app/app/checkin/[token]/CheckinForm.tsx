@@ -93,7 +93,7 @@ interface Props {
   initialCompanions?: Companion[]
 }
 
-type Lang = 'fr' | 'en'
+type Lang = 'fr' | 'en' | 'es' | 'pt' | 'de'
 
 const T: Record<Lang, Record<string, string>> = {
   fr: {
@@ -226,12 +226,209 @@ const T: Record<Lang, Record<string, string>> = {
     arrival: 'Arrival',
     departure: 'Departure',
   },
+  es: {
+    title: 'Check-in online',
+    intro: 'le pide que complete sus datos de viajero antes de su llegada. Solo toma 2 minutos y facilita su recibimiento (y las declaraciones obligatorias).',
+    introNoHost: 'Complete sus datos de viajero antes de su llegada. Solo toma 2 minutos.',
+    stay: 'Su estancia',
+    identity: 'Su identidad',
+    firstName: 'Nombre',
+    lastName: 'Apellidos',
+    birthDate: 'Fecha de nacimiento',
+    birthPlace: 'Lugar de nacimiento',
+    nationality: 'Nacionalidad',
+    contact: 'Sus datos de contacto',
+    email: 'Correo electrónico',
+    phone: 'Teléfono',
+    address: 'Dirección (residencia principal)',
+    addressLine: 'Dirección',
+    postalCode: 'Código postal',
+    city: 'Ciudad',
+    country: 'País',
+    document: 'Documento de identidad',
+    docNote: 'Obligatorio en algunos países para la declaración de viajeros (Portugal, España…). Sus datos solo se utilizan para su estancia.',
+    docType: 'Tipo de documento',
+    docTypeCni: 'DNI / documento de identidad',
+    docTypePasseport: 'Pasaporte',
+    docTypePermis: 'Permiso de conducir',
+    docTypeAutre: 'Otro',
+    docNumber: 'Número del documento',
+    docCountry: 'País de emisión',
+    consent: 'Acepto que esta información se comparta con mi anfitrión para la gestión de mi estancia y las declaraciones legales obligatorias.',
+    signature: 'Firma',
+    signatureHint: 'Firme en el recuadro (con el dedo o el ratón) para certificar que sus datos son correctos.',
+    signatureClear: 'Borrar',
+    errSignature: 'Firme en el recuadro, por favor.',
+    companions: 'Otros viajeros',
+    companionsHint: 'La normativa exige declarar a CADA viajero (niños incluidos). Añada aquí a las personas que se alojan con usted — o compártales este enlace: cada uno puede añadirse por sí mismo.',
+    companionN: 'Viajero',
+    addCompanion: 'Añadir un viajero',
+    removeCompanion: 'Quitar',
+    docOptionalChild: 'Documento opcional para menores de 15 años — su firma cubre la declaración de este niño.',
+    adultCompanionHint: 'Adulto: lo ideal es que se añada él mismo abriendo este enlace («Añadirme al grupo») para firmar su propia ficha. Si lo añade aquí, firmará a la llegada.',
+    shareTitle: 'Los demás viajeros pueden añadirse',
+    shareBody: 'Comparta este enlace: cada adulto del grupo se añade y firma su propia ficha en 1 minuto.',
+    shareBtn: 'Compartir el enlace del grupo',
+    shareCopied: '¡Enlace copiado!',
+    submit: 'Enviar mis datos',
+    submitting: 'Enviando…',
+    successTitle: '¡Gracias, todo listo!',
+    successBody: 'Sus datos se han enviado correctamente. ¡Buena estancia!',
+    successCompanion: 'Sus datos se han añadido al grupo. ¡Buena estancia!',
+    notYou: '¿No es usted',
+    notYouCta: 'Añadirme como viajero del grupo',
+    companionModeTitle: 'Añadirme al grupo',
+    companionModeHint: 'Complete su identidad: se añadirá al grupo de',
+    backToMain: 'Volver a la ficha principal',
+    submitCompanion: 'Añadirme al grupo',
+    alreadyDone: 'Ficha ya completada el',
+    alreadyDoneEdit: 'Puede corregir sus datos a continuación si es necesario.',
+    required: 'Este campo es obligatorio',
+    errConsent: 'Marque la casilla de consentimiento, por favor.',
+    errGeneric: 'Se ha producido un error. Inténtelo de nuevo en un momento.',
+    select: 'Seleccionar…',
+    nights: 'noches',
+    arrival: 'Llegada',
+    departure: 'Salida',
+  },
+  pt: {
+    title: 'Check-in online',
+    intro: 'pede-lhe que preencha os seus dados de viajante antes da chegada. Demora apenas 2 minutos e facilita a sua receção (e as declarações obrigatórias).',
+    introNoHost: 'Preencha os seus dados de viajante antes da chegada. Demora apenas 2 minutos.',
+    stay: 'A sua estadia',
+    identity: 'A sua identidade',
+    firstName: 'Nome próprio',
+    lastName: 'Apelido',
+    birthDate: 'Data de nascimento',
+    birthPlace: 'Local de nascimento',
+    nationality: 'Nacionalidade',
+    contact: 'Os seus contactos',
+    email: 'E-mail',
+    phone: 'Telefone',
+    address: 'Morada (residência principal)',
+    addressLine: 'Morada',
+    postalCode: 'Código postal',
+    city: 'Cidade',
+    country: 'País',
+    document: 'Documento de identificação',
+    docNote: 'Obrigatório em alguns países para a declaração de alojamento (Portugal, Espanha…). Os seus dados são usados apenas para a sua estadia.',
+    docType: 'Tipo de documento',
+    docTypeCni: 'Cartão de cidadão',
+    docTypePasseport: 'Passaporte',
+    docTypePermis: 'Carta de condução',
+    docTypeAutre: 'Outro',
+    docNumber: 'Número do documento',
+    docCountry: 'País emissor',
+    consent: 'Aceito que estas informações sejam transmitidas ao meu anfitrião para a gestão da minha estadia e as declarações legais obrigatórias.',
+    signature: 'Assinatura',
+    signatureHint: 'Assine no quadro (com o dedo ou o rato) para certificar que os seus dados estão corretos.',
+    signatureClear: 'Apagar',
+    errSignature: 'Assine no quadro, por favor.',
+    companions: 'Outros viajantes',
+    companionsHint: 'A lei exige declarar CADA viajante (crianças incluídas). Adicione aqui as pessoas que ficam consigo — ou partilhe-lhes esta ligação: cada um pode adicionar-se a si próprio.',
+    companionN: 'Viajante',
+    addCompanion: 'Adicionar um viajante',
+    removeCompanion: 'Remover',
+    docOptionalChild: 'Documento facultativo para menores de 15 anos — a sua assinatura cobre a declaração desta criança.',
+    adultCompanionHint: 'Adulto: o ideal é que se adicione ele próprio abrindo esta ligação («Adicionar-me ao grupo») para assinar a sua própria ficha. Se o adicionar aqui, assinará à chegada.',
+    shareTitle: 'Os outros viajantes podem adicionar-se',
+    shareBody: 'Partilhe esta ligação: cada adulto do grupo adiciona-se e assina a sua própria ficha em 1 minuto.',
+    shareBtn: 'Partilhar a ligação do grupo',
+    shareCopied: 'Ligação copiada!',
+    submit: 'Enviar os meus dados',
+    submitting: 'A enviar…',
+    successTitle: 'Obrigado, está tudo certo!',
+    successBody: 'Os seus dados foram enviados. Boa estadia!',
+    successCompanion: 'Os seus dados foram adicionados ao grupo. Boa estadia!',
+    notYou: 'Não é',
+    notYouCta: 'Adicionar-me como viajante do grupo',
+    companionModeTitle: 'Adicionar-me ao grupo',
+    companionModeHint: 'Preencha a sua identidade: será adicionada ao grupo de',
+    backToMain: 'Voltar à ficha principal',
+    submitCompanion: 'Adicionar-me ao grupo',
+    alreadyDone: 'Ficha já preenchida em',
+    alreadyDoneEdit: 'Pode corrigir os seus dados abaixo se necessário.',
+    required: 'Este campo é obrigatório',
+    errConsent: 'Assinale a caixa de consentimento, por favor.',
+    errGeneric: 'Ocorreu um erro. Tente novamente dentro de instantes.',
+    select: 'Selecionar…',
+    nights: 'noites',
+    arrival: 'Chegada',
+    departure: 'Partida',
+  },
+  de: {
+    title: 'Online-Check-in',
+    intro: 'bittet Sie, Ihre Gästedaten vor Ihrer Ankunft auszufüllen. Es dauert nur 2 Minuten und erleichtert Ihren Empfang (und die Pflichtmeldungen).',
+    introNoHost: 'Bitte füllen Sie Ihre Gästedaten vor Ihrer Ankunft aus. Es dauert nur 2 Minuten.',
+    stay: 'Ihr Aufenthalt',
+    identity: 'Ihre Identität',
+    firstName: 'Vorname',
+    lastName: 'Nachname',
+    birthDate: 'Geburtsdatum',
+    birthPlace: 'Geburtsort',
+    nationality: 'Staatsangehörigkeit',
+    contact: 'Ihre Kontaktdaten',
+    email: 'E-Mail',
+    phone: 'Telefon',
+    address: 'Adresse (Hauptwohnsitz)',
+    addressLine: 'Adresse',
+    postalCode: 'Postleitzahl',
+    city: 'Stadt',
+    country: 'Land',
+    document: 'Ausweisdokument',
+    docNote: 'In einigen Ländern für die Gästemeldung erforderlich (Portugal, Spanien…). Ihre Daten werden nur für Ihren Aufenthalt verwendet.',
+    docType: 'Dokumententyp',
+    docTypeCni: 'Personalausweis',
+    docTypePasseport: 'Reisepass',
+    docTypePermis: 'Führerschein',
+    docTypeAutre: 'Sonstiges',
+    docNumber: 'Dokumentennummer',
+    docCountry: 'Ausstellungsland',
+    consent: 'Ich bin damit einverstanden, dass diese Daten meinem Gastgeber für die Verwaltung meines Aufenthalts und die gesetzlichen Pflichtmeldungen übermittelt werden.',
+    signature: 'Unterschrift',
+    signatureHint: 'Unterschreiben Sie im Feld (mit Finger oder Maus), um die Richtigkeit Ihrer Angaben zu bestätigen.',
+    signatureClear: 'Löschen',
+    errSignature: 'Bitte unterschreiben Sie im Feld.',
+    companions: 'Weitere Reisende',
+    companionsHint: 'Das Gesetz verlangt die Meldung JEDES Reisenden (auch Kinder). Fügen Sie hier Ihre Mitreisenden hinzu — oder teilen Sie ihnen diesen Link: Jeder kann sich selbst eintragen.',
+    companionN: 'Reisender',
+    addCompanion: 'Reisenden hinzufügen',
+    removeCompanion: 'Entfernen',
+    docOptionalChild: 'Dokument optional für Kinder unter 15 Jahren — Ihre Unterschrift deckt die Meldung dieses Kindes ab.',
+    adultCompanionHint: 'Erwachsener: Idealerweise trägt er sich selbst über diesen Link ein („Mich zur Gruppe hinzufügen“), um sein eigenes Formular zu unterschreiben. Wenn Sie ihn hier eintragen, unterschreibt er bei der Ankunft.',
+    shareTitle: 'Die anderen Reisenden können sich selbst eintragen',
+    shareBody: 'Teilen Sie diesen Link: Jeder Erwachsene der Gruppe trägt sich ein und unterschreibt sein eigenes Formular in 1 Minute.',
+    shareBtn: 'Gruppen-Link teilen',
+    shareCopied: 'Link kopiert!',
+    submit: 'Meine Daten senden',
+    submitting: 'Wird gesendet…',
+    successTitle: 'Danke, alles erledigt!',
+    successBody: 'Ihre Daten wurden übermittelt. Schönen Aufenthalt!',
+    successCompanion: 'Ihre Daten wurden der Gruppe hinzugefügt. Schönen Aufenthalt!',
+    notYou: 'Sie sind nicht',
+    notYouCta: 'Mich als Reisenden der Gruppe eintragen',
+    companionModeTitle: 'Mich zur Gruppe hinzufügen',
+    companionModeHint: 'Füllen Sie Ihre Identität aus: Sie wird der Gruppe hinzugefügt von',
+    backToMain: 'Zurück zum Hauptformular',
+    submitCompanion: 'Mich zur Gruppe hinzufügen',
+    alreadyDone: 'Formular bereits ausgefüllt am',
+    alreadyDoneEdit: 'Sie können Ihre Angaben unten bei Bedarf korrigieren.',
+    required: 'Dieses Feld ist erforderlich',
+    errConsent: 'Bitte kreuzen Sie das Einverständnis-Kästchen an.',
+    errGeneric: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es gleich erneut.',
+    select: 'Auswählen…',
+    nights: 'Nächte',
+    arrival: 'Ankunft',
+    departure: 'Abreise',
+  },
 }
 
 const NAT_OPTIONS = NATIONALITES.map(n => ({ value: n.code, label: n.name }))
 
+const LOCALE: Record<Lang, string> = { fr: 'fr-FR', en: 'en-GB', es: 'es-ES', pt: 'pt-PT', de: 'de-DE' }
+
 function fmtDate(d: string, lang: Lang) {
-  return new Date(d + 'T12:00:00').toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB', {
+  return new Date(d + 'T12:00:00').toLocaleDateString(LOCALE[lang], {
     day: 'numeric', month: 'long', year: 'numeric',
   })
 }
@@ -286,9 +483,11 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
 
   // Auto-détection langue navigateur (une seule fois, modifiable via toggle)
   useEffect(() => {
-    if (typeof navigator !== 'undefined' && !navigator.language?.toLowerCase().startsWith('fr')) {
-      setLang('en')
-    }
+    if (typeof navigator === 'undefined') return
+    const nav = (navigator.language ?? '').toLowerCase().slice(0, 2)
+    const supported = ['fr', 'en', 'es', 'pt', 'de']
+    if (supported.includes(nav)) setLang(nav as Lang)
+    else setLang('en')
   }, [])
 
   const t = T[lang]
@@ -448,8 +647,11 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
               {t.companionModeTitle}
             </div>
             <div style={s.langToggle}>
-              <button onClick={() => setLang('fr')} style={{ ...s.langBtn, ...(lang === 'fr' ? s.langBtnActive : {}) }}>FR</button>
-              <button onClick={() => setLang('en')} style={{ ...s.langBtn, ...(lang === 'en' ? s.langBtnActive : {}) }}>EN</button>
+              {(['fr', 'en', 'es', 'pt', 'de'] as Lang[]).map(l => (
+                <button key={l} onClick={() => setLang(l)} style={{ ...s.langBtn, ...(lang === l ? s.langBtnActive : {}) }}>
+                  {l.toUpperCase()}
+                </button>
+              ))}
             </div>
           </div>
           <p style={s.introText}>
@@ -576,8 +778,11 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
             {t.title}
           </div>
           <div style={s.langToggle}>
-            <button onClick={() => setLang('fr')} style={{ ...s.langBtn, ...(lang === 'fr' ? s.langBtnActive : {}) }}>FR</button>
-            <button onClick={() => setLang('en')} style={{ ...s.langBtn, ...(lang === 'en' ? s.langBtnActive : {}) }}>EN</button>
+            {(['fr', 'en', 'es', 'pt', 'de'] as Lang[]).map(l => (
+              <button key={l} onClick={() => setLang(l)} style={{ ...s.langBtn, ...(lang === l ? s.langBtnActive : {}) }}>
+                {l.toUpperCase()}
+              </button>
+            ))}
           </div>
         </div>
 
