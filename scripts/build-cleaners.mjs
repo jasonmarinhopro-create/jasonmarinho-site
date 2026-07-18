@@ -12,6 +12,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { injectProsIntoVillePages } from './lib/inject-ville-pros.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -72,6 +73,25 @@ async function fetchActive() {
   const data = await res.json()
   console.log(`[build-cleaners] ${data.length} équipe(s) active(s)`)
   return data
+}
+
+// Recommandations d'hôtes (badge « Recommandé par N hôtes »). Fail-safe :
+// table absente ou fetch KO → Map vide, aucun badge.
+async function fetchRecoCounts() {
+  if (!HAS_SUPABASE) return new Map()
+  try {
+    const url = `${SUPABASE_URL}/rest/v1/pro_recommendations?pro_type=eq.cleaner&select=pro_id&limit=10000`
+    const res = await fetch(url, {
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, Accept: 'application/json' },
+    })
+    if (!res.ok) return new Map()
+    const rows = await res.json()
+    const map = new Map()
+    for (const r of rows) map.set(r.pro_id, (map.get(r.pro_id) ?? 0) + 1)
+    return map
+  } catch {
+    return new Map()
+  }
 }
 
 function fmtForfait(c) {
@@ -226,6 +246,7 @@ ${JSON.stringify({
     <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/menage">Annuaire ménage LCD</a> · <span>${escHtml(displayName)}</span></div>
     <div class="tag-row">
       ${isFondateur ? '<span class="tag gold"><i class="ph-bold ph-star" style="font-size:10px"></i>Fondateur</span>' : ''}
+      ${c.reco_count > 0 ? `<span class="tag" style="background:rgba(99,214,131,.15);color:#7be29a;border:1px solid rgba(99,214,131,.35)"><i class="ph-bold ph-heart" style="font-size:10px"></i>Recommandé par ${c.reco_count} hôte${c.reco_count > 1 ? 's' : ''}</span>` : ''}
       ${c.assurance_rc_pro ? '<span class="tag green"><i class="ph-bold ph-shield-check" style="font-size:10px"></i>RC Pro</span>' : ''}
       ${equipeLabel ? `<span class="tag">${escHtml(equipeLabel)}</span>` : ''}
       <span class="tag"><i class="ph-bold ph-map-pin" style="font-size:10px"></i>${escHtml(c.ville)}</span>
@@ -277,6 +298,7 @@ ${JSON.stringify({
       ${c.site_url ? `<a href="${escHtml(c.site_url)}" target="_blank" rel="noopener noreferrer" class="btn-ol" onclick="jmTrack('site')"><i class="ph-bold ph-globe"></i>Voir le site</a>` : ''}
       ${c.instagram_handle ? `<a href="https://instagram.com/${escHtml(c.instagram_handle)}" target="_blank" rel="noopener" class="btn-ol" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i>@${escHtml(c.instagram_handle)}</a>` : ''}
       <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tl);line-height:1.6">Pas de commission. Pas d'intermédiaire. Tu négocies et contractualises directement avec l'équipe.</div>
+      <div style="margin-top:12px;font-size:12px;color:var(--tm);line-height:1.6">Tu as déjà bossé avec cette équipe ? <a href="https://app.jasonmarinho.com/dashboard/recommander?type=cleaner&id=${escHtml(c.id)}" style="color:var(--g);font-weight:600">Recommande-la aux autres hôtes →</a></div>
     </div>
 
     <div class="card" style="margin-top:16px">
@@ -381,7 +403,7 @@ function buildAnnuaireListPage(items) {
     ${c.tier === 'fondateur' ? '<span class="card-tag gold"><i class="ph-bold ph-star"></i>Fondateur</span>' : ''}
   </div>
   ${c.zone_couverte ? `<div class="card-zone"><strong>Zone couverte :</strong> ${escHtml(c.zone_couverte)}</div>` : ''}
-  ${equipeLabel || c.assurance_rc_pro ? `<div class="card-chips">${equipeLabel ? `<span class="card-spe">${escHtml(equipeLabel)}</span>` : ''}${c.assurance_rc_pro ? '<span class="card-rc"><i class="ph-bold ph-shield-check"></i>RC pro</span>' : ''}</div>` : ''}
+  ${equipeLabel || c.assurance_rc_pro || c.reco_count > 0 ? `<div class="card-chips">${equipeLabel ? `<span class="card-spe">${escHtml(equipeLabel)}</span>` : ''}${c.assurance_rc_pro ? '<span class="card-rc"><i class="ph-bold ph-shield-check"></i>RC pro</span>' : ''}${c.reco_count > 0 ? `<span class="card-rc"><i class="ph-bold ph-heart"></i>Recommandé par ${c.reco_count} hôte${c.reco_count > 1 ? 's' : ''}</span>` : ''}</div>` : ''}
   <div class="card-foot">
     ${tarifLine ? `<div class="card-tarif">${escHtml(tarifLine)}</div>` : '<div></div>'}
     <span class="card-cta">Voir le profil <i class="ph-bold ph-arrow-right"></i></span>
@@ -490,6 +512,16 @@ ${JSON.stringify({
     <h1>${items.length} équipe${items.length > 1 ? 's' : ''} de ménage <em>LCD sélectionnée${items.length > 1 ? 's' : ''}</em></h1>
     <p class="lead">Toutes les équipes ci-dessous ont été vérifiées manuellement par Jason Marinho : références LCD réelles (turnover Airbnb/Booking), capacité confirmée, prestations cohérentes. Pas d'intermédiation : tu contactes directement.</p>
     ${items.length > 0 ? `<span class="count-pill"><i class="ph-bold ph-sparkle"></i>${items.length} équipes actives</span>` : ''}
+    <span class="count-pill" id="founder-live" style="display:none;margin-left:8px"></span>
+    <script>
+    // Compteur de places fondatrices en direct (fail-silent)
+    fetch('/api/annuaire-places').then(function(r){ return r.ok ? r.json() : null }).then(function(d){
+      if (!d || d.cleaners == null || d.cleaners <= 0) return
+      var el = document.getElementById('founder-live')
+      el.innerHTML = '⏳ ' + d.cleaners + ' place' + (d.cleaners > 1 ? 's' : '') + ' fondatrice' + (d.cleaners > 1 ? 's' : '') + ' restante' + (d.cleaners > 1 ? 's' : '') + ' à 39,98 €/an'
+      el.style.display = 'inline-flex'
+    }).catch(function(){})
+    </script>
   </div>
 </header>
 
@@ -568,6 +600,8 @@ ${urls.join('\n')}
 
 async function main() {
   const items = await fetchActive()
+  const recoCounts = await fetchRecoCounts()
+  for (const c of items) c.reco_count = recoCounts.get(c.id) ?? 0
 
   // Clean menage dir : on supprime UNIQUEMENT les sous-dossiers de fiches
   // (slugs). Hub + annuaire + inscription + exemple-fiche (RESERVED_DIRS)
@@ -593,6 +627,20 @@ async function main() {
   fs.writeFileSync(path.join(FICHES_DIR, 'index.html'), buildAnnuaireListPage(items), 'utf8')
 
   fs.writeFileSync(path.join(ROOT, 'sitemap-menages.xml'), buildSitemap(items), 'utf8')
+
+  // Injecte les équipes actives dans leurs pages ville SEO (/menage-lcd-{ville})
+  const villesEnrichies = injectProsIntoVillePages({
+    root: ROOT,
+    prefix: 'menage-lcd',
+    metier: 'équipe ménage LCD',
+    pros: items.map(c => ({
+      ville: c.ville,
+      url: `/annuaires/menage/${c.slug}`,
+      name: c.pseudo || c.full_name,
+      sub: fmtForfait(c) ? `Forfait ${fmtForfait(c)}` : null,
+    })),
+  })
+  console.log(`[build-cleaners] ${villesEnrichies} page(s) ville enrichie(s)`)
 
 
   console.log(`[build-cleaners] ✓ ${items.length} fiches + annuaire + sitemap`)

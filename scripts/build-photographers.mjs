@@ -13,6 +13,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { injectProsIntoVillePages } from './lib/inject-ville-pros.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -50,6 +51,25 @@ async function fetchActive() {
   const data = await res.json()
   console.log(`[build-photographers] ${data.length} photographe(s) actif(s)`)
   return data
+}
+
+// Recommandations d'hôtes (badge « Recommandé par N hôtes »). Fail-safe :
+// table absente ou fetch KO → Map vide, aucun badge.
+async function fetchRecoCounts() {
+  if (!HAS_SUPABASE) return new Map()
+  try {
+    const url = `${SUPABASE_URL}/rest/v1/pro_recommendations?pro_type=eq.photographer&select=pro_id&limit=10000`
+    const res = await fetch(url, {
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, Accept: 'application/json' },
+    })
+    if (!res.ok) return new Map()
+    const rows = await res.json()
+    const map = new Map()
+    for (const r of rows) map.set(r.pro_id, (map.get(r.pro_id) ?? 0) + 1)
+    return map
+  } catch {
+    return new Map()
+  }
 }
 
 function fmtTarif(p) {
@@ -188,6 +208,7 @@ ${JSON.stringify({
     <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/photographes">Annuaire photographes LCD</a> · <span>${escHtml(displayName)}</span></div>
     <div class="tag-row">
       ${isFondateur ? '<span class="tag gold"><i class="ph-bold ph-star" style="font-size:10px"></i>Fondateur</span>' : ''}
+      ${p.reco_count > 0 ? `<span class="tag" style="background:rgba(99,214,131,.15);color:#7be29a;border:1px solid rgba(99,214,131,.35)"><i class="ph-bold ph-heart" style="font-size:10px"></i>Recommandé par ${p.reco_count} hôte${p.reco_count > 1 ? 's' : ''}</span>` : ''}
       ${p.specialite ? `<span class="tag">${escHtml(p.specialite)}</span>` : ''}
       <span class="tag"><i class="ph-bold ph-map-pin" style="font-size:10px"></i>${escHtml(p.ville)}</span>
     </div>
@@ -228,6 +249,7 @@ ${JSON.stringify({
         <button type="submit" class="btn-p" id="contact-btn"><i class="ph-bold ph-paper-plane-tilt"></i>Envoyer ma demande</button>
       </form>
       <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tl);line-height:1.6">Pas de commission. Pas d'intermédiaire. Tu négocies et contractualises directement avec ${escHtml(displayName.split(' ')[0])}.</div>
+      <div style="margin-top:12px;font-size:12px;color:var(--tm);line-height:1.6">Tu as déjà bossé avec ${escHtml(displayName.split(' ')[0])} ? <a href="https://app.jasonmarinho.com/dashboard/recommander?type=photographer&id=${escHtml(p.id)}" style="color:var(--g);font-weight:600">Recommande-le aux autres hôtes →</a></div>
     </div>
 
     <div class="card" style="margin-top:16px">
@@ -330,7 +352,7 @@ function buildAnnuaireListPage(items) {
     ${p.tier === 'fondateur' ? '<span class="card-tag gold"><i class="ph-bold ph-star"></i>Fondateur</span>' : ''}
   </div>
   ${p.zone_couverte ? `<div class="card-zone"><strong>Zone couverte :</strong> ${escHtml(p.zone_couverte)}</div>` : ''}
-  ${p.specialite ? `<div class="card-chips"><span class="card-spe">${escHtml(p.specialite)}</span></div>` : ''}
+  ${p.specialite || p.reco_count > 0 ? `<div class="card-chips">${p.specialite ? `<span class="card-spe">${escHtml(p.specialite)}</span>` : ''}${p.reco_count > 0 ? `<span class="card-rc"><i class="ph-bold ph-heart"></i>Recommandé par ${p.reco_count} hôte${p.reco_count > 1 ? 's' : ''}</span>` : ''}</div>` : ''}
   <div class="card-foot">
     ${tarif ? `<div class="card-tarif">${escHtml(tarif)} <span>la session</span></div>` : '<div></div>'}
     <span class="card-cta">Voir le profil <i class="ph-bold ph-arrow-right"></i></span>
@@ -439,6 +461,16 @@ ${JSON.stringify({
     <h1>${items.length} photographe${items.length > 1 ? 's' : ''} <em>LCD sélectionné${items.length > 1 ? 's' : ''}</em></h1>
     <p class="lead">Tous les photographes ci-dessous ont été vérifiés manuellement par Jason Marinho : portfolio réel en LCD, expérience confirmée, tarifs cohérents marché. Pas d'intermédiation : tu contactes directement.</p>
     ${items.length > 0 ? `<span class="count-pill"><i class="ph-bold ph-camera"></i>${items.length} pros actifs</span>` : ''}
+    <span class="count-pill" id="founder-live" style="display:none;margin-left:8px"></span>
+    <script>
+    // Compteur de places fondateur en direct (fail-silent)
+    fetch('/api/annuaire-places').then(function(r){ return r.ok ? r.json() : null }).then(function(d){
+      if (!d || d.photographers == null || d.photographers <= 0) return
+      var el = document.getElementById('founder-live')
+      el.innerHTML = '⏳ ' + d.photographers + ' place' + (d.photographers > 1 ? 's' : '') + ' fondateur restante' + (d.photographers > 1 ? 's' : '') + ' à 39,98 €/an'
+      el.style.display = 'inline-flex'
+    }).catch(function(){})
+    </script>
   </div>
 </header>
 
@@ -517,6 +549,8 @@ ${urls.join('\n')}
 
 async function main() {
   const items = await fetchActive()
+  const recoCounts = await fetchRecoCounts()
+  for (const p of items) p.reco_count = recoCounts.get(p.id) ?? 0
 
   // Clean photographes dir (regen all)
   if (fs.existsSync(FICHES_DIR)) {
@@ -546,6 +580,19 @@ async function main() {
   // Sitemap dédié
   fs.writeFileSync(path.join(ROOT, 'sitemap-photographes.xml'), buildSitemap(items), 'utf8')
 
+  // Injecte les pros actifs dans leurs pages ville SEO (/photographe-lcd-{ville})
+  const villesEnrichies = injectProsIntoVillePages({
+    root: ROOT,
+    prefix: 'photographe-lcd',
+    metier: 'photographe LCD',
+    pros: items.map(p => ({
+      ville: p.ville,
+      url: `/annuaires/photographes/${p.slug}`,
+      name: p.full_name,
+      sub: [p.specialite, fmtTarif(p)].filter(Boolean).join(' · ') || null,
+    })),
+  })
+  console.log(`[build-photographers] ${villesEnrichies} page(s) ville enrichie(s)`)
 
   console.log(`[build-photographers] ✓ ${items.length} fiches + annuaire + sitemap`)
 }

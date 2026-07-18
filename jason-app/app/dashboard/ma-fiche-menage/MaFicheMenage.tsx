@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Sparkle, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, ShieldCheck, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
 import { updateCleanerFiche, createCustomerPortalSession, uploadCleanerLogo, deleteCleanerLogo } from './actions'
+import ShareFicheBlock from '@/components/pro/ShareFicheBlock'
 
 type Cleaner = {
   id: string; email: string; full_name: string; pseudo: string | null; ville: string
@@ -183,6 +184,10 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false }:
             ? 'Ta fiche n\'est pas encore publique. Statut Stripe : ' + (cleaner.stripe_subscription_status ?? 'en attente') + '.'
             : 'Ta fiche est ' + cleaner.status + '. Contacte contact@jasonmarinho.com.'}
         </div>
+      )}
+
+      {isActive && publicUrl && (
+        <ShareFicheBlock url={publicUrl} displayName={cleaner.pseudo || cleaner.full_name} />
       )}
 
       <div style={s.kpiRow}>

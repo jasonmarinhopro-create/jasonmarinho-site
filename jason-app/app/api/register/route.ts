@@ -1,7 +1,7 @@
 import { Resend } from 'resend'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-import { buildEmail, emailBtn, emailP, emailNote, emailInfoBlock, escHtml } from '@/lib/email/template'
+import { buildEmail, emailBtn, emailP, emailNote, emailInfoBlock, emailAnnuairesPromo, escHtml } from '@/lib/email/template'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { isEmail, isPassword, normalizeEmail } from '@/lib/security/validate'
 import { logger } from '@/lib/logger'
@@ -260,6 +260,7 @@ export async function POST(req: NextRequest) {
           ${emailP(`Bienvenue${fullName ? ` <strong style="color:#e8ede8;">${escHtml(fullName)}</strong>` : ''}&nbsp;! Ton compte est prêt. Clique sur le bouton ci-dessous pour confirmer ton adresse et accéder à la plateforme.`)}
           ${emailP(`Ce lien est valable <strong style="color:#FFD56B;">24&nbsp;heures</strong>.`)}
           ${emailBtn(linkData.properties.action_link, 'Confirmer mon compte', 'primary')}
+          ${isInvestor ? '' : emailAnnuairesPromo()}
           ${emailNote('Si tu n\'as pas créé de compte sur Jason Marinho, ignore simplement cet email. Aucune action n\'est requise.')}
         `,
       }),

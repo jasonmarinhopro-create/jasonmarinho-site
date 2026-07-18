@@ -77,6 +77,18 @@
     <i class="ph-bold ph-star" style="color:#FFD56B;font-size:18px"></i>
     <span><strong>39,98 € TTC / an à vie</strong> pour les 20 premières équipes fondatrices (tarif appliqué automatiquement), ensuite 79,98 €/an. Résiliation libre à tout moment depuis ton espace Stripe.</span>
   </div>
+  <div id="founder-live" style="display:none;align-items:center;gap:8px;margin-top:10px;padding:9px 14px;border-radius:10px;background:rgba(255,213,107,.12);border:1px solid rgba(255,213,107,.4);font-size:13.5px;font-weight:600;color:#8a6508"></div>
+  <script>
+  // Compteur de places fondatrices en direct (fail-silent si l'API répond pas)
+  fetch('/api/annuaire-places').then(function(r){ return r.ok ? r.json() : null }).then(function(d){
+    if (!d || d.cleaners == null) return
+    var el = document.getElementById('founder-live')
+    if (d.cleaners > 0) {
+      el.innerHTML = '⏳ Plus que <strong style="margin:0 4px">' + d.cleaners + ' place' + (d.cleaners > 1 ? 's' : '') + '</strong> fondatrice à 39,98 €/an à vie'
+      el.style.display = 'flex'
+    }
+  }).catch(function(){})
+  </script>
 
   <form class="form" id="signup-form" onsubmit="return submitForm(event)">
     <div id="err-box" class="err" style="display:none"></div>
