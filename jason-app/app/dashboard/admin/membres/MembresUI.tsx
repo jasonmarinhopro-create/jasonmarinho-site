@@ -162,10 +162,13 @@ export default function MembresUI({ members }: { members: Member[] }) {
     const matchSearch = !search || m.email.toLowerCase().includes(q) || (m.full_name ?? '').toLowerCase().includes(q)
     const matchPlan =
       filterPlan === 'all' ||
-      (filterPlan === 'decouverte' && m.plan !== 'driing' && m.plan !== 'standard') ||
-      (filterPlan === 'standard'   && m.plan === 'standard') ||
-      (filterPlan === 'driing'     && m.plan === 'driing') ||
-      (filterPlan === 'investor'   && !!m.is_investor)
+      (filterPlan === 'decouverte'   && m.plan !== 'driing' && m.plan !== 'standard') ||
+      (filterPlan === 'standard'     && m.plan === 'standard') ||
+      (filterPlan === 'driing'       && m.plan === 'driing') ||
+      (filterPlan === 'contrib'      && m.is_contributor) ||
+      (filterPlan === 'investor'     && !!m.is_investor) ||
+      (filterPlan === 'photographer' && !!m.is_photographer) ||
+      (filterPlan === 'cleaner'      && !!m.is_cleaner)
     return matchSearch && matchPlan
   })
 
@@ -175,10 +178,14 @@ export default function MembresUI({ members }: { members: Member[] }) {
   const totalDecouv    = members.filter(m => m.plan !== 'driing' && m.plan !== 'standard').length
   const totalContrib   = members.filter(m => m.is_contributor).length
   const totalInvestors = members.filter(m => m.is_investor).length
+  const totalPhotographers = members.filter(m => m.is_photographer).length
+  const totalCleaners  = members.filter(m => m.is_cleaner).length
 
   return (
     <div style={s.wrap}>
-      <style>{`
+      {/* dangerouslySetInnerHTML : React échappe les apostrophes/quotes du CSS
+          en texte JSX → mismatch d'hydratation (même fix que le check-in) */}
+      <style dangerouslySetInnerHTML={{ __html: `
         .jm-membre-card { will-change: transform; }
         .jm-membre-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-md); transform: translateY(-2px); }
         .jm-membre-card:hover .jm-action-btn { opacity: 1; }
@@ -186,30 +193,45 @@ export default function MembresUI({ members }: { members: Member[] }) {
         .jm-action-btn:hover { background: var(--surface-2) !important; color: var(--text) !important; border-color: var(--border-2) !important; transform: translateY(-1px); }
         /* Fix dropdown plan : avant, les options s'ouvraient en blanc-sur-blanc
            illisible sur le thème dark (rendu natif browser). On force les
-           couleurs sur les <option> directement. Compatible light + dark
+           couleurs sur les option directement. Compatible light + dark
            grâce à color-scheme inherited + var() */
         .jm-membre-card select option { background-color: var(--bg-2); color: var(--text); padding: 8px 12px; font-weight: 500; }
         .jm-membre-card select option:hover { background-color: rgba(0,76,63,0.55); color: #fff; }
         .jm-membre-card select option:checked { background: var(--accent-text); color: var(--bg); font-weight: 700; }
         .jm-membre-card select:focus { outline: none; border-color: var(--accent-text) !important; box-shadow: 0 0 0 3px rgba(0,76,63,.18); }
-      `}</style>
+      ` }} />
 
-      {/* ── Stats ── */}
+      {/* ── Stats (cliquables : chaque tuile applique le filtre correspondant) ── */}
       <div style={s.statsRow}>
         {[
-          { icon: <Users size={16} />,     value: members.length,    label: 'membres',     color: 'var(--text)' },
-          { icon: <Star size={16} weight="fill" />, value: totalStandard, label: 'Standard',    color: '#15803d' },
-          { icon: <Lightning size={16} weight="fill" />, value: totalDriing, label: 'Driing',  color: '#7c3aed' },
-          { icon: <Heart size={16} weight="fill" />, value: totalContrib,  label: 'contributeurs', color: '#db2777' },
-          { icon: <Briefcase size={16} weight="fill" />, value: totalInvestors, label: 'investisseurs', color: '#60BEFF' },
-          { icon: <CurrencyEur size={16} />, value: `${(totalStandard * 1.98).toFixed(2)} €`, label: 'MRR estimé', color: '#15803d' },
-        ].map(({ icon, value, label, color }) => (
-          <div key={label} style={s.statChip}>
-            <span style={{ color, lineHeight: 1, flexShrink: 0 }}>{icon}</span>
-            <span style={{ ...s.statNum, color }}>{value}</span>
-            <span style={s.statLabel}>{label}</span>
-          </div>
-        ))}
+          { filter: 'all',          icon: <Users size={16} />,                     value: members.length,     label: 'membres',       color: 'var(--text)' },
+          { filter: 'standard',     icon: <Star size={16} weight="fill" />,        value: totalStandard,      label: 'Standard',      color: '#15803d' },
+          { filter: 'driing',       icon: <Lightning size={16} weight="fill" />,   value: totalDriing,        label: 'Driing',        color: '#7c3aed' },
+          { filter: 'contrib',      icon: <Heart size={16} weight="fill" />,       value: totalContrib,       label: 'contributeurs', color: '#db2777' },
+          { filter: 'investor',     icon: <Briefcase size={16} weight="fill" />,   value: totalInvestors,     label: 'investisseurs', color: '#60BEFF' },
+          { filter: 'photographer', icon: <Camera size={16} weight="fill" />,      value: totalPhotographers, label: 'photographes',  color: '#C084FC' },
+          { filter: 'cleaner',      icon: <Sparkle size={16} weight="fill" />,     value: totalCleaners,      label: 'ménage',        color: 'var(--success-1)' },
+          { filter: null,           icon: <CurrencyEur size={16} />,               value: `${(totalStandard * 1.98).toFixed(2)} €`, label: 'MRR estimé', color: '#15803d' },
+        ].map(({ filter: f, icon, value, label, color }) => {
+          const active = f !== null && filterPlan === f && f !== 'all'
+          return (
+            <button
+              key={label}
+              onClick={f ? () => setFilterPlan(filterPlan === f ? 'all' : f) : undefined}
+              style={{
+                ...s.statChip,
+                cursor: f ? 'pointer' : 'default',
+                fontFamily: 'inherit', textAlign: 'left' as const,
+                ...(active ? { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' } : {}),
+              }}
+              title={f ? 'Filtrer la liste' : undefined}
+            >
+              <span style={{ color, lineHeight: 1, flexShrink: 0 }}>{icon}</span>
+              <span style={{ ...s.statNum, color }}>{value}</span>
+              <span style={s.statLabel}>{label}</span>
+            </button>
+          )
+        })}
       </div>
 
       {/* ── Actions (export + nettoyage bots) — ligne dédiée pour ne pas
@@ -248,11 +270,13 @@ export default function MembresUI({ members }: { members: Member[] }) {
 
         <div style={s.planTabs}>
           {[
-            { v: 'all',        l: 'Tous',         count: members.length },
-            { v: 'decouverte', l: 'Découverte',   count: totalDecouv },
-            { v: 'standard',   l: 'Standard',     count: totalStandard },
-            { v: 'driing',     l: 'Driing',       count: totalDriing },
-            { v: 'investor',   l: 'Investisseur', count: totalInvestors },
+            { v: 'all',          l: 'Tous',          count: members.length },
+            { v: 'decouverte',   l: 'Découverte',    count: totalDecouv },
+            { v: 'standard',     l: 'Standard',      count: totalStandard },
+            { v: 'driing',       l: 'Driing',        count: totalDriing },
+            { v: 'investor',     l: 'Investisseur',  count: totalInvestors },
+            { v: 'photographer', l: 'Photographe',   count: totalPhotographers },
+            { v: 'cleaner',      l: 'Ménage',        count: totalCleaners },
           ].map(f => (
             <button
               key={f.v}
