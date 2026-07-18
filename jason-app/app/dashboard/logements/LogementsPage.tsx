@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useEffect, useMemo } from 'react'
 import Image from 'next/image'
-import { Plus, X, House, PencilSimple, Trash, Warning, Check, Copy, WifiHigh, Key, Clock, Star, Leaf, MapPin, CurrencyEur, ArrowSquareOut, MagnifyingGlass, SquaresFour, Rows, ArrowRight } from '@phosphor-icons/react/dist/ssr'
+import { Plus, X, House, Trash, Warning, Check, Copy, WifiHigh, Key, Clock, Star, Leaf, MapPin, CurrencyEur, ArrowSquareOut, MagnifyingGlass, SquaresFour, Rows, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createLogement, updateLogement, deleteLogement, type LogementData } from './actions'
 import { COUNTRIES, ACTIVE_COUNTRIES, getCountry, type CountryCode } from '@/lib/countries'
@@ -625,12 +625,6 @@ export default function LogementsPage({ logements: initial }: Props) {
                           <CurrencyEur size={13} weight="bold" />
                         </a>
                         <button
-                          onClick={(e) => { e.stopPropagation(); openEdit(l) }}
-                          style={iconBtn} title="Modifier"
-                        >
-                          <PencilSimple size={13} />
-                        </button>
-                        <button
                           onClick={(e) => { e.stopPropagation(); setDeleteConfirm(l.id) }}
                           style={iconBtn} title="Supprimer"
                         >
@@ -674,12 +668,6 @@ export default function LogementsPage({ logements: initial }: Props) {
                     {/* Actions overlay sur la photo */}
                     <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '6px' }}>
                       <button
-                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); openEdit(l) }}
-                        style={{ ...iconBtn, background: 'rgba(0,0,0,0.55)', borderColor: 'rgba(255,255,255,0.15)', color: '#fff' }} title="Modifier"
-                      >
-                        <PencilSimple size={13} />
-                      </button>
-                      <button
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDeleteConfirm(l.id) }}
                         style={{ ...iconBtn, background: 'rgba(0,0,0,0.55)', borderColor: 'rgba(255,255,255,0.15)', color: '#fff' }} title="Supprimer"
                       >
@@ -692,12 +680,6 @@ export default function LogementsPage({ logements: initial }: Props) {
                   <div style={{ ...cardCover, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--success-bg)' }}>
                     <House size={52} color="var(--success-1)" weight="thin" style={{ opacity: 0.55 }} />
                     <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '6px' }}>
-                      <button
-                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); openEdit(l) }}
-                        style={iconBtn} title="Modifier"
-                      >
-                        <PencilSimple size={13} />
-                      </button>
                       <button
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDeleteConfirm(l.id) }}
                         style={iconBtn} title="Supprimer"
