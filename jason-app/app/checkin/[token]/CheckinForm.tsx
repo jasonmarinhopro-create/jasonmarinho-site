@@ -248,7 +248,7 @@ const T: Record<Lang, Record<string, string>> = {
     document: 'Documento de identidad',
     docNote: 'Obligatorio en algunos países para la declaración de viajeros (Portugal, España…). Sus datos solo se utilizan para su estancia.',
     docType: 'Tipo de documento',
-    docTypeCni: 'DNI / documento de identidad',
+    docTypeCni: 'DNI / NIE',
     docTypePasseport: 'Pasaporte',
     docTypePermis: 'Permiso de conducir',
     docTypeAutre: 'Otro',

@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import LogementDetail from './LogementDetail'
 import TitleSetter from '@/components/layout/TitleSetter'
+import SibaConfigCard from '@/components/logements/SibaConfigCard'
 import { getLogementIcalStatus } from '../actions'
 
 export default async function LogementDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -78,6 +79,25 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
         icalStatus={icalStatus}
         voyageurs={allVoyageurs ?? []}
       />
+      {/* Config SIBA accessible EN AMONT (avant, uniquement via le modal
+          d'une déclaration en attente — impossible si le widget est vide) */}
+      {logement.pays === 'PT' && (
+        <SibaConfigCard
+          logementId={logement.id}
+          configured={!!(logement.siba_unidade && logement.siba_chave)}
+          initial={{
+            siba_unidade: logement.siba_unidade ?? '',
+            siba_estabelecimento: logement.siba_estabelecimento ?? '00',
+            siba_chave: logement.siba_chave ?? '',
+            siba_abreviatura: logement.siba_abreviatura ?? '',
+            siba_localidade: logement.siba_localidade ?? '',
+            siba_codigo_postal: logement.siba_codigo_postal ?? '',
+            siba_zona_postal: logement.siba_zona_postal ?? '',
+            siba_telefone: logement.siba_telefone ?? '',
+            siba_auto_envoi: logement.siba_auto_envoi ?? true,
+          }}
+        />
+      )}
     </>
   )
 }
