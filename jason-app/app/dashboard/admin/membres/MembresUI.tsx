@@ -11,7 +11,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import {
   changeUserPlan, deleteUser, deleteAllBots,
-  getMemberDetails, toggleContributor, updateMemberName,
+  getMemberDetails, toggleContributor, toggleInvestor, updateMemberName,
 } from '../actions'
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -286,6 +286,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
               onOpenPanel={openPanel}
               onChangePlan={(plan) => action(m.id, () => changeUserPlan(m.id, plan), 'Plan mis à jour')}
               onToggleContrib={() => action(m.id, () => toggleContributor(m.id, !m.is_contributor), m.is_contributor ? 'Contributeur retiré' : 'Contributeur activé')}
+              onToggleInvestor={() => action(m.id, () => toggleInvestor(m.id, !m.is_investor), m.is_investor ? 'Investisseur retiré' : 'Investisseur activé')}
               onDelete={() => {
                 if (!confirm(`Supprimer définitivement ${m.full_name || m.email} ?`)) return
                 action(m.id, () => deleteUser(m.id), 'Supprimé')
@@ -316,11 +317,12 @@ interface MemberCardProps {
   onOpenPanel: (m: Member) => void
   onChangePlan: (plan: string) => void
   onToggleContrib: () => void
+  onToggleInvestor: () => void
   onDelete: () => void
   onSaveName: (name: string) => void
 }
 
-function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan, onToggleContrib, onDelete, onSaveName }: MemberCardProps) {
+function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan, onToggleContrib, onToggleInvestor, onDelete, onSaveName }: MemberCardProps) {
   const pal      = palette(m.full_name || m.email)
   const ini      = initials(m.full_name, m.email)
   const isAdmin  = m.role === 'admin'
@@ -454,6 +456,24 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
                   </option>
                 ))}
               </select>
+            )}
+
+            {/* Investor toggle */}
+            {!isAdmin && (
+              <button
+                disabled={isPending}
+                onClick={onToggleInvestor}
+                style={{
+                  ...s.actionBtn,
+                  ...(m.is_investor
+                    ? { background: 'rgba(96,190,255,0.1)', borderColor: 'rgba(96,190,255,0.28)', color: '#60BEFF' }
+                    : {}
+                  ),
+                }}
+                title={m.is_investor ? 'Retirer le profil investisseur' : 'Marquer comme investisseur'}
+              >
+                <Briefcase size={13} weight={m.is_investor ? 'fill' : 'regular'} />
+              </button>
             )}
 
             {/* Contributor toggle */}
