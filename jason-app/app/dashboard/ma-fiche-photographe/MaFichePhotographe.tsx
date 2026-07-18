@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Camera, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
 import { updatePhotographerFiche, createCustomerPortalSession, uploadPhotographerLogo, deletePhotographerLogo } from './actions'
+import ShareFicheBlock from '@/components/pro/ShareFicheBlock'
 
 type Photographer = {
   id: string; email: string; full_name: string; ville: string
@@ -142,6 +143,10 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
             ? 'Ta fiche n\'est pas encore publique. Statut Stripe : ' + (photographer.stripe_subscription_status ?? 'en attente') + '.'
             : 'Ta fiche est ' + photographer.status + '. Contacte contact@jasonmarinho.com.'}
         </div>
+      )}
+
+      {isActive && publicUrl && (
+        <ShareFicheBlock url={publicUrl} displayName={photographer.full_name} />
       )}
 
       <div style={s.kpiRow}>

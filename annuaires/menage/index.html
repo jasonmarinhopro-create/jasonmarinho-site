@@ -93,6 +93,16 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
     <h1>0 équipe de ménage <em>LCD sélectionnée</em></h1>
     <p class="lead">Toutes les équipes ci-dessous ont été vérifiées manuellement par Jason Marinho : références LCD réelles (turnover Airbnb/Booking), capacité confirmée, prestations cohérentes. Pas d'intermédiation : tu contactes directement.</p>
     
+    <span class="count-pill" id="founder-live" style="display:none;margin-left:8px"></span>
+    <script>
+    // Compteur de places fondatrices en direct (fail-silent)
+    fetch('/api/annuaire-places').then(function(r){ return r.ok ? r.json() : null }).then(function(d){
+      if (!d || d.cleaners == null || d.cleaners <= 0) return
+      var el = document.getElementById('founder-live')
+      el.innerHTML = '⏳ ' + d.cleaners + ' place' + (d.cleaners > 1 ? 's' : '') + ' fondatrice' + (d.cleaners > 1 ? 's' : '') + ' restante' + (d.cleaners > 1 ? 's' : '') + ' à 39,98 €/an'
+      el.style.display = 'inline-flex'
+    }).catch(function(){})
+    </script>
   </div>
 </header>
 

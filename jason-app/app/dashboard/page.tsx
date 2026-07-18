@@ -7,6 +7,7 @@ import {
   CalendarBlank,
   ArrowRight, Newspaper,
   GraduationCap, Trophy, Flame,
+  Camera, Sparkle,
 } from '@phosphor-icons/react/dist/ssr'
 import EtatDesLieux from './EtatDesLieux'
 // ChezNousWidget retiré Étape 7 (déplacé vers /dashboard/entre-hotes)
@@ -907,6 +908,53 @@ export default async function DashboardPage() {
 
         {/* ── (Entre Hôtes a été remonté plus haut après Quick actions
               pour plus de visibilité — voir commentaire ci-dessus.) */}
+
+        {/* ── Trouver un pro (annuaires) ────────────────────────────────
+              Les hôtes sont les clients directs des annuaires photographes
+              et ménage — ce bloc est le pont dashboard → annuaires. */}
+        <section style={s.section} className="fade-up d3">
+          <div style={s.sectionHead}>
+            <h3 style={s.sectionTitle}>Trouver un pro près de chez toi</h3>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px' }}>
+            <a
+              href="https://jasonmarinho.com/annuaires/photographes"
+              target="_blank" rel="noopener noreferrer"
+              style={{
+                display: 'flex', alignItems: 'center', gap: '14px',
+                padding: '16px 18px', borderRadius: '14px', textDecoration: 'none',
+                background: 'var(--surface)', border: '1px solid var(--border-2)',
+              }}
+            >
+              <span style={{ width: '38px', height: '38px', borderRadius: '11px', background: 'rgba(192,132,252,0.12)', border: '1px solid rgba(192,132,252,0.28)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Camera size={18} weight="fill" color="#C084FC" />
+              </span>
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span style={{ display: 'block', fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' }}>Photographe LCD</span>
+                <span style={{ display: 'block', fontSize: '11.5px', color: 'var(--text-muted)', lineHeight: 1.4 }}>Des photos pro = plus de clics sur ton annonce</span>
+              </span>
+              <ArrowRight size={13} weight="bold" color="var(--text-muted)" style={{ flexShrink: 0 }} />
+            </a>
+            <a
+              href="https://jasonmarinho.com/annuaires/menage"
+              target="_blank" rel="noopener noreferrer"
+              style={{
+                display: 'flex', alignItems: 'center', gap: '14px',
+                padding: '16px 18px', borderRadius: '14px', textDecoration: 'none',
+                background: 'var(--surface)', border: '1px solid var(--border-2)',
+              }}
+            >
+              <span style={{ width: '38px', height: '38px', borderRadius: '11px', background: 'rgba(16,185,129,0.10)', border: '1px solid rgba(16,185,129,0.28)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Sparkle size={18} weight="fill" color="var(--success-1)" />
+              </span>
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span style={{ display: 'block', fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' }}>Équipe ménage LCD</span>
+                <span style={{ display: 'block', fontSize: '11.5px', color: 'var(--text-muted)', lineHeight: 1.4 }}>Un turnover fiable = de meilleurs avis voyageurs</span>
+              </span>
+              <ArrowRight size={13} weight="bold" color="var(--text-muted)" style={{ flexShrink: 0 }} />
+            </a>
+          </div>
+        </section>
 
         {/* ── Actualités du secteur (en bas de page) ────────────────────
               L'entrée « Actualités » de la sidebar est passée en 2e

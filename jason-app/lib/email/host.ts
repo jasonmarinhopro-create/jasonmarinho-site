@@ -1,5 +1,5 @@
 import { Resend } from 'resend'
-import { buildEmail, emailBtn, emailInfoBlock, emailP, escHtml } from './template'
+import { buildEmail, emailBtn, emailInfoBlock, emailP, emailAnnuairesPromo, escHtml } from './template'
 
 // Module dédié aux notifications email envoyées AU HÔTE (vs les emails
 // envoyés au voyageur pour signature contrat). Trois types pour l'instant :
@@ -61,6 +61,7 @@ export async function sendSejourSignedEmail(opts: {
       ${emailBtn(opts.contractUrl, 'Voir le contrat signé', 'primary')}
     </div>
     ${emailP(`Pense aussi à demander à <strong>${escHtml(opts.guestFullName)}</strong> son téléphone et sa pièce d'identité avant l'arrivée si ce n'est pas déjà fait.`)}
+    ${emailAnnuairesPromo()}
   `
 
   try {

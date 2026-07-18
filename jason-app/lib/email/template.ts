@@ -116,3 +116,21 @@ export function emailP(text: string): string {
 export function escHtml(str: string): string {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
+
+/**
+ * Encart promo annuaires (photographes + ménage) à glisser dans les
+ * emails destinés aux HÔTES. Réutilisable partout où on parle à un hôte —
+ * jamais dans les emails voyageurs.
+ */
+export function emailAnnuairesPromo(): string {
+  const link = (href: string, label: string) =>
+    `<a href="${href}" style="color:${ACCENT};font-weight:600;text-decoration:none;">${label}</a>`
+  return `<div style="background:rgba(255,255,255,0.03);border:1px solid ${BORDER};border-radius:10px;padding:16px 20px;margin:24px 0 0;">
+    <p style="margin:0 0 8px;font-size:13px;font-weight:600;color:${TEXT};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Besoin d&rsquo;un coup de main pour ton logement&nbsp;?</p>
+    <p style="margin:0;font-size:12.5px;color:${TEXT_MUTED};line-height:1.7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+      📸 ${link('https://jasonmarinho.com/annuaires/photographes', 'Photographes LCD')} — des photos pro pour ton annonce<br>
+      🧹 ${link('https://jasonmarinho.com/annuaires/menage', 'Équipes ménage LCD')} — un turnover fiable près de chez toi<br>
+      <span style="color:${TEXT_MUTED};">Contact direct, zéro commission.</span>
+    </p>
+  </div>`
+}
