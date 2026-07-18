@@ -65,6 +65,8 @@ type Logement = {
   code_acces: string | null
   wifi_nom: string | null
   wifi_mdp: string | null
+  pays: string | null
+  numero_al: string | null
 }
 
 type Sejour = {
@@ -199,6 +201,24 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
   const [draftPropEmail, setDraftPropEmail] = useState(l.proprietaire_email ?? '')
   const [draftPropTel, setDraftPropTel] = useState(l.proprietaire_telephone ?? '')
   const [draftHonoraires, setDraftHonoraires] = useState<number | null>(l.honoraires_pct)
+  // Informations générales (nom, type, adresse, téléphone, pays)
+  const [draftNom, setDraftNom] = useState(l.nom)
+  const [draftType, setDraftType] = useState(l.type_logement ?? '')
+  const [draftAdresse, setDraftAdresse] = useState(l.adresse)
+  const [draftTelephone, setDraftTelephone] = useState(l.telephone ?? '')
+  const [draftPays, setDraftPays] = useState(l.pays ?? 'FR')
+  const [draftNumeroAl, setDraftNumeroAl] = useState(l.numero_al ?? '')
+  // Infos pratiques (horaires, wifi, code d'accès)
+  const [draftHeureArrivee, setDraftHeureArrivee] = useState(l.heure_arrivee ?? '')
+  const [draftHeureDepart, setDraftHeureDepart] = useState(l.heure_depart ?? '')
+  const [draftWifiNom, setDraftWifiNom] = useState(l.wifi_nom ?? '')
+  const [draftWifiMdp, setDraftWifiMdp] = useState(l.wifi_mdp ?? '')
+  const [draftCodeAcces, setDraftCodeAcces] = useState(l.code_acces ?? '')
+  // Contacts utiles
+  const [draftUrgenceNom, setDraftUrgenceNom] = useState(l.contact_urgence_nom ?? '')
+  const [draftUrgenceTel, setDraftUrgenceTel] = useState(l.contact_urgence_tel ?? '')
+  const [draftMenageNom, setDraftMenageNom] = useState(l.contact_menage_nom ?? '')
+  const [draftMenageTel, setDraftMenageTel] = useState(l.contact_menage_tel ?? '')
 
   // Modale Nouveau séjour rapide
   const [showQuickSejour, setShowQuickSejour] = useState(false)
@@ -265,6 +285,35 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
       proprietaire_email: draftPropEmail || null,
       proprietaire_telephone: draftPropTel || null,
       honoraires_pct: draftHonoraires,
+    })
+  }
+  async function saveInfosGenerales() {
+    if (!draftNom.trim()) return { error: 'Le nom du logement est requis.' }
+    if (!draftAdresse.trim()) return { error: "L'adresse est requise." }
+    return updateLogement(l.id, {
+      nom: draftNom.trim(),
+      type_logement: draftType || null,
+      adresse: draftAdresse.trim(),
+      telephone: draftTelephone,
+      pays: draftPays,
+      numero_al: draftPays === 'PT' ? (draftNumeroAl || null) : null,
+    })
+  }
+  async function saveInfosPratiques() {
+    return updateLogement(l.id, {
+      heure_arrivee: draftHeureArrivee || undefined,
+      heure_depart: draftHeureDepart || undefined,
+      wifi_nom: draftWifiNom,
+      wifi_mdp: draftWifiMdp,
+      code_acces: draftCodeAcces,
+    })
+  }
+  async function saveContacts() {
+    return updateLogement(l.id, {
+      contact_urgence_nom: draftUrgenceNom || null,
+      contact_urgence_tel: draftUrgenceTel || null,
+      contact_menage_nom: draftMenageNom || null,
+      contact_menage_tel: draftMenageTel || null,
     })
   }
 
@@ -569,14 +618,20 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
       {/* Infos pratiques + Contacts utiles */}
       <div style={s.twoColumns}>
         {/* Infos pratiques */}
-        {(l.heure_arrivee || l.heure_depart || l.code_acces || l.wifi_nom) && (
-          <div style={s.section}>
-            <div style={s.sectionHeader}>
-              <h3 style={s.sectionTitle}>
-                <Sparkle size={15} weight="fill" />
-                Infos pratiques
-              </h3>
-            </div>
+        <EditableCard
+          title="Infos pratiques"
+          icon={<Sparkle size={15} weight="fill" />}
+          onSave={saveInfosPratiques}
+          onCancel={() => {
+            setDraftHeureArrivee(l.heure_arrivee ?? '')
+            setDraftHeureDepart(l.heure_depart ?? '')
+            setDraftWifiNom(l.wifi_nom ?? '')
+            setDraftWifiMdp(l.wifi_mdp ?? '')
+            setDraftCodeAcces(l.code_acces ?? '')
+          }}
+          hasValue={!!(l.heure_arrivee || l.heure_depart || l.code_acces || l.wifi_nom)}
+          emptyView={<p style={s.emptyHint}>Horaires, wifi, code d&apos;accès… Cliquez sur Modifier pour les renseigner.</p>}
+          view={
             <div style={s.chipsRow}>
               {(l.heure_arrivee || l.heure_depart) && (
                 <div style={s.infoChip}>
@@ -610,18 +665,47 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                 />
               )}
             </div>
-          </div>
-        )}
+          }
+          edit={
+            <div style={s.editGrid}>
+              <label style={s.editLabel}>
+                <span>Heure d&apos;arrivée</span>
+                <input style={s.editInput} type="time" value={draftHeureArrivee} onChange={e => setDraftHeureArrivee(e.target.value)} />
+              </label>
+              <label style={s.editLabel}>
+                <span>Heure de départ</span>
+                <input style={s.editInput} type="time" value={draftHeureDepart} onChange={e => setDraftHeureDepart(e.target.value)} />
+              </label>
+              <label style={s.editLabel}>
+                <span>Nom du wifi</span>
+                <input style={s.editInput} type="text" value={draftWifiNom} onChange={e => setDraftWifiNom(e.target.value)} placeholder="MaBox-5G" />
+              </label>
+              <label style={s.editLabel}>
+                <span>Mot de passe wifi</span>
+                <input style={s.editInput} type="text" value={draftWifiMdp} onChange={e => setDraftWifiMdp(e.target.value)} placeholder="••••••••" />
+              </label>
+              <label style={s.editLabel}>
+                <span>Code d&apos;accès (boîte à clés…)</span>
+                <input style={s.editInput} type="text" value={draftCodeAcces} onChange={e => setDraftCodeAcces(e.target.value)} placeholder="1234A" />
+              </label>
+            </div>
+          }
+        />
 
         {/* Contacts utiles */}
-        {(l.contact_urgence_nom || l.contact_menage_nom) && (
-          <div style={s.section}>
-            <div style={s.sectionHeader}>
-              <h3 style={s.sectionTitle}>
-                <Wrench size={15} weight="fill" />
-                Contacts utiles
-              </h3>
-            </div>
+        <EditableCard
+          title="Contacts utiles"
+          icon={<Wrench size={15} weight="fill" />}
+          onSave={saveContacts}
+          onCancel={() => {
+            setDraftUrgenceNom(l.contact_urgence_nom ?? '')
+            setDraftUrgenceTel(l.contact_urgence_tel ?? '')
+            setDraftMenageNom(l.contact_menage_nom ?? '')
+            setDraftMenageTel(l.contact_menage_tel ?? '')
+          }}
+          hasValue={!!(l.contact_urgence_nom || l.contact_menage_nom)}
+          emptyView={<p style={s.emptyHint}>Contact d&apos;urgence, personne de ménage… Cliquez sur Modifier pour les ajouter.</p>}
+          view={
             <div style={s.contactsList}>
               {l.contact_urgence_nom && (
                 <div style={s.contactRow}>
@@ -650,12 +734,108 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                 </div>
               )}
             </div>
-          </div>
-        )}
+          }
+          edit={
+            <div style={s.editGrid}>
+              <label style={s.editLabel}>
+                <span>Contact d&apos;urgence — nom</span>
+                <input style={s.editInput} type="text" value={draftUrgenceNom} onChange={e => setDraftUrgenceNom(e.target.value)} placeholder="Marie Dupont" />
+              </label>
+              <label style={s.editLabel}>
+                <span>Contact d&apos;urgence — téléphone</span>
+                <input style={s.editInput} type="tel" value={draftUrgenceTel} onChange={e => setDraftUrgenceTel(e.target.value)} placeholder="06 00 00 00 00" />
+              </label>
+              <label style={s.editLabel}>
+                <span>Ménage — nom</span>
+                <input style={s.editInput} type="text" value={draftMenageNom} onChange={e => setDraftMenageNom(e.target.value)} placeholder="Société / personne" />
+              </label>
+              <label style={s.editLabel}>
+                <span>Ménage — téléphone</span>
+                <input style={s.editInput} type="tel" value={draftMenageTel} onChange={e => setDraftMenageTel(e.target.value)} placeholder="06 00 00 00 00" />
+              </label>
+            </div>
+          }
+        />
       </div>
 
-      {/* Conformité + Tarifs */}
+      {/* Infos générales + Conformité + Tarifs */}
       <div style={s.twoColumns}>
+        {/* Informations générales (nom, type, adresse, téléphone, pays) */}
+        <EditableCard
+          title="Informations générales"
+          icon={<House size={15} weight="fill" />}
+          onSave={saveInfosGenerales}
+          onCancel={() => {
+            setDraftNom(l.nom)
+            setDraftType(l.type_logement ?? '')
+            setDraftAdresse(l.adresse)
+            setDraftTelephone(l.telephone ?? '')
+            setDraftPays(l.pays ?? 'FR')
+            setDraftNumeroAl(l.numero_al ?? '')
+          }}
+          view={
+            <div style={s.detailRows}>
+              <div style={s.detailRow}><span style={s.detailKey}>Nom</span><span style={s.detailVal}>{l.nom}</span></div>
+              {l.type_logement && (
+                <div style={s.detailRow}><span style={s.detailKey}>Type</span><span style={s.detailVal}>{TYPE_LABELS[l.type_logement] ?? l.type_logement}</span></div>
+              )}
+              <div style={s.detailRow}><span style={s.detailKey}>Adresse</span><span style={s.detailVal}>{l.adresse}</span></div>
+              {l.telephone && (
+                <div style={s.detailRow}><span style={s.detailKey}>Téléphone</span><span style={s.detailVal}>{l.telephone}</span></div>
+              )}
+              <div style={s.detailRow}>
+                <span style={s.detailKey}>Pays</span>
+                <span style={s.detailVal}>{(l.pays ?? 'FR') === 'PT' ? '🇵🇹 Portugal' : '🇫🇷 France'}</span>
+              </div>
+              {l.pays === 'PT' && l.numero_al && (
+                <div style={s.detailRow}><span style={s.detailKey}>N° Alojamento Local</span><span style={s.detailVal}>{l.numero_al}</span></div>
+              )}
+            </div>
+          }
+          edit={
+            <div style={s.editGrid}>
+              <label style={s.editLabel}>
+                <span>Nom du logement</span>
+                <input style={s.editInput} type="text" value={draftNom} onChange={e => setDraftNom(e.target.value)} />
+              </label>
+              <label style={s.editLabel}>
+                <span>Type</span>
+                <select style={s.editInput} value={draftType} onChange={e => setDraftType(e.target.value)}>
+                  <option value="">Non renseigné</option>
+                  {Object.entries(TYPE_LABELS).map(([slug, label]) => (
+                    <option key={slug} value={slug}>{label}</option>
+                  ))}
+                </select>
+              </label>
+              <label style={s.editLabel}>
+                <span>Adresse complète</span>
+                <input style={s.editInput} type="text" value={draftAdresse} onChange={e => setDraftAdresse(e.target.value)} />
+              </label>
+              <label style={s.editLabel}>
+                <span>Téléphone du logement</span>
+                <input style={s.editInput} type="tel" value={draftTelephone} onChange={e => setDraftTelephone(e.target.value)} placeholder="06 00 00 00 00" />
+              </label>
+              <label style={s.editLabel}>
+                <span>Pays</span>
+                <select style={s.editInput} value={draftPays} onChange={e => setDraftPays(e.target.value)}>
+                  <option value="FR">🇫🇷 France</option>
+                  <option value="PT">🇵🇹 Portugal</option>
+                </select>
+              </label>
+              {draftPays === 'PT' && (
+                <label style={s.editLabel}>
+                  <span>N° Alojamento Local</span>
+                  <input style={s.editInput} type="text" value={draftNumeroAl} onChange={e => setDraftNumeroAl(e.target.value)} placeholder="12345/AL" />
+                </label>
+              )}
+              <p style={{ ...s.emptyHint, gridColumn: '1 / -1', margin: 0 }}>
+                Si vous renommez le logement, tout l&apos;historique (séjours, contrats,
+                déclarations, revenus) suit automatiquement.
+              </p>
+            </div>
+          }
+        />
+
         {/* Caractéristiques (édition inline des nombres) */}
         <EditableCard
           title="Caractéristiques & conformité"
