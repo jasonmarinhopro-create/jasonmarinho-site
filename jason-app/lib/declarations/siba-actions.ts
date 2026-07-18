@@ -48,6 +48,14 @@ export interface SibaContext {
   }
   dateArrivee: string
   dateDepart: string | null
+  /** Groupe déclaré au check-in : chaque personne part individuellement à SIBA */
+  companions: Array<{
+    prenom: string
+    nom: string
+    dateNaissance: string | null
+    idNumero: string | null
+    sibaSentAt: string | null
+  }>
 }
 
 function docTypeToIdType(t: SibaDocType): string {
@@ -147,12 +155,31 @@ export async function getSibaContext(declarationId: string): Promise<SibaContext
     dateDepart = c?.date_depart ?? null
   }
 
+  // Accompagnants déclarés via le check-in en ligne (groupe)
+  let companions: SibaContext['companions'] = []
+  if (decl.voyageur_id) {
+    const { data: comps } = await supabase
+      .from('checkin_companions')
+      .select('prenom, nom, date_naissance, id_numero, siba_sent_at')
+      .eq('user_id', user.id)
+      .eq('voyageur_id', decl.voyageur_id)
+      .order('created_at', { ascending: true })
+    companions = (comps ?? []).map(c => ({
+      prenom: c.prenom,
+      nom: c.nom,
+      dateNaissance: c.date_naissance ?? null,
+      idNumero: c.id_numero ?? null,
+      sibaSentAt: c.siba_sent_at ?? null,
+    }))
+  }
+
   return {
     declarationId: decl.id,
     logement,
     voyageur,
     dateArrivee: decl.date_arrivee,
     dateDepart,
+    companions,
   }
 }
 
@@ -299,7 +326,12 @@ export async function sendSibaDeclaration(
 
   const result = await submitToSiba(unit, sibaGuest, fileNumber)
   if (!result.ok) {
-    return { error: `SIBA a refusé l'envoi (code ${result.code}) : ${result.errorMessage}` }
+    // Code 60 = authentification Unidade Hoteleira refusée → le problème
+    // vient des identifiants, pas du voyageur. On guide la correction.
+    const hint = result.code === '60'
+      ? ' Le trio Unidade Hoteleira / n° établissement / chave n\'est pas reconnu par SIBA. Dans la carte « Déclarations SIBA » du logement, vérifie : (1) le n° d\'établissement exact — essaie « 00 » si « 0 » échoue ; (2) que l\'accès « Web Service » est bien activé sur ton compte siba.ssi.gov.pt (la chave de ativação n\'authentifie le Web Service qu\'une fois cette option activée) ; (3) les identifiants recopiés sans espaces.'
+      : ''
+    return { error: `SIBA a refusé l'envoi (code ${result.code}) : ${result.errorMessage}.${hint}` }
   }
 
   // ── Succès : marque la déclaration + enrichit la fiche voyageur ──────────

@@ -197,6 +197,36 @@ export default function SibaSendModal({ declarationId, onClose, onSent }: Props)
               <Field label="Date d'arrivée *" type="date" value={guest.dateEntree} onChange={v => setGuest(g => ({ ...g, dateEntree: v }))} />
               <Field label="Date de départ" type="date" value={guest.dateSortie ?? ''} onChange={v => setGuest(g => ({ ...g, dateSortie: v || null }))} />
             </div>
+
+            {/* Groupe déclaré au check-in : SIBA exige UN boletim PAR personne.
+                Ce formulaire n'envoie que le voyageur principal ; les
+                accompagnants complets partent automatiquement (siba-auto). */}
+            {ctx && ctx.companions.length > 0 && (
+              <div style={s.groupBox}>
+                <div style={s.groupTitle}>
+                  Groupe déclaré au check-in · {ctx.companions.length + 1} voyageur{ctx.companions.length > 0 ? 's' : ''}
+                </div>
+                <div style={s.groupHint}>
+                  SIBA exige un boletim par personne. Ce formulaire envoie celui de{' '}
+                  <strong>{ctx.voyageur.prenom}</strong> ; les accompagnants ci-dessous partent
+                  automatiquement dès que leur fiche est complète (document + date de naissance).
+                </div>
+                {ctx.companions.map((c, i) => {
+                  const complete = !!(c.idNumero && c.dateNaissance)
+                  return (
+                    <div key={i} style={s.groupRow}>
+                      <span style={s.groupName}>{c.prenom} {c.nom}</span>
+                      {c.sibaSentAt
+                        ? <span style={{ ...s.groupStatus, color: 'var(--success-1)' }}>✓ Envoyé à SIBA</span>
+                        : complete
+                          ? <span style={{ ...s.groupStatus, color: 'var(--accent-text)' }}>Prêt · envoi auto</span>
+                          : <span style={{ ...s.groupStatus, color: 'var(--warning)' }}>Fiche incomplète (via son lien check-in)</span>}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+
             {error && <p style={s.errorText}>{error}</p>}
             <div style={s.footer}>
               {!ctx?.logement?.configured && (
@@ -284,6 +314,20 @@ const s: Record<string, React.CSSProperties> = {
     outline: 'none', boxSizing: 'border-box',
   },
   errorText: { fontSize: '12.5px', color: 'var(--danger)', margin: '2px 0 0', lineHeight: 1.5 },
+  groupBox: {
+    background: 'var(--bg)', border: '1px solid var(--border-2)',
+    borderRadius: '10px', padding: '12px 14px',
+    display: 'flex', flexDirection: 'column' as const, gap: '8px',
+  },
+  groupTitle: { fontSize: '12px', fontWeight: 700, color: 'var(--text)' },
+  groupHint: { fontSize: '11.5px', color: 'var(--text-muted)', lineHeight: 1.55 },
+  groupRow: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px',
+    padding: '7px 10px', borderRadius: '8px',
+    background: 'var(--surface)', border: '1px solid var(--border-2)',
+  },
+  groupName: { fontSize: '12.5px', fontWeight: 600, color: 'var(--text)' },
+  groupStatus: { fontSize: '11px', fontWeight: 600, textAlign: 'right' as const },
   footer: { display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '6px' },
   primaryBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
