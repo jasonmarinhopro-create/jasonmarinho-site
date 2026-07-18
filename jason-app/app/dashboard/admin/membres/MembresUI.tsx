@@ -7,7 +7,7 @@ import {
   GraduationCap, Lightning, Users, X, Heart,
   House, BookmarkSimple, PencilSimple, Flag, Lightbulb,
   CalendarBlank, SpinnerGap, UsersFour, ArrowSquareOut,
-  Crown, Star, TextAa, CurrencyEur, DownloadSimple, Briefcase,
+  Crown, Star, TextAa, CurrencyEur, DownloadSimple, Briefcase, Camera, Sparkle,
 } from '@phosphor-icons/react/dist/ssr'
 import {
   changeUserPlan, deleteUser, deleteAllBots,
@@ -24,7 +24,9 @@ interface UserFormation {
 interface Member {
   id: string; email: string; full_name: string | null
   role: string; driing_status: string; plan: string
-  is_contributor: boolean; is_investor: boolean | null; created_at: string
+  is_contributor: boolean; is_investor: boolean | null
+  is_photographer?: boolean; is_cleaner?: boolean
+  created_at: string
   user_formations: UserFormation[]
 }
 
@@ -414,6 +416,12 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
         {m.is_investor && (
           <span style={s.investorChip}><Briefcase size={10} weight="fill" /> Investisseur</span>
         )}
+        {m.is_photographer && (
+          <span style={s.photographerChip}><Camera size={10} weight="fill" /> Photographe</span>
+        )}
+        {m.is_cleaner && (
+          <span style={s.cleanerChip}><Sparkle size={10} weight="fill" /> Ménage</span>
+        )}
         {m.is_contributor && (
           <span style={s.contribChip}><Heart size={10} weight="fill" /> Contributeur</span>
         )}
@@ -423,7 +431,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
             {formations} formation{formations > 1 ? 's' : ''}
           </button>
         )}
-        {formations === 0 && !m.is_contributor && !m.is_investor && (
+        {formations === 0 && !m.is_contributor && !m.is_investor && !m.is_photographer && !m.is_cleaner && (
           <span style={s.emptyChip}>Aucune formation commencée</span>
         )}
       </div>
@@ -915,6 +923,18 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
     background: 'rgba(96,190,255,0.10)', color: '#60BEFF',
     border: '1px solid rgba(96,190,255,0.25)',
+  },
+  photographerChip: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
+    background: 'rgba(192,132,252,0.10)', color: '#C084FC',
+    border: '1px solid rgba(192,132,252,0.25)',
+  },
+  cleanerChip: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
+    background: 'rgba(16,185,129,0.10)', color: 'var(--success-1)',
+    border: '1px solid rgba(16,185,129,0.25)',
   },
   formChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
