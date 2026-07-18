@@ -9,7 +9,7 @@ import {
   FacebookLogo, CaretDown, ChartBar, CalendarBlank, Heart,
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
-  ChartLineUp, HouseLine,
+  ChartLineUp, HouseLine, Briefcase,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
@@ -83,6 +83,7 @@ const adminMain = [
   { href: '/dashboard/admin/qg',          label: 'QG demandes',     Icon: ShieldCheck },
   { href: '/dashboard/admin/photographes', label: 'Photographes',   Icon: Camera },
   { href: '/dashboard/admin/menage',       label: 'Ménage',          Icon: Sparkle },
+  { href: '/dashboard/admin/investisseurs', label: 'Investisseurs',  Icon: Briefcase },
 ]
 
 const adminContent = [

@@ -296,6 +296,25 @@ export async function toggleContributor(userId: string, value: boolean) {
   return { success: true }
 }
 
+// Marque / démarque un membre comme investisseur depuis l'admin.
+// (Sinon, seuls les comptes créés via la carte « Investisseur » à
+// l'inscription portent le flag — impossible de rattraper l'existant.)
+export async function toggleInvestor(userId: string, value: boolean) {
+  const { error } = await getAdminClient()
+  if (error) return { error }
+
+  const { error: updateError } = await getServiceClient()
+    .from('profiles')
+    .update({ is_investor: value })
+    .eq('id', userId)
+
+  if (updateError) return { error: updateError.message }
+
+  invalidateProfileCache(userId)
+  revalidatePath('/dashboard/admin/membres')
+  return { success: true }
+}
+
 export async function deleteUser(userId: string) {
   const { error, supabase: _ } = await getAdminClient()
   if (error) return { error }

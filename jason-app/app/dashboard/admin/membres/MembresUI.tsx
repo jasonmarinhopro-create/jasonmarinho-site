@@ -7,11 +7,11 @@ import {
   GraduationCap, Lightning, Users, X, Heart,
   House, BookmarkSimple, PencilSimple, Flag, Lightbulb,
   CalendarBlank, SpinnerGap, UsersFour, ArrowSquareOut,
-  Crown, Star, TextAa, CurrencyEur, DownloadSimple, Briefcase,
+  Crown, Star, TextAa, CurrencyEur, DownloadSimple, Briefcase, Camera, Sparkle,
 } from '@phosphor-icons/react/dist/ssr'
 import {
   changeUserPlan, deleteUser, deleteAllBots,
-  getMemberDetails, toggleContributor, updateMemberName,
+  getMemberDetails, toggleContributor, toggleInvestor, updateMemberName,
 } from '../actions'
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -24,7 +24,9 @@ interface UserFormation {
 interface Member {
   id: string; email: string; full_name: string | null
   role: string; driing_status: string; plan: string
-  is_contributor: boolean; is_investor: boolean | null; created_at: string
+  is_contributor: boolean; is_investor: boolean | null
+  is_photographer?: boolean; is_cleaner?: boolean
+  created_at: string
   user_formations: UserFormation[]
 }
 
@@ -286,6 +288,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
               onOpenPanel={openPanel}
               onChangePlan={(plan) => action(m.id, () => changeUserPlan(m.id, plan), 'Plan mis à jour')}
               onToggleContrib={() => action(m.id, () => toggleContributor(m.id, !m.is_contributor), m.is_contributor ? 'Contributeur retiré' : 'Contributeur activé')}
+              onToggleInvestor={() => action(m.id, () => toggleInvestor(m.id, !m.is_investor), m.is_investor ? 'Investisseur retiré' : 'Investisseur activé')}
               onDelete={() => {
                 if (!confirm(`Supprimer définitivement ${m.full_name || m.email} ?`)) return
                 action(m.id, () => deleteUser(m.id), 'Supprimé')
@@ -316,11 +319,12 @@ interface MemberCardProps {
   onOpenPanel: (m: Member) => void
   onChangePlan: (plan: string) => void
   onToggleContrib: () => void
+  onToggleInvestor: () => void
   onDelete: () => void
   onSaveName: (name: string) => void
 }
 
-function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan, onToggleContrib, onDelete, onSaveName }: MemberCardProps) {
+function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan, onToggleContrib, onToggleInvestor, onDelete, onSaveName }: MemberCardProps) {
   const pal      = palette(m.full_name || m.email)
   const ini      = initials(m.full_name, m.email)
   const isAdmin  = m.role === 'admin'
@@ -412,6 +416,12 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
         {m.is_investor && (
           <span style={s.investorChip}><Briefcase size={10} weight="fill" /> Investisseur</span>
         )}
+        {m.is_photographer && (
+          <span style={s.photographerChip}><Camera size={10} weight="fill" /> Photographe</span>
+        )}
+        {m.is_cleaner && (
+          <span style={s.cleanerChip}><Sparkle size={10} weight="fill" /> Ménage</span>
+        )}
         {m.is_contributor && (
           <span style={s.contribChip}><Heart size={10} weight="fill" /> Contributeur</span>
         )}
@@ -421,7 +431,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
             {formations} formation{formations > 1 ? 's' : ''}
           </button>
         )}
-        {formations === 0 && !m.is_contributor && !m.is_investor && (
+        {formations === 0 && !m.is_contributor && !m.is_investor && !m.is_photographer && !m.is_cleaner && (
           <span style={s.emptyChip}>Aucune formation commencée</span>
         )}
       </div>
@@ -454,6 +464,24 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
                   </option>
                 ))}
               </select>
+            )}
+
+            {/* Investor toggle */}
+            {!isAdmin && (
+              <button
+                disabled={isPending}
+                onClick={onToggleInvestor}
+                style={{
+                  ...s.actionBtn,
+                  ...(m.is_investor
+                    ? { background: 'rgba(96,190,255,0.1)', borderColor: 'rgba(96,190,255,0.28)', color: '#60BEFF' }
+                    : {}
+                  ),
+                }}
+                title={m.is_investor ? 'Retirer le profil investisseur' : 'Marquer comme investisseur'}
+              >
+                <Briefcase size={13} weight={m.is_investor ? 'fill' : 'regular'} />
+              </button>
             )}
 
             {/* Contributor toggle */}
@@ -895,6 +923,18 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
     background: 'rgba(96,190,255,0.10)', color: '#60BEFF',
     border: '1px solid rgba(96,190,255,0.25)',
+  },
+  photographerChip: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
+    background: 'rgba(192,132,252,0.10)', color: '#C084FC',
+    border: '1px solid rgba(192,132,252,0.25)',
+  },
+  cleanerChip: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
+    background: 'rgba(16,185,129,0.10)', color: 'var(--success-1)',
+    border: '1px solid rgba(16,185,129,0.25)',
   },
   formChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
