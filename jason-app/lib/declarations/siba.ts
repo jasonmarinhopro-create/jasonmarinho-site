@@ -129,6 +129,9 @@ export function buildMovimentoBalXml(unit: SibaUnit, guest: SibaGuest, fileNumbe
         `<Codigo_Postal>${e(trunc(unit.codigoPostal, 4))}</Codigo_Postal>` +
         `<Zona_Postal>${e(trunc(unit.zonaPostal, 3))}</Zona_Postal>` +
         `<Telefone>${e(fitPhone(unit.telefone))}</Telefone>` +
+        // Fax : élément OBLIGATOIRE dans bal.xsd (pas de minOccurs=0) même si
+        // la valeur importe peu — on reprend le téléphone, comme le portail SIBA
+        `<Fax>${e(fitPhone(unit.telefone))}</Fax>` +
         `<Nome_Contacto>${e(trunc(unit.nomeContacto, 40))}</Nome_Contacto>` +
         `<Email_Contacto>${e(trunc(unit.emailContacto, 140))}</Email_Contacto>` +
       '</Unidade_Hoteleira>' +
