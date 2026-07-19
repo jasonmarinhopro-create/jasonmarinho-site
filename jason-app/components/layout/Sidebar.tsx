@@ -34,6 +34,11 @@ type NavItemDef = {
   icon: React.ElementType
   // Affiche un point pulsant rouge (utilisé pour Actualités quand il y a du neuf)
   pulseIf?: 'hasNewActualites'
+  // Préfixes de pathname qui doivent aussi allumer cet item, en plus de `href`.
+  // Nécessaire pour les hubs à onglets/cartes dont le href pointe sur UNE
+  // sous-page (ex: Mes finances → /finances/revenus) : sans ça, l'item
+  // s'éteint dès qu'on va sur un onglet frère (Encaissements, Performances…).
+  activeMatch?: string[]
 }
 const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
   {
@@ -56,7 +61,7 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
       // PERF : pointe directement sur l'onglet par defaut (revenus) au lieu
       // de /dashboard/finances qui redirige serveur → 2 loads visible. Meme
       // trick pour Apprendre + Entre Hotes ci-dessous.
-      { href: '/dashboard/finances/revenus', label: 'Mes finances',      icon: ChartBar },
+      { href: '/dashboard/finances/revenus', label: 'Mes finances',      icon: ChartBar, activeMatch: ['/dashboard/finances'] },
       { href: '/dashboard/securite',    label: 'Sécurité voyageur', icon: ShieldCheck },
     ],
   },
@@ -66,11 +71,16 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
       // Outils & calculs (Étape 5) : hub avec 4 cartes vers les outils
       // utilitaires (Simulateurs, Calculateurs, Audit GBP, QR & Affiches).
       // Les URLs individuelles restent accessibles directement.
-      { href: '/dashboard/outils', label: 'Outils & calculs', icon: Calculator },
+      {
+        href: '/dashboard/outils', label: 'Outils & calculs', icon: Calculator,
+        // Les 4 outils vivent en URL top-level (pas sous /dashboard/outils/*),
+        // cf. commentaire dans outils/page.tsx : liens directs conservés.
+        activeMatch: ['/dashboard/outils', '/dashboard/simulateurs', '/dashboard/calculateurs', '/dashboard/audit-gbp', '/dashboard/outils-impression'],
+      },
       // Apprendre (Étape 6) : fusion à onglets Formations + Guide LCD.
-      { href: '/dashboard/apprendre/formations', label: 'Apprendre',   icon: GraduationCap },
+      { href: '/dashboard/apprendre/formations', label: 'Apprendre',   icon: GraduationCap, activeMatch: ['/dashboard/apprendre'] },
       // Entre Hôtes (Étape 6) : fusion à onglets Forum + Groupes FB + Écosystème.
-      { href: '/dashboard/entre-hotes/forum', label: 'Entre Hôtes',   icon: ChatsCircle },
+      { href: '/dashboard/entre-hotes/forum', label: 'Entre Hôtes',   icon: ChatsCircle, activeMatch: ['/dashboard/entre-hotes'] },
     ],
   },
 ]
@@ -241,12 +251,14 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     '/dashboard/investir/simulateurs',
   ], [])
 
-  function NavItem({ href, label, Icon, adminColor, notifDot }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean; notifDot?: boolean }) {
+  function NavItem({ href, label, Icon, adminColor, notifDot, activeMatch }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean; notifDot?: boolean; activeMatch?: string[] }) {
     // Active state :
     // - /dashboard exact (sinon toutes les pages seraient "active")
     // - Si href contient une querystring (ex Mes reservations = /calendrier?view=list),
     //   on compare pathname + querystring
-    // - Sinon match exact OU match prefix avec regle "match le plus profond gagne"
+    // - Sinon match exact OU match prefix (sur `href`, ou sur chaque préfixe
+    //   `activeMatch` fourni pour les hubs à onglets/cartes) avec regle
+    //   "match le plus profond gagne"
     let active: boolean
     if (href === '/dashboard') {
       active = pathname === '/dashboard'
@@ -262,22 +274,22 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
       const onCalendrierList = pathname === '/dashboard/calendrier' && searchParams?.get('view') === 'list'
       if (href === '/dashboard/calendrier' && onCalendrierList) {
         active = false
-      } else if (pathname === href) {
-        // Match exact : toujours actif
-        active = true
-      } else if (pathname.startsWith(href + '/')) {
-        // Match prefix : actif SEULEMENT si aucun autre href de la sidebar
-        // ne fait un match plus profond. Ex : sur /dashboard/admin/photographes,
-        // /dashboard/admin fait un prefix match mais /dashboard/admin/photographes
-        // fait un match exact plus profond → /dashboard/admin n'est PAS actif.
-        const hasDeeperMatch = allHrefs.some(other =>
-          other !== href
-          && other.startsWith(href + '/')
-          && (pathname === other || pathname.startsWith(other + '/')),
-        )
-        active = !hasDeeperMatch
       } else {
-        active = false
+        const prefixes = activeMatch ?? [href]
+        active = prefixes.some(p => {
+          if (pathname === p) return true
+          if (!pathname.startsWith(p + '/')) return false
+          // Match prefix : actif SEULEMENT si aucun autre href de la sidebar
+          // ne fait un match plus profond. Ex : sur /dashboard/admin/photographes,
+          // /dashboard/admin fait un prefix match mais /dashboard/admin/photographes
+          // fait un match exact plus profond → /dashboard/admin n'est PAS actif.
+          const hasDeeperMatch = allHrefs.some(other =>
+            other !== href
+            && other.startsWith(p + '/')
+            && (pathname === other || pathname.startsWith(other + '/')),
+          )
+          return !hasDeeperMatch
+        })
       }
     }
     return (
@@ -437,13 +449,14 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                     <div style={styles.sectionLabel}>{group.label}</div>
                   )}
                   <div style={{ ...styles.navSection, ...(i === 0 ? { marginBottom: '4px' } : {}) }}>
-                    {group.items.map(({ href, label, icon: Icon, pulseIf }) => (
+                    {group.items.map(({ href, label, icon: Icon, pulseIf, activeMatch }) => (
                       <NavItem
                         key={href}
                         href={href}
                         label={label}
                         Icon={Icon}
                         notifDot={pulseIf === 'hasNewActualites' && hasNewActualites}
+                        activeMatch={activeMatch}
                       />
                     ))}
                   </div>
