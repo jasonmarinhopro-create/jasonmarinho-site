@@ -136,15 +136,22 @@
       '@media(max-width:1080px){.n-mega-3{min-width:0;flex-direction:column;gap:14px}}',
 
       /* Driing card redesignée */
-      '.n-driing-card{display:flex;flex-direction:column;gap:10px;background:linear-gradient(145deg,rgba(255,213,107,.09) 0%,rgba(255,213,107,.04) 100%);border:1px solid rgba(255,213,107,.22);border-radius:12px;padding:18px 16px;text-decoration:none!important;color:inherit;transition:background .2s,border-color .2s;min-width:210px;align-self:stretch}',
-      '.n-driing-card:hover{background:linear-gradient(145deg,rgba(255,213,107,.16) 0%,rgba(255,213,107,.08) 100%)!important;border-color:rgba(255,213,107,.42)!important}',
+      '.n-driing-card{display:flex;flex-direction:column;gap:10px;background:linear-gradient(145deg,rgba(255,213,107,.09) 0%,rgba(255,213,107,.04) 100%);border:1px solid rgba(255,213,107,.22);border-radius:12px;padding:18px 16px;color:inherit;transition:background .2s,border-color .2s;min-width:220px;align-self:stretch}',
+      '.n-driing-card:hover{background:linear-gradient(145deg,rgba(255,213,107,.16) 0%,rgba(255,213,107,.08) 100%);border-color:rgba(255,213,107,.42)}',
       '.n-driing-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.18);border-radius:20px;padding:3px 9px;width:fit-content}',
       '.n-driing-dot{width:5px;height:5px;border-radius:50%;background:var(--y);flex-shrink:0;box-shadow:0 0 7px rgba(255,213,107,.7)}',
       '.n-driing-badge-txt{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,213,107,.7)}',
       '.n-driing-name{font-family:\'Fraunces\',serif;font-size:22px;font-weight:400;color:#fff;letter-spacing:-.3px;line-height:1.15}',
       '.n-driing-sub{font-size:12px;color:rgba(255,255,255,.45);line-height:1.55}',
-      '.n-driing-cta{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--y);padding:7px 11px;background:rgba(255,213,107,.1);border-radius:7px;margin-top:2px;transition:background .2s;width:fit-content}',
-      '.n-driing-card:hover .n-driing-cta{background:rgba(255,213,107,.18)}',
+      '.n-driing-actions{display:flex;flex-direction:column;gap:6px;margin-top:2px}',
+      '.n-driing-card .n-driing-cta{display:inline-flex;align-items:center;gap:7px;justify-content:center;font-size:12.5px;font-weight:600;padding:9px 12px;border-radius:8px;text-decoration:none!important;transition:all .2s;white-space:nowrap}',
+      '.n-driing-card .n-driing-cta i{font-size:12px;flex-shrink:0}',
+      '.n-driing-card .n-driing-cta-primary,.n-driing-card .n-driing-cta-primary:hover{background:var(--y);color:var(--gd)}',
+      '.n-driing-card .n-driing-cta-primary:hover{background:#ffe08f}',
+      '.n-driing-card .n-driing-cta-primary i{color:var(--gd)}',
+      '.n-driing-card .n-driing-cta-secondary{background:transparent;color:rgba(255,213,107,.75);border:1px solid rgba(255,213,107,.20)}',
+      '.n-driing-card .n-driing-cta-secondary:hover{color:var(--y);border-color:rgba(255,213,107,.4);background:rgba(255,213,107,.05)}',
+      '.n-driing-card .n-driing-cta-secondary i{color:inherit}',
 
       /* Right CTAs */
       '.n-right{display:flex;align-items:center;gap:8px;flex-shrink:0}',
@@ -255,12 +262,15 @@
             + '<a href="/pour-qui/menage"><i class="ph ph-sparkle"></i>Équipes ménage LCD</a>'
             + '<a href="/pour-qui/investisseurs"><i class="ph ph-chart-line-up"></i>Investisseurs LCD</a>'
           + '</div>'
-          + '<a href="/pour-qui/membres-driing" class="n-driing-card">'
+          + '<div class="n-driing-card">'
             + '<div class="n-driing-badge"><div class="n-driing-dot"></div><span class="n-driing-badge-txt">Membres</span></div>'
             + '<div class="n-driing-name">Driing</div>'
             + '<div class="n-driing-sub">Réservation directe sans commission, accédez à vos avantages exclusifs</div>'
-            + '<div class="n-driing-cta">Voir mes avantages <i class="ph ph-arrow-right" style="font-size:11px"></i></div>'
-          + '</a>'
+            + '<div class="n-driing-actions">'
+              + '<a href="/pour-qui/membres-driing" class="n-driing-cta n-driing-cta-primary">Voir mes avantages <i class="ph ph-arrow-right"></i></a>'
+              + '<a href="https://driing.co" target="_blank" rel="noopener" class="n-driing-cta n-driing-cta-secondary">Découvrir Driing <i class="ph ph-arrow-square-out"></i></a>'
+            + '</div>'
+          + '</div>'
         + '</div>'
       + '</li>'
 
