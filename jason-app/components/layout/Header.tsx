@@ -346,8 +346,14 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
         </div>
 
         <div style={styles.right}>
-          {/* Onboarding parcours button */}
-          {showOnboardingBtn && (
+          {/* Onboarding parcours button — hôte uniquement : les parcours
+              (Parcours d'onboarding) couvrent uniquement les étapes hôte
+              (logement, voyageurs, Stripe…), sans équivalent pro/investisseur.
+              `showOnboardingBtn` vient du layout serveur et peut rester figé
+              après une nav client vers un autre espace (router cache) : on
+              regate donc côté client sur `currentSpaceKey`, calculé via
+              usePathname() qui suit chaque navigation. */}
+          {showOnboardingBtn && currentSpaceKey === 'host' && (
             <button
               onClick={() => window.dispatchEvent(new CustomEvent('open-onboarding'))}
               className="theme-toggle"
@@ -380,16 +386,21 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             )
           })()}
 
-          {/* SOS Hôte — accessible depuis n'importe quelle page du dashboard */}
-          <button
-            style={styles.sosBtn}
-            className="dash-sos-btn"
-            aria-label="SOS Hôte — En cas de problème"
-            title="SOS Hôte — En cas de problème"
-            onClick={() => setSosOpen(true)}
-          >
-            <Lifebuoy size={18} weight="regular" />
-          </button>
+          {/* SOS Hôte — hôte uniquement : les 6 scénarios (dégradation,
+              avis injuste, litige plateforme…) sont tous formulés du point
+              de vue d'un hôte qui loue son logement, sans sens pour un
+              photographe/ménage (prestataire) ou un investisseur (pré-achat). */}
+          {currentSpaceKey === 'host' && (
+            <button
+              style={styles.sosBtn}
+              className="dash-sos-btn"
+              aria-label="SOS Hôte — En cas de problème"
+              title="SOS Hôte — En cas de problème"
+              onClick={() => setSosOpen(true)}
+            >
+              <Lifebuoy size={18} weight="regular" />
+            </button>
+          )}
 
           {/* Notifications — cloche unifiée (Alertes app + Nouveautés produit + Forum Entre Hôtes) */}
           {(() => {
