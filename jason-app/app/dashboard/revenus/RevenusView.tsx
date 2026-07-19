@@ -181,6 +181,7 @@ export default function RevenusView({
   const [charges, setCharges]   = useState<ChargeEntry[]>(initialCharges)
   const [showForm, setShowForm] = useState(false)
   const [showChargeForm, setShowChargeForm] = useState(false)
+  const [chargesInfoOpen, setChargesInfoOpen] = useState(false)
   const [showImport, setShowImport] = useState(false)
 
   // Objectif annuel (déplacé tout en haut pour pouvoir l'utiliser dans chartData)
@@ -326,12 +327,16 @@ export default function RevenusView({
 
   // ── Charges stats (pour Phase 2 KPIs et la section dédiée) ──
   const chargesStats = useMemo(() => {
-    let cesMois = 0, cetteAnnee = 0
+    let cesMois = 0, cetteAnnee = 0, deductibleAnnee = 0
     const byCategoryYTD: Record<string, number> = {}
     charges.forEach(c => {
       const d = new Date(c.date_charge)
       if (d.getFullYear() === thisYear) {
         cetteAnnee += c.montant
+        // Seules les charges cochées "déductible" doivent réduire la base
+        // imposable simulée en régime réel — sinon le calcul (et la case à
+        // cocher) n'ont aucun effet réel, ce qui trompe l'hôte.
+        if (c.deductible) deductibleAnnee += c.montant
         if (d.getMonth() === thisMonth) cesMois += c.montant
         byCategoryYTD[c.categorie] = (byCategoryYTD[c.categorie] ?? 0) + c.montant
       }
@@ -339,7 +344,7 @@ export default function RevenusView({
     const byCategorySorted = Object.entries(byCategoryYTD)
       .map(([cat, total]) => ({ cat, total, ...CHARGE_LABEL[cat] }))
       .sort((a, b) => b.total - a.total)
-    return { cesMois, cetteAnnee, byCategorySorted }
+    return { cesMois, cetteAnnee, deductibleAnnee, byCategorySorted }
   }, [charges, thisMonth, thisYear])
 
   // ── Répartition par canal (séjours uniquement) ────────────────────────
@@ -1725,6 +1730,17 @@ export default function RevenusView({
             </h2>
             <p style={{ ...s.cardSub, margin: 0 }}>
               Ménage, énergie, commissions, taxes, assurance, pour calculer ton bénéfice net
+              {' · '}
+              <button
+                onClick={() => setChargesInfoOpen(v => !v)}
+                style={{
+                  background: 'none', border: 'none', padding: 0, margin: 0,
+                  color: 'var(--accent-text)', fontWeight: 600, fontSize: 'inherit',
+                  cursor: 'pointer', textDecoration: 'underline', fontFamily: 'inherit',
+                }}
+              >
+                Qu&apos;est-ce qui est déductible ?
+              </button>
             </p>
           </div>
           <div style={{ display: 'flex', gap: '8px', flexShrink: 0, alignItems: 'center', flexWrap: 'wrap' as const }}>
@@ -1749,6 +1765,84 @@ export default function RevenusView({
             </button>
           </div>
         </div>
+
+        {/* Explication déductibilité — la question n'est pas "quel TYPE de
+            charge" mais "quel RÉGIME fiscal" : en micro-BIC (FR) et Regime
+            Simplificado (PT), l'abattement forfaitaire couvre déjà tout,
+            donc aucune charge réelle ne se déduit en plus. */}
+        {chargesInfoOpen && (
+          <div style={s.chargesInfoBox}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '14px' }}>
+              <Info size={16} weight="fill" style={{ color: 'var(--accent-text)', flexShrink: 0, marginTop: '1px' }} />
+              <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.6, color: 'var(--text-2)' }}>
+                La déductibilité dépend de <strong style={{ color: 'var(--text)' }}>ton régime fiscal</strong>, pas
+                du type de charge. La box internet, le mobilier ou les travaux ne sont « déductibles »
+                que si tu es dans un régime qui déduit les charges réelles — sinon un abattement forfaitaire
+                les couvre déjà.
+              </p>
+            </div>
+
+            <div style={s.chargesInfoGrid} className="charges-info-grid">
+              {/* FRANCE */}
+              <div style={s.chargesInfoCol}>
+                <div style={s.chargesInfoColTitle}>🇫🇷 France</div>
+                <div style={s.chargesInfoRule}>
+                  <span style={{ ...s.chargesInfoTag, background: 'rgba(96,165,250,0.12)', color: '#60a5fa' }}>Micro-BIC (30 / 50 / 71 %)</span>
+                  <p style={s.chargesInfoText}>
+                    L&apos;abattement forfaitaire remplace <strong>toutes</strong> tes charges. Tu ne
+                    déduis rien en plus, quel que soit ce que tu as payé.
+                  </p>
+                </div>
+                <div style={s.chargesInfoRule}>
+                  <span style={{ ...s.chargesInfoTag, background: 'rgba(245,158,11,0.12)', color: '#f59e0b' }}>Régime réel (LMNP)</span>
+                  <p style={s.chargesInfoText}>
+                    Tu déduis tes charges réelles, mais pas toutes de la même façon :
+                  </p>
+                  <ul style={s.chargesInfoList}>
+                    <li><strong>Déductible tout de suite</strong> (l&apos;année du paiement) : ménage, énergie, box internet, assurance, taxe foncière, commissions plateforme, frais bancaires, comptable, petites réparations d&apos;entretien.</li>
+                    <li><strong>À amortir</strong> sur plusieurs années, pas déduit en une fois : mobilier (5 à 10 ans), climatisation, électroménager, travaux d&apos;amélioration ou d&apos;agrandissement, le bien lui-même hors terrain. Utilise la catégorie « Amortissement » et étale le montant.</li>
+                  </ul>
+                  <p style={{ ...s.chargesInfoText, fontStyle: 'italic' }}>
+                    Nuance travaux : une <strong>réparation</strong> (remettre en état) se déduit tout de suite ;
+                    une <strong>amélioration</strong> (ex. installer la clim pour la première fois) s&apos;amortit.
+                  </p>
+                </div>
+              </div>
+
+              {/* PORTUGAL */}
+              <div style={s.chargesInfoCol}>
+                <div style={s.chargesInfoColTitle}>🇵🇹 Portugal</div>
+                <div style={s.chargesInfoRule}>
+                  <span style={{ ...s.chargesInfoTag, background: 'rgba(96,165,250,0.12)', color: '#60a5fa' }}>Regime Simplificado (coef. 0,35)</span>
+                  <p style={s.chargesInfoText}>
+                    Le coefficient remplace <strong>toutes</strong> tes charges réelles. C&apos;est le régime
+                    par défaut de la plupart des Alojamento Local : aucune dépense (box, ménage, mobilier…)
+                    n&apos;a d&apos;effet sur ton impôt.
+                  </p>
+                </div>
+                <div style={s.chargesInfoRule}>
+                  <span style={{ ...s.chargesInfoTag, background: 'rgba(245,158,11,0.12)', color: '#f59e0b' }}>Contabilidade Organizada</span>
+                  <p style={s.chargesInfoText}>
+                    Tu déduis tes charges réelles (nécessite un TOC, comptable agréé) :
+                  </p>
+                  <ul style={s.chargesInfoList}>
+                    <li><strong>Déductible tout de suite</strong> : ménage, énergie, internet, assurance, commissions plateforme, frais bancaires, honoraires du TOC.</li>
+                    <li><strong>À amortir</strong> (« amortização », taux officiels Portaria 1011/2001) : mobilier, équipement, climatisation, travaux d&apos;amélioration, le bien immobilier.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div style={s.chargesInfoTip}>
+              💡 Coche <strong>« Charge déductible »</strong> seulement si tu es en régime réel (FR) ou
+              Contabilidade Organizada (PT). En micro-BIC ou Regime Simplificado, continue quand même à
+              enregistrer tes charges ici pour piloter ta rentabilité réelle — elles n&apos;auront simplement
+              aucun effet sur le calcul d&apos;impôt simulé plus bas, déjà couvert par l&apos;abattement.
+              Cette page reste un outil de suivi, pas une déclaration : vérifie ta situation avec un
+              expert-comptable.
+            </div>
+          </div>
+        )}
 
         {/* Form ajout charge */}
         {showChargeForm && (
@@ -1898,7 +1992,7 @@ export default function RevenusView({
 
       <FiscaliteSection
         annuel={taxEstimateByCountry.reduce((sum, c) => sum + c.brut, 0)}
-        chargesAnnee={chargesStats.cetteAnnee}
+        chargesAnnee={chargesStats.deductibleAnnee}
         country={
           // Choisit le pays dominant : celui avec le plus de revenus déclarables
           // cette année. Fallback FR si pays non couvert ou rien encore.
@@ -1943,6 +2037,7 @@ export default function RevenusView({
           /* Bandeau Brut/Commissions/Net : passage en colonnes empilées */
           .rv-net-banner { grid-template-columns: 1fr !important; gap: 10px !important; padding: 16px 18px !important; }
           .rv-net-banner-arrow { display: none !important; }
+          .charges-info-grid { grid-template-columns: 1fr !important; }
         }
         .fisc-card { transition: border-color 0.15s, background 0.15s; }
         .fisc-card:hover { border-color: rgba(0,76,63,0.5) !important; }
@@ -3178,6 +3273,55 @@ const s: Record<string, React.CSSProperties> = {
   chargesCatPct: {
     fontSize: '10px',
     color: 'var(--text-muted)',
+  },
+
+  // ─── Explication déductibilité (Charges & dépenses) ────────────
+  chargesInfoBox: {
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
+    borderRadius: '14px',
+    padding: '18px 20px',
+    margin: '14px 0',
+  },
+  chargesInfoGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '18px',
+  },
+  chargesInfoCol: {
+    display: 'flex', flexDirection: 'column' as const, gap: '10px',
+  },
+  chargesInfoColTitle: {
+    fontSize: '13.5px', fontWeight: 700,
+    color: 'var(--text)',
+  },
+  chargesInfoRule: {
+    display: 'flex', flexDirection: 'column' as const, gap: '5px',
+  },
+  chargesInfoTag: {
+    alignSelf: 'flex-start',
+    fontSize: '11px', fontWeight: 700,
+    padding: '3px 9px',
+    borderRadius: '100px',
+  },
+  chargesInfoText: {
+    margin: 0,
+    fontSize: '12.5px', lineHeight: 1.6,
+    color: 'var(--text-2)',
+  },
+  chargesInfoList: {
+    margin: '2px 0 0',
+    paddingLeft: '18px',
+    fontSize: '12.5px', lineHeight: 1.65,
+    color: 'var(--text-2)',
+    display: 'flex', flexDirection: 'column' as const, gap: '4px',
+  },
+  chargesInfoTip: {
+    marginTop: '16px',
+    paddingTop: '14px',
+    borderTop: '1px solid var(--border)',
+    fontSize: '12.5px', lineHeight: 1.6,
+    color: 'var(--text-2)',
   },
 
   // ─── Phase 1, Onboarding empty state ──────────────────────────
