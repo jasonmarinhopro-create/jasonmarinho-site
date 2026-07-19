@@ -65,7 +65,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
     supabase.from('chez_nous_replies').select('author_id').gte('created_at', since30d),
     supabase.from('chez_nous_replies').select('id, post_id, author_id, created_at, chez_nous_posts(title, author_id)').order('created_at', { ascending: false }).limit(8),
     supabase.from('chez_nous_posts').select('id, author_id, title, created_at').order('created_at', { ascending: false }).limit(5),
-    supabase.from('logements').select('user_id, adresse'),
+    supabase.from('logements').select('user_id, adresse, pays'),
     supabase.from('profiles').select('id, privacy_show_city'),
   ])
 
@@ -235,7 +235,14 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
     (privacyResult.data ?? []).filter(p => p.privacy_show_city !== false).map(p => p.id),
   )
   const addressesByMember: Record<string, string[]> = {}
-  ;(logementsResult.data ?? []).forEach((l: { user_id: string; adresse: string | null }) => {
+  ;(logementsResult.data ?? []).forEach((l: { user_id: string; adresse: string | null; pays: string | null }) => {
+    // La carte ne couvre QUE la France : detectRegion() matche des mots-clés
+    // français par sous-chaîne (villes, codes postaux courts...), donc un
+    // logement à l'étranger (ex: Portugal) peut matcher une région française
+    // par pure coïncidence si son adresse contient un fragment numérique
+    // ressemblant à un code postal FR. `pays` est nullable en DB, les
+    // logements historiques sans valeur sont FR par convention (cf. RevenusView).
+    if ((l.pays ?? 'FR') !== 'FR') return
     if (!allowedUserIds.has(l.user_id) || !l.adresse) return
     if (!addressesByMember[l.user_id]) addressesByMember[l.user_id] = []
     addressesByMember[l.user_id].push(l.adresse)
