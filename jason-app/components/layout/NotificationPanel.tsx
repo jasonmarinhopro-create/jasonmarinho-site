@@ -4,10 +4,17 @@ import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { X, Sparkle, ArrowUp, Wrench, Star, ArrowRight, ChatCircleDots, Bell, Warning, Info, CheckCircle } from '@phosphor-icons/react/dist/ssr'
 import { CHANGELOG, ChangelogTag } from '@/lib/constants/changelog'
+import { markNotificationRead } from '@/lib/notifications/actions'
 import type { AppNotification } from '@/lib/notifications/types'
 
 const VISIBLE_COUNT = 3
 const ALERTES_VISIBLE = 4
+// Le rules-engine fait plusieurs requêtes DB : pas la peine de le re-lancer
+// à chaque ouverture de la cloche, ça ne fait que ralentir l'affichage pour
+// rien la plupart du temps (les alertes déjà en DB ne changent pas d'une
+// ouverture à l'autre dans ce laps de temps).
+const RULES_THROTTLE_MS = 15 * 60 * 1000
+const RULES_THROTTLE_KEY = 'notif-rules-last-run'
 
 interface NotificationPanelProps {
   open: boolean
@@ -55,22 +62,62 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
     else setTab('nouveautes')
   }, [open, chezNousUnread, appNotifUnread, readIds])
 
-  // Fetch des alertes + trigger best-effort du rules-engine quand le panel s'ouvre.
-  // Idempotent côté DB (dedup_key unique), donc safe à rerouler.
+  // Fetch des alertes non lues quand le panel s'ouvre. Le rules-engine
+  // (best-effort, idempotent grâce à dedup_key) tourne EN PARALLÈLE au lieu
+  // de bloquer l'affichage, et seulement 1×/15 min par session : avant, il
+  // était systématiquement attendu avant même de lancer le fetch de la
+  // liste, ce qui rendait l'ouverture de la cloche visiblement lente à
+  // chaque clic.
   useEffect(() => {
     if (!open) return
     setAlertesLoading(true)
-    // Best-effort : si l'engine échoue, on continue avec les données en DB.
+
+    const fetchList = () =>
+      fetch('/api/notifications/list?limit=' + ALERTES_VISIBLE + '&unreadOnly=1', { cache: 'no-store' })
+        .then(r => r.ok ? r.json() : { notifications: [] })
+        .then(j => setAlertes(j.notifications ?? []))
+        .catch(() => setAlertes([]))
+
+    fetchList().finally(() => setAlertesLoading(false))
+
+    let lastRun = 0
+    try { lastRun = Number(sessionStorage.getItem(RULES_THROTTLE_KEY) ?? 0) } catch { /* privacy mode */ }
+    if (Date.now() - lastRun < RULES_THROTTLE_MS) return
+
+    try { sessionStorage.setItem(RULES_THROTTLE_KEY, String(Date.now())) } catch { /* privacy mode */ }
+    // Best-effort : si l'engine échoue, on garde les données déjà affichées.
+    // On ne re-fetch la liste que s'il a effectivement créé de nouvelles alertes.
     fetch('/api/notifications/run-rules', { method: 'POST' })
+      .then(r => r.ok ? r.json() : null)
+      .then(result => { if (result?.total > 0) fetchList() })
       .catch(() => null)
-      .finally(() => {
-        fetch('/api/notifications/list?limit=' + ALERTES_VISIBLE, { cache: 'no-store' })
-          .then(r => r.ok ? r.json() : { notifications: [] })
-          .then(j => setAlertes(j.notifications ?? []))
-          .catch(() => setAlertes([]))
-          .finally(() => setAlertesLoading(false))
-      })
   }, [open])
+
+  // Marque une alerte comme lue (clic sur la croix, ou sur son CTA) et la
+  // retire immédiatement de la liste affichée + décrémente le badge de la
+  // cloche (Header écoute cet évènement, même mécanisme que la page
+  // /dashboard/notifications). Revert optimiste si l'appel serveur échoue.
+  function dismissAlerte(id: string) {
+    const prevAlertes = alertes
+    const prevUnread = appNotifUnread
+    setAlertes(prev => prev.filter(n => n.id !== id))
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('notif-count-changed', { detail: { appNotifUnread: Math.max(0, prevUnread - 1) } }))
+    }
+    markNotificationRead(id).then(res => {
+      if (!res.ok) {
+        setAlertes(prevAlertes)
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('notif-count-changed', { detail: { appNotifUnread: prevUnread } }))
+        }
+      }
+    }).catch(() => {
+      setAlertes(prevAlertes)
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('notif-count-changed', { detail: { appNotifUnread: prevUnread } }))
+      }
+    })
+  }
 
   // Close on outside click
   useEffect(() => {
@@ -236,7 +283,7 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
                     {n.cta_href && (
                       <Link
                         href={n.cta_href}
-                        onClick={onClose}
+                        onClick={() => { if (isUnread) dismissAlerte(n.id); onClose() }}
                         style={{
                           display: 'inline-flex', alignItems: 'center', gap: '4px',
                           marginTop: '6px', fontSize: '11.5px', fontWeight: 600,
@@ -247,6 +294,16 @@ export default function NotificationPanel({ open, onClose, readIds, onMarkAllRea
                       </Link>
                     )}
                   </div>
+                  {isUnread && (
+                    <button
+                      onClick={() => dismissAlerte(n.id)}
+                      style={s.dismissBtn}
+                      aria-label="Marquer cette alerte comme lue"
+                      title="Marquer comme lue"
+                    >
+                      <X size={12} weight="bold" />
+                    </button>
+                  )}
                 </div>
               )
             })
@@ -449,6 +506,13 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'background 0.2s',
   },
   entryBody: { flex: 1, minWidth: 0 },
+  dismissBtn: {
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '6px', width: '22px', height: '22px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    cursor: 'pointer', color: 'var(--text-3)', flexShrink: 0,
+    marginLeft: '8px', marginTop: '2px',
+  },
   entryMeta: {
     display: 'flex', alignItems: 'center', gap: '7px',
     marginBottom: '5px', flexWrap: 'wrap' as const,
