@@ -12,7 +12,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
   const supabase = await createClient()
 
   // Phase A : toutes les queries indépendantes en parallèle
-  const [voyageurRes, sejoursRes, authRes, profileDataRes, logementsRes, companionsRes] = await Promise.all([
+  const [voyageurRes, sejoursRes, authRes, profileDataRes, logementsRes, companionsRes, declarationsRes] = await Promise.all([
     supabase
       .from('voyageurs')
       .select('id, prenom, nom, email, telephone, nationalite, source, tags, notes, note_privee, id_type, id_url, id_verifie, bloque, bloque_motif, created_at, checkin_token, checkin_sent_at, checkin_completed_at, checkin_signature')
@@ -43,6 +43,13 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
       .eq('voyageur_id', id)
       .eq('user_id', profile.userId)
       .order('created_at'),
+    // Statut des déclarations légales (SIBA, fiche police…) par séjour,
+    // pour ne pas ré-afficher l'alerte "à déclarer" une fois faite.
+    supabase
+      .from('guest_declarations')
+      .select('sejour_id, statut')
+      .eq('voyageur_id', id)
+      .eq('user_id', profile.userId),
   ])
 
   const voyageur = voyageurRes.data
@@ -52,6 +59,10 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
   const user = authRes.data.user
   const profileData = profileDataRes.data
   const logements = logementsRes.data
+  const declarationStatutBySejour: Record<string, string> = {}
+  for (const d of declarationsRes.data ?? []) {
+    if (d.sejour_id) declarationStatutBySejour[d.sejour_id] = d.statut
+  }
 
   // Phase B : reported query dépend de voyageur.email / voyageur.telephone
   const identifiers = [voyageur.email?.toLowerCase(), voyageur.telephone].filter(Boolean) as string[]
@@ -91,6 +102,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
         logements={(logements ?? []) as any[]}
         plan={profile.plan ?? 'decouverte'}
         checkinCompanions={companionsRes.data ?? []}
+        declarationStatutBySejour={declarationStatutBySejour}
       />
     </>
   )
