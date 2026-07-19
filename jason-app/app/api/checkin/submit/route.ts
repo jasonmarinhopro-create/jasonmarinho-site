@@ -8,6 +8,7 @@ import { createClient } from '@supabase/supabase-js'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { syncDeclarationsForVoyageur } from '@/lib/declarations/sync'
 import { autoSendSibaForVoyageur } from '@/lib/declarations/siba-auto'
+import { notifyHostCheckinSubmitted } from '@/lib/email/checkin-notify'
 
 export const dynamic = 'force-dynamic'
 
@@ -65,7 +66,7 @@ export async function POST(req: Request) {
 
   const { data: voyageur } = await supabase
     .from('voyageurs')
-    .select('id, user_id')
+    .select('id, user_id, checkin_completed_at')
     .eq('checkin_token', token)
     .maybeSingle()
   if (!voyageur) {
@@ -147,6 +148,16 @@ export async function POST(req: Request) {
     // déjà déclarées sont tracées par siba_sent_at et ne repartent pas).
     try {
       await autoSendSibaForVoyageur(supabase, voyageur.user_id, voyageur.id)
+    } catch { /* best-effort */ }
+
+    // Notifie l'hôte (awaité : la lambda gèle après la réponse)
+    try {
+      await notifyHostCheckinSubmitted(supabase, {
+        userId: voyageur.user_id,
+        voyageurId: voyageur.id,
+        kind: 'companion',
+        companionName: `${cPrenom} ${cNom}`,
+      })
     } catch { /* best-effort */ }
 
     return NextResponse.json({ ok: true })
@@ -286,6 +297,16 @@ export async function POST(req: Request) {
   // 'a_faire' et l'hôte la traite depuis le dashboard comme avant.
   try {
     await autoSendSibaForVoyageur(supabase, voyageur.user_id, voyageur.id)
+  } catch { /* ne bloque jamais le check-in */ }
+
+  // Notifie l'hôte : 1re complétion ou mise à jour (awaité, lambda gèle après
+  // la réponse). voyageur.checkin_completed_at = valeur AVANT cette soumission.
+  try {
+    await notifyHostCheckinSubmitted(supabase, {
+      userId: voyageur.user_id,
+      voyageurId: voyageur.id,
+      kind: voyageur.checkin_completed_at ? 'main-update' : 'main-first',
+    })
   } catch { /* ne bloque jamais le check-in */ }
 
   return NextResponse.json({ ok: true })
