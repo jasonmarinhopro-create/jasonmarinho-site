@@ -239,7 +239,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-lead">Tu as monté ta structure, choisi ta zone, défini tes services. Mais le téléphone ne sonne pas. Décrocher tes 3 premiers mandats est l'étape la plus difficile pour une conciergerie LCD. Voici 7 stratégies testées par des conciergeries qui ont passé ce cap.</p>
 <h2 class="art-h2">1. Approche directe d'annonces sous-performantes</h2>
 <p class="art-p">Cherche sur Airbnb des annonces dans ta zone qui ont clairement des problèmes : peu d'avis, photos floues ou sombres, prix trop bas pour la zone. Ces propriétaires sont les plus réceptifs à une aide professionnelle.</p>
-<ul class="art-ul"><li>Identifier les annonces "sous le marché" via AirDNA ou une analyse manuelle sur Airbnb</li><li>Contacter via Airbnb message ou LinkedIn : "J'ai vu que votre logement a un super potentiel. Pourrions-nous discuter 15 min ?"</li><li>Taux de réponse : 5-10 % — conversion en mandat : 15-20 % des répondants</li></ul>
+<ul class="art-ul"><li>Identifier les annonces "sous le marché" via AirDNA ou une analyse manuelle sur Airbnb</li><li>Contacter via Airbnb message ou LinkedIn : "J'ai vu que votre logement a un super potentiel. Pourrions-nous discuter 15 min ?"</li><li>Taux de réponse : 5-10 % : conversion en mandat : 15-20 % des répondants</li></ul>
 <h2 class="art-h2">2. Partenariat avec agences immobilières</h2>
 <p class="art-p">Les agences immobilières voient passer des propriétaires qui hésitent entre vendre, louer longue durée ou en LCD. Elles peuvent te référer en échange d'une commission.</p>
 <ul class="art-ul"><li>Cible : agences moyennes (5-15 agents) en quartiers touristiques ou proches gares</li><li>Pitch : "Je t'envoie des clients qui veulent vendre. En échange, tu me réfères ceux qui hésitent à louer en LCD"</li><li>Formaliser un contrat de partenariat simple : 5-10 % de commission par mandat signé</li><li>Volume potentiel : 1-3 mandats par mois par agence partenaire active</li></ul>
@@ -348,14 +348,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur : réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau : réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

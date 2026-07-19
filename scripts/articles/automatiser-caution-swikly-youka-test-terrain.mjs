@@ -19,7 +19,7 @@ export default {
       ],
     },
     {
-      h2: '2. SwikLy — le pure-player français',
+      h2: '2. SwikLy : le pure-player français',
       content: [
         { type: 'p', text: 'SwikLy (basé en France, RGPD friendly) est la solution la plus utilisée par les hôtes LCD français. Le voyageur reçoit un email avec un lien pour autoriser une empreinte CB. Si dégât, tu prélèves directement depuis ton dashboard. Si pas de problème, tu cliques sur "libérer" et le voyageur récupère sa caution sous 24 h.' },
         { type: 'ul', items: [
@@ -32,7 +32,7 @@ export default {
       ],
     },
     {
-      h2: '3. Youka — l\'option intégrée Airbnb',
+      h2: '3. Youka : l\'option intégrée Airbnb',
       content: [
         { type: 'p', text: 'Youka est plus récent mais propose une intégration directe avec Airbnb (via API). Le lien est envoyé automatiquement après réservation, sans intervention de ta part. Si tu cherches du "set & forget", c\'est l\'option.' },
         { type: 'ul', items: [

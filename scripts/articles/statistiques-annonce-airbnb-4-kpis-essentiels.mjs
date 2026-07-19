@@ -29,7 +29,7 @@ export default {
       h2: '3. Le taux de conversion (réservations)',
       content: [
         { type: 'p', text: 'Le taux de conversion est le pourcentage de voyageurs qui réservent après avoir cliqué sur ta fiche. Calcul = réservations / clics. C\'est le KPI le plus stratégique : il mesure si ta fiche tient ses promesses une fois cliquée.' },
-        { type: 'p', text: 'Benchmark moyen : 5 à 12 %. Au-dessus de 10 %, ta fiche est très bien construite. En dessous de 5 %, les voyageurs cliquent puis abandonnent — soit ton prix est trop élevé pour ce que tu proposes, soit la description/photos ne tiennent pas la promesse de la vignette, soit tes avis ou ta politique freinent.' },
+        { type: 'p', text: 'Benchmark moyen : 5 à 12 %. Au-dessus de 10 %, ta fiche est très bien construite. En dessous de 5 %, les voyageurs cliquent puis abandonnent : soit ton prix est trop élevé pour ce que tu proposes, soit la description/photos ne tiennent pas la promesse de la vignette, soit tes avis ou ta politique freinent.' },
         { type: 'p', text: 'Pour améliorer ce taux : optimiser la description longue, ajouter 5 photos additionnelles si tu en as moins de 25, vérifier que ta politique d\'annulation est cohérente avec le marché, soigner tes 5 derniers avis (réponses publiques aux avis < 5★).' },
       ],
     },

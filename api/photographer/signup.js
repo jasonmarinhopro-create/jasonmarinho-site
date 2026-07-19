@@ -1,4 +1,4 @@
-// Vercel serverless function — inscription photographe LCD self-service.
+// Vercel serverless function : inscription photographe LCD self-service.
 // Flow : form (email + password + infos) → crée compte Supabase Auth
 // + insert pending_payment + détermine tier → crée Stripe Checkout
 // session → renvoie l'URL au form qui redirige.
@@ -175,7 +175,7 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Service indisponible (config Stripe).' })
   }
 
-  // Check unicité email — avec auto-recovery des orphelins
+  // Check unicité email : avec auto-recovery des orphelins
   // (status='pending_payment' sans stripe_subscription_id : ce sont des
   // inscriptions ratées au moment du Stripe Checkout. On les supprime
   // silencieusement pour permettre le retry avec le même email.)
@@ -280,7 +280,7 @@ module.exports = async function handler(req, res) {
     })
   }
 
-  // 6. Notifie Jason de l'inscription — awaité : la lambda Vercel gèle
+  // 6. Notifie Jason de l'inscription : awaité : la lambda Vercel gèle
   //    après res.json(), un fire-and-forget ne partirait jamais.
   const RESEND_KEY = process.env.RESEND_API_KEY
   if (RESEND_KEY) {
@@ -291,7 +291,7 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         from: 'Jason Marinho <noreply@jasonmarinho.com>',
         to: 'contact@jasonmarinho.com',
-        subject: `Nouvelle inscription Photographe — ${esc(fullName)}`,
+        subject: `Nouvelle inscription Photographe : ${esc(fullName)}`,
         html: `<div style="font-family:-apple-system,Segoe UI,Helvetica,sans-serif;max-width:560px;padding:24px;background:#f7f5f0;border-radius:12px">
 <h2 style="font-family:Georgia,serif;color:#0F1A0D;margin:0 0 14px">📸 Nouvelle inscription Photographe</h2>
 <div style="background:#fff;padding:16px;border-radius:8px;font-size:13.5px;line-height:1.9;color:#3D5038;border-left:3px solid #63D683">

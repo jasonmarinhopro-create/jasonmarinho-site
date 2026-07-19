@@ -7,7 +7,7 @@ export default {
   categorySlug: 'visibilite',
   readTime: 7,
 
-  lead: 'L\'algorithme Airbnb favorise les annonces qui convertissent — pas les plus jolies, pas les moins chères. Si ton annonce ne performe pas, ce n\'est presque jamais une question de chance. C\'est une question de 8 éléments précis que tu peux corriger aujourd\'hui.',
+  lead: 'L\'algorithme Airbnb favorise les annonces qui convertissent : pas les plus jolies, pas les moins chères. Si ton annonce ne performe pas, ce n\'est presque jamais une question de chance. C\'est une question de 8 éléments précis que tu peux corriger aujourd\'hui.',
 
   sections: [
     {
@@ -44,23 +44,23 @@ export default {
           'Paragraphe 1 (3-4 lignes) : le bénéfice principal et l\'ambiance',
           'Paragraphe 2 : équipements différenciants (jacuzzi, parking, terrasse...)',
           'Paragraphe 3 : le quartier et ce qu\'on peut faire à pied',
-          'Évite les listes à puces dans la description Airbnb — le formatage est retiré à l\'affichage',
+          'Évite les listes à puces dans la description Airbnb : le formatage est retiré à l\'affichage',
         ]},
       ],
     },
     {
       h2: '4. Les équipements : coche les filtres que les voyageurs utilisent',
       content: [
-        { type: 'p', text: 'Airbnb filtre les résultats par équipements cochés. Si tu n\'as pas coché "Wi-Fi" alors que tu l\'as, tu n\'apparais pas dans les résultats filtrés. Fais un audit complet de ta liste d\'équipements — il y a souvent des cases oubliées.' },
+        { type: 'p', text: 'Airbnb filtre les résultats par équipements cochés. Si tu n\'as pas coché "Wi-Fi" alors que tu l\'as, tu n\'apparais pas dans les résultats filtrés. Fais un audit complet de ta liste d\'équipements : il y a souvent des cases oubliées.' },
         { type: 'ul', items: [
           'Wi-Fi haut débit : 40 % des voyageurs filtrent par ce critère',
           'Cuisine équipée avec cafetière, micro-ondes et plaques',
-          'Parking gratuit ou à prix fixe — à préciser même si c\'est payant',
+          'Parking gratuit ou à prix fixe : à préciser même si c\'est payant',
           'Lave-linge et sèche-linge pour les séjours de plus de 3 nuits',
           'Check-in autonome (boîte à clés ou serrure connectée) : booste les réservations last-minute',
           'TV connectée avec accès streaming',
         ]},
-        { type: 'tip', text: 'Vérifie tes équipements au moins une fois par an. Airbnb ajoute régulièrement de nouveaux filtres — certains sont déjà utilisés par les voyageurs et tu n\'y es peut-être pas coché.' },
+        { type: 'tip', text: 'Vérifie tes équipements au moins une fois par an. Airbnb ajoute régulièrement de nouveaux filtres : certains sont déjà utilisés par les voyageurs et tu n\'y es peut-être pas coché.' },
       ],
     },
     {
@@ -82,7 +82,7 @@ export default {
         { type: 'ul', items: [
           'Évite de cocher "no pets" si tu acceptes en réalité les petits animaux sur demande',
           'L\'heure de check-out à 10h réduit les réservations : 11h est le standard qui satisfait les deux parties',
-          'La caution n\'est plus gérée directement sur Airbnb — ne la mentionne pas dans les règles',
+          'La caution n\'est plus gérée directement sur Airbnb : ne la mentionne pas dans les règles',
           'Formule tes règles positivement : "Logement non-fumeur" plutôt que "Interdit de fumer"',
         ]},
       ],
@@ -90,11 +90,11 @@ export default {
     {
       h2: '7. La réactivité : ton taux de réponse compte dans le classement',
       content: [
-        { type: 'p', text: 'Airbnb mesure ton taux de réponse et ton délai de réponse moyen. Un taux inférieur à 90 % impacte ton classement. Réponds à toutes les demandes dans les 24h — même pour décliner, même si c\'est pour demander des précisions.' },
+        { type: 'p', text: 'Airbnb mesure ton taux de réponse et ton délai de réponse moyen. Un taux inférieur à 90 % impacte ton classement. Réponds à toutes les demandes dans les 24h : même pour décliner, même si c\'est pour demander des précisions.' },
         { type: 'ul', items: [
           'Active les notifications push Airbnb sur ton téléphone',
           'Utilise des <a href="/blog/gabarits-messages-lcd-hotes-templates" style="color:var(--g);font-weight:500">gabarits de réponse</a> pour les questions fréquentes',
-          'Si tu pars en vacances, active le mode "Absent" ou bloque le calendrier — ne laisse pas les demandes sans réponse',
+          'Si tu pars en vacances, active le mode "Absent" ou bloque le calendrier : ne laisse pas les demandes sans réponse',
           'Le délai cible : répondre en moins de 1h augmente tes chances d\'obtenir la réservation de 30 %',
         ]},
         { type: 'tip', text: 'Le badge "Hôte réactif" s\'affiche sur ton annonce si ton délai moyen est inférieur à 1h. C\'est un signal de confiance visible par les voyageurs avant même de lire ta description.' },
@@ -103,11 +103,11 @@ export default {
     {
       h2: '8. Les avis : l\'élément de confiance numéro un',
       content: [
-        { type: 'p', text: 'Les avis sont le principal facteur de décision des voyageurs — avant le prix, avant les photos. Un logement avec 50 avis à 4,8 étoiles surpasse un logement parfait avec 3 avis. Construire ta base d\'avis doit être une priorité dès tes premières réservations.' },
+        { type: 'p', text: 'Les avis sont le principal facteur de décision des voyageurs : avant le prix, avant les photos. Un logement avec 50 avis à 4,8 étoiles surpasse un logement parfait avec 3 avis. Construire ta base d\'avis doit être une priorité dès tes premières réservations.' },
         { type: 'ul', items: [
           'Envoie un message de remerciement le jour du départ en invitant discrètement à laisser un avis',
           'Réponds à tous tes avis, positifs comme négatifs, sous 48h',
-          'Un avis 4 étoiles vaut mieux que pas d\'avis — ne cherche pas la perfection mais la régularité',
+          'Un avis 4 étoiles vaut mieux que pas d\'avis : ne cherche pas la perfection mais la régularité',
           'Atteindre 10 avis est le premier palier : en dessous, les voyageurs hésitent',
         ]},
         { type: 'cta', text: 'Tu veux une méthode complète pour améliorer ton classement Airbnb et développer ta visibilité en dehors de la plateforme ?', button: 'Découvrir les formations', href: '/#formations' },

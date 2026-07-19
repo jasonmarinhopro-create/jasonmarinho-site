@@ -142,7 +142,7 @@ for (const file of TARGETS) {
   }
 }
 
-console.log(`\n${DRY ? '🔍 DRY-RUN' : '✅ MODERNISATION'} — pages services + pour-qui\n`)
+console.log(`\n${DRY ? '🔍 DRY-RUN' : '✅ MODERNISATION'} : pages services + pour-qui\n`)
 filesChanged
   .sort((a, b) => b.count - a.count)
   .forEach(f => console.log(`  ${f.count.toString().padStart(3)} maj  →  ${f.file}`))

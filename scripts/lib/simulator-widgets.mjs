@@ -1,4 +1,4 @@
-// Widgets simulateurs publics — vanilla JS, design 2026.
+// Widgets simulateurs publics : vanilla JS, design 2026.
 // Chaque fonction renvoie { html, script } à injecter dans une page statique.
 // Layout commun : 2-col responsive (form gauche / résultats live droite).
 
@@ -824,7 +824,7 @@ export function widgetFranchiseTva() {
     if (ca <= SEUIL) {
       $v.textContent = 'Franchise applicable';
       $v.className = 'sim-out-value success';
-      $vS.textContent = 'CA sous le seuil ' + fmt(SEUIL) + ' — tu ne factures pas la TVA';
+      $vS.textContent = 'CA sous le seuil ' + fmt(SEUIL) + ' : tu ne factures pas la TVA';
       $p.textContent = 'Sous le seuil';
       $p.className = 'sim-out-value success';
       $pS.textContent = 'Marge restante : ' + fmt(SEUIL - ca);

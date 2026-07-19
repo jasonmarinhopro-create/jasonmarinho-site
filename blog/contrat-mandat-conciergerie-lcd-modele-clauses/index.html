@@ -236,13 +236,13 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </section>
 
 <div class="art-body">
-<p class="art-lead">Une conciergerie LCD sans contrat formalisé court à la catastrophe. Le moindre désaccord avec un propriétaire — qui a payé quoi, qui contrôle les annonces, qui possède les photos — peut tourner au litige. Voici les 8 clauses indispensables d'un mandat de conciergerie LCD en 2026.</p>
+<p class="art-lead">Une conciergerie LCD sans contrat formalisé court à la catastrophe. Le moindre désaccord avec un propriétaire : qui a payé quoi, qui contrôle les annonces, qui possède les photos : peut tourner au litige. Voici les 8 clauses indispensables d'un mandat de conciergerie LCD en 2026.</p>
 <h2 class="art-h2">1. L'objet du mandat : ce qui est inclus (et ce qui ne l'est pas)</h2>
 <p class="art-p">L'objet du mandat doit lister exhaustivement ce qui est inclus ET ce qui ne l'est pas. Vague = source de conflit systématique.</p>
 <ul class="art-ul"><li>Inclus standard : création/gestion annonces, tarification, calendrier, communication voyageurs, organisation ménage, gestion des avis</li><li>Inclus optionnellement (à cocher) : photographie pro, livret d'accueil digital, fourniture linge, kit petit-déjeuner</li><li>Non inclus : travaux > 200 €, achat équipement neuf sans accord préalable, litiges juridiques avec voyageurs</li><li>Limites quantitatives : nombre max d'interventions/mois incluses, facturation à l'heure au-delà</li></ul>
 <h2 class="art-h2">2. La rémunération et la facturation</h2>
 <p class="art-p">Précise comment ta rémunération est calculée, quand elle est facturée, et comment elle est encaissée. Aucune ambiguïté possible.</p>
-<ul class="art-ul"><li>Pourcentage exact (ex : 22 % du CA TTC voyageur)</li><li>Base de calcul : CA TTC encaissé avant ou après commission plateforme — préciser lequel</li><li>Mode d'encaissement : prélèvement direct via plateforme, ou facturation mensuelle au propriétaire</li><li>TVA : préciser si le pourcentage est TTC ou HT</li><li>Date de paiement : J+5 du mois suivant par virement automatique</li></ul>
+<ul class="art-ul"><li>Pourcentage exact (ex : 22 % du CA TTC voyageur)</li><li>Base de calcul : CA TTC encaissé avant ou après commission plateforme : préciser lequel</li><li>Mode d'encaissement : prélèvement direct via plateforme, ou facturation mensuelle au propriétaire</li><li>TVA : préciser si le pourcentage est TTC ou HT</li><li>Date de paiement : J+5 du mois suivant par virement automatique</li></ul>
 <h2 class="art-h2">3. La durée minimale et le préavis</h2>
 <p class="art-p">La durée du mandat et les conditions de sortie doivent être explicitement définies pour protéger les deux parties.</p>
 <ul class="art-ul"><li>Engagement minimum recommandé : 3-6 mois pour que la conciergerie puisse optimiser l'annonce</li><li>Tacite reconduction mensuelle après la période minimale</li><li>Préavis de résiliation : 1-3 mois selon le volume et la complexité de la gestion</li><li>Résiliation pour faute : possible sans préavis avec mise en demeure préalable</li></ul>
@@ -255,7 +255,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <ul class="art-ul"><li>Médiation amiable obligatoire avant toute procédure judiciaire (délai 30 jours)</li><li>Tribunal compétent : généralement celui du siège de la conciergerie</li><li>Droit applicable : droit français</li><li>Clause arbitrale si tu vises des clients professionnels (structure corporative)</li></ul>
 <h2 class="art-h2">6. La propriété intellectuelle</h2>
 <p class="art-p">Qui possède quoi après la fin du mandat ? Cette clause évite des situations catastrophiques où le propriétaire te "vole" tes créations.</p>
-<ul class="art-ul"><li>Compte Airbnb : appartient au propriétaire (créé à son nom, tu le gères en mandataire)</li><li>Photos professionnelles : appartiennent au propriétaire s'il les a financées, à toi si tu les as financées et produites</li><li>Livret d'accueil digital : appartient à celui qui l'a créé et financé — préciser dans le contrat</li><li>Scripts de messages automatisés : à toi — usage autorisé pour le propriétaire pendant le mandat uniquement</li></ul>
+<ul class="art-ul"><li>Compte Airbnb : appartient au propriétaire (créé à son nom, tu le gères en mandataire)</li><li>Photos professionnelles : appartiennent au propriétaire s'il les a financées, à toi si tu les as financées et produites</li><li>Livret d'accueil digital : appartient à celui qui l'a créé et financé : préciser dans le contrat</li><li>Scripts de messages automatisés : à toi : usage autorisé pour le propriétaire pendant le mandat uniquement</li></ul>
 <h2 class="art-h2">7. Les assurances et responsabilités</h2>
 <p class="art-p">Chaque partie doit avoir sa couverture assurance propre. Cette clause définit qui souscrit quoi et qui répond de quoi.</p>
 <ul class="art-ul"><li>La conciergerie : RC professionnelle couvrant les erreurs de gestion (acte ou omission)</li><li>Le propriétaire : assurance LCD dédiée (pas MRH classique) couvrant les sinistres voyageurs</li><li>Pas de doublon : la RC pro conciergerie couvre tes fautes professionnelles, pas les dommages matériels du logement</li><li>AirCover Airbnb : complémentaire, pas substituable à une vraie assurance</li></ul>
@@ -351,14 +351,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur : réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau : réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

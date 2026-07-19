@@ -107,7 +107,7 @@ if (fs.existsSync(pourQuiDir)) {
   }
 }
 
-// Standalone (qui-suis-je, contact, etc.) — parent = Accueil
+// Standalone (qui-suis-je, contact, etc.) : parent = Accueil
 for (const slug of ['qui-suis-je', 'contact', 'tarifs', 'villes', 'sos-hote', 'lexique-lcd']) {
   const file = path.join(ROOT, slug, 'index.html')
   if (!fs.existsSync(file)) continue

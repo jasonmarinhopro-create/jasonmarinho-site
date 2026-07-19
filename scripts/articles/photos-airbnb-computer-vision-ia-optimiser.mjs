@@ -7,7 +7,7 @@ export default {
   categorySlug: 'visibilite',
   readTime: 7,
 
-  lead: 'Depuis 2025, Airbnb a intégré la Computer Vision dans l\'évaluation algorithmique des annonces. L\'IA ne regarde plus seulement combien de photos tu as uploadées — elle analyse leur contenu, leur qualité visuelle, leur cohérence avec ta description, et leur capacité à générer des clics. Si tes photos datent de plusieurs années ou ne correspondent pas à ce que tu annonces, elles pénalisent ton classement.',
+  lead: 'Depuis 2025, Airbnb a intégré la Computer Vision dans l\'évaluation algorithmique des annonces. L\'IA ne regarde plus seulement combien de photos tu as uploadées : elle analyse leur contenu, leur qualité visuelle, leur cohérence avec ta description, et leur capacité à générer des clics. Si tes photos datent de plusieurs années ou ne correspondent pas à ce que tu annonces, elles pénalisent ton classement.',
 
   sections: [
     {
@@ -26,15 +26,15 @@ export default {
     {
       h2: '2. Les erreurs les plus communes qui font baisser le score',
       content: [
-        { type: 'p', text: 'La plupart des annonces pénalisées par la Computer Vision souffrent des mêmes problèmes. Le plus fréquent : des photos prises à la verticale avec un smartphone, souvent dans une pièce peu éclairée. Le deuxième problème courant est l\'absence de photo pour un équipement mentionné dans la description — l\'IA considère cela comme une incohérence potentielle.' },
+        { type: 'p', text: 'La plupart des annonces pénalisées par la Computer Vision souffrent des mêmes problèmes. Le plus fréquent : des photos prises à la verticale avec un smartphone, souvent dans une pièce peu éclairée. Le deuxième problème courant est l\'absence de photo pour un équipement mentionné dans la description : l\'IA considère cela comme une incohérence potentielle.' },
         { type: 'ul', items: [
-          'Photos en format portrait (verticales) — toujours photographier en paysage (horizontal)',
-          'Photos sans lumière naturelle — évite le flash direct, ouvre les volets, photographie en milieu de journée',
+          'Photos en format portrait (verticales) : toujours photographier en paysage (horizontal)',
+          'Photos sans lumière naturelle : évite le flash direct, ouvre les volets, photographie en milieu de journée',
           'Photo de couverture qui ne montre pas clairement le logement (photo de décor, de vue seule, etc.)',
           'Équipements mentionnés dans la description mais absents des photos (bureau, écran, lave-linge...)',
-          'Photos trop peu nombreuses — Airbnb recommande 25 à 35 photos pour les annonces bien classées',
+          'Photos trop peu nombreuses : Airbnb recommande 25 à 35 photos pour les annonces bien classées',
         ]},
-        { type: 'tip', text: 'Si tu annonces la vue, la vue doit être visible sur au moins 2 photos. Si tu annonces un espace de travail, il doit être photographié avec le bureau, la chaise et l\'éclairage. Ce que tu décris doit être visible — sinon l\'IA doute.' },
+        { type: 'tip', text: 'Si tu annonces la vue, la vue doit être visible sur au moins 2 photos. Si tu annonces un espace de travail, il doit être photographié avec le bureau, la chaise et l\'éclairage. Ce que tu décris doit être visible : sinon l\'IA doute.' },
       ],
     },
     {
@@ -46,14 +46,14 @@ export default {
           '2. Ajoute une photo dédiée pour chaque équipement mentionné dans la description (bureau, wifi, cuisine équipée)',
           '3. Teste plusieurs photos de couverture sur 2 semaines et garde celle qui génère le plus de clics (visible dans les stats Airbnb)',
           '4. Vise 25 à 30 photos minimum avec une photo par pièce et une photo contextuelle de chaque équipement clé',
-          '5. Ajoute une capture du test de débit speedtest en photo — c\'est le seul élément technique non photographiable autrement',
+          '5. Ajoute une capture du test de débit speedtest en photo : c\'est le seul élément technique non photographiable autrement',
         ]},
       ],
     },
     {
       h2: '4. Photographie avancée : quand faire appel à un professionnel',
       content: [
-        { type: 'p', text: 'Un photographe professionnel n\'est pas indispensable pour corriger les erreurs techniques — mais il apporte une valeur réelle sur deux points précis : la photo de couverture principale et les pièces avec un potentiel esthétique fort (terrasse, vue, pièce principale lumineuse). Ces deux éléments ont le plus d\'impact sur le taux de clic, qui représente 50 % du score algorithmique.' },
+        { type: 'p', text: 'Un photographe professionnel n\'est pas indispensable pour corriger les erreurs techniques : mais il apporte une valeur réelle sur deux points précis : la photo de couverture principale et les pièces avec un potentiel esthétique fort (terrasse, vue, pièce principale lumineuse). Ces deux éléments ont le plus d\'impact sur le taux de clic, qui représente 50 % du score algorithmique.' },
         { type: 'p', text: 'Le retour sur investissement est calculable : si une meilleure photo de couverture augmente ton taux de clic de 15 %, et que tu as 10 réservations par mois, le coût d\'une séance photo (150 à 400 €) est amorti en 1 à 2 mois sur une annonce active.' },
         { type: 'cta', text: 'Tu veux un plan complet pour optimiser ta visibilité sur Airbnb en 2026 ?', button: 'Voir les formations', href: '/#formations' },
       ],

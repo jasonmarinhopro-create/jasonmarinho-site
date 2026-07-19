@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
- * Build script — génère les pages SEO ville × métier pros LCD :
+ * Build script : génère les pages SEO ville × métier pros LCD :
  *
  *   /photographe-lcd-{ville}/index.html
  *   /menage-lcd-{ville}/index.html
  *
  * SOURCE DE VÉRITÉ : le tableau CITIES de footer.js (parsé à l'exécution).
  * Toute ville ajoutée dans CITIES obtient automatiquement ses 2 pages au
- * prochain run — pas de duplication de données à maintenir ici.
+ * prochain run : pas de duplication de données à maintenir ici.
  *
  * Double cible par page :
  *   - HÔTES qui cherchent "photographe airbnb lyon" / "ménage airbnb lyon"
@@ -18,7 +18,7 @@
  * Choix de nommage : "lcd" dans l'URL (cohérent marque + pages revenu-lcd-*),
  * "Airbnb" travaillé dans title/meta/contenu pour capter le volume de recherche.
  *
- * Script déterministe (aucune dépendance réseau) — lancer :
+ * Script déterministe (aucune dépendance réseau) : lancer :
  *   node scripts/build-pages-pros-villes.mjs
  * puis committer l'output. Penser à footer.js (chips auto depuis CITIES)
  * et sitemap.xml (le script imprime les <url> à jour).
@@ -271,7 +271,7 @@ function buildPhotographePage(v) {
 
   const faqs = [
     { q: `Combien coûte un photographe Airbnb ${v.pre} ?`,
-      a: `Comptez <strong>${t1}</strong> pour une session essentielle (15-20 photos HDR d'un studio ou T2), <strong>${t2}</strong> pour une session standard (25-35 photos, mise en scène, retouches poussées) et <strong>${t3}</strong> pour du premium avec drone, crépuscule ou vidéo. ${premium ? `Sur un marché premium comme ${v.name}, les tarifs sont un cran au-dessus de la moyenne nationale — cohérent avec des nuitées à ${v.adrMin}-${v.adrMax} €.` : `À ${v.name}, ces fourchettes correspondent au marché constaté auprès des hôtes.`}` },
+      a: `Comptez <strong>${t1}</strong> pour une session essentielle (15-20 photos HDR d'un studio ou T2), <strong>${t2}</strong> pour une session standard (25-35 photos, mise en scène, retouches poussées) et <strong>${t3}</strong> pour du premium avec drone, crépuscule ou vidéo. ${premium ? `Sur un marché premium comme ${v.name}, les tarifs sont un cran au-dessus de la moyenne nationale : cohérent avec des nuitées à ${v.adrMin}-${v.adrMax} €.` : `À ${v.name}, ces fourchettes correspondent au marché constaté auprès des hôtes.`}` },
     { q: `En combien de temps un shooting pro est-il rentabilisé ${v.pre} ?`,
       a: `Avec un tarif moyen de <strong>${v.adrMin} à ${v.adrMax} € la nuit</strong> ${v.pre}, une session standard à ~300 € est amortie en <strong>${amortNuits} nuit${amortNuits > 1 ? 's' : ''} vendue${amortNuits > 1 ? 's' : ''}</strong>. Or de meilleures photos augmentent le taux de clic sur votre annonce et permettent souvent de monter le prix de 5 à 15 % : le shooting se rembourse généralement sur le premier mois.` },
     { q: `Combien de photos faut-il pour une annonce ${v.pre} ?`,
@@ -296,7 +296,7 @@ function buildPhotographePage(v) {
     <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/photographes">Photographes LCD</a> · <span>${escHtml(v.name)}</span></div>
     <span class="lbl">Photographe · Airbnb, Booking &amp; réservation directe</span>
     <h1>Photographe LCD <em>${escHtml(v.pre)}</em></h1>
-    <p class="lead">Sur les <strong>${v.annonces} annonces</strong> que compte ${escHtml(v.name)}, celles qui sortent du lot ont un point commun : des photos professionnelles. Tarifs locaux constatés, checklist des photos indispensables, questions à poser — et l'annuaire vérifié pour trouver le bon photographe.</p>
+    <p class="lead">Sur les <strong>${v.annonces} annonces</strong> que compte ${escHtml(v.name)}, celles qui sortent du lot ont un point commun : des photos professionnelles. Tarifs locaux constatés, checklist des photos indispensables, questions à poser : et l'annuaire vérifié pour trouver le bon photographe.</p>
     <div class="hero-ctas">
       <a href="/annuaires/photographes" class="btn-p"><i class="ph-bold ph-magnifying-glass"></i> Trouver un photographe vérifié</a>
       <a href="/devenir-photographe-lcd" class="btn-ol"><i class="ph-bold ph-camera"></i> Je suis photographe ${escHtml(v.pre)}</a>
@@ -315,7 +315,7 @@ function buildPhotographePage(v) {
     <h2>Pourquoi les photos pro comptent <em>autant ${escHtml(v.pre)}</em></h2>
     <p>${escHtml(v.desc)}</p>
     <p>Concrètement : avec des nuitées à <strong>${v.adrMin}-${v.adrMax} €</strong> et ~${v.annonces} annonces en concurrence directe, votre photo de couverture est votre premier levier de taux de clic. Les études des plateformes convergent : des photos professionnelles génèrent <strong>jusqu'à +40 % de réservations</strong> et permettent de positionner son prix dans le haut de la fourchette. Une session standard à ~300 € est amortie en <strong>${amortNuits} nuit${amortNuits > 1 ? 's' : ''} vendue${amortNuits > 1 ? 's' : ''}</strong>.</p>
-    <div class="note"><strong>Le réflexe anti-dépendance :</strong> de bonnes photos ne servent pas qu'Airbnb et Booking. Ce sont les mêmes visuels qui font vivre votre fiche Google Business, vos réseaux et votre canal de réservation directe — là où vous ne payez aucune commission.</div>
+    <div class="note"><strong>Le réflexe anti-dépendance :</strong> de bonnes photos ne servent pas qu'Airbnb et Booking. Ce sont les mêmes visuels qui font vivre votre fiche Google Business, vos réseaux et votre canal de réservation directe : là où vous ne payez aucune commission.</div>
   </div>
 </section>
 
@@ -329,7 +329,7 @@ function buildPhotographePage(v) {
       <tr><td>Standard</td><td class="prix">${t2}</td><td>25-35 photos, mise en scène voyageur, retouches poussées, formats optimisés vignettes plateformes. Le meilleur rapport qualité/prix pour la plupart des logements.</td></tr>
       <tr><td>Premium</td><td class="prix">${t3}</td><td>Grande maison ou villa, drone, photos crépuscule (twilight), vidéo courte pour les réseaux.</td></tr>
     </table>
-    <p style="margin-top:16px;font-size:13px;color:var(--tl)">Fourchettes constatées sur le marché ${escHtml(v.pre)} — chaque photographe fixe librement ses tarifs, affichés en transparence sur sa fiche annuaire.</p>
+    <p style="margin-top:16px;font-size:13px;color:var(--tl)">Fourchettes constatées sur le marché ${escHtml(v.pre)} : chaque photographe fixe librement ses tarifs, affichés en transparence sur sa fiche annuaire.</p>
   </div>
 </section>
 
@@ -343,11 +343,11 @@ function buildPhotographePage(v) {
       <li><i class="ph-bold ph-check-circle"></i><span><strong>La salle de bain</strong> : serviettes pliées, zéro objet personnel</span></li>
       <li><i class="ph-bold ph-check-circle"></i><span><strong>La cuisine équipée</strong> : plan de travail dégagé, équipements visibles</span></li>
       <li><i class="ph-bold ph-check-circle"></i><span><strong>L'espace de vie mis en scène</strong> : table dressée, plaid, lumières chaudes</span></li>
-      <li><i class="ph-bold ph-check-circle"></i><span><strong>Extérieurs et vue</strong> : terrasse, balcon, jardin — souvent décisifs ${escHtml(v.pre)}</span></li>
+      <li><i class="ph-bold ph-check-circle"></i><span><strong>Extérieurs et vue</strong> : terrasse, balcon, jardin : souvent décisifs ${escHtml(v.pre)}</span></li>
       <li><i class="ph-bold ph-check-circle"></i><span><strong>Les détails différenciants</strong> : cheminée, baignoire, machine à café, déco signature</span></li>
       <li><i class="ph-bold ph-check-circle"></i><span><strong>Le quartier</strong> : 2-3 photos qui vendent l'emplacement et l'ambiance locale</span></li>
     </ul>
-    <div class="note"><strong>Avant le shooting :</strong> logement rangé comme pour un voyageur exigeant, ampoules toutes identiques (blanc chaud), rideaux ouverts, shooting calé en fin de matinée ou début d'après-midi selon l'orientation. Un bon photographe LCD vous enverra sa propre checklist de préparation — c'est bon signe.</div>
+    <div class="note"><strong>Avant le shooting :</strong> logement rangé comme pour un voyageur exigeant, ampoules toutes identiques (blanc chaud), rideaux ouverts, shooting calé en fin de matinée ou début d'après-midi selon l'orientation. Un bon photographe LCD vous enverra sa propre checklist de préparation : c'est bon signe.</div>
   </div>
 </section>
 
@@ -402,9 +402,9 @@ function buildMenagePage(v) {
     { q: `Combien coûte un ménage Airbnb ${v.pre} ?`,
       a: `Pour un turnover complet (ménage + lits faits + contrôle), comptez <strong>${m1}</strong> pour un studio/T1, <strong>${m2}</strong> pour un T2/T3 et <strong>${m3}</strong> pour une grande maison. La gestion du linge (location + blanchisserie) s'ajoute souvent : 8 à 15 € par personne. ${premium ? `${v.name} étant un marché premium, les fourchettes sont un cran au-dessus de la moyenne nationale.` : ''}` },
     { q: `Qui paie le ménage : l'hôte ou le voyageur ?`,
-      a: `Le voyageur, via les <strong>frais de ménage</strong> ajoutés au prix du séjour sur Airbnb et Booking. Bien calibrés, ils couvrent intégralement votre prestataire. Attention : des frais trop élevés plombent le classement de l'annonce et le taux de conversion — visez le coût réel de votre équipe, pas une marge cachée.` },
+      a: `Le voyageur, via les <strong>frais de ménage</strong> ajoutés au prix du séjour sur Airbnb et Booking. Bien calibrés, ils couvrent intégralement votre prestataire. Attention : des frais trop élevés plombent le classement de l'annonce et le taux de conversion : visez le coût réel de votre équipe, pas une marge cachée.` },
     { q: `Que doit inclure un vrai ménage de turnover ?`,
-      a: `Bien plus qu'un ménage classique : nettoyage complet, <strong>lits faits qualité hôtelière</strong>, réassort des consommables (papier, savon, café), contrôle des équipements, signalement des dégâts photos à l'appui, parfois check du lave-vaisselle/lave-linge laissés par les voyageurs. Avec ${v.occ} % d'occupation ${v.pre}, un logement tourne environ <strong>${rotations} fois par mois</strong> — la régularité et la fiabilité comptent autant que la qualité.` },
+      a: `Bien plus qu'un ménage classique : nettoyage complet, <strong>lits faits qualité hôtelière</strong>, réassort des consommables (papier, savon, café), contrôle des équipements, signalement des dégâts photos à l'appui, parfois check du lave-vaisselle/lave-linge laissés par les voyageurs. Avec ${v.occ} % d'occupation ${v.pre}, un logement tourne environ <strong>${rotations} fois par mois</strong> : la régularité et la fiabilité comptent autant que la qualité.` },
     { q: `Comment trouver une équipe de ménage fiable ${v.pre} ?`,
       a: `Quatre critères non négociables : une <strong>RC pro</strong> à jour, une vraie expérience du turnover LCD (pas seulement du ménage de bureaux), la disponibilité week-ends et jours fériés (c'est là que tout se joue), et un plan B en cas d'absence. L'annuaire vérifié de Jason Marinho ne référence que des équipes contrôlées sur ces points, avec contact direct et zéro commission.` },
   ]
@@ -425,7 +425,7 @@ function buildMenagePage(v) {
     <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/menage">Ménage LCD</a> · <span>${escHtml(v.name)}</span></div>
     <span class="lbl">Ménage turnover · Airbnb, Booking &amp; réservation directe</span>
     <h1>Équipe de ménage LCD <em>${escHtml(v.pre)}</em></h1>
-    <p class="lead">Avec <strong>${v.occ} % d'occupation moyenne</strong>, un logement ${escHtml(v.pre)} tourne environ ${rotations} fois par mois. Le ménage est le maillon qui fait ou défait vos avis 5 étoiles. Tarifs locaux, checklist turnover, questions à poser — et l'annuaire vérifié pour trouver la bonne équipe.</p>
+    <p class="lead">Avec <strong>${v.occ} % d'occupation moyenne</strong>, un logement ${escHtml(v.pre)} tourne environ ${rotations} fois par mois. Le ménage est le maillon qui fait ou défait vos avis 5 étoiles. Tarifs locaux, checklist turnover, questions à poser : et l'annuaire vérifié pour trouver la bonne équipe.</p>
     <div class="hero-ctas">
       <a href="/annuaires/menage" class="btn-p"><i class="ph-bold ph-magnifying-glass"></i> Trouver une équipe vérifiée</a>
       <a href="/devenir-prestataire-menage-lcd" class="btn-ol"><i class="ph-bold ph-sparkle"></i> Je fais du ménage LCD ${escHtml(v.pre)}</a>
@@ -443,8 +443,8 @@ function buildMenagePage(v) {
     <span class="lbl dk">Le marché local</span>
     <h2>Le ménage LCD ${escHtml(v.pre)}, <em>un vrai métier</em></h2>
     <p>${escHtml(v.desc)}</p>
-    <p>Résultat : ~${v.annonces} annonces qui tournent, des check-out à 11h enchaînés sur des check-in à 15-16h, et zéro droit à l'erreur — la propreté est le critère n°1 des avis négatifs sur Airbnb et Booking. Une équipe spécialisée turnover, ce n'est pas « une femme de ménage » : c'est un partenaire qui connaît les standards hôteliers, gère le linge et vous alerte photos à l'appui au moindre souci.</p>
-    <div class="note"><strong>Le calcul honnête :</strong> les frais de ménage payés par le voyageur couvrent la prestation. Un turnover à ${premium ? '70' : '60'} € sur un séjour moyen de 3 nuits à ${v.adrMin}-${v.adrMax} €/nuit, c'est moins de ${Math.max(5, Math.round(((premium ? 70 : 60) / (3 * v.adrMin)) * 100))} % du panier — et c'est ce qui protège vos 5 étoiles.</div>
+    <p>Résultat : ~${v.annonces} annonces qui tournent, des check-out à 11h enchaînés sur des check-in à 15-16h, et zéro droit à l'erreur : la propreté est le critère n°1 des avis négatifs sur Airbnb et Booking. Une équipe spécialisée turnover, ce n'est pas « une femme de ménage » : c'est un partenaire qui connaît les standards hôteliers, gère le linge et vous alerte photos à l'appui au moindre souci.</p>
+    <div class="note"><strong>Le calcul honnête :</strong> les frais de ménage payés par le voyageur couvrent la prestation. Un turnover à ${premium ? '70' : '60'} € sur un séjour moyen de 3 nuits à ${v.adrMin}-${v.adrMax} €/nuit, c'est moins de ${Math.max(5, Math.round(((premium ? 70 : 60) / (3 * v.adrMin)) * 100))} % du panier : et c'est ce qui protège vos 5 étoiles.</div>
   </div>
 </section>
 
@@ -456,10 +456,10 @@ function buildMenagePage(v) {
       <tr><th>Logement</th><th>Tarif indicatif</th><th>Ce que ça couvre</th></tr>
       <tr><td>Studio / T1</td><td class="prix">${m1}</td><td>Turnover complet : ménage, lit fait, salle de bain, réassort consommables, contrôle.</td></tr>
       <tr><td>T2 / T3</td><td class="prix">${m2}</td><td>Idem avec 2-3 couchages, cuisine complète, souvent 2 personnes pour tenir le créneau 11h-15h.</td></tr>
-      <tr><td>Maison / villa</td><td class="prix">${m3}</td><td>Grands volumes, extérieurs, parfois piscine — équipe et durée dimensionnées en conséquence.</td></tr>
+      <tr><td>Maison / villa</td><td class="prix">${m3}</td><td>Grands volumes, extérieurs, parfois piscine : équipe et durée dimensionnées en conséquence.</td></tr>
       <tr><td>Gestion du linge</td><td class="prix">8 – 15 € / pers.</td><td>Location de linge hôtelier + blanchisserie, ou lavage sur place facturé au forfait.</td></tr>
     </table>
-    <p style="margin-top:16px;font-size:13px;color:var(--tl)">Fourchettes constatées sur le marché ${escHtml(v.pre)} — chaque équipe fixe librement ses tarifs, affichés en transparence sur sa fiche annuaire.</p>
+    <p style="margin-top:16px;font-size:13px;color:var(--tl)">Fourchettes constatées sur le marché ${escHtml(v.pre)} : chaque équipe fixe librement ses tarifs, affichés en transparence sur sa fiche annuaire.</p>
   </div>
 </section>
 
@@ -474,8 +474,8 @@ function buildMenagePage(v) {
       <li><i class="ph-bold ph-check-circle"></i><span><strong>Réassort consommables</strong> : papier, savon, éponge neuve, café/thé d'accueil</span></li>
       <li><i class="ph-bold ph-check-circle"></i><span><strong>Contrôle équipements</strong> : wifi, TV, chauffage/clim, ampoules, piles télécommandes</span></li>
       <li><i class="ph-bold ph-check-circle"></i><span><strong>Poubelles sorties</strong> et tri selon les consignes de la copropriété</span></li>
-      <li><i class="ph-bold ph-check-circle"></i><span><strong>Signalement photos</strong> : dégâts, objets oubliés, stocks bas — avant le prochain check-in</span></li>
-      <li><i class="ph-bold ph-check-circle"></i><span><strong>Mise en scène finale</strong> : rideaux, coussins, petit mot d'accueil — prêt pour les photos des voyageurs</span></li>
+      <li><i class="ph-bold ph-check-circle"></i><span><strong>Signalement photos</strong> : dégâts, objets oubliés, stocks bas : avant le prochain check-in</span></li>
+      <li><i class="ph-bold ph-check-circle"></i><span><strong>Mise en scène finale</strong> : rideaux, coussins, petit mot d'accueil : prêt pour les photos des voyageurs</span></li>
     </ul>
     <div class="note"><strong>Les 4 questions à poser avant d'engager :</strong> avez-vous une RC pro à jour ? Travaillez-vous les week-ends et jours fériés ? Quel est votre délai de réservation d'un créneau ? Qui me remplace en cas d'absence ? Une équipe pro répond aux quatre sans hésiter.</div>
   </div>

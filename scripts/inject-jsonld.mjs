@@ -16,7 +16,7 @@ const MARKER_END   = '<!-- JSONLD-AUTO:END -->';
 const PAGES = {
   'blog/index.html': {
     type: 'Blog',
-    name: 'Blog LCD — Jason Marinho',
+    name: 'Blog LCD : Jason Marinho',
     url: 'https://jasonmarinho.com/blog',
     description: 'Articles, conseils et ressources gratuites sur la location courte durée.',
     crumbs: [
@@ -26,7 +26,7 @@ const PAGES = {
   },
   'services/formations/index.html': {
     type: 'CollectionPage',
-    name: 'Formations LCD — Jason Marinho',
+    name: 'Formations LCD : Jason Marinho',
     url: 'https://jasonmarinho.com/services/formations',
     description: '15 formations pratiques pour hôtes Airbnb et conciergeries en location courte durée.',
     crumbs: [
@@ -73,7 +73,7 @@ const PAGES = {
   },
   'services/actualites/index.html': {
     type: 'WebPage',
-    name: 'Actualités LCD — Jason Marinho',
+    name: 'Actualités LCD : Jason Marinho',
     url: 'https://jasonmarinho.com/services/actualites',
     description: 'Actualités de la location courte durée : loi Le Meur, fiscalité 2026, plateformes OTA.',
     crumbs: [
@@ -84,7 +84,7 @@ const PAGES = {
   },
   'services/guides-lcd/index.html': {
     type: 'WebPage',
-    name: 'Guides LCD — Jason Marinho',
+    name: 'Guides LCD : Jason Marinho',
     url: 'https://jasonmarinho.com/services/guides-lcd',
     description: 'Guides LCD complets par profil d\'hôte : gîtes, chambres d\'hôtes, conciergeries, réservation directe.',
     crumbs: [
@@ -95,7 +95,7 @@ const PAGES = {
   },
   'services/communaute/index.html': {
     type: 'WebPage',
-    name: 'Communauté LCD — Jason Marinho',
+    name: 'Communauté LCD : Jason Marinho',
     url: 'https://jasonmarinho.com/services/communaute',
     description: 'Groupes Facebook d\'hôtes LCD : entraide, visibilité locale, bonnes pratiques.',
     crumbs: [
@@ -106,7 +106,7 @@ const PAGES = {
   },
   'services/partenaires/index.html': {
     type: 'WebPage',
-    name: 'Partenaires LCD — Jason Marinho',
+    name: 'Partenaires LCD : Jason Marinho',
     url: 'https://jasonmarinho.com/services/partenaires',
     description: 'Partenaires LCD Jason Marinho : Driing (réservation directe), PMS, assurances et outils négociés.',
     crumbs: [
@@ -117,7 +117,7 @@ const PAGES = {
   },
   'pour-qui/membres-driing/index.html': {
     type: 'WebPage',
-    name: 'Membres Driing — Jason Marinho',
+    name: 'Membres Driing : Jason Marinho',
     url: 'https://jasonmarinho.com/pour-qui/membres-driing',
     description: 'Avantages exclusifs pour les membres Driing : formations prioritaires, partenaires négociés, support direct.',
     crumbs: [
@@ -128,7 +128,7 @@ const PAGES = {
   },
   'tarifs/index.html': {
     type: 'WebPage',
-    name: 'Tarifs — Jason Marinho',
+    name: 'Tarifs : Jason Marinho',
     url: 'https://jasonmarinho.com/tarifs',
     description: 'Tarifs des formations et accompagnements LCD proposés par Jason Marinho.',
     crumbs: [
@@ -138,7 +138,7 @@ const PAGES = {
   },
   'contact/index.html': {
     type: 'ContactPage',
-    name: 'Contact — Jason Marinho',
+    name: 'Contact : Jason Marinho',
     url: 'https://jasonmarinho.com/contact',
     description: 'Contacter Jason Marinho pour toute question sur la location courte durée, les formations ou les outils.',
     crumbs: [

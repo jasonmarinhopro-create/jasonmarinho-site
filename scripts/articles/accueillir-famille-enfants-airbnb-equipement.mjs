@@ -7,7 +7,7 @@ export default {
   categorySlug: 'experience',
   readTime: 7,
 
-  lead: 'Les familles avec enfants représentent 30 % des réservations LCD en France et sont parmi les profils qui paient le mieux — séjours plus longs, plus d\'équipements acceptés, moins de négociation. Pourtant, 70 % des annonces ne sont pas optimisées pour ce profil. Voici les 15 équipements qui font vraiment la différence.',
+  lead: 'Les familles avec enfants représentent 30 % des réservations LCD en France et sont parmi les profils qui paient le mieux : séjours plus longs, plus d\'équipements acceptés, moins de négociation. Pourtant, 70 % des annonces ne sont pas optimisées pour ce profil. Voici les 15 équipements qui font vraiment la différence.',
 
   sections: [
     {
@@ -17,7 +17,7 @@ export default {
         { type: 'ul', items: [
           'Modèles recommandés : Babybjörn Bliss, Chicco Next2Me',
           'Vérifier la conformité aux normes CE avant chaque séjour',
-          'Le mentionner dans l\'annonce avec une photo dédiée — c\'est un critère de filtre',
+          'Le mentionner dans l\'annonce avec une photo dédiée : c\'est un critère de filtre',
         ]},
       ],
     },
@@ -37,8 +37,8 @@ export default {
       content: [
         { type: 'p', text: 'Pour les nourrissons, la baignoire adulte est inutilisable sans support. Une baignoire bébé pliable ou un tapis antidérapant avec siège règle le problème pour 25-40 €.' },
         { type: 'ul', items: [
-          'Option économique : tapis antidérapant avec siège de bain — 25 €',
-          'Option premium : baignoire pliable (Stokke Flexi Bath) — 50 €',
+          'Option économique : tapis antidérapant avec siège de bain : 25 €',
+          'Option premium : baignoire pliable (Stokke Flexi Bath) : 50 €',
           'À ranger proprement et à indiquer dans ton livret d\'accueil',
         ]},
       ],
@@ -82,7 +82,7 @@ export default {
         { type: 'p', text: 'Une TV avec compte Netflix kids ou un lecteur DVD avec quelques films enfants change radicalement la vie d\'une famille le soir. Budget : 0 € si tu as déjà Netflix (ajoute un profil enfant).' },
         { type: 'ul', items: [
           'Créer un profil "Enfants" sur Netflix avec code PIN parental',
-          'Alternativement : lecteur DVD + 5-10 DVD enfants — 30 € d\'occasion',
+          'Alternativement : lecteur DVD + 5-10 DVD enfants : 30 € d\'occasion',
           'Indiquer dans le livret d\'accueil comment activer le profil enfant',
         ]},
       ],
@@ -92,10 +92,10 @@ export default {
       content: [
         { type: 'p', text: 'Une boîte à jouets bien fournie transforme un logement standard en logement family-friendly dans l\'esprit des parents. Investissement one-shot, retour en avis garanti.' },
         { type: 'ul', items: [
-          '5-10 jouets/peluches lavables ou essuyables — 50 € one-shot',
+          '5-10 jouets/peluches lavables ou essuyables : 50 € one-shot',
           'Vérifier après chaque séjour : hygiène + intégrité des jouets',
           'Retirer tout jouet avec petites pièces détachables (risque étouffement)',
-          'Mentionner "boîte à jouets" dans l\'annonce — critère de choix pour les parents',
+          'Mentionner "boîte à jouets" dans l\'annonce : critère de choix pour les parents',
         ]},
       ],
     },
@@ -115,9 +115,9 @@ export default {
       content: [
         { type: 'p', text: 'Si ton logement a un jardin ou une terrasse, des jeux de plein air font exploser les avis. Les familles choisissent souvent un logement avec jardin précisément pour que les enfants puissent jouer dehors.' },
         { type: 'ul', items: [
-          'Ballon de foot ou de plage — 10 €',
-          'Vélo enfant (2 tailles différentes si possible) — 30 € d\'occasion',
-          'Frisbee, raquettes de plage — 15 €',
+          'Ballon de foot ou de plage : 10 €',
+          'Vélo enfant (2 tailles différentes si possible) : 30 € d\'occasion',
+          'Frisbee, raquettes de plage : 15 €',
           'Mentionner dans les photos : une photo avec les jeux de plein air visibles',
         ]},
       ],
@@ -149,20 +149,20 @@ export default {
     {
       h2: '13. Coins de table en mousse',
       content: [
-        { type: 'p', text: 'Protéger les angles de tables et meubles avec des coins en mousse est un investissement de 5 € qui peut éviter une urgence médicale — et te protège aussi d\'un avis catastrophique.' },
+        { type: 'p', text: 'Protéger les angles de tables et meubles avec des coins en mousse est un investissement de 5 € qui peut éviter une urgence médicale : et te protège aussi d\'un avis catastrophique.' },
         { type: 'ul', items: [
           'Kit coins de table transparent : 5-8 €',
           'Poser sur tous les angles de table basse, table de nuit, mobilier à angle vif',
-          'Ils s\'usent — vérifier et remplacer si nécessaire entre les séjours',
+          'Ils s\'usent : vérifier et remplacer si nécessaire entre les séjours',
         ]},
       ],
     },
     {
       h2: '14. Veilleuse chambre enfant',
       content: [
-        { type: 'p', text: 'Une veilleuse dans la chambre enfant permet aux parents de gérer les réveils nocturnes sans allumer la grande lumière. Petit investissement, grand impact sur la qualité du sommeil de toute la famille — et donc sur leur avis.' },
+        { type: 'p', text: 'Une veilleuse dans la chambre enfant permet aux parents de gérer les réveils nocturnes sans allumer la grande lumière. Petit investissement, grand impact sur la qualité du sommeil de toute la famille : et donc sur leur avis.' },
         { type: 'ul', items: [
-          'Veilleuse LED avec détecteur de mouvement — 10-15 €',
+          'Veilleuse LED avec détecteur de mouvement : 10-15 €',
           'Préférer les modèles en lumière chaude (moins agressive la nuit)',
           'La positionner près du lit ou à l\'entrée de la chambre',
         ]},
@@ -171,7 +171,7 @@ export default {
     {
       h2: '15. Livret d\'accueil spécial familles',
       content: [
-        { type: 'p', text: 'Avoir l\'équipement ne suffit pas — il faut le communiquer dans ton annonce ET dans ton livret pour que les familles le trouvent et l\'utilisent. Un livret d\'accueil spécial familles est le 15e équipement qui transforme l\'expérience.' },
+        { type: 'p', text: 'Avoir l\'équipement ne suffit pas : il faut le communiquer dans ton annonce ET dans ton livret pour que les familles le trouvent et l\'utilisent. Un livret d\'accueil spécial familles est le 15e équipement qui transforme l\'expérience.' },
         { type: 'ul', items: [
           'Section dédiée "Familles avec enfants" : liste exhaustive des équipements disponibles',
           'Photo du coin enfant (jouets visibles) ET du lit parapluie dans les 10 premières photos',

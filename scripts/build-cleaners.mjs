@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Build script — génère l'annuaire public des équipes de ménage LCD et
+ * Build script : génère l'annuaire public des équipes de ménage LCD et
  * les fiches individuelles SEO friendly. Réplique du pattern
  * build-photographers.mjs.
  *
@@ -18,8 +18,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
 const FICHES_DIR = path.join(ROOT, 'annuaires', 'menage')
 // Sous-dossiers à PROTÉGER du cleanup (sous-pages statiques sous
-// /annuaires/menage/) — sinon le rm récursif les supprimerait.
-// NB : 'annuaire' n'est plus réservé — l'ancienne URL /annuaires/menage/annuaire
+// /annuaires/menage/) : sinon le rm récursif les supprimerait.
+// NB : 'annuaire' n'est plus réservé : l'ancienne URL /annuaires/menage/annuaire
 // redirige (301 vercel.json) vers /annuaires/menage.
 const RESERVED_DIRS = new Set(['inscription', 'exemple-fiche'])
 
@@ -112,7 +112,7 @@ function villeGuidePath(ville, prefix) {
   return fs.existsSync(path.join(ROOT, dir, 'index.html')) ? `/${dir}` : null
 }
 
-// "Membre depuis juin 2026" — signal d'anciennete/confiance sur la fiche
+// "Membre depuis juin 2026" : signal d'anciennete/confiance sur la fiche
 const MOIS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
 function memberSince(createdAt) {
   if (!createdAt) return null
@@ -605,7 +605,7 @@ async function main() {
 
   // Clean menage dir : on supprime UNIQUEMENT les sous-dossiers de fiches
   // (slugs). Hub + annuaire + inscription + exemple-fiche (RESERVED_DIRS)
-  // sont intouchables — sinon le rm casse tout le hub /annuaires/menage/.
+  // sont intouchables : sinon le rm casse tout le hub /annuaires/menage/.
   if (fs.existsSync(FICHES_DIR)) {
     for (const entry of fs.readdirSync(FICHES_DIR, { withFileTypes: true })) {
       if (entry.isDirectory() && !RESERVED_DIRS.has(entry.name)) {

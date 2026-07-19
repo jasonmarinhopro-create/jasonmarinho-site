@@ -41,7 +41,7 @@ export default {
       content: [
         { type: 'p', text: 'Voici comment se mettre en règle en 2-3 heures.' },
         { type: 'ul', items: [
-          'Étape 1 : Tenir un registre de traitement (template gratuit sur cnil.fr) — liste des données collectées + finalité + durée',
+          'Étape 1 : Tenir un registre de traitement (template gratuit sur cnil.fr) : liste des données collectées + finalité + durée',
           'Étape 2 : Rédiger une politique de confidentialité simple à publier sur ton site direct + dans ton livret d\'accueil',
           'Étape 3 : Sécuriser le stockage (password manager, sauvegarde cloud, accès limité)',
           'Étape 4 : Préparer une procédure pour répondre aux demandes des voyageurs (typiquement 1-2 par an)',

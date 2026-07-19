@@ -26,7 +26,7 @@ export default {
           'Accéder au téléservice sur le portail officiel service-public.fr rubrique "Meublés de tourisme"',
           'Renseigner l\'adresse du logement et ton identité (numéro de SIRET si tu as une activité déclarée)',
           'Uploader le DPE valide du logement (obligatoire pour compléter la déclaration)',
-          'Obtenir le numéro d\'enregistrement immédiatement après validation — il est permanent tant que les informations ne changent pas',
+          'Obtenir le numéro d\'enregistrement immédiatement après validation : il est permanent tant que les informations ne changent pas',
           'Ajouter ce numéro dans les paramètres de chaque plateforme (Airbnb, Booking, Abritel) dans la section "Informations légales"',
         ]},
         { type: 'tip', text: 'Si ton DPE date de plus de 10 ans ou n\'existe pas encore, commande-le dès maintenant. Les diagnostiqueurs sont de plus en plus chargés et les délais s\'allongent. Sans DPE valide, tu ne peux pas compléter la déclaration.' },

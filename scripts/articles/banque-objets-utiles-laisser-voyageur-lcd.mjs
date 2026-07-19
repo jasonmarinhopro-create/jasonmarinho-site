@@ -97,8 +97,8 @@ export default {
     {
       h2: '15. Carnet de visite avec stylo',
       content: [
-        { type: 'p', text: 'Un carnet où chaque voyageur peut laisser un mot (8 €). Les nouveaux voyageurs feuillettent les mots des précédents et se sentent dans une histoire. Beaucoup laissent un mot à leur tour — effet communauté, bouche-à-oreille déclenché.' },
-        { type: 'tip', text: 'Présente ces 15 objets dans un panier ou tiroir avec un mot "Bienvenue, servez-vous !" — le libre accès sans friction double l\'effet. Vérifier et renouveler les consommables après chaque séjour (5-10 min ménage). Coût total : 80-120 € en one-shot, 5-10 €/mois en renouvellement.' },
+        { type: 'p', text: 'Un carnet où chaque voyageur peut laisser un mot (8 €). Les nouveaux voyageurs feuillettent les mots des précédents et se sentent dans une histoire. Beaucoup laissent un mot à leur tour : effet communauté, bouche-à-oreille déclenché.' },
+        { type: 'tip', text: 'Présente ces 15 objets dans un panier ou tiroir avec un mot "Bienvenue, servez-vous !" : le libre accès sans friction double l\'effet. Vérifier et renouveler les consommables après chaque séjour (5-10 min ménage). Coût total : 80-120 € en one-shot, 5-10 €/mois en renouvellement.' },
         { type: 'cta', text: 'Tu veux maximiser l\'expérience voyageur sans exploser ton budget ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },

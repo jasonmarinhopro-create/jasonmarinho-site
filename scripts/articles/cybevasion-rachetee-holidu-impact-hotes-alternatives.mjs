@@ -21,7 +21,7 @@ export default {
     {
       h2: '2. Holidu vaut-il le coup en 2026 ?',
       content: [
-        { type: 'p', text: 'Holidu génère du trafic principalement sur les marchés allemand, autrichien et suisse — ce qui peut être un avantage pour les logements dans des zones touristiques prisées par ces marchés (Alpes, Provence, Côte d\'Azur). En revanche, pour une location en milieu urbain ou sur des marchés à clientèle majoritairement française, son impact est plus limité.' },
+        { type: 'p', text: 'Holidu génère du trafic principalement sur les marchés allemand, autrichien et suisse : ce qui peut être un avantage pour les logements dans des zones touristiques prisées par ces marchés (Alpes, Provence, Côte d\'Azur). En revanche, pour une location en milieu urbain ou sur des marchés à clientèle majoritairement française, son impact est plus limité.' },
         { type: 'ul', items: [
           'Points forts : visibilité sur les marchés germaniques, agrégateur = présence sur plusieurs moteurs de recherche',
           'Points faibles : commission plus élevée que les plateformes directes, moins de contrôle sur l\'expérience voyageur',
@@ -35,13 +35,13 @@ export default {
       content: [
         { type: 'p', text: 'La dépendance à une seule plateforme est un risque stratégique. Les hôtes qui diversifient leurs sources de réservation obtiennent en moyenne 20 à 30 % de leur CA via des canaux alternatifs à Airbnb. Voici les plateformes les plus pertinentes selon le profil du logement :' },
         { type: 'ul', items: [
-          'Abritel (VRBO en Europe) : forte clientèle familiale, séjours longs, marché américain et nord-européen — idéal pour villas et maisons',
+          'Abritel (VRBO en Europe) : forte clientèle familiale, séjours longs, marché américain et nord-européen : idéal pour villas et maisons',
           'Gîtes de France : label qualité reconnu, clientèle française fidèle, particulièrement efficace en milieu rural et semi-rural',
           'Clévacances : similaire à Gîtes de France, plus souple sur les critères, forte présence dans les DOM-TOM',
           'Abritel : séjours familiaux, réservations directes privilégiées, commission compétitive vs Airbnb',
           'Site de réservation directe (avec Google My Business + Booking Moteur) : zéro commission, fidélisation optimale',
         ]},
-        { type: 'tip', text: 'La réservation directe via ton propre site reste le canal le plus rentable — zéro commission plateforme. Combinée à Google My Business correctement configuré, elle peut représenter 10 à 20 % des réservations sans budget publicitaire.' },
+        { type: 'tip', text: 'La réservation directe via ton propre site reste le canal le plus rentable : zéro commission plateforme. Combinée à Google My Business correctement configuré, elle peut représenter 10 à 20 % des réservations sans budget publicitaire.' },
       ],
     },
     {

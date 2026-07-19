@@ -30,7 +30,7 @@ function escAttr(s) {
     .replace(/>/g, '&gt;')
 }
 
-// Tri descendant par date — articles les plus récents en premier
+// Tri descendant par date : articles les plus récents en premier
 function sortArticles(arr) {
   return [...arr].sort((a, b) => {
     if (b.date !== a.date) return b.date.localeCompare(a.date)
@@ -65,7 +65,7 @@ function rebuildIndex() {
   const sorted = sortArticles(articles)
   let html = readFileSync(indexPath, 'utf8')
 
-  // 1) Cartes — remplace tout entre les marqueurs
+  // 1) Cartes : remplace tout entre les marqueurs
   const cardsHtml = sorted.map(buildCard).join('\n\n')
   const markerRegex = /<!-- BLOG:CARDS:START -->[\s\S]*?<!-- BLOG:CARDS:END -->/
   if (!markerRegex.test(html)) {
@@ -132,7 +132,7 @@ function rebuildSitemap() {
   console.log(`✓ sitemap.xml : ${sorted.length} URLs blog + pages catégories`)
 }
 
-// ─── Flux RSS (/rss.xml) — 50 derniers articles ───────────────────────────────
+// ─── Flux RSS (/rss.xml) : 50 derniers articles ───────────────────────────────
 
 function escXml(s) {
   return String(s)
@@ -154,7 +154,7 @@ function rebuildRss() {
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Jason Marinho — Blog location courte durée</title>
+    <title>Jason Marinho : Blog location courte durée</title>
     <link>https://jasonmarinho.com/blog</link>
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
@@ -203,7 +203,7 @@ function buildCategoryPage(slug, cat, arts) {
     {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
-      name: `${cat.label} — Blog location courte durée`,
+      name: `${cat.label} : Blog location courte durée`,
       description: desc,
       url,
       inLanguage: 'fr-FR',
@@ -225,10 +225,10 @@ function buildCategoryPage(slug, cat, arts) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${cat.label} — Blog location courte durée (${arts.length} articles) | Jason Marinho</title>
+<title>${cat.label} : Blog location courte durée (${arts.length} articles) | Jason Marinho</title>
 <meta name="description" content="${escAttr(desc)}">
 <link rel="canonical" href="${url}">
-<meta property="og:title" content="${cat.label} — Blog LCD | Jason Marinho">
+<meta property="og:title" content="${cat.label} : Blog LCD | Jason Marinho">
 <meta property="og:description" content="${escAttr(desc)}">
 <meta property="og:url" content="${url}">
 <meta property="og:type" content="website">

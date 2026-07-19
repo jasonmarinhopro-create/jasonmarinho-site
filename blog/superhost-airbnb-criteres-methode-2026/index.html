@@ -229,9 +229,9 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-lead">Le statut Superhost change concrètement la façon dont les voyageurs perçoivent ton annonce, mais beaucoup d'hôtes échouent sur un seul des quatre critères et perdent le badge en une évaluation. Voici exactement ce qu'Airbnb mesure en 2026 et la méthode pour cocher chaque case sans transformer ta gestion en cauchemar.</p>
 <h2 class="art-h2">1. Critère n°1 : maintenir une note moyenne d'au moins 4,8 sur 5</h2>
 <p class="art-p">Airbnb calcule cette moyenne sur les 365 derniers jours, en prenant en compte tous les avis publiés sur ton annonce. Un avis compte dès que voyageur et hôte ont posté leur évaluation, ou après le délai de 14 jours imparti pour le faire. La barre est haute parce que beaucoup de voyageurs notent 5 étoiles par défaut quand tout va bien : la moindre note de 3 ou 4 étoiles fait chuter ta moyenne plus vite que tu ne le penses.</p>
-<ul class="art-ul"><li>Si tu as 20 avis et qu'un seul est à 3 étoiles, ta moyenne tombe à 4,9 — encore au-dessus du seuil</li><li>Si tu as 10 avis et que deux sont à 3 étoiles, ta moyenne passe à 4,6 — en dessous du seuil</li><li>Plus tu as d'avis, plus tu absorbes les notes basses isolées</li><li>Les notes 1 et 2 étoiles peuvent te faire perdre le statut sur un seul cycle d'évaluation</li></ul>
+<ul class="art-ul"><li>Si tu as 20 avis et qu'un seul est à 3 étoiles, ta moyenne tombe à 4,9 : encore au-dessus du seuil</li><li>Si tu as 10 avis et que deux sont à 3 étoiles, ta moyenne passe à 4,6 : en dessous du seuil</li><li>Plus tu as d'avis, plus tu absorbes les notes basses isolées</li><li>Les notes 1 et 2 étoiles peuvent te faire perdre le statut sur un seul cycle d'évaluation</li></ul>
 <p class="art-p">La meilleure prévention reste de ne jamais sur-promettre dans ton annonce. Une annonce honnête sur les défauts du logement génère beaucoup moins de mauvais avis qu'une annonce qui embellit la réalité. Avant de te focaliser sur les détails, lis notre guide pour <a href="/blog/obtenir-avis-5-etoiles-airbnb" style="color:var(--g);font-weight:500">obtenir plus d'avis 5 étoiles sans harceler tes voyageurs</a> et applique la méthode du timing optimal pour la demande d'avis.</p>
-<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Vérifie ta moyenne mobile sur 365 jours dans ton tableau de bord Airbnb tous les mois. Si tu vois la moyenne descendre vers 4,85, identifie le ou les avis qui tirent vers le bas et corrige immédiatement le problème mentionné — c'est ton seul levier court terme.</span></div>
+<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Vérifie ta moyenne mobile sur 365 jours dans ton tableau de bord Airbnb tous les mois. Si tu vois la moyenne descendre vers 4,85, identifie le ou les avis qui tirent vers le bas et corrige immédiatement le problème mentionné : c'est ton seul levier court terme.</span></div>
 <h2 class="art-h2">2. Critère n°2 : répondre à 90 % des nouveaux messages en moins de 24 heures</h2>
 <p class="art-p">Le taux de réponse Airbnb ne mesure que les nouvelles demandes : premier message d'un voyageur, demande de réservation, demande d'information. Les conversations en cours, une fois la première réponse envoyée, ne pèsent pas dans le calcul. Le délai de 24 heures se déclenche dès la réception du message, peu importe l'heure. Un message reçu à 23h doit avoir une réponse avant 23h le lendemain pour ne pas plomber ton taux.</p>
 <p class="art-p">En pratique, atteindre 90 % demande surtout de la rigueur sur les notifications. Active les notifications push de l'application Airbnb sur ton téléphone, ajoute une réponse rapide automatique pour les demandes fréquentes (Wi-Fi, parking, équipements bébé), et utilise des <a href="/blog/gabarits-messages-lcd-hotes-templates" style="color:var(--g);font-weight:500">gabarits de messages LCD prêts à l'emploi</a> pour les questions répétitives.</p>
@@ -309,14 +309,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur : réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau : réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

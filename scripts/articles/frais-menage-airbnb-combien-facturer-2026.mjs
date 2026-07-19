@@ -49,9 +49,9 @@ export default {
       content: [
         { type: 'p', text: 'Si ton cleaning fee te coûte plus cher que tu ne facture, il faut optimiser le ménage avant de toucher au tarif. Quelques pistes éprouvées.' },
         { type: 'ul', items: [
-          'Acheter du linge en double (jeu rotation) — réduit le temps de pliage entre 2 séjours',
-          'Investir dans un système de blanchisserie externalisée (location de linge, ~3-5 €/kit complet) — vraiment rentable au-delà de 30 nuits/mois',
-          'Utiliser une checklist photo standardisée — réduit les retours voyageurs et donc les pertes',
+          'Acheter du linge en double (jeu rotation) : réduit le temps de pliage entre 2 séjours',
+          'Investir dans un système de blanchisserie externalisée (location de linge, ~3-5 €/kit complet) : vraiment rentable au-delà de 30 nuits/mois',
+          'Utiliser une checklist photo standardisée : réduit les retours voyageurs et donc les pertes',
           'Négocier des tarifs dégressifs avec une entreprise de ménage à partir de 4 prestations/mois',
         ]},
         { type: 'cta', text: 'Tu veux apprendre à structurer tes coûts LCD pour maximiser ta marge sans perdre en visibilité ?', button: 'Voir les formations', href: '/#formations' },

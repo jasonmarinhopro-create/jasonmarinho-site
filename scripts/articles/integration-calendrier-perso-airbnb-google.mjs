@@ -27,11 +27,11 @@ export default {
       h2: '2. Étapes d\'intégration',
       content: [
         { type: 'ul', items: [
-          'Étape 1 — Sur Airbnb : Calendrier → Synchronisation calendriers → Exporter calendrier. Copier le lien iCal',
-          'Étape 2 — Sur Google Calendar : Autres calendriers → "+" → À partir de l\'URL → coller le lien iCal Airbnb',
-          'Étape 3 — Renommer le calendrier importé en "Airbnb [nom logement]"',
-          'Étape 4 — Choisir une couleur (rouge pour Airbnb, bleu pour perso) pour distinguer visuellement',
-          'Étape 5 — Vérifier 5 min plus tard que les réservations apparaissent. Mise à jour toutes les 24 h',
+          'Étape 1 : Sur Airbnb : Calendrier → Synchronisation calendriers → Exporter calendrier. Copier le lien iCal',
+          'Étape 2 : Sur Google Calendar : Autres calendriers → "+" → À partir de l\'URL → coller le lien iCal Airbnb',
+          'Étape 3 : Renommer le calendrier importé en "Airbnb [nom logement]"',
+          'Étape 4 : Choisir une couleur (rouge pour Airbnb, bleu pour perso) pour distinguer visuellement',
+          'Étape 5 : Vérifier 5 min plus tard que les réservations apparaissent. Mise à jour toutes les 24 h',
         ]},
         { type: 'tip', text: 'Si tu as plusieurs logements, fais ça pour chacun avec une couleur différente. Tu vois en un coup d\'œil tous tes biens dans une seule timeline.' },
       ],

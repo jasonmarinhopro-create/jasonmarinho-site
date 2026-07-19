@@ -11,9 +11,9 @@ export default {
 
   sections: [
     {
-      h2: 'Étape 1 — Identifier les signaux d\'alerte',
+      h2: 'Étape 1 : Identifier les signaux d\'alerte',
       content: [
-        { type: 'p', text: 'Un mauvais client se révèle généralement dans les 2-3 premiers mois. Ces signaux ne s\'améliorent pas seuls — agir tôt.' },
+        { type: 'p', text: 'Un mauvais client se révèle généralement dans les 2-3 premiers mois. Ces signaux ne s\'améliorent pas seuls : agir tôt.' },
         { type: 'ul', items: [
           'Retards de paiement répétés (> 2 retards en 6 mois) malgré relances',
           'Critiques constantes sur ton travail sans suggestion constructive',
@@ -26,11 +26,11 @@ export default {
       ],
     },
     {
-      h2: 'Étape 2 — Tenter une réorientation (une seule fois)',
+      h2: 'Étape 2 : Tenter une réorientation (une seule fois)',
       content: [
         { type: 'p', text: 'Avant de mettre fin au mandat, tente une fois (et une seule) de remettre le rapport à plat. Si ça ne change pas, c\'est la sortie.' },
         { type: 'ul', items: [
-          'Demander un rdv téléphonique ou physique (pas de message — ça dégénère vite à l\'écrit)',
+          'Demander un rdv téléphonique ou physique (pas de message : ça dégénère vite à l\'écrit)',
           'Présenter des faits concrets : nombre de demandes hors contrat, retards de paiement, etc.',
           'Proposer 2 options claires : on revient au cadre du contrat OU on met fin au mandat',
           'Donner un délai de 30 jours pour voir si la situation s\'améliore',
@@ -39,11 +39,11 @@ export default {
       ],
     },
     {
-      h2: 'Étape 3 — Notifier la fin de mandat par lettre recommandée',
+      h2: 'Étape 3 : Notifier la fin de mandat par lettre recommandée',
       content: [
         { type: 'p', text: 'Si après 30 jours la situation n\'a pas changé, envoie la lettre de résiliation. La lettre RAR protège en cas de litige ultérieur.' },
         { type: 'ul', items: [
-          'Lettre RAR (recommandée avec accusé de réception) — obligatoire pour prouver la notification',
+          'Lettre RAR (recommandée avec accusé de réception) : obligatoire pour prouver la notification',
           'Contenu : date de fin du mandat (selon préavis contractuel), motifs objectifs (liste les faits)',
           'Ne pas être émotionnel dans la lettre : faits documentés uniquement',
           'Délai de préavis : respecter le contrat (1-3 mois selon la clause de résiliation)',
@@ -51,7 +51,7 @@ export default {
       ],
     },
     {
-      h2: 'Étape 4 — Gérer la transition avec le propriétaire et les voyageurs',
+      h2: 'Étape 4 : Gérer la transition avec le propriétaire et les voyageurs',
       content: [
         { type: 'p', text: 'La période de préavis est délicate. Le propriétaire peut être hostile. Les voyageurs avec des réservations en cours ne doivent pas en pâtir.' },
         { type: 'ul', items: [
@@ -63,7 +63,7 @@ export default {
       ],
     },
     {
-      h2: 'Étape 5 — Solder les comptes et tirer les leçons',
+      h2: 'Étape 5 : Solder les comptes et tirer les leçons',
       content: [
         { type: 'p', text: 'La dernière étape clôture la relation financièrement et te permet d\'éviter le même profil dans le futur.' },
         { type: 'ul', items: [

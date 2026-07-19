@@ -29,7 +29,7 @@ export default {
           'Plus-values LMNP : depuis 2025, les amortissements pratiqués réduisent la valeur d\'achat lors de la revente, ce qui augmente la plus-value imposable. Avant, ils étaient sans impact à la revente',
           'Le seuil de 23 000 € qui définit la bascule LMP/LMNP n\'a pas bougé mais peut être reconsidéré en 2027',
           'Le micro-BIC LMNP avec abattement 50 % reste valable jusqu\'à 77 700 € de CA, mais l\'État pousse vers le régime réel',
-          'Les recettes des plateformes sont automatiquement transmises au fisc (DAC 7 européen) — plus de marges grises',
+          'Les recettes des plateformes sont automatiquement transmises au fisc (DAC 7 européen) : plus de marges grises',
         ]},
         { type: 'tip', text: 'Si tu as acheté ton logement spécifiquement pour la LCD avec emprunt, le régime LMNP au réel reste avantageux car tu déduis les intérêts d\'emprunt + amortissement. Mais le calcul de plus-value à la revente est moins favorable qu\'avant.' },
       ],
@@ -37,7 +37,7 @@ export default {
     {
       h2: '3. LMNP vs LMP : la matrice de décision',
       content: [
-        { type: 'p', text: 'Choisir entre les deux n\'est pas vraiment un choix — c\'est mécaniquement déterminé par tes seuils. Mais tu peux jouer sur ta structure pour rester en LMNP plus longtemps.' },
+        { type: 'p', text: 'Choisir entre les deux n\'est pas vraiment un choix : c\'est mécaniquement déterminé par tes seuils. Mais tu peux jouer sur ta structure pour rester en LMNP plus longtemps.' },
         { type: 'ul', items: [
           'Recettes < 23 000 € : LMNP automatique, statut le plus simple, micro-BIC suffit',
           'Recettes 23-50 000 € + revenus salariaux > 50 % : LMNP au réel devient pertinent (déduction frais)',
@@ -51,11 +51,11 @@ export default {
       content: [
         { type: 'p', text: 'Quel que soit ton statut, voici les leviers d\'optimisation immédiatement applicables.' },
         { type: 'ul', items: [
-          'Opter pour le régime réel si tes charges réelles dépassent l\'abattement micro-BIC (50 % du CA) — vrai dès que tu as un emprunt ou des amortissements',
+          'Opter pour le régime réel si tes charges réelles dépassent l\'abattement micro-BIC (50 % du CA) : vrai dès que tu as un emprunt ou des amortissements',
           'Bien comptabiliser les amortissements (mobilier sur 7 ans, gros électroménager sur 5 ans, immeuble si propriétaire sur 30-50 ans)',
           'Déduire toutes les charges pro (assurance, internet, abonnements logiciels, formations, frais de comptable)',
           'Si tu crées une activité conciergerie en plus : structure dédiée pour ne pas mélanger LMNP perso et activité commerciale',
-          'Anticiper la revente : amortissement réduit la base à la revente — important si tu prévois de revendre dans les 5 ans',
+          'Anticiper la revente : amortissement réduit la base à la revente : important si tu prévois de revendre dans les 5 ans',
         ]},
         { type: 'cta', text: 'Tu veux structurer ta fiscalité LCD avec un expert et éviter les erreurs coûteuses ?', button: 'Voir les formations', href: '/#formations' },
       ],

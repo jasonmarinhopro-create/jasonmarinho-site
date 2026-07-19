@@ -216,7 +216,7 @@ const PAGES = [
       h2Em: 'EI vs SASU comparés',
       examples: [
         {
-          titre: 'Bénéfice 30 000 € — verdict : EI',
+          titre: 'Bénéfice 30 000 € : verdict : EI',
           steps: [
             "EI au réel : 30 000 € − cotisations TNS ~9 000 € − IR TMI 11 % : 2 310 €",
             "Net en poche EI : ~18 690 €",
@@ -226,7 +226,7 @@ const PAGES = [
           ],
         },
         {
-          titre: 'Bénéfice 70 000 € — verdict : à arbitrer',
+          titre: 'Bénéfice 70 000 € : verdict : à arbitrer',
           steps: [
             "EI au réel : 70 000 € − cotisations TNS ~22 400 € − IR TMI 30 % : 14 280 €",
             "Net en poche EI : ~33 320 €",
@@ -236,7 +236,7 @@ const PAGES = [
           ],
         },
         {
-          titre: 'Bénéfice 120 000 € — verdict : SASU',
+          titre: 'Bénéfice 120 000 € : verdict : SASU',
           steps: [
             "EI au réel : 120 000 € − cotisations TNS ~42 000 € − IR TMI 41 % : 31 980 €",
             "Net en poche EI : ~46 020 €",
@@ -649,7 +649,7 @@ const PAGES = [
       },
       {
         q: 'Suis-je redevable de la TVA si je n\'ai aucun service ?',
-        a: "Non. Une location meublée nue saisonnière sans aucun service additionnel est hors champ TVA — aucune TVA à facturer, aucun seuil à surveiller, peu importe le CA. Tu restes uniquement en BIC pour l'impôt sur le revenu.",
+        a: "Non. Une location meublée nue saisonnière sans aucun service additionnel est hors champ TVA : aucune TVA à facturer, aucun seuil à surveiller, peu importe le CA. Tu restes uniquement en BIC pour l'impôt sur le revenu.",
       },
       {
         q: 'Airbnb collecte-t-il la TVA pour moi ?',

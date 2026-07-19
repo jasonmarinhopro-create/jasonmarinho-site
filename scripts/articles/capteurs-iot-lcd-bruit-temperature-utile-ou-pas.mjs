@@ -1,6 +1,6 @@
 export default {
   slug: 'capteurs-iot-lcd-bruit-temperature-utile-ou-pas',
-  title: 'Capteurs IoT pour LCD : bruit, température, ouverture — utile ou gadget ?',
+  title: 'Capteurs IoT pour LCD : bruit, température, ouverture : utile ou gadget ?',
   description: 'Détecteurs de bruit, sondes de température, capteurs d\'ouverture : l\'IoT promet de protéger ton logement. Test terrain de ce qui marche vraiment et ce qui est marketing.',
   keywords: 'capteur bruit Airbnb, IoT location courte durée, NoiseAware Minut, monitoring logement Airbnb',
   date: '2026-04-25',
@@ -43,7 +43,7 @@ export default {
         { type: 'ul', items: [
           'Coût : 15-25 € par capteur, parfois inclus dans l\'écosystème (Aqara, Nuki)',
           'Utilité : confirmation horodatée du check-in/check-out, détection d\'effraction',
-          'Friction : nécessite un hub central (gateway) pour fonctionner — coût supplémentaire 30-50 €',
+          'Friction : nécessite un hub central (gateway) pour fonctionner : coût supplémentaire 30-50 €',
           'Verdict : nice-to-have si tu as déjà l\'écosystème, gadget si tu pars de zéro',
         ]},
       ],

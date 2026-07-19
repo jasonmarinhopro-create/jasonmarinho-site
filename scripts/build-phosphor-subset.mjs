@@ -73,6 +73,9 @@ console.log(`Scanned site, found ${used.size} unique icon classes.`)
 const variants = [
   { variant: 'regular', prefix: 'ph' },
   { variant: 'bold',    prefix: 'ph-bold' },
+  // Light : utilisé par les cartes services de l'accueil. Sans lui dans le
+  // build, toute nouvelle icône ph-light restait absente du subset (carré vide).
+  { variant: 'light',   prefix: 'ph-light' },
 ]
 for (const { variant, prefix } of variants) {
   const src = join(FONTS_DIR, `phosphor-${variant}.css`)

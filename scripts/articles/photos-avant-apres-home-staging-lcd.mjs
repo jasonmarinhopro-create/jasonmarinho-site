@@ -43,7 +43,7 @@ export default {
       content: [
         { type: 'p', text: 'La cuisine est souvent négligée. Quelques détails simples la transforment.' },
         { type: 'ul', items: [
-          'Distributeur savon liquide en céramique noire (15 €) — au lieu de la bouteille Auchan',
+          'Distributeur savon liquide en céramique noire (15 €) : au lieu de la bouteille Auchan',
           'Plante verte (basilic, thym ou cactus) sur le plan de travail (15 €)',
           'Set de torchons coordonnés (lin gris, 25 €)',
           'Tablier accroché et set de couteaux visible (effet pro, 30-50 €)',

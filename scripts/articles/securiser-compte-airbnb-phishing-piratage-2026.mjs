@@ -43,9 +43,9 @@ export default {
       content: [
         { type: 'p', text: 'Les emails de phishing imitent les notifications légitimes d\'Airbnb avec une qualité parfois bluffante : logo, mise en page, ton commercial, lien vers une page qui ressemble à la vraie. L\'objectif est presque toujours le même, te faire saisir ton identifiant et ton mot de passe sur une fausse page Airbnb pour les voler. Les motifs les plus utilisés sont la fausse alerte de sécurité, le faux message d\'un voyageur urgent, la fausse notification de paiement bloqué et le faux avertissement de suspension de compte.' },
         { type: 'ul', items: [
-          'Vérifie l\'adresse complète de l\'expéditeur, pas seulement le nom affiché — un vrai email Airbnb finit par @airbnb.com',
+          'Vérifie l\'adresse complète de l\'expéditeur, pas seulement le nom affiché : un vrai email Airbnb finit par @airbnb.com',
           'Méfie-toi des variantes proches comme @aribnb.com, @bnb.com, @airbnb-support.com ou @airbnb.fr.com',
-          'Survole les liens sans cliquer pour voir l\'URL réelle en bas de l\'écran — elle doit commencer par https://www.airbnb.fr ou airbnb.com',
+          'Survole les liens sans cliquer pour voir l\'URL réelle en bas de l\'écran : elle doit commencer par https://www.airbnb.fr ou airbnb.com',
           'Une demande de mot de passe par email est toujours une arnaque, Airbnb ne te le demandera jamais comme ça',
           'Le ton anxiogène avec un délai court (24 heures, sinon suspension) est un signal d\'alerte classique',
         ]},
@@ -59,7 +59,7 @@ export default {
         { type: 'ul', items: [
           'Toute la communication pré-réservation reste dans la messagerie Airbnb, sans exception',
           'Refuse de communiquer ton email personnel ou ton numéro de mobile avant la réservation',
-          'Aucun paiement en dehors d\'Airbnb tant que la réservation se fait sur Airbnb — la plateforme bloque déjà les liens dans les messages',
+          'Aucun paiement en dehors d\'Airbnb tant que la réservation se fait sur Airbnb : la plateforme bloque déjà les liens dans les messages',
           'Méfie-toi du voyageur qui veut absolument passer par WhatsApp dès le premier message',
           'Si tu acceptes de communiquer par WhatsApp après la réservation, garde toujours une trace par écrit dans la messagerie Airbnb',
         ]},

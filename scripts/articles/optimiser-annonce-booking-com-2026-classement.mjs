@@ -32,7 +32,7 @@ export default {
           'Souple (J-5 ou J-3) : boost de visibilité significatif',
           'Impact estimé : +25 à +35 % de visibilité',
         ]},
-        { type: 'tip', text: 'Si tu crains les annulations tardives, garde la politique Souple mais demande une garantie de paiement à la réservation via les outils Booking — tu gardes le boost sans le risque.' },
+        { type: 'tip', text: 'Si tu crains les annulations tardives, garde la politique Souple mais demande une garantie de paiement à la réservation via les outils Booking : tu gardes le boost sans le risque.' },
       ],
     },
     {
@@ -137,7 +137,7 @@ export default {
           'Semaines 7-8 : monitorer les statistiques (taux de visite, taux de clic, taux de conversion). Ajustements ciblés',
           'Semaines 9-10 : si encore sous-performance, monter à Genius 20 % en saison creuse pour capturer du volume',
         ]},
-        { type: 'cta', text: 'Tu veux la formation complète Booking.com 2026 — algorithme, Genius, IA ?', button: 'Voir la formation Booking', href: '/services/formations/maitriser-booking-com-algorithme-genius' },
+        { type: 'cta', text: 'Tu veux la formation complète Booking.com 2026 : algorithme, Genius, IA ?', button: 'Voir la formation Booking', href: '/services/formations/maitriser-booking-com-algorithme-genius' },
       ],
     },
   ],

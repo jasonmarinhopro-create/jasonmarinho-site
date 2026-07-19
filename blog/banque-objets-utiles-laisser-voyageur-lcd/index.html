@@ -266,8 +266,8 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <h2 class="art-h2">14. Carte du quartier annotée</h2>
 <p class="art-p">Imprimée et annotée à la main avec tes adresses coups de cœur (boulangerie, café, parc, pharmacie), cette carte coûte 0 € et crée un sentiment d'accueil personnalisé immédiat. Mentionnée dans 25 % des avis 5★.</p>
 <h2 class="art-h2">15. Carnet de visite avec stylo</h2>
-<p class="art-p">Un carnet où chaque voyageur peut laisser un mot (8 €). Les nouveaux voyageurs feuillettent les mots des précédents et se sentent dans une histoire. Beaucoup laissent un mot à leur tour — effet communauté, bouche-à-oreille déclenché.</p>
-<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Présente ces 15 objets dans un panier ou tiroir avec un mot "Bienvenue, servez-vous !" — le libre accès sans friction double l'effet. Vérifier et renouveler les consommables après chaque séjour (5-10 min ménage). Coût total : 80-120 € en one-shot, 5-10 €/mois en renouvellement.</span></div>
+<p class="art-p">Un carnet où chaque voyageur peut laisser un mot (8 €). Les nouveaux voyageurs feuillettent les mots des précédents et se sentent dans une histoire. Beaucoup laissent un mot à leur tour : effet communauté, bouche-à-oreille déclenché.</p>
+<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Présente ces 15 objets dans un panier ou tiroir avec un mot "Bienvenue, servez-vous !" : le libre accès sans friction double l'effet. Vérifier et renouveler les consommables après chaque séjour (5-10 min ménage). Coût total : 80-120 € en one-shot, 5-10 €/mois en renouvellement.</span></div>
 <div class="art-cta-box"><p>Tu veux maximiser l'expérience voyageur sans exploser ton budget ?</p><a href="/#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a></div>
 </div>
 
@@ -357,14 +357,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur : réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau : réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

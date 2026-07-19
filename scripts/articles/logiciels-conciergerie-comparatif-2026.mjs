@@ -11,31 +11,31 @@ export default {
 
   sections: [
     {
-      h2: '1. Hospitable (anciennement Smartbnb) — pour < 30 biens',
+      h2: '1. Hospitable (anciennement Smartbnb) : pour < 30 biens',
       content: [
         { type: 'ul', items: [
           'Tarif : 25-40 €/mois/logement selon plan',
           'Forces : interface moderne, AI replies puissantes, intégration Airbnb officielle, assistant ChatGPT-like intégré',
           'Faiblesses : moins de plateformes connectées que Guesty, pas idéal pour 50+ biens',
           'Idéal pour : conciergeries 1-30 mandats, focus sur l\'automatisation conversationnelle',
-          'Nouveauté 2025 : tarification dynamique incluse dans le plan pro — fin des outils de pricing séparés pour petits volumes',
+          'Nouveauté 2025 : tarification dynamique incluse dans le plan pro : fin des outils de pricing séparés pour petits volumes',
         ]},
       ],
     },
     {
-      h2: '2. Smoobu — l\'option européenne tout-en-un',
+      h2: '2. Smoobu : l\'option européenne tout-en-un',
       content: [
         { type: 'ul', items: [
           'Tarif : 25 €/mois/logement, plan basic incluant l\'essentiel',
           'Forces : channel manager + messagerie + site direct + paiements dans un seul outil',
           'Faiblesses : moins puissant côté AI/automation que Hospitable',
           'Idéal pour : conciergeries franco-allemandes, hôtes qui veulent tout en un sans complexité',
-          'Support en français disponible — avantage appréciable pour les petites conciergeries',
+          'Support en français disponible : avantage appréciable pour les petites conciergeries',
         ]},
       ],
     },
     {
-      h2: '3. Hostfully — orienté multi-biens et équipes',
+      h2: '3. Hostfully : orienté multi-biens et équipes',
       content: [
         { type: 'ul', items: [
           'Tarif : 89-189 $/mois pour 1-30 biens (plan unique très complet)',
@@ -44,11 +44,11 @@ export default {
           'Idéal pour : conciergeries 10+ mandats avec plusieurs collaborateurs',
           'Recommandation : si tu vises 50+ mandats à terme, commence sur Hostfully dès 10 mandats plutôt que de migrer plus tard',
         ]},
-        { type: 'tip', text: 'Hostfully est le PMS le plus complet pour les conciergeries qui scalent. La migration d\'un PMS à un autre est douloureuse — autant choisir le bon dès que tu as 10 mandats.' },
+        { type: 'tip', text: 'Hostfully est le PMS le plus complet pour les conciergeries qui scalent. La migration d\'un PMS à un autre est douloureuse : autant choisir le bon dès que tu as 10 mandats.' },
       ],
     },
     {
-      h2: '4. Lodgify — avec site de réservation directe intégré',
+      h2: '4. Lodgify : avec site de réservation directe intégré',
       content: [
         { type: 'ul', items: [
           'Tarif : 35-55 €/mois selon volume',
@@ -60,7 +60,7 @@ export default {
       ],
     },
     {
-      h2: '5. Guesty — pour les grandes conciergeries (50+ biens)',
+      h2: '5. Guesty : pour les grandes conciergeries (50+ biens)',
       content: [
         { type: 'ul', items: [
           'Tarif : 100-300 $/mois selon volume (+ options supplémentaires)',

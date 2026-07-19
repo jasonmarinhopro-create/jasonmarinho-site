@@ -239,7 +239,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <p class="art-lead">À partir du 20 mai 2026, tout hôte qui loue en LCD en France doit avoir un numéro d'enregistrement national. Sans lui, tes annonces seront retirées des plateformes. Voici la procédure complète en 8 étapes pour l'obtenir avant la deadline, avec les pièges à éviter.</p>
 <h2 class="art-h2">Étape 1 : Préparer le DPE en cours de validité</h2>
 <p class="art-p">Le DPE (Diagnostic de Performance Énergétique) est le premier document exigé. Sans lui, tu ne peux pas terminer la procédure. Un DPE de classe G ou F peut aussi te bloquer pour les nouvelles autorisations.</p>
-<ul class="art-ul"><li>DPE valide : moins de 10 ans. Si expiré, le faire refaire avant de démarrer (150-300 €)</li><li>Classe minimum requise pour nouvelles autorisations 2026 : classe ≥ E</li><li>Conserver le PDF du DPE — il sera uploadé directement dans le téléservice</li></ul>
+<ul class="art-ul"><li>DPE valide : moins de 10 ans. Si expiré, le faire refaire avant de démarrer (150-300 €)</li><li>Classe minimum requise pour nouvelles autorisations 2026 : classe ≥ E</li><li>Conserver le PDF du DPE : il sera uploadé directement dans le téléservice</li></ul>
 <h2 class="art-h2">Étape 2 : Préparer les justificatifs de propriété ou d'autorisation</h2>
 <p class="art-p">Tu dois prouver que tu es bien le propriétaire ou que tu as l'autorisation d'exploiter le logement en LCD.</p>
 <ul class="art-ul"><li>Propriétaire : acte de vente ou extrait de la taxe foncière récent</li><li>Locataire / mandataire : autorisation écrite du propriétaire (modèle disponible sur service-public.fr)</li><li>Copropriété : vérifier que le règlement de copropriété n'interdit pas la LCD (certificat du syndic recommandé)</li></ul>
@@ -248,13 +248,13 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 <ul class="art-ul"><li>Vérifier si ta commune est en zone tendue : site service-public.fr ou mairie directement</li><li>Si oui : déposer le Cerfa 14004 en mairie (avec accusé de réception)</li><li>Délai de traitement mairie : 1 à 4 semaines selon la commune</li><li>Si non concerné : passer directement à l'étape 4</li></ul>
 <h2 class="art-h2">Étape 4 : Créer ou se connecter à son compte FranceConnect</h2>
 <p class="art-p">Le téléservice d'enregistrement LCD utilise FranceConnect pour l'authentification. Si tu n'as pas de compte, il faut en créer un avant de commencer.</p>
-<ul class="art-ul"><li>FranceConnect est accessible via : identifiants Ameli, impots.gouv.fr, La Poste, MSA</li><li>La connexion doit être au nom du propriétaire — pas d'un proche ou d'un prestataire</li><li>Préparer une adresse email valide et un numéro de mobile (confirmation par SMS)</li></ul>
+<ul class="art-ul"><li>FranceConnect est accessible via : identifiants Ameli, impots.gouv.fr, La Poste, MSA</li><li>La connexion doit être au nom du propriétaire : pas d'un proche ou d'un prestataire</li><li>Préparer une adresse email valide et un numéro de mobile (confirmation par SMS)</li></ul>
 <h2 class="art-h2">Étape 5 : Saisir les informations du logement</h2>
-<p class="art-p">Une fois connecté, la procédure demande les informations précises du logement. L'adresse doit être exactement identique à celle de Google Maps — une discordance bloque le système.</p>
+<p class="art-p">Une fois connecté, la procédure demande les informations précises du logement. L'adresse doit être exactement identique à celle de Google Maps : une discordance bloque le système.</p>
 <ul class="art-ul"><li>Adresse exacte du logement (numéro, rue, code postal, ville)</li><li>Type de logement : résidence principale partielle ou meublé de tourisme dédié</li><li>Capacité d'accueil déclarée (nombre de voyageurs max)</li><li>Type de mise en location : direct ou via plateforme (Airbnb, Booking, etc.)</li></ul>
 <h2 class="art-h2">Étape 6 : Uploader le DPE et les justificatifs</h2>
-<p class="art-p">La plateforme demande l'upload de documents en PDF. Prépare-les à l'avance dans un dossier — la session expire après 30 minutes d'inactivité.</p>
-<ul class="art-ul"><li>DPE en PDF — obligatoire</li><li>Justificatif de propriété ou d'autorisation — obligatoire</li><li>Accusé de réception mairie si commune en zone tendue — obligatoire dans ce cas</li><li>Taille maximum par fichier : 5 Mo. Scanner en 150 DPI suffit</li></ul>
+<p class="art-p">La plateforme demande l'upload de documents en PDF. Prépare-les à l'avance dans un dossier : la session expire après 30 minutes d'inactivité.</p>
+<ul class="art-ul"><li>DPE en PDF : obligatoire</li><li>Justificatif de propriété ou d'autorisation : obligatoire</li><li>Accusé de réception mairie si commune en zone tendue : obligatoire dans ce cas</li><li>Taille maximum par fichier : 5 Mo. Scanner en 150 DPI suffit</li></ul>
 <h2 class="art-h2">Étape 7 : Déclarer son SIRET si activité professionnelle</h2>
 <p class="art-p">Si tu loues en tant que professionnel (LMNP au réel, SASU, SCI), tu dois indiquer ton SIRET. Si tu loues comme particulier (micro-BIC), cette case est optionnelle.</p>
 <ul class="art-ul"><li>SIRET disponible sur l'avis de situation SIRENE (sirene.fr ou insee.fr)</li><li>Si tu n'as pas encore de SIRET et que tu es professionnel : inscription sur guichet-entreprises.fr d'abord</li><li>Pour les SCI : SIRET de la société (pas le SIRET personnel)</li></ul>
@@ -351,14 +351,14 @@ function subscriberBrevo(e) {
       msg.style.display='block';
       document.getElementById('brevo-email').value='';
     }else{
-      msg.textContent='Déjà inscrit ou erreur — réessaie.';
+      msg.textContent='Déjà inscrit ou erreur : réessaie.';
       msg.style.color='rgba(255,255,255,.6)';
       msg.style.display='block';
     }
     btn.textContent="S'inscrire";
     btn.disabled=false;
   }).catch(function(){
-    msg.textContent='Erreur réseau — réessaie.';
+    msg.textContent='Erreur réseau : réessaie.';
     msg.style.color='rgba(255,255,255,.6)';
     msg.style.display='block';
     btn.textContent="S'inscrire";

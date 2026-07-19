@@ -21,7 +21,7 @@ const formationDirs = fs.readdirSync(FORMATIONS_DIR, { withFileTypes: true })
 
 const TOTAL_FORMATIONS = formationDirs.length
 
-// Slots gratuits Découverte — lu depuis FormationsGrid.tsx pour rester aligné
+// Slots gratuits Découverte : lu depuis FormationsGrid.tsx pour rester aligné
 const gridFile = path.join(FORMATIONS_DIR, 'FormationsGrid.tsx')
 let DECOUVERTE_SLOTS = 2
 if (fs.existsSync(gridFile)) {
@@ -48,7 +48,7 @@ console.log(`[sync-counts] ${TOTAL_FORMATIONS} formations · ${DECOUVERTE_SLOTS}
 const constantsDir = path.join(ROOT, 'jason-app/lib/constants')
 fs.mkdirSync(constantsDir, { recursive: true })
 const constantsFile = path.join(constantsDir, 'auto-counts.ts')
-const constantsContent = `// AUTO-GENERATED par scripts/sync-counts.mjs — ne pas éditer à la main.
+const constantsContent = `// AUTO-GENERATED par scripts/sync-counts.mjs : ne pas éditer à la main.
 // Régénéré à chaque \`prebuild\` (Vercel) à partir du filesystem.
 export const FORMATIONS_TOTAL = ${TOTAL_FORMATIONS}
 export const FORMATIONS_DECOUVERTE_SLOTS = ${DECOUVERTE_SLOTS}
@@ -68,7 +68,7 @@ const TOTAL_PATTERNS = [
   { re: /(\b)(\d+)(\s+formations\s+pour\s+(?:développer|hôtes))/g, to: (_, p1, _n, p3) => `${p1}${TOTAL_FORMATIONS}${p3}` },
   // "Les 16 formations LCD disponibles"
   { re: /(Les\s+)(\d+)(\s+formations\s+(?:LCD|complètes|disponibles))/g, to: (_, p1, _n, p3) => `${p1}${TOTAL_FORMATIONS}${p3}` },
-  // "16 formations," ou "16 formations." (meta descriptions) — lookahead négatif pour épargner "X formations d'introduction"
+  // "16 formations," ou "16 formations." (meta descriptions) : lookahead négatif pour épargner "X formations d'introduction"
   { re: /(\b)(\d+)(\s+formations(?=[,.]))/g,                             to: (_, p1, _n, p3) => `${p1}${TOTAL_FORMATIONS}${p3}` },
 ]
 
@@ -99,7 +99,7 @@ for (const rel of FILES_TO_UPDATE) {
 
 // ── 4. Synchronise le TOTAL de places fondateur sur /tarifs ───────────────
 // Idempotent : remplace les références au total par FOUNDER_TOTAL. Le RESTANT
-// (data-founder-remaining) n'est PAS touché ici — il est mis à jour côté
+// (data-founder-remaining) n'est PAS touché ici : il est mis à jour côté
 // client par le fetch /api/founder-seats. On ne touche QUE le total.
 const tarifsFile = path.join(ROOT, 'tarifs/index.html')
 if (fs.existsSync(tarifsFile)) {

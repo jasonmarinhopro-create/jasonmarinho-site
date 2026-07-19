@@ -23,23 +23,23 @@ export default {
       content: [
         { type: 'p', text: 'Sur 250 hôtes accompagnés, la structure suivante augmente le taux de conversion de 18 à 32 % par rapport à une description "storytelling" classique. Elle tient en 4 phrases ordonnées et fait environ 480 caractères.' },
         { type: 'ul', items: [
-          'Phrase 1 — Type + capacité + spécificité : "Studio rénové 28 m² au 3e étage avec ascenseur, accueille 2 voyageurs."',
-          'Phrase 2 — Localisation factuelle : "Situé rue de la République à Lyon, à 4 minutes à pied de la place Bellecour et de la station de métro."',
-          'Phrase 3 — Atout principal différenciant : "Vue dégagée sur la cour intérieure, très calme malgré l\'hyper-centre."',
-          'Phrase 4 — Pratique du séjour : "Check-in autonome 24/7, fibre 450 Mb/s, kit petit-déjeuner offert."',
+          'Phrase 1 : Type + capacité + spécificité : "Studio rénové 28 m² au 3e étage avec ascenseur, accueille 2 voyageurs."',
+          'Phrase 2 : Localisation factuelle : "Situé rue de la République à Lyon, à 4 minutes à pied de la place Bellecour et de la station de métro."',
+          'Phrase 3 : Atout principal différenciant : "Vue dégagée sur la cour intérieure, très calme malgré l\'hyper-centre."',
+          'Phrase 4 : Pratique du séjour : "Check-in autonome 24/7, fibre 450 Mb/s, kit petit-déjeuner offert."',
         ]},
       ],
     },
     {
       h2: '3. Les 5 erreurs qui font perdre des réservations',
       content: [
-        { type: 'p', text: 'Ces erreurs sont récurrentes même chez les hôtes expérimentés. Elles passent inaperçues parce qu\'elles ne génèrent pas de remontée voyageur — juste moins de réservations.' },
+        { type: 'p', text: 'Ces erreurs sont récurrentes même chez les hôtes expérimentés. Elles passent inaperçues parce qu\'elles ne génèrent pas de remontée voyageur : juste moins de réservations.' },
         { type: 'ul', items: [
-          'Commencer par "Bienvenue chez nous !" ou "Nous vous accueillons" — perd 15 % de matching algorithmique car ces mots ne correspondent à aucune recherche voyageur',
-          'Mettre la durée du séjour idéal en premier ("idéal pour 2 nuits") — l\'algo l\'interprète comme une restriction',
-          'Adjectifs sans données : "très spacieux", "magnifique vue" — préférer "salon 32 m² orienté sud-ouest"',
-          'Mention du quartier sans nom précis — l\'algo a besoin du nom de rue ou place de référence',
-          'Émojis dans les 200 premiers caractères — Airbnb les filtre comme spam depuis 2025',
+          'Commencer par "Bienvenue chez nous !" ou "Nous vous accueillons" : perd 15 % de matching algorithmique car ces mots ne correspondent à aucune recherche voyageur',
+          'Mettre la durée du séjour idéal en premier ("idéal pour 2 nuits") : l\'algo l\'interprète comme une restriction',
+          'Adjectifs sans données : "très spacieux", "magnifique vue" : préférer "salon 32 m² orienté sud-ouest"',
+          'Mention du quartier sans nom précis : l\'algo a besoin du nom de rue ou place de référence',
+          'Émojis dans les 200 premiers caractères : Airbnb les filtre comme spam depuis 2025',
         ]},
         { type: 'tip', text: 'Si tu hésites entre 2 versions, A/B teste-les en alternant chaque semaine pendant un mois. Mesure le taux de clic dans tes statistiques Airbnb (section "Performances").' },
       ],

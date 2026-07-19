@@ -1,4 +1,4 @@
-// Vercel serverless function — tracking des fiches photographes publiques.
+// Vercel serverless function : tracking des fiches photographes publiques.
 // POST { slug, event } avec event ∈ ('view', 'portfolio', 'instagram')
 //
 // Appelé en navigator.sendBeacon depuis les fiches statiques :
@@ -67,7 +67,7 @@ module.exports = async function handler(req, res) {
   if (!Array.isArray(matches) || matches.length === 0) return res.status(200).json({ ok: true })
   const photographerId = matches[0].id
 
-  // Increment — AWAITÉ (lambda Vercel gelée dès la réponse envoyée)
+  // Increment : AWAITÉ (lambda Vercel gelée dès la réponse envoyée)
   const rpc = event === 'view'
     ? { fn: 'increment_photographer_views', args: { p_id: photographerId } }
     : { fn: 'increment_photographer_click', args: { p_id: photographerId, p_kind: event } }

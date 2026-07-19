@@ -17,7 +17,7 @@ export default {
         { type: 'ul', items: [
           'DPE valide : moins de 10 ans. Si expiré, le faire refaire avant de démarrer (150-300 €)',
           'Classe minimum requise pour nouvelles autorisations 2026 : classe ≥ E',
-          'Conserver le PDF du DPE — il sera uploadé directement dans le téléservice',
+          'Conserver le PDF du DPE : il sera uploadé directement dans le téléservice',
         ]},
       ],
     },
@@ -50,7 +50,7 @@ export default {
         { type: 'p', text: 'Le téléservice d\'enregistrement LCD utilise FranceConnect pour l\'authentification. Si tu n\'as pas de compte, il faut en créer un avant de commencer.' },
         { type: 'ul', items: [
           'FranceConnect est accessible via : identifiants Ameli, impots.gouv.fr, La Poste, MSA',
-          'La connexion doit être au nom du propriétaire — pas d\'un proche ou d\'un prestataire',
+          'La connexion doit être au nom du propriétaire : pas d\'un proche ou d\'un prestataire',
           'Préparer une adresse email valide et un numéro de mobile (confirmation par SMS)',
         ]},
       ],
@@ -58,7 +58,7 @@ export default {
     {
       h2: 'Étape 5 : Saisir les informations du logement',
       content: [
-        { type: 'p', text: 'Une fois connecté, la procédure demande les informations précises du logement. L\'adresse doit être exactement identique à celle de Google Maps — une discordance bloque le système.' },
+        { type: 'p', text: 'Une fois connecté, la procédure demande les informations précises du logement. L\'adresse doit être exactement identique à celle de Google Maps : une discordance bloque le système.' },
         { type: 'ul', items: [
           'Adresse exacte du logement (numéro, rue, code postal, ville)',
           'Type de logement : résidence principale partielle ou meublé de tourisme dédié',
@@ -70,11 +70,11 @@ export default {
     {
       h2: 'Étape 6 : Uploader le DPE et les justificatifs',
       content: [
-        { type: 'p', text: 'La plateforme demande l\'upload de documents en PDF. Prépare-les à l\'avance dans un dossier — la session expire après 30 minutes d\'inactivité.' },
+        { type: 'p', text: 'La plateforme demande l\'upload de documents en PDF. Prépare-les à l\'avance dans un dossier : la session expire après 30 minutes d\'inactivité.' },
         { type: 'ul', items: [
-          'DPE en PDF — obligatoire',
-          'Justificatif de propriété ou d\'autorisation — obligatoire',
-          'Accusé de réception mairie si commune en zone tendue — obligatoire dans ce cas',
+          'DPE en PDF : obligatoire',
+          'Justificatif de propriété ou d\'autorisation : obligatoire',
+          'Accusé de réception mairie si commune en zone tendue : obligatoire dans ce cas',
           'Taille maximum par fichier : 5 Mo. Scanner en 150 DPI suffit',
         ]},
       ],

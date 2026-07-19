@@ -1,13 +1,13 @@
 export default {
   slug: 'serrure-connectee-igloohome-nuki-comparatif-2026',
-  title: 'Serrure connectée LCD : Igloohome vs Nuki vs Master Lock — comparatif 2026',
+  title: 'Serrure connectée LCD : Igloohome vs Nuki vs Master Lock : comparatif 2026',
   description: 'Test terrain des 3 serrures connectées les plus utilisées par les hôtes LCD. Prix, autonomie, intégrations Airbnb, fiabilité et ROI réel.',
   keywords: 'serrure connectée Airbnb, Igloohome LCD, Nuki location courte durée, smart lock hôte 2026, check-in autonome',
   date: '2026-04-25',
   categorySlug: 'automatisation',
   readTime: 6,
 
-  lead: 'Le check-in autonome est devenu un standard 2026 sur Airbnb et Booking — les voyageurs business arrivent à 23 h et ne veulent pas attendre. La serrure connectée est l\'équipement qui te libère du check-in physique. Mais entre Igloohome, Nuki et Master Lock, le choix n\'est pas évident. Test terrain des 3 modèles.',
+  lead: 'Le check-in autonome est devenu un standard 2026 sur Airbnb et Booking : les voyageurs business arrivent à 23 h et ne veulent pas attendre. La serrure connectée est l\'équipement qui te libère du check-in physique. Mais entre Igloohome, Nuki et Master Lock, le choix n\'est pas évident. Test terrain des 3 modèles.',
 
   sections: [
     {
@@ -40,7 +40,7 @@ export default {
     {
       h2: '3. Master Lock : la solution boîte à clés intelligente',
       content: [
-        { type: 'p', text: 'Master Lock propose une boîte à clés sécurisée connectée (modèle 5440D ou 5441D). Tu glisses ta clé physique dedans, et tu génères un code unique par voyageur qui ouvre la boîte. Tu n\'as donc PAS à modifier ta serrure existante — ce qui est utile en copropriété stricte ou en location.' },
+        { type: 'p', text: 'Master Lock propose une boîte à clés sécurisée connectée (modèle 5440D ou 5441D). Tu glisses ta clé physique dedans, et tu génères un code unique par voyageur qui ouvre la boîte. Tu n\'as donc PAS à modifier ta serrure existante : ce qui est utile en copropriété stricte ou en location.' },
         { type: 'ul', items: [
           'Prix : 60-120 € selon le modèle',
           'Autonomie batterie : 24+ mois (peu d\'utilisation)',

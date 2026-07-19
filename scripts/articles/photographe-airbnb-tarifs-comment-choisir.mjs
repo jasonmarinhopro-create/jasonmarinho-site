@@ -7,7 +7,7 @@ export default {
   categorySlug: 'visibilite',
   readTime: 8,
 
-  lead: "Tes photos sont le premier — et souvent le seul — argument qui décide un voyageur à cliquer sur ton annonce plutôt que sur celle du voisin. Les plateformes le confirment : des photos professionnelles génèrent jusqu'à +40 % de réservations. Pourtant la plupart des hôtes hésitent encore à investir 300 € dans un shooting… tout en perdant bien plus chaque mois en nuits non vendues. Voici les vrais tarifs, le calcul de rentabilité honnête et la méthode pour choisir le bon photographe.",
+  lead: "Tes photos sont le premier : et souvent le seul : argument qui décide un voyageur à cliquer sur ton annonce plutôt que sur celle du voisin. Les plateformes le confirment : des photos professionnelles génèrent jusqu'à +40 % de réservations. Pourtant la plupart des hôtes hésitent encore à investir 300 € dans un shooting… tout en perdant bien plus chaque mois en nuits non vendues. Voici les vrais tarifs, le calcul de rentabilité honnête et la méthode pour choisir le bon photographe.",
 
   sections: [
     {
@@ -15,7 +15,7 @@ export default {
       content: [
         { type: 'p', text: "Sur Airbnb comme sur Booking, le voyageur voit d'abord une vignette : ta photo de couverture, un prix, une note. À ce stade, il n'a lu ni ta description ni tes équipements. Si la vignette ne donne pas envie, le reste n'existe pas. C'est mécanique : le taux de clic sur ton annonce dépend presque entièrement de cette première image." },
         { type: 'p', text: "Et l'effet se prolonge après le clic : une galerie complète et cohérente rassure, justifie un prix plus élevé et réduit les questions avant réservation. Les hôtes qui passent aux photos pro constatent en général deux choses : plus de réservations, et la possibilité de monter leurs prix de 5 à 15 % sans perdre de volume." },
-        { type: 'tip', text: "Tes photos pro ne servent pas qu'aux plateformes : ce sont les mêmes visuels qui alimentent ta fiche Google Business, tes réseaux sociaux et ton site de réservation directe — là où tu ne paies aucune commission." },
+        { type: 'tip', text: "Tes photos pro ne servent pas qu'aux plateformes : ce sont les mêmes visuels qui alimentent ta fiche Google Business, tes réseaux sociaux et ton site de réservation directe : là où tu ne paies aucune commission." },
       ],
     },
     {
@@ -23,9 +23,9 @@ export default {
       content: [
         { type: 'p', text: "Les fourchettes varient selon la ville (un marché premium comme Cannes ou Biarritz est un cran au-dessus), la taille du logement et les options. Voici ce qu'on constate sur le terrain en France :" },
         { type: 'ul', items: [
-          '<strong>Session essentielle : 150 à 250 €</strong> — 15-20 photos HDR pour un studio ou T2, retouches de base. Suffisant pour démarrer proprement.',
-          '<strong>Session standard : 250 à 400 €</strong> — 25-35 photos, mise en scène voyageur, retouches poussées, formats optimisés pour les vignettes. Le meilleur rapport qualité/prix pour la plupart des logements.',
-          "<strong>Session premium : 400 à 700 €</strong> — grande maison ou villa, drone, photos crépuscule (twilight), parfois une vidéo courte pour les réseaux.",
+          '<strong>Session essentielle : 150 à 250 €</strong> : 15-20 photos HDR pour un studio ou T2, retouches de base. Suffisant pour démarrer proprement.',
+          '<strong>Session standard : 250 à 400 €</strong> : 25-35 photos, mise en scène voyageur, retouches poussées, formats optimisés pour les vignettes. Le meilleur rapport qualité/prix pour la plupart des logements.',
+          "<strong>Session premium : 400 à 700 €</strong> : grande maison ou villa, drone, photos crépuscule (twilight), parfois une vidéo courte pour les réseaux.",
         ]},
         { type: 'p', text: "Méfie-toi des extrêmes : en dessous de 120 €, tu tombes souvent sur un généraliste qui shoote un logement comme un appartement à vendre. Au-dessus de 800 € sans drone ni vidéo, on te facture une notoriété, pas une prestation LCD." },
       ],
@@ -43,10 +43,10 @@ export default {
       content: [
         { type: 'p', text: "C'est LE piège classique. Le photographe immobilier vend des mètres carrés : angles ultra-larges, lumière froide, pièces vides. Le photographe LCD vend une expérience de séjour : lumière chaleureuse, mise en scène (table dressée, plaid jeté, café servi), angles pensés pour les vignettes des plateformes." },
         { type: 'ul', items: [
-          "Demande à voir des annonces Airbnb ou Booking qu'il a réellement shootées — pas juste un portfolio de biens à vendre",
+          "Demande à voir des annonces Airbnb ou Booking qu'il a réellement shootées : pas juste un portfolio de biens à vendre",
           'Vérifie qu\'il connaît les contraintes des plateformes : ratio des vignettes, ordre des photos, photo de couverture',
           'Un bon photographe LCD parle "taux de clic" et "mise en scène voyageur", pas "valorisation du bien"',
-          "Bonus : certains proposent un accompagnement sur l'ordre des photos dans l'annonce — ça vaut de l'or",
+          "Bonus : certains proposent un accompagnement sur l'ordre des photos dans l'annonce : ça vaut de l'or",
         ]},
       ],
     },
@@ -55,10 +55,10 @@ export default {
       content: [
         { type: 'p', text: "Un shooting réussi se joue à 50 % avant l'arrivée du photographe. Le logement doit être exactement dans l'état où un voyageur exigeant rêverait de le trouver :" },
         { type: 'ul', items: [
-          'Ménage impeccable et rangement complet — zéro câble qui traîne, zéro produit sur les plans de travail',
+          'Ménage impeccable et rangement complet : zéro câble qui traîne, zéro produit sur les plans de travail',
           'Toutes les ampoules identiques en blanc chaud, tous les luminaires fonctionnels',
           'Lits faits qualité hôtelière, serviettes pliées, rideaux ouverts',
-          "Mise en scène légère : un livre ouvert, deux tasses, un plaid — l'idée est de suggérer la vie, pas de surcharger",
+          "Mise en scène légère : un livre ouvert, deux tasses, un plaid : l'idée est de suggérer la vie, pas de surcharger",
           "Créneau en fin de matinée ou début d'après-midi selon l'orientation du logement",
         ]},
         { type: 'tip', text: "Un photographe sérieux t'enverra sa propre checklist de préparation quelques jours avant. S'il ne le fait pas spontanément, demande-la : sa réponse te dira tout sur son niveau de spécialisation." },
@@ -67,8 +67,8 @@ export default {
     {
       h2: 'Où trouver un photographe spécialisé LCD',
       content: [
-        { type: 'p', text: "Le bouche-à-oreille entre hôtes reste une bonne piste, mais il est lent et aléatoire selon ta ville. C'est exactement pour ça que j'ai lancé l'annuaire des photographes LCD : des pros sélectionnés manuellement — portfolio LCD réel exigé, tarifs cohérents marché, zone d'intervention claire — que tu contactes en direct, sans commission ni intermédiaire." },
-        { type: 'p', text: "Chaque fiche affiche le portfolio, la spécialité (intérieurs, drone, twilight…), la zone couverte et les tarifs indicatifs. Tu compares, tu contactes, tu négocies en direct. Et si tu veux d'abord te faire une idée des tarifs dans ta ville, on a publié des guides locaux pour 60 villes de France — de <a href='/photographe-lcd-paris'>Paris</a> à <a href='/photographe-lcd-lyon'>Lyon</a> en passant par <a href='/photographe-lcd-biarritz'>Biarritz</a>." },
+        { type: 'p', text: "Le bouche-à-oreille entre hôtes reste une bonne piste, mais il est lent et aléatoire selon ta ville. C'est exactement pour ça que j'ai lancé l'annuaire des photographes LCD : des pros sélectionnés manuellement : portfolio LCD réel exigé, tarifs cohérents marché, zone d'intervention claire : que tu contactes en direct, sans commission ni intermédiaire." },
+        { type: 'p', text: "Chaque fiche affiche le portfolio, la spécialité (intérieurs, drone, twilight…), la zone couverte et les tarifs indicatifs. Tu compares, tu contactes, tu négocies en direct. Et si tu veux d'abord te faire une idée des tarifs dans ta ville, on a publié des guides locaux pour 60 villes de France : de <a href='/photographe-lcd-paris'>Paris</a> à <a href='/photographe-lcd-lyon'>Lyon</a> en passant par <a href='/photographe-lcd-biarritz'>Biarritz</a>." },
         { type: 'cta', text: "Des photographes spécialisés location courte durée, vérifiés manuellement, à contacter en direct et sans commission.", href: '/annuaires/photographes', button: "Voir l'annuaire des photographes LCD" },
       ],
     },

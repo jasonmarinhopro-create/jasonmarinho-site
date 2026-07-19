@@ -7,7 +7,7 @@ export default {
   categorySlug: 'ressources',
   readTime: 4,
 
-  lead: 'La fiche de police est obligatoire en France pour tout voyageur étranger qui passe une nuit dans ton logement LCD. C\'est l\'une des obligations les moins connues des hôtes Airbnb français — et l\'une des plus contrôlées en cas d\'inspection. Voici ce que tu dois savoir et faire en 2026.',
+  lead: 'La fiche de police est obligatoire en France pour tout voyageur étranger qui passe une nuit dans ton logement LCD. C\'est l\'une des obligations les moins connues des hôtes Airbnb français : et l\'une des plus contrôlées en cas d\'inspection. Voici ce que tu dois savoir et faire en 2026.',
 
   sections: [
     {
@@ -52,7 +52,7 @@ export default {
     {
       h2: '4. Sanctions et contrôles',
       content: [
-        { type: 'p', text: 'Beaucoup d\'hôtes ignorent cette obligation — jusqu\'au jour où ils sont contrôlés. Voici les enjeux.' },
+        { type: 'p', text: 'Beaucoup d\'hôtes ignorent cette obligation : jusqu\'au jour où ils sont contrôlés. Voici les enjeux.' },
         { type: 'ul', items: [
           'Amende administrative : 3e classe (jusqu\'à 450 €) par fiche manquante en cas de contrôle',
           'En cas d\'enquête criminelle (suspect logé chez toi) : ne pas avoir la fiche peut être considéré comme entrave à l\'enquête',

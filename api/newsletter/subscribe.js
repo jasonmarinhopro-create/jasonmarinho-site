@@ -25,7 +25,7 @@ function getClientIp(req) {
 }
 
 // Domaines email jetables les plus courants. Liste compacte (pas exhaustive
-// mais couvre 95% des bots) — pas de dépendance externe.
+// mais couvre 95% des bots) : pas de dépendance externe.
 const DISPOSABLE_DOMAINS = new Set([
   'yopmail.com','yopmail.fr','yopmail.net',
   'mailinator.com','mailinator.net','mailinator.org',

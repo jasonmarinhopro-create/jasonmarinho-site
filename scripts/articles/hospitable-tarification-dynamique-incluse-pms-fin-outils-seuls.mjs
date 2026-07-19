@@ -1,7 +1,7 @@
 export default {
   slug: 'hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls',
   title: 'Hospitable intègre la tarification dynamique : la fin des outils de pricing séparés pour les petits hôtes ?',
-  description: 'Hospitable inclut désormais la tarification dynamique native dans son PMS. Ce que ça change pour les hôtes LCD qui utilisaient PriceLabs ou Wheelhouse séparément — et si le tout-en-un vaut vraiment le coup.',
+  description: 'Hospitable inclut désormais la tarification dynamique native dans son PMS. Ce que ça change pour les hôtes LCD qui utilisaient PriceLabs ou Wheelhouse séparément : et si le tout-en-un vaut vraiment le coup.',
   keywords: 'Hospitable tarification dynamique, PMS location courte durée tout en un, Hospitable vs PriceLabs 2026, automatisation LCD hôte, outils gestion Airbnb 2026',
   date: '2026-04-24',
   categorySlug: 'automatisation',
@@ -15,7 +15,7 @@ export default {
       content: [
         { type: 'p', text: 'Hospitable a lancé sa fonctionnalité de tarification dynamique native en incluant une synchronisation automatique des prix sur Airbnb et Booking, un calendrier de prix avec ajustements selon la saisonnalité, et des règles personnalisables par période (weekend, vacances scolaires, événements locaux). Le moteur s\'appuie sur les données de marché de l\'outil AirDNA, intégré via API.' },
         { type: 'p', text: 'Le principal avantage de l\'intégration native : tout se passe dans le même tableau de bord. Messages automatiques, synchronisation du calendrier, tarification et rapports de performance sont au même endroit. Pour les petits hôtes qui trouvaient la complexité des outils dédiés décourageante, c\'est une simplification réelle.' },
-        { type: 'tip', text: 'L\'offre tout-en-un d\'Hospitable revient à environ 40 à 60 € par mois pour un logement, vs 50 à 80 € pour un PMS de base + PriceLabs. Le gain financier existe, mais il est modeste — l\'argument principal est la simplicité d\'usage.' },
+        { type: 'tip', text: 'L\'offre tout-en-un d\'Hospitable revient à environ 40 à 60 € par mois pour un logement, vs 50 à 80 € pour un PMS de base + PriceLabs. Le gain financier existe, mais il est modeste : l\'argument principal est la simplicité d\'usage.' },
       ],
     },
     {
@@ -47,7 +47,7 @@ export default {
     {
       h2: '4. L\'automatisation au-delà du pricing : ce que Hospitable gère vraiment',
       content: [
-        { type: 'p', text: 'Le vrai argument d\'Hospitable n\'est pas seulement le pricing — c\'est la plateforme d\'automatisation complète. Messages automatiques conditionnels (si réservation Airbnb + séjour > 7 jours → envoie livret long séjour), gestion des tâches de ménage, synchronisation multi-plateformes du calendrier, et alertes en cas de problème signalé par le voyageur.' },
+        { type: 'p', text: 'Le vrai argument d\'Hospitable n\'est pas seulement le pricing : c\'est la plateforme d\'automatisation complète. Messages automatiques conditionnels (si réservation Airbnb + séjour > 7 jours → envoie livret long séjour), gestion des tâches de ménage, synchronisation multi-plateformes du calendrier, et alertes en cas de problème signalé par le voyageur.' },
         { type: 'p', text: 'Pour les hôtes qui font tout manuellement aujourd\'hui, l\'automatisation des messages seule justifie souvent l\'abonnement. Le pricing intégré devient alors un bonus qui simplifie encore l\'opérationnel sans nécessiter un outil supplémentaire.' },
         { type: 'cta', text: 'Tu veux automatiser ta gestion LCD et récupérer du temps tout en augmentant tes revenus ?', button: 'Voir les formations', href: '/#formations' },
       ],

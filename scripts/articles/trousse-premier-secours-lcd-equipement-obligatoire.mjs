@@ -67,11 +67,11 @@ export default {
       content: [
         { type: 'p', text: 'En complément de la trousse, l\'affichage des numéros d\'urgence est obligatoire. Affiche-les en évidence (réfrigérateur, livret d\'accueil) :' },
         { type: 'ul', items: [
-          '112 — Numéro d\'urgence européen unique',
-          '15 — SAMU (urgences médicales)',
-          '17 — Police Secours',
-          '18 — Pompiers',
-          '114 — Urgences pour personnes sourdes/malentendantes',
+          '112 : Numéro d\'urgence européen unique',
+          '15 : SAMU (urgences médicales)',
+          '17 : Police Secours',
+          '18 : Pompiers',
+          '114 : Urgences pour personnes sourdes/malentendantes',
           'Ton numéro de téléphone personnel (en cas de panne d\'eau, électricité, problème dans le logement)',
           'Le numéro du médecin de garde du quartier',
           'Le numéro du commissariat le plus proche',

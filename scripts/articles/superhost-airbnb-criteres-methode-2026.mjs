@@ -15,13 +15,13 @@ export default {
       content: [
         { type: 'p', text: 'Airbnb calcule cette moyenne sur les 365 derniers jours, en prenant en compte tous les avis publiés sur ton annonce. Un avis compte dès que voyageur et hôte ont posté leur évaluation, ou après le délai de 14 jours imparti pour le faire. La barre est haute parce que beaucoup de voyageurs notent 5 étoiles par défaut quand tout va bien : la moindre note de 3 ou 4 étoiles fait chuter ta moyenne plus vite que tu ne le penses.' },
         { type: 'ul', items: [
-          'Si tu as 20 avis et qu\'un seul est à 3 étoiles, ta moyenne tombe à 4,9 — encore au-dessus du seuil',
-          'Si tu as 10 avis et que deux sont à 3 étoiles, ta moyenne passe à 4,6 — en dessous du seuil',
+          'Si tu as 20 avis et qu\'un seul est à 3 étoiles, ta moyenne tombe à 4,9 : encore au-dessus du seuil',
+          'Si tu as 10 avis et que deux sont à 3 étoiles, ta moyenne passe à 4,6 : en dessous du seuil',
           'Plus tu as d\'avis, plus tu absorbes les notes basses isolées',
           'Les notes 1 et 2 étoiles peuvent te faire perdre le statut sur un seul cycle d\'évaluation',
         ]},
         { type: 'p', text: 'La meilleure prévention reste de ne jamais sur-promettre dans ton annonce. Une annonce honnête sur les défauts du logement génère beaucoup moins de mauvais avis qu\'une annonce qui embellit la réalité. Avant de te focaliser sur les détails, lis notre guide pour <a href="/blog/obtenir-avis-5-etoiles-airbnb" style="color:var(--g);font-weight:500">obtenir plus d\'avis 5 étoiles sans harceler tes voyageurs</a> et applique la méthode du timing optimal pour la demande d\'avis.' },
-        { type: 'tip', text: 'Vérifie ta moyenne mobile sur 365 jours dans ton tableau de bord Airbnb tous les mois. Si tu vois la moyenne descendre vers 4,85, identifie le ou les avis qui tirent vers le bas et corrige immédiatement le problème mentionné — c\'est ton seul levier court terme.' },
+        { type: 'tip', text: 'Vérifie ta moyenne mobile sur 365 jours dans ton tableau de bord Airbnb tous les mois. Si tu vois la moyenne descendre vers 4,85, identifie le ou les avis qui tirent vers le bas et corrige immédiatement le problème mentionné : c\'est ton seul levier court terme.' },
       ],
     },
     {

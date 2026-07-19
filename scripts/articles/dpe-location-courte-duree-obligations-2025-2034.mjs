@@ -13,7 +13,7 @@ export default {
     {
       h2: '1. Ce qui est déjà en vigueur depuis 2025',
       content: [
-        { type: 'p', text: 'Depuis le 1er janvier 2025, les logements classés F ou G au DPE ne peuvent plus faire l\'objet d\'une nouvelle mise en location courte durée. Si tu louais déjà avec ce classement avant cette date, une période transitoire peut s\'appliquer selon ta commune — mais elle est limitée dans le temps.' },
+        { type: 'p', text: 'Depuis le 1er janvier 2025, les logements classés F ou G au DPE ne peuvent plus faire l\'objet d\'une nouvelle mise en location courte durée. Si tu louais déjà avec ce classement avant cette date, une période transitoire peut s\'appliquer selon ta commune : mais elle est limitée dans le temps.' },
         { type: 'p', text: 'Par ailleurs, toute nouvelle demande d\'autorisation de changement d\'usage (pour un logement qui n\'était pas déjà en LCD) est conditionnée à un DPE attestant d\'une note minimale E. Pas de DPE E ou mieux, pas d\'autorisation.' },
         { type: 'tip', text: 'Si ton DPE date de plus de 10 ans, il n\'est plus valable. Fais-le refaire : les méthodes de calcul ont évolué et certains logements obtiennent un meilleur résultat avec la nouvelle méthode 3CL.' },
       ],

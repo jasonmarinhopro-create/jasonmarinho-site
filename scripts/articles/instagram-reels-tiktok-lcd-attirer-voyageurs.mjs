@@ -11,7 +11,7 @@ export default {
 
   sections: [
     {
-      h2: 'Format 1 — Visite guidée 60 secondes',
+      h2: 'Format 1 : Visite guidée 60 secondes',
       content: [
         { type: 'p', text: 'Le format le plus efficace pour déclencher l\'envie. Un tour complet du logement en 60 secondes avec voix off naturelle (pas de scripte lu). Vue d\'ensemble puis 3-4 détails marquants.' },
         { type: 'ul', items: [
@@ -23,7 +23,7 @@ export default {
       ],
     },
     {
-      h2: 'Format 2 — "Avant/après" rénovation ou aménagement',
+      h2: 'Format 2 : "Avant/après" rénovation ou aménagement',
       content: [
         { type: 'p', text: 'Très partagé et très mémorisé. La transformation visuelle crée un effet émotionnel fort. Fonctionne même pour des petits changements (peinture, rideaux, mobilier).' },
         { type: 'ul', items: [
@@ -35,11 +35,11 @@ export default {
       ],
     },
     {
-      h2: 'Format 3 — Coin café/petit-déjeuner ASMR',
+      h2: 'Format 3 : Coin café/petit-déjeuner ASMR',
       content: [
-        { type: 'p', text: '30 secondes de pur plaisir sensoriel. Sons de la cafetière, vue de la fenêtre, lumière du matin. Ce format touche l\'émotion — pas la logique. Les comptes qui le font régulièrement ont des taux d\'engagement 4-5× supérieurs à la moyenne.' },
+        { type: 'p', text: '30 secondes de pur plaisir sensoriel. Sons de la cafetière, vue de la fenêtre, lumière du matin. Ce format touche l\'émotion : pas la logique. Les comptes qui le font régulièrement ont des taux d\'engagement 4-5× supérieurs à la moyenne.' },
         { type: 'ul', items: [
-          'Son : utilise le son ambiant (cafetière, oiseaux, vent léger) — pas de musique forte',
+          'Son : utilise le son ambiant (cafetière, oiseaux, vent léger) : pas de musique forte',
           'Lumière : filmer entre 7h et 9h pour la lumière dorée de matin',
           'Pas de voix off : le son ambiant suffit pour créer l\'atmosphère',
           'Cible : voyageurs en recherche d\'évasion romantique, escapades couples',
@@ -47,33 +47,33 @@ export default {
       ],
     },
     {
-      h2: 'Format 4 — "Ce qu\'on ne voit pas sur Airbnb"',
+      h2: 'Format 4 : "Ce qu\'on ne voit pas sur Airbnb"',
       content: [
         { type: 'p', text: 'Un hook puissant qui crée immédiatement de la curiosité. Tu révèles un détail caché ou un avantage que les photos d\'annonce ne montrent pas : vue cachée, terrasse secrète, équipement spécial.' },
         { type: 'ul', items: [
           'Hook : "Ce que ma photo d\'annonce Airbnb ne montre pas..." → révélation en 3 secondes',
           'Exemples : vue depuis la fenêtre de la salle de bain, terrasse avec vue sur les toits, cave à vins',
-          'Format court : 15-30 secondes max — l\'effet surprise doit arriver vite',
+          'Format court : 15-30 secondes max : l\'effet surprise doit arriver vite',
           'Très partagé par des voyageurs qui ont séjourné et veulent montrer "leur" découverte',
         ]},
       ],
     },
     {
-      h2: 'Format 5 — Recommandations locales en 30 secondes',
+      h2: 'Format 5 : Recommandations locales en 30 secondes',
       content: [
         { type: 'p', text: '3 spots à proximité de ton logement présentés en 30 secondes. Ce format apporte une valeur concrète aux voyageurs ET booste ton SEO local sur les réseaux. Tu deviens la référence locale, pas seulement un hôte.' },
         { type: 'ul', items: [
           'Structure : "3 endroits à faire absolument à [ville] depuis mon logement" → 3 spots × 7-8 sec chacun',
           'Ajouter ta localisation géo dans chaque vidéo de recommandation locale',
           'Partenariat possible : certains restaurateurs ou cafés adorent être recommandés (et peuvent te reverser une commission)',
-          'Crée une série hebdomadaire "Top 3 de [ville] selon l\'hôte" — séries = abonnés récurrents',
+          'Crée une série hebdomadaire "Top 3 de [ville] selon l\'hôte" : séries = abonnés récurrents',
         ]},
       ],
     },
     {
-      h2: 'Format 6 — Témoignage voyageur en voix off',
+      h2: 'Format 6 : Témoignage voyageur en voix off',
       content: [
-        { type: 'p', text: 'Prends ton meilleur avis voyageur, lis-le en voix off pendant que les images du logement défilent. Storytelling puissant — les voyageurs potentiels s\'identifient à d\'autres voyageurs.' },
+        { type: 'p', text: 'Prends ton meilleur avis voyageur, lis-le en voix off pendant que les images du logement défilent. Storytelling puissant : les voyageurs potentiels s\'identifient à d\'autres voyageurs.' },
         { type: 'ul', items: [
           'Prendre un avis spécifique et émotionnel (pas générique "super séjour")',
           'Voix off : lire naturellement, avec émotion sincère',
