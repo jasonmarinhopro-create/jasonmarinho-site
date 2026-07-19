@@ -27,7 +27,7 @@ export default {
         { type: 'p', text: 'Au-delà de 10 mandats, tu ne peux plus tout faire seul. Tu dois embaucher et déléguer. Ordre logique des recrutements.' },
         { type: 'ul', items: [
           '1er recrutement (à 10-15 mandats) : agent ménage interne ou prestataire principal. Coût : 15-25 € de l\'heure',
-          '2e recrutement (à 15-20 mandats) : assistant administratif (gestion messages, ménage planning, factures) — alternant ou freelance 15-20 h/semaine',
+          '2e recrutement (à 15-20 mandats) : assistant administratif (gestion messages, ménage planning, factures) : alternant ou freelance 15-20 h/semaine',
           '3e recrutement (à 20-25 mandats) : technicien volant pour petites réparations, état des lieux, dépannages',
           '4e recrutement (à 25-30 mandats) : commercial / chargé de prospection à temps partiel',
         ]},

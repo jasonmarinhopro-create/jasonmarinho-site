@@ -391,7 +391,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <div class="founder-tracker" data-founder-tracker data-founder-total="50">
           <div class="founder-head">
             <i class="ph-bold ph-lock-key"></i>
-            <span class="founder-headline">Offre Fondateur — Plus que <strong data-founder-remaining>50</strong> places sur <span data-founder-total-label>50</span></span>
+            <span class="founder-headline">Offre Fondateur : Plus que <strong data-founder-remaining>50</strong> places sur <span data-founder-total-label>50</span></span>
           </div>
           <div class="founder-bar"><div class="founder-bar-fill"></div></div>
           <p class="founder-foot">Chaque place fondateur garantit le tarif de <strong>19,98 €/an à vie</strong>.</p>
@@ -536,7 +536,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
             <span class="annuaire-price">39,98 €</span>
             <span class="annuaire-period">/ an TTC à vie</span>
           </div>
-          <p class="annuaire-mo">Soit ≈ 3,33 €/mois — verrouillé tant que ton abonnement reste actif</p>
+          <p class="annuaire-mo">Soit ≈ 3,33 €/mois : verrouillé tant que ton abonnement reste actif</p>
           <ul class="annuaire-feats">
             <li><i class="ph-bold ph-check"></i>Mini-site dédié (portfolio, bio, tarifs, zone)</li>
             <li><i class="ph-bold ph-check"></i>Hébergé sur jasonmarinho.com (SEO fort)</li>
@@ -554,7 +554,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
             <span class="annuaire-price">79,98 €</span>
             <span class="annuaire-period">/ an TTC</span>
           </div>
-          <p class="annuaire-mo">Soit ≈ 6,67 €/mois — résiliable à tout moment</p>
+          <p class="annuaire-mo">Soit ≈ 6,67 €/mois : résiliable à tout moment</p>
           <ul class="annuaire-feats">
             <li><i class="ph-bold ph-check"></i>Mini-site dédié (portfolio, bio, tarifs, zone)</li>
             <li><i class="ph-bold ph-check"></i>Hébergé sur jasonmarinho.com (SEO fort)</li>
@@ -592,7 +592,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
             <span class="annuaire-price">39,98 €</span>
             <span class="annuaire-period">/ an TTC à vie</span>
           </div>
-          <p class="annuaire-mo">Soit ≈ 3,33 €/mois — verrouillé tant que ton abonnement reste actif</p>
+          <p class="annuaire-mo">Soit ≈ 3,33 €/mois : verrouillé tant que ton abonnement reste actif</p>
           <ul class="annuaire-feats">
             <li><i class="ph-bold ph-check"></i>Mini-site dédié (prestations, équipe, tarifs)</li>
             <li><i class="ph-bold ph-check"></i>Hébergé sur jasonmarinho.com (SEO fort)</li>
@@ -610,7 +610,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
             <span class="annuaire-price">79,98 €</span>
             <span class="annuaire-period">/ an TTC</span>
           </div>
-          <p class="annuaire-mo">Soit ≈ 6,67 €/mois — résiliable à tout moment</p>
+          <p class="annuaire-mo">Soit ≈ 6,67 €/mois : résiliable à tout moment</p>
           <ul class="annuaire-feats">
             <li><i class="ph-bold ph-check"></i>Mini-site dédié (prestations, équipe, tarifs)</li>
             <li><i class="ph-bold ph-check"></i>Hébergé sur jasonmarinho.com (SEO fort)</li>
@@ -751,7 +751,7 @@ function switchTab(tab){
   if (VALID_TABS.includes(hash)) switchTab(hash);
 })();
 
-// Compteur places fondateur — fetch /api/founder-seats et applique l'état
+// Compteur places fondateur : fetch /api/founder-seats et applique l'état
 (function(){
   var tracker = document.querySelector('[data-founder-tracker]');
   if (!tracker) return;
@@ -776,14 +776,14 @@ function switchTab(tab){
     if (r === 0) {
       tracker.classList.add('is-exhausted');
       if (card) card.classList.add('is-exhausted');
-      if (headEl) headEl.innerHTML = 'Offre Fondateur épuisée — Tarif Standard <strong>38,98 €/an</strong>';
+      if (headEl) headEl.innerHTML = 'Offre Fondateur épuisée : Tarif Standard <strong>38,98 €/an</strong>';
     } else {
       if (headEl) headEl.innerHTML = defaultHeadline.replace(/<strong[^>]*data-founder-remaining[^>]*>[^<]*<\/strong>/, '<strong data-founder-remaining>'+r+'</strong>');
       if (r < 10) tracker.classList.add('is-urgent');
     }
   }
 
-  // Initial render avec la valeur par défaut HTML (50/50) — pas de flash
+  // Initial render avec la valeur par défaut HTML (50/50) : pas de flash
   applyState(TOTAL);
 
   // Fetch en arrière-plan, met à jour si différent

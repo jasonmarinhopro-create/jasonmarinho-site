@@ -36,8 +36,8 @@ export default {
       content: [
         { type: 'p', text: 'Pour être sélectionné par une IA en 2026, ton annonce doit répondre aux questions avant qu\'elles soient posées. Voici les 4 points les plus impactants :' },
         { type: 'ul', items: [
-          'Réécris ta description en phrases courtes et factuelles — évite les formules comme "superbe vue", préfère "vue dégagée sur le Rhône depuis le salon"',
-          'Liste chaque équipement individuellement dans la section dédiée — ne laisse aucun appareil sans mention',
+          'Réécris ta description en phrases courtes et factuelles : évite les formules comme "superbe vue", préfère "vue dégagée sur le Rhône depuis le salon"',
+          'Liste chaque équipement individuellement dans la section dédiée : ne laisse aucun appareil sans mention',
           'Ajoute le débit internet mesuré (pas estimé) avec l\'opérateur dans la description',
           'Décris l\'espace de travail s\'il existe : "bureau avec chaise ergonomique, prise secteur et lumière naturelle"',
         ]},

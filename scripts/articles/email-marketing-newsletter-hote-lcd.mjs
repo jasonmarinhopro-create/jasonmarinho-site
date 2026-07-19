@@ -27,12 +27,12 @@ export default {
       content: [
         { type: 'p', text: 'Voici la structure qui convertit le mieux, testée sur 50+ hôtes français.' },
         { type: 'ul', items: [
-          'Section 1 — Petit message personnel (3-4 lignes) : "Coucou, on espère que tout va bien chez toi !". Ton chaleureux, pas vendeur',
-          'Section 2 — News du quartier (2-3 actualités locales : nouveau resto, exposition, événement) — apporte de la valeur',
-          'Section 3 — Calendrier dispo (si certaines dates en basse saison ne se remplissent pas) avec offre fidèle -10 %',
-          'Section 4 — Photo récente du logement (saisonnière, après-petit-aménagement) avec 2-3 lignes',
-          'Section 5 — CTA simple : "Réserver en direct" avec bouton',
-          'Section 6 — Footer simple : ton nom, contact, lien désabonnement',
+          'Section 1 : Petit message personnel (3-4 lignes) : "Coucou, on espère que tout va bien chez toi !". Ton chaleureux, pas vendeur',
+          'Section 2 : News du quartier (2-3 actualités locales : nouveau resto, exposition, événement) : apporte de la valeur',
+          'Section 3 : Calendrier dispo (si certaines dates en basse saison ne se remplissent pas) avec offre fidèle -10 %',
+          'Section 4 : Photo récente du logement (saisonnière, après-petit-aménagement) avec 2-3 lignes',
+          'Section 5 : CTA simple : "Réserver en direct" avec bouton',
+          'Section 6 : Footer simple : ton nom, contact, lien désabonnement',
         ]},
         { type: 'tip', text: 'Évite les newsletters "promotionnelles" pure (-20 %, dernière minute). Ce sont les newsletters "valeur + nouvelles" qui convertissent le mieux car elles ne donnent pas l\'impression d\'être spammé.' },
       ],

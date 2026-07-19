@@ -156,6 +156,7 @@ const T: Record<Lang, Record<string, string>> = {
     required: 'Ce champ est requis',
     errConsent: 'Merci de cocher la case de consentement.',
     errGeneric: "Une erreur est survenue. Réessayez dans un instant.",
+    draftRestored: "Brouillon restauré : vos informations saisies précédemment ont été conservées.",
     select: 'Sélectionner…',
     nights: 'nuits',
     arrival: 'Arrivée',
@@ -221,6 +222,7 @@ const T: Record<Lang, Record<string, string>> = {
     required: 'This field is required',
     errConsent: 'Please tick the consent box.',
     errGeneric: 'Something went wrong. Please try again shortly.',
+    draftRestored: 'Draft restored: the information you previously entered has been kept.',
     select: 'Select…',
     nights: 'nights',
     arrival: 'Arrival',
@@ -286,6 +288,7 @@ const T: Record<Lang, Record<string, string>> = {
     required: 'Este campo es obligatorio',
     errConsent: 'Marque la casilla de consentimiento, por favor.',
     errGeneric: 'Se ha producido un error. Inténtelo de nuevo en un momento.',
+    draftRestored: 'Borrador restaurado: la información que introdujo anteriormente se ha conservado.',
     select: 'Seleccionar…',
     nights: 'noches',
     arrival: 'Llegada',
@@ -351,6 +354,7 @@ const T: Record<Lang, Record<string, string>> = {
     required: 'Este campo é obrigatório',
     errConsent: 'Assinale a caixa de consentimento, por favor.',
     errGeneric: 'Ocorreu um erro. Tente novamente dentro de instantes.',
+    draftRestored: 'Rascunho restaurado: as informações que preencheu anteriormente foram guardadas.',
     select: 'Selecionar…',
     nights: 'noites',
     arrival: 'Chegada',
@@ -416,6 +420,7 @@ const T: Record<Lang, Record<string, string>> = {
     required: 'Dieses Feld ist erforderlich',
     errConsent: 'Bitte kreuzen Sie das Einverständnis-Kästchen an.',
     errGeneric: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es gleich erneut.',
+    draftRestored: 'Entwurf wiederhergestellt: Ihre zuvor eingegebenen Daten wurden gespeichert.',
     select: 'Auswählen…',
     nights: 'Nächte',
     arrival: 'Ankunft',
@@ -490,6 +495,48 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
     else setLang('en')
   }, [])
 
+  // ── Sauvegarde automatique du brouillon (localStorage) ────────────────────
+  // Sur mobile, un appel entrant ou un onglet tué fait perdre toute la
+  // saisie. On sauvegarde champs + accompagnants à chaque frappe, on
+  // restaure à la réouverture du lien (max 48h), on nettoie au succès.
+  const draftKey = `checkin-draft-${token}`
+  const [draftRestored, setDraftRestored] = useState(false)
+  // L'écriture n'est armée qu'APRÈS la restauration (via timeout + cleanup) :
+  // sinon le premier rendu écrase le brouillon avec le formulaire vide —
+  // et le double passage des effets en StrictMode le clobber avant relecture.
+  const saveEnabledRef = useRef(false)
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(draftKey)
+      if (raw) {
+        const draft = JSON.parse(raw)
+        const fresh = typeof draft?.savedAt === 'number' && Date.now() - draft.savedAt < 48 * 3600_000
+        if (fresh) {
+          if (draft.form) setForm(f => ({ ...f, ...draft.form }))
+          if (Array.isArray(draft.companions) && draft.companions.length > 0) setCompanions(draft.companions)
+          if (draft.selfC) setSelfC(c => ({ ...c, ...draft.selfC }))
+          setDraftRestored(true)
+          setTimeout(() => setDraftRestored(false), 7000)
+        } else {
+          localStorage.removeItem(draftKey)
+        }
+      }
+    } catch { /* brouillon illisible ou stockage indisponible */ }
+    const arm = setTimeout(() => { saveEnabledRef.current = true }, 400)
+    return () => clearTimeout(arm)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  useEffect(() => {
+    if (!saveEnabledRef.current) return
+    try {
+      localStorage.setItem(draftKey, JSON.stringify({ form, companions, selfC, savedAt: Date.now() }))
+    } catch { /* stockage plein ou navigation privée */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form, companions, selfC])
+  function clearDraft() {
+    try { localStorage.removeItem(draftKey) } catch { /* noop */ }
+  }
+
   const t = T[lang]
   const set = (k: keyof CheckinInitial, v: string) => setForm(f => ({ ...f, [k]: v }))
 
@@ -553,6 +600,7 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
         return
       }
       setDone(true)
+      clearDraft()
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch {
       setError(t.errGeneric)
@@ -594,6 +642,7 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
         return
       }
       setCompanionDone(true)
+      clearDraft()
       setDone(true)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch {
@@ -810,6 +859,13 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
             <span>
               {t.alreadyDone} {fmtDate(alreadyCompletedAt.slice(0, 10), lang)}. {t.alreadyDoneEdit}
             </span>
+          </div>
+        )}
+
+        {draftRestored && (
+          <div style={{ ...s.alreadyBanner, background: 'rgba(255,213,107,0.10)', borderColor: 'rgba(255,213,107,0.35)', color: '#b8860b' }}>
+            <CheckCircle size={15} weight="fill" />
+            <span>{t.draftRestored}</span>
           </div>
         )}
 

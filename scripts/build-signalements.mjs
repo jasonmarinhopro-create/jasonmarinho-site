@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Build script — génère les pages publiques anonymisées des signalements
+ * Build script : génère les pages publiques anonymisées des signalements
  * et le sitemap dédié. Lancé en prebuild Vercel via vercel.json.
  *
  * Si SUPABASE_SERVICE_ROLE_KEY ou NEXT_PUBLIC_SUPABASE_URL ne sont pas
@@ -27,8 +27,8 @@ const HAS_SUPABASE = !!(SUPABASE_URL && SERVICE_KEY)
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
 console.log('[build-signalements] DIAGNOSTIC START')
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
-console.log(`[build-signalements] NEXT_PUBLIC_SUPABASE_URL : ${SUPABASE_URL ? '✓ posée (' + SUPABASE_URL.slice(0, 40) + '...)' : '✗ MANQUANTE — pose-la dans Vercel → projet site statique → Settings → Environment Variables'}`)
-console.log(`[build-signalements] SUPABASE_SERVICE_ROLE_KEY : ${SERVICE_KEY ? '✓ posée (longueur ' + SERVICE_KEY.length + ')' : '✗ MANQUANTE — pose-la dans Vercel → projet site statique → Settings → Environment Variables'}`)
+console.log(`[build-signalements] NEXT_PUBLIC_SUPABASE_URL : ${SUPABASE_URL ? '✓ posée (' + SUPABASE_URL.slice(0, 40) + '...)' : '✗ MANQUANTE : pose-la dans Vercel → projet site statique → Settings → Environment Variables'}`)
+console.log(`[build-signalements] SUPABASE_SERVICE_ROLE_KEY : ${SERVICE_KEY ? '✓ posée (longueur ' + SERVICE_KEY.length + ')' : '✗ MANQUANTE : pose-la dans Vercel → projet site statique → Settings → Environment Variables'}`)
 
 if (!HAS_SUPABASE) {
   console.log('[build-signalements] ⚠ Env vars Supabase absentes → liste publique générée vide.')
@@ -93,12 +93,12 @@ async function fetchSignalements() {
 function buildFichePage(item) {
   const monthLabel = fmtMonth(item.month)
   // Fil conducteur orienté UTILITÉ HÔTE :
-  //  1. Hero — Identifier l'incident (type + résumé en lead)
-  //  2. Section "Le récit" — Ce qui s'est passé (le summary détaillé)
-  //  3. Section "Les signaux d'alerte" — Comment reconnaître (universel)
-  //  4. Section "Comment se protéger" — Quoi faire avant/après (universel)
-  //  5. CTA — Drive vers inscription dashboard
-  //  6. Footer — Disclaimer + contestation + métadonnées (date, source)
+  //  1. Hero : Identifier l'incident (type + résumé en lead)
+  //  2. Section "Le récit" : Ce qui s'est passé (le summary détaillé)
+  //  3. Section "Les signaux d'alerte" : Comment reconnaître (universel)
+  //  4. Section "Comment se protéger" : Quoi faire avant/après (universel)
+  //  5. CTA : Drive vers inscription dashboard
+  //  6. Footer : Disclaimer + contestation + métadonnées (date, source)
   //
   // La ville disparaît du titre/URL/breadcrumb : pas un signal utile pour
   // reconnaître un pattern. Elle apparaît juste en pied de page comme
@@ -112,7 +112,7 @@ function buildFichePage(item) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${escHtml(title)} | Signalement voyageur LCD — Jason Marinho</title>
+<title>${escHtml(title)} | Signalement voyageur LCD : Jason Marinho</title>
 <meta name="description" content="${escHtml(desc)}">
 <link rel="canonical" href="${canonical}">
 <meta property="og:title" content="${escHtml(title)}">
@@ -233,9 +233,9 @@ ${JSON.stringify({
     <p class="p">Quel que soit le type d'arnaque, ces marqueurs reviennent dans plus de 80 % des cas observés par la communauté Jason Marinho. Si tu en vois 2 ou plus cumulés sur une demande de réservation, vérifie-la immédiatement dans la base.</p>
     <ul class="list-num">
       <li><span class="num">1</span><span class="txt"><strong>Profil créé récemment</strong> (moins de 3 mois) avec zéro ou très peu d'avis vérifiables.</span></li>
-      <li><span class="num">2</span><span class="txt"><strong>Photo de profil absente, floue ou trop parfaite</strong> — souvent une photo de stock ou générée par IA.</span></li>
+      <li><span class="num">2</span><span class="txt"><strong>Photo de profil absente, floue ou trop parfaite</strong> : souvent une photo de stock ou générée par IA.</span></li>
       <li><span class="num">3</span><span class="txt"><strong>Insistance pour sortir de la plateforme</strong> dès les premiers échanges (WhatsApp, email perso, virement direct, lien Wero).</span></li>
-      <li><span class="num">4</span><span class="txt"><strong>Demande de remise, dérogation ou tarif spécial</strong> qui semble "trop belle pour être vraie" — signal classique de bait.</span></li>
+      <li><span class="num">4</span><span class="txt"><strong>Demande de remise, dérogation ou tarif spécial</strong> qui semble "trop belle pour être vraie" : signal classique de bait.</span></li>
       <li><span class="num">5</span><span class="txt"><strong>Pression émotionnelle ou temporelle</strong> ("décide vite", "j'ai besoin maintenant", "ne dis pas à Airbnb"). Un voyageur légitime n'utilise jamais ce ton.</span></li>
     </ul>
   </div>
@@ -491,6 +491,6 @@ async function main() {
 
 main().catch(err => {
   console.error('[build-signalements] Erreur:', err)
-  // Pas exit 1 — on ne bloque PAS le build du site marketing si le script foire.
+  // Pas exit 1 : on ne bloque PAS le build du site marketing si le script foire.
   process.exit(0)
 })

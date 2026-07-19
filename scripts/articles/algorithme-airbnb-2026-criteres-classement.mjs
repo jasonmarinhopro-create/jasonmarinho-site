@@ -38,7 +38,7 @@ export default {
         { type: 'ul', items: [
           'Taux de clics : tes photos de couverture et ton prix affiché sont les premiers leviers',
           'Taux de conversion : ton profil, tes avis récents et ta politique d\'annulation influencent la décision finale',
-          'Avis post-séjour : la régularité compte plus que la perfection — 4,8 stable vaut mieux que 5,0 avec des trous',
+          'Avis post-séjour : la régularité compte plus que la perfection : 4,8 stable vaut mieux que 5,0 avec des trous',
           'Signalements de problèmes : chaque incident horodaté (ampoule, Wi-Fi, propreté) impacte ton score de fiabilité',
         ]},
       ],
@@ -48,7 +48,7 @@ export default {
       content: [
         { type: 'p', text: 'En 2026, Airbnb a durci sa politique sur deux points qui semblaient anodins : les annulations hôte et le délai de réponse. Une seule annulation de ta part peut entraîner plusieurs mois de visibilité réduite. Le système ne fait pas de distinction entre une annulation "justifiée" et une annulation opportuniste.' },
         { type: 'p', text: 'Sur le délai de réponse, le seuil critique est désormais de 4 heures en journée (entre 8h et 22h). Dépasser ce délai de façon répétée affecte ton score de fiabilité, visible par les voyageurs et pris en compte par l\'algorithme. Active les réponses automatiques pour les demandes fréquentes et utilise l\'application mobile avec les notifications activées.' },
-        { type: 'tip', text: 'Si tu dois absolument annuler une réservation, contacte d\'abord le voyageur pour qu\'il annule de son côté — avec un geste commercial si nécessaire. Une annulation voyageur n\'impacte pas ton classement. Une annulation hôte, si.' },
+        { type: 'tip', text: 'Si tu dois absolument annuler une réservation, contacte d\'abord le voyageur pour qu\'il annule de son côté : avec un geste commercial si nécessaire. Une annulation voyageur n\'impacte pas ton classement. Une annulation hôte, si.' },
         { type: 'cta', text: 'Tu veux un plan d\'action complet pour optimiser ta visibilité sur Airbnb et les autres plateformes ?', button: 'Voir les formations', href: '/#formations' },
       ],
     },

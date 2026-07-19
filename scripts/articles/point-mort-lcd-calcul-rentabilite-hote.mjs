@@ -7,7 +7,7 @@ export default {
   categorySlug: 'revenus',
   readTime: 6,
 
-  lead: 'Beaucoup d\'hôtes louent en LCD sans connaître leur point mort — le nombre exact de nuits par mois nécessaire pour rentrer dans ses frais. Le résultat : ils prennent des décisions tarifaires à l\'instinct sans savoir si elles compromettent leur marge. Voici la méthode chiffrée pour calculer ton point mort en 4 lignes.',
+  lead: 'Beaucoup d\'hôtes louent en LCD sans connaître leur point mort : le nombre exact de nuits par mois nécessaire pour rentrer dans ses frais. Le résultat : ils prennent des décisions tarifaires à l\'instinct sans savoir si elles compromettent leur marge. Voici la méthode chiffrée pour calculer ton point mort en 4 lignes.',
 
   sections: [
     {
@@ -22,9 +22,9 @@ export default {
       content: [
         { type: 'p', text: 'Tu as besoin de 4 chiffres pour un point mort fiable.' },
         { type: 'ul', items: [
-          'Coûts fixes mensuels (charges, copropriété, assurance, internet, abonnements logiciels) — exemple : 350 €',
-          'Coût variable par nuitée (ménage, consommables, eau/électricité supplémentaire, commission plateforme) — exemple : 25 €',
-          'Tarif moyen pratiqué (TTC voyageur, brut sans déduction) — exemple : 90 €',
+          'Coûts fixes mensuels (charges, copropriété, assurance, internet, abonnements logiciels) : exemple : 350 €',
+          'Coût variable par nuitée (ménage, consommables, eau/électricité supplémentaire, commission plateforme) : exemple : 25 €',
+          'Tarif moyen pratiqué (TTC voyageur, brut sans déduction) : exemple : 90 €',
           'Marge nette par nuit = tarif − coût variable − commission Airbnb (3 %) = 90 − 25 − 2,7 = 62,3 €',
         ]},
         { type: 'p', text: 'Point mort = coûts fixes ÷ marge nette par nuit = 350 ÷ 62,3 = 5,6 nuits. Tu dois donc louer 6 nuits par mois pour atteindre l\'équilibre. Toute nuit au-delà génère 62,3 € de marge nette pour toi.' },
@@ -47,9 +47,9 @@ export default {
       content: [
         { type: 'p', text: 'Trois erreurs récurrentes faussent le calcul et donnent un point mort trop bas (donc une fausse impression de rentabilité).' },
         { type: 'ul', items: [
-          'Oublier l\'amortissement du logement et du mobilier — sur 7 ans, un mobilier neuf de 8 000 € = 95 €/mois à intégrer',
-          'Ne pas compter ton temps — si tu passes 10 h/semaine sur ton activité, valorise au moins au SMIC (110 €/semaine = 480 €/mois à intégrer dans les fixes ou le coût variable)',
-          'Sous-estimer les imprévus (panne de chauffe-eau, dégât voyageur) — provisionner 5 % du CA mensuel = ~75 €/mois à ajouter aux fixes',
+          'Oublier l\'amortissement du logement et du mobilier : sur 7 ans, un mobilier neuf de 8 000 € = 95 €/mois à intégrer',
+          'Ne pas compter ton temps : si tu passes 10 h/semaine sur ton activité, valorise au moins au SMIC (110 €/semaine = 480 €/mois à intégrer dans les fixes ou le coût variable)',
+          'Sous-estimer les imprévus (panne de chauffe-eau, dégât voyageur) : provisionner 5 % du CA mensuel = ~75 €/mois à ajouter aux fixes',
         ]},
         { type: 'cta', text: 'Tu veux apprendre à piloter ta rentabilité LCD avec des tableaux de bord pros et des décisions tarifaires basées sur les chiffres ?', button: 'Voir les formations', href: '/#formations' },
       ],

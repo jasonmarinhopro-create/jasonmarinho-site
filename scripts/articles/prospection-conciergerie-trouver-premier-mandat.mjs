@@ -17,7 +17,7 @@ export default {
         { type: 'ul', items: [
           'Identifier les annonces "sous le marché" via AirDNA ou une analyse manuelle sur Airbnb',
           'Contacter via Airbnb message ou LinkedIn : "J\'ai vu que votre logement a un super potentiel. Pourrions-nous discuter 15 min ?"',
-          'Taux de réponse : 5-10 % — conversion en mandat : 15-20 % des répondants',
+          'Taux de réponse : 5-10 % : conversion en mandat : 15-20 % des répondants',
         ]},
       ],
     },

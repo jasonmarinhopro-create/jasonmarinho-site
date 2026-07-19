@@ -1,4 +1,4 @@
-// Vercel serverless — places « fondateur » restantes sur les annuaires.
+// Vercel serverless : places « fondateur » restantes sur les annuaires.
 // Consommé par les pages annuaires/inscription pour afficher un compteur
 // en direct (« Plus que X places à 39,98 € »). Quota partagé avec la
 // logique de tier des signups (FOUNDER_QUOTA = 20 par annuaire).

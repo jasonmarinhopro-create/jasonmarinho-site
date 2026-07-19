@@ -43,7 +43,7 @@ export default {
     {
       h2: '3. Procédure réservation directe',
       content: [
-        { type: 'p', text: 'Sur les réservations en direct (via Driing, GMB, ton site), tu es 100 % autonome — donc plus de pouvoir, mais aussi plus de responsabilité.' },
+        { type: 'p', text: 'Sur les réservations en direct (via Driing, GMB, ton site), tu es 100 % autonome : donc plus de pouvoir, mais aussi plus de responsabilité.' },
         { type: 'ul', items: [
           'Avoir une caution active : SwikLy ou Youka prennent une empreinte CB avant arrivée',
           'En cas de dégât : tu prélèves directement depuis ton dashboard SwikLy/Youka (sous 48 h)',

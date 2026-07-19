@@ -15,11 +15,11 @@ export default {
       content: [
         { type: 'p', text: 'Avant de déclarer, identifie ton régime. 5 questions suffisent à le définir.' },
         { type: 'ul', items: [
-          'Question 1 — Tes revenus Airbnb dépassent 23 000 €/an ? Si NON → LMNP automatique. Si OUI → tu peux basculer en LMP selon le ratio',
-          'Question 2 — Tes recettes Airbnb dépassent 50 % des revenus de ton foyer fiscal ? Si NON → reste en LMNP. Si OUI → potentiellement LMP',
-          'Question 3 — Tu as un emprunt sur le logement ? Si OUI → régime réel BIC plus avantageux. Si NON → micro-BIC suffit',
-          'Question 4 — Tu loues ta résidence principale ou un meublé dédié ? Résidence principale = plafond 120 jours/an. Meublé dédié = pas de plafond',
-          'Question 5 — Tu as fait des travaux > 5 000 € dans le logement ? Si OUI → régime réel pour amortir. Si NON → micro-BIC si CA modeste',
+          'Question 1 : Tes revenus Airbnb dépassent 23 000 €/an ? Si NON → LMNP automatique. Si OUI → tu peux basculer en LMP selon le ratio',
+          'Question 2 : Tes recettes Airbnb dépassent 50 % des revenus de ton foyer fiscal ? Si NON → reste en LMNP. Si OUI → potentiellement LMP',
+          'Question 3 : Tu as un emprunt sur le logement ? Si OUI → régime réel BIC plus avantageux. Si NON → micro-BIC suffit',
+          'Question 4 : Tu loues ta résidence principale ou un meublé dédié ? Résidence principale = plafond 120 jours/an. Meublé dédié = pas de plafond',
+          'Question 5 : Tu as fait des travaux > 5 000 € dans le logement ? Si OUI → régime réel pour amortir. Si NON → micro-BIC si CA modeste',
         ]},
         { type: 'tip', text: 'Pour 80 % des hôtes débutants : LMNP au régime micro-BIC. Simple, abattement 50 %, déclaration via 2042-C-PRO. Pas besoin d\'expert-comptable la première année.' },
       ],
@@ -29,7 +29,7 @@ export default {
       content: [
         { type: 'p', text: 'Avant la déclaration, tu dois faire ces 4 démarches.' },
         { type: 'ul', items: [
-          'Obtenir un SIRET (gratuit, en ligne sur formalites.entreprises.gouv.fr) — formalité, ~10 min, te donne ton numéro pro',
+          'Obtenir un SIRET (gratuit, en ligne sur formalites.entreprises.gouv.fr) : formalité, ~10 min, te donne ton numéro pro',
           'Déclarer ton activité en mairie via formulaire Cerfa 14004 (résidence principale partielle) ou Cerfa 13404 (meublé dédié)',
           'Souscrire une assurance LCD (RC pro + multirisque LCD) auprès d\'un assureur spécialisé',
           'Obtenir le numéro d\'enregistrement national LCD (obligatoire dès le 20 mai 2026)',
@@ -41,7 +41,7 @@ export default {
       content: [
         { type: 'p', text: 'En LMNP au micro-BIC, tu fais ta déclaration via le formulaire 2042-C-PRO, en mai chaque année (revenus de l\'année précédente).' },
         { type: 'ul', items: [
-          'Étape 1 : récupérer ton chiffre d\'affaires brut total (Airbnb + Booking + direct) — Airbnb te fournit l\'attestation annuelle dans ton tableau de bord',
+          'Étape 1 : récupérer ton chiffre d\'affaires brut total (Airbnb + Booking + direct) : Airbnb te fournit l\'attestation annuelle dans ton tableau de bord',
           'Étape 2 : sur la déclaration 2042-C-PRO, dans la rubrique "Revenus d\'activité non salariée", indique ton CA brut',
           'Étape 3 : précise "Régime micro-BIC" dans la case dédiée',
           'Étape 4 : l\'administration applique automatiquement l\'abattement (50 % en 2026 pour locations classées, 30 % pour non classées)',

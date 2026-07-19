@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Build script — génère l'annuaire public des photographes LCD et les
+ * Build script : génère l'annuaire public des photographes LCD et les
  * fiches individuelles SEO friendly. Idem pattern build-signalements.
  *
  * - /annuaires/photographes/index.html : liste filtrable (l'annuaire)
@@ -19,8 +19,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
 const FICHES_DIR = path.join(ROOT, 'annuaires', 'photographes')
 // Sous-dossiers à PROTÉGER du cleanup (sous-pages statiques sous
-// /annuaires/photographes/) — sinon le rm récursif les supprimerait.
-// NB : 'annuaire' n'est plus réservé — l'ancienne URL /annuaires/photographes/annuaire
+// /annuaires/photographes/) : sinon le rm récursif les supprimerait.
+// NB : 'annuaire' n'est plus réservé : l'ancienne URL /annuaires/photographes/annuaire
 // redirige (301 vercel.json) vers /annuaires/photographes.
 const RESERVED_DIRS = new Set(['inscription', 'exemple-fiche'])
 
@@ -90,7 +90,7 @@ function villeGuidePath(ville, prefix) {
   return fs.existsSync(path.join(ROOT, dir, 'index.html')) ? `/${dir}` : null
 }
 
-// "Membre depuis juin 2026" — signal d'anciennete/confiance sur la fiche
+// "Membre depuis juin 2026" : signal d'anciennete/confiance sur la fiche
 const MOIS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
 function memberSince(createdAt) {
   if (!createdAt) return null
@@ -556,7 +556,7 @@ async function main() {
   if (fs.existsSync(FICHES_DIR)) {
     // Cleanup : on supprime UNIQUEMENT les sous-dossiers de fiches (slugs).
     // Hub + annuaire + inscription + exemple-fiche (RESERVED_DIRS) sont
-    // intouchables — sinon le rm casse tout le hub /annuaires/photographes/.
+    // intouchables : sinon le rm casse tout le hub /annuaires/photographes/.
     for (const entry of fs.readdirSync(FICHES_DIR, { withFileTypes: true })) {
       if (entry.isDirectory() && !RESERVED_DIRS.has(entry.name)) {
         fs.rmSync(path.join(FICHES_DIR, entry.name), { recursive: true, force: true })

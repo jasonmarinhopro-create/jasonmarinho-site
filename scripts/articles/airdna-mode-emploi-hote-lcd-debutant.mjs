@@ -17,7 +17,7 @@ export default {
         { type: 'ul', items: [
           'Tarif moyen / médian / percentile par taille de logement',
           'Taux d\'occupation moyen sur 12 mois glissants',
-          'RevPAR (revenu par logement disponible) — KPI central',
+          'RevPAR (revenu par logement disponible) : KPI central',
           'Saisonnalité graphique mois par mois',
           'Évolution sur 1-3 ans (tendance hausse ou baisse)',
           'Top performers (annonces les mieux notées et les plus rentables)',
@@ -43,7 +43,7 @@ export default {
       content: [
         { type: 'p', text: 'AirDNA permet d\'identifier tes 5-10 concurrents directs (même type de logement, même quartier). Étudie-les pour comprendre ce qui marche.' },
         { type: 'ul', items: [
-          'Annonces top performer : photo de couverture, titre, description — quels patterns reviennent ?',
+          'Annonces top performer : photo de couverture, titre, description : quels patterns reviennent ?',
           'Équipements cochés : que coches-tu vs eux ?',
           'Note moyenne et nombre d\'avis : leur écart vs toi',
           'Politique d\'annulation : Stricte/Modérée/Souple',

@@ -11,7 +11,7 @@ export default {
 
   sections: [
     {
-      h2: '1. Make vs Zapier — quelle plateforme choisir',
+      h2: '1. Make vs Zapier : quelle plateforme choisir',
       content: [
         { type: 'p', text: 'Les deux outils permettent de connecter des apps en mode "si X arrive, alors Y se déclenche". La différence se joue sur l\'interface et le pricing.' },
         { type: 'ul', items: [
@@ -52,7 +52,7 @@ export default {
       content: [
         { type: 'p', text: 'Make et Zapier ont 3 limites importantes pour les hôtes LCD à connaître avant d\'investir du temps.' },
         { type: 'ul', items: [
-          'Sans API Airbnb officielle, tu dépends du parsing email — si Airbnb change ses templates, tes automations cassent',
+          'Sans API Airbnb officielle, tu dépends du parsing email : si Airbnb change ses templates, tes automations cassent',
           'Le coût grimpe vite avec le volume (au-delà de 1 000 ops/mois sur Make ou 750 tâches/mois sur Zapier)',
           'Si tu as besoin de logique business complexe (calcul tarifaire dynamique, gestion multi-biens), un PMS comme Hospitable est plus pertinent',
         ]},

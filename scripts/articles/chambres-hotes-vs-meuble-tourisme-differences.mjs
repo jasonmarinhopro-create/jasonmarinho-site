@@ -13,7 +13,7 @@ export default {
     {
       h2: '1. La présence de l\'hôte',
       content: [
-        { type: 'p', text: 'C\'est la différence fondamentale. En chambres d\'hôtes, la présence de l\'hôte est OBLIGATOIRE — tu dois habiter le logement pendant que le voyageur séjourne. En meublé de tourisme, ta présence n\'est pas requise.' },
+        { type: 'p', text: 'C\'est la différence fondamentale. En chambres d\'hôtes, la présence de l\'hôte est OBLIGATOIRE : tu dois habiter le logement pendant que le voyageur séjourne. En meublé de tourisme, ta présence n\'est pas requise.' },
         { type: 'ul', items: [
           'Chambres d\'hôtes : l\'hôte réside dans le logement pendant l\'accueil',
           'Meublé de tourisme : l\'hôte peut être absent (check-in autonome possible)',
@@ -26,8 +26,8 @@ export default {
       content: [
         { type: 'p', text: 'En chambres d\'hôtes, le petit-déjeuner doit être proposé aux voyageurs (obligatoirement, gratuit ou payant). En meublé de tourisme, aucune prestation de restauration n\'est requise.' },
         { type: 'ul', items: [
-          'Chambres d\'hôtes : petit-déjeuner obligatoire — peut être inclus dans le prix ou facturé en supplément',
-          'Meublé de tourisme : pas de petit-déjeuner imposé — les hôtes qui en proposent un glissent vers les services parahôteliers (et la TVA qui va avec)',
+          'Chambres d\'hôtes : petit-déjeuner obligatoire : peut être inclus dans le prix ou facturé en supplément',
+          'Meublé de tourisme : pas de petit-déjeuner imposé : les hôtes qui en proposent un glissent vers les services parahôteliers (et la TVA qui va avec)',
           'Cette obligation distingue les chambres d\'hôtes comme un service d\'accueil "vivant" vs un logement mis à disposition',
         ]},
       ],

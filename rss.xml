@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Jason Marinho — Blog location courte durée</title>
+    <title>Jason Marinho : Blog location courte durée</title>
     <link>https://jasonmarinho.com/blog</link>
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
@@ -60,7 +60,7 @@
       <link>https://jasonmarinho.com/blog/devenir-prestataire-menage-airbnb-se-lancer</link>
       <guid isPermaLink="true">https://jasonmarinho.com/blog/devenir-prestataire-menage-airbnb-se-lancer</guid>
       <pubDate>Sun, 05 Jul 2026 08:00:00 GMT</pubDate>
-      <description>Le ménage de turnover LCD est un vrai business : marché en croissance, tarifs 40-180 € par passage, clients récurrents. Statut, matériel, tarification et premiers clients — le guide pour se lancer.</description>
+      <description>Le ménage de turnover LCD est un vrai business : marché en croissance, tarifs 40-180 € par passage, clients récurrents. Statut, matériel, tarification et premiers clients : le guide pour se lancer.</description>
       <category>Conciergerie</category>
     </item>
     <item>
@@ -368,7 +368,7 @@
       <category>Revenus</category>
     </item>
     <item>
-      <title>Capteurs IoT pour LCD : bruit, température, ouverture — utile ou gadget ?</title>
+      <title>Capteurs IoT pour LCD : bruit, température, ouverture : utile ou gadget ?</title>
       <link>https://jasonmarinho.com/blog/capteurs-iot-lcd-bruit-temperature-utile-ou-pas</link>
       <guid isPermaLink="true">https://jasonmarinho.com/blog/capteurs-iot-lcd-bruit-temperature-utile-ou-pas</guid>
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>

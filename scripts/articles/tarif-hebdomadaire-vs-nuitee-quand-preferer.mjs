@@ -48,7 +48,7 @@ export default {
         { type: 'p', text: 'Trois erreurs reviennent régulièrement et grignotent la marge sans amélioration de l\'occupation.' },
         { type: 'ul', items: [
           'Cumul de remises : remise semaine 15 % + early booking 10 % + last-minute 10 % = -32 % cumulé. Vérifie que tes remises ne s\'additionnent pas par accident',
-          'Remise mois trop forte : à -40 %, certains voyageurs voient ton logement comme "low-cost" et baissent leurs attentes — risque d\'avis moins bons',
+          'Remise mois trop forte : à -40 %, certains voyageurs voient ton logement comme "low-cost" et baissent leurs attentes : risque d\'avis moins bons',
           'Garder une remise constante toute l\'année : en haute saison, tu n\'as pas besoin de remise. Désactive-la les 3 mois de pic, réactive en basse saison',
         ]},
         { type: 'cta', text: 'Tu veux mettre en place une stratégie tarifaire LCD complète, saisonnière et rentable ?', button: 'Voir les formations', href: '/#formations' },

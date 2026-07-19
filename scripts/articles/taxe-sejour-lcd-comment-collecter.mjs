@@ -20,18 +20,18 @@ export default {
           'Exempts : enfants -18 ans, contrat saisonnier de travail, urgence sanitaire',
           'Plafonnement : la taxe ne peut pas dépasser le tarif le plus élevé de l\'hôtellerie 4 étoiles de la commune',
         ]},
-        { type: 'tip', text: 'Vérifie le montant exact pour ta commune sur taxesejour.impots.gouv.fr — tu as un simulateur officiel qui calcule exactement ce que tu dois facturer.' },
+        { type: 'tip', text: 'Vérifie le montant exact pour ta commune sur taxesejour.impots.gouv.fr : tu as un simulateur officiel qui calcule exactement ce que tu dois facturer.' },
       ],
     },
     {
       h2: '2. Sur Airbnb et Booking : c\'est automatique',
       content: [
-        { type: 'p', text: 'Depuis 2019, Airbnb et Booking collectent automatiquement la taxe de séjour pour la majorité des communes françaises. Tu n\'as RIEN à faire — la plateforme la facture au voyageur, la collecte, et la reverse directement à la commune.' },
+        { type: 'p', text: 'Depuis 2019, Airbnb et Booking collectent automatiquement la taxe de séjour pour la majorité des communes françaises. Tu n\'as RIEN à faire : la plateforme la facture au voyageur, la collecte, et la reverse directement à la commune.' },
         { type: 'ul', items: [
           'Tu vois la taxe sur la facture voyageur (séparée du tarif)',
           'La plateforme te transmet une attestation annuelle pour ta comptabilité',
           'Aucune déclaration mairie de ta part (sauf attestation à fournir si demandée)',
-          'Important : vérifie 1 fois/an que ta commune est bien dans le système — les nouvelles communes mettent du temps à intégrer',
+          'Important : vérifie 1 fois/an que ta commune est bien dans le système : les nouvelles communes mettent du temps à intégrer',
         ]},
       ],
     },

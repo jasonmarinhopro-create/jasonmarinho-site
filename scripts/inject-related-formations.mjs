@@ -89,7 +89,7 @@ const FORMATIONS = {
   },
   'maitriser-booking-com-algorithme-genius': {
     title: 'Maîtriser Booking.com',
-    short: 'Algorithme, Genius 2026 et visibilité IA — la 2e plateforme LCD enfin décryptée.',
+    short: 'Algorithme, Genius 2026 et visibilité IA : la 2e plateforme LCD enfin décryptée.',
     icon: 'ph-globe',
   },
 };

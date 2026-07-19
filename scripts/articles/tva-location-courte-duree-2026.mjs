@@ -7,7 +7,7 @@ export default {
   categorySlug: 'fiscalite',
   readTime: 8,
 
-  lead: 'Un projet de loi de finances change la donne pour des milliers d\'hôtes LCD en 2026 : le seuil d\'assujettissement à la TVA pour les locations avec prestations para-hôtelières tombe à 37 500 € — contre 85 000 € jusqu\'à présent. Si tu proposes le petit-déjeuner, le ménage, le linge ou la réception, tu es peut-être directement concerné.',
+  lead: 'Un projet de loi de finances change la donne pour des milliers d\'hôtes LCD en 2026 : le seuil d\'assujettissement à la TVA pour les locations avec prestations para-hôtelières tombe à 37 500 € : contre 85 000 € jusqu\'à présent. Si tu proposes le petit-déjeuner, le ménage, le linge ou la réception, tu es peut-être directement concerné.',
 
   sections: [
     {
@@ -26,15 +26,15 @@ export default {
           'Petit-déjeuner fourni ou livré aux voyageurs',
           'Nettoyage régulier des locaux pendant le séjour (pas uniquement entre deux voyageurs)',
           'Fourniture de linge de maison (draps, serviettes) avec remplacement pendant le séjour',
-          'Réception de la clientèle — même via un service de conciergerie ou une boîte à clés avec accueil téléphonique personnalisé',
+          'Réception de la clientèle : même via un service de conciergerie ou une boîte à clés avec accueil téléphonique personnalisé',
         ]},
-        { type: 'p', text: 'Attention : certains hôtes cochent 3 de ces 4 cases sans le réaliser. Si tu fournis le linge, fais nettoyer entre chaque séjour ET proposes un accueil personnalisé — même à distance — tu es déjà en zone para-hôtelière.' },
+        { type: 'p', text: 'Attention : certains hôtes cochent 3 de ces 4 cases sans le réaliser. Si tu fournis le linge, fais nettoyer entre chaque séjour ET proposes un accueil personnalisé : même à distance : tu es déjà en zone para-hôtelière.' },
       ],
     },
     {
       h2: '3. Comment calculer si tu es au-dessus du seuil de 37 500 €',
       content: [
-        { type: 'p', text: 'Le calcul se fait sur l\'ensemble des revenus bruts perçus via toutes tes plateformes et réservations directes. Si tu gères plusieurs logements, les revenus sont additionnés. La commission Airbnb ou Booking que tu ne touches pas directement n\'est pas déduite pour ce calcul — c\'est le prix total facturé au voyageur qui compte.' },
+        { type: 'p', text: 'Le calcul se fait sur l\'ensemble des revenus bruts perçus via toutes tes plateformes et réservations directes. Si tu gères plusieurs logements, les revenus sont additionnés. La commission Airbnb ou Booking que tu ne touches pas directement n\'est pas déduite pour ce calcul : c\'est le prix total facturé au voyageur qui compte.' },
         { type: 'ul', items: [
           'Revenu brut annuel < 37 500 € avec prestations : franchise de TVA maintenue',
           'Revenu brut annuel ≥ 37 500 € avec ≥ 3 prestations : TVA à 10 % obligatoire',
@@ -47,7 +47,7 @@ export default {
     {
       h2: '4. Ce que tu dois faire concrètement',
       content: [
-        { type: 'p', text: 'Si tu es concerné, voici les étapes à suivre sans attendre : d\'abord, déclarer ton activité para-hôtelière à l\'administration fiscale et obtenir un numéro de TVA intracommunautaire. Ensuite, paramétrer tes outils de réservation pour afficher les prix TTC ou HT avec la TVA en sus — Airbnb et Booking permettent cette configuration côté professionnel.' },
+        { type: 'p', text: 'Si tu es concerné, voici les étapes à suivre sans attendre : d\'abord, déclarer ton activité para-hôtelière à l\'administration fiscale et obtenir un numéro de TVA intracommunautaire. Ensuite, paramétrer tes outils de réservation pour afficher les prix TTC ou HT avec la TVA en sus : Airbnb et Booking permettent cette configuration côté professionnel.' },
         { type: 'ul', items: [
           'Consulter un expert-comptable spécialisé LCD dès maintenant si tu es entre 30 000 € et 50 000 € de revenus annuels',
           'Vérifier si ton statut actuel (micro-BIC, LMNP, SCI) est compatible avec l\'assujettissement à la TVA',

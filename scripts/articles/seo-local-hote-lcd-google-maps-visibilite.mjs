@@ -37,7 +37,7 @@ export default {
         { type: 'ul', items: [
           'Sollicite chaque voyageur post-séjour : "Si vous avez apprécié votre séjour, un avis Google nous aiderait beaucoup. Voici le lien direct"',
           'Privilégie 1 avis Google + 1 avis Airbnb (au lieu de 2 avis Airbnb)',
-          'Réponds à 100 % des avis (positifs et négatifs) — Google value cet engagement',
+          'Réponds à 100 % des avis (positifs et négatifs) : Google value cet engagement',
           'Évite les solicitations massives en série (Google détecte et pénalise les pics suspects)',
         ]},
         { type: 'tip', text: 'Crée un QR code qui renvoie directement à l\'écran d\'avis de ta fiche Google. Imprime-le sur ton livret d\'accueil. Tu doubles le taux de retour d\'avis.' },

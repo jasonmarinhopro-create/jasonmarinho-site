@@ -1,4 +1,4 @@
-// Vercel serverless function — formulaire de contact d'une fiche ménage.
+// Vercel serverless function : formulaire de contact d'une fiche ménage.
 // POST { slug, contactName, contactEmail, message, website, t }
 
 const rateLimitMap = new Map()
@@ -123,7 +123,7 @@ module.exports = async function handler(req, res) {
 </div>
 <div style="background:#fff;padding:16px;border-radius:8px;font-size:14px;line-height:1.75;color:#3D5038;margin-top:12px;white-space:pre-wrap">${escHtml(message)}</div>
 <p style="margin:18px 0 0"><a href="mailto:${escHtml(contactEmail)}" style="display:inline-block;background:#FFD56B;color:#003329;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">Répondre par email →</a></p>
-<p style="font-size:12px;color:#7A8C77;margin:22px 0 0;line-height:1.6">Tu peux répondre directement à cet email — ta réponse arrivera dans la boîte de ${escHtml(contactName)}. Aucune commission, aucun intermédiaire.</p>
+<p style="font-size:12px;color:#7A8C77;margin:22px 0 0;line-height:1.6">Tu peux répondre directement à cet email : ta réponse arrivera dans la boîte de ${escHtml(contactName)}. Aucune commission, aucun intermédiaire.</p>
 </div>`,
       }, 'pro')
 

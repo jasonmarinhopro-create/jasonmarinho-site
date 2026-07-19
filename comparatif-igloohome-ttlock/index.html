@@ -66,7 +66,7 @@
       "name": "igloohome ou TTLock : quelle serrure connectée choisir pour la LCD en 2026 ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "igloohome est la référence premium pour les hôtes LCD : technologie algoPIN qui génère des codes PIN valides pendant le séjour SANS internet ni gateway, intégration native Airbnb (sync calendrier + auto-PIN), hardware singapourien fiable. TTLock est la solution low-cost (3 à 5× moins chère) mais nécessite un gateway WiFi pour la plupart des fonctions à distance et n'a pas d'intégration Airbnb native — il faut passer par RemoteLock ($6/mois/serrure) pour l'automatisation."
+        "text": "igloohome est la référence premium pour les hôtes LCD : technologie algoPIN qui génère des codes PIN valides pendant le séjour SANS internet ni gateway, intégration native Airbnb (sync calendrier + auto-PIN), hardware singapourien fiable. TTLock est la solution low-cost (3 à 5× moins chère) mais nécessite un gateway WiFi pour la plupart des fonctions à distance et n'a pas d'intégration Airbnb native : il faut passer par RemoteLock ($6/mois/serrure) pour l'automatisation."
       }
     },
     {
@@ -98,7 +98,7 @@
       "name": "TTLock fonctionne-t-il sans internet ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Partiellement. TTLock peut générer des codes PIN offline (mode \"custom passcode\" via Bluetooth) mais nécessite que vous soyez à proximité de la serrure pour le faire. Pour générer un code à distance pour un voyageur Airbnb, il faut un gateway WiFi connecté en permanence. Si votre box internet ou le gateway tombe en panne, vous ne pouvez plus envoyer de nouveaux codes — un risque pour les check-ins automatisés."
+        "text": "Partiellement. TTLock peut générer des codes PIN offline (mode \"custom passcode\" via Bluetooth) mais nécessite que vous soyez à proximité de la serrure pour le faire. Pour générer un code à distance pour un voyageur Airbnb, il faut un gateway WiFi connecté en permanence. Si votre box internet ou le gateway tombe en panne, vous ne pouvez plus envoyer de nouveaux codes : un risque pour les check-ins automatisés."
       }
     }
   ]
@@ -210,8 +210,8 @@ a:hover { text-decoration: underline; }
   .comp-table tr { margin-bottom: 16px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .comp-table td { text-align: left !important; border: none; border-bottom: 1px solid var(--border); }
   .comp-table td:first-child { background: var(--surface2) !important; font-weight: 600; color: var(--text); }
-  .comp-table td:nth-child(2)::before { content: "igloohome — "; color: var(--green); font-weight: 600; }
-  .comp-table td:nth-child(3)::before { content: "TTLock — "; color: #60a5fa; font-weight: 600; }
+  .comp-table td:nth-child(2)::before { content: "igloohome : "; color: var(--green); font-weight: 600; }
+  .comp-table td:nth-child(3)::before { content: "TTLock : "; color: #60a5fa; font-weight: 600; }
 }
 </style>
 <script type="application/ld+json">
@@ -260,11 +260,11 @@ a:hover { text-decoration: underline; }
   <div class="section">
     <h2>Présentation rapide des 2 solutions</h2>
 
-    <h3>igloohome — la référence premium algoPIN</h3>
+    <h3>igloohome : la référence premium algoPIN</h3>
     <p>igloohome est une marque singapourienne fondée en 2015, spécialisée dans les serrures pour la location courte durée. Sa technologie phare, <strong>algoPIN</strong>, génère des codes PIN à validité bornée (heures, jours, dates) <strong>sans aucune connexion internet à la serrure</strong>. Le code est calculé localement par algorithme et seed partagé, comme un token bancaire OTP. Intégration native Airbnb : la synchronisation du calendrier déclenche automatiquement la génération du PIN voyageur.</p>
     <p>Gamme : Smart Deadbolt, Smart Mortise, Glass Door Lock, Keybox 3 (boîte à clés), Padlock 2 (cadenas connecté). Le Bridge WiFi est optionnel et sert uniquement aux notifications temps réel et au déverrouillage à distance.</p>
 
-    <h3>TTLock — la plateforme low-cost mondiale</h3>
+    <h3>TTLock : la plateforme low-cost mondiale</h3>
     <p>TTLock n'est pas une marque mais une <strong>plateforme logicielle chinoise</strong> (éditée par Sciener) utilisée par des dizaines de fabricants OEM : Glomarket, Welock, ULTRALOQ partiellement, et de nombreuses marques sans nom propre. L'app TTLock est gratuite et permet de générer des codes PIN offline en Bluetooth. Pour le contrôle à distance (génération de codes pour des voyageurs en cours de route), un <strong>gateway WiFi</strong> est obligatoire.</p>
     <p>TTLock n'a pas d'intégration native Airbnb : pour automatiser, il faut passer par <strong>RemoteLock</strong> (à partir de $6/mois/serrure) ou un PMS qui supporte l'API TTLock (Smoobu le fait, par exemple).</p>
   </div>
@@ -407,22 +407,22 @@ a:hover { text-decoration: underline; }
     <h2>4 scénarios LCD concrets</h2>
     <div class="scenario-grid">
       <div class="scenario-card">
-        <h4>Scénario 1 — Hôte 1 logement, 0 abonnement</h4>
+        <h4>Scénario 1 : Hôte 1 logement, 0 abonnement</h4>
         <p>Vous voulez la simplicité, zéro frais récurrent, fiabilité même si box internet en panne.</p>
         <p class="winner">→ igloohome Smart Deadbolt sans Bridge (algoPIN suffit)</p>
       </div>
       <div class="scenario-card">
-        <h4>Scénario 2 — Hôte 5 logements avec Smoobu</h4>
+        <h4>Scénario 2 : Hôte 5 logements avec Smoobu</h4>
         <p>Vous avez Smoobu, vous voulez le minimum de coût matériel.</p>
         <p class="winner">→ TTLock + Smoobu (pilote natif, pas besoin de RemoteLock)</p>
       </div>
       <div class="scenario-card">
-        <h4>Scénario 3 — Conciergerie multi-marques</h4>
+        <h4>Scénario 3 : Conciergerie multi-marques</h4>
         <p>Plusieurs PMS, exigence de fiabilité, traçabilité, support client.</p>
         <p class="winner">→ igloohome (gamme cohérente, support pro, intégrations larges)</p>
       </div>
       <div class="scenario-card">
-        <h4>Scénario 4 — Maison d'amis / locations occasionnelles</h4>
+        <h4>Scénario 4 : Maison d'amis / locations occasionnelles</h4>
         <p>Pas d'enjeu économique, vous testez le concept de check-in autonome.</p>
         <p class="winner">→ TTLock low-cost (40–60 €) en mode Bluetooth manuel</p>
       </div>
@@ -474,17 +474,17 @@ a:hover { text-decoration: underline; }
   </div>
 
   <div class="voir-aussi">
-    <h3>Voir aussi — Autres comparatifs outils LCD</h3>
+    <h3>Voir aussi : Autres comparatifs outils LCD</h3>
     <div class="voir-aussi-links">
-      <a href="/comparatif-ring-eufy-reolink">Ring vs Eufy vs Reolink — caméras extérieures</a>
-      <a href="/comparatif-turnoverbnb-properly">Turno vs Properly — coordination ménage</a>
+      <a href="/comparatif-ring-eufy-reolink">Ring vs Eufy vs Reolink : caméras extérieures</a>
+      <a href="/comparatif-turnoverbnb-properly">Turno vs Properly : coordination ménage</a>
       <a href="/comparatif-hostfully-guidebook-driing-touchstay">Hostfully Guidebook vs Driing vs Touch Stay</a>
-      <a href="/comparatif-lodgify-smoobu">Lodgify vs Smoobu — channel managers</a>
-      <a href="/comparatif-hostfully-guesty">Hostfully vs Guesty — PMS pro</a>
+      <a href="/comparatif-lodgify-smoobu">Lodgify vs Smoobu : channel managers</a>
+      <a href="/comparatif-hostfully-guesty">Hostfully vs Guesty : PMS pro</a>
       <a href="/comparatif-smoobu-hospitable">Smoobu vs Hospitable</a>
       <a href="/comparatif-pricelabs-beyond-wheelhouse">PriceLabs vs Beyond vs Wheelhouse</a>
-      <a href="/comparatif-airdna-mashvisor">AirDNA vs Mashvisor — données marché</a>
-      <a href="/comparatif-indy-tiime-henrri">Indy vs Tiime vs Henrri — comptabilité LMNP</a>
+      <a href="/comparatif-airdna-mashvisor">AirDNA vs Mashvisor : données marché</a>
+      <a href="/comparatif-indy-tiime-henrri">Indy vs Tiime vs Henrri : comptabilité LMNP</a>
       <a href="/comparatif-superhote-welkeys">Superhote vs Welkeys</a>
       <a href="/comparatif-driing-airbnb-booking">Driing vs Airbnb vs Booking.com</a>
     </div>

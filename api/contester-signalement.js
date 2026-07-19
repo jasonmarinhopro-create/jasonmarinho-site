@@ -1,7 +1,7 @@
 // Vercel serverless function : reçoit les demandes de retrait d'un
 // signalement public anonymisé. Validation + rate-limit + appel Supabase
 // + notification Jason via Resend. Le retrait effectif est manuel
-// (décision admin) — cet endpoint enregistre seulement la demande.
+// (décision admin) : cet endpoint enregistre seulement la demande.
 
 const rateLimitMap = new Map()
 

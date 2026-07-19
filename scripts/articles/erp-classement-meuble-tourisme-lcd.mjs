@@ -34,7 +34,7 @@ export default {
           'Validité : 5 ans, renouvelable',
           'Délai : 4-8 semaines entre la demande et la décision',
         ]},
-        { type: 'tip', text: 'Avant de demander le classement, étudie les grilles publiques d\'Atout France pour évaluer ton niveau probable. Inutile de viser 5 étoiles si tu as 3 étoiles atteignables — la 5 étoiles a des contraintes énormes (concierge 24/7, restaurant, etc.).' },
+        { type: 'tip', text: 'Avant de demander le classement, étudie les grilles publiques d\'Atout France pour évaluer ton niveau probable. Inutile de viser 5 étoiles si tu as 3 étoiles atteignables : la 5 étoiles a des contraintes énormes (concierge 24/7, restaurant, etc.).' },
       ],
     },
     {

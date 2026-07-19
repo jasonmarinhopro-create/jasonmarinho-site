@@ -32,7 +32,7 @@ export default {
           'Spa et massages à domicile : 15-25 % du tarif',
           'Location vélo électrique : 5-10 € de commission par journée louée',
         ]},
-        { type: 'tip', text: 'Crée un livret d\'accueil digital avec tes recommandations triées et tes liens d\'affiliation. Les voyageurs adorent les recommandations curated — ça améliore ta note ET ton revenu.' },
+        { type: 'tip', text: 'Crée un livret d\'accueil digital avec tes recommandations triées et tes liens d\'affiliation. Les voyageurs adorent les recommandations curated : ça améliore ta note ET ton revenu.' },
       ],
     },
     {
@@ -40,7 +40,7 @@ export default {
       content: [
         { type: 'p', text: 'Quelques sources de revenus que ton logement peut générer même quand il n\'est pas loué en LCD.' },
         { type: 'ul', items: [
-          'Tournages et shootings photo (entre 200 et 800 €/jour) — inscription sur ShootRights, Pollen Studios',
+          'Tournages et shootings photo (entre 200 et 800 €/jour) : inscription sur ShootRights, Pollen Studios',
           'Stockage longue durée (cave, garage) sur Costockage : 30-100 €/mois selon la zone',
           'Location de matériel photo/drone si tu en as : 30-80 €/jour',
         ]},
@@ -64,7 +64,7 @@ export default {
         { type: 'ul', items: [
           'Créer une Expérience Airbnb dans ta ville : inscription gratuite, commission 20 % pour Airbnb',
           'Proposer un séjour "clé en main" à tes voyageurs : logement + petit-déj + visite guidée + dîner',
-          'Tarifer 10-15 % plus cher que la somme des composants séparés — et les voyageurs acceptent souvent pour la simplicité',
+          'Tarifer 10-15 % plus cher que la somme des composants séparés : et les voyageurs acceptent souvent pour la simplicité',
         ]},
       ],
     },
@@ -85,7 +85,7 @@ export default {
       content: [
         { type: 'p', text: 'Si tu partages ton expérience d\'hôte LCD sur un blog, Instagram ou YouTube, tu peux monétiser via l\'affiliation (outils LCD, livres, équipements). Ce levier est lent à démarrer mais génère un revenu récurrent sans effort supplémentaire sur le long terme.' },
         { type: 'ul', items: [
-          'Programmes d\'affiliation : PriceLabs, Hospitable, Smoobu, Driing — 20-30 % de commission récurrente',
+          'Programmes d\'affiliation : PriceLabs, Hospitable, Smoobu, Driing : 20-30 % de commission récurrente',
           'Blog d\'hôte LCD avec trafic SEO : monétisable en affiliation dès 1 000 visiteurs/mois',
           'Formation ou ebook sur ton retour d\'expérience : si tu as 50+ séjours, tu as assez de matière pour créer un produit info',
         ]},

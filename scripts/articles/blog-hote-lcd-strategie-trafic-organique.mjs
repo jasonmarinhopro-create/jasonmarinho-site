@@ -22,12 +22,12 @@ export default {
       content: [
         { type: 'p', text: 'Voici les types d\'articles avec le meilleur ROI SEO/conversion.' },
         { type: 'ul', items: [
-          'Type 1 — Guide local : "10 restaurants incontournables à [ville]", "5 visites insolites à [quartier]". Capte les recherches voyageurs en pré-réservation. CTR élevé',
-          'Type 2 — Guide pratique : "Que faire à [ville] quand il pleut ?", "Aller à [ville] sans voiture : guide complet". Long-tail SEO',
-          'Type 3 — Saisonnier : "[Ville] en hiver : top 7 activités", "[Ville] en automne : pourquoi c\'est la meilleure saison". Récurrent chaque année',
-          'Type 4 — Comparatif : "[Ville] vs [Ville voisine] : laquelle visiter ?", "Logement à [quartier] vs [autre quartier]". Capte les indécis',
+          'Type 1 : Guide local : "10 restaurants incontournables à [ville]", "5 visites insolites à [quartier]". Capte les recherches voyageurs en pré-réservation. CTR élevé',
+          'Type 2 : Guide pratique : "Que faire à [ville] quand il pleut ?", "Aller à [ville] sans voiture : guide complet". Long-tail SEO',
+          'Type 3 : Saisonnier : "[Ville] en hiver : top 7 activités", "[Ville] en automne : pourquoi c\'est la meilleure saison". Récurrent chaque année',
+          'Type 4 : Comparatif : "[Ville] vs [Ville voisine] : laquelle visiter ?", "Logement à [quartier] vs [autre quartier]". Capte les indécis',
         ]},
-        { type: 'tip', text: 'Évite les articles "trop génériques" comme "Guide complet de Paris" — tu ne ressortiras jamais sur ces requêtes contre les gros médias. Vise les longue traîne hyperlocales : "Que faire à Saint-Émilion en mai ?" — beaucoup moins de concurrence, audience qualifiée.' },
+        { type: 'tip', text: 'Évite les articles "trop génériques" comme "Guide complet de Paris" : tu ne ressortiras jamais sur ces requêtes contre les gros médias. Vise les longue traîne hyperlocales : "Que faire à Saint-Émilion en mai ?" : beaucoup moins de concurrence, audience qualifiée.' },
       ],
     },
     {
@@ -49,7 +49,7 @@ export default {
       content: [
         { type: 'p', text: 'Avoir 500 visiteurs/mois ne sert à rien sans tunnel de conversion.' },
         { type: 'ul', items: [
-          'Lead magnet : guide PDF gratuit ("Les 20 secrets de [ville]") en échange de l\'email — capture 5-15 % des visiteurs',
+          'Lead magnet : guide PDF gratuit ("Les 20 secrets de [ville]") en échange de l\'email : capture 5-15 % des visiteurs',
           'CTA bien visible dans chaque article : "Tu veux séjourner à [ville] ? Voir notre logement"',
           'Pop-up sortie discret : "Avant de partir, code FIDELE10 pour -10 % sur ta première réservation"',
           'Newsletter : email mensuel à ta base avec les nouveautés du quartier + dispos calendrier',

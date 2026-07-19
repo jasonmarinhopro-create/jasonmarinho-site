@@ -7,7 +7,7 @@ export default {
   categorySlug: 'conciergerie',
   readTime: 6,
 
-  lead: 'Une conciergerie LCD sans contrat formalisé court à la catastrophe. Le moindre désaccord avec un propriétaire — qui a payé quoi, qui contrôle les annonces, qui possède les photos — peut tourner au litige. Voici les 8 clauses indispensables d\'un mandat de conciergerie LCD en 2026.',
+  lead: 'Une conciergerie LCD sans contrat formalisé court à la catastrophe. Le moindre désaccord avec un propriétaire : qui a payé quoi, qui contrôle les annonces, qui possède les photos : peut tourner au litige. Voici les 8 clauses indispensables d\'un mandat de conciergerie LCD en 2026.',
 
   sections: [
     {
@@ -28,7 +28,7 @@ export default {
         { type: 'p', text: 'Précise comment ta rémunération est calculée, quand elle est facturée, et comment elle est encaissée. Aucune ambiguïté possible.' },
         { type: 'ul', items: [
           'Pourcentage exact (ex : 22 % du CA TTC voyageur)',
-          'Base de calcul : CA TTC encaissé avant ou après commission plateforme — préciser lequel',
+          'Base de calcul : CA TTC encaissé avant ou après commission plateforme : préciser lequel',
           'Mode d\'encaissement : prélèvement direct via plateforme, ou facturation mensuelle au propriétaire',
           'TVA : préciser si le pourcentage est TTC ou HT',
           'Date de paiement : J+5 du mois suivant par virement automatique',
@@ -79,8 +79,8 @@ export default {
         { type: 'ul', items: [
           'Compte Airbnb : appartient au propriétaire (créé à son nom, tu le gères en mandataire)',
           'Photos professionnelles : appartiennent au propriétaire s\'il les a financées, à toi si tu les as financées et produites',
-          'Livret d\'accueil digital : appartient à celui qui l\'a créé et financé — préciser dans le contrat',
-          'Scripts de messages automatisés : à toi — usage autorisé pour le propriétaire pendant le mandat uniquement',
+          'Livret d\'accueil digital : appartient à celui qui l\'a créé et financé : préciser dans le contrat',
+          'Scripts de messages automatisés : à toi : usage autorisé pour le propriétaire pendant le mandat uniquement',
         ]},
       ],
     },

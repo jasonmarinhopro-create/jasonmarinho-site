@@ -39,7 +39,7 @@ export default {
           'Réduire ou supprimer la durée de séjour minimale en octobre, novembre, janvier et février',
           'Activer les remises automatiques longue durée dès l\'approche de la basse saison',
           'Adapter la description de l\'annonce avec une section "Séjour prolongé" qui liste les atouts',
-          'Mettre en avant le quartier, les commodités, l\'environnement — ce qui compte sur le long terme',
+          'Mettre en avant le quartier, les commodités, l\'environnement : ce qui compte sur le long terme',
         ]},
         { type: 'tip', text: 'Un voyageur qui cherche un logement pour 3 semaines pense à son quotidien : supermarché, transports, restaurants du quartier. Donne ces informations proactivement dans ton annonce et ton livret d\'accueil.' },
       ],

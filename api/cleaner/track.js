@@ -1,6 +1,6 @@
-// Vercel serverless function — tracking des fiches équipes ménage publiques.
+// Vercel serverless function : tracking des fiches équipes ménage publiques.
 // POST { slug, event } avec event ∈ ('view', 'site', 'instagram')
-// Réplique du pattern api/photographer/track.js — voir ce fichier pour
+// Réplique du pattern api/photographer/track.js : voir ce fichier pour
 // le détail des choix (beacon, filtres bots, rate-limit, RPC awaité).
 
 const rateLimitMap = new Map()

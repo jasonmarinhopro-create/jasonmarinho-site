@@ -7,13 +7,13 @@ export default {
   categorySlug: 'fiscalite',
   readTime: 6,
 
-  lead: 'Beaucoup d\'hôtes français ne réalisent pas qu\'ils dépassent le seuil TVA bien plus tôt qu\'ils ne le pensent. La règle 2026 abaisse le seuil à 37 500 € de CA pour les hébergements avec prestations para-hôtelières — et la définition de "para-hôtelier" est plus large que tu ne crois.',
+  lead: 'Beaucoup d\'hôtes français ne réalisent pas qu\'ils dépassent le seuil TVA bien plus tôt qu\'ils ne le pensent. La règle 2026 abaisse le seuil à 37 500 € de CA pour les hébergements avec prestations para-hôtelières : et la définition de "para-hôtelier" est plus large que tu ne crois.',
 
   sections: [
     {
       h2: '1. Ce qu\'est une prestation para-hôtelière en 2026',
       content: [
-        { type: 'p', text: 'L\'administration fiscale définit les prestations para-hôtelières comme tout service à valeur ajoutée fourni en plus du logement, similaire à un hôtel. Si tu fournis 3 sur 4 des éléments suivants, tu es considéré comme para-hôtelier — donc soumis au seuil 37 500 € (et non 85 800 €).' },
+        { type: 'p', text: 'L\'administration fiscale définit les prestations para-hôtelières comme tout service à valeur ajoutée fourni en plus du logement, similaire à un hôtel. Si tu fournis 3 sur 4 des éléments suivants, tu es considéré comme para-hôtelier : donc soumis au seuil 37 500 € (et non 85 800 €).' },
         { type: 'ul', items: [
           'Petit-déjeuner ou repas (même un simple kit pré-installé compte)',
           'Nettoyage régulier des locaux (au-delà du ménage de fin de séjour)',
@@ -43,7 +43,7 @@ export default {
         { type: 'p', text: 'Quand tu dépasses le seuil, tu deviens assujetti TVA. Les conséquences pratiques.' },
         { type: 'ul', items: [
           'Tu factures 10 % de TVA en plus aux voyageurs (sauf si tu absorbes dans ton tarif)',
-          'Tu peux récupérer la TVA sur tes achats pro (mobilier, équipements, réparations) — gain potentiel de 1 000-3 000 €/an',
+          'Tu peux récupérer la TVA sur tes achats pro (mobilier, équipements, réparations) : gain potentiel de 1 000-3 000 €/an',
           'Tu dois faire une déclaration TVA tous les 3 mois (CA3), ou demander la franchise en base si tu repasses sous le seuil',
           'Tu dois afficher ton n° de TVA intracommunautaire sur tes factures',
           'Côté plateformes : Airbnb et Booking gèrent la TVA voyageur automatiquement, tu n\'as rien à régler',

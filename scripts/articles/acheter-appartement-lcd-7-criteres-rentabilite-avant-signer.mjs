@@ -7,7 +7,7 @@ export default {
   categorySlug: 'revenus',
   readTime: 8,
 
-  lead: 'Acheter un appartement pour le louer en courte durée n\'a rien à voir avec un investissement locatif classique. Le bon prix au m², les bons travaux, la bonne zone, oui — mais aussi la bonne réglementation, le bon DPE et le bon règlement de copropriété. Voici les 7 critères que tu dois absolument valider avant de signer le compromis, sous peine d\'acheter un bien qui ne sera jamais rentable en LCD.',
+  lead: 'Acheter un appartement pour le louer en courte durée n\'a rien à voir avec un investissement locatif classique. Le bon prix au m², les bons travaux, la bonne zone, oui : mais aussi la bonne réglementation, le bon DPE et le bon règlement de copropriété. Voici les 7 critères que tu dois absolument valider avant de signer le compromis, sous peine d\'acheter un bien qui ne sera jamais rentable en LCD.',
 
   sections: [
     {

@@ -37,7 +37,7 @@ export default {
         { type: 'ul', items: [
           'Photos initiales : avant la 1ère réservation (zone par zone, ~30 min)',
           'Mise à jour majeure : tous les 6 mois ou après un changement (nouveau mobilier, rénovation, etc.)',
-          'Mise à jour ciblée : avant chaque arrivée pour les zones sensibles (TV, appareils électroménager) — 5 min',
+          'Mise à jour ciblée : avant chaque arrivée pour les zones sensibles (TV, appareils électroménager) : 5 min',
           'Photo de "fin de séjour" : avant chaque ménage, prendre 3-5 photos rapides de l\'état laissé par le voyageur (preuve si signalé après)',
         ]},
       ],
@@ -45,7 +45,7 @@ export default {
     {
       h2: '4. Stockage et présentation des preuves',
       content: [
-        { type: 'p', text: 'Les photos seules ne suffisent pas — elles doivent être organisées et accessibles rapidement en cas de litige.' },
+        { type: 'p', text: 'Les photos seules ne suffisent pas : elles doivent être organisées et accessibles rapidement en cas de litige.' },
         { type: 'ul', items: [
           'Stockage : Google Photos avec albums datés ("Avril 2026 - inventaire complet"). Backup automatique cloud',
           'Renommage : si possible, une numérotation par zone (Z1-cuisine-01.jpg, Z1-cuisine-02.jpg) pour navigation rapide',

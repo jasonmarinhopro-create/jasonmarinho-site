@@ -1,4 +1,4 @@
-// Vercel serverless function — formulaire de contact d'une fiche photographe.
+// Vercel serverless function : formulaire de contact d'une fiche photographe.
 // POST { slug, contactName, contactEmail, message, website, t }
 // Lookup du photographe via slug, log dans `photographer_contacts`,
 // email au photographe + accusé de réception au demandeur.
@@ -87,7 +87,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ ok: true })
   }
 
-  // Log dans la table contacts — AWAITÉ : sur Vercel, la lambda est
+  // Log dans la table contacts : AWAITÉ : sur Vercel, la lambda est
   // gelée dès que la réponse part, un fetch non-attendu n'aboutit jamais.
   const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/photographer_contacts`, {
     method: 'POST',
@@ -107,14 +107,14 @@ module.exports = async function handler(req, res) {
   }).catch(err => { console.warn('[photographer/contact] insert failed', err); return null })
   if (insertRes && !insertRes.ok) console.warn('[photographer/contact] insert status', insertRes.status, await insertRes.text().catch(() => ''))
 
-  // Increment compteur contacts (awaité — même contrainte lambda)
+  // Increment compteur contacts (awaité : même contrainte lambda)
   await fetch(`${SUPABASE_URL}/rest/v1/rpc/increment_photographer_contacts`, {
     method: 'POST',
     headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ p_id: photographer.id }),
   }).catch(() => {})
 
-  // Emails — AWAITÉS via Promise.allSettled : sans await, la lambda
+  // Emails : AWAITÉS via Promise.allSettled : sans await, la lambda
   // Vercel gèle après res.json() et Resend n'est jamais appelé
   // (cause du "j'ai testé et rien reçu").
   const RESEND_KEY = process.env.RESEND_API_KEY
@@ -144,7 +144,7 @@ module.exports = async function handler(req, res) {
 </div>
 <div style="background:#fff;padding:16px;border-radius:8px;font-size:14px;line-height:1.75;color:#3D5038;margin-top:12px;white-space:pre-wrap">${escHtml(message)}</div>
 <p style="margin:18px 0 0"><a href="mailto:${escHtml(contactEmail)}" style="display:inline-block;background:#FFD56B;color:#003329;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">Répondre par email →</a></p>
-<p style="font-size:12px;color:#7A8C77;margin:22px 0 0;line-height:1.6">Tu peux répondre directement à cet email — ton réponse arrivera dans la boîte de ${escHtml(contactName)}. Aucune commission, aucun intermédiaire : tu négocies et factures directement.</p>
+<p style="font-size:12px;color:#7A8C77;margin:22px 0 0;line-height:1.6">Tu peux répondre directement à cet email : ton réponse arrivera dans la boîte de ${escHtml(contactName)}. Aucune commission, aucun intermédiaire : tu négocies et factures directement.</p>
 </div>`,
       }, 'pro')
 
