@@ -378,9 +378,11 @@ interface Props {
   plan?: string
   /** Groupe déclaré via le check-in en ligne (accompagnants) */
   checkinCompanions?: CheckinCompanion[]
+  /** Statut guest_declarations ('a_faire' | 'faite' | 'ignoree') par sejour_id */
+  declarationStatutBySejour?: Record<string, string>
 }
 
-export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur, logements = [], plan = 'decouverte', checkinCompanions = [] }: Props) {
+export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur, logements = [], plan = 'decouverte', checkinCompanions = [], declarationStatutBySejour = {} }: Props) {
   const isDecouverte = plan === 'decouverte'
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -2005,12 +2007,13 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 
               {/* Alerte légale voyageur étranger (SIBA PT, fiche police FR, etc.)
                   — pas pour un séjour annulé : plus rien à déclarer. */}
-              {!isCancelled && (
+              {!isCancelled && declarationStatutBySejour[sj.id] !== 'ignoree' && (
                 <ForeignGuestAlert
                   logementPays={sejourLogementPays}
                   voyageurNationalite={voyageur.nationalite}
                   dateArrivee={sj.date_arrivee}
                   voyageurNom={`${voyageur.prenom} ${voyageur.nom}`}
+                  declared={declarationStatutBySejour[sj.id] === 'faite'}
                 />
               )}
 

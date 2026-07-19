@@ -1,6 +1,6 @@
 'use client'
 
-import { Warning, ArrowSquareOut } from '@phosphor-icons/react/dist/ssr'
+import { Warning, ArrowSquareOut, CheckCircle } from '@phosphor-icons/react/dist/ssr'
 import { getCountry } from '@/lib/countries'
 
 type Props = {
@@ -12,13 +12,15 @@ type Props = {
   dateArrivee: string | null
   /** Nom du voyageur pour personnaliser */
   voyageurNom?: string
+  /** true si guest_declarations.statut === 'faite' pour ce séjour */
+  declared?: boolean
 }
 
 // Affiche une alerte légale rappelant l'obligation de déclarer un voyageur
 // étranger : SIBA au Portugal, fiche police en France, registres locaux
 // pour les autres pays. La règle se déclenche quand la nationalité du
 // voyageur diffère du pays du logement (et qu'on a les deux infos).
-export default function ForeignGuestAlert({ logementPays, voyageurNationalite, dateArrivee, voyageurNom }: Props) {
+export default function ForeignGuestAlert({ logementPays, voyageurNationalite, dateArrivee, voyageurNom, declared = false }: Props) {
   const pays = logementPays ?? 'FR'
 
   // Cas où on ne peut pas évaluer : on ne montre rien (pas d'alerte spam).
@@ -32,6 +34,15 @@ export default function ForeignGuestAlert({ logementPays, voyageurNationalite, d
 
   const config = getCountry(pays)
   const decl = config.foreignGuestDeclaration
+
+  if (declared) {
+    return (
+      <div style={s.doneBox}>
+        <CheckCircle size={15} weight="fill" color="var(--success-1, #4ade80)" />
+        <span style={s.doneText}>{config.flag} {decl.label} déjà envoyée pour ce séjour.</span>
+      </div>
+    )
+  }
 
   // Calcul de la deadline si on a la date d'arrivée
   let deadlineLabel: string | null = null
@@ -70,6 +81,17 @@ export default function ForeignGuestAlert({ logementPays, voyageurNationalite, d
 }
 
 const s: Record<string, React.CSSProperties> = {
+  doneBox: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    background: 'rgba(74,222,128,0.08)',
+    border: '1px solid rgba(74,222,128,0.22)',
+    borderRadius: '10px',
+    padding: '10px 14px',
+    marginTop: '10px',
+  },
+  doneText: {
+    fontSize: '12px', fontWeight: 600, color: 'var(--text-2)',
+  },
   box: {
     background: 'var(--warning-bg)',
     border: '1px solid rgba(245,158,11,0.28)',
