@@ -325,6 +325,20 @@ export default function RevenusView({
     })
   }
 
+  // ── Pays réellement présents parmi les logements de l'hôte ──
+  // Sert à n'afficher, dans l'encart déductibilité, que les colonnes
+  // pertinentes (FR et/ou PT) plutôt que les deux systématiquement — un
+  // hôte avec uniquement des logements portugais n'a rien à faire de la
+  // colonne France, et inversement. Même convention que le reste du
+  // fichier : pays absent/null → 'FR' par défaut.
+  const hostCountries = useMemo(() => {
+    const set = new Set(logements.map(l => l.pays ?? 'FR'))
+    if (set.size === 0) set.add('FR')
+    return set
+  }, [logements])
+  const showFranceInfo = hostCountries.has('FR')
+  const showPortugalInfo = hostCountries.has('PT')
+
   // ── Charges stats (pour Phase 2 KPIs et la section dédiée) ──
   const chargesStats = useMemo(() => {
     let cesMois = 0, cetteAnnee = 0, deductibleAnnee = 0
@@ -1782,64 +1796,88 @@ export default function RevenusView({
               </p>
             </div>
 
-            <div style={s.chargesInfoGrid} className="charges-info-grid">
-              {/* FRANCE */}
-              <div style={s.chargesInfoCol}>
-                <div style={s.chargesInfoColTitle}>🇫🇷 France</div>
-                <div style={s.chargesInfoRule}>
-                  <span style={{ ...s.chargesInfoTag, background: 'rgba(96,165,250,0.12)', color: '#60a5fa' }}>Micro-BIC (30 / 50 / 71 %)</span>
-                  <p style={s.chargesInfoText}>
-                    L&apos;abattement forfaitaire remplace <strong>toutes</strong> tes charges. Tu ne
-                    déduis rien en plus, quel que soit ce que tu as payé.
-                  </p>
-                </div>
-                <div style={s.chargesInfoRule}>
-                  <span style={{ ...s.chargesInfoTag, background: 'rgba(245,158,11,0.12)', color: '#f59e0b' }}>Régime réel (LMNP)</span>
-                  <p style={s.chargesInfoText}>
-                    Tu déduis tes charges réelles, mais pas toutes de la même façon :
-                  </p>
-                  <ul style={s.chargesInfoList}>
-                    <li><strong>Déductible tout de suite</strong> (l&apos;année du paiement) : ménage, énergie, box internet, assurance, taxe foncière, commissions plateforme, frais bancaires, comptable, petites réparations d&apos;entretien.</li>
-                    <li><strong>À amortir</strong> sur plusieurs années, pas déduit en une fois : mobilier (5 à 10 ans), climatisation, électroménager, travaux d&apos;amélioration ou d&apos;agrandissement, le bien lui-même hors terrain. Utilise la catégorie « Amortissement » et étale le montant.</li>
-                  </ul>
-                  <p style={{ ...s.chargesInfoText, fontStyle: 'italic' }}>
-                    Nuance travaux : une <strong>réparation</strong> (remettre en état) se déduit tout de suite ;
-                    une <strong>amélioration</strong> (ex. installer la clim pour la première fois) s&apos;amortit.
-                  </p>
-                </div>
-              </div>
+            {(showFranceInfo || showPortugalInfo) ? (
+              <div
+                style={{ ...s.chargesInfoGrid, gridTemplateColumns: (showFranceInfo && showPortugalInfo) ? 'repeat(2, 1fr)' : '1fr' }}
+                className="charges-info-grid"
+              >
+                {/* FRANCE — affichée seulement si l'hôte a un logement en France
+                    (ou pays non renseigné, convention par défaut du reste de l'app) */}
+                {showFranceInfo && (
+                  <div style={s.chargesInfoCol}>
+                    <div style={s.chargesInfoColTitle}>🇫🇷 France</div>
+                    <div style={s.chargesInfoRule}>
+                      <span style={{ ...s.chargesInfoTag, background: 'rgba(96,165,250,0.12)', color: '#60a5fa' }}>Micro-BIC (30 / 50 / 71 %)</span>
+                      <p style={s.chargesInfoText}>
+                        L&apos;abattement forfaitaire remplace <strong>toutes</strong> tes charges. Tu ne
+                        déduis rien en plus, quel que soit ce que tu as payé.
+                      </p>
+                    </div>
+                    <div style={s.chargesInfoRule}>
+                      <span style={{ ...s.chargesInfoTag, background: 'rgba(245,158,11,0.12)', color: '#f59e0b' }}>Régime réel (LMNP)</span>
+                      <p style={s.chargesInfoText}>
+                        Tu déduis tes charges réelles, mais pas toutes de la même façon :
+                      </p>
+                      <ul style={s.chargesInfoList}>
+                        <li><strong>Déductible tout de suite</strong> (l&apos;année du paiement) : ménage, énergie, box internet, assurance, taxe foncière, commissions plateforme, frais bancaires, comptable, petites réparations d&apos;entretien.</li>
+                        <li><strong>À amortir</strong> sur plusieurs années, pas déduit en une fois : mobilier (5 à 10 ans), climatisation, électroménager, travaux d&apos;amélioration ou d&apos;agrandissement, le bien lui-même hors terrain. Utilise la catégorie « Amortissement » et étale le montant.</li>
+                      </ul>
+                      <p style={{ ...s.chargesInfoText, fontStyle: 'italic' }}>
+                        Nuance travaux : une <strong>réparation</strong> (remettre en état) se déduit tout de suite ;
+                        une <strong>amélioration</strong> (ex. installer la clim pour la première fois) s&apos;amortit.
+                      </p>
+                    </div>
+                  </div>
+                )}
 
-              {/* PORTUGAL */}
-              <div style={s.chargesInfoCol}>
-                <div style={s.chargesInfoColTitle}>🇵🇹 Portugal</div>
-                <div style={s.chargesInfoRule}>
-                  <span style={{ ...s.chargesInfoTag, background: 'rgba(96,165,250,0.12)', color: '#60a5fa' }}>Regime Simplificado (coef. 0,35)</span>
-                  <p style={s.chargesInfoText}>
-                    Le coefficient remplace <strong>toutes</strong> tes charges réelles. C&apos;est le régime
-                    par défaut de la plupart des Alojamento Local : aucune dépense (box, ménage, mobilier…)
-                    n&apos;a d&apos;effet sur ton impôt.
-                  </p>
-                </div>
-                <div style={s.chargesInfoRule}>
-                  <span style={{ ...s.chargesInfoTag, background: 'rgba(245,158,11,0.12)', color: '#f59e0b' }}>Contabilidade Organizada</span>
-                  <p style={s.chargesInfoText}>
-                    Tu déduis tes charges réelles (nécessite un TOC, comptable agréé) :
-                  </p>
-                  <ul style={s.chargesInfoList}>
-                    <li><strong>Déductible tout de suite</strong> : ménage, énergie, internet, assurance, commissions plateforme, frais bancaires, honoraires du TOC.</li>
-                    <li><strong>À amortir</strong> (« amortização », taux officiels Portaria 1011/2001) : mobilier, équipement, climatisation, travaux d&apos;amélioration, le bien immobilier.</li>
-                  </ul>
-                </div>
+                {/* PORTUGAL — affichée seulement si l'hôte a un logement au Portugal */}
+                {showPortugalInfo && (
+                  <div style={s.chargesInfoCol}>
+                    <div style={s.chargesInfoColTitle}>🇵🇹 Portugal</div>
+                    <div style={s.chargesInfoRule}>
+                      <span style={{ ...s.chargesInfoTag, background: 'rgba(96,165,250,0.12)', color: '#60a5fa' }}>Regime Simplificado (coef. 0,35)</span>
+                      <p style={s.chargesInfoText}>
+                        Le coefficient remplace <strong>toutes</strong> tes charges réelles. C&apos;est le régime
+                        par défaut de la plupart des Alojamento Local : aucune dépense (box, ménage, mobilier…)
+                        n&apos;a d&apos;effet sur ton impôt.
+                      </p>
+                    </div>
+                    <div style={s.chargesInfoRule}>
+                      <span style={{ ...s.chargesInfoTag, background: 'rgba(245,158,11,0.12)', color: '#f59e0b' }}>Contabilidade Organizada</span>
+                      <p style={s.chargesInfoText}>
+                        Tu déduis tes charges réelles (nécessite un TOC, comptable agréé) :
+                      </p>
+                      <ul style={s.chargesInfoList}>
+                        <li><strong>Déductible tout de suite</strong> : ménage, énergie, internet, assurance, commissions plateforme, frais bancaires, honoraires du TOC.</li>
+                        <li><strong>À amortir</strong> (« amortização », taux officiels Portaria 1011/2001) : mobilier, équipement, climatisation, travaux d&apos;amélioration, le bien immobilier.</li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
+            ) : (
+              <p style={s.chargesInfoText}>
+                Aucun de tes logements n&apos;est en France ou au Portugal : ce guide ne couvre pas encore
+                ton pays. Le principe général reste le même partout — vérifie si ton régime fiscal local
+                applique un abattement forfaitaire (auquel cas les charges réelles ne se déduisent pas
+                en plus) ou permet une comptabilité réelle (auquel cas oui). Un expert-comptable local
+                te le confirmera.
+              </p>
+            )}
 
             <div style={s.chargesInfoTip}>
-              💡 Coche <strong>« Charge déductible »</strong> seulement si tu es en régime réel (FR) ou
-              Contabilidade Organizada (PT). En micro-BIC ou Regime Simplificado, continue quand même à
-              enregistrer tes charges ici pour piloter ta rentabilité réelle — elles n&apos;auront simplement
-              aucun effet sur le calcul d&apos;impôt simulé plus bas, déjà couvert par l&apos;abattement.
-              Cette page reste un outil de suivi, pas une déclaration : vérifie ta situation avec un
-              expert-comptable.
+              💡 Coche <strong>« Charge déductible »</strong> seulement si tu es
+              {showFranceInfo && showPortugalInfo
+                ? ' en régime réel (FR) ou Contabilidade Organizada (PT).'
+                : showFranceInfo
+                  ? ' en régime réel (LMNP).'
+                  : showPortugalInfo
+                    ? ' en Contabilidade Organizada.'
+                    : ' dans un régime qui déduit les charges réelles.'}
+              {' '}Sinon, continue quand même à enregistrer tes charges ici pour piloter ta rentabilité
+              réelle — elles n&apos;auront simplement aucun effet sur le calcul d&apos;impôt simulé plus
+              bas, déjà couvert par l&apos;abattement. Cette page reste un outil de suivi, pas une
+              déclaration : vérifie ta situation avec un expert-comptable.
             </div>
           </div>
         )}
