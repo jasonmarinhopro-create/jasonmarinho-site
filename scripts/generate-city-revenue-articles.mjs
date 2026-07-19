@@ -1058,8 +1058,8 @@ function buildHtml (city) {
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="stylesheet" href="/fonts/site-fonts.css">
   <noscript><link rel="stylesheet" href="/fonts/site-fonts.css"></noscript>
-  <link rel="stylesheet" href="/fonts/phosphor-regular-subset.css">
-  <link rel="stylesheet" href="/fonts/phosphor-bold-subset.css">
+  <link rel="stylesheet" href="/fonts/phosphor-regular-subset.css?v=2026-07-19">
+  <link rel="stylesheet" href="/fonts/phosphor-bold-subset.css?v=2026-07-19">
   <style>
     :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--yd:#FFC845;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,0.10);--ok:#34D399}
     *{box-sizing:border-box}

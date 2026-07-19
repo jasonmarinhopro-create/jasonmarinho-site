@@ -88,4 +88,4 @@ for (const { variant, prefix } of variants) {
   console.log(`  ${variant.padEnd(7)} : ${(before / 1024).toFixed(1)} KB → ${(after / 1024).toFixed(1)} KB  (-${Math.round(100 * (1 - after / before))}%)`)
 }
 
-console.log('\nDone. Reference subset files via /fonts/phosphor-regular-subset.css and /fonts/phosphor-bold-subset.css')
+console.log('\nDone. Reference subset files via /fonts/phosphor-regular-subset.css?v=2026-07-19 and /fonts/phosphor-bold-subset.css?v=2026-07-19')

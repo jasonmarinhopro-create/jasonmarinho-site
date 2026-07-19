@@ -98,12 +98,14 @@
 .ph-bold.ph-files:before { content: "\e710"; }
 .ph-bold.ph-fingerprint:before { content: "\e23e"; }
 .ph-bold.ph-flag:before { content: "\e244"; }
+.ph-bold.ph-folders:before { content: "\e260"; }
 .ph-bold.ph-gauge:before { content: "\e628"; }
 .ph-bold.ph-gavel:before { content: "\ea32"; }
 .ph-bold.ph-gear:before { content: "\e270"; }
 .ph-bold.ph-gift:before { content: "\e276"; }
 .ph-bold.ph-globe:before { content: "\e288"; }
 .ph-bold.ph-graduation-cap:before { content: "\e62c"; }
+.ph-bold.ph-hand-coins:before { content: "\ea8c"; }
 .ph-bold.ph-hand-heart:before { content: "\e810"; }
 .ph-bold.ph-handshake:before { content: "\e582"; }
 .ph-bold.ph-headset:before { content: "\e584"; }
