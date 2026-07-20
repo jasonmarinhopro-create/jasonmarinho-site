@@ -250,8 +250,22 @@ export function manualEventToSlot(
 
 /**
  * Fusionne les slots auto-dérivés des séjours avec les ménages saisis
- * manuellement. Politique de dédup : si un manuel et un auto matchent
- * sur (date + logement), le MANUEL gagne (l'hôte a customisé).
+ * manuellement (ce qui inclut les événements [FAIT] créés par la case à
+ * cocher du popover séjour — cocher "fait" crée un calendar_event 'menage',
+ * qui est donc lui aussi un "manualEvent" de ce point de vue).
+ *
+ * Politique : si un manuel et un auto matchent sur (date + logement), on
+ * FUSIONNE au lieu de remplacer — le manuel prime pour les notes/frais/
+ * horaires explicitement saisis, mais on GARDE le contexte calculé de
+ * l'auto (prochainCheckIn, sameDay, voyageurEntrant/Sortant, logementId).
+ *
+ * Avant : le manuel remplaçait entièrement l'auto, et manualEventToSlot()
+ * met toujours prochainCheckIn à null (un événement calendrier n'a pas
+ * cette notion). Résultat : dès qu'on cochait un ménage "fait", son slot
+ * perdait le lien vers le check-in suivant — donc le popover du séjour
+ * suivant ne retrouvait plus ce ménage comme "avant l'arrivée" (le slot
+ * cherché par `prochainCheckIn === date_arrivee` n'existait plus), et
+ * l'hôte se retrouvait avec la case "à faire" qui revenait sans arrêt.
  */
 export function mergeAutoAndManual(
   autoSlots: MenageSlot[],
@@ -260,15 +274,34 @@ export function mergeAutoAndManual(
 ): MenageSlot[] {
   const manualSlots = manualEvents.map(ev => manualEventToSlot(ev, logementSettings))
 
-  // Index des slots manuels par clé (logement + date) pour dédup
-  const manualKeys = new Set(
-    manualSlots.map(m => `${normalizeLogementName(m.logementName)}|${m.date}`)
-  )
+  const autoByKey = new Map<string, MenageSlot>()
+  for (const a of autoSlots) {
+    autoByKey.set(`${normalizeLogementName(a.logementName)}|${a.date}`, a)
+  }
+
+  const usedAutoKeys = new Set<string>()
+  const merged: MenageSlot[] = manualSlots.map(m => {
+    const key = `${normalizeLogementName(m.logementName)}|${m.date}`
+    const auto = autoByKey.get(key)
+    if (!auto) return m
+    usedAutoKeys.add(key)
+    return {
+      ...auto,
+      isManual: true,
+      manualEventId: m.manualEventId,
+      notes: m.notes ?? auto.notes,
+      fraisMenage: m.fraisMenage ?? auto.fraisMenage,
+      startTime: m.startTime,
+      endTime: m.endTime,
+      durationMin: m.durationMin,
+    }
+  })
+
   const filteredAuto = autoSlots.filter(a =>
-    !manualKeys.has(`${normalizeLogementName(a.logementName)}|${a.date}`)
+    !usedAutoKeys.has(`${normalizeLogementName(a.logementName)}|${a.date}`)
   )
 
-  return [...filteredAuto, ...manualSlots]
+  return [...filteredAuto, ...merged]
     .sort((a, b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime))
 }
 
