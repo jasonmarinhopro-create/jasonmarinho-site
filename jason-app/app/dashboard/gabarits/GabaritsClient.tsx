@@ -311,7 +311,15 @@ export default function GabaritsClient({
     }
     return map
   })
-  const [selectedLogementId, setSelectedLogementId] = useState<string | null>(null)
+  // Par défaut sur "✨ Par défaut" (aucun logement) SAUF si l'hôte n'a qu'un
+  // seul logement : dans ce cas il n'y a aucune ambiguïté à lever, et le
+  // laisser sur "Par défaut" désactivait tout l'auto-fill (WiFi, code
+  // d'accès, adresse, heures...) tant qu'il ne cliquait pas explicitement
+  // sur son propre logement — obligeant à ressaisir des infos fixes à
+  // chaque copie de gabarit alors qu'elles ne changent jamais.
+  const [selectedLogementId, setSelectedLogementId] = useState<string | null>(
+    () => (logements.length === 1 ? logements[0].id : null)
+  )
 
   // Séquence affichée = celle du logement sélectionné (ou défaut si NULL).
   const pinned = useMemo<Record<TimingBucket, string[]>>(() => {
@@ -771,8 +779,11 @@ export default function GabaritsClient({
           </p>
         </div>
 
-        {/* Sélecteur de logement — chaque logement peut avoir sa propre séquence */}
-        {logements.length > 0 && (
+        {/* Sélecteur de logement — chaque logement peut avoir sa propre séquence.
+            Masqué s'il n'y a qu'UN seul logement : pas de choix à faire (déjà
+            auto-sélectionné plus haut), afficher le sélecteur serait juste du
+            bruit visuel pour un hôte mono-logement. */}
+        {logements.length > 1 && (
           <div style={s.logementSelector} className="fade-up d1">
             <div style={s.logementSelectorLabel}>
               <House size={14} weight="duotone" color="var(--accent-text)" />
