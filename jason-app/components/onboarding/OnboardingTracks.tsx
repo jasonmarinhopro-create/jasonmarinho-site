@@ -2,6 +2,7 @@
 
 import { useState, useTransition, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import {
   Check, ArrowRight, X, Sparkle, CaretDown, CaretRight, Lock,
   CheckCircle,
@@ -44,6 +45,18 @@ export function OnboardingTracks({
   const [view, setView] = useState<View>(dismissed || completed ? 'pill' : 'track')
   const [isMobile, setIsMobile] = useState(false)
   const [, startTransition] = useTransition()
+  const pathname = usePathname()
+  // Le montage de ce widget dépend de `showOnboarding`, calculé côté serveur
+  // dans dashboard/layout.tsx à partir du pathname de la requête — ce layout
+  // est partagé par tous les espaces (hôte/photographe/ménage/investisseur)
+  // et mémorisé par le router cache entre routes sœurs, donc cette valeur
+  // reste figée après une navigation client vers un autre espace (même bug
+  // que le bouton "Parcours" du Header). On regate donc ici aussi côté
+  // client sur le pathname réel, qui lui suit chaque navigation.
+  const isOnProOrInvestorSpace =
+    pathname?.startsWith('/dashboard/ma-fiche-photographe') ||
+    pathname?.startsWith('/dashboard/ma-fiche-menage') ||
+    pathname?.startsWith('/dashboard/investir')
 
   // Format mobile : la carte étendue devient une bottom sheet pleine largeur
   // (au lieu d'une carte 420px collée bas-droite) avec liste scrollable.
@@ -67,7 +80,7 @@ export function OnboardingTracks({
     return () => window.removeEventListener('open-onboarding', onOpen)
   }, [])
 
-  if (completed || isDismissed) return null
+  if (completed || isDismissed || isOnProOrInvestorSpace) return null
 
   const pinnedTrack = getTrack(pinnedKey) ?? ONBOARDING_TRACKS[0]
   const isFirstTime = persistedStep < 2
