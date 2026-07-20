@@ -10,6 +10,17 @@ const nextConfig = {
 
   experimental: {
     optimizePackageImports: ['@phosphor-icons/react'],
+    // Chaque page dashboard est dynamique (données par utilisateur) donc,
+    // sans ce réglage, le Router Cache client la considère périmée dès sa
+    // sortie de viewport : cliquer entre Calendrier/Finances/etc. relance
+    // TOUTE la requête serveur (souvent 10-16 requêtes DB en parallèle par
+    // page) à chaque navigation, même en revenant sur une page vue il y a
+    // 2 secondes — d'où la lenteur perçue à chaque clic, pas seulement au
+    // login. 30s de fraîcheur suffit largement pour un dashboard perso, et
+    // toute mutation (créer un contrat, cocher un ménage...) appelle déjà
+    // router.refresh() explicitement donc l'utilisateur voit son propre
+    // changement immédiatement malgré ce cache.
+    staleTimes: { dynamic: 30 },
   },
 
   async redirects() {
