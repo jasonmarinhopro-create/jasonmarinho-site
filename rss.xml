@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 20 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 22 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Petit-déjeuner en LCD : 6 formules à proposer à tes voyageurs sans plomber ton budget</title>
+      <link>https://jasonmarinho.com/blog/petit-dejeuner-lcd-6-formules-voyageurs-budget</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/petit-dejeuner-lcd-6-formules-voyageurs-budget</guid>
+      <pubDate>Wed, 22 Jul 2026 08:00:00 GMT</pubDate>
+      <description>Panier essentiel, terroir régional, healthy, familial, gourmand ou pack à emporter : 6 formules concrètes de petit-déjeuner à tester en location courte durée, avec budget par personne et point de vigilance para-hôtellerie.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Poubelles et tri sélectif en LCD : 7 règles pour éviter amendes, plaintes voisins et avis négatifs</title>
       <link>https://jasonmarinho.com/blog/poubelles-tri-selectif-lcd-7-regles-eviter-amendes-plaintes</link>
@@ -398,14 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>60% des voyageurs business arrivent après 21h. Voici les 4 solutions pour gérer un check-in tardif sans te déplacer ni t&apos;embêter.</description>
       <category>Expérience</category>
-    </item>
-    <item>
-      <title>Checklist préparation logement LCD : 47 points avant ta 1ère réservation</title>
-      <link>https://jasonmarinho.com/blog/checklist-preparation-logement-avant-1ere-reservation</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/checklist-preparation-logement-avant-1ere-reservation</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Avant ta première réservation Airbnb, tu dois vérifier 47 points pour ne pas avoir de mauvaise surprise. Checklist complète téléchargeable et triée par priorité.</description>
-      <category>Ressources</category>
     </item>
   </channel>
 </rss>
