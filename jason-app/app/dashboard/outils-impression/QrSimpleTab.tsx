@@ -4,8 +4,10 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import {
   WifiHigh, Link, EnvelopeSimple, Phone, ChatTeardropText, Star,
   MapPin, DownloadSimple, ArrowsClockwise, CaretDown,
+  LockKey, LockOpen, PencilSimple, Trash, Plus, Check, X,
 } from '@phosphor-icons/react/dist/ssr'
 import { useTheme } from '@/components/ThemeProvider'
+import { listQrRedirects, createQrRedirect, updateQrRedirectTarget, deleteQrRedirect, type QrRedirect } from './actions'
 
 interface Logement {
   id: string
@@ -156,6 +158,66 @@ export default function QrSimpleTab({ plan, logements }: Props) {
       wifiPassword: l.wifi_mdp ?? prev.wifiPassword ?? '',
     }))
   }, [selectedLogement, logements])
+
+  // ── Liens permanents (QR "lien modifiable") ────────────────────────────
+  // Un QR code "URL directe" classique meurt si l'URL change après
+  // impression. Ici, le QR encode /q/<slug> (fixe pour toujours) qui
+  // redirige vers `target_url`, modifiable à tout moment sans réimprimer.
+  const [usePermanentLink, setUsePermanentLink] = useState(false)
+  const [qrRedirects, setQrRedirects] = useState<QrRedirect[]>([])
+  const [selectedRedirectId, setSelectedRedirectId] = useState<string>('')
+  const [newLinkLabel, setNewLinkLabel] = useState('')
+  const [newLinkTarget, setNewLinkTarget] = useState('')
+  const [creatingLink, setCreatingLink] = useState(false)
+  const [linkError, setLinkError] = useState('')
+  const [editingTargetId, setEditingTargetId] = useState<string | null>(null)
+  const [editingTargetValue, setEditingTargetValue] = useState('')
+  const [savingTarget, setSavingTarget] = useState(false)
+  const [origin, setOrigin] = useState('')
+
+  useEffect(() => {
+    setOrigin(window.location.origin)
+    listQrRedirects().then(setQrRedirects)
+  }, [])
+
+  const selectedRedirect = qrRedirects.find(r => r.id === selectedRedirectId) ?? null
+
+  // Quand un lien permanent est sélectionné, le champ URL du QR pointe vers
+  // sa redirection stable (/q/<slug>), pas vers la destination réelle.
+  useEffect(() => {
+    if (!usePermanentLink || !selectedRedirect || !origin) return
+    setField('url', `${origin}/q/${selectedRedirect.slug}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usePermanentLink, selectedRedirect?.slug, origin])
+
+  async function handleCreateLink() {
+    setLinkError('')
+    setCreatingLink(true)
+    const res = await createQrRedirect({ label: newLinkLabel, targetUrl: newLinkTarget, logementId: selectedLogement || null })
+    setCreatingLink(false)
+    if (!res.ok) { setLinkError(res.error); return }
+    setQrRedirects(prev => [res.redirect, ...prev])
+    setSelectedRedirectId(res.redirect.id)
+    setNewLinkLabel('')
+    setNewLinkTarget('')
+  }
+
+  async function handleSaveTarget(id: string) {
+    setLinkError('')
+    setSavingTarget(true)
+    const res = await updateQrRedirectTarget(id, editingTargetValue)
+    setSavingTarget(false)
+    if (!res.ok) { setLinkError(res.error); return }
+    setQrRedirects(prev => prev.map(r => r.id === id ? { ...r, target_url: editingTargetValue.trim() } : r))
+    setEditingTargetId(null)
+  }
+
+  async function handleDeleteLink(id: string) {
+    if (!window.confirm('Supprimer ce lien permanent ? Le QR déjà imprimé ne fonctionnera plus.')) return
+    await deleteQrRedirect(id)
+    setQrRedirects(prev => prev.filter(r => r.id !== id))
+    if (selectedRedirectId === id) setSelectedRedirectId('')
+  }
 
   const qrData = buildQrData(qrType, fields)
   const hasData = qrData.length > 5
@@ -316,16 +378,130 @@ export default function QrSimpleTab({ plan, logements }: Props) {
 
           {(qrType === 'url' || qrType === 'gmap' || qrType === 'greview') && (
             <div style={s.fieldWrap}>
-              <label style={s.fieldLabel}>
-                {qrType === 'url' ? 'URL (https://...)' : qrType === 'gmap' ? 'Lien Google Maps de ton logement' : 'Lien Google Avis de ta fiche GMB'}
-              </label>
-              <input
-                style={s.input}
-                type="url"
-                placeholder="https://..."
-                value={fields.url ?? ''}
-                onChange={e => setField('url', e.target.value)}
-              />
+              {qrType === 'url' && (
+                <div style={s.permToggleRow}>
+                  <button
+                    onClick={() => setUsePermanentLink(false)}
+                    style={{ ...s.permToggleBtn, ...(!usePermanentLink ? s.permToggleBtnActive : {}) }}
+                  >
+                    <LockOpen size={13} /> Lien direct
+                  </button>
+                  <button
+                    onClick={() => setUsePermanentLink(true)}
+                    style={{ ...s.permToggleBtn, ...(usePermanentLink ? s.permToggleBtnActive : {}) }}
+                  >
+                    <LockKey size={13} weight={usePermanentLink ? 'fill' : 'regular'} /> Lien permanent (modifiable)
+                  </button>
+                </div>
+              )}
+
+              {qrType === 'url' && usePermanentLink ? (
+                <div style={s.permBox}>
+                  <p style={s.permHint}>
+                    Le QR code pointera vers une adresse fixe pour toujours. Tu pourras changer sa destination
+                    à tout moment ici, sans jamais avoir à réimprimer le QR.
+                  </p>
+
+                  {qrRedirects.length > 0 && (
+                    <div style={s.permList}>
+                      {qrRedirects.map(r => (
+                        <div
+                          key={r.id}
+                          style={{ ...s.permCard, ...(selectedRedirectId === r.id ? s.permCardActive : {}) }}
+                        >
+                          <button
+                            onClick={() => setSelectedRedirectId(r.id)}
+                            style={s.permCardMain}
+                          >
+                            <span style={s.permCardLabel}>{r.label}</span>
+                            {editingTargetId === r.id ? (
+                              <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }} onClick={e => e.stopPropagation()}>
+                                <input
+                                  autoFocus
+                                  style={{ ...s.input, padding: '6px 9px', fontSize: '12.5px' }}
+                                  value={editingTargetValue}
+                                  onChange={e => setEditingTargetValue(e.target.value)}
+                                  onKeyDown={e => { if (e.key === 'Enter') handleSaveTarget(r.id) }}
+                                />
+                                <button disabled={savingTarget} onClick={() => handleSaveTarget(r.id)} style={s.permIconBtn}>
+                                  <Check size={13} />
+                                </button>
+                                <button onClick={() => setEditingTargetId(null)} style={s.permIconBtn}>
+                                  <X size={13} />
+                                </button>
+                              </div>
+                            ) : (
+                              <span style={s.permCardTarget}>→ {r.target_url}</span>
+                            )}
+                          </button>
+                          {editingTargetId !== r.id && (
+                            <div style={{ display: 'flex', gap: '4px' }}>
+                              <button
+                                onClick={() => { setEditingTargetId(r.id); setEditingTargetValue(r.target_url) }}
+                                style={s.permIconBtn}
+                                title="Changer la destination"
+                              >
+                                <PencilSimple size={13} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteLink(r.id)}
+                                style={s.permIconBtn}
+                                title="Supprimer"
+                              >
+                                <Trash size={13} />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div style={s.permNewRow}>
+                    <input
+                      style={{ ...s.input, flex: '0 0 160px' }}
+                      placeholder="Nom (ex: Poster salon)"
+                      value={newLinkLabel}
+                      onChange={e => setNewLinkLabel(e.target.value)}
+                    />
+                    <input
+                      style={{ ...s.input, flex: 1 }}
+                      type="url"
+                      placeholder="Destination actuelle : https://..."
+                      value={newLinkTarget}
+                      onChange={e => setNewLinkTarget(e.target.value)}
+                    />
+                    <button
+                      onClick={handleCreateLink}
+                      disabled={creatingLink || !newLinkLabel.trim() || !newLinkTarget.trim()}
+                      style={s.permAddBtn}
+                    >
+                      <Plus size={14} weight="bold" />
+                    </button>
+                  </div>
+                  {linkError && <p style={s.permError}>{linkError}</p>}
+
+                  {selectedRedirect && origin && (
+                    <div style={s.permResult}>
+                      <LockKey size={13} weight="fill" />
+                      <span>Le QR pointera vers <strong>{origin}/q/{selectedRedirect.slug}</strong></span>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <label style={s.fieldLabel}>
+                    {qrType === 'url' ? 'URL (https://...)' : qrType === 'gmap' ? 'Lien Google Maps de ton logement' : 'Lien Google Avis de ta fiche GMB'}
+                  </label>
+                  <input
+                    style={s.input}
+                    type="url"
+                    placeholder="https://..."
+                    value={fields.url ?? ''}
+                    onChange={e => setField('url', e.target.value)}
+                  />
+                </>
+              )}
             </div>
           )}
 
@@ -849,5 +1025,133 @@ const s: Record<string, React.CSSProperties> = {
     margin: 0,
     textAlign: 'center' as const,
     lineHeight: 1.6,
+  },
+
+  // ── Liens permanents ──
+  permToggleRow: {
+    display: 'flex',
+    gap: '6px',
+    marginBottom: '10px',
+  },
+  permToggleBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '7px 12px',
+    borderRadius: '8px',
+    fontSize: '12.5px',
+    fontWeight: 400,
+    color: 'var(--text-2)',
+    background: 'var(--bg)',
+    border: '1px solid var(--border-2)',
+    cursor: 'pointer',
+    fontFamily: 'var(--font-outfit), sans-serif',
+  },
+  permToggleBtnActive: {
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    color: 'var(--accent-text)',
+    fontWeight: 600,
+  },
+  permBox: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+  },
+  permHint: {
+    fontSize: '12px',
+    color: 'var(--text-muted)',
+    lineHeight: 1.55,
+    margin: 0,
+  },
+  permList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+  },
+  permCard: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    background: 'var(--bg)',
+    border: '1px solid var(--border-2)',
+    borderRadius: '10px',
+    padding: '4px 4px 4px 12px',
+  },
+  permCardActive: {
+    border: '1px solid var(--accent-border)',
+    background: 'var(--accent-bg)',
+  },
+  permCardMain: {
+    flex: 1,
+    minWidth: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '2px',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    textAlign: 'left' as const,
+    padding: '8px 0',
+    fontFamily: 'var(--font-outfit), sans-serif',
+  },
+  permCardLabel: {
+    fontSize: '13px',
+    fontWeight: 600,
+    color: 'var(--text)',
+  },
+  permCardTarget: {
+    fontSize: '11.5px',
+    color: 'var(--text-muted)',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap' as const,
+  },
+  permIconBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '28px',
+    height: '28px',
+    borderRadius: '7px',
+    background: 'var(--surface)',
+    border: '1px solid var(--border-2)',
+    color: 'var(--text-2)',
+    cursor: 'pointer',
+    flexShrink: 0,
+  },
+  permNewRow: {
+    display: 'flex',
+    gap: '8px',
+    flexWrap: 'wrap' as const,
+  },
+  permAddBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '38px',
+    borderRadius: '10px',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    color: 'var(--accent-text)',
+    cursor: 'pointer',
+    flexShrink: 0,
+  },
+  permError: {
+    fontSize: '12px',
+    color: '#dc2626',
+    margin: 0,
+  },
+  permResult: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '7px',
+    fontSize: '12.5px',
+    color: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '8px',
+    padding: '9px 12px',
+    wordBreak: 'break-all' as const,
   },
 }
