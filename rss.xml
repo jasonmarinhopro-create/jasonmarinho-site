@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 22 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 24 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>TV et streaming en LCD : 6 règles pour équiper ton logement sans compte piraté ni voyageur frustré</title>
+      <link>https://jasonmarinho.com/blog/tv-streaming-lcd-6-regles-equiper-compte-pirate-voyageur</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/tv-streaming-lcd-6-regles-equiper-compte-pirate-voyageur</guid>
+      <pubDate>Fri, 24 Jul 2026 08:00:00 GMT</pubDate>
+      <description>Smart TV, Netflix, Chromecast, TNT, réinitialisation : 6 règles concrètes pour équiper la TV de ta location courte durée sans risque de compte piraté ni voyageur frustré devant un écran figé.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Petit-déjeuner en LCD : 6 formules à proposer à tes voyageurs sans plomber ton budget</title>
       <link>https://jasonmarinho.com/blog/petit-dejeuner-lcd-6-formules-voyageurs-budget</link>
@@ -397,14 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/chambres-hotes-vs-meuble-tourisme-differences</guid>
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>Chambres d&apos;hôtes et meublé de tourisme sont 2 régimes différents. Voici les 7 différences (statut, fiscalité, obligations) pour bien choisir et te conformer.</description>
-      <category>Expérience</category>
-    </item>
-    <item>
-      <title>Check-in tardif Airbnb : 4 solutions sans clé ni présence physique</title>
-      <link>https://jasonmarinho.com/blog/check-in-tardif-4-solutions-sans-cles</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/check-in-tardif-4-solutions-sans-cles</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>60% des voyageurs business arrivent après 21h. Voici les 4 solutions pour gérer un check-in tardif sans te déplacer ni t&apos;embêter.</description>
       <category>Expérience</category>
     </item>
   </channel>
