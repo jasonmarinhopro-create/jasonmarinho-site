@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Fri, 24 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 27 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Machine à café en LCD : 6 modèles à comparer pour ravir tes voyageurs sans exploser ton budget</title>
+      <link>https://jasonmarinho.com/blog/machine-a-cafe-lcd-6-modeles-ravir-voyageurs-sans-exploser-budget</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/machine-a-cafe-lcd-6-modeles-ravir-voyageurs-sans-exploser-budget</guid>
+      <pubDate>Mon, 27 Jul 2026 08:00:00 GMT</pubDate>
+      <description>Cafetière filtre, Nespresso, machine à grains, dosettes : 6 modèles testés en location courte durée avec coût réel, entretien et impact sur les avis voyageurs en 2026.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>TV et streaming en LCD : 6 règles pour équiper ton logement sans compte piraté ni voyageur frustré</title>
       <link>https://jasonmarinho.com/blog/tv-streaming-lcd-6-regles-equiper-compte-pirate-voyageur</link>
@@ -398,14 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>Détecteurs de bruit, sondes de température, capteurs d&apos;ouverture : l&apos;IoT promet de protéger ton logement. Test terrain de ce qui marche vraiment et ce qui est marketing.</description>
       <category>Automatisation</category>
-    </item>
-    <item>
-      <title>Chambres d&apos;hôtes vs meublé de tourisme : 7 différences que les hôtes ignorent</title>
-      <link>https://jasonmarinho.com/blog/chambres-hotes-vs-meuble-tourisme-differences</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/chambres-hotes-vs-meuble-tourisme-differences</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Chambres d&apos;hôtes et meublé de tourisme sont 2 régimes différents. Voici les 7 différences (statut, fiscalité, obligations) pour bien choisir et te conformer.</description>
-      <category>Expérience</category>
     </item>
   </channel>
 </rss>
