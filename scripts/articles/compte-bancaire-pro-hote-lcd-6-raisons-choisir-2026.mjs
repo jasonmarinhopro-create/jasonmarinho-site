@@ -97,7 +97,7 @@ export default {
       ],
     },
     {
-      h2: '7. Comment choisir ta banque pro en 2026 : néobanque, banque en ligne ou banque traditionnelle',
+      h2: 'Comment choisir ta banque pro en 2026 : néobanque, banque en ligne ou banque traditionnelle',
       content: [
         { type: 'p', text: 'Trois familles d\'offres cohabitent aujourd\'hui pour l\'hôte LCD. Les néobanques pros (Qonto, Shine, Blank, Finom) sont taillées pour les indépendants avec ouverture 100 % en ligne, tarifs mensuels transparents et outils intégrés (facturation, catégorisation, export compta). Les banques en ligne traditionnelles (Boursorama Pro, Hello Business, Fortuneo) proposent souvent des offres gratuites sous condition de flux, mais avec moins de fonctionnalités dédiées. Les banques réseau classiques restent utiles si tu veux un crédit immobilier LCD à côté.' },
         { type: 'ul', items: [
