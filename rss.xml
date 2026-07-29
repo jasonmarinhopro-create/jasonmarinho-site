@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 27 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 29 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Fin d&apos;été LCD 2026 : 7 actions à mener en août et septembre pour ne pas subir la basse saison</title>
+      <link>https://jasonmarinho.com/blog/fin-ete-lcd-2026-7-actions-aout-septembre-basse-saison</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/fin-ete-lcd-2026-7-actions-aout-septembre-basse-saison</guid>
+      <pubDate>Wed, 29 Jul 2026 08:00:00 GMT</pubDate>
+      <description>Audit des avis, ajustement tarifaire, séjours longs, Google My Business, relance carnet voyageurs, Toussaint 2026, fiscalité : 7 actions concrètes à mener maintenant pour ne pas subir la basse saison en location courte durée.</description>
+      <category>Revenus</category>
+    </item>
     <item>
       <title>Machine à café en LCD : 6 modèles à comparer pour ravir tes voyageurs sans exploser ton budget</title>
       <link>https://jasonmarinho.com/blog/machine-a-cafe-lcd-6-modeles-ravir-voyageurs-sans-exploser-budget</link>
@@ -398,14 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>Tous les postes de coûts annuels d&apos;un hôte LCD français en 2026, avec fourchettes par taille de logement. Le tableau qu&apos;aucun hôte ne te montre.</description>
       <category>Revenus</category>
-    </item>
-    <item>
-      <title>Capteurs IoT pour LCD : bruit, température, ouverture : utile ou gadget ?</title>
-      <link>https://jasonmarinho.com/blog/capteurs-iot-lcd-bruit-temperature-utile-ou-pas</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/capteurs-iot-lcd-bruit-temperature-utile-ou-pas</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Détecteurs de bruit, sondes de température, capteurs d&apos;ouverture : l&apos;IoT promet de protéger ton logement. Test terrain de ce qui marche vraiment et ce qui est marketing.</description>
-      <category>Automatisation</category>
     </item>
   </channel>
 </rss>
