@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 29 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 31 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Chauffage en LCD : 7 règles pour maîtriser ta facture énergie sans dégrader tes avis voyageurs cet hiver</title>
+      <link>https://jasonmarinho.com/blog/chauffage-lcd-7-regles-maitriser-facture-energie-hiver-avis</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/chauffage-lcd-7-regles-maitriser-facture-energie-hiver-avis</guid>
+      <pubDate>Fri, 31 Jul 2026 08:00:00 GMT</pubDate>
+      <description>Thermostat, contrat énergie, consignes, isolation, livret d&apos;accueil, forfait chauffage : 7 règles concrètes pour piloter ta facture énergie en location courte durée sans risquer d&apos;avis négatifs sur le confort thermique.</description>
+      <category>Revenus</category>
+    </item>
     <item>
       <title>Fin d&apos;été LCD 2026 : 7 actions à mener en août et septembre pour ne pas subir la basse saison</title>
       <link>https://jasonmarinho.com/blog/fin-ete-lcd-2026-7-actions-aout-septembre-basse-saison</link>
@@ -398,14 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>Le bruit est la première cause de plaintes voisins en LCD. Voici la formulation exacte du règlement intérieur qui fonctionne, testée sur 100 hôtes.</description>
       <category>Expérience</category>
-    </item>
-    <item>
-      <title>Budget annuel d&apos;un hôte LCD : la grille de coûts complète pour anticiper</title>
-      <link>https://jasonmarinho.com/blog/budget-annuel-hote-lcd-grille-couts</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/budget-annuel-hote-lcd-grille-couts</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Tous les postes de coûts annuels d&apos;un hôte LCD français en 2026, avec fourchettes par taille de logement. Le tableau qu&apos;aucun hôte ne te montre.</description>
-      <category>Revenus</category>
     </item>
   </channel>
 </rss>
