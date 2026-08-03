@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Fri, 31 Jul 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 03 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Équipement cuisine en LCD : 8 règles pour séduire tes voyageurs sans exploser ton budget</title>
+      <link>https://jasonmarinho.com/blog/equipement-cuisine-lcd-8-regles-seduire-voyageurs-budget</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/equipement-cuisine-lcd-8-regles-seduire-voyageurs-budget</guid>
+      <pubDate>Mon, 03 Aug 2026 08:00:00 GMT</pubDate>
+      <description>Vaisselle, couteaux, machine à café, ustensiles, épices : 8 règles concrètes pour équiper la cuisine de ta location courte durée et transformer un point faible classique en argument à 5 étoiles.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Chauffage en LCD : 7 règles pour maîtriser ta facture énergie sans dégrader tes avis voyageurs cet hiver</title>
       <link>https://jasonmarinho.com/blog/chauffage-lcd-7-regles-maitriser-facture-energie-hiver-avis</link>
@@ -398,14 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>Un blog d&apos;hôte LCD bien fait peut générer 100-500 visiteurs par mois en SEO local. Voici la stratégie : sujets, fréquence, structure, gain attendu.</description>
       <category>Visibilité</category>
-    </item>
-    <item>
-      <title>Bruit voyageur : le règlement intérieur LCD qui fait baisser les plaintes de 70 %</title>
-      <link>https://jasonmarinho.com/blog/bruit-reglement-interieur-lcd-efficace</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/bruit-reglement-interieur-lcd-efficace</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Le bruit est la première cause de plaintes voisins en LCD. Voici la formulation exacte du règlement intérieur qui fonctionne, testée sur 100 hôtes.</description>
-      <category>Expérience</category>
     </item>
   </channel>
 </rss>
