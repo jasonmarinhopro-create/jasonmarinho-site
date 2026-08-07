@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 05 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 07 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Terrasse et jardin en LCD : 7 règles pour transformer ton extérieur en argument différenciant</title>
+      <link>https://jasonmarinho.com/blog/terrasse-jardin-lcd-7-regles-transformer-exterieur-argument-differenciant</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/terrasse-jardin-lcd-7-regles-transformer-exterieur-argument-differenciant</guid>
+      <pubDate>Fri, 07 Aug 2026 08:00:00 GMT</pubDate>
+      <description>Mobilier, éclairage, ombrage, sécurité, photos : 7 règles concrètes pour transformer la terrasse ou le jardin de ta location courte durée en argument de réservation qui fait grimper ton tarif et tes avis.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Salle de bain en LCD : 8 règles pour offrir une expérience premium sans budget hôtelier</title>
       <link>https://jasonmarinho.com/blog/salle-de-bain-lcd-8-regles-experience-premium-sans-budget-hotelier</link>
@@ -398,14 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>Le bail mobilité (1 à 10 mois) est-il une alternative à la LCD ? Comparatif fiscal, contractuel et pratique pour décider quel format choisir.</description>
       <category>Réglementation</category>
-    </item>
-    <item>
-      <title>15 objets utiles à laisser à tes voyageurs LCD : kit oubli, dépannage, plaisir</title>
-      <link>https://jasonmarinho.com/blog/banque-objets-utiles-laisser-voyageur-lcd</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/banque-objets-utiles-laisser-voyageur-lcd</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Au-delà du basique, voici 15 objets utiles à laisser à tes voyageurs : kit oubli, kit dépannage, petits plaisirs. Coût total ~80€, retour avis +0.2★.</description>
-      <category>Ressources</category>
     </item>
   </channel>
 </rss>
