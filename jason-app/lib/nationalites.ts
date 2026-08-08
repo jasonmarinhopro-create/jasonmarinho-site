@@ -34,3 +34,14 @@ export function nationaliteName(code: string | null | undefined): string | null 
   if (!code) return null
   return NATIONALITES.find(n => n.code === code)?.name ?? code
 }
+
+/** Convertit un code ISO 3166-1 alpha-2 en emoji drapeau (Regional Indicator
+ *  Symbols Unicode) — fonctionne pour n'importe quel code valide, pas
+ *  seulement les nationalités listées ci-dessus (un voyageur peut être de
+ *  n'importe quelle nationalité, contrairement à un logement dont le pays
+ *  est limité aux pays LCD supportés par lib/countries.ts). */
+export function nationaliteFlag(code: string | null | undefined): string {
+  if (!code || !/^[A-Za-z]{2}$/.test(code)) return '🌍'
+  const points = code.toUpperCase().split('').map(c => 127397 + c.charCodeAt(0))
+  return String.fromCodePoint(...points)
+}

@@ -189,7 +189,7 @@ export default async function DashboardPage() {
     // créées automatiquement à la signature des contrats.
     supabase
       .from('guest_declarations')
-      .select('id, voyageur_nom, voyageur_nationalite, logement_nom, logement_pays, date_arrivee, deadline_at')
+      .select('id, voyageur_id, voyageur_nom, voyageur_nationalite, logement_nom, logement_pays, date_arrivee, deadline_at')
       .eq('user_id', userId)
       .eq('statut', 'a_faire')
       .order('deadline_at')
@@ -233,6 +233,7 @@ export default async function DashboardPage() {
   const { count: pricingCount }  = pick<{ count: number | null }>(15, { count: 0 })
   const { data: pendingDeclarations } = pick<{ data: Array<{
     id: string
+    voyageur_id: string | null
     voyageur_nom: string
     voyageur_nationalite: string | null
     logement_nom: string | null

@@ -6,15 +6,17 @@
 // lien vers le portail officiel, récap copiable et bouton « Fait ».
 
 import { useState, useTransition } from 'react'
+import Link from 'next/link'
 import { Warning, ArrowSquareOut, Check, Copy, X, PaperPlaneTilt, FilePdf } from '@phosphor-icons/react/dist/ssr'
 import { getCountry } from '@/lib/countries'
-import { nationaliteName } from '@/lib/nationalites'
+import { nationaliteName, nationaliteFlag } from '@/lib/nationalites'
 import { markDeclarationDone, ignoreDeclaration } from '@/lib/declarations/actions'
 import { getPoliceFicheContext } from '@/lib/declarations/police-actions'
 import SibaSendModal from './SibaSendModal'
 
 export interface PendingDeclaration {
   id: string
+  voyageur_id: string | null
   voyageur_nom: string
   voyageur_nationalite: string | null
   logement_nom: string | null
@@ -129,12 +131,19 @@ export default function DeclarationsWidget({ declarations }: { declarations: Pen
             <div key={d.id} style={s.item}>
               <div style={s.itemMain}>
                 <div style={s.itemTitle}>
-                  {config.flag} <strong>{d.voyageur_nom}</strong>
+                  {nationaliteFlag(d.voyageur_nationalite)}{' '}
+                  {d.voyageur_id ? (
+                    <Link href={`/dashboard/voyageurs/${d.voyageur_id}`} style={s.itemNameLink}>
+                      {d.voyageur_nom}
+                    </Link>
+                  ) : (
+                    <strong>{d.voyageur_nom}</strong>
+                  )}
                   {natName ? <span style={s.itemNat}> · {natName}</span> : null}
                   {d.logement_nom ? <span style={s.itemNat}> · {d.logement_nom}</span> : null}
                 </div>
                 <div style={s.itemSub}>
-                  {decl.label} · <span style={{ color: dl.color, fontWeight: 600 }}>{dl.label}</span>
+                  {config.flag} {decl.label} · <span style={{ color: dl.color, fontWeight: 600 }}>{dl.label}</span>
                 </div>
               </div>
               <div style={s.itemActions}>
@@ -227,6 +236,7 @@ const s: Record<string, React.CSSProperties> = {
   itemMain: { flex: 1, minWidth: '200px' },
   itemTitle: { fontSize: '13.5px', color: 'var(--text)', lineHeight: 1.4 },
   itemNat: { color: 'var(--text-2)', fontWeight: 400 },
+  itemNameLink: { color: 'var(--accent-text)', fontWeight: 700, textDecoration: 'none' },
   itemSub: { fontSize: '12px', color: 'var(--text-2)', marginTop: '3px' },
   itemActions: {
     display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0,
