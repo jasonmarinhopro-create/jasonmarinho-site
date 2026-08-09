@@ -19,6 +19,7 @@ type Voyageur = {
   email: string | null; telephone: string | null; notes: string | null
   tags: string[] | null; source: string | null; bloque: boolean | null
   id_verifie: boolean | null; note_privee: number | null
+  checkin_expected_count: number | null
   created_at: string; updated_at: string
   sejours: Sejour[]; is_flagged: boolean
 }
@@ -39,7 +40,7 @@ function lastStay(sejours: Sejour[]): string | null {
 
 const COUNTRIES = NATIONALITES
 
-const EMPTY_FORM: VoyageurData = { prenom: '', nom: '', email: '', telephone: '', notes: '', nationalite: null }
+const EMPTY_FORM: VoyageurData = { prenom: '', nom: '', email: '', telephone: '', notes: '', nationalite: null, checkin_expected_count: null }
 
 // ─── Filtres personnalisables ────────────────────────────────────────────────
 // L'hôte choisit lesquels afficher (persisté en localStorage). « Tous » est
@@ -212,7 +213,7 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
 
   function openEdit(v: Voyageur, e: React.MouseEvent) {
     e.stopPropagation()
-    setForm({ prenom: v.prenom, nom: v.nom, email: v.email ?? '', telephone: v.telephone ?? '', notes: v.notes ?? '', nationalite: (v as any).nationalite ?? null })
+    setForm({ prenom: v.prenom, nom: v.nom, email: v.email ?? '', telephone: v.telephone ?? '', notes: v.notes ?? '', nationalite: (v as any).nationalite ?? null, checkin_expected_count: v.checkin_expected_count ?? null })
     setFormError('')
     setEditTarget(v)
     setModal('edit')
@@ -247,6 +248,7 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
         email: form.email?.trim() || undefined,
         telephone: form.telephone?.trim() || undefined,
         notes: form.notes?.trim() || undefined,
+        checkin_expected_count: form.checkin_expected_count ?? null,
       }
       const res = modal === 'edit' && editTarget
         ? await updateVoyageur(editTarget.id, data)
@@ -846,6 +848,30 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
                       </div>
                     </div>
                   )}
+                </div>
+              </div>
+
+              {/* Nombre de voyageurs attendus : pré-remplit directement le lien de
+                  check-in (SIBA…) avec le bon nombre de fiches accompagnant, sans
+                  avoir à repasser par la fiche voyageur après coup. */}
+              <div style={s.field}>
+                <label style={s.label}>
+                  Voyageurs attendus <span style={{ fontWeight: 400, color: 'var(--text-muted)' }}>(pour le lien de check-in / SIBA)</span>
+                </label>
+                <div style={s.inputWrap}>
+                  <Users size={15} color="var(--text-muted)" />
+                  <input
+                    style={s.input}
+                    type="number"
+                    min={1}
+                    max={20}
+                    value={form.checkin_expected_count ?? ''}
+                    onChange={e => {
+                      const raw = e.target.value
+                      setForm(f => ({ ...f, checkin_expected_count: raw === '' ? null : Math.max(1, Math.min(20, Number(raw))) }))
+                    }}
+                    placeholder="Ex : 9"
+                  />
                 </div>
               </div>
 

@@ -37,6 +37,9 @@ export type VoyageurData = {
   note_privee?: number | null
   bloque?: boolean
   bloque_motif?: string | null
+  /** Nombre de voyageurs attendus pour le check-in en ligne (SIBA…) — voir
+   *  setCheckinExpectedCount(). Peut être renseigné dès la création. */
+  checkin_expected_count?: number | null
 }
 
 export type SejourData = {
