@@ -2757,7 +2757,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   sejourLeft: { flex: 1, minWidth: 0 },
   sejourDates: {
-    display: 'flex', alignItems: 'center', gap: 'var(--s-2)',
+    display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--s-2)',
     fontSize: 'var(--t-base)', fontWeight: 600, color: 'var(--text)', marginBottom: 'var(--s-2)',
     letterSpacing: 'var(--ls-snug)',
   },
@@ -2765,6 +2765,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
     borderRadius: 'var(--r-pill)', padding: '2px 9px',
     fontSize: 'var(--t-xs)', fontWeight: 600, color: 'var(--accent-text)',
+    whiteSpace: 'nowrap', flexShrink: 0,
   },
   sejourMeta: { display: 'flex', flexWrap: 'wrap', gap: 'var(--s-2)' },
   metaChip: {
