@@ -42,7 +42,7 @@ export default async function CheckinPage({
 
   const { data: voyageur } = await supabase
     .from('voyageurs')
-    .select('id, user_id, prenom, nom, email, telephone, date_naissance, lieu_naissance, nationalite, adresse, code_postal, ville, pays, id_type, id_numero, id_pays_emetteur, checkin_completed_at')
+    .select('id, user_id, prenom, nom, email, telephone, date_naissance, lieu_naissance, nationalite, adresse, code_postal, ville, pays, id_type, id_numero, id_pays_emetteur, checkin_completed_at, checkin_expected_count')
     .eq('checkin_token', token)
     .maybeSingle()
 
@@ -82,6 +82,7 @@ export default async function CheckinPage({
       hostName={hostProfile?.full_name ?? null}
       sejour={nextSejour ?? null}
       alreadyCompletedAt={voyageur.checkin_completed_at ?? null}
+      expectedGroupSize={voyageur.checkin_expected_count ?? null}
       initialCompanions={(companions ?? []).map(c => ({
         prenom: c.prenom ?? '',
         nom: c.nom ?? '',

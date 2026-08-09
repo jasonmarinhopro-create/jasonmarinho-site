@@ -7,9 +7,9 @@ import {
   Envelope, Phone, Note, CalendarBlank, House,
   CurrencyEur, Seal, Link as LinkIcon, ShieldWarning, Star, FileText, Lock,
   ListChecks, CheckSquare, Square, Bandaids, DownloadSimple,
-  Prohibit, ArrowCounterClockwise,
+  Prohibit, ArrowCounterClockwise, UsersThree,
 } from '@phosphor-icons/react/dist/ssr'
-import { updateVoyageur, addSejour, updateSejour, deleteSejour, cancelSejour, restoreSejour, generateCheckinLink, type VoyageurData, type SejourData } from '../actions'
+import { updateVoyageur, addSejour, updateSejour, deleteSejour, cancelSejour, restoreSejour, generateCheckinLink, setCheckinExpectedCount, type VoyageurData, type SejourData } from '../actions'
 import { updateContractChecklist } from '../../calendrier/actions'
 import { reportGuest } from '../../securite/actions'
 import IncidentsPanel from './IncidentsPanel'
@@ -66,6 +66,7 @@ type Voyageur = {
   checkin_sent_at?: string | null
   checkin_completed_at?: string | null
   checkin_signature?: string | null
+  checkin_expected_count?: number | null
 }
 
 const SOURCE_LABELS: Record<string, { label: string; emoji: string }> = {
@@ -491,6 +492,19 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   )
   const [checkinCopied, setCheckinCopied] = useState(false)
   const [checkinLoading, setCheckinLoading] = useState(false)
+  // Nombre de voyageurs attendus (groupe Airbnb à 9 par ex.) : détermine
+  // combien de fiches accompagnant sont pré-affichées sur le lien public.
+  const [expectedCount, setExpectedCount] = useState<number | ''>(voyageur.checkin_expected_count ?? '')
+  const [expectedCountSaved, setExpectedCountSaved] = useState(false)
+
+  function persistExpectedCount(v: number | '') {
+    setExpectedCount(v)
+    startTransition(async () => {
+      await setCheckinExpectedCount(voyageur.id, v === '' ? null : v)
+      setExpectedCountSaved(true)
+      setTimeout(() => setExpectedCountSaved(false), 1500)
+    })
+  }
 
   async function handleCheckinLink() {
     // Lien déjà connu → copie directe
@@ -1636,6 +1650,46 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
             date de naissance, pièce d&apos;identité…) — la fiche se met à jour et, pour
             un logement portugais configuré, le boletim part automatiquement au SIBA.
           </p>
+
+          {/* Nombre de voyageurs attendus : le lien pré-affiche alors le bon
+              nombre de fiches accompagnant, pour que le groupe entier soit
+              déclaré dès le premier envoi (et pas juste le voyageur principal). */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const }}>
+            <span style={{ fontSize: '11.5px', color: 'var(--text-2)', display: 'inline-flex', alignItems: 'center', gap: '5px', fontWeight: 600 }}>
+              <UsersThree size={13} weight="bold" />
+              Voyageurs attendus pour ce séjour
+            </span>
+            <input
+              type="number"
+              min={1}
+              max={20}
+              value={expectedCount}
+              onChange={e => {
+                const raw = e.target.value
+                persistExpectedCount(raw === '' ? '' : Math.max(1, Math.min(20, Number(raw))))
+              }}
+              placeholder="1"
+              style={{
+                width: '56px', padding: '5px 8px', fontSize: '12px',
+                fontFamily: 'inherit', color: 'var(--text)',
+                background: 'var(--bg)', border: '1px solid var(--border)',
+                borderRadius: '7px', outline: 'none',
+              }}
+            />
+            {expectedCountSaved && (
+              <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--success-1, #34d399)', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                <Check size={11} weight="bold" /> Enregistré
+              </span>
+            )}
+          </div>
+          {typeof expectedCount === 'number' && expectedCount > 1 && (
+            <p style={{ fontSize: '11.5px', color: 'var(--accent-text)', margin: 0, lineHeight: 1.5 }}>
+              Le lien affichera directement {expectedCount - 1} fiche{expectedCount - 1 > 1 ? 's' : ''} accompagnant
+              à compléter, pour que {voyageur.prenom} comprenne qu&apos;il faut déclarer les {expectedCount} voyageurs
+              du séjour, pas seulement une personne.
+            </p>
+          )}
+
           <button
             onClick={handleCheckinLink}
             disabled={checkinLoading}
@@ -1674,8 +1728,13 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               sans avoir à ouvrir le lien public. */}
           {checkinCompanions.length > 0 && (
             <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '5px' }}>
-              <span style={{ fontSize: '10.5px', fontWeight: 600, letterSpacing: '0.4px', textTransform: 'uppercase' as const, color: 'var(--text-muted)' }}>
+              <span style={{
+                fontSize: '10.5px', fontWeight: 600, letterSpacing: '0.4px', textTransform: 'uppercase' as const,
+                color: (typeof voyageur.checkin_expected_count === 'number' && checkinCompanions.length + 1 < voyageur.checkin_expected_count)
+                  ? 'var(--warning, #f59e0b)' : 'var(--text-muted)',
+              }}>
                 Groupe déclaré · {checkinCompanions.length + 1} voyageur{checkinCompanions.length + 1 > 1 ? 's' : ''} (dont {voyageur.prenom})
+                {typeof voyageur.checkin_expected_count === 'number' && ` / ${voyageur.checkin_expected_count} attendu${voyageur.checkin_expected_count > 1 ? 's' : ''}`}
               </span>
               {checkinCompanions.map(c => {
                 const age = (() => {
@@ -1717,8 +1776,10 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           )}
           {voyageur.checkin_completed_at && checkinCompanions.length === 0 && (
             <p style={{ fontSize: '11.5px', color: 'var(--warning)', margin: 0, lineHeight: 1.5 }}>
-              Check-in complété SANS accompagnant : {voyageur.prenom} a déclaré voyager seul.
-              S'il vient accompagné, renvoie-lui le lien pour ajouter le reste du groupe.
+              {typeof voyageur.checkin_expected_count === 'number' && voyageur.checkin_expected_count > 1
+                ? `Check-in complété SANS accompagnant alors que ${voyageur.checkin_expected_count} voyageurs étaient attendus : renvoie-lui le lien pour compléter le reste du groupe.`
+                : <>Check-in complété SANS accompagnant : {voyageur.prenom} a déclaré voyager seul.
+                   S&apos;il vient accompagné, renvoie-lui le lien pour ajouter le reste du groupe.</>}
             </p>
           )}
 

@@ -289,3 +289,25 @@ export async function generateCheckinLink(voyageurId: string): Promise<{ url?: s
   revalidatePath(`/dashboard/voyageurs/${voyageurId}`)
   return { url: `${appUrl}/checkin/${token}` }
 }
+
+// Nombre de voyageurs attendus (ex : 9 pour un groupe Airbnb) : le formulaire
+// public pré-remplit alors le bon nombre de fiches accompagnant, pour que le
+// voyageur comprenne dès l'ouverture du lien qu'il doit déclarer tout le
+// groupe et pas seulement lui-même.
+export async function setCheckinExpectedCount(voyageurId: string, count: number | null): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
+
+  const clamped = count === null ? null : Math.max(1, Math.min(20, Math.round(count)))
+
+  const { error } = await supabase
+    .from('voyageurs')
+    .update({ checkin_expected_count: clamped })
+    .eq('id', voyageurId)
+    .eq('user_id', user.id)
+  if (error) return { error: error.message }
+
+  revalidatePath(`/dashboard/voyageurs/${voyageurId}`)
+  return {}
+}

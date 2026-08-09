@@ -91,6 +91,10 @@ interface Props {
   alreadyCompletedAt: string | null
   initial: CheckinInitial
   initialCompanions?: Companion[]
+  /** Nombre total de voyageurs attendus pour ce séjour (renseigné par
+   *  l'hôte) : pré-affiche le bon nombre de fiches accompagnant pour que
+   *  le voyageur principal comprenne qu'il doit déclarer tout le groupe. */
+  expectedGroupSize?: number | null
 }
 
 type Lang = 'fr' | 'en' | 'es' | 'pt' | 'de'
@@ -157,6 +161,7 @@ const T: Record<Lang, Record<string, string>> = {
     errConsent: 'Merci de cocher la case de consentement.',
     errGeneric: "Une erreur est survenue. Réessayez dans un instant.",
     draftRestored: "Brouillon restauré : vos informations saisies précédemment ont été conservées.",
+    groupSizeHint: 'Ce séjour concerne {n} voyageurs au total. Merci de compléter la fiche de chacun ci-dessous (vous compris) — pas seulement la vôtre.',
     select: 'Sélectionner…',
     nights: 'nuits',
     arrival: 'Arrivée',
@@ -223,6 +228,7 @@ const T: Record<Lang, Record<string, string>> = {
     errConsent: 'Please tick the consent box.',
     errGeneric: 'Something went wrong. Please try again shortly.',
     draftRestored: 'Draft restored: the information you previously entered has been kept.',
+    groupSizeHint: 'This stay is for {n} travellers in total. Please fill in the form for everyone below (including you) — not just your own.',
     select: 'Select…',
     nights: 'nights',
     arrival: 'Arrival',
@@ -289,6 +295,7 @@ const T: Record<Lang, Record<string, string>> = {
     errConsent: 'Marque la casilla de consentimiento, por favor.',
     errGeneric: 'Se ha producido un error. Inténtelo de nuevo en un momento.',
     draftRestored: 'Borrador restaurado: la información que introdujo anteriormente se ha conservado.',
+    groupSizeHint: 'Esta estancia es para {n} viajeros en total. Complete la ficha de cada uno a continuación (incluida la suya) — no solo la suya.',
     select: 'Seleccionar…',
     nights: 'noches',
     arrival: 'Llegada',
@@ -355,6 +362,7 @@ const T: Record<Lang, Record<string, string>> = {
     errConsent: 'Assinale a caixa de consentimento, por favor.',
     errGeneric: 'Ocorreu um erro. Tente novamente dentro de instantes.',
     draftRestored: 'Rascunho restaurado: as informações que preencheu anteriormente foram guardadas.',
+    groupSizeHint: 'Esta estadia é para {n} viajantes no total. Preencha a ficha de cada um abaixo (incluindo a sua) — não apenas a sua.',
     select: 'Selecionar…',
     nights: 'noites',
     arrival: 'Chegada',
@@ -421,6 +429,7 @@ const T: Record<Lang, Record<string, string>> = {
     errConsent: 'Bitte kreuzen Sie das Einverständnis-Kästchen an.',
     errGeneric: 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es gleich erneut.',
     draftRestored: 'Entwurf wiederhergestellt: Ihre zuvor eingegebenen Daten wurden gespeichert.',
+    groupSizeHint: 'Dieser Aufenthalt betrifft insgesamt {n} Reisende. Bitte füllen Sie unten das Formular für jede Person aus (auch für sich selbst) — nicht nur Ihr eigenes.',
     select: 'Auswählen…',
     nights: 'Nächte',
     arrival: 'Ankunft',
@@ -442,7 +451,7 @@ function nights(a: string, b: string) {
   return Math.max(1, Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86400000))
 }
 
-export default function CheckinForm({ token, hostName, sejour, alreadyCompletedAt, initial, initialCompanions }: Props) {
+export default function CheckinForm({ token, hostName, sejour, alreadyCompletedAt, initial, initialCompanions, expectedGroupSize }: Props) {
   const [lang, setLang] = useState<Lang>('fr')
   const [form, setForm] = useState<CheckinInitial>(initial)
   const [consent, setConsent] = useState(false)
@@ -472,7 +481,17 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
   // Accompagnants — la réglementation impose de déclarer chaque voyageur
   // (SIBA : un boletim par personne, mineurs inclus ; FR : une fiche par
   // voyageur, enfants <15 ans sur la fiche d'un adulte).
-  const [companions, setCompanions] = useState<Companion[]>(initialCompanions ?? [])
+  const [companions, setCompanions] = useState<Companion[]>(() => {
+    const base = initialCompanions ?? []
+    // Pré-affiche le bon nombre de fiches accompagnant vides quand l'hôte a
+    // renseigné la taille du groupe et qu'aucune fiche n'est encore
+    // enregistrée — sinon on ne touche pas à un check-in déjà en cours.
+    if (base.length === 0 && expectedGroupSize && expectedGroupSize > 1) {
+      const needed = Math.min(MAX_COMPANIONS, expectedGroupSize - 1)
+      return Array.from({ length: needed }, () => ({ ...EMPTY_COMPANION }))
+    }
+    return base
+  })
   // Mode « je m'ajoute au groupe » : le lien est partageable — un ami du
   // groupe l'ouvre et remplit SA fiche, ajoutée côté serveur sans toucher
   // à la fiche du voyageur principal (sinon il l'écraserait).
@@ -887,6 +906,21 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
                 {nights(sejour.date_arrivee, sejour.date_depart)} {t.nights}
               </span>
             </div>
+          </div>
+        )}
+
+        {/* Groupe attendu : rendu visible dès le haut du formulaire pour que
+            le voyageur principal ne s'arrête pas après sa propre fiche. */}
+        {expectedGroupSize && expectedGroupSize > 1 && (
+          <div style={{
+            display: 'flex', alignItems: 'flex-start', gap: '8px',
+            background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+            borderRadius: '10px', padding: '10px 12px', marginBottom: '14px',
+          }}>
+            <UsersThree size={16} weight="fill" style={{ flexShrink: 0, marginTop: '1px', color: 'var(--accent-text)' }} />
+            <span style={{ fontSize: '12.5px', color: 'var(--accent-text)', fontWeight: 600, lineHeight: 1.5 }}>
+              {t.groupSizeHint.replace('{n}', String(expectedGroupSize))}
+            </span>
           </div>
         )}
 
