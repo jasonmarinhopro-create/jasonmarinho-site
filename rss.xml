@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Fri, 07 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 10 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Chambre à coucher en LCD : 7 règles pour offrir un sommeil impeccable et faire grimper tes avis voyageurs</title>
+      <link>https://jasonmarinho.com/blog/chambre-coucher-lcd-7-regles-sommeil-avis-voyageurs</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/chambre-coucher-lcd-7-regles-sommeil-avis-voyageurs</guid>
+      <pubDate>Mon, 10 Aug 2026 08:00:00 GMT</pubDate>
+      <description>Matelas, literie, obscurité, silence, température, chevet, rangement : 7 règles concrètes pour transformer la chambre de ta location courte durée en argument de réservation qui fait grimper tes avis.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Terrasse et jardin en LCD : 7 règles pour transformer ton extérieur en argument différenciant</title>
       <link>https://jasonmarinho.com/blog/terrasse-jardin-lcd-7-regles-transformer-exterieur-argument-differenciant</link>
@@ -398,14 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>Test terrain des 3 solutions pour gérer ta caution voyageur sans friction. Tarifs, fiabilité, expérience voyageur, intégrations Airbnb/Booking.</description>
       <category>Automatisation</category>
-    </item>
-    <item>
-      <title>Bail mobilité vs location courte durée : les vraies différences pour un hôte</title>
-      <link>https://jasonmarinho.com/blog/bail-mobilite-vs-courte-duree-differences</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/bail-mobilite-vs-courte-duree-differences</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Le bail mobilité (1 à 10 mois) est-il une alternative à la LCD ? Comparatif fiscal, contractuel et pratique pour décider quel format choisir.</description>
-      <category>Réglementation</category>
     </item>
   </channel>
 </rss>
