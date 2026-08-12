@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 10 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 12 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Salon en LCD : 7 règles pour transformer ton espace de vie en cœur d&apos;expérience voyageur</title>
+      <link>https://jasonmarinho.com/blog/salon-lcd-7-regles-espace-vie-coeur-experience-voyageur</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/salon-lcd-7-regles-espace-vie-coeur-experience-voyageur</guid>
+      <pubDate>Wed, 12 Aug 2026 08:00:00 GMT</pubDate>
+      <description>Canapé, éclairage, TV, rangements, décoration : 7 règles concrètes pour transformer le salon de ta location courte durée en pièce où tes voyageurs veulent vraiment passer du temps.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Chambre à coucher en LCD : 7 règles pour offrir un sommeil impeccable et faire grimper tes avis voyageurs</title>
       <link>https://jasonmarinho.com/blog/chambre-coucher-lcd-7-regles-sommeil-avis-voyageurs</link>
@@ -398,14 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>Ton assurance habitation classique ne couvre PAS la location courte durée. Voici les 5 garanties dédiées LCD à exiger et les pièges à éviter.</description>
       <category>Réglementation</category>
-    </item>
-    <item>
-      <title>Automatiser sa caution LCD : SwikLy vs Youka vs solution maison</title>
-      <link>https://jasonmarinho.com/blog/automatiser-caution-swikly-youka-test-terrain</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/automatiser-caution-swikly-youka-test-terrain</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Test terrain des 3 solutions pour gérer ta caution voyageur sans friction. Tarifs, fiabilité, expérience voyageur, intégrations Airbnb/Booking.</description>
-      <category>Automatisation</category>
     </item>
   </channel>
 </rss>
