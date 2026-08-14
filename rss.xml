@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 12 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 14 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Entrée d&apos;un logement LCD : 6 règles pour transformer la première impression en avis 5 étoiles</title>
+      <link>https://jasonmarinho.com/blog/entree-logement-lcd-6-regles-premiere-impression-avis-voyageurs</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/entree-logement-lcd-6-regles-premiere-impression-avis-voyageurs</guid>
+      <pubDate>Fri, 14 Aug 2026 08:00:00 GMT</pubDate>
+      <description>Signalétique, éclairage, tapis, vide-poche, mot d&apos;accueil : 6 règles concrètes pour soigner l&apos;entrée de ta location courte durée et transformer les 30 premières secondes du voyageur en avis 5 étoiles.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Salon en LCD : 7 règles pour transformer ton espace de vie en cœur d&apos;expérience voyageur</title>
       <link>https://jasonmarinho.com/blog/salon-lcd-7-regles-espace-vie-coeur-experience-voyageur</link>
@@ -398,14 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>AirDNA agrège les données Airbnb/VRBO de ta zone. Voici comment t&apos;en servir pour fixer ton tarif, identifier la concurrence et anticiper les saisons.</description>
       <category>Revenus</category>
-    </item>
-    <item>
-      <title>Assurance LCD : les 5 garanties indispensables en 2026 (et celles inutiles)</title>
-      <link>https://jasonmarinho.com/blog/assurance-lcd-5-garanties-indispensables-2026</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/assurance-lcd-5-garanties-indispensables-2026</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Ton assurance habitation classique ne couvre PAS la location courte durée. Voici les 5 garanties dédiées LCD à exiger et les pièges à éviter.</description>
-      <category>Réglementation</category>
     </item>
   </channel>
 </rss>
