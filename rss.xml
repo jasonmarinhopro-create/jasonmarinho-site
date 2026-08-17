@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Fri, 14 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 17 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Odeurs en LCD : 6 règles pour transformer l&apos;ambiance olfactive de ton logement en argument à 5 étoiles</title>
+      <link>https://jasonmarinho.com/blog/odeurs-lcd-6-regles-ambiance-olfactive-argument-avis-5-etoiles</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/odeurs-lcd-6-regles-ambiance-olfactive-argument-avis-5-etoiles</guid>
+      <pubDate>Mon, 17 Aug 2026 08:00:00 GMT</pubDate>
+      <description>Siphons, poubelles, textiles, ventilation, diffuseurs : 6 règles concrètes pour supprimer les mauvaises odeurs en LCD et déclencher les avis 5 étoiles.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Entrée d&apos;un logement LCD : 6 règles pour transformer la première impression en avis 5 étoiles</title>
       <link>https://jasonmarinho.com/blog/entree-logement-lcd-6-regles-premiere-impression-avis-voyageurs</link>
@@ -398,14 +406,6 @@
       <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
       <description>Les voyageurs business paient 25-40% plus cher que les voyageurs loisir. Voici les 10 équipements et services à mettre en place pour les capter.</description>
       <category>Expérience</category>
-    </item>
-    <item>
-      <title>AirDNA mode d&apos;emploi : utiliser les data marché pour optimiser ton tarif LCD</title>
-      <link>https://jasonmarinho.com/blog/airdna-mode-emploi-hote-lcd-debutant</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/airdna-mode-emploi-hote-lcd-debutant</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>AirDNA agrège les données Airbnb/VRBO de ta zone. Voici comment t&apos;en servir pour fixer ton tarif, identifier la concurrence et anticiper les saisons.</description>
-      <category>Revenus</category>
     </item>
   </channel>
 </rss>
