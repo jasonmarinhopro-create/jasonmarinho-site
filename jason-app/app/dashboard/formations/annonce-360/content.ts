@@ -1,11 +1,11 @@
 export const ANNONCE_360_FORMATION = {
   slug: 'annonce-360',
   title: 'Annonce 360° : la stratégie multicanal pour hôtes confirmés',
-  description: `Tu as déjà optimisé ton annonce Airbnb, ta fiche Booking, ton site direct. La suite, c'est la vue d'ensemble : piloter tes canaux comme un système, tester en continu, être recommandé par les IA génératives, et savoir où investir vraiment (vidéo, 3D, metasearch). Le niveau pro, sans répéter ce que tu sais déjà.`,
+  description: `Tu as déjà optimisé ton annonce Airbnb, ta fiche Booking, ta page Driing. La suite, c'est la vue d'ensemble : piloter tes canaux comme un système, tester en continu, être recommandé par les IA génératives, et savoir où investir vraiment (vidéo, 3D, metasearch). Le niveau pro, sans répéter ce que tu sais déjà.`,
   duration: '3h50',
   level: 'Avancé',
   objectifs: [
-    'Cartographier et piloter Airbnb, Booking, Driing et le direct comme un seul portefeuille, pas des annonces isolées',
+    'Cartographier et piloter Airbnb, Booking et Driing comme un seul portefeuille, pas des annonces isolées',
     `Mettre en place une méthode de test continu au lieu de suivre des "bonnes pratiques" figées`,
     'Appliquer les leviers psychologiques de conversion à travers tous les canaux, pas juste dans une description',
     `Rendre ton logement "citable" par les IA génératives, ChatGPT, Gemini, Perplexity`,
@@ -24,7 +24,7 @@ export const ANNONCE_360_FORMATION = {
           duration: '20 min',
           content: `## Arrête de penser "mes annonces", pense "mon portefeuille"
 
-Si tu es sur Airbnb, Booking, peut-être Driing, et que tu as un site direct, tu ne gères pas quatre annonces séparées. Tu gères un **portefeuille de canaux**, chacun avec un rôle précis. Le problème de la plupart des hôtes multicanaux : ils traitent chaque plateforme comme un projet isolé, avec sa propre logique, sans jamais se demander comment elles s'articulent entre elles.
+Si tu es sur Airbnb, Booking, et peut-être Driing, tu ne gères pas trois annonces séparées. Tu gères un **portefeuille de canaux**, chacun avec un rôle précis. Le problème de la plupart des hôtes multicanaux : ils traitent chaque plateforme comme un projet isolé, avec sa propre logique, sans jamais se demander comment elles s'articulent entre elles.
 
 Résultat : du temps perdu à optimiser un canal secondaire aussi fort qu'un canal principal, ou pire, des canaux qui se cannibalisent entre eux sans que tu t'en rendes compte.
 
@@ -35,8 +35,7 @@ Ton **canal héros** est celui qui capte l'essentiel de ton volume et de ta noto
 Les **canaux secondaires** jouent un rôle différent :
 
 - **Booking.com** capte une audience européenne et business qu'Airbnb touche moins bien, avec des séjours plus courts. Rentable si ton logement s'y prête, jamais au prix d'une fiche bâclée.
-- **Driing** fonctionne sur un modèle sans commission, adhésion annuelle plutôt que prélèvement par séjour. Le volume de trafic est aujourd'hui sans commune mesure avec Airbnb ou Booking, mais le coût marginal d'y être présent est quasi nul une fois ta fiche configurée. C'est un canal à faible friction, pas un pari lourd.
-- **Ton site direct** n'est pas un canal de découverte, c'est un canal de rétention et de marge : les voyageurs qui y réservent te connaissent déjà ou ont été redirigés depuis un autre canal (avis Google, réseaux, bouche-à-oreille).
+- **Driing** fonctionne sur un modèle sans commission, adhésion annuelle plutôt que prélèvement par séjour. C'est ton canal direct : ta page a sa propre URL, tu peux y rediriger tes voyageurs directement (QR code dans le logement, lien en bio, réponse à un avis), sans avoir à construire ni maintenir un site à toi. Créer et faire vivre un vrai site (référencement, mises à jour, sécurité) est un métier à part entière, chronophage, que la quasi-totalité des hôtes n'ont ni le temps ni l'envie de faire sérieusement. Le volume de trafic sur Driing est aujourd'hui sans commune mesure avec Airbnb ou Booking, mais le coût marginal d'y être présent est quasi nul une fois ta page configurée : c'est un canal à faible friction, pas un pari lourd, et c'est lui qui joue le rôle de rétention et de marge dans ton portefeuille.
 
 ### L'erreur classique : traiter tous les canaux à égalité
 
@@ -54,14 +53,14 @@ Airbnb et Booking surveillent les écarts de prix entre plateformes concurrentes
 
 La bonne pratique n'est pas d'afficher rigoureusement le même prix partout, c'est de **ne jamais casser ton prix vers le bas sur un canal à commission pour favoriser un canal sans commission**. La marge de manœuvre honnête :
 
-- **Direct et Driing** : tu peux légitimement afficher un tarif légèrement inférieur (5 à 10 %) puisque tu ne reverses pas de commission dessus. C'est un avantage concurrentiel réel, pas une entorse aux règles.
+- **Driing** : tu peux légitimement afficher un tarif légèrement inférieur (5 à 10 %) puisque tu ne reverses pas de commission dessus. C'est un avantage concurrentiel réel, pas une entorse aux règles.
 - **Airbnb vs Booking** : garde des tarifs alignés à 2-3 % près. Un écart plus large déclenche des signaux négatifs sur la plateforme la plus chère, sans bénéfice proportionnel.
 
 ### Éviter la cannibalisation entre canaux
 
 La cannibalisation, c'est quand un canal secondaire capte des réservations qui auraient de toute façon eu lieu sur ton canal héros, sans ajouter de volume net. Trois leviers pour limiter ce phénomène :
 
-1. **Des avantages exclusifs par canal.** Réserve une offre de bienvenue ou un late check-out gratuit au direct et à Driing, jamais visible sur Airbnb ou Booking. Un voyageur qui compare doit avoir une raison claire de choisir le canal que tu préfères, pas juste le hasard.
+1. **Des avantages exclusifs par canal.** Réserve une offre de bienvenue ou un late check-out gratuit à ta page Driing, jamais visible sur Airbnb ou Booking. Un voyageur qui compare doit avoir une raison claire de choisir le canal que tu préfères, pas juste le hasard.
 2. **Une allocation de calendrier réfléchie**, si tu as plusieurs logements ou beaucoup de disponibilité : garde certaines dates premium (vacances scolaires, événements locaux) prioritairement sur ton canal héros, où la conversion est la plus élevée.
 3. **Un channel manager qui synchronise en temps réel.** Sans synchronisation immédiate, le risque n'est plus la cannibalisation mais le double-booking, l'échec opérationnel le plus coûteux en multicanal. Les hôtes qui pilotent leurs canaux avec un outil dédié plutôt qu'à la main génèrent en moyenne 35 % de revenus en plus que ceux qui gèrent chaque plateforme séparément — la coordination elle-même est un levier de revenu, pas juste un confort de gestion.
 
@@ -204,44 +203,44 @@ Cette banque de formulations authentiques sert au-delà de la description Airbnb
 
 Une part croissante de voyageurs ne tape plus "location appartement Bordeaux centre" dans Google. Ils demandent directement à ChatGPT, Gemini ou Perplexity : *"Trouve-moi un logement calme pour un couple près du centre de Bordeaux, avec parking, budget 120 € la nuit"*. L'IA répond en quelques secondes avec une sélection de recommandations, souvent en citant 2 à 7 sites au total pour construire sa réponse.
 
-Ce comportement porte un nom, la **Generative Engine Optimization (GEO)** : l'ensemble des pratiques qui augmentent la probabilité qu'une IA générative cite ton logement ou ton site quand elle répond à ce type de question.
+Ce comportement porte un nom, la **Generative Engine Optimization (GEO)** : l'ensemble des pratiques qui augmentent la probabilité qu'une IA générative cite ton logement quand elle répond à ce type de question.
 
 ### En quoi c'est différent du SEO classique
 
 Le SEO classique optimise pour être bien classé dans une liste de résultats que l'utilisateur parcourt lui-même. Le GEO optimise pour être **cité comme source** dans une réponse déjà rédigée par l'IA, que l'utilisateur ne remonte pas nécessairement à la source pour vérifier. Concrètement :
 
-- Une fiche Airbnb ou Booking n'est **pas indexée** de la même façon qu'un site web classique : les IA génératives ne peuvent généralement pas la citer directement comme source, parce que ces plateformes bloquent l'indexation profonde de leur contenu par les robots IA.
-- Ton **site direct**, lui, est indexable, à condition d'être structuré pour ça. C'est le chantier de la leçon suivante.
+- Une fiche Airbnb ou Booking n'est **pas indexée** de la même façon qu'une page web classique : les IA génératives ne peuvent généralement pas la citer directement comme source, parce que ces plateformes bloquent l'indexation profonde de leur contenu par les robots IA.
+- **Ta page Driing**, elle, a sa propre URL, indépendante et non verrouillée de la même façon. C'est le terrain sur lequel tu peux effectivement jouer ce jeu-là, sans avoir à construire et maintenir un site perso pour ça, un chantier technique que la grande majorité des hôtes n'ont ni le temps ni l'envie de mener sérieusement. C'est le chantier de la leçon suivante.
 
 ### Pourquoi 2026 est le bon moment pour s'y mettre
 
-Les études sur le sujet montrent que la présence de citations, de statistiques vérifiables et de sources externes dans le contenu d'un site peut augmenter sa visibilité dans les réponses d'IA génératives de plus de 40 %. Le terrain est encore largement ouvert dans le secteur LCD en France : très peu d'hôtes ont structuré leur site direct pour ça, ce qui signifie qu'agir maintenant capte un avantage que la majorité n'aura pas encore commencé à chercher.
+Les études sur le sujet montrent que la présence de citations, de statistiques vérifiables et de sources externes dans un contenu peut augmenter sa visibilité dans les réponses d'IA génératives de plus de 40 %. Le terrain est encore largement ouvert dans le secteur LCD en France : très peu d'hôtes ont pensé à soigner leur page Driing pour ça, ce qui signifie qu'agir maintenant capte un avantage que la majorité n'aura pas encore commencé à chercher.
 
 Ce n'est pas un chantier qui remplace le SEO classique ou la présence sur Airbnb et Booking, c'est une couche supplémentaire, spécifiquement sur ton canal direct, qui capte une audience qui ne passe même plus par une recherche traditionnelle.`,
         },
         {
           id: 8,
-          title: 'La méthode GEO appliquée à ton site direct',
+          title: 'La méthode GEO appliquée à ta page Driing',
           duration: '20 min',
-          content: `## Rendre ton site "citable" par une IA générative
+          content: `## Rendre ta page Driing "citable" par une IA générative
 
-Une IA générative construit sa réponse en cherchant des sources claires, structurées, et vérifiables. Un site vague ou purement promotionnel a moins de chances d'être retenu qu'un site qui répond concrètement à des questions précises avec des faits.
+Une IA générative construit sa réponse en cherchant des sources claires, structurées, et vérifiables. Une page vague ou purement promotionnelle a moins de chances d'être retenue qu'une page qui répond concrètement à des questions précises avec des faits. La bonne nouvelle : tout ce qui suit se joue dans les champs de texte que tu remplis toi-même sur ta page Driing, pas dans du code ou de la technique.
 
 ### Les 4 leviers concrets
 
-**1. Une structure "réponse directe".** Chaque page importante de ton site direct devrait répondre clairement à une question qu'un voyageur pourrait poser : "Ce logement est-il adapté aux familles avec bébé ?", "Y a-t-il un parking gratuit à proximité ?". Réponds en une ou deux phrases nettes en haut de section, puis développe. C'est exactement la structure qu'une IA cherche à extraire.
+**1. Une structure "réponse directe".** Ta description Driing devrait répondre clairement à une question qu'un voyageur pourrait poser : "Ce logement est-il adapté aux familles avec bébé ?", "Y a-t-il un parking gratuit à proximité ?". Réponds en une ou deux phrases nettes dès le début du texte, puis développe. C'est exactement la structure qu'une IA cherche à extraire.
 
-**2. Une identité claire (clarté d'entité).** Ton nom, celui du logement, l'adresse précise ou le quartier, doivent apparaître de façon cohérente sur toutes tes pages et dans tes données structurées (balisage Schema.org LodgingBusiness, déjà couvert dans la formation Annonce Directe). Une IA a besoin de comprendre sans ambiguïté de quelle entité il est question.
+**2. Une identité claire (clarté d'entité).** Ton nom, celui du logement, l'adresse précise ou le quartier, doivent apparaître de façon cohérente sur ta page Driing et partout où tu es mentionné (Airbnb, Google, réseaux). Une IA a besoin de comprendre sans ambiguïté de quelle entité il est question, tu n'as rien à coder pour ça, juste à rester cohérent.
 
 **3. Des chiffres et des faits vérifiables**, plutôt que des adjectifs. "À 8 minutes à pied de la gare" convainc et se cite mieux que "très bien situé". "Capacité 4 personnes, 2 chambres, 65 m²" se cite mieux que "spacieux et confortable". Chaque affirmation vérifiable est une prise que l'IA peut citer avec confiance.
 
-**4. Être mentionné ailleurs.** Une IA pondère davantage un site cité ou lié par d'autres sources externes (office de tourisme local, blog local, presse locale, annuaire spécialisé). Les partenariats locaux évoqués dans la formation Annonce Directe, ce n'est plus seulement un levier SEO classique, c'est aussi un levier GEO.
+**4. Être mentionné ailleurs.** Une IA pondère davantage une page citée ou liée par d'autres sources externes (office de tourisme local, blog local, presse locale, annuaire spécialisé). Un partenariat local qui pointe vers ta page Driing, ce n'est plus seulement un levier SEO classique, c'est aussi un levier GEO, sans que tu aies besoin d'un site à toi pour en profiter.
 
 ### Ce qu'il ne faut pas faire
 
-Ne cherche pas à "tromper" une IA générative avec du contenu généré en masse ou des affirmations exagérées. Les moteurs génératifs recoupent les sources entre elles ; une incohérence entre ce que dit ton site et ce que disent tes avis publics ailleurs (Google, Airbnb) réduit ta crédibilité de citation plus vite qu'elle ne l'augmente.
+Ne cherche pas à "tromper" une IA générative avec du contenu généré en masse ou des affirmations exagérées. Les moteurs génératifs recoupent les sources entre elles ; une incohérence entre ce que dit ta page Driing et ce que disent tes avis publics ailleurs (Google, Airbnb) réduit ta crédibilité de citation plus vite qu'elle ne l'augmente.
 
-**Concrètement** : prends les 3 pages les plus importantes de ton site direct (page logement, page réservation, page FAQ) et réécris leur premier paragraphe pour qu'il réponde directement à la question la plus probable qu'un voyageur poserait à une IA à ce sujet.`,
+**Concrètement** : reprends la description de ta page Driing et réécris son premier paragraphe pour qu'il réponde directement à la question la plus probable qu'un voyageur poserait à une IA à ce sujet.`,
         },
       ],
     },
@@ -270,7 +269,7 @@ Ces deux plateformes fonctionnent différemment : elles agrègent principalement
 
 ### Ce que ça signifie pour ta priorité de temps
 
-Le metasearch n'est pas un canal sur lequel investir du temps de rédaction ou d'optimisation directe pour un hôte avec peu de logements, contrairement à Airbnb, Booking, Driing ou ton site. C'est un bénéfice indirect qui découle de la qualité de ta présence sur tes canaux principaux, et d'une intégration technique côté channel manager, pas d'un effort de contenu de ta part.
+Le metasearch n'est pas un canal sur lequel investir du temps de rédaction ou d'optimisation directe pour un hôte avec peu de logements, contrairement à Airbnb, Booking ou Driing. C'est un bénéfice indirect qui découle de la qualité de ta présence sur tes canaux principaux, et d'une intégration technique côté channel manager, pas d'un effort de contenu de ta part.
 
 **Ne perds pas de temps à chercher comment "t'inscrire" sur Google Vacation Rentals en direct** : vérifie plutôt, dans les paramètres de ton channel manager, si cette diffusion est déjà activée.`,
         },
@@ -375,13 +374,13 @@ Ce module de clôture ne t'apprend rien de nouveau, il t'aide à transformer les
 
 ### La grille d'audit, canal par canal
 
-Pour chaque canal actif (Airbnb, Booking, Driing, direct), réponds honnêtement à ces questions :
+Pour chaque canal actif (Airbnb, Booking, Driing), réponds honnêtement à ces questions :
 
 1. **Vélocité d'avis** : ta dernière notation date de moins de 6 semaines ?
 2. **Dernier test mené** : as-tu changé un élément de ton annonce, méthodiquement, dans les 3 derniers mois ?
 3. **Cohérence tarifaire** : ton prix sur ce canal respecte-t-il la logique de parité et d'anti-cannibalisation du module 1 ?
 4. **Fraîcheur du contenu visuel** : tes photos ont-elles plus de 18 mois, ou le logement a-t-il changé depuis (déco, mobilier, rénovation) ?
-5. **Citabilité IA** (pour ton site direct uniquement) : tes pages principales répondent-elles directement aux questions qu'un voyageur poserait à une IA ?
+5. **Citabilité IA** (pour ta page Driing) : sa description répond-elle directement aux questions qu'un voyageur poserait à une IA ?
 
 ### Scorer sans complaisance
 
