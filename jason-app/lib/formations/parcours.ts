@@ -32,8 +32,8 @@ export const PARCOURS: Parcours[] = [
     slug: 'maximiser-tes-revenus',
     emoji: '💰',
     title: 'Maximiser tes revenus LCD',
-    description: 'Augmente ton revenu par bien : pricing dynamique, canal direct sans commission, optimisation algorithme + avis 5★.',
-    duration: '~12h',
+    description: 'Augmente ton revenu par bien : pricing dynamique, canal direct sans commission, optimisation algorithme + avis 5★, puis la stratégie multicanal niveau pro.',
+    duration: '~16h',
     level: 'intermediaire',
     forWho: 'Tu loues déjà mais tu sens que tu laisses de l\'argent sur la table.',
     formations: [
@@ -41,6 +41,7 @@ export const PARCOURS: Parcours[] = [
       'annonce-directe',
       'optimiser-annonce-airbnb',
       'ecrire-avis-repondre-voyageurs',
+      'annonce-360',
     ],
   },
   {

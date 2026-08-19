@@ -16,6 +16,7 @@ import { FISCALITE_CONCIERGERIE_FORMATION } from '@/app/dashboard/formations/fis
 import { BOOKING_FORMATION } from '@/app/dashboard/formations/maitriser-booking-com-algorithme-genius/content'
 import { PHOTOGRAPHIE_LCD_FORMATION } from '@/app/dashboard/formations/photographie-lcd-smartphone/content'
 import { GERER_INCIDENTS_LITIGES_FORMATION } from '@/app/dashboard/formations/gerer-incidents-litiges-lcd/content'
+import { ANNONCE_360_FORMATION } from '@/app/dashboard/formations/annonce-360/content'
 
 export interface StaticFormation {
   slug?: string
@@ -56,4 +57,5 @@ export const FORMATION_CONTENT_MAP: Record<string, StaticFormation> = {
   'maitriser-booking-com-algorithme-genius': BOOKING_FORMATION,
   'photographie-lcd-smartphone': PHOTOGRAPHIE_LCD_FORMATION,
   'gerer-incidents-litiges-lcd': GERER_INCIDENTS_LITIGES_FORMATION,
+  'annonce-360': ANNONCE_360_FORMATION,
 }

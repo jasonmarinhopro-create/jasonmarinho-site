@@ -12,14 +12,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     title: 'Formations LCD pour hôtes & conciergeries · Jason Marinho',
-    description: 'GMB, tarification dynamique, fiscalité 2026, créer sa conciergerie, optimiser son annonce Airbnb… 18 formations pratiques pour la location courte durée.',
+    description: 'GMB, tarification dynamique, fiscalité 2026, créer sa conciergerie, optimiser son annonce Airbnb… 19 formations pratiques pour la location courte durée.',
     siteName: 'Jason Marinho, Plateforme LCD',
     locale: 'fr_FR',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Formations LCD pour hôtes & conciergeries',
-    description: '18 formations pratiques pour la location courte durée.',
+    description: '19 formations pratiques pour la location courte durée.',
   },
   robots: { index: false, follow: false },
 }
@@ -44,6 +44,7 @@ const ACTIVE_SLUGS = [
   'maitriser-booking-com-algorithme-genius',
   'photographie-lcd-smartphone',
   'gerer-incidents-litiges-lcd',
+  'annonce-360',
 ]
 
 // Formations à venir, hardcodées, pas encore en DB

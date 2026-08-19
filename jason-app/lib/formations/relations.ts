@@ -43,6 +43,7 @@ const RELATIONS: Record<string, FormationRelations> = {
     recommendedNext: [
       { slug: 'google-my-business-lcd', reason: 'Le canal n°1 pour la résa directe locale' },
       { slug: 'reseaux-sociaux-lcd', reason: 'Construis une audience qui te suit' },
+      { slug: 'annonce-360', reason: 'La suite avancée, une fois ton canal direct lancé' },
     ],
   },
   'tarification-dynamique': {
@@ -91,6 +92,7 @@ const RELATIONS: Record<string, FormationRelations> = {
     recommendedNext: [
       { slug: 'maitriser-booking-com-algorithme-genius', reason: 'Diversifie tes plateformes' },
       { slug: 'ecrire-avis-repondre-voyageurs', reason: 'Booste tes avis = ton classement' },
+      { slug: 'annonce-360', reason: 'Le niveau pro, une fois les bases maîtrisées' },
     ],
   },
   'maitriser-booking-com-algorithme-genius': {
@@ -101,6 +103,15 @@ const RELATIONS: Record<string, FormationRelations> = {
     recommendedNext: [
       { slug: 'optimiser-annonce-airbnb', reason: 'Optimise aussi ton Airbnb' },
       { slug: 'tarification-dynamique', reason: 'Synchronise tes prix' },
+      { slug: 'annonce-360', reason: 'Pilote tous tes canaux comme un système' },
+    ],
+  },
+  'annonce-360': {
+    articles: [],
+    recommendedNext: [
+      { slug: 'optimiser-annonce-airbnb', reason: 'Les bases si ce n\'est pas déjà fait' },
+      { slug: 'maitriser-booking-com-algorithme-genius', reason: 'Le détail plateforme par plateforme' },
+      { slug: 'ecrire-avis-repondre-voyageurs', reason: 'Approfondis la vélocité d\'avis' },
     ],
   },
   'reseaux-sociaux-lcd': {
