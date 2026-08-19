@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { getAuthUser } from '@/lib/supabase/auth-user'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import DemandesRecues, { type ProContact } from '@/components/pros/DemandesRecues'
 import { updateContactStatus, updateContactNotes, deleteContact, addClientFromContact } from '../actions'
@@ -16,8 +16,7 @@ function getServiceClient() {
 }
 
 export default async function Page() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getAuthUser()
   if (!user) redirect('/auth/login?as=menage')
 
   const admin = getServiceClient()

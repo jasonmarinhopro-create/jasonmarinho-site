@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { createClient } from '@/lib/supabase/server'
+import { getAuthUser } from '@/lib/supabase/auth-user'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import { Check, Wrench, Star, ArrowRight, CheckCircle, XCircle, ShieldStar, Crown, LockKey } from '@phosphor-icons/react/dist/ssr'
@@ -53,9 +54,11 @@ export default async function AbonnementPage({
 }) {
   const supabase = await createClient()
 
-  // getUser() valide le token auprès de Supabase Auth, jamais de données stales
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
-  if (authError || !user) redirect('/auth/login')
+  // getAuthUser() valide le token auprès de Supabase Auth (jamais de données
+  // stales) tout en étant dédupliqué avec l'appel déjà fait par le layout
+  // dashboard, au lieu de repayer un aller-retour réseau supplémentaire.
+  const user = await getAuthUser()
+  if (!user) redirect('/auth/login')
 
   // Requête directe, sans passer par React.cache() ni getProfile()
   // Garantit une lecture fraîche à chaque chargement de cette page

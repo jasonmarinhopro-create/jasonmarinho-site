@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { getAuthUser } from '@/lib/supabase/auth-user'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import MaFichePhotographe from './MaFichePhotographe'
 
@@ -22,8 +22,7 @@ export default async function Page({ searchParams }: PageProps) {
   const sp = await searchParams
   const previewId = sp?.id
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getAuthUser()
   if (!user) redirect('/auth/login?as=photographe')
 
   const admin = getServiceClient()

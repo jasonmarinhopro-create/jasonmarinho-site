@@ -1,4 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
+import { getAuthUser } from '@/lib/supabase/auth-user'
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import TitleSetter from '@/components/layout/TitleSetter'
@@ -12,7 +13,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
   const supabase = await createClient()
 
   // Phase A : toutes les queries indépendantes en parallèle
-  const [voyageurRes, sejoursRes, authRes, profileDataRes, logementsRes, companionsRes, declarationsRes] = await Promise.all([
+  const [voyageurRes, sejoursRes, authUser, profileDataRes, logementsRes, companionsRes, declarationsRes] = await Promise.all([
     supabase
       .from('voyageurs')
       .select('id, prenom, nom, email, telephone, nationalite, source, tags, notes, note_privee, id_type, id_url, id_verifie, bloque, bloque_motif, created_at, checkin_token, checkin_sent_at, checkin_completed_at, checkin_signature, checkin_expected_count')
@@ -25,7 +26,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
       .eq('voyageur_id', id)
       .eq('user_id', profile.userId)
       .order('date_arrivee', { ascending: false }),
-    supabase.auth.getUser(),
+    getAuthUser(),
     supabase
       .from('profiles')
       .select('iban, bic, adresse, stripe_account_id, stripe_onboarding_complete')
@@ -56,7 +57,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
   if (!voyageur) notFound()
 
   const sejours = sejoursRes.data
-  const user = authRes.data.user
+  const user = authUser
   const profileData = profileDataRes.data
   const logements = logementsRes.data
   const declarationStatutBySejour: Record<string, string> = {}

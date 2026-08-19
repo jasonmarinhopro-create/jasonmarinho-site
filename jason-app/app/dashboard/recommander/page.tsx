@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { getAuthUser } from '@/lib/supabase/auth-user'
 import { getProForRecommendation, type ProType } from './actions'
 import RecommanderCard from './RecommanderCard'
 
@@ -15,8 +15,7 @@ export default async function RecommanderPage({ searchParams }: {
   const proType = sp.type === 'cleaner' ? 'cleaner' : 'photographer'
   const proId = sp.id ?? ''
 
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getAuthUser()
   if (!user) {
     redirect(`/auth/login?next=${encodeURIComponent(`/dashboard/recommander?type=${proType}&id=${proId}`)}`)
   }
