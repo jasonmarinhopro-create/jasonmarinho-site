@@ -1489,6 +1489,21 @@ a { color: inherit; }
   .filter-search-wrap { max-width: 100% !important; }
 }
 
+/* Barre de recherche : glow discret sur toute la pilule au focus plutôt que
+   l'anneau accessible générique (3px, carré) qui tranche trop sur une forme
+   arrondie. L'input garde .no-ring, le halo vit sur le conteneur entier. */
+.filter-search-wrap {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+.filter-search-wrap:hover {
+  border-color: var(--border-2);
+}
+.filter-search-wrap:focus-within {
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+  box-shadow: 0 0 0 1px var(--accent-border), 0 8px 24px -10px var(--accent-border-2);
+}
+
 /* Hero "Parcours d'apprentissage", layout mobile empilé */
 @media (max-width: 640px) {
   .formations-parcours-hero {

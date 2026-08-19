@@ -203,6 +203,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
             value={search}
             onChange={e => setSearch(e.target.value)}
             style={styles.searchInput}
+            className="no-ring"
           />
           {search && (
             <button onClick={() => setSearch('')} style={styles.clearBtn}>×</button>

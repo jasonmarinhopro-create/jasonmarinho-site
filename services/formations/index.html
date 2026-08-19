@@ -139,6 +139,7 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .f-bge{position:absolute;top:12px;right:12px;z-index:3;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:100px}
 .bge-s{background:rgba(255,213,107,.18);color:var(--y);border:1px solid rgba(255,213,107,.28)}
 .bge-i{background:rgba(85,107,47,.28);color:#b4d46e;border:1px solid rgba(85,107,47,.42)}
+.bge-a{background:rgba(230,126,34,.22);color:#f0a868;border:1px solid rgba(230,126,34,.4)}
 .f-card.wip{opacity:.6;pointer-events:none}
 .f-card.wip .f-lk{display:none}
 .f-wip-tag{font-size:11px;color:rgba(255,255,255,.3);display:flex;align-items:center;gap:5px;font-weight:500}
@@ -310,8 +311,8 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
     </div>
     <!-- Filtre par thème -->
     <div class="f-cats" id="f-cats" role="navigation" aria-label="Filtrer par thème">
-      <button class="f-cat-btn active" data-filter="all" onclick="filterFormations(this,'all')"><i class="ph-bold ph-squares-four"></i> Tous <span class="f-cat-btn-count">18</span></button>
-      <button class="f-cat-btn" data-filter="visibilite" onclick="filterFormations(this,'visibilite')"><i class="ph-bold ph-eye"></i> Visibilité <span class="f-cat-btn-count">6</span></button>
+      <button class="f-cat-btn active" data-filter="all" onclick="filterFormations(this,'all')"><i class="ph-bold ph-squares-four"></i> Tous <span class="f-cat-btn-count">19</span></button>
+      <button class="f-cat-btn" data-filter="visibilite" onclick="filterFormations(this,'visibilite')"><i class="ph-bold ph-eye"></i> Visibilité <span class="f-cat-btn-count">7</span></button>
       <button class="f-cat-btn" data-filter="revenus" onclick="filterFormations(this,'revenus')"><i class="ph-bold ph-trend-up"></i> Revenus <span class="f-cat-btn-count">3</span></button>
       <button class="f-cat-btn" data-filter="gestion" onclick="filterFormations(this,'gestion')"><i class="ph-bold ph-lightning"></i> Gestion <span class="f-cat-btn-count">4</span></button>
       <button class="f-cat-btn" data-filter="reputation" onclick="filterFormations(this,'reputation')"><i class="ph-bold ph-star"></i> Réputation <span class="f-cat-btn-count">2</span></button>
@@ -321,11 +322,34 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 
     <div class="f-gr" id="f-gr">
 
-      <!-- Card, Maîtriser Booking.com (nouveauté) -->
+      <!-- Card, Annonce 360° (nouveauté) -->
+      <div class="f-card" data-cat="visibilite">
+        <div class="f-th" style="background:linear-gradient(135deg,#2a1a0d 0%,#8a5a1a 100%)">
+          <i class="ph ph-compass"></i>
+          <div class="f-bge" style="background:rgba(255,213,107,.18);color:var(--y);border:1px solid rgba(255,213,107,.3)">Nouveauté</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Visibilité & plateformes</div>
+          <div class="f-tt">Annonce 360° : la stratégie multicanal pour hôtes confirmés</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 7 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 3h50</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 14 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/services/formations/annonce-360" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card, Maîtriser Booking.com -->
       <div class="f-card" data-cat="visibilite">
         <div class="f-th" style="background:linear-gradient(135deg,#003d66 0%,#0071C2 100%)">
           <i class="ph ph-globe"></i>
-          <div class="f-bge" style="background:rgba(255,213,107,.18);color:var(--y);border:1px solid rgba(255,213,107,.3)">Nouveauté</div>
+          <div class="f-bge bge-i">Intermédiaire</div>
         </div>
         <div class="f-bd">
           <div class="f-cat">Visibilité & plateformes</div>
