@@ -91,7 +91,7 @@ const RELATIONS: Record<string, FormationRelations> = {
     ],
     recommendedNext: [
       { slug: 'maitriser-booking-com-algorithme-genius', reason: 'Diversifie tes plateformes' },
-      { slug: 'ecrire-avis-repondre-voyageurs', reason: 'Booste tes avis = ton classement' },
+      { slug: 'audit-annonce', reason: 'Vérifie où tu en es avec une vraie grille' },
       { slug: 'annonce-360', reason: 'Le niveau pro, une fois les bases maîtrisées' },
     ],
   },
@@ -111,7 +111,7 @@ const RELATIONS: Record<string, FormationRelations> = {
     recommendedNext: [
       { slug: 'optimiser-annonce-airbnb', reason: 'Les bases si ce n\'est pas déjà fait' },
       { slug: 'maitriser-booking-com-algorithme-genius', reason: 'Le détail plateforme par plateforme' },
-      { slug: 'ecrire-avis-repondre-voyageurs', reason: 'Approfondis la vélocité d\'avis' },
+      { slug: 'audit-annonce', reason: 'Une grille de notation pour suivre tes progrès' },
     ],
   },
   'reseaux-sociaux-lcd': {
@@ -199,6 +199,15 @@ const RELATIONS: Record<string, FormationRelations> = {
     recommendedNext: [
       { slug: 'fiscalite-statut-conciergerie-tourisme', reason: 'Loi Hoguet, statuts, TVA' },
       { slug: 'gerer-lcd-automatisation', reason: 'Automatise dès le départ' },
+      { slug: 'audit-annonce', reason: 'Un outil concret pour ta prospection' },
+    ],
+  },
+  'audit-annonce': {
+    articles: [],
+    recommendedNext: [
+      { slug: 'optimiser-annonce-airbnb', reason: 'Corrige ce que l\'audit révèle sur Airbnb' },
+      { slug: 'annonce-360', reason: 'La stratégie multicanal, une fois les bases auditées' },
+      { slug: 'creer-conciergerie-lcd', reason: 'Fais de l\'audit un outil de prospection' },
     ],
   },
   'ecrire-avis-repondre-voyageurs': {

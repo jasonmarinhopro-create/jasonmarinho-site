@@ -49,11 +49,12 @@ export const PARCOURS: Parcours[] = [
     emoji: '🏢',
     title: 'Devenir conciergerie en 60 jours',
     description: 'Création juridique (loi Hoguet, statuts), prospection des premiers mandats, automatisation pour scaler.',
-    duration: '~14h',
+    duration: '~17h',
     level: 'avance',
     forWho: 'Tu veux gérer des biens pour des propriétaires tiers.',
     formations: [
       'creer-conciergerie-lcd',
+      'audit-annonce',
       'fiscalite-statut-conciergerie-tourisme',
       'optimiser-annonce-airbnb',
       'gerer-lcd-automatisation',

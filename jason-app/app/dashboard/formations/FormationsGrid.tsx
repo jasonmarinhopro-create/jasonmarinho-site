@@ -63,6 +63,7 @@ const SLUG_CATEGORY: Record<string, string> = {
   'photographie-lcd-smartphone': 'visibilite',
   'gerer-incidents-litiges-lcd': 'gestion',
   'annonce-360': 'visibilite',
+  'audit-annonce': 'visibilite',
 }
 
 const categoryLabel: Record<string, string> = {

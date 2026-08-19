@@ -17,6 +17,7 @@ import { BOOKING_FORMATION } from '@/app/dashboard/formations/maitriser-booking-
 import { PHOTOGRAPHIE_LCD_FORMATION } from '@/app/dashboard/formations/photographie-lcd-smartphone/content'
 import { GERER_INCIDENTS_LITIGES_FORMATION } from '@/app/dashboard/formations/gerer-incidents-litiges-lcd/content'
 import { ANNONCE_360_FORMATION } from '@/app/dashboard/formations/annonce-360/content'
+import { AUDIT_ANNONCE_FORMATION } from '@/app/dashboard/formations/audit-annonce/content'
 
 export interface StaticFormation {
   slug?: string
@@ -58,4 +59,5 @@ export const FORMATION_CONTENT_MAP: Record<string, StaticFormation> = {
   'photographie-lcd-smartphone': PHOTOGRAPHIE_LCD_FORMATION,
   'gerer-incidents-litiges-lcd': GERER_INCIDENTS_LITIGES_FORMATION,
   'annonce-360': ANNONCE_360_FORMATION,
+  'audit-annonce': AUDIT_ANNONCE_FORMATION,
 }
