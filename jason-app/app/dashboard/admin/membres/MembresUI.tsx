@@ -199,10 +199,17 @@ export default function MembresUI({ members }: { members: Member[] }) {
         .jm-membre-card select option:hover { background-color: rgba(0,76,63,0.55); color: #fff; }
         .jm-membre-card select option:checked { background: var(--accent-text); color: var(--bg); font-weight: 700; }
         .jm-membre-card select:focus { outline: none; border-color: var(--accent-text) !important; box-shadow: 0 0 0 3px rgba(0,76,63,.18); }
+        /* Colonnes fixes (pas auto-fit) : avec 8 tuiles, auto-fit peut faire
+           tenir 7 colonnes sur une largeur de contenu courante (~1280px avec
+           sidebar), laissant la 8e tuile orpheline seule sur sa ligne. Un
+           nombre de colonnes fixe qui divise 8 évite ce cas dans tous les cas. */
+        .jm-stats-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        @media (max-width: 900px) { .jm-stats-row { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media (max-width: 640px) { .jm-stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
       ` }} />
 
       {/* ── Stats (cliquables : chaque tuile applique le filtre correspondant) ── */}
-      <div style={s.statsRow}>
+      <div className="jm-stats-row" style={s.statsRow}>
         {[
           { filter: 'all',          icon: <Users size={16} />,                     value: members.length,     label: 'membres',       color: 'var(--text)' },
           { filter: 'standard',     icon: <Star size={16} weight="fill" />,        value: totalStandard,      label: 'Standard',      color: '#15803d' },
@@ -211,7 +218,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
           { filter: 'investor',     icon: <Briefcase size={16} weight="fill" />,   value: totalInvestors,     label: 'investisseurs', color: '#60BEFF' },
           { filter: 'photographer', icon: <Camera size={16} weight="fill" />,      value: totalPhotographers, label: 'photographes',  color: '#C084FC' },
           { filter: 'cleaner',      icon: <Sparkle size={16} weight="fill" />,     value: totalCleaners,      label: 'ménage',        color: 'var(--success-1)' },
-          { filter: null,           icon: <CurrencyEur size={16} />,               value: `${(totalStandard * 1.98).toFixed(2)} €`, label: 'MRR estimé', color: '#15803d' },
+          { filter: null,           icon: <CurrencyEur size={16} />,               value: `${(totalStandard * 1.98).toFixed(2)} €`, label: 'MRR', color: '#15803d' },
         ].map(({ filter: f, icon, value, label, color }) => {
           const active = f !== null && filterPlan === f && f !== 'all'
           return (
@@ -794,7 +801,6 @@ const s: Record<string, React.CSSProperties> = {
   // Stats — sur mobile (<=640px) grid 2 colonnes pour éviter le débordement
   statsRow: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
     gap: '10px',
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '14px', padding: 'clamp(12px, 2vw, 16px)',
@@ -805,8 +811,8 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--bg-2)', border: '1px solid var(--border)',
     minWidth: 0,
   },
-  statNum:   { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 500 },
-  statLabel: { fontSize: '12px', color: 'var(--text-2)' },
+  statNum:   { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 500, whiteSpace: 'nowrap' as const },
+  statLabel: { fontSize: '12px', color: 'var(--text-2)', whiteSpace: 'nowrap' as const, overflow: 'hidden', textOverflow: 'ellipsis' as const },
   deleteBotsBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     background: 'var(--danger-bg)', border: '1px solid rgba(248,113,113,0.2)',
