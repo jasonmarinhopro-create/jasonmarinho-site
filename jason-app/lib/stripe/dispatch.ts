@@ -4,6 +4,9 @@ import { planFromPriceId } from '@/lib/constants/stripe-plans'
 import { invalidateProfileCache } from '@/lib/queries/profile'
 import { sendPaiementReceivedEmail } from '@/lib/email/host'
 import { sendProWelcomeEmail } from '@/lib/email/pro-welcome'
+import { logger } from '@/lib/logger'
+
+const log = logger('lib/stripe/dispatch')
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
@@ -249,14 +252,22 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
       }
       // ── Branche standard : abonnement hôte plateforme ──
       const userId = sub.metadata?.user_id
-      if (!userId) break
+      if (!userId) {
+        log.warn('subscription.created sans user_id en metadata', { sub_id: sub.id })
+        break
+      }
       const priceId = sub.items.data[0]?.price?.id ?? ''
-      await db.from('profiles').update({
+      const { data: updated, error: updateErr } = await db.from('profiles').update({
         plan: planFromPriceId(priceId),
         stripe_subscription_id: sub.id,
         stripe_subscription_status: sub.status,
         stripe_price_id: priceId,
-      }).eq('id', userId)
+      }).eq('id', userId).select('id')
+      if (updateErr) {
+        log.error('subscription.created — update profiles échoué', { userId, sub_id: sub.id, err: updateErr.message })
+      } else if (!updated || updated.length === 0) {
+        log.error('subscription.created — aucune ligne profiles matchée', { userId, sub_id: sub.id })
+      }
       invalidateProfileCache(userId)
       break
     }
@@ -289,14 +300,22 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
         break
       }
       const userId = sub.metadata?.user_id
-      if (!userId) break
+      if (!userId) {
+        log.warn('subscription.updated sans user_id en metadata', { sub_id: sub.id })
+        break
+      }
       const priceId = sub.items.data[0]?.price?.id ?? ''
       const plan = sub.status === 'active' ? planFromPriceId(priceId) : 'decouverte'
-      await db.from('profiles').update({
+      const { data: updated, error: updateErr } = await db.from('profiles').update({
         plan,
         stripe_subscription_status: sub.status,
         stripe_price_id: priceId,
-      }).eq('id', userId)
+      }).eq('id', userId).select('id')
+      if (updateErr) {
+        log.error('subscription.updated — update profiles échoué', { userId, sub_id: sub.id, err: updateErr.message })
+      } else if (!updated || updated.length === 0) {
+        log.error('subscription.updated — aucune ligne profiles matchée', { userId, sub_id: sub.id })
+      }
       invalidateProfileCache(userId)
       break
     }

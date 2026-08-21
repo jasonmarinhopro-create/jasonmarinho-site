@@ -32,6 +32,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Signature invalide.' }, { status: 400 })
   }
 
+  log.info('event reçu', { event_id: event.id, type: event.type })
+
   const db = serviceClient()
 
   // Idempotence : Stripe garantit "at-least-once delivery", on saute si déjà traité
@@ -39,6 +41,7 @@ export async function POST(request: NextRequest) {
     .from('stripe_webhook_events')
     .insert({ event_id: event.id, type: event.type })
   if (insertErr && insertErr.code === '23505') {
+    log.info('event dupliqué, dispatch sauté', { event_id: event.id, type: event.type })
     return NextResponse.json({ received: true, duplicate: true })
   }
 
