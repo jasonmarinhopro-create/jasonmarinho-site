@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 19 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 21 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Réseau Wi-Fi invité en LCD : 6 étapes pour isoler ton réseau et sécuriser tes voyageurs</title>
+      <link>https://jasonmarinho.com/blog/reseau-wifi-invite-lcd-6-etapes-isoler-securiser</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/reseau-wifi-invite-lcd-6-etapes-isoler-securiser</guid>
+      <pubDate>Fri, 21 Aug 2026 08:00:00 GMT</pubDate>
+      <description>SSID invité, WPA3, isolation IoT, blocage P2P, communication au voyageur : 6 étapes concrètes pour créer un Wi-Fi invité sécurisé en location courte durée et te protéger juridiquement.</description>
+      <category>Automatisation</category>
+    </item>
     <item>
       <title>Réservation instantanée Airbnb : 6 critères pour trancher entre l&apos;activer ou la désactiver en 2026</title>
       <link>https://jasonmarinho.com/blog/reservation-instantanee-airbnb-activer-desactiver-2026</link>
@@ -398,14 +406,6 @@
       <pubDate>Mon, 04 May 2026 08:00:00 GMT</pubDate>
       <description>Note 4,8, taux de réponse 90 %, annulations sous 1 %, 10 séjours : les 4 critères du statut Superhost Airbnb 2026 et la méthode pour les valider sans stress.</description>
       <category>Visibilité</category>
-    </item>
-    <item>
-      <title>Accueillir une famille avec enfants en LCD : 15 équipements qui font la différence</title>
-      <link>https://jasonmarinho.com/blog/accueillir-famille-enfants-airbnb-equipement</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/accueillir-famille-enfants-airbnb-equipement</guid>
-      <pubDate>Sat, 25 Apr 2026 08:00:00 GMT</pubDate>
-      <description>Les familles avec enfants représentent 30% du marché LCD. Voici les 15 équipements qui les fidélisent et te démarquent dans les recherches &quot;logement famille&quot;.</description>
-      <category>Expérience</category>
     </item>
   </channel>
 </rss>

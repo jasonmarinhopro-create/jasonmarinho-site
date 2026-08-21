@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/webp" href="/favicon-jason.webp">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Réseau Wi-Fi invité en LCD : 6 étapes pour isoler ton réseau et sécuriser tes voyageurs | Jason Marinho</title>
+<meta name="description" content="SSID invité, WPA3, isolation IoT, blocage P2P, communication au voyageur : 6 étapes concrètes pour créer un Wi-Fi invité sécurisé en location courte durée et te protéger juridiquement.">
+<meta name="keywords" content="wifi invité airbnb, réseau invité LCD, SSID invité box, isoler wifi voyageurs, sécurité wifi location courte durée, responsabilité hôte téléchargement illégal, WPA3 wifi">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jasonmarinho.com/blog/reseau-wifi-invite-lcd-6-etapes-isoler-securiser">
+<meta property="og:title" content="Réseau Wi-Fi invité en LCD : 6 étapes pour isoler ton réseau et sécuriser tes voyageurs | Jason Marinho">
+<meta property="og:description" content="SSID invité, WPA3, isolation IoT, blocage P2P, communication au voyageur : 6 étapes concrètes pour créer un Wi-Fi invité sécurisé en location courte durée et te protéger juridiquement.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://jasonmarinho.com/blog/reseau-wifi-invite-lcd-6-etapes-isoler-securiser">
+<meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="article:published_time" content="2026-08-21">
+<meta property="article:author" content="Jason Marinho">
+<meta property="article:section" content="Automatisation">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
+<link rel="stylesheet" href="/fonts/site-fonts.css">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#004C3F;--gd:#003329;--gm:#005A4A;
+  --ol:#556B2F;--y:#FFD56B;--yw:#FFF8E1;
+  --cr:#F7F5F0;--w:#FDFCF9;
+  --td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;
+  --bd:rgba(0,76,63,.09);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.nav-logo-img{width:36px;height:36px;object-fit:contain;filter:brightness(0) invert(1);opacity:.9;flex-shrink:0}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,5vw,60px);background:rgba(0,51,41,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,213,107,.07);transition:box-shadow .3s}
+nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
+.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
+.n-logo svg{width:34px;height:34px;flex-shrink:0}
+.n-brand{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.2px;white-space:nowrap}
+.n-brand em{color:var(--y);font-style:italic;font-weight:300}
+.n-links{display:flex;align-items:center;gap:28px;list-style:none}
+.n-links a{color:rgba(255,255,255,.5);text-decoration:none;font-size:14px;transition:color .2s}
+.n-links a:hover{color:#fff}
+.n-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nb-o{font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.18);background:transparent;padding:8px 15px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap}
+.nb-o:hover{border-color:rgba(255,255,255,.42);color:#fff}
+.nb-c{font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:var(--gd);background:var(--y);padding:8px 16px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap}
+.nb-c:hover{background:#ffe08f;transform:translateY(-1px)}
+.hbg{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
+.hbg span{display:block;height:2px;background:rgba(255,255,255,.8);border-radius:2px;transition:.3s}
+.hbg span:nth-child(1){width:22px}
+.hbg span:nth-child(2){width:16px}
+.hbg span:nth-child(3){width:20px}
+.mob-menu{display:none;position:fixed;top:64px;left:0;right:0;background:var(--gd);border-bottom:1px solid rgba(255,213,107,.08);padding:16px clamp(16px,5vw,60px) 20px;z-index:199;flex-direction:column}
+.mob-menu.open{display:flex}
+.mob-menu a{font-size:15px;color:rgba(255,255,255,.55);text-decoration:none;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:10px;transition:color .2s}
+.mob-menu a:hover{color:#fff}
+.mob-menu a:last-of-type{border-bottom:none}
+.mob-ctas{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.05)}
+.mob-ctas a{flex:1;justify-content:center;font-size:14px;font-weight:500;text-decoration:none;padding:12px 0;border-radius:9px;display:flex;align-items:center;gap:5px}
+.mc-o{background:rgba(255,255,255,.05);color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.12)}
+.mc-c{background:var(--y);color:var(--gd)!important;font-weight:600}
+.btn-p{background:var(--y);color:var(--gd);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px 26px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,213,107,.28)}
+.lbl{font-size:10.5px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--ol);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.lbl.lt{color:rgba(255,213,107,.5)}
+.lbl.ct{justify-content:center}
+.lbl::before{content:'';width:18px;height:2px;background:currentColor;border-radius:2px}
+.h2{font-family:'Fraunces',serif;font-size:clamp(30px,3.8vw,50px);font-weight:300;line-height:1.1;letter-spacing:-1.5px;color:var(--td);margin-bottom:14px}
+.h2 em{font-style:italic;color:var(--g)}
+.h2.lt{color:#fff}.h2.lt em{color:var(--y)}
+.h2.ct{text-align:center}
+.sub{font-size:16px;font-weight:300;color:var(--tm);line-height:1.72;max-width:440px;margin-bottom:48px}
+.sub.lt{color:rgba(255,255,255,.38)}
+.sub.ct{text-align:center;margin-left:auto;margin-right:auto}
+.cta-s{background:var(--g);padding:clamp(64px,8vw,88px) clamp(16px,5vw,60px);text-align:center;position:relative;overflow:hidden}
+.cta-gw{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:640px;height:300px;background:radial-gradient(ellipse,rgba(255,213,107,.06) 0%,transparent 65%);pointer-events:none}
+.cta-in{max-width:520px;margin:0 auto;position:relative;z-index:2}
+.cta-fm{display:flex;gap:10px;margin:28px auto 0;max-width:420px}
+.cta-i{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:13px 16px;font-size:14.5px;font-weight:300;color:#fff;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s;min-width:0}
+.cta-i::placeholder{color:rgba(255,255,255,.28)}
+.cta-i:focus{border-color:rgba(255,213,107,.45)}
+.cta-n{font-size:11.5px;color:rgba(255,255,255,.22);margin-top:12px;font-weight:300;display:flex;align-items:center;justify-content:center;gap:5px}
+.cta-n i{font-size:12px}
+footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28px;border-top:1px solid rgba(255,213,107,.05)}
+.ft-in{max-width:1200px;margin:0 auto}
+.ft-g{display:grid;grid-template-columns:1.7fr 1fr 1fr 1fr;gap:clamp(28px,4vw,48px);margin-bottom:48px}
+.ft-desc{font-size:13px;font-weight:300;color:rgba(255,255,255,.26);line-height:1.7;margin-top:14px;max-width:230px}
+.ft-ct{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,213,107,.28);margin-bottom:15px}
+.ft-ls{list-style:none;display:flex;flex-direction:column;gap:10px}
+.ft-ls a{font-size:13px;font-weight:300;color:rgba(255,255,255,.26);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s}
+.ft-ls a i{font-size:13px;opacity:.6}
+.ft-ls a:hover{color:rgba(255,255,255,.65)}
+.ft-bot{display:flex;justify-content:space-between;align-items:center;padding-top:22px;border-top:1px solid rgba(255,255,255,.04);flex-wrap:wrap;gap:12px}
+.ft-cp{font-size:12px;color:rgba(255,255,255,.16);font-weight:300}
+.socs{display:flex;gap:7px}
+.soc{width:32px;height:32px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:7px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:rgba(255,255,255,.3);transition:all .2s}
+.soc i{font-size:15px}
+.soc:hover{background:rgba(255,255,255,.09);color:#fff}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.rv.in{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+@media(max-width:1024px){
+  .n-links,.n-right{display:none}
+  .hbg{display:flex}
+  .ft-g{grid-template-columns:1fr 1fr;gap:32px}
+}
+@media(max-width:640px){
+  .cta-fm{flex-direction:column}
+  .cta-fm .btn-p{justify-content:center}
+  .ft-g{grid-template-columns:1fr;gap:28px}
+  .ft-desc{max-width:100%}
+  .ft-bot{flex-direction:column;align-items:flex-start}
+}
+</style>
+<style>
+.art-hero{background:var(--gd);padding:clamp(100px,14vw,130px) clamp(16px,5vw,60px) clamp(48px,6vw,64px);position:relative;overflow:hidden}
+.art-hero .ah-g{position:absolute;top:-15%;right:-10%;width:480px;height:480px;background:radial-gradient(circle,rgba(0,107,88,.28) 0%,transparent 65%);border-radius:50%;pointer-events:none}
+.art-hero .ah-g2{position:absolute;bottom:-15%;left:-8%;width:340px;height:340px;background:radial-gradient(circle,rgba(85,107,47,.15) 0%,transparent 65%);border-radius:50%;pointer-events:none}
+.art-hero-in{position:relative;z-index:2;max-width:760px;margin:0 auto}
+.art-cat{font-size:11px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--y);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.art-cat::before{content:"";display:inline-block;width:22px;height:2px;background:var(--g);border-radius:2px}
+.art-title{font-family:'Fraunces',serif;font-size:clamp(28px,4.2vw,52px);font-weight:300;line-height:1.1;letter-spacing:-1.5px;color:#fff;margin-bottom:20px}
+.art-title em{font-style:italic;color:var(--y)}
+.art-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.art-meta span{font-size:12px;color:rgba(255,255,255,.42);display:flex;align-items:center;gap:5px}
+.art-body{max-width:760px;margin:0 auto;padding:clamp(40px,6vw,64px) clamp(16px,5vw,60px)}
+.art-lead{font-size:clamp(16px,1.5vw,18px);font-weight:300;color:var(--tm);line-height:1.8;margin-bottom:28px;border-left:3px solid var(--g);padding-left:18px}
+.art-h2{font-family:'Fraunces',serif;font-size:clamp(20px,2.2vw,26px);font-weight:400;color:var(--td);letter-spacing:-.3px;margin:36px 0 12px}
+.art-p{font-size:15px;font-weight:300;color:var(--tm);line-height:1.8;margin-bottom:16px}
+.art-ul{padding-left:0;margin:0 0 20px;list-style:none}
+.art-ul li{font-size:15px;font-weight:300;color:var(--tm);line-height:1.7;padding:6px 0 6px 24px;position:relative;border-bottom:1px solid var(--bd)}
+.art-ul li:last-child{border-bottom:none}
+.art-ul li::before{content:"";position:absolute;left:0;top:14px;width:8px;height:8px;background:var(--g);border-radius:50%;opacity:.7}
+.art-tip{background:rgba(0,76,63,.06);border:1px solid rgba(0,76,63,.12);border-left:3px solid var(--g);border-radius:10px;padding:16px 18px;margin:20px 0;display:flex;align-items:flex-start;gap:10px;font-size:14px;font-weight:300;color:var(--tm);line-height:1.65}
+.art-tip i{color:var(--g);font-size:18px;flex-shrink:0;margin-top:1px}
+.art-cta-box{background:var(--gd);border-radius:14px;padding:clamp(24px,3vw,32px);margin:32px 0;text-align:center}
+.art-cta-box p{font-size:15px;font-weight:300;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:18px}
+.related-sec{background:var(--cr);padding:clamp(40px,6vw,64px) clamp(16px,5vw,60px)}
+.related-in{max-width:760px;margin:0 auto}
+.rel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}
+.rel-card{background:var(--w);border:1px solid var(--bd);border-radius:12px;overflow:hidden;text-decoration:none;transition:transform .2s,box-shadow .2s;display:block}
+.rel-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,76,63,.08)}
+@media(max-width:640px){.rel-grid{grid-template-columns:1fr!important}}
+</style>
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Accueil",
+        "item": "https://jasonmarinho.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Blog",
+        "item": "https://jasonmarinho.com/blog"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Réseau Wi-Fi invité en LCD : 6 étapes pour isoler ton réseau et sécuriser tes voyageurs",
+        "item": "https://jasonmarinho.com/blog/reseau-wifi-invite-lcd-6-etapes-isoler-securiser"
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Réseau Wi-Fi invité en LCD : 6 étapes pour isoler ton réseau et sécuriser tes voyageurs",
+    "description": "SSID invité, WPA3, isolation IoT, blocage P2P, communication au voyageur : 6 étapes concrètes pour créer un Wi-Fi invité sécurisé en location courte durée et te protéger juridiquement.",
+    "author": {
+      "@type": "Person",
+      "name": "Jason Marinho",
+      "url": "https://jasonmarinho.com/qui-suis-je"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Jason Marinho",
+      "url": "https://jasonmarinho.com"
+    },
+    "datePublished": "2026-08-21",
+    "dateModified": "2026-08-21",
+    "url": "https://jasonmarinho.com/blog/reseau-wifi-invite-lcd-6-etapes-isoler-securiser",
+    "articleSection": "Automatisation",
+    "keywords": "wifi invité airbnb, réseau invité LCD, SSID invité box, isoler wifi voyageurs, sécurité wifi location courte durée, responsabilité hôte téléchargement illégal, WPA3 wifi",
+    "inLanguage": "fr-FR",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://jasonmarinho.com/blog/reseau-wifi-invite-lcd-6-etapes-isoler-securiser"
+    }
+  }
+]
+</script>
+<script defer src="https://va.vercel-scripts.com/v1/script.js"></script>
+<script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
+</head>
+<body>
+<script src="/nav.js"></script>
+<section class="art-hero">
+  <div class="ah-g"></div>
+  <div class="ah-g2"></div>
+  <div class="art-hero-in">
+    <a href="/blog" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.4);text-decoration:none;margin-bottom:20px;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.4)'">
+      <i class="ph ph-arrow-left"></i> Retour au blog
+    </a>
+    <div class="art-cat">Automatisation</div>
+    <h1 class="art-title">Réseau Wi-Fi invité en LCD : 6 étapes pour isoler ton réseau et sécuriser tes voyageurs</h1>
+    <div class="art-meta">
+      <span><i class="ph ph-clock"></i> 7 min de lecture</span>
+      <span><i class="ph ph-calendar"></i> Août 2026</span>
+      <span><i class="ph ph-user"></i> Jason Marinho</span>
+    </div>
+  </div>
+</section>
+
+<div class="art-body">
+<p class="art-lead">Ta box internet accueille tes voyageurs comme elle accueillerait un cousin de passage : mot de passe unique, accès complet au réseau, aux imprimantes et parfois même aux caméras de la maison. En LCD, ce fonctionnement est un risque juridique et une porte ouverte à des usages qui engagent directement ta responsabilité d'abonné internet. Voici 6 étapes concrètes pour créer un réseau Wi-Fi invité isolé, propre et sécurisé, sans changer de matériel dans 90 % des cas.</p>
+<h2 class="art-h2">1. Comprends les vrais risques d'un Wi-Fi partagé avec tes voyageurs</h2>
+<p class="art-p">Quand ton voyageur se connecte à ton réseau Wi-Fi principal, il partage la même adresse IP publique que toi et se trouve sur le même sous-réseau local que tous tes appareils. Concrètement, il peut découvrir ta box, tes imprimantes, ton NAS de sauvegarde et parfois même les caméras que tu utilises pour la sécurité de ton logement. Le pire n'est pas là : en cas de téléchargement illégal ou de fraude commise depuis ta connexion, c'est ton nom d'abonné qui remonte auprès de l'Arcom et des ayants droit.</p>
+<p class="art-p">La responsabilité de l'abonné internet en France est encadrée par le mécanisme dit de "défaut de sécurisation" de la connexion. Autrement dit, si tu ne peux pas prouver que tu as sécurisé ta ligne, tu peux être tenu responsable des usages faits depuis ton IP, même par un tiers. Un réseau invité isolé est justement l'élément qui te protège juridiquement, au même titre qu'un règlement intérieur clair sur les usages du logement. Si tu veux compléter la vision sur les autres équipements sensibles à installer proprement, jette un œil au guide sur les <a href="/blog/videosurveillance-lcd-6-regles-cameras-legalite" style="color:var(--g);font-weight:500">6 règles de vidéosurveillance légale en location courte durée</a>.</p>
+<ul class="art-ul"><li>Accès potentiel à tes imprimantes, NAS et objets connectés perso</li><li>Ton IP publique engagée en cas de fraude ou piratage</li><li>Défaut de sécurisation de ligne opposable devant les ayants droit</li><li>Impossibilité de couper le voyageur sans couper aussi ta propre connexion</li></ul>
+<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Le simple fait d'avoir configuré un réseau invité isolé, documenté et communiqué au voyageur constitue une preuve de sécurisation. C'est un vrai bouclier juridique, pas juste un confort technique.</span></div>
+<h2 class="art-h2">2. Vérifie si ta box propose déjà un réseau invité natif</h2>
+<p class="art-p">Avant d'acheter quoi que ce soit, connecte-toi à l'interface de ta box : la majorité des box grand public françaises embarquent nativement une fonction réseau invité, sous des noms différents. Chez Orange, la Livebox affiche "Wi-Fi Extra" dans les paramètres Wi-Fi. Chez Free, la Freebox propose "Wi-Fi partagé" ou un SSID secondaire configurable. Chez SFR, la Box 8 permet d'activer un "Wi-Fi Guest" en deux clics. Chez Bouygues, la Bbox propose un "Wi-Fi invité" avec bande passante limitée et isolation par défaut.</p>
+<p class="art-p">Si ta box est trop ancienne pour proposer cette fonction, tu as deux options : demander gratuitement le remplacement de la box auprès de ton opérateur (souvent accordé après quelques années d'ancienneté), ou brancher un routeur secondaire type TP-Link, Asus ou UniFi derrière ta box existante. Le second choix est plus flexible et te permet aussi d'améliorer la couverture dans un logement à étages. Pour comprendre les débits à viser en amont, relis le guide sur les <a href="/blog/wifi-location-courte-duree-debit-equipement-avis" style="color:var(--g);font-weight:500">6 actions pour un Wi-Fi qui booste tes avis voyageurs</a>.</p>
+<ul class="art-ul"><li>Livebox Orange : "Wi-Fi Extra" dans Paramètres Wi-Fi</li><li>Freebox : "Wi-Fi partagé" ou SSID secondaire dédié</li><li>SFR Box : "Wi-Fi Guest" activable depuis l'app SFR</li><li>Bbox Bouygues : "Wi-Fi invité" avec isolation par défaut</li><li>Box ancienne : routeur secondaire type TP-Link Archer ou UniFi</li></ul>
+<h2 class="art-h2">3. Configure ton SSID invité proprement : nom, mot de passe, chiffrement</h2>
+<p class="art-p">Le SSID invité est le nom du réseau que ton voyageur va voir dans la liste des Wi-Fi disponibles. Évite les noms techniques ou anonymisés type "Guest_1234" qui font douter le voyageur : préfère un nom clair et rassurant qui reprend ton logement, par exemple "Appartement Marina" ou "Chalet Belledonne". Un nom bien choisi diminue le taux de messages "Je ne trouve pas le bon Wi-Fi" au check-in, un des messages les plus fréquents la première heure.</p>
+<p class="art-p">Sur le chiffrement, sélectionne impérativement WPA2 au minimum, ou WPA3 si ta box et les appareils voyageurs le supportent. N'active jamais un réseau ouvert sans mot de passe, même par facilité : un Wi-Fi ouvert est immédiatement scanné par les outils automatisés et te fait porter la responsabilité complète des usages. Le mot de passe doit rester unique par logement, avoir au moins 12 caractères mélangeant lettres, chiffres et un symbole, et être imprimé dans le livret d'accueil pour éviter les erreurs de saisie.</p>
+<ul class="art-ul"><li>Nom de réseau qui reprend clairement le nom du logement</li><li>Chiffrement WPA2 minimum, WPA3 si compatible</li><li>Mot de passe de 12 caractères minimum, unique par logement</li><li>Jamais de réseau ouvert sans mot de passe</li><li>Mot de passe imprimé dans le livret et affiché près du canapé ou de la box</li></ul>
+<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Change le mot de passe du réseau invité une à deux fois par an ou après un séjour problématique. Tu conserves la traçabilité par période et tu coupes proprement l'accès aux anciens voyageurs sans toucher à ton propre réseau.</span></div>
+<h2 class="art-h2">4. Isole ton réseau perso et tes objets connectés du réseau voyageurs</h2>
+<p class="art-p">C'est le cœur du sujet : l'isolation client-à-client (souvent appelée AP isolation) empêche les appareils connectés au réseau invité de communiquer entre eux et surtout d'atteindre ton réseau principal. Cette option est presque toujours présente dans l'interface de ta box mais rarement activée par défaut. Cherche une case type "Isoler les clients du réseau invité", "AP isolation" ou "Guest network isolation" et coche-la. Sans cette étape, les deux SSID cohabitent mais ne cloisonnent rien.</p>
+<p class="art-p">Vérifie ensuite que tes objets connectés perso, tes caméras intérieures autorisées et ton assistant vocal sont bien branchés sur le réseau principal, pas sur le réseau invité. Une caméra visible du voyageur doit rester sur ton réseau perso pour que lui ne puisse pas la voir dans le voisinage réseau, et pour que tu puisses toi continuer à la consulter à distance. C'est cohérent avec ta démarche générale de séparation domicile et logement loué, dans la lignée de l'analyse sur les <a href="/blog/capteurs-iot-lcd-bruit-temperature-utile-ou-pas" style="color:var(--g);font-weight:500">capteurs IoT utiles ou pas en LCD</a>.</p>
+<ul class="art-ul"><li>AP isolation activée sur le SSID invité</li><li>NAS, imprimante, disques réseau restent sur le SSID principal</li><li>Caméras autorisées branchées sur le réseau perso, pas sur l'invité</li><li>Assistant vocal type Alexa ou Google Home isolé du voyageur</li><li>Test rapide : depuis ton téléphone connecté à l'invité, tu ne dois voir aucun de tes appareils</li></ul>
+<h2 class="art-h2">5. Bloque les usages qui engagent ta responsabilité d'hôte</h2>
+<p class="art-p">Certains usages sont pénalisés par la loi française et remontent directement à l'abonné de la ligne : téléchargement de contenus protégés par le droit d'auteur via BitTorrent, partage de flux TV pirates, accès à des services de streaming illégaux. La plupart des box modernes intègrent un contrôle parental ou un filtrage par catégories : active-le sur le SSID invité seulement, sans affecter ton propre réseau. Chez Free et Orange, tu peux bloquer les protocoles P2P sur le Wi-Fi partagé sans installer de matériel supplémentaire.</p>
+<p class="art-p">Ajoute dans ton livret d'accueil et ton règlement intérieur une clause claire : le Wi-Fi est fourni pour un usage personnel et légal, le téléchargement illégal ou le partage de contenus piratés est interdit et engagerait la responsabilité du voyageur. Cette clause a une vraie valeur en cas de litige ultérieur avec un ayant droit : tu prouves que tu as informé et cadré l'usage. C'est le pendant technique de ce qui est expliqué côté équipement TV dans le guide sur les <a href="/blog/tv-streaming-lcd-6-regles-equiper-compte-pirate-voyageur" style="color:var(--g);font-weight:500">6 règles pour équiper ta TV sans te faire pirater tes comptes streaming</a>.</p>
+<ul class="art-ul"><li>Blocage P2P et BitTorrent activé sur le SSID invité</li><li>Filtrage des sites de streaming pirate via le contrôle parental de la box</li><li>Clause écrite dans le livret et le règlement intérieur</li><li>Log des connexions conservé au minimum 12 mois si ta box le permet</li></ul>
+<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>Si tu reçois un signalement de l'Arcom pour un usage suspect sur ta ligne, la combinaison "réseau invité isolé + clause livret + filtrage P2P" est ta meilleure ligne de défense pour démontrer que tu as sécurisé la connexion.</span></div>
+<h2 class="art-h2">6. Communique le bon Wi-Fi au voyageur pour éviter les messages inutiles</h2>
+<p class="art-p">Un réseau invité parfaitement configuré ne sert à rien si le voyageur se connecte par erreur à ton SSID principal ou passe 20 minutes à chercher le mot de passe. Le combo qui marche partout : mot de passe affiché dans un cadre discret à côté de la box ou du salon, mention dans le livret d'accueil digital, message automatique de bienvenue le jour du check-in avec le nom exact du réseau et le mot de passe. Cette redondance élimine 90 % des questions Wi-Fi qui polluent les premières heures.</p>
+<p class="art-p">Profite aussi de ta fiche Google Business Profile : mentionne "Wi-Fi haut débit sécurisé" dans les services et réponds à toutes les questions du type "Y a-t-il un Wi-Fi ?" par un oui explicite. C'est un signal qui pèse à la fois pour l'algorithme et pour les voyageurs qui préparent leur venue, notamment en amont d'un séjour direct. C'est exactement le type de finition qui différencie un logement qui pilote sa <a href="/services/reservation-directe" style="color:var(--g);font-weight:500">réservation directe sans commission</a> d'un logement resté sur le pilotage automatique des OTA.</p>
+<ul class="art-ul"><li>Mot de passe affiché à côté du canapé ou de la box</li><li>Fiche Wi-Fi dans le livret d'accueil digital, page dédiée</li><li>Message automatique jour du check-in avec réseau et mot de passe</li><li>Mention "Wi-Fi haut débit sécurisé" sur ta fiche Google Business</li><li>Ton propre SSID caché ou renommé sans référence évidente au logement</li></ul>
+<p class="art-p">Une fois ces 6 étapes en place, tu as un réseau invité propre, isolé de tes appareils perso, protégé contre les usages illégaux et clairement communiqué au voyageur. Tu as réduit ta surface de risque juridique, éliminé une bonne partie des messages Wi-Fi post check-in et tu as un vrai levier de différenciation quand un télétravailleur ou une famille compare ton annonce à celle du voisin.</p>
+<div class="art-cta-box"><p>Tu veux aller plus loin sur la mise en place des équipements et l'acquisition directe sans commission ?</p><a href="/services/formations" class="btn-p">Découvrir les formations LCD <i class="ph-bold ph-arrow-right"></i></a></div>
+</div>
+
+<section class="related-sec">
+  <div class="related-in">
+    <div class="lbl rv">Continuer la lecture</div>
+    <h2 style="font-family:'Fraunces',serif;font-size:clamp(20px,2.2vw,24px);font-weight:400;color:var(--td);margin-bottom:0;letter-spacing:-.2px">Articles similaires</h2>
+    <div class="rel-grid">
+      <a href="/blog/wifi-location-courte-duree-debit-equipement-avis" class="rel-card"><div style="height:6px;background:var(--ol);border-radius:6px 6px 0 0"></div><div style="padding:16px"><div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ol);margin-bottom:6px">Expérience</div><p style="font-family:'Fraunces',serif;font-size:15px;font-weight:400;color:var(--td);line-height:1.35;margin:0">WiFi en LCD : 6 actions pour une connexion qui booste tes avis voyageurs</p></div></a><a href="/blog/videosurveillance-lcd-6-regles-cameras-legalite" class="rel-card"><div style="height:6px;background:var(--ol);border-radius:6px 6px 0 0"></div><div style="padding:16px"><div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ol);margin-bottom:6px">Réglementation</div><p style="font-family:'Fraunces',serif;font-size:15px;font-weight:400;color:var(--td);line-height:1.35;margin:0">Vidéosurveillance en LCD : 6 règles pour rester dans la légalité</p></div></a><a href="/blog/tv-streaming-lcd-6-regles-equiper-compte-pirate-voyageur" class="rel-card"><div style="height:6px;background:var(--ol);border-radius:6px 6px 0 0"></div><div style="padding:16px"><div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ol);margin-bottom:6px">Expérience</div><p style="font-family:'Fraunces',serif;font-size:15px;font-weight:400;color:var(--td);line-height:1.35;margin:0">TV et streaming en LCD : équiper sans te faire pirater tes comptes</p></div></a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-s" id="contact">
+  <div class="cta-gw"></div>
+  <div class="cta-in">
+    <div class="lbl lt ct rv" style="justify-content:center">Newsletter</div>
+    <h2 class="h2 lt ct rv">Rejoins la communauté<br><em>des hôtes qui progressent</em></h2>
+    <p class="sub lt ct rv" style="margin-bottom:0;max-width:380px">Conseils LCD, ressources et outils pratiques dans ta boîte mail chaque semaine.</p>
+    <div class="cta-fm rv" id="brevo-form">
+      <input type="email" id="brevo-email" class="cta-i" placeholder="ton@email.com" aria-label="Email" autocomplete="email">
+      <button class="btn-p" id="brevo-submit" onclick="subscriberBrevo(event)">S'inscrire <i class="ph-bold ph-arrow-right"></i></button>
+    </div>
+    <p id="brevo-msg" style="display:none;font-size:13px;margin-top:10px;color:var(--y)"></p>
+    <p class="cta-n"><i class="ph ph-lock"></i> Aucun spam. Désinscription en un clic.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<script src="/footer.js"></script>
+<script>
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
+</script>
+<script>
+function subscriberBrevo(e) {
+  e.preventDefault();
+  var email = document.getElementById('brevo-email').value;
+  var msg = document.getElementById('brevo-msg');
+  var btn = document.getElementById('brevo-submit');
+  if (!email || !email.includes('@')) {
+    msg.textContent = 'Saisis une adresse email valide.';
+    msg.style.color = '#FFD56B';
+    msg.style.display = 'block';
+    return;
+  }
+  btn.textContent = 'Envoi...';
+  btn.disabled = true;
+  fetch('/api/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})}).then(function(r){
+    if(r.ok||r.status===204){
+      msg.textContent='✓ Bienvenue ! Vérifie ta boîte mail.';
+      msg.style.color='#FFD56B';
+      msg.style.display='block';
+      document.getElementById('brevo-email').value='';
+    }else{
+      msg.textContent='Déjà inscrit ou erreur : réessaie.';
+      msg.style.color='rgba(255,255,255,.6)';
+      msg.style.display='block';
+    }
+    btn.textContent="S'inscrire";
+    btn.disabled=false;
+  }).catch(function(){
+    msg.textContent='Erreur réseau : réessaie.';
+    msg.style.color='rgba(255,255,255,.6)';
+    msg.style.display='block';
+    btn.textContent="S'inscrire";
+    btn.disabled=false;
+  });
+}
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add("in")}),{threshold:.08,rootMargin:"0px 0px -28px 0px"});
+document.querySelectorAll(".rv").forEach(el=>obs.observe(el));
+</script>
+<script src="/cookie-banner.js" defer></script>
+</body>
+</html>
