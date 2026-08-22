@@ -38,8 +38,8 @@ export function buildAuthorizeUrl(redirectUri: string, state: string): string {
     'pages_manage_posts',
     'pages_read_engagement',
     'pages_show_list',
-    'instagram_basic',
-    'instagram_content_publish',
+    'instagram_business_basic',
+    'instagram_business_content_publish',
     'business_management',
   ].join(',')
   const url = new URL(`https://www.facebook.com/${API_VERSION}/dialog/oauth`)
