@@ -195,3 +195,32 @@ export async function publishToInstagram(igUserId: string, pageAccessToken: stri
 
   return published.id
 }
+
+// ── Stats d'engagement ────────────────────────────────────────────
+
+export interface PostInsights {
+  likeCount: number
+  commentCount: number
+}
+
+export async function getFacebookPostInsights(postId: string, pageAccessToken: string): Promise<PostInsights> {
+  const json = await graphFetch(`/${postId}`, {
+    access_token: pageAccessToken,
+    fields: 'likes.summary(true).limit(0),comments.summary(true).limit(0)',
+  })
+  return {
+    likeCount: json.likes?.summary?.total_count ?? 0,
+    commentCount: json.comments?.summary?.total_count ?? 0,
+  }
+}
+
+export async function getInstagramMediaInsights(mediaId: string, pageAccessToken: string): Promise<PostInsights> {
+  const json = await graphFetch(`/${mediaId}`, {
+    access_token: pageAccessToken,
+    fields: 'like_count,comments_count',
+  })
+  return {
+    likeCount: json.like_count ?? 0,
+    commentCount: json.comments_count ?? 0,
+  }
+}

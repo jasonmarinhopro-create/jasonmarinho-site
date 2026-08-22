@@ -6,8 +6,9 @@ import Image from 'next/image'
 import {
   FacebookLogo, InstagramLogo, PinterestLogo, LinkedinLogo, XLogo,
   Plus, ArrowClockwise, X, CheckCircle, XCircle, Clock, UploadSimple, ImageSquare,
+  Heart, ChatCircle, CalendarBlank, PencilSimple, Check,
 } from '@phosphor-icons/react/dist/ssr'
-import { createSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia } from './actions'
+import { createSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, setSocialCadence } from './actions'
 
 export interface SocialAccountRow {
   id: string
@@ -27,6 +28,46 @@ export interface SocialPostTargetRow {
   external_post_id: string | null
   error: string | null
   published_at: string | null
+  body_override: string | null
+  like_count: number | null
+  comment_count: number | null
+  stats_updated_at: string | null
+}
+
+export interface CadenceConfig {
+  weekdays: number[] // ISO : 1 = lundi ... 7 = dimanche
+  timeOfDay: string  // "HH:MM"
+}
+
+const WEEKDAY_LABELS: Array<{ iso: number; label: string }> = [
+  { iso: 1, label: 'Lun' }, { iso: 2, label: 'Mar' }, { iso: 3, label: 'Mer' },
+  { iso: 4, label: 'Jeu' }, { iso: 5, label: 'Ven' }, { iso: 6, label: 'Sam' }, { iso: 7, label: 'Dim' },
+]
+
+// Prochain créneau qui matche la cadence, dans le futur, et qui n'entre pas
+// en collision avec un post déjà programmé (± 1 min).
+function nextFreeSlot(cadence: CadenceConfig, existingScheduled: string[]): Date | null {
+  if (cadence.weekdays.length === 0) return null
+  const [h, m] = cadence.timeOfDay.split(':').map(Number)
+  const taken = new Set(existingScheduled.map(iso => Math.floor(new Date(iso).getTime() / 60000)))
+  const now = new Date()
+  for (let i = 0; i < 21; i++) {
+    const candidate = new Date(now)
+    candidate.setDate(candidate.getDate() + i)
+    candidate.setHours(h, m, 0, 0)
+    const isoDay = candidate.getDay() === 0 ? 7 : candidate.getDay()
+    if (!cadence.weekdays.includes(isoDay)) continue
+    if (candidate.getTime() <= now.getTime()) continue
+    if (taken.has(Math.floor(candidate.getTime() / 60000))) continue
+    return candidate
+  }
+  return null
+}
+
+// Format compatible avec la valeur d'un <input type="datetime-local"> (heure locale, sans timezone).
+function toDatetimeLocalValue(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
 
 export interface SocialPostRow {
@@ -50,7 +91,7 @@ const PLATFORM_META: Record<string, { label: string; Icon: React.ElementType; co
 const IMPLEMENTED_PLATFORMS = ['facebook', 'instagram']
 const ALL_PLATFORMS = ['instagram', 'facebook', 'pinterest', 'x', 'linkedin']
 
-export default function SocialAdmin({ accounts, posts }: { accounts: SocialAccountRow[]; posts: SocialPostRow[] }) {
+export default function SocialAdmin({ accounts, posts, cadence }: { accounts: SocialAccountRow[]; posts: SocialPostRow[]; cadence: CadenceConfig | null }) {
   const searchParams = useSearchParams()
   const router = useRouter()
   const metaConnected = searchParams.get('meta_connected')
@@ -68,12 +109,41 @@ export default function SocialAdmin({ accounts, posts }: { accounts: SocialAccou
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
+  const [showPerNetworkText, setShowPerNetworkText] = useState(false)
+  const [bodyOverrides, setBodyOverrides] = useState<Record<string, string>>({})
+
+  const [editingCadence, setEditingCadence] = useState(false)
+  const [cadenceWeekdays, setCadenceWeekdays] = useState<number[]>(cadence?.weekdays ?? [1, 3, 5])
+  const [cadenceTime, setCadenceTime] = useState(cadence?.timeOfDay ?? '18:00')
+
   const activeAccounts = accounts.filter(a => a.status === 'active')
   const byPlatform = (p: string) => activeAccounts.filter(a => a.platform === p)
   const activePreview = previewPlatform && platforms.includes(previewPlatform) ? previewPlatform : platforms[0]
 
   const upcoming = posts.filter(p => p.status === 'scheduled')
   const history = posts.filter(p => p.status !== 'scheduled')
+
+  const freeSlot = cadence ? nextFreeSlot(cadence, upcoming.map(p => p.scheduled_at!).filter(Boolean)) : null
+
+  function applyFreeSlot() {
+    if (!freeSlot) return
+    setScheduleMode('later')
+    setScheduledAt(toDatetimeLocalValue(freeSlot))
+  }
+
+  function saveCadence() {
+    startTransition(async () => {
+      const result = await setSocialCadence({ weekdays: cadenceWeekdays, timeOfDay: cadenceTime })
+      if (!result.error) { setEditingCadence(false); router.refresh() }
+    })
+  }
+
+  function refreshStats(postId: string) {
+    startTransition(async () => {
+      await refreshPostStats(postId)
+      router.refresh()
+    })
+  }
 
   function togglePlatform(p: string) {
     if (!IMPLEMENTED_PLATFORMS.includes(p) || byPlatform(p).length === 0) return
@@ -113,6 +183,7 @@ export default function SocialAdmin({ accounts, posts }: { accounts: SocialAccou
         body,
         mediaUrls,
         platforms,
+        bodyOverrides,
         scheduledAt: scheduleMode === 'later' && scheduledAt ? new Date(scheduledAt).toISOString() : null,
       })
       if (result.error) {
@@ -121,6 +192,8 @@ export default function SocialAdmin({ accounts, posts }: { accounts: SocialAccou
         setBody('')
         setMediaUrls([])
         setPlatforms([])
+        setBodyOverrides({})
+        setShowPerNetworkText(false)
         setScheduleMode('now')
         setScheduledAt('')
         router.refresh()
@@ -265,7 +338,74 @@ export default function SocialAdmin({ accounts, posts }: { accounts: SocialAccou
             rows={5}
             style={s.textarea}
           />
-          <span style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>{body.length} caractères</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>{body.length} caractères</span>
+            {platforms.length > 0 && (
+              <button type="button" onClick={() => setShowPerNetworkText(v => !v)} style={s.linkBtn}>
+                {showPerNetworkText ? 'Masquer' : 'Personnaliser'} le texte par réseau
+              </button>
+            )}
+          </div>
+
+          {showPerNetworkText && platforms.map(p => {
+            const meta = PLATFORM_META[p]
+            return (
+              <div key={p} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600, color: meta.color }}>
+                  <meta.Icon size={14} weight="fill" /> {meta.label}
+                </span>
+                <textarea
+                  value={bodyOverrides[p] ?? ''}
+                  onChange={e => setBodyOverrides(prev => ({ ...prev, [p]: e.target.value }))}
+                  placeholder={`Texte spécifique à ${meta.label} (sinon le texte ci-dessus est utilisé)`}
+                  rows={2}
+                  style={s.textarea}
+                />
+              </div>
+            )
+          })}
+
+          {/* Cadence */}
+          <div style={s.cadenceBox}>
+            {editingCadence ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' as const }}>
+                  {WEEKDAY_LABELS.map(({ iso, label }) => {
+                    const active = cadenceWeekdays.includes(iso)
+                    return (
+                      <button
+                        key={iso}
+                        type="button"
+                        onClick={() => setCadenceWeekdays(prev => active ? prev.filter(d => d !== iso) : [...prev, iso].sort())}
+                        style={{ ...s.dayChip, ...(active ? { background: 'var(--accent-text)', color: 'var(--bg)', borderColor: 'var(--accent-text)' } : {}) }}
+                      >
+                        {label}
+                      </button>
+                    )
+                  })}
+                  <input type="time" value={cadenceTime} onChange={e => setCadenceTime(e.target.value)} style={s.input} />
+                </div>
+                <button type="button" onClick={saveCadence} disabled={isPending} style={s.smallBtn}>
+                  <Check size={13} /> Enregistrer la cadence
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' as const }}>
+                <CalendarBlank size={15} style={{ color: 'var(--text-muted)' }} />
+                <span style={{ fontSize: 13 }}>
+                  Cadence {cadence ? <strong>{WEEKDAY_LABELS.filter(w => cadence.weekdays.includes(w.iso)).map(w => w.label).join(' · ')} à {cadence.timeOfDay}</strong> : <span style={{ color: 'var(--text-muted)' }}>non définie</span>}
+                </span>
+                <button type="button" onClick={() => setEditingCadence(true)} style={s.linkBtn}>
+                  <PencilSimple size={12} /> Modifier
+                </button>
+                {freeSlot && (
+                  <button type="button" onClick={applyFreeSlot} style={s.freeSlotBtn}>
+                    Prochain créneau libre : {freeSlot.toLocaleString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
 
           <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' as const }}>
             <label style={s.radioLabel}>
@@ -345,7 +485,7 @@ export default function SocialAdmin({ accounts, posts }: { accounts: SocialAccou
               <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Rien de programmé.</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {upcoming.map(post => <PostCard key={post.id} post={post} onRetry={retry} disabled={isPending} />)}
+                {upcoming.map(post => <PostCard key={post.id} post={post} onRetry={retry} onRefreshStats={refreshStats} disabled={isPending} />)}
               </div>
             )}
           </section>
@@ -356,7 +496,7 @@ export default function SocialAdmin({ accounts, posts }: { accounts: SocialAccou
               <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Aucun post pour le moment.</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 480, overflowY: 'auto' as const }}>
-                {history.map(post => <PostCard key={post.id} post={post} onRetry={retry} disabled={isPending} />)}
+                {history.map(post => <PostCard key={post.id} post={post} onRetry={retry} onRefreshStats={refreshStats} disabled={isPending} />)}
               </div>
             )}
           </section>
@@ -366,8 +506,18 @@ export default function SocialAdmin({ accounts, posts }: { accounts: SocialAccou
   )
 }
 
-function PostCard({ post, onRetry, disabled }: { post: SocialPostRow; onRetry: (id: string) => void; disabled: boolean }) {
+function PostCard({ post, onRetry, onRefreshStats, disabled }: {
+  post: SocialPostRow
+  onRetry: (id: string) => void
+  onRefreshStats: (id: string) => void
+  disabled: boolean
+}) {
   const thumb = post.media_urls[0]
+  const hasPublished = post.targets.some(t => t.status === 'published')
+  const totalLikes = post.targets.reduce((sum, t) => sum + (t.like_count ?? 0), 0)
+  const totalComments = post.targets.reduce((sum, t) => sum + (t.comment_count ?? 0), 0)
+  const statsKnown = post.targets.some(t => t.stats_updated_at)
+
   return (
     <div style={s.postRow}>
       <div style={{ display: 'flex', gap: 10 }}>
@@ -387,7 +537,7 @@ function PostCard({ post, onRetry, disabled }: { post: SocialPostRow; onRetry: (
               </button>
             )}
           </div>
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' as const, marginTop: 6 }}>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' as const, marginTop: 6, alignItems: 'center' }}>
             {post.targets.map(t => {
               const meta = PLATFORM_META[t.platform]
               const StatusIcon = t.status === 'published' ? CheckCircle : t.status === 'failed' ? XCircle : Clock
@@ -400,6 +550,17 @@ function PostCard({ post, onRetry, disabled }: { post: SocialPostRow; onRetry: (
                 </span>
               )
             })}
+            {statsKnown && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'var(--text-muted)' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}><Heart size={11} weight="fill" /> {totalLikes}</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}><ChatCircle size={11} weight="fill" /> {totalComments}</span>
+              </span>
+            )}
+            {hasPublished && (
+              <button onClick={() => onRefreshStats(post.id)} disabled={disabled} style={s.iconBtn} title="Actualiser les stats">
+                <ArrowClockwise size={12} />
+              </button>
+            )}
             <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
               {post.scheduled_at ? new Date(post.scheduled_at).toLocaleString('fr-FR') : new Date(post.created_at).toLocaleString('fr-FR')}
             </span>
@@ -507,5 +668,24 @@ const s: Record<string, any> = {
     display: 'inline-flex', alignItems: 'center', gap: 5,
     padding: '3px 9px', borderRadius: 100, fontSize: 11, fontWeight: 600,
     background: 'var(--surface)', border: '1px solid var(--border)',
+  },
+  linkBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: 4,
+    background: 'none', border: 'none', padding: 0,
+    fontSize: 12, fontWeight: 600, color: 'var(--accent-text)', cursor: 'pointer',
+  },
+  cadenceBox: {
+    padding: '10px 12px', borderRadius: 10,
+    background: 'var(--bg-2)', border: '1px solid var(--border)',
+  },
+  dayChip: {
+    padding: '6px 10px', borderRadius: 7, fontSize: 12.5, fontWeight: 600,
+    background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)',
+    cursor: 'pointer',
+  },
+  freeSlotBtn: {
+    padding: '5px 11px', borderRadius: 100, fontSize: 12, fontWeight: 600,
+    background: 'var(--success-bg)', color: 'var(--success-1)', border: '1px solid var(--success-1)',
+    cursor: 'pointer',
   },
 }

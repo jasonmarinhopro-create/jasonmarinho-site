@@ -3,7 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
-import { dispatchPost } from '@/lib/social/dispatch'
+import { dispatchPost, refreshPostStats as refreshPostStatsInternal } from '@/lib/social/dispatch'
 
 function adminClient() {
   return createAdminClient(
@@ -54,6 +54,7 @@ export async function createSocialPost(input: {
   body: string
   mediaUrls: string[]
   platforms: string[]
+  bodyOverrides?: Record<string, string> // platform -> texte spécifique (sinon body partagé)
   scheduledAt: string | null // ISO, null = publier maintenant
 }): Promise<{ success?: boolean; error?: string }> {
   try {
@@ -81,7 +82,12 @@ export async function createSocialPost(input: {
     if (insertErr || !post) return { error: insertErr?.message ?? 'Échec de la création du post.' }
 
     await db.from('social_post_targets').insert(
-      input.platforms.map(platform => ({ post_id: post.id, platform, status: 'pending' })),
+      input.platforms.map(platform => ({
+        post_id: post.id,
+        platform,
+        status: 'pending',
+        body_override: input.bodyOverrides?.[platform]?.trim() || null,
+      })),
     )
 
     if (!isScheduled) {
@@ -112,6 +118,41 @@ export async function disconnectSocialAccount(accountId: string): Promise<{ succ
     const db = adminClient()
     const { error } = await db.from('social_accounts').update({ status: 'revoked' }).eq('id', accountId)
     if (error) return { error: error.message }
+    revalidatePath('/dashboard/admin/social')
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
+  }
+}
+
+export async function refreshPostStats(postId: string): Promise<{ success?: boolean; error?: string }> {
+  try {
+    await requireAdmin()
+    await refreshPostStatsInternal(postId)
+    revalidatePath('/dashboard/admin/social')
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
+  }
+}
+
+export async function setSocialCadence(input: { weekdays: number[]; timeOfDay: string }): Promise<{ success?: boolean; error?: string }> {
+  try {
+    await requireAdmin()
+    if (input.weekdays.length === 0) return { error: 'Sélectionne au moins un jour.' }
+    if (!/^\d{2}:\d{2}$/.test(input.timeOfDay)) return { error: 'Heure invalide.' }
+
+    const db = adminClient()
+    const { data: existing } = await db.from('social_cadence').select('id').limit(1).maybeSingle()
+    if (existing) {
+      await db.from('social_cadence').update({
+        weekdays: input.weekdays,
+        time_of_day: input.timeOfDay,
+        updated_at: new Date().toISOString(),
+      }).eq('id', existing.id)
+    } else {
+      await db.from('social_cadence').insert({ weekdays: input.weekdays, time_of_day: input.timeOfDay })
+    }
     revalidatePath('/dashboard/admin/social')
     return { success: true }
   } catch (err) {

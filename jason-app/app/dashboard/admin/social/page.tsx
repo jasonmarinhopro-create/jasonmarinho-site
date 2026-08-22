@@ -19,7 +19,7 @@ export default async function SocialAdminPage() {
     { auth: { autoRefreshToken: false, persistSession: false } },
   )
 
-  const [{ data: accounts }, { data: posts }, { data: targets }] = await Promise.all([
+  const [{ data: accounts }, { data: posts }, { data: targets }, { data: cadence }] = await Promise.all([
     admin.from('social_accounts')
       .select('id, platform, external_account_id, display_name, status, token_expires_at, created_at')
       .order('created_at', { ascending: true }),
@@ -28,7 +28,8 @@ export default async function SocialAdminPage() {
       .order('created_at', { ascending: false })
       .limit(50),
     admin.from('social_post_targets')
-      .select('id, post_id, platform, status, external_post_id, error, published_at'),
+      .select('id, post_id, platform, status, external_post_id, error, published_at, body_override, like_count, comment_count, stats_updated_at'),
+    admin.from('social_cadence').select('weekdays, time_of_day').limit(1).maybeSingle(),
   ])
 
   const targetsByPost = new Map<string, typeof targets>()
@@ -45,7 +46,11 @@ export default async function SocialAdminPage() {
 
   return (
     <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
-      <SocialAdmin accounts={(accounts ?? []) as SocialAccountRow[]} posts={postRows} />
+      <SocialAdmin
+        accounts={(accounts ?? []) as SocialAccountRow[]}
+        posts={postRows}
+        cadence={cadence ? { weekdays: cadence.weekdays as number[], timeOfDay: cadence.time_of_day as string } : null}
+      />
     </div>
   )
 }
