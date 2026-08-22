@@ -9,6 +9,7 @@ import {
   Heart, ChatCircle, CalendarBlank, PencilSimple, Check, Sparkle,
 } from '@phosphor-icons/react/dist/ssr'
 import { createSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, setSocialCadence, generateSocialDraft } from './actions'
+import VisualStudio from './VisualStudio'
 
 export interface SocialAccountRow {
   id: string
@@ -316,7 +317,17 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
             })}
           </div>
 
-          {/* Zone glisser-déposer */}
+          {/* Studio visuels — génère une image de marque à partir d'un sujet,
+              sans dépendre d'un service tiers payant. */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600, color: 'var(--accent-text)' }}>
+            <ImageSquare size={14} weight="fill" /> Créer un visuel
+          </div>
+          <VisualStudio
+            onGenerated={url => setMediaUrls(prev => [...prev, url])}
+            onPresetBrief={brief => setContentBrief(brief)}
+          />
+
+          {/* Zone glisser-déposer — pour tes propres photos, en plus ou à la place du visuel généré */}
           <div
             onDragOver={e => { e.preventDefault(); setDragOver(true) }}
             onDragLeave={() => setDragOver(false)}
