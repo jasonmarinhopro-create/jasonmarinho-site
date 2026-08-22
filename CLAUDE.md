@@ -170,7 +170,6 @@ Publication auto (immédiate ou programmée) vers les comptes Facebook/Instagram
 - **Cadence** : une config partagée (`social_cadence`, jours + heure), le composeur calcule côté client le prochain créneau libre sans collision avec un post déjà programmé.
 - **Texte par réseau** : `social_post_targets.body_override`, fallback sur `social_posts.body` au dispatch.
 - **Stats** : likes/commentaires récupérés à la demande depuis l'API Meta (pas de cron dédié), stockés sur `social_post_targets`.
-- **Aide à la rédaction** : `lib/social/content-assistant.ts` appelle l'API Anthropic (`ANTHROPIC_API_KEY`, modèle `claude-haiku-4-5`) pour proposer un texte de post à partir d'un sujet — toujours une proposition à relire, jamais publié tel quel automatiquement.
 
 ---
 
@@ -194,7 +193,6 @@ META_APP_SECRET
 META_LOGIN_CONFIG_ID             ← Facebook Login for Business → Configurations, requis pour les permissions Instagram Business
 SOCIAL_TOKENS_ENCRYPTION_KEY     ← chiffrement tokens OAuth réseaux sociaux, `openssl rand -base64 32`
 SOCIAL_CRON_SECRET               ← dispatch programmé réseaux sociaux via GitHub Actions (pas Vercel Cron)
-ANTHROPIC_API_KEY                ← aide à la rédaction des posts réseaux sociaux
 ```
 
 ## Rate limiting (Upstash Redis)

@@ -6,9 +6,9 @@ import Image from 'next/image'
 import {
   FacebookLogo, InstagramLogo, PinterestLogo, LinkedinLogo, XLogo,
   Plus, ArrowClockwise, X, CheckCircle, XCircle, Clock, UploadSimple, ImageSquare,
-  Heart, ChatCircle, CalendarBlank, PencilSimple, Check, Sparkle,
+  Heart, ChatCircle, CalendarBlank, PencilSimple, Check,
 } from '@phosphor-icons/react/dist/ssr'
-import { createSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, setSocialCadence, generateSocialDraft } from './actions'
+import { createSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, setSocialCadence } from './actions'
 import VisualStudio from './VisualStudio'
 
 export interface SocialAccountRow {
@@ -113,11 +113,6 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
   const [showPerNetworkText, setShowPerNetworkText] = useState(false)
   const [bodyOverrides, setBodyOverrides] = useState<Record<string, string>>({})
 
-  const [contentBrief, setContentBrief] = useState('')
-  const [generating, setGenerating] = useState(false)
-  const [generateError, setGenerateError] = useState<string | null>(null)
-  const [draftVariants, setDraftVariants] = useState<string[]>([])
-
   const [editingCadence, setEditingCadence] = useState(false)
   const [cadenceWeekdays, setCadenceWeekdays] = useState<number[]>(cadence?.weekdays ?? [1, 3, 5])
   const [cadenceTime, setCadenceTime] = useState(cadence?.timeOfDay ?? '18:00')
@@ -142,20 +137,6 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
       const result = await setSocialCadence({ weekdays: cadenceWeekdays, timeOfDay: cadenceTime })
       if (!result.error) { setEditingCadence(false); router.refresh() }
     })
-  }
-
-  async function generateDraft() {
-    if (!contentBrief.trim()) { setGenerateError('Décris le sujet du post.'); return }
-    setGenerateError(null)
-    setGenerating(true)
-    setDraftVariants([])
-    const result = await generateSocialDraft(contentBrief)
-    if (result.variants && result.variants.length > 0) {
-      setDraftVariants(result.variants)
-    } else {
-      setGenerateError(result.error ?? 'Échec de la génération.')
-    }
-    setGenerating(false)
   }
 
   function refreshStats(postId: string) {
@@ -214,8 +195,6 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
         setPlatforms([])
         setBodyOverrides({})
         setShowPerNetworkText(false)
-        setContentBrief('')
-        setDraftVariants([])
         setScheduleMode('now')
         setScheduledAt('')
         router.refresh()
@@ -328,7 +307,6 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
           </div>
           <VisualStudio
             onGenerated={url => setMediaUrls(prev => [...prev, url])}
-            onPresetBrief={brief => setContentBrief(brief)}
           />
 
           {/* Zone glisser-déposer — pour tes propres photos, en plus ou à la place du visuel généré */}
@@ -365,41 +343,6 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
               ))}
             </div>
           )}
-
-          <div style={s.assistantBox}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600, color: 'var(--accent-text)' }}>
-              <Sparkle size={14} weight="fill" /> Aide à la rédaction
-            </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <input
-                type="text"
-                value={contentBrief}
-                onChange={e => setContentBrief(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter' && !generating) generateDraft() }}
-                placeholder="De quoi veux-tu parler ? (ex: promo -20% pour les nouveaux hôtes ce mois-ci)"
-                style={{ ...s.input, flex: 1 }}
-              />
-              <button type="button" onClick={generateDraft} disabled={generating} style={s.smallBtn}>
-                {generating ? 'Génération…' : 'Générer'}
-              </button>
-            </div>
-            {generateError && <span style={{ fontSize: 12, color: '#EF4444' }}>{generateError}</span>}
-            {draftVariants.length > 0 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>3 angles différents — clique celui qui te plaît, tu peux toujours l'ajuster ensuite.</span>
-                {draftVariants.map((variant, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => { setBody(variant); setDraftVariants([]) }}
-                    style={s.variantCard}
-                  >
-                    {variant}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
 
           <textarea
             value={body}
@@ -676,17 +619,6 @@ const s: Record<string, any> = {
     padding: '5px 10px', borderRadius: 7, fontSize: 12, fontWeight: 500,
     background: 'var(--bg-2)', border: '1px solid var(--border)', color: 'var(--text)',
     cursor: 'pointer', flexShrink: 0,
-  },
-  variantCard: {
-    textAlign: 'left' as const, padding: '10px 12px', borderRadius: 9,
-    border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)',
-    fontSize: 13, fontFamily: 'inherit', cursor: 'pointer', whiteSpace: 'pre-wrap' as const,
-    lineHeight: 1.5,
-  },
-  assistantBox: {
-    display: 'flex', flexDirection: 'column', gap: 8,
-    padding: '12px 14px', borderRadius: 10,
-    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
   },
   dropzone: {
     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
