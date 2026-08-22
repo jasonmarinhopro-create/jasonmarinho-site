@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { dispatchPost, refreshPostStats as refreshPostStatsInternal } from '@/lib/social/dispatch'
+import { generatePostDraft } from '@/lib/social/content-assistant'
 
 function adminClient() {
   return createAdminClient(
@@ -131,6 +132,17 @@ export async function refreshPostStats(postId: string): Promise<{ success?: bool
     await refreshPostStatsInternal(postId)
     revalidatePath('/dashboard/admin/social')
     return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
+  }
+}
+
+export async function generateSocialDraft(brief: string): Promise<{ text?: string; error?: string }> {
+  try {
+    await requireAdmin()
+    if (!brief.trim()) return { error: 'Décris le sujet du post.' }
+    const text = await generatePostDraft(brief)
+    return { text }
   } catch (err) {
     return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
   }

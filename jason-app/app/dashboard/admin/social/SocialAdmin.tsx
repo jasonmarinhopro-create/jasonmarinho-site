@@ -6,9 +6,9 @@ import Image from 'next/image'
 import {
   FacebookLogo, InstagramLogo, PinterestLogo, LinkedinLogo, XLogo,
   Plus, ArrowClockwise, X, CheckCircle, XCircle, Clock, UploadSimple, ImageSquare,
-  Heart, ChatCircle, CalendarBlank, PencilSimple, Check,
+  Heart, ChatCircle, CalendarBlank, PencilSimple, Check, Sparkle,
 } from '@phosphor-icons/react/dist/ssr'
-import { createSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, setSocialCadence } from './actions'
+import { createSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, setSocialCadence, generateSocialDraft } from './actions'
 
 export interface SocialAccountRow {
   id: string
@@ -112,6 +112,10 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
   const [showPerNetworkText, setShowPerNetworkText] = useState(false)
   const [bodyOverrides, setBodyOverrides] = useState<Record<string, string>>({})
 
+  const [contentBrief, setContentBrief] = useState('')
+  const [generating, setGenerating] = useState(false)
+  const [generateError, setGenerateError] = useState<string | null>(null)
+
   const [editingCadence, setEditingCadence] = useState(false)
   const [cadenceWeekdays, setCadenceWeekdays] = useState<number[]>(cadence?.weekdays ?? [1, 3, 5])
   const [cadenceTime, setCadenceTime] = useState(cadence?.timeOfDay ?? '18:00')
@@ -136,6 +140,19 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
       const result = await setSocialCadence({ weekdays: cadenceWeekdays, timeOfDay: cadenceTime })
       if (!result.error) { setEditingCadence(false); router.refresh() }
     })
+  }
+
+  async function generateDraft() {
+    if (!contentBrief.trim()) { setGenerateError('Décris le sujet du post.'); return }
+    setGenerateError(null)
+    setGenerating(true)
+    const result = await generateSocialDraft(contentBrief)
+    if (result.text) {
+      setBody(result.text)
+    } else {
+      setGenerateError(result.error ?? 'Échec de la génération.')
+    }
+    setGenerating(false)
   }
 
   function refreshStats(postId: string) {
@@ -256,9 +273,11 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
               </div>
             ))
           })}
-          <a href="/api/social/connect/meta" style={s.connectBtn}>
-            <Plus size={15} /> Connecter Facebook / Instagram
-          </a>
+          {(byPlatform('facebook').length === 0 || byPlatform('instagram').length === 0) && (
+            <a href="/api/social/connect/meta" style={s.connectBtn}>
+              <Plus size={15} /> Connecter Facebook / Instagram
+            </a>
+          )}
         </div>
       </section>
 
@@ -286,6 +305,7 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
                     cursor: usable ? 'pointer' : 'not-allowed',
                     borderColor: active ? meta.color : 'var(--border)',
                     background: active ? `${meta.color}18` : 'var(--bg-2)',
+                    color: active ? meta.color : 'var(--text)',
                   }}
                   title={!implemented ? 'Bientôt disponible' : !connected ? 'Connecte ce compte pour le sélectionner' : undefined}
                 >
@@ -330,6 +350,29 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
               ))}
             </div>
           )}
+
+          <div style={s.assistantBox}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600, color: 'var(--accent-text)' }}>
+              <Sparkle size={14} weight="fill" /> Aide à la rédaction
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <input
+                type="text"
+                value={contentBrief}
+                onChange={e => setContentBrief(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && !generating) generateDraft() }}
+                placeholder="De quoi veux-tu parler ? (ex: promo -20% pour les nouveaux hôtes ce mois-ci)"
+                style={{ ...s.input, flex: 1 }}
+              />
+              <button type="button" onClick={generateDraft} disabled={generating} style={s.smallBtn}>
+                {generating ? 'Génération…' : 'Générer'}
+              </button>
+            </div>
+            {generateError && <span style={{ fontSize: 12, color: '#EF4444' }}>{generateError}</span>}
+            {body && (
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Relis et ajuste toujours avant de publier — c'est une proposition, pas un texte final.</span>
+            )}
+          </div>
 
           <textarea
             value={body}
@@ -607,6 +650,11 @@ const s: Record<string, any> = {
     background: 'var(--bg-2)', border: '1px solid var(--border)', color: 'var(--text)',
     cursor: 'pointer', flexShrink: 0,
   },
+  assistantBox: {
+    display: 'flex', flexDirection: 'column', gap: 8,
+    padding: '12px 14px', borderRadius: 10,
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+  },
   dropzone: {
     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
     padding: '26px 16px', borderRadius: 12, border: '1.5px dashed var(--border)',
@@ -635,7 +683,7 @@ const s: Record<string, any> = {
   platformToggle: {
     display: 'inline-flex', alignItems: 'center', gap: 7,
     padding: '8px 13px', borderRadius: 9, border: '1px solid var(--border)',
-    fontSize: 13.5, fontWeight: 600, fontFamily: 'inherit',
+    fontSize: 13.5, fontWeight: 600, fontFamily: 'inherit', color: 'var(--text)',
   },
   radioLabel: {
     display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, cursor: 'pointer',

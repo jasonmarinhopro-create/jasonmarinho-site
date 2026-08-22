@@ -167,6 +167,10 @@ Publication auto (immédiate ou programmée) vers les comptes Facebook/Instagram
 - **Tokens** : chiffrés (AES-256-GCM, `lib/security/crypto.ts`) avant écriture en base — jamais en clair, clé dédiée `SOCIAL_TOKENS_ENCRYPTION_KEY` (séparée de `SUPABASE_SERVICE_ROLE_KEY`).
 - **Publication** : `lib/social/dispatch.ts` — même chemin de code pour "publier maintenant" (`app/dashboard/admin/social/actions.ts`) et pour les posts programmés. Le déclenchement programmé passe par `.github/workflows/social-dispatch.yml` (GitHub Actions, toutes les 5 min) qui appelle `/api/cron/social-dispatch` avec `SOCIAL_CRON_SECRET` — **pas** un Vercel Cron : le plan Hobby limite les Vercel Cron à une exécution par jour, incompatible avec du 5 min.
 - **Adaptateurs** : un module par réseau (`lib/social/meta.ts` pour Facebook + Instagram — Instagram réutilise le token de la Page Facebook liée, pas de token IG séparé).
+- **Cadence** : une config partagée (`social_cadence`, jours + heure), le composeur calcule côté client le prochain créneau libre sans collision avec un post déjà programmé.
+- **Texte par réseau** : `social_post_targets.body_override`, fallback sur `social_posts.body` au dispatch.
+- **Stats** : likes/commentaires récupérés à la demande depuis l'API Meta (pas de cron dédié), stockés sur `social_post_targets`.
+- **Aide à la rédaction** : `lib/social/content-assistant.ts` appelle l'API Anthropic (`ANTHROPIC_API_KEY`, modèle `claude-haiku-4-5`) pour proposer un texte de post à partir d'un sujet — toujours une proposition à relire, jamais publié tel quel automatiquement.
 
 ---
 
@@ -188,6 +192,8 @@ UPSTASH_REDIS_REST_KV_REST_API_TOKEN
 META_APP_ID                      ← publication Facebook/Instagram, developers.facebook.com/apps
 META_APP_SECRET
 SOCIAL_TOKENS_ENCRYPTION_KEY     ← chiffrement tokens OAuth réseaux sociaux, `openssl rand -base64 32`
+SOCIAL_CRON_SECRET               ← dispatch programmé réseaux sociaux via GitHub Actions (pas Vercel Cron)
+ANTHROPIC_API_KEY                ← aide à la rédaction des posts réseaux sociaux
 ```
 
 ## Rate limiting (Upstash Redis)
