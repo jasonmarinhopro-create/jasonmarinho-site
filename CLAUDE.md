@@ -103,6 +103,8 @@ import { House } from '@phosphor-icons/react'
 | `audit_gbp_sessions` | Sessions audit Google Business Profile |
 | `sejour_incidents` | Fiches incidents par séjour |
 | `roadmap_items` | Feuille de route publique |
+| `social_accounts` | Comptes réseaux sociaux connectés (tokens chiffrés) |
+| `social_posts` / `social_post_targets` | Posts réseaux sociaux et leur statut par plateforme |
 
 ### RLS
 - RLS activé sur toutes les tables utilisateurs
@@ -156,6 +158,18 @@ Templates dans `lib/email/template.ts` avec helpers :
 
 ---
 
+## Publication réseaux sociaux
+
+Publication auto (immédiate ou programmée) vers les comptes Facebook/Instagram de l'entreprise, depuis `/dashboard/admin/social`. Conçu pour être étendu réseau par réseau (LinkedIn, Pinterest, X, TikTok) sans changer le socle.
+
+- **Modèle** : `social_accounts` (comptes connectés, token chiffré), `social_posts` (le post, écrit une fois), `social_post_targets` (résultat par réseau — un échec sur une plateforme n'affecte pas les autres). Migration `20260821_086`.
+- **Auth Meta** : OAuth via `app/api/social/connect/meta` → `app/api/social/callback/meta`. Aucune revue d'app Meta requise tant qu'on publie uniquement sur les comptes où Jason est Admin/Testeur de l'app (mode développement). La revue ne devient obligatoire que pour publier au nom de comptes tiers.
+- **Tokens** : chiffrés (AES-256-GCM, `lib/security/crypto.ts`) avant écriture en base — jamais en clair, clé dédiée `SOCIAL_TOKENS_ENCRYPTION_KEY` (séparée de `SUPABASE_SERVICE_ROLE_KEY`).
+- **Publication** : `lib/social/dispatch.ts` — même chemin de code pour "publier maintenant" (`app/dashboard/admin/social/actions.ts`) et pour les posts programmés (cron `/api/cron/social-dispatch`, toutes les 5 min, `CRON_SECRET`).
+- **Adaptateurs** : un module par réseau (`lib/social/meta.ts` pour Facebook + Instagram — Instagram réutilise le token de la Page Facebook liée, pas de token IG séparé).
+
+---
+
 ## Variables d'environnement requises
 
 ```
@@ -171,6 +185,9 @@ UPSTASH_REDIS_REST_TOKEN
 # Variables injectées automatiquement par l'intégration Vercel × Upstash :
 UPSTASH_REDIS_REST_KV_REST_API_URL
 UPSTASH_REDIS_REST_KV_REST_API_TOKEN
+META_APP_ID                      ← publication Facebook/Instagram, developers.facebook.com/apps
+META_APP_SECRET
+SOCIAL_TOKENS_ENCRYPTION_KEY     ← chiffrement tokens OAuth réseaux sociaux, `openssl rand -base64 32`
 ```
 
 ## Rate limiting (Upstash Redis)
