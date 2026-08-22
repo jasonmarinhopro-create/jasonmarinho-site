@@ -165,7 +165,7 @@ Publication auto (immédiate ou programmée) vers les comptes Facebook/Instagram
 - **Modèle** : `social_accounts` (comptes connectés, token chiffré), `social_posts` (le post, écrit une fois), `social_post_targets` (résultat par réseau — un échec sur une plateforme n'affecte pas les autres). Migration `20260821_086`.
 - **Auth Meta** : OAuth via `app/api/social/connect/meta` → `app/api/social/callback/meta`. Aucune revue d'app Meta requise tant qu'on publie uniquement sur les comptes où Jason est Admin/Testeur de l'app (mode développement). La revue ne devient obligatoire que pour publier au nom de comptes tiers.
 - **Tokens** : chiffrés (AES-256-GCM, `lib/security/crypto.ts`) avant écriture en base — jamais en clair, clé dédiée `SOCIAL_TOKENS_ENCRYPTION_KEY` (séparée de `SUPABASE_SERVICE_ROLE_KEY`).
-- **Publication** : `lib/social/dispatch.ts` — même chemin de code pour "publier maintenant" (`app/dashboard/admin/social/actions.ts`) et pour les posts programmés (cron `/api/cron/social-dispatch`, toutes les 5 min, `CRON_SECRET`).
+- **Publication** : `lib/social/dispatch.ts` — même chemin de code pour "publier maintenant" (`app/dashboard/admin/social/actions.ts`) et pour les posts programmés. Le déclenchement programmé passe par `.github/workflows/social-dispatch.yml` (GitHub Actions, toutes les 5 min) qui appelle `/api/cron/social-dispatch` avec `SOCIAL_CRON_SECRET` — **pas** un Vercel Cron : le plan Hobby limite les Vercel Cron à une exécution par jour, incompatible avec du 5 min.
 - **Adaptateurs** : un module par réseau (`lib/social/meta.ts` pour Facebook + Instagram — Instagram réutilise le token de la Page Facebook liée, pas de token IG séparé).
 
 ---
