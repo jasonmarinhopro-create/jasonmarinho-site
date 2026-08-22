@@ -22,6 +22,34 @@ async function requireAdmin() {
   return user
 }
 
+const MAX_IMAGE_BYTES = 8 * 1024 * 1024
+const ALLOWED_MIMES = ['image/jpeg', 'image/png', 'image/webp']
+
+export async function uploadSocialMedia(formData: FormData): Promise<{ ok: boolean; url?: string; error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { ok: false, error: 'Non authentifié.' }
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
+  if (profile?.role !== 'admin') return { ok: false, error: 'Non autorisé.' }
+
+  const file = formData.get('file')
+  if (!(file instanceof File)) return { ok: false, error: 'Fichier invalide' }
+  if (file.size === 0) return { ok: false, error: 'Fichier vide' }
+  if (file.size > MAX_IMAGE_BYTES) return { ok: false, error: 'Image trop lourde (max 8 Mo)' }
+  if (!ALLOWED_MIMES.includes(file.type)) return { ok: false, error: 'Format non supporté (JPEG, PNG ou WebP)' }
+
+  const ext = file.type === 'image/jpeg' ? 'jpg' : file.type === 'image/png' ? 'png' : 'webp'
+  const path = `${user.id}/${crypto.randomUUID()}.${ext}`
+
+  const { error: upErr } = await supabase.storage
+    .from('social-post-media')
+    .upload(path, file, { contentType: file.type, cacheControl: '31536000' })
+  if (upErr) return { ok: false, error: upErr.message }
+
+  const { data: urlData } = supabase.storage.from('social-post-media').getPublicUrl(path)
+  return { ok: true, url: urlData.publicUrl }
+}
+
 export async function createSocialPost(input: {
   body: string
   mediaUrls: string[]
@@ -33,7 +61,10 @@ export async function createSocialPost(input: {
     if (!input.body.trim() && input.mediaUrls.length === 0) return { error: 'Le post est vide.' }
     if (input.platforms.length === 0) return { error: 'Sélectionne au moins un réseau.' }
     if (input.platforms.includes('instagram') && input.mediaUrls.length === 0) {
-      return { error: 'Instagram exige au moins une image — ajoute une URL de média.' }
+      return { error: 'Instagram exige au moins une image.' }
+    }
+    if (input.mediaUrls.length > 10) {
+      return { error: 'Maximum 10 images (limite du carrousel Instagram).' }
     }
 
     const db = adminClient()

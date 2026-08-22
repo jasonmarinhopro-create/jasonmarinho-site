@@ -123,15 +123,31 @@ export interface PostContent {
 }
 
 export async function publishToFacebook(pageId: string, pageAccessToken: string, post: PostContent): Promise<string> {
-  const firstImage = post.mediaUrls[0]
-  if (firstImage) {
+  const images = post.mediaUrls
+  if (images.length === 1) {
     const json = await graphFetch(`/${pageId}/photos`, {
       access_token: pageAccessToken,
-      url: firstImage,
+      url: images[0],
       caption: post.body,
       published: 'true',
     }, 'POST')
     return json.post_id ?? json.id
+  }
+  if (images.length > 1) {
+    // Album multi-photos : chaque image est d'abord uploadée non publiée,
+    // puis rattachée à un seul post via attached_media.
+    const uploaded = await Promise.all(images.map(url => graphFetch(`/${pageId}/photos`, {
+      access_token: pageAccessToken,
+      url,
+      published: 'false',
+    }, 'POST')))
+    const attachedMedia = JSON.stringify(uploaded.map(u => ({ media_fbid: u.id })))
+    const json = await graphFetch(`/${pageId}/feed`, {
+      access_token: pageAccessToken,
+      message: post.body,
+      attached_media: attachedMedia,
+    }, 'POST')
+    return json.id
   }
   const json = await graphFetch(`/${pageId}/feed`, {
     access_token: pageAccessToken,
@@ -141,20 +157,40 @@ export async function publishToFacebook(pageId: string, pageAccessToken: string,
 }
 
 // Instagram exige au moins une image/vidéo — pas de post texte seul.
-// Flux en 2 étapes : créer le conteneur média, puis le publier.
+// 1 image : conteneur média puis publication directe.
+// 2+ images : chaque image devient un conteneur enfant (is_carousel_item),
+// regroupés dans un conteneur CAROUSEL, puis publication de ce conteneur.
 export async function publishToInstagram(igUserId: string, pageAccessToken: string, post: PostContent): Promise<string> {
-  const imageUrl = post.mediaUrls[0]
-  if (!imageUrl) throw new Error('Instagram exige au moins une image — aucun media_url fourni')
+  const images = post.mediaUrls
+  if (images.length === 0) throw new Error('Instagram exige au moins une image — aucun media_url fourni')
 
-  const container = await graphFetch(`/${igUserId}/media`, {
-    access_token: pageAccessToken,
-    image_url: imageUrl,
-    caption: post.body,
-  }, 'POST')
+  let creationId: string
+  if (images.length === 1) {
+    const container = await graphFetch(`/${igUserId}/media`, {
+      access_token: pageAccessToken,
+      image_url: images[0],
+      caption: post.body,
+    }, 'POST')
+    creationId = container.id
+  } else {
+    if (images.length > 10) throw new Error('Instagram limite les carrousels à 10 images maximum')
+    const children = await Promise.all(images.map(image_url => graphFetch(`/${igUserId}/media`, {
+      access_token: pageAccessToken,
+      image_url,
+      is_carousel_item: 'true',
+    }, 'POST')))
+    const carousel = await graphFetch(`/${igUserId}/media`, {
+      access_token: pageAccessToken,
+      media_type: 'CAROUSEL',
+      caption: post.body,
+      children: children.map(c => c.id).join(','),
+    }, 'POST')
+    creationId = carousel.id
+  }
 
   const published = await graphFetch(`/${igUserId}/media_publish`, {
     access_token: pageAccessToken,
-    creation_id: container.id,
+    creation_id: creationId,
   }, 'POST')
 
   return published.id
