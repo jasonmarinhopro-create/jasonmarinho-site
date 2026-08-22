@@ -94,6 +94,7 @@ const adminMain = [
   { href: '/dashboard/admin/photographes', label: 'Photographes',   Icon: Camera },
   { href: '/dashboard/admin/menage',       label: 'Ménage',          Icon: Sparkle },
   { href: '/dashboard/admin/investisseurs', label: 'Investisseurs',  Icon: Briefcase },
+  { href: '/dashboard/admin/social',       label: 'Réseaux sociaux', Icon: ShareNetwork },
 ]
 
 const adminContent = [
@@ -102,7 +103,6 @@ const adminContent = [
   { href: '/dashboard/admin/actualites', label: 'Actualités', Icon: Newspaper },
   { href: '/dashboard/admin/communaute', label: 'Communauté', Icon: FacebookLogo },
   { href: '/dashboard/admin/guides',     label: 'Guide LCD',  Icon: BookOpen },
-  { href: '/dashboard/admin/social',     label: 'Réseaux sociaux', Icon: ShareNetwork },
 ]
 
 interface SidebarProps {
