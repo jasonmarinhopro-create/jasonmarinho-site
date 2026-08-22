@@ -34,20 +34,30 @@ async function graphFetch(path: string, params: Record<string, string>, method: 
 export function buildAuthorizeUrl(redirectUri: string, state: string): string {
   const appId = process.env.META_APP_ID
   if (!appId) throw new Error('META_APP_ID manquante')
-  const scope = [
-    'pages_manage_posts',
-    'pages_read_engagement',
-    'pages_show_list',
-    'instagram_business_basic',
-    'instagram_business_content_publish',
-    'business_management',
-  ].join(',')
   const url = new URL(`https://www.facebook.com/${API_VERSION}/dialog/oauth`)
   url.searchParams.set('client_id', appId)
   url.searchParams.set('redirect_uri', redirectUri)
-  url.searchParams.set('scope', scope)
   url.searchParams.set('response_type', 'code')
   url.searchParams.set('state', state)
+
+  // Meta a remplacé le paramètre `scope` brut par des "Configurations"
+  // (Facebook Login for Business → Configurations) pour les permissions
+  // Instagram Business — `instagram_business_basic` / `_content_publish`
+  // ne sont plus fiables via `scope` seul. config_id référence une
+  // configuration créée côté Meta qui embarque déjà les permissions.
+  const configId = process.env.META_LOGIN_CONFIG_ID
+  if (configId) {
+    url.searchParams.set('config_id', configId)
+  } else {
+    url.searchParams.set('scope', [
+      'pages_manage_posts',
+      'pages_read_engagement',
+      'pages_show_list',
+      'instagram_business_basic',
+      'instagram_business_content_publish',
+      'business_management',
+    ].join(','))
+  }
   return url.toString()
 }
 

@@ -191,6 +191,7 @@ UPSTASH_REDIS_REST_KV_REST_API_URL
 UPSTASH_REDIS_REST_KV_REST_API_TOKEN
 META_APP_ID                      ← publication Facebook/Instagram, developers.facebook.com/apps
 META_APP_SECRET
+META_LOGIN_CONFIG_ID             ← Facebook Login for Business → Configurations, requis pour les permissions Instagram Business
 SOCIAL_TOKENS_ENCRYPTION_KEY     ← chiffrement tokens OAuth réseaux sociaux, `openssl rand -base64 32`
 SOCIAL_CRON_SECRET               ← dispatch programmé réseaux sociaux via GitHub Actions (pas Vercel Cron)
 ANTHROPIC_API_KEY                ← aide à la rédaction des posts réseaux sociaux
