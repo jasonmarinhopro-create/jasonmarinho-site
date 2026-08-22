@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { dispatchPost, refreshPostStats as refreshPostStatsInternal } from '@/lib/social/dispatch'
-import { generatePostDraft } from '@/lib/social/content-assistant'
+import { generatePostVariants } from '@/lib/social/content-assistant'
 
 function adminClient() {
   return createAdminClient(
@@ -137,12 +137,23 @@ export async function refreshPostStats(postId: string): Promise<{ success?: bool
   }
 }
 
-export async function generateSocialDraft(brief: string): Promise<{ text?: string; error?: string }> {
+export async function generateSocialDraft(brief: string): Promise<{ variants?: string[]; error?: string }> {
   try {
     await requireAdmin()
     if (!brief.trim()) return { error: 'Décris le sujet du post.' }
-    const text = await generatePostDraft(brief)
-    return { text }
+
+    const db = adminClient()
+    const { data: recent } = await db
+      .from('social_posts')
+      .select('body')
+      .not('body', 'is', null)
+      .neq('body', '')
+      .order('created_at', { ascending: false })
+      .limit(5)
+    const recentPosts = (recent ?? []).map(p => p.body as string).filter(Boolean)
+
+    const variants = await generatePostVariants(brief, recentPosts)
+    return { variants }
   } catch (err) {
     return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
   }

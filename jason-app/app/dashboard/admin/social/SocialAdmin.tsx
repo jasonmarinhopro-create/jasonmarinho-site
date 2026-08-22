@@ -116,6 +116,7 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
   const [contentBrief, setContentBrief] = useState('')
   const [generating, setGenerating] = useState(false)
   const [generateError, setGenerateError] = useState<string | null>(null)
+  const [draftVariants, setDraftVariants] = useState<string[]>([])
 
   const [editingCadence, setEditingCadence] = useState(false)
   const [cadenceWeekdays, setCadenceWeekdays] = useState<number[]>(cadence?.weekdays ?? [1, 3, 5])
@@ -147,9 +148,10 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
     if (!contentBrief.trim()) { setGenerateError('Décris le sujet du post.'); return }
     setGenerateError(null)
     setGenerating(true)
+    setDraftVariants([])
     const result = await generateSocialDraft(contentBrief)
-    if (result.text) {
-      setBody(result.text)
+    if (result.variants && result.variants.length > 0) {
+      setDraftVariants(result.variants)
     } else {
       setGenerateError(result.error ?? 'Échec de la génération.')
     }
@@ -212,6 +214,8 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
         setPlatforms([])
         setBodyOverrides({})
         setShowPerNetworkText(false)
+        setContentBrief('')
+        setDraftVariants([])
         setScheduleMode('now')
         setScheduledAt('')
         router.refresh()
@@ -380,8 +384,20 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
               </button>
             </div>
             {generateError && <span style={{ fontSize: 12, color: '#EF4444' }}>{generateError}</span>}
-            {body && (
-              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Relis et ajuste toujours avant de publier — c'est une proposition, pas un texte final.</span>
+            {draftVariants.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>3 angles différents — clique celui qui te plaît, tu peux toujours l'ajuster ensuite.</span>
+                {draftVariants.map((variant, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => { setBody(variant); setDraftVariants([]) }}
+                    style={s.variantCard}
+                  >
+                    {variant}
+                  </button>
+                ))}
+              </div>
             )}
           </div>
 
@@ -660,6 +676,12 @@ const s: Record<string, any> = {
     padding: '5px 10px', borderRadius: 7, fontSize: 12, fontWeight: 500,
     background: 'var(--bg-2)', border: '1px solid var(--border)', color: 'var(--text)',
     cursor: 'pointer', flexShrink: 0,
+  },
+  variantCard: {
+    textAlign: 'left' as const, padding: '10px 12px', borderRadius: 9,
+    border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)',
+    fontSize: 13, fontFamily: 'inherit', cursor: 'pointer', whiteSpace: 'pre-wrap' as const,
+    lineHeight: 1.5,
   },
   assistantBox: {
     display: 'flex', flexDirection: 'column', gap: 8,
