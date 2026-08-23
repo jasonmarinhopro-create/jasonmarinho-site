@@ -128,7 +128,9 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
 
   const activeAccounts = accounts.filter(a => a.status === 'active')
   const byPlatform = (p: string) => activeAccounts.filter(a => a.platform === p)
-  const activePreview = previewPlatform && platforms.includes(previewPlatform) ? previewPlatform : platforms[0]
+  const orderedPlatforms = ALL_PLATFORMS.filter(p => platforms.includes(p))
+  const activePreview = previewPlatform && platforms.includes(previewPlatform) ? previewPlatform : orderedPlatforms[0]
+  const previewText = showPerNetworkText ? (bodyOverrides[activePreview ?? ''] ?? '') : body
 
   const [scheduledDate, scheduledTime] = scheduledAt.split('T')
   function setScheduledDate(d: string) {
@@ -190,6 +192,26 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
     setUploading(false)
   }
 
+  function toggleSameText() {
+    if (showPerNetworkText) {
+      // passage à un texte unique : on récupère le premier texte par réseau déjà rempli
+      if (!body.trim()) {
+        const firstOverride = orderedPlatforms.map(p => bodyOverrides[p]).find(v => v?.trim())
+        if (firstOverride) setBody(firstOverride)
+      }
+    } else if (body.trim()) {
+      // retour au texte par réseau : on pré-remplit les cases vides avec le texte unique
+      setBodyOverrides(prev => {
+        const merged = { ...prev }
+        for (const p of orderedPlatforms) {
+          if (!merged[p]?.trim()) merged[p] = body
+        }
+        return merged
+      })
+    }
+    setShowPerNetworkText(v => !v)
+  }
+
   function removeImage(url: string) {
     setMediaUrls(prev => prev.filter(u => u !== url))
     setPreviewMediaIndex(0)
@@ -207,12 +229,15 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
 
   function submit() {
     setError(null)
+    const effectiveBody = showPerNetworkText
+      ? (orderedPlatforms.map(p => bodyOverrides[p]).find(v => v?.trim()) ?? '')
+      : body
     startTransition(async () => {
       const result = await createSocialPost({
-        body,
+        body: effectiveBody,
         mediaUrls,
         platforms,
-        bodyOverrides,
+        bodyOverrides: showPerNetworkText ? bodyOverrides : {},
         scheduledAt: scheduleMode === 'later' && scheduledAt ? new Date(scheduledAt).toISOString() : null,
       })
       if (result.error) {
@@ -391,39 +416,45 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
             </p>
           )}
 
-          <textarea
-            value={body}
-            onChange={e => setBody(e.target.value)}
-            placeholder="Le texte de ton post…"
-            rows={5}
-            style={s.textarea}
-          />
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>{body.length} caractères</span>
-            {platforms.length > 0 && (
-              <button type="button" onClick={() => setShowPerNetworkText(v => !v)} style={s.linkBtn}>
-                {showPerNetworkText ? 'Masquer' : 'Personnaliser'} le texte par réseau
-              </button>
-            )}
-          </div>
+          {showPerNetworkText ? (
+            orderedPlatforms.map(p => {
+              const meta = PLATFORM_META[p]
+              const text = bodyOverrides[p] ?? ''
+              return (
+                <div key={p} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600, color: meta.color }}>
+                    <meta.Icon size={14} weight="fill" /> {meta.label}
+                  </span>
+                  <textarea
+                    value={text}
+                    onChange={e => setBodyOverrides(prev => ({ ...prev, [p]: e.target.value }))}
+                    placeholder={`Légende ${meta.label}…`}
+                    rows={4}
+                    style={s.textarea}
+                  />
+                  <span style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>{text.length} caractères</span>
+                </div>
+              )
+            })
+          ) : (
+            <>
+              <textarea
+                value={body}
+                onChange={e => setBody(e.target.value)}
+                placeholder="Le texte de ton post…"
+                rows={5}
+                style={s.textarea}
+              />
+              <span style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>{body.length} caractères</span>
+            </>
+          )}
 
-          {showPerNetworkText && platforms.map(p => {
-            const meta = PLATFORM_META[p]
-            return (
-              <div key={p} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600, color: meta.color }}>
-                  <meta.Icon size={14} weight="fill" /> {meta.label}
-                </span>
-                <textarea
-                  value={bodyOverrides[p] ?? ''}
-                  onChange={e => setBodyOverrides(prev => ({ ...prev, [p]: e.target.value }))}
-                  placeholder={`Texte spécifique à ${meta.label} (sinon le texte ci-dessus est utilisé)`}
-                  rows={2}
-                  style={s.textarea}
-                />
-              </div>
-            )
-          })}
+          {orderedPlatforms.length > 0 && (
+            <label style={{ display: 'inline-flex', alignItems: 'center', gap: 7, fontSize: 12.5, color: 'var(--text-2)', cursor: 'pointer' }}>
+              <input type="checkbox" checked={!showPerNetworkText} onChange={toggleSameText} />
+              Texte identique pour tous les réseaux
+            </label>
+          )}
 
           {/* Cadence */}
           <div style={s.cadenceBox}>
@@ -502,7 +533,7 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
             ) : (
               <>
                 <div style={{ display: 'flex', gap: 6 }}>
-                  {platforms.map(p => {
+                  {orderedPlatforms.map(p => {
                     const meta = PLATFORM_META[p]
                     return (
                       <button
@@ -574,7 +605,7 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
                     )}
                   </div>
                   <p style={{ padding: '10px 12px', margin: 0, fontSize: 13, whiteSpace: 'pre-wrap' as const }}>
-                    {body || <span style={{ color: 'var(--text-muted)' }}>Ton texte apparaîtra ici…</span>}
+                    {previewText || <span style={{ color: 'var(--text-muted)' }}>Ton texte apparaîtra ici…</span>}
                   </p>
                 </div>
               </>
