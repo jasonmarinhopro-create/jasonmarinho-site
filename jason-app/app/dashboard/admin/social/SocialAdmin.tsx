@@ -9,6 +9,7 @@ import {
   Heart, ChatCircle, CalendarBlank, PencilSimple, Check,
 } from '@phosphor-icons/react/dist/ssr'
 import { createSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, setSocialCadence } from './actions'
+import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 
 export interface SocialAccountRow {
   id: string
@@ -70,6 +71,12 @@ function toDatetimeLocalValue(date: Date): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
 
+function todayDateValue(): string {
+  const pad = (n: number) => String(n).padStart(2, '0')
+  const d = new Date()
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+}
+
 export interface SocialPostRow {
   id: string
   body: string
@@ -104,6 +111,7 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
   const [dragOver, setDragOver] = useState(false)
   const [platforms, setPlatforms] = useState<string[]>([])
   const [previewPlatform, setPreviewPlatform] = useState<string | null>(null)
+  const [previewMediaIndex, setPreviewMediaIndex] = useState(0)
   const [scheduleMode, setScheduleMode] = useState<'now' | 'later'>('now')
   const [scheduledAt, setScheduledAt] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -119,6 +127,14 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
   const activeAccounts = accounts.filter(a => a.status === 'active')
   const byPlatform = (p: string) => activeAccounts.filter(a => a.platform === p)
   const activePreview = previewPlatform && platforms.includes(previewPlatform) ? previewPlatform : platforms[0]
+
+  const [scheduledDate, scheduledTime] = scheduledAt.split('T')
+  function setScheduledDate(d: string) {
+    setScheduledAt(`${d}T${scheduledTime || '18:00'}`)
+  }
+  function setScheduledTime(t: string) {
+    setScheduledAt(`${scheduledDate || todayDateValue()}T${t}`)
+  }
 
   const upcoming = posts.filter(p => p.status === 'scheduled')
   const history = posts.filter(p => p.status !== 'scheduled')
@@ -174,6 +190,17 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
 
   function removeImage(url: string) {
     setMediaUrls(prev => prev.filter(u => u !== url))
+    setPreviewMediaIndex(0)
+  }
+
+  function moveImage(index: number, dir: -1 | 1) {
+    setMediaUrls(prev => {
+      const target = index + dir
+      if (target < 0 || target >= prev.length) return prev
+      const next = [...prev]
+      ;[next[index], next[target]] = [next[target], next[index]]
+      return next
+    })
   }
 
   function submit() {
@@ -323,15 +350,43 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
 
           {mediaUrls.length > 0 && (
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' as const }}>
-              {mediaUrls.map(url => (
+              {mediaUrls.map((url, i) => (
                 <div key={url} style={s.thumbWrap}>
                   <Image src={url} alt="" fill sizes="64px" style={{ objectFit: 'cover' }} />
+                  <span style={s.thumbIndex}>{i + 1}</span>
                   <button onClick={() => removeImage(url)} style={s.thumbRemove} title="Retirer">
                     <X size={11} weight="bold" />
                   </button>
+                  {mediaUrls.length > 1 && (
+                    <div style={s.thumbMoveRow}>
+                      <button
+                        type="button"
+                        onClick={() => moveImage(i, -1)}
+                        disabled={i === 0}
+                        style={{ ...s.thumbMoveBtn, opacity: i === 0 ? 0.3 : 1 }}
+                        title="Déplacer avant"
+                      >
+                        ‹
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveImage(i, 1)}
+                        disabled={i === mediaUrls.length - 1}
+                        style={{ ...s.thumbMoveBtn, opacity: i === mediaUrls.length - 1 ? 0.3 : 1 }}
+                        title="Déplacer après"
+                      >
+                        ›
+                      </button>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
+          )}
+          {mediaUrls.length > 1 && (
+            <p style={{ fontSize: 11.5, color: 'var(--text-muted)', margin: 0 }}>
+              Ordre du carrousel : utilise les flèches ‹ › sur chaque image pour la déplacer.
+            </p>
           )}
 
           <textarea
@@ -418,12 +473,14 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
               <input type="radio" checked={scheduleMode === 'later'} onChange={() => setScheduleMode('later')} /> Programmer
             </label>
             {scheduleMode === 'later' && (
-              <input
-                type="datetime-local"
-                value={scheduledAt}
-                onChange={e => setScheduledAt(e.target.value)}
-                style={s.input}
-              />
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' as const }}>
+                <div style={{ width: 190 }}>
+                  <CalendarInput value={scheduledDate ?? ''} onChange={setScheduledDate} placeholder="Choisir une date" />
+                </div>
+                <div style={{ width: 130 }}>
+                  <TimePickerInput value={scheduledTime ?? ''} onChange={setScheduledTime} placeholder="Heure" />
+                </div>
+              </div>
             )}
           </div>
 
@@ -469,7 +526,47 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
                   </div>
                   <div style={s.previewMedia}>
                     {mediaUrls.length > 0 ? (
-                      <Image src={mediaUrls[0]} alt="" fill sizes="320px" style={{ objectFit: 'cover' }} />
+                      <>
+                        <Image
+                          key={mediaUrls[Math.min(previewMediaIndex, mediaUrls.length - 1)]}
+                          src={mediaUrls[Math.min(previewMediaIndex, mediaUrls.length - 1)]}
+                          alt=""
+                          fill
+                          sizes="320px"
+                          style={{ objectFit: 'cover' }}
+                        />
+                        {mediaUrls.length > 1 && (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => setPreviewMediaIndex(i => (i - 1 + mediaUrls.length) % mediaUrls.length)}
+                              style={{ ...s.carouselNavBtn, left: 8 }}
+                              title="Image précédente"
+                            >
+                              ‹
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setPreviewMediaIndex(i => (i + 1) % mediaUrls.length)}
+                              style={{ ...s.carouselNavBtn, right: 8 }}
+                              title="Image suivante"
+                            >
+                              ›
+                            </button>
+                            <div style={s.carouselDots}>
+                              {mediaUrls.map((u, i) => (
+                                <span
+                                  key={u}
+                                  style={{
+                                    ...s.carouselDot,
+                                    background: i === previewMediaIndex ? '#fff' : 'rgba(255,255,255,0.45)',
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </>
                     ) : (
                       <ImageSquare size={28} style={{ color: 'var(--text-muted)' }} />
                     )}
@@ -624,6 +721,36 @@ const s: Record<string, any> = {
     width: 18, height: 18, borderRadius: '50%', border: 'none',
     background: 'rgba(0,0,0,0.6)', color: '#fff', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
+  },
+  thumbIndex: {
+    position: 'absolute' as const, top: 3, left: 3,
+    minWidth: 15, height: 15, padding: '0 3px', borderRadius: 8,
+    background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 9.5, fontWeight: 700,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+  },
+  thumbMoveRow: {
+    position: 'absolute' as const, bottom: 3, left: 3, right: 3,
+    display: 'flex', justifyContent: 'space-between', gap: 4,
+  },
+  thumbMoveBtn: {
+    width: 20, height: 18, borderRadius: 5, border: 'none',
+    background: 'rgba(0,0,0,0.6)', color: '#fff', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: 13, lineHeight: 1, padding: 0,
+  },
+  carouselNavBtn: {
+    position: 'absolute' as const, top: '50%', transform: 'translateY(-50%)',
+    width: 26, height: 26, borderRadius: '50%', border: 'none',
+    background: 'rgba(0,0,0,0.5)', color: '#fff', cursor: 'pointer',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontSize: 16, lineHeight: 1,
+  },
+  carouselDots: {
+    position: 'absolute' as const, bottom: 8, left: '50%', transform: 'translateX(-50%)',
+    display: 'flex', gap: 4,
+  },
+  carouselDot: {
+    width: 5, height: 5, borderRadius: '50%',
   },
   textarea: {
     width: '100%', padding: '10px 12px', borderRadius: 9,
