@@ -8,7 +8,7 @@ import {
   Plus, ArrowClockwise, X, CheckCircle, XCircle, Clock, UploadSimple, ImageSquare,
   Heart, ChatCircle, CalendarBlank, PencilSimple, Check,
 } from '@phosphor-icons/react/dist/ssr'
-import { createSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, setSocialCadence } from './actions'
+import { createSocialPost, updateSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, setSocialCadence } from './actions'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 
 export interface SocialAccountRow {
@@ -118,6 +118,7 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
   const [scheduledAt, setScheduledAt] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+  const [editingPostId, setEditingPostId] = useState<string | null>(null)
 
   const [showPerNetworkText, setShowPerNetworkText] = useState(true)
   const [bodyOverrides, setBodyOverrides] = useState<Record<string, string>>({})
@@ -212,6 +213,38 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
     setShowPerNetworkText(v => !v)
   }
 
+  function startEdit(post: SocialPostRow) {
+    setEditingPostId(post.id)
+    setBody(post.body)
+    setMediaUrls(post.media_urls)
+    setPreviewMediaIndex(0)
+    setPlatforms(post.platforms)
+    setPreviewPlatform(post.platforms[0] ?? null)
+    const overrides: Record<string, string> = {}
+    let anyOverride = false
+    for (const t of post.targets) {
+      if (t.body_override) { overrides[t.platform] = t.body_override; anyOverride = true }
+    }
+    setBodyOverrides(overrides)
+    setShowPerNetworkText(anyOverride)
+    setScheduleMode('later')
+    setScheduledAt(post.scheduled_at ? toDatetimeLocalValue(new Date(post.scheduled_at)) : '')
+    setError(null)
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function cancelEdit() {
+    setEditingPostId(null)
+    setBody('')
+    setMediaUrls([])
+    setPlatforms(defaultPlatforms)
+    setBodyOverrides({})
+    setShowPerNetworkText(true)
+    setScheduleMode('now')
+    setScheduledAt('')
+    setError(null)
+  }
+
   function removeImage(url: string) {
     setMediaUrls(prev => prev.filter(u => u !== url))
     setPreviewMediaIndex(0)
@@ -232,17 +265,21 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
     const effectiveBody = showPerNetworkText
       ? (orderedPlatforms.map(p => bodyOverrides[p]).find(v => v?.trim()) ?? '')
       : body
+    const payload = {
+      body: effectiveBody,
+      mediaUrls,
+      platforms,
+      bodyOverrides: showPerNetworkText ? bodyOverrides : {},
+      scheduledAt: scheduleMode === 'later' && scheduledAt ? new Date(scheduledAt).toISOString() : null,
+    }
     startTransition(async () => {
-      const result = await createSocialPost({
-        body: effectiveBody,
-        mediaUrls,
-        platforms,
-        bodyOverrides: showPerNetworkText ? bodyOverrides : {},
-        scheduledAt: scheduleMode === 'later' && scheduledAt ? new Date(scheduledAt).toISOString() : null,
-      })
+      const result = editingPostId
+        ? await updateSocialPost(editingPostId, payload)
+        : await createSocialPost(payload)
       if (result.error) {
         setError(result.error)
       } else {
+        setEditingPostId(null)
         setBody('')
         setMediaUrls([])
         setPlatforms(defaultPlatforms)
@@ -321,7 +358,7 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
       <div style={s.mainGrid}>
         {/* Composeur */}
         <section style={s.card}>
-          <h2 style={s.cardTitle}>Créer une publication</h2>
+          <h2 style={s.cardTitle}>{editingPostId ? 'Modifier la publication programmée' : 'Créer une publication'}</h2>
 
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' as const }}>
             {ALL_PLATFORMS.map(platform => {
@@ -519,9 +556,16 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
 
           {error && <div style={s.banner('#EF4444', 'rgba(239,68,68,0.1)')}>{error}</div>}
 
-          <button onClick={submit} disabled={isPending || uploading} style={s.primaryBtn}>
-            {isPending ? 'Envoi…' : scheduleMode === 'now' ? 'Publier maintenant' : 'Programmer'}
-          </button>
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            <button onClick={submit} disabled={isPending || uploading} style={s.primaryBtn}>
+              {isPending ? 'Envoi…' : editingPostId ? 'Enregistrer les modifications' : scheduleMode === 'now' ? 'Publier maintenant' : 'Programmer'}
+            </button>
+            {editingPostId && (
+              <button type="button" onClick={cancelEdit} disabled={isPending} style={s.smallBtn}>
+                Annuler
+              </button>
+            )}
+          </div>
         </section>
 
         {/* Aperçu + historique */}
@@ -618,7 +662,7 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
               <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Rien de programmé.</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {upcoming.map(post => <PostCard key={post.id} post={post} onRetry={retry} onRefreshStats={refreshStats} disabled={isPending} />)}
+                {upcoming.map(post => <PostCard key={post.id} post={post} onRetry={retry} onEdit={startEdit} onRefreshStats={refreshStats} disabled={isPending} />)}
               </div>
             )}
           </section>
@@ -629,7 +673,7 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
               <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Aucun post pour le moment.</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 480, overflowY: 'auto' as const }}>
-                {history.map(post => <PostCard key={post.id} post={post} onRetry={retry} onRefreshStats={refreshStats} disabled={isPending} />)}
+                {history.map(post => <PostCard key={post.id} post={post} onRetry={retry} onEdit={startEdit} onRefreshStats={refreshStats} disabled={isPending} />)}
               </div>
             )}
           </section>
@@ -639,9 +683,10 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
   )
 }
 
-function PostCard({ post, onRetry, onRefreshStats, disabled }: {
+function PostCard({ post, onRetry, onEdit, onRefreshStats, disabled }: {
   post: SocialPostRow
   onRetry: (id: string) => void
+  onEdit: (post: SocialPostRow) => void
   onRefreshStats: (id: string) => void
   disabled: boolean
 }) {
@@ -664,6 +709,11 @@ function PostCard({ post, onRetry, onRefreshStats, disabled }: {
             <p style={{ margin: 0, fontSize: 13.5, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis' as const, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const }}>
               {post.body || <em style={{ color: 'var(--text-muted)' }}>(image seule)</em>}
             </p>
+            {post.status === 'scheduled' && (
+              <button onClick={() => onEdit(post)} disabled={disabled} style={s.smallBtn}>
+                <PencilSimple size={13} /> Modifier
+              </button>
+            )}
             {(post.status === 'failed' || post.status === 'partial') && (
               <button onClick={() => onRetry(post.id)} disabled={disabled} style={s.smallBtn}>
                 <ArrowClockwise size={13} /> Réessayer

@@ -101,6 +101,61 @@ export async function createSocialPost(input: {
   }
 }
 
+export async function updateSocialPost(postId: string, input: {
+  body: string
+  mediaUrls: string[]
+  platforms: string[]
+  bodyOverrides?: Record<string, string>
+  scheduledAt: string | null // ISO, null = publier maintenant
+}): Promise<{ success?: boolean; error?: string }> {
+  try {
+    await requireAdmin()
+    if (!input.body.trim() && input.mediaUrls.length === 0) return { error: 'Le post est vide.' }
+    if (input.platforms.length === 0) return { error: 'Sélectionne au moins un réseau.' }
+    if (input.platforms.includes('instagram') && input.mediaUrls.length === 0) {
+      return { error: 'Instagram exige au moins une image.' }
+    }
+    if (input.mediaUrls.length > 10) {
+      return { error: 'Maximum 10 images (limite du carrousel Instagram).' }
+    }
+
+    const db = adminClient()
+    const { data: existing } = await db.from('social_posts').select('status').eq('id', postId).maybeSingle()
+    if (!existing) return { error: 'Publication introuvable.' }
+    if (existing.status !== 'scheduled') return { error: 'Seules les publications encore programmées peuvent être modifiées.' }
+
+    const isScheduled = !!input.scheduledAt
+    const { error: updateErr } = await db.from('social_posts').update({
+      body: input.body,
+      media_urls: input.mediaUrls,
+      platforms: input.platforms,
+      scheduled_at: input.scheduledAt,
+      status: isScheduled ? 'scheduled' : 'publishing',
+      updated_at: new Date().toISOString(),
+    }).eq('id', postId)
+    if (updateErr) return { error: updateErr.message }
+
+    await db.from('social_post_targets').delete().eq('post_id', postId)
+    await db.from('social_post_targets').insert(
+      input.platforms.map(platform => ({
+        post_id: postId,
+        platform,
+        status: 'pending',
+        body_override: input.bodyOverrides?.[platform]?.trim() || null,
+      })),
+    )
+
+    if (!isScheduled) {
+      await dispatchPost(postId)
+    }
+
+    revalidatePath('/dashboard/admin/social')
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
+  }
+}
+
 export async function retrySocialPost(postId: string): Promise<{ success?: boolean; error?: string }> {
   try {
     await requireAdmin()
