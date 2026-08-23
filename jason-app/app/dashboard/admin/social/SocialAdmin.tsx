@@ -105,19 +105,21 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
   const metaError = searchParams.get('meta_error')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const defaultPlatforms = IMPLEMENTED_PLATFORMS.filter(p => accounts.some(a => a.platform === p && a.status === 'active'))
+
   const [body, setBody] = useState('')
   const [mediaUrls, setMediaUrls] = useState<string[]>([])
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
-  const [platforms, setPlatforms] = useState<string[]>([])
-  const [previewPlatform, setPreviewPlatform] = useState<string | null>(null)
+  const [platforms, setPlatforms] = useState<string[]>(defaultPlatforms)
+  const [previewPlatform, setPreviewPlatform] = useState<string | null>(defaultPlatforms[0] ?? null)
   const [previewMediaIndex, setPreviewMediaIndex] = useState(0)
   const [scheduleMode, setScheduleMode] = useState<'now' | 'later'>('now')
   const [scheduledAt, setScheduledAt] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
-  const [showPerNetworkText, setShowPerNetworkText] = useState(false)
+  const [showPerNetworkText, setShowPerNetworkText] = useState(true)
   const [bodyOverrides, setBodyOverrides] = useState<Record<string, string>>({})
 
   const [editingCadence, setEditingCadence] = useState(false)
@@ -218,9 +220,9 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
       } else {
         setBody('')
         setMediaUrls([])
-        setPlatforms([])
+        setPlatforms(defaultPlatforms)
         setBodyOverrides({})
-        setShowPerNetworkText(false)
+        setShowPerNetworkText(true)
         setScheduleMode('now')
         setScheduledAt('')
         router.refresh()
