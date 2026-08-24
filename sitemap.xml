@@ -607,6 +607,12 @@
     <priority>0.88</priority>
   </url>
   <url>
+    <loc>https://jasonmarinho.com/services/formations/declarer-lmnp-seul-decla-fr</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
     <loc>https://jasonmarinho.com/services/formations/google-my-business-lcd</loc>
     <lastmod>2026-05-02</lastmod>
     <changefreq>monthly</changefreq>
@@ -2497,6 +2503,12 @@
   <url>
     <loc>https://jasonmarinho.com/blog/regime-reel-vs-micro-bic-decision-2026</loc>
     <lastmod>2026-04-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/declarer-lmnp-sans-expert-comptable-decla-fr</loc>
+    <lastmod>2026-08-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

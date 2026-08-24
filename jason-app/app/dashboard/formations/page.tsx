@@ -46,6 +46,7 @@ const ACTIVE_SLUGS = [
   'gerer-incidents-litiges-lcd',
   'annonce-360',
   'audit-annonce',
+  'declarer-lmnp-seul-decla-fr',
 ]
 
 // Formations à venir, hardcodées, pas encore en DB
