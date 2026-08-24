@@ -748,6 +748,15 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, disabled }: {
               {post.scheduled_at ? new Date(post.scheduled_at).toLocaleString('fr-FR') : new Date(post.created_at).toLocaleString('fr-FR')}
             </span>
           </div>
+          {post.targets.filter(t => t.status === 'failed' && t.error).map(t => {
+            const meta = PLATFORM_META[t.platform]
+            return (
+              <p key={t.id} style={{ margin: '4px 0 0', fontSize: 11.5, color: '#EF4444', display: 'flex', gap: 5, alignItems: 'flex-start' }}>
+                {meta && <meta.Icon size={11} weight="fill" style={{ color: meta.color, flexShrink: 0, marginTop: 2 }} />}
+                <span>{t.error}</span>
+              </p>
+            )
+          })}
         </div>
       </div>
     </div>
