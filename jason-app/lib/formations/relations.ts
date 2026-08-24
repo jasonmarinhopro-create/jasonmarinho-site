@@ -176,7 +176,19 @@ const RELATIONS: Record<string, FormationRelations> = {
       { label: 'Numéro d\'enregistrement 20 mai 2026', slug: 'numero-enregistrement-lcd-20-mai-2026-demarches' },
     ],
     recommendedNext: [
+      { slug: 'declarer-lmnp-seul-decla-fr', reason: 'Tu es au régime réel ? La méthode pour déclarer seul' },
       { slug: 'fiscalite-statut-conciergerie-tourisme', reason: 'Si tu vises la conciergerie' },
+    ],
+  },
+  'declarer-lmnp-seul-decla-fr': {
+    articles: [
+      { label: 'Régime réel vs micro-BIC : la décision 2026', slug: 'regime-reel-vs-micro-bic-decision-2026' },
+      { label: 'LMNP vs LMP : ce qui change en 2026', slug: 'lmnp-vs-lmp-changement-2026-impact' },
+      { label: 'Guide fiscal débutant 2026', slug: 'guide-fiscal-debutant-hote-airbnb-2026' },
+      { label: 'Déclarer sa LMNP sans expert-comptable avec décla.fr', slug: 'declarer-lmnp-sans-expert-comptable-decla-fr' },
+    ],
+    recommendedNext: [
+      { slug: 'fiscalite-reglementation-lcd-france-2026', reason: 'Le cadre légal complet, loi Le Meur incluse' },
     ],
   },
   'fiscalite-statut-conciergerie-tourisme': {
