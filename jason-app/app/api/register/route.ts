@@ -160,7 +160,53 @@ export async function POST(req: NextRequest) {
     })
 
     if (createError) {
-      if (createError.message.toLowerCase().includes('already registered') || createError.message.toLowerCase().includes('already been registered') || createError.message.includes('already exists')) {
+      const alreadyRegistered = createError.message.toLowerCase().includes('already registered') || createError.message.toLowerCase().includes('already been registered') || createError.message.includes('already exists')
+      if (alreadyRegistered) {
+        // Compte déjà créé — s'il n'a jamais confirmé son email (premier envoi
+        // perdu en spam, domaine qui filtre, etc.), on lui renvoie un nouveau
+        // lien au lieu de le bloquer sans aucun recours.
+        const { data: existingProfile } = await supabaseAdmin
+          .from('profiles')
+          .select('id')
+          .eq('email', normalized)
+          .maybeSingle()
+
+        if (existingProfile) {
+          const { data: existingUser } = await supabaseAdmin.auth.admin.getUserById(existingProfile.id)
+          if (existingUser?.user && !existingUser.user.email_confirmed_at) {
+            const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+              type: 'magiclink',
+              email: normalized,
+              options: { redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/login` },
+            })
+            if (linkError || !linkData?.properties?.action_link) {
+              log.error('generateLink(resend)', { msg: linkError?.message })
+              return NextResponse.json({ success: true, emailSent: false })
+            }
+            const { error: resendErr } = await getResend().emails.send({
+              from: 'Jason Marinho <noreply@jasonmarinho.com>',
+              to: normalized,
+              subject: 'Confirme ton adresse email',
+              html: buildEmail({
+                title: 'Confirme ton adresse email',
+                preview: 'Une dernière étape pour accéder à ton espace Jason Marinho.',
+                body: `
+                  ${emailP(`Bienvenue${fullName ? ` <strong style="color:#e8ede8;">${escHtml(fullName)}</strong>` : ''}&nbsp;! Voici un nouveau lien pour confirmer ton adresse et accéder à la plateforme.`)}
+                  ${emailP(`Ce lien est valable <strong style="color:#FFD56B;">24&nbsp;heures</strong>.`)}
+                  ${emailBtn(linkData.properties.action_link, 'Confirmer mon compte', 'primary')}
+                  ${isInvestor ? '' : emailAnnuairesPromo()}
+                  ${emailNote('Si tu n\'as pas créé de compte sur Jason Marinho, ignore simplement cet email. Aucune action n\'est requise.')}
+                `,
+              }),
+            })
+            if (resendErr) {
+              log.error('resend(resend)', resendErr)
+              return NextResponse.json({ success: true, emailSent: false })
+            }
+            return NextResponse.json({ success: true, emailSent: true })
+          }
+        }
+
         return NextResponse.json({ error: 'Un compte existe déjà avec cet email.' }, { status: 409 })
       }
       log.error('createUser', { msg: createError.message })
