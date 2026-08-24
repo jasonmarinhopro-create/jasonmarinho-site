@@ -5,6 +5,10 @@ import SocialAdmin, { type SocialAccountRow, type SocialPostRow } from './Social
 
 export const metadata = { title: 'Réseaux sociaux, Admin' }
 export const dynamic = 'force-dynamic'
+// La publication Instagram attend le traitement du média (jusqu'à ~40s,
+// voir waitForMediaReady dans lib/social/meta.ts) — au-delà du timeout
+// par défaut des Server Actions.
+export const maxDuration = 60
 
 export default async function SocialAdminPage() {
   const supabase = await createClient()

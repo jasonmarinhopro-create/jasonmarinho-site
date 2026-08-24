@@ -166,6 +166,20 @@ export async function publishToFacebook(pageId: string, pageAccessToken: string,
   return json.id
 }
 
+// Instagram traite l'image de façon asynchrone après la création du
+// conteneur média — publier avant la fin de ce traitement renvoie l'erreur
+// "Media ID is not available". On attend status_code=FINISHED (poll toutes
+// les 2s, jusqu'à 40s) avant d'appeler media_publish.
+async function waitForMediaReady(containerId: string, token: string): Promise<void> {
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const json = await graphFetch(`/${containerId}`, { access_token: token, fields: 'status_code' })
+    if (json.status_code === 'FINISHED') return
+    if (json.status_code === 'ERROR') throw new Error('Le traitement du média par Instagram a échoué (image invalide ou inaccessible).')
+    await new Promise(resolve => setTimeout(resolve, 2000))
+  }
+  throw new Error('Le média met trop de temps à être traité par Instagram (délai dépassé).')
+}
+
 // Instagram exige au moins une image/vidéo — pas de post texte seul.
 // 1 image : conteneur média puis publication directe.
 // 2+ images : chaque image devient un conteneur enfant (is_carousel_item),
@@ -197,6 +211,8 @@ export async function publishToInstagram(igUserId: string, pageAccessToken: stri
     }, 'POST')
     creationId = carousel.id
   }
+
+  await waitForMediaReady(creationId, pageAccessToken)
 
   const published = await graphFetch(`/${igUserId}/media_publish`, {
     access_token: pageAccessToken,
