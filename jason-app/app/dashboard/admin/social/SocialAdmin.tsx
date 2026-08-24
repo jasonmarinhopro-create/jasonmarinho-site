@@ -4,12 +4,13 @@ import { useRef, useState, useTransition } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import {
-  FacebookLogo, InstagramLogo, PinterestLogo, LinkedinLogo, XLogo,
   Plus, ArrowClockwise, X, CheckCircle, XCircle, Clock, UploadSimple, ImageSquare,
   Heart, ChatCircle, CalendarBlank, PencilSimple, Check,
 } from '@phosphor-icons/react/dist/ssr'
-import { createSocialPost, updateSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, setSocialCadence } from './actions'
+import { createSocialPost, updateSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, refreshAllStats, setSocialCadence } from './actions'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
+import SocialStats from './SocialStats'
+import { PLATFORM_META, IMPLEMENTED_PLATFORMS, ALL_PLATFORMS } from './constants'
 
 export interface SocialAccountRow {
   id: string
@@ -88,16 +89,6 @@ export interface SocialPostRow {
   targets: SocialPostTargetRow[]
 }
 
-const PLATFORM_META: Record<string, { label: string; Icon: React.ElementType; color: string }> = {
-  facebook:  { label: 'Facebook',  Icon: FacebookLogo,  color: '#1877F2' },
-  instagram: { label: 'Instagram', Icon: InstagramLogo, color: '#C13584' },
-  pinterest: { label: 'Pinterest', Icon: PinterestLogo, color: '#E60023' },
-  x:         { label: 'X',         Icon: XLogo,         color: 'var(--text)' },
-  linkedin:  { label: 'LinkedIn',  Icon: LinkedinLogo,  color: '#0A66C2' },
-}
-const IMPLEMENTED_PLATFORMS = ['facebook', 'instagram']
-const ALL_PLATFORMS = ['instagram', 'facebook', 'pinterest', 'x', 'linkedin']
-
 export default function SocialAdmin({ accounts, posts, cadence }: { accounts: SocialAccountRow[]; posts: SocialPostRow[]; cadence: CadenceConfig | null }) {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -119,6 +110,7 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const [editingPostId, setEditingPostId] = useState<string | null>(null)
+  const [view, setView] = useState<'composer' | 'stats'>('composer')
 
   const [showPerNetworkText, setShowPerNetworkText] = useState(true)
   const [bodyOverrides, setBodyOverrides] = useState<Record<string, string>>({})
@@ -306,6 +298,13 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
     })
   }
 
+  function refreshAll() {
+    startTransition(async () => {
+      await refreshAllStats()
+      router.refresh()
+    })
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, fontFamily: 'var(--font-outfit), sans-serif' }}>
       <div>
@@ -355,6 +354,21 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
         </div>
       </section>
 
+      {/* Onglets */}
+      <div style={s.tabRow}>
+        <button type="button" onClick={() => setView('composer')} style={{ ...s.tabBtn, ...(view === 'composer' ? s.tabBtnActive : {}) }}>
+          Composer
+        </button>
+        <button type="button" onClick={() => setView('stats')} style={{ ...s.tabBtn, ...(view === 'stats' ? s.tabBtnActive : {}) }}>
+          Statistiques
+        </button>
+      </div>
+
+      {view === 'stats' && (
+        <SocialStats posts={posts} onRefreshAll={refreshAll} refreshing={isPending} />
+      )}
+
+      {view === 'composer' && (
       <div style={s.mainGrid}>
         {/* Composeur */}
         <section style={s.card}>
@@ -679,6 +693,7 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
           </section>
         </div>
       </div>
+      )}
     </div>
   )
 }
@@ -777,6 +792,17 @@ const s: Record<string, any> = {
   }),
   mainGrid: {
     display: 'grid', gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 0.9fr)', gap: 20,
+  },
+  tabRow: {
+    display: 'flex', gap: 6, borderBottom: '1px solid var(--border)', paddingBottom: 0,
+  },
+  tabBtn: {
+    padding: '9px 4px', marginBottom: -1, borderRadius: 0, border: 'none', borderBottom: '2px solid transparent',
+    background: 'transparent', color: 'var(--text-muted)', fontSize: 14, fontWeight: 600,
+    fontFamily: 'inherit', cursor: 'pointer', marginRight: 18,
+  },
+  tabBtnActive: {
+    color: 'var(--accent-text)', borderBottomColor: 'var(--accent-text)',
   },
   accountRow: {
     display: 'flex', alignItems: 'center', gap: 8,

@@ -96,6 +96,37 @@ export async function dispatchDuePosts(): Promise<{ processed: number }> {
   return { processed: (due ?? []).length }
 }
 
+// Rafraîchit un seul target publié depuis l'API Meta. Partagé par
+// refreshPostStats (un post) et refreshAllStats (tous les posts).
+async function refreshTargetStats(
+  db: ReturnType<typeof serviceClient>,
+  target: { id: string; platform: string; external_post_id: string | null },
+  accounts: Array<{ platform: string; access_token: string }>,
+): Promise<boolean> {
+  if (!target.external_post_id) return false
+  const account = accounts.find(a => a.platform === target.platform)
+  if (!account) return false
+  try {
+    const accessToken = decryptToken(account.access_token)
+    const insights = target.platform === 'facebook'
+      ? await getFacebookPostInsights(target.external_post_id, accessToken)
+      : target.platform === 'instagram'
+        ? await getInstagramMediaInsights(target.external_post_id, accessToken)
+        : null
+    if (!insights) return false
+    await db.from('social_post_targets').update({
+      like_count: insights.likeCount,
+      comment_count: insights.commentCount,
+      stats_updated_at: new Date().toISOString(),
+    }).eq('id', target.id)
+    return true
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    log.error('refresh stats échoué', { platform: target.platform, err: message })
+    return false
+  }
+}
+
 // Rafraîchit les likes/commentaires des cibles publiées d'un post, depuis
 // l'API Meta. Appelé à la demande (bouton "Actualiser les stats"), pas en
 // tâche de fond — évite un cron de plus pour un besoin non temps-réel.
@@ -105,27 +136,22 @@ export async function refreshPostStats(postId: string): Promise<void> {
     db.from('social_post_targets').select('*').eq('post_id', postId).eq('status', 'published'),
     db.from('social_accounts').select('*').eq('status', 'active'),
   ])
-
   for (const target of targets ?? []) {
-    if (!target.external_post_id) continue
-    const account = (accounts ?? []).find(a => a.platform === target.platform)
-    if (!account) continue
-    try {
-      const accessToken = decryptToken(account.access_token)
-      const insights = target.platform === 'facebook'
-        ? await getFacebookPostInsights(target.external_post_id, accessToken)
-        : target.platform === 'instagram'
-          ? await getInstagramMediaInsights(target.external_post_id, accessToken)
-          : null
-      if (!insights) continue
-      await db.from('social_post_targets').update({
-        like_count: insights.likeCount,
-        comment_count: insights.commentCount,
-        stats_updated_at: new Date().toISOString(),
-      }).eq('id', target.id)
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err)
-      log.error('refresh stats échoué', { postId, platform: target.platform, err: message })
-    }
+    await refreshTargetStats(db, target, accounts ?? [])
   }
+}
+
+// Même chose mais pour toutes les cibles publiées, tous posts confondus —
+// utilisé par le bouton "Actualiser tout" de l'onglet Statistiques.
+export async function refreshAllStats(): Promise<{ updated: number }> {
+  const db = serviceClient()
+  const [{ data: targets }, { data: accounts }] = await Promise.all([
+    db.from('social_post_targets').select('*').eq('status', 'published'),
+    db.from('social_accounts').select('*').eq('status', 'active'),
+  ])
+  let updated = 0
+  for (const target of targets ?? []) {
+    if (await refreshTargetStats(db, target, accounts ?? [])) updated++
+  }
+  return { updated }
 }
