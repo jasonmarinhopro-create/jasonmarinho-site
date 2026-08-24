@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Fri, 21 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 24 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Vidéo d&apos;annonce Airbnb : 6 règles pour tourner un tour vidéo qui booste ta conversion en 2026</title>
+      <link>https://jasonmarinho.com/blog/video-annonce-airbnb-6-regles-tour-video-conversion-2026</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/video-annonce-airbnb-6-regles-tour-video-conversion-2026</guid>
+      <pubDate>Mon, 24 Aug 2026 08:00:00 GMT</pubDate>
+      <description>Préparation, matériel, séquence, cadrage, montage, publication : 6 règles concrètes pour tourner une vidéo d&apos;annonce Airbnb qui augmente ta conversion en 2026.</description>
+      <category>Visibilité</category>
+    </item>
     <item>
       <title>Réseau Wi-Fi invité en LCD : 6 étapes pour isoler ton réseau et sécuriser tes voyageurs</title>
       <link>https://jasonmarinho.com/blog/reseau-wifi-invite-lcd-6-etapes-isoler-securiser</link>
@@ -398,14 +406,6 @@
       <pubDate>Wed, 06 May 2026 08:00:00 GMT</pubDate>
       <description>Près d&apos;un foyer français sur deux a un animal. Voici les 7 règles concrètes pour ouvrir ta location courte durée aux voyageurs avec animaux sans risque pour ton logement.</description>
       <category>Expérience</category>
-    </item>
-    <item>
-      <title>Devenir Superhost Airbnb : les 4 critères à valider et la méthode pour y arriver en 2026</title>
-      <link>https://jasonmarinho.com/blog/superhost-airbnb-criteres-methode-2026</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/superhost-airbnb-criteres-methode-2026</guid>
-      <pubDate>Mon, 04 May 2026 08:00:00 GMT</pubDate>
-      <description>Note 4,8, taux de réponse 90 %, annulations sous 1 %, 10 séjours : les 4 critères du statut Superhost Airbnb 2026 et la méthode pour les valider sans stress.</description>
-      <category>Visibilité</category>
     </item>
   </channel>
 </rss>
