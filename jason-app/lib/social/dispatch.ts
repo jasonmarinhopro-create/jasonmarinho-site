@@ -34,6 +34,12 @@ export async function dispatchPost(postId: string): Promise<void> {
   let failed = 0
 
   for (const target of targets ?? []) {
+    if (target.status === 'published') {
+      // Déjà publié (ex : Facebook OK, Instagram en échec) — on ne
+      // republie pas, sinon "Réessayer" créerait un doublon sur ce réseau.
+      succeeded++
+      continue
+    }
     const account = (accounts ?? []).find(a => a.platform === target.platform)
     if (!account) {
       failed++
