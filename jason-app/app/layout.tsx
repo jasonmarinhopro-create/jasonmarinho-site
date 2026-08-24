@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" data-theme="dark" className={`${fraunces.variable} ${outfit.variable}`}>
+    <html lang="fr" data-theme="light" className={`${fraunces.variable} ${outfit.variable}`}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* Anti-flash script: applies stored theme before React hydrates */}

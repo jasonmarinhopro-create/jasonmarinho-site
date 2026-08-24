@@ -2,26 +2,26 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 
-// 3 thèmes : dark (par défaut), light, amoled (true black pour OLED).
-// Le cycle de toggleTheme : dark → light → amoled → dark
+// 3 thèmes : light (par défaut), dark, amoled (true black pour OLED).
+// Le cycle de toggleTheme : light → dark → amoled → light
 type Theme = 'dark' | 'light' | 'amoled'
 
 interface ThemeCtx {
   theme: Theme
-  /** Cycle entre les 3 thèmes : dark → light → amoled → dark */
+  /** Cycle entre les 3 thèmes : light → dark → amoled → light */
   toggleTheme: () => void
   /** Setter direct pour les UI qui exposent les 3 options */
   setTheme: (t: Theme) => void
 }
 
 const ThemeContext = createContext<ThemeCtx>({
-  theme: 'dark',
+  theme: 'light',
   toggleTheme: () => {},
   setTheme: () => {},
 })
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('dark')
+  const [theme, setThemeState] = useState<Theme>('light')
 
   useEffect(() => {
     // Read theme set by the inline script (already applied on <html>)
@@ -36,11 +36,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }
 
   function toggleTheme() {
-    // Cycle dark → light → amoled → dark
+    // Cycle light → dark → amoled → light
     const next: Theme =
-      theme === 'dark'   ? 'light' :
-      theme === 'light'  ? 'amoled' :
-                           'dark'
+      theme === 'light'  ? 'dark' :
+      theme === 'dark'   ? 'amoled' :
+                           'light'
     applyTheme(next)
   }
 
