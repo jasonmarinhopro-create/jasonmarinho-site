@@ -13,8 +13,8 @@ export default function FinancesTabBar() {
   const pathname = usePathname() ?? ''
   const tabs = [
     { href: '/dashboard/finances/revenus',       label: 'Revenus',       Icon: ChartBar },
-    { href: '/dashboard/finances/encaissements', label: 'Encaissements', Icon: Bank },
     { href: '/dashboard/finances/performances',  label: 'Performances',  Icon: ChartLineUp },
+    { href: '/dashboard/finances/encaissements', label: 'Encaissements', Icon: Bank },
   ]
 
   return (
