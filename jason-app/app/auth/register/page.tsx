@@ -212,6 +212,7 @@ function RegisterForm({ investor = false }: { investor?: boolean }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [emailSent, setEmailSent] = useState(true)
   // Honeypot (champ caché qu'un humain ne remplit jamais) + timestamp d'ouverture
   // du form pour détecter les bots ultra-rapides (anti-spam Brevo).
   const [website, setWebsite] = useState('')
@@ -247,6 +248,7 @@ function RegisterForm({ investor = false }: { investor?: boolean }) {
         setLoading(false)
         return
       }
+      setEmailSent(data.emailSent !== false)
       setSuccess(true)
     } catch {
       setError('Erreur réseau. Réessaie.')
@@ -305,9 +307,15 @@ function RegisterForm({ investor = false }: { investor?: boolean }) {
           <div style={{ textAlign: 'center', maxWidth: '360px', padding: '40px 0' }} className="fade-up">
             <CheckCircle size={56} weight="fill" color="#10b981" style={{ marginBottom: '20px' }} />
             <h2 style={s.formTitle}>Compte créé !</h2>
-            <p style={{ fontSize: '15px', color: 'rgba(11,29,15,0.5)', lineHeight: 1.65, marginBottom: '32px' }}>
-              Un email de confirmation t'a été envoyé. Vérifie ta boîte mail (et tes spams), puis connecte-toi.
-            </p>
+            {emailSent ? (
+              <p style={{ fontSize: '15px', color: 'rgba(11,29,15,0.5)', lineHeight: 1.65, marginBottom: '32px' }}>
+                Un email de confirmation t'a été envoyé. Vérifie ta boîte mail (et tes spams), puis connecte-toi.
+              </p>
+            ) : (
+              <p style={{ fontSize: '15px', color: 'rgba(11,29,15,0.5)', lineHeight: 1.65, marginBottom: '32px' }}>
+                Ton compte est créé, mais l'email de confirmation n'a pas pu être envoyé tout de suite. Si tu ne reçois rien d'ici quelques minutes (spams inclus), <a href="/contact" style={{ color: '#004C3F', fontWeight: 500 }}>contacte-nous</a> pour qu'on débloque ton accès.
+              </p>
+            )}
             <Link href="/auth/login" className="btn-primary" style={{ justifyContent: 'center' }}>
               Aller à la connexion <ArrowRight size={16} weight="bold" />
             </Link>
@@ -425,21 +433,21 @@ function RegisterForm({ investor = false }: { investor?: boolean }) {
 
             {error && <p style={s.errorBox}>{error}</p>}
 
-            {/* Honeypot anti-bot : champ caché qu'un humain ne remplit jamais */}
-            <input
-              type="text"
-              name="website"
-              value={website}
-              onChange={e => setWebsite(e.target.value)}
-              tabIndex={-1}
-              autoComplete="off"
-              aria-hidden="true"
-              style={{
-                position: 'absolute', left: '-9999px', top: '-9999px',
-                opacity: 0, pointerEvents: 'none', height: 0, width: 0,
-                border: 0, padding: 0,
-              }}
-            />
+            {/* Honeypot anti-bot : champ caché qu'un humain ne remplit jamais.
+                display:none (pas juste positionné hors écran) + nom neutre
+                (pas "website"/"url"/"company") pour éviter que l'autofill du
+                navigateur (adresses/infos pro enregistrées) le remplisse à la
+                place d'un bot — ça a probablement bloqué de vraies personnes. */}
+            <div style={{ display: 'none' }} aria-hidden="true">
+              <input
+                type="text"
+                name="hp_do_not_fill"
+                value={website}
+                onChange={e => setWebsite(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
 
             <button
               type="submit" className="btn-primary" disabled={loading}
