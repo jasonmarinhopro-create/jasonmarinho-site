@@ -20,6 +20,11 @@ export interface ChargeInput {
   categorie: string
   description?: string | null
   deductible?: boolean
+  // Uniquement pour categorie === 'amortissement' : nombre d'années sur
+  // lesquelles étaler la déduction (mobilier 5-10 ans, travaux 10-15 ans,
+  // bien immobilier hors terrain ~20-30 ans). Alimente le tableau
+  // d'amortissement et la dotation annuelle utilisée dans l'estimation fiscale.
+  duree_amortissement_annees?: number | null
 }
 
 export async function createRevenusEntry(input: EntryInput) {
@@ -111,6 +116,7 @@ export async function createCharge(input: ChargeInput) {
       categorie: input.categorie,
       description: input.description ?? null,
       deductible: input.deductible ?? true,
+      duree_amortissement_annees: input.categorie === 'amortissement' ? (input.duree_amortissement_annees ?? null) : null,
     })
     .select()
     .single()

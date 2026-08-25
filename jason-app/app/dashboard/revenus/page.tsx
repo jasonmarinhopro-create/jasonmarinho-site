@@ -46,7 +46,7 @@ export default async function RevenusPage() {
       .order('date_paiement', { ascending: false }),
     supabase
       .from('revenus_charges')
-      .select('id, logement_nom, logement_id, montant, date_charge, categorie, description, deductible')
+      .select('id, logement_nom, logement_id, montant, date_charge, categorie, description, deductible, duree_amortissement_annees')
       .eq('user_id', userId)
       .order('date_charge', { ascending: false }),
     supabase

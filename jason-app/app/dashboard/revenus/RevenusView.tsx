@@ -5,7 +5,7 @@ import {
   CurrencyEur, Clock, TrendUp, CalendarBlank,
   House, Plus, Trash, X, Check,
   Info, Warning, ArrowRight, Scales, Upload,
-  Receipt, ChartBar, Target, EyeSlash,
+  Receipt, ChartBar, Target, EyeSlash, Stack,
 } from '@phosphor-icons/react/dist/ssr'
 import { createRevenusEntry, deleteRevenusEntry, createCharge, deleteCharge, setObjectifAnnuel, setEntryADeclarer } from './actions'
 import ImportCSVModal from './ImportCSVModal'
@@ -56,6 +56,8 @@ interface ChargeEntry {
   categorie: string
   description: string | null
   deductible: boolean
+  // Uniquement pour categorie === 'amortissement' : durée d'étalement en années.
+  duree_amortissement_annees?: number | null
 }
 
 interface LogementMin {
@@ -215,6 +217,7 @@ export default function RevenusView({
   const [cCat,      setCCat]      = useState<string>('menage')
   const [cDesc,     setCDesc]     = useState('')
   const [cDeductible, setCDeductible] = useState<boolean>(true)
+  const [cDuree,    setCDuree]    = useState('5')
 
   function resetForm() {
     setFLogement(''); setFMontant(''); setFDate(todayISO())
@@ -271,13 +274,16 @@ export default function RevenusView({
 
   function resetChargeForm() {
     setCLogement(''); setCMontant(''); setCDate(todayISO())
-    setCCat('menage'); setCDesc(''); setCDeductible(true)
+    setCCat('menage'); setCDesc(''); setCDeductible(true); setCDuree('5')
     setShowChargeForm(false)
   }
 
   function handleAddCharge() {
     const montant = parseFloat(cMontant)
     if (!cLogement.trim() || isNaN(montant) || montant <= 0 || !cDate) return
+    const isAmortissement = cCat === 'amortissement'
+    const duree = isAmortissement ? parseInt(cDuree, 10) : null
+    if (isAmortissement && (!duree || duree <= 0)) return
     const matchedLogement = logements.find(l => l.nom === cLogement.trim())
     const optimistic: ChargeEntry = {
       id: 'tmp-' + Date.now(),
@@ -288,6 +294,7 @@ export default function RevenusView({
       categorie: cCat,
       description: cDesc.trim() || null,
       deductible: cDeductible,
+      duree_amortissement_annees: duree,
     }
     setCharges(prev => [optimistic, ...prev])
     resetChargeForm()
@@ -300,6 +307,7 @@ export default function RevenusView({
         categorie: optimistic.categorie,
         description: optimistic.description,
         deductible: optimistic.deductible,
+        duree_amortissement_annees: optimistic.duree_amortissement_annees,
       })
       if (res.error) {
         setCharges(prev => prev.filter(c => c.id !== optimistic.id))
@@ -339,6 +347,30 @@ export default function RevenusView({
   const showFranceInfo = hostCountries.has('FR')
   const showPortugalInfo = hostCountries.has('PT')
 
+  // ── Tableau d'amortissement ────────────────────────────────────────────
+  // Un bien amorti se déduit par tranches annuelles (dotation = valeur /
+  // durée), pas en une fois l'année de l'achat. On calcule le planning
+  // complet de chaque bien, indépendamment de son année d'achat, pour
+  // pouvoir déterminer la dotation qui tombe sur l'année en cours même si
+  // le bien a été acheté il y a plusieurs années.
+  const amortissementRows = useMemo(() => {
+    return charges
+      .filter(c => c.categorie === 'amortissement' && (c.duree_amortissement_annees ?? 0) > 0)
+      .map(c => {
+        const duree = c.duree_amortissement_annees as number
+        const anneeDebut = new Date(c.date_charge).getFullYear()
+        const anneeFin = anneeDebut + duree - 1
+        const dotationAnnuelle = c.montant / duree
+        const anneesEcoulees = Math.min(Math.max(thisYear - anneeDebut + 1, 0), duree)
+        const cumul = dotationAnnuelle * anneesEcoulees
+        const vnc = Math.max(c.montant - cumul, 0)
+        const statut: 'a_venir' | 'en_cours' | 'amorti' =
+          thisYear < anneeDebut ? 'a_venir' : thisYear > anneeFin ? 'amorti' : 'en_cours'
+        return { ...c, duree, anneeDebut, anneeFin, dotationAnnuelle, cumul, vnc, statut }
+      })
+      .sort((a, b) => b.anneeDebut - a.anneeDebut)
+  }, [charges, thisYear])
+
   // ── Charges stats (pour Phase 2 KPIs et la section dédiée) ──
   const chargesStats = useMemo(() => {
     let cesMois = 0, cetteAnnee = 0, deductibleAnnee = 0
@@ -349,17 +381,32 @@ export default function RevenusView({
         cetteAnnee += c.montant
         // Seules les charges cochées "déductible" doivent réduire la base
         // imposable simulée en régime réel — sinon le calcul (et la case à
-        // cocher) n'ont aucun effet réel, ce qui trompe l'hôte.
-        if (c.deductible) deductibleAnnee += c.montant
+        // cocher) n'ont aucun effet réel, ce qui trompe l'hôte. Les charges
+        // "amortissement" AVEC une durée renseignée sont exclues ici : leur
+        // déduction est étalée (voir amortissementDotationAnnee ci-dessous).
+        // Les charges "amortissement" sans durée (saisies avant l'ajout du
+        // tableau d'amortissement) gardent l'ancien comportement — déduites
+        // en une fois — pour ne pas faire disparaître silencieusement une
+        // déduction déjà comptée par l'hôte.
+        const isScheduledAmortissement = c.categorie === 'amortissement' && (c.duree_amortissement_annees ?? 0) > 0
+        if (c.deductible && !isScheduledAmortissement) deductibleAnnee += c.montant
         if (d.getMonth() === thisMonth) cesMois += c.montant
         byCategoryYTD[c.categorie] = (byCategoryYTD[c.categorie] ?? 0) + c.montant
       }
     })
+    // Dotation d'amortissement de l'année en cours, tous biens confondus —
+    // peut inclure des biens achetés une année précédente mais toujours en
+    // cours d'amortissement.
+    const amortissementDotationAnnee = amortissementRows
+      .filter(r => r.deductible && r.statut === 'en_cours')
+      .reduce((sum, r) => sum + r.dotationAnnuelle, 0)
+    deductibleAnnee += amortissementDotationAnnee
+
     const byCategorySorted = Object.entries(byCategoryYTD)
       .map(([cat, total]) => ({ cat, total, ...CHARGE_LABEL[cat] }))
       .sort((a, b) => b.total - a.total)
-    return { cesMois, cetteAnnee, deductibleAnnee, byCategorySorted }
-  }, [charges, thisMonth, thisYear])
+    return { cesMois, cetteAnnee, deductibleAnnee, byCategorySorted, amortissementDotationAnnee }
+  }, [charges, thisMonth, thisYear, amortissementRows])
 
   // ── Répartition par canal (séjours uniquement) ────────────────────────
   // Agrège les revenus issus de séjours par plateforme YTD, calcule les
@@ -1919,6 +1966,19 @@ export default function RevenusView({
                   style={s.formInput} className="input-field"
                 />
               </div>
+              {cCat === 'amortissement' && (
+                <div style={s.formField}>
+                  <label style={s.formLabel}>Durée d&apos;amortissement (années) *</label>
+                  <input
+                    type="number" min="1" max="50" step="1"
+                    value={cDuree} onChange={e => setCDuree(e.target.value)}
+                    placeholder="5" style={s.formInput} className="input-field"
+                  />
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                    Repères : mobilier 5-10 ans · électroménager 5-10 ans · travaux d&apos;amélioration 10-15 ans · bien immobilier hors terrain 20-30 ans.
+                  </span>
+                </div>
+              )}
               <div style={{ ...s.formField, gridColumn: 'span 2' }}>
                 <label style={s.formLabel}>Description (optionnel)</label>
                 <input
@@ -1940,14 +2000,20 @@ export default function RevenusView({
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '12px' }}>
-              <button
-                onClick={handleAddCharge}
-                disabled={!cLogement.trim() || !cMontant || parseFloat(cMontant) <= 0 || !cDate}
-                style={{ ...s.actionBtn, opacity: (cLogement.trim() && cMontant && parseFloat(cMontant) > 0 && cDate) ? 1 : 0.45 }}
-              >
-                <Check size={14} weight="bold" />
-                Enregistrer la charge
-              </button>
+              {(() => {
+                const dureeInvalid = cCat === 'amortissement' && (!cDuree || parseInt(cDuree, 10) <= 0)
+                const valid = !!cLogement.trim() && !!cMontant && parseFloat(cMontant) > 0 && !!cDate && !dureeInvalid
+                return (
+                  <button
+                    onClick={handleAddCharge}
+                    disabled={!valid}
+                    style={{ ...s.actionBtn, opacity: valid ? 1 : 0.45 }}
+                  >
+                    <Check size={14} weight="bold" />
+                    Enregistrer la charge
+                  </button>
+                )
+              })()}
             </div>
           </div>
         )}
@@ -2027,6 +2093,84 @@ export default function RevenusView({
           </div>
         )}
       </section>
+
+      {/* ── Tableau d'amortissement ─────────────────────────────────── */}
+      {amortissementRows.length > 0 && (
+        <section style={s.card}>
+          <div style={s.journalHead}>
+            <div>
+              <h2 style={{ ...s.cardTitle, marginBottom: '2px' }}>
+                <Stack size={16} weight="fill" style={{ verticalAlign: 'middle', marginRight: '6px', color: 'var(--accent-text)' }} />
+                Tableau d&apos;amortissement
+              </h2>
+              <p style={{ ...s.cardSub, margin: 0 }}>
+                Dotation annuelle calculée automatiquement pour chaque bien amorti (valeur ÷ durée), étalée sur la période choisie.
+              </p>
+            </div>
+            {chargesStats.amortissementDotationAnnee > 0 && (
+              <span style={{
+                fontSize: '12px', fontWeight: 600, flexShrink: 0,
+                padding: '6px 12px',
+                background: 'rgba(244,114,182,0.10)',
+                color: '#f472b6',
+                border: '1px solid rgba(244,114,182,0.24)',
+                borderRadius: '8px',
+              }}>
+                − {fmt(chargesStats.amortissementDotationAnnee)} dotation {thisYear}
+              </span>
+            )}
+          </div>
+
+          <div style={{ overflowX: 'auto' as const }}>
+            <table style={s.amortTable}>
+              <thead>
+                <tr>
+                  <th style={s.amortTh}>Bien</th>
+                  <th style={s.amortTh}>Logement</th>
+                  <th style={{ ...s.amortTh, textAlign: 'right' as const }}>Valeur</th>
+                  <th style={{ ...s.amortTh, textAlign: 'center' as const }}>Période</th>
+                  <th style={{ ...s.amortTh, textAlign: 'right' as const }}>Dotation / an</th>
+                  <th style={{ ...s.amortTh, textAlign: 'right' as const }}>Cumulé</th>
+                  <th style={{ ...s.amortTh, textAlign: 'right' as const }}>VNC restante</th>
+                  <th style={s.amortTh}>Statut</th>
+                </tr>
+              </thead>
+              <tbody>
+                {amortissementRows.map(r => (
+                  <tr key={r.id} style={s.amortTr}>
+                    <td style={s.amortTd}>{r.description || 'Bien amorti'}</td>
+                    <td style={{ ...s.amortTd, color: 'var(--text-muted)' }}>{r.logement_nom}</td>
+                    <td style={{ ...s.amortTd, textAlign: 'right' as const }}>{fmt(r.montant)}</td>
+                    <td style={{ ...s.amortTd, textAlign: 'center' as const, color: 'var(--text-muted)', whiteSpace: 'nowrap' as const }}>
+                      {r.anneeDebut}{'–'}{r.anneeFin}
+                    </td>
+                    <td style={{ ...s.amortTd, textAlign: 'right' as const }}>{fmt(r.dotationAnnuelle)}</td>
+                    <td style={{ ...s.amortTd, textAlign: 'right' as const, color: 'var(--text-muted)' }}>{fmt(r.cumul)}</td>
+                    <td style={{ ...s.amortTd, textAlign: 'right' as const, fontWeight: 600 }}>{fmt(r.vnc)}</td>
+                    <td style={s.amortTd}>
+                      <span style={{
+                        ...s.txBadge,
+                        ...(r.statut === 'en_cours'
+                          ? { background: 'rgba(74,222,128,0.10)', color: '#4ade80' }
+                          : r.statut === 'amorti'
+                            ? { background: 'rgba(148,163,184,0.10)', color: 'var(--text-muted)' }
+                            : { background: 'rgba(96,165,250,0.10)', color: '#60a5fa' }),
+                      }}>
+                        {r.statut === 'en_cours' ? 'En cours' : r.statut === 'amorti' ? 'Amorti' : 'À venir'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p style={{ fontSize: '11.5px', color: 'var(--text-muted)', margin: '10px 0 0', lineHeight: 1.5 }}>
+            Amortissement linéaire simplifié (valeur ÷ durée, réparti à l&apos;année). Ce tableau est un outil de pilotage,
+            pas une liasse fiscale : vérifie le plan d&apos;amortissement retenu avec ton expert-comptable, notamment pour
+            un amortissement par composants ou une méthode dégressive.
+          </p>
+        </section>
+      )}
 
       <FiscaliteSection
         annuel={taxEstimateByCountry.reduce((sum, c) => sum + c.brut, 0)}
@@ -3352,6 +3496,29 @@ const s: Record<string, React.CSSProperties> = {
   chargesCatPct: {
     fontSize: '10px',
     color: 'var(--text-muted)',
+  },
+
+  // ─── Tableau d'amortissement ────────────────────────────────────
+  amortTable: {
+    width: '100%',
+    borderCollapse: 'collapse' as const,
+    fontSize: '13px',
+    minWidth: '640px',
+  },
+  amortTh: {
+    textAlign: 'left' as const,
+    fontSize: '11px', fontWeight: 600, color: 'var(--text-muted)',
+    textTransform: 'uppercase' as const, letterSpacing: '0.4px',
+    padding: '0 10px 8px',
+    borderBottom: '1px solid var(--border)',
+    whiteSpace: 'nowrap' as const,
+  },
+  amortTr: {
+    borderBottom: '1px solid var(--border)',
+  },
+  amortTd: {
+    padding: '10px',
+    color: 'var(--text)',
   },
 
   // ─── Explication déductibilité (Charges & dépenses) ────────────
