@@ -380,7 +380,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
               <button onClick={() => setShowCreateModal(false)} style={s.clearBtn}><X size={16} /></button>
             </div>
             <p style={{ fontSize: '12.5px', color: 'var(--text-3)', margin: '0 0 16px', lineHeight: 1.5 }}>
-              Pour débloquer un prospect dont l&rsquo;inscription a échoué (bloqué par erreur, email jamais reçu…). Un email lui est envoyé pour définir son mot de passe.
+              Pour débloquer un prospect dont l&rsquo;inscription a échoué (bloqué par erreur, email jamais reçu…). Un email lui est envoyé avec un mot de passe temporaire pour se connecter.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <input
