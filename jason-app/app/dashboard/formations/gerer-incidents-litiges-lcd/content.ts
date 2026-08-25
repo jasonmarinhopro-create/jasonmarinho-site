@@ -38,8 +38,6 @@ Le contrat de location, c'est :
 
 *Sans contrat, tu es à 100 % à la merci de la plateforme.*
 
----
-
 ## Ce que doit contenir un contrat solide
 
 Un contrat de location courte durée juridiquement valide doit comporter au minimum **12 mentions** :
@@ -59,8 +57,6 @@ Un contrat de location courte durée juridiquement valide doit comporter au mini
 
 > Si ton contrat actuel n'a pas les 12 points, **refais-le**.
 
----
-
 ## Le piège du contrat "Airbnb-only"
 
 Beaucoup d'hôtes pensent que les conditions qu'ils renseignent dans leur annonce Airbnb font office de contrat.
@@ -72,8 +68,6 @@ Beaucoup d'hôtes pensent que les conditions qu'ils renseignent dans leur annonc
 - En cas de litige, Airbnb peut décider de **ne pas** faire respecter ces règles contre le voyageur.
 
 **Conclusion :** envoie systématiquement un contrat à signer en parallèle de la réservation Airbnb.
-
----
 
 ## Comment faire signer le contrat
 
@@ -101,8 +95,6 @@ Tu as 3 options, par ordre de qualité :
 
 > Choisis l'**option 1** dans 95 % des cas.
 
----
-
 ## Les 3 clauses qui te protègent vraiment
 
 3 clauses spécifiques font la différence en cas de litige.
@@ -127,8 +119,6 @@ Tu as 3 options, par ordre de qualité :
 
 *Sans cette clause, tu DOIS rembourser la caution intégralement et faire un procès pour récupérer les dégâts.*
 
----
-
 ## Exercice, action immédiate
 
 1. **Vérifie** que ton contrat actuel contient les 12 mentions obligatoires + les 3 clauses de protection.
@@ -151,8 +141,6 @@ La caution te protège **financièrement**.
 
 > Le **type** de caution que tu choisis détermine ton **pouvoir de négociation** après l'incident.
 
----
-
 ## Le tableau comparatif des cautions
 
 4 méthodes courantes en LCD :
@@ -163,8 +151,6 @@ La caution te protège **financièrement**.
 | **Chèque non encaissé** | ⭐⭐⭐⭐ | Moyenne | OUI |
 | **Virement bancaire** | ⭐⭐⭐ | Élevée | Selon cas |
 | **Caution Airbnb (AirCover)** | ⭐⭐ | Aucune | NON |
-
----
 
 ## Option 1, La pré-autorisation Stripe *(recommandée)*
 
@@ -195,8 +181,6 @@ La caution te protège **financièrement**.
 
 Si tu utilises le dashboard, la pré-autorisation Stripe est intégrée. Tu actives "Caution Stripe" sur le contrat.
 
----
-
 ## Option 2, Le chèque non encaissé
 
 ### Comment ça marche
@@ -224,8 +208,6 @@ Si tu utilises le dashboard, la pré-autorisation Stripe est intégrée. Tu acti
 
 Voyageurs français, zones rurales, séjours longs (> 5 nuits) où la friction d'envoi est acceptable.
 
----
-
 ## Option 3, Le virement bancaire
 
 ### Comment ça marche
@@ -252,8 +234,6 @@ Voyageurs français, zones rurales, séjours longs (> 5 nuits) où la friction d
 - Voyageurs B2B / contrats d'entreprise
 - *Pas pour la LCD classique.*
 
----
-
 ## Option 4, La caution Airbnb (AirCover)
 
 ### Comment ça marche
@@ -275,8 +255,6 @@ Voyageurs français, zones rurales, séjours longs (> 5 nuits) où la friction d
 
 *AirCover est une assurance catastrophe, pas une caution.*
 
----
-
 ## La règle des 3 niveaux
 
 Pour les hôtes sérieux, **empile 3 niveaux de protection** :
@@ -292,8 +270,6 @@ Pour les hôtes sérieux, **empile 3 niveaux de protection** :
 
 > Cette stratégie te protège à **99,8 %**.
 
----
-
 ## Le montant de la caution
 
 **Règle de base :** 2 à 3 nuits de loyer.
@@ -308,8 +284,6 @@ Pour les hôtes sérieux, **empile 3 niveaux de protection** :
 **Plafond légal en France :** aucun pour la LCD, mais au-delà de 2000 €, les voyageurs deviennent réticents.
 
 > Pour les cautions importantes (> 1000 €), fais une caution "à 2 niveaux" : une partie via **Stripe** (rapide à capturer) et une partie en **chèque** (réserve).
-
----
 
 ## Exercice, action immédiate
 
@@ -332,13 +306,9 @@ C'est ta **fenêtre de tir** pour vérifier qui est ce voyageur et s'il représe
 - La majorité des hôtes utilisent ce temps pour **zéro vérification**.
 - Pourtant, **80 % des incidents** en LCD sont prévisibles dès cette phase.
 
----
-
 ## Les 7 questions qui détectent les risques
 
 Envoie ces 7 questions par message 24-48 h après la confirmation de réservation. Chaque réponse (ou non-réponse) te donne des indicateurs précieux.
-
----
 
 ### Question 1, *« Quel est le motif de votre voyage ? »*
 
@@ -353,8 +323,6 @@ Envoie ces 7 questions par message 24-48 h après la confirmation de réservatio
 
 > Si la réponse est ambiguë, demande des précisions. Si elles sont aussi ambiguës, **annule la réservation** pendant que c'est encore facile.
 
----
-
 ### Question 2, *« Combien serez-vous au total ? »*
 
 **Réponses normales** : le nombre déclaré sur la réservation.
@@ -367,8 +335,6 @@ Envoie ces 7 questions par message 24-48 h après la confirmation de réservatio
 
 **Réagis :** *« Pour des raisons d'assurance et de capacité, je dois connaître le nombre exact. Tout dépassement implique un supplément de 50 €/personne. »*
 
----
-
 ### Question 3, *« Quelle plateforme avez-vous utilisée pour réserver ? »*
 
 C'est un **test piège**.
@@ -379,8 +345,6 @@ C'est un **test piège**.
 *Il a été ajouté en "guest" par quelqu'un d'autre. La personne qui a réservé n'est pas celle qui vient.*
 
 > Si c'est le cas, demande **l'identité du réservataire principal**. Souvent, c'est un revendeur (location pour autrui) ou un fraudeur.
-
----
 
 ### Question 4, *« À quelle heure pensez-vous arriver ? »*
 
@@ -396,8 +360,6 @@ C'est un **test piège**.
 
 > **Bonus :** tu envoies les instructions d'arrivée seulement **après** confirmation de l'horaire.
 
----
-
 ### Question 5, *« Avez-vous déjà séjourné en location courte durée ? »*
 
 **Réponse normale** : oui, ou non avec curiosité ("c'est ma première fois, pouvez-vous m'expliquer ?").
@@ -409,8 +371,6 @@ C'est un **test piège**.
 
 > Si "première fois", envoie un mot d'accueil détaillé. Si attitude désinvolte, **alerte mentale**.
 
----
-
 ### Question 6, *« Y aura-t-il des animaux ? »*
 
 C'est important **même si tu n'acceptes pas** les animaux. Beaucoup de voyageurs viennent avec, sans le déclarer.
@@ -420,8 +380,6 @@ C'est important **même si tu n'acceptes pas** les animaux. Beaucoup de voyageur
 **Drapeau rouge** : le voyageur a coché "non" sur Airbnb mais répond *« juste un petit chien »*.
 
 **Réagis :** *« Ma police d'assurance n'autorise pas les animaux. Je ne peux pas accueillir le séjour. Je vais devoir annuler. À moins que vous trouviez une autre solution pour votre animal. »*
-
----
 
 ### Question 7, *« Avez-vous des questions ou des besoins spécifiques ? »*
 
@@ -434,8 +392,6 @@ C'est important **même si tu n'acceptes pas** les animaux. Beaucoup de voyageur
 - "Est-ce qu'il y a un système de caution ?" *(en sous-entendu : "comment l'éviter")*
 
 > Une question sur la caution = **90 % d'intention** de tester les limites.
-
----
 
 ## L'étape "vérification d'identité"
 
@@ -454,8 +410,6 @@ Si refus catégorique, c'est un **drapeau rouge sérieux**. Annule.
 
 **Stockage :** Drive privé ou dashboard chiffré. Détruis 6 mois après le séjour pour respecter le RGPD.
 
----
-
 ## Le scoring rapide d'un voyageur
 
 Après les 7 questions + vérification d'identité, classe ton voyageur :
@@ -470,8 +424,6 @@ Après les 7 questions + vérification d'identité, classe ton voyageur :
   *Annule la réservation maintenant. Tu peux invoquer "circonstances exceptionnelles" sur Airbnb.*
 
 > Cette grille te fait économiser en moyenne **1500 €/an** de dégâts évités.
-
----
 
 ## Le timing des messages
 
@@ -489,8 +441,6 @@ Demande pièce d'identité + selfie
 Questions 5, 6, 7 + envoi du contrat + lien de caution Stripe
 
 > Cette cadence est non-agressive et te donne **3 occasions** de détecter un problème.
-
----
 
 ## Exercice, action immédiate
 
@@ -520,8 +470,6 @@ Quand un voyageur cause un problème, il **prévient rarement**. À l'inverse, i
 
 Voici les **8 signaux** que les hôtes expérimentés ont appris à détecter.
 
----
-
 ## Signal 1, Le silence radio total
 
 **Ce qui se passe :** le voyageur ne répond plus à tes messages après l'arrivée.
@@ -535,8 +483,6 @@ Voici les **8 signaux** que les hôtes expérimentés ont appris à détecter.
 - Une sous-location (le vrai locataire n'est pas là, les "remplaçants" évitent le contact).
 
 **Comment réagir :** envoie un message neutre type *« Tout va bien chez vous ? Tout est OK pour le wifi / chauffage ? »*. Si pas de réponse en 6 h, **passe sur place ou envoie quelqu'un**.
-
----
 
 ## Signal 2, Les bruits du quartier
 
@@ -552,8 +498,6 @@ Voici les **8 signaux** que les hôtes expérimentés ont appris à détecter.
 
 **Comment réagir :** documente l'heure et la nature du signalement par écrit (SMS du voisin, mail). C'est ta preuve future.
 
----
-
 ## Signal 3, La consommation anormale
 
 **Ce qui se passe :** tu as accès à ton compteur intelligent (Linky, eau) ou à un capteur, et tu vois une consommation anormale.
@@ -565,8 +509,6 @@ Voici les **8 signaux** que les hôtes expérimentés ont appris à détecter.
 - Pic de bruit Wi-Fi (> 20 appareils connectés) = invités non déclarés.
 
 **Comment réagir :** fais une "visite courtoise" sous prétexte (récupérer un colis, vérifier le chauffage, etc.).
-
----
 
 ## Signal 4, Les photos d'arrivée bizarres
 
@@ -580,8 +522,6 @@ Voici les **8 signaux** que les hôtes expérimentés ont appris à détecter.
 
 **Comment réagir :** redemande des photos précises (*« Pouvez-vous me prendre la salle de bain et la cuisine ? J'ai besoin pour la conformité. »*).
 
----
-
 ## Signal 5, Les demandes de "sortie tardive" répétées
 
 **Ce qui se passe :** le voyageur demande de partir 2 h, 4 h, 6 h après l'heure prévue.
@@ -593,8 +533,6 @@ Voici les **8 signaux** que les hôtes expérimentés ont appris à détecter.
 - Échapper à l'inventaire de sortie.
 
 **Comment réagir :** *« Désolé, ce n'est pas possible. Le ménage doit commencer à 11h pour le voyageur suivant. Sortie au plus tard à 11h. »* Pas de négociation.
-
----
 
 ## Signal 6, Le ton qui dégrade
 
@@ -608,8 +546,6 @@ Voici les **8 signaux** que les hôtes expérimentés ont appris à détecter.
 
 **Comment réagir :** **garde absolument tout par écrit** (Airbnb chat, SMS). Évite le téléphone (pas de preuve). Reste poli et factuel : *« Je comprends votre frustration. Pour avancer, pouvez-vous me préciser le problème exact ? »*
 
----
-
 ## Signal 7, Les messages le soir tard
 
 **Ce qui se passe :** le voyageur t'écrit après 22 h, surtout après 1 h du matin.
@@ -617,8 +553,6 @@ Voici les **8 signaux** que les hôtes expérimentés ont appris à détecter.
 **Pourquoi c'est suspect :** la majorité des messages tardifs concernent des situations qui se sont dégradées dans la soirée (fête, dispute, panique).
 
 **Comment réagir :** **ne réponds pas dans la nuit** (sauf urgence vitale). Réponds le lendemain matin avec une question factuelle. La nuit, tu ne penses pas clairement.
-
----
 
 ## Signal 8, Le règlement en plusieurs fois sans demande
 
@@ -630,8 +564,6 @@ Voici les **8 signaux** que les hôtes expérimentés ont appris à détecter.
 - Une tentative d'éviter la traçabilité (Airbnb / impôts).
 
 **Comment réagir :** *« Tout paiement passe par la plateforme officielle pour des raisons de conformité. Si vous avez un besoin spécifique, dites-moi. »* Refuse poliment mais fermement.
-
----
 
 ## La grille de vigilance
 
@@ -646,8 +578,6 @@ Les actions à enclencher :
 5. **Anticiper** la rédaction de l'avis ouvert/fermé (cf. Module 5).
 
 > La détection précoce **divise par 3** le coût moyen d'un incident.
-
----
 
 ## Exercice, action immédiate
 
@@ -677,8 +607,6 @@ Tu reçois ce message à 23h47 :
 
 > **Stop.** Ce n'est pas le moment de réagir à chaud. C'est le moment de suivre une **procédure froide**.
 
----
-
 ## Étape 1, Remercier le voisin (30 secondes)
 
 Réponds **immédiatement** au voisin :
@@ -697,8 +625,6 @@ Pourquoi c'est important :
 - Promettre (*« ça ne se reproduira plus »*) → tu ne maîtrises rien encore.
 - Te défausser (*« c'est Airbnb, je n'y peux rien »*) → tu perds en crédibilité.
 
----
-
 ## Étape 2, Contacter le voyageur (2 minutes)
 
 Envoie un message **direct, ferme, sans accusation** :
@@ -716,8 +642,6 @@ Envoie un message **direct, ferme, sans accusation** :
 - Menacer (*« ou je vous expulse »*) → escalade.
 - Insulter (*« c'est inacceptable »*) → ils se braquent.
 - Trop parler → plus tu écris, moins le message porte.
-
----
 
 ## Étape 3, Vérifier 30 minutes plus tard
 
@@ -753,8 +677,6 @@ C'est sérieux mais pas catastrophique.
 - Attends le rapport / PV au lendemain.
 - Prends contact avec la copropriété sous 24 h.
 
----
-
 ## Étape 4, Le lendemain matin
 
 ### Reprends contact avec le voyageur
@@ -778,8 +700,6 @@ Note dans ton dashboard (ou un cahier dédié) :
 
 > Cette documentation sera ton **bouclier** si le voyageur se plaint ensuite à Airbnb.
 
----
-
 ## Étape 5, Si la fête continue malgré tes messages
 
 C'est le scénario le plus rare mais le plus grave. Tu as **3 options** :
@@ -796,8 +716,6 @@ C'est le scénario le plus rare mais le plus grave. Tu as **3 options** :
 - **Filme discrètement** (preuve juridique, attention au cadre légal de la captation).
 - Si refus, **appelle la police** toi-même. Mieux que d'attendre que le voisin le fasse.
 
----
-
 ## Le contrat te protège-t-il vraiment ?
 
 Si ton contrat (cf. M1.L1) inclut une **clause anti-fête**, tu peux :
@@ -811,8 +729,6 @@ Si ton contrat (cf. M1.L1) inclut une **clause anti-fête**, tu peux :
 - Tu peux toujours résilier le séjour pour "trouble manifeste à l'ordre".
 - Mais Airbnb peut refuser la pénalité.
 - Tu es plus exposé en cas de procès.
-
----
 
 ## Exercice, action immédiate
 
@@ -839,8 +755,6 @@ Voici les règles que les voyageurs **enfreignent le plus**, par ordre de fréqu
 5. **Utilisation commerciale** (shoot photo, vidéo, événement)
 
 Pour chaque cas, il y a une **procédure spécifique** que voici.
-
----
 
 ## Cas 1, Sur-occupation
 
@@ -871,8 +785,6 @@ Ton contrat doit prévoir :
 
 Avec cette clause, tu prélèves **sans demander l'autorisation**.
 
----
-
 ## Cas 2, Animaux non déclarés
 
 ### Comment tu le détectes
@@ -901,8 +813,6 @@ Documente :
 
 **Total moyen prélevable :** 200 à 400 €.
 
----
-
 ## Cas 3, Fumée dans le logement
 
 ### Comment tu le détectes
@@ -928,8 +838,6 @@ Documente :
 **Total moyen prélevable :** 300 à 800 €.
 
 > La fumée de cannabis est **plus difficile** à éliminer (3 à 5 fois plus cher que la cigarette). Mentionne-le dans le devis.
-
----
 
 ## Cas 4, Fêtes et soirées
 
@@ -957,8 +865,6 @@ Procédure :
 3. Si refus, appelle la police.
 4. Au lendemain, signale à Airbnb avec ta documentation (messages, photos, témoignage voisin).
 5. Réclame le remboursement intégral du séjour + dégâts.
-
----
 
 ## Cas 5, Utilisation commerciale (shoot photo, événement, location bureau)
 
@@ -989,8 +895,6 @@ Si tu veux ouvrir cette possibilité comme business secondaire :
 
 > Beaucoup d'hôtes refusent. C'est légitime. Mais c'est aussi un canal de revenus 5x supérieur si tu sais le facturer.
 
----
-
 ## Le principe général : "Documenter, demander, appliquer"
 
 Quand un voyageur viole une règle, suis toujours ces 3 étapes :
@@ -1012,8 +916,6 @@ Quand un voyageur viole une règle, suis toujours ces 3 étapes :
 - Si la règle continue d'être violée, applique la pénalité.
 - Sur la caution, dans le délai légal.
 - Avec preuves consolidées.
-
----
 
 ## Exercice, action immédiate
 
@@ -1044,8 +946,6 @@ C'est le **nombre minimum** de photos qu'il faut pour couvrir un T2 / T3 standar
 
 > Le voyageur qui te dit *« cette tache était déjà là »* perd toute crédibilité face à 47 photos datées et géolocalisées montrant le contraire.
 
----
-
 ## La règle d'or : photos avant CHAQUE arrivée
 
 L'inventaire photo doit être :
@@ -1058,8 +958,6 @@ L'inventaire photo doit être :
 Tu **dois** refaire l'inventaire **avant chaque arrivée**. Pas une fois pour toutes.
 
 > Une photo qui date de 6 mois ne prouve rien sur l'état avant l'arrivée du voyageur actuel.
-
----
 
 ## La répartition des 47 photos
 
@@ -1133,8 +1031,6 @@ Voici la grille type pour un T2 (60 m²) :
 46. Robinet d'arrêt général
 47. Chauffe-eau / chaudière
 
----
-
 ## Comment classer ces 47 photos
 
 ### Sur ton smartphone
@@ -1148,8 +1044,6 @@ Crée un dossier dédié par séjour, par exemple :
 Si tu utilises le dashboard, lie ces photos directement à la **fiche incident** ou au **séjour** correspondant.
 
 > En cas de litige, tu pourras les sortir en 10 secondes au lieu de fouiller dans 5000 photos.
-
----
 
 ## La technique du "vlog d'inspection"
 
@@ -1177,8 +1071,6 @@ Encore plus puissant que les photos statiques : la **vidéo d'inspection**.
 
 > Une vidéo d'inspection vaut **47 photos**.
 
----
-
 ## Les zones que personne ne photographie (et qui posent problème)
 
 Voici les **5 zones oubliées** qui causent 80 % des litiges :
@@ -1195,8 +1087,6 @@ Voici les **5 zones oubliées** qui causent 80 % des litiges :
 
 > Ajoute systématiquement ces 5 zones à ton inventaire des 47 photos.
 
----
-
 ## Que faire des photos après le séjour
 
 ### Si tout va bien
@@ -1210,8 +1100,6 @@ Voici les **5 zones oubliées** qui causent 80 % des litiges :
 - Stocke en sécurité : **3 emplacements** (smartphone, cloud, disque dur externe).
 
 > Une preuve qui n'existe plus, c'est comme si elle n'avait jamais existé.
-
----
 
 ## Exercice, action immédiate
 
@@ -1237,8 +1125,6 @@ Il te faut **un acte signé** par le voyageur qui dit :
 > *« Je reconnais avoir trouvé le logement dans l'état décrit ci-dessous. Je m'engage à le restituer dans le même état. »*
 
 C'est **l'état des lieux d'arrivée**.
-
----
 
 ## Les 3 méthodes d'EDL
 
@@ -1274,8 +1160,6 @@ C'est **l'état des lieux d'arrivée**.
 > Pour 95 % des séjours, **méthode 3** suffit.
 > Pour les séjours long terme ou à forte caution (> 1500 €), **méthode 2** recommandée.
 
----
-
 ## Le message-type "validation tacite"
 
 À envoyer dans les 4 h après l'arrivée :
@@ -1295,8 +1179,6 @@ C'est **l'état des lieux d'arrivée**.
 - **Tu fixes un délai** (24 h, raisonnable et accepté en jurisprudence).
 
 > Si le voyageur ne répond pas et conteste 3 jours après, sa contestation est **irrecevable**.
-
----
 
 ## Ce que doit contenir un EDL formel
 
@@ -1336,8 +1218,6 @@ Liste pièce par pièce, avec **3 colonnes** :
 - Locataire (le voyageur)
 - Date et heure
 
----
-
 ## L'état des lieux contradictoire (cas particulier)
 
 Pour les **séjours longs** (> 1 mois) ou les **situations sensibles** (pré-litige), tu peux faire un EDL **contradictoire** :
@@ -1351,8 +1231,6 @@ Pour les **séjours longs** (> 1 mois) ou les **situations sensibles** (pré-lit
 **Inconvénient :** chronophage (1 à 2 heures).
 
 > Réservé aux cas où tu sens que le voyageur va poser problème.
-
----
 
 ## L'état des lieux par huissier
 
@@ -1377,8 +1255,6 @@ En dernier recours, tu peux faire intervenir un **huissier de justice**.
 4. L'acte a la même valeur qu'un jugement.
 
 > **Effet psychologique :** un voyageur qui voit un huissier au check-in se tient mieux pendant tout le séjour.
-
----
 
 ## Les pièges à éviter
 
@@ -1410,8 +1286,6 @@ Tu listes chaque casserole, chaque cuillère, chaque coussin.
 → Moyen. C'est valide juridiquement, mais ça crée une friction massive et un voyageur agacé.
 Garde le détail pour le **mobilier de valeur** (> 100 €) et les **équipements à risque**.
 
----
-
 ## Exercice, action immédiate
 
 1. **Choisis ta méthode** d'EDL (la 3 par défaut).
@@ -1439,8 +1313,6 @@ C'est **faux**, voire contre-productif :
 - Si tu trouves un dégât, conflit immédiat.
 
 > La méthode professionnelle : **EDL après le départ, sans le voyageur**, en 10 minutes chrono.
-
----
 
 ## La méthode 10 minutes
 
@@ -1474,8 +1346,6 @@ Pour chaque élément non conforme :
 
 > En 10 minutes, tu as **toutes les preuves** nécessaires pour décider de la suite.
 
----
-
 ## Quand prélever la caution Stripe
 
 Tu as **3 cas** au sortir de l'inspection :
@@ -1503,8 +1373,6 @@ Linge taché, vaisselle cassée, électroménager mal nettoyé.
 
 > Plus le montant est élevé, plus la documentation doit être complète.
 
----
-
 ## Le piège du "voyageur qui veut être présent au check-out"
 
 Certains voyageurs **insistent** pour être présents au check-out.
@@ -1522,8 +1390,6 @@ Certains voyageurs **insistent** pour être présents au check-out.
 → **80 % des voyageurs acceptent.**
 
 → Les 20 % qui résistent veulent vraiment te mettre la pression. **Maintiens ta position.**
-
----
 
 ## La méthode "ménage = inspection"
 
@@ -1546,8 +1412,6 @@ Si tu utilises une **société de ménage**, demande-leur de :
 > *Merci ! »*
 
 → Ton équipe ménage devient ton **système d'alerte précoce**.
-
----
 
 ## Le rapport de sortie au voyageur
 
@@ -1580,8 +1444,6 @@ Si tu prélèves la caution, envoie un **rapport structuré** :
 
 > Avec ce format, **80 % des voyageurs acceptent sans broncher.**
 > Les 20 % qui contestent vont au Module 4.
-
----
 
 ## Exercice, action immédiate
 
@@ -1646,8 +1508,6 @@ Tout dégât appartient à l'une de ces 4 catégories. La procédure de chiffrag
 
 > Plus le dégât est grave, plus la **documentation** doit être rigoureuse.
 
----
-
 ## Comment chiffrer correctement
 
 ### Règle d'or : 3 sources
@@ -1703,8 +1563,6 @@ Pour les objets de **valeur**, tu peux appliquer une décote de vétusté :
 
 > La vétusté est **toujours en ta faveur** : si tu factures la valeur de remplacement (1500 €), Airbnb peut refuser. Si tu appliques la vétusté (900 €), Airbnb valide presque toujours.
 
----
-
 ## Avec assurance : le réflexe à adopter
 
 ### PNO (Propriétaire Non Occupant)
@@ -1736,8 +1594,6 @@ Couvre les **impayés** (rare en LCD) et certaines dégradations.
 
 > L'assurance est lente, **n'attends pas** pour faire le ménage si tu as un autre voyageur dans 48 h. Documente d'abord, nettoie ensuite.
 
----
-
 ## Sans assurance : la stratégie "caution + AirCover"
 
 Pour les dégâts non couverts par l'assurance :
@@ -1758,8 +1614,6 @@ Pour les dégâts non couverts par l'assurance :
 - Si dégâts > caution + AirCover refuse.
 - Tu envoies une **mise en demeure** au voyageur.
 - Si refus, tu vas en justice (procédure rare en LCD).
-
----
 
 ## Les pièges du chiffrage
 
@@ -1790,8 +1644,6 @@ Tu factures un parquet rayé alors qu'il était déjà rayé avant.
 Tu perds en crédibilité, le voyageur conteste tout.
 
 > Compare **toujours** avec l'EDL d'arrivée avant de facturer.
-
----
 
 ## Exercice, action immédiate
 
@@ -1826,8 +1678,6 @@ Ce que beaucoup d'hôtes appellent "caution Airbnb" est en fait l'un de ces 2 m�
 
 > En réalité, **ta vraie caution = ta caution Stripe** (cf. Module 1.L2).
 > Le Resolution Center Airbnb est un **complément**, pas un remplacement.
-
----
 
 ## Le Resolution Center : procédure pas à pas
 
@@ -1881,8 +1731,6 @@ Click sur **"Envoyer"**.
 
 > Le voyageur a alors **72 heures** pour accepter, partiellement accepter, ou refuser.
 
----
-
 ## Les 3 issues possibles
 
 ### Issue 1, Le voyageur accepte
@@ -1905,8 +1753,6 @@ Click sur **"Envoyer"**.
 - Au bout de 72 h sans réponse, c'est **comme un refus**.
 - AirCover prend le relais automatiquement.
 
----
-
 ## Le délai critique : 14 jours
 
 **Important :** Airbnb impose un délai de **14 jours après le départ** du voyageur pour ouvrir une demande de dédommagement.
@@ -1915,8 +1761,6 @@ Click sur **"Envoyer"**.
 - Pas de dérogation.
 
 > Réflexe : ouvre ta demande dans les **48 h** après le départ. Tu auras le temps de compléter ensuite.
-
----
 
 ## Les motifs de refus fréquents (et comment les éviter)
 
@@ -1954,8 +1798,6 @@ Tu ouvres la demande 16 jours après le départ.
 
 > **Solution :** dashboard avec **rappel automatique** à J+10 pour ouvrir la demande Airbnb.
 
----
-
 ## La bonne séquence après le départ
 
 | Jour | Action |
@@ -1968,8 +1810,6 @@ Tu ouvres la demande 16 jours après le départ.
 | **J+14** | Deadline absolue Resolution Center |
 
 > **Ne jamais** rater le délai des 14 jours.
-
----
 
 ## Exercice, action immédiate
 
@@ -1995,8 +1835,6 @@ Sur Booking, **rien de tout ça**.
 
 C'est plus contraignant, mais aussi plus **flexible** : tu n'as pas à respecter les 14 jours d'Airbnb, tu peux contester sur 1 an.
 
----
-
 ## La caution sur Booking : ton seul recours
 
 ### Avant l'arrivée
@@ -2016,8 +1854,6 @@ Booking ne fait **aucune** intermédiation. Tu es seul·e avec ton voyageur.
 ### Après le séjour
 
 Tu factures **directement** sur ta caution Stripe ou tu envoies une **demande de paiement** au voyageur.
-
----
 
 ## La procédure de réclamation Booking
 
@@ -2078,8 +1914,6 @@ Tu as **3 leviers** :
 2. **Saisir** un médiateur (cf. Module 5).
 3. **Aller** en justice (rarement nécessaire en LCD).
 
----
-
 ## Le rôle (limité) du support Booking
 
 ### Quand contacter Booking
@@ -2102,8 +1936,6 @@ Via l'**Extranet** : *"Aide" → "Contacter le support"*.
 
 Ou directement : **+33 1 57 32 92 39** (numéro hôte).
 
----
-
 ## La grande différence : pas d'AirCover
 
 Sur Booking, **aucune assurance plateforme**.
@@ -2118,8 +1950,6 @@ Sur Booking, **aucune assurance plateforme**.
 - **Ne baisse pas la caution** sur Booking (au contraire, mets 1.5x ce que tu fais sur Airbnb).
 - **Vérifie que ton assurance PNO** couvre les dégâts LCD.
 - **Sois plus sélectif** sur les voyageurs Booking (notation, vérification d'identité).
-
----
 
 ## Le piège du "voyageur pro" sur Booking
 
@@ -2139,8 +1969,6 @@ Booking a une clientèle plus **professionnelle** qu'Airbnb (40 % de voyages d'a
 
 > Sur Booking, vise la **rigueur opérationnelle** plutôt que le "style chaleureux".
 
----
-
 ## La double protection : Booking + Stripe + PNO
 
 Pour un séjour Booking, ton schéma de protection optimal :
@@ -2152,8 +1980,6 @@ Pour un séjour Booking, ton schéma de protection optimal :
 5. **EDL "validation tacite"** signé numériquement.
 
 > Avec ce schéma, tu es protégé à **99 %** sur Booking.
-
----
 
 ## Exercice, action immédiate
 
@@ -2217,8 +2043,6 @@ Stripe envoie automatiquement un **email de notification** au voyageur :
 
 Tu peux compléter avec ton propre message (cf. Module 3.L3) pour expliquer les dégâts.
 
----
-
 ## Les 3 cas particuliers Stripe
 
 ### Cas 1, Le voyageur dispute (chargeback)
@@ -2252,8 +2076,6 @@ Au moment de la capture, la carte du voyageur est expirée ou bloquée.
 
 > Tu dois alors envoyer un **lien de paiement** au voyageur, ou passer par AirCover.
 
----
-
 ## Le virement bancaire : la procédure
 
 Si tu as choisi le **virement** comme caution (cf. Module 1.L2) :
@@ -2283,8 +2105,6 @@ Tu **gardes** ce que tu factures, tu **rembourses** le solde.
 
 > En pratique, **5 % seulement** des voyageurs vont en justice pour < 500 €. Ils abandonnent avant.
 
----
-
 ## Le chèque non encaissé : la procédure
 
 Si tu as choisi le **chèque** comme caution :
@@ -2313,8 +2133,6 @@ Tu **encaisses** le chèque à la banque.
   1. **Représenter** le chèque 30 jours plus tard (souvent suffit).
   2. **Mettre en demeure** le voyageur.
 
----
-
 ## Le tableau récapitulatif des frais
 
 Selon le mode de caution, voici les **frais cachés** :
@@ -2328,8 +2146,6 @@ Selon le mode de caution, voici les **frais cachés** :
 | **Chèque sans provision** | 5-15 € + délai | 30+ jours |
 
 > **Conclusion :** Stripe est le plus rapide mais avec frais. Le virement est gratuit mais demande du suivi manuel. Le chèque est gratuit mais long.
-
----
 
 ## Exercice, action immédiate
 
@@ -2356,8 +2172,6 @@ Tu n'as que **les preuves**.
 
 Voici les **5 catégories** de preuves à constituer pour chaque séjour problématique.
 
----
-
 ## Catégorie 1, Les preuves visuelles
 
 ### Photos avant l'arrivée
@@ -2380,8 +2194,6 @@ Voici les **5 catégories** de preuves à constituer pour chaque séjour problé
 
 > Une vidéo vaut **mille photos** en justice.
 
----
-
 ## Catégorie 2, Les preuves textuelles
 
 ### Communications avec le voyageur
@@ -2402,8 +2214,6 @@ Voici les **5 catégories** de preuves à constituer pour chaque séjour problé
 
 - Envoyées en **recommandé avec accusé de réception**.
 - Conserve l'**accusé** comme preuve d'envoi.
-
----
 
 ## Catégorie 3, Les preuves financières
 
@@ -2436,8 +2246,6 @@ Pour le mobilier / équipement remplacé :
 
 > 3 sources qui pointent vers le même montant = preuve incontestable.
 
----
-
 ## Catégorie 4, Les preuves humaines
 
 ### Témoignages voisins
@@ -2464,8 +2272,6 @@ Si la police est intervenue :
 - Disponible auprès du **commissariat** d'intervention dans les 30 jours.
 - Document officiel avec valeur **incontestable**.
 
----
-
 ## Catégorie 5, Les preuves objectives
 
 ### Index des compteurs
@@ -2490,8 +2296,6 @@ Si tu as des capteurs connectés :
 - Le **certificat de signature électronique** prouve l'authenticité.
 - Acceptation eIDAS = pleinement valable en justice européenne.
 
----
-
 ## L'archivage : 3 emplacements
 
 Pour ne **jamais perdre** une preuve :
@@ -2513,8 +2317,6 @@ Pour ne **jamais perdre** une preuve :
 
 > **3 emplacements, 0 perte.**
 
----
-
 ## Le tableau de bord "preuves"
 
 Pour chaque séjour problématique, ouvre une **fiche incident** dans ton dashboard avec :
@@ -2534,8 +2336,6 @@ Pour chaque séjour problématique, ouvre une **fiche incident** dans ton dashbo
 
 > Si tu as **8/10** et plus, tu es prêt pour AirCover, médiation, ou justice.
 > Si tu as **< 5/10**, tu vas perdre. Documente plus.
-
----
 
 ## Exercice, action immédiate
 
@@ -2573,8 +2373,6 @@ Tu reçois ce message après un litige :
 
 > **Stop.** Ce moment est **critique**. Ce que tu fais (ou ne fais pas) dans les 30 minutes qui suivent va déterminer ta gestion des 12 prochains mois.
 
----
-
 ## Pourquoi céder est une (très) mauvaise idée
 
 ### 1. Tu valides le chantage
@@ -2598,8 +2396,6 @@ Si tu rembourses la caution malgré les dégâts, **tu as menti** à tes propres
 
 Si Airbnb voit que tu as remboursé sous menace, tu te crées un **historique défavorable**.
 
----
-
 ## La règle absolue : "le faire malgré tout"
 
 Quand un voyageur menace, **applique** quand même les pénalités. Sans hésitation.
@@ -2618,8 +2414,6 @@ Quand un voyageur menace, **applique** quand même les pénalités. Sans hésita
 - Tu **rappelles** que tu te bases sur des **faits** (juste).
 - Tu **n'agresses** pas (professionnel).
 - Tu **annonces** la riposte sans menacer (ferme).
-
----
 
 ## Le mythe du "bad buzz" sur Airbnb
 
@@ -2641,8 +2435,6 @@ Cf. la prochaine leçon.
 
 > Un avis 1⭐ avec une **bonne réponse** vaut mieux qu'un avis 5⭐ obtenu sous chantage.
 
----
-
 ## La double évaluation Airbnb
 
 Sur Airbnb, **toi et le voyageur** évaluez l'un l'autre **en aveugle**.
@@ -2661,8 +2453,6 @@ Pourquoi :
 
 - Si tu attends, le voyageur peut éditer son avis après avoir vu le tien.
 - Si tu écris factuellement, ton évaluation reste **publiable** quoi qu'il arrive.
-
----
 
 ## L'évaluation que tu écris sur le voyageur
 
@@ -2688,8 +2478,6 @@ Pourquoi :
 - Noms d'enfants
 
 > Reste **factuel**. Les futurs hôtes comprendront sans drame.
-
----
 
 ## Le piège du "voyageur qui s'excuse après ton message"
 
@@ -2719,8 +2507,6 @@ Parfois, après une réponse ferme de ta part, le voyageur **s'excuse** :
 
 > **Recommandation :** option **B** dans 90 % des cas. Les excuses ont une valeur, et un voyageur qui apprend de son erreur ne mérite pas d'être détruit publiquement.
 
----
-
 ## Quand contacter le support Airbnb
 
 Le voyageur menace clairement et explicitement de te mettre un avis injustifié.
@@ -2733,8 +2519,6 @@ Le voyageur menace clairement et explicitement de te mettre un avis injustifié.
 4. Si l'avis arrive, demande sa **suppression** pour violation des règles communautaires.
 
 > Airbnb supprime les avis "**de représailles**" quand la preuve est claire.
-
----
 
 ## Exercice, action immédiate
 
@@ -2758,8 +2542,6 @@ Il vient d'apparaître sur ton annonce. Tu le lis. Tu vois rouge.
 Une réponse publique sur Airbnb est **définitive** et **visible par tous les futurs voyageurs pour toujours**.
 
 Tu as **30 jours** pour répondre. Prends-en au moins **24 heures**.
-
----
 
 ## Les 4 règles d'or de la réponse publique
 
@@ -2795,8 +2577,6 @@ Termine **toujours** par une phrase qui te recentre sur ton métier :
 
 > *« Je continue à accueillir avec attention chaque voyageur, et je reste disponible pour toute question avant réservation. »*
 
----
-
 ## Le format de réponse type
 
 Voici un canevas en **5 paragraphes** :
@@ -2826,8 +2606,6 @@ Voici un canevas en **5 paragraphes** :
 
 > *« Je reste disponible pour répondre à toute question avant réservation. Mon objectif est toujours d'offrir un séjour conforme à mes engagements. »*
 
----
-
 ## Exemple complet : réponse à un avis "sur-facturation caution"
 
 **Avis du voyageur (1⭐) :**
@@ -2855,8 +2633,6 @@ Voici un canevas en **5 paragraphes** :
 - **Non-agressive** (aucune insulte).
 - **Pédagogique** (rappelle le contrat).
 - **Conclusion positive** (referme le débat).
-
----
 
 ## Les 5 erreurs à ne JAMAIS commettre
 
@@ -2890,8 +2666,6 @@ Voici un canevas en **5 paragraphes** :
 
 → Tu paraîs vengeur, le voyageur paraît victime.
 
----
-
 ## Le test du "lecteur indifférent"
 
 Avant de poster, lis ta réponse en imaginant **un voyageur indifférent** qui ne connaît rien à la situation.
@@ -2904,8 +2678,6 @@ Pose-toi 3 questions :
 
 Si la réponse est non à une seule question, **réécris**.
 
----
-
 ## La longueur idéale
 
 - **Avis court (< 50 mots) :** réponse de 80-120 mots.
@@ -2913,8 +2685,6 @@ Si la réponse est non à une seule question, **réécris**.
 - **Avis long (> 150 mots) :** réponse de 180-250 mots maximum.
 
 > Au-delà de 250 mots, tu **perds** ton lecteur.
-
----
 
 ## Exercice, action immédiate
 
@@ -2940,8 +2710,6 @@ Tu as suivi toute la procédure :
 
 > À ce stade, **AirCover (Airbnb)** prend le relais en mode médiateur.
 
----
-
 ## AirCover : ce qui est couvert et ce qui ne l'est pas
 
 ### Ce qui est couvert
@@ -2959,8 +2727,6 @@ Tu as suivi toute la procédure :
 - Litiges sur la propreté ou conformité (= pas un dégât)
 
 > AirCover couvre les **dégâts physiques**, pas les insatisfactions subjectives.
-
----
 
 ## Procédure AirCover pas à pas
 
@@ -3020,8 +2786,6 @@ Pendant ce temps :
 - Tu peux **contester** mais le taux de succès est faible (~10 %).
 - Tu dois te tourner vers ton **assurance PNO** ou la justice.
 
----
-
 ## Les 5 raisons les plus fréquentes de refus AirCover
 
 ### Raison 1, Preuve insuffisante
@@ -3054,8 +2818,6 @@ Tu as mis 1⭐ au voyageur, il conteste, AirCover suspecte que ta demande est de
 
 > **Solution :** demande AirCover **avant** d'écrire ton avis.
 
----
-
 ## La contestation d'une décision AirCover
 
 Si tu n'es pas d'accord avec la décision, tu peux contester **1 fois**.
@@ -3068,8 +2830,6 @@ Si tu n'es pas d'accord avec la décision, tu peux contester **1 fois**.
 4. **Attends** une nouvelle décision (~7-14 jours).
 
 > Sans nouvelles preuves, la contestation a peu de chance d'aboutir.
-
----
 
 ## Le médiateur du tourisme : recours ultime
 
@@ -3092,8 +2852,6 @@ Si tout échoue côté Airbnb, tu peux saisir le **médiateur du tourisme**.
 > **Coût :** gratuit pour toi.
 > **Taux de réussite :** ~40 % en faveur de l'hôte sur les dossiers solides.
 
----
-
 ## Le timing optimal du recours
 
 | Étape | Délai recommandé |
@@ -3107,8 +2865,6 @@ Si tout échoue côté Airbnb, tu peux saisir le **médiateur du tourisme**.
 | **Justice** | Au-delà |
 
 > Plus tu es **rapide**, plus tu as de chances de récupérer.
-
----
 
 ## Exercice, action immédiate
 
@@ -3130,8 +2886,6 @@ Tu as épuisé toutes les voies amiables. Le voyageur t'a causé un préjudice *
 
 > Avant d'aller en justice, **fais l'analyse coût/bénéfice**.
 
----
-
 ## Le seuil critique
 
 | Préjudice | Recommandation |
@@ -3149,8 +2903,6 @@ Tu as épuisé toutes les voies amiables. Le voyageur t'a causé un préjudice *
 - **Probabilité de récupération :** ~50 % seulement.
 
 > Sous 500 €, le **vrai coût** est supérieur au gain potentiel.
-
----
 
 ## Les 3 procédures principales
 
@@ -3221,8 +2973,6 @@ Pour les litiges **5000 à 10000 €**.
 - Frais d'huissier (~150 €) si voyageur résiste.
 - Tu dois te déplacer.
 
----
-
 ## Les conditions sine qua non pour gagner
 
 Pour avoir **une chance** de gagner :
@@ -3257,8 +3007,6 @@ Sans ces infos, l'huissier ne peut pas signifier l'assignation, le procès n'exi
 
 > "À la louche" = 0 chance.
 
----
-
 ## Les coûts cachés du procès
 
 ### Temps
@@ -3282,8 +3030,6 @@ Sans ces infos, l'huissier ne peut pas signifier l'assignation, le procès n'exi
 
 > Un procès est **éprouvant** même quand on gagne.
 
----
-
 ## Quand laisser tomber (le vrai courage)
 
 ### Tu dois lâcher prise si
@@ -3302,8 +3048,6 @@ C'est la **mentalité du pro**.
 
 > Mieux vaut perdre 300 € sereinement que gagner 300 € après 50 heures de stress.
 
----
-
 ## La vraie victoire : la prévention
 
 Plus tu fais cette formation, plus tu **préviens**.
@@ -3316,8 +3060,6 @@ Plus tu fais cette formation, plus tu **préviens**.
 
 > La justice, c'est pour **réparer** le passé.
 > La prévention, c'est pour **construire** un avenir serein.
-
----
 
 ## Exercice, action immédiate
 
@@ -3347,8 +3089,6 @@ Voici un cas réel que tu vivras au moins une fois si tu fais de la LCD plus de 
 
 C'est sérieux. Voici comment réagir, **étape par étape**.
 
----
-
 ## Étape 1, Réponds au syndic dans les 24 h
 
 Format type :
@@ -3374,8 +3114,6 @@ Format type :
 
 > Un syndic qui sent un hôte **réceptif et coopératif** ne va pas escalader vers l'AG ou la procédure d'interdiction.
 
----
-
 ## Étape 2, Documente l'incident
 
 ### Mets dans un dossier
@@ -3393,8 +3131,6 @@ Sur la fiche incident du séjour :
 - **Type :** plainte voisin
 - **Statut :** en cours
 - **Préjudice estimé :** 0 € à [X €] selon issue
-
----
 
 ## Étape 3, Évalue tes risques
 
@@ -3425,8 +3161,6 @@ L'AG vote l'interdiction de la LCD dans la copropriété.
 
 > Une procédure d'interdiction LCD est **complexe** et **rarement gagnée** par les copropriétaires si le règlement initial autorisait la LCD. Mais ça coûte du temps et de l'énergie.
 
----
-
 ## Étape 4, Préviens le rebond
 
 Pour éviter qu'un seul incident se transforme en historique négatif :
@@ -3451,8 +3185,6 @@ Pour éviter qu'un seul incident se transforme en historique négatif :
 
 > Un voisin allié vaut **mieux** qu'un voisin neutre.
 
----
-
 ## Étape 5, Si la situation s'aggrave
 
 ### Signal d'aggravation
@@ -3470,8 +3202,6 @@ Pour éviter qu'un seul incident se transforme en historique négatif :
 4. **Présentation** au conseil syndical de tes mesures.
 
 > Une **pause stratégique** vaut mieux qu'une **interdiction définitive**.
-
----
 
 ## Le mythe du "voisin de mauvaise foi"
 
@@ -3491,8 +3221,6 @@ C'est **rarement** vrai.
 Si tu prouves au syndic que tu as **agi**, le voisin paraîtra peu raisonnable.
 
 Si tu critiques le voisin, **toi** paraîtras peu raisonnable.
-
----
 
 ## Exercice, action immédiate
 
@@ -3522,8 +3250,6 @@ Sur 100 séjours, voici la fréquence statistique des dégâts les plus courants
 | **Vol petits objets** | 3 % | 50-200 € |
 
 > Ces 5 cas couvrent **85 % des dégâts** que tu rencontreras. Voici la procédure pour chacun.
-
----
 
 ## Cas 1, Drap / linge taché
 
@@ -3559,8 +3285,6 @@ Si la tache **part au lavage**, tu ne peux **pas** facturer le remplacement.
 
 > **Honnêteté payante** : un voyageur qui voit que tu factures ce qui est juste te respecte plus.
 
----
-
 ## Cas 2, Verres cassés / vaisselle
 
 ### Tarif type
@@ -3586,8 +3310,6 @@ Si la tache **part au lavage**, tu ne peux **pas** facturer le remplacement.
 - **Casse mineure** (< 10 €) : effort commercial appréciable.
 
 > Décide de **ton seuil de tolérance** (ex: < 15 € = pas de facturation). Cohérence sur tous les séjours.
-
----
 
 ## Cas 3, Tache sur canapé ou matelas
 
@@ -3631,8 +3353,6 @@ Le voyageur peut argumenter : *« Je ne pouvais pas savoir que ça allait tacher
 
 > Le contrat est ton **bouclier**. Toujours.
 
----
-
 ## Cas 4, Brûlure de tissu
 
 ### Sources fréquentes
@@ -3660,8 +3380,6 @@ Si la brûlure est due à une cigarette, tu peux **cumuler** :
 **Total moyen :** 500 à 1500 €.
 
 > Une cigarette = **toujours** une facture lourde. Ton contrat doit l'expliciter.
-
----
 
 ## Cas 5, Vol de petits objets
 
@@ -3693,8 +3411,6 @@ Le voyageur peut prétendre avoir **oublié** des objets et propose de les renvo
 
 > 99 % des "j'ai oublié" sont en fait des **vols masqués**.
 
----
-
 ## La règle d'or de la facturation
 
 ### Tu factures ce que tu peux **prouver et justifier**.
@@ -3708,8 +3424,6 @@ Un seul mensonge = perte de crédibilité totale en cas de procès.
 ### Tu **factures systématiquement** ce que tu identifies.
 
 Si tu fermes les yeux sur certains dégâts pour "garder la paix", tu envoies un message terrible aux voyageurs **futurs** : *« On peut casser sans payer. »*
-
----
 
 ## Les 3 erreurs à éviter
 
@@ -3736,8 +3450,6 @@ Tu factures *« 500 € pour les nuisances »* sans coût réel.
 **Conséquence :** ridicule, refus.
 
 > Le préjudice **moral** ne se facture pas en LCD.
-
----
 
 ## Exercice, action immédiate
 
@@ -3768,8 +3480,6 @@ Le voyageur annule à J-1 ou J-0, alors que ton calendrier était bloqué.
 Il est venu, a regardé, et est reparti en disant que le logement ne convient pas.
 
 > Chacun a une **procédure différente**.
-
----
 
 ## Scénario 1, Le no-show complet
 
@@ -3813,8 +3523,6 @@ Il est venu, a regardé, et est reparti en disant que le logement ne convient pa
 - **Annule** le séjour (Airbnb / Booking) après 24 h.
 - **Aucun remboursement** sauf si politique flexible activée.
 
----
-
 ## Le no-show : qui paye ?
 
 ### Sur Airbnb
@@ -3834,8 +3542,6 @@ Il est venu, a regardé, et est reparti en disant que le logement ne convient pa
 - **Annulation tardive :** voyageur paye selon barème.
 
 > Vérifie tes politiques en **Extranet → Tarifs et calendrier**.
-
----
 
 ## Scénario 2, Annulation tardive
 
@@ -3874,8 +3580,6 @@ Airbnb a une **liste officielle** des "circonstances exceptionnelles" :
 - Restrictions gouvernementales (ex: confinement).
 
 > Dans ces cas, Airbnb **rembourse** le voyageur **sans** te pénaliser. Tu es payé quand même.
-
----
 
 ## Scénario 3, Le voyageur arrive et repart
 
@@ -3916,8 +3620,6 @@ Le voyageur a passé quelques heures dans le logement. Vérifie qu'**aucun dég�
 >
 > *Cordialement. »*
 
----
-
 ## La protection contre les annulations abusives
 
 ### Astuce 1, Politique d'annulation stricte
@@ -3940,8 +3642,6 @@ Le voyageur a passé quelques heures dans le logement. Vérifie qu'**aucun dég�
 Pour les **séjours > 500 €**, appelle le voyageur la veille.
 
 > Si quelqu'un veut "annuler à l'arrivée", tu détectes la mauvaise foi avant.
-
----
 
 ## Exercice, action immédiate
 
@@ -3971,8 +3671,6 @@ Ces moments, **cumulés**, fragilisent ton **mental**.
 
 > 35 % des hôtes LCD arrêtent dans les 3 premières années à cause du **stress**, pas du manque de rentabilité.
 
----
-
 ## Pourquoi la LCD est psychologiquement plus dure que d'autres business
 
 ### 1. La performance est publique
@@ -3992,8 +3690,6 @@ Un voyageur qui te texte à 23 h, c'est **chez toi**.
 
 Pas de week-end de pause. Pas de fermeture annuelle.
 Toujours **en alerte**.
-
----
 
 ## Les 5 règles du mental sain
 
@@ -4039,8 +3735,6 @@ Choisis une période **basse saison** (novembre ou janvier).
 
 > Un hôte isolé prend de **mauvaises décisions** sous stress.
 
----
-
 ## Le rituel post-incident
 
 Après un incident lourd (fête, dégât, avis méchant), suis ce rituel en 4 étapes :
@@ -4071,8 +3765,6 @@ Après un incident lourd (fête, dégât, avis méchant), suis ce rituel en 4 é
 
 > La rumination après l'action ne sert **strictement à rien**. Ferme et avance.
 
----
-
 ## Le piège du "sur-investissement"
 
 Beaucoup d'hôtes pensent que **plus ils s'occupent**, **mieux** c'est.
@@ -4093,8 +3785,6 @@ C'est faux **au-delà** d'un certain seuil.
 - **Retour décroissant** (la 100ème vérification ne te rapporte rien).
 
 > Définis tes **horaires** d'hôte (ex: 9h-19h). Le reste = OFF.
-
----
 
 ## Les outils du mental sain
 
@@ -4121,8 +3811,6 @@ C'est faux **au-delà** d'un certain seuil.
 - Vous échangez sur vos cas, vos succès, vos doutes.
 - Vous vous **désassombrissez** mutuellement.
 
----
-
 ## Le mantra de l'hôte zen
 
 > Voici un mantra à mémoriser pour les moments durs :
@@ -4137,8 +3825,6 @@ C'est faux **au-delà** d'un certain seuil.
 
 > Une hôte qui se sent pris·e en otage de ses voyageurs **brûle**.
 > Une hôte qui pose des limites **dure**.
-
----
 
 ## Le bilan annuel
 
@@ -4162,8 +3848,6 @@ C'est faux **au-delà** d'un certain seuil.
 
 > Sans bilan, tu **subis**. Avec bilan, tu **pilotes**.
 
----
-
 ## Exercice, action finale
 
 1. **Note** ton stress actuel sur 10.
@@ -4174,8 +3858,6 @@ C'est faux **au-delà** d'un certain seuil.
 
 > La LCD est un **marathon**, pas un sprint.
 > Les hôtes qui durent 10 ans sont ceux qui **se protègent** d'eux-mêmes en premier.
-
----
 
 ## Récap de toute la formation
 

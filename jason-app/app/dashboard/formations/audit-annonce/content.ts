@@ -93,7 +93,7 @@ La pondération de base convient à la majorité des logements. Deux ajustements
           id: 3,
           title: 'Noter la photo de couverture et la galerie en 5 minutes',
           duration: '15 min',
-          content: `## Catégorie Visuel — /20
+          content: `## Catégorie Visuel (/20)
 
 Cette leçon donne le protocole de notation, pas la méthode pour prendre de meilleures photos : pour ça, la formation Photographie LCD au smartphone va beaucoup plus loin. Ici, l'objectif est de noter ce qui existe déjà, vite et sans expertise photo.
 
@@ -116,7 +116,7 @@ Un score sous 12/20 signale presque toujours la même cause : des photos prises 
           id: 4,
           title: 'Noter le titre et la description sans se noyer dans le détail',
           duration: '15 min',
-          content: `## Catégorie Texte — /15
+          content: `## Catégorie Texte (/15)
 
 Même logique que la leçon précédente : un protocole de notation rapide, pas un cours de copywriting complet (couvert en détail dans Optimiser son annonce Airbnb et dans le module psychologie de la conversion d'Annonce 360°).
 
@@ -179,7 +179,7 @@ Contrairement aux photos ou au texte, personne ne "voit" un mauvais taux de rép
           id: 6,
           title: 'Avis et badge Coup de Cœur : lire ce que la note ne dit pas',
           duration: '15 min',
-          content: `## Catégorie Avis — /15
+          content: `## Catégorie Avis (/15)
 
 La formation Écrire des avis et répondre aux voyageurs couvre la rédaction et la sollicitation. Ici, l'objectif est différent : savoir noter la catégorie Avis dans un audit, en évitant l'erreur la plus fréquente, s'arrêter à la moyenne affichée.
 
@@ -210,7 +210,7 @@ Le badge Coup de Cœur Voyageurs (couvert en détail dans Optimiser son annonce 
           id: 7,
           title: 'Équipements déclarés vs équipements réels',
           duration: '15 min',
-          content: `## Catégorie Équipements réels — /10
+          content: `## Catégorie Équipements réels (/10)
 
 C'est l'angle presque jamais traité ailleurs dans le catalogue : pas "comment lister ses équipements" mais "comment vérifier que ce qui est listé existe vraiment", un contrôle que la quasi-totalité des hôtes ne refont jamais après la création de l'annonce.
 
@@ -235,7 +235,7 @@ Pour un hôte qui ne visite plus son logement régulièrement, ou pour une conci
           id: 8,
           title: 'Règlement intérieur et photos trompeuses : le risque caché',
           duration: '15 min',
-          content: `## Catégorie Conformité — /5
+          content: `## Catégorie Conformité (/5)
 
 Seulement 5 points sur 100, mais une catégorie qui protège contre un risque disproportionné par rapport à son poids : le litige évitable et le mauvais avis lié à une attente non cadrée dès le départ.
 

@@ -40,8 +40,6 @@ Une conciergerie de tourisme relève des **Bénéfices Industriels et Commerciau
 
 > **Une conciergerie = BIC. Sans exception.**
 
----
-
 ## Les codes APE/NAF de la conciergerie
 
 Lors de ta création d'activité, l'INSEE t'attribue un **code APE**. Pour une conciergerie :
@@ -64,8 +62,6 @@ Lors de ta création d'activité, l'INSEE t'attribue un **code APE**. Pour une c
 
 > La nouvelle nomenclature **NAF 2025** entrera en vigueur au 1er janvier **2027**.
 
----
-
 ## Ce que ça change concrètement pour toi
 
 La conciergerie facture **ses services** aux propriétaires. *Ce ne sont pas des revenus locatifs.*
@@ -83,8 +79,6 @@ La conciergerie facture **ses services** aux propriétaires. *Ce ne sont pas des
 
 > C'est un **avantage** par rapport aux propriétaires qui voient leur abattement baisser à 30 %.
 
----
-
 ## Résumé
 
 | Critère | Propriétaire LCD | Conciergerie |
@@ -93,8 +87,6 @@ La conciergerie facture **ses services** aux propriétaires. *Ce ne sont pas des
 | **Abattement micro 2025** | 30 % *(non classé)* / 50 % *(classé)* | **50 %** |
 | **Plafond micro 2025** | 15 000 € / 77 700 € | **77 700 €** |
 | **Impacté loi Le Meur fiscalement** | Oui | **Non directement** |
-
----
 
 ## Exercice pratique
 
@@ -121,8 +113,6 @@ Les prestations d'une conciergerie sont soumises au **taux normal de TVA : 20 %*
 
 *Source : BOFiP mise à jour 26/03/2025*
 
----
-
 ## Les seuils de franchise en base TVA *(2025)*
 
 Tant que ton CA reste sous ces seuils, tu **n'es pas obligé** de facturer la TVA :
@@ -144,8 +134,6 @@ Tant que ton CA reste sous ces seuils, tu **n'es pas obligé** de facturer la TV
 
 *Les seuils actuels (37 500 €) restent valables.*
 
----
-
 ## Une fois assujetti à la TVA : tes obligations
 
 ### Facturer la TVA
@@ -163,8 +151,6 @@ Tant que ton CA reste sous ces seuils, tu **n'es pas obligé** de facturer la TV
 - Logiciels, téléphone pro, véhicule pro, fournitures…
 - C'est un **avantage réel** : tu récupères la TVA sur toutes tes dépenses professionnelles.
 
----
-
 ## Franchise ou TVA : qu'est-ce qui est préférable ?
 
 ### ✅ Avec la franchise *(CA < 37 500 €)*
@@ -181,8 +167,6 @@ Tant que ton CA reste sous ces seuils, tu **n'es pas obligé** de facturer la TV
 - ✗ Prix de 20 % plus élevés *(si clientèle non-assujettie)*
 
 > Pour une conciergerie dont les propriétaires sont souvent **non-assujettis à la TVA**, la franchise est souvent préférable tant qu'elle s'applique.
-
----
 
 ## Exercice pratique
 
@@ -224,8 +208,6 @@ L'administration fiscale applique **automatiquement** un abattement de **50 %** 
 
 > Si tu dépasses **2 années consécutives**, sortie automatique du micro, passage au **réel**.
 
----
-
 ## Les cotisations sociales en micro-BIC *(2025)*
 
 En auto-entrepreneur, tu paies sur ton **CA**, pas sur ton **bénéfice** :
@@ -245,8 +227,6 @@ En auto-entrepreneur, tu paies sur ton **CA**, pas sur ton **bénéfice** :
 
 > Les taux augmentent d'environ **1 point au 1er janvier 2026** pour renforcer les droits à la retraite. *Prévoir ~24-26 % du CA dès 2026.*
 
----
-
 ## Le versement libératoire de l'IR
 
 Option disponible si ton **revenu fiscal de référence** de l'année N-2 est inférieur à **27 478 €** *(1 part, 2025)*.
@@ -262,8 +242,6 @@ Option disponible si ton **revenu fiscal de référence** de l'année N-2 est in
 - Bénéfice imposable *(CA × 50 %)* intégré dans la déclaration de revenus du foyer fiscal.
 - **Barème progressif** : 0 %, 11 %, 30 %, 41 %, 45 %.
 
----
-
 ## Quand le micro-BIC est optimal
 
 - ✓ **CA inférieur à 55 000 €/an**
@@ -271,8 +249,6 @@ Option disponible si ton **revenu fiscal de référence** de l'année N-2 est in
 - ✓ **Activité en démarrage** : tester sans formalisme
 - ✓ **Pas de besoin de protection** du patrimoine *(pas de séparation biens pro/perso)*
 - ✓ **Pas d'investissements lourds** à amortir
-
----
 
 ## Les limites à connaître
 
@@ -291,8 +267,6 @@ Ton patrimoine personnel n'est **pas séparé** de ton patrimoine professionnel 
 ### ❌ Retraite plus faible
 
 Cotisations calculées sur le **CA**, pas sur le **bénéfice réel** → droits à la retraite proportionnellement plus bas.
-
----
 
 ## Exercice pratique
 
@@ -327,8 +301,6 @@ Même statut solo qu'en micro, mais avec **déduction des charges réelles** au 
 - **~40 à 45 %** de ta rémunération nette.
 - Cotisations **minimales** : ~1 200 €/an *(même sans revenu)*.
 
----
-
 ## L'EURL, La société unipersonnelle classique
 
 ### Ce que c'est
@@ -354,8 +326,6 @@ Une **SARL à associé unique**. Tu es gérant majoritaire = **TNS**.
 - **Expert-comptable** : 800 à 1 500 €/an *(quasi-obligatoire)*
 
 > **Recommandé pour : CA 60 000, 100 000 €/an.**
-
----
 
 ## La SASU, La société par actions simplifiée unipersonnelle
 
@@ -384,8 +354,6 @@ Une **SAS à associé unique**. Tu es président = **assimilé salarié**.
 
 **Recommandé pour : CA > 100 000 € avec bons bénéfices.**
 
----
-
 ## Le tableau de décision rapide
 
 | Profil | Statut recommandé |
@@ -397,8 +365,6 @@ Une **SAS à associé unique**. Tu es président = **assimilé salarié**.
 | CA > 100 000 €, bénéfices solides | **SASU / IS** |
 | S'associer prévu | **SAS** *(pluripersonnel)* |
 
----
-
 ## Les coûts comparés sur 1 an
 
 | Statut | Création | Gestion annuelle |
@@ -409,8 +375,6 @@ Une **SAS à associé unique**. Tu es président = **assimilé salarié**.
 | **SASU** | 500-1 500 € | 1 500-2 500 € *(comptable)* |
 
 > La différence de coût se justifie **rapidement** dès que l'optimisation fiscale dépasse ces montants.
-
----
 
 ## Exercice pratique
 
@@ -450,8 +414,6 @@ Les cotisations TNS sont calculées sur la **rémunération nette** *(après cha
 
 > **Cotisations minimales : ~1 200 €/an.** Même si tu ne te verses aucune rémunération, ces cotisations minimales sont dues.
 
----
-
 ## Le régime assimilé salarié *(SASU)*
 
 > **Concerne** : SASU *(président)*.
@@ -467,8 +429,6 @@ Les cotisations sont calculées sur le **salaire brut**.
 > **Exemple :** pour te verser **3 000 €** net/mois, la SASU paie **~5 460 €** *(salaire + charges)*.
 
 > **Mais si tu te verses 0 € de salaire : 0 € de charges.** C'est là que la SASU devient intéressante pour les conciergeries très rentables.
-
----
 
 ## La stratégie salaire + dividendes SASU
 
@@ -497,8 +457,6 @@ Si la SASU génère **80 000 € de bénéfice** :
 | Flat tax 30 % sur dividendes | 14 775 € |
 | **Net en poche** | **34 475 €** |
 
----
-
 ## Comparatif TNS vs assimilé salarié
 
 | Critère | TNS *(EURL)* | Assimilé salarié *(SASU)* |
@@ -509,8 +467,6 @@ Si la SASU génère **80 000 € de bénéfice** :
 | **Dividendes** | Cotisés si > 10 % capital | Non cotisés |
 | **Zéro cotisation possible** | Non *(min. 1 200 €/an)* | **Oui** |
 | **Conseil si bénéfices élevés** | Non | **Oui** |
-
----
 
 ## Exercice pratique
 
@@ -550,8 +506,6 @@ Si la SASU génère **80 000 € de bénéfice** :
 - Taux marginal monte vite dès **28 797 €**.
 - Impôt payé **même si tu réinvestis** dans la société.
 
----
-
 ## L'Impôt sur les Sociétés *(IS)*, l'option société
 
 > **Applicable en** : EURL avec option IS, SASU *(automatique)*.
@@ -574,8 +528,6 @@ Si la SASU génère **80 000 € de bénéfice** :
 - **Double imposition** si tout est distribué *(IS + flat tax)*.
 - Formalisme comptable renforcé.
 - Moins avantageux si tu distribues l'intégralité du bénéfice.
-
----
 
 ## Comparatif chiffré, bénéfice 60 000 €
 
@@ -604,8 +556,6 @@ Si la SASU génère **80 000 € de bénéfice** :
 
 > La SASU/IS est **gagnante** ici grâce au taux IS 15 % et à la flat tax 30 %.
 
----
-
 ## Quand choisir IS vs IR
 
 ### ✅ Choisir IR si
@@ -620,8 +570,6 @@ Si la SASU génère **80 000 € de bénéfice** :
 - Tu veux **conserver des bénéfices** en société.
 - Tu utilises la stratégie **SASU + dividendes**.
 - Ton **taux marginal IR dépasse 30 %**.
-
----
 
 ## Exercice pratique
 
@@ -653,8 +601,6 @@ Tu ne déduis **rien individuellement**. L'administration applique **50 % forfai
 Tu déduis **toutes** tes charges professionnelles réelles.
 
 > Si tes charges dépassent **50 % du CA** → le réel est **gagnant**.
-
----
 
 ## Liste complète des charges déductibles
 
@@ -719,8 +665,6 @@ Tu déduis **toutes** tes charges professionnelles réelles.
 - **Serrures connectées**, boîtiers à clé, interphones.
 - Déductibles ou **amortissables** selon valeur unitaire *(seuil d'immobilisation : 500 € HT)*.
 
----
-
 ## La règle d'or des charges déductibles
 
 Pour être déductible, une charge doit être :
@@ -734,8 +678,6 @@ Pour être déductible, une charge doit être :
 - **Garde toutes tes factures** *(délai légal : 10 ans)*.
 - **Utilise un compte bancaire pro** distinct dès le départ.
 - **Ne mélange jamais** dépenses perso et pro.
-
----
 
 ## Exercice pratique
 
@@ -773,8 +715,6 @@ La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activi
 
 > ⚠️ Si tu travailles depuis ton **domicile** sans local commercial distinct, la CFE est calculée sur la **base minimum** de ta commune. Anticipe ce montant dès la 2ème année d'activité.
 
----
-
 ## Provisions fiscales mensuelles, une habitude de gérant
 
 > Ne pas provisionner ses impôts = **mauvaise surprise** en fin d'année.
@@ -796,8 +736,6 @@ La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activi
 
 > La trésorerie IS reste en **société**, ne la confonds pas avec tes liquidités.
 
----
-
 ## Agenda fiscal annuel d'une conciergerie
 
 | Période | Action |
@@ -814,16 +752,12 @@ La CFE est un impôt local dû par toute entreprise disposant d'un lieu d'activi
 - **TVA** : mensuelle ou trimestrielle si assujetti *(CA3)*.
 - **URSSAF auto-entrepreneur** : mensuelle ou trimestrielle.
 
----
-
 ## Les outils recommandés
 
 - **Indy**, comptabilité automatisée pour indépendants
 - **Pennylane**, idéal EURL/SASU avec un expert-comptable
 - **Impots.gouv.fr**, agenda fiscal personnalisé dans l'espace pro
 - **Net-entreprises.fr**, cotisations et déclarations URSSAF
-
----
 
 ## Exercice pratique
 
@@ -851,8 +785,6 @@ Promulguée le **19 novembre 2024** *(n° 2024-1039)*, la loi Le Meur **encadre 
 
 > Elle vise principalement les **propriétaires**, mais les **conciergeries** sont indirectement impactées.
 
----
-
 ## Mesure 1, Numéro d'enregistrement obligatoire
 
 ### Pour les propriétaires
@@ -867,8 +799,6 @@ Toute location de courte durée devra être enregistrée auprès de la **commune
 - **Sans numéro** = risque de suspension sur Airbnb/Booking.
 - **Anticipe** dès maintenant avec tes propriétaires clients.
 - Certaines communes déploient **déjà** le dispositif.
-
----
 
 ## Mesure 2, DPE progressif obligatoire
 
@@ -886,8 +816,6 @@ Toute location de courte durée devra être enregistrée auprès de la **commune
 - Les logements **G et F** vont sortir du marché progressivement.
 - **Opportunité** : accompagner tes propriétaires dans la rénovation ou la transition vers d'autres usages.
 
----
-
 ## Mesure 3, Limitation à 90 jours *(résidences principales)*
 
 ### Pour les propriétaires
@@ -898,8 +826,6 @@ La location d'une **résidence principale** reste limitée à **90 nuits/an** *(
 
 - Peu d'impact si tu gères des **résidences secondaires**.
 - Si ton portefeuille inclut des **RP** : surveille le compteur ou réoriente vers des résidences secondaires.
-
----
 
 ## Mesure 4, Pouvoirs renforcés des communes
 
@@ -914,8 +840,6 @@ Les communes peuvent désormais :
 - **Surveille les délibérations** municipales de tes communes d'intervention.
 - La **diversification géographique** protège contre les restrictions locales.
 
----
-
 ## Ce que la loi Le Meur NE change PAS fiscalement
 
 - ✓ Ton **abattement micro-BIC** reste à 50 %.
@@ -924,8 +848,6 @@ Les communes peuvent désormais :
 - ✓ Ton **régime IS/IR** n'est pas modifié.
 
 > La loi Le Meur est une loi d'**urbanisme et de régulation**. Elle ne modifie **pas** la fiscalité des prestataires de services.
-
----
 
 ## Exercice pratique
 
@@ -980,8 +902,6 @@ Les communes peuvent désormais :
 - Bénéfices **conservés ou distribués** en flat tax 30 %.
 - **Expert-comptable spécialisé** : investissement non négociable.
 
----
-
 ## Les 5 erreurs fiscales les plus fréquentes
 
 ### Erreur 1, Confondre abattement propriétaire et abattement conciergerie
@@ -1007,8 +927,6 @@ Les communes peuvent désormais :
 ### Erreur 5, Passer en SASU trop tôt
 
 - Les frais comptables et la complexité ne se justifient qu'à partir d'environ **60 000 € de bénéfice annuel**.
-
----
 
 ## Plan d'action en 3 étapes
 
@@ -1036,8 +954,6 @@ Les communes peuvent désormais :
 - ☐ **Audite le DPE** de ton portefeuille.
 - ☐ Planifie ton **rendez-vous comptable annuel**.
 
----
-
 ## Ressources officielles
 
 - **bofip.impots.gouv.fr**, doctrine fiscale officielle française
@@ -1045,8 +961,6 @@ Les communes peuvent désormais :
 - **impots.gouv.fr**, simulateur IR/IS et espace professionnel
 - **inpi.fr**, guichet unique de création d'entreprise
 - **service-public.fr**, textes officiels loi Le Meur
-
----
 
 ## Félicitations
 

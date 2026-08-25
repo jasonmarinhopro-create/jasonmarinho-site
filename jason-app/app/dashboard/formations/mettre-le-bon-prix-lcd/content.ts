@@ -22,24 +22,15 @@ export const METTRE_BON_PRIX_FORMATION = {
           id: 1,
           title: 'Pourquoi 45% des hôtes travaillent à perte sans le savoir',
           duration: '15 min',
-          content: `---
-
-MODULE 1 · LEÇON 1
-────────────────────────────────────
-Le prix minimum
-La base que personne ne calcule vraiment
-────────────────────────────────────
-
----
-
-## La réalité que personne ne dit
+          content: `## La réalité que personne ne dit
 45% des propriétaires sous-évaluent
 ou surévaluent leurs tarifs.
 
 Ils perdent entre 15 et 25%
 de revenus potentiels chaque année.
 
-Source : étude marché LCD France, 2026
+
+> Source : étude marché LCD France, 2026
 
 La cause n°1 : fixer un prix "à l'oeil"
 en regardant les voisins sur Airbnb.
@@ -47,8 +38,6 @@ en regardant les voisins sur Airbnb.
 C'est la pire méthode qui soit.
 Ton voisin a peut-être des charges
 dix fois inférieures aux tiennes.
-
----
 
 ## Le piège du prix fixe
 Imaginons 3 hôtes avec le même appartement.
@@ -67,9 +56,8 @@ Hôte C : prix dynamique 60€ → 180€
 
 → Les locations avec tarification dynamique
   génèrent en moyenne +27% de revenus bruts.
-Source : investissement-locatif.com, 2026
 
----
+> Source : investissement-locatif.com, 2026
 
 ## Ce que doit couvrir ton prix minimum
 Avant tout calcul de stratégie,
@@ -92,8 +80,6 @@ CHARGES VARIABLES (par séjour)
 → Consommables (café, produits accueil...)
 → Commission de la plateforme
 → Taxe de séjour si applicable
-
----
 
 ## La formule de base
 PRIX MINIMUM PAR NUIT =
@@ -122,8 +108,6 @@ Prix minimum = 55,5 + 53 = 108,5€ → 110€
 En dessous de 110€ sur Airbnb :
 tu travailles à perte.
 
----
-
 ## Ce que la commission change tout
 Même appartement, même prix de base : 100€
 
@@ -142,8 +126,6 @@ Conséquence directe sur ton prix minimum :
 → Sur Driing, tu peux proposer moins cher
   au voyageur ET gagner plus.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Calcule ton prix minimum maintenant avec cette formule :
@@ -154,24 +136,13 @@ Conséquence directe sur ton prix minimum :
 Mon prix minimum absolu = ___€
 
 Note ce chiffre quelque part. C'est le seul nombre qui ne bougera jamais quelles que soient les stratégies appliquées ensuite.
-
----`,
+`,
         },
         {
           id: 2,
           title: 'Comment fixer ton prix de base : la méthode des 3 comparateurs',
           duration: '15 min',
-          content: `---
-
-MODULE 1 · LEÇON 2
-────────────────────────────────────
-Le prix de base
-Ni trop haut, ni trop bas, la méthode
-────────────────────────────────────
-
----
-
-## Le prix de base : c'est quoi exactement ?
+          content: `## Le prix de base : c'est quoi exactement ?
 Le prix de base, c'est ton tarif de référence
 pour une nuit "normale" :
 → Pas un weekend
@@ -188,8 +159,6 @@ Les outils de tarification dynamique
 utilisent ton prix de base pour calculer
 toutes leurs recommandations.
 Mal calibré, il fausse tout.
-
----
 
 ## Méthode 1 : L'analyse des concurrents directs
 Cherche sur Airbnb les logements similaires
@@ -211,8 +180,6 @@ Observe :
   12 à 18% au-dessus de la moyenne locale.
   Source : AirDNA, 2026
 
----
-
 ## Méthode 2 : La règle du 1% par semaine
 Une heuristique simple pour valider ton prix :
 
@@ -228,8 +195,6 @@ Appartement valeur 200 000€
 C'est une indication, pas une règle absolue.
 Elle permet de vérifier que tu n'es pas
 complètement décalé du marché.
-
----
 
 ## Méthode 3 : Le test prix-occupation
 La méthode la plus fiable sur le terrain :
@@ -251,8 +216,6 @@ réservé 30 nuits par mois à bas prix.
 C'est d'être réservé 18-22 nuits
 au meilleur prix possible.
 
----
-
 ## La note Airbnb et son impact sur le prix
 Ta note Airbnb est un levier tarifaire direct.
 
@@ -272,8 +235,6 @@ Note 4,9 → +15 à 20% sur les concurrents
   est le moyen le moins coûteux
   d'augmenter ses prix légitimement.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Ouvre Airbnb maintenant. Cherche 5 logements similaires au tien dans ton quartier. Note leur prix de base en semaine hors saison. Fais la moyenne. C'est ton point de référence marché.
@@ -282,8 +243,7 @@ Compare avec ton prix minimum calculé en leçon 1.1 :
 - Si ta moyenne marché > ton prix minimum → tu as de la marge. Bien.
 - Si ta moyenne marché ≈ ton prix minimum → ta rentabilité est fragile. À surveiller.
 - Si ta moyenne marché < ton prix minimum → tu as un problème de coûts ou de positionnement à corriger.
-
----`,
+`,
         },
       ],
     },
@@ -296,17 +256,7 @@ Compare avec ton prix minimum calculé en leçon 1.1 :
           id: 11,
           title: 'Construire son calendrier saisonnier',
           duration: '15 min',
-          content: `---
-
-MODULE 2 · LEÇON 1
-────────────────────────────────────
-La saisonnalité
-Multiplier ses revenus aux bons moments
-────────────────────────────────────
-
----
-
-## Les 4 niveaux de demande à connaître
+          content: `## Les 4 niveaux de demande à connaître
 NIVEAU 4, DEMANDE EXCEPTIONNELLE
 Événements rares : grand festival, compétition
 internationale, salon professionnel majeur
@@ -328,8 +278,6 @@ NIVEAU 0, BASSE SAISON
 Périodes creuses, semaines calmes
 → Réduction : -15% à -30%
 
----
-
 ## Les vacances scolaires françaises : ton calendrier prioritaire
 En France, les 5 zones de vacances
 (A, B, C + spécifiques) créent des pics
@@ -349,8 +297,6 @@ un tarif majoré programmé à l'avance.
 Airbnb et Booking te suggèrent ces
 ajustements, mais ne les fais pas
 à ta place et souvent sous-évaluent.
-
----
 
 ## Les événements locaux : ton avantage concurrentiel
 C'est là que la majorité des hôtes
@@ -374,8 +320,6 @@ Dès qu'un événement est identifié :
 → Anticipe 6-12 mois à l'avance
    pour les grands événements récurrents
 
----
-
 ## Les weekends : un levier simple et sous-exploité
 Une règle universelle en LCD :
 
@@ -396,8 +340,6 @@ ou selon tes dates de disponibilité
 
 Cette seule modification peut augmenter
 tes revenus de 8 à 12% sur l'année entière.
-
----
 
 ## La règle des 30/60/90 jours
 Le délai avant la date du séjour
@@ -421,29 +363,16 @@ Moins de 7 jours avant :
 Ne laisse JAMAIS une nuit se vendre
 en dessous de ton prix minimum.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Ouvre ton calendrier Airbnb. Identifie les 3 prochains événements locaux autour de chez toi (concert, festival, salon...). Configure immédiatement une majoration de +30% pour ces périodes et un séjour minimum de 2 nuits. C'est fait en 10 minutes et ça peut représenter plusieurs centaines d'euros de revenus supplémentaires.
-
----`,
+`,
         },
         {
           id: 12,
           title: 'Réductions pour la durée de séjour : remplir le calendrier intelligemment',
           duration: '15 min',
-          content: `---
-
-MODULE 2 · LEÇON 2
-────────────────────────────────────
-Les réductions par durée de séjour
-Remplir le calendrier sans brader
-────────────────────────────────────
-
----
-
-## Pourquoi les réductions longue durée augmentent les revenus
+          content: `## Pourquoi les réductions longue durée augmentent les revenus
 Contre-intuitif mais vrai :
 
 Proposer -15% pour 7 nuits
@@ -461,8 +390,6 @@ Pourquoi ?
 
 La remise compense largement la réduction
 des coûts opérationnels par séjour.
-
----
 
 ## La grille de remises recommandée
 SÉJOUR DE 3-4 NUITS (weekend prolongé)
@@ -484,8 +411,6 @@ Ces remises s'appliquent SUR TON PRIX DE BASE.
 Elles ne doivent jamais faire descendre
 le revenu par nuit sous ton prix minimum.
 
----
-
 ## La stratégie du prix à 2 nuits minimum
 Une technique avancée mais très efficace :
 
@@ -504,8 +429,6 @@ Effet :
 
 Applicable sur Airbnb (remises sur durée de séjour)
 et sur Booking (promotions durée).
-
----
 
 ## Ne jamais confondre remise et bradage
 La différence entre une remise intelligente
@@ -527,8 +450,6 @@ Test simple avant toute remise :
 
 Si non : ne fais pas cette remise.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Va dans les paramètres Airbnb → Tarification → Remises sur la durée de séjour. Configure ces deux valeurs :
@@ -536,8 +457,7 @@ Si non : ne fais pas cette remise.
 - Remise 28 nuits : -25%
 
 Vérifie que le prix par nuit résultant reste au-dessus de ton prix minimum calculé en module 1. Si ce n'est pas le cas, ajuste le pourcentage.
-
----`,
+`,
         },
       ],
     },
@@ -550,17 +470,7 @@ Vérifie que le prix par nuit résultant reste au-dessus de ton prix minimum cal
           id: 21,
           title: 'Comment Airbnb fixe vraiment tes prix (et pourquoi tu ne dois pas lui faire confiance aveuglément)',
           duration: '12 min',
-          content: `---
-
-MODULE 3 · LEÇON 1
-────────────────────────────────────
-L'algorithme Airbnb
-Ce qu'il fait, et ce qu'il ne fait pas
-────────────────────────────────────
-
----
-
-## La tarification intelligente Airbnb : comment ça fonctionne
+          content: `## La tarification intelligente Airbnb : comment ça fonctionne
 La tarification intelligente Airbnb est
 un outil gratuit intégré à ta gestion
 de calendrier.
@@ -576,8 +486,6 @@ Ce qu'elle analyse :
 
 Elle ajuste tes prix automatiquement
 chaque jour en fonction de ces données.
-
----
 
 ## Le problème fondamental de la tarification Airbnb
 ⚠️ Ce que personne ne dit assez clairement :
@@ -600,8 +508,6 @@ le taux de réservation global de la plateforme.
   AVEC un prix minimum configuré manuellement.
   Sans ça, tu prends le risque de vendre
   des nuits sous ton seuil de rentabilité.
-
----
 
 ## Les paramètres à toujours configurer sur Airbnb
 Dans Tarification → Tarification intelligente :
@@ -627,8 +533,6 @@ RECOMMANDÉ :
 □ Remises sur durée de séjour
   → Configurées en module 2
 
----
-
 ## Quand activer et quand désactiver la tarification intelligente
 ACTIVER si :
 → Tu démarres et tu n'as pas encore de données
@@ -646,29 +550,16 @@ DÉSACTIVER et gérer manuellement si :
 → Dans tous les cas :
   Prix minimum configuré = non négociable.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Vérifie maintenant dans ton tableau de bord Airbnb si un prix minimum est configuré. Si ce champ est vide ou inférieur au chiffre calculé en module 1 : corrige-le immédiatement. C'est la protection la plus importante de ta rentabilité.
-
----`,
+`,
         },
         {
           id: 22,
           title: 'Booking.com : la logique tarifaire est différente',
           duration: '12 min',
-          content: `---
-
-MODULE 3 · LEÇON 2
-────────────────────────────────────
-Booking.com
-Une logique tarifaire radicalement différente
-────────────────────────────────────
-
----
-
-## La différence fondamentale avec Airbnb
+          content: `## La différence fondamentale avec Airbnb
 Sur Airbnb :
 Le voyageur paie ton prix + 14-16% de frais.
 Tu paies 3-5% de commission.
@@ -691,8 +582,6 @@ Ou : tu ajustes ta stratégie sur Booking
 pour que ça reste compétitif tout en
 protégeant ta marge.
 
----
-
 ## Comment Booking positionne tes annonces
 L'algorithme de Booking priorise :
 
@@ -714,8 +603,6 @@ L'algorithme de Booking priorise :
   les annonces avec annulation gratuite
   et prix compétitifs, même si ça réduit
   ta rentabilité par réservation.
-
----
 
 ## La stratégie de prix sur Booking
 3 approches selon ton objectif :
@@ -740,8 +627,6 @@ MAXIMISER LA MARGE
   sur Airbnb et Booking sans ajuster
   pour la différence de commission.
 
----
-
 ## Les promotions Booking qui valent le coup
 Booking propose plusieurs types de promotions.
 Toutes ne sont pas intéressantes.
@@ -762,29 +647,16 @@ Règle : toute promotion ne doit jamais
 faire descendre ton revenu net sous
 ton prix minimum calculé en module 1.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Si tu es sur Booking, compare ton prix de base actuel sur Booking avec celui sur Airbnb. Applique la règle : ton prix Booking doit être ≥ prix Airbnb × 1.12. Si ce n'est pas le cas, ajuste-le maintenant dans l'extranet Booking.
-
----`,
+`,
         },
         {
           id: 23,
           title: 'Le prix juste sur Driing et en réservation directe',
           duration: '11 min',
-          content: `---
-
-MODULE 3 · LEÇON 3
-────────────────────────────────────
-Le prix en réservation directe
-La règle du gagnant-gagnant
-────────────────────────────────────
-
----
-
-## La logique gagnant-gagnant de la réservation directe
+          content: `## La logique gagnant-gagnant de la réservation directe
 Quand un voyageur passe par Airbnb :
 → Il paie 115-120€ pour un logement à 100€
 → Tu reçois 96€ (après commission hôte)
@@ -800,8 +672,6 @@ Il n'y a pas de mauvaise affaire ici.
 → Driing affiche automatiquement ce comparatif.
   Le voyageur voit exactement ce qu'il économise
   vs Airbnb et Booking. Tu n'as pas à argumenter.
-
----
 
 ## Comment calculer ton prix direct optimal
 TON PRIX DIRECT = Prix affiché Airbnb voyageur
@@ -822,8 +692,6 @@ Sur un séjour d'une semaine :
 → Win-win total : ~126€ "créés"
    en sortant de la plateforme
 
----
-
 ## Les 3 erreurs à ne pas faire sur le prix direct
 ERREUR 1, Afficher le même prix qu'Airbnb
 → Pourquoi réserver directement ?
@@ -837,8 +705,6 @@ ERREUR 3, Ne pas rendre la comparaison visible
 → Le voyageur ne fait pas le calcul seul.
   Sur Driing, c'est fait automatiquement.
   Sur ton site propre, montre-le explicitement.
-
----
 
 ## Le prix direct selon le type de voyageur
 VOYAGEUR NOUVEAU (première visite)
@@ -856,15 +722,12 @@ VOYAGEUR RECOMMANDÉ (envoyé par quelqu'un)
 → Coûte moins que n'importe quelle commission
 → Et récompense ton ambassadeur
 
----
-
 
 ## Exercice
 **Exercice pratique :** Sur ton annonce Driing, vérifie que ton prix est correctement positionné. Il doit être inférieur au prix total Airbnb (frais inclus) mais supérieur à ton prix de base Airbnb net.
 
 Si tu n'as pas encore d'annonce Driing : c'est le moment de la créer. Le prix optimal de départ = prix affiché Airbnb × 0,91.
-
----`,
+`,
         },
       ],
     },
@@ -877,17 +740,7 @@ Si tu n'as pas encore d'annonce Driing : c'est le moment de la créer. Le prix o
           id: 31,
           title: 'Faire sa tarification dynamique manuellement (la méthode pour débuter)',
           duration: '15 min',
-          content: `---
-
-MODULE 4 · LEÇON 1
-────────────────────────────────────
-La tarification dynamique manuelle
-La méthode pour débuter sans outil
-────────────────────────────────────
-
----
-
-## Pourquoi commencer manuellement
+          content: `## Pourquoi commencer manuellement
 Avant d'utiliser un outil automatisé,
 il faut comprendre la logique.
 
@@ -903,8 +756,6 @@ configurés, il amplifie les erreurs.
 La tarification dynamique manuelle,
 c'est simplement 3 vérifications
 hebdomadaires de 15 minutes.
-
----
 
 ## Le rituel des 15 minutes hebdomadaires
 Chaque lundi matin, ouvre ton calendrier
@@ -927,8 +778,6 @@ et réponds à ces 3 questions :
 
 C'est tout. 15 minutes. Chaque semaine.
 
----
-
 ## Les 5 règles de tarification manuelle
 RÈGLE 1, Le prix minimum est sacré
 → Jamais en dessous, quelles que soient
@@ -948,8 +797,6 @@ RÈGLE 5, Haute saison = prix maximum
   monte au maximum raisonnable (+30-50%)
   et augmente le séjour minimum
 
----
-
 ## Le tableau de bord simple à tenir
 Un Google Sheet avec 5 colonnes suffit :
 
@@ -964,29 +811,16 @@ Après 3 mois, tu vois exactement
 quelles périodes performent
 et lesquelles méritent d'être optimisées.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Ouvre un Google Sheet ou une simple note. Liste les 8 prochaines semaines. Pour chacune, note le niveau de demande estimé (vacances ? événement ? standard ? creux ?) et le prix que tu vas appliquer. C'est ton premier plan de tarification, imparfait mais déjà 10 fois mieux qu'un prix fixe.
-
----`,
+`,
         },
         {
           id: 32,
           title: 'Les outils de tarification dynamique : quand les utiliser et lesquels',
           duration: '15 min',
-          content: `---
-
-MODULE 4 · LEÇON 2
-────────────────────────────────────
-Les outils de tarification dynamique
-Quand en avoir besoin, et lesquels
-────────────────────────────────────
-
----
-
-## À partir de quand un outil est-il pertinent ?
+          content: `## À partir de quand un outil est-il pertinent ?
 Un outil de tarification dynamique
 est pertinent si :
 
@@ -1006,8 +840,6 @@ Ce n'est PAS pertinent si :
 
 → Un outil amplifie ta stratégie.
   Il ne la remplace pas.
-
----
 
 ## Les 3 outils à connaître
 PRICELABS
@@ -1035,8 +867,6 @@ BEYOND
   votre prix minimum manuellement.
   Les outils respectent ce seuil.
 
----
-
 ## Ce qu'aucun outil ne peut faire à ta place
 Les outils analysent le marché.
 Ils ne connaissent pas ton logement.
@@ -1055,8 +885,6 @@ Ce qui reste ta responsabilité :
 Un outil mal configuré sur un mauvais
 prix de base = revenus optimisés dans
 la mauvaise direction.
-
----
 
 ## La vraie question : outil ou pas ?
 Pose-toi ces questions :
@@ -1082,13 +910,10 @@ Pose-toi ces questions :
 Tu as des doutes ? [Parles-en avec Jason](/contact)
 avant d'investir dans un outil.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Rien à faire maintenant si tu démarres. Reviens à cette leçon dans 3 mois, après avoir appliqué la méthode manuelle du module 4.1. À ce moment-là, regarde ton tableau de bord : si tu passes plus de 30 minutes par semaine sur les prix ou si tu vois des nuits mal optimisées récurrentes, c'est le signal pour passer à un outil.
-
----`,
+`,
         },
       ],
     },
@@ -1101,17 +926,7 @@ avant d'investir dans un outil.
           id: 41,
           title: 'Les 5 erreurs de tarification les plus fréquentes',
           duration: '10 min',
-          content: `---
-
-MODULE 5 · LEÇON 1
-────────────────────────────────────
-Les 5 erreurs de tarification
-Celles qui coûtent le plus cher
-────────────────────────────────────
-
----
-
-## Erreur 1 : Le prix figé toute l'année
+          content: `## Erreur 1 : Le prix figé toute l'année
 C'est l'erreur n°1.
 
 Un hôte fixe son prix en janvier
@@ -1129,8 +944,6 @@ valoir deux à trois fois plus.
 
 → Un prix statique en LCD, c'est
   garantir de sous-performer.
-
----
 
 ## Erreur 2 : Copier le prix du voisin
 "Mes concurrents sont à 80€,
@@ -1152,8 +965,6 @@ que le marché est à 80€ :
 le problème n'est pas ton prix,
 c'est tes coûts ou ton positionnement.
 
----
-
 ## Erreur 3 : Confondre taux d'occupation et rentabilité
 Un calendrier plein à 70€/nuit
 n'est pas forcément mieux qu'un calendrier
@@ -1172,8 +983,6 @@ Résultat réel :
 
 → L'objectif n'est pas d'être plein.
   C'est d'être rentable.
-
----
 
 ## Erreurs 4 et 5
 ERREUR 4, Oublier l'impact des frais de ménage
@@ -1197,29 +1006,16 @@ Si ta plateforme ne la collecte pas automatiquement,
 tu dois l'intégrer dans ta structure tarifaire.
 Ne la calcule jamais "après coup".
 
----
-
 
 ## Exercice
 **Exercice pratique :** Réponds honnêtement : est-ce que tu fais l'une de ces 5 erreurs en ce moment ? Note laquelle et l'action corrective correspondante. Une seule erreur corrigée peut représenter plusieurs centaines d'euros de revenus supplémentaires sur l'année.
-
----`,
+`,
         },
         {
           id: 42,
           title: 'La stratégie complète par type de logement',
           duration: '8 min',
-          content: `---
-
-MODULE 5 · LEÇON 2
-────────────────────────────────────
-Stratégie par profil de logement
-Ce qui marche pour chaque type
-────────────────────────────────────
-
----
-
-## Le studio en zone urbaine
+          content: `## Le studio en zone urbaine
 PROFIL TYPE : Paris, Lyon, Bordeaux,
               centres-villes actifs
 
@@ -1235,8 +1031,6 @@ LEVIER CLÉ : les événements professionnels
 (salons, congrès, fashion week...) sont
 souvent plus lucratifs que les événements
 grand public pour un studio.
-
----
 
 ## La maison / villa familiale
 PROFIL TYPE : Littoral, campagne, montagne,
@@ -1255,8 +1049,6 @@ STRATÉGIE :
 LEVIER CLÉ : les remises de longue durée
 en basse saison sont souvent plus rentables
 que les courtes rotations à prix réduit.
-
----
 
 ## La chambre d'hôtes
 PROFIL TYPE : Hébergement chez l'habitant,
@@ -1278,29 +1070,16 @@ LEVIER CLÉ : la qualité de l'expérience
 humaine permet de maintenir un prix
 au-dessus du marché sans algorithme.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Identifie dans quelle case ton logement tombe. Note les 2-3 leviers spécifiques à ton profil que tu n'appliques pas encore. Ce sont tes prochaines actions d'optimisation tarifaire.
-
----`,
+`,
         },
         {
           id: 43,
           title: 'Mesurer et ajuster : les 3 indicateurs à suivre chaque mois',
           duration: '7 min',
-          content: `---
-
-MODULE 5 · LEÇON 3
-────────────────────────────────────
-Mesurer et ajuster
-Les 3 chiffres qui disent tout
-────────────────────────────────────
-
----
-
-## Indicateur 1 : Le RevPAN
+          content: `## Indicateur 1 : Le RevPAN
 RevPAN = Revenu Par nuit Disponible
 (équivalent du RevPAR hôtelier)
 
@@ -1321,8 +1100,6 @@ ta stratégie tarifaire s'améliore.
 Objectif réaliste :
 → Augmenter le RevPAN de 10% tous les 6 mois
 
----
-
 ## Indicateur 2 : Le taux d'occupation par période
 Ne regarde pas ton taux d'occupation global.
 Regarde-le par type de période :
@@ -1341,8 +1118,6 @@ Si un segment est au-dessus de l'objectif :
 → Tu laisses de l'argent sur la table.
   Monte les prix progressivement.
 
----
-
 ## Indicateur 3 : Le revenu net par canal
 Tous les mois, calcule tes revenus nets
 par canal de réservation :
@@ -1359,8 +1134,6 @@ TOTAL          ___           ___€           ___€        ___€
   ajuste ta stratégie tarifaire sur Booking.
   Si le direct représente < 20% :
   développe ce canal (module 4 de l'autre formation).
-
----
 
 ## Le récapitulatif de la formation
 CE QUE TU SAIS MAINTENANT FAIRE :
@@ -1385,15 +1158,11 @@ MODULE 5 : Éviter les 5 erreurs les plus coûteuses
 
 Des questions ? [Prends un appel avec Jason](/contact)
 
----
-
 
 ## Exercice
 **L'action finale de la formation :**
 
 Calcule ton RevPAN du mois dernier. Revenus bruts ÷ nuits disponibles = ___€. Note ce chiffre. Dans 3 mois, recalcule-le. Si tu as appliqué les enseignements de cette formation, il aura progressé. C'est ta mesure de succès.
-
----
 
 # ANNEXE, Récapitulatif des formules
 

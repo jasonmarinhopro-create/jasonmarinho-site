@@ -828,8 +828,6 @@ Nombre de fois que tes photos ont été vues. Si ce chiffre est bas → change t
 | 3 | Ajouter 1-2 nouvelles photos |
 | 4 | Répondre aux avis + vérifier modifications de fiche |
 
----
-
 ## Les 10 erreurs fatales à éviter
 
 **Erreurs de création :**
@@ -865,8 +863,6 @@ Différentes versions de ton nom, adresse ou téléphone sur Google, ton site, P
 
 **⑩ Ignorer la section Q&A**
 N'importe qui peut y écrire des questions (et parfois du contenu négatif). Si tu ne la gères pas, elle s'alimente sans toi.
-
----
 
 ## Tes prochaines étapes concrètes
 

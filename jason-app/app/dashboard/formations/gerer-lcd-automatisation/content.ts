@@ -22,21 +22,12 @@ export const GERER_LCD_FORMATION = {
           id: 1,
           title: `L'audit de vos tâches : trouver les heures perdues`,
           duration: '12 min',
-          content: `---
-
-MODULE 1 · LEÇON 1
-────────────────────────────────────
-L'audit de vos tâches
-Trouver ce qui vous vole du temps
-────────────────────────────────────
-
----
-
-## Le chiffre qui change tout
+          content: `## Le chiffre qui change tout
 Les propriétaires qui automatisent
 leur gestion LCD gagnent jusqu'à
 12 heures par semaine.
-Source : moncercleimmo.com, 2026
+
+> Source : moncercleimmo.com, 2026
 
 Ce que représentent 12 heures/semaine :
 → 624 heures par an
@@ -48,13 +39,12 @@ Une conciergerie de 30 logements
 qui fait encore ses rapports sur Excel
 consacre entre 40 et 48 heures par an
 à cette seule tâche.
-Source : Tweelo / hostnlib, 2026
+
+> Source : Tweelo / hostnlib, 2026
 
 → L'automatisation n'est pas un confort.
   En 2026, c'est une nécessité
   pour rester compétitif et sain d'esprit.
-
----
 
 ## Les 6 tâches qui volent le plus de temps
 Par ordre d'impact sur votre temps :
@@ -86,8 +76,6 @@ Par ordre d'impact sur votre temps :
     Récapitulatifs, factures, déclarations...
     → Automatisable à 60%
 
----
-
 ## L'audit en 10 minutes
 Pour chaque semaine type, estimez :
 
@@ -106,8 +94,6 @@ TOTAL                           _____ h/semaine
 → Multipliez par 52 pour l'impact annuel.
 → Identifiez la tâche la plus chronophage.
   C'est votre priorité d'automatisation n°1.
-
----
 
 ## L'ordre d'automatisation recommandé
 Ne tentez pas de tout automatiser
@@ -134,29 +120,16 @@ PHASE 3 (mois 2-3)
   Ne passez pas à la phase 2 avant
   d'avoir stabilisé la phase 1.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Fais l'audit de tes tâches LCD maintenant. Remplis le tableau de la slide 4 honnêtement. Note ton total hebdomadaire. Identifie ta tâche la plus chronophage, c'est là que tu commences dans les leçons suivantes.
-
----`,
+`,
         },
         {
           id: 2,
           title: 'Les outils : channel manager, PMS, comment choisir ?',
           duration: '13 min',
-          content: `---
-
-MODULE 1 · LEÇON 2
-────────────────────────────────────
-Channel manager et PMS
-Comprendre les outils avant d'en acheter un
-────────────────────────────────────
-
----
-
-## La différence entre channel manager et PMS
+          content: `## La différence entre channel manager et PMS
 CHANNEL MANAGER
 → Synchronise vos calendriers et tarifs
   entre plateformes (Airbnb, Booking,
@@ -179,8 +152,6 @@ PMS (Property Management System)
 → Commencez par un channel manager.
   Passez au PMS quand vous gérez 5+ biens
   ou quand vous avez une équipe à coordonner.
-
----
 
 ## Les outils recommandés selon votre profil
 PROFIL 1, HÔTE SOLO 1-3 LOGEMENTS
@@ -205,8 +176,6 @@ PROFIL 3, CONCIERGERIE 10+ LOGEMENTS
   testez toujours avant d'acheter.
   Tous les outils sérieux proposent
   un essai gratuit de 14 jours.
-
----
 
 ## Ce qu'il ne faut PAS faire
 LES ERREURS D'OUTIL LES PLUS FRÉQUENTES :
@@ -235,13 +204,10 @@ LES ERREURS D'OUTIL LES PLUS FRÉQUENTES :
      coûte plus cher que les gains.
      Choisissez bien et restez.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Identifie ton profil (1, 2 ou 3) et note les 2 outils recommandés pour toi. Inscris-toi à un essai gratuit de l'un d'eux cette semaine. Pas besoin de tout configurer maintenant, juste explorer l'interface. La prise en main progressive est toujours meilleure que la migration totale précipitée.
-
----`,
+`,
         },
       ],
     },
@@ -254,17 +220,7 @@ LES ERREURS D'OUTIL LES PLUS FRÉQUENTES :
           id: 11,
           title: 'Les 7 messages à automatiser absolument',
           duration: '13 min',
-          content: `---
-
-MODULE 2 · LEÇON 1
-────────────────────────────────────
-Les messages automatiques
-Les 7 messages qui tournent sans vous
-────────────────────────────────────
-
----
-
-## Pourquoi automatiser les messages sans perdre l'humain
+          content: `## Pourquoi automatiser les messages sans perdre l'humain
 Automatiser ≠ être impersonnel.
 
 La clé : des messages bien rédigés,
@@ -284,8 +240,6 @@ Variables à utiliser :
   et les détails de SON séjour
   ne ressemble pas à un message automatique.
   C'est de la personnalisation à l'échelle.
-
----
 
 ## Les 7 messages du parcours voyageur
 MESSAGE 1, CONFIRMATION IMMÉDIATE
@@ -324,8 +278,6 @@ Timing : le jour du départ (après l'heure de checkout)
 Contenu : remerciement + invitation à l'avis
           + lien réservation directe Driing
 
----
-
 ## Comment configurer les messages automatiques
 AVEC UN PMS / CHANNEL MANAGER :
 → Menu "Automatisation" ou "Messages"
@@ -350,8 +302,6 @@ POUR DRIING :
 → Les gabarits de messages de la plateforme
   Jason Marinho sont directement réutilisables
   comme templates dans votre outil d'automatisation.
-
----
 
 ## Les questions fréquentes à anticiper dans les messages
 80% des questions voyageurs concernent
@@ -382,29 +332,16 @@ AVANT que la question soit posée :
   Moins de messages = plus de temps
   ET meilleur taux de réponse Airbnb.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Rédige maintenant le message J-1 (instructions d'arrivée) de façon complète. Inclus le code d'accès, les instructions de stationnement, le Wi-Fi, le lien livret Driing et votre numéro. C'est le message le plus important car il évite 50% des questions pendant le séjour. Configurez-le en envoi automatique dès aujourd'hui.
-
----`,
+`,
         },
         {
           id: 12,
           title: 'Répondre aux questions en dehors des heures ouvrées',
           duration: '12 min',
-          content: `---
-
-MODULE 2 · LEÇON 2
-────────────────────────────────────
-Les questions hors horaires
-Ne plus être disponible 24h/24 sans perdre en qualité
-────────────────────────────────────
-
----
-
-## Le problème du taux de réponse Airbnb
+          content: `## Le problème du taux de réponse Airbnb
 Airbnb mesure votre taux de réponse
 et votre délai moyen sur 30 jours.
 
@@ -438,8 +375,6 @@ NIVEAU 3, LE MESSAGE D'ACCUSÉ DE RÉCEPTION
   → Maintient votre taux de réponse Airbnb
     sans vous forcer à répondre à 23h.
 
----
-
 ## Les outils d'IA pour répondre aux messages
 En 2026, des outils basés sur l'IA
 peuvent répondre automatiquement
@@ -468,8 +403,6 @@ SUPERHOTE
   pendant que vous vous concentrez sur
   la relation humaine quand c'est nécessaire.
 
----
-
 ## La règle des plages horaires
 Même sans IA, vous pouvez préserver
 votre vie personnelle avec une règle simple :
@@ -496,13 +429,10 @@ Communicquez-le clairement :
   à la satisfaction voyageur.
   Un voyageur prévenu est un voyageur patient.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Configure maintenant un message d'accusé de réception automatique sur Airbnb pour les demandes de réservation et les messages entrants. Même une phrase simple : "Merci pour votre message, je reviens vers vous très prochainement !" maintient votre taux de réponse sans vous forcer à répondre immédiatement.
-
----`,
+`,
         },
       ],
     },
@@ -515,17 +445,7 @@ Communicquez-le clairement :
           id: 21,
           title: `L'accès autonome : finir avec les remises de clés`,
           duration: '12 min',
-          content: `---
-
-MODULE 3 · LEÇON 1
-────────────────────────────────────
-L'accès autonome
-La liberté de ne plus remettre de clés
-────────────────────────────────────
-
----
-
-## Ce que l'accès autonome change
+          content: `## Ce que l'accès autonome change
 AVANT (remise de clés manuelle) :
 → Vous devez être disponible à l'heure exacte d'arrivée
 → Le voyageur arrive avec 2h de retard : vous attendez
@@ -544,8 +464,6 @@ APRÈS (accès autonome) :
 → C'est souvent LA première automatisation
   que les hôtes mettent en place
   et celle qui change le plus leur quotidien.
-
----
 
 ## Les 3 solutions d'accès autonome
 SOLUTION 1, LA BOÎTE À CLÉS (budget : 30-80€)
@@ -577,8 +495,6 @@ SOLUTION 3, INTERPHONE CONNECTÉ (immeubles)
 → Application mobile pour ouvrir à distance
 → Solution si remplacement de serrure impossible
 
----
-
 ## Comment intégrer la serrure connectée dans votre automatisation
 L'intérêt de la serrure connectée
 va bien au-delà de la remise de clés.
@@ -603,29 +519,16 @@ Outils qui s'intègrent nativement :
 → Igloohome + la plupart des PMS
 → Vérifiez la compatibilité avant l'achat.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Si tu n'as pas encore d'accès autonome : commande cette semaine une boîte à clés (30-50€ sur Amazon) comme solution immédiate. Si tu veux aller plus loin : consulte les intégrations de ton PMS pour voir quelle serrure connectée est compatible. La boîte à clés te fait gagner du temps dès demain.
-
----`,
+`,
         },
         {
           id: 22,
           title: 'Coordonner son équipe de ménage automatiquement',
           duration: '12 min',
-          content: `---
-
-MODULE 3 · LEÇON 2
-────────────────────────────────────
-La coordination ménage automatique
-Zéro appel, zéro message, zéro oubli
-────────────────────────────────────
-
----
-
-## Le problème de la coordination ménage
+          content: `## Le problème de la coordination ménage
 Sans automatisation, chaque rotation
 nécessite :
 
@@ -651,8 +554,6 @@ Avec automatisation :
 → Il confirme en un clic.
 → Vous n'êtes impliqué qu'en cas de problème.
 
----
-
 ## Les outils de coordination ménage
 OPTION 1, GOOGLE CALENDAR PARTAGÉ (gratuit)
 → Créez un calendrier partagé avec votre ménage
@@ -677,8 +578,6 @@ OPTION 4, WHATSAPP + CALENDRIER PARTAGÉ (simple)
   en format iCal avec votre prestataire.
 → Il voit les arrivées et départs en temps réel.
 → Accord verbal sur les délais d'intervention.
-
----
 
 ## La checklist de ménage : l'outil qui garantit la qualité
 Automatiser la coordination ne suffit pas.
@@ -717,29 +616,16 @@ VÉRIFICATION FINALE
 □ Photos de chaque pièce envoyées
 □ Rapport d'incident si constaté
 
----
-
 
 ## Exercice
 **Exercice pratique :** Crée la checklist ménage de ton logement avec les éléments de la slide 4, adaptée à ta configuration. Partage-la avec ton prestataire cette semaine. Et crée un calendrier Google partagé avec lui si ce n'est pas déjà fait, c'est la solution gratuite la plus rapide à mettre en place pour la coordination.
-
----`,
+`,
         },
         {
           id: 23,
           title: 'La tarification dynamique : automatiser son pricing',
           duration: '11 min',
-          content: `---
-
-MODULE 3 · LEÇON 3
-────────────────────────────────────
-La tarification dynamique
-Gagner plus sans y penser
-────────────────────────────────────
-
----
-
-## Ce que la tarification dynamique fait pour vous
+          content: `## Ce que la tarification dynamique fait pour vous
 La tarification dynamique ajuste
 vos prix automatiquement chaque jour
 selon la demande locale.
@@ -757,15 +643,14 @@ Impact moyen observé :
 → +15 à +25% de revenus
   pour les hôtes qui passent
   à la tarification dynamique
-Source : moncercleimmo.com, 2026
+
+> Source : moncercleimmo.com, 2026
 
 → Sans tarification dynamique :
   vous laissez de l'argent sur la table
   pendant les périodes de forte demande
   et videz votre calendrier
   pendant les périodes creuses.
-
----
 
 ## Les outils de tarification dynamique
 PRICELABS (recommandé)
@@ -791,8 +676,6 @@ RÈGLE GÉNÉRALE :
 → 1 logement : commencez par l'outil Airbnb gratuit
 → 2+ logements : investissez dans Pricelabs ou Beyond
   (ROI positif dès le 1er mois en général)
-
----
 
 ## Les règles de base à configurer
 Même avec un outil automatique,
@@ -823,13 +706,10 @@ BLOCAGES CALENDRIER
   Sinon l'outil peut proposer vos dates
   personnelles à des voyageurs.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Si tu n'as pas encore de tarification dynamique : active l'outil "Prix intelligents" gratuit d'Airbnb dès aujourd'hui. Définis ton prix minimum (charges + ménage + marge minimale). C'est la version simple, gratuite, et qui améliore déjà vos revenus sur les périodes de forte demande.
-
----`,
+`,
         },
       ],
     },
@@ -842,17 +722,7 @@ BLOCAGES CALENDRIER
           id: 31,
           title: 'Le tableau de bord de votre activité LCD',
           duration: '12 min',
-          content: `---
-
-MODULE 4 · LEÇON 1
-────────────────────────────────────
-Le tableau de bord
-Piloter son activité en 15 minutes par semaine
-────────────────────────────────────
-
----
-
-## Les 5 métriques à suivre chaque semaine
+          content: `## Les 5 métriques à suivre chaque semaine
 Vous n'avez pas besoin d'un reporting complexe.
 5 chiffres suffisent pour piloter votre LCD :
 
@@ -881,8 +751,6 @@ Vous n'avez pas besoin d'un reporting complexe.
   en 5 minutes = vous pilotez vraiment
   votre activité.
 
----
-
 ## Le Google Sheet de pilotage (gratuit et suffisant)
 Créez un Google Sheet avec ces onglets :
 
@@ -909,8 +777,6 @@ ONGLET 4, CONTACTS VOYAGEURS
   Mais avoir votre propre outil garantit
   que vous possédez vos données
   indépendamment des plateformes.
-
----
 
 ## Les indicateurs d'alerte à surveiller
 Certains chiffres doivent déclencher
@@ -940,29 +806,16 @@ une action immédiate :
 → Briefez à nouveau votre équipe ménage.
    Ajoutez des éléments à la checklist.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Crée ton Google Sheet de pilotage maintenant avec les 4 onglets. Remplis-le avec les données de tes 3 derniers mois. Ça prend 20 minutes. Ce tableau devient votre tableau de bord permanent, 15 minutes par semaine pour le maintenir à jour.
-
----`,
+`,
         },
         {
           id: 32,
           title: 'La routine hebdomadaire du pro de la LCD',
           duration: '12 min',
-          content: `---
-
-MODULE 4 · LEÇON 2
-────────────────────────────────────
-La routine hebdomadaire
-Tout gérer en 2 à 3 heures par semaine
-────────────────────────────────────
-
----
-
-## Ce que fait un hôte LCD pro chaque semaine
+          content: `## Ce que fait un hôte LCD pro chaque semaine
 UN SYSTÈME BIEN AUTOMATISÉ
 + UNE ROUTINE HEBDOMADAIRE CLAIRE
 = LCD gérée en 2 à 3h/semaine
@@ -989,8 +842,6 @@ FIN DU MOIS, 30 MIN
 → Analyse des métriques du mois
 → 1 action d'amélioration identifiée
 
----
-
 ## Les notifications à activer (et celles à désactiver)
 NOTIFICATIONS À ACTIVER :
 → Nouvelle réservation
@@ -1010,8 +861,6 @@ NOTIFICATIONS À DÉSACTIVER
   une action immédiate, elle ne doit pas
   vous interrompre en temps réel.
   Traitez-la dans votre plage horaire dédiée.
-
----
 
 ## Ce que vous faites avec les heures récupérées
 Une fois votre système en place,
@@ -1035,29 +884,16 @@ avec ce temps :
   Décidez consciemment de ce que
   vous en faites.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Bloque maintenant dans ton agenda 4 créneaux récurrents chaque semaine : lundi matin 30 min, mercredi 15 min, vendredi 15 min, et dernier lundi du mois 30 min. C'est ta routine LCD. Avec un système automatisé, ces 4 créneaux suffisent à gérer 1 à 3 logements sereinement.
-
----`,
+`,
         },
         {
           id: 33,
           title: `Le plan d'automatisation sur 8 semaines`,
           duration: '11 min',
-          content: `---
-
-MODULE 4 · LEÇON 3
-────────────────────────────────────
-Le plan sur 8 semaines
-De zéro automatisation à système complet
-────────────────────────────────────
-
----
-
-## Le plan semaine par semaine
+          content: `## Le plan semaine par semaine
 SEMAINE 1, ACCÈS AUTONOME
 □ Commander boîte à clés ou serrure connectée
 □ Configurer le code
@@ -1095,8 +931,6 @@ SEMAINE 8, BILAN
 □ Identifier ce qui reste à améliorer
 □ 1 action pour le mois suivant
 
----
-
 ## Le récapitulatif de la formation
 CE QUE VOUS SAVEZ MAINTENANT FAIRE :
 
@@ -1128,8 +962,6 @@ MODULE 4
 
 Des questions sur votre configuration ?
 [Prends un appel avec Jason](/contact)
-
----
 
 
 ## Exercice
