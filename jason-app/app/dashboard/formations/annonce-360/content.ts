@@ -62,7 +62,7 @@ La cannibalisation, c'est quand un canal secondaire capte des réservations qui 
 
 1. **Des avantages exclusifs par canal.** Réserve une offre de bienvenue ou un late check-out gratuit à ta page Driing, jamais visible sur Airbnb ou Booking. Un voyageur qui compare doit avoir une raison claire de choisir le canal que tu préfères, pas juste le hasard.
 2. **Une allocation de calendrier réfléchie**, si tu as plusieurs logements ou beaucoup de disponibilité : garde certaines dates premium (vacances scolaires, événements locaux) prioritairement sur ton canal héros, où la conversion est la plus élevée.
-3. **Un channel manager qui synchronise en temps réel.** Sans synchronisation immédiate, le risque n'est plus la cannibalisation mais le double-booking, l'échec opérationnel le plus coûteux en multicanal. Les hôtes qui pilotent leurs canaux avec un outil dédié plutôt qu'à la main génèrent en moyenne 35 % de revenus en plus que ceux qui gèrent chaque plateforme séparément — la coordination elle-même est un levier de revenu, pas juste un confort de gestion.
+3. **Un channel manager qui synchronise en temps réel.** Sans synchronisation immédiate, le risque n'est plus la cannibalisation mais le double-booking, l'échec opérationnel le plus coûteux en multicanal. Les hôtes qui pilotent leurs canaux avec un outil dédié plutôt qu'à la main génèrent en moyenne 35 % de revenus en plus que ceux qui gèrent chaque plateforme séparément : la coordination elle-même est un levier de revenu, pas juste un confort de gestion.
 
 **Concrètement** : si tu n'as pas encore de channel manager et que tu gères 2 canaux ou plus à la main, c'est le premier chantier à lancer avant même de retoucher tes annonces.`,
         },

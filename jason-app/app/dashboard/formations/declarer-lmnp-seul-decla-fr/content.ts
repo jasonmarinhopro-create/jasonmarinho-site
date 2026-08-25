@@ -44,6 +44,7 @@ Tu es LMNP si tu loues un logement meublé (donc y compris ta LCD) et que tu rem
 
 Si tu dépasses **les deux seuils à la fois**, tu bascules en LMP (Loueur Meublé Professionnel) : cotisations sociales SSI, régime des plus-values professionnelles, obligations différentes. Si un seul des deux seuils est dépassé, tu restes LMNP : c'est le cumul des deux qui déclenche le changement de statut.
 
+
 > Source : Code général des impôts, art. 155 IV ; BOFiP BIC-CHAMP-40
 
 ## Micro-BIC : la déclaration simplifiée
@@ -59,6 +60,7 @@ Au micro-BIC, tu déclares ton chiffre d'affaires brut sur ta déclaration de re
 | Chambre d'hôtes | 71% | 77 700€/an |
 
 Pour les revenus 2026 (déclarés en 2027), le plafond "classé" est réévalué à 83 600€. Le plafond "non classé" de 15 000€, lui, est explicitement exclu de la revalorisation : il reste figé.
+
 
 > Source : Loi n° 2024-1039 du 19 novembre 2024 (loi Le Meur) ; CGI art. 50-0 ; BOFiP BIC-DECLA-10-10
 
@@ -159,6 +161,7 @@ Concrètement, le calcul devient :
 
 Plus tu as amorti pendant la location, plus ton "prix d'acquisition" est réduit dans le calcul, et plus la plus-value taxable est élevée à la revente. Le mobilier n'est **pas** concerné : son amortissement reste hors du calcul de la plus-value.
 
+
 > Source : Loi n° 2025-127 du 14 février 2025 de finances pour 2025, article 84 ; BOFiP, mis à jour en 2025-2026
 
 ## Depuis quand, et pour quels amortissements
@@ -211,6 +214,7 @@ Depuis le 1er janvier 2023, toutes les démarches de création d'activité (y co
 - Délai légal : à faire dans les 15 jours suivant le début de ton activité de location meublée
 - Réception du SIRET : généralement entre 1 et 4 semaines après le dépôt
 
+
 > Source : formalites.entreprises.gouv.fr (INPI) ; ordonnance n°2021-1189 du 15 septembre 2021
 
 ## Ce que tu dois renseigner
@@ -239,6 +243,7 @@ Si tu loues déjà depuis un moment sans être immatriculé, régularise dès qu
 **Méthode 1 : Au moment de l'immatriculation.** Sur le Guichet unique (formalites.entreprises.gouv.fr), tu coches directement l'option "régime réel" lors de ta déclaration de début d'activité. C'est la méthode la plus simple si tu sais déjà que tu veux le réel dès le départ.
 
 **Méthode 2 : En cours d'activité** (tu es déjà au micro-BIC). Tu envoies une lettre d'option au Service des Impôts des Entreprises (SIE) dont tu dépends, de préférence en recommandé avec accusé de réception, pour garder une preuve datée. Certains SIE tolèrent une option via la messagerie sécurisée d'impots.gouv.fr, mais ce n'est pas la voie officiellement prévue : privilégie toujours le courrier recommandé.
+
 
 > Source : BOFiP BIC-DECLA-10-10-20
 
@@ -284,6 +289,7 @@ Un outil de **production fiscale annuelle**, dédié aux loueurs en meublé (LMN
 - Partenaire EDI (échange de données informatisé) habilité par la DGFiP : la télétransmission de ta liasse se fait directement et de façon sécurisée, sans passer par un tiers déclarant classique
 - Se présente comme utilisé par plusieurs dizaines de milliers de loueurs (chiffre communiqué par l'éditeur, à prendre comme tel)
 
+
 > Source : decla.fr, page "qui sommes-nous" et blog éditeur, 2026
 
 ## Comment se déroule une déclaration
@@ -309,6 +315,7 @@ Des alertes automatiques signalent les incohérences de saisie (montants aberran
 | SCI à l'IS | 119€ TTC / déclaration |
 
 À comparer à un expert-comptable spécialisé LMNP : compter entre 500€ et 800€ HT/an pour un lot simple, et davantage pour plusieurs biens ou une structure plus complexe.
+
 
 > Source : decla.fr, grille tarifaire publique 2026 ; comparatifs indépendants (jedeclaremonmeuble.com, lmnp.ai), 2026
 
@@ -337,6 +344,7 @@ Sans pouvoir garantir l'exhaustivité de chaque avis en ligne, les retours consu
 ❌ Certains utilisateurs de longue date signalent une hausse du prix sur les renouvellements
 ❌ decla.fr n'est pas un cabinet d'expertise comptable inscrit à l'Ordre : la responsabilité finale de l'exactitude de ta déclaration reste la tienne, comme pour tout auto-déclarant
 
+
 > Source : synthèse de comparatifs et avis publics (jedeclaremonmeuble.com, lmnp.ai, immobilierloyer.com, avis Google decla.fr), consultés en 2026
 
 ## La vraie question à se poser
@@ -360,6 +368,7 @@ Ces deux avantages n'existent plus :
 - Le cadre légal des CGA/OGA lui-même a été supprimé par la loi de finances 2025, à compter du 16 février 2025
 
 Autrement dit, l'argument "il faut adhérer à un CGA" pour optimiser ta fiscalité LMNP est aujourd'hui obsolète. Si tu le lis encore quelque part, la source n'a pas été mise à jour depuis 2025.
+
 
 > Source : loi n° 2020-1721 du 29 décembre 2020 (LF 2021) ; loi n° 2025-127 du 14 février 2025 (LF 2025)
 
@@ -454,6 +463,7 @@ Beaucoup d'hôtes confondent trois obligations qui n'ont rien à voir entre elle
 | Déclaration de revenus (2042 + 2042-C-PRO) | Tout le monde | 23 mai (dépts 1-19 + non-résidents), 30 mai (dépts 20-54), 6 juin (dépts 55-976) |
 
 Ces dates concernent la campagne 2026 (revenus 2025). Elles évoluent chaque année de quelques jours : vérifie toujours le calendrier officiel sur impots.gouv.fr avant de t'organiser.
+
 
 > Source : impots.gouv.fr, calendrier fiscal officiel 2026 ; BOFiP BIC-DECLA-30
 

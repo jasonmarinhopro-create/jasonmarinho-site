@@ -23,17 +23,7 @@ export const CREER_CONCIERGERIE_FORMATION = {
           id: 1,
           title: `Ce qu'est vraiment une conciergerie LCD (et ce que ce n'est pas)`,
           duration: '12 min',
-          content: `---
-
-MODULE 1 · LEÇON 1
-────────────────────────────────────
-Ce qu'est vraiment une conciergerie LCD
-Avant de se lancer, comprendre le métier
-────────────────────────────────────
-
----
-
-## La conciergerie LCD : définition réelle
+          content: `## La conciergerie LCD : définition réelle
 Une conciergerie LCD prend en charge
 la gestion d'un logement pour le compte
 d'un propriétaire, en échange d'une commission.
@@ -52,8 +42,6 @@ Ce qu'elle n'est PAS :
 → Une femme de ménage
 → Une agence immobilière
 → Un gestionnaire de baux classiques
-
----
 
 ## Comment une conciergerie gagne de l'argent
 Le modèle économique dominant :
@@ -79,8 +67,6 @@ SERVICES COMPLÉMENTAIRES (optionnel)
 → Petite maintenance, déco, photo pro...
 → Améliore la marge sans nouveaux mandats
 
----
-
 ## Le marché en 2026 : une opportunité réelle
 En France en 2026 :
 
@@ -103,8 +89,6 @@ d'une conciergerie ?
 Ce qu'ils veulent tous :
 du gain de temps, de la transparence,
 et du revenu optimisé.
-
----
 
 ## La question à se poser avant tout
 Avant de créer une conciergerie,
@@ -131,29 +115,16 @@ Si tu réponds oui aux 4 : tu peux y aller.
 Si tu réponds non à l'une : commence par
 combler ce manque avant de te lancer.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Réponds aux 4 questions de la slide 5. Par écrit, pas dans ta tête. Les points faibles identifiés maintenant coûtent moins cher à corriger qu'une fois l'activité lancée.
-
----`,
+`,
         },
         {
           id: 2,
           title: `Étude de marché : valider son territoire avant d'investir`,
           duration: '13 min',
-          content: `---
-
-MODULE 1 · LEÇON 2
-────────────────────────────────────
-Étude de marché
-Valider son territoire avant d'investir
-────────────────────────────────────
-
----
-
-## Les 3 types de zones qui fonctionnent
+          content: `## Les 3 types de zones qui fonctionnent
 ZONE TYPE 1, TOURISTIQUE
 Littoral, montagne, villes historiques,
 destinations de week-end.
@@ -174,8 +145,6 @@ Villes moyennes avec flux pro ET touristique.
 → Revenus lissés sur l'année
 → Souvent sous-servi par les conciergeries
    → Opportunité à saisir
-
----
 
 ## Comment évaluer la demande dans ta zone
 ÉTAPE 1, Analyser Airbnb
@@ -203,8 +172,6 @@ Villes moyennes avec flux pro ET touristique.
 → Si 50 logements et 5 conciergeries
   → marché saturé dans cette zone précise
 
----
-
 ## L'annuaire Driing : un outil de veille et de positionnement
 Avant de te lancer, consulte l'annuaire
 des conciergeries sur Driing :
@@ -223,8 +190,6 @@ une fois ton activité lancée.
 
 → Les zones peu représentées dans l'annuaire
   sont des opportunités directes.
-
----
 
 ## Le seuil de rentabilité à connaître
 Pour une conciergerie solo, le seuil
@@ -248,13 +213,10 @@ Les 3 premiers mois : investissement
 et construction de réputation.
 Les 6 premiers mois : montée en charge progressive.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Va sur Airbnb et compte le nombre de logements actifs dans ton secteur géographique cible (rayon de 10-15 km). Va ensuite sur l'annuaire Driing et compte les conciergeries déjà présentes dans cette zone. Le ratio logements/conciergeries te donne une première indication du potentiel.
-
----`,
+`,
         },
       ],
     },
@@ -267,17 +229,7 @@ Les 6 premiers mois : montée en charge progressive.
           id: 11,
           title: 'Choisir son statut juridique selon ses ambitions',
           duration: '15 min',
-          content: `---
-
-MODULE 2 · LEÇON 1
-────────────────────────────────────
-Le statut juridique
-Ne pas se planter dès le départ
-────────────────────────────────────
-
----
-
-## Les 4 statuts possibles et leur logique
+          content: `## Les 4 statuts possibles et leur logique
 MICRO-ENTREPRISE (Auto-entrepreneur)
 → Pour : démarrer simplement, tester
 → Plafond CA : 77 700€/an
@@ -306,8 +258,6 @@ SAS / SARL
 → Pour : plusieurs associés dès le départ
 → Si tu t'associes avec quelqu'un
 
----
-
 ## La recommandation selon ton profil
 TU TESTES, DÉMARRAGE PRUDENT
 → Micro-entreprise
@@ -332,8 +282,6 @@ La bonne nouvelle : on peut démarrer
 en micro-entreprise et basculer
 en société quand l'activité se développe.
 
----
-
 ## Les obligations communes à tous les statuts
 Quel que soit ton statut :
 
@@ -350,8 +298,6 @@ Quel que soit ton statut :
    → Fais-le rédiger ou valider par un juriste
 
 □ Déclaration fiscale annuelle adaptée au statut
-
----
 
 ## Le budget de démarrage réaliste
 DÉMARRAGE MINIMAL (micro-entreprise)
@@ -374,30 +320,16 @@ TOTAL : ~3 000 à 5 000€ la première année
 → Prévoir 3 à 6 mois de trésorerie tampon :
   les premiers revenus arrivent avec décalage.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Décide maintenant de ton statut de départ. Si tu testes : micro-entreprise. Si tu es décidé avec un budget : SASU. Va sur **inpi.fr** et commence la démarche d'immatriculation. C'est la première action concrète de création de ton activité.
-
----`,
+`,
         },
         {
           id: 12,
           title: `La Carte G : ce que c'est, qui en a besoin, et les solutions légales`,
           duration: '15 min',
-          content: `---
-
-MODULE 2 · LEÇON 2
-────────────────────────────────────
-La Carte G
-Le point juridique que personne n'explique
-clairement, mais qui peut tout changer
-────────────────────────────────────
-
----
-
-## Qu'est-ce que la Carte G ?
+          content: `## Qu'est-ce que la Carte G ?
 La Carte G est la Carte Professionnelle
 de Gestion Immobilière, régie par la
 Loi Hoguet (1970).
@@ -423,8 +355,6 @@ Exercer sans carte G :
 ⚠️ Jusqu'à 6 mois d'emprisonnement
    et 7 500€ d'amende
 
----
-
 ## Est-ce que tu en as vraiment besoin ?
 La question centrale : est-ce que tu
 ENCAISSES des loyers pour le compte
@@ -447,8 +377,6 @@ ou du propriétaire EN PLUS)
 
 → La frontière est juridiquement débattue.
   Fais valider ton montage par un avocat.
-
----
 
 ## Les 3 solutions légales sans Carte G
 SOLUTION 1, LE STATUT DE CO-HÔTE AIRBNB
@@ -480,8 +408,6 @@ SOLUTION 3, OBTENIR LA CARTE G
    par un avocat spécialisé immobilier
    avant de signer ton premier contrat.
 
----
-
 ## Le contrat de gestion : la pièce maîtresse
 Que tu aies la carte G ou non,
 un contrat de gestion solide est
@@ -505,13 +431,10 @@ Investis 300 à 500€ dans un contrat
 validé par un avocat. C'est la meilleure
 dépense de démarrage.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Décide de ton modèle légal : co-hôte Airbnb, réseau d'indépendants ou obtention de la Carte G. Si tu as le moindre doute, réserve une consultation avec un avocat spécialisé en droit immobilier (1 à 2 heures suffisent pour valider ton montage). C'est 200 à 400€ qui peuvent t'éviter des années de problèmes.
-
----`,
+`,
         },
       ],
     },
@@ -524,17 +447,7 @@ dépense de démarrage.
           id: 21,
           title: 'Définir ses services et se différencier',
           duration: '12 min',
-          content: `---
-
-MODULE 3 · LEÇON 1
-────────────────────────────────────
-Construire son offre
-Se différencier dans un marché qui se structure
-────────────────────────────────────
-
----
-
-## Les services d'une conciergerie : de base à premium
+          content: `## Les services d'une conciergerie : de base à premium
 SERVICES CORE (indispensables)
 → Création et optimisation des annonces
 → Gestion du calendrier et des réservations
@@ -556,8 +469,6 @@ SERVICES PREMIUM
 → Services concierge voyageur (transferts, resto...)
 → Reporting mensuel détaillé pour le propriétaire
 → Gestion des relations avec la copropriété
-
----
 
 ## Choisir son positionnement
 Tu ne peux pas tout faire pour tout le monde.
@@ -583,8 +494,6 @@ EXEMPLES DE POSITIONNEMENTS DIFFÉRENCIANTS :
 → Logements urbains, clientèle business
 → Check-in 24h/24, Wi-Fi fibre, factures pros
 
----
-
 ## Le livret d'accueil digital comme différenciateur
 Un service que peu de conciergeries
 proposent encore : le livret d'accueil digital.
@@ -607,8 +516,6 @@ Ce que ça apporte à ta conciergerie :
   l'inscription à l'annuaire conciergerie
   Driing est gratuite (Profil Plus).
 
----
-
 ## Les 3 erreurs de positionnement à éviter
 ERREUR 1, Vouloir tout faire pour tous
 → Une conciergerie "généraliste" est
@@ -627,29 +534,16 @@ ERREUR 3, Sous-estimer l'importance des photos
   dans son offre standard se différencie
   immédiatement.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Rédige en 3 phrases ton positionnement : "Je suis une conciergerie spécialisée dans [type de logements] pour [type de propriétaires] dans [zone géographique]. Je me différencie par [1 ou 2 éléments clés]. Mon client idéal est [portrait précis]." Garde ces 3 phrases sous la main, elles guideront toute ta communication.
-
----`,
+`,
         },
         {
           id: 22,
           title: 'Fixer ses tarifs sans se brader ni effrayer les propriétaires',
           duration: '13 min',
-          content: `---
-
-MODULE 3 · LEÇON 2
-────────────────────────────────────
-Fixer ses tarifs
-L'équilibre entre attractivité et rentabilité
-────────────────────────────────────
-
----
-
-## Les modèles tarifaires possibles
+          content: `## Les modèles tarifaires possibles
 MODÈLE 1, COMMISSION PURE (le plus courant)
 → Tu prélèves X% des revenus bruts
 → Avantage : tu es aligné avec
@@ -668,8 +562,6 @@ MODÈLE 3, HYBRIDE (recommandé)
 → Exemple : 100€/mois + 10% de commission
 → Sécurise ton plancher de revenus
   tout en restant incitatif
-
----
 
 ## Les fourchettes de tarifs en France en 2026
 COMMISSION STANDARD DU MARCHÉ :
@@ -691,8 +583,6 @@ CE QUI EST SOUVENT FACTURÉ EN PLUS :
 → Sois transparent sur ce qui est inclus
   et ce qui ne l'est pas.
   La clarté évite 80% des litiges.
-
----
 
 ## Comment justifier ton tarif face à un propriétaire
 Le propriétaire voit 20% de commission.
@@ -721,8 +611,6 @@ vs 1 500€ tout seul → +100€/mois
 → Tu ne coûtes rien au propriétaire.
   Tu lui rapportes du temps et souvent plus d'argent.
 
----
-
 ## Règles de tarification pour bien démarrer
 QUAND TU DÉMARRES (0 à 5 logements) :
 → Commence à 15-18% pour te constituer
@@ -743,13 +631,10 @@ NE JAMAIS :
 → Descendre sous 15% : non rentable
   une fois tes coûts déduits
 
----
-
 
 ## Exercice
 **Exercice pratique :** Calcule ton seuil de rentabilité : tes charges mensuelles (outils, déplacements, temps valorisé...) divisées par ta commission moyenne. Combien de logements te faut-il pour couvrir tes frais ? C'est ton objectif de phase 1.
-
----`,
+`,
         },
       ],
     },
@@ -762,17 +647,7 @@ NE JAMAIS :
           id: 31,
           title: 'Où trouver tes premiers mandats',
           duration: '15 min',
-          content: `---
-
-MODULE 4 · LEÇON 1
-────────────────────────────────────
-Trouver ses premiers mandats
-Les 5 canaux qui fonctionnent vraiment
-────────────────────────────────────
-
----
-
-## Canal 1 : La prospection Airbnb directe
+          content: `## Canal 1 : La prospection Airbnb directe
 C'est le canal le plus efficace pour débuter.
 
 LES PROPRIÉTAIRES QUI GÈRENT SEULS
@@ -799,8 +674,6 @@ Comment les approcher :
 dans la région. Votre logement est
 très bien noté, est-ce que vous gérez
 tout vous-même ? J'aimerais échanger."
-
----
 
 ## Canal 2 : Le réseau local
 Les recommandations locales convertissent
@@ -830,8 +703,6 @@ Autres hôtes LCD de ta zone
 
 → LinkedIn est très efficace pour
   contacter ces profils professionnellement.
-
----
 
 ## Canal 3 : L'annuaire Driing
 Driing propose un annuaire de conciergeries
@@ -863,8 +734,6 @@ FORMULE PROFIL PLUS : 4,98€/mois
 
 Inscription : driing.co/inscription-conciergerie
 
----
-
 ## Canaux 4 et 5 : Contenu local et bouche à oreille
 CANAL 4, CONTENU LOCAL (Instagram / LinkedIn)
 
@@ -893,29 +762,16 @@ en LCD, je serai ravi d'échanger avec eux."
 → Un propriétaire qui te recommande
   vaut 10 campagnes publicitaires.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Inscris-toi maintenant sur l'annuaire Driing : **driing.co/inscription-conciergerie**. Utilise le code **JASON2** pour bénéficier de 2 mois offerts sur le Profil Plus. C'est ta première présence en ligne professionnelle, et ça te prend 20 minutes.
-
----`,
+`,
         },
         {
           id: 32,
           title: 'Convaincre un propriétaire : le premier rendez-vous',
           duration: '15 min',
-          content: `---
-
-MODULE 4 · LEÇON 2
-────────────────────────────────────
-Convaincre un propriétaire
-Ce qui se joue au premier rendez-vous
-────────────────────────────────────
-
----
-
-## Ce que cherche un propriétaire
+          content: `## Ce que cherche un propriétaire
 Avant de pitcher ta conciergerie,
 comprends ce que le propriétaire veut vraiment.
 
@@ -936,8 +792,6 @@ Il cherche 3 choses :
   Pas parler de tes outils.
   Pas de ta carte de visite.
   Répondre aux 3 vraies questions.
-
----
 
 ## La structure d'un premier rendez-vous qui signe
 15 PREMIÈRES MINUTES, Écouter, pas parler
@@ -967,8 +821,6 @@ Il cherche 3 choses :
 → Explique ta commission avec le calcul
   de gain net pour LUI
 
----
-
 ## Les objections les plus courantes et comment y répondre
 "C'est trop cher"
 → "Par rapport à quoi ? Calculons ensemble
@@ -993,8 +845,6 @@ Il cherche 3 choses :
   qui vous retient pour l'instant ?"
 → (Identifie l'objection réelle)
 
----
-
 ## Le contrat : ne jamais partir sans accord écrit
 Après un accord verbal, envoie toujours
 un contrat dans les 24-48h.
@@ -1017,13 +867,10 @@ par un avocat (voir module 2).
   Ne le négocie pas à la baisse
   sous pression du propriétaire.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Prépare ton "pitch de 3 minutes" : en 3 minutes, tu dois être capable d'expliquer ce que tu fais, pour qui, et pourquoi ça vaut la commission que tu demandes. Entraîne-toi à voix haute. Ce pitch servira en rendez-vous, au téléphone, et dans ta bio Driing.
-
----`,
+`,
         },
       ],
     },
@@ -1036,18 +883,7 @@ par un avocat (voir module 2).
           id: 41,
           title: `Pourquoi l'annuaire Driing remplace avantageusement un site internet au démarrage`,
           duration: '12 min',
-          content: `---
-
-MODULE 5 · LEÇON 1
-────────────────────────────────────
-Ta présence en ligne
-L'annuaire Driing : rapide, professionnel,
-sans les coûts d'un site
-────────────────────────────────────
-
----
-
-## Le problème du site internet au démarrage
+          content: `## Le problème du site internet au démarrage
 Beaucoup de créateurs de conciergerie
 pensent avoir besoin d'un site internet
 avant de se lancer.
@@ -1068,8 +904,6 @@ Et pendant ce temps-là :
 → L'annuaire Driing te donne une présence
   professionnelle immédiate, sans investissement
   technique ni attente SEO.
-
----
 
 ## Ce que l'annuaire Driing offre concrètement
 FORMULE STANDARD (Gratuite)
@@ -1096,8 +930,6 @@ FORMULE PROFIL PLUS (4,98€/mois ou 44,98€/an)
 → Si tu as un livret d'accueil Driing :
    Profil Plus GRATUIT
 
----
-
 ## Pourquoi les propriétaires consultent l'annuaire Driing
 Les propriétaires qui visitent l'annuaire
 Driing ont un point commun : ils cherchent
@@ -1119,8 +951,6 @@ Ils comparent :
 Et si tu as un site internet par la suite :
 le profil Driing l'alimente avec
 un lien cliquable vers tes pages.
-
----
 
 ## La stratégie de présence : Driing + réseaux sociaux
 La combinaison qui fonctionne au démarrage :
@@ -1146,29 +976,16 @@ LINKEDIN
   dans les 6 premiers mois.
   Investis ce temps en prospection.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Va sur **driing.co/inscription-conciergerie** et crée ou complète ton profil. Utilise le code **JASON2** pour 2 mois offerts sur le Profil Plus. Remplis toutes les sections : nom, zone(s), services, description. Un profil complet est un profil qui convertit.
-
----`,
+`,
         },
         {
           id: 42,
           title: 'Construire sa réputation rapidement : les avis et le bouche à oreille',
           duration: '13 min',
-          content: `---
-
-MODULE 5 · LEÇON 2
-────────────────────────────────────
-Construire sa réputation
-Le seul actif qui compte vraiment
-────────────────────────────────────
-
----
-
-## Pourquoi la réputation prime sur tout le reste
+          content: `## Pourquoi la réputation prime sur tout le reste
 En conciergerie, tu vends de la confiance.
 
 Un propriétaire va te confier les clés
@@ -1196,8 +1013,6 @@ Un propriétaire déçu =
 → Il part
 → Il en parle (souvent plus fort)
 → Tu perds du temps à reconstruire
-
----
 
 ## Les 5 leviers de réputation à activer
 01. OVER-DELIVER SUR LES PREMIERS MANDATS
@@ -1227,8 +1042,6 @@ Un propriétaire déçu =
     "J'ai augmenté le revenu de ce logement
     de 35% en 3 mois." Ce type de donnée
     concrète vaut 10 pages de brochure.
-
----
 
 ## Le rapport mensuel propriétaire : la base de la relation
 Un rapport mensuel simple envoyé le 5
@@ -1261,8 +1074,6 @@ Format : un email ou un PDF.
 Pas besoin de PowerPoint.
 La régularité compte plus que le format.
 
----
-
 ## Le moment où tout bascule
 La plupart des conciergeries abandonnent
 dans les 3 premiers mois. Pas parce que
@@ -1289,13 +1100,10 @@ Au-delà de 12 mois : Scalabilité
 → La clé : tenir les 3 premiers mois.
   Tout le reste vient après.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Crée un template de rapport mensuel maintenant, avant même d'avoir ton premier propriétaire. Ça t'oblige à réfléchir aux données que tu vas suivre. Et quand tu auras ton premier mandat, tu l'enverras dès le premier mois.
-
----`,
+`,
         },
       ],
     },
@@ -1308,17 +1116,7 @@ Au-delà de 12 mois : Scalabilité
           id: 51,
           title: 'La tech stack minimale pour démarrer',
           duration: '12 min',
-          content: `---
-
-MODULE 6 · LEÇON 1
-────────────────────────────────────
-Les outils essentiels
-Efficace dès le premier logement
-────────────────────────────────────
-
----
-
-## Les outils indispensables (et rien de plus)
+          content: `## Les outils indispensables (et rien de plus)
 COMMUNICATION VOYAGEURS
 → La messagerie intégrée des plateformes
   suffit pour 1 à 3 logements
@@ -1346,8 +1144,6 @@ FACTURATION
   au démarrage
 → Pour émettre tes factures aux propriétaires
 
----
-
 ## Ce qu'il ne faut pas acheter trop tôt
 Les conciergeries débutantes sur-investissent
 souvent dans des outils avant d'en avoir besoin.
@@ -1373,8 +1169,6 @@ NE PAS ACHETER AVANT D'EN AVOIR BESOIN :
   du temps ou de l'argent mesurable.
   Pas avant.
 
----
-
 ## Le livret d'accueil digital Driing : un outil à double valeur
 Le livret d'accueil digital Driing a
 une double utilité pour une conciergerie :
@@ -1397,8 +1191,6 @@ POUR TOI (LA CONCIERGERIE)
 → C'est un investissement qui se rentabilise
   rapidement en temps gagné.
 
----
-
 ## L'organisation opérationnelle minimale
 Pour chaque logement géré,
 tu dois avoir ces documents :
@@ -1417,29 +1209,16 @@ tu dois avoir ces documents :
   C'est ton processus d'onboarding.
   Standardise-le dès le premier mandat.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Crée ta checklist d'onboarding pour un nouveau logement. Liste les 10 à 15 étapes depuis la signature du contrat jusqu'au premier voyageur accueilli. Ce document deviendra le process que tu suivras (et éventuellement transmettras à une équipe) pour chaque nouveau mandat.
-
----`,
+`,
         },
         {
           id: 52,
           title: `Scaler : passer de 5 à 20 logements sans s'épuiser`,
           duration: '13 min',
-          content: `---
-
-MODULE 6 · LEÇON 2
-────────────────────────────────────
-Scaler sa conciergerie
-De 5 à 20 logements sans s'épuiser
-────────────────────────────────────
-
----
-
-## Les 3 piliers de la scalabilité
+          content: `## Les 3 piliers de la scalabilité
 Une conciergerie qui scale repose sur 3 piliers :
 
 01. DES PROCESS STANDARDISÉS
@@ -1459,8 +1238,6 @@ Une conciergerie qui scale repose sur 3 piliers :
     calendrier synchronisé, rapports automatiques.
     Ton temps = mandats et propriétaires.
     Pas les messages de check-in.
-
----
 
 ## Les 3 premières choses à déléguer
 DÉLÉGATION 1, LE MÉNAGE (priorité absolue)
@@ -1484,8 +1261,6 @@ DÉLÉGATION 3, LA COMMUNICATION ROUTINE
 → Configure-les dans ton PMS
   pour un envoi automatique.
 
----
-
 ## Le seuil des 10 logements : changer de mode
 Avant 10 logements :
 → Tu fais tout toi-même
@@ -1508,8 +1283,6 @@ Au-delà de 15-20 logements :
   tout seul. Au-delà de 10-12,
   la qualité chute et les propriétaires partent.
   Mieux vaut 10 bien gérés que 20 mal gérés.
-
----
 
 ## Les services complémentaires pour augmenter la marge
 Une fois ta base de mandats stable,
@@ -1540,8 +1313,6 @@ Rapport de performance trimestriel détaillé
 → Ces services augmentent ta marge
   sans augmenter ton nombre de logements.
 
----
-
 
 ## Exercice
 **L'action finale de la formation :**
@@ -1552,8 +1323,6 @@ Définis tes 3 objectifs à 6 mois :
 3. Première délégation que tu vas mettre en place : ___
 
 Avec ces 3 chiffres, tu as un plan. Il ne reste plus qu'à l'exécuter.
-
----
 
 # RÉCAPITULATIF, Le plan de lancement en 30 jours
 
@@ -1580,8 +1349,6 @@ SEMAINE 4, PREMIERS RENDEZ-VOUS
 □ Envoyer ses premiers contrats
 □ Signer son premier mandat
 □ Mettre en place son processus d'onboarding
-
----
 
 # ANNEXE, Ressources utiles
 

@@ -22,17 +22,7 @@ export const SECURISER_RESERVATIONS_FORMATION = {
           id: 1,
           title: 'Les profils à risque : comment les identifier',
           duration: '12 min',
-          content: `---
-
-MODULE 1 · LEÇON 1
-────────────────────────────────────
-Les profils à risque
-Les signaux d'alarme à repérer avant d'accepter
-────────────────────────────────────
-
----
-
-## La réalité du risque en LCD
+          content: `## La réalité du risque en LCD
 La grande majorité des voyageurs
 sont honnêtes et respectueux.
 
@@ -57,8 +47,6 @@ des réservations selon les zones.
   qui filtre les mauvais profils
   avant qu'ils arrivent chez vous.
 
----
-
 ## Les 8 signaux d'alarme sur Airbnb
 Avant d'accepter une réservation,
 vérifiez ces 8 points :
@@ -82,8 +70,6 @@ vérifiez ces 8 points :
 → Réservation de dernière minute
   le vendredi soir pour un weekend
   dans une ville festive
-
----
 
 ## Les signaux d'alarme sur Booking
 Booking est la plateforme où le risque
@@ -110,8 +96,6 @@ Signaux spécifiques à Booking :
 → Sur Booking, la vérification d'identité
   manuelle est encore plus importante
   qu'Airbnb.
-
----
 
 ## La question à poser systématiquement
 Une seule question envoyée à tous
@@ -141,29 +125,16 @@ Ce que cette question fait :
   Les profils à risque évitent
   souvent de répondre.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Crée un gabarit de message de pré-réservation dans tes outils. Utilise la structure de la slide 5. Envoie-le à chaque nouvelle réservation Booking, et à toute réservation Airbnb qui présente au moins 2 signaux d'alarme. Note les réponses, ou les absences de réponse.
-
----`,
+`,
         },
         {
           id: 2,
           title: 'Les situations les plus risquées à anticiper',
           duration: '12 min',
-          content: `---
-
-MODULE 1 · LEÇON 2
-────────────────────────────────────
-Les situations à risque
-Anticiper plutôt que subir
-────────────────────────────────────
-
----
-
-## Le voyageur local : le profil le plus risqué
+          content: `## Le voyageur local : le profil le plus risqué
 Statistiquement, les voyageurs locaux
 - ceux qui habitent à moins de 30 km
 du logement, représentent le profil
@@ -189,8 +160,6 @@ Sur Airbnb :
   une réservation pour cette raison,
   à condition que ce soit écrit dans
   votre règlement avant la réservation.
-
----
 
 ## Les réservations festives : comment les détecter
 Une fête non déclarée peut générer :
@@ -220,8 +189,6 @@ Tout séjour pour organisation de fête
 entraîne l'annulation immédiate
 sans remboursement."
 
----
-
 ## La fraude à la caution : le scénario classique
 Scénario classique de fraude :
 
@@ -248,8 +215,6 @@ Comment se protéger :
   la messagerie de la plateforme
   (ne jamais passer sur WhatsApp
   pour les litiges).
-
----
 
 ## Les demandes de paiement hors plateforme
 C'est l'arnaque la plus fréquente en LCD.
@@ -280,8 +245,6 @@ Sur Airbnb : signaler immédiatement
 via la messagerie plateforme.
 Airbnb supprime les comptes frauduleux.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Ajoute ces deux règles dans ton règlement intérieur Airbnb maintenant :
@@ -289,24 +252,13 @@ Airbnb supprime les comptes frauduleux.
 2. Interdiction des rassemblements non déclarés.
 
 Et crée l'habitude de prendre des photos horodatées de chaque pièce le matin avant chaque check-in. Ça prend 3 minutes et c'est votre meilleure protection en cas de litige.
-
----`,
+`,
         },
         {
           id: 3,
           title: 'Lire un profil voyageur comme un expert',
           duration: '11 min',
-          content: `---
-
-MODULE 1 · LEÇON 3
-────────────────────────────────────
-Lire un profil voyageur
-Analyser en 2 minutes ce qui prend habituellement des heures
-────────────────────────────────────
-
----
-
-## Les 5 éléments d'un profil Airbnb à analyser
+          content: `## Les 5 éléments d'un profil Airbnb à analyser
 01. LES AVIS D'HÔTES PRÉCÉDENTS
     → Lisez entre les lignes.
     → "Voyageur discret" peut signifier
@@ -341,8 +293,6 @@ Analyser en 2 minutes ce qui prend habituellement des heures
     → Copié-collé ou générique = méfiance.
     → Absent = signal d'alarme.
 
----
-
 ## La grille de scoring rapide
 Pour chaque réservation, attribuez
 des points selon cette grille :
@@ -368,8 +318,6 @@ Score ≥ 4 → Acceptez sans hésitation
 Score 1-3 → Demandez des précisions
 Score ≤ 0 → Refus ou demande de vérification
 
----
-
 ## Le service de vérification voyageurs
 Vous n'avez pas le temps ou les outils
 pour vérifier chaque profil vous-même ?
@@ -392,13 +340,10 @@ Ce que le service vérifie :
 → Particulièrement utile pour les réservations
   Booking où les profils sont moins fournis.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Prends ta dernière réservation acceptée. Passe-la à travers la grille de scoring de la slide 3. Quel score obtient-elle ? Refais l'exercice avec une réservation passée qui s'est mal passée, le score était-il révélateur ? Cette rétroactivité aide à calibrer ton instinct.
-
----`,
+`,
         },
       ],
     },
@@ -411,17 +356,7 @@ Ce que le service vérifie :
           id: 11,
           title: `L'obligation légale de vérification : ce que dit la loi en France`,
           duration: '15 min',
-          content: `---
-
-MODULE 2 · LEÇON 1
-────────────────────────────────────
-Le cadre légal
-Ce que la loi vous oblige à faire, et ce qu'elle vous permet
-────────────────────────────────────
-
----
-
-## La fiche de police : une obligation méconnue
+          content: `## La fiche de police : une obligation méconnue
 En France, l'article R.814-1 du CESEDA
 (Code de l'entrée et du séjour des étrangers)
 oblige les hôtes à faire remplir une fiche
@@ -448,8 +383,6 @@ Sanction si non-respect :
   C'est pourtant une obligation légale
   qui vous protège en cas d'incident
   impliquant un voyageur étranger.
-
----
 
 ## Vérification d'identité des voyageurs français : vos droits
 Pour les voyageurs français,
@@ -478,8 +411,6 @@ et est détruite à la fin de votre séjour."
   AVANT la réservation, le voyageur l'a accepté
   en confirmant sa réservation.
 
----
-
 ## RGPD et conservation des données : ce qu'il faut savoir
 Vous avez le droit de collecter
 une pièce d'identité. Mais vous avez
@@ -504,8 +435,6 @@ Format de stockage recommandé :
 → Ou outil spécialisé de check-in
   (Chekin, Superhote...) qui gère
   la conformité RGPD automatiquement.
-
----
 
 ## Comment intégrer la vérification dans votre processus
 Procédure en 4 étapes :
@@ -533,29 +462,16 @@ la messagerie de la plateforme."
   si votre règlement mentionnait
   cette obligation.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Ajoute maintenant dans ton règlement intérieur Airbnb une phrase sur la vérification d'identité : "Une copie de votre pièce d'identité vous sera demandée avant le check-in conformément à nos obligations légales." Une seule phrase dans les règles supplémentaires suffit. Elle te protège légalement et crée un filtre naturel.
-
----`,
+`,
         },
         {
           id: 12,
           title: 'Le dépôt de garantie : comment le mettre en place correctement',
           duration: '15 min',
-          content: `---
-
-MODULE 2 · LEÇON 2
-────────────────────────────────────
-Le dépôt de garantie
-Votre filet de sécurité financier
-────────────────────────────────────
-
----
-
-## Airbnb et la caution : comment ça fonctionne
+          content: `## Airbnb et la caution : comment ça fonctionne
 Sur Airbnb, le dépôt de garantie
 peut être configuré dans les paramètres
 de chaque annonce.
@@ -579,8 +495,6 @@ Montant recommandé selon le logement :
 → Studio / petit appartement : 200-400€
 → Grand appartement / maison : 500-1 000€
 → Logement haut de gamme : 1 000-2 000€
-
----
 
 ## La caution hors plateforme : pour Booking et le direct
 Booking ne propose pas de dépôt de garantie
@@ -615,8 +529,6 @@ OPTIONS :
   dans votre règlement intérieur
   ET dans votre message de confirmation.
 
----
-
 ## Comment rédiger la demande de caution sans froisser
 La clé : présenter la caution comme
 une formalité standard, pas comme
@@ -639,8 +551,6 @@ appliquons à toutes nos réservations."
   Elle évite que le voyageur se sente ciblé.
   Elle présente la caution comme un processus,
   pas comme un jugement.
-
----
 
 ## Que faire si le voyageur refuse la caution ?
 Si un voyageur refuse de verser la caution
@@ -667,13 +577,10 @@ Ce que signifie un refus de caution :
 → Mieux vaut une nuit vide
   qu'un logement dégradé.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Configure ton dépôt de garantie sur Airbnb maintenant si ce n'est pas fait. Ensuite, si tu as des réservations Booking ou directes, ouvre un compte Swikly (swikly.com) pour gérer les cautions numériques. Ces deux actions ensemble couvrent 95% de tes réservations avec une protection financière réelle.
-
----`,
+`,
         },
       ],
     },
@@ -686,17 +593,7 @@ Ce que signifie un refus de caution :
           id: 21,
           title: `AirCover : ce qu'il couvre vraiment (et ce qu'il ne couvre pas)`,
           duration: '12 min',
-          content: `---
-
-MODULE 3 · LEÇON 1
-────────────────────────────────────
-AirCover pour les hôtes
-La protection réelle, sans les illusions
-────────────────────────────────────
-
----
-
-## Ce qu'AirCover couvre
+          content: `## Ce qu'AirCover couvre
 AirCover est inclus gratuitement
 pour tous les hôtes Airbnb.
 
@@ -722,8 +619,6 @@ VÉRIFICATION DES RÉSERVATIONS
 ASSISTANCE 24H/24 7J/7
 → Disponible en cas d'incident
   pendant un séjour.
-
----
 
 ## Ce qu'AirCover NE couvre PAS
 Ce que beaucoup d'hôtes découvrent
@@ -757,8 +652,6 @@ trop tard :
 → AirCover est utile.
   Il n'est pas suffisant comme seule protection.
 
----
-
 ## Comment déclencher AirCover efficacement
 Si un dommage survient, respectez
 scrupuleusement cette procédure :
@@ -788,8 +681,6 @@ scrupuleusement cette procédure :
   vous pouvez contester avec des preuves
   supplémentaires (devis d'artisan).
 
----
-
 ## L'assurance complémentaire : est-elle nécessaire ?
 AirCover ne remplace pas une vraie
 assurance habitation LCD.
@@ -813,29 +704,16 @@ Coût moyen : 150 à 400€/an selon le logement.
   une assurance complémentaire
   est un investissement raisonnable.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Vérifie maintenant si tu as une assurance habitation qui couvre explicitement la location courte durée. Appelle ton assureur cette semaine et pose-lui la question directement. Beaucoup d'hôtes découvrent trop tard que leur assurance classique ne couvre pas la LCD.
-
----`,
+`,
         },
         {
           id: 22,
           title: 'La protection sur Booking et en réservation directe',
           duration: '13 min',
-          content: `---
-
-MODULE 3 · LEÇON 2
-────────────────────────────────────
-Protection Booking et réservation directe
-Là où AirCover n'existe pas
-────────────────────────────────────
-
----
-
-## Booking : une protection bien plus limitée
+          content: `## Booking : une protection bien plus limitée
 Booking.com n'offre pas l'équivalent
 d'AirCover pour les hôtes.
 
@@ -860,8 +738,6 @@ Ce que Booking ne propose PAS :
 
 → Booking est une source de réservations.
   Ce n'est pas un partenaire de sécurité.
-
----
 
 ## Réservation directe via Driing : votre cadre légal
 Pour les réservations directes via Driing,
@@ -893,8 +769,6 @@ Ce que vous devez avoir en place :
     → Encore plus importante en direct
       car aucune plateforme ne fait de filtre.
 
----
-
 ## Les 5 règles d'or de la sécurité LCD toutes plateformes
 Quelles que soient les plateformes utilisées :
 
@@ -922,13 +796,10 @@ Un voyageur qui demande une exception
 accueillir quelqu'un à sa place...)
 est souvent celui qui posera problème.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Évalue maintenant ta protection actuelle sur une échelle de 1 à 5 pour chaque règle d'or. Pour chaque règle notée ≤ 3, note l'action corrective à prendre cette semaine. Pas tout en même temps, une amélioration par semaine pendant 5 semaines suffit à avoir un système solide.
-
----`,
+`,
         },
       ],
     },
@@ -941,17 +812,7 @@ est souvent celui qui posera problème.
           id: 31,
           title: 'Comment réagir pendant un incident en cours',
           duration: '10 min',
-          content: `---
-
-MODULE 4 · LEÇON 1
-────────────────────────────────────
-Réagir pendant un incident
-Calme, rapidité, traçabilité
-────────────────────────────────────
-
----
-
-## Les 3 types d'incidents pendant le séjour
+          content: `## Les 3 types d'incidents pendant le séjour
 TYPE 1, DÉGRADATION OU CASSE
 → Le voyageur vous le signale lui-même.
 → Ou vous le constatez lors d'un passage.
@@ -977,8 +838,6 @@ TYPE 3, URGENCE (INCENDIE, FUITE, BLESSURE)
   18 (pompiers), 17 (police).
 → Puis contacter Airbnb assistance 24h/24.
 → Informer le propriétaire si conciergerie.
-
----
 
 ## Le message à envoyer en cas de nuisances
 Message factuel et ferme, sans agressivité :
@@ -1006,29 +865,16 @@ Cordialement,
 → Il prépare le dossier si vous devez
   aller plus loin avec la plateforme.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Crée un gabarit "Incident nuisances" dans tes outils de messagerie avec le message de la slide 3 adapté à ton logement. Tu ne l'utiliseras peut-être jamais, mais le jour où tu en auras besoin, ne pas avoir à le rédiger à chaud sous le stress sera précieux.
-
----`,
+`,
         },
         {
           id: 32,
           title: 'Après le départ : constater, documenter, agir',
           duration: '10 min',
-          content: `---
-
-MODULE 4 · LEÇON 2
-────────────────────────────────────
-Après le départ
-Constater, documenter, agir dans les délais
-────────────────────────────────────
-
----
-
-## La procédure post-séjour en cas de dommage
+          content: `## La procédure post-séjour en cas de dommage
 Dès que votre équipe de ménage
 constate un dommage :
 
@@ -1057,8 +903,6 @@ DANS LES 14 JOURS :
 → Le délai de 14 jours est la règle
   la plus importante à retenir
   de toute cette formation.
-
----
 
 ## Comment rédiger le message au voyageur après dommage
 Factuel, documenté, sans accusation directe :
@@ -1090,29 +934,16 @@ Cordialement,
 → Joindre les photos dans le message
 → Garder le ton professionnel
 
----
-
 
 ## Exercice
 **Exercice pratique :** Crée un gabarit "Dommage post-séjour" dans tes outils avec la structure de la slide 3. Et rappelle-toi : la règle des 14 jours. Configure un rappel dans ton calendrier pour J+13 après chaque check-out, si quelque chose a été constaté et pas encore traité, c'est ton dernier délai.
-
----`,
+`,
         },
         {
           id: 33,
           title: 'Construire un système de sécurité complet',
           duration: '10 min',
-          content: `---
-
-MODULE 4 · LEÇON 3
-────────────────────────────────────
-Le système complet
-De la prévention à la gestion des incidents
-────────────────────────────────────
-
----
-
-## Les 3 niveaux de protection
+          content: `## Les 3 niveaux de protection
 NIVEAU 1, PRÉVENTION (avant le séjour)
 → Règlement intérieur précis et publié
 → Vérification du profil voyageur
@@ -1133,8 +964,6 @@ NIVEAU 3, RÉPARATION (après le séjour)
   aux photos pré-arrivée
 → Activation des recours dans les 14 jours
 → Laisser un avis honnête sur le voyageur
-
----
 
 ## Les outils technologiques de sécurité
 CAPTEURS DE BRUIT (recommandés si nuisances récurrentes)
@@ -1162,8 +991,6 @@ CAMÉRAS EXTÉRIEURES (entrée uniquement)
 → Interdites dans tout espace intérieur
 → Doivent être déclarées dans l'annonce
 → Dissuasion efficace contre les fêtes
-
----
 
 ## Le récapitulatif de la formation
 CE QUE VOUS SAVEZ MAINTENANT FAIRE :
@@ -1201,8 +1028,6 @@ Des questions sur la sécurité de votre logement ?
 [Prends un appel avec Jason](/contact)
 Ou découvre le service de vérification voyageurs :
 [/services/securite]
-
----
 
 
 ## Exercice

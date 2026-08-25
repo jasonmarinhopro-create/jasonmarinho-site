@@ -22,21 +22,12 @@ export const RESEAUX_SOCIAUX_FORMATION = {
           id: 1,
           title: 'Les réseaux sociaux comme levier de réservation directe',
           duration: '12 min',
-          content: `---
-
-MODULE 1 · LEÇON 1
-────────────────────────────────────
-Réseaux sociaux et LCD
-Pourquoi ça change la donne
-────────────────────────────────────
-
----
-
-## Les chiffres qui justifient d'y être
+          content: `## Les chiffres qui justifient d'y être
 81% des utilisateurs d'Instagram
 se servent de la plateforme pour
 chercher des hébergements avant de réserver.
-Source : jecreemongite.com, 2025
+
+> Source : jecreemongite.com, 2025
 
 Les publications avec des visuels attractifs
 génèrent jusqu'à 38% d'engagement en plus,
@@ -53,8 +44,6 @@ Ce que ça signifie pour vous :
   que votre logement leur plaît.
   Leur taux de conversion est bien
   supérieur à un visiteur Airbnb froid.
-
----
 
 ## Ce que les réseaux sociaux font qu'Airbnb ne peut pas faire
 AIRBNB
@@ -75,8 +64,6 @@ INSTAGRAM / RÉSEAUX SOCIAUX
   Instagram est votre canal de fidélisation
   et d'indépendance.
 
----
-
 ## Les 3 bénéfices concrets des réseaux sociaux
 BÉNÉFICE 1, RÉSERVATIONS DIRECTES SANS COMMISSION
 → Un abonné Instagram qui réserve via Driing
@@ -96,8 +83,6 @@ BÉNÉFICE 3, FIDÉLISATION ET BOUCHE-À-OREILLE
 → Ils voient vos posts, pensent à vous
   quand ils planifient leur prochain voyage.
 → Ils partagent votre compte avec leurs amis.
-
----
 
 ## Quelle plateforme choisir ?
 INSTAGRAM, LA PRIORITÉ ABSOLUE
@@ -127,29 +112,16 @@ TikTok, OPTIONNEL
   Mieux vaut un seul canal bien géré
   que quatre canaux abandonnés.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Recherche maintenant sur Instagram le hashtag de ta ville suivi de "location" ou "airbnb" (ex : #locationparis, #airbnblyon). Regarde les comptes qui apparaissent. Lesquels semblent attirer des voyageurs ? Note 2-3 éléments qui t'inspirent, ce sont tes premiers benchmarks.
-
----`,
+`,
         },
         {
           id: 2,
           title: 'Créer sa page Instagram : les fondations qui font la différence',
           duration: '13 min',
-          content: `---
-
-MODULE 1 · LEÇON 2
-────────────────────────────────────
-Créer sa page Instagram
-Les fondations d'un compte qui convertit
-────────────────────────────────────
-
----
-
-## Compte personnel vs compte dédié au logement
+          content: `## Compte personnel vs compte dédié au logement
 La question que tout hôte se pose :
 "Dois-je utiliser mon compte perso
 ou créer un compte séparé pour mon logement ?"
@@ -171,8 +143,6 @@ COMPTE PERSONNEL
 → Créez un compte dédié.
   Ça prend 5 minutes et ça change
   tout dans la perception de votre logement.
-
----
 
 ## Le nom de compte et la bio : votre vitrine en 150 caractères
 NOM DE COMPTE (@handle)
@@ -204,8 +174,6 @@ PHOTO DE PROFIL
   (ou votre photo si vous valorisez
    l'aspect humain de l'accueil)
 
----
-
 ## Les 5 premiers posts : lancer son compte sur de bonnes bases
 Les 5 premiers posts définissent
 l'identité de votre compte.
@@ -234,13 +202,10 @@ POST 5, UNE PHOTO ATMOSPHÉRIQUE
 Ambiance de soirée, lumière du matin,
 quelque chose qui fait rêver.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Crée maintenant votre compte Instagram dédié à ton logement. Passe-le en "Compte Professionnel" (Paramètres → Compte → Passer en compte professionnel). Rédige ta bio en 3 lignes avec le lien Driing. C'est ta page, la prochaine leçon t'apprend quoi y publier.
-
----`,
+`,
         },
       ],
     },
@@ -253,17 +218,7 @@ quelque chose qui fait rêver.
           id: 11,
           title: 'Les 5 types de posts qui fonctionnent pour un logement LCD',
           duration: '12 min',
-          content: `---
-
-MODULE 2 · LEÇON 1
-────────────────────────────────────
-Les types de posts
-Ce qui fonctionne, et ce qui ennuie
-────────────────────────────────────
-
----
-
-## TYPE 1 : Les photos d'ambiance du logement
+          content: `## TYPE 1 : Les photos d'ambiance du logement
 C'est la base, mais ça doit être fait correctement.
 
 CE QUI FONCTIONNE :
@@ -288,8 +243,6 @@ LÉGENDE IDÉALE :
 → Une invitation à imaginer le séjour
   "Imaginez votre café du matin ici..."
 → 5-8 hashtags (pas 30)
-
----
 
 ## TYPE 2 : Le contenu local (votre vraie valeur ajoutée)
 C'est le type de contenu le plus sous-utilisé
@@ -316,8 +269,6 @@ EXEMPLES :
   • Mentionnez votre lien Driing en commentaire
     ou en bio ("Réservez en direct → lien en bio")
 
----
-
 ## TYPE 3 : Les témoignages voyageurs
 La preuve sociale est le contenu le plus convertissant.
 
@@ -340,8 +291,6 @@ EXEMPLES DE FORMATS :
   • Montre que de vraies personnes ont aimé
   • Répond aux doutes des futurs voyageurs
   • Crée un sentiment de communauté
-
----
 
 ## TYPES 4 ET 5 : Les coulisses et les offres
 TYPE 4, LES COULISSES (behind the scenes)
@@ -368,29 +317,16 @@ TYPE 5, LES OFFRES ET DISPONIBILITÉS
 → À utiliser avec parcimonie (1 fois/mois max)
   Trop de posts commerciaux = désabonnements
 
----
-
 
 ## Exercice
 **Exercice pratique :** Planifie tes 4 prochains posts maintenant : 1 photo d'ambiance, 1 recommandation locale, 1 témoignage voyageur (si tu en as), 1 coulisse. Prends les photos cette semaine si elles n'existent pas encore. Tu as déjà un mois de contenu.
-
----`,
+`,
         },
         {
           id: 12,
           title: 'La fréquence et le calendrier éditorial',
           duration: '12 min',
-          content: `---
-
-MODULE 2 · LEÇON 2
-────────────────────────────────────
-Fréquence et calendrier
-Publier régulièrement sans s'épuiser
-────────────────────────────────────
-
----
-
-## La fréquence idéale selon votre temps disponible
+          content: `## La fréquence idéale selon votre temps disponible
 LA RÈGLE D'OR :
 Mieux vaut 1 post/semaine pendant 1 an
 que 10 posts/semaine pendant 3 semaines
@@ -422,8 +358,6 @@ STRATÉGIE AVANCÉE (2-3h/semaine)
   pouvez tenir dans la durée.
   Commencez minimaliste si vous débutez.
 
----
-
 ## Le calendrier éditorial mensuel type
 UN MOIS DE CONTENU EN AVANCE :
 
@@ -453,8 +387,6 @@ SEMAINE 4
 → Stories : "Votre prochaine visite ?"
   avec sticker lien vers Driing
 
----
-
 ## Les outils pour programmer ses posts
 Programmer à l'avance = moins de stress,
 meilleure régularité.
@@ -481,29 +413,16 @@ MÉTHODE SIMPLE SANS OUTIL
 → Programmez-les avec Meta Business Suite
 → La semaine tourne toute seule
 
----
-
 
 ## Exercice
 **Exercice pratique :** Ouvre Meta Business Suite (business.facebook.com) et connecte ton compte Instagram. Crée et programme tes 2 premiers posts pour la semaine prochaine. Prendre l'habitude de programmer à l'avance est ce qui différencie les comptes qui durent de ceux qui abandonnent.
-
----`,
+`,
         },
         {
           id: 13,
           title: 'Hashtags, géolocalisation et algorithme Instagram',
           duration: '11 min',
-          content: `---
-
-MODULE 2 · LEÇON 3
-────────────────────────────────────
-Hashtags et géolocalisation
-Être trouvé par les bons voyageurs
-────────────────────────────────────
-
----
-
-## Comment Instagram vous fait découvrir
+          content: `## Comment Instagram vous fait découvrir
 Instagram vous montre à de nouvelles personnes
 via 3 mécanismes :
 
@@ -528,8 +447,6 @@ via 3 mécanismes :
 → Pour un hôte LCD, les hashtags locaux
   et la géolocalisation sont de loin
   les plus importants.
-
----
 
 ## La stratégie hashtags en 3 catégories
 STRUCTURE RECOMMANDÉE : 7 à 12 hashtags par post
@@ -560,8 +477,6 @@ Exemples :
 → #coupleretreat #familyvacation
 → #logementcosy #chemineeauthentique
 
----
-
 ## La géolocalisation : le tag que vous oubliez toujours
 Sur chaque post, ajoutez une localisation.
 C'est gratuit, ça prend 5 secondes
@@ -589,13 +504,10 @@ POURQUOI C'EST IMPORTANT :
   la même adresse, variez avec le quartier,
   la ville, les attractions proches.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Recherche sur Instagram les hashtags de ton secteur : tape #location + ta ville. Note les 5 hashtags les plus utilisés avec le plus de posts récents (pas trop génériques). Ce sont tes hashtags principaux à utiliser sur chaque post.
-
----`,
+`,
         },
       ],
     },
@@ -608,17 +520,7 @@ POURQUOI C'EST IMPORTANT :
           id: 21,
           title: `Le lien en bio : votre seul appel à l'action direct`,
           duration: '12 min',
-          content: `---
-
-MODULE 3 · LEÇON 1
-────────────────────────────────────
-Le lien en bio
-Votre seule passerelle vers la réservation
-────────────────────────────────────
-
----
-
-## Pourquoi le lien en bio est stratégique
+          content: `## Pourquoi le lien en bio est stratégique
 Sur Instagram, vous ne pouvez pas
 mettre de lien cliquable dans vos posts.
 
@@ -647,8 +549,6 @@ Comment le faire naturellement :
   avec votre lien Driing
   visible en permanence sur votre profil
 
----
-
 ## Le linktree : si vous avez plusieurs liens
 Vous avez plusieurs logements ou plusieurs
 liens à partager (Driing + livret + avis) ?
@@ -673,8 +573,6 @@ EXEMPLE DE PAGE LINKTREE POUR UN HÔTE :
   le lien Driing, vous pouvez ainsi
   mettre à jour les liens sans changer
   votre bio Instagram.
-
----
 
 ## Les stories à la une : votre vitrine permanente
 Les "stories à la une" (highlights)
@@ -708,29 +606,16 @@ HIGHLIGHTS RECOMMANDÉS :
   toutes les infos à un voyageur qui découvre
   votre compte pour la première fois.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Crée maintenant vos 3 premiers highlights : "Le logement", "Avis voyageurs" et "Réserver". Pour chacun : faites 1-2 stories dédiées et sauvegardez-les dans le highlight correspondant. Ces 3 highlights suffisent pour une première vitrine professionnelle.
-
----`,
+`,
         },
         {
           id: 22,
           title: 'Engager sa communauté pour générer des réservations',
           duration: '13 min',
-          content: `---
-
-MODULE 3 · LEÇON 2
-────────────────────────────────────
-Engager sa communauté
-Transformer des followers en clients
-────────────────────────────────────
-
----
-
-## La différence entre abonnés et communauté
+          content: `## La différence entre abonnés et communauté
 Un compte avec 500 abonnés engagés
 génère plus de réservations directes
 qu'un compte avec 5 000 abonnés passifs.
@@ -750,8 +635,6 @@ COMMUNAUTÉ ENGAGÉE
 → L'objectif n'est pas le nombre d'abonnés.
   C'est le niveau d'engagement.
   100 vrais fans valent plus que 1 000 fantômes.
-
----
 
 ## Les 5 actions qui créent de l'engagement
 01. RÉPONDRE À TOUS LES COMMENTAIRES
@@ -784,8 +667,6 @@ COMMUNAUTÉ ENGAGÉE
     → Le voyageur est touché, partage à son tour.
     → Preuve sociale authentique.
 
----
-
 ## Le DM de bienvenue aux nouveaux abonnés
 Chaque nouvel abonné est un prospect potentiel.
 
@@ -813,13 +694,10 @@ N'hésitez pas si vous avez des questions !"
   pertinents par semaine : quelques minutes,
   potentiel de plusieurs réservations annuelles.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Cette semaine : réponds à tous les commentaires de tes derniers posts, même anciens. Et regarde si tu as des DM non répondus, chacun peut être un prospect. Pour les nouveaux abonnés dont le profil ressemble à un voyageur potentiel : envoie le message de bienvenue de la slide 4 à 3 d'entre eux.
-
----`,
+`,
         },
       ],
     },
@@ -832,17 +710,7 @@ N'hésitez pas si vous avez des questions !"
           id: 31,
           title: 'La routine sociale de 30 minutes',
           duration: '10 min',
-          content: `---
-
-MODULE 4 · LEÇON 1
-────────────────────────────────────
-La routine de 30 minutes
-Tout gérer sans y passer sa vie
-────────────────────────────────────
-
----
-
-## La semaine type en 30 minutes
+          content: `## La semaine type en 30 minutes
 LUNDI, 10 MIN : CRÉATION
 → Prenez 1-2 photos du logement
   ou du quartier
@@ -871,8 +739,6 @@ DIMANCHE, 5 MIN : ANALYSE
 
 TOTAL : 30 minutes/semaine
 
----
-
 ## Les statistiques à regarder chaque semaine
 Dans les "Insights" de votre compte
 Instagram Pro :
@@ -899,29 +765,16 @@ CLICS SUR LE LIEN EN BIO
   pas une fois par heure.
   L'obsession des stats tue la créativité.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Crée un rappel récurrent dans ton agenda pour chaque jour de ta routine : lundi création, mercredi engagement, vendredi stories, dimanche analyse. 30 minutes réparties sur 4 créneaux sont infiniment plus durables qu'une heure d'un coup le weekend.
-
----`,
+`,
         },
         {
           id: 32,
           title: 'Récapitulatif et plan de lancement',
           duration: '10 min',
-          content: `---
-
-MODULE 4 · LEÇON 2
-────────────────────────────────────
-Le plan de lancement
-De zéro à un compte qui génère des réservations
-────────────────────────────────────
-
----
-
-## Le plan sur 90 jours
+          content: `## Le plan sur 90 jours
 JOURS 1-7 : LES FONDATIONS
 □ Créer le compte Instagram dédié
 □ Rédiger la bio avec lien Driing
@@ -949,8 +802,6 @@ JOURS 61-90 : LA CONVERSION
 □ Y a-t-il des DM de voyageurs potentiels ?
 □ Première réservation via Driing ?
 
----
-
 ## Les attentes réalistes
 Soyons honnêtes sur ce qu'Instagram peut faire :
 
@@ -975,8 +826,6 @@ RÉSULTATS RÉALISTES À 12 MOIS :
   C'est un moteur qui prend du temps
   à chauffer mais qui tourne ensuite
   de façon durable.
-
----
 
 ## Le récapitulatif de la formation
 CE QUE VOUS SAVEZ MAINTENANT FAIRE :
@@ -1014,8 +863,6 @@ Des questions sur votre stratégie réseaux ?
 [Prends un appel avec Jason](/contact)
 Créez votre lien de réservation directe :
 → driing.co/deposer-annonce
-
----
 
 
 ## Exercice

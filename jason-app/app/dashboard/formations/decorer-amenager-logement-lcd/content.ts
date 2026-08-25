@@ -22,21 +22,12 @@ export const DECORER_AMENAGER_FORMATION = {
           id: 1,
           title: 'Pourquoi la décoration impacte directement vos avis',
           duration: '12 min',
-          content: `---
-
-MODULE 1 · LEÇON 1
-────────────────────────────────────
-Décoration et avis
-Un lien direct que peu d'hôtes voient
-────────────────────────────────────
-
----
-
-## Les chiffres qui changent tout
+          content: `## Les chiffres qui changent tout
 Un logement bien pensé et bien équipé
 peut générer jusqu'à 20 à 30%
 de réservations supplémentaires.
-Source : RentaPlus, 2026
+
+> Source : RentaPlus, 2026
 
 Pourquoi ?
 
@@ -59,8 +50,6 @@ Pourquoi ?
 → La décoration n'est pas de l'esthétique.
   C'est de la stratégie commerciale.
 
----
-
 ## Ce que les voyageurs ressentent en 30 secondes
 Un voyageur qui entre dans votre logement
 se forge une impression en moins de 30 secondes.
@@ -82,8 +71,6 @@ sur les moindres imperfections.
   une émotion positive immédiate.
   Pas seulement être "correct".
 
----
-
 ## Les 3 niveaux d'impact de la décoration
 NIVEAU 1, L'IMPACT SUR LES PHOTOS
 → Un logement bien décoré se photographie
@@ -103,8 +90,6 @@ NIVEAU 3, L'IMPACT SUR LA DIFFÉRENCIATION
   au même prix.
 → Impact sur le taux de conversion
   de votre annonce.
-
----
 
 ## Décorer pour votre cible, pas pour vous
 L'erreur la plus fréquente :
@@ -134,29 +119,16 @@ VOYAGEURS "EXPÉRIENCE"
 → Avant d'acheter quoi que ce soit :
   qui est votre voyageur idéal ?
 
----
-
 
 ## Exercice
 **Exercice pratique :** Fais le test maintenant : entre dans ton logement comme si c'était la première fois. Quelle est ta première impression en 5 secondes ? Note-la honnêtement. C'est l'impression que ressentent tes voyageurs. Est-ce qu'elle correspond à ce que tu veux qu'ils ressentent ?
-
----`,
+`,
         },
         {
           id: 2,
           title: 'Les erreurs de décoration qui font fuir les bons voyageurs',
           duration: '13 min',
-          content: `---
-
-MODULE 1 · LEÇON 2
-────────────────────────────────────
-Les erreurs à éviter
-Ce qui nuit sans qu'on le sache
-────────────────────────────────────
-
----
-
-## Erreur 1 : Les objets trop personnels
+          content: `## Erreur 1 : Les objets trop personnels
 Vos photos de famille, les dessins
 de vos enfants, vos livres personnels,
 vos vêtements dans les placards visibles...
@@ -170,14 +142,13 @@ Ce qu'Airbnb dit officiellement :
 "Retirez vos photos de famille, dessins
 d'enfants, vêtements et chaussures
 des parties accessibles aux voyageurs."
-Source : Centre de ressources Airbnb
+
+> Source : Centre de ressources Airbnb
 
 → Gardez une touche personnelle
   via la décoration (un tableau,
   un objet local...), pas via
   des traces de votre vie quotidienne.
-
----
 
 ## Erreur 2 : La décoration thématique trop marquée
 Un logement entièrement décoré autour
@@ -199,8 +170,6 @@ La règle du pouce :
 → Un logement entièrement thématisé = risqué.
 → Le style "neutre avec caractère"
   fonctionne pour tout le monde.
-
----
 
 ## Erreur 3 : Les meubles fragiles ou de valeur
 Un canapé blanc en tissu délicat,
@@ -224,8 +193,6 @@ La règle de l'aménagement LCD :
   Facile à remplacer (produit courant,
   pas une pièce unique)
   Sans valeur sentimentale
-
----
 
 ## Erreur 4 : Le vide et le trop-plein
 Deux extrêmes qui font mauvais effet :
@@ -254,13 +221,10 @@ L'ÉQUILIBRE RECHERCHÉ :
   doit avoir une utilité."
   Source : Airbnb Centre de ressources
 
----
-
 
 ## Exercice
 **Exercice pratique :** Fais le tour de ton logement avec un sac ou une boîte. Mets dedans tout ce qui est personnel (photos, objets intimes), tout ce qui est fragile ou de valeur, et tout ce qui encombre sans utilité pour le voyageur. Tu te retrouveras probablement avec 10 à 20 objets à retirer. C'est gratuit, ça prend 30 minutes, et l'effet sur les photos est immédiat.
-
----`,
+`,
         },
       ],
     },
@@ -273,17 +237,7 @@ L'ÉQUILIBRE RECHERCHÉ :
           id: 11,
           title: 'Couleurs et ambiance : créer un logement mémorable',
           duration: '12 min',
-          content: `---
-
-MODULE 2 · LEÇON 1
-────────────────────────────────────
-Couleurs et ambiance
-La base d'un logement qui se démarque
-────────────────────────────────────
-
----
-
-## La palette gagnante en 2026
+          content: `## La palette gagnante en 2026
 Les tendances couleurs qui fonctionnent
 en location courte durée en 2026 :
 
@@ -309,8 +263,6 @@ COULEURS À ÉVITER :
 
 → Une règle simple : 60% neutre,
   30% complémentaire, 10% accent.
-
----
 
 ## La lumière : le facteur le plus sous-estimé
 La lumière transforme un logement ordinaire
@@ -339,8 +291,6 @@ LUMIÈRE NATURELLE (à maximiser)
   donne l'impression d'être plus grand,
   plus propre et plus accueillant.
 
----
-
 ## Les plantes : le détail qui change tout
 Des plantes bien choisies dans un logement LCD :
 → Créent une impression de vie et de fraîcheur
@@ -368,29 +318,16 @@ ERREURS À ÉVITER :
 → 2-3 plantes bien placées suffisent.
   Une par pièce principale maximum.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Regarde tes photos actuelles. Sont-elles prises avec la lumière naturelle ou artificielle ? Est-ce que les couleurs des murs et des textiles sont harmonieuses ou disparates ? Identifie une action simple : changer les ampoules pour de la lumière chaude (10€), ajouter un coussin d'accent (15€), ou acheter une belle plante artificielle (20-30€). Petit investissement, grand impact sur les photos.
-
----`,
+`,
         },
         {
           id: 12,
           title: `Les textiles : l'investissement le plus rentable`,
           duration: '13 min',
-          content: `---
-
-MODULE 2 · LEÇON 2
-────────────────────────────────────
-Les textiles
-L'investissement le plus rentable en LCD
-────────────────────────────────────
-
----
-
-## Pourquoi les textiles changent tout
+          content: `## Pourquoi les textiles changent tout
 Les textiles sont ce que les voyageurs
 touchent en premier.
 
@@ -412,8 +349,6 @@ Budget recommandé pour les textiles :
   en LCD en termes de retour sur avis.
 → Avant d'acheter un meuble neuf :
   achetez de beaux draps.
-
----
 
 ## La literie : le critère n°1 des avis
 LE MATELAS
@@ -445,8 +380,6 @@ COUSSINS DÉCORATIFS
 → 2-4 coussins par lit = look hôtel premium.
 → Couleur accordée à la palette du logement.
 
----
-
 ## Les serviettes : le détail hôtelier
 Les serviettes sont un critère
 souvent mentionné dans les avis.
@@ -475,13 +408,10 @@ ASTUCE ÉCONOMIQUE :
   pour avoir des stocks de remplacement
   et maintenir la cohérence de couleur.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Inspecte tes draps et serviettes maintenant comme si tu étais voyageur. Sont-ils blancs ou légèrement jaunis ? Les serviettes sont-elles douces ou râpeuses ? Y a-t-il des taches ou des bords effilochés ? Tout ce qui ne passerait pas dans un bon hôtel 3 étoiles : commandez le remplacement cette semaine. C'est l'investissement avec le meilleur retour sur avis en LCD.
-
----`,
+`,
         },
       ],
     },
@@ -494,17 +424,7 @@ ASTUCE ÉCONOMIQUE :
           id: 21,
           title: 'La chambre : la pièce qui fait ou défait les avis',
           duration: '12 min',
-          content: `---
-
-MODULE 3 · LEÇON 1
-────────────────────────────────────
-La chambre
-La pièce la plus scrutée par les voyageurs
-────────────────────────────────────
-
----
-
-## Ce que les voyageurs cherchent dans une chambre
+          content: `## Ce que les voyageurs cherchent dans une chambre
 Les voyageurs passent en moyenne
 7 à 8 heures dans la chambre.
 C'est la pièce la plus importante
@@ -523,8 +443,6 @@ Ce qu'ils cherchent :
   depuis le lit (smartphone, ordinateur)
 → Le calme
   (isolation phonique ou bouchons d'oreille)
-
----
 
 ## La check-list chambre parfaite
 LITERIE
@@ -549,8 +467,6 @@ CONFORT SUPPLÉMENTAIRE
 □ Bouchons d'oreilles
 □ Masque de nuit
 □ Chargeur USB intégré si possible
-
----
 
 ## La mise en scène de la chambre
 Le lit doit être "fait pour la photo"
@@ -577,29 +493,16 @@ LA MÉTHODE HÔTEL EN 5 ÉTAPES :
   Fait mentionner le confort dans les avis
   Ne prend que 3 minutes supplémentaires
 
----
-
 
 ## Exercice
 **Exercice pratique :** Fais la mise en scène complète de ton lit maintenant avec la méthode en 5 étapes. Prends une photo. Compare-la avec ta photo de chambre actuelle dans ton annonce. Si la différence est visible, mets la nouvelle photo en ligne. Cette seule action peut améliorer significativement le taux de clic sur votre annonce.
-
----`,
+`,
         },
         {
           id: 22,
           title: 'La cuisine et le salon : le cœur du logement',
           duration: '12 min',
-          content: `---
-
-MODULE 3 · LEÇON 2
-────────────────────────────────────
-Cuisine et salon
-Fonctionnel ET agréable
-────────────────────────────────────
-
----
-
-## La cuisine : équipée = bien notée
+          content: `## La cuisine : équipée = bien notée
 Un voyageur sur deux utilise la cuisine
 même pour un court séjour.
 
@@ -628,8 +531,6 @@ USTENSILES ESSENTIELS
 → Sel, poivre, huile d'olive
   (les voyageurs adorent trouver ça)
 
----
-
 ## Les erreurs cuisine qui génèrent des avis négatifs
 CE QUI GÉNÈRE DES AVIS NÉGATIFS EN CUISINE :
 
@@ -656,8 +557,6 @@ CE QUI GÉNÈRE DES AVIS NÉGATIFS EN CUISINE :
   → Fermez ce que vous voulez protéger
     dans une pièce entière, pas dans
     des tiroirs visibles et accessibles.
-
----
 
 ## Le salon : confort et fonctionnalité
 Le salon est l'espace de vie.
@@ -687,29 +586,16 @@ CE QUI FAIT VRAIMENT LA DIFFÉRENCE :
   (Uno, cartes, Dobble...)
 → Une bougie LED sur la table
 
----
-
 
 ## Exercice
 **Exercice pratique :** Ouvre les placards de ta cuisine. Est-ce qu'il y a assez de vaisselle pour le nombre maximum de voyageurs ? Les poêles et casseroles sont-elles en bon état ? Si tu trouves des éléments défaillants, achète les remplacements cette semaine, cuisine bien équipée = avis bien notés, systématiquement.
-
----`,
+`,
         },
         {
           id: 23,
           title: 'La salle de bain et les espaces secondaires',
           duration: '11 min',
-          content: `---
-
-MODULE 3 · LEÇON 3
-────────────────────────────────────
-Salle de bain et espaces secondaires
-Les détails qui font la différence
-────────────────────────────────────
-
----
-
-## La salle de bain : propreté perçue = avis propreté
+          content: `## La salle de bain : propreté perçue = avis propreté
 La salle de bain est la pièce
 la plus scrutée pour le critère "propreté".
 
@@ -739,8 +625,6 @@ POINTS QUI FONT LA DIFFÉRENCE :
   (détail hôtelier à 0€ qui crée l'effet waouh)
 → Tapis de bain propre et moelleux
 
----
-
 ## L'entrée : la première impression physique
 L'entrée est la première pièce
 que voit le voyageur.
@@ -768,13 +652,10 @@ CE QUI CRÉE UNE TRÈS BONNE IMPRESSION :
   dans les 3 premières secondes.
   Pas "voici le règlement intérieur".
 
----
-
 
 ## Exercice
 **Exercice pratique :** Inspecte ta salle de bain comme un voyageur. Regardes le joint de douche, les robinets, les serviettes. Y a-t-il des produits d'accueil ? Achète cette semaine un pack de produits d'accueil petits formats (5-8€ sur Amazon) et une bombe de détartrant. Ce sont les 2 investissements avec le meilleur impact sur le critère "propreté" dans les avis.
-
----`,
+`,
         },
       ],
     },
@@ -787,17 +668,7 @@ CE QUI CRÉE UNE TRÈS BONNE IMPRESSION :
           id: 31,
           title: `Créer l'effet waouh sans se ruiner`,
           duration: '12 min',
-          content: `---
-
-MODULE 4 · LEÇON 1
-────────────────────────────────────
-L'effet waouh
-Des investissements ciblés à fort impact
-────────────────────────────────────
-
----
-
-## Ce qu'est l'effet waouh en LCD
+          content: `## Ce qu'est l'effet waouh en LCD
 L'effet waouh, c'est l'élément
 que le voyageur mentionne spontanément
 dans son avis sans qu'on lui ait
@@ -818,8 +689,6 @@ fournies, c'était parfait"
   Il demande de la réflexion.
   Quelle est la PETITE chose qui ferait
   que votre voyageur en parle ?
-
----
 
 ## Les éléments waouh les plus efficaces (par budget)
 MOINS DE 20€ :
@@ -846,8 +715,6 @@ MOINS DE 20€ :
 → Miroir rétroéclairé dans la salle de bain
 → Lampe de lecture sur pied dans le salon
 
----
-
 ## L'élément local : votre avantage unique
 Ce qu'aucun hôtel ne peut reproduire :
 l'authenticité locale.
@@ -873,29 +740,16 @@ EXEMPLES :
 → Ils justifient un tarif plus élevé
   car ils différencient de l'hôtel impersonnel.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Identifie l'élément waouh que ton logement n'a pas encore. Parmi la liste de la slide 3, lequel correspond le mieux à ta cible et à ton logement ? Commandez-le cette semaine. Un seul élément waouh bien choisi peut transformer des avis de 4 étoiles en avis de 5 étoiles.
-
----`,
+`,
         },
         {
           id: 32,
           title: 'Gérer son budget déco intelligemment',
           duration: '12 min',
-          content: `---
-
-MODULE 4 · LEÇON 2
-────────────────────────────────────
-Gérer son budget déco
-Investir aux bons endroits
-────────────────────────────────────
-
----
-
-## Le principe du retour sur avis
+          content: `## Le principe du retour sur avis
 En LCD, chaque investissement déco
 doit être évalué selon son retour
 sur expérience voyageur, pas sur
@@ -921,8 +775,6 @@ Exemples :
 → Machine à café Nespresso (60€) →
   mentionnée dans les avis régulièrement.
   ROI fort pour le prix.
-
----
 
 ## Où investir et dans quel ordre
 PRIORITÉ 1, LITERIE ET TEXTILES (impact immédiat sur les avis)
@@ -954,8 +806,6 @@ Budget moyen : 50 à 150€
 
 TOTAL : 380 à 830€ pour une transformation complète.
 Rentabilisé en 2-3 mois de meilleures notes.
-
----
 
 ## Les bonnes adresses pour équiper sans surpayer
 IKEA
@@ -989,29 +839,16 @@ DESTOCKAGE / SOLDERIE HÔTELIÈRE
 → Prix professionnels pour des quantités
   qui correspondent à la LCD.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Établis ton budget déco selon les 4 priorités. Si tu dois choisir, commence par la priorité 1 (literie). C'est l'investissement avec le meilleur retour sur avis, systématiquement, dans tous les logements et tous les marchés.
-
----`,
+`,
         },
         {
           id: 33,
           title: `Le récapitulatif et le plan d'action`,
           duration: '11 min',
-          content: `---
-
-MODULE 4 · LEÇON 3
-────────────────────────────────────
-Le plan d'action
-De la formation à la transformation
-────────────────────────────────────
-
----
-
-## L'audit complet en 1 heure
+          content: `## L'audit complet en 1 heure
 Bloquez 1 heure pour faire cet audit
 pièce par pièce :
 
@@ -1044,8 +881,6 @@ SALLE DE BAIN
 □ Produits d'accueil ?
 □ Sèche-cheveux fonctionnel ?
 
----
-
 ## Les 10 actions classées par impact
 IMPACT IMMÉDIAT (cette semaine, < 50€) :
 □ Papier toilette en triangle (0€)
@@ -1066,8 +901,6 @@ IMPACT MOYEN TERME (selon budget) :
 □ Compléter la vaisselle manquante
 □ Coussins et plaid cohérents
 □ Éléments de déco locaux
-
----
 
 ## Le récapitulatif de la formation
 CE QUE VOUS SAVEZ MAINTENANT FAIRE :
@@ -1103,8 +936,6 @@ MODULE 4
 
 Des questions sur votre logement spécifique ?
 [Prends un appel avec Jason](/contact)
-
----
 
 
 ## Exercice

@@ -22,17 +22,7 @@ export const LCD_BASSE_SAISON_FORMATION = {
           id: 1,
           title: 'Analyser sa saisonnalité locale : les données à regarder',
           duration: '12 min',
-          content: `---
-
-MODULE 1 · LEÇON 1
-────────────────────────────────────
-Comprendre sa saisonnalité
-Analyser avant d'agir
-────────────────────────────────────
-
----
-
-## La réalité du marché LCD en basse saison
+          content: `## La réalité du marché LCD en basse saison
 En France, les taux d'occupation LCD
 chutent fortement hors saison :
 
@@ -41,7 +31,8 @@ chutent fortement hors saison :
 → Novembre : 35 à 50%
 → Mars / Octobre : 45 à 60%
 
-Source : AirDNA, données France 2025-2026
+
+> Source : AirDNA, données France 2025-2026
 
 Ces chiffres sont des moyennes.
 Certains hôtes font 60% en janvier.
@@ -53,8 +44,6 @@ Une stratégie adaptée.
 Mais avant toute stratégie :
 comprendre SA propre saisonnalité,
 pas celle d'un autre marché.
-
----
 
 ## Les 4 données à analyser sur son propre logement
 01. TON TAUX D'OCCUPATION MENSUEL
@@ -83,8 +72,6 @@ pas celle d'un autre marché.
       professionnel ou d'un festival hivernal
       que tu n'exploites pas.
 
----
-
 ## La différence entre "basse saison structurelle" et "creux évitables"
 BASSE SAISON STRUCTURELLE
 → La demande est objectivement faible
@@ -108,8 +95,6 @@ CREUX ÉVITABLES
   Les creux évitables s'éliminent.
   Ne confonds pas les deux.
 
----
-
 ## L'objectif réaliste de cette formation
 Cette formation ne va pas te promettre
 de remplir ton calendrier à 100% en janvier.
@@ -132,29 +117,16 @@ Sur un logement à 100€/nuit :
 
 C'est l'objectif. Concret et réaliste.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Ouvre tes statistiques Airbnb (Tableau de bord → Statistiques → Revenus). Note tes 3 mois les plus creux de l'année dernière et leur taux d'occupation respectif. Ce sont les mois sur lesquels on va travailler dans toute cette formation.
-
----`,
+`,
         },
         {
           id: 2,
           title: 'Identifier les segments de voyageurs actifs en hiver',
           duration: '13 min',
-          content: `---
-
-MODULE 1 · LEÇON 2
-────────────────────────────────────
-Les voyageurs de basse saison
-Qui voyage en hiver, et ce qu'ils veulent
-────────────────────────────────────
-
----
-
-## Les 5 segments actifs en basse saison
+          content: `## Les 5 segments actifs en basse saison
 01. LES TÉLÉTRAVAILLEURS / NOMADES DIGITAUX
     → Actifs toute l'année, pas de contrainte
       de vacances scolaires.
@@ -187,8 +159,6 @@ Qui voyage en hiver, et ce qu'ils veulent
     → Réservent à court terme, budget moins sensible.
     → Actifs ponctuellement mais très rentables.
 
----
-
 ## Adapter son positionnement au segment ciblé
 Tu ne peux pas parler à tout le monde.
 En basse saison, choisis 1 à 2 segments
@@ -212,8 +182,6 @@ POUR LES PROS :
 → Titre : "Logement professionnel connecté"
 → Facturation disponible
 → Accès autonome 24h/24 mis en avant
-
----
 
 ## Le télétravailleur : le segment basse saison le plus rentable
 En 2026, les télétravailleurs sont
@@ -245,8 +213,6 @@ son taux d'occupation hivernal en ajoutant
 "Fibre 500 Mbps + bureau dédié"
 dans son titre. Source : Welkomz, 2026
 
----
-
 ## Les vacances scolaires : les micro-hautes-saisons cachées
 En basse saison apparente, il y a
 des semaines de forte demande cachées :
@@ -269,13 +235,10 @@ pendant ces micro-pics.
   de l'année prochaine.
   Ça prend 20 minutes et ça change tout.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Choisis le segment principal que tu vas cibler en basse saison. Télétravailleur, couple, pro en déplacement ou famille ? Note les 2-3 modifications concrètes que tu vas apporter à ton annonce pour parler directement à ce segment. On les met en place dans le module suivant.
-
----`,
+`,
         },
       ],
     },
@@ -288,17 +251,7 @@ pendant ces micro-pics.
           id: 11,
           title: 'La stratégie tarifaire basse saison',
           duration: '12 min',
-          content: `---
-
-MODULE 2 · LEÇON 1
-────────────────────────────────────
-La tarification basse saison
-Baisser intelligemment sans brader
-────────────────────────────────────
-
----
-
-## Le changement d'objectif en basse saison
+          content: `## Le changement d'objectif en basse saison
 En haute saison :
 → Objectif = maximiser le revenu par nuit
 → Prix élevés, taux d'occupation
@@ -321,8 +274,6 @@ te fait perdre de l'argent.
 → Rappel : calcule ton prix minimum
   (voir formation "Mettre le bon prix")
   avant de baisser quoi que ce soit.
-
----
 
 ## Les 4 ajustements tarifaires basse saison
 01. BAISSE DU PRIX DE BASE
@@ -352,8 +303,6 @@ te fait perdre de l'argent.
       = +15 à +20% de réservations
       selon les experts OptiRental.
 
----
-
 ## La durée minimale de séjour : le levier le plus sous-utilisé
 En haute saison :
 → Minimum 3-7 nuits pour maximiser
@@ -377,8 +326,6 @@ La stratégie intelligente :
    et cible les couples)
 → Vacances scolaires : minimum 3-4 nuits
   (demande forte = tu peux exiger plus)
-
----
 
 ## Les réservations de dernière minute : opportunité ou risque ?
 En basse saison, une proportion
@@ -410,29 +357,16 @@ Pour en profiter :
     de Jason Marinho est particulièrement
     utile dans ces cas.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Ouvre ton calendrier Airbnb pour tes 3 prochains mois creux. Fais ces 3 modifications maintenant : baisse le prix de base de 15-20%, réduis le séjour minimum à 1-2 nuits, active la réservation instantanée si elle ne l'est pas. Ce sont les 3 ajustements qui ont le plus d'impact immédiat sur le taux d'occupation.
-
----`,
+`,
         },
         {
           id: 12,
           title: 'Optimiser son annonce pour les recherches de basse saison',
           duration: '12 min',
-          content: `---
-
-MODULE 2 · LEÇON 2
-────────────────────────────────────
-Optimiser son annonce
-Parler aux voyageurs de basse saison
-────────────────────────────────────
-
----
-
-## Pourquoi ton annonce d'été ne fonctionne pas en hiver
+          content: `## Pourquoi ton annonce d'été ne fonctionne pas en hiver
 Une annonce avec des photos de terrasse
 ensoleillée et une description axée
 sur la plage à 5 minutes...
@@ -450,8 +384,6 @@ En basse saison, les voyageurs cherchent :
 
 Ton annonce doit parler à ces besoins,
 pas à ceux d'un vacancier d'été.
-
----
 
 ## Les 3 modifications à faire sur son titre
 LE TITRE EN BASSE SAISON
@@ -473,8 +405,6 @@ Sur Airbnb tu peux modifier ton titre
 sur ton classement.
 Change-le en octobre avant la basse saison,
 remets-le en version estivale en avril.
-
----
 
 ## Les photos à ajouter pour la basse saison
 Les photos que tu n'as peut-être pas
@@ -503,8 +433,6 @@ mais qui font la différence en hiver :
   d'ambiance chaleureuse en première
   position pendant les mois d'hiver.
 
----
-
 ## La section "À savoir" : tes arguments basse saison
 La description et la section "À savoir"
 d'Airbnb sont des espaces pour parler
@@ -531,29 +459,16 @@ Le logement est disponible dès [heure]
 pour vous permettre de profiter
 de votre première journée."
 
----
-
 
 ## Exercice
 **Exercice pratique :** Modifie ton titre Airbnb maintenant pour la basse saison. Ajoute un élément "hiver", cosy, fibre, bureau, cheminée, selon ce que tu as. Ensuite, planifie une session photo en soirée cette semaine pour prendre 2-3 photos d'ambiance chaleureuse avec les lampes et bougies allumées. Ce sont les 2 actions qui améliorent le plus la conversion en basse saison.
-
----`,
+`,
         },
         {
           id: 13,
           title: `Capter les voyageurs longue durée : la mine d'or de l'hiver`,
           duration: '11 min',
-          content: `---
-
-MODULE 2 · LEÇON 3
-────────────────────────────────────
-Les séjours longue durée
-Transformer un mois creux en mois serein
-────────────────────────────────────
-
----
-
-## Pourquoi la longue durée est parfaite en basse saison
+          content: `## Pourquoi la longue durée est parfaite en basse saison
 Un séjour de 28 nuits en janvier :
 
 → Ton calendrier est plein pour tout le mois
@@ -569,8 +484,6 @@ vs le scénario sans stratégie :
 
 → La longue durée à -30% rapporte
   2x plus qu'un mois creux non optimisé.
-
----
 
 ## Comment attirer les séjours longue durée
 ÉTAPE 1, Activer les remises longue durée
@@ -594,8 +507,6 @@ Sur Airbnb :
   aux séjours de 28+ nuits.
 → Assure-toi que ton annonce
   y apparaît avec les bons paramètres.
-
----
 
 ## Les autres canaux pour la longue durée
 Airbnb n'est pas le seul canal
@@ -630,13 +541,10 @@ BOOKING "LONG STAY"
 → Configure ton annonce pour qu'elle
   y apparaisse.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Active maintenant les remises longue durée sur Airbnb si ce n'est pas déjà fait. Puis publie une annonce sur LeBonCoin pour ton logement avec un tarif mensuel (prix mensuel = prix nuit × 20 environ, pour intégrer une vraie remise longue durée). Ça prend 30 minutes et peut remplir ton mois le plus creux d'un coup.
-
----`,
+`,
         },
       ],
     },
@@ -649,17 +557,7 @@ BOOKING "LONG STAY"
           id: 21,
           title: 'Les plateformes alternatives actives en hiver',
           duration: '12 min',
-          content: `---
-
-MODULE 3 · LEÇON 1
-────────────────────────────────────
-Les plateformes alternatives
-Diversifier ses canaux en basse saison
-────────────────────────────────────
-
----
-
-## Pourquoi la diversification est cruciale en basse saison
+          content: `## Pourquoi la diversification est cruciale en basse saison
 En haute saison, Airbnb seul peut suffire.
 En basse saison, la demande est plus dispersée.
 
@@ -677,8 +575,6 @@ DRIING → Réservation directe, voyageurs fidèles,
   Airbnb + Booking + Driing multiplie
   significativement tes chances de remplissage
   sur des marchés à faible demande globale.
-
----
 
 ## Booking.com en basse saison : les leviers spécifiques
 Booking a des outils basse saison
@@ -709,8 +605,6 @@ peu utilisés par les hôtes :
     → À évaluer selon ta marge :
       Genius demande -10% minimum.
 
----
-
 ## La réservation directe via Driing : l'arme anti-commission
 En basse saison, chaque euro de commission
 économisé compte davantage.
@@ -738,8 +632,6 @@ Disponible jusqu'au [date]."
 → Et tes anciens voyageurs
   sont les plus susceptibles de revenir.
 
----
-
 ## Les salons et événements professionnels locaux
 En hiver, les grandes villes françaises
 accueillent des dizaines de salons
@@ -766,29 +658,16 @@ Ce qu'il faut faire dès l'identification :
   peut valoir 3 semaines de revenus
   normaux en basse saison.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Deux actions : ouvre l'extranet Booking et crée une promotion de -15% sur tes 2-3 mois les plus creux. Ensuite, cherche sur Google les salons et événements professionnels dans ta ville de novembre à mars. Note les 3 dates les plus importantes et configure dès maintenant tes prix majorés sur ces périodes.
-
----`,
+`,
         },
         {
           id: 22,
           title: 'Les partenariats locaux basse saison',
           duration: '12 min',
-          content: `---
-
-MODULE 3 · LEÇON 2
-────────────────────────────────────
-Les partenariats locaux
-Des sources de voyageurs que personne n'exploite
-────────────────────────────────────
-
----
-
-## Le principe du partenariat local en basse saison
+          content: `## Le principe du partenariat local en basse saison
 En haute saison, les voyageurs viennent
 à toi naturellement via les plateformes.
 
@@ -809,8 +688,6 @@ d'accéder à ces segments directement :
   de patients venant de loin
 → Des agences événementielles pour
   leurs équipes et intervenants
-
----
 
 ## Les 5 partenariats les plus efficaces
 01. LES ENTREPRISES LOCALES (RH / OFFICE MANAGER)
@@ -848,8 +725,6 @@ d'accéder à ces segments directement :
     → Certains offices ont des accords
       avec des groupes ou des entreprises.
 
----
-
 ## Comment approcher une entreprise locale
 Script d'approche par email ou LinkedIn :
 
@@ -882,29 +757,16 @@ Bien cordialement,
   Mais une entreprise cliente régulière
   peut remplir plusieurs mois par an.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Identifie 3 entreprises de 50+ salariés situées à moins de 15 minutes de ton logement. Trouve le nom du responsable RH ou de l'office manager sur LinkedIn. Envoie le message d'approche à au moins 2 d'entre eux cette semaine. C'est long à convertir mais un seul client entreprise peut valoir 2 à 3 mois de basse saison.
-
----`,
+`,
         },
         {
           id: 23,
           title: 'Utiliser sa base email pour remplir le calendrier',
           duration: '11 min',
-          content: `---
-
-MODULE 3 · LEÇON 3
-────────────────────────────────────
-La base email en basse saison
-Vos anciens voyageurs sont vos meilleurs clients
-────────────────────────────────────
-
----
-
-## Pourquoi les anciens voyageurs sont le levier le plus rentable
+          content: `## Pourquoi les anciens voyageurs sont le levier le plus rentable
 Un voyageur qui a déjà séjourné chez toi :
 
 → Te connaît et te fait confiance
@@ -924,8 +786,6 @@ En basse saison, 1 email bien ciblé
 
 C'est le canal le plus rentable
 et le moins utilisé.
-
----
 
 ## La structure de l'email basse saison parfait
 OBJET : "Un tarif réservé pour vous
@@ -961,8 +821,6 @@ Cette offre est disponible jusqu'au [date].
   L'argument prix est mis en avant.
   L'action est claire.
 
----
-
 ## Segmenter pour mieux cibler
 Si tu as une base email de 30+ contacts,
 segmente tes envois :
@@ -988,13 +846,10 @@ SEGMENT 3, Voyageurs pros / télétravailleurs
   le profil = 3x plus de conversions
   qu'un email générique.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Récupère la liste de tes 20-30 derniers voyageurs (leurs prénoms et emails si tu les as via tes réservations directes ou Brevo). Rédige l'email basse saison avec l'offre directe Driing. Envoie-le cette semaine. Si tu n'as pas encore de base email, c'est le moment de commencer à la constituer pour la prochaine basse saison.
-
----`,
+`,
         },
       ],
     },
@@ -1007,17 +862,7 @@ SEGMENT 3, Voyageurs pros / télétravailleurs
           id: 31,
           title: 'Les travaux et améliorations à faire en basse saison',
           duration: '12 min',
-          content: `---
-
-MODULE 4 · LEÇON 1
-────────────────────────────────────
-Profiter de la basse saison
-Pour améliorer le logement sans pertes de revenus
-────────────────────────────────────
-
----
-
-## La basse saison : une opportunité d'investissement
+          content: `## La basse saison : une opportunité d'investissement
 Les hôtes qui subissent la basse saison
 voient des nuits vides.
 
@@ -1034,8 +879,6 @@ Si ton taux d'occupation est de 30% en janvier :
 
 Les améliorations faites en basse saison
 ont un impact direct sur la haute saison suivante.
-
----
 
 ## Les 5 améliorations basse saison à fort ROI
 01. AMÉLIORER LA LITERIE (ROI immédiat)
@@ -1075,8 +918,6 @@ ont un impact direct sur la haute saison suivante.
       que tu remettrais à plus tard.
     → Budget : variable, souvent < 100€
 
----
-
 ## Les nouvelles photos : l'investissement le plus rentable
 Le retour sur investissement le plus élevé
 en LCD reste les photos professionnelles.
@@ -1099,29 +940,16 @@ Coût d'un photographe pro LCD :
 → Rentabilisé en 1 à 2 réservations supplémentaires
   par mois sur l'année entière.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Fais la liste des 3 améliorations que tu reportes depuis l'été. Planifie-les pendant tes prochaines nuits vides de basse saison. Et si tu n'as pas eu de shooting photo professionnel depuis plus de 2 ans : c'est le moment de le faire. L'investissement se rentabilise dans les 2 premiers mois de haute saison.
-
----`,
+`,
         },
         {
           id: 32,
           title: `Construire son plan d'action basse saison personnalisé`,
           duration: '13 min',
-          content: `---
-
-MODULE 4 · LEÇON 2
-────────────────────────────────────
-Le plan d'action personnalisé
-De la formation à l'exécution
-────────────────────────────────────
-
----
-
-## Les 3 profils et leur stratégie adaptée
+          content: `## Les 3 profils et leur stratégie adaptée
 PROFIL A, LOGEMENT EN ZONE URBAINE
 (Paris, Lyon, Bordeaux, grandes villes)
 → Levier 1 : Voyageurs d'affaires et télétravailleurs
@@ -1146,8 +974,6 @@ PROFIL C, LOGEMENT EN ZONE RURALE / CAMPAGNE
 → Action prioritaire : Photos ambiance hiver
   + annonce activités locales hiver
   + présence Google My Business
-
----
 
 ## Le calendrier de mise en place (8 semaines)
 SEMAINE 1, ANALYSE ET DÉCISION
@@ -1181,8 +1007,6 @@ SEMAINE 7-8, TRAVAUX ET AMÉLIORATIONS
   en septembre-octobre pour être prêt
   pour novembre-janvier.
 
----
-
 ## Les métriques à suivre pour savoir si ça marche
 Suis ces 3 chiffres chaque mois :
 
@@ -1204,8 +1028,6 @@ Suis ces 3 chiffres chaque mois :
     directes (via Driing ou email)
     par mois de basse saison.
     Ce sont tes nuits les plus rentables.
-
----
 
 ## Le récapitulatif de la formation
 CE QUE TU SAIS MAINTENANT FAIRE :
@@ -1239,8 +1061,6 @@ MODULE 4
 
 Des questions sur ton marché spécifique ?
 [Prends un appel avec Jason](/contact)
-
----
 
 
 ## Exercice

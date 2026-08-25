@@ -22,17 +22,7 @@ export const OPTIMISER_ANNONCE_FORMATION = {
           id: 1,
           title: `Comment fonctionne vraiment l'algorithme Airbnb`,
           duration: '15 min',
-          content: `---
-
-MODULE 1 · LEÇON 1
-────────────────────────────────────
-L'algorithme Airbnb 2026
-Ce qui a changé, et pourquoi ça change tout
-────────────────────────────────────
-
----
-
-## Ce que l'algorithme cherche vraiment
+          content: `## Ce que l'algorithme cherche vraiment
 Beaucoup d'hôtes pensent que l'algorithme
 est un système de points à accumuler.
 Plus d'équipements, plus de photos,
@@ -56,10 +46,9 @@ CE voyageur, pour CES dates, à CE prix.
 → Votre allié n°1 : tenir exactement
   la promesse de votre annonce, à chaque séjour.
 
----
-
 ## Les 7 facteurs de classement par ordre d'impact
-Source : Airbnb documentation officielle
+
+> Source : Airbnb documentation officielle
 + données terrain 2025-2026
 
 01. QUALITÉ DE L'ANNONCE
@@ -90,8 +79,6 @@ Source : Airbnb documentation officielle
     Taux d'acceptation, absence
     d'annulations, signalements.
 
----
-
 ## Le badge Coup de Cœur Voyageurs : le filtre primaire
 En 2026, le badge "Coup de Cœur Voyageurs"
 (Guest Favorite) est devenu le filtre
@@ -117,8 +104,6 @@ Pour l'obtenir, vous devez avoir :
 → Un faible taux d'annulation hôte
 
 → C'est l'objectif numéro 1 de cette formation.
-
----
 
 ## Les métriques à suivre chaque mois
 Dans votre tableau de bord Airbnb
@@ -150,29 +135,16 @@ En dessous de 4,7 : visibilité impactée.
 → Ces 5 chiffres vous disent exactement
   où concentrer vos efforts d'optimisation.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Ouvre maintenant tes statistiques Airbnb. Note tes 5 métriques clés : CTR, taux de conversion, taux de réponse, taux d'acceptation, note moyenne. Identifie la métrique la plus faible, c'est là que tu concentres tes efforts dans les leçons suivantes.
-
----`,
+`,
         },
         {
           id: 2,
           title: 'Les erreurs qui font descendre votre annonce',
           duration: '15 min',
-          content: `---
-
-MODULE 1 · LEÇON 2
-────────────────────────────────────
-Les erreurs qui pénalisent
-Ce qui fait descendre une annonce sans qu'on le sache
-────────────────────────────────────
-
----
-
-## Erreur 1 : Le calendrier mal géré
+          content: `## Erreur 1 : Le calendrier mal géré
 C'est la cause n°1 de déclassement
 chez les hôtes expérimentés.
 
@@ -200,8 +172,6 @@ Action corrective :
 → Mettez-le à jour au moins 2 fois/semaine.
 → Ne jamais annuler sauf force majeure.
 
----
-
 ## Erreur 2 : Le séjour minimum trop élevé
 Un séjour minimum de 3 nuits élimine
 votre annonce de toutes les recherches
@@ -228,8 +198,6 @@ Configurez des règles par période
 dans votre calendrier Airbnb
 plutôt qu'un minimum global.
 
----
-
 ## Erreur 3 : Les filtres manquants
 Les voyageurs filtrent leurs recherches.
 Si votre annonce ne coche pas les filtres,
@@ -251,8 +219,6 @@ allez dans "Équipements" et vérifiez
 que TOUT ce que vous avez réellement
 est coché. Chaque équipement non coché
 est une invisibilité dans les recherches.
-
----
 
 ## Erreur 4 : Le taux de réponse négligé
 Airbnb mesure votre taux de réponse
@@ -279,13 +245,10 @@ Comment maintenir > 90% :
 → Utiliser les réponses automatiques
   pour les questions fréquentes
 
----
-
 
 ## Exercice
 **Exercice pratique :** Fais l'audit rapide en 10 minutes : vérifie (1) que ton calendrier est ouvert sur au moins 6 mois, (2) que tous tes équipements réels sont cochés, (3) que ton séjour minimum est adapté selon les jours de la semaine. Ces 3 corrections seules peuvent faire remonter une annonce de plusieurs positions en quelques jours.
-
----`,
+`,
         },
       ],
     },
@@ -298,17 +261,7 @@ Comment maintenir > 90% :
           id: 11,
           title: 'La photo principale : la seule qui compte vraiment',
           duration: '15 min',
-          content: `---
-
-MODULE 2 · LEÇON 1
-────────────────────────────────────
-La photo principale
-Celle qui décide si on clique ou non
-────────────────────────────────────
-
----
-
-## Ce qui se passe en 2 secondes
+          content: `## Ce qui se passe en 2 secondes
 Dans les résultats de recherche Airbnb,
 un voyageur voit une grille d'annonces.
 
@@ -331,8 +284,6 @@ votre annonce descend dans le classement.
   votre taux de clic de 50%
   et faire descendre votre annonce
   indépendamment de tout le reste.
-
----
 
 ## Les caractéristiques d'une photo principale performante
 Ce qui fait cliquer :
@@ -363,8 +314,6 @@ Ce qui fait cliquer :
   paysage 16/9. Une photo portrait
   sera recadrée et perdra ses côtés.
 
----
-
 ## Les photos principales qui ne fonctionnent pas
 ❌ La salle de bain en première photo
    (logique pour vous, pas pour le voyageur)
@@ -391,8 +340,6 @@ Ce qui fait cliquer :
   Est-ce qu'elle donne envie de cliquer ?
   Si vous hésitez : changez-la.
 
----
-
 ## Tester et changer sa photo principale
 L'avantage d'Airbnb :
 vous pouvez changer votre photo principale
@@ -416,29 +363,16 @@ C'est votre indicateur de taux de clic.
   3. Un détail distinctif (cheminée,
      terrasse, vue, décoration unique)
 
----
-
 
 ## Exercice
 **Exercice pratique :** Ouvre ton annonce sur ton smartphone. Regarde ta photo principale dans la grille Airbnb (pas en plein écran). Est-elle lumineuse, spacieuse, mise en scène ? Sinon, identifie une autre photo dans ta galerie qui réunit ces critères et passe-la en première position aujourd'hui. C'est une modification de 30 secondes qui peut significativement améliorer ton taux de clic.
-
----`,
+`,
         },
         {
           id: 12,
           title: 'Organiser et optimiser toutes ses photos',
           duration: '15 min',
-          content: `---
-
-MODULE 2 · LEÇON 2
-────────────────────────────────────
-Organiser ses photos
-L'ordre et le contenu qui convertissent
-────────────────────────────────────
-
----
-
-## Le nombre idéal de photos
+          content: `## Le nombre idéal de photos
 Airbnb recommande entre 20 et 30 photos.
 
 Moins de 15 : annonce perçue comme incomplète.
@@ -460,8 +394,6 @@ Détails distinctifs : 2-4 photos
   visualiser mentalement chaque pièce
   et son organisation avant d'arriver.
 
----
-
 ## L'ordre des photos : le parcours visuel du voyageur
 Après la photo principale (1ère),
 l'ordre des suivantes doit suivre
@@ -482,8 +414,6 @@ Photos 21+ : Quartier, environnement proche
 → Finissez toujours sur un détail chaleureux
   ou une vue attrayante.
 → L'ordre crée une histoire, racontez-la bien.
-
----
 
 ## Les photos que 90% des hôtes n'ont pas (et devraient avoir)
 Ces photos font la différence entre
@@ -514,8 +444,6 @@ mémorable :
    Serviettes pliées, quelques produits
    bien disposés. Propreté visible.
 
----
-
 ## Légendes des photos : le levier oublié
 Airbnb permet d'ajouter une légende
 à chaque photo.
@@ -544,13 +472,10 @@ lave-vaisselle, machine à café Nespresso"
   pertinents pour votre type de logement
   et votre cible de voyageurs.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Compte tes photos actuelles. Si tu en as moins de 20 : planifie une session photo cette semaine. Si tu en as plus de 20 : réorganise-les selon l'ordre recommandé en slide 3. Et ajoute des légendes à tes 5 meilleures photos, ça prend 10 minutes et améliore ton référencement interne Airbnb.
-
----`,
+`,
         },
       ],
     },
@@ -563,17 +488,7 @@ lave-vaisselle, machine à café Nespresso"
           id: 21,
           title: `La structure d'un titre qui remonte dans les résultats`,
           duration: '12 min',
-          content: `---
-
-MODULE 3 · LEÇON 1
-────────────────────────────────────
-Le titre Airbnb
-50 caractères qui changent tout
-────────────────────────────────────
-
----
-
-## Ce que l'algorithme cherche dans votre titre
+          content: `## Ce que l'algorithme cherche dans votre titre
 En 2026, l'algorithme Airbnb analyse
 votre titre pour deux choses :
 
@@ -599,8 +514,6 @@ Et ce que les voyageurs cherchent :
 → Mais : "Votre base lyonnaise à 2 min
   de la gare, idéal pros et weekends"
   (contexte + cible + bénéfice)
-
----
 
 ## La formule titre qui fonctionne
 STRUCTURE EN 3 ÉLÉMENTS :
@@ -631,8 +544,6 @@ Accès pistes direct
   "Marais", "Oberkampf", "Batignolles"
   vous positionnent sur des recherches précises.
 
----
-
 ## Les mots à utiliser et à éviter
 MOTS QUI PERFORMENT :
 → Cosy, lumineux, calme, vue, terrasse
@@ -656,29 +567,16 @@ ASTUCE : Le · (point médian) ou, (tiret)
 comme séparateur rend un titre plus lisible
 qu'une virgule ou un espace.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Réécris ton titre avec la formule en 3 éléments. Identité + Localisation précise + Bénéfice. Écris 3 versions différentes. Choisis celle qui répond le mieux à la question : "En 3 secondes, est-ce que ce titre me dit qui accueille ce logement et pourquoi je devrais cliquer ?" Publie-la maintenant, les changements de titre n'impactent pas négativement le classement.
-
----`,
+`,
         },
         {
           id: 22,
           title: 'Adapter son titre selon la saison et la cible',
           duration: '13 min',
-          content: `---
-
-MODULE 3 · LEÇON 2
-────────────────────────────────────
-Adapter son titre
-Le titre saisonnier et ciblé
-────────────────────────────────────
-
----
-
-## Pourquoi changer de titre selon la saison
+          content: `## Pourquoi changer de titre selon la saison
 Votre logement ne change pas.
 Vos voyageurs, si.
 
@@ -701,8 +599,6 @@ En hiver, votre cible principale :
   (avril et octobre) est une pratique
   des hôtes les mieux classés.
   Aucune pénalité algorithmique.
-
----
 
 ## Titres selon le type de voyageur cible
 POUR LES TÉLÉTRAVAILLEURS :
@@ -733,13 +629,10 @@ Séjours groupe bienvenue"
   ou celle que vous voulez attirer
   en priorité.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Regarde tes 10 dernières réservations. Quelle est la cible dominante ? Télétravailleur, couple, famille, pro ? Adapte ton titre pour parler directement à cette cible. Si tu changes de cible selon la saison, note dans ton calendrier la date à laquelle tu changeras de titre (avril pour l'été, octobre pour l'hiver).
-
----`,
+`,
         },
       ],
     },
@@ -752,17 +645,7 @@ Séjours groupe bienvenue"
           id: 31,
           title: `La structure d'une description qui convertit`,
           duration: '12 min',
-          content: `---
-
-MODULE 4 · LEÇON 1
-────────────────────────────────────
-La description
-Vendre l'expérience, pas le logement
-────────────────────────────────────
-
----
-
-## Ce que la plupart des hôtes écrivent (et pourquoi ça ne convertit pas)
+          content: `## Ce que la plupart des hôtes écrivent (et pourquoi ça ne convertit pas)
 Description type de 90% des hôtes :
 
 "Bel appartement de 55m², 2 pièces,
@@ -785,8 +668,6 @@ Ce que ça devrait dire :
 → Qu'est-ce que je vais vivre ici
   que je ne vivrai pas ailleurs ?
 → Qui êtes-vous en tant qu'hôte ?
-
----
 
 ## La structure en 4 parties
 PARTIE 1, L'ACCROCHE (2-3 lignes)
@@ -812,8 +693,6 @@ Votre promesse personnelle.
    en moins d'une heure et je vous
    partage mes adresses secrètes."
 
----
-
 ## Les mots qui vendent et ceux qui refroidissent
 MOTS QUI CONVERTISSENT :
 → "Vous vous sentirez..."
@@ -837,29 +716,16 @@ MOTS QUI REFROIDISSENT :
   dans une expérience positive.
   Pas informer. Séduire.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Réécris les 3 premières lignes de ta description selon la structure de la slide 3. Commence par l'expérience, pas par la surface. Montre-les à quelqu'un qui ne connaît pas ton logement, est-ce qu'il a envie d'y aller ? Si oui : publie. Si non : retravaille l'accroche.
-
----`,
+`,
         },
         {
           id: 32,
           title: `Le SEO interne Airbnb : écrire pour l'algorithme`,
           duration: '12 min',
-          content: `---
-
-MODULE 4 · LEÇON 2
-────────────────────────────────────
-Le SEO interne Airbnb
-Écrire pour l'algorithme sans sacrifier l'humain
-────────────────────────────────────
-
----
-
-## Comment l'algorithme lit votre description
+          content: `## Comment l'algorithme lit votre description
 En 2026, l'algorithme Airbnb analyse
 votre description pour :
 
@@ -884,8 +750,6 @@ votre description pour :
   dans votre description les mots-clés
   que vos voyageurs tapent dans la barre
   de recherche Airbnb.
-
----
 
 ## Les mots-clés à intégrer selon votre cible
 CIBLE TÉLÉTRAVAILLEURS :
@@ -914,8 +778,6 @@ CIBLE GÉNÉRALE :
 → Ne JAMAIS bourrer les mots-clés.
   L'algorithme pénalise le keyword stuffing.
   Intégrez-les naturellement dans des phrases.
-
----
 
 ## Exemple de description optimisée (avant/après)
 AVANT (typique) :
@@ -950,29 +812,16 @@ préférées du quartier."
   avec ce type de réécriture.
   Source : reussirsalocationcourteduree.fr, 2026
 
----
-
 
 ## Exercice
 **Exercice pratique :** Identifie 5 mots-clés pertinents pour ta cible principale. Vérifie qu'ils apparaissent naturellement dans ta description. S'ils n'y sont pas : réécris 1-2 phrases pour les intégrer sans que ce soit forcé. La description doit se lire naturellement tout en étant optimisée algorithmiquement.
-
----`,
+`,
         },
         {
           id: 33,
           title: 'Le règlement intérieur : protéger sans faire fuir',
           duration: '11 min',
-          content: `---
-
-MODULE 4 · LEÇON 3
-────────────────────────────────────
-Le règlement intérieur
-Protéger sans décourager les bons voyageurs
-────────────────────────────────────
-
----
-
-## L'impact du règlement sur le classement
+          content: `## L'impact du règlement sur le classement
 Un règlement trop restrictif
 nuit à votre classement Airbnb.
 
@@ -994,8 +843,6 @@ L'équilibre à trouver :
   AVANT de réserver, un règlement
   trop long ou trop sévère fait fuir
   les bons voyageurs autant que les mauvais.
-
----
 
 ## Structure d'un règlement efficace
 SECTION 1, RÈGLES ESSENTIELLES (3-5 règles max)
@@ -1021,13 +868,10 @@ SECTION 4, RÈGLES SUPPLÉMENTAIRES
   Un règlement de 800 mots effraie
   plus qu'il ne protège.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Relis ton règlement actuel. Comptes-en les règles. Si tu en as plus de 8-10 : supprime les règles qui ne sont pas vraiment essentielles. Reformule les règles restantes de façon positive quand c'est possible ("Silence demandé après 22h" plutôt que "Interdit de faire du bruit"). Un règlement bienveillant et concis convertit mieux qu'une liste d'interdictions.
-
----`,
+`,
         },
       ],
     },
@@ -1040,17 +884,7 @@ SECTION 4, RÈGLES SUPPLÉMENTAIRES
           id: 41,
           title: 'Les critères pour obtenir le badge',
           duration: '10 min',
-          content: `---
-
-MODULE 5 · LEÇON 1
-────────────────────────────────────
-Le badge Coup de Cœur
-L'objectif final de toute cette formation
-────────────────────────────────────
-
----
-
-## Les conditions pour obtenir le badge
+          content: `## Les conditions pour obtenir le badge
 Airbnb ne publie pas de liste officielle
 exhaustive, mais les données terrain
 en 2026 indiquent :
@@ -1076,8 +910,6 @@ CE QUI ACCÉLÈRE L'OBTENTION :
 → Avec un score de 4,8 stable,
   comptez 3 à 6 mois pour l'obtenir
   si vous avez au moins 10 avis récents.
-
----
 
 ## Les sous-critères à optimiser en priorité
 Si votre note globale est 4,8 mais que
@@ -1110,29 +942,16 @@ RAPPORT QUALITÉ/PRIX
   soit ajouter des équipements qui
   justifient le prix actuel.
 
----
-
 
 ## Exercice
 **Exercice pratique :** Regarde tes notes par sous-critère dans ton tableau de bord Airbnb. Identifie le critère le plus faible. C'est votre priorité d'amélioration n°1. Une action concrète pour chaque critère sous 4,8 cette semaine.
-
----`,
+`,
         },
         {
           id: 42,
           title: 'Maintenir le badge sur la durée',
           duration: '10 min',
-          content: `---
-
-MODULE 5 · LEÇON 2
-────────────────────────────────────
-Maintenir le badge
-Un système, pas une performance ponctuelle
-────────────────────────────────────
-
----
-
-## Pourquoi des hôtes perdent leur badge
+          content: `## Pourquoi des hôtes perdent leur badge
 Obtenir le badge est difficile.
 Le perdre est facile.
 
@@ -1158,8 +977,6 @@ Les causes de perte les plus fréquentes :
 
 → Le badge se maintient avec un système,
   pas avec des efforts ponctuels.
-
----
 
 ## Le système de maintien en 5 habitudes
 01. BRIEFING MÉNAGE SYSTÉMATIQUE
@@ -1190,29 +1007,16 @@ Les causes de perte les plus fréquentes :
       toujours disponibles ?
     → Votre titre est-il toujours adapté ?
 
----
-
 
 ## Exercice
 **Exercice pratique :** Des 5 habitudes listées, laquelle n'est pas encore en place ? Mets-la en place cette semaine. Une seule habitude à la fois, mais de façon permanente. C'est la différence entre un hôte qui maintient son badge et celui qui le perd au bout de 3 mois.
-
----`,
+`,
         },
         {
           id: 43,
           title: `Le récapitulatif et le plan d'action`,
           duration: '10 min',
-          content: `---
-
-MODULE 5 · LEÇON 3
-────────────────────────────────────
-Le plan d'action
-De la formation à l'exécution
-────────────────────────────────────
-
----
-
-## Les 12 actions classées par impact
+          content: `## Les 12 actions classées par impact
 IMPACT IMMÉDIAT (à faire aujourd'hui) :
 □ Vérifier et compléter les équipements cochés
 □ Ouvrir le calendrier sur 12 mois
@@ -1230,8 +1034,6 @@ IMPACT MOYEN TERME (ce mois-ci) :
 □ Ajouter les photos manquantes (si < 20)
 □ Simplifier le règlement intérieur
 □ Configurer les 5 habitudes de maintien badge
-
----
 
 ## Les métriques à suivre après optimisation
 Attendez 2 à 4 semaines avant de juger
@@ -1254,8 +1056,6 @@ Métriques à comparer (avant/après) :
 → Si elles stagnent ou baissent :
   revenez sur le module où votre
   métrique la plus faible se situe.
-
----
 
 ## Le récapitulatif de la formation
 CE QUE VOUS SAVEZ MAINTENANT FAIRE :
@@ -1293,8 +1093,6 @@ MODULE 5
 
 Des questions sur votre annonce spécifique ?
 [Prends un appel avec Jason](/contact)
-
----
 
 
 ## Exercice
