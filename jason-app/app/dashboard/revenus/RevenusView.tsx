@@ -5,9 +5,9 @@ import {
   CurrencyEur, Clock, TrendUp, CalendarBlank,
   House, Plus, Trash, X, Check,
   Info, Warning, ArrowRight, Scales, Upload,
-  Receipt, ChartBar, Target, EyeSlash, Stack,
+  Receipt, ChartBar, Target, EyeSlash, Stack, PencilSimple,
 } from '@phosphor-icons/react/dist/ssr'
-import { createRevenusEntry, deleteRevenusEntry, createCharge, deleteCharge, setObjectifAnnuel, setEntryADeclarer } from './actions'
+import { createRevenusEntry, deleteRevenusEntry, createCharge, updateCharge, deleteCharge, setObjectifAnnuel, setEntryADeclarer } from './actions'
 import ImportCSVModal from './ImportCSVModal'
 import { PLATFORMS, suggestCommission } from '@/lib/platforms'
 import { COUNTRIES as COUNTRIES_MAP } from '@/lib/countries'
@@ -218,6 +218,9 @@ export default function RevenusView({
   const [cDesc,     setCDesc]     = useState('')
   const [cDeductible, setCDeductible] = useState<boolean>(true)
   const [cDuree,    setCDuree]    = useState('5')
+  // Non-null pendant l'édition d'une charge existante : le même formulaire
+  // sert à la création ET à l'édition, seul le handler de soumission change.
+  const [editingChargeId, setEditingChargeId] = useState<string | null>(null)
 
   function resetForm() {
     setFLogement(''); setFMontant(''); setFDate(todayISO())
@@ -275,7 +278,16 @@ export default function RevenusView({
   function resetChargeForm() {
     setCLogement(''); setCMontant(''); setCDate(todayISO())
     setCCat('menage'); setCDesc(''); setCDeductible(true); setCDuree('5')
+    setEditingChargeId(null)
     setShowChargeForm(false)
+  }
+
+  function startEditCharge(c: ChargeEntry) {
+    setCLogement(c.logement_nom); setCMontant(String(c.montant)); setCDate(c.date_charge)
+    setCCat(c.categorie); setCDesc(c.description ?? ''); setCDeductible(c.deductible)
+    setCDuree(c.duree_amortissement_annees ? String(c.duree_amortissement_annees) : '5')
+    setEditingChargeId(c.id)
+    setShowChargeForm(true)
   }
 
   function handleAddCharge() {
@@ -285,6 +297,25 @@ export default function RevenusView({
     const duree = isAmortissement ? parseInt(cDuree, 10) : null
     if (isAmortissement && (!duree || duree <= 0)) return
     const matchedLogement = logements.find(l => l.nom === cLogement.trim())
+
+    if (editingChargeId) {
+      const id = editingChargeId
+      const patch = {
+        logement_nom: cLogement.trim(),
+        logement_id: matchedLogement?.id ?? null,
+        montant,
+        date_charge: cDate,
+        categorie: cCat,
+        description: cDesc.trim() || null,
+        deductible: cDeductible,
+        duree_amortissement_annees: duree,
+      }
+      setCharges(prev => prev.map(c => c.id === id ? { ...c, ...patch } : c))
+      resetChargeForm()
+      startT(async () => { await updateCharge(id, patch) })
+      return
+    }
+
     const optimistic: ChargeEntry = {
       id: 'tmp-' + Date.now(),
       logement_nom: cLogement.trim(),
@@ -1836,7 +1867,7 @@ export default function RevenusView({
               </span>
             )}
             <button
-              onClick={() => setShowChargeForm(v => !v)}
+              onClick={() => (showChargeForm ? resetChargeForm() : setShowChargeForm(true))}
               style={{ ...s.actionBtn, ...(showChargeForm ? s.actionBtnCancel : {}) }}
             >
               {showChargeForm ? <X size={14} weight="bold" /> : <Plus size={14} weight="bold" />}
@@ -1947,9 +1978,14 @@ export default function RevenusView({
           </div>
         )}
 
-        {/* Form ajout charge */}
+        {/* Form ajout / édition charge */}
         {showChargeForm && (
           <div style={s.addForm}>
+            {editingChargeId && (
+              <p style={{ margin: '0 0 12px', fontSize: '12px', fontWeight: 600, color: 'var(--accent-text)' }}>
+                Modification d&apos;une charge existante
+              </p>
+            )}
             <div className="rev-form-grid">
               <div style={s.formField}>
                 <label style={s.formLabel}>Catégorie *</label>
@@ -2028,7 +2064,7 @@ export default function RevenusView({
                     style={{ ...s.actionBtn, opacity: valid ? 1 : 0.45 }}
                   >
                     <Check size={14} weight="bold" />
-                    Enregistrer la charge
+                    {editingChargeId ? 'Enregistrer les modifications' : 'Enregistrer la charge'}
                   </button>
                 )
               })()}
@@ -2097,6 +2133,9 @@ export default function RevenusView({
                   }}>
                     {c.deductible ? '✓ Déductible' : 'Non déduct.'}
                   </span>
+                  <button onClick={() => startEditCharge(c)} style={s.deleteBtn} className="tx-del icon-btn" title="Modifier">
+                    <PencilSimple size={13} />
+                  </button>
                   <button onClick={() => handleDeleteCharge(c.id)} style={s.deleteBtn} className="tx-del icon-btn" title="Supprimer">
                     <Trash size={13} />
                   </button>
