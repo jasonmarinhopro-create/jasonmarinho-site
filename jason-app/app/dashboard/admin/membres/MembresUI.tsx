@@ -8,9 +8,10 @@ import {
   House, BookmarkSimple, PencilSimple, Flag, Lightbulb,
   CalendarBlank, SpinnerGap, UsersFour, ArrowSquareOut,
   Crown, Star, TextAa, CurrencyEur, DownloadSimple, Briefcase, Camera, Sparkle,
+  UserPlus,
 } from '@phosphor-icons/react/dist/ssr'
 import {
-  changeUserPlan, deleteUser, deleteAllBots,
+  adminCreateAccount, changeUserPlan, deleteUser, deleteAllBots,
   getMemberDetails, toggleContributor, toggleInvestor, updateMemberName,
 } from '../actions'
 
@@ -89,6 +90,14 @@ export default function MembresUI({ members }: { members: Member[] }) {
   const [feedback, setFeedback]   = useState<{ id: string; type: 'ok'|'err'; msg: string } | null>(null)
   const [botsFeedback, setBotsFeedback] = useState<{ type: 'ok'|'err'; msg: string } | null>(null)
 
+  // Création manuelle de compte — recours pour un prospect bloqué (faux
+  // positif anti-bot, email de confirmation jamais reçu, etc.)
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [createName, setCreateName]     = useState('')
+  const [createEmail, setCreateEmail]   = useState('')
+  const [createInvestor, setCreateInvestor] = useState(false)
+  const [createFeedback, setCreateFeedback] = useState<{ type: 'ok'|'err'; msg: string } | null>(null)
+
   // Side panel
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
   const [memberDetails, setMemberDetails]   = useState<MemberDetails | null>(null)
@@ -144,6 +153,22 @@ export default function MembresUI({ members }: { members: Member[] }) {
     a.download = `membres-${suffix}-${stamp}.csv`
     a.click()
     URL.revokeObjectURL(url)
+  }
+
+  function handleCreateAccount() {
+    if (!createEmail.trim() || !createName.trim()) return
+    setCreateFeedback(null)
+    startTransition(async () => {
+      const res = await adminCreateAccount({ email: createEmail, fullName: createName, isInvestor: createInvestor })
+      if (res?.error) {
+        setCreateFeedback({ type: 'err', msg: String(res.error) })
+      } else {
+        setCreateFeedback({ type: 'ok', msg: 'Compte créé, email envoyé' })
+        setCreateName(''); setCreateEmail(''); setCreateInvestor(false)
+        router.refresh()
+        setTimeout(() => { setShowCreateModal(false); setCreateFeedback(null) }, 1800)
+      }
+    })
   }
 
   function handleDeleteAllBots() {
@@ -249,6 +274,11 @@ export default function MembresUI({ members }: { members: Member[] }) {
           Exporter CSV
         </button>
 
+        <button onClick={() => setShowCreateModal(true)} style={s.createBtn} title="Créer un compte manuellement (inscription bloquée, prospect sans email…)">
+          <UserPlus size={13} weight="bold" />
+          Créer un compte
+        </button>
+
         {totalBots > 0 && (
           botsFeedback ? (
             <FeedbackPill type={botsFeedback.type} msg={botsFeedback.msg} />
@@ -337,6 +367,52 @@ export default function MembresUI({ members }: { members: Member[] }) {
         loading={detailsLoading}
         onClose={() => setSelectedMember(null)}
       />
+
+      {/* ── Modal création manuelle de compte ── */}
+      {showCreateModal && (
+        <>
+          <div onClick={() => setShowCreateModal(false)} style={s.modalOverlay} />
+          <div role="dialog" aria-modal="true" style={s.modalBox}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+              <span style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '17px', fontWeight: 500, color: 'var(--text)' }}>
+                Créer un compte
+              </span>
+              <button onClick={() => setShowCreateModal(false)} style={s.clearBtn}><X size={16} /></button>
+            </div>
+            <p style={{ fontSize: '12.5px', color: 'var(--text-3)', margin: '0 0 16px', lineHeight: 1.5 }}>
+              Pour débloquer un prospect dont l&rsquo;inscription a échoué (bloqué par erreur, email jamais reçu…). Un email lui est envoyé pour définir son mot de passe.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <input
+                type="text" placeholder="Nom complet" value={createName}
+                onChange={e => setCreateName(e.target.value)}
+                style={s.modalInput}
+              />
+              <input
+                type="email" placeholder="Email" value={createEmail}
+                onChange={e => setCreateEmail(e.target.value)}
+                style={s.modalInput}
+              />
+              <label style={{ display: 'flex', alignItems: 'center', gap: '7px', fontSize: '13px', color: 'var(--text-2)', cursor: 'pointer' }}>
+                <input type="checkbox" checked={createInvestor} onChange={e => setCreateInvestor(e.target.checked)} />
+                Marquer comme investisseur
+              </label>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '16px' }}>
+              <button
+                disabled={isPending || !createName.trim() || !createEmail.trim()}
+                onClick={handleCreateAccount}
+                style={{ ...s.exportBtn, opacity: (isPending || !createName.trim() || !createEmail.trim()) ? 0.5 : 1 }}
+              >
+                {isPending ? <SpinnerGap size={13} style={{ animation: 'spin 0.8s linear infinite' }} /> : <UserPlus size={13} weight="bold" />}
+                Créer et envoyer l&rsquo;email
+              </button>
+              {createFeedback && <FeedbackPill type={createFeedback.type} msg={createFeedback.msg} />}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
@@ -826,6 +902,34 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '9px', padding: '7px 13px',
     color: 'var(--accent-text)', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
     fontFamily: 'var(--font-outfit), sans-serif',
+  },
+  createBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    background: 'var(--surface)', border: '1px solid var(--border-2)',
+    borderRadius: '9px', padding: '7px 13px',
+    color: 'var(--text)', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
+    fontFamily: 'var(--font-outfit), sans-serif',
+  },
+
+  // Modal création de compte
+  modalOverlay: {
+    position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)',
+    backdropFilter: 'blur(3px)', zIndex: 150,
+  },
+  modalBox: {
+    position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+    width: 'min(400px, 92vw)',
+    background: 'var(--bg-2)', border: '1px solid var(--border-2)',
+    borderRadius: '16px', padding: '22px',
+    boxShadow: '0 24px 64px rgba(0,0,0,0.45)',
+    zIndex: 160,
+  },
+  modalInput: {
+    width: '100%', boxSizing: 'border-box' as const,
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '9px', padding: '9px 12px',
+    fontSize: '13px', color: 'var(--text)', fontFamily: 'var(--font-outfit), sans-serif',
+    outline: 'none',
   },
 
   // Ligne d'actions (export + bots) — séparée de la stats row pour éviter

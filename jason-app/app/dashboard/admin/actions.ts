@@ -327,6 +327,77 @@ export async function deleteUser(userId: string) {
   return { success: true }
 }
 
+// Débloque manuellement une inscription qui a échoué côté prospect (faux
+// positif anti-bot, email de confirmation jamais reçu, etc.) : crée le compte
+// (ou réutilise le profil existant) et envoie un lien pour définir le mot de
+// passe, sans dépendre des logs Vercel (inaccessibles en plan Hobby).
+export async function adminCreateAccount(input: { email: string; fullName: string; isInvestor?: boolean }) {
+  const { error } = await getAdminClient()
+  if (error) return { error }
+
+  const email = input.email.trim().toLowerCase()
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'Email invalide' }
+  const fullName = input.fullName.trim().slice(0, 100)
+
+  const adminClient = getServiceClient()
+
+  const { data: existing } = await adminClient
+    .from('profiles')
+    .select('id')
+    .eq('email', email)
+    .maybeSingle()
+
+  let userId = existing?.id as string | undefined
+
+  if (!userId) {
+    const { data: created, error: createError } = await adminClient.auth.admin.createUser({
+      email,
+      password: crypto.randomUUID(),
+      email_confirm: true,
+      user_metadata: { full_name: fullName },
+    })
+    if (createError || !created.user) return { error: createError?.message ?? 'Création du compte impossible' }
+    userId = created.user.id
+
+    const { error: upsertError } = await adminClient
+      .from('profiles')
+      .upsert({ id: userId, email, full_name: fullName, is_investor: input.isInvestor ?? false })
+    if (upsertError) return { error: upsertError.message }
+  } else {
+    const { error: updateError } = await adminClient
+      .from('profiles')
+      .update({ full_name: fullName, ...(input.isInvestor ? { is_investor: true } : {}) })
+      .eq('id', userId)
+    if (updateError) return { error: updateError.message }
+  }
+
+  const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
+    type: 'recovery',
+    email,
+    options: { redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/login` },
+  })
+  if (linkError || !linkData?.properties?.action_link) {
+    return { error: linkError?.message ?? 'Lien de connexion non généré' }
+  }
+
+  await getResend().emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: 'Ton accès Jason Marinho est prêt',
+    html: buildEmail({
+      title: `Bienvenue${fullName ? `, ${fullName}` : ''}`,
+      preview: 'Ton compte a été créé. Définis ton mot de passe pour y accéder.',
+      body: `
+        ${emailP('Ton compte vient d\'être créé sur la plateforme. Clique ci-dessous pour définir ton mot de passe et accéder à ton espace.')}
+        ${emailBtn(linkData.properties.action_link, 'Définir mon mot de passe', 'primary')}
+      `,
+    }),
+  }).catch(() => {})
+
+  revalidatePath('/dashboard/admin/membres')
+  return { success: true }
+}
+
 function isBotLike(name: string | null, email: string): boolean {
   if (name && name.length > 8 && !name.includes(' ') && /[A-Z]/.test(name) && /[a-z]/.test(name)) return true
   const local = email.split('@')[0]
