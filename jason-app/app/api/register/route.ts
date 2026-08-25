@@ -40,21 +40,21 @@ function isDisposableEmail(email: string): boolean {
   return DISPOSABLE_DOMAINS.has(email.slice(at + 1).toLowerCase())
 }
 
-// L'inscription bloquée silencieusement (faux succès affiché au navigateur,
-// pour ne pas indiquer la détection à un bot) reste invisible pour Jason sauf
-// à checker les logs Vercel. On lui envoie un email discret à chaque
-// déclenchement, pour qu'il puisse repérer et régulariser un faux positif
-// sur une vraie personne sans avoir à fouiller les logs.
-function notifyBotBlock(reason: string, details: Record<string, unknown>) {
+// Notifie Jason (email discret) à chaque incident sur l'inscription : bloqué
+// par erreur par un filtre anti-bot (faux succès affiché au navigateur, pour
+// ne pas indiquer la détection à un bot), ou compte créé mais email de
+// confirmation non envoyé. Sans ça, ces cas restent invisibles pour Jason sauf
+// à fouiller les logs Vercel — ce qu'il n'a pas toujours la possibilité de faire.
+function notifyJasonIssue(reason: string, details: Record<string, unknown>) {
   void new Resend(process.env.RESEND_API_KEY).emails.send({
     from: 'Jason Marinho <noreply@jasonmarinho.com>',
     to: 'contact@jasonmarinho.com',
-    subject: `Inscription bloquée (${reason})`,
+    subject: `Incident inscription : ${reason}`,
     html: buildEmail({
-      title: 'Une inscription a été bloquée automatiquement',
-      preview: `Raison : ${reason}. Si c'est une vraie personne, tu peux la créer manuellement.`,
+      title: 'Un incident a eu lieu sur une inscription',
+      preview: `${reason}. Si c'est une vraie personne, tu peux l'aider manuellement.`,
       body: `
-        ${emailP(`Le filtre anti-bot a bloqué une tentative d'inscription. Si tu penses que c'est une vraie personne (pas un bot), tu peux créer son compte manuellement depuis l'admin, ou lui répondre pour vérifier.`)}
+        ${emailP(`Détail : <strong style="color:#e8ede8;">${escHtml(reason)}</strong>. Si tu penses que c'est une vraie personne (pas un bot) ou que son compte est créé mais bloqué sans email, tu peux l'aider manuellement depuis l'admin, ou lui répondre pour vérifier.`)}
         ${emailInfoBlock(Object.entries(details).map(([label, value]) => ({ label, value: escHtml(String(value ?? '-')) })))}
       `,
     }),
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
     // 1. Honeypot : 'website' caché côté front, humain ne le remplit jamais.
     if (typeof website === 'string' && website.trim().length > 0) {
       log.warn('botHoneypot', { ip, email })
-      notifyBotBlock('champ caché rempli', { IP: ip, Email: email, 'Nom saisi': fullName, 'Valeur du champ caché': website })
+      notifyJasonIssue('champ caché rempli', { IP: ip, Email: email, 'Nom saisi': fullName, 'Valeur du champ caché': website })
       return NextResponse.json({ ok: true })
     }
 
@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
       const elapsed = Date.now() - ts
       if (elapsed < 1500) {
         log.warn('botTooFast', { ip, elapsed })
-        notifyBotBlock('formulaire soumis trop vite', { IP: ip, Email: email, 'Nom saisi': fullName, 'Délai (ms)': elapsed })
+        notifyJasonIssue('formulaire soumis trop vite', { IP: ip, Email: email, 'Nom saisi': fullName, 'Délai (ms)': elapsed })
         return NextResponse.json({ ok: true })
       }
     }
@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
     // 3. Domaine email jetable → fake success silencieux.
     if (isDisposableEmail(normalized)) {
       log.warn('botDisposable', { ip, email: normalized })
-      notifyBotBlock('domaine email jetable', { IP: ip, Email: normalized, 'Nom saisi': fullName })
+      notifyJasonIssue('domaine email jetable', { IP: ip, Email: normalized, 'Nom saisi': fullName })
       return NextResponse.json({ ok: true })
     }
 
@@ -151,6 +151,7 @@ export async function POST(req: NextRequest) {
             })
             if (linkError || !linkData?.properties?.action_link) {
               log.error('generateLink(resend)', { msg: linkError?.message })
+              notifyJasonIssue('lien de renvoi non généré (Supabase)', { Email: normalized, 'Nom saisi': fullName, Erreur: linkError?.message })
               return NextResponse.json({ success: true, emailSent: false })
             }
             const { error: resendErr } = await getResend().emails.send({
@@ -171,6 +172,7 @@ export async function POST(req: NextRequest) {
             })
             if (resendErr) {
               log.error('resend(resend)', resendErr)
+              notifyJasonIssue('email de renvoi non envoyé (Resend)', { Email: normalized, 'Nom saisi': fullName, Erreur: JSON.stringify(resendErr) })
               return NextResponse.json({ success: true, emailSent: false })
             }
             return NextResponse.json({ success: true, emailSent: true })
@@ -260,6 +262,7 @@ export async function POST(req: NextRequest) {
 
     if (linkError || !linkData?.properties?.action_link) {
       log.error('generateLink', { msg: linkError?.message })
+      notifyJasonIssue('lien de confirmation non généré (Supabase)', { Email: normalized, 'Nom saisi': fullName, Erreur: linkError?.message })
       // User was created, just couldn't send email, let them know
       return NextResponse.json({ success: true, emailSent: false })
     }
@@ -284,6 +287,7 @@ export async function POST(req: NextRequest) {
 
     if (resendError) {
       log.error('resend', resendError)
+      notifyJasonIssue('email de confirmation non envoyé (Resend)', { Email: normalized, 'Nom saisi': fullName, Erreur: JSON.stringify(resendError) })
       return NextResponse.json({ success: true, emailSent: false })
     }
 
