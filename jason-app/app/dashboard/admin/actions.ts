@@ -4,7 +4,7 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
-import { buildEmail, emailBtn, emailP } from '@/lib/email/template'
+import { buildEmail, emailBtn, emailP, emailInfoBlock } from '@/lib/email/template'
 import { CACHE_TAGS } from '@/lib/queries/cache'
 import { invalidateProfileCache } from '@/lib/queries/profile'
 
@@ -327,10 +327,23 @@ export async function deleteUser(userId: string) {
   return { success: true }
 }
 
+// Mot de passe temporaire lisible (évite les caractères ambigus 0/O/1/l/I) —
+// plus simple et plus fiable qu'un lien de récupération Supabase (le
+// redirectTo doit pointer vers une page qui sait lire le hash #access_token,
+// sinon Supabase consomme le token quand même et l'utilisateur se retrouve
+// bloqué sans recours).
+function generateTempPassword(): string {
+  const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789'
+  let out = ''
+  for (let i = 0; i < 10; i++) out += chars[Math.floor(Math.random() * chars.length)]
+  return out
+}
+
 // Débloque manuellement une inscription qui a échoué côté prospect (faux
 // positif anti-bot, email de confirmation jamais reçu, etc.) : crée le compte
-// (ou réutilise le profil existant) et envoie un lien pour définir le mot de
-// passe, sans dépendre des logs Vercel (inaccessibles en plan Hobby).
+// (ou réutilise le profil existant), lui attribue un mot de passe temporaire
+// et l'envoie par email, sans dépendre des logs Vercel (inaccessibles en
+// plan Hobby).
 export async function adminCreateAccount(input: { email: string; fullName: string; isInvestor?: boolean }) {
   const { error } = await getAdminClient()
   if (error) return { error }
@@ -338,6 +351,7 @@ export async function adminCreateAccount(input: { email: string; fullName: strin
   const email = input.email.trim().toLowerCase()
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: 'Email invalide' }
   const fullName = input.fullName.trim().slice(0, 100)
+  const tempPassword = generateTempPassword()
 
   const adminClient = getServiceClient()
 
@@ -352,7 +366,7 @@ export async function adminCreateAccount(input: { email: string; fullName: strin
   if (!userId) {
     const { data: created, error: createError } = await adminClient.auth.admin.createUser({
       email,
-      password: crypto.randomUUID(),
+      password: tempPassword,
       email_confirm: true,
       user_metadata: { full_name: fullName },
     })
@@ -369,15 +383,9 @@ export async function adminCreateAccount(input: { email: string; fullName: strin
       .update({ full_name: fullName, ...(input.isInvestor ? { is_investor: true } : {}) })
       .eq('id', userId)
     if (updateError) return { error: updateError.message }
-  }
 
-  const { data: linkData, error: linkError } = await adminClient.auth.admin.generateLink({
-    type: 'recovery',
-    email,
-    options: { redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/login` },
-  })
-  if (linkError || !linkData?.properties?.action_link) {
-    return { error: linkError?.message ?? 'Lien de connexion non généré' }
+    const { error: pwError } = await adminClient.auth.admin.updateUserById(userId, { password: tempPassword })
+    if (pwError) return { error: pwError.message }
   }
 
   await getResend().emails.send({
@@ -386,10 +394,12 @@ export async function adminCreateAccount(input: { email: string; fullName: strin
     subject: 'Ton accès Jason Marinho est prêt',
     html: buildEmail({
       title: `Bienvenue${fullName ? `, ${fullName}` : ''}`,
-      preview: 'Ton compte a été créé. Définis ton mot de passe pour y accéder.',
+      preview: 'Ton compte a été créé, voici ton mot de passe temporaire.',
       body: `
-        ${emailP('Ton compte vient d\'être créé sur la plateforme. Clique ci-dessous pour définir ton mot de passe et accéder à ton espace.')}
-        ${emailBtn(linkData.properties.action_link, 'Définir mon mot de passe', 'primary')}
+        ${emailP('Ton compte vient d\'être créé sur la plateforme. Voici tes identifiants de connexion :')}
+        ${emailInfoBlock([{ label: 'Email', value: email }, { label: 'Mot de passe temporaire', value: tempPassword }])}
+        ${emailP('Connecte-toi avec ces identifiants, puis pense à changer ce mot de passe depuis ton profil.')}
+        ${emailBtn(`${process.env.NEXT_PUBLIC_APP_URL}/auth/login`, 'Me connecter', 'primary')}
       `,
     }),
   }).catch(() => {})
