@@ -49,6 +49,13 @@ export interface UrlInspectionResult {
   coverageState: string | null
   verdict: string | null
   indexed: boolean
+  // Lien direct vers cette inspection dans Search Console, renvoyé par
+  // l'API elle-même (champ inspectionResultLink) — contrairement au lien
+  // "inspect?resource_id=...&id=..." construit à la main (id est en réalité
+  // un jeton opaque émis par Google, pas une URL encodée : impossible à
+  // reconstruire soi-même, d'où les 404 systématiques), celui-ci est garanti
+  // valide puisque Google le génère pour CETTE inspection précise.
+  inspectionLink: string | null
 }
 
 export async function inspectUrl(url: string): Promise<UrlInspectionResult> {
@@ -67,15 +74,17 @@ export async function inspectUrl(url: string): Promise<UrlInspectionResult> {
     coverageState,
     verdict,
     indexed: coverageState === 'Submitted and indexed' || verdict === 'PASS',
+    inspectionLink: json.inspectionResult?.inspectionResultLink ?? null,
   }
 }
 
-// Lien d'inspection Search Console pré-rempli pour une URL — dernier recours
-// manuel, Google n'exposant pas d'API de demande d'indexation pour des
-// pages classiques (seules offres d'emploi et diffusions en direct en ont
-// une). IMPORTANT : resource_id doit rester NON percent-encodé (le ':' de
-// "sc-domain:" tel quel) — encoder ce paramètre casse le lien côté Google
-// (404 générique) alors que le paramètre id, lui, doit être encodé normalement.
-export function inspectDeepLink(url: string): string {
-  return `https://search.google.com/search-console/inspect?resource_id=${SEARCH_CONSOLE_SITE_URL}&id=${encodeURIComponent(url)}`
+// Lien vers la propriété Search Console — dernier recours manuel, Google
+// n'exposant pas d'API de demande d'indexation pour des pages classiques
+// (seules offres d'emploi et diffusions en direct en ont une). Le format
+// "inspect?resource_id=...&id=..." avec l'URL pré-remplie n'est pas un
+// endpoint documenté par Google (juste observé dans certains emails Search
+// Console) — testé avec plusieurs encodages, 404 systématique. On se
+// contente donc d'un lien garanti stable vers la propriété elle-même.
+export function searchConsolePropertyLink(): string {
+  return `https://search.google.com/search-console?resource_id=${SEARCH_CONSOLE_SITE_URL}`
 }
