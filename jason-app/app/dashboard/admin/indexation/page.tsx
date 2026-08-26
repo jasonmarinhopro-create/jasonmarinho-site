@@ -52,6 +52,7 @@ export default async function IndexationPage() {
       indexed: s?.indexed ?? false,
       inspectionLink: s?.inspection_link ?? null,
       lastCheckedAt: s?.last_checked_at ?? null,
+      submittedAt: s?.submitted_at ?? null,
       error: s?.error ?? null,
     }
   })
