@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 24 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 26 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Turnover J+0 en LCD : 7 règles pour enchaîner un check-out et un check-in le même jour sans stress</title>
+      <link>https://jasonmarinho.com/blog/turnover-j0-lcd-7-regles-enchainer-checkout-checkin-meme-jour</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/turnover-j0-lcd-7-regles-enchainer-checkout-checkin-meme-jour</guid>
+      <pubDate>Wed, 26 Aug 2026 08:00:00 GMT</pubDate>
+      <description>Check-out 11 h, check-in 15 h : 7 règles pour organiser un turnover LCD le même jour sans épuiser ton équipe ménage ni décevoir un voyageur pressé.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Vidéo d&apos;annonce Airbnb : 6 règles pour tourner un tour vidéo qui booste ta conversion en 2026</title>
       <link>https://jasonmarinho.com/blog/video-annonce-airbnb-6-regles-tour-video-conversion-2026</link>
@@ -397,14 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/wifi-location-courte-duree-debit-equipement-avis</guid>
       <pubDate>Fri, 08 May 2026 08:00:00 GMT</pubDate>
       <description>Le WiFi est l&apos;un des équipements les plus recherchés sur Airbnb. Voici 6 actions concrètes pour offrir une connexion rapide, fiable et sécurisée en LCD en 2026.</description>
-      <category>Expérience</category>
-    </item>
-    <item>
-      <title>Accepter les animaux en LCD : les 7 règles pour louer pet-friendly sans abîmer ton logement</title>
-      <link>https://jasonmarinho.com/blog/accepter-animaux-lcd-7-regles-pet-friendly</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/accepter-animaux-lcd-7-regles-pet-friendly</guid>
-      <pubDate>Wed, 06 May 2026 08:00:00 GMT</pubDate>
-      <description>Près d&apos;un foyer français sur deux a un animal. Voici les 7 règles concrètes pour ouvrir ta location courte durée aux voyageurs avec animaux sans risque pour ton logement.</description>
       <category>Expérience</category>
     </item>
   </channel>
