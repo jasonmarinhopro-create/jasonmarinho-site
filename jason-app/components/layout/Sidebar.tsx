@@ -95,15 +95,21 @@ const adminMain = [
   { href: '/dashboard/admin/menage',       label: 'Ménage',          Icon: Sparkle },
   { href: '/dashboard/admin/investisseurs', label: 'Investisseurs',  Icon: Briefcase },
   { href: '/dashboard/admin/social',       label: 'Réseaux sociaux', Icon: ShareNetwork },
+  // Tout en bas, hors du groupe "Contenu" (retiré de la sidebar — jamais
+  // utilisé, cf. Formations/Gabarits/Actualités/Communauté/Guide LCD
+  // ci-dessous, toujours accessibles en direct par URL si besoin).
+  { href: '/dashboard/admin/indexation',  label: 'Indexation',  Icon: MagnifyingGlass },
 ]
 
+// Routes conservées (accessibles en direct par URL) mais retirées de la
+// sidebar admin — jamais utilisées au quotidien, elles n'encombrent plus
+// le menu. Le sous-menu "Contenu" qui les affichait a été supprimé.
 const adminContent = [
   { href: '/dashboard/admin/formations',  label: 'Formations',  Icon: GraduationCap },
   { href: '/dashboard/admin/gabarits',    label: 'Gabarits',    Icon: FileText },
   { href: '/dashboard/admin/actualites',  label: 'Actualités',  Icon: Newspaper },
   { href: '/dashboard/admin/communaute',  label: 'Communauté',  Icon: FacebookLogo },
   { href: '/dashboard/admin/guides',      label: 'Guide LCD',   Icon: BookOpen },
-  { href: '/dashboard/admin/indexation',  label: 'Indexation',  Icon: MagnifyingGlass },
 ]
 
 interface SidebarProps {
@@ -149,9 +155,6 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   const investorMode = pathname?.startsWith('/dashboard/investir') ?? false
   const router = useRouter()
   const supabase = createClient()
-  const [adminContentOpen, setAdminContentOpen] = useState(
-    adminContent.some(item => pathname.startsWith(item.href))
-  )
   const [hasNewActualites, setHasNewActualites] = useState(initialHasNewActualites)
 
   // ── Collapse sidebar (mode icônes seulement) ──
@@ -486,45 +489,6 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                 {adminMain.map(({ href, label, Icon }) => (
                   <NavItem key={href} href={href} label={label} Icon={Icon} adminColor />
                 ))}
-
-                {/* Contenu sub-menu toggle — en mode réduit devient une icône
-                    cliquable sans texte ni caret (comportement identique). */}
-                <button
-                  onClick={() => setAdminContentOpen(v => !v)}
-                  className="jm-nav-item"
-                  title={collapsed ? 'Contenu' : undefined}
-                  style={{
-                    ...styles.navItem,
-                    background: 'none', border: 'none', cursor: 'pointer',
-                    width: '100%', textAlign: 'left',
-                    color: 'var(--nav-admin-color)',
-                    justifyContent: collapsed ? 'center' : 'flex-start',
-                  }}
-                >
-                  <Gear size={18} weight="regular" style={{ opacity: 0.5, flexShrink: 0 }} />
-                  {!collapsed && (
-                    <>
-                      <span style={{ flex: 1 }}>Contenu</span>
-                      <CaretDown
-                        size={12}
-                        style={{
-                          color: 'var(--nav-admin-color)',
-                          transform: adminContentOpen ? 'rotate(180deg)' : 'none',
-                          transition: 'transform 0.2s',
-                          opacity: 0.6,
-                        }}
-                      />
-                    </>
-                  )}
-                </button>
-
-                {adminContentOpen && (
-                  <div style={collapsed ? styles.navSection : styles.subMenu}>
-                    {adminContent.map(({ href, label, Icon }) => (
-                      <NavItem key={href} href={href} label={label} Icon={Icon} adminColor />
-                    ))}
-                  </div>
-                )}
               </div>
             </>
           )}
