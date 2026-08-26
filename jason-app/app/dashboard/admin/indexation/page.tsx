@@ -65,7 +65,7 @@ export default async function IndexationPage() {
       pages={pages}
       fetchError={fetchError}
       lastChecked={lastChecked}
-      apiConfigured={isConfigured()}
+      apiConfigured={await isConfigured()}
     />
   )
 }

@@ -1,13 +1,15 @@
 'use client'
 
 import { useMemo, useState, useTransition } from 'react'
+import { useSearchParams } from 'next/navigation'
 import {
-  MagnifyingGlass, ArrowSquareOut, Warning, Info, ArrowClockwise, CaretDown, CaretUp, Eye,
+  MagnifyingGlass, ArrowSquareOut, Warning, Info, ArrowClockwise, CaretDown, CaretUp, Eye, GoogleLogo,
 } from '@phosphor-icons/react/dist/ssr'
 import { refreshIndexationNow } from './actions'
 
 // Dupliqué (pas importé) de lib/google/search-console.ts : ce fichier
-// importe le module Node `crypto` (auth JWT), pas bundlable côté client.
+// importe le module Node `crypto` (côté serveur, via lib/security/crypto.ts),
+// pas bundlable côté client.
 // IMPORTANT : resource_id doit rester NON percent-encodé (le ':' de
 // "sc-domain:" tel quel) — encoder ce paramètre casse le lien côté Google.
 const SEARCH_CONSOLE_SITE_URL = 'sc-domain:jasonmarinho.com'
@@ -84,6 +86,10 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
   const [isPending, startTransition] = useTransition()
   const [refreshMsg, setRefreshMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
 
+  const searchParams = useSearchParams()
+  const googleConnected = searchParams.get('google_connected') === '1'
+  const googleError = searchParams.get('google_error')
+
   const notPublished = useMemo(() => pages.filter(p => p.httpStatus && p.httpStatus >= 400), [pages])
   const live = useMemo(() => pages.filter(p => !p.httpStatus || p.httpStatus < 400), [pages])
   const neverChecked = useMemo(() => live.filter(p => !p.lastCheckedAt), [live])
@@ -133,15 +139,35 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
         </div>
       </div>
 
+      {googleConnected && (
+        <div style={s.infoBox}>
+          <Info size={16} weight="fill" style={{ color: 'var(--success-1)', flexShrink: 0, marginTop: '1px' }} />
+          <span style={{ fontSize: '13px', color: 'var(--text-2)' }}>
+            Google Search Console connecté. Clique sur &laquo;&nbsp;Vérifier l&apos;indexation&nbsp;&raquo; pour lancer
+            une première vérification.
+          </span>
+        </div>
+      )}
+
+      {googleError && (
+        <div style={s.errorBox}>
+          <Warning size={16} weight="fill" style={{ color: 'var(--danger)', flexShrink: 0 }} />
+          <span style={{ fontSize: '13px', color: 'var(--danger)' }}>Connexion Google échouée ({googleError}).</span>
+        </div>
+      )}
+
       {!apiConfigured && (
         <div style={s.infoBox}>
           <Info size={16} weight="fill" style={{ color: 'var(--accent-text)', flexShrink: 0, marginTop: '1px' }} />
-          <span style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.5 }}>
-            Configuration en attente : une fois <code style={s.code}>GOOGLE_SEARCH_CONSOLE_CLIENT_EMAIL</code> et{' '}
-            <code style={s.code}>GOOGLE_SEARCH_CONSOLE_PRIVATE_KEY</code> ajoutées dans Vercel, cette page affichera le vrai
-            statut indexé / pas indexé de chaque page. En attendant, le bouton &laquo;&nbsp;Inspecter&nbsp;&raquo; sur
-            chaque ligne fonctionne déjà.
-          </span>
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px', flexWrap: 'wrap' as const }}>
+            <span style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.5 }}>
+              Connecte Google Search Console pour afficher le vrai statut indexé / pas indexé de chaque page. En
+              attendant, le bouton &laquo;&nbsp;Inspecter&nbsp;&raquo; sur chaque ligne fonctionne déjà.
+            </span>
+            <a href="/api/google/connect" style={s.connectBtn}>
+              <GoogleLogo size={14} weight="bold" /> Connecter Google Search Console
+            </a>
+          </div>
         </div>
       )}
 
@@ -250,6 +276,13 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '9px', padding: '9px 16px',
     color: 'var(--bg)', cursor: 'pointer', fontSize: '13px', fontWeight: 600,
     fontFamily: 'var(--font-outfit), sans-serif',
+  },
+  connectBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    background: 'var(--accent-text)', border: 'none',
+    borderRadius: '9px', padding: '8px 14px',
+    color: 'var(--bg)', cursor: 'pointer', fontSize: '12.5px', fontWeight: 600,
+    fontFamily: 'var(--font-outfit), sans-serif', textDecoration: 'none', whiteSpace: 'nowrap' as const,
   },
   errorBox: {
     display: 'flex', gap: '8px', alignItems: 'flex-start',
