@@ -244,6 +244,19 @@ export async function publishToInstagram(igUserId: string, pageAccessToken: stri
   return published.id
 }
 
+// ── Réponses automatiques aux commentaires ────────────────────────
+
+// Réponse en message privé à un commentaire (pas un commentaire public) —
+// même endpoint pour Facebook et Instagram. C'est la seule action possible
+// pour "recontacter" un commentateur : Meta ne donne jamais son email.
+export async function sendPrivateReply(commentId: string, pageAccessToken: string, message: string): Promise<string> {
+  const json = await graphFetch(`/${commentId}/private_replies`, {
+    access_token: pageAccessToken,
+    message,
+  }, 'POST')
+  return json.id ?? 'ok'
+}
+
 // ── Stats d'engagement ────────────────────────────────────────────
 
 export interface PostInsights {

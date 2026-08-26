@@ -202,6 +202,64 @@ export async function refreshAllStats(): Promise<{ success?: boolean; error?: st
   }
 }
 
+// Meta n'a pas d'API pour donner l'email d'un commentateur — la réponse
+// automatique passe par un message privé (DM) sur le commentaire lui-même,
+// cf. lib/social/comment-triggers.ts et le webhook app/api/social/webhook/meta.
+export async function createCommentTrigger(input: {
+  platform: 'facebook' | 'instagram' | 'both'
+  keyword: string
+  replyMessage: string
+}): Promise<{ success?: boolean; error?: string }> {
+  try {
+    const user = await requireAdmin()
+    const keyword = input.keyword.trim()
+    const replyMessage = input.replyMessage.trim()
+    if (!keyword) return { error: 'Mot-clé requis.' }
+    if (!replyMessage) return { error: 'Message de réponse requis.' }
+
+    const db = adminClient()
+    const { error } = await db.from('social_comment_triggers').insert({
+      created_by: user.id,
+      platform: input.platform,
+      keyword,
+      reply_message: replyMessage,
+    })
+    if (error) return { error: error.message }
+    revalidatePath('/dashboard/admin/social')
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
+  }
+}
+
+export async function toggleCommentTrigger(id: string, active: boolean): Promise<{ success?: boolean; error?: string }> {
+  try {
+    await requireAdmin()
+    const db = adminClient()
+    const { error } = await db.from('social_comment_triggers')
+      .update({ active, updated_at: new Date().toISOString() })
+      .eq('id', id)
+    if (error) return { error: error.message }
+    revalidatePath('/dashboard/admin/social')
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
+  }
+}
+
+export async function deleteCommentTrigger(id: string): Promise<{ success?: boolean; error?: string }> {
+  try {
+    await requireAdmin()
+    const db = adminClient()
+    const { error } = await db.from('social_comment_triggers').delete().eq('id', id)
+    if (error) return { error: error.message }
+    revalidatePath('/dashboard/admin/social')
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
+  }
+}
+
 export async function setSocialCadence(input: { weekdays: number[]; timeOfDay: string }): Promise<{ success?: boolean; error?: string }> {
   try {
     await requireAdmin()
