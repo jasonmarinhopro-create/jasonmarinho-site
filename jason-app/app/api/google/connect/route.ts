@@ -8,8 +8,11 @@ import { cookies } from 'next/headers'
 import { randomBytes } from 'crypto'
 import { createClient } from '@/lib/supabase/server'
 import { buildAuthorizeUrl, SEARCH_CONSOLE_SCOPE } from '@/lib/google/oauth'
+import { logger } from '@/lib/logger'
 
+const log = logger('api/google/connect')
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
+const ADMIN_INDEXATION_URL = `${APP_URL}/dashboard/admin/indexation`
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient()
@@ -19,17 +22,26 @@ export async function GET(req: NextRequest) {
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
   if (profile?.role !== 'admin') return NextResponse.redirect(new URL('/dashboard', req.url))
 
-  const state = randomBytes(16).toString('hex')
-  const cookieStore = await cookies()
-  cookieStore.set('google_oauth_state', state, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'lax',
-    maxAge: 600,
-    path: '/',
-  })
+  // buildAuthorizeUrl jette si GOOGLE_SEARCH_CONSOLE_CLIENT_ID manque — sans
+  // ce try/catch, une config Vercel incomplète plantait cette route en 500
+  // brut au lieu de renvoyer un message exploitable sur la page admin.
+  try {
+    const state = randomBytes(16).toString('hex')
+    const cookieStore = await cookies()
+    cookieStore.set('google_oauth_state', state, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 600,
+      path: '/',
+    })
 
-  const redirectUri = `${APP_URL}/api/google/callback`
-  const authorizeUrl = buildAuthorizeUrl(redirectUri, state, SEARCH_CONSOLE_SCOPE)
-  return NextResponse.redirect(authorizeUrl)
+    const redirectUri = `${APP_URL}/api/google/callback`
+    const authorizeUrl = buildAuthorizeUrl(redirectUri, state, SEARCH_CONSOLE_SCOPE)
+    return NextResponse.redirect(authorizeUrl)
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    log.error('connect échoué', { err: message })
+    return NextResponse.redirect(`${ADMIN_INDEXATION_URL}?google_error=${encodeURIComponent(message)}`)
+  }
 }
