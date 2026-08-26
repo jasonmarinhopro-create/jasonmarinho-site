@@ -245,7 +245,7 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
           filtered.map(p => {
             const badge = statusBadge(p)
             return (
-              <div key={p.url} style={s.row}>
+              <div key={p.url} style={s.row} className="jm-idx-row">
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const }}>
                     <span style={s.rowUrl}>{p.path}</span>
@@ -257,7 +257,7 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
                     {p.error && <span style={{ color: '#f59e0b' }}> · {p.error}</span>}
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+                <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }} className="jm-idx-actions">
                   {p.inspectionLink ? (
                     // Lien officiel renvoyé par l'API pour la dernière
                     // vérification — arrive directement sur cette page,
@@ -288,6 +288,15 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
 
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        /* Mobile : la ligne (chemin + badge à gauche, boutons à droite) n'a
+           pas la place de rester côte à côte — le badge se retrouvait
+           chevauché par les boutons. On empile verticalement en dessous
+           d'une certaine largeur, et les boutons passent sur plusieurs
+           lignes si besoin plutôt que de déborder. */
+        @media (max-width: 640px) {
+          .jm-idx-row { flex-direction: column !important; align-items: stretch !important; gap: 10px !important; }
+          .jm-idx-actions { flex-wrap: wrap !important; }
+        }
       `}</style>
     </div>
   )
