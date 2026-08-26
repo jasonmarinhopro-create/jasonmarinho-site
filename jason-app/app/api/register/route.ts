@@ -40,6 +40,24 @@ function isDisposableEmail(email: string): boolean {
   return DISPOSABLE_DOMAINS.has(email.slice(at + 1).toLowerCase())
 }
 
+// Gmail ignore les points dans la partie locale de l'adresse (a.b.c@gmail.com
+// et abc@gmail.com délivrent au même endroit) — un pattern classique de bot
+// consiste à saupoudrer des points partout pour générer des adresses
+// "différentes" aux yeux d'un filtre anti-doublon, alors qu'elles tombent
+// toutes dans la même boîte. Un humain met rarement plus de 1-2 points
+// (prénom.nom@gmail.com) : on ne déclenche que sur un découpage en plein de
+// micro-segments (≥5 segments, longueur moyenne ≤2.5 caractères), ce qui
+// laisse passer les noms composés légitimes (jean.pierre.dupont@gmail.com).
+function looksLikeDottedGmailBot(email: string): boolean {
+  const [local, domain] = email.toLowerCase().split('@')
+  if (!local || !domain) return false
+  if (domain !== 'gmail.com' && domain !== 'googlemail.com') return false
+  const parts = local.split('.').filter(Boolean)
+  if (parts.length < 5) return false
+  const avgLen = local.replace(/\./g, '').length / parts.length
+  return avgLen <= 2.5
+}
+
 // Notifie Jason (email discret) à chaque incident sur l'inscription : bloqué
 // par erreur par un filtre anti-bot (faux succès affiché au navigateur, pour
 // ne pas indiquer la détection à un bot), ou compte créé mais email de
@@ -105,6 +123,13 @@ export async function POST(req: NextRequest) {
     if (isDisposableEmail(normalized)) {
       log.warn('botDisposable', { ip, email: normalized })
       notifyJasonIssue('domaine email jetable', { IP: ip, Email: normalized, 'Nom saisi': fullName })
+      return NextResponse.json({ ok: true })
+    }
+
+    // 4. Email Gmail truffé de points (a.b.c.d.e@gmail.com) → fake success silencieux.
+    if (looksLikeDottedGmailBot(normalized)) {
+      log.warn('botDottedGmail', { ip, email: normalized })
+      notifyJasonIssue('email Gmail à points suspects', { IP: ip, Email: normalized, 'Nom saisi': fullName })
       return NextResponse.json({ ok: true })
     }
 
