@@ -76,7 +76,10 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
   apiConfigured: boolean
 }) {
   const [search, setSearch] = useState('')
-  const [tab, setTab] = useState<Tab>('pas_indexees')
+  // Tant que l'API n'est pas configurée, tout est "jamais vérifié" — partir
+  // sur cet onglet plutôt que "Pas encore dans Google" (qui affiche 0 et
+  // laisse croire que la page est cassée).
+  const [tab, setTab] = useState<Tab>(apiConfigured ? 'pas_indexees' : 'jamais')
   const [bannerOpen, setBannerOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [refreshMsg, setRefreshMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
@@ -131,12 +134,13 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
       </div>
 
       {!apiConfigured && (
-        <div style={s.errorBox}>
-          <Warning size={16} weight="fill" style={{ color: 'var(--danger)', flexShrink: 0 }} />
-          <span style={{ fontSize: '13px', color: 'var(--danger)' }}>
-            API Search Console non configurée — ajoute GOOGLE_SEARCH_CONSOLE_CLIENT_EMAIL et
-            GOOGLE_SEARCH_CONSOLE_PRIVATE_KEY dans Vercel. En attendant, seuls les liens vers Search Console fonctionnent,
-            pas le vrai statut d&apos;indexation.
+        <div style={s.infoBox}>
+          <Info size={16} weight="fill" style={{ color: 'var(--accent-text)', flexShrink: 0, marginTop: '1px' }} />
+          <span style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.5 }}>
+            Configuration en attente : une fois <code style={s.code}>GOOGLE_SEARCH_CONSOLE_CLIENT_EMAIL</code> et{' '}
+            <code style={s.code}>GOOGLE_SEARCH_CONSOLE_PRIVATE_KEY</code> ajoutées dans Vercel, cette page affichera le vrai
+            statut indexé / pas indexé de chaque page. En attendant, le bouton &laquo;&nbsp;Inspecter&nbsp;&raquo; sur
+            chaque ligne fonctionne déjà.
           </span>
         </div>
       )}
@@ -251,6 +255,16 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', gap: '8px', alignItems: 'flex-start',
     background: 'var(--danger-bg)', border: '1px solid var(--danger-border)',
     borderRadius: '10px', padding: '10px 14px',
+  },
+  infoBox: {
+    display: 'flex', gap: '10px', alignItems: 'flex-start',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '10px', padding: '12px 16px',
+  },
+  code: {
+    fontFamily: 'ui-monospace, monospace', fontSize: '12px',
+    background: 'var(--bg-2)', padding: '1px 5px', borderRadius: '4px',
+    color: 'var(--text)',
   },
   banner: {
     background: 'var(--surface)', border: '1px solid var(--border)',
