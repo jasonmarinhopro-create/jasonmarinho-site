@@ -166,30 +166,52 @@ export async function publishToFacebook(pageId: string, pageAccessToken: string,
   return json.id
 }
 
+// Levée quand l'attente expire encore avec le conteneur toujours en cours de
+// traitement (pas en erreur) — le conteneur reste valide côté Instagram, qui
+// continue de le traiter en arrière-plan. On transporte son ID pour que
+// l'appelant puisse le réutiliser au prochain essai plutôt que d'en créer un
+// nouveau et reperdre le temps déjà investi.
+export class InstagramMediaTimeoutError extends Error {
+  constructor(public readonly creationId: string) {
+    super('Le média met trop de temps à être traité par Instagram (délai dépassé).')
+    this.name = 'InstagramMediaTimeoutError'
+  }
+}
+
 // Instagram traite l'image de façon asynchrone après la création du
 // conteneur média — publier avant la fin de ce traitement renvoie l'erreur
 // "Media ID is not available". On attend status_code=FINISHED (poll toutes
-// les 2s, jusqu'à 40s) avant d'appeler media_publish.
+// les 2s, jusqu'à ~52s — le gros du budget des 60s de la fonction, le reste
+// couvrant la création du conteneur et l'appel media_publish) avant
+// d'appeler media_publish.
 async function waitForMediaReady(containerId: string, token: string): Promise<void> {
-  for (let attempt = 0; attempt < 20; attempt++) {
+  for (let attempt = 0; attempt < 26; attempt++) {
     const json = await graphFetch(`/${containerId}`, { access_token: token, fields: 'status_code' })
     if (json.status_code === 'FINISHED') return
     if (json.status_code === 'ERROR') throw new Error('Le traitement du média par Instagram a échoué (image invalide ou inaccessible).')
     await new Promise(resolve => setTimeout(resolve, 2000))
   }
-  throw new Error('Le média met trop de temps à être traité par Instagram (délai dépassé).')
+  throw new InstagramMediaTimeoutError(containerId)
 }
 
 // Instagram exige au moins une image/vidéo — pas de post texte seul.
 // 1 image : conteneur média puis publication directe.
 // 2+ images : chaque image devient un conteneur enfant (is_carousel_item),
 // regroupés dans un conteneur CAROUSEL, puis publication de ce conteneur.
-export async function publishToInstagram(igUserId: string, pageAccessToken: string, post: PostContent): Promise<string> {
+//
+// `resumeCreationId` : si un essai précédent a expiré en attendant Instagram
+// (InstagramMediaTimeoutError), le conteneur créé reste valide côté Instagram
+// qui continue de le traiter en arrière-plan. On le réutilise au lieu d'en
+// recréer un — sinon chaque "Réessayer" repart de zéro et retombe sur le
+// même délai, ce qui explique un échec qui "revient tout le temps".
+export async function publishToInstagram(igUserId: string, pageAccessToken: string, post: PostContent, resumeCreationId?: string | null): Promise<string> {
   const images = post.mediaUrls
   if (images.length === 0) throw new Error('Instagram exige au moins une image — aucun media_url fourni')
 
   let creationId: string
-  if (images.length === 1) {
+  if (resumeCreationId) {
+    creationId = resumeCreationId
+  } else if (images.length === 1) {
     const container = await graphFetch(`/${igUserId}/media`, {
       access_token: pageAccessToken,
       image_url: images[0],

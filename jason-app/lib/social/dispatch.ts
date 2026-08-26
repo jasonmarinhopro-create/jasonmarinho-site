@@ -5,7 +5,7 @@
 
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { decryptToken } from '@/lib/security/crypto'
-import { publishToFacebook, publishToInstagram, getFacebookPostInsights, getInstagramMediaInsights } from '@/lib/social/meta'
+import { publishToFacebook, publishToInstagram, getFacebookPostInsights, getInstagramMediaInsights, InstagramMediaTimeoutError } from '@/lib/social/meta'
 import { logger } from '@/lib/logger'
 
 const log = logger('lib/social/dispatch')
@@ -58,7 +58,7 @@ export async function dispatchPost(postId: string): Promise<void> {
       if (target.platform === 'facebook') {
         externalId = await publishToFacebook(account.external_account_id, accessToken, content)
       } else if (target.platform === 'instagram') {
-        externalId = await publishToInstagram(account.external_account_id, accessToken, content)
+        externalId = await publishToInstagram(account.external_account_id, accessToken, content, target.pending_media_id ?? null)
       } else {
         throw new Error(`Plateforme non supportée pour le moment : ${target.platform}`)
       }
@@ -68,12 +68,21 @@ export async function dispatchPost(postId: string): Promise<void> {
         external_post_id: externalId,
         published_at: new Date().toISOString(),
         error: null,
+        pending_media_id: null,
       }).eq('id', target.id)
     } catch (err) {
       failed++
       const message = err instanceof Error ? err.message : String(err)
+      // Instagram a expiré mais garde le conteneur en traitement en arrière-
+      // plan : on le conserve pour que le prochain "Réessayer" le réutilise
+      // au lieu de repartir de zéro et retomber sur le même délai.
+      const pendingMediaId = err instanceof InstagramMediaTimeoutError ? err.creationId : null
       log.error('publication échouée', { postId, platform: target.platform, err: message })
-      await db.from('social_post_targets').update({ status: 'failed', error: message }).eq('id', target.id)
+      await db.from('social_post_targets').update({
+        status: 'failed',
+        error: message,
+        pending_media_id: pendingMediaId,
+      }).eq('id', target.id)
     }
   }
 
