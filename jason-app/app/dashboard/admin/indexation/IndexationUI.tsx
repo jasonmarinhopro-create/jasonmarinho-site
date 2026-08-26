@@ -97,13 +97,19 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
   const [bannerOpen, setBannerOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [refreshMsg, setRefreshMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
-  const [pendingSubmitUrl, setPendingSubmitUrl] = useState<string | null>(null)
+  // Override optimiste par URL pour le bouton "C'est fait" — voir
+  // handleMarkSubmitted plus bas.
+  const [submittedOverrides, setSubmittedOverrides] = useState<Record<string, string | null>>({})
 
   const router = useRouter()
   const searchParams = useSearchParams()
   const googleConnected = searchParams.get('google_connected') === '1'
   const googleError = searchParams.get('google_error')
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null)
+
+  function effectiveSubmittedAt(p: PageStatus): string | null {
+    return p.url in submittedOverrides ? submittedOverrides[p.url] : p.submittedAt
+  }
 
   function handleCopy(url: string) {
     navigator.clipboard.writeText(url).then(() => {
@@ -120,7 +126,10 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
   // Pas indexées ET jamais encore demandées à Google — la vraie file
   // d'action, contrairement à "Pas encore dans Google" qui garde aussi
   // celles déjà demandées (en attente que Google les traite).
-  const aSoumettre = useMemo(() => notIndexed.filter(p => !p.submittedAt), [notIndexed])
+  const aSoumettre = useMemo(
+    () => notIndexed.filter(p => !(p.url in submittedOverrides ? submittedOverrides[p.url] : p.submittedAt)),
+    [notIndexed, submittedOverrides],
+  )
 
   const byTab: Record<Tab, PageStatus[]> = {
     a_soumettre: aSoumettre,
@@ -182,20 +191,31 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
   // classique — on ouvre Search Console (inspectionLink) où l'admin clique
   // "Demander une indexation" à la main, puis revient cocher "C'est fait"
   // ici pour ne pas reperdre le fil sur ~500 pages.
-  async function handleMarkSubmitted(url: string) {
-    setPendingSubmitUrl(url)
-    const res = await markSubmitted(url)
-    if (res.error) setRefreshMsg({ type: 'err', text: res.error })
-    router.refresh()
-    setPendingSubmitUrl(null)
+  //
+  // Pattern optimiste (cf. CLAUDE.md) : router.refresh() re-déclenche la
+  // page serveur entière, qui re-télécharge le sitemap.xml en direct et
+  // re-requête ~500 lignes — sensible en latence pour un simple clic. La
+  // ligne change d'état tout de suite côté client ; le serveur suit derrière,
+  // avec retour en arrière si l'écriture échoue.
+  function handleMarkSubmitted(url: string) {
+    const now = new Date().toISOString()
+    setSubmittedOverrides(prev => ({ ...prev, [url]: now }))
+    markSubmitted(url).then(res => {
+      if (res.error) {
+        setSubmittedOverrides(prev => ({ ...prev, [url]: null }))
+        setRefreshMsg({ type: 'err', text: res.error! })
+      }
+    })
   }
 
-  async function handleUnmarkSubmitted(url: string) {
-    setPendingSubmitUrl(url)
-    const res = await unmarkSubmitted(url)
-    if (res.error) setRefreshMsg({ type: 'err', text: res.error })
-    router.refresh()
-    setPendingSubmitUrl(null)
+  function handleUnmarkSubmitted(url: string, previous: string | null) {
+    setSubmittedOverrides(prev => ({ ...prev, [url]: null }))
+    unmarkSubmitted(url).then(res => {
+      if (res.error) {
+        setSubmittedOverrides(prev => ({ ...prev, [url]: previous }))
+        setRefreshMsg({ type: 'err', text: res.error! })
+      }
+    })
   }
 
   return (
@@ -308,6 +328,7 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
         ) : (
           filtered.map(p => {
             const badge = statusBadge(p)
+            const submittedAt = effectiveSubmittedAt(p)
             return (
               <div key={p.url} style={s.row} className="jm-idx-row">
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -318,15 +339,15 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
                   <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '3px' }}>
                     Vérifiée {fmtDateTime(p.lastCheckedAt)}
                     {p.lastmod && <> · modifiée {fmtDate(p.lastmod)}</>}
-                    {p.submittedAt && <span style={{ color: 'var(--success-1)' }}> · demandée le {fmtDate(p.submittedAt)}</span>}
+                    {submittedAt && <span style={{ color: 'var(--success-1)' }}> · demandée le {fmtDate(submittedAt)}</span>}
                     {p.error && <span style={{ color: '#f59e0b' }}> · {p.error}</span>}
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }} className="jm-idx-actions">
                   {!p.indexed && (
-                    p.submittedAt ? (
+                    submittedAt ? (
                       <button
-                        onClick={() => handleUnmarkSubmitted(p.url)} disabled={pendingSubmitUrl === p.url}
+                        onClick={() => handleUnmarkSubmitted(p.url, submittedAt)}
                         style={{ ...s.smallBtn, cursor: 'pointer', color: 'var(--success-1)', borderColor: 'var(--success-1)' }}
                         title="Annuler — la remettre dans « À soumettre »"
                       >
@@ -334,7 +355,7 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
                       </button>
                     ) : (
                       <button
-                        onClick={() => handleMarkSubmitted(p.url)} disabled={pendingSubmitUrl === p.url}
+                        onClick={() => handleMarkSubmitted(p.url)}
                         style={{ ...s.smallBtn, cursor: 'pointer' }}
                         title="Marquer comme demandée (après avoir cliqué « Demander une indexation » dans Search Console)"
                       >
