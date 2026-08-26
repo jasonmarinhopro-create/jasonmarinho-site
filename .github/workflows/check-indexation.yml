@@ -1,0 +1,22 @@
+name: SEO indexation check
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch: # déclenchement manuel pour tester
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vérifier l'indexation Google de toutes les pages du sitemap
+        run: |
+          RESPONSE=$(curl -s -o /tmp/check_response.json -w "%{http_code}" \
+            -X GET https://app.jasonmarinho.com/api/cron/check-indexation \
+            -H "Authorization: Bearer ${{ secrets.SEO_CRON_SECRET }}")
+          echo "Status HTTP : $RESPONSE"
+          cat /tmp/check_response.json
+          if [ "$RESPONSE" != "200" ]; then
+            echo "ERREUR : vérification indexation a échoué (HTTP $RESPONSE)"
+            exit 1
+          fi
