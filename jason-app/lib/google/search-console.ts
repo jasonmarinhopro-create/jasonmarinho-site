@@ -1,13 +1,14 @@
-// Client minimal pour l'API Search Console (URL Inspection), authentifié en
-// compte de service (JWT signé RS256 échangé contre un access token OAuth2).
-// Pas de lib Google officielle (googleapis est lourde) — le flow "service
-// account" tient en une signature crypto + un POST, cf. RFC 7523.
+// Client minimal pour l'API Search Console (URL Inspection), authentifié
+// via un refresh_token OAuth stocké en base (chiffré) — cf. lib/google/oauth.ts
+// pour le pourquoi (compte de service impossible : règle d'organisation
+// Google Cloud par défaut qui bloque la création de clés).
 
-import crypto from 'crypto'
+import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { decryptToken } from '@/lib/security/crypto'
+import { refreshAccessToken } from '@/lib/google/oauth'
 
-const SCOPE = 'https://www.googleapis.com/auth/webmasters.readonly'
-const TOKEN_URL = 'https://oauth2.googleapis.com/token'
 const INSPECT_URL = 'https://searchconsole.googleapis.com/v1/urlInspection/index:inspect'
+const SERVICE_KEY = 'search_console'
 
 // Propriété Search Console : domaine vérifié en DNS (préfixe sc-domain:),
 // couvre http/https + sous-domaines. Si jasonmarinho.com est plutôt une
@@ -15,12 +16,18 @@ const INSPECT_URL = 'https://searchconsole.googleapis.com/v1/urlInspection/index
 // "https://jasonmarinho.com/".
 export const SEARCH_CONSOLE_SITE_URL = 'sc-domain:jasonmarinho.com'
 
-function base64url(input: Buffer | string): string {
-  return Buffer.from(input).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+function serviceClient() {
+  return createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } },
+  )
 }
 
-export function isConfigured(): boolean {
-  return !!process.env.GOOGLE_SEARCH_CONSOLE_CLIENT_EMAIL && !!process.env.GOOGLE_SEARCH_CONSOLE_PRIVATE_KEY
+export async function isConfigured(): Promise<boolean> {
+  const db = serviceClient()
+  const { data } = await db.from('google_oauth_tokens').select('service').eq('service', SERVICE_KEY).maybeSingle()
+  return !!data
 }
 
 let cachedToken: { token: string; expiresAt: number } | null = null
@@ -28,38 +35,13 @@ let cachedToken: { token: string; expiresAt: number } | null = null
 async function getAccessToken(): Promise<string> {
   if (cachedToken && cachedToken.expiresAt > Date.now() + 60_000) return cachedToken.token
 
-  const clientEmail = process.env.GOOGLE_SEARCH_CONSOLE_CLIENT_EMAIL
-  // Vercel n'accepte pas les retours à la ligne littéraux dans une env var —
-  // la clé y est stockée avec des "\n" échappés qu'il faut reconvertir.
-  const privateKey = process.env.GOOGLE_SEARCH_CONSOLE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-  if (!clientEmail || !privateKey) {
-    throw new Error('GOOGLE_SEARCH_CONSOLE_CLIENT_EMAIL / GOOGLE_SEARCH_CONSOLE_PRIVATE_KEY manquants')
-  }
+  const db = serviceClient()
+  const { data } = await db.from('google_oauth_tokens').select('refresh_token').eq('service', SERVICE_KEY).maybeSingle()
+  if (!data) throw new Error('Google Search Console non connecté — va dans Admin → Indexation pour te connecter')
 
-  const now = Math.floor(Date.now() / 1000)
-  const header = base64url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }))
-  const claims = base64url(JSON.stringify({
-    iss: clientEmail,
-    scope: SCOPE,
-    aud: TOKEN_URL,
-    iat: now,
-    exp: now + 3600,
-  }))
-  const signInput = `${header}.${claims}`
-  const signature = crypto.createSign('RSA-SHA256').update(signInput).sign(privateKey)
-  const jwt = `${signInput}.${base64url(signature)}`
-
-  const res = await fetch(TOKEN_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-      assertion: jwt,
-    }),
-  })
-  if (!res.ok) throw new Error(`Google OAuth token : ${res.status} ${await res.text()}`)
-  const json = await res.json()
-  cachedToken = { token: json.access_token as string, expiresAt: now * 1000 + (json.expires_in ?? 3600) * 1000 }
+  const refreshToken = decryptToken(data.refresh_token)
+  const { accessToken, expiresIn } = await refreshAccessToken(refreshToken)
+  cachedToken = { token: accessToken, expiresAt: Date.now() + expiresIn * 1000 }
   return cachedToken.token
 }
 

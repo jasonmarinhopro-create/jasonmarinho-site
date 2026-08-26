@@ -57,8 +57,8 @@ async function checkOne(url: string): Promise<{
 }
 
 export async function checkAllUrls(): Promise<{ checked: number; error?: string }> {
-  if (!isConfigured()) {
-    return { checked: 0, error: 'GOOGLE_SEARCH_CONSOLE_CLIENT_EMAIL / GOOGLE_SEARCH_CONSOLE_PRIVATE_KEY manquants' }
+  if (!(await isConfigured())) {
+    return { checked: 0, error: 'Google Search Console non connecté (Admin → Indexation)' }
   }
 
   const entries = await fetchSitemapEntries()
