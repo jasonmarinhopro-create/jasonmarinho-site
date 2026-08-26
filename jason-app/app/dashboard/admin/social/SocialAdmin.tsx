@@ -10,6 +10,7 @@ import {
 import { createSocialPost, updateSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, refreshAllStats, setSocialCadence } from './actions'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import SocialStats from './SocialStats'
+import SocialAutoReply, { type CommentTriggerRow, type CommentReplyRow } from './SocialAutoReply'
 import { PLATFORM_META, IMPLEMENTED_PLATFORMS, ALL_PLATFORMS } from './constants'
 
 export interface SocialAccountRow {
@@ -89,7 +90,13 @@ export interface SocialPostRow {
   targets: SocialPostTargetRow[]
 }
 
-export default function SocialAdmin({ accounts, posts, cadence }: { accounts: SocialAccountRow[]; posts: SocialPostRow[]; cadence: CadenceConfig | null }) {
+export default function SocialAdmin({ accounts, posts, cadence, commentTriggers, commentReplies }: {
+  accounts: SocialAccountRow[]
+  posts: SocialPostRow[]
+  cadence: CadenceConfig | null
+  commentTriggers: CommentTriggerRow[]
+  commentReplies: CommentReplyRow[]
+}) {
   const searchParams = useSearchParams()
   const router = useRouter()
   const metaConnected = searchParams.get('meta_connected')
@@ -110,7 +117,7 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const [editingPostId, setEditingPostId] = useState<string | null>(null)
-  const [view, setView] = useState<'composer' | 'stats'>('composer')
+  const [view, setView] = useState<'composer' | 'stats' | 'auto_reply'>('composer')
 
   const [showPerNetworkText, setShowPerNetworkText] = useState(true)
   const [bodyOverrides, setBodyOverrides] = useState<Record<string, string>>({})
@@ -362,10 +369,17 @@ export default function SocialAdmin({ accounts, posts, cadence }: { accounts: So
         <button type="button" onClick={() => setView('stats')} style={{ ...s.tabBtn, ...(view === 'stats' ? s.tabBtnActive : {}) }}>
           Statistiques
         </button>
+        <button type="button" onClick={() => setView('auto_reply')} style={{ ...s.tabBtn, ...(view === 'auto_reply' ? s.tabBtnActive : {}) }}>
+          Réponses auto
+        </button>
       </div>
 
       {view === 'stats' && (
         <SocialStats posts={posts} onRefreshAll={refreshAll} refreshing={isPending} />
+      )}
+
+      {view === 'auto_reply' && (
+        <SocialAutoReply triggers={commentTriggers} recentReplies={commentReplies} />
       )}
 
       {view === 'composer' && (

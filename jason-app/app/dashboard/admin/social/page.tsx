@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import SocialAdmin, { type SocialAccountRow, type SocialPostRow } from './SocialAdmin'
+import type { CommentTriggerRow, CommentReplyRow } from './SocialAutoReply'
 
 export const metadata = { title: 'Réseaux sociaux, Admin' }
 export const dynamic = 'force-dynamic'
@@ -23,7 +24,7 @@ export default async function SocialAdminPage() {
     { auth: { autoRefreshToken: false, persistSession: false } },
   )
 
-  const [{ data: accounts }, { data: posts }, { data: targets }, { data: cadence }] = await Promise.all([
+  const [{ data: accounts }, { data: posts }, { data: targets }, { data: cadence }, { data: commentTriggers }, { data: commentReplies }] = await Promise.all([
     admin.from('social_accounts')
       .select('id, platform, external_account_id, display_name, status, token_expires_at, created_at')
       .order('created_at', { ascending: true }),
@@ -34,6 +35,13 @@ export default async function SocialAdminPage() {
     admin.from('social_post_targets')
       .select('id, post_id, platform, status, external_post_id, error, published_at, body_override, like_count, comment_count, stats_updated_at'),
     admin.from('social_cadence').select('weekdays, time_of_day').limit(1).maybeSingle(),
+    admin.from('social_comment_triggers')
+      .select('id, platform, keyword, reply_message, active, created_at')
+      .order('created_at', { ascending: false }),
+    admin.from('social_comment_replies')
+      .select('id, trigger_id, platform, comment_id, commenter_name, status, error, created_at')
+      .order('created_at', { ascending: false })
+      .limit(30),
   ])
 
   const targetsByPost = new Map<string, typeof targets>()
@@ -54,6 +62,8 @@ export default async function SocialAdminPage() {
         accounts={(accounts ?? []) as SocialAccountRow[]}
         posts={postRows}
         cadence={cadence ? { weekdays: cadence.weekdays as number[], timeOfDay: cadence.time_of_day as string } : null}
+        commentTriggers={(commentTriggers ?? []) as CommentTriggerRow[]}
+        commentReplies={(commentReplies ?? []) as CommentReplyRow[]}
       />
     </div>
   )
