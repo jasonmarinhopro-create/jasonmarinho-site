@@ -9,7 +9,7 @@ import {
   FacebookLogo, CaretDown, ChartBar, CalendarBlank, Heart,
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
-  ChartLineUp, HouseLine, Briefcase, ShareNetwork,
+  ChartLineUp, HouseLine, Briefcase, ShareNetwork, MagnifyingGlass,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
@@ -98,11 +98,12 @@ const adminMain = [
 ]
 
 const adminContent = [
-  { href: '/dashboard/admin/formations', label: 'Formations', Icon: GraduationCap },
-  { href: '/dashboard/admin/gabarits',   label: 'Gabarits',   Icon: FileText },
-  { href: '/dashboard/admin/actualites', label: 'Actualités', Icon: Newspaper },
-  { href: '/dashboard/admin/communaute', label: 'Communauté', Icon: FacebookLogo },
-  { href: '/dashboard/admin/guides',     label: 'Guide LCD',  Icon: BookOpen },
+  { href: '/dashboard/admin/formations',  label: 'Formations',  Icon: GraduationCap },
+  { href: '/dashboard/admin/gabarits',    label: 'Gabarits',    Icon: FileText },
+  { href: '/dashboard/admin/actualites',  label: 'Actualités',  Icon: Newspaper },
+  { href: '/dashboard/admin/communaute',  label: 'Communauté',  Icon: FacebookLogo },
+  { href: '/dashboard/admin/guides',      label: 'Guide LCD',   Icon: BookOpen },
+  { href: '/dashboard/admin/indexation',  label: 'Indexation',  Icon: MagnifyingGlass },
 ]
 
 interface SidebarProps {

@@ -77,6 +77,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/admin/formations': 'Formations',
   '/dashboard/admin/guides': 'Guide LCD',
   '/dashboard/admin/social': 'Réseaux sociaux',
+  '/dashboard/admin/indexation': 'Indexation',
 }
 
 // Routes dynamiques : titre par défaut tant que TitleSetter n'a pas envoyé le titre spécifique
