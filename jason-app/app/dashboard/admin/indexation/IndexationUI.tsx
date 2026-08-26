@@ -136,9 +136,22 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
     startTransition(async () => {
       let totalChecked = 0
       for (let pass = 0; pass < 30; pass++) {
-        const res = await refreshIndexationNow()
+        // Un raté réseau ponctuel en appelant la server action elle-même
+        // (pas une erreur métier renvoyée par checkAllUrls, qui est déjà
+        // gérée via res.error) ne doit pas faire planter toute la page avec
+        // l'écran d'erreur générique Next.js — on l'affiche proprement et on
+        // arrête la boucle, l'utilisateur peut recliquer.
+        let res
+        try {
+          res = await refreshIndexationNow()
+        } catch {
+          setRefreshMsg({ type: 'err', text: `${totalChecked} vérifiées avant l'interruption — réessaie.` })
+          router.refresh()
+          return
+        }
         if (res.error) {
           setRefreshMsg({ type: 'err', text: res.error })
+          router.refresh()
           return
         }
         totalChecked += res.checked ?? 0

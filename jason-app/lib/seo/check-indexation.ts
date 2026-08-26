@@ -61,40 +61,65 @@ async function checkOne(url: string): Promise<{
   }
 }
 
+// Quota Google : 2000 inspections/jour par site. Pas de compteur exact côté
+// client (Google ne le renvoie pas), donc on détecte le 429/RESOURCE_EXHAUSTED
+// sur un checkOne et on arrête la passe immédiatement plutôt que de continuer
+// à cramer des requêtes vouées à échouer une par une.
+function isQuotaError(message: string): boolean {
+  return /429|RESOURCE_EXHAUSTED|quota/i.test(message)
+}
+
 export async function checkAllUrls(): Promise<{ checked: number; remaining: number; error?: string }> {
   if (!(await isConfigured())) {
     return { checked: 0, remaining: 0, error: 'Google Search Console non connecté (Admin → Indexation)' }
   }
 
-  const t0 = Date.now()
-  const entries = await fetchSitemapEntries()
-  const db = serviceClient()
+  // Tout le corps est protégé : un pépin réseau (sitemap, Supabase, Google)
+  // ne doit jamais faire planter la server action en pleine boucle du bouton
+  // "Vérifier l'indexation" (ça affichait l'écran d'erreur générique
+  // Next.js) — on renvoie un message clair à la place, la boucle client
+  // s'arrête proprement et l'utilisateur peut réessayer.
+  try {
+    const t0 = Date.now()
+    const entries = await fetchSitemapEntries()
+    const db = serviceClient()
 
-  const { data: statusRows } = await db.from('seo_indexation_status').select('url, last_checked_at')
-  const lastCheckedByUrl = new Map((statusRows ?? []).map(r => [r.url, r.last_checked_at as string | null]))
-  const alreadyCheckedBefore = entries.filter(e => lastCheckedByUrl.get(e.url)).length
+    const { data: statusRows } = await db.from('seo_indexation_status').select('url, last_checked_at')
+    const lastCheckedByUrl = new Map((statusRows ?? []).map(r => [r.url, r.last_checked_at as string | null]))
+    const alreadyCheckedBefore = entries.filter(e => lastCheckedByUrl.get(e.url)).length
 
-  // Jamais vérifiées d'abord (last_checked_at absent → tri en tête).
-  const ordered = [...entries].sort((a, b) => {
-    const aChecked = lastCheckedByUrl.get(a.url) ?? ''
-    const bChecked = lastCheckedByUrl.get(b.url) ?? ''
-    return aChecked.localeCompare(bChecked)
-  })
+    // Jamais vérifiées d'abord (last_checked_at absent → tri en tête).
+    const ordered = [...entries].sort((a, b) => {
+      const aChecked = lastCheckedByUrl.get(a.url) ?? ''
+      const bChecked = lastCheckedByUrl.get(b.url) ?? ''
+      return aChecked.localeCompare(bChecked)
+    })
 
-  let checked = 0
-  for (let i = 0; i < ordered.length; i += CONCURRENCY) {
-    if (Date.now() - t0 > BUDGET_MS) break
+    let checked = 0
+    for (let i = 0; i < ordered.length; i += CONCURRENCY) {
+      if (Date.now() - t0 > BUDGET_MS) break
 
-    const batch = ordered.slice(i, i + CONCURRENCY)
-    const results = await Promise.all(batch.map(e => checkOne(e.url)))
-    const { error } = await db.from('seo_indexation_status').upsert(
-      results.map(r => ({ ...r, last_checked_at: new Date().toISOString() })),
-      { onConflict: 'url' },
-    )
-    if (error) log.error('upsert seo_indexation_status', { msg: error.message })
-    checked += results.length
+      const batch = ordered.slice(i, i + CONCURRENCY)
+      const results = await Promise.all(batch.map(e => checkOne(e.url)))
+      const { error } = await db.from('seo_indexation_status').upsert(
+        results.map(r => ({ ...r, last_checked_at: new Date().toISOString() })),
+        { onConflict: 'url' },
+      )
+      if (error) log.error('upsert seo_indexation_status', { msg: error.message })
+      checked += results.length
+
+      const quotaHit = results.find(r => r.error && isQuotaError(r.error))
+      if (quotaHit) {
+        const remaining = Math.max(0, ordered.length - alreadyCheckedBefore - checked)
+        return { checked, remaining, error: 'Quota Google Search Console atteint (2000 vérifications/jour) — réessaie demain, ou laisse le cron quotidien continuer tout seul.' }
+      }
+    }
+
+    const remaining = Math.max(0, ordered.length - alreadyCheckedBefore - checked)
+    return { checked, remaining }
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e)
+    log.error('checkAllUrls', { msg: message })
+    return { checked: 0, remaining: 0, error: `Vérification interrompue (${message}) — réessaie.` }
   }
-
-  const remaining = Math.max(0, ordered.length - alreadyCheckedBefore - checked)
-  return { checked, remaining }
 }
