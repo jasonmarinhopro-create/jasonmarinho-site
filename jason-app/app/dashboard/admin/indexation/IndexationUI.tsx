@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState, useTransition } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import {
   MagnifyingGlass, ArrowSquareOut, Warning, Info, ArrowClockwise, CaretDown, CaretUp, Eye, GoogleLogo, Copy, Check,
 } from '@phosphor-icons/react/dist/ssr'
@@ -94,6 +94,7 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
   const [isPending, startTransition] = useTransition()
   const [refreshMsg, setRefreshMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
 
+  const router = useRouter()
   const searchParams = useSearchParams()
   const googleConnected = searchParams.get('google_connected') === '1'
   const googleError = searchParams.get('google_error')
@@ -126,12 +127,31 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
     return list.filter(p => p.path.toLowerCase().includes(q))
   }, [byTab, tab, search])
 
+  // Une passe (~50s) ne suffit pas pour les ~500 URLs du sitemap — on
+  // rappelle l'action tant qu'il reste des pages à vérifier, pour que le
+  // clic unique aille jusqu'au bout sans manip supplémentaire. Plafond de
+  // sécurité (30 passes) pour ne jamais boucler indéfiniment en cas de bug.
   function handleRefresh() {
     setRefreshMsg(null)
     startTransition(async () => {
-      const res = await refreshIndexationNow()
-      if (res.error) setRefreshMsg({ type: 'err', text: res.error })
-      else setRefreshMsg({ type: 'ok', text: `${res.checked} pages vérifiées.` })
+      let totalChecked = 0
+      for (let pass = 0; pass < 30; pass++) {
+        const res = await refreshIndexationNow()
+        if (res.error) {
+          setRefreshMsg({ type: 'err', text: res.error })
+          return
+        }
+        totalChecked += res.checked ?? 0
+        const remaining = res.remaining ?? 0
+        if (remaining > 0) {
+          setRefreshMsg({ type: 'ok', text: `${totalChecked} vérifiées, ${remaining} restantes… (ne quitte pas la page)` })
+          router.refresh()
+        } else {
+          setRefreshMsg({ type: 'ok', text: `${totalChecked} pages vérifiées.` })
+          router.refresh()
+          return
+        }
+      }
     })
   }
 
@@ -303,7 +323,7 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
 }
 
 const s: Record<string, React.CSSProperties> = {
-  wrap: { display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: '820px', padding: 'clamp(20px,3vw,44px)' },
+  wrap: { display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: '1200px', padding: 'clamp(20px,3vw,44px)' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' },
   title: {
     fontFamily: 'var(--font-fraunces), serif', fontSize: '26px', fontWeight: 500,
@@ -381,7 +401,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   rowUrl: {
     fontSize: '13px', color: 'var(--text)', fontFamily: 'ui-monospace, monospace',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '340px',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '640px',
   },
   badge: {
     fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px', whiteSpace: 'nowrap',

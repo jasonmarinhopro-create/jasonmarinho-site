@@ -12,7 +12,12 @@ async function requireAdmin() {
   if (profile?.role !== 'admin') throw new Error('Non autorisé')
 }
 
-export async function refreshIndexationNow(): Promise<{ checked?: number; error?: string }> {
+// Une passe (~50s) ne suffit pas pour ~500 URLs (latence réseau réelle vers
+// Google) — checkAllUrls priorise les jamais-vérifiées et renvoie combien il
+// en reste. Le bouton "Vérifier l'indexation" (IndexationUI) rappelle cette
+// action en boucle tant que remaining > 0, pour que le clic unique aille
+// jusqu'au bout sans que l'utilisateur ait à recliquer manuellement.
+export async function refreshIndexationNow(): Promise<{ checked?: number; remaining?: number; error?: string }> {
   try {
     await requireAdmin()
   } catch (e) {
