@@ -50,6 +50,7 @@ export default async function IndexationPage() {
       httpStatus: s?.http_status ?? null,
       coverageState: s?.coverage_state ?? null,
       indexed: s?.indexed ?? false,
+      inspectionLink: s?.inspection_link ?? null,
       lastCheckedAt: s?.last_checked_at ?? null,
       error: s?.error ?? null,
     }

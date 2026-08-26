@@ -3,18 +3,23 @@
 import { useMemo, useState, useTransition } from 'react'
 import { useSearchParams } from 'next/navigation'
 import {
-  MagnifyingGlass, ArrowSquareOut, Warning, Info, ArrowClockwise, CaretDown, CaretUp, Eye, GoogleLogo,
+  MagnifyingGlass, ArrowSquareOut, Warning, Info, ArrowClockwise, CaretDown, CaretUp, Eye, GoogleLogo, Copy, Check,
 } from '@phosphor-icons/react/dist/ssr'
 import { refreshIndexationNow } from './actions'
 
 // Dupliqué (pas importé) de lib/google/search-console.ts : ce fichier
 // importe le module Node `crypto` (côté serveur, via lib/security/crypto.ts),
 // pas bundlable côté client.
-// IMPORTANT : resource_id doit rester NON percent-encodé (le ':' de
-// "sc-domain:" tel quel) — encoder ce paramètre casse le lien côté Google.
+//
+// Le lien "inspect?resource_id=...&id=..." avec l'URL pré-remplie n'est pas
+// un endpoint documenté par Google (juste observé dans certains emails
+// Search Console) — testé deux fois avec différents encodages, 404
+// systématique. On se rabat sur un lien garanti stable : la propriété elle-
+// même, avec un bouton "copier l'URL" pour la coller dans la barre de
+// recherche du Search Console une fois arrivé.
 const SEARCH_CONSOLE_SITE_URL = 'sc-domain:jasonmarinho.com'
-function inspectDeepLink(url: string): string {
-  return `https://search.google.com/search-console/inspect?resource_id=${SEARCH_CONSOLE_SITE_URL}&id=${encodeURIComponent(url)}`
+function searchConsolePropertyLink(): string {
+  return `https://search.google.com/search-console?resource_id=${SEARCH_CONSOLE_SITE_URL}`
 }
 
 export interface PageStatus {
@@ -24,6 +29,9 @@ export interface PageStatus {
   httpStatus: number | null
   coverageState: string | null
   indexed: boolean
+  // Lien direct renvoyé par l'API Google pour la dernière vérification —
+  // absent tant que la page n'a jamais été vérifiée via l'API.
+  inspectionLink: string | null
   lastCheckedAt: string | null
   error: string | null
 }
@@ -89,6 +97,14 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
   const searchParams = useSearchParams()
   const googleConnected = searchParams.get('google_connected') === '1'
   const googleError = searchParams.get('google_error')
+  const [copiedUrl, setCopiedUrl] = useState<string | null>(null)
+
+  function handleCopy(url: string) {
+    navigator.clipboard.writeText(url).then(() => {
+      setCopiedUrl(url)
+      setTimeout(() => setCopiedUrl(null), 1500)
+    }).catch(() => {})
+  }
 
   const notPublished = useMemo(() => pages.filter(p => p.httpStatus && p.httpStatus >= 400), [pages])
   const live = useMemo(() => pages.filter(p => !p.httpStatus || p.httpStatus < 400), [pages])
@@ -242,9 +258,24 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
-                  <a href={inspectDeepLink(p.url)} target="_blank" rel="noopener noreferrer" style={s.smallBtn} title="Ouvrir l'inspection dans Search Console">
-                    <ArrowSquareOut size={13} /> Inspecter
-                  </a>
+                  {p.inspectionLink ? (
+                    // Lien officiel renvoyé par l'API pour la dernière
+                    // vérification — arrive directement sur cette page,
+                    // aucune manip requise.
+                    <a href={p.inspectionLink} target="_blank" rel="noopener noreferrer" style={s.smallBtn} title="Ouvrir l'inspection de cette page dans Search Console">
+                      <ArrowSquareOut size={13} /> Inspecter
+                    </a>
+                  ) : (
+                    <>
+                      <button onClick={() => handleCopy(p.url)} style={{ ...s.smallBtn, cursor: 'pointer' }} title="Copier l'URL (à coller dans la barre de recherche Search Console)">
+                        {copiedUrl === p.url ? <Check size={13} weight="bold" style={{ color: 'var(--success-1)' }} /> : <Copy size={13} />}
+                        {copiedUrl === p.url ? 'Copié' : 'Copier'}
+                      </button>
+                      <a href={searchConsolePropertyLink()} target="_blank" rel="noopener noreferrer" style={s.smallBtn} title="Ouvrir Search Console (colle l'URL copiée dans la barre de recherche) — lien direct disponible après une vérification">
+                        <ArrowSquareOut size={13} /> Inspecter
+                      </a>
+                    </>
+                  )}
                   <a href={p.url} target="_blank" rel="noopener noreferrer" style={s.smallBtn} title="Voir la page">
                     <Eye size={13} /> Voir
                   </a>

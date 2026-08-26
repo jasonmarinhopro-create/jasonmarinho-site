@@ -31,6 +31,7 @@ async function checkOne(url: string): Promise<{
   coverage_state: string | null
   verdict: string | null
   indexed: boolean
+  inspection_link: string | null
   error: string | null
 }> {
   // 1. La page répond-elle ? Pas la peine d'interroger Google sur un 404.
@@ -43,16 +44,16 @@ async function checkOne(url: string): Promise<{
   }
 
   if (httpStatus && httpStatus >= 400) {
-    return { url, http_status: httpStatus, coverage_state: null, verdict: null, indexed: false, error: null }
+    return { url, http_status: httpStatus, coverage_state: null, verdict: null, indexed: false, inspection_link: null, error: null }
   }
 
   // 2. Statut réel côté Google.
   try {
     const result = await inspectUrl(url)
-    return { url, http_status: httpStatus, coverage_state: result.coverageState, verdict: result.verdict, indexed: result.indexed, error: null }
+    return { url, http_status: httpStatus, coverage_state: result.coverageState, verdict: result.verdict, indexed: result.indexed, inspection_link: result.inspectionLink, error: null }
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e)
-    return { url, http_status: httpStatus, coverage_state: null, verdict: null, indexed: false, error: message }
+    return { url, http_status: httpStatus, coverage_state: null, verdict: null, indexed: false, inspection_link: null, error: message }
   }
 }
 
