@@ -1,28 +1,16 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import IndexationUI from './IndexationUI'
+import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { fetchSitemapEntries } from '@/lib/seo/sitemap'
+import { isConfigured } from '@/lib/google/search-console'
+import IndexationUI, { type PageStatus } from './IndexationUI'
 
 export const metadata = { title: 'Indexation, Jason Marinho' }
-
-interface SitemapEntry {
-  url: string
-  lastmod: string | null
-}
-
-// Pas de lib XML (le reste du projet évite les dépendances lourdes, cf.
-// lib/security/validate.ts) — un sitemap.xml est un format assez simple
-// pour une extraction par regex.
-function parseSitemap(xml: string): SitemapEntry[] {
-  const entries: SitemapEntry[] = []
-  const urlBlocks = xml.match(/<url>[\s\S]*?<\/url>/g) ?? []
-  for (const block of urlBlocks) {
-    const loc = block.match(/<loc>([^<]+)<\/loc>/)?.[1]?.trim()
-    if (!loc) continue
-    const lastmod = block.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1]?.trim() ?? null
-    entries.push({ url: loc, lastmod })
-  }
-  return entries
-}
+export const dynamic = 'force-dynamic'
+// Le bouton "Vérifier l'indexation" (action serveur) peut interroger ~500
+// URLs — s'exécute dans la même fonction que cette page, même budget que le
+// cron (60s).
+export const maxDuration = 60
 
 export default async function IndexationPage() {
   const supabase = await createClient()
@@ -37,21 +25,47 @@ export default async function IndexationPage() {
 
   if (profile?.role !== 'admin') redirect('/dashboard')
 
-  let entries: SitemapEntry[] = []
+  let entries: Awaited<ReturnType<typeof fetchSitemapEntries>> = []
   let fetchError: string | null = null
   try {
-    // revalidate 1h : cette page est consultée ponctuellement, pas besoin
-    // de retélécharger le sitemap (500+ URLs) à chaque visite.
-    const res = await fetch('https://jasonmarinho.com/sitemap.xml', { next: { revalidate: 3600 } })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    entries = parseSitemap(await res.text())
+    entries = await fetchSitemapEntries()
   } catch (e) {
     fetchError = e instanceof Error ? e.message : 'Erreur inconnue'
   }
 
-  // Plus récemment modifiées en premier : ce sont celles qui ont le plus
-  // besoin d'être (re)soumises à l'indexation.
-  entries.sort((a, b) => (b.lastmod ?? '').localeCompare(a.lastmod ?? ''))
+  const service = createServiceClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } },
+  )
+  const { data: statusRows } = await service.from('seo_indexation_status').select('*')
+  const statusByUrl = new Map((statusRows ?? []).map(r => [r.url, r]))
 
-  return <IndexationUI entries={entries} fetchError={fetchError} />
+  const pages: PageStatus[] = entries.map(e => {
+    const s = statusByUrl.get(e.url)
+    return {
+      url: e.url,
+      path: e.url.replace('https://jasonmarinho.com', '') || '/',
+      lastmod: e.lastmod,
+      httpStatus: s?.http_status ?? null,
+      coverageState: s?.coverage_state ?? null,
+      indexed: s?.indexed ?? false,
+      lastCheckedAt: s?.last_checked_at ?? null,
+      error: s?.error ?? null,
+    }
+  })
+
+  const lastChecked = pages.reduce<string | null>((max, p) => {
+    if (!p.lastCheckedAt) return max
+    return !max || p.lastCheckedAt > max ? p.lastCheckedAt : max
+  }, null)
+
+  return (
+    <IndexationUI
+      pages={pages}
+      fetchError={fetchError}
+      lastChecked={lastChecked}
+      apiConfigured={isConfigured()}
+    />
+  )
 }

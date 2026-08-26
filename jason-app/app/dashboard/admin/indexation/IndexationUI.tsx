@@ -1,24 +1,32 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { MagnifyingGlass, ArrowSquareOut, Warning, Info } from '@phosphor-icons/react/dist/ssr'
+import { useMemo, useState, useTransition } from 'react'
+import {
+  MagnifyingGlass, ArrowSquareOut, Warning, Info, ArrowClockwise, CaretDown, CaretUp, Eye,
+} from '@phosphor-icons/react/dist/ssr'
+import { refreshIndexationNow } from './actions'
 
-interface SitemapEntry {
+// Dupliqué (pas importé) de lib/google/search-console.ts : ce fichier
+// importe le module Node `crypto` (auth JWT), pas bundlable côté client.
+// IMPORTANT : resource_id doit rester NON percent-encodé (le ':' de
+// "sc-domain:" tel quel) — encoder ce paramètre casse le lien côté Google.
+const SEARCH_CONSOLE_SITE_URL = 'sc-domain:jasonmarinho.com'
+function inspectDeepLink(url: string): string {
+  return `https://search.google.com/search-console/inspect?resource_id=${SEARCH_CONSOLE_SITE_URL}&id=${encodeURIComponent(url)}`
+}
+
+export interface PageStatus {
   url: string
+  path: string
   lastmod: string | null
+  httpStatus: number | null
+  coverageState: string | null
+  indexed: boolean
+  lastCheckedAt: string | null
+  error: string | null
 }
 
-// Propriété Search Console utilisée pour le lien d'inspection — domaine
-// vérifié en DNS (couvre http/https + sous-domaines), le cas le plus courant.
-// Si jasonmarinho.com est plutôt vérifié comme propriété "préfixe d'URL"
-// dans Search Console, ce lien tombera sur le sélecteur de propriété : à
-// signaler pour ajuster resource_id vers "https://jasonmarinho.com/".
-const GSC_RESOURCE_ID = 'sc-domain:jasonmarinho.com'
-
-function inspectUrl(pageUrl: string): string {
-  const params = new URLSearchParams({ resource_id: GSC_RESOURCE_ID, id: pageUrl })
-  return `https://search.google.com/search-console/inspect?${params.toString()}`
-}
+type Tab = 'jamais' | 'pas_indexees' | 'indexees' | 'toutes'
 
 function fmtDate(d: string | null): string {
   if (!d) return '—'
@@ -27,43 +35,153 @@ function fmtDate(d: string | null): string {
   return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
-export default function IndexationUI({ entries, fetchError }: { entries: SitemapEntry[]; fetchError: string | null }) {
+function fmtDateTime(d: string | null): string {
+  if (!d) return 'jamais'
+  const date = new Date(d)
+  if (isNaN(date.getTime())) return d
+  return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+}
+
+// Traductions des coverageState renvoyés par l'API Search Console — liste
+// non exhaustive (Google en a une trentaine), les plus fréquentes sur un
+// site de ce type.
+const COVERAGE_LABELS: Record<string, string> = {
+  'Submitted and indexed': 'Indexée',
+  'Indexed, not submitted in sitemap': 'Indexée',
+  'Discovered - currently not indexed': 'Détectée, pas encore explorée',
+  'Crawled - currently not indexed': 'Explorée, pas indexée',
+  'URL is unknown to Google': 'Inconnue de Google',
+  'Duplicate without user-selected canonical': 'Doublon (canonical ambigu)',
+  'Duplicate, Google chose different canonical than user': 'Doublon (canonical ignoré)',
+  'Alternate page with proper canonical tag': 'Page alternative (canonical correct)',
+  'Excluded by ’noindex’ tag': 'Exclue (noindex)',
+  'Blocked by robots.txt': 'Bloquée (robots.txt)',
+  'Not found (404)': 'Page introuvable (404)',
+  'Page with redirect': 'Redirection',
+}
+
+function statusBadge(p: PageStatus): { label: string; color: string; bg: string } {
+  if (p.httpStatus && p.httpStatus >= 400) return { label: `Page ${p.httpStatus}`, color: '#ef4444', bg: 'rgba(239,68,68,0.10)' }
+  if (!p.lastCheckedAt) return { label: 'Jamais vérifiée', color: 'var(--text-muted)', bg: 'var(--surface)' }
+  if (p.error) return { label: 'Erreur de vérification', color: '#f59e0b', bg: 'rgba(245,158,11,0.10)' }
+  if (p.indexed) return { label: 'Indexée', color: '#4ade80', bg: 'rgba(74,222,128,0.10)' }
+  const label = (p.coverageState && COVERAGE_LABELS[p.coverageState]) || p.coverageState || 'Pas indexée'
+  return { label, color: '#60a5fa', bg: 'rgba(96,165,250,0.10)' }
+}
+
+export default function IndexationUI({ pages, fetchError, lastChecked, apiConfigured }: {
+  pages: PageStatus[]
+  fetchError: string | null
+  lastChecked: string | null
+  apiConfigured: boolean
+}) {
   const [search, setSearch] = useState('')
+  const [tab, setTab] = useState<Tab>('pas_indexees')
+  const [bannerOpen, setBannerOpen] = useState(false)
+  const [isPending, startTransition] = useTransition()
+  const [refreshMsg, setRefreshMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
+
+  const notPublished = useMemo(() => pages.filter(p => p.httpStatus && p.httpStatus >= 400), [pages])
+  const live = useMemo(() => pages.filter(p => !p.httpStatus || p.httpStatus < 400), [pages])
+  const neverChecked = useMemo(() => live.filter(p => !p.lastCheckedAt), [live])
+  const notIndexed = useMemo(() => live.filter(p => p.lastCheckedAt && !p.indexed), [live])
+  const indexed = useMemo(() => live.filter(p => p.indexed), [live])
+
+  const byTab: Record<Tab, PageStatus[]> = {
+    jamais: neverChecked,
+    pas_indexees: notIndexed,
+    indexees: indexed,
+    toutes: pages,
+  }
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
-    if (!q) return entries
-    return entries.filter(e => e.url.toLowerCase().includes(q))
-  }, [entries, search])
+    const list = byTab[tab]
+    if (!q) return list
+    return list.filter(p => p.path.toLowerCase().includes(q))
+  }, [byTab, tab, search])
+
+  function handleRefresh() {
+    setRefreshMsg(null)
+    startTransition(async () => {
+      const res = await refreshIndexationNow()
+      if (res.error) setRefreshMsg({ type: 'err', text: res.error })
+      else setRefreshMsg({ type: 'ok', text: `${res.checked} pages vérifiées.` })
+    })
+  }
 
   return (
     <div style={s.wrap}>
       <div style={s.header}>
-        <h1 style={s.title}>Indexation</h1>
-        <p style={s.subtitle}>
-          {entries.length} pages dans le sitemap. Clique sur une page pour ouvrir directement son inspection
-          dans Google Search Console.
-        </p>
+        <div>
+          <h1 style={s.title}>Indexation Google</h1>
+          <p style={s.subtitle}>Dernière vérification {lastChecked ? fmtDateTime(lastChecked) : 'jamais'}</p>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {refreshMsg && (
+            <span style={{ fontSize: '12.5px', color: refreshMsg.type === 'ok' ? 'var(--success-1)' : 'var(--danger)' }}>
+              {refreshMsg.text}
+            </span>
+          )}
+          <button onClick={handleRefresh} disabled={isPending || !apiConfigured} style={{ ...s.refreshBtn, opacity: (isPending || !apiConfigured) ? 0.5 : 1 }}>
+            <ArrowClockwise size={14} weight="bold" style={isPending ? { animation: 'spin 0.8s linear infinite' } : undefined} />
+            Vérifier l&apos;indexation
+          </button>
+        </div>
       </div>
 
-      <div style={s.infoBox}>
-        <Info size={16} weight="fill" style={{ color: 'var(--accent-text)', flexShrink: 0, marginTop: '1px' }} />
-        <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.6, color: 'var(--text-2)' }}>
-          Google ne permet pas de déclencher une demande d&apos;indexation automatiquement pour des pages classiques
-          (seules les offres d&apos;emploi et diffusions en direct ont une API dédiée). Le bouton ouvre l&apos;outil
-          d&apos;inspection d&apos;URL de Search Console, déjà pré-rempli avec la bonne page : il te reste juste à
-          cliquer sur <strong style={{ color: 'var(--text)' }}>&laquo;&nbsp;Demander une indexation&nbsp;&raquo;</strong> dedans.
-        </p>
-      </div>
+      {!apiConfigured && (
+        <div style={s.errorBox}>
+          <Warning size={16} weight="fill" style={{ color: 'var(--danger)', flexShrink: 0 }} />
+          <span style={{ fontSize: '13px', color: 'var(--danger)' }}>
+            API Search Console non configurée — ajoute GOOGLE_SEARCH_CONSOLE_CLIENT_EMAIL et
+            GOOGLE_SEARCH_CONSOLE_PRIVATE_KEY dans Vercel. En attendant, seuls les liens vers Search Console fonctionnent,
+            pas le vrai statut d&apos;indexation.
+          </span>
+        </div>
+      )}
 
       {fetchError && (
         <div style={s.errorBox}>
           <Warning size={16} weight="fill" style={{ color: 'var(--danger)', flexShrink: 0 }} />
-          <span style={{ fontSize: '13px', color: 'var(--danger)' }}>
-            Sitemap non récupéré ({fetchError}). Réessaie de recharger la page.
-          </span>
+          <span style={{ fontSize: '13px', color: 'var(--danger)' }}>Sitemap non récupéré ({fetchError}).</span>
         </div>
       )}
+
+      {notPublished.length > 0 && (
+        <div style={s.banner}>
+          <button onClick={() => setBannerOpen(v => !v)} style={s.bannerHead}>
+            {bannerOpen ? <CaretUp size={13} /> : <CaretDown size={13} />}
+            <strong>{notPublished.length} pages pas encore publiées sur le site</strong>
+            <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>
+              — leur adresse renvoie une erreur, rien à demander à Google tant qu&apos;elles ne sont pas en ligne.
+            </span>
+          </button>
+          {bannerOpen && (
+            <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              {notPublished.map(p => (
+                <span key={p.url} style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'ui-monospace, monospace' }}>
+                  {p.path} <span style={{ color: '#ef4444' }}>({p.httpStatus})</span>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      <div style={s.tabs}>
+        {([
+          { id: 'jamais' as const, label: 'Jamais vérifiées', count: neverChecked.length },
+          { id: 'pas_indexees' as const, label: 'Pas encore dans Google', count: notIndexed.length },
+          { id: 'indexees' as const, label: 'Indexées', count: indexed.length },
+          { id: 'toutes' as const, label: 'Toutes', count: pages.length },
+        ]).map(t => (
+          <button key={t.id} onClick={() => setTab(t.id)} style={{ ...s.tab, ...(tab === t.id ? s.tabActive : {}) }}>
+            {t.label}
+            <span style={{ ...s.tabCount, ...(tab === t.id ? s.tabCountActive : {}) }}>{t.count}</span>
+          </button>
+        ))}
+      </div>
 
       <div style={s.searchWrap}>
         <MagnifyingGlass size={14} color="var(--text-muted)" />
@@ -76,50 +194,89 @@ export default function IndexationUI({ entries, fetchError }: { entries: Sitemap
 
       <div style={s.list}>
         {filtered.length === 0 ? (
-          <p style={s.empty}>Aucune page pour &laquo;&nbsp;{search}&nbsp;&raquo;.</p>
+          <p style={s.empty}>Aucune page ici.</p>
         ) : (
-          filtered.map(e => (
-            <a
-              key={e.url}
-              href={inspectUrl(e.url)}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={s.row}
-              className="jm-idx-row"
-            >
-              <span style={s.rowUrl}>{e.url.replace('https://jasonmarinho.com', '') || '/'}</span>
-              <span style={s.rowDate}>{fmtDate(e.lastmod)}</span>
-              <ArrowSquareOut size={14} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
-            </a>
-          ))
+          filtered.map(p => {
+            const badge = statusBadge(p)
+            return (
+              <div key={p.url} style={s.row}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const }}>
+                    <span style={s.rowUrl}>{p.path}</span>
+                    <span style={{ ...s.badge, color: badge.color, background: badge.bg }}>{badge.label}</span>
+                  </div>
+                  <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '3px' }}>
+                    Vérifiée {fmtDateTime(p.lastCheckedAt)}
+                    {p.lastmod && <> · modifiée {fmtDate(p.lastmod)}</>}
+                    {p.error && <span style={{ color: '#f59e0b' }}> · {p.error}</span>}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+                  <a href={inspectDeepLink(p.url)} target="_blank" rel="noopener noreferrer" style={s.smallBtn} title="Ouvrir l'inspection dans Search Console">
+                    <ArrowSquareOut size={13} /> Inspecter
+                  </a>
+                  <a href={p.url} target="_blank" rel="noopener noreferrer" style={s.smallBtn} title="Voir la page">
+                    <Eye size={13} /> Voir
+                  </a>
+                </div>
+              </div>
+            )
+          })
         )}
       </div>
 
       <style>{`
-        .jm-idx-row:hover { background: var(--surface) !important; border-color: var(--border-2) !important; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>
     </div>
   )
 }
 
 const s: Record<string, React.CSSProperties> = {
-  wrap: { display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '760px' },
-  header: { marginBottom: '4px' },
+  wrap: { display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: '820px' },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' },
   title: {
     fontFamily: 'var(--font-fraunces), serif', fontSize: '26px', fontWeight: 500,
-    color: 'var(--text)', margin: '0 0 6px',
+    color: 'var(--text)', margin: '0 0 4px',
   },
-  subtitle: { fontSize: '13.5px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 },
-  infoBox: {
-    display: 'flex', gap: '10px', alignItems: 'flex-start',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '12px', padding: '14px 16px',
+  subtitle: { fontSize: '13px', color: 'var(--text-muted)', margin: 0 },
+  refreshBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    background: 'var(--accent-text)', border: 'none',
+    borderRadius: '9px', padding: '9px 16px',
+    color: 'var(--bg)', cursor: 'pointer', fontSize: '13px', fontWeight: 600,
+    fontFamily: 'var(--font-outfit), sans-serif',
   },
   errorBox: {
-    display: 'flex', gap: '8px', alignItems: 'center',
+    display: 'flex', gap: '8px', alignItems: 'flex-start',
     background: 'var(--danger-bg)', border: '1px solid var(--danger-border)',
     borderRadius: '10px', padding: '10px 14px',
   },
+  banner: {
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '10px', padding: '10px 14px',
+  },
+  bannerHead: {
+    display: 'flex', alignItems: 'center', gap: '8px',
+    background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+    fontSize: '13px', color: 'var(--text)', width: '100%', textAlign: 'left',
+    fontFamily: 'var(--font-outfit), sans-serif',
+  },
+  tabs: { display: 'flex', gap: '6px', flexWrap: 'wrap', borderBottom: '1px solid var(--border)', paddingBottom: '2px' },
+  tab: {
+    display: 'flex', alignItems: 'center', gap: '7px',
+    padding: '8px 14px', borderRadius: '9px 9px 0 0', fontSize: '13px', fontWeight: 500,
+    background: 'none', border: 'none', borderBottom: '2px solid transparent',
+    color: 'var(--text-3)', cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
+  },
+  tabActive: {
+    color: 'var(--accent-text)', borderBottomColor: 'var(--accent-text)', fontWeight: 600,
+  },
+  tabCount: {
+    fontSize: '10.5px', fontWeight: 700, padding: '1px 7px',
+    borderRadius: '100px', background: 'var(--border)', color: 'var(--text-muted)',
+  },
+  tabCountActive: { background: 'var(--accent-bg-2)', color: 'var(--accent-text)' },
   searchWrap: {
     display: 'flex', alignItems: 'center', gap: '8px',
     background: 'var(--surface)', border: '1px solid var(--border)',
@@ -129,27 +286,24 @@ const s: Record<string, React.CSSProperties> = {
     background: 'none', border: 'none', outline: 'none',
     fontSize: '13px', color: 'var(--text)', width: '100%', fontFamily: 'var(--font-outfit), sans-serif',
   },
-  list: {
-    display: 'flex', flexDirection: 'column', gap: '2px',
-    maxHeight: '65vh', overflowY: 'auto',
-    border: '1px solid var(--border)', borderRadius: '12px',
-    padding: '6px',
-  },
+  list: { display: 'flex', flexDirection: 'column', gap: '6px' },
   row: {
     display: 'flex', alignItems: 'center', gap: '12px',
-    padding: '9px 10px', borderRadius: '8px',
-    border: '1px solid transparent',
-    textDecoration: 'none',
-    transition: 'background 0.1s, border-color 0.1s',
+    padding: '12px 14px', borderRadius: '10px',
+    border: '1px solid var(--border)', background: 'var(--surface)',
   },
   rowUrl: {
-    flex: 1, minWidth: 0,
-    fontSize: '13px', color: 'var(--text)',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-    fontFamily: 'ui-monospace, monospace',
+    fontSize: '13px', color: 'var(--text)', fontFamily: 'ui-monospace, monospace',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '340px',
   },
-  rowDate: {
-    fontSize: '11.5px', color: 'var(--text-muted)', flexShrink: 0, whiteSpace: 'nowrap',
+  badge: {
+    fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px', whiteSpace: 'nowrap',
+  },
+  smallBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '12px', fontWeight: 500, color: 'var(--text-2)',
+    background: 'var(--bg-2)', border: '1px solid var(--border)',
+    borderRadius: '8px', padding: '6px 10px', textDecoration: 'none', whiteSpace: 'nowrap',
   },
   empty: { fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', padding: '24px 0', margin: 0 },
 }
