@@ -263,7 +263,7 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
 }
 
 const s: Record<string, React.CSSProperties> = {
-  wrap: { display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: '820px' },
+  wrap: { display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: '820px', padding: 'clamp(20px,3vw,44px)' },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' },
   title: {
     fontFamily: 'var(--font-fraunces), serif', fontSize: '26px', fontWeight: 500,
