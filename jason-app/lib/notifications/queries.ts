@@ -45,23 +45,55 @@ export async function getNotifications(opts?: {
   }
 }
 
+// NB : pas de `count: 'exact', head: true` ici — il faudrait alors filtrer
+// l'expiration côté DB, et la syntaxe `.or(...)` de PostgREST est fragile à
+// cause des points dans le timestamp (cf. getNotifications ci-dessus). On
+// récupère donc les lignes non lues (volume faible, par utilisateur) et on
+// filtre les expirées en mémoire, comme getNotifications — sinon une
+// notification expirée mais jamais purgée (purge quotidienne seulement,
+// cf. cron notifications-engine) reste comptée dans le badge alors qu'elle
+// est déjà invisible dans le panneau, ce qui affiche un badge "fantôme".
 export async function getUnreadCount(): Promise<number> {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return 0
-    const { count, error } = await supabase
+    const { data, error } = await supabase
       .from('notifications')
-      .select('id', { count: 'exact', head: true })
+      .select('id, expires_at')
       .eq('recipient_id', user.id)
       .is('read_at', null)
     if (error) {
       console.error('[getUnreadCount]', error)
       return 0
     }
-    return count ?? 0
+    const now = Date.now()
+    return (data ?? []).filter(n => !n.expires_at || new Date(n.expires_at).getTime() > now).length
   } catch (e) {
     console.error('[getUnreadCount] crash', e)
+    return 0
+  }
+}
+
+// Compteur non lu du forum Entre Hôtes (chez_nous_notifications) — pas de
+// notion d'expiration sur cette table, un count exact DB suffit.
+export async function getChezNousUnreadCount(): Promise<number> {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return 0
+    const { count, error } = await supabase
+      .from('chez_nous_notifications')
+      .select('id', { count: 'exact', head: true })
+      .eq('recipient_id', user.id)
+      .is('read_at', null)
+    if (error) {
+      console.error('[getChezNousUnreadCount]', error)
+      return 0
+    }
+    return count ?? 0
+  } catch (e) {
+    console.error('[getChezNousUnreadCount] crash', e)
     return 0
   }
 }

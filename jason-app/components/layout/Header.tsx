@@ -137,13 +137,17 @@ interface HeaderProps {
   spaces?: Array<{ key: 'host' | 'photographer' | 'cleaner' | 'investor'; label: string; href: string; subtitle?: string | null; active: boolean }>
   /** Forwarded a la sidebar mobile — pour que le menu user affiche les bonnes infos */
   isContributor?: boolean
+  /** Compteurs calculés côté serveur (comme hasNewActualites) — évite au badge
+      de rester à 0 le temps de l'aller-retour client au montage. */
+  initialAppNotifUnread?: number
+  initialChezNousUnread?: number
   /** Forwarded a la sidebar mobile — sélecteur logement */
   allProperties?: Array<{ id: string; nom: string; ville: string | null }>
   /** Forwarded a la sidebar mobile — sélecteur logement */
   activePropertyId?: string
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false, showOnboardingBtn = false, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false, showOnboardingBtn = false, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId, initialAppNotifUnread = 0, initialChezNousUnread = 0 }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -155,11 +159,13 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
     : currentPlan === 'Standard' ? 'standard'
     : 'decouverte'
 
-  const [chezNousUnread, setChezNousUnread] = useState(0)
+  const [chezNousUnread, setChezNousUnread] = useState(initialChezNousUnread)
   // Compteur des notifications contextuelles (table `notifications`, générées
-  // par le rules-engine). Récupéré au mount et mis à jour quand l'utilisateur
-  // visite /dashboard/notifications.
-  const [appNotifUnread, setAppNotifUnread] = useState(0)
+  // par le rules-engine). Initialisé depuis le serveur (layout.tsx, mêmes
+  // requêtes que hasNewActualites) pour afficher le bon nombre dès le premier
+  // rendu ; le fetch client ci-dessous ne sert qu'à rafraîchir en arrière-plan
+  // sans bloquer l'affichage initial.
+  const [appNotifUnread, setAppNotifUnread] = useState(initialAppNotifUnread)
   const [readIds, setReadIds] = useState<Set<string>>(() => computeReadIds(lastSeenNouveautesAt))
   const [userName] = useState(initialUserName ?? '')
   const [titleFromStore, setTitleFromStore] = useState<string | null>(null)
@@ -177,31 +183,24 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
     : pathname?.startsWith('/dashboard/investir') ? 'investor'
     : 'host'
 
-  // Cloche unifiée : on récupère les compteurs (Entre Hôtes + Alertes app) côté
-  // client au mount pour pouvoir les sommer au unreadCount produit (badge agrégé)
-  // et les afficher dans les onglets du NotificationPanel.
-  // Défensif : try/catch + Promise.allSettled — si une des deux tables est
-  // momentanément indispo, l'autre compteur s'affiche quand même.
+  // Cloche unifiée : l'état initial vient du serveur (props ci-dessus, calculé
+  // dans dashboard/layout.tsx), donc le badge est correct dès le premier
+  // rendu. Ce fetch ne fait que rafraîchir en arrière-plan au montage — utile
+  // quand le layout serveur n'a pas re-render depuis un moment (navigation
+  // client entre routes soeurs) — via le même endpoint/logique que le
+  // serveur, pour ne pas réintroduire le badge "fantôme" (notification
+  // expirée mais pas encore purgée) qu'un calcul dupliqué recréerait.
   useEffect(() => {
     if (!userId) return
     let cancelled = false
-    const supabase = createClient()
-    Promise.allSettled([
-      supabase
-        .from('chez_nous_notifications')
-        .select('*', { count: 'exact', head: true })
-        .eq('recipient_id', userId)
-        .is('read_at', null),
-      supabase
-        .from('notifications')
-        .select('*', { count: 'exact', head: true })
-        .eq('recipient_id', userId)
-        .is('read_at', null),
-    ]).then(([cnResult, notifResult]) => {
-      if (cancelled) return
-      if (cnResult.status === 'fulfilled') setChezNousUnread(cnResult.value.count ?? 0)
-      if (notifResult.status === 'fulfilled') setAppNotifUnread(notifResult.value.count ?? 0)
-    }).catch(err => console.warn('[Header notif counts]', err))
+    fetch('/api/notifications/unread-counts')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (cancelled || !data) return
+        if (typeof data.chezNousUnread === 'number') setChezNousUnread(data.chezNousUnread)
+        if (typeof data.appNotifUnread === 'number') setAppNotifUnread(data.appNotifUnread)
+      })
+      .catch(err => console.warn('[Header notif counts]', err))
     return () => { cancelled = true }
   }, [userId])
 
