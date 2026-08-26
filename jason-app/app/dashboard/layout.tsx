@@ -7,6 +7,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { getCachedPublishedActualites } from '@/lib/queries/cache'
 import { getUserSpaces } from '@/lib/queries/spaces'
 import { getActiveProperty } from '@/lib/queries/active-property'
+import { getUnreadCount, getChezNousUnreadCount } from '@/lib/notifications/queries'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { OnboardingTracks } from '@/components/onboarding/OnboardingTracks'
 import { detectTracksProgress } from '@/lib/onboarding/detect-tracks'
@@ -33,6 +34,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const actualitesPromise = getCachedPublishedActualites()
   const spacesPromise = getUserSpaces()
   const activePropertyPromise = getActiveProperty()
+  // Cloche : comptés côté serveur (comme hasNewActualites ci-dessous) pour
+  // que le badge affiche le bon nombre dès le premier rendu, plutôt que
+  // d'attendre un aller-retour client après hydratation (cf. Header.tsx).
+  const appNotifUnreadPromise = getUnreadCount()
+  const chezNousUnreadPromise = getChezNousUnreadCount()
 
   // detectTracksProgress (7 tests d'existence, ~200-500ms, non cachable)
   // dépend du profil : lancé juste après, en parallèle des 3 autres.
@@ -61,7 +67,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const emptyOnboarding = { totalDone: 1, totalSteps: 1, tracks: [] as Array<{ key: string; doneSteps: Set<string> }> }
 
-  const [cachedActualites, spacesResult, activeProperty, onboardingState] = await Promise.all([
+  const [cachedActualites, spacesResult, activeProperty, onboardingState, appNotifUnread, chezNousUnread] = await Promise.all([
     actualitesPromise,
     spacesPromise,
     activePropertyPromise,
@@ -74,6 +80,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
           onboardingStep: profile.onboarding_step,
           stripeOnboardingComplete: profile.stripe_onboarding_complete,
         }),
+    appNotifUnreadPromise,
+    chezNousUnreadPromise,
   ])
 
   const isAdmin = profile.role === 'admin'
@@ -121,6 +129,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
           lastSeenNouveautesAt={profile.last_seen_nouveautes_at}
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
+          initialAppNotifUnread={appNotifUnread}
+          initialChezNousUnread={chezNousUnread}
           showOnboardingBtn={showOnboarding}
           hasStripeAccount={profile.stripe_onboarding_complete}
           spaces={spacesResult.spaces}
