@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import {
   MagnifyingGlass, ArrowSquareOut, Warning, Info, ArrowClockwise, CaretDown, CaretUp, Eye, GoogleLogo, Copy, Check,
 } from '@phosphor-icons/react/dist/ssr'
-import { refreshIndexationNow } from './actions'
+import { refreshIndexationNow, markSubmitted, unmarkSubmitted } from './actions'
 
 // Dupliqué (pas importé) de lib/google/search-console.ts : ce fichier
 // importe le module Node `crypto` (côté serveur, via lib/security/crypto.ts),
@@ -33,10 +33,14 @@ export interface PageStatus {
   // absent tant que la page n'a jamais été vérifiée via l'API.
   inspectionLink: string | null
   lastCheckedAt: string | null
+  // Demande d'indexation faite à la main dans Search Console (Google n'a pas
+  // d'API d'écriture pour ça) — coché par l'admin via "C'est fait" pour
+  // garder le fil sur ~500 pages, cf. le même bouton chez Driing.
+  submittedAt: string | null
   error: string | null
 }
 
-type Tab = 'jamais' | 'pas_indexees' | 'indexees' | 'toutes'
+type Tab = 'a_soumettre' | 'jamais' | 'pas_indexees' | 'indexees' | 'toutes'
 
 function fmtDate(d: string | null): string {
   if (!d) return '—'
@@ -87,12 +91,13 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
 }) {
   const [search, setSearch] = useState('')
   // Tant que l'API n'est pas configurée, tout est "jamais vérifié" — partir
-  // sur cet onglet plutôt que "Pas encore dans Google" (qui affiche 0 et
-  // laisse croire que la page est cassée).
-  const [tab, setTab] = useState<Tab>(apiConfigured ? 'pas_indexees' : 'jamais')
+  // sur cet onglet plutôt que "À soumettre" (qui affiche 0 et laisse croire
+  // que tout est déjà réglé).
+  const [tab, setTab] = useState<Tab>(apiConfigured ? 'a_soumettre' : 'jamais')
   const [bannerOpen, setBannerOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [refreshMsg, setRefreshMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
+  const [pendingSubmitUrl, setPendingSubmitUrl] = useState<string | null>(null)
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -112,8 +117,13 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
   const neverChecked = useMemo(() => live.filter(p => !p.lastCheckedAt), [live])
   const notIndexed = useMemo(() => live.filter(p => p.lastCheckedAt && !p.indexed), [live])
   const indexed = useMemo(() => live.filter(p => p.indexed), [live])
+  // Pas indexées ET jamais encore demandées à Google — la vraie file
+  // d'action, contrairement à "Pas encore dans Google" qui garde aussi
+  // celles déjà demandées (en attente que Google les traite).
+  const aSoumettre = useMemo(() => notIndexed.filter(p => !p.submittedAt), [notIndexed])
 
   const byTab: Record<Tab, PageStatus[]> = {
+    a_soumettre: aSoumettre,
     jamais: neverChecked,
     pas_indexees: notIndexed,
     indexees: indexed,
@@ -166,6 +176,26 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
         }
       }
     })
+  }
+
+  // Google n'a pas d'API d'écriture pour demander l'indexation d'une page
+  // classique — on ouvre Search Console (inspectionLink) où l'admin clique
+  // "Demander une indexation" à la main, puis revient cocher "C'est fait"
+  // ici pour ne pas reperdre le fil sur ~500 pages.
+  async function handleMarkSubmitted(url: string) {
+    setPendingSubmitUrl(url)
+    const res = await markSubmitted(url)
+    if (res.error) setRefreshMsg({ type: 'err', text: res.error })
+    router.refresh()
+    setPendingSubmitUrl(null)
+  }
+
+  async function handleUnmarkSubmitted(url: string) {
+    setPendingSubmitUrl(url)
+    const res = await unmarkSubmitted(url)
+    if (res.error) setRefreshMsg({ type: 'err', text: res.error })
+    router.refresh()
+    setPendingSubmitUrl(null)
   }
 
   return (
@@ -250,6 +280,7 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
 
       <div style={s.tabs}>
         {([
+          { id: 'a_soumettre' as const, label: 'À soumettre', count: aSoumettre.length },
           { id: 'jamais' as const, label: 'Jamais vérifiées', count: neverChecked.length },
           { id: 'pas_indexees' as const, label: 'Pas encore dans Google', count: notIndexed.length },
           { id: 'indexees' as const, label: 'Indexées', count: indexed.length },
@@ -287,10 +318,30 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
                   <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '3px' }}>
                     Vérifiée {fmtDateTime(p.lastCheckedAt)}
                     {p.lastmod && <> · modifiée {fmtDate(p.lastmod)}</>}
+                    {p.submittedAt && <span style={{ color: 'var(--success-1)' }}> · demandée le {fmtDate(p.submittedAt)}</span>}
                     {p.error && <span style={{ color: '#f59e0b' }}> · {p.error}</span>}
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }} className="jm-idx-actions">
+                  {!p.indexed && (
+                    p.submittedAt ? (
+                      <button
+                        onClick={() => handleUnmarkSubmitted(p.url)} disabled={pendingSubmitUrl === p.url}
+                        style={{ ...s.smallBtn, cursor: 'pointer', color: 'var(--success-1)', borderColor: 'var(--success-1)' }}
+                        title="Annuler — la remettre dans « À soumettre »"
+                      >
+                        <Check size={13} weight="bold" /> Demandée
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleMarkSubmitted(p.url)} disabled={pendingSubmitUrl === p.url}
+                        style={{ ...s.smallBtn, cursor: 'pointer' }}
+                        title="Marquer comme demandée (après avoir cliqué « Demander une indexation » dans Search Console)"
+                      >
+                        <Check size={13} /> C&apos;est fait
+                      </button>
+                    )
+                  )}
                   {p.inspectionLink ? (
                     // Lien officiel renvoyé par l'API pour la dernière
                     // vérification — arrive directement sur cette page,
