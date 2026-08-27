@@ -2,8 +2,8 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, X, Info, MagnifyingGlass } from '@phosphor-icons/react/dist/ssr'
-import { createCommentTrigger, toggleCommentTrigger, deleteCommentTrigger, checkWebhookSubscriptions } from './actions'
+import { Plus, X, Info, MagnifyingGlass, Plugs } from '@phosphor-icons/react/dist/ssr'
+import { createCommentTrigger, toggleCommentTrigger, deleteCommentTrigger, checkWebhookSubscriptions, registerAppWebhooks } from './actions'
 import { PLATFORM_META } from './constants'
 
 export interface CommentTriggerRow {
@@ -44,6 +44,7 @@ export default function SocialAutoReply({ triggers, recentReplies }: {
   const [formError, setFormError] = useState<string | null>(null)
   const [diagResult, setDiagResult] = useState<string | null>(null)
   const [diagPending, setDiagPending] = useState(false)
+  const [registerPending, setRegisterPending] = useState(false)
 
   function runDiagnostic() {
     setDiagPending(true)
@@ -52,6 +53,16 @@ export default function SocialAutoReply({ triggers, recentReplies }: {
       const res = await checkWebhookSubscriptions()
       setDiagResult(res.result ?? res.error ?? 'Erreur inconnue.')
       setDiagPending(false)
+    })
+  }
+
+  function runRegister() {
+    setRegisterPending(true)
+    setDiagResult(null)
+    startTransition(async () => {
+      const res = await registerAppWebhooks()
+      setDiagResult(res.result ?? res.error ?? 'Erreur inconnue.')
+      setRegisterPending(false)
     })
   }
 
@@ -100,11 +111,17 @@ export default function SocialAutoReply({ triggers, recentReplies }: {
       <section style={s.card}>
         <h2 style={s.cardTitle}>Diagnostic</h2>
         <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>
-          Interroge Meta directement pour voir si tes comptes sont réellement abonnés au webhook (au lieu de deviner).
+          Interroge Meta directement pour voir si tes comptes sont réellement abonnés au webhook (au lieu de deviner),
+          ou enregistre le webhook de l&apos;app via l&apos;API si le dashboard Meta ne l&apos;a pas sauvegardé.
         </p>
-        <button type="button" onClick={runDiagnostic} disabled={diagPending} style={{ ...s.primaryBtn, opacity: diagPending ? 0.6 : 1 }}>
-          <MagnifyingGlass size={14} /> {diagPending ? 'Vérification…' : 'Diagnostiquer l’abonnement webhook'}
-        </button>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' as const }}>
+          <button type="button" onClick={runDiagnostic} disabled={diagPending} style={{ ...s.primaryBtn, opacity: diagPending ? 0.6 : 1 }}>
+            <MagnifyingGlass size={14} /> {diagPending ? 'Vérification…' : 'Diagnostiquer l’abonnement webhook'}
+          </button>
+          <button type="button" onClick={runRegister} disabled={registerPending} style={{ ...s.primaryBtn, background: 'var(--bg-2)', color: 'var(--text-2)', border: '1px solid var(--border)', opacity: registerPending ? 0.6 : 1 }}>
+            <Plugs size={14} /> {registerPending ? 'Enregistrement…' : 'Enregistrer le webhook de l’app'}
+          </button>
+        </div>
         {diagResult && (
           <pre style={s.diagOutput}>{diagResult}</pre>
         )}

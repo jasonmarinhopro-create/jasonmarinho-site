@@ -295,6 +295,28 @@ export async function getAppSubscriptions(): Promise<Array<{ object: string; cal
   return json.data ?? []
 }
 
+// Enregistre le webhook de l'app elle-même (URL + jeton + champs) via
+// l'API plutôt que via le dashboard Meta — dont l'écran "Configurez les
+// webhooks" s'est avéré ne pas sauvegarder réellement malgré un état de
+// succès affiché (confirmé via getAppSubscriptions : aucune souscription
+// enregistrée côté Meta). Meta valide le hub.challenge sur l'URL avant
+// d'accepter, donc échoue franchement si le callback ne répond pas.
+export async function subscribeAppWebhook(object: string, fields: string[]): Promise<void> {
+  const appId = process.env.META_APP_ID
+  const appSecret = process.env.META_APP_SECRET
+  const verifyToken = process.env.META_WEBHOOK_VERIFY_TOKEN
+  if (!appId || !appSecret) throw new Error('META_APP_ID/META_APP_SECRET manquants')
+  if (!verifyToken) throw new Error('META_WEBHOOK_VERIFY_TOKEN manquant')
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
+  await graphFetch(`/${appId}/subscriptions`, {
+    access_token: `${appId}|${appSecret}`,
+    object,
+    callback_url: `${appUrl}/api/social/webhook/meta`,
+    verify_token: verifyToken,
+    fields: fields.join(','),
+  }, 'POST')
+}
+
 export async function debugTokenScopes(accessToken: string): Promise<string[]> {
   const appId = process.env.META_APP_ID
   const appSecret = process.env.META_APP_SECRET
