@@ -276,6 +276,22 @@ export async function getSubscribedApps(nodeId: string, accessToken: string): Pr
   return json.data ?? []
 }
 
+// Permissions réellement accordées sur un token stocké — un token créé
+// avant l'ajout d'une permission (ex : instagram_manage_comments) ne
+// l'embarque pas tant qu'il n'y a pas eu de reconnexion, même si la
+// permission existe désormais côté Configuration Meta. Sert à vérifier ça
+// directement plutôt que de supposer que "Reconnecter" a suffi.
+export async function debugTokenScopes(accessToken: string): Promise<string[]> {
+  const appId = process.env.META_APP_ID
+  const appSecret = process.env.META_APP_SECRET
+  if (!appId || !appSecret) throw new Error('META_APP_ID/META_APP_SECRET manquants')
+  const json = await graphFetch('/debug_token', {
+    input_token: accessToken,
+    access_token: `${appId}|${appSecret}`,
+  }, 'GET')
+  return json.data?.scopes ?? []
+}
+
 // ── Réponses automatiques aux commentaires ────────────────────────
 
 // Réponse en message privé à un commentaire (pas un commentaire public) —
