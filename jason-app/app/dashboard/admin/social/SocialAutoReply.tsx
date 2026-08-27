@@ -2,8 +2,8 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, X, Info } from '@phosphor-icons/react/dist/ssr'
-import { createCommentTrigger, toggleCommentTrigger, deleteCommentTrigger } from './actions'
+import { Plus, X, Info, MagnifyingGlass } from '@phosphor-icons/react/dist/ssr'
+import { createCommentTrigger, toggleCommentTrigger, deleteCommentTrigger, checkWebhookSubscriptions } from './actions'
 import { PLATFORM_META } from './constants'
 
 export interface CommentTriggerRow {
@@ -42,6 +42,18 @@ export default function SocialAutoReply({ triggers, recentReplies }: {
   const [keyword, setKeyword] = useState('')
   const [replyMessage, setReplyMessage] = useState('')
   const [formError, setFormError] = useState<string | null>(null)
+  const [diagResult, setDiagResult] = useState<string | null>(null)
+  const [diagPending, setDiagPending] = useState(false)
+
+  function runDiagnostic() {
+    setDiagPending(true)
+    setDiagResult(null)
+    startTransition(async () => {
+      const res = await checkWebhookSubscriptions()
+      setDiagResult(res.result ?? res.error ?? 'Erreur inconnue.')
+      setDiagPending(false)
+    })
+  }
 
   function submit() {
     setFormError(null)
@@ -84,6 +96,19 @@ export default function SocialAutoReply({ triggers, recentReplies }: {
           app/api/social/webhook/meta).
         </span>
       </div>
+
+      <section style={s.card}>
+        <h2 style={s.cardTitle}>Diagnostic</h2>
+        <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>
+          Interroge Meta directement pour voir si tes comptes sont réellement abonnés au webhook (au lieu de deviner).
+        </p>
+        <button type="button" onClick={runDiagnostic} disabled={diagPending} style={{ ...s.primaryBtn, opacity: diagPending ? 0.6 : 1 }}>
+          <MagnifyingGlass size={14} /> {diagPending ? 'Vérification…' : 'Diagnostiquer l’abonnement webhook'}
+        </button>
+        {diagResult && (
+          <pre style={s.diagOutput}>{diagResult}</pre>
+        )}
+      </section>
 
       <section style={s.card}>
         <h2 style={s.cardTitle}>Nouvelle réponse automatique</h2>
@@ -201,6 +226,11 @@ const s: Record<string, any> = {
   input: {
     width: '100%', padding: '9px 12px', borderRadius: 9, border: '1px solid var(--border)',
     background: 'var(--bg-2)', color: 'var(--text)', fontSize: 13.5, fontFamily: 'inherit',
+  },
+  diagOutput: {
+    fontSize: 12.5, fontFamily: 'ui-monospace, monospace', whiteSpace: 'pre-wrap' as const,
+    background: 'var(--bg-2)', border: '1px solid var(--border)', borderRadius: 9,
+    padding: '10px 12px', margin: 0, color: 'var(--text)',
   },
   primaryBtn: {
     display: 'inline-flex', alignItems: 'center', gap: 7, alignSelf: 'flex-start',

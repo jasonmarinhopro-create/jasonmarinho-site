@@ -268,6 +268,14 @@ export async function subscribePageWebhooks(nodeId: string, accessToken: string,
   }, 'POST')
 }
 
+// État réel de l'abonnement, tel que Meta le voit — sert à diagnostiquer
+// sans deviner (ex : bouton "Diagnostiquer" dans Admin → Réseaux sociaux)
+// plutôt que d'empiler des hypothèses sur pourquoi un webhook n'arrive pas.
+export async function getSubscribedApps(nodeId: string, accessToken: string): Promise<Array<{ id: string; name?: string; subscribed_fields?: string[] }>> {
+  const json = await graphFetch(`/${nodeId}/subscribed_apps`, { access_token: accessToken }, 'GET')
+  return json.data ?? []
+}
+
 // ── Réponses automatiques aux commentaires ────────────────────────
 
 // Réponse en message privé à un commentaire (pas un commentaire public) —

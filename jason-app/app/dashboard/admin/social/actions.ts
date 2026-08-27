@@ -4,6 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { dispatchPost, refreshPostStats as refreshPostStatsInternal, refreshAllStats as refreshAllStatsInternal } from '@/lib/social/dispatch'
+import { getSubscribedApps } from '@/lib/social/meta'
+import { decryptToken } from '@/lib/security/crypto'
 
 function adminClient() {
   return createAdminClient(
@@ -255,6 +257,40 @@ export async function deleteCommentTrigger(id: string): Promise<{ success?: bool
     if (error) return { error: error.message }
     revalidatePath('/dashboard/admin/social')
     return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
+  }
+}
+
+// Interroge directement l'API Meta pour voir l'état réel de l'abonnement
+// webhook de chaque compte connecté — pour diagnostiquer sans deviner
+// pourquoi un commentaire ne déclenche rien (ex : abonnement jamais pris,
+// mauvais champ, app pas encore listée dans subscribed_apps).
+export async function checkWebhookSubscriptions(): Promise<{ result?: string; error?: string }> {
+  try {
+    await requireAdmin()
+    const db = adminClient()
+    const { data: accounts } = await db.from('social_accounts').select('*').eq('status', 'active')
+    if (!accounts || accounts.length === 0) return { result: 'Aucun compte connecté.' }
+
+    const appId = process.env.META_APP_ID
+    const lines: string[] = []
+    for (const account of accounts) {
+      try {
+        const accessToken = decryptToken(account.access_token)
+        const subs = await getSubscribedApps(account.external_account_id, accessToken)
+        const mine = subs.find(s => s.id === appId)
+        lines.push(
+          `${account.platform} (${account.display_name ?? account.external_account_id}) : ` +
+          (mine
+            ? `abonnée, champs = [${(mine.subscribed_fields ?? []).join(', ')}]`
+            : `PAS abonnée (${subs.length} app(s) au total : ${subs.map(s => s.name ?? s.id).join(', ') || 'aucune'})`),
+        )
+      } catch (err) {
+        lines.push(`${account.platform} (${account.display_name ?? account.external_account_id}) : erreur — ${err instanceof Error ? err.message : String(err)}`)
+      }
+    }
+    return { result: lines.join('\n') }
   } catch (err) {
     return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
   }
