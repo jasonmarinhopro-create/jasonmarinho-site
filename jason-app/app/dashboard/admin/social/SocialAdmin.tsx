@@ -353,9 +353,19 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
               </div>
             ))
           })}
-          {(byPlatform('facebook').length === 0 || byPlatform('instagram').length === 0) && (
+          {(byPlatform('facebook').length === 0 || byPlatform('instagram').length === 0) ? (
             <a href="/api/social/connect/meta" style={s.connectBtn}>
               <Plus size={15} /> Connecter Facebook / Instagram
+            </a>
+          ) : (
+            // Comptes déjà connectés — pas de bouton "Connecter" dans ce cas,
+            // mais on peut avoir besoin de relancer l'OAuth quand même (ex :
+            // nouvelles permissions ajoutées côté Meta après coup, comme
+            // pages_manage_metadata pour les webhooks) : le token stocké
+            // n'embarque que les permissions accordées au moment de la
+            // connexion initiale, il faut re-authentifier pour le rafraîchir.
+            <a href="/api/social/connect/meta" style={{ ...s.connectBtn, background: 'var(--bg-2)', color: 'var(--text-2)', border: '1px solid var(--border)' }}>
+              <ArrowClockwise size={14} /> Reconnecter (rafraîchir permissions)
             </a>
           )}
         </div>
