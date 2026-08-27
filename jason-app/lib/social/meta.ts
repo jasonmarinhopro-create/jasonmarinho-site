@@ -45,6 +45,10 @@ export function buildAuthorizeUrl(redirectUri: string, state: string): string {
   // Instagram Business — `instagram_business_basic` / `_content_publish`
   // ne sont plus fiables via `scope` seul. config_id référence une
   // configuration créée côté Meta qui embarque déjà les permissions.
+  // Si META_LOGIN_CONFIG_ID est défini, ces permissions viennent de la
+  // Configuration Meta elle-même (Facebook Login for Business →
+  // Configurations) — l'ajouter ici ne suffit pas, il faut aussi les
+  // ajouter côté Meta dans cette Configuration.
   const configId = process.env.META_LOGIN_CONFIG_ID
   if (configId) {
     url.searchParams.set('config_id', configId)
@@ -56,6 +60,12 @@ export function buildAuthorizeUrl(redirectUri: string, state: string): string {
       'instagram_business_basic',
       'instagram_business_content_publish',
       'business_management',
+      // Réponses automatiques aux commentaires (cf. lib/social/comment-triggers.ts) :
+      // s'abonner aux webhooks de Page + envoyer des réponses privées.
+      'pages_manage_metadata',
+      'pages_messaging',
+      'instagram_manage_comments',
+      'instagram_manage_messages',
     ].join(','))
   }
   return url.toString()
@@ -242,6 +252,18 @@ export async function publishToInstagram(igUserId: string, pageAccessToken: stri
   }, 'POST')
 
   return published.id
+}
+
+// Abonne la Page (et son compte Instagram lié) aux webhooks de l'app pour
+// les champs donnés — évite de dépendre du flow "Générer un token" du
+// dashboard Meta (peu fiable, popup de login Instagram qui échoue souvent).
+// Suffit à lui seul pour recevoir feed/comments dès lors que l'app a déjà
+// l'URL de webhook + le champ correspondant activés côté App Dashboard.
+export async function subscribePageWebhooks(pageId: string, pageAccessToken: string, fields: string[]): Promise<void> {
+  await graphFetch(`/${pageId}/subscribed_apps`, {
+    access_token: pageAccessToken,
+    subscribed_fields: fields.join(','),
+  }, 'POST')
 }
 
 // ── Réponses automatiques aux commentaires ────────────────────────

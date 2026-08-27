@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
-import { exchangeCodeForUserToken, exchangeForLongLivedToken, getManagedPages } from '@/lib/social/meta'
+import { exchangeCodeForUserToken, exchangeForLongLivedToken, getManagedPages, subscribePageWebhooks } from '@/lib/social/meta'
 import { encryptToken } from '@/lib/security/crypto'
 import { logger } from '@/lib/logger'
 
@@ -91,6 +91,17 @@ export async function GET(req: NextRequest) {
           status: 'active',
           updated_at: new Date().toISOString(),
         }, { onConflict: 'platform,external_account_id' })
+      }
+
+      // Abonne la Page aux webhooks (feed = commentaires) pour les réponses
+      // auto — remplace le flow "Générer un token" du dashboard Meta, peu
+      // fiable. Non bloquant : la connexion réussit même si l'app n'a pas
+      // encore la permission pages_manage_metadata (ex : Configuration Meta
+      // pas encore mise à jour), l'admin pourra réessayer après.
+      try {
+        await subscribePageWebhooks(page.id, page.accessToken, ['feed'])
+      } catch (err) {
+        log.error('abonnement webhook page échoué', { pageId: page.id, err: err instanceof Error ? err.message : String(err) })
       }
     }
 
