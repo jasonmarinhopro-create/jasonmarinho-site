@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { dispatchPost, refreshPostStats as refreshPostStatsInternal, refreshAllStats as refreshAllStatsInternal } from '@/lib/social/dispatch'
-import { getSubscribedApps } from '@/lib/social/meta'
+import { getSubscribedApps, debugTokenScopes } from '@/lib/social/meta'
 import { decryptToken } from '@/lib/security/crypto'
 
 function adminClient() {
@@ -276,18 +276,41 @@ export async function checkWebhookSubscriptions(): Promise<{ result?: string; er
     const appId = process.env.META_APP_ID
     const lines: string[] = []
     for (const account of accounts) {
+      const label = `${account.platform} (${account.display_name ?? account.external_account_id})`
+      let accessToken: string
       try {
-        const accessToken = decryptToken(account.access_token)
+        accessToken = decryptToken(account.access_token)
+      } catch (err) {
+        lines.push(`${label} : erreur de déchiffrement du token — ${err instanceof Error ? err.message : String(err)}`)
+        continue
+      }
+
+      try {
+        const scopes = await debugTokenScopes(accessToken)
+        lines.push(`${label} : permissions du token = [${scopes.join(', ')}]`)
+      } catch (err) {
+        lines.push(`${label} : impossible de lire les permissions — ${err instanceof Error ? err.message : String(err)}`)
+      }
+
+      // Contrairement à la Page, {ig-user-id}/subscribed_apps n'existe pas
+      // côté Graph API pour Instagram (confirmé : "Tried accessing
+      // nonexisting field") — les commentaires y sont livrés automatiquement
+      // dès que instagram_manage_comments est accordé (vérifié ci-dessus) +
+      // le champ "comments" actif côté App Dashboard, sans abonnement par
+      // compte à vérifier ici.
+      if (account.platform === 'instagram') continue
+
+      try {
         const subs = await getSubscribedApps(account.external_account_id, accessToken)
         const mine = subs.find(s => s.id === appId)
         lines.push(
-          `${account.platform} (${account.display_name ?? account.external_account_id}) : ` +
+          `${label} : ` +
           (mine
             ? `abonnée, champs = [${(mine.subscribed_fields ?? []).join(', ')}]`
             : `PAS abonnée (${subs.length} app(s) au total : ${subs.map(s => s.name ?? s.id).join(', ') || 'aucune'})`),
         )
       } catch (err) {
-        lines.push(`${account.platform} (${account.display_name ?? account.external_account_id}) : erreur — ${err instanceof Error ? err.message : String(err)}`)
+        lines.push(`${label} : erreur abonnement — ${err instanceof Error ? err.message : String(err)}`)
       }
     }
     return { result: lines.join('\n') }

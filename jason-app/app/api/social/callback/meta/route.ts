@@ -98,21 +98,18 @@ export async function GET(req: NextRequest) {
       // fiable. Non bloquant : la connexion réussit même si l'app n'a pas
       // encore la permission pages_manage_metadata (ex : Configuration Meta
       // pas encore mise à jour), l'admin pourra réessayer après.
+      //
+      // Pas d'équivalent pour Instagram : contrairement à la Page,
+      // {ig-user-id}/subscribed_apps n'existe pas côté Graph API (confirmé
+      // via le diagnostic — "Tried accessing nonexisting field"). Les
+      // commentaires Instagram sont livrés automatiquement dès que le champ
+      // "comments" est actif côté App Dashboard (webhook object "instagram")
+      // et que le compte a accordé instagram_manage_comments via OAuth,
+      // sans abonnement explicite par compte.
       try {
         await subscribePageWebhooks(page.id, page.accessToken, ['feed'])
       } catch (err) {
         log.error('abonnement webhook page échoué', { pageId: page.id, err: err instanceof Error ? err.message : String(err) })
-      }
-
-      // Le compte Instagram lié a son propre edge subscribed_apps, distinct
-      // de celui de la Page — l'abonner à la Page ne suffit pas pour
-      // recevoir les commentaires Instagram, il faut l'abonner lui aussi.
-      if (page.instagramAccountId) {
-        try {
-          await subscribePageWebhooks(page.instagramAccountId, page.accessToken, ['comments'])
-        } catch (err) {
-          log.error('abonnement webhook instagram échoué', { igAccountId: page.instagramAccountId, err: err instanceof Error ? err.message : String(err) })
-        }
       }
     }
 
