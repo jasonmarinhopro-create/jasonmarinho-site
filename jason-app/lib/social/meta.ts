@@ -281,6 +281,20 @@ export async function getSubscribedApps(nodeId: string, accessToken: string): Pr
 // l'embarque pas tant qu'il n'y a pas eu de reconnexion, même si la
 // permission existe désormais côté Configuration Meta. Sert à vérifier ça
 // directement plutôt que de supposer que "Reconnecter" a suffi.
+// Config webhook de l'app elle-même (URL de callback, objets/champs
+// actifs) telle que Meta l'a réellement enregistrée — indépendant de ce
+// qu'affiche le dashboard Meta, qui peut ne pas refléter un enregistrement
+// qui a échoué silencieusement.
+export async function getAppSubscriptions(): Promise<Array<{ object: string; callback_url: string; active: boolean; fields: string[] }>> {
+  const appId = process.env.META_APP_ID
+  const appSecret = process.env.META_APP_SECRET
+  if (!appId || !appSecret) throw new Error('META_APP_ID/META_APP_SECRET manquants')
+  const json = await graphFetch(`/${appId}/subscriptions`, {
+    access_token: `${appId}|${appSecret}`,
+  }, 'GET')
+  return json.data ?? []
+}
+
 export async function debugTokenScopes(accessToken: string): Promise<string[]> {
   const appId = process.env.META_APP_ID
   const appSecret = process.env.META_APP_SECRET

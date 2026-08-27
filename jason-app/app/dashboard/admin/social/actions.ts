@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { dispatchPost, refreshPostStats as refreshPostStatsInternal, refreshAllStats as refreshAllStatsInternal } from '@/lib/social/dispatch'
-import { getSubscribedApps, debugTokenScopes } from '@/lib/social/meta'
+import { getSubscribedApps, debugTokenScopes, getAppSubscriptions } from '@/lib/social/meta'
 import { decryptToken } from '@/lib/security/crypto'
 
 function adminClient() {
@@ -275,6 +275,19 @@ export async function checkWebhookSubscriptions(): Promise<{ result?: string; er
 
     const appId = process.env.META_APP_ID
     const lines: string[] = []
+
+    try {
+      const subs = await getAppSubscriptions()
+      if (subs.length === 0) {
+        lines.push(`App : AUCUN webhook enregistré (l'URL/jeton n'a peut-être jamais été sauvegardé côté Meta).`)
+      } else {
+        for (const s of subs) lines.push(`App, objet "${s.object}" : ${s.active ? 'actif' : 'inactif'}, champs = [${s.fields.join(', ')}]`)
+      }
+    } catch (err) {
+      lines.push(`App : impossible de lire la config webhook — ${err instanceof Error ? err.message : String(err)}`)
+    }
+    lines.push('')
+
     for (const account of accounts) {
       const label = `${account.platform} (${account.display_name ?? account.external_account_id})`
       let accessToken: string
