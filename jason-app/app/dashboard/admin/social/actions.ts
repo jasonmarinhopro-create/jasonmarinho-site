@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { dispatchPost, refreshPostStats as refreshPostStatsInternal, refreshAllStats as refreshAllStatsInternal } from '@/lib/social/dispatch'
-import { getSubscribedApps, debugTokenScopes, getAppSubscriptions } from '@/lib/social/meta'
+import { getSubscribedApps, debugTokenScopes, getAppSubscriptions, subscribeAppWebhook } from '@/lib/social/meta'
 import { decryptToken } from '@/lib/security/crypto'
 
 function adminClient() {
@@ -257,6 +257,29 @@ export async function deleteCommentTrigger(id: string): Promise<{ success?: bool
     if (error) return { error: error.message }
     revalidatePath('/dashboard/admin/social')
     return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
+  }
+}
+
+// Enregistre le webhook de l'app via l'API — le dashboard Meta ("Configurez
+// les webhooks") s'est avéré ne pas sauvegarder réellement malgré un état
+// de succès affiché à l'écran (confirmé par getAppSubscriptions renvoyant
+// vide). Remplace cette étape peu fiable, comme pour l'abonnement de la
+// Page (subscribePageWebhooks) et le flow "Générer un token" avant lui.
+export async function registerAppWebhooks(): Promise<{ result?: string; error?: string }> {
+  try {
+    await requireAdmin()
+    const lines: string[] = []
+    for (const [object, fields] of [['page', ['feed']], ['instagram', ['comments']]] as const) {
+      try {
+        await subscribeAppWebhook(object, [...fields])
+        lines.push(`${object} : enregistré (champs [${fields.join(', ')}])`)
+      } catch (err) {
+        lines.push(`${object} : échec — ${err instanceof Error ? err.message : String(err)}`)
+      }
+    }
+    return { result: lines.join('\n') }
   } catch (err) {
     return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
   }
