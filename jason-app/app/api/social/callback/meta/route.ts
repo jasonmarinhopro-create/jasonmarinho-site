@@ -103,6 +103,17 @@ export async function GET(req: NextRequest) {
       } catch (err) {
         log.error('abonnement webhook page échoué', { pageId: page.id, err: err instanceof Error ? err.message : String(err) })
       }
+
+      // Le compte Instagram lié a son propre edge subscribed_apps, distinct
+      // de celui de la Page — l'abonner à la Page ne suffit pas pour
+      // recevoir les commentaires Instagram, il faut l'abonner lui aussi.
+      if (page.instagramAccountId) {
+        try {
+          await subscribePageWebhooks(page.instagramAccountId, page.accessToken, ['comments'])
+        } catch (err) {
+          log.error('abonnement webhook instagram échoué', { igAccountId: page.instagramAccountId, err: err instanceof Error ? err.message : String(err) })
+        }
+      }
     }
 
     return NextResponse.redirect(`${ADMIN_SOCIAL_URL}?meta_connected=1`)

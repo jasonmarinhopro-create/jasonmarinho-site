@@ -254,14 +254,16 @@ export async function publishToInstagram(igUserId: string, pageAccessToken: stri
   return published.id
 }
 
-// Abonne la Page (et son compte Instagram lié) aux webhooks de l'app pour
-// les champs donnés — évite de dépendre du flow "Générer un token" du
-// dashboard Meta (peu fiable, popup de login Instagram qui échoue souvent).
-// Suffit à lui seul pour recevoir feed/comments dès lors que l'app a déjà
-// l'URL de webhook + le champ correspondant activés côté App Dashboard.
-export async function subscribePageWebhooks(pageId: string, pageAccessToken: string, fields: string[]): Promise<void> {
-  await graphFetch(`/${pageId}/subscribed_apps`, {
-    access_token: pageAccessToken,
+// Abonne un nœud (Page Facebook OU compte Instagram Business — chacun a son
+// propre edge subscribed_apps, l'abonnement de l'un ne couvre pas l'autre)
+// aux webhooks de l'app pour les champs donnés — évite de dépendre du flow
+// "Générer un token" du dashboard Meta (peu fiable, popup de login
+// Instagram qui échoue souvent). Suffit à lui seul pour recevoir
+// feed/comments dès lors que l'app a déjà l'URL de webhook + le champ
+// correspondant activés côté App Dashboard.
+export async function subscribePageWebhooks(nodeId: string, accessToken: string, fields: string[]): Promise<void> {
+  await graphFetch(`/${nodeId}/subscribed_apps`, {
+    access_token: accessToken,
     subscribed_fields: fields.join(','),
   }, 'POST')
 }
