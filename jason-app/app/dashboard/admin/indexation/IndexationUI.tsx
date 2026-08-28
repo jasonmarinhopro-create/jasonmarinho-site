@@ -454,7 +454,11 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '13px', color: 'var(--text)', width: '100%', textAlign: 'left',
     fontFamily: 'var(--font-outfit), sans-serif',
   },
-  tabs: { display: 'flex', gap: '6px', flexWrap: 'wrap', borderBottom: '1px solid var(--border)', paddingBottom: '2px' },
+  // Pas de borderBottom partagé ici : une fine ligne grise sous tous les
+  // onglets se confondait visuellement avec le soulignement coloré de
+  // l'onglet actif, laissant croire que tous étaient sélectionnés. Seul le
+  // vrai soulignement (2px, coloré) de l'onglet actif doit être visible.
+  tabs: { display: 'flex', gap: '6px', flexWrap: 'wrap', paddingBottom: '2px' },
   tab: {
     display: 'flex', alignItems: 'center', gap: '7px',
     padding: '8px 14px', borderRadius: '9px 9px 0 0', fontSize: '13px', fontWeight: 500,
