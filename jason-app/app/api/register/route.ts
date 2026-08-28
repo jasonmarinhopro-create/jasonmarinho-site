@@ -100,12 +100,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true })
     }
 
-    // 2. Time-trap : un humain met >1.5s à remplir et soumettre.
+    // 2. Time-trap : un humain met >1.5s à remplir et soumettre. De loin le
+    // cas le plus fréquent (un site public se fait scanner en continu) et
+    // quasi toujours un vrai bot — pas d'email à chaque fois (ça noyait la
+    // boîte mail de Jason), juste un log serveur. Les cas plus rares et plus
+    // ambigus (honeypot, domaine jetable, Gmail à points) restent notifiés.
     if (typeof ts === 'number' && ts > 0) {
       const elapsed = Date.now() - ts
       if (elapsed < 1500) {
         log.warn('botTooFast', { ip, elapsed })
-        notifyJasonIssue('formulaire soumis trop vite', { IP: ip, Email: email, 'Nom saisi': fullName, 'Délai (ms)': elapsed })
         return NextResponse.json({ ok: true })
       }
     }
