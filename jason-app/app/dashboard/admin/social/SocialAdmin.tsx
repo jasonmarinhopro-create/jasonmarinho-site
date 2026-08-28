@@ -7,7 +7,7 @@ import {
   Plus, ArrowClockwise, X, CheckCircle, XCircle, Clock, UploadSimple, ImageSquare,
   Heart, ChatCircle, CalendarBlank, PencilSimple, Check,
 } from '@phosphor-icons/react/dist/ssr'
-import { createSocialPost, updateSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, refreshAllStats, setSocialCadence } from './actions'
+import { createSocialPost, updateSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, refreshAllStats, setSocialCadence, markTargetPublished } from './actions'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import SocialStats from './SocialStats'
 import SocialAutoReply, { type CommentTriggerRow, type CommentReplyRow } from './SocialAutoReply'
@@ -294,6 +294,13 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
   function retry(postId: string) {
     startTransition(async () => {
       await retrySocialPost(postId)
+      router.refresh()
+    })
+  }
+
+  function markPublished(targetId: string) {
+    startTransition(async () => {
+      await markTargetPublished(targetId)
       router.refresh()
     })
   }
@@ -700,7 +707,7 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
               <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Rien de programmé.</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {upcoming.map(post => <PostCard key={post.id} post={post} onRetry={retry} onEdit={startEdit} onRefreshStats={refreshStats} disabled={isPending} />)}
+                {upcoming.map(post => <PostCard key={post.id} post={post} onRetry={retry} onEdit={startEdit} onRefreshStats={refreshStats} onMarkPublished={markPublished} disabled={isPending} />)}
               </div>
             )}
           </section>
@@ -711,7 +718,7 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
               <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Aucun post pour le moment.</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 480, overflowY: 'auto' as const }}>
-                {history.map(post => <PostCard key={post.id} post={post} onRetry={retry} onEdit={startEdit} onRefreshStats={refreshStats} disabled={isPending} />)}
+                {history.map(post => <PostCard key={post.id} post={post} onRetry={retry} onEdit={startEdit} onRefreshStats={refreshStats} onMarkPublished={markPublished} disabled={isPending} />)}
               </div>
             )}
           </section>
@@ -722,11 +729,12 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
   )
 }
 
-function PostCard({ post, onRetry, onEdit, onRefreshStats, disabled }: {
+function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, disabled }: {
   post: SocialPostRow
   onRetry: (id: string) => void
   onEdit: (post: SocialPostRow) => void
   onRefreshStats: (id: string) => void
+  onMarkPublished: (targetId: string) => void
   disabled: boolean
 }) {
   const thumb = post.media_urls[0]
@@ -765,10 +773,21 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, disabled }: {
               const StatusIcon = t.status === 'published' ? CheckCircle : t.status === 'failed' ? XCircle : Clock
               const statusColor = t.status === 'published' ? 'var(--success-1)' : t.status === 'failed' ? '#EF4444' : 'var(--text-muted)'
               return (
-                <span key={t.id} title={t.error ?? undefined} style={{ ...s.targetPill, color: statusColor }}>
-                  {meta && <meta.Icon size={12} weight="fill" style={{ color: meta.color }} />}
-                  <StatusIcon size={12} weight="fill" />
-                  {t.status}
+                <span key={t.id} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                  <span title={t.error ?? undefined} style={{ ...s.targetPill, color: statusColor }}>
+                    {meta && <meta.Icon size={12} weight="fill" style={{ color: meta.color }} />}
+                    <StatusIcon size={12} weight="fill" />
+                    {t.status}
+                  </span>
+                  {t.status === 'pending' && (
+                    <button
+                      onClick={() => onMarkPublished(t.id)} disabled={disabled}
+                      style={{ ...s.iconBtn, width: 'auto', padding: '0 6px' }}
+                      title="A été publiée pour de vrai (vérifié à l'œil) mais le statut n'a jamais suivi — corrige juste l'affichage, ne republie pas"
+                    >
+                      <Check size={11} />
+                    </button>
+                  )}
                 </span>
               )
             })}
