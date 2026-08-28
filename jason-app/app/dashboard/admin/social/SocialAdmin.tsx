@@ -784,7 +784,17 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, disabled }: {
               </button>
             )}
             <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-              {post.scheduled_at ? new Date(post.scheduled_at).toLocaleString('fr-FR') : new Date(post.created_at).toLocaleString('fr-FR')}
+              {(() => {
+                // Priorité : vraie date de publication (le plus fiable une
+                // fois publié) > date programmée (à venir) > date de
+                // création (dernier recours) — auparavant on retombait
+                // directement sur created_at dès que scheduled_at était vidé
+                // par "Publier maintenant", affichant une date de plusieurs
+                // jours avant la publication réelle.
+                const publishedAt = post.targets.find(t => t.published_at)?.published_at
+                const display = publishedAt ?? post.scheduled_at ?? post.created_at
+                return new Date(display).toLocaleString('fr-FR')
+              })()}
             </span>
           </div>
           {post.targets.filter(t => t.status === 'failed' && t.error).map(t => {
