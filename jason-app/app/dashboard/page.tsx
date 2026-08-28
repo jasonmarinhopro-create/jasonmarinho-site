@@ -1063,9 +1063,14 @@ const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
 
   welcome: {
-    // Mesh gradient subtil 2026 : vert profond → halo accent en haut à droite
-    background: 'radial-gradient(ellipse 80% 60% at 90% 0%, rgba(255,213,107,0.10), transparent 60%), linear-gradient(135deg, rgba(0,76,63,0.28) 0%, rgba(0,76,63,0.10) 100%)',
-    border: '1px solid var(--border)',
+    // Fond vert profond opaque (pas un dégradé vers transparent) : la
+    // version précédente s'estompait jusqu'à quasi-invisible en haut à
+    // droite (opacité 0.10 + halo jaune clair), rendant le texte illisible
+    // à cet endroit. Couleur fixe indépendante du thème clair/sombre, texte
+    // blanc explicite en conséquence — un contraste garanti partout sur la
+    // carte plutôt qu'hérité du thème.
+    background: 'radial-gradient(ellipse 80% 60% at 90% 0%, rgba(255,213,107,0.14), transparent 60%), linear-gradient(135deg, #004C3F 0%, #0B6B57 100%)',
+    border: '1px solid rgba(255,255,255,0.08)',
     borderRadius: 'var(--r-xl)',
     padding: 'clamp(28px,3vw,44px) clamp(28px,4vw,52px)',
     marginBottom: 'var(--s-6)',
@@ -1075,9 +1080,9 @@ const s: Record<string, React.CSSProperties> = {
     overflow: 'hidden' as const,
     boxShadow: 'var(--shadow-md)',
   },
-  welcomeSub:   { fontSize: 'var(--t-sm)', color: 'var(--text-3)', marginBottom: 'var(--s-2)', letterSpacing: '0.3px', textTransform: 'uppercase' as const, fontWeight: 500 },
-  welcomeTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(28px,2.6vw,40px)', fontWeight: 400, color: 'var(--text)', marginBottom: 'var(--s-3)', letterSpacing: 'var(--ls-tight)', lineHeight: 'var(--lh-tight)' },
-  welcomeDesc:  { fontSize: 'var(--t-base)', fontWeight: 400, color: 'var(--text-2)', maxWidth: '440px', lineHeight: 'var(--lh-relax)' },
+  welcomeSub:   { fontSize: 'var(--t-sm)', color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-2)', letterSpacing: '0.3px', textTransform: 'uppercase' as const, fontWeight: 500 },
+  welcomeTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(28px,2.6vw,40px)', fontWeight: 400, color: '#fff', marginBottom: 'var(--s-3)', letterSpacing: 'var(--ls-tight)', lineHeight: 'var(--lh-tight)' },
+  welcomeDesc:  { fontSize: 'var(--t-base)', fontWeight: 400, color: 'rgba(255,255,255,0.85)', maxWidth: '440px', lineHeight: 'var(--lh-relax)' },
   // Pills d'actions contextuelles (Étape 7). Remplacent les stats statiques.
   actionPills:  {
     display: 'flex', flexWrap: 'wrap', gap: 'var(--s-2)',
@@ -1087,9 +1092,13 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     padding: '7px 13px', borderRadius: 'var(--r-pill)',
     fontSize: 'var(--t-sm)', fontWeight: 500,
-    color: 'var(--text)',
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid var(--border)',
+    // Couleurs fixes (pas var(--text)/var(--border)) : ces pills vivent
+    // uniquement sur le fond vert foncé de la carte d'accueil, pas sur le
+    // fond de page — leurs couleurs ne doivent pas suivre le thème clair/
+    // sombre du reste du site.
+    color: '#fff',
+    background: 'rgba(255,255,255,0.10)',
+    border: '1px solid rgba(255,255,255,0.18)',
     textDecoration: 'none',
     transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
     whiteSpace: 'nowrap' as const,
