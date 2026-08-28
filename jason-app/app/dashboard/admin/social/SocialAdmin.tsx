@@ -827,11 +827,14 @@ const s: Record<string, any> = {
   mainGrid: {
     display: 'grid', gridTemplateColumns: 'minmax(0, 1.1fr) minmax(0, 0.9fr)', gap: 20,
   },
+  // Pas de borderBottom partagé ici : une fine ligne grise sous tous les
+  // onglets se confondait visuellement avec le soulignement coloré de
+  // l'onglet actif, laissant croire que tous étaient sélectionnés.
   tabRow: {
-    display: 'flex', gap: 6, borderBottom: '1px solid var(--border)', paddingBottom: 0,
+    display: 'flex', gap: 6, paddingBottom: 0,
   },
   tabBtn: {
-    padding: '9px 4px', marginBottom: -1, borderRadius: 0, border: 'none', borderBottom: '2px solid transparent',
+    padding: '9px 4px', borderRadius: 0, border: 'none', borderBottom: '2px solid transparent',
     background: 'transparent', color: 'var(--text-muted)', fontSize: 14, fontWeight: 600,
     fontFamily: 'inherit', cursor: 'pointer', marginRight: 18,
   },
