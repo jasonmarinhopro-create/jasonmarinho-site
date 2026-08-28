@@ -336,15 +336,34 @@ export async function debugTokenScopes(accessToken: string): Promise<string[]> {
 
 // ── Réponses automatiques aux commentaires ────────────────────────
 
-// Réponse en message privé à un commentaire (pas un commentaire public) —
-// même endpoint pour Facebook et Instagram. C'est la seule action possible
-// pour "recontacter" un commentateur : Meta ne donne jamais son email.
-export async function sendPrivateReply(commentId: string, pageAccessToken: string, message: string): Promise<string> {
-  const json = await graphFetch(`/${commentId}/private_replies`, {
-    access_token: pageAccessToken,
-    message,
+// Réponse en message privé à un commentaire — pas le même mécanisme
+// Facebook/Instagram malgré ce qu'on pourrait attendre :
+// - Facebook : edge dédié directement sur le commentaire.
+// - Instagram : pas d'edge équivalent sur le commentaire (confirmé en
+//   prod — "Unsupported post request... does not support this operation"
+//   en réutilisant l'endpoint Facebook) — passe par l'edge "messages" du
+//   compte Instagram lui-même, avec le commentaire référencé dans le
+//   destinataire (recipient.comment_id), comme la Messaging API classique.
+export async function sendPrivateReply(
+  platform: 'facebook' | 'instagram',
+  targetId: string,
+  commentId: string,
+  accessToken: string,
+  message: string,
+): Promise<string> {
+  if (platform === 'facebook') {
+    const json = await graphFetch(`/${commentId}/private_replies`, {
+      access_token: accessToken,
+      message,
+    }, 'POST')
+    return json.id ?? 'ok'
+  }
+  const json = await graphFetch(`/${targetId}/messages`, {
+    access_token: accessToken,
+    recipient: JSON.stringify({ comment_id: commentId }),
+    message: JSON.stringify({ text: message }),
   }, 'POST')
-  return json.id ?? 'ok'
+  return json.message_id ?? json.id ?? 'ok'
 }
 
 // ── Stats d'engagement ────────────────────────────────────────────

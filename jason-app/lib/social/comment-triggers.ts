@@ -73,7 +73,7 @@ export async function handleIncomingComment(comment: IncomingComment): Promise<v
     if (!account) throw new Error('Aucun compte connecté pour cette plateforme')
 
     const accessToken = decryptToken(account.access_token)
-    await sendPrivateReply(comment.commentId, accessToken, trigger.reply_message)
+    await sendPrivateReply(comment.platform, comment.pageId, comment.commentId, accessToken, trigger.reply_message)
 
     await db.from('social_comment_replies')
       .update({ status: 'sent' })
