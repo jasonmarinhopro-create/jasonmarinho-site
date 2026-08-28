@@ -289,10 +289,16 @@ export async function getAppSubscriptions(): Promise<Array<{ object: string; cal
   const appId = process.env.META_APP_ID
   const appSecret = process.env.META_APP_SECRET
   if (!appId || !appSecret) throw new Error('META_APP_ID/META_APP_SECRET manquants')
+  // Chaque entrée de "fields" est un objet ({ name, version }), pas une
+  // simple chaîne — mappé vers son nom pour un affichage lisible.
   const json = await graphFetch(`/${appId}/subscriptions`, {
     access_token: `${appId}|${appSecret}`,
   }, 'GET')
-  return json.data ?? []
+  const data = (json.data ?? []) as Array<{ object: string; callback_url: string; active: boolean; fields: Array<string | { name: string }> }>
+  return data.map(s => ({
+    ...s,
+    fields: s.fields.map(f => typeof f === 'string' ? f : f.name),
+  }))
 }
 
 // Enregistre le webhook de l'app elle-même (URL + jeton + champs) via
