@@ -169,6 +169,39 @@ export async function retrySocialPost(postId: string): Promise<{ success?: boole
   }
 }
 
+// Correction manuelle pour le cas rare où une publication a réellement
+// réussi côté Meta (confirmé à l'œil par l'admin sur le réseau) mais dont
+// l'écriture du statut en base ne s'est jamais terminée — laissant la
+// cible bloquée en "pending" indéfiniment (ex : timeout de la fonction
+// Vercel pile entre l'appel Meta réussi et l'écriture Supabase). Ne
+// republie rien, corrige juste le statut affiché.
+export async function markTargetPublished(targetId: string): Promise<{ success?: boolean; error?: string }> {
+  try {
+    await requireAdmin()
+    const db = adminClient()
+    const { data: target } = await db.from('social_post_targets').select('post_id').eq('id', targetId).maybeSingle()
+    if (!target) return { error: 'Cible introuvable.' }
+
+    const { error } = await db.from('social_post_targets').update({
+      status: 'published',
+      published_at: new Date().toISOString(),
+      error: null,
+    }).eq('id', targetId)
+    if (error) return { error: error.message }
+
+    const { data: targets } = await db.from('social_post_targets').select('status').eq('post_id', target.post_id)
+    const allPublished = (targets ?? []).every(t => t.status === 'published')
+    const anyFailed = (targets ?? []).some(t => t.status === 'failed')
+    const finalStatus = allPublished ? 'done' : anyFailed ? 'partial' : 'publishing'
+    await db.from('social_posts').update({ status: finalStatus }).eq('id', target.post_id)
+
+    revalidatePath('/dashboard/admin/social')
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
+  }
+}
+
 export async function disconnectSocialAccount(accountId: string): Promise<{ success?: boolean; error?: string }> {
   try {
     await requireAdmin()
