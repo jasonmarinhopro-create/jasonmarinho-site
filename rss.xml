@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 26 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 28 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Consommables en LCD : 7 règles pour ne plus jamais tomber en rupture chez ton voyageur</title>
+      <link>https://jasonmarinho.com/blog/consommables-lcd-7-regles-eviter-rupture-voyageur</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/consommables-lcd-7-regles-eviter-rupture-voyageur</guid>
+      <pubDate>Fri, 28 Aug 2026 08:00:00 GMT</pubDate>
+      <description>Papier toilette, savon, café, dosettes, produits ménage : 7 règles concrètes pour piloter tes consommables en location courte durée sans rupture ni marge écrasée.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Turnover J+0 en LCD : 7 règles pour enchaîner un check-out et un check-in le même jour sans stress</title>
       <link>https://jasonmarinho.com/blog/turnover-j0-lcd-7-regles-enchainer-checkout-checkin-meme-jour</link>
@@ -398,14 +406,6 @@
       <pubDate>Mon, 11 May 2026 08:00:00 GMT</pubDate>
       <description>Tu loues un logement situé à plusieurs heures de chez toi ? Voici les 7 piliers pour gérer ta location courte durée à distance sans perdre en qualité ni en sérénité.</description>
       <category>Automatisation</category>
-    </item>
-    <item>
-      <title>WiFi en LCD : 6 actions pour une connexion qui booste tes avis voyageurs</title>
-      <link>https://jasonmarinho.com/blog/wifi-location-courte-duree-debit-equipement-avis</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/wifi-location-courte-duree-debit-equipement-avis</guid>
-      <pubDate>Fri, 08 May 2026 08:00:00 GMT</pubDate>
-      <description>Le WiFi est l&apos;un des équipements les plus recherchés sur Airbnb. Voici 6 actions concrètes pour offrir une connexion rapide, fiable et sécurisée en LCD en 2026.</description>
-      <category>Expérience</category>
     </item>
   </channel>
 </rss>
