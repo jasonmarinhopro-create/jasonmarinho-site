@@ -291,45 +291,29 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
     })
   }
 
-  function retry(postId: string) {
-    startTransition(async () => {
-      await retrySocialPost(postId)
-      router.refresh()
-    })
+  // Ces trois actions renvoient le résultat au lieu de le jeter (comme
+  // avant) : sur mobile/webview, window.prompt/confirm/alert peuvent ne
+  // rien afficher et renvoyer immédiatement — un échec silencieux du
+  // serveur (token expiré, etc.) passait totalement inaperçu, ce qui
+  // rendait ces boutons impossibles à déboguer depuis un retour utilisateur
+  // ("ça ne marche pas"). Chaque PostCard affiche maintenant l'erreur
+  // réelle, sans dépendre d'aucune boîte de dialogue native.
+  async function retry(postId: string) {
+    const result = await retrySocialPost(postId)
+    router.refresh()
+    return result
   }
 
-  function markPublished(targetId: string) {
-    // La date réelle de publication est souvent différente de "maintenant"
-    // (correction faite après coup) — on la demande plutôt que de deviner,
-    // pour ne pas remplacer une date fausse par une autre.
-    const input = window.prompt(
-      "Date/heure réelle de publication (JJ/MM/AAAA HH:MM) — laisser vide pour maintenant :",
-      '',
-    )
-    if (input === null) return
-    let publishedAtIso: string | undefined
-    if (input.trim()) {
-      const match = input.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$/)
-      if (!match) {
-        window.alert('Format non reconnu — utilise JJ/MM/AAAA HH:MM (ex : 28/08/2026 09:00).')
-        return
-      }
-      const [, day, month, year, hour, minute] = match
-      const date = new Date(Number(year), Number(month) - 1, Number(day), Number(hour ?? 0), Number(minute ?? 0))
-      publishedAtIso = date.toISOString()
-    }
-    startTransition(async () => {
-      await markTargetPublished(targetId, publishedAtIso)
-      router.refresh()
-    })
+  async function markPublished(targetId: string) {
+    const result = await markTargetPublished(targetId)
+    router.refresh()
+    return result
   }
 
-  function markFailed(targetId: string) {
-    if (!window.confirm("Confirmer : cette publication n'a réellement rien publié sur ce réseau (vérifié à l'œil) ? Elle repassera en échec et pourra être relancée via \"Réessayer\".")) return
-    startTransition(async () => {
-      await markTargetFailed(targetId)
-      router.refresh()
-    })
+  async function markFailed(targetId: string) {
+    const result = await markTargetFailed(targetId)
+    router.refresh()
+    return result
   }
 
   function disconnect(accountId: string) {
@@ -767,11 +751,11 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
 
 function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMarkFailed, disabled }: {
   post: SocialPostRow
-  onRetry: (id: string) => void
+  onRetry: (id: string) => Promise<{ error?: string }>
   onEdit: (post: SocialPostRow) => void
   onRefreshStats: (id: string) => void
-  onMarkPublished: (targetId: string) => void
-  onMarkFailed: (targetId: string) => void
+  onMarkPublished: (targetId: string) => Promise<{ error?: string }>
+  onMarkFailed: (targetId: string) => Promise<{ error?: string }>
   disabled: boolean
 }) {
   const thumb = post.media_urls[0]
@@ -779,6 +763,23 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
   const totalLikes = post.targets.reduce((sum, t) => sum + (t.like_count ?? 0), 0)
   const totalComments = post.targets.reduce((sum, t) => sum + (t.comment_count ?? 0), 0)
   const statsKnown = post.targets.some(t => t.stats_updated_at)
+
+  // État local à la carte : les actions (Relancer, ✓, ✗) affichaient leur
+  // résultat nulle part avant — un échec côté serveur (session expirée,
+  // ligne introuvable...) passait inaperçu et le bouton semblait juste ne
+  // rien faire. On garde le retour de l'action ici pour l'afficher.
+  const [busy, setBusy] = useState(false)
+  const [actionError, setActionError] = useState<string | null>(null)
+
+  async function run(action: () => Promise<{ error?: string }>) {
+    setBusy(true)
+    setActionError(null)
+    const result = await action()
+    setBusy(false)
+    if (result?.error) setActionError(result.error)
+  }
+
+  const isDisabled = disabled || busy
 
   return (
     <div style={s.postRow}>
@@ -799,9 +800,9 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
               </button>
             )}
             {(post.status === 'failed' || post.status === 'partial' || post.status === 'publishing') && (
-              <button onClick={() => onRetry(post.id)} disabled={disabled} style={s.smallBtn}>
+              <button onClick={() => run(() => onRetry(post.id))} disabled={isDisabled} style={s.smallBtn}>
                 <ArrowClockwise size={13} />
-                {post.status === 'publishing' ? 'Relancer' : 'Réessayer'}
+                {busy ? '...' : post.status === 'publishing' ? 'Relancer' : 'Réessayer'}
               </button>
             )}
           </div>
@@ -819,7 +820,7 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
                   </span>
                   {t.status === 'pending' && (
                     <button
-                      onClick={() => onMarkPublished(t.id)} disabled={disabled}
+                      onClick={() => run(() => onMarkPublished(t.id))} disabled={isDisabled}
                       style={{ ...s.iconBtn, width: 'auto', padding: '0 6px' }}
                       title="A été publiée pour de vrai (vérifié à l'œil) mais le statut n'a jamais suivi — corrige juste l'affichage, ne republie pas"
                     >
@@ -828,7 +829,7 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
                   )}
                   {t.status === 'published' && (
                     <button
-                      onClick={() => onMarkFailed(t.id)} disabled={disabled}
+                      onClick={() => run(() => onMarkFailed(t.id))} disabled={isDisabled}
                       style={{ ...s.iconBtn, width: 'auto', padding: '0 6px' }}
                       title="N'a en réalité rien publié sur ce réseau (vérifié à l'œil) — repasse en échec pour pouvoir réessayer, ne supprime rien côté Meta"
                     >
@@ -845,7 +846,7 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
               </span>
             )}
             {hasPublished && (
-              <button onClick={() => onRefreshStats(post.id)} disabled={disabled} style={s.iconBtn} title="Actualiser les stats">
+              <button onClick={() => onRefreshStats(post.id)} disabled={isDisabled} style={s.iconBtn} title="Actualiser les stats">
                 <ArrowClockwise size={12} />
               </button>
             )}
@@ -872,6 +873,11 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
               </p>
             )
           })}
+          {actionError && (
+            <p style={{ margin: '4px 0 0', fontSize: 11.5, color: '#EF4444', fontWeight: 600 }}>
+              Échec de l&apos;action : {actionError}
+            </p>
+          )}
         </div>
       </div>
     </div>
