@@ -20,6 +20,12 @@ export async function GET(req: Request) {
     }
   }
 
-  const { processed } = await dispatchDuePosts()
-  return NextResponse.json({ ok: true, processed })
+  // dispatchDuePosts() s'arrête proprement avant son propre budget interne
+  // (DUE_POSTS_BUDGET_MS, dispatch.ts) plutôt que de risquer le timeout de
+  // 60s de cette fonction sur un gros backlog. On ne boucle PAS ici pour
+  // épuiser le reste dans la même invocation (ça empilerait deux budgets et
+  // recréerait le même risque de timeout) — un backlog résiduel est repris
+  // naturellement au prochain passage du cron (QStash, 5 min).
+  const { processed, remaining } = await dispatchDuePosts()
+  return NextResponse.json({ ok: true, processed, remaining })
 }

@@ -94,19 +94,36 @@ export async function dispatchPost(postId: string): Promise<void> {
   await db.from('social_posts').update({ status: finalStatus }).eq('id', postId)
 }
 
+// Un backlog de plusieurs posts en retard (ex : pipeline cassé depuis des
+// jours) traité séquentiellement peut lui-même dépasser les 60s de la
+// fonction Vercel, même si chaque dispatchPost() individuel est rapide —
+// observé en conditions réelles (HTTP 504 FUNCTION_INVOCATION_TIMEOUT sur
+// /api/cron/social-dispatch). Même remède que checkAllUrls() (SEO
+// indexation) : on s'arrête proprement avant la limite et on renvoie ce
+// qu'il reste, plutôt que de se faire tuer en plein milieu d'un post.
+const DUE_POSTS_BUDGET_MS = 50_000 // le cron et l'action serveur ont maxDuration=60
+
 // Trouve les posts programmés dont l'heure est arrivée et les publie.
-export async function dispatchDuePosts(): Promise<{ processed: number }> {
+export async function dispatchDuePosts(): Promise<{ processed: number; remaining: number }> {
   const db = serviceClient()
   const { data: due } = await db
     .from('social_posts')
     .select('id')
     .eq('status', 'scheduled')
     .lte('scheduled_at', new Date().toISOString())
+    .order('scheduled_at', { ascending: true })
 
-  for (const p of due ?? []) {
+  const queue = due ?? []
+  const started = Date.now()
+  let processed = 0
+
+  for (const p of queue) {
+    if (Date.now() - started > DUE_POSTS_BUDGET_MS) break
     await dispatchPost(p.id)
+    processed++
   }
-  return { processed: (due ?? []).length }
+
+  return { processed, remaining: queue.length - processed }
 }
 
 // Rafraîchit un seul target publié depuis l'API Meta. Partagé par
