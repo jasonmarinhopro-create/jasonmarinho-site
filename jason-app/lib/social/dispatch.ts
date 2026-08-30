@@ -30,23 +30,25 @@ export async function dispatchPost(postId: string): Promise<void> {
     db.from('social_accounts').select('*').eq('status', 'active'),
   ])
 
-  let succeeded = 0
-  let failed = 0
-
-  for (const target of targets ?? []) {
+  // En parallèle plutôt que séquentiel : Instagram peut prendre jusqu'à ~52s
+  // rien que pour le traitement du média (waitForMediaReady) — l'enchaîner
+  // après Facebook (même rapide) rapprochait dangereusement le total du
+  // timeout de 60s de la fonction Vercel, provoquant des posts bloqués en
+  // "pending" pile au milieu (Meta publie réellement, mais la fonction est
+  // tuée avant l'écriture du statut en base). En parallèle, le temps total
+  // est borné par le plus lent des deux au lieu de leur somme.
+  const results = await Promise.all((targets ?? []).map(async (target): Promise<boolean> => {
     if (target.status === 'published') {
       // Déjà publié (ex : Facebook OK, Instagram en échec) — on ne
       // republie pas, sinon "Réessayer" créerait un doublon sur ce réseau.
-      succeeded++
-      continue
+      return true
     }
     const account = (accounts ?? []).find(a => a.platform === target.platform)
     if (!account) {
-      failed++
       await db.from('social_post_targets')
         .update({ status: 'failed', error: 'Aucun compte connecté pour cette plateforme' })
         .eq('id', target.id)
-      continue
+      return false
     }
     try {
       const accessToken = decryptToken(account.access_token)
@@ -62,7 +64,6 @@ export async function dispatchPost(postId: string): Promise<void> {
       } else {
         throw new Error(`Plateforme non supportée pour le moment : ${target.platform}`)
       }
-      succeeded++
       await db.from('social_post_targets').update({
         status: 'published',
         external_post_id: externalId,
@@ -70,8 +71,8 @@ export async function dispatchPost(postId: string): Promise<void> {
         error: null,
         pending_media_id: null,
       }).eq('id', target.id)
+      return true
     } catch (err) {
-      failed++
       const message = err instanceof Error ? err.message : String(err)
       // Instagram a expiré mais garde le conteneur en traitement en arrière-
       // plan : on le conserve pour que le prochain "Réessayer" le réutilise
@@ -83,9 +84,12 @@ export async function dispatchPost(postId: string): Promise<void> {
         error: message,
         pending_media_id: pendingMediaId,
       }).eq('id', target.id)
+      return false
     }
-  }
+  }))
 
+  const succeeded = results.filter(Boolean).length
+  const failed = results.length - succeeded
   const finalStatus = failed === 0 ? 'done' : succeeded === 0 ? 'failed' : 'partial'
   await db.from('social_posts').update({ status: finalStatus }).eq('id', postId)
 }
