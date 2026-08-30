@@ -184,10 +184,6 @@ export async function markTargetPublished(targetId: string, publishedAtIso?: str
 
     const { error } = await db.from('social_post_targets').update({
       status: 'published',
-      // La vraie date de publication est demandée à l'admin (pas "maintenant"
-      // par défaut) : la correction est souvent faite bien après coup, et
-      // "maintenant" afficherait une date encore fausse dans "Publiées
-      // récemment", juste avec une erreur différente.
       published_at: publishedAtIso ?? new Date().toISOString(),
       error: null,
     }).eq('id', targetId)
