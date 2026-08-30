@@ -3,12 +3,23 @@ name: Social publishing dispatch
 # Le déclenchement "schedule" a été retiré : sur un cron toutes les 5 minutes,
 # GitHub Actions retarde ou saute massivement les exécutions (observé : 2-5h
 # d'écart réel entre exécutions au lieu de 5 min), inutilisable pour une
-# planification de publication fiable. Remplacé par Upstash QStash, qui
-# appelle directement /api/cron/social-dispatch sur son propre cron (voir
-# CLAUDE.md). Ce workflow reste disponible en déclenchement manuel pour
-# tester ou forcer un passage.
+# planification de publication fiable.
+#
+# Remplacé par une Routine Claude Code (compte Jason) qui se déclenche toutes
+# les heures et pousse un commit modifiant automation/social-dispatch-ping
+# (horodatage) — le trigger "push" ci-dessous s'en sert comme déclencheur
+# fiable, sans dépendre d'un cron GitHub natif ni d'un compte Upstash externe
+# jamais configuré. Même pattern que la veille "Actualités LCD journalière"
+# (voir data/actualites-queue/ + son propre workflow) : une session sans
+# accès direct à l'API GitHub Actions ne peut pas déclencher un
+# workflow_dispatch, mais peut toujours committer/pousser du code, qui lui,
+# déclenche le workflow via ce trigger push scopé à un seul fichier.
 on:
   workflow_dispatch: # déclenchement manuel pour tester
+  push:
+    branches: [main]
+    paths:
+      - 'automation/social-dispatch-ping'
 
 jobs:
   dispatch:
