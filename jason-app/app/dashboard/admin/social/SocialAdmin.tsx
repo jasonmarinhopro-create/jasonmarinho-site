@@ -400,7 +400,7 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
       )}
 
       {view === 'composer' && (
-      <div style={s.mainGrid}>
+      <div style={s.mainGrid} className="jm-social-grid">
         {/* Composeur */}
         <section style={s.card}>
           <h2 style={s.cardTitle}>{editingPostId ? 'Modifier la publication programmée' : 'Créer une publication'}</h2>
@@ -725,6 +725,15 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
         </div>
       </div>
       )}
+
+      {/* mainGrid n'avait aucun point de rupture mobile : sur un écran
+          étroit, les deux colonnes (1.1fr/0.9fr) se répartissaient quand
+          même côte à côte au lieu de s'empiler, écrasant le composeur. */}
+      <style>{`
+        @media (max-width: 860px) {
+          .jm-social-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </div>
   )
 }
