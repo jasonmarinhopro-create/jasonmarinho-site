@@ -798,9 +798,10 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
                 <PencilSimple size={13} /> Modifier
               </button>
             )}
-            {(post.status === 'failed' || post.status === 'partial') && (
+            {(post.status === 'failed' || post.status === 'partial' || post.status === 'publishing') && (
               <button onClick={() => onRetry(post.id)} disabled={disabled} style={s.smallBtn}>
-                <ArrowClockwise size={13} /> Réessayer
+                <ArrowClockwise size={13} />
+                {post.status === 'publishing' ? 'Relancer' : 'Réessayer'}
               </button>
             )}
           </div>
