@@ -7,7 +7,7 @@ import {
   Plus, ArrowClockwise, X, CheckCircle, XCircle, Clock, UploadSimple, ImageSquare,
   Heart, ChatCircle, CalendarBlank, PencilSimple, Check,
 } from '@phosphor-icons/react/dist/ssr'
-import { createSocialPost, updateSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, refreshAllStats, setSocialCadence, markTargetPublished } from './actions'
+import { createSocialPost, updateSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, refreshAllStats, setSocialCadence, markTargetPublished, markTargetFailed } from './actions'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import SocialStats from './SocialStats'
 import SocialAutoReply, { type CommentTriggerRow, type CommentReplyRow } from './SocialAutoReply'
@@ -299,8 +299,35 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
   }
 
   function markPublished(targetId: string) {
+    // La date réelle de publication est souvent différente de "maintenant"
+    // (correction faite après coup) — on la demande plutôt que de deviner,
+    // pour ne pas remplacer une date fausse par une autre.
+    const input = window.prompt(
+      "Date/heure réelle de publication (JJ/MM/AAAA HH:MM) — laisser vide pour maintenant :",
+      '',
+    )
+    if (input === null) return
+    let publishedAtIso: string | undefined
+    if (input.trim()) {
+      const match = input.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?$/)
+      if (!match) {
+        window.alert('Format non reconnu — utilise JJ/MM/AAAA HH:MM (ex : 28/08/2026 09:00).')
+        return
+      }
+      const [, day, month, year, hour, minute] = match
+      const date = new Date(Number(year), Number(month) - 1, Number(day), Number(hour ?? 0), Number(minute ?? 0))
+      publishedAtIso = date.toISOString()
+    }
     startTransition(async () => {
-      await markTargetPublished(targetId)
+      await markTargetPublished(targetId, publishedAtIso)
+      router.refresh()
+    })
+  }
+
+  function markFailed(targetId: string) {
+    if (!window.confirm("Confirmer : cette publication n'a réellement rien publié sur ce réseau (vérifié à l'œil) ? Elle repassera en échec et pourra être relancée via \"Réessayer\".")) return
+    startTransition(async () => {
+      await markTargetFailed(targetId)
       router.refresh()
     })
   }
@@ -707,7 +734,7 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
               <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Rien de programmé.</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {upcoming.map(post => <PostCard key={post.id} post={post} onRetry={retry} onEdit={startEdit} onRefreshStats={refreshStats} onMarkPublished={markPublished} disabled={isPending} />)}
+                {upcoming.map(post => <PostCard key={post.id} post={post} onRetry={retry} onEdit={startEdit} onRefreshStats={refreshStats} onMarkPublished={markPublished} onMarkFailed={markFailed} disabled={isPending} />)}
               </div>
             )}
           </section>
@@ -718,7 +745,7 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
               <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Aucun post pour le moment.</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 480, overflowY: 'auto' as const }}>
-                {history.map(post => <PostCard key={post.id} post={post} onRetry={retry} onEdit={startEdit} onRefreshStats={refreshStats} onMarkPublished={markPublished} disabled={isPending} />)}
+                {history.map(post => <PostCard key={post.id} post={post} onRetry={retry} onEdit={startEdit} onRefreshStats={refreshStats} onMarkPublished={markPublished} onMarkFailed={markFailed} disabled={isPending} />)}
               </div>
             )}
           </section>
@@ -738,12 +765,13 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
   )
 }
 
-function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, disabled }: {
+function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMarkFailed, disabled }: {
   post: SocialPostRow
   onRetry: (id: string) => void
   onEdit: (post: SocialPostRow) => void
   onRefreshStats: (id: string) => void
   onMarkPublished: (targetId: string) => void
+  onMarkFailed: (targetId: string) => void
   disabled: boolean
 }) {
   const thumb = post.media_urls[0]
@@ -795,6 +823,15 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, disa
                       title="A été publiée pour de vrai (vérifié à l'œil) mais le statut n'a jamais suivi — corrige juste l'affichage, ne republie pas"
                     >
                       <Check size={11} />
+                    </button>
+                  )}
+                  {t.status === 'published' && (
+                    <button
+                      onClick={() => onMarkFailed(t.id)} disabled={disabled}
+                      style={{ ...s.iconBtn, width: 'auto', padding: '0 6px' }}
+                      title="N'a en réalité rien publié sur ce réseau (vérifié à l'œil) — repasse en échec pour pouvoir réessayer, ne supprime rien côté Meta"
+                    >
+                      <XCircle size={11} />
                     </button>
                   )}
                 </span>

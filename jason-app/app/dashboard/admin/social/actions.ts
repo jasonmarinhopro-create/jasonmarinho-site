@@ -175,7 +175,7 @@ export async function retrySocialPost(postId: string): Promise<{ success?: boole
 // cible bloquée en "pending" indéfiniment (ex : timeout de la fonction
 // Vercel pile entre l'appel Meta réussi et l'écriture Supabase). Ne
 // republie rien, corrige juste le statut affiché.
-export async function markTargetPublished(targetId: string): Promise<{ success?: boolean; error?: string }> {
+export async function markTargetPublished(targetId: string, publishedAtIso?: string): Promise<{ success?: boolean; error?: string }> {
   try {
     await requireAdmin()
     const db = adminClient()
@@ -184,8 +184,48 @@ export async function markTargetPublished(targetId: string): Promise<{ success?:
 
     const { error } = await db.from('social_post_targets').update({
       status: 'published',
-      published_at: new Date().toISOString(),
+      // La vraie date de publication est demandée à l'admin (pas "maintenant"
+      // par défaut) : la correction est souvent faite bien après coup, et
+      // "maintenant" afficherait une date encore fausse dans "Publiées
+      // récemment", juste avec une erreur différente.
+      published_at: publishedAtIso ?? new Date().toISOString(),
       error: null,
+    }).eq('id', targetId)
+    if (error) return { error: error.message }
+
+    const { data: targets } = await db.from('social_post_targets').select('status').eq('post_id', target.post_id)
+    const allPublished = (targets ?? []).every(t => t.status === 'published')
+    const anyFailed = (targets ?? []).some(t => t.status === 'failed')
+    const finalStatus = allPublished ? 'done' : anyFailed ? 'partial' : 'publishing'
+    await db.from('social_posts').update({ status: finalStatus }).eq('id', target.post_id)
+
+    revalidatePath('/dashboard/admin/social')
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
+  }
+}
+
+// Correction manuelle inverse : une cible marquée "published" en base alors
+// qu'elle n'a en réalité rien publié côté Meta (constaté à l'œil par
+// l'admin — ex : media_publish a répondu succès sans que le post apparaisse
+// réellement, cas rare mais déjà observé). dispatchPost() ignore les cibles
+// déjà "published" pour éviter les doublons, donc "Réessayer" ne les
+// retente jamais tant qu'elles restent dans ce faux état — on les repasse
+// en "failed" pour rendre cette cible retentable normalement.
+export async function markTargetFailed(targetId: string): Promise<{ success?: boolean; error?: string }> {
+  try {
+    await requireAdmin()
+    const db = adminClient()
+    const { data: target } = await db.from('social_post_targets').select('post_id').eq('id', targetId).maybeSingle()
+    if (!target) return { error: 'Cible introuvable.' }
+
+    const { error } = await db.from('social_post_targets').update({
+      status: 'failed',
+      external_post_id: null,
+      published_at: null,
+      pending_media_id: null,
+      error: "Marqué manuellement comme non publié en réalité (corrigé par l'admin)",
     }).eq('id', targetId)
     if (error) return { error: error.message }
 
