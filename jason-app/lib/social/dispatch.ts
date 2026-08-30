@@ -45,9 +45,10 @@ export async function dispatchPost(postId: string): Promise<void> {
     }
     const account = (accounts ?? []).find(a => a.platform === target.platform)
     if (!account) {
-      await db.from('social_post_targets')
+      const { error: writeErr } = await db.from('social_post_targets')
         .update({ status: 'failed', error: 'Aucun compte connecté pour cette plateforme' })
         .eq('id', target.id)
+      if (writeErr) log.error('écriture du statut échouée', { postId, platform: target.platform, err: writeErr.message })
       return false
     }
     try {
@@ -64,13 +65,22 @@ export async function dispatchPost(postId: string): Promise<void> {
       } else {
         throw new Error(`Plateforme non supportée pour le moment : ${target.platform}`)
       }
-      await db.from('social_post_targets').update({
+      const { error: writeErr } = await db.from('social_post_targets').update({
         status: 'published',
         external_post_id: externalId,
         published_at: new Date().toISOString(),
         error: null,
         pending_media_id: null,
       }).eq('id', target.id)
+      // La publication Meta a réellement réussi (externalId obtenu) mais
+      // l'écriture du statut en base a échoué (ex : colonne manquante côté
+      // schéma — déjà arrivé en prod, cf. migration 091 non appliquée) :
+      // sans ce log, le cas restait invisible et le post repartait "pending"
+      // indéfiniment tout en étant déjà réellement publié côté Meta.
+      if (writeErr) {
+        log.error('publication réussie mais écriture du statut échouée', { postId, platform: target.platform, externalId, err: writeErr.message })
+        return false
+      }
       return true
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err)
@@ -79,11 +89,12 @@ export async function dispatchPost(postId: string): Promise<void> {
       // au lieu de repartir de zéro et retomber sur le même délai.
       const pendingMediaId = err instanceof InstagramMediaTimeoutError ? err.creationId : null
       log.error('publication échouée', { postId, platform: target.platform, err: message })
-      await db.from('social_post_targets').update({
+      const { error: writeErr } = await db.from('social_post_targets').update({
         status: 'failed',
         error: message,
         pending_media_id: pendingMediaId,
       }).eq('id', target.id)
+      if (writeErr) log.error('écriture du statut échec échouée', { postId, platform: target.platform, err: writeErr.message })
       return false
     }
   }))
