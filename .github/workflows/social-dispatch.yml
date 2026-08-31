@@ -5,21 +5,13 @@ name: Social publishing dispatch
 # d'écart réel entre exécutions au lieu de 5 min), inutilisable pour une
 # planification de publication fiable.
 #
-# Remplacé par une Routine Claude Code (compte Jason) qui se déclenche toutes
-# les heures et pousse un commit modifiant automation/social-dispatch-ping
-# (horodatage) — le trigger "push" ci-dessous s'en sert comme déclencheur
-# fiable, sans dépendre d'un cron GitHub natif ni d'un compte Upstash externe
-# jamais configuré. Même pattern que la veille "Actualités LCD journalière"
-# (voir data/actualites-queue/ + son propre workflow) : une session sans
-# accès direct à l'API GitHub Actions ne peut pas déclencher un
-# workflow_dispatch, mais peut toujours committer/pousser du code, qui lui,
-# déclenche le workflow via ce trigger push scopé à un seul fichier.
+# Remplacé par un Vercel Cron natif (jason-app/vercel.json, 1x/jour — limite
+# du plan Hobby) qui appelle directement /api/cron/social-dispatch, sans
+# dépendre de GitHub ni d'un compte externe (QStash) que Jason ne voulait pas
+# configurer. Ce workflow reste disponible en déclenchement manuel pour
+# tester ou forcer un passage entre deux exécutions du cron Vercel.
 on:
   workflow_dispatch: # déclenchement manuel pour tester
-  push:
-    branches: [main]
-    paths:
-      - 'automation/social-dispatch-ping'
 
 jobs:
   dispatch:
