@@ -1,9 +1,13 @@
 // Publie les social_posts programmés dont l'heure est arrivée.
-// Déclenché toutes les 5 minutes par un GitHub Actions scheduled workflow
-// (.github/workflows/social-dispatch.yml), PAS par un Vercel Cron : le plan
-// Hobby limite les Vercel Cron à une exécution par jour, incompatible avec
-// une programmation à 5 min près. Sécurisé par SOCIAL_CRON_SECRET (dédié,
-// distinct du CRON_SECRET auto-injecté par Vercel pour ses propres crons).
+// Déclenché une fois par jour par un Vercel Cron natif (jason-app/vercel.json)
+// — le plan Hobby limite les Vercel Cron à une exécution par jour, donc pas
+// de précision à 5 min près, mais fiable et sans dépendance externe (ni
+// GitHub Actions, dont le cron natif s'est montré peu fiable en pratique, ni
+// compte Upstash à configurer). Accepte deux secrets : CRON_SECRET (injecté
+// automatiquement par Vercel pour ses propres crons) et SOCIAL_CRON_SECRET
+// (dédié, pour un déclenchement manuel/externe — ex : le workflow_dispatch
+// de .github/workflows/social-dispatch.yml, gardé pour forcer un passage
+// entre deux exécutions du cron Vercel).
 
 import { NextResponse } from 'next/server'
 import { dispatchDuePosts } from '@/lib/social/dispatch'
@@ -12,12 +16,10 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 export async function GET(req: Request) {
-  const expectedSecret = process.env.SOCIAL_CRON_SECRET
-  if (expectedSecret) {
-    const auth = req.headers.get('authorization')
-    if (auth !== `Bearer ${expectedSecret}`) {
-      return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
-    }
+  const auth = req.headers.get('authorization')
+  const validSecrets = [process.env.CRON_SECRET, process.env.SOCIAL_CRON_SECRET].filter(Boolean)
+  if (validSecrets.length > 0 && !validSecrets.some(secret => auth === `Bearer ${secret}`)) {
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
   }
 
   // dispatchDuePosts() s'arrête proprement avant son propre budget interne
