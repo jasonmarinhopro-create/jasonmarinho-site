@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Fri, 28 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 31 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Réception de colis voyageurs en LCD : 6 règles pour gérer les livraisons pendant un séjour sans galère</title>
+      <link>https://jasonmarinho.com/blog/reception-colis-voyageurs-lcd-6-regles-livraisons-sejour</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/reception-colis-voyageurs-lcd-6-regles-livraisons-sejour</guid>
+      <pubDate>Mon, 31 Aug 2026 08:00:00 GMT</pubDate>
+      <description>Amazon, courses, valise perdue par la compagnie aérienne : 6 règles concrètes pour organiser la réception de colis pour tes voyageurs en location courte durée sans t&apos;y épuiser.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Consommables en LCD : 7 règles pour ne plus jamais tomber en rupture chez ton voyageur</title>
       <link>https://jasonmarinho.com/blog/consommables-lcd-7-regles-eviter-rupture-voyageur</link>
@@ -398,14 +406,6 @@
       <pubDate>Tue, 12 May 2026 08:00:00 GMT</pubDate>
       <description>Voyageur qui dégrade, refuse de partir, avis injuste, annulation last-minute, litige avec Airbnb : les situations critiques en location courte durée et le bon réflexe pour chacune.</description>
       <category>Expérience</category>
-    </item>
-    <item>
-      <title>Gérer sa LCD à distance : les 7 piliers pour héberger sans habiter sur place</title>
-      <link>https://jasonmarinho.com/blog/gerer-lcd-distance-7-piliers-hote-absent</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/gerer-lcd-distance-7-piliers-hote-absent</guid>
-      <pubDate>Mon, 11 May 2026 08:00:00 GMT</pubDate>
-      <description>Tu loues un logement situé à plusieurs heures de chez toi ? Voici les 7 piliers pour gérer ta location courte durée à distance sans perdre en qualité ni en sérénité.</description>
-      <category>Automatisation</category>
     </item>
   </channel>
 </rss>
