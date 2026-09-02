@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 31 Aug 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 02 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Photos d&apos;ambiance nocturne en LCD : 6 techniques pour capturer ton logement en soirée et te démarquer sur Airbnb</title>
+      <link>https://jasonmarinho.com/blog/photos-nocturne-crepuscule-lcd-airbnb-differenciation</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/photos-nocturne-crepuscule-lcd-airbnb-differenciation</guid>
+      <pubDate>Wed, 02 Sep 2026 08:00:00 GMT</pubDate>
+      <description>Crépuscule bleu, éclairage en couches, trépied, retouche légère : 6 techniques concrètes pour intégrer des photos nocturnes qui font grimper ton CTR Airbnb sans matériel pro.</description>
+      <category>Visibilité</category>
+    </item>
     <item>
       <title>Réception de colis voyageurs en LCD : 6 règles pour gérer les livraisons pendant un séjour sans galère</title>
       <link>https://jasonmarinho.com/blog/reception-colis-voyageurs-lcd-6-regles-livraisons-sejour</link>
@@ -398,14 +406,6 @@
       <pubDate>Wed, 13 May 2026 08:00:00 GMT</pubDate>
       <description>Détecteur de fumée, extincteur, couverture anti-feu, détecteur de CO : les 6 équipements à installer dans ton logement de location courte durée pour respecter la loi et rassurer tes voyageurs en 2026.</description>
       <category>Réglementation</category>
-    </item>
-    <item>
-      <title>Les 6 galères les plus fréquentes en LCD et comment les gérer en urgence</title>
-      <link>https://jasonmarinho.com/blog/galeres-location-courte-duree-comment-gerer-urgence</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/galeres-location-courte-duree-comment-gerer-urgence</guid>
-      <pubDate>Tue, 12 May 2026 08:00:00 GMT</pubDate>
-      <description>Voyageur qui dégrade, refuse de partir, avis injuste, annulation last-minute, litige avec Airbnb : les situations critiques en location courte durée et le bon réflexe pour chacune.</description>
-      <category>Expérience</category>
     </item>
   </channel>
 </rss>
