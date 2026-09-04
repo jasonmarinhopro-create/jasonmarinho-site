@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 02 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 04 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Robot aspirateur en location courte durée : 6 critères pour choisir un modèle qui tient entre 2 séjours</title>
+      <link>https://jasonmarinho.com/blog/robot-aspirateur-lcd-6-criteres-choisir-modele-entre-sejours</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/robot-aspirateur-lcd-6-criteres-choisir-modele-entre-sejours</guid>
+      <pubDate>Fri, 04 Sep 2026 08:00:00 GMT</pubDate>
+      <description>Autonomie, station de vidage, cartographie, cheveux longs, bruit, SAV : 6 critères concrets pour choisir un robot aspirateur qui tient vraiment le rythme d&apos;un turnover LCD sans finir bloqué sous un canapé.</description>
+      <category>Ressources</category>
+    </item>
     <item>
       <title>Photos d&apos;ambiance nocturne en LCD : 6 techniques pour capturer ton logement en soirée et te démarquer sur Airbnb</title>
       <link>https://jasonmarinho.com/blog/photos-nocturne-crepuscule-lcd-airbnb-differenciation</link>
@@ -398,14 +406,6 @@
       <pubDate>Fri, 15 May 2026 08:00:00 GMT</pubDate>
       <description>Voyageur qui demande un prix ? Voici 7 réponses calibrées pour préserver ta marge sans casser la conversation. Tactiques testées sur le terrain par Jason Marinho.</description>
       <category>Revenus</category>
-    </item>
-    <item>
-      <title>Sécurité incendie en LCD : 6 équipements à installer pour protéger ton logement et tes voyageurs</title>
-      <link>https://jasonmarinho.com/blog/securite-incendie-lcd-6-equipements-obligatoires-2026</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/securite-incendie-lcd-6-equipements-obligatoires-2026</guid>
-      <pubDate>Wed, 13 May 2026 08:00:00 GMT</pubDate>
-      <description>Détecteur de fumée, extincteur, couverture anti-feu, détecteur de CO : les 6 équipements à installer dans ton logement de location courte durée pour respecter la loi et rassurer tes voyageurs en 2026.</description>
-      <category>Réglementation</category>
     </item>
   </channel>
 </rss>
