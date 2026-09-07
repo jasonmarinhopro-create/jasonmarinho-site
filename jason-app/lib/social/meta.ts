@@ -191,11 +191,17 @@ export class InstagramMediaTimeoutError extends Error {
 // Instagram traite l'image de façon asynchrone après la création du
 // conteneur média — publier avant la fin de ce traitement renvoie l'erreur
 // "Media ID is not available". On attend status_code=FINISHED (poll toutes
-// les 2s, jusqu'à ~52s — le gros du budget des 60s de la fonction, le reste
-// couvrant la création du conteneur et l'appel media_publish) avant
-// d'appeler media_publish.
+// les 2s). Plafond volontairement resserré à ~34s (pas ~52s comme avant) :
+// un seul post à attendre ce plafond, plus le reste de la requête (query
+// due posts, comptes, Facebook en parallèle, sérialisation) suffit à
+// dépasser le timeout dur de 60s de la fonction Vercel — confirmé en
+// prod (HTTP 504 FUNCTION_INVOCATION_TIMEOUT) même avec un seul post dans
+// la file. Si Instagram met vraiment plus longtemps que ça à traiter le
+// média, le post échoue proprement (InstagramMediaTimeoutError, garde le
+// conteneur pour que "Réessayer" reprenne dessus au lieu de repartir de
+// zéro) plutôt que de faire planter toute la fonction sans rien écrire.
 async function waitForMediaReady(containerId: string, token: string): Promise<void> {
-  for (let attempt = 0; attempt < 26; attempt++) {
+  for (let attempt = 0; attempt < 17; attempt++) {
     const json = await graphFetch(`/${containerId}`, { access_token: token, fields: 'status_code' })
     if (json.status_code === 'FINISHED') return
     if (json.status_code === 'ERROR') throw new Error('Le traitement du média par Instagram a échoué (image invalide ou inaccessible).')

@@ -30,7 +30,7 @@ export async function dispatchPost(postId: string): Promise<void> {
     db.from('social_accounts').select('*').eq('status', 'active'),
   ])
 
-  // En parallèle plutôt que séquentiel : Instagram peut prendre jusqu'à ~52s
+  // En parallèle plutôt que séquentiel : Instagram peut prendre jusqu'à ~34s
   // rien que pour le traitement du média (waitForMediaReady) — l'enchaîner
   // après Facebook (même rapide) rapprochait dangereusement le total du
   // timeout de 60s de la fonction Vercel, provoquant des posts bloqués en
