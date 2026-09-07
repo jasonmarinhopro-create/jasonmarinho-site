@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Fri, 04 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 07 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Lave-linge et sèche-linge en LCD : 6 critères pour équiper ton logement et débloquer les séjours longs</title>
+      <link>https://jasonmarinho.com/blog/lave-linge-seche-linge-lcd-6-criteres-equiper-debloquer-sejours-longs</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/lave-linge-seche-linge-lcd-6-criteres-equiper-debloquer-sejours-longs</guid>
+      <pubDate>Mon, 07 Sep 2026 08:00:00 GMT</pubDate>
+      <description>Type d&apos;appareil, capacité, cycles courts, emplacement, règles d&apos;usage, rentabilité : 6 critères concrets pour intégrer un lave-linge ou un sèche-linge en location courte durée et capter les séjours longs.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Robot aspirateur en location courte durée : 6 critères pour choisir un modèle qui tient entre 2 séjours</title>
       <link>https://jasonmarinho.com/blog/robot-aspirateur-lcd-6-criteres-choisir-modele-entre-sejours</link>
@@ -397,14 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/duree-minimum-sejour-airbnb-criteres-choisir</guid>
       <pubDate>Mon, 18 May 2026 08:00:00 GMT</pubDate>
       <description>Une nuit, deux ou trois ? Voici 5 critères concrets pour fixer ta durée minimum de séjour sur Airbnb et optimiser ton taux d&apos;occupation sans saccager ton logement.</description>
-      <category>Revenus</category>
-    </item>
-    <item>
-      <title>Demande de réduction de prix Airbnb : 7 réponses pour préserver tes marges</title>
-      <link>https://jasonmarinho.com/blog/demande-reduction-prix-airbnb-7-reponses-hote</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/demande-reduction-prix-airbnb-7-reponses-hote</guid>
-      <pubDate>Fri, 15 May 2026 08:00:00 GMT</pubDate>
-      <description>Voyageur qui demande un prix ? Voici 7 réponses calibrées pour préserver ta marge sans casser la conversation. Tactiques testées sur le terrain par Jason Marinho.</description>
       <category>Revenus</category>
     </item>
   </channel>
