@@ -7,6 +7,7 @@ import {
   BookmarkSimple, PencilSimple, Flag, Lightbulb, Lightning,
   Pencil, Check, X, Note, SpinnerGap, EnvelopeSimple,
   ArrowClockwise, FacebookLogo, MagnifyingGlass, Trophy, Briefcase,
+  MapPin, FolderOpen,
 } from '@phosphor-icons/react/dist/ssr'
 import { updateAdminNotes, changeUserPlan } from '../../actions'
 
@@ -65,12 +66,24 @@ interface AuditSession {
   score_global: number | null
 }
 
+interface InvestorProject {
+  id: string
+  nom: string
+  ville: string | null
+  pays: string
+  type_logement: string
+  prix_achat: number | null
+  mensualite: number | null
+  created_at: string
+}
+
 interface Props {
   profile: MemberProfile
   formations: UserFormation[]
   stats: MemberStats
   community?: { joinedGroups: CommunityGroup[] }
   audits?: AuditSession[]
+  investorProjects?: InvestorProject[]
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -98,8 +111,12 @@ function formatReach(n: number): string {
   return String(n)
 }
 
+function fmtEur(n: number): string {
+  return n.toLocaleString('fr-FR') + ' €'
+}
+
 // ── Main component ──────────────────────────────────────────────────────────
-export default function MembreDetailUI({ profile, formations, stats, community, audits }: Props) {
+export default function MembreDetailUI({ profile, formations, stats, community, audits, investorProjects }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -166,10 +183,10 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
 
   const statTiles = [
     { icon: <UsersFour size={16} />, value: stats.voyageurs,      label: 'Voyageurs',       color: '#93C5FD' },
-    { icon: <CalendarBlank size={16} />, value: stats.sejours,    label: 'Séjours',          color: 'var(--success-1)' },
+    { icon: <CalendarBlank size={16} />, value: stats.sejours,    label: 'Séjours',          color: '#34D399' },
     { icon: <BookmarkSimple size={16} />, value: stats.favorites,  label: 'Gabarits favoris', color: '#FFD56B' },
     { icon: <PencilSimple size={16} />, value: stats.customizations, label: 'Gabarits perso.', color: '#C084FC' },
-    { icon: <Flag size={16} />, value: stats.signalements,        label: 'Signalements',     color: 'var(--danger)' },
+    { icon: <Flag size={16} />, value: stats.signalements,        label: 'Signalements',     color: '#F87171' },
     { icon: <Lightbulb size={16} />, value: stats.suggestions,    label: 'Suggestions',      color: '#FB923C' },
     { icon: <FacebookLogo size={16} />, value: stats.communityGroupsCount, label: 'Groupes FB rejoints', color: '#60A5FA' },
     { icon: <MagnifyingGlass size={16} />, value: stats.auditsCount, label: 'Audits GBP', color: '#A78BFA' },
@@ -177,6 +194,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
 
   const joinedGroups = community?.joinedGroups ?? []
   const auditList = audits ?? []
+  const projectList = investorProjects ?? []
 
   return (
     <div style={s.page}>
@@ -324,6 +342,48 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
         </div>
         {/* ── Right column : stats + community + audits ── */}
         <aside style={isDesktop ? s.rightColumnSticky : s.rightColumn}>
+
+      {/* ── Espace investisseur : ce que fait réellement un compte marqué
+          investisseur — un investisseur pur n'a ni logement, ni séjour, ni
+          voyageur, donc "Activité sur la plateforme" plus bas n'affiche que
+          des zéros pour lui. Ce qu'il fait vraiment, ce sont les projets
+          d'acquisition sauvegardés depuis l'estimateur (même donnée que
+          /dashboard/admin/investisseurs). ── */}
+      {profile.is_investor && (
+        <div style={s.section} className="fade-up">
+          <div style={s.sectionHeader}>
+            <div style={s.sectionTitle}>
+              <Briefcase size={16} color="#60BEFF" weight="fill" />
+              Espace investisseur ({projectList.length} projet{projectList.length > 1 ? 's' : ''})
+            </div>
+          </div>
+          {projectList.length === 0 ? (
+            <div style={{ fontSize: '13px', color: 'var(--text-muted)', padding: '14px 0' }}>
+              N&apos;a pas encore sauvegardé de projet d&apos;acquisition depuis l&apos;estimateur.
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {projectList.map(p => (
+                <div key={p.id} style={s.commItem}>
+                  <FolderOpen size={14} color="#60BEFF" weight="fill" style={{ flexShrink: 0 }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: '13px', color: 'var(--text)', fontWeight: 600 }}>{p.nom}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11.5px', color: 'var(--text-2)', marginTop: '2px', flexWrap: 'wrap' }}>
+                      {p.ville && <><MapPin size={10} weight="fill" /> {p.ville} ·</>}
+                      {p.type_logement.toUpperCase()}
+                      {p.prix_achat != null && <> · {fmtEur(p.prix_achat)}</>}
+                      {p.mensualite != null && <> · {fmtEur(p.mensualite)}/mois</>}
+                    </div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-3)', marginTop: '2px' }}>
+                      {formatDateShort(p.created_at)}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ── Activité stats ── */}
       <div style={s.section} className="fade-up">

@@ -486,6 +486,7 @@ export async function getFullMemberProfile(memberId: string) {
     { count: sejoursCount },
     { data: communityMemberships },
     { data: audits },
+    { data: investorProjects },
   ] = await Promise.all([
     adminClient
       .from('profiles')
@@ -516,6 +517,15 @@ export async function getFullMemberProfile(memberId: string) {
       .eq('user_id', memberId)
       .order('started_at', { ascending: false })
       .limit(5),
+    // ─── Espace investisseur : projets d'acquisition sauvegardés depuis
+    // l'estimateur (cf. /dashboard/admin/investisseurs, même requête) —
+    // sans ça, la fiche d'un investisseur pur (sans logement/séjour/voyageur)
+    // n'affiche que des zéros dans "Activité sur la plateforme".
+    adminClient
+      .from('investor_projects')
+      .select('id, nom, ville, pays, type_logement, prix_achat, mensualite, created_at')
+      .eq('user_id', memberId)
+      .order('created_at', { ascending: false }),
   ])
 
   if (!memberProfile) return { error: 'Membre introuvable' }
@@ -560,6 +570,7 @@ export async function getFullMemberProfile(memberId: string) {
     },
     community: { joinedGroups },
     audits: auditsData,
+    investorProjects: investorProjects ?? [],
   }
 }
 

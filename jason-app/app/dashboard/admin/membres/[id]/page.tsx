@@ -38,6 +38,7 @@ export default async function MembreDetailPage({ params }: { params: { id: strin
           stats={result.stats}
           community={result.community}
           audits={result.audits}
+          investorProjects={result.investorProjects}
         />
       </div>
     </>
