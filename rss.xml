@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 07 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 09 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Co-hôte Airbnb : 6 règles pour ajouter un co-hôte à ton annonce sans risque juridique ni fiscal en 2026</title>
+      <link>https://jasonmarinho.com/blog/co-hote-airbnb-6-regles-ajouter-cohote-annonce-sans-risque-2026</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/co-hote-airbnb-6-regles-ajouter-cohote-annonce-sans-risque-2026</guid>
+      <pubDate>Wed, 09 Sep 2026 08:00:00 GMT</pubDate>
+      <description>Rôle, autorisations, rémunération, contrat, fiscalité, sortie : 6 règles concrètes pour ajouter un co-hôte à ton annonce Airbnb en 2026 sans mauvaise surprise juridique ni fiscale.</description>
+      <category>Conciergerie</category>
+    </item>
     <item>
       <title>Lave-linge et sèche-linge en LCD : 6 critères pour équiper ton logement et débloquer les séjours longs</title>
       <link>https://jasonmarinho.com/blog/lave-linge-seche-linge-lcd-6-criteres-equiper-debloquer-sejours-longs</link>
@@ -397,14 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/acheter-appartement-lcd-7-criteres-rentabilite-avant-signer</guid>
       <pubDate>Wed, 20 May 2026 08:00:00 GMT</pubDate>
       <description>Tu veux acheter un appartement pour le louer en courte durée ? Voici 7 critères concrets à vérifier avant de signer le compromis pour éviter d&apos;acheter un bien qui ne sera jamais rentable en LCD.</description>
-      <category>Revenus</category>
-    </item>
-    <item>
-      <title>Durée minimum de séjour Airbnb : 5 critères pour choisir entre 1, 2 ou 3 nuits</title>
-      <link>https://jasonmarinho.com/blog/duree-minimum-sejour-airbnb-criteres-choisir</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/duree-minimum-sejour-airbnb-criteres-choisir</guid>
-      <pubDate>Mon, 18 May 2026 08:00:00 GMT</pubDate>
-      <description>Une nuit, deux ou trois ? Voici 5 critères concrets pour fixer ta durée minimum de séjour sur Airbnb et optimiser ton taux d&apos;occupation sans saccager ton logement.</description>
       <category>Revenus</category>
     </item>
   </channel>
