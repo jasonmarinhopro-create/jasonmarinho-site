@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 09 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 11 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Panne courant, eau ou internet en LCD : 7 réflexes pour gérer une coupure pendant un séjour sans avis négatif</title>
+      <link>https://jasonmarinho.com/blog/panne-courant-eau-internet-lcd-7-reflexes-coupure-sejour</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/panne-courant-eau-internet-lcd-7-reflexes-coupure-sejour</guid>
+      <pubDate>Fri, 11 Sep 2026 08:00:00 GMT</pubDate>
+      <description>Coupure électrique, panne de box, fuite ou chauffe-eau HS pendant un séjour : 7 réflexes concrets pour préserver ton voyageur, ton logement et tes avis en location courte durée.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Co-hôte Airbnb : 6 règles pour ajouter un co-hôte à ton annonce sans risque juridique ni fiscal en 2026</title>
       <link>https://jasonmarinho.com/blog/co-hote-airbnb-6-regles-ajouter-cohote-annonce-sans-risque-2026</link>
@@ -398,14 +406,6 @@
       <pubDate>Fri, 22 May 2026 08:00:00 GMT</pubDate>
       <description>Vagues de chaleur, voyageurs étrangers exigeants, mauvais avis liés à la température : 6 actions concrètes pour rendre ton logement de location courte durée confortable cet été.</description>
       <category>Expérience</category>
-    </item>
-    <item>
-      <title>Acheter un appartement pour la LCD : 7 critères de rentabilité à vérifier avant de signer</title>
-      <link>https://jasonmarinho.com/blog/acheter-appartement-lcd-7-criteres-rentabilite-avant-signer</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/acheter-appartement-lcd-7-criteres-rentabilite-avant-signer</guid>
-      <pubDate>Wed, 20 May 2026 08:00:00 GMT</pubDate>
-      <description>Tu veux acheter un appartement pour le louer en courte durée ? Voici 7 critères concrets à vérifier avant de signer le compromis pour éviter d&apos;acheter un bien qui ne sera jamais rentable en LCD.</description>
-      <category>Revenus</category>
     </item>
   </channel>
 </rss>
