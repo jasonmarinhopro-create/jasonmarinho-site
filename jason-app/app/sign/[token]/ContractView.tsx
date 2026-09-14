@@ -101,9 +101,11 @@ export default function ContractView({
               onClick={() => setLang(l)}
               style={{
                 ...langBtn,
-                background: lang === l ? 'var(--accent-bg)' : 'transparent',
-                border: `1px solid ${lang === l ? 'var(--accent-border-2)' : 'var(--border, rgba(255,255,255,0.12))'}`,
-                color: lang === l ? 'var(--accent-text)' : 'var(--text-muted, #6b9a7e)',
+                background: lang === l ? 'var(--accent-bg-2)' : 'var(--surface)',
+                border: `1.5px solid ${lang === l ? 'var(--accent-text)' : 'var(--border)'}`,
+                color: lang === l ? 'var(--accent-text)' : 'var(--text-2)',
+                fontWeight: lang === l ? 700 : 500,
+                boxShadow: lang === l ? '0 0 0 3px var(--accent-bg)' : 'none',
               }}
               title={LANG_NAME[l]}
             >
