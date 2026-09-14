@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Fri, 11 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 14 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Cheminée et poêle à bois en LCD : 7 règles pour laisser tes voyageurs profiter du feu en sécurité et en règle</title>
+      <link>https://jasonmarinho.com/blog/cheminee-poele-bois-lcd-7-regles-autoriser-hiver-sans-risque</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/cheminee-poele-bois-lcd-7-regles-autoriser-hiver-sans-risque</guid>
+      <pubDate>Mon, 14 Sep 2026 08:00:00 GMT</pubDate>
+      <description>Ramonage, assurance, bois sec, règlement voyageur : 7 règles concrètes pour autoriser cheminée ou poêle à bois en LCD sans risque cet hiver.</description>
+      <category>Réglementation</category>
+    </item>
     <item>
       <title>Panne courant, eau ou internet en LCD : 7 réflexes pour gérer une coupure pendant un séjour sans avis négatif</title>
       <link>https://jasonmarinho.com/blog/panne-courant-eau-internet-lcd-7-reflexes-coupure-sejour</link>
@@ -397,14 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/punaises-de-lit-lcd-prevenir-detecter-reagir</guid>
       <pubDate>Mon, 25 May 2026 08:00:00 GMT</pubDate>
       <description>Loi ELAN, prévention entre séjours, détection précoce, traitement Certibiocide : 6 actions concrètes pour gérer les punaises de lit en location courte durée sans casser tes avis.</description>
-      <category>Expérience</category>
-    </item>
-    <item>
-      <title>Climatisation et canicule en LCD : 6 actions pour préparer ton logement à l&apos;été 2026</title>
-      <link>https://jasonmarinho.com/blog/climatisation-canicule-lcd-6-actions-preparer-ete</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/climatisation-canicule-lcd-6-actions-preparer-ete</guid>
-      <pubDate>Fri, 22 May 2026 08:00:00 GMT</pubDate>
-      <description>Vagues de chaleur, voyageurs étrangers exigeants, mauvais avis liés à la température : 6 actions concrètes pour rendre ton logement de location courte durée confortable cet été.</description>
       <category>Expérience</category>
     </item>
   </channel>
