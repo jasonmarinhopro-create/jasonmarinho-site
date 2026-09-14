@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
+import { CONTRACT_EMAIL_I18N, toEmailLang } from '@/lib/email/contract-i18n'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { logger } from '@/lib/logger'
 import { createDeclarationForSignedContract, type DeclarationCreateResult } from '@/lib/declarations/create'
@@ -30,6 +31,7 @@ type ContractRow = {
   modalites_paiement: string | null
   stripe_payment_enabled: boolean | null
   checklist_status: Record<string, boolean> | null
+  langue: string | null
 }
 
 // Service role, bypass RLS complet (lecture + écriture)
@@ -99,7 +101,7 @@ export async function POST(request: NextRequest) {
       .from('contracts')
       .select('id, statut, sejour_id, user_id, token_expires_at, locataire_email, bailleur_email, ' +
               'locataire_prenom, locataire_nom, bailleur_prenom, bailleur_nom, ' +
-              'logement_adresse, montant_loyer, montant_caution, modalites_paiement, stripe_payment_enabled, checklist_status')
+              'logement_adresse, montant_loyer, montant_caution, modalites_paiement, stripe_payment_enabled, checklist_status, langue')
       .eq('token', token)
       .single()
 
@@ -240,9 +242,19 @@ export async function POST(request: NextRequest) {
       contract.modalites_paiement.toLowerCase().includes('virement')
 
     // ── Étape 5 : Emails de confirmation ──────────────────────────────────────
+    // Email locataire dans la langue du contrat (contracts.langue) — l'email
+    // hôte (Jason / l'hôte) reste toujours en français, cf. hostEmailHtml.
+    const emailLang = toEmailLang(contract.langue)
+    const et = CONTRACT_EMAIL_I18N[emailLang]
+    const guestLocale = emailLang === 'pt' ? 'pt-PT' : 'fr-FR'
+
     const guestName = `${contract.locataire_prenom} ${contract.locataire_nom}`
     const hostName = `${contract.bailleur_prenom} ${contract.bailleur_nom}`
     const signDate = new Date().toLocaleDateString('fr-FR', {
+      day: 'numeric', month: 'long', year: 'numeric',
+      hour: '2-digit', minute: '2-digit',
+    })
+    const signDateGuest = new Date().toLocaleDateString(guestLocale, {
       day: 'numeric', month: 'long', year: 'numeric',
       hour: '2-digit', minute: '2-digit',
     })
@@ -262,43 +274,43 @@ export async function POST(request: NextRequest) {
 
     const ibanEmailBlock = (isVirement && hostIban) ? `
       <div style="background:#0a1a13;border:1px solid #1a3328;border-left:2px solid #a29bfe;border-radius:10px;padding:18px 20px;margin:0 0 24px;">
-        <p style="margin:0 0 12px;font-size:12px;font-weight:600;letter-spacing:0.5px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">VIREMENT BANCAIRE</p>
+        <p style="margin:0 0 12px;font-size:12px;font-weight:600;letter-spacing:0.5px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.bankTransferTitle}</p>
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-          <tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">IBAN</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:Courier New,Courier,monospace;word-break:break-all;">${escHtml(hostIban)}</td></tr>
-          ${hostBic ? `<tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">BIC</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:Courier New,Courier,monospace;">${escHtml(hostBic)}</td></tr>` : ''}
-          <tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">Bénéficiaire</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${escHtml(`${contract.bailleur_prenom} ${contract.bailleur_nom}`)}</td></tr>
-          ${Number(contract.montant_loyer) > 0 ? `<tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">Montant</td><td style="padding:4px 0;font-size:14px;color:#FFD56B;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${loyerFormatted} €</td></tr>` : ''}
-          <tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">Référence</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:Courier New,Courier,monospace;">${escHtml(ibanRef)}</td></tr>
+          <tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">${et.bankTransferLabelIban}</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:Courier New,Courier,monospace;word-break:break-all;">${escHtml(hostIban)}</td></tr>
+          ${hostBic ? `<tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">${et.bankTransferLabelBic}</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:Courier New,Courier,monospace;">${escHtml(hostBic)}</td></tr>` : ''}
+          <tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">${et.bankTransferLabelBeneficiaire}</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${escHtml(`${contract.bailleur_prenom} ${contract.bailleur_nom}`)}</td></tr>
+          ${Number(contract.montant_loyer) > 0 ? `<tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">${et.bankTransferLabelMontant}</td><td style="padding:4px 0;font-size:14px;color:#FFD56B;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${loyerFormatted} €</td></tr>` : ''}
+          <tr><td style="padding:4px 0;font-size:12px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;white-space:nowrap;padding-right:16px;">${et.bankTransferLabelReference}</td><td style="padding:4px 0;font-size:13px;color:#e8ede8;font-weight:500;font-family:Courier New,Courier,monospace;">${escHtml(ibanRef)}</td></tr>
         </table>
-        <p style="margin:12px 0 0;font-size:12px;color:#7a9e8a;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Indiquez la référence dans le libellé du virement. Prévenez le propriétaire une fois le virement effectué.</p>
+        <p style="margin:12px 0 0;font-size:12px;color:#7a9e8a;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.bankTransferNote}</p>
       </div>` : ''
 
     const stripeBlock = (hasPayment || hasCaution) ? `
       <div style="background:#0a1a13;border:1px solid #1a3328;border-left:2px solid #FFD56B;border-radius:10px;padding:18px 20px;margin:0 0 24px;">
-        <p style="margin:0 0 12px;font-size:12px;font-weight:600;letter-spacing:0.5px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">FINALISER LE DOSSIER</p>
-        ${hasPayment ? `<a href="${paymentRedirectUrl}" style="display:block;text-align:center;background:#FFD56B;color:#0a0f0d;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Payer la réservation, ${loyerFormatted} €</a>` : ''}
-        ${hasCaution ? `<a href="${depositRedirectUrl}" style="display:block;text-align:center;background:transparent;border:1px solid #1a3328;color:#e8ede8;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">Régler la caution, ${cautionFormatted} €</a>` : ''}
-        ${hasCaution ? `<p style="margin:10px 0 0;font-size:12px;color:#7a9e8a;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">La caution est bloquée sur votre carte et libérée après votre séjour si aucun dommage n'est constaté.</p>` : ''}
+        <p style="margin:0 0 12px;font-size:12px;font-weight:600;letter-spacing:0.5px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.finalizeTitle}</p>
+        ${hasPayment ? `<a href="${paymentRedirectUrl}" style="display:block;text-align:center;background:#FFD56B;color:#0a0f0d;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.payBookingBtn(loyerFormatted)}</a>` : ''}
+        ${hasCaution ? `<a href="${depositRedirectUrl}" style="display:block;text-align:center;background:transparent;border:1px solid #1a3328;color:#e8ede8;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.payDepositBtn(cautionFormatted)}</a>` : ''}
+        ${hasCaution ? `<p style="margin:10px 0 0;font-size:12px;color:#7a9e8a;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.depositNote}</p>` : ''}
       </div>` : ''
 
     const eidas = 'Ce contrat constitue une signature électronique simple au sens du règlement eIDAS (UE) 910/2014 et de l\'article 1366 du Code civil français.'
 
-    // Email voyageur
+    // Email voyageur, dans la langue du contrat
     const guestEmailHtml = buildEmail({
-      title: 'Votre contrat est signé',
-      preview: `Signature confirmée pour ${propertyLabel}.`,
+      title: et.signedTitle,
+      preview: et.signedPreview(propertyLabel),
       body: `
-        ${emailP(`Bonjour <strong style="color:#e8ede8;">${escHtml(guestName)}</strong>,`)}
-        ${emailP(`Votre contrat de location pour <strong style="color:#e8ede8;">${escHtml(propertyLabel)}</strong> a été signé le <strong style="color:#e8ede8;">${escHtml(signDate)}</strong>.`)}
+        ${emailP(et.signedGreeting(escHtml(guestName)))}
+        ${emailP(et.signedBody(escHtml(propertyLabel), escHtml(signDateGuest)))}
         ${emailInfoBlock([
-          { label: 'Logement', value: escHtml(propertyLabel) },
-          { label: 'Signé le', value: escHtml(signDate) },
-          { label: 'Adresse IP', value: escHtml(ip) },
+          { label: et.labelLogement, value: escHtml(propertyLabel) },
+          { label: et.labelSigned, value: escHtml(signDateGuest) },
+          { label: et.labelIp, value: escHtml(ip) },
         ], 'var(--success-1)')}
         ${stripeBlock}
         ${ibanEmailBlock}
-        ${emailBtn(contractUrl, 'Accéder au contrat signé', 'green')}
-        ${emailNote(eidas)}
+        ${emailBtn(contractUrl, et.viewContractBtn, 'green')}
+        ${emailNote(et.eidasNote)}
       `,
     })
 

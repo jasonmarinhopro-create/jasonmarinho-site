@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
+import { CONTRACT_EMAIL_I18N, toEmailLang } from '@/lib/email/contract-i18n'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
@@ -109,33 +110,37 @@ export async function createContract(data: ContractData): Promise<{
     .eq('id', data.sejour_id)
     .eq('user_id', session.user.id)
 
-  // Envoyer l'email de signature au voyageur (si email disponible)
+  // Envoyer l'email de signature au voyageur (si email disponible), dans la
+  // langue du contrat (contracts.langue) — pas systématiquement en français.
   if (data.locataire_email) {
+    const emailLang = toEmailLang(data.langue)
+    const et = CONTRACT_EMAIL_I18N[emailLang]
+    const locale = emailLang === 'pt' ? 'pt-PT' : 'fr-FR'
     const signUrl = `${APP_URL}/sign/${row.token}`
     const hostName = `${data.bailleur_prenom} ${data.bailleur_nom}`
     const guestName = `${data.locataire_prenom} ${data.locataire_nom}`
-    const dateArr = new Date(data.date_arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
-    const dateDep = new Date(data.date_depart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+    const dateArr = new Date(data.date_arrivee).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' })
+    const dateDep = new Date(data.date_depart).toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' })
 
     const propertyLabel = data.logement_nom ?? data.logement_adresse
     await getResend().emails.send({
       from: FROM_EMAIL,
       to: data.locataire_email,
-      subject: `Contrat à signer, ${propertyLabel}`,
+      subject: et.inviteSubject(propertyLabel),
       html: buildEmail({
-        title: 'Contrat de location',
-        preview: `${hostName} vous invite à signer votre contrat pour ${propertyLabel}.`,
+        title: et.inviteTitle,
+        preview: et.invitePreview(hostName, propertyLabel),
         body: `
-          ${emailP(`Bonjour <strong style="color:#e8ede8;">${escHtml(guestName)}</strong>,`)}
-          ${emailP(`<strong style="color:#e8ede8;">${escHtml(hostName)}</strong> vous invite à lire et signer votre contrat de location.`)}
+          ${emailP(et.inviteGreeting(escHtml(guestName)))}
+          ${emailP(et.inviteBody(escHtml(hostName)))}
           ${emailInfoBlock([
-            { label: 'Logement', value: escHtml(propertyLabel) },
-            ...(data.logement_nom ? [{ label: 'Adresse', value: escHtml(data.logement_adresse) }] : []),
-            { label: 'Arrivée', value: escHtml(dateArr) },
-            { label: 'Départ', value: escHtml(dateDep) },
+            { label: et.labelLogement, value: escHtml(propertyLabel) },
+            ...(data.logement_nom ? [{ label: et.labelAdresse, value: escHtml(data.logement_adresse) }] : []),
+            { label: et.labelArrivee, value: escHtml(dateArr) },
+            { label: et.labelDepart, value: escHtml(dateDep) },
           ])}
-          ${emailBtn(signUrl, 'Lire et signer le contrat', 'primary')}
-          ${emailNote('Ce lien est valable 30 jours. La signature constitue une signature électronique simple au sens du règlement eIDAS (UE) 910/2014, juridiquement valable en France et dans l\'Union Européenne.')}
+          ${emailBtn(signUrl, et.inviteBtn, 'primary')}
+          ${emailNote(et.inviteNote)}
         `,
       }),
     }).catch(() => null) // Ne pas faire échouer la création si l'email échoue

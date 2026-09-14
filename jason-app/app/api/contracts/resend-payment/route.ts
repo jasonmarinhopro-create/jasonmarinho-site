@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { logger } from '@/lib/logger'
+import { CONTRACT_EMAIL_I18N, toEmailLang } from '@/lib/email/contract-i18n'
 const log = logger('api/contracts/resend-payment')
 
 export const dynamic = 'force-dynamic'
@@ -58,6 +59,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Aucun email renseigné pour ce voyageur.' }, { status: 400 })
     }
 
+    const emailLang = toEmailLang(contract.langue)
+    const et = CONTRACT_EMAIL_I18N[emailLang]
+
     const guestName = `${contract.locataire_prenom} ${contract.locataire_nom}`
     const propertyLabel = (contract.logement_nom as string | null) ?? contract.logement_adresse
     const contractUrl = `${APP_URL}/sign/${contract.token}`
@@ -107,54 +111,54 @@ export async function POST(request: NextRequest) {
     // Bloc virement bancaire
     const ibanBlock = (isVirement && hostIban) ? `
         <div style="background:rgba(99,91,255,0.06);border:1px solid rgba(99,91,255,0.3);border-radius:14px;padding:22px 24px;margin:0 0 24px;">
-          <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#a29bfe;text-transform:uppercase;letter-spacing:1px;">Virement bancaire</p>
-          <p style="margin:0 0 16px;font-size:13px;color:#a5c4b0;line-height:1.6;">Appuyez sur chaque champ pour le sélectionner, puis copiez-le :</p>
-          ${ibanRow('IBAN', hostIban, true)}
-          ${hostBic ? ibanRow('BIC / SWIFT', hostBic, true) : ''}
-          ${ibanRow('Bénéficiaire', `${contract.bailleur_prenom} ${contract.bailleur_nom}`)}
-          ${Number(contract.montant_loyer) > 0 ? ibanRow('Montant à virer', `${loyerFormatted} €`, false, true) : ''}
-          ${ibanRow('Référence', ibanRef, true)}
-          <p style="margin:14px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">Indiquez bien la référence dans le libellé de votre virement. Prévenez le propriétaire une fois le virement effectué.</p>
+          <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#a29bfe;text-transform:uppercase;letter-spacing:1px;">${et.bankTransferTitle}</p>
+          <p style="margin:0 0 16px;font-size:13px;color:#a5c4b0;line-height:1.6;">${et.reminderSelectToCopy}</p>
+          ${ibanRow(et.bankTransferLabelIban, hostIban, true)}
+          ${hostBic ? ibanRow(`${et.bankTransferLabelBic} / SWIFT`, hostBic, true) : ''}
+          ${ibanRow(et.bankTransferLabelBeneficiaire, `${contract.bailleur_prenom} ${contract.bailleur_nom}`)}
+          ${Number(contract.montant_loyer) > 0 ? ibanRow(et.bankTransferLabelMontant, `${loyerFormatted} €`, false, true) : ''}
+          ${ibanRow(et.bankTransferLabelReference, ibanRef, true)}
+          <p style="margin:14px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">${et.bankTransferNote}</p>
         </div>` : ''
 
     const emailHtml = `
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="${emailLang}">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
 <body style="margin:0;padding:0;background:#0d1f1a;font-family:'Helvetica Neue',Arial,sans-serif;">
   <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
     <div style="background:#132b22;border:1px solid #1e3d2f;border-radius:20px;overflow:hidden;">
       <div style="padding:32px 32px 24px;border-bottom:1px solid #1e3d2f;">
-        <p style="margin:0 0 4px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#FFD56B;font-weight:600;">Rappel, Dossier à finaliser</p>
-        <h1 style="margin:0;font-size:24px;font-weight:400;color:#f0ebe1;font-family:Georgia,serif;">Finalisez votre dossier</h1>
+        <p style="margin:0 0 4px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#FFD56B;font-weight:600;">${et.reminderPreheader}</p>
+        <h1 style="margin:0;font-size:24px;font-weight:400;color:#f0ebe1;font-family:Georgia,serif;">${et.reminderTitle}</h1>
       </div>
       <div style="padding:28px 32px;">
         <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
-          Bonjour <strong style="color:#f0ebe1;">${guestName}</strong>,
+          ${et.reminderGreeting(guestName)}
         </p>
         <p style="color:#a5c4b0;font-size:15px;line-height:1.7;margin:0 0 20px;">
-          Votre contrat de location pour <strong style="color:#f0ebe1;">${propertyLabel}</strong> a bien été signé.
-          ${(hasPayment || hasCaution) ? `Il reste à effectuer le${hasPayment && hasCaution ? 's paiements suivants' : ' paiement suivant'} pour confirmer définitivement votre séjour :` : isVirement ? 'Voici les coordonnées bancaires pour effectuer votre règlement :' : ''}
+          ${et.reminderBody(propertyLabel)}
+          ${(hasPayment || hasCaution) ? ` ${et.reminderPaymentsIntro(hasPayment && hasCaution)}` : isVirement ? ` ${et.reminderVirementIntro}` : ''}
         </p>
         ${(hasPayment || hasCaution) ? `
         <div style="background:#0a2018;border:1px solid rgba(255,213,107,0.25);border-radius:14px;padding:22px 24px;margin:0 0 24px;">
-          <p style="margin:0 0 18px;font-size:14px;color:#a5c4b0;line-height:1.6;">Cliquez sur le bouton correspondant pour effectuer votre paiement en ligne :</p>
+          <p style="margin:0 0 18px;font-size:14px;color:#a5c4b0;line-height:1.6;">${et.reminderClickToPay}</p>
           ${hasPayment ? `
           <a href="${paymentRedirectUrl}" style="display:block;text-align:center;background:rgba(255,213,107,0.18);border:1px solid rgba(255,213,107,0.4);color:#FFD56B;padding:14px 24px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;margin:0 0 12px;">
-            Payer la réservation, ${loyerFormatted} € →
+            ${et.payBookingBtn(loyerFormatted)} →
           </a>` : ''}
           ${hasCaution ? `
           <a href="${depositRedirectUrl}" style="display:block;text-align:center;background:rgba(99,91,255,0.2);border:1px solid rgba(99,91,255,0.4);color:#a29bfe;padding:14px 24px;border-radius:12px;text-decoration:none;font-size:15px;font-weight:600;margin:0 0 12px;">
-            Régler la caution, ${cautionFormatted} € →
+            ${et.payDepositBtn(cautionFormatted)} →
           </a>` : ''}
-          ${hasCaution ? `<p style="margin:8px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">La caution est bloquée sur votre carte mais non débitée, elle est libérée après votre séjour si aucun dommage n'est constaté.</p>` : ''}
+          ${hasCaution ? `<p style="margin:8px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">${et.depositNote}</p>` : ''}
         </div>` : ''}
         ${ibanBlock}
         <a href="${contractUrl}" style="display:block;text-align:center;background:#34D399;color:#0d1f1a;padding:14px 32px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 20px;">
-          Accéder au contrat signé
+          ${et.viewContractBtn}
         </a>
         <p style="color:#6b9a7e;font-size:12px;line-height:1.6;margin:0;">
-          En cas de difficulté, contactez directement votre propriétaire.
+          ${et.reminderTroubleNote}
         </p>
       </div>
     </div>
@@ -165,7 +169,7 @@ export async function POST(request: NextRequest) {
     const { error: emailErr } = await getResend().emails.send({
       from: FROM_EMAIL,
       to: contract.locataire_email,
-      subject: `Rappel, Finalisez votre dossier pour ${propertyLabel}`,
+      subject: et.reminderSubject(propertyLabel),
       html: emailHtml,
     })
 
