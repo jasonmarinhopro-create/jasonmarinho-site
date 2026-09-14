@@ -114,6 +114,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     // Financier, pré-rempli selon les méthodes de paiement du logement
     montant_loyer: sejour.montant ?? 0,
     montant_caution: 0,
+    acompte_percent: 100,
     methodes_keys: initialLogement?.methodes_paiement ?? 'virement',
     ...(() => {
       const labels: Record<string, string> = {
@@ -253,6 +254,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       heure_depart: form.heure_depart,
       montant_loyer: form.montant_loyer,
       montant_caution: form.montant_caution,
+      acompte_percent: form.acompte_percent,
       modalites_paiement: form.modalites_paiement,
       stripe_payment_enabled: form.stripe_payment_enabled,
       conditions_annulation: form.conditions_annulation.trim(),
@@ -480,7 +482,47 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                     value={form.montant_caution}
                     onChange={e => set('montant_caution', parseFloat(e.target.value) || 0)}
                   />
+                  <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '4px 0 0' }}>
+                    À ne pas confondre avec l&apos;acompte ci-dessous : la caution est remboursée après le séjour, elle ne fait pas partie du loyer.
+                  </p>
                 </div>
+              </div>
+
+              {/* Acompte à la réservation : distinct de la caution ci-dessus.
+                  C'est une part du LOYER encaissée pour bloquer la réservation,
+                  le solde restant étant à régler par le locataire selon les
+                  modalités convenues (pas de suivi Stripe automatisé pour le
+                  solde, cf. migration 097). */}
+              <div>
+                <label style={fieldLabel}>Acompte à la réservation</label>
+                <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                  {[50, 100].map(pct => {
+                    const checked = form.acompte_percent === pct
+                    return (
+                      <button
+                        key={pct}
+                        type="button"
+                        onClick={() => set('acompte_percent', pct)}
+                        style={{
+                          flex: 1, padding: '10px 14px', borderRadius: '10px', cursor: 'pointer',
+                          fontSize: '13px', fontWeight: checked ? 600 : 400,
+                          background: checked ? 'var(--success-bg)' : 'var(--surface)',
+                          border: `1px solid ${checked ? 'rgba(52,211,153,0.4)' : 'var(--border)'}`,
+                          color: checked ? 'var(--success-1)' : 'var(--text-2)',
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        {pct === 100 ? '100 %, solde intégral à la signature' : '50 % maintenant, 50 % à l’arrivée'}
+                      </button>
+                    )
+                  })}
+                </div>
+                {form.acompte_percent < 100 && form.montant_loyer > 0 && (
+                  <p style={{ fontSize: '12px', color: 'var(--text-2)', margin: '8px 0 0' }}>
+                    Acompte&nbsp;: <strong>{(form.montant_loyer * form.acompte_percent / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</strong>
+                    {' · '}Solde à l&apos;arrivée&nbsp;: <strong>{(form.montant_loyer * (100 - form.acompte_percent) / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</strong>
+                  </p>
+                )}
               </div>
               <div>
                 <label style={fieldLabel}>Méthodes de paiement acceptées</label>

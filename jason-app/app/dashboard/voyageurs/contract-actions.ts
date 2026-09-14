@@ -44,6 +44,9 @@ export type ContractData = {
   montant_caution: number
   modalites_paiement: string
   stripe_payment_enabled?: boolean
+  /** % du loyer réglé pour bloquer la réservation (100 = solde intégral à la
+   *  signature). Le solde restant n'est pas suivi automatiquement. */
+  acompte_percent?: number
 
   // Clauses
   conditions_annulation: string

@@ -61,7 +61,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Le bailleur n\'a pas encore connecté son compte Stripe.' }, { status: 400 })
     }
 
-    const amountCents = Math.round(Number(contract.montant_loyer) * 100)
+    // acompte_percent < 100 : seule une part du loyer est encaissée en ligne
+    // pour bloquer la réservation, le solde restant étant à régler par le
+    // locataire selon les modalités convenues (pas de 2e paiement Stripe
+    // automatisé, cf. migration 097 / colonne acompte_percent).
+    const acomptePercent = Number(contract.acompte_percent ?? 100)
+    const isPartial = acomptePercent < 100
+    const amountCents = Math.round(Number(contract.montant_loyer) * acomptePercent / 100 * 100)
 
     const n = Math.round(
       (new Date(contract.date_depart).getTime() - new Date(contract.date_arrivee).getTime()) / 86400000
@@ -77,8 +83,12 @@ export async function POST(request: NextRequest) {
               currency: 'eur',
               unit_amount: amountCents,
               product_data: {
-                name: `Réservation, ${contract.logement_adresse}`,
-                description: `${n} nuit${n > 1 ? 's' : ''}, du ${new Date(contract.date_arrivee).toLocaleDateString('fr-FR')} au ${new Date(contract.date_depart).toLocaleDateString('fr-FR')}`,
+                name: isPartial
+                  ? `Acompte (${acomptePercent}%), ${contract.logement_adresse}`
+                  : `Réservation, ${contract.logement_adresse}`,
+                description: isPartial
+                  ? `${n} nuit${n > 1 ? 's' : ''}, du ${new Date(contract.date_arrivee).toLocaleDateString('fr-FR')} au ${new Date(contract.date_depart).toLocaleDateString('fr-FR')}. Solde de ${(Number(contract.montant_loyer) * (100 - acomptePercent) / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € à régler à l'arrivée.`
+                  : `${n} nuit${n > 1 ? 's' : ''}, du ${new Date(contract.date_arrivee).toLocaleDateString('fr-FR')} au ${new Date(contract.date_depart).toLocaleDateString('fr-FR')}`,
               },
             },
             quantity: 1,

@@ -6,11 +6,13 @@ interface Props {
   iban: string
   bic: string | null
   amount: number
+  /** Solde restant après l'acompte ci-dessus, à régler séparément (ex: à l'arrivée). */
+  soldeAmount?: number
   reference: string
   beneficiary: string
 }
 
-export default function IbanSection({ iban, bic, amount, reference, beneficiary }: Props) {
+export default function IbanSection({ iban, bic, amount, soldeAmount, reference, beneficiary }: Props) {
   const [copiedField, setCopiedField] = useState<string | null>(null)
 
   function copy(value: string, field: string) {
@@ -37,7 +39,7 @@ export default function IbanSection({ iban, bic, amount, reference, beneficiary 
         <CopyField label="IBAN" value={iban} field="iban" copiedField={copiedField} onCopy={copy} mono />
         {bic && <CopyField label="BIC / SWIFT" value={bic} field="bic" copiedField={copiedField} onCopy={copy} mono />}
         <CopyField
-          label="Montant"
+          label={soldeAmount != null ? 'Montant (acompte)' : 'Montant'}
           value={`${amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`}
           field="amount"
           copiedField={copiedField}
@@ -45,6 +47,12 @@ export default function IbanSection({ iban, bic, amount, reference, beneficiary 
         />
         <CopyField label="Référence" value={reference} field="reference" copiedField={copiedField} onCopy={copy} mono />
       </div>
+
+      {soldeAmount != null && (
+        <p style={{ ...hint, marginTop: '10px' }}>
+          Solde restant de <strong style={{ color: '#f0ebe1' }}>{soldeAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</strong> à régler directement au propriétaire à votre arrivée.
+        </p>
+      )}
 
       <p style={notice}>
         Une fois le virement effectué, prévenez le propriétaire par email ou téléphone.

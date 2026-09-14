@@ -5,11 +5,13 @@ import { useState } from 'react'
 interface Props {
   token: string
   amount: number
+  /** true si `amount` n'est qu'un acompte (pas le loyer total) — ajuste le libellé. */
+  isPartial?: boolean
   paymentParam?: string
   alreadyPaid: boolean
 }
 
-export default function PaymentSection({ token, amount, paymentParam, alreadyPaid }: Props) {
+export default function PaymentSection({ token, amount, isPartial, paymentParam, alreadyPaid }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -43,11 +45,11 @@ export default function PaymentSection({ token, amount, paymentParam, alreadyPai
           <span style={{ fontSize: '24px' }}>✅</span>
           <div>
             <strong style={{ color: 'var(--success-1)', display: 'block', marginBottom: '4px' }}>
-              Réservation réglée
+              {isPartial ? 'Acompte réglé' : 'Réservation réglée'}
             </strong>
             <p style={hint}>
               {amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € reçus par le propriétaire.
-              Votre réservation est confirmée.
+              Votre réservation est confirmée{isPartial && ' — le solde reste à régler à votre arrivée'}.
             </p>
           </div>
         </div>
@@ -62,8 +64,8 @@ export default function PaymentSection({ token, amount, paymentParam, alreadyPai
         <strong style={{ color: '#FFD56B', display: 'block', marginBottom: '8px' }}>
           Paiement annulé
         </strong>
-        <p style={hint}>Vous pouvez régler votre réservation ci-dessous pour la finaliser.</p>
-        <PayButton loading={loading} onClick={handlePayReservation} amount={amount} />
+        <p style={hint}>Vous pouvez régler {isPartial ? 'votre acompte' : 'votre réservation'} ci-dessous pour la finaliser.</p>
+        <PayButton loading={loading} onClick={handlePayReservation} amount={amount} isPartial={isPartial} />
         {error && <p style={errStyle}>{error}</p>}
       </div>
     )
@@ -74,7 +76,7 @@ export default function PaymentSection({ token, amount, paymentParam, alreadyPai
     <div style={box('default')}>
       <div style={{ marginBottom: '16px' }}>
         <strong style={{ color: '#f0ebe1', display: 'block', marginBottom: '6px', fontSize: '16px' }}>
-          Réglez votre réservation
+          {isPartial ? 'Réglez votre acompte' : 'Réglez votre réservation'}
         </strong>
         <p style={hint}>
           Pour confirmer votre séjour, réglez en ligne{' '}
@@ -82,6 +84,7 @@ export default function PaymentSection({ token, amount, paymentParam, alreadyPai
             {amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €
           </strong>{' '}
           directement par carte bancaire.
+          {isPartial && ' Le solde restant est à régler directement au propriétaire à votre arrivée.'}
         </p>
         <p style={{ ...hint, marginTop: '8px' }}>
           Le paiement est <strong style={{ color: '#f0ebe1' }}>sécurisé par Stripe</strong> et votre carte
@@ -89,12 +92,12 @@ export default function PaymentSection({ token, amount, paymentParam, alreadyPai
         </p>
       </div>
       {error && <p style={errStyle}>{error}</p>}
-      <PayButton loading={loading} onClick={handlePayReservation} amount={amount} />
+      <PayButton loading={loading} onClick={handlePayReservation} amount={amount} isPartial={isPartial} />
     </div>
   )
 }
 
-function PayButton({ loading, onClick, amount }: { loading: boolean; onClick: () => void; amount: number }) {
+function PayButton({ loading, onClick, amount, isPartial }: { loading: boolean; onClick: () => void; amount: number; isPartial?: boolean }) {
   return (
     <button
       onClick={onClick}
@@ -113,7 +116,7 @@ function PayButton({ loading, onClick, amount }: { loading: boolean; onClick: ()
     >
       {loading
         ? 'Redirection vers Stripe…'
-        : `Payer la réservation, ${amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € →`}
+        : `Payer ${isPartial ? "l'acompte" : 'la réservation'}, ${amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € →`}
     </button>
   )
 }

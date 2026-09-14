@@ -102,9 +102,14 @@ export default async function SignPage({
   const depositAlreadyHeld = contract.stripe_deposit_status === 'held'
     || contract.stripe_deposit_status === 'captured'
 
-  // Paiement réservation
+  // Paiement réservation — acompte_percent < 100 : seule une part du loyer
+  // est encaissée en ligne pour bloquer la réservation (cf. migration 097),
+  // le solde étant à régler par le locataire selon les modalités convenues.
   const paymentEnabled = !!(contract.stripe_payment_enabled)
   const paymentAlreadyDone = contract.stripe_payment_status === 'paid'
+  const acomptePercent = Number(contract.acompte_percent ?? 100)
+  const montantAcompte = Number(contract.montant_loyer) * acomptePercent / 100
+  const montantSolde = Number(contract.montant_loyer) - montantAcompte
 
   const badgeStyle: React.CSSProperties = alreadySigned
     ? { ...badge, background: 'var(--success-border)', border: '1px solid rgba(52,211,153,0.35)', color: 'var(--success-1)' }
@@ -249,6 +254,20 @@ export default async function SignPage({
                 <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>remboursé sous 30 jours après l&apos;état des lieux</p>
               </div>
             </div>
+            {acomptePercent < 100 && (
+              <div style={{ ...pricesGrid, marginTop: '10px' }}>
+                <div style={priceBox}>
+                  <p style={priceLabel}>Acompte ({acomptePercent}%)</p>
+                  <p style={priceValue}>{montantAcompte.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
+                  <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>à régler pour confirmer la réservation</p>
+                </div>
+                <div style={priceBox}>
+                  <p style={priceLabel}>Solde</p>
+                  <p style={priceValue}>{montantSolde.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
+                  <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>à régler à l&apos;arrivée</p>
+                </div>
+              </div>
+            )}
             <p style={{ ...contractText, marginTop: '12px', marginBottom: '8px' }}>
               <strong>Modalités de paiement&nbsp;:</strong>
             </p>
@@ -368,7 +387,8 @@ export default async function SignPage({
                   <div id="paiement-reservation">
                     <PaymentSection
                       token={token}
-                      amount={Number(contract.montant_loyer)}
+                      amount={montantAcompte}
+                      isPartial={acomptePercent < 100}
                       paymentParam={paymentParam}
                       alreadyPaid={paymentAlreadyDone}
                     />
@@ -393,7 +413,8 @@ export default async function SignPage({
               <IbanSection
                 iban={hostIban}
                 bic={hostBic}
-                amount={Number(contract.montant_loyer)}
+                amount={montantAcompte}
+                soldeAmount={acomptePercent < 100 ? montantSolde : undefined}
                 reference={`LOC-${contract.id.slice(0, 8).toUpperCase()}`}
                 beneficiary={`${contract.bailleur_prenom} ${contract.bailleur_nom}`}
               />

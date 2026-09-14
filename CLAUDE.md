@@ -158,7 +158,8 @@ Templates dans `lib/email/template.ts` avec helpers :
 
 - **Connect** : chaque hôte a son propre `stripe_account_id` dans profiles
 - **Loyer** : PaymentIntent sur le compte connecté
-- **Caution** : PaymentIntent `capture_method: 'manual'` (bloqué, capturé ou libéré après séjour)
+- **Acompte à la réservation** (`contracts.acompte_percent`, migration `20260914_097`) : distinct de la caution — c'est une part du **loyer** encaissée pour bloquer la réservation (50% ou 100%, choisi à la création du contrat dans `ContractModal.tsx`). Quand < 100%, `app/api/stripe/payment/create/route.ts` n'encaisse que ce pourcentage du loyer ; le solde restant n'a **pas** de suivi Stripe automatisé, affiché sur le contrat (`/sign/[token]`) comme "à régler à l'arrivée" mais réglable par n'importe quel moyen convenu avec le locataire.
+- **Caution** : PaymentIntent `capture_method: 'manual'` (bloqué, capturé ou libéré après séjour). Jamais confondue avec l'acompte : la caution n'est jamais un paiement de loyer, elle est intégralement remboursée après l'état des lieux.
 - **Webhooks** : signature vérifiée dans `app/api/stripe/webhooks/route.ts`
 
 ---
