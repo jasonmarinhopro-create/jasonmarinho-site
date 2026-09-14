@@ -3,12 +3,14 @@
 import { useState, useTransition, useRef, useEffect } from 'react'
 import { X, FileText, Check, Copy, Envelope, CalendarBlank, Clock } from '@phosphor-icons/react/dist/ssr'
 import { createContract, type ContractData } from '../contract-actions'
+import { DEFAULT_ANNULATION as DEFAULT_ANNULATION_I18N, DEFAULT_REGLEMENT as DEFAULT_REGLEMENT_I18N } from '@/lib/contract-default-clauses'
 
-const DEFAULT_ANNULATION =
-  `En cas d'annulation par le locataire plus de 30 jours avant l'arrivée, l'acompte versé est remboursé intégralement. En cas d'annulation moins de 30 jours avant l'arrivée, l'acompte reste acquis au bailleur.`
-
-const DEFAULT_REGLEMENT =
-  `- Respecter le calme et la tranquillité du voisinage.\n- Interdiction de fumer à l'intérieur du logement.\n- Les animaux de compagnie ne sont pas admis sauf accord préalable du bailleur.\n- Toute fête ou rassemblement est interdit sans autorisation écrite du bailleur.\n- Le locataire s'engage à laisser le logement dans l'état dans lequel il l'a trouvé.`
+// Valeur française utilisée comme pré-remplissage par défaut (langue de
+// référence) — les traductions PT/EN correspondantes se retrouvent
+// automatiquement sur /sign/[token] via resolveClauseText, sans rien
+// stocker de plus ici (cf. lib/contract-default-clauses.ts).
+const DEFAULT_ANNULATION = DEFAULT_ANNULATION_I18N.fr
+const DEFAULT_REGLEMENT = DEFAULT_REGLEMENT_I18N.fr
 
 type Sejour = {
   id: string
@@ -40,9 +42,15 @@ export type LogementOption = {
   adresse: string
   telephone: string | null
   description: string | null
+  description_pt?: string | null
+  description_en?: string | null
   capacite_max: number
   reglement_interieur: string | null
   conditions_annulation: string | null
+  conditions_annulation_pt?: string | null
+  conditions_annulation_en?: string | null
+  reglement_interieur_pt?: string | null
+  reglement_interieur_en?: string | null
   animaux_acceptes: boolean
   fumeur_accepte: boolean
   methodes_paiement?: string | null
@@ -122,6 +130,10 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     logement_nom: initialLogement?.nom ?? '',
     logement_adresse: initialLogement?.adresse ?? '',
     logement_description: initialLogement?.description ?? '',
+    // Traductions PT/EN de la description, si la fiche logement les a (sinon
+    // le contrat retombe sur le texte français sur /sign/[token]).
+    logement_description_pt: initialLogement?.description_pt ?? '',
+    logement_description_en: initialLogement?.description_en ?? '',
     capacite_max: initialLogement?.capacite_max ?? 1,
 
     // Séjour
@@ -157,6 +169,13 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     // Clauses, pré-remplies depuis la fiche logement si disponible
     conditions_annulation: initialLogement?.conditions_annulation ?? DEFAULT_ANNULATION,
     reglement_interieur: initialLogement?.reglement_interieur ?? DEFAULT_REGLEMENT,
+    // Traductions PT/EN des clauses : si le logement a les siennes, sinon
+    // vide (le texte par défaut ci-dessus se traduit tout seul côté
+    // /sign/[token] via resolveClauseText, pas besoin de les dupliquer ici).
+    conditions_annulation_pt: initialLogement?.conditions_annulation_pt ?? '',
+    conditions_annulation_en: initialLogement?.conditions_annulation_en ?? '',
+    reglement_interieur_pt: initialLogement?.reglement_interieur_pt ?? '',
+    reglement_interieur_en: initialLogement?.reglement_interieur_en ?? '',
     animaux_acceptes: initialLogement?.animaux_acceptes ?? false,
     fumeur_accepte: initialLogement?.fumeur_accepte ?? false,
   })
@@ -192,6 +211,8 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       logement_nom: l.nom,
       logement_adresse: l.adresse,
       logement_description: l.description ?? '',
+      logement_description_pt: l.description_pt ?? '',
+      logement_description_en: l.description_en ?? '',
       capacite_max: l.capacite_max,
       // Conciergerie : si le logement a un propriétaire tiers renseigné, ses
       // coordonnées remplacent celles du bailleur (l'utilisateur connecté).
@@ -200,7 +221,11 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       bailleur_email: l.proprietaire_email ?? bailleur.email,
       bailleur_telephone: l.proprietaire_telephone ?? l.telephone ?? f.bailleur_telephone,
       conditions_annulation: l.conditions_annulation ?? f.conditions_annulation,
+      conditions_annulation_pt: l.conditions_annulation_pt ?? '',
+      conditions_annulation_en: l.conditions_annulation_en ?? '',
       reglement_interieur: l.reglement_interieur ?? f.reglement_interieur,
+      reglement_interieur_pt: l.reglement_interieur_pt ?? '',
+      reglement_interieur_en: l.reglement_interieur_en ?? '',
       animaux_acceptes: l.animaux_acceptes,
       fumeur_accepte: l.fumeur_accepte,
       methodes_keys: l.methodes_paiement ?? 'virement',
@@ -212,7 +237,8 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     setSelectedLogementId(null)
     setForm(f => ({
       ...f,
-      logement_nom: '', logement_adresse: '', logement_description: '', capacite_max: 1,
+      logement_nom: '', logement_adresse: '', logement_description: '',
+      logement_description_pt: '', logement_description_en: '', capacite_max: 1,
       // Revenir au profil de l'utilisateur connecté (plus de propriétaire tiers).
       bailleur_prenom: bailleur.prenom,
       bailleur_nom: bailleur.nom,
@@ -283,6 +309,8 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       logement_id: selectedLogementId ?? undefined,
       logement_adresse: form.logement_adresse.trim(),
       logement_description: form.logement_description.trim() || undefined,
+      logement_description_pt: form.logement_description_pt.trim() || undefined,
+      logement_description_en: form.logement_description_en.trim() || undefined,
       capacite_max: form.capacite_max,
       date_arrivee: form.date_arrivee,
       date_depart: form.date_depart,
@@ -294,7 +322,11 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       modalites_paiement: form.modalites_paiement,
       stripe_payment_enabled: form.stripe_payment_enabled,
       conditions_annulation: form.conditions_annulation.trim(),
+      conditions_annulation_pt: form.conditions_annulation_pt.trim() || undefined,
+      conditions_annulation_en: form.conditions_annulation_en.trim() || undefined,
       reglement_interieur: form.reglement_interieur.trim(),
+      reglement_interieur_pt: form.reglement_interieur_pt.trim() || undefined,
+      reglement_interieur_en: form.reglement_interieur_en.trim() || undefined,
       animaux_acceptes: form.animaux_acceptes,
       fumeur_accepte: form.fumeur_accepte,
       pays: contractPays,

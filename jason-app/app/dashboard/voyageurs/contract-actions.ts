@@ -31,6 +31,10 @@ export type ContractData = {
   logement_id?: string
   logement_adresse: string
   logement_description?: string
+  /** Traductions PT/EN de la description — saisies une fois sur la fiche
+   *  logement, affichées sur /sign/[token] selon la langue choisie. */
+  logement_description_pt?: string
+  logement_description_en?: string
   capacite_max: number
 
   // Séjour
@@ -48,9 +52,14 @@ export type ContractData = {
    *  signature). Le solde restant n'est pas suivi automatiquement. */
   acompte_percent?: number
 
-  // Clauses
+  // Clauses (+ traductions PT/EN — si absentes, /sign/[token] retombe sur
+  // le texte par défaut traduit si non modifié, sinon sur le français)
   conditions_annulation: string
+  conditions_annulation_pt?: string
+  conditions_annulation_en?: string
   reglement_interieur: string
+  reglement_interieur_pt?: string
+  reglement_interieur_en?: string
   animaux_acceptes: boolean
   fumeur_accepte: boolean
 

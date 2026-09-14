@@ -34,7 +34,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
       .single(),
     supabase
       .from('logements')
-      .select('id, nom, adresse, telephone, description, capacite_max, reglement_interieur, conditions_annulation, animaux_acceptes, fumeur_accepte, methodes_paiement, pays, numero_al, proprietaire_nom, proprietaire_email, proprietaire_telephone')
+      .select('id, nom, adresse, telephone, description, description_pt, description_en, capacite_max, reglement_interieur, conditions_annulation, conditions_annulation_pt, conditions_annulation_en, reglement_interieur_pt, reglement_interieur_en, animaux_acceptes, fumeur_accepte, methodes_paiement, pays, numero_al, proprietaire_nom, proprietaire_email, proprietaire_telephone')
       .eq('user_id', profile.userId)
       .order('created_at', { ascending: false }),
     // Groupe déclaré via le check-in en ligne (accompagnants)

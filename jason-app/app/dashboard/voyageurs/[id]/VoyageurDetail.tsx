@@ -350,9 +350,15 @@ type LogementOption = {
   adresse: string
   telephone: string | null
   description: string | null
+  description_pt?: string | null
+  description_en?: string | null
   capacite_max: number
   reglement_interieur: string | null
   conditions_annulation: string | null
+  conditions_annulation_pt?: string | null
+  conditions_annulation_en?: string | null
+  reglement_interieur_pt?: string | null
+  reglement_interieur_en?: string | null
   animaux_acceptes: boolean
   fumeur_accepte: boolean
   methodes_paiement?: string | null

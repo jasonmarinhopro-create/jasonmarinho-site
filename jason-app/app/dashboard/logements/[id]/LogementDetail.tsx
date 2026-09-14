@@ -18,6 +18,52 @@ import { updateLogement, type LogementIcalFeedStatus } from '../actions'
 
 const QuickSejourModal = dynamic(() => import('./QuickSejourModal'), { ssr: false })
 
+/** Textarea avec onglets FR/PT/EN — pour les textes libres (description,
+ *  clauses) dont le sélecteur de langue du contrat ne peut pas traduire le
+ *  contenu automatiquement : le bailleur saisit lui-même les 3 versions. */
+function LangTextarea({
+  fr, pt, en, onChangeFr, onChangePt, onChangeEn, placeholder, rows = 5,
+}: {
+  fr: string; pt: string; en: string
+  onChangeFr: (v: string) => void; onChangePt: (v: string) => void; onChangeEn: (v: string) => void
+  placeholder?: string
+  rows?: number
+}) {
+  const [tab, setTab] = useState<'fr' | 'pt' | 'en'>('fr')
+  const value = tab === 'fr' ? fr : tab === 'pt' ? pt : en
+  const onChange = tab === 'fr' ? onChangeFr : tab === 'pt' ? onChangePt : onChangeEn
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: '6px', marginBottom: '8px' }}>
+        {(['fr', 'pt', 'en'] as const).map(l => (
+          <button
+            key={l}
+            type="button"
+            onClick={() => setTab(l)}
+            style={{
+              padding: '4px 11px', borderRadius: '7px', fontSize: '11.5px', fontWeight: 600,
+              cursor: 'pointer', fontFamily: 'inherit',
+              background: tab === l ? 'var(--accent-bg-2)' : 'var(--surface)',
+              border: `1px solid ${tab === l ? 'var(--accent-text)' : 'var(--border)'}`,
+              color: tab === l ? 'var(--accent-text)' : 'var(--text-2)',
+            }}
+          >
+            {l === 'fr' ? '🇫🇷 FR' : l === 'pt' ? '🇵🇹 PT' : '🇬🇧 EN'}
+            {l !== 'fr' && !(l === 'pt' ? pt : en) && <span style={{ opacity: 0.5 }}> (vide)</span>}
+          </button>
+        ))}
+      </div>
+      <textarea
+        style={s.editTextarea}
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        placeholder={tab === 'fr' ? placeholder : `Traduction ${tab === 'pt' ? 'portugaise' : 'anglaise'} (optionnelle, sinon le français s'affiche)`}
+        rows={rows}
+      />
+    </div>
+  )
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type Logement = {
@@ -26,6 +72,8 @@ type Logement = {
   adresse: string
   telephone: string | null
   description: string | null
+  description_pt: string | null
+  description_en: string | null
   type_logement: string | null
   capacite_max: number
   surface_m2: number | null
@@ -59,6 +107,10 @@ type Logement = {
   bic: string | null
   reglement_interieur: string | null
   conditions_annulation: string | null
+  conditions_annulation_pt: string | null
+  conditions_annulation_en: string | null
+  reglement_interieur_pt: string | null
+  reglement_interieur_en: string | null
   animaux_acceptes: boolean
   fumeur_accepte: boolean
   methodes_paiement: string | null
@@ -177,12 +229,20 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
   const [draftNumeroEnreg, setDraftNumeroEnreg] = useState(l.numero_enregistrement ?? '')
   const [draftClassement, setDraftClassement] = useState<number | null>(l.classement_etoiles)
   const [draftDpe, setDraftDpe] = useState(l.dpe ?? '')
-  // Description
+  // Description (+ traductions PT/EN, saisies manuellement une fois pour
+  // toutes — le sélecteur de langue du contrat ne peut pas traduire un
+  // texte libre tout seul)
   const [draftDescription, setDraftDescription] = useState(l.description ?? '')
-  // Conditions d'annulation
+  const [draftDescriptionPt, setDraftDescriptionPt] = useState(l.description_pt ?? '')
+  const [draftDescriptionEn, setDraftDescriptionEn] = useState(l.description_en ?? '')
+  // Conditions d'annulation (+ traductions PT/EN)
   const [draftConditions, setDraftConditions] = useState(l.conditions_annulation ?? '')
-  // Règlement intérieur
+  const [draftConditionsPt, setDraftConditionsPt] = useState(l.conditions_annulation_pt ?? '')
+  const [draftConditionsEn, setDraftConditionsEn] = useState(l.conditions_annulation_en ?? '')
+  // Règlement intérieur (+ traductions PT/EN)
   const [draftReglement, setDraftReglement] = useState(l.reglement_interieur ?? '')
+  const [draftReglementPt, setDraftReglementPt] = useState(l.reglement_interieur_pt ?? '')
+  const [draftReglementEn, setDraftReglementEn] = useState(l.reglement_interieur_en ?? '')
   // Tarifs
   const [draftTarifNuit, setDraftTarifNuit] = useState<number | null>(l.tarif_nuitee_moyen)
   const [draftFraisMenage, setDraftFraisMenage] = useState<number | null>(l.frais_menage)
@@ -251,13 +311,25 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
     })
   }
   async function saveDescription() {
-    return updateLogement(l.id, { description: draftDescription })
+    return updateLogement(l.id, {
+      description: draftDescription,
+      description_pt: draftDescriptionPt || null,
+      description_en: draftDescriptionEn || null,
+    })
   }
   async function saveConditions() {
-    return updateLogement(l.id, { conditions_annulation: draftConditions })
+    return updateLogement(l.id, {
+      conditions_annulation: draftConditions,
+      conditions_annulation_pt: draftConditionsPt || null,
+      conditions_annulation_en: draftConditionsEn || null,
+    })
   }
   async function saveReglement() {
-    return updateLogement(l.id, { reglement_interieur: draftReglement })
+    return updateLogement(l.id, {
+      reglement_interieur: draftReglement,
+      reglement_interieur_pt: draftReglementPt || null,
+      reglement_interieur_en: draftReglementEn || null,
+    })
   }
   async function saveTarifs() {
     return updateLogement(l.id, {
@@ -1244,39 +1316,45 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
         }
       />
 
-      {/* Description (éditable inline) */}
+      {/* Description (éditable inline, + traductions PT/EN) */}
       <EditableCard
         title="Description"
         onSave={saveDescription}
-        onCancel={() => setDraftDescription(l.description ?? '')}
+        onCancel={() => {
+          setDraftDescription(l.description ?? '')
+          setDraftDescriptionPt(l.description_pt ?? '')
+          setDraftDescriptionEn(l.description_en ?? '')
+        }}
         hasValue={!!l.description}
         emptyView={<p style={s.emptyHint}>Aucune description. Cliquez sur Modifier pour ajouter une présentation de votre logement.</p>}
         view={<p style={s.descText}>{l.description}</p>}
         edit={
-          <textarea
-            style={s.editTextarea}
-            value={draftDescription}
-            onChange={e => setDraftDescription(e.target.value)}
+          <LangTextarea
+            fr={draftDescription} pt={draftDescriptionPt} en={draftDescriptionEn}
+            onChangeFr={setDraftDescription} onChangePt={setDraftDescriptionPt} onChangeEn={setDraftDescriptionEn}
             placeholder="Décrivez votre logement, son ambiance, ses atouts…"
             rows={6}
           />
         }
       />
 
-      {/* Conditions & règlement (éditables inline) */}
+      {/* Conditions & règlement (éditables inline, + traductions PT/EN) */}
       <div style={s.twoColumns}>
         <EditableCard
           title="Conditions d'annulation"
           onSave={saveConditions}
-          onCancel={() => setDraftConditions(l.conditions_annulation ?? '')}
+          onCancel={() => {
+            setDraftConditions(l.conditions_annulation ?? '')
+            setDraftConditionsPt(l.conditions_annulation_pt ?? '')
+            setDraftConditionsEn(l.conditions_annulation_en ?? '')
+          }}
           hasValue={!!l.conditions_annulation}
           emptyView={<p style={s.emptyHint}>Aucune condition d&apos;annulation. Cliquez sur Modifier pour les définir.</p>}
           view={<p style={s.descText}>{l.conditions_annulation}</p>}
           edit={
-            <textarea
-              style={s.editTextarea}
-              value={draftConditions}
-              onChange={e => setDraftConditions(e.target.value)}
+            <LangTextarea
+              fr={draftConditions} pt={draftConditionsPt} en={draftConditionsEn}
+              onChangeFr={setDraftConditions} onChangePt={setDraftConditionsPt} onChangeEn={setDraftConditionsEn}
               placeholder="Ex : Annulation gratuite jusqu'à 30 jours avant l'arrivée, 50 % entre 30 et 7 jours, 100 % après."
               rows={5}
             />
@@ -1285,15 +1363,18 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
         <EditableCard
           title="Règlement intérieur"
           onSave={saveReglement}
-          onCancel={() => setDraftReglement(l.reglement_interieur ?? '')}
+          onCancel={() => {
+            setDraftReglement(l.reglement_interieur ?? '')
+            setDraftReglementPt(l.reglement_interieur_pt ?? '')
+            setDraftReglementEn(l.reglement_interieur_en ?? '')
+          }}
           hasValue={!!l.reglement_interieur}
           emptyView={<p style={s.emptyHint}>Aucun règlement. Cliquez sur Modifier pour ajouter les règles de la maison.</p>}
           view={<p style={{ ...s.descText, whiteSpace: 'pre-wrap' as const }}>{l.reglement_interieur}</p>}
           edit={
-            <textarea
-              style={s.editTextarea}
-              value={draftReglement}
-              onChange={e => setDraftReglement(e.target.value)}
+            <LangTextarea
+              fr={draftReglement} pt={draftReglementPt} en={draftReglementEn}
+              onChangeFr={setDraftReglement} onChangePt={setDraftReglementPt} onChangeEn={setDraftReglementEn}
               placeholder={'- Pas de fête\n- Non-fumeur à l\'intérieur\n- Animaux non admis'}
               rows={5}
             />

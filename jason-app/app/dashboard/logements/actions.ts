@@ -12,6 +12,9 @@ export type LogementData = {
   adresse: string
   telephone?: string
   description?: string
+  /** Traductions de la description — voir note "Conditions & règlement" plus bas. */
+  description_pt?: string | null
+  description_en?: string | null
   type_logement?: string | null
   capacite_max: number
 
@@ -67,6 +70,15 @@ export type LogementData = {
   // Conditions & règlement
   reglement_interieur?: string
   conditions_annulation?: string
+  /** Traductions PT/EN, saisies une fois pour toutes sur la fiche — le
+   *  sélecteur de langue FR/PT/EN du contrat (/sign/[token]) ne peut pas
+   *  traduire un texte libre automatiquement, donc ce sont ces versions
+   *  qui s'affichent quand le locataire bascule en portugais/anglais
+   *  (fallback sur le français si absentes). */
+  conditions_annulation_pt?: string | null
+  conditions_annulation_en?: string | null
+  reglement_interieur_pt?: string | null
+  reglement_interieur_en?: string | null
   animaux_acceptes: boolean
   fumeur_accepte: boolean
   methodes_paiement?: string

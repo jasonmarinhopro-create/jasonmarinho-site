@@ -10,6 +10,7 @@ import ContractIbanBlock from './ContractIbanBlock'
 import { getContractTemplate } from '@/lib/contract-templates'
 import { getCountry } from '@/lib/countries'
 import { SIGN_UI, formatDateLang, type UiLang } from '@/lib/sign-ui-i18n'
+import { DEFAULT_ANNULATION, DEFAULT_REGLEMENT, resolveClauseText } from '@/lib/contract-default-clauses'
 
 interface ContractRow {
   id: string
@@ -29,6 +30,8 @@ interface ContractRow {
   locataire_telephone: string | null
   logement_adresse: string | null
   logement_description: string | null
+  logement_description_pt?: string | null
+  logement_description_en?: string | null
   capacite_max: number
   date_arrivee: string
   date_depart: string
@@ -40,7 +43,11 @@ interface ContractRow {
   animaux_acceptes: boolean
   fumeur_accepte: boolean
   conditions_annulation: string
+  conditions_annulation_pt?: string | null
+  conditions_annulation_en?: string | null
   reglement_interieur: string | null
+  reglement_interieur_pt?: string | null
+  reglement_interieur_en?: string | null
 }
 
 interface Props {
@@ -80,6 +87,25 @@ export default function ContractView({
   const t = SIGN_UI[lang]
   const tpl = getContractTemplate(contractPays, lang)
   const countryInfo = getCountry(contractPays)
+
+  // Textes libres (description, clauses) : traduits seulement si le bailleur
+  // a rempli les champs PT/EN sur la fiche logement, sauf pour les clauses
+  // par défaut qui se traduisent automatiquement (cf. lib/contract-default-clauses.ts).
+  const description = lang === 'en'
+    ? (contract.logement_description_en || contract.logement_description)
+    : lang === 'pt'
+    ? (contract.logement_description_pt || contract.logement_description)
+    : contract.logement_description
+  const conditionsAnnulation = resolveClauseText(
+    contract.conditions_annulation,
+    lang === 'pt' ? contract.conditions_annulation_pt : contract.conditions_annulation_en,
+    lang, DEFAULT_ANNULATION
+  )
+  const reglementInterieur = contract.reglement_interieur ? resolveClauseText(
+    contract.reglement_interieur,
+    lang === 'pt' ? contract.reglement_interieur_pt : contract.reglement_interieur_en,
+    lang, DEFAULT_REGLEMENT
+  ) : null
 
   const badgeStyle: React.CSSProperties = alreadySigned
     ? { ...badge, background: 'var(--success-border)', border: '1px solid rgba(52,211,153,0.35)', color: 'var(--success-1)' }
@@ -191,8 +217,8 @@ export default function ContractView({
             <p style={{ ...contractText, fontWeight: 600, color: '#f0ebe1', marginTop: '8px' }}>
               {contract.logement_adresse || <em style={{ color: '#6b9a7e', fontWeight: 400 }}>{t.addressMissing}</em>}
             </p>
-            {contract.logement_description && (
-              <p style={{ ...contractText, marginTop: '8px' }}>{contract.logement_description}</p>
+            {description && (
+              <p style={{ ...contractText, marginTop: '8px' }}>{description}</p>
             )}
             <p style={{ ...contractText, marginTop: '8px' }}>
               <strong>{t.capaciteMax(contract.capacite_max)}</strong>
@@ -281,22 +307,22 @@ export default function ContractView({
 
           <div style={divider} />
 
-          {/* Art. 5, Conditions d'annulation (texte libre rédigé par le bailleur,
-              non traduit automatiquement) */}
+          {/* Art. 5, Conditions d'annulation (texte libre rédigé par le bailleur —
+              traduit seulement si les champs PT/EN de la fiche logement sont
+              remplis, ou si c'est le texte par défaut non modifié) */}
           <section style={contractSection}>
             <h2 style={sectionTitle}>{t.art5}</h2>
-            <p style={{ ...contractText, whiteSpace: 'pre-line' }}>{contract.conditions_annulation}</p>
+            <p style={{ ...contractText, whiteSpace: 'pre-line' }}>{conditionsAnnulation}</p>
           </section>
 
           <div style={divider} />
 
-          {/* Art. 6, Règlement intérieur (texte libre rédigé par le bailleur,
-              non traduit automatiquement) */}
-          {contract.reglement_interieur && (
+          {/* Art. 6, Règlement intérieur (idem) */}
+          {reglementInterieur && (
             <>
               <section style={contractSection}>
                 <h2 style={sectionTitle}>{t.art6}</h2>
-                <p style={{ ...contractText, whiteSpace: 'pre-line' }}>{contract.reglement_interieur}</p>
+                <p style={{ ...contractText, whiteSpace: 'pre-line' }}>{reglementInterieur}</p>
               </section>
               <div style={divider} />
             </>
