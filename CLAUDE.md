@@ -92,6 +92,12 @@ import { House } from '@phosphor-icons/react'
 - `ContractModal.tsx` (création de contrat) : quand un logement sélectionné a un `proprietaire_nom` renseigné (conciergerie), le bailleur du contrat devient ce propriétaire (prénom/nom reconstruits par split sur le premier espace, email, téléphone) au lieu du profil de l'utilisateur connecté. `clearLogement()` revient au profil utilisateur si le logement est désélectionné.
 - `/sign/[token]` : l'IBAN affiché au locataire (`IbanSection`) vient du logement (`logements.iban`/`bic`) s'il est renseigné, sinon fallback sur `profiles.iban`/`bic` de l'utilisateur connecté — l'argent doit aller au propriétaire réel, pas à l'utilisateur qui gère le logement.
 
+### Contrat bilingue (langue du locataire + anglais)
+- `contracts.langue` (`'fr' | 'pt'`, migration `20260914_099`, défaut `fr`) : choisi à la création dans `ContractModal.tsx` (étape "Locataire"). Le corps entier du contrat sur `/sign/[token]` (Articles 1-10, bannières, footer) est toujours affiché dans cette langue **puis en anglais juste en dessous** (texte italique plus discret) — jamais un seul des deux. Voir `lib/sign-ui-i18n.ts` (chrome UI : titres d'articles, labels) et `lib/contract-templates.ts` (texte légal : `CONTRACT_TEMPLATES[pays][langue]`, désormais `fr`/`pt`/`en` pour FR et PT).
+- Les champs libres rédigés par le bailleur (`conditions_annulation`, `reglement_interieur`) ne sont **pas** traduits automatiquement (impossible de garantir une traduction juridique fiable d'un texte libre) — affichés tels quels, dans la langue où le bailleur les a écrits.
+- Coordonnées bancaires (IBAN/BIC) affichées directement dans le corps du contrat (Article 4, `ContractIbanBlock.tsx`, avec boutons copier), pas seulement dans le bloc de paiement post-signature (`IbanSection.tsx`) — visible dès avant la signature.
+- L'interface du bloc de signature (`SignaturePage.tsx`) a son propre système i18n indépendant (fr/en/es/pt/de, auto-détecté via `navigator.language`, changeable manuellement) : ne pas confondre avec `contracts.langue`, qui pilote le corps du contrat lui-même.
+
 ---
 
 ## Base de données

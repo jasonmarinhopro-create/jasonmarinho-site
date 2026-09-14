@@ -1,17 +1,21 @@
 'use client'
 
 import { useState } from 'react'
+import { SIGN_UI, type UiLang } from '@/lib/sign-ui-i18n'
 
 interface Props {
   token: string
   amount: number
   depositParam?: string
   depositAlreadyHeld: boolean
+  lang: UiLang
 }
 
-export default function DepositSection({ token, amount, depositParam, depositAlreadyHeld }: Props) {
+export default function DepositSection({ token, amount, depositParam, depositAlreadyHeld, lang }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const t = SIGN_UI[lang]
+  const amountLabel = `${amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`
 
   async function handlePayDeposit() {
     setLoading(true)
@@ -24,13 +28,13 @@ export default function DepositSection({ token, amount, depositParam, depositAlr
       })
       const data = await res.json()
       if (!res.ok || !data.url) {
-        setError(data.error ?? 'Erreur lors du paiement.')
+        setError(data.error ?? t.paymentError)
         setLoading(false)
       } else {
         window.location.href = data.url
       }
     } catch {
-      setError('Erreur réseau. Réessayez.')
+      setError(t.networkError)
       setLoading(false)
     }
   }
@@ -43,12 +47,9 @@ export default function DepositSection({ token, amount, depositParam, depositAlr
           <span style={{ fontSize: '24px' }}>✅</span>
           <div>
             <strong style={{ color: 'var(--success-1)', display: 'block', marginBottom: '4px' }}>
-              Caution enregistrée
+              {t.depositRegistered}
             </strong>
-            <p style={hint}>
-              {amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € bloqués sur votre carte.
-              Cette somme sera libérée par le propriétaire après votre séjour si aucun dommage n&apos;est constaté.
-            </p>
+            <p style={hint}>{t.depositRegisteredHint(amountLabel)}</p>
           </div>
         </div>
       </div>
@@ -60,10 +61,10 @@ export default function DepositSection({ token, amount, depositParam, depositAlr
     return (
       <div style={box('warning')}>
         <strong style={{ color: '#FFD56B', display: 'block', marginBottom: '8px' }}>
-          Paiement de la caution annulé
+          {t.depositCancelled}
         </strong>
-        <p style={hint}>Vous pouvez régler la caution ci-dessous pour finaliser votre dossier.</p>
-        <PayButton loading={loading} onClick={handlePayDeposit} amount={amount} />
+        <p style={hint}>{t.depositCancelledHint}</p>
+        <PayButton loading={loading} onClick={handlePayDeposit} amountLabel={amountLabel} t={t} />
         {error && <p style={errStyle}>{error}</p>}
       </div>
     )
@@ -74,27 +75,25 @@ export default function DepositSection({ token, amount, depositParam, depositAlr
     <div style={box('default')}>
       <div style={{ marginBottom: '16px' }}>
         <strong style={{ color: '#f0ebe1', display: 'block', marginBottom: '6px', fontSize: '16px' }}>
-          Dépôt de garantie requis
+          {t.depositRequired}
         </strong>
-        <p style={hint}>
-          Pour finaliser votre séjour, un dépôt de garantie de{' '}
-          <strong style={{ color: '#FFD56B' }}>
-            {amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €
-          </strong>{' '}
-          est demandé par le propriétaire.
-        </p>
-        <p style={{ ...hint, marginTop: '8px' }}>
-          Votre carte sera <strong style={{ color: '#f0ebe1' }}>bloquée mais pas débitée</strong>, la somme
-          n&apos;est encaissée qu&apos;en cas de dommages constatés à la fin du séjour.
-        </p>
+        <p style={hint}>{t.depositRequiredHint(amountLabel)}</p>
+        <p style={{ ...hint, marginTop: '8px' }}>{t.depositCardNote}</p>
       </div>
       {error && <p style={errStyle}>{error}</p>}
-      <PayButton loading={loading} onClick={handlePayDeposit} amount={amount} />
+      <PayButton loading={loading} onClick={handlePayDeposit} amountLabel={amountLabel} t={t} />
     </div>
   )
 }
 
-function PayButton({ loading, onClick, amount }: { loading: boolean; onClick: () => void; amount: number }) {
+function PayButton({
+  loading, onClick, amountLabel, t,
+}: {
+  loading: boolean
+  onClick: () => void
+  amountLabel: string
+  t: typeof SIGN_UI['fr']
+}) {
   return (
     <button
       onClick={onClick}
@@ -111,9 +110,7 @@ function PayButton({ loading, onClick, amount }: { loading: boolean; onClick: ()
         transition: 'all 0.15s',
       }}
     >
-      {loading
-        ? 'Redirection vers Stripe…'
-        : `Régler la caution, ${amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € →`}
+      {loading ? t.redirecting : t.payDeposit(amountLabel)}
     </button>
   )
 }

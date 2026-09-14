@@ -56,6 +56,10 @@ export type ContractData = {
 
   // Pays du logement → détermine le template juridique utilisé sur /sign
   pays?: string
+
+  /** Langue principale du contrat (fr ou pt) — toujours affiché aussi en
+   *  anglais en complément sur /sign/[token] (cf. migration 099). */
+  langue?: 'fr' | 'pt'
 }
 
 // ─── Créer un contrat ─────────────────────────────────────────────────────────

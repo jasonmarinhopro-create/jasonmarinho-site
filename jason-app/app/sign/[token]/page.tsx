@@ -9,6 +9,8 @@ import PaymentSection from './PaymentSection'
 import IbanSection from './IbanSection'
 import { getContractTemplate } from '@/lib/contract-templates'
 import { getCountry } from '@/lib/countries'
+import { SIGN_UI, toUiLang, formatDateLang, type UiLang } from '@/lib/sign-ui-i18n'
+import ContractIbanBlock from './ContractIbanBlock'
 
 // Toujours servir depuis le serveur (pas de cache), la signature doit être fraîche
 export const dynamic = 'force-dynamic'
@@ -28,14 +30,39 @@ function createServiceClient() {
   )
 }
 
-function formatDate(d: string) {
-  return new Date(d).toLocaleDateString('fr-FR', {
-    day: 'numeric', month: 'long', year: 'numeric',
-  })
-}
-
 function nights(arrivee: string, depart: string) {
   return Math.round((new Date(depart).getTime() - new Date(arrivee).getTime()) / 86400000)
+}
+
+/** Libellé court bilingue (badges, labels) : "Primaire / English" ou juste "Primaire" si identique. */
+function bi(primary: string, en: string) {
+  return primary === en ? primary : `${primary} / ${en}`
+}
+
+/** Titre de section bilingue : langue principale du contrat en gras, anglais en dessous en italique. */
+function SectionTitle({ primary, en, style }: { primary: string; en: string; style?: React.CSSProperties }) {
+  return (
+    <h2 style={{ ...sectionTitle, ...style }}>
+      {primary}
+      {primary !== en && (
+        <span style={{ display: 'block', fontSize: '11px', fontWeight: 400, color: '#6b9a7e', marginTop: '3px', fontStyle: 'italic' as const }}>
+          {en}
+        </span>
+      )}
+    </h2>
+  )
+}
+
+/** Paragraphe de contrat bilingue : texte principal, puis traduction anglaise en italique juste en dessous. */
+function BiText({ primary, en, style }: { primary: string; en: string; style?: React.CSSProperties }) {
+  return (
+    <>
+      <p style={style}>{primary}</p>
+      {primary !== en && (
+        <p style={{ ...style, marginTop: '4px', opacity: 0.65, fontStyle: 'italic' as const }}>{en}</p>
+      )}
+    </>
+  )
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ token: string }> }) {
@@ -82,7 +109,15 @@ export default async function SignPage({
   // Template juridique adapté au pays du logement (FR par défaut).
   // Pour les contrats créés avant l'ajout de la colonne pays, fallback FR.
   const contractPays: string = (contract as any).pays ?? 'FR'
-  const tpl = getContractTemplate(contractPays)
+
+  // Langue du contrat (fr ou pt, choisie à la création) : le corps entier est
+  // affiché dans cette langue PUIS en anglais en complément (cf. migration 099).
+  const primaryLang: UiLang = toUiLang((contract as any).langue)
+  const tp = SIGN_UI[primaryLang]
+  const te = SIGN_UI.en
+  const tpl = getContractTemplate(contractPays, primaryLang)
+  const tplEn = getContractTemplate(contractPays, 'en')
+
   const countryInfo = getCountry(contractPays)
   const cancelled = contract.statut === 'annule'
   const n = nights(contract.date_arrivee, contract.date_depart)
@@ -140,17 +175,33 @@ export default async function SignPage({
         {/* Header */}
         <div style={header}>
           <span style={badgeStyle} className="no-print">
-            {cancelled ? 'Annulé' : alreadySigned ? 'Signé ✓' : expired ? 'Expiré' : 'En attente de signature'}
+            {bi(
+              cancelled ? tp.badgeCancelled : alreadySigned ? tp.badgeSigned : expired ? tp.badgeExpired : tp.badgePending,
+              cancelled ? te.badgeCancelled : alreadySigned ? te.badgeSigned : expired ? te.badgeExpired : te.badgePending,
+            )}
           </span>
           <h1 style={title} className="print-title">
-            Contrat de location<br />
-            <em style={{ color: '#FFD56B', fontStyle: 'normal' }}>saisonnière</em>
+            {tp.contractTitle1}<br />
+            <em style={{ color: '#FFD56B', fontStyle: 'normal' }}>{tp.contractTitle2}</em>
+            {tp.contractTitle1 !== te.contractTitle1 && (
+              <span style={{ display: 'block', fontSize: '0.4em', fontStyle: 'italic', opacity: 0.55, marginTop: '6px' }}>
+                {te.contractTitle1} {te.contractTitle2}
+              </span>
+            )}
           </h1>
           <p style={subtitle} className="print-subtitle">
             {tpl.legalBasis}<br />
-            Signature électronique valide selon le règlement eIDAS (UE) 910/2014.
+            {tp.eidasNote}
             {contractPays !== 'FR' && (
-              <><br /><span style={{ fontSize: '11px', opacity: 0.75 }}>{countryInfo.flag} Contrat soumis au droit {countryInfo.name.toLowerCase()}</span></>
+              <><br /><span style={{ fontSize: '11px', opacity: 0.75 }}>{countryInfo.flag} {tp.boundByLaw} {countryInfo.name.toLowerCase()}</span></>
+            )}
+            {tpl.legalBasis !== tplEn.legalBasis && (
+              <>
+                <br /><br />
+                <span style={{ fontStyle: 'italic', opacity: 0.65 }}>
+                  {tplEn.legalBasis}<br />{te.eidasNote}
+                </span>
+              </>
             )}
           </p>
         </div>
@@ -160,10 +211,15 @@ export default async function SignPage({
           <div style={successBanner} className="no-print">
             <span style={{ fontSize: '20px' }}>✅</span>
             <div>
-              <strong>Ce contrat a été signé électroniquement</strong>
+              <strong>{bi(tp.signedBanner, te.signedBanner)}</strong>
               <p style={{ margin: '4px 0 0', fontSize: '13px', opacity: 0.85 }}>
-                Signé le {formatDate(contract.signature_date)}, Les deux parties ont reçu une confirmation par email.
+                {tp.signedBannerSub(formatDateLang(contract.signature_date, primaryLang))}
               </p>
+              {primaryLang !== 'en' && (
+                <p style={{ margin: '4px 0 0', fontSize: '13px', opacity: 0.6, fontStyle: 'italic' }}>
+                  {te.signedBannerSub(formatDateLang(contract.signature_date, 'en'))}
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -171,9 +227,9 @@ export default async function SignPage({
           <div style={warningBanner} className="no-print">
             <span style={{ fontSize: '20px' }}>⏰</span>
             <div>
-              <strong>Ce lien de signature a expiré</strong>
+              <strong>{bi(tp.expiredBanner, te.expiredBanner)}</strong>
               <p style={{ margin: '4px 0 0', fontSize: '13px', opacity: 0.85 }}>
-                Contactez le propriétaire pour obtenir un nouveau lien.
+                {bi(tp.expiredBannerSub, te.expiredBannerSub)}
               </p>
             </div>
           </div>
@@ -181,7 +237,7 @@ export default async function SignPage({
         {cancelled && (
           <div style={warningBanner} className="no-print">
             <span style={{ fontSize: '20px' }}>❌</span>
-            <div><strong>Ce contrat a été annulé.</strong></div>
+            <div><strong>{bi(tp.cancelledBanner, te.cancelledBanner)}</strong></div>
           </div>
         )}
 
@@ -189,17 +245,17 @@ export default async function SignPage({
         <div style={contractBody} className="contract-print">
           {/* Art. 1, Parties */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 1, Parties au contrat</h2>
+            <SectionTitle primary={tp.art1} en={te.art1} />
             <div style={partyGrid}>
               <div style={partyBox}>
-                <p style={partyLabel}>Bailleur (propriétaire)</p>
+                <p style={partyLabel}>{bi(tp.bailleurLabel, te.bailleurLabel)}</p>
                 <p style={partyName}>{contract.bailleur_prenom} {contract.bailleur_nom}</p>
                 {contract.bailleur_adresse && <p style={partyDetail}>{contract.bailleur_adresse}</p>}
                 {contract.bailleur_email && <p style={partyDetail}>{contract.bailleur_email}</p>}
                 {contract.bailleur_telephone && <p style={partyDetail}>{contract.bailleur_telephone}</p>}
               </div>
               <div style={partyBox}>
-                <p style={partyLabel}>Locataire</p>
+                <p style={partyLabel}>{bi(tp.locataireLabel, te.locataireLabel)}</p>
                 <p style={partyName}>{contract.locataire_prenom} {contract.locataire_nom}</p>
                 {contract.locataire_email && <p style={partyDetail}>{contract.locataire_email}</p>}
                 {contract.locataire_telephone && <p style={partyDetail}>{contract.locataire_telephone}</p>}
@@ -211,22 +267,29 @@ export default async function SignPage({
 
           {/* Art. 2, Bien loué */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 2, Bien loué</h2>
-            <p style={contractText}>
-              Le bailleur loue au locataire le bien immobilier situé à l&apos;adresse suivante&nbsp;:
-            </p>
+            <SectionTitle primary={tp.art2} en={te.art2} />
+            <BiText primary={tp.bienLoueIntro} en={te.bienLoueIntro} style={contractText} />
             <p style={{ ...contractText, fontWeight: 600, color: '#f0ebe1', marginTop: '8px' }}>
-              {contract.logement_adresse || <em style={{ color: '#6b9a7e', fontWeight: 400 }}>Adresse non renseignée</em>}
+              {contract.logement_adresse || <em style={{ color: '#6b9a7e', fontWeight: 400 }}>{bi(tp.addressMissing, te.addressMissing)}</em>}
             </p>
             {contract.logement_description && (
               <p style={{ ...contractText, marginTop: '8px' }}>{contract.logement_description}</p>
             )}
             <p style={{ ...contractText, marginTop: '8px' }}>
-              Capacité maximale d&apos;occupation&nbsp;: <strong>{contract.capacite_max} personne{contract.capacite_max > 1 ? 's' : ''}</strong>.
+              <strong>{tp.capaciteMax(contract.capacite_max)}</strong>
+              {tp.capaciteMax(contract.capacite_max) !== te.capaciteMax(contract.capacite_max) && (
+                <><br /><span style={{ fontStyle: 'italic', opacity: 0.65 }}>{te.capaciteMax(contract.capacite_max)}</span></>
+              )}
             </p>
             <p style={{ ...contractText, marginTop: '6px', fontSize: '13px', opacity: 0.7 }}>
-              Animaux admis&nbsp;: {contract.animaux_acceptes ? 'Oui' : 'Non'} -
-              Tabac&nbsp;: {contract.fumeur_accepte ? 'Autorisé' : 'Interdit'}
+              {tp.petsAllowed}&nbsp;: {contract.animaux_acceptes ? tp.yes : tp.no} -{' '}
+              {contract.fumeur_accepte ? tp.smokingAllowed : tp.smokingForbidden}
+              {primaryLang !== 'en' && (
+                <>
+                  {' '}({te.petsAllowed}: {contract.animaux_acceptes ? te.yes : te.no} -{' '}
+                  {contract.fumeur_accepte ? te.smokingAllowed : te.smokingForbidden})
+                </>
+              )}
             </p>
           </section>
 
@@ -234,21 +297,21 @@ export default async function SignPage({
 
           {/* Art. 3, Durée */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 3, Durée de la location</h2>
+            <SectionTitle primary={tp.art3} en={te.art3} />
             <div style={datesGrid}>
               <div style={dateBox}>
-                <p style={dateLabel}>Arrivée</p>
-                <p style={dateValue}>{formatDate(contract.date_arrivee)}</p>
-                <p style={dateTime}>à partir de {contract.heure_arrivee}</p>
+                <p style={dateLabel}>{bi(tp.arrivee, te.arrivee)}</p>
+                <p style={dateValue}>{formatDateLang(contract.date_arrivee, primaryLang)}</p>
+                <p style={dateTime}>{tp.from} {contract.heure_arrivee}</p>
               </div>
               <div style={dateArrow}>→</div>
               <div style={dateBox}>
-                <p style={dateLabel}>Départ</p>
-                <p style={dateValue}>{formatDate(contract.date_depart)}</p>
-                <p style={dateTime}>avant {contract.heure_depart}</p>
+                <p style={dateLabel}>{bi(tp.depart, te.depart)}</p>
+                <p style={dateValue}>{formatDateLang(contract.date_depart, primaryLang)}</p>
+                <p style={dateTime}>{tp.before} {contract.heure_depart}</p>
               </div>
               <div style={nightsBadge}>
-                {n} nuit{n > 1 ? 's' : ''}
+                {bi(tp.nights(n), te.nights(n))}
               </div>
             </div>
           </section>
@@ -257,34 +320,34 @@ export default async function SignPage({
 
           {/* Art. 4, Prix */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 4, Prix et modalités de paiement</h2>
+            <SectionTitle primary={tp.art4} en={te.art4} />
             <div style={pricesGrid}>
               <div style={priceBox}>
-                <p style={priceLabel}>Loyer total</p>
+                <p style={priceLabel}>{bi(tp.loyerTotal, te.loyerTotal)}</p>
                 <p style={priceValue}>{Number(contract.montant_loyer).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
               </div>
               <div style={priceBox}>
-                <p style={priceLabel}>Dépôt de garantie</p>
+                <p style={priceLabel}>{bi(tp.deposit, te.deposit)}</p>
                 <p style={priceValue}>{Number(contract.montant_caution).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
-                <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>remboursé sous 30 jours après l&apos;état des lieux</p>
+                <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>{bi(tp.depositRefund, te.depositRefund)}</p>
               </div>
             </div>
             {acomptePercent < 100 && (
               <div style={{ ...pricesGrid, marginTop: '10px' }}>
                 <div style={priceBox}>
-                  <p style={priceLabel}>Acompte ({acomptePercent}%)</p>
+                  <p style={priceLabel}>{bi(tp.acompte(acomptePercent), te.acompte(acomptePercent))}</p>
                   <p style={priceValue}>{montantAcompte.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
-                  <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>à régler pour confirmer la réservation</p>
+                  <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>{bi(tp.acompteHint, te.acompteHint)}</p>
                 </div>
                 <div style={priceBox}>
-                  <p style={priceLabel}>Solde</p>
+                  <p style={priceLabel}>{bi(tp.solde, te.solde)}</p>
                   <p style={priceValue}>{montantSolde.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
-                  <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>à régler à l&apos;arrivée</p>
+                  <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>{bi(tp.soldeHint, te.soldeHint)}</p>
                 </div>
               </div>
             )}
             <p style={{ ...contractText, marginTop: '12px', marginBottom: '8px' }}>
-              <strong>Modalités de paiement&nbsp;:</strong>
+              <strong>{bi(tp.paymentTerms, te.paymentTerms)}</strong>
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {(contract.modalites_paiement ?? 'Virement bancaire').split(/,\s*|\s*\/\s*|\s*ou\s*/i).map((m: string, i: number) => (
@@ -296,23 +359,35 @@ export default async function SignPage({
                 }}>{m.trim()}</span>
               ))}
             </div>
+            {/* Coordonnées bancaires directement dans le corps du contrat, visibles
+                dès avant la signature (pas seulement dans le bloc post-signature). */}
+            {hostIban && (
+              <ContractIbanBlock
+                iban={hostIban}
+                bic={hostBic}
+                beneficiary={`${contract.bailleur_prenom} ${contract.bailleur_nom}`}
+                primaryLang={primaryLang}
+              />
+            )}
           </section>
 
           <div style={divider} />
 
-          {/* Art. 5, Conditions d'annulation */}
+          {/* Art. 5, Conditions d'annulation (texte libre rédigé par le bailleur,
+              non traduit automatiquement) */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 5, Conditions d&apos;annulation</h2>
+            <SectionTitle primary={tp.art5} en={te.art5} />
             <p style={{ ...contractText, whiteSpace: 'pre-line' }}>{contract.conditions_annulation}</p>
           </section>
 
           <div style={divider} />
 
-          {/* Art. 6, Règlement intérieur */}
+          {/* Art. 6, Règlement intérieur (texte libre rédigé par le bailleur,
+              non traduit automatiquement) */}
           {contract.reglement_interieur && (
             <>
               <section style={contractSection}>
-                <h2 style={sectionTitle}>Article 6, Règlement intérieur</h2>
+                <SectionTitle primary={tp.art6} en={te.art6} />
                 <p style={{ ...contractText, whiteSpace: 'pre-line' }}>{contract.reglement_interieur}</p>
               </section>
               <div style={divider} />
@@ -321,18 +396,27 @@ export default async function SignPage({
 
           {/* Art. 7, Obligations légales */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 7, Obligations des parties</h2>
-            <p style={contractText}>
-              <strong>Le bailleur s&apos;engage à&nbsp;:</strong> {tpl.obligationsBailleur}
-            </p>
-            <p style={{ ...contractText, marginTop: '10px' }}>
-              <strong>Le locataire s&apos;engage à&nbsp;:</strong> {tpl.obligationsLocataire}
-              {' '}(Capacité maximale&nbsp;: {contract.capacite_max} personne{contract.capacite_max > 1 ? 's' : ''}.)
-            </p>
+            <SectionTitle primary={tp.art7} en={te.art7} />
+            <BiText
+              primary={`${tp.bailleurCommit} ${tpl.obligationsBailleur}`}
+              en={`${te.bailleurCommit} ${tplEn.obligationsBailleur}`}
+              style={contractText}
+            />
+            <div style={{ marginTop: '10px' }}>
+              <BiText
+                primary={`${tp.locataireCommit} ${tpl.obligationsLocataire} ${tp.capaciteReminder(contract.capacite_max)}`}
+                en={`${te.locataireCommit} ${tplEn.obligationsLocataire} ${te.capaciteReminder(contract.capacite_max)}`}
+                style={contractText}
+              />
+            </div>
             {tpl.declarationVoyageur && (
-              <p style={{ ...contractText, marginTop: '10px', fontSize: '13px', opacity: 0.85 }}>
-                <strong>Déclaration des voyageurs étrangers&nbsp;:</strong> {tpl.declarationVoyageur}
-              </p>
+              <div style={{ marginTop: '10px' }}>
+                <BiText
+                  primary={`${tp.foreignGuestDeclaration} ${tpl.declarationVoyageur}`}
+                  en={`${te.foreignGuestDeclaration} ${tplEn.declarationVoyageur ?? ''}`}
+                  style={{ ...contractText, fontSize: '13px', opacity: 0.85 }}
+                />
+              </div>
             )}
           </section>
 
@@ -340,32 +424,34 @@ export default async function SignPage({
 
           {/* Art. 8, RGPD */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 8, Protection des données personnelles (RGPD)</h2>
-            <p style={contractText}>{tpl.rgpd}</p>
+            <SectionTitle primary={tp.art8} en={te.art8} />
+            <BiText primary={tpl.rgpd} en={tplEn.rgpd} style={contractText} />
           </section>
 
           <div style={divider} />
 
           {/* Art. 9, Loi applicable */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 9, Loi applicable et juridiction</h2>
-            <p style={contractText}>{tpl.loiApplicable}</p>
+            <SectionTitle primary={tp.art9} en={te.art9} />
+            <BiText primary={tpl.loiApplicable} en={tplEn.loiApplicable} style={contractText} />
           </section>
 
           <div style={divider} />
 
           {/* Art. 10, Signature électronique */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>Article 10, Valeur juridique de la signature électronique</h2>
-            <p style={contractText}>{tpl.signatureElectronique}</p>
+            <SectionTitle primary={tp.art10} en={te.art10} />
+            <BiText primary={tpl.signatureElectronique} en={tplEn.signatureElectronique} style={contractText} />
           </section>
 
           {/* Disclaimer template non-FR */}
           {tpl.disclaimer && (
             <section style={{ ...contractSection, background: 'var(--warning-bg)', padding: '14px 18px', borderRadius: '10px', border: '1px solid rgba(245,158,11,0.22)' }}>
-              <p style={{ ...contractText, fontSize: '12px', fontStyle: 'italic', margin: 0, opacity: 0.85 }}>
-                {tpl.disclaimer}
-              </p>
+              <BiText
+                primary={tpl.disclaimer}
+                en={tplEn.disclaimer ?? tpl.disclaimer}
+                style={{ ...contractText, fontSize: '12px', fontStyle: 'italic', margin: 0, opacity: 0.85 }}
+              />
             </section>
           )}
         </div>
@@ -377,9 +463,9 @@ export default async function SignPage({
               <div style={warningBanner}>
                 <span style={{ fontSize: '20px' }}>🔒</span>
                 <div>
-                  <strong>Vous êtes le propriétaire-bailleur</strong>
+                  <strong>{bi(tp.ownerLockedTitle, te.ownerLockedTitle)}</strong>
                   <p style={{ margin: '4px 0 0', fontSize: '13px', opacity: 0.85 }}>
-                    Ce lien est destiné à votre locataire pour qu&apos;il signe. Transmettez-le par email ou message.
+                    {bi(tp.ownerLockedText, te.ownerLockedText)}
                   </p>
                 </div>
               </div>
@@ -392,7 +478,7 @@ export default async function SignPage({
         {/* ── Paiements (uniquement si actionnable : Stripe prêt ou IBAN configuré) ── */}
         {alreadySigned && ((paymentEnabled && stripeReady) || (hasDeposit && stripeReady) || hostIban) && (
           <div style={paymentsBlock} className="no-print">
-            <p style={paymentsTitle}>Finaliser votre dossier</p>
+            <p style={paymentsTitle}>{bi(tp.finalizeTitle, te.finalizeTitle)}</p>
 
             {/* Sections Stripe (uniquement si compte prêt) */}
             {stripeReady && (
@@ -406,6 +492,7 @@ export default async function SignPage({
                       isPartial={acomptePercent < 100}
                       paymentParam={paymentParam}
                       alreadyPaid={paymentAlreadyDone}
+                      lang={primaryLang}
                     />
                   </div>
                 )}
@@ -417,6 +504,7 @@ export default async function SignPage({
                       amount={Number(contract.montant_caution)}
                       depositParam={depositParam}
                       depositAlreadyHeld={depositAlreadyHeld}
+                      lang={primaryLang}
                     />
                   </div>
                 )}
@@ -432,6 +520,7 @@ export default async function SignPage({
                 soldeAmount={acomptePercent < 100 ? montantSolde : undefined}
                 reference={`LOC-${contract.id.slice(0, 8).toUpperCase()}`}
                 beneficiary={`${contract.bailleur_prenom} ${contract.bailleur_nom}`}
+                lang={primaryLang}
               />
             )}
           </div>
@@ -441,9 +530,9 @@ export default async function SignPage({
         {alreadySigned && (
           <div style={signedBlock} className="print-signature">
             <div style={signedLeft}>
-              <p style={signedLabel}>Signé par</p>
+              <p style={signedLabel}>{bi(tp.signedBy, te.signedBy)}</p>
               <p style={signedName}>{contract.locataire_prenom} {contract.locataire_nom}</p>
-              <p style={signedDate}>Le {formatDate(contract.signature_date)}</p>
+              <p style={signedDate}>{tp.signedOn(formatDateLang(contract.signature_date, primaryLang))}</p>
             </div>
             {contract.signature_image && (
               // eslint-disable-next-line @next/next/no-img-element
@@ -460,11 +549,18 @@ export default async function SignPage({
         {/* Footer légal */}
         <div style={footerLegal} className="print-footer">
           <p>
-            Contrat établi via <a href="https://jasonmarinho.com" style={{ color: '#4a7260' }}>jasonmarinho.com</a>
-            {', '}Conforme au Code civil, au Code du tourisme et au règlement eIDAS (UE) 910/2014.
+            {tp.footerLine1.split('jasonmarinho.com').map((part, i, arr) => (
+              <span key={i}>
+                {part}
+                {i < arr.length - 1 && <a href="https://jasonmarinho.com" style={{ color: '#4a7260' }}>jasonmarinho.com</a>}
+              </span>
+            ))}
           </p>
+          {primaryLang !== 'en' && (
+            <p style={{ marginTop: '2px', opacity: 0.7, fontStyle: 'italic' }}>{te.footerLine1}</p>
+          )}
           <p style={{ marginTop: '6px' }}>
-            Référence&nbsp;: {contract.id.slice(0, 8).toUpperCase()}, Créé le {formatDate(contract.created_at)}
+            {tp.footerRef(contract.id.slice(0, 8).toUpperCase(), formatDateLang(contract.created_at, primaryLang))}
           </p>
         </div>
 

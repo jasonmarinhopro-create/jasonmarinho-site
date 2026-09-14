@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SIGN_UI, type UiLang } from '@/lib/sign-ui-i18n'
 
 interface Props {
   iban: string
@@ -10,10 +11,12 @@ interface Props {
   soldeAmount?: number
   reference: string
   beneficiary: string
+  lang: UiLang
 }
 
-export default function IbanSection({ iban, bic, amount, soldeAmount, reference, beneficiary }: Props) {
+export default function IbanSection({ iban, bic, amount, soldeAmount, reference, beneficiary, lang }: Props) {
   const [copiedField, setCopiedField] = useState<string | null>(null)
+  const t = SIGN_UI[lang]
 
   function copy(value: string, field: string) {
     navigator.clipboard.writeText(value).then(() => {
@@ -26,44 +29,39 @@ export default function IbanSection({ iban, bic, amount, soldeAmount, reference,
     <div style={box}>
       <div style={{ marginBottom: '18px' }}>
         <strong style={{ color: '#f0ebe1', display: 'block', marginBottom: '6px', fontSize: '16px' }}>
-          Payer par virement bancaire
+          {t.payByTransfer}
         </strong>
-        <p style={hint}>
-          Effectuez un virement depuis votre banque avec les coordonnées ci-dessous.
-          Indiquez bien la référence pour que le propriétaire identifie votre paiement.
-        </p>
+        <p style={hint}>{t.transferHint}</p>
       </div>
 
       <div style={fields}>
-        <CopyField label="Bénéficiaire" value={beneficiary} field="beneficiary" copiedField={copiedField} onCopy={copy} />
-        <CopyField label="IBAN" value={iban} field="iban" copiedField={copiedField} onCopy={copy} mono />
-        {bic && <CopyField label="BIC / SWIFT" value={bic} field="bic" copiedField={copiedField} onCopy={copy} mono />}
+        <CopyField label={t.beneficiary} value={beneficiary} field="beneficiary" copiedField={copiedField} onCopy={copy} t={t} />
+        <CopyField label="IBAN" value={iban} field="iban" copiedField={copiedField} onCopy={copy} mono t={t} />
+        {bic && <CopyField label="BIC / SWIFT" value={bic} field="bic" copiedField={copiedField} onCopy={copy} mono t={t} />}
         <CopyField
-          label={soldeAmount != null ? 'Montant (acompte)' : 'Montant'}
+          label={soldeAmount != null ? t.amountPartialLabel : t.amountLabel}
           value={`${amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`}
           field="amount"
           copiedField={copiedField}
           onCopy={copy}
+          t={t}
         />
-        <CopyField label="Référence" value={reference} field="reference" copiedField={copiedField} onCopy={copy} mono />
+        <CopyField label={t.referenceLabel} value={reference} field="reference" copiedField={copiedField} onCopy={copy} mono t={t} />
       </div>
 
       {soldeAmount != null && (
         <p style={{ ...hint, marginTop: '10px' }}>
-          Solde restant de <strong style={{ color: '#f0ebe1' }}>{soldeAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</strong> à régler directement au propriétaire à votre arrivée.
+          {t.soldeRemainingNote(`${soldeAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`)}
         </p>
       )}
 
-      <p style={notice}>
-        Une fois le virement effectué, prévenez le propriétaire par email ou téléphone.
-        Les virements peuvent prendre 1 à 3 jours ouvrés selon votre banque.
-      </p>
+      <p style={notice}>{t.transferNotice}</p>
     </div>
   )
 }
 
 function CopyField({
-  label, value, field, copiedField, onCopy, mono = false,
+  label, value, field, copiedField, onCopy, mono = false, t,
 }: {
   label: string
   value: string
@@ -71,6 +69,7 @@ function CopyField({
   copiedField: string | null
   onCopy: (value: string, field: string) => void
   mono?: boolean
+  t: typeof SIGN_UI['fr']
 }) {
   const copied = copiedField === field
   return (
@@ -84,9 +83,9 @@ function CopyField({
       <button
         onClick={() => onCopy(value, field)}
         style={{ ...copyBtn, ...(copied ? copyBtnCopied : {}) }}
-        title="Copier"
+        title={t.copy}
       >
-        {copied ? '✓ Copié' : 'Copier'}
+        {copied ? `✓ ${t.copied}` : t.copy}
       </button>
     </div>
   )

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { SIGN_UI, type UiLang } from '@/lib/sign-ui-i18n'
 
 interface Props {
   token: string
@@ -9,11 +10,14 @@ interface Props {
   isPartial?: boolean
   paymentParam?: string
   alreadyPaid: boolean
+  lang: UiLang
 }
 
-export default function PaymentSection({ token, amount, isPartial, paymentParam, alreadyPaid }: Props) {
+export default function PaymentSection({ token, amount, isPartial, paymentParam, alreadyPaid, lang }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const t = SIGN_UI[lang]
+  const amountLabel = `${amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`
 
   async function handlePayReservation() {
     setLoading(true)
@@ -26,13 +30,13 @@ export default function PaymentSection({ token, amount, isPartial, paymentParam,
       })
       const data = await res.json()
       if (!res.ok || !data.url) {
-        setError(data.error ?? 'Erreur lors du paiement.')
+        setError(data.error ?? t.paymentError)
         setLoading(false)
       } else {
         window.location.href = data.url
       }
     } catch {
-      setError('Erreur réseau. Réessayez.')
+      setError(t.networkError)
       setLoading(false)
     }
   }
@@ -45,12 +49,9 @@ export default function PaymentSection({ token, amount, isPartial, paymentParam,
           <span style={{ fontSize: '24px' }}>✅</span>
           <div>
             <strong style={{ color: 'var(--success-1)', display: 'block', marginBottom: '4px' }}>
-              {isPartial ? 'Acompte réglé' : 'Réservation réglée'}
+              {t.paymentDoneTitle(!!isPartial)}
             </strong>
-            <p style={hint}>
-              {amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € reçus par le propriétaire.
-              Votre réservation est confirmée{isPartial && ' — le solde reste à régler à votre arrivée'}.
-            </p>
+            <p style={hint}>{t.paymentDoneHint(amountLabel, !!isPartial)}</p>
           </div>
         </div>
       </div>
@@ -62,10 +63,10 @@ export default function PaymentSection({ token, amount, isPartial, paymentParam,
     return (
       <div style={box('warning')}>
         <strong style={{ color: '#FFD56B', display: 'block', marginBottom: '8px' }}>
-          Paiement annulé
+          {t.paymentCancelledTitle}
         </strong>
-        <p style={hint}>Vous pouvez régler {isPartial ? 'votre acompte' : 'votre réservation'} ci-dessous pour la finaliser.</p>
-        <PayButton loading={loading} onClick={handlePayReservation} amount={amount} isPartial={isPartial} />
+        <p style={hint}>{t.paymentCancelledHint(!!isPartial)}</p>
+        <PayButton loading={loading} onClick={handlePayReservation} amountLabel={amountLabel} isPartial={isPartial} t={t} />
         {error && <p style={errStyle}>{error}</p>}
       </div>
     )
@@ -76,28 +77,26 @@ export default function PaymentSection({ token, amount, isPartial, paymentParam,
     <div style={box('default')}>
       <div style={{ marginBottom: '16px' }}>
         <strong style={{ color: '#f0ebe1', display: 'block', marginBottom: '6px', fontSize: '16px' }}>
-          {isPartial ? 'Réglez votre acompte' : 'Réglez votre réservation'}
+          {t.payTitle(!!isPartial)}
         </strong>
-        <p style={hint}>
-          Pour confirmer votre séjour, réglez en ligne{' '}
-          <strong style={{ color: '#FFD56B' }}>
-            {amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €
-          </strong>{' '}
-          directement par carte bancaire.
-          {isPartial && ' Le solde restant est à régler directement au propriétaire à votre arrivée.'}
-        </p>
-        <p style={{ ...hint, marginTop: '8px' }}>
-          Le paiement est <strong style={{ color: '#f0ebe1' }}>sécurisé par Stripe</strong> et votre carte
-          est débitée immédiatement. Vous recevrez une confirmation par email.
-        </p>
+        <p style={hint}>{t.payHint1(amountLabel, !!isPartial)}</p>
+        <p style={{ ...hint, marginTop: '8px' }}>{t.payHint2}</p>
       </div>
       {error && <p style={errStyle}>{error}</p>}
-      <PayButton loading={loading} onClick={handlePayReservation} amount={amount} isPartial={isPartial} />
+      <PayButton loading={loading} onClick={handlePayReservation} amountLabel={amountLabel} isPartial={isPartial} t={t} />
     </div>
   )
 }
 
-function PayButton({ loading, onClick, amount, isPartial }: { loading: boolean; onClick: () => void; amount: number; isPartial?: boolean }) {
+function PayButton({
+  loading, onClick, amountLabel, isPartial, t,
+}: {
+  loading: boolean
+  onClick: () => void
+  amountLabel: string
+  isPartial?: boolean
+  t: typeof SIGN_UI['fr']
+}) {
   return (
     <button
       onClick={onClick}
@@ -114,9 +113,7 @@ function PayButton({ loading, onClick, amount, isPartial }: { loading: boolean; 
         transition: 'all 0.15s',
       }}
     >
-      {loading
-        ? 'Redirection vers Stripe…'
-        : `Payer ${isPartial ? "l'acompte" : 'la réservation'}, ${amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € →`}
+      {loading ? t.redirecting : t.payButton(amountLabel, !!isPartial)}
     </button>
   )
 }

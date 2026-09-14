@@ -134,6 +134,10 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     montant_loyer: sejour.montant ?? 0,
     montant_caution: 0,
     acompte_percent: 100,
+
+    // Langue du contrat (fr ou pt) : le corps du contrat est toujours affiché
+    // dans cette langue PUIS en anglais en complément (cf. migration 099).
+    langue: 'fr' as 'fr' | 'pt',
     methodes_keys: initialLogement?.methodes_paiement ?? 'virement',
     ...(() => {
       const labels: Record<string, string> = {
@@ -294,6 +298,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       animaux_acceptes: form.animaux_acceptes,
       fumeur_accepte: form.fumeur_accepte,
       pays: contractPays,
+      langue: form.langue,
     }
 
     startTransition(async () => {
@@ -382,6 +387,38 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
               {!form.locataire_email && (
                 <p style={warnText}>⚠️ Sans email, le lien de signature ne pourra pas être envoyé automatiquement.</p>
               )}
+
+              {/* Langue du contrat : le corps entier (Article 1-10) est affiché
+                  dans cette langue PUIS toujours en anglais en complément, pour
+                  que le locataire comprenne ce qu'il signe (cf. migration 099). */}
+              <div>
+                <label style={fieldLabel}>Langue du contrat</label>
+                <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                  {(['fr', 'pt'] as const).map(l => {
+                    const checked = form.langue === l
+                    return (
+                      <button
+                        key={l}
+                        type="button"
+                        onClick={() => set('langue', l)}
+                        style={{
+                          flex: 1, padding: '10px 14px', borderRadius: '10px', cursor: 'pointer',
+                          fontSize: '13px', fontWeight: checked ? 600 : 400,
+                          background: checked ? 'var(--accent-bg)' : 'var(--surface)',
+                          border: `1px solid ${checked ? 'var(--accent-border-2)' : 'var(--border)'}`,
+                          color: checked ? 'var(--accent-text)' : 'var(--text-2)',
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        {l === 'fr' ? '🇫🇷 Français + English' : '🇵🇹 Português + English'}
+                      </button>
+                    )
+                  })}
+                </div>
+                <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '6px 0 0' }}>
+                  Le contrat est toujours affiché en anglais en complément de la langue choisie.
+                </p>
+              </div>
             </>
           )}
 
