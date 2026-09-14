@@ -88,6 +88,10 @@ import { House } from '@phosphor-icons/react'
 - Supabase storage déjà dans `remotePatterns` dans `next.config.js`
 - Pour les images dynamiques (ex: couvertures logements) : utiliser `fill` + `sizes`
 
+### Conciergerie (contrats pour propriétaire tiers)
+- `ContractModal.tsx` (création de contrat) : quand un logement sélectionné a un `proprietaire_nom` renseigné (conciergerie), le bailleur du contrat devient ce propriétaire (prénom/nom reconstruits par split sur le premier espace, email, téléphone) au lieu du profil de l'utilisateur connecté. `clearLogement()` revient au profil utilisateur si le logement est désélectionné.
+- `/sign/[token]` : l'IBAN affiché au locataire (`IbanSection`) vient du logement (`logements.iban`/`bic`) s'il est renseigné, sinon fallback sur `profiles.iban`/`bic` de l'utilisateur connecté — l'argent doit aller au propriétaire réel, pas à l'utilisateur qui gère le logement.
+
 ---
 
 ## Base de données
@@ -96,7 +100,7 @@ import { House } from '@phosphor-icons/react'
 | Table | Description |
 |-------|-------------|
 | `profiles` | Profil utilisateur, role ('user'/'admin'), plan, Stripe account |
-| `logements` | Propriétés de l'hôte |
+| `logements` | Propriétés de l'hôte. Conciergerie : `proprietaire_nom`/`proprietaire_email`/`proprietaire_telephone`/`honoraires_pct` quand géré pour un propriétaire tiers, `iban`/`bic` du propriétaire (migration `20260914_098`) prioritaires sur `profiles.iban`/`bic` sur `/sign/[token]` — voir note ContractModal ci-dessous |
 | `voyageurs` | Carnet de voyageurs |
 | `sejours` | Séjours/réservations |
 | `contracts` | Contrats de location (signe/en_attente/annule) |

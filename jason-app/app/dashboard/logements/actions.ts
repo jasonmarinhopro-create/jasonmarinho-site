@@ -59,6 +59,10 @@ export type LogementData = {
   proprietaire_email?: string | null
   proprietaire_telephone?: string | null
   honoraires_pct?: number | null
+  /** IBAN/BIC du propriétaire pour ce logement — prioritaires sur
+   *  profiles.iban/bic pour les virements sur /sign/[token]. */
+  iban?: string | null
+  bic?: string | null
 
   // Conditions & règlement
   reglement_interieur?: string

@@ -55,6 +55,8 @@ type Logement = {
   proprietaire_email: string | null
   proprietaire_telephone: string | null
   honoraires_pct: number | null
+  iban: string | null
+  bic: string | null
   reglement_interieur: string | null
   conditions_annulation: string | null
   animaux_acceptes: boolean
@@ -201,6 +203,8 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
   const [draftPropEmail, setDraftPropEmail] = useState(l.proprietaire_email ?? '')
   const [draftPropTel, setDraftPropTel] = useState(l.proprietaire_telephone ?? '')
   const [draftHonoraires, setDraftHonoraires] = useState<number | null>(l.honoraires_pct)
+  const [draftIban, setDraftIban] = useState(l.iban ?? '')
+  const [draftBic, setDraftBic] = useState(l.bic ?? '')
   // Informations générales (nom, type, adresse, téléphone, pays)
   const [draftNom, setDraftNom] = useState(l.nom)
   const [draftType, setDraftType] = useState(l.type_logement ?? '')
@@ -285,6 +289,8 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
       proprietaire_email: draftPropEmail || null,
       proprietaire_telephone: draftPropTel || null,
       honoraires_pct: draftHonoraires,
+      iban: draftIban.trim() || null,
+      bic: draftBic.trim() || null,
     })
   }
   async function saveInfosGenerales() {
@@ -1160,8 +1166,10 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
           setDraftPropEmail(l.proprietaire_email ?? '')
           setDraftPropTel(l.proprietaire_telephone ?? '')
           setDraftHonoraires(l.honoraires_pct)
+          setDraftIban(l.iban ?? '')
+          setDraftBic(l.bic ?? '')
         }}
-        hasValue={!!(l.proprietaire_nom || l.proprietaire_email || l.proprietaire_telephone || l.honoraires_pct != null)}
+        hasValue={!!(l.proprietaire_nom || l.proprietaire_email || l.proprietaire_telephone || l.honoraires_pct != null || l.iban)}
         emptyView={<p style={s.emptyHint}>Aucun propriétaire renseigné (utile si vous gérez ce logement en tant que conciergerie).</p>}
         view={
           <div style={s.detailRows}>
@@ -1189,6 +1197,18 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                 <span style={{ ...s.detailVal, color: '#a78bfa', fontWeight: 700 }}>{l.honoraires_pct}%</span>
               </div>
             )}
+            {l.iban && (
+              <div style={s.detailRow}>
+                <span style={s.detailKey}>IBAN</span>
+                <span style={{ ...s.detailVal, fontFamily: 'monospace', letterSpacing: '0.5px' }}>{l.iban}</span>
+              </div>
+            )}
+            {l.bic && (
+              <div style={s.detailRow}>
+                <span style={s.detailKey}>BIC</span>
+                <span style={{ ...s.detailVal, fontFamily: 'monospace', letterSpacing: '0.5px' }}>{l.bic}</span>
+              </div>
+            )}
           </div>
         }
         edit={
@@ -1209,6 +1229,17 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               <span>Honoraires (%)</span>
               <input style={s.editInput} type="number" min={0} max={100} value={draftHonoraires ?? ''} onChange={e => setDraftHonoraires(e.target.value ? parseFloat(e.target.value) : null)} placeholder="20" />
             </label>
+            <label style={s.editLabel}>
+              <span>IBAN du propriétaire</span>
+              <input style={{ ...s.editInput, fontFamily: 'monospace' }} type="text" value={draftIban} onChange={e => setDraftIban(e.target.value)} placeholder="FR76 XXXX XXXX XXXX XXXX XXXX XXX" />
+            </label>
+            <label style={s.editLabel}>
+              <span>BIC</span>
+              <input style={{ ...s.editInput, fontFamily: 'monospace' }} type="text" value={draftBic} onChange={e => setDraftBic(e.target.value)} placeholder="BNPAFRPPXXX" />
+            </label>
+            <p style={{ ...s.emptyHint, gridColumn: '1 / -1', margin: '4px 0 0' }}>
+              Si renseigné, c'est cet IBAN qui sera affiché au locataire pour le virement (pas le vôtre) — l'argent va directement au propriétaire.
+            </p>
           </div>
         }
       />

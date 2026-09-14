@@ -47,6 +47,18 @@ export type LogementOption = {
   fumeur_accepte: boolean
   methodes_paiement?: string | null
   pays?: string | null
+  proprietaire_nom?: string | null
+  proprietaire_email?: string | null
+  proprietaire_telephone?: string | null
+}
+
+/** Découpe "Prénom Nom" au premier espace, pour reconstruire bailleur_prenom/bailleur_nom
+ *  depuis le champ unique logements.proprietaire_nom (conciergerie). */
+function splitName(fullName: string): { prenom: string; nom: string } {
+  const trimmed = fullName.trim()
+  const i = trimmed.indexOf(' ')
+  if (i === -1) return { prenom: trimmed, nom: '' }
+  return { prenom: trimmed.slice(0, i), nom: trimmed.slice(i + 1) }
 }
 
 interface Props {
@@ -84,13 +96,20 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
 
   const [selectedLogementId, setSelectedLogementId] = useState<string | null>(initialLogement?.id ?? null)
 
+  // Bailleur : si le logement est géré pour le compte d'un propriétaire tiers
+  // (conciergerie, cf. logements.proprietaire_nom/email/telephone), ses coordonnées
+  // priment sur le profil de l'utilisateur connecté.
+  const initialProprietaire = initialLogement?.proprietaire_nom
+    ? splitName(initialLogement.proprietaire_nom)
+    : null
+
   // Form state, pré-rempli depuis le logement si disponible
   const [form, setForm] = useState({
     // Bailleur
-    bailleur_prenom: bailleur.prenom,
-    bailleur_nom: bailleur.nom,
-    bailleur_email: bailleur.email,
-    bailleur_telephone: initialLogement?.telephone ?? '',
+    bailleur_prenom: initialProprietaire?.prenom ?? bailleur.prenom,
+    bailleur_nom: initialProprietaire?.nom ?? bailleur.nom,
+    bailleur_email: initialLogement?.proprietaire_email ?? bailleur.email,
+    bailleur_telephone: initialLogement?.proprietaire_telephone ?? initialLogement?.telephone ?? '',
     bailleur_adresse: bailleur.adresse ?? '',
 
     // Locataire
@@ -163,13 +182,19 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
   function selectLogement(l: LogementOption) {
     setSelectedLogementId(l.id)
     const paymentFields = paymentFieldsFromLogement(l.methodes_paiement)
+    const proprietaire = l.proprietaire_nom ? splitName(l.proprietaire_nom) : null
     setForm(f => ({
       ...f,
       logement_nom: l.nom,
       logement_adresse: l.adresse,
       logement_description: l.description ?? '',
       capacite_max: l.capacite_max,
-      bailleur_telephone: l.telephone ?? f.bailleur_telephone,
+      // Conciergerie : si le logement a un propriétaire tiers renseigné, ses
+      // coordonnées remplacent celles du bailleur (l'utilisateur connecté).
+      bailleur_prenom: proprietaire?.prenom ?? bailleur.prenom,
+      bailleur_nom: proprietaire?.nom ?? bailleur.nom,
+      bailleur_email: l.proprietaire_email ?? bailleur.email,
+      bailleur_telephone: l.proprietaire_telephone ?? l.telephone ?? f.bailleur_telephone,
       conditions_annulation: l.conditions_annulation ?? f.conditions_annulation,
       reglement_interieur: l.reglement_interieur ?? f.reglement_interieur,
       animaux_acceptes: l.animaux_acceptes,
@@ -181,7 +206,14 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
 
   function clearLogement() {
     setSelectedLogementId(null)
-    setForm(f => ({ ...f, logement_nom: '', logement_adresse: '', logement_description: '', capacite_max: 1 }))
+    setForm(f => ({
+      ...f,
+      logement_nom: '', logement_adresse: '', logement_description: '', capacite_max: 1,
+      // Revenir au profil de l'utilisateur connecté (plus de propriétaire tiers).
+      bailleur_prenom: bailleur.prenom,
+      bailleur_nom: bailleur.nom,
+      bailleur_email: bailleur.email,
+    }))
   }
 
   function nextStep() {

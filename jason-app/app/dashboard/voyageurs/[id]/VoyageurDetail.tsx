@@ -358,6 +358,9 @@ type LogementOption = {
   methodes_paiement?: string | null
   pays?: string | null
   numero_al?: string | null
+  proprietaire_nom?: string | null
+  proprietaire_email?: string | null
+  proprietaire_telephone?: string | null
 }
 
 type CheckinCompanion = {

@@ -94,8 +94,23 @@ export default async function SignPage({
     .eq('id', contract.user_id)
     .single()
   const stripeReady = !!(bailProfile?.stripe_account_id && bailProfile?.stripe_onboarding_complete)
-  const hostIban = bailProfile?.iban ?? null
-  const hostBic = bailProfile?.bic ?? null
+
+  // Conciergerie : si le logement a son propre IBAN (propriétaire tiers géré
+  // par l'utilisateur), il est prioritaire sur profiles.iban — l'argent doit
+  // aller au propriétaire du bien, pas à l'utilisateur connecté (cf. migration 098).
+  let logementIban: string | null = null
+  let logementBic: string | null = null
+  if (contract.logement_id) {
+    const { data: logement } = await supabase
+      .from('logements')
+      .select('iban, bic')
+      .eq('id', contract.logement_id)
+      .single()
+    logementIban = logement?.iban ?? null
+    logementBic = logement?.bic ?? null
+  }
+  const hostIban = logementIban ?? bailProfile?.iban ?? null
+  const hostBic = logementIban ? logementBic : (bailProfile?.bic ?? null)
 
   // Caution
   const hasDeposit = Number(contract.montant_caution) > 0
