@@ -258,7 +258,10 @@ body *:not(.no-theme-transition) {
   --d-slow:   350ms;
 
   /* ── Focus ring accessible (WCAG AAA) ─────────────────────────────── */
-  --ring:        0 0 0 3px rgba(255,213,107,0.45);
+  /* Référence les tokens d'accent theme-aware (jaune sur fond sombre, vert
+     forêt sur fond clair) au lieu d'un jaune fixe — sinon l'anneau reste
+     jaune même en thème clair, où il tranche mal sur le fond vert pâle. */
+  --ring:        0 0 0 3px var(--accent-border-2);
   --ring-offset: 2px;
 }
 
@@ -1502,6 +1505,19 @@ a { color: inherit; }
   border-color: var(--accent-border);
   background: var(--accent-bg);
   box-shadow: 0 0 0 1px var(--accent-border), 0 8px 24px -10px var(--accent-border-2);
+}
+
+/* Même idée pour les champs de formulaire "icône + input nu" (voir
+   .inputWrap dans les modales) : l'input imbriqué n'a ni bordure ni fond,
+   donc l'anneau de focus générique ne se voyait que collé au texte au lieu
+   d'entourer toute la case. Le glow vit sur le conteneur entier ; l'input
+   porte className="no-ring" pour ne pas cumuler les deux. */
+.form-input-wrap {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.form-input-wrap:focus-within {
+  border-color: var(--accent-border-2);
+  box-shadow: 0 0 0 3px var(--accent-bg-2);
 }
 
 /* Hero "Parcours d'apprentissage", layout mobile empilé */

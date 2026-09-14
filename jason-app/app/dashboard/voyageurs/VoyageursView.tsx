@@ -690,9 +690,10 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
               <div style={s.formRow}>
                 <div style={s.field}>
                   <label style={s.label}>Prénom *</label>
-                  <div style={s.inputWrap}>
+                  <div style={s.inputWrap} className="form-input-wrap">
                     <User size={15} color="var(--text-muted)" />
                     <input
+                      className="no-ring"
                       style={s.input}
                       value={form.prenom}
                       onChange={e => setForm(f => ({ ...f, prenom: e.target.value }))}
@@ -703,9 +704,10 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
                 </div>
                 <div style={s.field}>
                   <label style={s.label}>Nom *</label>
-                  <div style={s.inputWrap}>
+                  <div style={s.inputWrap} className="form-input-wrap">
                     <User size={15} color="var(--text-muted)" />
                     <input
+                      className="no-ring"
                       style={s.input}
                       value={form.nom}
                       onChange={e => setForm(f => ({ ...f, nom: e.target.value }))}
@@ -717,9 +719,10 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
 
               <div style={s.field}>
                 <label style={s.label}>Email</label>
-                <div style={s.inputWrap}>
+                <div style={s.inputWrap} className="form-input-wrap">
                   <Envelope size={15} color="var(--text-muted)" />
                   <input
+                    className="no-ring"
                     style={s.input}
                     type="email"
                     value={form.email ?? ''}
@@ -731,9 +734,10 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
 
               <div style={s.field}>
                 <label style={s.label}>Téléphone</label>
-                <div style={s.inputWrap}>
+                <div style={s.inputWrap} className="form-input-wrap">
                   <Phone size={15} color="var(--text-muted)" />
                   <input
+                    className="no-ring"
                     style={s.input}
                     type="tel"
                     value={form.telephone ?? ''}
@@ -858,9 +862,10 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
                 <label style={s.label}>
                   Voyageurs attendus <span style={{ fontWeight: 400, color: 'var(--text-muted)' }}>(pour le lien de check-in / SIBA)</span>
                 </label>
-                <div style={s.inputWrap}>
+                <div style={s.inputWrap} className="form-input-wrap">
                   <Users size={15} color="var(--text-muted)" />
                   <input
+                    className="no-ring"
                     style={s.input}
                     type="number"
                     min={1}

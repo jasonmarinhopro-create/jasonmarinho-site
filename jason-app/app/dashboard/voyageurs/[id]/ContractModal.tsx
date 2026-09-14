@@ -911,9 +911,12 @@ function TimePickerInput({ value, onChange }: { value: string; onChange: (v: str
           style={{
             position: 'fixed', top: popupPos.top, left: popupPos.left,
             zIndex: 9999, width: popupPos.width,
-            background: 'var(--bg-2, #0f2018)', border: '1px solid #2a5040',
+            // Couleurs jaunes en dur avant (pensées pour un fond sombre) :
+            // rendaient un jaune vif sur le fond vert pâle du thème clair.
+            // Passe aux tokens d'accent theme-aware, comme le reste de l'app.
+            background: 'var(--bg-2)', border: '1px solid var(--border-2)',
             borderRadius: '16px', padding: '12px',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.7)',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
           }}
         >
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '4px', maxHeight: '220px', overflowY: 'auto' }}>
@@ -921,10 +924,10 @@ function TimePickerInput({ value, onChange }: { value: string; onChange: (v: str
               <button key={t} type="button" onClick={() => { onChange(t); setOpen(false) }} style={{
                 padding: '8px 4px', borderRadius: '8px', border: 'none',
                 fontSize: '13px', fontWeight: value === t ? 700 : 400,
-                background: value === t ? 'rgba(255,213,107,0.18)' : 'transparent',
-                color: value === t ? '#FFD56B' : '#a5c4b0',
+                background: value === t ? 'var(--accent-bg-2)' : 'transparent',
+                color: value === t ? 'var(--accent-text)' : 'var(--text-2)',
                 cursor: 'pointer',
-                outline: value === t ? '1.5px solid rgba(255,213,107,0.45)' : 'none',
+                outline: value === t ? '1.5px solid var(--accent-border-2)' : 'none',
                 transition: 'background 0.1s',
               }}>{t}</button>
             ))}

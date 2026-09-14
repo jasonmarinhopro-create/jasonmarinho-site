@@ -1012,8 +1012,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               <div style={s.profileEditRow}>
                 <div style={s.field}>
                   <label style={s.label}>Prénom *</label>
-                  <div style={s.inputWrap}>
+                  <div style={s.inputWrap} className="form-input-wrap">
                     <input
+                      className="no-ring"
                       style={s.input} autoFocus
                       value={profileForm.prenom}
                       onChange={e => setProfileForm(f => ({ ...f, prenom: e.target.value }))}
@@ -1023,8 +1024,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                 </div>
                 <div style={s.field}>
                   <label style={s.label}>Nom *</label>
-                  <div style={s.inputWrap}>
+                  <div style={s.inputWrap} className="form-input-wrap">
                     <input
+                      className="no-ring"
                       style={s.input}
                       value={profileForm.nom}
                       onChange={e => setProfileForm(f => ({ ...f, nom: e.target.value }))}
@@ -1036,9 +1038,10 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               <div style={s.profileEditRow}>
                 <div style={s.field}>
                   <label style={s.label}>Email</label>
-                  <div style={s.inputWrap}>
+                  <div style={s.inputWrap} className="form-input-wrap">
                     <Envelope size={14} color="var(--text-muted)" />
                     <input
+                      className="no-ring"
                       style={s.input} type="email"
                       value={profileForm.email}
                       onChange={e => setProfileForm(f => ({ ...f, email: e.target.value }))}
@@ -1048,9 +1051,10 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                 </div>
                 <div style={s.field}>
                   <label style={s.label}>Téléphone</label>
-                  <div style={s.inputWrap}>
+                  <div style={s.inputWrap} className="form-input-wrap">
                     <Phone size={14} color="var(--text-muted)" />
                     <input
+                      className="no-ring"
                       style={s.input} type="tel"
                       value={profileForm.telephone}
                       onChange={e => setProfileForm(f => ({ ...f, telephone: e.target.value }))}
@@ -2366,9 +2370,10 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   </div>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '6px' }}>
-                    <div style={s.inputWrap}>
+                    <div style={s.inputWrap} className="form-input-wrap">
                       <House size={15} color="var(--text-muted)" style={{ flexShrink: 0 }} />
                       <input
+                        className="no-ring"
                         style={s.input}
                         value={sejourForm.logement ?? ''}
                         onChange={e => setSejourForm(f => ({ ...f, logement: e.target.value }))}
@@ -2399,9 +2404,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               </div>
               <div style={s.field}>
                 <label style={s.label}>Montant total (€)</label>
-                <div style={s.inputWrap}>
+                <div style={s.inputWrap} className="form-input-wrap">
                   <CurrencyEur size={15} color="var(--text-muted)" />
-                  <input style={s.input} type="number" min="0" step="0.01" value={sejourForm.montant ?? ''} onChange={e => setSejourForm(f => ({ ...f, montant: e.target.value ? Number(e.target.value) : null }))} placeholder="450" />
+                  <input className="no-ring" style={s.input} type="number" min="0" step="0.01" value={sejourForm.montant ?? ''} onChange={e => setSejourForm(f => ({ ...f, montant: e.target.value ? Number(e.target.value) : null }))} placeholder="450" />
                 </div>
               </div>
               <div style={s.field}>
@@ -2541,9 +2546,10 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                               </span>
                             )}
                           </label>
-                          <div style={s.inputWrap}>
+                          <div style={s.inputWrap} className="form-input-wrap">
                             <CurrencyEur size={15} color="var(--text-muted)" />
                             <input
+                              className="no-ring"
                               style={s.input}
                               type="number" min="0" step="0.01"
                               value={sejourForm.commission_montant ?? ''}
@@ -2560,9 +2566,10 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                               <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
                                 Ou saisis ton <strong style={{ color: 'var(--text-2)' }}>net réel</strong> (Airbnb « Vous gagnez ») :
                               </span>
-                              <div style={{ ...s.inputWrap, flex: '0 0 130px' }}>
+                              <div style={{ ...s.inputWrap, flex: '0 0 130px' }} className="form-input-wrap">
                                 <CurrencyEur size={13} color="var(--text-muted)" />
                                 <input
+                                  className="no-ring"
                                   style={{ ...s.input, fontSize: '13px', padding: '7px 10px 7px 30px' }}
                                   type="number" min="0" step="0.01"
                                   placeholder="ex : 890.92"
@@ -2592,9 +2599,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                       </div>
                       <div style={s.field}>
                         <label style={s.label}>Lien contrat</label>
-                        <div style={s.inputWrap}>
+                        <div style={s.inputWrap} className="form-input-wrap">
                           <LinkIcon size={15} color="var(--text-muted)" />
-                          <input style={s.input} type="url" value={sejourForm.contrat_lien ?? ''} onChange={e => setSejourForm(f => ({ ...f, contrat_lien: e.target.value || null }))} placeholder="https://…" />
+                          <input className="no-ring" style={s.input} type="url" value={sejourForm.contrat_lien ?? ''} onChange={e => setSejourForm(f => ({ ...f, contrat_lien: e.target.value || null }))} placeholder="https://…" />
                         </div>
                       </div>
                     </div>

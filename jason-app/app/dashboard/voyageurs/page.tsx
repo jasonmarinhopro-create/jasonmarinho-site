@@ -3,6 +3,14 @@ import { createClient } from '@/lib/supabase/server'
 import VoyageursView, { type ContractRow } from './VoyageursView'
 import OnboardingTour, { VOYAGEURS_STEPS } from '../OnboardingTour'
 
+// Cette page et ses server actions (addVoyageur, checkVoyageurSignale…)
+// n'avaient aucun maxDuration explicite, donc soumis à la limite Vercel par
+// défaut (10s sur Hobby) — un simple insert d'une ligne est normalement
+// instantané, mais un cold start (fonction ou pool de connexions Supabase
+// réveillés après inactivité) peut suffire à la dépasser, provoquant un
+// vrai 504 côté client alors que l'écriture elle-même n'a rien de lent.
+export const maxDuration = 60
+
 export default async function VoyageursPage() {
   const [profile, supabase] = await Promise.all([getProfile(), createClient()])
   if (!profile) return null
