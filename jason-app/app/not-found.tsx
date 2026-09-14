@@ -11,21 +11,21 @@ export default function NotFound() {
       <div style={styles.card} className="fade-up">
         {/* Icône animée */}
         <div style={styles.iconWrap}>
-          <Compass size={52} color="#FFD56B" weight="thin" />
+          <Compass size={52} color="var(--accent-text)" weight="thin" />
         </div>
 
         <p style={styles.code}>4 0 4</p>
         <h1 style={styles.title}>
-          Vous êtes <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>perdus en mer</em>
+          Vous êtes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>perdus en mer</em>
         </h1>
         <p style={styles.desc}>
           Cette page a été emportée par les vagues. Le cap que vous cherchez n'existe pas (ou n'existe plus).
         </p>
 
         <div style={styles.waves}>
-          <Waves size={20} color="rgba(255,213,107,0.3)" />
-          <Waves size={20} color="rgba(255,213,107,0.15)" />
-          <Waves size={20} color="rgba(255,213,107,0.07)" />
+          <Waves size={20} color="var(--accent-border-2)" />
+          <Waves size={20} color="var(--accent-border)" />
+          <Waves size={20} color="var(--accent-bg-2)" />
         </div>
 
         <Link href="/dashboard" className="btn-primary" style={styles.btn}>
@@ -73,22 +73,22 @@ const styles: Record<string, React.CSSProperties> = {
   },
   iconWrap: {
     width: '80px', height: '80px', borderRadius: '20px',
-    background: 'rgba(0,76,63,0.3)', border: '1px solid rgba(255,213,107,0.15)',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     marginBottom: '8px',
   },
   code: {
     fontFamily: 'var(--font-fraunces), serif', fontSize: '72px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.08)', letterSpacing: '12px', lineHeight: 1,
+    color: 'var(--text-muted)', letterSpacing: '12px', lineHeight: 1,
     marginBottom: '-16px',
   },
   title: {
     fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px, 4vw, 36px)',
-    fontWeight: 400, color: '#f0f4ff', lineHeight: 1.25,
+    fontWeight: 400, color: 'var(--text)', lineHeight: 1.25,
   },
   desc: {
     fontSize: '15px', fontWeight: 300,
-    color: 'rgba(240,244,255,0.45)',
+    color: 'var(--text-2)',
     lineHeight: 1.65, maxWidth: '360px',
   },
   waves: {
@@ -97,7 +97,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   btn: { marginTop: '12px' },
   hint: {
-    fontSize: '13px', color: 'rgba(240,244,255,0.3)',
+    fontSize: '13px', color: 'var(--text-muted)',
   },
-  link: { color: '#FFD56B', textDecoration: 'none', fontWeight: 500 },
+  link: { color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 500 },
 }
