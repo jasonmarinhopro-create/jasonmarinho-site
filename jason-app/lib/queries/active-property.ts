@@ -60,6 +60,32 @@ const fetchAllPropertiesForUser = (userId: string) => unstable_cache(
   { revalidate: 300, tags: [`logements:${userId}`] },
 )()
 
+// PERF : idem pour le matching par nom (2b ci-dessous) — auparavant hors-cache
+// "car les noms sont dynamiques", mais ça revient au même : tant que le jeu de
+// noms non-matchés n'a pas changé, on peut le mettre en cache 5 min comme le
+// reste. Le cache key inclut les noms triés, donc un nom qui change (nouveau
+// séjour/contrat) invalide naturellement l'entrée sans jamais servir une
+// réponse périmée. Avant ce correctif, CHAQUE navigation dans le dashboard
+// repayait 1 aller-retour Supabase par nom non-matché (le layout attend
+// getActiveProperty() avant de rendre sidebar + header) — direct suspect
+// d'un dashboard qui devient lent à mesure que des noms de logements sans
+// fiche formelle s'accumulent dans les séjours/contrats.
+const fetchLogementsByName = (userId: string, names: string[]) => unstable_cache(
+  async () => {
+    const admin2 = getServiceClient()
+    const results = await Promise.all(
+      names.map(nom =>
+        admin2.from('logements').select('id, nom, ville').ilike('nom', nom).limit(1).maybeSingle()
+      )
+    )
+    return results
+      .map(({ data: r }) => r)
+      .filter((r): r is { id: string; nom: string; ville: string | null } => !!r)
+  },
+  ['active-property-name-match', userId, ...[...names].sort()],
+  { revalidate: 300, tags: [`logements:${userId}`] },
+)()
+
 export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {
   // getAuthUser : dédupliqué par rendu (1 seul RTT auth pour tout le layout)
   const user = await getAuthUser()
@@ -67,10 +93,8 @@ export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {
     return { propertyId: ALL_PROPERTIES, property: null, allProperties: [] }
   }
 
-  // Les 3 queries sont en cache Next.js (revalidate 5 min). La query de
-  // matching par NOM (namesToFetch) reste hors-cache car les noms sont
-  // dynamiques, mais elle n'appelle Supabase que si c'est necessaire.
-  const admin = getServiceClient()
+  // Les 3 queries de base ET le matching par nom (namesToFetch plus bas)
+  // sont tous les deux en cache Next.js (revalidate 5 min).
   const { ownedRes, sejoursRes, contractsRes } = await fetchAllPropertiesForUser(user.id)
 
   const allProperties: PropertyLite[] = []
@@ -98,18 +122,12 @@ export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {
   ;(ownedRes.data ?? []).forEach(r => { if (r.nom) foundNames.add(r.nom.trim().toLowerCase()) })
   const namesToFetch = names.filter(n => !foundNames.has(n.toLowerCase()))
   if (namesToFetch.length > 0) {
-    const admin2 = getServiceClient()
-    // 1 query par nom (typiquement 1-3 noms), avec ilike case-insensitive
-    const results = await Promise.all(
-      namesToFetch.map(nom =>
-        admin2.from('logements').select('id, nom, ville').ilike('nom', nom).limit(1).maybeSingle()
-      )
-    )
-    results.forEach(({ data: r }) => {
-      if (r) {
-        addLogement(r)
-        if (r.nom) foundNames.add(r.nom.trim().toLowerCase())
-      }
+    // 1 query par nom (typiquement 1-3 noms), avec ilike case-insensitive,
+    // mise en cache 5 min (cf. fetchLogementsByName ci-dessus)
+    const matched = await fetchLogementsByName(user.id, namesToFetch)
+    matched.forEach(r => {
+      addLogement(r)
+      if (r.nom) foundNames.add(r.nom.trim().toLowerCase())
     })
   }
 
