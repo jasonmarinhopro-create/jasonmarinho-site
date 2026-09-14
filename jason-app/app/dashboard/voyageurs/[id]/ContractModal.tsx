@@ -327,7 +327,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
         <div style={modalHeader}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-              <FileText size={18} color="#FFD56B" weight="fill" />
+              <FileText size={18} color="var(--accent-text)" weight="fill" />
               <span style={modalTag}>Nouveau contrat</span>
             </div>
             <h3 style={modalTitle}>
@@ -345,8 +345,8 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                 key={s}
                 style={{
                   ...progressDot,
-                  background: i <= currentStepIndex ? '#FFD56B' : 'var(--surface-2, #1e3d2f)',
-                  border: i === currentStepIndex ? '2px solid #FFD56B' : '2px solid transparent',
+                  background: i <= currentStepIndex ? 'var(--accent-text)' : 'var(--surface-2, #1e3d2f)',
+                  border: i === currentStepIndex ? '2px solid var(--accent-text)' : '2px solid transparent',
                   transform: i === currentStepIndex ? 'scale(1.2)' : 'scale(1)',
                 }}
               />
@@ -784,7 +784,7 @@ function ToggleField({
         type="checkbox"
         checked={value}
         onChange={e => onChange(e.target.checked)}
-        style={{ width: '16px', height: '16px', accentColor: '#FFD56B' }}
+        style={{ width: '16px', height: '16px', accentColor: 'var(--accent-text)' }}
       />
       <span style={{ fontSize: '14px', color: 'var(--text-2, #a5c4b0)' }}>{label}</span>
     </label>
@@ -901,10 +901,10 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   height: '34px', borderRadius: '8px', border: 'none',
                   fontSize: '13px', fontWeight: isSel ? 700 : 400,
-                  background: isSel ? 'rgba(255,213,107,0.18)' : isToday2 ? 'rgba(52,211,153,0.1)' : 'transparent',
-                  color: isSel ? '#FFD56B' : isToday2 ? 'var(--success-1)' : '#a5c4b0',
+                  background: isSel ? 'var(--accent-bg-2)' : isToday2 ? 'rgba(52,211,153,0.1)' : 'transparent',
+                  color: isSel ? 'var(--accent-text)' : isToday2 ? 'var(--success-1)' : '#a5c4b0',
                   cursor: 'pointer',
-                  outline: isSel ? '1.5px solid rgba(255,213,107,0.45)' : 'none',
+                  outline: isSel ? '1.5px solid var(--accent-border-2)' : 'none',
                   transition: 'background 0.1s',
                 }}>{day}</button>
               )
@@ -1103,9 +1103,9 @@ const stepHint: React.CSSProperties = {
 }
 
 const warnText: React.CSSProperties = {
-  fontSize: '13px', color: '#FFD56B',
-  background: 'rgba(255,213,107,0.08)',
-  border: '1px solid rgba(255,213,107,0.2)',
+  fontSize: '13px', color: 'var(--accent-text)',
+  background: 'var(--accent-bg)',
+  border: '1px solid var(--accent-border)',
   borderRadius: '8px', padding: '10px 14px', margin: 0,
 }
 
@@ -1161,7 +1161,7 @@ const linkRow: React.CSSProperties = {
 }
 
 const linkText: React.CSSProperties = {
-  flex: 1, fontSize: '13px', color: '#FFD56B',
+  flex: 1, fontSize: '13px', color: 'var(--accent-text)',
   textDecoration: 'none', wordBreak: 'break-all' as const,
 }
 
@@ -1175,10 +1175,10 @@ const copyBtn: React.CSSProperties = {
 
 const previewBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '6px',
-  background: 'rgba(255,213,107,0.1)',
-  border: '1px solid rgba(255,213,107,0.25)',
+  background: 'var(--accent-bg)',
+  border: '1px solid var(--accent-border)',
   borderRadius: '10px', padding: '8px 16px',
-  fontSize: '13px', color: '#FFD56B',
+  fontSize: '13px', color: 'var(--accent-text)',
   textDecoration: 'none', cursor: 'pointer',
 }
 
