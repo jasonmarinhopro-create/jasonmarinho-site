@@ -184,6 +184,17 @@ export async function deleteSejour(id: string, voyageurId: string): Promise<{ er
   const { supabase, session } = await getSession()
   if (!session) return { error: 'Non authentifié.' }
 
+  // Annule d'abord le(s) contrat(s) lié(s) : sinon ils restent orphelins
+  // (sejour_id pointant vers rien) et continuent d'apparaître « en attente »
+  // dans le journal Encaissements et les impayés, en doublon avec un séjour
+  // recréé pour le même voyageur (best-effort, ne bloque pas la suppression).
+  await supabase
+    .from('contracts')
+    .update({ statut: 'annule' })
+    .eq('sejour_id', id)
+    .eq('user_id', session.user.id)
+    .neq('statut', 'annule')
+
   const { error } = await supabase
     .from('sejours')
     .delete()
@@ -192,6 +203,7 @@ export async function deleteSejour(id: string, voyageurId: string): Promise<{ er
 
   if (error) return { error: error.message }
   revalidatePath(`/dashboard/voyageurs/${voyageurId}`)
+  revalidatePath('/dashboard/revenus')
   return {}
 }
 
