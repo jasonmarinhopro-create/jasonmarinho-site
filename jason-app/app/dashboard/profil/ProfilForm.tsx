@@ -545,7 +545,7 @@ export default function ProfilForm({
                 placeholder="Mention TVA affichée sur la facture"
               />
               <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '6px 0 0' }}>
-                Adapte cette mention si ta situation fiscale n'est pas l'exonération par défaut.
+                Indique la mention TVA correcte pour ton pays (ex : IVA à 6% obligatoire au Portugal, jamais "non applicable").
               </p>
               {facturationError && <div style={f.errorBox}><Warning size={13} />{facturationError}</div>}
               <div style={f.saveRow}>
