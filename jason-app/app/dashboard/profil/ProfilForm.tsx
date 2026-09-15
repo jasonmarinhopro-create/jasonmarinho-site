@@ -538,14 +538,14 @@ export default function ProfilForm({
                 style={{ ...f.input, marginBottom: '8px' }}
                 placeholder="N° SIRET (FR) ou NIF/NIPC (PT)" autoFocus
               />
-              <textarea
-                value={mentionTva}
+              <input
+                type="text" value={mentionTva}
                 onChange={e => setMentionTva(e.target.value)}
-                style={{ ...f.input, minHeight: '64px', resize: 'vertical' as const, fontFamily: 'inherit' }}
+                style={f.input}
                 placeholder="Mention TVA affichée sur la facture"
               />
               <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '6px 0 0' }}>
-                Par défaut : "TVA non applicable, article 261 D 4° du CGI" (location meublée de tourisme sans prestations parahôtelières). Adapte cette mention si ta situation fiscale est différente (TVA applicable, hors France…) — vérifie avec ton comptable si besoin.
+                Adapte cette mention si ta situation fiscale n'est pas l'exonération par défaut.
               </p>
               {facturationError && <div style={f.errorBox}><Warning size={13} />{facturationError}</div>}
               <div style={f.saveRow}>
