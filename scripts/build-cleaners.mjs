@@ -399,7 +399,8 @@ function buildAnnuaireListPage(items) {
         const equipeLabel = c.equipe_type ? EQUIPE_LABELS[c.equipe_type] : null
         const initials = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
         const searchBlob = normalizeSearch([c.ville, c.zone_couverte, equipeLabel].filter(Boolean).join(' '))
-        return `<a href="/annuaires/menage/${escHtml(c.slug)}" class="card" data-search="${escHtml(searchBlob)}">
+        const prestationsBlob = (c.prestations || []).join(' ')
+        return `<a href="/annuaires/menage/${escHtml(c.slug)}" class="card" data-search="${escHtml(searchBlob)}" data-equipe="${escHtml(c.equipe_type || '')}" data-delai="${escHtml(c.delai_reservation || '')}" data-assurance="${c.assurance_rc_pro ? '1' : '0'}" data-prestations="${escHtml(prestationsBlob)}" data-tarif-min="${c.tarif_forfait_min ?? ''}" data-tarif-max="${c.tarif_forfait_max ?? ''}">
   <div class="card-head">
     ${c.logo_url
       ? `<div class="card-logo" style="background:url('${escHtml(c.logo_url)}') center/cover"></div>`
@@ -453,24 +454,64 @@ h1{font-family:'Fraunces',serif;font-size:clamp(28px,4vw,42px);font-weight:400;l
 h1 em{color:var(--y);font-style:italic;font-weight:300}
 .lead{font-size:15.5px;color:rgba(255,255,255,.7);line-height:1.7;max-width:640px}
 .count-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.25);border-radius:100px;padding:7px 16px;font-size:13px;font-weight:600;color:#FFD56B;margin-top:14px}
-.search-wrap{max-width:820px;margin:-30px auto 0;padding:0 clamp(16px,5vw,40px);position:relative;z-index:5}
-.search-bar{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--bd);border-radius:16px;padding:6px 8px 6px 22px;box-shadow:0 14px 36px rgba(0,30,20,.16)}
+.tools-row{max-width:820px;margin:-30px auto 0;padding:0 clamp(16px,5vw,40px);position:relative;z-index:5;display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+.search-bar{flex:1;min-width:220px;display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--bd);border-radius:16px;padding:6px 8px 6px 22px;box-shadow:0 14px 36px rgba(0,30,20,.16)}
 .search-ico{color:var(--g);font-size:17px;flex-shrink:0}
 .search-bar input{flex:1;min-width:0;border:none;outline:none;font-family:'Outfit',sans-serif;font-size:15px;color:var(--td);padding:15px 0;background:transparent}
 .search-bar input::placeholder{color:var(--tl)}
 .search-clear{display:none;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:none;background:rgba(0,76,63,.06);color:var(--tm);cursor:pointer;flex-shrink:0;font-size:13px}
 .search-clear:hover{background:rgba(0,76,63,.12)}
 .search-count{font-size:12px;font-weight:600;color:var(--tl);white-space:nowrap;padding:0 6px 0 2px;flex-shrink:0}
-.chips-row{max-width:820px;margin:14px auto 0;padding:0 clamp(16px,5vw,40px);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
-.chips-label{font-size:12px;color:var(--tl);margin-right:2px}
-.chip{font-size:12.5px;padding:6px 14px;border-radius:999px;background:#fff;border:1px solid var(--bd);color:var(--tm);cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s}
-.chip:hover{color:var(--g);border-color:rgba(0,76,63,.3);background:rgba(0,76,63,.04)}
-.chip.active{background:var(--g);color:#fff;border-color:var(--g)}
+.filters-btn{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--bd);border-radius:16px;padding:0 20px;box-shadow:0 14px 36px rgba(0,30,20,.16);font-size:14px;font-weight:600;color:var(--td);cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap}
+.filters-btn:hover{border-color:rgba(0,76,63,.3)}
+.filters-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:999px;background:var(--g);color:#fff;font-size:10.5px;font-weight:700;padding:0 5px}
 .main{max-width:1100px;margin:0 auto;padding:50px clamp(16px,5vw,40px) 40px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
-.search-fallback{display:none;align-items:center;gap:10px;padding:13px 16px;background:rgba(255,213,107,.08);border:1px solid rgba(255,213,107,.22);border-radius:12px;margin-bottom:18px;font-size:13px;color:var(--tm);line-height:1.5}
-.search-fallback i{color:#b8860b;font-size:16px;flex-shrink:0}
-.search-fallback strong{color:var(--td);font-weight:600}
+.search-empty{display:none;padding:44px 20px;text-align:center;background:#fff;border:1px solid var(--bd);border-radius:16px;max-width:560px;margin:0 auto}
+.search-empty-ico{display:inline-flex;width:64px;height:64px;border-radius:16px;background:rgba(0,76,63,.06);align-items:center;justify-content:center;margin-bottom:14px;color:var(--g);font-size:26px}
+.search-empty h3{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:0 0 8px;line-height:1.3}
+.search-empty p{font-size:13px;line-height:1.65;color:var(--tm);margin:0 0 16px}
+.search-empty a{color:var(--g);font-weight:600;text-decoration:underline}
+.search-empty button{display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid rgba(0,76,63,.2);color:var(--g);font-weight:500;font-size:13px;padding:10px 18px;border-radius:10px;cursor:pointer;font-family:'Outfit',sans-serif}
+.search-empty button:hover{background:var(--g);color:#fff;border-color:var(--g)}
+@media(max-width:480px){
+  .search-empty{padding:30px 16px}
+  .search-empty-ico{width:52px;height:52px;font-size:21px;margin-bottom:11px}
+  .search-empty h3{font-size:16px}
+  .search-empty p{font-size:12.5px}
+}
+.filters-backdrop{display:none;position:fixed;inset:0;background:rgba(0,20,14,.45);z-index:200;align-items:center;justify-content:center;padding:20px}
+.filters-backdrop.open{display:flex}
+.filters-modal{background:#fff;border-radius:18px;width:100%;max-width:460px;max-height:min(680px,86vh);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px rgba(0,20,14,.35)}
+.filters-head{display:flex;align-items:center;justify-content:center;position:relative;padding:18px 20px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.filters-title{font-family:'Fraunces',serif;font-size:17px;font-weight:500;color:var(--td)}
+.filters-close{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;border:none;background:transparent;color:var(--td);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.filters-close:hover{background:rgba(0,76,63,.06)}
+.filters-body{padding:22px clamp(16px,4vw,22px) 6px;overflow-y:auto;flex:1}
+.filters-section{padding-bottom:22px;margin-bottom:22px;border-bottom:1px solid var(--bd)}
+.filters-section:last-child{border-bottom:none;margin-bottom:0}
+.filters-section h3{font-family:'Fraunces',serif;font-size:15.5px;font-weight:500;color:var(--td);margin:0 0 14px}
+.filters-options{display:flex;flex-wrap:wrap;gap:8px}
+.filters-opt{font-size:13px;padding:9px 16px;border-radius:10px;border:1px solid var(--bd);background:#fff;color:var(--tm);cursor:pointer;font-family:'Outfit',sans-serif;transition:all .15s}
+.filters-opt:hover{border-color:rgba(0,76,63,.3)}
+.filters-opt.active{background:var(--td);border-color:var(--td);color:#fff}
+.filters-toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.filters-toggle-label{font-size:13.5px;color:var(--td);font-weight:500}
+.filters-toggle-sub{font-size:11.5px;color:var(--tl);margin-top:2px}
+.filters-toggle{position:relative;width:42px;height:24px;border-radius:999px;background:var(--bd);border:none;cursor:pointer;flex-shrink:0}
+.filters-toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.filters-toggle.active{background:var(--g)}
+.filters-toggle.active::after{transform:translateX(18px)}
+.filters-price{display:flex;gap:14px}
+.filters-price-field{flex:1;min-width:0}
+.filters-price-field label{display:block;font-size:11px;font-weight:600;color:var(--tl);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.filters-price-field .fx{display:flex;align-items:center;border:1px solid var(--bd);border-radius:10px;padding:0 12px}
+.filters-price-field .fx span{color:var(--tl);font-size:13px}
+.filters-price-field input{border:none;outline:none;padding:11px 6px;font-size:14px;width:100%;min-width:0;font-family:'Outfit',sans-serif;color:var(--td)}
+.filters-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-top:1px solid var(--bd);flex-shrink:0}
+.filters-clear{background:transparent;border:none;font-size:14px;font-weight:600;color:var(--td);text-decoration:underline;cursor:pointer;font-family:'Outfit',sans-serif;padding:6px 0}
+.filters-apply{background:var(--td);color:#fff;border:none;border-radius:10px;padding:13px 20px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap}
+.filters-apply:hover{background:#000}
 .card{display:flex;flex-direction:column;gap:12px;padding:24px;background:#fff;border:1px solid var(--bd);border-radius:16px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,76,63,.1)}
 .card-head{display:flex;align-items:flex-start;gap:14px}
@@ -549,23 +590,83 @@ ${JSON.stringify({
   </div>
 </header>
 
-${items.length > 0 ? `<div class="search-wrap">
+${items.length > 0 ? `<div class="tools-row">
   <div class="search-bar">
     <i class="ph-bold ph-map-pin search-ico" aria-hidden="true"></i>
     <input type="text" id="pro-search" placeholder="Cherche par ville : Lyon, Bordeaux, Annecy…" autocomplete="off" aria-label="Rechercher une équipe de ménage par ville">
     <span class="search-count" id="search-count"></span>
     <button type="button" class="search-clear" id="search-clear" aria-label="Effacer la recherche"><i class="ph-bold ph-x"></i></button>
   </div>
+  <button type="button" class="filters-btn" id="filters-open">
+    <i class="ph-bold ph-sliders-horizontal"></i> Filtres
+    <span class="filters-badge" id="filters-badge" style="display:none">0</span>
+  </button>
 </div>
-<div class="chips-row" id="search-chips">
-  <span class="chips-label">Villes avec des pros actifs :</span>
-  ${[...new Set(items.map(c => c.ville).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'fr')).map(v =>
-    `<button type="button" class="chip" data-city="${escHtml(v)}">${escHtml(v)}</button>`
-  ).join('')}
+
+<div class="filters-backdrop" id="filters-backdrop">
+  <div class="filters-modal" role="dialog" aria-modal="true" aria-label="Filtres">
+    <div class="filters-head">
+      <span class="filters-title">Filtres</span>
+      <button type="button" class="filters-close" id="filters-close" aria-label="Fermer"><i class="ph-bold ph-x"></i></button>
+    </div>
+    <div class="filters-body">
+      <div class="filters-section">
+        <h3>Type d'équipe</h3>
+        <div class="filters-options" id="f-equipe">
+          ${Object.entries(EQUIPE_LABELS).map(([slug, label]) => `<button type="button" class="filters-opt" data-value="${escHtml(slug)}">${escHtml(label)}</button>`).join('')}
+        </div>
+      </div>
+      <div class="filters-section">
+        <h3>Prestations</h3>
+        <div class="filters-options" id="f-prestations">
+          ${Object.entries(PRESTATIONS_LABELS).map(([slug, label]) => `<button type="button" class="filters-opt" data-value="${escHtml(slug)}">${escHtml(label)}</button>`).join('')}
+        </div>
+      </div>
+      <div class="filters-section">
+        <h3>Garanties</h3>
+        <div class="filters-toggle-row">
+          <div>
+            <div class="filters-toggle-label">Assurance RC pro uniquement</div>
+            <div class="filters-toggle-sub">Couverture en cas de dommage pendant l'intervention</div>
+          </div>
+          <button type="button" class="filters-toggle" id="f-assurance" aria-pressed="false"></button>
+        </div>
+      </div>
+      <div class="filters-section">
+        <h3>Délai de réservation</h3>
+        <div class="filters-options" id="f-delai">
+          ${Object.entries(DELAI_LABELS).map(([slug, label]) => `<button type="button" class="filters-opt" data-value="${escHtml(slug)}">${escHtml(label)}</button>`).join('')}
+        </div>
+      </div>
+      <div class="filters-section">
+        <h3>Fourchette de tarif</h3>
+        <div class="filters-price">
+          <div class="filters-price-field">
+            <label for="f-min">Minimum</label>
+            <div class="fx"><span>€</span><input type="number" id="f-min" inputmode="numeric" placeholder="0" min="0"></div>
+          </div>
+          <div class="filters-price-field">
+            <label for="f-max">Maximum</label>
+            <div class="fx"><span>€</span><input type="number" id="f-max" inputmode="numeric" placeholder="500+" min="0"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="filters-foot">
+      <button type="button" class="filters-clear" id="filters-clear">Tout effacer</button>
+      <button type="button" class="filters-apply" id="filters-apply">Afficher <span id="filters-count">${items.length}</span> <span id="filters-count-word">équipe${items.length > 1 ? 's' : ''}</span></button>
+    </div>
+  </div>
 </div>` : ''}
 
 <main class="main">
 ${itemsHtml}
+${items.length > 0 ? `<div class="search-empty" id="search-empty">
+  <div class="search-empty-ico"><i class="ph-bold ph-map-trifold"></i></div>
+  <h3>Pas encore d'équipe à «<span id="search-empty-q"></span>»</h3>
+  <p>L'annuaire grandit chaque semaine. En attendant, jette un œil aux <a href="#villes">guides ville par ville</a> ci-dessous, ou repasse bientôt.</p>
+  <button type="button" id="search-reset"><i class="ph-bold ph-arrow-counter-clockwise"></i>Voir toutes les équipes</button>
+</div>` : ''}
 </main>
 
 ${items.length > 0 ? `<script>
@@ -573,48 +674,143 @@ ${items.length > 0 ? `<script>
   function norm(s){ return (s || '').toString().toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').trim() }
   var input      = document.getElementById('pro-search')
   var clear      = document.getElementById('search-clear')
+  var reset      = document.getElementById('search-reset')
   var countEl    = document.getElementById('search-count')
+  var emptyEl    = document.getElementById('search-empty')
+  var emptyQ     = document.getElementById('search-empty-q')
   var grid       = document.querySelector('.grid')
   var cards      = grid ? Array.prototype.slice.call(grid.querySelectorAll('.card')) : []
-  var chips      = Array.prototype.slice.call(document.querySelectorAll('.chip'))
   if (!input || !cards.length) return
 
-  // Bandeau discret injecté en tête de grille quand aucun résultat exact :
-  // on ne cache JAMAIS la liste complète (mur vide), on la garde visible
-  // en dessous — utile dès qu'il n'y a que quelques pros dans l'annuaire.
-  var fallback = document.createElement('div')
-  fallback.className = 'search-fallback'
-  fallback.innerHTML = '<i class="ph-bold ph-info"></i><span>Aucun résultat exact pour «<strong id="search-fallback-q"></strong>», voici toutes nos équipes actives.</span>'
-  grid.parentNode.insertBefore(fallback, grid)
-  var fallbackQ = fallback.querySelector('#search-fallback-q')
+  // ── Modal Filtres ──────────────────────────────────────────────────
+  var backdrop     = document.getElementById('filters-backdrop')
+  var openBtn      = document.getElementById('filters-open')
+  var closeBtn     = document.getElementById('filters-close')
+  var applyBtn     = document.getElementById('filters-apply')
+  var clearBtn     = document.getElementById('filters-clear')
+  var badge        = document.getElementById('filters-badge')
+  var countPreview = document.getElementById('filters-count')
+  var countWord    = document.getElementById('filters-count-word')
+  var equipeOpts   = Array.prototype.slice.call(document.querySelectorAll('#f-equipe .filters-opt'))
+  var prestaOpts   = Array.prototype.slice.call(document.querySelectorAll('#f-prestations .filters-opt'))
+  var delaiOpts    = Array.prototype.slice.call(document.querySelectorAll('#f-delai .filters-opt'))
+  var assuranceBtn = document.getElementById('f-assurance')
+  var minInput     = document.getElementById('f-min')
+  var maxInput     = document.getElementById('f-max')
 
+  var state = { equipe: null, delai: null, assurance: false, prestations: [], min: null, max: null }
+
+  function openModal(){ backdrop.classList.add('open'); previewCount() }
+  function closeModal(){ backdrop.classList.remove('open') }
+  openBtn.addEventListener('click', openModal)
+  closeBtn.addEventListener('click', closeModal)
+  backdrop.addEventListener('click', function(e){ if (e.target === backdrop) closeModal() })
+
+  // Sélection unique (équipe, délai) : reclique = désélectionne
+  function wireSingleSelect(opts, onChange){
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        var val = opt.getAttribute('data-value')
+        var next = opt.classList.contains('active') ? null : val
+        opts.forEach(function(o){ o.classList.remove('active') })
+        if (next) opt.classList.add('active')
+        onChange(next)
+        previewCount()
+      })
+    })
+  }
+  wireSingleSelect(equipeOpts, function(v){ state.equipe = v })
+  wireSingleSelect(delaiOpts, function(v){ state.delai = v })
+
+  // Sélection multiple (prestations)
+  prestaOpts.forEach(function(opt){
+    opt.addEventListener('click', function(){
+      var val = opt.getAttribute('data-value')
+      var idx = state.prestations.indexOf(val)
+      if (idx === -1) { state.prestations.push(val); opt.classList.add('active') }
+      else { state.prestations.splice(idx, 1); opt.classList.remove('active') }
+      previewCount()
+    })
+  })
+
+  assuranceBtn.addEventListener('click', function(){
+    state.assurance = !state.assurance
+    assuranceBtn.classList.toggle('active', state.assurance)
+    assuranceBtn.setAttribute('aria-pressed', String(state.assurance))
+    previewCount()
+  })
+  minInput.addEventListener('input', function(){ state.min = minInput.value ? Number(minInput.value) : null; previewCount() })
+  maxInput.addEventListener('input', function(){ state.max = maxInput.value ? Number(maxInput.value) : null; previewCount() })
+
+  function matchesFilters(c){
+    if (state.equipe && c.getAttribute('data-equipe') !== state.equipe) return false
+    if (state.delai && c.getAttribute('data-delai') !== state.delai) return false
+    if (state.assurance && c.getAttribute('data-assurance') !== '1') return false
+    if (state.prestations.length) {
+      var have = (c.getAttribute('data-prestations') || '').split(' ')
+      for (var i = 0; i < state.prestations.length; i++) {
+        if (have.indexOf(state.prestations[i]) === -1) return false
+      }
+    }
+    var tMin = c.getAttribute('data-tarif-min'), tMax = c.getAttribute('data-tarif-max')
+    tMin = tMin ? Number(tMin) : null
+    tMax = tMax ? Number(tMax) : null
+    // Chevauchement de fourchette. Pas de tarif renseigné = jamais exclu.
+    if (state.min != null && tMax != null && tMax < state.min) return false
+    if (state.max != null && tMin != null && tMin > state.max) return false
+    return true
+  }
+
+  function activeFilterGroups(){
+    return (state.equipe ? 1 : 0) + (state.delai ? 1 : 0) + (state.assurance ? 1 : 0) +
+      (state.prestations.length ? 1 : 0) + (state.min != null || state.max != null ? 1 : 0)
+  }
+
+  function previewCount(){
+    var n = 0
+    cards.forEach(function(c){ if (matchesFilters(c)) n++ })
+    countPreview.textContent = n
+    countWord.textContent = n > 1 ? 'équipes' : 'équipe'
+    applyBtn.disabled = n === 0
+    var activeCount = activeFilterGroups()
+    if (activeCount > 0) { badge.style.display = 'inline-flex'; badge.textContent = activeCount } else { badge.style.display = 'none' }
+    clearBtn.style.color = activeCount > 0 ? 'var(--td)' : 'var(--tl)'
+  }
+
+  function clearFilters(){
+    state = { equipe: null, delai: null, assurance: false, prestations: [], min: null, max: null }
+    equipeOpts.concat(prestaOpts, delaiOpts).forEach(function(o){ o.classList.remove('active') })
+    assuranceBtn.classList.remove('active'); assuranceBtn.setAttribute('aria-pressed', 'false')
+    minInput.value = ''; maxInput.value = ''
+    previewCount()
+  }
+  clearBtn.addEventListener('click', clearFilters)
+  applyBtn.addEventListener('click', function(){ closeModal(); apply() })
+
+  // ── Recherche + filtres combinés ────────────────────────────────────
   function apply(){
     var q = norm(input.value)
     var shown = 0
     cards.forEach(function(c){
-      if (!q || (c.getAttribute('data-search') || '').indexOf(q) !== -1) shown++
+      var searchOk = !q || (c.getAttribute('data-search') || '').indexOf(q) !== -1
+      if (searchOk && matchesFilters(c)) shown++
     })
-    var noResults = !!q && shown === 0
+    var noResults = shown === 0
     cards.forEach(function(c){
-      var match = !q || (c.getAttribute('data-search') || '').indexOf(q) !== -1
-      // Sur 0 résultat exact on retombe sur la liste complète plutôt que de tout cacher
-      c.style.display = (noResults || match) ? '' : 'none'
+      var searchOk = !q || (c.getAttribute('data-search') || '').indexOf(q) !== -1
+      var match = searchOk && matchesFilters(c)
+      c.style.display = match ? '' : 'none'
     })
     countEl.textContent = q ? (noResults ? '' : shown + ' résultat' + (shown > 1 ? 's' : '')) : ''
     clear.style.display = q ? 'inline-flex' : 'none'
-    fallback.style.display = noResults ? 'flex' : 'none'
-    if (fallbackQ) fallbackQ.textContent = input.value.trim()
-    chips.forEach(function(chip){ chip.classList.toggle('active', q && norm(chip.getAttribute('data-city')) === q) })
+    if (emptyEl) emptyEl.style.display = noResults ? 'block' : 'none'
+    if (emptyQ) emptyQ.textContent = input.value.trim() || 'ces filtres'
+    if (grid) grid.style.display = noResults ? 'none' : ''
   }
   input.addEventListener('input', apply)
   clear.addEventListener('click', function(){ input.value = ''; apply(); input.focus() })
-  chips.forEach(function(chip){
-    chip.addEventListener('click', function(){
-      var city = chip.getAttribute('data-city') || ''
-      input.value = norm(input.value) === norm(city) ? '' : city
-      apply()
-    })
-  })
+  if (reset) reset.addEventListener('click', function(){ input.value = ''; clearFilters(); apply(); input.focus() })
+  apply()
 })()
 </script>` : ''}
 
