@@ -43,6 +43,26 @@ export async function createRevenusEntry(input: EntryInput) {
   return { entry: data }
 }
 
+// Annule un contrat directement depuis le journal (ex : contrat orphelin
+// resté "en attente" après suppression du séjour lié) — même effet que
+// cancelContract() dans voyageurs/contract-actions.ts, dupliqué ici pour
+// éviter un aller-retour vers une autre page depuis le journal.
+export async function cancelContractRevenus(id: string) {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Non authentifié' }
+
+  const { error } = await supabase
+    .from('contracts')
+    .update({ statut: 'annule' })
+    .eq('id', id)
+    .eq('user_id', session.user.id)
+
+  if (error) return { error: error.message }
+  revalidatePath('/dashboard/revenus')
+  return { success: true }
+}
+
 export async function deleteRevenusEntry(id: string) {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()

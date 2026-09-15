@@ -7,7 +7,7 @@ import {
   Info, Warning, ArrowRight, Scales, Upload,
   Receipt, ChartBar, Target, EyeSlash, Stack, PencilSimple,
 } from '@phosphor-icons/react/dist/ssr'
-import { createRevenusEntry, deleteRevenusEntry, createCharge, updateCharge, deleteCharge, setObjectifAnnuel, setEntryADeclarer } from './actions'
+import { createRevenusEntry, deleteRevenusEntry, cancelContractRevenus, createCharge, updateCharge, deleteCharge, setObjectifAnnuel, setEntryADeclarer } from './actions'
 import ImportCSVModal from './ImportCSVModal'
 import { PLATFORMS, suggestCommission } from '@/lib/platforms'
 import { COUNTRIES as COUNTRIES_MAP } from '@/lib/countries'
@@ -164,7 +164,7 @@ function todayISO() {
 // ── component ────────────────────────────────────────────────────────────────
 
 export default function RevenusView({
-  contracts,
+  contracts: initialContracts,
   initialEntries,
   initialCharges = [],
   logementNoms,
@@ -179,6 +179,7 @@ export default function RevenusView({
   const thisMonth = now.getMonth()
   const thisYear  = now.getFullYear()
 
+  const [contracts, setContracts] = useState<Contract[]>(initialContracts)
   const [entries, setEntries]   = useState<RevenusEntry[]>(initialEntries)
   const [charges, setCharges]   = useState<ChargeEntry[]>(initialCharges)
   const [showForm, setShowForm] = useState(false)
@@ -257,6 +258,17 @@ export default function RevenusView({
   function handleDelete(id: string) {
     setEntries(prev => prev.filter(e => e.id !== id))
     startT(async () => { await deleteRevenusEntry(id) })
+  }
+
+  // Annule un contrat "en attente" directement depuis le journal (ex : contrat
+  // orphelin resté affiché après suppression du séjour lié). Rollback si échec.
+  function handleCancelContract(id: string) {
+    const removed = contracts.find(c => c.id === id)
+    setContracts(prev => prev.filter(c => c.id !== id))
+    startT(async () => {
+      const res = await cancelContractRevenus(id)
+      if (res?.error && removed) setContracts(prev => [...prev, removed])
+    })
   }
 
   // Toggle 'à déclarer aux impôts' : exclut/réinclut une entrée de l'estimation
@@ -1815,14 +1827,19 @@ export default function RevenusView({
                       <EyeSlash size={13} />
                     </button>
                   )}
-                  {tx.source === 'manuel'
-                    ? <button onClick={() => handleDelete(tx.id)} style={s.deleteBtn} className="tx-del icon-btn" title="Supprimer">
+                  <div style={{ minWidth: '68px', flexShrink: 0, display: 'flex', justifyContent: 'flex-end' }}>
+                    {tx.source === 'manuel' ? (
+                      <button onClick={() => handleDelete(tx.id)} style={s.deleteBtn} className="tx-del icon-btn" title="Supprimer">
                         <Trash size={13} />
                       </button>
-                    : tx.source === 'sejour'
-                      ? <span style={{ fontSize: '10px', color: 'var(--text-muted)', flexShrink: 0, whiteSpace: 'nowrap' as const }}>Calendrier</span>
-                      : <div style={{ width: '24px', flexShrink: 0 }} />
-                  }
+                    ) : tx.source === 'sejour' ? (
+                      <span style={{ fontSize: '10px', color: 'var(--text-muted)', whiteSpace: 'nowrap' as const }}>Calendrier</span>
+                    ) : (
+                      <button onClick={() => handleCancelContract(tx.id)} style={s.deleteBtn} className="tx-del icon-btn" title="Supprimer ce contrat en attente">
+                        <Trash size={13} />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 )
               })}
