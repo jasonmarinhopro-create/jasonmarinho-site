@@ -59,6 +59,13 @@ function escHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
 }
 
+// Texte de recherche insensible aux accents/casse, précalculé au build pour
+// que le filtre côté client (annuaire) n'ait qu'à normaliser la saisie.
+function normalizeSearch(s) {
+  if (!s) return ''
+  return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim()
+}
+
 async function fetchActive() {
   if (!HAS_SUPABASE) return []
   const url = `${SUPABASE_URL}/rest/v1/public_cleaners_view?select=*&order=created_at.desc&limit=500`
@@ -391,7 +398,8 @@ function buildAnnuaireListPage(items) {
         const tarifLine = [forfait, heure].filter(Boolean).join(' · ')
         const equipeLabel = c.equipe_type ? EQUIPE_LABELS[c.equipe_type] : null
         const initials = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
-        return `<a href="/annuaires/menage/${escHtml(c.slug)}" class="card">
+        const searchBlob = normalizeSearch([c.ville, c.zone_couverte, equipeLabel].filter(Boolean).join(' '))
+        return `<a href="/annuaires/menage/${escHtml(c.slug)}" class="card" data-search="${escHtml(searchBlob)}">
   <div class="card-head">
     ${c.logo_url
       ? `<div class="card-logo" style="background:url('${escHtml(c.logo_url)}') center/cover"></div>`
@@ -445,8 +453,23 @@ h1{font-family:'Fraunces',serif;font-size:clamp(28px,4vw,42px);font-weight:400;l
 h1 em{color:var(--y);font-style:italic;font-weight:300}
 .lead{font-size:15.5px;color:rgba(255,255,255,.7);line-height:1.7;max-width:640px}
 .count-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.25);border-radius:100px;padding:7px 16px;font-size:13px;font-weight:600;color:#FFD56B;margin-top:14px}
-.main{max-width:1100px;margin:0 auto;padding:40px clamp(16px,5vw,40px)}
+.search-wrap{max-width:820px;margin:-30px auto 0;padding:0 clamp(16px,5vw,40px);position:relative;z-index:5}
+.search-bar{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--bd);border-radius:16px;padding:6px 8px 6px 22px;box-shadow:0 14px 36px rgba(0,30,20,.16)}
+.search-ico{color:var(--g);font-size:17px;flex-shrink:0}
+.search-bar input{flex:1;min-width:0;border:none;outline:none;font-family:'Outfit',sans-serif;font-size:15px;color:var(--td);padding:15px 0;background:transparent}
+.search-bar input::placeholder{color:var(--tl)}
+.search-clear{display:none;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:none;background:rgba(0,76,63,.06);color:var(--tm);cursor:pointer;flex-shrink:0;font-size:13px}
+.search-clear:hover{background:rgba(0,76,63,.12)}
+.search-count{font-size:12px;font-weight:600;color:var(--tl);white-space:nowrap;padding:0 6px 0 2px;flex-shrink:0}
+.main{max-width:1100px;margin:0 auto;padding:60px clamp(16px,5vw,40px) 40px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.search-empty{display:none;padding:56px 20px;text-align:center;background:#fff;border:1px solid var(--bd);border-radius:16px;max-width:560px;margin:0 auto}
+.search-empty-ico{display:inline-flex;width:72px;height:72px;border-radius:18px;background:rgba(0,76,63,.06);align-items:center;justify-content:center;margin-bottom:16px;color:var(--g);font-size:30px}
+.search-empty h3{font-family:'Fraunces',serif;font-size:19px;font-weight:400;color:var(--td);margin:0 0 10px}
+.search-empty p{font-size:13.5px;line-height:1.7;color:var(--tm);margin:0 0 18px}
+.search-empty a{color:var(--g);font-weight:600;text-decoration:underline}
+.search-empty button{display:inline-flex;align-items:center;gap:7px;background:transparent;border:1px solid rgba(0,76,63,.2);color:var(--g);font-weight:500;font-size:13.5px;padding:10px 18px;border-radius:10px;cursor:pointer;font-family:'Outfit',sans-serif}
+.search-empty button:hover{background:var(--g);color:#fff;border-color:var(--g)}
 .card{display:flex;flex-direction:column;gap:12px;padding:24px;background:#fff;border:1px solid var(--bd);border-radius:16px;text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s}
 .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,76,63,.1)}
 .card-head{display:flex;align-items:flex-start;gap:14px}
@@ -525,9 +548,58 @@ ${JSON.stringify({
   </div>
 </header>
 
+${items.length > 0 ? `<div class="search-wrap">
+  <div class="search-bar">
+    <i class="ph-bold ph-map-pin search-ico" aria-hidden="true"></i>
+    <input type="text" id="pro-search" placeholder="Cherche par ville : Lyon, Bordeaux, Annecy…" autocomplete="off" aria-label="Rechercher une équipe de ménage par ville">
+    <span class="search-count" id="search-count"></span>
+    <button type="button" class="search-clear" id="search-clear" aria-label="Effacer la recherche"><i class="ph-bold ph-x"></i></button>
+  </div>
+</div>` : ''}
+
 <main class="main">
 ${itemsHtml}
+${items.length > 0 ? `<div class="search-empty" id="search-empty">
+  <div class="search-empty-ico"><i class="ph-bold ph-map-trifold"></i></div>
+  <h3>Pas encore d'équipe à «<span id="search-empty-q"></span>»</h3>
+  <p>L'annuaire grandit chaque semaine. En attendant, jette un œil aux <a href="#villes">guides ville par ville</a> ci-dessous, ou repasse bientôt.</p>
+  <button type="button" id="search-reset"><i class="ph-bold ph-arrow-counter-clockwise"></i>Voir toutes les équipes</button>
+</div>` : ''}
 </main>
+
+${items.length > 0 ? `<script>
+(function(){
+  function norm(s){ return (s || '').toString().toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').trim() }
+  var input   = document.getElementById('pro-search')
+  var clear   = document.getElementById('search-clear')
+  var reset   = document.getElementById('search-reset')
+  var countEl = document.getElementById('search-count')
+  var emptyEl = document.getElementById('search-empty')
+  var emptyQ  = document.getElementById('search-empty-q')
+  var grid    = document.querySelector('.grid')
+  var cards   = grid ? Array.prototype.slice.call(grid.querySelectorAll('.card')) : []
+  if (!input || !cards.length) return
+
+  function apply(){
+    var q = norm(input.value)
+    var shown = 0
+    cards.forEach(function(c){
+      var match = !q || (c.getAttribute('data-search') || '').indexOf(q) !== -1
+      c.style.display = match ? '' : 'none'
+      if (match) shown++
+    })
+    countEl.textContent = q ? (shown + ' résultat' + (shown > 1 ? 's' : '')) : ''
+    clear.style.display = q ? 'inline-flex' : 'none'
+    var noResults = !!q && shown === 0
+    if (emptyEl) emptyEl.style.display = noResults ? 'block' : 'none'
+    if (emptyQ) emptyQ.textContent = input.value.trim()
+    if (grid) grid.style.display = noResults ? 'none' : ''
+  }
+  input.addEventListener('input', apply)
+  clear.addEventListener('click', function(){ input.value = ''; apply(); input.focus() })
+  if (reset) reset.addEventListener('click', function(){ input.value = ''; apply(); input.focus() })
+})()
+</script>` : ''}
 
 <section class="preview-section">
   <div class="preview-card">
@@ -572,7 +644,7 @@ function villesSectionHtml(prefix, label) {
   const chips = cities.map(c =>
     `<a href="/${prefix}-${c.slug}">${escHtml(c.name)}</a>`
   ).join('')
-  return `<section class="villes-section">
+  return `<section class="villes-section" id="villes">
   <div class="villes-in">
     <h2 class="villes-h">Guides ${label} <em>par ville</em></h2>
     <p class="villes-p">Tarifs locaux constatés, checklists et conseils pour choisir ton prestataire, ville par ville.</p>
