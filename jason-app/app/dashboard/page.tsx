@@ -473,8 +473,12 @@ export default async function DashboardPage() {
     const cl = (c.checklist_status as Record<string, boolean>) ?? {}
     return !cl.contrat_signe && c.date_arrivee >= today
   })
+  // Comme deriveImpayes() (page Encaissements) : ne compte que les paiements
+  // en retard ou dont l'arrivée est imminente (≤7j), sinon un contrat payable
+  // dans plusieurs semaines se retrouvait affiché comme "action urgente" sur
+  // le dashboard alors qu'il n'apparaissait nulle part dans "à relancer".
   const pendingPayments = allC.filter(c =>
-    c.stripe_payment_enabled && c.stripe_payment_status !== 'paid'
+    c.stripe_payment_enabled && c.stripe_payment_status !== 'paid' && c.date_arrivee <= in7
   )
   // Instructions non envoyées pour les contrats avec arrivée < 7j.
   const pendingInstructions = allC.filter(c => {
@@ -495,6 +499,14 @@ export default async function DashboardPage() {
     + pendingPayments.length
     + pendingInstructions.length
     + pendingMenage.length
+  // La pill "N action(s) à traiter" pointait toujours vers Encaissements,
+  // même quand ce qui la déclenchait n'avait rien à voir (contrat non signé,
+  // ménage non planifié) — dead-end pour l'hôte. Route vers la bonne page
+  // selon la priorité réelle (même ordre que ActionUrgente.tsx).
+  const actionsHref =
+    unsignedContracts.length > 0 ? '/dashboard/calendrier'
+    : pendingPayments.length > 0 ? '/dashboard/finances/encaissements'
+    : '/dashboard/calendrier'
 
   // ── KPIs financiers
   const isPaid = (c: typeof allC[0]) =>
@@ -705,7 +717,7 @@ export default async function DashboardPage() {
                   </Link>
                 )}
                 {actionsCount > 0 && (
-                  <Link href="/dashboard/finances/encaissements" style={{ ...s.pill, ...s.pillWarn }}>
+                  <Link href={actionsHref} style={{ ...s.pill, ...s.pillWarn }}>
                     <span style={s.pillDot} />
                     {actionsCount} action{pl(actionsCount)} à traiter
                   </Link>
@@ -803,6 +815,7 @@ export default async function DashboardPage() {
             joinedCount={joinedCount}
             totalGroupCount={communityGroups.length}
             urgentCount={actionsCount}
+            urgentHref={actionsHref}
           />
         </section>
 

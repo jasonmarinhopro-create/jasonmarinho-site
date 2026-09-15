@@ -9,6 +9,7 @@ interface Props {
   joinedCount: number
   totalGroupCount: number
   urgentCount: number
+  urgentHref: string
 }
 
 function fmtEur(n: number) {
@@ -25,7 +26,7 @@ function fmtReach(n: number) {
 
 export default function EtatDesLieux({
   revenuPrevisionnel, revenusThisMois, revenusPrevMois,
-  totalReach, joinedCount, totalGroupCount, urgentCount,
+  totalReach, joinedCount, totalGroupCount, urgentCount, urgentHref,
 }: Props) {
   // Revenu prévisionnel : forward-looking, complète "Revenu du mois"
   const previsColor = revenuPrevisionnel > 0 ? 'var(--success-1)' : 'var(--text-muted)'
@@ -48,7 +49,7 @@ export default function EtatDesLieux({
   const urgLabel = urgentCount > 0
     ? `${urgentCount} à traiter`
     : 'Tout est à jour'
-  const urgSub   = urgentCount > 0 ? 'Voir les détails ci-dessous' : 'Aucune urgence'
+  const urgSub   = urgentCount > 0 ? 'Voir le détail' : 'Aucune urgence'
 
   return (
     <div style={s.grid}>
@@ -102,16 +103,31 @@ export default function EtatDesLieux({
       </Link>
 
       {/* 4, Action urgente */}
-      <div style={{ ...s.card, cursor: urgentCount > 0 ? 'pointer' : 'default' }}>
-        <div style={{ ...s.icon, color: urgColor, background: urgColor + '18', border: `1px solid ${urgColor}30` }}>
-          <Lightning size={18} weight="fill" />
+      {urgentCount > 0 ? (
+        <Link href={urgentHref} style={{ textDecoration: 'none' }}>
+          <div style={s.card} className="kpi-hover">
+            <div style={{ ...s.icon, color: urgColor, background: urgColor + '18', border: `1px solid ${urgColor}30` }}>
+              <Lightning size={18} weight="fill" />
+            </div>
+            <div style={s.body}>
+              <span style={s.lbl}>Action urgente</span>
+              <span style={{ ...s.val, color: urgColor }}>{urgLabel}</span>
+              <span style={s.sub}>{urgSub}</span>
+            </div>
+          </div>
+        </Link>
+      ) : (
+        <div style={s.card}>
+          <div style={{ ...s.icon, color: urgColor, background: urgColor + '18', border: `1px solid ${urgColor}30` }}>
+            <Lightning size={18} weight="fill" />
+          </div>
+          <div style={s.body}>
+            <span style={s.lbl}>Action urgente</span>
+            <span style={{ ...s.val, color: urgColor }}>{urgLabel}</span>
+            <span style={s.sub}>{urgSub}</span>
+          </div>
         </div>
-        <div style={s.body}>
-          <span style={s.lbl}>Action urgente</span>
-          <span style={{ ...s.val, color: urgColor }}>{urgLabel}</span>
-          <span style={s.sub}>{urgSub}</span>
-        </div>
-      </div>
+      )}
     </div>
   )
 }

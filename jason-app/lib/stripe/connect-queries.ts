@@ -190,7 +190,7 @@ export function deriveImpayes(
     .filter(c => {
       if (c.statut === 'annule') return false
       if (!c.stripe_payment_enabled) return false  // pas concerné par l'encaissement Stripe
-      if (c.stripe_payment_status === 'succeeded') return false
+      if (c.stripe_payment_status === 'paid') return false
       if (!c.date_arrivee) return false
       // Impayé si date d'arrivée passée OU dans moins de 7 jours
       const arrivee = new Date(c.date_arrivee).getTime()
