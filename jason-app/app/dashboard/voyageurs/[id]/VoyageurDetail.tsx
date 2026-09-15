@@ -353,6 +353,8 @@ type LogementOption = {
   description_pt?: string | null
   description_en?: string | null
   capacite_max: number
+  heure_arrivee?: string | null
+  heure_depart?: string | null
   reglement_interieur: string | null
   conditions_annulation: string | null
   conditions_annulation_pt?: string | null

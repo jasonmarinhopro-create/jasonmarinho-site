@@ -26,6 +26,9 @@ type Voyageur = {
   nom: string
   email: string | null
   telephone: string | null
+  /** Taille du groupe déclarée pour le check-in (ex: 6) — sert à préremplir
+   *  la capacité du contrat, plus pertinente que la capacité max du logement. */
+  checkin_expected_count?: number | null
 }
 
 type BailleurProfile = {
@@ -45,6 +48,8 @@ export type LogementOption = {
   description_pt?: string | null
   description_en?: string | null
   capacite_max: number
+  heure_arrivee?: string | null
+  heure_depart?: string | null
   reglement_interieur: string | null
   conditions_annulation: string | null
   conditions_annulation_pt?: string | null
@@ -140,13 +145,16 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     // le contrat retombe sur le texte français sur /sign/[token]).
     logement_description_pt: initialLogement?.description_pt ?? '',
     logement_description_en: initialLogement?.description_en ?? '',
-    capacite_max: initialLogement?.capacite_max ?? 1,
+    // Capacité : la taille réelle du groupe qui vient (déclarée au check-in)
+    // prime sur la capacité max du logement, plus pertinente pour le contrat.
+    capacite_max: voyageur.checkin_expected_count ?? initialLogement?.capacite_max ?? 1,
 
     // Séjour
     date_arrivee: sejour.date_arrivee,
     date_depart: sejour.date_depart,
-    heure_arrivee: '16:00',
-    heure_depart: '11:00',
+    // Horaires d'arrivée/départ habituels du logement, sinon défaut standard.
+    heure_arrivee: initialLogement?.heure_arrivee ?? '16:00',
+    heure_depart: initialLogement?.heure_depart ?? '11:00',
 
     // Financier, pré-rempli selon les méthodes de paiement du logement
     montant_loyer: sejour.montant ?? 0,
@@ -219,7 +227,11 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       logement_description: l.description ?? '',
       logement_description_pt: l.description_pt ?? '',
       logement_description_en: l.description_en ?? '',
-      capacite_max: l.capacite_max,
+      // Idem qu'à l'ouverture : la taille réelle du groupe (si déclarée)
+      // prime sur la capacité max du logement sélectionné.
+      capacite_max: voyageur.checkin_expected_count ?? l.capacite_max,
+      heure_arrivee: l.heure_arrivee ?? f.heure_arrivee,
+      heure_depart: l.heure_depart ?? f.heure_depart,
       // Conciergerie : si le logement a un propriétaire tiers renseigné, ses
       // coordonnées remplacent celles du bailleur (l'utilisateur connecté).
       bailleur_prenom: proprietaire?.prenom ?? bailleur.prenom,
@@ -371,8 +383,11 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
   const signUrl = contractToken ? `${APP_URL}/sign/${contractToken}` : ''
 
   return (
-    <div style={overlay} onClick={onClose}>
-      <div style={modal} onClick={e => e.stopPropagation()}>
+    <div style={overlay}>
+      {/* Pas de fermeture au clic sur l'overlay : un clic accidentel en dehors
+          du formulaire (long à remplir, 5 étapes) faisait tout perdre. Seule
+          la croix ferme volontairement le modal. */}
+      <div style={modal}>
         {/* Header */}
         <div style={modalHeader}>
           <div>
