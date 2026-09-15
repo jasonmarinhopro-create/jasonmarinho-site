@@ -29,7 +29,7 @@ export default async function ProfilPage() {
   const [{ data: { session } }, { data: pd }] = await Promise.all([
     supabase.auth.getSession(),
     supabase.from('profiles')
-      .select('stripe_account_id, stripe_onboarding_complete, iban, bic, adresse, pseudo, bio, privacy_show_logements, privacy_show_platforms, privacy_show_city, stripe_subscription_id, stripe_customer_id')
+      .select('stripe_account_id, stripe_onboarding_complete, iban, bic, adresse, pseudo, bio, privacy_show_logements, privacy_show_platforms, privacy_show_city, stripe_subscription_id, stripe_customer_id, entreprise_numero, mention_tva')
       .eq('id', userId)
       .maybeSingle(),
   ])
@@ -284,6 +284,8 @@ export default async function ProfilPage() {
             initialIban={pd?.iban ?? ''}
             initialBic={pd?.bic ?? ''}
             initialAdresse={pd?.adresse ?? ''}
+            initialEntrepriseNumero={pd?.entreprise_numero ?? ''}
+            initialMentionTva={pd?.mention_tva ?? ''}
           />
           <AbonnementCard
             planLabel={planLabel as 'Découverte' | 'Standard' | 'Membre Driing' | 'Administrateur'}

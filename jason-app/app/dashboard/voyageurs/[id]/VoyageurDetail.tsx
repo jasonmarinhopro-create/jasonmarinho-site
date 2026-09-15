@@ -469,6 +469,24 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     setContractSejour(sj)
   }
 
+  const [invoiceLoading, setInvoiceLoading] = useState<string | null>(null)
+
+  async function handleInvoiceClick(sj: Sejour) {
+    setInvoiceLoading(sj.id)
+    try {
+      const { getContractsBySejour, issueInvoice } = await import('../contract-actions')
+      const res = await getContractsBySejour(sj.id)
+      const latest = res.contracts?.[0]
+      if (!latest?.id || !latest?.token) return
+      const inv = await issueInvoice(latest.id, voyageur.id)
+      if (inv.error) return
+      const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
+      window.open(`${APP_URL}/invoice/${latest.token}`, '_blank', 'noopener,noreferrer')
+    } finally {
+      setInvoiceLoading(null)
+    }
+  }
+
   // Profile inline edit
   const [editingProfile, setEditingProfile] = useState(false)
   const [profileForm, setProfileForm] = useState({
@@ -2032,6 +2050,17 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                       title="Gérer les paiements"
                     >
                       {depositLoading === sj.id ? '…' : 'Paiements'}
+                    </button>
+                  )}
+                  {sj.contrat_statut === 'signe' && !sj.contrat_plateforme && !isDecouverte && (
+                    <button
+                      onClick={() => handleInvoiceClick(sj)}
+                      disabled={invoiceLoading === sj.id}
+                      style={s.sejourActionBtn}
+                      className="jm-sejour-action"
+                      title="Émettre / voir la facture"
+                    >
+                      {invoiceLoading === sj.id ? '…' : <FileText size={14} weight="light" />}
                     </button>
                   )}
                   <button onClick={() => openEditSejour(sj)} style={s.sejourActionBtn} className="jm-sejour-action" title="Modifier">

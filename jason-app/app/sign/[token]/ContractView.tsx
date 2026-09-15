@@ -28,6 +28,9 @@ interface ContractRow {
   locataire_nom: string
   locataire_email: string | null
   locataire_telephone: string | null
+  locataire_type?: string | null
+  locataire_structure?: string | null
+  locataire_nif?: string | null
   logement_adresse: string | null
   logement_description: string | null
   logement_description_pt?: string | null
@@ -201,7 +204,15 @@ export default function ContractView({
               </div>
               <div style={partyBox}>
                 <p style={partyLabel}>{t.locataireLabel}</p>
-                <p style={partyName}>{contract.locataire_prenom} {contract.locataire_nom}</p>
+                {contract.locataire_type === 'professionnel' && contract.locataire_structure ? (
+                  <>
+                    <p style={partyName}>{contract.locataire_structure}</p>
+                    <p style={partyDetail}>{t.representedBy} {contract.locataire_prenom} {contract.locataire_nom}</p>
+                    {contract.locataire_nif && <p style={partyDetail}>{t.nifLabel}&nbsp;: {contract.locataire_nif}</p>}
+                  </>
+                ) : (
+                  <p style={partyName}>{contract.locataire_prenom} {contract.locataire_nom}</p>
+                )}
                 {contract.locataire_email && <p style={partyDetail}>{contract.locataire_email}</p>}
                 {contract.locataire_telephone && <p style={partyDetail}>{contract.locataire_telephone}</p>}
               </div>

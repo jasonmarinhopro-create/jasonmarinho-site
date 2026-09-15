@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { saveProfileName, saveIban, saveAdresse, deleteAccount } from './actions'
+import { saveProfileName, saveIban, saveAdresse, saveFacturation, deleteAccount } from './actions'
 import {
   Check, User, EnvelopeSimple, PencilSimple, Warning, Lock,
   Eye, EyeSlash, CreditCard, Bank, MapPin, IdentificationCard,
@@ -18,6 +18,8 @@ interface Props {
   initialIban?: string
   initialBic?: string
   initialAdresse?: string
+  initialEntrepriseNumero?: string
+  initialMentionTva?: string
 }
 
 // ─── Shared section card wrapper ───────────────────────────────────────────
@@ -154,6 +156,7 @@ function stripeBanner(type: 'success' | 'pending' | 'error'): React.CSSPropertie
 export default function ProfilForm({
   initialFullName, email, stripeAccountId, stripeComplete,
   initialIban = '', initialBic = '', initialAdresse = '',
+  initialEntrepriseNumero = '', initialMentionTva = '',
 }: Props) {
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
@@ -192,6 +195,13 @@ export default function ProfilForm({
   const [adressePending, startAdresseTransition] = useTransition()
   const [adresseSaved,   setAdresseSaved] = useState(false)
   const [adresseError,   setAdresseError] = useState('')
+
+  const [editFacturation, setEditFacturation]           = useState(false)
+  const [entrepriseNumero, setEntrepriseNumero]         = useState(initialEntrepriseNumero)
+  const [mentionTva, setMentionTva]                     = useState(initialMentionTva)
+  const [facturationPending, startFacturationTransition] = useTransition()
+  const [facturationSaved, setFacturationSaved]         = useState(false)
+  const [facturationError, setFacturationError]         = useState('')
 
   const displayName = [firstName, lastName].filter(Boolean).join(' ')
   const initials = displayName
@@ -264,6 +274,21 @@ export default function ProfilForm({
     })
   }
   function handleAdresseCancel() { setAdresseValue(initialAdresse); setAdresseError(''); setEditAdresse(false) }
+
+  function handleFacturationSave() {
+    setFacturationError('')
+    startFacturationTransition(async () => {
+      const result = await saveFacturation(entrepriseNumero, mentionTva)
+      if (result.error) { setFacturationError(result.error); return }
+      setFacturationSaved(true); setEditFacturation(false)
+      router.refresh()
+      setTimeout(() => setFacturationSaved(false), 2500)
+    })
+  }
+  function handleFacturationCancel() {
+    setEntrepriseNumero(initialEntrepriseNumero); setMentionTva(initialMentionTva)
+    setFacturationError(''); setEditFacturation(false)
+  }
 
   return (
     <>
@@ -494,6 +519,57 @@ export default function ProfilForm({
               </p>
               <button onClick={() => setEditIban(true)} style={addBtn('var(--success-1)', 'rgba(52,211,153,0.1)', 'var(--success-border)')}>
                 + Ajouter mon IBAN
+              </button>
+            </div>
+          )}
+        </FieldRow>
+
+        <div style={{ height: '1px', background: 'var(--border)', margin: '4px 0 20px' }} />
+
+        {/* Facturation : SIRET/NIF + mention TVA, utilisés sur les factures
+            émises depuis un contrat (cf. app/invoice/[token]) */}
+        <FieldRow label="Facturation (SIRET / NIF, mention TVA)" icon={<IdentificationCard size={12} />}>
+          {facturationSaved && <div style={{ ...stripeBanner('success'), marginBottom: '10px' }}><Check size={13} weight="bold" /> Infos de facturation enregistrées.</div>}
+          {editFacturation ? (
+            <div>
+              <input
+                type="text" value={entrepriseNumero}
+                onChange={e => setEntrepriseNumero(e.target.value)}
+                style={{ ...f.input, marginBottom: '8px' }}
+                placeholder="N° SIRET (FR) ou NIF/NIPC (PT)" autoFocus
+              />
+              <textarea
+                value={mentionTva}
+                onChange={e => setMentionTva(e.target.value)}
+                style={{ ...f.input, minHeight: '64px', resize: 'vertical' as const, fontFamily: 'inherit' }}
+                placeholder="Mention TVA affichée sur la facture"
+              />
+              <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '6px 0 0' }}>
+                Par défaut : "TVA non applicable, article 261 D 4° du CGI" (location meublée de tourisme sans prestations parahôtelières). Adapte cette mention si ta situation fiscale est différente (TVA applicable, hors France…) — vérifie avec ton comptable si besoin.
+              </p>
+              {facturationError && <div style={f.errorBox}><Warning size={13} />{facturationError}</div>}
+              <div style={f.saveRow}>
+                <button onClick={handleFacturationSave} disabled={facturationPending} className="btn-primary" style={{ fontSize: '13px', padding: '9px 18px' }}>
+                  {facturationPending ? 'Sauvegarde…' : 'Enregistrer'}
+                </button>
+                <button onClick={handleFacturationCancel} className="jm-profil-cancel-btn" style={f.cancelBtn}>Annuler</button>
+              </div>
+            </div>
+          ) : entrepriseNumero || mentionTva ? (
+            <div style={f.valueRow}>
+              <div>
+                {entrepriseNumero && <p style={{ margin: '0 0 2px', fontSize: '13px', color: 'var(--text)' }}>{entrepriseNumero}</p>}
+                {mentionTva && <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-3)' }}>{mentionTva}</p>}
+              </div>
+              <button onClick={() => setEditFacturation(true)} className="jm-profil-edit-btn" style={f.editBtn}><PencilSimple size={13} /> Modifier</button>
+            </div>
+          ) : (
+            <div>
+              <p style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '10px' }}>
+                Ajoute ton numéro SIRET/NIF pour qu'il apparaisse sur les factures émises depuis tes contrats.
+              </p>
+              <button onClick={() => setEditFacturation(true)} style={addBtn('var(--success-1)', 'rgba(52,211,153,0.1)', 'var(--success-border)')}>
+                + Ajouter mes infos de facturation
               </button>
             </div>
           )}

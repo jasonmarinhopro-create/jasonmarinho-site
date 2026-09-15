@@ -23,6 +23,8 @@ export type SignUiStrings = {
   art1: string
   bailleurLabel: string
   locataireLabel: string
+  representedBy: string
+  nifLabel: string
   art2: string
   bienLoueIntro: string
   addressMissing: string
@@ -115,6 +117,8 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     art1: 'Article 1, Parties au contrat',
     bailleurLabel: 'Bailleur (propriétaire)',
     locataireLabel: 'Locataire',
+    representedBy: 'Représenté(e) par',
+    nifLabel: 'NIF / N° fiscal',
     art2: 'Article 2, Bien loué',
     bienLoueIntro: "Le bailleur loue au locataire le bien immobilier situé à l'adresse suivante :",
     addressMissing: 'Adresse non renseignée',
@@ -202,6 +206,8 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     art1: 'Artigo 1, Partes no contrato',
     bailleurLabel: 'Senhorio (proprietário)',
     locataireLabel: 'Hóspede',
+    representedBy: 'Representado(a) por',
+    nifLabel: 'NIF',
     art2: 'Artigo 2, Imóvel arrendado',
     bienLoueIntro: 'O senhorio arrenda ao hóspede o imóvel situado no seguinte endereço :',
     addressMissing: 'Endereço não indicado',
@@ -289,6 +295,8 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     art1: 'Article 1, Parties to the contract',
     bailleurLabel: 'Landlord (owner)',
     locataireLabel: 'Tenant',
+    representedBy: 'Represented by',
+    nifLabel: 'Tax ID',
     art2: 'Article 2, Rented property',
     bienLoueIntro: 'The landlord rents to the tenant the property located at the following address:',
     addressMissing: 'Address not provided',

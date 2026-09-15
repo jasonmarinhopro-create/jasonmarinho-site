@@ -56,6 +56,30 @@ export async function saveIban(iban: string, bic: string): Promise<{ error?: str
   return {}
 }
 
+export async function saveFacturation(entrepriseNumero: string, mentionTva: string): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+
+  if (!session) return { error: 'Non authentifié.' }
+
+  const { error } = await supabase
+    .from('profiles')
+    .upsert({
+      id: session.user.id,
+      email: session.user.email ?? '',
+      entreprise_numero: entrepriseNumero.trim() || null,
+      mention_tva: mentionTva.trim() || null,
+      updated_at: new Date().toISOString(),
+    })
+
+  if (error) return { error: `Erreur: ${error.message}` }
+
+  invalidateProfileCache(session.user.id)
+  revalidatePath('/dashboard', 'layout')
+
+  return {}
+}
+
 export async function saveAdresse(adresse: string): Promise<{ error?: string }> {
   const supabase = await createClient()
   const { data: { session } } = await supabase.auth.getSession()

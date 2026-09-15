@@ -26,6 +26,11 @@ export type ContractData = {
   locataire_nom: string
   locataire_email?: string
   locataire_telephone?: string
+  /** 'professionnel' : location au nom d'une structure (entreprise,
+   *  association…), utilisée sur le contrat et pour émettre une facture. */
+  locataire_type?: 'particulier' | 'professionnel'
+  locataire_structure?: string
+  locataire_nif?: string
 
   // Bien
   logement_nom?: string
@@ -204,6 +209,77 @@ export async function cancelContract(contractId: string, voyageurId: string): Pr
   if (error) return { error: error.message }
   revalidatePath(`/dashboard/voyageurs/${voyageurId}`)
   return {}
+}
+
+// ─── Émettre une facture ──────────────────────────────────────────────────────
+// Assigne un numéro de facture séquentiel (une seule fois, via la fonction
+// SQL issue_next_invoice_number qui incrémente profiles.invoice_counter de
+// façon atomique — obligation légale de numérotation sans trou) et snapshot
+// les infos fiscales du bailleur (numéro d'entreprise + mention TVA) sur le
+// contrat, dans l'ordre de priorité logement (conciergerie) > profil.
+
+export async function issueInvoice(contractId: string, voyageurId: string): Promise<{
+  invoiceNumber?: string
+  error?: string
+}> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
+
+  const { data: contract, error: fetchError } = await supabase
+    .from('contracts')
+    .select('id, statut, logement_id, invoice_number, user_id')
+    .eq('id', contractId)
+    .eq('user_id', user.id)
+    .single()
+
+  if (fetchError || !contract) return { error: 'Contrat introuvable.' }
+  if (contract.statut !== 'signe') return { error: 'Le contrat doit être signé avant d\'émettre une facture.' }
+  if (contract.invoice_number) return { invoiceNumber: contract.invoice_number }
+
+  // Numéro fiscal / mention TVA : celui du logement (propriétaire tiers en
+  // conciergerie) prime sur celui du profil, même logique que l'IBAN.
+  let numeroFiscal: string | null = null
+  let mentionTva: string | null = null
+  if (contract.logement_id) {
+    const { data: logement } = await supabase
+      .from('logements')
+      .select('numero_fiscal, mention_tva')
+      .eq('id', contract.logement_id)
+      .single()
+    numeroFiscal = logement?.numero_fiscal ?? null
+    mentionTva = logement?.mention_tva ?? null
+  }
+  if (!numeroFiscal || !mentionTva) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('entreprise_numero, mention_tva')
+      .eq('id', user.id)
+      .single()
+    numeroFiscal = numeroFiscal ?? profile?.entreprise_numero ?? null
+    mentionTva = mentionTva ?? profile?.mention_tva ?? null
+  }
+
+  const { data: numeroData, error: rpcError } = await supabase
+    .rpc('issue_next_invoice_number', { p_user_id: user.id })
+
+  if (rpcError || !numeroData) return { error: rpcError?.message ?? 'Impossible de générer le numéro de facture.' }
+
+  const { error: updateError } = await supabase
+    .from('contracts')
+    .update({
+      invoice_number: numeroData,
+      invoice_issued_at: new Date().toISOString(),
+      bailleur_numero_fiscal: numeroFiscal,
+      bailleur_mention_tva: mentionTva,
+    })
+    .eq('id', contractId)
+    .eq('user_id', user.id)
+
+  if (updateError) return { error: updateError.message }
+
+  revalidatePath(`/dashboard/voyageurs/${voyageurId}`)
+  return { invoiceNumber: numeroData }
 }
 
 // ─── Récupérer le profil bailleur depuis les métadonnées utilisateur ──────────

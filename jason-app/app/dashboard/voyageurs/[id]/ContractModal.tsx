@@ -125,6 +125,12 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     locataire_nom: voyageur.nom,
     locataire_email: voyageur.email ?? '',
     locataire_telephone: voyageur.telephone ?? '',
+    // Locataire professionnel (structure) : pour une facture au nom d'une
+    // entreprise/association plutôt qu'un particulier. locataire_prenom/nom
+    // restent le signataire ; ces champs s'ajoutent pour la structure.
+    locataire_type: 'particulier' as 'particulier' | 'professionnel',
+    locataire_structure: '',
+    locataire_nif: '',
 
     // Bien, pré-rempli depuis la fiche logement si elle correspond
     logement_nom: initialLogement?.nom ?? '',
@@ -264,6 +270,10 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     }
     if (step === 'locataire') {
       if (!form.locataire_prenom.trim() || !form.locataire_nom.trim()) return 'Prénom et nom du locataire sont requis.'
+      if (form.locataire_type === 'professionnel') {
+        if (!form.locataire_structure.trim()) return 'Le nom de la structure est requis.'
+        if (!form.locataire_nif.trim()) return 'Le NIF / numéro fiscal de la structure est requis.'
+      }
     }
     if (step === 'bien') {
       if (!form.logement_adresse.trim()) return 'L\'adresse du logement est requise.'
@@ -305,6 +315,9 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       locataire_nom: form.locataire_nom.trim(),
       locataire_email: form.locataire_email.trim() || undefined,
       locataire_telephone: form.locataire_telephone.trim() || undefined,
+      locataire_type: form.locataire_type,
+      locataire_structure: form.locataire_type === 'professionnel' ? form.locataire_structure.trim() || undefined : undefined,
+      locataire_nif: form.locataire_type === 'professionnel' ? form.locataire_nif.trim() || undefined : undefined,
       logement_nom: form.logement_nom.trim() || undefined,
       logement_id: selectedLogementId ?? undefined,
       logement_adresse: form.logement_adresse.trim(),
@@ -418,6 +431,55 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
               <Field label="Téléphone" value={form.locataire_telephone} onChange={v => set('locataire_telephone', v)} placeholder="+33 6 12 34 56 78" type="tel" />
               {!form.locataire_email && (
                 <p style={warnText}>⚠️ Sans email, le lien de signature ne pourra pas être envoyé automatiquement.</p>
+              )}
+
+              {/* Locataire professionnel : pour une location au nom d'une
+                  structure (entreprise, association, club…) avec son
+                  numéro fiscal, utile notamment pour émettre une facture
+                  ensuite (cf. issueInvoice). */}
+              <div>
+                <label style={fieldLabel}>Type de locataire</label>
+                <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                  {(['particulier', 'professionnel'] as const).map(t => {
+                    const checked = form.locataire_type === t
+                    return (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => set('locataire_type', t)}
+                        style={{
+                          flex: 1, padding: '10px 14px', borderRadius: '10px', cursor: 'pointer',
+                          fontSize: '13px', fontWeight: checked ? 600 : 400,
+                          background: checked ? 'var(--accent-bg)' : 'var(--surface)',
+                          border: `1px solid ${checked ? 'var(--accent-border-2)' : 'var(--border)'}`,
+                          color: checked ? 'var(--accent-text)' : 'var(--text-2)',
+                          transition: 'all 0.15s',
+                        }}
+                      >
+                        {t === 'particulier' ? 'Particulier' : '🏢 Professionnel (structure)'}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+              {form.locataire_type === 'professionnel' && (
+                <>
+                  <Field
+                    label="Nom de la structure *"
+                    value={form.locataire_structure}
+                    onChange={v => set('locataire_structure', v)}
+                    placeholder="Ex : Clube Desportivo de Granja"
+                  />
+                  <Field
+                    label="NIF / Numéro fiscal *"
+                    value={form.locataire_nif}
+                    onChange={v => set('locataire_nif', v)}
+                    placeholder="Ex : 500123456"
+                  />
+                  <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '-6px 0 0' }}>
+                    Ces informations apparaîtront sur le contrat et sur la facture émise ensuite.
+                  </p>
+                </>
               )}
 
               {/* Langue du contrat : le corps entier (Article 1-10) est affiché
