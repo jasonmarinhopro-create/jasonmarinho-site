@@ -42,6 +42,7 @@ const T: Record<Lang, {
   printLabel: string
   notIssuedTitle: string
   notIssuedBody: string
+  notCertifiedWarning: string
   locale: string
 }> = {
   fr: {
@@ -63,6 +64,7 @@ const T: Record<Lang, {
     printLabel: 'Télécharger / Imprimer la facture (PDF)',
     notIssuedTitle: "Cette facture n'a pas encore été émise",
     notIssuedBody: 'Contactez le propriétaire pour obtenir la facture de ce contrat.',
+    notCertifiedWarning: "⚠️ Ce document n'est pas une fatura portugaise valide au sens fiscal. Pour un logement en Alojamento Local (Portugal), la loi impose l'émission via le Portail des Finances portugais (e-fatura, gratuit) ou un logiciel de facturation certifié — ce document sert uniquement de récapitulatif informatif.",
     locale: 'fr-FR',
   },
   pt: {
@@ -84,6 +86,7 @@ const T: Record<Lang, {
     printLabel: 'Descarregar / Imprimir a fatura (PDF)',
     notIssuedTitle: 'Esta fatura ainda não foi emitida',
     notIssuedBody: 'Contacte o proprietário para obter a fatura deste contrato.',
+    notCertifiedWarning: '⚠️ Este documento não constitui uma fatura válida para efeitos fiscais em Portugal. Para um Alojamento Local, a lei exige a emissão através do Portal das Finanças (e-fatura, gratuito) ou de um programa de faturação certificado — este documento serve apenas como resumo informativo.',
     locale: 'pt-PT',
   },
 }
@@ -132,10 +135,14 @@ export default async function InvoicePage({ params }: { params: Promise<{ token:
   const amount = Number(contract.montant_loyer).toLocaleString(t.locale, { minimumFractionDigits: 2 })
   const isPaid = contract.stripe_payment_status === 'paid'
   const isPro = contract.locataire_type === 'professionnel' && !!contract.locataire_structure
+  const isPortugueseAL = contract.pays === 'PT'
 
   return (
     <div style={page} className="print-page">
       <div style={container} className="print-container">
+        {isPortugueseAL && (
+          <p style={certifWarning}>{t.notCertifiedWarning}</p>
+        )}
         <div style={header}>
           <div>
             <h1 style={title} className="print-title">{t.title}</h1>
@@ -366,4 +373,15 @@ const legalNote: React.CSSProperties = {
   lineHeight: 1.6,
   textAlign: 'center' as const,
   margin: '0 0 8px',
+}
+
+const certifWarning: React.CSSProperties = {
+  fontSize: '12.5px',
+  color: '#FFD56B',
+  background: 'rgba(255,213,107,0.08)',
+  border: '1px solid rgba(255,213,107,0.25)',
+  borderRadius: '12px',
+  padding: '14px 18px',
+  lineHeight: 1.6,
+  marginBottom: '24px',
 }
