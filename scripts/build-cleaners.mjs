@@ -577,16 +577,6 @@ ${JSON.stringify({
     <h1>${items.length} équipe${items.length > 1 ? 's' : ''} de ménage <em>LCD sélectionnée${items.length > 1 ? 's' : ''}</em></h1>
     <p class="lead">Toutes les équipes ci-dessous ont été vérifiées manuellement par Jason Marinho : références LCD réelles (turnover Airbnb/Booking), capacité confirmée, prestations cohérentes. Pas d'intermédiation : tu contactes directement.</p>
     ${items.length > 0 ? `<span class="count-pill"><i class="ph-bold ph-sparkle"></i>${items.length} équipes actives</span>` : ''}
-    <span class="count-pill" id="founder-live" style="display:none;margin-left:8px"></span>
-    <script>
-    // Compteur de places fondatrices en direct (fail-silent)
-    fetch('/api/annuaire-places').then(function(r){ return r.ok ? r.json() : null }).then(function(d){
-      if (!d || d.cleaners == null || d.cleaners <= 0) return
-      var el = document.getElementById('founder-live')
-      el.innerHTML = '⏳ ' + d.cleaners + ' place' + (d.cleaners > 1 ? 's' : '') + ' fondatrice' + (d.cleaners > 1 ? 's' : '') + ' restante' + (d.cleaners > 1 ? 's' : '') + ' à 39,98 €/an'
-      el.style.display = 'inline-flex'
-    }).catch(function(){})
-    </script>
   </div>
 </header>
 
