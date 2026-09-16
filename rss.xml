@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 14 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 16 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Répondre à un avis 5 étoiles Airbnb : 6 techniques pour transformer chaque commentaire en levier de réservation</title>
+      <link>https://jasonmarinho.com/blog/repondre-avis-5-etoiles-airbnb-transformer-reservations</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/repondre-avis-5-etoiles-airbnb-transformer-reservations</guid>
+      <pubDate>Wed, 16 Sep 2026 08:00:00 GMT</pubDate>
+      <description>Un avis 5 étoiles sans réponse est un levier gâché. Voici 6 techniques concrètes pour répondre à tes avis positifs Airbnb et transformer chaque commentaire en argument de réservation pour les futurs voyageurs.</description>
+      <category>Visibilité</category>
+    </item>
     <item>
       <title>Cheminée et poêle à bois en LCD : 7 règles pour laisser tes voyageurs profiter du feu en sécurité et en règle</title>
       <link>https://jasonmarinho.com/blog/cheminee-poele-bois-lcd-7-regles-autoriser-hiver-sans-risque</link>
@@ -398,14 +406,6 @@
       <pubDate>Wed, 27 May 2026 08:00:00 GMT</pubDate>
       <description>Caméras intérieures interdites par Airbnb, caméras extérieures encadrées, RGPD, sanctions pénales : 6 règles claires pour sécuriser ta location courte durée légalement.</description>
       <category>Réglementation</category>
-    </item>
-    <item>
-      <title>Punaises de lit en LCD : 6 actions pour prévenir, détecter et réagir sans ruiner ta réputation</title>
-      <link>https://jasonmarinho.com/blog/punaises-de-lit-lcd-prevenir-detecter-reagir</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/punaises-de-lit-lcd-prevenir-detecter-reagir</guid>
-      <pubDate>Mon, 25 May 2026 08:00:00 GMT</pubDate>
-      <description>Loi ELAN, prévention entre séjours, détection précoce, traitement Certibiocide : 6 actions concrètes pour gérer les punaises de lit en location courte durée sans casser tes avis.</description>
-      <category>Expérience</category>
     </item>
   </channel>
 </rss>
