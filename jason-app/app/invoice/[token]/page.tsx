@@ -133,7 +133,12 @@ export default async function InvoicePage({ params }: { params: Promise<{ token:
   const dateDep = new Date(contract.date_depart).toLocaleDateString(t.locale, { day: 'numeric', month: 'long', year: 'numeric' })
   const issuedDate = new Date(contract.invoice_issued_at).toLocaleDateString(t.locale, { day: 'numeric', month: 'long', year: 'numeric' })
   const amount = Number(contract.montant_loyer).toLocaleString(t.locale, { minimumFractionDigits: 2 })
+  // Même règle que isPaid() dans RevenusView.tsx : un contrat sans Stripe
+  // (paiement géré hors plateforme par l'hôte) compte comme réglé dès qu'il
+  // est signé, sinon la facture affichait "en attente" pour un loyer déjà
+  // encaissé manuellement — contradiction avec le journal des paiements.
   const isPaid = contract.stripe_payment_status === 'paid'
+    || (!contract.stripe_payment_enabled && contract.statut === 'signe')
   const isPro = contract.locataire_type === 'professionnel' && !!contract.locataire_structure
   const isPortugueseAL = contract.pays === 'PT'
 

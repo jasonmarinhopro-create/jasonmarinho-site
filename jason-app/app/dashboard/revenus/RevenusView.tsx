@@ -7,7 +7,7 @@ import {
   Info, Warning, ArrowRight, Scales, Upload,
   Receipt, ChartBar, Target, EyeSlash, Stack, PencilSimple,
 } from '@phosphor-icons/react/dist/ssr'
-import { createRevenusEntry, deleteRevenusEntry, cancelContractRevenus, createCharge, updateCharge, deleteCharge, setObjectifAnnuel, setEntryADeclarer } from './actions'
+import { createRevenusEntry, deleteRevenusEntry, cancelContractRevenus, cancelSejourRevenus, createCharge, updateCharge, deleteCharge, setObjectifAnnuel, setEntryADeclarer } from './actions'
 import ImportCSVModal from './ImportCSVModal'
 import { PLATFORMS, suggestCommission } from '@/lib/platforms'
 import { COUNTRIES as COUNTRIES_MAP } from '@/lib/countries'
@@ -268,6 +268,19 @@ export default function RevenusView({
     startT(async () => {
       const res = await cancelContractRevenus(id)
       if (res?.error && removed) setContracts(prev => [...prev, removed])
+    })
+  }
+
+  // Annule (soft) un séjour directement depuis le journal — même geste que
+  // le bouton "Annuler" sur la fiche voyageur, accessible aussi ici pour ne
+  // pas devoir changer de page. tx.id est préfixé "sejour:" dans allTx.
+  function handleCancelSejourEntry(txId: string) {
+    const realId = txId.replace(/^sejour:/, '')
+    const removed = entries.find(e => e.id === txId)
+    setEntries(prev => prev.filter(e => e.id !== txId))
+    startT(async () => {
+      const res = await cancelSejourRevenus(realId)
+      if (res?.error && removed) setEntries(prev => [removed, ...prev])
     })
   }
 
@@ -1833,7 +1846,9 @@ export default function RevenusView({
                         <Trash size={13} />
                       </button>
                     ) : tx.source === 'sejour' ? (
-                      <span style={{ fontSize: '10px', color: 'var(--text-muted)', whiteSpace: 'nowrap' as const }}>Calendrier</span>
+                      <button onClick={() => handleCancelSejourEntry(tx.id)} style={s.deleteBtn} className="tx-del icon-btn" title="Annuler ce séjour">
+                        <Trash size={13} />
+                      </button>
                     ) : (
                       <button onClick={() => handleCancelContract(tx.id)} style={s.deleteBtn} className="tx-del icon-btn" title="Supprimer ce contrat en attente">
                         <Trash size={13} />

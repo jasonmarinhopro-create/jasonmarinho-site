@@ -40,6 +40,7 @@ export async function createRevenusEntry(input: EntryInput) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
+  revalidatePath('/dashboard/finances/revenus')
   return { entry: data }
 }
 
@@ -60,6 +61,27 @@ export async function cancelContractRevenus(id: string) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
+  revalidatePath('/dashboard/finances/revenus')
+  return { success: true }
+}
+
+// Annule (soft, réversible) un séjour directement depuis le journal — même
+// effet que cancelSejour() dans voyageurs/actions.ts. Contrairement à un
+// contrat, on n'a pas besoin de voyageurId ici : uniquement revalidatePath.
+export async function cancelSejourRevenus(id: string) {
+  const supabase = await createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) return { error: 'Non authentifié' }
+
+  const { error } = await supabase
+    .from('sejours')
+    .update({ annule_at: new Date().toISOString() })
+    .eq('id', id)
+    .eq('user_id', session.user.id)
+
+  if (error) return { error: error.message }
+  revalidatePath('/dashboard/revenus')
+  revalidatePath('/dashboard/finances/revenus')
   return { success: true }
 }
 
@@ -76,6 +98,7 @@ export async function deleteRevenusEntry(id: string) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
+  revalidatePath('/dashboard/finances/revenus')
   return { success: true }
 }
 
@@ -115,6 +138,7 @@ export async function bulkImportRevenusEntries(entries: EntryInput[]) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
+  revalidatePath('/dashboard/finances/revenus')
   return { inserted: data?.length ?? 0, skipped, entries: data ?? [] }
 }
 
@@ -143,6 +167,7 @@ export async function createCharge(input: ChargeInput) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
+  revalidatePath('/dashboard/finances/revenus')
   return { charge: data }
 }
 
@@ -162,6 +187,7 @@ export async function updateCharge(id: string, input: Partial<ChargeInput>) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
+  revalidatePath('/dashboard/finances/revenus')
   return { success: true }
 }
 
@@ -178,6 +204,7 @@ export async function deleteCharge(id: string) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
+  revalidatePath('/dashboard/finances/revenus')
   return { success: true }
 }
 
@@ -199,6 +226,7 @@ export async function setEntryADeclarer(id: string, source: 'entry' | 'sejour', 
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
+  revalidatePath('/dashboard/finances/revenus')
   return { success: true }
 }
 
@@ -217,6 +245,7 @@ export async function setObjectifAnnuel(montant: number | null, annee: number) {
       .eq('user_id', session.user.id)
     if (error) return { error: error.message }
     revalidatePath('/dashboard/revenus')
+    revalidatePath('/dashboard/finances/revenus')
     return { success: true }
   }
 
@@ -231,5 +260,6 @@ export async function setObjectifAnnuel(montant: number | null, annee: number) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
+  revalidatePath('/dashboard/finances/revenus')
   return { success: true }
 }
