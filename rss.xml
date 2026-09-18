@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 16 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 18 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Early check-in en LCD : 6 solutions pour accueillir un voyageur avant l&apos;heure sans épuiser ton équipe ménage</title>
+      <link>https://jasonmarinho.com/blog/early-check-in-lcd-6-solutions-accueillir-voyageur-avant-heure</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/early-check-in-lcd-6-solutions-accueillir-voyageur-avant-heure</guid>
+      <pubDate>Fri, 18 Sep 2026 08:00:00 GMT</pubDate>
+      <description>Un voyageur qui débarque à 11 h alors que ton check-in est à 15 h : 6 solutions concrètes pour gérer les early check-in en location courte durée sans casser ton turnover ni ton avis.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Répondre à un avis 5 étoiles Airbnb : 6 techniques pour transformer chaque commentaire en levier de réservation</title>
       <link>https://jasonmarinho.com/blog/repondre-avis-5-etoiles-airbnb-transformer-reservations</link>
@@ -398,14 +406,6 @@
       <pubDate>Fri, 29 May 2026 08:00:00 GMT</pubDate>
       <description>Le linge est la première chose que ton voyageur touche et sent. Voici 7 règles concrètes pour choisir, gérer et renouveler ton linge de maison en location courte durée sans te ruiner.</description>
       <category>Expérience</category>
-    </item>
-    <item>
-      <title>Vidéosurveillance en LCD : 6 règles pour protéger ton logement sans enfreindre la loi</title>
-      <link>https://jasonmarinho.com/blog/videosurveillance-lcd-6-regles-cameras-legalite</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/videosurveillance-lcd-6-regles-cameras-legalite</guid>
-      <pubDate>Wed, 27 May 2026 08:00:00 GMT</pubDate>
-      <description>Caméras intérieures interdites par Airbnb, caméras extérieures encadrées, RGPD, sanctions pénales : 6 règles claires pour sécuriser ta location courte durée légalement.</description>
-      <category>Réglementation</category>
     </item>
   </channel>
 </rss>
