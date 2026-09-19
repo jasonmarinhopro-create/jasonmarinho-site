@@ -80,3 +80,25 @@ export async function getChannelBreakdown(admin: SupabaseClient, hours = 24): Pr
     .map(channel => ({ channel, count: counts[channel], pct: total > 0 ? Math.round((counts[channel] / total) * 100) : 0 }))
     .sort((a, b) => b.count - a.count)
 }
+
+export interface TopPage { path: string; views: number }
+
+/** Pages les plus vues (toutes visites confondues, pas de dédup par session) sur les N dernières heures. */
+export async function getTopPages(admin: SupabaseClient, hours = 24 * 7, limit = 8): Promise<TopPage[]> {
+  const since = new Date(Date.now() - hours * 3600 * 1000).toISOString()
+  const { data } = await admin
+    .from('site_visits')
+    .select('path')
+    .gte('created_at', since)
+    .limit(20000)
+  if (!data || data.length === 0) return []
+
+  const counts: Record<string, number> = {}
+  for (const row of data as Array<{ path: string }>) {
+    counts[row.path] = (counts[row.path] || 0) + 1
+  }
+  return Object.entries(counts)
+    .map(([path, views]) => ({ path, views }))
+    .sort((a, b) => b.views - a.views)
+    .slice(0, limit)
+}

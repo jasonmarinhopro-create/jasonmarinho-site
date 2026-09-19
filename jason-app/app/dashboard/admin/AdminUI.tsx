@@ -35,6 +35,9 @@ interface MonthlySignup {
 interface ChannelStat {
   channel: string; label: string; count: number; pct: number
 }
+interface TopPage {
+  path: string; views: number
+}
 interface Stats {
   totalUsers: number; driingMembers: number; standardMembers: number; newThisMonth: number
   pendingDriing: number; pendingReports: number; suggestions: number
@@ -72,7 +75,7 @@ function relativeDate(iso: string) {
 export default function AdminUI({
   pendingDriing, reports, suggestions, stats,
   recentSignups, monthlySignupsChart,
-  liveVisitors, channelBreakdown,
+  liveVisitors, channelBreakdown, topPages,
 }: {
   pendingDriing: PendingUser[]
   reports: Report[]
@@ -82,6 +85,7 @@ export default function AdminUI({
   monthlySignupsChart: MonthlySignup[]
   liveVisitors: number
   channelBreakdown: ChannelStat[]
+  topPages: TopPage[]
 }) {
   const [tab, setTab] = useState<'driing' | 'reports' | 'suggestions'>('driing')
   const [isPending, startTransition] = useTransition()
@@ -210,7 +214,7 @@ export default function AdminUI({
       </div>
 
       {/* ── Trafic en direct ── */}
-      <LiveTraffic initialLive={liveVisitors} initialChannels={channelBreakdown} />
+      <LiveTraffic initialLive={liveVisitors} initialChannels={channelBreakdown} topPages={topPages} />
 
       {/* ── Sparkline 12 mois ── */}
       <SignupsSparkline data={monthlySignupsChart} />
@@ -616,7 +620,11 @@ const CHANNEL_COLORS: Record<string, string> = {
   referral: '#0369a1',
 }
 
-function LiveTraffic({ initialLive, initialChannels }: { initialLive: number; initialChannels: ChannelStat[] }) {
+function pageLabel(path: string) {
+  return path === '/' ? 'Accueil' : path
+}
+
+function LiveTraffic({ initialLive, initialChannels, topPages }: { initialLive: number; initialChannels: ChannelStat[]; topPages: TopPage[] }) {
   const [live, setLive] = useState(initialLive)
   const [channels, setChannels] = useState(initialChannels)
 
@@ -645,6 +653,10 @@ function LiveTraffic({ initialLive, initialChannels }: { initialLive: number; in
         Trafic du site · en direct
       </div>
       <style>{`
+        @media (max-width: 900px) {
+          .admin-traffic-grid { grid-template-columns: minmax(180px,260px) 1fr !important; }
+          .admin-traffic-grid > *:last-child { grid-column: 1 / -1; }
+        }
         @media (max-width: 560px) {
           .admin-traffic-grid { grid-template-columns: 1fr !important; }
         }
@@ -676,6 +688,28 @@ function LiveTraffic({ initialLive, initialChannels }: { initialLive: number; in
                   <span style={s.channelName}>{c.label}</span>
                   <span style={s.channelPct}>{c.pct}%</span>
                   <span style={s.channelCount}>{c.count}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div style={s.channelCard}>
+          <div style={s.liveTop}>
+            <Trophy size={14} weight="duotone" style={{ color: 'var(--text-2)' }} />
+            <span style={s.liveLabel}>Pages les plus vues · 7 jours</span>
+          </div>
+          {topPages.length === 0 ? (
+            <div style={{ fontSize: '12.5px', color: 'var(--text-3)', marginTop: '6px' }}>
+              Pas encore de données sur cette période.
+            </div>
+          ) : (
+            <div style={s.channelList}>
+              {topPages.map((p, i) => (
+                <div key={p.path} style={s.channelRow}>
+                  <span style={s.topPageRank}>{i + 1}</span>
+                  <span style={s.topPagePath} title={p.path}>{pageLabel(p.path)}</span>
+                  <span style={s.channelCount}>{p.views}</span>
                 </div>
               ))}
             </div>
@@ -1014,7 +1048,7 @@ const s: Record<string, React.CSSProperties> = {
 
   // Trafic en direct
   trafficGrid: {
-    display: 'grid', gridTemplateColumns: 'minmax(180px,260px) 1fr', gap: '12px',
+    display: 'grid', gridTemplateColumns: 'minmax(180px,260px) 1fr 1fr', gap: '12px',
   },
   liveCard: {
     background: 'var(--surface)', border: '1px solid var(--border)',
@@ -1034,6 +1068,11 @@ const s: Record<string, React.CSSProperties> = {
   channelName: { fontSize: '12.5px', color: 'var(--text-2)', flex: 1 },
   channelPct: { fontSize: '12.5px', fontWeight: 700, color: 'var(--text)', minWidth: '32px', textAlign: 'right' as const },
   channelCount: { fontSize: '11px', color: 'var(--text-3)', minWidth: '26px', textAlign: 'right' as const },
+  topPageRank: { fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', width: '14px', flexShrink: 0 },
+  topPagePath: {
+    fontSize: '12.5px', color: 'var(--text-2)', flex: 1, minWidth: 0,
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+  },
 
   // Activity row
   activityRow: { display: 'flex', gap: '12px', flexWrap: 'wrap' as const },
