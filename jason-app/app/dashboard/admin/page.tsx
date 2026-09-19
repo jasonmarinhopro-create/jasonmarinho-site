@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
 import AdminUI from './AdminUI'
+import { getLiveVisitorsCount, getChannelBreakdown, CHANNEL_LABELS } from '@/lib/queries/site-traffic'
 
 // Service client : la RLS limite chaque utilisateur à SES données (profile,
 // reports, etc.). Pour la vue admin on bypasse une fois l'auth admin vérifiée.
@@ -60,6 +61,8 @@ export default async function AdminPage() {
     { data: formationEnrollments },
     { data: recentSignups },
     { data: monthlySignups },
+    liveVisitors,
+    channelBreakdown,
   ] = await Promise.all([
     admin.from('profiles').select('*', { count: 'exact', head: true }),
     admin.from('profiles').select('*', { count: 'exact', head: true }).eq('plan', 'driing'),
@@ -77,6 +80,8 @@ export default async function AdminPage() {
     admin.from('user_formations').select('formation_id, formations(title)'),
     admin.from('profiles').select('id, email, full_name, plan, created_at').neq('role', 'admin').order('created_at', { ascending: false }).limit(8),
     admin.from('profiles').select('created_at, plan').gte('created_at', twelveMonthsAgo.toISOString()).neq('role', 'admin'),
+    getLiveVisitorsCount(admin),
+    getChannelBreakdown(admin),
   ])
 
   // Formation la plus commencée, tri par count desc puis titre alphabétique
@@ -127,6 +132,8 @@ export default async function AdminPage() {
           suggestions={suggestions ?? []}
           recentSignups={(recentSignups ?? []) as Array<{ id: string; email: string; full_name: string | null; plan: string; created_at: string }>}
           monthlySignupsChart={monthlySignupsChart}
+          liveVisitors={liveVisitors}
+          channelBreakdown={channelBreakdown.map(c => ({ ...c, label: CHANNEL_LABELS[c.channel] }))}
           stats={{
             totalUsers: totalUsers ?? 0,
             driingMembers: driingMembers ?? 0,

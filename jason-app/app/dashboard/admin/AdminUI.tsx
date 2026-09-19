@@ -8,7 +8,7 @@ import {
   UsersThree, ArrowRight, UsersFour, CalendarBlank, Trophy,
   BookOpen, Newspaper, Crown, ShieldStar, ShieldCheck, TrendUp, Lightning,
   Sparkle, Circle, CurrencyEur, ChartLineUp, Percent,
-  UserPlus, Star,
+  UserPlus, Star, Globe, Broadcast,
 } from '@phosphor-icons/react/dist/ssr'
 import {
   confirmDriingMember, rejectDriingMember,
@@ -31,6 +31,9 @@ interface RecentSignup {
 }
 interface MonthlySignup {
   month: string; total: number; paid: number
+}
+interface ChannelStat {
+  channel: string; label: string; count: number; pct: number
 }
 interface Stats {
   totalUsers: number; driingMembers: number; standardMembers: number; newThisMonth: number
@@ -69,6 +72,7 @@ function relativeDate(iso: string) {
 export default function AdminUI({
   pendingDriing, reports, suggestions, stats,
   recentSignups, monthlySignupsChart,
+  liveVisitors, channelBreakdown,
 }: {
   pendingDriing: PendingUser[]
   reports: Report[]
@@ -76,6 +80,8 @@ export default function AdminUI({
   stats: Stats
   recentSignups: RecentSignup[]
   monthlySignupsChart: MonthlySignup[]
+  liveVisitors: number
+  channelBreakdown: ChannelStat[]
 }) {
   const [tab, setTab] = useState<'driing' | 'reports' | 'suggestions'>('driing')
   const [isPending, startTransition] = useTransition()
@@ -202,6 +208,9 @@ export default function AdminUI({
           </div>
         </div>
       </div>
+
+      {/* ── Trafic en direct ── */}
+      <LiveTraffic initialLive={liveVisitors} initialChannels={channelBreakdown} />
 
       {/* ── Sparkline 12 mois ── */}
       <SignupsSparkline data={monthlySignupsChart} />
@@ -600,6 +609,83 @@ export default function AdminUI({
 }
 
 // ── Sub-components ─────────────────────────────────────────────────────────
+const CHANNEL_COLORS: Record<string, string> = {
+  direct: '#475569',
+  recherche: '#15803d',
+  social: '#db2777',
+  referral: '#0369a1',
+}
+
+function LiveTraffic({ initialLive, initialChannels }: { initialLive: number; initialChannels: ChannelStat[] }) {
+  const [live, setLive] = useState(initialLive)
+  const [channels, setChannels] = useState(initialChannels)
+
+  useEffect(() => {
+    const poll = async () => {
+      try {
+        const res = await fetch('/api/admin/live-traffic', { cache: 'no-store' })
+        if (!res.ok) return
+        const json = await res.json()
+        if (typeof json.live === 'number') setLive(json.live)
+        if (Array.isArray(json.channels)) setChannels(json.channels)
+      } catch {
+        // silencieux : on garde l'affichage précédent
+      }
+    }
+    const interval = setInterval(poll, 25_000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const totalSessions = channels.reduce((sum, c) => sum + c.count, 0)
+
+  return (
+    <div className="fade-up">
+      <div style={s.sectionLabel}>
+        <Globe size={13} />
+        Trafic du site · en direct
+      </div>
+      <style>{`
+        @media (max-width: 560px) {
+          .admin-traffic-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+      <div className="admin-traffic-grid" style={s.trafficGrid}>
+        <div style={s.liveCard}>
+          <div style={s.liveTop}>
+            <span style={{ ...s.liveDot, animation: live > 0 ? 'pulse 2s ease-in-out infinite' : undefined }} />
+            <span style={s.liveLabel}>En ce moment</span>
+          </div>
+          <div style={s.liveValue}>{live}</div>
+          <div style={s.liveSub}>visiteur{live !== 1 ? 's' : ''} actif{live !== 1 ? 's' : ''} (5 min)</div>
+        </div>
+
+        <div style={s.channelCard}>
+          <div style={s.liveTop}>
+            <Broadcast size={14} weight="duotone" style={{ color: 'var(--text-2)' }} />
+            <span style={s.liveLabel}>Par canal · dernières 24h</span>
+          </div>
+          {channels.length === 0 || totalSessions === 0 ? (
+            <div style={{ fontSize: '12.5px', color: 'var(--text-3)', marginTop: '6px' }}>
+              Pas encore de visite enregistrée aujourd'hui.
+            </div>
+          ) : (
+            <div style={s.channelList}>
+              {channels.map(c => (
+                <div key={c.channel} style={s.channelRow}>
+                  <span style={{ ...s.planDot, background: CHANNEL_COLORS[c.channel] || '#475569' }} />
+                  <span style={s.channelName}>{c.label}</span>
+                  <span style={s.channelPct}>{c.pct}%</span>
+                  <span style={s.channelCount}>{c.count}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function SignupsSparkline({ data }: { data: MonthlySignup[] }) {
   if (!data || data.length === 0) return null
   const maxVal = Math.max(1, ...data.map(d => d.total))
@@ -925,6 +1011,29 @@ const s: Record<string, React.CSSProperties> = {
   planCount: { fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 400, color: 'var(--text)', lineHeight: 1 },
   planBar: { height: '3px', borderRadius: '2px', background: 'var(--border)', overflow: 'hidden' },
   planFill: { height: '100%', borderRadius: '2px', transition: 'width 0.6s ease', minWidth: '4px' },
+
+  // Trafic en direct
+  trafficGrid: {
+    display: 'grid', gridTemplateColumns: 'minmax(180px,260px) 1fr', gap: '12px',
+  },
+  liveCard: {
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '14px', padding: '16px 18px',
+  },
+  liveTop: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' },
+  liveDot: { width: '8px', height: '8px', borderRadius: '50%', background: 'var(--success-1)', flexShrink: 0 },
+  liveLabel: { fontSize: '12px', color: 'var(--text-2)', fontWeight: 600 },
+  liveValue: { fontFamily: 'var(--font-fraunces), serif', fontSize: '34px', fontWeight: 500, lineHeight: 1, color: 'var(--success-1)' },
+  liveSub: { fontSize: '11.5px', color: 'var(--text-3)', marginTop: '4px' },
+  channelCard: {
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: '14px', padding: '16px 18px',
+  },
+  channelList: { display: 'flex', flexDirection: 'column' as const, gap: '9px', marginTop: '4px' },
+  channelRow: { display: 'flex', alignItems: 'center', gap: '9px' },
+  channelName: { fontSize: '12.5px', color: 'var(--text-2)', flex: 1 },
+  channelPct: { fontSize: '12.5px', fontWeight: 700, color: 'var(--text)', minWidth: '32px', textAlign: 'right' as const },
+  channelCount: { fontSize: '11px', color: 'var(--text-3)', minWidth: '26px', textAlign: 'right' as const },
 
   // Activity row
   activityRow: { display: 'flex', gap: '12px', flexWrap: 'wrap' as const },

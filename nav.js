@@ -574,3 +574,33 @@
     });
   });
 }());
+
+/* Ping léger "page vue" pour le compteur en direct + canal d'acquisition
+   (admin). Une ligne par navigation, pas de dédup (sert à mesurer
+   l'activité récente). session_id généré une fois par onglet, pas de
+   cookie, aucune IP/UA stockée côté serveur. Fail-silent : ne doit
+   jamais bloquer ni ralentir l'affichage de la page. */
+(function () {
+  try {
+    var KEY = 'jm_sid';
+    var sid = sessionStorage.getItem(KEY);
+    if (!sid) {
+      sid = 'v_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+      sessionStorage.setItem(KEY, sid);
+    }
+    var params = new URLSearchParams(window.location.search);
+    var payload = JSON.stringify({
+      session_id: sid,
+      path: window.location.pathname,
+      referrer: document.referrer || '',
+      utm_source: params.get('utm_source') || '',
+      utm_medium: params.get('utm_medium') || '',
+      utm_campaign: params.get('utm_campaign') || '',
+    });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/track/visit', new Blob([payload], { type: 'application/json' }));
+    } else {
+      fetch('/api/track/visit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(function () {});
+    }
+  } catch (e) { /* fail-silent */ }
+}());
