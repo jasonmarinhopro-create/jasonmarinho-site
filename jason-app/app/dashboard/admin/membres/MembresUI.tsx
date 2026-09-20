@@ -8,7 +8,7 @@ import {
   House, BookmarkSimple, PencilSimple, Flag, Lightbulb,
   CalendarBlank, SpinnerGap, UsersFour, ArrowSquareOut,
   Crown, Star, TextAa, CurrencyEur, DownloadSimple, Briefcase, Camera, Sparkle,
-  UserPlus,
+  UserPlus, SquaresFour, Rows,
 } from '@phosphor-icons/react/dist/ssr'
 import {
   adminCreateAccount, changeUserPlan, deleteUser, deleteAllBots,
@@ -86,6 +86,19 @@ export default function MembresUI({ members }: { members: Member[] }) {
   const router = useRouter()
   const [search, setSearch]       = useState('')
   const [filterPlan, setFilterPlan] = useState<string>('all')
+  // Vue grille vs liste : la grille reste lisible pour une cinquantaine de
+  // membres, mais ne scale pas (une carte = ~150px de haut) une fois qu'on
+  // passe à plusieurs centaines. Persisté par appareil, pas de valeur par
+  // défaut imposée côté serveur.
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  useEffect(() => {
+    const stored = typeof window !== 'undefined' ? localStorage.getItem('membres-view-mode') : null
+    if (stored === 'list' || stored === 'grid') setViewMode(stored)
+  }, [])
+  function changeViewMode(mode: 'grid' | 'list') {
+    setViewMode(mode)
+    try { localStorage.setItem('membres-view-mode', mode) } catch {}
+  }
   const [isPending, startTransition] = useTransition()
   const [feedback, setFeedback]   = useState<{ id: string; type: 'ok'|'err'; msg: string } | null>(null)
   const [botsFeedback, setBotsFeedback] = useState<{ type: 'ok'|'err'; msg: string } | null>(null)
@@ -224,6 +237,12 @@ export default function MembresUI({ members }: { members: Member[] }) {
         .jm-membre-card select option:hover { background-color: rgba(0,76,63,0.55); color: #fff; }
         .jm-membre-card select option:checked { background: var(--accent-text); color: var(--bg); font-weight: 700; }
         .jm-membre-card select:focus { outline: none; border-color: var(--accent-text) !important; box-shadow: 0 0 0 3px rgba(0,76,63,.18); }
+        .jm-membre-row:hover { background: var(--surface-2); }
+        .jm-membre-row:hover .jm-action-btn { opacity: 1; }
+        .jm-membre-row + .jm-membre-row { border-top: 1px solid var(--border); }
+        @media (max-width: 720px) {
+          .jm-membre-row .jm-list-plan, .jm-membre-row .jm-list-date { display: none !important; }
+        }
         /* Colonnes fixes (pas auto-fit) : avec 8 tuiles, auto-fit peut faire
            tenir 7 colonnes sur une largeur de contenu courante (~1280px avec
            sidebar), laissant la 8e tuile orpheline seule sur sa ligne. Un
@@ -289,6 +308,25 @@ export default function MembresUI({ members }: { members: Member[] }) {
             </button>
           )
         )}
+
+        {/* Grille / Liste — la liste scale mieux au-delà de quelques dizaines
+            de membres (une ligne compacte au lieu d'une carte ~150px). */}
+        <div style={{ ...s.viewToggle, marginLeft: 'auto' }}>
+          <button
+            onClick={() => changeViewMode('grid')}
+            style={{ ...s.viewToggleBtn, ...(viewMode === 'grid' ? s.viewToggleBtnActive : {}) }}
+            title="Vue grille"
+          >
+            <SquaresFour size={14} weight={viewMode === 'grid' ? 'fill' : 'regular'} />
+          </button>
+          <button
+            onClick={() => changeViewMode('list')}
+            style={{ ...s.viewToggleBtn, ...(viewMode === 'list' ? s.viewToggleBtnActive : {}) }}
+            title="Vue liste"
+          >
+            <Rows size={14} weight={viewMode === 'list' ? 'fill' : 'regular'} />
+          </button>
+        </div>
       </div>
 
       {/* ── Filters ── */}
@@ -331,13 +369,27 @@ export default function MembresUI({ members }: { members: Member[] }) {
         </div>
       </div>
 
-      {/* ── Cards grid ── */}
+      {/* ── Cards grid / liste ── */}
       {filtered.length === 0 ? (
         <div style={s.empty}>
           <MagnifyingGlass size={32} color="var(--text-muted)" />
           <p style={{ fontSize: '14px', color: 'var(--text-muted)', margin: 0 }}>
             Aucun membre pour &ldquo;{search}&rdquo;.
           </p>
+        </div>
+      ) : viewMode === 'list' ? (
+        <div style={s.list}>
+          {filtered.map(m => (
+            <MemberListRow
+              key={m.id} member={m}
+              isPending={isPending}
+              onOpenPanel={openPanel}
+              onDelete={() => {
+                if (!confirm(`Supprimer définitivement ${m.full_name || m.email} ?`)) return
+                action(m.id, () => deleteUser(m.id), 'Supprimé')
+              }}
+            />
+          ))}
         </div>
       ) : (
         <div style={s.grid}>
@@ -432,6 +484,7 @@ interface MemberCardProps {
 }
 
 function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan, onToggleContrib, onToggleInvestor, onDelete, onSaveName }: MemberCardProps) {
+  const router   = useRouter()
   const pal      = palette(m.full_name || m.email)
   const ini      = initials(m.full_name, m.email)
   const isAdmin  = m.role === 'admin'
@@ -467,7 +520,12 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
   const planLabel  = isAdmin ? 'Admin' : isDriing ? 'Membre Driing' : isStandard ? 'Standard' : 'Découverte'
 
   return (
-    <div className="jm-membre-card" style={{ ...s.card, ...(suspect ? { borderColor: 'var(--danger-border)' } : {}) }}>
+    <div
+      className="jm-membre-card"
+      style={{ ...s.card, cursor: 'pointer', ...(suspect ? { borderColor: 'var(--danger-border)' } : {}) }}
+      onClick={() => router.push(`/dashboard/admin/membres/${m.id}`)}
+      title="Ouvrir la fiche complète"
+    >
 
       {/* ── Identity ── */}
       <div style={s.cardTop}>
@@ -481,7 +539,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
         {/* Name + email + date */}
         <div style={s.identity}>
           {editingName ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }} onClick={e => e.stopPropagation()}>
               <input
                 ref={nameInputRef}
                 value={nameValue}
@@ -501,7 +559,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
             <div style={s.nameRow}>
               <span style={s.name}>{displayName || m.email.split('@')[0]}</span>
               {!isAdmin && (
-                <button onClick={startEdit} style={s.editNameBtn} title="Modifier le nom">
+                <button onClick={e => { e.stopPropagation(); startEdit() }} style={s.editNameBtn} title="Modifier le nom">
                   <PencilSimple size={11} />
                 </button>
               )}
@@ -519,7 +577,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
       </div>
 
       {/* ── Chips row ── */}
-      <div style={s.chipsRow}>
+      <div style={s.chipsRow} onClick={e => e.stopPropagation()}>
         {m.is_investor && (
           <span style={s.investorChip}><Briefcase size={10} weight="fill" /> Investisseur</span>
         )}
@@ -547,7 +605,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
       <div style={s.sep} />
 
       {/* ── Actions ── */}
-      <div style={s.actions}>
+      <div style={s.actions} onClick={e => e.stopPropagation()}>
         {/* Feedback overlay */}
         {feedback ? (
           <FeedbackPill type={feedback.type} msg={feedback.msg} />
@@ -609,15 +667,11 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
               </button>
             )}
 
-            {/* View activity */}
-            <button onClick={() => onOpenPanel(m)} className="jm-action-btn" style={{ ...s.actionBtn, marginLeft: 'auto' }} title="Voir l'activité">
+            {/* View activity (aperçu rapide en side panel — la carte entière
+                ouvre déjà la fiche complète au clic) */}
+            <button onClick={() => onOpenPanel(m)} className="jm-action-btn" style={{ ...s.actionBtn, marginLeft: 'auto' }} title="Aperçu rapide de l'activité">
               <Users size={13} />
             </button>
-
-            {/* Full profile */}
-            <a href={`/dashboard/admin/membres/${m.id}`} className="jm-action-btn" style={s.actionBtn} title="Fiche complète">
-              <ArrowSquareOut size={13} />
-            </a>
 
             {/* Delete */}
             {!isAdmin && (
@@ -632,6 +686,84 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
               </button>
             )}
           </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ── Member List Row (vue liste, plus compacte que les cartes) ──────────────────
+
+interface MemberListRowProps {
+  member: Member
+  isPending: boolean
+  onOpenPanel: (m: Member) => void
+  onDelete: () => void
+}
+
+function MemberListRow({ member: m, isPending, onOpenPanel, onDelete }: MemberListRowProps) {
+  const router   = useRouter()
+  const pal      = palette(m.full_name || m.email)
+  const ini      = initials(m.full_name, m.email)
+  const isAdmin  = m.role === 'admin'
+  const isDriing = m.plan === 'driing'
+  const isStandard = m.plan === 'standard'
+  const suspect  = isBotLike(m.full_name, m.email)
+  const formations = m.user_formations?.length ?? 0
+
+  const planColor  = isAdmin ? '#7c3aed' : isDriing ? '#7c3aed' : isStandard ? '#15803d' : 'var(--text-2)'
+  const planBg     = isAdmin ? 'rgba(124,58,237,0.14)' : isDriing ? 'rgba(124,58,237,0.14)' : isStandard ? 'rgba(21,128,61,0.14)' : 'var(--border)'
+  const planLabel  = isAdmin ? 'Admin' : isDriing ? 'Membre Driing' : isStandard ? 'Standard' : 'Découverte'
+
+  return (
+    <div
+      className="jm-membre-row"
+      style={{ ...s.listRow, ...(suspect ? { background: 'var(--danger-bg)' } : {}) }}
+      onClick={() => router.push(`/dashboard/admin/membres/${m.id}`)}
+      title="Ouvrir la fiche complète"
+    >
+      <div style={{ ...s.avatar, width: '38px', height: '38px', borderRadius: '11px', flexShrink: 0, background: pal.bg, border: `1.5px solid ${suspect ? 'rgba(248,113,113,0.35)' : pal.border}` }}>
+        <span style={{ ...s.avatarText, fontSize: '13px', color: suspect ? 'var(--danger)' : pal.text }}>
+          {suspect ? <Robot size={15} /> : ini}
+        </span>
+      </div>
+
+      <div style={s.listIdentity}>
+        <span style={s.listName}>{m.full_name || m.email.split('@')[0]}</span>
+        <span style={s.listEmail}>{m.email}</span>
+      </div>
+
+      <div className="jm-list-plan" style={{ ...s.planBadge, background: planBg, color: planColor, flexShrink: 0 }}>
+        {isAdmin ? <Crown size={11} weight="fill" /> : isDriing ? <Star size={11} weight="fill" /> : null}
+        {planLabel}
+      </div>
+
+      <div style={s.listChips}>
+        {m.is_investor && <span style={s.investorChip}><Briefcase size={10} weight="fill" /></span>}
+        {m.is_photographer && <span style={s.photographerChip}><Camera size={10} weight="fill" /></span>}
+        {m.is_cleaner && <span style={s.cleanerChip}><Sparkle size={10} weight="fill" /></span>}
+        {m.is_contributor && <span style={s.contribChip}><Heart size={10} weight="fill" /></span>}
+        {formations > 0 && (
+          <span style={s.formChip}><GraduationCap size={11} /> {formations}</span>
+        )}
+      </div>
+
+      <span className="jm-list-date" style={s.listDate}>{formatDate(m.created_at)}</span>
+
+      <div style={s.listActions} onClick={e => e.stopPropagation()}>
+        <button onClick={() => onOpenPanel(m)} className="jm-action-btn" style={s.actionBtn} title="Aperçu rapide de l'activité">
+          <Users size={13} />
+        </button>
+        {!isAdmin && (
+          <button
+            disabled={isPending}
+            onClick={onDelete}
+            className="jm-action-btn"
+            style={{ ...s.actionBtn, ...s.actionBtnDanger }}
+            title="Supprimer"
+          >
+            <Trash size={13} />
+          </button>
         )}
       </div>
     </div>
@@ -937,6 +1069,20 @@ const s: Record<string, React.CSSProperties> = {
   actionsRow: {
     display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const,
   },
+  viewToggle: {
+    display: 'flex', gap: '2px',
+    background: 'var(--bg-2)', border: '1px solid var(--border)',
+    borderRadius: '9px', padding: '2px',
+  },
+  viewToggleBtn: {
+    width: '30px', height: '28px', borderRadius: '7px',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)',
+  },
+  viewToggleBtnActive: {
+    background: 'var(--surface)', color: 'var(--accent-text)',
+    boxShadow: 'var(--shadow-sm)',
+  },
 
   // Filters
   filtersRow: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' },
@@ -978,12 +1124,37 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '100px', lineHeight: '16px',
   },
 
-  // Grid
+  // Grid — auto-fit (pas auto-fill) : les colonnes vides se replient et les
+  // cartes existantes s'étirent pour remplir la largeur, au lieu de laisser
+  // des pistes de colonnes fantômes vides sur la droite quand le nombre de
+  // membres ne remplit pas exactement une ligne.
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
     gap: '14px',
   },
+  list: {
+    display: 'flex', flexDirection: 'column' as const,
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: 'var(--r-xl)', overflow: 'hidden',
+  },
+  listRow: {
+    display: 'flex', alignItems: 'center', gap: '12px',
+    padding: '10px 16px', cursor: 'pointer',
+    transition: 'background var(--d-base) var(--ease-smooth)',
+  },
+  listIdentity: { flex: '1 1 200px', minWidth: 0, display: 'flex', flexDirection: 'column' as const },
+  listName: {
+    fontSize: '13.5px', fontWeight: 600, color: 'var(--text)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+  },
+  listEmail: {
+    fontSize: '11.5px', color: 'var(--text-3)',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
+  },
+  listChips: { display: 'flex', alignItems: 'center', gap: '5px', flexShrink: 0 },
+  listDate: { fontSize: '11.5px', color: 'var(--text-muted)', flexShrink: 0, width: '86px' },
+  listActions: { display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 },
   empty: {
     padding: '60px 0', display: 'flex', flexDirection: 'column',
     alignItems: 'center', gap: '12px',
