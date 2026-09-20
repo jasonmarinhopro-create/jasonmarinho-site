@@ -1,31 +1,18 @@
 'use client'
 
-import { useState, useTransition, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
-  Users, Warning, CheckCircle, XCircle, Trash,
-  Check, X, ArrowClockwise, FileText, GraduationCap,
+  Users, Warning, FileText, GraduationCap,
   UsersThree, ArrowRight, UsersFour, CalendarBlank, Trophy,
   BookOpen, Newspaper, Crown, ShieldStar, ShieldCheck, TrendUp, Lightning,
-  Sparkle, Circle, CurrencyEur, ChartLineUp, Percent,
+  Sparkle, CurrencyEur, ChartLineUp, Percent,
   UserPlus, Star, Globe, Broadcast,
 } from '@phosphor-icons/react/dist/ssr'
 import {
-  confirmDriingMember, rejectDriingMember,
-  validateReport, deleteReport, deleteSuggestion,
+  validateReport, deleteReport,
 } from './actions'
 
-interface PendingUser {
-  id: string; email: string; full_name: string | null; created_at: string; driing_status: string
-}
-interface Report {
-  id: string; identifier: string; identifier_type: string; name: string | null
-  incident_type: string; description: string | null; reporter_city: string | null
-  reported_at: string; is_validated: boolean
-}
-interface Suggestion {
-  id: string; type: 'formation' | 'partner'; message: string; user_email: string | null; created_at: string
-}
 interface RecentSignup {
   id: string; email: string; full_name: string | null; plan: string; created_at: string
 }
@@ -73,13 +60,10 @@ function relativeDate(iso: string) {
 }
 
 export default function AdminUI({
-  pendingDriing, reports, suggestions, stats,
+  stats,
   recentSignups, monthlySignupsChart,
   liveVisitors, channelBreakdown, topPages,
 }: {
-  pendingDriing: PendingUser[]
-  reports: Report[]
-  suggestions: Suggestion[]
   stats: Stats
   recentSignups: RecentSignup[]
   monthlySignupsChart: MonthlySignup[]
@@ -87,44 +71,13 @@ export default function AdminUI({
   channelBreakdown: ChannelStat[]
   topPages: TopPage[]
 }) {
-  const [tab, setTab] = useState<'driing' | 'reports' | 'suggestions'>('driing')
-  const [isPending, startTransition] = useTransition()
-  const [feedback, setFeedback] = useState<{ id: string; type: 'ok' | 'err'; msg: string } | null>(null)
-  const [isDesktop, setIsDesktop] = useState(false)
-
-  useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 1100)
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [])
-
-  function notify(id: string, type: 'ok' | 'err', msg: string) {
-    setFeedback({ id, type, msg })
-    setTimeout(() => setFeedback(null), 3000)
-  }
-  function action(id: string, fn: () => Promise<{ error?: string | null }>, successMsg: string) {
-    startTransition(async () => {
-      const res = await fn()
-      if (res?.error) notify(id, 'err', String(res.error))
-      else notify(id, 'ok', successMsg)
-    })
-  }
-
-  const pendingReportsCount = reports.filter(r => !r.is_validated).length
-  const totalAlerts = stats.pendingDriing + pendingReportsCount
+  const totalAlerts = stats.pendingDriing + stats.pendingReports
   const decouverte = stats.totalUsers - stats.standardMembers - stats.driingMembers
   // Seul Standard est payant ; Driing = gratuit pour les clients Driing existants
   const payingUsers = stats.standardMembers
   const conversionRate = stats.totalUsers > 0 ? (payingUsers / stats.totalUsers) * 100 : 0
   const arpu = payingUsers > 0 ? stats.mrr / payingUsers : 0
   const arr = stats.mrr * 12
-
-  const tabs = [
-    { key: 'driing' as const,      label: 'Membres Driing', count: stats.pendingDriing },
-    { key: 'reports' as const,     label: 'Signalements',   count: pendingReportsCount },
-    { key: 'suggestions' as const, label: 'Suggestions',    count: stats.suggestions },
-  ]
 
   return (
     <div style={s.wrap}>
@@ -149,10 +102,10 @@ export default function AdminUI({
         <div style={s.heroGlow} />
         <div style={s.heroContent}>
           {totalAlerts > 0 && (
-            <div className="admin-hero-alert" style={s.heroAlert}>
+            <Link href="/dashboard/admin/qg" className="admin-hero-alert" style={{ ...s.heroAlert, textDecoration: 'none' }}>
               <Warning size={14} weight="fill" />
               {totalAlerts} action{totalAlerts > 1 ? 's' : ''} en attente
-            </div>
+            </Link>
           )}
           <div style={s.heroBadge}>
             <ShieldStar size={11} weight="fill" />
@@ -219,9 +172,7 @@ export default function AdminUI({
       {/* ── Sparkline 12 mois ── */}
       <SignupsSparkline data={monthlySignupsChart} />
 
-      {/* ── Layout 2 colonnes desktop / stack mobile ── */}
-      <div style={isDesktop ? s.mainGrid : s.mainStack}>
-        <div style={s.leftCol}>
+      <div style={s.mainStack}>
 
       {/* ── Répartition membres ── */}
       <div className="fade-up">
@@ -341,7 +292,7 @@ export default function AdminUI({
             { href: '/dashboard/admin/communaute', icon: UsersThree,    color: '#93C5FD', bg: 'rgba(147,197,253,0.1)', title: 'Communauté',  desc: `${stats.groupsCount} groupe${stats.groupsCount !== 1 ? 's' : ''}` },
             { href: '/dashboard/admin/guides',     icon: BookOpen,      color: '#fb923c', bg: 'rgba(251,146,60,0.1)',  title: 'Guide LCD',   desc: 'Profils & fiches' },
             { href: '/dashboard/admin/sos-feedback', icon: Warning,     color: 'var(--danger)', bg: 'rgba(220,38,38,0.1)',   title: 'SOS Feedback', desc: 'Signalements & témoignages' },
-            { href: '/dashboard/admin/qg', icon: ShieldCheck, color: '#f87171', bg: 'rgba(248,113,113,0.1)', title: 'Signalements', desc: `${pendingReportsCount} à valider` },
+            { href: '/dashboard/admin/qg', icon: ShieldCheck, color: '#f87171', bg: 'rgba(248,113,113,0.1)', title: 'Signalements', desc: `${stats.pendingReports} à valider` },
           ].map(({ href, icon: Icon, color, bg, title, desc }) => (
             <Link key={href} href={href} style={s.contentCard} className="admin-content-card">
               <div style={{ ...s.contentIcon, color, background: bg, border: `1px solid ${color}20` }}>
@@ -446,166 +397,6 @@ export default function AdminUI({
         </div>
       )}
 
-        </div>
-        {/* ── Right column : actions en attente (sticky desktop) ── */}
-        <aside style={isDesktop ? s.rightColSticky : s.rightCol}>
-
-      {/* ── Actions en attente ── */}
-      <div className="fade-up">
-        <div style={s.sectionLabel}>
-          <Warning size={13} style={{ color: totalAlerts > 0 ? '#fb923c' : 'var(--text-muted)' }} />
-          Actions en attente
-          {totalAlerts > 0 && (
-            <span style={s.alertBadge}>{totalAlerts}</span>
-          )}
-        </div>
-
-        <div style={s.tabBar}>
-          {tabs.map(t => (
-            <button key={t.key} onClick={() => setTab(t.key)} style={{ ...s.tab, ...(tab === t.key ? s.tabActive : {}) }}>
-              {t.count > 0 && <Circle size={7} weight="fill" style={{ color: '#fb923c', flexShrink: 0 }} />}
-              {t.label}
-              {t.count > 0 && (
-                <span style={{ ...s.tabBadge, ...(tab === t.key ? s.tabBadgeActive : {}) }}>{t.count}</span>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Driing */}
-        {tab === 'driing' && (
-          <Section title="Demandes Membre Driing" empty={pendingDriing.length === 0} emptyMsg="Aucune demande en attente.">
-            <Link
-              href="/dashboard/admin/driing"
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '10px 14px', marginBottom: '12px',
-                background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
-                borderRadius: '10px', color: 'var(--accent-text)',
-                textDecoration: 'none', fontSize: '12.5px', fontWeight: 600,
-              }}
-            >
-              Ouvrir la console Membres Driing
-              <span style={{ fontSize: '11px', opacity: 0.7 }}>stats, filtres, validation rapide →</span>
-            </Link>
-            {pendingDriing.slice(0, 5).map(u => (
-              <div key={u.id} className="admin-item">
-                <div className="admin-item-head">
-                  <div style={s.itemAvatar}>{(u.full_name || u.email).slice(0, 1).toUpperCase()}</div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={s.cellPrimary}>{u.full_name || '-'}</div>
-                    <div style={s.cellSub}>{u.email} · {formatDate(u.created_at)}</div>
-                  </div>
-                  <span style={{ ...s.badge, background: 'rgba(251,146,60,.12)', color: '#fb923c', border: '1px solid rgba(251,146,60,.2)' }}>En attente</span>
-                </div>
-                <div className="admin-item-foot">
-                  {feedback?.id === u.id
-                    ? <FeedbackPill type={feedback.type} msg={feedback.msg} />
-                    : (
-                      <>
-                        <ActionBtn label="Confirmer" icon={<Check size={13} weight="bold" />} color="#34D399" loading={isPending}
-                          onClick={() => action(u.id, () => confirmDriingMember(u.id), 'Membre Driing confirmé ✓')} />
-                        <ActionBtn label="Rejeter" icon={<X size={13} weight="bold" />} color="#f87171" loading={isPending}
-                          onClick={() => action(u.id, () => rejectDriingMember(u.id), 'Demande rejetée')} />
-                      </>
-                    )}
-                </div>
-              </div>
-            ))}
-            {pendingDriing.length > 5 && (
-              <div style={{ textAlign: 'center', fontSize: '11.5px', color: 'var(--text-muted)', padding: '8px' }}>
-                + {pendingDriing.length - 5} autres demandes sur la console dédiée
-              </div>
-            )}
-          </Section>
-        )}
-
-        {/* Reports — aperçu compact ; tout le travail (édition, recherche,
-            normalisation, modération signalements publics) se fait sur le
-            QG admin /admin/qg dans la tab "Signalements". */}
-        {tab === 'reports' && (
-          <Section title={`${reports.length} signalement${reports.length !== 1 ? 's' : ''}`} empty={reports.length === 0} emptyMsg="Aucun signalement.">
-            <Link
-              href="/dashboard/admin/qg"
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '10px 14px', marginBottom: '12px',
-                background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
-                borderRadius: '10px', color: 'var(--accent-text)',
-                textDecoration: 'none', fontSize: '12.5px', fontWeight: 600,
-              }}
-            >
-              Ouvrir la console signalements
-              <span style={{ fontSize: '11px', opacity: 0.7 }}>édition, recherche, normalisation →</span>
-            </Link>
-            {reports.slice(0, 5).map(r => (
-              <div key={r.id} className="admin-item">
-                <div className="admin-item-head">
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={s.cellPrimary}>{r.name || r.identifier}</div>
-                    <div style={s.cellSub}>{r.identifier_type} · {r.identifier}</div>
-                  </div>
-                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                    <span style={{ ...s.badge, background: 'rgba(248,113,113,.1)', color: 'var(--danger)', border: '1px solid rgba(248,113,113,.2)' }}>{r.incident_type}</span>
-                    <span style={{ ...s.badge, ...(r.is_validated ? { background: 'rgba(52,211,153,.1)', color: 'var(--success-1)', border: '1px solid rgba(52,211,153,.2)' } : { background: 'rgba(251,146,60,.1)', color: '#fb923c', border: '1px solid rgba(251,146,60,.2)' }) }}>
-                      {r.is_validated ? 'Validé' : 'En attente'}
-                    </span>
-                  </div>
-                </div>
-                <div style={s.cellSub}>{r.reporter_city || '-'} · {formatDate(r.reported_at)}</div>
-              </div>
-            ))}
-            {reports.length > 5 && (
-              <div style={{ textAlign: 'center', fontSize: '11.5px', color: 'var(--text-muted)', padding: '8px' }}>
-                + {reports.length - 5} autres signalements sur la console dédiée
-              </div>
-            )}
-          </Section>
-        )}
-
-        {/* Suggestions */}
-        {tab === 'suggestions' && (
-          <Section title="Suggestions utilisateurs" empty={suggestions.length === 0} emptyMsg="Aucune suggestion.">
-            <Link
-              href="/dashboard/admin/suggestions"
-              style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '10px 14px', marginBottom: '12px',
-                background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
-                borderRadius: '10px', color: 'var(--accent-text)',
-                textDecoration: 'none', fontSize: '12.5px', fontWeight: 600,
-              }}
-            >
-              Ouvrir la console Suggestions
-              <span style={{ fontSize: '11px', opacity: 0.7 }}>filtres formations / partenaires →</span>
-            </Link>
-            {suggestions.slice(0, 5).map(sg => (
-              <div key={sg.id} className="admin-item">
-                <div className="admin-item-head">
-                  <span style={{ ...s.badge, ...(sg.type === 'formation' ? { background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)' } : { background: 'rgba(147,197,253,.1)', color: '#93C5FD', border: '1px solid rgba(147,197,253,.2)' }) }}>
-                    {sg.type === 'formation' ? 'Formation' : 'Partenaire'}
-                  </span>
-                  <div style={{ ...s.cellSub, marginLeft: 'auto' }}>{sg.user_email || '-'} · {formatDate(sg.created_at)}</div>
-                </div>
-                <div style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.55, marginTop: '4px' }}>{sg.message}</div>
-                <div className="admin-item-foot">
-                  {feedback?.id === sg.id
-                    ? <FeedbackPill type={feedback.type} msg={feedback.msg} />
-                    : <ActionBtn label="Supprimer" icon={<Trash size={13} weight="bold" />} color="#f87171" loading={isPending}
-                        onClick={() => action(sg.id, () => deleteSuggestion(sg.id), 'Supprimée')} />}
-                </div>
-              </div>
-            ))}
-            {suggestions.length > 5 && (
-              <div style={{ textAlign: 'center', fontSize: '11.5px', color: 'var(--text-muted)', padding: '8px' }}>
-                + {suggestions.length - 5} autres suggestions sur la console dédiée
-              </div>
-            )}
-          </Section>
-        )}
-      </div>
-
-        </aside>
       </div>
 
     </div>
@@ -783,74 +574,14 @@ function SignupsSparkline({ data }: { data: MonthlySignup[] }) {
   )
 }
 
-function Section({ title, children, empty, emptyMsg }: { title: string; children: React.ReactNode; empty: boolean; emptyMsg: string }) {
-  return (
-    <div style={s.section}>
-      <div style={s.sectionSubTitle}>{title}</div>
-      {empty
-        ? <div style={s.empty}>{emptyMsg}</div>
-        : <div style={s.table}>{children}</div>
-      }
-    </div>
-  )
-}
-function ActionBtn({ label, icon, color, loading, onClick }: { label: string; icon: React.ReactNode; color: string; loading: boolean; onClick: () => void }) {
-  return (
-    <button onClick={onClick} disabled={loading} style={{
-      display: 'inline-flex', alignItems: 'center', gap: '5px',
-      padding: '6px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 600,
-      cursor: loading ? 'not-allowed' : 'pointer',
-      background: `${color}14`, color, border: `1px solid ${color}25`,
-      opacity: loading ? 0.5 : 1, fontFamily: 'var(--font-outfit), sans-serif',
-      transition: 'all 0.15s',
-    }}>
-      {loading ? <ArrowClockwise size={12} style={{ animation: 'spin 1s linear infinite' }} /> : icon}
-      {label}
-    </button>
-  )
-}
-function FeedbackPill({ type, msg }: { type: 'ok' | 'err'; msg: string }) {
-  const color = type === 'ok' ? 'var(--success-1)' : 'var(--danger)'
-  return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 500, color, background: `${color}14`, border: `1px solid ${color}25` }}>
-      {type === 'ok' ? <CheckCircle size={13} weight="fill" /> : <XCircle size={13} weight="fill" />}
-      {msg}
-    </div>
-  )
-}
-
 const s: Record<string, React.CSSProperties> = {
   wrap: { display: 'flex', flexDirection: 'column', gap: '32px' },
 
-  // ── Main 2-column layout ──────────────────────────────────────────────────
-  mainGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'minmax(0, 1fr) 380px',
-    gap: '32px',
-    alignItems: 'start',
-  },
+  // ── Main layout (colonne unique) ────────────────────────────────────────
   mainStack: {
     display: 'flex',
     flexDirection: 'column' as const,
     gap: '32px',
-  },
-  leftCol: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '32px',
-    minWidth: 0,
-  },
-  rightCol: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '20px',
-  },
-  rightColSticky: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '20px',
-    position: 'sticky' as const,
-    top: '24px',
   },
 
   // ── KPI Bar ───────────────────────────────────────────────────────────────
@@ -1106,67 +837,4 @@ const s: Record<string, React.CSSProperties> = {
   contentTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '3px' },
   contentDesc: { fontSize: '12px', color: 'var(--text-3)' },
 
-  // Tabs
-  alertBadge: {
-    background: 'rgba(251,146,60,0.15)', color: '#fb923c',
-    border: '1px solid rgba(251,146,60,0.25)',
-    borderRadius: '100px', padding: '1px 8px',
-    fontSize: '11px', fontWeight: 700,
-  },
-  tabBar: {
-    display: 'flex', gap: '4px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '12px', padding: '4px', marginBottom: '16px', overflowX: 'auto' as const,
-  },
-  tab: {
-    display: 'flex', alignItems: 'center', gap: '7px',
-    padding: '9px 18px', borderRadius: '9px',
-    fontSize: '13px', fontWeight: 500, color: 'var(--text-3)',
-    background: 'none', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap' as const,
-  },
-  tabActive: { background: 'var(--border-2)', color: 'var(--text)' },
-  tabBadge: {
-    fontSize: '11px', fontWeight: 700,
-    background: 'var(--border)', color: 'var(--text-3)',
-    padding: '1px 7px', borderRadius: '100px',
-  },
-  tabBadgeActive: { background: 'rgba(251,146,60,0.15)', color: '#fb923c' },
-
-  // Items
-  section: { display: 'flex', flexDirection: 'column', gap: '0' },
-  sectionSubTitle: {
-    fontSize: '11px', fontWeight: 600, letterSpacing: '0.8px', textTransform: 'uppercase' as const,
-    color: 'var(--text-muted)', padding: '0 0 10px',
-  },
-  table: {
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', overflow: 'hidden',
-  },
-  empty: {
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', padding: '40px',
-    textAlign: 'center' as const, fontSize: '14px', color: 'var(--text-muted)',
-  },
-  itemAvatar: {
-    width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
-    background: 'rgba(167,139,250,0.12)', border: '1px solid rgba(167,139,250,0.2)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '14px', fontWeight: 700, color: '#a78bfa', fontFamily: 'var(--font-fraunces), serif',
-  },
-  cellPrimary: {
-    fontSize: '14px', fontWeight: 500, color: 'var(--text)',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
-  },
-  cellSub: {
-    fontSize: '12px', color: 'var(--text-3)', marginTop: '2px',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
-  },
-  description: {
-    fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.5, marginTop: '4px',
-  },
-  badge: {
-    display: 'inline-block', fontSize: '11px', fontWeight: 600,
-    padding: '3px 10px', borderRadius: '100px', letterSpacing: '0.3px',
-    whiteSpace: 'nowrap' as const,
-  },
 }

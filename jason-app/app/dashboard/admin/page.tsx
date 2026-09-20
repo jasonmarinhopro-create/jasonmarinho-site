@@ -55,9 +55,9 @@ export default async function AdminPage() {
     { count: totalVoyageurs },
     { count: totalSejours },
     { count: completedFormations },
-    { data: pendingDriing },
-    { data: reports },
-    { data: suggestions },
+    { count: pendingDriingCount },
+    { count: pendingReportsCount },
+    { count: suggestionsCount },
     { data: formationEnrollments },
     { data: recentSignups },
     { data: monthlySignups },
@@ -75,9 +75,9 @@ export default async function AdminPage() {
     admin.from('voyageurs').select('*', { count: 'exact', head: true }),
     admin.from('sejours').select('*', { count: 'exact', head: true }),
     admin.from('user_formations').select('*', { count: 'exact', head: true }).eq('progress', 100),
-    admin.from('profiles').select('id, email, full_name, created_at, driing_status').eq('driing_status', 'pending').order('created_at', { ascending: false }).limit(100),
-    admin.from('reported_guests').select('id, identifier, identifier_type, name, incident_type, is_validated, reporter_city, reported_at, description').order('reported_at', { ascending: false }).limit(100),
-    admin.from('suggestions').select('id, type, message, user_email, created_at').order('created_at', { ascending: false }).limit(100),
+    admin.from('profiles').select('*', { count: 'exact', head: true }).eq('driing_status', 'pending'),
+    admin.from('reported_guests').select('*', { count: 'exact', head: true }).eq('is_validated', false),
+    admin.from('suggestions').select('*', { count: 'exact', head: true }),
     admin.from('user_formations').select('formation_id, formations(title)'),
     admin.from('profiles').select('id, email, full_name, plan, created_at').neq('role', 'admin').order('created_at', { ascending: false }).limit(8),
     admin.from('profiles').select('created_at, plan').gte('created_at', twelveMonthsAgo.toISOString()).neq('role', 'admin'),
@@ -129,9 +129,6 @@ export default async function AdminPage() {
     <>
       <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
         <AdminUI
-          pendingDriing={pendingDriing ?? []}
-          reports={reports ?? []}
-          suggestions={suggestions ?? []}
           recentSignups={(recentSignups ?? []) as Array<{ id: string; email: string; full_name: string | null; plan: string; created_at: string }>}
           monthlySignupsChart={monthlySignupsChart}
           liveVisitors={liveVisitors}
@@ -142,9 +139,9 @@ export default async function AdminPage() {
             driingMembers: driingMembers ?? 0,
             standardMembers: standardMembers ?? 0,
             newThisMonth: newThisMonth ?? 0,
-            pendingDriing: pendingDriing?.length ?? 0,
-            pendingReports: reports?.filter(r => !r.is_validated).length ?? 0,
-            suggestions: suggestions?.length ?? 0,
+            pendingDriing: pendingDriingCount ?? 0,
+            pendingReports: pendingReportsCount ?? 0,
+            suggestions: suggestionsCount ?? 0,
             templatesCount: templatesCount ?? 0,
             formationsCount: formationsCount ?? 0,
             groupsCount: groupsCount ?? 0,
