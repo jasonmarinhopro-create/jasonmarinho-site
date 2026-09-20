@@ -158,6 +158,13 @@ import { House } from '@phosphor-icons/react'
 
 ---
 
+## Sidebar & mode admin
+
+- `components/layout/Sidebar.tsx` : le "mode admin" (sidebar hôte → sidebar admin dédiée, toggle depuis le menu user) est un booléen persisté en `localStorage` (`admin-mode`), pas en base ni en cookie — c'est un état d'affichage local à l'appareil, pas un droit d'accès (le contrôle réel reste `profile.role === 'admin'` côté serveur sur chaque route `/dashboard/admin/*`).
+- **Cohérence au montage** : si `admin-mode` est resté `true` (ex : session précédente laissée en mode admin) et que l'utilisateur atterrit sur `/dashboard` (l'Accueil hôte, ex : juste après connexion, le login redirige toujours ici), la sidebar admin s'affiche mais le contenu affiché serait l'Accueil hôte : incohérent. Le `useEffect` qui restaure `adminMode` depuis `localStorage` redirige alors immédiatement (`router.replace`) vers `/dashboard/admin` (Vue d'ensemble) pour aligner contenu et sidebar, au lieu de laisser les deux se contredire ou de forcer un retour silencieux en mode hôte.
+
+---
+
 ## Patterns d'état côté client
 
 ```typescript

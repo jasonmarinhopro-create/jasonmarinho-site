@@ -183,8 +183,15 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   const [adminMode, setAdminMode] = useState(false)
   useEffect(() => {
     const stored = typeof window !== 'undefined' ? localStorage.getItem('admin-mode') : null
-    setAdminMode(stored === 'true' && !!isAdmin)
-  }, [isAdmin])
+    const active = stored === 'true' && !!isAdmin
+    setAdminMode(active)
+    // Reconnexion avec le mode admin resté actif : la sidebar bascule sur
+    // "Vue d'ensemble" mais le login redirige toujours vers /dashboard
+    // (l'accueil hôte) — incohérent (sidebar admin + contenu hôte affichés
+    // ensemble). On aligne le contenu sur la sidebar au lieu de forcer un
+    // retour silencieux en mode hôte.
+    if (active && pathname === '/dashboard') router.replace('/dashboard/admin')
+  }, [isAdmin, pathname, router])
   function toggleAdminMode() {
     setAdminMode(v => {
       const next = !v
