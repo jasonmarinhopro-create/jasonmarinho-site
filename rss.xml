@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Fri, 18 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 21 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Reporting mensuel LCD : 7 indicateurs à suivre chaque mois pour piloter ton activité</title>
+      <link>https://jasonmarinho.com/blog/reporting-mensuel-lcd-7-indicateurs-piloter-activite</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/reporting-mensuel-lcd-7-indicateurs-piloter-activite</guid>
+      <pubDate>Mon, 21 Sep 2026 08:00:00 GMT</pubDate>
+      <description>Taux d&apos;occupation, ADR, RevPAR, mix de canaux, avis, coût d&apos;acquisition, marge nette : les 7 chiffres à relever tous les 5 du mois pour piloter ta location courte durée sans naviguer à vue.</description>
+      <category>Revenus</category>
+    </item>
     <item>
       <title>Early check-in en LCD : 6 solutions pour accueillir un voyageur avant l&apos;heure sans épuiser ton équipe ménage</title>
       <link>https://jasonmarinho.com/blog/early-check-in-lcd-6-solutions-accueillir-voyageur-avant-heure</link>
@@ -397,14 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/eclairage-lcd-7-regles-confort-photos-avis</guid>
       <pubDate>Mon, 01 Jun 2026 08:00:00 GMT</pubDate>
       <description>Niveaux de lumière, température Kelvin, intensité variable, sources multiples : 7 règles concrètes pour soigner l&apos;éclairage de ta location courte durée et booster tes photos et tes avis.</description>
-      <category>Expérience</category>
-    </item>
-    <item>
-      <title>Linge de maison en LCD : 7 règles pour des draps impeccables sans exploser ton budget</title>
-      <link>https://jasonmarinho.com/blog/linge-de-maison-lcd-7-regles-draps-impeccables-budget</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/linge-de-maison-lcd-7-regles-draps-impeccables-budget</guid>
-      <pubDate>Fri, 29 May 2026 08:00:00 GMT</pubDate>
-      <description>Le linge est la première chose que ton voyageur touche et sent. Voici 7 règles concrètes pour choisir, gérer et renouveler ton linge de maison en location courte durée sans te ruiner.</description>
       <category>Expérience</category>
     </item>
   </channel>
