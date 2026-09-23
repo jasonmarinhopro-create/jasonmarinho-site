@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 21 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 23 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Kit hivernal en LCD : 7 essentiels à ajouter avant novembre pour transformer tes séjours d&apos;hiver en avis 5 étoiles</title>
+      <link>https://jasonmarinho.com/blog/kit-hivernal-lcd-7-essentiels-avant-novembre-avis-5-etoiles</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/kit-hivernal-lcd-7-essentiels-avant-novembre-avis-5-etoiles</guid>
+      <pubDate>Wed, 23 Sep 2026 08:00:00 GMT</pubDate>
+      <description>Plaids, tapis d&apos;entrée, kit dégivrage, bougies, boissons chaudes, bouillottes, guide indoor : 7 essentiels concrets à ajouter à ton logement LCD avant novembre pour soigner les séjours d&apos;hiver et faire grimper tes avis.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Reporting mensuel LCD : 7 indicateurs à suivre chaque mois pour piloter ton activité</title>
       <link>https://jasonmarinho.com/blog/reporting-mensuel-lcd-7-indicateurs-piloter-activite</link>
@@ -397,14 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/voyageurs-vehicule-electrique-lcd-7-actions-accueillir</guid>
       <pubDate>Wed, 03 Jun 2026 08:00:00 GMT</pubDate>
       <description>Prise renforcée, Wallbox, crédit d&apos;impôt IRVE, affichage Airbnb et GMB, tarification : 7 actions concrètes pour accueillir un voyageur en véhicule électrique en location courte durée.</description>
-      <category>Expérience</category>
-    </item>
-    <item>
-      <title>Éclairage en LCD : 7 règles pour transformer ton logement, tes photos et tes avis</title>
-      <link>https://jasonmarinho.com/blog/eclairage-lcd-7-regles-confort-photos-avis</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/eclairage-lcd-7-regles-confort-photos-avis</guid>
-      <pubDate>Mon, 01 Jun 2026 08:00:00 GMT</pubDate>
-      <description>Niveaux de lumière, température Kelvin, intensité variable, sources multiples : 7 règles concrètes pour soigner l&apos;éclairage de ta location courte durée et booster tes photos et tes avis.</description>
       <category>Expérience</category>
     </item>
   </channel>
