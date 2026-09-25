@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 23 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 25 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Réclamation voyageur pendant le séjour : la méthode en 5 étapes pour désamorcer et sauver l&apos;avis</title>
+      <link>https://jasonmarinho.com/blog/reclamation-voyageur-pendant-sejour-methode-5-etapes</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/reclamation-voyageur-pendant-sejour-methode-5-etapes</guid>
+      <pubDate>Fri, 25 Sep 2026 08:00:00 GMT</pubDate>
+      <description>Un voyageur se plaint pendant son séjour ? Voici la méthode terrain en 5 étapes pour désamorcer la situation, éviter le mauvais avis et parfois même récupérer un 5 étoiles.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Kit hivernal en LCD : 7 essentiels à ajouter avant novembre pour transformer tes séjours d&apos;hiver en avis 5 étoiles</title>
       <link>https://jasonmarinho.com/blog/kit-hivernal-lcd-7-essentiels-avant-novembre-avis-5-etoiles</link>
@@ -398,14 +406,6 @@
       <pubDate>Fri, 05 Jun 2026 08:00:00 GMT</pubDate>
       <description>Dispositif de sécurité NF, déclaration cadastrale, taxe foncière, assurance, règlement voyageur : les 7 règles concrètes pour louer ton logement avec piscine en location courte durée sans risque légal ni mauvaise surprise fiscale.</description>
       <category>Réglementation</category>
-    </item>
-    <item>
-      <title>Voyageurs en véhicule électrique : 7 actions pour les accueillir et te démarquer en LCD</title>
-      <link>https://jasonmarinho.com/blog/voyageurs-vehicule-electrique-lcd-7-actions-accueillir</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/voyageurs-vehicule-electrique-lcd-7-actions-accueillir</guid>
-      <pubDate>Wed, 03 Jun 2026 08:00:00 GMT</pubDate>
-      <description>Prise renforcée, Wallbox, crédit d&apos;impôt IRVE, affichage Airbnb et GMB, tarification : 7 actions concrètes pour accueillir un voyageur en véhicule électrique en location courte durée.</description>
-      <category>Expérience</category>
     </item>
   </channel>
 </rss>
