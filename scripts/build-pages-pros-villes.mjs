@@ -21,7 +21,7 @@
  * Script déterministe (aucune dépendance réseau) : lancer :
  *   node scripts/build-pages-pros-villes.mjs
  * puis committer l'output. Penser à footer.js (chips auto depuis CITIES)
- * et sitemap.xml (le script imprime les <url> à jour).
+ * et sitemap.xml (seules les villes de INDEXABLE y figurent).
  */
 
 import fs from 'node:fs'
@@ -43,6 +43,14 @@ function loadCities() {
   // Le littéral est du JS pur (strings simples/doubles quotes) → eval contrôlé
   return new Function('return ' + literal)()
 }
+
+// Pages ville à faire indexer par Google. Par défaut aucune : sans pro
+// réel dans la ville, la page est à ~93 % identique aux autres villes et
+// Google la traite comme du contenu dupliqué (pénalise la qualité globale
+// du site). Ajouter ici "photographe-lcd-lyon" ou "menage-lcd-lyon" dès que
+// la ville a de vrais pros dans l'annuaire et du contenu local réel, puis
+// relancer le script et remettre l'URL dans sitemap.xml.
+const INDEXABLE = new Set([])
 
 // Préposition française devant le nom de ville ("à Lyon", "au Touquet", "au Mans")
 function prepo(name) {
@@ -87,6 +95,8 @@ const isPremium = v => v.adrMin >= 95
 
 // ── Squelette HTML commun ───────────────────────────────────────────────────
 function pageShell({ title, desc, canonical, jsonLd, body }) {
+  const slug = canonical.replace(/^https?:\/\/[^/]+\//, '').replace(/\/$/, '')
+  const robots = INDEXABLE.has(slug) ? 'index, follow' : 'noindex, follow'
   return `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -105,7 +115,7 @@ function pageShell({ title, desc, canonical, jsonLd, body }) {
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
 <meta property="og:site_name" content="Jason Marinho">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="${robots}">
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
