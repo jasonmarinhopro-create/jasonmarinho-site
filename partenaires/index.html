@@ -7,7 +7,7 @@
   <meta name="description" content="Les partenaires recommandés pour ta location courte durée : Driing, offres négociées pour les membres, logiciels comme Lodgify, et le catalogue des 30+ outils LCD par catégorie.">
   <link rel="canonical" href="https://jasonmarinho.com/partenaires">
   <meta property="og:title" content="Partenaires LCD : outils recommandés et offres négociées | Jason Marinho">
-  <meta property="og:description" content="L'annuaire complet des outils LCD : channel managers, serrures connectées, assurances, comptabilité… avec partenariats négociés pour les membres.">
+  <meta property="og:description" content="L'annuaire complet des outils LCD : channel managers, serrures connectées, banque pro, comptabilité, tarification… avec partenariats négociés pour les membres.">
   <meta property="og:url" content="https://jasonmarinho.com/partenaires">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
 <meta property="og:image:width" content="1200">
@@ -131,7 +131,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
   "@type": "WebPage",
   "name": "Partenaires LCD, Jason Marinho",
   "url": "https://jasonmarinho.com/partenaires",
-  "description": "L'annuaire des outils essentiels à la LCD : channel managers, serrures connectées, assurances, comptabilité, avec partenariats négociés pour les membres.",
+  "description": "L'annuaire des outils essentiels à la LCD : channel managers, serrures connectées, banque pro, comptabilité, avec partenariats négociés pour les membres.",
   "inLanguage": "fr-FR",
   "isPartOf": {
     "@type": "WebSite",
@@ -176,7 +176,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     </div>
     <div class="lbl">Partenaires</div>
     <h1 class="h1">Les partenaires qui font<br>vivre <em>ta location courte durée</em></h1>
-    <p class="sub">Les outils que je recommande, les offres négociées pour les membres, et le catalogue des 30+ outils du marché (channel managers, serrures connectées, assurances, comptabilité, ménage…). Sans pub déguisée : chaque lien rémunéré est signalé comme tel.</p>
+    <p class="sub">Les outils que je recommande, les offres négociées pour les membres, et le catalogue des 30+ outils du marché (channel managers, serrures connectées, banque pro, comptabilité, ménage…). Sans pub déguisée : chaque lien rémunéré est signalé comme tel.</p>
   </div>
 </header>
 
@@ -245,89 +245,430 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
   </div>
 </section>
 
-<!-- PARTENARIATS NÉGOCIÉS -->
-<section class="sec cr">
+<!-- MARKET:START -->
+<!-- Généré par scripts/build-partenaires.mjs depuis scripts/data/partenaires.mjs : ne pas éditer à la main -->
+<section class="sec mk-sec" id="offres">
+  <style>
+    .mk-sec{background:#fff}
+    .mk-sec .s-in{max-width:1320px}
+    .mk-head{text-align:center;max-width:760px;margin:0 auto 44px}
+    .mk-head .h2{font-size:clamp(1.9rem,3.6vw,2.9rem);margin-bottom:14px}
+    .mk-head p{font-size:clamp(16px,1.6vw,19px);color:var(--tm);line-height:1.6;margin:0;font-family:'Fraunces',serif;font-weight:300}
+    .mk-tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;max-width:1000px;margin:0 auto 64px}
+    .mk-tile{display:flex;flex-direction:column;align-items:center;gap:14px;background:none;border:0;cursor:pointer;padding:14px 8px;border-radius:14px;font-family:'Outfit',sans-serif;font-size:14.5px;color:var(--td);line-height:1.4;transition:background .15s}
+    .mk-tile i{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:14px;background:var(--cr);font-size:24px;color:var(--g);transition:background .15s,color .15s}
+    .mk-tile:hover{background:rgba(0,76,63,.03)}
+    .mk-tile:hover i,.mk-tile.on i{background:var(--g);color:var(--y)}
+    .mk-layout{display:grid;grid-template-columns:230px 1fr;gap:clamp(28px,4vw,56px);align-items:start}
+    .mk-side{position:sticky;top:90px;display:flex;flex-direction:column;gap:2px}
+    .mk-f{display:flex;align-items:center;justify-content:space-between;gap:8px;background:none;border:0;cursor:pointer;text-align:left;padding:11px 0;font-family:'Outfit',sans-serif;font-size:15px;color:var(--tm);position:relative}
+    .mk-f span{font-size:12px;color:var(--tl);font-variant-numeric:tabular-nums}
+    .mk-f:hover{color:var(--g)}
+    .mk-f.on{color:var(--g);font-weight:600}
+    .mk-f.on::after{content:"";position:absolute;left:0;bottom:4px;width:40px;height:2px;border-radius:2px;background:var(--g)}
+    .mk-f.star{color:#7a5a00}
+    .mk-f.star.on{color:#7a5a00}
+    .mk-f.star.on::after{background:var(--y)}
+    .mk-sep{height:1px;background:rgba(0,76,63,.1);margin:8px 0}
+    .mk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:44px 36px}
+    .mk-card{display:grid;grid-template-columns:64px 1fr;gap:18px;align-items:start}
+    .mk-card[hidden]{display:none}
+    .mk-logo{width:64px;height:64px;border-radius:14px;background:#fff;border:1px solid rgba(0,76,63,.12);box-shadow:0 1px 2px rgba(0,0,0,.03);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:28px;font-weight:600;line-height:1}
+    .mk-card.is-offre .mk-logo{border-color:rgba(255,213,107,.8);box-shadow:0 0 0 3px rgba(255,213,107,.18)}
+    .mk-body{min-width:0}
+    .mk-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+    .mk-nom{font-family:'Fraunces',serif;font-size:1.45rem;font-weight:400;color:var(--td);margin:0;letter-spacing:-.02em;line-height:1.15}
+    .mk-badge{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:3px 7px;border-radius:5px;white-space:nowrap}
+    .b-aff{background:rgba(255,213,107,.3);color:#7a5a00}
+    .b-mem{background:rgba(21,128,61,.1);color:#15803d}
+    .b-fond{background:rgba(0,76,63,.08);color:var(--g)}
+    .mk-offre{font-size:14.5px;font-weight:600;color:var(--td);margin:0 0 6px;line-height:1.45}
+    .mk-cat{font-size:12px;font-weight:600;letter-spacing:.3px;color:var(--tl);margin:0 0 6px}
+    .mk-desc{font-size:14px;line-height:1.6;color:var(--tl);margin:0}
+    .mk-liens{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px}
+    .mk-l{font-size:13.5px;font-weight:600;color:var(--g);text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+    .mk-l i{font-size:11px}
+    .mk-l:hover{text-decoration:underline}
+    .mk-l1{background:var(--g);color:#fff;padding:8px 13px;border-radius:8px}
+    .mk-l1:hover{background:var(--gd);text-decoration:none}
+    .mk-note{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.6;color:var(--tl);background:var(--cr);border-radius:12px;padding:14px 16px;margin:0 0 36px}
+    .mk-note i{font-size:17px;color:var(--g);margin-top:1px}
+    .mk-count{font-size:13px;color:var(--tl);margin:0 0 20px}
+    @media(max-width:860px){
+      .mk-tiles{display:none}
+      .mk-layout{grid-template-columns:1fr}
+      .mk-side{position:static;flex-direction:row;overflow-x:auto;gap:8px;padding-bottom:6px;margin:0 -16px;padding-left:16px;padding-right:16px;scrollbar-width:none}
+      .mk-side::-webkit-scrollbar{display:none}
+      .mk-sep{display:none}
+      .mk-f{flex:0 0 auto;padding:9px 14px;border:1px solid rgba(0,76,63,.15);border-radius:100px;font-size:14px;white-space:nowrap}
+      .mk-f.on{background:var(--g);color:#fff;border-color:var(--g)}
+      .mk-f.on span{color:rgba(255,255,255,.7)}
+      .mk-f.on::after{display:none}
+      .mk-f.star.on{background:var(--y);color:var(--gd);border-color:var(--y)}
+      .mk-grid{grid-template-columns:1fr;gap:30px}
+    }
+  </style>
   <div class="s-in">
-    <div style="margin-bottom:32px">
-      <div class="lbl dk">Offres &amp; outils recommandés</div>
-      <h2 class="h2">Les <em>partenaires</em> du moment</h2>
-      <p style="font-size:16px;color:var(--tm);margin:0 0 8px;max-width:600px;line-height:1.7">Quand un outil mérite vraiment d'être recommandé, on négocie une offre spéciale pour les membres. Certains liens sont des liens affiliés : si tu t'abonnes via ces liens, je touche une commission, sans aucun surcoût pour toi. Ils sont toujours signalés.</p>
+    <div class="mk-head">
+      <div class="lbl dk">Offres &amp; outils</div>
+      <h2 class="h2">Tire plus de ta <em>location courte durée</em></h2>
+      <p>Les outils que je recommande, les offres négociées pour les membres et le catalogue des outils LCD, par catégorie.</p>
     </div>
-    <div class="soon-grid">
-      <div class="soon-card" style="opacity:1;border:1px solid rgba(0,76,63,.18);background:#fff">
-        <div class="soon-ic" style="background:rgba(21,128,61,.10);color:#15803d"><i class="ph ph-buildings"></i></div>
-        <span class="soon-badge" style="background:rgba(21,128,61,.10);color:#15803d">Réduction membre</span>
-        <h3 style="color:var(--td)">Krossbooking</h3>
-        <p style="color:var(--tm)">Channel manager italien complet (PMS + sync OTA + booking engine). Réduction négociée pour les membres.</p>
-      </div>
-      <div class="soon-card" style="opacity:1;border:1px solid rgba(0,76,63,.18);background:#fff">
-        <div class="soon-ic" style="background:rgba(0,76,63,.08);color:var(--g)"><i class="ph ph-globe"></i></div>
-        <span class="soon-badge" style="background:rgba(255,213,107,.25);color:#7a5a00">Lien affilié · Essai 7 jours</span>
-        <h3 style="color:var(--td)">Lodgify</h3>
-        <p style="color:var(--tm)">Site de réservation directe + channel manager (Airbnb, Booking.com, Vrbo). Le bon choix si tu veux ton propre site sans coder. Essai gratuit de 7 jours et démo gratuite avec un conseiller.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
-          <a href="https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv" target="_blank" rel="sponsored noopener" style="display:inline-flex;align-items:center;gap:6px;background:var(--g);color:#fff;font-weight:600;font-size:13px;padding:9px 14px;border-radius:8px;text-decoration:none">Démo gratuite <i class="ph-bold ph-arrow-up-right"></i></a>
-          <a href="/lodgify-avis" style="display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(0,76,63,.25);color:var(--g);font-weight:600;font-size:13px;padding:8px 13px;border-radius:8px;text-decoration:none">Mon avis</a>
-          <a href="/lodgify-prix" style="display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(0,76,63,.25);color:var(--g);font-weight:600;font-size:13px;padding:8px 13px;border-radius:8px;text-decoration:none">Les prix</a>
-        </div>
-      </div>
-      <div class="soon-card" style="opacity:1;border:1px solid rgba(0,76,63,.18);background:#fff">
-        <div class="soon-ic" style="background:rgba(0,76,63,.08);color:var(--g)"><i class="ph ph-chats-circle"></i></div>
-        <span class="soon-badge" style="background:rgba(255,213,107,.25);color:#7a5a00">Lien affilié · -25 % 3 mois</span>
-        <h3 style="color:var(--td)">Hospitable</h3>
-        <p style="color:var(--tm)">Messagerie unifiée et automatisée (Airbnb, Booking.com, Vrbo), réponses assistées par IA, coordination des équipes de ménage. Le bon choix si tu es surtout sur Airbnb et que les messages te prennent trop de temps. Essai gratuit de 14 jours sans carte bancaire, puis 25 % de réduction sur les 3 premiers mois via ce lien.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
-          <a href="https://hospitable.com/partners/refer?utm_source=affiliates&amp;utm_medium=blog&amp;utm_campaign=BASWTYN7" target="_blank" rel="sponsored noopener" style="display:inline-flex;align-items:center;gap:6px;background:var(--g);color:#fff;font-weight:600;font-size:13px;padding:9px 14px;border-radius:8px;text-decoration:none">Essai gratuit <i class="ph-bold ph-arrow-up-right"></i></a>
-          <a href="/hospitable-avis" style="display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(0,76,63,.25);color:var(--g);font-weight:600;font-size:13px;padding:8px 13px;border-radius:8px;text-decoration:none">Mon avis</a>
-        </div>
-      </div>
-      <div class="soon-card" style="opacity:1;border:1px solid rgba(0,76,63,.18);background:#fff">
-        <div class="soon-ic" style="background:rgba(0,76,63,.08);color:var(--g)"><i class="ph ph-credit-card"></i></div>
-        <span class="soon-badge" style="background:rgba(255,213,107,.25);color:#7a5a00">Parrainage · 1 mois offert</span>
-        <h3 style="color:var(--td)">Shine</h3>
-        <p style="color:var(--tm)">Néobanque pro française, ouverte en ligne : compte séparé pour tes revenus LCD, facturation et export pour ton comptable. Via mon lien de parrainage, un mois d'abonnement offert en plus de l'essai (selon les conditions de parrainage en vigueur chez Shine).</p>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
-          <a href="https://app.shine.fr/register?referral=WYDP4644" target="_blank" rel="sponsored noopener" style="display:inline-flex;align-items:center;gap:6px;background:var(--g);color:#fff;font-weight:600;font-size:13px;padding:9px 14px;border-radius:8px;text-decoration:none">Ouvrir un compte <i class="ph-bold ph-arrow-up-right"></i></a>
-          <a href="/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026" style="display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(0,76,63,.25);color:var(--g);font-weight:600;font-size:13px;padding:8px 13px;border-radius:8px;text-decoration:none">Pourquoi un compte pro ?</a>
-        </div>
-      </div>
-      <div class="soon-card" style="opacity:.6">
-        <div class="soon-ic"><i class="ph ph-heart"></i></div>
-        <span class="soon-badge">À négocier</span>
-        <h3>Selon vos votes</h3>
-        <p>Les membres votent pour les outils qu'ils utilisent. Plus de votes = plus de chances qu'on négocie un partenariat.</p>
-      </div>
-      <div class="soon-card" style="opacity:.6">
-        <div class="soon-ic"><i class="ph ph-handshake"></i></div>
-        <span class="soon-badge">Bientôt</span>
-        <h3>Plus de partenariats</h3>
-        <p>D'autres outils viendront enrichir cette section au fur et à mesure des négociations en cours.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- CATALOGUE -->
-<section class="sec">
-  <div class="s-in">
-    <div style="margin-bottom:32px">
-      <div class="lbl dk">Catalogue complet</div>
-      <h2 class="h2">9 catégories d'<em>outils LCD</em></h2>
-      <p style="font-size:16px;color:var(--tm);margin:0 0 8px;max-width:560px;line-height:1.7">Tous les outils du marché, partenariats négociés mis en avant, sinon liens directs vers les outils. Pas de pub déguisée.</p>
+    <div class="mk-tiles" role="group" aria-label="Catégories principales">
+      <button type="button" class="mk-tile" data-f="gestion"><i class="ph ph-squares-four"></i>Gestion & channel manager</button>
+      <button type="button" class="mk-tile" data-f="messagerie"><i class="ph ph-chats-circle"></i>Messagerie & automatisation</button>
+      <button type="button" class="mk-tile" data-f="direct"><i class="ph ph-globe"></i>Réservation directe</button>
+      <button type="button" class="mk-tile" data-f="banque"><i class="ph ph-credit-card"></i>Banque & paiement</button>
+      <button type="button" class="mk-tile" data-f="acces"><i class="ph ph-lock-key"></i>Accès & sécurité</button>
+      <button type="button" class="mk-tile" data-f="compta"><i class="ph ph-calculator"></i>Comptabilité & fiscalité</button>
     </div>
-    <div class="cat-grid">
-      <div class="cat-card"><span class="cat-emoji">🏠</span><h3>Channel managers</h3><p>Smoobu, <a href="/lodgify-avis">Lodgify</a>, Krossbooking, <a href="/hospitable-avis">Hospitable</a>, Beds24, BookingSync, Avantio</p></div>
-      <div class="cat-card"><span class="cat-emoji">🔐</span><h3>Serrures connectées</h3><p>Igloohome, Nuki, Tedee, Yale Linus</p></div>
-      <div class="cat-card"><span class="cat-emoji">🛡️</span><h3>Assurances</h3><p>Luko, SMA BTP, AIR Cover by Airbnb</p></div>
-      <div class="cat-card"><span class="cat-emoji">📊</span><h3>Comptabilité &amp; juridique</h3><p>Ouicompta, Dougs, Indy, Jedeclaremonmeuble</p></div>
-      <div class="cat-card"><span class="cat-emoji">🧹</span><h3>Ménage &amp; maintenance</h3><p>Olalo, Properly</p></div>
-      <div class="cat-card"><span class="cat-emoji">📸</span><h3>Photographe</h3><p>Hôte-Photo, Pix4Stay</p></div>
-      <div class="cat-card"><span class="cat-emoji">🌍</span><h3>Site de réservation directe</h3><p>Driing, Hostfully, <a href="/lodgify-avis">Lodgify</a></p></div>
-      <div class="cat-card"><span class="cat-emoji">💳</span><h3>Paiement &amp; banque pro</h3><p>Stripe, GoCardless, Shine, Qonto</p></div>
-      <div class="cat-card"><span class="cat-emoji">📧</span><h3>Marketing &amp; email</h3><p>Brevo, Mailchimp</p></div>
+
+    <div class="mk-layout">
+      <nav class="mk-side" aria-label="Filtrer par catégorie">
+        <button type="button" class="mk-f on" data-f="all">Toutes les catégories <span>33</span></button>
+        <button type="button" class="mk-f star" data-f="offres">★ Offres partenaires <span>5</span></button>
+        <div class="mk-sep"></div>
+        <button type="button" class="mk-f" data-f="gestion">Gestion & channel manager <span>8</span></button>
+        <button type="button" class="mk-f" data-f="messagerie">Messagerie & automatisation <span>4</span></button>
+        <button type="button" class="mk-f" data-f="direct">Réservation directe <span>4</span></button>
+        <button type="button" class="mk-f" data-f="banque">Banque & paiement <span>3</span></button>
+        <button type="button" class="mk-f" data-f="prix">Tarification dynamique <span>3</span></button>
+        <button type="button" class="mk-f" data-f="acces">Accès & sécurité <span>6</span></button>
+        <button type="button" class="mk-f" data-f="compta">Comptabilité & fiscalité <span>4</span></button>
+        <button type="button" class="mk-f" data-f="menage">Ménage & opérations <span>2</span></button>
+        <button type="button" class="mk-f" data-f="photo">Photo & visite virtuelle <span>2</span></button>
+        <button type="button" class="mk-f" data-f="marche">Étude de marché <span>2</span></button>
+        <button type="button" class="mk-f" data-f="marketing">Marketing & email <span>2</span></button>
+      </nav>
+
+      <div>
+        <p class="mk-note"><i class="ph ph-info"></i><span>Les outils marqués <strong>Lien affilié</strong> ou <strong>Parrainage</strong> me rapportent une commission si tu t'abonnes via mon lien, sans aucun surcoût pour toi. Tous les autres sont référencés sans aucune rémunération.</span></p>
+        <p class="mk-count" aria-live="polite"><span id="mk-n">33</span> outils</p>
+        <div class="mk-grid">
+      <article class="mk-card is-offre" data-cats="direct messagerie" data-offre="1">
+        <div class="mk-logo" style="color:#004C3F" aria-hidden="true">D</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Driing</h3><span class="mk-badge b-fond">Co-fondé par Jason</span></div>
+          <p class="mk-offre">Réservation directe à 0 % de commission</p>
+          <p class="mk-desc">Plateforme de réservation directe, livret d'accueil digital et annuaire de conciergeries. Co-fondée par Jason, pas de commission pour lui.</p>
+          <div class="mk-liens"><a href="https://driing.co" target="_blank" rel="noopener" class="mk-l mk-l1">Découvrir Driing <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card is-offre" data-cats="gestion direct" data-offre="1">
+        <div class="mk-logo" style="color:#2E5BFF" aria-hidden="true">L</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Lodgify</h3><span class="mk-badge b-aff">Lien affilié</span></div>
+          <p class="mk-offre">Essai 7 jours + démo gratuite</p>
+          <p class="mk-desc">Site de réservation directe et channel manager (Airbnb, Booking.com, Vrbo). Le bon choix pour avoir ton propre site sans coder.</p>
+          <div class="mk-liens"><a href="https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Démo gratuite <i class="ph-bold ph-arrow-up-right"></i></a><a href="/lodgify-avis" class="mk-l">Mon avis <i class="ph-bold ph-arrow-right"></i></a><a href="/lodgify-prix" class="mk-l">Les prix <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card is-offre" data-cats="messagerie gestion" data-offre="1">
+        <div class="mk-logo" style="color:#E0245E" aria-hidden="true">H</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Hospitable</h3><span class="mk-badge b-aff">Lien affilié</span></div>
+          <p class="mk-offre">-25 % pendant 3 mois + 14 jours d’essai</p>
+          <p class="mk-desc">Messagerie unifiée et automatisée, réponses par IA, codes de serrure et tâches de ménage générés à chaque réservation. Idéal si tu es surtout sur Airbnb.</p>
+          <div class="mk-liens"><a href="https://hospitable.com/partners/refer?utm_source=affiliates&amp;utm_medium=blog&amp;utm_campaign=BASWTYN7" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Essai gratuit <i class="ph-bold ph-arrow-up-right"></i></a><a href="/hospitable-avis" class="mk-l">Mon avis <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card is-offre" data-cats="banque" data-offre="1">
+        <div class="mk-logo" style="color:#1F2937" aria-hidden="true">S</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Shine</h3><span class="mk-badge b-aff">Parrainage</span></div>
+          <p class="mk-offre">1 mois d’abonnement offert</p>
+          <p class="mk-desc">Néobanque pro française : compte séparé pour tes revenus LCD, facturation, export pour ton comptable. Mois offert selon les conditions de parrainage en vigueur.</p>
+          <div class="mk-liens"><a href="https://app.shine.fr/register?referral=WYDP4644" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Ouvrir un compte <i class="ph-bold ph-arrow-up-right"></i></a><a href="/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026" class="mk-l">Pourquoi un compte pro ? <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card is-offre" data-cats="gestion" data-offre="1">
+        <div class="mk-logo" style="color:#0E7490" aria-hidden="true">K</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Krossbooking</h3><span class="mk-badge b-mem">Réduction membre</span></div>
+          <p class="mk-offre">Réduction négociée pour les membres</p>
+          <p class="mk-desc">Channel manager italien complet : PMS, synchronisation des plateformes et moteur de réservation.</p>
+          
+        </div>
+      </article>
+      <article class="mk-card" data-cats="gestion direct">
+        <div class="mk-logo" style="color:#0F766E" aria-hidden="true">S</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Smoobu</h3></div>
+          <p class="mk-cat">Gestion & channel manager · Réservation directe</p>
+          <p class="mk-desc">Channel manager simple et rapide à prendre en main, interface en français, site de réservation inclus.</p>
+          <div class="mk-liens"><a href="/comparatif-lodgify-smoobu" class="mk-l mk-l1">Lodgify vs Smoobu <i class="ph-bold ph-arrow-right"></i></a><a href="/comparatif-smoobu-hospitable" class="mk-l">Smoobu vs Hospitable <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="gestion messagerie">
+        <div class="mk-logo" style="color:#7C3AED" aria-hidden="true">S</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Superhote</h3></div>
+          <p class="mk-cat">Gestion & channel manager · Messagerie & automatisation</p>
+          <p class="mk-desc">Logiciel français de gestion et de messages automatiques, avec un support en français.</p>
+          <div class="mk-liens"><a href="/comparatif-superhote-welkeys" class="mk-l mk-l1">Superhote vs Welkeys <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="gestion">
+        <div class="mk-logo" style="color:#334155" aria-hidden="true">B</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Beds24</h3></div>
+          <p class="mk-cat">Gestion & channel manager</p>
+          <p class="mk-desc">Channel manager très complet et paramétrable, pour les profils à l’aise avec la technique.</p>
+          <div class="mk-liens"><a href="https://beds24.com" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="gestion messagerie">
+        <div class="mk-logo" style="color:#EA580C" aria-hidden="true">H</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Hostfully</h3></div>
+          <p class="mk-cat">Gestion & channel manager · Messagerie & automatisation</p>
+          <p class="mk-desc">PMS pour conciergeries multi-biens, avec livret d’accueil digital.</p>
+          <div class="mk-liens"><a href="/comparatif-hostfully-guesty" class="mk-l mk-l1">Hostfully vs Guesty <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="gestion">
+        <div class="mk-logo" style="color:#1D4ED8" aria-hidden="true">G</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Guesty</h3></div>
+          <p class="mk-cat">Gestion & channel manager</p>
+          <p class="mk-desc">PMS pensé pour les grandes conciergeries qui gèrent des dizaines de logements.</p>
+          <div class="mk-liens"><a href="/comparatif-hostfully-guesty" class="mk-l mk-l1">Hostfully vs Guesty <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="banque direct">
+        <div class="mk-logo" style="color:#635BFF" aria-hidden="true">S</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Stripe</h3></div>
+          <p class="mk-cat">Banque & paiement · Réservation directe</p>
+          <p class="mk-desc">Paiement en ligne par carte sur ton site de réservation directe.</p>
+          <div class="mk-liens"><a href="https://stripe.com/fr" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="banque">
+        <div class="mk-logo" style="color:#111827" aria-hidden="true">Q</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Qonto</h3></div>
+          <p class="mk-cat">Banque & paiement</p>
+          <p class="mk-desc">Néobanque pro très répandue chez les indépendants et les petites sociétés.</p>
+          <div class="mk-liens"><a href="https://qonto.com/fr" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="prix">
+        <div class="mk-logo" style="color:#2563EB" aria-hidden="true">P</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">PriceLabs</h3></div>
+          <p class="mk-cat">Tarification dynamique</p>
+          <p class="mk-desc">Tarification dynamique très paramétrable, basée sur la demande du marché local.</p>
+          <div class="mk-liens"><a href="/comparatif-pricelabs-beyond-wheelhouse" class="mk-l mk-l1">Comparatif pricing <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="prix">
+        <div class="mk-logo" style="color:#0891B2" aria-hidden="true">B</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Beyond</h3></div>
+          <p class="mk-cat">Tarification dynamique</p>
+          <p class="mk-desc">Tarification dynamique automatisée, pensée pour être simple à laisser tourner.</p>
+          <div class="mk-liens"><a href="/comparatif-pricelabs-beyond-wheelhouse" class="mk-l mk-l1">Comparatif pricing <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="prix">
+        <div class="mk-logo" style="color:#4F46E5" aria-hidden="true">W</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Wheelhouse</h3></div>
+          <p class="mk-cat">Tarification dynamique</p>
+          <p class="mk-desc">Tarification dynamique avec des recommandations détaillées et transparentes.</p>
+          <div class="mk-liens"><a href="/comparatif-pricelabs-beyond-wheelhouse" class="mk-l mk-l1">Comparatif pricing <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="acces">
+        <div class="mk-logo" style="color:#0F172A" aria-hidden="true">I</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Igloohome</h3></div>
+          <p class="mk-cat">Accès & sécurité</p>
+          <p class="mk-desc">Serrures et boîtes à clés à codes temporaires, qui fonctionnent sans wifi.</p>
+          <div class="mk-liens"><a href="/comparatif-igloohome-ttlock" class="mk-l mk-l1">igloohome vs TTLock <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="acces">
+        <div class="mk-logo" style="color:#16A34A" aria-hidden="true">T</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">TTLock</h3></div>
+          <p class="mk-cat">Accès & sécurité</p>
+          <p class="mk-desc">Écosystème de serrures à code et Bluetooth, souvent à petit prix.</p>
+          <div class="mk-liens"><a href="/comparatif-igloohome-ttlock" class="mk-l mk-l1">igloohome vs TTLock <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="acces">
+        <div class="mk-logo" style="color:#F59E0B" aria-hidden="true">N</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Nuki</h3></div>
+          <p class="mk-cat">Accès & sécurité</p>
+          <p class="mk-desc">Serrure connectée qui se monte sur la serrure existante, côté intérieur.</p>
+          <div class="mk-liens"><a href="https://nuki.io/fr" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="acces">
+        <div class="mk-logo" style="color:#0284C7" aria-hidden="true">R</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Ring</h3></div>
+          <p class="mk-cat">Accès & sécurité</p>
+          <p class="mk-desc">Sonnettes vidéo et caméras extérieures, historique vidéo sur abonnement.</p>
+          <div class="mk-liens"><a href="/comparatif-ring-eufy-reolink" class="mk-l mk-l1">Ring vs Eufy vs Reolink <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="acces">
+        <div class="mk-logo" style="color:#0369A1" aria-hidden="true">E</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Eufy</h3></div>
+          <p class="mk-cat">Accès & sécurité</p>
+          <p class="mk-desc">Caméras et sonnettes avec stockage local, sans abonnement obligatoire.</p>
+          <div class="mk-liens"><a href="/comparatif-ring-eufy-reolink" class="mk-l mk-l1">Ring vs Eufy vs Reolink <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="acces">
+        <div class="mk-logo" style="color:#1E40AF" aria-hidden="true">R</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Reolink</h3></div>
+          <p class="mk-cat">Accès & sécurité</p>
+          <p class="mk-desc">Caméras de surveillance wifi ou filaires, avec stockage local.</p>
+          <div class="mk-liens"><a href="/comparatif-ring-eufy-reolink" class="mk-l mk-l1">Ring vs Eufy vs Reolink <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="compta">
+        <div class="mk-logo" style="color:#10B981" aria-hidden="true">I</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Indy</h3></div>
+          <p class="mk-cat">Comptabilité & fiscalité</p>
+          <p class="mk-desc">Comptabilité en ligne automatisée pour les indépendants.</p>
+          <div class="mk-liens"><a href="/comparatif-indy-tiime-henrri" class="mk-l mk-l1">Indy vs Tiime vs Henrri <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="compta">
+        <div class="mk-logo" style="color:#0EA5E9" aria-hidden="true">T</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Tiime</h3></div>
+          <p class="mk-cat">Comptabilité & fiscalité</p>
+          <p class="mk-desc">Comptabilité et facturation en ligne, avec une offre gratuite.</p>
+          <div class="mk-liens"><a href="/comparatif-indy-tiime-henrri" class="mk-l mk-l1">Indy vs Tiime vs Henrri <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="compta">
+        <div class="mk-logo" style="color:#DB2777" aria-hidden="true">H</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Henrri</h3></div>
+          <p class="mk-cat">Comptabilité & fiscalité</p>
+          <p class="mk-desc">Logiciel de facturation en ligne gratuit.</p>
+          <div class="mk-liens"><a href="/comparatif-indy-tiime-henrri" class="mk-l mk-l1">Indy vs Tiime vs Henrri <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="compta">
+        <div class="mk-logo" style="color:#B45309" aria-hidden="true">J</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Jedeclaremonmeuble</h3></div>
+          <p class="mk-cat">Comptabilité & fiscalité</p>
+          <p class="mk-desc">Comptabilité et déclaration LMNP en ligne, avec accompagnement.</p>
+          <div class="mk-liens"><a href="https://www.jedeclaremonmeuble.com" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="menage">
+        <div class="mk-logo" style="color:#059669" aria-hidden="true">T</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Turno</h3></div>
+          <p class="mk-cat">Ménage & opérations</p>
+          <p class="mk-desc">Planification automatique des ménages et place de marché de prestataires.</p>
+          <div class="mk-liens"><a href="/comparatif-turnoverbnb-properly" class="mk-l mk-l1">Turno vs Properly <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="menage">
+        <div class="mk-logo" style="color:#7C2D12" aria-hidden="true">P</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Properly</h3></div>
+          <p class="mk-cat">Ménage & opérations</p>
+          <p class="mk-desc">Checklists de ménage et contrôle qualité en photos.</p>
+          <div class="mk-liens"><a href="/comparatif-turnoverbnb-properly" class="mk-l mk-l1">Turno vs Properly <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="photo">
+        <div class="mk-logo" style="color:#111827" aria-hidden="true">M</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Matterport</h3></div>
+          <p class="mk-cat">Photo & visite virtuelle</p>
+          <p class="mk-desc">Visite virtuelle 3D du logement, intégrable à ton annonce ou ton site.</p>
+          <div class="mk-liens"><a href="/comparatif-matterport-cubicasa" class="mk-l mk-l1">Matterport vs CubiCasa <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="photo">
+        <div class="mk-logo" style="color:#0D9488" aria-hidden="true">C</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">CubiCasa</h3></div>
+          <p class="mk-cat">Photo & visite virtuelle</p>
+          <p class="mk-desc">Plan du logement généré en le scannant avec un smartphone.</p>
+          <div class="mk-liens"><a href="/comparatif-matterport-cubicasa" class="mk-l mk-l1">Matterport vs CubiCasa <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="marche">
+        <div class="mk-logo" style="color:#E11D48" aria-hidden="true">A</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">AirDNA</h3></div>
+          <p class="mk-cat">Étude de marché</p>
+          <p class="mk-desc">Données du marché LCD : taux d’occupation, prix moyens, saisonnalité par ville.</p>
+          <div class="mk-liens"><a href="/comparatif-airdna-mashvisor" class="mk-l mk-l1">AirDNA vs Mashvisor <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="marche">
+        <div class="mk-logo" style="color:#6D28D9" aria-hidden="true">M</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Mashvisor</h3></div>
+          <p class="mk-cat">Étude de marché</p>
+          <p class="mk-desc">Analyse de rentabilité immobilière, surtout sur le marché américain.</p>
+          <div class="mk-liens"><a href="/comparatif-airdna-mashvisor" class="mk-l mk-l1">AirDNA vs Mashvisor <i class="ph-bold ph-arrow-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="marketing">
+        <div class="mk-logo" style="color:#0B996E" aria-hidden="true">B</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Brevo</h3></div>
+          <p class="mk-cat">Marketing & email</p>
+          <p class="mk-desc">Emailing et SMS, solution française, pour fidéliser tes anciens voyageurs.</p>
+          <div class="mk-liens"><a href="https://www.brevo.com/fr/" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        </div>
+      </article>
+      <article class="mk-card" data-cats="marketing">
+        <div class="mk-logo" style="color:#CA8A04" aria-hidden="true">M</div>
+        <div class="mk-body">
+          <div class="mk-top"><h3 class="mk-nom">Mailchimp</h3></div>
+          <p class="mk-cat">Marketing & email</p>
+          <p class="mk-desc">Emailing et automatisations, très répandu.</p>
+          <div class="mk-liens"><a href="https://mailchimp.com/fr/" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        </div>
+      </article>
+        </div>
+      </div>
     </div>
   </div>
+  <script>
+  (function(){
+    var sec=document.getElementById('offres');if(!sec)return;
+    var cards=sec.querySelectorAll('.mk-card'),btns=sec.querySelectorAll('[data-f]'),n=document.getElementById('mk-n');
+    function apply(f,scroll){
+      var shown=0;
+      cards.forEach(function(c){
+        var ok=f==='all'||(f==='offres'?c.hasAttribute('data-offre'):(' '+c.getAttribute('data-cats')+' ').indexOf(' '+f+' ')>-1);
+        c.hidden=!ok;if(ok)shown++;
+      });
+      btns.forEach(function(b){b.classList.toggle('on',b.getAttribute('data-f')===f)});
+      if(n)n.textContent=shown;
+      if(scroll){var g=sec.querySelector('.mk-layout');var y=g.getBoundingClientRect().top+window.pageYOffset-90;if(Math.abs(window.pageYOffset-y)>200)window.scrollTo({top:y,behavior:'smooth'})}
+      try{history.replaceState(null,'',f==='all'?location.pathname:'#'+f)}catch(e){}
+    }
+    btns.forEach(function(b){b.addEventListener('click',function(){apply(b.getAttribute('data-f'),b.classList.contains('mk-tile'))})});
+    var h=location.hash.slice(1);
+    if(h&&sec.querySelector('[data-f="'+h+'"]'))apply(h,false);
+  })();
+  </script>
 </section>
+<!-- MARKET:END -->
 
 <!-- COMPARATIFS -->
 <section class="sec cr" id="comparatifs">
