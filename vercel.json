@@ -89,7 +89,7 @@
     },
     {
       "source": "/ressources/partenaires",
-      "destination": "/services/ecosysteme",
+      "destination": "/partenaires",
       "permanent": true
     },
     {
@@ -98,8 +98,13 @@
       "permanent": true
     },
     {
+      "source": "/services/ecosysteme",
+      "destination": "/partenaires",
+      "permanent": true
+    },
+    {
       "source": "/services/partenaires",
-      "destination": "/services/ecosysteme",
+      "destination": "/partenaires",
       "permanent": true
     },
     {

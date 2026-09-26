@@ -77,7 +77,7 @@ const FILES_TO_UPDATE = [
   'services/index.html',
   'services/formations/index.html',
   'services/communaute/index.html',
-  'services/ecosysteme/index.html',
+  'partenaires/index.html',
   'services/guides-lcd/index.html',
   'jason-app/app/dashboard/abonnement/page.tsx',
   'jason-app/app/dashboard/formations/page.tsx',

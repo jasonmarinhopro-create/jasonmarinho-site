@@ -259,6 +259,7 @@
             + '<a href="/services/formations">Formations</a>'
             + '<a href="/services/actualites">Actualités LCD</a>'
             + '<a href="/lexique-lcd">Lexique LCD</a>'
+            + '<a href="/partenaires">Partenaires</a>'
             + '<a href="/sos-hote">SOS Hôte (urgences)</a>'
           + '</div>'
           + '<div class="ft-cat">'

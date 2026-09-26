@@ -1,5 +1,9 @@
 (function () {
   'use strict';
+  // Certaines pages incluent nav.js deux fois : sans ce garde, deux menus
+  // sont injectés et chaque visite est comptée deux fois.
+  if (window.__jmNavLoaded) return;
+  window.__jmNavLoaded = true;
 
   /* ── Phosphor Icons : assure que les deux subsets (regular + bold) sont chargés ─
    * Si une page n'inclut qu'un seul subset, on ajoute le ou les manquants
@@ -129,6 +133,30 @@
       '.n-mega-ann .n-ann-cta-secondary:hover{color:var(--y);border-color:rgba(255,213,107,.4);background:rgba(255,213,107,.05)}',
       '.n-mega-ann .n-ann-cta-secondary i,.n-mega-ann .n-ann-cta-secondary:hover i{color:inherit}',
       '@media(max-width:780px){.n-mega-ann{min-width:auto;width:min(94vw,520px);flex-direction:column}.n-mega-ann .n-ann-card{min-width:auto}}',
+
+      /* Ressources mega menu : 2 cartes visuelles + colonne "Plus" (modèle Shine) */
+      '.n-mega-res{min-width:720px;padding:22px;gap:14px;align-items:stretch}',
+      '.n-mega-res a.n-res-card{flex:0 0 200px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;gap:6px;min-height:210px;border-radius:12px;padding:18px;position:relative;overflow:hidden;white-space:normal;text-decoration:none;transition:transform .2s,border-color .2s}',
+      '.n-mega-res a.n-res-card:hover{transform:translateY(-2px)}',
+      '.n-mega-res a.n-res-blog,.n-mega-res a.n-res-blog:hover{background:linear-gradient(160deg,#FFD56B 0%,#ffe39a 100%);border:1px solid rgba(255,213,107,.6)}',
+      '.n-mega-res a.n-res-part,.n-mega-res a.n-res-part:hover{background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%);border:1px solid rgba(255,213,107,.22)}',
+      '.n-mega-res .n-res-part:hover{border-color:rgba(255,213,107,.45)}',
+      '.n-mega-res .n-res-ico{position:absolute;top:16px;left:18px;width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px}',
+      '.n-mega-res a.n-res-card .n-res-ico i{font-size:22px;width:auto;color:inherit}',
+      '.n-mega-res .n-res-blog .n-res-ico{background:rgba(0,51,41,.10);color:var(--gd)}',
+      '.n-mega-res .n-res-part .n-res-ico{background:rgba(255,213,107,.10);color:var(--y)}',
+      '.n-mega-res .n-res-card i.n-res-deco{position:absolute;right:-14px;top:40px;font-size:120px;opacity:.10;width:auto}',
+      '.n-mega-res .n-res-blog i.n-res-deco{color:var(--gd)}',
+      '.n-mega-res .n-res-part i.n-res-deco{color:var(--y)}',
+      '.n-mega-res .n-res-t{font-family:\'Fraunces\',serif;font-size:19px;font-weight:500;letter-spacing:-.01em;position:relative}',
+      '.n-mega-res .n-res-blog .n-res-t{color:var(--gd)}',
+      '.n-mega-res .n-res-part .n-res-t{color:#fff}',
+      '.n-mega-res .n-res-d{font-size:12.5px;line-height:1.45;position:relative}',
+      '.n-mega-res .n-res-blog .n-res-d{color:rgba(0,51,41,.7)}',
+      '.n-mega-res .n-res-part .n-res-d{color:rgba(255,255,255,.6)}',
+      '.n-mega-res .n-res-more{display:flex;flex-direction:column;gap:1px;min-width:190px;padding:4px 4px 0 10px}',
+      '.n-mega-res .n-res-more .n-col-title{margin-bottom:6px}',
+      '@media(max-width:1080px){.n-mega-res{min-width:auto;width:min(96vw,640px);flex-wrap:wrap}.n-mega-res a.n-res-card{flex:1 1 180px;min-height:170px}.n-mega-res .n-res-more{flex:1 1 100%;padding:8px 0 0}}',
 
       '.n-tag-free{display:inline-flex;align-items:center;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:rgba(99,214,131,.18);color:#7AE89A;border:1px solid rgba(99,214,131,.30);margin-left:auto;flex-shrink:0}',
       '.n-mega a.n-sub-link{color:rgba(255,213,107,.7);font-size:12.5px;margin-top:4px;border-top:1px dashed rgba(255,255,255,.06);padding-top:10px}',
@@ -310,11 +338,8 @@
             + '<h3 class="n-col-svc-h">Apprendre & échanger</h3>'
             + '<p class="n-col-svc-cap">Pour aller plus loin et trouver du soutien.</p>'
             + '<a href="/services/formations">Formations LCD<span class="n-arr">→</span></a>'
-            + '<a href="/services/guides-lcd">Guides LCD<span class="n-arr">→</span></a>'
-            + '<a href="/services/actualites">Actualités LCD<span class="n-arr">→</span></a>'
             + '<a href="/sos-hote">SOS Hôte (urgences)<span class="n-arr">→</span></a>'
             + '<a href="/services/entre-hotes">Entre Hôtes (forum)<span class="n-arr">→</span></a>'
-            + '<a href="/services/ecosysteme">Écosystème LCD<span class="n-arr">→</span></a>'
             + '<a href="/services/communaute">Groupes Facebook<span class="n-arr">→</span></a>'
           + '</div>'
         + '</div>'
@@ -347,14 +372,33 @@
         + '</div>'
       + '</li>'
 
-      /* ── Blog ── */
-      + '<li><a href="/blog" class="n-link">Blog</a></li>'
-
-      /* ── Qui suis-je ── */
-      + '<li><a href="/qui-suis-je" class="n-link">Qui suis-je</a></li>'
-
-      /* ── Contact ── */
-      + '<li><a href="/contact" class="n-link">Contact</a></li>'
+      /* ── Ressources (Blog, Partenaires + liens secondaires) ── */
+      + '<li class="n-drop">'
+        + '<button class="n-btn" aria-haspopup="true" aria-expanded="false">Ressources ' + CARET + '</button>'
+        + '<div class="n-mega n-mega-res">'
+          + '<a href="/blog" class="n-res-card n-res-blog">'
+            + '<span class="n-res-ico"><i class="ph-bold ph-newspaper"></i></span>'
+            + '<i class="ph ph-newspaper n-res-deco"></i>'
+            + '<span class="n-res-t">Blog</span>'
+            + '<span class="n-res-d">Conseils, stratégies et actus pour les hôtes LCD.</span>'
+          + '</a>'
+          + '<a href="/partenaires" class="n-res-card n-res-part">'
+            + '<span class="n-res-ico"><i class="ph-bold ph-handshake"></i></span>'
+            + '<i class="ph ph-handshake n-res-deco"></i>'
+            + '<span class="n-res-t">Partenaires</span>'
+            + '<span class="n-res-d">Outils recommandés et offres négociées pour les membres.</span>'
+          + '</a>'
+          + '<div class="n-res-more">'
+            + '<div class="n-col-title">Plus</div>'
+            + '<a href="/qui-suis-je"><i class="ph ph-user-circle"></i>Qui suis-je</a>'
+            + '<a href="/contact"><i class="ph ph-envelope"></i>Contact</a>'
+            + '<a href="/partenaires#comparatifs"><i class="ph ph-scales"></i>Comparatifs outils</a>'
+            + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
+            + '<a href="/services/actualites"><i class="ph ph-megaphone"></i>Actualités LCD</a>'
+            + '<a href="/lexique-lcd"><i class="ph ph-book-open"></i>Lexique LCD</a>'
+          + '</div>'
+        + '</div>'
+      + '</li>'
 
       /* ── Tarifs ── */
       + '<li><a href="/tarifs" class="n-link">Tarifs</a></li>'
@@ -415,11 +459,8 @@
         + '<a href="/calculateurs" class="mob-sublink">Voir tous les calculateurs <i class="ph-bold ph-arrow-right"></i></a>'
         + '<span class="mob-stitle">Apprendre & échanger</span>'
         + '<a href="/services/formations"><i class="ph ph-graduation-cap"></i>Formations LCD</a>'
-        + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
-        + '<a href="/services/actualites"><i class="ph ph-megaphone"></i>Actualités LCD</a>'
         + '<a href="/sos-hote"><i class="ph ph-lifebuoy"></i>SOS Hôte (urgences)</a>'
         + '<a href="/services/entre-hotes"><i class="ph ph-house"></i>Entre Hôtes (forum)</a>'
-        + '<a href="/services/ecosysteme"><i class="ph ph-globe"></i>Écosystème LCD</a>'
         + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Groupes Facebook</a>'
       + '</div>'
     + '</div>'
@@ -448,9 +489,26 @@
       + '</div>'
     + '</div>'
 
-    + '<a href="/blog"><i class="ph ph-newspaper"></i>Blog LCD</a>'
-    + '<a href="/qui-suis-je"><i class="ph ph-user-circle"></i>Qui suis-je</a>'
-    + '<a href="/contact"><i class="ph ph-envelope"></i>Contact</a>'
+    + '<div class="mob-acc" id="acc-res">'
+      + '<button class="mob-acc-btn" aria-expanded="false">Ressources ' + MOB_ARROW + '</button>'
+      + '<div class="mob-acc-body">'
+        + '<a href="/blog"><i class="ph ph-newspaper"></i>Blog LCD</a>'
+        + '<a href="/partenaires" class="mob-driing">'
+          + '<i class="ph ph-handshake"></i>'
+          + '<div class="mob-driing-body">'
+            + '<span class="mob-driing-name">Partenaires</span>'
+            + '<span class="mob-driing-sub">Outils recommandés et offres membres</span>'
+          + '</div>'
+        + '</a>'
+        + '<a href="/qui-suis-je"><i class="ph ph-user-circle"></i>Qui suis-je</a>'
+        + '<a href="/contact"><i class="ph ph-envelope"></i>Contact</a>'
+        + '<a href="/partenaires#comparatifs"><i class="ph ph-scales"></i>Comparatifs outils</a>'
+        + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
+        + '<a href="/services/actualites"><i class="ph ph-megaphone"></i>Actualités LCD</a>'
+        + '<a href="/lexique-lcd"><i class="ph ph-book-open"></i>Lexique LCD</a>'
+      + '</div>'
+    + '</div>'
+
     + '<a href="/tarifs"><i class="ph ph-tag"></i>Tarifs</a>'
 
     + '<div class="mob-ctas">'
@@ -581,6 +639,8 @@
    cookie, aucune IP/UA stockée côté serveur. Fail-silent : ne doit
    jamais bloquer ni ralentir l'affichage de la page. */
 (function () {
+  if (window.__jmVisitSent) return;
+  window.__jmVisitSent = true;
   try {
     var KEY = 'jm_sid';
     var sid = sessionStorage.getItem(KEY);
