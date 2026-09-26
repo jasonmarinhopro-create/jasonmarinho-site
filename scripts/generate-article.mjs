@@ -342,7 +342,7 @@ ${buildBodyContent(art.sections)}
 <script src="/footer.js"></script>
 <script>
 const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
+window.addEventListener('scroll',()=>nav&&nav.classList.toggle('sc',window.scrollY>20));
 </script>
 <script>
 function subscriberBrevo(e) {

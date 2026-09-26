@@ -483,7 +483,7 @@ Cal.ns["appel-decouverte"]("ui", {"cssVarsPerTheme":{"light":{"cal-brand":"#0032
 
 <script>
 const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
+window.addEventListener('scroll',()=>nav&&nav.classList.toggle('sc',window.scrollY>20));
 </script>
 
 <script>

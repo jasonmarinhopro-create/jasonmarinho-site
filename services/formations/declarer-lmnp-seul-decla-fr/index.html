@@ -447,7 +447,7 @@ body{font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);overflo
 
 <script>
 const nav=document.getElementById('nav');
-if(nav)window.addEventListener('scroll',()=>nav.classList.toggle('sc',window.scrollY>20));
+if(nav)window.addEventListener('scroll',()=>nav&&nav.classList.toggle('sc',window.scrollY>20));
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.08,rootMargin:'0px 0px -28px 0px'});
 document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
 document.querySelectorAll('.mod-hd').forEach(function(hd){

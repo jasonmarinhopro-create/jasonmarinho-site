@@ -45,7 +45,7 @@ function buildCard(art) {
   if (!cat) throw new Error(`Catégorie inconnue : ${art.categorySlug} (slug=${art.slug})`)
   const title = art.title
   const desc  = art.description || ''
-  return `      <article data-cat="${art.categorySlug}" data-title="${escAttr(title)}" data-desc="${escAttr(desc)}" class="blog-card rv">
+  return `      <article data-cat="${art.categorySlug}" class="blog-card rv">
         <div class="bc-bar" style="background:${cat.barColor}"></div>
         <div class="bc-body">
           <div class="bc-cat" style="color:${cat.catColor}"><span style="background:${cat.barColor}"></span>${cat.label}</div>
