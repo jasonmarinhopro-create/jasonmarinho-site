@@ -662,5 +662,20 @@
     } else {
       fetch('/api/track/visit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(function () {});
     }
+
+    /* Clics sortants sur les liens affiliés/partenaires (rel="sponsored") :
+       une ligne par clic, pour savoir quelles pages envoient des clients. */
+    document.addEventListener('click', function (e) {
+      try {
+        var a = e.target && e.target.closest ? e.target.closest('a[rel~="sponsored"]') : null;
+        if (!a || !a.href) return;
+        var body = JSON.stringify({ session_id: sid, path: window.location.pathname, url: a.href });
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/track/click', new Blob([body], { type: 'application/json' }));
+        } else {
+          fetch('/api/track/click', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true }).catch(function () {});
+        }
+      } catch (err) { /* fail-silent */ }
+    }, true);
   } catch (e) { /* fail-silent */ }
 }());

@@ -7,7 +7,7 @@ import {
   UsersThree, ArrowRight, UsersFour, CalendarBlank, Trophy,
   BookOpen, Newspaper, Crown, ShieldStar, ShieldCheck, TrendUp, Lightning,
   Sparkle, CurrencyEur, ChartLineUp, Percent,
-  UserPlus, Star, Globe, Broadcast,
+  UserPlus, Star, Globe, Broadcast, Handshake,
 } from '@phosphor-icons/react/dist/ssr'
 import {
   validateReport, deleteReport,
@@ -24,6 +24,11 @@ interface ChannelStat {
 }
 interface TopPage {
   path: string; views: number
+}
+interface AffiliateClicks {
+  total: number
+  byPartner: Array<{ partner: string; count: number }>
+  byPage: Array<{ path: string; count: number }>
 }
 interface Stats {
   totalUsers: number; driingMembers: number; standardMembers: number; newThisMonth: number
@@ -62,7 +67,7 @@ function relativeDate(iso: string) {
 export default function AdminUI({
   stats,
   recentSignups, monthlySignupsChart,
-  liveVisitors, channelBreakdown, topPages,
+  liveVisitors, channelBreakdown, topPages, affiliateClicks,
 }: {
   stats: Stats
   recentSignups: RecentSignup[]
@@ -70,6 +75,7 @@ export default function AdminUI({
   liveVisitors: number
   channelBreakdown: ChannelStat[]
   topPages: TopPage[]
+  affiliateClicks: AffiliateClicks
 }) {
   const totalAlerts = stats.pendingDriing + stats.pendingReports
   const decouverte = stats.totalUsers - stats.standardMembers - stats.driingMembers
@@ -168,6 +174,9 @@ export default function AdminUI({
 
       {/* ── Trafic en direct ── */}
       <LiveTraffic initialLive={liveVisitors} initialChannels={channelBreakdown} topPages={topPages} />
+
+      {/* ── Clics partenaires (liens affiliés) ── */}
+      <AffiliateClicksCard data={affiliateClicks} />
 
       {/* ── Sparkline 12 mois ── */}
       <SignupsSparkline data={monthlySignupsChart} />
@@ -501,6 +510,60 @@ function LiveTraffic({ initialLive, initialChannels, topPages }: { initialLive: 
                   <span style={s.topPageRank}>{i + 1}</span>
                   <span style={s.topPagePath} title={p.path}>{pageLabel(p.path)}</span>
                   <span style={s.channelCount}>{p.views}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function AffiliateClicksCard({ data }: { data: AffiliateClicks }) {
+  return (
+    <div className="fade-up">
+      <div style={s.sectionLabel}>
+        <Handshake size={13} />
+        Clics partenaires · 30 derniers jours
+      </div>
+      <div className="admin-traffic-grid" style={s.trafficGrid}>
+        <div style={s.liveCard}>
+          <div style={s.liveTop}>
+            <span style={s.liveLabel}>Clics sur les liens affiliés</span>
+          </div>
+          <div style={{ ...s.liveValue, color: 'var(--text)' }}>{data.total}</div>
+          <div style={s.liveSub}>vers les sites partenaires</div>
+        </div>
+        <div style={s.channelCard}>
+          <div style={s.liveTop}>
+            <span style={s.liveLabel}>Par partenaire</span>
+          </div>
+          {data.byPartner.length === 0 ? (
+            <div style={{ fontSize: '12.5px', color: 'var(--text-3)', marginTop: '6px' }}>Aucun clic pour l&apos;instant.</div>
+          ) : (
+            <div style={s.channelList}>
+              {data.byPartner.map(p => (
+                <div key={p.partner} style={s.channelRow}>
+                  <span style={{ ...s.channelName, textTransform: 'capitalize' }}>{p.partner}</span>
+                  <span style={s.channelPct}>{p.count}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div style={s.channelCard}>
+          <div style={s.liveTop}>
+            <span style={s.liveLabel}>Pages qui envoient des clics</span>
+          </div>
+          {data.byPage.length === 0 ? (
+            <div style={{ fontSize: '12.5px', color: 'var(--text-3)', marginTop: '6px' }}>Aucun clic pour l&apos;instant.</div>
+          ) : (
+            <div style={s.channelList}>
+              {data.byPage.map(p => (
+                <div key={p.path} style={s.channelRow}>
+                  <span style={s.topPagePath} title={p.path}>{pageLabel(p.path)}</span>
+                  <span style={s.channelCount}>{p.count}</span>
                 </div>
               ))}
             </div>

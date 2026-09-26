@@ -102,3 +102,32 @@ export async function getTopPages(admin: SupabaseClient, hours = 24 * 7, limit =
     .sort((a, b) => b.views - a.views)
     .slice(0, limit)
 }
+
+export interface AffiliateClicksSummary {
+  total: number
+  byPartner: Array<{ partner: string; count: number }>
+  byPage: Array<{ path: string; count: number }>
+}
+
+/** Clics sortants sur les liens affiliés (rel="sponsored") sur les N derniers jours. */
+export async function getAffiliateClicks(admin: SupabaseClient, days = 30): Promise<AffiliateClicksSummary> {
+  const since = new Date(Date.now() - days * 24 * 3600 * 1000).toISOString()
+  const { data } = await admin
+    .from('affiliate_clicks')
+    .select('partner, path')
+    .gte('created_at', since)
+    .limit(20000)
+  const rows = (data ?? []) as Array<{ partner: string; path: string }>
+  const partners: Record<string, number> = {}
+  const pages: Record<string, number> = {}
+  for (const r of rows) {
+    partners[r.partner] = (partners[r.partner] || 0) + 1
+    pages[r.path] = (pages[r.path] || 0) + 1
+  }
+  const sortDesc = (o: Record<string, number>) => Object.entries(o).sort((a, b) => b[1] - a[1])
+  return {
+    total: rows.length,
+    byPartner: sortDesc(partners).map(([partner, count]) => ({ partner, count })),
+    byPage: sortDesc(pages).slice(0, 6).map(([path, count]) => ({ path, count })),
+  }
+}
