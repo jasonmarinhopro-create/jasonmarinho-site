@@ -961,7 +961,7 @@ const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','A
 
 function buildHtml (city) {
   const canonicalUrl = `https://jasonmarinho.com/calculateurs/${city.slug}`
-  const title = `Combien rapporte une location courte durée à ${city.ville} en 2026 ? Calcul gratuit | Jason Marinho`
+  const title = `Combien rapporte une location courte durée à ${city.ville} ?`
   const description = `Estime gratuitement les revenus d'une location courte durée (Airbnb, Booking, en direct) à ${city.ville} en 2026. Données ${city.source.split(' + ')[0]} : ${city.occ} % d'occupation, ${city.adr} €/nuit. Calculateur préfilé par type de bien.`
 
   const scenariosHtml = [

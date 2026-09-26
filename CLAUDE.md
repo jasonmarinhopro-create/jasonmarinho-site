@@ -145,6 +145,8 @@ import { House } from '@phosphor-icons/react'
 - **Schemas JSON-LD** : BlogPosting + BreadcrumbList sur tous les articles, FAQPage/HowTo sur les guides
 - **Liens internes** : chaque article doit avoir au moins 1 lien contextuel vers /services/*
 - **llms.txt** : existe à la racine pour la search IA, à maintenir
+- **Balise `<title>` ≤ 60 caractères** (sept. 2026 : les 535 pages ont été ramenées sous 60, Google coupe au-delà). Mot-clé en tête, suffixe « | Jason Marinho » seulement s'il tient dans les 60. Le H1 et `og:title` peuvent rester longs. Pour un nouvel article, renseigner `seoTitle` (≤ 60) dans `scripts/articles/<slug>.mjs` quand le titre éditorial est long : `generate-article.mjs` l'utilise via `seoTitle()`. Les générateurs de pages villes (`build-pages-pros-villes.mjs`, `generate-city-revenue-articles.mjs`) produisent déjà des titres courts.
+- **Liens internes** : vérifier qu'une URL existe avant de la citer. Anciennes URL mortes corrigées en sept. 2026 (ex. `/formations` → `/services/formations`, `/services/reservation-directe` → `/services/annonce-directe`, `/services/reglementation-lcd` → `/services/actualites`, `/services/fiscalite-lcd` → `/services/simulateurs`), avec redirections 301 de secours dans `vercel.json`.
 
 ### Liens affiliés (Lodgify, sept. 2026)
 - Jason est affilié Lodgify (20 % de commission, 25 % au-delà de 3 000 $ de ventes, 30 % au-delà de 10 000 $). Une commission n'est générée que pour un client nouveau chez Lodgify qui reste abonné au moins 30 jours ; elle court sur 12 mois pour un abonnement mensuel, et elle est versée d'un coup pour un abonnement annuel. Un lead = une démo réservée ou un essai démarré, d'où les CTA vers la démo et l'essai plutôt que vers la page d'accueil de Lodgify.

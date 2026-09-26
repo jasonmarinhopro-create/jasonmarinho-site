@@ -261,7 +261,7 @@ function linksRow(v, metier) {
 // ── PAGE PHOTOGRAPHE ────────────────────────────────────────────────────────
 function buildPhotographePage(v) {
   const url = `https://jasonmarinho.com/photographe-lcd-${v.slug}`
-  const title = `Photographe Airbnb ${v.pre} : tarifs & annuaire LCD | Jason Marinho`
+  const title = `Photographe Airbnb ${v.pre} : tarifs & annuaire LCD`
   const desc = `Trouver un photographe spécialisé Airbnb et location courte durée ${v.pre} : tarifs constatés, les photos indispensables, comment briefer, annuaire vérifié. ${v.annonces} annonces sur le marché, des photos pro rentabilisées en quelques nuits.`
   const amortNuits = Math.max(2, Math.ceil(300 / v.adrMin))
   const premium = isPremium(v)
@@ -389,7 +389,9 @@ function buildPhotographePage(v) {
 // ── PAGE MÉNAGE ─────────────────────────────────────────────────────────────
 function buildMenagePage(v) {
   const url = `https://jasonmarinho.com/menage-lcd-${v.slug}`
-  const title = `Ménage Airbnb ${v.pre} : tarifs turnover & annuaire LCD | Jason Marinho`
+  const title = `Ménage Airbnb ${v.pre} : tarifs turnover & annuaire LCD`.length <= 60
+    ? `Ménage Airbnb ${v.pre} : tarifs turnover & annuaire LCD`
+    : `Ménage Airbnb ${v.pre} : tarifs et annuaire`
   const desc = `Trouver une équipe de ménage spécialisée Airbnb et location courte durée ${v.pre} : tarifs turnover constatés, checklist complète, gestion du linge, questions à poser, annuaire vérifié.`
   const premium = isPremium(v)
   const m1 = premium ? '50 – 70 €' : '40 – 60 €'

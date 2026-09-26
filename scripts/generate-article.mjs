@@ -14,6 +14,16 @@ import { resolve, dirname } from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 import { spawnSync } from 'child_process'
 
+// Titre <title> pour Google : ~60 caractères max, sinon Google le coupe.
+// Priorité à art.seoTitle (à renseigner dans la source de l'article quand le
+// titre éditorial est long) ; sinon le titre, suffixé seulement s'il tient.
+function seoTitle(art) {
+  const base = art.seoTitle || art.title
+  const withBrand = `${base} | Jason Marinho`
+  return withBrand.length <= 60 ? withBrand : base
+}
+
+
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
 
@@ -247,7 +257,7 @@ function generateArticleHTML(art) {
 <meta charset="UTF-8">
 <link rel="icon" type="image/webp" href="/favicon-jason.webp">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${esc(art.title)} | Jason Marinho</title>
+<title>${esc(seoTitle(art))}</title>
 <meta name="description" content="${esc(art.description)}">
 <meta name="keywords" content="${esc(art.keywords)}">
 <meta name="robots" content="index, follow">
