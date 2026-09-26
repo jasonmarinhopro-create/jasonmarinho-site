@@ -82,7 +82,7 @@ export default {
       h2: '6. Structure ton lavage : maison ou blanchisserie',
       content: [
         { type: 'p', text: `Tant que tu gères un seul logement avec des rotations espacées, le lavage maison tient la route : machine performante, lavage à 60°C pour l\'hygiène, séchage rapide et stockage au sec. Mais dès que le volume grimpe ou que les rotations s\'enchaînent, le linge devient un goulot d\'étranglement qui te bouffe tes journées.` },
-        { type: 'p', text: `À partir de plusieurs logements ou d\'un fort taux d\'occupation, la blanchisserie professionnelle ou la location de linge change la donne : linge livré propre, plié, prêt à poser, sans que tu touches une machine. C\'est typiquement le genre de logistique qu\'une <a href="/services/conciergerie" style="color:var(--g);font-weight:500">conciergerie LCD prend en charge de A à Z</a> quand tu décides de déléguer la gestion opérationnelle.` },
+        { type: 'p', text: `À partir de plusieurs logements ou d\'un fort taux d\'occupation, la blanchisserie professionnelle ou la location de linge change la donne : linge livré propre, plié, prêt à poser, sans que tu touches une machine. C\'est typiquement le genre de logistique qu\'une <a href="/pour-qui/conciergeries" style="color:var(--g);font-weight:500">conciergerie LCD prend en charge de A à Z</a> quand tu décides de déléguer la gestion opérationnelle.` },
         { type: 'ul', items: [
           'Un seul logement, rotations espacées : lavage maison rentable',
           'Plusieurs logements ou rotations serrées : externalise',
@@ -104,7 +104,7 @@ export default {
           'Date d\'achat notée par lot pour anticiper le renouvellement',
         ] },
         { type: 'tip', text: `Garde toujours une avance d\'un jeu neuf en réserve. Le jour où un drap craque, tu le remplaces immédiatement sans casser ta rotation ni accepter un lit mal habillé.` },
-        { type: 'cta', text: 'Tu préfères déléguer toute la logistique du linge, du ménage et des rotations pour te concentrer sur l\'essentiel ?', button: 'Découvrir la conciergerie', href: '/services/conciergerie' },
+        { type: 'cta', text: 'Tu préfères déléguer toute la logistique du linge, du ménage et des rotations pour te concentrer sur l\'essentiel ?', button: 'Découvrir la conciergerie', href: '/pour-qui/conciergeries' },
       ],
     },
   ],

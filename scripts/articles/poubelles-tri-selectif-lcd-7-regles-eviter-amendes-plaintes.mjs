@@ -14,7 +14,7 @@ export default {
       h2: '1. Comprends ce qui a changé au 1ᵉʳ janvier 2024',
       content: [
         { type: 'p', text: 'La loi AGEC (anti-gaspillage pour une économie circulaire) impose depuis le 1ᵉʳ janvier 2024 le tri à la source des bio-déchets pour tous les producteurs, particuliers inclus. Concrètement, chaque commune doit proposer une solution (bac marron dédié, composteur collectif, borne d\'apport volontaire) et les habitants sont censés séparer épluchures, restes de repas et déchets verts du reste des ordures ménagères.' },
-        { type: 'p', text: 'Pour un hôte LCD, ça change deux choses. Tes voyageurs mélangent presque toujours tout dans un même sac par défaut. Et ton syndic ou ta mairie peut te tenir responsable des erreurs de tri constatées à ton adresse. Sur les questions liées à ta conformité réglementaire, l\'accompagnement de la <a href="/services/reglementation-lcd" style="color:var(--g);font-weight:500">réglementation LCD</a> permet de vérifier ce qui s\'applique à ta commune.' },
+        { type: 'p', text: 'Pour un hôte LCD, ça change deux choses. Tes voyageurs mélangent presque toujours tout dans un même sac par défaut. Et ton syndic ou ta mairie peut te tenir responsable des erreurs de tri constatées à ton adresse. Sur les questions liées à ta conformité réglementaire, l\'accompagnement de la <a href="/services/actualites" style="color:var(--g);font-weight:500">réglementation LCD</a> permet de vérifier ce qui s\'applique à ta commune.' },
       ],
     },
     {

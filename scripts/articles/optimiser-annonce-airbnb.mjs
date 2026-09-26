@@ -39,7 +39,7 @@ export default {
     {
       h2: '3. La description : convertir la curiosité en réservation',
       content: [
-        { type: 'p', text: 'Structure ta description en blocs courts. Commence par le point fort du logement, puis l\'ambiance, les équipements clés, enfin la localisation. Les voyageurs lisent en diagonale : utilise des phrases courtes et des sauts de ligne. La description complète pour la <a href="/services/reservation-directe" style="color:var(--g);font-weight:500">réservation directe</a> peut être plus longue et plus personnelle.' },
+        { type: 'p', text: 'Structure ta description en blocs courts. Commence par le point fort du logement, puis l\'ambiance, les équipements clés, enfin la localisation. Les voyageurs lisent en diagonale : utilise des phrases courtes et des sauts de ligne. La description complète pour la <a href="/services/annonce-directe" style="color:var(--g);font-weight:500">réservation directe</a> peut être plus longue et plus personnelle.' },
         { type: 'ul', items: [
           'Paragraphe 1 (3-4 lignes) : le bénéfice principal et l\'ambiance',
           'Paragraphe 2 : équipements différenciants (jacuzzi, parking, terrasse...)',

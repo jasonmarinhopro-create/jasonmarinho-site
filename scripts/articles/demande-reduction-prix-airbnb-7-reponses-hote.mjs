@@ -85,7 +85,7 @@ export default {
     {
       h2: '7. La réponse « redirection vers la réservation directe »',
       content: [
-        { type: 'p', text: 'Sur Airbnb, la commission hôte se situe entre 14 et 17 % selon les options. Si un voyageur insiste vraiment et que tu sens un profil sérieux, propose-lui le même séjour via ton canal direct, à un prix légèrement plus bas pour lui et plus rentable pour toi. C\'est l\'un des leviers les plus simples pour t\'orienter vers une vraie stratégie de <a href="/services/reservation-directe" style="color:var(--g);font-weight:500">réservation directe sans commission</a>, où tu reprends la main sur la relation et sur la marge.' },
+        { type: 'p', text: 'Sur Airbnb, la commission hôte se situe entre 14 et 17 % selon les options. Si un voyageur insiste vraiment et que tu sens un profil sérieux, propose-lui le même séjour via ton canal direct, à un prix légèrement plus bas pour lui et plus rentable pour toi. C\'est l\'un des leviers les plus simples pour t\'orienter vers une vraie stratégie de <a href="/services/annonce-directe" style="color:var(--g);font-weight:500">réservation directe sans commission</a>, où tu reprends la main sur la relation et sur la marge.' },
         { type: 'ul', items: [
           'Formule : « Je peux te proposer le même séjour en réservation directe à 8 % de moins, ça te convient ? »',
           'Vérifier que la plateforme l\'autorise (Airbnb interdit le bypass explicite, à manier avec doigté avant confirmation de résa)',

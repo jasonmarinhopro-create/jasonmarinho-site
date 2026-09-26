@@ -99,7 +99,7 @@ export default {
       h2: 'Un investissement de moins de 150 euros pour une protection durable',
       content: [
         { type: 'p', text: 'Le coût total des 6 équipements de sécurité incendie pour un logement LCD standard tourne autour de 120 à 150 euros, hors temps de pose. C\'est probablement l\'investissement le plus rentable de toute ta trousse d\'équipement, parce qu\'il te protège juridiquement, te couvre face à ton assureur et améliore concrètement la note des voyageurs les plus exigeants. Pour aller plus loin sur la conformité globale de ton activité, regarde aussi notre guide sur les <a href="/blog/declarer-activite-location-courte-duree-france-demarches" style="color:var(--g);font-weight:500">démarches administratives pour déclarer son activité LCD en France</a>.' },
-        { type: 'cta', text: 'Tu veux structurer toutes tes obligations réglementaires LCD en un seul parcours clair ?', button: 'Voir le service réglementation', href: '/services/reglementation-lcd' },
+        { type: 'cta', text: 'Tu veux structurer toutes tes obligations réglementaires LCD en un seul parcours clair ?', button: 'Voir le service réglementation', href: '/services/actualites' },
       ],
     },
   ],

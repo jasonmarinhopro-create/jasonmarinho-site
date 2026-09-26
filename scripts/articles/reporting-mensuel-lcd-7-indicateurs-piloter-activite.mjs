@@ -42,7 +42,7 @@ export default {
       h2: '4. La répartition du chiffre d\'affaires par canal',
       content: [
         { type: 'p', text: 'Sur chaque euro encaissé le mois dernier, combien vient d\'Airbnb ? De Booking ? De tes réservations directes ? De Driing ? Cette ligne dans le reporting est celle qui te dit à quel point ton activité dépend d\'une seule plateforme, et donc d\'un seul algorithme, d\'un seul changement de règles, d\'un seul suspend de compte.' },
-        { type: 'p', text: 'L\'objectif à moyen terme, c\'est de sortir progressivement d\'une dépendance à 100 % Airbnb. Tu peux commencer par activer <a href="/services/reservation-directe" style="color:var(--g);font-weight:500">un canal de réservation directe simple</a> et suivre chaque mois le pourcentage de revenu qui bascule dessus. Un hôte qui passe de 5 % à 25 % de revenu direct en 12 mois a divisé son risque plateforme par cinq.' },
+        { type: 'p', text: 'L\'objectif à moyen terme, c\'est de sortir progressivement d\'une dépendance à 100 % Airbnb. Tu peux commencer par activer <a href="/services/annonce-directe" style="color:var(--g);font-weight:500">un canal de réservation directe simple</a> et suivre chaque mois le pourcentage de revenu qui bascule dessus. Un hôte qui passe de 5 % à 25 % de revenu direct en 12 mois a divisé son risque plateforme par cinq.' },
         { type: 'tip', text: 'Range tes canaux dans l\'ordre décroissant du revenu net, pas du revenu brut. Un canal à 20 % de commission qui rapporte 3 000 € brut ne te laisse que 2 400 € : moins qu\'un canal direct qui a fait 2 700 € brut.' },
       ],
     },

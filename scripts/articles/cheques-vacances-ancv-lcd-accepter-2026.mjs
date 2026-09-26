@@ -50,7 +50,7 @@ export default {
           'Signature électronique de la convention de conventionnement',
           'Réception d\'un identifiant prestataire et accès à ton espace personnel',
         ]},
-        { type: 'p', text: 'Le seul coût réel du dispositif est la commission de 2,5 % prélevée par l\'ANCV sur les chèques encaissés. Sur une semaine louée 900 euros payée en chèques-vacances, tu récupères 877,50 euros nets. C\'est très en dessous des commissions Airbnb (14 à 17 %) ou Booking (15 à 18 %), et c\'est directement un point rentable de plus dans ta stratégie de <a href="/services/reservation-directe" style="color:var(--g);font-weight:500">réservation directe sans commissions plateforme</a>. Le délai de virement des remboursements ANCV tourne autour de 15 jours après réception des titres.' },
+        { type: 'p', text: 'Le seul coût réel du dispositif est la commission de 2,5 % prélevée par l\'ANCV sur les chèques encaissés. Sur une semaine louée 900 euros payée en chèques-vacances, tu récupères 877,50 euros nets. C\'est très en dessous des commissions Airbnb (14 à 17 %) ou Booking (15 à 18 %), et c\'est directement un point rentable de plus dans ta stratégie de <a href="/services/annonce-directe" style="color:var(--g);font-weight:500">réservation directe sans commissions plateforme</a>. Le délai de virement des remboursements ANCV tourne autour de 15 jours après réception des titres.' },
         { type: 'tip', text: 'Prépare tous tes documents avant de lancer la demande : SIRET, attestation de classement, RIB pro. Une demande complète est validée en 2 à 4 semaines, une demande incomplète peut traîner 2 mois. C\'est du gagné pour la saison suivante.' },
       ],
     },

@@ -63,6 +63,111 @@
   ],
   "redirects": [
     {
+      "source": "/blog/channel-manager-lcd-comparatif",
+      "destination": "/blog/pms-logiciel-gestion-location-courte-duree-debutant",
+      "permanent": true
+    },
+    {
+      "source": "/blog/declarer-meuble-tourisme-mairie-formalites",
+      "destination": "/blog/declarer-activite-location-courte-duree-france-demarches",
+      "permanent": true
+    },
+    {
+      "source": "/blog/fiscalite-location-meublee-lmnp-lmp-2026",
+      "destination": "/blog/lmnp-vs-lmp-changement-2026-impact",
+      "permanent": true
+    },
+    {
+      "source": "/blog/gestion-co-hotes-airbnb-guide",
+      "destination": "/blog/co-hote-airbnb-6-regles-ajouter-cohote-annonce-sans-risque-2026",
+      "permanent": true
+    },
+    {
+      "source": "/blog/hausse-loyers-lcd-zones-tendues-2026",
+      "destination": "/blog/reglementation-lcd-france-2026",
+      "permanent": true
+    },
+    {
+      "source": "/blog/optimiser-taux-occupation-lcd-strategies",
+      "destination": "/blog/basse-saison-location-courte-duree-strategies-reservations",
+      "permanent": true
+    },
+    {
+      "source": "/blog/simulateur-revenus-location-courte-duree",
+      "destination": "/calculateurs/revenus-lcd",
+      "permanent": true
+    },
+    {
+      "source": "/blog/superhote-avis-test-hotes-lcd",
+      "destination": "/comparatif-superhote-welkeys",
+      "permanent": true
+    },
+    {
+      "source": "/blog/taxe-sejour-lcd-comment-la-collecter",
+      "destination": "/blog/taxe-sejour-lcd-comment-collecter",
+      "permanent": true
+    },
+    {
+      "source": "/blog/tva-location-meublee-courte-duree-guide",
+      "destination": "/blog/tva-location-courte-duree-2026",
+      "permanent": true
+    },
+    {
+      "source": "/communaute",
+      "destination": "/services/communaute",
+      "permanent": true
+    },
+    {
+      "source": "/formations",
+      "destination": "/services/formations",
+      "permanent": true
+    },
+    {
+      "source": "/guides",
+      "destination": "/services/guides-lcd",
+      "permanent": true
+    },
+    {
+      "source": "/services/conciergerie",
+      "destination": "/pour-qui/conciergeries",
+      "permanent": true
+    },
+    {
+      "source": "/services/fiscalite-lcd",
+      "destination": "/services/simulateurs",
+      "permanent": true
+    },
+    {
+      "source": "/services/formations/messages-automatiques",
+      "destination": "/services/formations",
+      "permanent": true
+    },
+    {
+      "source": "/services/gestion-locative",
+      "destination": "/pour-qui/conciergeries",
+      "permanent": true
+    },
+    {
+      "source": "/services/gestion-locative-airbnb",
+      "destination": "/pour-qui/conciergeries",
+      "permanent": true
+    },
+    {
+      "source": "/services/optimisation-revenus-lcd",
+      "destination": "/services/performances",
+      "permanent": true
+    },
+    {
+      "source": "/services/reglementation-lcd",
+      "destination": "/services/actualites",
+      "permanent": true
+    },
+    {
+      "source": "/services/reservation-directe",
+      "destination": "/services/annonce-directe",
+      "permanent": true
+    },
+    {
       "source": "/services/chez-nous",
       "destination": "/services/entre-hotes",
       "permanent": true

@@ -110,7 +110,7 @@ export default {
           'Combiner petit-déjeuner offert, linge changé à chaque séjour et ménage quotidien te met en zone à risque très clair',
           'Le rescrit fiscal reste la seule vraie protection : demande à ton centre des impôts un avis écrit sur ta situation avant de multiplier les prestations',
         ]},
-        { type: 'p', text: 'La question du seuil TVA et du régime para-hôtelier est un sujet à part entière que chaque hôte doit intégrer avant de proposer des prestations récurrentes. Les seuils exacts, les cas de bascule et les calculs concrets sont détaillés dans l\'article sur la <a href="/blog/tva-petit-dejeuner-lcd-seuil-37500-2026-detail" style="color:var(--g);font-weight:500">TVA et le petit-déjeuner en LCD</a>. En cas de doute sur ton statut, l\'accompagnement par un spécialiste de la <a href="/services/reglementation-lcd" style="color:var(--g);font-weight:500">réglementation LCD</a> te sécurise.' },
+        { type: 'p', text: 'La question du seuil TVA et du régime para-hôtelier est un sujet à part entière que chaque hôte doit intégrer avant de proposer des prestations récurrentes. Les seuils exacts, les cas de bascule et les calculs concrets sont détaillés dans l\'article sur la <a href="/blog/tva-petit-dejeuner-lcd-seuil-37500-2026-detail" style="color:var(--g);font-weight:500">TVA et le petit-déjeuner en LCD</a>. En cas de doute sur ton statut, l\'accompagnement par un spécialiste de la <a href="/services/actualites" style="color:var(--g);font-weight:500">réglementation LCD</a> te sécurise.' },
         { type: 'cta', text: 'Tu veux structurer ton offre voyageur sans prendre de risque fiscal ni casser ton budget ?', button: 'Découvrir les formations', href: '/services/formations' },
       ],
     },

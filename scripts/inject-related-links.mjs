@@ -33,14 +33,14 @@ const TARGETS = {
   'outil:calendrier':     { href: '/services/calendrier',     label: 'Calendrier & check-list',    desc: 'Synchronise tes flux iCal et suis tes séjours sans rien oublier.', icon: 'ph-calendar-check', kind: 'Outil' },
   'outil:revenus':        { href: '/services/revenus',        label: 'Suivi des revenus',          desc: 'Pilote tes revenus LCD plateforme par plateforme, mois après mois.', icon: 'ph-chart-line-up',  kind: 'Outil' },
   'outil:securite':       { href: '/services/securite',       label: 'Vérification voyageurs',     desc: 'Base communautaire pour détecter les voyageurs problématiques.', icon: 'ph-shield-check',   kind: 'Outil' },
-  'outil:gabarits':       { href: '/ressources/gabarits-messages', label: 'Gabarits messages',     desc: 'Modèles de messages Airbnb et Booking prêts à copier-coller.',  icon: 'ph-chat-text',      kind: 'Outil' },
+  'outil:gabarits':       { href: '/services/gabarits-messages', label: 'Gabarits messages',     desc: 'Modèles de messages Airbnb et Booking prêts à copier-coller.',  icon: 'ph-chat-text',      kind: 'Outil' },
 
   // Ressources
   'res:blog':             { href: '/blog',                    label: 'Blog LCD',                   desc: '60+ articles gratuits sur l\'optimisation, la fiscalité et la visibilité.', icon: 'ph-newspaper',   kind: 'Ressource' },
   'res:actualites':       { href: '/services/actualites',     label: 'Actualités LCD',             desc: 'Les dernières nouvelles du secteur : lois, plateformes, tendances.', icon: 'ph-megaphone',       kind: 'Ressource' },
   'res:guides':           { href: '/services/guides-lcd',     label: 'Guides LCD',                 desc: 'Guides complets pour chaque thématique LCD importante.',        icon: 'ph-books',            kind: 'Ressource' },
   'res:communaute':       { href: '/services/communaute',     label: 'Communauté LCD',             desc: 'Groupes Facebook privés pour échanger entre hôtes.',           icon: 'ph-users-four',       kind: 'Ressource' },
-  'res:partenaires':      { href: '/services/partenaires',    label: 'Partenaires exclusifs',      desc: 'Outils et assurances avec conditions négociées pour les membres.', icon: 'ph-handshake',     kind: 'Ressource' },
+  'res:partenaires':      { href: '/partenaires',    label: 'Partenaires exclusifs',      desc: 'Outils et assurances avec conditions négociées pour les membres.', icon: 'ph-handshake',     kind: 'Ressource' },
   'res:formations':       { href: '/services/formations',     label: 'Toutes les formations',      desc: '16 formations pour développer ton activité LCD.',               icon: 'ph-graduation-cap',   kind: 'Ressource' },
 };
 

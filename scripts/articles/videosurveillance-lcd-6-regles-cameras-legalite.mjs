@@ -98,7 +98,7 @@ export default {
       h2: 'Protège ton bien, pas ta tranquillité juridique',
       content: [
         { type: 'p', text: 'La vidéosurveillance en LCD se résume à une logique simple : tout ce qui touche l\'intérieur ou l\'intimité du voyageur est interdit, tout ce qui protège l\'accès au logement est autorisé à condition d\'être déclaré et proportionné. Caméras extérieures bien orientées, détecteur de bruit en décibels, sonnette connectée annoncée, données conservées peu de temps : avec ces quatre piliers, tu sécurises ton bien sans jamais te mettre en danger. Le reste, c\'est du filtrage de voyageurs, un bon contrat et une assurance solide. La caméra cachée, elle, ne t\'apporte qu\'un faux sentiment de sécurité et un vrai risque pénal. Mets-toi en conformité cette semaine, pendant que ton calendrier est calme.' },
-        { type: 'p', text: 'Si tu veux faire le tour complet de tes obligations d\'hôte sans rien oublier, la page <a href="/services/reglementation-lcd" style="color:var(--g);font-weight:500">accompagnement réglementation LCD de Jason Marinho</a> reprend tout ce que tu dois sécuriser, de la vidéosurveillance aux déclarations administratives.' },
+        { type: 'p', text: 'Si tu veux faire le tour complet de tes obligations d\'hôte sans rien oublier, la page <a href="/services/actualites" style="color:var(--g);font-weight:500">accompagnement réglementation LCD de Jason Marinho</a> reprend tout ce que tu dois sécuriser, de la vidéosurveillance aux déclarations administratives.' },
         { type: 'cta', text: 'Tu veux maîtriser toute la conformité de ton activité LCD sans y passer tes nuits ?', button: 'Découvrir les formations', href: '/#formations' },
       ],
     },

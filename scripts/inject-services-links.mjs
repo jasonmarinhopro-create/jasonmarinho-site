@@ -21,7 +21,7 @@ const SERVICES = {
   audit:       { url: '/services/audit-gbp',                 title: 'Audit Google Business Profile',              desc: 'Outil d\'audit GBP intégré : analyse ta fiche en 30 secondes et obtiens les actions à prendre.' },
   chez_nous:   { url: '/services/entre-hotes',                 title: 'Forum Entre Hôtes',                            desc: 'Le forum privé des hôtes LCD pour s\'entraider entre pros.' },
   formations:  { url: '/services/formations',                title: 'Catalogue des formations LCD',               desc: 'Toutes les formations pensées pour les hôtes et conciergeries.' },
-  partenaires: { url: '/services/partenaires',               title: 'Partenaires validés',                        desc: 'Les outils LCD que Jason utilise et recommande, avec offres négociées.' },
+  partenaires: { url: '/partenaires',               title: 'Partenaires validés',                        desc: 'Les outils LCD que Jason utilise et recommande, avec offres négociées.' },
   form_gmb:    { url: '/services/formations/google-my-business-lcd', title: 'Formation Google My Business LCD',   desc: 'Maîtriser sa fiche Google Business Profile en 2h30 (7 modules).' },
   form_tarif:  { url: '/services/formations/tarification-dynamique', title: 'Formation Tarification dynamique',  desc: 'Comprendre et appliquer la tarification dynamique pour maximiser tes revenus.' },
   form_anno:   { url: '/services/formations/optimiser-annonce-airbnb', title: 'Formation Optimiser son annonce', desc: 'Remonter dans les résultats et convertir chaque visite en réservation.' },

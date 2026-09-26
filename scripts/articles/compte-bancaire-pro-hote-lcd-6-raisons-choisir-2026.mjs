@@ -50,7 +50,7 @@ export default {
           'Déduction des intérêts d\'emprunt et frais d\'assurance PNO',
           'Compte pro obligatoire pour un usage propre de la comptabilité en partie double',
         ]},
-        { type: 'p', text: 'Le régime réel est aussi le seul qui te permet de déduire les cotisations à un logiciel de gestion, les frais bancaires du compte pro lui-même, les commissions Airbnb, les frais de PMS et l\'ensemble de tes abonnements dédiés à l\'activité. Un compte pro qui centralise tous ces prélèvements t\'évite de fouiller dans 12 mois de relevés perso pour reconstruire la liste. Notre <a href="/services/fiscalite-lcd" style="color:var(--g);font-weight:500">page dédiée à la fiscalité en location courte durée</a> synthétise toutes les charges déductibles en réel et les cas où le régime réel est le plus rentable.' },
+        { type: 'p', text: 'Le régime réel est aussi le seul qui te permet de déduire les cotisations à un logiciel de gestion, les frais bancaires du compte pro lui-même, les commissions Airbnb, les frais de PMS et l\'ensemble de tes abonnements dédiés à l\'activité. Un compte pro qui centralise tous ces prélèvements t\'évite de fouiller dans 12 mois de relevés perso pour reconstruire la liste. Notre <a href="/services/simulateurs" style="color:var(--g);font-weight:500">page dédiée à la fiscalité en location courte durée</a> synthétise toutes les charges déductibles en réel et les cas où le régime réel est le plus rentable.' },
       ],
     },
     {
@@ -64,7 +64,7 @@ export default {
           'Encaissement de la caution voyageur via SwikLy ou Youka sans mélange',
           'Gestion multi-plateforme centralisée et lisible',
         ]},
-        { type: 'p', text: 'Le compte pro te sert aussi de point de convergence pour la <a href="/services/reservation-directe" style="color:var(--g);font-weight:500">réservation directe sans commissions plateforme</a>. Quand tu commences à encaisser en direct via Stripe ou un lien de paiement, tu veux absolument éviter de mélanger ces flux avec le reste. Un compte pro te donne aussi accès à un TPE mobile ou virtuel plus facilement, utile si tu proposes une option d\'encaissement à l\'arrivée du voyageur.' },
+        { type: 'p', text: 'Le compte pro te sert aussi de point de convergence pour la <a href="/services/annonce-directe" style="color:var(--g);font-weight:500">réservation directe sans commissions plateforme</a>. Quand tu commences à encaisser en direct via Stripe ou un lien de paiement, tu veux absolument éviter de mélanger ces flux avec le reste. Un compte pro te donne aussi accès à un TPE mobile ou virtuel plus facilement, utile si tu proposes une option d\'encaissement à l\'arrivée du voyageur.' },
       ],
     },
     {

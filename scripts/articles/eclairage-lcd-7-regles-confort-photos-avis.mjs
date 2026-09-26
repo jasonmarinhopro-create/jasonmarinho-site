@@ -83,7 +83,7 @@ export default {
     {
       h2: '6. Soigne l\'éclairage du check-in tardif et de l\'extérieur',
       content: [
-        { type: 'p', text: 'Beaucoup de voyageurs arrivent après la tombée de la nuit, surtout en hiver et pour les voyageurs business. Un logement mal éclairé à l\'arrivée donne immédiatement une mauvaise première impression et déclenche plus de questions sur l\'usage des équipements. C\'est aussi un sujet de sécurité, donc à intégrer dans ta réflexion de gestion à distance ou avec une <a href="/services/conciergerie" style="color:var(--g);font-weight:500">conciergerie LCD professionnelle</a>.' },
+        { type: 'p', text: 'Beaucoup de voyageurs arrivent après la tombée de la nuit, surtout en hiver et pour les voyageurs business. Un logement mal éclairé à l\'arrivée donne immédiatement une mauvaise première impression et déclenche plus de questions sur l\'usage des équipements. C\'est aussi un sujet de sécurité, donc à intégrer dans ta réflexion de gestion à distance ou avec une <a href="/pour-qui/conciergeries" style="color:var(--g);font-weight:500">conciergerie LCD professionnelle</a>.' },
         { type: 'p', text: 'Le combo qui fonctionne : une applique extérieure avec détecteur de mouvement à l\'entrée, une lampe allumée en permanence dans l\'entrée pendant les soirées de check-in, et 2 ou 3 veilleuses LED à brancher dans le couloir, la cuisine et la salle de bain. Total : moins de 50 euros et un confort d\'arrivée incomparable. Le sujet complet est traité dans cet article sur les <a href="/blog/check-in-tardif-4-solutions-sans-cles" style="color:var(--g);font-weight:500">solutions de check-in tardif sans clé</a>.' },
         { type: 'ul', items: [
           'Applique extérieure avec détecteur de mouvement IP44 minimum',
