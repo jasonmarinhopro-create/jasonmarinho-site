@@ -303,7 +303,7 @@ ${jsonLd}
     <div class="art-meta">
       <span><i class="ph ph-clock"></i> ${art.readTime} min de lecture</span>
       <span><i class="ph ph-calendar"></i> ${dateDisplay}</span>
-      <span><i class="ph ph-user"></i> Jason Marinho</span>
+      <span><i class="ph ph-user"></i> <a href="/qui-suis-je" style="color:inherit;text-decoration:underline;text-underline-offset:3px">Jason Marinho</a></span>
     </div>
   </div>
 </section>
