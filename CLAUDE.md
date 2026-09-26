@@ -146,6 +146,13 @@ import { House } from '@phosphor-icons/react'
 - **Liens internes** : chaque article doit avoir au moins 1 lien contextuel vers /services/*
 - **llms.txt** : existe à la racine pour la search IA, à maintenir
 
+### Liens affiliés (Lodgify, sept. 2026)
+- Jason est affilié Lodgify (20 % de commission, 25 % au-delà de 3 000 $ de ventes, 30 % au-delà de 10 000 $). Une commission n'est générée que pour un client nouveau chez Lodgify qui reste abonné au moins 30 jours ; elle court sur 12 mois pour un abonnement mensuel, et elle est versée d'un coup pour un abonnement annuel. Un lead = une démo réservée ou un essai démarré, d'où les CTA vers la démo et l'essai plutôt que vers la page d'accueil de Lodgify.
+- Liens FR à utiliser : essai 7 jours `https://app.lodgify.com/signup/fr/?afmc=ui1`, démo `https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv`, tarifs `https://www.lodgify.com/fr/tarifs/?afmc=uhp`, onboarding gratuit `https://www.lodgify.com/fr/onboarding-gratuit/?afmc=uid` (liste complète dans le tableau de bord affilié, section "Highlighted Links").
+- **Obligatoire** sur tout lien affilié : `rel="sponsored noopener"` + mention visible « Lien affilié » à côté (pratique commerciale trompeuse sinon, et Google pénalise les liens payants non signalés). Garder un ton honnête avec les limites de l'outil : c'est ce qui convertit.
+- Pages : `/lodgify-avis`, `/lodgify-prix` (calculateur de rentabilité inline), `/tutoriel-lodgify-site-reservation-directe` (HowTo), plus les encadrés `.aff-lodgify` (styles inline) dans le comparatif Lodgify/Smoobu et 4 articles de blog. Les autres mentions de Lodgify dans le blog pointent en interne vers `/lodgify-avis`.
+- Prix Lodgify : grille instable (formules et frais de 1,9 % modifiés en 2026, relevés contradictoires). Toujours formuler en « relevés de [mois] », renvoyer vers la grille officielle et revérifier avant toute mise à jour.
+
 ---
 
 ## Trafic & analytics (visiteurs en direct + canal)
