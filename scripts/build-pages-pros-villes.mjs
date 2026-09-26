@@ -159,6 +159,7 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .tarif-table tr:last-child td{border-bottom:none}
 .tarif-table td:first-child{font-weight:600;color:var(--td);white-space:nowrap}
 .tarif-table .prix{font-family:'Fraunces',serif;font-weight:600;color:var(--g);white-space:nowrap}
+@media(max-width:560px){.tarif-table th,.tarif-table td{padding:10px 10px;font-size:13px}.tarif-table td:first-child,.tarif-table .prix{white-space:normal}}
 .check-list{list-style:none;margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;max-width:760px}
 @media(max-width:640px){.check-list{grid-template-columns:1fr}}
 .check-list li{display:flex;align-items:flex-start;gap:10px;font-size:14.5px;line-height:1.6;color:var(--tm);padding:4px 0}
