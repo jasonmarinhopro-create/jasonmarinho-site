@@ -32,12 +32,12 @@ const box = (id, intro, button, mention) => `<!-- AFF:${id}:START -->
 const hospitableTu = box('hospitable-tu',
   "<strong>Tester Hospitable :</strong> essai gratuit de 14 jours sans carte bancaire, puis <strong>25 % de réduction sur tes 3 premiers mois</strong> en passant par ce lien.",
   btn(HOSPITABLE_BLOG, 'Essayer Hospitable gratuitement'),
-  "Lien affilié : si tu t'abonnes via ce lien, je touche une commission, sans aucun surcoût pour toi (tu profites au contraire de la réduction). Mon avis reste indépendant.")
+  "Lien affilié : si tu t'abonnes via ce lien, je touche une commission, sans aucun surcoût pour toi (tu profites au contraire de la réduction). Mon avis reste indépendant. <a href=\"/hospitable-avis\" style=\"color:#004c3f\">Lire mon avis complet sur Hospitable</a>.")
 
 const hospitableVous = box('hospitable-vous',
   "<strong>Tester Hospitable :</strong> essai gratuit de 14 jours sans carte bancaire, puis <strong>25 % de réduction sur vos 3 premiers mois</strong> en passant par ce lien.",
   btn(HOSPITABLE_BLOG, 'Essayer Hospitable gratuitement'),
-  "Lien affilié : si vous vous abonnez via ce lien, je perçois une commission, sans aucun surcoût pour vous (vous profitez au contraire de la réduction). Mon avis reste indépendant.")
+  "Lien affilié : si vous vous abonnez via ce lien, je perçois une commission, sans aucun surcoût pour vous (vous profitez au contraire de la réduction). Mon avis reste indépendant. <a href=\"/hospitable-avis\" style=\"color:#004c3f\">Lire mon avis complet sur Hospitable</a>.")
 
 const shineTu = box('shine-tu',
   "<strong>Ouvrir un compte Shine :</strong> néobanque pro française, ouverture en ligne. Avec mon lien de parrainage, tu as un mois d'abonnement offert en plus de l'essai (selon les conditions de parrainage en vigueur chez Shine).",

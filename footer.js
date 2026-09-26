@@ -199,6 +199,7 @@
     { href: '/comparatif-pricelabs-beyond-wheelhouse', name: 'PriceLabs vs Beyond vs Wheelhouse' },
     { href: '/comparatif-ring-eufy-reolink', name: 'Ring vs Eufy vs Reolink' },
     { href: '/comparatif-smoobu-hospitable', name: 'Smoobu vs Hospitable' },
+    { href: '/hospitable-avis', name: 'Hospitable : avis 2026' },
     { href: '/comparatif-superhote-welkeys', name: 'Superhote vs Welkeys' },
     { href: '/comparatif-turnoverbnb-properly', name: 'Turno vs Properly' },
     { href: '/comparatif-welkeys-guestready', name: 'Welkeys vs GuestReady' }
