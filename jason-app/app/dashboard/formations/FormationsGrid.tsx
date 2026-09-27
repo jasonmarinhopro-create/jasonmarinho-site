@@ -35,6 +35,8 @@ interface Props {
   unlockedSlugs: string[] | null // null = tout accessible (Standard+)
   plan: string
   initialFavoriteIds?: string[]
+  /** En-tête (parcours, compteurs, profil/favoris) déjà dans le hero de la page */
+  hideHeader?: boolean
 }
 
 const levelLabel: Record<string, string> = {
@@ -80,7 +82,7 @@ type LevelFilter = 'all' | 'debutant' | 'intermediaire' | 'avance'
 type StatusFilter = 'all' | 'enrolled' | 'not_enrolled' | 'done'
 type CategoryFilter = 'all' | 'visibilite' | 'revenus' | 'gestion' | 'reglementation' | 'conciergerie'
 
-export default function FormationsGrid({ formations, progressMap, comingSoon, unlockedSlugs, plan, initialFavoriteIds = [] }: Props) {
+export default function FormationsGrid({ formations, progressMap, comingSoon, unlockedSlugs, plan, initialFavoriteIds = [], hideHeader = false }: Props) {
   const isDecouverte = plan === 'decouverte'
   const slotsUsed = unlockedSlugs?.length ?? 0
   const slotsMax = 2
@@ -146,6 +148,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
 
   return (
     <div>
+      {!hideHeader && (<>
       {/* Hero, Parcours d'apprentissage mis en avant */}
       <Link href="/dashboard/formations/parcours" style={styles.parcoursHero} className="formations-parcours-hero">
         <div style={styles.parcoursHeroIcon}>
@@ -200,6 +203,8 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
           <ArrowRight size={14} weight="bold" style={{ marginLeft: 'auto', flexShrink: 0, opacity: 0.7 }} />
         </Link>
       </div>
+
+      </>)}
 
       {/* Filters */}
       <div style={styles.filtersWrap}>
@@ -407,8 +412,8 @@ const styles: Record<string, React.CSSProperties> = {
   parcoursHero: {
     display: 'flex', alignItems: 'center', gap: '20px',
     padding: 'clamp(16px, 2.5vw, 22px) clamp(18px, 3vw, 28px)',
-    background: 'linear-gradient(135deg, rgba(96,165,250,0.12), rgba(96,165,250,0.04))',
-    border: '1px solid rgba(96,165,250,0.28)',
+    background: 'linear-gradient(135deg, var(--accent-bg), rgba(255,213,107,0.10))',
+    border: '1px solid var(--accent-border)',
     borderRadius: '16px',
     textDecoration: 'none',
     color: 'var(--text)',
@@ -419,15 +424,15 @@ const styles: Record<string, React.CSSProperties> = {
   } as React.CSSProperties,
   parcoursHeroIcon: {
     width: '56px', height: '56px', borderRadius: '14px',
-    background: 'var(--info-border)',
-    color: 'var(--info)',
+    background: 'var(--accent-border)',
+    color: 'var(--accent-text)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
   parcoursHeroBody: { flex: 1, minWidth: 0 },
   parcoursHeroLabel: {
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.8px',
-    textTransform: 'uppercase' as const, color: 'var(--info)',
+    textTransform: 'uppercase' as const, color: 'var(--accent-text)',
     marginBottom: '4px',
   },
   parcoursHeroTitle: {
@@ -441,7 +446,7 @@ const styles: Record<string, React.CSSProperties> = {
   parcoursHeroCta: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     padding: '9px 16px', borderRadius: '10px',
-    background: 'var(--info)', color: '#fff',
+    background: 'var(--accent-text)', color: 'var(--bg)',
     fontSize: '13px', fontWeight: 600,
     flexShrink: 0,
     whiteSpace: 'nowrap',

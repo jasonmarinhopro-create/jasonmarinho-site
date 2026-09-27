@@ -89,8 +89,8 @@ export default function ProfilApprenantUI(props: Props) {
       {/* Stats grid full-width */}
       <div style={s.statsGrid}>
         <div style={s.statCard}>
-          <span style={{ ...s.statIcon, background: 'rgba(96,165,250,0.14)' }}>
-            <BookOpen size={18} weight="fill" color="#60a5fa" />
+          <span style={{ ...s.statIcon, background: 'var(--accent-bg)' }}>
+            <BookOpen size={18} weight="fill" color="var(--accent-text)" />
           </span>
           <div>
             <div style={s.statValue}>{totalLessonsDone}</div>

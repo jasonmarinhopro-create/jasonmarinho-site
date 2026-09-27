@@ -10,7 +10,7 @@ export type HighlightFormation = { slug: string; title: string; duration: string
 export default function FormationsHighlights({ resume, recommended }: { resume: HighlightFormation | null; recommended: HighlightFormation[] }) {
   if (!resume && recommended.length === 0) return null
   return (
-    <div style={s.wrap} className="fade-up formations-highlights">
+    <div style={s.wrap} className={`fade-up ${resume ? 'formations-highlights' : ''}`}>
       {resume && (
         <Link href={`/dashboard/formations/${resume.slug}`} style={s.resume}>
           <span style={s.resumeIcon}><PlayCircle size={26} weight="fill" /></span>

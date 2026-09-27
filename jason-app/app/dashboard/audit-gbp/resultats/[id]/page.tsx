@@ -355,8 +355,8 @@ const s: Record<string, React.CSSProperties> = {
 
   /* CTA formation */
   cta: {
-    background: 'linear-gradient(135deg, rgba(96,165,250,0.08), rgba(167,139,250,0.04))',
-    border: '1px solid rgba(96,165,250,0.18)',
+    background: 'linear-gradient(135deg, var(--accent-bg), rgba(255,213,107,0.08))',
+    border: '1px solid var(--accent-border)',
     borderRadius: '16px', padding: '24px',
     marginBottom: '16px',
   },
@@ -371,7 +371,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   ctaBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
-    background: 'var(--info)', color: '#0a1628',
+    background: 'var(--accent-text)', color: 'var(--bg)',
     fontWeight: 700, fontSize: '13px',
     padding: '10px 18px', borderRadius: '10px',
     textDecoration: 'none',
@@ -384,7 +384,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   redoLink: {
     fontSize: '13px', fontWeight: 600,
-    color: 'var(--info)', textDecoration: 'none',
+    color: 'var(--accent-text)', textDecoration: 'none',
   },
   redoNote: { fontSize: '11px', color: 'var(--text-3)' },
 }

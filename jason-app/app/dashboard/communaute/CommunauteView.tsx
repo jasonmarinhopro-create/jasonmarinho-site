@@ -8,6 +8,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import { setGroupMembership, restoreAllDismissed } from './actions'
 import FacebookTemplatesSection from './FacebookTemplatesSection'
+import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 
 interface Group {
   id: string
@@ -250,10 +251,10 @@ export default function CommunauteView({
         <div style={s.cardTop}>
           <div style={{
             ...s.platformIcon,
-            background: featured ? 'rgba(255,213,107,0.08)' : 'rgba(24,119,242,0.08)',
-            border: `1px solid ${featured ? 'rgba(255,213,107,0.18)' : 'rgba(24,119,242,0.18)'}`,
+            background: featured ? 'rgba(255,213,107,0.08)' : 'var(--accent-bg)',
+            border: `1px solid ${featured ? 'rgba(255,213,107,0.18)' : 'var(--accent-border)'}`,
           }}>
-            <FacebookLogo size={18} color={featured ? 'var(--accent-text)' : '#1877F2'} weight="fill" />
+            <FacebookLogo size={18} color="var(--accent-text)" weight="fill" />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <h3 style={featured ? s.featuredName : s.groupName}>{g.name}</h3>
@@ -324,45 +325,32 @@ export default function CommunauteView({
       {/* Hero (sept. 2026) : la promesse, le mode d'emploi en 3 étapes et la
           portée. Avant : un éditeur de message plein écran en haut de page
           cachait les groupes et ne donnait pas envie. */}
-      <section style={s.hero} className="fade-up fb-hero">
-        <div style={{ flex: '1 1 420px', minWidth: 0 }}>
-          <div style={s.heroEyebrow}><FacebookLogo size={14} weight="fill" /> Groupes Facebook</div>
-          <h2 style={s.heroTitle}>
-            Des voyageurs t&apos;attendent, <em style={{ fontStyle: 'italic', color: 'var(--accent-text)' }}>sans commission</em>
-          </h2>
-          <p style={s.heroDesc}>
-            Des centaines de milliers de voyageurs cherchent une location dans ces groupes.
-            Publie ton annonce et reçois des réservations en direct.
-          </p>
-          <ol style={s.steps}>
-            {[
-              ['Rejoins', 'les groupes de ta région'],
-              ['Copie', 'ton post prêt à l’emploi'],
-              ['Publie', 'et réponds aux messages'],
-            ].map(([verb, rest], i) => (
-              <li key={verb} style={s.step}>
-                <span style={s.stepNum}>{i + 1}</span>
-                <span><strong style={{ color: 'var(--text)' }}>{verb}</strong> {rest}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-        <div style={s.heroStats}>
-          <div style={s.heroStat}>
-            <span style={{ ...s.heroStatVal, color: '#15803d' }}>{fmtNum(totalReach)}</span>
+      <HubHero
+        eyebrowIcon={<FacebookLogo size={14} weight="fill" />}
+        eyebrow="Groupes Facebook"
+        title={<>Des voyageurs t&apos;attendent, <HeroEm>sans commission</HeroEm></>}
+        desc="Des centaines de milliers de voyageurs cherchent une location dans ces groupes. Publie ton annonce et reçois des réservations en direct."
+        steps={[
+          ['Rejoins', 'les groupes de ta région'],
+          ['Copie', 'ton post prêt à l’emploi'],
+          ['Publie', 'et réponds aux messages'],
+        ]}
+        aside={<>
+          <div style={{ ...heroCard, ...s.heroStat }}>
+            <span style={{ ...s.heroStatVal, color: 'var(--accent-text)' }}>{fmtNum(totalReach)}</span>
             <span style={s.heroStatLbl}>voyageurs dans tes groupes</span>
             <div style={{ ...s.coverageBar, marginTop: '8px' }}>
               <div style={{ ...s.coverageFill, width: `${coveragePct}%` }} />
             </div>
           </div>
           {unexploitedReach > 0 && (
-            <div style={s.heroStat}>
+            <div style={{ ...heroCard, ...s.heroStat }}>
               <span style={{ ...s.heroStatVal, color: '#d97706' }}>+{fmtNum(unexploitedReach)}</span>
               <span style={s.heroStatLbl}>encore à atteindre</span>
             </div>
           )}
-        </div>
-      </section>
+        </>}
+      />
 
       <div className="fb-layout">
         <aside className="fb-aside">
@@ -577,36 +565,6 @@ export default function CommunauteView({
 /* ─────────────────────── Styles ─────────────────────── */
 const s: Record<string, React.CSSProperties> = {
   page:     { padding: 'clamp(20px,3vw,44px)', width: '100%' },
-  hero: {
-    display: 'flex', flexWrap: 'wrap', gap: '24px 40px', alignItems: 'center',
-    padding: 'clamp(22px,3vw,36px)', borderRadius: '20px', marginBottom: '28px',
-    background: 'linear-gradient(135deg, rgba(24,119,242,0.10) 0%, rgba(0,76,63,0.08) 60%, rgba(255,213,107,0.10) 100%)',
-    border: '1px solid rgba(24,119,242,0.18)',
-  },
-  heroEyebrow: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700,
-    color: '#1877F2', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px',
-  },
-  heroTitle: {
-    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400,
-    color: 'var(--text)', margin: '0 0 10px', lineHeight: 1.15, letterSpacing: '-0.5px',
-  },
-  heroDesc: { fontSize: '15px', color: 'var(--text-2)', lineHeight: 1.6, margin: '0 0 18px', maxWidth: '560px' },
-  steps: { listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexWrap: 'wrap', gap: '10px' },
-  step: {
-    display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 14px 8px 8px',
-    borderRadius: '999px', background: 'var(--surface)', border: '1px solid var(--border)',
-    fontSize: '13px', color: 'var(--text-2)',
-  },
-  stepNum: {
-    width: '22px', height: '22px', borderRadius: '50%', background: '#1877F2', color: '#fff',
-    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, flexShrink: 0,
-  },
-  heroStats: { display: 'flex', gap: '12px', flex: '0 1 auto', minWidth: 0 },
-  heroStat: {
-    display: 'flex', flexDirection: 'column', flex: '1 1 0', minWidth: '130px', padding: '16px 18px', borderRadius: '16px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-  },
   heroStatVal: { fontFamily: 'var(--font-fraunces), serif', fontSize: '32px', lineHeight: 1.05, fontWeight: 500 },
   heroStatLbl: { fontSize: '12.5px', color: 'var(--text-3)', marginTop: '4px' },
   intro:    { marginBottom: '28px' },
@@ -815,8 +773,8 @@ const s: Record<string, React.CSSProperties> = {
   inlineTag: {
     display: 'inline-flex', alignItems: 'center', gap: 'var(--s-1)',
     fontSize: 'var(--t-xs)', fontWeight: 600, padding: '2px 8px', borderRadius: 'var(--r-pill)',
-    background: 'var(--info-bg)', border: '1px solid var(--info-border)',
-    color: 'var(--info)',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+    color: 'var(--accent-text)',
   },
   desc: {
     fontSize: 'var(--t-sm)', fontWeight: 400, color: 'var(--text-2)',

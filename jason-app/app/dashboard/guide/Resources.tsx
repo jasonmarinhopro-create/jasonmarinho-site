@@ -113,7 +113,7 @@ export default function Resources() {
         </div>
         <div style={s.list}>
           {OFFICIAL.map(r => (
-            <ResourceItem key={r.href} r={r} accent="#60a5fa" />
+            <ResourceItem key={r.href} r={r} accent="var(--accent-text)" />
           ))}
         </div>
       </div>

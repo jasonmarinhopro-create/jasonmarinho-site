@@ -8,6 +8,7 @@ import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 import Link from 'next/link'
 import ComparisonTable from './ComparisonTable'
+import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import Resources from './Resources'
 import {
   HouseLine, Coffee, Buildings, Handshake, Sparkle,
@@ -92,9 +93,11 @@ function Glossaire() {
 interface GuideUIProps {
   /** Cards rendues côté serveur (GuideCards.tsx), passées depuis page.tsx */
   guideCards: React.ReactNode
+  /** Nombre de fiches (GUIDE_CARD_COUNT), affiché dans le hero */
+  cardCount: number
 }
 
-export default function GuideUI({ guideCards }: GuideUIProps) {
+export default function GuideUI({ guideCards, cardCount }: GuideUIProps) {
   const [activeFilter, setActiveFilter] = useState<ProfileFilter>('all')
   const [search, setSearch] = useState('')
   const [visibleCount, setVisibleCount] = useState<number>(-1) // -1 = pas encore mesuré
@@ -137,55 +140,59 @@ export default function GuideUI({ guideCards }: GuideUIProps) {
   return (
     <div style={s.page} className="guide-no-fade">
 
-      {/* Intro */}
-      <div style={s.intro} className="fade-up">
-        <div style={s.updatedBadge}>
-          <span style={s.updatedDot} />
-          Mis à jour avril 2026
-        </div>
-        <h2 style={s.pageTitle}>
-          Guide <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>LCD</em>
-        </h2>
-        <p style={s.pageDesc}>
-          Gîtes en EI ou SASU, chambres d&apos;hôtes, conciergeries, réservation directe, chaque activité a ses règles, sa fiscalité, ses obligations. Ici, on ne parle pas que d&apos;Airbnb.
-        </p>
-      </div>
-
-      {/* Parcours guidés (visibles seulement si pas de recherche) */}
-      {!q && activeFilter === 'all' && (
-        <div style={s.parcoursWrap} className="fade-up d1">
-          <div style={s.parcoursLabel}>Par où commencer ?</div>
-          <div style={s.parcoursList}>
-            <button onClick={() => handleFilter('gites')} style={s.parcoursCard}>
-              <span style={{ ...s.parcoursIcon, background: 'rgba(245,158,11,0.14)', color: '#d97706' }}>
-                <HouseLine size={18} weight="fill" />
-              </span>
-              <div>
-                <div style={s.parcoursTitle}>Je débute en gîte</div>
-                <div style={s.parcoursDesc}>Statut, fiscalité, obligations légales</div>
-              </div>
-            </button>
-            <button onClick={() => handleFilter('direct')} style={s.parcoursCard}>
-              <span style={{ ...s.parcoursIcon, background: 'rgba(16,185,129,0.14)', color: '#059669' }}>
-                <Handshake size={18} weight="fill" />
-              </span>
-              <div>
-                <div style={s.parcoursTitle}>Je passe à la résa directe</div>
-                <div style={s.parcoursDesc}>Contrat, paiement, visibilité</div>
-              </div>
-            </button>
-            <button onClick={() => handleFilter('conciergerie')} style={s.parcoursCard}>
-              <span style={{ ...s.parcoursIcon, background: 'rgba(139,92,246,0.14)', color: '#7c3aed' }}>
-                <Buildings size={18} weight="fill" />
-              </span>
-              <div>
-                <div style={s.parcoursTitle}>Je structure ma conciergerie</div>
-                <div style={s.parcoursDesc}>Hoguet, équipe, mandats, scaling</div>
-              </div>
-            </button>
+      {/* Hero (sept. 2026, même gabarit vert que Formations et Trouver des
+          voyageurs). Les 3 « Par où commencer ? » sont des raccourcis de filtre. */}
+      <HubHero
+        eyebrowIcon={<BookOpen size={14} weight="fill" />}
+        eyebrow="Guide LCD"
+        title={<>Les règles de ta location, <HeroEm>sans jargon</HeroEm></>}
+        desc="Gîte, chambres d’hôtes, conciergerie ou réservation directe : chaque activité a ses obligations et sa fiscalité. Chaque fiche renvoie vers l’outil de ton espace qui t’aide à t’y conformer."
+        aside={
+          <div style={{ ...heroCard, flex: '1 1 240px' }}>
+            <span style={s.asideStat}>{cardCount}</span>
+            <span style={s.asideMeta}>fiches pratiques, pour 5 profils d&apos;hôtes</span>
+            <span style={{ ...s.updatedBadge, alignSelf: 'flex-start' }}>
+              <span style={s.updatedDot} />
+              Mis à jour avril 2026
+            </span>
           </div>
-        </div>
-      )}
+        }
+      >
+        {!q && activeFilter === 'all' && (
+          <>
+            <div style={s.parcoursLabel}>Par où commencer ?</div>
+            <div style={s.parcoursList}>
+              <button onClick={() => handleFilter('gites')} style={s.parcoursCard}>
+                <span style={{ ...s.parcoursIcon, background: 'rgba(245,158,11,0.14)', color: '#d97706' }}>
+                  <HouseLine size={18} weight="fill" />
+                </span>
+                <div>
+                  <div style={s.parcoursTitle}>Je débute en gîte</div>
+                  <div style={s.parcoursDesc}>Statut, fiscalité, obligations légales</div>
+                </div>
+              </button>
+              <button onClick={() => handleFilter('direct')} style={s.parcoursCard}>
+                <span style={{ ...s.parcoursIcon, background: 'rgba(16,185,129,0.14)', color: '#059669' }}>
+                  <Handshake size={18} weight="fill" />
+                </span>
+                <div>
+                  <div style={s.parcoursTitle}>Je passe à la résa directe</div>
+                  <div style={s.parcoursDesc}>Contrat, paiement, visibilité</div>
+                </div>
+              </button>
+              <button onClick={() => handleFilter('conciergerie')} style={s.parcoursCard}>
+                <span style={{ ...s.parcoursIcon, background: 'rgba(139,92,246,0.14)', color: '#7c3aed' }}>
+                  <Buildings size={18} weight="fill" />
+                </span>
+                <div>
+                  <div style={s.parcoursTitle}>Je structure ma conciergerie</div>
+                  <div style={s.parcoursDesc}>Hoguet, équipe, mandats, scaling</div>
+                </div>
+              </button>
+            </div>
+          </>
+        )}
+      </HubHero>
 
       {/* Recherche */}
       <div style={s.searchWrap} className="fade-up d1">
@@ -296,6 +303,8 @@ export default function GuideUI({ guideCards }: GuideUIProps) {
 }
 
 const s: Record<string, React.CSSProperties> = {
+  asideStat: { fontFamily: 'var(--font-fraunces), serif', fontSize: '40px', lineHeight: 1, color: 'var(--accent-text)' },
+  asideMeta: { fontSize: '12.5px', color: 'var(--text-3)' },
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
 
   calcTeaser: {
@@ -325,9 +334,6 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--accent-text)', flexShrink: 0,
   },
 
-  intro: { marginBottom: '28px', maxWidth: '640px' },
-  pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.7 },
 
   updatedBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
@@ -398,7 +404,6 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   // Parcours guidés
-  parcoursWrap: { marginBottom: '20px' },
   parcoursLabel: {
     fontSize: '11px', fontWeight: 600, letterSpacing: '0.6px',
     textTransform: 'uppercase' as const,

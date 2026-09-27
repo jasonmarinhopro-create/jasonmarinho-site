@@ -174,7 +174,7 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
       {/* En-tête compact : ton post prêt à coller */}
       <div style={s.header}>
         <div style={s.headerIcon}>
-          <FacebookLogo size={20} color="#1877F2" weight="fill" />
+          <FacebookLogo size={20} color="var(--accent-text)" weight="fill" />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={s.title}>Ton post prêt à publier</div>
@@ -456,7 +456,7 @@ const s: Record<string, React.CSSProperties> = {
   header: { display: 'flex', alignItems: 'flex-start', gap: '12px' },
   headerIcon: {
     width: '40px', height: '40px',
-    background: 'rgba(24,119,242,0.10)', borderRadius: '10px',
+    background: 'var(--accent-bg)', borderRadius: '10px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },

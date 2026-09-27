@@ -77,7 +77,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'commun-fiche-police',
     profile: 'commun',
-    iconColor: '#3b82f6', iconBg: 'rgba(59,130,246,0.12)',
+    iconColor: 'var(--accent-text)', iconBg: 'var(--accent-bg)',
     icon: <ClipboardText size={22} weight="fill" />,
     title: 'Fiche police & registre voyageurs',
     subtitle: 'Souvent ignoré, parfois sanctionné',
@@ -94,7 +94,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'commun-rgpd',
     profile: 'commun',
-    iconColor: '#6366f1', iconBg: 'rgba(99,102,241,0.12)',
+    iconColor: 'var(--accent-text)', iconBg: 'var(--accent-bg)',
     icon: <Lock size={22} weight="fill" />,
     title: 'RGPD : données voyageurs',
     subtitle: 'Ce que tu peux stocker, comment, combien de temps',
@@ -224,7 +224,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'gites-obligations',
     profile: 'gites',
-    iconColor: 'var(--info)', iconBg: 'rgba(96,165,250,0.12)',
+    iconColor: 'var(--accent-text)', iconBg: 'var(--accent-bg)',
     icon: <ClipboardText size={22} weight="fill" />,
     title: 'Obligations légales du gîte',
     subtitle: "Ce que la loi impose avant d'accueillir",
@@ -277,7 +277,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'gites-copropriete',
     profile: 'gites',
-    iconColor: '#0ea5e9', iconBg: 'rgba(14,165,233,0.12)',
+    iconColor: 'var(--accent-text)', iconBg: 'var(--accent-bg)',
     icon: <UsersThree size={22} weight="fill" />,
     title: 'Copropriété, voisinage & règlement',
     subtitle: 'Anticiper les conflits avant qu\'ils explosent',
@@ -568,7 +568,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'direct-seo-local',
     profile: 'direct',
-    iconColor: '#0ea5e9', iconBg: 'rgba(14,165,233,0.12)',
+    iconColor: 'var(--accent-text)', iconBg: 'var(--accent-bg)',
     icon: <MapPin size={22} weight="fill" />,
     title: 'SEO local & Google Business Profile',
     subtitle: 'Apparaître quand on cherche "gîte + ta ville"',
@@ -587,7 +587,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'direct-site-propre',
     profile: 'direct',
-    iconColor: '#0ea5e9', iconBg: 'rgba(14,165,233,0.12)',
+    iconColor: 'var(--accent-text)', iconBg: 'var(--accent-bg)',
     icon: <Globe size={22} weight="fill" />,
     title: 'Site web & page de réservation propre',
     subtitle: 'Ton QG digital sans commission, sans dépendance',
@@ -669,7 +669,7 @@ const GUIDE_CARDS: GuideCard[] = [
 const RULE_STYLES: Record<RuleType, { color: string; bg: string }> = {
   warn: { color: 'var(--danger)', bg: 'rgba(239,68,68,0.08)' },
   ok:   { color: 'var(--success-1)', bg: 'rgba(16,185,129,0.08)' },
-  info: { color: 'var(--info)', bg: 'var(--info-bg)' },
+  info: { color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
 }
 
 function RuleIcon({ type }: { type: RuleType }) {
@@ -781,6 +781,8 @@ const APP_LINKS: Record<string, AppLink[]> = {
   'direct-site-propre':      [O('/dashboard/entre-hotes/ecosysteme', 'Outils de site direct'), F('annonce-directe', 'Réservation directe')],
   'direct-fidelisation':     [O('/dashboard/voyageurs', 'Mes voyageurs')],
 }
+
+export const GUIDE_CARD_COUNT = GUIDE_CARDS.length
 
 function buildSearchText(card: GuideCard): string {
   return [card.title, card.subtitle, card.keywords ?? '']

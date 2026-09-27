@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashboard/HubHero'
 import AuditWizard from './AuditWizard'
 import AuditHistory, { type PastAudit } from './AuditHistory'
 import { MagnifyingGlass, Star, Camera, Megaphone, ChatCircleDots, Sparkle, IdentificationCard, Clock, ArrowRight, Lightning } from '@phosphor-icons/react/dist/ssr'
@@ -7,7 +8,7 @@ import { MagnifyingGlass, Star, Camera, Megaphone, ChatCircleDots, Sparkle, Iden
 // pour pouvoir le prévisualiser avec des données fictives.
 
 const PILLAR_ICONS = [
-  { Icon: IdentificationCard, label: 'Identité',  color: 'var(--info)' },
+  { Icon: IdentificationCard, label: 'Identité',  color: 'var(--accent-text)' },
   { Icon: Camera,             label: 'Photos',    color: '#a78bfa' },
   { Icon: Star,               label: 'Avis',      color: 'var(--accent-text)' },
   { Icon: Megaphone,          label: 'Posts',     color: 'var(--success-1)' },
@@ -34,42 +35,18 @@ export default function AuditGbpView({ userId, initialSession, pastAudits }: {
         {/* ── Hero (sept. 2026) : pourquoi, comment, et ton score. Avant : trois
               entrées concurrentes (URL, CSV, formulaire) sans hiérarchie, jargon
               « GBP » et score caché en bas de page. ── */}
-        <section style={s.heroNew} className="fade-up gg-hero">
-          <div style={{ flex: '1 1 440px', minWidth: 0 }}>
-            <div style={s.heroEyebrow}>
-              <MagnifyingGlass size={13} weight="bold" /> Fiche Google
-            </div>
-            <h1 style={s.heroTitleNew}>
-              Sois trouvé quand on cherche <em style={{ fontStyle: 'italic', color: 'var(--accent-text)' }}>« gîte + ta ville »</em>
-            </h1>
-            <p style={s.heroDescNew}>
-              Beaucoup de voyageurs cherchent directement sur Google Maps. Une fiche complète, avec des photos
-              et des avis, t&apos;amène des réservations en direct, sans commission.
-            </p>
-            <ol style={s.steps}>
-              {[
-                ['Colle', 'le lien de ta fiche Google Maps'],
-                ['Vérifie', 'les points à compléter'],
-                ['Suis', 'ton plan d’action priorisé'],
-              ].map(([verb, rest], i) => (
-                <li key={verb} style={s.step}>
-                  <span style={s.stepNum}>{i + 1}</span>
-                  <span><strong style={{ color: 'var(--text)' }}>{verb}</strong> {rest}</span>
-                </li>
-              ))}
-            </ol>
-            {!initialSession && (
-              <div style={s.ctaRow}>
-                <Link href="/dashboard/audit-gbp/import-url" style={s.ctaPrimary}>
-                  <Lightning size={15} weight="fill" /> Lancer l&apos;audit express · 30 s
-                </Link>
-                <a href="#audit-complet" style={s.ctaSecondary}>Répondre aux 25 questions</a>
-              </div>
-            )}
-          </div>
-
-          {/* Dernier score : la raison de revenir sur la page */}
-          <div style={s.scoreCard}>
+        <HubHero
+          eyebrowIcon={<MagnifyingGlass size={13} weight="bold" />}
+          eyebrow="Fiche Google"
+          title={<>Sois trouvé quand on cherche <HeroEm>« gîte + ta ville »</HeroEm></>}
+          desc="Beaucoup de voyageurs cherchent directement sur Google Maps. Une fiche complète, avec des photos et des avis, t’amène des réservations en direct, sans commission."
+          steps={[
+            ['Colle', 'le lien de ta fiche Google Maps'],
+            ['Vérifie', 'les points à compléter'],
+            ['Suis', 'ton plan d’action priorisé'],
+          ]}
+          aside={
+          <div style={{ ...heroCard, ...s.scoreCard }}>
             {lastScore !== null ? (
               <>
                 <span style={s.scoreLabel}>Ton dernier score</span>
@@ -102,13 +79,23 @@ export default function AuditGbpView({ userId, initialSession, pastAudits }: {
               </>
             )}
           </div>
-        </section>
+          }
+        >
+            {!initialSession && (
+              <div style={s.ctaRow}>
+                <Link href="/dashboard/audit-gbp/import-url" style={heroCta}>
+                  <Lightning size={15} weight="fill" /> Lancer l&apos;audit express · 30 s
+                </Link>
+                <a href="#audit-complet" style={heroLink}>Répondre aux 25 questions</a>
+              </div>
+            )}
+        </HubHero>
 
         {/* ── Bandeau de reprise (si session en cours) ── */}
         {initialSession && (
           <div style={s.resumeBanner} className="fade-up">
             <div style={s.resumeIcon}>
-              <Clock size={18} color="#60a5fa" weight="fill" />
+              <Clock size={18} color="var(--accent-text)" weight="fill" />
             </div>
             <div style={s.resumeBody}>
               <div style={s.resumeTitle}>Tu reprends ton audit</div>
@@ -168,41 +155,7 @@ function scoreColor(score: number): string {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  heroNew: {
-    display: 'flex', flexWrap: 'wrap', gap: '24px 40px', alignItems: 'center',
-    padding: 'clamp(22px,3vw,36px)', borderRadius: '20px', marginBottom: '28px',
-    background: 'linear-gradient(135deg, rgba(66,133,244,0.10) 0%, rgba(52,168,83,0.08) 55%, rgba(251,188,5,0.10) 100%)',
-    border: '1px solid rgba(66,133,244,0.20)',
-  },
-  heroEyebrow: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700,
-    color: '#4285F4', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: '10px',
-  },
-  heroTitleNew: {
-    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400,
-    color: 'var(--text)', margin: '0 0 10px', lineHeight: 1.15, letterSpacing: '-0.5px',
-  },
-  heroDescNew: { fontSize: '15px', color: 'var(--text-2)', lineHeight: 1.6, margin: '0 0 18px', maxWidth: '580px' },
-  steps: { listStyle: 'none', margin: '0 0 20px', padding: 0, display: 'flex', flexWrap: 'wrap', gap: '10px' },
-  step: {
-    display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '8px 14px 8px 8px',
-    borderRadius: '999px', background: 'var(--surface)', border: '1px solid var(--border)',
-    fontSize: '13px', color: 'var(--text-2)',
-  },
-  stepNum: {
-    width: '22px', height: '22px', borderRadius: '50%', background: '#4285F4', color: '#fff',
-    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, flexShrink: 0,
-  },
   ctaRow: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 18px' },
-  ctaPrimary: {
-    display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 20px', borderRadius: '12px',
-    background: 'var(--accent-text)', color: 'var(--bg)', fontSize: '14.5px', fontWeight: 700, textDecoration: 'none',
-  },
-  ctaSecondary: { fontSize: '13.5px', fontWeight: 600, color: 'var(--accent-text)', textDecoration: 'underline', textUnderlineOffset: '3px' },
-  scoreCard: {
-    flex: '0 1 300px', minWidth: '240px', display: 'flex', flexDirection: 'column', gap: '8px',
-    padding: '20px 22px', borderRadius: '18px', background: 'var(--surface)', border: '1px solid var(--border)',
-  },
   scoreLabel: { fontSize: '12px', fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.5px' },
   scoreValue: { fontFamily: 'var(--font-fraunces), serif', fontSize: '52px', lineHeight: 1, fontWeight: 500 },
   scoreMax: { fontSize: '20px', color: 'var(--text-3)', marginLeft: '2px' },
@@ -218,14 +171,6 @@ const s: Record<string, React.CSSProperties> = {
   inlineLink: { color: 'var(--accent-text)', fontWeight: 600 },
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
 
-  hero: {
-    background: 'radial-gradient(ellipse 70% 80% at 90% 0%, var(--info-bg), transparent 60%), var(--surface)',
-    border: '1px solid var(--info-border)',
-    borderRadius: 'var(--r-xl)',
-    padding: 'clamp(28px,3vw,40px)',
-    marginBottom: 'var(--s-5)',
-    boxShadow: 'var(--shadow-sm)',
-  },
   heroTitle: {
     fontFamily: 'var(--font-fraunces), serif',
     fontSize: 'clamp(24px,3vw,34px)',
@@ -255,14 +200,14 @@ const s: Record<string, React.CSSProperties> = {
   resumeBanner: {
     display: 'flex', alignItems: 'center', gap: '14px',
     padding: '14px 18px',
-    background: 'rgba(96,165,250,0.05)',
-    border: '1px solid rgba(96,165,250,0.18)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '12px', marginBottom: '16px',
     flexWrap: 'wrap' as const,
   },
   resumeIcon: {
     width: '36px', height: '36px', borderRadius: '10px',
-    background: 'rgba(96,165,250,0.12)',
+    background: 'var(--accent-bg)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },

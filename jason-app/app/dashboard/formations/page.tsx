@@ -3,6 +3,9 @@ import { createClient } from '@/lib/supabase/server'
 import FormationsSuggestForm from './FormationsSuggestForm'
 import FormationsGrid from './FormationsGrid'
 import FormationsHighlights, { type HighlightFormation } from './FormationsHighlights'
+import Link from 'next/link'
+import { ArrowRight, Compass, GraduationCap } from '@phosphor-icons/react/dist/ssr'
+import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashboard/HubHero'
 import { recommendFormations } from '@/lib/formations/recommend'
 import { getUnlockedFormationSlugs } from '@/lib/queries/formation-access'
 import { getCachedPublishedFormations } from '@/lib/queries/cache'
@@ -81,6 +84,9 @@ export default async function FormationsPage() {
   )
   const favoriteIds = new Set((favorites ?? []).map((f: { formation_id: string }) => f.formation_id))
 
+  const startedCount = formations.filter(f => progressMap[f.id] !== undefined).length
+  const doneCount = formations.filter(f => progressMap[f.id] === 100).length
+
   // « Reprendre » : la formation commencée la plus avancée (hors terminées).
   const inProgress = formations
     .filter(f => (progressMap[f.id] ?? 0) > 0 && (progressMap[f.id] ?? 0) < 100)
@@ -110,13 +116,57 @@ export default async function FormationsPage() {
     <>
 
       <div style={styles.page} className="formations-no-fade">
-        <div style={styles.intro} className="fade-up">
-          <h2 style={styles.pageTitle}>Tes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>formations</em></h2>
-          <p style={styles.pageDesc}>Des parcours concrets pour optimiser ta location courte durée. Accessibles à vie, à ton rythme.</p>
-        </div>
+        {/* Hero (sept. 2026, même gabarit vert que Trouver des voyageurs) :
+            la promesse, 3 étapes, une action, et à droite la reprise ou les chiffres.
+            Remplace le titre + la bannière Parcours + les compteurs + les barres
+            profil/favoris qui s'empilaient avant le catalogue. */}
+        <HubHero
+          eyebrowIcon={<GraduationCap size={14} weight="fill" />}
+          eyebrow="Formations"
+          title={<>Progresse à ton rythme, <HeroEm>une leçon à la fois</HeroEm></>}
+          desc={`${formations.length} formations concrètes et à jour (visibilité, prix, fiscalité, réservation directe), accessibles à vie.`}
+          steps={[
+            ['Choisis', 'une formation ou un parcours'],
+            ['Avance', 'leçon par leçon'],
+            ['Applique', 'directement dans ton espace'],
+          ]}
+          aside={
+            <div style={{ ...heroCard, flex: '1 1 260px' }}>
+              {resume ? (
+                <>
+                  <span style={styles.asideLabel}>Reprendre</span>
+                  <span style={styles.asideTitle}>{resume.title}</span>
+                  <span style={styles.asideBar}><span style={{ ...styles.asideFill, width: `${resume.progress ?? 0}%` }} /></span>
+                  <span style={styles.asideMeta}>{resume.progress ?? 0} % terminé</span>
+                  <Link href={`/dashboard/formations/${resume.slug}`} style={{ ...heroCta, justifyContent: 'center', marginTop: '6px' }}>
+                    Continuer <ArrowRight size={14} weight="bold" />
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <span style={styles.asideLabel}>Ta progression</span>
+                  <span style={styles.asideStat}>{startedCount}<span style={styles.asideStatOf}> / {formations.length}</span></span>
+                  <span style={styles.asideMeta}>formations commencées · {doneCount} terminée{doneCount > 1 ? 's' : ''}</span>
+                </>
+              )}
+              <span style={styles.asideLinks}>
+                <Link href="/dashboard/formations/profil-apprenant" style={heroLink}>Mon profil apprenant</Link>
+                <Link href="/dashboard/formations/favoris" style={heroLink}>Mes favoris</Link>
+              </span>
+            </div>
+          }
+        >
+          <div style={styles.ctaRow}>
+            <Link href="/dashboard/formations/parcours" style={heroCta}>
+              <Compass size={16} weight="fill" /> Suivre un parcours guidé
+            </Link>
+            <a href="#catalogue" style={heroLink}>Voir tout le catalogue</a>
+          </div>
+        </HubHero>
 
-        <FormationsHighlights resume={resume} recommended={recommended} />
+        <FormationsHighlights resume={null} recommended={recommended} />
 
+        <div id="catalogue" style={{ scrollMarginTop: '80px' }} />
         <div style={styles.section} className="fade-up d1">
           <FormationsGrid
             formations={formations as unknown as import('@/types').Formation[]}
@@ -125,6 +175,7 @@ export default async function FormationsPage() {
             unlockedSlugs={unlockedSlugs}
             plan={plan}
             initialFavoriteIds={Array.from(favoriteIds) as string[]}
+            hideHeader
           />
         </div>
 
@@ -152,9 +203,15 @@ export default async function FormationsPage() {
 
 const styles: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(16px,3vw,44px)', width: '100%' },
-  intro: { marginBottom: '28px' },
-  pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(24px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '10px' },
-  pageDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-2)', maxWidth: '520px', lineHeight: 1.6 },
+  ctaRow: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 18px' },
+  asideLabel: { fontSize: '12px', fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  asideTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '19px', color: 'var(--text)', lineHeight: 1.3 },
+  asideBar: { display: 'block', height: '6px', borderRadius: '999px', background: 'var(--bg)', overflow: 'hidden' },
+  asideFill: { display: 'block', height: '100%', borderRadius: '999px', background: 'var(--accent-text)' },
+  asideMeta: { fontSize: '12.5px', color: 'var(--text-3)' },
+  asideStat: { fontFamily: 'var(--font-fraunces), serif', fontSize: '40px', lineHeight: 1, color: 'var(--accent-text)' },
+  asideStatOf: { fontSize: '18px', color: 'var(--text-3)' },
+  asideLinks: { display: 'flex', flexWrap: 'wrap', gap: '6px 14px', marginTop: '6px', paddingTop: '10px', borderTop: '1px solid var(--border)' },
   section: { marginBottom: '32px' },
   suggestSection: { marginTop: '8px' },
   suggestBox: {

@@ -492,7 +492,7 @@ const s: Record<string, React.CSSProperties> = {
     overflow: 'hidden', marginBottom: '8px',
   },
   progressFill: {
-    height: '100%', background: 'var(--info)',
+    height: '100%', background: 'var(--accent-text)',
     transition: 'width 0.3s',
   },
   progressMeta: {
@@ -630,9 +630,9 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'inherit',
   },
   choiceBtnActive: {
-    borderColor: 'var(--info)',
-    background: 'rgba(96,165,250,0.1)',
-    color: 'var(--info)',
+    borderColor: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    color: 'var(--accent-text)',
     fontWeight: 600,
   },
 
@@ -653,7 +653,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   btnPrimary: {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
-    background: 'var(--info)', color: '#0a1628',
+    background: 'var(--accent-text)', color: 'var(--bg)',
     fontWeight: 700, fontSize: '14px',
     padding: '11px 18px', borderRadius: '9px',
     border: 'none', cursor: 'pointer',
