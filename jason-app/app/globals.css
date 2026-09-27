@@ -183,9 +183,13 @@
  * doucement au lieu de changer brutalement.
  * ═════════════════════════════════════════════════════════════════════ */
 
-html, body,
-html *:not(.no-theme-transition),
-body *:not(.no-theme-transition) {
+/* Limité à la bascule de thème (classe posée 300 ms par ThemeProvider).
+   Avant, la règle s'appliquait en permanence à TOUS les éléments : chaque
+   survol, clic, case cochée ou bouton activé attendait 200 ms avant de
+   changer de couleur, d'où l'impression que « les actions ne sont pas
+   directes », et un coût de recalcul de style sur les grosses pages. */
+html.theme-switching,
+html.theme-switching *:not(.no-theme-transition) {
   transition-property: background-color, border-color, color, fill, stroke;
   transition-duration: var(--d-base);
   transition-timing-function: var(--ease-smooth);
@@ -327,16 +331,30 @@ body *:not(.no-theme-transition) {
 }
 
 /* ═════════════════════════════════════════════════════════════════════
- * ACCESSIBILITÉ — contraste amélioré pour WCAG AA
- * --text-muted était à 0.24 d'opacité (~3:1 = AA fail).
- * On le remonte à 0.42 (~5:1 = AA pour body, AA-large pour 11px+).
+ * ACCESSIBILITÉ — contraste des textes secondaires (WCAG AA : 4,5:1)
+ * Sept. 2026 : --text-3 (460 usages) était à ~3,3:1 et --text-muted
+ * (800+ usages : sous-titres, descriptions, légendes) à ~3,9:1, sur les
+ * 3 thèmes : textes gris trop pâles, difficiles à lire (surtout en clair).
+ * Valeurs recalculées pour rester >= 4,5:1 sur le fond ET sur les cartes,
+ * en gardant 3 niveaux distincts (text-2 > text-3 > muted).
+ * Mesures (fond / carte) : sombre 5,8 / 5,5 (text-3) et 4,8 / 4,7 (muted) ;
+ * clair 5,8 / 6,1 et 4,8 / 5,0 ; AMOLED 5,9 / 5,8 et 4,9 / 5,0.
  * ═════════════════════════════════════════════════════════════════════ */
 
 :root {
-  --text-muted: rgba(240,244,255,0.42);
+  --text-2:     rgba(240,244,255,0.74);
+  --text-3:     rgba(240,244,255,0.56);
+  --text-muted: rgba(240,244,255,0.50);
 }
 [data-theme="light"] {
-  --text-muted: rgba(11,29,15,0.55);
+  --text-2:     rgba(11,29,15,0.82);
+  --text-3:     rgba(11,29,15,0.68);
+  --text-muted: rgba(11,29,15,0.62);
+}
+[data-theme="amoled"] {
+  --text-2:     rgba(255,255,255,0.78);
+  --text-3:     rgba(255,255,255,0.54);
+  --text-muted: rgba(255,255,255,0.48);
 }
 
 html {

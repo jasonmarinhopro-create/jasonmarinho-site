@@ -195,6 +195,12 @@ import { House } from '@phosphor-icons/react'
 - **Checklist** (`app/dashboard/page.tsx`, `setupSteps`) orientée vers cette valeur : logement → calendrier Airbnb/Booking connecté (`ical_feeds` count) → premier contrat à signer (`contracts`) → planning ménage partagé (`profiles.ical_token` généré) → prix → objectif. Les anciennes étapes « saisir une réservation à la main » et « commencer une formation » ont été retirées.
 - `/dashboard/calendrier?menage=1` ouvre directement le partage du planning ménage (sinon caché derrière l'icône balai de la barre d'outils).
 
+## Lisibilité et thèmes du dashboard (sept. 2026)
+
+- **Contraste des textes gris** (`app/globals.css`, bloc « ACCESSIBILITÉ ») : `--text-3` (~460 usages) et `--text-muted` (~800 usages) étaient à 3,3:1 et 3,9:1, sous le minimum WCAG AA (4,5:1). Remontés à ≥ 4,5:1 sur le fond ET sur les cartes, dans les 3 thèmes, en gardant 3 niveaux distincts (`--text-2` > `--text-3` > `--text-muted`). Ne pas redescendre ces opacités ; pour un texte « discret », jouer sur la taille/graisse plutôt que sur la transparence.
+- **Thèmes** : le bouton de l'en-tête bascule clair ↔ sombre (`ThemeProvider.toggleTheme`). AMOLED (noir pur) reste supporté pour les comptes qui l'avaient, mais n'est plus dans le cycle (quasi identique au sombre, il rendait le bouton confus). Défaut : clair.
+- **Transition de couleurs** : uniquement pendant la bascule de thème (`html.theme-switching`, posée 300 ms par `applyTheme`). Avant, `html *` avait une transition permanente de 200 ms sur couleurs/fonds/bordures : chaque clic ou survol changeait d'état avec retard (« les actions ne sont pas directes »). Ne pas remettre de transition globale.
+
 ## Qualité : CI, tests, suivi des erreurs (sept. 2026)
 
 - **CI** : `.github/workflows/ci.yml` à chaque push sur main / PR touchant `jason-app/` : `npm run typecheck` (tsc), `npm test` (Vitest), `npx next lint --quiet` (erreurs bloquantes). Les tests Playwright (`e2e/`) n'y tournent pas (serveur + secrets requis).

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import {
   List, Bell, UserCircle, SignOut, CreditCard,
-  Question, CaretDown, ArrowUpRight, Sun, Moon, MoonStars, Star, MapTrifold, Lifebuoy, Heart,
+  Question, CaretDown, ArrowUpRight, Sun, Moon, Star, MapTrifold, Lifebuoy, Heart,
 } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
@@ -365,16 +365,10 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             </button>
           )}
 
-          {/* Theme toggle — cycle dark → light → amoled → dark */}
+          {/* Thème : clair ↔ sombre (l'icône montre le mode vers lequel on bascule) */}
           {(() => {
-            const nextLabel =
-              theme === 'dark'   ? 'Passer en mode clair' :
-              theme === 'light'  ? 'Passer en mode AMOLED (noir profond)' :
-                                   'Passer en mode sombre'
-            const icon =
-              theme === 'dark'   ? <Sun size={17} weight="regular" /> :
-              theme === 'light'  ? <Moon size={17} weight="regular" /> :
-                                   <MoonStars size={17} weight="fill" />
+            const nextLabel = theme === 'light' ? 'Passer en mode sombre' : 'Passer en mode clair'
+            const icon = theme === 'light' ? <Moon size={17} weight="regular" /> : <Sun size={17} weight="regular" />
             return (
               <button
                 onClick={toggleTheme}

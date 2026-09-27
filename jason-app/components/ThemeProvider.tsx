@@ -3,12 +3,12 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 // 3 thèmes : light (par défaut), dark, amoled (true black pour OLED).
-// Le cycle de toggleTheme : light → dark → amoled → light
+// toggleTheme : clair ↔ sombre (amoled conservé pour l'existant, hors cycle)
 type Theme = 'dark' | 'light' | 'amoled'
 
 interface ThemeCtx {
   theme: Theme
-  /** Cycle entre les 3 thèmes : light → dark → amoled → light */
+  /** Bascule clair ↔ sombre */
   toggleTheme: () => void
   /** Setter direct pour les UI qui exposent les 3 options */
   setTheme: (t: Theme) => void
@@ -31,17 +31,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   function applyTheme(next: Theme) {
     setThemeState(next)
-    document.documentElement.setAttribute('data-theme', next)
+    const root = document.documentElement
+    // Fondu des couleurs uniquement pendant la bascule (cf. globals.css,
+    // html.theme-switching) : le reste du temps, clics et survols sont instantanés.
+    root.classList.add('theme-switching')
+    root.setAttribute('data-theme', next)
+    window.setTimeout(() => root.classList.remove('theme-switching'), 300)
     try { localStorage.setItem('theme', next) } catch {}
   }
 
   function toggleTheme() {
-    // Cycle light → dark → amoled → light
-    const next: Theme =
-      theme === 'light'  ? 'dark' :
-      theme === 'dark'   ? 'amoled' :
-                           'light'
-    applyTheme(next)
+    // Deux modes proposés : clair ↔ sombre. AMOLED (noir pur) reste pris en
+    // charge pour les comptes qui l'avaient déjà, mais n'est plus dans le
+    // cycle : quasi identique au sombre, il rendait le bouton confus.
+    applyTheme(theme === 'light' ? 'dark' : 'light')
   }
 
   return (
