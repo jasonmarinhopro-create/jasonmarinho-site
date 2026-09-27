@@ -15,7 +15,7 @@ updatedAt: "2026-09-27"
 
 ## Le plus rapide pour une réservation directe
 
-**Contrats & paiements** → **Nouvelle réservation directe**. Tu choisis le logement, tu crées le voyageur et les dates, puis l'assistant de contrat s'ouvre directement.
+**Mes réservations** → **Nouvelle réservation** (ou **Contrats & paiements** → **Nouvelle réservation directe**). Tu choisis le logement, le voyageur et les dates, puis **Créer + contrat** ouvre directement l'assistant de contrat.
 
 ## Depuis la fiche voyageur
 

@@ -6,6 +6,7 @@ import OnboardingTour, { RESERVATIONS_STEPS } from '../OnboardingTour'
 import { icalReservationsForDisplay } from '@/lib/ical/display'
 import { icalOccupationsForMenage } from '@/lib/menage/ical-occupations'
 import type { Reservation, LogementLite } from './types'
+import { parisToday } from '@/lib/stripe/deposit-window'
 import { computeMenageSlots, mergeAutoAndManual, type LogementSettings, type Occupation, type MenageSlot } from '@/lib/menage/compute'
 
 export const metadata = { title: 'Mes réservations' }
@@ -36,7 +37,7 @@ export default async function ReservationsPage() {
     { data: sejoursRaw },
     { data: logementsRaw },
     { data: events },
-    { data: profileRow },
+    { data: voyageurOptions },
     { data: icalFeeds },
     { data: icalEvents },
   ] = await Promise.all([
@@ -67,12 +68,14 @@ export default async function ReservationsPage() {
       .select('id, title, date, end_date, start_time, end_time, description, category')
       .eq('user_id', userId)
       .eq('category', 'menage'),
-    // profile.ical_token + full_name pour le modal (lien iCal + signature PDF).
+    // Voyageurs existants pour « Nouvelle réservation » et « Ajouter le
+    // voyageur » d'une réservation synchronisée (même modale que Contrats).
     supabase
-      .from('profiles')
-      .select('ical_token, full_name')
-      .eq('id', userId)
-      .maybeSingle(),
+      .from('voyageurs')
+      .select('id, prenom, nom, email, telephone')
+      .eq('user_id', userId)
+      .order('updated_at', { ascending: false })
+      .limit(300),
     // Réservations Airbnb / Booking / Vrbo importées par la synchro du
     // calendrier (sept. 2026 : absentes de cette page jusqu'ici, alors que
     // l'accueil et le calendrier les affichaient). 12 derniers mois + à venir.
@@ -251,15 +254,9 @@ export default async function ReservationsPage() {
     if (isDone) doneIds.push(slot.id)
   }
 
-  const logementNames: string[] = logementSettings.map(l => l.nom).filter(Boolean)
-  const logementIdByName: Record<string, string> = {}
-  for (const l of logementSettings) {
-    if (l.nom) logementIdByName[l.nom] = l.id
-  }
-
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
-  const icalToken = (profileRow as any)?.ical_token ?? null
-  const hostName = (profileRow as any)?.full_name ?? null
+  // Date du jour à Paris, calculée une fois côté serveur : le navigateur et
+  // le serveur (UTC) ne tombaient pas d'accord autour de minuit.
+  const today = parisToday()
 
   return (
     <>
@@ -274,11 +271,8 @@ export default async function ReservationsPage() {
         logements={logements}
         menageSlots={menageSlots}
         menageDoneIds={doneIds}
-        menageLogementNames={logementNames}
-        menageLogementIdByName={logementIdByName}
-        appUrl={appUrl}
-        icalToken={icalToken}
-        hostName={hostName}
+        voyageurs={voyageurOptions ?? []}
+        today={today}
       />
     </>
   )

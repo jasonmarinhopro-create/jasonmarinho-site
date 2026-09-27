@@ -27,10 +27,12 @@ export interface LogementLite {
   nom: string
 }
 
+// Pas de bleu sur les pages hôte (demande de Jason, sept. 2026), même pour
+// Booking et Vrbo : couleurs chaudes distinctes, le libellé fait le reste.
 export const PLATFORM_META: Record<Platform, { label: string; color: string }> = {
-  airbnb:  { label: 'Airbnb',  color: '#FF385C' },
-  booking: { label: 'Booking', color: '#003580' },
+  airbnb:  { label: 'Airbnb',  color: '#E0475B' },
+  booking: { label: 'Booking', color: '#D97706' },
   driing:  { label: 'Driing',  color: '#B8860B' },
-  vrbo:    { label: 'VRBO',    color: '#0072ce' },
-  direct:  { label: 'Direct',  color: '#63D683' },
+  vrbo:    { label: 'Vrbo',    color: '#8B6D5E' },
+  direct:  { label: 'Direct',  color: '#2F9E5B' },
 }

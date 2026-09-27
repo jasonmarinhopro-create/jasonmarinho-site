@@ -7,6 +7,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import { addVoyageur, addSejour } from '@/app/dashboard/voyageurs/actions'
 import { CalendarInput } from '@/components/ui/CalendarInput'
+import { NATIONALITES } from '@/lib/nationalites'
 
 export type VoyageurOption = {
   id: string
@@ -26,11 +27,21 @@ interface Props {
   onClose: () => void
   /** Ne propose que « Créer + contrat » (depuis « Nouveau contrat »). */
   contractOnly?: boolean
+  /** Dates et logement préremplis (réservation Airbnb/Booking synchronisée). */
+  defaults?: { logementNom?: string; dateArrivee?: string; dateDepart?: string }
+  /**
+   * Réservation venue d'une plateforme : le séjour est enregistré comme
+   * « contrat géré par la plateforme » (pas de contrat ni de paiement proposé),
+   * pour rattacher le voyageur (déclaration, carnet). Mes réservations, sept. 2026.
+   */
+  platform?: 'airbnb' | 'booking' | 'vrbo'
 }
+
+const PLATFORM_NAMES = { airbnb: 'Airbnb', booking: 'Booking', vrbo: 'Vrbo' } as const
 
 type Mode = 'existing' | 'new'
 
-export default function QuickSejourModal({ logementNom: fixedLogementNom, logements = [], voyageurs, onClose, contractOnly = false }: Props) {
+export default function QuickSejourModal({ logementNom: fixedLogementNom, logements = [], voyageurs, onClose, contractOnly = false, defaults, platform }: Props) {
   const router = useRouter()
   const [mode, setMode] = useState<Mode>(voyageurs.length > 0 ? 'existing' : 'new')
   const [search, setSearch] = useState('')
@@ -40,11 +51,12 @@ export default function QuickSejourModal({ logementNom: fixedLogementNom, logeme
   const [newNom, setNewNom] = useState('')
   const [newEmail, setNewEmail] = useState('')
   const [newTel, setNewTel] = useState('')
+  const [newNationalite, setNewNationalite] = useState('')
 
-  const [chosenLogement, setChosenLogement] = useState(logements.length === 1 ? logements[0].nom : '')
+  const [chosenLogement, setChosenLogement] = useState(defaults?.logementNom ?? (logements.length === 1 ? logements[0].nom : ''))
   const logementNom = fixedLogementNom ?? chosenLogement
-  const [dateArrivee, setDateArrivee] = useState('')
-  const [dateDepart, setDateDepart] = useState('')
+  const [dateArrivee, setDateArrivee] = useState(defaults?.dateArrivee ?? '')
+  const [dateDepart, setDateDepart] = useState(defaults?.dateDepart ?? '')
   const [montant, setMontant] = useState('')
 
   const [submitting, setSubmitting] = useState<null | 'sejour' | 'sejour-contract'>(null)
@@ -81,6 +93,8 @@ export default function QuickSejourModal({ logementNom: fixedLogementNom, logeme
       nom: newNom.trim(),
       email: newEmail.trim() || undefined,
       telephone: newTel.trim() || undefined,
+      nationalite: newNationalite || null,
+      ...(platform ? { source: platform } : {}),
     })
     if (res.error || !res.id) {
       setError(res.error ?? 'Impossible de créer le voyageur')
@@ -104,7 +118,10 @@ export default function QuickSejourModal({ logementNom: fixedLogementNom, logeme
         date_arrivee: dateArrivee,
         date_depart: dateDepart,
         montant: Number.isFinite(montantNum) ? montantNum : null,
-        contrat_statut: 'nouveau',
+        // Plateforme : contrat et paiement gérés par Airbnb/Booking
+        ...(platform
+          ? { contrat_statut: 'signe' as const, contrat_plateforme: platform }
+          : { contrat_statut: 'nouveau' as const }),
       })
       if (sejourRes.error || !sejourRes.id) {
         setError(sejourRes.error ?? 'Impossible de créer le séjour')
@@ -128,8 +145,12 @@ export default function QuickSejourModal({ logementNom: fixedLogementNom, logeme
       <div style={modal} onClick={e => e.stopPropagation()}>
         <header style={header}>
           <div>
-            <h2 style={title}>{contractOnly ? 'Nouvelle réservation directe' : 'Nouveau séjour'}</h2>
-            <p style={subtitle}>{fixedLogementNom ?? 'Le voyageur, les dates, puis le contrat à signer'}</p>
+            <h2 style={title}>{platform ? `Voyageur de la réservation ${PLATFORM_NAMES[platform]}` : contractOnly ? 'Nouvelle réservation directe' : 'Nouvelle réservation'}</h2>
+            <p style={subtitle}>
+              {platform
+                ? 'Nom et nationalité : de quoi préparer la déclaration (fiche de police, SIBA) et garder le contact.'
+                : fixedLogementNom ?? 'Le voyageur, les dates, puis le contrat à signer'}
+            </p>
           </div>
           <button type="button" onClick={onClose} style={closeBtn} aria-label="Fermer">
             <X size={16} weight="bold" />
@@ -216,6 +237,13 @@ export default function QuickSejourModal({ logementNom: fixedLogementNom, logeme
                   <label style={fieldLabel}>Téléphone</label>
                   <input type="tel" value={newTel} onChange={e => setNewTel(e.target.value)} style={input} />
                 </div>
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={fieldLabel}>Nationalité {platform ? '(pour la déclaration)' : ''}</label>
+                  <select value={newNationalite} onChange={e => setNewNationalite(e.target.value)} style={input} aria-label="Nationalité">
+                    <option value="">Choisir un pays…</option>
+                    {NATIONALITES.map(n => <option key={n.code} value={n.code}>{n.name}</option>)}
+                  </select>
+                </div>
               </div>
             )}
           </section>
@@ -292,15 +320,15 @@ export default function QuickSejourModal({ logementNom: fixedLogementNom, logeme
           <button type="button" onClick={onClose} style={ghostBtn} disabled={submitting !== null}>
             Annuler
           </button>
-          {!contractOnly && <button
+          {(!contractOnly || platform) && <button
             type="button"
             onClick={() => handleSubmit(false)}
             disabled={!canSubmit}
-            style={{ ...secondaryBtn, opacity: canSubmit ? 1 : 0.5, cursor: canSubmit ? 'pointer' : 'not-allowed' }}
+            style={{ ...(platform ? primaryBtn : secondaryBtn), opacity: canSubmit ? 1 : 0.5, cursor: canSubmit ? 'pointer' : 'not-allowed' }}
           >
-            {submitting === 'sejour' ? 'Création…' : 'Créer le séjour'}
+            {submitting === 'sejour' ? 'Création…' : platform ? 'Enregistrer le voyageur' : 'Créer le séjour'}
           </button>}
-          <button
+          {!platform && <button
             type="button"
             onClick={() => handleSubmit(true)}
             disabled={!canSubmit}
@@ -309,7 +337,7 @@ export default function QuickSejourModal({ logementNom: fixedLogementNom, logeme
             <FileText size={13} weight="bold" />
             {submitting === 'sejour-contract' ? 'Création…' : contractOnly ? 'Continuer vers le contrat' : 'Créer + contrat'}
             <ArrowRight size={11} weight="bold" />
-          </button>
+          </button>}
         </footer>
       </div>
     </div>

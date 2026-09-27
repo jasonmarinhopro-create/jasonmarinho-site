@@ -32,11 +32,11 @@ type BuiltIn = {
 
 const BUILTIN: BuiltIn[] = [
   { key: 'airbnb',  label: 'Airbnb',  color: '#FF5A5F', bg: 'rgba(255,90,95,0.13)',  icon: <House size={18} weight="duotone" />,              placeholder: 'https://www.airbnb.fr/hosting/reservations' },
-  { key: 'booking', label: 'Booking', color: '#003580', bg: 'rgba(0,53,128,0.18)',   icon: <BookOpen size={18} weight="duotone" />,           placeholder: 'https://admin.booking.com/extranet_ng/manage/messaging' },
+  { key: 'booking', label: 'Booking', color: '#D97706', bg: 'rgba(217,119,6,0.13)',  icon: <BookOpen size={18} weight="duotone" />,           placeholder: 'https://admin.booking.com/extranet_ng/manage/messaging' },
   { key: 'driing',  label: 'Driing',  color: 'var(--accent-text)', bg: 'var(--accent-bg)', icon: <Bell size={18} weight="duotone" />,         placeholder: 'https://driing.com/hote/messages' },
   { key: 'vrbo',    label: 'Vrbo',    color: '#4ade80', bg: 'rgba(74,222,128,0.13)', icon: <GlobeHemisphereWest size={18} weight="duotone" />, placeholder: 'https://www.vrbo.com/hosting' },
   { key: 'abritel', label: 'Abritel', color: '#fbbf24', bg: 'rgba(251,191,36,0.13)', icon: <Storefront size={18} weight="duotone" />,         placeholder: 'https://admin.abritel.fr' },
-  { key: 'gmb',     label: 'Google My Business', color: '#4285F4', bg: 'rgba(66,133,244,0.13)', icon: <MapPin size={18} weight="duotone" />,   placeholder: 'https://business.google.com/dashboard' },
+  { key: 'gmb',     label: 'Fiche Google', color: 'var(--accent-text)', bg: 'var(--accent-bg)', icon: <MapPin size={18} weight="duotone" />,   placeholder: 'https://business.google.com/dashboard' },
 ]
 
 function urlForKey(data: PlatformLinksData, key: BuiltInKey): string | null {

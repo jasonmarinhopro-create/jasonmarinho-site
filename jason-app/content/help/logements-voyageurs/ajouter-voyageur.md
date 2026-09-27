@@ -20,7 +20,7 @@ updatedAt: "2026-09-27"
 - **Nationalité** : elle décide si une déclaration est obligatoire (fiche de police en France, SIBA au Portugal pour un voyageur étranger). Sans nationalité, l'app ne peut pas créer la déclaration
 - **Notes privées** : tes remarques, jamais visibles par le voyageur
 
-> Les réservations importées d'Airbnb ou Booking n'ont ni nom ni nationalité : le calendrier iCal ne les transmet pas. Crée la fiche du voyageur et relie-la au séjour pour que la déclaration soit créée.
+> Les réservations importées d'Airbnb ou Booking n'ont ni nom ni nationalité : le calendrier iCal ne les transmet pas. Dans **Mes réservations**, ouvre la réservation et clique sur **Ajouter le voyageur** : dates et logement sont déjà remplis, indique son nom et sa nationalité, et la déclaration est créée.
 
 ## La fiche voyageur
 

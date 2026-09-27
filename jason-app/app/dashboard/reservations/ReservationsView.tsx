@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 import {
   MagnifyingGlass, Download, SquaresFour, Rows, House, CalendarBlank,
   CurrencyEur, Users, ChartLineUp, X, ArrowsCounterClockwise,
-  Envelope, Phone, ArrowSquareOut, Broom, ArrowRight,
+  Envelope, Phone, ArrowSquareOut, Broom, ArrowRight, Plus, FileText, UserPlus,
 } from '@phosphor-icons/react/dist/ssr'
 import type { Reservation, LogementLite, Platform, ReservationStatus } from './types'
 import { PLATFORM_META } from './types'
@@ -14,16 +14,20 @@ import Select, { type SelectOption } from '@/components/ui/Select'
 import TourTrigger from '@/components/dashboard/TourTrigger'
 import type { MenageSlot } from '@/lib/menage/compute'
 
-// Reutilise le modal Planning menage existant du calendrier (lazy-loaded).
-// Contient le builder PDF/print/WhatsApp/iCal — pas la peine de dupliquer.
-const MenageExportModal = dynamic(() => import('@/app/dashboard/calendrier/MenageExportModal'), { ssr: false })
+import type { VoyageurOption } from '@/app/dashboard/logements/[id]/QuickSejourModal'
+
+// Même modale que « Nouvelle réservation directe » (Contrats & paiements) et
+// la fiche logement : voyageur + logement + dates, puis contrat au besoin.
+const QuickSejourModal = dynamic(() => import('@/app/dashboard/logements/[id]/QuickSejourModal'), { ssr: false })
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 
-const today = (() => {
-  const d = new Date()
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-})()
+// La date du jour (Paris) vient du serveur via la prop `today` : calculée
+// dans le navigateur, elle différait du rendu serveur autour de minuit.
+function addDays(iso: string, n: number) {
+  const d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n)
+  return d.toISOString().slice(0, 10)
+}
 
 function fmtDate(d: string, opts?: Intl.DateTimeFormatOptions) {
   const [y, m, dd] = d.split('-').map(Number)
@@ -32,7 +36,7 @@ function fmtDate(d: string, opts?: Intl.DateTimeFormatOptions) {
 function nights(from: string, to: string) {
   return Math.max(0, Math.round((new Date(to + 'T12:00').getTime() - new Date(from + 'T12:00').getTime()) / 86400000))
 }
-function statusOf(r: Reservation): ReservationStatus {
+function statusOf(r: Reservation, today: string): ReservationStatus {
   if (r.date_depart < today) return 'past'
   if (r.date_arrivee <= today && r.date_depart >= today) return 'ongoing'
   return 'upcoming'
@@ -73,22 +77,22 @@ const PERIODS: Array<{ key: Period; label: string }> = [
 interface Props {
   reservations: Reservation[]
   logements: LogementLite[]
-  // ── Props pour la section "Planning ménage" (reutilise MenageExportModal)
+  // Bandeau « Planning ménage » (le détail est dans Calendrier → Ménage)
   menageSlots: MenageSlot[]
   menageDoneIds: string[]
-  menageLogementNames: string[]
-  menageLogementIdByName: Record<string, string>
-  appUrl: string
-  icalToken: string | null
-  hostName: string | null
+  voyageurs: VoyageurOption[]
+  /** 'YYYY-MM-DD', heure de Paris, calculé côté serveur */
+  today: string
 }
 
+// Modale de saisie : nouvelle réservation, ou voyageur d'une réservation
+// Airbnb/Booking synchronisée (dates et logement préremplis)
+type QuickTarget = { kind: 'new' } | { kind: 'attach'; r: Reservation }
+
 export default function ReservationsView({
-  reservations, logements,
-  menageSlots, menageDoneIds, menageLogementNames, menageLogementIdByName,
-  appUrl, icalToken, hostName,
+  reservations, logements, menageSlots, menageDoneIds, voyageurs, today,
 }: Props) {
-  const [menageModalOpen, setMenageModalOpen] = useState(false)
+  const [quick, setQuick] = useState<QuickTarget | null>(null)
   const [period, setPeriod] = useState<Period>('upcoming')
   const [platform, setPlatform] = useState<Platform | 'all'>('all')
   const [logementId, setLogementId] = useState<string | 'all'>('all')
@@ -103,25 +107,20 @@ export default function ReservationsView({
   const filtered = useMemo(() => {
     let list = [...reservations]
 
-    // Période
-    const now = new Date()
+    // Période (à partir de la date du jour fournie par le serveur)
     if (period === 'upcoming') list = list.filter(r => r.date_depart >= today)
     else if (period === 'past') list = list.filter(r => r.date_depart < today)
     else if (period === 'week') {
-      const monday = new Date(now)
-      const diff = (monday.getDay() + 6) % 7
-      monday.setDate(monday.getDate() - diff)
-      const sunday = new Date(monday); sunday.setDate(sunday.getDate() + 6)
-      const mStr = `${monday.getFullYear()}-${String(monday.getMonth() + 1).padStart(2, '0')}-${String(monday.getDate()).padStart(2, '0')}`
-      const sStr = `${sunday.getFullYear()}-${String(sunday.getMonth() + 1).padStart(2, '0')}-${String(sunday.getDate()).padStart(2, '0')}`
+      const dow = (new Date(today + 'T12:00:00Z').getUTCDay() + 6) % 7
+      const mStr = addDays(today, -dow), sStr = addDays(mStr, 6)
       list = list.filter(r => r.date_arrivee <= sStr && r.date_depart >= mStr)
     }
     else if (period === 'month') {
-      const yMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+      const yMonth = today.slice(0, 7)
       list = list.filter(r => r.date_arrivee.startsWith(yMonth) || r.date_depart.startsWith(yMonth))
     }
     else if (period === 'year') {
-      const y = String(now.getFullYear())
+      const y = today.slice(0, 4)
       list = list.filter(r => r.date_arrivee.startsWith(y) || r.date_depart.startsWith(y))
     }
 
@@ -152,15 +151,21 @@ export default function ReservationsView({
     })
 
     return list
-  }, [reservations, period, platform, logementId, search, sort, logements])
+  }, [reservations, period, platform, logementId, search, sort, logements, today])
 
   // KPIs
   const kpis = useMemo(() => {
     const total = filtered.length
-    const revenue = filtered.reduce((sum, r) => sum + (r.montant ?? 0), 0)
+    const withAmount = filtered.filter(r => r.montant != null)
+    const revenue = withAmount.reduce((sum, r) => sum + (r.montant ?? 0), 0)
     const totalNights = filtered.reduce((sum, r) => sum + nights(r.date_arrivee, r.date_depart), 0)
-    const avgPerNight = totalNights > 0 ? Math.round(revenue / totalNights) : 0
-    return { total, revenue, totalNights, avgPerNight }
+    // Prix moyen calculé seulement sur les réservations dont on connaît le
+    // montant : avant, les nuits Airbnb/Booking synchronisées (montant
+    // inconnu) faisaient baisser la moyenne.
+    const pricedNights = withAmount.reduce((sum, r) => sum + nights(r.date_arrivee, r.date_depart), 0)
+    const avgPerNight = pricedNights > 0 ? Math.round(revenue / pricedNights) : 0
+    const unknownAmount = total - withAmount.length
+    return { total, revenue, totalNights, avgPerNight, unknownAmount }
   }, [filtered])
 
   function resetFilters() {
@@ -196,16 +201,21 @@ export default function ReservationsView({
       <style>{MOBILE_CSS}</style>
       {/* HERO */}
       <div style={s.head}>
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ flex: '1 1 320px', minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
             <h1 style={s.title}>Mes <em style={s.titleEm}>réservations</em></h1>
             <TourTrigger />
           </div>
-          <p style={s.sub}>Pilote toutes tes réservations : filtre, trie, exporte. Clique une carte pour voir le détail voyageur et l&apos;état du contrat.</p>
+          <p style={s.sub}>Airbnb, Booking et réservations directes au même endroit. Clique une réservation pour voir le voyageur, le contrat et ce qui reste à faire.</p>
         </div>
-        <button onClick={exportCSV} style={s.exportBtn} title="Exporter en CSV (filtres actifs)">
-          <Download size={15} weight="bold" />Exporter CSV
-        </button>
+        <div style={s.headActions}>
+          <button onClick={exportCSV} style={s.exportBtn} title="Exporter en CSV (filtres actifs)">
+            <Download size={15} weight="bold" />Exporter
+          </button>
+          <button onClick={() => setQuick({ kind: 'new' })} style={s.newBtn}>
+            <Plus size={15} weight="bold" />Nouvelle réservation
+          </button>
+        </div>
       </div>
 
       {/* STATS BAR */}
@@ -218,30 +228,34 @@ export default function ReservationsView({
           </div>
         </div>
         <div style={s.kpi}>
-          <div style={{ ...s.kpiIco, color: '#63D683', background: 'rgba(99,214,131,0.12)', borderColor: 'rgba(99,214,131,0.30)' }}><CurrencyEur size={18} weight="duotone" /></div>
+          <div style={s.kpiIco}><CurrencyEur size={18} weight="duotone" /></div>
           <div>
             <div style={s.kpiVal}>{fmtEurCompact(kpis.revenue)}</div>
             <div style={s.kpiLbl}>CA {periodShortLabel(period)}</div>
+            {kpis.unknownAmount > 0 && (
+              <div style={s.kpiHint}>hors {kpis.unknownAmount} résa{kpis.unknownAmount > 1 ? 's' : ''} sans montant (Airbnb, Booking)</div>
+            )}
           </div>
         </div>
         <div style={s.kpi}>
-          <div style={{ ...s.kpiIco, color: '#93C5FD', background: 'rgba(147,197,253,0.12)', borderColor: 'rgba(147,197,253,0.30)' }}><Users size={18} weight="duotone" /></div>
+          <div style={s.kpiIco}><House size={18} weight="duotone" /></div>
           <div>
             <div style={s.kpiVal}>{kpis.totalNights}</div>
             <div style={s.kpiLbl}>Nuit{kpis.totalNights > 1 ? 's' : ''} vendue{kpis.totalNights > 1 ? 's' : ''}</div>
           </div>
         </div>
         <div style={s.kpi}>
-          <div style={{ ...s.kpiIco, color: '#F472B6', background: 'rgba(244,114,182,0.12)', borderColor: 'rgba(244,114,182,0.30)' }}><ChartLineUp size={18} weight="duotone" /></div>
+          <div style={s.kpiIco}><ChartLineUp size={18} weight="duotone" /></div>
           <div>
-            <div style={s.kpiVal}>{kpis.avgPerNight ? fmtEurCompact(kpis.avgPerNight) : '—'}</div>
+            <div style={s.kpiVal}>{kpis.avgPerNight ? fmtEurCompact(kpis.avgPerNight) : '-'}</div>
             <div style={s.kpiLbl}>Prix moyen / nuit</div>
           </div>
         </div>
       </div>
 
-      {/* PLANNING MÉNAGE — CTA vers le modal Planning menage (WhatsApp/PDF/iCal) */}
-      <PlanningMenageCard slots={menageSlots} onOpen={() => setMenageModalOpen(true)} />
+      {/* Ménages à venir : bandeau vers Calendrier → Ménage (avant : grosse
+          carte + modale qui doublonnaient l'onglet Ménage) */}
+      <MenageStrip slots={menageSlots} doneIds={menageDoneIds} today={today} />
 
       {/* FILTRES */}
       <div style={s.filtersBar} data-tour="resa-filtres">
@@ -312,101 +326,67 @@ export default function ReservationsView({
         </div>
       ) : view === 'cards' ? (
         <div style={s.cardsGrid}>
-          {filtered.map(r => <ResaCard key={r.id} r={r} onClick={() => setSelected(r)} />)}
+          {filtered.map(r => <ResaCard key={r.id} r={r} today={today} onClick={() => setSelected(r)} />)}
         </div>
       ) : (
-        <TableView reservations={filtered} onSelect={setSelected} />
+        <TableView reservations={filtered} today={today} onSelect={setSelected} />
       )}
 
       {/* DRAWER DÉTAIL */}
-      {selected && <ReservationDrawer r={selected} onClose={() => setSelected(null)} />}
+      {selected && (
+        <ReservationDrawer
+          r={selected}
+          today={today}
+          onClose={() => setSelected(null)}
+          onAttachGuest={r => { setSelected(null); setQuick({ kind: 'attach', r }) }}
+        />
+      )}
 
-      {/* MODAL PLANNING MÉNAGE — periodes preselectionnees, PDF, WhatsApp, iCal */}
-      {menageModalOpen && (
-        <MenageExportModal
-          slots={menageSlots}
-          doneIds={new Set(menageDoneIds)}
-          logementNames={menageLogementNames}
-          logementIdByName={menageLogementIdByName}
-          appUrl={appUrl}
-          icalToken={icalToken}
-          hostName={hostName}
-          onClose={() => setMenageModalOpen(false)}
+      {quick && (
+        <QuickSejourModal
+          voyageurs={voyageurs}
+          logements={logements}
+          onClose={() => setQuick(null)}
+          {...(quick.kind === 'attach' ? {
+            defaults: { logementNom: quick.r.logement_name, dateArrivee: quick.r.date_arrivee, dateDepart: quick.r.date_depart },
+            platform: quick.r.platform === 'airbnb' || quick.r.platform === 'booking' || quick.r.platform === 'vrbo' ? quick.r.platform : undefined,
+          } : {})}
         />
       )}
     </div>
   )
 }
 
-// ─── Carte Planning ménage ────────────────────────────────────────────────
+// ─── Bandeau ménages ──────────────────────────────────────────────────────
 
-function PlanningMenageCard({ slots, onOpen }: { slots: MenageSlot[]; onOpen: () => void }) {
-  // Comptes utiles pour le teaser : cette semaine + semaine prochaine
-  const { thisWeek, nextWeek, next3 } = useMemo(() => {
-    const now = new Date()
-    const day = (now.getDay() + 6) % 7
-    const monday = new Date(now); monday.setDate(now.getDate() - day); monday.setHours(0,0,0,0)
-    const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6)
-    const nextMonday = new Date(monday); nextMonday.setDate(monday.getDate() + 7)
-    const nextSunday = new Date(nextMonday); nextSunday.setDate(nextMonday.getDate() + 6)
-    const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-    const monISO = iso(monday), sunISO = iso(sunday), nextMonISO = iso(nextMonday), nextSunISO = iso(nextSunday)
-    const inRange = (d: string, from: string, to: string) => d >= from && d <= to
-    const thisWeek = slots.filter(s => inRange(s.date, monISO, sunISO))
-    const nextWeek = slots.filter(s => inRange(s.date, nextMonISO, nextSunISO))
-    // 3 prochains creneaux depuis aujourd'hui pour le teaser
-    const todayISO = iso(now)
-    const next3 = slots.filter(s => s.date >= todayISO).sort((a, b) => a.date.localeCompare(b.date)).slice(0, 3)
-    return { thisWeek: thisWeek.length, nextWeek: nextWeek.length, next3 }
-  }, [slots])
-
+function MenageStrip({ slots, doneIds, today }: { slots: MenageSlot[]; doneIds: string[]; today: string }) {
+  const done = new Set(doneIds)
+  const in7 = addDays(today, 6)
+  const todo = slots.filter(sl => sl.date >= today && !done.has(sl.id))
+  const thisWeek = todo.filter(sl => sl.date <= in7).length
+  const next = [...todo].sort((a, b) => a.date.localeCompare(b.date))[0]
+  if (todo.length === 0) return null
   return (
-    <button onClick={onOpen} style={mc.card} className="jm-menage-card">
-      <div style={mc.headRow}>
-        <div style={mc.headLeft}>
-          <div style={mc.ico}><Broom size={20} weight="duotone" /></div>
-          <div>
-            <div style={mc.title}>Planning ménage</div>
-            <div style={mc.sub}>Génère un récap semaine, PDF, WhatsApp ou lien iCal pour ta femme de ménage.</div>
-          </div>
-        </div>
-        <span style={mc.chevron}><ArrowRight size={14} weight="bold" /></span>
-      </div>
-      <div style={mc.statsRow}>
-        <div style={mc.stat}>
-          <span style={mc.statVal}>{thisWeek}</span>
-          <span style={mc.statLbl}>Cette semaine</span>
-        </div>
-        <div style={mc.statDivider} />
-        <div style={mc.stat}>
-          <span style={mc.statVal}>{nextWeek}</span>
-          <span style={mc.statLbl}>Semaine prochaine</span>
-        </div>
-        <div style={mc.statDivider} />
-        <div style={mc.stat}>
-          <span style={mc.statVal}>{slots.length}</span>
-          <span style={mc.statLbl}>Total à venir</span>
-        </div>
-      </div>
-      {next3.length > 0 && (
-        <div style={mc.previewRow}>
-          {next3.map((s, i) => (
-            <span key={i} style={mc.previewPill}>
-              {fmtDate(s.date, { weekday: 'short', day: 'numeric', month: 'short' })} · {s.logementName}
-            </span>
-          ))}
-          {slots.length > 3 && <span style={{ ...mc.previewPill, background: 'transparent', border: '1px dashed var(--border-2)', color: 'var(--text-3)' }}>+{slots.length - 3} autres</span>}
-        </div>
-      )}
-    </button>
+    <Link href="/dashboard/calendrier/menage" style={mc.strip} className="jm-menage-card">
+      <span style={mc.ico}><Broom size={17} weight="duotone" /></span>
+      <span style={{ flex: 1, minWidth: 0 }}>
+        <strong style={{ color: 'var(--text)' }}>{thisWeek} ménage{thisWeek > 1 ? 's' : ''} dans les 7 prochains jours</strong>
+        {next && (
+          <span style={{ color: 'var(--text-3)' }}>
+            {' '}· prochain : {fmtDate(next.date, { weekday: 'short', day: 'numeric', month: 'short' })}, {next.logementName}
+          </span>
+        )}
+      </span>
+      <span style={mc.link}>Planning ménage <ArrowRight size={13} weight="bold" /></span>
+    </Link>
   )
 }
 
 // ─── Carte réservation ────────────────────────────────────────────────────
 
-function ResaCard({ r, onClick }: { r: Reservation; onClick: () => void }) {
+function ResaCard({ r, today, onClick }: { r: Reservation; today: string; onClick: () => void }) {
   const platform = PLATFORM_META[r.platform]
-  const st = statusMeta(statusOf(r))
+  const st = statusMeta(statusOf(r, today))
   const n = nights(r.date_arrivee, r.date_depart)
   const perNight = r.montant && n > 0 ? Math.round(r.montant / n) : null
 
@@ -414,7 +394,7 @@ function ResaCard({ r, onClick }: { r: Reservation; onClick: () => void }) {
     <button onClick={onClick} style={c.card} className="jm-resa-card">
       <span style={{ ...c.accent, background: platform.color }} />
       <div style={c.cardTop}>
-        <div style={c.avatar}>{initials(r.voyageur_name)}</div>
+        <div style={c.avatar}>{r.source === 'ical' ? <CalendarBlank size={16} weight="duotone" /> : initials(r.voyageur_name)}</div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={c.name}>{r.voyageur_name}</div>
           <div style={c.metaRow}>
@@ -446,7 +426,7 @@ function ResaCard({ r, onClick }: { r: Reservation; onClick: () => void }) {
 
 // ─── Vue tableau ──────────────────────────────────────────────────────────
 
-function TableView({ reservations, onSelect }: { reservations: Reservation[]; onSelect: (r: Reservation) => void }) {
+function TableView({ reservations, today, onSelect }: { reservations: Reservation[]; today: string; onSelect: (r: Reservation) => void }) {
   return (
     <div style={t.wrap}>
       <div style={t.scroll} className="resa-table-scroll">
@@ -465,14 +445,14 @@ function TableView({ reservations, onSelect }: { reservations: Reservation[]; on
           </thead>
           <tbody>
             {reservations.map(r => {
-              const st = statusMeta(statusOf(r))
+              const st = statusMeta(statusOf(r, today))
               const p = PLATFORM_META[r.platform]
               const n = nights(r.date_arrivee, r.date_depart)
               return (
                 <tr key={r.id} onClick={() => onSelect(r)} style={t.tr}>
                   <td style={t.td}>
                     <div style={t.voyageurCell}>
-                      <span style={t.miniAvatar} className="resa-avatar">{initials(r.voyageur_name)}</span>
+                      <span style={t.miniAvatar} className="resa-avatar">{r.source === 'ical' ? <CalendarBlank size={12} weight="duotone" /> : initials(r.voyageur_name)}</span>
                       <span>{r.voyageur_name}</span>
                     </div>
                   </td>
@@ -481,7 +461,7 @@ function TableView({ reservations, onSelect }: { reservations: Reservation[]; on
                   <td style={t.td}>{fmtDate(r.date_depart)}</td>
                   <td style={{ ...t.td, textAlign: 'right' }} className="resa-col-sec">{n}</td>
                   <td style={{ ...t.td, textAlign: 'right', color: 'var(--accent-text)', fontWeight: 600 }}>
-                    {r.montant != null ? fmtEur(r.montant) : '—'}
+                    {r.montant != null ? fmtEur(r.montant) : '-'}
                   </td>
                   <td style={t.td} className="resa-col-sec">
                     <span style={{ ...t.dot, background: p.color }} />
@@ -517,9 +497,19 @@ const MOBILE_CSS = `
 
 // ─── Drawer détail ────────────────────────────────────────────────────────
 
-function ReservationDrawer({ r, onClose }: { r: Reservation; onClose: () => void }) {
+function ReservationDrawer({ r, today, onClose, onAttachGuest }: {
+  r: Reservation
+  today: string
+  onClose: () => void
+  onAttachGuest: (r: Reservation) => void
+}) {
   const platform = PLATFORM_META[r.platform]
-  const st = statusMeta(statusOf(r))
+  const status = statusOf(r, today)
+  const st = statusMeta(status)
+  // Réservation directe saisie, sans contrat : on propose de le créer
+  // (assistant ouvert sur la fiche voyageur via ?contract=<séjour>)
+  const canCreateContract = r.source === 'sejour' && r.platform === 'direct' && !!r.voyageur_id
+    && (!r.contract_status || r.contract_status === 'nouveau') && status !== 'past'
   const n = nights(r.date_arrivee, r.date_depart)
   const perNight = r.montant && n > 0 ? Math.round(r.montant / n) : null
 
@@ -553,7 +543,7 @@ function ReservationDrawer({ r, onClose }: { r: Reservation; onClose: () => void
             </div>
             <div style={d.block}>
               <div style={d.blockLbl}>Montant</div>
-              <div style={{ ...d.blockVal, color: 'var(--accent-text)' }}>{r.montant != null ? fmtEur(r.montant) : '—'}</div>
+              <div style={{ ...d.blockVal, color: 'var(--accent-text)' }}>{r.montant != null ? fmtEur(r.montant) : '-'}</div>
               {perNight && <div style={d.blockHint}>{perNight}€ / nuit</div>}
             </div>
           </div>
@@ -598,17 +588,28 @@ function ReservationDrawer({ r, onClose }: { r: Reservation; onClose: () => void
           {r.source === 'ical' && (
             <div style={d.section}>
               <div style={d.sectionLbl}>Réservation synchronisée</div>
-              <div style={d.rowInfo}>
+              <div style={{ ...d.rowInfo, display: 'block', lineHeight: 1.55 }}>
                 Importée depuis {PLATFORM_META[r.platform]?.label ?? 'la plateforme'} par la synchro du calendrier :
-                nom, contact et montant restent sur la plateforme. Le ménage après le départ est déjà planifié.
+                la plateforme ne transmet ni le nom, ni le contact, ni le montant. Le ménage après le départ est déjà planifié.
+                Ajoute le voyageur pour garder son contact et préparer la déclaration s&apos;il est étranger.
               </div>
             </div>
           )}
 
           {/* Actions */}
           <div style={d.actions}>
+            {r.source === 'ical' && (
+              <button type="button" onClick={() => onAttachGuest(r)} style={d.actionPrimary}>
+                <UserPlus size={14} weight="bold" /> Ajouter le voyageur
+              </button>
+            )}
+            {canCreateContract && (
+              <Link href={`/dashboard/voyageurs/${r.voyageur_id}?contract=${r.sourceId}`} style={d.actionPrimary}>
+                <FileText size={14} weight="bold" /> Créer le contrat
+              </Link>
+            )}
             {r.voyageur_id && (
-              <Link href={`/dashboard/voyageurs/${r.voyageur_id}`} style={d.actionPrimary}>
+              <Link href={`/dashboard/voyageurs/${r.voyageur_id}`} style={canCreateContract ? d.actionSecondary : d.actionPrimary}>
                 <Users size={14} weight="bold" /> Voir la fiche voyageur
               </Link>
             )}
@@ -620,16 +621,16 @@ function ReservationDrawer({ r, onClose }: { r: Reservation; onClose: () => void
           </div>
 
           {/* Alertes contextuelles */}
-          <ContextualAlerts r={r} />
+          <ContextualAlerts r={r} today={today} />
         </div>
       </aside>
     </>
   )
 }
 
-function ContextualAlerts({ r }: { r: Reservation }) {
+function ContextualAlerts({ r, today }: { r: Reservation; today: string }) {
   const alerts: Array<{ level: 'warn' | 'info' | 'danger'; msg: string }> = []
-  const status = statusOf(r)
+  const status = statusOf(r, today)
   const daysToArrival = Math.ceil((new Date(r.date_arrivee + 'T12:00').getTime() - Date.now()) / 86400000)
 
   if (r.source === 'contract' && r.contract_status && r.contract_status !== 'signe' && daysToArrival >= 0 && daysToArrival <= 7) {
@@ -640,7 +641,7 @@ function ContextualAlerts({ r }: { r: Reservation }) {
     alerts.push({ level: 'warn', msg: r.payment_status === 'failed' ? 'Paiement en ligne échoué : relance le voyageur.' : 'Loyer pas encore payé en ligne : relance le voyageur.' })
   }
   if (r.source !== 'ical' && status === 'upcoming' && daysToArrival >= 0 && daysToArrival <= 3 && !r.voyageur_email && !r.voyageur_phone) {
-    alerts.push({ level: 'warn', msg: 'Aucun contact voyageur enregistré — pense à récupérer ses coordonnées.' })
+    alerts.push({ level: 'warn', msg: 'Aucun contact voyageur enregistré : pense à récupérer ses coordonnées.' })
   }
   if (status === 'past' && r.contract_status === 'signe' && r.payment_status === 'paid') {
     alerts.push({ level: 'info', msg: 'Séjour terminé et payé. Pense à demander un avis.' })
@@ -656,15 +657,15 @@ function ContextualAlerts({ r }: { r: Reservation }) {
           background:
             a.level === 'danger' ? 'rgba(248,113,113,0.10)'
               : a.level === 'warn' ? 'rgba(251,146,60,0.10)'
-                : 'rgba(147,197,253,0.10)',
+                : 'var(--accent-bg)',
           borderColor:
             a.level === 'danger' ? 'rgba(248,113,113,0.30)'
               : a.level === 'warn' ? 'rgba(251,146,60,0.30)'
-                : 'rgba(147,197,253,0.30)',
+                : 'var(--accent-border)',
           color:
-            a.level === 'danger' ? '#F87171'
-              : a.level === 'warn' ? '#FB923C'
-                : '#93C5FD',
+            a.level === 'danger' ? '#dc2626'
+              : a.level === 'warn' ? '#c2410c'
+                : 'var(--accent-text)',
         }}>{a.msg}</div>
       ))}
     </div>
@@ -704,13 +705,16 @@ function periodShortLabel(p: Period) {
 // ─── Styles ───────────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
-  wrap: { padding: 'var(--dash-page-px)', width: '100%', maxWidth: 1600, margin: '0 auto', display: 'flex', flexDirection: 'column' as const, gap: 18 },
+  wrap: { padding: 'var(--dash-page-px)', width: '100%', display: 'flex', flexDirection: 'column' as const, gap: 18 },
+  headActions: { display: 'flex', gap: 8, flexWrap: 'wrap' as const, alignItems: 'center' },
+  newBtn: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 16px', background: 'var(--accent-text)', border: 'none', borderRadius: 10, color: 'var(--bg)', fontSize: 13.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
+  kpiHint: { fontSize: 11, color: 'var(--text-3)', marginTop: 3, lineHeight: 1.35 },
   head: { display: 'flex', alignItems: 'flex-start', gap: 16, flexWrap: 'wrap' as const },
   title: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(22px, 3vw, 28px)', fontWeight: 400, letterSpacing: '-0.02em', margin: 0, marginBottom: 4 },
   titleEm: { color: 'var(--accent-text)', fontStyle: 'italic', fontWeight: 300 },
   sub: { fontSize: 13.5, color: 'var(--text-muted)', margin: 0, lineHeight: 1.6, maxWidth: 640 },
-  exportBtn: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 9, color: 'var(--text-2)', fontSize: 13, fontWeight: 500, cursor: 'pointer', flexShrink: 0 },
-  kpiRow: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 },
+  exportBtn: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--text-2)', fontSize: 13, fontWeight: 600, cursor: 'pointer', flexShrink: 0, fontFamily: 'inherit' },
+  kpiRow: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', gap: 12 },
   kpi: { display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12 },
   kpiIco: { width: 38, height: 38, borderRadius: 10, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   kpiVal: { fontFamily: 'var(--font-fraunces), serif', fontSize: 22, fontWeight: 500, color: 'var(--text)', lineHeight: 1 },
@@ -771,35 +775,13 @@ const t: Record<string, React.CSSProperties> = {
 }
 
 const mc: Record<string, React.CSSProperties> = {
-  card: {
-    display: 'flex', flexDirection: 'column' as const, gap: 14,
-    padding: '18px 20px', width: '100%',
-    background: 'var(--surface)',
-    border: '1px solid var(--accent-border)',
-    borderRadius: 14,
-    cursor: 'pointer',
-    fontFamily: 'inherit', textAlign: 'left' as const,
-    color: 'var(--text)',
-    transition: 'transform 0.15s var(--ease-spring), border-color 0.15s, box-shadow 0.15s',
+  strip: {
+    display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' as const,
+    padding: '12px 16px', background: 'var(--surface)', border: '1px solid var(--accent-border)',
+    borderRadius: 12, fontSize: 13.5, color: 'var(--text-2)', textDecoration: 'none',
   },
-  headRow: { display: 'flex', alignItems: 'flex-start', gap: 14, justifyContent: 'space-between' },
-  headLeft: { display: 'flex', alignItems: 'flex-start', gap: 14, minWidth: 0, flex: 1 },
-  ico: { width: 42, height: 42, borderRadius: 11, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  title: { fontFamily: 'var(--font-fraunces), serif', fontSize: 17, fontWeight: 500, letterSpacing: '-0.01em' },
-  sub: { fontSize: 12.5, color: 'var(--text-3)', lineHeight: 1.55, marginTop: 3, maxWidth: 520 },
-  chevron: { width: 30, height: 30, borderRadius: 8, background: 'var(--bg-2)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-text)', flexShrink: 0 },
-  statsRow: { display: 'flex', alignItems: 'center', gap: 22, paddingTop: 12, borderTop: '1px solid var(--border)' },
-  stat: { display: 'flex', flexDirection: 'column' as const, gap: 2, minWidth: 0 },
-  statVal: { fontFamily: 'var(--font-fraunces), serif', fontSize: 20, fontWeight: 500, color: 'var(--accent-text)', lineHeight: 1 },
-  statLbl: { fontSize: 10.5, color: 'var(--text-muted)', letterSpacing: 0.4, textTransform: 'uppercase' as const, fontWeight: 600 },
-  statDivider: { width: 1, height: 24, background: 'var(--border)' },
-  previewRow: { display: 'flex', flexWrap: 'wrap' as const, gap: 6 },
-  previewPill: {
-    display: 'inline-flex', alignItems: 'center', gap: 5,
-    padding: '4px 10px', borderRadius: 999,
-    background: 'var(--bg-2)', border: '1px solid var(--border)',
-    fontSize: 11.5, color: 'var(--text-2)', fontWeight: 500,
-  },
+  ico: { width: 34, height: 34, borderRadius: 10, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  link: { display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 700, color: 'var(--accent-text)', whiteSpace: 'nowrap' as const },
 }
 
 const d: Record<string, React.CSSProperties> = {
@@ -821,7 +803,7 @@ const d: Record<string, React.CSSProperties> = {
   rowInfo: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-2)', padding: '6px 0' },
   rowLink: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--accent-text)', padding: '6px 0', textDecoration: 'none' },
   actions: { display: 'flex', flexDirection: 'column' as const, gap: 8, marginTop: 4 },
-  actionPrimary: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '10px 14px', background: 'var(--accent-text)', color: 'var(--bg)', borderRadius: 9, fontSize: 13, fontWeight: 600, textDecoration: 'none' },
+  actionPrimary: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '10px 14px', background: 'var(--accent-text)', color: 'var(--bg)', border: 'none', borderRadius: 9, fontSize: 13, fontWeight: 600, textDecoration: 'none', cursor: 'pointer', fontFamily: 'inherit' },
   actionSecondary: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '10px 14px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)', borderRadius: 9, fontSize: 13, fontWeight: 500, textDecoration: 'none' },
   alert: { padding: '10px 12px', border: '1px solid', borderRadius: 8, fontSize: 12.5, lineHeight: 1.5 },
 }
