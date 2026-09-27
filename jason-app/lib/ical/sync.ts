@@ -121,6 +121,40 @@ export async function fetchAndUpsertIcalFeed(
   url: string,
   userId: string,
 ): Promise<SyncResult> {
+  const result = await doSync(supabase, feedId, url, userId)
+  // Suivi d'état (migration 20260927_107) : best-effort et séparé de la mise
+  // à jour de last_synced, pour ne rien casser si la migration n'est pas
+  // encore appliquée. Un flux vide n'est pas compté comme un échec (annonce
+  // sans réservation), seules les vraies erreurs (HTTP, délai, base) le sont.
+  if (result.synced != null) {
+    await supabase.from('ical_feeds')
+      .update({ consecutive_failures: 0, last_sync_error: null })
+      .eq('id', feedId)
+      .then(() => {}, () => {})
+  } else if (result.error && result.error !== EMPTY_FEED) {
+    await recordSyncFailure(supabase, feedId, result.error)
+  }
+  return result
+}
+
+const EMPTY_FEED = 'Aucun événement dans ce flux iCal'
+
+async function recordSyncFailure(supabase: SupabaseClient, feedId: string, message: string) {
+  try {
+    const { data } = await supabase.from('ical_feeds').select('consecutive_failures').eq('id', feedId).maybeSingle()
+    const n = ((data as { consecutive_failures?: number } | null)?.consecutive_failures ?? 0) + 1
+    await supabase.from('ical_feeds')
+      .update({ consecutive_failures: n, last_sync_error: message.slice(0, 300), last_sync_error_at: new Date().toISOString() })
+      .eq('id', feedId)
+  } catch { /* colonnes absentes (migration non appliquée) : on ignore */ }
+}
+
+async function doSync(
+  supabase: SupabaseClient,
+  feedId: string,
+  url: string,
+  userId: string,
+): Promise<SyncResult> {
   try {
     // webcal:// is identical to https:// — convert so fetch() can handle it
     const fetchUrl = url.replace(/^webcal:\/\//i, 'https://')
@@ -132,7 +166,7 @@ export async function fetchAndUpsertIcalFeed(
 
     const text = await res.text()
     const parsed = parseIcalText(text)
-    if (parsed.length === 0) return { error: 'Aucun événement dans ce flux iCal' }
+    if (parsed.length === 0) return { error: EMPTY_FEED }
 
     const { error: upsertErr } = await supabase
       .from('ical_events')

@@ -7,6 +7,7 @@
 import { NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { runNotificationRules, purgeExpiredNotifications } from '@/lib/notifications/rules'
+import { syncStaleFeeds } from '@/lib/ical/background'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60  // 60s max (suffisant pour quelques centaines d'utilisateurs)
@@ -42,6 +43,10 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  // Synchro iCal de fond AVANT les règles : les alertes (arrivée demain,
+  // synchro échouée) portent sur des données fraîches. Budget 25 s sur les 60.
+  const icalSync = await syncStaleFeeds(supabase, { staleMinutes: 360, budgetMs: 25_000, concurrency: 6 })
+
   const t0 = Date.now()
   let totalCreated = 0
   let usersProcessed = 0
@@ -55,6 +60,7 @@ export async function GET(req: Request) {
 
   return NextResponse.json({
     ok: true,
+    icalSync,
     usersProcessed,
     notificationsCreated: totalCreated,
     expiredPurged: purged,

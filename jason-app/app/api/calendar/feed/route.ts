@@ -1,3 +1,4 @@
+import { syncUserFeedsQuick } from '@/lib/ical/background'
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest } from 'next/server'
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
@@ -21,6 +22,10 @@ function fold(line: string): string {
   return out.join('\r\n')
 }
 
+// Laisse le temps à la resynchro iCal rapide (~9 s max) avant de répondre.
+export const maxDuration = 30
+export const dynamic = 'force-dynamic'
+
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get('token')
   if (!token) return new Response('Token requis', { status: 400 })
@@ -39,6 +44,9 @@ export async function GET(req: NextRequest) {
   if (!profile) return new Response('Token invalide', { status: 401 })
 
   const uid = profile.id
+  // Resynchro Airbnb/Booking si > 1 h, à chaque lecture par l'agenda abonné
+  // (plafonné à ~9 s). Voir lib/ical/background.ts.
+  await syncUserFeedsQuick(supabase, uid)
   const [
     { data: contracts },
     { data: sejours },

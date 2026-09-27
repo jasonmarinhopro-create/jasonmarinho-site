@@ -165,6 +165,13 @@ import { House } from '@phosphor-icons/react'
 
 ---
 
+## Synchro iCal en tâche de fond + planning ménage
+
+- **Avant (sept. 2026)** : les flux Airbnb/Booking/Vrbo (`ical_feeds` → `ical_events`) ne se synchronisaient que quand l'hôte ouvrait `/dashboard/calendrier`, et le flux iCal de l'équipe de ménage (`/api/calendar/menage-feed`) **ignorait complètement les réservations importées** (seulement contrats + séjours saisis à la main).
+- **Maintenant** : `lib/ical/background.ts` (`syncStaleFeeds`, budget de temps, plus anciens d'abord). Appelé par le cron quotidien `/api/cron/notifications-engine` (flux > 6 h, avant les règles) et par `/api/calendar/feed` + `/api/calendar/menage-feed` à chaque lecture par l'agenda abonné (`syncUserFeedsQuick`, flux de l'hôte > 1 h, plafonné ~9 s) : synchro quasi horaire sans cron supplémentaire (pas de 4e cron Vercel).
+- **Flux ménage** : les réservations iCal sont reliées au logement par l'URL (`lib/menage/ical-occupations.ts`, `ical_feeds.url` = `logements.ical_*`, pas de `logement_id` sur `ical_feeds`). Un flux ajouté à la main dans le Calendrier sans fiche logement est ignoré. Blocages ignorés (`lib/ical/blocked.ts`) : limite connue, Booking.com exporte ses réservations comme « CLOSED - Not available », indiscernables d'un blocage.
+- **État de synchro** : migration `20260927_107` (`last_sync_error`, `last_sync_error_at`, `consecutive_failures` sur `ical_feeds`), écrit en best-effort par `fetchAndUpsertIcalFeed` (fonctionne même si la migration n'est pas appliquée). Un flux vide n'est pas un échec. Règle `ruleSyncFailed` (`lib/notifications/rules.ts`) : notification après 3 échecs consécutifs, dédup par flux + dernière synchro réussie.
+
 ## Réglementation dans les estimations (investisseur + hôte)
 
 - `jason-app/lib/lcd/regulation.ts` : règles LCD par ville, **uniquement des faits vérifiés et sourcés** (relevés de sept. 2026), 3 niveaux : `bloquant` (nouvel investissement quasi impossible : Paris, Barcelone, Palma, Málaga, Florence, Amsterdam), `restrictif` (90 jours, compensation, quotas : Lyon, Bordeaux, Marseille, Nice, Montpellier, Annecy, Biarritz, La Rochelle, Saint-Malo, Chamonix, Madrid, Valencia, Lisbonne, Berlin, Vienne), `encadre` (changement d'usage à prévoir). Ville absente = note générique du pays (`COUNTRY_NOTES`), jamais de chiffre inventé. Mêmes faits FR que `scripts/data/villes-local.mjs` côté site statique : garder les deux cohérents.

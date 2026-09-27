@@ -16,6 +16,8 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest } from 'next/server'
 import { computeMenageSlots, type Occupation, type LogementSettings } from '@/lib/menage/compute'
+import { icalOccupationsForMenage } from '@/lib/menage/ical-occupations'
+import { syncUserFeedsQuick } from '@/lib/ical/background'
 
 function p2(n: number) { return String(n).padStart(2, '0') }
 function icalDate(s: string) { return s.replace(/-/g, '') }
@@ -36,6 +38,10 @@ function fold(line: string): string {
 function toISODate(d: Date): string {
   return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`
 }
+
+// Laisse le temps à la resynchro iCal rapide (~9 s max) avant de répondre.
+export const maxDuration = 30
+export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get('token')
@@ -62,16 +68,24 @@ export async function GET(req: NextRequest) {
   const fromDate = toISODate(new Date(now.getTime() - 30 * 86400000))
   const toDate = toISODate(new Date(now.getTime() + 180 * 86400000))
 
+  // L'agenda de l'équipe relit ce flux environ toutes les heures : on en
+  // profite pour resynchroniser les flux Airbnb/Booking de l'hôte s'ils ont
+  // plus d'une heure (plafonné à ~9 s pour ne pas faire attendre l'agenda).
+  await syncUserFeedsQuick(supabase, uid)
+
   const [
-    { data: contracts },
+    { data: contractsRaw },
     { data: sejours },
     { data: logements },
+    { data: icalFeeds },
+    { data: icalEvents },
   ] = await Promise.all([
+    // Statut filtré en JS : .neq('statut', 'annule') excluait aussi les
+    // contrats au statut NULL (NULL <> 'annule' vaut NULL en SQL).
     supabase
       .from('contracts')
       .select('id, logement_nom, date_arrivee, date_depart, sejour_id, statut')
-      .eq('user_id', uid)
-      .neq('statut', 'annule'),
+      .eq('user_id', uid),
     supabase
       .from('sejours')
       .select('id, logement, date_arrivee, date_depart')
@@ -81,9 +95,23 @@ export async function GET(req: NextRequest) {
       .not('date_depart', 'is', null),
     supabase
       .from('logements')
-      .select('id, nom, adresse, menage_duree_min, menage_heure_defaut, menage_notes, contact_menage_nom, contact_menage_tel, frais_menage')
+      .select('id, nom, adresse, menage_duree_min, menage_heure_defaut, menage_notes, contact_menage_nom, contact_menage_tel, frais_menage, ical_airbnb, ical_booking, ical_vrbo, ical_autre')
       .eq('user_id', uid),
+    supabase
+      .from('ical_feeds')
+      .select('id, url')
+      .eq('user_id', uid),
+    // Réservations importées d'Airbnb/Booking/Vrbo : avant, elles étaient
+    // absentes du planning ménage (seuls les séjours saisis à la main et les
+    // contrats y figuraient).
+    supabase
+      .from('ical_events')
+      .select('id, feed_id, title, description, start_date, end_date')
+      .eq('user_id', uid)
+      .gte('end_date', fromDate)
+      .lte('start_date', toDate),
   ])
+  const contracts = (contractsRaw ?? []).filter(c => c.statut !== 'annule')
 
   const sejourIdsWithContract = new Set(
     (contracts ?? [])
@@ -92,7 +120,7 @@ export async function GET(req: NextRequest) {
   )
 
   const occupations: Occupation[] = []
-  for (const c of contracts ?? []) {
+  for (const c of contracts) {
     if (!c.date_arrivee || !c.date_depart) continue
     occupations.push({
       sourceId: `contract-${c.id}`,
@@ -112,6 +140,10 @@ export async function GET(req: NextRequest) {
       dateDepart: s.date_depart,
     })
   }
+
+  // Après les séjours/contrats : à date égale, le calcul garde la première
+  // occupation vue, donc la saisie manuelle prime sur le miroir iCal.
+  occupations.push(...icalOccupationsForMenage(logements ?? [], icalFeeds ?? [], icalEvents ?? []))
 
   const logementSettings: LogementSettings[] = (logements ?? []).map((l: any) => ({
     id: l.id,

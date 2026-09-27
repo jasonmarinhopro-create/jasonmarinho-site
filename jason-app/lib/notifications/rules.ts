@@ -237,12 +237,39 @@ async function ruleStripeIncomplete(userId: string): Promise<number> {
   return ok ? 1 : 0
 }
 
-// ─── Règle 4 : Synchro iCal — désactivée tant que le tracking last_sync_status
-// n'est pas en base. Les colonnes existantes (ical_airbnb / ical_booking / etc.)
-// sont juste des URLs, pas un statut. Sera activée quand on ajoutera
-// `ical_last_sync_status` + `ical_last_sync_at` aux logements.
-async function ruleSyncFailed(_userId: string): Promise<number> {
-  return 0
+// ─── Règle 4 : Synchro iCal échouée ───────────────────────────────────
+// Un flux Airbnb/Booking/Vrbo qui échoue 3 fois de suite (URL régénérée côté
+// plateforme, annonce supprimée…) : le calendrier et le planning ménage ne
+// sont plus à jour. Colonnes ajoutées par la migration 20260927_107 ; si elle
+// n'est pas appliquée, la requête échoue et la règle renvoie 0.
+// Dédup : une alerte par flux et par dernière synchro réussie (pas de relance
+// quotidienne tant que rien n'a changé ; nouvelle alerte si ça re-casse
+// après un succès).
+async function ruleSyncFailed(userId: string): Promise<number> {
+  const supabase = svc()
+  const { data: feeds, error } = await supabase
+    .from('ical_feeds')
+    .select('id, name, last_synced, consecutive_failures, last_sync_error')
+    .eq('user_id', userId)
+    .gte('consecutive_failures', 3)
+  if (error || !feeds) return 0
+
+  let created = 0
+  for (const f of feeds as Array<{ id: string; name: string | null; last_synced: string | null; consecutive_failures: number; last_sync_error: string | null }>) {
+    const ok = await createNotification({
+      recipientId: userId,
+      category: 'sync',
+      type: 'sync_failed',
+      title: `Synchro calendrier en échec : ${f.name ?? 'flux iCal'}`,
+      body: `Les ${f.consecutive_failures} dernières synchronisations ont échoué${f.last_sync_error ? ` (${f.last_sync_error})` : ''}. Tes nouvelles réservations n'arrivent plus dans le calendrier ni dans le planning ménage. Vérifie le lien iCal sur la plateforme et recopie-le sur la fiche du logement.`,
+      ctaLabel: 'Voir mes logements',
+      ctaHref: '/dashboard/logements',
+      severity: 'warning',
+      dedupKey: `sync_failed:${f.id}:${f.last_synced ?? 'jamais'}`,
+    })
+    if (ok) created++
+  }
+  return created
 }
 
 // ─── Règle 5 : Nouveau guide publié (à voir) ──────────────────────────
