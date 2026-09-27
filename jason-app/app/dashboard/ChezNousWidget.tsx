@@ -1,7 +1,8 @@
+import RelativeTime from '@/components/ui/RelativeTime'
 import Link from 'next/link'
 import { ChatCircle, ArrowRight, House } from '@phosphor-icons/react/dist/ssr'
 import { CATEGORIES, type CategoryId } from '@/lib/chez-nous/categories'
-import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
+import { displayName, displayInitials, colorFromId } from '@/lib/chez-nous/display'
 
 type WidgetPost = {
   id: string
@@ -75,7 +76,7 @@ export default function ChezNousWidget({
                 </div>
                 <div style={s.titleRow}>{p.title}</div>
                 <div style={s.foot}>
-                  <span>{formatRelative(p.last_reply_at ?? p.created_at)}</span>
+                  <span><RelativeTime iso={p.last_reply_at ?? p.created_at} /></span>
                   <span style={s.metaSep}>·</span>
                   <span style={s.foot}>
                     <ChatCircle size={10} weight="fill" /> {p.reply_count}

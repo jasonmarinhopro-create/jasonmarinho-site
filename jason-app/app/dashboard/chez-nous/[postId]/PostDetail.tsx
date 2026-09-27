@@ -1,5 +1,6 @@
 'use client'
 
+import RelativeTime from '@/components/ui/RelativeTime'
 import { useState, useTransition, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -8,7 +9,7 @@ import {
   ArrowFatUp, Pencil, X, Check, CheckCircle,
 } from '@phosphor-icons/react/dist/ssr'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
-import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
+import { displayName, displayInitials, colorFromId } from '@/lib/chez-nous/display'
 import type { BadgeId } from '@/lib/badges'
 import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import RichText from '@/components/chez-nous/RichText'
@@ -207,7 +208,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
                   {author?.role === 'admin' && <span style={s.adminTag}>admin</span>}
                 </Link>
                 <div style={s.dateRow}>
-                  <span style={s.authorDate}>{formatRelative(post.created_at)}</span>
+                  <span style={s.authorDate}><RelativeTime iso={post.created_at} /></span>
                   {post.edited_at && <span style={s.editedTag}>· modifié</span>}
                 </div>
                 {author?.proStats && formatProStats(author.proStats) && (
@@ -418,7 +419,7 @@ function PostInfoAside({ post, replyCount }: { post: Post; replyCount: number })
           <span style={s.statLabel}>réponse{replyCount > 1 ? 's' : ''}</span>
         </div>
         <div style={s.statRow2}>
-          <span style={s.statValueSmall}>{formatRelative(post.created_at)}</span>
+          <span style={s.statValueSmall}><RelativeTime iso={post.created_at} /></span>
           <span style={s.statLabel}>créée</span>
         </div>
       </div>
@@ -569,7 +570,7 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
           {proStats && formatProStats(proStats) && (
             <span style={s.proStatsPill}>{formatProStats(proStats)}</span>
           )}
-          <span style={s.authorDate}>{formatRelative(reply.created_at)}</span>
+          <span style={s.authorDate}><RelativeTime iso={reply.created_at} /></span>
           {reply.edited_at && <span style={s.editedTag}>· modifié</span>}
           <div style={{ marginLeft: 'auto', display: 'flex', gap: '2px' }}>
             {canAccept && (

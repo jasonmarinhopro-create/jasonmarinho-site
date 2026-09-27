@@ -1,5 +1,6 @@
 'use client'
 
+import RelativeTime from '@/components/ui/RelativeTime'
 import { useState, useTransition, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -8,7 +9,7 @@ import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Questi
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { REGION_POSITIONS } from '@/lib/chez-nous/regions'
 import { MapPin } from '@phosphor-icons/react/dist/ssr'
-import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
+import { displayName, displayInitials, colorFromId } from '@/lib/chez-nous/display'
 import type { BadgeId } from '@/lib/badges'
 import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import MentionAutocomplete from '@/components/chez-nous/MentionAutocomplete'
@@ -650,7 +651,7 @@ function ActivityCard({
       </div>
       <div style={s.activityList}>
         {events.map(ev => {
-          const when = formatRelative(ev.created_at)
+          const when = <RelativeTime iso={ev.created_at} />
           if (ev.kind === 'reply') {
             const replier = nameOf(ev.replierId)
             const author = nameOf(ev.postAuthorId)
@@ -1006,7 +1007,7 @@ function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; auth
           )}
           <span style={s.postFootDot}>·</span>
           <Link href={`/dashboard/chez-nous/${post.id}`} style={s.postFootLink}>
-            {formatRelative(post.last_reply_at ?? post.created_at)}
+            <RelativeTime iso={post.last_reply_at ?? post.created_at} />
           </Link>
           <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
             {isAuthor && (
@@ -1235,7 +1236,7 @@ function NewMembersBand({ members }: { members: NewMember[] }) {
                 </span>
                 {m.city && <span style={s.newMemberCity} className="cn-member-city">{m.city}</span>}
                 {m.created_at && (
-                  <span style={s.newMemberSince} className="cn-member-since">{formatRelative(m.created_at)}</span>
+                  <span style={s.newMemberSince} className="cn-member-since"><RelativeTime iso={m.created_at} /></span>
                 )}
               </div>
             </Link>

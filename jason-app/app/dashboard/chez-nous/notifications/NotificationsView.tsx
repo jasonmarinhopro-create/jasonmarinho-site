@@ -1,11 +1,12 @@
 'use client'
 
+import RelativeTime from '@/components/ui/RelativeTime'
 import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, BellRinging, ChatCircleDots, Check, At, CheckCircle, Funnel, NotePencil } from '@phosphor-icons/react/dist/ssr'
 import { CATEGORIES, type CategoryId } from '@/lib/chez-nous/categories'
-import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
+import { displayName, displayInitials, colorFromId } from '@/lib/chez-nous/display'
 import { markNotifRead, markAllNotifsRead } from './actions'
 
 type NotifType = 'reply' | 'mention' | 'accepted' | 'post'
@@ -223,7 +224,7 @@ function NotifRow({ notif, post, actor, actorId }: {
             <span style={s.postTitle}>{post.title}</span>
           </div>
         )}
-        <span style={s.time}>{formatRelative(notif.created_at)}</span>
+        <span style={s.time}><RelativeTime iso={notif.created_at} /></span>
       </div>
       {isUnread && <div style={s.unreadDot} />}
     </Link>

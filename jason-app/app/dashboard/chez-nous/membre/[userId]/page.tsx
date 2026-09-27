@@ -1,9 +1,10 @@
+import RelativeTime from '@/components/ui/RelativeTime'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, ChatCircle, House, PencilSimple } from '@phosphor-icons/react/dist/ssr'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import { displayName, displayInitials, colorFromId, formatRelative } from '@/lib/chez-nous/display'
+import { displayName, displayInitials, colorFromId } from '@/lib/chez-nous/display'
 import { CATEGORIES, type CategoryId } from '@/lib/chez-nous/categories'
 import { getMemberStats, type MemberProfile } from '@/lib/chez-nous/member-stats'
 import { BADGES } from '@/lib/badges'
@@ -199,7 +200,7 @@ export default async function MembrePage({ params }: Props) {
               {stats.lastActiveAt && (
                 <p style={s.lastActive}>
                   <span style={s.lastActiveDot} />
-                  Actif {formatRelative(stats.lastActiveAt)}
+                  Actif <RelativeTime iso={stats.lastActiveAt} />
                 </p>
               )}
 
@@ -245,7 +246,7 @@ export default async function MembrePage({ params }: Props) {
                               <span style={{ ...s.catChip, color: cat.color, background: cat.bg }}>
                                 {cat.short}
                               </span>
-                              <span style={s.itemDate}>{formatRelative(p.created_at)}</span>
+                              <span style={s.itemDate}><RelativeTime iso={p.created_at} /></span>
                             </div>
                             <h3 style={s.itemTitle}>{p.title}</h3>
                             <div style={s.itemFoot}>
@@ -271,7 +272,7 @@ export default async function MembrePage({ params }: Props) {
                             <div style={s.itemHead}>
                               <span style={s.replyOnLabel}>Sur</span>
                               <span style={s.replyOnTitle}>{title}</span>
-                              <span style={s.itemDate}>{formatRelative(r.created_at)}</span>
+                              <span style={s.itemDate}><RelativeTime iso={r.created_at} /></span>
                             </div>
                             <p style={s.replyExcerpt}>{r.body.slice(0, 220)}{r.body.length > 220 ? '…' : ''}</p>
                           </Link>
