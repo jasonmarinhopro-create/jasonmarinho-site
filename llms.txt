@@ -2,7 +2,7 @@
 
 > Plateforme de ressources et d'accompagnement pour les hôtes de location courte durée (LCD) en France. Jason Marinho aide les propriétaires Airbnb, Booking.com et chambres d'hôtes à optimiser leurs annonces, développer les réservations directes et piloter leur activité avec des outils concrets.
 
-Jason Marinho est un expert en location courte durée (LCD) basé en France. Il propose des formations, outils et contenus pratiques destinés aux hôtes indépendants, gérants de gîtes, chambres d'hôtes et conciergeries. La plateforme inclut un espace membre à l'adresse app.jasonmarinho.com avec des outils intégrés (audit Google Business Profile, suivi des revenus, tableau de voyageurs, forum Chez Nous, gabarits de messages, gestion de contrats avec signature électronique et caution Stripe).
+Jason Marinho est un expert en location courte durée (LCD) basé en France. Il propose des formations, outils et contenus pratiques destinés aux hôtes indépendants, gérants de gîtes, chambres d'hôtes et conciergeries. La plateforme inclut un espace membre à l'adresse app.jasonmarinho.com avec des outils intégrés (contrats de location saisonnière signés en ligne avec paiement du loyer et caution par carte, planning ménage automatique partagé avec l'équipe de ménage, déclarations voyageurs (fiche de police en France, SIBA au Portugal), suivi des revenus, carnet de voyageurs, audit de la fiche Google, gabarits de messages, questions & réponses entre hôtes avec réponse sous 48 h).
 
 ## Qui est Jason Marinho
 
@@ -27,8 +27,11 @@ Jason Marinho est un expert en location courte durée (LCD) basé en France. Il 
 - [Service GMB complet](https://jasonmarinho.com/services/gmb/): Gestion et optimisation de Google My Business pour hôtes
 - [Annonce directe](https://jasonmarinho.com/services/annonce-directe/): Créer et optimiser son canal de réservation directe
 - [Acquisition de voyageurs](https://jasonmarinho.com/services/acquisition-voyageurs/): Stratégies pour attirer plus de voyageurs
-- [Audit Google Business Profile](https://jasonmarinho.com/services/audit-gbp/): Outil d'audit GBP intégré à la plateforme — analyse la fiche Google des hôtes
-- [Chez Nous — forum hôtes LCD](https://jasonmarinho.com/services/chez-nous/): Forum privé réservé aux membres de la plateforme pour s'entraider entre hôtes
+- [Contrats & paiements](https://jasonmarinho.com/services/contrats): Contrat de location saisonnière signé en ligne (FR, PT, EN), loyer payé par carte via Stripe sur le compte de l'hôte, caution par empreinte bancaire, facture numérotée
+- [Planning ménage](https://jasonmarinho.com/services/planning-menage): Ménages calculés à partir des réservations Airbnb, Booking et directes, lien de planning pour l'équipe, photos de fin de ménage
+- [Déclarations voyageurs](https://jasonmarinho.com/services/declarations-voyageurs): Fiche individuelle de police pré-remplie (France), envoi SIBA (Portugal), check-in en ligne
+- [Audit de la fiche Google](https://jasonmarinho.com/services/audit-gbp/): Audit de la fiche Google Business Profile des hôtes, intégré à la plateforme
+- [Questions & réponses](https://jasonmarinho.com/services/entre-hotes): Les hôtes inscrits posent leurs questions, réponse sous 48 h par Jason Marinho ou un hôte expérimenté
 - [Partenaires](https://jasonmarinho.com/partenaires): Outils recommandés, offres négociées pour les membres (Driing, Lodgify…), comparatifs et catalogue des outils LCD
 - [Sécurité et protection](https://jasonmarinho.com/services/securite/): Ressources sur la sécurité en LCD
 
@@ -222,6 +225,6 @@ Le blog de jasonmarinho.com couvre une large palette de sujets pour les hôtes L
 
 ## Optional
 
-- [Détail des services Chez Nous](https://jasonmarinho.com/services/chez-nous/page.md)
+- [Détail de Questions & réponses](https://jasonmarinho.com/services/entre-hotes/page.md)
 - [Détail du service Audit GBP](https://jasonmarinho.com/services/audit-gbp/page.md)
 - [Détail des formations](https://jasonmarinho.com/services/formations/page.md)

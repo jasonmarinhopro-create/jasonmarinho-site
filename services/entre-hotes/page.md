@@ -1,44 +1,30 @@
-# Chez Nous, Le forum privé des hôtes LCD
+# Questions & réponses entre hôtes LCD : réponse sous 48 h
 
-**Chez Nous** est l'espace communautaire réservé aux membres inscrits sur la plateforme Jason Marinho. C'est un forum d'entraide entre hôtes de location courte durée (meublés de tourisme, chambres d'hôtes, gîtes, conciergeries) en France.
+**Questions & réponses** (anciennement le forum « Entre Hôtes » / « Chez Nous ») est l'espace où les hôtes inscrits sur la plateforme Jason Marinho posent leurs questions sur la location courte durée (meublés de tourisme, chambres d'hôtes, gîtes, conciergeries), en France et au Portugal.
 
-## À quoi ça sert
+## La promesse
 
-Chez Nous permet aux hôtes de :
-- poser des questions à d'autres hôtes expérimentés
-- partager des retours d'expérience concrets sur Airbnb, Booking.com et les réservations directes
-- discuter de réglementation, fiscalité, optimisation d'annonce, relation voyageurs
-- s'entraider localement ou thématiquement
-- être notifié quand quelqu'un répond à leur discussion
+Chaque question reçoit une réponse **sous 48 heures**, de Jason Marinho ou d'un hôte expérimenté à qui il confie la question. L'auteur est prévenu par email. Les réponses sur la fiscalité et la réglementation citent leur source (texte de loi, site officiel).
 
-## Catégories disponibles
+## Comment ça marche
 
-- **Bienvenue**, Présentations et premiers pas sur la plateforme
-- **Réglementation & Fiscalité**, Lois, impôts, numéros d'enregistrement, DPE, LMNP
-- **Voyageurs**, Gestion des voyageurs difficiles, avis, communication
-- **Optimisation**, Annonces, tarification dynamique, algorithme, photos
-- **Réservations directes**, Site direct, Google My Business, Instagram, email marketing
-- **Outils & Tech**, PMS, automatisation, serrures connectées, capteurs
-- **Entraide locale**, Échanges géographiques entre hôtes d'une même région
+1. L'hôte pose sa question en une phrase, avec son contexte (ville, plateforme, statut). Une recherche lui montre d'abord si la question a déjà une réponse.
+2. Jason reçoit chaque nouvelle question par email, et un rappel quotidien des questions restées sans réponse depuis 24 heures.
+3. La réponse est marquée comme acceptée : la question rejoint les « questions déjà répondues », consultables par tous les membres.
 
-## Fonctionnalités
+## Sujets
 
-- **Fil de discussion** avec tri par date (Récent), popularité, sans réponse ou non résolu
-- **Recherche plein texte** dans les titres et corps de message
-- **Vote** sur les posts (système de likes)
-- **Réponse acceptée**, le créateur d'un post peut marquer la meilleure réponse comme "Réponse acceptée", ce qui marque le sujet comme Résolu
-- **Images**, jusqu'à 5 images par post
-- **Badges hôtes**, indicateurs de parcours : Pionnier, Visionnaire, Bâtisseur, Auditeur GBP, Formé, Connecté, Premier message
-- **Stats pro**, le pseudo de chaque membre affiche son ancienneté, nombre de logements et ville (si paramétrage public)
-- **Signalement**, modération participative via bouton Signaler
-- **Notifications**, alerte en temps réel dès qu'un hôte répond à une discussion
+- Réglementation & fiscalité : déclaration en mairie, numéro d'enregistrement, nuits autorisées, micro-BIC, LMNP, classement, taxe de séjour
+- Voyageurs : contrat, caution, fiche de police, litiges
+- Annonces & optimisation : prix, frais des plateformes, réservations directes
+- Entraide locale : ménage, prestataires, organisation à distance
+- Études de cas et autres questions
 
-## Qui peut utiliser Chez Nous
+## Accès
 
-Chez Nous est accessible à tout hôte inscrit sur la plateforme app.jasonmarinho.com. L'inscription est gratuite. La communauté est animée dans un esprit bienveillant et professionnel, sans publicité, sans spam, sans algorithme de recommandation.
+Réservé aux hôtes inscrits sur app.jasonmarinho.com (compte gratuit). Les questions et réponses ne sont pas publiées sur le web public. Des liens « Poser ma question » sont présents dans le guide LCD, les simulateurs, la page des déclarations voyageurs et les actualités.
 
-## URL d'accès
+## URL
 
-La page publique de présentation est disponible à : https://jasonmarinho.com/services/chez-nous/
-
-L'accès au forum requiert un compte membre : https://app.jasonmarinho.com/dashboard/chez-nous
+- Présentation : https://jasonmarinho.com/services/entre-hotes
+- Dans l'espace hôte : https://app.jasonmarinho.com/dashboard/entre-hotes/forum
