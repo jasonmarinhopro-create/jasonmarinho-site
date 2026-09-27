@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { findSimilarActualite, isSimilarActualite, tokens } from './dedup'
+import { dedupeActualites, findSimilarActualite, isSimilarActualite, tokens } from './dedup'
 import actus from './__fixtures__/actus-2026-09.json'
 
 // Les 54 actualités réellement publiées du 28/08 au 26/09/2026, dont 22
@@ -11,6 +11,7 @@ function sujet(title: string): string {
   if (/factur/.test(t)) return 'facture-electronique'
   if (/declaloc|déclaloc|api meublés|téléservice|enregistrement meublé/.test(t)) return 'enregistrement'
   if (/super-app|intègre hôtels|nouveaux services/.test(t)) return 'airbnb-services'
+  if (/bruxelles|l'ue donne/.test(t)) return 'proposition-ue-9-septembre'
   return 'unique:' + t
 }
 
@@ -50,5 +51,27 @@ describe('isSimilarActualite (données réelles)', () => {
       { title: 'Booking.com supprime la parité tarifaire en France', summary: 'Booking ne peut plus imposer ses prix. Tu peux proposer moins cher sur ton site direct.', source_url: 'https://example.fr/booking' },
       [airbnb],
     )).toBeNull()
+  })
+})
+
+describe('dedupeActualites (affichage)', () => {
+  const dated = actus.map(a => ({ ...a, published_at: `${a.date.slice(0, 4)}-${a.date.slice(4, 6)}-${a.date.slice(6, 8)}T07:00:00Z` }))
+  const newestFirst = [...dated].reverse()
+
+  it('ne montre plus qu\'une seule actu « Airbnb 15,5 % » et une seule facture électronique', () => {
+    const out = dedupeActualites(newestFirst)
+    expect(out.filter(a => sujet(a.title) === 'airbnb-15.5')).toHaveLength(1)
+    expect(out.filter(a => sujet(a.title) === 'facture-electronique')).toHaveLength(1)
+    // Bilans de l'été : 13 publiés, 3 au plus restent à l'affichage (dont le
+    // fait distinct « 70 % des séjours en France ») ; la migration 111 fait le reste.
+    expect(out.filter(a => sujet(a.title) === 'bilan-ete').length).toBeLessThanOrEqual(3)
+    // La plus récente est gardée (info la plus à jour).
+    expect(out.find(a => sujet(a.title) === 'airbnb-15.5')!.date).toBe('20260926')
+  })
+
+  it('garde toutes les actus uniques', () => {
+    const out = dedupeActualites(newestFirst)
+    const uniques = newestFirst.filter(a => sujet(a.title).startsWith('unique:'))
+    for (const u of uniques) expect(out).toContain(u)
   })
 })

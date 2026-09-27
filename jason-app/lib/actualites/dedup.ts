@@ -84,3 +84,44 @@ export function findSimilarActualite<T extends ActuLike>(candidate: ActuLike, ex
   }
   return null
 }
+
+/**
+ * Règle plus large, réservée à l'affichage : même catégorie ET (titres ou
+ * résumés assez proches). Sur les 54 actus réelles, elle regroupe aussi les
+ * « Été 2026 : … » reformulés que isSimilarActualite laisse passer, sans
+ * rapprocher deux sujets différents (seul rapprochement « inattendu » : deux
+ * actus sur la même proposition européenne du 9 septembre, un vrai doublon).
+ * Pas utilisée pour refuser une publication (l'API reste sur la règle stricte).
+ */
+export function isSameTopicLoose(a: ActuLike & { category?: string }, b: ActuLike & { category?: string }): boolean {
+  if (!a.category || a.category !== b.category) return false
+  return jaccard(tokens(a.title), tokens(b.title)) >= 0.25 || jaccard(tokens(a.summary), tokens(b.summary)) >= 0.2
+}
+
+/**
+ * Filet de sécurité à l'affichage : ne garde qu'une actualité par sujet.
+ * La liste doit arriver déjà triée par priorité (épinglées puis plus récentes
+ * d'abord) : la première de chaque sujet est gardée, les suivantes sont
+ * masquées si elles sont similaires ET publiées à moins de `windowDays` jours
+ * d'une actu gardée (un sujet qui revient des mois plus tard reste visible).
+ * Indépendant du nettoyage en base (migration 20260927_111) : les doublons ne
+ * s'affichent plus même si la migration n'a pas été appliquée.
+ */
+export function dedupeActualites<T extends ActuLike & { category?: string; published_at?: string | null; created_at?: string | null }>(
+  list: T[],
+  windowDays = 60,
+): T[] {
+  const kept: T[] = []
+  const ts = (a: T) => new Date(a.published_at ?? a.created_at ?? 0).getTime()
+  const windowMs = windowDays * 86_400_000
+  for (const item of list) {
+    const t = ts(item)
+    const dup = kept.some(k => Math.abs(ts(k) - t) <= windowMs && (
+      k.title.trim().toLowerCase() === item.title.trim().toLowerCase()
+      || isSimilarActualite(k, item)
+      || isSameTopicLoose(k, item)
+    ))
+    if (!dup) kept.push(item)
+  }
+  return kept
+}

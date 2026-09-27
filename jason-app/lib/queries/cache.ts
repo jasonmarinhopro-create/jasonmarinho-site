@@ -9,6 +9,7 @@
  */
 
 import { unstable_cache } from 'next/cache'
+import { dedupeActualites } from '@/lib/actualites/dedup'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
 export const CACHE_TAGS = {
@@ -117,9 +118,12 @@ export const getCachedPublishedActualites = unstable_cache(
       .eq('is_published', true)
       .order('is_pinned', { ascending: false, nullsFirst: false })
       .order('published_at', { ascending: false, nullsFirst: false })
-    return (data ?? []) as CachedActualite[]
+    // Une seule actu par sujet à l'affichage (épinglées puis plus récentes
+    // gardées) : filet de sécurité contre les reformulations de la veille
+    // quotidienne, même si le nettoyage en base n'a pas été appliqué.
+    return dedupeActualites((data ?? []) as CachedActualite[])
   },
-  ['actualites-published-v1'],
+  ['actualites-published-v2'],
   { tags: [CACHE_TAGS.ACTUALITES_PUBLISHED], revalidate: 300 },
 )
 
