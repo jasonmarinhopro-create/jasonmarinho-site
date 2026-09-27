@@ -38,6 +38,7 @@
 .ph.ph-address-book:before { content: "\e6f8"; }
 .ph.ph-anchor:before { content: "\e514"; }
 .ph.ph-armchair:before { content: "\e012"; }
+.ph.ph-arrow-counter-clockwise:before { content: "\e038"; }
 .ph.ph-arrow-down:before { content: "\e03e"; }
 .ph.ph-arrow-fat-up:before { content: "\e52e"; }
 .ph.ph-arrow-left:before { content: "\e058"; }

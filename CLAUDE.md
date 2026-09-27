@@ -343,7 +343,7 @@ Routes protégées : `/api/login`, `/api/register`, `/api/send-reset-email`, `/a
    ```
    Une fois en DB, `getFormationDbContent()` lit la DB en priorité et le fallback statique sert juste de safety net.
 4. **Pas de gtag** : analytics via Vercel Analytics uniquement
-5. **Cache-Control immutable** : configuré dans vercel.json pour /fonts/* et *.webp
+5. **Cache-Control immutable** : configuré dans vercel.json pour /fonts/* et *.webp. Conséquence pour les subsets Phosphor (`fonts/phosphor-*-subset.css`, régénérés à chaque build Vercel) : l'URL doit changer quand le contenu change, sinon les visiteurs déjà venus gardent l'ancien fichier un an (nouvelle icône = carré vide). `scripts/build-phosphor-subset.mjs` réécrit donc tous les `?v=` en hash du contenu (pages, `nav.js`, générateurs de `scripts/`). Ne jamais remettre une date fixe en `?v=` à la main.
 
 ---
 

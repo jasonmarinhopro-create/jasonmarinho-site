@@ -7,10 +7,12 @@
  * phosphor-bold-subset.css that only contain rules for icons actually
  * used on the site. Reduces ~84KB → ~10KB per file.
  *
- * Idempotent: re-run anytime, regenerates the subset files in place.
+ * Idempotent: re-run anytime, regenerates the subset files in place and
+ * rewrites every `?v=` reference to the subsets with a content hash.
  */
 import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs'
 import { join, dirname, resolve } from 'node:path'
+import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -88,4 +90,27 @@ for (const { variant, prefix } of variants) {
   console.log(`  ${variant.padEnd(7)} : ${(before / 1024).toFixed(1)} KB → ${(after / 1024).toFixed(1)} KB  (-${Math.round(100 * (1 - after / before))}%)`)
 }
 
-console.log('\nDone. Reference subset files via /fonts/phosphor-regular-subset.css?v=2026-07-19 and /fonts/phosphor-bold-subset.css?v=2026-07-19')
+// ── Version des URL (cache busting) ──────────────────────────────────
+// /fonts/* est servi en « immutable, 1 an » (vercel.json). Le subset change
+// dès qu'une icône est ajoutée quelque part, mais l'URL restait figée sur
+// ?v=2026-07-19 : un visiteur déjà venu gardait l'ancien fichier en cache et
+// voyait un carré vide à la place des nouvelles icônes. On versionne donc
+// chaque subset par le hash de son contenu et on réécrit toutes les
+// références (pages, nav.js, générateurs dans scripts/). Tourne en dernier
+// dans le buildCommand Vercel : le site déployé a toujours le bon hash.
+const versions = {}
+for (const { variant } of variants) {
+  const css = readFileSync(join(FONTS_DIR, `phosphor-${variant}-subset.css`))
+  versions[variant] = createHash('sha256').update(css).digest('hex').slice(0, 10)
+}
+const REF_RE = /(\/fonts\/phosphor-(regular|bold|light)-subset\.css)\?v=[A-Za-z0-9-]+/g
+let rewritten = 0
+for (const file of walk(ROOT)) {
+  const text = readFileSync(file, 'utf8')
+  const next = text.replace(REF_RE, (_, url, variant) => `${url}?v=${versions[variant]}`)
+  if (next !== text) {
+    writeFileSync(file, next)
+    rewritten++
+  }
+}
+console.log(`\nDone. Versions : ${Object.entries(versions).map(([k, v]) => `${k}=${v}`).join(', ')} · ${rewritten} fichier(s) mis à jour.`)

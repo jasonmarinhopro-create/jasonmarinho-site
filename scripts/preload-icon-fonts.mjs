@@ -35,7 +35,7 @@ for (const file of TARGETS) {
   }
 
   // Insère après le preload Google Fonts existant (ou avant <noscript>)
-  const anchor = '<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=2026-07-19">'
+  const anchor = '<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=d063236422">'
   if (!html.includes(anchor)) {
     skipped++
     continue
