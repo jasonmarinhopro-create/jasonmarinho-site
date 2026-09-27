@@ -184,4 +184,19 @@ if (src.includes('<!-- MARKET:START -->')) {
   src = src.slice(0, a) + html + '\n\n' + src.slice(b)
 }
 fs.writeFileSync(FILE, src)
+
+// Même catalogue pour le dashboard (Entre Hôtes → Partenaires) : copie JSON
+// dans jason-app (projet Vercel séparé, qui ne voit pas scripts/). Liens
+// relatifs rendus absolus, Hospitable suivi en utm_medium=other (canal app).
+// Garde-fou : jason-app/lib/ecosysteme/partenaires-sync.test.ts.
+const APP_JSON = path.join(ROOT, 'jason-app/lib/ecosysteme/partenaires-data.json')
+const absolu = href => (href.startsWith('/') ? 'https://jasonmarinho.com' + href : href)
+const appOutils = OUTILS.map(({ liensApp, ...o }) => ({
+  ...o,
+  // liensApp : liens propres au dashboard (ex. « Devenir membre » inutile pour un membre)
+  liens: (liensApp ?? o.liens).map(l => ({ ...l, href: absolu(l.href).replace('utm_medium=blog', 'utm_medium=other') })),
+}))
+fs.mkdirSync(path.dirname(APP_JSON), { recursive: true })
+fs.writeFileSync(APP_JSON, JSON.stringify({ categories: CATEGORIES, outils: appOutils }, null, 2) + '\n')
+
 console.log(`[build-partenaires] ${OUTILS.length} outils, ${nbOffres} offres, ${CATEGORIES.length} catégories`)

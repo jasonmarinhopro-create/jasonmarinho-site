@@ -83,7 +83,7 @@ export default function EtatDesLieux({
       </Link>
 
       {/* 3, Communauté LCD */}
-      <Link href="/dashboard/communaute" style={{ textDecoration: 'none' }}>
+      <Link href="/dashboard/visibilite/facebook" style={{ textDecoration: 'none' }}>
         <div style={s.card} className="kpi-hover">
           <div style={{ ...s.icon, color: '#a78bfa', background: '#a78bfa18', border: '1px solid #a78bfa30' }}>
             <UsersThree size={18} weight="fill" />

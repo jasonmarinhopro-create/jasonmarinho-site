@@ -1,4 +1,7 @@
-import CommunautePage from '@/app/dashboard/communaute/page'
+import { redirect } from 'next/navigation'
 
-export const metadata = { title: 'Groupes Facebook — Entre Hôtes' }
-export default CommunautePage
+// Les groupes Facebook servent à trouver des voyageurs : déplacés dans le hub
+// « Trouver des voyageurs » (sept. 2026). Ancienne URL conservée.
+export default function GroupesFacebookRedirect() {
+  redirect('/dashboard/visibilite/facebook')
+}

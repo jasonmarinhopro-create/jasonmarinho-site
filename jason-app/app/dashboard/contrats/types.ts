@@ -21,3 +21,13 @@ export type ContractRow = {
   /** Fiche voyageur du séjour lié (déduit de sejour_id), pour les liens. */
   voyageur_id: string | null
 }
+
+/** Séjour à venir sans contrat, proposé par le bouton « Nouveau contrat ». */
+export type ContractCandidate = {
+  sejourId: string
+  voyageurId: string
+  guest: string
+  logement: string | null
+  dateArrivee: string | null
+  dateDepart: string | null
+}

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Calculator, ChartLineUp, MagnifyingGlass, Printer } from '@phosphor-icons/react/dist/ssr'
+import { Calculator, ChartLineUp, Printer } from '@phosphor-icons/react/dist/ssr'
 
 /**
  * Barre de navigation entre les 4 outils du hub /dashboard/outils :
@@ -14,12 +14,11 @@ import { Calculator, ChartLineUp, MagnifyingGlass, Printer } from '@phosphor-ico
  * qui vivait dans OutilsBackBar. Les 4 boutons donnent une nav directe entre
  * outils sans passer par le hub — plus utile pour l'exploration.
  */
-type Current = 'fiscal' | 'marche' | 'audit' | 'impression'
+type Current = 'fiscal' | 'marche' | 'impression'
 
 const ITEMS: Array<{ key: Current; href: string; label: string; Icon: any }> = [
   { key: 'fiscal',     href: '/dashboard/simulateurs',       label: 'Simulateurs fiscaux', Icon: Calculator },
   { key: 'marche',     href: '/dashboard/calculateurs',      label: 'Prix & marché',       Icon: ChartLineUp },
-  { key: 'audit',      href: '/dashboard/audit-gbp',         label: 'Audit GBP',           Icon: MagnifyingGlass },
   { key: 'impression', href: '/dashboard/outils-impression', label: 'QR & Affiches',       Icon: Printer },
 ]
 

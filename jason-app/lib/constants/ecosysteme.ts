@@ -1,3 +1,6 @@
+// OBSOLÈTE (sept. 2026) : plus utilisé. Le dashboard lit désormais le même
+// catalogue que la page publique /partenaires (lib/ecosysteme/partenaires.ts).
+// Fichier conservé en attendant l'accord de Jason pour le supprimer.
 // Catalogue des outils & services de la LCD (Location Courte Durée)
 // Liste informative, Jason peut négocier des partenariats sur ces outils
 // et l'indique via le champ partnership.

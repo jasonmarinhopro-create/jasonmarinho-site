@@ -4,7 +4,6 @@ import { createClient } from '@/lib/supabase/server'
 import AuditWizard from './AuditWizard'
 import AuditHistory, { type PastAudit } from './AuditHistory'
 import { MagnifyingGlass, Star, Camera, Megaphone, ChatCircleDots, Sparkle, IdentificationCard, Clock, ArrowRight, Lightning, FileCsv, MapPin } from '@phosphor-icons/react/dist/ssr'
-import OutilsSwitcher from '@/components/dashboard/OutilsSwitcher'
 
 // Historique des audits + état utilisateur. 60s de cache : les audits sont
 // lancés à la demande puis statiques. La page se rafraîchit automatiquement
@@ -71,13 +70,12 @@ export default async function AuditGbpPage({ searchParams }: PageProps) {
     <>
       <div style={s.page}>
 
-        <OutilsSwitcher current="audit" />
 
         {/* ── Hero ── */}
         <div style={s.hero} className="fade-up">
           <div style={s.heroBadge}>
             <MagnifyingGlass size={13} color="#60a5fa" weight="fill" />
-            Outil · Audit Google Business Profile
+            Audit de ta fiche Google Business Profile
           </div>
           <h1 style={s.heroTitle}>
             Audite ta fiche Google Business<br />

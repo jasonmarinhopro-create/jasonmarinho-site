@@ -2,6 +2,8 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import FormationsSuggestForm from './FormationsSuggestForm'
 import FormationsGrid from './FormationsGrid'
+import FormationsHighlights, { type HighlightFormation } from './FormationsHighlights'
+import { recommendFormations } from '@/lib/formations/recommend'
 import { getUnlockedFormationSlugs } from '@/lib/queries/formation-access'
 import { getCachedPublishedFormations } from '@/lib/queries/cache'
 import type { Metadata } from 'next'
@@ -58,12 +60,15 @@ export default async function FormationsPage() {
 
   const plan = profile?.plan ?? 'decouverte'
 
-  const [allCachedFormations, { data: userFormations }, { data: favorites }, unlockedSlugs] = await Promise.all([
+  const [allCachedFormations, { data: userFormations }, { data: favorites }, unlockedSlugs, { data: logementsPays }, { count: contractsCount }] = await Promise.all([
     // Catalogue public partagé entre tous les users (caché 10 min).
     getCachedPublishedFormations(),
     supabase.from('user_formations').select('formation_id, progress').eq('user_id', userId),
     supabase.from('user_formation_favorites').select('formation_id').eq('user_id', userId),
     getUnlockedFormationSlugs(supabase, userId, plan),
+    // Recommandations « Pour toi » : pays des logements + réservations directes
+    supabase.from('logements').select('pays').eq('user_id', userId),
+    supabase.from('contracts').select('id', { count: 'exact', head: true }).eq('user_id', userId),
   ])
 
   // Filtre côté JS sur ACTIVE_SLUGS : la liste est petite et la donnée
@@ -76,6 +81,31 @@ export default async function FormationsPage() {
   )
   const favoriteIds = new Set((favorites ?? []).map((f: { formation_id: string }) => f.formation_id))
 
+  // « Reprendre » : la formation commencée la plus avancée (hors terminées).
+  const inProgress = formations
+    .filter(f => (progressMap[f.id] ?? 0) > 0 && (progressMap[f.id] ?? 0) < 100)
+    .sort((a, b) => (progressMap[b.id] ?? 0) - (progressMap[a.id] ?? 0))[0]
+  const resume: HighlightFormation | null = inProgress
+    ? { slug: inProgress.slug, title: inProgress.title, duration: inProgress.duration, progress: progressMap[inProgress.id] }
+    : null
+
+  // « Pour toi » : formations accessibles (Découverte : 2 accès gratuits)
+  // non commencées, choisies d'après la situation de l'hôte.
+  const slotsFull = unlockedSlugs !== null && unlockedSlugs.length >= 2
+  const accessible = formations.filter(f => !slotsFull || unlockedSlugs!.includes(f.slug))
+  const bySlug = new Map(formations.map(f => [f.slug, f]))
+  const recommended: HighlightFormation[] = recommendFormations({
+    countries: Array.from(new Set((logementsPays ?? []).map(l => (l as { pays: string | null }).pays ?? 'FR'))),
+    logementsCount: (logementsPays ?? []).length,
+    hasContracts: (contractsCount ?? 0) > 0,
+    month: new Date().getMonth() + 1,
+    startedSlugs: new Set(formations.filter(f => progressMap[f.id] !== undefined).map(f => f.slug)),
+    availableSlugs: new Set(accessible.map(f => f.slug)),
+  }).map(r => {
+    const f = bySlug.get(r.slug)!
+    return { slug: f.slug, title: f.title, duration: f.duration, reason: r.reason }
+  })
+
   return (
     <>
 
@@ -84,6 +114,8 @@ export default async function FormationsPage() {
           <h2 style={styles.pageTitle}>Tes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>formations</em></h2>
           <p style={styles.pageDesc}>Des parcours concrets pour optimiser ta location courte durée. Accessibles à vie, à ton rythme.</p>
         </div>
+
+        <FormationsHighlights resume={resume} recommended={recommended} />
 
         <div style={styles.section} className="fade-up d1">
           <FormationsGrid

@@ -9,7 +9,7 @@ import {
   FacebookLogo, CaretDown, ChartBar, CalendarBlank, Heart,
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
-  ChartLineUp, HouseLine, Briefcase, ShareNetwork, MagnifyingGlass, CalendarCheck, Signature,
+  ChartLineUp, HouseLine, Briefcase, ShareNetwork, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
@@ -79,19 +79,23 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
   {
     label: 'Faire grandir mon activité',
     items: [
-      // Outils & calculs (Étape 5) : hub avec 4 cartes vers les outils
-      // utilitaires (Simulateurs, Calculateurs, Audit GBP, QR & Affiches).
-      // Les URLs individuelles restent accessibles directement.
+      // Trouver des voyageurs (sept. 2026) : groupes Facebook (posts prêts à
+      // publier) + fiche Google, les leviers de réservation directe. En tête
+      // du bloc : c'est ce qui fait grandir l'activité en premier.
+      {
+        href: '/dashboard/visibilite/facebook', label: 'Trouver des voyageurs', icon: Megaphone,
+        activeMatch: ['/dashboard/visibilite', '/dashboard/communaute', '/dashboard/audit-gbp'],
+      },
+      // Apprendre : Formations + Guide LCD.
+      { href: '/dashboard/apprendre/formations', label: 'Apprendre',   icon: GraduationCap, activeMatch: ['/dashboard/apprendre', '/dashboard/formations', '/dashboard/guide'] },
+      // Outils & calculs : hub (modèles de messages, simulateurs, prix, QR).
+      // Les outils vivent en URL top-level (cf. outils/page.tsx).
       {
         href: '/dashboard/outils', label: 'Outils & calculs', icon: Calculator,
-        // Les 4 outils vivent en URL top-level (pas sous /dashboard/outils/*),
-        // cf. commentaire dans outils/page.tsx : liens directs conservés.
-        activeMatch: ['/dashboard/outils', '/dashboard/gabarits', '/dashboard/simulateurs', '/dashboard/calculateurs', '/dashboard/audit-gbp', '/dashboard/outils-impression'],
+        activeMatch: ['/dashboard/outils', '/dashboard/gabarits', '/dashboard/simulateurs', '/dashboard/calculateurs', '/dashboard/outils-impression'],
       },
-      // Apprendre (Étape 6) : fusion à onglets Formations + Guide LCD.
-      { href: '/dashboard/apprendre/formations', label: 'Apprendre',   icon: GraduationCap, activeMatch: ['/dashboard/apprendre'] },
-      // Entre Hôtes (Étape 6) : fusion à onglets Forum + Groupes FB + Écosystème.
-      { href: '/dashboard/entre-hotes/forum', label: 'Entre Hôtes',   icon: ChatsCircle, activeMatch: ['/dashboard/entre-hotes'] },
+      // Entre Hôtes : Forum + Partenaires & outils.
+      { href: '/dashboard/entre-hotes/forum', label: 'Entre Hôtes',   icon: ChatsCircle, activeMatch: ['/dashboard/entre-hotes', '/dashboard/chez-nous', '/dashboard/ecosysteme'] },
     ],
   },
 ]

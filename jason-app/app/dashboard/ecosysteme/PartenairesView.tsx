@@ -3,7 +3,7 @@
 import { useState, useTransition, useEffect } from 'react'
 import { ArrowUpRight, Star, Buildings, Handshake, Sparkle, Heart, TrendUp } from '@phosphor-icons/react/dist/ssr'
 import { DRIING_SERVICES } from '@/lib/constants/partners'
-import { ECOSYSTEME_TOOLS, ECOSYSTEME_CATEGORIES, type EcosystemeTool } from '@/lib/constants/ecosysteme'
+import { PARTNER_CATEGORIES, PARTNER_OFFERS, PARTNER_CATALOG, BADGE_LABEL, partnerSlug, type PartnerEntry, type PartnerLink } from '@/lib/ecosysteme/partenaires'
 import PartenaireSuggestForm from './PartenaireSuggestForm'
 import { toggleToolInterest } from './actions'
 import { markStepIfNotYet } from '@/lib/onboarding/client'
@@ -74,20 +74,16 @@ export default function PartenairesView({
     })
   }
 
-  // Outils avec partenariat (discount), affichés en haut
-  const partnered = ECOSYSTEME_TOOLS.filter(t => t.partnership === 'discount')
-
-  // Outils sans partenariat, affichés par catégorie dans le catalogue
-  const catalog = ECOSYSTEME_TOOLS.filter(t => t.partnership === 'none')
-  const filteredCatalog = activeCategory
-    ? catalog.filter(t => t.category === activeCategory)
-    : catalog
-
-  // Group catalog by category
-  const grouped: Record<string, EcosystemeTool[]> = {}
+  // Même catalogue que la page publique /partenaires (lib/ecosysteme/partenaires.ts).
+  // Un outil peut appartenir à plusieurs catégories : filtré par inclusion,
+  // rangé sous sa 1re catégorie quand aucun filtre n'est actif.
+  const catalog = PARTNER_CATALOG.map(p => ({ ...p, slug: partnerSlug(p.nom) }))
+  const filteredCatalog = activeCategory ? catalog.filter(t => t.cats.includes(activeCategory)) : catalog
+  const grouped: Record<string, typeof catalog> = {}
   filteredCatalog.forEach(t => {
-    if (!grouped[t.category]) grouped[t.category] = []
-    grouped[t.category].push(t)
+    const key = activeCategory ?? t.cats[0]
+    if (!grouped[key]) grouped[key] = []
+    grouped[key].push(t)
   })
 
   return (
@@ -95,11 +91,11 @@ export default function PartenairesView({
       {/* Hero intro */}
       <div style={styles.intro} className="fade-up">
         <h2 style={styles.pageTitle}>
-          L&apos;<em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>écosystème</em> LCD
+          Partenaires <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>&amp; outils</em>
         </h2>
         <p style={styles.pageDesc}>
-          Tous les services, partenaires et acteurs qui font vivre ta location courte durée.
-          Avec partenariats négociés mis en avant quand ils existent, sinon liens directs vers les outils du marché.
+          Les outils et services qui font tourner une location courte durée : mes offres négociées d&apos;abord,
+          puis le catalogue des outils du marché, avec un comparatif quand j&apos;en ai écrit un.
         </p>
       </div>
 
@@ -159,80 +155,70 @@ export default function PartenairesView({
         </div>
       </div>
 
-      {/* ── Partenariats négociés (hors Driing) ── */}
-      {(partnered.length > 0 || additionalPartners.length > 0) && (
-        <div style={styles.sectionWrap} className="fade-up">
-          <div style={styles.sectionLabel}>
-            <Sparkle size={13} weight="fill" color="#15803d" />
-            Partenariats négociés pour les membres
-            <span style={styles.sectionCount}>
-              {partnered.length + additionalPartners.length}
-            </span>
-          </div>
-          <div style={styles.partneredGrid} className="dash-grid-2">
-            {partnered.map(t => (
-              <a
-                key={t.slug}
-                href={t.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={styles.partneredCard}
-                className="glass-card"
-              >
-                <div style={styles.partneredHead}>
-                  <div style={styles.partneredName}>{t.name}</div>
-                  <span style={styles.discountBadge}>
-                    <Sparkle size={10} weight="fill" /> Réduction membre
-                  </span>
-                </div>
-                <p style={styles.partneredDesc}>{t.description}</p>
-                {t.partnershipText && (
-                  <div style={styles.advantageBox}>
-                    <span style={styles.advantageLabel}>Avantage</span>
-                    <span style={styles.advantageText}>{t.partnershipText}</span>
-                  </div>
-                )}
-                <div style={styles.serviceLink}>
-                  Voir le site <ArrowUpRight size={12} />
-                </div>
-              </a>
-            ))}
-            {additionalPartners.map(p => (
-              <a
-                key={p.id}
-                href={p.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={styles.partneredCard}
-                className="glass-card"
-              >
-                <div style={styles.partneredHead}>
-                  <div style={styles.partneredName}>{p.name}</div>
-                  <span style={styles.discountBadge}>
-                    <Sparkle size={10} weight="fill" /> Réduction membre
-                  </span>
-                </div>
-                <p style={styles.partneredDesc}>{p.description}</p>
+      {/* ── Offres : affiliation, parrainage, réduction membre (toujours signalées) ── */}
+      <div style={styles.sectionWrap} className="fade-up">
+        <div style={styles.sectionLabel}>
+          <Sparkle size={13} weight="fill" color="#15803d" />
+          Offres pour les membres
+          <span style={styles.sectionCount}>{PARTNER_OFFERS.length + additionalPartners.length}</span>
+        </div>
+        <p style={styles.catalogDesc}>
+          Les outils que je recommande, avec un avantage quand j&apos;ai pu en négocier un. Les liens affiliés et
+          de parrainage sont signalés : ils me rémunèrent sans rien te coûter de plus.
+        </p>
+        <div style={styles.partneredGrid} className="dash-grid-2">
+          {PARTNER_OFFERS.map(o => (
+            <div key={o.nom} style={styles.partneredCard} className="glass-card">
+              <div style={styles.partneredHead}>
+                <span style={{ ...styles.mono, background: o.couleur }}>{o.mono}</span>
+                <div style={styles.partneredName}>{o.nom}</div>
+                <span style={styles.discountBadge}>{BADGE_LABEL[o.badge!]}</span>
+              </div>
+              {o.offre && (
                 <div style={styles.advantageBox}>
                   <span style={styles.advantageLabel}>Avantage</span>
-                  <span style={styles.advantageText}>{p.advantage}</span>
-                  {p.promo_code && !isDecouverte && (
-                    <span style={styles.promoCode}>{p.promo_code}</span>
-                  )}
-                  {p.promo_code && isDecouverte && (
-                    <a href="/dashboard/abonnement" style={styles.promoLocked}>
-                      🔒 Code promo, Standard
-                    </a>
-                  )}
+                  <span style={styles.advantageText}>{o.offre}</span>
                 </div>
-                <div style={styles.serviceLink}>
-                  Voir le site <ArrowUpRight size={12} />
-                </div>
-              </a>
-            ))}
-          </div>
+              )}
+              <p style={styles.partneredDesc}>{o.desc}</p>
+              <PartnerLinks entry={o} />
+            </div>
+          ))}
+          {additionalPartners.map(p => (
+            <a
+              key={p.id}
+              href={p.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={styles.partneredCard}
+              className="glass-card"
+            >
+              <div style={styles.partneredHead}>
+                <div style={styles.partneredName}>{p.name}</div>
+                <span style={styles.discountBadge}>
+                  <Sparkle size={10} weight="fill" /> Réduction membre
+                </span>
+              </div>
+              <p style={styles.partneredDesc}>{p.description}</p>
+              <div style={styles.advantageBox}>
+                <span style={styles.advantageLabel}>Avantage</span>
+                <span style={styles.advantageText}>{p.advantage}</span>
+                {p.promo_code && !isDecouverte && (
+                  <span style={styles.promoCode}>{p.promo_code}</span>
+                )}
+                {p.promo_code && isDecouverte && (
+                  <a href="/dashboard/abonnement" style={styles.promoLocked}>
+                    🔒 Code promo, Standard
+                  </a>
+                )}
+              </div>
+              <div style={styles.serviceLink}>
+                Voir le site <ArrowUpRight size={12} />
+              </div>
+            </a>
+          ))}
         </div>
-      )}
+      </div>
 
       {/* ── Catalogue par catégorie ── */}
       <div style={styles.sectionWrap} className="fade-up">
@@ -254,8 +240,8 @@ export default function PartenairesView({
           >
             Tout
           </button>
-          {ECOSYSTEME_CATEGORIES.map(cat => {
-            const count = catalog.filter(t => t.category === cat.id).length
+          {PARTNER_CATEGORIES.map(cat => {
+            const count = catalog.filter(t => t.cats.includes(cat.id)).length
             if (count === 0) return null
             return (
               <button
@@ -263,7 +249,7 @@ export default function PartenairesView({
                 onClick={() => setActiveCategory(activeCategory === cat.id ? null : cat.id)}
                 style={{ ...styles.catChip, ...(activeCategory === cat.id ? styles.catChipOn : {}) }}
               >
-                <span>{cat.emoji}</span> {cat.label}
+                {cat.label}
                 <span style={styles.catChipCount}>{count}</span>
               </button>
             )
@@ -271,14 +257,10 @@ export default function PartenairesView({
         </div>
 
         {/* Listing groupé par catégorie */}
-        {ECOSYSTEME_CATEGORIES.filter(cat => grouped[cat.id]?.length > 0).map(cat => (
+        {PARTNER_CATEGORIES.filter(cat => grouped[cat.id]?.length > 0).map(cat => (
           <div key={cat.id} style={styles.catBlock}>
             <div style={styles.catHeader}>
-              <span style={styles.catEmoji}>{cat.emoji}</span>
-              <div>
-                <div style={styles.catTitle}>{cat.label}</div>
-                <div style={styles.catSubtitle}>{cat.desc}</div>
-              </div>
+              <div style={styles.catTitle}>{cat.label}</div>
             </div>
             <div style={styles.catGrid} className="dash-grid-2">
               {grouped[cat.id].map(t => {
@@ -287,16 +269,17 @@ export default function PartenairesView({
                 return (
                   <div key={t.slug} style={styles.toolCard}>
                     <a
-                      href={t.url}
+                      href={t.liens[0]?.href}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel={t.liens[0]?.externe ? 'noopener noreferrer nofollow' : 'noopener noreferrer'}
                       style={styles.toolLink}
                     >
                       <div style={styles.toolHead}>
-                        <div style={styles.toolName}>{t.name}</div>
-                        <ArrowUpRight size={12} color="var(--text-muted)" style={{ flexShrink: 0 }} />
+                        <span style={{ ...styles.mono, background: t.couleur }}>{t.mono}</span>
+                        <div style={styles.toolName}>{t.nom}</div>
+                        <span style={styles.toolLinkLabel}>{t.liens[0]?.label} <ArrowUpRight size={11} /></span>
                       </div>
-                      <p style={styles.toolDesc}>{t.description}</p>
+                      <p style={styles.toolDesc}>{t.desc}</p>
                     </a>
                     <div style={styles.toolFooter}>
                       <button
@@ -353,15 +336,15 @@ export default function PartenairesView({
             </p>
             <div style={styles.topGrid}>
               {topRequested.map(({ tool, count }, i) => {
-                const cat = ECOSYSTEME_CATEGORIES.find(c => c.id === tool.category)
+                const cat = PARTNER_CATEGORIES.find(c => c.id === tool.cats[0])
                 const isVoted = voted.has(tool.slug)
                 return (
                   <div key={tool.slug} style={styles.topCard}>
                     <div style={styles.topRank}>#{i + 1}</div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={styles.topName}>
-                        {tool.name}
-                        {cat && <span style={styles.topCat}>{cat.emoji} {cat.label}</span>}
+                        {tool.nom}
+                        {cat && <span style={styles.topCat}>{cat.label}</span>}
                       </div>
                       <div style={styles.topMeta}>
                         <span style={{ color: 'var(--accent-text)', fontWeight: 700 }}>{count}</span>
@@ -382,7 +365,7 @@ export default function PartenairesView({
                       {isVoted ? 'Voté' : 'Voter'}
                     </button>
                     <a
-                      href={tool.url}
+                      href={tool.liens[0]?.href}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={styles.topLink}
@@ -421,7 +404,43 @@ export default function PartenairesView({
   )
 }
 
+// Liens d'une offre : les liens rémunérés portent rel="sponsored" (obligation
+// de transparence, cf. CLAUDE.md « Liens affiliés »).
+function PartnerLinks({ entry }: { entry: PartnerEntry }) {
+  return (
+    <div style={styles.offerLinks}>
+      {entry.liens.map((l: PartnerLink) => (
+        <a
+          key={l.href}
+          href={l.href}
+          target="_blank"
+          rel={l.sponsored ? 'sponsored noopener' : 'noopener noreferrer'}
+          style={l.sponsored ? styles.offerLinkMain : styles.offerLink}
+        >
+          {l.label} <ArrowUpRight size={12} />
+        </a>
+      ))}
+      {entry.liens.some(l => l.sponsored) && <span style={styles.affMention}>{BADGE_LABEL[entry.badge ?? 'affilie']}</span>}
+    </div>
+  )
+}
+
 const styles: Record<string, React.CSSProperties> = {
+  mono: {
+    width: '26px', height: '26px', borderRadius: '7px', color: '#fff', fontSize: '12px', fontWeight: 700,
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+  },
+  toolLinkLabel: { marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '11.5px', color: 'var(--accent-text)', fontWeight: 600, whiteSpace: 'nowrap' },
+  offerLinks: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginTop: 'auto', paddingTop: '10px' },
+  offerLinkMain: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '7px 12px', borderRadius: '8px',
+    background: 'var(--accent-text)', color: 'var(--bg)', fontSize: '12.5px', fontWeight: 700, textDecoration: 'none',
+  },
+  offerLink: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '7px 12px', borderRadius: '8px',
+    border: '1px solid var(--border)', color: 'var(--text-2)', fontSize: '12.5px', fontWeight: 600, textDecoration: 'none',
+  },
+  affMention: { fontSize: '11px', color: 'var(--text-muted)' },
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   intro: { marginBottom: 'var(--s-7)' },
   pageTitle: {
@@ -519,6 +538,7 @@ const styles: Record<string, React.CSSProperties> = {
     flexWrap: 'wrap' as const,
   },
   partneredName: {
+    flex: 1, minWidth: 0,
     fontFamily: 'var(--font-fraunces), serif', fontSize: '17px',
     fontWeight: 500, color: 'var(--text)',
   },
@@ -612,7 +632,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', flexDirection: 'column' as const, gap: '6px',
     textDecoration: 'none' as const, color: 'inherit',
   },
-  toolHead: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' },
+  toolHead: { display: 'flex', alignItems: 'center', gap: '8px' },
   toolName: { fontSize: '14px', fontWeight: 600, color: 'var(--text)' },
   toolDesc: { fontSize: '12.5px', color: 'var(--text-2)', lineHeight: 1.5, margin: 0 },
   toolFooter: {

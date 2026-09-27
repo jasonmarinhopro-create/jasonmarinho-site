@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import {
   Plus, MagnifyingGlass, Warning,
   X, User, Envelope, Phone, Note,
-  Users, ShieldCheck, CurrencyEur, Star, SquaresFour, Rows, ProhibitInset, FileText, Faders, IdentificationCard,
+  Users, ShieldCheck, CurrencyEur, Star, SquaresFour, Rows, ProhibitInset, Faders, IdentificationCard,
 } from '@phosphor-icons/react/dist/ssr'
 import { addVoyageur, updateVoyageur, deleteVoyageur, checkVoyageurSignale, type VoyageurData } from './actions'
 import TourTrigger from '@/components/dashboard/TourTrigger'
@@ -253,31 +253,21 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
           </p>
         </div>
         {tableReady && (
-          <button onClick={openAdd} className="btn-primary" style={s.addBtn} data-tour="voyageur-create">
-            <Plus size={16} weight="bold" />
-            Ajouter
-          </button>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '6px' }}>
+            {/* Déclarations obligatoires (SIBA, fiche de police) : page dédiée,
+                compteur des déclarations en attente. Les contrats ont leur
+                entrée dans le menu (pas de doublon ici). */}
+            <Link href="/dashboard/voyageurs/declarations" style={s.declBtn}>
+              <IdentificationCard size={15} weight="fill" />
+              Déclarations
+              {pendingDeclarations > 0 && <span style={s.declCount}>{pendingDeclarations}</span>}
+            </Link>
+            <button onClick={openAdd} className="btn-primary" style={{ flexShrink: 0 }} data-tour="voyageur-create">
+              <Plus size={16} weight="bold" />
+              Ajouter
+            </button>
+          </div>
         )}
-      </div>
-
-      {/* Raccourcis : Contrats & paiements (anciennement un onglet ici) et
-          Déclarations obligatoires (SIBA, fiche de police) */}
-      <div style={s.topTabs} className="fade-up">
-        <span style={{ ...s.topTab, ...s.topTabActive, cursor: 'default' }}>
-          <Users size={14} weight="fill" />
-          Voyageurs <span style={s.topTabCount}>{voyageurs.length}</span>
-        </span>
-        <Link href="/dashboard/contrats" style={{ ...s.topTab, textDecoration: 'none' }}>
-          <FileText size={14} weight="fill" />
-          Contrats &amp; paiements
-        </Link>
-        <Link href="/dashboard/voyageurs/declarations" style={{ ...s.topTab, textDecoration: 'none' }}>
-          <IdentificationCard size={14} weight="fill" />
-          Déclarations
-          {pendingDeclarations > 0 && (
-            <span style={{ ...s.topTabCount, background: 'var(--warning-border)', color: 'var(--warning)' }}>{pendingDeclarations}</span>
-          )}
-        </Link>
       </div>
 
       <>
@@ -909,30 +899,15 @@ const MEDIA_CSS = `
 
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
-  topTabs: {
-    display: 'inline-flex', flexWrap: 'wrap', maxWidth: '100%', gap: '4px', padding: '4px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '10px', marginBottom: '20px',
+  declBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '9px 14px', borderRadius: '10px',
+    background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)',
+    fontSize: '13.5px', fontWeight: 600, textDecoration: 'none',
   },
-  topTab: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    padding: '8px 14px', borderRadius: '7px',
-    fontSize: '13px', fontWeight: 500,
-    color: 'var(--text-2)', background: 'transparent',
-    border: 'none', cursor: 'pointer',
-    fontFamily: 'inherit',
-    transition: 'all .18s cubic-bezier(.4,0,.2,1)',
-  },
-  topTabActive: {
-    background: 'var(--accent-bg)', color: 'var(--accent-text)',
-    fontWeight: 700,
-  },
-  topTabCount: {
-    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-    minWidth: '20px', padding: '0 6px', height: '18px',
-    background: 'rgba(255,255,255,.06)', borderRadius: '999px',
-    fontSize: '10.5px', fontWeight: 700,
-    marginLeft: '2px',
+  declCount: {
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minWidth: '20px', height: '20px',
+    padding: '0 6px', borderRadius: '999px', fontSize: '11px', fontWeight: 700,
+    background: 'var(--warning-border)', color: 'var(--warning)',
   },
   toolbar: {
     display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
@@ -943,7 +918,6 @@ const s: Record<string, React.CSSProperties> = {
     fontWeight: 400, color: 'var(--text)', marginBottom: '4px',
   },
   pageDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-3)' },
-  addBtn: { flexShrink: 0, marginTop: '6px' },
 
   setupBanner: {
     display: 'flex', alignItems: 'center', gap: '10px',

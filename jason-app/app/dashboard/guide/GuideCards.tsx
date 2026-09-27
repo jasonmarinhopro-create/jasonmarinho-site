@@ -8,8 +8,9 @@ import {
   Warning, Info, CheckCircle, BookOpen, ArrowUpRight,
   Leaf, IdentificationBadge, UsersThree, Calculator, ForkKnife, Wheelchair,
   UserGear, Target, ChartLineUp, MapPin, EnvelopeSimple, Star,
-  Lock, Stack, Receipt, ChatCircleText,
+  Lock, Stack, Receipt, ChatCircleText, Wrench, GraduationCap, ArrowRight,
 } from '@phosphor-icons/react/dist/ssr'
+import Link from 'next/link'
 
 const BLOG_BASE = 'https://jasonmarinho.com/blog/'
 
@@ -84,7 +85,7 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'warn', text: <><strong>Obligation légale</strong> pour tout hébergement touristique d&apos;établir une fiche d&apos;identité par voyageur étranger</> },
       { type: 'info', text: <>Données : nom, prénom, date et lieu de naissance, nationalité, adresse, dates de séjour</> },
       { type: 'warn', text: <>Conservation <strong>6 mois</strong> minimum, transmission à la police nationale ou gendarmerie sur demande, amende jusqu&apos;à <strong>1 500 €</strong></> },
-      { type: 'ok',   text: <>Le livret d&apos;accueil digital (Driing, Hospitable) peut collecter ces infos automatiquement à l&apos;arrivée</> },
+      { type: 'ok',   text: <>Dans ton espace, la fiche est <strong>préremplie automatiquement</strong> pour chaque voyageur étranger (et signée s&apos;il a fait son check-in en ligne) : Mes voyageurs → Déclarations</> },
     ],
     articles: [
       { label: 'Formulaire fiche police obligatoire', slug: 'formulaire-fiche-police-lcd-obligatoire' },
@@ -715,6 +716,18 @@ function GuideCardItem({ card }: { card: GuideCard }) {
         })}
       </div>
 
+      {APP_LINKS[card.id] && (
+        <div style={s.appLinks}>
+          {APP_LINKS[card.id].map(l => (
+            <Link key={l.href + l.label} href={l.href} style={l.kind === 'outil' ? s.appLinkTool : s.appLinkFormation}>
+              {l.kind === 'outil' ? <Wrench size={12} weight="fill" /> : <GraduationCap size={12} weight="fill" />}
+              {l.label}
+              <ArrowRight size={11} weight="bold" />
+            </Link>
+          ))}
+        </div>
+      )}
+
       {card.articles && card.articles.length > 0 && (
         <div style={s.articlesBlock}>
           <div style={s.articlesLabel}>
@@ -739,6 +752,34 @@ function GuideCardItem({ card }: { card: GuideCard }) {
       )}
     </div>
   )
+}
+
+// Passer de la règle à l'action (sept. 2026) : chaque fiche renvoie vers
+// l'outil de l'app et la formation qui la mettent en pratique. Uniquement des
+// URL internes existantes ; slugs de formations = ACTIVE_SLUGS de formations/page.tsx.
+type AppLink = { label: string; href: string; kind: 'outil' | 'formation' }
+const F = (slug: string, label: string): AppLink => ({ label, href: `/dashboard/formations/${slug}`, kind: 'formation' })
+const O = (href: string, label: string): AppLink => ({ label, href, kind: 'outil' })
+const APP_LINKS: Record<string, AppLink[]> = {
+  'commun-taxe-sejour':      [O('/dashboard/simulateurs', 'Simulateur taxe de séjour')],
+  'commun-fiche-police':     [O('/dashboard/voyageurs/declarations', 'Mes déclarations voyageurs')],
+  'commun-pricing':          [O('/dashboard/calculateurs', 'Prix & marché'), F('mettre-le-bon-prix-lcd', 'Mettre le bon prix'), F('tarification-dynamique', 'Tarification dynamique')],
+  'commun-channel-managers': [O('/dashboard/entre-hotes/ecosysteme', 'Comparer les outils'), F('gerer-lcd-automatisation', 'Automatiser sa gestion')],
+  'commun-avis':             [O('/dashboard/gabarits', 'Modèles de messages'), F('ecrire-avis-repondre-voyageurs', 'Avis voyageurs')],
+  'commun-litiges':          [O('/dashboard/contrats', 'Contrat + caution'), O('/dashboard/securite', 'Sécurité voyageur'), F('gerer-incidents-litiges-lcd', 'Gérer incidents et litiges')],
+  'gites-statut':            [O('/dashboard/simulateurs', 'Simulateur EI ou SASU'), F('fiscalite-reglementation-lcd-france-2026', 'Fiscalité LCD 2026')],
+  'gites-fiscalite':         [O('/dashboard/simulateurs', 'Simulateur micro-BIC'), F('declarer-lmnp-seul-decla-fr', 'Déclarer son LMNP seul')],
+  'gites-rentabilite':       [O('/dashboard/simulateurs', 'Simulateur de rentabilité')],
+  'conciergerie-hoguet':     [F('fiscalite-statut-conciergerie-tourisme', 'Statut de la conciergerie')],
+  'conciergerie-statut':     [F('fiscalite-statut-conciergerie-tourisme', 'Statut de la conciergerie')],
+  'conciergerie-contrats':   [F('creer-conciergerie-lcd', 'Créer sa conciergerie')],
+  'conciergerie-prospection':[F('creer-conciergerie-lcd', 'Créer sa conciergerie')],
+  'direct-contrat':          [O('/dashboard/contrats', 'Contrats & paiements')],
+  'direct-paiement':         [O('/dashboard/contrats', 'Loyer et caution en ligne')],
+  'direct-visibilite':       [O('/dashboard/visibilite/facebook', 'Publier dans les groupes Facebook'), F('annonce-directe', 'Réservation directe'), F('reseaux-sociaux-lcd', 'Réseaux sociaux')],
+  'direct-seo-local':        [O('/dashboard/visibilite/google', 'Auditer ma fiche Google'), F('google-my-business-lcd', 'Google Business Profile')],
+  'direct-site-propre':      [O('/dashboard/entre-hotes/ecosysteme', 'Outils de site direct'), F('annonce-directe', 'Réservation directe')],
+  'direct-fidelisation':     [O('/dashboard/voyageurs', 'Mes voyageurs')],
 }
 
 function buildSearchText(card: GuideCard): string {
@@ -797,6 +838,17 @@ const s: Record<string, React.CSSProperties> = {
   ruleText: {
     fontSize: 'var(--t-sm)', fontWeight: 400, color: 'var(--text-2)',
     lineHeight: 'var(--lh-base)',
+  },
+  appLinks: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: 'var(--s-4)' },
+  appLinkTool: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '6px 10px', borderRadius: '8px',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)',
+    fontSize: '12px', fontWeight: 600, textDecoration: 'none',
+  },
+  appLinkFormation: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '6px 10px', borderRadius: '8px',
+    background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)',
+    fontSize: '12px', fontWeight: 600, textDecoration: 'none',
   },
   articlesBlock: { marginTop: 'var(--s-4)', paddingTop: 'var(--s-4)', borderTop: '1px solid var(--border)' },
   articlesLabel: {

@@ -3,7 +3,7 @@
 import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
 import Select from '@/components/ui/Select'
-import { FileText, MagnifyingGlass, CheckCircle, Clock, X, House, CurrencyEur, ArrowSquareOut, Plus, Info, Funnel, ArrowCounterClockwise } from '@phosphor-icons/react/dist/ssr'
+import { FileText, MagnifyingGlass, CheckCircle, Clock, House, CurrencyEur, ArrowSquareOut, Funnel, ArrowCounterClockwise } from '@phosphor-icons/react/dist/ssr'
 import { restoreContract } from '../voyageurs/contract-actions'
 import type { ContractRow } from './types'
 
@@ -112,36 +112,15 @@ export default function ContractsTab({ contracts }: Props) {
           AirCover / Partner Protection, et leur médiation en cas de litige.
         </p>
 
-        <div style={s.emptyHowTo}>
-          <div style={s.emptyHowToTitle}>Comment créer ton premier contrat</div>
-          <ol style={s.emptyHowToList}>
-            <li>Ouvre la fiche d'un voyageur dans <strong>Mes voyageurs</strong></li>
-            <li>Dans la section <strong>Séjours</strong>, repère le séjour concerné</li>
-            <li>Clique <strong>« Créer un contrat »</strong> → un wizard te guide en 5 étapes (≈ 2 min)</li>
-            <li>Le locataire signe en ligne via un lien sécurisé envoyé par email</li>
-          </ol>
-        </div>
-
-        <div style={s.emptyCtaRow}>
-          <Link href="/dashboard/voyageurs" style={s.emptyCtaPrimary}>Aller à mes voyageurs →</Link>
-          <Link href="/dashboard/apprendre/guide" style={s.emptyCtaSecondary}>Lire le guide LCD</Link>
-        </div>
+        <p style={{ ...s.emptyLead, fontSize: '13.5px', color: 'var(--text-3)' }}>
+          Clique sur <strong>« Nouveau contrat »</strong> en haut : choisis le séjour, l&apos;assistant fait le reste (2 min).
+        </p>
       </div>
     )
   }
 
   return (
     <div>
-      {/* Bandeau pédagogique permanent (compact, refermable visuellement
-          mais non dismissable pour rappeler la nature de l'outil) */}
-      <div style={s.note}>
-        <Info size={14} weight="fill" color="var(--accent-text)" />
-        <span>
-          Les contrats servent surtout pour les <strong>réservations directes</strong> (Airbnb / Booking ont leurs propres CGU).
-          Pour en créer un : ouvre la fiche du voyageur, puis « Créer un contrat » sur le séjour concerné.
-        </span>
-      </div>
-
       {/* KPIs */}
       <div style={s.kpiGrid}>
         <KpiCard icon={<FileText size={14} weight="fill" />} label="Total" value={String(kpis.total)} color="var(--text)" />
@@ -319,14 +298,6 @@ function FilterPills({ icon, options, value, onChange }: { icon?: React.ReactNod
 }
 
 const s: Record<string, React.CSSProperties> = {
-  note: {
-    display: 'flex', alignItems: 'flex-start', gap: '8px',
-    padding: '11px 14px', background: 'var(--accent-bg)',
-    border: '1px solid var(--accent-border)',
-    borderRadius: '10px', fontSize: '13px',
-    color: 'var(--text-2)', lineHeight: 1.55,
-    marginBottom: '20px',
-  },
 
   kpiGrid: {
     display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
@@ -459,40 +430,6 @@ const s: Record<string, React.CSSProperties> = {
     margin: 0,
     maxWidth: '720px',
     textAlign: 'center' as const,
-  },
-  emptyHowTo: {
-    width: '100%', maxWidth: '640px',
-    padding: '20px 24px',
-    background: 'var(--bg)', border: '1px solid var(--border)',
-    borderRadius: '12px',
-    marginTop: '4px',
-  },
-  emptyHowToTitle: {
-    fontSize: '11.5px', fontWeight: 700, letterSpacing: '0.6px',
-    textTransform: 'uppercase' as const, color: 'var(--accent-text)',
-    marginBottom: '12px',
-  },
-  emptyHowToList: {
-    margin: 0, padding: '0 0 0 22px',
-    display: 'flex', flexDirection: 'column' as const, gap: '8px',
-    fontSize: '13.5px', color: 'var(--text-2)', lineHeight: 1.65,
-  },
-  emptyCtaRow: {
-    display: 'flex', gap: '10px', flexWrap: 'wrap' as const,
-    justifyContent: 'center', marginTop: '6px',
-  },
-  emptyCtaPrimary: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    padding: '11px 22px', background: 'var(--accent-text)', color: 'var(--bg)',
-    borderRadius: '10px', textDecoration: 'none',
-    fontSize: '13.5px', fontWeight: 700, fontFamily: 'inherit',
-  },
-  emptyCtaSecondary: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    padding: '11px 18px', background: 'transparent', color: 'var(--text-2)',
-    border: '1px solid var(--border)', borderRadius: '10px',
-    textDecoration: 'none',
-    fontSize: '13.5px', fontWeight: 500, fontFamily: 'inherit',
   },
   emptyResults: {
     padding: '28px 20px', textAlign: 'center' as const,

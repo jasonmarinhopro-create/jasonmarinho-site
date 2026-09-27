@@ -68,6 +68,8 @@ export const OUTILS = [
     badge: 'membre', offre: 'Tarif négocié membres',
     desc: 'Channel manager italien avec PMS et moteur de réservation. Réduction réservée aux membres.',
     liens: [{ label: 'Devenir membre', href: 'https://app.jasonmarinho.com/auth/register' }],
+    // Dans le dashboard, l'hôte est déjà membre : lien vers le site à la place.
+    liensApp: [{ label: 'Site officiel', href: 'https://www.krossbooking.com/', externe: true }],
   },
 
   // ── Outils référencés (aucune rémunération) ──

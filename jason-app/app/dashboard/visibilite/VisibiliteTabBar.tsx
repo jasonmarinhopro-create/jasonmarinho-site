@@ -2,32 +2,24 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ChatsCircle, Handshake } from '@phosphor-icons/react/dist/ssr'
+import { FacebookLogo, GoogleLogo } from '@phosphor-icons/react/dist/ssr'
 
-/**
- * Barre d'onglets pour /dashboard/entre-hotes/*.
- * Les sous-routes du forum (/chez-nous/[postId], /chez-nous/membre/[id], etc.)
- * restent à leur URL d'origine — la tab bar n'est visible que sur la home
- * du forum (/entre-hotes/forum), pas sur les vues détail.
- */
-export default function EntreHotesTabBar() {
+// Hub « Trouver des voyageurs » (sept. 2026) : les leviers pour remplir le
+// calendrier en direct, sans commission. Avant, les groupes Facebook étaient
+// rangés dans « Entre Hôtes » (communauté d'hôtes) et l'audit Google dans
+// « Outils & calculs », alors que les deux servent à attirer des voyageurs.
+export default function VisibiliteTabBar() {
   const pathname = usePathname() ?? ''
   const tabs = [
-    { href: '/dashboard/entre-hotes/forum',      label: 'Forum',               Icon: ChatsCircle },
-    // Groupes Facebook : déplacés dans « Trouver des voyageurs » (sept. 2026).
-    { href: '/dashboard/entre-hotes/ecosysteme', label: 'Partenaires & outils', Icon: Handshake },
+    { href: '/dashboard/visibilite/facebook', label: 'Groupes Facebook', Icon: FacebookLogo },
+    { href: '/dashboard/visibilite/google',   label: 'Fiche Google',     Icon: GoogleLogo },
   ]
   return (
-    <nav style={s.bar} aria-label="Onglets Entre Hôtes">
+    <nav style={s.bar} aria-label="Onglets Trouver des voyageurs">
       {tabs.map(({ href, label, Icon }) => {
         const active = pathname === href || pathname.startsWith(href + '/')
         return (
-          <Link
-            key={href}
-            href={href}
-            style={{ ...s.tab, ...(active ? s.tabActive : {}) }}
-            aria-current={active ? 'page' : undefined}
-          >
+          <Link key={href} href={href} style={{ ...s.tab, ...(active ? s.tabActive : {}) }} aria-current={active ? 'page' : undefined}>
             <Icon size={15} weight={active ? 'fill' : 'regular'} />
             <span>{label}</span>
           </Link>
@@ -52,7 +44,6 @@ const s: Record<string, React.CSSProperties> = {
     textDecoration: 'none',
     borderBottom: '2px solid transparent',
     marginBottom: -1, whiteSpace: 'nowrap',
-    transition: 'color 0.15s, border-color 0.15s',
   },
   tabActive: {
     color: 'var(--accent-text)',

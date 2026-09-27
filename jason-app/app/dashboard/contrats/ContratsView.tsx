@@ -2,10 +2,10 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { PenNib, CurrencyEur, LockKey, CheckCircle, Copy, ArrowRight } from '@phosphor-icons/react/dist/ssr'
+import { PenNib, CurrencyEur, LockKey, CheckCircle, Copy, Plus, CaretDown, House } from '@phosphor-icons/react/dist/ssr'
 import { contractTodos, contractTodoCount } from '@/lib/contracts/todo'
 import ContractsTab from './ContractsTab'
-import type { ContractRow } from './types'
+import type { ContractRow, ContractCandidate } from './types'
 
 function todayISO(): string {
   const d = new Date()
@@ -26,7 +26,7 @@ function ficheHref(c: ContractRow): string {
   return c.voyageur_id ? `/dashboard/voyageurs/${c.voyageur_id}` : '/dashboard/voyageurs'
 }
 
-export default function ContratsView({ contracts, appUrl }: { contracts: ContractRow[]; appUrl: string }) {
+export default function ContratsView({ contracts, candidates, appUrl }: { contracts: ContractRow[]; candidates: ContractCandidate[]; appUrl: string }) {
   const todos = useMemo(() => contractTodos(contracts, todayISO()), [contracts])
   const count = contractTodoCount(todos)
   const [copied, setCopied] = useState<string | null>(null)
@@ -48,9 +48,7 @@ export default function ContratsView({ contracts, appUrl }: { contracts: Contrac
             Contrats signés en ligne, loyer et caution pour tes réservations directes.
           </p>
         </div>
-        <Link href="/dashboard/voyageurs" style={s.newBtn} title="Un contrat se crée depuis la fiche du voyageur, sur son séjour">
-          Créer depuis un voyageur <ArrowRight size={14} weight="bold" />
-        </Link>
+        <NewContractMenu candidates={candidates} />
       </div>
 
       {contracts.length > 0 && (
@@ -119,7 +117,53 @@ export default function ContratsView({ contracts, appUrl }: { contracts: Contrac
 
       <ContractsTab contracts={contracts} />
 
-      <style>{`@media (max-width: 900px) { .ctr-todo-grid { grid-template-columns: 1fr !important; } }`}</style>
+      <style>{`
+        @media (max-width: 900px) { .ctr-todo-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 640px) { .ctr-menu { left: 0 !important; right: auto !important; } }
+      `}</style>
+    </div>
+  )
+}
+
+// Un contrat est toujours rattaché à un séjour : le bouton liste les séjours à
+// venir qui n'en ont pas et ouvre directement l'assistant (5 étapes) sur la
+// fiche du voyageur (?contract=<séjour>).
+function NewContractMenu({ candidates }: { candidates: ContractCandidate[] }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div style={{ position: 'relative', marginTop: 6 }}>
+      <button type="button" onClick={() => setOpen(o => !o)} style={s.newBtn} aria-expanded={open}>
+        <Plus size={14} weight="bold" /> Nouveau contrat <CaretDown size={12} weight="bold" />
+      </button>
+      {open && (
+        <>
+          <div style={s.menuBackdrop} onClick={() => setOpen(false)} aria-hidden />
+          <div style={s.menu} className="ctr-menu" role="menu">
+            <div style={s.menuTitle}>Pour quel séjour ?</div>
+            {candidates.length === 0 ? (
+              <p style={s.menuEmpty}>
+                Aucun séjour à venir sans contrat. Ajoute d&apos;abord le séjour sur la fiche du voyageur.
+                <Link href="/dashboard/voyageurs" style={s.menuLink}>Mes voyageurs</Link>
+              </p>
+            ) : (
+              <ul style={s.menuList}>
+                {candidates.slice(0, 8).map(c => (
+                  <li key={c.sejourId}>
+                    <Link href={`/dashboard/voyageurs/${c.voyageurId}?contract=${c.sejourId}`} style={s.menuItem} role="menuitem">
+                      <span style={s.menuGuest}>{c.guest}</span>
+                      <span style={s.menuSub}>
+                        {c.logement && <><House size={11} weight="fill" /> {c.logement} · </>}
+                        {fmtShort(c.dateArrivee)} → {fmtShort(c.dateDepart)}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {candidates.length > 8 && <p style={s.menuMore}>+ {candidates.length - 8} autres dans Mes voyageurs</p>}
+          </div>
+        </>
+      )}
     </div>
   )
 }
@@ -160,6 +204,7 @@ function TodoCard({ icon, color, title, hint, items, render }: {
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   head: {
+    position: 'relative', zIndex: 5,
     display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
     gap: '16px', flexWrap: 'wrap', marginBottom: '24px',
   },
@@ -169,10 +214,24 @@ const s: Record<string, React.CSSProperties> = {
   },
   desc: { fontSize: '14px', color: 'var(--text-3)', margin: 0 },
   newBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '6px',
-    padding: '10px 16px', borderRadius: '10px', textDecoration: 'none',
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '10px 16px', borderRadius: '10px', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
     background: 'var(--accent-text)', color: 'var(--bg)', fontSize: '13.5px', fontWeight: 700,
   },
+  menuBackdrop: { position: 'fixed', inset: 0, zIndex: 40 },
+  menu: {
+    position: 'absolute', right: 0, top: 'calc(100% + 6px)', zIndex: 41, width: 'min(360px, calc(100vw - 32px))',
+    background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px',
+    boxShadow: '0 12px 32px rgba(0,0,0,0.14)', padding: '10px',
+  },
+  menuTitle: { fontSize: '11.5px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', color: 'var(--text-2)', padding: '4px 6px 8px' },
+  menuList: { listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '2px' },
+  menuItem: { display: 'flex', flexDirection: 'column', gap: '2px', padding: '8px 10px', borderRadius: '8px', textDecoration: 'none' },
+  menuGuest: { fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' },
+  menuSub: { display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: 'var(--text-3)' },
+  menuEmpty: { fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.5, margin: '0 6px 6px', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start' },
+  menuLink: { color: 'var(--accent-text)', fontWeight: 600 },
+  menuMore: { fontSize: '12px', color: 'var(--text-muted)', margin: '6px 10px 2px' },
   todoWrap: { marginBottom: '22px' },
   todoHead: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px', flexWrap: 'wrap' },
   todoTitle: {

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import {
-  Calculator, ChartLineUp, MagnifyingGlass, Printer, ArrowRight, ChatText,
+  Calculator, ChartLineUp, Printer, ArrowRight, ChatText,
 } from '@phosphor-icons/react/dist/ssr'
 
 export const metadata = { title: 'Outils & calculs' }
@@ -41,14 +41,7 @@ const tools = [
     tag: 'Pricing',
     accent: '#63D683',
   },
-  {
-    href: '/dashboard/audit-gbp',
-    label: 'Audit Google My Business',
-    Icon: MagnifyingGlass,
-    desc: 'Analyse ta fiche Google, identifie les leviers pour ranker sur les recherches locales.',
-    tag: 'SEO local',
-    accent: '#93C5FD',
-  },
+
   {
     href: '/dashboard/outils-impression',
     label: 'QR Codes & Affiches',
@@ -67,8 +60,8 @@ export default function OutilsHubPage() {
           Outils <em style={s.titleEm}>&amp; calculs</em>
         </h1>
         <p style={s.sub}>
-          Tes utilitaires en un endroit : modèles de messages, simulateurs fiscaux, benchmarks prix,
-          audit SEO Google et générateurs d&apos;impression pour l&apos;accueil voyageur.
+          Tes utilitaires en un endroit : modèles de messages, simulateurs fiscaux, benchmarks prix
+          et générateurs d&apos;impression pour l&apos;accueil voyageur.
         </p>
       </div>
 

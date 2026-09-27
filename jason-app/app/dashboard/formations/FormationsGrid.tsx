@@ -4,6 +4,7 @@ import { useState, useMemo, useTransition } from 'react'
 import Link from 'next/link'
 import { GraduationCap, Clock, BookOpen, ArrowRight, CheckCircle, Lock, Wrench, MagnifyingGlass, Funnel, BookmarkSimple, Trophy, Compass, Heart } from '@phosphor-icons/react/dist/ssr'
 import { toggleFormationFavorite } from './actions'
+import Select from '@/components/ui/Select'
 
 interface Formation {
   id: string
@@ -64,6 +65,7 @@ const SLUG_CATEGORY: Record<string, string> = {
   'gerer-incidents-litiges-lcd': 'gestion',
   'annonce-360': 'visibilite',
   'audit-annonce': 'visibilite',
+  'declarer-lmnp-seul-decla-fr': 'reglementation',
 }
 
 const categoryLabel: Record<string, string> = {
@@ -123,7 +125,13 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
       if (statusFilter === 'done' && !done) return false
 
       return true
-    })
+    }).sort((a, b) => rank(a) - rank(b))
+    // En cours d'abord, puis non commencées, terminées en dernier
+    // (ordre du catalogue conservé à rang égal : tri stable).
+    function rank(f: Formation) {
+      const p = progressMap[f.id]
+      return p === undefined ? 1 : p === 100 ? 2 : 0
+    }
   }, [formations, progressMap, search, levelFilter, statusFilter, categoryFilter])
 
   const enrolledCount = formations.filter(f => progressMap[f.id] !== undefined).length
@@ -195,6 +203,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
 
       {/* Filters */}
       <div style={styles.filtersWrap}>
+        <div style={styles.topFilterRow}>
         {/* Search */}
         <div style={styles.searchWrap} className="filter-search-wrap">
           <MagnifyingGlass size={14} color="var(--text-muted)" style={{ flexShrink: 0 }} />
@@ -210,6 +219,33 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
             <button onClick={() => setSearch('')} style={styles.clearBtn}>×</button>
           )}
         </div>
+        {/* Niveau + statut en menus déroulants (avant : 2 rangées de boutons
+            en plus de la rangée des thèmes, lourd pour 21 formations). */}
+        <div style={styles.selectRow}>
+          <Select
+            value={levelFilter}
+            onChange={v => setLevelFilter(v as LevelFilter)}
+            options={[
+              { value: 'all', label: 'Tous niveaux' },
+              { value: 'debutant', label: 'Débutant' },
+              { value: 'intermediaire', label: 'Intermédiaire' },
+              { value: 'avance', label: 'Avancé' },
+            ]}
+            ariaLabel="Filtrer par niveau"
+          />
+          <Select
+            value={statusFilter}
+            onChange={v => setStatusFilter(v as StatusFilter)}
+            options={[
+              { value: 'all', label: 'Tous statuts' },
+              { value: 'enrolled', label: 'En cours' },
+              { value: 'done', label: 'Terminées' },
+              { value: 'not_enrolled', label: 'Non commencées' },
+            ]}
+            ariaLabel="Filtrer par statut"
+          />
+        </div>
+        </div>
 
         {/* Category filter, scrollable row on mobile */}
         <div style={styles.filterScrollRow} className="filter-scroll-row">
@@ -224,45 +260,6 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
               }}
             >
               {v === 'all' ? 'Tous' : categoryLabel[v]}
-            </button>
-          ))}
-        </div>
-
-        {/* Level filter row */}
-        <div style={styles.filterScrollRow} className="filter-scroll-row">
-          <span style={styles.filterLabel}><Funnel size={12} /> Niveau</span>
-          {(['all', 'debutant', 'intermediaire', 'avance'] as LevelFilter[]).map(v => (
-            <button
-              key={v}
-              onClick={() => setLevelFilter(v)}
-              style={{
-                ...styles.filterBtn,
-                ...(levelFilter === v ? styles.filterBtnActive : {}),
-              }}
-            >
-              {v === 'all' ? 'Tous' : levelLabel[v]}
-            </button>
-          ))}
-        </div>
-
-        {/* Status filter row */}
-        <div style={styles.filterScrollRow} className="filter-scroll-row">
-          <span style={styles.filterLabel}><Funnel size={12} /> Statut</span>
-          {([
-            { v: 'all', label: 'Toutes' },
-            { v: 'enrolled', label: 'En cours' },
-            { v: 'done', label: 'Terminées' },
-            { v: 'not_enrolled', label: 'Non commencées' },
-          ] as { v: StatusFilter; label: string }[]).map(({ v, label }) => (
-            <button
-              key={v}
-              onClick={() => setStatusFilter(v)}
-              style={{
-                ...styles.filterBtn,
-                ...(statusFilter === v ? styles.filterBtnActive : {}),
-              }}
-            >
-              {label}
             </button>
           ))}
         </div>
@@ -304,7 +301,6 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
                     ? <span style={styles.lockedBadge}>Standard</span>
                     : <>
                         <span className="badge badge-yellow">{levelLabel[f.level] ?? f.level}</span>
-                        <span className="badge badge-green">Disponible</span>
                         {done && <span className="badge badge-green">Terminé ✓</span>}
                       </>
                   }
@@ -497,6 +493,8 @@ const styles: Record<string, React.CSSProperties> = {
   navLinkText: {
     flex: 1, lineHeight: 1.3,
   },
+  topFilterRow: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' },
+  selectRow: { display: 'flex', gap: '8px', flexWrap: 'wrap' },
   filtersWrap: {
     display: 'flex', flexDirection: 'column', gap: '8px',
     marginBottom: '20px',
