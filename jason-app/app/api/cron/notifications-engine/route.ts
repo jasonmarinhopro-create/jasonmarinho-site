@@ -9,6 +9,7 @@ import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { runNotificationRules, purgeExpiredNotifications } from '@/lib/notifications/rules'
 import { syncStaleFeeds } from '@/lib/ical/background'
 import { sendDepositOpenEmails } from '@/lib/contracts/deposit-reminders'
+import { purgeOldMenagePhotos } from '@/lib/menage/photo-retention'
 import { unansweredQuestions, unansweredDigestEmail, REMIND_MAX_DAYS, type QuestionRow } from '@/lib/chez-nous/unanswered'
 import { sendAdminEmail } from '@/lib/email/admin'
 
@@ -54,6 +55,13 @@ export async function GET(req: Request) {
     depositEmails = await sendDepositOpenEmails(supabase, process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com')
   } catch (e) { console.warn('[cron] deposit reminders failed', e) }
 
+  // Photos de ménage de plus de 90 jours supprimées (stockage Supabase gratuit
+  // limité à 1 Go, lib/menage/photo-retention.ts). Par lots, best-effort.
+  let menagePhotosPurged = 0
+  try {
+    menagePhotosPurged = await purgeOldMenagePhotos(supabase)
+  } catch (e) { console.warn('[cron] menage photos purge failed', e) }
+
   // Synchro iCal de fond AVANT les règles : les alertes (arrivée demain,
   // synchro échouée) portent sur des données fraîches. Budget 25 s sur les 60.
   const icalSync = await syncStaleFeeds(supabase, { staleMinutes: 360, budgetMs: 25_000, concurrency: 6 })
@@ -94,6 +102,7 @@ export async function GET(req: Request) {
     expiredPurged: purged,
     unansweredQuestions: unanswered,
     depositEmails,
+    menagePhotosPurged,
     durationMs: Date.now() - t0,
   })
 }

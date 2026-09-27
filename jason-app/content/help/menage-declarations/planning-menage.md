@@ -35,6 +35,10 @@ Régénère le lien : l'ancien cesse de fonctionner et l'équipe voit « Lien ex
 
 Bouton **Marquer fait** sur la ligne du ménage. Si ton équipe l'a déjà fait, tu vois « Fait par » et tu peux ouvrir ses photos.
 
+## Combien de temps les photos sont gardées
+
+Les photos de fin de ménage sont conservées **90 jours**, puis supprimées automatiquement (la ligne du ménage, elle, reste). La page du ménage indique la date de suppression et propose un bouton **Télécharger** sous chaque photo : garde-les de ton côté si tu en as besoin plus longtemps, par exemple pour un litige sur une caution.
+
 ## Imprimer ou envoyer par WhatsApp
 
 L'icône balai du Calendrier ouvre le **planning ménage** en version imprimable (PDF) ou à envoyer par WhatsApp, avec les notes par logement.

@@ -300,7 +300,7 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
             <ul style={s.tipList}>
               <li>Les ménages suivent les réservations Airbnb, Booking et directes de tes clients.</li>
               <li>« Arrivée le jour même » : des voyageurs arrivent le jour du ménage, à faire en priorité.</li>
-              <li>Les photos sont visibles uniquement par ton client.</li>
+              <li>Les photos sont visibles uniquement par ton client, et conservées 90 jours avant d’être supprimées automatiquement.</li>
             </ul>
           </section>
         </aside>
