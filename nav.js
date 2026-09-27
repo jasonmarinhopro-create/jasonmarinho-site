@@ -197,6 +197,22 @@
       '.n-sol-card-h{font-family:\'Fraunces\',serif;font-size:17px;line-height:1.25;color:#fff}',
       '.n-sol-card-h em{color:var(--y);font-style:italic;font-weight:300}',
       '.n-sol-card-p{font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.6)}',
+      /* « Trouver un pro » : les deux cartes de l'ancien menu Annuaire, dans le panneau central */
+      '.n-sol-ann{display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:12px;background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%);border:1px solid rgba(255,213,107,.22);white-space:normal}',
+      '.n-sol-ann-head{display:flex;align-items:center;justify-content:space-between;gap:8px}',
+      '.n-sol-ann-ico{width:36px;height:36px;border-radius:9px;background:rgba(255,213,107,.10);color:var(--y);display:flex;align-items:center;justify-content:center;font-size:18px}',
+      '.n-sol-ann .n-ann-tag{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--y);padding:3px 9px;border-radius:999px;background:rgba(255,213,107,.10)}',
+      '.n-sol-ann .n-ann-dot{width:5px;height:5px;border-radius:50%;background:var(--y);box-shadow:0 0 7px rgba(255,213,107,.7)}',
+      '.n-sol-ann-h{font-family:\'Fraunces\',serif;font-size:18px;line-height:1.25;color:#fff}',
+      '.n-sol-ann-h em{color:var(--y);font-style:italic;font-weight:300}',
+      '.n-sol-ann-p{font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.62);margin-bottom:4px}',
+      '.n-mega a.n-sol-ann-cta{justify-content:center;padding:9px 12px;border-radius:8px;font-weight:600;font-size:12.5px;white-space:nowrap}',
+      '.n-mega a.n-sol-ann-primary,.n-mega a.n-sol-ann-primary:hover{background:var(--y);color:var(--gd)}',
+      '.n-mega a.n-sol-ann-primary:hover{background:#ffe08f}',
+      '.n-mega a.n-sol-ann-cta i{width:auto;font-size:13px;color:inherit}',
+      '.n-mega a.n-sol-ann-secondary{color:rgba(255,213,107,.8);border:1px solid rgba(255,213,107,.22)}',
+      '.n-mega a.n-sol-ann-secondary:hover{color:var(--y);border-color:rgba(255,213,107,.45);background:rgba(255,213,107,.05)}',
+      '.n-sol-panel-ann{column-gap:14px!important;row-gap:14px!important}',
       '@media(max-width:1180px){.n-mega-sol{grid-template-columns:230px minmax(0,1fr)}.n-sol-side{display:none}}',
 
       /* Tarifs (façon Shine) : une carte visuelle par offre + offres spéciales */
@@ -387,11 +403,21 @@
               + '<a href="/services/actualites"><i class="ph ph-newspaper"></i>Actualités LCD</a>'
               + '<a href="/services/formations" class="n-sol-all">Voir les formations <i class="ph-bold ph-arrow-right"></i></a>'
             + '</div>'
-            + '<div class="n-sol-panel" data-sol-panel="pros" role="tabpanel">'
-              + '<a href="/annuaires/photographes"><i class="ph ph-camera"></i>Annuaire photographes LCD</a>'
-              + '<a href="/annuaires/menage"><i class="ph ph-sparkle"></i>Annuaire équipes ménage</a>'
-              + '<a href="/devenir-photographe-lcd"><i class="ph ph-user-plus"></i>Devenir photographe LCD</a>'
-              + '<a href="/devenir-prestataire-menage-lcd"><i class="ph ph-user-plus"></i>Devenir prestataire ménage</a>'
+            + '<div class="n-sol-panel n-sol-panel-ann" data-sol-panel="pros" role="tabpanel">'
+              + '<div class="n-sol-ann">'
+              + '<span class="n-sol-ann-head"><span class="n-sol-ann-ico"><i class="ph-bold ph-camera"></i></span><span class="n-ann-tag"><span class="n-ann-dot"></span>Annuaire pro</span></span>'
+              + '<span class="n-sol-ann-h">Photographes <em>LCD</em></span>'
+              + '<span class="n-sol-ann-p">Pros qui maîtrisent l\'angle Airbnb, portfolio visible sur leur fiche.</span>'
+              + '<a href="/annuaires/photographes" class="n-sol-ann-cta n-sol-ann-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
+              + '<a href="/devenir-photographe-lcd" class="n-sol-ann-cta n-sol-ann-secondary"><i class="ph-bold ph-user-plus"></i>Devenir photographe LCD</a>'
+              + '</div>'
+              + '<div class="n-sol-ann">'
+              + '<span class="n-sol-ann-head"><span class="n-sol-ann-ico"><i class="ph-bold ph-sparkle"></i></span><span class="n-ann-tag"><span class="n-ann-dot"></span>Annuaire pro</span></span>'
+              + '<span class="n-sol-ann-h">Ménage <em>LCD</em></span>'
+              + '<span class="n-sol-ann-p">Équipes de turnover express, gestion du linge, RC pro vérifiée.</span>'
+              + '<a href="/annuaires/menage" class="n-sol-ann-cta n-sol-ann-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
+              + '<a href="/devenir-prestataire-menage-lcd" class="n-sol-ann-cta n-sol-ann-secondary"><i class="ph-bold ph-user-plus"></i>Devenir prestataire ménage</a>'
+              + '</div>'
               + '<a href="/tarifs#photographes" class="n-sol-all">Tarifs des fiches pros <i class="ph-bold ph-arrow-right"></i></a>'
             + '</div>'
             + '<a href="https://app.jasonmarinho.com/auth/register" class="n-sol-cta">Commence gratuitement : 0 €, sans carte bancaire <i class="ph-bold ph-arrow-right"></i></a>'
@@ -548,10 +574,24 @@
         + '<a href="/services/actualites"><i class="ph ph-newspaper"></i>Actualités LCD</a>'
         + '<a href="/services/formations" class="mob-sublink">Voir les formations <i class="ph-bold ph-arrow-right"></i></a>'
         + '<span class="mob-stitle">Trouver un pro</span>'
-        + '<a href="/annuaires/photographes"><i class="ph ph-camera"></i>Annuaire photographes LCD</a>'
-        + '<a href="/annuaires/menage"><i class="ph ph-sparkle"></i>Annuaire équipes ménage</a>'
-        + '<a href="/devenir-photographe-lcd"><i class="ph ph-user-plus"></i>Devenir photographe LCD</a>'
-        + '<a href="/devenir-prestataire-menage-lcd"><i class="ph ph-user-plus"></i>Devenir prestataire ménage</a>'
+        + '<div class="mob-driing-card">'
+        + '<span class="mdc-tag"><span class="mdc-dot"></span>Annuaire pro</span>'
+        + '<div class="mdc-h">Photographes <em>LCD</em></div>'
+        + '<div class="mdc-p">Pros qui maîtrisent l\'angle Airbnb, portfolio visible sur leur fiche.</div>'
+        + '<div class="mdc-actions">'
+        + '<a href="/annuaires/photographes" class="mdc-cta mdc-cta-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
+        + '<a href="/devenir-photographe-lcd" class="mdc-cta mdc-cta-secondary"><i class="ph-bold ph-info"></i>Devenir photographe LCD</a>'
+        + '</div>'
+        + '</div>'
+        + '<div class="mob-driing-card">'
+        + '<span class="mdc-tag"><span class="mdc-dot"></span>Annuaire pro</span>'
+        + '<div class="mdc-h">Ménage <em>LCD</em></div>'
+        + '<div class="mdc-p">Équipes de turnover express, gestion du linge, RC pro vérifiée.</div>'
+        + '<div class="mdc-actions">'
+        + '<a href="/annuaires/menage" class="mdc-cta mdc-cta-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
+        + '<a href="/devenir-prestataire-menage-lcd" class="mdc-cta mdc-cta-secondary"><i class="ph-bold ph-info"></i>Devenir prestataire ménage</a>'
+        + '</div>'
+        + '</div>'
         + '<a href="/tarifs#photographes" class="mob-sublink">Tarifs des fiches pros <i class="ph-bold ph-arrow-right"></i></a>'
       + '</div>'
     + '</div>'
