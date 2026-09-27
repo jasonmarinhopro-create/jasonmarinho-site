@@ -1,5 +1,6 @@
 {
   "buildCommand": "node ../scripts/sync-counts.mjs && next build",
+  "regions": ["lhr1"],
   "crons": [
     {
       "path": "/api/cron/notifications-engine",

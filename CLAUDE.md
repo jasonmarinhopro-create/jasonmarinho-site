@@ -195,6 +195,11 @@ import { House } from '@phosphor-icons/react'
 - **Checklist** (`app/dashboard/page.tsx`, `setupSteps`) orientée vers cette valeur : logement → calendrier Airbnb/Booking connecté (`ical_feeds` count) → premier contrat à signer (`contracts`) → planning ménage partagé (`profiles.ical_token` généré) → prix → objectif. Les anciennes étapes « saisir une réservation à la main » et « commencer une formation » ont été retirées.
 - `/dashboard/calendrier?menage=1` ouvre directement le partage du planning ménage (sinon caché derrière l'icône balai de la barre d'outils).
 
+## Région des fonctions Vercel (sept. 2026)
+
+- La base Supabase est à **Londres (eu-west-2)**. Les fonctions des deux projets Vercel tournaient par défaut à Washington (`iad1`) : chaque requête base de données traversait l'Atlantique (~75 ms aller-retour, plusieurs par page ou par action). Les deux `vercel.json` (`jason-app/` et racine) fixent maintenant `"regions": ["lhr1"]` (Londres, une seule région autorisée en Hobby). Ne pas retirer, ne pas choisir une autre région sans déplacer la base.
+- Reste transatlantique : Upstash Redis (rate limiting) créé en `iad1`. Ne touche que les routes rate-limitées (login, inscription, signature de contrat…), pas la navigation. Pour l'aligner : créer une nouvelle base Upstash en Europe et remplacer les variables d'environnement.
+
 ## Lisibilité et thèmes du dashboard (sept. 2026)
 
 - **Contraste des textes gris** (`app/globals.css`, bloc « ACCESSIBILITÉ ») : `--text-3` (~460 usages) et `--text-muted` (~800 usages) étaient à 3,3:1 et 3,9:1, sous le minimum WCAG AA (4,5:1). Remontés à ≥ 4,5:1 sur le fond ET sur les cartes, dans les 3 thèmes, en gardant 3 niveaux distincts (`--text-2` > `--text-3` > `--text-muted`). Ne pas redescendre ces opacités ; pour un texte « discret », jouer sur la taille/graisse plutôt que sur la transparence.
@@ -345,7 +350,7 @@ Si absentes, fallback in-memory (par lambda) — utile en dev local.
 
 Setup via intégration Vercel (méthode recommandée) :
 1. Vercel Dashboard → Storage → Connect → Upstash for Redis
-2. Région `iad1` (US East, aligne avec les fonctions Vercel)
+2. Région : une région européenne (les fonctions Vercel sont à Londres `lhr1`, cf. « Région des fonctions Vercel »). La base actuelle est en `iad1`, créée avant ce changement.
 3. Prefix `UPSTASH_REDIS_REST` → variables auto-injectées en Production + Preview
 4. Redeploy automatique
 
