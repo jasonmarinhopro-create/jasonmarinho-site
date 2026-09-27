@@ -70,6 +70,31 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     .tab-btn:hover{color:var(--g)}
     .tab-btn.active{background:var(--g);color:#fff}
     .tab-btn i{font-size:14px;flex-shrink:0}
+    /* Hub : une carte par public (même langage visuel que le menu Tarifs de nav.js).
+       Pas de prix ici : ils vivent uniquement dans les onglets ci-dessous
+       (les places Fondateur changent les montants affichés). */
+    .aud-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:40px}
+    .aud-card{display:flex;flex-direction:column;gap:16px;padding:20px;border-radius:16px;text-decoration:none;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+    .aud-card:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(0,0,0,.28)}
+    .aud-hote{background:linear-gradient(160deg,#FFE9A8 0%,var(--y) 100%);color:var(--gd)}
+    .aud-photo{background:linear-gradient(160deg,#00463a 0%,#003329 100%);border:1px solid rgba(255,213,107,.22);color:#fff}
+    .aud-menage{background:linear-gradient(160deg,#556B2F 0%,#3d5022 100%);color:#fff}
+    .aud-vis{display:flex;flex-direction:column;gap:6px;height:128px}
+    .aud-row{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;padding:8px 10px;border-radius:9px;background:rgba(255,255,255,.75);color:var(--gd)}
+    .aud-row i{font-size:14px;opacity:.8}
+    .aud-row b{margin-left:auto;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:rgba(0,51,41,.1)}
+    .aud-row.dk{background:rgba(255,255,255,.1);color:#fff}
+    .aud-row.dk b{background:rgba(255,213,107,.18);color:var(--y)}
+    .aud-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+    .aud-tiles i{display:block;aspect-ratio:2.2;border-radius:6px;background:linear-gradient(135deg,rgba(255,213,107,.35),rgba(255,255,255,.08))}
+    .aud-tiles i:nth-child(2n){background:linear-gradient(135deg,rgba(147,197,253,.3),rgba(255,255,255,.06))}
+    .aud-for{font-size:10.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;opacity:.65}
+    .aud-t{font-family:'Fraunces',serif;font-size:22px;font-weight:500;line-height:1.15;margin:2px 0 6px}
+    .aud-p{font-size:13.5px;line-height:1.55;opacity:.78;margin:0}
+    .aud-cta{margin-top:auto;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;text-decoration:underline;text-underline-offset:4px}
+    .aud-hote .aud-cta{text-decoration-color:rgba(0,51,41,.35)}
+    .aud-photo .aud-cta,.aud-menage .aud-cta{color:var(--y);text-decoration-color:rgba(255,213,107,.45)}
+    @media(max-width:860px){.aud-grid{grid-template-columns:1fr}.aud-vis{height:auto}}
     @media(max-width:480px){.tab-btn{padding:9px 14px;font-size:12.5px} .tab-label-full{display:none}}
 
     /* Tab panels */
@@ -315,7 +340,48 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     </div>
     <div class="lbl">Accès &amp; Tarifs</div>
     <h1 class="h1">Un accès adapté<br>à <em>chaque étape</em></h1>
-    <p class="sub">3 services au choix : <strong>plateforme hôte LCD</strong>, <strong>annuaire photographes</strong>, <strong>annuaire équipes ménage</strong>. Facturation annuelle uniquement. Résiliation à tout moment.</p>
+    <p class="sub">Trois offres pour trois métiers : choisis la tienne. Facturation annuelle uniquement, résiliation à tout moment.</p>
+    <!-- Une carte par public : ouvre l'onglet correspondant plus bas (applyTarifsHash) -->
+    <nav class="aud-grid" aria-label="Choisir ton profil">
+      <a href="#hote" class="aud-card aud-hote">
+        <span class="aud-vis">
+          <span class="aud-row"><i class="ph-bold ph-file-text"></i>Contrat<b>Signé</b></span>
+          <span class="aud-row"><i class="ph-bold ph-sparkle"></i>Ménage<b>Planifié</b></span>
+          <span class="aud-row"><i class="ph-bold ph-lock-key"></i>Caution<b>Bloquée</b></span>
+        </span>
+        <span>
+          <span class="aud-for">Tu loues en courte durée</span>
+          <span class="aud-t" style="display:block">Plateforme hôte</span>
+          <p class="aud-p">Gratuit pour commencer, puis le plan Standard à l'année pour tout débloquer : contrats, paiements, performances.</p>
+        </span>
+        <span class="aud-cta">Voir les offres hôte <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
+      <a href="#photographes" class="aud-card aud-photo">
+        <span class="aud-vis">
+          <span class="aud-tiles"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+          <span class="aud-row dk"><i class="ph-bold ph-camera"></i>Portfolio<b>12 photos</b></span>
+        </span>
+        <span>
+          <span class="aud-for">Tu es photographe</span>
+          <span class="aud-t" style="display:block">Photographes LCD</span>
+          <p class="aud-p">Ta fiche dans l'annuaire consulté par les hôtes : portfolio, tarifs, zone, contact direct sans commission.</p>
+        </span>
+        <span class="aud-cta">Voir l'offre photographe <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
+      <a href="#menage" class="aud-card aud-menage">
+        <span class="aud-vis">
+          <span class="aud-row dk"><i class="ph-bold ph-check-circle"></i>Chambres<b>Fait</b></span>
+          <span class="aud-row dk"><i class="ph-bold ph-check-circle"></i>Linge<b>Fait</b></span>
+          <span class="aud-row dk"><i class="ph-bold ph-camera"></i>Photos<b>Envoyées</b></span>
+        </span>
+        <span>
+          <span class="aud-for">Tu fais le ménage</span>
+          <span class="aud-t" style="display:block">Équipes ménage</span>
+          <p class="aud-p">Ta fiche dans l'annuaire consulté par les hôtes. En plus, gratuitement : le planning de tes clients, à jour avec leurs réservations.</p>
+        </span>
+        <span class="aud-cta">Voir l'offre ménage <i class="ph-bold ph-arrow-right"></i></span>
+      </a>
+    </nav>
   </div>
 </header>
 
