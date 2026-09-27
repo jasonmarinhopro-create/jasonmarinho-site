@@ -11,8 +11,8 @@ import { stripe } from '@/lib/stripe/client'
 
 export async function POST() {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
 
   const db = createAdminClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -23,7 +23,7 @@ export async function POST() {
   const { data: profile } = await db
     .from('profiles')
     .select('stripe_subscription_id')
-    .eq('id', session.user.id)
+    .eq('id', user.id)
     .single()
 
   if (!profile?.stripe_subscription_id) {

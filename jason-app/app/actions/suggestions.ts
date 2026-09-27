@@ -16,22 +16,22 @@ export async function saveSuggestion(
   }
 
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié.' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
 
   const { data: profile } = await supabase
     .from('profiles')
     .select('email, full_name')
-    .eq('id', session.user.id)
+    .eq('id', user.id)
     .maybeSingle()
 
-  const userEmail = profile?.email ?? session.user.email ?? 'inconnu'
+  const userEmail = profile?.email ?? user.email ?? 'inconnu'
   const userName = profile?.full_name ?? userEmail
 
   const { error } = await supabase.from('suggestions').insert({
     type,
     message: message.trim(),
-    user_id: session.user.id,
+    user_id: user.id,
     user_email: userEmail,
   })
 

@@ -29,12 +29,12 @@ export interface ChargeInput {
 
 export async function createRevenusEntry(input: EntryInput) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { data, error } = await supabase
     .from('revenus_entries')
-    .insert({ ...input, user_id: session.user.id })
+    .insert({ ...input, user_id: user.id })
     .select()
     .single()
 
@@ -50,14 +50,14 @@ export async function createRevenusEntry(input: EntryInput) {
 // éviter un aller-retour vers une autre page depuis le journal.
 export async function cancelContractRevenus(id: string) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { error } = await supabase
     .from('contracts')
     .update({ statut: 'annule' })
     .eq('id', id)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
@@ -70,14 +70,14 @@ export async function cancelContractRevenus(id: string) {
 // contrat, on n'a pas besoin de voyageurId ici : uniquement revalidatePath.
 export async function cancelSejourRevenus(id: string) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { error } = await supabase
     .from('sejours')
     .update({ annule_at: new Date().toISOString() })
     .eq('id', id)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
@@ -87,14 +87,14 @@ export async function cancelSejourRevenus(id: string) {
 
 export async function deleteRevenusEntry(id: string) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { error } = await supabase
     .from('revenus_entries')
     .delete()
     .eq('id', id)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
@@ -107,10 +107,10 @@ export async function bulkImportRevenusEntries(entries: EntryInput[]) {
   if (entries.length > 500) return { error: 'Maximum 500 lignes par import' }
 
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
-  const userId = session.user.id
+  const userId = user.id
 
   // Check for duplicates against existing entries (same date + amount + logement)
   const { data: existing } = await supabase
@@ -146,13 +146,13 @@ export async function bulkImportRevenusEntries(entries: EntryInput[]) {
 
 export async function createCharge(input: ChargeInput) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { data, error } = await supabase
     .from('revenus_charges')
     .insert({
-      user_id: session.user.id,
+      user_id: user.id,
       logement_nom: input.logement_nom,
       logement_id: input.logement_id ?? null,
       montant: input.montant,
@@ -173,8 +173,8 @@ export async function createCharge(input: ChargeInput) {
 
 export async function updateCharge(id: string, input: Partial<ChargeInput>) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const patch: any = { ...input, updated_at: new Date().toISOString() }
   delete patch.id
@@ -183,7 +183,7 @@ export async function updateCharge(id: string, input: Partial<ChargeInput>) {
     .from('revenus_charges')
     .update(patch)
     .eq('id', id)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
@@ -193,14 +193,14 @@ export async function updateCharge(id: string, input: Partial<ChargeInput>) {
 
 export async function deleteCharge(id: string) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { error } = await supabase
     .from('revenus_charges')
     .delete()
     .eq('id', id)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
@@ -234,15 +234,15 @@ export async function setEntryADeclarer(id: string, source: 'entry' | 'sejour', 
 
 export async function setObjectifAnnuel(montant: number | null, annee: number) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   if (montant === null || montant <= 0) {
     // Supprimer l'objectif
     const { error } = await supabase
       .from('revenus_objectifs')
       .delete()
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
     if (error) return { error: error.message }
     revalidatePath('/dashboard/revenus')
     revalidatePath('/dashboard/finances/revenus')
@@ -252,7 +252,7 @@ export async function setObjectifAnnuel(montant: number | null, annee: number) {
   const { error } = await supabase
     .from('revenus_objectifs')
     .upsert({
-      user_id: session.user.id,
+      user_id: user.id,
       objectif_ca_annuel: montant,
       annee,
       updated_at: new Date().toISOString(),

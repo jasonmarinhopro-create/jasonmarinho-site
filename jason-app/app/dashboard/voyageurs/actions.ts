@@ -59,8 +59,10 @@ export type SejourData = {
 
 async function getSession() {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  return { supabase, session }
+  // getUser() (et non getSession()) : valide le JWT côté serveur Supabase,
+  // conformément aux conventions du projet. Même forme de retour qu'avant.
+  const { data: { user } } = await supabase.auth.getUser()
+  return { supabase, session: user ? { user } : null }
 }
 
 // ─── Check si un email/tel est signalé par la communauté ────────────────

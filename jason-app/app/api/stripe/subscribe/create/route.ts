@@ -22,8 +22,8 @@ function adminClient() {
 // Crée ou récupère le customer Stripe, puis crée une Checkout Session en mode subscription
 export async function POST(request: NextRequest) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
 
   const body = await request.json().catch(() => ({}))
   const { priceId } = body as { priceId?: string }
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
   const { data: profile } = await db
     .from('profiles')
     .select('full_name, stripe_customer_id, stripe_subscription_id, stripe_subscription_status')
-    .eq('id', session.user.id)
+    .eq('id', user.id)
     .single()
 
   // Bloque si déjà abonné et actif
@@ -51,13 +51,13 @@ export async function POST(request: NextRequest) {
   let customerId = profile?.stripe_customer_id ?? null
   if (!customerId) {
     const customer = await stripe.customers.create({
-      email: session.user.email,
+      email: user.email,
       name: profile?.full_name ?? undefined,
-      metadata: { user_id: session.user.id },
+      metadata: { user_id: user.id },
     })
     customerId = customer.id
-    await db.from('profiles').update({ stripe_customer_id: customerId }).eq('id', session.user.id)
-    invalidateProfileCache(session.user.id)
+    await db.from('profiles').update({ stripe_customer_id: customerId }).eq('id', user.id)
+    invalidateProfileCache(user.id)
   }
 
   const checkoutSession = await stripe.checkout.sessions.create({
@@ -66,8 +66,8 @@ export async function POST(request: NextRequest) {
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${APP_URL}/dashboard/abonnement?subscription=success`,
     cancel_url:  `${APP_URL}/dashboard/abonnement?subscription=cancel`,
-    metadata: { user_id: session.user.id, price_id: priceId },
-    subscription_data: { metadata: { user_id: session.user.id } },
+    metadata: { user_id: user.id, price_id: priceId },
+    subscription_data: { metadata: { user_id: user.id } },
     allow_promotion_codes: false,
     billing_address_collection: 'auto',
     locale: 'fr',

@@ -11,22 +11,22 @@ const log = logger('profil/actions')
 
 export async function saveProfileName(fullName: string): Promise<{ error?: string }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  if (!session) return { error: 'Non authentifié.' }
+  if (!user) return { error: 'Non authentifié.' }
 
   const { error } = await supabase
     .from('profiles')
     .upsert({
-      id: session.user.id,
-      email: session.user.email ?? '',
+      id: user.id,
+      email: user.email ?? '',
       full_name: fullName.trim() || null,
       updated_at: new Date().toISOString(),
     })
 
   if (error) return { error: `Erreur: ${error.message}` }
 
-  invalidateProfileCache(session.user.id)
+  invalidateProfileCache(user.id)
   revalidatePath('/dashboard', 'layout')
 
   return {}
@@ -34,15 +34,15 @@ export async function saveProfileName(fullName: string): Promise<{ error?: strin
 
 export async function saveIban(iban: string, bic: string): Promise<{ error?: string }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  if (!session) return { error: 'Non authentifié.' }
+  if (!user) return { error: 'Non authentifié.' }
 
   const { error } = await supabase
     .from('profiles')
     .upsert({
-      id: session.user.id,
-      email: session.user.email ?? '',
+      id: user.id,
+      email: user.email ?? '',
       iban: iban || null,
       bic: bic || null,
       updated_at: new Date().toISOString(),
@@ -50,7 +50,7 @@ export async function saveIban(iban: string, bic: string): Promise<{ error?: str
 
   if (error) return { error: `Erreur: ${error.message}` }
 
-  invalidateProfileCache(session.user.id)
+  invalidateProfileCache(user.id)
   revalidatePath('/dashboard', 'layout')
 
   return {}
@@ -58,15 +58,15 @@ export async function saveIban(iban: string, bic: string): Promise<{ error?: str
 
 export async function saveFacturation(entrepriseNumero: string, mentionTva: string): Promise<{ error?: string }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  if (!session) return { error: 'Non authentifié.' }
+  if (!user) return { error: 'Non authentifié.' }
 
   const { error } = await supabase
     .from('profiles')
     .upsert({
-      id: session.user.id,
-      email: session.user.email ?? '',
+      id: user.id,
+      email: user.email ?? '',
       entreprise_numero: entrepriseNumero.trim() || null,
       mention_tva: mentionTva.trim() || null,
       updated_at: new Date().toISOString(),
@@ -74,7 +74,7 @@ export async function saveFacturation(entrepriseNumero: string, mentionTva: stri
 
   if (error) return { error: `Erreur: ${error.message}` }
 
-  invalidateProfileCache(session.user.id)
+  invalidateProfileCache(user.id)
   revalidatePath('/dashboard', 'layout')
 
   return {}
@@ -82,22 +82,22 @@ export async function saveFacturation(entrepriseNumero: string, mentionTva: stri
 
 export async function saveAdresse(adresse: string): Promise<{ error?: string }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  if (!session) return { error: 'Non authentifié.' }
+  if (!user) return { error: 'Non authentifié.' }
 
   const { error } = await supabase
     .from('profiles')
     .upsert({
-      id: session.user.id,
-      email: session.user.email ?? '',
+      id: user.id,
+      email: user.email ?? '',
       adresse: adresse.trim() || null,
       updated_at: new Date().toISOString(),
     })
 
   if (error) return { error: `Erreur: ${error.message}` }
 
-  invalidateProfileCache(session.user.id)
+  invalidateProfileCache(user.id)
   revalidatePath('/dashboard', 'layout')
 
   return {}

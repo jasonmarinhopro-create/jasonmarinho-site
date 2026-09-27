@@ -13,8 +13,8 @@ const FROM_EMAIL = 'notifications@jasonmarinho.com'
 
 export async function requestDriingUpgrade(driingEmail: string): Promise<{ success?: boolean; error?: string }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié.' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
 
   if (!driingEmail || !driingEmail.includes('@')) return { error: 'Adresse e-mail invalide.' }
 
@@ -22,7 +22,7 @@ export async function requestDriingUpgrade(driingEmail: string): Promise<{ succe
   const { data: profile } = await supabase
     .from('profiles')
     .select('full_name, email, driing_status, plan')
-    .eq('id', session.user.id)
+    .eq('id', user.id)
     .maybeSingle()
 
   // Cas incohérent : driing_status confirmé mais plan pas encore mis à jour
@@ -33,8 +33,8 @@ export async function requestDriingUpgrade(driingEmail: string): Promise<{ succe
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
       { auth: { autoRefreshToken: false, persistSession: false } },
     )
-    await adminClient.from('profiles').update({ plan: 'driing', role: 'driing' }).eq('id', session.user.id)
-    invalidateProfileCache(session.user.id)
+    await adminClient.from('profiles').update({ plan: 'driing', role: 'driing' }).eq('id', user.id)
+    invalidateProfileCache(user.id)
     revalidatePath('/dashboard/abonnement')
     return { success: true }
   }
@@ -51,15 +51,15 @@ export async function requestDriingUpgrade(driingEmail: string): Promise<{ succe
   const { error: updateError } = await adminClient
     .from('profiles')
     .update({ driing_status: 'pending' })
-    .eq('id', session.user.id)
+    .eq('id', user.id)
 
   if (updateError) return { error: `Erreur : ${updateError.message}` }
 
-  invalidateProfileCache(session.user.id)
+  invalidateProfileCache(user.id)
   revalidatePath('/dashboard/abonnement')
 
   // Notification email à l'admin
-  const userEmail = profile?.email ?? session.user.email ?? 'inconnu'
+  const userEmail = profile?.email ?? user.email ?? 'inconnu'
   const userName = profile?.full_name ?? userEmail
 
   await getResend().emails.send({

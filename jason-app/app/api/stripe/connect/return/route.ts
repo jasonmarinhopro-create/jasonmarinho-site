@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
+import { createClient as createUserClient } from '@/lib/supabase/server'
 import { logger } from '@/lib/logger'
 const log = logger('api/stripe/connect/return')
 
@@ -15,12 +16,25 @@ function createServiceClient() {
 }
 
 // GET /api/stripe/connect/return?account_id=acct_xxx
-// Stripe redirige ici après l'onboarding Express
+// Stripe redirige ici après l'onboarding Express.
+// SÉCURITÉ : on ne met à jour que le compte Connect de l'utilisateur connecté
+// (le paramètre account_id doit correspondre à profiles.stripe_account_id).
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
-  const accountId = searchParams.get('account_id')
+  const requested = searchParams.get('account_id')
 
-  if (!accountId) {
+  const userClient = await createUserClient()
+  const { data: { user } } = await userClient.auth.getUser()
+  if (!user) return NextResponse.redirect(`${APP_URL}/auth/login`)
+
+  const { data: profile } = await userClient
+    .from('profiles')
+    .select('stripe_account_id')
+    .eq('id', user.id)
+    .maybeSingle()
+  const accountId = profile?.stripe_account_id as string | null | undefined
+
+  if (!accountId || (requested && requested !== accountId)) {
     return NextResponse.redirect(`${APP_URL}/dashboard/profil?stripe=error`)
   }
 
@@ -37,7 +51,7 @@ export async function GET(request: NextRequest) {
         stripe_account_id: accountId,
         stripe_onboarding_complete: isComplete ?? false,
       })
-      .eq('stripe_account_id', accountId)
+      .eq('id', user.id)
 
     const status = isComplete ? 'success' : 'pending'
     return NextResponse.redirect(`${APP_URL}/dashboard/profil?stripe=${status}`)

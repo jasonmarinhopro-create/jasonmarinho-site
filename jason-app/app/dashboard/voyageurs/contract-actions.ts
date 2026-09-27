@@ -85,8 +85,8 @@ export async function createContract(data: ContractData): Promise<{
   error?: string
 }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié.' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
 
   // Si on a un email locataire, l'email part automatiquement ; on coche
   // alors "contrat_envoyé" sur la checklist. Sinon on laisse au manuel.
@@ -98,7 +98,7 @@ export async function createContract(data: ContractData): Promise<{
     .from('contracts')
     .insert({
       ...data,
-      user_id: session.user.id,
+      user_id: user.id,
       statut: 'en_attente',
       checklist_status: initialChecklist,
     })
@@ -113,7 +113,7 @@ export async function createContract(data: ContractData): Promise<{
     .from('sejours')
     .update({ contrat_statut: 'en_attente', contrat_lien: signUrl })
     .eq('id', data.sejour_id)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
 
   // Envoyer l'email de signature au voyageur (si email disponible), dans la
   // langue du contrat (contracts.langue) — pas systématiquement en français.
@@ -179,14 +179,14 @@ export async function getContractsBySejour(sejourId: string): Promise<{
   error?: string
 }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié.' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
 
   const { data, error } = await supabase
     .from('contracts')
     .select('id, token, statut, signature_date, signature_image, created_at, locataire_prenom, locataire_nom, montant_loyer, montant_caution, modalites_paiement, stripe_payment_enabled, stripe_payment_status, stripe_deposit_status, stripe_deposit_payment_intent_id')
     .eq('sejour_id', sejourId)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
   if (error) return { error: error.message }
@@ -197,14 +197,14 @@ export async function getContractsBySejour(sejourId: string): Promise<{
 
 export async function cancelContract(contractId: string, voyageurId: string): Promise<{ error?: string }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié.' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
 
   const { error } = await supabase
     .from('contracts')
     .update({ statut: 'annule' })
     .eq('id', contractId)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
 
   if (error) return { error: error.message }
   revalidatePath(`/dashboard/voyageurs/${voyageurId}`)
@@ -290,10 +290,9 @@ export async function getBailleurProfile(): Promise<{
   email: string
 }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { prenom: '', nom: '', email: '' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { prenom: '', nom: '', email: '' }
 
-  const user = session.user
   const meta = user.user_metadata ?? {}
 
   return {
@@ -311,14 +310,14 @@ export async function getChecklistBySejour(sejourId: string): Promise<{
   error?: string
 }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { checklist: {}, error: 'Non authentifié.' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { checklist: {}, error: 'Non authentifié.' }
 
   const { data, error } = await supabase
     .from('contracts')
     .select('id, checklist_status')
     .eq('sejour_id', sejourId)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(1)
     .maybeSingle()
@@ -336,7 +335,7 @@ export async function getChecklistBySejour(sejourId: string): Promise<{
     .from('sejours')
     .select('checklist_status')
     .eq('id', sejourId)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
     .maybeSingle()
 
   return { checklist: (sj?.checklist_status as Record<string, boolean>) ?? {} }
@@ -348,14 +347,14 @@ export async function updateSejourChecklist(
   value: boolean,
 ): Promise<{ error?: string }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié.' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
 
   const { data } = await supabase
     .from('sejours')
     .select('checklist_status')
     .eq('id', sejourId)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
     .maybeSingle()
 
   const current = (data?.checklist_status as Record<string, boolean>) ?? {}
@@ -363,7 +362,7 @@ export async function updateSejourChecklist(
     .from('sejours')
     .update({ checklist_status: { ...current, [key]: value } })
     .eq('id', sejourId)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
 
   return error ? { error: error.message } : {}
 }

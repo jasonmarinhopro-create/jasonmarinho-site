@@ -11,10 +11,10 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com
 export async function POST() {
   try {
     const supabase = await createClient()
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
 
-    const userId = session.user.id
+    const userId = user.id
 
     // Récupérer le profil (stripe_account_id existant ?)
     const { data: profile } = await supabase
@@ -29,7 +29,7 @@ export async function POST() {
     if (!accountId) {
       const account = await stripe.accounts.create({
         country: 'FR',
-        email: session.user.email,
+        email: user.email,
         capabilities: {
           card_payments: { requested: true },
           transfers: { requested: true },
@@ -84,13 +84,13 @@ export async function POST() {
 export async function GET() {
   try {
     const supabase = await createClient()
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
 
     const { data: profile } = await supabase
       .from('profiles')
       .select('stripe_account_id, stripe_onboarding_complete')
-      .eq('id', session.user.id)
+      .eq('id', user.id)
       .single()
 
     if (!profile?.stripe_account_id) {
@@ -106,7 +106,7 @@ export async function GET() {
       await supabase
         .from('profiles')
         .update({ stripe_onboarding_complete: isComplete })
-        .eq('id', session.user.id)
+        .eq('id', user.id)
     }
 
     return NextResponse.json({

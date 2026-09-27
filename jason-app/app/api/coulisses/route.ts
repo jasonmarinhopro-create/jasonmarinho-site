@@ -5,15 +5,15 @@ const ADMIN_EMAIL = 'djason.marinho@gmail.com'
 
 export async function GET() {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
 
-  const isAdmin = session.user.email === ADMIN_EMAIL
+  const isAdmin = user.email === ADMIN_EMAIL
   if (!isAdmin) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('is_contributor')
-      .eq('id', session.user.id)
+      .eq('id', user.id)
       .maybeSingle()
     if (!profile?.is_contributor) {
       return NextResponse.json({ error: 'Accès réservé aux contributeurs' }, { status: 403 })
@@ -31,9 +31,9 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
-  if (session.user.email !== ADMIN_EMAIL) {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
+  if (user.email !== ADMIN_EMAIL) {
     return NextResponse.json({ error: 'Réservé à Jason' }, { status: 403 })
   }
 
@@ -54,9 +54,9 @@ export async function POST(req: Request) {
 
 export async function DELETE(req: Request) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
-  if (session.user.email !== ADMIN_EMAIL) {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
+  if (user.email !== ADMIN_EMAIL) {
     return NextResponse.json({ error: 'Réservé à Jason' }, { status: 403 })
   }
 

@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
+import { getAuthUser } from '@/lib/supabase/auth-user'
 import ProfilForm from './ProfilForm'
 import ChezNousIdentity from './ChezNousIdentity'
 import FiscalContextCard from './FiscalContextCard'
@@ -26,8 +27,10 @@ export default async function ProfilPage() {
 
   const userId = profile.userId
 
-  const [{ data: { session } }, { data: pd }] = await Promise.all([
-    supabase.auth.getSession(),
+  // getAuthUser() : getUser() validé côté serveur, mis en cache pour le rendu
+  // (déjà appelé par getProfile), donc sans aller-retour supplémentaire.
+  const [authUser, { data: pd }] = await Promise.all([
+    getAuthUser(),
     supabase.from('profiles')
       .select('stripe_account_id, stripe_onboarding_complete, iban, bic, adresse, pseudo, bio, privacy_show_logements, privacy_show_platforms, privacy_show_city, stripe_subscription_id, stripe_customer_id, entreprise_numero, mention_tva')
       .eq('id', userId)
@@ -41,8 +44,8 @@ export default async function ProfilPage() {
     ? await getSubscriptionDetails(pd.stripe_subscription_id)
     : null
 
-  const email       = session?.user?.email ?? ''
-  const createdAt   = session?.user?.created_at ?? ''
+  const email       = authUser?.email ?? ''
+  const createdAt   = authUser?.created_at ?? ''
   const fullName    = profile.full_name ?? ''
   const initials    = fullName
     ? fullName.split(/\s+/).map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)

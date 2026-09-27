@@ -5,13 +5,13 @@ import { revalidatePath } from 'next/cache'
 
 export async function enrollInFormation(formationId: string) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { error } = await supabase
     .from('user_formations')
     .upsert(
-      { user_id: session.user.id, formation_id: formationId, progress: 0, completed_lessons: [] },
+      { user_id: user.id, formation_id: formationId, progress: 0, completed_lessons: [] },
       { onConflict: 'user_id,formation_id', ignoreDuplicates: true }
     )
 
@@ -29,14 +29,14 @@ export async function saveLessonNote(input: {
   content: string
 }): Promise<{ error?: string }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { error } = await supabase
     .from('user_lesson_notes')
     .upsert(
       {
-        user_id: session.user.id,
+        user_id: user.id,
         formation_id: input.formationId,
         module_id: input.moduleId,
         lesson_id: input.lessonId,
@@ -52,12 +52,12 @@ export async function saveLessonNote(input: {
 
 export async function getLessonNotes(formationId: string): Promise<Record<string, string>> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return {}
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return {}
   const { data } = await supabase
     .from('user_lesson_notes')
     .select('lesson_id, content')
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
     .eq('formation_id', formationId)
   const out: Record<string, string> = {}
   ;(data ?? []).forEach((n: any) => { out[String(n.lesson_id)] = n.content })
@@ -76,15 +76,15 @@ export async function toggleLessonBookmark(input: {
   add: boolean
 }): Promise<{ error?: string; bookmarked?: boolean }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   if (input.add) {
     const { error } = await supabase
       .from('user_lesson_bookmarks')
       .upsert(
         {
-          user_id: session.user.id,
+          user_id: user.id,
           formation_id: input.formationId,
           formation_slug: input.formationSlug,
           formation_title: input.formationTitle,
@@ -101,7 +101,7 @@ export async function toggleLessonBookmark(input: {
     const { error } = await supabase
       .from('user_lesson_bookmarks')
       .delete()
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .eq('formation_id', input.formationId)
       .eq('lesson_id', input.lessonId)
     if (error) return { error: error.message }
@@ -112,12 +112,12 @@ export async function toggleLessonBookmark(input: {
 
 export async function getLessonBookmarks(formationId: string): Promise<number[]> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return []
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return []
   const { data } = await supabase
     .from('user_lesson_bookmarks')
     .select('lesson_id')
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
     .eq('formation_id', formationId)
   return (data ?? []).map((b: any) => b.lesson_id as number)
 }
@@ -130,14 +130,14 @@ export async function voteLesson(input: {
   vote: 1 | -1 | 0 // 0 = retirer le vote
 }): Promise<{ error?: string }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   if (input.vote === 0) {
     const { error } = await supabase
       .from('lesson_feedback')
       .delete()
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .eq('formation_id', input.formationId)
       .eq('lesson_id', input.lessonId)
     if (error) return { error: error.message }
@@ -148,7 +148,7 @@ export async function voteLesson(input: {
     .from('lesson_feedback')
     .upsert(
       {
-        user_id: session.user.id,
+        user_id: user.id,
         formation_id: input.formationId,
         lesson_id: input.lessonId,
         vote: input.vote,
@@ -169,8 +169,8 @@ export async function postLessonComment(input: {
   displayName?: string
 }): Promise<{ error?: string; comment?: any }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const trimmed = input.content.trim()
   if (!trimmed) return { error: 'Le commentaire est vide' }
@@ -179,7 +179,7 @@ export async function postLessonComment(input: {
   const { data, error } = await supabase
     .from('lesson_comments')
     .insert({
-      user_id: session.user.id,
+      user_id: user.id,
       formation_id: input.formationId,
       lesson_id: input.lessonId,
       content: trimmed,
@@ -195,14 +195,14 @@ export async function postLessonComment(input: {
 
 export async function deleteLessonComment(commentId: string): Promise<{ error?: string }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const { error } = await supabase
     .from('lesson_comments')
     .delete()
     .eq('id', commentId)
-    .eq('user_id', session.user.id)
+    .eq('user_id', user.id)
   if (error) return { error: error.message }
   return {}
 }
@@ -239,8 +239,8 @@ export async function submitFormationReview(input: {
   isPublic?: boolean
 }): Promise<{ error?: string }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   if (input.rating < 1 || input.rating > 5) return { error: 'Note invalide (1 à 5)' }
 
@@ -248,7 +248,7 @@ export async function submitFormationReview(input: {
     .from('formation_reviews')
     .upsert(
       {
-        user_id: session.user.id,
+        user_id: user.id,
         formation_id: input.formationId,
         rating: input.rating,
         comment: input.comment?.trim() || null,
@@ -270,8 +270,8 @@ export async function updateFormationProgress(
   newlyCompletedLessonId?: number, // Phase 6, pour logger la date dans completion_log
 ) {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   const updateData: Record<string, unknown> = { progress }
   if (completedLessons !== undefined) {
@@ -282,7 +282,7 @@ export async function updateFormationProgress(
   const { error } = await supabase
     .from('user_formations')
     .upsert(
-      { user_id: session.user.id, formation_id: formationId, ...updateData },
+      { user_id: user.id, formation_id: formationId, ...updateData },
       { onConflict: 'user_id,formation_id' }
     )
 
@@ -293,7 +293,7 @@ export async function updateFormationProgress(
     await supabase
       .from('user_lesson_completion_log')
       .insert({
-        user_id: session.user.id,
+        user_id: user.id,
         formation_id: formationId,
         lesson_id: newlyCompletedLessonId,
       })
@@ -313,15 +313,15 @@ export async function toggleFormationFavorite(input: {
   add: boolean
 }): Promise<{ error?: string; favorited?: boolean }> {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session) return { error: 'Non authentifié' }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
 
   if (input.add) {
     const { error } = await supabase
       .from('user_formation_favorites')
       .upsert(
         {
-          user_id: session.user.id,
+          user_id: user.id,
           formation_id: input.formationId,
           formation_slug: input.formationSlug,
           formation_title: input.formationTitle,
@@ -336,7 +336,7 @@ export async function toggleFormationFavorite(input: {
     const { error } = await supabase
       .from('user_formation_favorites')
       .delete()
-      .eq('user_id', session.user.id)
+      .eq('user_id', user.id)
       .eq('formation_id', input.formationId)
     if (error) return { error: error.message }
     revalidatePath('/dashboard/formations')
