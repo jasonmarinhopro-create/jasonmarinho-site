@@ -104,7 +104,9 @@ type DepositContract = {
   modalites_paiement: string | null
   stripe_payment_enabled: boolean
   stripe_payment_status: 'pending' | 'paid' | 'refunded' | 'failed' | null
-  stripe_deposit_status: 'pending' | 'held' | 'captured' | 'released' | 'failed' | null
+  stripe_deposit_status: 'pending' | 'held' | 'captured' | 'released' | 'expired' | 'failed' | null
+  date_arrivee: string
+  date_depart: string
 }
 
 function avatarColor(name: string) {

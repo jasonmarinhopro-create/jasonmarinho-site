@@ -55,6 +55,13 @@ export const CONTRACT_EMAIL_I18N: Record<EmailLang, {
   reminderSelectToCopy: string
   reminderTroubleNote: string
   reminderSubject: (property: string) => string
+
+  // Caution : lien ouvert 2 jours avant l'arrivée (lib/stripe/deposit-window.ts)
+  depositLater: (date: string) => string
+  depositOpenSubject: (property: string) => string
+  depositOpenPreheader: string
+  depositOpenTitle: string
+  depositOpenBody: (property: string, arrival: string) => string
 }> = {
   fr: {
     inviteSubject: property => `Contrat à signer, ${property}`,
@@ -100,6 +107,11 @@ export const CONTRACT_EMAIL_I18N: Record<EmailLang, {
     reminderSelectToCopy: 'Appuyez sur chaque champ pour le sélectionner, puis copiez-le :',
     reminderTroubleNote: 'En cas de difficulté, contactez directement votre propriétaire.',
     reminderSubject: property => `Rappel, Finalisez votre dossier pour ${property}`,
+    depositLater: date => `La caution se règle 2 jours avant votre arrivée : vous recevrez le lien par e-mail le ${date}. Une carte ne reste bloquée que quelques jours, elle doit donc l'être pendant votre séjour.`,
+    depositOpenSubject: property => `Caution à régler pour votre séjour, ${property}`,
+    depositOpenPreheader: 'Votre séjour approche',
+    depositOpenTitle: 'Réglez votre caution',
+    depositOpenBody: (property, arrival) => `Votre séjour à <strong style="color:#f0ebe1;">${property}</strong> commence le ${arrival}. Il reste à enregistrer le dépôt de garantie : votre carte est bloquée, pas débitée.`,
   },
   pt: {
     inviteSubject: property => `Contrato para assinar, ${property}`,
@@ -145,5 +157,10 @@ export const CONTRACT_EMAIL_I18N: Record<EmailLang, {
     reminderSelectToCopy: 'Toque em cada campo para o selecionar e depois copie-o:',
     reminderTroubleNote: 'Em caso de dificuldade, contacte diretamente o seu anfitrião.',
     reminderSubject: property => `Lembrete, finalize o seu processo para ${property}`,
+    depositLater: date => `A caução paga-se 2 dias antes da sua chegada: receberá a ligação por e-mail a ${date}. Um cartão só fica bloqueado durante alguns dias, por isso deve sê-lo durante a sua estadia.`,
+    depositOpenSubject: property => `Caução a pagar para a sua estadia, ${property}`,
+    depositOpenPreheader: 'A sua estadia aproxima-se',
+    depositOpenTitle: 'Pague a sua caução',
+    depositOpenBody: (property, arrival) => `A sua estadia em <strong style="color:#f0ebe1;">${property}</strong> começa a ${arrival}. Falta registar a caução: o seu cartão fica bloqueado, não debitado.`,
   },
 }

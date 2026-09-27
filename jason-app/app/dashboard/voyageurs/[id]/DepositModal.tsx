@@ -3,8 +3,11 @@
 import { useState, useTransition } from 'react'
 import { X, LockKey, LockKeyOpen, Warning, CurrencyEur, Copy, Check, PaperPlaneTilt, Bank } from '@phosphor-icons/react/dist/ssr'
 import { useRouter } from 'next/navigation'
+import { depositWindow, depositOpensOn, depositActBefore, holdMayExpireBeforeCheckout } from '@/lib/stripe/deposit-window'
 
-type DepositStatus = 'pending' | 'held' | 'captured' | 'released' | 'failed' | null
+const fmtDay = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
+
+type DepositStatus = 'pending' | 'held' | 'captured' | 'released' | 'expired' | 'failed' | null
 type PaymentStatus = 'pending' | 'paid' | 'refunded' | 'failed' | null
 
 interface Contract {
@@ -19,6 +22,8 @@ interface Contract {
   stripe_payment_enabled: boolean
   stripe_payment_status: PaymentStatus
   stripe_deposit_status: DepositStatus
+  date_arrivee: string
+  date_depart: string
 }
 
 interface Props {
@@ -35,6 +40,7 @@ const DEPOSIT_LABELS: Record<string, { label: string; color: string; bg: string 
   held:     { label: 'Caution retenue ✓',       color: 'var(--success-1)', bg: 'var(--success-bg)' },
   captured: { label: 'Encaissée',               color: '#FFD56B', bg: 'rgba(255,213,107,0.08)' },
   released: { label: 'Libérée',                  color: '#6b9a7e', bg: 'rgba(107,154,126,0.08)' },
+  expired:  { label: 'Expirée : la carte n’est plus bloquée', color: '#d97706', bg: 'rgba(217,119,6,0.10)' },
   failed:   { label: 'Échec paiement',           color: 'var(--danger)', bg: 'rgba(239,68,68,0.08)' },
 }
 
@@ -145,6 +151,12 @@ export default function DepositModal({ contract, hostIban, hostBic, onClose }: P
   const paymentStatusMeta = paymentStatus ? PAYMENT_LABELS[paymentStatus] : null
   // Keep backward-compat alias
   const amount = depositAmount
+  // Calendrier de la caution (lib/stripe/deposit-window.ts) : lien ouvert de
+  // J-2 au départ, carte bloquée ~7 jours
+  const depositState = depositWindow(contract.date_arrivee, contract.date_depart)
+  const opensLabel = fmtDay(depositOpensOn(contract.date_arrivee))
+  const actBeforeLabel = fmtDay(depositActBefore(contract.date_arrivee))
+  const longStay = holdMayExpireBeforeCheckout(contract.date_arrivee, contract.date_depart)
 
   async function handleAction(type: 'capture' | 'release') {
     setError('')
@@ -271,6 +283,7 @@ export default function DepositModal({ contract, hostIban, hostBic, onClose }: P
                   </div>
                   <p style={legal}>
                     L&apos;encaissement est définitif. La libération annule le blocage carte immédiatement.
+                    {' '}Décide au plus tard le <strong>{actBeforeLabel}</strong> : passé environ 7 jours, Stripe débloque la carte tout seul.
                   </p>
                 </>
               )}
@@ -294,9 +307,22 @@ export default function DepositModal({ contract, hostIban, hostBic, onClose }: P
               {depositStatus === 'released' && !done && (
                 <p style={hint}>La caution a été libérée. Le locataire n&apos;a pas été débité.</p>
               )}
-              {(depositStatus === 'pending' || !depositStatus) && (
+              {longStay && depositStatus !== 'captured' && depositStatus !== 'released' && (
+                <p style={{ ...hint, color: '#d97706' }}>
+                  <Warning size={13} weight="fill" style={{ verticalAlign: '-2px', marginRight: '5px' }} />
+                  Séjour de plus de 4 nuits : la carte ne reste bloquée qu&apos;environ 7 jours, elle sera débloquée avant l&apos;état des lieux de sortie. Pour ce séjour, une caution par virement est plus sûre.
+                </p>
+              )}
+              {depositStatus === 'expired' && depositState === 'open' && (
+                <p style={hint}>Le séjour n&apos;est pas terminé : renvoie le lien au voyageur pour bloquer à nouveau sa carte.</p>
+              )}
+              {(depositStatus === 'pending' || depositStatus === 'expired' || !depositStatus) && depositState !== 'closed' && (
                 <div>
-                  <p style={hint}>La caution n&apos;a pas encore été payée par le locataire.</p>
+                  <p style={hint}>
+                    {depositState === 'not_yet'
+                      ? <>Le lien de caution s&apos;ouvre le <strong>{opensLabel}</strong>, 2 jours avant l&apos;arrivée, et part automatiquement par email au voyageur ce jour-là. Plus tôt, le blocage de la carte tomberait avant le séjour.</>
+                      : depositStatus === 'expired' ? null : <>La caution n&apos;a pas encore été payée par le locataire.</>}
+                  </p>
                   <div style={linkRow}>
                     <button onClick={() => copyLink('deposit')} style={copyBtn}>
                       {copied === 'deposit' ? <Check size={13} weight="bold" /> : <Copy size={13} />}

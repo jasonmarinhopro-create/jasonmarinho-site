@@ -1,5 +1,6 @@
 'use client'
 
+import { holdMayExpireBeforeCheckout } from '@/lib/stripe/deposit-window'
 import { useState, useTransition, useRef, useEffect } from 'react'
 import { X, FileText, Check, Copy, Envelope, CalendarBlank, Clock } from '@phosphor-icons/react/dist/ssr'
 import { createContract, type ContractData } from '../contract-actions'
@@ -663,6 +664,14 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                   <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '4px 0 0' }}>
                     À ne pas confondre avec l&apos;acompte ci-dessous : la caution est remboursée après le séjour, elle ne fait pas partie du loyer.
                   </p>
+                  {form.montant_caution > 0 && form.date_arrivee && form.date_depart && (
+                    <p style={{ fontSize: '11px', color: 'var(--text-2)', margin: '6px 0 0', lineHeight: 1.5 }}>
+                      Par carte, le lien de caution part au voyageur 2 jours avant l&apos;arrivée : une carte ne reste bloquée qu&apos;environ 7 jours.
+                      {holdMayExpireBeforeCheckout(form.date_arrivee, form.date_depart) && (
+                        <strong style={{ color: '#d97706' }}> Séjour de plus de 4 nuits : la carte sera débloquée avant ton état des lieux de sortie, préfère une caution par virement.</strong>
+                      )}
+                    </p>
+                  )}
                 </div>
               </div>
 

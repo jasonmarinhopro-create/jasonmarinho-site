@@ -4,6 +4,7 @@ import { useState } from 'react'
 import SignaturePage from './SignaturePage'
 import PrintButton from './PrintButton'
 import DepositSection from './DepositSection'
+import type { DepositWindowState } from '@/lib/stripe/deposit-window'
 import PaymentSection from './PaymentSection'
 import IbanSection from './IbanSection'
 import ContractIbanBlock from './ContractIbanBlock'
@@ -70,6 +71,8 @@ interface Props {
   paymentAlreadyDone: boolean
   hasDeposit: boolean
   depositAlreadyHeld: boolean
+  depositState: DepositWindowState
+  depositOpens: string
   acomptePercent: number
   montantAcompte: number
   montantSolde: number
@@ -83,7 +86,7 @@ const LANG_NAME: Record<UiLang, string> = { fr: 'Français', pt: 'Português', e
 
 export default function ContractView({
   token, contract, contractPays, initialLang, isViewerBailleur, expired, cancelled, alreadySigned, n,
-  hostIban, hostBic, stripeReady, paymentEnabled, paymentAlreadyDone, hasDeposit, depositAlreadyHeld,
+  hostIban, hostBic, stripeReady, paymentEnabled, paymentAlreadyDone, hasDeposit, depositAlreadyHeld, depositState, depositOpens,
   acomptePercent, montantAcompte, montantSolde, paymentParam, depositParam,
 }: Props) {
   const [lang, setLang] = useState<UiLang>(initialLang)
@@ -435,6 +438,8 @@ export default function ContractView({
                       amount={Number(contract.montant_caution)}
                       depositParam={depositParam}
                       depositAlreadyHeld={depositAlreadyHeld}
+                      windowState={depositState}
+                      opensOn={depositOpens}
                       lang={lang}
                     />
                   </div>

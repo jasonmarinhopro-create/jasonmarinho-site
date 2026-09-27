@@ -2,7 +2,6 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import { sejoursSansContrat } from '@/lib/finances/dedup'
 import RevenusView from './RevenusView'
-import PlanGate from '@/components/ui/PlanGate'
 import OnboardingTour, { REVENUS_STEPS } from '../OnboardingTour'
 
 // revalidate: 60 (vs force-dynamic) permet à Vercel de servir une page en
@@ -15,13 +14,10 @@ export default async function RevenusPage() {
   const profile = await getProfile()
   const plan = profile?.plan ?? 'decouverte'
 
-  if (plan === 'decouverte') {
-    return (
-      <>
-        <PlanGate feature="revenus" />
-      </>
-    )
-  }
+  // Revenus ouverts à la formule gratuite (sept. 2026, décision de Jason) :
+  // /tarifs et Mon abonnement annonçaient le journal des revenus en
+  // Découverte, et l'étape « objectif annuel » de la checklist y menait.
+  // Les performances détaillées restent en Standard (PerformancesView).
 
   const supabase = await createClient()
   const userId = profile?.userId ?? ''

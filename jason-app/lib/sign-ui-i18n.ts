@@ -63,6 +63,10 @@ export type SignUiStrings = {
   depositRequired: string
   depositRequiredHint: (amount: string) => string
   depositCardNote: string
+  depositNotYet: string
+  depositNotYetHint: (amount: string, date: string) => string
+  depositClosed: string
+  depositClosedHint: string
   payDeposit: (amount: string) => string
   redirecting: string
   networkError: string
@@ -157,6 +161,10 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     depositRequired: 'Dépôt de garantie requis',
     depositRequiredHint: amount => `Pour finaliser votre séjour, un dépôt de garantie de ${amount} est demandé par le propriétaire.`,
     depositCardNote: "Votre carte sera bloquée mais pas débitée, la somme n'est encaissée qu'en cas de dommages constatés à la fin du séjour.",
+    depositNotYet: "Caution à régler 2 jours avant l'arrivée",
+    depositNotYetHint: (amount, date) => `Le dépôt de garantie de ${amount} se règle à partir du ${date}. Vous recevrez le lien par e-mail ce jour-là : une carte ne reste bloquée que quelques jours, elle doit donc l'être pendant votre séjour.`,
+    depositClosed: 'Séjour terminé',
+    depositClosedHint: 'Le séjour est terminé : le dépôt de garantie ne peut plus être réglé en ligne.',
     payDeposit: amount => `Régler la caution, ${amount} →`,
     redirecting: 'Redirection vers Stripe…',
     networkError: 'Erreur réseau. Réessayez.',
@@ -246,6 +254,10 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     depositRequired: 'Caução necessária',
     depositRequiredHint: amount => `Para finalizar a sua estadia, é pedida pelo proprietário uma caução de ${amount}.`,
     depositCardNote: 'O seu cartão será bloqueado mas não debitado; o valor só é cobrado em caso de danos constatados no final da estadia.',
+    depositNotYet: 'Caução a pagar 2 dias antes da chegada',
+    depositNotYetHint: (amount, date) => `A caução de ${amount} pode ser paga a partir de ${date}. Receberá a ligação por e-mail nesse dia: um cartão só fica bloqueado durante alguns dias, por isso deve sê-lo durante a sua estadia.`,
+    depositClosed: 'Estadia terminada',
+    depositClosedHint: 'A estadia terminou: a caução já não pode ser paga online.',
     payDeposit: amount => `Pagar a caução, ${amount} →`,
     redirecting: 'A redirecionar para o Stripe…',
     networkError: 'Erro de rede. Tente novamente.',
@@ -335,6 +347,10 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     depositRequired: 'Security deposit required',
     depositRequiredHint: amount => `To finalise your stay, the owner requires a security deposit of ${amount}.`,
     depositCardNote: 'Your card will be authorised but not charged; the amount is only collected if damage is found at the end of the stay.',
+    depositNotYet: 'Deposit due 2 days before arrival',
+    depositNotYetHint: (amount, date) => `The ${amount} security deposit can be paid from ${date}. You will receive the link by email that day: a card can only be held for a few days, so the hold needs to cover your stay.`,
+    depositClosed: 'Stay completed',
+    depositClosedHint: 'The stay is over: the deposit can no longer be paid online.',
     payDeposit: amount => `Pay the security deposit, ${amount} →`,
     redirecting: 'Redirecting to Stripe…',
     networkError: 'Network error. Please try again.',

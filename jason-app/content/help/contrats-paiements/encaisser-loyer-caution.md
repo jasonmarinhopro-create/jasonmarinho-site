@@ -21,11 +21,17 @@ La caution n'est **pas débitée** : le montant est **bloqué** sur la carte du 
 
 > L'app encaisse la caution en entier. Pour retenir seulement une partie (une vaisselle cassée, par exemple), encaisse puis rembourse la différence depuis ton tableau de bord Stripe.
 
-## Attention à la durée du blocage
+## Le lien part 2 jours avant l'arrivée
 
-Stripe garde en général une carte bloquée **7 jours**. Passé ce délai, le blocage tombe tout seul et la caution n'est plus disponible. Pour un séjour de plus d'une semaine, ou si la caution est réglée longtemps avant l'arrivée, elle peut expirer avant la fin du séjour. Demande au voyageur de la régler juste avant son arrivée.
+Stripe garde en général une carte bloquée **7 jours**, pas plus. C'est pourquoi le lien de caution ne s'ouvre que **2 jours avant l'arrivée** : ce jour-là, l'app l'envoie automatiquement par email au voyageur. Avant, la page du contrat lui indique la date.
 
 > Source : documentation Stripe, « Place a hold on a payment method » (docs.stripe.com)
+
+Conséquences :
+
+- Libère ou encaisse la caution **au plus tard 4 jours après l'arrivée**. La fenêtre Paiements t'indique la date exacte
+- Pour un séjour de **plus de 4 nuits**, la carte sera débloquée avant l'état des lieux de sortie : préfère une caution par virement. L'assistant de contrat te prévient
+- Si le blocage tombe avant que tu aies décidé, la caution passe en **Expirée** et tu reçois une notification. Si le séjour n'est pas terminé, renvoie le lien au voyageur
 
 ## Où gérer tout ça
 
@@ -35,7 +41,7 @@ Stripe garde en général une carte bloquée **7 jours**. Passé ce délai, le b
 ## Les statuts
 
 - **Loyer** : En attente de paiement, Réglé, Remboursé ou Échec paiement
-- **Caution** : En attente de paiement, Caution retenue (la carte est bloquée), Encaissée, Libérée ou Échec paiement
+- **Caution** : En attente de paiement, Caution retenue (la carte est bloquée), Encaissée, Libérée, Expirée ou Échec paiement
 
 ## En cas de contestation
 

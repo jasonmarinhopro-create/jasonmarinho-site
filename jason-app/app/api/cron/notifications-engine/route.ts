@@ -8,6 +8,7 @@ import { NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { runNotificationRules, purgeExpiredNotifications } from '@/lib/notifications/rules'
 import { syncStaleFeeds } from '@/lib/ical/background'
+import { sendDepositOpenEmails } from '@/lib/contracts/deposit-reminders'
 import { unansweredQuestions, unansweredDigestEmail, REMIND_MAX_DAYS, type QuestionRow } from '@/lib/chez-nous/unanswered'
 import { sendAdminEmail } from '@/lib/email/admin'
 
@@ -44,6 +45,14 @@ export async function GET(req: Request) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
+
+  // Caution : lien envoyé aux voyageurs qui arrivent dans 2 jours (une carte
+  // ne reste bloquée que ~7 jours). En premier : c'est l'envoi le plus
+  // important du cron, il ne doit pas être privé de temps. Best-effort.
+  let depositEmails = 0
+  try {
+    depositEmails = await sendDepositOpenEmails(supabase, process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com')
+  } catch (e) { console.warn('[cron] deposit reminders failed', e) }
 
   // Synchro iCal de fond AVANT les règles : les alertes (arrivée demain,
   // synchro échouée) portent sur des données fraîches. Budget 25 s sur les 60.
@@ -84,6 +93,7 @@ export async function GET(req: Request) {
     notificationsCreated: totalCreated,
     expiredPurged: purged,
     unansweredQuestions: unanswered,
+    depositEmails,
     durationMs: Date.now() - t0,
   })
 }

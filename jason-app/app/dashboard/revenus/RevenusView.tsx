@@ -172,9 +172,6 @@ export default function RevenusView({
   objectifAnnuel = null,
   plan = 'standard',
 }: Props) {
-  const isStandard = plan === 'standard'
-  const isDriing = plan === 'driing'
-  // const isDecouverte = plan === 'decouverte' // bloqué en amont via PlanGate
   const now = new Date()
   const thisMonth = now.getMonth()
   const thisYear  = now.getFullYear()

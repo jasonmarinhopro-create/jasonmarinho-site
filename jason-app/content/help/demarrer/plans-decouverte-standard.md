@@ -8,7 +8,7 @@ updatedAt: "2026-09-27"
 
 ## Découverte : gratuit, sans carte bancaire
 
-Tu peux utiliser l'app gratuitement, sans limite de durée. La formule Découverte couvre le quotidien d'un hôte : calendrier synchronisé avec Airbnb et Booking, planning ménage, déclarations voyageurs, simulateurs, audit de ta fiche Google, modèles de messages, sécurité voyageur, guide LCD et 2 formations au choix. Tu peux poser **2 questions par mois** dans Questions & réponses.
+Tu peux utiliser l'app gratuitement, sans limite de durée. La formule Découverte couvre le quotidien d'un hôte : calendrier synchronisé avec Airbnb et Booking, planning ménage, déclarations voyageurs, journal des revenus et des charges, simulateurs, audit de ta fiche Google, modèles de messages, sécurité voyageur, guide LCD et 2 formations au choix. Tu peux poser **2 questions par mois** dans Questions & réponses.
 
 ## Standard : pour les réservations directes
 

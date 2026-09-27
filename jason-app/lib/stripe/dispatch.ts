@@ -5,6 +5,8 @@ import { invalidateProfileCache } from '@/lib/queries/profile'
 import { sendPaiementReceivedEmail } from '@/lib/email/host'
 import { sendProWelcomeEmail } from '@/lib/email/pro-welcome'
 import { logger } from '@/lib/logger'
+import { createNotification } from '@/lib/notifications/create'
+import { parisToday } from '@/lib/stripe/deposit-window'
 
 const log = logger('lib/stripe/dispatch')
 
@@ -115,15 +117,49 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
       const pi = event.data.object as Stripe.PaymentIntent
       const contractId = pi.metadata?.contract_id
       if (!contractId) break
-      // Une annulation Stripe (release ou expiration auto au bout de 7j)
-      // marque la caution comme released. Avant on remettait en 'pending'
-      // ce qui était faux : si l'auth a été annulée, on ne peut pas la
-      // réutiliser. 'released' = état final propre.
+      // Libération demandée par l'hôte : la route /release passe d'abord en
+      // 'releasing', on finalise en 'released'.
       await db
         .from('contracts')
         .update({ stripe_deposit_status: 'released' })
         .eq('id', contractId)
-        .in('stripe_deposit_status', ['held', 'releasing', 'pending'])
+        .in('stripe_deposit_status', ['releasing', 'pending'])
+      // Encore 'held' = personne n'a rien demandé : le blocage de carte est
+      // tombé tout seul (~7 jours chez Stripe). On le dit à l'hôte au lieu
+      // d'afficher « libérée » (sept. 2026). Repli sur 'released' si la base
+      // refuse le statut 'expired'.
+      let { data: expired, error: expErr } = await db
+        .from('contracts')
+        .update({ stripe_deposit_status: 'expired' })
+        .eq('id', contractId)
+        .eq('stripe_deposit_status', 'held')
+        .select('id, user_id, locataire_prenom, locataire_nom, date_depart, sejour_id')
+      if (expErr) {
+        ;({ data: expired } = await db
+          .from('contracts')
+          .update({ stripe_deposit_status: 'released' })
+          .eq('id', contractId)
+          .eq('stripe_deposit_status', 'held')
+          .select('id, user_id, locataire_prenom, locataire_nom, date_depart, sejour_id'))
+      }
+      const c = expired?.[0]
+      if (c?.user_id) {
+        const guest = `${c.locataire_prenom ?? ''} ${c.locataire_nom ?? ''}`.trim() || 'ton voyageur'
+        const stillOn = c.date_depart && String(c.date_depart).slice(0, 10) >= parisToday()
+        await createNotification({
+          recipientId: c.user_id,
+          category: 'sejour',
+          type: 'deposit_expired',
+          title: `Caution de ${guest} expirée`,
+          body: stillOn
+            ? 'La carte n\'est plus bloquée : le délai de Stripe (environ 7 jours) est passé. Le séjour n\'est pas terminé : tu peux renvoyer le lien de caution au voyageur.'
+            : 'La carte n\'est plus bloquée : le délai de Stripe (environ 7 jours) est passé avant que tu libères ou encaisses la caution.',
+          ctaLabel: 'Voir le séjour',
+          ctaHref: c.sejour_id ? `/dashboard/voyageurs?sejour=${c.sejour_id}` : '/dashboard/contrats',
+          severity: 'warning',
+          dedupKey: `deposit_expired:${c.id}:${pi.id}`,
+        }).catch(() => {})
+      }
       break
     }
 

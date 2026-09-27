@@ -2,6 +2,7 @@ import { getServiceClient as createServiceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
+import { depositWindow, depositOpensOn, parisToday } from '@/lib/stripe/deposit-window'
 const log = logger('api/stripe/deposit/create')
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
@@ -37,6 +38,17 @@ export async function POST(request: NextRequest) {
 
     if (contract.stripe_deposit_status === 'held') {
       return NextResponse.json({ error: 'La caution a déjà été encaissée.' }, { status: 409 })
+    }
+
+    // La carte ne reste bloquée que ~7 jours : le lien ne s'ouvre que 2 jours
+    // avant l'arrivée (lib/stripe/deposit-window.ts)
+    const depositState = depositWindow(contract.date_arrivee, contract.date_depart)
+    if (depositState === 'not_yet') {
+      const opens = new Date(`${depositOpensOn(contract.date_arrivee)}T12:00:00Z`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })
+      return NextResponse.json({ error: `La caution pourra être réglée à partir du ${opens}, 2 jours avant l'arrivée.` }, { status: 409 })
+    }
+    if (depositState === 'closed') {
+      return NextResponse.json({ error: 'Le séjour est terminé : la caution ne peut plus être réglée.' }, { status: 409 })
     }
 
     // Récupérer le stripe_account_id du bailleur
@@ -103,7 +115,8 @@ export async function POST(request: NextRequest) {
       },
       {
         stripeAccount: profile.stripe_account_id,
-        idempotencyKey: `deposit:${contract.id}:${amountCents}`,
+        // + jour : après une caution expirée, un nouveau blocage reste possible
+        idempotencyKey: `deposit:${contract.id}:${amountCents}:${parisToday()}`,
       }
     )
 

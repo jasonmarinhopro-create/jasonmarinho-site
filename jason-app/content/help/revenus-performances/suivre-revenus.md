@@ -12,6 +12,8 @@ updatedAt: "2026-09-27"
 - **Performances** : occupation, prix moyen, saisonnalité
 - **Encaissements** : les paiements reçus par Stripe
 
+L'onglet Revenus est inclus dans toutes les formules, y compris Découverte. Les analyses détaillées de l'onglet Performances sont en Standard.
+
 ## Le journal des paiements
 
 L'onglet **Revenus** reprend automatiquement tes **contrats** et tes **séjours saisis**. Un séjour relié à un contrat n'est compté qu'une fois.

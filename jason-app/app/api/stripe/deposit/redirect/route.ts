@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
+import { depositWindow } from '@/lib/stripe/deposit-window'
 const log = logger('api/stripe/deposit/redirect')
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
@@ -54,6 +55,12 @@ export async function GET(request: NextRequest) {
 
     if (contract.stripe_deposit_status === 'held') {
       return NextResponse.redirect(`${APP_URL}/sign/${token}?deposit=success`)
+    }
+
+    // Lien ouvert seulement de J-2 au départ (lib/stripe/deposit-window.ts)
+    const depositState = depositWindow(contract.date_arrivee, contract.date_depart)
+    if (depositState !== 'open') {
+      return NextResponse.redirect(`${APP_URL}/sign/${token}?deposit=${depositState === 'not_yet' ? 'early' : 'closed'}#depot-garantie`)
     }
 
     const { data: profile } = await supabase

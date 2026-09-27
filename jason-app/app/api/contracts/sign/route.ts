@@ -6,6 +6,7 @@ import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from
 import { CONTRACT_EMAIL_I18N, toEmailLang } from '@/lib/email/contract-i18n'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { logger } from '@/lib/logger'
+import { depositWindow, depositOpensOn } from '@/lib/stripe/deposit-window'
 import { createDeclarationForSignedContract, type DeclarationCreateResult } from '@/lib/declarations/create'
 
 export const dynamic = 'force-dynamic'
@@ -32,6 +33,8 @@ type ContractRow = {
   stripe_payment_enabled: boolean | null
   checklist_status: Record<string, boolean> | null
   langue: string | null
+  date_arrivee: string
+  date_depart: string
 }
 
 // Service role, bypass RLS complet (lecture + écriture)
@@ -101,7 +104,8 @@ export async function POST(request: NextRequest) {
       .from('contracts')
       .select('id, statut, sejour_id, user_id, token_expires_at, locataire_email, bailleur_email, ' +
               'locataire_prenom, locataire_nom, bailleur_prenom, bailleur_nom, ' +
-              'logement_adresse, montant_loyer, montant_caution, modalites_paiement, stripe_payment_enabled, checklist_status, langue')
+              'logement_adresse, montant_loyer, montant_caution, modalites_paiement, stripe_payment_enabled, checklist_status, langue, ' +
+              'date_arrivee, date_depart')
       .eq('token', token)
       .single()
 
@@ -265,6 +269,11 @@ export async function POST(request: NextRequest) {
 
     const hasPayment = !!(contract.stripe_payment_enabled)
     const hasCaution = Number(contract.montant_caution) > 0
+    // Caution : lien actif seulement de J-2 au départ, sinon il est envoyé
+    // automatiquement à J-2 par le cron (lib/stripe/deposit-window.ts)
+    const depositOpenNow = depositWindow(contract.date_arrivee, contract.date_depart) === 'open'
+    const depositOpensLabel = new Date(`${depositOpensOn(contract.date_arrivee)}T12:00:00Z`)
+      .toLocaleDateString(guestLocale, { day: 'numeric', month: 'long' })
     const loyerFormatted = Number(contract.montant_loyer).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
     // Nom du logement : utilise le nom personnalisé si disponible, sinon l'adresse
     const propertyLabel = (contract.logement_nom as string | null) ?? contract.logement_adresse
@@ -289,8 +298,8 @@ export async function POST(request: NextRequest) {
       <div style="background:#0a1a13;border:1px solid #1a3328;border-left:2px solid #FFD56B;border-radius:10px;padding:18px 20px;margin:0 0 24px;">
         <p style="margin:0 0 12px;font-size:12px;font-weight:600;letter-spacing:0.5px;color:#7a9e8a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.finalizeTitle}</p>
         ${hasPayment ? `<a href="${paymentRedirectUrl}" style="display:block;text-align:center;background:#FFD56B;color:#0a0f0d;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.payBookingBtn(loyerFormatted)}</a>` : ''}
-        ${hasCaution ? `<a href="${depositRedirectUrl}" style="display:block;text-align:center;background:transparent;border:1px solid #1a3328;color:#e8ede8;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.payDepositBtn(cautionFormatted)}</a>` : ''}
-        ${hasCaution ? `<p style="margin:10px 0 0;font-size:12px;color:#7a9e8a;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.depositNote}</p>` : ''}
+        ${hasCaution && depositOpenNow ? `<a href="${depositRedirectUrl}" style="display:block;text-align:center;background:transparent;border:1px solid #1a3328;color:#e8ede8;padding:12px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${et.payDepositBtn(cautionFormatted)}</a>` : ''}
+        ${hasCaution ? `<p style="margin:10px 0 0;font-size:12px;color:#7a9e8a;line-height:1.6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">${depositOpenNow ? et.depositNote : et.depositLater(depositOpensLabel)}</p>` : ''}
       </div>` : ''
 
     const eidas = 'Ce contrat constitue une signature électronique simple au sens du règlement eIDAS (UE) 910/2014 et de l\'article 1366 du Code civil français.'

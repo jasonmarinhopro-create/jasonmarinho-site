@@ -4,6 +4,7 @@ import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { logger } from '@/lib/logger'
 import { CONTRACT_EMAIL_I18N, toEmailLang } from '@/lib/email/contract-i18n'
+import { depositWindow, depositOpensOn } from '@/lib/stripe/deposit-window'
 const log = logger('api/contracts/resend-payment')
 
 export const dynamic = 'force-dynamic'
@@ -61,9 +62,16 @@ export async function POST(request: NextRequest) {
     const depositRedirectUrl = `${APP_URL}/api/stripe/deposit/redirect?token=${contract.token}`
 
     const hasPayment = !!(contract.stripe_payment_enabled) && contract.stripe_payment_status !== 'paid'
-    const hasCaution = Number(contract.montant_caution) > 0 &&
+    const cautionDue = Number(contract.montant_caution) > 0 &&
       contract.stripe_deposit_status !== 'held' &&
       contract.stripe_deposit_status !== 'captured'
+    // Lien de caution actif seulement de J-2 au départ (lib/stripe/deposit-window.ts) :
+    // avant, on annonce la date d'envoi au lieu d'un lien qui ne marcherait pas
+    const depositState = depositWindow(contract.date_arrivee, contract.date_depart)
+    const hasCaution = cautionDue && depositState === 'open'
+    const cautionLater = cautionDue && depositState === 'not_yet'
+    const depositOpensLabel = new Date(`${depositOpensOn(contract.date_arrivee)}T12:00:00Z`)
+      .toLocaleDateString(emailLang === 'pt' ? 'pt-PT' : 'fr-FR', { day: 'numeric', month: 'long' })
 
     const isVirement = typeof contract.modalites_paiement === 'string' &&
       contract.modalites_paiement.toLowerCase().includes('virement')
@@ -82,7 +90,11 @@ export async function POST(request: NextRequest) {
     }
 
     if (!hasPayment && !hasCaution && !isVirement) {
-      return NextResponse.json({ error: 'Tous les paiements ont déjà été effectués.' }, { status: 400 })
+      return NextResponse.json({
+        error: cautionLater
+          ? `Rien à régler pour l'instant : le lien de caution partira automatiquement au voyageur le ${new Date(`${depositOpensOn(contract.date_arrivee)}T12:00:00Z`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}, 2 jours avant l'arrivée.`
+          : 'Tous les paiements ont déjà été effectués.',
+      }, { status: 400 })
     }
 
     const loyerFormatted = Number(contract.montant_loyer).toLocaleString('fr-FR', { minimumFractionDigits: 2 })
@@ -145,6 +157,7 @@ export async function POST(request: NextRequest) {
           </a>` : ''}
           ${hasCaution ? `<p style="margin:8px 0 0;font-size:12px;color:#6b9a7e;line-height:1.5;">${et.depositNote}</p>` : ''}
         </div>` : ''}
+        ${cautionLater ? `<p style="color:#a5c4b0;font-size:13px;line-height:1.6;margin:0 0 20px;">${et.depositLater(depositOpensLabel)}</p>` : ''}
         ${ibanBlock}
         <a href="${contractUrl}" style="display:block;text-align:center;background:#34D399;color:#0d1f1a;padding:14px 32px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;margin:0 0 20px;">
           ${et.viewContractBtn}

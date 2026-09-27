@@ -1,17 +1,21 @@
 'use client'
 
 import { useState } from 'react'
-import { SIGN_UI, type UiLang } from '@/lib/sign-ui-i18n'
+import { SIGN_UI, formatDateLang, type UiLang } from '@/lib/sign-ui-i18n'
+import type { DepositWindowState } from '@/lib/stripe/deposit-window'
 
 interface Props {
   token: string
   amount: number
   depositParam?: string
   depositAlreadyHeld: boolean
+  /** Le lien ne s'ouvre que 2 jours avant l'arrivée (lib/stripe/deposit-window.ts) */
+  windowState: DepositWindowState
+  opensOn: string
   lang: UiLang
 }
 
-export default function DepositSection({ token, amount, depositParam, depositAlreadyHeld, lang }: Props) {
+export default function DepositSection({ token, amount, depositParam, depositAlreadyHeld, windowState, opensOn, lang }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const t = SIGN_UI[lang]
@@ -52,6 +56,31 @@ export default function DepositSection({ token, amount, depositParam, depositAlr
             <p style={hint}>{t.depositRegisteredHint(amountLabel)}</p>
           </div>
         </div>
+      </div>
+    )
+  }
+
+  // Trop tôt : la carte ne resterait pas bloquée jusqu'au séjour
+  if (windowState === 'not_yet') {
+    return (
+      <div style={box('default')}>
+        <strong style={{ color: '#f0ebe1', display: 'block', marginBottom: '6px', fontSize: '16px' }}>
+          {t.depositNotYet}
+        </strong>
+        <p style={hint}>{t.depositNotYetHint(amountLabel, formatDateLang(`${opensOn}T12:00:00Z`, lang))}</p>
+        <p style={{ ...hint, marginTop: '8px' }}>{t.depositCardNote}</p>
+      </div>
+    )
+  }
+
+  // Séjour terminé
+  if (windowState === 'closed') {
+    return (
+      <div style={box('default')}>
+        <strong style={{ color: '#f0ebe1', display: 'block', marginBottom: '6px', fontSize: '16px' }}>
+          {t.depositClosed}
+        </strong>
+        <p style={hint}>{t.depositClosedHint}</p>
       </div>
     )
   }

@@ -24,7 +24,8 @@ const STATUS_META: Record<string, { label: string; color: string; bg: string }> 
 // action après le séjour) puis loyer payé en ligne.
 function paymentBadge(c: ContractRow): { label: string; color: string; bg: string } | null {
   switch (c.stripe_deposit_status) {
-    case 'held':     return { label: 'Caution bloquée', color: '#2563eb', bg: 'rgba(37,99,235,0.12)' }
+    case 'held':     return { label: 'Caution bloquée', color: 'var(--accent-text)', bg: 'var(--accent-bg)' }
+    case 'expired':  return { label: 'Caution expirée', color: '#d97706', bg: 'rgba(217,119,6,0.12)' }
     case 'captured': return { label: 'Caution encaissée', color: '#dc2626', bg: 'rgba(220,38,38,0.10)' }
     case 'released': return { label: 'Caution libérée', color: '#10b981', bg: 'rgba(16,185,129,0.12)' }
   }

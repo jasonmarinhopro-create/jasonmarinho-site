@@ -4,6 +4,7 @@ import { unstable_noStore as noStore } from 'next/cache'
 import { notFound } from 'next/navigation'
 import ContractView from './ContractView'
 import { toUiLang } from '@/lib/sign-ui-i18n'
+import { depositWindow, depositOpensOn } from '@/lib/stripe/deposit-window'
 
 // Toujours servir depuis le serveur (pas de cache), la signature doit être fraîche
 export const dynamic = 'force-dynamic'
@@ -108,6 +109,9 @@ export default async function SignPage({
   const hasDeposit = Number(contract.montant_caution) > 0
   const depositAlreadyHeld = contract.stripe_deposit_status === 'held'
     || contract.stripe_deposit_status === 'captured'
+  // Lien de caution ouvert seulement de J-2 au départ (lib/stripe/deposit-window.ts)
+  const depositState = depositWindow(contract.date_arrivee, contract.date_depart)
+  const depositOpens = depositOpensOn(contract.date_arrivee)
 
   // Paiement réservation — acompte_percent < 100 : seule une part du loyer
   // est encaissée en ligne pour bloquer la réservation (cf. migration 097),
@@ -136,6 +140,8 @@ export default async function SignPage({
       paymentAlreadyDone={paymentAlreadyDone}
       hasDeposit={hasDeposit}
       depositAlreadyHeld={depositAlreadyHeld}
+      depositState={depositState}
+      depositOpens={depositOpens}
       acomptePercent={acomptePercent}
       montantAcompte={montantAcompte}
       montantSolde={montantSolde}
