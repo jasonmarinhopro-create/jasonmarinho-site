@@ -3,12 +3,14 @@
 import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
 import Select from '@/components/ui/Select'
-import { FileText, MagnifyingGlass, CheckCircle, Clock, House, CurrencyEur, ArrowSquareOut, Funnel, ArrowCounterClockwise } from '@phosphor-icons/react/dist/ssr'
+import { FileText, MagnifyingGlass, CheckCircle, Clock, House, CurrencyEur, ArrowSquareOut, Funnel, ArrowCounterClockwise, Eye } from '@phosphor-icons/react/dist/ssr'
 import { restoreContract } from '../voyageurs/contract-actions'
 import type { ContractRow } from './types'
 
 interface Props {
   contracts: ContractRow[]
+  /** 'YYYY-MM-DD' à Paris, calculé côté serveur */
+  today: string
 }
 
 type StatusFilter = 'tous' | 'en_attente' | 'signe' | 'annule'
@@ -16,7 +18,7 @@ type PeriodFilter = 'tous' | 'a-venir' | 'ce-mois' | 'passes'
 
 const STATUS_META: Record<string, { label: string; color: string; bg: string }> = {
   en_attente: { label: 'En attente', color: '#d97706', bg: 'rgba(217,119,6,0.12)' },
-  signe:      { label: 'Signé',      color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
+  signe:      { label: 'Signé',      color: '#2F9E5B', bg: 'rgba(47,158,91,0.12)' },
   annule:     { label: 'Annulé',     color: '#64748b', bg: 'rgba(100,116,139,0.12)' },
 }
 
@@ -27,34 +29,24 @@ function paymentBadge(c: ContractRow): { label: string; color: string; bg: strin
     case 'held':     return { label: 'Caution bloquée', color: 'var(--accent-text)', bg: 'var(--accent-bg)' }
     case 'expired':  return { label: 'Caution expirée', color: '#d97706', bg: 'rgba(217,119,6,0.12)' }
     case 'captured': return { label: 'Caution encaissée', color: '#dc2626', bg: 'rgba(220,38,38,0.10)' }
-    case 'released': return { label: 'Caution libérée', color: '#10b981', bg: 'rgba(16,185,129,0.12)' }
+    case 'released': return { label: 'Caution libérée', color: '#2F9E5B', bg: 'rgba(47,158,91,0.12)' }
   }
   if (!c.stripe_payment_enabled) return null
-  if (c.stripe_payment_status === 'paid') return { label: 'Loyer payé', color: '#10b981', bg: 'rgba(16,185,129,0.12)' }
+  if (c.stripe_payment_status === 'paid') return { label: 'Loyer payé', color: '#2F9E5B', bg: 'rgba(47,158,91,0.12)' }
   if (c.stripe_payment_status === 'failed') return { label: 'Paiement échoué', color: '#dc2626', bg: 'rgba(220,38,38,0.10)' }
   return c.statut === 'signe' ? { label: 'Loyer à encaisser', color: '#d97706', bg: 'rgba(217,119,6,0.12)' } : null
 }
 
-function fmtDate(iso: string | null): string {
-  if (!iso) return '—'
-  return new Date(iso + (iso.length === 10 ? 'T12:00:00' : '')).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
-}
 function fmtDateShort(iso: string | null): string {
-  if (!iso) return '—'
-  return new Date(iso + (iso.length === 10 ? 'T12:00:00' : '')).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+  if (!iso) return '-'
+  return new Date(iso.slice(0, 10) + 'T12:00:00Z').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', timeZone: 'UTC' })
 }
 function fmtEur(n: number | null): string {
-  if (n == null || !isFinite(n)) return '—'
+  if (n == null || !isFinite(n)) return '-'
   return Math.round(n).toLocaleString('fr-FR') + ' €'
 }
-function todayISO(): string {
-  return new Date().toISOString().slice(0, 10)
-}
-function monthPrefix(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-}
 
-export default function ContractsTab({ contracts }: Props) {
+export default function ContractsTab({ contracts, today }: Props) {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('tous')
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>('tous')
@@ -68,8 +60,7 @@ export default function ContractsTab({ contracts }: Props) {
   }, [contracts])
 
   const filtered = useMemo(() => {
-    const today = todayISO()
-    const thisMonth = monthPrefix(new Date())
+    const thisMonth = today.slice(0, 7)
     const q = search.trim().toLowerCase()
     return contracts.filter(c => {
       if (statusFilter !== 'tous' && c.statut !== statusFilter) return false
@@ -86,7 +77,7 @@ export default function ContractsTab({ contracts }: Props) {
       }
       return true
     })
-  }, [contracts, search, statusFilter, periodFilter, logementFilter])
+  }, [contracts, search, statusFilter, periodFilter, logementFilter, today])
 
   const kpis = useMemo(() => {
     const total = contracts.length
@@ -125,7 +116,7 @@ export default function ContractsTab({ contracts }: Props) {
       {/* KPIs */}
       <div style={s.kpiGrid}>
         <KpiCard icon={<FileText size={14} weight="fill" />} label="Total" value={String(kpis.total)} color="var(--text)" />
-        <KpiCard icon={<CheckCircle size={14} weight="fill" />} label="Signés" value={String(kpis.signe)} color="#10b981" />
+        <KpiCard icon={<CheckCircle size={14} weight="fill" />} label="Signés" value={String(kpis.signe)} color="#2F9E5B" />
         <KpiCard icon={<Clock size={14} weight="fill" />} label="En attente" value={String(kpis.enAttente)} color="#d97706" />
         <KpiCard icon={<CurrencyEur size={14} weight="fill" />} label="CA contractualisé" value={fmtEur(kpis.caTotal)} color="var(--accent-text)" />
       </div>
@@ -228,7 +219,9 @@ function ContractRow({ contract: c }: { contract: ContractRow }) {
     <div style={s.row} className="ctr-row">
       <div style={s.rowAvatar}>{initials}</div>
       <div style={{ flex: 1, minWidth: 0 }} className="ctr-main">
-        <div style={s.rowName}>{fullName}</div>
+        {c.voyageur_id
+          ? <Link href={`/dashboard/voyageurs/${c.voyageur_id}`} style={{ ...s.rowName, textDecoration: 'none', display: 'block' }}>{fullName}</Link>
+          : <div style={s.rowName}>{fullName}</div>}
         <div style={s.rowMeta}>
           <span><House size={11} weight="fill" /> {c.logement_nom ?? 'Logement'}</span>
           <span>{fmtDateShort(c.date_arrivee)} → {fmtDateShort(c.date_depart)}</span>
@@ -252,6 +245,18 @@ function ContractRow({ contract: c }: { contract: ContractRow }) {
             <ArrowCounterClockwise size={13} weight="bold" />
             {restoring ? 'Réactivation…' : restoreError ? 'Réessayer' : 'Réactiver'}
           </button>
+        )}
+        {c.token && c.statut !== 'annule' && (
+          <a
+            href={`/sign/${c.token}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={s.actionBtn}
+            title={c.statut === 'signe' ? 'Voir le contrat signé (impression, PDF)' : 'Voir le contrat envoyé'}
+            aria-label="Voir le contrat"
+          >
+            <Eye size={13} weight="bold" />
+          </a>
         )}
         {c.voyageur_id && (
           <Link
@@ -301,7 +306,7 @@ function FilterPills({ icon, options, value, onChange }: { icon?: React.ReactNod
 const s: Record<string, React.CSSProperties> = {
 
   kpiGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))',
     gap: '10px', marginBottom: '20px',
   },
   kpiCard: {
@@ -387,7 +392,7 @@ const s: Record<string, React.CSSProperties> = {
   rowMoney: { textAlign: 'right' as const, minWidth: '90px' },
   rowAmount: {
     fontSize: '14.5px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif',
-    color: 'var(--success-1)',
+    color: 'var(--accent-text)',
   },
   rowDeposit: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' },
   statusBadge: {

@@ -19,8 +19,8 @@ export type TodayAction = {
 
 const ACTIONS: Record<TodayAction['key'], { label: (n: number) => string; Icon: React.ElementType; color: string }> = {
   signer:       { label: n => `contrat${n > 1 ? 's' : ''} à faire signer`,        Icon: PenNib,             color: '#d97706' },
-  loyer:        { label: n => `loyer${n > 1 ? 's' : ''} pas encore encaissé${n > 1 ? 's' : ''}`, Icon: CurrencyEur, color: '#2563eb' },
-  caution:      { label: n => `caution${n > 1 ? 's' : ''} à libérer`,             Icon: LockKey,            color: '#10b981' },
+  loyer:        { label: n => `loyer${n > 1 ? 's' : ''} pas encore encaissé${n > 1 ? 's' : ''}`, Icon: CurrencyEur, color: '#B7791F' },
+  caution:      { label: n => `caution${n > 1 ? 's' : ''} à traiter`,             Icon: LockKey,            color: 'var(--accent-text)' },
   declarations: { label: n => `déclaration${n > 1 ? 's' : ''} voyageur à faire`,  Icon: IdentificationCard, color: '#f59e0b' },
 }
 

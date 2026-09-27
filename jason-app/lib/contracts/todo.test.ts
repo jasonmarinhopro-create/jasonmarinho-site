@@ -40,4 +40,22 @@ describe('contractTodos', () => {
     expect(t.cautionALiberer.map(x => x.id)).toEqual(['parti', 'partiAujourdhui'])
     expect(contractTodoCount(t)).toBe(2)
   })
+
+  it('caution à décider dès la date limite, même voyageur encore sur place', () => {
+    // arrivée 20/09 → date limite 24/09 (blocage ~7 jours depuis J-2)
+    const t = contractTodos([
+      c({ id: 'longSejour', stripe_deposit_status: 'held', date_arrivee: '2026-09-20', date_depart: '2026-10-05' }),
+      c({ id: 'recent', stripe_deposit_status: 'held', date_arrivee: '2026-09-26', date_depart: '2026-10-05' }),
+    ], TODAY)
+    expect(t.cautionALiberer.map(x => x.id)).toEqual(['longSejour'])
+  })
+
+  it('caution expirée signalée tant que le séjour n\'est pas terminé', () => {
+    const t = contractTodos([
+      c({ id: 'aRenvoyer', stripe_deposit_status: 'expired', date_depart: '2026-10-05' }),
+      c({ id: 'fini', stripe_deposit_status: 'expired', date_depart: '2026-09-20' }),
+    ], TODAY)
+    expect(t.cautionExpiree.map(x => x.id)).toEqual(['aRenvoyer'])
+    expect(contractTodoCount(t)).toBe(1)
+  })
 })

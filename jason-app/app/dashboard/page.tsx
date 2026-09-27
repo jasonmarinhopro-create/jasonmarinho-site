@@ -713,7 +713,7 @@ export default async function DashboardPage() {
       return { count: l.length, names: l.map(guest) }
     })() },
     { key: 'loyer', href: '/dashboard/contrats', count: cTodos.loyerEnAttente.length, names: cTodos.loyerEnAttente.map(guest) },
-    { key: 'caution', href: '/dashboard/contrats', count: cTodos.cautionALiberer.length, names: cTodos.cautionALiberer.map(guest) },
+    { key: 'caution', href: '/dashboard/contrats', count: cTodos.cautionALiberer.length + cTodos.cautionExpiree.length, names: [...cTodos.cautionALiberer, ...cTodos.cautionExpiree].map(guest) },
     { key: 'declarations', href: '/dashboard/voyageurs/declarations', count: (pendingDeclarations ?? []).length, names: (pendingDeclarations ?? []).map(d => d.voyageur_nom) },
   ]
 

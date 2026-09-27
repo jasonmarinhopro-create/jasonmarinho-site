@@ -11,16 +11,12 @@ import type { VoyageurOption } from '../logements/[id]/QuickSejourModal'
 
 const QuickSejourModal = dynamic(() => import('../logements/[id]/QuickSejourModal'), { ssr: false })
 
-function todayISO(): string {
-  const d = new Date()
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
 function fmtShort(iso: string | null): string {
-  if (!iso) return '—'
-  return new Date(iso + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
+  if (!iso) return '-'
+  return new Date(iso.slice(0, 10) + 'T12:00:00Z').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', timeZone: 'UTC' })
 }
 function fmtEur(n: number | null): string {
-  if (n == null || !isFinite(n)) return '—'
+  if (n == null || !isFinite(n)) return '-'
   return Math.round(n).toLocaleString('fr-FR') + ' €'
 }
 function guestName(c: ContractRow): string {
@@ -30,14 +26,17 @@ function ficheHref(c: ContractRow): string {
   return c.voyageur_id ? `/dashboard/voyageurs/${c.voyageur_id}` : '/dashboard/voyageurs'
 }
 
-export default function ContratsView({ contracts, candidates, voyageurs, logements, appUrl }: {
+export default function ContratsView({ contracts, candidates, voyageurs, logements, appUrl, today }: {
   contracts: ContractRow[]
   candidates: ContractCandidate[]
   voyageurs: VoyageurOption[]
   logements: Array<{ id: string; nom: string }>
   appUrl: string
+  /** 'YYYY-MM-DD' à Paris, calculé côté serveur */
+  today: string
 }) {
-  const todos = useMemo(() => contractTodos(contracts, todayISO()), [contracts])
+  const todos = useMemo(() => contractTodos(contracts, today), [contracts, today])
+  const cautionItems = useMemo(() => [...todos.cautionALiberer, ...todos.cautionExpiree], [todos])
   // Modale « Nouvelle réservation directe » rendue au niveau de la page : dans
   // l'en-tête (animé, donc transformé), le position:fixed serait confiné à l'en-tête.
   const [quickOpen, setQuickOpen] = useState(false)
@@ -58,7 +57,7 @@ export default function ContratsView({ contracts, candidates, voyageurs, logemen
         <div>
           <h1 style={s.title}>Contrats &amp; paiements</h1>
           <p style={s.desc}>
-            Contrats signés en ligne, loyer et caution pour tes réservations directes.
+            Contrats signés en ligne, loyer et caution pour tes réservations directes. En haut, ce qui attend une action. En dessous, tous tes contrats.
           </p>
         </div>
         <NewContractMenu candidates={candidates} onNewReservation={() => setQuickOpen(true)} />
@@ -95,7 +94,7 @@ export default function ContratsView({ contracts, candidates, voyageurs, logemen
               />
               <TodoCard
                 icon={<CurrencyEur size={16} weight="fill" />}
-                color="#2563eb"
+                color="#B7791F"
                 title="Loyer pas encore encaissé"
                 hint="Contrat signé, paiement en ligne pas encore reçu."
                 items={todos.loyerEnAttente}
@@ -111,15 +110,19 @@ export default function ContratsView({ contracts, candidates, voyageurs, logemen
               />
               <TodoCard
                 icon={<LockKey size={16} weight="fill" />}
-                color="#10b981"
-                title="Caution à libérer"
-                hint="Séjour terminé : libère la caution ou encaisse-la en cas de dégâts."
-                items={todos.cautionALiberer}
+                color="var(--accent-text)"
+                title="Caution à traiter"
+                hint="Libère la caution ou encaisse-la en cas de dégâts, avant que Stripe ne débloque la carte (environ 7 jours)."
+                items={cautionItems}
                 render={c => (
                   <>
                     <span style={s.itemMain}>{guestName(c)}</span>
-                    <span style={s.itemSub}>{fmtEur(c.montant_caution)} · départ {fmtShort(c.date_depart)}</span>
-                    <Link href={ficheHref(c)} style={s.itemBtn}>Gérer</Link>
+                    <span style={s.itemSub}>
+                      {c.stripe_deposit_status === 'expired'
+                        ? <span style={{ color: '#b45309', fontWeight: 600 }}>expirée : renvoie le lien</span>
+                        : <>{fmtEur(c.montant_caution)} · {c.date_depart && c.date_depart <= today ? 'départ' : 'sur place, départ'} {fmtShort(c.date_depart)}</>}
+                    </span>
+                    <Link href={ficheHref(c)} style={s.itemBtn}>{c.stripe_deposit_status === 'expired' ? 'Renvoyer' : 'Gérer'}</Link>
                   </>
                 )}
               />
@@ -128,7 +131,7 @@ export default function ContratsView({ contracts, candidates, voyageurs, logemen
         </section>
       )}
 
-      <ContractsTab contracts={contracts} />
+      <ContractsTab contracts={contracts} today={today} />
 
       {quickOpen && (
         <QuickSejourModal voyageurs={voyageurs} logements={logements} contractOnly onClose={() => setQuickOpen(false)} />
@@ -234,7 +237,7 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)',
     fontWeight: 400, color: 'var(--text)', margin: '0 0 4px',
   },
-  desc: { fontSize: '14px', color: 'var(--text-3)', margin: 0 },
+  desc: { fontSize: '14px', color: 'var(--text-3)', margin: 0, maxWidth: '640px', lineHeight: 1.6 },
   newBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     padding: '10px 16px', borderRadius: '10px', border: 'none', cursor: 'pointer', fontFamily: 'inherit',

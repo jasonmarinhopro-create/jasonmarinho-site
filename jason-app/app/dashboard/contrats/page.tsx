@@ -1,6 +1,7 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import ContratsView from './ContratsView'
+import { parisToday } from '@/lib/stripe/deposit-window'
 import type { ContractRow, ContractCandidate } from './types'
 
 // Page « Contrats & paiements » (sept. 2026) : auparavant un onglet caché
@@ -24,7 +25,8 @@ export default async function ContratsPage() {
   // Un contrat est toujours rattaché à un séjour : on propose directement la
   // liste plutôt que d'expliquer où aller (le lien ouvre l'assistant de
   // contrat sur la fiche voyageur via ?contract=<séjour>).
-  const today = new Date().toISOString().slice(0, 10)
+  // Date du jour à Paris (le serveur tourne en UTC), passée aussi à la vue
+  const today = parisToday()
   const withContract = new Set(rows.filter(c => c.statut !== 'annule' && c.sejour_id).map(c => c.sejour_id as string))
   // Pour « Nouvelle réservation directe » (séjour pas encore saisi) :
   // voyageurs existants + logements, même modale que la fiche logement.
@@ -72,5 +74,5 @@ export default async function ContratsPage() {
     voyageur_id: c.sejour_id ? voyageurBySejour.get(c.sejour_id) ?? null : null,
   }))
 
-  return <ContratsView contracts={contracts} candidates={candidates} voyageurs={voyageurOptions ?? []} logements={(logementOptions ?? []).filter(l => l.nom) as Array<{ id: string; nom: string }>} appUrl={process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'} />
+  return <ContratsView contracts={contracts} candidates={candidates} voyageurs={voyageurOptions ?? []} logements={(logementOptions ?? []).filter(l => l.nom) as Array<{ id: string; nom: string }>} appUrl={process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'} today={today} />
 }
