@@ -165,6 +165,14 @@ import { House } from '@phosphor-icons/react'
 
 ---
 
+## Qualité : CI, tests, suivi des erreurs (sept. 2026)
+
+- **CI** : `.github/workflows/ci.yml` à chaque push sur main / PR touchant `jason-app/` : `npm run typecheck` (tsc), `npm test` (Vitest), `npx next lint --quiet` (erreurs bloquantes). Les tests Playwright (`e2e/`) n'y tournent pas (serveur + secrets requis).
+- **Tests unitaires** : Vitest (`vitest.config.ts`, alias `@`), fichiers `lib/**/*.test.ts`. Couvrent la réglementation, le parseur iCal, le rattachement iCal → logement → créneau ménage. Tout calcul pur ajouté dans `lib/` devrait avoir son test.
+- **ESLint** : `.eslintrc.json` (`next/core-web-vitals`, plugin `@typescript-eslint` pour les `eslint-disable` existants, `react/no-unescaped-entities` coupé : apostrophes françaises dans le JSX). 0 erreur, ~17 avertissements (dépendances de hooks) à résorber au fil de l'eau. `next build` lance aussi le lint : une erreur ESLint casse désormais le déploiement Vercel.
+- **Suivi des erreurs en prod (maison, sans Sentry)** : table `app_errors` (migration `20260927_108`, service role uniquement, purge > 30 jours). Côté navigateur, `lib/errors/client-report.ts` (appelé par `DashboardError`, `global-error.tsx` et `components/ErrorReporter.tsx` monté dans le layout racine pour les exceptions non gérées), 5 envois max par page, dédupliqués, bruit filtré. Envoi vers `POST /api/errors` (rate-limité). Côté serveur, chaque `log.error` de `lib/logger.ts` en production écrit aussi dans `app_errors` (`lib/errors/server-report.ts`, best-effort). Affichage : carte « Erreurs de l'app · 7 derniers jours » dans `/dashboard/admin` (`getAppErrors`, regroupées par message).
+- **Dates iCal** : `ical_events.end_date` = dernière nuit (DTEND exclusif moins 1 jour, `parseIcalText`), pas le jour du départ. Pour un ménage ou un départ, ajouter 1 jour (`addDaysIso`, `lib/menage/ical-occupations.ts`).
+
 ## Synchro iCal en tâche de fond + planning ménage
 
 - **Avant (sept. 2026)** : les flux Airbnb/Booking/Vrbo (`ical_feeds` → `ical_events`) ne se synchronisaient que quand l'hôte ouvrait `/dashboard/calendrier`, et le flux iCal de l'équipe de ménage (`/api/calendar/menage-feed`) **ignorait complètement les réservations importées** (seulement contrats + séjours saisis à la main).

@@ -1,5 +1,6 @@
 'use client'
 
+import { reportClientError } from '@/lib/errors/client-report'
 import { useEffect, useMemo } from 'react'
 import { ArrowCounterClockwise, Warning, EnvelopeSimple, ArrowsClockwise } from '@phosphor-icons/react/dist/ssr'
 import { toFriendlyError, buildSupportMailto } from '@/lib/errors/friendly-message'
@@ -13,6 +14,7 @@ interface Props {
 export default function DashboardError({ error, reset, label }: Props) {
   useEffect(() => {
     console.error('[Dashboard error]', error.digest ?? '', error.message)
+    reportClientError(error, { digest: error.digest })
   }, [error])
 
   const friendly = useMemo(() => toFriendlyError(error), [error])

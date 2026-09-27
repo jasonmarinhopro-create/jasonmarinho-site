@@ -9,6 +9,10 @@
 //
 // Les blocages (« Not available », « Closed »…) sont ignorés, comme partout
 // ailleurs dans l'app (lib/ical/blocked.ts).
+//
+// ATTENTION dates : parseIcalText (lib/ical/sync.ts) stocke end_date comme la
+// DERNIÈRE NUIT (DTEND iCal exclusif moins 1 jour), alors que le calcul des
+// ménages attend le jour du départ (= jour du ménage). On rajoute donc 1 jour.
 
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
 import type { Occupation } from './compute'
@@ -28,6 +32,13 @@ export interface IcalEventRow {
   description: string | null
   start_date: string | null
   end_date: string | null
+}
+
+/** 'YYYY-MM-DD' + n jours (calcul en UTC, sans décalage de fuseau). */
+export function addDaysIso(date: string, n: number): string {
+  const [y, m, d] = date.split('-').map(Number)
+  const t = new Date(Date.UTC(y, m - 1, d + n))
+  return t.toISOString().slice(0, 10)
 }
 
 export function normalizeIcalUrl(u: string | null | undefined): string {
@@ -63,7 +74,7 @@ export function icalOccupationsForMenage(
       source: 'ical',
       logementName: nom,
       dateArrivee: e.start_date,
-      dateDepart: e.end_date,
+      dateDepart: addDaysIso(e.end_date, 1),
     })
   }
   return out

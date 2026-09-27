@@ -7,7 +7,7 @@ import {
   UsersThree, ArrowRight, UsersFour, CalendarBlank, Trophy,
   BookOpen, Newspaper, Crown, ShieldStar, ShieldCheck, TrendUp, Lightning,
   Sparkle, CurrencyEur, ChartLineUp, Percent,
-  UserPlus, Star, Globe, Broadcast, Handshake,
+  UserPlus, Star, Globe, Broadcast, Handshake, Bug,
 } from '@phosphor-icons/react/dist/ssr'
 import {
   validateReport, deleteReport,
@@ -29,6 +29,10 @@ interface AffiliateClicks {
   total: number
   byPartner: Array<{ partner: string; count: number }>
   byPage: Array<{ path: string; count: number }>
+}
+interface AppErrors {
+  total: number
+  groups: Array<{ message: string; source: 'client' | 'server'; count: number; users: number; lastAt: string; path: string | null }>
 }
 interface Stats {
   totalUsers: number; driingMembers: number; standardMembers: number; newThisMonth: number
@@ -67,7 +71,7 @@ function relativeDate(iso: string) {
 export default function AdminUI({
   stats,
   recentSignups, monthlySignupsChart,
-  liveVisitors, channelBreakdown, topPages, affiliateClicks,
+  liveVisitors, channelBreakdown, topPages, affiliateClicks, appErrors,
 }: {
   stats: Stats
   recentSignups: RecentSignup[]
@@ -76,6 +80,7 @@ export default function AdminUI({
   channelBreakdown: ChannelStat[]
   topPages: TopPage[]
   affiliateClicks: AffiliateClicks
+  appErrors: AppErrors
 }) {
   const totalAlerts = stats.pendingDriing + stats.pendingReports
   const decouverte = stats.totalUsers - stats.standardMembers - stats.driingMembers
@@ -177,6 +182,7 @@ export default function AdminUI({
 
       {/* ── Clics partenaires (liens affiliés) ── */}
       <AffiliateClicksCard data={affiliateClicks} />
+      <AppErrorsCard data={appErrors} />
 
       {/* ── Sparkline 12 mois ── */}
       <SignupsSparkline data={monthlySignupsChart} />
@@ -569,6 +575,44 @@ function AffiliateClicksCard({ data }: { data: AffiliateClicks }) {
             </div>
           )}
         </div>
+      </div>
+    </div>
+  )
+}
+
+// Erreurs de l'app en production (table app_errors, 7 jours) : remplace un
+// outil type Sentry. Une erreur qui revient souvent ou touche plusieurs
+// membres est à traiter en priorité.
+function AppErrorsCard({ data }: { data: AppErrors }) {
+  return (
+    <div className="fade-up">
+      <div style={s.sectionLabel}>
+        <Bug size={13} />
+        Erreurs de l&apos;app · 7 derniers jours
+      </div>
+      <div style={{ ...s.channelCard, width: '100%' }}>
+        <div style={s.liveTop}>
+          <span style={s.liveLabel}>{data.total === 0 ? 'Aucune erreur enregistrée' : `${data.total} erreur${data.total > 1 ? 's' : ''} enregistrée${data.total > 1 ? 's' : ''}`}</span>
+        </div>
+        {data.groups.length === 0 ? (
+          <div style={{ fontSize: '12.5px', color: 'var(--text-3)', marginTop: '6px' }}>
+            Rien à signaler. Les plantages (écran d&apos;erreur, bug JavaScript, erreur serveur) apparaîtront ici.
+          </div>
+        ) : (
+          <div style={s.channelList}>
+            {data.groups.map(g => (
+              <div key={g.source + g.message} style={{ ...s.channelRow, alignItems: 'flex-start', gap: '12px' }}>
+                <span style={{ minWidth: 0, flex: 1 }}>
+                  <span style={{ display: 'block', fontSize: '13px', color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={g.message}>{g.message}</span>
+                  <span style={{ fontSize: '11.5px', color: 'var(--text-3)' }}>
+                    {g.source === 'server' ? 'Serveur' : 'Navigateur'}{g.path ? ` · ${g.path}` : ''} · {g.users > 0 ? `${g.users} membre${g.users > 1 ? 's' : ''} touché${g.users > 1 ? 's' : ''} · ` : ''}dernière : {relativeDate(g.lastAt)}
+                  </span>
+                </span>
+                <span style={{ ...s.channelCount, color: g.count >= 10 ? 'var(--danger-text)' : undefined }}>{g.count}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

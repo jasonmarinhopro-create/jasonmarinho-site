@@ -1,3 +1,4 @@
+import { icalOccupationsForMenage } from '@/lib/menage/ical-occupations'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import CalendrierView from './CalendrierView'
@@ -120,7 +121,7 @@ export default async function CalendrierPage() {
       .order('prenom'),
     supabase
       .from('logements')
-      .select('id, nom, adresse, menage_duree_min, menage_heure_defaut, menage_notes, contact_menage_nom, contact_menage_tel, frais_menage')
+      .select('id, nom, adresse, menage_duree_min, menage_heure_defaut, menage_notes, contact_menage_nom, contact_menage_tel, frais_menage, ical_airbnb, ical_booking, ical_vrbo, ical_autre')
       .eq('user_id', userId)
       .order('nom'),
   ])
@@ -235,10 +236,15 @@ export default async function CalendrierPage() {
       voyageurLabel,
     })
   }
-  // Note : les events iCal n'ont PAS de logement explicite — ils sont liés à
-  // un feed qui correspond à 1 logement. On peut faire ce mapping plus tard.
-  // Pour l'instant, on s'appuie uniquement sur contracts + sejours qui ont
-  // bien un logement_nom / logement.
+  // Réservations Airbnb/Booking/Vrbo importées : rattachées au logement par
+  // l'URL iCal de la fiche logement (même logique que le flux ménage envoyé
+  // à l'équipe, pour que l'hôte voie exactement le même planning). Après les
+  // séjours/contrats : la saisie manuelle prime sur le miroir iCal.
+  occupations.push(...icalOccupationsForMenage(
+    (logementsRaw ?? []) as any[],
+    (feeds ?? []) as Array<{ id: string; url: string | null }>,
+    (icalEventsRaw ?? []) as any[],
+  ))
 
   // Auto-dérivés depuis les séjours
   const autoSlots = computeMenageSlots(occupations, allLogementSettings)

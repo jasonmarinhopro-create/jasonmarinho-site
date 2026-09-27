@@ -5,6 +5,7 @@
 // composants applicatifs (CSS globals, contexts, etc.) qui pourraient eux
 // aussi être en erreur. Styles 100 % inline.
 
+import { reportClientError } from '@/lib/errors/client-report'
 import { useEffect } from 'react'
 import { ArrowCounterClockwise, ArrowsClockwise, EnvelopeSimple } from '@phosphor-icons/react/dist/ssr'
 
@@ -17,6 +18,7 @@ export default function GlobalError({
 }) {
   useEffect(() => {
     console.error('[GlobalError]', error.digest ?? '', error.message)
+    reportClientError(error, { digest: error.digest })
   }, [error])
 
   const supportHref =

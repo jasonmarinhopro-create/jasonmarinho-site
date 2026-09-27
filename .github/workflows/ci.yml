@@ -1,0 +1,51 @@
+name: CI dashboard
+
+# Filet de sécurité automatique du dashboard (jason-app) à chaque push sur
+# main et à chaque pull request : typage TypeScript, tests unitaires (Vitest)
+# et ESLint (erreurs bloquantes, avertissements affichés).
+# Les parcours Playwright (e2e/) ne tournent pas ici : ils demandent un
+# serveur et des secrets Supabase de test.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'jason-app/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    paths:
+      - 'jason-app/**'
+      - '.github/workflows/ci.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: jason-app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: jason-app/package-lock.json
+
+      - name: Dépendances
+        run: npm ci --no-audit --no-fund
+
+      - name: Typage TypeScript
+        run: npm run typecheck
+
+      - name: Tests unitaires
+        run: npm test
+
+      - name: ESLint
+        run: npx next lint --quiet

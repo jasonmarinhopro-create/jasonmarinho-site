@@ -10,6 +10,8 @@
  *   log.error('signIn failed', { code: error.code })
  */
 
+import { reportServerError } from '@/lib/errors/server-report'
+
 type LogLevel = 'info' | 'warn' | 'error'
 
 interface LogEntry {
@@ -34,6 +36,8 @@ function write(level: LogLevel, route: string, msg: string, data?: unknown) {
   if (isProd) {
     const fn = level === 'error' ? console.error : level === 'warn' ? console.warn : console.log
     fn(JSON.stringify(entry))
+    // Erreurs persistées dans app_errors (Vue d'ensemble admin), best-effort.
+    if (level === 'error') reportServerError(route, msg, data)
   } else {
     const prefix = `[${entry.ts.slice(11, 23)}] [${level.toUpperCase()}] [${route}]`
     if (data !== undefined) {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { icalOccupationsForMenage, normalizeIcalUrl } from './ical-occupations'
+import { icalOccupationsForMenage, normalizeIcalUrl, addDaysIso } from './ical-occupations'
 import { computeMenageSlots } from './compute'
 
 const logements = [
@@ -15,8 +15,8 @@ const feeds = [
 describe('icalOccupationsForMenage', () => {
   it('relie chaque événement au logement par l’URL du flux', () => {
     const occ = icalOccupationsForMenage(logements, feeds, [
-      { id: 'e1', feed_id: 'f1', title: 'Reserved', description: 'Reservation URL: https://airbnb.fr/x', start_date: '2026-10-01', end_date: '2026-10-04' },
-      { id: 'e2', feed_id: 'f2', title: 'Réservation', description: null, start_date: '2026-10-10', end_date: '2026-10-12' },
+      { id: 'e1', feed_id: 'f1', title: 'Reserved', description: 'Reservation URL: https://airbnb.fr/x', start_date: '2026-10-01', end_date: '2026-10-03' },
+      { id: 'e2', feed_id: 'f2', title: 'Réservation', description: null, start_date: '2026-10-10', end_date: '2026-10-11' },
     ])
     expect(occ.map(o => [o.logementName, o.dateDepart])).toEqual([
       ['Studio Vieux-Port', '2026-10-04'],
@@ -33,6 +33,11 @@ describe('icalOccupationsForMenage', () => {
     expect(occ).toEqual([])
   })
 
+  it('passe de la dernière nuit (stockée en base) au jour du départ, y compris en fin de mois', () => {
+    expect(addDaysIso('2026-10-31', 1)).toBe('2026-11-01')
+    expect(addDaysIso('2026-12-31', 1)).toBe('2027-01-01')
+  })
+
   it('normalise webcal:// et le slash final', () => {
     expect(normalizeIcalUrl(' webcal://a.com/x.ics/ ')).toBe('https://a.com/x.ics')
   })
@@ -41,7 +46,7 @@ describe('icalOccupationsForMenage', () => {
     const occ = [
       { sourceId: 'sejour-1', source: 'sejour' as const, logementName: 'T2 Panier', dateArrivee: '2026-10-01', dateDepart: '2026-10-05' },
       ...icalOccupationsForMenage(logements, [{ id: 'f4', url: 'https://www.airbnb.fr/calendar/ical/456.ics?s=def' }], [
-        { id: 'e6', feed_id: 'f4', title: 'Reserved', description: 'Reservation URL: x', start_date: '2026-10-01', end_date: '2026-10-05' },
+        { id: 'e6', feed_id: 'f4', title: 'Reserved', description: 'Reservation URL: x', start_date: '2026-10-01', end_date: '2026-10-04' },
       ]),
     ]
     const slots = computeMenageSlots(occ, [], { fromDate: '2026-09-01', toDate: '2026-12-31' })
