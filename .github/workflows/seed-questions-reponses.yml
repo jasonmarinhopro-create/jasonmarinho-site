@@ -1,0 +1,38 @@
+name: Publier les questions/réponses d'amorce
+
+# Publie jason-app/scripts/data/questions-reponses-amorce.json dans
+# « Questions & réponses » (au nom du compte admin). Idempotent : une question
+# déjà publiée (même titre) est ignorée, relancer ne crée pas de doublon.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - jason-app/scripts/data/questions-reponses-amorce.json
+
+concurrency:
+  group: seed-questions-reponses
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: jason-app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: jason-app/package-lock.json
+
+      - run: npm ci
+
+      - name: Publier les questions
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/seed-questions-reponses.mjs
