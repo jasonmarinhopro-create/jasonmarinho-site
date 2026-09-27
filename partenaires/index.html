@@ -270,26 +270,28 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     .mk-f.star.on{color:#7a5a00}
     .mk-f.star.on::after{background:var(--y)}
     .mk-sep{height:1px;background:rgba(0,76,63,.1);margin:8px 0}
-    .mk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:44px 36px}
-    .mk-card{display:grid;grid-template-columns:64px 1fr;gap:18px;align-items:start}
+    .mk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;align-items:stretch}
+    .mk-card{display:flex;flex-direction:column;background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:16px;padding:22px;min-width:0;transition:border-color .15s,box-shadow .15s,transform .15s}
+    .mk-card:hover{border-color:rgba(0,76,63,.22);box-shadow:0 10px 28px rgba(0,76,63,.07);transform:translateY(-2px)}
+    .mk-card.is-offre{border-color:rgba(255,213,107,.7);background:linear-gradient(180deg,rgba(255,213,107,.07),#fff 60%)}
     .mk-card[hidden]{display:none}
-    .mk-logo{width:64px;height:64px;border-radius:14px;background:#fff;border:1px solid rgba(0,76,63,.12);box-shadow:0 1px 2px rgba(0,0,0,.03);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:28px;font-weight:600;line-height:1}
-    .mk-card.is-offre .mk-logo{border-color:rgba(255,213,107,.8);box-shadow:0 0 0 3px rgba(255,213,107,.18)}
-    .mk-body{min-width:0}
-    .mk-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-    .mk-nom{font-family:'Fraunces',serif;font-size:1.45rem;font-weight:400;color:var(--td);margin:0;letter-spacing:-.02em;line-height:1.15}
-    .mk-badge{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:3px 7px;border-radius:5px;white-space:nowrap}
+    .mk-head-c{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+    .mk-logo{flex:0 0 52px;width:52px;height:52px;border-radius:13px;background:#fff;border:1px solid rgba(0,76,63,.12);box-shadow:0 1px 2px rgba(0,0,0,.03);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:24px;font-weight:600;line-height:1}
+    .mk-id{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+    .mk-nom{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:400;color:var(--td);margin:0;letter-spacing:-.02em;line-height:1.15;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .mk-badge{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:3px 7px;border-radius:5px;white-space:nowrap;line-height:1.4}
     .b-aff{background:rgba(255,213,107,.3);color:#7a5a00}
     .b-mem{background:rgba(21,128,61,.1);color:#15803d}
     .b-fond{background:rgba(0,76,63,.08);color:var(--g)}
-    .mk-offre{font-size:14.5px;font-weight:600;color:var(--td);margin:0 0 6px;line-height:1.45}
-    .mk-cat{font-size:12px;font-weight:600;letter-spacing:.3px;color:var(--tl);margin:0 0 6px}
-    .mk-desc{font-size:14px;line-height:1.6;color:var(--tl);margin:0}
-    .mk-liens{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px}
+    .b-ref{background:rgba(0,0,0,.04);color:var(--tl)}
+    .mk-offre{font-size:14.5px;font-weight:600;color:var(--td);margin:0 0 6px;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .mk-offre.is-cat{color:var(--tm);font-weight:500}
+    .mk-desc{font-size:14px;line-height:1.6;color:var(--tl);margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;height:calc(1.6em * 3)}
+    .mk-liens{display:flex;align-items:center;gap:14px;margin-top:auto;padding-top:18px;white-space:nowrap}
     .mk-l{font-size:13.5px;font-weight:600;color:var(--g);text-decoration:none;display:inline-flex;align-items:center;gap:5px}
     .mk-l i{font-size:11px}
     .mk-l:hover{text-decoration:underline}
-    .mk-l1{background:var(--g);color:#fff;padding:8px 13px;border-radius:8px}
+    .mk-l1{background:var(--g);color:#fff;padding:9px 14px;border-radius:8px}
     .mk-l1:hover{background:var(--gd);text-decoration:none}
     .mk-note{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.6;color:var(--tl);background:var(--cr);border-radius:12px;padding:14px 16px;margin:0 0 36px}
     .mk-note i{font-size:17px;color:var(--g);margin-top:1px}
@@ -305,7 +307,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
       .mk-f.on span{color:rgba(255,255,255,.7)}
       .mk-f.on::after{display:none}
       .mk-f.star.on{background:var(--y);color:var(--gd);border-color:var(--y)}
-      .mk-grid{grid-template-columns:1fr;gap:30px}
+      .mk-grid{grid-template-columns:1fr;gap:14px}
     }
   </style>
   <div class="s-in">
@@ -347,301 +349,301 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-count" aria-live="polite"><span id="mk-n">33</span> outils</p>
         <div class="mk-grid">
       <article class="mk-card is-offre" data-cats="direct messagerie" data-offre="1">
-        <div class="mk-logo" style="color:#004C3F" aria-hidden="true">D</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Driing</h3><span class="mk-badge b-fond">Co-fondé par Jason</span></div>
-          <p class="mk-offre">Réservation directe à 0 % de commission</p>
-          <p class="mk-desc">Plateforme de réservation directe, livret d'accueil digital et annuaire de conciergeries. Co-fondée par Jason, pas de commission pour lui.</p>
-          <div class="mk-liens"><a href="https://driing.co" target="_blank" rel="noopener" class="mk-l mk-l1">Découvrir Driing <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#004C3F" aria-hidden="true">D</div>
+          <div class="mk-id"><h3 class="mk-nom">Driing</h3><span class="mk-badge b-fond">Co-fondé par Jason</span></div>
         </div>
+        <p class="mk-offre" title="0 % de commission">0 % de commission</p>
+        <p class="mk-desc" title="Réservation directe, livret d'accueil digital et annuaire de conciergeries. Co-fondée par Jason, non rémunéré.">Réservation directe, livret d'accueil digital et annuaire de conciergeries. Co-fondée par Jason, non rémunéré.</p>
+        <div class="mk-liens"><a href="https://driing.co" target="_blank" rel="noopener" class="mk-l mk-l1">Découvrir Driing <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
       <article class="mk-card is-offre" data-cats="gestion direct" data-offre="1">
-        <div class="mk-logo" style="color:#2E5BFF" aria-hidden="true">L</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Lodgify</h3><span class="mk-badge b-aff">Lien affilié</span></div>
-          <p class="mk-offre">Essai 7 jours + démo gratuite</p>
-          <p class="mk-desc">Site de réservation directe et channel manager (Airbnb, Booking.com, Vrbo). Le bon choix pour avoir ton propre site sans coder.</p>
-          <div class="mk-liens"><a href="https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Démo gratuite <i class="ph-bold ph-arrow-up-right"></i></a><a href="/lodgify-avis" class="mk-l">Mon avis <i class="ph-bold ph-arrow-right"></i></a><a href="/lodgify-prix" class="mk-l">Les prix <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#2E5BFF" aria-hidden="true">L</div>
+          <div class="mk-id"><h3 class="mk-nom">Lodgify</h3><span class="mk-badge b-aff">Lien affilié</span></div>
         </div>
+        <p class="mk-offre" title="Essai 7 jours + démo offerte">Essai 7 jours + démo offerte</p>
+        <p class="mk-desc" title="Ton propre site de réservation directe, relié à Airbnb, Booking.com et Vrbo, sans coder.">Ton propre site de réservation directe, relié à Airbnb, Booking.com et Vrbo, sans coder.</p>
+        <div class="mk-liens"><a href="https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Démo gratuite <i class="ph-bold ph-arrow-up-right"></i></a><a href="/lodgify-avis" class="mk-l">Mon avis <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card is-offre" data-cats="messagerie gestion" data-offre="1">
-        <div class="mk-logo" style="color:#E0245E" aria-hidden="true">H</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Hospitable</h3><span class="mk-badge b-aff">Lien affilié</span></div>
-          <p class="mk-offre">-25 % pendant 3 mois + 14 jours d’essai</p>
-          <p class="mk-desc">Messagerie unifiée et automatisée, réponses par IA, codes de serrure et tâches de ménage générés à chaque réservation. Idéal si tu es surtout sur Airbnb.</p>
-          <div class="mk-liens"><a href="https://hospitable.com/partners/refer?utm_source=affiliates&amp;utm_medium=blog&amp;utm_campaign=BASWTYN7" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Essai gratuit <i class="ph-bold ph-arrow-up-right"></i></a><a href="/hospitable-avis" class="mk-l">Mon avis <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#E0245E" aria-hidden="true">H</div>
+          <div class="mk-id"><h3 class="mk-nom">Hospitable</h3><span class="mk-badge b-aff">Lien affilié</span></div>
         </div>
+        <p class="mk-offre" title="-25 % pendant 3 mois">-25 % pendant 3 mois</p>
+        <p class="mk-desc" title="Messages automatiques et IA, codes de serrure et ménage gérés à chaque réservation. 14 jours d’essai gratuit.">Messages automatiques et IA, codes de serrure et ménage gérés à chaque réservation. 14 jours d’essai gratuit.</p>
+        <div class="mk-liens"><a href="https://hospitable.com/partners/refer?utm_source=affiliates&amp;utm_medium=blog&amp;utm_campaign=BASWTYN7" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Essai gratuit <i class="ph-bold ph-arrow-up-right"></i></a><a href="/hospitable-avis" class="mk-l">Mon avis <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card is-offre" data-cats="banque" data-offre="1">
-        <div class="mk-logo" style="color:#1F2937" aria-hidden="true">S</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Shine</h3><span class="mk-badge b-aff">Parrainage</span></div>
-          <p class="mk-offre">1 mois d’abonnement offert</p>
-          <p class="mk-desc">Néobanque pro française : compte séparé pour tes revenus LCD, facturation, export pour ton comptable. Mois offert selon les conditions de parrainage en vigueur.</p>
-          <div class="mk-liens"><a href="https://app.shine.fr/register?referral=WYDP4644" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Ouvrir un compte <i class="ph-bold ph-arrow-up-right"></i></a><a href="/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026" class="mk-l">Pourquoi un compte pro ? <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#1F2937" aria-hidden="true">S</div>
+          <div class="mk-id"><h3 class="mk-nom">Shine</h3><span class="mk-badge b-aff">Parrainage</span></div>
         </div>
+        <p class="mk-offre" title="1 mois offert">1 mois offert</p>
+        <p class="mk-desc" title="Néobanque pro : un compte séparé pour tes revenus LCD. Mois offert selon les conditions de parrainage Shine.">Néobanque pro : un compte séparé pour tes revenus LCD. Mois offert selon les conditions de parrainage Shine.</p>
+        <div class="mk-liens"><a href="https://app.shine.fr/register?referral=WYDP4644" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Ouvrir un compte <i class="ph-bold ph-arrow-up-right"></i></a><a href="/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026" class="mk-l">Pourquoi ? <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card is-offre" data-cats="gestion" data-offre="1">
-        <div class="mk-logo" style="color:#0E7490" aria-hidden="true">K</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Krossbooking</h3><span class="mk-badge b-mem">Réduction membre</span></div>
-          <p class="mk-offre">Réduction négociée pour les membres</p>
-          <p class="mk-desc">Channel manager italien complet : PMS, synchronisation des plateformes et moteur de réservation.</p>
-          
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#0E7490" aria-hidden="true">K</div>
+          <div class="mk-id"><h3 class="mk-nom">Krossbooking</h3><span class="mk-badge b-mem">Réduction membre</span></div>
         </div>
+        <p class="mk-offre" title="Tarif négocié membres">Tarif négocié membres</p>
+        <p class="mk-desc" title="Channel manager italien avec PMS et moteur de réservation. Réduction réservée aux membres.">Channel manager italien avec PMS et moteur de réservation. Réduction réservée aux membres.</p>
+        <div class="mk-liens"><a href="https://app.jasonmarinho.com/auth/register" class="mk-l mk-l1">Devenir membre <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="gestion direct">
-        <div class="mk-logo" style="color:#0F766E" aria-hidden="true">S</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Smoobu</h3></div>
-          <p class="mk-cat">Gestion & channel manager · Réservation directe</p>
-          <p class="mk-desc">Channel manager simple et rapide à prendre en main, interface en français, site de réservation inclus.</p>
-          <div class="mk-liens"><a href="/comparatif-lodgify-smoobu" class="mk-l mk-l1">Lodgify vs Smoobu <i class="ph-bold ph-arrow-right"></i></a><a href="/comparatif-smoobu-hospitable" class="mk-l">Smoobu vs Hospitable <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#0F766E" aria-hidden="true">S</div>
+          <div class="mk-id"><h3 class="mk-nom">Smoobu</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Gestion & channel manager">Gestion & channel manager</p>
+        <p class="mk-desc" title="Channel manager simple et rapide à prendre en main, interface en français, site de réservation inclus.">Channel manager simple et rapide à prendre en main, interface en français, site de réservation inclus.</p>
+        <div class="mk-liens"><a href="/comparatif-lodgify-smoobu" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="gestion messagerie">
-        <div class="mk-logo" style="color:#7C3AED" aria-hidden="true">S</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Superhote</h3></div>
-          <p class="mk-cat">Gestion & channel manager · Messagerie & automatisation</p>
-          <p class="mk-desc">Logiciel français de gestion et de messages automatiques, avec un support en français.</p>
-          <div class="mk-liens"><a href="/comparatif-superhote-welkeys" class="mk-l mk-l1">Superhote vs Welkeys <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#7C3AED" aria-hidden="true">S</div>
+          <div class="mk-id"><h3 class="mk-nom">Superhote</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Gestion & channel manager">Gestion & channel manager</p>
+        <p class="mk-desc" title="Logiciel français de gestion et de messages automatiques, avec un support en français.">Logiciel français de gestion et de messages automatiques, avec un support en français.</p>
+        <div class="mk-liens"><a href="/comparatif-superhote-welkeys" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="gestion">
-        <div class="mk-logo" style="color:#334155" aria-hidden="true">B</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Beds24</h3></div>
-          <p class="mk-cat">Gestion & channel manager</p>
-          <p class="mk-desc">Channel manager très complet et paramétrable, pour les profils à l’aise avec la technique.</p>
-          <div class="mk-liens"><a href="https://beds24.com" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#334155" aria-hidden="true">B</div>
+          <div class="mk-id"><h3 class="mk-nom">Beds24</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Gestion & channel manager">Gestion & channel manager</p>
+        <p class="mk-desc" title="Channel manager très complet et paramétrable, pour les profils à l’aise avec la technique.">Channel manager très complet et paramétrable, pour les profils à l’aise avec la technique.</p>
+        <div class="mk-liens"><a href="https://beds24.com" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="gestion messagerie">
-        <div class="mk-logo" style="color:#EA580C" aria-hidden="true">H</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Hostfully</h3></div>
-          <p class="mk-cat">Gestion & channel manager · Messagerie & automatisation</p>
-          <p class="mk-desc">PMS pour conciergeries multi-biens, avec livret d’accueil digital.</p>
-          <div class="mk-liens"><a href="/comparatif-hostfully-guesty" class="mk-l mk-l1">Hostfully vs Guesty <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#EA580C" aria-hidden="true">H</div>
+          <div class="mk-id"><h3 class="mk-nom">Hostfully</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Gestion & channel manager">Gestion & channel manager</p>
+        <p class="mk-desc" title="PMS pour conciergeries multi-biens, avec livret d’accueil digital.">PMS pour conciergeries multi-biens, avec livret d’accueil digital.</p>
+        <div class="mk-liens"><a href="/comparatif-hostfully-guesty" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="gestion">
-        <div class="mk-logo" style="color:#1D4ED8" aria-hidden="true">G</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Guesty</h3></div>
-          <p class="mk-cat">Gestion & channel manager</p>
-          <p class="mk-desc">PMS pensé pour les grandes conciergeries qui gèrent des dizaines de logements.</p>
-          <div class="mk-liens"><a href="/comparatif-hostfully-guesty" class="mk-l mk-l1">Hostfully vs Guesty <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#1D4ED8" aria-hidden="true">G</div>
+          <div class="mk-id"><h3 class="mk-nom">Guesty</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Gestion & channel manager">Gestion & channel manager</p>
+        <p class="mk-desc" title="PMS pensé pour les grandes conciergeries qui gèrent des dizaines de logements.">PMS pensé pour les grandes conciergeries qui gèrent des dizaines de logements.</p>
+        <div class="mk-liens"><a href="/comparatif-hostfully-guesty" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="banque direct">
-        <div class="mk-logo" style="color:#635BFF" aria-hidden="true">S</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Stripe</h3></div>
-          <p class="mk-cat">Banque & paiement · Réservation directe</p>
-          <p class="mk-desc">Paiement en ligne par carte sur ton site de réservation directe.</p>
-          <div class="mk-liens"><a href="https://stripe.com/fr" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#635BFF" aria-hidden="true">S</div>
+          <div class="mk-id"><h3 class="mk-nom">Stripe</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Banque & paiement">Banque & paiement</p>
+        <p class="mk-desc" title="Paiement en ligne par carte sur ton site de réservation directe.">Paiement en ligne par carte sur ton site de réservation directe.</p>
+        <div class="mk-liens"><a href="https://stripe.com/fr" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="banque">
-        <div class="mk-logo" style="color:#111827" aria-hidden="true">Q</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Qonto</h3></div>
-          <p class="mk-cat">Banque & paiement</p>
-          <p class="mk-desc">Néobanque pro très répandue chez les indépendants et les petites sociétés.</p>
-          <div class="mk-liens"><a href="https://qonto.com/fr" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#111827" aria-hidden="true">Q</div>
+          <div class="mk-id"><h3 class="mk-nom">Qonto</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Banque & paiement">Banque & paiement</p>
+        <p class="mk-desc" title="Néobanque pro très répandue chez les indépendants et les petites sociétés.">Néobanque pro très répandue chez les indépendants et les petites sociétés.</p>
+        <div class="mk-liens"><a href="https://qonto.com/fr" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="prix">
-        <div class="mk-logo" style="color:#2563EB" aria-hidden="true">P</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">PriceLabs</h3></div>
-          <p class="mk-cat">Tarification dynamique</p>
-          <p class="mk-desc">Tarification dynamique très paramétrable, basée sur la demande du marché local.</p>
-          <div class="mk-liens"><a href="/comparatif-pricelabs-beyond-wheelhouse" class="mk-l mk-l1">Comparatif pricing <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#2563EB" aria-hidden="true">P</div>
+          <div class="mk-id"><h3 class="mk-nom">PriceLabs</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Tarification dynamique">Tarification dynamique</p>
+        <p class="mk-desc" title="Tarification dynamique très paramétrable, basée sur la demande du marché local.">Tarification dynamique très paramétrable, basée sur la demande du marché local.</p>
+        <div class="mk-liens"><a href="/comparatif-pricelabs-beyond-wheelhouse" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="prix">
-        <div class="mk-logo" style="color:#0891B2" aria-hidden="true">B</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Beyond</h3></div>
-          <p class="mk-cat">Tarification dynamique</p>
-          <p class="mk-desc">Tarification dynamique automatisée, pensée pour être simple à laisser tourner.</p>
-          <div class="mk-liens"><a href="/comparatif-pricelabs-beyond-wheelhouse" class="mk-l mk-l1">Comparatif pricing <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#0891B2" aria-hidden="true">B</div>
+          <div class="mk-id"><h3 class="mk-nom">Beyond</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Tarification dynamique">Tarification dynamique</p>
+        <p class="mk-desc" title="Tarification dynamique automatisée, pensée pour être simple à laisser tourner.">Tarification dynamique automatisée, pensée pour être simple à laisser tourner.</p>
+        <div class="mk-liens"><a href="/comparatif-pricelabs-beyond-wheelhouse" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="prix">
-        <div class="mk-logo" style="color:#4F46E5" aria-hidden="true">W</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Wheelhouse</h3></div>
-          <p class="mk-cat">Tarification dynamique</p>
-          <p class="mk-desc">Tarification dynamique avec des recommandations détaillées et transparentes.</p>
-          <div class="mk-liens"><a href="/comparatif-pricelabs-beyond-wheelhouse" class="mk-l mk-l1">Comparatif pricing <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#4F46E5" aria-hidden="true">W</div>
+          <div class="mk-id"><h3 class="mk-nom">Wheelhouse</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Tarification dynamique">Tarification dynamique</p>
+        <p class="mk-desc" title="Tarification dynamique avec des recommandations détaillées et transparentes.">Tarification dynamique avec des recommandations détaillées et transparentes.</p>
+        <div class="mk-liens"><a href="/comparatif-pricelabs-beyond-wheelhouse" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="acces">
-        <div class="mk-logo" style="color:#0F172A" aria-hidden="true">I</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Igloohome</h3></div>
-          <p class="mk-cat">Accès & sécurité</p>
-          <p class="mk-desc">Serrures et boîtes à clés à codes temporaires, qui fonctionnent sans wifi.</p>
-          <div class="mk-liens"><a href="/comparatif-igloohome-ttlock" class="mk-l mk-l1">igloohome vs TTLock <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#0F172A" aria-hidden="true">I</div>
+          <div class="mk-id"><h3 class="mk-nom">Igloohome</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Accès & sécurité">Accès & sécurité</p>
+        <p class="mk-desc" title="Serrures et boîtes à clés à codes temporaires, qui fonctionnent sans wifi.">Serrures et boîtes à clés à codes temporaires, qui fonctionnent sans wifi.</p>
+        <div class="mk-liens"><a href="/comparatif-igloohome-ttlock" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="acces">
-        <div class="mk-logo" style="color:#16A34A" aria-hidden="true">T</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">TTLock</h3></div>
-          <p class="mk-cat">Accès & sécurité</p>
-          <p class="mk-desc">Écosystème de serrures à code et Bluetooth, souvent à petit prix.</p>
-          <div class="mk-liens"><a href="/comparatif-igloohome-ttlock" class="mk-l mk-l1">igloohome vs TTLock <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#16A34A" aria-hidden="true">T</div>
+          <div class="mk-id"><h3 class="mk-nom">TTLock</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Accès & sécurité">Accès & sécurité</p>
+        <p class="mk-desc" title="Écosystème de serrures à code et Bluetooth, souvent à petit prix.">Écosystème de serrures à code et Bluetooth, souvent à petit prix.</p>
+        <div class="mk-liens"><a href="/comparatif-igloohome-ttlock" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="acces">
-        <div class="mk-logo" style="color:#F59E0B" aria-hidden="true">N</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Nuki</h3></div>
-          <p class="mk-cat">Accès & sécurité</p>
-          <p class="mk-desc">Serrure connectée qui se monte sur la serrure existante, côté intérieur.</p>
-          <div class="mk-liens"><a href="https://nuki.io/fr" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#F59E0B" aria-hidden="true">N</div>
+          <div class="mk-id"><h3 class="mk-nom">Nuki</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Accès & sécurité">Accès & sécurité</p>
+        <p class="mk-desc" title="Serrure connectée qui se monte sur la serrure existante, côté intérieur.">Serrure connectée qui se monte sur la serrure existante, côté intérieur.</p>
+        <div class="mk-liens"><a href="https://nuki.io/fr" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="acces">
-        <div class="mk-logo" style="color:#0284C7" aria-hidden="true">R</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Ring</h3></div>
-          <p class="mk-cat">Accès & sécurité</p>
-          <p class="mk-desc">Sonnettes vidéo et caméras extérieures, historique vidéo sur abonnement.</p>
-          <div class="mk-liens"><a href="/comparatif-ring-eufy-reolink" class="mk-l mk-l1">Ring vs Eufy vs Reolink <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#0284C7" aria-hidden="true">R</div>
+          <div class="mk-id"><h3 class="mk-nom">Ring</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Accès & sécurité">Accès & sécurité</p>
+        <p class="mk-desc" title="Sonnettes vidéo et caméras extérieures, historique vidéo sur abonnement.">Sonnettes vidéo et caméras extérieures, historique vidéo sur abonnement.</p>
+        <div class="mk-liens"><a href="/comparatif-ring-eufy-reolink" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="acces">
-        <div class="mk-logo" style="color:#0369A1" aria-hidden="true">E</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Eufy</h3></div>
-          <p class="mk-cat">Accès & sécurité</p>
-          <p class="mk-desc">Caméras et sonnettes avec stockage local, sans abonnement obligatoire.</p>
-          <div class="mk-liens"><a href="/comparatif-ring-eufy-reolink" class="mk-l mk-l1">Ring vs Eufy vs Reolink <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#0369A1" aria-hidden="true">E</div>
+          <div class="mk-id"><h3 class="mk-nom">Eufy</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Accès & sécurité">Accès & sécurité</p>
+        <p class="mk-desc" title="Caméras et sonnettes avec stockage local, sans abonnement obligatoire.">Caméras et sonnettes avec stockage local, sans abonnement obligatoire.</p>
+        <div class="mk-liens"><a href="/comparatif-ring-eufy-reolink" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="acces">
-        <div class="mk-logo" style="color:#1E40AF" aria-hidden="true">R</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Reolink</h3></div>
-          <p class="mk-cat">Accès & sécurité</p>
-          <p class="mk-desc">Caméras de surveillance wifi ou filaires, avec stockage local.</p>
-          <div class="mk-liens"><a href="/comparatif-ring-eufy-reolink" class="mk-l mk-l1">Ring vs Eufy vs Reolink <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#1E40AF" aria-hidden="true">R</div>
+          <div class="mk-id"><h3 class="mk-nom">Reolink</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Accès & sécurité">Accès & sécurité</p>
+        <p class="mk-desc" title="Caméras de surveillance wifi ou filaires, avec stockage local.">Caméras de surveillance wifi ou filaires, avec stockage local.</p>
+        <div class="mk-liens"><a href="/comparatif-ring-eufy-reolink" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="compta">
-        <div class="mk-logo" style="color:#10B981" aria-hidden="true">I</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Indy</h3></div>
-          <p class="mk-cat">Comptabilité & fiscalité</p>
-          <p class="mk-desc">Comptabilité en ligne automatisée pour les indépendants.</p>
-          <div class="mk-liens"><a href="/comparatif-indy-tiime-henrri" class="mk-l mk-l1">Indy vs Tiime vs Henrri <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#10B981" aria-hidden="true">I</div>
+          <div class="mk-id"><h3 class="mk-nom">Indy</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Comptabilité & fiscalité">Comptabilité & fiscalité</p>
+        <p class="mk-desc" title="Comptabilité en ligne automatisée pour les indépendants.">Comptabilité en ligne automatisée pour les indépendants.</p>
+        <div class="mk-liens"><a href="/comparatif-indy-tiime-henrri" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="compta">
-        <div class="mk-logo" style="color:#0EA5E9" aria-hidden="true">T</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Tiime</h3></div>
-          <p class="mk-cat">Comptabilité & fiscalité</p>
-          <p class="mk-desc">Comptabilité et facturation en ligne, avec une offre gratuite.</p>
-          <div class="mk-liens"><a href="/comparatif-indy-tiime-henrri" class="mk-l mk-l1">Indy vs Tiime vs Henrri <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#0EA5E9" aria-hidden="true">T</div>
+          <div class="mk-id"><h3 class="mk-nom">Tiime</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Comptabilité & fiscalité">Comptabilité & fiscalité</p>
+        <p class="mk-desc" title="Comptabilité et facturation en ligne, avec une offre gratuite.">Comptabilité et facturation en ligne, avec une offre gratuite.</p>
+        <div class="mk-liens"><a href="/comparatif-indy-tiime-henrri" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="compta">
-        <div class="mk-logo" style="color:#DB2777" aria-hidden="true">H</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Henrri</h3></div>
-          <p class="mk-cat">Comptabilité & fiscalité</p>
-          <p class="mk-desc">Logiciel de facturation en ligne gratuit.</p>
-          <div class="mk-liens"><a href="/comparatif-indy-tiime-henrri" class="mk-l mk-l1">Indy vs Tiime vs Henrri <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#DB2777" aria-hidden="true">H</div>
+          <div class="mk-id"><h3 class="mk-nom">Henrri</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Comptabilité & fiscalité">Comptabilité & fiscalité</p>
+        <p class="mk-desc" title="Logiciel de facturation en ligne gratuit.">Logiciel de facturation en ligne gratuit.</p>
+        <div class="mk-liens"><a href="/comparatif-indy-tiime-henrri" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="compta">
-        <div class="mk-logo" style="color:#B45309" aria-hidden="true">J</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Jedeclaremonmeuble</h3></div>
-          <p class="mk-cat">Comptabilité & fiscalité</p>
-          <p class="mk-desc">Comptabilité et déclaration LMNP en ligne, avec accompagnement.</p>
-          <div class="mk-liens"><a href="https://www.jedeclaremonmeuble.com" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#B45309" aria-hidden="true">J</div>
+          <div class="mk-id"><h3 class="mk-nom">Jedeclaremonmeuble</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Comptabilité & fiscalité">Comptabilité & fiscalité</p>
+        <p class="mk-desc" title="Comptabilité et déclaration LMNP en ligne, avec accompagnement.">Comptabilité et déclaration LMNP en ligne, avec accompagnement.</p>
+        <div class="mk-liens"><a href="https://www.jedeclaremonmeuble.com" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="menage">
-        <div class="mk-logo" style="color:#059669" aria-hidden="true">T</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Turno</h3></div>
-          <p class="mk-cat">Ménage & opérations</p>
-          <p class="mk-desc">Planification automatique des ménages et place de marché de prestataires.</p>
-          <div class="mk-liens"><a href="/comparatif-turnoverbnb-properly" class="mk-l mk-l1">Turno vs Properly <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#059669" aria-hidden="true">T</div>
+          <div class="mk-id"><h3 class="mk-nom">Turno</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Ménage & opérations">Ménage & opérations</p>
+        <p class="mk-desc" title="Planification automatique des ménages et place de marché de prestataires.">Planification automatique des ménages et place de marché de prestataires.</p>
+        <div class="mk-liens"><a href="/comparatif-turnoverbnb-properly" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="menage">
-        <div class="mk-logo" style="color:#7C2D12" aria-hidden="true">P</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Properly</h3></div>
-          <p class="mk-cat">Ménage & opérations</p>
-          <p class="mk-desc">Checklists de ménage et contrôle qualité en photos.</p>
-          <div class="mk-liens"><a href="/comparatif-turnoverbnb-properly" class="mk-l mk-l1">Turno vs Properly <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#7C2D12" aria-hidden="true">P</div>
+          <div class="mk-id"><h3 class="mk-nom">Properly</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Ménage & opérations">Ménage & opérations</p>
+        <p class="mk-desc" title="Checklists de ménage et contrôle qualité en photos.">Checklists de ménage et contrôle qualité en photos.</p>
+        <div class="mk-liens"><a href="/comparatif-turnoverbnb-properly" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="photo">
-        <div class="mk-logo" style="color:#111827" aria-hidden="true">M</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Matterport</h3></div>
-          <p class="mk-cat">Photo & visite virtuelle</p>
-          <p class="mk-desc">Visite virtuelle 3D du logement, intégrable à ton annonce ou ton site.</p>
-          <div class="mk-liens"><a href="/comparatif-matterport-cubicasa" class="mk-l mk-l1">Matterport vs CubiCasa <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#111827" aria-hidden="true">M</div>
+          <div class="mk-id"><h3 class="mk-nom">Matterport</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Photo & visite virtuelle">Photo & visite virtuelle</p>
+        <p class="mk-desc" title="Visite virtuelle 3D du logement, intégrable à ton annonce ou ton site.">Visite virtuelle 3D du logement, intégrable à ton annonce ou ton site.</p>
+        <div class="mk-liens"><a href="/comparatif-matterport-cubicasa" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="photo">
-        <div class="mk-logo" style="color:#0D9488" aria-hidden="true">C</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">CubiCasa</h3></div>
-          <p class="mk-cat">Photo & visite virtuelle</p>
-          <p class="mk-desc">Plan du logement généré en le scannant avec un smartphone.</p>
-          <div class="mk-liens"><a href="/comparatif-matterport-cubicasa" class="mk-l mk-l1">Matterport vs CubiCasa <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#0D9488" aria-hidden="true">C</div>
+          <div class="mk-id"><h3 class="mk-nom">CubiCasa</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Photo & visite virtuelle">Photo & visite virtuelle</p>
+        <p class="mk-desc" title="Plan du logement généré en le scannant avec un smartphone.">Plan du logement généré en le scannant avec un smartphone.</p>
+        <div class="mk-liens"><a href="/comparatif-matterport-cubicasa" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="marche">
-        <div class="mk-logo" style="color:#E11D48" aria-hidden="true">A</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">AirDNA</h3></div>
-          <p class="mk-cat">Étude de marché</p>
-          <p class="mk-desc">Données du marché LCD : taux d’occupation, prix moyens, saisonnalité par ville.</p>
-          <div class="mk-liens"><a href="/comparatif-airdna-mashvisor" class="mk-l mk-l1">AirDNA vs Mashvisor <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#E11D48" aria-hidden="true">A</div>
+          <div class="mk-id"><h3 class="mk-nom">AirDNA</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Étude de marché">Étude de marché</p>
+        <p class="mk-desc" title="Données du marché LCD : taux d’occupation, prix moyens, saisonnalité par ville.">Données du marché LCD : taux d’occupation, prix moyens, saisonnalité par ville.</p>
+        <div class="mk-liens"><a href="/comparatif-airdna-mashvisor" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="marche">
-        <div class="mk-logo" style="color:#6D28D9" aria-hidden="true">M</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Mashvisor</h3></div>
-          <p class="mk-cat">Étude de marché</p>
-          <p class="mk-desc">Analyse de rentabilité immobilière, surtout sur le marché américain.</p>
-          <div class="mk-liens"><a href="/comparatif-airdna-mashvisor" class="mk-l mk-l1">AirDNA vs Mashvisor <i class="ph-bold ph-arrow-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#6D28D9" aria-hidden="true">M</div>
+          <div class="mk-id"><h3 class="mk-nom">Mashvisor</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Étude de marché">Étude de marché</p>
+        <p class="mk-desc" title="Analyse de rentabilité immobilière, surtout sur le marché américain.">Analyse de rentabilité immobilière, surtout sur le marché américain.</p>
+        <div class="mk-liens"><a href="/comparatif-airdna-mashvisor" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="marketing">
-        <div class="mk-logo" style="color:#0B996E" aria-hidden="true">B</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Brevo</h3></div>
-          <p class="mk-cat">Marketing & email</p>
-          <p class="mk-desc">Emailing et SMS, solution française, pour fidéliser tes anciens voyageurs.</p>
-          <div class="mk-liens"><a href="https://www.brevo.com/fr/" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#0B996E" aria-hidden="true">B</div>
+          <div class="mk-id"><h3 class="mk-nom">Brevo</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Marketing & email">Marketing & email</p>
+        <p class="mk-desc" title="Emailing et SMS, solution française, pour fidéliser tes anciens voyageurs.">Emailing et SMS, solution française, pour fidéliser tes anciens voyageurs.</p>
+        <div class="mk-liens"><a href="https://www.brevo.com/fr/" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="marketing">
-        <div class="mk-logo" style="color:#CA8A04" aria-hidden="true">M</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">Mailchimp</h3></div>
-          <p class="mk-cat">Marketing & email</p>
-          <p class="mk-desc">Emailing et automatisations, très répandu.</p>
-          <div class="mk-liens"><a href="https://mailchimp.com/fr/" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#CA8A04" aria-hidden="true">M</div>
+          <div class="mk-id"><h3 class="mk-nom">Mailchimp</h3><span class="mk-badge b-ref">Référencé</span></div>
         </div>
+        <p class="mk-offre is-cat" title="Marketing & email">Marketing & email</p>
+        <p class="mk-desc" title="Emailing et automatisations, très répandu.">Emailing et automatisations, très répandu.</p>
+        <div class="mk-liens"><a href="https://mailchimp.com/fr/" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
         </div>
       </div>

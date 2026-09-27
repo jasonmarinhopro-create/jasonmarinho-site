@@ -36,17 +36,24 @@ function lien(l, i) {
   return `<a href="${l.href}" class="${cls}">${l.label}${arrow}</a>`
 }
 
+// Toutes les cartes ont exactement la même structure (en-tête logo + nom +
+// badge, 1 ligne d'accroche, 3 lignes de description, 1 rangée de liens en
+// bas) pour que la grille reste équilibrée : texte coupé proprement au-delà,
+// texte complet au survol (title).
 function carte(o) {
-  const badge = o.badge ? `<span class="mk-badge ${BADGES[o.badge][1]}">${BADGES[o.badge][0]}</span>` : ''
-  const offre = o.offre ? `<p class="mk-offre">${o.offre}</p>` : `<p class="mk-cat">${o.cats.map(c => catById[c].label).join(' · ')}</p>`
+  const chip = o.badge
+    ? `<span class="mk-badge ${BADGES[o.badge][1]}">${BADGES[o.badge][0]}</span>`
+    : '<span class="mk-badge b-ref">Référencé</span>'
+  const accroche = o.offre || catById[o.cats[0]].label
+  const liens = o.liens.slice(0, 2)
   return `      <article class="mk-card${o.badge ? ' is-offre' : ''}" data-cats="${o.cats.join(' ')}"${o.badge ? ' data-offre="1"' : ''}>
-        <div class="mk-logo" style="color:${o.couleur}" aria-hidden="true">${o.mono}</div>
-        <div class="mk-body">
-          <div class="mk-top"><h3 class="mk-nom">${o.nom}</h3>${badge}</div>
-          ${offre}
-          <p class="mk-desc">${o.desc}</p>
-          ${o.liens.length ? `<div class="mk-liens">${o.liens.map(lien).join('')}</div>` : ''}
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:${o.couleur}" aria-hidden="true">${o.mono}</div>
+          <div class="mk-id"><h3 class="mk-nom">${o.nom}</h3>${chip}</div>
         </div>
+        <p class="mk-offre${o.offre ? '' : ' is-cat'}" title="${accroche}">${accroche}</p>
+        <p class="mk-desc" title="${o.desc.replace(/"/g, '&quot;')}">${o.desc}</p>
+        <div class="mk-liens">${liens.map(lien).join('')}</div>
       </article>`
 }
 
@@ -75,26 +82,28 @@ const html = `<!-- MARKET:START -->
     .mk-f.star.on{color:#7a5a00}
     .mk-f.star.on::after{background:var(--y)}
     .mk-sep{height:1px;background:rgba(0,76,63,.1);margin:8px 0}
-    .mk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:44px 36px}
-    .mk-card{display:grid;grid-template-columns:64px 1fr;gap:18px;align-items:start}
+    .mk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;align-items:stretch}
+    .mk-card{display:flex;flex-direction:column;background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:16px;padding:22px;min-width:0;transition:border-color .15s,box-shadow .15s,transform .15s}
+    .mk-card:hover{border-color:rgba(0,76,63,.22);box-shadow:0 10px 28px rgba(0,76,63,.07);transform:translateY(-2px)}
+    .mk-card.is-offre{border-color:rgba(255,213,107,.7);background:linear-gradient(180deg,rgba(255,213,107,.07),#fff 60%)}
     .mk-card[hidden]{display:none}
-    .mk-logo{width:64px;height:64px;border-radius:14px;background:#fff;border:1px solid rgba(0,76,63,.12);box-shadow:0 1px 2px rgba(0,0,0,.03);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:28px;font-weight:600;line-height:1}
-    .mk-card.is-offre .mk-logo{border-color:rgba(255,213,107,.8);box-shadow:0 0 0 3px rgba(255,213,107,.18)}
-    .mk-body{min-width:0}
-    .mk-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-    .mk-nom{font-family:'Fraunces',serif;font-size:1.45rem;font-weight:400;color:var(--td);margin:0;letter-spacing:-.02em;line-height:1.15}
-    .mk-badge{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:3px 7px;border-radius:5px;white-space:nowrap}
+    .mk-head-c{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+    .mk-logo{flex:0 0 52px;width:52px;height:52px;border-radius:13px;background:#fff;border:1px solid rgba(0,76,63,.12);box-shadow:0 1px 2px rgba(0,0,0,.03);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:24px;font-weight:600;line-height:1}
+    .mk-id{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+    .mk-nom{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:400;color:var(--td);margin:0;letter-spacing:-.02em;line-height:1.15;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .mk-badge{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:3px 7px;border-radius:5px;white-space:nowrap;line-height:1.4}
     .b-aff{background:rgba(255,213,107,.3);color:#7a5a00}
     .b-mem{background:rgba(21,128,61,.1);color:#15803d}
     .b-fond{background:rgba(0,76,63,.08);color:var(--g)}
-    .mk-offre{font-size:14.5px;font-weight:600;color:var(--td);margin:0 0 6px;line-height:1.45}
-    .mk-cat{font-size:12px;font-weight:600;letter-spacing:.3px;color:var(--tl);margin:0 0 6px}
-    .mk-desc{font-size:14px;line-height:1.6;color:var(--tl);margin:0}
-    .mk-liens{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px}
+    .b-ref{background:rgba(0,0,0,.04);color:var(--tl)}
+    .mk-offre{font-size:14.5px;font-weight:600;color:var(--td);margin:0 0 6px;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .mk-offre.is-cat{color:var(--tm);font-weight:500}
+    .mk-desc{font-size:14px;line-height:1.6;color:var(--tl);margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;height:calc(1.6em * 3)}
+    .mk-liens{display:flex;align-items:center;gap:14px;margin-top:auto;padding-top:18px;white-space:nowrap}
     .mk-l{font-size:13.5px;font-weight:600;color:var(--g);text-decoration:none;display:inline-flex;align-items:center;gap:5px}
     .mk-l i{font-size:11px}
     .mk-l:hover{text-decoration:underline}
-    .mk-l1{background:var(--g);color:#fff;padding:8px 13px;border-radius:8px}
+    .mk-l1{background:var(--g);color:#fff;padding:9px 14px;border-radius:8px}
     .mk-l1:hover{background:var(--gd);text-decoration:none}
     .mk-note{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.6;color:var(--tl);background:var(--cr);border-radius:12px;padding:14px 16px;margin:0 0 36px}
     .mk-note i{font-size:17px;color:var(--g);margin-top:1px}
@@ -110,7 +119,7 @@ const html = `<!-- MARKET:START -->
       .mk-f.on span{color:rgba(255,255,255,.7)}
       .mk-f.on::after{display:none}
       .mk-f.star.on{background:var(--y);color:var(--gd);border-color:var(--y)}
-      .mk-grid{grid-template-columns:1fr;gap:30px}
+      .mk-grid{grid-template-columns:1fr;gap:14px}
     }
   </style>
   <div class="s-in">
