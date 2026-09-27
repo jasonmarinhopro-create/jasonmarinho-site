@@ -8,11 +8,11 @@ updatedAt: "2026-09-27"
 
 ## Découverte : gratuit, sans carte bancaire
 
-Tu peux utiliser l'app gratuitement, sans limite de durée. La formule Découverte couvre le quotidien d'un hôte : calendrier synchronisé avec Airbnb et Booking, planning ménage, déclarations voyageurs, journal des revenus et des charges, simulateurs, audit de ta fiche Google, modèles de messages, sécurité voyageur, guide LCD et 2 formations au choix. Tu peux poser **2 questions par mois** dans Questions & réponses.
+Tu peux utiliser l'app gratuitement, sans limite de durée ni de nombre de logements. La formule Découverte couvre le quotidien d'un hôte : calendrier synchronisé avec Airbnb et Booking, planning ménage, déclarations voyageurs, journal des revenus et des charges, simulateurs, audit de ta fiche Google, modèles de messages, sécurité voyageur, guide LCD et 2 formations au choix. Tu peux poser **2 questions par mois** dans Questions & réponses.
 
 ## Standard : pour les réservations directes
 
-Standard ajoute ce qui sert à louer en direct et à piloter plusieurs biens : logements illimités, contrats signés en ligne avec paiement Stripe, caution par empreinte bancaire, état des lieux digital, performances détaillées, toutes les formations et des questions illimitées.
+Standard ajoute ce qui sert à louer en direct : contrats signés en ligne avec paiement Stripe, caution par empreinte bancaire, état des lieux digital, performances détaillées, toutes les formations et des questions illimitées.
 
 > La liste complète et à jour est sur la page **Mon abonnement**.
 

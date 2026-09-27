@@ -77,7 +77,9 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
         if ('error' in prep) throw new Error(prep.error)
         const sb = createClient()
         paths = await Promise.all(prep.uploads.map(async (u, i) => {
-          const blob = await compressImage(files[i])
+          // 1280 px suffisent pour constater l'état d'une pièce : ~2x plus léger
+          // que 1600 px (stockage Supabase gratuit limité à 1 Go)
+          const blob = await compressImage(files[i], 1280, 0.72)
           const { error } = await sb.storage.from('menage-photos').uploadToSignedUrl(u.path, u.token, blob, { contentType: 'image/jpeg' })
           if (error) throw new Error('Une photo n’a pas pu être envoyée. Réessaie avec une connexion plus stable.')
           return u.path

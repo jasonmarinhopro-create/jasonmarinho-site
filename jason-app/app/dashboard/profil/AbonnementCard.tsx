@@ -89,7 +89,7 @@ export default function AbonnementCard({ planLabel, subscription }: Props) {
 
       {isFree && (
         <p style={s.note}>
-          Tu es en plan gratuit Découverte. Passe en Standard pour débloquer logements illimités, contrats Stripe et toutes les formations.
+          Tu es en plan gratuit Découverte. Passe en Standard pour débloquer les contrats avec paiement Stripe, la caution par carte et toutes les formations.
         </p>
       )}
 

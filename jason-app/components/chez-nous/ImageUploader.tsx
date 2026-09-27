@@ -4,6 +4,7 @@ import { useState, useRef, useTransition } from 'react'
 import Image from 'next/image'
 import { ImageSquare, Plus, X } from '@phosphor-icons/react/dist/ssr'
 import { uploadPostImage } from '@/app/dashboard/chez-nous/actions'
+import { compressImage } from '@/lib/images/compress'
 
 type Props = {
   value: string[]
@@ -29,8 +30,17 @@ export default function ImageUploader({ value, onChange, max = 3 }: Props) {
     startTransition(async () => {
       const newUrls: string[] = []
       for (const file of toUpload) {
+        // Compression dans le navigateur avant envoi : une photo de téléphone
+        // (3 à 5 Mo) dépassait la limite de 1 Mo des server actions, et pesait
+        // sur le stockage Supabase. GIF et fichiers déjà légers passent tels quels.
+        let upload: File = file
+        if (file.type !== 'image/gif' && file.size > 400_000) {
+          const blob = await compressImage(file, 1600, 0.8)
+          // compressImage renvoie l'original s'il ne sait pas le décoder
+          if (blob !== file) upload = new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' })
+        }
         const fd = new FormData()
-        fd.append('file', file)
+        fd.append('file', upload)
         const res = await uploadPostImage(fd)
         if (res.ok) newUrls.push(res.url)
         else { setError(res.error); break }

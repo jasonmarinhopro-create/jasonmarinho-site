@@ -289,6 +289,13 @@ import { House } from '@phosphor-icons/react'
 - Affichée par `components/lcd/RegulationAlert.tsx` dans l'estimateur (`SimulateursUI.tsx`, hôte et `/dashboard/investir/estimateur`, avec alerte si les nuits estimées dépassent le plafond résidence principale), une ligne « Réglementation » dans le comparateur de villes, un résumé sur chaque projet investisseur, et une section 6 dans le PDF banque (`lib/lcd/previsionnel-pdf.ts`, ligne d'alerte en page 1).
 - Tests : `lib/lcd/regulation.test.ts` vérifie notamment que chaque ville réglementée existe dans `market-benchmarks.ts` (sinon l'alerte ne s'affiche jamais). Revérifier les règles une fois par an.
 
+## Quotas des offres gratuites Supabase / Vercel (audit sept. 2026)
+
+- **Supabase Free** : 500 Mo de base, **1 Go de fichiers**, 5 Go d'egress (+ 5 Go en cache), 50 000 utilisateurs actifs/mois, pause après 7 jours sans activité (évitée par le cron `/api/cron/ping-db` tous les 3 jours), **aucune sauvegarde**. Plus gros consommateurs : photos de ménage (bucket `menage-photos`, jusqu'à 8 par ménage), images Questions & réponses, portfolios photographes ; en base, `site_visits` (une ligne par page vue, purge > 30 jours) et les signatures en base64 (`contracts.signature_image`, ne pas la sélectionner quand on n'affiche pas la signature).
+- **Vercel Hobby** : 100 Go de transfert, 1 M de requêtes edge, 1 M d'invocations de fonctions, 4 h de CPU actif, 6 000 min de build par mois, **pour le compte entier** (site + app). Dépassement = service suspendu jusqu'à 30 jours, pas de facturation. **Usage commercial interdit en Hobby** (vente d'abonnements = commercial) : passer en Pro (20 $/mois).
+- Réglages d'économie : photos de ménage compressées à 1280 px (JPEG 0,72) ; images Questions & réponses compressées dans le navigateur (avant : envoyées brutes, 5 Mo max, et bloquées par la limite de 1 Mo des server actions) ; JS/CSS du site statique en cache navigateur 1 h (`vercel.json`, avant : revalidés à chaque page vue, une requête edge de plus par fichier).
+- Pistes non faites (décision de Jason requise) : durée de conservation des photos de ménage (purge automatique), ignorer les builds d'un projet quand seul l'autre a changé (`ignoreCommand`, à tester avec les deploy hooks des fiches pros), Supabase Pro pour les sauvegardes.
+
 ## Fonctions serverless du site statique : 12 maximum
 
 - Le forfait Vercel Hobby refuse tout déploiement qui contient plus de **12 fonctions serverless** (chaque fichier sous `api/` du site statique ; le dashboard Next.js n'est pas concerné). Le 27/09/2026, l'ajout de `api/photographer/portfolio.js` (13e fonction) a fait échouer tous les déploiements du site pendant plusieurs heures.

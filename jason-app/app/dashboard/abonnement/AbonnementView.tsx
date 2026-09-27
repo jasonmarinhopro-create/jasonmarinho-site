@@ -15,7 +15,7 @@ import type { getSubscriptionDetails, listRecentInvoices } from '@/lib/stripe/su
 // formules revues en sept. 2026 (planning ménage, déclarations, Questions &
 // réponses avec 2 questions par mois en gratuit, audit Google ouvert à tous).
 const DECOUVERTE_FEATURES = [
-  '1 logement, voyageurs illimités',
+  'Logements et voyageurs illimités',
   'Calendrier, planning ménage + journal des revenus',
   'Déclarations voyageurs (fiche de police, SIBA)',
   'Questions & réponses : 2 questions par mois',
@@ -26,7 +26,6 @@ const DECOUVERTE_FEATURES = [
 ]
 
 const STANDARD_FEATURES = [
-  'Logements illimités',
   'Contrats signés en ligne (FR, PT, EN) + paiement Stripe',
   'Caution par empreinte bancaire',
   'État des lieux digital',
@@ -283,7 +282,7 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
                       </>
                     )}
                   </div>
-                  <p style={styles.planDesc}>Logements illimités, contrats, paiement en ligne et formations complètes.</p>
+                  <p style={styles.planDesc}>Contrats, paiement en ligne et formations complètes.</p>
                   <div style={styles.featureList}>
                     {STANDARD_FEATURES.map(f => (
                       <div key={f} style={styles.featureItem}>
