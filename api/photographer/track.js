@@ -77,5 +77,15 @@ module.exports = async function handler(req, res) {
     body: JSON.stringify(rpc.args),
   }).catch(err => console.warn('[photographer/track] rpc failed', err))
 
+  // Vues par jour (tendance « ce mois-ci » dans l'espace pro, migration
+  // 20260927_110). Best-effort : sans la migration, l'appel échoue sans effet.
+  if (event === 'view') {
+    await fetch(`${SUPABASE_URL}/rest/v1/rpc/increment_pro_fiche_view_daily`, {
+      method: 'POST',
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_kind: 'photographer', p_id: photographerId }),
+    }).catch(err => console.warn('[photographer/track] daily rpc failed', err))
+  }
+
   return res.status(200).json({ ok: true })
 }

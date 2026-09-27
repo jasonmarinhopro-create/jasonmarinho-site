@@ -1,5 +1,7 @@
 'use client'
 
+import ViewsTrend from '@/components/pros/ViewsTrend'
+import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { useState, useTransition } from 'react'
 import { Sparkle, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, ShieldCheck, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
 import { updateCleanerFiche, createCustomerPortalSession, uploadCleanerLogo, deleteCleanerLogo } from './actions'
@@ -27,6 +29,7 @@ interface Props {
   cleaner: Cleaner
   kpis: { views: number; contacts: number; clics: number; daysActive: number }
   isAdminPreview?: boolean
+  viewsTrend?: ViewsTrendData
 }
 
 const PRESTATIONS: Array<[string, string]> = [
@@ -44,7 +47,7 @@ const LANGUES: Array<[string, string]> = [
   ['de', 'Deutsch'], ['pt', 'Português'], ['ar', 'العربية'],
 ]
 
-export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false }: Props) {
+export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, viewsTrend }: Props) {
   const [form, setForm] = useState({
     full_name: cleaner.full_name,
     pseudo: cleaner.pseudo ?? '',
@@ -190,8 +193,10 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false }:
         <ShareFicheBlock url={publicUrl} displayName={cleaner.pseudo || cleaner.full_name} />
       )}
 
+      {viewsTrend && <ViewsTrend trend={viewsTrend} metier="ménage" />}
+
       <div style={s.kpiRow}>
-        <Kpi v={kpis.views} l="Vues fiche" Icon={Eye} />
+        <Kpi v={kpis.views} l="Vues fiche (total)" Icon={Eye} />
         <Kpi v={kpis.clics} l="Clics site / insta" Icon={CursorClick} />
         <Kpi v={kpis.contacts} l="Contacts reçus" Icon={ChatCircle} />
         <Kpi v={kpis.daysActive} l="Jours d'activité" Icon={Calendar} />

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getAuthUser } from '@/lib/supabase/auth-user'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import MaFicheMenage from './MaFicheMenage'
+import { getViewsTrend } from '@/lib/pros/views'
 
 export const metadata = { title: 'Ma fiche équipe ménage' }
 export const dynamic = 'force-dynamic'
@@ -76,6 +77,7 @@ export default async function Page({ searchParams }: PageProps) {
     )
   }
 
+  const viewsTrend = await getViewsTrend(admin, 'cleaner', cleaner.id)
   const createdAt = new Date(cleaner.created_at)
   const daysActive = Math.max(1, Math.floor((Date.now() - createdAt.getTime()) / 86400000))
 
@@ -89,6 +91,7 @@ export default async function Page({ searchParams }: PageProps) {
         daysActive,
       }}
       isAdminPreview={isAdminPreview}
+      viewsTrend={viewsTrend}
     />
   )
 }

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getAuthUser } from '@/lib/supabase/auth-user'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import MaFichePhotographe from './MaFichePhotographe'
+import { getViewsTrend } from '@/lib/pros/views'
 
 export const metadata = { title: 'Ma fiche photographe' }
 export const dynamic = 'force-dynamic'
@@ -78,6 +79,7 @@ export default async function Page({ searchParams }: PageProps) {
     )
   }
 
+  const viewsTrend = await getViewsTrend(admin, 'photographer', photographer.id)
   const createdAt = new Date(photographer.created_at)
   const daysActive = Math.max(1, Math.floor((Date.now() - createdAt.getTime()) / 86400000))
 
@@ -91,6 +93,8 @@ export default async function Page({ searchParams }: PageProps) {
         daysActive,
       }}
       isAdminPreview={isAdminPreview}
+      viewsTrend={viewsTrend}
+      portfolioPublicBase={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/pro-portfolio/`}
     />
   )
 }

@@ -11,6 +11,7 @@ import {
   ArrowCounterClockwise, X, CalendarCheck, Lightning,
 } from '@phosphor-icons/react/dist/ssr'
 import { createClient } from '@/lib/supabase/client'
+import { compressImage } from '@/lib/images/compress'
 import { addPlanningLink, removePlanningLink, preparePhotoUploads, markMenageTermine, annulerMenageTermine } from './actions'
 
 export interface PlanningClient { linkId: string; hostId: string; label: string; expired: boolean }
@@ -23,21 +24,6 @@ export interface PlanningSlot {
 }
 
 const MAX_PHOTOS = 8
-
-/** Redimensionne une photo (1600 px max, JPEG) pour un envoi rapide en 4G. */
-async function compress(file: File): Promise<Blob> {
-  try {
-    const bmp = await createImageBitmap(file)
-    const scale = Math.min(1, 1600 / Math.max(bmp.width, bmp.height))
-    const canvas = document.createElement('canvas')
-    canvas.width = Math.round(bmp.width * scale)
-    canvas.height = Math.round(bmp.height * scale)
-    canvas.getContext('2d')!.drawImage(bmp, 0, 0, canvas.width, canvas.height)
-    return await new Promise<Blob>((res, rej) => canvas.toBlob(b => (b ? res(b) : rej(new Error('compression'))), 'image/jpeg', 0.8))
-  } catch {
-    return file // format non décodable par le navigateur : envoi tel quel
-  }
-}
 
 function dayLabel(date: string, today: string): string {
   const d = new Date(date + 'T12:00:00')
@@ -85,7 +71,7 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
         if ('error' in prep) throw new Error(prep.error)
         const sb = createClient()
         paths = await Promise.all(prep.uploads.map(async (u, i) => {
-          const blob = await compress(files[i])
+          const blob = await compressImage(files[i])
           const { error } = await sb.storage.from('menage-photos').uploadToSignedUrl(u.path, u.token, blob, { contentType: 'image/jpeg' })
           if (error) throw new Error('Une photo n’a pas pu être envoyée. Réessaie avec une connexion plus stable.')
           return u.path

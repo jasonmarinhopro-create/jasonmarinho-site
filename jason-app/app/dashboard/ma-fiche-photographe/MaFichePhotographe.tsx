@@ -1,8 +1,11 @@
 'use client'
 
+import ViewsTrend from '@/components/pros/ViewsTrend'
+import PortfolioManager from '@/components/pros/PortfolioManager'
+import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { useState, useTransition } from 'react'
 import { Camera, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
-import { updatePhotographerFiche, createCustomerPortalSession, uploadPhotographerLogo, deletePhotographerLogo } from './actions'
+import { updatePhotographerFiche, createCustomerPortalSession, uploadPhotographerLogo, deletePhotographerLogo, preparePortfolioUploads, addPortfolioPhotos, removePortfolioPhoto, movePortfolioPhoto } from './actions'
 import ShareFicheBlock from '@/components/pro/ShareFicheBlock'
 
 type Photographer = {
@@ -10,6 +13,7 @@ type Photographer = {
   zone_couverte: string | null; bio: string | null; specialite: string | null
   tarif_min: number | null; tarif_max: number | null
   portfolio_url: string; instagram_handle: string | null
+  portfolio_photos?: string[] | null
   telephone: string | null
   tier: string; status: string
   slug: string | null
@@ -23,9 +27,11 @@ interface Props {
   photographer: Photographer
   kpis: { views: number; contacts: number; clics: number; daysActive: number }
   isAdminPreview?: boolean
+  viewsTrend?: ViewsTrendData
+  portfolioPublicBase?: string
 }
 
-export default function MaFichePhotographe({ photographer, kpis, isAdminPreview = false }: Props) {
+export default function MaFichePhotographe({ photographer, kpis, isAdminPreview = false, viewsTrend, portfolioPublicBase }: Props) {
   const [form, setForm] = useState({
     full_name: photographer.full_name,
     ville: photographer.ville,
@@ -149,12 +155,29 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         <ShareFicheBlock url={publicUrl} displayName={photographer.full_name} />
       )}
 
+      {viewsTrend && <ViewsTrend trend={viewsTrend} metier="photographe" />}
+
       <div style={s.kpiRow}>
-        <Kpi v={kpis.views} l="Vues fiche" Icon={Eye} />
+        <Kpi v={kpis.views} l="Vues fiche (total)" Icon={Eye} />
         <Kpi v={kpis.clics} l="Clics portfolio / insta" Icon={CursorClick} />
         <Kpi v={kpis.contacts} l="Contacts reçus" Icon={ChatCircle} />
         <Kpi v={kpis.daysActive} l="Jours d'activité" Icon={Calendar} />
       </div>
+
+      {portfolioPublicBase && (
+        <section style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, padding: '16px 18px', margin: '18px 0' }}>
+          <h3 style={{ ...s.sectionTitle, marginTop: 0 }}>Mon portfolio</h3>
+          <PortfolioManager
+            initial={photographer.portfolio_photos ?? []}
+            publicBase={portfolioPublicBase}
+            targetId={isAdminPreview ? photographer.id : undefined}
+            onPrepare={preparePortfolioUploads}
+            onAdd={addPortfolioPhotos}
+            onRemove={removePortfolioPhoto}
+            onMove={movePortfolioPhoto}
+          />
+        </section>
+      )}
 
       {err && <div style={s.errBanner}><Warning size={14} weight="fill" /> {err}</div>}
       {ok && <div style={s.okBanner}><CheckCircle size={14} weight="fill" /> {ok}</div>}
