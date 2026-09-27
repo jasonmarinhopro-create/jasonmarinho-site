@@ -1,6 +1,6 @@
+import { getServiceClient } from '@/lib/supabase/service'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
 import SecuriteView from './SecuriteView'
 
 const POSITIVE_TYPES = [
@@ -16,13 +16,6 @@ const POSITIVE_TYPES = [
 // base communautaire (« 200+ voyageurs signalés par la communauté ») doit
 // inclure tous les signalements validés, pas juste les miens. Service role
 // pour lecture seule des stats agrégées.
-function getServiceClient(): SupabaseClient<any, 'public', any> {
-  return createServiceClient<any, 'public', any>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 export default async function SecuritePage() {
   const [profile] = await Promise.all([getProfile()])

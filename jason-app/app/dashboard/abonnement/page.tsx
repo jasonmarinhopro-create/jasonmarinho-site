@@ -1,8 +1,8 @@
 export const dynamic = 'force-dynamic'
 
+import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
 import { getAuthUser } from '@/lib/supabase/auth-user'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { redirect } from 'next/navigation'
 import { Check, Wrench, Star, ArrowRight, CheckCircle, XCircle, ShieldStar, Crown, LockKey } from '@phosphor-icons/react/dist/ssr'
 import DriingRequestForm from './DriingRequestForm'
@@ -89,11 +89,7 @@ export default async function AbonnementPage({
   // Same source de vérité que /api/founder-seats : on évite un round-trip HTTP.
   let founderRemaining = FOUNDER_TOTAL_SEATS
   try {
-    const adminDb = createServiceClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      { auth: { autoRefreshToken: false, persistSession: false } },
-    )
+    const adminDb = getServiceClient()
     const foundingPriceIds = [
       STRIPE_PLANS.STANDARD_FOUNDING_MONTHLY,
       STRIPE_PLANS.STANDARD_FOUNDING_YEARLY,

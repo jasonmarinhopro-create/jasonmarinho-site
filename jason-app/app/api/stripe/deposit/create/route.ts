@@ -1,18 +1,10 @@
+import { getServiceClient as createServiceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
 const log = logger('api/stripe/deposit/create')
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
-
-function createServiceClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  )
-}
 
 // POST /api/stripe/deposit/create
 // Body: { token }   (token du contrat)

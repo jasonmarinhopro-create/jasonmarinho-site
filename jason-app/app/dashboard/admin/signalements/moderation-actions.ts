@@ -1,7 +1,7 @@
 'use server'
 
+import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { buildEmail, emailInfoBlock, emailBtn, emailNote, emailP, escHtml } from '@/lib/email/template'
 import { revalidatePath } from 'next/cache'
@@ -9,14 +9,6 @@ import { revalidatePath } from 'next/cache'
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
-
-function getServiceClient(): SupabaseClient<any, 'public', any> {
-  return createServiceClient<any, 'public', any>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 async function requireAdmin(): Promise<{ userId: string } | { error: string }> {
   const supabase = await createClient()

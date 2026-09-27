@@ -1,20 +1,12 @@
 'use server'
 
+import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
 
 const log = logger('ma-fiche-photographe/actions')
-
-function getServiceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 /**
  * Résout la fiche cible :
@@ -211,7 +203,6 @@ export async function createCustomerPortalSession(targetId?: string): Promise<{ 
   }
 }
 
-
 /**
  * Demandes reçues : met à jour le statut pipeline d'une demande
  * (nouvelle → répondue → devis envoyé → gagnée/perdue).
@@ -265,7 +256,6 @@ export async function updateContactNotes(
   revalidatePath('/dashboard/ma-fiche-photographe')
   return { success: true }
 }
-
 
 /**
  * Demandes reçues : suppression d'une demande par le pro.

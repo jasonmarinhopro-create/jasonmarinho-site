@@ -1,8 +1,8 @@
 'use server'
 
+import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { checkAllUrls } from '@/lib/seo/check-indexation'
 
 async function requireAdmin() {
@@ -11,14 +11,6 @@ async function requireAdmin() {
   if (!user) throw new Error('Non authentifié')
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
   if (profile?.role !== 'admin') throw new Error('Non autorisé')
-}
-
-function serviceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } },
-  )
 }
 
 // Une passe (~50s) ne suffit pas pour ~500 URLs (latence réseau réelle vers

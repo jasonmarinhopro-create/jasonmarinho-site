@@ -3,7 +3,7 @@
 // pour le pourquoi (compte de service impossible : règle d'organisation
 // Google Cloud par défaut qui bloque la création de clés).
 
-import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { decryptToken } from '@/lib/security/crypto'
 import { refreshAccessToken } from '@/lib/google/oauth'
 
@@ -15,14 +15,6 @@ const SERVICE_KEY = 'search_console'
 // propriété "préfixe d'URL" côté Search Console, remplacer par
 // "https://jasonmarinho.com/".
 export const SEARCH_CONSOLE_SITE_URL = 'sc-domain:jasonmarinho.com'
-
-function serviceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } },
-  )
-}
 
 export async function isConfigured(): Promise<boolean> {
   const db = serviceClient()

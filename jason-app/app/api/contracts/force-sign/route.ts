@@ -1,16 +1,8 @@
+import { getServiceClient as createServiceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { logger } from '@/lib/logger'
 const log = logger('api/contracts/force-sign')
-
-function createServiceClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  )
-}
 
 // POST /api/contracts/force-sign
 // Body: { contract_id, signature_date? }

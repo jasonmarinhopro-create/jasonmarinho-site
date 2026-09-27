@@ -1,18 +1,10 @@
+import { getServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
 import { getAuthUser } from '@/lib/supabase/auth-user'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
 import CreerFicheMenage from './CreerFicheMenage'
 
 export const metadata = { title: 'Créer ma fiche équipe ménage' }
 export const dynamic = 'force-dynamic'
-
-function getServiceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 const FOUNDER_QUOTA = 20
 

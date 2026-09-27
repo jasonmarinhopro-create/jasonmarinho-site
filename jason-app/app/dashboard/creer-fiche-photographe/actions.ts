@@ -1,7 +1,7 @@
 'use server'
 
+import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
 
@@ -10,14 +10,6 @@ const FOUNDER_QUOTA = 20
 const FOUNDER_PRICE_ID = process.env.STRIPE_PHOTOGRAPHER_FOUNDER_PRICE_ID || ''
 const STANDARD_PRICE_ID = process.env.STRIPE_PHOTOGRAPHER_STANDARD_PRICE_ID || ''
 const APP_URL = 'https://app.jasonmarinho.com'
-
-function getServiceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 export interface PhotographerSignupPayload {
   fullName: string

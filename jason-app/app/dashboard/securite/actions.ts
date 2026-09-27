@@ -1,7 +1,7 @@
 'use server'
 
+import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { buildEmail, emailInfoBlock, emailBtn, emailNote, emailP, escHtml } from '@/lib/email/template'
 import { rateLimit } from '@/lib/security/rate-limit'
@@ -14,13 +14,6 @@ const FROM_EMAIL = 'notifications@jasonmarinho.com'
 // limite chaque hôte à ses propres reports, ce qui casserait la fonctionnalité
 // "recherche dans la base communautaire". On vérifie l'auth de l'utilisateur
 // AVANT de bypasser la RLS pour le SELECT lecture seule.
-function getServiceClient(): SupabaseClient<any, 'public', any> {
-  return createServiceClient<any, 'public', any>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 export async function searchGuest(query: string): Promise<{
   results: Array<{

@@ -1,7 +1,7 @@
 'use server'
 
+import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
@@ -15,14 +15,6 @@ const ALLOWED_PRESTATIONS = new Set([
 const ALLOWED_EQUIPE = new Set(['solo', 'duo', 'equipe_3_5', 'equipe_6_plus'])
 const ALLOWED_DELAI = new Set(['jour_meme', '24h', '48h', '72h'])
 const ALLOWED_LANGUES = new Set(['fr', 'en', 'es', 'it', 'de', 'pt', 'ar', 'zh'])
-
-function getServiceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 /**
  * Cleaner connecté → sa propre fiche ; admin avec targetId → édition
@@ -224,7 +216,6 @@ export async function createCustomerPortalSession(targetId?: string): Promise<{ 
   }
 }
 
-
 /**
  * Demandes reçues : met à jour le statut pipeline d'une demande
  * (nouvelle → répondue → devis envoyé → gagnée/perdue).
@@ -278,7 +269,6 @@ export async function updateContactNotes(
   revalidatePath('/dashboard/ma-fiche-menage')
   return { success: true }
 }
-
 
 /**
  * Demandes reçues : suppression d'une demande par le pro.

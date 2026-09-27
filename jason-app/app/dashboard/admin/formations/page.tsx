@@ -1,17 +1,9 @@
+import { getServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
 import FormationsAdmin from './FormationsAdmin'
 
 export const metadata = { title: 'Formations, Admin, Jason Marinho' }
-
-function getServiceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 export default async function AdminFormationsPage() {
   const supabase = await createClient()

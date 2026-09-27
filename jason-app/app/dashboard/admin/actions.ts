@@ -1,8 +1,8 @@
 'use server'
 
+import { getServiceClient } from '@/lib/supabase/service'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailP, emailInfoBlock } from '@/lib/email/template'
 import { CACHE_TAGS } from '@/lib/queries/cache'
@@ -10,14 +10,6 @@ import { invalidateProfileCache } from '@/lib/queries/profile'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
-
-function getServiceClient() {
-  return createAdminClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 // getAdminClient : vérifie le rôle admin via le client SSR (cookies),
 // puis retourne le SERVICE ROLE client pour bypasser la RLS sur les

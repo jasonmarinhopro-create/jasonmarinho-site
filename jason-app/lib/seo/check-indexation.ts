@@ -12,7 +12,7 @@
 // pages déjà faites. Le bouton "Vérifier l'indexation" ré-appelle
 // automatiquement tant qu'il reste des pages (cf. actions.ts / IndexationUI).
 
-import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { fetchSitemapEntries } from '@/lib/seo/sitemap'
 import { inspectUrl, isConfigured } from '@/lib/google/search-console'
 import { logger } from '@/lib/logger'
@@ -20,14 +20,6 @@ import { logger } from '@/lib/logger'
 const log = logger('lib/seo/check-indexation')
 const CONCURRENCY = 5
 const BUDGET_MS = 50_000 // le cron et l'action serveur ont maxDuration=60
-
-function serviceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } },
-  )
-}
 
 async function checkOne(url: string): Promise<{
   url: string

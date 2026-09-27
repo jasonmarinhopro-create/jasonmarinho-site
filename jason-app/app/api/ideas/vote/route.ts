@@ -1,17 +1,9 @@
+import { getServiceClient as getClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { isUuid } from '@/lib/security/validate'
 
 export const runtime = 'edge'
-
-function getClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req)

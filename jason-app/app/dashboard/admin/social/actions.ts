@@ -1,19 +1,11 @@
 'use server'
 
+import { getServiceClient as adminClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { dispatchPost, refreshPostStats as refreshPostStatsInternal, refreshAllStats as refreshAllStatsInternal } from '@/lib/social/dispatch'
 import { getSubscribedApps, debugTokenScopes, getAppSubscriptions, subscribeAppWebhook } from '@/lib/social/meta'
 import { decryptToken } from '@/lib/security/crypto'
-
-function adminClient() {
-  return createAdminClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } },
-  )
-}
 
 async function requireAdmin() {
   const supabase = await createClient()

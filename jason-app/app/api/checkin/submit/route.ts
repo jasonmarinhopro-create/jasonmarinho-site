@@ -3,22 +3,14 @@
 // comme /api/contracts/sign. Service role scoped par le token + whitelist
 // stricte des champs modifiables.
 
+import { getServiceClient as createServiceClient } from '@/lib/supabase/service'
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { syncDeclarationsForVoyageur } from '@/lib/declarations/sync'
 import { autoSendSibaForVoyageur } from '@/lib/declarations/siba-auto'
 import { notifyHostCheckinSubmitted } from '@/lib/email/checkin-notify'
 
 export const dynamic = 'force-dynamic'
-
-function createServiceClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  )
-}
 
 const ID_TYPES = new Set(['cni', 'passeport', 'permis', 'autre'])
 

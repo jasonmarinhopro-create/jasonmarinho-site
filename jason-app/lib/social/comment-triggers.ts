@@ -3,20 +3,12 @@
 // Meta (app/api/social/webhook/meta/route.ts). Pas d'email possible ici :
 // Meta ne donne jamais l'adresse d'un commentateur, cf. lib/social/meta.ts.
 
-import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { decryptToken } from '@/lib/security/crypto'
 import { sendPrivateReply } from '@/lib/social/meta'
 import { logger } from '@/lib/logger'
 
 const log = logger('lib/social/comment-triggers')
-
-function serviceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } },
-  )
-}
 
 export interface IncomingComment {
   platform: 'facebook' | 'instagram'

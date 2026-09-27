@@ -60,6 +60,12 @@ jason-app/                 ← dashboard Next.js (app.jasonmarinho.com)
 - `getSession()` est autorisé seulement dans middleware.ts pour les routes publiques (économie de RTT)
 - Les routes admin vérifient `profile.role === 'admin'` après getUser()
 
+### Clé service role (contourne la RLS)
+- **Point d'accès unique** : `getServiceClient()` de `@/lib/supabase/service` (`import 'server-only'` : le build échoue si un composant client l'importe). 52 copies locales de `getServiceClient()` ont été remplacées par cet import (sept. 2026).
+- **Préférer le client utilisateur** (`@/lib/supabase/server`) : la RLS protège même si une requête oublie un filtre. Pages « Demandes reçues » / « Mes clients » des pros déjà basculées (policies des migrations 062 et 069).
+- **Usages légitimes du service role** : routes publiques à jeton (contrat, check-in, facture, flux iCal), crons et webhooks, vues admin après vérification du rôle, compteurs globaux (signalements, places fondateur), requêtes en `unstable_cache` (pas d'accès aux cookies : `lib/queries/profile.ts`, `spaces.ts`, `active-property.ts`, `cache.ts`, `lib/lcd/dashboard-prefill.ts`), écritures croisées entre comptes (équipe de ménage → hôte). Toujours filtrer explicitement (`.eq('user_id', …)`).
+- **Garde-fou CI** : `lib/supabase/service-role-guard.test.ts` échoue si un nouveau fichier lit `SUPABASE_SERVICE_ROLE_KEY` directement (liste des fichiers historiques figée, elle ne doit que rétrécir) ou si un composant client importe le service role.
+
 ### Phosphor Icons
 ```typescript
 // CORRECT

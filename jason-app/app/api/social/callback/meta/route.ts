@@ -5,10 +5,10 @@
 // plusieurs Pages — chacune devient une ligne social_accounts distincte,
 // sélectionnable dans le composeur.
 
+import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { exchangeCodeForUserToken, exchangeForLongLivedToken, getManagedPages, subscribePageWebhooks } from '@/lib/social/meta'
 import { encryptToken } from '@/lib/security/crypto'
 import { logger } from '@/lib/logger'
@@ -16,14 +16,6 @@ import { logger } from '@/lib/logger'
 const log = logger('api/social/callback/meta')
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 const ADMIN_SOCIAL_URL = `${APP_URL}/dashboard/admin/social`
-
-function serviceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } },
-  )
-}
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient()

@@ -1,6 +1,6 @@
+import { getServiceClient } from '@/lib/supabase/service'
 import { redirect, notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
 import dynamic from 'next/dynamic'
 import DashboardSkeleton from '@/components/ui/DashboardSkeleton'
 import { FORMATION_CONTENT_MAP } from './contentMap'
@@ -10,14 +10,6 @@ const FormationEditor = dynamic(() => import('./FormationEditor'), {
   ssr: false,
   loading: () => <DashboardSkeleton />,
 })
-
-function getServiceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 interface PageProps {
   params: { slug: string }

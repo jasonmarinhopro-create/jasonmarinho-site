@@ -1,18 +1,10 @@
+import { getServiceClient } from '@/lib/supabase/service'
 import { cache } from 'react'
 import { unstable_cache, revalidateTag } from 'next/cache'
 import { getAuthUser } from '@/lib/supabase/auth-user'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
 
 const ADMIN_EMAIL = 'djason.marinho@gmail.com'
 const PROFILE_CACHE_TTL_SECONDS = 300 // 5 min, invalidé via tag à chaque mutation
-
-function getServiceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 /** Tag pour le cache profil d'un utilisateur, utilisé pour l'invalidation. */
 export function profileCacheTag(userId: string) {

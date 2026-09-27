@@ -1,18 +1,10 @@
-import { createClient } from '@supabase/supabase-js'
+import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
 
 const VALID_CATEGORIES = new Set([
   'reglementation', 'fiscalite', 'plateformes', 'marche', 'outils', 'juridique', 'driing',
   'gites', 'chambres-hotes', 'conciergerie', 'reservation-directe', 'communes', 'general',
 ])
-
-function serviceClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 export async function POST(req: NextRequest) {
   // ── Auth ───────────────────────────────────────────────────────

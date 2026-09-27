@@ -1,7 +1,7 @@
+import { getServiceClient } from '@/lib/supabase/service'
 import { cookies } from 'next/headers'
 import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { getAuthUser } from '@/lib/supabase/auth-user'
 
 export const ACTIVE_PROPERTY_COOKIE = 'active-property-id'
@@ -20,14 +20,6 @@ export interface ActiveProperty {
   property: PropertyLite | null
   /** Tous les logements de l'utilisateur (pour le sélecteur dans la sidebar). */
   allProperties: PropertyLite[]
-}
-
-function getServiceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
 }
 
 /**

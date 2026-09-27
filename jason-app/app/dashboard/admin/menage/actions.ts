@@ -1,7 +1,8 @@
 'use server'
 
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
 import { stripe } from '@/lib/stripe/client'
@@ -17,14 +18,6 @@ const STANDARD_PRICE_ID = process.env.STRIPE_CLEANER_STANDARD_PRICE_ID || ''
 const FOUNDER_QUOTA = 20
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
-
-function getServiceClient(): SupabaseClient<any, 'public', any> {
-  return createServiceClient<any, 'public', any>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 async function requireAdmin(): Promise<{ userId: string } | { error: string }> {
   const supabase = await createClient()

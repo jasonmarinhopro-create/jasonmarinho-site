@@ -1,21 +1,12 @@
 'use server'
+import { getServiceClient as adminClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
 import { STRIPE_PLANS, ALL_VALID_PRICE_IDS } from '@/lib/constants/stripe-plans'
 import { invalidateProfileCache } from '@/lib/queries/profile'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
-
-function adminClient() {
-  return createAdminClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  )
-}
-
 
 // POST /api/stripe/subscribe/create
 // Body: { priceId: string }

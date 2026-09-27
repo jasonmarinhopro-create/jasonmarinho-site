@@ -1,6 +1,6 @@
+import { getServiceClient } from '@/lib/supabase/service'
 import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { getAuthUser } from '@/lib/supabase/auth-user'
 
 const ADMIN_EMAIL = 'djason.marinho@gmail.com'
@@ -16,14 +16,6 @@ export interface UserSpace {
 export interface SpacesResult {
   spaces: UserSpace[]
   primary: UserSpace
-}
-
-function getServiceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
 }
 
 /**

@@ -12,20 +12,12 @@
 // serveur à CHAQUE scan, garantissant que la redirection reflète toujours
 // la valeur actuelle en base.
 
+import { getServiceClient as svc } from '@/lib/supabase/service'
 import { NextResponse } from 'next/server'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 export const fetchCache = 'force-no-store'
-
-function svc() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-}
 
 function noCacheRedirect(url: string) {
   const res = NextResponse.redirect(url, 307)

@@ -1,19 +1,11 @@
+import { getServiceClient as createServiceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
 import { createClient as createUserClient } from '@/lib/supabase/server'
 import { logger } from '@/lib/logger'
 const log = logger('api/stripe/connect/return')
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
-
-function createServiceClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } }
-  )
-}
 
 // GET /api/stripe/connect/return?account_id=acct_xxx
 // Stripe redirige ici après l'onboarding Express.

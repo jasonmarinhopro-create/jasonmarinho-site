@@ -3,10 +3,10 @@
 // le chiffre et le stocke en base (google_oauth_tokens). Même schéma que
 // /api/social/callback/meta.
 
+import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { exchangeCodeForTokens } from '@/lib/google/oauth'
 import { encryptToken } from '@/lib/security/crypto'
 import { logger } from '@/lib/logger'
@@ -14,14 +14,6 @@ import { logger } from '@/lib/logger'
 const log = logger('api/google/callback')
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 const ADMIN_INDEXATION_URL = `${APP_URL}/dashboard/admin/indexation`
-
-function serviceClient() {
-  return createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false } },
-  )
-}
 
 export async function GET(req: NextRequest) {
   const supabase = await createClient()
