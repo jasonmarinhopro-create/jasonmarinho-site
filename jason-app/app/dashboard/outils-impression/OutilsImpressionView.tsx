@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { QrCode, Printer, Sparkle } from '@phosphor-icons/react/dist/ssr'
 import QrSimpleTab from './QrSimpleTab'
 import AfficheTab from './AfficheTab'
@@ -21,6 +21,17 @@ interface Props {
 
 export default function OutilsImpressionView({ plan, logements }: Props) {
   const [tab, setTab] = useState<'qr' | 'affiche'>('qr')
+
+  // Lien direct vers un onglet depuis le hub Outils & calculs (#qr, #affiche)
+  useEffect(() => {
+    const fromHash = () => {
+      const h = window.location.hash.slice(1)
+      if (h === 'qr' || h === 'affiche') setTab(h)
+    }
+    fromHash()
+    window.addEventListener('hashchange', fromHash)
+    return () => window.removeEventListener('hashchange', fromHash)
+  }, [])
 
   return (
     <div style={s.page}>

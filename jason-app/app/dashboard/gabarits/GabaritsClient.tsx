@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import OutilsSwitcher from '@/components/dashboard/OutilsSwitcher'
 import {
   Copy, Check, MagnifyingGlass, PencilSimple, X,
   CalendarCheck, House, SunHorizon, ArrowRight,
@@ -768,6 +769,8 @@ export default function GabaritsClient({
       )}
 
       <div style={s.page}>
+
+        <OutilsSwitcher current="messages" />
 
         <div style={s.intro} className="fade-up">
           <h2 style={s.pageTitle}>

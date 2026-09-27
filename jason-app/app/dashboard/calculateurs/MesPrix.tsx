@@ -205,7 +205,7 @@ function LogementPricingCard({ logement, startsOpen }: { logement: LogementPrefi
             <div style={s.seasonGrid}>
               <div style={s.seasonInput}>
                 <label style={s.seasonLabel}>
-                  <Snowflake size={13} weight="fill" color="#60a5fa" />
+                  <Snowflake size={13} weight="fill" color="var(--text-3)" />
                   Saison basse
                 </label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -315,7 +315,7 @@ function PricingMatrix({ draft }: { draft: DraftPrices }) {
   const highPct = Number(draft.prix_saison_haute_pct) || 140
 
   const rows = [
-    { label: 'Basse saison', pct: lowPct, icon: <Snowflake size={12} weight="fill" color="#60a5fa" /> },
+    { label: 'Basse saison', pct: lowPct, icon: <Snowflake size={12} weight="fill" color="var(--text-3)" /> },
     { label: 'Saison moyenne', pct: basePct, icon: null },
     { label: 'Haute saison', pct: highPct, icon: <Sun size={12} weight="fill" color="#fbbf24" /> },
   ]

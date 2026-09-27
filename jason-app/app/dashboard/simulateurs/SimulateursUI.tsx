@@ -652,7 +652,7 @@ export function CompareurMesVilles({ logements }: { logements: LogementPrefill[]
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' as const }}>
                   <div style={{
                     width: '24px', height: '24px', borderRadius: '6px',
-                    background: ['#10b981', '#3b82f6', '#f59e0b', '#a78bfa'][i],
+                    background: ['#10b981', '#004C3F', '#f59e0b', '#a78bfa'][i],
                     color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: '11px', fontWeight: 700, flexShrink: 0,
                   }}>{i + 1}</div>

@@ -1,164 +1,176 @@
 import Link from 'next/link'
 import {
-  Calculator, ChartLineUp, Printer, ArrowRight, ChatText,
+  Calculator, ChartLineUp, Printer, ArrowRight, ChatText, Wrench, CaretRight,
 } from '@phosphor-icons/react/dist/ssr'
+import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
+import AskQuestionCard from '@/components/chez-nous/AskQuestionCard'
 
 export const metadata = { title: 'Outils & calculs' }
 
 /**
- * Hub "Outils & calculs" (Étape 5/7 du refactor).
- * Regroupe les outils utilitaires (avant éparpillés dans la sidebar) en
- * 4 cartes cliquables. Les sous-pages restent accessibles via leur URL
- * directe (liens contextuels depuis le blog, bookmarks, etc.), on ne fait
- * QUE ajouter cette page hub.
- *
- * NB : Sécurité voyageur reste top-level dans la sidebar vu sa criticité.
+ * Hub « Outils & calculs » (refonte sept. 2026, même esprit que les autres
+ * hubs : HubHero vert, pleine largeur). Avant : 4 cartes génériques qui
+ * renvoyaient chacune vers un outil à plusieurs onglets, sans dire ce qu'on
+ * pouvait y calculer. Désormais chaque carte liste ses outils, avec un lien
+ * direct vers l'onglet (#fiscal, #mes-prix…, hash gérés par SimulateursUI et
+ * CalculateursUI), et la colonne de droite répond aux questions les plus
+ * fréquentes en un clic. Les sous-pages gardent leur URL (liens du blog).
  */
-const tools = [
-  // Modèles de messages : sorti du menu principal en sept. 2026 (servi
-  // surtout à la mise en place, moins au quotidien).
-  {
-    href: '/dashboard/gabarits',
-    label: 'Modèles de messages',
-    Icon: ChatText,
-    desc: 'Messages prêts à copier pour chaque étape du séjour : réservation, arrivée, départ, avis.',
-    tag: 'Communication',
-    accent: '#FFD56B',
-  },
+
+type Tool = { label: string; href: string }
+type Group = {
+  href: string
+  label: string
+  Icon: React.ElementType
+  question: string
+  desc: string
+  tools: Tool[]
+}
+
+const GROUPS: Group[] = [
   {
     href: '/dashboard/simulateurs',
     label: 'Simulateurs fiscaux',
     Icon: Calculator,
-    desc: 'Micro-BIC, LMNP, franchise TVA, choix statut EI/SASU, taxe de séjour, rentabilité LCD.',
-    tag: 'Fiscalité',
-    accent: 'var(--accent-text)',
+    question: 'Combien vais-je payer, et sous quel statut ?',
+    desc: 'Préremplis avec les revenus de tes logements. Règles 2026, loi Le Meur comprise.',
+    tools: [
+      { label: 'Micro-BIC ou réel', href: '/dashboard/simulateurs#fiscal' },
+      { label: 'EI ou SASU', href: '/dashboard/simulateurs#statut' },
+      { label: 'Rentabilité', href: '/dashboard/simulateurs#rentabilite' },
+      { label: 'Taxe de séjour', href: '/dashboard/simulateurs#taxe' },
+      { label: 'Franchise TVA', href: '/dashboard/simulateurs#tva' },
+    ],
   },
   {
     href: '/dashboard/calculateurs',
-    label: 'Prix & Marché',
+    label: 'Prix & marché',
     Icon: ChartLineUp,
-    desc: 'Estime le tarif optimal pour ton logement, compare aux prix moyens de ta ville.',
-    tag: 'Pricing',
-    accent: '#63D683',
+    question: 'À quel prix louer mes nuits ?',
+    desc: 'Compare tes tarifs aux prix de ta ville et estime ce que ton logement peut rapporter.',
+    tools: [
+      { label: 'Mes prix', href: '/dashboard/calculateurs#mes-prix' },
+      { label: 'Estimer mes revenus', href: '/dashboard/calculateurs#revenus' },
+      { label: 'Prix du marché', href: '/dashboard/calculateurs#prix' },
+      { label: 'Comparer mes villes', href: '/dashboard/calculateurs#mesvilles' },
+    ],
   },
-
+  {
+    href: '/dashboard/gabarits',
+    label: 'Modèles de messages',
+    Icon: ChatText,
+    question: 'Que dire à mes voyageurs, et quand ?',
+    desc: 'Messages prêts à copier pour chaque étape du séjour, personnalisés avec ton logement.',
+    tools: [
+      { label: 'Avant l’arrivée', href: '/dashboard/gabarits?cat=checkin' },
+      { label: 'Pendant le séjour', href: '/dashboard/gabarits?cat=probleme' },
+      { label: 'Départ et avis', href: '/dashboard/gabarits?cat=avis' },
+    ],
+  },
   {
     href: '/dashboard/outils-impression',
-    label: 'QR Codes & Affiches',
+    label: 'QR codes & affiches',
     Icon: Printer,
-    desc: 'Génère tes affiches d\'accueil (WiFi, règles, urgences) et QR codes à imprimer.',
-    tag: 'Print',
-    accent: '#F472B6',
+    question: 'Que mettre au mur de mon logement ?',
+    desc: 'QR code WiFi ou vers ton livret d’accueil, et affiches A4 prêtes à imprimer pour ton logement.',
+    tools: [
+      { label: 'QR code', href: '/dashboard/outils-impression#qr' },
+      { label: 'Affiche A4', href: '/dashboard/outils-impression#affiche' },
+    ],
   },
+]
+
+// Les questions qu'on se pose le plus souvent, chacune vers l'onglet qui y répond
+const QUICK: Tool[] = [
+  { label: 'Combien d’impôts sur mes locations ?', href: '/dashboard/simulateurs#fiscal' },
+  { label: 'Combien de taxe de séjour ?', href: '/dashboard/simulateurs#taxe' },
+  { label: 'Mes prix sont-ils dans le marché ?', href: '/dashboard/calculateurs#mes-prix' },
+  { label: 'Combien peut rapporter un logement ?', href: '/dashboard/calculateurs#revenus' },
 ]
 
 export default function OutilsHubPage() {
   return (
-    <div style={s.wrap}>
-      <div style={s.head}>
-        <h1 style={s.title}>
-          Outils <em style={s.titleEm}>&amp; calculs</em>
-        </h1>
-        <p style={s.sub}>
-          Tes utilitaires en un endroit : modèles de messages, simulateurs fiscaux, benchmarks prix
-          et générateurs d&apos;impression pour l&apos;accueil voyageur.
-        </p>
-      </div>
+    <div style={s.page}>
+      <HubHero
+        eyebrowIcon={<Wrench size={13} weight="fill" />}
+        eyebrow="Outils & calculs"
+        title={<>Les bons chiffres, <HeroEm>sans tableur</HeroEm></>}
+        desc="Impôts, prix, taxe de séjour, messages, affiches : les outils pour décider vite, déjà remplis avec les données de tes logements."
+        aside={
+          <div style={heroCard}>
+            <span style={s.quickTitle}>Réponse en un clic</span>
+            {QUICK.map(q => (
+              <Link key={q.label} href={q.href} style={s.quickLink}>
+                <span>{q.label}</span>
+                <CaretRight size={13} weight="bold" style={{ flexShrink: 0 }} />
+              </Link>
+            ))}
+          </div>
+        }
+      />
 
-      <div style={s.grid}>
-        {tools.map(({ href, label, Icon, desc, tag, accent }) => (
-          <Link key={href} href={href} style={s.card} className="jm-outil-card">
-            <div style={{ ...s.cardIco, background: `color-mix(in oklab, ${accent} 12%, transparent)`, borderColor: `color-mix(in oklab, ${accent} 30%, transparent)`, color: accent }}>
-              <Icon size={22} weight="duotone" />
+      <div className="ot-grid" style={s.grid}>
+        {GROUPS.map(({ href, label, Icon, question, desc, tools }) => (
+          <section key={href} style={s.card}>
+            <Link href={href} style={s.cardHead}>
+              <span style={s.cardIco}><Icon size={22} weight="duotone" /></span>
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span style={s.cardTitle}>{label}</span>
+                <span style={s.cardQuestion}>{question}</span>
+              </span>
+              <ArrowRight size={16} style={{ color: 'var(--text-3)', flexShrink: 0 }} />
+            </Link>
+            <p style={s.cardDesc}>{desc}</p>
+            <div style={s.chips}>
+              {tools.map(t => (
+                <Link key={t.label} href={t.href} style={s.chip}>{t.label}</Link>
+              ))}
             </div>
-            <div style={s.cardBody}>
-              <div style={s.cardTag}>{tag}</div>
-              <div style={s.cardTitle}>{label}</div>
-              <div style={s.cardDesc}>{desc}</div>
-            </div>
-            <ArrowRight size={16} style={{ color: 'var(--text-3)', flexShrink: 0, marginTop: 4 }} />
-          </Link>
+          </section>
         ))}
       </div>
+
+      <div style={{ marginTop: '24px' }}>
+        <AskQuestionCard
+          category="reglementation"
+          title="Un calcul que ces outils ne font pas ?"
+          text="Pose ta question à Jason et aux autres hôtes : réponse sous 48 h, par email."
+        />
+      </div>
+
+      <style>{`
+        .ot-grid { grid-template-columns: minmax(0, 1fr); }
+        @media (min-width: 900px) { .ot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      `}</style>
     </div>
   )
 }
 
 const s: Record<string, React.CSSProperties> = {
-  wrap: {
-    padding: 'var(--dash-page-px)',
-    width: '100%',
-    maxWidth: 1600,       // Limite pour ne pas s'étaler sur 4K+ (breakpoint XL)
-    margin: '0 auto',     // Centre le contenu si écran plus large que 1600px
+  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+  quickTitle: { fontSize: '12px', fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '2px' },
+  quickLink: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px',
+    padding: '9px 12px', borderRadius: '10px', textDecoration: 'none',
+    background: 'var(--accent-bg)', color: 'var(--accent-text)', fontSize: '13.5px', fontWeight: 600,
   },
-  head: { marginBottom: 28 },
-  title: {
-    fontFamily: 'var(--font-fraunces), serif',
-    fontSize: 'clamp(22px, 3vw, 28px)',
-    fontWeight: 400,
-    letterSpacing: '-0.02em',
-    margin: 0,
-    marginBottom: 6,
-    color: 'var(--text)',
-  },
-  titleEm: { color: 'var(--accent-text)', fontStyle: 'italic', fontWeight: 300 },
-  sub: {
-    fontSize: 14,
-    color: 'var(--text-muted)',
-    margin: 0,
-    lineHeight: 1.65,
-    maxWidth: 640,
-  },
-  grid: {
-    display: 'grid',
-    // Breakpoints via auto-fit + minmax généreux : 1 col mobile, 2 col
-    // tablette (~700px+), 4 col desktop large (~1400px+). Cards plus grandes
-    // (min 320px au lieu de 280) pour ne pas paraître ridicules sur 24".
-    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-    gap: 18,
-  },
+  grid: { display: 'grid', gap: '16px' },
   card: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: 16,
-    padding: 22,
-    minHeight: 130,       // Cards de taille uniforme pour aligner la grille
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
-    borderRadius: 'var(--r-lg)',
-    textDecoration: 'none',
-    color: 'var(--text)',
-    transition: 'transform 0.15s var(--ease-spring), border-color 0.15s',
+    display: 'flex', flexDirection: 'column', gap: '12px', padding: '20px 22px',
+    background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--r-lg)',
   },
+  cardHead: { display: 'flex', alignItems: 'center', gap: '14px', textDecoration: 'none', color: 'var(--text)' },
   cardIco: {
-    width: 44, height: 44,
-    borderRadius: 10,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    border: '1px solid',
-    flexShrink: 0,
+    width: '44px', height: '44px', borderRadius: '12px', flexShrink: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)',
   },
-  cardBody: { flex: 1, minWidth: 0 },
-  cardTag: {
-    fontSize: 10,
-    fontWeight: 700,
-    letterSpacing: 0.8,
-    textTransform: 'uppercase' as const,
-    color: 'var(--text-muted)',
-    marginBottom: 4,
-  },
-  cardTitle: {
-    fontFamily: 'var(--font-fraunces), serif',
-    fontSize: 16,
-    fontWeight: 500,
-    color: 'var(--text)',
-    marginBottom: 4,
-    letterSpacing: '-0.01em',
-  },
-  cardDesc: {
-    fontSize: 12.5,
-    color: 'var(--text-3)',
-    lineHeight: 1.55,
+  cardTitle: { display: 'block', fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 500, color: 'var(--text)' },
+  cardQuestion: { display: 'block', fontSize: '13.5px', color: 'var(--text-2)', marginTop: '2px' },
+  cardDesc: { fontSize: '13px', color: 'var(--text-3)', lineHeight: 1.55, margin: 0 },
+  chips: { display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: 'auto' },
+  chip: {
+    padding: '7px 12px', borderRadius: '999px', fontSize: '12.5px', fontWeight: 600, textDecoration: 'none',
+    color: 'var(--text)', background: 'var(--bg)', border: '1px solid var(--border)',
   },
 }

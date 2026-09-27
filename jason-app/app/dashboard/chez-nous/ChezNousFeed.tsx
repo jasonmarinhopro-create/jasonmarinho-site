@@ -15,6 +15,7 @@ import { Plus, ChatCircle, ChatCircleText, PushPin, Lock, ArrowFatUp, ArrowRight
 import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashboard/HubHero'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId } from '@/lib/chez-nous/display'
+import { stripMarkdown } from '@/lib/chez-nous/markdown'
 import type { BadgeId } from '@/lib/badges'
 import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import MentionAutocomplete from '@/components/chez-nous/MentionAutocomplete'
@@ -110,7 +111,10 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
           opacity: 1; visibility: visible; transform: translateY(0);
         }
         @media (hover: none) { .cn-recent-reply-full { display: none; } }
-        .cn-post-card { will-change: transform; }
+        /* Pas de will-change: transform ici : chaque carte devenait un contexte
+           d'empilement et l'aperçu au survol passait sous la carte suivante. */
+        .cn-post-card { position: relative; }
+        .cn-post-card:hover, .cn-post-card:focus-within { z-index: 5; }
         .cn-post-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
         .cn-cat-emoji { font-size: 13px; line-height: 1; }
         .cn-cat-label { font-weight: 600; }
@@ -517,7 +521,8 @@ function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; auth
               const rName = rAuthor ? displayName({ pseudo: rAuthor.pseudo, full_name: rAuthor.full_name }) : 'Anonyme'
               const rAv = colorFromId(r.author_id)
               const rInitials = rAuthor ? displayInitials({ pseudo: rAuthor.pseudo, full_name: rAuthor.full_name }) : '?'
-              const rExcerpt = r.body.replace(/\n+/g, ' ').replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.+?)\*/g, '$1').trim()
+              // Texte brut (liens [texte](url) compris), sinon l'aperçu affichait le Markdown
+              const rExcerpt = stripMarkdown(r.body).replace(/\s+/g, ' ').trim()
               const isTruncated = rExcerpt.length > 120
               return (
                 <div key={r.id} style={s.recentReplyItem} className="cn-recent-reply">
@@ -530,7 +535,9 @@ function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; auth
                   {isTruncated && (
                     <span className="cn-recent-reply-full" role="tooltip">
                       <strong>{rName}</strong>
-                      <span style={{ display: 'block', marginTop: '6px', whiteSpace: 'pre-wrap' as const }}>{rExcerpt}</span>
+                      <span style={{ display: 'block', marginTop: '6px' }}>
+                        {rExcerpt.length > 600 ? `${rExcerpt.slice(0, 600)}… (clique pour lire la suite)` : rExcerpt}
+                      </span>
                     </span>
                   )}
                 </div>
