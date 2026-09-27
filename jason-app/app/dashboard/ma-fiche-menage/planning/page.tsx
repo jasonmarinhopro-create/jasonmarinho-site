@@ -93,7 +93,7 @@ export default async function Page() {
   const slots = perHost.flat().sort((a, b) => (a.date + a.startTime).localeCompare(b.date + b.startTime))
 
   return (
-    <div style={{ padding: 'clamp(20px, 3vw, 44px)', width: '100%', maxWidth: 980 }}>
+    <div style={{ padding: 'clamp(20px, 3vw, 44px)', width: '100%' }}>
       <PlanningMenage clients={clients} slots={slots} today={iso(today)} />
     </div>
   )
