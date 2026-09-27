@@ -1,6 +1,6 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import VoyageursView, { type ContractRow } from './VoyageursView'
+import VoyageursView from './VoyageursView'
 import OnboardingTour, { VOYAGEURS_STEPS } from '../OnboardingTour'
 
 // Cette page et ses server actions (addVoyageur, checkVoyageurSignale…)
@@ -15,10 +15,8 @@ export default async function VoyageursPage() {
   const [profile, supabase] = await Promise.all([getProfile(), createClient()])
   if (!profile) return null
 
-  // Fetch voyageurs + contrats en parallèle. Les contrats alimentent la
-  // nouvelle tab "Contrats" (vue d'ensemble filtrable, utile surtout pour
-  // les réservations directes — Airbnb/Booking ont leurs propres CGU).
-  const [voyageursRes, contractsRes] = await Promise.all([
+  // Les contrats ont leur page dédiée (/dashboard/contrats).
+  const [voyageursRes, declRes] = await Promise.all([
     supabase
       .from('voyageurs')
       .select('id, prenom, nom, email, telephone, notes, tags, source, bloque, id_verifie, note_privee, checkin_expected_count, created_at, updated_at, sejours(id, date_arrivee, date_depart, montant)')
@@ -28,15 +26,14 @@ export default async function VoyageursPage() {
       .is('sejours.annule_at', null)
       .order('updated_at', { ascending: false })
       .limit(500),
+    // Déclarations obligatoires en attente (badge du lien « Déclarations »)
     supabase
-      .from('contracts')
-      .select('id, statut, signature_date, created_at, locataire_prenom, locataire_nom, locataire_email, logement_nom, logement_adresse, date_arrivee, date_depart, montant_loyer, montant_caution, stripe_payment_enabled, stripe_payment_status, stripe_deposit_status, sejour_id, token')
+      .from('guest_declarations')
+      .select('id', { count: 'exact', head: true })
       .eq('user_id', profile.userId)
-      .order('created_at', { ascending: false })
-      .limit(500),
+      .eq('statut', 'a_faire'),
   ])
   const { data: voyageurs, error } = voyageursRes
-  const { data: contracts } = contractsRes
 
   // Table manquante → affiche quand même la vue (état vide avec message clair)
   if (error && error.code !== '42P01') console.error('[voyageurs]', error.message)
@@ -80,7 +77,7 @@ export default async function VoyageursPage() {
         storageScope="voyageurs"
         initiallyDone={profile.onboarding_completed_steps.includes('tour:voyageurs')}
       />
-      <VoyageursView voyageurs={list} tableReady={!error} contracts={(contracts ?? []) as ContractRow[]} />
+      <VoyageursView voyageurs={list} tableReady={!error} pendingDeclarations={declRes.count ?? 0} />
     </>
   )
 }

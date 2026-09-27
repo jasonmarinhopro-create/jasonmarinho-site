@@ -11,7 +11,7 @@ import { Warning, ArrowSquareOut, Check, Copy, X, PaperPlaneTilt, FilePdf } from
 import { getCountry } from '@/lib/countries'
 import { nationaliteName, nationaliteFlag } from '@/lib/nationalites'
 import { markDeclarationDone, ignoreDeclaration } from '@/lib/declarations/actions'
-import { getPoliceFicheContext } from '@/lib/declarations/police-actions'
+import { downloadPoliceFichePdf } from '@/lib/declarations/police-fiche-download'
 import SibaSendModal from './SibaSendModal'
 
 export interface PendingDeclaration {
@@ -48,32 +48,8 @@ export default function DeclarationsWidget({ declarations }: { declarations: Pen
     setFicheError('')
     setFicheLoadingId(d.id)
     try {
-      const ctx = await getPoliceFicheContext(d.id)
-      if ('error' in ctx) { setFicheError(ctx.error); return }
-      // Import dynamique : jsPDF (~350 Ko) ne doit pas alourdir la home
-      const { buildPoliceFichePdf } = await import('@/lib/declarations/police-fiche-pdf')
-      const doc = buildPoliceFichePdf({
-        voyageur: {
-          ...ctx.voyageur,
-          nationalite: ctx.voyageur.nationalite ? nationaliteName(ctx.voyageur.nationalite) : null,
-          pays: ctx.voyageur.pays ? nationaliteName(ctx.voyageur.pays) : null,
-        },
-        // Accompagnants du check-in : <15 ans sur la fiche du principal,
-        // 15+ = une page de fiche chacun (générées dans le même PDF)
-        companions: ctx.companions.map(c => ({
-          ...c,
-          nationalite: c.nationalite ? nationaliteName(c.nationalite) : null,
-        })),
-        sejour: { dateArrivee: ctx.dateArrivee, dateDepart: ctx.dateDepart },
-        logement: ctx.logement,
-        hoteName: ctx.hoteName,
-        signatureDataUrl: ctx.signatureDataUrl,
-        signedAt: ctx.signedAt,
-      })
-      const slug = d.voyageur_nom.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-      doc.save(`fiche-police-${slug || 'voyageur'}.pdf`)
-    } catch {
-      setFicheError('Génération du PDF impossible, réessaie.')
+      const res = await downloadPoliceFichePdf(d.id, d.voyageur_nom)
+      if (res.error) setFicheError(res.error)
     } finally {
       setFicheLoadingId(null)
     }

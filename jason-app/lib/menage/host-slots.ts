@@ -1,13 +1,14 @@
 // Chargement des créneaux ménage d'un hôte (contrats + séjours + réservations
 // iCal Airbnb/Booking/Vrbo), partagé par :
 //   - /api/calendar/menage-feed (flux iCal envoyé à l'équipe),
-//   - /dashboard/ma-fiche-menage/planning (espace de l'équipe).
+//   - /dashboard/ma-fiche-menage/planning (espace de l'équipe),
+//   - /dashboard/calendrier/menage (vue de l'hôte, client utilisateur).
 // Le client Supabase est passé par l'appelant (service role : ces deux usages
 // lisent les données d'un hôte qui n'est pas l'utilisateur connecté, après
 // vérification du token de partage).
 
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { computeMenageSlots, type Occupation, type LogementSettings, type MenageSlot } from './compute'
+import { computeMenageSlots, mergeAutoAndManual, type Occupation, type LogementSettings, type MenageSlot, type ManualMenageEvent } from './compute'
 import { icalOccupationsForMenage } from './ical-occupations'
 
 export async function loadHostMenageSlots(
@@ -22,6 +23,7 @@ export async function loadHostMenageSlots(
     { data: logements },
     { data: icalFeeds },
     { data: icalEvents },
+    { data: manualEvents },
   ] = await Promise.all([
     // Statut filtré en JS : .neq('statut', 'annule') excluait aussi les
     // contrats au statut NULL (NULL <> 'annule' vaut NULL en SQL).
@@ -43,6 +45,15 @@ export async function loadHostMenageSlots(
       .eq('user_id', hostId)
       .gte('end_date', fromDate)
       .lte('start_date', toDate),
+    // Ménages saisis ou ajustés par l'hôte (heure, notes, prix, ménage
+    // ajouté à la main) : fusionnés comme dans son Calendrier, sinon
+    // l'équipe voyait l'horaire par défaut au lieu de celui choisi.
+    db.from('calendar_events')
+      .select('id, title, date, start_time, end_time, description')
+      .eq('user_id', hostId)
+      .eq('category', 'menage')
+      .gte('date', fromDate)
+      .lte('date', toDate),
   ])
 
   const contracts = (contractsRaw ?? []).filter(c => c.statut !== 'annule')
@@ -72,7 +83,11 @@ export async function loadHostMenageSlots(
     fraisMenage: l.frais_menage ?? null,
   }))
 
-  return computeMenageSlots(occupations, settings, { fromDate, toDate })
+  const auto = computeMenageSlots(occupations, settings, { fromDate, toDate })
+  const manual: ManualMenageEvent[] = (manualEvents ?? []).map((e: any) => ({
+    id: e.id, date: e.date, startTime: e.start_time, endTime: e.end_time, title: e.title, description: e.description,
+  }))
+  return manual.length ? mergeAutoAndManual(auto, manual, settings) : auto
 }
 
 /** Clé de rapprochement d'un créneau : date + nom de logement normalisé. */

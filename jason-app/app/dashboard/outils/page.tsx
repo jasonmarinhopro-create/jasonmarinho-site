@@ -1,13 +1,13 @@
 import Link from 'next/link'
 import {
-  Calculator, ChartLineUp, MagnifyingGlass, Printer, ArrowRight,
+  Calculator, ChartLineUp, MagnifyingGlass, Printer, ArrowRight, ChatText,
 } from '@phosphor-icons/react/dist/ssr'
 
 export const metadata = { title: 'Outils & calculs' }
 
 /**
  * Hub "Outils & calculs" (Étape 5/7 du refactor).
- * Regroupe les 4 outils utilitaires (avant éparpillés dans la sidebar) en
+ * Regroupe les outils utilitaires (avant éparpillés dans la sidebar) en
  * 4 cartes cliquables. Les sous-pages restent accessibles via leur URL
  * directe (liens contextuels depuis le blog, bookmarks, etc.), on ne fait
  * QUE ajouter cette page hub.
@@ -15,6 +15,16 @@ export const metadata = { title: 'Outils & calculs' }
  * NB : Sécurité voyageur reste top-level dans la sidebar vu sa criticité.
  */
 const tools = [
+  // Modèles de messages : sorti du menu principal en sept. 2026 (servi
+  // surtout à la mise en place, moins au quotidien).
+  {
+    href: '/dashboard/gabarits',
+    label: 'Modèles de messages',
+    Icon: ChatText,
+    desc: 'Messages prêts à copier pour chaque étape du séjour : réservation, arrivée, départ, avis.',
+    tag: 'Communication',
+    accent: '#FFD56B',
+  },
   {
     href: '/dashboard/simulateurs',
     label: 'Simulateurs fiscaux',
@@ -57,8 +67,8 @@ export default function OutilsHubPage() {
           Outils <em style={s.titleEm}>&amp; calculs</em>
         </h1>
         <p style={s.sub}>
-          Tes utilitaires en un endroit : simulateurs fiscaux, benchmarks prix, audit SEO Google
-          et générateurs d&apos;impression pour l&apos;accueil voyageur.
+          Tes utilitaires en un endroit : modèles de messages, simulateurs fiscaux, benchmarks prix,
+          audit SEO Google et générateurs d&apos;impression pour l&apos;accueil voyageur.
         </p>
       </div>
 

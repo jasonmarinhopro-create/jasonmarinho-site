@@ -19,6 +19,7 @@ export async function markDeclarationDone(id: string) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard')
+  revalidatePath('/dashboard/voyageurs/declarations')
   return { ok: true }
 }
 
@@ -39,5 +40,6 @@ export async function ignoreDeclaration(id: string) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard')
+  revalidatePath('/dashboard/voyageurs/declarations')
   return { ok: true }
 }

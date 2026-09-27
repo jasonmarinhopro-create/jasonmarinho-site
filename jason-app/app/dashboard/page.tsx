@@ -13,6 +13,9 @@ import EtatDesLieux from './EtatDesLieux'
 // ChezNousWidget retiré Étape 7 (déplacé vers /dashboard/entre-hotes)
 import SetupChecklist, { type SetupStep } from './SetupChecklist'
 import MesPlateformesWidget from './MesPlateformesWidget'
+import TodayBoard, { type TodayItem, type TodayAction } from './TodayBoard'
+import { loadHostMenageSlots, menageKey } from '@/lib/menage/host-slots'
+import { contractTodos } from '@/lib/contracts/todo'
 import DeclarationsWidget from '@/components/dashboard/DeclarationsWidget'
 import OnboardingTour from './OnboardingTour'
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
@@ -84,10 +87,20 @@ export default async function DashboardPage() {
   // allSettled (vs all) : si une requête échoue (table renommée, colonne supprimée,
   // timeout réseau), les autres restent disponibles et la page se rend en mode dégradé
   // au lieu de planter complètement.
+  // Ménages du jour (bloc « À faire aujourd'hui ») : même source que la page
+  // Ménage et le flux de l'équipe, lancé en parallèle des autres requêtes.
+  const menageTodayPromise = userId
+    ? Promise.all([
+        loadHostMenageSlots(supabase, userId, today, today),
+        supabase.from('menage_completions').select('logement_nom, date').eq('host_user_id', userId).eq('date', today),
+        supabase.from('calendar_events').select('title').eq('user_id', userId).eq('category', 'menage').eq('date', today).ilike('description', '%[FAIT]%'),
+      ]).catch(err => { console.error('[Dashboard] ménages du jour', err); return null })
+    : Promise.resolve(null)
+
   const results = await Promise.allSettled([
     supabase
       .from('contracts')
-      .select('id, logement_nom, date_arrivee, date_depart, statut, checklist_status, montant_loyer, stripe_payment_status, stripe_payment_enabled, locataire_prenom, locataire_nom')
+      .select('id, logement_nom, date_arrivee, date_depart, statut, checklist_status, montant_loyer, stripe_payment_status, stripe_payment_enabled, stripe_deposit_status, locataire_prenom, locataire_nom')
       .eq('user_id', userId)
       .neq('statut', 'annule')
       .order('date_arrivee'),
@@ -193,7 +206,7 @@ export default async function DashboardPage() {
       .eq('user_id', userId)
       .eq('statut', 'a_faire')
       .order('deadline_at')
-      .limit(5),
+      .limit(20),
     // 17. Checklist de démarrage : calendrier Airbnb/Booking connecté ?
     supabase
       .from('ical_feeds')
@@ -518,8 +531,8 @@ export default async function DashboardPage() {
   // ménage non planifié) — dead-end pour l'hôte. Route vers la bonne page
   // selon la priorité réelle (même ordre que ActionUrgente.tsx).
   const actionsHref =
-    unsignedContracts.length > 0 ? '/dashboard/calendrier'
-    : pendingPayments.length > 0 ? '/dashboard/finances/encaissements'
+    unsignedContracts.length > 0 ? '/dashboard/contrats'
+    : pendingPayments.length > 0 ? '/dashboard/contrats'
     : '/dashboard/calendrier'
 
   // ── KPIs financiers
@@ -627,7 +640,7 @@ export default async function DashboardPage() {
     {
       key: 'menage', label: 'Envoyer le planning ménage à ton équipe',
       desc: 'Un lien d’agenda à ajouter sur son téléphone : chaque départ devient un créneau ménage, mis à jour automatiquement',
-      done: !!icalTokenRow?.ical_token, ctaLabel: 'Partager', ctaHref: '/dashboard/calendrier?menage=1',
+      done: !!icalTokenRow?.ical_token, ctaLabel: 'Partager', ctaHref: '/dashboard/calendrier/menage',
       durationLabel: '1 min',
     },
     // Step "prix" : visible UNIQUEMENT si l'hôte a au moins 1 logement.
@@ -645,6 +658,43 @@ export default async function DashboardPage() {
       done: hasObjectif, ctaLabel: 'Définir', ctaHref: '/dashboard/finances/revenus',
       durationLabel: '1 min',
     },
+  ]
+
+  // ── Bloc « À faire aujourd'hui » ────────────────────────────────────
+  const occLabel = (o: Occ) => ({
+    key: o.id,
+    label: o.contract ? [o.contract.locataire_prenom, o.contract.locataire_nom].filter(Boolean).join(' ') || o.label : o.label,
+    sub: o.contract?.logement_nom ?? o.logement_nom,
+  })
+  const todayArrivalItems: TodayItem[] = todayArrivals.map(occLabel)
+  const todayDepartureItems: TodayItem[] = todayDepartures.map(occLabel)
+
+  const menageToday = await menageTodayPromise
+  const todayMenageItems: TodayItem[] | null = menageToday
+    ? (() => {
+        const [slots, { data: comps }, { data: doneEv }] = menageToday
+        const doneKeys = new Set((comps ?? []).map(c => menageKey(c.date, c.logement_nom)))
+        return slots.map(sl => {
+          const low = sl.logementName.trim().toLowerCase()
+          const done = doneKeys.has(menageKey(sl.date, sl.logementName))
+            || (doneEv ?? []).some(e => (e.title ?? '').toLowerCase().includes(low))
+          return { key: sl.id, label: sl.logementName, sub: `${sl.startTime}${sl.sameDay ? ' · arrivée le jour même' : ''}`, done }
+        })
+      })()
+    : null
+
+  const cTodos = contractTodos(allC.map(c => ({ ...c, date_arrivee: c.date_arrivee ?? null, date_depart: c.date_depart ?? null })), today)
+  const guest = (c: { locataire_prenom?: string | null; locataire_nom?: string | null }) =>
+    [c.locataire_prenom, c.locataire_nom].filter(Boolean).join(' ') || 'Locataire'
+  const todayActions: TodayAction[] = [
+    // À signer : seulement si l'arrivée approche (14 jours), sinon ce n'est pas « aujourd'hui »
+    { key: 'signer', href: '/dashboard/contrats', ...(() => {
+      const l = cTodos.aSigner.filter(c => !c.date_arrivee || c.date_arrivee <= in14)
+      return { count: l.length, names: l.map(guest) }
+    })() },
+    { key: 'loyer', href: '/dashboard/contrats', count: cTodos.loyerEnAttente.length, names: cTodos.loyerEnAttente.map(guest) },
+    { key: 'caution', href: '/dashboard/contrats', count: cTodos.cautionALiberer.length, names: cTodos.cautionALiberer.map(guest) },
+    { key: 'declarations', href: '/dashboard/voyageurs/declarations', count: (pendingDeclarations ?? []).length, names: (pendingDeclarations ?? []).map(d => d.voyageur_nom) },
   ]
 
   return (
@@ -669,22 +719,6 @@ export default async function DashboardPage() {
             !!profile?.onboarding_dismissed ||
             !!profile?.onboarding_completed_at
           }
-        />
-
-        {/* ── Déclarations voyageurs obligatoires (SIBA, fiche police…) ── */}
-        <DeclarationsWidget declarations={pendingDeclarations ?? []} />
-
-        {/* ── Mes plateformes : accès rapide aux inbox (Airbnb, Booking…) */}
-        <MesPlateformesWidget
-          initialData={{
-            inbox_airbnb_url:  platformLinksRaw?.inbox_airbnb_url  ?? null,
-            inbox_booking_url: platformLinksRaw?.inbox_booking_url ?? null,
-            inbox_vrbo_url:    platformLinksRaw?.inbox_vrbo_url    ?? null,
-            inbox_abritel_url: platformLinksRaw?.inbox_abritel_url ?? null,
-            inbox_driing_url:  platformLinksRaw?.inbox_driing_url  ?? null,
-            inbox_gmb_url:     platformLinksRaw?.inbox_gmb_url     ?? null,
-            custom_platform_links: platformLinksRaw?.custom_platform_links ?? [],
-          }}
         />
 
         {/* ── Welcome / Ma journée ─────────────────────────────────────── */}
@@ -752,6 +786,18 @@ export default async function DashboardPage() {
             )}
           </div>
         </section>
+
+        {/* ── À faire aujourd'hui : arrivées, départs, ménages du jour, puis
+              contrats / loyers / cautions / déclarations en attente (sept. 2026). */}
+        <TodayBoard
+          arrivals={todayArrivalItems}
+          departures={todayDepartureItems}
+          menages={todayMenageItems}
+          actions={todayActions}
+        />
+
+        {/* ── Déclarations voyageurs obligatoires (SIBA, fiche police…) ── */}
+        <DeclarationsWidget declarations={(pendingDeclarations ?? []).slice(0, 5)} />
 
         {/* ── Quick actions RETIRÉES (Étape 7/7) ────────────────────────
               Les 5 quick actions (Nouveau séjour, Nouveau voyageur, Saisir
@@ -826,6 +872,19 @@ export default async function DashboardPage() {
           </div>
         </section>
 
+        {/* ── Mes plateformes : accès rapide aux inbox (Airbnb, Booking…) */}
+        <MesPlateformesWidget
+          initialData={{
+            inbox_airbnb_url:  platformLinksRaw?.inbox_airbnb_url  ?? null,
+            inbox_booking_url: platformLinksRaw?.inbox_booking_url ?? null,
+            inbox_vrbo_url:    platformLinksRaw?.inbox_vrbo_url    ?? null,
+            inbox_abritel_url: platformLinksRaw?.inbox_abritel_url ?? null,
+            inbox_driing_url:  platformLinksRaw?.inbox_driing_url  ?? null,
+            inbox_gmb_url:     platformLinksRaw?.inbox_gmb_url     ?? null,
+            custom_platform_links: platformLinksRaw?.custom_platform_links ?? [],
+          }}
+        />
+
         {/* ── État des lieux, 4 métriques ─────────────────────────────── */}
         <section style={s.section} className="fade-up d1">
           <EtatDesLieux
@@ -885,58 +944,6 @@ export default async function DashboardPage() {
                   {(objectifPct ?? 0) >= expectedPct ? '✓ Dans les temps' : `${expectedPct - (objectifPct ?? 0)} pts derrière`}
                 </span>
               </div>
-            </Link>
-          </section>
-        )}
-
-        {/* ── Pulse apprenant ─────────────────────────────────────────── */}
-        {(learnerLevel || formationInProgressData) && (
-          <section style={s.section} className="fade-up d3">
-            <Link href="/dashboard/formations/profil-apprenant" style={s.learnerCard}>
-              <div style={s.learnerLeft}>
-                <div style={s.learnerHead}>
-                  <GraduationCap size={14} weight="fill" color="var(--accent-text)" />
-                  <span style={s.learnerLabel}>Mon apprentissage</span>
-                </div>
-                <div style={s.learnerBadges}>
-                  {learnerLevel && (
-                    <span style={{ ...s.learnerLevel, color: learnerLevel.color, borderColor: `${learnerLevel.color}50`, background: `${learnerLevel.color}14` }}>
-                      <Trophy size={12} weight="fill" />
-                      {learnerLevel.label}
-                    </span>
-                  )}
-                  {streakLearner > 0 && (
-                    <span style={s.learnerStreak}>
-                      <Flame size={12} weight="fill" color="#dc2626" />
-                      <strong style={{ color: 'var(--danger)' }}>{streakLearner}</strong> jour{streakLearner > 1 ? 's' : ''}
-                    </span>
-                  )}
-                  <span style={s.learnerCount}>
-                    {totalLessonsDone} leçon{totalLessonsDone > 1 ? 's' : ''} · {formationsCompleted} formation{formationsCompleted > 1 ? 's' : ''} finie{formationsCompleted > 1 ? 's' : ''}
-                  </span>
-                </div>
-              </div>
-
-              {formationInProgressData ? (
-                <div style={s.learnerProgress}>
-                  <div style={s.learnerProgressLabel}>Continue</div>
-                  <div style={s.learnerProgressTitle}>{formationInProgressData.title}</div>
-                  <div style={s.learnerProgressBar}>
-                    <div style={{ ...s.learnerProgressFill, width: `${formationInProgressData.progress}%` }} />
-                  </div>
-                  <div style={s.learnerProgressMeta}>
-                    {formationInProgressData.progress}% · {formationInProgressData.completedCount}/{formationInProgressData.lessonsCount} leçons
-                  </div>
-                </div>
-              ) : (
-                <div style={s.learnerProgress}>
-                  <div style={s.learnerProgressLabel}>Suggestion</div>
-                  <div style={s.learnerProgressTitle}>Démarre une formation pour progresser</div>
-                  <div style={s.learnerProgressMeta}>16 formations disponibles dans le catalogue</div>
-                </div>
-              )}
-
-              <ArrowRight size={14} weight="bold" color="var(--text-muted)" style={{ flexShrink: 0 }} />
             </Link>
           </section>
         )}
@@ -1018,6 +1025,59 @@ export default async function DashboardPage() {
                 <NewsCard key={article.id} article={article} />
               ))}
             </div>
+          </section>
+        )}
+
+        {/* ── Pulse apprenant (niveaux) : en fin de page depuis sept. 2026,
+              l'accueil garde son focus opérationnel. */}
+        {(learnerLevel || formationInProgressData) && (
+          <section style={s.section} className="fade-up d3">
+            <Link href="/dashboard/formations/profil-apprenant" style={s.learnerCard}>
+              <div style={s.learnerLeft}>
+                <div style={s.learnerHead}>
+                  <GraduationCap size={14} weight="fill" color="var(--accent-text)" />
+                  <span style={s.learnerLabel}>Mon apprentissage</span>
+                </div>
+                <div style={s.learnerBadges}>
+                  {learnerLevel && (
+                    <span style={{ ...s.learnerLevel, color: learnerLevel.color, borderColor: `${learnerLevel.color}50`, background: `${learnerLevel.color}14` }}>
+                      <Trophy size={12} weight="fill" />
+                      {learnerLevel.label}
+                    </span>
+                  )}
+                  {streakLearner > 0 && (
+                    <span style={s.learnerStreak}>
+                      <Flame size={12} weight="fill" color="#dc2626" />
+                      <strong style={{ color: 'var(--danger)' }}>{streakLearner}</strong> jour{streakLearner > 1 ? 's' : ''}
+                    </span>
+                  )}
+                  <span style={s.learnerCount}>
+                    {totalLessonsDone} leçon{totalLessonsDone > 1 ? 's' : ''} · {formationsCompleted} formation{formationsCompleted > 1 ? 's' : ''} finie{formationsCompleted > 1 ? 's' : ''}
+                  </span>
+                </div>
+              </div>
+
+              {formationInProgressData ? (
+                <div style={s.learnerProgress}>
+                  <div style={s.learnerProgressLabel}>Continue</div>
+                  <div style={s.learnerProgressTitle}>{formationInProgressData.title}</div>
+                  <div style={s.learnerProgressBar}>
+                    <div style={{ ...s.learnerProgressFill, width: `${formationInProgressData.progress}%` }} />
+                  </div>
+                  <div style={s.learnerProgressMeta}>
+                    {formationInProgressData.progress}% · {formationInProgressData.completedCount}/{formationInProgressData.lessonsCount} leçons
+                  </div>
+                </div>
+              ) : (
+                <div style={s.learnerProgress}>
+                  <div style={s.learnerProgressLabel}>Suggestion</div>
+                  <div style={s.learnerProgressTitle}>Démarre une formation pour progresser</div>
+                  <div style={s.learnerProgressMeta}>16 formations disponibles dans le catalogue</div>
+                </div>
+              )}
+
+              <ArrowRight size={14} weight="bold" color="var(--text-muted)" style={{ flexShrink: 0 }} />
+            </Link>
           </section>
         )}
 

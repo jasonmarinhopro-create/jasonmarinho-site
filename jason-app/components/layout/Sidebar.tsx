@@ -9,7 +9,7 @@ import {
   FacebookLogo, CaretDown, ChartBar, CalendarBlank, Heart,
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
-  ChartLineUp, HouseLine, Briefcase, ShareNetwork, MagnifyingGlass, CalendarCheck,
+  ChartLineUp, HouseLine, Briefcase, ShareNetwork, MagnifyingGlass, CalendarCheck, Signature,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
@@ -62,7 +62,10 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
       // (qui redevient purement vue chronologique Mois).
       { href: '/dashboard/reservations', label: 'Mes réservations', icon: ListChecks },
       { href: '/dashboard/voyageurs',   label: 'Mes voyageurs',     icon: Users },
-      { href: '/dashboard/gabarits',    label: 'Modèles de messages', icon: FileText },
+      // Contrats + loyer + caution des réservations directes : la valeur n°1
+      // de l'app face aux PMS (sept. 2026), auparavant un onglet caché dans
+      // Mes voyageurs. « Modèles de messages » a rejoint Outils & calculs.
+      { href: '/dashboard/contrats',    label: 'Contrats & paiements', icon: Signature },
       // Mes finances : Étape 4 — fusion à onglets Revenus / Encaissements
       // / Performances. Le lien pointe vers la racine /dashboard/finances
       // qui redirige sur l'onglet Revenus par défaut.
@@ -83,7 +86,7 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
         href: '/dashboard/outils', label: 'Outils & calculs', icon: Calculator,
         // Les 4 outils vivent en URL top-level (pas sous /dashboard/outils/*),
         // cf. commentaire dans outils/page.tsx : liens directs conservés.
-        activeMatch: ['/dashboard/outils', '/dashboard/simulateurs', '/dashboard/calculateurs', '/dashboard/audit-gbp', '/dashboard/outils-impression'],
+        activeMatch: ['/dashboard/outils', '/dashboard/gabarits', '/dashboard/simulateurs', '/dashboard/calculateurs', '/dashboard/audit-gbp', '/dashboard/outils-impression'],
       },
       // Apprendre (Étape 6) : fusion à onglets Formations + Guide LCD.
       { href: '/dashboard/apprendre/formations', label: 'Apprendre',   icon: GraduationCap, activeMatch: ['/dashboard/apprendre'] },

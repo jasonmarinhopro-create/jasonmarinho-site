@@ -2,6 +2,7 @@ import { icalOccupationsForMenage } from '@/lib/menage/ical-occupations'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import CalendrierView from './CalendrierView'
+import CalendrierTabBar from './CalendrierTabBar'
 import OnboardingTour, { CALENDRIER_STEPS } from '../OnboardingTour'
 import { computeMenageSlots, mergeAutoAndManual, type Occupation, type LogementSettings, type MenageSlot, type ManualMenageEvent } from '@/lib/menage/compute'
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
@@ -276,6 +277,7 @@ export default async function CalendrierPage() {
         storageScope="calendrier"
         initiallyDone={(profile?.onboarding_completed_steps ?? []).includes('tour:calendrier')}
       />
+      <CalendrierTabBar />
       <CalendrierView
         events={events ?? []}
         contractEvents={contractEvents}

@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import Select from '@/components/ui/Select'
 import { FileText, MagnifyingGlass, CheckCircle, Clock, X, House, CurrencyEur, ArrowSquareOut, Plus, Info, Funnel } from '@phosphor-icons/react/dist/ssr'
-import type { ContractRow } from './VoyageursView'
+import type { ContractRow } from './types'
 
 interface Props {
   contracts: ContractRow[]
@@ -17,6 +17,20 @@ const STATUS_META: Record<string, { label: string; color: string; bg: string }> 
   en_attente: { label: 'En attente', color: '#d97706', bg: 'rgba(217,119,6,0.12)' },
   signe:      { label: 'Signé',      color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
   annule:     { label: 'Annulé',     color: '#64748b', bg: 'rgba(100,116,139,0.12)' },
+}
+
+// Où en est l'argent : caution (prioritaire, c'est elle qui demande une
+// action après le séjour) puis loyer payé en ligne.
+function paymentBadge(c: ContractRow): { label: string; color: string; bg: string } | null {
+  switch (c.stripe_deposit_status) {
+    case 'held':     return { label: 'Caution bloquée', color: '#2563eb', bg: 'rgba(37,99,235,0.12)' }
+    case 'captured': return { label: 'Caution encaissée', color: '#dc2626', bg: 'rgba(220,38,38,0.10)' }
+    case 'released': return { label: 'Caution libérée', color: '#10b981', bg: 'rgba(16,185,129,0.12)' }
+  }
+  if (!c.stripe_payment_enabled) return null
+  if (c.stripe_payment_status === 'paid') return { label: 'Loyer payé', color: '#10b981', bg: 'rgba(16,185,129,0.12)' }
+  if (c.stripe_payment_status === 'failed') return { label: 'Paiement échoué', color: '#dc2626', bg: 'rgba(220,38,38,0.10)' }
+  return c.statut === 'signe' ? { label: 'Loyer à encaisser', color: '#d97706', bg: 'rgba(217,119,6,0.12)' } : null
 }
 
 function fmtDate(iso: string | null): string {
@@ -100,7 +114,7 @@ export default function ContractsTab({ contracts }: Props) {
         <div style={s.emptyHowTo}>
           <div style={s.emptyHowToTitle}>Comment créer ton premier contrat</div>
           <ol style={s.emptyHowToList}>
-            <li>Ouvre la fiche d'un voyageur dans l'onglet <strong>Voyageurs</strong> ci-dessus</li>
+            <li>Ouvre la fiche d'un voyageur dans <strong>Mes voyageurs</strong></li>
             <li>Dans la section <strong>Séjours</strong>, repère le séjour concerné</li>
             <li>Clique <strong>« Créer un contrat »</strong> → un wizard te guide en 5 étapes (≈ 2 min)</li>
             <li>Le locataire signe en ligne via un lien sécurisé envoyé par email</li>
@@ -108,8 +122,8 @@ export default function ContractsTab({ contracts }: Props) {
         </div>
 
         <div style={s.emptyCtaRow}>
-          <a href="#voyageurs" style={s.emptyCtaPrimary}>Aller à mes voyageurs →</a>
-          <a href="https://app.jasonmarinho.com/dashboard/guide" style={s.emptyCtaSecondary}>Lire le guide LCD</a>
+          <Link href="/dashboard/voyageurs" style={s.emptyCtaPrimary}>Aller à mes voyageurs →</Link>
+          <Link href="/dashboard/apprendre/guide" style={s.emptyCtaSecondary}>Lire le guide LCD</Link>
         </div>
       </div>
     )
@@ -122,7 +136,8 @@ export default function ContractsTab({ contracts }: Props) {
       <div style={s.note}>
         <Info size={14} weight="fill" color="var(--accent-text)" />
         <span>
-          Les contrats servent surtout pour les <strong>réservations directes</strong>. Pour les séjours Airbnb / Booking, les plateformes gèrent leurs propres CGU.
+          Les contrats servent surtout pour les <strong>réservations directes</strong> (Airbnb / Booking ont leurs propres CGU).
+          Pour en créer un : ouvre la fiche du voyageur, puis « Créer un contrat » sur le séjour concerné.
         </span>
       </div>
 
@@ -185,6 +200,12 @@ export default function ContractsTab({ contracts }: Props) {
         {filtered.length} contrat{filtered.length > 1 ? 's' : ''} affiché{filtered.length > 1 ? 's' : ''} sur {contracts.length}
       </div>
 
+      {/* Mobile : nom + logement sur une ligne, montant et statuts en dessous */}
+      <style>{`@media (max-width: 640px) {
+        .ctr-row { flex-wrap: wrap; }
+        .ctr-row .ctr-main { flex: 1 1 calc(100% - 60px) !important; }
+      }`}</style>
+
       {/* Liste */}
       {filtered.length === 0 ? (
         <div style={s.emptyResults}>
@@ -207,11 +228,12 @@ function ContractRow({ contract: c }: { contract: ContractRow }) {
   const meta = STATUS_META[c.statut] ?? { label: c.statut, color: 'var(--text-muted)', bg: 'transparent' }
   const fullName = `${c.locataire_prenom ?? ''} ${c.locataire_nom ?? ''}`.trim() || 'Locataire'
   const initials = ((c.locataire_prenom?.[0] ?? '') + (c.locataire_nom?.[0] ?? '')).toUpperCase() || '?'
+  const pay = c.statut === 'annule' ? null : paymentBadge(c)
 
   return (
-    <div style={s.row}>
+    <div style={s.row} className="ctr-row">
       <div style={s.rowAvatar}>{initials}</div>
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ flex: 1, minWidth: 0 }} className="ctr-main">
         <div style={s.rowName}>{fullName}</div>
         <div style={s.rowMeta}>
           <span><House size={11} weight="fill" /> {c.logement_nom ?? 'Logement'}</span>
@@ -223,12 +245,14 @@ function ContractRow({ contract: c }: { contract: ContractRow }) {
         {c.montant_caution ? <div style={s.rowDeposit}>caution {fmtEur(c.montant_caution)}</div> : null}
       </div>
       <span style={{ ...s.statusBadge, color: meta.color, background: meta.bg }}>{meta.label}</span>
+      {pay && <span style={{ ...s.statusBadge, color: pay.color, background: pay.bg }} className="ctr-pay-badge">{pay.label}</span>}
       <div style={s.rowActions}>
-        {c.sejour_id && (
+        {c.voyageur_id && (
           <Link
-            href={`/dashboard/voyageurs?sejour=${c.sejour_id}`}
+            href={`/dashboard/voyageurs/${c.voyageur_id}`}
             style={s.actionBtn}
-            title="Voir dans la fiche voyageur"
+            title="Ouvrir la fiche voyageur (relance, caution, facture)"
+            aria-label="Ouvrir la fiche voyageur"
           >
             <ArrowSquareOut size={13} weight="bold" />
           </Link>

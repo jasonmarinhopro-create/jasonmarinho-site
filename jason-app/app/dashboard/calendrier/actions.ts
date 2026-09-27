@@ -52,7 +52,10 @@ export async function setMenageDone(input: {
   if (!user) return { ok: false, error: 'Non authentifié' }
 
   const res = await applyMenageDone(supabase, user.id, input)
-  if (res.ok) revalidatePath('/dashboard/calendrier')
+  if (res.ok) {
+    revalidatePath('/dashboard/calendrier')
+    revalidatePath('/dashboard/calendrier/menage')
+  }
   return res
 }
 
@@ -465,6 +468,7 @@ export async function generateIcalToken() {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/calendrier')
+  revalidatePath('/dashboard/calendrier/menage')
   return { token }
 }
 

@@ -2,13 +2,13 @@
 
 import { useState, useTransition, useMemo, useEffect, useRef } from 'react'
 import { NATIONALITES } from '@/lib/nationalites'
-import ContractsTab from './ContractsTab'
+import Link from 'next/link'
 import Select from '@/components/ui/Select'
 import { useRouter } from 'next/navigation'
 import {
   Plus, MagnifyingGlass, Warning,
   X, User, Envelope, Phone, Note,
-  Users, ShieldCheck, CurrencyEur, Star, SquaresFour, Rows, ProhibitInset, FileText, Faders,
+  Users, ShieldCheck, CurrencyEur, Star, SquaresFour, Rows, ProhibitInset, FileText, Faders, IdentificationCard,
 } from '@phosphor-icons/react/dist/ssr'
 import { addVoyageur, updateVoyageur, deleteVoyageur, checkVoyageurSignale, type VoyageurData } from './actions'
 import TourTrigger from '@/components/dashboard/TourTrigger'
@@ -61,52 +61,19 @@ const FILTER_DEFS: { key: FilterKey; label: string; desc: string; test: (v: Voya
 const DEFAULT_VISIBLE_FILTERS: FilterKey[] = ['a-venir', 'recurrents', 'signales', 'bloques']
 const FILTERS_LS_KEY = 'jm-voyageurs-filters'
 
-export type ContractRow = {
-  id: string
-  statut: 'en_attente' | 'signe' | 'annule' | string
-  signature_date: string | null
-  created_at: string
-  locataire_prenom: string | null
-  locataire_nom: string | null
-  locataire_email: string | null
-  logement_nom: string | null
-  logement_adresse: string | null
-  date_arrivee: string | null
-  date_depart: string | null
-  montant_loyer: number | null
-  montant_caution: number | null
-  stripe_payment_enabled: boolean | null
-  stripe_payment_status: string | null
-  stripe_deposit_status: string | null
-  sejour_id: string | null
-  token: string | null
-}
-
 interface Props {
   voyageurs: Voyageur[]
   tableReady: boolean
-  contracts?: ContractRow[]
+  pendingDeclarations?: number
 }
 
-export default function VoyageursView({ voyageurs, tableReady, contracts = [] }: Props) {
+export default function VoyageursView({ voyageurs, tableReady, pendingDeclarations = 0 }: Props) {
   const router = useRouter()
-  // Toggle "Voyageurs" / "Contrats". Sync URL hash pour partage de lien
-  // (#contrats ouvre directement la 2e vue). Voyageurs par défaut.
-  const [topTab, setTopTab] = useState<'voyageurs' | 'contrats'>('voyageurs')
+  // Les contrats ont leur propre page (/dashboard/contrats, entrée
+  // « Contrats & paiements » du menu). Les anciens liens #contrats y mènent.
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    const fromHash = () => {
-      const h = window.location.hash.slice(1)
-      if (h === 'contrats' || h === 'voyageurs') setTopTab(h)
-    }
-    fromHash()
-    window.addEventListener('hashchange', fromHash)
-    return () => window.removeEventListener('hashchange', fromHash)
-  }, [])
-  function selectTopTab(t: 'voyageurs' | 'contrats') {
-    setTopTab(t)
-    if (typeof window !== 'undefined') history.replaceState(null, '', `#${t}`)
-  }
+    if (typeof window !== 'undefined' && window.location.hash === '#contrats') router.replace('/dashboard/contrats')
+  }, [router])
   const [isPending, startTransition] = useTransition()
   const [search, setSearch] = useState('')
   const [modal, setModal] = useState<'add' | 'edit' | null>(null)
@@ -285,12 +252,7 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
               : `${voyageurs.length} voyageur${voyageurs.length > 1 ? 's' : ''}`}
           </p>
         </div>
-        {/* Bouton "+ Ajouter" : uniquement sur la tab Voyageurs.
-            Le modal qu'il ouvre est dans le wrapper voyageurs — si on
-            l'affichait sur la tab Contrats, openAdd ferait set du state
-            mais le modal JSX n'étant pas rendu, ça donnerait l'illusion
-            que le bouton est cassé. */}
-        {tableReady && topTab === 'voyageurs' && (
+        {tableReady && (
           <button onClick={openAdd} className="btn-primary" style={s.addBtn} data-tour="voyageur-create">
             <Plus size={16} weight="bold" />
             Ajouter
@@ -298,38 +260,27 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
         )}
       </div>
 
-      {/* Toggle Voyageurs / Contrats : visible toujours, drive vers la vue
-          Contrats utile surtout aux réservations directes (Airbnb/Booking
-          ont leurs propres CGU). */}
-      <div style={s.topTabs} role="tablist" aria-label="Voyageurs ou contrats" className="fade-up">
-        <button
-          onClick={() => selectTopTab('voyageurs')}
-          role="tab"
-          aria-selected={topTab === 'voyageurs'}
-          style={{ ...s.topTab, ...(topTab === 'voyageurs' ? s.topTabActive : {}) }}
-        >
+      {/* Raccourcis : Contrats & paiements (anciennement un onglet ici) et
+          Déclarations obligatoires (SIBA, fiche de police) */}
+      <div style={s.topTabs} className="fade-up">
+        <span style={{ ...s.topTab, ...s.topTabActive, cursor: 'default' }}>
           <Users size={14} weight="fill" />
           Voyageurs <span style={s.topTabCount}>{voyageurs.length}</span>
-        </button>
-        <button
-          onClick={() => selectTopTab('contrats')}
-          role="tab"
-          aria-selected={topTab === 'contrats'}
-          style={{ ...s.topTab, ...(topTab === 'contrats' ? s.topTabActive : {}) }}
-        >
+        </span>
+        <Link href="/dashboard/contrats" style={{ ...s.topTab, textDecoration: 'none' }}>
           <FileText size={14} weight="fill" />
-          Contrats <span style={s.topTabCount}>{contracts.length}</span>
-        </button>
+          Contrats &amp; paiements
+        </Link>
+        <Link href="/dashboard/voyageurs/declarations" style={{ ...s.topTab, textDecoration: 'none' }}>
+          <IdentificationCard size={14} weight="fill" />
+          Déclarations
+          {pendingDeclarations > 0 && (
+            <span style={{ ...s.topTabCount, background: 'var(--warning-border)', color: 'var(--warning)' }}>{pendingDeclarations}</span>
+          )}
+        </Link>
       </div>
 
-      {topTab === 'contrats' && (
-        <div key="contrats-panel" className="anim-fade-in">
-          <ContractsTab contracts={contracts} />
-        </div>
-      )}
-
-      {/* Vue Voyageurs (rendu conditionnel) */}
-      {topTab === 'voyageurs' && (<>
+      <>
 
       {/* Stats globales */}
       {tableReady && voyageurs.length > 0 && (
@@ -944,7 +895,7 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
         </div>
       )}
 
-      </>)}
+      </>
       {/* /Vue Voyageurs */}
     </div>
   )
@@ -959,7 +910,7 @@ const MEDIA_CSS = `
 const s: Record<string, React.CSSProperties> = {
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   topTabs: {
-    display: 'inline-flex', gap: '4px', padding: '4px',
+    display: 'inline-flex', flexWrap: 'wrap', maxWidth: '100%', gap: '4px', padding: '4px',
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '10px', marginBottom: '20px',
   },
