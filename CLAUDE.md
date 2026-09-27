@@ -165,6 +165,13 @@ import { House } from '@phosphor-icons/react'
 
 ---
 
+## Espace équipe de ménage : « Mes ménages » (sept. 2026)
+
+- **Principe** : aucun compte partagé. L'hôte envoie son lien de planning (`/api/calendar/menage-feed?token=<profiles.ical_token>`, bouton « Copier le lien du planning » / « Générer le lien » dans `MenageExportModal.tsx`). L'équipe le colle dans `/dashboard/ma-fiche-menage/planning` (`addPlanningLink`, token extrait par `lib/menage/share-link.ts`) → ligne `menage_links` (migration `20260927_109`). Si l'hôte régénère son token, `host_token` ne correspond plus : accès expiré automatiquement (affiché « Lien expiré »).
+- **Planning** : `lib/menage/host-slots.ts` (`loadHostMenageSlots`, contrats + séjours + réservations iCal) partagé avec le flux iCal. Fenêtre hier → J+13, groupé par jour, badge « Arrivée le jour même » (turnover serré), adresse cliquable (Google Maps).
+- **Terminé + photos** : photos compressées dans le navigateur (1600 px JPEG) puis envoyées directement au bucket privé `menage-photos` via URL signées (`preparePhotoUploads` → `uploadToSignedUrl`) : pas de passage par la server action (limite 1 Mo). `markMenageTermine` vérifie lien + token + existence du créneau, écrit `menage_completions`, marque l'événement [FAIT] chez l'hôte (`lib/menage/done.ts` `applyMenageDone`, partagé avec `setMenageDone`, ILIKE échappé) et notifie l'hôte (lien `/dashboard/menages/[id]`, photos en URL signées 1 h). Annulation possible par la personne qui a validé.
+- Sidebar pro (mode ménage) : entrée « Mes ménages » en premier.
+
 ## Positionnement hôte + checklist de démarrage (sept. 2026)
 
 - **Positionnement** : l'app n'est pas un logiciel de gestion concurrent de Smoobu/Hospitable (pas de synchro bidirectionnelle ni d'envoi automatique de messages). Elle gère « le reste » : contrats signés + caution pour les réservations directes, planning ménage automatique, formalités voyageurs, finances, savoir. Phrase affichée en tête de la checklist d'accueil (`app/dashboard/SetupChecklist.tsx`, `headPitch`).

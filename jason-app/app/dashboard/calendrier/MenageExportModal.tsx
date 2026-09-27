@@ -6,7 +6,7 @@ import {
   Copy, Check, ArrowSquareOut, Printer, MapPin, PencilSimple, Plus, Trash, FloppyDisk,
 } from '@phosphor-icons/react/dist/ssr'
 import type { MenageSlot } from './page'
-import { upsertMenageEvent, deleteMenageEvent } from './actions'
+import { upsertMenageEvent, deleteMenageEvent, generateIcalToken } from './actions'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 
 type Props = {
@@ -666,9 +666,24 @@ export default function MenageExportModal({ slots: allSlots, doneIds, logementNa
   }, [allSlots, from, to])
 
   const whatsAppMsg = useMemo(() => buildWhatsAppMessage(slots, label), [slots, label])
-  const cleanerIcalUrl = icalToken
-    ? `${appUrl}/api/calendar/menage-feed?token=${icalToken}`
+  // Le token peut ne pas exister encore (nouvel hôte arrivé depuis la
+  // checklist de l'accueil) : on permet de le générer ici même.
+  const [token, setToken] = useState<string | null>(icalToken)
+  const [linkCopied, setLinkCopied] = useState(false)
+  const [genError, setGenError] = useState<string | null>(null)
+  const cleanerIcalUrl = token
+    ? `${appUrl}/api/calendar/menage-feed?token=${token}`
     : null
+  async function handleGenerateLink() {
+    setGenError(null)
+    const res = await generateIcalToken()
+    if ('token' in res && res.token) setToken(res.token)
+    else setGenError(('error' in res && res.error) || 'Impossible de générer le lien')
+  }
+  async function handleCopyLink() {
+    if (!cleanerIcalUrl) return
+    try { await navigator.clipboard.writeText(cleanerIcalUrl); setLinkCopied(true); setTimeout(() => setLinkCopied(false), 2000) } catch {}
+  }
 
   // ── Édition / ajout d'un ménage ───────────────────────────────────────
   // editingSlotId === '__new__' = formulaire d'ajout, sinon = id du slot édité
@@ -967,16 +982,27 @@ export default function MenageExportModal({ slots: allSlots, doneIds, logementNa
               <><ChatTeardropDots size={13} weight="bold" /> Copier pour WhatsApp</>
             )}
           </button>
-          {cleanerIcalUrl && (
-            <a href={cleanerIcalUrl} target="_blank" rel="noopener noreferrer" style={s.btnSecondary}>
-              <CalendarIcon size={13} weight="bold" /> Lien iCal pour la femme de ménage
-              <ArrowSquareOut size={11} weight="bold" />
-            </a>
+          {cleanerIcalUrl ? (
+            <>
+              <button onClick={handleCopyLink} style={s.btnSecondary}>
+                {linkCopied
+                  ? <><Check size={13} weight="bold" /> Lien copié</>
+                  : <><CalendarIcon size={13} weight="bold" /> Copier le lien du planning</>}
+              </button>
+              <a href={cleanerIcalUrl} target="_blank" rel="noopener noreferrer" style={s.btnGhost} title="Ouvrir le fichier iCal">
+                <ArrowSquareOut size={11} weight="bold" />
+              </a>
+            </>
+          ) : (
+            <button onClick={handleGenerateLink} style={s.btnSecondary}>
+              <CalendarIcon size={13} weight="bold" /> Générer le lien du planning
+            </button>
           )}
         </footer>
+        {genError && <p style={{ ...s.footerNote, color: 'var(--danger-text)' }}>{genError}</p>}
 
         <p style={s.footerNote}>
-          💡 Le lien iCal permet à la femme de ménage de s'abonner depuis son téléphone : son agenda se met à jour automatiquement à chaque nouvelle réservation.
+          💡 Envoie ce lien à ton équipe de ménage. Elle peut l'ajouter à l'agenda de son téléphone (mise à jour automatique à chaque réservation), ou le coller dans son espace Jason Marinho « Mes ménages » pour marquer chaque ménage terminé avec photos : tu es prévenu tout de suite.
         </p>
       </div>
     </>

@@ -9,7 +9,7 @@ import {
   FacebookLogo, CaretDown, ChartBar, CalendarBlank, Heart,
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
-  ChartLineUp, HouseLine, Briefcase, ShareNetwork, MagnifyingGlass,
+  ChartLineUp, HouseLine, Briefcase, ShareNetwork, MagnifyingGlass, CalendarCheck,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
@@ -256,6 +256,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     '/dashboard/ma-fiche-menage',
     '/dashboard/ma-fiche-menage/demandes',
     '/dashboard/ma-fiche-menage/clients',
+    '/dashboard/ma-fiche-menage/planning',
     // Espace investisseur : idem, sinon "Accueil" reste actif sur /estimateur.
     '/dashboard/investir',
     '/dashboard/investir/estimateur',
@@ -405,6 +406,9 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
             <div>
               {!collapsed && <div style={styles.sectionLabel}>Mon annuaire</div>}
               <div style={styles.navSection}>
+                {proRole === 'cleaner' && (
+                  <NavItem href="/dashboard/ma-fiche-menage/planning" label="Mes ménages" Icon={CalendarCheck} />
+                )}
                 <NavItem
                   href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe' : '/dashboard/ma-fiche-menage'}
                   label="Ma fiche"

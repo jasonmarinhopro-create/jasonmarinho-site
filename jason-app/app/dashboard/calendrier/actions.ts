@@ -1,5 +1,6 @@
 'use server'
 
+import { applyMenageDone } from '@/lib/menage/done'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { fetchAndUpsertIcalFeed } from '@/lib/ical/sync'
@@ -50,70 +51,9 @@ export async function setMenageDone(input: {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { ok: false, error: 'Non authentifié' }
 
-  const { data: existing } = await supabase
-    .from('calendar_events')
-    .select('id, description')
-    .eq('user_id', user.id)
-    .eq('date', input.date)
-    .eq('category', 'menage')
-    .ilike('title', `%${input.logementName}%`)
-    .limit(1)
-    .maybeSingle()
-
-  // ─── Décocher : supprimer l'événement (ou son tag [FAIT]) ────────────
-  if (!input.done) {
-    if (!existing) {
-      // Rien à faire — déjà non coché
-      return { ok: true }
-    }
-    // Si la description contient autre chose que [FAIT], on garde l'événement
-    // pour préserver les notes manuelles éventuelles. Sinon on supprime.
-    const desc = existing.description ?? ''
-    const stripped = desc.replace(/\[FAIT\]\s*/, '').trim()
-    if (stripped.length > 0 && stripped !== '·') {
-      await supabase
-        .from('calendar_events')
-        .update({ description: stripped })
-        .eq('id', existing.id)
-    } else {
-      await supabase
-        .from('calendar_events')
-        .delete()
-        .eq('id', existing.id)
-    }
-    revalidatePath('/dashboard/calendrier')
-    return { ok: true }
-  }
-
-  // ─── Cocher : créer ou marquer [FAIT] ────────────────────────────────
-  if (existing) {
-    const desc = existing.description ?? ''
-    if (!desc.includes('[FAIT]')) {
-      await supabase
-        .from('calendar_events')
-        .update({ description: `[FAIT] ${desc}`.trim() })
-        .eq('id', existing.id)
-    }
-    revalidatePath('/dashboard/calendrier')
-    return { ok: true }
-  }
-
-  const { error } = await supabase
-    .from('calendar_events')
-    .insert({
-      user_id: user.id,
-      title: `Ménage · ${input.logementName}`,
-      date: input.date,
-      end_date: null,
-      start_time: input.startTime ?? '11:00',
-      end_time: input.endTime ?? '14:00',
-      category: 'menage',
-      description: `[FAIT]${input.notes ? ' · ' + input.notes : ''}`,
-    })
-
-  if (error) return { ok: false, error: error.message }
-  revalidatePath('/dashboard/calendrier')
-  return { ok: true }
+  const res = await applyMenageDone(supabase, user.id, input)
+  if (res.ok) revalidatePath('/dashboard/calendrier')
+  return res
 }
 
 /**

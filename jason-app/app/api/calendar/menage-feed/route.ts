@@ -15,8 +15,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest } from 'next/server'
-import { computeMenageSlots, type Occupation, type LogementSettings } from '@/lib/menage/compute'
-import { icalOccupationsForMenage } from '@/lib/menage/ical-occupations'
+import { loadHostMenageSlots } from '@/lib/menage/host-slots'
 import { syncUserFeedsQuick } from '@/lib/ical/background'
 
 function p2(n: number) { return String(n).padStart(2, '0') }
@@ -73,91 +72,9 @@ export async function GET(req: NextRequest) {
   // plus d'une heure (plafonné à ~9 s pour ne pas faire attendre l'agenda).
   await syncUserFeedsQuick(supabase, uid)
 
-  const [
-    { data: contractsRaw },
-    { data: sejours },
-    { data: logements },
-    { data: icalFeeds },
-    { data: icalEvents },
-  ] = await Promise.all([
-    // Statut filtré en JS : .neq('statut', 'annule') excluait aussi les
-    // contrats au statut NULL (NULL <> 'annule' vaut NULL en SQL).
-    supabase
-      .from('contracts')
-      .select('id, logement_nom, date_arrivee, date_depart, sejour_id, statut')
-      .eq('user_id', uid),
-    supabase
-      .from('sejours')
-      .select('id, logement, date_arrivee, date_depart')
-      .eq('user_id', uid)
-      .is('annule_at', null)
-      .not('date_arrivee', 'is', null)
-      .not('date_depart', 'is', null),
-    supabase
-      .from('logements')
-      .select('id, nom, adresse, menage_duree_min, menage_heure_defaut, menage_notes, contact_menage_nom, contact_menage_tel, frais_menage, ical_airbnb, ical_booking, ical_vrbo, ical_autre')
-      .eq('user_id', uid),
-    supabase
-      .from('ical_feeds')
-      .select('id, url')
-      .eq('user_id', uid),
-    // Réservations importées d'Airbnb/Booking/Vrbo : avant, elles étaient
-    // absentes du planning ménage (seuls les séjours saisis à la main et les
-    // contrats y figuraient).
-    supabase
-      .from('ical_events')
-      .select('id, feed_id, title, description, start_date, end_date')
-      .eq('user_id', uid)
-      .gte('end_date', fromDate)
-      .lte('start_date', toDate),
-  ])
-  const contracts = (contractsRaw ?? []).filter(c => c.statut !== 'annule')
-
-  const sejourIdsWithContract = new Set(
-    (contracts ?? [])
-      .map(c => (c as any).sejour_id as string | null)
-      .filter((v): v is string => !!v)
-  )
-
-  const occupations: Occupation[] = []
-  for (const c of contracts) {
-    if (!c.date_arrivee || !c.date_depart) continue
-    occupations.push({
-      sourceId: `contract-${c.id}`,
-      source: 'contract',
-      logementName: c.logement_nom ?? '',
-      dateArrivee: c.date_arrivee,
-      dateDepart: c.date_depart,
-    })
-  }
-  for (const s of (sejours ?? []) as any[]) {
-    if (sejourIdsWithContract.has(s.id)) continue
-    occupations.push({
-      sourceId: `sejour-${s.id}`,
-      source: 'sejour',
-      logementName: s.logement ?? '',
-      dateArrivee: s.date_arrivee,
-      dateDepart: s.date_depart,
-    })
-  }
-
-  // Après les séjours/contrats : à date égale, le calcul garde la première
-  // occupation vue, donc la saisie manuelle prime sur le miroir iCal.
-  occupations.push(...icalOccupationsForMenage(logements ?? [], icalFeeds ?? [], icalEvents ?? []))
-
-  const logementSettings: LogementSettings[] = (logements ?? []).map((l: any) => ({
-    id: l.id,
-    nom: l.nom ?? 'Logement',
-    menageDureeMin: l.menage_duree_min ?? 180,
-    menageHeureDefaut: l.menage_heure_defaut ?? '11:00',
-    menageNotes: l.menage_notes ?? null,
-    adresse: l.adresse ?? null,
-    contactMenageNom: l.contact_menage_nom ?? null,
-    contactMenageTel: l.contact_menage_tel ?? null,
-    fraisMenage: l.frais_menage ?? null,
-  }))
-
-  const slots = computeMenageSlots(occupations, logementSettings, { fromDate, toDate })
+  // Contrats + séjours + réservations Airbnb/Booking/Vrbo (lib/menage/host-slots.ts,
+  // partagé avec l'espace de l'équipe /dashboard/ma-fiche-menage/planning).
+  const slots = await loadHostMenageSlots(supabase, uid, fromDate, toDate)
 
   const stamp = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15) + 'Z'
   const lines: string[] = [
