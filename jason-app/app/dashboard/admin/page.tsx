@@ -118,7 +118,7 @@ export default async function AdminPage() {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([month, counts]) => ({ month, ...counts }))
 
-  // MRR estimé (annuel / 12) : plan Standard vendu en annuel 19,98 €/an HT
+  // MRR estimé (annuel / 12) : plan Standard vendu en annuel 19,98 €/an TTC
   // Seul le plan Standard contribue (Driing = gratuit pour les clients Driing)
   const mrr = (standardMembers ?? 0) * (19.98 / 12)
 

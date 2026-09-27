@@ -10,15 +10,15 @@ export const STRIPE_PRODUCTS = {
 // statique). planFromPriceId reconnaît toujours les 4 variantes pour ne
 // pas casser les abonnés existants au renouvellement.
 export const STRIPE_PLANS = {
-  // Membre Fondateur, 19,98 €/an HT (à vie tant que l'abonnement reste actif)
+  // Membre Fondateur, 19,98 €/an TTC (à vie tant que l'abonnement reste actif)
   STANDARD_FOUNDING_MONTHLY: process.env.STRIPE_PRICE_STANDARD_FOUNDING_MONTHLY ?? 'price_1TNwbyJ7Hsyvd5AVv0FAWhj6',
   STANDARD_FOUNDING_YEARLY:  process.env.STRIPE_PRICE_STANDARD_FOUNDING_YEARLY  ?? 'price_1TNwdLJ7Hsyvd5AVmSRYghOk',
 
-  // Standard public (offre Fondateur épuisée), 38,98 €/an HT
+  // Standard public (offre Fondateur épuisée), 38,98 €/an TTC
   STANDARD_PUBLIC_MONTHLY:   process.env.STRIPE_PRICE_STANDARD_PUBLIC_MONTHLY   ?? 'price_1TNwdhJ7Hsyvd5AV5fY88XJ8',
   STANDARD_PUBLIC_YEARLY:    process.env.STRIPE_PRICE_STANDARD_PUBLIC_YEARLY    ?? 'price_1TNwiCJ7Hsyvd5AVu1XHPMMr',
 
-  // Contribution Membre Driing, 9,98 €/an HT (legacy, n'est plus proposé à la souscription)
+  // Contribution Membre Driing, 9,98 €/an TTC (legacy, n'est plus proposé à la souscription)
   DRIING_MEMBER_MONTHLY:     process.env.STRIPE_PRICE_DRIING_MEMBER_MONTHLY     ?? 'price_1TNweJJ7Hsyvd5AV4hnVjadk',
   DRIING_MEMBER_YEARLY:      process.env.STRIPE_PRICE_DRIING_MEMBER_YEARLY      ?? 'price_1TNwjhJ7Hsyvd5AVioj16oD0',
 } as const

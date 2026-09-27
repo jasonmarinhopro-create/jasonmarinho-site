@@ -18,7 +18,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     date: '2026-06-23',
     tag: 'important',
     title: 'Plan Standard désormais en annuel uniquement (19,98 €/an Fondateur)',
-    description: 'Simplification : on bascule le plan Standard sur de la facturation annuelle uniquement. Tarif Membre Fondateur 19,98 €/an HT à vie (au lieu de 1,98 €/mois). Tarif public à 38,98 €/an. Les abonnements mensuels en cours restent actifs et se renouvellent normalement.',
+    description: 'Simplification : on bascule le plan Standard sur de la facturation annuelle uniquement. Tarif Membre Fondateur 19,98 €/an à vie (au lieu de 1,98 €/mois). Tarif public à 38,98 €/an. Les abonnements mensuels en cours restent actifs et se renouvellent normalement.',
   },
   {
     id: 'annuaires-pros-jun-2026',

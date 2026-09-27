@@ -158,7 +158,7 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
                 {subDetails?.amount != null && (
                   <div style={styles.priceRow}>
                     <span style={styles.price}>{(subDetails.amount / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €</span>
-                    <span style={styles.priceLabel}> / {subDetails.interval === 'month' ? 'mois' : 'an'}</span>
+                    <span style={styles.priceLabel}> / {subDetails.interval === 'month' ? 'mois' : 'an'} TTC</span>
                   </div>
                 )}
                 <p style={styles.planDesc}>Tous les outils pour piloter ton activité LCD.</p>
@@ -273,12 +273,12 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
                     {founderExhausted ? (
                       <>
                         <span style={styles.price}>38,98 €</span>
-                        <span style={styles.priceLabel}> / an</span>
+                        <span style={styles.priceLabel}> / an TTC</span>
                       </>
                     ) : (
                       <>
                         <span style={styles.price}>19,98 €</span>
-                        <span style={styles.priceLabel}> / an</span>
+                        <span style={styles.priceLabel}> / an TTC</span>
                         <span style={styles.priceStrike}>38,98 €</span>
                       </>
                     )}
@@ -301,6 +301,7 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
                     {founderExhausted
                       ? 'Facturation annuelle uniquement. Résiliable à tout moment depuis ton espace.'
                       : 'Prix bloqué à vie tant que l’abonnement est actif. Facturation annuelle. Résiliable à tout moment.'}
+                    {' '}TVA non applicable, art. 293 B du CGI : le prix affiché est le prix payé.
                   </p>
                 </div>
               </>
