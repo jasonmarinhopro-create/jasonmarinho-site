@@ -45,7 +45,8 @@ export default function SubscribeButton({ priceId, label = 'Passer en Standard',
 
 const btnStyle: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
-  background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.25)',
-  color: 'var(--success-1)', fontSize: '13px', fontWeight: 600, padding: '11px 18px',
+  // Bouton principal de la page : plein, vert de la marque (avant : vert menthe pâle)
+  background: 'var(--accent-text)', border: '1px solid var(--accent-text)',
+  color: 'var(--bg)', fontSize: '14px', fontWeight: 700, padding: '12px 18px',
   borderRadius: '10px', cursor: 'pointer', transition: 'all .2s', fontFamily: 'inherit',
 }

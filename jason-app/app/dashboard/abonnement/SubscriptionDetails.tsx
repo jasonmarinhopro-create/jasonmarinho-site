@@ -13,12 +13,12 @@ type Props = {
 }
 
 function fmtDate(unix: number | null | undefined): string {
-  if (!unix) return '—'
+  if (!unix) return '-'
   try {
     return new Date(unix * 1000).toLocaleDateString('fr-FR', {
       day: 'numeric', month: 'long', year: 'numeric',
     })
-  } catch { return '—' }
+  } catch { return '-' }
 }
 
 function fmtMoney(cents: number, currency: string): string {
@@ -31,7 +31,7 @@ function fmtMoney(cents: number, currency: string): string {
 }
 
 const INVOICE_STATUS_LABEL: Record<string, { label: string; color: string }> = {
-  paid: { label: 'Payée', color: '#34D399' },
+  paid: { label: 'Payée', color: 'var(--accent-text)' },
   open: { label: 'En attente', color: '#fbbf24' },
   void: { label: 'Annulée', color: 'var(--text-muted)' },
   uncollectible: { label: 'Impayée', color: 'var(--warning)' },
@@ -49,7 +49,7 @@ export default function SubscriptionDetails({ details, invoices }: Props) {
 
   async function handleSwitchInterval() {
     const target = details.isMonthly ? 'annuel' : 'mensuel'
-    if (!confirm(`Passer ton abonnement en ${target} ? Le changement est immédiat — la différence est calculée au prorata et appliquée à ta prochaine facture.`)) return
+    if (!confirm(`Passer ton abonnement en ${target} ? Le changement est immédiat : la différence est calculée au prorata et appliquée à ta prochaine facture.`)) return
     setSwitching(true)
     setError(null)
     try {
@@ -138,8 +138,9 @@ export default function SubscriptionDetails({ details, invoices }: Props) {
           </button>
         )}
 
+        {/* Mensuel → annuel mis en avant ; annuel → mensuel en bouton discret (sept. 2026) */}
         {!isCancelScheduled && (details.isMonthly || details.isYearly) && (
-          <button onClick={handleSwitchInterval} disabled={switching} style={{ ...s.btn, ...s.btnAccent }}>
+          <button onClick={handleSwitchInterval} disabled={switching} style={{ ...s.btn, ...(details.isMonthly ? s.btnAccent : s.btnGhost) }}>
             {switching ? (
               <><CircleNotch size={13} style={{ animation: 'spin 1s linear infinite' }} /> Migration…</>
             ) : details.isMonthly ? (
@@ -216,7 +217,7 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '11px', fontWeight: 600, letterSpacing: '0.2px',
     border: '1px solid',
   },
-  statusOk: { color: '#34D399', borderColor: 'rgba(52,211,153,0.35)', background: 'rgba(52,211,153,0.08)' },
+  statusOk: { color: 'var(--accent-text)', borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' },
   statusWarn: { color: 'var(--warning)', borderColor: 'rgba(251,191,36,0.35)', background: 'rgba(251,191,36,0.08)' },
 
   keyRow: {
@@ -271,7 +272,7 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'inherit',
     transition: 'all .15s ease',
   },
-  btnPrimary: { background: '#34D399', borderColor: '#34D399', color: '#012618' },
+  btnPrimary: { background: 'var(--accent-text)', borderColor: 'var(--accent-text)', color: 'var(--bg)' },
   btnAccent: { background: 'var(--accent-text)', borderColor: 'var(--accent-text)', color: 'var(--bg)' },
   btnGhost: { background: 'var(--surface)', borderColor: 'var(--border-2)', color: 'var(--text-2)' },
 

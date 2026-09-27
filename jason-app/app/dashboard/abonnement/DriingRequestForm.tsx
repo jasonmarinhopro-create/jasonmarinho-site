@@ -66,7 +66,7 @@ export default function DriingRequestForm({ userEmail, driingStatus: initialStat
   if (sent) {
     return (
       <div style={s.successBox}>
-        <Check size={16} color="#34D399" weight="bold" />
+        <Check size={16} color="var(--accent-text)" weight="bold" />
         Demande envoyée ! Nous la traitons sous 24–48h.
       </div>
     )
@@ -184,7 +184,7 @@ const s: Record<string, React.CSSProperties> = {
   pendingDesc: { fontSize: '12px', fontWeight: 400, color: 'var(--text-2)', lineHeight: 1.6 },
   successBox: {
     display: 'flex', alignItems: 'center', gap: '8px',
-    fontSize: '13px', color: 'var(--success-1)',
+    fontSize: '13px', color: 'var(--accent-text)',
     background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.18)',
     borderRadius: '8px', padding: '12px 14px',
   },
