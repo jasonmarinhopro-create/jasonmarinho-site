@@ -25,8 +25,8 @@
   <link rel="stylesheet" href="/fonts/site-fonts.css">
 <link rel="stylesheet" href="/fonts/site-fonts.css">
 <noscript><link rel="stylesheet" href="/fonts/site-fonts.css"></noscript>
-  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=d063236422">
-  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=7aa1054957">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=a872f92e5a">
+  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=811eafe0e6">
   <style>
     :root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77}
     *,*::before,*::after{box-sizing:border-box}
@@ -412,7 +412,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
           <li><i class="ph-bold ph-check"></i>Simulateurs (rentabilité, fiscalité)</li>
           <li><i class="ph-bold ph-check"></i>Audit Google Business Profile</li>
           <li><i class="ph-bold ph-check"></i>Gabarits FR + EN · Sécurité voyageur</li>
-          <li><i class="ph-bold ph-check"></i><span data-formations-count>18</span> formations complètes</li>
+          <li><i class="ph-bold ph-check"></i><span data-formations-count>21</span> formations complètes</li>
           <li><i class="ph-bold ph-check"></i>Entre Hôtes (forum hôtes) + communauté complète</li>
           <li><i class="ph-bold ph-check"></i><strong style="color:var(--td)">Support prioritaire</strong></li>
         </ul>
@@ -461,7 +461,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     </div>
 
     <!-- Comparison table -->
-    <div class="cmp-wrap">
+    <div class="cmp-wrap" id="compare">
       <h3 class="cmp-ttl">Compare <em style="color:var(--g);font-style:italic">en détail</em></h3>
       <table class="cmp-table">
         <thead>
@@ -496,7 +496,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
           <tr><td>Guide LCD (consultation)</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
           <tr><td>Actualités LCD</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
           <tr><td>Gabarits de messages (FR + EN)</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
-          <tr><td>Formations</td><td><span class="cmp-txt">2 au choix</span></td><td><span class="cmp-txt">Toutes les <span data-formations-count>18</span></span></td><td><span class="cmp-txt">Toutes les <span data-formations-count>18</span></span></td></tr>
+          <tr><td>Formations</td><td><span class="cmp-txt">2 au choix</span></td><td><span class="cmp-txt">Toutes les <span data-formations-count>21</span></span></td><td><span class="cmp-txt">Toutes les <span data-formations-count>21</span></span></td></tr>
 
           <tr><td class="cmp-section-label" colspan="4">Communauté &amp; échange</td></tr>
           <tr><td>Entre Hôtes (forum hôtes)</td><td><span class="cmp-txt">Lecture</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
@@ -635,17 +635,17 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
 </section>
 
 <!-- GARANTIE + FAQ -->
-<section class="sec">
+<section class="sec" id="garantie">
   <div class="s-in">
     <div class="two-col">
       <div>
         <div class="lbl dk">Garantie</div>
         <h2 class="h2">Remboursement<br><em>30 jours</em> sans question</h2>
-        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 24px">Si tu achètes une formation et qu'elle ne t'apporte pas de valeur concrète dans les 30 jours, je te rembourse intégralement. Sans justification. Un simple message suffit.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 24px">Si le plan Standard ne t'apporte pas de valeur concrète dans les 30 jours, je te rembourse intégralement. Sans justification. Un simple message suffit.</p>
         <a href="/contact" class="btn-g">Contacter Jason <i class="ph-bold ph-arrow-right"></i></a>
       </div>
       <div>
-        <div class="lbl dk">FAQ</div>
+        <div class="lbl dk" id="faq">FAQ</div>
         <div class="faq">
           <div class="faq-item">
             <div class="faq-q">Le plan Découverte est-il vraiment gratuit à vie ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
@@ -730,7 +730,7 @@ document.querySelectorAll('.faq-q').forEach(function(q){
 // Tab switcher : 3 services (hote / photographes / menage)
 // Synchronise le hash URL pour permettre les liens directs : #hote, #photographes, #menage
 var VALID_TABS = ['hote','photographes','menage'];
-function switchTab(tab){
+function switchTab(tab, keepHash){
   if (!VALID_TABS.includes(tab)) tab = 'hote';
   document.querySelectorAll('.tab-btn').forEach(function(b){
     var on = b.getAttribute('data-tab') === tab;
@@ -741,15 +741,28 @@ function switchTab(tab){
     p.style.display = p.getAttribute('data-panel') === tab ? '' : 'none';
   });
   // Update hash sans scroller
-  if (history.replaceState) {
+  if (!keepHash && history.replaceState) {
     history.replaceState(null, '', '#'+tab);
   }
 }
-// Lecture du hash au load pour deeplink
-(function(){
+// Liens directs depuis le menu Tarifs : #hote, #photographes, #menage ouvrent
+// l'onglet et descendent jusqu'aux offres ; #compare (dans l'onglet hôte),
+// #garantie et #faq descendent à la bonne section. Écoute aussi hashchange :
+// un clic dans le menu alors qu'on est déjà sur /tarifs ne recharge pas la page.
+function applyTarifsHash(scroll){
   var hash = (window.location.hash || '').replace('#','');
-  if (VALID_TABS.includes(hash)) switchTab(hash);
-})();
+  var target = null;
+  if (VALID_TABS.includes(hash)) { switchTab(hash, true); target = document.getElementById('pricing'); }
+  else if (hash === 'compare') { switchTab('hote', true); target = document.getElementById('compare'); }
+  else if (hash === 'garantie' || hash === 'faq') { target = document.getElementById(hash); }
+  if (scroll && target) {
+    var y = target.getBoundingClientRect().top + window.pageYOffset - 80;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+}
+applyTarifsHash(false);
+window.addEventListener('hashchange', function(){ applyTarifsHash(true); });
+window.addEventListener('load', function(){ if (window.location.hash) applyTarifsHash(true); });
 
 // Compteur places fondateur : fetch /api/founder-seats et applique l'état
 (function(){

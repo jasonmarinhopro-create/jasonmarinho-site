@@ -8,11 +8,14 @@
   /* ── Phosphor Icons : assure que les deux subsets (regular + bold) sont chargés ─
    * Si une page n'inclut qu'un seul subset, on ajoute le ou les manquants
    * pour éviter les icônes cassées (cas du footer qui mélange ph et ph-bold). */
-  ['phosphor-bold-subset','phosphor-regular-subset'].forEach(function(n){
-    if (!document.querySelector('link[href*="'+n+'"]')) {
+  // URL écrites en entier : scripts/build-phosphor-subset.mjs y réécrit le
+  // ?v= (hash du contenu) à chaque build.
+  [['phosphor-bold-subset','/fonts/phosphor-bold-subset.css?v=a872f92e5a'],
+   ['phosphor-regular-subset','/fonts/phosphor-regular-subset.css?v=811eafe0e6']].forEach(function(s){
+    if (!document.querySelector('link[href*="'+s[0]+'"]')) {
       var l = document.createElement('link');
       l.rel = 'stylesheet'; l.type = 'text/css';
-      l.href = '/fonts/'+n+'.css?v=2026-06-23';
+      l.href = s[1];
       document.head.appendChild(l);
     }
   });
@@ -158,6 +161,66 @@
       '.n-mega-res .n-res-more .n-col-title{margin-bottom:6px}',
       '@media(max-width:1080px){.n-mega-res{min-width:auto;width:min(96vw,640px);flex-wrap:wrap}.n-mega-res a.n-res-card{flex:1 1 180px;min-height:170px}.n-mega-res .n-res-more{flex:1 1 100%;padding:8px 0 0}}',
 
+      /* Menus larges (Services, Tarifs) : centrés sur la page et collés sous la
+         barre, sinon ils débordent de l'écran. Le <li> occupe toute la hauteur
+         de la barre pour que le survol ne se perde pas entre bouton et menu. */
+      '.n-links{align-self:stretch}',
+      '.n-links>li{display:flex;align-items:center;align-self:stretch}',
+      '.n-drop-wide{position:static}',
+      '.n-drop-wide::after{display:none}',
+      '.n-drop-wide>.n-mega{top:100%}',
+      '.n-drop-wide>.n-mega::before{display:none}',
+      /* Services (façon Shine) : domaines à gauche, fonctionnalités au centre, « Plus » à droite */
+      '.n-mega-sol{display:grid;grid-template-columns:250px minmax(0,1fr) 230px;gap:28px;width:min(1080px,94vw);padding:24px 26px}',
+      '.n-sol-tabs{display:flex;flex-direction:column;gap:8px}',
+      '.n-sol-tab{display:flex;align-items:flex-start;gap:11px;width:100%;text-align:left;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);border-radius:11px;padding:13px 14px;cursor:pointer;font-family:\'Outfit\',sans-serif;color:#fff;transition:background .15s,border-color .15s}',
+      '.n-sol-tab i{font-size:18px;color:rgba(255,213,107,.55);margin-top:1px;flex-shrink:0}',
+      '.n-sol-tab:hover{background:rgba(255,255,255,.06)}',
+      '.n-sol-tab.on{background:rgba(255,213,107,.11);border-color:rgba(255,213,107,.38)}',
+      '.n-sol-tab.on i{color:var(--y)}',
+      '.n-sol-t{display:block;font-size:14.5px;font-weight:600;line-height:1.3}',
+      '.n-sol-s{display:block;font-size:12px;color:rgba(255,255,255,.48);margin-top:2px;line-height:1.35}',
+      '.n-sol-mid{display:flex;flex-direction:column;min-width:0}',
+      '.n-sol-panel{display:none;grid-template-columns:1fr 1fr;column-gap:18px;row-gap:1px;align-content:start}',
+      '.n-sol-panel.on{display:grid}',
+      '.n-mega .n-sol-panel a{white-space:normal;line-height:1.3}',
+      '.n-mega .n-sol-panel a.n-sol-all{grid-column:1 / -1;color:rgba(255,213,107,.75);font-size:12.5px;margin-top:6px}',
+      '.n-mega .n-sol-panel a.n-sol-all i{font-size:11px;color:inherit;width:auto}',
+      '.n-mega a.n-sol-cta{margin-top:auto;padding:16px 0 2px;border-radius:0;color:var(--y);font-weight:600;font-size:13.5px;text-decoration:underline;text-underline-offset:5px;text-decoration-color:rgba(255,213,107,.45);white-space:normal}',
+      '.n-mega a.n-sol-cta:hover{background:transparent;text-decoration-color:var(--y)}',
+      '.n-mega a.n-sol-cta i{color:var(--y);font-size:12px;width:auto}',
+      '.n-sol-side{display:flex;flex-direction:column;gap:1px;min-width:0}',
+      '.n-mega a.n-sol-card{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:12px;padding:16px;border-radius:12px;white-space:normal;background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%);border:1px solid rgba(255,213,107,.22)}',
+      '.n-mega a.n-sol-card:hover{border-color:rgba(255,213,107,.45);background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%)}',
+      '.n-sol-card-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--y);background:rgba(255,213,107,.1);padding:3px 9px;border-radius:999px}',
+      '.n-sol-card .n-feat-dot{width:5px;height:5px;border-radius:50%;background:var(--y)}',
+      '.n-sol-card-h{font-family:\'Fraunces\',serif;font-size:17px;line-height:1.25;color:#fff}',
+      '.n-sol-card-h em{color:var(--y);font-style:italic;font-weight:300}',
+      '.n-sol-card-p{font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.6)}',
+      '@media(max-width:1180px){.n-mega-sol{grid-template-columns:230px minmax(0,1fr)}.n-sol-side{display:none}}',
+
+      /* Tarifs (façon Shine) : une carte visuelle par offre + offres spéciales */
+      '.n-mega-tar{gap:16px;padding:22px;align-items:stretch}',
+      '.n-mega a.n-tar-card{flex:0 0 190px;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;gap:14px;min-height:236px;padding:16px;border-radius:12px;white-space:normal;position:relative;overflow:hidden;transition:transform .2s}',
+      '.n-mega a.n-tar-card:hover{transform:translateY(-2px)}',
+      '.n-mega a.n-tar-hote,.n-mega a.n-tar-hote:hover{background:linear-gradient(160deg,#FFE9A8 0%,var(--y) 100%);color:var(--gd)}',
+      '.n-mega a.n-tar-photo,.n-mega a.n-tar-photo:hover{background:linear-gradient(160deg,#00463a 0%,#003329 100%);border:1px solid rgba(255,213,107,.2);color:#fff}',
+      '.n-mega a.n-tar-menage,.n-mega a.n-tar-menage:hover{background:linear-gradient(160deg,#556B2F 0%,#3d5022 100%);color:#fff}',
+      '.n-tar-vis{display:flex;flex-direction:column;gap:6px}',
+      '.n-tar-row{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:500;padding:7px 9px;border-radius:8px;background:rgba(255,255,255,.75);color:var(--gd)}',
+      '.n-tar-row-dk{background:rgba(255,255,255,.1);color:#fff}',
+      '.n-mega a.n-tar-card .n-tar-row i{font-size:13px;width:auto;color:inherit;opacity:.8}',
+      '.n-tar-row b{margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;background:rgba(0,51,41,.1)}',
+      '.n-tar-row-dk b{background:rgba(255,213,107,.18);color:var(--y)}',
+      '.n-tar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}',
+      '.n-mega a.n-tar-card .n-tar-grid i{display:block;width:auto;aspect-ratio:1;border-radius:5px;background:linear-gradient(135deg,rgba(255,213,107,.35),rgba(255,255,255,.08))}',
+      '.n-mega a.n-tar-card .n-tar-grid i:nth-child(2n){background:linear-gradient(135deg,rgba(147,197,253,.3),rgba(255,255,255,.06))}',
+      '.n-tar-foot{display:block}',
+      '.n-tar-t{font-family:\'Fraunces\',serif;font-size:18px;font-weight:500;line-height:1.2;display:block}',
+      '.n-tar-s{font-size:12px;line-height:1.4;opacity:.72;display:block;margin-top:3px}',
+      '.n-tar-side{display:flex;flex-direction:column;gap:1px;min-width:220px;padding-left:6px}',
+      '@media(max-width:1180px){.n-mega a.n-tar-card{flex-basis:160px}.n-tar-side{min-width:190px}}',
+
       '.n-tag-free{display:inline-flex;align-items:center;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:rgba(99,214,131,.18);color:#7AE89A;border:1px solid rgba(99,214,131,.30);margin-left:auto;flex-shrink:0}',
       '.n-mega a.n-sub-link{color:rgba(255,213,107,.7);font-size:12.5px;margin-top:4px;border-top:1px dashed rgba(255,255,255,.06);padding-top:10px}',
       '.n-mega a.n-sub-link:hover{color:var(--y)}',
@@ -277,6 +340,77 @@
     + '</a>'
     + '<ul class="n-links">'
 
+      /* ── Services (structure inspirée de Shine : domaines à gauche,
+         fonctionnalités au centre, liens transverses à droite) ── */
+      + '<li class="n-drop n-drop-wide">'
+        + '<button class="n-btn" aria-haspopup="true" aria-expanded="false">Services ' + CARET + '</button>'
+        + '<div class="n-mega n-mega-sol">'
+          + '<div class="n-sol-tabs" role="tablist" aria-label="Domaines">'
+            + '<button type="button" class="n-sol-tab on" role="tab" aria-selected="true" data-sol="gerer"><i class="ph ph-calendar-check"></i><span><span class="n-sol-t">Gérer ton activité</span><span class="n-sol-s">Calendrier, contrats, revenus</span></span></button>'
+            + '<button type="button" class="n-sol-tab" role="tab" aria-selected="false" data-sol="chiffrer"><i class="ph ph-calculator"></i><span><span class="n-sol-t">Chiffrer & investir</span><span class="n-sol-s">Simulateurs et calculateurs</span></span></button>'
+            + '<button type="button" class="n-sol-tab" role="tab" aria-selected="false" data-sol="apprendre"><i class="ph ph-graduation-cap"></i><span><span class="n-sol-t">Te former & échanger</span><span class="n-sol-s">Formations, forum, entraide</span></span></button>'
+            + '<button type="button" class="n-sol-tab" role="tab" aria-selected="false" data-sol="pros"><i class="ph ph-camera"></i><span><span class="n-sol-t">Trouver un pro</span><span class="n-sol-s">Photographes et équipes ménage</span></span></button>'
+          + '</div>'
+          + '<div class="n-sol-mid">'
+            + '<div class="n-col-title">Fonctionnalités</div>'
+            + '<div class="n-sol-panel on" data-sol-panel="gerer" role="tabpanel">'
+              + '<a href="/services/calendrier"><i class="ph ph-calendar-check"></i>Calendrier & check-list</a>'
+              + '<a href="/services/performances"><i class="ph ph-chart-bar"></i>Performances LCD</a>'
+              + '<a href="/services/revenus"><i class="ph ph-chart-line-up"></i>Suivi des revenus</a>'
+              + '<a href="/services/carnet-voyageurs"><i class="ph ph-address-book"></i>Carnet voyageurs (CRM)</a>'
+              + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a>'
+              + '<a href="/securite/signalements"><i class="ph ph-megaphone"></i>Signalements publics</a>'
+              + '<a href="/services/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits de messages</a>'
+              + '<a href="/services/qr-affiches"><i class="ph ph-squares-four"></i>QR & Affiches WiFi</a>'
+              + '<a href="/services/audit-gbp"><i class="ph ph-magnifying-glass"></i>Audit Google Business</a>'
+              + '<a href="/services/annonce-directe"><i class="ph ph-globe"></i>Annonce directe</a>'
+              + '<a href="/services" class="n-sol-all">Voir tous les services <i class="ph-bold ph-arrow-right"></i></a>'
+            + '</div>'
+            + '<div class="n-sol-panel" data-sol-panel="chiffrer" role="tabpanel">'
+              + '<a href="/services/simulateurs/fiscalite-micro-bic"><i class="ph ph-currency-eur"></i>Fiscalité micro-BIC</a>'
+              + '<a href="/services/simulateurs/choisir-statut-ei-sasu"><i class="ph ph-scales"></i>EI vs SASU</a>'
+              + '<a href="/services/simulateurs/rentabilite-location-courte-duree"><i class="ph ph-chart-line-up"></i>Rentabilité LCD</a>'
+              + '<a href="/services/simulateurs/taxe-de-sejour"><i class="ph ph-map-pin"></i>Taxe de séjour</a>'
+              + '<a href="/services/simulateurs/franchise-tva-lcd"><i class="ph ph-percent"></i>Franchise TVA</a>'
+              + '<a href="/investir-lcd"><i class="ph ph-buildings"></i>Investir en LCD</a>'
+              + '<a href="/calculateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur de revenus</a>'
+              + '<a href="/calculateurs/prix-lcd"><i class="ph ph-tag"></i>Calculateur de prix</a>'
+              + '<a href="/calculateurs/comparer-villes"><i class="ph ph-scales"></i>Comparateur de villes</a>'
+              + '<a href="/services/simulateurs" class="n-sol-all">Voir tous les simulateurs <i class="ph-bold ph-arrow-right"></i></a>'
+            + '</div>'
+            + '<div class="n-sol-panel" data-sol-panel="apprendre" role="tabpanel">'
+              + '<a href="/services/formations"><i class="ph ph-graduation-cap"></i>Formations LCD</a>'
+              + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
+              + '<a href="/sos-hote"><i class="ph ph-lifebuoy"></i>SOS Hôte (urgences)</a>'
+              + '<a href="/services/entre-hotes"><i class="ph ph-house"></i>Entre Hôtes (forum)</a>'
+              + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Groupes Facebook</a>'
+              + '<a href="/services/actualites"><i class="ph ph-newspaper"></i>Actualités LCD</a>'
+              + '<a href="/services/formations" class="n-sol-all">Voir les formations <i class="ph-bold ph-arrow-right"></i></a>'
+            + '</div>'
+            + '<div class="n-sol-panel" data-sol-panel="pros" role="tabpanel">'
+              + '<a href="/annuaires/photographes"><i class="ph ph-camera"></i>Annuaire photographes LCD</a>'
+              + '<a href="/annuaires/menage"><i class="ph ph-sparkle"></i>Annuaire équipes ménage</a>'
+              + '<a href="/devenir-photographe-lcd"><i class="ph ph-user-plus"></i>Devenir photographe LCD</a>'
+              + '<a href="/devenir-prestataire-menage-lcd"><i class="ph ph-user-plus"></i>Devenir prestataire ménage</a>'
+              + '<a href="/tarifs#photographes" class="n-sol-all">Tarifs des fiches pros <i class="ph-bold ph-arrow-right"></i></a>'
+            + '</div>'
+            + '<a href="https://app.jasonmarinho.com/auth/register" class="n-sol-cta">Commence gratuitement : 0 €, sans carte bancaire <i class="ph-bold ph-arrow-right"></i></a>'
+          + '</div>'
+          + '<div class="n-sol-side">'
+          + '<div class="n-col-title">Plus</div>'
+          + '<a href="/tarifs"><i class="ph ph-tag"></i>Choisir ton offre</a>'
+          + '<a href="/partenaires"><i class="ph ph-handshake"></i>Offres partenaires</a>'
+          + '<a href="/partenaires#comparatifs"><i class="ph ph-scales"></i>Comparatifs outils</a>'
+          + '<a href="/pour-qui/membres-driing"><i class="ph ph-lightning"></i>Membres Driing</a>'
+          + '<a href="/services/securite" class="n-sol-card">'
+          + '<span class="n-sol-card-tag"><span class="n-feat-dot"></span>Gratuit</span>'
+          + '<span class="n-sol-card-h">Vérifie un voyageur <em>avant</em> d\'accepter</span>'
+          + '<span class="n-sol-card-p">La base de signalements de la communauté des hôtes.</span>'
+          + '</a>'
+          + '</div>'
+        + '</div>'
+      + '</li>'
+
       /* ── Pour qui ── */
       + '<li class="n-drop">'
         + '<button class="n-btn" aria-haspopup="true" aria-expanded="false">Pour qui ' + CARET + '</button>'
@@ -297,76 +431,6 @@
             + '<div class="n-driing-actions">'
               + '<a href="/pour-qui/membres-driing" class="n-driing-cta n-driing-cta-primary">Voir mes avantages <i class="ph ph-arrow-right"></i></a>'
               + '<a href="https://driing.co" target="_blank" rel="noopener" class="n-driing-cta n-driing-cta-secondary">Découvrir Driing <i class="ph ph-arrow-square-out"></i></a>'
-            + '</div>'
-          + '</div>'
-        + '</div>'
-      + '</li>'
-
-      /* ── Services ── */
-      + '<li class="n-drop">'
-        + '<button class="n-btn" aria-haspopup="true" aria-expanded="false">Services ' + CARET + '</button>'
-        + '<div class="n-mega n-mega-svc">'
-          + '<div class="n-col-svc">'
-            + '<h3 class="n-col-svc-h">Piloter ton activité</h3>'
-            + '<p class="n-col-svc-cap">Tes opérations au quotidien.</p>'
-            + '<a href="/services/calendrier">Calendrier & check-list<span class="n-arr">→</span></a>'
-            + '<a href="/services/performances">Performances LCD<span class="n-arr">→</span></a>'
-            + '<a href="/services/revenus">Suivi des revenus<span class="n-arr">→</span></a>'
-            + '<a href="/services/securite">Vérification voyageurs<span class="n-arr">→</span></a>'
-            + '<a href="/securite/signalements">Signalements publics<span class="n-arr">→</span></a>'
-            + '<a href="/services/carnet-voyageurs">Carnet voyageurs (CRM)<span class="n-arr">→</span></a>'
-            + '<a href="/services/gabarits-messages">Gabarits de messages<span class="n-arr">→</span></a>'
-            + '<a href="/services/qr-affiches">QR & Affiches WiFi<span class="n-arr">→</span></a>'
-            + '<a href="/services/audit-gbp">Audit Google Business<span class="n-arr">→</span></a>'
-          + '</div>'
-          + '<div class="n-col-svc">'
-            + '<h3 class="n-col-svc-h">Chiffrer & décider</h3>'
-            + '<p class="n-col-svc-cap">Avant d\'investir ou de relancer un prix.</p>'
-            + '<div class="n-sub-cat">Simulateurs fiscaux</div>'
-            + '<a href="/services/simulateurs/fiscalite-micro-bic">Fiscalité micro-BIC<span class="n-arr">→</span></a>'
-            + '<a href="/services/simulateurs/choisir-statut-ei-sasu">EI vs SASU<span class="n-arr">→</span></a>'
-            + '<a href="/services/simulateurs/rentabilite-location-courte-duree">Rentabilité LCD<span class="n-arr">→</span></a>'
-            + '<a href="/services/simulateurs/taxe-de-sejour">Taxe de séjour<span class="n-arr">→</span></a>'
-            + '<a href="/services/simulateurs/franchise-tva-lcd">Franchise TVA<span class="n-arr">→</span></a>'
-            + '<div class="n-sub-cat">Calculateurs marché</div>'
-            + '<a href="/investir-lcd">Investir en LCD<span class="n-arr">→</span></a>'
-            + '<a href="/calculateurs/revenus-lcd">Estimateur de revenus<span class="n-arr">→</span></a>'
-            + '<a href="/calculateurs/prix-lcd">Calculateur de prix<span class="n-arr">→</span></a>'
-            + '<a href="/calculateurs/comparer-villes">Comparateur de villes<span class="n-arr">→</span></a>'
-          + '</div>'
-          + '<div class="n-col-svc">'
-            + '<h3 class="n-col-svc-h">Apprendre & échanger</h3>'
-            + '<p class="n-col-svc-cap">Pour aller plus loin et trouver du soutien.</p>'
-            + '<a href="/services/formations">Formations LCD<span class="n-arr">→</span></a>'
-            + '<a href="/sos-hote">SOS Hôte (urgences)<span class="n-arr">→</span></a>'
-            + '<a href="/services/entre-hotes">Entre Hôtes (forum)<span class="n-arr">→</span></a>'
-            + '<a href="/services/communaute">Groupes Facebook<span class="n-arr">→</span></a>'
-          + '</div>'
-        + '</div>'
-      + '</li>'
-
-      /* ── Annuaires pros ── */
-      + '<li class="n-drop">'
-        + '<button class="n-btn" aria-haspopup="true" aria-expanded="false">Annuaire ' + CARET + '</button>'
-        + '<div class="n-mega n-mega-ann">'
-          + '<div class="n-ann-card">'
-            + '<span class="n-ann-tag"><span class="n-ann-dot"></span>Annuaire pro</span>'
-            + '<div class="n-ann-icon"><i class="ph-bold ph-camera"></i></div>'
-            + '<h3 class="n-ann-h">Photographes <em>LCD</em></h3>'
-            + '<p class="n-ann-p">Pros qui maîtrisent l\'angle Airbnb. Photos qui font booker +40 %.</p>'
-            + '<div class="n-ann-actions">'
-              + '<a href="/annuaires/photographes" class="n-ann-cta n-ann-cta-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
-              + '<a href="/devenir-photographe-lcd" class="n-ann-cta n-ann-cta-secondary"><i class="ph-bold ph-info"></i>Devenir photographe LCD</a>'
-            + '</div>'
-          + '</div>'
-          + '<div class="n-ann-card">'
-            + '<span class="n-ann-tag"><span class="n-ann-dot"></span>Annuaire pro</span>'
-            + '<div class="n-ann-icon"><i class="ph-bold ph-sparkle"></i></div>'
-            + '<h3 class="n-ann-h">Ménage <em>LCD</em></h3>'
-            + '<p class="n-ann-p">Équipes de turnover express, gestion du linge, RC pro vérifiée.</p>'
-            + '<div class="n-ann-actions">'
-              + '<a href="/annuaires/menage" class="n-ann-cta n-ann-cta-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
-              + '<a href="/devenir-prestataire-menage-lcd" class="n-ann-cta n-ann-cta-secondary"><i class="ph-bold ph-info"></i>Devenir prestataire ménage</a>'
             + '</div>'
           + '</div>'
         + '</div>'
@@ -400,8 +464,43 @@
         + '</div>'
       + '</li>'
 
-      /* ── Tarifs ── */
-      + '<li><a href="/tarifs" class="n-link">Tarifs</a></li>'
+      /* ── Tarifs : une carte par offre (3 publics différents), offres spéciales à droite ── */
+      + '<li class="n-drop n-drop-wide">'
+        + '<button class="n-btn" aria-haspopup="true" aria-expanded="false">Tarifs ' + CARET + '</button>'
+        + '<div class="n-mega n-mega-tar">'
+          + '<a href="/tarifs#hote" class="n-tar-card n-tar-hote">'
+            + '<span class="n-tar-vis">'
+              + '<span class="n-tar-row"><i class="ph-bold ph-file-text"></i>Contrat<b>Signé</b></span>'
+              + '<span class="n-tar-row"><i class="ph-bold ph-sparkle"></i>Ménage<b>Planifié</b></span>'
+              + '<span class="n-tar-row"><i class="ph-bold ph-lock-key"></i>Caution<b>Bloquée</b></span>'
+            + '</span>'
+            + '<span class="n-tar-foot"><span class="n-tar-t">Plateforme hôte</span><span class="n-tar-s">Gratuit, puis Standard à l\'année</span></span>'
+          + '</a>'
+          + '<a href="/tarifs#photographes" class="n-tar-card n-tar-photo">'
+            + '<span class="n-tar-vis">'
+              + '<span class="n-tar-grid"><i></i><i></i><i></i><i></i><i></i><i></i></span>'
+              + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-camera"></i>Portfolio<b>12 photos</b></span>'
+            + '</span>'
+            + '<span class="n-tar-foot"><span class="n-tar-t">Photographes LCD</span><span class="n-tar-s">Ta fiche dans l\'annuaire</span></span>'
+          + '</a>'
+          + '<a href="/tarifs#menage" class="n-tar-card n-tar-menage">'
+            + '<span class="n-tar-vis">'
+              + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-check-circle"></i>Chambres<b>Fait</b></span>'
+              + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-check-circle"></i>Linge<b>Fait</b></span>'
+              + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-camera"></i>Photos<b>Envoyées</b></span>'
+            + '</span>'
+            + '<span class="n-tar-foot"><span class="n-tar-t">Équipes ménage</span><span class="n-tar-s">Ta fiche dans l\'annuaire</span></span>'
+          + '</a>'
+          + '<div class="n-tar-side">'
+          + '<div class="n-col-title">Offres & aide</div>'
+          + '<a href="/tarifs#hote"><i class="ph ph-seal-check"></i>Membre Fondateur, prix à vie</a>'
+          + '<a href="/pour-qui/membres-driing"><i class="ph ph-lightning"></i>Membres Driing : tout inclus</a>'
+          + '<a href="/tarifs#compare"><i class="ph ph-table"></i>Comparer les plans</a>'
+          + '<a href="/tarifs#garantie"><i class="ph ph-arrow-counter-clockwise"></i>Remboursé 30 jours</a>'
+          + '<a href="/tarifs#faq"><i class="ph ph-question"></i>Questions fréquentes</a>'
+          + '</div>'
+        + '</div>'
+      + '</li>'
 
     + '</ul>'
     + '<div class="n-right">'
@@ -413,6 +512,49 @@
 
   /* ── MOBILE MENU, ordre identique au desktop ── */
   + '<div class="mob-menu" id="mob">'
+
+    + '<div class="mob-acc" id="acc-sv">'
+      + '<button class="mob-acc-btn" aria-expanded="false">Services ' + MOB_ARROW + '</button>'
+      + '<div class="mob-acc-body">'
+        + '<span class="mob-stitle">Gérer ton activité</span>'
+        + '<a href="/services/calendrier"><i class="ph ph-calendar-check"></i>Calendrier & check-list</a>'
+        + '<a href="/services/performances"><i class="ph ph-chart-bar"></i>Performances LCD</a>'
+        + '<a href="/services/revenus"><i class="ph ph-chart-line-up"></i>Suivi des revenus</a>'
+        + '<a href="/services/carnet-voyageurs"><i class="ph ph-address-book"></i>Carnet voyageurs (CRM)</a>'
+        + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a>'
+        + '<a href="/securite/signalements"><i class="ph ph-megaphone"></i>Signalements publics</a>'
+        + '<a href="/services/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits de messages</a>'
+        + '<a href="/services/qr-affiches"><i class="ph ph-squares-four"></i>QR & Affiches WiFi</a>'
+        + '<a href="/services/audit-gbp"><i class="ph ph-magnifying-glass"></i>Audit Google Business</a>'
+        + '<a href="/services/annonce-directe"><i class="ph ph-globe"></i>Annonce directe</a>'
+        + '<a href="/services" class="mob-sublink">Voir tous les services <i class="ph-bold ph-arrow-right"></i></a>'
+        + '<span class="mob-stitle">Chiffrer & investir</span>'
+        + '<a href="/services/simulateurs/fiscalite-micro-bic"><i class="ph ph-currency-eur"></i>Fiscalité micro-BIC</a>'
+        + '<a href="/services/simulateurs/choisir-statut-ei-sasu"><i class="ph ph-scales"></i>EI vs SASU</a>'
+        + '<a href="/services/simulateurs/rentabilite-location-courte-duree"><i class="ph ph-chart-line-up"></i>Rentabilité LCD</a>'
+        + '<a href="/services/simulateurs/taxe-de-sejour"><i class="ph ph-map-pin"></i>Taxe de séjour</a>'
+        + '<a href="/services/simulateurs/franchise-tva-lcd"><i class="ph ph-percent"></i>Franchise TVA</a>'
+        + '<a href="/investir-lcd"><i class="ph ph-buildings"></i>Investir en LCD</a>'
+        + '<a href="/calculateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur de revenus</a>'
+        + '<a href="/calculateurs/prix-lcd"><i class="ph ph-tag"></i>Calculateur de prix</a>'
+        + '<a href="/calculateurs/comparer-villes"><i class="ph ph-scales"></i>Comparateur de villes</a>'
+        + '<a href="/services/simulateurs" class="mob-sublink">Voir tous les simulateurs <i class="ph-bold ph-arrow-right"></i></a>'
+        + '<span class="mob-stitle">Te former & échanger</span>'
+        + '<a href="/services/formations"><i class="ph ph-graduation-cap"></i>Formations LCD</a>'
+        + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
+        + '<a href="/sos-hote"><i class="ph ph-lifebuoy"></i>SOS Hôte (urgences)</a>'
+        + '<a href="/services/entre-hotes"><i class="ph ph-house"></i>Entre Hôtes (forum)</a>'
+        + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Groupes Facebook</a>'
+        + '<a href="/services/actualites"><i class="ph ph-newspaper"></i>Actualités LCD</a>'
+        + '<a href="/services/formations" class="mob-sublink">Voir les formations <i class="ph-bold ph-arrow-right"></i></a>'
+        + '<span class="mob-stitle">Trouver un pro</span>'
+        + '<a href="/annuaires/photographes"><i class="ph ph-camera"></i>Annuaire photographes LCD</a>'
+        + '<a href="/annuaires/menage"><i class="ph ph-sparkle"></i>Annuaire équipes ménage</a>'
+        + '<a href="/devenir-photographe-lcd"><i class="ph ph-user-plus"></i>Devenir photographe LCD</a>'
+        + '<a href="/devenir-prestataire-menage-lcd"><i class="ph ph-user-plus"></i>Devenir prestataire ménage</a>'
+        + '<a href="/tarifs#photographes" class="mob-sublink">Tarifs des fiches pros <i class="ph-bold ph-arrow-right"></i></a>'
+      + '</div>'
+    + '</div>'
 
     + '<div class="mob-acc" id="acc-pq">'
       + '<button class="mob-acc-btn" aria-expanded="false">Pour qui ' + MOB_ARROW + '</button>'
@@ -430,62 +572,6 @@
             + '<span class="mob-driing-sub">Accès inclus avec Driing</span>'
           + '</div>'
         + '</a>'
-      + '</div>'
-    + '</div>'
-
-    + '<div class="mob-acc" id="acc-sv">'
-      + '<button class="mob-acc-btn" aria-expanded="false">Services ' + MOB_ARROW + '</button>'
-      + '<div class="mob-acc-body">'
-        + '<span class="mob-stitle">Piloter ton activité</span>'
-        + '<a href="/services/calendrier"><i class="ph ph-calendar-check"></i>Calendrier & check-list</a>'
-        + '<a href="/services/performances"><i class="ph ph-chart-bar"></i>Performances LCD</a>'
-        + '<a href="/services/revenus"><i class="ph ph-chart-line-up"></i>Suivi des revenus</a>'
-        + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a>'
-        + '<a href="/securite/signalements"><i class="ph ph-megaphone"></i>Signalements publics</a>'
-        + '<a href="/services/carnet-voyageurs"><i class="ph ph-address-book"></i>Carnet voyageurs (CRM)</a>'
-        + '<a href="/services/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits de messages</a>'
-        + '<a href="/services/qr-affiches"><i class="ph ph-squares-four"></i>QR & Affiches WiFi</a>'
-        + '<a href="/services/audit-gbp"><i class="ph ph-magnifying-glass"></i>Audit Google Business</a>'
-        + '<span class="mob-stitle">Chiffrer & décider</span>'
-        + '<a href="/services/simulateurs/fiscalite-micro-bic"><i class="ph ph-currency-eur"></i>Fiscalité micro-BIC</a>'
-        + '<a href="/services/simulateurs/choisir-statut-ei-sasu"><i class="ph ph-scales"></i>EI vs SASU</a>'
-        + '<a href="/services/simulateurs/rentabilite-location-courte-duree"><i class="ph ph-chart-line-up"></i>Rentabilité LCD</a>'
-        + '<a href="/services/simulateurs/taxe-de-sejour"><i class="ph ph-map-pin"></i>Taxe de séjour</a>'
-        + '<a href="/services/simulateurs/franchise-tva-lcd"><i class="ph ph-percent"></i>Franchise TVA</a>'
-        + '<a href="/services/simulateurs" class="mob-sublink">Voir tous les simulateurs <i class="ph-bold ph-arrow-right"></i></a>'
-        + '<a href="/calculateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur de revenus</a>'
-        + '<a href="/calculateurs/prix-lcd"><i class="ph ph-currency-eur"></i>Calculateur de prix</a>'
-        + '<a href="/calculateurs/comparer-villes"><i class="ph ph-scales"></i>Comparateur de villes</a>'
-        + '<a href="/calculateurs" class="mob-sublink">Voir tous les calculateurs <i class="ph-bold ph-arrow-right"></i></a>'
-        + '<span class="mob-stitle">Apprendre & échanger</span>'
-        + '<a href="/services/formations"><i class="ph ph-graduation-cap"></i>Formations LCD</a>'
-        + '<a href="/sos-hote"><i class="ph ph-lifebuoy"></i>SOS Hôte (urgences)</a>'
-        + '<a href="/services/entre-hotes"><i class="ph ph-house"></i>Entre Hôtes (forum)</a>'
-        + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Groupes Facebook</a>'
-      + '</div>'
-    + '</div>'
-
-    + '<div class="mob-acc" id="acc-ann">'
-      + '<button class="mob-acc-btn" aria-expanded="false">Annuaire ' + MOB_ARROW + '</button>'
-      + '<div class="mob-acc-body">'
-        + '<div class="mob-driing-card">'
-          + '<span class="mdc-tag"><span class="mdc-dot"></span>Annuaire pro</span>'
-          + '<div class="mdc-h">Photographes <em>LCD</em></div>'
-          + '<div class="mdc-p">Annuaire des pros qui maîtrisent l\'angle Airbnb. Photos qui font booker +40 %.</div>'
-          + '<div class="mdc-actions">'
-            + '<a href="/annuaires/photographes" class="mdc-cta mdc-cta-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
-            + '<a href="/devenir-photographe-lcd" class="mdc-cta mdc-cta-secondary"><i class="ph-bold ph-info"></i>Devenir photographe LCD</a>'
-          + '</div>'
-        + '</div>'
-        + '<div class="mob-driing-card">'
-          + '<span class="mdc-tag"><span class="mdc-dot"></span>Annuaire pro</span>'
-          + '<div class="mdc-h">Ménage <em>LCD</em></div>'
-          + '<div class="mdc-p">Équipes de ménage spécialisées turnover Airbnb. Linge, photo, RC pro vérifiée.</div>'
-          + '<div class="mdc-actions">'
-            + '<a href="/annuaires/menage" class="mdc-cta mdc-cta-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
-            + '<a href="/devenir-prestataire-menage-lcd" class="mdc-cta mdc-cta-secondary"><i class="ph-bold ph-info"></i>Devenir prestataire ménage</a>'
-          + '</div>'
-        + '</div>'
       + '</div>'
     + '</div>'
 
@@ -509,7 +595,18 @@
       + '</div>'
     + '</div>'
 
-    + '<a href="/tarifs"><i class="ph ph-tag"></i>Tarifs</a>'
+    + '<div class="mob-acc" id="acc-tar">'
+      + '<button class="mob-acc-btn" aria-expanded="false">Tarifs ' + MOB_ARROW + '</button>'
+      + '<div class="mob-acc-body">'
+        + '<a href="/tarifs#hote"><i class="ph ph-house-line"></i>Plateforme hôte</a>'
+        + '<a href="/tarifs#photographes"><i class="ph ph-camera"></i>Photographes LCD</a>'
+        + '<a href="/tarifs#menage"><i class="ph ph-sparkle"></i>Équipes ménage</a>'
+        + '<a href="/pour-qui/membres-driing"><i class="ph ph-lightning"></i>Membres Driing : tout inclus</a>'
+        + '<a href="/tarifs#compare"><i class="ph ph-table"></i>Comparer les plans</a>'
+        + '<a href="/tarifs#faq"><i class="ph ph-question"></i>Questions fréquentes</a>'
+      + '</div>'
+    + '</div>'
+
 
     + '<div class="mob-ctas">'
       + '<a href="https://app.jasonmarinho.com/dashboard" class="mc-o"><i class="ph ph-user"></i> Mon espace</a>'
@@ -613,6 +710,26 @@
     });
     document.addEventListener('click', function () {
       document.querySelectorAll('.n-drop.open').forEach(function (d) { d.classList.remove('open'); });
+    });
+
+    /* Services : les domaines de gauche pilotent la colonne centrale
+       (survol, focus clavier ou clic tactile). */
+    document.querySelectorAll('.n-sol-tab').forEach(function (tab) {
+      function show(e) {
+        if (e && e.type === 'click') e.stopPropagation();
+        var mega = tab.closest('.n-mega-sol');
+        mega.querySelectorAll('.n-sol-tab').forEach(function (t2) {
+          var on = t2 === tab;
+          t2.classList.toggle('on', on);
+          t2.setAttribute('aria-selected', on ? 'true' : 'false');
+        });
+        mega.querySelectorAll('.n-sol-panel').forEach(function (p) {
+          p.classList.toggle('on', p.getAttribute('data-sol-panel') === tab.getAttribute('data-sol'));
+        });
+      }
+      tab.addEventListener('mouseenter', show);
+      tab.addEventListener('focus', show);
+      tab.addEventListener('click', show);
     });
 
     /* Échap */

@@ -159,6 +159,7 @@
 .ph-light.ph-rocket:before { content: "\e3fc"; }
 .ph-light.ph-rows:before { content: "\e5a2"; }
 .ph-light.ph-scales:before { content: "\e750"; }
+.ph-light.ph-seal-check:before { content: "\e606"; }
 .ph-light.ph-shield-check:before { content: "\e40c"; }
 .ph-light.ph-shield-warning:before { content: "\e412"; }
 .ph-light.ph-shovel:before { content: "\e9e6"; }
@@ -189,6 +190,7 @@
 .ph-light.ph-umbrella:before { content: "\e684"; }
 .ph-light.ph-user:before { content: "\e4c2"; }
 .ph-light.ph-user-circle:before { content: "\e4c4"; }
+.ph-light.ph-user-plus:before { content: "\e4d0"; }
 .ph-light.ph-users:before { content: "\e4d6"; }
 .ph-light.ph-users-four:before { content: "\e68c"; }
 .ph-light.ph-users-three:before { content: "\e68e"; }

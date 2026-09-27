@@ -60,6 +60,10 @@ console.log(`[sync-counts] → ${path.relative(ROOT, constantsFile)}`)
 // Patterns idempotents : matchent un nombre, le remplacent par le bon.
 // On reste conservateur : qualifiants explicites pour éviter les faux positifs.
 const TOTAL_PATTERNS = [
+  // /tarifs : <span data-formations-count>18</span> (le nombre est isolé dans
+  // une balise, les motifs texte ci-dessous ne le voyaient pas : la carte
+  // Standard affichait 18 alors que la FAQ disait 21).
+  { re: /(<span data-formations-count>)(\d+)(<\/span>)/g,           to: (_, p1, _n, p3) => `${p1}${TOTAL_FORMATIONS}${p3}` },
   // "14 formations complètes" / "16 formations pratiques" / etc.
   { re: /(\b)(\d+)(\s+formations\s+complètes)/g,                 to: (_, p1, _n, p3) => `${p1}${TOTAL_FORMATIONS}${p3}` },
   { re: /(\b)(\d+)(\s+formations\s+pratiques)/g,                 to: (_, p1, _n, p3) => `${p1}${TOTAL_FORMATIONS}${p3}` },
