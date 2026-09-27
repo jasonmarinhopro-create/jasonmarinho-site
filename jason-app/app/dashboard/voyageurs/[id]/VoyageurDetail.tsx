@@ -841,7 +841,6 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       if (res.error) { setProfileError(res.error); return }
       setNationalite(profileForm.nationalite)
       setEditingProfile(false)
-      router.refresh()
     })
   }
 
@@ -858,7 +857,6 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       }
       await updateVoyageur(voyageur.id, data)
       setEditingNotes(false)
-      router.refresh()
     })
   }
 
@@ -907,15 +905,15 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
         : await addSejour(data)
       if (res.error) { setSejourError(res.error); return }
       setSejourModal(null)
-      router.refresh()
     })
   }
 
+  // Les actions de cette page (updateVoyageur, addSejour, deleteSejour…) appellent
+  // revalidatePath sur la fiche : pas de router.refresh() en plus (double rendu).
   function handleDeleteSejour(id: string) {
     if (!confirm('Supprimer ce séjour ?')) return
     startTransition(async () => {
       await deleteSejour(id, voyageur.id)
-      router.refresh()
     })
   }
 
@@ -923,14 +921,12 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     if (!confirm('Annuler ce séjour ? Il restera visible dans l\u2019historique mais sortira du calendrier, du CA et des déclarations.')) return
     startTransition(async () => {
       await cancelSejour(id, voyageur.id)
-      router.refresh()
     })
   }
 
   function handleRestoreSejour(id: string) {
     startTransition(async () => {
       await restoreSejour(id, voyageur.id)
-      router.refresh()
     })
   }
 

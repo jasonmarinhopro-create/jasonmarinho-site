@@ -206,6 +206,13 @@ import { House } from '@phosphor-icons/react'
 - **Thèmes** : le bouton de l'en-tête bascule clair ↔ sombre (`ThemeProvider.toggleTheme`). AMOLED (noir pur) reste supporté pour les comptes qui l'avaient, mais n'est plus dans le cycle (quasi identique au sombre, il rendait le bouton confus). Défaut : clair.
 - **Transition de couleurs** : uniquement pendant la bascule de thème (`html.theme-switching`, posée 300 ms par `applyTheme`). Avant, `html *` avait une transition permanente de 200 ms sur couleurs/fonds/bordures : chaque clic ou survol changeait d'état avec retard (« les actions ne sont pas directes »). Ne pas remettre de transition globale.
 
+## Actions instantanées + menu du dashboard (sept. 2026)
+
+- **Pas de `router.refresh()` après une server action qui appelle `revalidatePath` sur la page courante** : la réponse de l'action contient déjà la page à jour ; le refresh en plus refaisait un 2e rendu complet (vérif de session + layout + page). Retiré dans `CalendrierView.tsx`, `VoyageurDetail.tsx`, `VoyageursView.tsx`, `PlanningMenage.tsx`. Garder `router.refresh()` seulement quand l'action ne revalide pas la page affichée, ou pour annuler un état optimiste après une erreur.
+- **Optimiste d'abord** : modifier l'état local avant l'appel serveur, revenir en arrière si erreur (ex. `onUpdateSejour` du calendrier, `onToggleMenage`, notifications).
+- **Notifications** (`lib/notifications/actions.ts`) : ne revalident plus `('/dashboard', 'layout')` (tout le dashboard à chaque clic) mais seulement `/dashboard/notifications` ; le badge est géré côté client (`notif-count-changed`).
+- **Sidebar** (`components/layout/Sidebar.tsx`) : blocs « Au quotidien » (Accueil, Mes logements, Calendrier, Mes réservations, Mes voyageurs, Modèles de messages, Mes finances, Sécurité voyageur) et « Faire grandir mon activité » (Actualités avec point rouge, Outils & calculs, Apprendre, Entre Hôtes).
+
 ## Qualité : CI, tests, suivi des erreurs (sept. 2026)
 
 - **CI** : `.github/workflows/ci.yml` à chaque push sur main / PR touchant `jason-app/` : `npm run typecheck` (tsc), `npm test` (Vitest), `npx next lint --quiet` (erreurs bloquantes). Les tests Playwright (`e2e/`) n'y tournent pas (serveur + secrets requis).

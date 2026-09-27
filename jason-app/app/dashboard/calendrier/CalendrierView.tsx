@@ -2525,15 +2525,9 @@ export default function CalendrierView({
             anchorRect={sejourPopover.anchor}
             onClose={() => setSejourPopover(null)}
             onUpdateSejour={async (form) => {
-              const r = await updateSejourFromCalendar({
-                id: sej.id,
-                date_arrivee: form.date_arrivee,
-                date_depart: form.date_depart,
-                logement: form.logement,
-                montant: form.montant,
-              })
-              if ('error' in r && r.error) return { ok: false, error: r.error }
-              // Mise à jour optimiste du state local pour refléter immédiatement
+              // Optimiste : le calendrier reflète la modification tout de suite,
+              // l'appel serveur suit ; retour arrière si le serveur refuse.
+              const before = sejourEvents
               setSejourEvents(prev => prev.map(s => s.id === sej.id ? {
                 ...s,
                 date_arrivee: form.date_arrivee,
@@ -2545,7 +2539,18 @@ export default function CalendrierView({
                 ...curr,
                 sejour: { ...curr.sejour, date_arrivee: form.date_arrivee, date_depart: form.date_depart, logement_label: form.logement, montant: form.montant },
               } : null)
-              router.refresh()
+              const r = await updateSejourFromCalendar({
+                id: sej.id,
+                date_arrivee: form.date_arrivee,
+                date_depart: form.date_depart,
+                logement: form.logement,
+                montant: form.montant,
+              })
+              if ('error' in r && r.error) {
+                setSejourEvents(before)
+                return { ok: false, error: r.error }
+              }
+              // Pas de router.refresh() : l'action appelle revalidatePath sur cette page, dont la réponse contient déjà la page à jour (un refresh en plus refaisait tout le rendu une 2e fois).
               return { ok: true }
             }}
             onDeleteSejour={async () => {
@@ -2553,7 +2558,7 @@ export default function CalendrierView({
               if (!r.ok) return { ok: false, error: r.error }
               // Optimiste : retire du state local + ferme le popover
               setSejourEvents(prev => prev.filter(s => s.id !== sej.id))
-              router.refresh()
+              // Pas de router.refresh() : l'action appelle revalidatePath sur cette page, dont la réponse contient déjà la page à jour (un refresh en plus refaisait tout le rendu une 2e fois).
               return { ok: true }
             }}
             onToggleMenage={async (slot, done) => {
@@ -2616,9 +2621,9 @@ export default function CalendrierView({
                 endTime: slot.endTime,
                 notes: slot.notes ?? undefined,
               })
-              if (r.ok) {
-                router.refresh()
-              } else {
+              // Succès : rien à faire (état déjà à jour localement, et
+              // revalidatePath côté serveur). Échec : on recharge pour annuler.
+              if (!r.ok) {
                 alert(r.error)
                 router.refresh()
               }

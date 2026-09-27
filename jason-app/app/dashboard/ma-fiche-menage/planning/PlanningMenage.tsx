@@ -5,7 +5,6 @@
 // l'hôte. Les plannings viennent des liens partagés par les hôtes.
 
 import { useMemo, useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
 import {
   Broom, CheckCircle, Camera, MapPin, Clock, Warning, Trash, Plus, LinkSimple,
   ArrowCounterClockwise, X, CalendarCheck, Lightning,
@@ -42,10 +41,11 @@ function dayLabel(date: string, today: string): string {
   return nice.charAt(0).toUpperCase() + nice.slice(1)
 }
 
+// Les actions (markMenageTermine, addPlanningLink…) appellent revalidatePath sur
+// cette page : leur réponse contient déjà le planning à jour, pas de router.refresh().
 export default function PlanningMenage({ clients, slots, today, unavailable = false }: {
   clients: PlanningClient[]; slots: PlanningSlot[]; today: string; unavailable?: boolean
 }) {
-  const router = useRouter()
   const [pending, startTransition] = useTransition()
   const [openId, setOpenId] = useState<string | null>(null)
   const [files, setFiles] = useState<File[]>([])
@@ -86,7 +86,6 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
       const res = await markMenageTermine({ hostId: s.hostId, date: s.date, logementName: s.logementName, note, photos: paths })
       if ('error' in res) throw new Error(res.error)
       setOpenId(null)
-      router.refresh()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur inattendue')
     } finally {
@@ -99,7 +98,6 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
     startTransition(async () => {
       const res = await annulerMenageTermine({ hostId: s.hostId, date: s.date, logementName: s.logementName })
       if ('error' in res) alert(res.error)
-      router.refresh()
     })
   }
 
@@ -110,13 +108,12 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
       if ('error' in res) { setLinkMsg({ ok: false, text: res.error }); return }
       setLinkInput(''); setLabelInput('')
       setLinkMsg({ ok: true, text: 'Planning ajouté.' })
-      router.refresh()
     })
   }
 
   function retirerLien(c: PlanningClient) {
     if (!confirm(`Retirer le planning de ${c.label} ? Tu pourras le rajouter avec son lien.`)) return
-    startTransition(async () => { await removePlanningLink(c.linkId); router.refresh() })
+    startTransition(async () => { await removePlanningLink(c.linkId) })
   }
 
   if (unavailable) {

@@ -256,7 +256,6 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
 
       if (res.error) { setFormError(res.error); return }
       closeModal()
-      router.refresh()
     })
   }
 
@@ -265,7 +264,6 @@ export default function VoyageursView({ voyageurs, tableReady, contracts = [] }:
     if (!confirm('Supprimer ce voyageur et tous ses séjours ?')) return
     startTransition(async () => {
       await deleteVoyageur(id)
-      router.refresh()
     })
   }
 

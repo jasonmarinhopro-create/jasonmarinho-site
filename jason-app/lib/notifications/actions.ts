@@ -5,6 +5,12 @@
 // côté serveur, conformément à CLAUDE.md), pas getSession().
 
 import { revalidatePath } from 'next/cache'
+
+// Le badge de la cloche et les listes sont mis à jour côté client, de façon
+// optimiste (événement 'notif-count-changed', cf. Header / NotificationPanel /
+// NotificationsView). On ne revalide donc que la page notifications : avant,
+// revalidatePath('/dashboard', 'layout') refaisait TOUT le rendu (layout +
+// page courante, ~8 requêtes) à chaque clic sur une notification.
 import { createClient } from '@/lib/supabase/server'
 
 export async function markNotificationRead(id: string): Promise<{ ok: boolean; error?: string }> {
@@ -19,7 +25,7 @@ export async function markNotificationRead(id: string): Promise<{ ok: boolean; e
     .eq('recipient_id', user.id)
 
   if (error) return { ok: false, error: error.message }
-  revalidatePath('/dashboard', 'layout')
+  revalidatePath('/dashboard/notifications')
   return { ok: true }
 }
 
@@ -36,6 +42,6 @@ export async function markAllNotificationsRead(): Promise<{ ok: boolean; count: 
     .select('id')
 
   if (error) return { ok: false, count: 0, error: error.message }
-  revalidatePath('/dashboard', 'layout')
+  revalidatePath('/dashboard/notifications')
   return { ok: true, count: data?.length ?? 0 }
 }
