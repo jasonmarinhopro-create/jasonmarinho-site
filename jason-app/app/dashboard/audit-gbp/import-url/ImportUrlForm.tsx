@@ -125,7 +125,7 @@ export default function ImportUrlForm({ userId }: Props) {
         <div style={s.preview}>
           <div style={s.previewHead}>
             <div style={s.previewIcon}>
-              <CheckCircle size={20} color="#34d399" weight="fill" />
+              <CheckCircle size={20} color="var(--accent-text)" weight="fill" />
             </div>
             <div>
               <div style={s.previewTitle}>Fiche trouvée</div>
@@ -175,7 +175,7 @@ export default function ImportUrlForm({ userId }: Props) {
             <div style={s.detailTitle}>Informations détectées :</div>
             {result.matchedFields.map((f, i) => (
               <div key={`m-${i}`} style={s.detailItem}>
-                <CheckCircle size={13} color="#34d399" weight="fill" />
+                <CheckCircle size={13} color="var(--accent-text)" weight="fill" />
                 <span>{f}</span>
               </div>
             ))}
@@ -267,7 +267,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   previewIcon: {
     width: '40px', height: '40px', borderRadius: '10px',
-    background: 'var(--success-bg)',
+    background: 'var(--accent-bg)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
@@ -300,7 +300,7 @@ const s: Record<string, React.CSSProperties> = {
   summaryBlock: { flex: 1, textAlign: 'center' as const },
   summaryNum: {
     fontSize: '24px', fontWeight: 700,
-    color: 'var(--success-1)', fontFamily: 'var(--font-fraunces), serif',
+    color: 'var(--accent-text)', fontFamily: 'var(--font-fraunces), serif',
   },
   summaryLabel: { fontSize: '11px', color: 'var(--text-3)', marginTop: '2px' },
 
@@ -330,7 +330,7 @@ const s: Record<string, React.CSSProperties> = {
   btnPrimary: {
     flex: 1, minWidth: '200px',
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
-    background: 'var(--success-1)', color: '#0a1628',
+    background: 'var(--accent-text)', color: 'var(--bg)',
     border: 'none', borderRadius: '9px',
     padding: '11px 18px', fontSize: '14px', fontWeight: 700,
     cursor: 'pointer', fontFamily: 'inherit',

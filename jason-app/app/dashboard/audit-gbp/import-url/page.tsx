@@ -30,12 +30,12 @@ export default async function ImportUrlPage() {
           <div className="audit-left">
             <div style={s.hero}>
               <div style={s.heroBadge}>
-                <Lightning size={13} color="#34d399" weight="fill" />
+                <Lightning size={13} color="var(--accent-text)" weight="fill" />
                 Audit Express · Import URL
               </div>
               <h1 style={s.heroTitle}>
                 Pré-remplis 9 questions<br />
-                <em style={{ color: 'var(--success-1)', fontStyle: 'italic' }}>en collant ton URL.</em>
+                <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>en collant ton URL.</em>
               </h1>
               <p style={s.heroDesc}>
                 Donne-nous le lien Google Maps de ta fiche : on récupère officiellement
@@ -85,7 +85,7 @@ export default async function ImportUrlPage() {
             </div>
 
             <div style={s.privacyNote}>
-              <Info size={14} color="#34d399" weight="fill" />
+              <Info size={14} color="var(--accent-text)" weight="fill" />
               <div>
                 <strong style={{ color: 'var(--text)' }}>API officielle Google Places</strong> : on
                 utilise uniquement les données publiques fournies par Google. Aucun scraping,
@@ -122,8 +122,8 @@ const s: Record<string, React.CSSProperties> = {
   heroBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase' as const,
-    color: 'var(--success-1)', background: 'var(--success-bg)',
-    border: '1px solid rgba(52,211,153,0.18)',
+    color: 'var(--accent-text)', background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '999px', padding: '4px 12px', marginBottom: '14px',
   },
   heroTitle: {
@@ -154,8 +154,8 @@ const s: Record<string, React.CSSProperties> = {
   },
   stepNum: {
     width: '32px', height: '32px', borderRadius: '50%',
-    background: 'var(--success-bg)',
-    color: 'var(--success-1)',
+    background: 'var(--accent-bg)',
+    color: 'var(--accent-text)',
     fontWeight: 700, fontSize: '14px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
@@ -169,7 +169,7 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.7,
   },
   link: {
-    color: 'var(--success-1)', textDecoration: 'none',
+    color: 'var(--accent-text)', textDecoration: 'none',
     fontWeight: 500,
   },
   code: {
@@ -182,8 +182,8 @@ const s: Record<string, React.CSSProperties> = {
   privacyNote: {
     display: 'flex', alignItems: 'flex-start', gap: '10px',
     padding: '12px 14px',
-    background: 'var(--success-bg)',
-    border: '1px solid rgba(52,211,153,0.18)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '10px',
     fontSize: '12.5px', color: 'var(--text-2)',
     lineHeight: 1.6, marginBottom: '20px',

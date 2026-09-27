@@ -32,12 +32,12 @@ export default async function ImportCsvPage() {
             {/* Hero */}
             <div style={s.hero}>
               <div style={s.heroBadge}>
-                <Lightning size={13} color="#FFD56B" weight="fill" />
+                <Lightning size={13} color="var(--accent-text)" weight="fill" />
                 Audit Express · Import CSV
               </div>
               <h1 style={s.heroTitle}>
                 Pré-remplis 7 questions<br />
-                <em style={{ color: '#FFD56B', fontStyle: 'italic' }}>en 2 clics.</em>
+                <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>en 2 clics.</em>
               </h1>
               <p style={s.heroDesc}>
                 Google Business Profile permet d'exporter toutes tes infos en un fichier CSV.
@@ -135,7 +135,7 @@ export default async function ImportCsvPage() {
 
             {/* Note privacy */}
             <div style={s.privacyNote}>
-              <Info size={14} color="#34d399" weight="fill" />
+              <Info size={14} color="var(--accent-text)" weight="fill" />
               <div>
                 <strong style={{ color: 'var(--text)' }}>Tes données restent privées.</strong> Le CSV
                 est lu localement dans ton navigateur. Seules les réponses (oui/non/choix) sont
@@ -174,8 +174,8 @@ const s: Record<string, React.CSSProperties> = {
   heroBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',
     fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase' as const,
-    color: '#FFD56B', background: 'rgba(255,213,107,0.08)',
-    border: '1px solid rgba(255,213,107,0.18)',
+    color: 'var(--accent-text)', background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '999px', padding: '4px 12px', marginBottom: '14px',
   },
   heroTitle: {
@@ -207,8 +207,8 @@ const s: Record<string, React.CSSProperties> = {
   },
   stepNum: {
     width: '32px', height: '32px', borderRadius: '50%',
-    background: 'rgba(255,213,107,0.12)',
-    color: '#FFD56B',
+    background: 'var(--accent-bg)',
+    color: 'var(--accent-text)',
     fontWeight: 700, fontSize: '14px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
@@ -222,7 +222,7 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.7,
   },
   link: {
-    color: '#FFD56B', textDecoration: 'none',
+    color: 'var(--accent-text)', textDecoration: 'none',
     fontWeight: 500,
   },
 
@@ -262,8 +262,8 @@ const s: Record<string, React.CSSProperties> = {
   privacyNote: {
     display: 'flex', alignItems: 'flex-start', gap: '10px',
     padding: '12px 14px',
-    background: 'var(--success-bg)',
-    border: '1px solid rgba(52,211,153,0.18)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '10px',
     fontSize: '12.5px', color: 'var(--text-2)',
     lineHeight: 1.6, marginBottom: '20px',

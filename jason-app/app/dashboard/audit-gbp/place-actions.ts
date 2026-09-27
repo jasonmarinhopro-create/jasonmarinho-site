@@ -3,7 +3,11 @@
 import { createClient } from '@/lib/supabase/server'
 import { fetchPlaceFromMapsUrl } from '@/lib/audit-gbp/places-api'
 import { placesResponseToAnswers, type PlacesImportResult } from '@/lib/audit-gbp/places-mapper'
+import { placesAccessAdvice } from '@/lib/audit-gbp/places-errors'
+import { logger } from '@/lib/logger'
 import { startAuditSession, saveAuditAnswers } from './actions'
+
+const log = logger('audit-gbp/place-actions')
 
 interface ActionResult<T = void> {
   ok?: T
@@ -36,10 +40,14 @@ export async function previewMapsUrl(rawUrl: string): Promise<ActionResult<Place
     return { ok: result }
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Erreur inconnue'
-    // Messages d'erreur user-friendly
-    if (msg.includes('REQUEST_DENIED') || msg.includes('403')) {
-      return { error: 'La clé API n\'est pas autorisée. Vérifie les restrictions côté Google Cloud.' }
+    // Réponse brute de Google gardée dans les logs (et « Erreurs de l'app »
+    // dans l'admin) : c'est elle qui dit exactement quel réglage bloque.
+    if (!msg.includes('Aucun établissement') && !msg.includes("Impossible d'extraire")) {
+      log.error('Places API', { msg: msg.slice(0, 600) })
     }
+    // Refus d'accès : on traduit la raison donnée par Google en consigne
+    const advice = placesAccessAdvice(msg)
+    if (advice) return { error: advice }
     if (msg.includes('OVER_QUERY_LIMIT') || msg.includes('429')) {
       return { error: 'Quota Google atteint. Réessaie dans quelques minutes.' }
     }

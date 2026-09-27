@@ -114,7 +114,7 @@ export default function ImportCsvForm({ userId }: Props) {
               if (file) processFile(file)
             }}
           />
-          <UploadSimple size={32} color="#FFD56B" weight="duotone" />
+          <UploadSimple size={32} color="var(--accent-text)" weight="duotone" />
           <div style={s.dropzoneTitle}>
             Glisse-dépose ton fichier CSV ici
           </div>
@@ -136,7 +136,7 @@ export default function ImportCsvForm({ userId }: Props) {
         <div style={s.preview}>
           <div style={s.previewHead}>
             <div style={s.previewIcon}>
-              <FileCsv size={20} color="#FFD56B" weight="fill" />
+              <FileCsv size={20} color="var(--accent-text)" weight="fill" />
             </div>
             <div>
               <div style={s.previewTitle}>Fichier importé avec succès</div>
@@ -209,7 +209,7 @@ export default function ImportCsvForm({ userId }: Props) {
             <div style={s.detailTitle}>Champs détectés :</div>
             {parseResult.matchedFields.map((f, i) => (
               <div key={i} style={s.detailItem}>
-                <CheckCircle size={13} color="#34d399" weight="fill" />
+                <CheckCircle size={13} color="var(--accent-text)" weight="fill" />
                 <span>{f}</span>
               </div>
             ))}
@@ -264,8 +264,8 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'all 0.2s',
   },
   dropzoneActive: {
-    borderColor: '#FFD56B',
-    background: 'rgba(255,213,107,0.04)',
+    borderColor: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
     transform: 'scale(1.01)',
   },
   dropzoneTitle: {
@@ -297,7 +297,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   previewIcon: {
     width: '40px', height: '40px', borderRadius: '10px',
-    background: 'rgba(255,213,107,0.1)',
+    background: 'var(--accent-bg)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     flexShrink: 0,
   },
@@ -325,9 +325,9 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer', fontFamily: 'inherit',
   },
   rowChoiceActive: {
-    borderColor: '#FFD56B',
-    background: 'rgba(255,213,107,0.1)',
-    color: '#FFD56B', fontWeight: 600,
+    borderColor: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    color: 'var(--accent-text)', fontWeight: 600,
   },
   rowMore: {
     fontSize: '11px', color: 'var(--text-muted)',
@@ -358,7 +358,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   summaryNum: {
     fontSize: '24px', fontWeight: 700,
-    color: 'var(--success-1)', fontFamily: 'var(--font-fraunces), serif',
+    color: 'var(--accent-text)', fontFamily: 'var(--font-fraunces), serif',
   },
   summaryLabel: {
     fontSize: '11px', color: 'var(--text-3)',
@@ -395,7 +395,7 @@ const s: Record<string, React.CSSProperties> = {
   btnPrimary: {
     flex: 1, minWidth: '200px',
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
-    background: '#FFD56B', color: '#0a1628',
+    background: 'var(--accent-text)', color: 'var(--bg)',
     border: 'none', borderRadius: '9px',
     padding: '11px 18px', fontSize: '14px', fontWeight: 700,
     cursor: 'pointer', fontFamily: 'inherit',
