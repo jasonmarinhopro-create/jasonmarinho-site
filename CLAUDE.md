@@ -165,6 +165,12 @@ import { House } from '@phosphor-icons/react'
 
 ---
 
+## Réglementation dans les estimations (investisseur + hôte)
+
+- `jason-app/lib/lcd/regulation.ts` : règles LCD par ville, **uniquement des faits vérifiés et sourcés** (relevés de sept. 2026), 3 niveaux : `bloquant` (nouvel investissement quasi impossible : Paris, Barcelone, Palma, Málaga, Florence, Amsterdam), `restrictif` (90 jours, compensation, quotas : Lyon, Bordeaux, Marseille, Nice, Montpellier, Annecy, Biarritz, La Rochelle, Saint-Malo, Chamonix, Madrid, Valencia, Lisbonne, Berlin, Vienne), `encadre` (changement d'usage à prévoir). Ville absente = note générique du pays (`COUNTRY_NOTES`), jamais de chiffre inventé. Mêmes faits FR que `scripts/data/villes-local.mjs` côté site statique : garder les deux cohérents.
+- Affichée par `components/lcd/RegulationAlert.tsx` dans l'estimateur (`SimulateursUI.tsx`, hôte et `/dashboard/investir/estimateur`, avec alerte si les nuits estimées dépassent le plafond résidence principale), une ligne « Réglementation » dans le comparateur de villes, un résumé sur chaque projet investisseur, et une section 6 dans le PDF banque (`lib/lcd/previsionnel-pdf.ts`, ligne d'alerte en page 1).
+- Tests : `lib/lcd/regulation.test.ts` vérifie notamment que chaque ville réglementée existe dans `market-benchmarks.ts` (sinon l'alerte ne s'affiche jamais). Revérifier les règles une fois par an.
+
 ## Trafic & analytics (visiteurs en direct + canal)
 
 - **Pas de gtag** (cf. Performance) : le trafic en direct + canal d'acquisition affiché dans l'admin est un tracking maison léger, pas Vercel Analytics (pas d'API exposée pour ça) ni Google Analytics.

@@ -1,5 +1,7 @@
 'use client'
 
+import RegulationAlert from '@/components/lcd/RegulationAlert'
+import { findRegulation, LEVEL_LABELS, COUNTRY_NOTES } from '@/lib/lcd/regulation'
 import { useState, useMemo, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Calculator, Scales, CurrencyEur, ChartLineUp, TrendUp, Storefront, Receipt, Percent } from '@phosphor-icons/react/dist/ssr'
@@ -226,6 +228,13 @@ export function EstimateurRevenus({ logements }: { logements: LogementPrefill[] 
           <div style={{ fontSize: '13px', color: 'var(--text-2)', marginTop: '4px' }}>
             Fourchette : <strong>{fmtEur(res.revenuLow)}</strong> → <strong>{fmtEur(res.revenuHigh)}</strong>
           </div>
+
+          <RegulationAlert
+            ville={ville}
+            pays={pays}
+            nuitsEstimees={Math.round(365 * res.occupation / 100)}
+            revenuAnnuel={res.revenuAnnuel}
+          />
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginTop: '16px' }}>
             <MiniBox label="Occupation" value={`${res.occupation} %`} />
@@ -749,6 +758,25 @@ export function CompareurMesVilles({ logements }: { logements: LogementPrefill[]
                 </td>
               ))}
             </tr>
+            {/* Réglementation : une ville au meilleur RevPAR peut être fermée
+                aux nouveaux logements (Barcelone, Palma…), à lire avant le 🏆. */}
+            <tr>
+              <td style={{ padding: '12px 12px', fontWeight: 600, color: 'var(--text-2)', borderBottom: '1px solid var(--border)' }}>Réglementation</td>
+              {benches.map((b, i) => {
+                const reg = findRegulation(b.bench.ville, b.bench.pays)
+                const tone = reg?.niveau === 'bloquant' ? { bg: 'var(--danger-bg)', fg: 'var(--danger-text)' }
+                  : reg?.niveau === 'restrictif' ? { bg: 'var(--warning-bg)', fg: 'var(--warning-text)' }
+                  : reg ? { bg: 'var(--info-bg)', fg: 'var(--info-text)' }
+                  : { bg: 'var(--surface-2)', fg: 'var(--text-muted)' }
+                return (
+                  <td key={i} style={{ padding: '12px 12px', borderBottom: '1px solid var(--border)', verticalAlign: 'top' as const }}>
+                    <span title={reg?.resume ?? COUNTRY_NOTES[b.bench.pays] ?? ''} style={{ display: 'inline-block', fontSize: '11.5px', fontWeight: 600, lineHeight: 1.35, padding: '4px 8px', borderRadius: '6px', background: tone.bg, color: tone.fg }}>
+                      {reg ? LEVEL_LABELS[reg.niveau] : 'Règles nationales, à vérifier'}
+                    </span>
+                  </td>
+                )
+              })}
+            </tr>
             {/* Tes vraies stats si dispo */}
             {benches.some(b => b.mine?.statsReelles && b.mine.statsReelles.nuitsLouees > 0) && (
               <tr>
@@ -774,7 +802,7 @@ export function CompareurMesVilles({ logements }: { logements: LogementPrefill[]
         </table>
 
         <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '14px', marginBottom: 0, fontStyle: 'italic' as const, borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
-          Sources publiques INSEE, DGE, INE, ENIT, CBS, OFS, Statistik Austria 2024. Tes stats réelles calculées sur les 12 derniers mois de séjours encaissés.
+          Sources publiques INSEE, DGE, INE, ENIT, CBS, OFS, Statistik Austria 2024. Réglementation vérifiée en septembre 2026 (survole une case pour le détail). Tes stats réelles calculées sur les 12 derniers mois de séjours encaissés.
         </p>
       </div>
     </div>

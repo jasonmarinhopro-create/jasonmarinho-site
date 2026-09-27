@@ -1,5 +1,6 @@
 'use client'
 
+import RegulationAlert from '@/components/lcd/RegulationAlert'
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import {
@@ -148,6 +149,8 @@ export default function InvestirView({ projects, firstName }: { projects: Invest
                     <Stat label="Résultat expl." value={eur(snap?.resultatExploitation)} />
                     <Stat label="Rentab. nette" value={snap?.rentabiliteNette != null ? `${snap.rentabiliteNette.toFixed(1)} %` : '—'} />
                   </div>
+
+                  <RegulationAlert ville={p.ville} pays={p.pays} compact />
 
                   {(p.prix_achat || p.mensualite) && (
                     <div style={s.finLine}>

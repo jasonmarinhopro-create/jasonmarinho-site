@@ -8,6 +8,7 @@
 import { jsPDF } from 'jspdf'
 import type { EstimateRevenueResult } from './market-benchmarks'
 import { DEFAULT_CHARGES, type ChargeAssumptions, type FinancingAssumptions } from './previsionnel-pdf-types'
+import { findRegulation, LEVEL_LABELS, COUNTRY_NOTES, REGULATION_VERIFIED_AT } from './regulation'
 
 export { DEFAULT_CHARGES }
 export type { ChargeAssumptions, FinancingAssumptions }
@@ -208,6 +209,16 @@ export function buildPrevisionnelPdf(input: PrevisionnelInput): jsPDF {
   doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor(...MUTED)
   doc.text(`Source des données marché : ${r.source}.`, M + 2, y)
   y += 7
+  // Alerte courte en page 1 (le détail est en section 6, page 2) : une seule
+  // ligne pour ne pas faire déborder la page.
+  const reg = r.bench ? findRegulation(r.bench.ville, r.bench.pays) : null
+  if (reg) {
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8)
+    doc.setTextColor(...(reg.niveau === 'bloquant' ? [185, 28, 28] as [number, number, number] : MUTED))
+    doc.text(`Réglementation locale : ${LEVEL_LABELS[reg.niveau].toLowerCase()} (détail en section 6).`, M + 2, y - 2.5)
+    y += 3
+  }
+
 
   // ── 3. Revenus escomptés (3 scénarios) ────────────────────────────────────
   sectionTitle(3, 'Revenus annuels escomptés')
@@ -292,8 +303,21 @@ export function buildPrevisionnelPdf(input: PrevisionnelInput): jsPDF {
   doc.text('Barres vertes = haute saison observée. Répartition indicative pondérée par la saisonnalité locale.', M + 2, y)
   y += 9
 
-  // ── 6. Sources & méthodologie ─────────────────────────────────────────────
-  sectionTitle(6, 'Sources & méthodologie')
+  // ── 6. Réglementation locale ──────────────────────────────────────────────
+  // Un banquier doit savoir si l'exploitation est seulement possible
+  // (changement d'usage, quotas, licences gelées…).
+  sectionTitle(6, 'Réglementation locale')
+  const regTxt = reg
+    ? `${LEVEL_LABELS[reg.niveau]}. ${reg.resume} ${reg.points.join(' ')} Source : ${reg.source.label}, vérifié en ${REGULATION_VERIFIED_AT}. Les règles évoluent : à confirmer auprès de la commune.`
+    : (COUNTRY_NOTES[r.bench?.pays ?? 'FR'] ?? 'À vérifier auprès de la commune.')
+  doc.setFont('helvetica', reg?.niveau === 'bloquant' ? 'bold' : 'normal'); doc.setFontSize(8.8)
+  doc.setTextColor(...(reg?.niveau === 'bloquant' ? [185, 28, 28] as [number, number, number] : INK))
+  const regLines = doc.splitTextToSize(regTxt, CW - 4)
+  doc.text(regLines, M + 2, y)
+  y += regLines.length * 4.4 + 6
+
+  // ── 7. Sources & méthodologie ─────────────────────────────────────────────
+  sectionTitle(7, 'Sources & méthodologie')
   doc.setFont('helvetica', 'normal'); doc.setFontSize(8.8); doc.setTextColor(...INK)
   const method = [
     `• Données marché ${r.city} : ${r.source}.`,
