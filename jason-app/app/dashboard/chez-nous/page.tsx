@@ -5,6 +5,7 @@ import ChezNousFeed, { type Sort } from './ChezNousFeed'
 import { isValidCategory, type CategoryId } from '@/lib/chez-nous/categories'
 import { computeBadges, type BadgeId } from '@/lib/badges'
 import { getBulkProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
+import { monthStartIso, questionsLeft } from '@/lib/chez-nous/quota'
 
 export const dynamic  = 'force-dynamic'
 export const metadata = { title: 'Questions & réponses, Jason Marinho' }
@@ -46,10 +47,15 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
     postsQuery = postsQuery.or(`title.ilike.%${escaped}%,body.ilike.%${escaped}%`)
   }
 
-  const [meProfileResult, postsResult, answeredResult] = await Promise.all([
+  const isFree = profile.plan === 'decouverte'
+  const [meProfileResult, postsResult, answeredResult, myMonthResult] = await Promise.all([
     supabase.from('profiles').select('pseudo').eq('id', profile.userId).maybeSingle(),
     postsQuery,
     supabase.from('chez_nous_posts').select('*', { count: 'exact', head: true }).gt('reply_count', 0),
+    // Formule gratuite : questions déjà posées ce mois-ci (plafond de 2, lib/chez-nous/quota.ts)
+    isFree
+      ? supabase.from('chez_nous_posts').select('id', { count: 'exact', head: true }).eq('author_id', profile.userId).gte('created_at', monthStartIso())
+      : Promise.resolve({ count: 0 }),
   ])
 
   const posts           = postsResult.data ?? []
@@ -175,6 +181,7 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
       currentSearch={q}
       answeredCount={answeredResult.count ?? 0}
       openComposer={sp.ask === '1'}
+      questionsLeft={questionsLeft(profile.plan, myMonthResult.count ?? 0)}
     />
   )
 }

@@ -6,6 +6,7 @@ import {
   Cigarette, Moon, MusicNote, PawPrint, Footprints,
   Recycle, Lock, Drop,
 } from '@phosphor-icons/react/dist/ssr'
+import InlineStyle from '@/components/ui/InlineStyle'
 
 type Lang = 'fr' | 'en'
 
@@ -376,13 +377,13 @@ export default function AffichePublicView({ data: rawData }: Props) {
         <div style={{ height: '3px', background: accent }} />
       </div>
 
-      <style>{`
+      <InlineStyle css={`
         @media (max-width: 560px) {
           .affiche-wifi { grid-template-columns: 1fr !important; text-align: center; }
           .affiche-wifi > div:first-child { max-width: 200px; margin: 0 auto; }
           .affiche-rules { grid-template-columns: repeat(3, 1fr) !important; gap: 12px !important; }
         }
-      `}</style>
+      `} />
     </div>
   )
 }

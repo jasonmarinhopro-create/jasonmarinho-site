@@ -1270,7 +1270,7 @@ export default function CalendrierView({
         .cat-chip:hover { opacity: 0.85; transform: translateY(-1px); }
         .icon-btn { transition: background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring); cursor: pointer; }
         .icon-btn:hover { background: var(--surface-2) !important; color: var(--text) !important; transform: translateY(-1px); }
-        /* Aujourd'hui : pastille accent, animation pulse subtile */
+        /* Aujourd hui : pastille accent, animation pulse subtile */
         .today-num {
           background: var(--accent-text); color: var(--bg);
           border-radius: 50%; width: 28px; height: 28px;
@@ -1338,7 +1338,7 @@ export default function CalendrierView({
           }
           /* Saisie rapide cachée sur mobile (saisie clavier pénible, le bouton + suffit) */
           .cal-quick-wrap   { display: none !important; }
-          /* Bandeau "Tout est en ordre" plus discret sur mobile */
+          /* Bandeau Tout est en ordre plus discret sur mobile */
           .cal-alert-ok     { padding: 8px 12px !important; font-size: 11.5px !important; }
         }
         @media (max-width: 640px) {

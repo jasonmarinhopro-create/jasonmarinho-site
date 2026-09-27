@@ -3,6 +3,8 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { isValidCategory, type CategoryId } from '@/lib/chez-nous/categories'
+import { getProfile } from '@/lib/queries/profile'
+import { monthStartIso, questionsLeft, QUOTA_REACHED_MESSAGE } from '@/lib/chez-nous/quota'
 
 async function requireAuth() {
   const supabase = await createClient()
@@ -165,6 +167,18 @@ export async function createPost(input: {
   if (!isValidCategory(input.category)) return { ok: false, error: 'Catégorie invalide' }
   if (title.length < 3 || title.length > 200)   return { ok: false, error: 'Le titre doit faire entre 3 et 200 caractères' }
   if (body.length < 1 || body.length > 8000)    return { ok: false, error: 'Le message doit faire entre 1 et 8000 caractères' }
+
+  // Formule gratuite : 2 questions par mois (lib/chez-nous/quota.ts).
+  // Vérifié ici, côté serveur : le compteur affiché dans la page n'est qu'indicatif.
+  const profile = await getProfile()
+  if (profile?.plan === 'decouverte') {
+    const { count } = await supabase
+      .from('chez_nous_posts')
+      .select('id', { count: 'exact', head: true })
+      .eq('author_id', userId)
+      .gte('created_at', monthStartIso())
+    if (questionsLeft('decouverte', count ?? 0) === 0) return { ok: false, error: QUOTA_REACHED_MESSAGE }
+  }
 
   const { data, error } = await supabase
     .from('chez_nous_posts')

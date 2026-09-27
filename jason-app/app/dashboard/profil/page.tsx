@@ -7,6 +7,7 @@ import ChezNousIdentity from './ChezNousIdentity'
 import FiscalContextCard from './FiscalContextCard'
 import AbonnementCard from './AbonnementCard'
 import { getSubscriptionDetails } from '@/lib/stripe/subscription-info'
+import InlineStyle from '@/components/ui/InlineStyle'
 
 const PLAN_BADGE: Record<string, { label: string; color: string; bg: string; dot: string }> = {
   'Membre Driing':  { label: 'Membre Driing',  color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', dot: 'var(--accent-text)' },
@@ -72,7 +73,7 @@ export default async function ProfilPage() {
 
   return (
     <>
-      <style>{`
+      <InlineStyle css={`
         .profil-page {
           padding: clamp(20px,3vw,44px);
           width: 100%;
@@ -222,7 +223,7 @@ export default async function ProfilPage() {
           }
           .profil-progress-bar { margin-bottom: 8px; }
         }
-      `}</style>
+      `} />
 
       <div className="profil-page">
         {/* ── Hero card ── */}

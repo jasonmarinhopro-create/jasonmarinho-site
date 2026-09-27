@@ -12,6 +12,7 @@ import {
 import {
   validateReport, deleteReport,
 } from './actions'
+import InlineStyle from '@/components/ui/InlineStyle'
 
 interface RecentSignup {
   id: string; email: string; full_name: string | null; plan: string; created_at: string
@@ -96,8 +97,8 @@ export default function AdminUI({
       {/* ── Bannière admin ── */}
       <div style={s.hero}>
         <style>{`
-          /* Mobile : position absolute → static pour éviter l'overlap avec
-             le badge "ESPACE PRIVÉ" qui wrap sur 2 lignes. La couronne
+          /* Mobile : position absolute → static pour éviter l overlap avec
+             le badge ESPACE PRIVÉ qui wrap sur 2 lignes. La couronne
              cachée pour gagner de la place visuelle. */
           @media (max-width: 640px) {
             .admin-hero-alert {
@@ -458,7 +459,7 @@ function LiveTraffic({ initialLive, initialChannels, topPages }: { initialLive: 
         <Globe size={13} />
         Trafic du site · en direct
       </div>
-      <style>{`
+      <InlineStyle css={`
         @media (max-width: 900px) {
           .admin-traffic-grid { grid-template-columns: minmax(180px,260px) 1fr !important; }
           .admin-traffic-grid > *:last-child { grid-column: 1 / -1; }
@@ -466,7 +467,7 @@ function LiveTraffic({ initialLive, initialChannels, topPages }: { initialLive: 
         @media (max-width: 560px) {
           .admin-traffic-grid { grid-template-columns: 1fr !important; }
         }
-      `}</style>
+      `} />
       <div className="admin-traffic-grid" style={s.trafficGrid}>
         <div style={s.liveCard}>
           <div style={s.liveTop}>

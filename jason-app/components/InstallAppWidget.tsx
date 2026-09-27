@@ -165,17 +165,17 @@ export default function InstallAppWidget() {
           padding: 14px 16px 12px;
           animation: jm-iw-slide-in .35s cubic-bezier(.22,.61,.36,1) forwards;
         }
-        [data-theme="dark"] .jm-iw-root {
+        [data-theme=dark] .jm-iw-root {
           background: #0F1A0D; color: #F0F4FF;
           border-color: rgba(255,213,107,.18);
           box-shadow: 0 12px 32px rgba(0,0,0,.5);
         }
         .jm-iw-desc { color: rgba(15,26,13,.66); }
-        [data-theme="dark"] .jm-iw-desc { color: rgba(240,244,255,.62); }
+        [data-theme=dark] .jm-iw-desc { color: rgba(240,244,255,.62); }
         .jm-iw-close { color: rgba(15,26,13,.4); }
-        [data-theme="dark"] .jm-iw-close { color: rgba(240,244,255,.4); }
+        [data-theme=dark] .jm-iw-close { color: rgba(240,244,255,.4); }
         .jm-iw-close:hover { background: rgba(15,26,13,.06); color: rgba(15,26,13,.7); }
-        [data-theme="dark"] .jm-iw-close:hover { background: rgba(255,255,255,.08); color: rgba(240,244,255,.7); }
+        [data-theme=dark] .jm-iw-close:hover { background: rgba(255,255,255,.08); color: rgba(240,244,255,.7); }
         @media (max-width: 480px) {
           .jm-iw-root { right: 8px; bottom: 8px; left: 8px; width: auto; }
         }

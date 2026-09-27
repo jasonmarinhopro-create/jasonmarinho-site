@@ -16,6 +16,7 @@ import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashb
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId } from '@/lib/chez-nous/display'
 import { stripMarkdown } from '@/lib/chez-nous/markdown'
+import { FREE_MONTHLY_QUESTIONS } from '@/lib/chez-nous/quota'
 import type { BadgeId } from '@/lib/badges'
 import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import MentionAutocomplete from '@/components/chez-nous/MentionAutocomplete'
@@ -70,6 +71,8 @@ type Props = {
   answeredCount: number
   /** ?ask=1 : ouvre directement le formulaire (liens « Pose ta question » du guide, des formations…) */
   openComposer: boolean
+  /** Formule gratuite : questions restantes ce mois-ci (null = illimité), cf. lib/chez-nous/quota.ts */
+  questionsLeft: number | null
 }
 
 // « Bienvenue » (présentations) n'est plus proposé à la création : la page
@@ -86,9 +89,15 @@ function feedHref(cat: CategoryId | 'all', sort: Sort, search: string) {
   return BASE + (params.toString() ? `?${params}` : '')
 }
 
-export default function ChezNousFeed({ posts, authorsMap, currentUserId, currentUserName, currentCategory, currentSort, currentSearch, answeredCount, openComposer }: Props) {
-  const [composer, setComposer] = useState<{ title: string } | null>(openComposer ? { title: '' } : null)
-  const ask = (title = '') => setComposer({ title })
+export default function ChezNousFeed({ posts, authorsMap, currentUserId, currentUserName, currentCategory, currentSort, currentSearch, answeredCount, openComposer, questionsLeft }: Props) {
+  const limitReached = questionsLeft === 0
+  const [composer, setComposer] = useState<{ title: string } | null>(openComposer && !limitReached ? { title: '' } : null)
+  // Plafond atteint (formule gratuite) : pas de formulaire, on affiche l'explication
+  const [limitNotice, setLimitNotice] = useState(openComposer && limitReached)
+  const ask = (title = '') => {
+    if (limitReached) { setLimitNotice(true); return }
+    setComposer({ title })
+  }
 
   return (
     <div style={s.page}>
@@ -111,8 +120,10 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
           opacity: 1; visibility: visible; transform: translateY(0);
         }
         @media (hover: none) { .cn-recent-reply-full { display: none; } }
-        /* Pas de will-change: transform ici : chaque carte devenait un contexte
-           d'empilement et l'aperçu au survol passait sous la carte suivante. */
+        /* Pas de will-change: transform ici : chaque carte devenait un calque
+           à part, et l aperçu au survol passait sous la carte suivante.
+           (Pas d apostrophe dans ce bloc : React l échappe côté serveur,
+           ce qui casse l hydratation.) */
         .cn-post-card { position: relative; }
         .cn-post-card:hover, .cn-post-card:focus-within { z-index: 5; }
         .cn-post-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
@@ -154,7 +165,28 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
             <Link href={feedHref('all', 'answered', '')} style={heroLink}>Voir les questions déjà répondues</Link>
           )}
         </div>
+        {questionsLeft !== null && !limitNotice && (
+          <p style={s.quotaLine}>
+            Formule gratuite : {questionsLeft > 0
+              ? <><strong style={{ color: 'var(--text)' }}>{questionsLeft} question{questionsLeft > 1 ? 's' : ''}</strong> restante{questionsLeft > 1 ? 's' : ''} ce mois-ci.</>
+              : <>tes {FREE_MONTHLY_QUESTIONS} questions du mois sont posées.</>}
+            {' '}<Link href="/dashboard/abonnement" style={s.quotaLink}>Illimité en Standard</Link>
+          </p>
+        )}
       </HubHero>
+
+      {limitNotice && (
+        <div style={s.limitCard} role="status">
+          <span style={s.limitIco}><Lock size={18} weight="fill" /></span>
+          <div style={{ flex: '1 1 260px', minWidth: 0 }}>
+            <strong style={{ display: 'block', color: 'var(--text)', fontSize: '14.5px' }}>Tes {FREE_MONTHLY_QUESTIONS} questions du mois sont posées</strong>
+            <span style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.55 }}>
+              Avec la formule gratuite, tu poses {FREE_MONTHLY_QUESTIONS} questions par mois ; le compteur repart le 1er. En attendant, cherche dans les questions déjà répondues, ou passe en Standard pour poser tes questions sans limite.
+            </span>
+          </div>
+          <Link href="/dashboard/abonnement" style={{ ...heroCta, padding: '10px 16px', fontSize: '13.5px' }}>Passer en Standard</Link>
+        </div>
+      )}
 
       <div className="qa-layout">
         <div style={s.mainCol}>
@@ -890,6 +922,16 @@ function NewPostForm({ onSuccess, defaultCategory, defaultTitle = '' }: { onSucc
 
 const s: Record<string, React.CSSProperties> = {
   heroCtas: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 18px' },
+  quotaLine: { fontSize: '13px', color: 'var(--text-2)', margin: '12px 0 0' },
+  quotaLink: { color: 'var(--accent-text)', fontWeight: 600 },
+  limitCard: {
+    display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px 16px', padding: '16px 18px', marginBottom: '20px',
+    borderRadius: '16px', background: 'rgba(255,213,107,0.14)', border: '1px solid rgba(255,213,107,0.45)',
+  },
+  limitIco: {
+    width: '38px', height: '38px', borderRadius: '11px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+    background: 'var(--surface)', color: 'var(--accent-text)',
+  },
   qaAside: { flexDirection: 'column', gap: '14px' },
   searchForm: {
     display: 'flex', alignItems: 'center', gap: '10px',

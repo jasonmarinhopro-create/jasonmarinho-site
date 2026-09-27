@@ -5,6 +5,7 @@ import { Info } from '@phosphor-icons/react/dist/ssr'
 import type { AccountStats } from '@/lib/lcd/account-stats'
 import { FISCAL_PARAMS_2026 } from '@/lib/lcd/fiscal-params'
 import { s, fmtEur } from './_shared'
+import InlineStyle from '@/components/ui/InlineStyle'
 
 export default function FiscalLCD({ accountStats }: { accountStats?: AccountStats }) {
   const [ca, setCa] = useState(accountStats && accountStats.caTotal12m > 0 ? Math.round(accountStats.caTotal12m) : 30000)
@@ -132,7 +133,7 @@ export default function FiscalLCD({ accountStats }: { accountStats?: AccountStat
 
       {/* ─── Statut LMNP / LMP ─── */}
       <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: '1px solid var(--border)' }}>
-        <style>{`
+        <InlineStyle css={`
           .lmp-section-row {
             display: grid;
             grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
@@ -151,7 +152,7 @@ export default function FiscalLCD({ accountStats }: { accountStats?: AccountStat
             .lmp-section-row,
             .lmp-conds-row { grid-template-columns: 1fr !important; }
           }
-        `}</style>
+        `} />
         <div style={{ marginBottom: '14px' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)', marginBottom: '4px', letterSpacing: '-.1px' }}>
             Statut LMNP ou LMP ?

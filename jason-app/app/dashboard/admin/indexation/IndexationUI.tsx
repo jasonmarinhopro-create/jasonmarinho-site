@@ -393,10 +393,10 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
 
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        /* Mobile : la ligne (chemin + badge à gauche, boutons à droite) n'a
+        /* Mobile : la ligne (chemin + badge à gauche, boutons à droite) n a
            pas la place de rester côte à côte — le badge se retrouvait
            chevauché par les boutons. On empile verticalement en dessous
-           d'une certaine largeur, et les boutons passent sur plusieurs
+           d une certaine largeur, et les boutons passent sur plusieurs
            lignes si besoin plutôt que de déborder. */
         @media (max-width: 640px) {
           .jm-idx-row { flex-direction: column !important; align-items: stretch !important; gap: 10px !important; }

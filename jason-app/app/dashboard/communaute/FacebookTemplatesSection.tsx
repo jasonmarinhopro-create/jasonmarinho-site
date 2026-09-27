@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { FacebookLogo, Copy, Check, House, FloppyDisk, Trash, BookmarkSimple, Plus, Warning } from '@phosphor-icons/react/dist/ssr'
 import { saveFacebookPost, deleteFacebookPost } from './actions'
 import { markStepIfNotYet } from '@/lib/onboarding/client'
+import InlineStyle from '@/components/ui/InlineStyle'
 
 interface Template { id: string; title: string; content: string }
 interface Logement { id: string; nom: string; lien_driing: string | null }
@@ -297,7 +298,7 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
       <div>
         <div style={s.chipsLabel}>Pioche un style pour t'inspirer</div>
         <div style={s.chipsRow} className="fb-inspirations-row">
-          <style>{`
+          <InlineStyle css={`
             @media (max-width: 640px) {
               .fb-inspirations-row {
                 flex-wrap: nowrap !important;
@@ -315,7 +316,7 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
                 background: var(--border-2); border-radius: 999px;
               }
             }
-          `}</style>
+          `} />
           {templates.map(t => {
             const active = t.id === lastLoadedTemplateId
             return (

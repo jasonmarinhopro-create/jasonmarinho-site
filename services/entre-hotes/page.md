@@ -22,7 +22,7 @@ Chaque question reçoit une réponse **sous 48 heures**, de Jason Marinho ou d'u
 
 ## Accès
 
-Réservé aux hôtes inscrits sur app.jasonmarinho.com (compte gratuit). Les questions et réponses ne sont pas publiées sur le web public. Des liens « Poser ma question » sont présents dans le guide LCD, les simulateurs, la page des déclarations voyageurs et les actualités.
+Réservé aux hôtes inscrits sur app.jasonmarinho.com : 2 questions par mois avec le compte gratuit (le compteur repart le 1er), sans limite en formule Standard. Les réponses ne sont jamais limitées. Les questions et réponses ne sont pas publiées sur le web public. Des liens « Poser ma question » sont présents dans le guide LCD, les simulateurs, la page des déclarations voyageurs et les actualités.
 
 ## URL
 

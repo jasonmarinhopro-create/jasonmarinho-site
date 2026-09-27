@@ -525,7 +525,7 @@ export default function ContractView({
           .contract-print p { font-size: 11px !important; line-height: 1.6 !important;
             margin: 0 0 5px !important; }
           .contract-print strong { color: #000 !important; }
-          .contract-print div[style*="height: 1px"] { background: #ddd !important; }
+          .contract-print div[style*=height\\:\\ 1px] { background: #ddd !important; }
 
           .print-signature { background: white !important; border: 1px solid #ccc !important;
             border-radius: 4px !important; padding: 14px 18px !important;

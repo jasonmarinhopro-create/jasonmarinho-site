@@ -397,7 +397,7 @@ export default function LogementsPage({ logements: initial }: Props) {
   return (
     <div style={page}>
       <style>{`
-        /* Card logement : hover lift + halo accent subtil sur l'icône */
+        /* Card logement : hover lift + halo accent subtil sur l icône */
         .jm-logement-card:hover {
           border-color: var(--border-2);
           box-shadow: var(--shadow-md);

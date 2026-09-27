@@ -966,7 +966,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
         /* Séjour row : hover lift + border highlight */
         .jm-sejour-row { transition: border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth); }
         .jm-sejour-row:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
-        /* Boutons d'action séjour : hover lift */
+        /* Boutons d action séjour : hover lift */
         .jm-sejour-action:hover { background: var(--surface-2); color: var(--text); border-color: var(--border-2); transform: translateY(-1px); }
         .sejour-actions {
           display: flex;
