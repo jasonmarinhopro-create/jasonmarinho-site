@@ -99,29 +99,32 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
 
   const authorIds = Array.from(new Set(posts.map(p => p.author_id)))
 
-  // ─── Phase 2 : queries dépendant des posts (auteurs + badges + top membres + activité) ──
+  // Un seul appel « profiles » pour les auteurs, les top contributeurs et
+  // l'activité récente (avant : 3 requêtes séparées sur la même table).
+  const profileIds = Array.from(new Set([...authorIds, ...topMemberIds, ...Array.from(activityUserIds)]))
 
+  // ─── Phase 2 : queries dépendant des posts (profils + badges + votes + aperçus) ──
+  // Dernière vague réseau : les stats pro (phase 3) réutilisent les logements
+  // déjà chargés en phase 1 (avant : une 3e vague séquentielle).
+
+  type ProfileRow = { id: string; full_name: string | null; pseudo: string | null; role: string | null; is_contributor: boolean | null; created_at: string | null; privacy_show_logements: boolean | null; privacy_show_city: boolean | null }
   const [
-    authorsResult,
+    profilesResult,
     votesResult,
     ideasResult,
     auditsResult,
     formationsResult,
     communityResult,
     userVotesResult,
-    topMembersResult,
-    activityProfilesResult,
     repliesPreviewResult,
   ] = await Promise.all([
-    authorIds.length ? supabase.from('profiles').select('id, full_name, pseudo, role, is_contributor, created_at, privacy_show_logements, privacy_show_city').in('id', authorIds) : Promise.resolve({ data: [] as { id: string; full_name: string | null; pseudo: string | null; role: string | null; is_contributor: boolean | null; created_at: string | null; privacy_show_logements: boolean | null; privacy_show_city: boolean | null }[] }),
+    profileIds.length ? supabase.from('profiles').select('id, full_name, pseudo, role, is_contributor, created_at, privacy_show_logements, privacy_show_city').in('id', profileIds) : Promise.resolve({ data: [] as ProfileRow[] }),
     authorIds.length ? supabase.from('roadmap_votes').select('user_id').in('user_id', authorIds) : Promise.resolve({ data: [] as { user_id: string }[] }),
     authorIds.length ? supabase.from('roadmap_items').select('author_id').in('author_id', authorIds) : Promise.resolve({ data: [] as { author_id: string }[] }),
     authorIds.length ? supabase.from('audit_gbp_sessions').select('user_id').in('user_id', authorIds).not('completed_at', 'is', null) : Promise.resolve({ data: [] as { user_id: string }[] }),
     authorIds.length ? supabase.from('user_formations').select('user_id').in('user_id', authorIds) : Promise.resolve({ data: [] as { user_id: string }[] }),
     authorIds.length ? supabase.from('user_community_memberships').select('user_id').in('user_id', authorIds).eq('status', 'joined') : Promise.resolve({ data: [] as { user_id: string }[] }),
     posts.length ? supabase.from('chez_nous_post_votes').select('post_id').eq('user_id', profile.userId).in('post_id', posts.map(p => p.id)) : Promise.resolve({ data: [] as { post_id: string }[] }),
-    topMemberIds.length ? supabase.from('profiles').select('id, full_name, pseudo, is_contributor').in('id', topMemberIds) : Promise.resolve({ data: [] as { id: string; full_name: string | null; pseudo: string | null; is_contributor: boolean | null }[] }),
-    activityUserIds.size ? supabase.from('profiles').select('id, full_name, pseudo').in('id', Array.from(activityUserIds)) : Promise.resolve({ data: [] as { id: string; full_name: string | null; pseudo: string | null }[] }),
     // Top 2 réponses les plus récentes par post visible, pour afficher un
     // aperçu inline sous chaque card du feed (gain UX : pas besoin de cliquer
     // pour voir si la discussion a déjà des réponses pertinentes).
@@ -130,9 +133,12 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
       : Promise.resolve({ data: [] as { id: string; post_id: string; author_id: string; body: string; created_at: string }[] }),
   ])
 
-  const authorsData = authorsResult.data ?? []
+  const profilesById = new Map<string, ProfileRow>(((profilesResult.data ?? []) as ProfileRow[]).map(p => [p.id, p]))
+  const authorsData = authorIds.map(id => profilesById.get(id)).filter((a): a is ProfileRow => !!a)
+  const topMembersData = topMemberIds.map(id => profilesById.get(id)).filter((a): a is ProfileRow => !!a)
+  const activityProfilesData = Array.from(activityUserIds).map(id => profilesById.get(id)).filter((a): a is ProfileRow => !!a)
 
-  // ─── Phase 3 : pro stats (1 seul appel pour auteurs + nouveaux membres) ──
+  // ─── Phase 3 : pro stats (calcul local, sans réseau : logements de la phase 1) ──
 
   const allProStatProfiles = [
     ...authorsData.map(a => ({
@@ -146,7 +152,11 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
       privacy_show_city: m.privacy_show_city,
     })),
   ]
-  const proStatsByUser = await getBulkProStats(supabase, allProStatProfiles)
+  // Garde-fou : Supabase plafonne une réponse à 1 000 lignes par défaut. Si la
+  // liste de la phase 1 atteint ce plafond, elle peut être tronquée : on laisse
+  // alors getBulkProStats refaire sa requête ciblée sur les seuls membres affichés.
+  const preloadedLogements = (logementsResult.data?.length ?? 0) < 1000 ? (logementsResult.data ?? []) : undefined
+  const proStatsByUser = await getBulkProStats(supabase, allProStatProfiles, preloadedLogements)
 
   // ─── Construction des structures finales ─────────────────────────────────
 
@@ -203,14 +213,14 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
 
   const topMembers = topMemberIds
     .map(id => {
-      const m = (topMembersResult.data ?? []).find(p => p.id === id)
+      const m = topMembersData.find(p => p.id === id)
       if (!m) return null
       return { id, full_name: m.full_name, pseudo: m.pseudo, is_contributor: m.is_contributor ?? false, score: activityScore[id] ?? 0 }
     })
     .filter((m): m is NonNullable<typeof m> => m !== null)
 
   const activityProfiles: Record<string, { full_name: string | null; pseudo: string | null }> = {}
-  ;(activityProfilesResult.data ?? []).forEach(p => {
+  activityProfilesData.forEach(p => {
     activityProfiles[p.id] = { full_name: p.full_name, pseudo: p.pseudo }
   })
 
