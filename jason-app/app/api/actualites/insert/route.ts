@@ -1,5 +1,6 @@
 import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
+import { findSimilarActualite } from '@/lib/actualites/dedup'
 
 const VALID_CATEGORIES = new Set([
   'reglementation', 'fiscalite', 'plateformes', 'marche', 'outils', 'juridique', 'driing',
@@ -23,7 +24,16 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = serviceClient()
-  const results: { title: string; status: 'inserted' | 'duplicate' | 'error'; error?: string }[] = []
+  const results: { title: string; status: 'inserted' | 'duplicate' | 'error'; error?: string; similar_to?: string }[] = []
+
+  // Actualités des 60 derniers jours (publiées ou masquées : une actu masquée
+  // comme doublon doit continuer à bloquer ses reformulations).
+  const since = new Date(Date.now() - 60 * 86_400_000).toISOString()
+  const { data: recent } = await supabase
+    .from('actualites')
+    .select('title, summary, source_url')
+    .gte('created_at', since)
+  const known: { title: string; summary: string; source_url: string | null }[] = recent ?? []
 
   for (const item of items) {
     if (
@@ -34,7 +44,7 @@ export async function POST(req: NextRequest) {
       continue
     }
 
-    const { title, summary, source_url, category, published_at, is_published = true, read_time_minutes } =
+    const { title, summary, source_url, category, published_at, is_published = true, read_time_minutes, is_update } =
       item as Record<string, unknown>
 
     if (!VALID_CATEGORIES.has(String(category))) {
@@ -42,7 +52,7 @@ export async function POST(req: NextRequest) {
       continue
     }
 
-    // Deduplication
+    // Déduplication 1 : titre exact, sur tout l'historique.
     const { data: existing } = await supabase
       .from('actualites')
       .select('id')
@@ -51,6 +61,17 @@ export async function POST(req: NextRequest) {
 
     if (existing) {
       results.push({ title: String(title), status: 'duplicate' })
+      continue
+    }
+
+    // Déduplication 2 : même sujet reformulé dans les 60 derniers jours
+    // (lib/actualites/dedup.ts). `is_update: true` laisse passer une vraie
+    // évolution (nouvelle date, décision publiée), le titre doit alors dire
+    // ce qui change.
+    const candidate = { title: String(title), summary: String(summary), source_url: source_url ? String(source_url) : null }
+    const similar = is_update === true ? null : findSimilarActualite(candidate, known)
+    if (similar) {
+      results.push({ title: String(title), status: 'duplicate', similar_to: similar.title })
       continue
     }
 
@@ -68,6 +89,7 @@ export async function POST(req: NextRequest) {
       results.push({ title: String(title), status: 'error', error: error.message })
     } else {
       results.push({ title: String(title), status: 'inserted' })
+      known.push(candidate) // un lot ne peut pas contenir deux fois le même sujet
     }
   }
 
