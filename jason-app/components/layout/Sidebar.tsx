@@ -40,12 +40,11 @@ type NavItemDef = {
   // s'éteint dès qu'on va sur un onglet frère (Encaissements, Performances…).
   activeMatch?: string[]
 }
-// Sept. 2026 (retour de Jason sur le menu) :
-// - « Mes logements » revient en 2e position : c'est là qu'on règle les
-//   calendriers Airbnb/Booking, l'IBAN, les clauses de contrat ; il n'était
-//   accessible que par le sélecteur du bas.
-// - « Actualités » passe dans « Faire grandir mon activité » (c'est de la
-//   veille, pas une tâche du quotidien), avec son point rouge « du neuf ».
+// Sept. 2026 (retours de Jason sur le menu) :
+// - « Actualités » reste en 2e position : la veille est un axe fort, Jason
+//   la veut visible en haut (essai de la déplacer plus bas annulé).
+// - Pas d'entrée « Mes logements » : on y accède par le sélecteur de
+//   logement en bas de la sidebar (« Gérer mes logements »).
 // - « Messages » → « Modèles de messages » : ce sont des modèles à copier,
 //   pas une boîte de réception.
 // - Le premier bloc a un titre, comme le second.
@@ -54,7 +53,9 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
     label: 'Au quotidien',
     items: [
       { href: '/dashboard',             label: 'Accueil',           icon: HouseSimple },
-      { href: '/dashboard/logements',   label: 'Mes logements',     icon: HouseLine },
+      // Actualités en 2e position : la veille LCD est un axe fort de la
+      // marque — visible dès l'ouverture, avec le point rouge « du neuf ».
+      { href: '/dashboard/actualites',  label: 'Actualités',        icon: Newspaper, pulseIf: 'hasNewActualites' },
       { href: '/dashboard/calendrier',  label: 'Calendrier',        icon: CalendarBlank },
       // Mes reservations : page dediee avec KPIs, filtres, cartes/tableau,
       // drawer detail voyageur + alertes contextuelles. Detachee du Calendrier
@@ -75,9 +76,6 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
   {
     label: 'Faire grandir mon activité',
     items: [
-      // Actualités : veille LCD, axe fort de la marque. En tête de ce bloc,
-      // avec le point rouge « du neuf ».
-      { href: '/dashboard/actualites',  label: 'Actualités',        icon: Newspaper, pulseIf: 'hasNewActualites' },
       // Outils & calculs (Étape 5) : hub avec 4 cartes vers les outils
       // utilitaires (Simulateurs, Calculateurs, Audit GBP, QR & Affiches).
       // Les URLs individuelles restent accessibles directement.
