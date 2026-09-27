@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { icalOccupationsForMenage, normalizeIcalUrl, addDaysIso } from './ical-occupations'
+import { icalOccupationsForMenage, normalizeIcalUrl, addDaysIso, isBookingFeedUrl } from './ical-occupations'
 import { computeMenageSlots } from './compute'
 
 const logements = [
@@ -31,6 +31,22 @@ describe('icalOccupationsForMenage', () => {
       { id: 'e5', feed_id: 'f1', title: 'Reserved', description: null, start_date: '2026-10-01', end_date: null },
     ])
     expect(occ).toEqual([])
+  })
+
+  it('Booking.com : un « CLOSED - Not available » court compte comme réservation, pas un long', () => {
+    const occ = icalOccupationsForMenage(logements, feeds, [
+      { id: 'b1', feed_id: 'f2', title: 'CLOSED - Not available', description: null, start_date: '2026-10-10', end_date: '2026-10-12' },
+      { id: 'b2', feed_id: 'f2', title: 'CLOSED - Not available', description: null, start_date: '2026-11-01', end_date: '2027-02-28' },
+    ])
+    expect(occ.map(o => o.sourceId)).toEqual(['ical-b1'])
+    expect(occ[0].dateDepart).toBe('2026-10-13')
+  })
+
+  it('reconnaît les URL Booking.com (admin, ical, webcal) et pas les autres', () => {
+    expect(isBookingFeedUrl('https://admin.booking.com/hotel/hoteladmin/ical.html?t=abc')).toBe(true)
+    expect(isBookingFeedUrl('webcal://ical.booking.com/v1/export?t=abc')).toBe(true)
+    expect(isBookingFeedUrl('https://www.airbnb.fr/calendar/ical/1.ics')).toBe(false)
+    expect(isBookingFeedUrl('https://notbooking.com.evil.io/x')).toBe(false)
   })
 
   it('passe de la dernière nuit (stockée en base) au jour du départ, y compris en fin de mois', () => {

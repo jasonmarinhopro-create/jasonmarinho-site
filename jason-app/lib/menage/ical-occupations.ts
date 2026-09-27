@@ -8,7 +8,13 @@
 // à une fiche logement est ignoré (impossible de savoir quel logement nettoyer).
 //
 // Les blocages (« Not available », « Closed »…) sont ignorés, comme partout
-// ailleurs dans l'app (lib/ical/blocked.ts).
+// ailleurs dans l'app (lib/ical/blocked.ts), SAUF sur les flux Booking.com :
+// Booking exporte ses vraies réservations sous le titre « CLOSED - Not
+// available », indiscernables d'un blocage manuel. Règle retenue (sept. 2026) :
+// sur un flux Booking, un « CLOSED » de 30 nuits ou moins compte comme une
+// réservation (un ménage est prévu au départ) ; au-delà, c'est une fermeture
+// du logement. Contrepartie assumée : un blocage manuel court crée un créneau
+// ménage en trop, que l'hôte peut supprimer.
 //
 // ATTENTION dates : parseIcalText (lib/ical/sync.ts) stocke end_date comme la
 // DERNIÈRE NUIT (DTEND iCal exclusif moins 1 jour), alors que le calcul des
@@ -41,6 +47,21 @@ export function addDaysIso(date: string, n: number): string {
   return t.toISOString().slice(0, 10)
 }
 
+export const BOOKING_MAX_NIGHTS_AS_RESERVATION = 30
+
+export function isBookingFeedUrl(u: string | null | undefined): boolean {
+  try {
+    const host = new URL(normalizeIcalUrl(u)).hostname.toLowerCase()
+    return host === 'booking.com' || host.endsWith('.booking.com')
+  } catch { return false }
+}
+
+function nights(start: string, lastNight: string): number {
+  const a = Date.UTC(+start.slice(0, 4), +start.slice(5, 7) - 1, +start.slice(8, 10))
+  const b = Date.UTC(+lastNight.slice(0, 4), +lastNight.slice(5, 7) - 1, +lastNight.slice(8, 10))
+  return Math.round((b - a) / 86_400_000) + 1
+}
+
 export function normalizeIcalUrl(u: string | null | undefined): string {
   return (u ?? '').trim().replace(/^webcal:\/\//i, 'https://').replace(/\/+$/, '')
 }
@@ -59,16 +80,21 @@ export function icalOccupationsForMenage(
     }
   }
   const nomByFeed = new Map<string, string>()
+  const bookingFeeds = new Set<string>()
   for (const f of feeds) {
     const nom = nomByUrl.get(normalizeIcalUrl(f.url))
     if (nom) nomByFeed.set(f.id, nom)
+    if (isBookingFeedUrl(f.url)) bookingFeeds.add(f.id)
   }
 
   const out: Occupation[] = []
   for (const e of events) {
     const nom = nomByFeed.get(e.feed_id)
     if (!nom || !e.start_date || !e.end_date) continue
-    if (isBlockedIcalEvent(e.title, e.description)) continue
+    if (isBlockedIcalEvent(e.title, e.description)) {
+      const bookingResa = bookingFeeds.has(e.feed_id) && nights(e.start_date, e.end_date) <= BOOKING_MAX_NIGHTS_AS_RESERVATION
+      if (!bookingResa) continue
+    }
     out.push({
       sourceId: `ical-${e.id}`,
       source: 'ical',
