@@ -279,6 +279,8 @@ export default function RevenusView({
   // le bouton "Annuler" sur la fiche voyageur, accessible aussi ici pour ne
   // pas devoir changer de page. tx.id est préfixé "sejour:" dans allTx.
   function handleCancelSejourEntry(txId: string) {
+    // Annule le séjour lui-même (calendrier, ménage, CA), pas seulement la ligne
+    if (!confirm('Annuler ce séjour ? Il sortira du calendrier, du planning ménage et de tes revenus. Il restera visible (annulé) sur la fiche du voyageur.')) return
     const realId = txId.replace(/^sejour:/, '')
     const removed = entries.find(e => e.id === txId)
     setEntries(prev => prev.filter(e => e.id !== txId))

@@ -16,6 +16,7 @@ import MesPlateformesWidget from './MesPlateformesWidget'
 import TodayBoard, { type TodayItem, type TodayAction } from './TodayBoard'
 import { loadHostMenageSlots, menageKey } from '@/lib/menage/host-slots'
 import { contractTodos } from '@/lib/contracts/todo'
+import { sejoursSansContrat } from '@/lib/finances/dedup'
 import DeclarationsWidget from '@/components/dashboard/DeclarationsWidget'
 import OnboardingTour from './OnboardingTour'
 import { icalReservationsForDisplay } from '@/lib/ical/display'
@@ -100,7 +101,7 @@ export default async function DashboardPage() {
   const results = await Promise.allSettled([
     supabase
       .from('contracts')
-      .select('id, logement_nom, date_arrivee, date_depart, statut, checklist_status, montant_loyer, stripe_payment_status, stripe_payment_enabled, stripe_deposit_status, locataire_prenom, locataire_nom')
+      .select('id, logement_nom, date_arrivee, date_depart, statut, checklist_status, montant_loyer, stripe_payment_status, stripe_payment_enabled, stripe_deposit_status, locataire_prenom, locataire_nom, sejour_id')
       .eq('user_id', userId)
       .neq('statut', 'annule')
       .order('date_arrivee'),
@@ -159,7 +160,7 @@ export default async function DashboardPage() {
     // l'objectif reste à 0 alors que /revenus affiche le bon total.
     supabase
       .from('sejours')
-      .select('montant, date_arrivee')
+      .select('id, montant, date_arrivee')
       .eq('user_id', userId)
       .is('annule_at', null)
       .not('montant', 'is', null)
@@ -246,7 +247,7 @@ export default async function DashboardPage() {
   const { data: completionLogLearn }  = pick<{ data: { completed_at: string }[] | null }>(8, { data: [] })
   const { data: cnPosts }         = pick<{ data: any[] | null }>(9, { data: [] })
   const { count: cnTotal }        = pick<{ count: number | null }>(10, { count: 0 })
-  const { data: sejoursYearAll }  = pick<{ data: { montant: number | null; date_arrivee: string }[] | null }>(11, { data: [] })
+  const { data: sejoursYearRaw }  = pick<{ data: { id: string; montant: number | null; date_arrivee: string }[] | null }>(11, { data: [] })
   const { data: platformLinksRaw } = pick<{ data: {
     inbox_airbnb_url: string | null
     inbox_booking_url: string | null
@@ -274,6 +275,10 @@ export default async function DashboardPage() {
   const { data: icalTokenRow }   = pick<{ data: { ical_token: string | null } | null }>(18, { data: null })
   const { data: icalFeedsRaw }   = pick<{ data: Array<{ id: string; url: string | null; name: string | null }> | null }>(19, { data: [] })
   const { data: logementsIcal }  = pick<{ data: Array<{ nom: string | null; ical_airbnb: string | null; ical_booking: string | null; ical_vrbo: string | null; ical_autre: string | null }> | null }>(20, { data: [] })
+
+  // Séjours liés à un contrat actif : déjà comptés par le loyer du contrat
+  // (sinon CA du mois, cumul annuel et prévisionnel comptés deux fois).
+  const sejoursYearAll = sejoursSansContrat(sejoursYearRaw ?? [], contracts ?? [])
 
   const latestNews = allCachedNews.slice(0, 3)
   // Nombre d'actus publiées depuis la dernière visite de la page Actualités,

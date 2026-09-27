@@ -202,6 +202,11 @@ import { House } from '@phosphor-icons/react'
 - **Nouvel hôte** (ni logement ni réservation) : l'accueil masque « À faire aujourd'hui », les prochaines arrivées et l'état des lieux (que des zéros) ; la checklist de démarrage suffit.
 - Limite connue, non traitée : une réservation Airbnb/Booking importée ne porte ni nom ni nationalité, donc aucune déclaration (SIBA, fiche de police) n'est créée tant que l'hôte n'a pas saisi le voyageur.
 
+## Revenus : un séjour lié à un contrat compté une seule fois (sept. 2026)
+
+- `lib/finances/dedup.ts` (`sejoursSansContrat`, testé) : un séjour relié à un contrat actif (`contracts.sejour_id`, statut ≠ `annule`) est retiré des revenus, la ligne du contrat le représente (statut de paiement + locataire). Appliqué au journal Encaissements et à ses totaux (`app/dashboard/revenus/page.tsx`, réutilisé par `/dashboard/finances/revenus`) et à l'accueil (CA du mois, cumul annuel, prévisionnel). Avant : le même loyer apparaissait deux fois (ligne « Loyer » du contrat + ligne « Loyer · Séjour »). `performances/page.tsx` faisait déjà la déduplication inverse (garde le séjour, ignore le contrat lié) : les deux vues comptent une fois, chacune avec sa ligne de référence.
+- Corbeilles du journal : contrat (`cancelContractRevenus`) et séjour (`cancelSejourRevenus`) demandent une confirmation, les deux annulent l'objet lui-même, pas seulement la ligne.
+
 ## Espace équipe de ménage : « Mes ménages » (sept. 2026)
 
 - **Principe** : aucun compte partagé. L'hôte envoie son lien de planning (`/api/calendar/menage-feed?token=<profiles.ical_token>`, bouton « Copier le lien du planning » / « Générer le lien » dans `MenageExportModal.tsx`). L'équipe le colle dans `/dashboard/ma-fiche-menage/planning` (`addPlanningLink`, token extrait par `lib/menage/share-link.ts`) → ligne `menage_links` (migration `20260927_109`). Si l'hôte régénère son token, `host_token` ne correspond plus : accès expiré automatiquement (affiché « Lien expiré »).

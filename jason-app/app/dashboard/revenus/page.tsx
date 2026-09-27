@@ -1,5 +1,6 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
+import { sejoursSansContrat } from '@/lib/finances/dedup'
 import RevenusView from './RevenusView'
 import PlanGate from '@/components/ui/PlanGate'
 import OnboardingTour, { REVENUS_STEPS } from '../OnboardingTour'
@@ -35,7 +36,7 @@ export default async function RevenusPage() {
   ] = await Promise.all([
     supabase
       .from('contracts')
-      .select('id, montant_loyer, stripe_payment_status, stripe_payment_enabled, date_arrivee, date_depart, logement_nom, logement_id, statut, locataire_prenom, locataire_nom')
+      .select('id, montant_loyer, stripe_payment_status, stripe_payment_enabled, date_arrivee, date_depart, logement_nom, logement_id, statut, locataire_prenom, locataire_nom, sejour_id')
       .eq('user_id', userId)
       .neq('statut', 'annule')
       .order('date_arrivee', { ascending: false }),
@@ -68,7 +69,8 @@ export default async function RevenusPage() {
       .order('date_arrivee', { ascending: false }),
   ])
 
-  const sejourEntries = (sejours ?? []).map(s => {
+  // Séjour lié à un contrat actif : déjà compté par la ligne du contrat
+  const sejourEntries = sejoursSansContrat(sejours ?? [], contracts ?? []).map(s => {
     const commission = (s as any).commission_montant ?? 0
     const plateforme = (s as any).contrat_plateforme ?? null
     const platformLabel = plateforme ? ` · ${plateforme}` : ' · en direct'
