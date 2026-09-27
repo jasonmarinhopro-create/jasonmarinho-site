@@ -7,7 +7,7 @@ import Select from '@/components/ui/Select'
 import { useRouter } from 'next/navigation'
 import {
   Plus, MagnifyingGlass, Warning,
-  X, User, Envelope, Phone, Note,
+  X, User, Envelope, Phone, Note, Trash, CalendarBlank,
   Users, ShieldCheck, CurrencyEur, Star, SquaresFour, Rows, ProhibitInset, Faders, IdentificationCard,
 } from '@phosphor-icons/react/dist/ssr'
 import { addVoyageur, updateVoyageur, deleteVoyageur, checkVoyageurSignale, type VoyageurData } from './actions'
@@ -20,22 +20,35 @@ type Voyageur = {
   tags: string[] | null; source: string | null; bloque: boolean | null
   id_verifie: boolean | null; note_privee: number | null
   checkin_expected_count: number | null
+  nationalite: string | null
   created_at: string; updated_at: string
   sejours: Sejour[]; is_flagged: boolean
 }
 
 function avatarColor(name: string) {
-  const palette = ['#2D9A7B', '#4F7DB8', '#9B5E8C', '#D4875A', '#6B8E6B', '#8B6D5E']
+  // Tons chauds et verts uniquement (pas de bleu ni de violet sur les pages hôte)
+  const palette = ['#2D9A7B', '#3F7D5C', '#B7791F', '#D4875A', '#6B8E6B', '#8B6D5E']
   let h = 0
   for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h)
   return palette[Math.abs(h) % palette.length]
 }
 
-function lastStay(sejours: Sejour[]): string | null {
+function fmtDay(iso: string) {
+  return new Date(iso.slice(0, 10) + 'T12:00:00Z').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
+}
+
+/** Prochain séjour (en cours ou à venir), sinon le dernier passé */
+function stayInfo(sejours: Sejour[], today: string): { label: string; date: string; upcoming: boolean } | null {
   if (!sejours.length) return null
-  const sorted = [...sejours].sort((a, b) => b.date_arrivee.localeCompare(a.date_arrivee))
-  const d = new Date(sorted[0].date_arrivee)
-  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
+  const next = sejours.filter(sj => sj.date_depart >= today).sort((a, b) => a.date_arrivee.localeCompare(b.date_arrivee))[0]
+  if (next) return { label: next.date_arrivee <= today ? 'Départ (sur place)' : 'Arrivée', date: next.date_arrivee <= today ? next.date_depart : next.date_arrivee, upcoming: true }
+  const last = [...sejours].sort((a, b) => b.date_arrivee.localeCompare(a.date_arrivee))[0]
+  return { label: 'Dernier séjour', date: last.date_arrivee, upcoming: false }
+}
+
+/** Séjour à venir mais nationalité inconnue : aucune déclaration ne peut être créée */
+function missingNationality(v: Voyageur, today: string) {
+  return !v.nationalite && v.sejours.some(sj => sj.date_depart >= today)
 }
 
 const COUNTRIES = NATIONALITES
@@ -46,28 +59,31 @@ const EMPTY_FORM: VoyageurData = { prenom: '', nom: '', email: '', telephone: ''
 // L'hôte choisit lesquels afficher (persisté en localStorage). « Tous » est
 // toujours présent.
 
-type FilterKey = 'a-venir' | 'sur-place' | 'recurrents' | 'fideles' | 'signales' | 'bloques' | 'sans-contact'
+type FilterKey = 'a-venir' | 'sur-place' | 'sans-nationalite' | 'recurrents' | 'fideles' | 'signales' | 'bloques' | 'sans-contact'
 
 const FILTER_DEFS: { key: FilterKey; label: string; desc: string; test: (v: Voyageur, today: string) => boolean }[] = [
   { key: 'a-venir',      label: 'À venir',      desc: 'Ont un séjour à venir',      test: (v, t) => v.sejours.some(sj => sj.date_arrivee >= t) },
   { key: 'sur-place',    label: 'Sur place',    desc: 'Actuellement en séjour',     test: (v, t) => v.sejours.some(sj => sj.date_arrivee <= t && sj.date_depart >= t) },
+  { key: 'sans-nationalite', label: 'Nationalité manquante', desc: 'Séjour à venir sans nationalité : pas de déclaration possible', test: (v, t) => missingNationality(v, t) },
   { key: 'recurrents',   label: 'Récurrents',   desc: '2 séjours ou plus',          test: v => v.sejours.length >= 2 },
   { key: 'fideles',      label: 'Fidèles',      desc: '4 séjours ou plus',          test: v => v.sejours.length >= 4 },
   { key: 'signales',     label: 'Signalés',     desc: 'Signalés par un autre hôte', test: v => v.is_flagged },
-  { key: 'bloques',      label: 'Bloqués',      desc: 'Que vous avez bloqués',      test: v => v.bloque === true },
+  { key: 'bloques',      label: 'Bloqués',      desc: 'Que tu as bloqués',          test: v => v.bloque === true },
   { key: 'sans-contact', label: 'Sans contact', desc: 'Ni email ni téléphone',      test: v => !v.email && !v.telephone },
 ]
 
-const DEFAULT_VISIBLE_FILTERS: FilterKey[] = ['a-venir', 'recurrents', 'signales', 'bloques']
+const DEFAULT_VISIBLE_FILTERS: FilterKey[] = ['a-venir', 'sans-nationalite', 'recurrents', 'signales']
 const FILTERS_LS_KEY = 'jm-voyageurs-filters'
 
 interface Props {
   voyageurs: Voyageur[]
   tableReady: boolean
   pendingDeclarations?: number
+  /** 'YYYY-MM-DD' à Paris, calculé côté serveur (évite l'écart serveur / navigateur) */
+  today: string
 }
 
-export default function VoyageursView({ voyageurs, tableReady, pendingDeclarations = 0 }: Props) {
+export default function VoyageursView({ voyageurs, tableReady, pendingDeclarations = 0, today }: Props) {
   const router = useRouter()
   // Les contrats ont leur propre page (/dashboard/contrats, entrée
   // « Contrats & paiements » du menu). Les anciens liens #contrats y mènent.
@@ -124,7 +140,7 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
     if (!next.includes(key) && filter === key) setFilter('all')
   }
 
-  const todayISO = new Date().toISOString().slice(0, 10)
+  const todayISO = today
 
   // Helper : CA d'un voyageur
   const caOf = (v: Voyageur) => v.sejours.reduce((sum, s) => sum + (s.montant ?? 0), 0)
@@ -180,7 +196,7 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
 
   function openEdit(v: Voyageur, e: React.MouseEvent) {
     e.stopPropagation()
-    setForm({ prenom: v.prenom, nom: v.nom, email: v.email ?? '', telephone: v.telephone ?? '', notes: v.notes ?? '', nationalite: (v as any).nationalite ?? null, checkin_expected_count: v.checkin_expected_count ?? null })
+    setForm({ prenom: v.prenom, nom: v.nom, email: v.email ?? '', telephone: v.telephone ?? '', notes: v.notes ?? '', nationalite: v.nationalite ?? null, checkin_expected_count: v.checkin_expected_count ?? null })
     setFormError('')
     setEditTarget(v)
     setModal('edit')
@@ -215,6 +231,9 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
         email: form.email?.trim() || undefined,
         telephone: form.telephone?.trim() || undefined,
         notes: form.notes?.trim() || undefined,
+        // Oubliée avant sept. 2026 : la nationalité choisie ici n'était jamais
+        // enregistrée, donc aucune déclaration (fiche de police, SIBA) créée
+        nationalite: form.nationalite ?? null,
         checkin_expected_count: form.checkin_expected_count ?? null,
       }
       const res = modal === 'edit' && editTarget
@@ -226,9 +245,14 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
     })
   }
 
-  async function handleDelete(id: string, e: React.MouseEvent) {
+  async function handleDelete(v: Voyageur, e: React.MouseEvent) {
     e.stopPropagation()
-    if (!confirm('Supprimer ce voyageur et tous ses séjours ?')) return
+    const n = v.sejours.length
+    const msg = n > 0
+      ? `Supprimer ${v.prenom} ${v.nom} ? Ses ${n} séjour${n > 1 ? 's' : ''} seront aussi supprimé${n > 1 ? 's' : ''}, avec leurs montants dans tes revenus. C'est définitif.`
+      : `Supprimer ${v.prenom} ${v.nom} ? C'est définitif.`
+    if (!confirm(msg)) return
+    const id = v.id
     startTransition(async () => {
       await deleteVoyageur(id)
     })
@@ -242,14 +266,12 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
         <div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' as const }}>
             <h2 style={s.pageTitle}>
-              Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Voyageurs</em>
+              Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>voyageurs</em>
             </h2>
             <TourTrigger />
           </div>
           <p style={s.pageDesc}>
-            {voyageurs.length === 0
-              ? 'Aucun voyageur enregistré'
-              : `${voyageurs.length} voyageur${voyageurs.length > 1 ? 's' : ''}`}
+            Ton carnet : contacts, séjours et nationalité (indispensable pour les déclarations). Clique un voyageur pour ses séjours, contrats et paiements.
           </p>
         </div>
         {tableReady && (
@@ -264,7 +286,7 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
             </Link>
             <button onClick={openAdd} className="btn-primary" style={{ flexShrink: 0 }} data-tour="voyageur-create">
               <Plus size={16} weight="bold" />
-              Ajouter
+              Ajouter un voyageur
             </button>
           </div>
         )}
@@ -285,8 +307,8 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
             </div>
           </div>
           <div style={s.statCard}>
-            <span style={{ ...s.statIcon, background: 'rgba(96,165,250,0.10)' }}>
-              <Star size={14} weight="fill" color="#60a5fa" />
+            <span style={{ ...s.statIcon, background: 'rgba(255,213,107,0.16)' }}>
+              <Star size={14} weight="fill" color="#B7791F" />
             </span>
             <div>
               <div style={s.globalStatValue}>{globalStats.recurrents}</div>
@@ -294,8 +316,8 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
             </div>
           </div>
           <div style={s.statCard}>
-            <span style={{ ...s.statIcon, background: 'rgba(16,185,129,0.10)' }}>
-              <CurrencyEur size={14} weight="fill" color="#10b981" />
+            <span style={{ ...s.statIcon, background: 'var(--accent-bg)' }}>
+              <CurrencyEur size={14} weight="fill" color="var(--accent-text)" />
             </span>
             <div>
               <div style={s.globalStatValue}>{globalStats.caTotal.toLocaleString('fr-FR')} €</div>
@@ -422,7 +444,7 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
             <div style={s.emptyState} className="fade-up glass-card">
               <User size={40} color="var(--text-muted)" />
               <p style={s.emptyTitle}>Aucun voyageur pour l&apos;instant</p>
-              <p style={s.emptyDesc}>Ajoutez vos premiers voyageurs pour suivre leurs coordonnées et leurs séjours.</p>
+              <p style={s.emptyDesc}>Ajoute tes voyageurs pour garder leurs coordonnées, suivre leurs séjours et préparer les déclarations. Une réservation Airbnb ou Booking synchronisée ? Ajoute son voyageur depuis Mes réservations.</p>
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '8px' }}>
                 <button onClick={openAdd} className="btn-primary">
                   <Plus size={15} weight="bold" />
@@ -441,7 +463,10 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
           {/* No search results */}
           {voyageurs.length > 0 && filtered.length === 0 && (
             <div style={s.emptyState} className="fade-up">
-              <p style={s.emptyTitle}>Aucun résultat pour &laquo; {search} &raquo;</p>
+              <p style={s.emptyTitle}>
+                {search ? <>Aucun résultat pour &laquo;&nbsp;{search}&nbsp;&raquo;</> : 'Aucun voyageur dans ce filtre'}
+              </p>
+              <button onClick={() => { setSearch(''); setFilter('all') }} className="btn-ghost" style={{ fontSize: '13px' }}>Voir tous les voyageurs</button>
             </div>
           )}
 
@@ -454,6 +479,8 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
                 const ca = caOf(v)
                 const recurrent = v.sejours.length >= 2
                 const fidele = v.sejours.length >= 4
+                const noNat = missingNationality(v, todayISO)
+                const stay = stayInfo(v.sejours, todayISO)
                 return (
                   <div
                     key={v.id}
@@ -466,8 +493,8 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
                       <button onClick={e => openEdit(v, e)} style={s.actionBtn} title="Modifier">
                         <Note size={14} />
                       </button>
-                      <button onClick={e => handleDelete(v.id, e)} style={s.actionBtn} title="Supprimer">
-                        <X size={14} />
+                      <button onClick={e => handleDelete(v, e)} style={s.actionBtn} title="Supprimer" aria-label="Supprimer">
+                        <Trash size={14} />
                       </button>
                     </div>
 
@@ -477,15 +504,24 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
                         <span style={s.tileAvatarText}>{initials}</span>
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={s.tileName}>{v.prenom} {v.nom}</div>
+                        <div style={s.tileName}>
+                          {v.prenom} {v.nom}
+                          {v.nationalite && <span style={s.natCode} title={COUNTRIES.find(c => c.code === v.nationalite)?.name ?? v.nationalite}>{v.nationalite}</span>}
+                        </div>
                         {v.email && <div style={s.tileMeta}>{v.email}</div>}
                         {v.telephone && <div style={s.tileMeta}>{v.telephone}</div>}
                       </div>
                     </div>
 
                     {/* Badges */}
-                    {(v.is_flagged || v.bloque || fidele || recurrent || (v.tags && v.tags.length > 0)) && (
+                    {(v.is_flagged || v.bloque || fidele || recurrent || noNat || (v.tags && v.tags.length > 0)) && (
                       <div style={s.tileBadges}>
+                        {noNat && (
+                          <span style={s.natBadge} title="Séjour à venir : renseigne la nationalité pour créer la déclaration (fiche de police, SIBA)">
+                            <IdentificationCard size={11} weight="fill" />
+                            Nationalité manquante
+                          </span>
+                        )}
                         {v.is_flagged && (
                           <span style={s.flagBadge}>
                             <Warning size={11} weight="fill" />
@@ -504,7 +540,7 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
                           </span>
                         )}
                         {!v.is_flagged && !v.bloque && !fidele && recurrent && (
-                          <span style={{ ...s.flagBadge, background: 'rgba(96,165,250,0.10)', borderColor: 'rgba(96,165,250,0.30)', color: 'var(--info)' }}>
+                          <span style={{ ...s.flagBadge, background: 'var(--accent-bg)', borderColor: 'var(--accent-border)', color: 'var(--accent-text)' }}>
                             Récurrent
                           </span>
                         )}
@@ -522,8 +558,16 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
                       </div>
                       {ca > 0 && (
                         <div style={s.tileStat}>
-                          <span style={{ ...s.tileStatVal, color: 'var(--success-1)' }}>{ca.toLocaleString('fr-FR')} €</span>
+                          <span style={{ ...s.tileStatVal, color: 'var(--accent-text)' }}>{ca.toLocaleString('fr-FR')} €</span>
                           <span style={s.tileStatLabel}>CA</span>
+                        </div>
+                      )}
+                      {stay && (
+                        <div style={{ ...s.tileStat, marginLeft: 'auto', alignItems: 'flex-end' as const }}>
+                          <span style={{ ...s.tileStatVal, fontSize: '13px', color: stay.upcoming ? 'var(--accent-text)' : 'var(--text-2)' }}>
+                            <CalendarBlank size={12} weight="bold" style={{ verticalAlign: '-1px', marginRight: '4px' }} />{fmtDay(stay.date)}
+                          </span>
+                          <span style={s.tileStatLabel}>{stay.label}</span>
                         </div>
                       )}
                     </div>
@@ -591,18 +635,23 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
                               Fidèle
                             </span>
                           ) : v.sejours.length >= 2 ? (
-                            <span style={{ ...s.flagBadge, background: 'rgba(96,165,250,0.10)', borderColor: 'rgba(96,165,250,0.30)', color: 'var(--info)' }}>
+                            <span style={{ ...s.flagBadge, background: 'var(--accent-bg)', borderColor: 'var(--accent-border)', color: 'var(--accent-text)' }}>
                               Récurrent
                             </span>
                           ) : <span style={{ color: 'var(--text-muted)' }}>Nouveau</span>}
+                          {missingNationality(v, todayISO) && (
+                            <span style={{ ...s.natBadge, marginLeft: '6px' }} title="Séjour à venir : renseigne la nationalité pour la déclaration">
+                              <IdentificationCard size={11} weight="fill" /> Nationalité
+                            </span>
+                          )}
                         </td>
                         <td style={s.tableTd} onClick={e => e.stopPropagation()}>
                           <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>
                             <button onClick={e => openEdit(v, e)} style={s.actionBtn} title="Modifier">
                               <Note size={14} />
                             </button>
-                            <button onClick={e => handleDelete(v.id, e)} style={s.actionBtn} title="Supprimer">
-                              <X size={14} />
+                            <button onClick={e => handleDelete(v, e)} style={s.actionBtn} title="Supprimer" aria-label="Supprimer">
+                              <Trash size={14} />
                             </button>
                           </div>
                         </td>
@@ -917,7 +966,7 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)',
     fontWeight: 400, color: 'var(--text)', marginBottom: '4px',
   },
-  pageDesc: { fontSize: '14px', fontWeight: 300, color: 'var(--text-3)' },
+  pageDesc: { fontSize: '14px', fontWeight: 400, color: 'var(--text-3)', maxWidth: '640px', lineHeight: 1.6, margin: 0 },
 
   setupBanner: {
     display: 'flex', alignItems: 'center', gap: '10px',
@@ -1210,6 +1259,19 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   // Tag chip dans la liste
+  natBadge: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    background: 'rgba(217,119,6,0.10)', color: '#b45309',
+    border: '1px solid rgba(217,119,6,0.30)',
+    borderRadius: '100px', padding: '2px 7px',
+    fontSize: '11px', fontWeight: 600,
+  },
+  natCode: {
+    display: 'inline-block', marginLeft: '7px', verticalAlign: '1px',
+    fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px', fontFamily: 'monospace',
+    padding: '1px 5px', borderRadius: '4px',
+    background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)',
+  },
   tagChip: {
     display: 'inline-block',
     fontSize: '10px', fontWeight: 600,

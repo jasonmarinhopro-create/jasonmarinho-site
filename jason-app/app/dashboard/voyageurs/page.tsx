@@ -1,6 +1,7 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import VoyageursView from './VoyageursView'
+import { parisToday } from '@/lib/stripe/deposit-window'
 import OnboardingTour, { VOYAGEURS_STEPS } from '../OnboardingTour'
 
 // Cette page et ses server actions (addVoyageur, checkVoyageurSignale…)
@@ -19,7 +20,7 @@ export default async function VoyageursPage() {
   const [voyageursRes, declRes] = await Promise.all([
     supabase
       .from('voyageurs')
-      .select('id, prenom, nom, email, telephone, notes, tags, source, bloque, id_verifie, note_privee, checkin_expected_count, created_at, updated_at, sejours(id, date_arrivee, date_depart, montant)')
+      .select('id, prenom, nom, email, telephone, notes, tags, source, bloque, id_verifie, note_privee, checkin_expected_count, nationalite, created_at, updated_at, sejours(id, date_arrivee, date_depart, montant)')
       .eq('user_id', profile.userId)
       // Filtre la relation IMBRIQUÉE : les séjours annulés sortent des
       // compteurs de la liste (nb séjours, CA cumulé, filtre « À venir »)
@@ -44,6 +45,7 @@ export default async function VoyageursPage() {
     tags: string[] | null; source: string | null; bloque: boolean | null
     id_verifie: boolean | null; note_privee: number | null
     checkin_expected_count: number | null
+    nationalite: string | null
     created_at: string; updated_at: string
     sejours: Array<{ id: string; date_arrivee: string; date_depart: string; montant: number | null }>
     is_flagged: boolean
@@ -77,7 +79,7 @@ export default async function VoyageursPage() {
         storageScope="voyageurs"
         initiallyDone={profile.onboarding_completed_steps.includes('tour:voyageurs')}
       />
-      <VoyageursView voyageurs={list} tableReady={!error} pendingDeclarations={declRes.count ?? 0} />
+      <VoyageursView voyageurs={list} tableReady={!error} pendingDeclarations={declRes.count ?? 0} today={parisToday()} />
     </>
   )
 }
