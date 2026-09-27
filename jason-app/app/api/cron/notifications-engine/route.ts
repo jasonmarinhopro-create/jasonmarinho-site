@@ -8,6 +8,8 @@ import { NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { runNotificationRules, purgeExpiredNotifications } from '@/lib/notifications/rules'
 import { syncStaleFeeds } from '@/lib/ical/background'
+import { unansweredQuestions, unansweredDigestEmail, REMIND_MAX_DAYS, type QuestionRow } from '@/lib/chez-nous/unanswered'
+import { sendAdminEmail } from '@/lib/email/admin'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60  // 60s max (suffisant pour quelques centaines d'utilisateurs)
@@ -58,12 +60,30 @@ export async function GET(req: Request) {
 
   const purged = await purgeExpiredNotifications()
 
+  // Questions & réponses : rappel à Jason des questions sans réponse depuis
+  // 24 h (promesse affichée : réponse sous 48 h). Un email par jour au plus,
+  // seulement s'il y en a. Best-effort.
+  let unanswered = 0
+  try {
+    const since = new Date(Date.now() - REMIND_MAX_DAYS * 24 * 3600 * 1000).toISOString()
+    const [{ data: posts }, { data: admins }] = await Promise.all([
+      supabase.from('chez_nous_posts').select('id, author_id, title, category, reply_count, created_at').eq('reply_count', 0).gte('created_at', since),
+      supabase.from('profiles').select('id').eq('role', 'admin'),
+    ])
+    const due = unansweredQuestions((posts ?? []) as QuestionRow[], new Set((admins ?? []).map(a => a.id as string)))
+    unanswered = due.length
+    if (due.length > 0) {
+      await sendAdminEmail(unansweredDigestEmail(due, process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'))
+    }
+  } catch (e) { console.warn('[cron] unanswered questions digest failed', e) }
+
   return NextResponse.json({
     ok: true,
     icalSync,
     usersProcessed,
     notificationsCreated: totalCreated,
     expiredPurged: purged,
+    unansweredQuestions: unanswered,
     durationMs: Date.now() - t0,
   })
 }

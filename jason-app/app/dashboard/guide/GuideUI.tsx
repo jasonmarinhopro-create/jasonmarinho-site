@@ -10,6 +10,7 @@ import Link from 'next/link'
 import ComparisonTable from './ComparisonTable'
 import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import Resources from './Resources'
+import AskQuestionCard from '@/components/chez-nous/AskQuestionCard'
 import {
   HouseLine, Coffee, Buildings, Handshake, Sparkle,
   ArrowRight, ArrowUpRight, BookOpen, Calculator, MagnifyingGlass,
@@ -275,6 +276,14 @@ export default function GuideUI({ guideCards, cardCount }: GuideUIProps) {
 
       {/* Glossaire */}
       <Glossaire />
+
+      {/* Une situation que les fiches ne couvrent pas : Questions & réponses */}
+      <div style={{ margin: '0 0 24px' }}>
+        <AskQuestionCard
+          title="Ta situation n'est pas dans le guide ?"
+          text="Litige, mairie, caution, avis injuste : pose ta question à Jason et aux autres hôtes, réponse sous 48 h."
+        />
+      </div>
 
       {/* Driing banner */}
       <div style={s.banner} className="fade-up glass-card">

@@ -268,7 +268,11 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
         {replies.length === 0 ? (
           <div style={s.empty}>
             <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)' }}>
-              Pas encore de réponse, {post.locked ? 'le sujet est verrouillé.' : 'sois le premier à répondre.'}
+              {post.locked
+                ? 'Pas encore de réponse, le sujet est verrouillé.'
+                : post.author_id === currentUserId
+                  ? 'Ta question est bien publiée. Jason ou un hôte te répond sous 48 h : tu recevras la réponse par email.'
+                  : 'Pas encore de réponse. Tu connais le sujet ? Ton expérience peut vraiment aider.'}
             </p>
           </div>
         ) : (() => {
@@ -1018,13 +1022,13 @@ const s: Record<string, React.CSSProperties> = {
     padding: '5px 10px', fontSize: '12px', cursor: 'pointer',
   },
   btnPrimary: {
-    background: '#ffd56b', color: '#1a1a0e',
+    background: 'var(--accent-text)', color: 'var(--bg)',
     border: 'none', borderRadius: '8px',
     padding: '9px 18px', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
   },
   btnPrimarySmall: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
-    background: '#ffd56b', color: '#1a1a0e',
+    background: 'var(--accent-text)', color: 'var(--bg)',
     border: 'none', borderRadius: '6px',
     padding: '5px 12px', fontSize: '12px', fontWeight: 700, cursor: 'pointer',
   },

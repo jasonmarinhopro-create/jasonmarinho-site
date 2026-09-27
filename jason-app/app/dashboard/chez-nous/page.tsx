@@ -1,28 +1,32 @@
 import { redirect } from 'next/navigation'
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
-import ChezNousFeed from './ChezNousFeed'
-import WelcomeModal from '@/components/chez-nous/WelcomeModal'
-import type { CategoryId } from '@/lib/chez-nous/categories'
+import ChezNousFeed, { type Sort } from './ChezNousFeed'
+import { isValidCategory, type CategoryId } from '@/lib/chez-nous/categories'
 import { computeBadges, type BadgeId } from '@/lib/badges'
 import { getBulkProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
-import { aggregateRegionsByMember } from '@/lib/chez-nous/regions'
 
 export const dynamic  = 'force-dynamic'
-export const metadata = { title: 'Entre Hôtes, Jason Marinho' }
+export const metadata = { title: 'Questions & réponses, Jason Marinho' }
 
-type SearchParams = { cat?: string; sort?: string; q?: string }
+type SearchParams = { cat?: string; sort?: string; q?: string; ask?: string }
+
+// Questions & réponses (ex-forum Entre Hôtes, refonte sept. 2026) : la page
+// ne cherche plus à ressembler à un réseau social (compteurs de membres, top
+// contributeurs, carte, nouveaux membres, présentation en 3 écrans) : avec peu
+// de membres, tout ça affichait surtout le vide et décourageait de poster.
+// Promesse : réponse sous 48 h par Jason ou un hôte (lib/chez-nous/unanswered.ts).
 
 export default async function ChezNousPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const [profile, supabase, sp] = await Promise.all([getProfile(), createClient(), searchParams])
   if (!profile?.userId) redirect('/auth/login')
 
-  const sort   = (sp.sort as 'recent' | 'popular' | 'unanswered' | 'unresolved') ?? 'recent'
-  const q      = sp.q?.trim() ?? ''
-  const since30d = new Date(Date.now() - 30 * 86400000).toISOString()
+  const sort: Sort = sp.sort === 'answered' || sp.sort === 'unanswered' || sp.sort === 'popular' || sp.sort === 'unresolved'
+    ? sp.sort : 'recent'
+  const q   = sp.q?.trim() ?? ''
+  const cat = sp.cat && isValidCategory(sp.cat) ? sp.cat : 'all'
 
-  // ─── Phase 1 : toutes les queries indépendantes en parallèle ─────────────
-  // (posts + profil onboarding + compteurs + nouveaux membres + activité + régions)
+  // ─── Phase 1 : questions + compteurs en parallèle ───────────────────────
 
   let postsQuery = supabase
     .from('chez_nous_posts')
@@ -32,82 +36,30 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
 
   if (sort === 'popular')         postsQuery = postsQuery.order('vote_count', { ascending: false }).order('created_at', { ascending: false })
   else if (sort === 'unanswered') postsQuery = postsQuery.eq('reply_count', 0).order('created_at', { ascending: false })
+  else if (sort === 'answered')   postsQuery = postsQuery.gt('reply_count', 0).order('last_reply_at', { ascending: false, nullsFirst: false })
   else if (sort === 'unresolved') postsQuery = postsQuery.is('accepted_reply_id', null).order('last_reply_at', { ascending: false, nullsFirst: false }).order('created_at', { ascending: false })
   else                            postsQuery = postsQuery.order('last_reply_at', { ascending: false, nullsFirst: false }).order('created_at', { ascending: false })
 
-  if (sp.cat && sp.cat !== 'all') postsQuery = postsQuery.eq('category', sp.cat)
+  if (cat !== 'all') postsQuery = postsQuery.eq('category', cat)
   if (q) {
-    const escaped = q.replace(/[\\%_]/g, '\\$&')
+    const escaped = q.replace(/[\\%_,]/g, '\\$&')
     postsQuery = postsQuery.or(`title.ilike.%${escaped}%,body.ilike.%${escaped}%`)
   }
 
-  const [
-    meProfileResult,
-    postsResult,
-    totalPostsResult,
-    totalRepliesResult,
-    totalMembersResult,
-    newMembersResult,
-    recentPostsRankResult,
-    recentRepliesRankResult,
-    recentRepliesResult,
-    recentPostsActivityResult,
-    logementsResult,
-    privacyResult,
-  ] = await Promise.all([
-    supabase.from('profiles').select('chez_nous_onboarded_at, pseudo').eq('id', profile.userId).maybeSingle(),
+  const [meProfileResult, postsResult, answeredResult] = await Promise.all([
+    supabase.from('profiles').select('pseudo').eq('id', profile.userId).maybeSingle(),
     postsQuery,
-    supabase.from('chez_nous_posts').select('*', { count: 'exact', head: true }),
-    supabase.from('chez_nous_replies').select('*', { count: 'exact', head: true }),
-    supabase.from('profiles').select('*', { count: 'exact', head: true }),
-    supabase.from('profiles').select('id, full_name, pseudo, is_contributor, created_at, privacy_show_city').neq('id', profile.userId).order('created_at', { ascending: false }).limit(6),
-    supabase.from('chez_nous_posts').select('author_id').gte('created_at', since30d),
-    supabase.from('chez_nous_replies').select('author_id').gte('created_at', since30d),
-    supabase.from('chez_nous_replies').select('id, post_id, author_id, created_at, chez_nous_posts(title, author_id)').order('created_at', { ascending: false }).limit(8),
-    supabase.from('chez_nous_posts').select('id, author_id, title, created_at').order('created_at', { ascending: false }).limit(5),
-    supabase.from('logements').select('user_id, adresse, pays'),
-    supabase.from('profiles').select('id, privacy_show_city'),
+    supabase.from('chez_nous_posts').select('*', { count: 'exact', head: true }).gt('reply_count', 0),
   ])
 
-  const meProfile       = meProfileResult.data
   const posts           = postsResult.data ?? []
-  const newMembersData  = newMembersResult.data ?? []
+  const currentUserName = (meProfileResult.data?.pseudo ?? profile.full_name ?? '').trim()
+  const authorIds       = Array.from(new Set(posts.map(p => p.author_id)))
 
-  // ─── Calculs purs (pas de réseau) ────────────────────────────────────────
-
-  const showWelcome     = !meProfile?.chez_nous_onboarded_at
-  const currentUserName = (meProfile?.pseudo ?? profile.full_name ?? '').trim()
-
-  // catCounts calculé depuis les posts déjà fetched (pas de query supplémentaire)
-  const catCounts: Record<string, number> = {}
-  posts.forEach(p => { catCounts[p.category] = (catCounts[p.category] ?? 0) + 1 })
-
-  // Top contributeurs
-  const activityScore: Record<string, number> = {}
-  ;(recentPostsRankResult.data ?? []).forEach(p => { activityScore[p.author_id] = (activityScore[p.author_id] ?? 0) + 2 })
-  ;(recentRepliesRankResult.data ?? []).forEach(r => { activityScore[r.author_id] = (activityScore[r.author_id] ?? 0) + 1 })
-  const topMemberIds = Object.entries(activityScore).sort(([, a], [, b]) => b - a).slice(0, 5).map(([id]) => id)
-
-  // IDs auteurs nécessaires pour l'activité ambiante
-  const activityUserIds = new Set<string>()
-  ;(recentRepliesResult.data ?? []).forEach((r: { author_id: string; chez_nous_posts?: { author_id?: string } | { author_id?: string }[] | null }) => {
-    activityUserIds.add(r.author_id)
-    const cnp = Array.isArray(r.chez_nous_posts) ? r.chez_nous_posts[0] : r.chez_nous_posts
-    if (cnp?.author_id) activityUserIds.add(cnp.author_id)
-  })
-  ;(recentPostsActivityResult.data ?? []).forEach(p => activityUserIds.add(p.author_id))
-
-  const authorIds = Array.from(new Set(posts.map(p => p.author_id)))
-
-  // Un seul appel « profiles » pour les auteurs, les top contributeurs et
-  // l'activité récente (avant : 3 requêtes séparées sur la même table).
-  const profileIds = Array.from(new Set([...authorIds, ...topMemberIds, ...Array.from(activityUserIds)]))
-
-  // ─── Phase 2 : queries dépendant des posts (profils + badges + votes + aperçus) ──
-  // Dernière vague réseau : les stats pro (phase 3) réutilisent les logements
-  // déjà chargés en phase 1 (avant : une 3e vague séquentielle).
+  // ─── Phase 2 : auteurs, badges, votes, aperçus de réponses ──────────────
 
   type ProfileRow = { id: string; full_name: string | null; pseudo: string | null; role: string | null; is_contributor: boolean | null; created_at: string | null; privacy_show_logements: boolean | null; privacy_show_city: boolean | null }
+  const none = <T,>() => Promise.resolve({ data: [] as T[] })
   const [
     profilesResult,
     votesResult,
@@ -117,46 +69,29 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
     communityResult,
     userVotesResult,
     repliesPreviewResult,
+    logementsResult,
   ] = await Promise.all([
-    profileIds.length ? supabase.from('profiles').select('id, full_name, pseudo, role, is_contributor, created_at, privacy_show_logements, privacy_show_city').in('id', profileIds) : Promise.resolve({ data: [] as ProfileRow[] }),
-    authorIds.length ? supabase.from('roadmap_votes').select('user_id').in('user_id', authorIds) : Promise.resolve({ data: [] as { user_id: string }[] }),
-    authorIds.length ? supabase.from('roadmap_items').select('author_id').in('author_id', authorIds) : Promise.resolve({ data: [] as { author_id: string }[] }),
-    authorIds.length ? supabase.from('audit_gbp_sessions').select('user_id').in('user_id', authorIds).not('completed_at', 'is', null) : Promise.resolve({ data: [] as { user_id: string }[] }),
-    authorIds.length ? supabase.from('user_formations').select('user_id').in('user_id', authorIds) : Promise.resolve({ data: [] as { user_id: string }[] }),
-    authorIds.length ? supabase.from('user_community_memberships').select('user_id').in('user_id', authorIds).eq('status', 'joined') : Promise.resolve({ data: [] as { user_id: string }[] }),
-    posts.length ? supabase.from('chez_nous_post_votes').select('post_id').eq('user_id', profile.userId).in('post_id', posts.map(p => p.id)) : Promise.resolve({ data: [] as { post_id: string }[] }),
-    // Top 2 réponses les plus récentes par post visible, pour afficher un
-    // aperçu inline sous chaque card du feed (gain UX : pas besoin de cliquer
-    // pour voir si la discussion a déjà des réponses pertinentes).
+    authorIds.length ? supabase.from('profiles').select('id, full_name, pseudo, role, is_contributor, created_at, privacy_show_logements, privacy_show_city').in('id', authorIds) : none<ProfileRow>(),
+    authorIds.length ? supabase.from('roadmap_votes').select('user_id').in('user_id', authorIds) : none<{ user_id: string }>(),
+    authorIds.length ? supabase.from('roadmap_items').select('author_id').in('author_id', authorIds) : none<{ author_id: string }>(),
+    authorIds.length ? supabase.from('audit_gbp_sessions').select('user_id').in('user_id', authorIds).not('completed_at', 'is', null) : none<{ user_id: string }>(),
+    authorIds.length ? supabase.from('user_formations').select('user_id').in('user_id', authorIds) : none<{ user_id: string }>(),
+    authorIds.length ? supabase.from('user_community_memberships').select('user_id').in('user_id', authorIds).eq('status', 'joined') : none<{ user_id: string }>(),
+    posts.length ? supabase.from('chez_nous_post_votes').select('post_id').eq('user_id', profile.userId).in('post_id', posts.map(p => p.id)) : none<{ post_id: string }>(),
+    // 2 réponses les plus récentes par question, en aperçu sous chaque carte
     posts.length
       ? supabase.from('chez_nous_replies').select('id, post_id, author_id, body, created_at').in('post_id', posts.map(p => p.id)).order('created_at', { ascending: false }).limit(50)
-      : Promise.resolve({ data: [] as { id: string; post_id: string; author_id: string; body: string; created_at: string }[] }),
+      : none<{ id: string; post_id: string; author_id: string; body: string; created_at: string }>(),
+    // Logements des auteurs (ville affichée à côté du nom), chargés dans la même vague
+    authorIds.length ? supabase.from('logements').select('user_id, adresse').in('user_id', authorIds) : none<{ user_id: string; adresse: string | null }>(),
   ])
 
-  const profilesById = new Map<string, ProfileRow>(((profilesResult.data ?? []) as ProfileRow[]).map(p => [p.id, p]))
-  const authorsData = authorIds.map(id => profilesById.get(id)).filter((a): a is ProfileRow => !!a)
-  const topMembersData = topMemberIds.map(id => profilesById.get(id)).filter((a): a is ProfileRow => !!a)
-  const activityProfilesData = Array.from(activityUserIds).map(id => profilesById.get(id)).filter((a): a is ProfileRow => !!a)
-
-  // ─── Phase 3 : pro stats (calcul local, sans réseau : logements de la phase 1) ──
-
-  const allProStatProfiles = [
-    ...authorsData.map(a => ({
-      id: a.id, created_at: a.created_at,
-      privacy_show_logements: a.privacy_show_logements,
-      privacy_show_city: a.privacy_show_city,
-    })),
-    ...newMembersData.map(m => ({
-      id: m.id, created_at: m.created_at,
-      privacy_show_logements: false as boolean | null,
-      privacy_show_city: m.privacy_show_city,
-    })),
-  ]
-  // Garde-fou : Supabase plafonne une réponse à 1 000 lignes par défaut. Si la
-  // liste de la phase 1 atteint ce plafond, elle peut être tronquée : on laisse
-  // alors getBulkProStats refaire sa requête ciblée sur les seuls membres affichés.
-  const preloadedLogements = (logementsResult.data?.length ?? 0) < 1000 ? (logementsResult.data ?? []) : undefined
-  const proStatsByUser = await getBulkProStats(supabase, allProStatProfiles, preloadedLogements)
+  const authorsData = (profilesResult.data ?? []) as ProfileRow[]
+  const proStatsByUser = await getBulkProStats(supabase, authorsData.map(a => ({
+    id: a.id, created_at: a.created_at,
+    privacy_show_logements: a.privacy_show_logements,
+    privacy_show_city: a.privacy_show_city,
+  })), logementsResult.data ?? [])
 
   // ─── Construction des structures finales ─────────────────────────────────
 
@@ -202,66 +137,6 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
     }
   })
 
-  const newMembers = newMembersData.map(m => ({
-    id: m.id,
-    full_name: m.full_name,
-    pseudo: m.pseudo,
-    is_contributor: m.is_contributor ?? false,
-    created_at: m.created_at,
-    city: proStatsByUser[m.id]?.city ?? null,
-  }))
-
-  const topMembers = topMemberIds
-    .map(id => {
-      const m = topMembersData.find(p => p.id === id)
-      if (!m) return null
-      return { id, full_name: m.full_name, pseudo: m.pseudo, is_contributor: m.is_contributor ?? false, score: activityScore[id] ?? 0 }
-    })
-    .filter((m): m is NonNullable<typeof m> => m !== null)
-
-  const activityProfiles: Record<string, { full_name: string | null; pseudo: string | null }> = {}
-  activityProfilesData.forEach(p => {
-    activityProfiles[p.id] = { full_name: p.full_name, pseudo: p.pseudo }
-  })
-
-  type ActivityEvent =
-    | { kind: 'reply'; id: string; created_at: string; replierId: string; postTitle: string; postAuthorId: string; postId: string }
-    | { kind: 'post'; id: string; created_at: string; authorId: string; title: string }
-
-  const activityEvents: ActivityEvent[] = []
-  ;(recentRepliesResult.data ?? []).forEach((r: { id: string; post_id: string; author_id: string; created_at: string; chez_nous_posts?: { title?: string; author_id?: string } | { title?: string; author_id?: string }[] | null }) => {
-    const cnp = Array.isArray(r.chez_nous_posts) ? r.chez_nous_posts[0] : r.chez_nous_posts
-    if (!cnp?.title || !cnp?.author_id) return
-    activityEvents.push({ kind: 'reply', id: r.id, created_at: r.created_at, replierId: r.author_id, postTitle: cnp.title, postAuthorId: cnp.author_id, postId: r.post_id })
-  })
-  ;(recentPostsActivityResult.data ?? []).forEach(p => {
-    activityEvents.push({ kind: 'post', id: p.id, created_at: p.created_at, authorId: p.author_id, title: p.title })
-  })
-  activityEvents.sort((a, b) => b.created_at.localeCompare(a.created_at))
-  const activity = activityEvents.slice(0, 6)
-
-  // Régions
-  const allowedUserIds = new Set(
-    (privacyResult.data ?? []).filter(p => p.privacy_show_city !== false).map(p => p.id),
-  )
-  const addressesByMember: Record<string, string[]> = {}
-  ;(logementsResult.data ?? []).forEach((l: { user_id: string; adresse: string | null; pays: string | null }) => {
-    // La carte ne couvre QUE la France : detectRegion() matche des mots-clés
-    // français par sous-chaîne (villes, codes postaux courts...), donc un
-    // logement à l'étranger (ex: Portugal) peut matcher une région française
-    // par pure coïncidence si son adresse contient un fragment numérique
-    // ressemblant à un code postal FR. `pays` est nullable en DB, les
-    // logements historiques sans valeur sont FR par convention (cf. RevenusView).
-    if ((l.pays ?? 'FR') !== 'FR') return
-    if (!allowedUserIds.has(l.user_id) || !l.adresse) return
-    if (!addressesByMember[l.user_id]) addressesByMember[l.user_id] = []
-    addressesByMember[l.user_id].push(l.adresse)
-  })
-  const regionCounts = aggregateRegionsByMember(addressesByMember)
-
-  // Préparer les 2 dernières réponses par post pour l'aperçu inline du feed.
-  // On retient seulement les 2 plus récentes par post même si la query limit 50
-  // (cas où plusieurs posts récents ont beaucoup de réponses).
   const recentRepliesByPost: Record<string, Array<{ id: string; author_id: string; body: string; created_at: string }>> = {}
   ;(repliesPreviewResult.data ?? []).forEach(r => {
     if (!recentRepliesByPost[r.post_id]) recentRepliesByPost[r.post_id] = []
@@ -270,53 +145,36 @@ export default async function ChezNousPage({ searchParams }: { searchParams: Pro
     }
   })
 
-  // Ajouter les auteurs des réponses à authorsMap si pas déjà présent (rare en
-  // pratique car ils ont souvent posté quelque chose visible).
-  // On ne refait pas de query : on accepte juste l'absence d'info auteur sur
-  // la preview reply (affichera 'Anonyme').
-
   return (
-    <>
-      {showWelcome && <WelcomeModal />}
-      <ChezNousFeed
-        posts={posts.map(p => ({
-          id:            p.id,
-          author_id:     p.author_id,
-          category:      p.category as CategoryId,
-          title:         p.title,
-          body:          p.body,
-          pinned:        p.pinned,
-          locked:        p.locked,
-          reply_count:   p.reply_count,
-          vote_count:    p.vote_count ?? 0,
-          last_reply_at: p.last_reply_at,
-          created_at:    p.created_at,
-          edited_at:     p.edited_at,
-          has_voted:     myVotedSet.has(p.id),
-          is_resolved:   !!p.accepted_reply_id,
-          image_count:   Array.isArray(p.images) ? p.images.length : 0,
-          images:        Array.isArray(p.images) ? p.images.slice(0, 4) : [],
-          recent_replies: recentRepliesByPost[p.id] ?? [],
-        }))}
-        authorsMap={authorsMap}
-        currentUserId={profile.userId}
-        currentUserName={currentUserName}
-        isAdmin={profile.role === 'admin'}
-        currentCategory={(sp.cat as CategoryId | 'all') ?? 'all'}
-        currentSort={sort}
-        currentSearch={q}
-        stats={{
-          totalPosts:   totalPostsResult.count ?? 0,
-          totalReplies: totalRepliesResult.count ?? 0,
-          totalMembers: totalMembersResult.count ?? 0,
-        }}
-        topMembers={topMembers}
-        newMembers={newMembers}
-        catCounts={catCounts}
-        activity={activity}
-        activityProfiles={activityProfiles}
-        regionCounts={regionCounts}
-      />
-    </>
+    <ChezNousFeed
+      posts={posts.map(p => ({
+        id:            p.id,
+        author_id:     p.author_id,
+        category:      p.category as CategoryId,
+        title:         p.title,
+        body:          p.body,
+        pinned:        p.pinned,
+        locked:        p.locked,
+        reply_count:   p.reply_count,
+        vote_count:    p.vote_count ?? 0,
+        last_reply_at: p.last_reply_at,
+        created_at:    p.created_at,
+        edited_at:     p.edited_at,
+        has_voted:     myVotedSet.has(p.id),
+        is_resolved:   !!p.accepted_reply_id,
+        image_count:   Array.isArray(p.images) ? p.images.length : 0,
+        images:        Array.isArray(p.images) ? p.images.slice(0, 4) : [],
+        recent_replies: recentRepliesByPost[p.id] ?? [],
+      }))}
+      authorsMap={authorsMap}
+      currentUserId={profile.userId}
+      currentUserName={currentUserName}
+      isAdmin={profile.role === 'admin'}
+      currentCategory={cat}
+      currentSort={sort}
+      currentSearch={q}
+      answeredCount={answeredResult.count ?? 0}
+      openComposer={sp.ask === '1'}
+    />
   )
 }

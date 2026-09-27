@@ -468,7 +468,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   emptyBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
-    background: '#ffd56b', color: '#1a1a0e',
+    background: 'var(--accent-text)', color: 'var(--bg)',
     fontWeight: 700, fontSize: '13px',
     padding: '9px 20px', borderRadius: '10px',
     border: 'none', textDecoration: 'none', marginTop: '6px',

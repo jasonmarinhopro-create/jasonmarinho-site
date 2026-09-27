@@ -28,7 +28,7 @@ export const CATEGORIES: Record<CategoryId, Category> = {
   },
   optimisation: {
     id: 'optimisation', label: 'Annonces & Optimisation', short: 'Annonces', emoji: '📈',
-    color: '#60a5fa', bg: 'rgba(96,165,250,0.14)',
+    color: '#ca8a04', bg: 'rgba(255,213,107,0.16)',
     description: 'Airbnb, Booking, photos, prix, taux d\'occupation',
   },
   entraide: {
@@ -42,7 +42,7 @@ export const CATEGORIES: Record<CategoryId, Category> = {
     description: 'Ce qui marche (ou pas), chiffres, expériences',
   },
   autres: {
-    id: 'autres', label: 'Autres', short: 'Autres', emoji: '💬',
+    id: 'autres', label: 'Autre question', short: 'Autres', emoji: '💬',
     color: '#94a3b8', bg: 'rgba(148,163,184,0.14)',
     description: 'Tout ce qui ne rentre pas ailleurs',
   },

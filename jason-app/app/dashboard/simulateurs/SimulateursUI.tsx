@@ -1,6 +1,7 @@
 'use client'
 
 import RegulationAlert from '@/components/lcd/RegulationAlert'
+import AskQuestionCard from '@/components/chez-nous/AskQuestionCard'
 import { findRegulation, LEVEL_LABELS, COUNTRY_NOTES } from '@/lib/lcd/regulation'
 import { useState, useMemo, useEffect } from 'react'
 import dynamic from 'next/dynamic'
@@ -916,6 +917,15 @@ export default function SimulateursUI({ logementsPrefill = [], accountStats }: P
             {tab === 'taxe' && <TaxeSejour accountStats={accountStats} />}
             {tab === 'tva' && <FranchiseTVA accountStats={accountStats} />}
           </div>
+        </div>
+
+        {/* Un résultat qui ne colle pas à ta situation ? Question à Jason */}
+        <div style={{ marginTop: '16px' }}>
+          <AskQuestionCard
+            category="reglementation"
+            title="Ton cas ne rentre pas dans le simulateur ?"
+            text="Statut, régime, plusieurs logements : pose ta question à Jason et aux autres hôtes, réponse sous 48 h."
+          />
         </div>
       </div>
     </div>

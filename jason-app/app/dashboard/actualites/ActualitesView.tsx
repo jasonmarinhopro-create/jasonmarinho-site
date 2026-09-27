@@ -9,6 +9,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import type { Actualite } from './page'
 import { markActualiteRead, markAllActualitesRead, toggleActualiteFavorite } from './actions'
+import AskQuestionCard from '@/components/chez-nous/AskQuestionCard'
 
 // Nombre d'articles affichés au premier rendu (puis +PAGE_SIZE par clic "Voir plus")
 const PAGE_SIZE = 24
@@ -630,6 +631,14 @@ export default function ActualitesView({
           }
         }
       `}</style>
+
+      <div style={{ marginTop: '28px' }}>
+        <AskQuestionCard
+          category="reglementation"
+          title="Une actu te concerne et tu ne sais pas quoi faire ?"
+          text="Nouvelle règle, taxe, plateforme : pose ta question, Jason ou un hôte te répond sous 48 h."
+        />
+      </div>
     </div>
   )
 }

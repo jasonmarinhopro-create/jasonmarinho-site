@@ -177,6 +177,25 @@ export async function createPost(input: {
   // Parser titre + body pour les mentions @pseudo (best-effort, n'échoue pas le post)
   await processMentions(supabase, `${title} ${body}`, userId, { postId: data.id }).catch(() => {})
 
+  // Promesse « réponse sous 48 h » : Jason reçoit chaque nouvelle question
+  // par email (la cloche seule ne suffisait pas, cf. migration 050).
+  // Best-effort, jamais bloquant pour l'auteur.
+  try {
+    const { data: author } = await supabase.from('profiles').select('full_name, pseudo, role').eq('id', userId).maybeSingle()
+    if (author?.role !== 'admin') {
+      const [{ sendAdminEmail }, { newQuestionEmail }] = await Promise.all([
+        import('@/lib/email/admin'),
+        import('@/lib/chez-nous/unanswered'),
+      ])
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
+      await sendAdminEmail(newQuestionEmail({
+        authorName: author?.full_name?.trim() || author?.pseudo || 'Un hôte',
+        title, body, category: input.category,
+        postUrl: `${appUrl}/dashboard/chez-nous/${data.id}`,
+      }))
+    }
+  } catch (e) { console.warn('[chez-nous] new question admin email failed', e) }
+
   revalidatePath('/dashboard/chez-nous')
   return { ok: true, postId: data.id }
 }

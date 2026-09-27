@@ -4,6 +4,7 @@ import { getCountry } from '@/lib/countries'
 import { nationaliteFlag } from '@/lib/nationalites'
 import DeclarationsWidget, { type PendingDeclaration } from '@/components/dashboard/DeclarationsWidget'
 import PoliceFicheButton from './PoliceFicheButton'
+import AskQuestionCard from '@/components/chez-nous/AskQuestionCard'
 
 export type DoneDeclaration = {
   id: string; voyageur_id: string | null; voyageur_nom: string; voyageur_nationalite: string | null
@@ -63,6 +64,14 @@ export default function DeclarationsView({ todo, done }: { todo: PendingDeclarat
           })}
         </div>
       )}
+
+      <div style={{ marginTop: '28px' }}>
+        <AskQuestionCard
+          category="reglementation"
+          title="Un doute sur une déclaration ?"
+          text="Fiche de police, SIBA, voyageur mineur ou sans papiers : pose ta question, réponse sous 48 h."
+        />
+      </div>
     </div>
   )
 }

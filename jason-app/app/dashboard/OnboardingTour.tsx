@@ -60,7 +60,7 @@ export const DASHBOARD_HOME_STEPS: TourStep[] = [
     id: 'entre-hotes',
     targetSelector: 'a[href="/dashboard/entre-hotes/forum"]',
     title: "Entre Hôtes : ta communauté",
-    body: "Le forum privé des hôtes LCD, les groupes Facebook pour trouver des voyageurs, et l'écosystème de partenaires (photographes, ménage, conciergeries).",
+    body: "Tes questions à Jason et aux autres hôtes (réponse sous 48 h), et les partenaires et outils recommandés (photographes, ménage, conciergeries).",
   },
   {
     id: 'done',

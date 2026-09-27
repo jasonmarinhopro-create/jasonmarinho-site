@@ -4,5 +4,5 @@
 // du forum, ce qui laisse les vues détail sans distraction.
 import ChezNousPage from '@/app/dashboard/chez-nous/page'
 
-export const metadata = { title: 'Forum — Entre Hôtes' }
+export const metadata = { title: 'Questions & réponses, Entre Hôtes' }
 export default ChezNousPage

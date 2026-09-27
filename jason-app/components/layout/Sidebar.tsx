@@ -94,7 +94,7 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
         href: '/dashboard/outils', label: 'Outils & calculs', icon: Calculator,
         activeMatch: ['/dashboard/outils', '/dashboard/gabarits', '/dashboard/simulateurs', '/dashboard/calculateurs', '/dashboard/outils-impression'],
       },
-      // Entre Hôtes : Forum + Partenaires & outils.
+      // Entre Hôtes : Questions & réponses + Partenaires & outils.
       { href: '/dashboard/entre-hotes/forum', label: 'Entre Hôtes',   icon: ChatsCircle, activeMatch: ['/dashboard/entre-hotes', '/dashboard/chez-nous', '/dashboard/ecosysteme'] },
     ],
   },
@@ -560,7 +560,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
               </Link>
               {userId && (
                 <Link href={`/dashboard/chez-nous/membre/${userId}`} onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
-                  <UserCircle size={15} weight="duotone" />Profil forum
+                  <UserCircle size={15} weight="duotone" />Profil Entre Hôtes
                 </Link>
               )}
               <Link href="/dashboard/abonnement" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>

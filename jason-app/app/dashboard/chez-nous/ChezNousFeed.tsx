@@ -1,21 +1,25 @@
 'use client'
 
+// Questions & réponses (ex-forum « Entre Hôtes », refonte sept. 2026).
+// Recentré sur une promesse : « Pose ta question, réponse sous 48 h par Jason
+// ou un hôte ». Retirés : compteurs de membres, top contributeurs, carte de
+// France, nouveaux membres, invitations, présentation en 3 écrans. Avec peu de
+// membres, ils mettaient surtout le vide en avant.
+
 import RelativeTime from '@/components/ui/RelativeTime'
 import { useState, useTransition, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { House, Plus, ChatCircle, PushPin, Lock, ArrowFatUp, Clock, Fire, Question, Pencil, Sparkle, Trophy, Users, MagnifyingGlass, X, CheckCircle, ShareNetwork, UserPlus } from '@phosphor-icons/react/dist/ssr'
+import { Plus, ChatCircle, ChatCircleText, PushPin, Lock, ArrowFatUp, ArrowRight, Clock, Question, Pencil, Sparkle, MagnifyingGlass, X, CheckCircle, HandHeart } from '@phosphor-icons/react/dist/ssr'
+import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashboard/HubHero'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
-import { REGION_POSITIONS } from '@/lib/chez-nous/regions'
-import { MapPin } from '@phosphor-icons/react/dist/ssr'
 import { displayName, displayInitials, colorFromId } from '@/lib/chez-nous/display'
 import type { BadgeId } from '@/lib/badges'
 import { formatProStats, type ProStats } from '@/lib/chez-nous/pro-stats'
 import MentionAutocomplete from '@/components/chez-nous/MentionAutocomplete'
 import MarkdownToolbar from '@/components/chez-nous/MarkdownToolbar'
 import ImageUploader from '@/components/chez-nous/ImageUploader'
-import InviteModal from '@/components/chez-nous/InviteModal'
 import { useDraftAutosave } from '@/lib/chez-nous/use-draft'
 import { createPost, createReply, togglePostVote } from './actions'
 
@@ -49,28 +53,8 @@ type Author = {
   proStats: ProStats | null
 }
 
-type Sort = 'recent' | 'popular' | 'unanswered' | 'unresolved'
 
-type TopMember = {
-  id: string
-  full_name: string | null
-  pseudo: string | null
-  is_contributor: boolean
-  score: number
-}
-
-type NewMember = {
-  id: string
-  full_name: string | null
-  pseudo: string | null
-  is_contributor: boolean
-  created_at: string | null
-  city: string | null
-}
-
-type ActivityEvent =
-  | { kind: 'reply'; id: string; created_at: string; replierId: string; postTitle: string; postAuthorId: string; postId: string }
-  | { kind: 'post'; id: string; created_at: string; authorId: string; title: string }
+export type Sort = 'recent' | 'answered' | 'unanswered' | 'popular' | 'unresolved'
 
 type Props = {
   posts: Post[]
@@ -81,26 +65,34 @@ type Props = {
   currentCategory: CategoryId | 'all'
   currentSort: Sort
   currentSearch: string
-  stats: { totalPosts: number; totalReplies: number; totalMembers: number }
-  topMembers: TopMember[]
-  newMembers: NewMember[]
-  catCounts: Record<string, number>
-  activity: ActivityEvent[]
-  activityProfiles: Record<string, { full_name: string | null; pseudo: string | null }>
-  regionCounts: Record<string, number>
+  /** Nombre de questions qui ont déjà au moins une réponse */
+  answeredCount: number
+  /** ?ask=1 : ouvre directement le formulaire (liens « Pose ta question » du guide, des formations…) */
+  openComposer: boolean
 }
 
-export default function ChezNousFeed({ posts, authorsMap, currentUserId, currentUserName, currentCategory, currentSort, currentSearch, stats, topMembers, newMembers, catCounts, activity, activityProfiles, regionCounts }: Props) {
-  const [showForm,   setShowForm]   = useState(false)
-  const [showInvite, setShowInvite] = useState(false)
+// « Bienvenue » (présentations) n'est plus proposé à la création : la page
+// sert à poser des questions. Les anciens posts restent visibles dans « Tout ».
+const QUESTION_CATEGORIES = CATEGORY_ORDER.filter(c => c !== 'bienvenue')
+
+const BASE = '/dashboard/chez-nous'
+
+function feedHref(cat: CategoryId | 'all', sort: Sort, search: string) {
+  const params = new URLSearchParams()
+  if (cat !== 'all')     params.set('cat', cat)
+  if (sort !== 'recent') params.set('sort', sort)
+  if (search)            params.set('q', search)
+  return BASE + (params.toString() ? `?${params}` : '')
+}
+
+export default function ChezNousFeed({ posts, authorsMap, currentUserId, currentUserName, currentCategory, currentSort, currentSearch, answeredCount, openComposer }: Props) {
+  const [composer, setComposer] = useState<{ title: string } | null>(openComposer ? { title: '' } : null)
+  const ask = (title = '') => setComposer({ title })
 
   return (
     <div style={s.page}>
       <style>{`
-        /* Map silhouette: white in dark mode, dark green in light mode */
-        .cn-map-shape { fill: rgba(255,255,255,0.025); stroke: rgba(255,255,255,0.14); }
-        [data-theme="light"] .cn-map-shape { fill: rgba(0,76,63,0.07); stroke: rgba(0,76,63,0.28); }
-        /* Hover preview pour les réponses tronquées du feed */
+        /* Réponse tronquée : texte complet au survol */
         .cn-recent-reply { position: relative; }
         .cn-recent-reply-full {
           position: absolute; left: 28px; top: calc(100% + 6px);
@@ -117,246 +109,77 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
         .cn-recent-reply:focus-within .cn-recent-reply-full {
           opacity: 1; visibility: visible; transform: translateY(0);
         }
-        /* Pas de hover sur mobile (touch) → tooltip inutile */
         @media (hover: none) { .cn-recent-reply-full { display: none; } }
-        /* Composer card hover : feedback subtil pour inviter au clic */
-        .cn-composer-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
-        .cn-composer-card:hover .cn-composer-input { background: var(--surface-2); color: var(--text-2); border-color: var(--border-2); }
-        .cn-composer-input:hover { background: var(--surface) !important; color: var(--text) !important; }
-        /* Post card hover : feedback discret pour signaler interactivité */
         .cn-post-card { will-change: transform; }
         .cn-post-card:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
-        /* Default category chip rendering (desktop) */
         .cn-cat-emoji { font-size: 13px; line-height: 1; }
         .cn-cat-label { font-weight: 600; }
-        /* Bouton invitation mobile (caché sur desktop car la sidebar fait le job) */
-        .cn-mobile-invite { display: none; }
-        @media (max-width: 1023px) {
-          .cn-aside { display: none !important; }
-          .cn-main-col { flex: 1 1 100% !important; }
-          .cn-mobile-invite {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 16px;
-            padding: 11px 18px;
-            border-radius: 999px;
-            background: var(--accent-text);
-            color: var(--bg);
-            font-weight: 600;
-            font-size: 14px;
-            border: none;
-            cursor: pointer;
-            font-family: inherit;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-            width: 100%;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
-          }
-          .cn-mobile-invite:active { transform: scale(0.98); }
+        .qa-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
+        .qa-aside { display: none; }
+        @media (min-width: 1200px) {
+          .qa-layout { grid-template-columns: minmax(0, 1fr) 320px; }
+          .qa-aside { display: flex; position: sticky; top: calc(var(--header-h, 64px) + 16px); }
         }
         @media (max-width: 767px) {
-          /* Category chips: stories-style bubbles */
-          .cn-cat-row {
-            flex-wrap: nowrap !important;
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            padding: 4px 4px 8px;
-            gap: 4px !important;
-            margin: 0 -4px 14px !important;
+          .cn-cat-row, .cn-sort-row {
+            flex-wrap: nowrap !important; overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch; scrollbar-width: none;
           }
-          .cn-cat-row::-webkit-scrollbar { display: none; }
-          .cn-cat-link {
-            flex-direction: column !important;
-            align-items: center !important;
-            gap: 6px !important;
-            background: transparent !important;
-            border: none !important;
-            padding: 4px !important;
-            min-width: 76px !important;
-            flex-shrink: 0 !important;
-            text-align: center;
-          }
-          .cn-cat-link .cn-cat-emoji {
-            display: flex; align-items: center; justify-content: center;
-            width: 56px; height: 56px;
-            border-radius: 50%;
-            background: var(--cat-bg);
-            border: 1.5px solid color-mix(in srgb, var(--cat-color) 28%, transparent);
-            font-size: 26px; line-height: 1;
-            transition: transform 0.15s, box-shadow 0.15s;
-          }
-          .cn-cat-link.cn-active .cn-cat-emoji {
-            box-shadow: 0 0 0 2.5px var(--cat-color);
-            transform: scale(1.04);
-          }
-          .cn-cat-link .cn-cat-label {
-            font-size: 11px !important;
-            font-weight: 600;
-            color: var(--text-2);
-            line-height: 1.2;
-            max-width: 70px;
-          }
-          .cn-cat-link.cn-active .cn-cat-label { color: var(--cat-color); }
-          /* Hero invite button on mobile: full width */
-          .cn-hero-actions { flex-direction: column !important; align-items: stretch !important; }
-          .cn-hero-actions > * { width: 100% !important; justify-content: center !important; }
-          /* Sort chips: horizontal scroll */
-          .cn-sort-row {
-            flex-wrap: nowrap !important;
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-          }
-          .cn-sort-row::-webkit-scrollbar { display: none; }
-          /* Members band: vertical stack, list scrolls sideways as "stories" */
-          .cn-members-band {
-            flex-direction: column !important;
-            align-items: stretch !important;
-            gap: 12px !important;
-            padding: 14px 16px !important;
-          }
-          .cn-members-text-col { min-width: 0 !important; }
-          .cn-members-list {
-            flex-wrap: nowrap !important;
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            gap: 8px !important;
-            padding-bottom: 4px;
-            align-items: flex-start !important;
-          }
-          .cn-members-list::-webkit-scrollbar { display: none; }
-          /* Member card → stories bubble */
-          .cn-member-card {
-            flex-direction: column !important;
-            align-items: center !important;
-            gap: 6px !important;
-            padding: 10px 8px !important;
-            border-radius: 14px !important;
-            min-width: 68px !important;
-            max-width: 76px !important;
-            flex-shrink: 0 !important;
-          }
-          .cn-member-avatar {
-            width: 44px !important;
-            height: 44px !important;
-            font-size: 15px !important;
-          }
-          .cn-member-info { align-items: center !important; text-align: center; }
-          .cn-member-name {
-            font-size: 11px !important;
-            white-space: normal !important;
-            text-align: center;
-            line-height: 1.3 !important;
-            max-width: 60px;
-            justify-content: center;
-          }
-          .cn-member-city  { display: none !important; }
-          .cn-member-since { font-size: 9px !important; }
-          /* Toolbar: wrap column on mobile */
-          .cn-toolbar {
-            flex-direction: column !important;
-            align-items: stretch !important;
-            gap: 10px !important;
-          }
-          .cn-new-btn { width: 100% !important; justify-content: center !important; }
+          .cn-cat-row::-webkit-scrollbar, .cn-sort-row::-webkit-scrollbar { display: none; }
+          .cn-cat-link, .cn-sort-chip { flex-shrink: 0; }
         }
       `}</style>
-      {/* Hero */}
-      <div style={s.hero}>
-        <div style={s.heroBadge}>
-          <House size={13} color="var(--accent-text)" weight="fill" />
-          Entre Hôtes · entre hôtes LCD
+
+      <HubHero
+        eyebrowIcon={<ChatCircleText size={13} weight="fill" />}
+        eyebrow="Questions & réponses"
+        title={<>Pose ta question, <HeroEm>réponse sous 48 h</HeroEm></>}
+        desc="Fiscalité, mairie, voyageurs, annonce, ménage : Jason ou un hôte expérimenté te répond sous 48 h, et tu es prévenu par email. Chaque réponse reste ici, pour tous les hôtes."
+        steps={[
+          ['Pose', 'ta question en une phrase, avec ton contexte'],
+          ['Reçois', 'une réponse sous 48 h, par email'],
+          ['Retrouve', 'toutes les réponses déjà données, juste en dessous'],
+        ]}
+        aside={<JasonPromise answeredCount={answeredCount} />}
+      >
+        <div style={s.heroCtas}>
+          <button type="button" onClick={() => ask()} style={{ ...heroCta, border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
+            <Plus size={15} weight="bold" /> Poser ma question
+          </button>
+          {answeredCount > 0 && currentSort !== 'answered' && (
+            <Link href={feedHref('all', 'answered', '')} style={heroLink}>Voir les questions déjà répondues</Link>
+          )}
         </div>
-        <h1 style={s.heroTitle}>
-          Bienvenue <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Entre Hôtes</em>
-        </h1>
-        <p style={s.heroDesc}>
-          L'endroit où on s'entraide pour de vrai. Tu poses tes questions, tu partages tes réussites,
-          tu réponds quand tu peux. Sans détour, sans jugement.
-        </p>
+      </HubHero>
 
-        <div style={s.statRow}>
-          <span><strong style={{ color: 'var(--text)' }}>Vous êtes {stats.totalMembers}</strong> hôte{stats.totalMembers > 1 ? 's' : ''}</span>
-          <span style={s.statSep}>·</span>
-          <span><strong style={{ color: 'var(--text)' }}>{stats.totalPosts}</strong> conversation{stats.totalPosts > 1 ? 's' : ''}</span>
-          <span style={s.statSep}>·</span>
-          <span><strong style={{ color: 'var(--text)' }}>{stats.totalReplies}</strong> coup{stats.totalReplies > 1 ? 's' : ''} de main</span>
-        </div>
+      <div className="qa-layout">
+        <div style={s.mainCol}>
+          <SearchBar key={currentSearch} cat={currentCategory} sort={currentSort} initial={currentSearch} />
 
-        {/* Bouton Partager, visible mobile uniquement (la sidebar fait déjà le job desktop) */}
-        <button
-          type="button"
-          className="cn-mobile-invite"
-          onClick={() => setShowInvite(true)}
-        >
-          <UserPlus size={16} weight="fill" />
-          <span>Inviter des amis hôtes</span>
-        </button>
-      </div>
-
-      {/* Nouveaux membres */}
-      {newMembers.length > 0 && <NewMembersBand members={newMembers} />}
-
-      {/* Catégories */}
-      <div style={s.catRow} className="cn-cat-row">
-        <CategoryChip id="all" label="Tout" emoji="✨" color="var(--accent-text)" bg="rgba(255,213,107,0.14)" active={currentCategory === 'all'} sort={currentSort} search={currentSearch} />
-        {CATEGORY_ORDER.map(cid => (
-          <CategoryChip
-            key={cid} id={cid}
-            label={CATEGORIES[cid].short}
-            emoji={CATEGORIES[cid].emoji}
-            color={CATEGORIES[cid].color} bg={CATEGORIES[cid].bg}
-            active={currentCategory === cid}
-            sort={currentSort}
-            search={currentSearch}
-          />
-        ))}
-      </div>
-
-      {/* Layout 2-col desktop */}
-      <div style={s.layout}>
-        {/* Colonne principale */}
-        <div style={s.mainCol} className="cn-main-col">
-          {/* Composer unifié : poste + recherche dans la même card.
-              Click sur la zone texte → modal de création. Click sur la
-              loupe → bascule en mode recherche dans la même barre.  */}
-          <ComposerCard
-            firstName={currentUserName.split(/\s+/)[0] || ''}
-            initials={(currentUserName || 'JM').split(/\s+/).map(n => n[0]).join('').toUpperCase().slice(0, 2)}
-            onOpen={() => setShowForm(true)}
-            userId={currentUserId}
-            searchInitial={currentSearch}
-            cat={currentCategory}
-            sort={currentSort}
-          />
-
-          {/* Tri */}
-          <div style={s.sortBar} className="cn-sort-bar">
-            <div style={s.sortRow} className="cn-sort-row">
-              <SortChip cat={currentCategory} sort="recent"     active={currentSort === 'recent'}     search={currentSearch} icon={Clock} label="Récent" />
-              <SortChip cat={currentCategory} sort="popular"    active={currentSort === 'popular'}    search={currentSearch} icon={Fire}  label="Populaire" />
-              <SortChip cat={currentCategory} sort="unanswered" active={currentSort === 'unanswered'} search={currentSearch} icon={Question} label="À aider" />
-              <SortChip cat={currentCategory} sort="unresolved" active={currentSort === 'unresolved'} search={currentSearch} icon={CheckCircle} label="En suspens" />
-            </div>
+          <div style={s.sortRow} className="cn-sort-row" role="tablist" aria-label="Filtrer les questions">
+            <SortChip cat={currentCategory} sort="recent"     active={currentSort === 'recent'}     search={currentSearch} icon={Clock}       label="Récentes" />
+            <SortChip cat={currentCategory} sort="answered"   active={currentSort === 'answered'}   search={currentSearch} icon={CheckCircle} label="Déjà répondues" />
+            <SortChip cat={currentCategory} sort="unanswered" active={currentSort === 'unanswered'} search={currentSearch} icon={Question}    label="Sans réponse" />
           </div>
 
-          {/* Modal de création de post */}
-          {showForm && (
-            <PostFormModal
-              onClose={() => setShowForm(false)}
-              defaultCategory={currentCategory === 'all' ? 'autres' : currentCategory}
-              firstName={currentUserName.split(/\s+/)[0] || ''}
-              initials={(currentUserName || 'JM').split(/\s+/).map(n => n[0]).join('').toUpperCase().slice(0, 2)}
-            />
-          )}
+          <div style={s.catRow} className="cn-cat-row">
+            <CategoryChip id="all" label="Tous les sujets" emoji="✨" color="var(--accent-text)" bg="var(--accent-bg)" active={currentCategory === 'all'} sort={currentSort} search={currentSearch} />
+            {[...QUESTION_CATEGORIES, ...(currentCategory === 'bienvenue' ? ['bienvenue' as const] : [])].map(cid => (
+              <CategoryChip
+                key={cid} id={cid}
+                label={CATEGORIES[cid].short}
+                emoji={CATEGORIES[cid].emoji}
+                color="var(--accent-text)" bg="var(--accent-bg)"
+                active={currentCategory === cid}
+                sort={currentSort}
+                search={currentSearch}
+              />
+            ))}
+          </div>
 
-          {/* Feed */}
           <div style={s.feed}>
             {posts.length === 0 ? (
-              <EmptyState category={currentCategory} sort={currentSort} search={currentSearch} onNew={() => setShowForm(true)} />
+              <EmptyState category={currentCategory} sort={currentSort} search={currentSearch} onAsk={ask} />
             ) : (
               posts.map(post => (
                 <PostRow key={post.id} post={post} author={authorsMap[post.author_id]} currentUserId={currentUserId} authorsMap={authorsMap} />
@@ -365,143 +188,118 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
           </div>
         </div>
 
-        {/* Aside */}
-        <aside style={s.aside} className="cn-aside">
-          <JasonNoteCard />
-          <InviteFriendsCard onClick={() => setShowInvite(true)} />
-          <FranceMapCard regionCounts={regionCounts} />
-          <ActivityCard events={activity} profiles={activityProfiles} />
-          <StatsCard stats={stats} />
-          <TopMembersCard members={topMembers} />
-          <CategoriesCard counts={catCounts} currentCategory={currentCategory} currentSort={currentSort} />
-          <TipCard />
+        <aside className="qa-aside" style={s.qaAside}>
+          <GoodQuestionCard />
+          <HelpCard />
         </aside>
       </div>
 
-      {/* Modal de partage / invitation */}
-      <InviteModal
-        open={showInvite}
-        onClose={() => setShowInvite(false)}
-        inviterName={currentUserName.split(/\s+/)[0] || 'Un hôte'}
-        inviterUserId={currentUserId}
-      />
+      {composer && (
+        <PostFormModal
+          onClose={() => setComposer(null)}
+          defaultCategory={currentCategory === 'all' || currentCategory === 'bienvenue' ? 'autres' : currentCategory}
+          defaultTitle={composer.title}
+          firstName={currentUserName.split(/\s+/)[0] || ''}
+          initials={(currentUserName || 'JM').split(/\s+/).map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+        />
+      )}
     </div>
   )
 }
 
-// ─── InviteFriendsCard (sidebar) ───────────────────────────────────────
-function InviteFriendsCard({ onClick }: { onClick: () => void }) {
+// ─── Carte « promesse » de Jason (colonne droite du hero) ────────────────
+function JasonPromise({ answeredCount }: { answeredCount: number }) {
   return (
-    <div style={s.inviteCard}>
-      <div style={s.inviteIconWrap}>
-        <UserPlus size={20} weight="fill" color="var(--accent-text)" />
+    <div style={{ ...heroCard, gap: '12px' }}>
+      <div style={s.jasonHeader}>
+        <span style={s.jasonAvatar}>JM</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
+          <span style={s.jasonName}>Jason</span>
+          <span style={s.jasonRole}>Fondateur</span>
+        </div>
       </div>
-      <h3 style={s.inviteTitle}>Invite des amis hôtes</h3>
-      <p style={s.inviteDesc}>
-        Tu connais d&apos;autres hôtes en LCD&nbsp;? Invite-les. Plus on est nombreux,
-        plus l&apos;entraide est riche.
+      <p style={s.jasonMessage}>
+        Je lis chaque question. Si je ne suis pas le mieux placé, je la confie à un hôte qui connaît le sujet.
+        Dans tous les cas, <strong style={{ color: 'var(--text)' }}>tu as une réponse sous 48 h</strong>.
       </p>
-      <button onClick={onClick} style={s.inviteBtn}>
-        <ShareNetwork size={14} weight="fill" />
-        Partager Entre Hôtes
-      </button>
+      {answeredCount > 0 && (
+        <span style={s.jasonStat}>
+          <CheckCircle size={14} weight="fill" color="var(--accent-text)" />
+          {answeredCount} question{answeredCount > 1 ? 's' : ''} déjà répondue{answeredCount > 1 ? 's' : ''}
+        </span>
+      )}
     </div>
   )
 }
 
-// ─── ComposerCard (Facebook-style "Exprimez-vous") ────────────────────
-function ComposerCard({ firstName, initials, onOpen, userId, searchInitial, cat, sort }: {
-  firstName: string; initials: string; onOpen: () => void; userId: string
-  searchInitial: string; cat: CategoryId | 'all'; sort: Sort
-}) {
+// ─── Recherche ────────────────────────────────────────────────────────────
+function SearchBar({ cat, sort, initial }: { cat: CategoryId | 'all'; sort: Sort; initial: string }) {
   const router = useRouter()
-  const [searchMode, setSearchMode] = useState(!!searchInitial)
-  const [searchValue, setSearchValue] = useState(searchInitial)
-  const searchInputRef = useRef<HTMLInputElement>(null)
-
-  const submitSearch = (e?: React.FormEvent) => {
-    e?.preventDefault()
-    const params = new URLSearchParams()
-    if (cat !== 'all')      params.set('cat', cat)
-    if (sort !== 'recent')  params.set('sort', sort)
-    if (searchValue.trim()) params.set('q', searchValue.trim())
-    router.push('/dashboard/chez-nous' + (params.toString() ? `?${params}` : ''))
+  const [value, setValue] = useState(initial)
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault()
+    router.push(feedHref(cat, sort, value.trim()))
   }
-
-  const exitSearch = () => {
-    if (searchValue || searchInitial) {
-      // clear la recherche dans l'URL avant de fermer
-      const params = new URLSearchParams()
-      if (cat !== 'all')      params.set('cat', cat)
-      if (sort !== 'recent')  params.set('sort', sort)
-      router.push('/dashboard/chez-nous' + (params.toString() ? `?${params}` : ''))
-    }
-    setSearchValue('')
-    setSearchMode(false)
-  }
-
-  const enterSearch = () => {
-    setSearchMode(true)
-    setTimeout(() => searchInputRef.current?.focus(), 50)
-  }
-
   return (
-    <div style={s.composerCard} className="cn-composer-card">
-      <div style={s.composerRow}>
-        <Link
-          href={`/dashboard/chez-nous/membre/${userId}`}
-          style={{ ...s.composerAvatar, textDecoration: 'none', cursor: 'pointer' }}
-          title="Voir mon profil Entre Hôtes"
-        >
-          {initials}
+    <form onSubmit={submit} style={s.searchForm} role="search">
+      <MagnifyingGlass size={16} color="var(--text-muted)" />
+      <input
+        type="search"
+        value={value}
+        onChange={e => setValue(e.target.value)}
+        placeholder="Cherche dans les questions déjà posées…"
+        aria-label="Rechercher dans les questions"
+        style={s.searchInput}
+      />
+      {initial && (
+        <Link href={feedHref(cat, sort, '')} style={s.searchClear} aria-label="Effacer la recherche">
+          <X size={14} weight="bold" />
         </Link>
-        {searchMode ? (
-          <form onSubmit={submitSearch} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
-            <MagnifyingGlass size={16} color="var(--text-muted)" />
-            <input
-              ref={searchInputRef}
-              type="search"
-              value={searchValue}
-              onChange={e => setSearchValue(e.target.value)}
-              placeholder="Rechercher dans Entre Hôtes…"
-              style={s.composerSearchInput}
-            />
-            <button
-              type="button"
-              onClick={exitSearch}
-              style={s.composerToggleBtn}
-              title="Fermer la recherche"
-              aria-label="Fermer la recherche"
-            >
-              <X size={14} weight="bold" />
-            </button>
-          </form>
-        ) : (
-          <>
-            <button onClick={onOpen} style={s.composerInput} className="cn-composer-input">
-              {firstName ? `Exprime-toi, ${firstName}…` : 'Pose ta question, partage une expérience…'}
-            </button>
-            <button
-              type="button"
-              onClick={enterSearch}
-              style={s.composerToggleBtn}
-              title="Rechercher dans Entre Hôtes"
-              aria-label="Rechercher dans Entre Hôtes"
-            >
-              <MagnifyingGlass size={16} />
-            </button>
-          </>
-        )}
+      )}
+    </form>
+  )
+}
+
+// ─── Colonne droite (≥ 1200 px) ──────────────────────────────────────────
+function GoodQuestionCard() {
+  return (
+    <div style={s.asideCard}>
+      <div style={s.asideHead}>
+        <Sparkle size={14} color="var(--accent-text)" weight="fill" />
+        <span style={s.asideTitle}>Pour une réponse rapide</span>
       </div>
+      <ul style={s.tipList}>
+        <li style={s.tipItem}>Une question par sujet, formulée en une phrase</li>
+        <li style={s.tipItem}>Ta ville et ta plateforme (Airbnb, Booking, en direct)</li>
+        <li style={s.tipItem}>Ton statut si c&apos;est fiscal : LMNP, micro-BIC, résidence principale ou non</li>
+        <li style={s.tipItem}>Ce que tu as déjà essayé ou lu</li>
+      </ul>
     </div>
   )
 }
 
-// ─── PostFormModal (overlay Facebook-style) ─────────────────────────
-function PostFormModal({ onClose, defaultCategory, firstName, initials }: {
-  onClose: () => void; defaultCategory: CategoryId; firstName: string; initials: string
+function HelpCard() {
+  return (
+    <div style={{ ...s.asideCard, background: 'var(--accent-bg)', borderColor: 'var(--accent-border)' }}>
+      <div style={s.asideHead}>
+        <HandHeart size={14} color="var(--accent-text)" weight="fill" />
+        <span style={s.asideTitle}>Tu connais la réponse ?</span>
+      </div>
+      <p style={s.helpText}>
+        Un hôte attend peut-être ton retour d&apos;expérience. Une réponse de deux lignes suffit souvent.
+      </p>
+      <Link href={feedHref('all', 'unanswered', '')} style={s.helpLink}>
+        Voir les questions sans réponse <ArrowRight size={13} weight="bold" />
+      </Link>
+    </div>
+  )
+}
+
+// ─── Formulaire de question (fenêtre) ────────────────────────────────────
+function PostFormModal({ onClose, defaultCategory, defaultTitle, firstName, initials }: {
+  onClose: () => void; defaultCategory: CategoryId; defaultTitle: string; firstName: string; initials: string
 }) {
-  // Lock scroll & escape key
+  // Bloque le défilement de la page + Échap pour fermer
   useEffect(() => {
     const original = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -523,7 +321,7 @@ function PostFormModal({ onClose, defaultCategory, firstName, initials }: {
     >
       <div style={s.modalDialog} className="cn-modal-dialog">
         <div style={s.modalHeader}>
-          <h2 id="post-modal-title" style={s.modalTitle}>Créer une publication</h2>
+          <h2 id="post-modal-title" style={s.modalTitle}>Pose ta question</h2>
           <button onClick={onClose} style={s.modalClose} aria-label="Fermer">
             <X size={18} />
           </button>
@@ -533,268 +331,18 @@ function PostFormModal({ onClose, defaultCategory, firstName, initials }: {
           <div style={s.composerAvatar}>{initials}</div>
           <div>
             <p style={s.modalUserName}>{firstName || 'Toi'}</p>
-            <p style={s.modalUserSub}>Visible par tous les membres Entre Hôtes</p>
+            <p style={s.modalUserSub}>Jason ou un hôte te répond sous 48 h. Tu reçois la réponse par email.</p>
           </div>
         </div>
 
         <div style={s.modalBody}>
-          <NewPostForm onSuccess={onClose} defaultCategory={defaultCategory} />
+          <NewPostForm onSuccess={onClose} defaultCategory={defaultCategory} defaultTitle={defaultTitle} />
         </div>
       </div>
     </div>
   )
 }
 
-// ─── Aside cards ─────────────────────────────────────────────────────
-
-function JasonNoteCard() {
-  return (
-    <div style={s.jasonCard}>
-      <div style={s.jasonHeader}>
-        <span style={s.jasonAvatar}>JM</span>
-        <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '1px' }}>
-          <span style={s.jasonName}>Jason</span>
-          <span style={s.jasonRole}>Fondateur</span>
-        </div>
-      </div>
-      <p style={s.jasonMessage}>
-        Bienvenue Entre Hôtes. Cet espace n'a qu'une règle :
-        <strong style={{ color: 'var(--accent-text)' }}> on s'entraide</strong>.
-        Pose tes questions sans hésiter, partage ce que tu apprends, et surtout
-        réponds quand tu peux à ceux qui débutent. C'est comme ça qu'on grandit ensemble.
-      </p>
-      <span style={s.jasonSign}>Jason</span>
-    </div>
-  )
-}
-
-function FranceMapCard({ regionCounts }: { regionCounts: Record<string, number> }) {
-  const total = Object.values(regionCounts).reduce((a, b) => a + b, 0)
-  if (total === 0) return null
-
-  // Min/max pour normaliser la taille des bulles
-  const max = Math.max(...Object.values(regionCounts))
-
-  return (
-    <div style={s.asideCard}>
-      <div style={s.asideHead}>
-        <MapPin size={14} color="#fb7185" weight="fill" />
-        <span style={s.asideTitle}>On est partout en France</span>
-      </div>
-      <div style={s.mapWrap}>
-        <svg viewBox="0 0 100 110" style={s.mapSvg} aria-label="Répartition des hôtes en France">
-          {/* Silhouette simplifiée de la France métropolitaine */}
-          <path
-            className="cn-map-shape"
-            d="M 28 10 Q 42 5, 55 8 Q 68 6, 78 14 Q 84 22, 80 32 Q 88 38, 86 48 Q 90 56, 84 64 Q 88 72, 80 82 Q 70 90, 56 92 Q 42 94, 30 88 Q 20 82, 18 70 Q 10 60, 14 48 Q 10 36, 18 26 Q 22 16, 28 10 Z"
-            strokeWidth="0.5"
-          />
-          {/* Corse */}
-          <path
-            className="cn-map-shape"
-            d="M 88 92 Q 92 90, 93 95 Q 92 100, 89 100 Q 87 96, 88 92 Z"
-            strokeWidth="0.5"
-          />
-          {/* Bulles par région */}
-          {Object.entries(regionCounts).map(([region, count]) => {
-            const pos = REGION_POSITIONS[region]
-            if (!pos) return null
-            const size = 1.5 + (count / max) * 3.5
-            return (
-              <g key={region}>
-                <circle
-                  cx={pos.x} cy={pos.y} r={size + 1.5}
-                  fill="rgba(251,113,133,0.15)"
-                />
-                <circle
-                  cx={pos.x} cy={pos.y} r={size}
-                  fill="#fb7185"
-                />
-                <title>{`${region} : ${count} hôte${count > 1 ? 's' : ''}`}</title>
-              </g>
-            )
-          })}
-        </svg>
-      </div>
-      <div style={s.regionLegend}>
-        {Object.entries(regionCounts)
-          .sort(([, a], [, b]) => b - a)
-          .slice(0, 5)
-          .map(([region, count]) => (
-            <span key={region} style={s.regionLegendItem}>
-              <span style={s.regionLegendName}>{region}</span>
-              <span style={s.regionLegendCount}>{count}</span>
-            </span>
-          ))}
-      </div>
-    </div>
-  )
-}
-
-function ActivityCard({
-  events, profiles,
-}: {
-  events: ActivityEvent[]
-  profiles: Record<string, { full_name: string | null; pseudo: string | null }>
-}) {
-  if (events.length === 0) return null
-  const nameOf = (id: string) => {
-    const p = profiles[id]
-    if (!p) return 'Quelqu\'un'
-    return displayName({ pseudo: p.pseudo, full_name: p.full_name })
-  }
-  return (
-    <div style={s.asideCard}>
-      <div style={s.asideHead}>
-        <ChatCircle size={14} color="#34d399" weight="fill" />
-        <span style={s.asideTitle}>Ça vit en ce moment</span>
-      </div>
-      <div style={s.activityList}>
-        {events.map(ev => {
-          const when = <RelativeTime iso={ev.created_at} />
-          if (ev.kind === 'reply') {
-            const replier = nameOf(ev.replierId)
-            const author = nameOf(ev.postAuthorId)
-            return (
-              <Link key={`r-${ev.id}`} href={`/dashboard/chez-nous/${ev.postId}`} style={s.activityRow}>
-                <span style={s.activityDotReply} />
-                <div style={s.activityText}>
-                  <span><strong>{replier}</strong> a répondu à <strong>{author}</strong></span>
-                  <span style={s.activityTitle}>« {ev.postTitle.slice(0, 60)}{ev.postTitle.length > 60 ? '…' : ''} »</span>
-                  <span style={s.activityWhen}>{when}</span>
-                </div>
-              </Link>
-            )
-          }
-          const poster = nameOf(ev.authorId)
-          return (
-            <Link key={`p-${ev.id}`} href={`/dashboard/chez-nous/${ev.id}`} style={s.activityRow}>
-              <span style={s.activityDotPost} />
-              <div style={s.activityText}>
-                <span><strong>{poster}</strong> a lancé une conversation</span>
-                <span style={s.activityTitle}>« {ev.title.slice(0, 60)}{ev.title.length > 60 ? '…' : ''} »</span>
-                <span style={s.activityWhen}>{when}</span>
-              </div>
-            </Link>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
-function StatsCard({ stats }: { stats: { totalPosts: number; totalReplies: number; totalMembers: number } }) {
-  return (
-    <div style={s.asideCard}>
-      <div style={s.asideHead}>
-        <Sparkle size={14} color="var(--accent-text)" weight="fill" />
-        <span style={s.asideTitle}>Notre famille LCD</span>
-      </div>
-      <div style={s.statsList}>
-        <div style={s.statRow2}>
-          <span style={s.statValue}>{stats.totalMembers}</span>
-          <span style={s.statLabel}>hôte{stats.totalMembers > 1 ? 's' : ''}</span>
-        </div>
-        <div style={s.statRow2}>
-          <span style={s.statValue}>{stats.totalPosts}</span>
-          <span style={s.statLabel}>conversation{stats.totalPosts > 1 ? 's' : ''}</span>
-        </div>
-        <div style={s.statRow2}>
-          <span style={s.statValue}>{stats.totalReplies}</span>
-          <span style={s.statLabel}>coup{stats.totalReplies > 1 ? 's' : ''} de main</span>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function TopMembersCard({ members }: { members: TopMember[] }) {
-  if (members.length === 0) return null
-  return (
-    <div style={s.asideCard}>
-      <div style={s.asideHead}>
-        <Trophy size={14} color="#fb923c" weight="fill" />
-        <span style={s.asideTitle}>Ils ont aidé ce mois-ci</span>
-      </div>
-      <div style={s.membersList}>
-        {members.map((m, i) => {
-          const av = colorFromId(m.id)
-          const initials = displayInitials({ pseudo: m.pseudo, full_name: m.full_name })
-          const name = displayName({ pseudo: m.pseudo, full_name: m.full_name })
-          return (
-            <Link key={m.id} href={`/dashboard/chez-nous/membre/${m.id}`} style={s.memberRow}>
-              <span style={s.memberRank}>{i + 1}</span>
-              <span style={{ ...s.memberAvatar, background: av.bg, color: av.text }}>{initials}</span>
-              <span style={s.memberName}>
-                {name}
-                {m.is_contributor && <span style={s.contribDotMini} />}
-              </span>
-              <span style={s.memberScore}>{m.score} pts</span>
-            </Link>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
-function CategoriesCard({ counts, currentCategory, currentSort }: {
-  counts: Record<string, number>
-  currentCategory: CategoryId | 'all'
-  currentSort: Sort
-}) {
-  const total = Object.values(counts).reduce((a, b) => a + b, 0)
-  if (total === 0) return null
-  return (
-    <div style={s.asideCard}>
-      <div style={s.asideHead}>
-        <Users size={14} color="#a78bfa" weight="fill" />
-        <span style={s.asideTitle}>Sujets</span>
-      </div>
-      <div style={s.catList}>
-        {CATEGORY_ORDER.map(cid => {
-          const count = counts[cid] ?? 0
-          const cat = CATEGORIES[cid]
-          const params = new URLSearchParams()
-          params.set('cat', cid)
-          if (currentSort !== 'recent') params.set('sort', currentSort)
-          const active = currentCategory === cid
-          return (
-            <Link
-              key={cid}
-              href={`/dashboard/chez-nous?${params}`}
-              style={{
-                ...s.catItem,
-                background: active ? cat.bg : 'transparent',
-                borderColor: active ? `${cat.color}55` : 'transparent',
-              }}
-            >
-              <span style={{ ...s.catDot, background: cat.color }} />
-              <span style={s.catItemLabel}>{cat.short}</span>
-              <span style={s.catItemCount}>{count}</span>
-            </Link>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
-function TipCard() {
-  return (
-    <div style={{ ...s.asideCard, background: 'rgba(255,213,107,0.04)', borderColor: 'rgba(255,213,107,0.18)' }}>
-      <div style={s.asideHead}>
-        <Sparkle size={14} color="var(--accent-text)" weight="fill" />
-        <span style={s.asideTitle}>L'esprit Entre Hôtes</span>
-      </div>
-      <ul style={s.tipList}>
-        <li style={s.tipItem}>Un titre clair, du contexte (ville, plateforme), ça aide tout le monde</li>
-        <li style={s.tipItem}>Pas de jugement : on a tous débuté un jour</li>
-        <li style={s.tipItem}>Réponds quand tu peux, c&apos;est ce qui fait vivre la famille</li>
-      </ul>
-    </div>
-  )
-}
 
 // ─── Post row ─────────────────────────────────────────────────────────
 
@@ -1164,95 +712,48 @@ function SortChip({ cat, sort, active, search, icon: Icon, label }: {
   )
 }
 
-function EmptyState({ category, sort, search, onNew }: { category: CategoryId | 'all'; sort: Sort; search: string; onNew: () => void }) {
+function EmptyState({ category, sort, search, onAsk }: { category: CategoryId | 'all'; sort: Sort; search: string; onAsk: (title?: string) => void }) {
   if (search) {
     return (
       <div style={s.empty}>
         <MagnifyingGlass size={28} color="var(--accent-text)" weight="duotone" />
-        <p style={s.emptyTitle}>Rien trouvé pour « {search} »</p>
-        <p style={s.emptyDesc}>Essaie d'autres mots, ou retire les filtres pour voir toutes les conversations.</p>
+        <p style={s.emptyTitle}>Personne n&apos;a encore posé cette question</p>
+        <p style={s.emptyDesc}>Rien trouvé pour « {search} ». Pose-la : Jason ou un hôte te répond sous 48 h.</p>
+        <button onClick={() => onAsk(search)} style={s.emptyBtn}>
+          <Plus size={13} weight="bold" /> Poser cette question
+        </button>
       </div>
     )
   }
   if (sort === 'unanswered') {
     return (
       <div style={s.empty}>
-        <Question size={28} color="var(--accent-text)" weight="duotone" />
-        <p style={s.emptyTitle}>Tout le monde a été aidé</p>
-        <p style={s.emptyDesc}>Aucune question en attente. Bravo la famille !</p>
+        <CheckCircle size={28} color="var(--accent-text)" weight="duotone" />
+        <p style={s.emptyTitle}>Toutes les questions ont une réponse</p>
+        <p style={s.emptyDesc}>Rien en attente pour le moment.</p>
       </div>
     )
   }
   return (
     <div style={s.empty}>
-      <ChatCircle size={28} color="var(--accent-text)" weight="duotone" />
+      <ChatCircleText size={28} color="var(--accent-text)" weight="duotone" />
       <p style={s.emptyTitle}>
         {category !== 'all'
-          ? `Personne n'a encore parlé de ${CATEGORIES[category].short}`
-          : "C'est calme aujourd'hui. Brise la glace !"}
+          ? `Aucune question sur « ${CATEGORIES[category].short} » pour l'instant`
+          : 'Aucune question pour l’instant'}
       </p>
-      <p style={s.emptyDesc}>
-        {category !== 'all'
-          ? 'Sois le premier à lancer le sujet. Quelqu\'un attend probablement la même réponse que toi.'
-          : 'Raconte d\'où tu viens, ce qui t\'a amené à la LCD, ou ce qui te bloque en ce moment. On est curieux de te lire.'}
-      </p>
-      <button onClick={onNew} style={s.emptyBtn}>
-        <Plus size={13} weight="bold" /> Démarrer une conversation
+      <p style={s.emptyDesc}>Pose la première : Jason ou un hôte te répond sous 48 h, et la réponse servira aux suivants.</p>
+      <button onClick={() => onAsk()} style={s.emptyBtn}>
+        <Plus size={13} weight="bold" /> Poser ma question
       </button>
     </div>
   )
 }
 
-// ─── New members band ─────────────────────────────────────────────────
 
-function NewMembersBand({ members }: { members: NewMember[] }) {
-  const visible = members.slice(0, 5)
-  return (
-    <div style={s.newMembersBand} className="cn-members-band">
-      <div style={s.newMembersTextCol} className="cn-members-text-col">
-        <span style={s.newMembersLabel}>Nouveaux Entre Hôtes</span>
-        <span style={s.newMembersTitle}>Bienvenue à eux</span>
-      </div>
-      <div style={s.newMembersList} className="cn-members-list">
-        {visible.map(m => {
-          const av = colorFromId(m.id)
-          const initials = displayInitials({ pseudo: m.pseudo, full_name: m.full_name })
-          const name = displayName({ pseudo: m.pseudo, full_name: m.full_name })
-          return (
-            <Link
-              key={m.id}
-              href={`/dashboard/chez-nous/membre/${m.id}`}
-              style={s.newMemberCard}
-              className="cn-member-card"
-              title={`${name}${m.city ? ` · ${m.city}` : ''}`}
-            >
-              <span style={{ ...s.newMemberAvatar, background: av.bg, color: av.text }} className="cn-member-avatar">
-                {initials}
-              </span>
-              <div style={s.newMemberInfo} className="cn-member-info">
-                <span style={s.newMemberName} className="cn-member-name">
-                  {name}
-                  {m.is_contributor && <span style={s.contribDotMini} />}
-                </span>
-                {m.city && <span style={s.newMemberCity} className="cn-member-city">{m.city}</span>}
-                {m.created_at && (
-                  <span style={s.newMemberSince} className="cn-member-since"><RelativeTime iso={m.created_at} /></span>
-                )}
-              </div>
-            </Link>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
-// La SearchBar standalone a été fusionnée dans ComposerCard
-// (loupe à droite de 'Exprime-toi'). Plus de double row.
-
-function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; defaultCategory: CategoryId }) {
+function NewPostForm({ onSuccess, defaultCategory, defaultTitle = '' }: { onSuccess: () => void; defaultCategory: CategoryId; defaultTitle?: string }) {
   const [category, setCategory] = useState<CategoryId>(defaultCategory)
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState(defaultTitle)
   const [body, setBody] = useState('')
   const [images, setImages] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -1268,7 +769,8 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
 
   // Hydrate depuis le brouillon une fois au montage
   useEffect(() => {
-    if (restored && !restoredNotice) {
+    // Question pré-remplie depuis la recherche : elle prime sur un ancien brouillon
+    if (restored && !restoredNotice && !defaultTitle) {
       if (restored.category) setCategory(restored.category)
       if (restored.title) setTitle(restored.title)
       if (restored.body) setBody(restored.body)
@@ -1310,9 +812,9 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
         </div>
       )}
       <div style={s.formField}>
-        <label style={s.label}>Catégorie</label>
+        <label style={s.label}>Sujet</label>
         <select value={category} onChange={e => setCategory(e.target.value as CategoryId)} style={s.select}>
-          {CATEGORY_ORDER.map(cid => (
+          {QUESTION_CATEGORIES.map(cid => (
             <option key={cid} value={cid}>{CATEGORIES[cid].label}</option>
           ))}
         </select>
@@ -1321,27 +823,27 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
 
       <div style={s.formField}>
         <label style={s.label}>
-          Titre <span style={s.required}>*</span>
+          Ta question <span style={s.required}>*</span>
         </label>
         <input
           type="text" value={title} onChange={e => setTitle(e.target.value)}
-          placeholder="Un sujet précis et clair…"
+          placeholder="Ex. : Dois-je déclarer mon meublé en mairie à Lyon ?"
           style={s.input} maxLength={200}
           required
         />
-        <p style={s.helper}>{title.length}/200 caractères. Pose ta question ou ton sujet en une phrase.</p>
+        <p style={s.helper}>{title.length}/200 caractères. En une phrase : c&apos;est ce que les autres hôtes verront.</p>
       </div>
 
       <div style={s.formField}>
         <label style={s.label}>
-          Message <span style={s.required}>*</span>
+          Ton contexte <span style={s.required}>*</span>
         </label>
         <MarkdownToolbar textareaRef={taRef} value={body} onChange={setBody} />
         <MentionAutocomplete
           textareaRef={taRef}
           value={body}
           onChange={setBody}
-          placeholder="Détaille ton contexte, ce que tu as déjà essayé, ce que tu cherches…"
+          placeholder="Ville, plateforme, nombre de logements, statut (LMNP, résidence principale…), ce que tu as déjà essayé…"
           style={s.textarea}
           rows={6}
           maxLength={8000}
@@ -1360,17 +862,17 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
       {(!title.trim() || !body.trim()) && !error && (
         <p style={s.helperRequired}>
           {!title.trim() && !body.trim()
-            ? 'Renseigne un titre et un message pour publier.'
+            ? 'Écris ta question et ton contexte pour publier.'
             : !title.trim()
-              ? 'Il manque le titre pour pouvoir publier.'
-              : 'Il manque le message pour pouvoir publier.'}
+              ? 'Il manque ta question.'
+              : 'Ajoute un peu de contexte pour avoir une réponse précise.'}
         </p>
       )}
 
       <div style={s.formActions}>
         <button onClick={onSuccess} style={s.btnGhost} disabled={pending}>Annuler</button>
         <button onClick={submit} style={s.btnPrimary} disabled={pending || !title.trim() || !body.trim()}>
-          {pending ? 'Publication…' : 'Publier'}
+          {pending ? 'Envoi…' : 'Publier ma question'}
         </button>
       </div>
     </div>
@@ -1380,62 +882,28 @@ function NewPostForm({ onSuccess, defaultCategory }: { onSuccess: () => void; de
 // ─── Styles ───────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
+  heroCtas: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 18px' },
+  qaAside: { flexDirection: 'column', gap: '14px' },
+  searchForm: {
+    display: 'flex', alignItems: 'center', gap: '10px',
+    background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '14px',
+    padding: '4px 8px 4px 16px',
+  },
+  searchInput: {
+    flex: 1, minWidth: 0, border: 'none', outline: 'none', background: 'transparent',
+    color: 'var(--text)', fontSize: '14.5px', fontFamily: 'inherit', padding: '11px 0',
+  },
+  searchClear: {
+    display: 'flex', alignItems: 'center', justifyContent: 'center', width: '30px', height: '30px',
+    borderRadius: '8px', color: 'var(--text-2)', textDecoration: 'none',
+  },
+  jasonStat: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--text-2)' },
+  helpText: { fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.55, margin: 0 },
+  helpLink: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 700, color: 'var(--accent-text)', textDecoration: 'none' },
   page: { padding: 'clamp(14px, 3vw, 44px)', width: '100%' },
 
-  mapWrap: {
-    width: '100%', display: 'flex', justifyContent: 'center',
-    padding: '4px 0',
-  },
-  mapSvg: {
-    width: '100%', maxWidth: '240px', height: 'auto',
-  },
-  regionLegend: {
-    display: 'flex', flexDirection: 'column' as const, gap: '4px',
-    paddingTop: '8px', borderTop: '1px solid var(--border)',
-  },
-  regionLegendItem: {
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    fontSize: '12px',
-  },
-  regionLegendName: { color: 'var(--text-2)' },
-  regionLegendCount: {
-    color: '#fb7185', fontWeight: 700,
-    background: 'rgba(251,113,133,0.12)',
-    padding: '1px 8px', borderRadius: '100px',
-    fontSize: '11px',
-  },
 
-  activityList: { display: 'flex', flexDirection: 'column' as const, gap: '10px' },
-  activityRow: {
-    display: 'flex', alignItems: 'flex-start', gap: '10px',
-    padding: '8px 0', borderBottom: '1px solid var(--border)',
-    textDecoration: 'none' as const, color: 'var(--text-2)',
-    fontSize: '12.5px', lineHeight: 1.4,
-  },
-  activityDotReply: {
-    width: '6px', height: '6px', borderRadius: '50%',
-    background: 'var(--success-1)', flexShrink: 0, marginTop: '6px',
-    boxShadow: '0 0 0 3px rgba(52,211,153,0.18)',
-  },
-  activityDotPost: {
-    width: '6px', height: '6px', borderRadius: '50%',
-    background: 'var(--accent-text)', flexShrink: 0, marginTop: '6px',
-    boxShadow: '0 0 0 3px rgba(255,213,107,0.18)',
-  },
-  activityText: { display: 'flex', flexDirection: 'column' as const, gap: '2px', minWidth: 0, flex: 1 },
-  activityTitle: {
-    fontSize: '11.5px', color: 'var(--text-2)', fontStyle: 'italic' as const,
-    overflow: 'hidden' as const, textOverflow: 'ellipsis' as const, whiteSpace: 'nowrap' as const,
-  },
-  activityWhen: { fontSize: '10px', color: 'var(--text-muted)' },
 
-  jasonCard: {
-    background: 'linear-gradient(160deg, rgba(255,213,107,0.08), rgba(255,213,107,0.02))',
-    border: '1px solid rgba(255,213,107,0.22)',
-    borderRadius: '14px',
-    padding: 'clamp(14px, 2.5vw, 18px)',
-    display: 'flex', flexDirection: 'column' as const, gap: '12px',
-  },
   jasonHeader: { display: 'flex', alignItems: 'center', gap: '10px' },
   jasonAvatar: {
     width: '36px', height: '36px', borderRadius: '50%',
@@ -1452,75 +920,11 @@ const s: Record<string, React.CSSProperties> = {
   jasonMessage: {
     fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.65, margin: 0,
   },
-  jasonSign: {
-    fontSize: '12px', fontStyle: 'italic' as const,
-    color: 'var(--accent-text)', alignSelf: 'flex-end',
-    fontFamily: 'var(--font-fraunces), serif',
-  },
 
-  newMembersBand: {
-    display: 'flex', alignItems: 'center', gap: 'clamp(12px, 2vw, 24px)',
-    padding: 'clamp(12px, 2vw, 18px) clamp(14px, 2.5vw, 22px)',
-    margin: '0 0 18px',
-    background: 'linear-gradient(135deg, rgba(255,213,107,0.06), rgba(167,139,250,0.04))',
-    border: '1px solid rgba(255,213,107,0.18)',
-    borderRadius: '14px',
-    flexWrap: 'wrap' as const,
-  },
-  newMembersTextCol: {
-    display: 'flex', flexDirection: 'column' as const, gap: '2px',
-    minWidth: '140px', flexShrink: 0,
-  },
-  newMembersLabel: {
-    fontSize: '10px', fontWeight: 700, letterSpacing: '0.6px',
-    textTransform: 'uppercase' as const, color: 'var(--accent-text)',
-  },
-  newMembersTitle: {
-    fontFamily: 'var(--font-fraunces), serif',
-    fontSize: '17px', fontWeight: 400, color: 'var(--text)',
-  },
-  newMembersList: {
-    display: 'flex', gap: '10px', alignItems: 'center',
-    flexWrap: 'wrap' as const, flex: '1 1 auto',
-  },
-  newMemberCard: {
-    display: 'flex', alignItems: 'center', gap: '10px',
-    padding: '8px 12px 8px 8px',
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
-    borderRadius: '100px',
-    textDecoration: 'none' as const,
-    color: 'var(--text)',
-    transition: 'transform 0.15s, border-color 0.15s',
-  },
-  newMemberAvatar: {
-    width: '32px', height: '32px', borderRadius: '50%',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '11px', fontWeight: 700, flexShrink: 0,
-  },
-  newMemberInfo: { display: 'flex', flexDirection: 'column' as const, gap: '0', minWidth: 0 },
-  newMemberName: {
-    fontSize: '13px', fontWeight: 600, color: 'var(--text)',
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
-    whiteSpace: 'nowrap' as const,
-  },
-  newMemberCity: { fontSize: '11px', color: 'var(--text-muted)', whiteSpace: 'nowrap' as const },
-  newMemberSince: { fontSize: '10px', color: 'var(--text-3)', whiteSpace: 'nowrap' as const },
 
-  layout: {
-    display: 'flex', gap: 'clamp(14px, 2vw, 24px)',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-  },
   mainCol: {
     flex: '1 1 600px', minWidth: 0,
     display: 'flex', flexDirection: 'column', gap: '14px',
-  },
-  aside: {
-    flex: '0 1 300px',
-    minWidth: '260px',
-    display: 'flex', flexDirection: 'column', gap: '14px',
-    position: 'sticky', top: '20px',
   },
   asideCard: {
     background: 'var(--surface)', border: '1px solid var(--border)',
@@ -1535,68 +939,8 @@ const s: Record<string, React.CSSProperties> = {
     letterSpacing: '0.6px', color: 'var(--text-2)',
   },
 
-  statsList: {
-    display: 'flex', flexDirection: 'column', gap: '8px',
-  },
-  statRow2: { display: 'flex', alignItems: 'baseline', gap: '6px', flexWrap: 'wrap' },
-  statValue: {
-    fontFamily: 'var(--font-fraunces), serif',
-    fontSize: 'clamp(17px, 4vw, 22px)', fontWeight: 400, color: 'var(--text)', lineHeight: 1,
-  },
-  statLabel: {
-    fontSize: '12px', color: 'var(--text-2)',
-  },
 
-  membersList: {
-    display: 'flex', flexDirection: 'column', gap: '6px',
-  },
-  memberRow: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-    padding: '6px 8px', borderRadius: '8px',
-    textDecoration: 'none', color: 'inherit',
-  },
-  memberRank: {
-    fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700,
-    minWidth: '16px', textAlign: 'center',
-  },
-  memberAvatar: {
-    width: '28px', height: '28px', borderRadius: '50%',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '11px', fontWeight: 700, lineHeight: 1,
-    fontFamily: 'var(--font-fraunces), serif',
-    flexShrink: 0,
-  },
-  memberName: {
-    flex: 1, minWidth: 0,
-    fontSize: '12.5px', color: 'var(--text-2)', fontWeight: 500,
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
-  },
-  contribDotMini: {
-    width: '5px', height: '5px', borderRadius: '50%',
-    background: 'var(--accent-text)', display: 'inline-block', flexShrink: 0,
-  },
-  memberScore: {
-    fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600,
-    background: 'var(--bg)', padding: '2px 6px', borderRadius: '999px',
-    flexShrink: 0,
-  },
 
-  catList: {
-    display: 'flex', flexDirection: 'column', gap: '2px',
-  },
-  catItem: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-    padding: '7px 10px', borderRadius: '8px',
-    textDecoration: 'none', color: 'inherit',
-    border: '1px solid',
-  },
-  catDot: { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 },
-  catItemLabel: { flex: 1, fontSize: '12px', color: 'var(--text-2)', fontWeight: 500 },
-  catItemCount: {
-    fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600,
-    background: 'var(--bg)', padding: '2px 7px', borderRadius: '999px',
-  },
 
   tipList: { margin: 0, paddingLeft: '16px', display: 'flex', flexDirection: 'column', gap: '6px' },
   tipItem: {
@@ -1604,89 +948,10 @@ const s: Record<string, React.CSSProperties> = {
   },
 
 
-  hero: { marginBottom: 'clamp(16px, 3vw, 24px)' },
-  heroBadge: {
-    display: 'inline-flex', alignItems: 'center', gap: '7px',
-    fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase',
-    color: 'var(--accent-text)', background: 'rgba(255,213,107,0.08)',
-    border: '1px solid rgba(255,213,107,0.18)',
-    borderRadius: '999px', padding: '4px 12px', marginBottom: '14px',
-  },
-  heroTitle: {
-    fontFamily: 'var(--font-fraunces), serif',
-    fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400,
-    color: 'var(--text)', margin: '0 0 10px',
-  },
-  heroDesc: {
-    fontSize: '14px', lineHeight: 1.7, color: 'var(--text-2)',
-    maxWidth: '560px', margin: 0,
-  },
-  statRow: {
-    display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap',
-    fontSize: '12px', color: 'var(--text-muted)', marginTop: '12px',
-  },
-  statSep:  { opacity: 0.5 },
 
-  heroActions: {
-    display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap',
-    marginTop: '16px',
-  },
-  heroInviteBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '7px',
-    background: 'rgba(255,213,107,0.10)',
-    border: '1px solid rgba(255,213,107,0.30)',
-    color: '#FFD56B',
-    fontSize: '13px', fontWeight: 600,
-    padding: '8px 14px', borderRadius: '10px',
-    cursor: 'pointer',
-    transition: 'background 0.15s',
-  },
 
-  inviteCard: {
-    background: 'var(--surface)',
-    border: '1px solid var(--accent-border)',
-    borderRadius: '14px',
-    padding: '16px',
-    display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-start',
-    gap: '8px',
-  },
-  inviteIconWrap: {
-    width: '36px', height: '36px', borderRadius: '10px',
-    background: 'var(--accent-bg)',
-    border: '1px solid var(--accent-border)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    marginBottom: '4px',
-  },
-  inviteTitle: {
-    fontSize: '14px', fontWeight: 600, color: 'var(--text)',
-    margin: 0,
-  },
-  inviteDesc: {
-    fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.5,
-    margin: '0 0 4px',
-  },
-  inviteBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    background: 'var(--accent-text)', color: 'var(--bg)',
-    border: 'none', borderRadius: '9px',
-    padding: '8px 14px', fontSize: '12px', fontWeight: 700,
-    cursor: 'pointer', width: '100%', justifyContent: 'center',
-  },
 
   // ─── Composer Facebook-style ───────────────────────────────────────
-  composerCard: {
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
-    borderRadius: 'var(--r-lg)',
-    padding: 'var(--s-3)',
-    marginBottom: 'var(--s-4)',
-    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
-  },
-  composerRow: {
-    display: 'flex', alignItems: 'center', gap: 'var(--s-3)',
-    paddingBottom: 'var(--s-3)',
-    borderBottom: '1px solid var(--border)',
-  },
   composerAvatar: {
     width: '40px', height: '40px', borderRadius: '50%',
     background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
@@ -1695,14 +960,6 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'var(--font-fraunces), serif',
     flexShrink: 0,
     transition: 'transform var(--d-base) var(--ease-spring)',
-  },
-  composerInput: {
-    flex: 1, textAlign: 'left' as const,
-    background: 'var(--bg)', border: '1px solid var(--border)',
-    borderRadius: 'var(--r-pill)', padding: '12px 18px',
-    fontSize: 'var(--t-base)', color: 'var(--text-3)',
-    cursor: 'pointer', fontFamily: 'inherit',
-    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth)',
   },
   // ─── PostFormModal ─────────────────────────────────────────────────
   modalBackdrop: {
@@ -1762,9 +1019,6 @@ const s: Record<string, React.CSSProperties> = {
     flex: 1,
   },
 
-  sortBar: {
-    marginBottom: '14px',
-  },
 
   catRow: {
     display: 'flex', flexWrap: 'wrap', gap: '8px',
@@ -1778,24 +1032,6 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'background 0.15s, border-color 0.15s',
   },
 
-  composerSearchInput: {
-    flex: 1, minWidth: 0,
-    background: 'transparent', border: 'none', outline: 'none',
-    color: 'var(--text)', fontSize: '14px', fontFamily: 'inherit',
-  },
-  composerToggleBtn: {
-    background: 'transparent', border: 'none', cursor: 'pointer',
-    color: 'var(--text-2)',
-    width: '32px', height: '32px',
-    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-    borderRadius: '8px',
-    flexShrink: 0,
-    transition: 'background 0.15s, color 0.15s',
-  },
-  toolbar: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    gap: '10px', marginBottom: '14px', flexWrap: 'wrap',
-  },
   sortRow: {
     display: 'flex', gap: '4px',
     background: 'var(--bg)', border: '1px solid var(--border)',
@@ -1806,14 +1042,6 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '12px', fontWeight: 600,
     padding: '5px 10px', borderRadius: '7px',
     border: '1px solid', textDecoration: 'none',
-  },
-  newBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '7px',
-    background: '#ffd56b', color: '#1a1a0e',
-    fontWeight: 700, fontSize: '13px',
-    padding: '9px 18px', borderRadius: '10px',
-    border: 'none', cursor: 'pointer',
-    boxShadow: '0 4px 12px rgba(255,213,107,0.18)',
   },
 
   form: {
@@ -1874,7 +1102,7 @@ const s: Record<string, React.CSSProperties> = {
     padding: '8px 16px', fontSize: '13px', cursor: 'pointer',
   },
   btnPrimary: {
-    background: '#ffd56b', color: '#1a1a0e',
+    background: 'var(--accent-text)', color: 'var(--bg)',
     border: 'none', borderRadius: '8px',
     padding: '9px 18px', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
   },
@@ -1891,7 +1119,7 @@ const s: Record<string, React.CSSProperties> = {
   emptyDesc:  { fontSize: '13px', color: 'var(--text-muted)', margin: '0 auto', maxWidth: '380px', lineHeight: 1.6 },
   emptyBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
-    background: '#ffd56b', color: '#1a1a0e',
+    background: 'var(--accent-text)', color: 'var(--bg)',
     fontWeight: 700, fontSize: '13px',
     padding: '8px 16px', borderRadius: '10px',
     border: 'none', cursor: 'pointer', marginTop: '10px',
@@ -2111,10 +1339,5 @@ const s: Record<string, React.CSSProperties> = {
     letterSpacing: '0.5px', color: '#fb7185',
     background: 'rgba(251,113,133,0.12)', padding: '1px 5px', borderRadius: '4px',
   },
-  miniBadge: {
-    fontSize: '11px', lineHeight: 1, padding: '2px 4px',
-    borderRadius: '5px',
-  },
   postFootDot: { opacity: 0.5 },
-  postReplies: { display: 'inline-flex', alignItems: 'center', gap: '3px' },
 }

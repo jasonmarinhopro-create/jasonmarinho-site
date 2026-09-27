@@ -13,7 +13,7 @@ import { ChatsCircle, Handshake } from '@phosphor-icons/react/dist/ssr'
 export default function EntreHotesTabBar() {
   const pathname = usePathname() ?? ''
   const tabs = [
-    { href: '/dashboard/entre-hotes/forum',      label: 'Forum',               Icon: ChatsCircle },
+    { href: '/dashboard/entre-hotes/forum',      label: 'Questions & réponses', Icon: ChatsCircle },
     // Groupes Facebook : déplacés dans « Trouver des voyageurs » (sept. 2026).
     { href: '/dashboard/entre-hotes/ecosysteme', label: 'Partenaires & outils', Icon: Handshake },
   ]
