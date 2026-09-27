@@ -16,6 +16,7 @@ import MesPlateformesWidget from './MesPlateformesWidget'
 import TodayBoard, { type TodayItem, type TodayAction } from './TodayBoard'
 import { loadHostMenageSlots, menageKey } from '@/lib/menage/host-slots'
 import { contractTodos } from '@/lib/contracts/todo'
+import ReviewPrompt from './ReviewPrompt'
 import { sejoursSansContrat } from '@/lib/finances/dedup'
 import DeclarationsWidget from '@/components/dashboard/DeclarationsWidget'
 import OnboardingTour from './OnboardingTour'
@@ -808,6 +809,9 @@ export default async function DashboardPage() {
 
         {/* ── À faire aujourd'hui : arrivées, départs, ménages du jour, puis
               contrats / loyers / cautions / déclarations en attente (sept. 2026). */}
+        {/* Demande d'avis Google, une fois, dès qu'un contrat est signé */}
+        {(contracts ?? []).some((c: { statut?: string }) => c.statut === 'signe') && <ReviewPrompt />}
+
         {!isNewHost && (
           <TodayBoard
             arrivals={todayArrivalItems}

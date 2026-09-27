@@ -11,7 +11,7 @@ import { useState, useTransition, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Plus, ChatCircle, ChatCircleText, PushPin, Lock, ArrowFatUp, ArrowRight, Clock, Question, Pencil, Sparkle, MagnifyingGlass, X, CheckCircle, HandHeart } from '@phosphor-icons/react/dist/ssr'
+import { Plus, ChatCircle, ChatCircleText, PushPin, Lock, ArrowFatUp, ArrowRight, Clock, Question, Pencil, Sparkle, MagnifyingGlass, X, CheckCircle, HandHeart, UserCircle } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashboard/HubHero'
 import { CATEGORIES, CATEGORY_ORDER, type CategoryId } from '@/lib/chez-nous/categories'
 import { displayName, displayInitials, colorFromId } from '@/lib/chez-nous/display'
@@ -227,6 +227,10 @@ export default function ChezNousFeed({ posts, authorsMap, currentUserId, current
         <aside className="qa-aside" style={s.qaAside}>
           <GoodQuestionCard />
           <HelpCard />
+          {/* Profil public (pseudo, ville) : sorti du menu du compte en sept. 2026 */}
+          <Link href={`/dashboard/chez-nous/membre/${currentUserId}`} style={s.profileLink}>
+            <UserCircle size={16} /> Mon profil dans Questions & réponses <ArrowRight size={13} weight="bold" style={{ marginLeft: 'auto' }} />
+          </Link>
         </aside>
       </div>
 
@@ -922,6 +926,7 @@ function NewPostForm({ onSuccess, defaultCategory, defaultTitle = '' }: { onSucc
 
 const s: Record<string, React.CSSProperties> = {
   heroCtas: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 18px' },
+  profileLink: { display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 14px', borderRadius: '12px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', fontSize: '13px', fontWeight: 600, textDecoration: 'none' },
   quotaLine: { fontSize: '13px', color: 'var(--text-2)', margin: '12px 0 0' },
   quotaLink: { color: 'var(--accent-text)', fontWeight: 600 },
   limitCard: {

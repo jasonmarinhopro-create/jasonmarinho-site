@@ -76,7 +76,7 @@ export const getUserSpaces = cache(async (): Promise<SpacesResult> => {
       key: 'host',
       label: 'Hôte LCD',
       href: '/dashboard',
-      subtitle: isAdmin ? 'Mode admin' : (hasLogements ? `${logementsCount} logement${logementsCount! > 1 ? 's' : ''}` : null),
+      subtitle: hasLogements ? `${logementsCount} logement${logementsCount! > 1 ? 's' : ''}` : null,
       active: hostActive,
     },
   ]

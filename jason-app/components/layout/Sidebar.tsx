@@ -10,12 +10,19 @@ import {
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
   ChartLineUp, HouseLine, Briefcase, ShareNetwork, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
+  Broom, Check, Plus,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
 import type { PropertyLite } from '@/lib/queries/active-property'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import type { UserSpace } from '@/lib/queries/spaces'
+
+// Icône de chaque espace dans le menu du compte
+const SPACE_ICONS: Record<UserSpace['key'], React.ElementType> = {
+  host: HouseSimple, photographer: Camera, cleaner: Broom, investor: ChartLineUp,
+}
 
 // Sidebar refondue (Étape 2/7 du refactor — cf. docs/REFACTOR-DASHBOARD.md).
 // De 20 items à 10 : bloc quotidien (7) + bloc "Faire grandir" (3).
@@ -542,141 +549,110 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                 width: '260px',
               } : {}),
             }} role="menu">
-              {/* Section identité */}
+              {/* Menu du compte (refonte sept. 2026, demande de Jason : « un peu
+                  fouillis »). 3 blocs : compte, espaces (seulement s'il y en a
+                  plusieurs), admin + déconnexion. Retirés d'ici : Profil Entre
+                  Hôtes (lien sur la page Questions & réponses, pseudo dans Mon
+                  compte), Contributeurs, avis Google et jasonmarinho.com (encart
+                  « Tu aimes l'app ? » du Centre d'aide), les 3 « + Créer… »
+                  (une seule entrée « Ajouter un espace » → /dashboard/espaces). */}
               <div style={styles.userMenuHead}>
                 <div style={styles.userMenuAvatar}>
                   {(userName || '?').split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={styles.userMenuName}>{userName || 'Mon compte'}</div>
-                  <div style={styles.userMenuPlan}>{userPlanLabel || 'Découverte'}</div>
+                  <div style={styles.userMenuPlan}>
+                    {userPlanLabel === 'Découverte' ? (
+                      <>Découverte · <Link href="/dashboard/abonnement" onClick={() => setUserMenuOpen(false)} style={styles.userMenuUpgrade}>Passer en Standard</Link></>
+                    ) : (
+                      userPlanLabel === 'Administrateur' ? userPlanLabel : `Formule ${userPlanLabel || 'Découverte'}`
+                    )}
+                  </div>
                 </div>
               </div>
               <div style={styles.userMenuDivider} />
 
-              {/* Navigation */}
               <Link href="/dashboard/profil" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
                 <UserCircle size={15} />Mon compte
               </Link>
-              {userId && (
-                <Link href={`/dashboard/chez-nous/membre/${userId}`} onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
-                  <UserCircle size={15} weight="duotone" />Profil Entre Hôtes
-                </Link>
-              )}
               <Link href="/dashboard/abonnement" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
                 <CreditCard size={15} />Mon abonnement
-              </Link>
-              <Link href="/dashboard/contributeurs" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
-                <Heart size={15} weight={isContributor ? 'fill' : 'regular'} style={{ color: isContributor ? 'var(--accent-text)' : undefined }} />
-                Contributeurs
-                {!isContributor && <span style={styles.userMenuBadge}>Rejoindre</span>}
               </Link>
               <Link href="/dashboard/aide" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
                 <Question size={15} />Centre d&apos;aide
               </Link>
 
-              {/* Mes espaces multi-rôles : bascule Hôte / Photographe / Ménage */}
-              {spaces.length > 0 && (
-                <>
-                  <div style={styles.userMenuDivider} />
-                  <div style={{ padding: '10px 12px 4px', fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'var(--text-3)' }}>
-                    Mes espaces
-                  </div>
-                  {spaces.filter(s => s.active).map(s => {
-                    // Détection espace courant via pathname (client-side)
-                    const isCurrent =
-                      s.key === 'photographer' ? (pathname?.startsWith('/dashboard/ma-fiche-photographe') ?? false)
-                      : s.key === 'cleaner'    ? (pathname?.startsWith('/dashboard/ma-fiche-menage') ?? false)
-                      : s.key === 'investor'   ? (pathname?.startsWith('/dashboard/investir') ?? false)
-                      : !pathname?.startsWith('/dashboard/ma-fiche-') && !pathname?.startsWith('/dashboard/investir')
-                    return (
-                      <Link
-                        key={s.key}
-                        href={s.href}
-                        onClick={() => setUserMenuOpen(false)}
-                        style={{
-                          ...styles.userMenuItem,
-                          background: isCurrent ? 'rgba(255,213,107,0.08)' : 'transparent',
-                          color: isCurrent ? 'var(--accent-text)' : 'var(--text-2)',
-                          fontWeight: isCurrent ? 600 : 400,
-                        }}
-                      >
-                        <span style={{ width: 15, textAlign: 'center' as const, color: isCurrent ? 'var(--accent-text)' : 'var(--text-3)' }}>{isCurrent ? '✓' : '·'}</span>
-                        <span style={{ flex: 1, display: 'flex', flexDirection: 'column' as const }}>
-                          <span>{s.label}</span>
-                          {s.subtitle && <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 400 }}>{s.subtitle}</span>}
-                        </span>
+              {/* Espaces : la liste n'apparaît que si on en a au moins 2 */}
+              {(() => {
+                const activeSpaces = spaces.filter(s => s.active)
+                const canAdd = ['photographer', 'cleaner', 'investor'].some(k => !activeSpaces.some(s => s.key === k))
+                if (activeSpaces.length < 2 && !canAdd) return null
+                return (
+                  <>
+                    <div style={styles.userMenuDivider} />
+                    {activeSpaces.length >= 2 && (
+                      <>
+                        <div style={styles.userMenuSection}>Mes espaces</div>
+                        {activeSpaces.map(s => {
+                          const isCurrent =
+                            s.key === 'photographer' ? (pathname?.startsWith('/dashboard/ma-fiche-photographe') ?? false)
+                            : s.key === 'cleaner'    ? (pathname?.startsWith('/dashboard/ma-fiche-menage') ?? false)
+                            : s.key === 'investor'   ? (pathname?.startsWith('/dashboard/investir') ?? false)
+                            : !pathname?.startsWith('/dashboard/ma-fiche-') && !pathname?.startsWith('/dashboard/investir')
+                          const SpaceIcon = SPACE_ICONS[s.key]
+                          return (
+                            <Link
+                              key={s.key}
+                              href={s.href}
+                              onClick={() => setUserMenuOpen(false)}
+                              aria-current={isCurrent ? 'page' : undefined}
+                              style={{
+                                ...styles.userMenuItem,
+                                background: isCurrent ? 'var(--accent-bg)' : 'transparent',
+                                color: isCurrent ? 'var(--accent-text)' : 'var(--text-2)',
+                                fontWeight: isCurrent ? 600 : 400,
+                              }}
+                            >
+                              <SpaceIcon size={15} weight={isCurrent ? 'fill' : 'regular'} />
+                              <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' as const }}>
+                                <span>{s.label}</span>
+                                {s.subtitle && <span style={{ fontSize: 10.5, color: 'var(--text-muted)', fontWeight: 400 }}>{s.subtitle}</span>}
+                              </span>
+                              {isCurrent && <Check size={13} weight="bold" />}
+                            </Link>
+                          )
+                        })}
+                      </>
+                    )}
+                    {canAdd && (
+                      <Link href="/dashboard/espaces" onClick={() => setUserMenuOpen(false)} style={{ ...styles.userMenuItem, color: 'var(--text-3)' }}>
+                        <Plus size={15} />Ajouter un espace
                       </Link>
-                    )
-                  })}
-                  {/* CTAs pour créer les fiches pro manquantes (in-app, sans ressaisir email + mdp) */}
-                  {!spaces.find(s => s.key === 'photographer')?.active && (
-                    <Link href="/dashboard/creer-fiche-photographe" onClick={() => setUserMenuOpen(false)} style={{ ...styles.userMenuItem, color: 'var(--text-3)' }}>
-                      <span style={{ width: 15, textAlign: 'center' as const, color: 'var(--accent-text)', fontWeight: 700 }}>+</span>
-                      Créer ma fiche photographe
-                    </Link>
-                  )}
-                  {!spaces.find(s => s.key === 'cleaner')?.active && (
-                    <Link href="/dashboard/creer-fiche-menage" onClick={() => setUserMenuOpen(false)} style={{ ...styles.userMenuItem, color: 'var(--text-3)' }}>
-                      <span style={{ width: 15, textAlign: 'center' as const, color: 'var(--accent-text)', fontWeight: 700 }}>+</span>
-                      Créer ma fiche équipe ménage
-                    </Link>
-                  )}
-                  {/* Pont hôte → investisseur : analyser un nouveau bien à acheter.
-                      La 1re sauvegarde de projet active l'espace investisseur. */}
-                  {!spaces.find(s => s.key === 'investor')?.active && (
-                    <Link href="/dashboard/investir" onClick={() => setUserMenuOpen(false)} style={{ ...styles.userMenuItem, color: 'var(--text-3)' }}>
-                      <span style={{ width: 15, textAlign: 'center' as const, color: 'var(--accent-text)', fontWeight: 700 }}>+</span>
-                      Analyser un investissement
-                    </Link>
-                  )}
-                </>
-              )}
+                    )}
+                  </>
+                )
+              })()}
 
               <div style={styles.userMenuDivider} />
-              <a href="https://jasonmarinho.com" target="_blank" rel="noopener noreferrer" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
-                <ArrowUpRight size={15} />jasonmarinho.com
-              </a>
-              <a href="https://g.page/r/CcLzE7IbhS5_EAE/review" target="_blank" rel="noopener noreferrer" onClick={() => setUserMenuOpen(false)} style={{ ...styles.userMenuItem, color: 'var(--accent-text)' }}>
-                <Star size={15} weight="fill" />Laisser un avis Google
-              </a>
-
-              {/* Toggle Mode admin — visible uniquement pour les admins.
-                  Style aligne sur la DA (accent-text jaune) + petit chip
-                  icon pour un vrai look bouton, plus d'aplat purple hors DA. */}
+              {/* Mode admin : un interrupteur, une seule fois (avant : bouton + mention
+                  « Mode admin » sous l'espace Hôte LCD) */}
               {isAdmin && (
-                <>
-                  <div style={styles.userMenuDivider} />
-                  <button
-                    onClick={() => { setUserMenuOpen(false); toggleAdminMode() }}
-                    style={{
-                      ...styles.userMenuItem,
-                      width: '100%',
-                      background: adminMode ? 'var(--accent-bg)' : 'rgba(255,213,107,0.04)',
-                      border: '1px solid var(--accent-border)',
-                      cursor: 'pointer', textAlign: 'left',
-                      color: 'var(--accent-text)',
-                      fontWeight: 500,
-                    }}
-                    title={adminMode ? 'Repasser en mode hôte' : 'Basculer sur la sidebar admin dédiée'}
-                  >
-                    <span style={{
-                      width: 22, height: 22, flexShrink: 0,
-                      background: 'rgba(255,213,107,0.15)',
-                      border: '1px solid var(--accent-border)',
-                      borderRadius: 6,
-                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                      color: 'var(--accent-text)',
-                    }}>
-                      <Gear size={13} weight={adminMode ? 'fill' : 'regular'} />
-                    </span>
-                    {adminMode ? 'Repasser en mode hôte' : 'Mode admin'}
-                  </button>
-                </>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={adminMode}
+                  onClick={() => { setUserMenuOpen(false); toggleAdminMode() }}
+                  style={{ ...styles.userMenuItem, width: '100%', background: 'none', border: 'none', textAlign: 'left', fontFamily: 'inherit' }}
+                >
+                  <Gear size={15} />
+                  <span style={{ flex: 1 }}>Mode admin</span>
+                  <span style={{ ...styles.switchTrack, background: adminMode ? 'var(--accent-text)' : 'var(--border-2, var(--border))' }}>
+                    <span style={{ ...styles.switchThumb, transform: adminMode ? 'translateX(14px)' : 'translateX(0)' }} />
+                  </span>
+                </button>
               )}
-
-              <div style={styles.userMenuDivider} />
-              <button onClick={() => { setUserMenuOpen(false); handleSignOut() }} style={{ ...styles.userMenuItem, width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', color: 'var(--text-3)' }}>
+              <button onClick={() => { setUserMenuOpen(false); handleSignOut() }} style={{ ...styles.userMenuItem, width: '100%', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', color: 'var(--text-3)', fontFamily: 'inherit' }}>
                 <SignOut size={15} />Se déconnecter
               </button>
             </div>
@@ -937,6 +913,10 @@ const styles: Record<string, React.CSSProperties> = {
   },
   userMenuName: { fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' },
   userMenuPlan: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' },
+  userMenuUpgrade: { color: 'var(--accent-text)', fontWeight: 600, textDecoration: 'none' },
+  userMenuSection: { padding: '10px 12px 4px', fontSize: 10, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', color: 'var(--text-3)' },
+  switchTrack: { width: '30px', height: '16px', borderRadius: '999px', padding: '2px', flexShrink: 0, transition: 'background 0.15s' },
+  switchThumb: { display: 'block', width: '12px', height: '12px', borderRadius: '50%', background: 'var(--surface)', transition: 'transform 0.15s', boxShadow: '0 1px 2px rgba(0,0,0,0.2)' },
   userMenuDivider: { height: '1px', background: 'var(--border)', margin: '4px 0' },
   userMenuItem: {
     display: 'flex', alignItems: 'center', gap: '10px',

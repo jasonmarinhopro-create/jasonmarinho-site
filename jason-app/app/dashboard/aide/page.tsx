@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import {
   MagnifyingGlass, ArrowRight, ArrowUpRight, WhatsappLogo, ChatsCircle,
-  BookOpen, Sparkle,
+  BookOpen, Sparkle, Heart, Star,
 } from '@phosphor-icons/react/dist/ssr'
 import { HELP_CATEGORIES, getCategory } from '@/lib/help/categories'
 import { listAllArticles } from '@/lib/help/loader'
@@ -121,6 +121,26 @@ export default async function AidePage() {
         </div>
       </section>
 
+      {/* « Tu aimes l'app ? » (sept. 2026) : avis Google, Contributeurs et
+          jasonmarinho.com, sortis du menu du compte où ils encombraient. */}
+      <section style={s.loveBox}>
+        <div style={{ flex: '1 1 280px', minWidth: 0 }}>
+          <div style={s.loveTitle}><Heart size={16} weight="fill" /> Tu aimes l&apos;app ?</div>
+          <p style={s.loveDesc}>Un avis Google aide d&apos;autres hôtes à la trouver. Et si tu veux aller plus loin, tu peux soutenir le projet en devenant contributeur.</p>
+        </div>
+        <div style={s.loveActions}>
+          <a href="https://g.page/r/CcLzE7IbhS5_EAE/review" target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ fontSize: '13px', padding: '10px 16px' }}>
+            <Star size={15} weight="fill" /> Laisser un avis Google
+          </a>
+          <Link href="/dashboard/contributeurs" className="btn-ghost" style={{ fontSize: '13px', padding: '10px 16px' }}>
+            Devenir contributeur
+          </Link>
+          <a href="https://jasonmarinho.com" target="_blank" rel="noopener noreferrer" style={s.loveLink}>
+            jasonmarinho.com <ArrowUpRight size={12} weight="bold" />
+          </a>
+        </div>
+      </section>
+
       {/* Liens secondaires */}
       <section style={s.linksRow}>
         <Link href="/dashboard/formations" style={s.secondaryLink}>
@@ -145,6 +165,14 @@ export default async function AidePage() {
 }
 
 const s: Record<string, React.CSSProperties> = {
+  loveBox: {
+    display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '14px 20px', padding: '18px 20px', marginBottom: '20px',
+    borderRadius: '16px', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
+  },
+  loveTitle: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '15px', fontWeight: 700, color: 'var(--text)', marginBottom: '4px' },
+  loveDesc: { fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.55, margin: 0 },
+  loveActions: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 14px' },
+  loveLink: { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '13px', fontWeight: 600, color: 'var(--accent-text)', textDecoration: 'none' },
   page: {
     padding: 'clamp(20px,3vw,44px)',
     width: '100%',
