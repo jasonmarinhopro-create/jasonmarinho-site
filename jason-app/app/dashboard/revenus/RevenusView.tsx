@@ -263,6 +263,10 @@ export default function RevenusView({
   // Annule un contrat "en attente" directement depuis le journal (ex : contrat
   // orphelin resté affiché après suppression du séjour lié). Rollback si échec.
   function handleCancelContract(id: string) {
+    // Confirmation : ce bouton annule le contrat lui-même (plus signable, sort
+    // des décomptes), pas seulement la ligne du journal. Réactivable depuis
+    // Contrats & paiements.
+    if (!confirm('Annuler ce contrat ? Le locataire ne pourra plus le signer et il sortira de tes encaissements. Tu pourras le réactiver depuis Contrats & paiements.')) return
     const removed = contracts.find(c => c.id === id)
     setContracts(prev => prev.filter(c => c.id !== id))
     startT(async () => {
@@ -1850,7 +1854,7 @@ export default function RevenusView({
                         <Trash size={13} />
                       </button>
                     ) : (
-                      <button onClick={() => handleCancelContract(tx.id)} style={s.deleteBtn} className="tx-del icon-btn" title="Supprimer ce contrat en attente">
+                      <button onClick={() => handleCancelContract(tx.id)} style={s.deleteBtn} className="tx-del icon-btn" title="Annuler ce contrat en attente">
                         <Trash size={13} />
                       </button>
                     )}

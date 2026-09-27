@@ -1,9 +1,10 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
 import Select from '@/components/ui/Select'
-import { FileText, MagnifyingGlass, CheckCircle, Clock, X, House, CurrencyEur, ArrowSquareOut, Plus, Info, Funnel } from '@phosphor-icons/react/dist/ssr'
+import { FileText, MagnifyingGlass, CheckCircle, Clock, X, House, CurrencyEur, ArrowSquareOut, Plus, Info, Funnel, ArrowCounterClockwise } from '@phosphor-icons/react/dist/ssr'
+import { restoreContract } from '../voyageurs/contract-actions'
 import type { ContractRow } from './types'
 
 interface Props {
@@ -229,6 +230,19 @@ function ContractRow({ contract: c }: { contract: ContractRow }) {
   const fullName = `${c.locataire_prenom ?? ''} ${c.locataire_nom ?? ''}`.trim() || 'Locataire'
   const initials = ((c.locataire_prenom?.[0] ?? '') + (c.locataire_nom?.[0] ?? '')).toUpperCase() || '?'
   const pay = c.statut === 'annule' ? null : paymentBadge(c)
+  // Réactivation d'un contrat annulé par erreur (la page est revalidée par
+  // l'action : la ligne reprend son vrai statut sans rechargement manuel).
+  const [restoring, startRestore] = useTransition()
+  const [restoreError, setRestoreError] = useState('')
+  function restore() {
+    const next = c.signature_date ? 'signé' : 'en attente de signature'
+    if (!confirm(`Réactiver ce contrat ? Il repassera en « ${next} ».`)) return
+    setRestoreError('')
+    startRestore(async () => {
+      const res = await restoreContract(c.id)
+      if (res.error) setRestoreError(res.error)
+    })
+  }
 
   return (
     <div style={s.row} className="ctr-row">
@@ -247,6 +261,18 @@ function ContractRow({ contract: c }: { contract: ContractRow }) {
       <span style={{ ...s.statusBadge, color: meta.color, background: meta.bg }}>{meta.label}</span>
       {pay && <span style={{ ...s.statusBadge, color: pay.color, background: pay.bg }} className="ctr-pay-badge">{pay.label}</span>}
       <div style={s.rowActions}>
+        {c.statut === 'annule' && (
+          <button
+            type="button"
+            onClick={restore}
+            disabled={restoring}
+            style={{ ...s.restoreBtn, opacity: restoring ? 0.6 : 1 }}
+            title={restoreError || 'Contrat annulé par erreur ? Le remettre en place'}
+          >
+            <ArrowCounterClockwise size={13} weight="bold" />
+            {restoring ? 'Réactivation…' : restoreError ? 'Réessayer' : 'Réactiver'}
+          </button>
+        )}
         {c.voyageur_id && (
           <Link
             href={`/dashboard/voyageurs/${c.voyageur_id}`}
@@ -397,6 +423,11 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '11px', fontWeight: 600, whiteSpace: 'nowrap',
   },
   rowActions: { display: 'flex', gap: '4px' },
+  restoreBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px', height: '32px', padding: '0 10px',
+    borderRadius: '8px', background: 'var(--bg)', border: '1px solid var(--accent-border)',
+    color: 'var(--accent-text)', fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+  },
   actionBtn: {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
     width: '32px', height: '32px', borderRadius: '8px',
@@ -410,7 +441,6 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '16px',
     display: 'flex', flexDirection: 'column' as const,
     alignItems: 'center', gap: '18px',
-    maxWidth: '880px', margin: '0 auto',
   },
   emptyIcon: {
     width: '64px', height: '64px', borderRadius: '16px',

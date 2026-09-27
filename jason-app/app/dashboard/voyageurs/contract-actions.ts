@@ -211,6 +211,40 @@ export async function cancelContract(contractId: string, voyageurId: string): Pr
   return {}
 }
 
+// ─── Réactiver un contrat annulé ─────────────────────────────────────────────
+// Un contrat peut être annulé par erreur (corbeille du journal Encaissements,
+// suppression du séjour lié). On le remet dans l'état qu'il avait : signé
+// s'il porte une signature, sinon en attente de signature.
+
+export async function restoreContract(contractId: string): Promise<{ error?: string; statut?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
+
+  const { data: c } = await supabase
+    .from('contracts')
+    .select('id, statut, signature_date')
+    .eq('id', contractId)
+    .eq('user_id', user.id)
+    .maybeSingle()
+  if (!c) return { error: 'Contrat introuvable.' }
+  if (c.statut !== 'annule') return { statut: c.statut }
+
+  const statut = c.signature_date ? 'signe' : 'en_attente'
+  const { error } = await supabase
+    .from('contracts')
+    .update({ statut })
+    .eq('id', contractId)
+    .eq('user_id', user.id)
+    .eq('statut', 'annule')
+
+  if (error) return { error: error.message }
+  revalidatePath('/dashboard/contrats')
+  revalidatePath('/dashboard/revenus')
+  revalidatePath('/dashboard/finances/revenus')
+  return { statut }
+}
+
 // ─── Émettre une facture ──────────────────────────────────────────────────────
 // Assigne un numéro de facture séquentiel (une seule fois, via la fonction
 // SQL issue_next_invoice_number qui incrémente profiles.invoice_counter de

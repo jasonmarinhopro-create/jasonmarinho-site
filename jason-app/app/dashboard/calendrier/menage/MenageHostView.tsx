@@ -123,109 +123,127 @@ export default function MenageHostView({ slots, teams, icalToken, appUrl, today 
         </Link>
       </div>
 
-      <div style={s.kpis} className="mh-kpis">
-        <Kpi label="Aujourd'hui" value={todayCount} />
-        <Kpi label="7 prochains jours" value={weekCount} />
-        <Kpi label="Arrivée le jour même" value={tightCount} warn={tightCount > 0} />
-      </div>
-
-      {/* Partage avec l'équipe */}
-      <div style={s.share}>
-        <span style={s.shareIcon}><UsersThree size={18} weight="duotone" /></span>
-        <div style={{ flex: 1, minWidth: 220 }}>
-          <div style={s.shareTitle}>
-            {activeTeams.length > 0
-              ? `${activeTeams.map(t => t.name).join(', ')} ${activeTeams.length > 1 ? 'suivent' : 'suit'} ce planning`
-              : 'Partage ce planning avec ton équipe de ménage'}
+      {/* Grand écran : jours à gauche, compteurs + partage à droite (collant).
+          En dessous de 1200 px : une seule colonne, compteurs en tête. */}
+      <div className="mh-layout">
+        <aside className="mh-side">
+          <div style={s.kpis} className="mh-kpis">
+            <Kpi label="Aujourd'hui" value={todayCount} />
+            <Kpi label="7 prochains jours" value={weekCount} />
+            <Kpi label="Arrivée le jour même" value={tightCount} warn={tightCount > 0} />
           </div>
-          <div style={s.shareSub}>
-            {shareUrl
-              ? "Envoie ce lien : elle l'ajoute à son agenda ou le colle dans son espace Jason Marinho (gratuit) pour cocher « terminé » et t'envoyer les photos."
-              : 'Un lien privé, sans compte partagé. Tu peux le régénérer à tout moment pour couper l’accès.'}
-          </div>
-        </div>
-        {shareUrl ? (
-          <button type="button" onClick={copyLink} style={s.primaryBtn}>
-            {copied ? <><Check size={14} weight="bold" /> Lien copié</> : <><Copy size={14} weight="bold" /> Copier le lien</>}
-          </button>
-        ) : (
-          <button type="button" onClick={generate} style={s.primaryBtn}>
-            <LinkSimple size={14} weight="bold" /> Générer le lien
-          </button>
-        )}
-      </div>
 
-      {error && <p style={s.error}>{error}</p>}
-
-      {groups.length === 0 ? (
-        <div style={s.empty}>
-          <Broom size={28} weight="duotone" color="var(--accent-text)" />
-          <div style={{ fontWeight: 600, color: 'var(--text)' }}>Aucun ménage dans les 2 prochaines semaines</div>
-          <div>
-            Les ménages apparaissent ici dès qu&apos;un départ est prévu. Connecte ton calendrier Airbnb ou Booking
-            dans le <Link href="/dashboard/calendrier" style={s.link}>Calendrier</Link> pour qu&apos;ils se créent tout seuls.
-          </div>
-        </div>
-      ) : (
-        <div style={s.days}>
-          {groups.map(([date, list]) => (
-            <section key={date}>
-              <h2 style={{ ...s.dayTitle, ...(date === today ? { color: 'var(--accent-text)' } : {}) }}>
-                {dayLabel(date, today)} <span style={s.dayCount}>{list.length}</span>
-              </h2>
-              <div style={s.list}>
-                {list.map(slot => {
-                  const done = isDone(slot)
-                  const late = !done && slot.date < today
-                  return (
-                    <div key={slot.id} style={{ ...s.card, ...(done ? s.cardDone : {}), ...(late ? s.cardLate : {}) }}>
-                      <div style={s.time}>
-                        <strong>{slot.startTime}</strong>
-                        <span>{slot.endTime}</span>
-                      </div>
-                      <div style={{ flex: '1 1 220px', minWidth: 0 }}>
-                        <div style={s.name}>
-                          {slot.logementName}
-                          {slot.sameDay && (
-                            <span style={s.badgeTight}><Lightning size={11} weight="fill" /> Arrivée le jour même</span>
-                          )}
-                          {late && <span style={s.badgeLate}><Warning size={11} weight="fill" /> Pas marqué fait</span>}
-                        </div>
-                        <div style={s.meta}>
-                          {slot.voyageurSortant && <span>Départ : {slot.voyageurSortant}</span>}
-                          {slot.voyageurEntrant && <span>Arrivée : {slot.voyageurEntrant}</span>}
-                          {slot.adresse && (
-                            <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(slot.adresse)}`} target="_blank" rel="noopener noreferrer" style={s.metaLink}>
-                              <MapPin size={11} weight="fill" /> {slot.adresse}
-                            </a>
-                          )}
-                        </div>
-                        {slot.notes && <div style={s.notes}>{slot.notes}</div>}
-                      </div>
-                      <div style={s.actions}>
-                        {slot.done?.completionId && overrides[slot.id] !== false ? (
-                          <Link href={`/dashboard/menages/${slot.done.completionId}`} style={s.doneTeam}>
-                            <CheckCircle size={14} weight="fill" />
-                            Fait par {slot.done.by}
-                            {slot.done.photos > 0 && <span style={s.photos}><Camera size={12} weight="fill" /> {slot.done.photos}</span>}
-                          </Link>
-                        ) : (
-                          <button type="button" onClick={() => toggle(slot)} style={done ? s.doneBtn : s.todoBtn} aria-pressed={done}>
-                            {done ? <CheckCircle size={14} weight="fill" /> : <Circle size={14} weight="bold" />}
-                            {done ? 'Fait' : 'Marquer fait'}
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  )
-                })}
+          {/* Partage avec l'équipe */}
+          <div style={s.share}>
+            <span style={s.shareIcon}><UsersThree size={18} weight="duotone" /></span>
+            <div style={{ flex: 1, minWidth: 220 }}>
+              <div style={s.shareTitle}>
+                {activeTeams.length > 0
+                  ? `${activeTeams.map(t => t.name).join(', ')} ${activeTeams.length > 1 ? 'suivent' : 'suit'} ce planning`
+                  : 'Partage ce planning avec ton équipe de ménage'}
               </div>
-            </section>
-          ))}
-        </div>
-      )}
+              <div style={s.shareSub}>
+                {shareUrl
+                  ? "Envoie ce lien : elle l'ajoute à son agenda ou le colle dans son espace Jason Marinho (gratuit) pour cocher « terminé » et t'envoyer les photos."
+                  : 'Un lien privé, sans compte partagé. Tu peux le régénérer à tout moment pour couper l’accès.'}
+              </div>
+            </div>
+            {shareUrl ? (
+              <button type="button" onClick={copyLink} style={s.primaryBtn}>
+                {copied ? <><Check size={14} weight="bold" /> Lien copié</> : <><Copy size={14} weight="bold" /> Copier le lien</>}
+              </button>
+            ) : (
+              <button type="button" onClick={generate} style={s.primaryBtn}>
+                <LinkSimple size={14} weight="bold" /> Générer le lien
+              </button>
+            )}
+          </div>
+        </aside>
 
-      <style>{`@media (max-width: 640px) { .mh-kpis { grid-template-columns: repeat(3, minmax(0,1fr)) !important; } }`}</style>
+        <div className="mh-main">
+          {error && <p style={s.error}>{error}</p>}
+
+          {groups.length === 0 ? (
+            <div style={s.empty}>
+              <Broom size={28} weight="duotone" color="var(--accent-text)" />
+              <div style={{ fontWeight: 600, color: 'var(--text)' }}>Aucun ménage dans les 2 prochaines semaines</div>
+              <div>
+                Les ménages apparaissent ici dès qu&apos;un départ est prévu. Connecte ton calendrier Airbnb ou Booking
+                dans le <Link href="/dashboard/calendrier" style={s.link}>Calendrier</Link> pour qu&apos;ils se créent tout seuls.
+              </div>
+            </div>
+          ) : (
+            <div style={s.days}>
+              {groups.map(([date, list]) => (
+                <section key={date}>
+                  <h2 style={{ ...s.dayTitle, ...(date === today ? { color: 'var(--accent-text)' } : {}) }}>
+                    {dayLabel(date, today)} <span style={s.dayCount}>{list.length}</span>
+                  </h2>
+                  <div style={s.list}>
+                    {list.map(slot => {
+                      const done = isDone(slot)
+                      const late = !done && slot.date < today
+                      return (
+                        <div key={slot.id} style={{ ...s.card, ...(done ? s.cardDone : {}), ...(late ? s.cardLate : {}) }}>
+                          <div style={s.time}>
+                            <strong>{slot.startTime}</strong>
+                            <span>{slot.endTime}</span>
+                          </div>
+                          <div style={{ flex: '1 1 220px', minWidth: 0 }}>
+                            <div style={s.name}>
+                              {slot.logementName}
+                              {slot.sameDay && (
+                                <span style={s.badgeTight}><Lightning size={11} weight="fill" /> Arrivée le jour même</span>
+                              )}
+                              {late && <span style={s.badgeLate}><Warning size={11} weight="fill" /> Pas marqué fait</span>}
+                            </div>
+                            <div style={s.meta}>
+                              {slot.voyageurSortant && <span>Départ : {slot.voyageurSortant}</span>}
+                              {slot.voyageurEntrant && <span>Arrivée : {slot.voyageurEntrant}</span>}
+                              {slot.adresse && (
+                                <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(slot.adresse)}`} target="_blank" rel="noopener noreferrer" style={s.metaLink}>
+                                  <MapPin size={11} weight="fill" /> {slot.adresse}
+                                </a>
+                              )}
+                            </div>
+                            {slot.notes && <div style={s.notes}>{slot.notes}</div>}
+                          </div>
+                          <div style={s.actions}>
+                            {slot.done?.completionId && overrides[slot.id] !== false ? (
+                              <Link href={`/dashboard/menages/${slot.done.completionId}`} style={s.doneTeam}>
+                                <CheckCircle size={14} weight="fill" />
+                                Fait par {slot.done.by}
+                                {slot.done.photos > 0 && <span style={s.photos}><Camera size={12} weight="fill" /> {slot.done.photos}</span>}
+                              </Link>
+                            ) : (
+                              <button type="button" onClick={() => toggle(slot)} style={done ? s.doneBtn : s.todoBtn} aria-pressed={done}>
+                                {done ? <CheckCircle size={14} weight="fill" /> : <Circle size={14} weight="bold" />}
+                                {done ? 'Fait' : 'Marquer fait'}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </section>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <style>{`
+        .mh-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 28px; }
+        .mh-side { order: 0; }
+        .mh-main { order: 1; min-width: 0; }
+        @media (min-width: 1200px) {
+          .mh-layout { grid-template-columns: minmax(0, 1fr) 360px; align-items: start; }
+          .mh-side { order: 1; position: sticky; top: calc(var(--header-h, 64px) + 16px); }
+          .mh-main { order: 0; }
+          .mh-side .mh-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+        }
+      `}</style>
     </div>
   )
 }
@@ -240,7 +258,7 @@ function Kpi({ label, value, warn }: { label: string; value: number; warn?: bool
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,40px)', width: '100%', maxWidth: 1100 },
+  page: { padding: 'clamp(20px,3vw,40px)', width: '100%' },
   head: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', marginBottom: 20 },
   title: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,36px)', fontWeight: 400, color: 'var(--text)', margin: '0 0 4px' },
   desc: { fontSize: 14, color: 'var(--text-3)', margin: 0, lineHeight: 1.6, maxWidth: 640 },
@@ -249,7 +267,7 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)',
     fontSize: 13, fontWeight: 600, textDecoration: 'none', marginTop: 6,
   },
-  kpis: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 200px))', gap: 10, marginBottom: 16 },
+  kpis: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 10, marginBottom: 16 },
   kpi: { padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12 },
   kpiValue: { fontSize: 22, fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', lineHeight: 1.1 },
   kpiLabel: { fontSize: 12, color: 'var(--text-3)', marginTop: 2 },

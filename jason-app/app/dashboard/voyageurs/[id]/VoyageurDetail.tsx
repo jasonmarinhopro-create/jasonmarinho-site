@@ -911,7 +911,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   // Les actions de cette page (updateVoyageur, addSejour, deleteSejour…) appellent
   // revalidatePath sur la fiche : pas de router.refresh() en plus (double rendu).
   function handleDeleteSejour(id: string) {
-    if (!confirm('Supprimer ce séjour ?')) return
+    if (!confirm('Supprimer ce séjour ? Le contrat lié sera annulé. Pour garder la trace, préfère « Annuler » le séjour.')) return
     startTransition(async () => {
       await deleteSejour(id, voyageur.id)
     })
