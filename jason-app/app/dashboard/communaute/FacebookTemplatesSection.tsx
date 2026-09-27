@@ -56,6 +56,9 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
   const [postTitle, setPostTitle] = useState('Mon post')
   const [postContent, setPostContent] = useState('')
   const [copied, setCopied] = useState(false)
+  // Carte compacte par défaut (aperçu + « Copier ») : l'éditeur complet
+  // prenait tout le haut de la page et cachait les groupes (sept. 2026).
+  const [editorOpen, setEditorOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   const [savedFlash, setSavedFlash] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
@@ -104,6 +107,7 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
     // post sauvegardé (pas écrasement du saved courant).
     setEditingPostId(null)
     setLastLoadedTemplateId(tpl.id)
+    setEditorOpen(true)
     setPostTitle(tpl.title)
     setPostContent(applyVariables(tpl.content, selectedLogement?.lien_driing ?? null))
     setSaveError(null)
@@ -167,19 +171,53 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
 
   return (
     <section style={s.wrap} className="fade-up">
-      {/* Header */}
+      {/* En-tête compact : ton post prêt à coller */}
       <div style={s.header}>
         <div style={s.headerIcon}>
           <FacebookLogo size={20} color="#1877F2" weight="fill" />
         </div>
-        <div>
-          <div style={s.title}>Poste dans ces groupes</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={s.title}>Ton post prêt à publier</div>
           <div style={s.subtitle}>
-            Crée un ou plusieurs posts par logement, sauvegarde-les, puis copie-colle dans tous les groupes.
+            {selectedLogement ? selectedLogement.nom : 'Copie-le, colle-le dans chaque groupe.'}
           </div>
         </div>
       </div>
 
+      {!editorOpen && (
+        <>
+          <div style={s.preview}>{postContent || 'Choisis un style pour démarrer ton post.'}</div>
+          {noLinkOnSelected && (
+            <div style={s.previewWarn}>
+              <Warning size={13} /> Ajoute ton lien Driing au logement pour qu&apos;il apparaisse dans le post.
+            </div>
+          )}
+          <div style={s.compactActions}>
+            <button
+              type="button"
+              onClick={handleCopy}
+              disabled={!postContent.trim()}
+              style={{ ...s.copyBtn, flex: 1, justifyContent: 'center', background: copied ? 'var(--success-1)' : 'var(--accent-text)', color: copied ? '#fff' : 'var(--bg)' }}
+            >
+              {copied ? <Check size={14} weight="bold" /> : <Copy size={14} weight="bold" />}
+              {copied ? 'Copié !' : 'Copier le post'}
+            </button>
+            <button type="button" onClick={() => setEditorOpen(true)} style={s.saveBtn}>
+              Personnaliser
+            </button>
+          </div>
+          {templates.length > 1 && (
+            <div style={s.compactStyles}>
+              <span style={s.chipsLabel}>Autre style :</span>
+              {templates.slice(0, 4).map(t => (
+                <button key={t.id} type="button" onClick={() => loadTemplate(t)} style={s.styleLink}>{t.title}</button>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      {editorOpen && (<>
       {/* Sélecteur logement */}
       {hasLogements ? (
         <label style={s.field}>
@@ -396,6 +434,10 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
           </button>
         </div>
       </div>
+      <button type="button" onClick={() => setEditorOpen(false)} style={s.collapseBtn}>
+        Réduire l&apos;éditeur
+      </button>
+      </>)}
     </section>
   )
 }
@@ -470,6 +512,23 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '8px',
   },
 
+  preview: {
+    whiteSpace: 'pre-wrap', fontSize: '13px', lineHeight: 1.55, color: 'var(--text-2)',
+    background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px',
+    padding: '12px 14px', maxHeight: '132px', overflow: 'hidden',
+    maskImage: 'linear-gradient(180deg, #000 70%, transparent)', WebkitMaskImage: 'linear-gradient(180deg, #000 70%, transparent)',
+  },
+  previewWarn: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--warning)' },
+  compactActions: { display: 'flex', gap: '8px', alignItems: 'stretch' },
+  compactStyles: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '4px 10px' },
+  styleLink: {
+    background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit',
+    fontSize: '12.5px', color: 'var(--accent-text)', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '3px',
+  },
+  collapseBtn: {
+    alignSelf: 'center', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit',
+    fontSize: '12.5px', color: 'var(--text-3)', textDecoration: 'underline', textUnderlineOffset: '3px',
+  },
   textarea: {
     width: '100%', minHeight: '220px',
     padding: '14px 16px', borderRadius: '12px',
