@@ -113,7 +113,7 @@ export default function ContractsTab({ contracts }: Props) {
         </p>
 
         <p style={{ ...s.emptyLead, fontSize: '13.5px', color: 'var(--text-3)' }}>
-          Clique sur <strong>« Nouveau contrat »</strong> en haut : choisis le séjour, l&apos;assistant fait le reste (2 min).
+          Clique sur <strong>« Nouveau contrat »</strong> en haut : choisis la réservation (ou saisis-la en 30 secondes), l&apos;assistant fait le reste.
         </p>
       </div>
     )

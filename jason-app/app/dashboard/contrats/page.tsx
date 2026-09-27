@@ -26,6 +26,12 @@ export default async function ContratsPage() {
   // contrat sur la fiche voyageur via ?contract=<séjour>).
   const today = new Date().toISOString().slice(0, 10)
   const withContract = new Set(rows.filter(c => c.statut !== 'annule' && c.sejour_id).map(c => c.sejour_id as string))
+  // Pour « Nouvelle réservation directe » (séjour pas encore saisi) :
+  // voyageurs existants + logements, même modale que la fiche logement.
+  const [{ data: voyageurOptions }, { data: logementOptions }] = await Promise.all([
+    supabase.from('voyageurs').select('id, prenom, nom, email, telephone').eq('user_id', profile.userId).order('updated_at', { ascending: false }).limit(300),
+    supabase.from('logements').select('id, nom').eq('user_id', profile.userId).order('nom'),
+  ])
   const { data: upcoming } = await supabase
     .from('sejours')
     .select('id, voyageur_id, logement, date_arrivee, date_depart, voyageurs(prenom, nom)')
@@ -66,5 +72,5 @@ export default async function ContratsPage() {
     voyageur_id: c.sejour_id ? voyageurBySejour.get(c.sejour_id) ?? null : null,
   }))
 
-  return <ContratsView contracts={contracts} candidates={candidates} appUrl={process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'} />
+  return <ContratsView contracts={contracts} candidates={candidates} voyageurs={voyageurOptions ?? []} logements={(logementOptions ?? []).filter(l => l.nom) as Array<{ id: string; nom: string }>} appUrl={process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'} />
 }

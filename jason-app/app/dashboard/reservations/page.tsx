@@ -3,6 +3,8 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import ReservationsView from './ReservationsView'
 import OnboardingTour, { RESERVATIONS_STEPS } from '../OnboardingTour'
+import { icalReservationsForDisplay } from '@/lib/ical/display'
+import { icalOccupationsForMenage } from '@/lib/menage/ical-occupations'
 import type { Reservation, LogementLite } from './types'
 import { computeMenageSlots, mergeAutoAndManual, type LogementSettings, type Occupation, type MenageSlot } from '@/lib/menage/compute'
 
@@ -35,6 +37,8 @@ export default async function ReservationsPage() {
     { data: logementsRaw },
     { data: events },
     { data: profileRow },
+    { data: icalFeeds },
+    { data: icalEvents },
   ] = await Promise.all([
     supabase
       .from('contracts')
@@ -54,7 +58,7 @@ export default async function ReservationsPage() {
     // pour computeMenageSlots + le modal Planning menage.
     supabase
       .from('logements')
-      .select('id, nom, adresse, menage_duree_min, menage_heure_defaut, menage_notes, contact_menage_nom, contact_menage_tel, frais_menage')
+      .select('id, nom, adresse, menage_duree_min, menage_heure_defaut, menage_notes, contact_menage_nom, contact_menage_tel, frais_menage, ical_airbnb, ical_booking, ical_vrbo, ical_autre')
       .eq('user_id', userId)
       .order('nom'),
     // Events "menage" manuels (via +Evenement dans le calendrier).
@@ -69,6 +73,16 @@ export default async function ReservationsPage() {
       .select('ical_token, full_name')
       .eq('id', userId)
       .maybeSingle(),
+    // Réservations Airbnb / Booking / Vrbo importées par la synchro du
+    // calendrier (sept. 2026 : absentes de cette page jusqu'ici, alors que
+    // l'accueil et le calendrier les affichaient). 12 derniers mois + à venir.
+    supabase.from('ical_feeds').select('id, url, name').eq('user_id', userId),
+    supabase
+      .from('ical_events')
+      .select('id, feed_id, title, description, start_date, end_date')
+      .eq('user_id', userId)
+      .gte('end_date', new Date(Date.now() - 365 * 86_400_000).toISOString().slice(0, 10))
+      .limit(1000),
   ])
 
   // Contracts qui pointent sur un sejour → on skip le sejour pour ne pas dupliquer
@@ -82,13 +96,15 @@ export default async function ReservationsPage() {
 
   // Contracts d'abord (plus riche : contrat signe, paiement, etc.)
   // NB : la source d'un contrat manuel = 'direct' (pas de champ dedie).
+  // Fiche voyageur d'un contrat : via son séjour lié
+  const voyageurBySejour = new Map((sejoursRaw ?? []).map((s: any) => [s.id as string, (s.voyageur_id ?? null) as string | null]))
   ;(contracts ?? []).forEach(c => {
     const nom = [c.locataire_prenom, c.locataire_nom].filter(Boolean).join(' ').trim() || 'Voyageur'
     reservations.push({
       id: `contract-${c.id}`,
       source: 'contract',
       sourceId: c.id,
-      voyageur_id: null,
+      voyageur_id: (c as any).sejour_id ? voyageurBySejour.get((c as any).sejour_id) ?? null : null,
       voyageur_name: nom,
       voyageur_email: c.locataire_email ?? null,
       voyageur_phone: c.locataire_telephone ?? null,
@@ -135,6 +151,33 @@ export default async function ReservationsPage() {
         checklist_status: null,
       })
     })
+
+  // Réservations importées : ignorées si une résa saisie (contrat ou séjour)
+  // couvre déjà le même logement à la même date d'arrivée (miroir iCal).
+  const covered = new Set(reservations.map(r => `${r.date_arrivee}|${r.logement_name.trim().toLowerCase()}`))
+  for (const r of icalReservationsForDisplay(logementsRaw ?? [], icalFeeds ?? [], icalEvents ?? [])) {
+    const logementName = r.logementName ?? 'Logement'
+    if (covered.has(`${r.dateArrivee}|${logementName.trim().toLowerCase()}`)) continue
+    reservations.push({
+      id: `ical-${r.id}`,
+      source: 'ical',
+      sourceId: r.id,
+      voyageur_id: null,
+      voyageur_name: r.label,
+      voyageur_email: null,
+      voyageur_phone: null,
+      logement_id: null,
+      logement_name: logementName,
+      date_arrivee: r.dateArrivee,
+      date_depart: r.dateDepart,
+      montant: null,
+      nb_voyageurs: null,
+      platform: r.platform ?? 'direct',
+      contract_status: null,
+      payment_status: null,
+      checklist_status: null,
+    })
+  }
 
   const logements: LogementLite[] = (logementsRaw ?? []).map((l: any) => ({
     id: l.id, nom: l.nom ?? 'Logement',
@@ -185,6 +228,8 @@ export default async function ReservationsPage() {
     })
   }
 
+  // Ménages après les départs Airbnb/Booking aussi (même règle que le planning ménage)
+  occupations.push(...icalOccupationsForMenage(logementsRaw ?? [], icalFeeds ?? [], icalEvents ?? []))
   const autoSlots = computeMenageSlots(occupations, logementSettings)
   const manualMenageEvents = (events ?? []).map(e => ({
     id: e.id, date: e.date,

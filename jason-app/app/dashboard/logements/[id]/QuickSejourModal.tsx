@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  X, Users, Plus, MagnifyingGlass, CalendarBlank, CurrencyEur, FileText, ArrowRight, Check,
+  X, Users, Plus, MagnifyingGlass, CalendarBlank, CurrencyEur, FileText, ArrowRight, Check, House,
 } from '@phosphor-icons/react/dist/ssr'
 import { addVoyageur, addSejour } from '@/app/dashboard/voyageurs/actions'
 import { CalendarInput } from '@/components/ui/CalendarInput'
@@ -17,15 +17,20 @@ export type VoyageurOption = {
 }
 
 interface Props {
-  logementId: string
-  logementNom: string
+  /** Logement imposé (fiche logement). Sinon l'hôte choisit dans `logements`. */
+  logementId?: string
+  logementNom?: string
+  /** Choix du logement (page Contrats & paiements). */
+  logements?: Array<{ id: string; nom: string }>
   voyageurs: VoyageurOption[]
   onClose: () => void
+  /** Ne propose que « Créer + contrat » (depuis « Nouveau contrat »). */
+  contractOnly?: boolean
 }
 
 type Mode = 'existing' | 'new'
 
-export default function QuickSejourModal({ logementId, logementNom, voyageurs, onClose }: Props) {
+export default function QuickSejourModal({ logementNom: fixedLogementNom, logements = [], voyageurs, onClose, contractOnly = false }: Props) {
   const router = useRouter()
   const [mode, setMode] = useState<Mode>(voyageurs.length > 0 ? 'existing' : 'new')
   const [search, setSearch] = useState('')
@@ -36,6 +41,8 @@ export default function QuickSejourModal({ logementId, logementNom, voyageurs, o
   const [newEmail, setNewEmail] = useState('')
   const [newTel, setNewTel] = useState('')
 
+  const [chosenLogement, setChosenLogement] = useState(logements.length === 1 ? logements[0].nom : '')
+  const logementNom = fixedLogementNom ?? chosenLogement
   const [dateArrivee, setDateArrivee] = useState('')
   const [dateDepart, setDateDepart] = useState('')
   const [montant, setMontant] = useState('')
@@ -65,7 +72,7 @@ export default function QuickSejourModal({ logementId, logementNom, voyageurs, o
     ? !!selectedVoyageurId
     : !!newPrenom.trim() && !!newNom.trim()
 
-  const canSubmit = datesValid && voyageurValid && submitting === null
+  const canSubmit = datesValid && voyageurValid && !!logementNom && submitting === null
 
   async function ensureVoyageurId(): Promise<string | null> {
     if (mode === 'existing') return selectedVoyageurId
@@ -121,8 +128,8 @@ export default function QuickSejourModal({ logementId, logementNom, voyageurs, o
       <div style={modal} onClick={e => e.stopPropagation()}>
         <header style={header}>
           <div>
-            <h2 style={title}>Nouveau séjour</h2>
-            <p style={subtitle}>{logementNom}</p>
+            <h2 style={title}>{contractOnly ? 'Nouvelle réservation directe' : 'Nouveau séjour'}</h2>
+            <p style={subtitle}>{fixedLogementNom ?? 'Le voyageur, les dates, puis le contrat à signer'}</p>
           </div>
           <button type="button" onClick={onClose} style={closeBtn} aria-label="Fermer">
             <X size={16} weight="bold" />
@@ -213,6 +220,26 @@ export default function QuickSejourModal({ logementId, logementNom, voyageurs, o
             )}
           </section>
 
+          {/* ─── Logement (quand il n'est pas imposé) ── */}
+          {!fixedLogementNom && (
+            <section style={section}>
+              <h3 style={sectionTitle}>
+                <House size={13} weight="fill" />
+                Logement
+              </h3>
+              {logements.length === 0 ? (
+                <p style={{ fontSize: 13, color: 'var(--text-2)', margin: 0 }}>
+                  Ajoute d&apos;abord ton logement dans « Gérer mes logements » (sélecteur en bas du menu).
+                </p>
+              ) : (
+                <select value={chosenLogement} onChange={e => setChosenLogement(e.target.value)} style={input} aria-label="Logement">
+                  <option value="">Choisir le logement…</option>
+                  {logements.map(l => <option key={l.id} value={l.nom}>{l.nom}</option>)}
+                </select>
+              )}
+            </section>
+          )}
+
           {/* ─── Dates ───────────────────────── */}
           <section style={section}>
             <h3 style={sectionTitle}>
@@ -265,14 +292,14 @@ export default function QuickSejourModal({ logementId, logementNom, voyageurs, o
           <button type="button" onClick={onClose} style={ghostBtn} disabled={submitting !== null}>
             Annuler
           </button>
-          <button
+          {!contractOnly && <button
             type="button"
             onClick={() => handleSubmit(false)}
             disabled={!canSubmit}
             style={{ ...secondaryBtn, opacity: canSubmit ? 1 : 0.5, cursor: canSubmit ? 'pointer' : 'not-allowed' }}
           >
             {submitting === 'sejour' ? 'Création…' : 'Créer le séjour'}
-          </button>
+          </button>}
           <button
             type="button"
             onClick={() => handleSubmit(true)}
@@ -280,7 +307,7 @@ export default function QuickSejourModal({ logementId, logementNom, voyageurs, o
             style={{ ...primaryBtn, opacity: canSubmit ? 1 : 0.5, cursor: canSubmit ? 'pointer' : 'not-allowed' }}
           >
             <FileText size={13} weight="bold" />
-            {submitting === 'sejour-contract' ? 'Création…' : 'Créer + contrat'}
+            {submitting === 'sejour-contract' ? 'Création…' : contractOnly ? 'Continuer vers le contrat' : 'Créer + contrat'}
             <ArrowRight size={11} weight="bold" />
           </button>
         </footer>

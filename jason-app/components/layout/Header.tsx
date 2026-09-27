@@ -18,7 +18,7 @@ import { subscribeDashboardTitle } from '@/lib/dashboard-title-store'
 // Mapping pathname → titre du header (routes statiques)
 const PATH_TITLES: Record<string, string> = {
   '/dashboard': 'Accueil',
-  '/dashboard/audit-gbp': 'Audit GBP',
+  '/dashboard/audit-gbp': 'Fiche Google',
   '/dashboard/audit-gbp/import-url': 'Import URL',
   '/dashboard/audit-gbp/import-csv': 'Audit Express',
   '/dashboard/outils': 'Outils & calculs',
@@ -67,7 +67,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/formations/profil-apprenant': 'Mon profil apprenant',
   '/dashboard/formations/favoris': 'Mes favoris',
   '/dashboard/formations/parcours': "Parcours d'apprentissage",
-  '/dashboard/ecosysteme': 'Écosystème LCD',
+  '/dashboard/ecosysteme': 'Partenaires & outils',
   '/dashboard/contributeurs': 'Contributeurs',
   '/dashboard/guide': 'Guide LCD',
   '/dashboard/admin': 'Administration',
@@ -92,7 +92,7 @@ const PATH_TITLE_PATTERNS: Array<[RegExp, string]> = [
   [/^\/dashboard\/formations\/parcours\/[^/]+$/,     'Parcours'],
   [/^\/dashboard\/admin\/formations\/[^/]+$/,        'Édition formation'],
   [/^\/dashboard\/admin\/membres\/[^/]+$/,           'Fiche membre'],
-  [/^\/dashboard\/audit-gbp\/resultats\/[^/]+$/,     'Audit GBP'],
+  [/^\/dashboard\/audit-gbp\/resultats\/[^/]+$/,     'Fiche Google'],
   [/^\/dashboard\/chez-nous\/membre\/[^/]+$/,        'Profil membre'],
   [/^\/dashboard\/chez-nous\/[^/]+$/,                'Entre Hôtes'],
 ]

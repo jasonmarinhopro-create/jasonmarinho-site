@@ -18,7 +18,7 @@ import { loadHostMenageSlots, menageKey } from '@/lib/menage/host-slots'
 import { contractTodos } from '@/lib/contracts/todo'
 import DeclarationsWidget from '@/components/dashboard/DeclarationsWidget'
 import OnboardingTour from './OnboardingTour'
-import { isBlockedIcalEvent } from '@/lib/ical/blocked'
+import { icalReservationsForDisplay } from '@/lib/ical/display'
 import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
 // CategoryId retiré (utilisé uniquement par ChezNousWidget, désormais dans /entre-hotes)
 
@@ -177,7 +177,7 @@ export default async function DashboardPage() {
     // arrive dans 4 jours.
     supabase
       .from('ical_events')
-      .select('id, title, start_date, end_date, description')
+      .select('id, feed_id, title, start_date, end_date, description')
       .eq('user_id', userId)
       .gte('start_date', `${yearPfx}-01-01`)
       .order('start_date'),
@@ -218,6 +218,10 @@ export default async function DashboardPage() {
       .select('ical_token')
       .eq('id', userId)
       .maybeSingle(),
+    // 19-20. Flux iCal + URL iCal des logements : nommer les réservations
+    // importées (logement, plateforme) au lieu du titre brut « Reserved ».
+    supabase.from('ical_feeds').select('id, url, name').eq('user_id', userId),
+    supabase.from('logements').select('nom, ical_airbnb, ical_booking, ical_vrbo, ical_autre').eq('user_id', userId),
   ])
 
   // Helper : récupère une valeur en cas de fulfilled, sinon une valeur de fallback.
@@ -252,7 +256,7 @@ export default async function DashboardPage() {
     inbox_gmb_url: string | null
     custom_platform_links: Array<{ label: string; url: string; color?: string }> | null
   } | null }>(12, { data: null })
-  const { data: icalEventsRaw } = pick<{ data: Array<{ id: string; title: string; start_date: string; end_date: string | null; description: string | null }> | null }>(13, { data: [] })
+  const { data: icalEventsRaw } = pick<{ data: Array<{ id: string; feed_id: string; title: string; start_date: string; end_date: string | null; description: string | null }> | null }>(13, { data: [] })
   const { data: sejoursForArrivals } = pick<{ data: Array<{ id: string; voyageur_id: string | null; logement: string | null; date_arrivee: string; date_depart: string; voyageurs: { prenom: string | null; nom: string | null } | Array<{ prenom: string | null; nom: string | null }> | null }> | null }>(14, { data: [] })
   const { count: pricingCount }  = pick<{ count: number | null }>(15, { count: 0 })
   const { data: pendingDeclarations } = pick<{ data: Array<{
@@ -268,6 +272,8 @@ export default async function DashboardPage() {
 
   const { count: icalFeedCount } = pick<{ count: number | null }>(17, { count: 0 })
   const { data: icalTokenRow }   = pick<{ data: { ical_token: string | null } | null }>(18, { data: null })
+  const { data: icalFeedsRaw }   = pick<{ data: Array<{ id: string; url: string | null; name: string | null }> | null }>(19, { data: [] })
+  const { data: logementsIcal }  = pick<{ data: Array<{ nom: string | null; ical_airbnb: string | null; ical_booking: string | null; ical_vrbo: string | null; ical_autre: string | null }> | null }>(20, { data: [] })
 
   const latestNews = allCachedNews.slice(0, 3)
   // Nombre d'actus publiées depuis la dernière visite de la page Actualités,
@@ -416,24 +422,28 @@ export default async function DashboardPage() {
       label: vName || s.logement || 'Séjour',
     })
   }
-  for (const e of (icalEventsRaw ?? [])) {
-    if (!e.start_date) continue
-    // Skip blocages "Not available" / "Closed" générés par Airbnb chaque jour.
-    if (isBlockedIcalEvent(e.title, e.description)) continue
+  // Réservations Airbnb/Booking/Vrbo : logement + plateforme nommés, départ =
+  // dernière nuit + 1, « CLOSED » Booking courts gardés (lib/ical/display.ts).
+  const icalResas = icalReservationsForDisplay(
+    logementsIcal ?? [],
+    icalFeedsRaw ?? [],
+    icalEventsRaw ?? [],
+  )
+  for (const r of icalResas) {
     // Si un contract ou un sejour couvre déjà cette date → on skip l'iCal
     // qui n'est que le miroir Airbnb/Booking de la même résa (sinon
     // doublon visible dans "Prochaines arrivées").
-    if (datesCoveredByMaster.has(e.start_date)) continue
-    const k = dedupKey(e.start_date, e.title)
+    if (datesCoveredByMaster.has(r.dateArrivee)) continue
+    const k = dedupKey(r.dateArrivee, `${r.logementName ?? ''}|${r.label}`)
     if (seenOcc.has(k)) continue
     seenOcc.add(k)
     occupations.push({
-      id: `ical-${e.id}`,
+      id: `ical-${r.id}`,
       source: 'ical',
-      date_arrivee: e.start_date,
-      date_depart: e.end_date,
-      logement_nom: null,
-      label: e.title || 'Réservation',
+      date_arrivee: r.dateArrivee,
+      date_depart: r.dateDepart,
+      logement_nom: r.logementName,
+      label: r.label,
     })
   }
 
@@ -660,6 +670,10 @@ export default async function DashboardPage() {
     },
   ]
 
+  // Nouvel hôte (ni logement ni réservation) : la checklist de démarrage suffit,
+  // pas de colonnes de zéros (« Aucune arrivée », « 0 € », « Calendrier serein »).
+  const isNewHost = !hasLogement && occupations.length === 0
+
   // ── Bloc « À faire aujourd'hui » ────────────────────────────────────
   const occLabel = (o: Occ) => ({
     key: o.id,
@@ -789,12 +803,14 @@ export default async function DashboardPage() {
 
         {/* ── À faire aujourd'hui : arrivées, départs, ménages du jour, puis
               contrats / loyers / cautions / déclarations en attente (sept. 2026). */}
-        <TodayBoard
-          arrivals={todayArrivalItems}
-          departures={todayDepartureItems}
-          menages={todayMenageItems}
-          actions={todayActions}
-        />
+        {!isNewHost && (
+          <TodayBoard
+            arrivals={todayArrivalItems}
+            departures={todayDepartureItems}
+            menages={todayMenageItems}
+            actions={todayActions}
+          />
+        )}
 
         {/* ── Déclarations voyageurs obligatoires (SIBA, fiche police…) ── */}
         <DeclarationsWidget declarations={(pendingDeclarations ?? []).slice(0, 5)} />
@@ -814,6 +830,7 @@ export default async function DashboardPage() {
               — bloc supprimé volontairement. */}
 
         {/* ── Prochains événements 14 jours ─────────────────────────────── */}
+        {!isNewHost && (
         <section style={s.section} className="fade-up d1">
           <div style={s.upcomingCard}>
             <div style={s.upcomingHead}>
@@ -871,6 +888,7 @@ export default async function DashboardPage() {
             )}
           </div>
         </section>
+        )}
 
         {/* ── Mes plateformes : accès rapide aux inbox (Airbnb, Booking…) */}
         <MesPlateformesWidget
@@ -886,6 +904,7 @@ export default async function DashboardPage() {
         />
 
         {/* ── État des lieux, 4 métriques ─────────────────────────────── */}
+        {!isNewHost && (
         <section style={s.section} className="fade-up d1">
           <EtatDesLieux
             revenuPrevisionnel={revenuPrevisionnel}
@@ -898,6 +917,7 @@ export default async function DashboardPage() {
             urgentHref={actionsHref}
           />
         </section>
+        )}
 
         {/* ── Section "Action urgente" et "Résumé opérationnel"
               SUPPRIMÉES : doublons avec la KPI tile #4 d'EtatDesLieux

@@ -6,6 +6,10 @@ import { PenNib, CurrencyEur, LockKey, CheckCircle, Copy, Plus, CaretDown, House
 import { contractTodos, contractTodoCount } from '@/lib/contracts/todo'
 import ContractsTab from './ContractsTab'
 import type { ContractRow, ContractCandidate } from './types'
+import dynamic from 'next/dynamic'
+import type { VoyageurOption } from '../logements/[id]/QuickSejourModal'
+
+const QuickSejourModal = dynamic(() => import('../logements/[id]/QuickSejourModal'), { ssr: false })
 
 function todayISO(): string {
   const d = new Date()
@@ -26,8 +30,17 @@ function ficheHref(c: ContractRow): string {
   return c.voyageur_id ? `/dashboard/voyageurs/${c.voyageur_id}` : '/dashboard/voyageurs'
 }
 
-export default function ContratsView({ contracts, candidates, appUrl }: { contracts: ContractRow[]; candidates: ContractCandidate[]; appUrl: string }) {
+export default function ContratsView({ contracts, candidates, voyageurs, logements, appUrl }: {
+  contracts: ContractRow[]
+  candidates: ContractCandidate[]
+  voyageurs: VoyageurOption[]
+  logements: Array<{ id: string; nom: string }>
+  appUrl: string
+}) {
   const todos = useMemo(() => contractTodos(contracts, todayISO()), [contracts])
+  // Modale « Nouvelle réservation directe » rendue au niveau de la page : dans
+  // l'en-tête (animé, donc transformé), le position:fixed serait confiné à l'en-tête.
+  const [quickOpen, setQuickOpen] = useState(false)
   const count = contractTodoCount(todos)
   const [copied, setCopied] = useState<string | null>(null)
 
@@ -48,7 +61,7 @@ export default function ContratsView({ contracts, candidates, appUrl }: { contra
             Contrats signés en ligne, loyer et caution pour tes réservations directes.
           </p>
         </div>
-        <NewContractMenu candidates={candidates} />
+        <NewContractMenu candidates={candidates} onNewReservation={() => setQuickOpen(true)} />
       </div>
 
       {contracts.length > 0 && (
@@ -117,6 +130,10 @@ export default function ContratsView({ contracts, candidates, appUrl }: { contra
 
       <ContractsTab contracts={contracts} />
 
+      {quickOpen && (
+        <QuickSejourModal voyageurs={voyageurs} logements={logements} contractOnly onClose={() => setQuickOpen(false)} />
+      )}
+
       <style>{`
         @media (max-width: 900px) { .ctr-todo-grid { grid-template-columns: 1fr !important; } }
         @media (max-width: 640px) { .ctr-menu { left: 0 !important; right: auto !important; } }
@@ -128,7 +145,10 @@ export default function ContratsView({ contracts, candidates, appUrl }: { contra
 // Un contrat est toujours rattaché à un séjour : le bouton liste les séjours à
 // venir qui n'en ont pas et ouvre directement l'assistant (5 étapes) sur la
 // fiche du voyageur (?contract=<séjour>).
-function NewContractMenu({ candidates }: { candidates: ContractCandidate[] }) {
+function NewContractMenu({ candidates, onNewReservation }: {
+  candidates: ContractCandidate[]
+  onNewReservation: () => void
+}) {
   const [open, setOpen] = useState(false)
   return (
     <div style={{ position: 'relative', marginTop: 6 }}>
@@ -139,12 +159,14 @@ function NewContractMenu({ candidates }: { candidates: ContractCandidate[] }) {
         <>
           <div style={s.menuBackdrop} onClick={() => setOpen(false)} aria-hidden />
           <div style={s.menu} className="ctr-menu" role="menu">
-            <div style={s.menuTitle}>Pour quel séjour ?</div>
+            <div style={s.menuTitle}>Pour quelle réservation ?</div>
+            {/* Réservation pas encore saisie : voyageur + dates en une fois,
+                puis l'assistant de contrat s'ouvre directement. */}
+            <button type="button" onClick={() => { setOpen(false); onNewReservation() }} style={s.menuNew}>
+              <Plus size={13} weight="bold" /> Nouvelle réservation directe
+            </button>
             {candidates.length === 0 ? (
-              <p style={s.menuEmpty}>
-                Aucun séjour à venir sans contrat. Ajoute d&apos;abord le séjour sur la fiche du voyageur.
-                <Link href="/dashboard/voyageurs" style={s.menuLink}>Mes voyageurs</Link>
-              </p>
+              <p style={s.menuEmpty}>Aucun séjour à venir sans contrat.</p>
             ) : (
               <ul style={s.menuList}>
                 {candidates.slice(0, 8).map(c => (
@@ -229,6 +251,11 @@ const s: Record<string, React.CSSProperties> = {
   menuItem: { display: 'flex', flexDirection: 'column', gap: '2px', padding: '8px 10px', borderRadius: '8px', textDecoration: 'none' },
   menuGuest: { fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' },
   menuSub: { display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: 'var(--text-3)' },
+  menuNew: {
+    display: 'flex', alignItems: 'center', gap: '6px', width: '100%', padding: '9px 10px', marginBottom: '6px',
+    borderRadius: '8px', border: '1px dashed var(--accent-border)', background: 'var(--accent-bg)',
+    color: 'var(--accent-text)', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+  },
   menuEmpty: { fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.5, margin: '0 6px 6px', display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start' },
   menuLink: { color: 'var(--accent-text)', fontWeight: 600 },
   menuMore: { fontSize: '12px', color: 'var(--text-muted)', margin: '6px 10px 2px' },

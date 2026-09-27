@@ -594,6 +594,17 @@ function ReservationDrawer({ r, onClose }: { r: Reservation; onClose: () => void
             </div>
           )}
 
+          {/* Réservation importée d'Airbnb / Booking : l'app ne connaît que les dates */}
+          {r.source === 'ical' && (
+            <div style={d.section}>
+              <div style={d.sectionLbl}>Réservation synchronisée</div>
+              <div style={d.rowInfo}>
+                Importée depuis {PLATFORM_META[r.platform]?.label ?? 'la plateforme'} par la synchro du calendrier :
+                nom, contact et montant restent sur la plateforme. Le ménage après le départ est déjà planifié.
+              </div>
+            </div>
+          )}
+
           {/* Actions */}
           <div style={d.actions}>
             {r.voyageur_id && (
@@ -602,8 +613,8 @@ function ReservationDrawer({ r, onClose }: { r: Reservation; onClose: () => void
               </Link>
             )}
             {r.source === 'contract' && (
-              <Link href={`/dashboard/gabarits`} style={d.actionSecondary}>
-                <ArrowSquareOut size={13} weight="bold" /> Voir le contrat
+              <Link href="/dashboard/contrats" style={d.actionSecondary}>
+                <ArrowSquareOut size={13} weight="bold" /> Contrats &amp; paiements
               </Link>
             )}
           </div>
@@ -624,13 +635,14 @@ function ContextualAlerts({ r }: { r: Reservation }) {
   if (r.source === 'contract' && r.contract_status && r.contract_status !== 'signe' && daysToArrival >= 0 && daysToArrival <= 7) {
     alerts.push({ level: 'danger', msg: `Contrat non signé alors que l'arrivée est dans ${daysToArrival} jour${daysToArrival > 1 ? 's' : ''}.` })
   }
-  if (r.payment_status === 'requires_payment_method' || r.payment_status === 'requires_confirmation') {
-    alerts.push({ level: 'warn', msg: 'Paiement Stripe en attente — relancer le voyageur.' })
+  // Statuts stockés par l'app : 'pending' | 'paid' | 'failed' (webhook Stripe)
+  if (r.payment_status === 'pending' || r.payment_status === 'failed') {
+    alerts.push({ level: 'warn', msg: r.payment_status === 'failed' ? 'Paiement en ligne échoué : relance le voyageur.' : 'Loyer pas encore payé en ligne : relance le voyageur.' })
   }
-  if (status === 'upcoming' && daysToArrival >= 0 && daysToArrival <= 3 && !r.voyageur_email && !r.voyageur_phone) {
+  if (r.source !== 'ical' && status === 'upcoming' && daysToArrival >= 0 && daysToArrival <= 3 && !r.voyageur_email && !r.voyageur_phone) {
     alerts.push({ level: 'warn', msg: 'Aucun contact voyageur enregistré — pense à récupérer ses coordonnées.' })
   }
-  if (status === 'past' && r.contract_status === 'signe' && r.payment_status === 'succeeded') {
+  if (status === 'past' && r.contract_status === 'signe' && r.payment_status === 'paid') {
     alerts.push({ level: 'info', msg: 'Séjour terminé et payé. Pense à demander un avis.' })
   }
 
@@ -670,6 +682,9 @@ function prettyContractStatus(s: string) {
 }
 function prettyPaymentStatus(s: string) {
   const m: Record<string, string> = {
+    paid: 'Payé',
+    pending: 'En attente',
+    failed: 'Échoué',
     succeeded: 'Encaissé',
     requires_payment_method: 'À payer',
     requires_confirmation: 'À confirmer',

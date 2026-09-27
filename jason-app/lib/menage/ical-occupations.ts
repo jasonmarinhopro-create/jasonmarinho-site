@@ -56,7 +56,8 @@ export function isBookingFeedUrl(u: string | null | undefined): boolean {
   } catch { return false }
 }
 
-function nights(start: string, lastNight: string): number {
+/** Nombre de nuits d'un événement iCal (end_date = dernière nuit). */
+export function icalNights(start: string, lastNight: string): number {
   const a = Date.UTC(+start.slice(0, 4), +start.slice(5, 7) - 1, +start.slice(8, 10))
   const b = Date.UTC(+lastNight.slice(0, 4), +lastNight.slice(5, 7) - 1, +lastNight.slice(8, 10))
   return Math.round((b - a) / 86_400_000) + 1
@@ -92,7 +93,7 @@ export function icalOccupationsForMenage(
     const nom = nomByFeed.get(e.feed_id)
     if (!nom || !e.start_date || !e.end_date) continue
     if (isBlockedIcalEvent(e.title, e.description)) {
-      const bookingResa = bookingFeeds.has(e.feed_id) && nights(e.start_date, e.end_date) <= BOOKING_MAX_NIGHTS_AS_RESERVATION
+      const bookingResa = bookingFeeds.has(e.feed_id) && icalNights(e.start_date, e.end_date) <= BOOKING_MAX_NIGHTS_AS_RESERVATION
       if (!bookingResa) continue
     }
     out.push({

@@ -3,7 +3,8 @@ export type ReservationStatus = 'upcoming' | 'ongoing' | 'past'
 
 export interface Reservation {
   id: string
-  source: 'contract' | 'sejour'
+  /** 'ical' : réservation Airbnb/Booking/Vrbo importée par la synchro du calendrier */
+  source: 'contract' | 'sejour' | 'ical'
   sourceId: string
   voyageur_id: string | null
   voyageur_name: string
