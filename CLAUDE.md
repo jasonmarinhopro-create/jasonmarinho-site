@@ -66,6 +66,9 @@ jason-app/                 ← dashboard Next.js (app.jasonmarinho.com)
 - **Usages légitimes du service role** : routes publiques à jeton (contrat, check-in, facture, flux iCal), crons et webhooks, vues admin après vérification du rôle, compteurs globaux (signalements, places fondateur), requêtes en `unstable_cache` (pas d'accès aux cookies : `lib/queries/profile.ts`, `spaces.ts`, `active-property.ts`, `cache.ts`, `lib/lcd/dashboard-prefill.ts`), écritures croisées entre comptes (équipe de ménage → hôte). Toujours filtrer explicitement (`.eq('user_id', …)`).
 - **Garde-fou CI** : `lib/supabase/service-role-guard.test.ts` échoue si un nouveau fichier lit `SUPABASE_SERVICE_ROLE_KEY` directement (liste des fichiers historiques figée, elle ne doit que rétrécir) ou si un composant client importe le service role.
 
+### Gros composants : découpage
+- `app/dashboard/calendrier/` (sept. 2026) : `CalendrierView.tsx` passé de 4 390 à ~2 670 lignes par extraction mécanique, code inchangé (vérifié ligne à ligne) : `calendrier-shared.tsx` (constantes `CAT`, `CHECKLIST_ITEMS`, types `CalEvent`/`CatKey`, helpers de dates, `parseQuickAdd`, `isRealReservation`…), `ListView.tsx` (vue liste), `SearchableCombobox.tsx`, `calendrier-styles.ts` (objet `s`). `CalEvent` reste ré-exporté depuis `CalendrierView`. Même méthode à appliquer aux autres fichiers > 2 000 lignes (`RevenusView.tsx` 3 737, `VoyageurDetail.tsx` 2 915, `PerformancesView.tsx` 2 426) : sortir d'abord les styles, constantes et sous-composants de premier niveau, sans toucher au corps du composant principal.
+
 ### Phosphor Icons
 ```typescript
 // CORRECT
