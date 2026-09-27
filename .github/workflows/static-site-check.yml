@@ -1,0 +1,29 @@
+name: Site statique
+
+# Le forfait Vercel Hobby refuse tout déploiement du site statique qui
+# contient plus de 12 fonctions serverless (fichiers .js sous api/). Le
+# 27/09/2026, une 13e fonction a fait échouer tous les déploiements pendant
+# plusieurs heures sans autre signal qu'un email Vercel : ce contrôle échoue
+# dès le push, avec un message clair.
+
+on:
+  push:
+    branches: [main, 'claude/**']
+    paths: ['api/**', '.github/workflows/static-site-check.yml']
+  pull_request:
+    paths: ['api/**']
+
+jobs:
+  functions-limit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Au plus 12 fonctions serverless (limite Vercel Hobby)
+        run: |
+          COUNT=$(find api -type f \( -name '*.js' -o -name '*.mjs' -o -name '*.ts' \) | wc -l)
+          echo "Fonctions serverless : $COUNT / 12"
+          find api -type f | sort
+          if [ "$COUNT" -gt 12 ]; then
+            echo "::error::$COUNT fonctions dans api/ : Vercel Hobby en accepte 12, le déploiement du site échouera. Fusionner des fonctions (ex. route dynamique api/xxx/[type].js) ou en supprimer une."
+            exit 1
+          fi
