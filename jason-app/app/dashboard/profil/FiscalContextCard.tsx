@@ -108,7 +108,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color: '#5DC077',
+    color: 'var(--accent-text)',
     flexShrink: 0,
   },
   title: {

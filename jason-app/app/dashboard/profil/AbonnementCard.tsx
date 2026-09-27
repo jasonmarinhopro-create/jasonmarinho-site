@@ -32,10 +32,7 @@ export default function AbonnementCard({ planLabel, subscription }: Props) {
 
   // Couleurs par plan
   const accent =
-    isAdmin            ? '#c084fc'
-    : planLabel === 'Membre Driing' ? 'var(--accent-text)'
-    : planLabel === 'Standard'      ? '#34D399'
-    : 'var(--text-3)'
+    isFree ? 'var(--text-3)' : 'var(--accent-text)'  // couleurs de la marque (avant : violet admin, vert menthe Standard)
 
   return (
     <section style={s.card}>
@@ -72,7 +69,7 @@ export default function AbonnementCard({ planLabel, subscription }: Props) {
           ) : (
             <>
               <div style={s.meta}>
-                <CheckCircle size={13} weight="fill" style={{ color: '#34D399' }} /> Abonnement actif
+                <CheckCircle size={13} weight="fill" style={{ color: 'var(--accent-text)' }} /> Abonnement actif
               </div>
               {sub.currentPeriodEnd && (
                 <div style={s.meta}>

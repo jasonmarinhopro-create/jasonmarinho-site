@@ -2,12 +2,9 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { saveProfileName, saveIban, saveAdresse, saveFacturation, deleteAccount } from './actions'
 import {
-  Check, User, EnvelopeSimple, PencilSimple, Warning, Lock,
-  Eye, EyeSlash, CreditCard, Bank, MapPin, IdentificationCard,
-  Wallet, Trash, X,
+  Check, User, PencilSimple, Warning, CreditCard, Bank, MapPin, IdentificationCard, Wallet, Trash, X, Receipt,
 } from '@phosphor-icons/react/dist/ssr'
 
 interface Props {
@@ -23,7 +20,7 @@ interface Props {
 }
 
 // ─── Shared section card wrapper ───────────────────────────────────────────
-function SectionCard({
+export function SectionCard({
   icon, iconColor, iconBg, title, description, children, anchorId,
 }: {
   icon: React.ReactNode
@@ -78,7 +75,7 @@ const sc: Record<string, React.CSSProperties> = {
 }
 
 // ─── Field row ──────────────────────────────────────────────────────────────
-function FieldRow({ label, icon, children }: { label: string; icon?: React.ReactNode; children: React.ReactNode }) {
+export function FieldRow({ label, icon, children }: { label: string; icon?: React.ReactNode; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: '20px' }}>
       <label style={f.label}>
@@ -90,7 +87,7 @@ function FieldRow({ label, icon, children }: { label: string; icon?: React.React
   )
 }
 
-const f: Record<string, React.CSSProperties> = {
+export const f: Record<string, React.CSSProperties> = {
   label: {
     display: 'flex', alignItems: 'center', gap: 'var(--s-2)',
     fontSize: 'var(--t-xs)', fontWeight: 600, letterSpacing: '0.6px',
@@ -169,14 +166,6 @@ export default function ProfilForm({
   const [saveError, setSaveError] = useState('')
   const [editName, setEditName]   = useState(false)
 
-  const [editPassword,    setEditPassword]    = useState(false)
-  const [newPassword,     setNewPassword]     = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [showNew,         setShowNew]         = useState(false)
-  const [showConfirm,     setShowConfirm]     = useState(false)
-  const [pwLoading,       setPwLoading]       = useState(false)
-  const [pwError,         setPwError]         = useState('')
-  const [pwSaved,         setPwSaved]         = useState(false)
 
   const [stripeLoading, setStripeLoading] = useState(false)
   const [stripeError,   setStripeError]   = useState('')
@@ -224,19 +213,6 @@ export default function ProfilForm({
     const parts = fullName.trim().split(' ')
     setFirstName(parts[0] ?? ''); setLastName(parts.slice(1).join(' ') ?? '')
     setEditName(false); setSaveError('')
-  }
-
-  async function handlePasswordSave() {
-    setPwError('')
-    if (newPassword.length < 8) { setPwError('Au moins 8 caractères requis.'); return }
-    if (newPassword !== confirmPassword) { setPwError('Les mots de passe ne correspondent pas.'); return }
-    setPwLoading(true)
-    const supabase = createClient()
-    const { error } = await supabase.auth.updateUser({ password: newPassword })
-    setPwLoading(false)
-    if (error) { setPwError(error.message); return }
-    setPwSaved(true); setNewPassword(''); setConfirmPassword(''); setEditPassword(false)
-    setTimeout(() => setPwSaved(false), 3000)
   }
 
   async function handleStripeConnect() {
@@ -292,13 +268,16 @@ export default function ProfilForm({
 
   return (
     <>
-      {/* ── Carte 1 : Identité ─────────────────────────────────────────── */}
+      {/* ── Carte 1 : identité du bailleur (sept. 2026 : nom + adresse, ce qui
+            figure sur les contrats et les factures ; e-mail et mot de passe
+            sont dans AccountCard, colonne de droite) ───────────────────── */}
       <SectionCard
+        anchorId="identite"
         icon={<IdentificationCard size={20} weight="fill" />}
-        iconColor="var(--success-1)"
-        iconBg="var(--success-bg)"
-        title="Identité personnelle"
-        description="Nom affiché, e-mail et mot de passe du compte"
+        iconColor="var(--accent-text)"
+        iconBg="var(--accent-bg)"
+        title="Identité du bailleur"
+        description="Ton nom et ton adresse apparaissent sur tes contrats et tes factures."
       >
         {/* Prénom & Nom */}
         <FieldRow label="Prénom & Nom" icon={<User size={12} />}>
@@ -334,65 +313,6 @@ export default function ProfilForm({
           )}
         </FieldRow>
 
-        {/* Email */}
-        <FieldRow label="Adresse e-mail" icon={<EnvelopeSimple size={12} />}>
-          <div style={f.valueRow}>
-            <span style={f.value}>{email}</span>
-            <span style={f.readOnly}>Non modifiable</span>
-          </div>
-        </FieldRow>
-
-        {/* Mot de passe */}
-        <FieldRow label="Mot de passe" icon={<Lock size={12} />}>
-          {editPassword ? (
-            <div>
-              <div style={{ position: 'relative', marginBottom: '8px' }}>
-                <input
-                  type={showNew ? 'text' : 'password'}
-                  value={newPassword} onChange={e => setNewPassword(e.target.value)}
-                  style={{ ...f.input, paddingRight: '44px' }}
-                  placeholder="Nouveau mot de passe" autoFocus
-                />
-                <button type="button" onClick={() => setShowNew(v => !v)} style={eyeBtn}>
-                  {showNew ? <EyeSlash size={15} /> : <Eye size={15} />}
-                </button>
-              </div>
-              <div style={{ position: 'relative', marginBottom: '8px' }}>
-                <input
-                  type={showConfirm ? 'text' : 'password'}
-                  value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
-                  style={{ ...f.input, paddingRight: '44px' }}
-                  placeholder="Confirmer le mot de passe"
-                />
-                <button type="button" onClick={() => setShowConfirm(v => !v)} style={eyeBtn}>
-                  {showConfirm ? <EyeSlash size={15} /> : <Eye size={15} />}
-                </button>
-              </div>
-              {pwError && <div style={f.errorBox}><Warning size={13} />{pwError}</div>}
-              <div style={f.saveRow}>
-                <button onClick={handlePasswordSave} disabled={pwLoading} className="btn-primary" style={{ fontSize: '13px', padding: '9px 18px' }}>
-                  {pwSaved ? <><Check size={13} weight="bold" /> Modifié</> : pwLoading ? 'Mise à jour…' : 'Enregistrer'}
-                </button>
-                <button onClick={() => { setEditPassword(false); setNewPassword(''); setConfirmPassword(''); setPwError('') }} className="jm-profil-cancel-btn" style={f.cancelBtn}>Annuler</button>
-              </div>
-            </div>
-          ) : (
-            <div style={f.valueRow}>
-              <span style={{ ...f.value, letterSpacing: '3px' }}>••••••••</span>
-              <button onClick={() => setEditPassword(true)} className="jm-profil-edit-btn" style={f.editBtn}><PencilSimple size={13} /> Modifier</button>
-            </div>
-          )}
-        </FieldRow>
-      </SectionCard>
-
-      {/* ── Carte 2 : Coordonnées légales ──────────────────────────────── */}
-      <SectionCard
-        icon={<MapPin size={20} weight="fill" />}
-        iconColor="var(--accent-text)"
-        iconBg="var(--accent-bg)"
-        title="Coordonnées légales"
-        description="Apparaît sur tes contrats de location. Adresse du bailleur ou siège social."
-      >
         <FieldRow label="Adresse (bailleur)" icon={<MapPin size={12} />}>
           {adresseSaved && <div style={{ ...stripeBanner('success'), marginBottom: '10px' }}><Check size={13} weight="bold" /> Adresse enregistrée.</div>}
           {editAdresse ? (
@@ -428,10 +348,10 @@ export default function ProfilForm({
       <SectionCard
         anchorId="stripe"
         icon={<Wallet size={20} weight="fill" />}
-        iconColor="#a29bfe"
-        iconBg="rgba(99,91,255,0.12)"
+        iconColor="var(--accent-text)"
+        iconBg="var(--accent-bg)"
         title="Encaissements"
-        description="Stripe pour les cautions automatiques, IBAN pour les virements dans tes contrats"
+        description="Stripe pour le loyer par carte et la caution, IBAN pour les virements. Les deux figurent dans tes contrats."
       >
         {/* Stripe */}
         <FieldRow label="Paiements & Cautions (Stripe)" icon={<CreditCard size={12} />}>
@@ -442,8 +362,8 @@ export default function ProfilForm({
           {isStripeConnected ? (
             <div style={f.valueRow}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--success-1)', flexShrink: 0 }} />
-                <span style={{ ...f.value, color: 'var(--success-1)' }}>Compte connecté</span>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-text)', flexShrink: 0 }} />
+                <span style={{ ...f.value, color: 'var(--accent-text)' }}>Compte connecté</span>
                 <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'monospace' }}>{stripeAccountId?.slice(0, 20)}…</span>
               </div>
               <button onClick={handleStripeConnect} disabled={stripeLoading} className="jm-profil-edit-btn" style={f.editBtn}>{stripeLoading ? '…' : 'Gérer'}</button>
@@ -454,7 +374,7 @@ export default function ProfilForm({
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#d97706', flexShrink: 0 }} />
                 <span style={{ fontSize: '13px', color: '#b45309', fontWeight: 600 }}>Onboarding incomplet</span>
               </div>
-              <button onClick={handleStripeConnect} disabled={stripeLoading} style={addBtn('#a29bfe', 'rgba(99,91,255,0.1)', 'rgba(99,91,255,0.3)')}>
+              <button onClick={handleStripeConnect} disabled={stripeLoading} style={addBtn('var(--accent-text)', 'var(--accent-bg)', 'var(--accent-border)')}>
                 {stripeLoading ? 'Chargement…' : 'Finaliser mon compte Stripe →'}
               </button>
             </div>
@@ -463,14 +383,14 @@ export default function ProfilForm({
               <p style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '10px' }}>
                 Connecte Stripe pour collecter loyers et cautions automatiquement. La carte de ton locataire est bloquée à la signature.
               </p>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', background: 'rgba(99,91,255,0.07)', border: '1px solid rgba(99,91,255,0.18)', borderRadius: '8px', padding: '10px 12px', marginBottom: '12px' }}>
-                <span style={{ fontSize: '13px', flexShrink: 0 }}>ℹ️</span>
+              <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 12px', marginBottom: '12px' }}>
                 <p style={{ fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.6, margin: 0 }}>
-                  <strong style={{ color: 'var(--text-2)' }}>Commissions</strong> : 1,5 % + 0,25 € (UE) ou 2,9 % + 0,25 € (hors UE). Déduit automatiquement.
+                  {/* Grille Stripe France relevée en sept. 2026 : ne pas afficher de taux hors UE figé, il change */}
+                  <strong style={{ color: 'var(--text-2)' }}>Frais Stripe</strong> : 1,5 % + 0,25 € pour une carte européenne standard, davantage pour les cartes premium ou hors Europe (<a href="https://stripe.com/fr/pricing" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-text)' }}>grille officielle</a>). Aucune commission de notre part, déduits automatiquement.
                 </p>
               </div>
               {stripeError && <div style={{ ...f.errorBox, marginBottom: '10px' }}><Warning size={13} />{stripeError}</div>}
-              <button onClick={handleStripeConnect} disabled={stripeLoading} style={addBtn('#a29bfe', 'rgba(99,91,255,0.1)', 'rgba(99,91,255,0.3)')}>
+              <button onClick={handleStripeConnect} disabled={stripeLoading} style={addBtn('var(--accent-text)', 'var(--accent-bg)', 'var(--accent-border)')}>
                 {stripeLoading ? 'Connexion…' : 'Connecter mon compte Stripe →'}
               </button>
             </div>
@@ -480,6 +400,7 @@ export default function ProfilForm({
         <div style={{ height: '1px', background: 'var(--border)', margin: '4px 0 20px' }} />
 
         {/* IBAN */}
+        <div id="iban" style={{ scrollMarginTop: '80px' }} />
         <FieldRow label="Virement bancaire (IBAN)" icon={<Bank size={12} />}>
           {ibanSaved && <div style={{ ...stripeBanner('success'), marginBottom: '10px' }}><Check size={13} weight="bold" /> IBAN enregistré.</div>}
           {editIban ? (
@@ -517,18 +438,27 @@ export default function ProfilForm({
               <p style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '10px' }}>
                 Ajoute ton IBAN pour proposer le virement comme option de paiement dans tes contrats.
               </p>
-              <button onClick={() => setEditIban(true)} style={addBtn('var(--success-1)', 'rgba(52,211,153,0.1)', 'var(--success-border)')}>
+              <button onClick={() => setEditIban(true)} style={addBtn('var(--accent-text)', 'var(--accent-bg)', 'var(--accent-border)')}>
                 + Ajouter mon IBAN
               </button>
             </div>
           )}
         </FieldRow>
 
-        <div style={{ height: '1px', background: 'var(--border)', margin: '4px 0 20px' }} />
+      </SectionCard>
 
+      {/* ── Carte 3 : factures (sortie des Encaissements, sept. 2026) ── */}
+      <SectionCard
+        anchorId="facturation"
+        icon={<Receipt size={20} weight="fill" />}
+        iconColor="var(--accent-text)"
+        iconBg="var(--accent-bg)"
+        title="Factures"
+        description="Ton numéro et ta mention TVA, repris sur les factures émises depuis tes contrats."
+      >
         {/* Facturation : SIRET/NIF + mention TVA, utilisés sur les factures
             émises depuis un contrat (cf. app/invoice/[token]) */}
-        <FieldRow label="Facturation (SIRET / NIF, mention TVA)" icon={<IdentificationCard size={12} />}>
+        <FieldRow label="SIRET / NIF et mention TVA" icon={<IdentificationCard size={12} />}>
           {facturationSaved && <div style={{ ...stripeBanner('success'), marginBottom: '10px' }}><Check size={13} weight="bold" /> Infos de facturation enregistrées.</div>}
           {editFacturation ? (
             <div>
@@ -568,7 +498,7 @@ export default function ProfilForm({
               <p style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '10px' }}>
                 Ajoute ton numéro SIRET/NIF pour qu'il apparaisse sur les factures émises depuis tes contrats.
               </p>
-              <button onClick={() => setEditFacturation(true)} style={addBtn('var(--success-1)', 'rgba(52,211,153,0.1)', 'var(--success-border)')}>
+              <button onClick={() => setEditFacturation(true)} style={addBtn('var(--accent-text)', 'var(--accent-bg)', 'var(--accent-border)')}>
                 + Ajouter mes infos de facturation
               </button>
             </div>
@@ -576,14 +506,12 @@ export default function ProfilForm({
         </FieldRow>
       </SectionCard>
 
-      {/* ── Zone de danger : suppression du compte (RGPD) ── */}
-      <DangerZone />
     </>
   )
 }
 
 // ─── Zone de danger : suppression de compte ────────────────────────────────
-function DangerZone() {
+export function DangerZone() {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [confirmation, setConfirmation] = useState('')
@@ -798,13 +726,6 @@ const dz: Record<string, React.CSSProperties> = {
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
-const eyeBtn: React.CSSProperties = {
-  position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)',
-  background: 'none', border: 'none', cursor: 'pointer',
-  color: 'var(--text-2)', padding: '4px',
-  display: 'flex', alignItems: 'center',
-}
-
 function addBtn(color: string, bg: string, border: string): React.CSSProperties {
   return {
     display: 'inline-flex', alignItems: 'center', gap: '6px',

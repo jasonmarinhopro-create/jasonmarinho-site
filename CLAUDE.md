@@ -307,6 +307,12 @@ import { House } from '@phosphor-icons/react'
 
 ---
 
+## Page « Mon compte » (`/dashboard/profil`, refonte sept. 2026)
+
+- `page.tsx` charge les données, `ProfilView.tsx` les affiche (prévisualisable avec des données fictives). En-tête vert (avatar, formule, « Passer en Standard » en gratuit) + carte « Prêt pour tes contrats » (nom, adresse du bailleur, Stripe ou IBAN, SIRET/NIF + mention TVA ; chaque point manquant renvoie à sa carte `#identite`, `#stripe`, `#facturation`). Avant : jauge « Profil complété » dont 40 % tenaient au pseudo et à la bio du forum.
+- 2 colonnes dès 1200 px (avant : colonnes CSS « masonry », ordre de lecture imprévisible, suppression du compte au milieu). Gauche (`ProfilForm.tsx`) : Identité du bailleur (nom + adresse), Encaissements (Stripe + IBAN `#iban`), Factures, puis Profil fiscal. Droite : Connexion (`AccountCard.tsx`, e-mail + mot de passe), Mon abonnement, Profil public (pseudo Questions & réponses). `DangerZone` (exportée de `ProfilForm.tsx`) en bas, pleine largeur.
+- Frais Stripe affichés : 1,5 % + 0,25 € carte européenne standard + renvoi vers la grille officielle (avant : « 2,9 % hors UE », tarif américain). Couleurs hors marque retirées (violet Stripe et admin, vert menthe Standard).
+
 ## Sidebar & mode admin
 
 - **Menu du compte (bas de la sidebar, refonte sept. 2026, demande de Jason : « un peu fouillis »)** : identité + formule (« Découverte · Passer en Standard » en gratuit), puis Mon compte, Mon abonnement, Centre d'aide ; « Mes espaces » (icône par espace) seulement si au moins 2 espaces actifs, et une seule entrée « Ajouter un espace » → `/dashboard/espaces` (page qui présente les 4 espaces, remplace les 3 liens « + Créer ma fiche… / Analyser un investissement ») ; Mode admin en interrupteur (plus de mention « Mode admin » sous l'espace Hôte, `lib/queries/spaces.ts`) ; déconnexion. Sortis du menu : Profil Entre Hôtes (lien en colonne droite de Questions & réponses, pseudo éditable dans Mon compte), Contributeurs, avis Google et jasonmarinho.com (encart « Tu aimes l'app ? » du Centre d'aide) ; demande d'avis Google une fois sur l'accueil dès qu'un contrat est signé (`app/dashboard/ReviewPrompt.tsx`, masquage en `localStorage`). Le menu du `Header.tsx` (`display: none`) est du code mort, pas l'affichage réel.

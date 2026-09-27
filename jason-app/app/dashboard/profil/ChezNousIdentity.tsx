@@ -50,8 +50,8 @@ export default function ChezNousIdentity({ initialPseudo, initialBio, firstName,
           <House size={20} color="var(--accent-text)" weight="fill" />
         </div>
         <div>
-          <h3 style={s.title}>Profil Entre Hôtes</h3>
-          <p style={s.desc}>Comment tu apparais dans la communauté d&apos;hôtes LCD</p>
+          <h3 style={s.title}>Profil public</h3>
+          <p style={s.desc}>Ton pseudo et ce que les autres hôtes voient quand tu poses une question</p>
         </div>
       </div>
 
@@ -60,10 +60,10 @@ export default function ChezNousIdentity({ initialPseudo, initialBio, firstName,
         <Link href="/dashboard/chez-nous" style={s.infoBanner}>
           <UsersThree size={18} weight="fill" color="var(--accent-text)" />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={s.infoTitle}>Qu&apos;est-ce que Entre Hôtes&nbsp;?</p>
+            <p style={s.infoTitle}>Questions &amp; réponses</p>
             <p style={s.infoDesc}>
-              Le réseau social privé des hôtes en location courte durée. Échange entre pairs,
-              entraide, partage d&apos;expériences.
+              Pose tes questions à Jason et aux autres hôtes : réponse sous 48 h. Ton pseudo
+              s&apos;affiche à côté de tes questions et de tes réponses.
             </p>
           </div>
           <ArrowSquareOut size={14} color="var(--accent-text)" />
