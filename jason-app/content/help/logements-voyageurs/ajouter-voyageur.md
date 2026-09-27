@@ -1,61 +1,35 @@
 ---
 title: "Ajouter un voyageur dans ton carnet"
-excerpt: "Mes Voyageurs, c'est ton CRM LCD. Comment l'utiliser efficacement."
+excerpt: "Mes voyageurs : les informations à saisir et pourquoi la nationalité compte."
 order: 2
 relatedPages: [/dashboard/voyageurs]
-updatedAt: "2026-05-08"
+updatedAt: "2026-09-27"
 ---
 
-## Le carnet de voyageurs : ton CRM LCD
+## À quoi sert le carnet
 
-**Mes Voyageurs** est ton carnet de contacts. Chaque voyageur que tu enregistres peut être rattaché à un ou plusieurs séjours. C'est là que tu stockes ses coordonnées, ses préférences, ses antécédents.
+**Mes voyageurs** regroupe tous tes voyageurs, avec leurs séjours, leurs contrats et leurs paiements. Quand quelqu'un revient, tu retrouves tout en un clic : c'est la base de la réservation directe.
 
-> C'est la base de la **réservation directe** : quand un voyageur revient, tu retrouves son dossier complet en un clic au lieu de le re-saisir depuis zéro.
+## Créer une fiche
 
----
+**Mes voyageurs** → **Ajouter un voyageur** :
 
-## Créer une fiche voyageur
+- **Prénom et nom** (obligatoires) : tels qu'ils apparaîtront sur le contrat
+- **Email** : c'est là que part le lien de signature du contrat. Sans email, tu devras envoyer le lien toi-même
+- **Téléphone**
+- **Nationalité** : elle décide si une déclaration est obligatoire (fiche de police en France, SIBA au Portugal pour un voyageur étranger). Sans nationalité, l'app ne peut pas créer la déclaration
+- **Notes privées** : tes remarques, jamais visibles par le voyageur
 
-Va dans **Mes Voyageurs** → **Ajouter un voyageur**. Remplis les champs :
+> Les réservations importées d'Airbnb ou Booking n'ont ni nom ni nationalité : le calendrier iCal ne les transmet pas. Crée la fiche du voyageur et relie-la au séjour pour que la déclaration soit créée.
 
-### Champs essentiels pour générer un contrat
+## La fiche voyageur
 
-- **Prénom** et **nom** : tels qu'ils apparaîtront sur le contrat
-- **Email** : c'est sur cette adresse que le lien de signature sera envoyé
-- **Téléphone** : pour le contact direct (et pour la pièce jointe contrat)
+Depuis la fiche, tu peux :
 
-### Champs nécessaires pour un contrat juridiquement valide
+- **Ajouter un séjour** (section Séjours) et **créer son contrat**
+- Suivre les **paiements** (loyer, caution) et émettre la **facture**
+- Noter un **incident** pendant le séjour
 
-- **Adresse permanente** : mention légale obligatoire dans un contrat de location
-- **Numéro de pièce d'identité** (optionnel) : carte d'identité ou passeport
+## Un voyageur à problème ?
 
-### Champs pratiques
-
-- **Notes privées** : tes observations sur le voyageur (jamais visibles par lui)
-- **Tags** : pour catégoriser ("VIP", "habitué", "famille", "professionnel"...)
-
----
-
-## Pourquoi le carnet est stratégique
-
-### Récidivistes
-
-Un voyageur satisfait qui revient = **zéro commission plateforme** si tu passes en direct. Avoir sa fiche complète en 1 clic évite la friction.
-
-> *Exemple :* un voyageur qui revient 3 fois par an en direct te fait économiser 9% × 3 séjours × ton tarif moyen. Pour un T2 à 90€/nuit × 5 nuits, c'est environ **120€ d'économies de commission par an** pour un seul voyageur fidèle.
-
-### Blacklist
-
-Tu peux **noter les voyageurs problématiques** dans tes notes privées. Quand ils tentent de re-réserver, tu retrouves immédiatement le contexte.
-
-### Historique
-
-D'un coup d'œil, tu vois **tous les séjours passés** d'un voyageur, ses paiements, ses incidents. Pratique pour les négociations de prix sur un retour.
-
----
-
-## Importer des voyageurs en masse
-
-L'import CSV est en cours de développement. En attendant, ajoute-les un par un (compte 1 minute par fiche).
-
-> Pour les voyageurs Airbnb existants : tu peux récupérer leurs infos depuis chaque réservation (Profil → Contact). Quand tu génères un contrat depuis un séjour Airbnb, le système te demande automatiquement de créer la fiche si elle n'existe pas.
+Signale-le dans **Sécurité voyageur**. Après vérification, les autres hôtes le retrouveront en cherchant son email, son téléphone ou son nom avant d'accepter une réservation.

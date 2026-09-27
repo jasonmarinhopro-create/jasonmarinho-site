@@ -1,78 +1,42 @@
 ---
-title: "Pourquoi un contrat séparé en plus d'Airbnb"
-excerpt: "Les CGU Airbnb ne te protègent pas. Ce qu'un vrai contrat ajoute."
+title: "Pourquoi un contrat pour une réservation directe"
+excerpt: "Ce que le contrat t'apporte, ce que vaut la signature en ligne, et ses limites."
 order: 5
-relatedPages: [/dashboard/calendrier]
-updatedAt: "2026-05-08"
+relatedPages: [/dashboard/contrats]
+updatedAt: "2026-09-27"
 ---
 
-## Les CGU Airbnb ne sont pas un contrat avec toi
+## Sur Airbnb ou Booking, la plateforme fait le contrat
 
-Quand un voyageur réserve sur Airbnb, il accepte les **CGU d'Airbnb**. **Pas un contrat avec toi.**
+Quand un voyageur réserve sur une plateforme, ce sont ses conditions qui s'appliquent, et c'est elle qui arbitre les litiges. L'app ne te propose donc pas de contrat pour ces réservations.
 
-> En cas de litige, Airbnb tranche selon **ses** règles, pas selon ce que tu juges normal. Sans contrat séparé, ta marge de manœuvre est limitée à ce qu'Airbnb veut bien faire pour toi.
+## En direct, c'est à toi de fixer les règles
 
----
+Pour une réservation directe (bouche-à-oreille, Facebook, fiche Google, voyageur qui revient), le contrat écrit :
 
-## Ce que t'apporte un contrat séparé
+- fixe les **dates, le prix, la caution et les conditions d'annulation**
+- donne ton **règlement intérieur** (animaux, fêtes, tabac, bruit)
+- sert de **preuve** en cas de désaccord ou de retenue sur la caution
 
-Un contrat de location signé électroniquement, c'est :
+## Ce que contient le contrat de l'app
 
-- Un **document signé** par le voyageur (preuve juridique)
-- Qui définit **tes** règles, ton règlement, tes pénalités, ta caution
-- Une **preuve utilisable en justice ou en médiation**
-- L'**autorisation explicite** d'appliquer une retenue sur la caution sans demander à Airbnb
+- L'identité du **bailleur** et du **locataire** (ou de sa société)
+- L'**adresse** et la description du logement, la capacité
+- Les **dates** d'arrivée et de départ
+- Le **loyer**, l'acompte, la **caution** et les modalités de paiement, avec ton IBAN si tu es payé par virement
+- Les **conditions d'annulation** et le **règlement intérieur**
 
-Sans contrat, tu es **à 100% à la merci de la plateforme**.
+Le texte existe pour un logement situé en **France** ou au **Portugal**, et se lit en français, portugais ou anglais.
 
----
+## Ce que vaut la signature en ligne
 
-## Les 12 mentions obligatoires d'un contrat valide
+La signature électronique a la même valeur qu'une signature manuscrite si l'on peut identifier le signataire et garantir que le document n'a pas été modifié (articles 1366 et 1367 du Code civil). L'app enregistre la **signature** du voyageur, la **date et l'heure**, son **adresse IP** et son **navigateur**.
 
-Un contrat de location courte durée juridiquement solide doit comporter au minimum **12 mentions** :
+> Source : Code civil, articles 1366 et 1367 (Légifrance)
 
-1. **Identité complète du bailleur** (nom, adresse, n° SIRET si applicable)
-2. **Identité complète du locataire** (nom, adresse permanente, n° pièce d'identité)
-3. **Adresse exacte** du logement loué
-4. **Dates et heures précises** de séjour (arrivée + départ)
-5. **Capacité maximale** autorisée (nb d'adultes + enfants)
-6. **Montant du loyer** HT et TTC
-7. **Montant de la caution** (et modalités de restitution)
-8. **Modalités de paiement** (acompte, solde, calendrier)
-9. **Conditions d'annulation** (avec barème de remboursement)
-10. **Règlement intérieur** (animaux, fumeur, fêtes, bruit)
-11. **Inventaire annexé** (liste du mobilier et équipements)
-12. **Clause de litige** (juridiction compétente, procédure de médiation)
+C'est une signature électronique **simple** : suffisante comme preuve dans la plupart des litiges de location courte durée, mais pas une signature qualifiée avec certificat. En cas de contestation, c'est le juge qui apprécie la preuve.
 
-> Le contrat généré par le dashboard contient **toutes ces 12 mentions**. C'est validé par un cabinet juridique partenaire.
+## Les limites
 
----
-
-## La signature électronique : juridiquement valable ?
-
-**Oui.** La signature électronique est régie par :
-
-- L'article 1366 du Code civil français
-- Le règlement européen **eIDAS** (n°910/2014)
-
-Trois niveaux de signature électronique existent :
-
-| Niveau | Description | Valeur juridique |
-|--------|-------------|------------------|
-| **Simple** | Cocher une case "j'accepte" | Faible |
-| **Avancée** | Identification + horodatage | Forte (utilisé par Jason Marinho) |
-| **Qualifiée** | Avec certificat délégué (notaire) | Maximale (rare) |
-
-Le dashboard utilise la **signature avancée** : identité du voyageur (nom + email), horodatage (date, heure UTC, IP), preuve cryptographique. C'est largement suffisant pour 99% des cas d'hôte LCD.
-
-> En cas de litige, le voyageur peut difficilement nier avoir signé : il a cliqué depuis son email personnel, à une heure précise, depuis une IP géolocalisée. C'est plus solide qu'un PDF imprimé/signé/scanné.
-
----
-
-## Bon à savoir
-
-> Si ton contrat actuel n'a pas les 12 mentions ci-dessus, **refais-le** depuis le dashboard. Le système vérifie tout automatiquement.
-
-Pour les **conciergeries** : il existe un contrat de mandat spécifique (loi Hoguet). Voir l'article dédié dans [Outils](/dashboard/aide/outils).
-
-Pour les **réservations longue durée** (>30 jours) : utilise un **contrat de location meublée classique**, pas un contrat LCD. Le dashboard est conçu pour la location courte durée.
+- Le contrat est conçu pour la **location saisonnière**. Pour plus de 90 jours ou une résidence principale, il faut un bail meublé classique
+- Relis les clauses par défaut : elles sont une base, pas un conseil juridique adapté à ta situation

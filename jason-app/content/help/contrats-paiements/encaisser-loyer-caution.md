@@ -1,98 +1,42 @@
 ---
-title: "Encaisser le loyer et bloquer la caution"
-excerpt: "Loyer capturé immédiatement, caution bloquée puis libérée ou capturée selon le cas."
+title: "Encaisser le loyer et gérer la caution"
+excerpt: "Le paiement du loyer, la caution bloquée sur la carte, puis libérée ou encaissée."
 order: 3
-relatedPages: [/dashboard/calendrier]
-updatedAt: "2026-05-08"
+relatedPages: [/dashboard/contrats, /dashboard/voyageurs]
+updatedAt: "2026-09-27"
 ---
 
-## Loyer et caution : deux logiques différentes
+## Le loyer
 
-Une fois ton compte Stripe connecté, le dashboard te permet d'encaisser deux types de paiements distincts.
+Si le contrat prévoit un paiement **Stripe**, le voyageur reçoit le lien de paiement après sa signature. Le loyer est encaissé tout de suite et arrive sur ton compte bancaire selon le calendrier de versement de Stripe.
 
-### Le loyer — capture immédiate
+Si tu as choisi un **acompte de 50 %**, seul l'acompte est payé en ligne. Le solde est indiqué « à régler à l'arrivée » sur le contrat, par le moyen convenu avec le voyageur.
 
-Le loyer est **encaissé immédiatement** quand le voyageur paie. Il arrive sur ton compte bancaire sous **2 à 7 jours ouvrés** (délai standard Stripe pour un nouveau compte, plus rapide ensuite).
+## La caution
 
-### La caution — capture manuelle
+La caution n'est **pas débitée** : le montant est **bloqué** sur la carte du voyageur. Après le séjour, tu choisis :
 
-La caution est **bloquée** sur la carte du voyageur (autorisation de prélèvement) mais **pas encaissée**. Tu as **jusqu'à 7 jours après le séjour** pour :
+- **Libérer la caution** : le blocage est annulé, le voyageur n'est pas débité
+- **Encaisser** : le montant **total** de la caution est prélevé. C'est définitif
 
-- **Libérer** la caution si tout va bien (le voyageur ne voit aucun débit)
-- **Capturer** tout ou partie si tu dois déduire des dégâts
+> L'app encaisse la caution en entier. Pour retenir seulement une partie (une vaisselle cassée, par exemple), encaisse puis rembourse la différence depuis ton tableau de bord Stripe.
 
-> C'est exactement le même mécanisme qu'un hôtel qui bloque la carte à l'arrivée et débite les extras à la fin.
+## Attention à la durée du blocage
 
----
+Stripe garde en général une carte bloquée **7 jours**. Passé ce délai, le blocage tombe tout seul et la caution n'est plus disponible. Pour un séjour de plus d'une semaine, ou si la caution est réglée longtemps avant l'arrivée, elle peut expirer avant la fin du séjour. Demande au voyageur de la régler juste avant son arrivée.
 
-## Étape 1 — Envoyer le lien de paiement au voyageur
+> Source : documentation Stripe, « Place a hold on a payment method » (docs.stripe.com)
 
-Depuis la **fiche séjour** :
+## Où gérer tout ça
 
-1. Clique sur **Envoyer le lien de paiement**
-2. Choisis **Loyer**, **Caution** ou **Loyer + Caution** (les deux séparés)
-3. Le voyageur reçoit un email avec un lien Stripe Checkout sécurisé
+- **Contrats & paiements** : le bloc **À traiter** liste les loyers pas encore encaissés et les cautions à libérer
+- **Fiche du voyageur** → bouton **Paiements** du séjour : état du loyer et de la caution, liens à copier, **Renvoyer l'email au voyageur**, boutons Libérer et Encaisser
 
-## Étape 2 — Le voyageur paie
+## Les statuts
 
-Le voyageur :
+- **Loyer** : En attente de paiement, Réglé, Remboursé ou Échec paiement
+- **Caution** : En attente de paiement, Caution retenue (la carte est bloquée), Encaissée, Libérée ou Échec paiement
 
-- Ouvre le lien (pas besoin de compte Stripe)
-- Entre sa **carte bancaire**
-- Valide le paiement
-- Reçoit une confirmation par email
+## En cas de contestation
 
-Tu vois le paiement en **temps réel** dans ton dashboard Jason Marinho et dans ton dashboard Stripe.
-
----
-
-## Gérer la caution après le séjour
-
-Quand le séjour est terminé, tu as **7 jours** pour décider du sort de la caution.
-
-### Cas 1 — Tout va bien : libérer la caution
-
-1. Dans la fiche du séjour, va dans **Caution**
-2. Clique sur **Libérer la caution**
-3. La caution se libère automatiquement, le voyageur ne voit aucun débit
-4. Si ce n'est pas fait dans les 7 jours, **Stripe libère automatiquement**
-
-### Cas 2 — Dégâts : capturer une partie
-
-1. Évalue les dégâts (avec photos, devis)
-2. Dans la fiche, va dans **Caution** → **Capturer partiellement**
-3. Saisis le montant à capturer (ex: 80€ pour une vaisselle cassée)
-4. Justifie dans la description (visible par le voyageur)
-5. Confirme
-
-> Le voyageur reçoit un email automatique avec le détail. Le reste de la caution est libéré.
-
-### Cas 3 — Dégâts importants : capturer la totalité
-
-1. Va dans **Caution** → **Capturer la totalité**
-2. Justifie en détail (cette justification est ta preuve juridique)
-3. Confirme
-
-> En cas de litige, le voyageur peut contester via Stripe (procédure de chargeback). Tu auras besoin du **contrat signé** + **photos d'état des lieux** + **devis professionnels** pour gagner.
-
----
-
-## Suivre l'historique des paiements
-
-Dans la sidebar → **Revenus** (plan Standard+) ou directement sur **Stripe Dashboard** (stripe.com), tu vois :
-
-- Tous les **paiements reçus** (loyers)
-- Toutes les **autorisations en cours** (cautions bloquées)
-- Tous les **versements** vers ton compte bancaire
-- Les **frais Stripe** prélevés
-
----
-
-## Bon à savoir
-
-> La caution Stripe a une **limite** : elle est valable **7 jours maximum** sur la carte du voyageur. Si tu prévois un séjour de 14 jours, **bloque la caution dès la veille de l'arrivée**, pas 1 mois avant.
-
-Pour les séjours plus longs (>7 jours), tu peux :
-
-- Demander la caution par **virement** (en plus ou au lieu de Stripe)
-- Faire **renouveler** l'autorisation à mi-séjour (le voyageur reçoit un nouveau lien)
+Le voyageur peut contester un débit auprès de sa banque. Garde le **contrat signé**, des **photos de l'état des lieux** et les **devis ou factures** des réparations.

@@ -727,7 +727,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                         key={opt.value}
                         type="button"
                         disabled={isDisabled}
-                        title={isDisabled ? 'Connectez votre compte Stripe dans les paramètres pour activer cette option' : undefined}
+                        title={isDisabled ? 'Connecte ton compte Stripe dans Mon compte → Encaissements pour activer cette option' : undefined}
                         onClick={() => {
                           const next = checked ? keys.filter(v => v !== opt.value) : [...keys, opt.value]
                           const nextKeys = next.length ? next : ['virement']
@@ -758,7 +758,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                 </div>
                 {!bailleur.stripeReady && (
                   <p style={{ margin: '8px 0 0', fontSize: '11px', color: '#6b9a7e', lineHeight: 1.5 }}>
-                    🔒 Stripe non configuré, connectez votre compte dans <strong>Paramètres → Paiements</strong> pour l&apos;activer.
+                    🔒 Stripe non configuré, connecte ton compte dans <strong>Mon compte → Encaissements</strong> pour l&apos;activer.
                   </p>
                 )}
               </div>

@@ -1,77 +1,30 @@
 ---
-title: "Créer un séjour : lier logement, voyageur et dates"
-excerpt: "Le séjour, c'est ce qui relie tout. Comment le créer et ce qui se passe ensuite."
+title: "Créer un séjour ou une réservation directe"
+excerpt: "Relier un voyageur, un logement et des dates, puis passer au contrat."
 order: 3
-relatedPages: [/dashboard/calendrier, /dashboard/voyageurs, /dashboard/logements]
-updatedAt: "2026-05-08"
+relatedPages: [/dashboard/contrats, /dashboard/voyageurs, /dashboard/reservations]
+updatedAt: "2026-09-27"
 ---
 
-## Le séjour, c'est le lien entre tout
+## Séjour saisi ou réservation synchronisée
 
-Un séjour dans le dashboard = une réservation. Il relie :
+- Une **réservation synchronisée** vient d'Airbnb, Booking ou Vrbo par le calendrier iCal. Elle apparaît toute seule, sans nom de voyageur ni montant
+- Un **séjour** est une réservation que tu saisis toi-même : réservation directe, ou réservation de plateforme pour laquelle tu veux suivre le voyageur, le montant ou la déclaration
 
-- Un **logement** (lequel ?)
-- Un **voyageur** (qui ?)
-- Des **dates** (quand ?)
-- Un **montant** (combien ?)
+**Mes réservations** liste les deux. Si tu saisis un séjour aux mêmes dates qu'une réservation synchronisée du même logement, c'est ton séjour qui s'affiche : pas de doublon.
 
-Une fois le séjour créé, tu peux **générer le contrat associé en un clic**.
+## Le plus rapide pour une réservation directe
 
----
+**Contrats & paiements** → **Nouvelle réservation directe**. Tu choisis le logement, tu crées le voyageur et les dates, puis l'assistant de contrat s'ouvre directement.
 
-## 3 façons de créer un séjour
+## Depuis la fiche voyageur
 
-### 1. Depuis le calendrier
+**Mes voyageurs** → ouvre la fiche → section **Séjours** → **Ajouter** : logement, dates d'arrivée et de départ, montant.
 
-Va dans **Calendrier** et **clique sur un jour** (ou clique-glisse pour sélectionner une plage). Un formulaire s'ouvre, pré-rempli avec les dates.
+## Réservation Airbnb ou Booking
 
-### 2. Depuis la fiche voyageur
+Pour un séjour venu d'une plateforme, mets le contrat du séjour sur **Signé**, puis **Signé via → Plateforme** et choisis-la (Airbnb, Booking…). Le contrat et le paiement restent gérés par la plateforme : l'app ne propose alors ni contrat ni lien de paiement.
 
-Va dans **Mes Voyageurs** → ouvre la fiche → **Nouveau séjour**. Le voyageur est pré-sélectionné.
+## Ensuite
 
-### 3. Depuis la fiche logement
-
-Va dans **Mes Logements** → ouvre la fiche → **Ajouter un séjour**. Le logement est pré-sélectionné.
-
----
-
-## Les champs du séjour
-
-- **Logement** : sélectionne dans la liste déroulante
-- **Voyageur** : sélectionne dans ton carnet (ou crée-le à la volée)
-- **Date d'arrivée / Date de départ** : utilisées dans le contrat et le calendrier
-- **Heure d'arrivée / Heure de départ** : importantes pour les contrats (mention légale et pour le check-in/check-out)
-- **Nombre de voyageurs** : adultes + enfants (doit respecter la capacité du logement)
-- **Montant du loyer** : en euros TTC, hors caution
-- **Montant de la caution** : facultatif mais fortement recommandé
-- **Source de réservation** : Airbnb, Booking, Direct, Autre
-
----
-
-## Ce que le séjour génère automatiquement
-
-Une fois validé :
-
-- Le séjour apparaît **dans le calendrier** sur les bonnes dates (couleur selon statut)
-- Il est listé dans **Mes Voyageurs** → fiche du voyageur → onglet Séjours
-- Il est listé dans **Mes Logements** → fiche du logement → onglet Séjours
-- Tu peux **créer le contrat** depuis ce séjour en un clic
-
----
-
-## Les statuts d'un séjour
-
-| Statut | Quand | Couleur calendrier |
-|--------|-------|-------------------|
-| **En attente** | Séjour créé, contrat non encore envoyé | Gris |
-| **Contrat envoyé** | Lien de signature envoyé au voyageur | Jaune |
-| **Signé** | Contrat signé, séjour confirmé | Vert |
-| **Annulé** | Séjour annulé (manuellement ou par le voyageur) | Rouge |
-
----
-
-## Bon à savoir
-
-> Un séjour créé manuellement dans le dashboard **n'est pas lié à Airbnb**. C'est juste un objet dans ta base. Pour synchroniser les réservations Airbnb, utilise l'import iCal (voir l'article dédié).
-
-Si tu veux **un séjour de test** sans envoyer un vrai contrat à un vrai voyageur : crée le séjour avec ton propre email, génère le contrat, signe-le toi-même. Tu peux le supprimer après pour nettoyer.
+Le séjour apparaît dans le Calendrier et dans Mes réservations, le ménage de départ est ajouté au planning, et la déclaration est créée si le voyageur est étranger.

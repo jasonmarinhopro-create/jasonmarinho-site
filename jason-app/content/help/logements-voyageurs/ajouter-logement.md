@@ -1,56 +1,36 @@
 ---
 title: "Ajouter un logement"
-excerpt: "La fiche logement, ses champs obligatoires et facultatifs, et comment la remplir vite."
+excerpt: "Où créer ta fiche logement, les champs utiles et ce qu'ils préremplissent ensuite."
 order: 1
 relatedPages: [/dashboard/logements]
-updatedAt: "2026-05-08"
+updatedAt: "2026-09-27"
 ---
 
 ## Pourquoi commencer par le logement
 
-Le logement est **la colonne vertébrale du dashboard**. Tout le reste (séjours, contrats, revenus, calendrier) est rattaché à un logement. Sans logement créé, tu ne peux ni créer de séjour ni générer de contrat.
+Tout est rattaché à un logement : réservations, contrats, ménages, déclarations, revenus. Une fiche bien remplie t'évite de ressaisir les mêmes informations dans chaque contrat.
 
-> Si tu gères plusieurs biens, tu peux créer **plusieurs logements** et les gérer en parallèle. Le plan Découverte est limité à 1 logement, le plan Standard est illimité.
+## Où le créer
 
----
+Ouvre le **sélecteur de logement** en bas du menu, puis **Gérer mes logements** → **Ajouter**.
 
-## Étape 1 — Accéder à Mes Logements
+## Les champs obligatoires
 
-Dans la sidebar, clique sur **Mes Logements**. Tu arrives sur la grille de tes biens. Si c'est ton premier logement, tu vois un bouton **Ajouter un logement** au centre.
+- **Nom du logement** : un nom court qui s'affiche partout (ex. « Studio Oberkampf »)
+- **Adresse complète** : elle apparaît dans les contrats, le planning ménage et les déclarations
 
-## Étape 2 — Les champs obligatoires
+## Les champs qui te font gagner du temps
 
-- **Nom du logement** : un nom court qui servira partout dans le dashboard. Ex: "Studio Oberkampf", "Chalet Annecy", "T2 Lyon Croix-Rousse"
-- **Adresse** : adresse complète. Elle apparaîtra dans les contrats et permet le filtrage régional
-- **Type de logement** : appartement, maison, studio, chambre d'hôtes, gîte, autre
-- **Capacité** : nombre maximum de personnes (adultes + enfants)
+- **Synchronisation calendrier (iCal)** : les liens de ton annonce Airbnb, Booking, Vrbo ou autre. Tes réservations arrivent toutes seules et les ménages se planifient automatiquement
+- **Description, règles** (animaux, tabac) : reprises dans le contrat
+- **Code d'accès et Wi-Fi** : pour tes messages d'arrivée
+- **Contacts utiles** : ménage et urgence
+- **Liens de l'annonce** (Airbnb, Booking, site direct, fiche Google) : utilisés par les outils de visibilité
 
-## Étape 3 — Les champs facultatifs (mais utiles)
+## Tu gères le logement pour un propriétaire
 
-- **Description** : visible dans certains exports. Tu peux y mettre les particularités du bien
-- **Photo de couverture** : s'affiche sur la carte logement dans la grille
-- **Numéro de déclaration mairie** : obligatoire dans certaines communes (Paris, Bordeaux, Annecy, etc.)
-- **Numéro de classement étoiles** (Atout France) : si ton logement est classé
+Renseigne la partie **propriétaire** (nom, email, téléphone, IBAN). Les contrats créés pour ce logement seront alors au nom du propriétaire, et le loyer payé par virement ira sur son compte, pas sur le tien.
 
----
+## Modifier ou désactiver
 
-## Bon à savoir
-
-> Tous les champs sont **modifiables plus tard**. L'important est juste de valider et d'avoir un logement créé pour pouvoir créer des séjours.
-
-Une fois le logement créé :
-
-- Il apparaît dans ta grille **Mes Logements**
-- Tu peux le **sélectionner** dans le calendrier et les fiches séjour
-- Le module **Revenus** te permet de saisir ses revenus séparément
-- Le module **Performances** calcule ses KPI individuellement
-
----
-
-## Modifier un logement
-
-Clique sur la carte du logement → **Modifier**. Tous les champs sont éditables. Les modifications sont **immédiates** et n'affectent pas les contrats déjà signés.
-
-## Supprimer un logement
-
-Clique sur la carte → **Supprimer**. Attention : **les séjours et contrats associés ne sont pas supprimés**, ils restent visibles dans tes archives. Tu ne peux supprimer un logement que s'il n'a plus de séjour actif.
+Tous les champs restent modifiables. Un changement ne touche pas les contrats déjà signés : ils gardent les informations du jour de leur création. Décoche **Logement actif** pour retirer un bien des listes et des statistiques sans perdre son historique.

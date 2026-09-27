@@ -1,90 +1,39 @@
 ---
-title: "Synchroniser ton calendrier Airbnb et Booking via iCal"
-excerpt: "Importer automatiquement tes réservations Airbnb et Booking dans le dashboard."
+title: "Synchroniser ton calendrier Airbnb et Booking"
+excerpt: "Importer automatiquement tes réservations avec le lien iCal de chaque annonce."
 order: 4
-relatedPages: [/dashboard/calendrier]
-updatedAt: "2026-05-08"
+relatedPages: [/dashboard/logements, /dashboard/calendrier]
+updatedAt: "2026-09-27"
 ---
 
-## iCal : le standard universel des calendriers
+## Le principe
 
-**iCal** (format `.ics`) est le standard que toutes les plateformes de location utilisent pour partager leurs calendriers. Airbnb, Booking, Vrbo, Abritel : tous proposent un lien iCal exportable.
+Chaque plateforme fournit un **lien iCal** (qui se termine souvent par `.ics`) : une adresse privée qui donne les dates réservées de ton annonce. Colle-le dans la fiche de ton logement, et tes réservations arrivent dans le Calendrier sans double saisie.
 
-En important ce lien dans le dashboard, tu vois **les réservations Airbnb et Booking directement dans ton calendrier Jason Marinho**, sans double saisie.
+## Récupérer le lien
 
----
+**Airbnb** : Calendrier → ton annonce → **Disponibilités** → **Synchroniser les calendriers** → **Exporter le calendrier**. Copie le lien.
 
-## Étape 1 — Récupérer le lien iCal d'Airbnb
+**Booking.com** : dans l'extranet, **Tarifs et disponibilités** → **Synchroniser les calendriers** → **Exporter le calendrier**. Copie le lien.
 
-1. Va sur **Airbnb** (en mode hôte)
-2. **Calendrier** → choisis ton logement
-3. Clique sur **Plus d'options** (en haut à droite) → **Disponibilité**
-4. Descends jusqu'à **Synchroniser les calendriers**
-5. Copie le lien d'**exportation** (celui qu'Airbnb te donne pour synchroniser ailleurs)
+> Les menus des plateformes changent souvent. Si tu ne trouves pas, cherche « exporter calendrier iCal » dans l'aide de la plateforme.
 
-Le lien ressemble à : `https://www.airbnb.fr/calendar/ical/12345678.ics?s=xxx`
+## Le coller dans l'app
 
-> **Important** : ce lien est secret. Ne le partage à personne, il donne accès à tes réservations.
+Sélecteur de logement en bas du menu → **Gérer mes logements** → ouvre le logement → section **Synchronisation calendrier (iCal)**. Colle chaque lien dans la bonne case (Airbnb, Booking, Vrbo ou autre plateforme), puis enregistre.
 
----
+> Passe bien par la fiche du logement : c'est ce qui relie les réservations au bon bien, donc au bon planning ménage.
 
-## Étape 2 — Récupérer le lien iCal de Booking
+## Quand ça se met à jour
 
-1. Va sur l'**Extranet Booking.com** (en mode hôte)
-2. Va dans **Établissements** → ton logement → **Calendrier**
-3. Clique sur **Synchroniser**
-4. Copie le lien iCal fourni
+- À chaque ouverture du **Calendrier**
+- Quand ton équipe de ménage ou ton agenda consulte ton planning
+- Au moins une fois par jour, en tâche de fond
 
-> Booking.com ne génère parfois le lien que si tu actives la synchronisation iCal dans les préférences. Vérifie dans **Politique** → **Synchronisation calendriers**.
+Si un lien ne répond plus plusieurs fois de suite, tu reçois une notification pour le vérifier.
 
----
+## Ce que la synchro ne fait pas
 
-## Étape 3 — Ajouter le flux dans le dashboard
-
-Dans le **Calendrier** du dashboard :
-
-1. Clique sur l'icône **Paramètres** en haut à droite
-2. **Ajouter un flux iCal**
-3. Remplis :
-   - **Nom** : "Airbnb - Studio Oberkampf" (pour t'y retrouver)
-   - **URL** : le lien copié depuis Airbnb ou Booking
-   - **Couleur** : choisis une couleur distincte par plateforme (bleu pour Airbnb, rouge pour Booking…)
-4. Clique sur **Synchroniser**
-
-Les réservations des **6 derniers mois** + **12 mois à venir** apparaissent dans ton calendrier.
-
----
-
-## La synchronisation est automatique
-
-Le dashboard re-synchronise les flux iCal **toutes les heures**. Si une nouvelle réservation arrive sur Airbnb, elle apparaît dans ton dashboard sous 1h maximum.
-
-Tu peux **forcer une synchronisation manuelle** depuis les paramètres du flux.
-
----
-
-## Limitation importante : la synchro est unidirectionnelle
-
-Quand tu importes Airbnb dans le dashboard :
-
-- ✅ Les réservations Airbnb apparaissent dans ton calendrier
-- ❌ Bloquer une date dans le dashboard ne bloque pas Airbnb
-
-Pour une **vraie protection contre les doubles réservations**, tu dois aussi exporter le calendrier Jason Marinho vers Airbnb.
-
-### Exporter ton calendrier dashboard vers Airbnb
-
-1. Dans le **Calendrier** du dashboard, clique sur **Partager le calendrier** (icône en haut)
-2. Copie le lien iCal généré
-3. Sur Airbnb : **Calendrier → Plus d'options → Synchroniser les calendriers → Importer un calendrier**
-4. Colle le lien
-
-Maintenant le va-et-vient bloque automatiquement les dates occupées **des deux côtés**.
-
----
-
-## Bon à savoir
-
-> Si tu utilises un **channel manager** (Smoobu, Lodgify, Hospitable…), c'est lui qui gère déjà cette synchro. Tu peux quand même importer son calendrier dans Jason Marinho pour la vue unifiée.
-
-Pour la **réservation directe** (site perso, Driing, etc.), exporter le calendrier Jason Marinho vers Airbnb et Booking évite les doubles bookings.
+- Elle est **dans un seul sens** : l'app lit tes plateformes, elle ne leur écrit pas. Bloquer une date dans l'app ne la bloque pas sur Airbnb
+- Airbnb et Booking ne transmettent **ni le nom du voyageur ni le montant** : seulement les dates
+- Booking exporte ses réservations sous le nom « CLOSED - Not available ». L'app les compte comme des réservations quand elles font 30 nuits ou moins. Un blocage manuel court sur Booking peut donc créer un ménage en trop

@@ -1,9 +1,9 @@
 // Catégories du Help Center.
 // Organisées par TÂCHE utilisateur, pas par section du dashboard.
-// Chaque catégorie contient des articles (créés en Phase 3).
+// Articles : content/help/<slug>/*.md (réécrits en sept. 2026, faits vérifiés dans le code).
 
 import {
-  Rocket, House, FileText, ChartLineUp, Toolbox, UsersThree,
+  Rocket, House, FileText, ChartLineUp, Broom, Megaphone, UserCircle,
 } from '@phosphor-icons/react/dist/ssr'
 
 type PhosphorIcon = typeof Rocket
@@ -18,60 +18,52 @@ export interface HelpCategory {
   bg: string
 }
 
+// Couleurs : vert de la marque pour toutes les catégories (pas de bleu ni de
+// violet sur les pages hôte) ; l'icône suffit à les distinguer.
+const ACCENT = { color: 'var(--accent-text)', bg: 'var(--accent-bg)' }
+
 export const HELP_CATEGORIES: HelpCategory[] = [
   {
-    slug: 'demarrer',
-    emoji: '🚀',
-    Icon: Rocket,
+    slug: 'demarrer', emoji: '🚀', Icon: Rocket,
     title: 'Démarrer',
-    description: 'Premiers pas, configurer ton espace, créer ton premier contrat',
-    color: '#34d399',
-    bg: 'rgba(52,211,153,0.10)',
+    description: 'À quoi sert l\'app, la checklist de démarrage, le menu, les formules',
+    ...ACCENT,
   },
   {
-    slug: 'logements-voyageurs',
-    emoji: '🏠',
-    Icon: House,
-    title: 'Logements & voyageurs',
-    description: 'Gérer tes biens, tes voyageurs, tes séjours et ton calendrier',
-    color: '#60a5fa',
-    bg: 'rgba(96,165,250,0.10)',
+    slug: 'logements-voyageurs', emoji: '🏠', Icon: House,
+    title: 'Logements, voyageurs & calendrier',
+    description: 'Fiche logement, synchro Airbnb et Booking, séjours, agenda',
+    ...ACCENT,
   },
   {
-    slug: 'contrats-paiements',
-    emoji: '📄',
-    Icon: FileText,
+    slug: 'contrats-paiements', emoji: '📄', Icon: FileText,
     title: 'Contrats & paiements',
-    description: 'Contrats signés électroniquement, Stripe, caution, encaissements',
-    color: '#FFD56B',
-    bg: 'rgba(255,213,107,0.10)',
+    description: 'Contrat signé en ligne, Stripe, loyer, caution, facture',
+    ...ACCENT,
   },
   {
-    slug: 'revenus-performances',
-    emoji: '💰',
-    Icon: ChartLineUp,
-    title: 'Revenus & performances',
-    description: 'Suivi financier, KPI, simulateurs fiscaux, exports comptables',
-    color: '#a78bfa',
-    bg: 'rgba(167,139,250,0.10)',
+    slug: 'menage-declarations', emoji: '🧹', Icon: Broom,
+    title: 'Ménage & déclarations',
+    description: 'Planning ménage partagé avec ton équipe, fiche de police, SIBA',
+    ...ACCENT,
   },
   {
-    slug: 'outils',
-    emoji: '🛠️',
-    Icon: Toolbox,
-    title: 'Outils',
-    description: 'Gabarits messages, audit GBP, sécurité voyageur, formations',
-    color: '#fb923c',
-    bg: 'rgba(251,146,60,0.10)',
+    slug: 'revenus-performances', emoji: '💰', Icon: ChartLineUp,
+    title: 'Mes finances',
+    description: 'Revenus, charges, performances, simulateurs fiscaux',
+    ...ACCENT,
   },
   {
-    slug: 'communaute-compte',
-    emoji: '👥',
-    Icon: UsersThree,
-    title: 'Communauté & compte',
-    description: 'Entre Hôtes, groupes FB, abonnement, profil, RGPD',
-    color: '#f472b6',
-    bg: 'rgba(244,114,182,0.10)',
+    slug: 'outils', emoji: '📣', Icon: Megaphone,
+    title: 'Voyageurs en direct & outils',
+    description: 'Groupes Facebook, fiche Google, sécurité voyageur, modèles de messages',
+    ...ACCENT,
+  },
+  {
+    slug: 'communaute-compte', emoji: '👤', Icon: UserCircle,
+    title: 'Compte & abonnement',
+    description: 'Mon compte, abonnement et factures, Questions & réponses',
+    ...ACCENT,
   },
 ]
 

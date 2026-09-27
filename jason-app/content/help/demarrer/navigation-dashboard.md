@@ -1,69 +1,38 @@
 ---
-title: "Comprendre la navigation du dashboard"
-excerpt: "La sidebar, le header, la barre de recherche : où tout se trouve."
+title: "Se repérer dans le menu"
+excerpt: "Ce que contient chaque entrée du menu, et où trouver tes logements, ton compte et ton abonnement."
 order: 3
 relatedPages: [/dashboard]
-updatedAt: "2026-05-08"
+updatedAt: "2026-09-27"
 ---
 
-## La sidebar à gauche — ton menu principal
+## Au quotidien
 
-La barre latérale est ton point d'entrée. Elle est divisée en **3 zones** :
+- **Accueil** : « À faire aujourd'hui », tes prochaines arrivées et départs, tes déclarations en attente
+- **Actualités** : la veille réglementaire et fiscale pour les hôtes, avec un point rouge quand il y a du nouveau
+- **Calendrier** : tes réservations (Airbnb, Booking, directes) et l'onglet **Ménage**
+- **Mes réservations** : la liste de tous tes séjours, synchronisés ou saisis à la main
+- **Mes voyageurs** : ton carnet de voyageurs et l'accès aux **Déclarations**
+- **Contrats & paiements** : ce qui reste à faire signer, à encaisser ou à libérer, puis tous tes contrats
+- **Mes finances** : revenus, performances et encaissements
+- **Sécurité voyageur** : vérifier un voyageur avant d'accepter et signaler un problème
 
-### Apprendre
+## Faire grandir mon activité
 
-- **Formations** : 18 formations LCD, du débutant à l'avancé
-- **Guide LCD** : guide réglementaire structuré par profil (gîte, conciergerie, etc.)
-- **Actualités** : veille réglementaire et fiscale filtrée pour les hôtes
+- **Trouver des voyageurs** : groupes Facebook où publier et audit de ta fiche Google
+- **Apprendre** : formations et guide LCD
+- **Outils & calculs** : simulateurs, prix & marché, modèles de messages, QR codes et affiches
+- **Entre Hôtes** : Questions & réponses et partenaires
 
-### Gestion
+## Tes logements
 
-- **Mes Logements** : ton parc de biens
-- **Mes Voyageurs** : ton carnet de contacts
-- **Calendrier** : vue mensuelle, séjours, sync iCal
-- **Revenus** : saisie et analyse financière (Standard+)
-- **Performances** : TOM, RevPAR, taux d'occupation (Standard+)
+Il n'y a pas d'entrée « Mes logements » dans le menu : utilise le **sélecteur de logement** en bas du menu. Il permet de choisir le logement affiché, et **Gérer mes logements** ouvre la liste complète.
 
-### Outils
+## Ton compte
 
-- **Simulateurs** : 4 simulateurs (micro-BIC, EI vs SASU, rentabilité, taxe de séjour)
-- **Audit GBP** : audit Google Business Profile
-- **Gabarits** : 100+ messages-types prêts à copier
-- **Sécurité Voyageur** : signaler et consulter les voyageurs problématiques
+Clique sur ton nom en bas du menu :
 
-### Communauté
-
-- **Chez Nous** : forum entre hôtes
-- **Groupes FB** : 80+ groupes Facebook régionaux
-
----
-
-## Le header en haut
-
-En haut de page, tu trouves :
-
-- **Ton nom** et **ton plan** (Découverte / Standard / Membre Driing)
-- Un **menu rapide** avec les nouveautés et le profil
-- Le bouton **Paramètres**
-
----
-
-## La checklist d'onboarding
-
-Quand tu démarres, une **carte flottante** apparaît en bas à droite. Elle te guide à travers les 5 étapes essentielles. Tu peux :
-
-- **Cliquer** dessus pour la déplier
-- La **réduire** avec le bouton ▼
-- La **masquer** avec le bouton X (réversible depuis le centre d'aide)
-
----
-
-## Le centre d'aide
-
-Tu y es. Accessible depuis **Aide** dans le menu, le centre d'aide contient :
-
-- **6 catégories** d'articles organisés par tâche
-- Une **recherche** pour trouver une réponse rapidement
-- Le **contact direct** avec Jason (WhatsApp ou email)
-
-> Si tu cherches une fonctionnalité et que tu ne la trouves pas, le centre d'aide est ton premier réflexe. Si tu ne trouves toujours pas, demande à Jason.
+- **Mon compte** : identité du bailleur, encaissements (Stripe, IBAN), factures, connexion
+- **Mon abonnement** : ta formule, ton renouvellement, tes factures
+- **Centre d'aide** : tu y es
+- **Ajouter un espace** : si tu es aussi photographe, équipe de ménage ou investisseur

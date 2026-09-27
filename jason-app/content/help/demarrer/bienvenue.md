@@ -1,45 +1,32 @@
 ---
-title: "Bienvenue sur ton dashboard"
-excerpt: "Présentation de l'outil et de ce que tu peux y faire en 3 minutes."
+title: "Bienvenue : à quoi sert l'app"
+excerpt: "Ce que l'app fait pour toi au quotidien, et ce qu'elle ne remplace pas."
 order: 1
 relatedPages: [/dashboard]
-updatedAt: "2026-05-08"
+updatedAt: "2026-09-27"
 ---
 
-## Le dashboard en 30 secondes
+## Ce que l'app fait pour toi
 
-Le **dashboard Jason Marinho** regroupe tout ce dont un hôte LCD a besoin au quotidien :
+L'app ne remplace pas Airbnb ou Booking, ni un logiciel de gestion comme Smoobu ou Hospitable. Elle s'occupe **du reste**, tout ce que les plateformes ne font pas :
 
-- **Logements & voyageurs** : ton carnet de biens et de contacts
-- **Calendrier** : vue mensuelle, séjours, sync iCal Airbnb/Booking
-- **Contrats** : générer un contrat signé électroniquement en 5 minutes
-- **Paiements** : Stripe Connect pour le loyer et la caution
-- **Revenus & performances** : suivi financier + KPI
-- **Outils** : gabarits messages, audit GBP, simulateurs fiscaux
+- **Contrats signés en ligne** pour tes réservations directes (en français, portugais ou anglais), avec paiement du loyer par carte et caution bloquée sur la carte du voyageur
+- **Planning ménage automatique** : chaque départ Airbnb, Booking ou direct devient un créneau ménage, partagé avec ton équipe
+- **Déclarations voyageurs** : fiche de police en France, SIBA au Portugal, suivies pour toi
+- **Mes finances** : tes revenus, tes encaissements et tes performances au même endroit
+- **Apprendre** : formations, guide LCD, actualités réglementaires
+- **Trouver des voyageurs en direct** : groupes Facebook et fiche Google
 
-Tout est intégré et lié — un séjour pointe vers son logement, son voyageur, son contrat et son paiement.
+> L'app lit ton calendrier Airbnb et Booking mais ne leur écrit pas. Elle n'envoie pas non plus de messages automatiques à tes voyageurs.
 
-> Le dashboard ne remplace pas Airbnb. Il **complète** Airbnb avec ce qu'Airbnb ne fait pas : contrats, caution, suivi des revenus, réservation directe.
+## Par où commencer
 
----
+Sur l'**Accueil**, la carte de démarrage te guide étape par étape : ajouter ton logement, connecter ton calendrier, envoyer ton premier contrat, partager le planning ménage. Compte 15 minutes pour tout faire.
 
-## Le parcours en 5 étapes
+Une fois démarré, l'Accueil affiche chaque matin **« À faire aujourd'hui »** : arrivées, départs, ménages du jour, contrats à faire signer, loyers pas encore encaissés, cautions à libérer et déclarations en attente. Chaque ligne t'emmène directement à la page qui la traite.
 
-Pour démarrer, suis la checklist en bas à droite de ton écran. Elle te guide étape par étape :
+## Besoin d'aide ?
 
-1. **Bienvenue** — tu y es
-2. **Ton premier logement** — la base, 2 minutes
-3. **Ton premier voyageur** — un contact dans ton carnet
-4. **Ton premier séjour** — lier logement + voyageur + dates
-5. **Ton premier contrat** — l'aha moment, signé électroniquement
-
-Tu peux faire tout ça en moins de 10 minutes.
-
----
-
-## Bon à savoir
-
-- Tu peux **masquer** la checklist quand tu veux, elle reste accessible depuis le centre d'aide
-- Toutes les fonctionnalités essentielles sont **gratuites** (plan Découverte)
-- Le plan **Standard** débloque les revenus complets, les performances et toutes les formations
-- En cas de blocage, **WhatsApp Jason** directement, il répond dans la journée
+- Cherche un mot-clé dans le **Centre d'aide**
+- Pose ta question dans **Entre Hôtes → Questions & réponses** : réponse sous 48 h
+- Écris à Jason sur **WhatsApp** pour un problème urgent

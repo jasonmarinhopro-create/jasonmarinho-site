@@ -1,93 +1,33 @@
 ---
-title: "Exporter ton calendrier vers Google Calendar, Apple Calendar ou Notion"
-excerpt: "Voir tes séjours dans n'importe quel outil externe via un lien iCal."
+title: "Voir ton calendrier dans Google Agenda, Apple ou Outlook"
+excerpt: "Un lien d'abonnement pour retrouver tes réservations et rendez-vous dans ton agenda."
 order: 6
 relatedPages: [/dashboard/calendrier]
-updatedAt: "2026-05-08"
+updatedAt: "2026-09-27"
 ---
 
-## Pourquoi exporter ton calendrier
+## Récupérer ton lien
 
-Tu peux **partager** ton calendrier Jason Marinho vers d'autres outils en lecture seule :
+Dans le **Calendrier**, clique sur l'icône **Exporter ce calendrier** (le symbole de partage en haut). Génère le lien la première fois, puis copie-le.
 
-- **Google Calendar** (perso ou pro)
-- **Apple Calendar / iCloud**
-- **Microsoft Outlook**
-- **Notion** (via la vue calendrier)
-- **Airbnb** ou **Booking** (pour bloquer les dates de leurs côtés)
+> Ce lien est privé : quiconque le possède voit tes réservations. Ne le partage qu'aux outils qui en ont besoin.
 
-Toutes ces apps acceptent un **lien iCal** comme source.
+## L'ajouter à ton agenda
 
----
+**Google Agenda** (sur ordinateur) : à gauche, **Autres agendas** → **+** → **À partir de l'URL**, colle le lien. Google le met à jour à son rythme, souvent plusieurs heures après un changement.
 
-## Étape 1 — Générer ton lien iCal
+**Apple Calendrier** (Mac) : **Fichier** → **Nouvel abonnement à un calendrier**, colle le lien, choisis une fréquence de mise à jour.
 
-Dans le **Calendrier** du dashboard :
+**Outlook** : **Ajouter un calendrier** → **S'abonner à partir du web**, colle le lien.
 
-1. Clique sur l'icône **Partager** en haut (à côté de Paramètres)
-2. Si c'est ta première fois, le système te génère un **token unique** (lien sécurisé)
-3. Copie le lien
+## Pour ton équipe de ménage
 
-Le lien ressemble à : `https://app.jasonmarinho.com/api/calendar/feed?token=xxx-yyy-zzz`
+N'envoie pas ce lien à ton équipe : il contient toutes tes réservations. Utilise le **lien du planning ménage** (Calendrier → Ménage), qui ne montre que les créneaux de ménage.
 
-> **Important** : ce lien est secret. Quiconque a ce lien voit tous tes séjours. Ne le partage qu'aux outils où tu en as besoin.
+## Le lien a fuité ?
 
----
+Régénère-le depuis le même panneau : l'ancien lien cesse de fonctionner. Colle le nouveau dans tes agendas.
 
-## Étape 2 — Importer dans ton outil
+## Ce qui n'y figure pas
 
-### Dans Google Calendar
-
-1. Ouvre **Google Calendar** sur ordinateur
-2. Sidebar gauche → **Autres agendas** → **+** → **Avec une URL**
-3. Colle le lien iCal
-4. Le calendrier apparaît dans **Autres agendas**
-
-Synchronisation : Google met à jour environ toutes les 12-24h (pas de contrôle dessus).
-
-### Dans Apple Calendar (Mac)
-
-1. Ouvre **Calendrier**
-2. **Fichier** → **Nouvel abonnement à un calendrier**
-3. Colle le lien iCal
-4. Choisis la fréquence de mise à jour (15 min recommandé)
-
-### Dans Notion
-
-1. Sur ta page Notion, ajoute un bloc **Calendrier**
-2. Connecte-le à Google Calendar (étape précédente)
-3. Le calendrier Jason Marinho apparaît dans Notion
-
-### Dans Airbnb (synchro retour)
-
-Pour bloquer les dates Jason Marinho dans Airbnb :
-
-1. Sur **Airbnb** → Calendrier → **Plus d'options** → **Synchroniser**
-2. **Importer un calendrier** → colle le lien iCal Jason Marinho
-3. Donne un nom (ex: "Jason Marinho")
-
-Maintenant les séjours créés dans le dashboard sont **automatiquement bloqués sur Airbnb**.
-
----
-
-## Régénérer le lien (révocation)
-
-Si tu as accidentellement partagé ton lien à une mauvaise personne :
-
-1. **Calendrier** → **Partager** → **Régénérer le lien**
-2. Confirme
-3. L'ancien lien devient invalide immédiatement
-4. Tu dois mettre à jour tous les outils où tu l'avais collé
-
----
-
-## Limitation importante
-
-Le lien iCal exporte :
-
-- ✅ Tous tes **séjours** (avec dates, voyageur, logement)
-- ✅ Tous tes **événements** (ménage, blocage, etc.)
-- ❌ Pas les **détails financiers** (loyer, caution, paiements)
-- ❌ Pas les **contrats**
-
-C'est volontaire : iCal est un format de calendrier, pas de gestion financière.
+Les montants, les paiements et les contrats ne sont jamais dans le lien : c'est un agenda, pas un outil de gestion.

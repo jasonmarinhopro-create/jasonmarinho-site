@@ -1,51 +1,31 @@
 ---
-title: "Comment obtenir de l'aide rapidement"
-excerpt: "Les 4 canaux pour ne jamais rester bloqué."
+title: "Obtenir de l'aide rapidement"
+excerpt: "Centre d'aide, Questions & réponses, WhatsApp ou email : lequel choisir."
 order: 5
 relatedPages: [/dashboard/aide]
-updatedAt: "2026-05-08"
+updatedAt: "2026-09-27"
 ---
 
-## Tu es bloqué ? 4 options par ordre de rapidité
+## Selon ta question
 
-### 1. Le centre d'aide (cette section)
+| Ta situation | Le bon canal | Délai |
+|---|---|---|
+| Comment faire quelque chose dans l'app | La recherche du Centre d'aide | Tout de suite |
+| Une question de métier (fiscalité, règles, voyageurs) | Entre Hôtes → Questions & réponses | Sous 48 h |
+| Un blocage urgent ou un bug | WhatsApp Jason | Dans la journée, du lundi au vendredi |
+| Une demande avec captures d'écran | Email | Sous 48 h ouvrées |
 
-**Premier réflexe.** Cherche le mot-clé de ta question dans la barre de recherche. La plupart des questions ont déjà une réponse documentée.
+## Questions & réponses
 
-> Cherche par **action** plutôt que par module. Exemple : "envoyer un contrat" plutôt que "Voyageurs".
+Pose ta question en quelques lignes : Jason ou un autre hôte y répond sous 48 h. La réponse reste en ligne et sert aux suivants, alors cherche d'abord : ta question a peut-être déjà une réponse.
 
-### 2. Les formations
+En formule Découverte, tu peux poser 2 questions par mois (le compteur repart le 1er). Répondre aux autres n'est jamais limité.
 
-Pour les sujets profonds (fiscalité, photographie, tarification), une formation complète est plus utile qu'un article. Va dans **Formations** dans la sidebar.
+## Pour une réponse rapide
 
-### 3. WhatsApp Jason
+Quand tu écris, précise :
 
-Pour une question urgente ou un cas particulier, écris directement à Jason :
-
-- WhatsApp : [+33 6 30 21 25 92](https://wa.me/33630212592)
-- Disponible **lundi-vendredi, 9h-18h**
-- Réponse dans la journée
-
-### 4. Email
-
-Pour une question moins urgente, ou si tu veux joindre des captures d'écran :
-
-- Email : [jason@jasonmarinho.com](mailto:jason@jasonmarinho.com)
-- Réponse sous 24-48h ouvrées
-
----
-
-## Ce qui aide Jason à te répondre vite
-
-Quand tu écris, donne-lui :
-
-- **Ce que tu essaies de faire** (objectif final, pas juste l'erreur)
+- **Ce que tu essaies de faire**, pas seulement l'erreur
 - **Ce que tu as déjà essayé**
-- **Une capture d'écran** si possible
-- **Le navigateur** que tu utilises (Chrome, Safari…) si c'est un bug d'affichage
-
----
-
-## La communauté Chez Nous
-
-Si ta question est plus large ("comment vous gérez X ?"), va dans **Chez Nous**. C'est un forum d'hôtes LCD qui partagent leurs astuces. Souvent plus rapide qu'un article pour les questions stratégiques.
+- **Une capture d'écran** si c'est possible
+- **Ton navigateur** (Chrome, Safari…) si c'est un problème d'affichage

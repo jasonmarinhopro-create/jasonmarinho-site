@@ -1,74 +1,37 @@
 ---
-title: "Les 5 étapes pour démarrer"
-excerpt: "Du compte créé au premier contrat envoyé : la checklist complète."
+title: "La checklist de démarrage, étape par étape"
+excerpt: "Du logement ajouté au planning ménage partagé : les étapes de la carte d'accueil."
 order: 2
-relatedPages: [/dashboard, /dashboard/logements, /dashboard/voyageurs, /dashboard/calendrier]
-updatedAt: "2026-05-08"
+relatedPages: [/dashboard, /dashboard/logements, /dashboard/voyageurs, /dashboard/calendrier/menage]
+updatedAt: "2026-09-27"
 ---
 
-## Pourquoi suivre cette checklist
+## Où la trouver
 
-Le dashboard prend toute sa puissance quand tu as au moins **1 logement, 1 voyageur, 1 séjour et 1 contrat envoyé**. Ces 4 objets sont liés entre eux et activent automatiquement les autres modules (calendrier, revenus, performances).
+La checklist est en haut de l'**Accueil** tant que tu ne l'as pas terminée. Chaque étape a son bouton, qui t'emmène au bon endroit. Elle se coche toute seule quand l'étape est faite.
 
-Cette checklist te fait passer par **les 5 étapes minimales** dans le bon ordre. Compte 10 minutes au total.
+## 1. Ajouter ton premier logement
 
----
+Ouvre le sélecteur de logement en bas du menu, puis **Gérer mes logements** → **Ajouter**. Renseigne au minimum le nom, l'adresse et la capacité. Tout le reste (contrats, planning ménage, déclarations) se préremplit ensuite avec ces informations.
 
-## Étape 1 — Bienvenue
+## 2. Connecter ton calendrier Airbnb ou Booking
 
-Tu lis cet article : c'est fait. Clique sur **Commencer** dans la checklist en bas à droite pour valider l'étape.
+Dans la fiche du logement, section **Synchronisation calendrier (iCal)**, colle le lien iCal de ton annonce. Tes réservations arrivent toutes seules dans le Calendrier, et les ménages se planifient automatiquement.
 
-## Étape 2 — Ton premier logement
+> Le détail pas à pas est dans l'article « Synchroniser ton calendrier Airbnb et Booking ».
 
-Va dans **Mes Logements** → **Ajouter un logement**. Remplis au minimum :
+## 3. Envoyer ton premier contrat à signer
 
-- **Nom du logement** (ex: "Studio Oberkampf")
-- **Adresse** complète
-- **Type** (appartement, maison, studio, gîte…)
-- **Capacité** (nombre de personnes max)
+Pour une réservation directe : va dans **Contrats & paiements** → **Nouvelle réservation directe**. Tu crées le voyageur et le séjour, puis l'assistant de contrat s'ouvre. Le voyageur reçoit le lien de signature par email.
 
-> Tu peux laisser le reste vide pour le moment, tout est modifiable plus tard.
+## 4. Envoyer le planning ménage à ton équipe
 
-Une fois validé, le logement apparaît dans ta grille et devient sélectionnable dans les autres modules.
+Dans **Calendrier → Ménage**, copie le lien du planning et envoie-le à la personne qui fait tes ménages. Elle l'ajoute à l'agenda de son téléphone : chaque départ y apparaît, mis à jour automatiquement.
 
-## Étape 3 — Ton premier voyageur
+## 5. Définir tes prix par plateforme
 
-Va dans **Mes Voyageurs** → **Ajouter un voyageur**. Remplis :
+Dans **Outils & calculs → Prix & marché → Mes prix**, indique ton prix Airbnb, Booking et direct, avec la saisonnalité. Les simulateurs et les estimations s'en servent ensuite.
 
-- **Prénom et nom**
-- **Email** (utilisé pour envoyer le lien du contrat)
-- **Téléphone**
-- **Adresse permanente** (mention légale obligatoire pour le contrat)
+## 6. Définir ton objectif annuel
 
-> Si tu prépares un contrat pour un voyageur Airbnb réel, prends ces infos depuis sa réservation Airbnb (Profil → Contact). Si c'est juste pour tester, mets tes propres infos.
-
-## Étape 4 — Ton premier séjour
-
-Va dans **Calendrier** ou directement depuis la fiche d'un logement → **Nouveau séjour**. Remplis :
-
-- **Logement** (sélectionne dans la liste)
-- **Voyageur** (idem)
-- **Date d'arrivée et de départ**
-- **Heures** (15h check-in, 11h check-out par exemple)
-- **Montant du loyer** TTC
-- **Montant de la caution** (optionnel mais recommandé)
-
-Le séjour apparaît immédiatement dans ton calendrier.
-
-## Étape 5 — Ton premier contrat
-
-Depuis la fiche du séjour, clique sur **Créer le contrat**. Le système génère un contrat pré-rempli avec toutes tes infos. Vérifie l'aperçu, puis clique sur **Envoyer**.
-
-Le voyageur reçoit un email avec un **lien sécurisé** pour signer en 30 secondes sur son téléphone.
-
-> Quand le voyageur signe, tu reçois une notification, le contrat passe en statut **Signé** et le séjour est confirmé.
-
----
-
-## Et après ?
-
-Une fois ces 5 étapes validées, explore :
-
-- [Synchroniser ton calendrier Airbnb via iCal](/dashboard/aide/logements-voyageurs)
-- [Configurer Stripe pour la caution](/dashboard/aide/contrats-paiements)
-- [Suivre tes revenus](/dashboard/aide/revenus-performances)
+Dans **Mes finances**, fixe le chiffre d'affaires que tu vises sur l'année. L'Accueil te montre ensuite où tu en es.
