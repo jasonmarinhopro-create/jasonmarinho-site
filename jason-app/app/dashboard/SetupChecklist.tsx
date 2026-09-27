@@ -65,6 +65,10 @@ export default function SetupChecklist({ userId, steps, initiallyDismissed = fal
           <div style={s.headTitle}>
             Mets ton dashboard en route, <em style={s.headEm}>{doneCount}/{total}</em>
           </div>
+          <div style={s.headPitch}>
+            Airbnb et Booking gèrent tes annonces. Ici, tu gères le reste : contrats signés et cautions
+            pour tes réservations directes, planning ménage automatique, formalités voyageurs et finances.
+          </div>
           <div style={s.headSub}>
             {nextStep
               ? `Prochaine étape : ${nextStep.label}${nextStep.durationLabel ? ` · ${nextStep.durationLabel}` : ''}`
@@ -124,6 +128,13 @@ const s: Record<string, React.CSSProperties> = {
     justifyContent: 'space-between',
     gap: '14px',
     marginBottom: '14px',
+  },
+  headPitch: {
+    fontSize: '13.5px',
+    lineHeight: 1.55,
+    color: 'var(--text-2)',
+    margin: '6px 0 4px',
+    maxWidth: '640px',
   },
   headLeft: {
     flex: 1,

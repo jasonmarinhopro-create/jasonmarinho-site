@@ -194,6 +194,17 @@ export default async function DashboardPage() {
       .eq('statut', 'a_faire')
       .order('deadline_at')
       .limit(5),
+    // 17. Checklist de démarrage : calendrier Airbnb/Booking connecté ?
+    supabase
+      .from('ical_feeds')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', userId),
+    // 18. Checklist : lien du planning ménage déjà généré (ical_token) ?
+    supabase
+      .from('profiles')
+      .select('ical_token')
+      .eq('id', userId)
+      .maybeSingle(),
   ])
 
   // Helper : récupère une valeur en cas de fulfilled, sinon une valeur de fallback.
@@ -241,6 +252,9 @@ export default async function DashboardPage() {
     date_arrivee: string
     deadline_at: string
   }> | null }>(16, { data: [] })
+
+  const { count: icalFeedCount } = pick<{ count: number | null }>(17, { count: 0 })
+  const { data: icalTokenRow }   = pick<{ data: { ical_token: string | null } | null }>(18, { data: null })
 
   const latestNews = allCachedNews.slice(0, 3)
   // Nombre d'actus publiées depuis la dernière visite de la page Actualités,
@@ -576,7 +590,6 @@ export default async function DashboardPage() {
   const hasLogement = (logCount ?? 0) > 0
   const hasContract = (contracts ?? []).length > 0
   const hasObjectif = !!objectifData
-  const hasFormationStarted = totalLessonsDone > 0
 
   // ── Auteurs Entre Hôtes (await la promesse déférée plus haut)
   const cnAuthorsResult = await cnAuthorsPromise
@@ -584,6 +597,9 @@ export default async function DashboardPage() {
   ;(cnAuthorsResult.data ?? []).forEach(a => {
     cnAuthors[a.id] = { full_name: a.full_name, pseudo: a.pseudo }
   })
+  // Checklist de démarrage : orientée vers ce que l'app apporte en plus
+  // d'Airbnb/Booking et d'un logiciel de gestion (contrat signé + caution,
+  // planning ménage automatique), pas vers la saisie manuelle.
   const setupSteps: SetupStep[] = [
     {
       key: 'account', label: 'Ton compte est créé',
@@ -592,19 +608,29 @@ export default async function DashboardPage() {
     },
     {
       key: 'logement', label: 'Ajouter ton premier logement',
-      desc: 'Indispensable pour préfiler tous les outils avec tes vrais chiffres',
+      desc: 'Adresse, capacité, règles : tous les outils se préremplissent ensuite avec tes vraies infos',
       done: hasLogement, ctaLabel: 'Ajouter', ctaHref: '/dashboard/logements',
       durationLabel: '3 min',
     },
     {
-      key: 'sejour', label: 'Saisir ta première réservation',
-      desc: 'Elle apparaîtra dans « Mes réservations » avec CA, occupation et alertes',
-      done: hasContract, ctaLabel: 'Ouvrir', ctaHref: '/dashboard/calendrier',
+      key: 'calendrier', label: 'Connecter ton calendrier Airbnb ou Booking',
+      desc: 'Colle le lien iCal de l’annonce dans la fiche logement : tes réservations arrivent toutes seules, et les ménages se planifient automatiquement',
+      done: (icalFeedCount ?? 0) > 0, ctaLabel: 'Connecter', ctaHref: '/dashboard/logements',
       durationLabel: '2 min',
     },
-    // Step "prix" : visible UNIQUEMENT si l'hôte a au moins 1 logement
-    // (sinon ça n'a aucun sens). done = au moins 1 logement avec un prix
-    // par plateforme configuré (Airbnb, Booking ou Direct).
+    {
+      key: 'contrat', label: 'Envoyer ton premier contrat à signer',
+      desc: 'Pour une réservation directe : contrat signé en ligne (FR, PT, EN), caution bloquée par carte, facture. Ajoute le voyageur puis crée le contrat depuis sa fiche',
+      done: hasContract, ctaLabel: 'Commencer', ctaHref: '/dashboard/voyageurs',
+      durationLabel: '5 min',
+    },
+    {
+      key: 'menage', label: 'Envoyer le planning ménage à ton équipe',
+      desc: 'Un lien d’agenda à ajouter sur son téléphone : chaque départ devient un créneau ménage, mis à jour automatiquement',
+      done: !!icalTokenRow?.ical_token, ctaLabel: 'Partager', ctaHref: '/dashboard/calendrier?menage=1',
+      durationLabel: '1 min',
+    },
+    // Step "prix" : visible UNIQUEMENT si l'hôte a au moins 1 logement.
     ...(hasLogement ? [{
       key: 'prix', label: 'Définir tes prix par plateforme',
       desc: 'Stratégie tarifaire Airbnb / Booking / Direct + saisonnalité',
@@ -618,11 +644,6 @@ export default async function DashboardPage() {
       desc: 'Dans « Mes finances », pour voir où tu en es par rapport à ton plan de vol',
       done: hasObjectif, ctaLabel: 'Définir', ctaHref: '/dashboard/finances/revenus',
       durationLabel: '1 min',
-    },
-    {
-      key: 'apprendre', label: 'Commencer une formation',
-      desc: 'Approfondis fiscalité, classement Atout France, automatisation',
-      done: hasFormationStarted, ctaLabel: 'Explorer', ctaHref: '/dashboard/apprendre/formations',
     },
   ]
 

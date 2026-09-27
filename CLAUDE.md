@@ -165,6 +165,12 @@ import { House } from '@phosphor-icons/react'
 
 ---
 
+## Positionnement hôte + checklist de démarrage (sept. 2026)
+
+- **Positionnement** : l'app n'est pas un logiciel de gestion concurrent de Smoobu/Hospitable (pas de synchro bidirectionnelle ni d'envoi automatique de messages). Elle gère « le reste » : contrats signés + caution pour les réservations directes, planning ménage automatique, formalités voyageurs, finances, savoir. Phrase affichée en tête de la checklist d'accueil (`app/dashboard/SetupChecklist.tsx`, `headPitch`).
+- **Checklist** (`app/dashboard/page.tsx`, `setupSteps`) orientée vers cette valeur : logement → calendrier Airbnb/Booking connecté (`ical_feeds` count) → premier contrat à signer (`contracts`) → planning ménage partagé (`profiles.ical_token` généré) → prix → objectif. Les anciennes étapes « saisir une réservation à la main » et « commencer une formation » ont été retirées.
+- `/dashboard/calendrier?menage=1` ouvre directement le partage du planning ménage (sinon caché derrière l'icône balai de la barre d'outils).
+
 ## Qualité : CI, tests, suivi des erreurs (sept. 2026)
 
 - **CI** : `.github/workflows/ci.yml` à chaque push sur main / PR touchant `jason-app/` : `npm run typecheck` (tsc), `npm test` (Vitest), `npx next lint --quiet` (erreurs bloquantes). Les tests Playwright (`e2e/`) n'y tournent pas (serveur + secrets requis).

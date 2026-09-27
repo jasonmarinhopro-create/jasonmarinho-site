@@ -878,6 +878,11 @@ export default function CalendrierView({
   // l'entree sidebar "Mes reservations" pour ouvrir directement en mode liste).
   const searchParams = useSearchParams()
   const initialViewMode: 'month' | 'list' = searchParams?.get('view') === 'list' ? 'list' : 'month'
+  // ?menage=1 (depuis la checklist de démarrage de l'accueil) : ouvre
+  // directement le partage du planning ménage, sinon caché derrière l'icône balai.
+  useEffect(() => {
+    if (searchParams?.get('menage') === '1') setMenageExportOpen(true)
+  }, [searchParams])
   const [viewMode, setViewMode] = useState<'month' | 'list'>(initialViewMode)
   const [filter, setFilter] = useState<'all' | 'sejours' | 'menages' | 'rdv-tache' | 'synchro'>('all')
   // Persistance de la légende (Airbnb/Booking masqués). Sinon chaque
