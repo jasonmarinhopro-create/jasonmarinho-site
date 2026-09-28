@@ -7,6 +7,7 @@ import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailP, emailInfoBlock } from '@/lib/email/template'
 import { CACHE_TAGS } from '@/lib/queries/cache'
 import { invalidateProfileCache } from '@/lib/queries/profile'
+import { appErrorKey } from '@/lib/queries/site-traffic'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
@@ -638,3 +639,26 @@ export async function deleteAllBots() {
   return { deleted: bots.length }
 }
 
+
+// « Réglée » dans la carte Erreurs de l'app : supprime toutes les lignes du
+// groupe (même source + message normalisé) encore en base (30 jours max).
+export async function resolveAppErrorGroup(key: string) {
+  const { error, supabase } = await getAdminClient()
+  if (error || !supabase) return { error: error ?? 'Non autorisé' }
+  const source = key.split('|')[0]
+  if (source !== 'client' && source !== 'server') return { error: 'Clé invalide' }
+  const { data, error: readErr } = await supabase
+    .from('app_errors')
+    .select('id, message')
+    .eq('source', source)
+    .limit(5000)
+  if (readErr) return { error: readErr.message }
+  const ids = (data ?? []).filter(r => appErrorKey(source, r.message) === key).map(r => r.id)
+  for (let i = 0; i < ids.length; i += 200) {
+    const { error: delErr } = await supabase.from('app_errors').delete().in('id', ids.slice(i, i + 200))
+    if (delErr) return { error: delErr.message }
+  }
+  revalidateTag('admin-overview')
+  revalidatePath('/dashboard/admin')
+  return { error: null, deleted: ids.length }
+}

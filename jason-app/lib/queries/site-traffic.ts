@@ -133,6 +133,8 @@ export async function getAffiliateClicks(admin: SupabaseClient, days = 30): Prom
 }
 
 export interface AppErrorGroup {
+  /** Clé de regroupement (source + message normalisé), sert à « Réglée » */
+  key: string
   message: string
   source: 'client' | 'server'
   count: number
@@ -148,6 +150,11 @@ export interface AppErrorsSummary { total: number; groups: AppErrorGroup[] }
  * variantes d'une même erreur). Renvoie vide si la migration n'est pas
  * appliquée.
  */
+// Même erreur, identifiants et nombres près (ids de post, numéros de ligne…)
+export function appErrorKey(source: string, message: string): string {
+  return `${source}|${message.replace(/[0-9a-f]{8}-[0-9a-f-]{27,}/gi, '<id>').replace(/\d+/g, '<n>')}`
+}
+
 export async function getAppErrors(admin: SupabaseClient, days = 7, limit = 8): Promise<AppErrorsSummary> {
   const since = new Date(Date.now() - days * 24 * 3600 * 1000).toISOString()
   const { data, error } = await admin
@@ -158,13 +165,12 @@ export async function getAppErrors(admin: SupabaseClient, days = 7, limit = 8): 
     .limit(5000)
   if (error || !data) return { total: 0, groups: [] }
 
-  const norm = (m: string) => m.replace(/[0-9a-f]{8}-[0-9a-f-]{27,}/gi, '<id>').replace(/\d+/g, '<n>')
   const groups = new Map<string, AppErrorGroup & { userSet: Set<string> }>()
   for (const r of data as Array<{ message: string; source: 'client' | 'server'; path: string | null; route: string | null; user_id: string | null; created_at: string }>) {
-    const key = `${r.source}|${norm(r.message)}`
+    const key = appErrorKey(r.source, r.message)
     let g = groups.get(key)
     if (!g) {
-      g = { message: r.message, source: r.source, count: 0, users: 0, lastAt: r.created_at, path: r.path ?? r.route, userSet: new Set() }
+      g = { key, message: r.message, source: r.source, count: 0, users: 0, lastAt: r.created_at, path: r.path ?? r.route, userSet: new Set() }
       groups.set(key, g)
     }
     g.count++

@@ -10,7 +10,7 @@ import {
   UserPlus, Star, Globe, Broadcast, Handshake, Bug,
 } from '@phosphor-icons/react/dist/ssr'
 import {
-  validateReport, deleteReport,
+  validateReport, deleteReport, resolveAppErrorGroup,
 } from './actions'
 import InlineStyle from '@/components/ui/InlineStyle'
 
@@ -33,7 +33,7 @@ interface AffiliateClicks {
 }
 interface AppErrors {
   total: number
-  groups: Array<{ message: string; source: 'client' | 'server'; count: number; users: number; lastAt: string; path: string | null }>
+  groups: Array<{ key: string; message: string; source: 'client' | 'server'; count: number; users: number; lastAt: string; path: string | null }>
 }
 interface Stats {
   totalUsers: number; driingMembers: number; standardMembers: number; newThisMonth: number
@@ -585,6 +585,24 @@ function AffiliateClicksCard({ data }: { data: AffiliateClicks }) {
 // outil type Sentry. Une erreur qui revient souvent ou touche plusieurs
 // membres est à traiter en priorité.
 function AppErrorsCard({ data }: { data: AppErrors }) {
+  // « Réglée » : masque le groupe tout de suite, le supprime en base, le
+  // réaffiche si la suppression échoue
+  const [hidden, setHidden] = useState<Set<string>>(new Set())
+  const [busyKey, setBusyKey] = useState<string | null>(null)
+  const [failMsg, setFailMsg] = useState<string | null>(null)
+  const groups = data.groups.filter(g => !hidden.has(g.key))
+  const total = data.total - data.groups.filter(g => hidden.has(g.key)).reduce((n, g) => n + g.count, 0)
+  async function resolve(key: string) {
+    setBusyKey(key)
+    setFailMsg(null)
+    setHidden(prev => new Set(prev).add(key))
+    const res = await resolveAppErrorGroup(key).catch(() => ({ error: 'Réseau indisponible' }))
+    if (res.error) {
+      setHidden(prev => { const n = new Set(prev); n.delete(key); return n })
+      setFailMsg(`Suppression impossible : ${res.error}`)
+    }
+    setBusyKey(null)
+  }
   return (
     <div className="fade-up">
       <div style={s.sectionLabel}>
@@ -593,16 +611,17 @@ function AppErrorsCard({ data }: { data: AppErrors }) {
       </div>
       <div style={{ ...s.channelCard, width: '100%' }}>
         <div style={s.liveTop}>
-          <span style={s.liveLabel}>{data.total === 0 ? 'Aucune erreur enregistrée' : `${data.total} erreur${data.total > 1 ? 's' : ''} enregistrée${data.total > 1 ? 's' : ''}`}</span>
+          <span style={s.liveLabel}>{total <= 0 ? 'Aucune erreur enregistrée' : `${total} erreur${total > 1 ? 's' : ''} enregistrée${total > 1 ? 's' : ''}`}</span>
         </div>
-        {data.groups.length === 0 ? (
+        {failMsg && <div style={{ fontSize: '12px', color: 'var(--danger-text)', marginTop: '6px' }}>{failMsg}</div>}
+        {groups.length === 0 ? (
           <div style={{ fontSize: '12.5px', color: 'var(--text-3)', marginTop: '6px' }}>
             Rien à signaler. Les plantages (écran d&apos;erreur, bug JavaScript, erreur serveur) apparaîtront ici.
           </div>
         ) : (
           <div style={s.channelList}>
-            {data.groups.map(g => (
-              <div key={g.source + g.message} style={{ ...s.channelRow, alignItems: 'flex-start', gap: '12px' }}>
+            {groups.map(g => (
+              <div key={g.key} style={{ ...s.channelRow, alignItems: 'flex-start', gap: '12px' }}>
                 <span style={{ minWidth: 0, flex: 1 }}>
                   <span style={{ display: 'block', fontSize: '13px', color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={g.message}>{g.message}</span>
                   <span style={{ fontSize: '11.5px', color: 'var(--text-3)' }}>
@@ -610,6 +629,11 @@ function AppErrorsCard({ data }: { data: AppErrors }) {
                   </span>
                 </span>
                 <span style={{ ...s.channelCount, color: g.count >= 10 ? 'var(--danger-text)' : undefined }}>{g.count}</span>
+                <button type="button" onClick={() => resolve(g.key)} disabled={busyKey === g.key}
+                  title="Erreur traitée : la retirer de la liste (elle réapparaîtra si elle se reproduit)"
+                  style={{ flexShrink: 0, padding: '4px 10px', borderRadius: '999px', border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--accent-text)', fontSize: '11.5px', fontWeight: 600, fontFamily: 'inherit', cursor: 'pointer' }}>
+                  Réglée
+                </button>
               </div>
             ))}
           </div>

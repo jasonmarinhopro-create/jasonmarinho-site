@@ -76,11 +76,13 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
     setBusy(true)
     try {
       // Persiste le cookie du logement actif (filtre dashboard)
-      await fetch('/api/me/active-property', {
+      const res = await fetch('/api/me/active-property', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ propertyId: id }),
-      })
+      }).catch(() => null)
+      // Réseau coupé : on reste sur place plutôt que de laisser l'erreur remonter
+      if (!res) return
       setOpen(false)
       // Comportement selon le type :
       // - 'all' : reste sur la page courante, refresh pour appliquer le filtre

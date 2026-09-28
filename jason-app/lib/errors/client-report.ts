@@ -9,12 +9,22 @@ let count = 0
 // Bruit connu sans valeur (extensions, redimensionnement, scripts tiers).
 const IGNORE = [/ResizeObserver loop/i, /^Script error\.?$/i, /chrome-extension:|moz-extension:/i, /NEXT_REDIRECT/, /NEXT_NOT_FOUND/]
 
+// Coupure réseau (Chrome, Safari, Firefox) : sans intérêt quand le navigateur
+// est hors ligne ou l'onglet en arrière-plan (mobile en veille, changement
+// d'app), cas de loin le plus fréquent. Remontée seulement onglet visible et en ligne.
+const NETWORK = /^(TypeError: )?(Failed to fetch|Load failed|NetworkError when attempting to fetch resource\.?)$/i
+function isBenignNetworkError(message: string): boolean {
+  if (!NETWORK.test(message)) return false
+  return navigator.onLine === false || document.visibilityState === 'hidden'
+}
+
 export function reportClientError(err: unknown, extra?: { digest?: string; route?: string }) {
   try {
     if (typeof window === 'undefined') return
     const e = err as { message?: string; stack?: string; digest?: string } | null
     const message = String(e?.message ?? err ?? 'Erreur inconnue').slice(0, 500)
     if (!message || IGNORE.some(r => r.test(message) || r.test(e?.stack ?? ''))) return
+    if (isBenignNetworkError(message)) return
     const key = message + (extra?.digest ?? e?.digest ?? '')
     if (sent.has(key) || count >= 5) return
     sent.add(key); count++

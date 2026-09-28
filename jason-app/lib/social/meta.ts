@@ -224,17 +224,25 @@ export async function publishToInstagram(igUserId: string, pageAccessToken: stri
   const images = post.mediaUrls
   if (images.length === 0) throw new Error('Instagram exige au moins une image — aucun media_url fourni')
 
-  let creationId: string
+  // Conteneur d'un essai précédent : Instagram le fait expirer au bout de
+  // 24 h. On vérifie son état avant de le reprendre : expiré ou en erreur,
+  // on en recrée un ; déjà publié, on s'arrête (sinon doublon).
+  let creationId: string | null = null
   if (resumeCreationId) {
-    creationId = resumeCreationId
-  } else if (images.length === 1) {
+    const previous = await graphFetch(`/${resumeCreationId}`, { access_token: pageAccessToken, fields: 'status_code' }).catch(() => null)
+    if (previous?.status_code === 'PUBLISHED') {
+      throw new Error('Ce média a déjà été publié sur Instagram : vérifie le compte avant de relancer.')
+    }
+    if (previous && previous.status_code !== 'EXPIRED' && previous.status_code !== 'ERROR') creationId = resumeCreationId
+  }
+  if (!creationId && images.length === 1) {
     const container = await graphFetch(`/${igUserId}/media`, {
       access_token: pageAccessToken,
       image_url: images[0],
       caption: post.body,
     }, 'POST')
     creationId = container.id
-  } else {
+  } else if (!creationId) {
     if (images.length > 10) throw new Error('Instagram limite les carrousels à 10 images maximum')
     const children = await Promise.all(images.map(image_url => graphFetch(`/${igUserId}/media`, {
       access_token: pageAccessToken,
@@ -249,6 +257,7 @@ export async function publishToInstagram(igUserId: string, pageAccessToken: stri
     }, 'POST')
     creationId = carousel.id
   }
+  if (!creationId) throw new Error('Conteneur Instagram introuvable')
 
   await waitForMediaReady(creationId, pageAccessToken)
 
