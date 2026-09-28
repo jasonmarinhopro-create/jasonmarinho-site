@@ -5,10 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import {
-  ArrowLeft, House, MapPin, Star, PencilSimple, ArrowSquareOut,
-  CurrencyEur, Calendar as CalendarIcon, Users, TrendUp, Clock,
-  WifiHigh, Key, Phone, Wrench, Sparkle, ShieldCheck,
-  Check, Copy, ArrowRight, ChatText,
+  ArrowLeft, House, MapPin, Star, PencilSimple, ArrowSquareOut, CurrencyEur, Calendar as CalendarIcon, Users, TrendUp, Clock, WifiHigh, Key, Phone, Wrench, Sparkle, ShieldCheck, Check, Copy, ArrowRight, ChatText, Car, SwimmingPool, Snowflake, Fire, WashingMachine, ForkKnife, Television, Tree, Chair, Plant, Wheelchair, Elevator, Campfire, Bathtub, PawPrint, Cigarette,
 } from '@phosphor-icons/react/dist/ssr'
 import dynamic from 'next/dynamic'
 import { EditableCard } from './EditableCard'
@@ -142,6 +139,8 @@ interface Props {
   contractsCount: number
   icalStatus: LogementIcalFeedStatus[]
   voyageurs: VoyageurOption[]
+  /** Date du jour à Paris, calculée par le serveur (évite l'heure UTC et un écart serveur / navigateur) */
+  today?: string
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -154,22 +153,23 @@ const TYPE_LABELS: Record<string, string> = {
   'autre': 'Autre',
 }
 
-const EQUIPEMENT_LABELS: Record<string, { label: string; emoji: string }> = {
-  'wifi':           { label: 'Wi-Fi',          emoji: '📶' },
-  'parking':        { label: 'Parking',        emoji: '🅿️' },
-  'piscine':        { label: 'Piscine',        emoji: '🏊' },
-  'climatisation':  { label: 'Climatisation',  emoji: '❄️' },
-  'chauffage':      { label: 'Chauffage',      emoji: '🔥' },
-  'lave-linge':     { label: 'Lave-linge',     emoji: '🧺' },
-  'lave-vaisselle': { label: 'Lave-vaisselle', emoji: '🍽️' },
-  'tv':             { label: 'TV',             emoji: '📺' },
-  'jardin':         { label: 'Jardin',         emoji: '🌳' },
-  'terrasse':       { label: 'Terrasse',       emoji: '🪑' },
-  'balcon':         { label: 'Balcon',         emoji: '🌿' },
-  'pmr':            { label: 'Accès PMR',      emoji: '♿' },
-  'ascenseur':      { label: 'Ascenseur',      emoji: '↕️' },
-  'cheminee':       { label: 'Cheminée',       emoji: '🔥' },
-  'spa':            { label: 'Spa / jacuzzi',  emoji: '🛁' },
+// Icônes Phosphor (avant : emojis, rendus différemment selon l'appareil)
+const EQUIPEMENT_LABELS: Record<string, { label: string; Icon: React.ElementType }> = {
+  'wifi':           { label: 'Wi-Fi',          Icon: WifiHigh },
+  'parking':        { label: 'Parking',        Icon: Car },
+  'piscine':        { label: 'Piscine',        Icon: SwimmingPool },
+  'climatisation':  { label: 'Climatisation',  Icon: Snowflake },
+  'chauffage':      { label: 'Chauffage',      Icon: Fire },
+  'lave-linge':     { label: 'Lave-linge',     Icon: WashingMachine },
+  'lave-vaisselle': { label: 'Lave-vaisselle', Icon: ForkKnife },
+  'tv':             { label: 'TV',             Icon: Television },
+  'jardin':         { label: 'Jardin',         Icon: Tree },
+  'terrasse':       { label: 'Terrasse',       Icon: Chair },
+  'balcon':         { label: 'Balcon',         Icon: Plant },
+  'pmr':            { label: 'Accès PMR',      Icon: Wheelchair },
+  'ascenseur':      { label: 'Ascenseur',      Icon: Elevator },
+  'cheminee':       { label: 'Cheminée',       Icon: Campfire },
+  'spa':            { label: 'Spa / jacuzzi',  Icon: Bathtub },
 }
 
 function fmtEur(n: number): string {
@@ -205,7 +205,7 @@ function CopyChip({ icon, label, value, accent }: { icon: React.ReactNode; label
   }
   return (
     <button onClick={onClick} style={{ ...s.copyChip, color: accent ?? 'var(--text-2)' }} title={`Copier : ${value}`}>
-      {copied ? <Check size={12} weight="bold" color="#10b981" /> : icon}
+      {copied ? <Check size={12} weight="bold" color="var(--accent-text)" /> : icon}
       <span>{copied ? 'Copié !' : label}</span>
       <Copy size={10} style={{ opacity: 0.5 }} />
     </button>
@@ -214,9 +214,9 @@ function CopyChip({ icon, label, value, accent }: { icon: React.ReactNode; label
 
 // ─── Composant principal ─────────────────────────────────────────────────────
 
-export default function LogementDetail({ logement: l, sejours, contractsCount, icalStatus, voyageurs }: Props) {
+export default function LogementDetail({ logement: l, sejours, contractsCount, icalStatus, voyageurs, today: todayProp }: Props) {
   const router = useRouter()
-  const today = new Date().toISOString().slice(0, 10)
+  const today = todayProp ?? new Date().toISOString().slice(0, 10)
 
   // ─── États locaux pour l'édition inline ───
   // Caractéristiques (capacité, surface, chambres, lits, sdb)
@@ -491,7 +491,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               <span style={s.heroChip}>{TYPE_LABELS[l.type_logement] ?? l.type_logement}</span>
             )}
             {l.classement_etoiles !== null && l.classement_etoiles > 0 && (
-              <span style={{ ...s.heroChip, background: 'rgba(245,158,11,0.15)', color: 'var(--warning)', borderColor: 'rgba(245,158,11,0.3)' }}>
+              <span style={{ ...s.heroChip, background: 'color-mix(in srgb, #B7791F 15%, transparent)', color: '#8A5A12', borderColor: 'color-mix(in srgb, #B7791F 30%, transparent)' }}>
                 {Array.from({ length: l.classement_etoiles }).map((_, i) => (
                   <Star key={i} size={11} weight="fill" />
                 ))}
@@ -502,7 +502,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               return <span style={{ ...s.heroChip, background: dc.bg, color: dc.fg, borderColor: dc.border }}>DPE {l.dpe}</span>
             })()}
             {l.actif === false && (
-              <span style={{ ...s.heroChip, background: 'rgba(148,163,184,0.2)', color: '#94a3b8', borderColor: 'rgba(148,163,184,0.4)' }}>
+              <span style={{ ...s.heroChip, background: 'var(--surface)', color: 'var(--text-3)', borderColor: 'var(--border)' }}>
                 En pause
               </span>
             )}
@@ -541,7 +541,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
       <div style={s.statsGrid}>
         <div style={s.statCard}>
           <div style={s.statIcon}>
-            <CurrencyEur size={16} weight="fill" color="#10b981" />
+            <CurrencyEur size={16} weight="fill" color="var(--accent-text)" />
           </div>
           <div style={s.statValue}>{fmtEur(stats.caYTD)}</div>
           <div style={s.statLabel}>CA depuis le 1<sup>er</sup> janvier</div>
@@ -553,7 +553,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
           </div>
           <div style={{
             ...s.statValue,
-            color: stats.occupationPct >= 70 ? 'var(--success-1)' : stats.occupationPct >= 40 ? 'var(--accent-text)' : 'var(--text)',
+            color: stats.occupationPct >= 70 ? 'var(--accent-text)' : stats.occupationPct >= 40 ? 'var(--accent-text)' : 'var(--text)',
           }}>
             {stats.occupationPct}%
           </div>
@@ -561,16 +561,16 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
         </div>
 
         <div style={s.statCard}>
-          <div style={{ ...s.statIcon, background: 'rgba(96,165,250,0.10)' }}>
-            <Users size={16} weight="fill" color="#60a5fa" />
+          <div style={{ ...s.statIcon, background: 'color-mix(in srgb, #6E5446 10%, transparent)' }}>
+            <Users size={16} weight="fill" color="#6E5446" />
           </div>
           <div style={s.statValue}>{stats.nbSejoursYTD}</div>
           <div style={s.statLabel}>séjour{stats.nbSejoursYTD > 1 ? 's' : ''} cette année</div>
         </div>
 
         <div style={s.statCard}>
-          <div style={{ ...s.statIcon, background: 'rgba(167,139,250,0.10)' }}>
-            <CalendarIcon size={16} weight="fill" color="#a78bfa" />
+          <div style={{ ...s.statIcon, background: 'color-mix(in srgb, #B7791F 10%, transparent)' }}>
+            <CalendarIcon size={16} weight="fill" color="#B7791F" />
           </div>
           {stats.nextCheckIn ? (
             <>
@@ -649,9 +649,9 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                       )}
                       <span style={{
                         ...s.sejourStatus,
-                        color: isContracted ? 'var(--success-1)' : isPrivate ? 'var(--accent-text)' : 'var(--text-muted)',
-                        background: isContracted ? 'rgba(16,185,129,0.10)' : isPrivate ? 'var(--accent-bg)' : 'var(--surface)',
-                        borderColor: isContracted ? 'rgba(16,185,129,0.25)' : isPrivate ? 'var(--accent-border)' : 'var(--border)',
+                        color: isContracted ? 'var(--accent-text)' : isPrivate ? 'var(--accent-text)' : 'var(--text-muted)',
+                        background: isContracted ? 'color-mix(in srgb, var(--accent-text) 10%, transparent)' : isPrivate ? 'var(--accent-bg)' : 'var(--surface)',
+                        borderColor: isContracted ? 'color-mix(in srgb, var(--accent-text) 25%, transparent)' : isPrivate ? 'var(--accent-border)' : 'var(--border)',
                       }}>
                         {statusLabel}
                       </span>
@@ -712,12 +712,12 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
             setDraftCodeAcces(l.code_acces ?? '')
           }}
           hasValue={!!(l.heure_arrivee || l.heure_depart || l.code_acces || l.wifi_nom)}
-          emptyView={<p style={s.emptyHint}>Horaires, wifi, code d&apos;accès… Cliquez sur Modifier pour les renseigner.</p>}
+          emptyView={<p style={s.emptyHint}>Horaires, wifi, code d&apos;accès… Clique sur Modifier pour les renseigner.</p>}
           view={
             <div style={s.chipsRow}>
               {(l.heure_arrivee || l.heure_depart) && (
                 <div style={s.infoChip}>
-                  <Clock size={12} weight="fill" color="#60a5fa" />
+                  <Clock size={12} weight="fill" color="#6E5446" />
                   <span>
                     {l.heure_arrivee && <>Arrivée {l.heure_arrivee}</>}
                     {l.heure_arrivee && l.heure_depart && ' · '}
@@ -727,7 +727,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               )}
               {l.wifi_nom && (
                 <CopyChip
-                  icon={<WifiHigh size={12} weight="bold" color="#10b981" />}
+                  icon={<WifiHigh size={12} weight="bold" color="var(--accent-text)" />}
                   label={l.wifi_mdp ? `${l.wifi_nom} · ${l.wifi_mdp}` : l.wifi_nom}
                   value={l.wifi_mdp ? `${l.wifi_nom} / ${l.wifi_mdp}` : l.wifi_nom}
                 />
@@ -786,12 +786,12 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
             setDraftMenageTel(l.contact_menage_tel ?? '')
           }}
           hasValue={!!(l.contact_urgence_nom || l.contact_menage_nom)}
-          emptyView={<p style={s.emptyHint}>Contact d&apos;urgence, personne de ménage… Cliquez sur Modifier pour les ajouter.</p>}
+          emptyView={<p style={s.emptyHint}>Contact d&apos;urgence, personne de ménage… Clique sur Modifier pour les ajouter.</p>}
           view={
             <div style={s.contactsList}>
               {l.contact_urgence_nom && (
                 <div style={s.contactRow}>
-                  <div style={{ ...s.contactBadge, background: 'rgba(239,68,68,0.10)', color: 'var(--danger)', borderColor: 'rgba(239,68,68,0.25)' }}>
+                  <div style={{ ...s.contactBadge, background: 'color-mix(in srgb, var(--danger) 10%, transparent)', color: 'var(--danger)', borderColor: 'color-mix(in srgb, var(--danger) 25%, transparent)' }}>
                     Urgence
                   </div>
                   <div style={s.contactBody}>
@@ -804,7 +804,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               )}
               {l.contact_menage_nom && (
                 <div style={s.contactRow}>
-                  <div style={{ ...s.contactBadge, background: 'rgba(96,165,250,0.10)', color: 'var(--info)', borderColor: 'var(--info-border)' }}>
+                  <div style={{ ...s.contactBadge, background: 'color-mix(in srgb, #6E5446 10%, transparent)', color: '#6E5446', borderColor: 'color-mix(in srgb, #6E5446 30%, transparent)' }}>
                     Ménage
                   </div>
                   <div style={s.contactBody}>
@@ -820,19 +820,19 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
           edit={
             <div style={s.editGrid}>
               <label style={s.editLabel}>
-                <span>Contact d&apos;urgence — nom</span>
+                <span>Contact d&apos;urgence : nom</span>
                 <input style={s.editInput} type="text" value={draftUrgenceNom} onChange={e => setDraftUrgenceNom(e.target.value)} placeholder="Marie Dupont" />
               </label>
               <label style={s.editLabel}>
-                <span>Contact d&apos;urgence — téléphone</span>
+                <span>Contact d&apos;urgence : téléphone</span>
                 <input style={s.editInput} type="tel" value={draftUrgenceTel} onChange={e => setDraftUrgenceTel(e.target.value)} placeholder="06 00 00 00 00" />
               </label>
               <label style={s.editLabel}>
-                <span>Ménage — nom</span>
+                <span>Ménage : nom</span>
                 <input style={s.editInput} type="text" value={draftMenageNom} onChange={e => setDraftMenageNom(e.target.value)} placeholder="Société / personne" />
               </label>
               <label style={s.editLabel}>
-                <span>Ménage — téléphone</span>
+                <span>Ménage : téléphone</span>
                 <input style={s.editInput} type="tel" value={draftMenageTel} onChange={e => setDraftMenageTel(e.target.value)} placeholder="06 00 00 00 00" />
               </label>
             </div>
@@ -911,7 +911,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                 </label>
               )}
               <p style={{ ...s.emptyHint, gridColumn: '1 / -1', margin: 0 }}>
-                Si vous renommez le logement, tout l&apos;historique (séjours, contrats,
+                Si tu renommes le logement, tout l&apos;historique (séjours, contrats,
                 déclarations, revenus) suit automatiquement.
               </p>
             </div>
@@ -925,7 +925,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
           onSave={saveCaracteristiques}
           onCancel={resetCaracteristiques}
           hasValue={!!(l.numero_enregistrement || l.classement_etoiles || l.dpe || l.surface_m2 || l.nb_chambres || l.nb_lits || l.nb_sdb)}
-          emptyView={<p style={s.emptyHint}>Aucune information renseignée. Cliquez sur Modifier pour les ajouter.</p>}
+          emptyView={<p style={s.emptyHint}>Aucune information renseignée. Clique sur Modifier pour les ajouter.</p>}
           view={
             <div style={s.detailRows}>
               {l.surface_m2 && <div style={s.detailRow}><span style={s.detailKey}>Surface</span><span style={s.detailVal}>{l.surface_m2} m²</span></div>}
@@ -961,19 +961,19 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               </label>
               <label style={s.editLabel}>
                 <span>Surface (m²)</span>
-                <input style={s.editInput} type="number" min={0} value={draftSurface ?? ''} onChange={e => setDraftSurface(e.target.value ? parseFloat(e.target.value) : null)} placeholder="—" />
+                <input style={s.editInput} type="number" min={0} value={draftSurface ?? ''} onChange={e => setDraftSurface(e.target.value ? parseFloat(e.target.value) : null)} placeholder="-" />
               </label>
               <label style={s.editLabel}>
                 <span>Chambres</span>
-                <input style={s.editInput} type="number" min={0} value={draftChambres ?? ''} onChange={e => setDraftChambres(e.target.value ? parseInt(e.target.value) : null)} placeholder="—" />
+                <input style={s.editInput} type="number" min={0} value={draftChambres ?? ''} onChange={e => setDraftChambres(e.target.value ? parseInt(e.target.value) : null)} placeholder="-" />
               </label>
               <label style={s.editLabel}>
                 <span>Lits</span>
-                <input style={s.editInput} type="number" min={0} value={draftLits ?? ''} onChange={e => setDraftLits(e.target.value ? parseInt(e.target.value) : null)} placeholder="—" />
+                <input style={s.editInput} type="number" min={0} value={draftLits ?? ''} onChange={e => setDraftLits(e.target.value ? parseInt(e.target.value) : null)} placeholder="-" />
               </label>
               <label style={s.editLabel}>
                 <span>Salles de bain</span>
-                <input style={s.editInput} type="number" min={0} value={draftSdb ?? ''} onChange={e => setDraftSdb(e.target.value ? parseInt(e.target.value) : null)} placeholder="—" />
+                <input style={s.editInput} type="number" min={0} value={draftSdb ?? ''} onChange={e => setDraftSdb(e.target.value ? parseInt(e.target.value) : null)} placeholder="-" />
               </label>
               <label style={s.editLabel}>
                 <span>N° enregistrement</span>
@@ -1009,13 +1009,13 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
             setDraftMethodesPaiement(l.methodes_paiement ?? '')
           }}
           hasValue={!!(l.tarif_nuitee_moyen || l.frais_menage || l.caution || l.methodes_paiement)}
-          emptyView={<p style={s.emptyHint}>Aucun tarif renseigné. Cliquez sur Modifier pour les ajouter.</p>}
+          emptyView={<p style={s.emptyHint}>Aucun tarif renseigné. Clique sur Modifier pour les ajouter.</p>}
           view={
             <div style={s.detailRows}>
               {l.tarif_nuitee_moyen && (
                 <div style={s.detailRow}>
                   <span style={s.detailKey}>Nuitée moyenne</span>
-                  <span style={{ ...s.detailVal, color: 'var(--success-1)', fontWeight: 700 }}>{fmtEur(l.tarif_nuitee_moyen)}</span>
+                  <span style={{ ...s.detailVal, color: 'var(--accent-text)', fontWeight: 700 }}>{fmtEur(l.tarif_nuitee_moyen)}</span>
                 </div>
               )}
               {l.frais_menage && (
@@ -1088,26 +1088,26 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
             setDraftFumeur(l.fumeur_accepte ?? false)
           }}
           hasValue={!!(l.equipements && l.equipements.length > 0) || l.animaux_acceptes || l.fumeur_accepte}
-          emptyView={<p style={s.emptyHint}>Aucun équipement renseigné. Cliquez sur Modifier pour en ajouter.</p>}
+          emptyView={<p style={s.emptyHint}>Aucun équipement renseigné. Clique sur Modifier pour en ajouter.</p>}
           view={
             <div style={s.equipChips}>
               {(l.equipements ?? []).map(eq => {
-                const def = EQUIPEMENT_LABELS[eq] ?? { label: eq, emoji: '✓' }
+                const def = EQUIPEMENT_LABELS[eq] ?? { label: eq, Icon: Check }
                 return (
                   <span key={eq} style={s.equipChip}>
-                    <span>{def.emoji}</span>
+                    <def.Icon size={13} weight="duotone" />
                     {def.label}
                   </span>
                 )
               })}
-              {l.animaux_acceptes && <span style={s.equipChip}>🐾 Animaux acceptés</span>}
-              {l.fumeur_accepte && <span style={s.equipChip}>🚬 Fumeur autorisé</span>}
+              {l.animaux_acceptes && <span style={s.equipChip}><PawPrint size={13} weight="duotone" /> Animaux acceptés</span>}
+              {l.fumeur_accepte && <span style={s.equipChip}><Cigarette size={13} weight="duotone" /> Fumeur autorisé</span>}
             </div>
           }
           edit={
             <div>
               <div style={s.checkGrid}>
-                {Object.entries(EQUIPEMENT_LABELS).map(([slug, { label, emoji }]) => {
+                {Object.entries(EQUIPEMENT_LABELS).map(([slug, { label, Icon }]) => {
                   const checked = draftEquipements.includes(slug)
                   return (
                     <label key={slug} style={s.checkRow}>
@@ -1119,7 +1119,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                         )}
                         style={{ accentColor: 'var(--accent-text)', width: '14px', height: '14px', flexShrink: 0 }}
                       />
-                      <span>{emoji} {label}</span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}><Icon size={14} weight="duotone" /> {label}</span>
                     </label>
                   )
                 })}
@@ -1132,7 +1132,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                     onChange={e => setDraftAnimaux(e.target.checked)}
                     style={{ accentColor: 'var(--accent-text)', width: '14px', height: '14px', flexShrink: 0 }}
                   />
-                  <span>🐾 Animaux acceptés</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}><PawPrint size={14} weight="duotone" /> Animaux acceptés</span>
                 </label>
                 <label style={s.checkRow}>
                   <input
@@ -1141,7 +1141,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
                     onChange={e => setDraftFumeur(e.target.checked)}
                     style={{ accentColor: 'var(--accent-text)', width: '14px', height: '14px', flexShrink: 0 }}
                   />
-                  <span>🚬 Fumeur autorisé</span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}><Cigarette size={14} weight="duotone" /> Fumeur autorisé</span>
                 </label>
               </div>
             </div>
@@ -1161,7 +1161,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
             setDraftLienDriing(l.lien_driing ?? '')
           }}
           hasValue={!!(l.lien_airbnb || l.lien_booking || l.lien_gmb || l.lien_site_direct || l.lien_driing)}
-          emptyView={<p style={s.emptyHint}>Aucun lien renseigné. Cliquez sur Modifier pour les ajouter.</p>}
+          emptyView={<p style={s.emptyHint}>Aucun lien renseigné. Clique sur Modifier pour les ajouter.</p>}
           view={
             <div style={s.linksList}>
               {l.lien_airbnb && (
@@ -1242,7 +1242,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
           setDraftBic(l.bic ?? '')
         }}
         hasValue={!!(l.proprietaire_nom || l.proprietaire_email || l.proprietaire_telephone || l.honoraires_pct != null || l.iban)}
-        emptyView={<p style={s.emptyHint}>Aucun propriétaire renseigné (utile si vous gérez ce logement en tant que conciergerie).</p>}
+        emptyView={<p style={s.emptyHint}>Aucun propriétaire renseigné (utile si tu gères ce logement en tant que conciergerie).</p>}
         view={
           <div style={s.detailRows}>
             {l.proprietaire_nom && (
@@ -1266,7 +1266,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
             {l.honoraires_pct != null && (
               <div style={s.detailRow}>
                 <span style={s.detailKey}>Honoraires</span>
-                <span style={{ ...s.detailVal, color: '#a78bfa', fontWeight: 700 }}>{l.honoraires_pct}%</span>
+                <span style={{ ...s.detailVal, color: '#B7791F', fontWeight: 700 }}>{l.honoraires_pct}%</span>
               </div>
             )}
             {l.iban && (
@@ -1326,13 +1326,13 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
           setDraftDescriptionEn(l.description_en ?? '')
         }}
         hasValue={!!l.description}
-        emptyView={<p style={s.emptyHint}>Aucune description. Cliquez sur Modifier pour ajouter une présentation de votre logement.</p>}
+        emptyView={<p style={s.emptyHint}>Aucune description. Clique sur Modifier pour présenter ton logement.</p>}
         view={<p style={s.descText}>{l.description}</p>}
         edit={
           <LangTextarea
             fr={draftDescription} pt={draftDescriptionPt} en={draftDescriptionEn}
             onChangeFr={setDraftDescription} onChangePt={setDraftDescriptionPt} onChangeEn={setDraftDescriptionEn}
-            placeholder="Décrivez votre logement, son ambiance, ses atouts…"
+            placeholder="Décris ton logement, son ambiance, ses atouts…"
             rows={6}
           />
         }
@@ -1349,7 +1349,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
             setDraftConditionsEn(l.conditions_annulation_en ?? '')
           }}
           hasValue={!!l.conditions_annulation}
-          emptyView={<p style={s.emptyHint}>Aucune condition d&apos;annulation. Cliquez sur Modifier pour les définir.</p>}
+          emptyView={<p style={s.emptyHint}>Aucune condition d&apos;annulation. Clique sur Modifier pour les définir.</p>}
           view={<p style={s.descText}>{l.conditions_annulation}</p>}
           edit={
             <LangTextarea
@@ -1369,7 +1369,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
             setDraftReglementEn(l.reglement_interieur_en ?? '')
           }}
           hasValue={!!l.reglement_interieur}
-          emptyView={<p style={s.emptyHint}>Aucun règlement. Cliquez sur Modifier pour ajouter les règles de la maison.</p>}
+          emptyView={<p style={s.emptyHint}>Aucun règlement. Clique sur Modifier pour ajouter les règles de la maison.</p>}
           view={<p style={{ ...s.descText, whiteSpace: 'pre-wrap' as const }}>{l.reglement_interieur}</p>}
           edit={
             <LangTextarea
@@ -1416,8 +1416,9 @@ const s: Record<string, React.CSSProperties> = {
   hero: {
     position: 'relative' as const,
     display: 'flex', flexDirection: 'column' as const,
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
+    // Même fond que HubHero (DA 28/09/2026)
+    background: 'linear-gradient(135deg, var(--accent-bg) 0%, rgba(99,214,131,0.10) 55%, rgba(255,213,107,0.14) 100%)',
+    border: '1px solid var(--accent-border)',
     borderRadius: 'var(--r-xl)',
     overflow: 'hidden' as const,
     boxShadow: 'var(--shadow-sm)',
@@ -1456,7 +1457,7 @@ const s: Record<string, React.CSSProperties> = {
     position: 'absolute' as const,
     inset: 0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    background: 'radial-gradient(ellipse 80% 100% at 50% 50%, var(--success-bg), transparent 70%)',
+    background: 'radial-gradient(ellipse 80% 100% at 50% 50%, var(--accent-bg), transparent 70%)',
   },
   heroContent: {
     padding: 'var(--s-5) var(--s-6) var(--s-6)',
@@ -1531,7 +1532,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   statIcon: {
     width: '32px', height: '32px', borderRadius: '9px',
-    background: 'rgba(16,185,129,0.10)',
+    background: 'color-mix(in srgb, var(--accent-text) 10%, transparent)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   statValue: {
@@ -1622,7 +1623,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   sejourAmount: {
     fontSize: '12px', fontWeight: 600,
-    color: 'var(--success-1)',
+    color: 'var(--accent-text)',
   },
   sejourStatus: {
     fontSize: '10px', fontWeight: 600,

@@ -2,7 +2,8 @@
 
 import { useState, useTransition, useEffect, useMemo } from 'react'
 import Image from 'next/image'
-import { Plus, X, House, Trash, Warning, Check, Copy, WifiHigh, Key, Clock, Star, Leaf, MapPin, CurrencyEur, ArrowSquareOut, MagnifyingGlass, SquaresFour, Rows, ArrowRight } from '@phosphor-icons/react/dist/ssr'
+import { Plus, X, House, Trash, Warning, Check, Copy, WifiHigh, Key, Clock, Star, Leaf, MapPin, CurrencyEur, ArrowSquareOut, MagnifyingGlass, SquaresFour, Rows, ArrowRight, Car, SwimmingPool, Snowflake, Fire, WashingMachine, ForkKnife, Television, Tree, Chair, Plant, Wheelchair, Elevator, Campfire, Bathtub, PawPrint, Cigarette, CalendarCheck, IdentificationCard, Camera } from '@phosphor-icons/react/dist/ssr'
+import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createLogement, updateLogement, deleteLogement, type LogementData } from './actions'
 import { COUNTRIES, ACTIVE_COUNTRIES, getCountry, type CountryCode } from '@/lib/countries'
@@ -27,23 +28,40 @@ const TYPE_LOGEMENT_LABELS: Record<TypeLogement, string> = {
   'autre': 'Autre',
 }
 
-const EQUIPEMENTS: { slug: string; label: string; emoji: string }[] = [
-  { slug: 'wifi',           label: 'Wi-Fi',          emoji: '📶' },
-  { slug: 'parking',        label: 'Parking',        emoji: '🅿️' },
-  { slug: 'piscine',        label: 'Piscine',        emoji: '🏊' },
-  { slug: 'climatisation',  label: 'Climatisation',  emoji: '❄️' },
-  { slug: 'chauffage',      label: 'Chauffage',      emoji: '🔥' },
-  { slug: 'lave-linge',     label: 'Lave-linge',     emoji: '🧺' },
-  { slug: 'lave-vaisselle', label: 'Lave-vaisselle', emoji: '🍽️' },
-  { slug: 'tv',             label: 'TV',             emoji: '📺' },
-  { slug: 'jardin',         label: 'Jardin',         emoji: '🌳' },
-  { slug: 'terrasse',       label: 'Terrasse',       emoji: '🪑' },
-  { slug: 'balcon',         label: 'Balcon',         emoji: '🌿' },
-  { slug: 'pmr',            label: 'Accès PMR',      emoji: '♿' },
-  { slug: 'ascenseur',      label: 'Ascenseur',      emoji: '↕️' },
-  { slug: 'cheminee',       label: 'Cheminée',       emoji: '🔥' },
-  { slug: 'spa',            label: 'Spa / jacuzzi',  emoji: '🛁' },
+// Icônes Phosphor (avant : emojis, rendus différemment selon l'appareil)
+const EQUIPEMENTS: { slug: string; label: string; Icon: React.ElementType }[] = [
+  { slug: 'wifi',           label: 'Wi-Fi',          Icon: WifiHigh },
+  { slug: 'parking',        label: 'Parking',        Icon: Car },
+  { slug: 'piscine',        label: 'Piscine',        Icon: SwimmingPool },
+  { slug: 'climatisation',  label: 'Climatisation',  Icon: Snowflake },
+  { slug: 'chauffage',      label: 'Chauffage',      Icon: Fire },
+  { slug: 'lave-linge',     label: 'Lave-linge',     Icon: WashingMachine },
+  { slug: 'lave-vaisselle', label: 'Lave-vaisselle', Icon: ForkKnife },
+  { slug: 'tv',             label: 'TV',             Icon: Television },
+  { slug: 'jardin',         label: 'Jardin',         Icon: Tree },
+  { slug: 'terrasse',       label: 'Terrasse',       Icon: Chair },
+  { slug: 'balcon',         label: 'Balcon',         Icon: Plant },
+  { slug: 'pmr',            label: 'Accès PMR',      Icon: Wheelchair },
+  { slug: 'ascenseur',      label: 'Ascenseur',      Icon: Elevator },
+  { slug: 'cheminee',       label: 'Cheminée',       Icon: Campfire },
+  { slug: 'spa',            label: 'Spa / jacuzzi',  Icon: Bathtub },
 ]
+
+// Ce qui manque à une fiche pour que l'app travaille à ta place
+type Manque = 'calendrier' | 'numero' | 'photo'
+function manques(l: { ical_airbnb?: string | null; ical_booking?: string | null; ical_vrbo?: string | null; ical_autre?: string | null; pays?: string | null; numero_enregistrement?: string | null; numero_al?: string | null; photo_couverture_url?: string | null; actif?: boolean | null }): Manque[] {
+  if (l.actif === false) return []
+  const out: Manque[] = []
+  if (!l.ical_airbnb && !l.ical_booking && !l.ical_vrbo && !l.ical_autre) out.push('calendrier')
+  if ((l.pays ?? 'FR') === 'PT' ? !l.numero_al : !l.numero_enregistrement) out.push('numero')
+  if (!l.photo_couverture_url) out.push('photo')
+  return out
+}
+const MANQUE_LABELS: Record<Manque, [string, string]> = {
+  calendrier: ['sans calendrier Airbnb ou Booking connecté', 'sans calendrier connecté'],
+  numero: ['sans numéro d’enregistrement', 'sans numéro d’enregistrement'],
+  photo: ['sans photo de couverture', 'sans photo de couverture'],
+}
 
 type Logement = {
   id: string
@@ -201,8 +219,9 @@ export default function LogementsPage({ logements: initial }: Props) {
     return logements.filter(l => {
       if (filter === 'actifs' && l.actif === false) return false
       if (filter === 'en-pause' && l.actif !== false) return false
-      // filter par type
-      if (filter !== 'all' && filter !== 'actifs' && filter !== 'en-pause') {
+      if (filter.startsWith('manque:')) {
+        if (!manques(l).includes(filter.slice(7) as Manque)) return false
+      } else if (filter !== 'all' && filter !== 'actifs' && filter !== 'en-pause') {
         if (l.type_logement !== filter) return false
       }
       if (q) {
@@ -404,7 +423,7 @@ export default function LogementsPage({ logements: initial }: Props) {
           transform: translateY(-3px);
         }
         .jm-logement-card:hover [data-card-icon] {
-          background: var(--success-1);
+          background: var(--accent-text);
           color: #fff;
           transform: scale(1.06);
         }
@@ -423,24 +442,51 @@ export default function LogementsPage({ logements: initial }: Props) {
       {/* Mode "from=detail" : on masque la liste pour ne montrer que la modale,
           ce qui évite la sensation d'être éjecté de la fiche détail. */}
       <div style={{ ...container, ...(fromDetail ? { visibility: 'hidden' as const, height: 0, overflow: 'hidden' as const } : {}) }}>
-        {/* Header */}
-        <div style={headerRow}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' as const }}>
-              <h1 style={pageTitle}>
-                Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>logements</em>
-              </h1>
-              <TourTrigger />
+        <HubHero
+          eyebrowIcon={<House size={14} weight="fill" />}
+          eyebrow="Mes logements"
+          title={<>Une fiche par logement, <HeroEm>remplie une fois</HeroEm></>}
+          desc="Chaque fiche alimente tes contrats, ton planning ménage, tes déclarations voyageurs et tes finances. Connecte son calendrier Airbnb ou Booking : tes réservations arrivent toutes seules."
+          steps={[['Crée', 'la fiche du logement'], ['Connecte', 'son calendrier Airbnb ou Booking'], ['Complète', 'numéro, photos, infos pratiques']]}
+          aside={
+            <div style={{ ...heroCard, flex: '1 1 100%', minWidth: 0 }}>
+              <div style={asideLabel}>Tes logements</div>
+              <div style={asideBig}>
+                {logements.length === 0 ? 'Aucun logement' : `${logements.filter(l => l.actif !== false).length} actif${logements.filter(l => l.actif !== false).length > 1 ? 's' : ''}`}
+                {logements.some(l => l.actif === false) && <span style={{ fontSize: 14, color: 'var(--text-3)', fontFamily: 'var(--font-outfit), sans-serif' }}>{` · ${logements.filter(l => l.actif === false).length} en pause`}</span>}
+              </div>
+              {logements.length > 0 && (() => {
+                const counts = (['calendrier', 'numero', 'photo'] as Manque[]).map(m => [m, logements.filter(l => manques(l).includes(m)).length] as const).filter(([, n]) => n > 0)
+                if (counts.length === 0) return <div style={asideOk}><Check size={15} weight="bold" /> Toutes tes fiches sont complètes.</div>
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    <div style={{ fontSize: 12.5, color: 'var(--text-2)', fontWeight: 600 }}>À compléter</div>
+                    {counts.map(([m, n]) => {
+                      const Icon = m === 'calendrier' ? CalendarCheck : m === 'numero' ? IdentificationCard : Camera
+                      const on = filter === `manque:${m}`
+                      return (
+                        <button key={m} type="button" onClick={() => { setFilter(on ? 'all' : `manque:${m}`) }}
+                          style={{ ...asideRow, ...(on ? asideRowOn : {}) }}>
+                          <Icon size={15} weight="duotone" color="#B7791F" />
+                          <span style={{ flex: 1, textAlign: 'left' }}><strong style={{ color: 'var(--text)' }}>{n}</strong> {MANQUE_LABELS[m][n > 1 ? 1 : 0]}</span>
+                          <ArrowRight size={13} color="var(--text-muted)" />
+                        </button>
+                      )
+                    })}
+                  </div>
+                )
+              })()}
             </div>
-            <p style={pageSubtitle}>
-              Créez des fiches pour chacun de vos biens, elles pré-rempliront automatiquement les contrats.
-            </p>
+          }
+        >
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 16px' }}>
+            <button onClick={openCreate} style={addBtn} data-tour="logement-create">
+              <Plus size={16} weight="bold" />
+              Nouveau logement
+            </button>
+            <TourTrigger />
           </div>
-          <button onClick={openCreate} style={addBtn} data-tour="logement-create">
-            <Plus size={16} weight="bold" />
-            Nouveau logement
-          </button>
-        </div>
+        </HubHero>
 
         {success && (
           <div style={successBanner}>
@@ -471,6 +517,11 @@ export default function LogementsPage({ logements: initial }: Props) {
                   style={{ ...filterChip, ...(filter === 'en-pause' ? filterChipActive : {}) }}
                 >
                   En pause <span style={chipCount}>{logements.filter(l => l.actif === false).length}</span>
+                </button>
+              )}
+              {filter.startsWith('manque:') && (
+                <button onClick={() => setFilter('all')} style={{ ...filterChip, ...filterChipActive }} title="Retirer ce filtre">
+                  {MANQUE_LABELS[filter.slice(7) as Manque][1].replace(/^./, c => c.toUpperCase())} <X size={11} weight="bold" />
                 </button>
               )}
               {typesPresent.length > 1 && typesPresent.map(t => (
@@ -538,10 +589,10 @@ export default function LogementsPage({ logements: initial }: Props) {
         {/* Empty state */}
         {logements.length === 0 && (
           <div style={emptyState}>
-            <div style={emptyIcon}><House size={32} color="#34D399" weight="thin" /></div>
+            <div style={emptyIcon}><House size={32} color="var(--accent-text)" weight="thin" /></div>
             <p style={emptyTitle}>Aucun logement enregistré</p>
             <p style={emptyText}>
-              Créez votre première fiche logement pour gagner du temps lors de la création de vos contrats.
+              Crée ta première fiche : elle remplira tes contrats, ton planning ménage et tes déclarations voyageurs à ta place.
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
               <button onClick={openCreate} style={addBtnAlt}>
@@ -609,9 +660,9 @@ export default function LogementsPage({ logements: initial }: Props) {
                     <td style={tableTdNum}>{l.tarif_nuitee_moyen ? `${l.tarif_nuitee_moyen} €` : '-'}</td>
                     <td style={tableTd}>
                       {l.actif === false ? (
-                        <span style={{ ...chip, background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.3)', color: 'var(--text-muted)' }}>En pause</span>
+                        <span style={{ ...chip, background: 'color-mix(in srgb, var(--text-3) 12%, transparent)', borderColor: 'color-mix(in srgb, var(--text-3) 30%, transparent)', color: 'var(--text-muted)' }}>En pause</span>
                       ) : (
-                        <span style={{ ...chip, background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.25)', color: 'var(--success-1)' }}>Actif</span>
+                        <span style={{ ...chip, background: 'color-mix(in srgb, var(--accent-text) 10%, transparent)', borderColor: 'color-mix(in srgb, var(--accent-text) 25%, transparent)', color: 'var(--accent-text)' }}>Actif</span>
                       )}
                     </td>
                     <td style={tableTd}>
@@ -677,8 +728,8 @@ export default function LogementsPage({ logements: initial }: Props) {
                   </div>
                 ) : (
                   /* Placeholder coloré quand pas de photo */
-                  <div style={{ ...cardCover, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--success-bg)' }}>
-                    <House size={52} color="var(--success-1)" weight="thin" style={{ opacity: 0.55 }} />
+                  <div style={{ ...cardCover, height: '110px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--accent-bg)', color: 'var(--accent-text)', fontSize: '12.5px', fontWeight: 600 }}>
+                    <Camera size={20} weight="duotone" /> Ajoute une photo de couverture
                     <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '6px' }}>
                       <button
                         onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDeleteConfirm(l.id) }}
@@ -710,7 +761,7 @@ export default function LogementsPage({ logements: initial }: Props) {
                         </span>
                       )}
                       {!l.actif && (
-                        <span style={{ ...chip, background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.3)', color: 'var(--text-muted)' }}>
+                        <span style={{ ...chip, background: 'color-mix(in srgb, var(--text-3) 12%, transparent)', borderColor: 'color-mix(in srgb, var(--text-3) 30%, transparent)', color: 'var(--text-muted)' }}>
                           En pause
                         </span>
                       )}
@@ -733,8 +784,8 @@ export default function LogementsPage({ logements: initial }: Props) {
                     {l.surface_m2 && <span style={chip}>{l.surface_m2} m²</span>}
                     {l.nb_chambres && <span style={chip}>{l.nb_chambres} ch.</span>}
                     {l.nb_lits && <span style={chip}>{l.nb_lits} lit{l.nb_lits > 1 ? 's' : ''}</span>}
-                    {l.animaux_acceptes && <span style={chip}>🐾 Animaux</span>}
-                    {l.fumeur_accepte && <span style={chip}>🚬 Fumeur</span>}
+                    {l.animaux_acceptes && <span style={chip}><PawPrint size={11} weight="fill" /> Animaux</span>}
+                    {l.fumeur_accepte && <span style={chip}><Cigarette size={11} weight="fill" /> Fumeur</span>}
                   </div>
 
                   {/* Tarifs */}
@@ -771,7 +822,7 @@ export default function LogementsPage({ logements: initial }: Props) {
                     <div style={practicalRow}>
                       {(l.heure_arrivee || l.heure_depart) && (
                         <div style={practicalItem}>
-                          <Clock size={12} color="#60BEFF" />
+                          <Clock size={12} color="#6E5446" />
                           <span style={practicalText}>
                             {l.heure_arrivee && <>Arrivée {l.heure_arrivee}</>}
                             {l.heure_arrivee && l.heure_depart && ' · '}
@@ -780,7 +831,7 @@ export default function LogementsPage({ logements: initial }: Props) {
                         </div>
                       )}
                       {l.wifi_nom && (
-                        <CopyChip icon={<WifiHigh size={12} color="#34D399" />} label={l.wifi_nom} value={`${l.wifi_nom}${l.wifi_mdp ? ` / ${l.wifi_mdp}` : ''}`} />
+                        <CopyChip icon={<WifiHigh size={12} color="var(--accent-text)" />} label={l.wifi_nom} value={`${l.wifi_nom}${l.wifi_mdp ? ` / ${l.wifi_mdp}` : ''}`} />
                       )}
                       {l.code_acces && (
                         <CopyChip icon={<Key size={12} color="var(--accent-text)" />} label={l.code_acces} value={l.code_acces} />
@@ -984,9 +1035,9 @@ export default function LogementsPage({ logements: initial }: Props) {
                             style={{
                               flex: 1,
                               padding: '8px 6px', borderRadius: '8px',
-                              background: selected ? 'rgba(245,158,11,0.14)' : 'var(--surface)',
-                              border: `1px solid ${selected ? 'rgba(245,158,11,0.40)' : 'var(--border)'}`,
-                              color: selected ? '#d97706' : 'var(--text-2)',
+                              background: selected ? 'color-mix(in srgb, #B7791F 14%, transparent)' : 'var(--surface)',
+                              border: `1px solid ${selected ? 'color-mix(in srgb, #B7791F 40%, transparent)' : 'var(--border)'}`,
+                              color: selected ? '#B7791F' : 'var(--text-2)',
                               fontSize: '12px', fontWeight: 600,
                               cursor: 'pointer', fontFamily: 'inherit',
                             }}
@@ -1080,7 +1131,7 @@ export default function LogementsPage({ logements: initial }: Props) {
                         fontWeight: selected ? 600 : 400,
                       }}
                     >
-                      <span>{eq.emoji}</span>
+                      <eq.Icon size={14} weight={selected ? 'fill' : 'regular'} />
                       {eq.label}
                     </button>
                   )
@@ -1261,10 +1312,10 @@ export default function LogementsPage({ logements: initial }: Props) {
                       <label key={opt.value} style={{
                         display: 'inline-flex', alignItems: 'center', gap: '7px',
                         padding: '7px 12px', borderRadius: '10px', cursor: 'pointer',
-                        background: checked ? 'rgba(52,211,153,0.1)' : 'var(--surface)',
-                        border: `1px solid ${checked ? 'rgba(52,211,153,0.35)' : 'var(--border)'}`,
+                        background: checked ? 'color-mix(in srgb, var(--accent-text) 10%, transparent)' : 'var(--surface)',
+                        border: `1px solid ${checked ? 'color-mix(in srgb, var(--accent-text) 35%, transparent)' : 'var(--border)'}`,
                         fontSize: '13px', fontWeight: checked ? 600 : 400,
-                        color: checked ? 'var(--success-1)' : 'var(--text-2)',
+                        color: checked ? 'var(--accent-text)' : 'var(--text-2)',
                         transition: 'all 0.15s', userSelect: 'none' as const,
                       }}>
                         <input
@@ -1319,7 +1370,7 @@ function CopyChip({ icon, label, value }: { icon: React.ReactNode; label: string
   }
   return (
     <button onClick={handleCopy} style={copyChipStyle} title={`Copier : ${value}`}>
-      {copied ? <Check size={11} color="#34D399" weight="bold" /> : icon}
+      {copied ? <Check size={11} color="var(--accent-text)" weight="bold" /> : icon}
       <span style={{ fontSize: '11px', maxWidth: '90px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>
         {copied ? 'Copié !' : label}
       </span>
@@ -1359,7 +1410,7 @@ function Toggle({ label: lbl, value, onChange }: { label: string; value: boolean
     <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
       <input
         type="checkbox" checked={value} onChange={e => onChange(e.target.checked)}
-        style={{ width: '16px', height: '16px', accentColor: 'var(--success-1)' }}
+        style={{ width: '16px', height: '16px', accentColor: 'var(--accent-text)' }}
       />
       <span style={{ fontSize: '14px', color: 'var(--text-2)' }}>{lbl}</span>
     </label>
@@ -1374,27 +1425,26 @@ const page: React.CSSProperties = {
 
 const container: React.CSSProperties = {}
 
-const headerRow: React.CSSProperties = {
-  display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
-  flexWrap: 'wrap' as const, gap: '16px', marginBottom: '28px',
-}
 
-const pageTitle: React.CSSProperties = {
-  fontFamily: 'var(--font-fraunces), serif',
-  fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', margin: '0 0 6px',
-}
 
-const pageSubtitle: React.CSSProperties = {
-  fontSize: '14px', color: 'var(--text-2)', margin: 0, lineHeight: 1.6,
-}
 
 const addBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '7px',
   background: 'var(--accent-text)', color: 'var(--bg)',
   border: 'none', borderRadius: '12px',
-  padding: '10px 18px', fontSize: '14px', fontWeight: 600,
-  cursor: 'pointer', flexShrink: 0,
+  padding: '12px 20px', fontSize: '14.5px', fontWeight: 700,
+  cursor: 'pointer', flexShrink: 0, fontFamily: 'inherit',
 }
+
+const asideLabel: React.CSSProperties = { fontSize: '12px', fontWeight: 700, letterSpacing: '.5px', textTransform: 'uppercase', color: 'var(--text-3)' }
+const asideBig: React.CSSProperties = { fontFamily: 'var(--font-fraunces), serif', fontSize: '24px', color: 'var(--text)', lineHeight: 1.2 }
+const asideOk: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '7px', fontSize: '13px', color: 'var(--accent-text)', fontWeight: 600 }
+const asideRow: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '9px', padding: '9px 11px', borderRadius: '10px', width: '100%',
+  background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--text-2)', fontSize: '13px',
+  fontFamily: 'inherit', cursor: 'pointer',
+}
+const asideRowOn: React.CSSProperties = { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' }
 
 const addBtnAlt: React.CSSProperties = {
   ...addBtn,
@@ -1405,9 +1455,9 @@ const addBtnAlt: React.CSSProperties = {
 
 const successBanner: React.CSSProperties = {
   display: 'flex', alignItems: 'center', gap: '8px',
-  background: 'rgba(52,211,153,0.1)', border: '1px solid rgba(52,211,153,0.2)',
+  background: 'color-mix(in srgb, var(--accent-text) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--accent-text) 20%, transparent)',
   borderRadius: '10px', padding: '12px 16px', marginBottom: '20px',
-  fontSize: '13px', color: 'var(--success-1)', fontWeight: 500,
+  fontSize: '13px', color: 'var(--accent-text)', fontWeight: 500,
 }
 
 const emptyState: React.CSSProperties = {
@@ -1419,8 +1469,8 @@ const emptyState: React.CSSProperties = {
 
 const emptyIcon: React.CSSProperties = {
   width: '64px', height: '64px',
-  background: 'var(--success-bg)',
-  border: '1px solid rgba(52,211,153,0.15)',
+  background: 'var(--accent-bg)',
+  border: '1px solid color-mix(in srgb, var(--accent-text) 15%, transparent)',
   borderRadius: '50%',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
   margin: '0 auto 20px',
@@ -1438,7 +1488,7 @@ const emptyText: React.CSSProperties = {
 
 const grid: React.CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 360px), 1fr))',
   gap: 'var(--s-5)',
 }
 
@@ -1470,14 +1520,14 @@ const cardTop: React.CSSProperties = {
 const cardIcon: React.CSSProperties = {
   width: '54px',
   height: '54px',
-  background: 'var(--success-bg)',
-  border: '1px solid var(--success-border)',
+  background: 'var(--accent-bg)',
+  border: '1px solid var(--accent-border)',
   borderRadius: 'var(--r-lg)',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   flexShrink: 0,
-  color: 'var(--success-1)',
+  color: 'var(--accent-text)',
   transition: 'transform var(--d-base) var(--ease-spring), background var(--d-base) var(--ease-smooth)',
 }
 
@@ -1514,12 +1564,12 @@ const cardMeta: React.CSSProperties = {
 
 const chip: React.CSSProperties = {
   display: 'inline-block',
-  background: 'var(--success-bg)',
-  border: '1px solid var(--success-border)',
+  background: 'var(--accent-bg)',
+  border: '1px solid var(--accent-border)',
   borderRadius: 'var(--r-sm)',
   padding: '3px 9px',
   fontSize: 'var(--t-xs)',
-  color: 'var(--success-1)',
+  color: 'var(--accent-text)',
   fontWeight: 600,
 }
 
@@ -1530,14 +1580,14 @@ const cardDesc: React.CSSProperties = {
 
 const deleteBox: React.CSSProperties = {
   marginTop: '8px', padding: '14px',
-  background: 'rgba(239,68,68,0.06)',
-  border: '1px solid rgba(239,68,68,0.15)',
+  background: 'color-mix(in srgb, var(--danger) 6%, transparent)',
+  border: '1px solid color-mix(in srgb, var(--danger) 15%, transparent)',
   borderRadius: '10px',
 }
 
 const deleteConfirmBtn: React.CSSProperties = {
   padding: '6px 14px', borderRadius: '8px',
-  background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)',
+  background: 'color-mix(in srgb, var(--danger) 15%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 30%, transparent)',
   color: 'var(--danger)', fontSize: '13px', fontWeight: 500, cursor: 'pointer',
 }
 
@@ -1561,8 +1611,8 @@ const overlay: React.CSSProperties = {
 }
 
 const modalBox: React.CSSProperties = {
-  background: 'var(--bg-2, #0f2018)',
-  border: '1px solid var(--border-2, #1e3d2f)',
+  background: 'var(--bg-2)',
+  border: '1px solid var(--border-2)',
   borderRadius: '22px',
   width: '100%', maxWidth: '560px',
   // Pas de maxHeight fixe : la modal peut grandir naturellement,
@@ -1573,12 +1623,12 @@ const modalBox: React.CSSProperties = {
 const modalHeader: React.CSSProperties = {
   display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
   padding: '22px 24px 16px',
-  borderBottom: '1px solid var(--border, #1e3d2f)',
+  borderBottom: '1px solid var(--border)',
 }
 
 const modalTag: React.CSSProperties = {
   fontSize: '11px', fontWeight: 600, letterSpacing: '1.2px',
-  textTransform: 'uppercase', color: 'var(--success-1)', margin: '0 0 4px',
+  textTransform: 'uppercase', color: 'var(--accent-text)', margin: '0 0 4px',
 }
 
 const modalTitle: React.CSSProperties = {
@@ -1599,7 +1649,7 @@ const modalBody: React.CSSProperties = {
 const modalFooter: React.CSSProperties = {
   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
   padding: '16px 24px 20px',
-  borderTop: '1px solid var(--border, #1e3d2f)',
+  borderTop: '1px solid var(--border)',
 }
 
 const fieldRow: React.CSSProperties = {
@@ -1625,7 +1675,7 @@ const input: React.CSSProperties = {
 const errorBox: React.CSSProperties = {
   display: 'flex', alignItems: 'center', gap: '8px',
   fontSize: '13px', color: 'var(--danger)',
-  background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
+  background: 'color-mix(in srgb, var(--danger) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 20%, transparent)',
   borderRadius: '8px', padding: '10px 14px',
 }
 
@@ -1636,7 +1686,7 @@ const ghostBtn: React.CSSProperties = {
 
 const saveBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '6px',
-  background: 'var(--success-1)', color: '#0a1a14',
+  background: 'var(--accent-text)', color: 'var(--bg)',
   border: 'none', borderRadius: '12px',
   padding: '10px 20px', fontSize: '14px', fontWeight: 600, cursor: 'pointer',
 }
@@ -1649,12 +1699,12 @@ const practicalRow: React.CSSProperties = {
 
 const practicalItem: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '5px',
-  background: 'rgba(96,190,255,0.07)', border: '1px solid rgba(96,190,255,0.15)',
+  background: 'color-mix(in srgb, #6E5446 7%, transparent)', border: '1px solid color-mix(in srgb, #6E5446 15%, transparent)',
   borderRadius: '7px', padding: '4px 9px',
 }
 
 const practicalText: React.CSSProperties = {
-  fontSize: '11px', color: '#60BEFF', fontWeight: 500,
+  fontSize: '11px', color: '#6E5446', fontWeight: 500,
 }
 
 const copyChipStyle: React.CSSProperties = {
@@ -1871,9 +1921,9 @@ const proprietaireBadge: React.CSSProperties = {
   display: 'inline-block',
   fontSize: '9px', fontWeight: 700, letterSpacing: '0.5px',
   textTransform: 'uppercase' as const,
-  color: '#a78bfa',
-  background: 'rgba(167,139,250,0.10)',
-  border: '1px solid rgba(167,139,250,0.25)',
+  color: '#B7791F',
+  background: 'color-mix(in srgb, #B7791F 10%, transparent)',
+  border: '1px solid color-mix(in srgb, #B7791F 25%, transparent)',
   padding: '2px 7px', borderRadius: '6px',
   flexShrink: 0,
 }
@@ -1921,8 +1971,8 @@ const typeChip: React.CSSProperties = {
 
 const starChip: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '1px',
-  background: 'var(--warning-bg)', color: '#d97706',
-  border: '1px solid rgba(245,158,11,0.25)',
+  background: 'rgba(255,213,107,0.2)', color: '#8A5A12',
+  border: '1px solid color-mix(in srgb, #B7791F 25%, transparent)',
   borderRadius: '6px', padding: '3px 6px',
 }
 
@@ -1939,8 +1989,8 @@ const tarifRow: React.CSSProperties = {
 
 const tarifChip: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '3px',
-  background: 'rgba(16,185,129,0.08)', color: 'var(--success-1)',
-  border: '1px solid rgba(16,185,129,0.20)',
+  background: 'color-mix(in srgb, var(--accent-text) 8%, transparent)', color: 'var(--accent-text)',
+  border: '1px solid color-mix(in srgb, var(--accent-text) 20%, transparent)',
   borderRadius: '6px', padding: '3px 8px',
   fontSize: '11px', fontWeight: 500,
 }

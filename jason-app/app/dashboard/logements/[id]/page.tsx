@@ -1,4 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
+import { parisToday } from '@/lib/stripe/deposit-window'
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import LogementDetail from './LogementDetail'
@@ -78,6 +79,7 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
         contractsCount={contractsByLogementId?.length ?? 0}
         icalStatus={icalStatus}
         voyageurs={allVoyageurs ?? []}
+        today={parisToday()}
       />
       {/* Config SIBA accessible EN AMONT (avant, uniquement via le modal
           d'une déclaration en attente — impossible si le widget est vide) */}

@@ -13,17 +13,17 @@ interface Props {
 }
 
 const SOURCE_BG: Record<string, string> = {
-  airbnb:  'rgba(255,90,95,0.10)',
-  booking: 'rgba(0,59,149,0.10)',
-  vrbo:    'rgba(255,199,44,0.12)',
-  autre:   'rgba(99,102,241,0.10)',
+  airbnb:  'color-mix(in srgb, #E0475B 10%, transparent)',
+  booking: 'color-mix(in srgb, #D97706 10%, transparent)',
+  vrbo:    'color-mix(in srgb, #8B6D5E 12%, transparent)',
+  autre:   'var(--accent-bg)',
 }
 
 const SOURCE_FG: Record<string, string> = {
-  airbnb:  '#FF5A5F',
-  booking: '#3b82f6',
-  vrbo:    '#d97706',
-  autre:   '#6366f1',
+  airbnb:  '#E0475B',
+  booking: '#D97706',
+  vrbo:    '#8B6D5E',
+  autre:   'var(--accent-text)',
 }
 
 function fmtRelative(iso: string | null): string {
@@ -134,7 +134,7 @@ export default function IcalSyncSection({ logementId, status }: Props) {
               <div style={feedInfo}>
                 <span style={{
                   ...syncStatus,
-                  color: synced ? 'var(--success-1)' : 'var(--text-muted)',
+                  color: synced ? 'var(--accent-text)' : 'var(--text-muted)',
                 }}>
                   {synced ? <CheckCircle size={11} weight="fill" /> : <Warning size={11} weight="fill" />}
                   {fmtRelative(f.lastSynced)}
@@ -289,9 +289,9 @@ const feedbackOk: React.CSSProperties = {
   padding: '7px 11px',
   fontSize: '12px',
   fontWeight: 500,
-  color: 'var(--success-1)',
-  background: 'rgba(16,185,129,0.08)',
-  border: '1px solid rgba(16,185,129,0.2)',
+  color: 'var(--accent-text)',
+  background: 'color-mix(in srgb, var(--accent-text) 8%, transparent)',
+  border: '1px solid color-mix(in srgb, var(--accent-text) 20%, transparent)',
   borderRadius: '8px',
 }
 
@@ -303,8 +303,8 @@ const feedbackErr: React.CSSProperties = {
   fontSize: '12px',
   fontWeight: 500,
   color: 'var(--danger)',
-  background: 'rgba(239,68,68,0.08)',
-  border: '1px solid rgba(239,68,68,0.2)',
+  background: 'color-mix(in srgb, var(--danger) 8%, transparent)',
+  border: '1px solid color-mix(in srgb, var(--danger) 20%, transparent)',
   borderRadius: '8px',
 }
 
