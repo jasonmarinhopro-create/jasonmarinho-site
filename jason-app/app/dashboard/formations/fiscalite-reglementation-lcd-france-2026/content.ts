@@ -416,7 +416,7 @@ La déclaration micro-BIC est simple :
 3. L'impôt est calculé sur le montant restant
    (CA - abattement) + tes autres revenus
    → Barème progressif de l'impôt sur le revenu
-   → + Prélèvements sociaux (17,2%)
+   → + Prélèvements sociaux (18,6 % depuis les revenus 2025)
 
 Tenue obligatoire : un livre de recettes
 (liste chronologique de toutes tes entrées)
@@ -490,13 +490,13 @@ RÉGIME RÉEL
 → Charges : 6 000 + 3 000 + 6 500 = 15 500€
 → Bénéfice imposable : 2 500€
 → Impôt : 2 500 × 30% = 750€
-→ + Prélèvements sociaux 17,2% = 430€
-→ TOTAL : ~1 180€/an
+→ + Prélèvements sociaux 18,6% = 465€
+→ TOTAL : ~1 215€/an
 
 Économie vs micro-BIC classique (avant réforme) :
 → Ancien micro-BIC (50%) : 2 700€ d'impôts
-→ Régime réel : 1 180€ d'impôts
-→ Économie : 1 520€/an
+→ Régime réel : 1 215€ d'impôts
+→ Économie : 1 485€/an
 
 
 > Source : exemple adapté de LMNP.ai, 2026

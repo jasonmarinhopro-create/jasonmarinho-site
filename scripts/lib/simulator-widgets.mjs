@@ -456,7 +456,7 @@ export function widgetEiSasu() {
 
     <div class="sim-hint">
       <strong>EI au réel</strong> : cotisations TNS ~42 % + IR sur le restant.
-      <strong>SASU 100 % dividendes</strong> : IS (15/25 %) + flat tax 30 %.
+      <strong>SASU 100 % dividendes</strong> : IS (15/25 %) + flat tax 31,4 %.
     </div>
   </div>
 
@@ -469,7 +469,7 @@ export function widgetEiSasu() {
     <div class="sim-out">
       <div class="sim-out-label">Net en poche SASU (100 % dividendes)</div>
       <div class="sim-out-value" id="ei-out-sasu">23 800 €</div>
-      <div class="sim-out-sub">après IS + flat tax 30 %</div>
+      <div class="sim-out-sub">après IS + flat tax 31,4 %</div>
     </div>
     <div class="sim-out">
       <div class="sim-out-label">Écart en faveur de</div>

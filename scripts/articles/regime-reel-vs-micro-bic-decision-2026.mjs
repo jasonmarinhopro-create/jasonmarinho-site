@@ -24,10 +24,10 @@ export default {
         { type: 'p', text: 'Prenons un T2 acheté 250 000 € avec emprunt sur 20 ans (mensualité ~1 200 €), loué en LCD à 1 800 €/mois de CA brut.' },
         { type: 'ul', items: [
           'CA annuel brut : 1 800 × 12 = 21 600 €',
-          'Micro-BIC, possible seulement si le meublé est classé (21 600 € dépasse le plafond de 15 000 € sans classement), abattement 50 % : revenu imposable = 10 800 €. Si TMI 30 % + 17,2 % CSG/CRDS = 5 097 € d\'imposition',
+          'Micro-BIC, possible seulement si le meublé est classé (21 600 € dépasse le plafond de 15 000 € sans classement), abattement 50 % : revenu imposable = 10 800 €. Si TMI 30 % + 18,6 % de prélèvements sociaux = 5 249 € d\'imposition',
           'Régime réel : intérêts emprunt 6 000 € + copro 800 € + assurance 400 € + amortissement mobilier 700 € + amortissement immeuble 4 500 € + autres charges 1 200 € = 13 600 € de charges. Bénéfice = 21 600 − 13 600 = 8 000 €',
-          'Régime réel impôt : 8 000 × 30 % + 17,2 % = 3 776 €',
-          'Économie régime réel vs micro-BIC : 5 097 − 3 776 = 1 321 €/an',
+          'Régime réel impôt : 8 000 × (30 % + 18,6 %) = 3 888 €',
+          'Économie régime réel vs micro-BIC : 5 249 − 3 888 = 1 361 €/an',
         ]},
       ],
     },

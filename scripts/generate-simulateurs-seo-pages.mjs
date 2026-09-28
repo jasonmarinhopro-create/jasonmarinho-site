@@ -154,13 +154,13 @@ const PAGES = [
   {
     slug: 'choisir-statut-ei-sasu',
     title: 'Simulateur EI vs SASU pour la LCD : net en poche, cotisations, dividendes',
-    metaDesc: 'Compare net en poche entre EI au réel (cotisations TNS + IR) et SASU 100 % dividendes (IS + flat tax 30 %). Inclut protection sociale, retraite, charges déductibles. Pour hôtes LCD jusqu\'à 150 k€ de bénéfice.',
+    metaDesc: 'Compare net en poche entre EI au réel (cotisations TNS + IR) et SASU 100 % dividendes (IS + flat tax 31,4 %). Inclut protection sociale, retraite, charges déductibles. Pour hôtes LCD jusqu\'à 150 k€ de bénéfice.',
     canonical: 'https://jasonmarinho.com/services/simulateurs/choisir-statut-ei-sasu',
     appPath: '/dashboard/simulateurs?tab=statut',
     heroLabel: 'Outil gratuit · Statut juridique',
     heroH1Top: 'Simulateur',
     heroH1Em: 'EI vs SASU pour la LCD',
-    heroSub: "Quel statut juridique te laisse le plus à la fin ? EI au régime réel (cotisations TNS + impôt sur le revenu) versus SASU 100 % dividendes (impôt sur les sociétés + flat tax 30 %). Le simulateur compare le net en poche, la protection sociale, et la retraite.",
+    heroSub: "Quel statut juridique te laisse le plus à la fin ? EI au régime réel (cotisations TNS + impôt sur le revenu) versus SASU 100 % dividendes (impôt sur les sociétés + flat tax 31,4 %). Le simulateur compare le net en poche, la protection sociale, et la retraite.",
     metaBadges: [
       { icon: 'scales', text: 'Comparaison réelle' },
       { icon: 'currency-eur', text: 'Bénéfice jusqu\'à 150 k€' },
@@ -178,7 +178,7 @@ const PAGES = [
       ],
       checklist: [
         "Calcul EI au réel : bénéfice − cotisations TNS − IR au TMI",
-        "Calcul SASU 100 % dividendes : bénéfice − IS − flat tax 30 %",
+        "Calcul SASU 100 % dividendes : bénéfice − IS − flat tax 31,4 %",
         "Comparaison net en poche sur le même CA",
         "Alerte protection sociale (zéro cotisation = zéro retraite)",
       ],
@@ -194,11 +194,11 @@ const PAGES = [
         },
         {
           h: 'SASU 100 % dividendes',
-          desc: "Bénéfice − impôt sur les sociétés (15 % jusqu'à 42 500 €, 25 % au-delà) − flat tax 30 % (PFU = 12,8 % IR + 17,2 % prélèvements sociaux) sur les dividendes versés. Aucune cotisation sociale (zéro trimestre retraite acquis).",
+          desc: "Bénéfice − impôt sur les sociétés (15 % jusqu'à 42 500 €, 25 % au-delà) − flat tax 31,4 % (PFU = 12,8 % IR + 18,6 % prélèvements sociaux depuis 2026) sur les dividendes versés. Aucune cotisation sociale (zéro trimestre retraite acquis).",
         },
         {
           h: 'SASU avec salaire (option C)',
-          desc: "Tu te verses un salaire de président → cotisations assimilé salarié (~80 %) → tu acquiers des droits retraite régime général. Le reste du bénéfice peut sortir en dividendes (flat tax 30 %).",
+          desc: "Tu te verses un salaire de président → cotisations assimilé salarié (~80 %) → tu acquiers des droits retraite régime général. Le reste du bénéfice peut sortir en dividendes (flat tax 31,4 %).",
         },
         {
           h: 'Quand bascule EI → SASU',
@@ -220,8 +220,8 @@ const PAGES = [
           steps: [
             "EI au réel : 30 000 € − cotisations TNS ~9 000 € − IR TMI 11 % : 2 310 €",
             "Net en poche EI : ~18 690 €",
-            "SASU 100 % dividendes : 30 000 € − IS 15 % : 4 500 € − flat tax 30 % sur 25 500 € : 7 650 €",
-            "Net en poche SASU : ~17 850 € (− 840 € vs EI)",
+            "SASU 100 % dividendes : 30 000 € − IS 15 % : 4 500 € − flat tax 31,4 % sur 25 500 € : 8 007 €",
+            "Net en poche SASU : ~17 493 € (− 1 197 € vs EI)",
             "Verdict : EI gagnant, plus simple, protection sociale acquise",
           ],
         },
@@ -230,8 +230,8 @@ const PAGES = [
           steps: [
             "EI au réel : 70 000 € − cotisations TNS ~22 400 € − IR TMI 30 % : 14 280 €",
             "Net en poche EI : ~33 320 €",
-            "SASU 100 % dividendes : 70 000 € − IS 15 %/25 % : ~14 250 € − flat tax 30 % sur 55 750 € : 16 725 €",
-            "Net en poche SASU : ~39 025 € (+ 5 705 € vs EI)",
+            "SASU 100 % dividendes : 70 000 € − IS 15 %/25 % : ~13 250 € − flat tax 31,4 % sur 56 750 € : 17 820 €",
+            "Net en poche SASU : ~38 930 € (+ 5 610 € vs EI)",
             "Verdict : SASU gagne en net, mais zéro cotisation retraite. Si tu n'as pas d'autre activité salariée, choix risqué",
           ],
         },
@@ -240,8 +240,8 @@ const PAGES = [
           steps: [
             "EI au réel : 120 000 € − cotisations TNS ~42 000 € − IR TMI 41 % : 31 980 €",
             "Net en poche EI : ~46 020 €",
-            "SASU 100 % dividendes : 120 000 € − IS 15 %/25 % : ~28 750 € − flat tax 30 % sur 91 250 € : 27 375 €",
-            "Net en poche SASU : ~63 875 € (+ 17 855 € vs EI)",
+            "SASU 100 % dividendes : 120 000 € − IS 15 %/25 % : ~25 750 € − flat tax 31,4 % sur 94 250 € : 29 595 €",
+            "Net en poche SASU : ~64 655 € (+ 18 635 € vs EI)",
             "Verdict : SASU largement gagnante, mais prévoir une rémunération minimale ou un PER pour conserver de la retraite",
           ],
         },
@@ -254,7 +254,7 @@ const PAGES = [
       },
       {
         q: "La SASU 100 % dividendes, c'est légal pour la LCD ?",
-        a: "Oui. La SASU permet au président de ne pas se verser de salaire. Tu paies l'IS sur le bénéfice, puis tu distribues des dividendes à toi-même (actionnaire unique) avec la flat tax de 30 %. Aucun salaire = aucune cotisation = aucun droit retraite acquis sur cette activité. C'est légal mais à compenser par un PER ou une autre activité salariée.",
+        a: "Oui. La SASU permet au président de ne pas se verser de salaire. Tu paies l'IS sur le bénéfice, puis tu distribues des dividendes à toi-même (actionnaire unique) avec la flat tax de 31,4 %. Aucun salaire = aucune cotisation = aucun droit retraite acquis sur cette activité. C'est légal mais à compenser par un PER ou une autre activité salariée.",
       },
       {
         q: "Quels sont les frais fixes de la SASU pour la LCD ?",
@@ -270,7 +270,7 @@ const PAGES = [
       },
       {
         q: "Le simulateur prend-il en compte la CSG-CRDS et les prélèvements sociaux ?",
-        a: "Oui. La flat tax SASU de 30 % inclut 17,2 % de prélèvements sociaux (CSG + CRDS + prélèvement de solidarité). Côté EI, les cotisations TNS incluent maladie, retraite, allocations familiales, CSG-CRDS, et la cotisation à la CIPAV pour les libérales (ou SSI pour les commerciaux).",
+        a: "Oui. La flat tax SASU de 31,4 % inclut 18,6 % de prélèvements sociaux (CSG + CRDS + prélèvement de solidarité). Côté EI, les cotisations TNS incluent maladie, retraite, allocations familiales, CSG-CRDS, et la cotisation à la CIPAV pour les libérales (ou SSI pour les commerciaux).",
       },
     ],
   },

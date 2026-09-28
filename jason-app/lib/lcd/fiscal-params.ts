@@ -64,7 +64,10 @@ export const FISCAL_PARAMS_2026 = {
       seuilTauxReduit: 42500,
       tauxNormal: 0.25,
     },
-    flatTax: 0.30,               // PFU sur dividendes (12,8 IR + 17,2 PS)
+    flatTax: 0.314,              // PFU sur dividendes versés depuis le 01/01/2026 : 12,8 IR + 18,6 PS (LFSS 2026, art. 12)
+    // Prélèvements sociaux sur les revenus LMNP (BIC non professionnels) depuis les revenus 2025.
+    // La location nue et les plus-values immobilières restent à 17,2 %.
+    prelevementsSociauxLmnp: 0.186,
     csgDeductible: 0.068,        // CSG déductible si option barème
   },
 

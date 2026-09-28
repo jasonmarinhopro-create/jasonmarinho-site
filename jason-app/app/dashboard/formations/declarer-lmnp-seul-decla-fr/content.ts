@@ -108,10 +108,10 @@ Appartement classé, à crédit :
 | Amortissement bien + mobilier | 6 000€ |
 | Total charges réelles | 14 500€ (72,5% des recettes) |
 
-- Micro-BIC (abattement 50%) → base imposable : 10 000€
+- Micro-BIC d'un meublé classé (abattement 50%) → base imposable : 10 000€ (sans classement, 20 000€ dépasse le plafond de 15 000€ : réel obligatoire)
 - Régime réel → base imposable : 20 000 − 14 500 = **5 500€**
 
-Sur une TMI à 30% + prélèvements sociaux 17,2% : micro-BIC ≈ 4 720€ d'impôt/prélèvements, régime réel ≈ 2 596€. Écart : environ **2 100€/an** en faveur du réel.
+Sur une TMI à 30% + prélèvements sociaux 18,6% : micro-BIC ≈ 4 860€ d'impôt/prélèvements, régime réel ≈ 2 673€. Écart : environ **2 200€/an** en faveur du réel.
 
 > Cet exemple est pédagogique. Ta situation réelle dépend de ton taux marginal d'imposition, de ton apport, de ton crédit et de tes charges effectives : fais toujours ta propre simulation avant de trancher.
 

@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { Info } from '@phosphor-icons/react/dist/ssr'
 import type { AccountStats } from '@/lib/lcd/account-stats'
+import { FISCAL_PARAMS_2026 } from '@/lib/lcd/fiscal-params'
 import { s, fmtEur } from './_shared'
 
 export default function EIvsSASU({ accountStats }: { accountStats?: AccountStats }) {
@@ -26,7 +27,7 @@ export default function EIvsSASU({ accountStats }: { accountStats?: AccountStats
     const isPlein = Math.max(0, benef - seuilIS) * 0.25
     const totalIS = isReduit + isPlein
     const beneficeApresIS = benef - totalIS
-    const flatTax = beneficeApresIS * 0.30
+    const flatTax = beneficeApresIS * FISCAL_PARAMS_2026.societe.flatTax
     const netPocheSASU = beneficeApresIS - flatTax
 
     const diff = netPocheSASU - netPocheEI
@@ -73,7 +74,7 @@ export default function EIvsSASU({ accountStats }: { accountStats?: AccountStats
         <div style={{ ...s.resultBox, ...(result.meilleur === 'sasu' ? { borderColor: 'rgba(16,185,129,0.4)', background: 'rgba(16,185,129,0.06)' } : {}) }}>
           <div style={s.resultLabel}>SASU · 100 % dividendes</div>
           <div style={s.resultValue}>{fmtEur(result.sasu.net)}</div>
-          <div style={s.resultHint}>IS (15/25 %) : {fmtEur(result.sasu.is)}<br />Flat tax 30 % : {fmtEur(result.sasu.flatTax)}</div>
+          <div style={s.resultHint}>IS (15/25 %) : {fmtEur(result.sasu.is)}<br />Flat tax 31,4 % : {fmtEur(result.sasu.flatTax)}</div>
         </div>
         {benef > 0 && (
           <div style={{ ...s.resultBox, gridColumn: '1 / -1', background: 'var(--accent-bg)', borderColor: 'var(--accent-border)' }}>

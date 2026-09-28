@@ -26,7 +26,7 @@ export const FISCAL_PARAMS_2026 = {
   },
   societe: {
     is: { tauxReduit: 0.15, seuilTauxReduit: 42500, tauxNormal: 0.25 },
-    flatTax: 0.30,
+    flatTax: 0.314,            // PFU dividendes 2026 : 12,8 % IR + 18,6 % PS (LFSS 2026, art. 12)
   },
   ei: {
     tauxCotisationsTns: 0.42,

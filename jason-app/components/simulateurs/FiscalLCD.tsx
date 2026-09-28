@@ -266,11 +266,11 @@ export default function FiscalLCD({ accountStats }: { accountStats?: AccountStat
         }}>
           <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#059669', marginBottom: '8px',
             textTransform: 'uppercase' as const, letterSpacing: '0.5px' }}>
-            Tu restes LMNP — ce que ça implique
+            Tu restes LMNP : ce que ça implique
           </div>
           <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', lineHeight: 1.7, color: 'var(--text-2)' }}>
             <li><strong style={{ color: 'var(--text)' }}>Pas de cotisations sociales URSSAF</strong>
-              {' '}(juste 17,2% prélèvements sociaux si régime réel)</li>
+              {' '}(seulement les prélèvements sociaux : 18,6 % du bénéfice imposable, en micro-BIC comme au réel)</li>
             <li><strong style={{ color: 'var(--text)' }}>Plus-values privées</strong>
               {' '}(abattement durée détention)</li>
             <li><strong style={{ color: 'var(--text)' }}>Déficits imputables uniquement</strong>

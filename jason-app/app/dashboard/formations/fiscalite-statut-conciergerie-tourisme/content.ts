@@ -336,7 +336,7 @@ Une **SAS à associé unique**. Tu es président = **assimilé salarié**.
 ### L'avantage clé : les dividendes sans charges sociales
 
 - Les dividendes versés par une SASU **ne supportent pas** de cotisations sociales.
-- Seule la **flat tax de 30 %** s'applique *(12,8 % IR + 17,2 % prélèvements sociaux)*.
+- Seule la **flat tax de 31,4 %** s'applique *(12,8 % IR + 18,6 % prélèvements sociaux, sur les dividendes versés depuis 2026)*.
 
 > Optimisation **puissante** quand les bénéfices sont élevés.
 
@@ -443,7 +443,7 @@ Si la SASU génère **80 000 € de bénéfice** :
 
 - **Salaire** : 1 500 €/mois brut *(sécurité sociale de base)*.
 - **Dividendes** : reste des bénéfices après IS.
-- Dividendes SASU : **flat tax 30 %** seulement.
+- Dividendes SASU : **flat tax 31,4 %** seulement.
 - **Pas de cotisations sociales** sur les dividendes.
 
 ### Exemple concret *(bénéfice IS 60 000 €)*
@@ -454,8 +454,8 @@ Si la SASU génère **80 000 € de bénéfice** :
 | IS 25 % sur 17 500 € | 4 375 € |
 | **Total IS** | **10 750 €** |
 | Bénéfice net après IS | 49 250 € |
-| Flat tax 30 % sur dividendes | 14 775 € |
-| **Net en poche** | **34 475 €** |
+| Flat tax 31,4 % sur dividendes | 15 465 € |
+| **Net en poche** | **33 785 €** |
 
 ## Comparatif TNS vs assimilé salarié
 
@@ -520,7 +520,7 @@ Si la SASU génère **80 000 € de bénéfice** :
 ### ✅ Avantages IS
 
 - Taux **faibles** sur les premiers 42 500 €.
-- Dividendes SASU : **flat tax 30 %** *(pas de charges sociales)*.
+- Dividendes SASU : **flat tax 31,4 %** *(pas de charges sociales)*.
 - Possibilité de **conserver des bénéfices** en société sans les distribuer *(renforcement des capitaux propres)*.
 
 ### ❌ Inconvénients IS
@@ -551,10 +551,10 @@ Si la SASU génère **80 000 € de bénéfice** :
 | Bénéfice IS après salaire | 27 240 € |
 | IS 15 % | 4 086 € |
 | Bénéfice distribuable | 23 154 € |
-| Flat tax 30 % | 6 946 € |
-| **Net total en poche** *(18 000 € + 16 208 €)* | **34 208 €** |
+| Flat tax 31,4 % | 7 270 € |
+| **Net total en poche** *(18 000 € + 15 884 €)* | **33 884 €** |
 
-> La SASU/IS est **gagnante** ici grâce au taux IS 15 % et à la flat tax 30 %.
+> La SASU/IS est **gagnante** ici grâce au taux IS 15 % et à la flat tax 31,4 %.
 
 ## Quand choisir IS vs IR
 
@@ -899,7 +899,7 @@ Les communes peuvent désormais :
 > **Statut optimal :** SASU à l'IS + stratégie dividendes.
 
 - **Salaire président minimal** pour droits sociaux de base.
-- Bénéfices **conservés ou distribués** en flat tax 30 %.
+- Bénéfices **conservés ou distribués** en flat tax 31,4 %.
 - **Expert-comptable spécialisé** : investissement non négociable.
 
 ## Les 5 erreurs fiscales les plus fréquentes
