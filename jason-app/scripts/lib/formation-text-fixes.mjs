@@ -27,6 +27,8 @@ export function fiscalFix(text) {
     [/Régime réel : \*\*1 180 ?€ d'impôts\*\*/g, "Régime réel : **1 215€ d'impôts**"],
     [/Économie : \*\*1 520 ?€\/an\*\*/g, 'Économie : **1 485€/an**'],
     [/17,2\s?% = 1 720 ?€/g, '18,6% = 1 860€'],
+    // 3 000 € d'impôt + 1 720 € de prélèvements (17,2 %) → + 1 860 € (18,6 %)
+    [/\*\*Total : environ 4 720 ?€ par an\*\*/g, '**Total : environ 4 860€ par an**'],
     // Prélèvements sociaux LMNP : 18,6 % depuis les revenus 2025 (LFSS 2026, art. 12)
     [/17,2\s?%/g, m => m.replace('17,2', '18,6')],
     // Plafond micro 77 700 € → 83 600 € (revenus 2026)
