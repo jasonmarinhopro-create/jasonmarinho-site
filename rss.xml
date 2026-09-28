@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Fri, 25 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 28 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Adaptateurs de prises et chargeurs USB en LCD : 7 essentiels à fournir à tes voyageurs étrangers en 2026</title>
+      <link>https://jasonmarinho.com/blog/adaptateurs-prises-usb-lcd-voyageurs-etrangers-2026</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/adaptateurs-prises-usb-lcd-voyageurs-etrangers-2026</guid>
+      <pubDate>Mon, 28 Sep 2026 08:00:00 GMT</pubDate>
+      <description>Prises internationales, USB-C obligatoire, multiprise, chargeur sans fil, transformateur : 7 essentiels pour équiper ta location courte durée et rassurer les voyageurs étrangers en 2026.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Réclamation voyageur pendant le séjour : la méthode en 5 étapes pour désamorcer et sauver l&apos;avis</title>
       <link>https://jasonmarinho.com/blog/reclamation-voyageur-pendant-sejour-methode-5-etapes</link>
@@ -397,14 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/arnaques-airbnb-2026-classement-types-arnaques-hotes</guid>
       <pubDate>Sun, 14 Jun 2026 08:00:00 GMT</pubDate>
       <description>Rapport 2026 sur les arnaques Airbnb et Booking subies par les hôtes LCD : 9 types d&apos;arnaques classés par fréquence, signaux d&apos;alerte, comment réagir.</description>
-      <category>Expérience</category>
-    </item>
-    <item>
-      <title>Cyclotourisme en LCD : 7 actions pour attirer les voyageurs à vélo et booster ton taux d&apos;occupation</title>
-      <link>https://jasonmarinho.com/blog/cyclotourisme-lcd-7-actions-attirer-voyageurs-velo</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/cyclotourisme-lcd-7-actions-attirer-voyageurs-velo</guid>
-      <pubDate>Fri, 12 Jun 2026 08:00:00 GMT</pubDate>
-      <description>Stockage sécurisé, kit réparation, label Accueil Vélo, partenariats locaux, tarification : 7 actions concrètes pour transformer ton logement en étape parfaite pour les cyclotouristes en LCD.</description>
       <category>Expérience</category>
     </item>
   </channel>
