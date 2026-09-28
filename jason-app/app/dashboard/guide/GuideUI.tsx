@@ -40,9 +40,9 @@ const FILTER_TABS: { id: ProfileFilter; label: string; Icon: React.ElementType |
 
 const GLOSSARY: { term: string; def: string }[] = [
   { term: 'LCD', def: 'Location de Courte Durée, location meublée touristique de moins de 30 jours.' },
-  { term: 'LMNP', def: 'Loueur en Meublé Non Professionnel, statut fiscal pour la majorité des hôtes (revenus < 23 000 € OU < 50 % des revenus du foyer).' },
-  { term: 'LMP', def: 'Loueur en Meublé Professionnel, au-delà de 23 000 € de recettes ET > 50 % des revenus du foyer ; régime social et fiscal différent.' },
-  { term: 'EI', def: 'Entreprise Individuelle, création gratuite, régime travailleur non salarié, responsabilité illimitée par défaut.' },
+  { term: 'LMNP', def: 'Loueur en Meublé Non Professionnel, statut fiscal de la majorité des hôtes (recettes ≤ 23 000 € ou ≤ autres revenus d’activité du foyer). En courte durée, cotisations sociales dues quand même au-delà de 23 000 € de recettes.' },
+  { term: 'LMP', def: 'Loueur en Meublé Professionnel : recettes > 23 000 € ET > autres revenus d’activité du foyer ; cotisations sociales et fiscalité des professionnels (plus-values, déficits).' },
+  { term: 'EI', def: 'Entreprise Individuelle, création gratuite, régime des travailleurs indépendants, responsabilité limitée au patrimoine professionnel depuis mai 2022.' },
   { term: 'SASU', def: 'Société par Actions Simplifiée Unipersonnelle, assimilé-salarié, responsabilité limitée au capital, optimisation salaire/dividendes.' },
   { term: 'Micro-BIC', def: 'Régime micro pour les Bénéfices Industriels et Commerciaux, abattement forfaitaire (30 % non classé, 50 % classé ou chambres d\'hôtes) sans déduction réelle.' },
   { term: 'Régime réel', def: 'Régime fiscal qui permet de déduire toutes les charges réelles (amortissement, intérêts, travaux), souvent plus avantageux > 30 k€/an.' },

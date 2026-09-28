@@ -2,7 +2,7 @@
 // Chaque fonction renvoie { html, script } à injecter dans une page statique.
 // Layout commun : 2-col responsive (form gauche / résultats live droite).
 
-import { FISCAL_PARAMS_2026, TAXE_SEJOUR } from './fiscal-params.mjs'
+import { FISCAL_PARAMS_2026, TAXE_SEJOUR_2026 } from './fiscal-params.mjs'
 
 // ─── Bloc conversion : "Sans compte vs Avec compte" ──────────────────
 // Affiché juste sous chaque widget pour transformer un calcul one-shot
@@ -356,7 +356,7 @@ export function widgetFiscalite() {
     </div>
 
     <div class="sim-hint" id="fsc-hint">
-      Les valeurs reposent sur la <strong>loi Le Meur (2025+)</strong> : abattement 30 % / 50 %, plafonds 15 000 € / 83 600 € (revenus 2026).
+      Les valeurs reposent sur la <strong>loi Le Meur (2025+)</strong> : abattement 30 % / 50 %, plafonds 15 000 € / 83 600 € (revenus 2026), prélèvements sociaux de 18,6 %.
     </div>
   </div>
 
@@ -367,9 +367,9 @@ export function widgetFiscalite() {
       <div class="sim-out-sub" id="fsc-out-base-sub">Abattement 30 % sur 30 000 €</div>
     </div>
     <div class="sim-out">
-      <div class="sim-out-label">Impôt sur le revenu estimé</div>
+      <div class="sim-out-label">Impôt et prélèvements estimés</div>
       <div class="sim-out-value" id="fsc-out-ir">6 300 €</div>
-      <div class="sim-out-sub">à ton TMI sélectionné</div>
+      <div class="sim-out-sub" id="fsc-out-ir-sub">impôt à ta tranche</div>
     </div>
     <div class="sim-out">
       <div class="sim-out-label">Statut plafond</div>
@@ -393,25 +393,33 @@ export function widgetFiscalite() {
   var $ir = document.getElementById('fsc-out-ir');
   var $pla = document.getElementById('fsc-out-plafond');
   var $plaSub = document.getElementById('fsc-out-plafond-sub');
+  var $irSub = document.getElementById('fsc-out-ir-sub');
+  var PS = 0.186, SEUIL_SOCIAL = 23000;
   function fmt(n){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.round(n));}
   function pct(n){return Math.round(n*100)+' %';}
   function update(){
     var ca = +$ca.value;
     var r = P[regime];
     var abat = r.abattement;
-    var base = Math.max(0, ca * (1 - abat));
-    var ir = base * tmi;
+    // Abattement minimum de 305 € (sans dépasser les recettes)
+    var base = Math.max(0, ca - Math.max(ca * abat, Math.min(305, ca)));
+    // Au-delà de 23 000 € en courte durée : cotisations Urssaf à la place des 18,6 %
+    var social = ca > SEUIL_SOCIAL;
+    var ir = base * (social ? tmi : tmi + PS);
     var sousPlafond = ca <= r.plafond;
     $caV.textContent = fmt(ca);
     $ca.style.setProperty('--pct', (ca/120000*100)+'%');
     $base.textContent = fmt(base);
     $baseSub.textContent = 'Abattement ' + pct(abat) + ' sur ' + fmt(ca);
     $ir.textContent = fmt(ir);
+    $irSub.textContent = social
+      ? 'Impôt à ta tranche. Au-delà de 23 000 € de recettes : cotisations sociales Urssaf en plus'
+      : 'Impôt à ta tranche + 18,6 % de prélèvements sociaux';
     $pla.textContent = sousPlafond ? 'Sous plafond' : 'Plafond dépassé';
     $pla.className = 'sim-out-value ' + (sousPlafond ? 'success' : 'alert');
     $plaSub.textContent = sousPlafond
       ? 'CA ≤ ' + fmt(r.plafond) + ' (' + r.label + ')'
-      : 'CA > ' + fmt(r.plafond) + ' → bascule régime réel obligatoire';
+      : 'Recettes > ' + fmt(r.plafond) + ' : régime réel si ça se répète 2 années de suite';
   }
   $ca.addEventListener('input', update);
   document.querySelectorAll('#fsc-reg .sim-chip').forEach(function(c){
@@ -455,7 +463,7 @@ export function widgetEiSasu() {
     </div>
 
     <div class="sim-hint">
-      <strong>EI au réel</strong> : cotisations TNS ~42 % + IR sur le restant.
+      <strong>EI au réel</strong> : cotisations TNS ~32 % du bénéfice (estimation) + IR sur le restant.
       <strong>SASU 100 % dividendes</strong> : IS (15/25 %) + flat tax 31,4 %.
     </div>
   </div>
@@ -563,7 +571,7 @@ export function widgetRentabilite() {
     </div>
 
     <div class="sim-hint">
-      Charges = copropriété, eau, électricité, internet, ménage, assurance PNO, abonnements.
+      Charges = copropriété, taxe foncière, eau, électricité, internet, ménage, assurance PNO, abonnements (par mois). Commission : Airbnb 15,5 % côté hôte depuis le 13/10/2026, Booking 15 à 18 %, hors TVA.
     </div>
   </div>
 
@@ -629,9 +637,11 @@ export function widgetRentabilite() {
 
 // ─── 4. Simulateur taxe de séjour ────────────────────────────────────
 export function widgetTaxeSejour() {
-  const cityOptions = Object.entries(TAXE_SEJOUR)
-    .map(([id, c]) => `<option value="${id}">${c.nom}</option>`)
-    .join('\n      ')
+  const T = TAXE_SEJOUR_2026
+  const chips = T.categories
+    // 2 boutons larges puis 4 étroits : lisible dès 390 px
+    .map((c, k) => `<button type="button" class="sim-chip${k === 0 ? ' on' : ''}" data-v="${c.id}" style="flex:1 1 ${k < 2 ? '40%' : '18%'}">${c.label}</button>`)
+    .join('\n        ')
   const html = `
 <div class="sim-widget" id="sim-t">
   <div class="sim-inputs">
@@ -639,20 +649,25 @@ export function widgetTaxeSejour() {
     <h3 class="sim-title">Calcule la <em>taxe de séjour</em></h3>
 
     <div class="sim-field">
-      <div class="sim-label">Ville</div>
-      <select class="sim-select" id="t-city">
-      ${cityOptions}
-      </select>
+      <div class="sim-label">Classement du logement</div>
+      <div class="sim-chips" id="t-cls">
+        ${chips}
+      </div>
     </div>
 
-    <div class="sim-field">
-      <div class="sim-label">Classement du meublé</div>
-      <div class="sim-chips" id="t-cls">
-        <button type="button" class="sim-chip on" data-v="nc">Non classé</button>
-        <button type="button" class="sim-chip" data-v="et12">1–2★</button>
-        <button type="button" class="sim-chip" data-v="et3">3★</button>
-        <button type="button" class="sim-chip" data-v="et45">4–5★</button>
-      </div>
+    <div class="sim-field" id="t-f-tarif" style="display:none">
+      <div class="sim-label">Tarif voté par ta commune (€ par personne et par nuit)</div>
+      <input type="number" class="sim-num" id="t-tarif" min="0" step="0.05" value="1.70">
+    </div>
+
+    <div class="sim-field" id="t-f-plafond">
+      <div class="sim-label">Tarif le plus élevé voté par ta commune (plafond)</div>
+      <input type="number" class="sim-num" id="t-plafond" min="0" max="${T.plafondMax}" step="0.1" value="${T.plafondMax.toFixed(2)}">
+    </div>
+
+    <div class="sim-field" id="t-f-prix">
+      <div class="sim-label">Prix par nuit, logement entier <span class="sim-label-val" id="t-p-v">120 €</span></div>
+      <input type="range" class="sim-range" id="t-p" min="20" max="500" step="10" value="120">
     </div>
 
     <div class="sim-field">
@@ -661,87 +676,121 @@ export function widgetTaxeSejour() {
     </div>
 
     <div class="sim-field">
+      <div class="sim-label">Mineurs (exonérés) <span class="sim-label-val" id="t-m-v">0</span></div>
+      <input type="range" class="sim-range" id="t-m" min="0" max="8" step="1" value="0">
+    </div>
+
+    <div class="sim-field">
       <div class="sim-label">Nuits <span class="sim-label-val" id="t-n-v">3</span></div>
       <input type="range" class="sim-range" id="t-n" min="1" max="14" step="1" value="3">
     </div>
 
     <div class="sim-field">
-      <div class="sim-label">Prix par nuit <span class="sim-label-val" id="t-p-v">120 €</span></div>
-      <input type="range" class="sim-range" id="t-p" min="20" max="500" step="10" value="120">
+      <div class="sim-label">Taxes additionnelles</div>
+      <div class="sim-chips" id="t-add">
+        <button type="button" class="sim-chip on" data-v="dpt">Départementale +10 %</button>
+        <button type="button" class="sim-chip" data-v="idf">Île-de-France +15 % et +200 %</button>
+      </div>
     </div>
 
-    <div class="sim-hint">
-      Pour le non classé, taxe = 5 % du prix par nuit par personne, plafonné au cap palace de la ville.
+    <div class="sim-hint" id="t-hint">
+      Non classé : 5 % du prix de la nuit par personne (taux voté entre 1 et 5 %), plafonné au tarif le plus élevé voté par ta commune (4,90 € au plus en 2026).
     </div>
   </div>
 
   <div class="sim-results">
     <div class="sim-out primary">
       <div class="sim-out-label">Total à collecter</div>
-      <div class="sim-out-value" id="t-out-total">14,90 €</div>
-      <div class="sim-out-sub" id="t-out-detail">2 adultes × 3 nuits × 2,49 €/nuit/adulte</div>
+      <div class="sim-out-value" id="t-out-total">19,80 €</div>
+      <div class="sim-out-sub" id="t-out-detail">2 adultes × 3 nuits × 3,30 € par nuit</div>
     </div>
     <div class="sim-out">
-      <div class="sim-out-label">Taxe communale</div>
-      <div class="sim-out-value" id="t-out-com">13,55 €</div>
-      <div class="sim-out-sub">barème de la ville sélectionnée</div>
+      <div class="sim-out-label">Part communale</div>
+      <div class="sim-out-value" id="t-out-com">18,00 €</div>
+      <div class="sim-out-sub" id="t-out-com-sub">3,00 € par adulte et par nuit</div>
     </div>
     <div class="sim-out">
-      <div class="sim-out-label">Taxe additionnelle</div>
-      <div class="sim-out-value" id="t-out-add">1,36 €</div>
+      <div class="sim-out-label">Taxes additionnelles</div>
+      <div class="sim-out-value" id="t-out-add">1,80 €</div>
       <div class="sim-out-sub" id="t-out-add-sub">départementale +10 %</div>
     </div>
     <div class="sim-cta-row">
-      <a href="https://app.jasonmarinho.com/dashboard/simulateurs#taxe" class="sim-cta-primary">Top 30 villes dans l'app <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></a>
+      <a href="https://app.jasonmarinho.com/dashboard/simulateurs#taxe" class="sim-cta-primary">Calcule-la dans ton espace <i class="ph-bold ph-arrow-right" style="font-size:12px"></i></a>
       <a href="#explication" class="sim-cta-ghost">Comprendre la formule</a>
     </div>
   </div>
 </div>`
   const script = `
 (function(){
-  var CITIES = ${JSON.stringify(TAXE_SEJOUR)};
-  var $c = document.getElementById('t-city');
+  var T = ${JSON.stringify(T)};
+  var cls = 'nc', dpt = true, idf = false;
+  var $tarif = document.getElementById('t-tarif'), $plafond = document.getElementById('t-plafond');
+  var $fTarif = document.getElementById('t-f-tarif'), $fPlafond = document.getElementById('t-f-plafond'), $fPrix = document.getElementById('t-f-prix');
   var $a = document.getElementById('t-a'), $aV = document.getElementById('t-a-v');
+  var $m = document.getElementById('t-m'), $mV = document.getElementById('t-m-v');
   var $n = document.getElementById('t-n'), $nV = document.getElementById('t-n-v');
   var $p = document.getElementById('t-p'), $pV = document.getElementById('t-p-v');
   var $tot = document.getElementById('t-out-total'), $det = document.getElementById('t-out-detail');
-  var $com = document.getElementById('t-out-com'), $add = document.getElementById('t-out-add');
-  var $addSub = document.getElementById('t-out-add-sub');
-  var cls = 'nc';
+  var $com = document.getElementById('t-out-com'), $comSub = document.getElementById('t-out-com-sub');
+  var $add = document.getElementById('t-out-add'), $addSub = document.getElementById('t-out-add-sub');
+  var $hint = document.getElementById('t-hint');
   function fmt(n){return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2}).format(n);}
+  function cat(){ for (var i = 0; i < T.categories.length; i++) if (T.categories[i].id === cls) return T.categories[i]; return T.categories[0]; }
   function update(){
-    var city = CITIES[$c.value];
-    var adultes = +$a.value, nuits = +$n.value, prix = +$p.value;
-    var cap = city[cls];
-    var tarifPersNuit;
+    var adultes = +$a.value, mineurs = +$m.value, nuits = +$n.value, prix = +$p.value;
+    var c = cat(), tarif, plafonne = false;
     if (cls === 'nc') {
-      var cinqPct = (prix * 0.05) / Math.max(1, adultes);
-      tarifPersNuit = Math.min(cinqPct, cap);
+      var plafond = Math.min(T.plafondMax, Math.max(0, +$plafond.value || 0));
+      var brut = prix / Math.max(1, adultes + mineurs) * 0.05;
+      plafonne = brut > plafond;
+      tarif = Math.min(brut, plafond);
     } else {
-      tarifPersNuit = cap;
+      var saisi = Math.max(0, +$tarif.value || 0);
+      plafonne = saisi > c.plafond;
+      tarif = Math.min(saisi, c.plafond);
     }
-    var taxeCom = tarifPersNuit * adultes * nuits;
-    var taxeDpt = taxeCom * (city.dpt || 0);
-    var taxeIdf = taxeCom * (city.idf || 0);
-    var total = taxeCom + taxeDpt + taxeIdf;
+    var coef = 1 + (dpt ? T.departementale : 0) + (idf ? T.idfRegionale + T.idfMobilites : 0);
+    var com = tarif * adultes * nuits;
+    var total = com * coef;
     $aV.textContent = adultes; $a.style.setProperty('--pct', ((adultes-1)/9*100)+'%');
+    $mV.textContent = mineurs; $m.style.setProperty('--pct', (mineurs/8*100)+'%');
     $nV.textContent = nuits; $n.style.setProperty('--pct', ((nuits-1)/13*100)+'%');
-    $pV.textContent = fmt(prix); $p.style.setProperty('--pct', ((prix-20)/(500-20)*100)+'%');
+    $pV.textContent = Math.round(prix) + ' €'; $p.style.setProperty('--pct', ((prix-20)/(500-20)*100)+'%');
     $tot.textContent = fmt(total);
-    $det.textContent = adultes + ' adulte' + (adultes>1?'s':'') + ' × ' + nuits + ' nuit' + (nuits>1?'s':'') + ' × ' + fmt(tarifPersNuit) + '/nuit/adulte';
-    $com.textContent = fmt(taxeCom);
-    var add = taxeDpt + taxeIdf;
-    $add.textContent = fmt(add);
-    $addSub.textContent = city.idf
-      ? 'départementale +10 % + régionale IDF +15 %'
-      : 'départementale +10 %';
+    $det.textContent = adultes + ' adulte' + (adultes>1?'s':'') + ' × ' + nuits + ' nuit' + (nuits>1?'s':'') + ' × ' + fmt(tarif * coef) + ' par nuit';
+    $com.textContent = fmt(com);
+    $comSub.textContent = fmt(tarif) + ' par adulte et par nuit' + (plafonne ? ' (plafonné)' : '');
+    $add.textContent = fmt(total - com);
+    var parts = [];
+    if (dpt) parts.push('départementale +10 %');
+    if (idf) parts.push('Île-de-France +15 % et +200 %');
+    $addSub.textContent = parts.length ? parts.join(', ') : 'aucune';
+    $hint.textContent = cls === 'nc'
+      ? 'Non classé : 5 % du prix de la nuit par personne (taux voté entre 1 et 5 %), plafonné au tarif le plus élevé voté par ta commune (4,90 € au plus en 2026). Les mineurs comptent dans la division mais ne paient pas.'
+      : 'Plafond national 2026 pour cette catégorie : ' + fmt(c.plafond) + '. Reprends le tarif voté par ta commune (délibération en mairie ou à l’office de tourisme).';
   }
-  $c.addEventListener('change', update);
-  [$a, $n, $p].forEach(function(el){ el.addEventListener('input', update); });
+  function setCls(v){
+    cls = v;
+    var c = cat();
+    // style.display : la classe .sim-field impose display:flex, l'attribut hidden ne suffit pas
+    $fTarif.style.display = v === 'nc' ? 'none' : '';
+    $fPlafond.style.display = v === 'nc' ? '' : 'none';
+    $fPrix.style.display = v === 'nc' ? '' : 'none';
+    if (v !== 'nc') $tarif.value = c.plafond.toFixed(2);
+    update();
+  }
+  [$a, $m, $n, $p, $tarif, $plafond].forEach(function(el){ el.addEventListener('input', update); });
   document.querySelectorAll('#t-cls .sim-chip').forEach(function(b){
     b.addEventListener('click', function(){
       document.querySelectorAll('#t-cls .sim-chip').forEach(function(x){x.classList.remove('on')});
-      b.classList.add('on'); cls = b.dataset.v; update();
+      b.classList.add('on'); setCls(b.dataset.v);
+    });
+  });
+  document.querySelectorAll('#t-add .sim-chip').forEach(function(b){
+    b.addEventListener('click', function(){
+      b.classList.toggle('on');
+      if (b.dataset.v === 'dpt') dpt = b.classList.contains('on'); else idf = b.classList.contains('on');
+      update();
     });
   });
   update();

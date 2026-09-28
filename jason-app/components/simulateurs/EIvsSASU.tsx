@@ -17,14 +17,14 @@ export default function EIvsSASU({ accountStats }: { accountStats?: AccountStats
   const [tmi, setTmi] = useState(30)
 
   const result = useMemo(() => {
-    const cotisEI = benef * 0.42
+    const cotisEI = benef * FISCAL_PARAMS_2026.ei.tauxCotisationsTns
     const netImposableEI = benef - cotisEI
     const irEI = netImposableEI * (tmi / 100)
     const netPocheEI = netImposableEI - irEI
 
-    const seuilIS = 42500
-    const isReduit = Math.min(benef, seuilIS) * 0.15
-    const isPlein = Math.max(0, benef - seuilIS) * 0.25
+    const { seuilTauxReduit: seuilIS, tauxReduit, tauxNormal } = FISCAL_PARAMS_2026.societe.is
+    const isReduit = Math.min(benef, seuilIS) * tauxReduit
+    const isPlein = Math.max(0, benef - seuilIS) * tauxNormal
     const totalIS = isReduit + isPlein
     const beneficeApresIS = benef - totalIS
     const flatTax = beneficeApresIS * FISCAL_PARAMS_2026.societe.flatTax
@@ -66,12 +66,12 @@ export default function EIvsSASU({ accountStats }: { accountStats?: AccountStats
       </div>
 
       <div style={s.results}>
-        <div style={{ ...s.resultBox, ...(result.meilleur === 'ei' ? { borderColor: 'rgba(16,185,129,0.4)', background: 'rgba(16,185,129,0.06)' } : {}) }}>
+        <div style={{ ...s.resultBox, ...(result.meilleur === 'ei' ? { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' } : {}) }}>
           <div style={s.resultLabel}>EI · TNS · IR</div>
           <div style={s.resultValue}>{fmtEur(result.ei.net)}</div>
-          <div style={s.resultHint}>Cotisations TNS ~42 % : {fmtEur(result.ei.cotis)}<br />IR ({tmi} %) : {fmtEur(result.ei.ir)}</div>
+          <div style={s.resultHint}>Cotisations ~{Math.round(FISCAL_PARAMS_2026.ei.tauxCotisationsTns * 100)} % (estimation) : {fmtEur(result.ei.cotis)}<br />IR ({tmi} %) : {fmtEur(result.ei.ir)}</div>
         </div>
-        <div style={{ ...s.resultBox, ...(result.meilleur === 'sasu' ? { borderColor: 'rgba(16,185,129,0.4)', background: 'rgba(16,185,129,0.06)' } : {}) }}>
+        <div style={{ ...s.resultBox, ...(result.meilleur === 'sasu' ? { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' } : {}) }}>
           <div style={s.resultLabel}>SASU · 100 % dividendes</div>
           <div style={s.resultValue}>{fmtEur(result.sasu.net)}</div>
           <div style={s.resultHint}>IS (15/25 %) : {fmtEur(result.sasu.is)}<br />Flat tax 31,4 % : {fmtEur(result.sasu.flatTax)}</div>

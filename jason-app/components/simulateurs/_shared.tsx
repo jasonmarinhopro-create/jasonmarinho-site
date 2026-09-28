@@ -10,7 +10,8 @@
 //   fmtEur(n) → "12 345 €" (toLocaleString fr-FR avec suffixe espace + €)
 //   fmtPct(n) → "25,5 %"   (n est DÉJÀ en pourcentage, pas en ratio 0-1)
 export function fmtEur(n: number, decimals: number = 0): string {
-  return n.toLocaleString('fr-FR', { maximumFractionDigits: decimals }) + ' €'
+  // Avec décimales, toujours les afficher : 19,80 € et non 19,8 €
+  return n.toLocaleString('fr-FR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) + ' €'
 }
 
 export function fmtPct(n: number): string {
@@ -150,8 +151,8 @@ export const s: Record<string, React.CSSProperties> = {
   disclaimer: {
     display: 'flex', alignItems: 'flex-start', gap: '7px',
     padding: '10px 12px',
-    background: 'var(--info-bg)',
-    border: '1px solid rgba(96,165,250,0.18)',
+    background: 'var(--bg-2)',
+    border: '1px solid var(--border)',
     borderRadius: '9px',
     fontSize: '11.5px', fontWeight: 300, color: 'var(--text-2)',
     lineHeight: 1.5, marginTop: '4px',

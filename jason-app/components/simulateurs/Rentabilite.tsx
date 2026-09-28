@@ -7,8 +7,10 @@ import { s, fmtEur, fmtPct } from './_shared'
 
 const COMMISSION_PRESETS = [
   { label: 'Direct', value: 0 },
-  { label: 'Airbnb', value: 17 },
-  { label: 'Booking', value: 18 },
+  // Airbnb : frais d'hôte unique de 15,5 % dans l'EEE depuis le 13/10/2026 ;
+  // Booking : 15 à 18 % selon la zone. Hors TVA sur la commission.
+  { label: 'Airbnb', value: 15.5 },
+  { label: 'Booking', value: 17 },
 ]
 
 export default function Rentabilite({ accountStats }: { accountStats?: AccountStats }) {
@@ -16,7 +18,7 @@ export default function Rentabilite({ accountStats }: { accountStats?: AccountSt
   // Operational
   const [prixNuit, setPrixNuit] = useState(hasReal && accountStats!.adrMoyen > 0 ? accountStats!.adrMoyen : 100)
   const [occupation, setOccupation] = useState(hasReal && accountStats!.occupationMoyenne > 0 ? accountStats!.occupationMoyenne : 65)
-  const [commission, setCommission] = useState(17)
+  const [commission, setCommission] = useState(15.5)
   const [fraisMenage, setFraisMenage] = useState(50)
   const [dureeMoy, setDureeMoy] = useState(3)
   const [chargesMens, setChargesMens] = useState(800)
@@ -94,7 +96,7 @@ export default function Rentabilite({ accountStats }: { accountStats?: AccountSt
             {COMMISSION_PRESETS.map(p => (
               <button key={p.label} onClick={() => setCommission(p.value)}
                 style={{ ...s.toggleBtn, ...(commission === p.value ? s.toggleActive : {}) }}>
-                {p.label} {p.value}%
+                {p.label} {String(p.value).replace('.', ',')} %
               </button>
             ))}
           </div>

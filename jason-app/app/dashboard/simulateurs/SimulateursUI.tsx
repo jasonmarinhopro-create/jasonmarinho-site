@@ -463,7 +463,7 @@ export function CalculateurPrix({ logements }: { logements: LogementPrefill[] })
             <label style={s.label}>Canal de réservation</label>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(120px, 100%), 1fr))', gap: '6px' }}>
               {[
-                { v: 'airbnb',  l: 'Airbnb',     sub: '~3 % comm.' },
+                { v: 'airbnb',  l: 'Airbnb',     sub: '~15,5 % comm.' },
                 { v: 'booking', l: 'Booking',    sub: '~15 % comm.' },
                 { v: 'direct',  l: 'Direct',     sub: '0 % comm.' },
                 { v: 'mix',     l: 'Mix tous',   sub: 'pondéré' },

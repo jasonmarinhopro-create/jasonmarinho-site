@@ -189,7 +189,7 @@
   </style>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Calculateur de prix LCD","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"description":"Calculateur gratuit pour fixer le bon prix par nuit en location courte durée. Tient compte de la ville, du mois, du type de bien et du canal de réservation (Airbnb, Booking, direct).","url":"https://jasonmarinho.com/calculateurs/prix-lcd","provider":{"@type":"Person","name":"Jason Marinho"}}</script>
   <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Calculateurs","item":"https://jasonmarinho.com/calculateurs"},{"@type":"ListItem","position":3,"name":"Calculateur de prix LCD","item":"https://jasonmarinho.com/calculateurs/prix-lcd"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Pourquoi le prix conseillé varie selon Airbnb, Booking ou direct ?","acceptedAnswer":{"@type":"Answer","text":"Les commissions sont très différentes : Booking prend 15 % sur le prix affiché, Airbnb prélève environ 3 % côté hôte (host-only fees), le direct = 0 %. Pour encaisser la même somme nette, tu dois afficher des prix légèrement différents par canal. Le calculateur le fait automatiquement."}},{"@type":"Question","name":"Comment est calculé le prix recommandé ?","acceptedAnswer":{"@type":"Answer","text":"On part de l'ADR moyen LCD de ta ville (sources INSEE, DGE, INE, Turismo de Portugal). On ajuste selon le type de bien, le mois (haute saison ×1.25, basse ×0.85, neutre ×1.0) et le canal pour neutraliser la commission. On donne le prix base, le prix weekend (+20 %) et la fourchette min/max."}},{"@type":"Question","name":"Quelle est la différence entre prix semaine et prix weekend ?","acceptedAnswer":{"@type":"Answer","text":"Les hôtes LCD pratiquent un premium weekend de 20 à 40 % par rapport à la semaine. Vendredi et samedi sont les nuits les plus demandées, surtout en ville. Notre calculateur applique automatiquement un +20 % weekend, à ajuster selon ta concurrence locale."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Pourquoi le prix conseillé varie selon Airbnb, Booking ou direct ?","acceptedAnswer":{"@type":"Answer","text":"Les commissions sont très différentes : Booking prend 15 à 18 % sur le prix affiché, Airbnb prélève 15,5 % côté hôte depuis le 13 octobre 2026 (frais d'hôte unique), le direct = 0 %. Pour encaisser la même somme nette, tu dois afficher des prix légèrement différents par canal. Le calculateur le fait automatiquement."}},{"@type":"Question","name":"Comment est calculé le prix recommandé ?","acceptedAnswer":{"@type":"Answer","text":"On part de l'ADR moyen LCD de ta ville (sources INSEE, DGE, INE, Turismo de Portugal). On ajuste selon le type de bien, le mois (haute saison ×1.25, basse ×0.85, neutre ×1.0) et le canal pour neutraliser la commission. On donne le prix base, le prix weekend (+20 %) et la fourchette min/max."}},{"@type":"Question","name":"Quelle est la différence entre prix semaine et prix weekend ?","acceptedAnswer":{"@type":"Answer","text":"Les hôtes LCD pratiquent un premium weekend de 20 à 40 % par rapport à la semaine. Vendredi et samedi sont les nuits les plus demandées, surtout en ville. Notre calculateur applique automatiquement un +20 % weekend, à ajuster selon ta concurrence locale."}}]}</script>
   <script defer src="/nav.js"></script>
   <script defer src="/calculateurs/engine.js"></script>
 <script type="application/ld+json">
@@ -206,7 +206,7 @@
     </div>
     <div class="lbl lt"><i class="ph ph-currency-eur"></i> Calculateur gratuit</div>
     <h1 class="h1" style="color:#fff">Combien afficher <em style="color:var(--y)">par nuit</em> ?</h1>
-    <p class="sub">Le bon prix selon ta ville, le mois, ton bien et la plateforme. Compensation automatique des commissions (Airbnb 3 %, Booking 15 %, direct 0 %). Données INSEE et Turismo de Portugal.</p>
+    <p class="sub">Le bon prix selon ta ville, le mois, ton bien et la plateforme. Compensation automatique des commissions (Airbnb 15,5 %, Booking 15 %, direct 0 %). Données INSEE et Turismo de Portugal.</p>
   </div>
 </header>
 
@@ -285,7 +285,7 @@
       <div class="field">
         <label>Canal de réservation</label>
         <div class="channel-grid">
-          <div class="channel-opt" data-channel="airbnb">Airbnb<small>commission ~3 %</small></div>
+          <div class="channel-opt" data-channel="airbnb">Airbnb<small>commission ~15,5 %</small></div>
           <div class="channel-opt" data-channel="booking">Booking<small>commission ~15 %</small></div>
           <div class="channel-opt" data-channel="direct">Direct<small>0 % commission</small></div>
           <div class="channel-opt active" data-channel="mix">Mix (tous)<small>moyenne pondérée</small></div>
@@ -314,7 +314,7 @@
 
   <details class="faq-item">
     <summary>Pourquoi le prix varie selon Airbnb, Booking ou direct ?</summary>
-    <p>Les commissions sont très différentes : Booking prend 15 % sur le prix affiché, Airbnb prélève environ 3 % côté hôte (host-only fees), le direct = 0 % de commission. Pour encaisser la même somme nette, tu dois afficher des prix légèrement différents sur chaque canal. Le calculateur le fait automatiquement.</p>
+    <p>Les commissions sont très différentes : Booking prend 15 à 18 % sur le prix affiché, Airbnb prélève 15,5 % côté hôte depuis le 13 octobre 2026 (frais d'hôte unique), le direct = 0 % de commission. Pour encaisser la même somme nette, tu dois afficher des prix légèrement différents sur chaque canal. Le calculateur le fait automatiquement.</p>
   </details>
 
   <details class="faq-item">

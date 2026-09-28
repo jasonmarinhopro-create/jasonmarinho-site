@@ -248,7 +248,9 @@ const MODE_MULT: Record<string, number> = {
 }
 const SEASON_COEF = { high: 1.25, neutral: 1.00, low: 0.85 } as const
 const CHANNEL_ADJ: Record<string, number> = {
-  airbnb: 1.03, booking: 1.18, direct: 0.95, mix: 1.05,
+  // Airbnb : frais d'hôte unique de 15,5 % dans l'EEE depuis le 13/10/2026
+  // (avant : ~3 % hôte), d'où +18 % comme Booking (~15 %)
+  airbnb: 1.18, booking: 1.18, direct: 0.95, mix: 1.12,
 }
 
 // ─── Estimation revenus annuels d'une LCD selon la ville + le bien ──────────

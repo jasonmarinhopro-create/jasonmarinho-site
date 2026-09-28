@@ -140,7 +140,7 @@ function France({ fr, year, current }: { fr: FiscalFR; year: number; current: nu
 
       {fr.lmpPossible && (
         <Notice tone="warn">
-          Tes recettes dépassent 23 000 €. Tu deviens <strong>loueur en meublé professionnel (LMP)</strong> si, en plus, elles dépassent les autres revenus d&apos;activité de ton foyer (salaires, pensions…). Le LMP change la fiscalité et ajoute des cotisations sociales : parles-en à un comptable.
+          Tes recettes dépassent 23 000 €. En location courte durée, tu dois alors des <strong>cotisations sociales</strong> (Urssaf, indépendants) à la place des 18,6 % de prélèvements sociaux, même en LMNP. Tu deviens en plus <strong>loueur en meublé professionnel (LMP)</strong> si elles dépassent les autres revenus d&apos;activité de ton foyer (salaires, pensions…), ce qui change aussi l&apos;impôt : parles-en à un comptable.
         </Notice>
       )}
 

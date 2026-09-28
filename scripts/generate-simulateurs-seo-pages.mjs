@@ -3,7 +3,7 @@
 //  - fiscalite-micro-bic/                  (Simulateur fiscalité micro-BIC LCD)
 //  - choisir-statut-ei-sasu/                (Simulateur EI vs SASU pour la LCD)
 //  - rentabilite-location-courte-duree/     (Simulateur rentabilité LCD)
-//  - taxe-de-sejour/                        (Simulateur taxe de séjour par ville)
+//  - taxe-de-sejour/                        (Simulateur taxe de séjour 2026)
 //
 // Chaque page : hero 2026, explication formules, 3 cas pratiques, FAQ, schema
 // JSON-LD (WebApplication + BreadcrumbList + FAQPage), CTA vers le simulateur
@@ -24,16 +24,16 @@ const PAGES = [
   {
     slug: 'fiscalite-micro-bic',
     title: 'Simulateur fiscalité micro-BIC LCD : abattement 30 % ou 50 %, plafonds 2026',
-    metaDesc: 'Calcule ton imposition micro-BIC selon ton CA LCD et le classement de ton meublé. Abattement 30 % (non classé) vs 50 % (classé Atout France), plafonds 15 k€ et 77,7 k€, économie potentielle. Gratuit.',
+    metaDesc: 'Calcule ton imposition micro-BIC selon ton CA LCD et le classement de ton meublé. Abattement 30 % (non classé) vs 50 % (classé Atout France), plafonds 15 k€ et 83,6 k€, économie potentielle. Gratuit.',
     canonical: 'https://jasonmarinho.com/services/simulateurs/fiscalite-micro-bic',
     appPath: '/dashboard/simulateurs?tab=fiscal',
     heroLabel: 'Outil gratuit · Fiscalité LCD',
     heroH1Top: 'Simulateur fiscalité',
     heroH1Em: 'micro-BIC pour la LCD',
-    heroSub: "Calcule ta base imposable en quelques secondes selon ton chiffre d'affaires et le classement Atout France. Identifie l'économie réelle d'un classement (abattement 50 % au lieu de 30 %), vérifie que tu restes sous le plafond du micro et compare avec le régime réel simplifié.",
+    heroSub: "Calcule ta base imposable en quelques secondes selon tes recettes et le classement de ton meublé. Identifie l'économie réelle d'un classement (abattement 50 % au lieu de 30 %) et vérifie que tu restes sous le plafond du micro.",
     metaBadges: [
       { icon: 'currency-eur', text: 'CA jusqu\'à 100 k€' },
-      { icon: 'gauge', text: 'Plafonds 15 k€ / 77,7 k€' },
+      { icon: 'gauge', text: 'Plafonds 15 k€ / 83,6 k€' },
       { icon: 'percent', text: 'Abattement 30 % / 50 %' },
       { icon: 'check-circle', text: 'Conforme 2026' },
     ],
@@ -42,15 +42,15 @@ const PAGES = [
       h2Top: 'La fiscalité LCD',
       h2Em: "n'est pas qu'une question d'abattement",
       paras: [
-        "Sous le régime micro-BIC, ton bénéfice imposable est calculé en appliquant un abattement forfaitaire à ton chiffre d'affaires. Cet abattement vaut 30 % par défaut, 50 % si ton meublé est classé Atout France (1 à 5 étoiles) ou labellisé tourisme. La différence est massive : sur 40 000 € de CA, le bénéfice passe de 28 000 € à 11 600 €, soit 16 400 € de base en moins.",
-        "Mais ce n'est pas la seule variable. Tu as deux plafonds à surveiller (15 000 € pour les meublés non classés depuis 2025, 83 600 € pour les meublés classés et chambres d'hôtes en 2026), une option pour le versement libératoire (sous condition de RFR), et le choix de basculer vers le régime réel simplifié si tes charges réelles dépassent l'abattement.",
-        "Ce simulateur fait tous ces calculs d'un coup et te dit : ton bénéfice imposable, ton impôt sur le revenu approximatif, ton économie en cas de classement, et si tu devrais envisager le réel.",
+        "Sous le régime micro-BIC, ton bénéfice imposable est calculé en appliquant un abattement forfaitaire à ton chiffre d'affaires. Cet abattement vaut 30 % par défaut, 50 % si ton meublé est classé meublé de tourisme (1 à 5 étoiles) ou si tu fais des chambres d'hôtes. La différence est nette : sur 14 000 € de recettes, la base imposable passe de 9 800 € à 7 000 €, soit 2 800 € de moins, imposés à ta tranche et à 18,6 % de prélèvements sociaux.",
+        "Mais ce n'est pas la seule variable. Tu as deux plafonds à surveiller (15 000 € pour les meublés non classés depuis 2025, loi Le Meur, 83 600 € pour les meublés classés et chambres d'hôtes en 2026), une option pour le versement libératoire (sous condition de RFR), et le choix de basculer vers le régime réel simplifié si tes charges réelles dépassent l'abattement.",
+        "Ce simulateur fait tous ces calculs d'un coup et te dit : ton bénéfice imposable, ton impôt sur le revenu et tes prélèvements sociaux approximatifs, et si tu restes sous le plafond du micro.",
       ],
       checklist: [
         "Calcul automatique selon classement Atout France",
-        "Détection des dépassements de plafonds (15 k€ / 77,7 k€)",
-        "Comparaison micro-BIC vs réel simplifié",
-        "Suggestion versement libératoire si RFR éligible",
+        "Détection des dépassements de plafonds (15 k€ / 83,6 k€)",
+        "Impôt et prélèvements sociaux estimés",
+        "Économie d'un classement en un coup d'œil",
       ],
     },
     formules: {
@@ -60,23 +60,23 @@ const PAGES = [
       items: [
         {
           h: 'Base imposable',
-          desc: "Base = CA × (1 − abattement). L'abattement est de 30 % pour un meublé non classé, 50 % pour un meublé classé Atout France ou labellisé tourisme. Minimum 305 € d'abattement, sinon CA entier imposé.",
+          desc: "Base = CA × (1 − abattement). L'abattement est de 30 % pour un meublé non classé, 50 % pour un meublé de tourisme classé ou des chambres d'hôtes. L'abattement ne peut pas être inférieur à 305 €.",
         },
         {
           h: 'Plafond micro-BIC',
-          desc: "Tu dois rester sous 15 000 € de CA pour un meublé non classé (depuis 2025, loi de finances), 83 600 € pour un meublé classé et chambres d'hôtes (revenus 2026). Au-dessus, bascule automatique au réel.",
+          desc: "Tu dois rester sous 15 000 € de recettes pour un meublé non classé (depuis 2025, loi Le Meur), 83 600 € pour un meublé classé et les chambres d'hôtes (revenus 2026). Un premier dépassement ne change rien l'année suivante ; si tu dépasses 2 années de suite, tu passes au régime réel.",
         },
         {
           h: 'Impôt sur le revenu',
-          desc: "IR = Base × TMI. Le TMI dépend de ton revenu imposable global et de ton quotient familial. Les tranches 2026 retenues : 0 %, 11 %, 30 %, 41 %, 45 %.",
+          desc: "IR supplémentaire ≈ Base × TMI, plus 18,6 % de prélèvements sociaux sur la base (location meublée non professionnelle). La TMI dépend de ton revenu imposable global et de ton quotient familial. Barème 2026 (revenus 2025) : 0 % jusqu'à 11 600 €, 11 % jusqu'à 29 579 €, 30 % jusqu'à 84 577 €, 41 % jusqu'à 181 917 €, 45 % au-delà, par part.",
         },
         {
           h: 'Versement libératoire',
-          desc: "Option ouverte si RFR du foyer ≤ 27 478 € (1 part), 54 956 € (2 parts), 82 434 € (3 parts). Taux fixe 1 % du CA en LCD classé, qui solde IR + cotisations forfaitaires.",
+          desc: "Réservé aux micro-entrepreneurs. En 2026, RFR 2024 du foyer ≤ 29 315 € par part (58 630 € pour 2 parts, 87 945 € pour 3). Taux : 1 % des recettes en meublé classé ou chambres d'hôtes, 1,7 % en non classé. Il remplace l'impôt sur le revenu de cette activité, pas les cotisations sociales.",
         },
         {
           h: 'Régime réel simplifié',
-          desc: "Si tes charges déductibles (intérêts, amortissements, eau, assurance, copro, ménage) dépassent l'abattement micro, le réel est plus avantageux. Le simulateur fait la bascule automatique.",
+          desc: "Si tes charges déductibles (intérêts, amortissements, eau, assurance, copro, ménage) dépassent l'abattement micro, le réel est plus avantageux. Compare avec ton comptable ou dans l'onglet Fiscalité de ton espace.",
         },
       ],
     },
@@ -90,23 +90,23 @@ const PAGES = [
           steps: [
             'CA annuel : 14 000 €',
             "Classement Atout France 3★ → abattement 50 %",
-            'Base imposable : 14 000 × 29 % = 4 060 €',
-            "TMI 30 % → IR estimé : 1 218 €",
-            'Sans classement (abattement 30 %) : IR aurait été 2 940 €',
-            "Gain net du classement : 1 722 €/an, sur ~250 € de frais de classement (rentabilisé en 2 mois)",
+            'Base imposable : 14 000 × 50 % = 7 000 €',
+            "TMI 30 % → IR estimé : 2 100 €, plus 1 302 € de prélèvements sociaux (18,6 %)",
+            'Sans classement (abattement 30 %) : base 9 800 €, IR 2 940 € et prélèvements 1 823 €',
+            "Gain du classement : environ 1 360 €/an, pour 200 à 400 € de frais de classement valables 5 ans",
           ],
         },
         {
           titre: 'T2 non classé à 22 000 € de CA',
           steps: [
             'CA annuel : 22 000 €',
-            'Meublé non classé → plafond micro 15 000 € dépassé',
-            'Bascule automatique au régime réel simplifié',
+            'Meublé non classé → plafond micro de 15 000 € dépassé',
+            'Régime réel si le dépassement se répète 2 années de suite',
             "Charges réelles déductibles estimées : 9 500 € (intérêts crédit, copro, eau, ménage, amortissement mobilier)",
             'Bénéfice réel : 12 500 €',
-            'IR (TMI 30 %) : 3 750 €',
-            "Avec classement 50 % et passage en chambre d'hôtes ou meublé classé : base aurait été 6 380 €, IR 1 914 €",
-            "Conseil simulateur : envisager le classement pour rester en micro avec plafond 77,7 k€",
+            'IR (TMI 30 %) : 3 750 €, plus 2 325 € de prélèvements sociaux',
+            "Avec un classement (50 %) : micro-BIC possible, base 11 000 €, IR 3 300 € et prélèvements 2 046 €",
+            "Conseil : le classement permet de rester au micro (plafond 83,6 k€) ; le réel reste intéressant si tes charges augmentent",
           ],
         },
         {
@@ -114,11 +114,11 @@ const PAGES = [
           steps: [
             'CA annuel : 65 000 €',
             "Classement Atout France 4★ → abattement 50 %",
-            'Base imposable : 65 000 × 29 % = 18 850 €',
-            "TMI 30 % → IR estimé : 5 655 €",
-            'Cotisations sociales TNS (URSSAF) : ~22 % du bénéfice si dépassement seuil 23 000 €',
-            "Avec versement libératoire 1 % (RFR foyer < 54 956 € pour 2 parts) : 650 € de plus à payer mais solde IR + cotisations forfaitaires",
-            "Conseil simulateur : si TMI 30 %+ et RFR éligible, le versement libératoire est presque toujours gagnant",
+            'Base imposable : 65 000 × 50 % = 32 500 €',
+            "TMI 30 % → IR estimé : 9 750 €",
+            'Recettes au-delà de 23 000 € en courte durée : cotisations sociales obligatoires (Urssaf), à la place des 18,6 % de prélèvements sociaux',
+            "En micro-entrepreneur avec versement libératoire (RFR 2024 ≤ 58 630 € pour 2 parts) : 650 € d'impôt (1 %) au lieu de 9 750 €, cotisations sociales en plus",
+            "Conseil : si ta tranche est à 30 % ou plus et ton RFR éligible, le versement libératoire est souvent gagnant ; estime tes cotisations sur le simulateur de l'Urssaf",
           ],
         },
       ],
@@ -126,11 +126,11 @@ const PAGES = [
     faq: [
       {
         q: 'Quel abattement micro-BIC en 2026 pour la location courte durée ?',
-        a: "30 % pour un meublé de tourisme non classé (avec plafond 15 000 € de CA depuis la loi de finances 2025), 50 % pour un meublé classé Atout France 1 à 5 étoiles ou labellisé tourisme (avec plafond 83 600 € sur les revenus 2026). Les chambres d'hôtes sont passées à 50 % (décision CE du 16/09/2025) avec le même plafond.",
+        a: "30 % pour un meublé de tourisme non classé (avec plafond de 15 000 € de recettes depuis 2025, loi Le Meur), 50 % pour un meublé de tourisme classé de 1 à 5 étoiles (avec plafond de 83 600 € sur les revenus 2026). Les chambres d'hôtes sont passées à 50 % (décision CE du 16/09/2025) avec le même plafond.",
       },
       {
         q: "Comment se faire classer Atout France pour bénéficier de l'abattement 50 % ?",
-        a: "Tu mandates un organisme agréé (Cofrac), il fait l'inspection sur place (15 critères qualité), tu reçois ton classement officiel valable 5 ans. Coût moyen : 200 à 400 € selon la taille du logement. Le classement s'active immédiatement, l'abattement 50 % s'applique sur le CA de l'année.",
+        a: "Tu fais appel à un organisme de contrôle accrédité, qui visite le logement et le note selon la grille officielle des meublés de tourisme ; le classement est valable 5 ans. Coût courant : 200 à 400 € selon la taille du logement.",
       },
       {
         q: "Le micro-BIC est-il toujours plus avantageux que le réel simplifié ?",
@@ -138,15 +138,15 @@ const PAGES = [
       },
       {
         q: "Qu'est-ce que le versement libératoire et qui peut en profiter ?",
-        a: "C'est une option qui te permet de payer ton IR au fil de l'eau avec un taux fixe (1 % du CA en LCD classé, 1,7 % en non classé). Tu y as droit si le RFR du foyer fiscal de l'avant-dernière année est sous 27 478 € (1 part), 54 956 € (2 parts) ou 82 434 € (3 parts). Avantage : c'est définitif, pas de régularisation en mai.",
+        a: "C'est une option des micro-entrepreneurs qui te fait payer l'impôt de cette activité au fil de l'eau, à taux fixe (1 % des recettes en meublé classé ou chambres d'hôtes, 1,7 % en non classé). En 2026, il faut un RFR 2024 du foyer sous 29 315 € par part (58 630 € pour 2 parts, 87 945 € pour 3). Avantage : l'impôt est soldé, pas de régularisation en mai.",
       },
       {
         q: "Que se passe-t-il si je dépasse le plafond du micro-BIC en cours d'année ?",
-        a: "Tu bascules automatiquement au régime réel simplifié dès l'année suivante (ou immédiatement si dépassement du plafond majoré sur 2 ans consécutifs). Plus de bénéfice de l'abattement forfaitaire, mais tu déduis toutes tes charges réelles, ce qui peut être beaucoup plus avantageux selon ton profil.",
+        a: "Un premier dépassement ne te fait pas quitter le micro : tu y restes tant que les recettes de l'une des 2 années précédentes sont sous le plafond. Si tu dépasses 2 années de suite, tu passes au régime réel l'année suivante : plus d'abattement forfaitaire, mais tu déduis tes charges réelles, ce qui peut être plus avantageux.",
       },
       {
         q: "Faut-il déclarer ses revenus LCD même en dessous de 15 000 € ?",
-        a: "Oui. Tout revenu LCD doit être déclaré, peu importe le montant. La case 5ND (BIC pro non pros) ou 5NP (BIC pros) de ta 2042-C-PRO selon ton statut LMNP / LMP. L'oubli déclenche des redressements URSSAF + DGFiP avec intérêts de retard.",
+        a: "Oui. Toutes tes recettes de location doivent être déclarées, quel que soit le montant, sur la déclaration 2042-C-PRO (rubrique des locations meublées, non professionnelles ou professionnelles selon ton statut). Un oubli expose à un redressement avec intérêts de retard et majorations.",
       },
     ],
   },
@@ -154,7 +154,7 @@ const PAGES = [
   {
     slug: 'choisir-statut-ei-sasu',
     title: 'Simulateur EI vs SASU pour la LCD : net en poche, cotisations, dividendes',
-    metaDesc: 'Compare net en poche entre EI au réel (cotisations TNS + IR) et SASU 100 % dividendes (IS + flat tax 31,4 %). Inclut protection sociale, retraite, charges déductibles. Pour hôtes LCD jusqu\'à 150 k€ de bénéfice.',
+    metaDesc: 'Compare net en poche entre EI au réel (cotisations TNS + IR) et SASU 100 % dividendes (IS + flat tax 31,4 %). Avec les points de vigilance sur la protection sociale et la retraite. Pour hôtes LCD jusqu\'à 150 k€ de bénéfice.',
     canonical: 'https://jasonmarinho.com/services/simulateurs/choisir-statut-ei-sasu',
     appPath: '/dashboard/simulateurs?tab=statut',
     heroLabel: 'Outil gratuit · Statut juridique',
@@ -190,7 +190,7 @@ const PAGES = [
       items: [
         {
           h: 'EI au régime réel',
-          desc: "Bénéfice − cotisations TNS (~30 à 45 % selon URSSAF, CIPAV ou SSI) − IR au TMI. Tu cotises pour la retraite et la maladie, mais tes charges sociales sont élevées.",
+          desc: "Bénéfice − cotisations sociales des indépendants (SSI, environ 30 à 35 % du bénéfice, soit ~45 % du revenu net) − IR au TMI. Tu cotises pour la retraite et la maladie, mais tes charges sociales sont élevées.",
         },
         {
           h: 'SASU 100 % dividendes',
@@ -198,7 +198,7 @@ const PAGES = [
         },
         {
           h: 'SASU avec salaire (option C)',
-          desc: "Tu te verses un salaire de président → cotisations assimilé salarié (~80 %) → tu acquiers des droits retraite régime général. Le reste du bénéfice peut sortir en dividendes (flat tax 31,4 %).",
+          desc: "Tu te verses un salaire de président → cotisations d'assimilé salarié (environ 75 à 80 % du salaire net) → tu acquiers des droits retraite au régime général. Le reste du bénéfice peut sortir en dividendes (flat tax 31,4 %).",
         },
         {
           h: 'Quand bascule EI → SASU',
@@ -206,7 +206,7 @@ const PAGES = [
         },
         {
           h: 'CFE, impôt forfaitaire, taxe foncière',
-          desc: "Le simulateur intègre la CFE (cotisation foncière des entreprises, ~250 à 1 200 € selon ville) et signale les autres frais fixes (compte bancaire pro, comptable, expert-comptable obligatoire en SASU à partir d'un certain seuil).",
+          desc: "Le simulateur ne les intègre pas : prévois la CFE (exonérée l'année de création, puis fixée par ta commune), le compte bancaire pro et l'expert-comptable, quasi indispensable en SASU.",
         },
       ],
     },
@@ -258,11 +258,11 @@ const PAGES = [
       },
       {
         q: "Quels sont les frais fixes de la SASU pour la LCD ?",
-        a: "CFE (~250 à 1 200 €), compte bancaire pro (~50 €/an), expert-comptable (~1 200 à 2 500 € selon volume), CFE de chambre de commerce sur première année. Total à prévoir : 2 000 à 4 000 €/an de frais fixes incompressibles. Cela explique pourquoi la SASU n'est rentable qu'à partir d'un certain bénéfice.",
+        a: "CFE (exonérée l'année de création, puis quelques centaines d'euros selon la commune), compte bancaire pro (~50 à 150 €/an), expert-comptable (~1 200 à 2 500 € selon le volume). Total à prévoir : 2 000 à 4 000 €/an de frais fixes. Cela explique pourquoi la SASU n'est rentable qu'à partir d'un certain bénéfice.",
       },
       {
         q: "Peut-on passer d'EI à SASU sans tout perdre ?",
-        a: "Oui. Tu crées la SASU, tu apportes ton ancienne activité (apport en nature avec valeur d'expert si besoin), tu radies l'EI. Les biens immobiliers ne peuvent généralement pas être apportés à la SASU (ce serait une SCI), c'est l'activité de gestion et le matériel mobilier qui sont transférés.",
+        a: "Oui. Tu crées la SASU, tu apportes ton activité et ton mobilier (apport en nature, évalué si besoin), puis tu cesses l'EI. Apporter le logement lui-même est possible mais déclenche en général l'imposition de la plus-value et des droits d'enregistrement : à étudier avec un notaire ou un expert-comptable.",
       },
       {
         q: "Y a-t-il un seuil de bénéfice où la SASU devient automatiquement plus rentable ?",
@@ -270,7 +270,7 @@ const PAGES = [
       },
       {
         q: "Le simulateur prend-il en compte la CSG-CRDS et les prélèvements sociaux ?",
-        a: "Oui. La flat tax SASU de 31,4 % inclut 18,6 % de prélèvements sociaux (CSG + CRDS + prélèvement de solidarité). Côté EI, les cotisations TNS incluent maladie, retraite, allocations familiales, CSG-CRDS, et la cotisation à la CIPAV pour les libérales (ou SSI pour les commerciaux).",
+        a: "Oui. La flat tax SASU de 31,4 % inclut 18,6 % de prélèvements sociaux (CSG + CRDS + prélèvement de solidarité). Côté EI, les cotisations des indépendants (SSI) incluent maladie, retraite, allocations familiales et CSG-CRDS.",
       },
     ],
   },
@@ -284,7 +284,7 @@ const PAGES = [
     heroLabel: 'Outil gratuit · Rentabilité LCD',
     heroH1Top: 'Simulateur',
     heroH1Em: 'rentabilité LCD',
-    heroSub: "Mode opérationnel : ton revenu net mensuel selon prix par nuit, occupation, commission, charges. Mode investissement : cash-flow après crédit, rentabilité brute, rentabilité nette nette. Pour décider si ton bien LCD vaut le coup, sans illusions de chiffres bruts.",
+    heroSub: "Mode opérationnel : ton revenu net mensuel selon prix par nuit, occupation, commission, charges. Mode investissement (dans ton espace) : cash-flow après crédit, rentabilité brute et nette avant impôt. Pour décider si ton bien LCD vaut le coup, sans illusions de chiffres bruts.",
     metaBadges: [
       { icon: 'chart-line-up', text: 'Mode opérationnel' },
       { icon: 'house', text: 'Mode investissement' },
@@ -298,13 +298,13 @@ const PAGES = [
       paras: [
         "Le piège classique : un logement qui sort 28 000 € de CA par an sur Airbnb, ça semble énorme. Sauf qu'entre la commission plateforme (15 %), le ménage facturé en commission (à déduire si tu ne le refactures pas), l'eau, l'électricité, internet, l'assurance, la copropriété, la taxe foncière, le crédit, et le mobilier qui s'use, le net réel peut tomber à 8 000 €.",
         "Le simulateur de rentabilité fait deux choses : il calcule ton net mensuel en mode opérationnel (logement déjà acquis), et il calcule ton cash-flow + rentabilité brute + rentabilité nette nette en mode investissement (achat à crédit). C'est l'outil de décision avant achat, et le tableau de bord après acquisition.",
-        "Bonus : le simulateur signale les ratios qui indiquent une rentabilité fragile (taux d'effort > 40 %, rentabilité nette < 4 %) et compare ton bien à des standards du marché.",
+        "Le calcul rapide ci-dessus donne le net mensuel avant impôt. Dans ton espace, le mode investissement ajoute le crédit, le cash-flow et la rentabilité brute et nette.",
       ],
       checklist: [
         "Mode opérationnel : revenu net mensuel post-charges",
         "Mode investissement : cash-flow + rentabilité brute + nette",
         "Commissions plateforme paramétrables",
-        "Alertes ratios fragiles (taux d'effort, ROI)",
+        "Net avant impôt, sans chiffres gonflés",
       ],
     },
     formules: {
@@ -314,7 +314,7 @@ const PAGES = [
       items: [
         {
           h: "Revenu brut LCD",
-          desc: "Revenu brut = ADR × nb_nuits_louées × (1 − commission_plateforme). L'ADR moyen et le taux d'occupation sont les deux variables critiques. Une variation de 10 % d'occupation change ton revenu brut de 10 %.",
+          desc: "Revenu après commission = ADR × nb_nuits_louées × (1 − commission_plateforme). L'ADR moyen et le taux d'occupation sont les deux variables critiques. Une variation de 10 % d'occupation change ton revenu brut de 10 %.",
         },
         {
           h: 'Revenu net mensuel',
@@ -346,33 +346,33 @@ const PAGES = [
             "ADR moyen 75 €, occupation 60 % → 16 425 € CA brut/an",
             "Commission OTAs 15 %, charges courantes 3 200 €/an",
             "Revenu net annuel : 16 425 × 0,85 − 3 200 = 10 761 €",
-            "Cash-flow mensuel : (16 425 × 0,85 / 12) − 542 − (3 200 / 12) = 90 €",
-            "Rentabilité nette nette : (10 761 − impôt micro-BIC ~1 800 €) / 145 000 € (achat + frais) = 6,2 %",
-            "Verdict : bon dossier, cash-flow légèrement positif, rentabilité nette nette honorable",
+            "Cash-flow mensuel avant impôt : (16 425 × 0,85 / 12) − 542 − (3 200 / 12) = 355 €",
+            "Rentabilité nette nette : (10 761 − impôt et prélèvements ~1 800 €) / 145 000 € (achat + frais) = 6,2 %",
+            "Verdict : bon dossier, cash-flow positif, rentabilité nette nette honorable",
           ],
         },
         {
           titre: "T2 Lyon 35 m², achat 240 000 €",
           steps: [
             "Apport 50 000 € + prêt 190 000 € sur 25 ans à 3,8 % → mensualité 982 €",
-            "ADR moyen 95 €, occupation 65 % → 22 526 € CA brut/an",
+            "ADR moyen 95 €, occupation 65 % → 22 539 € CA brut/an",
             "Commission OTAs 15 %, charges courantes 4 500 €/an",
-            "Revenu net annuel : 22 526 × 0,85 − 4 500 = 14 647 €",
-            "Cash-flow mensuel : (22 526 × 0,85 / 12) − 982 − (4 500 / 12) = 238 €",
-            "Rentabilité nette nette : (14 647 − impôt ~2 800 €) / 263 000 € = 4,5 %",
-            "Verdict : cash-flow correct mais rentabilité nette nette serrée, vise classement Atout France pour économiser sur l'impôt",
+            "Revenu net annuel : 22 539 × 0,85 − 4 500 = 14 658 €",
+            "Cash-flow mensuel avant impôt : (22 539 × 0,85 / 12) − 982 − (4 500 / 12) = 239 €",
+            "Rentabilité nette nette : (14 658 − impôt et prélèvements ~2 800 €) / 263 000 € = 4,5 %",
+            "Verdict : cash-flow correct mais rentabilité nette nette serrée, vise le classement en meublé de tourisme pour économiser sur l'impôt",
           ],
         },
         {
           titre: 'Maison Honfleur 80 m², achat 380 000 €',
           steps: [
-            'Apport 80 000 € + prêt 300 000 € sur 25 ans à 3,8 % → mensualité 1 549 €',
-            'ADR moyen 165 €, occupation 58 % → 34 925 € CA brut/an',
+            'Apport 80 000 € + prêt 300 000 € sur 25 ans à 3,8 % → mensualité 1 551 €',
+            'ADR moyen 165 €, occupation 58 % → 34 931 € CA brut/an',
             "Commission OTAs 12 % (mix réservations directes via Driing), charges courantes 6 800 €/an",
-            "Revenu net annuel : 34 925 × 0,88 − 6 800 = 23 934 €",
-            "Cash-flow mensuel : (34 925 × 0,88 / 12) − 1 549 − (6 800 / 12) = 414 €",
-            "Rentabilité nette nette : (23 934 − impôt classé 50 % ~2 100 €) / 415 000 € = 5,3 %",
-            "Verdict : excellent dossier, cash-flow solide, classement Atout France indispensable pour optimiser",
+            "Revenu net annuel : 34 931 × 0,88 − 6 800 = 23 939 €",
+            "Cash-flow mensuel avant impôt : (34 931 × 0,88 / 12) − 1 551 − (6 800 / 12) = 444 €",
+            "Recettes au-delà de 23 000 € : cotisations sociales dues en plus de l'impôt (environ 4 000 à 6 000 € au total selon ton régime)",
+            "Rentabilité nette nette : environ 4,3 à 4,8 % sur 415 000 €. Verdict : bon dossier, cash-flow solide, classement indispensable pour optimiser",
           ],
         },
       ],
@@ -400,25 +400,25 @@ const PAGES = [
       },
       {
         q: "Le simulateur prend-il en compte les charges de copropriété et la taxe foncière ?",
-        a: "Oui. Tu paramètres charges courantes (eau, énergie, ménage, internet, assurance), charges fixes (copropriété, taxe foncière, CFE), et provision impôt/cotisations. Le simulateur affiche un net mensuel honnête, pas un brut trompeur.",
+        a: "Oui, dans le champ Charges mensuelles : additionne eau, énergie, ménage, internet, assurance, copropriété, taxe foncière et CFE, ramenées au mois. L'impôt et les cotisations ne sont pas inclus : le net affiché est avant impôt.",
       },
     ],
   },
 
   {
     slug: 'taxe-de-sejour',
-    title: 'Simulateur taxe de séjour LCD : barème par ville, classement, durée',
-    metaDesc: 'Calcule la taxe de séjour à collecter sur tes voyageurs selon la ville (top 30 France), le classement de ton meublé, le nombre d\'adultes et la durée. Barèmes 2026 officiels, exemptions, taxe départementale + 10 %.',
+    title: 'Simulateur taxe de séjour LCD : barème 2026, classement, durée',
+    metaDesc: 'Calcule la taxe de séjour à collecter sur tes voyageurs selon le tarif de ta commune, le classement de ton meublé, le nombre d\'adultes et la durée. Plafonds 2026 officiels, mineurs exonérés, taxes additionnelles départementale et Île-de-France.',
     canonical: 'https://jasonmarinho.com/services/simulateurs/taxe-de-sejour',
     appPath: '/dashboard/simulateurs?tab=taxe',
     heroLabel: 'Outil gratuit · Taxe de séjour',
     heroH1Top: 'Simulateur',
-    heroH1Em: 'taxe de séjour par ville',
-    heroSub: "La taxe de séjour est une obligation légale, et son calcul varie par ville, par classement et par nuit. Le simulateur applique les barèmes 2026 des 30 plus grandes villes françaises, gère la taxe additionnelle départementale et signale les exemptions (mineurs, séjour > 30 nuits).",
+    heroH1Em: 'taxe de séjour 2026',
+    heroSub: "La taxe de séjour est une obligation légale, et son calcul dépend de ta commune, du classement du logement et du nombre de voyageurs. Le simulateur applique les plafonds 2026, le tarif voté par ta commune, les taxes additionnelles (départementale, Île-de-France) et l'exonération des mineurs.",
     metaBadges: [
-      { icon: 'map-pin', text: '30 villes FR' },
-      { icon: 'star', text: 'Non classé / 1-2★ / 3★ / 4-5★' },
-      { icon: 'plus', text: 'Taxe départementale + 10 %' },
+      { icon: 'map-pin', text: 'Tarif de ta commune' },
+      { icon: 'star', text: 'Non classé à palace' },
+      { icon: 'plus', text: 'Taxes additionnelles' },
       { icon: 'users', text: 'Exemptions mineurs' },
     ],
     intro: {
@@ -426,15 +426,15 @@ const PAGES = [
       h2Top: 'La taxe de séjour est',
       h2Em: 'collectée par tes soins',
       paras: [
-        "Que tu loues via Airbnb, Booking, Vrbo, ton site direct ou Driing, la taxe de séjour est dûe à la commune par voyageur et par nuit. Elle est collectée soit par toi directement (réservations directes, certaines OTAs comme Vrbo selon les villes), soit par la plateforme et reversée à la commune (Airbnb dans les villes où l'accord existe).",
-        "Le piège : les barèmes varient à la fois par ville et par catégorie de meublé. Un T2 à Paris non classé : 1,55 €/nuit/adulte. Le même classé 4★ : 6,33 €/nuit/adulte. Et la taxe additionnelle départementale (10 %) s'ajoute encore.",
-        "Le simulateur applique le bon barème automatiquement et te donne le montant total à collecter pour un séjour donné. Pratique pour facturer correctement, et pour préparer les versements semestriels à la mairie.",
+        "Que tu loues via Airbnb, Booking, Vrbo, ton site direct ou Driing, la taxe de séjour est dûe à la commune par voyageur et par nuit. Si tu loues en non professionnel, la plateforme qui encaisse le paiement (Airbnb, Booking quand il encaisse) la collecte et la reverse à ta place. Pour tes réservations directes, c'est à toi de la collecter et de la reverser.",
+        "Le piège : chaque commune vote ses tarifs dans des plafonds nationaux, et des taxes additionnelles s'ajoutent. À Paris, un meublé non classé paie 5 % du prix de la nuit par personne, jusqu'à 15,93 € par adulte et par nuit en 2026 une fois ajoutées les taxes départementale (10 %), régionale (15 %) et Île-de-France Mobilités (200 %).",
+        "Tu saisis le tarif de ta commune, le simulateur te donne le montant total à collecter pour un séjour. Pratique pour tes réservations directes et pour préparer tes reversements à la mairie.",
       ],
       checklist: [
-        "Barèmes 2026 des 30 plus grandes villes françaises",
-        "Distinction non classé / classé 1-2★ / 3★ / 4-5★",
-        "Taxe additionnelle départementale +10 % automatique",
-        "Exemptions mineurs et séjours longue durée",
+        "Plafonds nationaux 2026 par catégorie",
+        "Non classé au pourcentage, classé au tarif fixe",
+        "Taxes additionnelles départementale et Île-de-France",
+        "Mineurs exonérés",
       ],
     },
     formules: {
@@ -444,23 +444,23 @@ const PAGES = [
       items: [
         {
           h: 'Taxe communale par nuit',
-          desc: "Tarif fixé par délibération communale, par catégorie de meublé. Plafonnée par la loi (de 0,22 €/nuit pour un terrain de camping à 4,30 €/nuit pour un palace en zone tendue, hors taxe départementale).",
+          desc: "Tarif fixé par délibération de la commune, par catégorie, dans les limites nationales : en 2026, de 0,20 € (campings) à 4,90 € (palaces), 3,60 € pour un 5★, 2,60 € pour un 4★, 1,70 € pour un 3★, jusqu'à 1,00 € pour un 1★, un 2★ ou des chambres d'hôtes. Non classé : 1 à 5 % du prix HT de la nuit par personne, plafonné au tarif le plus élevé voté par la commune.",
         },
         {
           h: 'Taxe additionnelle départementale',
-          desc: "Égale à 10 % de la taxe communale, fixée par le conseil départemental. S'ajoute systématiquement dans les départements qui l'ont votée (la majorité).",
+          desc: "Égale à 10 % de la taxe communale, dans les départements qui l'ont votée (la plupart).",
         },
         {
           h: 'Taxe additionnelle régionale Île-de-France',
-          desc: "Spécifique IDF : 15 % supplémentaires sur la taxe communale, depuis la loi Grand Paris. Le simulateur applique automatiquement pour Paris, Boulogne-Billancourt, Versailles, etc.",
+          desc: "En Île-de-France s'ajoutent une taxe régionale de 15 % et, depuis 2024, une taxe de 200 % au profit d'Île-de-France Mobilités, calculées sur la taxe communale. Active l'option Île-de-France dans le simulateur.",
         },
         {
           h: 'Exemptions légales',
-          desc: "Les mineurs (< 18 ans) sont exemptés totalement. Les bénéficiaires d'un hébergement d'urgence ou temporaire (loi DALO) aussi. Les séjours > 30 nuits consécutives pour un même voyageur ne sont pas soumis à la taxe (résidence assimilée).",
+          desc: "Sont exonérés : les mineurs, les titulaires d'un contrat de travail saisonnier employés dans la commune, les personnes en hébergement d'urgence ou en relogement temporaire, et celles dont le loyer est sous un montant fixé par la commune.",
         },
         {
           h: 'Cas Airbnb',
-          desc: "Airbnb collecte et reverse directement à la majorité des communes françaises (accord national). Tu n'as rien à faire côté Airbnb, mais tu restes responsable pour Booking (mixte selon la ville), Vrbo (à toi de collecter), et tes réservations directes.",
+          desc: "Depuis 2019, les plateformes qui encaissent le paiement pour un loueur non professionnel doivent collecter la taxe et la reverser : c'est le cas d'Airbnb. Pour une plateforme qui n'encaisse pas le paiement, et pour tes réservations directes, c'est à toi de la collecter.",
         },
       ],
     },
@@ -472,33 +472,33 @@ const PAGES = [
         {
           titre: 'T1 à Paris non classé, 2 adultes, 4 nuits',
           steps: [
-            "Tarif Paris non classé : 1,55 €/nuit/adulte",
-            "Taxe additionnelle départementale (Paris) : 10 %",
-            "Taxe additionnelle régionale (IDF) : 15 %",
-            "Taxe par adulte par nuit : 1,55 × 1,25 = 1,94 €",
-            "Taxe totale : 1,94 × 2 adultes × 4 nuits = 15,52 €",
-            "Tu peux la facturer en supplément sur ton tarif final voyageur",
+            "Nuit à 200 €, 2 adultes : 5 % × 200 / 2 = 5,00 €, plafonné à 4,90 €",
+            "Taxes additionnelles : départementale 10 %, régionale 15 %, Île-de-France Mobilités 200 %",
+            "Coefficient total : 1 + 0,10 + 0,15 + 2,00 = 3,25",
+            "Taxe par adulte et par nuit : 4,90 × 3,25 = 15,93 €",
+            "Taxe totale : 15,93 × 2 adultes × 4 nuits = 127,44 €",
+            "Si la réservation passe par Airbnb, la plateforme la collecte pour toi",
           ],
         },
         {
-          titre: 'T2 à Lyon classé 3★, 3 adultes, 5 nuits',
+          titre: 'Appartement classé 3★, 3 adultes, 5 nuits',
           steps: [
-            "Tarif Lyon classé 3★ : 1,53 €/nuit/adulte",
+            "Tarif voté pour un 3★ (exemple) : 1,50 € par adulte et par nuit, sous le plafond national de 1,70 €",
             "Taxe additionnelle départementale (Rhône) : 10 %",
-            "Taxe par adulte par nuit : 1,53 × 1,10 = 1,68 €",
-            "Taxe totale : 1,68 × 3 adultes × 5 nuits = 25,20 €",
-            "Si Airbnb gère la collecte automatique (Lyon est dans l'accord), rien à faire de ton côté",
+            "Taxe par adulte et par nuit : 1,50 × 1,10 = 1,65 €",
+            "Taxe totale : 1,65 × 3 adultes × 5 nuits = 24,75 €",
+            "Vérifie le tarif exact dans la délibération de ta commune",
           ],
         },
         {
-          titre: 'Maison à Bordeaux classée 4★, 4 adultes + 1 enfant, 7 nuits',
+          titre: 'Maison classée 4★, 4 adultes + 1 enfant, 7 nuits',
           steps: [
-            "Tarif Bordeaux classé 4★ : 2,42 €/nuit/adulte",
+            "Tarif voté pour un 4★ (exemple) : 2,40 € par adulte et par nuit, sous le plafond national de 2,60 €",
             "Taxe additionnelle départementale (Gironde) : 10 %",
-            "Taxe par adulte par nuit : 2,42 × 1,10 = 2,66 €",
+            "Taxe par adulte et par nuit : 2,40 × 1,10 = 2,64 €",
             "L'enfant (< 18 ans) est exempté",
-            "Taxe totale : 2,66 × 4 adultes × 7 nuits = 74,48 €",
-            "À reverser à la mairie semestriellement ou via la plateforme",
+            "Taxe totale : 2,64 × 4 adultes × 7 nuits = 73,92 €",
+            "À reverser à la mairie aux échéances qu'elle fixe, sauf si la plateforme l'a collectée",
           ],
         },
       ],
@@ -510,23 +510,23 @@ const PAGES = [
       },
       {
         q: "Airbnb collecte-t-il la taxe de séjour automatiquement en France ?",
-        a: "Oui, dans la quasi-totalité des communes françaises depuis 2019 (accord national). Tu retrouves le montant collecté dans tes relevés Airbnb. Booking, Vrbo et autres OTAs ont des accords variables selon la ville, vérifie systématiquement. Pour tes réservations directes (site, Driing), c'est à toi de collecter.",
+        a: "Oui : depuis 2019, les plateformes qui encaissent le paiement pour un loueur non professionnel doivent collecter la taxe de séjour et la reverser à la commune. Tu retrouves le montant dans tes relevés Airbnb. Pour une plateforme qui n'encaisse pas le paiement, et pour tes réservations directes (site, Driing), c'est à toi de la collecter.",
       },
       {
         q: "Comment connaître le barème exact de ma commune ?",
-        a: "Trois sources fiables : ton compte personnel sur taxesejour.fr (portail officiel), la délibération du conseil municipal (disponible en mairie ou sur le site de la ville), et le simulateur que je propose qui regroupe les 30 plus grandes villes françaises avec les barèmes 2026.",
+        a: "La délibération de ta commune (ou de ton intercommunalité) fixe les tarifs : demande-la en mairie ou à l'office de tourisme, beaucoup la publient sur leur portail de déclaration en ligne. Reporte ensuite ton tarif dans le simulateur.",
       },
       {
         q: "Quelles sont les exemptions à la taxe de séjour ?",
-        a: "Mineurs (< 18 ans) totalement exemptés. Bénéficiaires d'un hébergement d'urgence ou temporaire (loi DALO). Saisonniers titulaires d'un contrat de travail. Séjours dépassant 30 nuits consécutives pour un même voyageur (assimilation résidence). Le simulateur applique automatiquement l'exemption mineurs.",
+        a: "Les mineurs, les titulaires d'un contrat de travail saisonnier employés dans la commune, les personnes en hébergement d'urgence ou en relogement temporaire, et celles dont le loyer est sous un montant fixé par la commune. Le simulateur applique l'exonération des mineurs.",
       },
       {
         q: "Que se passe-t-il si je ne collecte pas la taxe de séjour ?",
-        a: "Tu deviens redevable à la place du voyageur. Amende possible jusqu'à 2 500 €. En cas de contrôle (DGFiP, communes touristiques), la mairie peut te réclamer plusieurs années de taxe non collectée plus intérêts. Aucun intérêt à ne pas collecter, c'est neutre pour ton compte de résultat.",
+        a: "La commune peut te réclamer la taxe que tu aurais dû collecter, avec des pénalités en cas de défaut de déclaration ou de reversement. Aucun intérêt à ne pas la collecter : c'est le voyageur qui la paie, elle est neutre pour tes revenus.",
       },
       {
         q: "Comment reverser la taxe de séjour à la mairie ?",
-        a: "La majorité des communes utilisent taxesejour.fr (portail dédié), où tu déclares chaque trimestre ou semestre le nombre de nuitées et la taxe collectée. Tu reçois ensuite un avis et paies par virement. Si Airbnb collecte automatiquement, la part Airbnb est reversée directement par la plateforme, tu n'as à déclarer que ta part Booking/directe.",
+        a: "La plupart des communes ont un portail de déclaration en ligne, où tu déclares aux échéances qu'elles fixent le nombre de nuitées et la taxe collectée, puis tu la reverses. La part collectée par une plateforme est reversée par la plateforme : tu ne déclares que tes réservations directes et celles des plateformes qui n'encaissent pas.",
       },
     ],
   },

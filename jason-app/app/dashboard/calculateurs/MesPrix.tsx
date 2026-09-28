@@ -6,12 +6,12 @@ import type { LogementPrefill } from '@/lib/lcd/dashboard-prefill'
 import { updateLogementPricing } from '../logements/actions'
 import { findMarketBenchmark } from '@/lib/lcd/market-benchmarks'
 
-// Commissions moyennes appliquées aux plateformes (côté hôte).
-// Airbnb = split fee 3-5 % hôte, on prend 5 %. Booking = 15-18 % hôte,
-// on prend 17 % (médiane FR). Direct = 0 % (mais le voyageur paie net,
-// donc affiché tel quel sans rabais).
+// Commissions moyennes appliquées aux plateformes (côté hôte, hors TVA).
+// Airbnb = frais d'hôte unique de 15,5 % dans l'EEE depuis le 13/10/2026
+// (fin des frais partagés 3 % hôte + ~15 % voyageur). Booking = 15-18 %,
+// on prend 17 %. Direct = 0 %.
 const COMMISSIONS = {
-  airbnb: 0.05,
+  airbnb: 0.155,
   booking: 0.17,
   direct: 0,
 } as const
@@ -176,14 +176,14 @@ function LogementPricingCard({ logement, startsOpen }: { logement: LogementPrefi
                 color="#FF5A5F"
                 value={draft.prix_airbnb_nuit}
                 onChange={v => setDraft(d => ({ ...d, prix_airbnb_nuit: v }))}
-                hint={draft.prix_airbnb_nuit ? `Tu touches ${fmtEur(Number(draft.prix_airbnb_nuit) * (1 - COMMISSIONS.airbnb))} net (-5%)` : 'Commission hôte ~5%'}
+                hint={draft.prix_airbnb_nuit ? `Tu touches ${fmtEur(Number(draft.prix_airbnb_nuit) * (1 - COMMISSIONS.airbnb))} net (-15,5 %)` : 'Frais hôte 15,5 % (depuis le 13/10/2026)'}
               />
               <PriceInput
                 label="Booking"
                 color="#003B95"
                 value={draft.prix_booking_nuit}
                 onChange={v => setDraft(d => ({ ...d, prix_booking_nuit: v }))}
-                hint={draft.prix_booking_nuit ? `Tu touches ${fmtEur(Number(draft.prix_booking_nuit) * (1 - COMMISSIONS.booking))} net (-17%)` : 'Commission hôte ~17%'}
+                hint={draft.prix_booking_nuit ? `Tu touches ${fmtEur(Number(draft.prix_booking_nuit) * (1 - COMMISSIONS.booking))} net (-17 %)` : 'Commission hôte ~17 %'}
               />
               <PriceInput
                 label="Direct / Driing"

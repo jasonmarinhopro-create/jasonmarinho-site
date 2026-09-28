@@ -1,11 +1,15 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Info } from '@phosphor-icons/react/dist/ssr'
+import { Info, CheckCircle, WarningCircle } from '@phosphor-icons/react/dist/ssr'
 import type { AccountStats } from '@/lib/lcd/account-stats'
 import { FISCAL_PARAMS_2026 } from '@/lib/lcd/fiscal-params'
 import { s, fmtEur } from './_shared'
 import InlineStyle from '@/components/ui/InlineStyle'
+
+const AMBER = '#B7791F'
+const AMBER_BG = 'rgba(255,213,107,0.14)'
+const AMBER_BORDER = 'rgba(183,121,31,0.35)'
 
 export default function FiscalLCD({ accountStats }: { accountStats?: AccountStats }) {
   const [ca, setCa] = useState(accountStats && accountStats.caTotal12m > 0 ? Math.round(accountStats.caTotal12m) : 30000)
@@ -25,7 +29,9 @@ export default function FiscalLCD({ accountStats }: { accountStats?: AccountStat
       ? { plafond: microBic.nonClasse.plafond, tauxAbattement: microBic.nonClasse.abattement }
       : { plafond: microBic.classe.plafond, tauxAbattement: microBic.classe.abattement }
     const sousPlafond = ca <= config.plafond
-    const baseImposable = sousPlafond ? ca * (1 - config.tauxAbattement) : ca
+    // Abattement minimum de 305 € (art. 50-0 CGI), sans dépasser les recettes
+    const abattement = Math.max(ca * config.tauxAbattement, Math.min(microBic.nonClasse.abattementMinimum, ca))
+    const baseImposable = Math.max(0, ca - abattement)
     const economieClassement = ca * (microBic.classe.abattement - microBic.nonClasse.abattement)
     return { ...config, sousPlafond, baseImposable, economieClassement }
   }, [ca, regime])
@@ -36,7 +42,10 @@ export default function FiscalLCD({ accountStats }: { accountStats?: AccountStat
     const conditionB = ca > autresRevenus
     const isLMP = conditionA && conditionB
     const beneficeEstime = ca * (1 - result.tauxAbattement)
-    const cotisLMP = isLMP ? beneficeEstime * 0.35 : 0
+    // Location courte durée : au-delà de 23 000 € de recettes, cotisations
+    // sociales dues même en LMNP (art. L613-1 CSS), à la place des 18,6 %
+    const socialPro = conditionA
+    const cotisLMP = socialPro ? beneficeEstime * FISCAL_PARAMS_2026.ei.tauxCotisationsTns : 0
     let lmnpReason = ''
     if (!isLMP) {
       if (!conditionA && !conditionB) {
@@ -44,10 +53,10 @@ export default function FiscalLCD({ accountStats }: { accountStats?: AccountStat
       } else if (!conditionA) {
         lmnpReason = `Ta LCD ne dépasse pas 23 000 € (actuellement ${fmtEur(ca)}). C'est la première condition à franchir.`
       } else {
-        lmnpReason = `Tu as dépassé les 23 000 €, MAIS tes autres revenus pro (${fmtEur(autresRevenus)}) restent supérieurs à ta LCD (${fmtEur(ca)}). Tant que ta LCD n'est pas ta source principale de revenus, tu restes particulier.`
+        lmnpReason = `Tu as dépassé les 23 000 €, mais tes autres revenus d'activité (${fmtEur(autresRevenus)}) restent supérieurs à ta LCD (${fmtEur(ca)}) : tu restes LMNP pour l'impôt. Les cotisations sociales, elles, sont dues dès 23 000 € en courte durée.`
       }
     }
-    return { isLMP, conditionA, conditionB, cotisLMP, seuilCA, beneficeEstime, lmnpReason }
+    return { isLMP, socialPro, conditionA, conditionB, cotisLMP, seuilCA, beneficeEstime, lmnpReason }
   }, [ca, autresRevenus, result.tauxAbattement])
 
   return (
@@ -88,23 +97,23 @@ export default function FiscalLCD({ accountStats }: { accountStats?: AccountStat
             </div>
             <div style={s.resultBox}>
               <div style={s.resultLabel}>Tu peux rester au micro</div>
-              <div style={{ ...s.resultValue, color: 'var(--success-1)' }}>OK</div>
+              <div style={{ ...s.resultValue, color: 'var(--accent-text)' }}>OK</div>
               <div style={s.resultHint}>Sous le plafond {fmtEur(result.plafond)}</div>
             </div>
           </>
         ) : (
-          <div style={{ ...s.resultBox, gridColumn: '1 / -1', borderColor: 'rgba(239,68,68,0.3)' }}>
+          <div style={{ ...s.resultBox, gridColumn: '1 / -1', borderColor: 'var(--danger-border)' }}>
             <div style={s.resultLabel}>Plafond dépassé</div>
             <div style={{ ...s.resultValue, color: 'var(--danger)' }}>Régime réel</div>
-            <div style={s.resultHint}>Tu dépasses le plafond {fmtEur(result.plafond)} → bascule au réel obligatoire l&apos;année suivante</div>
+            <div style={s.resultHint}>Tu dépasses le plafond de {fmtEur(result.plafond)}. Un premier dépassement ne change rien ; si ça se répète 2 années de suite, tu passes au régime réel l&apos;année d&apos;après.</div>
           </div>
         )}
         {regime === 'non_classe' && ca > 0 && (
-          <div style={{ ...s.resultBox, gridColumn: '1 / -1', background: 'rgba(34,197,94,0.06)', borderColor: 'rgba(34,197,94,0.25)' }}>
-            <div style={s.resultLabel}>Si tu te fais classer Atout France</div>
-            <div style={{ ...s.resultValue, color: 'var(--success-1)', fontSize: '20px' }}>− {fmtEur(result.economieClassement)} de base imposable</div>
+          <div style={{ ...s.resultBox, gridColumn: '1 / -1', background: 'var(--accent-bg)', borderColor: 'var(--accent-border)' }}>
+            <div style={s.resultLabel}>Si tu fais classer ton meublé</div>
+            <div style={{ ...s.resultValue, color: 'var(--accent-text)', fontSize: '20px' }}>− {fmtEur(result.economieClassement)} de base imposable</div>
             <div style={s.resultHint}>
-              Économie estimée d&apos;impôt : ~{fmtEur(result.economieClassement * 0.30)} (à TMI 30 %).
+              Économie estimée : ~{fmtEur(result.economieClassement * (0.30 + FISCAL_PARAMS_2026.societe.prelevementsSociauxLmnp))} par an (impôt à 30 % + 18,6 % de prélèvements sociaux).
               Le classement fait aussi passer ton plafond CA de 15 000 € à 83 600 € (revenus 2026).
             </div>
           </div>
@@ -123,7 +132,7 @@ export default function FiscalLCD({ accountStats }: { accountStats?: AccountStat
               <br />Limite légale d&apos;activité : 5 chambres et 15 voyageurs simultanés
               (art. L.324-3 du Code du tourisme).
               {ca > 50000 && (
-                <><br /><strong style={{ color: 'var(--warning)' }}>⚠️ Si tes charges réelles dépassent 50 % du CA,
+                <><br /><strong style={{ color: '#B7791F' }}>Si tes charges réelles dépassent 50 % du CA,
                   le régime réel sera probablement plus avantageux que le micro-BIC.</strong></>
               )}
             </div>
@@ -160,10 +169,10 @@ export default function FiscalLCD({ accountStats }: { accountStats?: AccountStat
           <div style={{ fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.5 }}>
             Au-delà de <strong style={{ color: 'var(--text-2)' }}>23 000 € de CA LCD</strong>
             {' '}<em>ET</em> si tes revenus locatifs dépassent tes autres revenus pro du foyer,
-            tu bascules automatiquement en LMP (Loueur Meublé Professionnel) — pas un choix, la loi.
+            tu deviens loueur en meublé professionnel (LMP) pour l&apos;impôt : ce n&apos;est pas un choix.
             <br />
-            <strong style={{ color: 'var(--text-2)' }}>Les 2 conditions doivent être remplies en même temps.</strong>
-            {' '}Si tu rates l&apos;une des deux (par exemple ton salaire reste supérieur à ta LCD), tu restes particulier (LMNP).
+            <strong style={{ color: 'var(--text-2)' }}>Attention, en courte durée les cotisations sociales ne suivent pas cette règle :</strong>
+            {' '}elles sont dues dès 23 000 € de recettes, même si tu restes LMNP (salarié par exemple).
           </div>
         </div>
         <div className="lmp-section-row">
@@ -182,26 +191,28 @@ export default function FiscalLCD({ accountStats }: { accountStats?: AccountStat
             <label style={s.label}>Verdict</label>
             <div style={{
               padding: '14px 16px', borderRadius: '12px',
-              background: statut.isLMP ? 'rgba(251,146,60,0.10)' : 'rgba(16,185,129,0.10)',
-              border: `1px solid ${statut.isLMP ? 'rgba(251,146,60,0.30)' : 'rgba(16,185,129,0.30)'}`,
+              background: statut.socialPro ? AMBER_BG : 'var(--accent-bg)',
+              border: `1px solid ${statut.socialPro ? AMBER_BORDER : 'var(--accent-border)'}`,
               height: '100%', display: 'flex', flexDirection: 'column' as const, justifyContent: 'center',
             }}>
               <div style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' as const,
-                color: statut.isLMP ? '#d97706' : '#059669', marginBottom: '4px' }}>
-                {statut.isLMP ? '⚠️ Tu bascules en LMP' : '✓ Tu restes en LMNP'}
+                color: statut.socialPro ? AMBER : 'var(--accent-text)', marginBottom: '4px' }}>
+                {statut.isLMP ? 'Tu deviens LMP' : statut.socialPro ? 'LMNP, avec cotisations sociales' : 'Tu restes LMNP'}
               </div>
               <div style={{ fontSize: '13px', color: 'var(--text)', lineHeight: 1.45 }}>
                 {statut.isLMP
-                  ? 'Particulier devenant pro. Cotisations sociales SSI à la clé.'
-                  : 'Statut particulier conservé. Pas de cotisations sociales.'}
+                  ? 'Loueur professionnel : cotisations sociales des indépendants et fiscalité des professionnels.'
+                  : statut.socialPro
+                    ? 'LMNP pour l’impôt, mais cotisations sociales dues au-delà de 23 000 € de recettes en courte durée.'
+                    : 'Pas de cotisations sociales : 18,6 % de prélèvements sociaux sur la base imposable.'}
               </div>
               {!statut.isLMP && statut.lmnpReason && (
                 <div style={{
                   marginTop: '10px', paddingTop: '10px',
-                  borderTop: '1px solid rgba(16,185,129,0.18)',
+                  borderTop: '1px solid var(--border)',
                   fontSize: '12px', color: 'var(--text-2)', lineHeight: 1.5,
                 }}>
-                  <strong style={{ color: '#059669' }}>Pourquoi&nbsp;? </strong>
+                  <strong style={{ color: 'var(--text)' }}>Pourquoi&nbsp;? </strong>
                   {statut.lmnpReason}
                 </div>
               )}
@@ -211,78 +222,65 @@ export default function FiscalLCD({ accountStats }: { accountStats?: AccountStat
       </div>
 
       <div className="lmp-conds-row">
-        <div style={{
-          padding: '10px 12px', borderRadius: '10px',
-          background: statut.conditionA ? 'rgba(251,146,60,0.08)' : 'rgba(16,185,129,0.06)',
-          border: `1px solid ${statut.conditionA ? 'rgba(251,146,60,0.25)' : 'rgba(16,185,129,0.20)'}`,
-          fontSize: '12.5px', display: 'flex', alignItems: 'center', gap: '8px',
-        }}>
-          <span style={{ fontSize: '14px' }}>{statut.conditionA ? '⚠️' : '✓'}</span>
-          <span style={{ color: 'var(--text)' }}>
-            <strong>CA &gt; 23 000 €</strong>
-            <span style={{ color: 'var(--text-3)' }}> · actuellement {fmtEur(ca)}</span>
-          </span>
-        </div>
-        <div style={{
-          padding: '10px 12px', borderRadius: '10px',
-          background: statut.conditionB ? 'rgba(251,146,60,0.08)' : 'rgba(16,185,129,0.06)',
-          border: `1px solid ${statut.conditionB ? 'rgba(251,146,60,0.25)' : 'rgba(16,185,129,0.20)'}`,
-          fontSize: '12.5px', display: 'flex', alignItems: 'center', gap: '8px',
-        }}>
-          <span style={{ fontSize: '14px' }}>{statut.conditionB ? '⚠️' : '✓'}</span>
-          <span style={{ color: 'var(--text)' }}>
-            <strong>CA &gt; autres revenus</strong>
-            <span style={{ color: 'var(--text-3)' }}> · {fmtEur(ca)} vs {fmtEur(autresRevenus)}</span>
-          </span>
-        </div>
+        {[
+          { on: statut.conditionA, label: <>Recettes &gt; 23 000 €</>, sub: `actuellement ${fmtEur(ca)}` },
+          { on: statut.conditionB, label: <>Recettes &gt; autres revenus</>, sub: `${fmtEur(ca)} contre ${fmtEur(autresRevenus)}` },
+        ].map((c, i) => (
+          <div key={i} style={{
+            padding: '10px 12px', borderRadius: '10px',
+            background: c.on ? AMBER_BG : 'var(--accent-bg)',
+            border: `1px solid ${c.on ? AMBER_BORDER : 'var(--accent-border)'}`,
+            fontSize: '12.5px', display: 'flex', alignItems: 'center', gap: '8px',
+          }}>
+            {c.on ? <WarningCircle size={15} weight="fill" color={AMBER} /> : <CheckCircle size={15} weight="fill" color="var(--accent-text)" />}
+            <span style={{ color: 'var(--text)' }}>
+              <strong>{c.label}</strong>
+              <span style={{ color: 'var(--text-3)' }}> · {c.sub}</span>
+            </span>
+          </div>
+        ))}
       </div>
 
-      {statut.isLMP ? (
-        <div style={{
-          marginTop: '12px', padding: '14px 16px', borderRadius: '12px',
-          background: 'rgba(251,146,60,0.06)', border: '1px solid rgba(251,146,60,0.20)',
-        }}>
-          <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#d97706', marginBottom: '8px',
-            textTransform: 'uppercase' as const, letterSpacing: '0.5px' }}>
-            Ce qui change en LMP
-          </div>
-          <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', lineHeight: 1.7, color: 'var(--text-2)' }}>
-            <li><strong style={{ color: 'var(--text)' }}>Cotisations URSSAF (SSI)</strong> ~35% du bénéfice net
-              {statut.cotisLMP > 0 && <> → estimé <strong style={{ color: '#d97706' }}>{fmtEur(statut.cotisLMP)}/an</strong></>}
-            </li>
-            <li><strong style={{ color: 'var(--text)' }}>Plus-values pro</strong> au lieu de privées
-              {' '}<span style={{ color: 'var(--text-3)' }}>(exonération si CA &lt; 90 k€ HT pendant 5 ans)</span>
-            </li>
-            <li><strong style={{ color: 'var(--text)' }}>Déficits imputables sur ton revenu global</strong>
-              {' '}(LMNP : déficits utilisables uniquement sur futurs loyers meublés)</li>
-            <li><strong style={{ color: 'var(--text)' }}>Biens loués sortis de l&apos;assiette IFI</strong></li>
-            <li>Immatriculation INSEE / SIRET obligatoire</li>
-          </ul>
+      <div style={{
+        marginTop: '12px', padding: '14px 16px', borderRadius: '12px',
+        background: 'var(--surface)', border: '1px solid var(--border)',
+      }}>
+        <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text)', marginBottom: '8px',
+          textTransform: 'uppercase' as const, letterSpacing: '0.5px' }}>
+          {statut.isLMP ? 'Ce qui change en LMP' : 'Tu restes LMNP : ce que ça implique'}
         </div>
-      ) : (
-        <div style={{
-          marginTop: '12px', padding: '14px 16px', borderRadius: '12px',
-          background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.20)',
-        }}>
-          <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#059669', marginBottom: '8px',
-            textTransform: 'uppercase' as const, letterSpacing: '0.5px' }}>
-            Tu restes LMNP : ce que ça implique
-          </div>
-          <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', lineHeight: 1.7, color: 'var(--text-2)' }}>
-            <li><strong style={{ color: 'var(--text)' }}>Pas de cotisations sociales URSSAF</strong>
-              {' '}(seulement les prélèvements sociaux : 18,6 % du bénéfice imposable, en micro-BIC comme au réel)</li>
-            <li><strong style={{ color: 'var(--text)' }}>Plus-values privées</strong>
-              {' '}(abattement durée détention)</li>
-            <li><strong style={{ color: 'var(--text)' }}>Déficits imputables uniquement</strong>
-              {' '}sur futurs revenus de location meublée (10 ans max)</li>
-            <li>Biens inclus dans l&apos;assiette IFI</li>
-          </ul>
-        </div>
-      )}
+        <ul style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', lineHeight: 1.7, color: 'var(--text-2)' }}>
+          {statut.socialPro ? (
+            <li><strong style={{ color: 'var(--text)' }}>Cotisations sociales (Urssaf, indépendants)</strong> à la place des 18,6 % de prélèvements sociaux,
+              {' '}environ {Math.round(FISCAL_PARAMS_2026.ei.tauxCotisationsTns * 100)} % du bénéfice : estimé <strong style={{ color: AMBER }}>{fmtEur(statut.cotisLMP)}/an</strong>
+              <span style={{ color: 'var(--text-3)' }}> (le simulateur de l&apos;Urssaf donne le montant exact)</span>
+            </li>
+          ) : (
+            <li><strong style={{ color: 'var(--text)' }}>Pas de cotisations sociales</strong>
+              {' '}: 18,6 % de prélèvements sociaux sur le bénéfice imposable, en micro-BIC comme au réel</li>
+          )}
+          {statut.isLMP ? (
+            <>
+              <li><strong style={{ color: 'var(--text)' }}>Plus-values professionnelles</strong>
+                {' '}<span style={{ color: 'var(--text-3)' }}>(exonération possible après 5 ans d&apos;activité si les recettes restent sous 90 000 €)</span>
+              </li>
+              <li><strong style={{ color: 'var(--text)' }}>Déficits imputables sur ton revenu global</strong></li>
+              <li><strong style={{ color: 'var(--text)' }}>Logements loués sortis de l&apos;IFI</strong> (sous conditions)</li>
+            </>
+          ) : (
+            <>
+              <li><strong style={{ color: 'var(--text)' }}>Plus-values des particuliers</strong> (abattement pour durée de détention)</li>
+              <li><strong style={{ color: 'var(--text)' }}>Déficits imputables uniquement</strong>
+                {' '}sur tes futurs revenus de location meublée (10 ans)</li>
+              <li>Logements inclus dans l&apos;assiette de l&apos;IFI</li>
+            </>
+          )}
+        </ul>
+      </div>
 
       <div style={s.disclaimer}>
         <Info size={11} weight="fill" style={{ flexShrink: 0, marginTop: '1px' }} />
-        <span>Estimation pédagogique. Le régime <strong>réel simplifié</strong> peut être plus avantageux au-delà de 30 k€/an si tu as des charges (amortissement, intérêts, travaux). Les cotisations SSI varient selon le bénéfice net réel et ton plan retraite. Consulte un expert-comptable.</span>
+        <span>Estimation pédagogique. Le régime <strong>réel simplifié</strong> peut être plus avantageux au-delà de 30 k€/an si tu as des charges (amortissement, intérêts, travaux). Les cotisations sociales dépendent de ton bénéfice réel et de ton régime (indépendant, micro-entrepreneur). Consulte un expert-comptable.</span>
       </div>
     </div>
   )

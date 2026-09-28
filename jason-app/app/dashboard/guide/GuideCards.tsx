@@ -203,7 +203,7 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'Statut juridique : EI ou SASU ?',
     subtitle: 'Choisir la bonne structure selon ton projet',
     rules: [
-      { type: 'info', text: <><strong>En nom propre (LMNP)</strong> : le cas le plus courant pour 1 ou 2 logements. Pas de société, pas de cotisations sociales tant que tu restes non professionnel : 18,6 % de prélèvements sociaux sur le bénéfice</> },
+      { type: 'info', text: <><strong>En nom propre (LMNP)</strong> : le cas le plus courant pour 1 ou 2 logements. Pas de société ; jusqu&apos;à 23 000 € de recettes, 18,6 % de prélèvements sociaux sur le bénéfice. Au-delà, en courte durée, cotisations sociales des indépendants même en LMNP</> },
       { type: 'warn', text: <><strong>LMP</strong> si tes recettes dépassent 23 000 €/an <strong>et</strong> tes autres revenus d&apos;activité du foyer : cotisations sociales (SSI) sur le bénéfice, autre fiscalité des plus-values</> },
       { type: 'info', text: <><strong>Société à l&apos;IS (SAS, SARL)</strong> : patrimoine protégé, amortissements, mais comptabilité obligatoire, pas de micro-BIC et imposition à la revente. À étudier avec un expert-comptable</> },
     ],

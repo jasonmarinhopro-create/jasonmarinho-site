@@ -146,12 +146,13 @@
 
   // Ajustement par canal de réservation (impact net sur le PRIX AFFICHÉ
   // recommandé, pour compenser ou capturer la commission)
-  // Airbnb prélève ~3% côté hôte (host-only). Booking ~15%. Direct = 0%.
+  // Airbnb prélève 15,5 % côté hôte (frais d'hôte unique dans l'EEE depuis
+  // le 13/10/2026, avant : ~3 % hôte + frais voyageur). Booking ~15 %. Direct = 0 %.
   var CHANNEL_ADJ = {
-    airbnb: 1.03,   // affiche +3% pour neutraliser la commission hôte
+    airbnb: 1.18,   // affiche +18 % pour neutraliser la commission hôte de 15,5 %
     booking: 1.18,  // affiche +18% pour neutraliser la commission Booking
     direct: 0.95,   // -5% : tu peux te permettre légèrement moins cher (pas de commission)
-    mix: 1.05,
+    mix: 1.12,      // moyenne pondérée Airbnb / Booking / direct
   }
 
   // ─── Helpers ──────────────────────────────────────────────────────────────

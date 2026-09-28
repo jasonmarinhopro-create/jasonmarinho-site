@@ -37,22 +37,25 @@ export const FISCAL_PARAMS_2026 = {
   },
 
   // ─── Versement libératoire ─────────────────────────────────────────────
-  // Seuils RFR du foyer fiscal (avant-dernière année)
+  // Option en 2026 : RFR 2024 ≤ 29 315 € par part (2e tranche du barème
+  // appliqué aux revenus 2024), majoré de 50 % par demi-part.
   versementLiberatoire: {
-    plafondRfr1part: 27478,
-    plafondRfr2parts: 54956,
-    plafondRfr3parts: 82434,
+    plafondRfr1part: 29315,
+    plafondRfr2parts: 58630,
+    plafondRfr3parts: 87945,
     tauxClasse: 0.01,            // 1 % CA
     tauxNonClasse: 0.017,        // 1,7 % CA
   },
 
   // ─── Impôt sur le revenu ───────────────────────────────────────────────
+  // Barème 2026 sur les revenus 2025 (loi n° 2026-103 du 19/02/2026, art. 4,
+  // indexation 0,9 %), par part de quotient familial.
   ir: {
     tranches: [
-      { jusqua: 11497, taux: 0 },
-      { jusqua: 29315, taux: 0.11 },
-      { jusqua: 83823, taux: 0.30 },
-      { jusqua: 180294, taux: 0.41 },
+      { jusqua: 11600, taux: 0 },
+      { jusqua: 29579, taux: 0.11 },
+      { jusqua: 84577, taux: 0.30 },
+      { jusqua: 181917, taux: 0.41 },
       { jusqua: Infinity, taux: 0.45 },
     ],
   },
@@ -73,9 +76,15 @@ export const FISCAL_PARAMS_2026 = {
 
   // ─── EI au régime réel (cotisations TNS approx) ───────────────────────
   ei: {
-    // Taux approximatif moyen URSSAF / SSI / CIPAV — varie selon profil
-    tauxCotisationsTns: 0.42,
-    seuilLmp: 23000,             // € de CA pour basculer en LMP (si >50% revenus foyer)
+    // Ordre de grandeur des cotisations SSI d'un indépendant : environ 45 % du
+    // revenu net, soit ~32 % du bénéfice avant cotisations (varie selon le
+    // revenu : minimales en bas, plafonnées en haut). Estimation, pas un calcul Urssaf.
+    tauxCotisationsTns: 0.32,
+    // 23 000 € de recettes : seuil fiscal du LMP (avec recettes > autres revenus
+    // d'activité du foyer) ET, pour la location courte durée (meublé de
+    // tourisme), seuil d'affiliation sociale à lui seul (art. L613-1 CSS) :
+    // cotisations sociales dues même en LMNP, à la place des 18,6 %.
+    seuilLmp: 23000,
   },
 
   // ─── TVA / Franchise en base ───────────────────────────────────────────
@@ -151,7 +160,7 @@ export function estimateRegimeFromCA(
     return {
       regime: 'reel',
       label: 'Régime réel (sauf si classé)',
-      hint: `Au-dessus de ${FISCAL_PARAMS_2026.microBic.nonClasse.plafond.toLocaleString('fr-FR')} €, classer ton meublé permettrait de rester en micro jusqu'à 77 700 €`,
+      hint: `Au-dessus de ${FISCAL_PARAMS_2026.microBic.nonClasse.plafond.toLocaleString('fr-FR')} €, classer ton meublé permettrait de rester en micro jusqu'à ${FISCAL_PARAMS_2026.microBic.classe.plafond.toLocaleString('fr-FR')} €`,
     }
   }
   return {
@@ -184,23 +193,26 @@ export function detectStatutLocatif(
     }
   }
   // CA >= seuil : test second critère
+  // Au-delà de 23 000 € en courte durée : cotisations sociales dues dans tous
+  // les cas (art. L613-1 CSS), le statut fiscal LMP dépend en plus des autres revenus.
+  const social = `cotisations sociales dues au-delà de ${seuil.toLocaleString('fr-FR')} € de recettes en courte durée, même en LMNP`
   if (autresRevenus === null) {
     return {
       statut: 'lmnp',
       label: 'LMNP probable',
-      details: `CA LCD ≥ ${seuil.toLocaleString('fr-FR')} € — vérifie ton autre revenu foyer pour confirmer (LMP si LCD > 50 % des revenus)`,
+      details: `Renseigne les autres revenus d'activité du foyer pour savoir si tu es LMP ; ${social}`,
     }
   }
   if (caLcd > autresRevenus) {
     return {
       statut: 'lmp',
       label: 'LMP',
-      details: `CA LCD > autres revenus du foyer → bascule LMP automatique (cotisations sociales TNS)`,
+      details: `Recettes > autres revenus d'activité du foyer : loueur professionnel, cotisations sociales (SSI)`,
     }
   }
   return {
     statut: 'lmnp',
     label: 'LMNP',
-    details: `Tu restes LMNP : LCD ≤ autres revenus du foyer`,
+    details: `LMNP pour l'impôt (recettes ≤ autres revenus du foyer), mais ${social}`,
   }
 }
