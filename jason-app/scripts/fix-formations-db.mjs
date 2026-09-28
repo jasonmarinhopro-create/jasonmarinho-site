@@ -33,15 +33,21 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE, { auth: { persistSessi
 const FISCAL_SLUGS = ['fiscalite-reglementation-lcd-france-2026', 'creer-conciergerie-lcd']
 
 const TVA_REVIEW = process.env.TVA_REVIEW === '1'
-const TVA_RX = /37[\s\u202f\u00a0.]?500|41[\s\u202f\u00a0.]?250|91[\s\u202f\u00a0.]?900|85[\s\u202f\u00a0.]?800|25[\s\u202f\u00a0.]?000\s?€[^|\n]{0,40}(TVA|franchise)|para-?h[ôo]tel/i
+const TVA_RX = /37[\s\u202f\u00a0.]?500|41[\s\u202f\u00a0.]?250|91[\s\u202f\u00a0.]?900|85[\s\u202f\u00a0.]?800|25[\s\u202f\u00a0.]?000\s?€[^|\n]{0,40}(TVA|franchise)|para-?h[ôo]tel|\bTVA\b|franchise en base|71\s?%/i
 
-// Extrait court (≤ 140 caractères) centré sur le seuil trouvé
+// Extrait court (≤ 140 caractères) centré sur le passage trouvé, précédé du
+// titre de section le plus proche (pour situer le contexte sans tout citer)
 function tvaLines(text) {
-  return text.split('\n').filter(l => TVA_RX.test(l)).slice(0, 6).map(l => {
+  const out = []
+  let heading = ''
+  for (const l of text.split('\n')) {
+    if (/^\s*#/.test(l)) heading = l.replace(/^\s*#+\s*/, '').slice(0, 60)
+    if (!TVA_RX.test(l) || out.length >= 8) continue
     const i = Math.max(0, l.search(TVA_RX) - 60)
     const cut = l.slice(i, i + 140).trim()
-    return (i > 0 ? '…' : '') + cut + (i + 140 < l.length ? '…' : '')
-  })
+    out.push(`[${heading}] ` + (i > 0 ? '…' : '') + cut + (i + 140 < l.length ? '…' : ''))
+  }
+  return out
 }
 
 function snippets(before, after) {
