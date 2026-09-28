@@ -140,7 +140,7 @@ function EditPanel({
               style={editStyles.input}
             >
               {!logementNames.includes(form.logementName) && (
-                <option value={form.logementName}>{form.logementName || '—'}</option>
+                <option value={form.logementName}>{form.logementName || '-'}</option>
               )}
               {logementNames.map(n => <option key={n} value={n}>{n}</option>)}
             </select>
@@ -179,7 +179,7 @@ function EditPanel({
             value={form.prix ?? ''}
             onChange={e => setForm(f => ({ ...f, prix: e.target.value === '' ? null : Number(e.target.value) }))}
             style={editStyles.input}
-            placeholder="—"
+            placeholder="-"
           />
         </label>
       </div>
@@ -377,7 +377,7 @@ function buildPrintHtml(slots: MenageSlot[], doneIds: Set<string>, periodLabel: 
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Planning ménage — ${esc(periodLabel)}</title>
+<title>Planning ménage : ${esc(periodLabel)}</title>
 <style>
   @page { size: A4 portrait; margin: 14mm 14mm 18mm; }
   * { box-sizing: border-box; }
@@ -864,7 +864,7 @@ export default function MenageExportModal({ slots: allSlots, doneIds, logementNa
         {/* Liste des créneaux (visible à l'écran + à l'impression) */}
         <div style={s.body}>
           <div style={s.printHead}>
-            <h3 style={s.printTitle}>Planning ménage — {label}</h3>
+            <h3 style={s.printTitle}>Planning ménage : {label}</h3>
             <p style={s.printSub}>{slots.length} créneau{slots.length > 1 ? 'x' : ''} · généré le {new Date().toLocaleDateString('fr-FR')}</p>
           </div>
 
@@ -1180,7 +1180,7 @@ const s: Record<string, React.CSSProperties> = {
     padding: '2px 6px',
     borderRadius: '999px',
     background: 'var(--success-bg)',
-    color: 'var(--success-1)',
+    color: 'var(--accent-text)',
     border: '1px solid var(--success-border)',
     letterSpacing: '0.3px',
   },

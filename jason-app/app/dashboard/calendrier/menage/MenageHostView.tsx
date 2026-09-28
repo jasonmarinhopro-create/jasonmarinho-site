@@ -111,8 +111,9 @@ export default function MenageHostView({ slots, teams, icalToken, appUrl, today 
   return (
     <div style={s.page}>
       <div style={s.head}>
-        <div>
-          <h1 style={s.title}>Ménage</h1>
+        <div style={{ flex: '1 1 320px', minWidth: 0 }}>
+          <div style={s.eyebrow}><Broom size={14} weight="fill" /> Ménage</div>
+          <h1 style={s.title}>Tes ménages, <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>planifiés tout seuls</em></h1>
           <p style={s.desc}>
             Créés automatiquement à chaque départ (Airbnb, Booking, contrats, séjours saisis).
             Ton équipe voit le même planning et le marque « terminé » avec photos.
@@ -258,14 +259,21 @@ function Kpi({ label, value, warn }: { label: string; value: number; warn?: bool
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,40px)', width: '100%' },
-  head: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', marginBottom: 20 },
-  title: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,36px)', fontWeight: 400, color: 'var(--text)', margin: '0 0 4px' },
-  desc: { fontSize: 14, color: 'var(--text-3)', margin: 0, lineHeight: 1.6, maxWidth: 640 },
+  page: { padding: '20px var(--dash-page-px) 40px', width: '100%' },
+  // Même bandeau vert que le Calendrier (DA sept. 2026)
+  head: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', marginBottom: 20,
+    padding: 'clamp(16px,2.2vw,22px) clamp(18px,2.6vw,28px)', borderRadius: 20,
+    background: 'linear-gradient(135deg, var(--accent-bg) 0%, rgba(99,214,131,0.10) 55%, rgba(255,213,107,0.14) 100%)',
+    border: '1px solid var(--accent-border)',
+  },
+  eyebrow: { display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, color: 'var(--accent-text)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: 4 },
+  title: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(24px,2.6vw,32px)', fontWeight: 400, color: 'var(--text)', margin: '0 0 6px', lineHeight: 1.15, letterSpacing: '-0.4px' },
+  desc: { fontSize: 13.5, color: 'var(--text-2)', margin: 0, lineHeight: 1.6, maxWidth: 640 },
   ghostBtn: {
     display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 14px', borderRadius: 10,
     border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)',
-    fontSize: 13, fontWeight: 600, textDecoration: 'none', marginTop: 6,
+    fontSize: 13, fontWeight: 600, textDecoration: 'none',
   },
   kpis: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 10, marginBottom: 16 },
   kpi: { padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12 },

@@ -123,7 +123,6 @@ export default function CalendrierView({
   )
   const [selectedContract, setSelectedContract] = useState<import('./page').ContractEvent | null>(null)
   const [showSources, setShowSources] = useState(false)
-  const [showStatsDetails, setShowStatsDetails] = useState(false)
   const [showQuickAdd, setShowQuickAdd] = useState(false)
   const [showSyncPanel, setShowSyncPanel] = useState(false)
   const [syncingAll, setSyncingAll] = useState(false)
@@ -321,16 +320,13 @@ export default function CalendrierView({
         seen.add(`ical-${e.id}`)
         const ss = e.start_date >= ws ? e.start_date : ws
         const se = e.end_date! <= we ? e.end_date! : we
-        const platformLabel = e.feed_color === '#FF5A5F' ? 'Airbnb'
-          : e.feed_color === '#003B95' ? 'Booking'
-          : e.feed_color === '#FFC72C' ? 'Vrbo'
-          : 'Synchro'
+        const platformLabel = e.platform_label ?? 'Synchro'
         const blocked = isBlockedIcalEvent(e.title, e.description)
         out.push({
           id: `ical-${e.id}`,
-          title: blocked ? `Bloqué — ${platformLabel}` : e.title,
-          color: blocked ? '#94a3b8' : e.feed_color,
-          bg:    blocked ? 'rgba(148,163,184,0.10)' : `${e.feed_color}22`,
+          title: blocked ? `Bloqué (${platformLabel})` : e.title,
+          color: blocked ? 'var(--text-3)' : e.feed_color,
+          bg:    blocked ? 'var(--bg-2)' : `${e.feed_color}22`,
           startCol: weekCells.findIndex(c => c.date === ss),
           endCol:   weekCells.findIndex(c => c.date === se),
           isStart:  e.start_date >= ws,
@@ -633,10 +629,11 @@ export default function CalendrierView({
       if ((a >= monthStart && a <= monthEnd) || (d && d >= monthStart && d <= monthEnd)) monthEvents++
     })
 
-    let menageWeek = 0, customMonth = 0
+    // Ménages de la semaine : le planning (départs Airbnb/Booking/directs +
+    // ménages saisis à la main, déjà fusionnés), pas seulement les saisies
+    const menageWeek = menageSlots.filter(sl => sl.date >= weekStart && sl.date <= weekEnd).length
+    let customMonth = 0
     events.forEach(e => {
-      const cat = catToDisplay(e.category)
-      if (cat === 'menage' && e.date >= weekStart && e.date <= weekEnd) menageWeek++
       if (e.date >= monthStart && e.date <= monthEnd) customMonth++
     })
 
@@ -672,7 +669,7 @@ export default function CalendrierView({
       monthEvents: monthEvents + customMonth,
       occupationPct, occupiedDays: occupiedDays.size, monthDays,
     }
-  }, [contractEvents, events, icalEvents, sejourEvents, year, month])
+  }, [contractEvents, events, icalEvents, sejourEvents, menageSlots, year, month])
 
   // ── Prochain événement à venir
   const nextUpcoming = useMemo(() => {
@@ -721,17 +718,15 @@ export default function CalendrierView({
     const seen = new Map<string, string>()
     icalEvents.forEach(e => {
       if (!seen.has(e.feed_color)) {
-        const label = e.feed_color === '#FF5A5F' ? 'Airbnb'
-          : e.feed_color === '#003B95' ? 'Booking'
-          : e.feed_color === '#FFC72C' ? 'Vrbo'
-          : 'Synchro'
+        const label = e.platform_label ?? 'Synchro'
         seen.set(e.feed_color, label)
       }
     })
     return Array.from(seen.entries()).map(([color, label]) => ({ color, label }))
   }, [icalEvents])
 
-  const LOGEMENT_COLORS = ['var(--success-1)','var(--info)','var(--warning)','#a78bfa','#fb923c','#f472b6']
+  // Couleurs de la marque, en hexadécimal (suffixées d'une opacité ailleurs)
+  const LOGEMENT_COLORS = ['#2F9E5B','#B7791F','#E0475B','#8B6D5E','#D97706','#F472B6']
   const logements = useMemo(() => {
     const seen = new Set<string>()
     return contractEvents
@@ -762,7 +757,7 @@ export default function CalendrierView({
       if (dta >= 0 && dta <= 2 && !cl.instructions_envoyees) add(arr, '#eab308', 'Instructions non envoyées')
       if (dep) {
         const dtd = diff(dep, today)
-        if (dtd >= 1 && dtd <= 3 && !cl.avis_demande)        add(dep, '#3b82f6', 'Avis non demandé')
+        if (dtd >= 1 && dtd <= 3 && !cl.avis_demande)        add(dep, '#8B6D5E', 'Avis non demandé')
         if (dta >= -1 && dta <= 0 && !cl.menage_planifie)    add(dep, '#64748b', 'Ménage non planifié')
       }
     })
@@ -798,7 +793,7 @@ export default function CalendrierView({
       if (dep) {
         const dtd = diff(dep, today)
         const di  = dtd === 1 ? 'Départ hier' : `Départ il y a ${dtd}j`
-        if (dtd >= 1 && dtd <= 3 && !cl.avis_demande) items.push({ color: '#3b82f6', priority: 3, label: 'Avis non demandé', logement: nom, daysInfo: di, navigateDate: dep, contractRef: depRef, contractId: ev.contractId, checklistKey: 'avis_demande' })
+        if (dtd >= 1 && dtd <= 3 && !cl.avis_demande) items.push({ color: '#8B6D5E', priority: 3, label: 'Avis non demandé', logement: nom, daysInfo: di, navigateDate: dep, contractRef: depRef, contractId: ev.contractId, checklistKey: 'avis_demande' })
       }
     })
     return items.sort((a, b) => a.priority - b.priority)
@@ -1090,174 +1085,53 @@ export default function CalendrierView({
   // ── render
   return (
     <div className="cal-root" style={s.root}>
-      {/* Page heading + résumé compact (1 ligne) avec toggle détails */}
-      <div style={s.headerCompact} className="cal-header-compact">
-        <div style={s.headerLeft}>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' as const }}>
-            <h1 style={s.pageTitleSmall}>
-              Mon <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>calendrier</em>
-            </h1>
+      {/* En-tête (DA sept. 2026) : bandeau vert compact, chiffres toujours
+          visibles (avant : une pastille « Occupation » et un bouton « Détails »). */}
+      <section style={hb.band} className="fade-up">
+        <div style={{ flex: '1 1 300px', minWidth: 0 }}>
+          <div style={hb.eyebrow}><CalendarBlank size={14} weight="fill" /> Calendrier</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <h1 style={hb.title}>Ton <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>calendrier</em></h1>
             <TourTrigger />
           </div>
-          <div style={s.summaryRow}>
-            {headerStats.occupiedDays > 0 && (
-              <button
-                type="button"
-                onClick={() => setShowStatsDetails(s => !s)}
-                style={s.summaryChip}
-                title="Voir le détail des stats"
-              >
-                <span style={s.summaryLabel}>Occupation</span>
-                <span style={{ ...s.summaryValue, color: headerStats.occupationPct >= 70 ? 'var(--success-1)' : headerStats.occupationPct >= 40 ? 'var(--accent-text)' : 'var(--text)' }}>
-                  {headerStats.occupationPct}%
-                </span>
-              </button>
-            )}
-            {nextUpcoming && nextUpcoming.daysAway >= 0 && nextUpcoming.daysAway <= 30 && (
-              <button
-                type="button"
-                onClick={() => {
-                  const d = nextUpcoming.date
-                  setSelected(d); setYear(Number(d.slice(0, 4))); setMonth(Number(d.slice(5, 7)) - 1)
-                  if (nextUpcoming.contract) setSelectedContract(nextUpcoming.contract)
-                }}
-                style={{ ...s.summaryChip, borderLeftColor: nextUpcoming.color, borderLeftWidth: '2px' }}
-                title="Voir cet événement"
-              >
-                <span style={s.summaryLabel}>Prochain</span>
-                <span style={s.summaryValue}>{nextUpcoming.title}</span>
-                <span style={{ ...s.summaryDays, color: nextUpcoming.color }}>
-                  {nextUpcoming.daysAway === 0 ? "aujourd'hui"
-                    : nextUpcoming.daysAway === 1 ? 'demain'
-                    : `dans ${nextUpcoming.daysAway}j`}
-                </span>
-              </button>
-            )}
-            {contractEvents.length > 0 && urgentAlerts.length === 0 && (
-              <span style={s.summaryOk}>
-                <span style={s.alertOkDot} />
-                Tout est en ordre
-              </span>
-            )}
+          <p style={hb.desc}>Airbnb, Booking, réservations directes, ménages et rendez-vous sur une seule vue.</p>
+        </div>
+        <div style={hb.stats} className="cal-band-stats">
+          <div style={hb.stat}>
+            <span style={hb.statNum}>{headerStats.arrToday}<span style={hb.statSep}>/</span>{headerStats.depToday}</span>
+            <span style={hb.statLbl}>arrivées / départs aujourd&apos;hui</span>
+          </div>
+          <div style={hb.stat}>
+            <span style={hb.statNum}>{headerStats.activeToday}</span>
+            <span style={hb.statLbl}>séjour{headerStats.activeToday > 1 ? 's' : ''} en cours</span>
+          </div>
+          <div style={hb.stat}>
+            <span style={hb.statNum}>{headerStats.menageWeek}</span>
+            <span style={hb.statLbl}>ménage{headerStats.menageWeek > 1 ? 's' : ''} cette semaine</span>
+          </div>
+          <div style={hb.stat}>
+            <span style={{ ...hb.statNum, color: headerStats.occupationPct >= 40 ? 'var(--accent-text)' : 'var(--text)' }}>{headerStats.occupationPct} %</span>
+            <span style={hb.statLbl}>occupation {MONTHS_FR[month].toLowerCase()} ({headerStats.occupiedDays}/{headerStats.monthDays} j)</span>
+          </div>
+          {nextUpcoming && nextUpcoming.daysAway >= 0 && nextUpcoming.daysAway <= 30 && (
             <button
               type="button"
-              onClick={() => setShowStatsDetails(s => !s)}
-              style={s.summaryToggle}
-              aria-expanded={showStatsDetails}
-              title={showStatsDetails ? 'Masquer les stats' : 'Voir toutes les stats'}
+              onClick={() => {
+                const d = nextUpcoming.date
+                setSelected(d); setYear(Number(d.slice(0, 4))); setMonth(Number(d.slice(5, 7)) - 1)
+                if (nextUpcoming.contract) setSelectedContract(nextUpcoming.contract)
+              }}
+              style={{ ...hb.stat, ...hb.statBtn }}
+              title="Voir cet événement"
             >
-              <CaretRight size={11} weight="bold" style={{ transform: showStatsDetails ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.15s' }} />
-              {showStatsDetails ? 'Masquer' : 'Détails'}
+              <span style={{ ...hb.statNum, fontSize: 16, color: 'var(--accent-text)' }}>
+                {nextUpcoming.daysAway === 0 ? "aujourd'hui" : nextUpcoming.daysAway === 1 ? 'demain' : `dans ${nextUpcoming.daysAway} j`}
+              </span>
+              <span style={{ ...hb.statLbl, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>prochain : {nextUpcoming.title}</span>
             </button>
-          </div>
+          )}
         </div>
-      </div>
-
-      {/* Stats détaillées repliables */}
-      {showStatsDetails && (() => {
-        const parts: React.ReactNode[] = []
-        if (headerStats.activeToday > 0) {
-          parts.push(
-            <span key="active" style={s.miniStat}>
-              <span style={s.miniStatNum}>{headerStats.activeToday}</span>
-              <span style={s.miniStatLabel}>séjour{headerStats.activeToday > 1 ? 's' : ''} en cours</span>
-            </span>
-          )
-        }
-        if (headerStats.arrToday > 0 || headerStats.depToday > 0) {
-          parts.push(
-            <span key="today" style={s.miniStat}>
-              <span style={s.miniStatLabel}>Aujourd&apos;hui</span>
-              {headerStats.arrToday > 0 && (
-                <>
-                  <span style={s.miniStatNum}>{headerStats.arrToday}</span>
-                  <span style={s.miniStatLabel}>arrivée{headerStats.arrToday > 1 ? 's' : ''}</span>
-                </>
-              )}
-              {headerStats.depToday > 0 && (
-                <>
-                  <span style={s.miniStatNum}>{headerStats.depToday}</span>
-                  <span style={s.miniStatLabel}>départ{headerStats.depToday > 1 ? 's' : ''}</span>
-                </>
-              )}
-            </span>
-          )
-        }
-        if (headerStats.arrWeek > 0 || headerStats.depWeek > 0 || headerStats.menageWeek > 0) {
-          parts.push(
-            <span key="week" style={s.miniStat}>
-              <span style={s.miniStatLabel}>Cette semaine</span>
-              {headerStats.arrWeek > 0 && (
-                <>
-                  <span style={s.miniStatNum}>{headerStats.arrWeek}</span>
-                  <span style={s.miniStatLabel}>arrivée{headerStats.arrWeek > 1 ? 's' : ''}</span>
-                </>
-              )}
-              {headerStats.depWeek > 0 && (
-                <>
-                  <span style={s.miniStatNum}>{headerStats.depWeek}</span>
-                  <span style={s.miniStatLabel}>départ{headerStats.depWeek > 1 ? 's' : ''}</span>
-                </>
-              )}
-              {headerStats.menageWeek > 0 && (
-                <>
-                  <span style={s.miniStatNum}>{headerStats.menageWeek}</span>
-                  <span style={s.miniStatLabel}>ménage{headerStats.menageWeek > 1 ? 's' : ''}</span>
-                </>
-              )}
-            </span>
-          )
-        }
-        if (headerStats.monthEvents > 0) {
-          parts.push(
-            <span key="month" style={s.miniStat}>
-              <span style={s.miniStatLabel}>Ce mois</span>
-              <span style={s.miniStatNum}>{headerStats.monthEvents}</span>
-              <span style={s.miniStatLabel}>événement{headerStats.monthEvents > 1 ? 's' : ''}</span>
-            </span>
-          )
-        }
-        parts.push(
-          <span key="occ" style={s.miniStat}>
-            <span style={s.miniStatLabel}>Occupation {MONTHS_FR[month].toLowerCase()}</span>
-            <span style={{ ...s.miniStatNum, color: headerStats.occupationPct >= 70 ? 'var(--success-1)' : headerStats.occupationPct >= 40 ? 'var(--accent-text)' : undefined }}>
-              {headerStats.occupationPct}%
-            </span>
-            <span style={s.miniStatLabel}>({headerStats.occupiedDays}/{headerStats.monthDays}j)</span>
-          </span>
-        )
-        const withSeparators: React.ReactNode[] = []
-        parts.forEach((p, i) => {
-          if (i > 0) withSeparators.push(<span key={`sep-${i}`} style={s.miniStatSep}>·</span>)
-          withSeparators.push(p)
-        })
-        return <div style={s.miniStats} className="cal-mini-stats">{withSeparators}</div>
-      })()}
-
-      {/* Vue compacte mobile : 2 KPIs essentiels seulement */}
-      <div className="cal-mobile-kpis">
-        {(() => {
-          const arrivals = headerStats.arrToday + headerStats.depToday
-          const occ = headerStats.occupationPct
-          const occColor = occ >= 70 ? 'var(--success-1)' : occ >= 40 ? 'var(--accent-text)' : 'var(--text-2)'
-          return (
-            <>
-              <div style={s.mobKpi}>
-                <span style={s.mobKpiNum}>{arrivals}</span>
-                <span style={s.mobKpiLabel}>aujourd&apos;hui</span>
-              </div>
-              <div style={s.mobKpi}>
-                <span style={{ ...s.mobKpiNum, color: occColor }}>{occ}%</span>
-                <span style={s.mobKpiLabel}>occupation</span>
-              </div>
-              <div style={s.mobKpi}>
-                <span style={s.mobKpiNum}>{headerStats.arrWeek + headerStats.depWeek}</span>
-                <span style={s.mobKpiLabel}>cette semaine</span>
-              </div>
-            </>
-          )
-        })()}
-      </div>
+      </section>
 
       <style>{`
         @keyframes cal-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -1296,6 +1170,9 @@ export default function CalendrierView({
         .time-sel:focus { border-color: var(--accent-text) !important; outline: none; box-shadow: 0 0 0 2px rgba(var(--accent-rgb, 0,76,63), 0.12); }
         .multi-toggle { transition: all 0.15s; cursor: pointer; }
         .multi-toggle:hover { background: var(--surface-2) !important; }
+        /* Libellés des boutons de la barre d outils : seulement sur grand écran */
+        .cal-btn-label { display: none; }
+        @media (min-width: 1400px) { .cal-btn-label { display: inline; } }
         @media (max-width: 1023px) {
           .cal-month-title { min-width: 180px !important; }
         }
@@ -1411,7 +1288,7 @@ export default function CalendrierView({
                 const stale = ageMs != null && ageMs > 1000 * 60 * 60 * 6 // > 6h
                 const noEvents = icalEvents.length === 0
                 const status = noEvents ? 'warn' : stale ? 'stale' : 'ok'
-                const dotColor = status === 'warn' ? 'var(--danger)' : status === 'stale' ? 'var(--warning)' : 'var(--success-1)'
+                const dotColor = status === 'warn' ? 'var(--danger)' : status === 'stale' ? 'var(--warning)' : 'var(--accent-text)'
                 return (
                   <button
                     type="button"
@@ -1441,6 +1318,7 @@ export default function CalendrierView({
             aria-label="Saisie rapide"
           >
             <Lightning size={14} weight="fill" />
+            <span className="cal-btn-label">Saisie rapide</span>
           </button>
           {/* Bouton Planning ménage — ouvre le modal d'export pour la femme de ménage */}
           <button
@@ -1451,6 +1329,7 @@ export default function CalendrierView({
             aria-label="Planning ménage"
           >
             <Broom size={14} weight="duotone" />
+            <span className="cal-btn-label">Ménage</span>
           </button>
           {/* Bouton Sources — afficher / masquer Airbnb, Booking, Vrbo, séjours…
               Visible partout. Sur desktop il double la legend inline en bas,
@@ -1466,6 +1345,7 @@ export default function CalendrierView({
                 aria-label="Filtrer les sources affichées"
               >
                 <Funnel size={14} weight={hiddenSources.size > 0 ? 'fill' : 'regular'} />
+                <span className="cal-btn-label">Sources</span>
                 {hiddenSources.size > 0 && (
                   <span style={s.sourcesBadge}>{hiddenSources.size}</span>
                 )}
@@ -1545,6 +1425,7 @@ export default function CalendrierView({
               aria-label="Exporter le calendrier"
             >
               <Share size={14} weight="bold" />
+            <span className="cal-btn-label">Partager</span>
             </button>
             {showExportPanel && (
               <div style={s.exportPanel}>
@@ -1555,7 +1436,7 @@ export default function CalendrierView({
                   </button>
                 </div>
                 <p style={s.exportDesc}>
-                  Collez ce lien dans Google&nbsp;Calendar, Apple Calendar, Outlook ou Notion pour voir vos séjours et rendez-vous se synchroniser automatiquement.
+                  Colle ce lien dans Google&nbsp;Agenda, Apple Calendar, Outlook ou Notion : tes séjours et rendez-vous s&apos;y mettent à jour tout seuls.
                 </p>
                 {icalTokenState ? (
                   <>
@@ -1683,7 +1564,7 @@ export default function CalendrierView({
           </div>
           {icalEvents.length === 0 && (
             <p style={s.syncEmpty}>
-              Aucune réservation importée. Cliquez sur « Tout synchroniser » pour récupérer les dates depuis Airbnb / Booking / Vrbo.
+              Aucune réservation importée. Clique sur « Tout synchroniser » pour récupérer les dates depuis Airbnb / Booking / Vrbo.
             </p>
           )}
         </div>
@@ -1861,7 +1742,7 @@ export default function CalendrierView({
                       if (c.type === 'arrivee') {
                         const avantItems = CHECKLIST_ITEMS.filter(i => i.phase === 'avant')
                         const done = avantItems.filter(i => cl[i.key]).length
-                        if (done === avantItems.length) progressColor = 'var(--success-1)'
+                        if (done === avantItems.length) progressColor = 'var(--accent-text)'
                         else if (done > 0) progressColor = '#eab308'
                         else progressColor = 'var(--danger)'
                       }
@@ -1901,8 +1782,8 @@ export default function CalendrierView({
                           ...s.cell,
                           opacity: !inMonth ? 0.4 : isPast ? 0.6 : 1,
                           userSelect: 'none', position: 'relative',
-                          background: isInDrag ? 'rgba(96,165,250,0.12)' : isInSelRange ? 'rgba(255,213,107,0.10)' : isSel && !selRange ? 'var(--surface-2)' : isWeekend && inMonth ? 'var(--bg-2)' : 'transparent',
-                          outline: isInDrag ? '1.5px solid rgba(96,165,250,0.4)' : (isSel && !selRange) ? '2px solid var(--accent-border)' : isToday && inMonth ? '2px solid var(--accent-text)' : '1.5px solid transparent',
+                          background: isInDrag ? 'rgba(255,213,107,0.16)' : isInSelRange ? 'rgba(255,213,107,0.10)' : isSel && !selRange ? 'var(--surface-2)' : isWeekend && inMonth ? 'var(--bg-2)' : 'transparent',
+                          outline: isInDrag ? '1.5px solid rgba(183,121,31,0.45)' : (isSel && !selRange) ? '2px solid var(--accent-border)' : isToday && inMonth ? '2px solid var(--accent-text)' : '1.5px solid transparent',
                         }}
                       >
                         {/* Day number, always at top */}
@@ -1966,7 +1847,7 @@ export default function CalendrierView({
                         style={{
                           position: 'absolute', top, left, width, height: BAR_H, zIndex: 2,
                           background: span.isBlocked
-                            ? 'repeating-linear-gradient(45deg, rgba(148,163,184,0.10) 0 6px, rgba(148,163,184,0.20) 6px 12px)'
+                            ? 'repeating-linear-gradient(45deg, rgba(122,110,95,0.10) 0 6px, rgba(122,110,95,0.20) 6px 12px)'
                             : span.bg,
                           borderLeft: span.isStart ? `2.5px solid ${span.color}` : 'none',
                           borderRadius: br,
@@ -1976,7 +1857,9 @@ export default function CalendrierView({
                           opacity: span.isBlocked ? 0.75 : 1,
                         }}
                       >
-                        {span.isStart && (
+                        {/* Libellé au début de la barre, et repris en début de
+                            semaine quand un séjour continue sur la ligne suivante */}
+                        {(span.isStart || span.startCol === 0) && (
                           <>
                             {span.isIcal && span.platformLabel && (
                               <span style={{
@@ -2340,10 +2223,10 @@ export default function CalendrierView({
                 <div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', fontSize: '11px', color: 'var(--text-muted)' }}>
                     <span>Suivi opérationnel</span>
-                    <span style={{ fontWeight: 600, color: pct === 100 ? 'var(--success-1)' : pct > 50 ? '#eab308' : 'var(--danger)' }}>{done}/{total}</span>
+                    <span style={{ fontWeight: 600, color: pct === 100 ? 'var(--accent-text)' : pct > 50 ? '#eab308' : 'var(--danger)' }}>{done}/{total}</span>
                   </div>
                   <div style={{ height: '5px', borderRadius: '3px', background: 'var(--surface)', overflow: 'hidden' }}>
-                    <div style={{ height: '100%', borderRadius: '3px', width: `${pct}%`, background: pct === 100 ? 'var(--success-1)' : pct > 50 ? '#eab308' : 'var(--danger)', transition: 'width 0.3s' }} />
+                    <div style={{ height: '100%', borderRadius: '3px', width: `${pct}%`, background: pct === 100 ? 'var(--accent-text)' : pct > 50 ? '#eab308' : 'var(--danger)', transition: 'width 0.3s' }} />
                   </div>
                 </div>
 
@@ -2359,7 +2242,7 @@ export default function CalendrierView({
                           type="button"
                           className="icon-btn"
                           onClick={() => handlePhaseToggle(selectedContract.contractId, phase, !allChecked)}
-                          style={{ fontSize: '10px', color: allChecked ? 'var(--danger)' : 'var(--success-1)', fontWeight: 600, padding: '2px 6px', borderRadius: '4px', border: `1px solid ${allChecked ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`, background: allChecked ? 'rgba(239,68,68,0.08)' : 'rgba(16,185,129,0.08)', cursor: 'pointer' }}
+                          style={{ fontSize: '10px', color: allChecked ? 'var(--danger)' : 'var(--accent-text)', fontWeight: 600, padding: '2px 6px', borderRadius: '4px', border: `1px solid ${allChecked ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)'}`, background: allChecked ? 'rgba(239,68,68,0.08)' : 'rgba(16,185,129,0.08)', cursor: 'pointer' }}
                         >
                           {allChecked ? 'Tout décocher' : 'Tout cocher'}
                         </button>
@@ -2382,8 +2265,8 @@ export default function CalendrierView({
                           >
                             <span style={{
                               width: 16, height: 16, borderRadius: '4px', flexShrink: 0,
-                              border: `1.5px solid ${checked ? 'var(--success-1)' : 'var(--border-2)'}`,
-                              background: checked ? 'var(--success-1)' : 'transparent',
+                              border: `1.5px solid ${checked ? 'var(--accent-text)' : 'var(--border-2)'}`,
+                              background: checked ? 'var(--accent-text)' : 'transparent',
                               display: 'flex', alignItems: 'center', justifyContent: 'center',
                               transition: 'all 0.15s',
                             }}>
@@ -2420,7 +2303,7 @@ export default function CalendrierView({
                   const isContract = !!ev.isContract
                   const isIcal     = !!ev.isIcal
                   const cat        = CAT[ev.category] ?? CAT.note
-                  const accent     = isIcal ? (ev.feedColor ?? '#94a3b8') : cat.color
+                  const accent     = isIcal ? (ev.feedColor ?? '#8B6D5E') : cat.color
                   const label      = isIcal ? (ev.feedName ?? 'Calendrier externe') : cat.label
                   const isMulti    = !!ev.end_date && ev.end_date !== ev.date
                   const origContract = isContract ? contractEvents.find(c => c.id === ev.id) : null
@@ -2436,7 +2319,7 @@ export default function CalendrierView({
                         <span style={s.evtTitle}>{ev.title}</span>
                         <div style={{ display: 'flex', gap: '4px', flexShrink: 0, alignItems: 'center' }}>
                           {isContract && (
-                            <span style={{ fontSize: '11px', fontWeight: 600, color: clDone === CHECKLIST_ITEMS.length ? 'var(--success-1)' : clDone > 0 ? '#eab308' : 'var(--text-muted)', background: 'var(--surface)', padding: '2px 7px', borderRadius: '100px' }}>
+                            <span style={{ fontSize: '11px', fontWeight: 600, color: clDone === CHECKLIST_ITEMS.length ? 'var(--accent-text)' : clDone > 0 ? '#eab308' : 'var(--text-muted)', background: 'var(--surface)', padding: '2px 7px', borderRadius: '100px' }}>
                               {clDone}/{CHECKLIST_ITEMS.length}
                             </span>
                           )}
@@ -2677,3 +2560,23 @@ export default function CalendrierView({
 }
 
 export type { CalEvent } from './calendrier-shared'
+
+// Bandeau d'en-tête du calendrier (même dégradé que HubHero, en plus compact)
+const hb: Record<string, React.CSSProperties> = {
+  band: {
+    display: 'flex', flexWrap: 'wrap', gap: '16px 28px', alignItems: 'center',
+    padding: 'clamp(16px,2.2vw,22px) clamp(18px,2.6vw,28px)', borderRadius: 20,
+    background: 'linear-gradient(135deg, var(--accent-bg) 0%, rgba(99,214,131,0.10) 55%, rgba(255,213,107,0.14) 100%)',
+    border: '1px solid var(--accent-border)',
+  },
+  eyebrow: { display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, color: 'var(--accent-text)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: 4 },
+  title: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(24px,2.6vw,32px)', fontWeight: 400, color: 'var(--text)', margin: 0, lineHeight: 1.15, letterSpacing: '-0.4px' },
+  desc: { fontSize: 13.5, color: 'var(--text-2)', margin: '6px 0 0', lineHeight: 1.5 },
+  // Flex (pas grid) : une tuile seule en fin de ligne s'étire au lieu de rester petite
+  stats: { flex: '2 1 460px', display: 'flex', flexWrap: 'wrap', gap: 8, minWidth: 0 },
+  stat: { flex: '1 1 112px', display: 'flex', flexDirection: 'column', gap: 3, padding: '10px 12px', borderRadius: 12, background: 'var(--surface)', border: '1px solid var(--border)', minWidth: 0, textAlign: 'left' },
+  statBtn: { cursor: 'pointer', fontFamily: 'inherit' },
+  statNum: { fontFamily: 'var(--font-fraunces), serif', fontSize: 22, lineHeight: 1.1, color: 'var(--text)' },
+  statSep: { color: 'var(--text-3)', margin: '0 3px', fontSize: 18 },
+  statLbl: { fontSize: 11.5, color: 'var(--text-3)', lineHeight: 1.35 },
+}

@@ -21,17 +21,19 @@ export interface CalEvent {
   category: string
 }
 
+// Couleurs de la marque uniquement (sept. 2026 : plus de bleu ni de violet),
+// toujours en hexadécimal car suffixées d'une opacité (`${color}55`)
 export const CAT: Record<string, { label: string; color: string; bg: string; border: string }> = {
-  arrivee:   { label: 'Arrivée',     color: 'var(--success-1)', bg: 'rgba(16,185,129,0.13)',  border: 'rgba(16,185,129,0.30)' },
-  depart:    { label: 'Départ',      color: 'var(--info)', bg: 'rgba(96,165,250,0.13)',  border: 'rgba(96,165,250,0.30)' },
-  sejour:    { label: 'Séjour',      color: '#F472B6', bg: 'rgba(244,114,182,0.13)', border: 'rgba(244,114,182,0.30)' },
-  menage:    { label: 'Ménage',      color: '#5DC077', bg: 'rgba(93,192,119,0.13)',  border: 'rgba(93,192,119,0.30)' },
-  rdv:       { label: 'RDV',         color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', border: 'var(--accent-border)' },
-  tache:     { label: 'Tâche',       color: '#a78bfa', bg: 'rgba(167,139,250,0.13)', border: 'rgba(167,139,250,0.30)' },
-  note:      { label: 'Note',        color: '#94a3b8', bg: 'rgba(148,163,184,0.13)', border: 'rgba(148,163,184,0.30)' },
+  arrivee:   { label: 'Arrivée',     color: '#2F9E5B', bg: 'rgba(47,158,91,0.13)',   border: 'rgba(47,158,91,0.32)' },
+  depart:    { label: 'Départ',      color: '#D97706', bg: 'rgba(217,119,6,0.12)',   border: 'rgba(217,119,6,0.32)' },
+  sejour:    { label: 'Séjour',      color: '#3F7D5C', bg: 'rgba(63,125,92,0.13)',   border: 'rgba(63,125,92,0.32)' },
+  menage:    { label: 'Ménage',      color: '#DB4F96', bg: 'rgba(244,114,182,0.14)', border: 'rgba(219,79,150,0.32)' },
+  rdv:       { label: 'RDV',         color: '#B7791F', bg: 'rgba(255,213,107,0.20)', border: 'rgba(183,121,31,0.35)' },
+  tache:     { label: 'Tâche',       color: '#8B6D5E', bg: 'rgba(139,109,94,0.13)',  border: 'rgba(139,109,94,0.32)' },
+  note:      { label: 'Note',        color: '#7A6E5F', bg: 'rgba(122,110,95,0.12)',  border: 'rgba(122,110,95,0.30)' },
   // Legacy aliases (display only, not shown in pickers)
-  entretien: { label: 'Ménage',      color: '#5DC077', bg: 'rgba(93,192,119,0.13)',  border: 'rgba(93,192,119,0.30)' },
-  admin:     { label: 'Tâche',       color: '#a78bfa', bg: 'rgba(167,139,250,0.13)', border: 'rgba(167,139,250,0.30)' },
+  entretien: { label: 'Ménage',      color: '#DB4F96', bg: 'rgba(244,114,182,0.14)', border: 'rgba(219,79,150,0.32)' },
+  admin:     { label: 'Tâche',       color: '#8B6D5E', bg: 'rgba(139,109,94,0.13)',  border: 'rgba(139,109,94,0.32)' },
 }
 
 export type CatKey = 'arrivee' | 'depart' | 'sejour' | 'menage' | 'rdv' | 'tache' | 'note'

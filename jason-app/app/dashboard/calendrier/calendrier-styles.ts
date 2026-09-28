@@ -62,7 +62,7 @@ export const s: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(16,185,129,0.2)',
     borderRadius: '8px',
     fontSize: '12px',
-    color: 'var(--success-1)',
+    color: 'var(--accent-text)',
     fontWeight: 500,
     whiteSpace: 'nowrap' as const,
   },
@@ -174,7 +174,7 @@ export const s: Record<string, React.CSSProperties> = {
   exportCopyBtnOk: {
     background: 'rgba(16,185,129,0.15)',
     borderColor: 'rgba(16,185,129,0.4)',
-    color: 'var(--success-1)',
+    color: 'var(--accent-text)',
   },
   exportPrimaryBtn: {
     width: '100%',
@@ -240,7 +240,7 @@ export const s: Record<string, React.CSSProperties> = {
   },
   syncOk: {
     fontSize: '12px',
-    color: 'var(--success-1)',
+    color: 'var(--accent-text)',
     background: 'rgba(16,185,129,0.08)',
     padding: '6px 10px',
     borderRadius: '7px',
@@ -264,8 +264,12 @@ export const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '32px',
+    gap: '6px',
+    minWidth: '32px',
+    padding: '0 9px',
     height: '32px',
+    fontSize: '12.5px',
+    fontWeight: 600,
     background: 'transparent',
     border: '1px solid var(--border)',
     borderRadius: '8px',
@@ -292,7 +296,7 @@ export const s: Record<string, React.CSSProperties> = {
     flexShrink: 0,
   },
   root: {
-    padding: 'clamp(20px,3vw,40px) clamp(20px,3vw,40px) 32px',
+    padding: '20px var(--dash-page-px) 32px',
     display: 'flex',
     flexDirection: 'column',
     gap: '16px',
@@ -491,8 +495,8 @@ export const s: Record<string, React.CSSProperties> = {
   evtTitle: { fontSize: '13px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.35 },
   spanBadge: {
     fontSize: '11px', fontWeight: 500,
-    color: 'var(--info)',
-    background: 'rgba(96,165,250,0.1)',
+    color: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
     padding: '2px 8px', borderRadius: '100px',
   },
   evtTime: {
@@ -604,7 +608,7 @@ export const s: Record<string, React.CSSProperties> = {
     background: 'transparent',
     border: 'none',
     borderLeft: '1px solid var(--border)',
-    color: 'var(--success-1)',
+    color: 'var(--accent-text)',
     fontSize: '14px', fontWeight: 700,
     cursor: 'pointer',
     flexShrink: 0,
@@ -632,11 +636,11 @@ export const s: Record<string, React.CSSProperties> = {
     border: '1px solid rgba(16,185,129,0.22)',
     borderRadius: '12px',
     fontSize: '12px', fontWeight: 500,
-    color: 'var(--success-1)',
+    color: 'var(--accent-text)',
   },
   alertOkDot: {
     width: '8px', height: '8px', borderRadius: '50%',
-    background: 'var(--success-1)',
+    background: 'var(--accent-text)',
     boxShadow: '0 0 0 4px rgba(16,185,129,0.18)',
   },
 

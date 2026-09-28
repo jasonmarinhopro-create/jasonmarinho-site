@@ -107,7 +107,7 @@ function MenageSection({
           {done && <CheckCircle size={11} weight="fill" />}
         </span>
         <span>
-          {isPending ? 'Enregistrement…' : (done ? 'Ménage fait — cliquer pour annuler' : 'Marquer comme fait')}
+          {isPending ? 'Enregistrement…' : (done ? 'Ménage fait (clique pour annuler)' : 'Marquer comme fait')}
         </span>
       </button>
     </div>
@@ -186,7 +186,7 @@ function SejourEditPanel({
           value={form.montant ?? ''}
           onChange={e => setForm(f => ({ ...f, montant: e.target.value === '' ? null : Number(e.target.value) }))}
           style={editStyles.input}
-          placeholder="—"
+          placeholder="-"
         />
       </label>
       {(error || datesInvalid) && (
@@ -457,7 +457,7 @@ export default function SejourPopover({
         ) : (
           <div style={s.firstStayNote}>
             <Sparkle size={12} weight="duotone" />
-            <span>Premier séjour sur cette période — pense à vérifier la propreté avant l'arrivée.</span>
+            <span>Premier séjour sur cette période : pense à vérifier la propreté avant l'arrivée.</span>
           </div>
         )}
 
@@ -657,7 +657,7 @@ const s: Record<string, React.CSSProperties> = {
     padding: '2px 7px',
     borderRadius: '999px',
     background: 'var(--success-bg)',
-    color: 'var(--success-1)',
+    color: 'var(--accent-text)',
     border: '1px solid var(--success-border)',
     letterSpacing: '0.3px',
     textTransform: 'none',
@@ -709,8 +709,8 @@ const s: Record<string, React.CSSProperties> = {
     flexShrink: 0,
   },
   checkboxDone: {
-    background: 'var(--success-1)',
-    borderColor: 'var(--success-1)',
+    background: 'var(--accent-text)',
+    borderColor: 'var(--accent-text)',
     color: '#fff',
   },
   urgentBadge: {

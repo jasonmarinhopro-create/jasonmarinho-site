@@ -6,6 +6,7 @@ import CalendrierTabBar from './CalendrierTabBar'
 import OnboardingTour, { CALENDRIER_STEPS } from '../OnboardingTour'
 import { computeMenageSlots, mergeAutoAndManual, type Occupation, type LogementSettings, type MenageSlot, type ManualMenageEvent } from '@/lib/menage/compute'
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
+import { icalCalendarDisplay } from '@/lib/ical/calendar-label'
 
 export interface ContractEvent {
   id: string
@@ -37,6 +38,8 @@ export interface IcalEvent {
   end_time: string | null
   description: string | null
   feed_color: string
+  /** Airbnb, Booking, Vrbo (déduit de l'URL du flux), sinon null */
+  platform_label?: string | null
 }
 
 export interface SejourEvent {
@@ -101,7 +104,7 @@ export default async function CalendrierPage() {
       .order('created_at'),
     supabase
       .from('ical_events')
-      .select('id, feed_id, title, start_date, end_date, start_time, end_time, description, ical_feeds(color)')
+      .select('id, feed_id, title, start_date, end_date, start_time, end_time, description, ical_feeds(color, url, name)')
       .eq('user_id', userId),
     supabase
       .from('profiles')
@@ -174,13 +177,22 @@ export default async function CalendrierPage() {
       }
     })
 
-  const icalEvents: IcalEvent[] = (icalEventsRaw ?? []).map((e: any) => ({
-    id: e.id, feed_id: e.feed_id, title: e.title,
-    start_date: e.start_date, end_date: e.end_date,
-    start_time: e.start_time, end_time: e.end_time,
-    description: e.description,
-    feed_color: (e.ical_feeds as any)?.color ?? 'var(--info)',
-  }))
+  // Plateforme lue dans l'URL du flux, libellé lisible au lieu de « Reserved »,
+  // couleurs de la marque (lib/ical/calendar-label.ts)
+  const icalEvents: IcalEvent[] = (icalEventsRaw ?? []).map((e: any) => {
+    const feed = e.ical_feeds as { color?: string; url?: string; name?: string } | null
+    const disp = icalCalendarDisplay({ title: e.title, feedUrl: feed?.url, feedName: feed?.name, feedColor: feed?.color })
+    return {
+      // Un blocage garde son titre brut : c'est lui que lisent
+      // isBlockedIcalEvent / isRealReservation dans la vue
+      id: e.id, feed_id: e.feed_id, title: isBlockedIcalEvent(e.title, e.description) ? e.title : disp.title,
+      start_date: e.start_date, end_date: e.end_date,
+      start_time: e.start_time, end_time: e.end_time,
+      description: e.description,
+      feed_color: disp.color,
+      platform_label: disp.platformLabel,
+    }
+  })
 
   const voyageurOptions: VoyageurOption[] = (voyageursRaw ?? []).map((v: any) => ({
     id: v.id,
