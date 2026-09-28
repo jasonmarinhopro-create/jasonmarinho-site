@@ -11,6 +11,7 @@ import TourTrigger from '@/components/dashboard/TourTrigger'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
 import type { ContractEvent, IcalFeed, IcalEvent, SejourEvent, VoyageurOption, LogementOption } from './page'
+import type { VoyageurOption as QuickVoyageur } from '@/app/dashboard/logements/[id]/QuickSejourModal'
 import dynamic from 'next/dynamic'
 import ListView from './ListView'
 import SearchableCombobox from './SearchableCombobox'
@@ -22,6 +23,9 @@ import { s } from './calendrier-styles'
 // l'utilisateur clique sur le bouton balai. Économise ~15 KB du bundle
 // initial du calendrier.
 const MenageExportModal = dynamic(() => import('./MenageExportModal'), { ssr: false })
+// « Compléter la réservation » d'une réservation Airbnb/Booking importée :
+// même modale que Mes réservations (voyageur, nationalité, montant).
+const QuickSejourModal = dynamic(() => import('@/app/dashboard/logements/[id]/QuickSejourModal'), { ssr: false })
 
 interface Props {
   events: CalEvent[]
@@ -30,6 +34,7 @@ interface Props {
   icalEvents: IcalEvent[]
   sejourEvents: SejourEvent[]
   voyageurOptions: VoyageurOption[]
+  quickVoyageurs: QuickVoyageur[]
   logementOptions: LogementOption[]
   menageSlots: import('./page').MenageSlot[]
   icalToken: string | null
@@ -45,6 +50,7 @@ export default function CalendrierView({
   icalEvents,
   sejourEvents: initialSejourEvents,
   voyageurOptions,
+  quickVoyageurs,
   logementOptions,
   menageSlots,
   icalToken,
@@ -66,6 +72,8 @@ export default function CalendrierView({
 
   // Mini-popover quand on clique sur un séjour (au lieu de naviguer vers la fiche)
   const [sejourPopover, setSejourPopover] = useState<{ sejour: SejourEvent; anchor: DOMRect | null } | null>(null)
+  // Réservation Airbnb/Booking à compléter (le flux ne donne que les dates)
+  const [completeIcal, setCompleteIcal] = useState<NonNullable<IcalEvent['completion']> | null>(null)
   // Modal d'export ménage (PDF / WhatsApp / iCal)
   const [menageExportOpen, setMenageExportOpen] = useState(false)
 
@@ -522,7 +530,7 @@ export default function CalendrierView({
   useEffect(() => { byDateRef.current = byDate }, [byDate])
 
   // ── selected day merged events (deduplicated by id)
-  type Merged = CalEvent & { isContract?: boolean; isIcal?: boolean; isSejour?: boolean; feedColor?: string; feedName?: string; voyageurId?: string }
+  type Merged = CalEvent & { isContract?: boolean; isIcal?: boolean; isSejour?: boolean; feedColor?: string; feedName?: string; voyageurId?: string; completion?: IcalEvent['completion']; linked?: boolean }
   const selectedAll = useMemo(() => {
     const day  = byDate[selected] ?? { custom: [], contracts: [], ical: [], sejours: [] }
     const seen = new Set<string>()
@@ -584,6 +592,8 @@ export default function CalendrierView({
           isIcal: true,
           feedColor: e.feed_color,
           feedName: feed?.name,
+          completion: e.completion ?? null,
+          linked: e.linked,
         })
       }
     })
@@ -2359,6 +2369,22 @@ export default function CalendrierView({
                       {ev.description && (
                         <p style={s.evtDesc}>{ev.description}</p>
                       )}
+
+                      {/* Réservation importée : le flux Airbnb / Booking ne
+                          transmet que les dates, l'hôte complète le reste */}
+                      {isIcal && ev.completion && (
+                        <div style={s.completeBox}>
+                          <p style={s.completeText}>
+                            {ev.completion.platform === 'booking' ? 'Booking' : ev.completion.platform === 'vrbo' ? 'Vrbo' : ev.completion.platform === 'airbnb' ? 'Airbnb' : 'La plateforme'} ne transmet que les dates. Ajoute le voyageur (sa nationalité sert à la déclaration) et le montant.
+                          </p>
+                          <button type="button" onClick={() => setCompleteIcal(ev.completion!)} style={s.completeBtn}>
+                            <Plus size={13} weight="bold" /> Compléter la réservation
+                          </button>
+                        </div>
+                      )}
+                      {isIcal && ev.linked && (
+                        <span style={s.linkedChip}><Check size={11} weight="bold" /> Voyageur ajouté</span>
+                      )}
                     </div>
                   )
                 })
@@ -2368,6 +2394,16 @@ export default function CalendrierView({
 
         </div>
       </div>
+
+      {completeIcal && (
+        <QuickSejourModal
+          voyageurs={quickVoyageurs}
+          logements={logementOptions}
+          onClose={() => setCompleteIcal(null)}
+          defaults={{ logementNom: completeIcal.logementNom ?? undefined, dateArrivee: completeIcal.dateArrivee, dateDepart: completeIcal.dateDepart }}
+          platform={completeIcal.platform ?? undefined}
+        />
+      )}
 
       {/* ── Mini-popover quand on clique sur un séjour ────────────────────── */}
       {sejourPopover && (() => {

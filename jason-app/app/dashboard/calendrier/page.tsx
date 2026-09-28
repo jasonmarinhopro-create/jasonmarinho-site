@@ -7,6 +7,7 @@ import OnboardingTour, { CALENDRIER_STEPS } from '../OnboardingTour'
 import { computeMenageSlots, mergeAutoAndManual, type Occupation, type LogementSettings, type MenageSlot, type ManualMenageEvent } from '@/lib/menage/compute'
 import { isBlockedIcalEvent } from '@/lib/ical/blocked'
 import { icalCalendarDisplay } from '@/lib/ical/calendar-label'
+import { icalReservationsForDisplay } from '@/lib/ical/display'
 
 export interface ContractEvent {
   id: string
@@ -40,6 +41,11 @@ export interface IcalEvent {
   feed_color: string
   /** Airbnb, Booking, Vrbo (déduit de l'URL du flux), sinon null */
   platform_label?: string | null
+  /** Vraie réservation pas encore complétée : logement, dates et plateforme
+   *  pour ouvrir « Compléter la réservation » (le flux ne donne que les dates) */
+  completion?: { logementNom: string | null; dateArrivee: string; dateDepart: string; platform: 'airbnb' | 'booking' | 'vrbo' | null } | null
+  /** Un séjour saisi couvre déjà cette réservation (voyageur ajouté) */
+  linked?: boolean
 }
 
 export interface SejourEvent {
@@ -120,7 +126,7 @@ export default async function CalendrierPage() {
       .not('date_depart', 'is', null),
     supabase
       .from('voyageurs')
-      .select('id, prenom, nom')
+      .select('id, prenom, nom, email, telephone')
       .eq('user_id', userId)
       .order('prenom'),
     supabase
@@ -179,6 +185,13 @@ export default async function CalendrierPage() {
 
   // Plateforme lue dans l'URL du flux, libellé lisible au lieu de « Reserved »,
   // couleurs de la marque (lib/ical/calendar-label.ts)
+  // Réservations Airbnb/Booking/Vrbo (blocages exclus, « CLOSED » Booking
+  // courts gardés) : le flux ne transmet que les dates, l'hôte complète le
+  // reste (voyageur, nationalité, montant) depuis le calendrier. Couverte
+  // si un séjour saisi a le même logement et la même arrivée.
+  const covered = new Set((sejoursRaw ?? []).map((s: any) => `${s.date_arrivee}|${(s.logement ?? '').trim().toLowerCase()}`))
+  const resaById = new Map(icalReservationsForDisplay((logementsRaw ?? []) as any[], (feeds ?? []) as any[], (icalEventsRaw ?? []) as any[]).map(r => [r.id, r]))
+
   const icalEvents: IcalEvent[] = (icalEventsRaw ?? []).map((e: any) => {
     const feed = e.ical_feeds as { color?: string; url?: string; name?: string } | null
     const disp = icalCalendarDisplay({ title: e.title, feedUrl: feed?.url, feedName: feed?.name, feedColor: feed?.color })
@@ -191,8 +204,16 @@ export default async function CalendrierPage() {
       description: e.description,
       feed_color: disp.color,
       platform_label: disp.platformLabel,
+      ...completionOf(e.id),
     }
   })
+
+  function completionOf(id: string): Pick<IcalEvent, 'completion' | 'linked'> {
+    const r = resaById.get(id)
+    if (!r) return {}
+    if (covered.has(`${r.dateArrivee}|${(r.logementName ?? '').trim().toLowerCase()}`)) return { linked: true }
+    return { completion: { logementNom: r.logementName, dateArrivee: r.dateArrivee, dateDepart: r.dateDepart, platform: r.platform } }
+  }
 
   const voyageurOptions: VoyageurOption[] = (voyageursRaw ?? []).map((v: any) => ({
     id: v.id,
@@ -297,6 +318,7 @@ export default async function CalendrierPage() {
         icalEvents={icalEvents}
         sejourEvents={sejourEvents}
         voyageurOptions={voyageurOptions}
+        quickVoyageurs={(voyageursRaw ?? []).map((v: any) => ({ id: v.id, prenom: v.prenom ?? '', nom: v.nom ?? '', email: v.email ?? null, telephone: v.telephone ?? null }))}
         logementOptions={logementOptions}
         menageSlots={menageSlots}
         icalToken={icalToken}

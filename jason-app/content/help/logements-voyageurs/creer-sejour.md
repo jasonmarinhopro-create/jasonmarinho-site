@@ -25,7 +25,7 @@ En haut de la page, l'encadré **À compléter** compte les réservations à ven
 
 ## Réservation Airbnb ou Booking
 
-Le plus simple : dans **Mes réservations**, ouvre la réservation synchronisée et clique **Ajouter le voyageur**. Dates et logement sont déjà remplis et le séjour est enregistré comme géré par la plateforme.
+Le plus simple : dans le **Calendrier**, clique sur la réservation synchronisée puis **Compléter la réservation** (ou dans **Mes réservations**, **Ajouter le voyageur**). Dates et logement sont déjà remplis et le séjour est enregistré comme géré par la plateforme.
 
 Pour un séjour saisi à la main venu d'une plateforme, mets le contrat du séjour sur **Signé**, puis **Signé via → Plateforme** et choisis-la (Airbnb, Booking…). Le contrat et le paiement restent gérés par la plateforme : l'app ne propose alors ni contrat ni lien de paiement.
 

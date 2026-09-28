@@ -35,5 +35,5 @@ Si un lien ne répond plus plusieurs fois de suite, tu reçois une notification 
 ## Ce que la synchro ne fait pas
 
 - Elle est **dans un seul sens** : l'app lit tes plateformes, elle ne leur écrit pas. Bloquer une date dans l'app ne la bloque pas sur Airbnb
-- Airbnb et Booking ne transmettent **ni le nom du voyageur ni le montant** : seulement les dates
+- Airbnb et Booking ne transmettent **ni le nom du voyageur ni le montant** : seulement les dates. Complète chaque réservation toi-même : dans le **Calendrier**, clique sur la réservation puis **Compléter la réservation** (ou dans **Mes réservations**, **Ajouter le voyageur**). Dates et logement sont déjà remplis ; ajoute le voyageur, sa nationalité (pour la déclaration) et le montant
 - Booking exporte ses réservations sous le nom « CLOSED - Not available ». L'app les compte comme des réservations quand elles font 30 nuits ou moins. Un blocage manuel court sur Booking peut donc créer un ménage en trop

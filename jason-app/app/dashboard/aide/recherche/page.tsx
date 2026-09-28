@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { ArrowLeft } from '@phosphor-icons/react/dist/ssr'
+import { ArrowLeft, MagnifyingGlass } from '@phosphor-icons/react/dist/ssr'
+import HubHero, { HeroEm } from '@/components/dashboard/HubHero'
 import { listAllArticles } from '@/lib/help/loader'
 import { extractPlainText } from '@/lib/help/markdown'
 import { HELP_CATEGORIES, getCategory } from '@/lib/help/categories'
@@ -31,12 +32,21 @@ export default function AideRecherchePage() {
         Retour au centre d'aide
       </Link>
 
-      <h1 style={s.title}>
-        Rechercher dans <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>l'aide</em>
-      </h1>
-      <p style={s.sub}>
-        {articles.length} article{articles.length > 1 ? 's' : ''} disponible{articles.length > 1 ? 's' : ''} dans le centre d'aide.
-      </p>
+      {/* En-tête (DA 28/09/2026) : même bandeau vert que le reste de l'aide */}
+      <HubHero
+        eyebrowIcon={<MagnifyingGlass size={13} weight="bold" />}
+        eyebrow="Centre d'aide"
+        title={<>Rechercher dans <HeroEm>l&apos;aide</HeroEm></>}
+        desc={`${articles.length} article${articles.length > 1 ? 's' : ''} : tape un mot-clé (caution, iCal, facture, déclaration…) ou parcours les thèmes ci-dessous.`}
+      >
+        <div style={s.topics}>
+          {HELP_CATEGORIES.filter(c => articles.some(a => a.category === c.slug)).map(c => (
+            <Link key={c.slug} href={`/dashboard/aide/${c.slug}`} style={s.topic}>
+              <c.Icon size={13} weight="fill" color="var(--accent-text)" /> {c.title}
+            </Link>
+          ))}
+        </div>
+      </HubHero>
 
       <HelpSearch articles={searchable} />
     </div>
@@ -45,7 +55,7 @@ export default function AideRecherchePage() {
 
 const s: Record<string, React.CSSProperties> = {
   page: {
-    padding: 'clamp(20px,3vw,44px)',
+    padding: '20px var(--dash-page-px) 48px',
     width: '100%',
   },
   back: {
@@ -55,20 +65,11 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '12.5px',
     color: 'var(--text-3)',
     textDecoration: 'none',
-    marginBottom: '24px',
+    marginBottom: '14px',
   },
-  title: {
-    fontFamily: 'var(--font-fraunces), serif',
-    fontSize: 'clamp(26px,3vw,38px)',
-    fontWeight: 400,
-    color: 'var(--text)',
-    marginBottom: '8px',
-    lineHeight: 1.2,
-  },
-  sub: {
-    fontSize: '14px',
-    fontWeight: 300,
-    color: 'var(--text-2)',
-    marginBottom: '28px',
+  topics: { display: 'flex', flexWrap: 'wrap', gap: '8px' },
+  topic: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 12px', borderRadius: '999px',
+    background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', fontSize: '12.5px', fontWeight: 600, textDecoration: 'none',
   },
 }

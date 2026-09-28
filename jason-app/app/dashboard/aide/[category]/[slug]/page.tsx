@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import HubHero from '@/components/dashboard/HubHero'
 import { ArrowLeft, ArrowRight, ChatsCircle, Clock, WhatsappLogo } from '@phosphor-icons/react/dist/ssr'
 import { getCategory, HELP_CATEGORIES } from '@/lib/help/categories'
 import { getArticle, listArticlesByCategory } from '@/lib/help/loader'
@@ -44,24 +45,30 @@ export default async function AideArticlePage({ params }: PageProps) {
         <Link href={`/dashboard/aide/${cat.slug}`} style={s.crumb}>{cat.title}</Link>
       </nav>
 
+      {/* En-tête (DA 28/09/2026) : même bandeau vert que le reste de l'aide */}
+      <HubHero
+        eyebrowIcon={<cat.Icon size={13} weight="fill" />}
+        eyebrow={cat.title}
+        title={article.title}
+        desc={article.excerpt ?? ''}
+      >
+        <div style={s.meta}>
+          <span style={s.metaChip}>
+            <Clock size={12} weight="bold" />
+            {minutes} min de lecture
+          </span>
+          {article.updatedAt && (
+            <span style={s.metaChip}>
+              Mis à jour le {new Date(article.updatedAt + (article.updatedAt.length === 10 ? 'T12:00:00Z' : '')).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Paris' })}
+            </span>
+          )}
+        </div>
+      </HubHero>
+
       <div style={s.layout}>
         {/* Colonne principale */}
         <div style={s.mainCol}>
           <article>
-            <header style={s.articleHeader}>
-              <h1 style={s.title}>{article.title}</h1>
-              {article.excerpt && <p style={s.excerpt}>{article.excerpt}</p>}
-              <div style={s.meta}>
-                <span style={s.metaItem}>
-                  <Clock size={12} weight="bold" />
-                  {minutes} min de lecture
-                </span>
-                <Link href={`/dashboard/aide/${cat.slug}`} style={{ ...s.metaItem, ...s.metaCat, background: cat.bg, color: cat.color }}>
-                  <cat.Icon size={11} weight="fill" />
-                  {cat.title}
-                </Link>
-              </div>
-            </header>
 
             <div style={s.content}>
               {renderMarkdown(article.content)}
@@ -70,7 +77,7 @@ export default async function AideArticlePage({ params }: PageProps) {
 
           {/* Pas trouvé ? Contact (mobile / under content) */}
           <section style={s.helpfulBox} className="glass-card">
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: '1 1 240px', minWidth: 0 }}>
               <div style={s.helpfulTitle}>Cet article t'a aidé ?</div>
               <div style={s.helpfulDesc}>Si tu as une question plus précise, écris à Jason directement.</div>
             </div>
@@ -114,7 +121,7 @@ export default async function AideArticlePage({ params }: PageProps) {
 
 const s: Record<string, React.CSSProperties> = {
   page: {
-    padding: 'clamp(20px,3vw,44px)',
+    padding: '20px var(--dash-page-px) 48px',
     width: '100%',
   },
 
@@ -141,7 +148,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    marginBottom: '24px',
+    marginBottom: '14px',
     fontSize: '12.5px',
   },
   crumb: {
@@ -155,7 +162,7 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   /* Article header */
-  articleHeader: { marginBottom: '28px' },
+  metaChip: { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12.5px', fontWeight: 600, color: 'var(--text-2)', background: 'var(--surface)', border: '1px solid var(--border)', padding: '5px 11px', borderRadius: '999px' },
   title: {
     fontFamily: 'var(--font-fraunces), serif',
     fontSize: 'clamp(26px,3.4vw,38px)',

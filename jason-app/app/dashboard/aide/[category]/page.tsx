@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, ArrowRight, BookOpen, Clock } from '@phosphor-icons/react/dist/ssr'
+import { ArrowLeft, ArrowRight, BookOpen, Clock, MagnifyingGlass, WhatsappLogo, EnvelopeSimple } from '@phosphor-icons/react/dist/ssr'
+import HubHero, { heroCard } from '@/components/dashboard/HubHero'
 import { getCategory, HELP_CATEGORIES } from '@/lib/help/categories'
 import { listArticlesByCategory } from '@/lib/help/loader'
 import { extractPlainText } from '@/lib/help/markdown'
@@ -38,15 +39,34 @@ export default async function AideCategoryPage({ params }: PageProps) {
         Retour au centre d'aide
       </Link>
 
-      <div style={s.header}>
-        <div style={{ ...s.icon, background: cat.bg, color: cat.color }}>
-          <cat.Icon size={26} weight="fill" />
-        </div>
-        <div>
-          <h1 style={s.title}>{cat.title}</h1>
-          <p style={s.desc}>{cat.description}</p>
-        </div>
-      </div>
+      {/* En-tête (DA 28/09/2026) : même bandeau vert que l'accueil de l'aide ;
+          à droite, le contact direct si l'article cherché n'existe pas. */}
+      <HubHero
+        eyebrowIcon={<cat.Icon size={13} weight="fill" />}
+        eyebrow="Centre d'aide"
+        title={cat.title}
+        desc={`${cat.description}. ${articles.length} article${articles.length > 1 ? 's' : ''} dans ce thème.`}
+        aside={
+          <div style={heroCard}>
+            <span style={s.asideTitle}>Tu n&apos;as pas trouvé ?</span>
+            <span style={s.asideText}>Écris à Jason, réponse dans la journée (lundi au vendredi, 9 h à 18 h).</span>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <a href="https://wa.me/33630212592" target="_blank" rel="noopener noreferrer" style={s.btnPrimary}>
+                <WhatsappLogo size={14} weight="fill" /> WhatsApp
+              </a>
+              <a href="mailto:jason@jasonmarinho.com" style={s.btnGhost}>
+                <EnvelopeSimple size={14} weight="bold" /> Email
+              </a>
+            </div>
+          </div>
+        }
+      >
+        <Link href="/dashboard/aide/recherche" style={s.searchTrigger}>
+          <MagnifyingGlass size={16} weight="bold" />
+          <span style={{ flex: 1 }}>Rechercher dans toute l&apos;aide</span>
+          <ArrowRight size={14} weight="bold" />
+        </Link>
+      </HubHero>
 
       {articles.length === 0 ? (
         <EmptyState
@@ -90,7 +110,7 @@ export default async function AideCategoryPage({ params }: PageProps) {
 
 const s: Record<string, React.CSSProperties> = {
   page: {
-    padding: 'clamp(20px,3vw,44px)',
+    padding: '20px var(--dash-page-px) 48px',
     width: '100%',
   },
   back: {
@@ -100,45 +120,31 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '12.5px',
     color: 'var(--text-3)',
     textDecoration: 'none',
-    marginBottom: '24px',
+    marginBottom: '14px',
     transition: 'color 0.15s',
   },
-  header: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: '18px',
-    marginBottom: '32px',
+  asideTitle: { fontSize: '12px', fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  asideText: { fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.5 },
+  btnPrimary: {
+    display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '9px 14px', borderRadius: '11px',
+    background: 'var(--accent-text)', color: 'var(--bg)', fontSize: '13px', fontWeight: 700, textDecoration: 'none',
   },
-  icon: {
-    width: '54px',
-    height: '54px',
-    borderRadius: '14px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
+  btnGhost: {
+    display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '9px 14px', borderRadius: '11px',
+    background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', fontSize: '13px', fontWeight: 600, textDecoration: 'none',
   },
-  title: {
-    fontFamily: 'var(--font-fraunces), serif',
-    fontSize: 'clamp(24px,3vw,34px)',
-    fontWeight: 400,
-    color: 'var(--text)',
-    margin: '0 0 6px',
-    lineHeight: 1.2,
-  },
-  desc: {
-    fontSize: '14px',
-    fontWeight: 300,
-    color: 'var(--text-2)',
-    margin: 0,
-    lineHeight: 1.6,
+  searchTrigger: {
+    display: 'flex', alignItems: 'center', gap: '12px', width: '100%', maxWidth: '560px',
+    padding: '14px 18px', background: 'var(--surface)', border: '1px solid var(--accent-border)', borderRadius: '14px',
+    color: 'var(--text-3)', fontSize: '14px', textDecoration: 'none',
   },
 
   /* Article list */
+  // 2 colonnes sur grand écran (avant : une longue liste pleine largeur)
   list: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 420px), 1fr))',
+    gap: '12px',
   },
   articleCard: {
     display: 'flex',
@@ -147,21 +153,21 @@ const s: Record<string, React.CSSProperties> = {
     padding: '18px 20px',
     background: 'var(--surface)',
     border: '1px solid var(--border)',
-    borderRadius: '12px',
+    borderRadius: '16px',
     textDecoration: 'none',
     transition: 'border-color 0.15s, transform 0.15s',
   },
   articleTitle: {
     fontFamily: 'var(--font-fraunces), serif',
-    fontSize: '16px',
-    fontWeight: 400,
+    fontSize: '17px',
+    fontWeight: 500,
     color: 'var(--text)',
     margin: '0 0 5px',
     lineHeight: 1.35,
   },
   articleExcerpt: {
     fontSize: '13px',
-    fontWeight: 300,
+    fontWeight: 400,
     color: 'var(--text-2)',
     margin: '0 0 8px',
     lineHeight: 1.55,

@@ -504,7 +504,11 @@ export const s: Record<string, React.CSSProperties> = {
     fontSize: '12px', color: 'var(--text-muted)', fontWeight: 500,
   },
   catLabel: { fontSize: '11px', fontWeight: 600, letterSpacing: '0.4px', textTransform: 'uppercase' },
-  evtDesc: { fontSize: '12px', color: 'var(--text-2)', margin: '2px 0 0', lineHeight: 1.5 },
+  evtDesc: { fontSize: '12px', color: 'var(--text-2)', margin: '2px 0 0', lineHeight: 1.5, whiteSpace: 'pre-line', overflowWrap: 'anywhere' },
+  completeBox: { display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '6px', padding: '10px 12px', borderRadius: '10px', background: 'rgba(255,213,107,0.14)', border: '1px solid rgba(255,213,107,0.4)' },
+  completeText: { margin: 0, fontSize: '12.5px', color: 'var(--text-2)', lineHeight: 1.45 },
+  completeBtn: { display: 'inline-flex', alignItems: 'center', gap: '6px', alignSelf: 'flex-start', padding: '7px 12px', borderRadius: '9px', border: 'none', background: 'var(--accent-text)', color: 'var(--bg)', fontSize: '12.5px', fontWeight: 700, fontFamily: 'inherit', cursor: 'pointer' },
+  linkedChip: { display: 'inline-flex', alignItems: 'center', gap: '5px', alignSelf: 'flex-start', marginTop: '4px', fontSize: '11.5px', fontWeight: 600, color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', padding: '3px 9px', borderRadius: '100px' },
   autoBadge: {
     fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px',
     padding: '2px 7px', borderRadius: '100px', flexShrink: 0, alignSelf: 'flex-start',
