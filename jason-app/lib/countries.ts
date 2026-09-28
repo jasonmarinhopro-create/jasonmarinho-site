@@ -143,8 +143,8 @@ export const COUNTRIES: Record<CountryCode, CountryConfig> = {
     },
     vat: {
       lcdRate: 6,
-      franchiseThreshold: 14500,
-      note: "AL au Portugal continental : IVA taxa reduzida à 6 %. Régime d'exemption (art. 53) sous 14 500 € de CA annuel. Madère/Açores : taux différents.",
+      franchiseThreshold: 15000,
+      note: "AL au Portugal continental : IVA taxa reduzida à 6 %. Régime d'exemption (art. 53 CIVA) jusqu'à 15 000 € de chiffre d'affaires annuel depuis 2025, réservé aux résidents fiscaux portugais depuis juillet 2025. Madère/Açores : taux différents.",
     },
     onSiteDocuments: [
       'Plaque AL avec le numéro à l\'entrée (visible depuis l\'extérieur)',
