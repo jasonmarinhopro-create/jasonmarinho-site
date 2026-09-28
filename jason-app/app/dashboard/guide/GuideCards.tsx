@@ -40,6 +40,8 @@ interface GuideCard {
   articles?: RelatedArticle[]
   /** keywords additionnels pour la recherche (acronymes, synonymes) */
   keywords?: string
+  /** Sources des faits réglementaires et fiscaux (vérifiées le 28/09/2026) */
+  sources?: { label: string; url: string }[]
 }
 
 const PROFILE_DEFS: Record<Exclude<ProfileFilter, 'all'>, {
@@ -65,10 +67,13 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'Taxe de séjour : qui, combien, comment',
     subtitle: 'L\'obligation que tout le monde a',
     rules: [
-      { type: 'info', text: <>Tarif fixé par chaque commune : généralement <strong>0,20 €–5 € par nuit / personne</strong> selon classement et type d&apos;hébergement</> },
-      { type: 'ok',   text: <>Si tu loues sur Airbnb/Booking : <strong>la plateforme collecte et reverse</strong> automatiquement (à vérifier dans les paramètres)</> },
-      { type: 'warn', text: <>En réservation directe ou Driing : <strong>tu collectes toi-même</strong> et reverses à la mairie chaque trimestre/semestre</> },
-      { type: 'info', text: <>Exonérations possibles : enfants &lt; 18 ans, saisonniers, urgence relogement, vérifier le règlement local</> },
+      { type: 'info', text: <>Tarif voté par chaque commune, par nuit et par personne : de <strong>0,20 € à 4,90 €</strong> selon le classement en 2026. Meublé <strong>non classé</strong> : <strong>1 à 5 % du prix de la nuitée</strong> par personne</> },
+      { type: 'ok',   text: <>Sur Airbnb, Booking ou Abritel : <strong>la plateforme collecte et reverse</strong> la taxe elle-même (obligatoire quand elle encaisse le paiement)</> },
+      { type: 'warn', text: <>En réservation directe : <strong>tu collectes toi-même</strong> et reverses à la commune selon le calendrier qu&apos;elle fixe (souvent trimestriel)</> },
+      { type: 'info', text: <>Exonérés : mineurs, titulaires d&apos;un contrat de travail saisonnier dans la commune, personnes en hébergement d&apos;urgence ou relogées temporairement. Vérifie la délibération de ta commune</> },
+    ],
+    sources: [
+      { label: 'Barème 2026 (collectivites-locales.gouv.fr)', url: 'https://www.collectivites-locales.gouv.fr/files/files/2.%20G%C3%A9rer%20les%20finances%20publiques%20locales/3.%20La%20fiscalit%C3%A9%20locale/Fiscalit%C3%A9%20indirecte%20locale/Taxe%20de%20s%C3%A9jour/TS_TarifsMax2026-1.pdf' },
     ],
     articles: [
       { label: 'Taxe de séjour : comment collecter', slug: 'taxe-sejour-lcd-comment-collecter' },
@@ -82,13 +87,16 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'Fiche police & registre voyageurs',
     subtitle: 'Souvent ignoré, parfois sanctionné',
     rules: [
-      { type: 'warn', text: <><strong>Obligation légale</strong> pour tout hébergement touristique d&apos;établir une fiche d&apos;identité par voyageur étranger</> },
-      { type: 'info', text: <>Données : nom, prénom, date et lieu de naissance, nationalité, adresse, dates de séjour</> },
-      { type: 'warn', text: <>Conservation <strong>6 mois</strong> minimum, transmission à la police nationale ou gendarmerie sur demande, amende jusqu&apos;à <strong>1 500 €</strong></> },
+      { type: 'warn', text: <><strong>Obligation légale</strong> pour les meublés de tourisme et les chambres d&apos;hôtes : chaque voyageur étranger remplit et signe une fiche individuelle de police à son arrivée</> },
+      { type: 'info', text: <>Données : nom, prénom, date et lieu de naissance, nationalité, domicile habituel, date d&apos;arrivée et de départ prévue. Les enfants de moins de 15 ans peuvent figurer sur la fiche d&apos;un adulte</> },
+      { type: 'warn', text: <>Conservation <strong>6 mois</strong>, à remettre à la police ou à la gendarmerie sur demande. La fiche peut être tenue sous forme numérique</> },
       { type: 'ok',   text: <>Dans ton espace, la fiche est <strong>préremplie automatiquement</strong> pour chaque voyageur étranger (et signée s&apos;il a fait son check-in en ligne) : Mes voyageurs → Déclarations</> },
     ],
     articles: [
       { label: 'Formulaire fiche police obligatoire', slug: 'formulaire-fiche-police-lcd-obligatoire' },
+    ],
+    sources: [
+      { label: 'Articles R814-1 à R814-3 du CESEDA (Légifrance)', url: 'https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006070158/LEGISCTA000042803266/' },
     ],
   },
   {
@@ -101,7 +109,7 @@ const GUIDE_CARDS: GuideCard[] = [
     rules: [
       { type: 'info', text: <>Bases légales : <strong>contrat</strong> (réservation), <strong>obligation légale</strong> (fiche police), <strong>consentement</strong> (newsletter)</> },
       { type: 'ok',   text: <>Données autorisées sans consentement : nom, mail, téléphone (résa), <strong>pas de carte d&apos;identité ni passeport</strong> sauf obligation légale</> },
-      { type: 'warn', text: <>Durée de conservation à respecter : <strong>3 ans après le dernier séjour</strong> pour le marketing, 10 ans pour les justificatifs comptables</> },
+      { type: 'warn', text: <>Durée de conservation : <strong>3 ans après le dernier contact</strong> pour la prospection, 10 ans pour les pièces comptables, 6 mois pour les fiches de police</> },
       { type: 'info', text: <>Mentions obligatoires : <strong>politique de confidentialité</strong> sur le site, droit d&apos;accès / suppression / portabilité</> },
     ],
     articles: [
@@ -137,9 +145,9 @@ const GUIDE_CARDS: GuideCard[] = [
     subtitle: 'Mutualiser calendriers, prix, messages',
     rules: [
       { type: 'info', text: <>Un <strong>channel manager</strong> centralise les annonces multi-plateformes (Airbnb, Booking, Vrbo, Driing, site propre)</> },
-      { type: 'ok',   text: <>Top du marché : <strong>Smoobu</strong> (entrée de gamme, ~25 €/mois), <strong>Lodgify</strong>, <strong>Hospitable</strong> (ex-Smartbnb), <strong>Beds24</strong>, <strong>Hostaway</strong></> },
-      { type: 'warn', text: <>Sans channel manager au-delà de 3 biens : risque de double-réservation et burnout administratif assuré</> },
-      { type: 'info', text: <>Synchronisation iCal : solution gratuite mais lente (15–60 min), réservé aux petits volumes</> },
+      { type: 'ok',   text: <>Les plus connus : <strong>Smoobu</strong>, <strong>Lodgify</strong>, <strong>Hospitable</strong> (ex-Smartbnb), <strong>Beds24</strong>, <strong>Hostaway</strong>. Prix par logement et par mois, à vérifier sur leur grille (ils changent souvent)</> },
+      { type: 'warn', text: <>Au-delà de 3 logements sur plusieurs plateformes, sans channel manager, le risque de double réservation devient réel</> },
+      { type: 'info', text: <>Synchronisation <strong>iCal</strong> : gratuite mais lente (de 1 h à plusieurs heures selon la plateforme), suffisante pour 1 ou 2 logements. C&apos;est elle qu&apos;utilise ton calendrier dans l&apos;app</> },
     ],
     articles: [
       { label: 'Logiciels conciergerie : comparatif 2026', slug: 'logiciels-conciergerie-comparatif-2026' },
@@ -155,10 +163,10 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'Avis & e-réputation',
     subtitle: 'La clé de ta crédibilité, toutes plateformes confondues',
     rules: [
-      { type: 'ok',   text: <>Objectif réaliste : <strong>4,8/5 minimum</strong> sur les plateformes (Airbnb, Booking, Google), en dessous, ranking en chute libre et taux de conversion qui s&apos;effondre</> },
-      { type: 'info', text: <>Les 5 critères universels : propreté, communication, arrivée, exactitude, emplacement, soigner les 4 premiers, tu maîtrises tout</> },
+      { type: 'ok',   text: <>Objectif : <strong>4,8/5 ou plus</strong> sur Airbnb (9/10 sur Booking). En dessous, l&apos;annonce recule dans les résultats et convertit moins</> },
+      { type: 'info', text: <>Airbnb note <strong>6 critères</strong> : propreté, exactitude, arrivée, communication, emplacement, qualité-prix. Les 4 premiers dépendent entièrement de toi</> },
       { type: 'warn', text: <>Mauvais avis : répondre <strong>publiquement, calmement, factuellement</strong> dans les 48h, un mauvais avis bien géré peut renforcer la confiance</> },
-      { type: 'ok',   text: <>Demander un avis <strong>au moment du check-out</strong> avec un message court : taux de retour x2 vs sans relance, vaut aussi pour les voyageurs directs</> },
+      { type: 'ok',   text: <>Demande un avis <strong>au moment du départ</strong> avec un message court (modèle dans Outils &amp; calculs → Modèles de messages), y compris aux voyageurs en direct</> },
     ],
     articles: [
       { label: 'Obtenir des avis 5 étoiles', slug: 'obtenir-avis-5-etoiles-airbnb' },
@@ -175,8 +183,8 @@ const GUIDE_CARDS: GuideCard[] = [
     subtitle: 'Anticiper et documenter, toujours',
     rules: [
       { type: 'ok',   text: <><strong>Vérifier les voyageurs</strong> avant d&apos;accepter : profil complet, avis antérieurs, motif du séjour</> },
-      { type: 'warn', text: <>En cas de dégât : photos avant/après, devis professionnel sous 14 jours, si plateforme : dossier Aircover (Airbnb) ou procédure Booking. En direct : contacter ton assureur LCD immédiatement</> },
-      { type: 'info', text: <>Dépôt de garantie en direct : <strong>Swikly</strong> (digital, sans pré-débit) ou virement, montant 200–800 € selon valeur du bien</> },
+      { type: 'warn', text: <>En cas de dégât : photos avant/après et devis. Sur Airbnb, la demande AirCover se fait <strong>dans les 14 jours après le départ</strong> ; sur Booking, via la procédure dommages. En direct : ton assureur et la caution</> },
+      { type: 'info', text: <>Caution en direct : <strong>empreinte bancaire</strong> depuis ton contrat dans l&apos;app (formule Standard), Swikly ou virement. Montant courant : 200 à 800 € selon le logement</> },
       { type: 'warn', text: <>Garder traces écrites : messages plateforme, emails, photos horodatées, sans preuves, pas de dédommagement</> },
     ],
     articles: [
@@ -195,9 +203,9 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'Statut juridique : EI ou SASU ?',
     subtitle: 'Choisir la bonne structure selon ton projet',
     rules: [
-      { type: 'info', text: <><strong>EI (Entreprise Individuelle)</strong> : création gratuite, régime TNS, cotisations ~40 % du bénéfice, responsabilité illimitée sur patrimoine personnel</> },
-      { type: 'info', text: <><strong>SASU</strong> : assimilé-salarié, responsabilité limitée au capital, optimisation salaire + dividendes possible, plus de charges fixes</> },
-      { type: 'ok',   text: <>EI conseillée pour <strong>1–2 biens</strong>, SASU pertinente dès que les revenus dépassent 30–40 k€/an ou pour protéger son patrimoine</> },
+      { type: 'info', text: <><strong>En nom propre (LMNP)</strong> : le cas le plus courant pour 1 ou 2 logements. Pas de société, pas de cotisations sociales tant que tu restes non professionnel : 18,6 % de prélèvements sociaux sur le bénéfice</> },
+      { type: 'warn', text: <><strong>LMP</strong> si tes recettes dépassent 23 000 €/an <strong>et</strong> tes autres revenus d&apos;activité du foyer : cotisations sociales (SSI) sur le bénéfice, autre fiscalité des plus-values</> },
+      { type: 'info', text: <><strong>Société à l&apos;IS (SAS, SARL)</strong> : patrimoine protégé, amortissements, mais comptabilité obligatoire, pas de micro-BIC et imposition à la revente. À étudier avec un expert-comptable</> },
     ],
     articles: [
       { label: 'Guide fiscal débutant 2026', slug: 'guide-fiscal-debutant-hote-airbnb-2026' },
@@ -229,15 +237,18 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'Obligations légales du gîte',
     subtitle: "Ce que la loi impose avant d'accueillir",
     rules: [
-      { type: 'warn', text: <><strong>Déclaration en mairie obligatoire</strong> (Cerfa 14004*04) avant la 1ère location</> },
-      { type: 'warn', text: <><strong>Numéro d&apos;enregistrement</strong> obligatoire dans les communes &gt; 200 000 hab. et communes touristiques, amende jusqu&apos;à 5 000 €</> },
-      { type: 'info', text: <><strong>Résidence principale</strong> : 120 nuits/an max · <strong>Résidence secondaire ou dédiée</strong> : pas de plafond de nuits</> },
+      { type: 'warn', text: <><strong>Déclaration obligatoire avant de louer</strong>, avec un numéro d&apos;enregistrement à afficher sur toutes tes annonces : généralisée à toute la France par la loi Le Meur (20 mai 2026), résidence principale comprise</> },
+      { type: 'info', text: <>Le téléservice national est annoncé pour le <strong>4e trimestre 2026</strong> : d&apos;ici là, déclare en mairie (en ligne ou Cerfa 14004). Amende jusqu&apos;à <strong>10 000 €</strong> sans déclaration</> },
+      { type: 'info', text: <><strong>Résidence principale</strong> : 120 nuits/an max, <strong>90</strong> si ta commune l&apos;a décidé (Paris, Lyon, Bordeaux, Nice…). <strong>Résidence secondaire</strong> : pas de plafond, mais changement d&apos;usage possible en zone tendue</> },
       { type: 'ok',   text: <>Taxe de séjour à collecter et reverser à la mairie si la plateforme ne le fait pas</> },
     ],
     articles: [
       { label: 'Numéro d\'enregistrement : démarches', slug: 'numero-enregistrement-lcd-obtenir-etapes-pratiques' },
-      { label: 'Numéro d\'enregistrement 20 mai 2026', slug: 'numero-enregistrement-lcd-20-mai-2026-demarches' },
+      { label: 'Enregistrement national : ce qui change', slug: 'numero-enregistrement-lcd-20-mai-2026-demarches' },
       { label: 'Taxe de séjour : comment collecter', slug: 'taxe-sejour-lcd-comment-collecter' },
+    ],
+    sources: [
+      { label: 'Loi Le Meur : ce qui change (Actu-Juridique)', url: 'https://www.actu-juridique.fr/fiscalite/fiscal-finances/locations-touristiques-ce-que-change-la-loi-le-meur/' },
     ],
   },
   {
@@ -245,16 +256,19 @@ const GUIDE_CARDS: GuideCard[] = [
     profile: 'gites',
     iconColor: 'var(--accent-text)', iconBg: 'var(--accent-bg)',
     icon: <Leaf size={22} weight="fill" />,
-    title: 'DPE & loi Climat, calendrier',
-    subtitle: 'Les passoires thermiques deviennent illouables',
+    title: 'DPE des meublés de tourisme (loi Le Meur)',
+    subtitle: 'Un calendrier propre à la location de vacances',
     rules: [
-      { type: 'warn', text: <><strong>2025</strong> : interdiction de louer les logements classés <strong>G</strong> (consommation &gt; 450 kWh/m²/an)</> },
-      { type: 'warn', text: <><strong>2028</strong> : interdiction des classés <strong>F</strong> · <strong>2034</strong> : interdiction des classés <strong>E</strong></> },
-      { type: 'info', text: <>La LCD est concernée comme la LLD, un DPE valide est <strong>obligatoire dès la mise en location</strong> et l&apos;étiquette doit figurer sur l&apos;annonce</> },
+      { type: 'warn', text: <>Nouveau meublé soumis à <strong>changement d&apos;usage</strong> (zones tendues) : DPE au moins <strong>F</strong> depuis 2025, au moins <strong>E</strong> à partir de 2028</> },
+      { type: 'warn', text: <><strong>2034</strong> : <strong>tous</strong> les meublés de tourisme, anciens comme nouveaux, devront être classés entre <strong>A et D</strong></> },
+      { type: 'info', text: <>Le maire peut te demander ton DPE : amende jusqu&apos;à <strong>5 000 €</strong> si le logement ne respecte pas le niveau exigé. Les règles de la location longue durée (G interdit depuis 2025) ne s&apos;appliquent pas telles quelles au meublé de tourisme</> },
       { type: 'ok',   text: <>Travaux éligibles à <strong>MaPrimeRénov&apos;</strong> et aux CEE, isolation, fenêtres, pompe à chaleur, bien avant les deadlines</> },
     ],
     articles: [
       { label: 'Travaux énergétiques & MaPrimeRénov', slug: 'travaux-energetiques-lcd-aides-maprimerenov-2026' },
+    ],
+    sources: [
+      { label: 'DPE et meublés de tourisme (France DPE)', url: 'https://france-dpe.fr/articles/dpe-location-saisonniere-meubles-touristiques' },
     ],
   },
   {
@@ -265,13 +279,16 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'Permis de louer & changement d\'usage',
     subtitle: 'Les pièges des grandes villes et zones tendues',
     rules: [
-      { type: 'warn', text: <><strong>Paris, Lyon, Bordeaux, Annecy, Nice</strong>… : autorisation de changement d&apos;usage obligatoire pour les résidences secondaires, sinon amende jusqu&apos;à <strong>50 000 €</strong></> },
-      { type: 'warn', text: <><strong>Compensation</strong> exigée à Paris : transformer un local commercial en habitation pour pouvoir louer en LCD</> },
-      { type: 'info', text: <><strong>120 nuits/an</strong> max pour une résidence principale dans toute la France, quota suivi par les plateformes via le numéro d&apos;enregistrement</> },
+      { type: 'warn', text: <><strong>Paris, Lyon, Bordeaux, Annecy, Nice</strong>… : autorisation de changement d&apos;usage pour louer une résidence secondaire, sinon amende civile jusqu&apos;à <strong>100 000 €</strong> par logement depuis la loi Le Meur</> },
+      { type: 'warn', text: <><strong>Compensation</strong> à Paris et dans d&apos;autres villes : transformer en logement une surface équivalente (ou double) de locaux commerciaux pour obtenir l&apos;autorisation</> },
+      { type: 'info', text: <>Résidence principale : <strong>120 nuits/an</strong>, abaissé à <strong>90</strong> dans les communes qui l&apos;ont voté. Dépassement : amende jusqu&apos;à <strong>15 000 €</strong>. Les plateformes suivent le compteur grâce au numéro d&apos;enregistrement</> },
       { type: 'ok',   text: <>Vérifier auprès de la mairie avant l&apos;achat ou la mise en location, règles très variables d&apos;une commune à l&apos;autre</> },
     ],
     articles: [
       { label: 'Réglementation LCD France 2026', slug: 'reglementation-lcd-france-2026' },
+    ],
+    sources: [
+      { label: 'Amendes changement d\'usage (Cafpi)', url: 'https://www.cafpi.fr/credit-immobilier/reglementation-credit-immobilier/loi-le-meur-impact-sur-la-location-touristique' },
     ],
   },
   {
@@ -283,12 +300,15 @@ const GUIDE_CARDS: GuideCard[] = [
     subtitle: 'Anticiper les conflits avant qu\'ils explosent',
     rules: [
       { type: 'warn', text: <>Le <strong>règlement de copropriété</strong> peut interdire la LCD (clause d&apos;habitation bourgeoise stricte), vérifier avant l&apos;achat</> },
-      { type: 'info', text: <>Une majorité de copropriétaires peut interdire la LCD <strong>par vote en AG</strong> dans certaines conditions (loi ALUR + jurisprudences récentes)</> },
+      { type: 'info', text: <>Depuis la loi Le Meur, l&apos;AG peut interdire les meublés de tourisme dans les résidences secondaires <strong>à la majorité des deux tiers</strong>, si le règlement interdit déjà toute activité commerciale dans les lots (validé par le Conseil constitutionnel, mars 2026)</> },
       { type: 'ok',   text: <>Règlement intérieur clair (bruit, parties communes, horaires d&apos;arrivée) + concertation avec les voisins = la meilleure prévention</> },
     ],
     articles: [
       { label: 'Droits voisins & litiges copropriété', slug: 'droits-voisins-lcd-copropriete-litiges' },
       { label: 'Bruit & règlement intérieur efficace', slug: 'bruit-reglement-interieur-lcd-efficace' },
+    ],
+    sources: [
+      { label: 'QPC 2025-1186 du 19 mars 2026 (21 Avocats)', url: 'https://www.21avocats.com/actualites/loi-le-meur-meubles-tourisme-copropriete-qpc-conseil-constitutionnel-2026/' },
     ],
   },
   {
@@ -300,7 +320,7 @@ const GUIDE_CARDS: GuideCard[] = [
     subtitle: 'Avant d\'acheter, mesurer le cash-flow réel',
     rules: [
       { type: 'info', text: <><strong>Revenu théorique</strong> = nuitée moyenne × taux d&apos;occupation × 365, varier selon saisonnalité de la zone</> },
-      { type: 'warn', text: <>Coûts à intégrer : commissions plateformes (15 %), ménage, linge, énergie, abonnements, taxe foncière, assurance, mensualité crédit, provision travaux</> },
+      { type: 'warn', text: <>Coûts à intégrer : commissions des plateformes (15,5 % chez Airbnb, 15 à 18 % chez Booking), ménage, linge, énergie, abonnements, taxe foncière, assurance, mensualité crédit, provision travaux</> },
       { type: 'ok',   text: <><strong>Point mort</strong> = nb de nuitées/an pour couvrir les charges fixes, au-delà, tout est marge</> },
       { type: 'info', text: <>Outils utiles : <strong>AirDNA</strong> pour les benchmarks de zone, simulateur Driing pour le yield</> },
     ],
@@ -317,17 +337,20 @@ const GUIDE_CARDS: GuideCard[] = [
     profile: 'chambres',
     iconColor: '#B83A7C', iconBg: 'rgba(244,114,182,0.14)',
     icon: <Gavel size={22} weight="fill" />,
-    title: 'Les règles légales strictes (loi 2006)',
+    title: 'Les règles légales des chambres d\'hôtes',
     subtitle: 'Les obligations que beaucoup ignorent',
     rules: [
       { type: 'warn', text: <><strong>Maximum 5 chambres</strong> et <strong>15 personnes simultanément</strong>, au-delà, c&apos;est un autre régime juridique</> },
-      { type: 'warn', text: <><strong>Petit-déjeuner obligatoire</strong> (légalement), il doit être proposé, inclus ou en option payante</> },
-      { type: 'warn', text: <><strong>Propriétaire présent sur place</strong> obligatoirement, contrairement au gîte où tu peux être absent</> },
-      { type: 'info', text: <>Ne pas appeler &ldquo;gîte&rdquo; une chambre d&apos;hôtes, la terminologie est encadrée par la loi</> },
+      { type: 'warn', text: <><strong>Nuitée et petit-déjeuner vendus ensemble</strong>, linge de maison fourni : c&apos;est ce qui définit la chambre d&apos;hôtes (Code du tourisme, art. D324-13)</> },
+      { type: 'warn', text: <><strong>Accueil par l&apos;habitant</strong> : tu vis sur place, contrairement au gîte</> },
+      { type: 'warn', text: <><strong>Déclaration en mairie</strong> avant d&apos;ouvrir (Cerfa 13566), amende jusqu&apos;à 450 € sinon. Les voyageurs étrangers remplissent aussi la fiche de police</> },
     ],
     articles: [
-      { label: 'TVA petit-déjeuner : seuil 37 500 €', slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail' },
+      { label: 'TVA et petit-déjeuner', slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail' },
       { label: 'Réglementation LCD 2026', slug: 'reglementation-lcd-france-2026' },
+    ],
+    sources: [
+      { label: 'Déclaration de chambre d\'hôtes, Cerfa 13566 (service-public.fr)', url: 'https://www.formulaires.service-public.gouv.fr/gf/cerfa_13566.do' },
     ],
   },
   {
@@ -338,14 +361,18 @@ const GUIDE_CARDS: GuideCard[] = [
     title: "Fiscalité spécifique chambres d'hôtes",
     subtitle: 'Différente du meublé de tourisme classique',
     rules: [
-      { type: 'ok',   text: <>Si revenus &lt; <strong>760 €/an</strong> : exonération fiscale totale possible</> },
-      { type: 'info', text: <>Micro-BIC : <strong>50 % d&apos;abattement</strong>, plafond 83 600 € pour les revenus 2026, comme les meublés classés (Conseil d&apos;État, 16/09/2025). L&apos;ancien taux de 71 % ne s&apos;applique plus</> },
-      { type: 'warn', text: <>Classement <strong>Atout France (meublé de tourisme) interdit</strong> pour les chambres d&apos;hôtes, régime différent</> },
-      { type: 'ok',   text: <>Labels possibles : <strong>Gîtes de France</strong> (épis) et <strong>Clévacances</strong> (clés), recommandés pour le référencement et la fiscalité</> },
+      { type: 'ok',   text: <>Recettes de <strong>760 €/an</strong> ou moins, dans ta résidence principale : exonération d&apos;impôt sur le revenu (art. 35 bis du CGI), pour les locations faites <strong>jusqu&apos;au 31 décembre 2026</strong></> },
+      { type: 'info', text: <>Micro-BIC : <strong>50 % d&apos;abattement</strong>, plafond 83 600 € pour les revenus 2026 (77 700 € pour 2025), comme les meublés classés (Conseil d&apos;État, 16/09/2025). L&apos;ancien taux de 71 % ne s&apos;applique plus</> },
+      { type: 'warn', text: <>Le <strong>classement Atout France</strong> vise les meublés de tourisme : il ne concerne pas les chambres d&apos;hôtes</> },
+      { type: 'ok',   text: <>Labels possibles : <strong>Gîtes de France</strong> (épis) et <strong>Clévacances</strong> (clés), utiles pour la visibilité (sans effet sur l&apos;abattement)</> },
     ],
     articles: [
       { label: 'Guide fiscal débutant 2026', slug: 'guide-fiscal-debutant-hote-airbnb-2026' },
-      { label: 'TVA petit-déjeuner détail', slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail' },
+      { label: 'TVA et petit-déjeuner', slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail' },
+    ],
+    sources: [
+      { label: 'Chambres d\'hôtes et micro-BIC (AUREP)', url: 'https://www.aurep.com/publications-et-agenda/chambres-dhotes-et-regime-micro-bic-la-ligne-est-fixee/' },
+      { label: 'Exonération 760 € (LégiFiscal)', url: 'https://www.legifiscal.fr/actualites-fiscales/4607-seuils-2026-exoneration-ir-location-residence-principale.html' },
     ],
   },
   {
@@ -359,7 +386,7 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'ok',   text: <>Airbnb, Booking.com, Abritel/Vrbo : compatibles avec les chambres d&apos;hôtes</> },
       { type: 'ok',   text: <><strong>Réseau Gîtes de France</strong> : spécialisé chambres d&apos;hôtes, clientèle qualifiée, recommandé</> },
       { type: 'ok',   text: <><strong>Driing</strong> et site propre : réservation directe sans commission, fort potentiel pour fidéliser les voyageurs récurrents</> },
-      { type: 'info', text: <><strong>Google My Business</strong> : levier visibilité locale essentiel pour les chambres d&apos;hôtes en zone rurale ou touristique</> },
+      { type: 'info', text: <><strong>Fiche Google</strong> (Google Business Profile) : levier de visibilité locale essentiel pour les chambres d&apos;hôtes en zone rurale ou touristique</> },
     ],
     articles: [
       { label: 'Airbnb vs Booking : comparatif', slug: 'airbnb-vs-booking-com-location-courte-duree' },
@@ -374,13 +401,17 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'HACCP & hygiène alimentaire (petit-déj)',
     subtitle: 'Servir un petit-déjeuner = obligations sanitaires',
     rules: [
-      { type: 'warn', text: <><strong>Déclaration auprès de la DDPP</strong> (CERFA 13984*06) obligatoire dès qu&apos;on sert des denrées</> },
+      { type: 'warn', text: <><strong>Déclaration à la DDPP</strong> (Cerfa 13984) avant de servir des denrées d&apos;origine animale (lait, beurre, œufs, charcuterie…)</> },
       { type: 'info', text: <>Application des principes <strong>HACCP</strong> : traçabilité des produits, chaîne du froid, dates de péremption, plan de nettoyage</> },
-      { type: 'ok',   text: <>Formation hygiène alimentaire <strong>conseillée</strong>, non obligatoire pour les chambres d&apos;hôtes mais recommandée pour limiter les risques</> },
-      { type: 'warn', text: <>Au-delà de <strong>37 500 € de CA petit-déj</strong> : <strong>TVA 10 %</strong> obligatoire, souvent ignoré</> },
+      { type: 'ok',   text: <>Formation hygiène alimentaire <strong>non obligatoire</strong> pour un service de petit-déjeuner seul, mais conseillée</> },
+      { type: 'warn', text: <>TVA : les chambres d&apos;hôtes sont de l&apos;<strong>hébergement</strong>, franchise jusqu&apos;à <strong>85 000 €</strong> de recettes (93 500 € majoré). Au-delà, <strong>TVA 10 %</strong> sur la nuitée et le petit-déjeuner</> },
     ],
     articles: [
-      { label: 'TVA petit-déjeuner détail', slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail' },
+      { label: 'TVA et petit-déjeuner', slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail' },
+    ],
+    sources: [
+      { label: 'Cerfa 13984 (ministère de l\'Agriculture)', url: 'https://agriculture-portail.6tzen.fr/default/requests/cerfa13984/' },
+      { label: 'Seuils de franchise TVA 2026 (Comptabook)', url: 'https://comptabook.fr/tva/seuil-franchise-tva-2026/' },
     ],
   },
   {
@@ -391,13 +422,16 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'ERP & accessibilité PMR',
     subtitle: 'Quand le logement devient un établissement',
     rules: [
-      { type: 'warn', text: <>À partir de <strong>5 chambres</strong> ou <strong>15 personnes</strong>, l&apos;activité bascule en <strong>ERP de type O</strong>, règles de sécurité incendie strictes</> },
+      { type: 'warn', text: <>Au-delà de <strong>15 personnes</strong> accueillies (gîte ou gîte de groupe), l&apos;hébergement devient un <strong>ERP de 5e catégorie</strong> avec locaux à sommeil : règles de sécurité incendie strictes</> },
       { type: 'info', text: <>ERP = visite de la commission sécurité, registre de sécurité, alarme, BAES, plan d&apos;évacuation</> },
       { type: 'warn', text: <><strong>Accessibilité PMR</strong> obligatoire pour tout ERP : au moins 1 chambre adaptée + cheminement, sanitaires accessibles</> },
-      { type: 'ok',   text: <>Si tu es sous le seuil (4 chambres / &lt;15 pers.) : tu n&apos;es pas ERP, mais l&apos;accessibilité reste un argument commercial fort</> },
+      { type: 'ok',   text: <>Jusqu&apos;à 15 personnes (et donc toute chambre d&apos;hôtes, limitée à 5 chambres et 15 personnes), c&apos;est la réglementation de l&apos;habitation qui s&apos;applique : pas d&apos;ERP, mais détecteurs de fumée obligatoires</> },
     ],
     articles: [
       { label: 'ERP & classement meublé tourisme', slug: 'erp-classement-meuble-tourisme-lcd' },
+    ],
+    sources: [
+      { label: 'Gîtes et chambres d\'hôtes : seuil de 15 personnes (Parlons Sécurité Incendie)', url: 'https://www.parlons-securite-incendie.fr/2015/06/02/les-gites-et-chambres-d-hotes-dont-l-effectif-est-inferieur-ou-egal-a-15-personnes-relevent-de-la-reglementation-habitation-qu-en-est-il-de-ces-memes-etablissements-dont-l-effectif-est-compris-entre-1/' },
     ],
   },
 
@@ -410,13 +444,17 @@ const GUIDE_CARDS: GuideCard[] = [
     title: "Loi Hoguet : quand s'applique-t-elle ?",
     subtitle: 'La question que toute conciergerie doit se poser',
     rules: [
-      { type: 'warn', text: <><strong>Tu encaisses les loyers pour le propriétaire</strong> → Loi Hoguet s&apos;applique → carte professionnelle obligatoire + garantie financière</> },
-      { type: 'ok',   text: <><strong>Le propriétaire encaisse directement</strong> (via Airbnb, Booking, virement) → Prestation de services classique → pas de carte pro requise</> },
-      { type: 'info', text: <>La plupart des conciergeries évitent la loi Hoguet en structurant correctement le flux de paiement dès le départ</> },
+      { type: 'warn', text: <><strong>Tu encaisses les loyers</strong> pour le propriétaire et les lui reverses : carte professionnelle <strong>G</strong> (gestion) + garantie financière</> },
+      { type: 'warn', text: <><strong>Tu publies les annonces à ton nom</strong> et conclus les locations pour son compte : c&apos;est de l&apos;entremise, carte <strong>T</strong> requise</> },
+      { type: 'ok',   text: <>Annonce au nom du propriétaire, paiements versés directement sur son compte, toi facturant ménage, accueil et gestion du calendrier : <strong>prestation de services</strong>, sans carte</> },
+      { type: 'info', text: <>Sans carte alors qu&apos;elle est requise, le contrat peut être annulé et tes honoraires perdus (tribunal de Tours, janvier 2025)</> },
     ],
     articles: [
       { label: 'Créer une conciergerie LCD en 2025', slug: 'creer-conciergerie-airbnb-2025' },
       { label: 'Contrat de mandat conciergerie', slug: 'contrat-mandat-conciergerie-lcd-modele-clauses' },
+    ],
+    sources: [
+      { label: 'Carte G et conciergerie (HostLegal)', url: 'https://www.hostlegal.fr/blog/carte-g-conciergerie-ou-cohost-airbnb' },
     ],
   },
   {
@@ -430,7 +468,7 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'ok',   text: <><strong>Micro-entreprise</strong> : pour démarrer, plafond 83 600 €/an (prestations de services, 2026), franchise TVA jusqu&apos;à 37 500 €</> },
       { type: 'ok',   text: <><strong>SASU/SAS</strong> : pour aller au-delà, protéger son patrimoine, avoir des associés ou employés</> },
       { type: 'warn', text: <><strong>TVA 20 %</strong> au-delà de 37 500 € de CA (dès que tu dépasses 41 250 € en cours d&apos;année), à intégrer dans ta tarification dès le départ</> },
-      { type: 'info', text: <><strong>RC Pro obligatoire</strong> dans tous les cas, couvre les dommages causés lors des prestations</> },
+      { type: 'info', text: <><strong>RC Pro</strong> : obligatoire avec une carte professionnelle, fortement conseillée dans tous les cas (dommages causés pendant tes prestations)</> },
     ],
     articles: [
       { label: 'Créer une conciergerie LCD 2025', slug: 'creer-conciergerie-airbnb-2025' },
@@ -457,7 +495,7 @@ const GUIDE_CARDS: GuideCard[] = [
   {
     id: 'conciergerie-equipe',
     profile: 'conciergerie',
-    iconColor: '#ec4899', iconBg: 'rgba(236,72,153,0.12)',
+    iconColor: '#B83A7C', iconBg: 'rgba(244,114,182,0.14)',
     icon: <UserGear size={22} weight="fill" />,
     title: 'URSSAF, équipe ménage & sous-traitance',
     subtitle: 'Recruter et déclarer correctement',
@@ -517,7 +555,7 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'Contrat obligatoire sans plateforme',
     subtitle: 'Ce que tu dois avoir avant le premier séjour',
     rules: [
-      { type: 'warn', text: <><strong>Contrat de location saisonnière obligatoire</strong>, mentions légales : identité des parties, durée, prix, descriptif du logement, conditions d&apos;annulation</> },
+      { type: 'warn', text: <><strong>Contrat écrit obligatoire</strong> (Code du tourisme, art. L324-2) : prix, dates, état descriptif du logement. Ajoute identités, caution et conditions d&apos;annulation. Ton contrat se fait en ligne dans Contrats &amp; paiements</> },
       { type: 'info', text: <>État des lieux <strong>recommandé</strong> (non obligatoire pour LCD &lt; 30 jours, mais utile en cas de litige)</> },
       { type: 'ok',   text: <><strong>Taxe de séjour à collecter toi-même</strong> et reverser à la mairie, montant selon commune et catégorie du logement</> },
     ],
@@ -536,8 +574,8 @@ const GUIDE_CARDS: GuideCard[] = [
     subtitle: 'La protection que tu dois assurer toi-même',
     rules: [
       { type: 'warn', text: <><strong>Assurance habitation classique insuffisante</strong> pour la LCD, vérifie et informe obligatoirement ton assureur</> },
-      { type: 'ok',   text: <>Contrats adaptés : <strong>MAIF, MMA, Hiscox, AXA Pro</strong>, extension LCD ou contrat dédié couvrant dommages, vol, RC voyageur</> },
-      { type: 'ok',   text: <>Caution/dépôt de garantie : <strong>Swikly</strong> (digitale), virement, ou chèque, délai de restitution à préciser dans le contrat (usage : 7 jours)</> },
+      { type: 'ok',   text: <>Demande une <strong>extension location saisonnière</strong> ou un contrat dédié (propriétaire non occupant pour une résidence secondaire) couvrant dommages, vol et responsabilité civile</> },
+      { type: 'ok',   text: <>Caution : <strong>empreinte bancaire</strong> depuis ton contrat dans l&apos;app, Swikly ou virement. Précise dans le contrat le délai de restitution (usage : 7 jours)</> },
       { type: 'info', text: <>Assurance annulation voyageur : tu peux proposer Chapka, AXA Assistance, ça rassure et évite les litiges d&apos;annulation</> },
     ],
     articles: [
@@ -553,9 +591,9 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'Se rendre visible sans Airbnb',
     subtitle: 'Les canaux pour remplir ton calendrier en direct',
     rules: [
-      { type: 'ok',   text: <><strong>Google My Business</strong> : fiche gratuite, apparaît dans les recherches locales, indispensable pour gîtes et chambres d&apos;hôtes</> },
+      { type: 'ok',   text: <><strong>Fiche Google</strong> (Google Business Profile) : gratuite, apparaît dans les recherches locales, indispensable pour gîtes et chambres d&apos;hôtes. Fais son audit dans Trouver des voyageurs</> },
       { type: 'ok',   text: <><strong>Driing</strong> : annonce directe sans commission, comparateur de prix intégré, voyageurs qualifiés</> },
-      { type: 'ok',   text: <>Paiements : <strong>Stripe, SumUp, Driing ou virement bancaire</strong>, prévoir une solution sécurisée avant le premier séjour direct</> },
+      { type: 'ok',   text: <>Paiements : <strong>Stripe</strong> (intégré à tes contrats dans l&apos;app), SumUp, Driing ou virement, à prévoir avant le premier séjour en direct</> },
       { type: 'info', text: <>Construire une <strong>base de voyageurs fidèles</strong> (email, Instagram) : la réservation directe se développe sur le temps long</> },
     ],
     articles: [
@@ -573,7 +611,7 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'SEO local & Google Business Profile',
     subtitle: 'Apparaître quand on cherche "gîte + ta ville"',
     rules: [
-      { type: 'ok',   text: <><strong>Fiche Google Business</strong> bien remplie : photos, horaires, description, posts hebdomadaires, c&apos;est le canal n°1 pour le local</> },
+      { type: 'ok',   text: <><strong>Fiche Google</strong> bien remplie : photos, description, catégorie, avis récents, publications régulières : c&apos;est le premier canal local</> },
       { type: 'info', text: <><strong>Avis Google</strong> : objectif 4,7+/5 avec 30+ avis pour ranker dans les résultats locaux, solliciter chaque voyageur après le séjour</> },
       { type: 'ok',   text: <>Mots-clés à cibler : "gîte + ville", "chambre d&apos;hôtes + région", "location vacances + lac/montagne/mer"</> },
       { type: 'info', text: <>Site web propre + page dédiée par bien + balisage <strong>schema.org LocalBusiness</strong> pour amplifier la visibilité Google</> },
@@ -593,10 +631,10 @@ const GUIDE_CARDS: GuideCard[] = [
     subtitle: 'Ton QG digital sans commission, sans dépendance',
     rules: [
       { type: 'ok',   text: <><strong>Driing</strong> : page de réservation directe prête en 30 min, 0 % commission, paiements intégrés, idéal pour démarrer</> },
-      { type: 'ok',   text: <>Site complet : <strong>Lodgify, Hostfully, Beds24</strong>, widget de réservation, calendrier, paiement, tout en un (~25–40 €/mois)</> },
+      { type: 'ok',   text: <>Site complet : <strong>Lodgify, Hostfully, Beds24</strong>, widget de réservation, calendrier et paiement en un seul outil (abonnement mensuel, grilles qui changent souvent)</> },
       { type: 'info', text: <>Site WordPress + plugin (WP Booking System, Beds24 iframe) : flexibilité maximale mais setup plus long, pertinent pour les profils tech</> },
       { type: 'warn', text: <>Contenu indispensable sur ta page : <strong>photos haute résolution, tarifs clairs, calendrier dispo, conditions d&apos;annulation et formulaire de contact</strong></> },
-      { type: 'ok',   text: <>Ajouter un bouton "Réserver en direct" depuis ton profil Airbnb dans ta bio / livret d&apos;accueil, sans violer les CGU</> },
+      { type: 'ok',   text: <>Mets ton lien de réservation directe dans ton <strong>livret d&apos;accueil</strong> et sur un QR code dans le logement, <strong>jamais</strong> dans ton annonce ou ta messagerie Airbnb (interdit par leurs règles)</> },
     ],
     articles: [
       { label: 'Driing : réservation sans commission', slug: 'driing-plateforme-vacances-sans-commissions' },
@@ -615,7 +653,7 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'ok',   text: <><strong>Stripe</strong> : solution professionnelle, lien de paiement ou formulaire intégrable, frais ~1,5 % + 0,25 € en Europe</> },
       { type: 'ok',   text: <><strong>Driing</strong> : paiement inclus dans la plateforme, virement sous 48h, la solution la plus simple pour les hôtes qui débutent en direct</> },
       { type: 'info', text: <><strong>SumUp</strong> : idéal si accueil physique (terminal carte), aussi avec lien de paiement en ligne</> },
-      { type: 'warn', text: <>Virement bancaire : gratuit mais risque de non-paiement, toujours exiger <strong>100 % à la réservation</strong> ou acompte 30 % + solde 30j avant arrivée</> },
+      { type: 'warn', text: <>Virement bancaire : gratuit mais sans garantie. Exige l&apos;<strong>acompte à la réservation</strong> (30 à 50 %) et le solde avant l&apos;arrivée. Ton contrat dans l&apos;app gère l&apos;acompte de 50 ou 100 %</> },
       { type: 'warn', text: <>Éviter PayPal pour les pros : protection acheteur trop favorable au voyageur, risques de remboursements forcés</> },
     ],
     articles: [
@@ -632,10 +670,10 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'Convertir tes voyageurs plateforme → direct',
     subtitle: 'La stratégie pour s\'affranchir des commissions',
     rules: [
-      { type: 'ok',   text: <><strong>Livret d&apos;accueil digital</strong> : y intégrer discrètement ton lien Driing / site propre et l&apos;offre "prochaine réservation en direct, 5 % offerts"</> },
-      { type: 'info', text: <>Carte de visite dans le logement : QR code vers ta page de réservation + votre Wi-Fi = touché par 100 % des voyageurs</> },
-      { type: 'ok',   text: <>Message post-séjour : remercier + donner le lien direct pour "revenir sans passer par la plateforme", rester dans les règles (pas de sollicitation pendant le séjour)</> },
-      { type: 'warn', text: <>Règles Airbnb/Booking : pas de coordonnées personnelles pendant le séjour, attendre le <strong>check-out</strong> pour proposer la résa directe</> },
+      { type: 'ok',   text: <><strong>Livret d&apos;accueil</strong> : ton lien de réservation directe et l&apos;offre « prochaine réservation en direct, 5 % offerts »</> },
+      { type: 'info', text: <>Carte dans le logement : QR code vers ta page de réservation à côté du Wi-Fi, vu par tous les voyageurs</> },
+      { type: 'warn', text: <>Règles Airbnb (renforcées en 2025) : <strong>interdit</strong> de proposer une réservation hors plateforme, de partager ses coordonnées ou de demander un paiement extérieur <strong>dans la messagerie</strong>. Compte suspendu en cas d&apos;abus</> },
+      { type: 'ok',   text: <>Laisse le voyageur venir à toi : livret, QR code et fiche Google suffisent. N&apos;utilise pas les données Airbnb pour le démarcher</> },
       { type: 'info', text: <>Construire son fichier email voyageurs au fil des séjours : c&apos;est l&apos;actif le plus précieux de ton activité en direct</> },
     ],
     articles: [
@@ -643,6 +681,9 @@ const GUIDE_CARDS: GuideCard[] = [
       { label: 'Email marketing & newsletter hôte', slug: 'email-marketing-newsletter-hote-lcd' },
     ],
     keywords: 'conversion direct fidélisation livret accueil qr code',
+    sources: [
+      { label: 'Politique hors plateforme d\'Airbnb (Smoobu)', url: 'https://www.smoobu.com/en/blog/airbnbs-off-platform-policy-explained/' },
+    ],
   },
   {
     id: 'direct-fidelisation',
@@ -652,10 +693,10 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'Fidéliser : email, parrainage, séjours longs',
     subtitle: 'La résa directe se construit sur le temps long',
     rules: [
-      { type: 'ok',   text: <><strong>Newsletter saisonnière</strong> : 4–6 envois/an aux anciens voyageurs, taux d&apos;ouverture moyen LCD = 35–45 %</> },
+      { type: 'ok',   text: <><strong>Newsletter saisonnière</strong> : 4 à 6 envois par an aux anciens voyageurs qui l&apos;ont acceptée, avec tes dates libres et une offre de retour</> },
       { type: 'info', text: <>Programme de <strong>parrainage</strong> : 5–10 % de réduction au parrain et au filleul, ROI très élevé sur fichier qualifié</> },
       { type: 'ok',   text: <><strong>Diversifier les revenus</strong> : workation longue durée hors saison, séjours pros, événements privés, taux d&apos;occupation année lissé</> },
-      { type: 'info', text: <>Conserver les <strong>emails voyageurs</strong> dès la première résa (RGPD compliant) : c&apos;est ton actif le plus précieux pour la résa directe</> },
+      { type: 'info', text: <>Garde l&apos;e-mail des voyageurs en direct <strong>avec leur accord</strong> pour les recontacter : c&apos;est ton actif le plus précieux pour la réservation directe</> },
     ],
     articles: [
       { label: 'Email marketing & newsletter', slug: 'email-marketing-newsletter-hote-lcd' },
@@ -750,6 +791,18 @@ function GuideCardItem({ card }: { card: GuideCard }) {
             ))}
           </div>
         </div>
+      )}
+
+      {card.sources && card.sources.length > 0 && (
+        <p style={s.sources}>
+          Sources :{' '}
+          {card.sources.map((src, i) => (
+            <span key={src.url}>
+              {i > 0 && ' · '}
+              <a href={src.url} target="_blank" rel="noopener noreferrer nofollow" style={s.sourceLink}>{src.label}</a>
+            </span>
+          ))}
+        </p>
       )}
     </div>
   )
@@ -854,6 +907,8 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '12px', fontWeight: 600, textDecoration: 'none',
   },
   articlesBlock: { marginTop: 'var(--s-4)', paddingTop: 'var(--s-4)', borderTop: '1px solid var(--border)' },
+  sources: { margin: 0, fontSize: '11.5px', lineHeight: 1.5, color: 'var(--text-3)' },
+  sourceLink: { color: 'var(--text-2)', textDecoration: 'underline', textUnderlineOffset: '2px' },
   articlesLabel: {
     display: 'inline-flex', alignItems: 'center', gap: 'var(--s-1)',
     fontSize: 'var(--t-xs)', fontWeight: 700, letterSpacing: '0.6px',

@@ -154,7 +154,7 @@ export default function GuideUI({ guideCards, cardCount }: GuideUIProps) {
             <span style={s.asideMeta}>fiches pratiques, pour 5 profils d&apos;hôtes</span>
             <span style={{ ...s.updatedBadge, alignSelf: 'flex-start' }}>
               <span style={s.updatedDot} />
-              Mis à jour avril 2026
+              Vérifié en septembre 2026
             </span>
           </div>
         }

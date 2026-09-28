@@ -23,10 +23,10 @@ const ROWS: Row[] = [
   {
     label: 'Statut juridique typique',
     values: {
-      gites:        { value: 'EI ou SASU', tone: 'neutral' },
-      chambres:     { value: 'EI (souvent)', tone: 'neutral' },
+      gites:        { value: 'En nom propre (LMNP), société au-delà', tone: 'neutral' },
+      chambres:     { value: 'En nom propre (souvent)', tone: 'neutral' },
       conciergerie: { value: 'Micro / SASU', tone: 'neutral' },
-      direct:       { value: 'EI (avec gîte)', tone: 'neutral' },
+      direct:       { value: 'Comme le gîte', tone: 'neutral' },
     },
   },
   {
@@ -50,8 +50,8 @@ const ROWS: Row[] = [
   {
     label: 'TVA',
     values: {
-      gites:        { value: 'Non (sauf classé + repas/services)', tone: 'ok' },
-      chambres:     { value: '10 % petit-déj > 37 500 €', tone: 'warn' },
+      gites:        { value: 'Exonérée, sauf services para-hôteliers (10 % au-delà de 85 000 €)', tone: 'ok' },
+      chambres:     { value: '10 % au-delà de 85 000 € de recettes', tone: 'warn' },
       conciergerie: { value: '20 % au-delà de 37 500 €', tone: 'warn' },
       direct:       { value: 'Idem gîte', tone: 'ok' },
     },
@@ -61,7 +61,7 @@ const ROWS: Row[] = [
     values: {
       gites:        { value: 'Non', tone: 'ok' },
       chambres:     { value: 'Non', tone: 'ok' },
-      conciergerie: { value: 'Oui si encaissement loyers', tone: 'warn' },
+      conciergerie: { value: 'Oui si tu encaisses (G) ou publies à ton nom (T)', tone: 'warn' },
       direct:       { value: 'Non', tone: 'ok' },
     },
   },
@@ -97,8 +97,8 @@ const ROWS: Row[] = [
     values: {
       gites:        { value: 'LCD ou multirisque PNO', tone: 'warn' },
       chambres:     { value: 'Multirisque + RC pro', tone: 'warn' },
-      conciergerie: { value: 'RC pro obligatoire', tone: 'warn' },
-      direct:       { value: 'LCD + caution Swikly', tone: 'warn' },
+      conciergerie: { value: 'RC pro (obligatoire avec carte)', tone: 'warn' },
+      direct:       { value: 'LCD + caution (empreinte ou Swikly)', tone: 'warn' },
     },
   },
 ]
