@@ -1,13 +1,15 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import {
   MagnifyingGlass, Download, SquaresFour, Rows, House, CalendarBlank,
-  CurrencyEur, Users, ChartLineUp, X, ArrowsCounterClockwise,
+  Users, X, ArrowsCounterClockwise, CaretRight,
   Envelope, Phone, ArrowSquareOut, Broom, ArrowRight, Plus, FileText, UserPlus,
 } from '@phosphor-icons/react/dist/ssr'
+import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
+import { Stat, ui } from '../finances/_ui/ui'
 import type { Reservation, LogementLite, Platform, ReservationStatus } from './types'
 import { PLATFORM_META } from './types'
 import Select, { type SelectOption } from '@/components/ui/Select'
@@ -42,9 +44,28 @@ function statusOf(r: Reservation, today: string): ReservationStatus {
   return 'upcoming'
 }
 function statusMeta(s: ReservationStatus) {
-  if (s === 'past')    return { label: 'Terminé', color: 'var(--text-muted)' }
-  if (s === 'ongoing') return { label: 'En cours', color: '#63D683' }
-  return { label: 'À venir', color: 'var(--accent-text)' }
+  if (s === 'past')    return { label: 'Terminé', color: 'var(--text-3)' }
+  if (s === 'ongoing') return { label: 'Sur place', color: 'var(--accent-text)' }
+  return { label: 'À venir', color: 'var(--text-2)' }
+}
+
+// Ce qui reste à compléter sur une réservation pas encore terminée
+type TodoKey = 'voyageur' | 'contrat'
+/** Réservation Airbnb/Booking synchronisée : ni nom, ni contact, ni déclaration */
+function needsGuest(r: Reservation, today: string) {
+  return r.source === 'ical' && r.date_depart >= today
+}
+/** Réservation directe saisie, sans contrat : à créer depuis la fiche voyageur */
+function needsContract(r: Reservation, today: string) {
+  return r.source === 'sejour' && r.platform === 'direct' && !!r.voyageur_id
+    && (!r.contract_status || r.contract_status === 'nouveau') && r.date_depart >= today
+}
+
+const MONTHS_SHORT = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
+const MONTHS = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+function monthLabel(ym: string) {
+  const [y, m] = ym.split('-').map(Number)
+  return `${MONTHS[m - 1]} ${y}`
 }
 function initials(name: string) {
   return name.split(/\s+/).filter(Boolean).map(w => w[0]).join('').toUpperCase().slice(0, 2)
@@ -100,15 +121,38 @@ export default function ReservationsView({
   const [sort, setSort] = useState<SortKey>('arrival-asc')
   const [view, setView] = useState<ViewMode>('cards')
   const [selected, setSelected] = useState<Reservation | null>(null)
+  const [todo, setTodo] = useState<TodoKey | null>(null)
+  const listRef = useRef<HTMLDivElement>(null)
 
   const platforms: Array<Platform | 'all'> = ['all', 'airbnb', 'booking', 'direct', 'driing', 'vrbo']
+
+  // Ce qui reste à compléter sur les réservations à venir (encadré du hero)
+  const todoCounts = useMemo(() => ({
+    voyageur: reservations.filter(r => needsGuest(r, today)).length,
+    contrat: reservations.filter(r => needsContract(r, today)).length,
+  }), [reservations, today])
+
+  // La semaine en cours (encadré du hero)
+  const week = useMemo(() => {
+    const in7 = addDays(today, 6)
+    const done = new Set(menageDoneIds)
+    return {
+      arriveesAuj: reservations.filter(r => r.date_arrivee === today).length,
+      departsAuj: reservations.filter(r => r.date_depart === today).length,
+      surPlace: reservations.filter(r => r.date_arrivee < today && r.date_depart > today).length,
+      arrivees7: reservations.filter(r => r.date_arrivee >= today && r.date_arrivee <= in7).length,
+      menages7: menageSlots.filter(sl => sl.date >= today && sl.date <= in7 && !done.has(sl.id)).length,
+    }
+  }, [reservations, menageSlots, menageDoneIds, today])
 
   // Filtrage
   const filtered = useMemo(() => {
     let list = [...reservations]
 
+    if (todo === 'voyageur') list = list.filter(r => needsGuest(r, today))
+    else if (todo === 'contrat') list = list.filter(r => needsContract(r, today))
     // Période (à partir de la date du jour fournie par le serveur)
-    if (period === 'upcoming') list = list.filter(r => r.date_depart >= today)
+    else if (period === 'upcoming') list = list.filter(r => r.date_depart >= today)
     else if (period === 'past') list = list.filter(r => r.date_depart < today)
     else if (period === 'week') {
       const dow = (new Date(today + 'T12:00:00Z').getUTCDay() + 6) % 7
@@ -141,7 +185,6 @@ export default function ReservationsView({
       )
     }
 
-    // Tri
     list.sort((a, b) => {
       if (sort === 'arrival-asc')  return a.date_arrivee.localeCompare(b.date_arrivee)
       if (sort === 'arrival-desc') return b.date_arrivee.localeCompare(a.date_arrivee)
@@ -151,9 +194,9 @@ export default function ReservationsView({
     })
 
     return list
-  }, [reservations, period, platform, logementId, search, sort, logements, today])
+  }, [reservations, period, platform, logementId, search, sort, logements, today, todo])
 
-  // KPIs
+  // Chiffres de la sélection
   const kpis = useMemo(() => {
     const total = filtered.length
     const withAmount = filtered.filter(r => r.montant != null)
@@ -168,13 +211,31 @@ export default function ReservationsView({
     return { total, revenue, totalNights, avgPerNight, unknownAmount }
   }, [filtered])
 
+  // Regroupement par mois d'arrivée (tri par date seulement)
+  const groups = useMemo(() => {
+    if (sort !== 'arrival-asc' && sort !== 'arrival-desc') return [{ key: 'all', label: '', items: filtered }]
+    const out: Array<{ key: string; label: string; items: Reservation[] }> = []
+    for (const r of filtered) {
+      const key = r.date_arrivee.slice(0, 7)
+      let g = out[out.length - 1]
+      if (!g || g.key !== key) { g = { key, label: monthLabel(key), items: [] }; out.push(g) }
+      g.items.push(r)
+    }
+    return out
+  }, [filtered, sort])
+
   function resetFilters() {
-    setPeriod('upcoming'); setPlatform('all'); setLogementId('all'); setSearch(''); setSort('arrival-asc')
+    setPeriod('upcoming'); setPlatform('all'); setLogementId('all'); setSearch(''); setSort('arrival-asc'); setTodo(null)
+  }
+
+  function showTodo(k: TodoKey) {
+    setTodo(k); setSearch(''); setPlatform('all'); setLogementId('all'); setSort('arrival-asc')
+    setTimeout(() => listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 30)
   }
 
   function exportCSV() {
     const rows = [
-      ['Voyageur', 'Email', 'Téléphone', 'Logement', 'Arrivée', 'Départ', 'Nuits', 'Montant', 'Plateforme', 'Statut contrat'],
+      ['Voyageur', 'E-mail', 'Téléphone', 'Logement', 'Arrivée', 'Départ', 'Nuits', 'Montant', 'Plateforme', 'Statut contrat'],
       ...filtered.map(r => [
         r.voyageur_name,
         r.voyageur_email ?? '',
@@ -185,98 +246,118 @@ export default function ReservationsView({
         String(nights(r.date_arrivee, r.date_depart)),
         r.montant != null ? String(r.montant) : '',
         PLATFORM_META[r.platform].label,
-        r.contract_status ?? '',
+        r.contract_status ? prettyContractStatus(r.contract_status) : '',
       ]),
     ]
     const csv = rows.map(row => row.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n')
-    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' })
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url; a.download = `reservations-${today}.csv`; a.click()
     URL.revokeObjectURL(url)
   }
 
-  return (
-    <div style={s.wrap}>
-      <style>{MOBILE_CSS}</style>
-      {/* HERO */}
-      <div style={s.head}>
-        <div style={{ flex: '1 1 320px', minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-            <h1 style={s.title}>Mes <em style={s.titleEm}>réservations</em></h1>
-            <TourTrigger />
-          </div>
-          <p style={s.sub}>Airbnb, Booking et réservations directes au même endroit. Clique une réservation pour voir le voyageur, le contrat et ce qui reste à faire.</p>
-        </div>
-        <div style={s.headActions}>
-          <button onClick={exportCSV} style={s.exportBtn} title="Exporter en CSV (filtres actifs)">
-            <Download size={15} weight="bold" />Exporter
-          </button>
-          <button onClick={() => setQuick({ kind: 'new' })} style={s.newBtn}>
-            <Plus size={15} weight="bold" />Nouvelle réservation
-          </button>
-        </div>
-      </div>
+  const weekRows: Array<{ n: number; label: string }> = [
+    { n: week.arriveesAuj, label: week.arriveesAuj > 1 ? 'arrivées aujourd\'hui' : 'arrivée aujourd\'hui' },
+    { n: week.departsAuj, label: week.departsAuj > 1 ? 'départs aujourd\'hui' : 'départ aujourd\'hui' },
+    { n: week.surPlace, label: week.surPlace > 1 ? 'séjours en cours' : 'séjour en cours' },
+    { n: week.arrivees7, label: week.arrivees7 > 1 ? 'arrivées dans les 7 jours' : 'arrivée dans les 7 jours' },
+  ]
 
-      {/* STATS BAR */}
-      <div style={s.kpiRow} data-tour="resa-kpis">
-        <div style={s.kpi}>
-          <div style={s.kpiIco}><CalendarBlank size={18} weight="duotone" /></div>
-          <div>
-            <div style={s.kpiVal}>{kpis.total}</div>
-            <div style={s.kpiLbl}>Réservation{kpis.total > 1 ? 's' : ''}</div>
-          </div>
-        </div>
-        <div style={s.kpi}>
-          <div style={s.kpiIco}><CurrencyEur size={18} weight="duotone" /></div>
-          <div>
-            <div style={s.kpiVal}>{fmtEurCompact(kpis.revenue)}</div>
-            <div style={s.kpiLbl}>CA {periodShortLabel(period)}</div>
-            {kpis.unknownAmount > 0 && (
-              <div style={s.kpiHint}>hors {kpis.unknownAmount} résa{kpis.unknownAmount > 1 ? 's' : ''} sans montant (Airbnb, Booking)</div>
+  return (
+    <div style={ui.page}>
+      <style>{MOBILE_CSS}</style>
+      <HubHero
+        eyebrowIcon={<CalendarBlank size={14} weight="fill" />}
+        eyebrow="Mes réservations"
+        title={<>Toutes tes <HeroEm>réservations</HeroEm>, au même endroit</>}
+        desc="Airbnb, Booking et tes réservations directes. Clique une réservation pour voir le voyageur, le contrat et ce qu'il reste à faire."
+        aside={
+          <div style={{ ...heroCard, width: '100%' }}>
+            <div style={s.asideTitle}>Cette semaine</div>
+            <div style={s.weekGrid}>
+              {weekRows.map(w => (
+                <div key={w.label} style={s.weekItem}>
+                  <strong style={{ ...s.weekNum, color: w.n > 0 ? 'var(--text)' : 'var(--text-3)' }}>{w.n}</strong>
+                  <span style={s.weekLbl}>{w.label}</span>
+                </div>
+              ))}
+            </div>
+            <Link href="/dashboard/calendrier/menage" style={s.asideLink}>
+              <Broom size={14} weight="bold" /> {week.menages7 > 0 ? `${week.menages7} ménage${week.menages7 > 1 ? 's' : ''} à faire dans les 7 jours` : 'Planning ménage'}
+              <ArrowRight size={12} weight="bold" style={{ marginLeft: 'auto' }} />
+            </Link>
+            {(todoCounts.voyageur > 0 || todoCounts.contrat > 0) && (
+              <div style={s.todoBox}>
+                <div style={s.asideTitle}>À compléter</div>
+                {todoCounts.voyageur > 0 && (
+                  <button type="button" onClick={() => showTodo('voyageur')} style={s.todoRow}>
+                    <UserPlus size={15} color="#B7791F" />
+                    <span style={{ flex: 1 }}><strong>{todoCounts.voyageur}</strong> réservation{todoCounts.voyageur > 1 ? 's' : ''} Airbnb ou Booking sans voyageur</span>
+                    <CaretRight size={13} color="var(--text-3)" />
+                  </button>
+                )}
+                {todoCounts.contrat > 0 && (
+                  <button type="button" onClick={() => showTodo('contrat')} style={s.todoRow}>
+                    <FileText size={15} color="#B7791F" />
+                    <span style={{ flex: 1 }}><strong>{todoCounts.contrat}</strong> réservation{todoCounts.contrat > 1 ? 's' : ''} directe{todoCounts.contrat > 1 ? 's' : ''} sans contrat</span>
+                    <CaretRight size={13} color="var(--text-3)" />
+                  </button>
+                )}
+              </div>
             )}
           </div>
+        }
+      >
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+          <button type="button" onClick={() => setQuick({ kind: 'new' })} style={heroCta}>
+            <Plus size={16} weight="bold" /> Nouvelle réservation
+          </button>
+          <button type="button" onClick={exportCSV} style={s.heroGhost} title="Exporter en CSV la sélection affichée">
+            <Download size={15} weight="bold" /> Exporter
+          </button>
+          <TourTrigger />
         </div>
-        <div style={s.kpi}>
-          <div style={s.kpiIco}><House size={18} weight="duotone" /></div>
-          <div>
-            <div style={s.kpiVal}>{kpis.totalNights}</div>
-            <div style={s.kpiLbl}>Nuit{kpis.totalNights > 1 ? 's' : ''} vendue{kpis.totalNights > 1 ? 's' : ''}</div>
-          </div>
-        </div>
-        <div style={s.kpi}>
-          <div style={s.kpiIco}><ChartLineUp size={18} weight="duotone" /></div>
-          <div>
-            <div style={s.kpiVal}>{kpis.avgPerNight ? fmtEurCompact(kpis.avgPerNight) : '-'}</div>
-            <div style={s.kpiLbl}>Prix moyen / nuit</div>
-          </div>
-        </div>
-      </div>
+      </HubHero>
 
-      {/* Ménages à venir : bandeau vers Calendrier → Ménage (avant : grosse
-          carte + modale qui doublonnaient l'onglet Ménage) */}
-      <MenageStrip slots={menageSlots} doneIds={menageDoneIds} today={today} />
-
-      {/* FILTRES */}
-      <div style={s.filtersBar} data-tour="resa-filtres">
-        <div style={s.chipsRow}>
-          {PERIODS.map(p => (
+      <div ref={listRef} style={{ ...ui.card, scrollMarginTop: 16 }}>
+        {/* Période */}
+        <div style={s.chipsRow} data-tour="resa-filtres">
+          {todo ? (
+            <span style={{ ...s.chip, ...s.chipActive, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              {todo === 'voyageur' ? 'Sans voyageur (à venir)' : 'Directes sans contrat (à venir)'}
+              <button type="button" onClick={() => setTodo(null)} style={s.chipClose} aria-label="Retirer ce filtre"><X size={12} weight="bold" /></button>
+            </span>
+          ) : PERIODS.map(p => (
             <button key={p.key} onClick={() => setPeriod(p.key)}
               style={{ ...s.chip, ...(period === p.key ? s.chipActive : {}) }}>
               {p.label}
             </button>
           ))}
         </div>
+
+        {/* Chiffres de la sélection */}
+        <div style={s.kpiRow} data-tour="resa-kpis">
+          <Stat label="Réservations" value={kpis.total} />
+          <Stat label="Nuits" value={kpis.totalNights} />
+          <Stat
+            label="Montant"
+            value={fmtEurCompact(kpis.revenue)}
+            tone="green"
+            hint={kpis.unknownAmount > 0 ? `hors ${kpis.unknownAmount} sans montant (Airbnb, Booking)` : undefined}
+          />
+          <Stat label="Prix moyen par nuit" value={kpis.avgPerNight ? fmtEur(kpis.avgPerNight) : '-'} hint={kpis.avgPerNight ? 'sur les réservations au montant connu' : undefined} />
+        </div>
+
+        {/* Filtres */}
         <div style={s.filterControls}>
           <div style={s.searchWrap}>
-            <MagnifyingGlass size={14} style={{ color: 'var(--text-3)', flexShrink: 0 }} />
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Rechercher voyageur, logement, email…" style={s.searchInput} />
+            <MagnifyingGlass size={15} style={{ color: 'var(--text-3)', flexShrink: 0 }} />
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Voyageur, logement, e-mail…" aria-label="Rechercher une réservation" style={s.searchInput} />
             {search && (
-              <button onClick={() => setSearch('')} style={s.searchClear} title="Effacer"><X size={12} /></button>
+              <button onClick={() => setSearch('')} style={s.searchClear} aria-label="Effacer la recherche"><X size={12} /></button>
             )}
           </div>
-          {/* Selects custom <Select> = dark theme coherent, plus des <select>
-              natifs qui ignorent le CSS et rendent un dropdown blanc illisible */}
           <Select<Platform | 'all'>
             value={platform}
             onChange={setPlatform}
@@ -302,35 +383,48 @@ export default function ReservationsView({
             value={sort}
             onChange={setSort}
             options={[
-              { value: 'arrival-asc',  label: 'Arrivée ↑' },
-              { value: 'arrival-desc', label: 'Arrivée ↓' },
-              { value: 'amount-desc',  label: 'Montant ↓' },
-              { value: 'nights-desc',  label: 'Nuits ↓' },
+              { value: 'arrival-asc',  label: 'Arrivée la plus proche' },
+              { value: 'arrival-desc', label: 'Arrivée la plus lointaine' },
+              { value: 'amount-desc',  label: 'Plus gros montant' },
+              { value: 'nights-desc',  label: 'Plus long séjour' },
             ]}
             ariaLabel="Trier par"
           />
-          <div style={s.viewToggle}>
-            <button onClick={() => setView('cards')} style={{ ...s.viewBtn, ...(view === 'cards' ? s.viewBtnActive : {}) }} title="Vue cartes"><SquaresFour size={13} weight={view === 'cards' ? 'fill' : 'regular'} /></button>
-            <button onClick={() => setView('table')} style={{ ...s.viewBtn, ...(view === 'table' ? s.viewBtnActive : {}) }} title="Vue tableau"><Rows size={13} weight={view === 'table' ? 'fill' : 'regular'} /></button>
+          <div style={s.viewToggle} role="group" aria-label="Affichage">
+            <button onClick={() => setView('cards')} aria-pressed={view === 'cards'} style={{ ...s.viewBtn, ...(view === 'cards' ? s.viewBtnActive : {}) }} title="Cartes"><SquaresFour size={14} weight={view === 'cards' ? 'fill' : 'regular'} /></button>
+            <button onClick={() => setView('table')} aria-pressed={view === 'table'} style={{ ...s.viewBtn, ...(view === 'table' ? s.viewBtnActive : {}) }} title="Tableau"><Rows size={14} weight={view === 'table' ? 'fill' : 'regular'} /></button>
           </div>
         </div>
-      </div>
 
-      {/* CONTENU */}
-      {filtered.length === 0 ? (
-        <div style={s.empty}>
-          <CalendarBlank size={40} weight="thin" color="var(--text-muted)" />
-          <div style={s.emptyTitle}>Aucune réservation ne correspond</div>
-          <div style={s.emptyDesc}>Ajuste les filtres ou change la période.</div>
-          <button onClick={resetFilters} style={s.resetBtn}><ArrowsCounterClockwise size={13} weight="bold" />Réinitialiser les filtres</button>
-        </div>
-      ) : view === 'cards' ? (
-        <div style={s.cardsGrid}>
-          {filtered.map(r => <ResaCard key={r.id} r={r} today={today} onClick={() => setSelected(r)} />)}
-        </div>
-      ) : (
-        <TableView reservations={filtered} today={today} onSelect={setSelected} />
-      )}
+        {/* Liste */}
+        {filtered.length === 0 ? (
+          <div style={s.empty}>
+            <CalendarBlank size={36} weight="thin" color="var(--text-3)" />
+            <div style={s.emptyTitle}>{reservations.length === 0 ? 'Aucune réservation pour l\'instant' : 'Aucune réservation ne correspond'}</div>
+            <div style={s.emptyDesc}>
+              {reservations.length === 0
+                ? <>Connecte ton calendrier Airbnb ou Booking depuis la fiche de ton logement, ou ajoute une réservation directe.</>
+                : <>Change la période ou retire un filtre.</>}
+            </div>
+            {reservations.length === 0
+              ? <button onClick={() => setQuick({ kind: 'new' })} style={{ ...ui.btn, marginTop: 6 }}><Plus size={14} weight="bold" /> Nouvelle réservation</button>
+              : <button onClick={resetFilters} style={{ ...ui.btnGhost, marginTop: 6 }}><ArrowsCounterClockwise size={13} weight="bold" /> Réinitialiser les filtres</button>}
+          </div>
+        ) : view === 'cards' ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 18, marginTop: 16 }}>
+            {groups.map(g => (
+              <section key={g.key}>
+                {g.label && <h3 style={s.monthHead}>{g.label} <span style={s.monthCount}>{g.items.length}</span></h3>}
+                <div style={s.cardsGrid}>
+                  {g.items.map(r => <ResaCard key={r.id} r={r} today={today} onClick={() => setSelected(r)} />)}
+                </div>
+              </section>
+            ))}
+          </div>
+        ) : (
+          <div style={{ marginTop: 16 }}><TableView reservations={filtered} today={today} onSelect={setSelected} /></div>
+        )}
+      </div>
 
       {/* DRAWER DÉTAIL */}
       {selected && (
@@ -357,68 +451,43 @@ export default function ReservationsView({
   )
 }
 
-// ─── Bandeau ménages ──────────────────────────────────────────────────────
-
-function MenageStrip({ slots, doneIds, today }: { slots: MenageSlot[]; doneIds: string[]; today: string }) {
-  const done = new Set(doneIds)
-  const in7 = addDays(today, 6)
-  const todo = slots.filter(sl => sl.date >= today && !done.has(sl.id))
-  const thisWeek = todo.filter(sl => sl.date <= in7).length
-  const next = [...todo].sort((a, b) => a.date.localeCompare(b.date))[0]
-  if (todo.length === 0) return null
-  return (
-    <Link href="/dashboard/calendrier/menage" style={mc.strip} className="jm-menage-card">
-      <span style={mc.ico}><Broom size={17} weight="duotone" /></span>
-      <span style={{ flex: 1, minWidth: 0 }}>
-        <strong style={{ color: 'var(--text)' }}>{thisWeek} ménage{thisWeek > 1 ? 's' : ''} dans les 7 prochains jours</strong>
-        {next && (
-          <span style={{ color: 'var(--text-3)' }}>
-            {' '}· prochain : {fmtDate(next.date, { weekday: 'short', day: 'numeric', month: 'short' })}, {next.logementName}
-          </span>
-        )}
-      </span>
-      <span style={mc.link}>Planning ménage <ArrowRight size={13} weight="bold" /></span>
-    </Link>
-  )
-}
-
 // ─── Carte réservation ────────────────────────────────────────────────────
 
 function ResaCard({ r, today, onClick }: { r: Reservation; today: string; onClick: () => void }) {
   const platform = PLATFORM_META[r.platform]
-  const st = statusMeta(statusOf(r, today))
+  const status = statusOf(r, today)
+  const st = statusMeta(status)
   const n = nights(r.date_arrivee, r.date_depart)
-  const perNight = r.montant && n > 0 ? Math.round(r.montant / n) : null
+  const [, m, dd] = r.date_arrivee.split('-').map(Number)
+  const missingGuest = needsGuest(r, today)
+  const missingContract = needsContract(r, today)
 
   return (
-    <button onClick={onClick} style={c.card} className="jm-resa-card">
-      <span style={{ ...c.accent, background: platform.color }} />
-      <div style={c.cardTop}>
-        <div style={c.avatar}>{r.source === 'ical' ? <CalendarBlank size={16} weight="duotone" /> : initials(r.voyageur_name)}</div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={c.name}>{r.voyageur_name}</div>
-          <div style={c.metaRow}>
-            <span style={{ ...c.badge, color: platform.color, background: `${platform.color}18`, border: `1px solid ${platform.color}40` }}>
-              {platform.label}
-            </span>
-            <span style={{ ...c.badge, color: st.color, background: 'transparent', border: `1px solid ${st.color}55` }}>
-              {st.label}
-            </span>
-          </div>
-        </div>
+    <button onClick={onClick} style={{ ...c.card, opacity: status === 'past' ? 0.8 : 1 }} className="jm-resa-card">
+      <div style={{ ...c.dateTile, ...(status === 'ongoing' ? c.dateTileOn : {}) }}>
+        <span style={c.dateDay}>{dd}</span>
+        <span style={c.dateMonth}>{MONTHS_SHORT[m - 1]}</span>
       </div>
-      <div style={c.logement}><House size={12} weight="duotone" style={{ verticalAlign: -1 }} /> {r.logement_name}</div>
-      <div style={c.datesRow}>
-        <span><strong>{fmtDate(r.date_arrivee)}</strong> → <strong>{fmtDate(r.date_depart)}</strong></span>
-        <span style={c.sep}>·</span>
-        <span>{n} nuit{n > 1 ? 's' : ''}</span>
-        {r.montant != null && (
-          <>
-            <span style={c.sep}>·</span>
-            <span style={c.montant}>{fmtEur(r.montant)}</span>
-            {perNight && <span style={c.perNight}>({perNight}€/nuit)</span>}
-          </>
-        )}
+      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, alignItems: 'flex-start' }}>
+          <div style={{ ...c.name, ...(r.source === 'ical' ? { color: 'var(--text-2)', fontStyle: 'italic' } : {}) }}>{r.voyageur_name}</div>
+          {r.montant != null && <span style={c.montant}>{fmtEur(r.montant)}</span>}
+        </div>
+        <div style={c.line}>
+          <House size={13} weight="duotone" style={{ flexShrink: 0 }} />
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.logement_name}</span>
+        </div>
+        <div style={c.line}>
+          {fmtDate(r.date_arrivee, { weekday: 'short', day: 'numeric', month: 'short' })} au {fmtDate(r.date_depart, { weekday: 'short', day: 'numeric', month: 'short' })} · {n} nuit{n > 1 ? 's' : ''}
+        </div>
+        <div style={c.metaRow}>
+          <span style={{ ...c.badge, color: platform.color, borderColor: `${platform.color}55` }}>
+            <span style={{ ...c.dot, background: platform.color }} />{platform.label}
+          </span>
+          {status !== 'upcoming' && <span style={{ ...c.badge, color: st.color, borderColor: 'var(--border-2)' }}>{st.label}</span>}
+          {missingGuest && <span style={{ ...c.badge, ...c.badgeTodo }}><UserPlus size={11} weight="bold" /> Voyageur à ajouter</span>}
+          {missingContract && <span style={{ ...c.badge, ...c.badgeTodo }}><FileText size={11} weight="bold" /> Contrat à créer</span>}
+        </div>
       </div>
     </button>
   )
@@ -508,8 +577,7 @@ function ReservationDrawer({ r, today, onClose, onAttachGuest }: {
   const st = statusMeta(status)
   // Réservation directe saisie, sans contrat : on propose de le créer
   // (assistant ouvert sur la fiche voyageur via ?contract=<séjour>)
-  const canCreateContract = r.source === 'sejour' && r.platform === 'direct' && !!r.voyageur_id
-    && (!r.contract_status || r.contract_status === 'nouveau') && status !== 'past'
+  const canCreateContract = needsContract(r, today)
   const n = nights(r.date_arrivee, r.date_depart)
   const perNight = r.montant && n > 0 ? Math.round(r.montant / n) : null
 
@@ -544,7 +612,7 @@ function ReservationDrawer({ r, today, onClose, onAttachGuest }: {
             <div style={d.block}>
               <div style={d.blockLbl}>Montant</div>
               <div style={{ ...d.blockVal, color: 'var(--accent-text)' }}>{r.montant != null ? fmtEur(r.montant) : '-'}</div>
-              {perNight && <div style={d.blockHint}>{perNight}€ / nuit</div>}
+              {perNight && <div style={d.blockHint}>{perNight} € / nuit</div>}
             </div>
           </div>
 
@@ -576,10 +644,10 @@ function ReservationDrawer({ r, today, onClose, onAttachGuest }: {
             <div style={d.section}>
               <div style={d.sectionLbl}>Contrat &amp; paiement</div>
               {r.contract_status && (
-                <div style={d.rowInfo}>Contrat : <strong style={{ color: r.contract_status === 'signe' ? '#63D683' : 'var(--accent-text)' }}>{prettyContractStatus(r.contract_status)}</strong></div>
+                <div style={d.rowInfo}>Contrat : <strong style={{ color: r.contract_status === 'signe' ? 'var(--accent-text)' : '#B7791F' }}>{prettyContractStatus(r.contract_status)}</strong></div>
               )}
               {r.payment_status && (
-                <div style={d.rowInfo}>Paiement Stripe : <strong>{prettyPaymentStatus(r.payment_status)}</strong></div>
+                <div style={d.rowInfo}>Loyer payé en ligne : <strong>{prettyPaymentStatus(r.payment_status)}</strong></div>
               )}
             </div>
           )}
@@ -631,7 +699,8 @@ function ReservationDrawer({ r, today, onClose, onAttachGuest }: {
 function ContextualAlerts({ r, today }: { r: Reservation; today: string }) {
   const alerts: Array<{ level: 'warn' | 'info' | 'danger'; msg: string }> = []
   const status = statusOf(r, today)
-  const daysToArrival = Math.ceil((new Date(r.date_arrivee + 'T12:00').getTime() - Date.now()) / 86400000)
+  // Écart en jours avec la date du jour fournie par le serveur (négatif si passé)
+  const daysToArrival = Math.round((new Date(r.date_arrivee + 'T12:00:00Z').getTime() - new Date(today + 'T12:00:00Z').getTime()) / 86400000)
 
   if (r.source === 'contract' && r.contract_status && r.contract_status !== 'signe' && daysToArrival >= 0 && daysToArrival <= 7) {
     alerts.push({ level: 'danger', msg: `Contrat non signé alors que l'arrivée est dans ${daysToArrival} jour${daysToArrival > 1 ? 's' : ''}.` })
@@ -655,16 +724,16 @@ function ContextualAlerts({ r, today }: { r: Reservation; today: string }) {
         <div key={i} style={{
           ...d.alert,
           background:
-            a.level === 'danger' ? 'rgba(248,113,113,0.10)'
-              : a.level === 'warn' ? 'rgba(251,146,60,0.10)'
+            a.level === 'danger' ? 'var(--danger-bg)'
+              : a.level === 'warn' ? 'rgba(255,213,107,0.16)'
                 : 'var(--accent-bg)',
           borderColor:
-            a.level === 'danger' ? 'rgba(248,113,113,0.30)'
-              : a.level === 'warn' ? 'rgba(251,146,60,0.30)'
+            a.level === 'danger' ? 'rgba(239,68,68,0.30)'
+              : a.level === 'warn' ? 'rgba(183,121,31,0.30)'
                 : 'var(--accent-border)',
           color:
-            a.level === 'danger' ? '#dc2626'
-              : a.level === 'warn' ? '#c2410c'
+            a.level === 'danger' ? 'var(--danger)'
+              : a.level === 'warn' ? '#8A5A12'
                 : 'var(--accent-text)',
         }}>{a.msg}</div>
       ))}
@@ -675,7 +744,8 @@ function ContextualAlerts({ r, today }: { r: Reservation; today: string }) {
 function prettyContractStatus(s: string) {
   const m: Record<string, string> = {
     signe: 'Signé',
-    en_attente: 'En attente signature',
+    en_attente: 'En attente de signature',
+    nouveau: 'Pas encore créé',
     brouillon: 'Brouillon',
     annule: 'Annulé',
   }
@@ -705,60 +775,67 @@ function periodShortLabel(p: Period) {
 // ─── Styles ───────────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
-  wrap: { padding: 'var(--dash-page-px)', width: '100%', display: 'flex', flexDirection: 'column' as const, gap: 18 },
-  headActions: { display: 'flex', gap: 8, flexWrap: 'wrap' as const, alignItems: 'center' },
-  newBtn: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '10px 16px', background: 'var(--accent-text)', border: 'none', borderRadius: 10, color: 'var(--bg)', fontSize: 13.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
-  kpiHint: { fontSize: 11, color: 'var(--text-3)', marginTop: 3, lineHeight: 1.35 },
-  head: { display: 'flex', alignItems: 'flex-start', gap: 16, flexWrap: 'wrap' as const },
-  title: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(22px, 3vw, 28px)', fontWeight: 400, letterSpacing: '-0.02em', margin: 0, marginBottom: 4 },
-  titleEm: { color: 'var(--accent-text)', fontStyle: 'italic', fontWeight: 300 },
-  sub: { fontSize: 13.5, color: 'var(--text-muted)', margin: 0, lineHeight: 1.6, maxWidth: 640 },
-  exportBtn: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '9px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, color: 'var(--text-2)', fontSize: 13, fontWeight: 600, cursor: 'pointer', flexShrink: 0, fontFamily: 'inherit' },
-  kpiRow: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', gap: 12 },
-  kpi: { display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12 },
-  kpiIco: { width: 38, height: 38, borderRadius: 10, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  kpiVal: { fontFamily: 'var(--font-fraunces), serif', fontSize: 22, fontWeight: 500, color: 'var(--text)', lineHeight: 1 },
-  kpiLbl: { fontSize: 11.5, color: 'var(--text-muted)', marginTop: 4, letterSpacing: 0.3 },
-  filtersBar: { display: 'flex', flexDirection: 'column' as const, gap: 12 },
+  asideTitle: { fontSize: 12, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  weekGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px 14px' },
+  weekItem: { display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 },
+  weekNum: { fontFamily: 'var(--font-fraunces), serif', fontSize: 24, lineHeight: 1.05, fontWeight: 500 },
+  weekLbl: { fontSize: 12, color: 'var(--text-3)', lineHeight: 1.35 },
+  asideLink: {
+    display: 'flex', alignItems: 'center', gap: 8, padding: '9px 12px', borderRadius: 10,
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)',
+    fontSize: 13, fontWeight: 700, textDecoration: 'none',
+  },
+  todoBox: { display: 'flex', flexDirection: 'column', gap: 4, paddingTop: 10, borderTop: '1px solid var(--border)' },
+  todoRow: {
+    display: 'flex', alignItems: 'center', gap: 9, padding: '6px 0', background: 'none', border: 'none',
+    cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, color: 'var(--text-2)', textAlign: 'left', lineHeight: 1.4,
+  },
+  heroGhost: {
+    display: 'inline-flex', alignItems: 'center', gap: 8, padding: '11px 16px', borderRadius: 12,
+    background: 'var(--surface)', border: '1px solid var(--border-2)', color: 'var(--text)', fontSize: 14, fontWeight: 600,
+    cursor: 'pointer', fontFamily: 'inherit',
+  },
+  kpiRow: { ...ui.kpis, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 125px), 1fr))', margin: '16px 0', padding: '14px 0', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' },
   chipsRow: { display: 'flex', flexWrap: 'wrap' as const, gap: 6 },
-  chip: { padding: '7px 12px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 999, fontSize: 12.5, color: 'var(--text-3)', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500 },
+  chip: { padding: '7px 13px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 999, fontSize: 13, color: 'var(--text-2)', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 500 },
   chipActive: { background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)', fontWeight: 600 },
-  filterControls: { display: 'flex', flexWrap: 'wrap' as const, gap: 8, alignItems: 'center' },
-  searchWrap: { display: 'flex', alignItems: 'center', gap: 8, padding: '7px 12px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 9, flex: 1, minWidth: 220 },
-  searchInput: { border: 'none', background: 'transparent', outline: 'none', color: 'var(--text)', fontSize: 13, fontFamily: 'inherit', width: '100%' },
+  chipClose: { display: 'inline-flex', background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'inherit' },
+  filterControls: { display: 'flex', flexWrap: 'wrap' as const, gap: 8, alignItems: 'center', position: 'relative', zIndex: 5 },
+  searchWrap: { display: 'flex', alignItems: 'center', gap: 8, padding: '9px 12px', background: 'var(--bg)', border: '1px solid var(--border-2)', borderRadius: 10, flex: '1 1 240px', minWidth: 0 },
+  searchInput: { border: 'none', background: 'transparent', outline: 'none', color: 'var(--text)', fontSize: 13.5, fontFamily: 'inherit', width: '100%', minWidth: 0 },
   searchClear: { background: 'none', border: 'none', color: 'var(--text-3)', cursor: 'pointer', padding: 2, display: 'flex' },
-  /* Le style .select natif a ete retire — remplace par <Select> custom
-     dans components/ui/Select.tsx qui gere le dropdown en dark theme. */
-  viewToggle: { display: 'flex', border: '1px solid var(--border)', borderRadius: 9, background: 'var(--surface)', padding: 2 },
+  viewToggle: { display: 'flex', border: '1px solid var(--border)', borderRadius: 9, background: 'var(--bg)', padding: 2 },
   viewBtn: { padding: '6px 10px', background: 'transparent', border: 'none', color: 'var(--text-3)', cursor: 'pointer', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' },
   viewBtnActive: { background: 'var(--accent-bg)', color: 'var(--accent-text)' },
-  cardsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 12 },
-  empty: { display: 'flex', flexDirection: 'column' as const, alignItems: 'center', justifyContent: 'center', gap: 10, padding: '60px 20px', textAlign: 'center' as const, color: 'var(--text-muted)' },
-  emptyTitle: { fontSize: 15, color: 'var(--text-2)', fontWeight: 500 },
-  emptyDesc: { fontSize: 12.5 },
-  resetBtn: { display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 8, padding: '7px 12px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, color: 'var(--text-2)', fontSize: 12.5, cursor: 'pointer', fontFamily: 'inherit' },
+  monthHead: { display: 'flex', alignItems: 'center', gap: 8, margin: '0 0 10px', fontFamily: 'var(--font-fraunces), serif', fontSize: 17, fontWeight: 500, color: 'var(--text)' },
+  monthCount: { fontFamily: 'var(--font-outfit), sans-serif', fontSize: 12, fontWeight: 700, color: 'var(--text-3)', background: 'var(--bg-2)', borderRadius: 999, padding: '1px 8px' },
+  cardsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 340px), 1fr))', gap: 10 },
+  empty: { display: 'flex', flexDirection: 'column' as const, alignItems: 'center', justifyContent: 'center', gap: 8, padding: '48px 20px 24px', textAlign: 'center' as const },
+  emptyTitle: { fontSize: 15.5, color: 'var(--text)', fontWeight: 600 },
+  emptyDesc: { fontSize: 13, color: 'var(--text-3)', maxWidth: 420, lineHeight: 1.55 },
 }
 
 const c: Record<string, React.CSSProperties> = {
   card: {
-    position: 'relative' as const,
-    display: 'flex', flexDirection: 'column' as const, gap: 8,
-    padding: '16px 16px 16px 20px',
-    background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12,
-    cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' as const, width: '100%',
+    display: 'flex', gap: 14, alignItems: 'flex-start',
+    padding: 14, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 14,
+    cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' as const, width: '100%', minWidth: 0,
     color: 'var(--text)', transition: 'transform 0.15s var(--ease-spring), border-color 0.15s, box-shadow 0.15s',
   },
-  accent: { position: 'absolute' as const, top: 0, left: 0, bottom: 0, width: 4, borderRadius: '12px 0 0 12px' },
-  cardTop: { display: 'flex', alignItems: 'flex-start', gap: 12 },
-  avatar: { width: 38, height: 38, borderRadius: '50%', background: 'rgba(255,213,107,0.14)', border: '1px solid var(--accent-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-text)', fontWeight: 600, fontSize: 13, fontFamily: 'var(--font-fraunces), serif', flexShrink: 0 },
-  name: { fontSize: 14.5, fontWeight: 600, color: 'var(--text)', fontFamily: 'var(--font-fraunces), serif', letterSpacing: '-0.01em', marginBottom: 5 },
-  metaRow: { display: 'flex', flexWrap: 'wrap' as const, gap: 5 },
-  badge: { fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 999, letterSpacing: 0.4, textTransform: 'uppercase' as const },
-  logement: { fontSize: 12.5, color: 'var(--text-2)', fontWeight: 500 },
-  datesRow: { display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' as const, fontSize: 12, color: 'var(--text-3)' },
-  sep: { color: 'var(--text-muted)', opacity: 0.6 },
-  montant: { color: 'var(--accent-text)', fontWeight: 600 },
-  perNight: { color: 'var(--text-muted)', fontSize: 11 },
+  dateTile: {
+    width: 52, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+    padding: '8px 0', borderRadius: 12, background: 'var(--surface)', border: '1px solid var(--border)',
+  },
+  dateTileOn: { background: 'var(--accent-bg)', borderColor: 'var(--accent-border)' },
+  dateDay: { fontFamily: 'var(--font-fraunces), serif', fontSize: 22, lineHeight: 1, color: 'var(--text)' },
+  dateMonth: { fontSize: 11, fontWeight: 600, color: 'var(--text-3)', marginTop: 3 },
+  name: { fontSize: 15, fontWeight: 600, color: 'var(--text)', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  line: { display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: 'var(--text-2)', minWidth: 0 },
+  metaRow: { display: 'flex', flexWrap: 'wrap' as const, gap: 5, marginTop: 2 },
+  badge: { display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11.5, fontWeight: 600, padding: '2px 8px', borderRadius: 999, border: '1px solid', background: 'transparent', whiteSpace: 'nowrap' },
+  badgeTodo: { color: '#8A5A12', background: 'rgba(255,213,107,0.16)', borderColor: 'rgba(183,121,31,0.30)' },
+  dot: { width: 7, height: 7, borderRadius: '50%', display: 'inline-block' },
+  montant: { fontFamily: 'var(--font-fraunces), serif', fontSize: 16, color: 'var(--accent-text)', whiteSpace: 'nowrap', flexShrink: 0 },
 }
 
 const t: Record<string, React.CSSProperties> = {
@@ -772,16 +849,6 @@ const t: Record<string, React.CSSProperties> = {
   miniAvatar: { width: 26, height: 26, borderRadius: '50%', background: 'rgba(255,213,107,0.14)', border: '1px solid var(--accent-border)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-text)', fontWeight: 600, fontSize: 10.5, fontFamily: 'var(--font-fraunces), serif' },
   dot: { display: 'inline-block', width: 8, height: 8, borderRadius: '50%', marginRight: 6, verticalAlign: 1 },
   status: { fontSize: 12.5, fontWeight: 500 },
-}
-
-const mc: Record<string, React.CSSProperties> = {
-  strip: {
-    display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' as const,
-    padding: '12px 16px', background: 'var(--surface)', border: '1px solid var(--accent-border)',
-    borderRadius: 12, fontSize: 13.5, color: 'var(--text-2)', textDecoration: 'none',
-  },
-  ico: { width: 34, height: 34, borderRadius: 10, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  link: { display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 700, color: 'var(--accent-text)', whiteSpace: 'nowrap' as const },
 }
 
 const d: Record<string, React.CSSProperties> = {
