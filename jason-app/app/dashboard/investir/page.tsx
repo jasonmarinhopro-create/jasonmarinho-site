@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import InvestirView from './InvestirView'
 import type { InvestorProject } from '@/lib/investor/actions'
 
-export const metadata = { title: 'Espace investisseur — Jason Marinho' }
+export const metadata = { title: 'Espace investisseur, Jason Marinho' }
 export const dynamic = 'force-dynamic'
 
 // Espace investisseur : dashboard tourné acquisition (pré-achat), pas

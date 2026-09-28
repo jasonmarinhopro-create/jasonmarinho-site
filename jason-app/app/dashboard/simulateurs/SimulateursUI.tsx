@@ -54,7 +54,7 @@ interface Props {
 const MONTHS_SHORT = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc']
 const MONTHS_LONG = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
 
-export function EstimateurRevenus({ logements }: { logements: LogementPrefill[] }) {
+export function EstimateurRevenus({ logements, hideHeader = false }: { logements: LogementPrefill[]; hideHeader?: boolean }) {
   const [logementId, setLogementId] = useState<string>(logements[0]?.id ?? '__manual__')
   const selected = logements.find(l => l.id === logementId)
 
@@ -108,11 +108,13 @@ export function EstimateurRevenus({ logements }: { logements: LogementPrefill[] 
           onClose={() => setPdfOpen(false)}
         />
       )}
+      {!hideHeader && (<>
       <h2 style={s.sectionTitle}><TrendUp size={20} weight="fill" /> Estimateur de revenus annuels</h2>
       <p style={s.sectionDesc}>
         Combien peut rapporter ton bien (ou un bien que tu envisages d'acheter) selon ta ville, ton type de bien et ton mode d'exploitation.
         {logements.length > 0 && ' Préfilé avec tes logements.'}
       </p>
+      </>)}
 
       <div style={s.grid2}>
         <div style={s.formCard}>
@@ -124,7 +126,7 @@ export function EstimateurRevenus({ logements }: { logements: LogementPrefill[] 
                 onChange={setLogementId}
                 options={[
                   ...logements.map(l => ({ value: l.id, label: `${l.nom}${l.ville ? ` · ${l.ville}` : ''}` })),
-                  { value: '__manual__', label: '— Saisie manuelle (autre bien) —' },
+                  { value: '__manual__', label: 'Saisie manuelle (autre bien)' },
                 ]}
                 minWidth="100%"
                 triggerStyle={fullSelectTrigger}
@@ -151,7 +153,7 @@ export function EstimateurRevenus({ logements }: { logements: LogementPrefill[] 
               value={ville}
               onChange={setVille}
               options={[
-                { value: '', label: '— Autre ville (moyenne pays) —' },
+                { value: '', label: 'Autre ville (moyenne du pays)' },
                 ...cityOptions.map(c => ({ value: c.ville, label: c.ville })),
               ]}
               minWidth="100%"
@@ -256,8 +258,8 @@ export function EstimateurRevenus({ logements }: { logements: LogementPrefill[] 
                     <div style={{
                       width: '100%', height: `${h}px`,
                       background: m.isHigh
-                        ? 'linear-gradient(180deg, var(--success-1) 0%, #2BA56A 100%)'
-                        : 'linear-gradient(180deg, #FFD56B 0%, #FFC845 100%)',
+                        ? 'linear-gradient(180deg, var(--accent-text) 0%, #2F7D52 100%)'
+                        : 'linear-gradient(180deg, #FFD56B 0%, #E6B94F 100%)',
                       borderRadius: '4px 4px 0 0',
                     }} />
                     <span style={{ fontSize: '9.5px', color: 'var(--text-muted)' }}>{MONTHS_SHORT[i]}</span>
@@ -281,7 +283,7 @@ export function EstimateurRevenus({ logements }: { logements: LogementPrefill[] 
             }}>
               <div style={{
                 fontSize: '11px', fontWeight: 700, letterSpacing: '0.5px',
-                textTransform: 'uppercase' as const, color: 'var(--success-1)',
+                textTransform: 'uppercase' as const, color: 'var(--accent-text)',
                 marginBottom: '10px',
                 display: 'flex', alignItems: 'center', gap: '6px',
               }}>
@@ -387,7 +389,7 @@ export function CalculateurPrix({ logements }: { logements: LogementPrefill[] })
                 onChange={setLogementId}
                 options={[
                   ...logements.map(l => ({ value: l.id, label: `${l.nom}${l.ville ? ` · ${l.ville}` : ''}` })),
-                  { value: '__manual__', label: '— Saisie manuelle —' },
+                  { value: '__manual__', label: 'Saisie manuelle' },
                 ]}
                 minWidth="100%" triggerStyle={fullSelectTrigger} ariaLabel="Logement"
               />
@@ -410,7 +412,7 @@ export function CalculateurPrix({ logements }: { logements: LogementPrefill[] })
               value={ville}
               onChange={setVille}
               options={[
-                { value: '', label: '— Autre ville (moyenne pays) —' },
+                { value: '', label: 'Autre ville (moyenne du pays)' },
                 ...cityOptions.map(c => ({ value: c.ville, label: c.ville })),
               ]}
               minWidth="100%" triggerStyle={fullSelectTrigger} ariaLabel="Ville"
@@ -514,7 +516,7 @@ export function CalculateurPrix({ logements }: { logements: LogementPrefill[] })
             <span style={{ fontWeight: 600, color: 'var(--text)' }}>
               {fmtEur(res.marketAdr)}
               {Math.abs(diffPct) >= 2 && (
-                <span style={{ marginLeft: '8px', fontSize: '11.5px', color: diffPct >= 0 ? 'var(--success-1)' : '#F59E0B' }}>
+                <span style={{ marginLeft: '8px', fontSize: '11.5px', color: diffPct >= 0 ? 'var(--accent-text)' : '#B7791F' }}>
                   {diffPct >= 0 ? '+' : ''}{diffPct} %
                 </span>
               )}
@@ -534,8 +536,8 @@ export function CalculateurPrix({ logements }: { logements: LogementPrefill[] })
                     <div style={{
                       width: '100%', height: `${h}px`,
                       background: p.isHigh
-                        ? 'linear-gradient(180deg, var(--success-1) 0%, #2BA56A 100%)'
-                        : 'linear-gradient(180deg, #FFD56B 0%, #FFC845 100%)',
+                        ? 'linear-gradient(180deg, var(--accent-text) 0%, #2F7D52 100%)'
+                        : 'linear-gradient(180deg, #FFD56B 0%, #E6B94F 100%)',
                       borderRadius: '4px 4px 0 0',
                       boxShadow: isCurrent ? '0 0 0 2px var(--accent-text)' : 'none',
                     }} />
@@ -559,7 +561,7 @@ export function CalculateurPrix({ logements }: { logements: LogementPrefill[] })
 /* ──────────────────────────────────────────
  * 7. COMPARATEUR MES VILLES (multi-villes, préfilé avec tes logements)
  * ────────────────────────────────────────── */
-export function CompareurMesVilles({ logements }: { logements: LogementPrefill[] }) {
+export function CompareurMesVilles({ logements, hideHeader = false }: { logements: LogementPrefill[]; hideHeader?: boolean }) {
   // Villes uniques des logements de l'utilisateur (déduplication par ville+pays)
   const villesLogements = useMemo(() => {
     const seen = new Set<string>()
@@ -634,6 +636,7 @@ export function CompareurMesVilles({ logements }: { logements: LogementPrefill[]
 
   return (
     <div>
+      {!hideHeader && (<>
       <h2 style={s.sectionTitle}>
         <Storefront size={20} weight="fill" /> Compare tes villes
       </h2>
@@ -641,6 +644,7 @@ export function CompareurMesVilles({ logements }: { logements: LogementPrefill[]
         Compare les benchmarks marché de tes propres villes à d&apos;autres villes pour décider d&apos;un investissement.
         {villesLogements.length > 0 && ` Préfilé avec ${villesLogements.length} ville${villesLogements.length > 1 ? 's' : ''} où tu as déjà un bien.`}
       </p>
+      </>)}
 
       {/* Sélection villes */}
       <div style={s.formCard}>
@@ -652,7 +656,7 @@ export function CompareurMesVilles({ logements }: { logements: LogementPrefill[]
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' as const }}>
                   <div style={{
                     width: '24px', height: '24px', borderRadius: '6px',
-                    background: ['#10b981', '#004C3F', '#f59e0b', '#a78bfa'][i],
+                    background: ['#2F7D52', '#004C3F', '#B7791F', '#B83A7C'][i],
                     color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: '11px', fontWeight: 700, flexShrink: 0,
                   }}>{i + 1}</div>
@@ -738,29 +742,29 @@ export function CompareurMesVilles({ logements }: { logements: LogementPrefill[]
             <tr>
               <td style={{ padding: '12px 12px', fontWeight: 600, color: 'var(--text-2)', borderBottom: '1px solid var(--border)' }}>Occupation</td>
               {benches.map((b, i) => (
-                <td key={i} style={{ padding: '12px 12px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', color: i === bestOcc ? 'var(--success-1)' : 'var(--text)', fontWeight: i === bestOcc ? 600 : 400 }}>
-                  {i === bestOcc && '🏆 '}{b.bench.occupationAnnuellePct} %
+                <td key={i} style={{ padding: '12px 12px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', color: i === bestOcc ? 'var(--accent-text)' : 'var(--text)', fontWeight: i === bestOcc ? 600 : 400 }}>
+                  {i === bestOcc && '★ '}{b.bench.occupationAnnuellePct} %
                 </td>
               ))}
             </tr>
             <tr>
               <td style={{ padding: '12px 12px', fontWeight: 600, color: 'var(--text-2)', borderBottom: '1px solid var(--border)' }}>ADR moyen</td>
               {benches.map((b, i) => (
-                <td key={i} style={{ padding: '12px 12px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', color: i === bestAdr ? 'var(--success-1)' : 'var(--text)', fontWeight: i === bestAdr ? 600 : 400 }}>
-                  {i === bestAdr && '🏆 '}{fmtEur(b.bench.adrEur)}
+                <td key={i} style={{ padding: '12px 12px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', color: i === bestAdr ? 'var(--accent-text)' : 'var(--text)', fontWeight: i === bestAdr ? 600 : 400 }}>
+                  {i === bestAdr && '★ '}{fmtEur(b.bench.adrEur)}
                 </td>
               ))}
             </tr>
             <tr>
               <td style={{ padding: '12px 12px', fontWeight: 600, color: 'var(--text-2)', borderBottom: '1px solid var(--border)' }}>RevPAR annuel</td>
               {benches.map((b, i) => (
-                <td key={i} style={{ padding: '12px 12px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', color: i === bestRev ? 'var(--success-1)' : 'var(--text)', fontWeight: i === bestRev ? 600 : 400 }}>
-                  {i === bestRev && '🏆 '}{fmtEur(b.bench.revparAnnuelEur)}
+                <td key={i} style={{ padding: '12px 12px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', color: i === bestRev ? 'var(--accent-text)' : 'var(--text)', fontWeight: i === bestRev ? 600 : 400 }}>
+                  {i === bestRev && '★ '}{fmtEur(b.bench.revparAnnuelEur)}
                 </td>
               ))}
             </tr>
             {/* Réglementation : une ville au meilleur RevPAR peut être fermée
-                aux nouveaux logements (Barcelone, Palma…), à lire avant le 🏆. */}
+                aux nouveaux logements (Barcelone, Palma…), à lire avant l’étoile. */}
             <tr>
               <td style={{ padding: '12px 12px', fontWeight: 600, color: 'var(--text-2)', borderBottom: '1px solid var(--border)' }}>Réglementation</td>
               {benches.map((b, i) => {
@@ -784,7 +788,7 @@ export function CompareurMesVilles({ logements }: { logements: LogementPrefill[]
                 <td style={{ padding: '12px 12px', fontWeight: 600, color: 'var(--accent-text)', borderBottom: '1px solid var(--border)' }}>★ Ton occupation réelle</td>
                 {benches.map((b, i) => (
                   <td key={i} style={{ padding: '12px 12px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', color: 'var(--accent-text)' }}>
-                    {b.mine?.statsReelles ? `${b.mine.statsReelles.occupationReelle} %` : '—'}
+                    {b.mine?.statsReelles ? `${b.mine.statsReelles.occupationReelle} %` : '-'}
                   </td>
                 ))}
               </tr>
@@ -794,7 +798,7 @@ export function CompareurMesVilles({ logements }: { logements: LogementPrefill[]
                 <td style={{ padding: '12px 12px', fontWeight: 600, color: 'var(--accent-text)' }}>★ Ton ADR réel</td>
                 {benches.map((b, i) => (
                   <td key={i} style={{ padding: '12px 12px', fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', color: 'var(--accent-text)' }}>
-                    {b.mine?.statsReelles?.adrReel ? fmtEur(b.mine.statsReelles.adrReel) : '—'}
+                    {b.mine?.statsReelles?.adrReel ? fmtEur(b.mine.statsReelles.adrReel) : '-'}
                   </td>
                 ))}
               </tr>

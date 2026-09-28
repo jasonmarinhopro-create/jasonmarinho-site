@@ -1,8 +1,10 @@
 import { redirect } from 'next/navigation'
 import { getProfile } from '@/lib/queries/profile'
 import { CompareurMesVilles } from '@/app/dashboard/simulateurs/SimulateursUI'
+import HubHero, { HeroEm } from '@/components/dashboard/HubHero'
+import { MapPin } from '@phosphor-icons/react/dist/ssr'
 
-export const metadata = { title: 'Comparer les villes — Espace investisseur' }
+export const metadata = { title: 'Comparer les villes, Espace investisseur' }
 export const dynamic = 'force-dynamic'
 
 // Comparateur de villes dans l'espace investisseur (détaché). Réutilise le
@@ -12,8 +14,14 @@ export default async function InvestirComparateurPage() {
   const profile = await getProfile()
   if (!profile?.userId) redirect('/auth/login')
   return (
-    <div className="sim-root" style={{ padding: 'var(--dash-page-px)', width: '100%', maxWidth: 1600, margin: '0 auto' }}>
-      <CompareurMesVilles logements={[]} />
+    <div className="sim-root" style={{ padding: 'var(--dash-page-px)', width: '100%' }}>
+      <HubHero
+        eyebrowIcon={<MapPin size={14} weight="fill" />}
+        eyebrow="Espace investisseur · Comparer les villes"
+        title={<>Où acheter <HeroEm>pour louer</HeroEm> ?</>}
+        desc="Mets jusqu’à 4 villes côte à côte : prix moyen par nuit, taux d’occupation, revenu estimé et réglementation. La meilleure valeur de chaque ligne ressort en vert."
+      />
+      <CompareurMesVilles logements={[]} hideHeader />
     </div>
   )
 }

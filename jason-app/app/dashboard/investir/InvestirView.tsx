@@ -9,6 +9,8 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import { estimateRevenue } from '@/lib/lcd/market-benchmarks'
 import { deleteInvestorProject, type InvestorProject } from '@/lib/investor/actions'
+import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashboard/HubHero'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 const TYPE_LABELS: Record<string, string> = {
   studio: 'Studio', t1: 'T1', t2: 'T2', t3: 'T3', maison: 'Maison',
@@ -22,7 +24,7 @@ const PAYS_LABELS: Record<string, string> = {
 }
 
 function eur(n: number | null | undefined): string {
-  if (n == null) return '—'
+  if (n == null) return '-'
   return Math.round(n).toLocaleString('fr-FR') + ' €'
 }
 
@@ -30,9 +32,16 @@ export default function InvestirView({ projects, firstName }: { projects: Invest
   const [items, setItems] = useState(projects)
   const [busyId, setBusyId] = useState<string | null>(null)
   const [, startTransition] = useTransition()
+  const { confirm, dialog } = useConfirm()
 
-  function remove(id: string) {
-    if (!confirm('Supprimer ce projet d\'acquisition ?')) return
+  // Meilleur projet par rentabilité nette (carte à droite du bandeau)
+  const withRenta = items.filter(p => p.snapshot?.rentabiliteNette != null)
+  const best = withRenta.length ? withRenta.reduce((a, b) => (b.snapshot!.rentabiliteNette! > a.snapshot!.rentabiliteNette! ? b : a)) : null
+  const villes = new Set(items.map(p => p.ville ?? p.pays)).size
+
+  async function remove(id: string) {
+    const p = items.find(x => x.id === id)
+    if (!(await confirm({ message: `Supprimer le projet « ${p?.nom ?? 'sans nom'} » ? Action irréversible.`, confirmLabel: 'Supprimer', danger: true }))) return
     setItems(prev => prev.filter(p => p.id !== id))
     startTransition(async () => { await deleteInvestorProject(id) })
   }
@@ -63,17 +72,36 @@ export default function InvestirView({ projects, firstName }: { projects: Invest
 
   return (
     <div style={s.page}>
-      {/* HERO */}
-      <section style={s.hero} className="fade-up">
-        <div style={s.heroIcon}><ChartLineUp size={24} weight="fill" /></div>
-        <div>
-          <h1 style={s.heroTitle}>Espace investisseur{firstName ? `, ${firstName}` : ''}</h1>
-          <p style={s.heroDesc}>
-            Analyse un bien avant de l&apos;acheter : estime les revenus, la rentabilité, et sors un
-            prévisionnel prêt pour ta banque. Quand tu passes à l&apos;achat, tout bascule dans ton espace hôte.
-          </p>
+      {dialog}
+      <HubHero
+        eyebrowIcon={<ChartLineUp size={14} weight="fill" />}
+        eyebrow={firstName ? `Espace investisseur · ${firstName}` : 'Espace investisseur'}
+        title={<>Analyse un bien <HeroEm>avant de l&apos;acheter</HeroEm></>}
+        desc="Estime les revenus en location courte durée, vérifie la réglementation de la ville et sors un prévisionnel prêt pour ta banque. Quand tu achètes, tout bascule dans ton espace hôte, avec le même compte."
+        steps={[['Estime', 'les revenus du bien'], ['Compare', 'les villes'], ['Présente', 'le PDF à ta banque']]}
+        aside={
+          <div style={{ ...heroCard, flex: '1 1 100%', minWidth: 0 }}>
+            <div style={s.asideLabel}>Mes projets</div>
+            <div style={s.asideBig}>{items.length === 0 ? 'Aucun projet' : `${items.length} projet${items.length > 1 ? 's' : ''} analysé${items.length > 1 ? 's' : ''}`}</div>
+            {items.length > 0 && <div style={s.asideLine}>{villes} ville{villes > 1 ? 's' : ''} étudiée{villes > 1 ? 's' : ''}</div>}
+            {best ? (
+              <div style={s.asideBest}>
+                <span style={{ fontSize: 12, color: 'var(--text-3)' }}>Meilleure rentabilité nette</span>
+                <span style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: 24, color: 'var(--accent-text)', lineHeight: 1.1 }}>{best.snapshot!.rentabiliteNette!.toFixed(1).replace('.', ',')} %</span>
+                <span style={{ fontSize: 12.5, color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{best.nom}</span>
+              </div>
+            ) : (
+              <div style={s.asideLine}>Sauvegarde une estimation pour la retrouver ici avec son PDF.</div>
+            )}
+          </div>
+        }
+      >
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 18px' }}>
+          <Link href="/dashboard/investir/estimateur" style={heroCta}><TrendUp size={17} weight="bold" /> Estimer un bien</Link>
+          <Link href="/dashboard/investir/comparateur" style={heroLink}>Comparer les villes</Link>
+          <Link href="/dashboard/investir/simulateurs" style={heroLink}>Rentabilité et fiscalité</Link>
         </div>
-      </section>
+      </HubHero>
 
       {/* OUTILS D'ACQUISITION */}
       <div style={s.toolsGrid}>
@@ -81,23 +109,23 @@ export default function InvestirView({ projects, firstName }: { projects: Invest
           <div style={{ ...s.toolIcon, background: 'var(--accent-bg)', color: 'var(--accent-text)' }}><TrendUp size={20} weight="fill" /></div>
           <div style={s.toolBody}>
             <div style={s.toolTitle}>Estimer les revenus + PDF banque</div>
-            <div style={s.toolDesc}>Revenu annuel, saisonnalité, prévisionnel exportable pour un dossier de prêt.</div>
+            <div style={s.toolDesc}>Revenu annuel, saisonnalité, réglementation de la ville, prévisionnel pour un dossier de prêt.</div>
           </div>
           <ArrowRight size={16} weight="bold" style={{ color: 'var(--text-3)' }} />
         </Link>
         <Link href="/dashboard/investir/comparateur" style={s.toolCard} className="quick-hover">
-          <div style={{ ...s.toolIcon, background: 'rgba(147,197,253,0.12)', color: '#93C5FD' }}><MapPin size={20} weight="fill" /></div>
+          <div style={{ ...s.toolIcon, background: 'rgba(255,213,107,0.22)', color: '#8A5A12' }}><MapPin size={20} weight="fill" /></div>
           <div style={s.toolBody}>
             <div style={s.toolTitle}>Comparer les villes</div>
-            <div style={s.toolDesc}>Prix moyen, occupation, potentiel par ville pour cibler où acheter.</div>
+            <div style={s.toolDesc}>Prix moyen, occupation, potentiel et réglementation, ville par ville.</div>
           </div>
           <ArrowRight size={16} weight="bold" style={{ color: 'var(--text-3)' }} />
         </Link>
         <Link href="/dashboard/investir/simulateurs" style={s.toolCard} className="quick-hover">
-          <div style={{ ...s.toolIcon, background: 'rgba(99,214,131,0.12)', color: 'var(--success-1)' }}><Calculator size={20} weight="fill" /></div>
+          <div style={{ ...s.toolIcon, background: 'color-mix(in srgb, #6E5446 14%, transparent)', color: '#6E5446' }}><Calculator size={20} weight="fill" /></div>
           <div style={s.toolBody}>
-            <div style={s.toolTitle}>Simuler la rentabilité & fiscalité</div>
-            <div style={s.toolDesc}>Micro-BIC, LMNP, rentabilité nette. Teste ton scénario d&apos;achat.</div>
+            <div style={s.toolTitle}>Simuler la rentabilité et la fiscalité</div>
+            <div style={s.toolDesc}>Rentabilité nette, micro-BIC ou réel en LMNP : teste ton scénario d&apos;achat.</div>
           </div>
           <ArrowRight size={16} weight="bold" style={{ color: 'var(--text-3)' }} />
         </Link>
@@ -129,7 +157,7 @@ export default function InvestirView({ projects, firstName }: { projects: Invest
             {items.map(p => {
               const snap = p.snapshot
               return (
-                <div key={p.id} style={s.projectCard} className="glass-card">
+                <div key={p.id} style={s.projectCard}>
                   <div style={s.projectHead}>
                     <div style={{ minWidth: 0 }}>
                       <div style={s.projectName}>{p.nom}</div>
@@ -139,15 +167,15 @@ export default function InvestirView({ projects, firstName }: { projects: Invest
                         {p.nb_chambres > 0 ? ` · ${p.nb_chambres} ch.` : ''}
                       </div>
                     </div>
-                    <button onClick={() => remove(p.id)} style={s.trashBtn} aria-label="Supprimer" title="Supprimer">
+                    <button onClick={() => remove(p.id)} style={s.trashBtn} aria-label={`Supprimer ${p.nom}`} title="Supprimer">
                       <Trash size={14} />
                     </button>
                   </div>
 
                   <div style={s.statsRow}>
                     <Stat label="Revenu / an" value={eur(snap?.revenuAnnuel)} strong />
-                    <Stat label="Résultat expl." value={eur(snap?.resultatExploitation)} />
-                    <Stat label="Rentab. nette" value={snap?.rentabiliteNette != null ? `${snap.rentabiliteNette.toFixed(1)} %` : '—'} />
+                    <Stat label="Résultat d'exploitation" value={eur(snap?.resultatExploitation)} />
+                    <Stat label="Rentabilité nette" value={snap?.rentabiliteNette != null ? `${snap.rentabiliteNette.toFixed(1).replace('.', ',')} %` : '-'} />
                   </div>
 
                   <RegulationAlert ville={p.ville} pays={p.pays} compact />
@@ -173,8 +201,8 @@ export default function InvestirView({ projects, firstName }: { projects: Invest
 
       {/* PONT VERS L'ESPACE HÔTE */}
       <section style={s.bridge} className="fade-up">
-        <div style={{ ...s.toolIcon, background: 'rgba(255,213,107,0.12)', color: 'var(--accent-text)' }}><HouseLine size={20} weight="fill" /></div>
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ ...s.toolIcon, background: 'var(--surface)', color: 'var(--accent-text)' }}><HouseLine size={20} weight="fill" /></div>
+        <div style={{ flex: '1 1 240px', minWidth: 0 }}>
           <div style={s.bridgeTitle}>Tu as acheté un bien ?</div>
           <div style={s.bridgeDesc}>
             Passe en mode Hôte : ajoute ton logement et débloque le pilotage complet (calendrier, réservations,
@@ -201,28 +229,16 @@ function Stat({ label, value, strong }: { label: string; value: string; strong?:
 const s: Record<string, React.CSSProperties> = {
   // Aligné sur la convention dashboard (cf. ReservationsView) : pleine
   // largeur jusqu'à 1600px, centré, pour bien exploiter les grands écrans.
-  page: { padding: 'var(--dash-page-px)', width: '100%', maxWidth: 1600, margin: '0 auto' },
-  hero: {
-    display: 'flex', gap: '16px', alignItems: 'flex-start',
-    padding: 'clamp(18px, 2.5vw, 26px)', borderRadius: '16px', marginBottom: '20px',
-    background: 'linear-gradient(135deg, var(--surface) 0%, rgba(99,214,131,0.05) 100%)',
-    border: '1px solid var(--accent-border)',
-  },
-  heroIcon: {
-    width: '48px', height: '48px', borderRadius: '12px', flexShrink: 0,
-    background: 'var(--accent-bg)', color: 'var(--accent-text)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-  },
-  heroTitle: {
-    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(20px, 2.6vw, 26px)',
-    fontWeight: 400, color: 'var(--text)', margin: '0 0 6px', letterSpacing: '-0.01em',
-  },
-  heroDesc: { fontSize: '13.5px', color: 'var(--text-2)', lineHeight: 1.55, margin: 0, maxWidth: '640px' },
-
+  // Pleine largeur, comme le reste du dashboard (avant : limitée à 1600 px)
+  page: { padding: 'var(--dash-page-px)', width: '100%' },
+  asideLabel: { fontSize: 12, fontWeight: 700, letterSpacing: '.5px', textTransform: 'uppercase', color: 'var(--text-3)' },
+  asideBig: { fontFamily: 'var(--font-fraunces), serif', fontSize: 22, color: 'var(--text)', lineHeight: 1.2 },
+  asideLine: { fontSize: 13, color: 'var(--text-2)', lineHeight: 1.5 },
+  asideBest: { display: 'flex', flexDirection: 'column', gap: 2, marginTop: 4, padding: '10px 12px', borderRadius: 12, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', minWidth: 0 },
   toolsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))', gap: '12px' },
   toolCard: {
-    display: 'flex', alignItems: 'center', gap: '12px', padding: '16px',
-    borderRadius: '14px', background: 'var(--surface)', border: '1px solid var(--border)',
+    display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 18px',
+    borderRadius: '16px', background: 'var(--surface)', border: '1px solid var(--border)',
     textDecoration: 'none', transition: 'all .18s',
   },
   toolIcon: { width: '40px', height: '40px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
@@ -230,12 +246,12 @@ const s: Record<string, React.CSSProperties> = {
   toolTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '3px' },
   toolDesc: { fontSize: '12px', color: 'var(--text-muted)', lineHeight: 1.45 },
 
-  sectionHead: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' },
-  sectionTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '19px', fontWeight: 400, color: 'var(--text)', margin: 0 },
+  sectionHead: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' },
+  sectionTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 400, color: 'var(--text)', margin: 0 },
   newBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 13px', borderRadius: '9px',
     background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)',
-    fontSize: '12.5px', fontWeight: 600, textDecoration: 'none',
+    fontSize: '12.5px', fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap',
   },
 
   empty: {
@@ -251,7 +267,7 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   projectsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(300px, 100%), 1fr))', gap: '14px' },
-  projectCard: { padding: '16px', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '12px' },
+  projectCard: { padding: '16px 18px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '12px', background: 'var(--surface)', border: '1px solid var(--border)' },
   projectHead: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '10px' },
   projectName: { fontSize: '15px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   projectMeta: { fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '3px' },
@@ -260,10 +276,10 @@ const s: Record<string, React.CSSProperties> = {
     background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  statsRow: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' },
-  stat: { padding: '8px 10px', borderRadius: '9px', background: 'var(--bg-2)', border: '1px solid var(--border)' },
-  statVal: { fontSize: '14px', fontWeight: 700, color: 'var(--text)', lineHeight: 1.1 },
-  statLbl: { fontSize: '10px', color: 'var(--text-muted)', marginTop: '3px', letterSpacing: '0.2px' },
+  statsRow: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '8px' },
+  stat: { padding: '8px 9px', borderRadius: '9px', minWidth: 0, background: 'var(--bg-2)', border: '1px solid var(--border)' },
+  statVal: { fontFamily: 'var(--font-fraunces), serif', fontSize: '15px', color: 'var(--text)', lineHeight: 1.1, whiteSpace: 'nowrap' },
+  statLbl: { fontSize: '11px', color: 'var(--text-3)', marginTop: '3px', lineHeight: 1.3 },
   finLine: { fontSize: '11.5px', color: 'var(--text-2)', display: 'flex', alignItems: 'center', gap: '4px' },
   pdfBtn: {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '7px', padding: '9px 14px',
@@ -273,7 +289,7 @@ const s: Record<string, React.CSSProperties> = {
 
   bridge: {
     display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' as const, marginTop: '28px',
-    padding: '18px 20px', borderRadius: '14px', background: 'var(--surface)', border: '1px solid var(--accent-border)',
+    padding: '18px 20px', borderRadius: '16px', background: 'linear-gradient(135deg, var(--accent-bg) 0%, rgba(255,213,107,0.14) 100%)', border: '1px solid var(--accent-border)',
   },
   bridgeTitle: { fontSize: '15px', fontWeight: 600, color: 'var(--text)', marginBottom: '3px' },
   bridgeDesc: { fontSize: '12.5px', color: 'var(--text-2)', lineHeight: 1.5, maxWidth: '560px' },
