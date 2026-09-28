@@ -532,7 +532,7 @@ export default async function DashboardPage() {
   // La pill "N action(s) à traiter" pointait toujours vers Encaissements,
   // même quand ce qui la déclenchait n'avait rien à voir (contrat non signé,
   // ménage non planifié) — dead-end pour l'hôte. Route vers la bonne page
-  // selon la priorité réelle (même ordre que ActionUrgente.tsx).
+  // selon la priorité réelle.
   const actionsHref =
     unsignedContracts.length > 0 ? '/dashboard/contrats'
     : pendingPayments.length > 0 ? '/dashboard/contrats'
