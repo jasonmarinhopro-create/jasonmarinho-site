@@ -202,7 +202,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         }
       >
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 16px' }}>
-          {publicUrl && (
+          {isActive && publicUrl && (
             <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={heroCta}>
               Voir ma fiche publique <ArrowSquareOut size={15} weight="bold" />
             </a>
@@ -217,7 +217,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         <div style={isPending ? s.warnBanner : s.errBanner}>
           <Warning size={14} weight="fill" />
           {isPending
-            ? `Ta fiche n’est pas encore publique : paiement ${stripeLabel(cleaner.stripe_subscription_status)}. Elle apparaît dans l’annuaire dès que l’abonnement est actif.`
+            ? `Ta fiche n’est pas encore publique (abonnement : ${stripeLabel(cleaner.stripe_subscription_status)}). Elle apparaît dans l’annuaire dès que l’abonnement est actif.`
             : `Ta fiche est ${FICHE_LABELS[cleaner.status] ?? cleaner.status}. Écris à contact@jasonmarinho.com pour la réactiver.`}
         </div>
       )}

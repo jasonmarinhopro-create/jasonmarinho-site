@@ -4,7 +4,7 @@ import { getAuthUser } from '@/lib/supabase/auth-user'
 import ClientsCrm, { type ProClient } from '@/components/pros/ClientsCrm'
 import { createProClient, updateProClient, deleteProClient } from '../actions'
 
-export const metadata = { title: 'Mes clients — Photographe' }
+export const metadata = { title: 'Mes clients, Photographe' }
 export const dynamic = 'force-dynamic'
 
 export default async function Page() {

@@ -4,7 +4,7 @@ import { getAuthUser } from '@/lib/supabase/auth-user'
 import DemandesRecues, { type ProContact } from '@/components/pros/DemandesRecues'
 import { updateContactStatus, updateContactNotes, deleteContact, addClientFromContact } from '../actions'
 
-export const metadata = { title: 'Demandes reçues — Équipe ménage' }
+export const metadata = { title: 'Demandes reçues, Équipe ménage' }
 export const dynamic = 'force-dynamic'
 
 export default async function Page() {

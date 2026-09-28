@@ -4,9 +4,22 @@ import ViewsTrend from '@/components/pros/ViewsTrend'
 import PortfolioManager from '@/components/pros/PortfolioManager'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { useState, useTransition } from 'react'
-import { Camera, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
+import { Camera, Images, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
 import { updatePhotographerFiche, createCustomerPortalSession, uploadPhotographerLogo, deletePhotographerLogo, preparePortfolioUploads, addPortfolioPhotos, removePortfolioPhoto, movePortfolioPhoto } from './actions'
 import ShareFicheBlock from '@/components/pro/ShareFicheBlock'
+import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
+
+const AMBER = '#B7791F'
+const AMBER_DARK = '#8A5A12'
+
+// Statuts Stripe en clair (avant : valeur brute « past_due », « incomplete »…)
+const STRIPE_LABELS: Record<string, string> = {
+  active: 'actif', trialing: 'période d’essai', past_due: 'paiement en retard', unpaid: 'impayé',
+  canceled: 'résilié', incomplete: 'paiement à finaliser', incomplete_expired: 'paiement expiré', paused: 'en pause',
+}
+const stripeLabel = (st: string | null) => (st ? STRIPE_LABELS[st] ?? st : 'en attente')
+const FICHE_LABELS: Record<string, string> = { hidden: 'masquée de l’annuaire', cancelled: 'résiliée', suspended: 'suspendue' }
 
 type Photographer = {
   id: string; email: string; full_name: string; ville: string
@@ -50,6 +63,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
   const [portalBusy, setPortalBusy] = useState(false)
   const [logoUrl, setLogoUrl] = useState<string | null>(photographer.logo_url)
   const [logoBusy, setLogoBusy] = useState(false)
+  const { confirm, dialog } = useConfirm()
 
   async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -66,7 +80,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
   }
 
   async function handleLogoDelete() {
-    if (!window.confirm('Supprimer le logo ?')) return
+    if (!(await confirm({ message: 'Supprimer le logo de ta fiche ?', confirmLabel: 'Supprimer', danger: true }))) return
     setErr(null); setOk(null); setLogoBusy(true)
     const res = await deletePhotographerLogo(isAdminPreview ? photographer.id : undefined)
     setLogoBusy(false)
@@ -93,8 +107,8 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
       })
       if (res.error) setErr(res.error)
       else setOk(res.adminEdit
-        ? `Fiche de ${photographer.full_name} modifiée par admin. La version publique se met à jour sous 2-3 minutes.`
-        : 'Fiche sauvegardée. La version publique se met à jour sous 2-3 minutes.')
+        ? `Fiche de ${photographer.full_name} modifiée par l’admin. La version publique se met à jour sous 2 à 3 minutes.`
+        : 'Fiche enregistrée. La version publique se met à jour sous 2 à 3 minutes.')
     })
   }
 
@@ -111,62 +125,73 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
   const isFondateur = photographer.tier === 'fondateur'
   const publicUrl = photographer.slug ? `https://jasonmarinho.com/annuaires/photographes/${photographer.slug}` : null
 
+  const displayName = photographer.full_name
+  const stats: Array<[number, string, typeof Eye]> = [
+    [kpis.views, 'vues de ta fiche', Eye],
+    [kpis.clics, 'clics portfolio ou Instagram', CursorClick],
+    [kpis.contacts, 'demandes reçues', ChatCircle],
+    [kpis.daysActive, 'jours dans l’annuaire', Calendar],
+  ]
+
   return (
     <section style={s.wrap}>
+      {dialog}
       {isAdminPreview && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 16px', background: 'rgba(255,213,107,0.10)', border: '1px solid rgba(255,213,107,0.35)', borderRadius: 10, fontSize: 13, color: '#b8860b', marginBottom: 18 }}>
+        <div style={s.adminBanner}>
           <Star size={14} weight="fill" />
-          <strong>Mode admin :</strong> tu édites la fiche de <strong>{photographer.full_name}</strong> pour son compte. Les modifications « Enregistrer » et l'ouverture du portail Stripe agissent au nom du photographe.{' '}
-          <a href="/dashboard/admin/photographes" style={{ color: '#b8860b', textDecoration: 'underline', marginLeft: 'auto' }}>← Retour admin</a>
+          <span><strong>Mode admin :</strong> tu modifies la fiche de <strong>{displayName}</strong>. « Enregistrer » et le portail Stripe agissent au nom du photographe.</span>
+          <a href="/dashboard/admin/photographes" style={{ color: AMBER_DARK, textDecoration: 'underline', marginLeft: 'auto' }}>Retour à l’admin</a>
         </div>
       )}
-      <header style={s.head}>
-        <div>
-          <h2 style={s.title}>
-            <Camera size={20} weight="duotone" style={{ verticalAlign: 'middle', marginRight: 8, color: 'var(--accent-text)' }} />
-            Ma fiche photographe <em style={s.titleEm}>{isFondateur ? '· fondateur' : ''}</em>
-          </h2>
-          <p style={s.sub}>
-            Édite ta fiche, suis tes stats, gère ton abonnement annuel.{' '}
-            {publicUrl && (
-              <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={s.publicLink}>
-                Voir ma fiche publique <ArrowSquareOut size={11} weight="bold" />
-              </a>
-            )}
-          </p>
-        </div>
-        {isFondateur && (
-          <div style={s.founderBadge}>
-            <Star size={12} weight="fill" /> Membre Fondateur — tarif à vie
+      <HubHero
+        eyebrowIcon={<Camera size={14} weight="fill" />}
+        eyebrow={isFondateur ? 'Ma fiche photographe · Membre fondateur' : 'Ma fiche photographe'}
+        title={<>Ton travail, <HeroEm>vu par les hôtes</HeroEm>{photographer.ville ? ` de ${photographer.ville}` : ''}</>}
+        desc="Les hôtes choisissent leur photographe dans l’annuaire de Jason Marinho en regardant d’abord les photos. Un portfolio bien rempli et des tarifs clairs t’apportent plus de demandes : elles arrivent dans Demandes reçues et par email."
+        aside={
+          <div style={{ ...heroCard, flex: '1 1 100%', minWidth: 0 }}>
+            <div style={s.asideTitle}>{isActive ? 'Ta fiche est en ligne' : isPending ? 'Ta fiche n’est pas encore publique' : `Ta fiche est ${FICHE_LABELS[photographer.status] ?? photographer.status}`}</div>
+            <div style={s.statGrid}>
+              {stats.map(([v, l, Icon]) => (
+                <div key={l} style={s.statCell}>
+                  <Icon size={15} weight="duotone" color="var(--accent-text)" />
+                  <span style={s.statV}>{v}</span>
+                  <span style={s.statL}>{l}</span>
+                </div>
+              ))}
+            </div>
           </div>
-        )}
-      </header>
+        }
+      >
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 16px' }}>
+          {isActive && publicUrl && (
+            <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={heroCta}>
+              Voir ma fiche publique <ArrowSquareOut size={15} weight="bold" />
+            </a>
+          )}
+          {isFondateur && (
+            <span style={s.founderBadge}><Star size={12} weight="fill" /> Membre fondateur, tarif à vie</span>
+          )}
+        </div>
+      </HubHero>
 
       {!isActive && (
         <div style={isPending ? s.warnBanner : s.errBanner}>
           <Warning size={14} weight="fill" />
           {isPending
-            ? 'Ta fiche n\'est pas encore publique. Statut Stripe : ' + (photographer.stripe_subscription_status ?? 'en attente') + '.'
-            : 'Ta fiche est ' + photographer.status + '. Contacte contact@jasonmarinho.com.'}
+            ? `Ta fiche n’est pas encore publique (abonnement : ${stripeLabel(photographer.stripe_subscription_status)}). Elle apparaît dans l’annuaire dès que l’abonnement est actif.`
+            : `Ta fiche est ${FICHE_LABELS[photographer.status] ?? photographer.status}. Écris à contact@jasonmarinho.com pour la réactiver.`}
         </div>
       )}
 
-      {isActive && publicUrl && (
-        <ShareFicheBlock url={publicUrl} displayName={photographer.full_name} />
-      )}
+      {err && <div style={s.errBanner}><Warning size={14} weight="fill" /> {err}</div>}
+      {ok && <div style={s.okBanner}><CheckCircle size={14} weight="fill" /> {ok}</div>}
 
-      {viewsTrend && <ViewsTrend trend={viewsTrend} metier="photographe" />}
-
-      <div style={s.kpiRow}>
-        <Kpi v={kpis.views} l="Vues fiche (total)" Icon={Eye} />
-        <Kpi v={kpis.clics} l="Clics portfolio / insta" Icon={CursorClick} />
-        <Kpi v={kpis.contacts} l="Contacts reçus" Icon={ChatCircle} />
-        <Kpi v={kpis.daysActive} l="Jours d'activité" Icon={Calendar} />
-      </div>
-
+      <div style={s.cols}>
+      <div style={s.colMain}>
       {portfolioPublicBase && (
-        <section style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, padding: '16px 18px', margin: '18px 0' }}>
-          <h3 style={{ ...s.sectionTitle, marginTop: 0 }}>Mon portfolio</h3>
+        <section style={s.portfolioCard}>
+          <h3 style={{ ...s.cardTitle }}><Images size={17} weight="duotone" color="var(--accent-text)" /> Mon portfolio</h3>
           <PortfolioManager
             initial={photographer.portfolio_photos ?? []}
             publicBase={portfolioPublicBase}
@@ -179,24 +204,21 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         </section>
       )}
 
-      {err && <div style={s.errBanner}><Warning size={14} weight="fill" /> {err}</div>}
-      {ok && <div style={s.okBanner}><CheckCircle size={14} weight="fill" /> {ok}</div>}
-
       <form onSubmit={handleSave} style={s.form}>
         <h3 style={s.sectionTitle}>Logo / avatar</h3>
         <div style={s.logoRow}>
-          <div style={{ ...s.logoPreview, background: logoUrl ? `url('${logoUrl}') center/cover` : 'rgba(0,76,63,0.08)' }}>
+          <div style={{ ...s.logoPreview, background: logoUrl ? `url('${logoUrl}') center/cover` : 'var(--accent-bg)' }}>
             {!logoUrl && <span style={s.logoInitials}>{(photographer.full_name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}</span>}
           </div>
           <div style={{ flex: 1, minWidth: 200 }}>
             <p style={s.logoHint}>Format carré recommandé. JPEG, PNG ou WebP. Max 500 KB. Apparaît sur ta fiche publique et dans la liste de l'annuaire.</p>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' as const }}>
               <label style={{ ...s.btnSecondary, cursor: logoBusy ? 'wait' : 'pointer', opacity: logoBusy ? 0.5 : 1 }}>
-                <UploadSimple size={13} weight="bold" /> {logoUrl ? 'Remplacer' : 'Uploader'}
+                <UploadSimple size={13} weight="bold" /> {logoUrl ? 'Remplacer' : 'Ajouter un logo'}
                 <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleLogoUpload} disabled={logoBusy} style={{ display: 'none' }} />
               </label>
               {logoUrl && (
-                <button type="button" onClick={handleLogoDelete} disabled={logoBusy} style={{ ...s.btnSecondary, color: 'var(--danger)', borderColor: 'rgba(239,68,68,0.3)' }}>
+                <button type="button" onClick={handleLogoDelete} disabled={logoBusy} style={{ ...s.btnSecondary, color: 'var(--danger-text)', borderColor: 'var(--danger-border)' }}>
                   <Trash size={13} weight="bold" /> Supprimer
                 </button>
               )}
@@ -236,7 +258,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         </Field>
         <Field label="Spécialité">
           <select style={s.input} value={form.specialite} onChange={e => setForm({ ...form, specialite: e.target.value })}>
-            <option value="">— Choisir —</option>
+            <option value="">Choisir</option>
             <option>Intérieurs LCD</option>
             <option>Intérieurs + drone extérieur</option>
             <option>Intérieurs + vidéo / Reels</option>
@@ -266,36 +288,33 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         </div>
       </form>
 
-      <div style={s.subscriptionCard}>
-        <div>
-          <h3 style={{ ...s.sectionTitle, marginTop: 0 }}>Mon abonnement</h3>
-          <p style={s.subscriptionMeta}>
-            {isFondateur ? '39,98 €' : '79,98 €'} TTC / an · Statut : <strong>{photographer.stripe_subscription_status ?? '—'}</strong>
-          </p>
+      </div>
+      <aside style={s.colSide}>
+        {isActive && publicUrl && (
+          <ShareFicheBlock url={publicUrl} displayName={displayName} />
+        )}
+        {viewsTrend && <ViewsTrend trend={viewsTrend} metier="photographe" style={{ margin: 0 }} />}
+        <div style={s.subscriptionCard}>
+          <div>
+            <h3 style={{ ...s.sectionTitle, marginTop: 0 }}><CreditCard size={15} weight="duotone" color="var(--accent-text)" /> Mon abonnement</h3>
+            <p style={s.subscriptionMeta}>
+              {isFondateur ? '39,98 €' : '79,98 €'} TTC par an · {stripeLabel(photographer.stripe_subscription_status)}
+            </p>
+          </div>
+          <button onClick={handlePortal} disabled={portalBusy} style={s.btnSecondary}>
+            {portalBusy ? 'Chargement…' : 'Gérer mon abonnement'}
+          </button>
         </div>
-        <button onClick={handlePortal} disabled={portalBusy} style={s.btnSecondary}>
-          <CreditCard size={14} weight="bold" /> {portalBusy ? 'Chargement…' : 'Gérer mon abonnement'}
-        </button>
+      </aside>
       </div>
     </section>
   )
 }
 
-function Kpi({ v, l, Icon }: { v: number | string; l: string; Icon: any }) {
-  return (
-    <div style={s.kpi}>
-      <Icon size={18} weight="duotone" color="var(--accent-text)" />
-      <div>
-        <div style={s.kpiV}>{v}</div>
-        <div style={s.kpiL}>{l}</div>
-      </div>
-    </div>
-  )
-}
 function Field({ label, req, children }: { label: string; req?: boolean; children: React.ReactNode }) {
   return (
     <label style={s.field}>
-      <span style={s.fieldLabel}>{label}{req && <span style={{ color: '#dc2626' }}> *</span>}</span>
+      <span style={s.fieldLabel}>{label}{req && <span style={{ color: 'var(--danger-text)' }}> *</span>}</span>
       {children}
     </label>
   )
@@ -303,20 +322,23 @@ function Field({ label, req, children }: { label: string; req?: boolean; childre
 
 const s: Record<string, React.CSSProperties> = {
   wrap: { padding: 'clamp(20px, 3vw, 44px)', width: '100%' },
-  head: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap' as const, gap: 14, marginBottom: 20 },
-  title: { fontSize: 22, fontWeight: 600, fontFamily: 'var(--font-fraunces), serif', color: 'var(--text)', margin: 0 },
-  titleEm: { color: '#FFD56B', fontStyle: 'italic', fontWeight: 300 },
-  sub: { fontSize: 13, color: 'var(--text-muted)', margin: '6px 0 0', lineHeight: 1.6 },
-  publicLink: { color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 },
-  founderBadge: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px', background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.35)', borderRadius: 999, fontSize: 12, fontWeight: 700, color: '#b8860b' },
-  kpiRow: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10, marginBottom: 22 },
-  kpi: { display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10 },
-  kpiV: { fontSize: 22, fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: 'var(--text)', lineHeight: 1 },
-  kpiL: { fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 0.4, fontWeight: 600, marginTop: 4 },
-  errBanner: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 8, fontSize: 13, color: 'var(--danger)', marginBottom: 14 },
-  warnBanner: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: 8, fontSize: 13, color: '#d97706', marginBottom: 14 },
-  okBanner: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', borderRadius: 8, fontSize: 13, color: 'var(--success-1)', marginBottom: 14 },
-  form: { display: 'flex', flexDirection: 'column' as const, gap: 14, padding: 22, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, marginBottom: 20 },
+  adminBanner: { display: 'flex', alignItems: 'center', flexWrap: 'wrap' as const, gap: 10, padding: '10px 16px', background: 'rgba(255,213,107,0.14)', border: `1px solid ${AMBER}55`, borderRadius: 12, fontSize: 13, color: AMBER_DARK, marginBottom: 18 },
+  founderBadge: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px', background: 'rgba(255,213,107,0.22)', border: `1px solid ${AMBER}55`, borderRadius: 999, fontSize: 12.5, fontWeight: 700, color: AMBER_DARK },
+  asideTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 18, color: 'var(--text)' },
+  statGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 8, marginTop: 4 },
+  statCell: { display: 'flex', flexDirection: 'column' as const, gap: 2, padding: '10px 12px', borderRadius: 12, background: 'var(--bg)', border: '1px solid var(--border)' },
+  statV: { fontFamily: 'var(--font-fraunces), serif', fontSize: 22, color: 'var(--text)', lineHeight: 1.1 },
+  statL: { fontSize: 11.5, color: 'var(--text-3)', lineHeight: 1.3 },
+  // 2 colonnes au-delà de ~1200 px : portfolio + formulaire à gauche, partage / vues / abonnement à droite
+  cols: { display: 'flex', flexWrap: 'wrap' as const, gap: 20, alignItems: 'flex-start' },
+  colMain: { flex: '999 1 600px', minWidth: 0, display: 'flex', flexDirection: 'column' as const, gap: 20 },
+  colSide: { flex: '1 1 340px', minWidth: 0, display: 'flex', flexDirection: 'column' as const, gap: 16 },
+  portfolioCard: { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: '18px 20px' },
+  cardTitle: { display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-fraunces), serif', fontSize: 18, fontWeight: 400, color: 'var(--text)', margin: '0 0 8px' },
+  errBanner: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'var(--danger-bg)', border: '1px solid var(--danger-border)', borderRadius: 10, fontSize: 13, color: 'var(--danger-text)', marginBottom: 14 },
+  warnBanner: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'rgba(255,213,107,0.18)', border: `1px solid ${AMBER}55`, borderRadius: 10, fontSize: 13, color: AMBER_DARK, marginBottom: 14 },
+  okBanner: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 10, fontSize: 13, color: 'var(--accent-text)', marginBottom: 14 },
+  form: { display: 'flex', flexDirection: 'column' as const, gap: 14, padding: 22, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16 },
   sectionTitle: { display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase' as const, letterSpacing: 0.5, margin: '14px 0 6px' },
   grid2: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 },
   field: { display: 'flex', flexDirection: 'column' as const, gap: 5 },
@@ -325,7 +347,7 @@ const s: Record<string, React.CSSProperties> = {
   actions: { display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 10 },
   btnPrimary: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 18px', background: 'var(--accent-text)', color: 'var(--bg)', border: 'none', borderRadius: 8, fontSize: 13.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
   btnSecondary: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 16px', background: 'transparent', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' },
-  subscriptionCard: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: 14, padding: 22, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12 },
+  subscriptionCard: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: 14, padding: '18px 20px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16 },
   subscriptionMeta: { fontSize: 13, color: 'var(--text-muted)', margin: '4px 0 0' },
   logoRow: { display: 'flex', gap: 18, padding: 14, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 10, flexWrap: 'wrap' as const, alignItems: 'center' },
   logoPreview: { width: 100, height: 100, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' as const, border: '1px solid var(--border)' },

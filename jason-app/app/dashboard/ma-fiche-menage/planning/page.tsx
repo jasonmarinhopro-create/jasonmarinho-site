@@ -6,7 +6,7 @@ import { loadHostMenageSlots, menageKey } from '@/lib/menage/host-slots'
 import PlanningMenage, { type PlanningClient, type PlanningSlot } from './PlanningMenage'
 import { parisToday, addDaysIso } from '@/lib/stripe/deposit-window'
 
-export const metadata = { title: 'Mes ménages — Équipe ménage' }
+export const metadata = { title: 'Mes ménages, Équipe ménage' }
 export const dynamic = 'force-dynamic'
 
 const DAYS_AHEAD = 13
