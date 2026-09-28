@@ -33,7 +33,7 @@ Jason Marinho est un expert en location courte durée (LCD) basé en France. Il 
 - [Audit de la fiche Google](https://jasonmarinho.com/services/audit-gbp/): Audit de la fiche Google Business Profile des hôtes, intégré à la plateforme
 - [Questions & réponses](https://jasonmarinho.com/services/entre-hotes): Les hôtes inscrits posent leurs questions, réponse sous 48 h par Jason Marinho ou un hôte expérimenté
 - [Partenaires](https://jasonmarinho.com/partenaires): Outils recommandés, offres négociées pour les membres (Driing, Lodgify…), comparatifs et catalogue des outils LCD
-- [Sécurité et protection](https://jasonmarinho.com/services/securite/): Ressources sur la sécurité en LCD
+- [Vérification voyageurs](https://jasonmarinho.com/services/securite): base des hôtes pour vérifier un voyageur (e-mail, téléphone ou nom) avant d'accepter, signalements relus, arnaques du moment
 
 ## Annuaires pros LCD
 

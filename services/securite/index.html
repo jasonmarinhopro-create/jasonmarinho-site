@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vérification voyageurs, Base communauté | Jason Marinho</title>
-  <meta name="description" content="Vérification voyageurs pour hôtes LCD : consulte la base communautaire pour détecter les signalements avant d'accepter une réservation Airbnb ou Booking.">
+  <meta name="description" content="Vérifie un voyageur avant d'accepter : e-mail, téléphone ou nom dans la base des hôtes, signalements relus, prochains voyageurs vérifiés automatiquement.">
   <link rel="canonical" href="https://jasonmarinho.com/services/securite">
   <meta property="og:title" content="Vérification voyageurs, Base communauté | Jason Marinho">
-  <meta property="og:description" content="Un doute sur une demande de réservation ? Consultez notre base de données communautaire pour savoir si le voyageur a déjà eu un signalement ou si tout s'est toujours bien passé.">
+  <meta property="og:description" content="Un doute sur une demande de réservation ? Vérifie dans la base des hôtes si le voyageur a déjà été signalé, ou si tout s'est toujours bien passé.">
   <meta property="og:url" content="https://jasonmarinho.com/services/securite">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
 <meta property="og:image:width" content="1200">
@@ -179,6 +179,9 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
 }
 </script>
 <!-- JSONLD-AUTO:END -->
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Qui peut consulter la base ?", "acceptedAnswer": {"@type": "Answer", "text": "Les membres de la plateforme Jason Marinho. La création de compte est gratuite, et la recherche est ouverte à tous les membres."}}, {"@type": "Question", "name": "Comment chercher un voyageur ?", "acceptedAnswer": {"@type": "Answer", "text": "Avec son e-mail, son téléphone ou son prénom et son nom. Le téléphone marche dans tous les formats (06 12 34 56 78 ou +33 6 12 34 56 78). Pour un nom, la recherche porte sur le prénom et le nom exacts : l'e-mail et le téléphone restent plus sûrs, à cause des homonymes."}}, {"@type": "Question", "name": "Comment signaler un voyageur ?", "acceptedAnswer": {"@type": "Answer", "text": "Depuis ton espace membre, dans Sécurité voyageur ou sur la fiche du voyageur : au moins un moyen de le retrouver, le motif et les faits. Jason relit chaque signalement avant qu'il apparaisse dans les recherches des autres hôtes."}}, {"@type": "Question", "name": "Que faire si le voyageur n'est pas dans la base ?", "acceptedAnswer": {"@type": "Answer", "text": "Ça veut seulement dire qu'aucun hôte de la communauté ne l'a encore signalé. Regarde aussi son profil et vos échanges, et protège la réservation avec un contrat signé, un paiement par lien et une caution."}}, {"@type": "Question", "name": "Les signalements sont-ils anonymes ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui pour l'hôte qui signale : les autres hôtes ne voient pas qui l'a fait. Seul Jason a accès aux informations complètes pour gérer les litiges éventuels."}}, {"@type": "Question", "name": "Un signalement me concerne, comment le contester ?", "acceptedAnswer": {"@type": "Answer", "text": "Un signalement publié sur le site peut être contesté sur la page dédiée : la demande est traitée sous 48 h. Pour une question sur tes données, écris à contact@jasonmarinho.com."}}]}
+</script>
 <script defer src="/nav.js"></script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Organization","@id":"https://jasonmarinho.com/#organization","name":"Jason Marinho","url":"https://jasonmarinho.com","logo":{"@type":"ImageObject","url":"https://jasonmarinho.com/logo.webp","width":1600,"height":1600},"sameAs":["https://instagram.com/jason_marinho","https://www.linkedin.com/in/jason-driing-location-sanscommission"]}
@@ -193,14 +196,14 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
       <a href="/">Accueil</a><span>›</span><a href="/services">Services</a><span>›</span><span>Vérification voyageurs</span>
     </div>
     <div class="lbl">Communauté d'hôtes</div>
-    <h1 class="h1">Un doute sur une demande ?<br><em>Consultez la base communauté</em></h1>
-    <p class="sub">Avant d'accepter une réservation, vérifiez si le voyageur a déjà été signalé par d'autres hôtes, ou si tout s'est toujours bien passé. Une base alimentée par la communauté, pour la communauté.</p>
+    <h1 class="h1">Un doute sur une demande ?<br><em>Vérifie le voyageur</em></h1>
+    <p class="sub">Avant d'accepter une réservation, cherche son e-mail, son téléphone ou son nom dans la base tenue par les hôtes de la communauté. Chaque signalement est relu avant d'apparaître.</p>
     <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
       <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Accéder à la base <i class="ph-bold ph-arrow-right"></i></a>
       <a href="/securite/signalements" class="btn-ol">Voir les signalements publics</a>
     </div>
     <!-- Compteur live mis à jour par scripts/build-signalements.mjs au build Vercel -->
-    <div style="display:inline-flex;align-items:center;gap:8px;margin-top:22px;padding:7px 16px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.25);border-radius:100px;font-size:13px;font-weight:600;color:#FFD56B">
+    <div id="sig-count" style="display:inline-flex;align-items:center;gap:8px;margin-top:22px;padding:7px 16px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.25);border-radius:100px;font-size:13px;font-weight:600;color:#FFD56B">
       <i class="ph-bold ph-shield-check"></i>
       <span><!--SIGNALEMENTS_COUNT:START-->0<!--SIGNALEMENTS_COUNT:END--> signalements publics anonymisés</span>
     </div>
@@ -224,12 +227,12 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
       <div class="step">
         <div class="step-n">2</div>
         <h3>Tu consultes la base</h3>
-        <p>Tu cherches le nom ou le profil du voyageur dans notre base de données alimentée par les hôtes de la communauté.</p>
+        <p>Tu tapes son e-mail, son téléphone (06… ou +33…, peu importe) ou son prénom et son nom dans la base des hôtes de la communauté.</p>
       </div>
       <div class="step">
         <div class="step-n">3</div>
         <h3>Tu décides en confiance</h3>
-        <p>Signalement passé, historique propre, tu as l'information et tu prends ta décision sereinement, sans stress.</p>
+        <p>Aucun signalement, que des bons retours, ou des faits signalés par d'autres hôtes : tu lis, puis tu acceptes, tu demandes plus de garanties ou tu refuses.</p>
       </div>
     </div>
   </div>
@@ -242,44 +245,41 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
       <div>
         <div class="lbl dk">La base de données</div>
         <h2 class="h2">Ce que la communauté <em>partage</em></h2>
-        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 20px">Chaque hôte peut contribuer et consulter. Les informations viennent directement du terrain, des hôtes qui ont déjà vécu une situation avec ce voyageur.</p>
+        <p style="font-size:16px;line-height:1.8;color:var(--tm);margin:0 0 20px">Chaque hôte peut signaler un problème réel ou témoigner d'un voyageur parfait. Jason relit chaque signalement avant qu'il apparaisse dans les recherches : des faits, pas des règlements de compte.</p>
         <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
-          <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:var(--tm)">
-            <span class="status-ok"><span class="status-dot"></span>RAS, Tout s'est toujours bien passé</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:12px;font-size:15px;color:var(--tm)">
-            <span class="status-warn"><span class="status-dot"></span>Signalement, Incident rapporté par un hôte</span>
-          </div>
+          <div><span class="status-ok"><span class="status-dot"></span>Aucun signalement ou que des bons retours</span></div>
+          <div><span class="status-warn"><span class="status-dot"></span>1 signalement : sois vigilant</span></div>
+          <div><span class="status-warn"><span class="status-dot"></span>Plusieurs signalements : prudence</span></div>
         </div>
-        <p style="font-size:14px;color:var(--tl);margin-top:20px;line-height:1.7">Si un voyageur n'est pas dans la base, ça signifie simplement qu'aucun hôte de la communauté ne l'a encore rencontré.</p>
+        <p style="font-size:14px;color:var(--tl);margin-top:20px;line-height:1.7">Un voyageur absent de la base n'est pas une garantie : ça veut seulement dire qu'aucun hôte de la communauté ne l'a encore signalé. Garde les bons réflexes : contrat, paiement par lien, caution.</p>
       </div>
       <div>
-        <!-- Simulation d'une fiche -->
+        <!-- Simulation d'un résultat -->
         <div style="background:rgba(0,76,63,.03);border:1px solid rgba(0,76,63,.08);border-radius:14px;padding:20px;margin-bottom:12px">
           <div style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-bottom:16px">Exemple de résultat</div>
           <div class="result-card">
             <div style="display:flex;align-items:center;gap:14px;padding-bottom:16px;border-bottom:1px solid rgba(0,76,63,.07)">
-              <div style="width:44px;height:44px;border-radius:50%;background:rgba(0,76,63,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ph ph-user" style="font-size:22px;color:var(--g)"></i></div>
+              <div style="width:44px;height:44px;border-radius:50%;background:rgba(0,76,63,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ph ph-shield-check" style="font-size:22px;color:var(--g)"></i></div>
               <div>
-                <div style="font-family:'Fraunces',serif;font-size:1rem;color:var(--td);font-weight:600">M. ··· ···</div>
-                <div style="font-size:12px;color:var(--tl);margin-top:2px">Profil consulté</div>
+                <div style="font-family:'Fraunces',serif;font-size:1rem;color:var(--td);font-weight:600">Que des bons retours</div>
+                <div style="font-size:12px;color:var(--tl);margin-top:2px">Recherche : 06 12 ·· ·· ··</div>
               </div>
             </div>
             <div class="result-row">
-              <span class="result-label">Signalement</span>
+              <span class="result-label">Signalements</span>
               <span class="status-ok" style="font-size:11px"><span class="status-dot"></span>Aucun</span>
             </div>
             <div class="result-row">
-              <span class="result-label">Séjours rapportés</span>
-              <span class="result-val">3 hôtes ont répondu</span>
+              <span class="result-label">Témoignages positifs</span>
+              <span class="result-val">2 hôtes</span>
             </div>
             <div class="result-row">
-              <span class="result-label">Avis communauté</span>
-              <span class="result-val" style="color:var(--g)">Tout s'est bien passé</span>
+              <span class="result-label">Exemple de témoignage</span>
+              <span class="result-val" style="color:var(--g)">Logement laissé impeccable</span>
             </div>
           </div>
         </div>
-        <p style="font-size:12px;color:var(--tl);text-align:center;margin:0">Illustration, les données réelles sont dans l'espace membres</p>
+        <p style="font-size:12px;color:var(--tl);text-align:center;margin:0">Illustration : les données réelles sont dans l'espace membres</p>
       </div>
     </div>
   </div>
@@ -296,32 +296,32 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
       <div class="card">
         <div class="card-ic"><i class="ph ph-warning-circle"></i></div>
         <h3>Éviter un voyageur problématique</h3>
-        <p>Un hôte a déjà signalé des dégradations, un mauvais comportement ou des règles non respectées ? Tu le saurais avant d'accepter.</p>
+        <p>Un hôte a déjà signalé une fête, des dégâts, un impayé ou une tentative d'arnaque ? Tu lis les faits avant d'accepter.</p>
       </div>
       <div class="card">
         <div class="card-ic"><i class="ph ph-check-circle"></i></div>
-        <h3>Confirmer que tout ira bien</h3>
-        <p>Plusieurs hôtes ont déjà eu ce voyageur sans aucun problème ? Ce retour communautaire te rassure et t'aide à dire oui sereinement.</p>
+        <h3>Accepter plus sereinement</h3>
+        <p>D'autres hôtes ont laissé des témoignages positifs sur ce voyageur ? Tu dis oui en connaissance de cause.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-calendar-check"></i></div>
+        <h3>Tes prochains voyageurs vérifiés</h3>
+        <p>Les voyageurs qui arrivent dans les 60 jours sont croisés automatiquement avec la base. Un voyageur signalé ressort en rouge, avec le motif.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-bell-ringing"></i></div>
+        <h3>Une alerte avant d'ajouter</h3>
+        <p>Quand tu ajoutes un voyageur dans ton <a href="/services/carnet-voyageurs" style="color:var(--g)">carnet</a>, l'app vérifie son e-mail et son téléphone et te prévient s'il a été signalé.</p>
+      </div>
+      <div class="card">
+        <div class="card-ic"><i class="ph ph-siren"></i></div>
+        <h3>Les arnaques du moment</h3>
+        <p>Faux virement Wero, trop-perçu à rembourser, faux message Booking ou Airbnb : comment ça marche et le bon réflexe, avec la source.</p>
       </div>
       <div class="card">
         <div class="card-ic"><i class="ph ph-users-three"></i></div>
-        <h3>Protéger toute la communauté</h3>
-        <p>En signalant à ton tour après un séjour, tu protèges les autres hôtes. C'est un cercle vertueux : plus on contribue, plus la base est fiable.</p>
-      </div>
-      <div class="card">
-        <div class="card-ic"><i class="ph ph-clock-clockwise"></i></div>
-        <h3>Timeline par voyageur</h3>
-        <p>Pour chaque voyageur dans ton CRM, vois son historique complet : séjours passés, communications, paiements, signalements. Plus d'oubli quand un voyageur revient.</p>
-      </div>
-      <div class="card">
-        <div class="card-ic"><i class="ph ph-tag"></i></div>
-        <h3>Tags personnalisés &amp; blocklist</h3>
-        <p>Marque tes voyageurs (VIP, problématique, repeat, professionnel…). Bloque ceux à éviter : l'app t'alerte si tu reçois une nouvelle demande de leur part.</p>
-      </div>
-      <div class="card">
-        <div class="card-ic"><i class="ph ph-identification-card"></i></div>
-        <h3>Pièces d'identité sécurisées</h3>
-        <p>Stocke les pièces d'identité (CNI, passeport) liées au voyageur. Conformes RGPD, accessibles seulement par toi, supprimables sur demande.</p>
+        <h3>Protéger les autres hôtes</h3>
+        <p>Après un séjour, tu signales ou tu témoignes en deux minutes. Tu restes anonyme pour les autres hôtes et tu suis l'état de tes signalements.</p>
       </div>
     </div>
   </div>
@@ -338,76 +338,57 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
       <div class="faq">
         <div class="faq-item">
           <div class="faq-q">Qui peut consulter la base ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
-          <div class="faq-a">L'accès est réservé aux membres de la communauté Jason Marinho. Il suffit de créer un compte gratuit sur la plateforme pour y accéder.</div>
+          <div class="faq-a">Les membres de la plateforme Jason Marinho. La création de compte est gratuite, et la recherche est ouverte à tous les membres.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Comment chercher un voyageur ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Avec son e-mail, son téléphone ou son prénom et son nom. Le téléphone marche dans tous les formats (06 12 34 56 78 ou +33 6 12 34 56 78). Pour un nom, la recherche porte sur le prénom et le nom exacts : l'e-mail et le téléphone restent plus sûrs, à cause des homonymes.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q">Comment signaler un voyageur ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
-          <div class="faq-a">Depuis ton espace membres, tu peux soumettre un signalement après un séjour. Il est ensuite visible par tous les autres hôtes de la communauté.</div>
+          <div class="faq-a">Depuis ton espace membre, dans Sécurité voyageur ou sur la fiche du voyageur : au moins un moyen de le retrouver, le motif et les faits. Jason relit chaque signalement avant qu'il apparaisse dans les recherches des autres hôtes.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q">Que faire si le voyageur n'est pas dans la base ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
-          <div class="faq-a">Ça signifie simplement qu'aucun membre de la communauté ne l'a encore rencontré. Tu peux te fier aux autres indicateurs (avis Airbnb, vérifications du profil) et contribuer toi-même après le séjour.</div>
+          <div class="faq-a">Ça veut seulement dire qu'aucun hôte de la communauté ne l'a encore signalé. Regarde aussi son profil et vos échanges, et protège la réservation avec un contrat signé, un paiement par lien et une caution.</div>
         </div>
         <div class="faq-item">
           <div class="faq-q">Les signalements sont-ils anonymes ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
-          <div class="faq-a">Oui. Les signalements sont partagés à la communauté sans identifier l'hôte à l'origine du signalement. Seul Jason a accès aux informations complètes pour gérer les litiges éventuels.</div>
+          <div class="faq-a">Oui pour l'hôte qui signale : les autres hôtes ne voient pas qui l'a fait. Seul Jason a accès aux informations complètes pour gérer les litiges éventuels.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Un signalement me concerne, comment le contester ? <span class="faq-ic"><i class="ph-bold ph-caret-down"></i></span></div>
+          <div class="faq-a">Un signalement publié sur le site peut être contesté sur <a href="/securite/contester-signalement" style="color:var(--g)">la page dédiée</a> : la demande est traitée sous 48 h. Pour une question sur tes données, écris à contact@jasonmarinho.com.</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- TÉMOIGNAGES -->
+<!-- PROTECTIONS -->
 <section class="sec">
   <div class="s-in">
     <div style="text-align:center;margin-bottom:8px">
-      <div class="lbl dk">Ils utilisent la base</div>
-      <h2 class="h2">Ce qu'en disent <em>les hôtes</em></h2>
-      <p style="font-size:16px;color:var(--tm);margin:8px auto 0;max-width:520px;line-height:1.7">Des hôtes qui ont déjà évité de mauvaises surprises grâce à la communauté.</p>
+      <div class="lbl dk">Au-delà de la base</div>
+      <h2 class="h2">Ce qui protège vraiment <em>une réservation directe</em></h2>
+      <p style="font-size:16px;color:var(--tm);margin:8px auto 0;max-width:560px;line-height:1.7">La base aide à repérer un voyageur à risque. Ces outils de l'app te protègent quel que soit le voyageur.</p>
     </div>
-    <div class="testi-grid">
-      <div class="testi">
-        <div class="testi-badge"><i class="ph ph-shield-check" style="font-size:12px"></i> Vérifié</div>
-        <div class="testi-stars">
-          <span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span>
-        </div>
-        <p class="testi-text">« J'avais un doute sur une demande. J'ai cherché le profil dans la base et je suis tombée sur un signalement d'une autre hôtesse. J'ai décliné et ça m'a évité bien des soucis. »</p>
-        <div class="testi-author">
-          <div class="testi-avatar">S</div>
-          <div>
-            <div class="testi-name">Sophie L.</div>
-            <div class="testi-role">Hôte Airbnb, Lyon</div>
-          </div>
-        </div>
-      </div>
-      <div class="testi">
-        <div class="testi-badge"><i class="ph ph-shield-check" style="font-size:12px"></i> Vérifié</div>
-        <div class="testi-stars">
-          <span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span>
-        </div>
-        <p class="testi-text">« Un voyageur avait l'air parfait sur Airbnb mais la base montrait deux signalements de fête. J'ai refusé et j'ai appris plus tard qu'il avait saccagé un autre appartement. »</p>
-        <div class="testi-author">
-          <div class="testi-avatar">M</div>
-          <div>
-            <div class="testi-name">Marc D.</div>
-            <div class="testi-role">Multi-hôte, Paris</div>
-          </div>
-        </div>
-      </div>
-      <div class="testi">
-        <div class="testi-badge"><i class="ph ph-shield-check" style="font-size:12px"></i> Vérifié</div>
-        <div class="testi-stars">
-          <span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span><span class="testi-star">★</span>
-        </div>
-        <p class="testi-text">« C'est rassurant de voir que le voyageur a déjà été chez plusieurs hôtes sans problème. Ça m'aide à accepter plus sereinement même les nouveaux profils. »</p>
-        <div class="testi-author">
-          <div class="testi-avatar">A</div>
-          <div>
-            <div class="testi-name">Aurélie T.</div>
-            <div class="testi-role">Hôte Airbnb, Bordeaux</div>
-          </div>
-        </div>
-      </div>
+    <div class="cards">
+      <a class="card" href="/services/contrats" style="text-decoration:none">
+        <div class="card-ic"><i class="ph ph-file-text"></i></div>
+        <h3>Contrat signé en ligne</h3>
+        <p>Identité, dates, règlement et conditions d'annulation acceptés avant l'arrivée, en français, portugais ou anglais.</p>
+      </a>
+      <a class="card" href="/services/contrats" style="text-decoration:none">
+        <div class="card-ic"><i class="ph ph-credit-card"></i></div>
+        <h3>Paiement par lien et caution</h3>
+        <p>Le loyer arrive sur ton compte par un lien de paiement, sans commission de la plateforme. La caution par empreinte bancaire est bloquée 2 jours avant l'arrivée (formule Standard).</p>
+      </a>
+      <a class="card" href="/services/declarations-voyageurs" style="text-decoration:none">
+        <div class="card-ic"><i class="ph ph-identification-card"></i></div>
+        <h3>Check-in en ligne</h3>
+        <p>Le voyageur remplit son identité et le numéro de sa pièce d'identité avant d'arriver, ce qui sert aussi aux déclarations obligatoires.</p>
+      </a>
     </div>
   </div>
 </section>
@@ -492,6 +473,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
 <script>
+(function(){var c=document.getElementById('sig-count');if(c&&/^\s*0\s/.test(c.textContent))c.style.display='none';})();
 document.querySelectorAll('.faq-q').forEach(function(q){
   q.addEventListener('click',function(){q.closest('.faq-item').classList.toggle('open');});
 });
