@@ -17,11 +17,11 @@ export default function FranchiseTVA({ accountStats }: { accountStats?: AccountS
   const result = useMemo(() => {
     if (activite === 'locatif') {
       return {
-        verdict: 'Hors champ TVA',
+        verdict: 'Exonérée de TVA',
         verdictTone: 'success' as const,
-        verdictSub: 'Location meublée nue : pas soumise à TVA',
-        position: '—',
-        positionSub: 'Sans services para-hôteliers',
+        verdictSub: 'Location meublée sans services para-hôteliers : exonérée (art. 261 D 4° du CGI), quel que soit ton CA',
+        position: 'Aucun seuil',
+        positionSub: 'Tant que tu proposes 2 services ou moins',
         tvaPotentielle: 0,
       }
     }
@@ -39,16 +39,16 @@ export default function FranchiseTVA({ accountStats }: { accountStats?: AccountS
       return {
         verdict: 'Zone de tolérance',
         verdictTone: 'neutral' as const,
-        verdictSub: 'Tu peux rester en franchise une année si tu redescends',
+        verdictSub: `Premier dépassement : tu gardes la franchise cette année, tu la perds si tu restes au-dessus de ${fmtEur(tvaParams.seuilFranchise)} l'an prochain`,
         position: `Au-dessus de ${fmtEur(tvaParams.seuilFranchise)}`,
-        positionSub: `Sortie immédiate si tu passes ${fmtEur(tvaParams.seuilTolerance)}`,
+        positionSub: `TVA due dès le jour où tu passes ${fmtEur(tvaParams.seuilTolerance)}`,
         tvaPotentielle: ca * tvaParams.tauxLcdHotelier,
       }
     }
     return {
       verdict: 'Sortie de franchise',
       verdictTone: 'alert' as const,
-      verdictSub: 'Tu dois facturer la TVA dès le mois suivant le dépassement',
+      verdictSub: 'Tu factures la TVA à 10 % dès le jour du dépassement',
       position: `Au-dessus de ${fmtEur(tvaParams.seuilTolerance)}`,
       positionSub: 'Demande ton numéro de TVA intracommunautaire',
       tvaPotentielle: ca * tvaParams.tauxLcdHotelier,
@@ -64,8 +64,8 @@ export default function FranchiseTVA({ accountStats }: { accountStats?: AccountS
             <input type="number" value={ca} onChange={e => setCa(+e.target.value || 0)} style={s.input} />
             <span style={s.suffix}>€</span>
           </div>
-          <input type="range" min={0} max={80000} step={500} value={ca} onChange={e => setCa(+e.target.value)} style={s.range} />
-          <div style={s.helper}>{accountStats && accountStats.caTotal12m > 0 ? 'Préfilé avec ton CA 12 mois glissants' : 'Valeur démo · ajoute tes séjours pour le réel'}</div>
+          <input type="range" min={0} max={120000} step={500} value={ca} onChange={e => setCa(+e.target.value)} style={s.range} />
+          <div style={s.helper}>{accountStats && accountStats.caTotal12m > 0 ? 'Prérempli avec ton CA des 12 derniers mois' : 'Valeur d\'exemple : ajoute tes séjours pour voir ton cas'}</div>
         </div>
         <div style={s.field}>
           <label style={s.label}>Type d'activité</label>
@@ -77,21 +77,21 @@ export default function FranchiseTVA({ accountStats }: { accountStats?: AccountS
               Sans services
             </button>
           </div>
-          <div style={s.helper}>Services para-hôteliers = petit-déj quotidien, ménage en cours, linge, accueil (3 min)</div>
+          <div style={s.helper}>Avec services = au moins 3 sur 4 : petit-déjeuner, ménage pendant le séjour, linge, réception (séjours de 30 nuits max)</div>
         </div>
       </div>
 
       <div style={{
         padding: '18px 20px', borderRadius: '14px',
         background: result.verdictTone === 'alert'
-          ? 'linear-gradient(135deg, rgba(252,165,165,0.12) 0%, var(--bg-2) 100%)'
+          ? 'var(--danger-bg)'
           : result.verdictTone === 'success'
-            ? 'linear-gradient(135deg, rgba(167,243,183,0.12) 0%, var(--bg-2) 100%)'
-            : 'linear-gradient(135deg, rgba(255,213,107,0.10) 0%, var(--bg-2) 100%)',
+            ? 'var(--accent-bg)'
+            : 'rgba(255,213,107,0.12)',
         border: '1px solid ' + (
-          result.verdictTone === 'alert' ? 'rgba(252,165,165,0.30)' :
-          result.verdictTone === 'success' ? 'rgba(167,243,183,0.30)' :
-          'rgba(255,213,107,0.28)'
+          result.verdictTone === 'alert' ? 'var(--danger-border)' :
+          result.verdictTone === 'success' ? 'var(--accent-border)' :
+          'rgba(255,213,107,0.40)'
         ),
         display: 'flex', flexDirection: 'column', gap: '12px',
       }}>
@@ -99,7 +99,7 @@ export default function FranchiseTVA({ accountStats }: { accountStats?: AccountS
           <div style={{ fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '4px' }}>Verdict</div>
           <div style={{
             fontFamily: 'var(--font-fraunces), serif', fontSize: '24px', fontWeight: 500,
-            color: result.verdictTone === 'alert' ? '#FCA5A5' : result.verdictTone === 'success' ? '#A7F3B7' : 'var(--accent-text)',
+            color: result.verdictTone === 'alert' ? 'var(--danger)' : result.verdictTone === 'success' ? 'var(--accent-text)' : '#B7791F',
             letterSpacing: '-0.01em', lineHeight: 1.2,
           }}>{result.verdict}</div>
           <div style={{ fontSize: '13px', color: 'var(--text-2)', marginTop: '4px', lineHeight: 1.5 }}>{result.verdictSub}</div>
@@ -108,7 +108,7 @@ export default function FranchiseTVA({ accountStats }: { accountStats?: AccountS
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
           <MiniBox label="Position vs seuils" value={result.position} sub={result.positionSub} />
           {activite === 'hotelier' && result.tvaPotentielle > 0 && (
-            <MiniBox label="Si tu collectais la TVA" value={fmtEur(result.tvaPotentielle)} sub="au taux 10 % LCD hôtelier" />
+            <MiniBox label="Si tu collectais la TVA" value={fmtEur(result.tvaPotentielle)} sub="au taux de 10 % (hébergement para-hôtelier)" />
           )}
         </div>
       </div>
@@ -117,7 +117,7 @@ export default function FranchiseTVA({ accountStats }: { accountStats?: AccountS
         padding: '12px 14px', fontSize: '12.5px', color: 'var(--text-2)', lineHeight: 1.5,
         background: 'rgba(255,213,107,0.06)', borderLeft: '2px solid var(--accent-text)', borderRadius: '0 8px 8px 0',
       }}>
-        <strong style={{ color: 'var(--accent-text)' }}>Réforme 25 000 €</strong> : la LFi 2025 a proposé un seuil unifié à 25 000 € pour tous les BIC. Sa mise en œuvre reste en suspens. À ce jour, le seuil 37 500 € reste applicable. Vérifie le BOFiP avant toute décision.
+        <strong style={{ color: 'var(--accent-text)' }}>À savoir</strong> : ta location para-hôtelière est une prestation d&apos;hébergement, d&apos;où le seuil de {fmtEur(tvaParams.seuilFranchise)}. Le seuil de {fmtEur(tvaParams.seuilServices)} concerne les autres services (une conciergerie, par exemple). Le seuil unique de 25 000 € prévu en 2025 a été abandonné (loi du 3 novembre 2025).
       </div>
     </div>
   )

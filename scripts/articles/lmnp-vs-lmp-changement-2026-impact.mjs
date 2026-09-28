@@ -65,6 +65,6 @@ export default {
   related: [
     { slug: 'location-courte-duree-impots-france',              label: 'LCD et impôts en France',               categoryLabel: 'Fiscalité' },
     { slug: 'tva-location-courte-duree-2026',                   label: 'TVA LCD : qui est concerné',            categoryLabel: 'Fiscalité' },
-    { slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail',   label: 'TVA petit-déjeuner seuil 37500',         categoryLabel: 'Fiscalité' },
+    { slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail',   label: 'TVA et petit-déjeuner : le vrai seuil',         categoryLabel: 'Fiscalité' },
   ],
 }

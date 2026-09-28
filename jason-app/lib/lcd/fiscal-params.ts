@@ -79,17 +79,20 @@ export const FISCAL_PARAMS_2026 = {
   },
 
   // ─── TVA / Franchise en base ───────────────────────────────────────────
-  // LCD avec services para-hôteliers (petit-déj quotidien, ménage en cours
-  // de séjour, fourniture du linge) : régime hôtelier — soumise à TVA au-dessus
-  // du seuil. Sans ces services : hors champ TVA.
-  // Note : LFi 2025 a proposé un seuil unifié à 25 000 € mais sa mise en
-  // œuvre reste en suspens — on garde le seuil BIC services 37 500 €.
+  // LCD para-hôtelière (au moins 3 services sur 4 : petit-déjeuner, ménage
+  // régulier pendant le séjour, linge, réception même non personnalisée,
+  // séjours de 30 nuits max, art. 261 D 4° CGI) : prestation d'hébergement,
+  // TVA 10 % au-delà de la franchise hébergement (85 000 € / 93 500 € majoré).
+  // Sans ces services : location meublée exonérée, aucun seuil.
+  // Le seuil 37 500 € / 41 250 € vise les autres prestations de services
+  // (conciergerie). Seuil unique 25 000 € abandonné (loi 2025-1044, 3/11/2025).
   tva: {
-    seuilFranchise: 37500,        // € — sous ce CA, dispense de facturation TVA
-    seuilTolerance: 41250,        // € — au-dessus, sortie de la franchise dès N+1
-    tauxLcdHotelier: 0.10,        // TVA 10 % LCD avec services
-    seuilReformePropose: 25000,   // proposition LFi 2025, en suspens
-    label: 'Franchise en base BIC services',
+    seuilFranchise: 85000,        // € : hébergement, sous ce CA pas de TVA à facturer
+    seuilTolerance: 93500,        // € : seuil majoré, TVA due dès le jour du dépassement
+    tauxLcdHotelier: 0.10,        // TVA 10 % hébergement para-hôtelier
+    seuilServices: 37500,         // € : prestations de services (conciergerie)
+    seuilServicesTolerance: 41250,
+    label: 'Franchise en base hébergement',
   },
 
   // ─── Plafonds régime micro-foncier (location nue, pour ref) ───────────

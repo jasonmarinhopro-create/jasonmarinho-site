@@ -1,60 +1,79 @@
 export default {
   slug: 'tva-location-courte-duree-2026',
-  title: 'TVA en location courte durée : qui est concerné en 2026 et comment se préparer',
-  description: 'Nouveau seuil TVA à 37 500 € en 2026 pour les LCD avec prestations. Qui est concerné, comment calculer et quoi faire concrètement avant que ça s\'applique.',
-  keywords: 'TVA location courte durée 2026, seuil TVA meublé tourisme, para-hôtelier LCD, TVA Airbnb France, fiscalité location saisonnière',
+  title: 'TVA en location courte durée : qui est concerné en 2026 (et qui ne l\'est pas)',
+  seoTitle: 'TVA location courte durée 2026 : qui est concerné',
+  description: 'Meublé sans services, para-hôtellerie, conciergerie : qui paie la TVA en LCD en 2026, avec les vrais seuils (85 000 € et 37 500 €) et ce qui change en 2027. Sources officielles.',
+  keywords: 'TVA location courte durée 2026, seuil TVA meublé tourisme, para-hôtelier LCD, TVA Airbnb France, TVA conciergerie 37 500 €, franchise TVA 85 000 €',
   date: '2026-04-24',
   categorySlug: 'fiscalite',
-  readTime: 8,
+  readTime: 7,
 
-  lead: 'Un projet de loi de finances change la donne pour des milliers d\'hôtes LCD en 2026 : le seuil d\'assujettissement à la TVA pour les locations avec prestations para-hôtelières tombe à 37 500 € : contre 85 000 € jusqu\'à présent. Si tu proposes le petit-déjeuner, le ménage, le linge ou la réception, tu es peut-être directement concerné.',
+  lead: 'Non, le seuil de TVA des locations avec services n\'est pas tombé à 37 500 € en 2026. La réforme qui prévoyait un seuil unique de 25 000 € a été abandonnée en novembre 2025, et les seuils restent ceux de 2025. En location courte durée, la TVA dépend d\'abord de ce que tu proposes en plus du logement, ensuite seulement de ton chiffre d\'affaires. Voici les 3 situations possibles.',
 
   sections: [
     {
-      h2: '1. Ce qui change concrètement en 2026',
+      h2: '1. Location meublée sans services : pas de TVA, quel que soit ton chiffre d\'affaires',
       content: [
-        { type: 'p', text: 'Jusqu\'en 2025, seuls les hébergeurs réalisant plus de 85 000 € de revenus annuels avec des prestations para-hôtelières étaient assujettis à la TVA. À partir de 2026, ce seuil descend à 37 500 €. Conséquence directe : de nombreux hôtes qui n\'ont jamais eu à facturer la TVA vont y être soumis pour la première fois.' },
-        { type: 'p', text: 'La TVA applicable est de 10 % sur les prestations d\'hébergement. Elle doit être facturée au voyageur, collectée, puis reversée à l\'administration fiscale chaque trimestre ou chaque mois selon ton chiffre d\'affaires. Si tu dépasses le seuil, l\'exonération de franchise en base de TVA ne s\'applique plus.' },
-        { type: 'tip', text: 'Ce nouveau seuil ne s\'applique qu\'aux locations offrant au moins 3 prestations para-hôtelières. Si tu loues sans aucun service annexe, tu restes sur le régime classique des meublés de tourisme.' },
+        { type: 'p', text: 'La location d\'un logement meublé est exonérée de TVA (article 261 D 4° du CGI). C\'est le cas de la grande majorité des hôtes Airbnb et Booking : tu fournis le logement, tu fais le ménage entre deux voyageurs, tu laisses les clés dans une boîte. Aucun seuil ne s\'applique : même à 120 000 € de loyers, tu ne factures pas de TVA.' },
+        { type: 'p', text: 'Contrepartie : tu ne récupères pas la TVA payée sur tes achats (mobilier, travaux, linge).' },
+        { type: 'tip', text: 'Mention à indiquer sur tes factures ou contrats : « TVA non applicable, article 261 D 4° du CGI ».' },
       ],
     },
     {
-      h2: '2. Les 3 prestations para-hôtelières qui déclenchent la TVA',
+      h2: '2. Location para-hôtelière : TVA à 10 %, avec une franchise jusqu\'à 85 000 €',
       content: [
-        { type: 'p', text: 'La qualification "para-hôtelière" dépend du nombre de services que tu fournis parmi une liste définie par l\'administration fiscale. En proposer au moins 3 sur 4 te place dans cette catégorie.' },
+        { type: 'p', text: 'Ta location sort de l\'exonération quand elle est proposée pour des séjours de 30 nuits maximum et qu\'elle comprend, en plus du logement, au moins 3 de ces 4 prestations :' },
         { type: 'ul', items: [
-          'Petit-déjeuner fourni ou livré aux voyageurs',
-          'Nettoyage régulier des locaux pendant le séjour (pas uniquement entre deux voyageurs)',
-          'Fourniture de linge de maison (draps, serviettes) avec remplacement pendant le séjour',
-          'Réception de la clientèle : même via un service de conciergerie ou une boîte à clés avec accueil téléphonique personnalisé',
+          'Le petit-déjeuner',
+          'Le nettoyage régulier des locaux pendant le séjour (le ménage entre deux voyageurs ne compte pas)',
+          'La fourniture du linge de maison',
+          'La réception de la clientèle, même non personnalisée',
         ]},
-        { type: 'p', text: 'Attention : certains hôtes cochent 3 de ces 4 cases sans le réaliser. Si tu fournis le linge, fais nettoyer entre chaque séjour ET proposes un accueil personnalisé : même à distance : tu es déjà en zone para-hôtelière.' },
+        { type: 'p', text: 'Selon la doctrine fiscale (BOFiP du 26 mars 2025), il suffit que ces services soient proposés, même si le voyageur ne les utilise pas. Les chambres d\'hôtes sont presque toujours dans ce cas.' },
+        { type: 'p', text: 'Une location para-hôtelière est une prestation d\'hébergement : elle bénéficie de la franchise en base de TVA jusqu\'à 85 000 € de chiffre d\'affaires annuel en 2026 (93 500 € en cas de premier dépassement). Au-delà de 93 500 €, tu deviens redevable de la TVA à 10 % dès le jour du dépassement.' },
       ],
     },
     {
-      h2: '3. Comment calculer si tu es au-dessus du seuil de 37 500 €',
+      h2: '3. Conciergerie : TVA à 20 % au-delà de 37 500 €',
       content: [
-        { type: 'p', text: 'Le calcul se fait sur l\'ensemble des revenus bruts perçus via toutes tes plateformes et réservations directes. Si tu gères plusieurs logements, les revenus sont additionnés. La commission Airbnb ou Booking que tu ne touches pas directement n\'est pas déduite pour ce calcul : c\'est le prix total facturé au voyageur qui compte.' },
-        { type: 'ul', items: [
-          'Revenu brut annuel < 37 500 € avec prestations : franchise de TVA maintenue',
-          'Revenu brut annuel ≥ 37 500 € avec ≥ 3 prestations : TVA à 10 % obligatoire',
-          'Revenu brut annuel ≥ 85 000 € sans prestations : seuil classique de TVA',
-          'Dépasser le seuil en cours d\'année déclenche l\'assujettissement au mois suivant',
-        ]},
-        { type: 'tip', text: 'Si tu es proche du seuil, envisage de lisser ta stratégie tarifaire ou de revoir tes prestations. Un comptable spécialisé LCD peut t\'aider à optimiser ta situation légalement avant que le seuil ne soit franchi.' },
+        { type: 'p', text: 'Le seuil de 37 500 € (41 250 € majoré) existe bien, mais il vise les prestations de services autres que l\'hébergement. C\'est le cas d\'une conciergerie qui facture des honoraires de gestion aux propriétaires : au-delà de ce seuil, elle facture la TVA à 20 % sur ses honoraires.' },
+        { type: 'p', text: 'C\'est probablement l\'origine de la confusion : ce seuil concerne la personne qui gère le logement pour un propriétaire, pas le propriétaire qui loue son logement.' },
       ],
     },
     {
-      h2: '4. Ce que tu dois faire concrètement',
+      h2: '4. Comment calculer ton chiffre d\'affaires',
       content: [
-        { type: 'p', text: 'Si tu es concerné, voici les étapes à suivre sans attendre : d\'abord, déclarer ton activité para-hôtelière à l\'administration fiscale et obtenir un numéro de TVA intracommunautaire. Ensuite, paramétrer tes outils de réservation pour afficher les prix TTC ou HT avec la TVA en sus : Airbnb et Booking permettent cette configuration côté professionnel.' },
         { type: 'ul', items: [
-          'Consulter un expert-comptable spécialisé LCD dès maintenant si tu es entre 30 000 € et 50 000 € de revenus annuels',
-          'Vérifier si ton statut actuel (micro-BIC, LMNP, SCI) est compatible avec l\'assujettissement à la TVA',
-          'Mettre à jour tes modèles de contrats et de factures pour inclure la TVA',
-          'Anticiper l\'impact sur ta rentabilité : la TVA augmente mécaniquement ton prix ou réduit ta marge',
+          'On additionne les nuits encaissées sur l\'année civile, toutes plateformes et réservations directes confondues',
+          'Les commissions d\'Airbnb ou Booking ne sont pas déduites : c\'est le prix de tes nuits qui compte',
+          'Si tu as plusieurs logements para-hôteliers dans la même activité, leurs chiffres d\'affaires s\'additionnent',
+          'Un logement para-hôtelier seul dépasse rarement 85 000 € : le seuil concerne surtout les maisons d\'hôtes de 4 chambres et plus et les grands gîtes avec services',
         ]},
-        { type: 'cta', text: 'Tu veux maîtriser la fiscalité de ta location courte durée sans te noyer dans les textes ? La formation LCD couvre les bases fiscales indispensables pour rester en règle.', button: 'Voir les formations', href: '/#formations' },
+        { type: 'p', text: 'Pour le détail des services et des exemples chiffrés, lis notre article sur <a href="/blog/tva-petit-dejeuner-lcd-seuil-37500-2026-detail" style="color:var(--g);font-weight:500">la TVA et le petit-déjeuner en LCD</a>, ou teste ta situation avec le <a href="/services/simulateurs/franchise-tva-lcd" style="color:var(--g);font-weight:500">simulateur de franchise TVA</a>.' },
+      ],
+    },
+    {
+      h2: '5. Si tu deviens redevable de la TVA',
+      content: [
+        { type: 'ul', items: [
+          'Demande un numéro de TVA intracommunautaire et fais-le figurer sur tes factures',
+          'Airbnb et Booking ne collectent pas ta TVA à ta place : ils facturent la TVA sur leurs commissions, la TVA sur tes nuits reste à déclarer par toi',
+          'Tu récupères la TVA sur tes dépenses liées à l\'activité',
+          'Déclarations : régime simplifié (CA12 annuelle et acomptes en juillet et décembre) jusqu\'au 31 décembre 2026, puis déclaration CA3 mensuelle, ou trimestrielle si ta TVA est faible, à partir du 1er janvier 2027',
+        ]},
+        { type: 'cta', text: 'Tu veux maîtriser la fiscalité de ta location courte durée sans te noyer dans les textes ?', button: 'Voir les formations', href: '/services/formations' },
+      ],
+    },
+    {
+      h2: 'Sources',
+      content: [
+        { type: 'ul', items: [
+          '<a href="https://bofip.impots.gouv.fr/bofip/124-PGP.html/identifiant=BOI-TVA-CHAMP-10-10-50-20-20250326" rel="noopener" target="_blank">BOFiP, BOI-TVA-CHAMP-10-10-50-20 (26/03/2025)</a> : hébergement para-hôtelier et location meublée',
+          '<a href="https://comptabook.fr/tva/seuil-franchise-tva-2026/" rel="noopener" target="_blank">Comptabook, seuils de franchise en base de TVA 2026</a>',
+          '<a href="https://kohenavocats.com/franchise-tva-auto-entrepreneur-25000-abandon-texte-vigueur/" rel="noopener" target="_blank">Kohen Avocats, abandon du seuil unique de 25 000 €</a> (loi du 3 novembre 2025)',
+          '<a href="https://www.compta-online.com/tva-et-regime-simplifie-imposition-acomptes-semestriels-ao808" rel="noopener" target="_blank">Compta-online, régime simplifié de TVA et sa suppression en 2027</a>',
+        ]},
+        { type: 'p', text: 'Règles vérifiées en septembre 2026. Pour une décision engageante, fais valider ta situation par un expert-comptable.' },
       ],
     },
   ],

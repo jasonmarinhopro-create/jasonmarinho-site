@@ -82,18 +82,18 @@ export default {
       ],
     },
     {
-      h2: '6. Anticiper le seuil TVA et la para-hôtellerie qui arrivent vite',
+      h2: '6. Anticiper le seuil TVA si tu proposes des services para-hôteliers',
       content: [
-        { type: 'p', text: 'Le seuil TVA de la para-hôtellerie a été rabaissé à 37 500 euros en 2026. Si tu proposes le petit-déjeuner, le linge fourni à chaque séjour ou le ménage inclus, tu peux être considéré comme faisant des prestations para-hôtelières et donc concerné par la TVA. Sans compte pro qui isole ton chiffre d\'affaires LCD, tu vas passer le seuil sans t\'en rendre compte et te retrouver à devoir régulariser plusieurs mois de TVA à posteriori.' },
+        { type: 'p', text: 'Si tu proposes au moins 3 services parmi le petit-déjeuner, le linge, le ménage pendant le séjour et la réception des voyageurs, ta location devient para-hôtelière et entre dans le champ de la TVA. La franchise en base te dispense de la facturer jusqu\'à 85 000 euros de chiffre d\'affaires en 2026 (93 500 euros en cas de premier dépassement). Ce seuil concerne surtout les chambres d\'hôtes et les hôtes qui ont plusieurs logements : sans compte pro qui isole ton chiffre d\'affaires LCD, tu risques de le passer sans t\'en rendre compte et de devoir régulariser la TVA après coup.' },
         { type: 'ul', items: [
           'Chiffre d\'affaires LCD visible en temps réel, pas noyé dans les flux perso',
-          'Alerte automatique paramétrable quand tu approches les 37 500 euros',
+          'Alerte automatique paramétrable quand tu approches les 85 000 euros',
           'Facilite l\'inscription à la TVA le moment venu et la ventilation HT/TTC',
           'Compte pro compatible avec un logiciel de facturation quand tu bascules à la TVA',
           'Traçabilité indispensable pour le passage à la TVA sans stress',
         ]},
-        { type: 'p', text: 'Ce point devient critique pour les hôtes en croissance ou les propriétaires de plusieurs logements. Notre article détaillé sur le <a href="/blog/tva-petit-dejeuner-lcd-seuil-37500-2026-detail" style="color:var(--g);font-weight:500">seuil TVA 37 500 euros pour la para-hôtellerie en 2026</a> t\'explique précisément quelles prestations te font basculer et comment calculer si tu es concerné. Dans tous les scénarios où tu es proche du seuil, ne pas avoir de compte pro est une erreur qui va te coûter cher en régularisation.' },
-        { type: 'tip', text: 'Paramètre une alerte à 30 000 euros de chiffre d\'affaires sur ton compte pro. Ça te laisse 7 500 euros de marge pour préparer sereinement le passage à la TVA sans t\'y prendre à la dernière minute. La plupart des néobanques proposent ce type d\'alerte gratuitement.' },
+        { type: 'p', text: 'Ce point devient critique pour les hôtes en croissance ou les propriétaires de plusieurs logements. Notre article détaillé sur le <a href="/blog/tva-petit-dejeuner-lcd-seuil-37500-2026-detail" style="color:var(--g);font-weight:500">seuil TVA de la para-hôtellerie en 2026</a> t\'explique précisément quelles prestations te font basculer et comment calculer si tu es concerné. Dans tous les scénarios où tu es proche du seuil, ne pas avoir de compte pro est une erreur qui va te coûter cher en régularisation.' },
+        { type: 'tip', text: 'Paramètre une alerte à 75 000 euros de chiffre d\'affaires sur ton compte pro. Ça te laisse 10 000 euros de marge pour préparer sereinement le passage à la TVA sans t\'y prendre à la dernière minute. La plupart des néobanques proposent ce type d\'alerte gratuitement.' },
       ],
     },
     {

@@ -74,10 +74,10 @@ export default {
       content: [
         { type: 'p', text: 'Le régime TVA diffère selon que tu proposes ou non des services au-delà du simple hébergement.' },
         { type: 'ul', items: [
-          'Chambres d\'hôtes avec petit-déjeuner : régime parahôtelier, TVA à 10 % dès le 1er euro si les services sont significatifs',
-          'Meublé de tourisme simple (sans service actif) : pas de TVA en dessous du seuil (91 900 € en 2026)',
-          'Meublé avec services parahôteliers (ménage quotidien, petit-déj, linge changé) : TVA 10 % obligatoire',
-          'La ligne de démarcation : 3 services parahôteliers ou plus = assujettissement TVA automatique',
+          'Chambres d\'hôtes : le petit-déjeuner, le linge et l\'accueil en font en général une activité parahôtelière, soumise à la TVA à 10 %, avec la franchise en base jusqu\'à 85 000 € de chiffre d\'affaires en 2026 (93 500 € en cas de premier dépassement)',
+          'Meublé de tourisme sans services parahôteliers : exonéré de TVA (article 261 D 4° du CGI), quel que soit le chiffre d\'affaires',
+          'Meublé avec services parahôteliers : TVA à 10 % au-delà de la franchise, comme les chambres d\'hôtes',
+          'La ligne de démarcation : au moins 3 des 4 services (petit-déjeuner, ménage régulier pendant le séjour, linge, réception) proposés pour des séjours de 30 nuits maximum',
         ]},
       ],
     },

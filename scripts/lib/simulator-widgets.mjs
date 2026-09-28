@@ -760,19 +760,19 @@ export function widgetFranchiseTva() {
 
     <div class="sim-field">
       <div class="sim-label">Chiffre d'affaires LCD annuel <span class="sim-label-val" id="tva-ca-v">25 000 €</span></div>
-      <input type="range" class="sim-range" id="tva-ca" min="0" max="80000" step="500" value="25000">
+      <input type="range" class="sim-range" id="tva-ca" min="0" max="120000" step="500" value="25000">
     </div>
 
     <div class="sim-field">
       <div class="sim-label">Type d'activité</div>
       <div class="sim-chips" id="tva-type">
         <button type="button" class="sim-chip on" data-v="hotelier">LCD avec services para-hôteliers</button>
-        <button type="button" class="sim-chip" data-v="locatif">LCD sans services (location simple)</button>
+        <button type="button" class="sim-chip" data-v="locatif">LCD sans services (location meublée)</button>
       </div>
     </div>
 
     <div class="sim-hint">
-      <strong>Services para-hôteliers</strong> = au moins 3 services parmi : petit-déjeuner quotidien, ménage en cours de séjour, fourniture du linge, accueil personnalisé. Sans ces services, tu es hors champ TVA (location meublée nue).
+      <strong>Services para-hôteliers</strong> = au moins 3 services parmi : petit-déjeuner, ménage régulier pendant le séjour, fourniture du linge, réception (même non personnalisée). Sans ces services, ta location meublée est exonérée de TVA.
     </div>
   </div>
 
@@ -780,12 +780,12 @@ export function widgetFranchiseTva() {
     <div class="sim-out primary">
       <div class="sim-out-label">Verdict TVA</div>
       <div class="sim-out-value" id="tva-out-verdict">Franchise applicable</div>
-      <div class="sim-out-sub" id="tva-out-verdict-sub">CA sous le seuil 37 500 €</div>
+      <div class="sim-out-sub" id="tva-out-verdict-sub">CA sous le seuil 85 000 €</div>
     </div>
     <div class="sim-out">
       <div class="sim-out-label">Position vs seuils</div>
       <div class="sim-out-value" id="tva-out-position">Sous le seuil</div>
-      <div class="sim-out-sub" id="tva-out-position-sub">Marge restante : 12 500 €</div>
+      <div class="sim-out-sub" id="tva-out-position-sub">Marge restante : 60 000 €</div>
     </div>
     <div class="sim-out">
       <div class="sim-out-label">Si tu collectais la TVA</div>
@@ -810,15 +810,15 @@ export function widgetFranchiseTva() {
   function update(){
     var ca = +$ca.value;
     $caV.textContent = fmt(ca);
-    $ca.style.setProperty('--pct', (ca/80000*100)+'%');
+    $ca.style.setProperty('--pct', (ca/120000*100)+'%');
     if (type === 'locatif') {
-      $v.textContent = 'Hors champ TVA';
+      $v.textContent = 'Exonérée de TVA';
       $v.className = 'sim-out-value success';
-      $vS.textContent = 'Location meublée nue : pas soumise à TVA';
-      $p.textContent = '—';
+      $vS.textContent = 'Location meublée sans services : art. 261 D 4° du CGI';
+      $p.textContent = 'Aucun seuil';
       $p.className = 'sim-out-value';
       $pS.textContent = 'Sans services para-hôteliers';
-      $c.textContent = '—';
+      $c.textContent = '0 €';
       return;
     }
     if (ca <= SEUIL) {
@@ -831,14 +831,14 @@ export function widgetFranchiseTva() {
     } else if (ca <= TOL) {
       $v.textContent = 'Zone de tolérance';
       $v.className = 'sim-out-value';
-      $vS.textContent = 'Tu peux rester en franchise une année supplémentaire si tu redescends';
+      $vS.textContent = "Premier dépassement : franchise gardée cette année, perdue si tu restes au-dessus l'an prochain";
       $p.textContent = 'Au-dessus de ' + fmt(SEUIL);
       $p.className = 'sim-out-value';
-      $pS.textContent = "Si tu dépasses ${p.seuilTolerance}, sortie immédiate dès le mois suivant";
+      $pS.textContent = 'Au-delà de ' + fmt(TOL) + ' : TVA due dès le jour du dépassement';
     } else {
       $v.textContent = 'Sortie de franchise';
       $v.className = 'sim-out-value alert';
-      $vS.textContent = 'Tu dois facturer la TVA dès le mois suivant le dépassement';
+      $vS.textContent = 'TVA à facturer dès le jour du dépassement';
       $p.textContent = 'Au-dessus de ' + fmt(TOL);
       $p.className = 'sim-out-value alert';
       $pS.textContent = 'Demande ton numéro de TVA intracommunautaire';

@@ -103,7 +103,7 @@ export default {
     {
       h2: 'Point de vigilance : le petit-déjeuner peut te faire basculer en para-hôtellerie',
       content: [
-        { type: 'p', text: 'Point crucial à connaître avant de te lancer. En droit fiscal français, offrir le petit-déjeuner est l\'une des 4 prestations dites para-hôtelières, les 3 autres étant la fourniture du linge de maison, l\'accueil personnalisé et le ménage régulier pendant le séjour. Si tu remplis 3 sur 4 de ces prestations, tu bascules en para-hôtellerie et tu es soumis à la TVA dès 37 500 € de chiffre d\'affaires en 2026.' },
+        { type: 'p', text: 'Point crucial à connaître avant de te lancer. En droit fiscal français, offrir le petit-déjeuner est l\'une des 4 prestations dites para-hôtelières, les 3 autres étant la fourniture du linge de maison, la réception des voyageurs (même non personnalisée) et le ménage régulier pendant le séjour. Si tu en proposes au moins 3 sur 4, tu bascules en para-hôtellerie : ta location entre dans le champ de la TVA à 10 %, avec une franchise jusqu\'à 85 000 € de chiffre d\'affaires en 2026. Sans ces services, la location meublée reste exonérée de TVA.' },
         { type: 'ul', items: [
           'Un petit-déjeuner ponctuel offert seulement le premier matin d\'arrivée ne bascule pas systématiquement, à condition qu\'il ne soit pas quotidien et intégré à un service hôtelier récurrent',
           'Un petit-déjeuner facturé en supplément (option payante activée par le voyageur) est traité différemment d\'un petit-déjeuner systématiquement inclus',
@@ -118,7 +118,7 @@ export default {
 
   related: [
     { slug: 'welcome-bag-lcd-12-idees-marquantes-budget',       label: 'Welcome bag LCD : 12 idées marquantes',   categoryLabel: 'Expérience' },
-    { slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail',   label: 'TVA petit-déjeuner : seuil 37 500 €',     categoryLabel: 'Fiscalité' },
+    { slug: 'tva-petit-dejeuner-lcd-seuil-37500-2026-detail',   label: 'TVA et petit-déjeuner : le vrai seuil',     categoryLabel: 'Fiscalité' },
     { slug: 'accueillir-voyageur-business-lcd-essentiels',      label: 'Accueillir un voyageur business',         categoryLabel: 'Expérience' },
   ],
 }

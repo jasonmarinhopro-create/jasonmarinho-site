@@ -33,11 +33,12 @@ export const FISCAL_PARAMS_2026 = {
     seuilLmp: 23000,
   },
   tva: {
-    seuilFranchise: 37500,
-    seuilTolerance: 41250,
+    seuilFranchise: 85000,
+    seuilTolerance: 93500,
     tauxLcdHotelier: 0.10,
-    seuilReformePropose: 25000,
-    label: 'Franchise en base BIC services',
+    seuilServices: 37500,
+    seuilServicesTolerance: 41250,
+    label: 'Franchise en base hébergement',
   },
   meta: {
     annee: 2026,

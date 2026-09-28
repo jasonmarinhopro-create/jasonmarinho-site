@@ -100,11 +100,13 @@ Depuis le 1er janvier 2025 :
 
 Booking demande déjà le DPE dans les informations réglementaires. Sans DPE valide (< 10 ans), ta fiche affiche un bandeau d'alerte et perd en visibilité.
 
-### 3. TVA para-hôtelière : seuil 37 500 € en 2026
+### 3. TVA para-hôtelière : seuil de 85 000 € en 2026
 
-Si tu proposes des **prestations para-hôtelières** (petit-déjeuner, ménage régulier, accueil personnel, fourniture du linge) en plus du logement, tu es potentiellement redevable de la TVA dès que ton CA dépasse **37 500 € annuels** (nouveau seuil 2026, précédemment 85 800 €).
+Si tu proposes au moins 3 des 4 **prestations para-hôtelières** (petit-déjeuner, ménage régulier pendant le séjour, fourniture du linge, réception même non personnalisée) en plus du logement, ta location entre dans le champ de la TVA à 10 %. La franchise en base te dispense de la facturer jusqu'à **85 000 € de CA annuel** en 2026 (93 500 € en cas de premier dépassement). Le seuil de 37 500 € parfois cité concerne les prestations de services comme une conciergerie, pas l'hébergement. Sans ces services, la location meublée est exonérée de TVA.
 
-Sur Booking, si tu es soumis à la TVA, tu dois **cocher la case "assujetti TVA" dans ton extranet** et afficher tes prix TTC. Ne pas le faire = risque de redressement fiscal + bannissement plateforme.
+> Source : BOFiP BOI-TVA-CHAMP-10-10-50-20 du 26/03/2025 et seuils de franchise 2026 (loi n° 2025-1044 du 3 novembre 2025)
+
+Sur Booking, si tu es redevable de la TVA, renseigne-le dans les paramètres de facturation de ton extranet et vérifie que tes prix affichés l'incluent : Booking ne déclare pas ta TVA à ta place.
 
 ### 4. Booking transmet tes revenus à l'administration fiscale
 
