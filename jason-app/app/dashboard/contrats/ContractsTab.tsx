@@ -3,7 +3,8 @@
 import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
 import Select from '@/components/ui/Select'
-import { FileText, MagnifyingGlass, CheckCircle, Clock, House, CurrencyEur, ArrowSquareOut, Funnel, ArrowCounterClockwise, Eye } from '@phosphor-icons/react/dist/ssr'
+import { FileText, MagnifyingGlass, House, ArrowSquareOut, ArrowCounterClockwise, Eye, X } from '@phosphor-icons/react/dist/ssr'
+import { Card, CardHead, Stat, ui } from '../finances/_ui/ui'
 import { restoreContract } from '../voyageurs/contract-actions'
 import type { ContractRow } from './types'
 
@@ -16,10 +17,13 @@ interface Props {
 type StatusFilter = 'tous' | 'en_attente' | 'signe' | 'annule'
 type PeriodFilter = 'tous' | 'a-venir' | 'ce-mois' | 'passes'
 
+// Couleurs de la marque uniquement (pas de bleu ni de gris-bleu)
+const AMBER = '#8A5A12'
+const AMBER_BG = 'rgba(255,213,107,0.18)'
 const STATUS_META: Record<string, { label: string; color: string; bg: string }> = {
-  en_attente: { label: 'En attente', color: '#d97706', bg: 'rgba(217,119,6,0.12)' },
-  signe:      { label: 'Signé',      color: '#2F9E5B', bg: 'rgba(47,158,91,0.12)' },
-  annule:     { label: 'Annulé',     color: '#64748b', bg: 'rgba(100,116,139,0.12)' },
+  en_attente: { label: 'À signer',  color: AMBER, bg: AMBER_BG },
+  signe:      { label: 'Signé',     color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  annule:     { label: 'Annulé',    color: 'var(--text-3)', bg: 'var(--bg-2)' },
 }
 
 // Où en est l'argent : caution (prioritaire, c'est elle qui demande une
@@ -27,14 +31,14 @@ const STATUS_META: Record<string, { label: string; color: string; bg: string }> 
 function paymentBadge(c: ContractRow): { label: string; color: string; bg: string } | null {
   switch (c.stripe_deposit_status) {
     case 'held':     return { label: 'Caution bloquée', color: 'var(--accent-text)', bg: 'var(--accent-bg)' }
-    case 'expired':  return { label: 'Caution expirée', color: '#d97706', bg: 'rgba(217,119,6,0.12)' }
-    case 'captured': return { label: 'Caution encaissée', color: '#dc2626', bg: 'rgba(220,38,38,0.10)' }
-    case 'released': return { label: 'Caution libérée', color: '#2F9E5B', bg: 'rgba(47,158,91,0.12)' }
+    case 'expired':  return { label: 'Caution expirée', color: AMBER, bg: AMBER_BG }
+    case 'captured': return { label: 'Caution encaissée', color: 'var(--danger)', bg: 'var(--danger-bg)' }
+    case 'released': return { label: 'Caution libérée', color: 'var(--accent-text)', bg: 'var(--accent-bg)' }
   }
   if (!c.stripe_payment_enabled) return null
-  if (c.stripe_payment_status === 'paid') return { label: 'Loyer payé', color: '#2F9E5B', bg: 'rgba(47,158,91,0.12)' }
-  if (c.stripe_payment_status === 'failed') return { label: 'Paiement échoué', color: '#dc2626', bg: 'rgba(220,38,38,0.10)' }
-  return c.statut === 'signe' ? { label: 'Loyer à encaisser', color: '#d97706', bg: 'rgba(217,119,6,0.12)' } : null
+  if (c.stripe_payment_status === 'paid') return { label: 'Loyer payé', color: 'var(--accent-text)', bg: 'var(--accent-bg)' }
+  if (c.stripe_payment_status === 'failed') return { label: 'Paiement échoué', color: 'var(--danger)', bg: 'var(--danger-bg)' }
+  return c.statut === 'signe' ? { label: 'Loyer à encaisser', color: AMBER, bg: AMBER_BG } : null
 }
 
 function fmtDateShort(iso: string | null): string {
@@ -83,61 +87,63 @@ export default function ContractsTab({ contracts, today }: Props) {
     const total = contracts.length
     const signe = contracts.filter(c => c.statut === 'signe').length
     const enAttente = contracts.filter(c => c.statut === 'en_attente').length
+    // Loyers des contrats signés (un contrat pas signé n'est pas un revenu)
     const caTotal = contracts
-      .filter(c => c.statut !== 'annule')
+      .filter(c => c.statut === 'signe')
       .reduce((acc, c) => acc + (c.montant_loyer ?? 0), 0)
     return { total, signe, enAttente, caTotal }
   }, [contracts])
 
   if (contracts.length === 0) {
     return (
-      <div style={s.empty}>
-        <div style={s.emptyIcon}>
-          <FileText size={32} weight="duotone" color="var(--accent-text)" />
+      <Card>
+        <div style={s.empty}>
+          <div style={s.emptyIcon}><FileText size={28} weight="duotone" color="var(--accent-text)" /></div>
+          <h3 style={s.emptyH}>Aucun contrat pour le moment</h3>
+          <p style={s.emptyLead}>
+            Le contrat sert surtout aux <strong>réservations directes</strong> (bouche-à-oreille, site perso, réseaux sociaux, Driing).
+            Pour Airbnb et Booking, la plateforme a déjà ses conditions, sa garantie et sa médiation.
+          </p>
+          <p style={{ ...s.emptyLead, fontSize: '13.5px', color: 'var(--text-3)' }}>
+            Clique sur <strong>Nouveau contrat</strong> en haut : choisis la réservation (ou saisis-la en 30 secondes), l&apos;assistant fait le reste.
+          </p>
         </div>
-        <h3 style={s.emptyH}>Aucun contrat pour le moment</h3>
-        <p style={s.emptyLead}>
-          Les contrats sont utiles principalement pour les <strong>réservations directes</strong> :
-          bouche-à-oreille, site perso, réseaux sociaux, plateformes sans CGU intégrées (Driing, par ex.).
-          Pour les séjours <strong>Airbnb</strong> et <strong>Booking</strong>, c'est rarement nécessaire :
-          ces plateformes fournissent déjà leurs propres conditions générales d'utilisation, leur protection
-          AirCover / Partner Protection, et leur médiation en cas de litige.
-        </p>
-
-        <p style={{ ...s.emptyLead, fontSize: '13.5px', color: 'var(--text-3)' }}>
-          Clique sur <strong>« Nouveau contrat »</strong> en haut : choisis la réservation (ou saisis-la en 30 secondes), l&apos;assistant fait le reste.
-        </p>
-      </div>
+      </Card>
     )
   }
 
+  const hasFilters = !!search || statusFilter !== 'tous' || periodFilter !== 'tous' || logementFilter !== 'tous'
+  const resetAll = () => { setSearch(''); setStatusFilter('tous'); setPeriodFilter('tous'); setLogementFilter('tous') }
+
   return (
-    <div>
-      {/* KPIs */}
+    <Card>
+      <CardHead title="Tous tes contrats" sub="Clique un nom pour ouvrir la fiche voyageur : relance, caution et facture s'y trouvent." />
+
       <div style={s.kpiGrid}>
-        <KpiCard icon={<FileText size={14} weight="fill" />} label="Total" value={String(kpis.total)} color="var(--text)" />
-        <KpiCard icon={<CheckCircle size={14} weight="fill" />} label="Signés" value={String(kpis.signe)} color="#2F9E5B" />
-        <KpiCard icon={<Clock size={14} weight="fill" />} label="En attente" value={String(kpis.enAttente)} color="#d97706" />
-        <KpiCard icon={<CurrencyEur size={14} weight="fill" />} label="CA contractualisé" value={fmtEur(kpis.caTotal)} color="var(--accent-text)" />
+        <Stat label="Contrats" value={kpis.total} />
+        <Stat label="Signés" value={kpis.signe} tone="green" />
+        <Stat label="À signer" value={kpis.enAttente} tone={kpis.enAttente > 0 ? 'amber' : 'muted'} />
+        <Stat label="Loyers signés" value={fmtEur(kpis.caTotal)} hint="contrats signés, toutes dates" />
       </div>
 
       {/* Filtres */}
       <div style={s.filters}>
-        <div style={{ ...s.search, flex: 1, minWidth: '200px' }}>
-          <MagnifyingGlass size={14} weight="bold" color="var(--text-muted)" />
+        <div style={{ ...s.search, flex: '1 1 240px', minWidth: 0 }}>
+          <MagnifyingGlass size={15} color="var(--text-3)" />
           <input
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Rechercher par nom, email, logement…"
+            placeholder="Nom, e-mail, logement…"
+            aria-label="Rechercher un contrat"
             style={s.searchInput}
           />
+          {search && <button type="button" onClick={() => setSearch('')} style={s.clearBtn} aria-label="Effacer la recherche"><X size={12} /></button>}
         </div>
         <FilterPills
-          icon={<Funnel size={12} weight="fill" />}
           options={[
             { v: 'tous', label: 'Tous statuts' },
-            { v: 'en_attente', label: 'En attente' },
+            { v: 'en_attente', label: 'À signer' },
             { v: 'signe', label: 'Signés' },
             { v: 'annule', label: 'Annulés' },
           ]}
@@ -169,7 +175,9 @@ export default function ContractsTab({ contracts, today }: Props) {
 
       {/* Compteur résultats */}
       <div style={s.resultsLabel}>
-        {filtered.length} contrat{filtered.length > 1 ? 's' : ''} affiché{filtered.length > 1 ? 's' : ''} sur {contracts.length}
+        {hasFilters
+          ? <>{filtered.length} contrat{filtered.length > 1 ? 's' : ''} sur {contracts.length} · <button type="button" onClick={resetAll} style={s.linkBtn}>tout afficher</button></>
+          : <>{contracts.length} contrat{contracts.length > 1 ? 's' : ''}, du plus récent au plus ancien</>}
       </div>
 
       {/* Mobile : nom + logement sur une ligne, montant et statuts en dessous */}
@@ -182,7 +190,7 @@ export default function ContractsTab({ contracts, today }: Props) {
       {filtered.length === 0 ? (
         <div style={s.emptyResults}>
           Aucun contrat ne correspond à ces filtres.
-          <button onClick={() => { setSearch(''); setStatusFilter('tous'); setPeriodFilter('tous'); setLogementFilter('tous') }} style={s.resetBtn}>
+          <button onClick={resetAll} style={s.resetBtn}>
             Réinitialiser
           </button>
         </div>
@@ -191,7 +199,7 @@ export default function ContractsTab({ contracts, today }: Props) {
           {filtered.map(c => <ContractRow key={c.id} contract={c} />)}
         </div>
       )}
-    </div>
+    </Card>
   )
 }
 
@@ -224,7 +232,7 @@ function ContractRow({ contract: c }: { contract: ContractRow }) {
           : <div style={s.rowName}>{fullName}</div>}
         <div style={s.rowMeta}>
           <span><House size={11} weight="fill" /> {c.logement_nom ?? 'Logement'}</span>
-          <span>{fmtDateShort(c.date_arrivee)} → {fmtDateShort(c.date_depart)}</span>
+          <span>{fmtDateShort(c.date_arrivee)} au {fmtDateShort(c.date_depart)}</span>
         </div>
       </div>
       <div style={s.rowMoney}>
@@ -274,22 +282,9 @@ function ContractRow({ contract: c }: { contract: ContractRow }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────
-function KpiCard({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: string; color: string }) {
-  return (
-    <div style={s.kpiCard}>
-      <span style={{ ...s.kpiIcon, color }}>{icon}</span>
-      <div>
-        <div style={{ ...s.kpiValue, color }}>{value}</div>
-        <div style={s.kpiLabel}>{label}</div>
-      </div>
-    </div>
-  )
-}
-
-function FilterPills({ icon, options, value, onChange }: { icon?: React.ReactNode; options: { v: string; label: string }[]; value: string; onChange: (v: string) => void }) {
+function FilterPills({ options, value, onChange }: { options: { v: string; label: string }[]; value: string; onChange: (v: string) => void }) {
   return (
     <div style={s.pillGroup}>
-      {icon && <span style={s.pillIcon}>{icon}</span>}
       {options.map(opt => (
         <button
           key={opt.v}
@@ -306,9 +301,11 @@ function FilterPills({ icon, options, value, onChange }: { icon?: React.ReactNod
 const s: Record<string, React.CSSProperties> = {
 
   kpiGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))',
-    gap: '10px', marginBottom: '20px',
+    ...ui.kpis, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 125px), 1fr))',
+    padding: '14px 0', margin: '0 0 16px', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)',
   },
+  clearBtn: { background: 'none', border: 'none', color: 'var(--text-3)', cursor: 'pointer', padding: 2, display: 'flex' },
+  linkBtn: { background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit', fontSize: 'inherit', color: 'var(--accent-text)', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: 2 },
   kpiCard: {
     display: 'flex', alignItems: 'center', gap: '12px',
     padding: '14px 16px', background: 'var(--surface)',
@@ -334,18 +331,18 @@ const s: Record<string, React.CSSProperties> = {
   },
   search: {
     display: 'inline-flex', alignItems: 'center', gap: '8px',
-    padding: '8px 12px', background: 'var(--surface)',
-    border: '1px solid var(--border)', borderRadius: '10px',
+    padding: '9px 12px', background: 'var(--bg)',
+    border: '1px solid var(--border-2)', borderRadius: '10px',
   },
   searchInput: {
     flex: 1, background: 'transparent', border: 'none', outline: 'none',
     color: 'var(--text)', fontSize: '13.5px', fontFamily: 'inherit',
-    minWidth: '160px',
+    minWidth: 0,
   },
   pillGroup: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
-    padding: '4px', background: 'var(--surface)',
-    border: '1px solid var(--border)', borderRadius: '10px',
+    padding: '4px', background: 'var(--bg)',
+    border: '1px solid var(--border)', borderRadius: '10px', flexWrap: 'wrap',
   },
   pillIcon: { color: 'var(--text-muted)', marginLeft: '6px', display: 'inline-flex' },
   pill: {
@@ -373,13 +370,13 @@ const s: Record<string, React.CSSProperties> = {
   },
   row: {
     display: 'flex', alignItems: 'center', gap: '14px',
-    padding: '14px 16px', background: 'var(--surface)',
+    padding: '14px 16px', background: 'var(--bg)',
     border: '1px solid var(--border)', borderRadius: '12px',
     transition: 'border-color 0.15s, transform 0.15s',
   },
   rowAvatar: {
     width: '38px', height: '38px', borderRadius: '50%',
-    background: 'linear-gradient(135deg, rgba(0,76,63,0.12), rgba(0,76,63,0.04))',
+    background: 'var(--accent-bg)',
     color: 'var(--accent-text)', fontWeight: 700, fontSize: '13px',
     fontFamily: 'var(--font-fraunces), serif',
     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
@@ -413,11 +410,9 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   empty: {
-    padding: 'clamp(28px, 4vw, 56px) clamp(20px, 4vw, 56px)',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '16px',
+    padding: 'clamp(12px, 3vw, 32px) 0',
     display: 'flex', flexDirection: 'column' as const,
-    alignItems: 'center', gap: '18px',
+    alignItems: 'center', gap: '14px',
   },
   emptyIcon: {
     width: '64px', height: '64px', borderRadius: '16px',
@@ -439,7 +434,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   emptyResults: {
     padding: '28px 20px', textAlign: 'center' as const,
-    background: 'var(--surface)', border: '1px dashed var(--border)',
+    background: 'var(--bg)', border: '1px dashed var(--border)',
     borderRadius: '12px', color: 'var(--text-muted)', fontSize: '13.5px',
   },
   resetBtn: {

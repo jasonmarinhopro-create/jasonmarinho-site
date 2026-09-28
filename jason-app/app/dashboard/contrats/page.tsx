@@ -30,9 +30,11 @@ export default async function ContratsPage() {
   const withContract = new Set(rows.filter(c => c.statut !== 'annule' && c.sejour_id).map(c => c.sejour_id as string))
   // Pour « Nouvelle réservation directe » (séjour pas encore saisi) :
   // voyageurs existants + logements, même modale que la fiche logement.
-  const [{ data: voyageurOptions }, { data: logementOptions }] = await Promise.all([
+  const [{ data: voyageurOptions }, { data: logementOptions }, { data: payProfile }] = await Promise.all([
     supabase.from('voyageurs').select('id, prenom, nom, email, telephone').eq('user_id', profile.userId).order('updated_at', { ascending: false }).limit(300),
     supabase.from('logements').select('id, nom').eq('user_id', profile.userId).order('nom'),
+    // Encaissement : Stripe connecté (paiement par lien + caution) ou IBAN (virement)
+    supabase.from('profiles').select('stripe_account_id, stripe_onboarding_complete, iban').eq('id', profile.userId).maybeSingle(),
   ])
   const { data: upcoming } = await supabase
     .from('sejours')
@@ -74,5 +76,5 @@ export default async function ContratsPage() {
     voyageur_id: c.sejour_id ? voyageurBySejour.get(c.sejour_id) ?? null : null,
   }))
 
-  return <ContratsView contracts={contracts} candidates={candidates} voyageurs={voyageurOptions ?? []} logements={(logementOptions ?? []).filter(l => l.nom) as Array<{ id: string; nom: string }>} appUrl={process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'} today={today} />
+  return <ContratsView contracts={contracts} candidates={candidates} voyageurs={voyageurOptions ?? []} logements={(logementOptions ?? []).filter(l => l.nom) as Array<{ id: string; nom: string }>} appUrl={process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'} today={today} stripeReady={!!(payProfile?.stripe_account_id && payProfile?.stripe_onboarding_complete)} hasIban={!!payProfile?.iban} />
 }
