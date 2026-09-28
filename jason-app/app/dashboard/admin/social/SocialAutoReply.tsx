@@ -29,7 +29,7 @@ export interface CommentReplyRow {
 const PLATFORM_LABEL: Record<string, string> = { facebook: 'Facebook', instagram: 'Instagram', both: 'Les deux' }
 
 function fmtDateTime(d: string): string {
-  return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+  return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' })
 }
 
 export default function SocialAutoReply({ triggers, recentReplies }: {

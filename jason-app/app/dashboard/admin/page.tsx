@@ -1,6 +1,7 @@
 import { getServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { unstable_cache } from 'next/cache'
+import { getProfile } from '@/lib/queries/profile'
 import AdminUI from './AdminUI'
 import { getLiveVisitorsCount, getChannelBreakdown, getTopPages, getAffiliateClicks, getAppErrors, CHANNEL_LABELS } from '@/lib/queries/site-traffic'
 
@@ -9,19 +10,11 @@ import { getLiveVisitorsCount, getChannelBreakdown, getTopPages, getAffiliateCli
 
 export const metadata = { title: 'Administration, Jason Marinho' }
 
-export default async function AdminPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role, full_name')
-    .eq('id', user.id)
-    .single()
-
-  if (profile?.role !== 'admin') redirect('/dashboard')
-
+// Chiffres de la Vue d'ensemble : ~20 requêtes, gardées 60 s en cache.
+// Avant, chaque passage en mode admin les relançait toutes (écran de
+// chargement de plusieurs secondes). Le trafic « en direct » reste calculé
+// à chaque fois (et rafraîchi toutes les 25 s par LiveTraffic).
+const getAdminOverview = unstable_cache(async () => {
   // Début du mois courant
   const startOfMonth = new Date()
   startOfMonth.setDate(1)
@@ -54,8 +47,6 @@ export default async function AdminPage() {
     { data: formationEnrollments },
     { data: recentSignups },
     { data: monthlySignups },
-    liveVisitors,
-    channelBreakdown,
     topPages,
     affiliateClicks,
     appErrors,
@@ -76,8 +67,6 @@ export default async function AdminPage() {
     admin.from('user_formations').select('formation_id, formations(title)'),
     admin.from('profiles').select('id, email, full_name, plan, created_at').neq('role', 'admin').order('created_at', { ascending: false }).limit(8),
     admin.from('profiles').select('created_at, plan').gte('created_at', twelveMonthsAgo.toISOString()).neq('role', 'admin'),
-    getLiveVisitorsCount(admin),
-    getChannelBreakdown(admin),
     getTopPages(admin),
     getAffiliateClicks(admin),
     getAppErrors(admin),
@@ -122,36 +111,58 @@ export default async function AdminPage() {
   // Seul le plan Standard contribue (Driing = gratuit pour les clients Driing)
   const mrr = (standardMembers ?? 0) * (19.98 / 12)
 
+  return {
+    recentSignups: (recentSignups ?? []) as Array<{ id: string; email: string; full_name: string | null; plan: string; created_at: string }>,
+    monthlySignupsChart,
+    topPages,
+    affiliateClicks,
+    appErrors,
+    stats: {
+      totalUsers: totalUsers ?? 0,
+      driingMembers: driingMembers ?? 0,
+      standardMembers: standardMembers ?? 0,
+      newThisMonth: newThisMonth ?? 0,
+      pendingDriing: pendingDriingCount ?? 0,
+      pendingReports: pendingReportsCount ?? 0,
+      suggestions: suggestionsCount ?? 0,
+      templatesCount: templatesCount ?? 0,
+      formationsCount: formationsCount ?? 0,
+      groupsCount: groupsCount ?? 0,
+      totalVoyageurs: totalVoyageurs ?? 0,
+      totalSejours: totalSejours ?? 0,
+      topFormation: topFormation,
+      mrr,
+      completedFormations: completedFormations ?? 0,
+    },
+  }
+}, ['admin-overview-v1'], { revalidate: 60, tags: ['admin-overview'] })
+
+export default async function AdminPage() {
+  // getProfile : getUser() + profil en cache, déjà dédupliqués avec le layout
+  const profile = await getProfile()
+  if (!profile) redirect('/auth/login')
+  if (profile.role !== 'admin') redirect('/dashboard')
+
+  const admin = getServiceClient()
+  const [overview, liveVisitors, channelBreakdown] = await Promise.all([
+    getAdminOverview(),
+    getLiveVisitorsCount(admin),
+    getChannelBreakdown(admin),
+  ])
+
   return (
-    <>
-      <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
-        <AdminUI
-          recentSignups={(recentSignups ?? []) as Array<{ id: string; email: string; full_name: string | null; plan: string; created_at: string }>}
-          monthlySignupsChart={monthlySignupsChart}
-          liveVisitors={liveVisitors}
-          channelBreakdown={channelBreakdown.map(c => ({ ...c, label: CHANNEL_LABELS[c.channel] }))}
-          topPages={topPages}
-          affiliateClicks={affiliateClicks}
-          appErrors={appErrors}
-          stats={{
-            totalUsers: totalUsers ?? 0,
-            driingMembers: driingMembers ?? 0,
-            standardMembers: standardMembers ?? 0,
-            newThisMonth: newThisMonth ?? 0,
-            pendingDriing: pendingDriingCount ?? 0,
-            pendingReports: pendingReportsCount ?? 0,
-            suggestions: suggestionsCount ?? 0,
-            templatesCount: templatesCount ?? 0,
-            formationsCount: formationsCount ?? 0,
-            groupsCount: groupsCount ?? 0,
-            totalVoyageurs: totalVoyageurs ?? 0,
-            totalSejours: totalSejours ?? 0,
-            topFormation: topFormation,
-            mrr,
-            completedFormations: completedFormations ?? 0,
-          }}
-        />
-      </div>
-    </>
+    <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
+      <AdminUI
+        recentSignups={overview.recentSignups}
+        monthlySignupsChart={overview.monthlySignupsChart}
+        liveVisitors={liveVisitors}
+        channelBreakdown={channelBreakdown.map(c => ({ ...c, label: CHANNEL_LABELS[c.channel] }))}
+        topPages={overview.topPages}
+        affiliateClicks={overview.affiliateClicks}
+        appErrors={overview.appErrors}
+        stats={overview.stats}
+      />
+    </div>
   )
+
 }

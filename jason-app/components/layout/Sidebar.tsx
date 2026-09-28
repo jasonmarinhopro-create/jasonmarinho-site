@@ -215,21 +215,26 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     if (active && pathname === '/dashboard') router.replace('/dashboard/admin')
   }, [isAdmin, pathname, router])
   function toggleAdminMode() {
-    setAdminMode(v => {
-      const next = !v
-      try { localStorage.setItem('admin-mode', String(next)) } catch {}
-      // Navigation auto vers la page pertinente : entrer en mode admin
-      // ouvre la Vue d'ensemble admin ; en sortir revient a l'Accueil hote.
-      // Sinon Jason restait sur la derniere page consultee dans l'autre mode,
-      // ce qui etait deroutant (ex : reste sur /admin/photographes en mode
-      // hote alors que le user n'a plus le contexte admin).
-      router.push(next ? '/dashboard/admin' : '/dashboard')
-      return next
-    })
+    const next = !adminMode
+    setAdminMode(next)
+    try { localStorage.setItem('admin-mode', String(next)) } catch {}
+    // Navigation auto vers la page pertinente : entrer en mode admin
+    // ouvre la Vue d'ensemble admin ; en sortir revient a l'Accueil hote.
+    // Sinon Jason restait sur la derniere page consultee dans l'autre mode,
+    // ce qui etait deroutant (ex : reste sur /admin/photographes en mode
+    // hote alors que le user n'a plus le contexte admin).
+    // (Hors du setState : un effet de bord dans une fonction de mise à jour
+    // peut être rejoué par React.)
+    router.push(next ? '/dashboard/admin' : '/dashboard')
   }
 
   // ── Menu user (bas de sidebar, s'ouvre vers le haut) ──
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  // Menu ouvert par un admin : précharge la page vers laquelle l'interrupteur
+  // « Mode admin » va mener, pour que la bascule s'affiche sans attendre.
+  useEffect(() => {
+    if (userMenuOpen && isAdmin) router.prefetch(adminMode ? '/dashboard' : '/dashboard/admin')
+  }, [userMenuOpen, isAdmin, adminMode, router])
   const userMenuRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     if (!userMenuOpen) return

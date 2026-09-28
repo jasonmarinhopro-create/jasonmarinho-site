@@ -77,6 +77,23 @@ async function loadContent(slug) {
   return exported
 }
 
+// Résumé lisible d'un écart de texte : lignes en plus / en moins et la
+// première ligne qui diffère (avant → après), pour juger en aperçu si l'écart
+// vient d'une correction du code ou d'une retouche faite dans l'éditeur admin.
+function describeDiff(dbText, codeText) {
+  const dbLines = dbText.split('\n')
+  const codeLines = codeText.split('\n')
+  const dbSet = new Set(dbLines)
+  const codeSet = new Set(codeLines)
+  const onlyDb = dbLines.filter(l => l.trim() && !codeSet.has(l))
+  const onlyCode = codeLines.filter(l => l.trim() && !dbSet.has(l))
+  const cut = t => (t.length > 110 ? t.slice(0, 110) + '…' : t).trim()
+  let out = `      ${onlyDb.length} ligne(s) seulement en base, ${onlyCode.length} seulement dans le code`
+  if (onlyDb[0] !== undefined) out += `\n      base : ${cut(onlyDb[0])}`
+  if (onlyCode[0] !== undefined) out += `\n      code : ${cut(onlyCode[0])}`
+  return out
+}
+
 async function getFormationId(slug) {
   const { data, error } = await supabase
     .from('formations')
@@ -162,6 +179,7 @@ async function seedFormation(slug) {
       if (before) {
         changed += 1
         console.log(`  ~ ${mod.id}.${lesson.id} ${lesson.title}${before.title !== lesson.title ? ` (titre en base : ${before.title})` : ''}`)
+        if (DRY_RUN) console.log(describeDiff(before.content ?? '', nextContent))
       } else {
         created += 1
         console.log(`  + ${mod.id}.${lesson.id} ${lesson.title}`)

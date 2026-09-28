@@ -4,7 +4,7 @@ import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { buildEmail, emailInfoBlock, emailBtn, emailNote, emailP, escHtml } from '@/lib/email/template'
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 const NOTIFY_EMAIL = 'contact@jasonmarinho.com'
@@ -228,6 +228,7 @@ export async function approvePublicSignalement(
 
   triggerStaticRebuild()
   revalidatePath('/dashboard/admin/qg', 'page')
+  revalidateTag('admin-overview')
   return { success: true, slug }
 }
 
@@ -252,6 +253,7 @@ export async function rejectPublicSignalement(
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/admin/qg')
+  revalidateTag('admin-overview')
   return { success: true }
 }
 
@@ -283,6 +285,7 @@ export async function removePublicSignalement(
 
   triggerStaticRebuild()
   revalidatePath('/dashboard/admin/qg')
+  revalidateTag('admin-overview')
   return { success: true }
 }
 

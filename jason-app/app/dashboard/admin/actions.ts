@@ -90,6 +90,7 @@ export async function confirmDriingMember(userId: string) {
 
   invalidateProfileCache(userId)
   revalidatePath('/dashboard/admin')
+  revalidateTag('admin-overview')
   revalidatePath('/dashboard/admin/membres')
   revalidatePath('/dashboard/abonnement')
   revalidatePath('/dashboard')
@@ -109,6 +110,7 @@ export async function rejectDriingMember(userId: string) {
   if (updateError) return { error: updateError.message }
   invalidateProfileCache(userId)
   revalidatePath('/dashboard/admin')
+  revalidateTag('admin-overview')
   return { success: true }
 }
 
@@ -123,6 +125,7 @@ export async function validateReport(reportId: string) {
 
   if (updateError) return { error: updateError.message }
   revalidatePath('/dashboard/admin')
+  revalidateTag('admin-overview')
   return { success: true }
 }
 
@@ -137,6 +140,7 @@ export async function deleteReport(reportId: string) {
 
   if (deleteError) return { error: deleteError.message }
   revalidatePath('/dashboard/admin')
+  revalidateTag('admin-overview')
   revalidatePath('/dashboard/admin/qg')
   return { success: true }
 }
@@ -177,6 +181,7 @@ export async function updateReport(reportId: string, patch: {
 
   if (updErr) return { error: updErr.message }
   revalidatePath('/dashboard/admin')
+  revalidateTag('admin-overview')
   revalidatePath('/dashboard/admin/qg')
   return { success: true }
 }
@@ -222,6 +227,7 @@ export async function deleteSuggestion(suggestionId: string) {
 
   if (deleteError) return { error: deleteError.message }
   revalidatePath('/dashboard/admin')
+  revalidateTag('admin-overview')
   return { success: true }
 }
 
@@ -264,6 +270,7 @@ export async function changeUserPlan(userId: string, plan: string) {
 
   invalidateProfileCache(userId)
   revalidatePath('/dashboard/admin')
+  revalidateTag('admin-overview')
   revalidatePath('/dashboard/admin/membres')
   revalidatePath('/dashboard/abonnement')
   revalidatePath('/dashboard')
@@ -316,6 +323,7 @@ export async function deleteUser(userId: string) {
 
   if (deleteError) return { error: deleteError.message }
   revalidatePath('/dashboard/admin')
+  revalidateTag('admin-overview')
   return { success: true }
 }
 
@@ -625,6 +633,7 @@ export async function deleteAllBots() {
   if (firstError?.error) return { error: firstError.error.message }
 
   revalidatePath('/dashboard/admin')
+  revalidateTag('admin-overview')
   revalidatePath('/dashboard/admin/membres')
   return { deleted: bots.length }
 }

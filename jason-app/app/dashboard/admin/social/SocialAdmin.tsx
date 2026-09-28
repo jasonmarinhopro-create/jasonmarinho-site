@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useTransition } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import {
@@ -143,7 +143,12 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
   const upcoming = posts.filter(p => p.status === 'scheduled')
   const history = posts.filter(p => p.status !== 'scheduled')
 
-  const freeSlot = cadence ? nextFreeSlot(cadence, upcoming.map(p => p.scheduled_at!).filter(Boolean)) : null
+  // Calculé seulement dans le navigateur : il dépend de l'heure courante et du
+  // fuseau (serveur Vercel en UTC, navigateur à Paris). Calculé aussi au rendu
+  // serveur, le texte différait et React levait l'erreur #425.
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+  const freeSlot = mounted && cadence ? nextFreeSlot(cadence, upcoming.map(p => p.scheduled_at!).filter(Boolean)) : null
 
   function applyFreeSlot() {
     if (!freeSlot) return
@@ -860,7 +865,7 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
                 // jours avant la publication réelle.
                 const publishedAt = post.targets.find(t => t.published_at)?.published_at
                 const display = publishedAt ?? post.scheduled_at ?? post.created_at
-                return new Date(display).toLocaleString('fr-FR')
+                return new Date(display).toLocaleString('fr-FR', { timeZone: 'Europe/Paris' })
               })()}
             </span>
           </div>
