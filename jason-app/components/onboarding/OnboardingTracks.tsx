@@ -5,9 +5,19 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   Check, ArrowRight, X, Sparkle, CaretDown, CaretRight, Lock,
-  CheckCircle,
+  CheckCircle, RocketLaunch, CalendarCheck, Handshake, Megaphone, ChatsCircle,
 } from '@phosphor-icons/react/dist/ssr'
-import { ONBOARDING_TRACKS, getTrack } from '@/lib/onboarding/tracks'
+import { ONBOARDING_TRACKS, getTrack, type OnboardingTrackDef } from '@/lib/onboarding/tracks'
+
+// Icônes des parcours (avant : emojis)
+const TRACK_ICONS: Record<OnboardingTrackDef['icon'], React.ElementType> = {
+  rocket: RocketLaunch, calendar: CalendarCheck, handshake: Handshake, megaphone: Megaphone, chats: ChatsCircle,
+}
+function TrackIcon({ track, size = 17 }: { track: OnboardingTrackDef; size?: number }) {
+  const I = TRACK_ICONS[track.icon] ?? Sparkle
+  return <I size={size} weight="duotone" />
+}
+const soft = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%, transparent)`
 import {
   startOnboarding, pinOnboardingTrack, markOnboardingStep,
   dismissOnboarding, restoreOnboarding,
@@ -137,7 +147,7 @@ export function OnboardingTracks({
     return (
       <div style={s.wrap}>
         <button onClick={() => setView('track')} style={s.pill} className="onboarding-pill">
-          <span style={s.pillIcon}>{pinnedTrack.icon}</span>
+          <span style={{ ...s.pillIcon, background: soft(pinnedTrack.color, 14), color: pinnedTrack.color }}><TrackIcon track={pinnedTrack} size={14} /></span>
           <span style={s.pillText}>
             <span style={s.pillTitle}>{pinnedTrack.title} · {pinnedDoneCount}/{pinnedTrack.steps.length}</span>
             <span style={s.pillBar}>
@@ -159,8 +169,8 @@ export function OnboardingTracks({
           {/* Header */}
           <div style={s.cardHeader}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: 0 }}>
-              <div style={{ ...s.trackBadge, background: pinnedTrack.color, color: 'var(--bg)' }}>
-                {pinnedTrack.icon}
+              <div style={{ ...s.trackBadge, background: soft(pinnedTrack.color, 14), color: pinnedTrack.color, border: `1px solid ${soft(pinnedTrack.color, 30)}` }}>
+                <TrackIcon track={pinnedTrack} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={s.cardTitle}>{pinnedTrack.title}</div>
@@ -228,7 +238,7 @@ export function OnboardingTracks({
                       disabled={step.detect === 'auto' || isLocked}
                       style={{
                         ...s.checkbox,
-                        ...(isDone ? { background: pinnedTrack.color, borderColor: pinnedTrack.color, color: 'var(--bg)' } : {}),
+                        ...(isDone ? { background: 'var(--accent-text)', borderColor: 'var(--accent-text)', color: 'var(--bg)' } : {}),
                         ...(isCurrent ? { borderColor: pinnedTrack.color, color: pinnedTrack.color } : {}),
                         cursor: step.detect === 'manual' && !isLocked ? 'pointer' : 'default',
                       }}
@@ -245,7 +255,7 @@ export function OnboardingTracks({
                       {step.title}
                       {step.requiresPlan && (
                         <span style={s.planBadge}>
-                          {step.requiresPlan === 'standard' ? 'Standard+' : 'Driing'}
+                          {step.requiresPlan === 'standard' ? 'Standard' : 'Driing'}
                         </span>
                       )}
                     </div>
@@ -281,7 +291,7 @@ export function OnboardingTracks({
                         href="/dashboard/abonnement"
                         style={{ ...s.itemAction, background: 'var(--surface-2)', color: 'var(--text)' }}
                       >
-                        Passer Standard
+                        Passer en Standard
                         <ArrowRight size={12} weight="bold" />
                       </Link>
                     </>
@@ -294,7 +304,7 @@ export function OnboardingTracks({
           {/* Footer : link to all tracks */}
           <button onClick={() => setView('all')} style={s.allTracksLink}>
             <Sparkle size={11} weight="fill" />
-            Voir les 4 parcours · {totalDone}/{totalSteps} étapes
+            Voir les {ONBOARDING_TRACKS.length} parcours · {totalDone}/{totalSteps} étapes
             <CaretRight size={11} weight="bold" />
           </button>
         </div>
@@ -365,17 +375,17 @@ export function OnboardingTracks({
                 onClick={() => pinTrack(track.key)}
                 style={{
                   ...s.trackCard,
-                  borderColor: isPinned ? track.color : 'var(--border)',
-                  background: isPinned ? `${track.color}10` : 'var(--surface)',
+                  borderColor: isPinned ? soft(track.color, 45) : 'var(--border)',
+                  background: isPinned ? soft(track.color, 7) : 'var(--surface)',
                 }}
               >
-                <div style={{ ...s.trackBadge, background: track.color, color: 'var(--bg)', fontSize: '17px' }}>
-                  {track.icon}
+                <div style={{ ...s.trackBadge, background: soft(track.color, 14), color: track.color, border: `1px solid ${soft(track.color, 30)}` }}>
+                  <TrackIcon track={track} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0, textAlign: 'left' as const }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <span style={s.trackCardTitle}>{track.title}</span>
-                    {isComplete && <CheckCircle size={13} weight="fill" style={{ color: track.color }} />}
+                    {isComplete && <CheckCircle size={14} weight="fill" style={{ color: 'var(--accent-text)' }} />}
                   </div>
                   <div style={s.trackCardDesc}>{track.description}</div>
                   <div style={s.trackCardProgress}>
@@ -430,7 +440,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', flexDirection: 'column' as const, gap: '4px',
     minWidth: '140px',
   },
-  pillTitle: { fontSize: '12px', fontWeight: 500, color: 'var(--text)', lineHeight: 1 },
+  pillTitle: { fontSize: '12.5px', fontWeight: 600, color: 'var(--text)', lineHeight: 1 },
   pillBar: {
     width: '100%', height: '3px',
     background: 'var(--surface-2)', borderRadius: '100px', overflow: 'hidden',
@@ -456,14 +466,14 @@ const s: Record<string, React.CSSProperties> = {
   },
   cardTitle: {
     fontFamily: 'var(--font-fraunces), serif',
-    fontSize: '17px', fontWeight: 400,
+    fontSize: '18px', fontWeight: 500,
     color: 'var(--text)', lineHeight: 1.2,
   },
   cardSub: { fontSize: '12px', color: 'var(--text-3)', marginTop: '2px' },
   trackBadge: {
     width: '34px', height: '34px', borderRadius: '10px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    fontSize: '16px', flexShrink: 0,
+    flexShrink: 0,
   },
   iconBtn: {
     width: '30px', height: '30px', borderRadius: '8px',
@@ -480,7 +490,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   barFill: {
     height: '100%',
-    background: 'linear-gradient(90deg, rgba(255,213,107,0.8), var(--accent-text))',
+    background: 'var(--accent-text)',
     transition: 'width 0.5s',
   },
 
@@ -492,8 +502,8 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'background 0.15s',
   },
   itemRow: { display: 'flex', alignItems: 'center', gap: '12px' },
-  itemCurrent: { background: 'var(--accent-bg)', padding: '14px' },
-  itemDone: { opacity: 0.6 },
+  itemCurrent: { background: 'var(--bg)', border: '1px solid var(--border)', padding: '14px' },
+  itemDone: {},
   itemLocked: { opacity: 0.7 },
   checkbox: {
     width: '26px', height: '26px', borderRadius: '50%',
@@ -509,19 +519,19 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text)', lineHeight: 1.35,
     display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const,
   },
+  // Étape faite : cochée en vert, texte discret (avant : barré et à 60 %)
   itemTitleDone: {
-    textDecoration: 'line-through',
-    color: 'var(--text-3)', fontWeight: 400,
+    color: 'var(--text-3)', fontWeight: 500,
   },
   itemDesc: {
-    fontSize: '12.5px', fontWeight: 300,
+    fontSize: '12.5px', fontWeight: 400,
     color: 'var(--text-2)', lineHeight: 1.55,
     paddingLeft: '38px',
   },
   itemAction: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
-    fontSize: '12.5px', fontWeight: 500,
-    padding: '8px 13px', borderRadius: '8px',
+    fontSize: '13px', fontWeight: 700,
+    padding: '9px 14px', borderRadius: '10px',
     border: 'none', cursor: 'pointer',
     fontFamily: 'inherit',
     marginLeft: '38px',
@@ -541,14 +551,14 @@ const s: Record<string, React.CSSProperties> = {
   tipBox: {
     display: 'flex', alignItems: 'flex-start', gap: '8px',
     padding: '10px 12px', marginBottom: '14px',
-    background: 'rgba(255,213,107,0.05)',
-    border: '1px solid rgba(255,213,107,0.18)',
+    background: 'rgba(255,213,107,0.14)',
+    border: '1px solid rgba(255,213,107,0.4)',
     borderRadius: '10px',
     fontSize: '11.5px', lineHeight: 1.55, color: 'var(--text-2)',
   },
   tipIcon: {
     width: '20px', height: '20px', borderRadius: '6px', flexShrink: 0,
-    background: 'rgba(255,213,107,0.12)', color: 'var(--accent-text)',
+    background: 'rgba(255,213,107,0.3)', color: '#8A5A12',
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
   },
   tipText: { flex: 1 },
@@ -561,9 +571,9 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'inherit',
     transition: 'border-color 0.15s, background 0.15s',
   },
-  trackCardTitle: { fontSize: '13.5px', fontWeight: 500, color: 'var(--text)' },
+  trackCardTitle: { fontSize: '14px', fontWeight: 700, color: 'var(--text)' },
   trackCardDesc: {
-    fontSize: '11.5px', fontWeight: 300,
+    fontSize: '12px', fontWeight: 400,
     color: 'var(--text-2)', lineHeight: 1.4,
     marginTop: '2px',
   },

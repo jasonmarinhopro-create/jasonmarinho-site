@@ -55,19 +55,20 @@ export async function detectTracksProgress(input: DetectInput): Promise<Onboardi
   // client component + suspense apres le first paint).
   const exists = (q: { data: unknown[] | null }) => Array.isArray(q.data) && q.data.length > 0
 
-  const [logements, voyageurs, sejours, contracts, audits, chezNousPosts, affiches] = await Promise.all([
+  const [logements, sejours, contracts, audits, chezNousPosts, affiches, icalFeeds, icalToken] = await Promise.all([
     supabase.from('logements')          .select('id').eq('user_id', userId).limit(1),
-    supabase.from('voyageurs')          .select('id').eq('user_id', userId).limit(1),
     supabase.from('sejours')            .select('id').eq('user_id', userId).limit(1),
     supabase.from('contracts')          .select('id').eq('user_id', userId).neq('statut', 'annule').limit(1),
     supabase.from('audit_gbp_sessions') .select('id').eq('user_id', userId).limit(1),
     supabase.from('chez_nous_posts')    .select('id').eq('author_id', userId).limit(1),
     supabase.from('affiches')           .select('id').eq('user_id', userId).limit(1),
+    supabase.from('ical_feeds')         .select('id').eq('user_id', userId).limit(1),
+    // Planning ménage partagé : le lien de l'équipe utilise profiles.ical_token
+    supabase.from('profiles')           .select('ical_token').eq('id', userId).not('ical_token', 'is', null).limit(1),
   ])
 
   const auto: Record<string, boolean> = {
     logement:        exists(logements),
-    voyageur:        exists(voyageurs),
     sejour:          exists(sejours),
     contrat:         exists(contracts),
     gbp_audit:       exists(audits),
@@ -75,6 +76,8 @@ export async function detectTracksProgress(input: DetectInput): Promise<Onboardi
     chez_nous_post:  exists(chezNousPosts),
     affiche:         exists(affiches),
     stripe_connect:  stripeOnboardingComplete,
+    ical_connected:  exists(icalFeeds),
+    menage_shared:   exists(icalToken),
     // welcome est manuel mais on le considère fait dès que onboarding_step >= 2
     // (compat avec l'ancien système).
   }
