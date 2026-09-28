@@ -33,6 +33,9 @@ export function fiscalFix(text) {
     [/17,2\s?%/g, m => m.replace('17,2', '18,6')],
     // Plafond micro 77 700 € → 83 600 € (revenus 2026)
     [/77 ?700 ?€/g, '83 600€'],
+    // Leçon « Qu'est-ce que le classement ? » : 71 % d'avant la loi Le Meur
+    [/Avantage fiscal intéressant avec un abattement de 71\s?%, mais optionnel et peu utilisé\./g,
+      'Avantage fiscal intéressant avec un abattement de 50% (contre 30% sans classement), mais optionnel et peu utilisé.'],
   ]
   for (const [rx, rep] of rules) out = out.replace(rx, rep)
   out = out.replace(/\u0000(\d+)\u0000/g, (_, i) => kept[Number(i)])
@@ -54,3 +57,13 @@ export function dashFix(text, { isTitle = false } = {}) {
     .join('\n')
 }
 
+// ─── Commissions des plateformes (toutes formations, vérifié sept. 2026) ───
+// Airbnb : frais d'hôte unique de 15,5 % dans l'EEE à partir du 13/10/2026
+// (fin des frais partagés 3 % hôte + ~15 % voyageur), 18,6 % avec la TVA
+// sur la commission.
+export function platformFix(text) {
+  return text.replace(
+    /Airbnb applique 15\s?% de commission plus 20\s?% de TVA, soit environ 18\s?% au total côté voyageur\./g,
+    "Airbnb prélève 15,5% de commission sur l'hôte (frais d'hôte unique à partir du 13 octobre 2026, le voyageur ne paie plus de frais de service), plus 20% de TVA sur cette commission, soit environ 18,6% au total.",
+  )
+}
