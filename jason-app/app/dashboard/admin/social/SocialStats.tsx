@@ -91,9 +91,12 @@ export default function SocialStats({ posts, onRefreshAll, refreshing }: {
 
   const maxWeekTotal = Math.max(1, ...stats.weeks.map(w => w.facebook + w.instagram))
   const chartH = 120
-  const barW = 22
-  const gap = 14
-  const chartW = stats.weeks.length * (barW + gap)
+  // Créneau de 56 px : l'étiquette « 17 août » tient sous sa barre sans
+  // chevaucher la voisine ; marge à gauche pour ne pas couper la première.
+  const barW = 26
+  const gap = 30
+  const padX = 16
+  const chartW = padX * 2 + stats.weeks.length * (barW + gap) - gap
   const readoutWeek = stats.weeks[hoveredWeek ?? stats.weeks.length - 1]
 
   return (
@@ -111,7 +114,7 @@ export default function SocialStats({ posts, onRefreshAll, refreshing }: {
           <span style={st.tileLabel}>Publications au total</span>
         </div>
         <div style={st.tile}>
-          <span style={st.tileValue}>{stats.successRate === null ? '—' : `${stats.successRate}%`}</span>
+          <span style={st.tileValue}>{stats.successRate === null ? '0 %' : `${stats.successRate} %`}</span>
           <span style={st.tileLabel}>Taux de réussite</span>
         </div>
         <div style={st.tile}>
@@ -126,10 +129,10 @@ export default function SocialStats({ posts, onRefreshAll, refreshing }: {
 
       {/* Répartition des statuts */}
       <div style={st.statusRow}>
-        <span style={{ ...st.statusChip, color: 'var(--success-1)' }}><CheckCircle size={14} weight="fill" /> {stats.statusCounts.done} publiées</span>
-        <span style={{ ...st.statusChip, color: 'var(--warning, #F59E0B)' }}><CheckCircle size={14} weight="fill" /> {stats.statusCounts.partial} partielles</span>
-        <span style={{ ...st.statusChip, color: 'var(--danger, #EF4444)' }}><XCircle size={14} weight="fill" /> {stats.statusCounts.failed} échouées</span>
-        <span style={{ ...st.statusChip, color: 'var(--text-muted)' }}><CalendarBlank size={14} /> {stats.statusCounts.scheduled} programmées</span>
+        <span style={{ ...st.statusChip, color: 'var(--accent-text)' }}><CheckCircle size={14} weight="fill" /> {plural(stats.statusCounts.done, 'publiée')}</span>
+        <span style={{ ...st.statusChip, color: '#B7791F' }}><CheckCircle size={14} weight="fill" /> {plural(stats.statusCounts.partial, 'partielle')}</span>
+        <span style={{ ...st.statusChip, color: 'var(--danger-text)' }}><XCircle size={14} weight="fill" /> {plural(stats.statusCounts.failed, 'échouée')}</span>
+        <span style={{ ...st.statusChip, color: 'var(--text-muted)' }}><CalendarBlank size={14} /> {plural(stats.statusCounts.scheduled, 'programmée')}</span>
       </div>
 
       {/* Graphique hebdomadaire */}
@@ -154,7 +157,7 @@ export default function SocialStats({ posts, onRefreshAll, refreshing }: {
                   const scale = chartH / maxWeekTotal
                   const fbH = w.facebook * scale
                   const igH = w.instagram * scale
-                  const x = i * (barW + gap)
+                  const x = padX + i * (barW + gap)
                   const baseline = chartH
                   const fbY = baseline - fbH
                   const hasGap = fbH > 0 && igH > 0
@@ -224,7 +227,7 @@ export default function SocialStats({ posts, onRefreshAll, refreshing }: {
       <section style={st.card}>
         <h2 style={st.cardTitle}><TrendUp size={16} style={{ verticalAlign: -2 }} /> Meilleures publications</h2>
         {stats.topPosts.length === 0 ? (
-          <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Pas encore de statistiques d'engagement — publie et actualise les stats.</p>
+          <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Pas encore de statistiques d'engagement : publie, puis actualise les stats.</p>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {stats.topPosts.map(({ post, engagement }) => {
@@ -258,11 +261,13 @@ export default function SocialStats({ posts, onRefreshAll, refreshing }: {
   )
 }
 
+const plural = (n: number, word: string) => `${n} ${word}${n > 1 ? 's' : ''}`
+
 const st: Record<string, any> = {
   refreshBtn: {
     display: 'inline-flex', alignItems: 'center', gap: 6,
     padding: '7px 13px', borderRadius: 8, fontSize: 12.5, fontWeight: 600,
-    background: 'var(--bg-2)', border: '1px solid var(--border)', color: 'var(--text)', cursor: 'pointer',
+    background: 'var(--bg-2)', border: '1px solid var(--border)', color: 'var(--text)', cursor: 'pointer', fontFamily: 'inherit',
   },
   tileRow: {
     display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14,

@@ -102,124 +102,131 @@ export default function SocialAutoReply({ triggers, recentReplies }: {
         <Info size={16} weight="fill" style={{ color: 'var(--accent-text)', flexShrink: 0, marginTop: 1 }} />
         <span style={{ fontSize: 13, color: 'var(--text-2)', lineHeight: 1.5 }}>
           Dès qu&apos;un commentaire contient le mot-clé, la personne reçoit automatiquement un message privé (Meta ne
-          donne jamais l&apos;email d&apos;un commentateur — la réponse privée est la seule voie). Ne fonctionne que
+          donne jamais l&apos;email d&apos;un commentateur : la réponse privée est la seule voie). Ne fonctionne que
           sur les commentaires récents (quelques jours), et seulement si le webhook Meta est configuré (voir
           app/api/social/webhook/meta).
         </span>
       </div>
 
-      <section style={s.card}>
-        <h2 style={s.cardTitle}>Diagnostic</h2>
-        <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>
-          Interroge Meta directement pour voir si tes comptes sont réellement abonnés au webhook (au lieu de deviner),
-          ou enregistre le webhook de l&apos;app via l&apos;API si le dashboard Meta ne l&apos;a pas sauvegardé.
-        </p>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' as const }}>
-          <button type="button" onClick={runDiagnostic} disabled={diagPending} style={{ ...s.primaryBtn, opacity: diagPending ? 0.6 : 1 }}>
-            <MagnifyingGlass size={14} /> {diagPending ? 'Vérification…' : 'Diagnostiquer l’abonnement webhook'}
-          </button>
-          <button type="button" onClick={runRegister} disabled={registerPending} style={{ ...s.primaryBtn, background: 'var(--bg-2)', color: 'var(--text-2)', border: '1px solid var(--border)', opacity: registerPending ? 0.6 : 1 }}>
-            <Plugs size={14} /> {registerPending ? 'Enregistrement…' : 'Enregistrer le webhook de l’app'}
-          </button>
-        </div>
-        {diagResult && (
-          <pre style={s.diagOutput}>{diagResult}</pre>
-        )}
-      </section>
-
-      <section style={s.card}>
-        <h2 style={s.cardTitle}>Nouvelle réponse automatique</h2>
-        {formError && <div style={s.banner}>{formError}</div>}
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' as const }}>
-          {(['both', 'facebook', 'instagram'] as const).map(p => (
-            <button
-              key={p} type="button" onClick={() => setPlatform(p)}
-              style={{ ...s.pill, ...(platform === p ? s.pillActive : {}) }}
-            >
-              {PLATFORM_LABEL[p]}
-            </button>
-          ))}
-        </div>
-        <input
-          type="text" placeholder="Mot-clé à détecter (ex : GUIDE)"
-          value={keyword} onChange={e => setKeyword(e.target.value)}
-          style={s.input}
-        />
-        <textarea
-          placeholder="Message envoyé en privé (colle le lien ici)"
-          value={replyMessage} onChange={e => setReplyMessage(e.target.value)}
-          rows={3} style={{ ...s.input, resize: 'vertical' as const }}
-        />
-        <button type="button" onClick={submit} disabled={isPending} style={{ ...s.primaryBtn, opacity: isPending ? 0.6 : 1 }}>
-          <Plus size={15} /> Ajouter
-        </button>
-      </section>
-
-      <section style={s.card}>
-        <h2 style={s.cardTitle}>Règles actives ({triggers.filter(t => t.active).length}/{triggers.length})</h2>
-        {triggers.length === 0 ? (
-          <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Aucune règle pour le moment.</p>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {triggers.map(t => (
-              <div key={t.id} style={s.row}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' as const }}>
-                    <span style={s.badge}>{PLATFORM_LABEL[t.platform]}</span>
-                    <strong style={{ fontSize: 13.5 }}>{t.keyword}</strong>
-                    {!t.active && <span style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>(désactivée)</span>}
-                  </div>
-                  <p style={{ fontSize: 12.5, color: 'var(--text-muted)', margin: '4px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {t.reply_message}
-                  </p>
-                </div>
-                <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                  <button type="button" onClick={() => toggle(t.id, !t.active)} disabled={isPending} style={s.smallBtn}>
-                    {t.active ? 'Désactiver' : 'Activer'}
-                  </button>
-                  <button type="button" onClick={() => remove(t.id)} disabled={isPending} style={s.iconBtn} title="Supprimer">
-                    <X size={13} />
-                  </button>
-                </div>
-              </div>
+      <div className="jm-ar-grid" style={s.grid}>
+        <div style={s.col}>
+        <section style={s.card}>
+          <h2 style={s.cardTitle}>Nouvelle réponse automatique</h2>
+          {formError && <div style={s.banner}>{formError}</div>}
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' as const }}>
+            {(['both', 'facebook', 'instagram'] as const).map(p => (
+              <button
+                key={p} type="button" onClick={() => setPlatform(p)}
+                style={{ ...s.pill, ...(platform === p ? s.pillActive : {}) }}
+              >
+                {PLATFORM_LABEL[p]}
+              </button>
             ))}
           </div>
-        )}
-      </section>
-
-      <section style={s.card}>
-        <h2 style={s.cardTitle}>Réponses envoyées récemment</h2>
-        {recentReplies.length === 0 ? (
-          <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Aucune pour le moment.</p>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {recentReplies.map(r => {
-              const meta = PLATFORM_META[r.platform]
-              const statusColor = r.status === 'sent' ? 'var(--success-1)' : r.status === 'failed' ? '#EF4444' : 'var(--text-muted)'
-              const statusLabel = r.status === 'sent' ? 'Envoyée' : r.status === 'failed' ? 'Échouée' : 'En cours'
-              return (
-                <div key={r.id} style={{ ...s.row, alignItems: 'center' }}>
-                  {meta && <span style={{ color: meta.color, display: 'flex', flexShrink: 0 }}><meta.Icon size={16} weight="fill" /></span>}
-                  <div style={{ flex: 1, minWidth: 0, fontSize: 12.5 }}>
-                    <span style={{ color: 'var(--text)' }}>{r.commenter_name ?? 'Commentateur'}</span>
-                    {r.trigger_id && keywordByTrigger.has(r.trigger_id) && (
-                      <span style={{ color: 'var(--text-muted)' }}> · « {keywordByTrigger.get(r.trigger_id)} »</span>
-                    )}
-                    <span style={{ color: 'var(--text-muted)' }}> · {fmtDateTime(r.created_at)}</span>
-                    {r.error && <span style={{ color: '#EF4444' }}> · {r.error}</span>}
+          <input
+            type="text" placeholder="Mot-clé à détecter (ex : GUIDE)"
+            value={keyword} onChange={e => setKeyword(e.target.value)}
+            style={s.input}
+          />
+          <textarea
+            placeholder="Message envoyé en privé (colle le lien ici)"
+            value={replyMessage} onChange={e => setReplyMessage(e.target.value)}
+            rows={3} style={{ ...s.input, resize: 'vertical' as const }}
+          />
+          <button type="button" onClick={submit} disabled={isPending} style={{ ...s.primaryBtn, opacity: isPending ? 0.6 : 1 }}>
+            <Plus size={15} /> Ajouter
+          </button>
+        </section>
+        <section style={s.card}>
+          <h2 style={s.cardTitle}>Règles actives ({triggers.filter(t => t.active).length}/{triggers.length})</h2>
+          {triggers.length === 0 ? (
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Aucune règle pour le moment.</p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {triggers.map(t => (
+                <div key={t.id} style={s.row}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' as const }}>
+                      <span style={s.badge}>{PLATFORM_LABEL[t.platform]}</span>
+                      <strong style={{ fontSize: 13.5 }}>{t.keyword}</strong>
+                      {!t.active && <span style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>(désactivée)</span>}
+                    </div>
+                    <p style={{ fontSize: 12.5, color: 'var(--text-muted)', margin: '4px 0 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {t.reply_message}
+                    </p>
                   </div>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: statusColor, flexShrink: 0 }}>{statusLabel}</span>
+                  <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                    <button type="button" onClick={() => toggle(t.id, !t.active)} disabled={isPending} style={s.smallBtn}>
+                      {t.active ? 'Désactiver' : 'Activer'}
+                    </button>
+                    <button type="button" onClick={() => remove(t.id)} disabled={isPending} style={s.iconBtn} title="Supprimer">
+                      <X size={13} />
+                    </button>
+                  </div>
                 </div>
-              )
-            })}
+              ))}
+            </div>
+          )}
+        </section>
+        </div>
+        <div style={s.col}>
+        <section style={s.card}>
+          <h2 style={s.cardTitle}>Réponses envoyées récemment</h2>
+          {recentReplies.length === 0 ? (
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Aucune pour le moment.</p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {recentReplies.map(r => {
+                const meta = PLATFORM_META[r.platform]
+                const statusColor = r.status === 'sent' ? 'var(--accent-text)' : r.status === 'failed' ? 'var(--danger-text)' : 'var(--text-muted)'
+                const statusLabel = r.status === 'sent' ? 'Envoyée' : r.status === 'failed' ? 'Échouée' : 'En cours'
+                return (
+                  <div key={r.id} style={{ ...s.row, alignItems: 'center' }}>
+                    {meta && <span style={{ color: meta.color, display: 'flex', flexShrink: 0 }}><meta.Icon size={16} weight="fill" /></span>}
+                    <div style={{ flex: 1, minWidth: 0, fontSize: 12.5 }}>
+                      <span style={{ color: 'var(--text)' }}>{r.commenter_name ?? 'Commentateur'}</span>
+                      {r.trigger_id && keywordByTrigger.has(r.trigger_id) && (
+                        <span style={{ color: 'var(--text-muted)' }}> · « {keywordByTrigger.get(r.trigger_id)} »</span>
+                      )}
+                      <span style={{ color: 'var(--text-muted)' }}> · {fmtDateTime(r.created_at)}</span>
+                      {r.error && <span style={{ color: 'var(--danger-text)' }}> · {r.error}</span>}
+                    </div>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: statusColor, flexShrink: 0 }}>{statusLabel}</span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </section>
+        <section style={s.card}>
+          <h2 style={s.cardTitle}>Diagnostic</h2>
+          <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>
+            Interroge Meta directement pour voir si tes comptes sont réellement abonnés au webhook (au lieu de deviner),
+            ou enregistre le webhook de l&apos;app via l&apos;API si le dashboard Meta ne l&apos;a pas sauvegardé.
+          </p>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' as const }}>
+            <button type="button" onClick={runDiagnostic} disabled={diagPending} style={{ ...s.primaryBtn, opacity: diagPending ? 0.6 : 1 }}>
+              <MagnifyingGlass size={14} /> {diagPending ? 'Vérification…' : 'Diagnostiquer l’abonnement webhook'}
+            </button>
+            <button type="button" onClick={runRegister} disabled={registerPending} style={{ ...s.primaryBtn, background: 'var(--bg-2)', color: 'var(--text-2)', border: '1px solid var(--border)', opacity: registerPending ? 0.6 : 1 }}>
+              <Plugs size={14} /> {registerPending ? 'Enregistrement…' : 'Enregistrer le webhook de l’app'}
+            </button>
           </div>
-        )}
-      </section>
+          {diagResult && (
+            <pre style={s.diagOutput}>{diagResult}</pre>
+          )}
+        </section>
+        </div>
+      </div>
     </div>
   )
 }
 
 const s: Record<string, any> = {
+  // 2 colonnes au-delà de 1100 px : créer et gérer les règles à gauche,
+  // suivi et diagnostic à droite
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 520px), 1fr))', gap: 20, alignItems: 'start' },
+  col: { display: 'flex', flexDirection: 'column', gap: 20, minWidth: 0 },
   infoBox: {
     display: 'flex', gap: 10, alignItems: 'flex-start',
     background: 'var(--surface)', border: '1px solid var(--border)',
@@ -233,7 +240,7 @@ const s: Record<string, any> = {
   cardTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 17, margin: 0 },
   banner: {
     padding: '10px 14px', borderRadius: 10, fontSize: 13.5,
-    color: '#EF4444', background: 'rgba(239,68,68,0.1)',
+    color: 'var(--danger-text)', background: 'var(--danger-bg)',
   },
   pill: {
     padding: '7px 14px', borderRadius: 100, fontSize: 13, fontWeight: 500,

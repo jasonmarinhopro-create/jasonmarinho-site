@@ -5,13 +5,15 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import {
   Plus, ArrowClockwise, X, CheckCircle, XCircle, Clock, UploadSimple, ImageSquare,
-  Heart, ChatCircle, CalendarBlank, PencilSimple, Check,
+  Heart, ChatCircle, CalendarBlank, PencilSimple, Check, ShareNetwork, PaperPlaneTilt, ChartBar, ChatsCircle,
 } from '@phosphor-icons/react/dist/ssr'
+import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
+import { nextDispatchRun } from '@/lib/social/dispatch-time'
 import { createSocialPost, updateSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, refreshAllStats, setSocialCadence, markTargetPublished, markTargetFailed } from './actions'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import SocialStats from './SocialStats'
 import SocialAutoReply, { type CommentTriggerRow, type CommentReplyRow } from './SocialAutoReply'
-import { PLATFORM_META, IMPLEMENTED_PLATFORMS, ALL_PLATFORMS } from './constants'
+import { PLATFORM_META, IMPLEMENTED_PLATFORMS, ALL_PLATFORMS, TARGET_STATUS_LABEL } from './constants'
 
 export interface SocialAccountRow {
   id: string
@@ -65,6 +67,11 @@ function nextFreeSlot(cadence: CadenceConfig, existingScheduled: string[]): Date
     return candidate
   }
   return null
+}
+
+// Date lisible, toujours à l'heure de Paris
+function fmtParis(d: Date): string {
+  return d.toLocaleString('fr-FR', { timeZone: 'Europe/Paris', weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })
 }
 
 // Format compatible avec la valeur d'un <input type="datetime-local"> (heure locale, sans timezone).
@@ -141,7 +148,10 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
   }
 
   const upcoming = posts.filter(p => p.status === 'scheduled')
+    .sort((x, y) => (x.scheduled_at ?? '').localeCompare(y.scheduled_at ?? ''))
   const history = posts.filter(p => p.status !== 'scheduled')
+  const nextPost = upcoming[0] ?? null
+  const publishedCount = posts.filter(p => p.status === 'done' || p.status === 'partial').length
 
   // Calculé seulement dans le navigateur : il dépend de l'heure courante et du
   // fuseau (serveur Vercel en UTC, navigateur à Paris). Calculé aussi au rendu
@@ -337,74 +347,90 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, fontFamily: 'var(--font-outfit), sans-serif' }}>
-      <div>
-        <h1 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: 26, margin: '0 0 4px' }}>Réseaux sociaux</h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: 14, margin: 0 }}>
-          Compose avec tes visuels (carrousel jusqu'à 10 images), publie tout de suite ou programme — Facebook et Instagram partent tout seuls à l'heure prévue.
-        </p>
-      </div>
-
-      {metaConnected && (
-        <div style={s.banner('var(--success-1)', 'var(--success-bg)')}>Compte Meta connecté avec succès.</div>
-      )}
-      {metaError && (
-        <div style={s.banner('#EF4444', 'rgba(239,68,68,0.1)')}>Échec de connexion Meta : {decodeURIComponent(metaError)}</div>
-      )}
-
-      {/* Comptes connectés */}
-      <section style={s.card}>
-        <h2 style={s.cardTitle}>Comptes connectés</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 10 }}>
-          {(['facebook', 'instagram'] as const).map(platform => {
-            const meta = PLATFORM_META[platform]
-            const list = byPlatform(platform)
-            if (list.length === 0) {
+      <HubHero
+        eyebrowIcon={<ShareNetwork size={14} weight="bold" />}
+        eyebrow="Admin · Réseaux sociaux"
+        title={<>Tes posts Facebook et Instagram, <HeroEm>préparés d&apos;avance</HeroEm></>}
+        desc="Compose une fois avec tes visuels (carrousel jusqu'à 10 images), un texte par réseau si tu veux, puis publie tout de suite ou programme."
+        steps={[
+          ['Compose', 'le post et ajoute tes visuels'],
+          ['Programme', 'sur ta cadence ou publie maintenant'],
+          ['Suis', 'likes, commentaires et réponses automatiques'],
+        ]}
+        aside={
+          <div style={{ ...heroCard, gap: 12, flex: '1 1 100%', minWidth: 0 }}>
+            <div style={s.asideLabel}>Tes comptes</div>
+            {(['facebook', 'instagram'] as const).map(platform => {
+              const meta = PLATFORM_META[platform]
+              const list = byPlatform(platform)
               return (
                 <div key={platform} style={s.accountRow}>
                   <span style={{ color: meta.color, display: 'flex' }}><meta.Icon size={18} weight="fill" /></span>
-                  <span style={{ fontSize: 13.5, color: 'var(--text-muted)' }}>{meta.label} — non connecté</span>
+                  <span style={{ flex: 1, minWidth: 0, fontSize: 13.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {list.length === 0
+                      ? <span style={{ color: 'var(--text-muted)' }}>{meta.label} : non connecté</span>
+                      : list.map(a => a.display_name ?? a.external_account_id).join(', ')}
+                  </span>
+                  {list.map(account => (
+                    <button key={account.id} onClick={() => disconnect(account.id)} disabled={isPending} style={s.iconBtn} title={`Déconnecter ${meta.label}`}>
+                      <X size={13} />
+                    </button>
+                  ))}
                 </div>
               )
-            }
-            return list.map(account => (
-              <div key={account.id} style={s.accountRow}>
-                <span style={{ color: meta.color, display: 'flex' }}><meta.Icon size={18} weight="fill" /></span>
-                <span style={{ fontSize: 13.5 }}>{account.display_name ?? account.external_account_id}</span>
-                <button onClick={() => disconnect(account.id)} disabled={isPending} style={s.iconBtn} title="Déconnecter">
-                  <X size={13} />
-                </button>
+            })}
+            {(byPlatform('facebook').length === 0 || byPlatform('instagram').length === 0) ? (
+              <a href="/api/social/connect/meta" style={s.connectBtn}>
+                <Plus size={15} /> Connecter Facebook / Instagram
+              </a>
+            ) : (
+              // Relancer l'OAuth rafraîchit les permissions (ex : nouvelles
+              // permissions ajoutées côté Meta, comme pages_manage_metadata) :
+              // le token stocké n'embarque que celles accordées à la connexion.
+              <a href="/api/social/connect/meta" style={s.reconnectLink}>
+                <ArrowClockwise size={13} /> Reconnecter (rafraîchir les permissions)
+              </a>
+            )}
+            <div style={s.asideSep} />
+            <div style={s.asideLabel}>Prochaine publication</div>
+            {nextPost ? (
+              <div style={{ fontSize: 13.5, color: 'var(--text)', lineHeight: 1.45 }}>
+                <strong>{nextPost.scheduled_at ? fmtParis(new Date(nextPost.scheduled_at)) : ''}</strong>
+                {nextPost.scheduled_at && (
+                  <div style={{ fontSize: 12, color: '#8A5A12' }}>part au passage du {fmtParis(nextDispatchRun(new Date(nextPost.scheduled_at)))}</div>
+                )}
+                <div style={{ fontSize: 12.5, color: 'var(--text-3)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {nextPost.body || '(image seule)'}
+                </div>
               </div>
-            ))
-          })}
-          {(byPlatform('facebook').length === 0 || byPlatform('instagram').length === 0) ? (
-            <a href="/api/social/connect/meta" style={s.connectBtn}>
-              <Plus size={15} /> Connecter Facebook / Instagram
-            </a>
-          ) : (
-            // Comptes déjà connectés — pas de bouton "Connecter" dans ce cas,
-            // mais on peut avoir besoin de relancer l'OAuth quand même (ex :
-            // nouvelles permissions ajoutées côté Meta après coup, comme
-            // pages_manage_metadata pour les webhooks) : le token stocké
-            // n'embarque que les permissions accordées au moment de la
-            // connexion initiale, il faut re-authentifier pour le rafraîchir.
-            <a href="/api/social/connect/meta" style={{ ...s.connectBtn, background: 'var(--bg-2)', color: 'var(--text-2)', border: '1px solid var(--border)' }}>
-              <ArrowClockwise size={14} /> Reconnecter (rafraîchir permissions)
-            </a>
-          )}
-        </div>
-      </section>
+            ) : (
+              <span style={{ fontSize: 13, color: 'var(--text-3)' }}>Rien de programmé</span>
+            )}
+            <span style={{ fontSize: 12, color: 'var(--text-3)' }}>
+              {upcoming.length} programmée{upcoming.length > 1 ? 's' : ''} · {publishedCount} publiée{publishedCount > 1 ? 's' : ''}
+            </span>
+          </div>
+        }
+      />
+
+      {metaConnected && (
+        <div style={s.banner('var(--accent-text)', 'var(--accent-bg)')}>Compte Meta connecté.</div>
+      )}
+      {metaError && (
+        <div style={s.banner('var(--danger-text)', 'var(--danger-bg)')}>Échec de connexion Meta : {decodeURIComponent(metaError)}</div>
+      )}
 
       {/* Onglets */}
       <div style={s.tabRow}>
-        <button type="button" onClick={() => setView('composer')} style={{ ...s.tabBtn, ...(view === 'composer' ? s.tabBtnActive : {}) }}>
-          Composer
-        </button>
-        <button type="button" onClick={() => setView('stats')} style={{ ...s.tabBtn, ...(view === 'stats' ? s.tabBtnActive : {}) }}>
-          Statistiques
-        </button>
-        <button type="button" onClick={() => setView('auto_reply')} style={{ ...s.tabBtn, ...(view === 'auto_reply' ? s.tabBtnActive : {}) }}>
-          Réponses auto
-        </button>
+        {([
+          ['composer', 'Composer', PaperPlaneTilt],
+          ['stats', 'Statistiques', ChartBar],
+          ['auto_reply', 'Réponses auto', ChatsCircle],
+        ] as const).map(([key, label, Icon]) => (
+          <button key={key} type="button" onClick={() => setView(key)} style={{ ...s.tabBtn, ...(view === key ? s.tabBtnActive : {}) }}>
+            <Icon size={15} weight={view === key ? 'fill' : 'regular'} /> {label}
+          </button>
+        ))}
       </div>
 
       {view === 'stats' && (
@@ -439,7 +465,7 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
                     opacity: usable ? 1 : 0.4,
                     cursor: usable ? 'pointer' : 'not-allowed',
                     borderColor: active ? meta.color : 'var(--border)',
-                    background: active ? `${meta.color}18` : 'var(--bg-2)',
+                    background: active ? `color-mix(in srgb, ${meta.color} 12%, transparent)` : 'var(--bg-2)',
                     color: active ? meta.color : 'var(--text)',
                   }}
                   title={!implemented ? 'Bientôt disponible' : !connected ? 'Connecte ce compte pour le sélectionner' : undefined}
@@ -469,7 +495,7 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
             />
             <UploadSimple size={22} style={{ color: 'var(--text-muted)' }} />
             <span style={{ fontSize: 13.5, color: 'var(--text-muted)' }}>
-              {uploading ? 'Envoi en cours…' : 'Glisse tes visuels ici (ou clique) — plusieurs images = carrousel'}
+              {uploading ? 'Envoi en cours…' : 'Glisse tes visuels ici ou clique : plusieurs images font un carrousel'}
             </span>
           </div>
 
@@ -614,8 +640,17 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
               </div>
             )}
           </div>
+          {scheduleMode === 'later' && mounted && scheduledAt && (
+            <p style={s.dispatchNote}>
+              <Clock size={13} style={{ flexShrink: 0, marginTop: 2 }} />
+              <span>
+                Les posts programmés partent au passage automatique de chaque matin : celui-ci partira le{' '}
+                <strong>{fmtParis(nextDispatchRun(new Date(scheduledAt)))}</strong> (heure de Paris), dans l&apos;heure qui suit.
+              </span>
+            </p>
+          )}
 
-          {error && <div style={s.banner('#EF4444', 'rgba(239,68,68,0.1)')}>{error}</div>}
+          {error && <div style={s.banner('var(--danger-text)', 'var(--danger-bg)')}>{error}</div>}
 
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
             <button onClick={submit} disabled={isPending || uploading} style={s.primaryBtn}>
@@ -815,19 +850,19 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
             {post.targets.map(t => {
               const meta = PLATFORM_META[t.platform]
               const StatusIcon = t.status === 'published' ? CheckCircle : t.status === 'failed' ? XCircle : Clock
-              const statusColor = t.status === 'published' ? 'var(--success-1)' : t.status === 'failed' ? '#EF4444' : 'var(--text-muted)'
+              const statusColor = t.status === 'published' ? 'var(--accent-text)' : t.status === 'failed' ? 'var(--danger-text)' : 'var(--text-muted)'
               return (
                 <span key={t.id} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                   <span title={t.error ?? undefined} style={{ ...s.targetPill, color: statusColor }}>
                     {meta && <meta.Icon size={12} weight="fill" style={{ color: meta.color }} />}
                     <StatusIcon size={12} weight="fill" />
-                    {t.status}
+                    {TARGET_STATUS_LABEL[t.status] ?? t.status}
                   </span>
                   {t.status === 'pending' && (
                     <button
                       onClick={() => run(() => onMarkPublished(t.id))} disabled={isDisabled}
                       style={{ ...s.iconBtn, width: 'auto', padding: '0 6px' }}
-                      title="A été publiée pour de vrai (vérifié à l'œil) mais le statut n'a jamais suivi — corrige juste l'affichage, ne republie pas"
+                      title="Publiée pour de vrai (vérifié à l'œil) mais le statut n'a pas suivi : corrige seulement l'affichage, ne republie pas"
                     >
                       <Check size={11} />
                     </button>
@@ -836,7 +871,7 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
                     <button
                       onClick={() => run(() => onMarkFailed(t.id))} disabled={isDisabled}
                       style={{ ...s.iconBtn, width: 'auto', padding: '0 6px' }}
-                      title="N'a en réalité rien publié sur ce réseau (vérifié à l'œil) — repasse en échec pour pouvoir réessayer, ne supprime rien côté Meta"
+                      title="Rien n'a été publié sur ce réseau (vérifié à l'œil) : repasse en échec pour pouvoir réessayer, ne supprime rien côté Meta"
                     >
                       <XCircle size={11} />
                     </button>
@@ -865,21 +900,24 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
                 // jours avant la publication réelle.
                 const publishedAt = post.targets.find(t => t.published_at)?.published_at
                 const display = publishedAt ?? post.scheduled_at ?? post.created_at
-                return new Date(display).toLocaleString('fr-FR', { timeZone: 'Europe/Paris' })
+                return fmtParis(new Date(display))
               })()}
+              {post.status === 'scheduled' && post.scheduled_at && (
+                <> · part vers le {fmtParis(nextDispatchRun(new Date(post.scheduled_at)))}</>
+              )}
             </span>
           </div>
           {post.targets.filter(t => t.status === 'failed' && t.error).map(t => {
             const meta = PLATFORM_META[t.platform]
             return (
-              <p key={t.id} style={{ margin: '4px 0 0', fontSize: 11.5, color: '#EF4444', display: 'flex', gap: 5, alignItems: 'flex-start' }}>
+              <p key={t.id} style={{ margin: '4px 0 0', fontSize: 11.5, color: 'var(--danger-text)', display: 'flex', gap: 5, alignItems: 'flex-start' }}>
                 {meta && <meta.Icon size={11} weight="fill" style={{ color: meta.color, flexShrink: 0, marginTop: 2 }} />}
                 <span>{t.error}</span>
               </p>
             )
           })}
           {actionError && (
-            <p style={{ margin: '4px 0 0', fontSize: 11.5, color: '#EF4444', fontWeight: 600 }}>
+            <p style={{ margin: '4px 0 0', fontSize: 11.5, color: 'var(--danger-text)', fontWeight: 600 }}>
               Échec de l&apos;action : {actionError}
             </p>
           )}
@@ -908,15 +946,19 @@ const s: Record<string, any> = {
   // onglets se confondait visuellement avec le soulignement coloré de
   // l'onglet actif, laissant croire que tous étaient sélectionnés.
   tabRow: {
-    display: 'flex', gap: 6, paddingBottom: 0,
+    display: 'flex', gap: 6, paddingBottom: 0, overflowX: 'auto' as const,
   },
   tabBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: 7,
     padding: '9px 4px', borderRadius: 0, border: 'none', borderBottom: '2px solid transparent',
     background: 'transparent', color: 'var(--text-muted)', fontSize: 14, fontWeight: 600,
-    fontFamily: 'inherit', cursor: 'pointer', marginRight: 18,
+    fontFamily: 'inherit', cursor: 'pointer', marginRight: 14, whiteSpace: 'nowrap' as const, flexShrink: 0,
   },
+  // Propriété complète, pas borderBottomColor seul : quand React retire une
+  // propriété détaillée, la couleur retombait sur celle du texte et les
+  // onglets déjà visités restaient soulignés
   tabBtnActive: {
-    color: 'var(--accent-text)', borderBottomColor: 'var(--accent-text)',
+    color: 'var(--accent-text)', borderBottom: '2px solid var(--accent-text)',
   },
   accountRow: {
     display: 'flex', alignItems: 'center', gap: 8,
@@ -929,12 +971,12 @@ const s: Record<string, any> = {
     background: 'transparent', color: 'var(--text-muted)', cursor: 'pointer',
   },
   connectBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: 7,
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7,
     padding: '7px 14px', borderRadius: 9, fontSize: 13, fontWeight: 600,
     background: 'var(--accent-text)', color: 'var(--bg)', textDecoration: 'none',
   },
   smallBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: 5,
+    display: 'inline-flex', alignItems: 'center', gap: 5, fontFamily: 'inherit',
     padding: '5px 10px', borderRadius: 7, fontSize: 12, fontWeight: 500,
     background: 'var(--bg-2)', border: '1px solid var(--border)', color: 'var(--text)',
     cursor: 'pointer', flexShrink: 0,
@@ -1003,16 +1045,19 @@ const s: Record<string, any> = {
     display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, cursor: 'pointer',
   },
   primaryBtn: {
-    alignSelf: 'flex-start',
-    padding: '10px 18px', borderRadius: 9, fontSize: 14, fontWeight: 600,
+    alignSelf: 'flex-start', fontFamily: 'inherit',
+    padding: '11px 20px', borderRadius: 10, fontSize: 14, fontWeight: 700,
     background: 'var(--accent-text)', color: 'var(--bg)', border: 'none', cursor: 'pointer',
   },
   previewTab: {
+    fontFamily: 'inherit',
     padding: '5px 11px', borderRadius: 7, fontSize: 12, fontWeight: 600,
     background: 'var(--bg-2)', border: '1px solid var(--border)', color: 'var(--text-muted)',
     cursor: 'pointer',
   },
+  // Largeur bornée : sur grand écran, l'aperçu carré prenait toute la colonne
   previewCard: {
+    width: '100%', maxWidth: 440, alignSelf: 'center' as const,
     borderRadius: 12, border: '1px solid var(--border)', overflow: 'hidden', background: 'var(--bg-2)',
   },
   previewMedia: {
@@ -1041,13 +1086,26 @@ const s: Record<string, any> = {
     background: 'var(--bg-2)', border: '1px solid var(--border)',
   },
   dayChip: {
+    fontFamily: 'inherit',
     padding: '6px 10px', borderRadius: 7, fontSize: 12.5, fontWeight: 600,
     background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)',
     cursor: 'pointer',
   },
   freeSlotBtn: {
-    padding: '5px 11px', borderRadius: 100, fontSize: 12, fontWeight: 600,
-    background: 'var(--success-bg)', color: 'var(--success-1)', border: '1px solid var(--success-1)',
+    padding: '5px 11px', borderRadius: 100, fontSize: 12, fontWeight: 600, fontFamily: 'inherit',
+    background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)',
     cursor: 'pointer',
+  },
+  asideLabel: {
+    fontSize: 11, fontWeight: 700, letterSpacing: '0.6px', textTransform: 'uppercase' as const, color: 'var(--text-3)',
+  },
+  asideSep: { height: 1, background: 'var(--border)', margin: '2px 0' },
+  reconnectLink: {
+    display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600,
+    color: 'var(--accent-text)', textDecoration: 'none',
+  },
+  dispatchNote: {
+    display: 'flex', gap: 7, margin: 0, padding: '9px 12px', borderRadius: 10, fontSize: 12.5, lineHeight: 1.5,
+    color: 'var(--text-2)', background: 'rgba(255,213,107,0.14)', border: '1px solid rgba(183,121,31,0.30)',
   },
 }
