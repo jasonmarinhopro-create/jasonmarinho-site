@@ -18,10 +18,10 @@ interface Props {
 }
 
 const PAYOUT_STATUS_LABEL: Record<string, { label: string; color: string }> = {
-  paid:       { label: 'Versé',           color: 'var(--success-1)' },
+  paid:       { label: 'Versé',           color: 'var(--accent-text)' },
   in_transit: { label: 'En transit',      color: 'var(--accent-text)' },
   pending:    { label: 'En attente',      color: 'var(--text-3)' },
-  failed:     { label: 'Échec',           color: '#f87171' },
+  failed:     { label: 'Échec',           color: 'var(--danger)' },
   canceled:   { label: 'Annulé',          color: 'var(--text-3)' },
 }
 
@@ -106,7 +106,7 @@ function ResendPaymentButton({ contractId, name }: { contractId: string; name: s
         <PaperPlaneTilt size={13} weight="fill" />
         {state === 'sending' ? 'Envoi…' : 'Renvoyer le lien'}
       </button>
-      {error && <span style={{ fontSize: '11px', color: '#f87171', maxWidth: '240px', textAlign: 'right' }}>{error}</span>}
+      {error && <span style={{ fontSize: '11px', color: 'var(--danger)', maxWidth: '240px', textAlign: 'right' }}>{error}</span>}
     </span>
   )
 }
@@ -141,15 +141,15 @@ export default function EncaissementsView({ summary, impayes, scopeNote }: Props
       {!summary.hasAccount && (
         <div style={s.banner}>
           <div style={s.bannerIcon} aria-hidden="true">
-            <Warning size={20} weight="duotone" color="#FFD56B" />
+            <Warning size={20} weight="duotone" color="#B7791F" />
           </div>
           <div style={{ flex: 1 }}>
             <div style={s.bannerTitle}>Compte Stripe non configuré</div>
             <div style={s.bannerBody}>
-              Pour encaisser tes loyers en CB et bénéficier de cette page, configure ton compte Stripe Connect (10 min).
+              Pour encaisser tes loyers par carte et suivre tes virements ici, connecte ton compte Stripe (10 min environ).
             </div>
           </div>
-          <Link href="/dashboard/profil" style={s.bannerCta}>
+          <Link href="/dashboard/profil#stripe" style={s.bannerCta}>
             Configurer →
           </Link>
         </div>
@@ -158,16 +158,16 @@ export default function EncaissementsView({ summary, impayes, scopeNote }: Props
       {summary.hasAccount && !isOnboarded && (
         <div style={s.banner}>
           <div style={s.bannerIcon} aria-hidden="true">
-            <Clock size={20} weight="duotone" color="#FFD56B" />
+            <Clock size={20} weight="duotone" color="#B7791F" />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={s.bannerTitle}>Onboarding Stripe à finaliser</div>
+            <div style={s.bannerTitle}>Inscription Stripe à terminer</div>
             <div style={s.bannerBody}>
-              Ton compte Stripe est créé mais l'onboarding n'est pas terminé. Tu ne peux pas encore recevoir de virements.
+              Ton compte Stripe est créé, mais l'inscription n'est pas terminée : tu ne peux pas encore recevoir de virements.
             </div>
           </div>
-          <Link href="/dashboard/profil" style={s.bannerCta}>
-            Finaliser →
+          <Link href="/dashboard/profil#stripe" style={s.bannerCta}>
+            Terminer →
           </Link>
         </div>
       )}
@@ -176,9 +176,9 @@ export default function EncaissementsView({ summary, impayes, scopeNote }: Props
       {isOnboardedButEmpty && (
         <div style={s.emptyReady}>
           <div style={s.emptyReadyIcon} aria-hidden="true">
-            <CheckCircle size={32} weight="duotone" color="var(--success-1)" />
+            <CheckCircle size={32} weight="duotone" color="var(--accent-text)" />
           </div>
-          <h2 style={s.emptyReadyTitle}>Tu es prêt à encaisser ✨</h2>
+          <h2 style={s.emptyReadyTitle}>Tu es prêt à encaisser</h2>
           <p style={s.emptyReadyBody}>
             Ton compte Stripe est configuré et opérationnel. Dès ton premier paiement reçu (loyer, caution),
             il apparaîtra ici avec le détail du virement, la date d'arrivée et le statut.
@@ -197,7 +197,7 @@ export default function EncaissementsView({ summary, impayes, scopeNote }: Props
         <StatBox
           label="Solde disponible"
           value={isOnboarded ? fmtEur(summary.balance.available) : '-'}
-          sub={isOnboarded && summary.balance.pending > 0 ? `+ ${fmtEur(summary.balance.pending)} en attente` : isOnboarded ? 'Aucun montant en attente' : 'Onboarding non terminé'}
+          sub={isOnboarded && summary.balance.pending > 0 ? `+ ${fmtEur(summary.balance.pending)} en attente` : isOnboarded ? 'Aucun montant en attente' : 'Inscription Stripe à terminer'}
           icon={<CurrencyEur size={16} weight="fill" />}
           accent
         />
@@ -222,7 +222,7 @@ export default function EncaissementsView({ summary, impayes, scopeNote }: Props
           value={impayes.length === 0 ? '0' : String(impayes.length)}
           sub={impayes.length > 0
             ? `${fmtEur(totalImpaye * 100)} à encaisser`
-            : 'Tout est à jour 🎉'}
+            : 'Tout est à jour'}
           icon={<Warning size={16} weight="fill" />}
           tone={impayes.length > 0 ? 'warning' : undefined}
         />
@@ -232,7 +232,7 @@ export default function EncaissementsView({ summary, impayes, scopeNote }: Props
       {impayes.length > 0 && (
         <section style={s.section}>
           <h2 style={s.sectionTitle}>
-            <Warning size={18} weight="fill" color="#FFD56B" /> Paiements à relancer
+            <Warning size={18} weight="fill" color="#B7791F" /> Paiements à relancer
           </h2>
           <p style={s.sectionDesc}>
             Séjours dont l'arrivée est dans 7 jours ou moins (ou passée) et dont le paiement en ligne n'est pas encaissé.
@@ -301,7 +301,7 @@ export default function EncaissementsView({ summary, impayes, scopeNote }: Props
       {summary.recentFailedCharges.length > 0 && (
         <section style={s.section}>
           <h2 style={s.sectionTitle}>
-            <Warning size={18} weight="fill" color="#f87171" /> Échecs de paiement (30 derniers jours)
+            <Warning size={18} weight="fill" color="var(--danger)" /> Échecs de paiement (30 derniers jours)
           </h2>
           <div style={s.list}>
             {summary.recentFailedCharges.map(c => (
@@ -325,7 +325,7 @@ export default function EncaissementsView({ summary, impayes, scopeNote }: Props
       {isOnboarded && summary.recentPayouts.length > 0 && (
         <section style={s.section}>
           <h2 style={s.sectionTitle}>
-            <ArrowsClockwise size={18} weight="fill" /> Virements récents
+            <ArrowsClockwise size={18} weight="fill" color="var(--accent-text)" /> Virements récents
           </h2>
           <div style={s.tableWrap}>
             <table style={s.table}>
@@ -357,7 +357,7 @@ export default function EncaissementsView({ summary, impayes, scopeNote }: Props
                           {status.label}
                         </span>
                         {p.failureMessage && (
-                          <div style={{ fontSize: '11px', color: '#f87171', marginTop: '3px' }}>{p.failureMessage}</div>
+                          <div style={{ fontSize: '11px', color: 'var(--danger)', marginTop: '3px' }}>{p.failureMessage}</div>
                         )}
                       </td>
                       <td style={s.td}>
@@ -373,7 +373,7 @@ export default function EncaissementsView({ summary, impayes, scopeNote }: Props
           </div>
           <p style={{ fontSize: '11.5px', color: 'var(--text-3)', marginTop: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Info size={12} weight="fill" />
-            Pour le détail complet, voir le <a href="https://dashboard.stripe.com/payouts" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-text)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>dashboard Stripe <ArrowSquareOut size={10} weight="bold" /></a>.
+            Pour le détail complet, ouvre ton <a href="https://dashboard.stripe.com/payouts" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-text)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>tableau de bord Stripe <ArrowSquareOut size={10} weight="bold" /></a>.
           </p>
         </section>
       )}
@@ -403,7 +403,7 @@ function StatBox({ label, value, sub, icon, accent, tone }: {
     }}>
       <div style={s.statHead}>
         <span style={s.statLabel}>{label}</span>
-        <span aria-hidden="true" style={{ ...s.statIcon, ...(accent ? { color: 'var(--accent-text)' } : {}), ...(isWarning ? { color: '#FFD56B' } : {}) }}>
+        <span aria-hidden="true" style={{ ...s.statIcon, ...(accent ? { color: 'var(--accent-text)' } : {}), ...(isWarning ? { color: '#B7791F' } : {}) }}>
           {icon}
         </span>
       </div>
@@ -433,12 +433,13 @@ const s: Record<string, React.CSSProperties> = {
   banner: {
     display: 'flex', alignItems: 'center', gap: '14px',
     padding: '14px 18px', borderRadius: '14px',
-    background: 'rgba(255,213,107,0.06)',
-    border: '1px solid rgba(255,213,107,0.18)',
+    background: 'rgba(255,213,107,0.14)',
+    border: '1px solid rgba(255,213,107,0.4)',
+    flexWrap: 'wrap' as const,
   },
   bannerIcon: {
     width: '40px', height: '40px', borderRadius: '12px',
-    background: 'rgba(255,213,107,0.10)',
+    background: 'rgba(255,213,107,0.22)',
     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
   },
   bannerTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--text)' },
@@ -460,14 +461,14 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', flexDirection: 'column' as const,
     alignItems: 'center', textAlign: 'center' as const,
     padding: 'clamp(28px, 4vw, 44px) 24px',
-    background: 'linear-gradient(135deg, rgba(16,185,129,0.04) 0%, var(--surface) 100%)',
-    border: '1px solid rgba(16,185,129,0.20)',
-    borderRadius: '16px',
+    background: 'var(--surface)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: 'var(--r-xl, 18px)',
     gap: '10px',
   },
   emptyReadyIcon: {
     width: '64px', height: '64px', borderRadius: '20px',
-    background: 'rgba(16,185,129,0.08)',
+    background: 'var(--accent-bg)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     marginBottom: '6px',
   },
@@ -487,24 +488,24 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '10px',
   },
   statBox: {
-    padding: '18px 20px', borderRadius: '14px',
+    padding: '18px 20px', borderRadius: 'var(--r-xl, 18px)',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    display: 'flex', flexDirection: 'column' as const, gap: '4px',
+    display: 'flex', flexDirection: 'column' as const, gap: '4px', minWidth: 0,
   },
   statBoxAccent: {
-    background: 'linear-gradient(135deg, var(--surface) 0%, rgba(255,213,107,0.05) 100%)',
-    border: '1px solid rgba(255,213,107,0.18)',
+    background: 'var(--surface)',
+    border: '1px solid var(--accent-border)',
   },
   statBoxWarning: {
-    background: 'linear-gradient(135deg, var(--surface) 0%, rgba(255,213,107,0.04) 100%)',
-    border: '1px solid rgba(255,213,107,0.22)',
+    background: 'rgba(255,213,107,0.10)',
+    border: '1px solid rgba(255,213,107,0.4)',
   },
   statHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' },
   statLabel: {
     fontSize: '11px', fontWeight: 600, letterSpacing: '0.5px',
     textTransform: 'uppercase' as const, color: 'var(--text-3)',
   },
-  statIcon: { color: 'var(--text-3)', opacity: 0.7, display: 'inline-flex' },
+  statIcon: { color: 'var(--text-3)', display: 'inline-flex' },
   statValue: {
     fontFamily: 'var(--font-fraunces), serif',
     fontSize: '24px', fontWeight: 400, color: 'var(--text)',
@@ -514,11 +515,11 @@ const s: Record<string, React.CSSProperties> = {
 
   section: {
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '16px', padding: 'clamp(16px, 2.5vw, 24px)',
+    borderRadius: 'var(--r-xl, 18px)', padding: 'clamp(16px, 2.2vw, 24px)', minWidth: 0,
   },
   sectionTitle: {
     fontFamily: 'var(--font-fraunces), serif',
-    fontSize: '20px', fontWeight: 400, color: 'var(--text)',
+    fontSize: '18px', fontWeight: 500, color: 'var(--text)',
     margin: '0 0 6px', display: 'flex', alignItems: 'center', gap: '8px',
   },
   sectionDesc: { fontSize: '13px', color: 'var(--text-2)', margin: '0 0 16px', lineHeight: 1.5 },
@@ -531,8 +532,8 @@ const s: Record<string, React.CSSProperties> = {
     flexWrap: 'wrap' as const,
   },
   rowDanger: {
-    background: 'rgba(248,113,113,0.04)',
-    borderColor: 'rgba(248,113,113,0.18)',
+    background: 'var(--danger-bg)',
+    borderColor: 'color-mix(in srgb, var(--danger) 30%, transparent)',
   },
   rowTitle: { fontSize: '13.5px', fontWeight: 600, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const },
   rowSub: { fontSize: '11.5px', color: 'var(--text-3)', marginTop: '2px' },
@@ -554,14 +555,14 @@ const s: Record<string, React.CSSProperties> = {
   },
   lateBadge: {
     fontSize: '10.5px', fontWeight: 700, padding: '2px 8px',
-    borderRadius: '999px', background: 'rgba(248,113,113,0.12)',
-    color: '#f87171', border: '1px solid rgba(248,113,113,0.22)',
+    borderRadius: '999px', background: 'var(--danger-bg)',
+    color: 'var(--danger)', border: '1px solid color-mix(in srgb, var(--danger) 30%, transparent)',
     letterSpacing: '0.2px',
   },
   soonBadge: {
     fontSize: '10.5px', fontWeight: 700, padding: '2px 8px',
-    borderRadius: '999px', background: 'rgba(255,213,107,0.10)',
-    color: 'var(--accent-text)', border: '1px solid rgba(255,213,107,0.22)',
+    borderRadius: '999px', background: 'rgba(255,213,107,0.2)',
+    color: '#8A5A12', border: '1px solid rgba(255,213,107,0.45)',
     letterSpacing: '0.2px',
   },
 

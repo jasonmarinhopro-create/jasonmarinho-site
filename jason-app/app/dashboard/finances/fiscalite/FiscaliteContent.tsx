@@ -75,7 +75,7 @@ function France({ fr, year, current }: { fr: FiscalFR; year: number; current: nu
 
   return (
     <>
-      <Card style={{ background: 'linear-gradient(135deg, var(--accent-bg) 0%, var(--surface) 70%)', borderColor: 'var(--accent-border)' }}>
+      <Card style={{ borderColor: 'var(--accent-border)' }}>
         <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
           <Scales size={26} weight="duotone" color="var(--accent-text)" style={{ flexShrink: 0, marginTop: 2 }} />
           <div style={{ minWidth: 0 }}>

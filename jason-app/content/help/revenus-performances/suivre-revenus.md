@@ -10,6 +10,8 @@ updatedAt: "2026-09-28"
 
 En haut de **Mes finances**, choisis un logement : tous les onglets affichent alors ses chiffres à lui. Avec plusieurs logements, **Tous les logements** les additionne et montre un tableau par logement. C'est le même choix que le sélecteur en bas du menu.
 
+Dans le bandeau vert, la carte de droite résume l'année en cours du logement choisi : revenus, bénéfice, déjà réservé d'ici décembre et avancement de l'objectif. Elle reste visible sur tous les onglets.
+
 ## Les 5 onglets
 
 - **Revenus** : ton bénéfice, mois par mois, par canal, et ton objectif

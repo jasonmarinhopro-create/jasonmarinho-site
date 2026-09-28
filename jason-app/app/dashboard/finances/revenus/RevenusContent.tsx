@@ -66,7 +66,7 @@ export default function RevenusContent({ data, searchParams }: { data: FinanceDa
       ) : (
         <>
           {/* Le bénéfice, et comment on y arrive */}
-          <Card style={{ background: 'linear-gradient(135deg, var(--accent-bg) 0%, var(--surface) 70%)', borderColor: 'var(--accent-border)' }}>
+          <Card>
             <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--accent-text)', letterSpacing: '0.02em' }}>
               Bénéfice {period.label}
             </div>

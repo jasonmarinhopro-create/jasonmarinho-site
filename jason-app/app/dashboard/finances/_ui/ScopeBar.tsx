@@ -11,14 +11,8 @@ export default function ScopeBar({ choices, activeId }: { choices: Array<{ id: s
   const [pending, startTransition] = useTransition()
   const [current, setCurrent] = useState(activeId)
 
-  if (choices.length === 0) return null
-  if (choices.length === 1) {
-    return (
-      <div style={s.single}>
-        <House size={15} weight="duotone" /> {choices[0].nom}
-      </div>
-    )
-  }
+  // Un seul logement : son nom est déjà dans le titre du bandeau
+  if (choices.length <= 1) return null
 
   async function pick(id: string) {
     if (id === current) return
@@ -56,12 +50,11 @@ export default function ScopeBar({ choices, activeId }: { choices: Array<{ id: s
 }
 
 const s: Record<string, React.CSSProperties> = {
-  bar: { display: 'flex', gap: 8, overflowX: 'auto', WebkitOverflowScrolling: 'touch', paddingBottom: 2, transition: 'opacity 0.15s' },
-  single: { display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 600, color: 'var(--text-2)' },
+  bar: { display: 'flex', flexWrap: 'wrap', gap: 8, transition: 'opacity 0.15s' },
   pill: {
     display: 'inline-flex', alignItems: 'center', gap: 6, flexShrink: 0,
-    padding: '7px 13px', borderRadius: 999, border: '1px solid var(--border)', background: 'var(--surface)',
+    padding: '7px 13px', borderRadius: 999, border: '1px solid var(--border-2)', background: 'var(--surface)',
     color: 'var(--text-2)', fontSize: 13, fontWeight: 500, fontFamily: 'inherit', cursor: 'pointer', whiteSpace: 'nowrap',
   },
-  pillActive: { background: 'var(--accent-bg)', borderColor: 'var(--accent-border)', color: 'var(--accent-text)', fontWeight: 600 },
+  pillActive: { background: 'var(--accent-text)', borderColor: 'var(--accent-text)', color: 'var(--bg)', fontWeight: 600 },
 }
