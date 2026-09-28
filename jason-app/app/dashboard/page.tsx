@@ -7,9 +7,9 @@ import {
   CalendarBlank,
   ArrowRight, Newspaper,
   GraduationCap, Trophy, Flame,
-  Camera, Sparkle,
+  Camera, Sparkle, SignIn, SignOut, UsersThree,
 } from '@phosphor-icons/react/dist/ssr'
-import EtatDesLieux from './EtatDesLieux'
+import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 // ChezNousWidget retiré Étape 7 (déplacé vers /dashboard/entre-hotes)
 import SetupChecklist, { type SetupStep } from './SetupChecklist'
 import MesPlateformesWidget from './MesPlateformesWidget'
@@ -21,6 +21,7 @@ import { buildRevenueLines, totaux as finTotaux } from '@/lib/finances/engine'
 import DeclarationsWidget from '@/components/dashboard/DeclarationsWidget'
 import OnboardingTour from './OnboardingTour'
 import { icalReservationsForDisplay } from '@/lib/ical/display'
+import { parisToday } from '@/lib/stripe/deposit-window'
 import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
 // CategoryId retiré (utilisé uniquement par ChezNousWidget, désormais dans /entre-hotes)
 
@@ -29,10 +30,6 @@ function getGreeting() {
   return h >= 18 || h < 5 ? 'Bonsoir' : 'Bonjour'
 }
 
-function todayStr() {
-  const t = new Date()
-  return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`
-}
 function addDays(date: string, n: number) {
   const d = new Date(date + 'T12:00:00')
   d.setDate(d.getDate() + n)
@@ -46,15 +43,15 @@ function fmtShort(d: string) {
   const [, m, day] = d.split('-')
   return `${parseInt(day)} ${MONTHS[parseInt(m) - 1]}`
 }
+// Montant exact (avant : « 3 k€ » pour 2 840 €, trop approximatif en tête de page)
 function fmtEur(n: number) {
-  if (n === 0) return '0 €'
-  if (n >= 1000) return `${(n / 1000).toFixed(n % 1000 < 100 ? 1 : 0)} k€`
-  return `${n} €`
+  return `${Math.round(n).toLocaleString('fr-FR')} €`
 }
-function monthPrefix(offset = 0) {
-  const d = new Date()
-  d.setMonth(d.getMonth() + offset)
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+// Mois (AAAA-MM) relatif à la date du jour à Paris
+function monthPrefix(today: string, offset = 0) {
+  const [y, m] = today.split('-').map(Number)
+  const d = new Date(Date.UTC(y, m - 1 + offset, 1))
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`
 }
 
 export default async function DashboardPage() {
@@ -79,11 +76,13 @@ export default async function DashboardPage() {
   const userId   = profile?.userId ?? ''
   const completedSteps = profile?.onboarding_completed_steps ?? []
   const now      = new Date()
-  const today    = todayStr()
+  // Date du jour à Paris (le serveur tourne en UTC : avant, entre minuit et
+  // 2 h du matin, l'accueil affichait encore les arrivées de la veille).
+  const today    = parisToday()
   const in7      = addDays(today, 7)
-  const monthPfx = monthPrefix(0)
-  const prevMPfx = monthPrefix(-1)
-  const yearPfx  = String(now.getFullYear())
+  const monthPfx = monthPrefix(today, 0)
+  const prevMPfx = monthPrefix(today, -1)
+  const yearPfx  = today.slice(0, 4)
 
   // ── 1 SEULE Promise.allSettled pour TOUTES les requêtes parallélisables.
   // allSettled (vs all) : si une requête échoue (table renommée, colonne supprimée,
@@ -708,300 +707,256 @@ export default async function DashboardPage() {
           }
         />
 
-        {/* ── Welcome / Ma journée ─────────────────────────────────────── */}
-        <section style={s.welcome} className="fade-up dash-welcome">
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={s.welcomeSub}>{new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-            <h2 style={s.welcomeTitle}>
-              {getGreeting()}{firstName ? `, ${firstName}` : ''}
-            </h2>
-            <p style={s.welcomeDesc}>
-              {(() => {
-                const ta = todayArrivals.length
-                const td = todayDepartures.length
-                const ac = activeStays.length
-                if (ta > 0 || td > 0) {
-                  const parts = []
-                  if (ta > 0) parts.push(`${ta} arrivée${pl(ta)} aujourd'hui`)
-                  if (td > 0) parts.push(`${td} départ${pl(td)} aujourd'hui`)
-                  if (actionsCount > 0) parts.push(`${actionsCount} action${pl(actionsCount)} à traiter`)
-                  return parts.join(' · ')
-                }
-                if (actionsCount > 0) {
-                  return `${actionsCount} action${pl(actionsCount)} à traiter${weekArrivals.length > 0 ? ` · ${weekArrivals.length} arrivée${pl(weekArrivals.length)} cette semaine` : ''}`
-                }
-                if (weekArrivals.length > 0) {
-                  return `Aucune arrivée aujourd'hui · ${weekArrivals.length} prévue${pl(weekArrivals.length)} cette semaine`
-                }
-                if (ac > 0) {
-                  return `${ac} séjour${pl(ac)} en cours · Tout est en ordre ✓`
-                }
-                return 'Aucun séjour prévu cette semaine. Profite de ce calme pour préparer la suite.'
-              })()}
-            </p>
-
-            {/* Pills d'actions contextuelles (Étape 7/7) — remplace les 3 stats
-                statiques 6/1/0 qui ne changeaient jamais dans la journée.
-                Chaque pill n'apparaît que si son contexte est vrai (pas de
-                "0 actions" qui fait peur : le bloc disparaît). */}
-            {(todayArrivals.length > 0 || todayDepartures.length > 0 || actionsCount > 0 || weekArrivals.length > 0) && (
-              <div style={s.actionPills} className="fade-up">
-                {todayArrivals.length > 0 && (
-                  <Link href="/dashboard/calendrier" style={{ ...s.pill, ...s.pillOk }}>
-                    <span style={s.pillDot} />
-                    {todayArrivals.length} arrivée{pl(todayArrivals.length)} à préparer
-                  </Link>
-                )}
-                {todayDepartures.length > 0 && (
-                  <Link href="/dashboard/calendrier" style={{ ...s.pill, ...s.pillInfo }}>
-                    <span style={s.pillDot} />
-                    {todayDepartures.length} départ{pl(todayDepartures.length)} aujourd&apos;hui
-                  </Link>
-                )}
-                {actionsCount > 0 && (
-                  <Link href={actionsHref} style={{ ...s.pill, ...s.pillWarn }}>
-                    <span style={s.pillDot} />
-                    {actionsCount} action{pl(actionsCount)} à traiter
-                  </Link>
-                )}
-                {weekArrivals.length > 0 && todayArrivals.length === 0 && (
-                  <Link href="/dashboard/calendrier" style={s.pill}>
-                    {weekArrivals.length} arrivée{pl(weekArrivals.length)} cette semaine
-                  </Link>
-                )}
+        {/* ── En-tête (DA sept. 2026) : bandeau vert HubHero, ta journée à
+              gauche, tes chiffres du mois à droite (avant : carte vert foncé
+              + pastilles, et les chiffres éparpillés plus bas). */}
+        <HubHero
+          eyebrowIcon={<CalendarBlank size={14} weight="fill" />}
+          eyebrow={new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Paris' })}
+          title={<>{getGreeting()}{firstName ? <>, <HeroEm>{firstName}</HeroEm></> : null}</>}
+          desc={(() => {
+            const ta = todayArrivals.length
+            const td = todayDepartures.length
+            const ac = activeStays.length
+            if (isNewHost) return 'Bienvenue dans ton espace. Suis la liste ci-dessus pour démarrer : chaque étape prend quelques minutes.'
+            if (ta > 0 || td > 0) {
+              const parts = []
+              if (ta > 0) parts.push(`${ta} arrivée${pl(ta)} aujourd'hui`)
+              if (td > 0) parts.push(`${td} départ${pl(td)} aujourd'hui`)
+              if (actionsCount > 0) parts.push(`${actionsCount} action${pl(actionsCount)} à traiter`)
+              return parts.join(' · ')
+            }
+            if (actionsCount > 0) {
+              return `${actionsCount} action${pl(actionsCount)} à traiter${weekArrivals.length > 0 ? ` · ${weekArrivals.length} arrivée${pl(weekArrivals.length)} cette semaine` : ''}`
+            }
+            if (weekArrivals.length > 0) return `Aucune arrivée aujourd'hui · ${weekArrivals.length} prévue${pl(weekArrivals.length)} cette semaine`
+            if (ac > 0) return `${ac} séjour${pl(ac)} en cours. Tout est en ordre.`
+            return 'Aucun séjour prévu cette semaine. Profite de ce calme pour préparer la suite.'
+          })()}
+          aside={!isNewHost ? (
+            <div style={{ ...heroCard, width: '100%' }}>
+              <div style={s.asideTitle}>Ce mois-ci</div>
+              <div style={s.asideStats}>
+                <Link href="/dashboard/finances/revenus" style={s.asideStat}>
+                  <span style={s.asideNum}>{fmtEur(revenusThisMois)}</span>
+                  <span style={s.asideLbl}>
+                    encaissés{revenusPrevMois > 0 && (
+                      <span style={{ color: revenusThisMois >= revenusPrevMois ? 'var(--accent-text)' : 'var(--danger)', fontWeight: 600 }}>
+                        {' '}{revenusThisMois >= revenusPrevMois ? '+' : ''}{Math.round(((revenusThisMois - revenusPrevMois) / revenusPrevMois) * 100)} % vs mois dernier
+                      </span>
+                    )}
+                  </span>
+                </Link>
+                <Link href="/dashboard/finances/revenus" style={s.asideStat}>
+                  <span style={s.asideNum}>{fmtEur(revenuPrevisionnel)}</span>
+                  <span style={s.asideLbl}>déjà réservés à venir</span>
+                </Link>
               </div>
-            )}
-          </div>
-        </section>
+              {objectifAnnuel !== null && objectifAnnuel > 0 ? (
+                <Link href="/dashboard/finances/revenus" style={s.asideObj}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, fontSize: 12.5 }}>
+                    <span style={{ color: 'var(--text-2)', fontWeight: 600 }}><Trophy size={13} weight="fill" color="var(--accent-text)" style={{ verticalAlign: '-2px' }} /> Objectif {yearPfx}</span>
+                    <span style={{ color: (objectifPct ?? 0) >= expectedPct ? 'var(--accent-text)' : '#B7791F', fontWeight: 700 }}>
+                      {objectifPct} % <span style={{ color: 'var(--text-3)', fontWeight: 500 }}>(attendu {expectedPct} %)</span>
+                    </span>
+                  </div>
+                  <div style={s.objectifBar}>
+                    <div style={{ ...s.objectifFill, width: `${objectifPct}%`, background: (objectifPct ?? 0) >= expectedPct ? 'var(--accent-text)' : '#B7791F' }} />
+                    <div style={{ position: 'absolute', top: 0, bottom: 0, left: `${expectedPct}%`, width: '2px', background: 'var(--text-3)', opacity: 0.6 }} />
+                  </div>
+                  <span style={{ fontSize: 12, color: 'var(--text-3)' }}>{fmtEur(revenuYTD)} sur {fmtEur(objectifAnnuel)}</span>
+                </Link>
+              ) : (
+                <Link href="/dashboard/finances/revenus" style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--accent-text)' }}>
+                  Fixer mon objectif de l&apos;année
+                </Link>
+              )}
+            </div>
+          ) : undefined}
+        >
+          {!isNewHost && (
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <Link href="/dashboard/calendrier" style={heroCta}>
+                <CalendarBlank size={16} weight="bold" /> Mon calendrier
+              </Link>
+              <Link href="/dashboard/reservations" style={s.heroGhost}>Mes réservations</Link>
+            </div>
+          )}
+        </HubHero>
 
-        {/* ── À faire aujourd'hui : arrivées, départs, ménages du jour, puis
-              contrats / loyers / cautions / déclarations en attente (sept. 2026). */}
         {/* Demande d'avis Google, une fois, dès qu'un contrat est signé */}
         {(contracts ?? []).some((c: { statut?: string }) => c.statut === 'signe') && <ReviewPrompt />}
 
-        {!isNewHost && (
-          <TodayBoard
-            arrivals={todayArrivalItems}
-            departures={todayDepartureItems}
-            menages={todayMenageItems}
-            actions={todayActions}
-          />
-        )}
+        {/* ── Deux colonnes au-delà de ~1100 px de contenu : le quotidien à
+              gauche, les raccourcis à droite (flex-wrap, sans position collante). */}
+        <div style={s.cols}>
+          <div style={s.colMain}>
+            {/* À faire aujourd'hui : arrivées, départs, ménages du jour, puis
+                contrats / loyers / cautions / déclarations en attente */}
+            {!isNewHost && (
+              <TodayBoard
+                arrivals={todayArrivalItems}
+                departures={todayDepartureItems}
+                menages={todayMenageItems}
+                actions={todayActions}
+              />
+            )}
 
-        {/* ── Déclarations voyageurs obligatoires (SIBA, fiche police…) ── */}
-        <DeclarationsWidget declarations={(pendingDeclarations ?? []).slice(0, 5)} />
+            {/* Déclarations voyageurs obligatoires (SIBA, fiche police…) */}
+            <DeclarationsWidget declarations={(pendingDeclarations ?? []).slice(0, 5)} />
 
-        {/* ── Quick actions RETIRÉES (Étape 7/7) ────────────────────────
-              Les 5 quick actions (Nouveau séjour, Nouveau voyageur, Saisir
-              revenu, Signaler voyageur, Voir calendrier) sont accessibles
-              depuis chaque page dédiée avec un bouton "+" contextuel. Elles
-              polluaient l'Accueil pour un usage 1-2 fois par mois seulement.
-              Les pills contextuelles du hero les remplacent avec plus de sens.
-              — bloc supprimé volontairement. */}
-
-        {/* ── Entre Hôtes RETIRÉ (Étape 7/7) ────────────────────────────
-              Le widget d'aperçu du forum a été déplacé vers /dashboard/entre-hotes
-              (Étape 6). Un lien direct est disponible dans la sidebar
-              "Faire grandir mon activité > Entre Hôtes".
-              — bloc supprimé volontairement. */}
-
-        {/* ── Prochains événements 14 jours ─────────────────────────────── */}
-        {!isNewHost && (
-        <section style={s.section} className="fade-up d1">
-          <div style={s.upcomingCard}>
-            <div style={s.upcomingHead}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <CalendarBlank size={14} weight="fill" color="var(--accent-text)" />
-                <span style={s.upcomingTitle}>Prochaines arrivées &amp; départs</span>
-              </div>
-              <Link href="/dashboard/calendrier" style={s.upcomingLink}>
-                Voir le calendrier <ArrowRight size={11} weight="bold" />
-              </Link>
-            </div>
-
-            {upcomingEvents.length === 0 ? (
-              <div style={s.upcomingEmpty}>
-                <CalendarBlank size={22} weight="duotone" color="var(--text-muted)" />
-                <div>
-                  <div style={s.upcomingEmptyTitle}>Calendrier serein</div>
-                  <div style={s.upcomingEmptySub}>Aucune arrivée ou départ dans les 14 prochains jours.</div>
+            {/* Prochaines arrivées et départs (14 jours) */}
+            {!isNewHost && (
+              <section style={s.card}>
+                <div style={s.cardHead}>
+                  <h3 style={s.cardTitle}>Prochaines arrivées et départs</h3>
+                  <Link href="/dashboard/calendrier" style={s.upcomingLink}>
+                    Voir le calendrier <ArrowRight size={11} weight="bold" />
+                  </Link>
                 </div>
-              </div>
-            ) : (
-              <div style={s.upcomingList}>
-                {upcomingEvents.map((e, i) => {
-                  const c = e.contract
-                  const o = e.occ
-                  const isArr = e.type === 'arrival'
-                  const color = isArr ? '#15803d' : '#0369a1'
-                  const bg = isArr ? 'rgba(21,128,61,0.10)' : 'rgba(3,105,161,0.10)'
-                  const traveler = c
-                    ? [c.locataire_prenom, c.locataire_nom].filter(Boolean).join(' ')
-                    : (o.source === 'sejour' || o.source === 'ical' ? o.label : '')
-                  const logementLabel = c?.logement_nom ?? o.logement_nom ?? (o.source === 'ical' ? 'Synchro plateforme' : 'Logement')
-                  return (
-                    <Link key={`${o.id}_${e.type}_${i}`} href="/dashboard/calendrier" style={s.upcomingItem}>
-                      <div style={{ ...s.upcomingDot, background: bg, color }}>
-                        <CalendarBlank size={14} weight="fill" />
-                      </div>
-                      <div style={s.upcomingMain}>
-                        <div style={s.upcomingItemTop}>
-                          <span style={s.upcomingDate}>{relDate(e.date)}</span>
-                          <span style={{ ...s.upcomingType, color, background: bg }}>
-                            {isArr ? 'Arrivée' : 'Départ'}
-                          </span>
-                        </div>
-                        <div style={s.upcomingMainText}>
-                          {logementLabel}
-                          {traveler && <span style={s.upcomingTraveler}> · {traveler}</span>}
-                        </div>
-                      </div>
-                      <ArrowRight size={12} weight="bold" color="var(--text-muted)" style={{ flexShrink: 0 }} />
-                    </Link>
-                  )
-                })}
-              </div>
+                {upcomingEvents.length === 0 ? (
+                  <div style={s.upcomingEmpty}>
+                    <CalendarBlank size={22} weight="duotone" color="var(--text-3)" />
+                    <div>
+                      <div style={s.upcomingEmptyTitle}>Rien dans les 14 prochains jours</div>
+                      <div style={s.upcomingEmptySub}>Aucune arrivée ni aucun départ prévu.</div>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={s.upcomingList}>
+                    {upcomingEvents.map((e, i) => {
+                      const c = e.contract
+                      const o = e.occ
+                      const isArr = e.type === 'arrival'
+                      const color = isArr ? 'var(--accent-text)' : '#B7791F'
+                      const bg = isArr ? 'var(--accent-bg)' : 'rgba(255,213,107,0.18)'
+                      const traveler = c
+                        ? [c.locataire_prenom, c.locataire_nom].filter(Boolean).join(' ')
+                        : (o.source === 'sejour' || o.source === 'ical' ? o.label : '')
+                      const logementLabel = c?.logement_nom ?? o.logement_nom ?? (o.source === 'ical' ? 'Synchro plateforme' : 'Logement')
+                      return (
+                        <Link key={`${o.id}_${e.type}_${i}`} href="/dashboard/calendrier" style={s.upcomingItem}>
+                          <div style={{ ...s.upcomingDot, background: bg, color }}>
+                            {isArr ? <SignIn size={15} weight="bold" /> : <SignOut size={15} weight="bold" />}
+                          </div>
+                          <div style={s.upcomingMain}>
+                            <div style={s.upcomingItemTop}>
+                              <span style={s.upcomingDate}>{relDate(e.date)}</span>
+                              <span style={{ ...s.upcomingType, color, background: bg }}>{isArr ? 'Arrivée' : 'Départ'}</span>
+                            </div>
+                            <div style={s.upcomingMainText}>
+                              {logementLabel}
+                              {traveler && <span style={s.upcomingTraveler}> · {traveler}</span>}
+                            </div>
+                          </div>
+                          <ArrowRight size={12} weight="bold" color="var(--text-3)" style={{ flexShrink: 0 }} />
+                        </Link>
+                      )
+                    })}
+                  </div>
+                )}
+              </section>
             )}
           </div>
-        </section>
-        )}
 
-        {/* ── Mes plateformes : accès rapide aux inbox (Airbnb, Booking…) */}
-        <MesPlateformesWidget
-          initialData={{
-            inbox_airbnb_url:  platformLinksRaw?.inbox_airbnb_url  ?? null,
-            inbox_booking_url: platformLinksRaw?.inbox_booking_url ?? null,
-            inbox_vrbo_url:    platformLinksRaw?.inbox_vrbo_url    ?? null,
-            inbox_abritel_url: platformLinksRaw?.inbox_abritel_url ?? null,
-            inbox_driing_url:  platformLinksRaw?.inbox_driing_url  ?? null,
-            inbox_gmb_url:     platformLinksRaw?.inbox_gmb_url     ?? null,
-            custom_platform_links: platformLinksRaw?.custom_platform_links ?? [],
-          }}
-        />
+          <aside style={s.colSide}>
+            {/* Mes plateformes : accès rapide aux messageries (Airbnb, Booking…) */}
+            <MesPlateformesWidget
+              initialData={{
+                inbox_airbnb_url:  platformLinksRaw?.inbox_airbnb_url  ?? null,
+                inbox_booking_url: platformLinksRaw?.inbox_booking_url ?? null,
+                inbox_vrbo_url:    platformLinksRaw?.inbox_vrbo_url    ?? null,
+                inbox_abritel_url: platformLinksRaw?.inbox_abritel_url ?? null,
+                inbox_driing_url:  platformLinksRaw?.inbox_driing_url  ?? null,
+                inbox_gmb_url:     platformLinksRaw?.inbox_gmb_url     ?? null,
+                custom_platform_links: platformLinksRaw?.custom_platform_links ?? [],
+              }}
+            />
 
-        {/* ── État des lieux, 4 métriques ─────────────────────────────── */}
-        {!isNewHost && (
-        <section style={s.section} className="fade-up d1">
-          <EtatDesLieux
-            revenuPrevisionnel={revenuPrevisionnel}
-            revenusThisMois={revenusThisMois}
-            revenusPrevMois={revenusPrevMois}
-            totalReach={totalReach}
-            joinedCount={joinedCount}
-            totalGroupCount={communityGroups.length}
-            urgentCount={actionsCount}
-            urgentHref={actionsHref}
-          />
-        </section>
-        )}
-
-        {/* ── Section "Action urgente" et "Résumé opérationnel"
-              SUPPRIMÉES : doublons avec la KPI tile #4 d'EtatDesLieux
-              ("Action urgente · Tout est à jour") et avec le widget
-              "Prochaines arrivées & départs" (14j). Si actions = 0 et
-              calendrier serein, l'EtatDesLieux suffit. Si actions > 0,
-              elles apparaissent dans EtatDesLieux + sont déjà reflétées
-              dans le compteur statsRow ci-dessus. */}
-
-        {/* ── Objectif revenu annuel ──────────────────────────────────── */}
-        {objectifAnnuel !== null && objectifAnnuel > 0 && (
-          <section style={s.section} className="fade-up d3">
-            <Link href="/dashboard/finances/revenus" style={s.objectifCard}>
-              <div style={s.objectifHead}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Trophy size={14} weight="fill" color="#15803d" />
-                  <span style={s.objectifLabel}>Objectif {yearPfx}</span>
-                </div>
-                <span style={s.objectifPct}>
-                  {objectifPct}% <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 500 }}>vs {expectedPct}% attendu</span>
+            {/* Trouver des voyageurs en direct : portée des groupes Facebook rejoints */}
+            <Link href="/dashboard/visibilite/facebook" style={{ ...s.card, ...s.linkCard }}>
+              <span style={s.linkIcon}><UsersThree size={18} weight="duotone" color="var(--accent-text)" /></span>
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <span style={s.linkTitle}>
+                  {joinedCount > 0 ? `${joinedCount} groupe${pl(joinedCount)} Facebook rejoint${pl(joinedCount)}` : 'Trouver des voyageurs en direct'}
                 </span>
-              </div>
-              <div style={s.objectifBar}>
-                <div style={{
-                  ...s.objectifFill,
-                  width: `${objectifPct}%`,
-                  // Toujours vert — variation d'intensité selon avance/retard
-                  // pour rester dans la charte (pas d'orange off-brand).
-                  background: (objectifPct ?? 0) >= expectedPct
-                    ? 'linear-gradient(90deg, #15803d, #34d399)'
-                    : 'linear-gradient(90deg, #166534, #4ade80)',
-                  opacity: (objectifPct ?? 0) >= expectedPct ? 1 : 0.82,
-                }} />
-                {/* Repère du % attendu */}
-                <div style={{
-                  position: 'absolute', top: 0, bottom: 0,
-                  left: `${expectedPct}%`,
-                  width: '2px', background: 'var(--text-muted)', opacity: 0.5,
-                }} />
-              </div>
-              <div style={s.objectifMeta}>
-                <span><strong style={{ color: 'var(--text)' }}>{fmtEur(revenuYTD)}</strong> sur {fmtEur(objectifAnnuel)}</span>
-                <span style={{ color: (objectifPct ?? 0) >= expectedPct ? 'var(--success-1)' : 'var(--warning)', fontWeight: 600 }}>
-                  {(objectifPct ?? 0) >= expectedPct ? '✓ Dans les temps' : `${expectedPct - (objectifPct ?? 0)} pts derrière`}
+                <span style={s.linkDesc}>
+                  {joinedCount > 0
+                    ? `${totalReach.toLocaleString('fr-FR')} membres à qui proposer tes dates, sans commission`
+                    : `${communityGroups.length} groupes où publier tes dates libres, sans commission`}
                 </span>
-              </div>
+              </span>
+              <ArrowRight size={13} weight="bold" color="var(--text-3)" style={{ flexShrink: 0 }} />
             </Link>
-          </section>
-        )}
 
-        {/* ── (Entre Hôtes a été remonté plus haut après Quick actions
-              pour plus de visibilité — voir commentaire ci-dessus.) */}
+            {/* Trouver un pro (annuaires) : le pont dashboard vers les annuaires */}
+            <section style={s.card}>
+              <div style={s.cardHead}><h3 style={s.cardTitle}>Trouver un pro près de chez toi</h3></div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <a href="https://jasonmarinho.com/annuaires/photographes" target="_blank" rel="noopener noreferrer" style={s.proRow}>
+                  <span style={s.linkIcon}><Camera size={17} weight="fill" color="var(--accent-text)" /></span>
+                  <span style={{ flex: 1, minWidth: 0 }}>
+                    <span style={s.linkTitle}>Photographe LCD</span>
+                    <span style={s.linkDesc}>Des photos pro : plus de clics sur ton annonce</span>
+                  </span>
+                  <ArrowRight size={13} weight="bold" color="var(--text-3)" style={{ flexShrink: 0 }} />
+                </a>
+                <a href="https://jasonmarinho.com/annuaires/menage" target="_blank" rel="noopener noreferrer" style={s.proRow}>
+                  <span style={s.linkIcon}><Sparkle size={17} weight="fill" color="var(--accent-text)" /></span>
+                  <span style={{ flex: 1, minWidth: 0 }}>
+                    <span style={s.linkTitle}>Équipe ménage LCD</span>
+                    <span style={s.linkDesc}>Un ménage fiable : de meilleurs avis voyageurs</span>
+                  </span>
+                  <ArrowRight size={13} weight="bold" color="var(--text-3)" style={{ flexShrink: 0 }} />
+                </a>
+              </div>
+            </section>
 
-        {/* ── Trouver un pro (annuaires) ────────────────────────────────
-              Les hôtes sont les clients directs des annuaires photographes
-              et ménage — ce bloc est le pont dashboard → annuaires. */}
-        <section style={s.section} className="fade-up d3">
-          <div style={s.sectionHead}>
-            <h3 style={s.sectionTitle}>Trouver un pro près de chez toi</h3>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px' }}>
-            <a
-              href="https://jasonmarinho.com/annuaires/photographes"
-              target="_blank" rel="noopener noreferrer"
-              style={{
-                display: 'flex', alignItems: 'center', gap: '14px',
-                padding: '16px 18px', borderRadius: '14px', textDecoration: 'none',
-                background: 'var(--surface)', border: '1px solid var(--border-2)',
-              }}
-            >
-              <span style={{ width: '38px', height: '38px', borderRadius: '11px', background: 'rgba(192,132,252,0.12)', border: '1px solid rgba(192,132,252,0.28)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Camera size={18} weight="fill" color="#C084FC" />
-              </span>
-              <span style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ display: 'block', fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' }}>Photographe LCD</span>
-                <span style={{ display: 'block', fontSize: '11.5px', color: 'var(--text-muted)', lineHeight: 1.4 }}>Des photos pro = plus de clics sur ton annonce</span>
-              </span>
-              <ArrowRight size={13} weight="bold" color="var(--text-muted)" style={{ flexShrink: 0 }} />
-            </a>
-            <a
-              href="https://jasonmarinho.com/annuaires/menage"
-              target="_blank" rel="noopener noreferrer"
-              style={{
-                display: 'flex', alignItems: 'center', gap: '14px',
-                padding: '16px 18px', borderRadius: '14px', textDecoration: 'none',
-                background: 'var(--surface)', border: '1px solid var(--border-2)',
-              }}
-            >
-              <span style={{ width: '38px', height: '38px', borderRadius: '11px', background: 'rgba(16,185,129,0.10)', border: '1px solid rgba(16,185,129,0.28)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Sparkle size={18} weight="fill" color="var(--success-1)" />
-              </span>
-              <span style={{ flex: 1, minWidth: 0 }}>
-                <span style={{ display: 'block', fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' }}>Équipe ménage LCD</span>
-                <span style={{ display: 'block', fontSize: '11.5px', color: 'var(--text-muted)', lineHeight: 1.4 }}>Un turnover fiable = de meilleurs avis voyageurs</span>
-              </span>
-              <ArrowRight size={13} weight="bold" color="var(--text-muted)" style={{ flexShrink: 0 }} />
-            </a>
-          </div>
-        </section>
+            {/* Mon apprentissage (niveaux) */}
+            {(learnerLevel || formationInProgressData) && (
+              <Link href="/dashboard/formations/profil-apprenant" style={{ ...s.card, textDecoration: 'none', color: 'inherit', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div style={s.cardHead}>
+                  <h3 style={s.cardTitle}><GraduationCap size={16} weight="fill" color="var(--accent-text)" style={{ verticalAlign: '-2px', marginRight: 6 }} />Mon apprentissage</h3>
+                  <ArrowRight size={13} weight="bold" color="var(--text-3)" />
+                </div>
+                <div style={s.learnerBadges}>
+                  {learnerLevel && (
+                    <span style={{ ...s.learnerLevel, color: 'var(--accent-text)', borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' }}>
+                      <Trophy size={12} weight="fill" /> {learnerLevel.label}
+                    </span>
+                  )}
+                  {streakLearner > 0 && (
+                    <span style={s.learnerStreak}>
+                      <Flame size={12} weight="fill" color="#D97706" />
+                      <strong>{streakLearner}</strong> jour{streakLearner > 1 ? 's' : ''} d&apos;affilée
+                    </span>
+                  )}
+                  <span style={s.learnerCount}>
+                    {totalLessonsDone} leçon{totalLessonsDone > 1 ? 's' : ''} · {formationsCompleted} formation{formationsCompleted > 1 ? 's' : ''} finie{formationsCompleted > 1 ? 's' : ''}
+                  </span>
+                </div>
+                {formationInProgressData ? (
+                  <div>
+                    <div style={s.learnerProgressLabel}>Continue</div>
+                    <div style={s.learnerProgressTitle}>{formationInProgressData.title}</div>
+                    <div style={s.learnerProgressBar}>
+                      <div style={{ ...s.learnerProgressFill, width: `${formationInProgressData.progress}%` }} />
+                    </div>
+                    <div style={s.learnerProgressMeta}>
+                      {formationInProgressData.progress} % · {formationInProgressData.completedCount}/{formationInProgressData.lessonsCount} leçons
+                    </div>
+                  </div>
+                ) : (
+                  <div style={s.learnerProgressMeta}>Démarre une formation pour progresser.</div>
+                )}
+              </Link>
+            )}
+          </aside>
+        </div>
 
-        {/* ── Actualités du secteur (en bas de page) ────────────────────
-              L'entrée « Actualités » de la sidebar est passée en 2e
-              position avec point pulsant : la découverte se fait par le
-              menu, la home garde son focus opérationnel. Le badge
-              « N nouvelle(s) » (last_seen_actualites_at) reste ici pour
-              donner une raison de cliquer en fin de parcours. */}
+        {/* ── Actualités du secteur (en bas de page, pleine largeur) */}
         {latestNews.length > 0 && (
-          <section style={s.section} className="fade-up d3">
+          <section style={s.section}>
             <div style={s.sectionHead}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Newspaper size={16} color="var(--accent-text)" weight="duotone" />
@@ -1024,59 +979,6 @@ export default async function DashboardPage() {
           </section>
         )}
 
-        {/* ── Pulse apprenant (niveaux) : en fin de page depuis sept. 2026,
-              l'accueil garde son focus opérationnel. */}
-        {(learnerLevel || formationInProgressData) && (
-          <section style={s.section} className="fade-up d3">
-            <Link href="/dashboard/formations/profil-apprenant" style={s.learnerCard}>
-              <div style={s.learnerLeft}>
-                <div style={s.learnerHead}>
-                  <GraduationCap size={14} weight="fill" color="var(--accent-text)" />
-                  <span style={s.learnerLabel}>Mon apprentissage</span>
-                </div>
-                <div style={s.learnerBadges}>
-                  {learnerLevel && (
-                    <span style={{ ...s.learnerLevel, color: learnerLevel.color, borderColor: `${learnerLevel.color}50`, background: `${learnerLevel.color}14` }}>
-                      <Trophy size={12} weight="fill" />
-                      {learnerLevel.label}
-                    </span>
-                  )}
-                  {streakLearner > 0 && (
-                    <span style={s.learnerStreak}>
-                      <Flame size={12} weight="fill" color="#dc2626" />
-                      <strong style={{ color: 'var(--danger)' }}>{streakLearner}</strong> jour{streakLearner > 1 ? 's' : ''}
-                    </span>
-                  )}
-                  <span style={s.learnerCount}>
-                    {totalLessonsDone} leçon{totalLessonsDone > 1 ? 's' : ''} · {formationsCompleted} formation{formationsCompleted > 1 ? 's' : ''} finie{formationsCompleted > 1 ? 's' : ''}
-                  </span>
-                </div>
-              </div>
-
-              {formationInProgressData ? (
-                <div style={s.learnerProgress}>
-                  <div style={s.learnerProgressLabel}>Continue</div>
-                  <div style={s.learnerProgressTitle}>{formationInProgressData.title}</div>
-                  <div style={s.learnerProgressBar}>
-                    <div style={{ ...s.learnerProgressFill, width: `${formationInProgressData.progress}%` }} />
-                  </div>
-                  <div style={s.learnerProgressMeta}>
-                    {formationInProgressData.progress}% · {formationInProgressData.completedCount}/{formationInProgressData.lessonsCount} leçons
-                  </div>
-                </div>
-              ) : (
-                <div style={s.learnerProgress}>
-                  <div style={s.learnerProgressLabel}>Suggestion</div>
-                  <div style={s.learnerProgressTitle}>Démarre une formation pour progresser</div>
-                  <div style={s.learnerProgressMeta}>16 formations disponibles dans le catalogue</div>
-                </div>
-              )}
-
-              <ArrowRight size={14} weight="bold" color="var(--text-muted)" style={{ flexShrink: 0 }} />
-            </Link>
-          </section>
-        )}
-
       </div>
     </>
   )
@@ -1084,18 +986,20 @@ export default async function DashboardPage() {
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
+// Couleurs de la marque uniquement (pas de bleu ni de violet sur les pages
+// hôte) : vert, jaune ambré, rose, brun ; le libellé fait la différence.
 const CATEGORY_CONFIG: Record<string, { bg: string; color: string; label: string }> = {
-  reglementation:      { bg: 'rgba(96,165,250,0.12)',  color: 'var(--info)', label: 'Réglementation' },
-  fiscalite:           { bg: 'var(--success-bg)',  color: 'var(--success-1)', label: 'Fiscalité' },
-  gites:               { bg: 'rgba(245,158,11,0.12)',  color: 'var(--warning)', label: 'Gîtes & Meublés' },
-  'chambres-hotes':    { bg: 'rgba(236,72,153,0.12)',  color: '#ec4899', label: "Chambres d'hôtes" },
-  conciergerie:        { bg: 'rgba(139,92,246,0.12)',  color: '#8b5cf6', label: 'Conciergeries' },
-  'reservation-directe': { bg: 'rgba(16,185,129,0.12)', color: 'var(--success-1)', label: 'Réserv. directe' },
-  marche:              { bg: 'rgba(244,114,182,0.12)', color: '#f472b6', label: 'Marché' },
-  communes:            { bg: 'rgba(100,116,139,0.12)', color: '#64748b', label: 'Communes' },
-  plateformes:         { bg: 'rgba(251,146,60,0.12)',  color: '#fb923c', label: 'Plateformes OTA' },
-  outils:              { bg: 'rgba(167,139,250,0.12)', color: '#a78bfa', label: 'Outils & Tech' },
-  general:             { bg: 'rgba(148,163,184,0.12)', color: '#94a3b8', label: 'Général' },
+  reglementation:        { bg: 'var(--accent-bg)',          color: 'var(--accent-text)', label: 'Réglementation' },
+  fiscalite:             { bg: 'rgba(255,213,107,0.18)',    color: '#8A5A12', label: 'Fiscalité' },
+  gites:                 { bg: 'rgba(255,213,107,0.18)',    color: '#8A5A12', label: 'Gîtes & Meublés' },
+  'chambres-hotes':      { bg: 'rgba(244,114,182,0.14)',    color: '#DB4F96', label: "Chambres d'hôtes" },
+  conciergerie:          { bg: 'rgba(139,109,94,0.14)',     color: '#8B6D5E', label: 'Conciergeries' },
+  'reservation-directe': { bg: 'var(--accent-bg)',          color: 'var(--accent-text)', label: 'Réserv. directe' },
+  marche:                { bg: 'rgba(244,114,182,0.14)',    color: '#DB4F96', label: 'Marché' },
+  communes:              { bg: 'rgba(139,109,94,0.14)',     color: '#8B6D5E', label: 'Communes' },
+  plateformes:           { bg: 'rgba(224,71,91,0.12)',      color: '#E0475B', label: 'Plateformes OTA' },
+  outils:                { bg: 'var(--accent-bg)',          color: 'var(--accent-text)', label: 'Outils & Tech' },
+  general:               { bg: 'rgba(139,109,94,0.14)',     color: '#8B6D5E', label: 'Général' },
 }
 
 const NEWS_MONTHS = ['jan.','fév.','mar.','avr.','mai','juin','juil.','août','sep.','oct.','nov.','déc.']
@@ -1150,238 +1054,102 @@ function NewsCard({ article }: { article: NewsArticle }) {
 // ── Styles ────────────────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+  page: { padding: '20px var(--dash-page-px) 48px', width: '100%', display: 'flex', flexDirection: 'column', gap: 16 },
 
-  welcome: {
-    // Fond vert profond opaque (pas un dégradé vers transparent) : la
-    // version précédente s'estompait jusqu'à quasi-invisible en haut à
-    // droite (opacité 0.10 + halo jaune clair), rendant le texte illisible
-    // à cet endroit. Couleur fixe indépendante du thème clair/sombre, texte
-    // blanc explicite en conséquence — un contraste garanti partout sur la
-    // carte plutôt qu'hérité du thème.
-    background: 'radial-gradient(ellipse 80% 60% at 90% 0%, rgba(255,213,107,0.14), transparent 60%), linear-gradient(135deg, #004C3F 0%, #0B6B57 100%)',
-    border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: 'var(--r-xl)',
-    padding: 'clamp(28px,3vw,44px) clamp(28px,4vw,52px)',
-    marginBottom: 'var(--s-6)',
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    gap: 'var(--s-6)', flexWrap: 'wrap',
-    position: 'relative' as const,
-    overflow: 'hidden' as const,
-    boxShadow: 'var(--shadow-md)',
-  },
-  welcomeSub:   { fontSize: 'var(--t-sm)', color: 'rgba(255,255,255,0.65)', marginBottom: 'var(--s-2)', letterSpacing: '0.3px', textTransform: 'uppercase' as const, fontWeight: 500 },
-  welcomeTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(28px,2.6vw,40px)', fontWeight: 400, color: '#fff', marginBottom: 'var(--s-3)', letterSpacing: 'var(--ls-tight)', lineHeight: 'var(--lh-tight)' },
-  welcomeDesc:  { fontSize: 'var(--t-base)', fontWeight: 400, color: 'rgba(255,255,255,0.85)', maxWidth: '440px', lineHeight: 'var(--lh-relax)' },
-  // Pills d'actions contextuelles (Étape 7). Remplacent les stats statiques.
-  actionPills:  {
-    display: 'flex', flexWrap: 'wrap', gap: 'var(--s-2)',
-    marginTop: 'var(--s-4)',
-  },
-  pill: {
-    display: 'inline-flex', alignItems: 'center', gap: '7px',
-    padding: '7px 13px', borderRadius: 'var(--r-pill)',
-    fontSize: 'var(--t-sm)', fontWeight: 500,
-    // Couleurs fixes (pas var(--text)/var(--border)) : ces pills vivent
-    // uniquement sur le fond vert foncé de la carte d'accueil, pas sur le
-    // fond de page — leurs couleurs ne doivent pas suivre le thème clair/
-    // sombre du reste du site.
-    color: '#fff',
-    background: 'rgba(255,255,255,0.10)',
-    border: '1px solid rgba(255,255,255,0.18)',
+  // ── En-tête (HubHero) ─────────────────────────────────────────────────────
+  asideTitle: { fontSize: 12, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  asideStats: { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px 14px' },
+  asideStat:  { display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0, textDecoration: 'none', color: 'inherit' },
+  asideNum:   { fontFamily: 'var(--font-fraunces), serif', fontSize: 24, lineHeight: 1.05, fontWeight: 500, color: 'var(--text)' },
+  asideLbl:   { fontSize: 12, color: 'var(--text-3)', lineHeight: 1.35 },
+  asideObj:   { display: 'flex', flexDirection: 'column', gap: 6, paddingTop: 10, borderTop: '1px solid var(--border)', textDecoration: 'none', color: 'inherit' },
+  heroGhost: {
+    display: 'inline-flex', alignItems: 'center', gap: 8, padding: '11px 16px', borderRadius: 12,
+    background: 'var(--surface)', border: '1px solid var(--border-2)', color: 'var(--text)', fontSize: 14, fontWeight: 600,
     textDecoration: 'none',
-    transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
-    whiteSpace: 'nowrap' as const,
   },
-  pillOk:   { color: 'var(--success-1)', background: 'var(--success-bg)', borderColor: 'rgba(99,214,131,0.30)' },
-  pillInfo: { color: '#93C5FD', background: 'rgba(147,197,253,0.10)', borderColor: 'rgba(147,197,253,0.25)' },
-  pillWarn: { color: '#FB923C', background: 'rgba(251,146,60,0.10)', borderColor: 'rgba(251,146,60,0.30)' },
-  pillDot:  { width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor', flexShrink: 0 },
-  // Anciennes stats — obsolètes après Étape 7 mais conservées le temps que
-  // rien ne les référence (utilisées par PerformanceCard qui reste sur
-  // /dashboard/finances). À nettoyer plus tard.
-  statsRow:     { display: 'flex', alignItems: 'center', gap: 'var(--s-7)', flexShrink: 0 },
-  stat:         { textAlign: 'center' as const },
-  statVal:      { display: 'block', fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(36px,3vw,44px)', fontWeight: 400, color: 'var(--accent-text)', lineHeight: 'var(--lh-tight)', letterSpacing: 'var(--ls-tight)' },
-  statLbl:      { display: 'block', fontSize: 'var(--t-xs)', color: 'var(--text-3)', marginTop: 'var(--s-2)', letterSpacing: '0.4px' },
-  statDivider:  { width: '1px', height: '48px', background: 'var(--border)' },
+  objectifBar: { position: 'relative', height: 8, background: 'var(--surface-2)', borderRadius: 6, overflow: 'hidden' },
+  objectifFill: { height: '100%', borderRadius: 6, transition: 'width 0.6s ease' },
 
-  section:      { marginBottom: '28px' },
-  sectionTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)', margin: 0 },
-  sectionHead:  { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' },
-  newsFreshBadge: { fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.3px', color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: '999px', padding: '2px 8px', lineHeight: 1.4, whiteSpace: 'nowrap' as const },
-  seeAll:       { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 500, padding: '5px 10px', borderRadius: '8px', background: 'rgba(255,213,107,0.08)', border: '1px solid rgba(255,213,107,0.2)', transition: 'background 0.15s, border-color 0.15s' },
+  // ── Deux colonnes (flex-wrap, sans position collante) ───────────────────
+  cols:    { display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'flex-start' },
+  colMain: { flex: '999 1 560px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 16 },
+  colSide: { flex: '1 1 340px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 16 },
 
-  // ── Quick actions ─────────────────────────────────────────────────────────
-  quickStrip: {
-    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 'var(--s-3)',
+  card: {
+    background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--r-xl, 18px)',
+    padding: 'clamp(16px, 2.2vw, 22px)', minWidth: 0,
   },
-  quickItem: {
-    display: 'flex', alignItems: 'center', gap: 'var(--s-3)',
-    padding: 'var(--s-4) var(--s-4)', borderRadius: 'var(--r-md)',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    textDecoration: 'none' as const, color: 'var(--text-2)',
-    transition: 'border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-out), background var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
-    fontSize: 'var(--t-sm)', fontWeight: 600,
+  cardHead:  { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 14, flexWrap: 'wrap' },
+  cardTitle: { margin: 0, fontFamily: 'var(--font-fraunces), serif', fontSize: 18, fontWeight: 500, color: 'var(--text)', letterSpacing: '-0.01em' },
+  linkCard:  { display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none', color: 'inherit' },
+  linkIcon:  {
+    width: 38, height: 38, borderRadius: 11, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
   },
-  quickIcon: {
-    width: '38px', height: '38px', borderRadius: 'var(--r-md)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    flexShrink: 0,
-    transition: 'transform var(--d-base) var(--ease-spring)',
+  linkTitle: { display: 'block', fontSize: 14, fontWeight: 700, color: 'var(--text)', lineHeight: 1.3 },
+  linkDesc:  { display: 'block', fontSize: 12.5, color: 'var(--text-3)', lineHeight: 1.4, marginTop: 2 },
+  proRow: {
+    display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', borderRadius: 12,
+    background: 'var(--bg)', border: '1px solid var(--border)', textDecoration: 'none', color: 'inherit',
   },
-  quickLabel: { color: 'var(--text)', fontSize: 'var(--t-sm)', fontWeight: 600, lineHeight: 'var(--lh-tight)' },
 
-  // ── Objectif revenu annuel ───────────────────────────────────────────────
-  objectifCard: {
-    display: 'block', padding: '18px 22px', borderRadius: '14px',
-    background: 'var(--surface)', border: '1px solid rgba(21,128,61,0.32)',
-    textDecoration: 'none' as const, color: 'inherit',
-    transition: 'border-color 0.15s',
-  },
-  objectifHead: {
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    marginBottom: '12px', flexWrap: 'wrap' as const, gap: '8px',
-  },
-  objectifLabel: { fontSize: '12px', fontWeight: 700, color: 'var(--text)', textTransform: 'uppercase' as const, letterSpacing: '0.6px' },
-  objectifPct: { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 500, color: '#15803d', lineHeight: 1 },
-  objectifBar: {
-    position: 'relative' as const,
-    height: '10px', background: 'var(--surface-2)', borderRadius: '6px',
-    overflow: 'hidden' as const, marginBottom: '10px',
-  },
-  objectifFill: {
-    height: '100%', borderRadius: '6px',
-    transition: 'width 0.6s ease',
-  },
-  objectifMeta: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: 'var(--text-2)', flexWrap: 'wrap' as const, gap: '6px' },
-
-  // ── Pulse apprenant ───────────────────────────────────────────────────────
-  learnerCard: {
-    display: 'flex', alignItems: 'center', gap: '20px',
-    padding: '18px 22px', borderRadius: '14px',
-    background: 'var(--surface)', border: '1px solid var(--accent-border)',
-    textDecoration: 'none' as const, color: 'inherit',
-    transition: 'border-color 0.15s, background 0.15s',
-    flexWrap: 'wrap' as const,
-  },
-  learnerLeft: { flex: 1, minWidth: '220px', display: 'flex', flexDirection: 'column' as const, gap: '8px' },
-  learnerHead: {
-    display: 'flex', alignItems: 'center', gap: '7px',
-    fontSize: '11px', fontWeight: 700, color: 'var(--text-2)',
-    textTransform: 'uppercase' as const, letterSpacing: '0.6px',
-  },
-  learnerLabel: { color: 'var(--text-2)' },
-  learnerBadges: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const },
+  // ── Mon apprentissage ─────────────────────────────────────────────────────
+  learnerBadges: { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
   learnerLevel: {
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
-    fontSize: '12px', fontWeight: 700,
-    padding: '5px 11px', borderRadius: '100px',
-    border: '1px solid',
+    display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 700,
+    padding: '5px 11px', borderRadius: 100, border: '1px solid',
   },
   learnerStreak: {
-    display: 'inline-flex', alignItems: 'center', gap: '5px',
-    fontSize: '12px', fontWeight: 500, color: 'var(--text)',
-    padding: '5px 11px', borderRadius: '100px',
-    background: 'rgba(220,38,38,0.10)', border: '1px solid rgba(220,38,38,0.25)',
+    display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 500, color: 'var(--text)',
+    padding: '5px 11px', borderRadius: 100, background: 'rgba(255,213,107,0.18)', border: '1px solid rgba(255,213,107,0.4)',
   },
-  learnerCount: { fontSize: '12px', color: 'var(--text-2)', fontWeight: 500 },
-  learnerProgress: {
-    flex: '1 1 280px', minWidth: '260px',
-    display: 'flex', flexDirection: 'column' as const, gap: '4px',
-    paddingLeft: '16px', borderLeft: '1px solid var(--border)',
-  },
-  learnerProgressLabel: { fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.6px' },
-  learnerProgressTitle: { fontSize: '13.5px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.3 },
-  learnerProgressBar: {
-    height: '5px', background: 'var(--surface-2)', borderRadius: '3px',
-    overflow: 'hidden' as const, marginTop: '4px',
-  },
-  learnerProgressFill: {
-    height: '100%', background: 'linear-gradient(90deg, var(--accent-text), #15803d)', borderRadius: '3px',
-  },
-  learnerProgressMeta: { fontSize: '11.5px', color: 'var(--text-2)', fontWeight: 500 },
+  learnerCount: { fontSize: 12, color: 'var(--text-2)', fontWeight: 500 },
+  learnerProgressLabel: { fontSize: 10.5, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px' },
+  learnerProgressTitle: { fontSize: 13.5, fontWeight: 600, color: 'var(--text)', lineHeight: 1.3, marginTop: 2 },
+  learnerProgressBar: { height: 6, background: 'var(--surface-2)', borderRadius: 3, overflow: 'hidden', margin: '8px 0 5px' },
+  learnerProgressFill: { height: '100%', background: 'var(--accent-text)', borderRadius: 3 },
+  learnerProgressMeta: { fontSize: 12, color: 'var(--text-2)', fontWeight: 500 },
 
-  // ── Prochains événements (14 jours) ───────────────────────────────────────
-  upcomingCard: {
-    padding: '18px 20px', borderRadius: '14px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-  },
-  upcomingHead: {
-    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-    marginBottom: '14px', flexWrap: 'wrap' as const, gap: '8px',
-  },
-  upcomingTitle: { fontSize: '12px', fontWeight: 700, color: 'var(--text)', textTransform: 'uppercase' as const, letterSpacing: '0.6px' },
-  upcomingLink: {
-    display: 'inline-flex', alignItems: 'center', gap: '4px',
-    fontSize: '12px', fontWeight: 600, color: 'var(--accent-text)',
-    textDecoration: 'none' as const,
-  },
-  upcomingList: { display: 'flex', flexDirection: 'column' as const, gap: '6px' },
+  // ── Prochaines arrivées et départs (14 jours) ────────────────────────────
+  upcomingLink: { display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 12.5, fontWeight: 600, color: 'var(--accent-text)', textDecoration: 'none' },
+  upcomingList: { display: 'flex', flexDirection: 'column', gap: 6 },
   upcomingItem: {
-    display: 'flex', alignItems: 'center', gap: '12px',
-    padding: '12px 14px', borderRadius: '10px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    textDecoration: 'none' as const, color: 'inherit',
-    transition: 'border-color 0.15s, background 0.15s',
+    display: 'flex', alignItems: 'center', gap: 12, padding: '11px 13px', borderRadius: 12,
+    background: 'var(--bg)', border: '1px solid var(--border)', textDecoration: 'none', color: 'inherit',
   },
-  upcomingDot: {
-    width: '34px', height: '34px', borderRadius: '10px', flexShrink: 0,
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-  },
-  upcomingMain: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' as const, gap: '3px' },
-  upcomingItemTop: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const },
-  upcomingDate: { fontSize: '13px', fontWeight: 600, color: 'var(--text)' },
-  upcomingType: {
-    fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px',
-    padding: '2px 8px', borderRadius: '100px', textTransform: 'uppercase' as const,
-  },
-  upcomingMainText: {
-    fontSize: '12.5px', color: 'var(--text-2)',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
-  },
+  upcomingDot: { width: 34, height: 34, borderRadius: 10, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  upcomingMain: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 3 },
+  upcomingItemTop: { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
+  upcomingDate: { fontSize: 13.5, fontWeight: 600, color: 'var(--text)' },
+  upcomingType: { fontSize: 10.5, fontWeight: 700, letterSpacing: '0.4px', padding: '2px 8px', borderRadius: 100, textTransform: 'uppercase' },
+  upcomingMainText: { fontSize: 13, color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
   upcomingTraveler: { color: 'var(--text-muted)' },
   upcomingEmpty: {
-    display: 'flex', alignItems: 'center', gap: '14px',
-    padding: '18px 16px', borderRadius: '10px',
-    background: 'var(--surface-2)', border: '1px dashed var(--border-2)',
+    display: 'flex', alignItems: 'center', gap: 14, padding: '16px', borderRadius: 12,
+    background: 'var(--bg)', border: '1px dashed var(--border-2)',
   },
-  upcomingEmptyTitle: { fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' },
-  upcomingEmptySub: { fontSize: '12px', color: 'var(--text-2)', marginTop: '2px' },
+  upcomingEmptyTitle: { fontSize: 13.5, fontWeight: 600, color: 'var(--text)' },
+  upcomingEmptySub: { fontSize: 12.5, color: 'var(--text-2)', marginTop: 2 },
 
-  // Operational
-  opGrid:      { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px' },
-  opCard:      { padding: '20px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '14px' },
-  opCardHead:  { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  opCardTitle: { fontSize: '11px', fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.6px' },
-  opLink:      { display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 500 },
-  countBadge:  { fontSize: '10px', fontWeight: 700, color: '#f97316', background: 'rgba(249,115,22,0.15)', border: '1px solid rgba(249,115,22,0.3)', borderRadius: '10px', padding: '1px 7px' },
-  stayRow:     { display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 10px', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--border)' },
-  badge:       { fontSize: '10px', fontWeight: 600, padding: '3px 7px', borderRadius: '6px', whiteSpace: 'nowrap', flexShrink: 0 },
-  stayInfo:    { display: 'flex', flexDirection: 'column', gap: '1px', minWidth: 0, flex: 1 },
-  stayName:    { fontSize: '13px', fontWeight: 600, color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-  stayMeta:    { fontSize: '11px', color: 'var(--text-muted)' },
-  actionRow:   { display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 10px', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--border)', cursor: 'pointer' },
-  dot:         { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 },
-
-  // News
-  newsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px' },
+  // ── Actualités ────────────────────────────────────────────────────────────
+  section:      { marginTop: 8 },
+  sectionTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 18, fontWeight: 500, color: 'var(--text)', margin: 0 },
+  sectionHead:  { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 14, flexWrap: 'wrap' },
+  newsFreshBadge: { fontSize: 10.5, fontWeight: 700, letterSpacing: '0.3px', color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 999, padding: '2px 8px', lineHeight: 1.4, whiteSpace: 'nowrap' },
+  seeAll:       { display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12.5, color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 600 },
+  newsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 260px), 1fr))', gap: 14 },
   newsCard: {
-    display: 'flex', flexDirection: 'column', gap: '10px',
-    padding: '20px 22px', borderRadius: '16px',
-    border: '1px solid var(--border)', borderLeft: '3px solid',
-    background: 'var(--surface)',
-    transition: 'transform 0.15s, box-shadow 0.15s',
-    height: '100%',
+    display: 'flex', flexDirection: 'column', gap: 10, padding: '18px 20px', borderRadius: 16,
+    border: '1px solid var(--border)', borderLeft: '3px solid', background: 'var(--surface)', height: '100%',
   },
   newsTag: {
-    display: 'inline-flex', width: 'fit-content',
-    fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' as const,
-    padding: '3px 9px', borderRadius: '100px',
+    display: 'inline-flex', width: 'fit-content', fontSize: 10.5, fontWeight: 700, letterSpacing: '0.5px',
+    textTransform: 'uppercase', padding: '3px 9px', borderRadius: 100,
   },
-  newsDate:     { fontSize: '11px', color: 'var(--text-muted)', whiteSpace: 'nowrap' as const },
-  newsTitle:    { fontSize: '14px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.4 },
-  newsDesc:     { fontSize: '12px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.65, flex: 1 },
-  newsFooter:   { display: 'flex', alignItems: 'center', gap: '5px', marginTop: '4px' },
-  newsReadMore: { fontSize: '11px', fontWeight: 500, color: 'var(--accent-text)' },
+  newsDate:     { fontSize: 11.5, color: 'var(--text-muted)', whiteSpace: 'nowrap' },
+  newsTitle:    { fontSize: 14, fontWeight: 600, color: 'var(--text)', lineHeight: 1.4 },
+  newsDesc:     { fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.6, flex: 1 },
+  newsFooter:   { display: 'flex', alignItems: 'center', gap: 5, marginTop: 4 },
+  newsReadMore: { fontSize: 12, fontWeight: 600, color: 'var(--accent-text)' },
 }

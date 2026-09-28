@@ -18,10 +18,10 @@ export type TodayAction = {
 }
 
 const ACTIONS: Record<TodayAction['key'], { label: (n: number) => string; Icon: React.ElementType; color: string }> = {
-  signer:       { label: n => `contrat${n > 1 ? 's' : ''} à faire signer`,        Icon: PenNib,             color: '#d97706' },
+  signer:       { label: n => `contrat${n > 1 ? 's' : ''} à faire signer`,        Icon: PenNib,             color: '#B7791F' },
   loyer:        { label: n => `loyer${n > 1 ? 's' : ''} pas encore encaissé${n > 1 ? 's' : ''}`, Icon: CurrencyEur, color: '#B7791F' },
   caution:      { label: n => `caution${n > 1 ? 's' : ''} à traiter`,             Icon: LockKey,            color: 'var(--accent-text)' },
-  declarations: { label: n => `déclaration${n > 1 ? 's' : ''} voyageur à faire`,  Icon: IdentificationCard, color: '#f59e0b' },
+  declarations: { label: n => `déclaration${n > 1 ? 's' : ''} voyageur à faire`,  Icon: IdentificationCard, color: '#B7791F' },
 }
 
 export default function TodayBoard({ arrivals, departures, menages, actions }: {
@@ -37,16 +37,16 @@ export default function TodayBoard({ arrivals, departures, menages, actions }: {
 
       <div style={{ ...s.cols, gridTemplateColumns: `repeat(${menages ? 3 : 2}, minmax(0, 1fr))` }} className="today-cols">
         <Column
-          Icon={SignIn} color="#15803d" title="Arrivées" href="/dashboard/calendrier"
+          Icon={SignIn} color="var(--accent-text)" title="Arrivées" href="/dashboard/calendrier"
           items={arrivals} empty="Aucune arrivée"
         />
         <Column
-          Icon={SignOut} color="#0369a1" title="Départs" href="/dashboard/calendrier"
+          Icon={SignOut} color="#B7791F" title="Départs" href="/dashboard/calendrier"
           items={departures} empty="Aucun départ"
         />
         {menages && (
           <Column
-            Icon={Broom} color="#7c3aed" title="Ménages" href="/dashboard/calendrier/menage"
+            Icon={Broom} color="#DB4F96" title="Ménages" href="/dashboard/calendrier/menage"
             items={menages} empty="Aucun ménage"
             badge={menages.length > 0 ? `${menages.filter(m => m.done).length}/${menages.length} faits` : undefined}
           />
@@ -62,7 +62,7 @@ export default function TodayBoard({ arrivals, departures, menages, actions }: {
           const meta = ACTIONS[a.key]
           return (
             <Link key={a.key} href={a.href} style={s.action}>
-              <span style={{ ...s.actionIcon, color: meta.color, background: `${meta.color}1f` }}>
+              <span style={{ ...s.actionIcon, color: meta.color, background: `color-mix(in srgb, ${meta.color} 13%, transparent)` }}>
                 <meta.Icon size={15} weight="fill" />
               </span>
               <span style={s.actionText}>
@@ -92,7 +92,7 @@ function Column({ Icon, color, title, href, items, empty, badge }: {
   return (
     <Link href={href} style={s.col}>
       <div style={s.colHead}>
-        <span style={{ ...s.colIcon, color, background: `${color}1a` }}><Icon size={15} weight="bold" /></span>
+        <span style={{ ...s.colIcon, color, background: `color-mix(in srgb, ${color} 12%, transparent)` }}><Icon size={15} weight="bold" /></span>
         <span style={s.colTitle}>{title}</span>
         <span style={{ ...s.colCount, color: items.length ? color : 'var(--text-muted)' }}>{items.length}</span>
       </div>
@@ -104,7 +104,7 @@ function Column({ Icon, color, title, href, items, empty, badge }: {
           {shown.map(it => (
             <li key={it.key} style={s.item}>
               {it.done !== undefined && (
-                <CheckCircle size={13} weight={it.done ? 'fill' : 'regular'} color={it.done ? '#10b981' : 'var(--text-muted)'} style={{ flexShrink: 0 }} />
+                <CheckCircle size={13} weight={it.done ? 'fill' : 'regular'} color={it.done ? "var(--accent-text)" : 'var(--text-muted)'} style={{ flexShrink: 0 }} />
               )}
               <span style={s.itemLabel}>{it.label}</span>
               {it.sub && <span style={s.itemSub}>{it.sub}</span>}
@@ -119,10 +119,10 @@ function Column({ Icon, color, title, href, items, empty, badge }: {
 
 const s: Record<string, React.CSSProperties> = {
   wrap: {
-    marginBottom: '28px', padding: '18px', borderRadius: '16px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
+    padding: 'clamp(16px, 2.2vw, 22px)', borderRadius: 'var(--r-xl, 18px)',
+    background: 'var(--surface)', border: '1px solid var(--border)', minWidth: 0,
   },
-  title: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)', margin: '0 0 14px' },
+  title: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 500, color: 'var(--text)', margin: '0 0 14px' },
   cols: { display: 'grid', gap: '10px', marginBottom: '12px' },
   col: {
     display: 'block', padding: '12px 14px', borderRadius: '12px', textDecoration: 'none',
@@ -149,6 +149,6 @@ const s: Record<string, React.CSSProperties> = {
   actionNames: { color: 'var(--text-3)' },
   allGood: {
     display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 12px', borderRadius: '10px',
-    fontSize: '13px', color: 'var(--success-1)', fontWeight: 600, background: 'var(--success-bg)',
+    fontSize: '13px', color: 'var(--accent-text)', fontWeight: 600, background: 'var(--accent-bg)',
   },
 }

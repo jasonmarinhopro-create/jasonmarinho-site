@@ -279,7 +279,7 @@ function EditPlatformsModal({
               </div>
             ))}
             {(form.custom_platform_links ?? []).length === 0 && (
-              <p style={s.customEmpty}>Aucune plateforme custom — utile pour Hospitable, Smoobu, ton site direct…</p>
+              <p style={s.customEmpty}>Aucune autre plateforme pour l'instant. Utile pour Hospitable, Smoobu, ton site direct…</p>
             )}
           </div>
 
@@ -303,9 +303,8 @@ const s: Record<string, React.CSSProperties> = {
   card: {
     background: 'var(--surface)',
     border: '1px solid var(--border)',
-    borderRadius: '16px',
-    padding: 'clamp(14px, 2vw, 20px)',
-    marginBottom: 'clamp(18px, 2.5vw, 26px)',
+    borderRadius: 'var(--r-xl, 18px)',
+    padding: 'clamp(16px, 2.2vw, 22px)',
     display: 'flex',
     flexDirection: 'column',
     gap: '12px',

@@ -28,7 +28,7 @@ export default function DeclarationsView({ todo, done }: { todo: PendingDeclarat
         <DeclarationsWidget declarations={todo} />
       ) : (
         <div style={s.ok}>
-          <CheckCircle size={18} weight="fill" color="var(--success-1)" />
+          <CheckCircle size={18} weight="fill" color="var(--accent-text)" />
           Aucune déclaration en attente.
         </div>
       )}
@@ -88,13 +88,13 @@ const s: Record<string, React.CSSProperties> = {
   },
   desc: { fontSize: '14px', color: 'var(--text-3)', margin: '0 0 22px', lineHeight: 1.6, maxWidth: '720px' },
   ok: {
-    display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 16px', marginBottom: '28px',
+    display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 16px', marginBottom: 0,
     background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px',
     fontSize: '14px', color: 'var(--text)', fontWeight: 600,
   },
   h2: {
     fontSize: '11.5px', fontWeight: 700, letterSpacing: '0.6px', textTransform: 'uppercase',
-    color: 'var(--text-2)', margin: '8px 0 10px',
+    color: 'var(--text-2)', margin: '28px 0 10px',
   },
   empty: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13.5px', color: 'var(--text-3)' },
   // Grands écrans : l'historique se répartit sur plusieurs colonnes

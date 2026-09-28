@@ -28,7 +28,7 @@ export interface PendingDeclaration {
 function deadlineInfo(deadlineAt: string): { label: string; color: string } {
   const ms = new Date(deadlineAt).getTime() - Date.now()
   const hours = Math.floor(ms / 3_600_000)
-  if (ms <= 0) return { label: 'Deadline dépassée — déclare sans attendre', color: 'var(--danger)' }
+  if (ms <= 0) return { label: 'Délai dépassé : déclare sans attendre', color: 'var(--danger)' }
   if (hours < 24) return { label: `Il reste moins de ${hours + 1}h`, color: '#f97316' }
   const days = Math.floor(hours / 24)
   return { label: `Il reste ${days} jour${days > 1 ? 's' : ''}`, color: '#f59e0b' }
@@ -187,9 +187,8 @@ const s: Record<string, React.CSSProperties> = {
   wrap: {
     background: 'var(--warning-bg)',
     border: '1px solid rgba(245,158,11,0.28)',
-    borderRadius: '14px',
+    borderRadius: 'var(--r-xl, 18px)',
     padding: '16px 18px',
-    marginBottom: 'clamp(18px, 2.5vw, 28px)',
   },
   head: {
     display: 'flex', alignItems: 'center', gap: '8px',
