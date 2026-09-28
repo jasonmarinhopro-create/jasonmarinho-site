@@ -15,6 +15,10 @@ on:
         description: "Formations à publier (slugs séparés par des virgules, vide = toutes)"
         required: false
         default: ''
+      chercher:
+        description: "Aperçu : motif à chercher dans le texte en base (regex, ex. 17,2|71 %)"
+        required: false
+        default: ''
       apply:
         description: "Écrire en base (décoché = aperçu seulement)"
         type: boolean
@@ -50,4 +54,5 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           SEED_ONLY: ${{ inputs.formations }}
           DRY_RUN: ${{ inputs.apply && '0' || '1' }}
+          FIND: ${{ inputs.chercher }}
         run: node scripts/seed-formations-content.mjs

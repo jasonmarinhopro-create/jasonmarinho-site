@@ -18,6 +18,8 @@
  * Options (env):
  *   SEED_ONLY=slug-a,slug-b  seed only these formations (default: all)
  *   DRY_RUN=1                write nothing, list what would change
+ *   FIND='17,2|71 %'         (aperçu) cherche ce motif (regex) dans le texte EN BASE
+ *                            et affiche les passages trouvés
  *
  * Warning: a lesson edited in /dashboard/admin/formations is overwritten by
  * its content.ts version. Run with DRY_RUN=1 first (the GitHub workflow
@@ -41,6 +43,8 @@ const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY
 const DRY_RUN = process.env.DRY_RUN === '1' || process.env.DRY_RUN === 'true'
 const ONLY = (process.env.SEED_ONLY ?? '').split(',').map(x => x.trim()).filter(Boolean)
 let errors = 0
+const FIND = process.env.FIND ? new RegExp(process.env.FIND, 'gi') : null
+let found = 0
 
 if (!SUPABASE_URL || !SERVICE_ROLE) {
   console.error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in env.')
@@ -143,6 +147,19 @@ async function seedFormation(slug) {
         .eq('module_id', moduleId)
       if (readLessonsErr) throw new Error(`lecture des leçons du module ${mod.id} impossible : ${readLessonsErr.message}`)
       for (const r of rows ?? []) existingLessons.set(r.lesson_number, r)
+      if (FIND) {
+        for (const r of rows ?? []) {
+          const text = `${r.title}\n${r.content ?? ''}`
+          const hits = [...text.matchAll(FIND)].slice(0, 3)
+          if (hits.length === 0) continue
+          found += 1
+          console.log(`  ? ${mod.id}.${r.lesson_number} ${r.title}`)
+          for (const h of hits) {
+            const i = h.index ?? 0
+            console.log(`      « …${text.slice(Math.max(0, i - 60), i + 60).replace(/\s+/g, ' ').trim()}… »`)
+          }
+        }
+      }
     }
 
     if (!DRY_RUN) {
@@ -246,6 +263,7 @@ async function main() {
   console.log(`Modules upserted:  ${totalModules}`)
   console.log(`Lessons upserted:  ${totalLessons}`)
   console.log(`${DRY_RUN ? 'Would change' : 'Changed'}: ${changed} lesson(s), ${DRY_RUN ? 'would create' : 'created'}: ${created}`)
+  if (FIND) console.log(`Motif « ${process.env.FIND} » trouvé en base dans ${found} leçon(s)`)
   if (errors > 0) {
     console.error(`${errors} erreur(s)`)
     process.exit(1)
