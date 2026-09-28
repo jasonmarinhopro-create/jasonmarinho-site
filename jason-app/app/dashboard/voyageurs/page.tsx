@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import VoyageursView from './VoyageursView'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import OnboardingTour, { VOYAGEURS_STEPS } from '../OnboardingTour'
+import { flaggedVoyageurs } from '@/lib/securite/lookup'
+import { isPositive } from '@/lib/securite/identifiers'
 
 // Cette page et ses server actions (addVoyageur, checkVoyageurSignale…)
 // n'avaient aucun maxDuration explicite, donc soumis à la limite Vercel par
@@ -51,25 +53,11 @@ export default async function VoyageursPage() {
     is_flagged: boolean
   }>
 
-  // Croiser avec reported_guests pour badge "Signalé"
-  const identifiers = list.flatMap(v =>
-    [v.email?.toLowerCase(), v.telephone].filter(Boolean) as string[]
-  )
-  if (identifiers.length > 0) {
-    const { data: reported } = await supabase
-      .from('reported_guests')
-      .select('identifier')
-      .in('identifier', identifiers)
-      .eq('is_validated', true)
-
-    const flagged = new Set((reported ?? []).map(r => r.identifier))
-    list.forEach(v => {
-      v.is_flagged = !!(
-        (v.email && flagged.has(v.email.toLowerCase())) ||
-        (v.telephone && flagged.has(v.telephone))
-      )
-    })
-  }
+  // Badge « Signalé » : signalements négatifs validés de TOUTE la communauté,
+  // téléphone comparé sous toutes ses formes (06…, +33…). Avant sept. 2026 :
+  // numéro comparé tel quel et témoignages positifs comptés comme signalements.
+  const flagged = await flaggedVoyageurs(list, t => !isPositive(t))
+  list.forEach(v => { v.is_flagged = flagged.has(v.id) })
 
   return (
     <>

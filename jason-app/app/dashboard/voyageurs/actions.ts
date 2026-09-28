@@ -3,6 +3,8 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { syncDeclarationsForVoyageur } from '@/lib/declarations/sync'
+import { findReports } from '@/lib/securite/lookup'
+import { isPositive, voyageurIdentifiers } from '@/lib/securite/identifiers'
 
 /** Best-effort : détecte les déclarations réglementaires (SIBA, fiche
  *  police…) pour les séjours du voyageur. Ne fait jamais échouer l'action
@@ -72,24 +74,18 @@ export async function checkVoyageurSignale(input: { email?: string | null; telep
   count?: number
   motifs?: string[]
 }> {
-  const { supabase, session } = await getSession()
+  const { session } = await getSession()
   if (!session) return { signale: false }
 
-  const identifiers: string[] = []
-  if (input.email?.trim()) identifiers.push(input.email.trim().toLowerCase())
-  if (input.telephone?.trim()) identifiers.push(input.telephone.trim())
+  // Base communautaire (service role après vérification de l'utilisateur),
+  // téléphone sous toutes ses formes, témoignages positifs exclus
+  const identifiers = voyageurIdentifiers(input)
   if (identifiers.length === 0) return { signale: false }
-
-  const { data } = await supabase
-    .from('reported_guests')
-    .select('incident_type')
-    .in('identifier', identifiers)
-    .eq('is_validated', true)
-    .limit(10)
-
-  if (!data || data.length === 0) return { signale: false }
-  const motifs = Array.from(new Set(data.map((r: any) => r.incident_type as string).filter(Boolean)))
-  return { signale: true, count: data.length, motifs }
+  const { data } = await findReports(identifiers, 'phone', 10)
+  const negatives = data.filter(r => !isPositive(r.incident_type))
+  if (negatives.length === 0) return { signale: false }
+  const motifs = Array.from(new Set(negatives.map(r => r.incident_type).filter(Boolean)))
+  return { signale: true, count: negatives.length, motifs }
 }
 
 // ─── Voyageurs ────────────────────────────────────────────────────────────────

@@ -12,6 +12,7 @@ import {
 import { updateVoyageur, addSejour, updateSejour, deleteSejour, cancelSejour, restoreSejour, generateCheckinLink, setCheckinExpectedCount, type VoyageurData, type SejourData } from '../actions'
 import { updateContractChecklist } from '../../calendrier/actions'
 import { reportGuest } from '../../securite/actions'
+import { ALL_INCIDENT_TYPES, POSITIVE_TYPES as POSITIVE_TYPES_LIST } from '@/lib/securite/identifiers'
 import IncidentsPanel from './IncidentsPanel'
 import ForeignGuestAlert from '@/components/voyageurs/ForeignGuestAlert'
 import { PLATFORMS, suggestCommission, type PlatformKey } from '@/lib/platforms'
@@ -21,25 +22,9 @@ import dynamic from 'next/dynamic'
 const ContractModal = dynamic(() => import('./ContractModal'), { ssr: false })
 const DepositModal  = dynamic(() => import('./DepositModal'),  { ssr: false })
 
-const INCIDENT_TYPES = [
-  'Dégradation du logement',
-  'Fête non autorisée',
-  'Non-respect des règles',
-  'Fumée dans le logement',
-  'Présence de personnes non déclarées',
-  "Tentative d'arnaque / fraude",
-  'Avis négatif abusif',
-  'Impayé / remboursement abusif',
-  'Autre',
-]
-
-const POSITIVE_TYPES = [
-  'Voyageur exemplaire',
-  'Logement laissé impeccable',
-  'Communication excellente',
-  'Respect total des règles',
-  'Je recommande vivement',
-]
+// Mêmes motifs que la page Sécurité voyageur (lib/securite/identifiers.ts)
+const INCIDENT_TYPES = ALL_INCIDENT_TYPES
+const POSITIVE_TYPES = POSITIVE_TYPES_LIST
 
 type Voyageur = {
   id: string; prenom: string; nom: string

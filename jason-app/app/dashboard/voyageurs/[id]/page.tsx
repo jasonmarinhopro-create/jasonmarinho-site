@@ -4,6 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import TitleSetter from '@/components/layout/TitleSetter'
 import VoyageurDetail from './VoyageurDetail'
+import { flaggedVoyageurs } from '@/lib/securite/lookup'
+import { isPositive } from '@/lib/securite/identifiers'
 
 export default async function VoyageurPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -66,17 +68,8 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
   }
 
   // Phase B : reported query dépend de voyageur.email / voyageur.telephone
-  const identifiers = [voyageur.email?.toLowerCase(), voyageur.telephone].filter(Boolean) as string[]
-  let isFlagged = false
-  if (identifiers.length > 0) {
-    const { data: reported } = await supabase
-      .from('reported_guests')
-      .select('id')
-      .in('identifier', identifiers)
-      .eq('is_validated', true)
-      .limit(1)
-    isFlagged = (reported ?? []).length > 0
-  }
+  // Signalements négatifs validés de la communauté (téléphone sous toutes ses formes)
+  const isFlagged = (await flaggedVoyageurs([voyageur], t => !isPositive(t))).has(voyageur.id)
 
   // Profil bailleur (depuis les métadonnées utilisateur Supabase Auth)
   const meta = user?.user_metadata ?? {}

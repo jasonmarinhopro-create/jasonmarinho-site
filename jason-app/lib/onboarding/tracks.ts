@@ -148,7 +148,7 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
       {
         key: 'reported_view',
         title: 'Découvre la base de signalements',
-        description: 'Plus de 200 voyageurs problématiques signalés par la communauté LCD, dans « Sécurité voyageur ».',
+        description: 'Les voyageurs signalés par les hôtes de la communauté, relus par Jason, dans « Sécurité voyageur ». Tes prochains voyageurs y sont vérifiés automatiquement.',
         ctaLabel: 'Ouvrir la base',
         ctaHref: '/dashboard/securite',
         detect: 'manual',
@@ -156,7 +156,7 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
       {
         key: 'reported_search',
         title: 'Vérifie un voyageur',
-        description: 'Recherche par téléphone ou email avant de confirmer une réservation. Le réflexe qui évite les mauvaises surprises.',
+        description: 'Cherche son téléphone ou son e-mail avant de confirmer une réservation. Le réflexe qui évite les mauvaises surprises.',
         ctaLabel: 'Faire une recherche',
         ctaHref: '/dashboard/securite',
         detect: 'manual',
