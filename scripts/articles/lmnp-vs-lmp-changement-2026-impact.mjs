@@ -28,7 +28,7 @@ export default {
         { type: 'ul', items: [
           'Plus-values LMNP : depuis 2025, les amortissements pratiqués réduisent la valeur d\'achat lors de la revente, ce qui augmente la plus-value imposable. Avant, ils étaient sans impact à la revente',
           'Le seuil de 23 000 € qui définit la bascule LMP/LMNP n\'a pas bougé mais peut être reconsidéré en 2027',
-          'Le micro-BIC LMNP avec abattement 50 % reste valable jusqu\'à 77 700 € de CA, mais l\'État pousse vers le régime réel',
+          'Le micro-BIC LMNP avec abattement de 50 % (meublé classé) reste valable jusqu\'à 83 600 € de recettes en 2026 (30 % et 15 000 € pour un non classé), mais l\'État pousse vers le régime réel',
           'Les recettes des plateformes sont automatiquement transmises au fisc (DAC 7 européen) : plus de marges grises',
         ]},
         { type: 'tip', text: 'Si tu as acheté ton logement spécifiquement pour la LCD avec emprunt, le régime LMNP au réel reste avantageux car tu déduis les intérêts d\'emprunt + amortissement. Mais le calcul de plus-value à la revente est moins favorable qu\'avant.' },

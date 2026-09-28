@@ -48,9 +48,9 @@ export default {
       content: [
         { type: 'p', text: 'La loi Le Meur de 2024 a profondément modifié la fiscalité. La différence d\'abattement entre régimes est devenue déterminante pour la rentabilité.' },
         { type: 'ul', items: [
-          'Chambres d\'hôtes classées : abattement micro-BIC 71 % (plafond 188 700 € de CA)',
-          'Chambres d\'hôtes non classées : abattement 71 % également (elles bénéficient du même traitement)',
-          'Meublé de tourisme classé : abattement 71 % (plafond 188 700 €)',
+          'Chambres d\'hôtes : abattement micro-BIC 50 % (plafond 83 600 € de CA sur les revenus 2026)',
+          'Chambres d\'hôtes non classées : 50 % également (décision du Conseil d\'État du 16/09/2025)',
+          'Meublé de tourisme classé : abattement 50 % (plafond 83 600 € sur les revenus 2026)',
           'Meublé de tourisme non classé en 2026 : abattement ramené à 30 %',
           'Conclusion : faire classer son logement est devenu très rentable pour les meublés non classés',
         ]},

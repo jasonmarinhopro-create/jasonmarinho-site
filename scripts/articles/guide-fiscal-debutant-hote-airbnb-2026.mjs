@@ -7,7 +7,7 @@ export default {
   categorySlug: 'ressources',
   readTime: 6,
 
-  lead: 'Quand tu démarres en LCD, la fiscalité est le sujet qui fait peur. Régime micro-BIC, LMNP, déclaration 2042, abattement 50 % : trop de termes pour un débutant. Voici le guide simple, pas à pas, pour déclarer tes premiers revenus Airbnb correctement en 2026.',
+  lead: 'Quand tu démarres en LCD, la fiscalité est le sujet qui fait peur. Régime micro-BIC, LMNP, déclaration 2042, abattement 30 % ou 50 % : trop de termes pour un débutant. Voici le guide simple, pas à pas, pour déclarer tes premiers revenus Airbnb correctement en 2026.',
 
   sections: [
     {
@@ -21,7 +21,7 @@ export default {
           'Question 4 : Tu loues ta résidence principale ou un meublé dédié ? Résidence principale = plafond 120 jours/an. Meublé dédié = pas de plafond',
           'Question 5 : Tu as fait des travaux > 5 000 € dans le logement ? Si OUI → régime réel pour amortir. Si NON → micro-BIC si CA modeste',
         ]},
-        { type: 'tip', text: 'Pour 80 % des hôtes débutants : LMNP au régime micro-BIC. Simple, abattement 50 %, déclaration via 2042-C-PRO. Pas besoin d\'expert-comptable la première année.' },
+        { type: 'tip', text: 'Pour 80 % des hôtes débutants : LMNP au régime micro-BIC. Simple, abattement de 30 % (50 % si le meublé est classé), déclaration via 2042-C-PRO. Pas besoin d\'expert-comptable la première année.' },
       ],
     },
     {
@@ -59,7 +59,7 @@ export default {
           'Confondre CA brut et CA net : tu déclares le CA BRUT (avant commission Airbnb). Pas le montant que tu touches après commission',
           'Mélanger résidence principale et meublé dédié : si tu loues ta résidence principale, plafond 120 jours et déclaration différente du meublé dédié',
           'Ne pas tenir un livret de recettes : recommandé pour le micro-BIC, obligatoire pour le réel. Note chaque entrée d\'argent (date, voyageur, montant)',
-          'Sous-estimer la CSG/CRDS : 17,2 % sur ton bénéfice imposable. C\'est 17,2 % de 50 % du CA = 8,6 % du CA. Pour un CA de 20 000 €, c\'est 1 720 € de cotisations sociales',
+          'Sous-estimer la CSG/CRDS : 17,2 % sur ton bénéfice imposable. Pour un meublé classé (abattement 50 %), c\'est 17,2 % de 50 % du CA = 8,6 % du CA : 1 720 € de prélèvements sociaux pour 20 000 € de CA',
         ]},
         { type: 'cta', text: 'Tu veux maîtriser toute la fiscalité LCD pour démarrer sereinement ?', button: 'Voir les formations', href: '/#formations' },
       ],

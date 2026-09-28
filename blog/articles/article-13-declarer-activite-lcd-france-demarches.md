@@ -63,8 +63,8 @@ Airbnb bloque automatiquement les calendriers à 120 nuits dans certaines villes
 Les revenus de la LCD sont imposables dans la catégorie **BIC (Bénéfices Industriels et Commerciaux)**, sous le statut de Loueur en Meublé Non Professionnel (LMNP) pour la majorité des hôtes.
 
 ### Le régime micro-BIC
-- **Automatique** si tes recettes annuelles ne dépassent pas 77 700 € (meublé de tourisme classé) ou 15 000 € (non classé depuis la loi Le Meur 2024)
-- **Abattement forfaitaire** : 71 % (classé) ou 30 % (non classé)
+- **Automatique** si tes recettes annuelles ne dépassent pas 83 600 € (meublé de tourisme classé, revenus 2026) ou 15 000 € (non classé depuis la loi Le Meur 2024)
+- **Abattement forfaitaire** : 50 % (classé) ou 30 % (non classé)
 - **Simple** : tu déclares tes revenus bruts, l'administration applique l'abattement
 
 ### Le régime réel

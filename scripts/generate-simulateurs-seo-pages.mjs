@@ -43,7 +43,7 @@ const PAGES = [
       h2Em: "n'est pas qu'une question d'abattement",
       paras: [
         "Sous le régime micro-BIC, ton bénéfice imposable est calculé en appliquant un abattement forfaitaire à ton chiffre d'affaires. Cet abattement vaut 30 % par défaut, 50 % si ton meublé est classé Atout France (1 à 5 étoiles) ou labellisé tourisme. La différence est massive : sur 40 000 € de CA, le bénéfice passe de 28 000 € à 11 600 €, soit 16 400 € de base en moins.",
-        "Mais ce n'est pas la seule variable. Tu as deux plafonds à surveiller (15 000 € pour les meublés non classés depuis 2025, 77 700 € pour les meublés classés et chambres d'hôtes), une option pour le versement libératoire (sous condition de RFR), et le choix de basculer vers le régime réel simplifié si tes charges réelles dépassent l'abattement.",
+        "Mais ce n'est pas la seule variable. Tu as deux plafonds à surveiller (15 000 € pour les meublés non classés depuis 2025, 83 600 € pour les meublés classés et chambres d'hôtes en 2026), une option pour le versement libératoire (sous condition de RFR), et le choix de basculer vers le régime réel simplifié si tes charges réelles dépassent l'abattement.",
         "Ce simulateur fait tous ces calculs d'un coup et te dit : ton bénéfice imposable, ton impôt sur le revenu approximatif, ton économie en cas de classement, et si tu devrais envisager le réel.",
       ],
       checklist: [
@@ -64,7 +64,7 @@ const PAGES = [
         },
         {
           h: 'Plafond micro-BIC',
-          desc: "Tu dois rester sous 15 000 € de CA pour un meublé non classé (depuis 2025, loi de finances), 77 700 € pour un meublé classé et chambres d'hôtes. Au-dessus, bascule automatique au réel.",
+          desc: "Tu dois rester sous 15 000 € de CA pour un meublé non classé (depuis 2025, loi de finances), 83 600 € pour un meublé classé et chambres d'hôtes (revenus 2026). Au-dessus, bascule automatique au réel.",
         },
         {
           h: 'Impôt sur le revenu',
@@ -126,7 +126,7 @@ const PAGES = [
     faq: [
       {
         q: 'Quel abattement micro-BIC en 2026 pour la location courte durée ?',
-        a: "30 % pour un meublé de tourisme non classé (avec plafond 15 000 € de CA depuis la loi de finances 2025), 50 % pour un meublé classé Atout France 1 à 5 étoiles ou labellisé tourisme (avec plafond 77 700 €). Les chambres d'hôtes sont passées à 50 % (décision CE du 16/09/2025) avec plafond 77 700 €.",
+        a: "30 % pour un meublé de tourisme non classé (avec plafond 15 000 € de CA depuis la loi de finances 2025), 50 % pour un meublé classé Atout France 1 à 5 étoiles ou labellisé tourisme (avec plafond 83 600 € sur les revenus 2026). Les chambres d'hôtes sont passées à 50 % (décision CE du 16/09/2025) avec le même plafond.",
       },
       {
         q: "Comment se faire classer Atout France pour bénéficier de l'abattement 50 % ?",

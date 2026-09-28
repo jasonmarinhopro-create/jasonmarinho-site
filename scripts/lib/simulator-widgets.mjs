@@ -356,7 +356,7 @@ export function widgetFiscalite() {
     </div>
 
     <div class="sim-hint" id="fsc-hint">
-      Les valeurs reposent sur la <strong>loi Le Meur (2025+)</strong> : abattement 30 % / 50 %, plafonds 15 000 € / 77 700 €.
+      Les valeurs reposent sur la <strong>loi Le Meur (2025+)</strong> : abattement 30 % / 50 %, plafonds 15 000 € / 83 600 € (revenus 2026).
     </div>
   </div>
 

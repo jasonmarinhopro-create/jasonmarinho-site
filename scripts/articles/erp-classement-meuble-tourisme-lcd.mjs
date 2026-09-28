@@ -7,14 +7,14 @@ export default {
   categorySlug: 'reglementation',
   readTime: 5,
 
-  lead: 'Faire classer son meublé de tourisme (1 à 5 étoiles) coûte 200-400 € et donne un abattement fiscal de 71 % au lieu de 50 %. Mais ça peut aussi te classer ERP (Établissement Recevant du Public) avec des obligations supplémentaires. Voici comment décider.',
+  lead: 'Faire classer son meublé de tourisme (1 à 5 étoiles) coûte 200-400 € et donne un abattement fiscal de 50 % au lieu de 30 %. Mais ça peut aussi te classer ERP (Établissement Recevant du Public) avec des obligations supplémentaires. Voici comment décider.',
 
   sections: [
     {
       h2: '1. Avantages du classement étoilé',
       content: [
         { type: 'ul', items: [
-          'Abattement fiscal : 71 % au lieu de 50 % (régime micro-BIC). Économie 500-3 000 €/an selon CA',
+          'Abattement fiscal : 50 % au lieu de 30 % (régime micro-BIC), plafond 83 600 € au lieu de 15 000 €',
           'Visibilité sur Airbnb : badge "Meublé de tourisme classé" qui rassure les voyageurs',
           'Référencement office de tourisme : présence dans les listes officielles',
           'Taxe de séjour : barème fixe par étoile (pas le 5 % du tarif HT plafonné)',
