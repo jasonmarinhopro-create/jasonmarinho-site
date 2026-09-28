@@ -1,12 +1,13 @@
 'use client'
 
 import { useMemo, useState, useTransition } from 'react'
-import Link from 'next/link'
 import {
-  ArrowLeft, MagnifyingGlass, Check, X, EnvelopeSimple, Funnel,
+  MagnifyingGlass, Check, X, EnvelopeSimple, Funnel,
   Crown, CheckCircle, Clock, User,
 } from '@phosphor-icons/react/dist/ssr'
 import { confirmDriingMember, rejectDriingMember } from '../actions'
+import AdminHero from '../_ui/AdminHero'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 interface Member {
   id: string
@@ -32,6 +33,7 @@ export default function DriingAdmin({ initialMembers }: { initialMembers: Member
   const [filter, setFilter] = useState<'all' | 'pending' | 'confirmed'>('pending')
   const [feedback, setFeedback] = useState<{ id: string; type: 'ok' | 'err'; msg: string } | null>(null)
   const [isPending, startT] = useTransition()
+  const { confirm, dialog } = useConfirm()
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -67,13 +69,13 @@ export default function DriingAdmin({ initialMembers }: { initialMembers: Member
         setMembers(prev => prev.map(m => m.id === id ? { ...m, driing_status: 'pending' } : m))
         notify(id, 'err', `Erreur : ${res.error}`)
       } else {
-        notify(id, 'ok', 'Membre Driing confirmé ✓')
+        notify(id, 'ok', 'Membre Driing confirmé')
       }
     })
   }
 
-  function handleReject(id: string) {
-    if (!confirm('Rejeter cette demande ? Le membre repassera en plan Découverte.')) return
+  async function handleReject(id: string) {
+    if (!(await confirm({ message: 'Rejeter cette demande ? Le membre repassera en plan Découverte.', confirmLabel: 'Refuser', danger: true }))) return
     const snapshot = members
     setMembers(prev => prev.filter(m => m.id !== id))
     startT(async () => {
@@ -89,31 +91,29 @@ export default function DriingAdmin({ initialMembers }: { initialMembers: Member
 
   return (
     <div style={s.root}>
-      <header style={s.header}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' as const }}>
-          <Link href="/dashboard/admin" style={s.backLink}>
-            <ArrowLeft size={13} weight="bold" />
-            Admin
-          </Link>
-          <h1 style={s.title}>Membres Driing</h1>
-        </div>
-      </header>
+      {dialog}
+      <AdminHero
+        section="Membres Driing"
+        title="Les clients Driing,"
+        em="validés à la main"
+        desc="Un client Driing qui s'inscrit demande l'accès offert : vérifie qu'il est bien client, puis confirme ou refuse. Refusé, il repasse en formule Découverte."
+      />
 
       {/* KPIs */}
       <div style={s.kpiRow}>
         <Kpi label="Total demandes" value={stats.total} color="var(--text)" icon={<User size={16} weight="duotone" />} />
-        <Kpi label="En attente" value={stats.pending} color="#fb923c" icon={<Clock size={16} weight="duotone" />}
+        <Kpi label="En attente" value={stats.pending} color="#B7791F" icon={<Clock size={16} weight="duotone" />}
           hint={stats.waitingLong > 0 ? `${stats.waitingLong} attendent > 7 j` : undefined}
         />
-        <Kpi label="Confirmés" value={stats.confirmed} color="var(--success-1)" icon={<CheckCircle size={16} weight="duotone" />} />
-        <Kpi label="Driing actifs" value={stats.confirmed} color="#7c3aed" icon={<Crown size={16} weight="duotone" />} />
+        <Kpi label="Confirmés" value={stats.confirmed} color="var(--accent-text)" icon={<CheckCircle size={16} weight="duotone" />} />
+        <Kpi label="Driing actifs" value={stats.confirmed} color="#B7791F" icon={<Crown size={16} weight="duotone" />} />
       </div>
 
       {/* Filtres + recherche */}
       <div style={s.toolbar}>
         <div style={s.filterRow}>
-          <FilterChip active={filter === 'pending'} onClick={() => setFilter('pending')} label="En attente" count={stats.pending} color="#fb923c" />
-          <FilterChip active={filter === 'confirmed'} onClick={() => setFilter('confirmed')} label="Confirmés" count={stats.confirmed} color="var(--success-1)" />
+          <FilterChip active={filter === 'pending'} onClick={() => setFilter('pending')} label="En attente" count={stats.pending} color="#B7791F" />
+          <FilterChip active={filter === 'confirmed'} onClick={() => setFilter('confirmed')} label="Confirmés" count={stats.confirmed} color="var(--accent-text)" />
           <FilterChip active={filter === 'all'} onClick={() => setFilter('all')} label="Tous" count={stats.total} />
         </div>
         <div style={s.searchWrap}>
@@ -142,7 +142,7 @@ export default function DriingAdmin({ initialMembers }: { initialMembers: Member
           return (
             <div key={m.id} style={s.row}>
               <div style={s.rowMain}>
-                <div style={{ ...s.avatar, background: isPending ? 'rgba(251,146,60,0.12)' : 'rgba(124,58,237,0.12)', color: isPending ? '#fb923c' : '#7c3aed' }}>
+                <div style={{ ...s.avatar, background: isPending ? 'color-mix(in srgb, #B7791F 12%, transparent)' : 'color-mix(in srgb, #B7791F 12%, transparent)', color: isPending ? '#B7791F' : '#B7791F' }}>
                   {(m.full_name || m.email).slice(0, 1).toUpperCase()}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -159,11 +159,11 @@ export default function DriingAdmin({ initialMembers }: { initialMembers: Member
                 </div>
                 <div style={s.statusCell}>
                   {isPending ? (
-                    <span style={{ ...s.badge, background: 'rgba(251,146,60,.12)', color: '#fb923c', border: '1px solid rgba(251,146,60,.22)' }}>
+                    <span style={{ ...s.badge, background: 'color-mix(in srgb, #B7791F 12%, transparent)', color: '#B7791F', border: '1px solid color-mix(in srgb, #B7791F 22%, transparent)' }}>
                       En attente
                     </span>
                   ) : (
-                    <span style={{ ...s.badge, background: 'rgba(124,58,237,.12)', color: '#7c3aed', border: '1px solid rgba(124,58,237,.22)' }}>
+                    <span style={{ ...s.badge, background: 'color-mix(in srgb, #B7791F 12%, transparent)', color: '#B7791F', border: '1px solid color-mix(in srgb, #B7791F 22%, transparent)' }}>
                       <Crown size={11} weight="fill" /> Driing
                     </span>
                   )}
@@ -171,7 +171,7 @@ export default function DriingAdmin({ initialMembers }: { initialMembers: Member
               </div>
               <div style={s.rowActions}>
                 {fbItem ? (
-                  <span style={{ ...s.feedback, color: fbItem.type === 'ok' ? 'var(--success-1)' : '#f87171' }}>
+                  <span style={{ ...s.feedback, color: fbItem.type === 'ok' ? 'var(--accent-text)' : 'var(--danger-text)' }}>
                     {fbItem.type === 'ok' ? <Check size={13} weight="bold" /> : <X size={13} weight="bold" />}
                     {fbItem.msg}
                   </span>
@@ -255,15 +255,15 @@ const s: Record<string, React.CSSProperties> = {
   cellPrimary: { fontSize: '14px', fontWeight: 600, color: 'var(--text)', marginBottom: '2px', wordBreak: 'break-word' as const },
   cellSub: { fontSize: '12px', color: 'var(--text-2)', wordBreak: 'break-word' as const },
   cellMeta: { fontSize: '11px', color: 'var(--text-3)', marginTop: '3px' },
-  warnTag: { color: '#fb923c', fontWeight: 600 },
+  warnTag: { color: '#B7791F', fontWeight: 600 },
   stripeTag: { color: 'var(--accent-text)', fontWeight: 600 },
   statusCell: { flexShrink: 0 },
   badge: { display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 9px', borderRadius: '999px', fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.3px', textTransform: 'uppercase' as const },
 
   rowActions: { display: 'flex', gap: '8px', flexWrap: 'wrap' as const, justifyContent: 'flex-end' },
   actionBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '7px 14px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', border: '1px solid', fontFamily: 'inherit' },
-  actionConfirm: { background: 'var(--success-1)', borderColor: 'var(--success-1)', color: 'var(--bg)' },
-  actionReject: { background: 'transparent', borderColor: 'rgba(248,113,113,0.4)', color: '#f87171' },
+  actionConfirm: { background: 'var(--accent-text)', borderColor: 'var(--accent-text)', color: 'var(--bg)' },
+  actionReject: { background: 'transparent', borderColor: 'color-mix(in srgb, var(--danger) 40%, transparent)', color: 'var(--danger-text)' },
 
   feedback: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 12px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, background: 'var(--bg-2)', border: '1px solid var(--border)' },
 }

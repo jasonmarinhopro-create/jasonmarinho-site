@@ -11,6 +11,7 @@ import {
   updateFormationMeta, upsertModule, upsertLesson,
   deleteModule, deleteLesson, importStaticContent,
 } from './actions'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 interface DbLesson {
   id: string
@@ -62,6 +63,7 @@ const LEVEL_OPTIONS = [
 export default function FormationEditor({ formation, dbModules: initialModules, staticContent, slug }: Props) {
   const [tab, setTab] = useState<Tab>('infos')
   const [isPending, startTransition] = useTransition()
+  const { confirm, dialog } = useConfirm()
   const [feedback, setFeedback] = useState<Feedback>(null)
 
   // Metadata state
@@ -118,9 +120,9 @@ export default function FormationEditor({ formation, dbModules: initialModules, 
 
   // ── Import static content ────────────────────────────────────
 
-  function handleImport() {
+  async function handleImport() {
     if (!staticContent) return
-    if (!confirm(`Importer le contenu statique dans la base de données ? Cela remplacera les modules et leçons existants pour cette formation.`)) return
+    if (!(await confirm({ title: 'Importer le contenu du code', message: 'Les modules et leçons en base de cette formation seront remplacés par le contenu du code.', confirmLabel: 'Importer', danger: true }))) return
     startTransition(async () => {
       const res = await importStaticContent(formation.id, slug, staticContent.modules)
       if (res.success) {
@@ -186,8 +188,8 @@ export default function FormationEditor({ formation, dbModules: initialModules, 
 
   // ── Delete module ────────────────────────────────────────────
 
-  function handleDeleteModule(moduleId: string) {
-    if (!confirm('Supprimer ce module et toutes ses leçons ? Cette action est irréversible.')) return
+  async function handleDeleteModule(moduleId: string) {
+    if (!(await confirm({ message: 'Supprimer ce module et toutes ses leçons ? Action irréversible.', confirmLabel: 'Supprimer', danger: true }))) return
     startTransition(async () => {
       const res = await deleteModule(moduleId, slug)
       if (res.success) {
@@ -268,9 +270,9 @@ export default function FormationEditor({ formation, dbModules: initialModules, 
 
   // ── Delete lesson ────────────────────────────────────────────
 
-  function handleDeleteLesson() {
+  async function handleDeleteLesson() {
     if (!selectedLesson?.lessonId) return
-    if (!confirm('Supprimer cette leçon ? Cette action est irréversible.')) return
+    if (!(await confirm({ message: 'Supprimer cette leçon ? Action irréversible.', confirmLabel: 'Supprimer', danger: true }))) return
     startTransition(async () => {
       const res = await deleteLesson(selectedLesson.lessonId!, slug)
       if (res.success) {
@@ -306,6 +308,7 @@ export default function FormationEditor({ formation, dbModules: initialModules, 
 
   return (
     <div style={s.root}>
+      {dialog}
       {/* Top bar */}
       <div style={s.topBar}>
         <Link href="/dashboard/admin/formations" style={s.backLink}>
@@ -343,9 +346,9 @@ export default function FormationEditor({ formation, dbModules: initialModules, 
         <div style={{
           margin: '0 clamp(16px,3vw,32px) 12px',
           padding: '10px 14px', borderRadius: '10px', border: '1px solid',
-          background: feedback.type === 'ok' ? 'rgba(99,214,131,0.12)' : 'rgba(239,68,68,0.12)',
-          borderColor: feedback.type === 'ok' ? 'rgba(99,214,131,0.25)' : 'rgba(239,68,68,0.25)',
-          color: feedback.type === 'ok' ? '#63D683' : 'var(--danger)',
+          background: feedback.type === 'ok' ? 'color-mix(in srgb, var(--accent-text) 12%, transparent)' : 'color-mix(in srgb, var(--danger) 12%, transparent)',
+          borderColor: feedback.type === 'ok' ? 'color-mix(in srgb, var(--accent-text) 25%, transparent)' : 'color-mix(in srgb, var(--danger) 25%, transparent)',
+          color: feedback.type === 'ok' ? 'var(--accent-text)' : 'var(--danger)',
           fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px',
         }}>
           {feedback.type === 'ok' ? <Check size={14} /> : <Warning size={14} />}
@@ -428,7 +431,7 @@ export default function FormationEditor({ formation, dbModules: initialModules, 
                     />
                     <button
                       onClick={() => removeObjectif(i)}
-                      style={{ ...s.iconBtn, color: 'rgba(239,68,68,0.6)' }}
+                      style={{ ...s.iconBtn, color: 'color-mix(in srgb, var(--danger) 60%, transparent)' }}
                     >
                       <Trash size={14} />
                     </button>
@@ -638,7 +641,7 @@ export default function FormationEditor({ formation, dbModules: initialModules, 
                     <button
                       onClick={handleDeleteLesson}
                       disabled={isPending}
-                      style={{ ...s.btn, color: 'rgba(239,68,68,0.7)', border: '1px solid rgba(239,68,68,0.2)' }}
+                      style={{ ...s.btn, color: 'color-mix(in srgb, var(--danger) 70%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 20%, transparent)' }}
                     >
                       <Trash size={14} />
                       Supprimer
@@ -682,7 +685,7 @@ function ModuleEditRow({
         <button onClick={() => setEditing(true)} style={s.iconBtnTiny}>
           <PencilSimple size={11} />
         </button>
-        <button onClick={onDelete} disabled={isPending} style={{ ...s.iconBtnTiny, color: 'rgba(239,68,68,0.6)' }}>
+        <button onClick={onDelete} disabled={isPending} style={{ ...s.iconBtnTiny, color: 'color-mix(in srgb, var(--danger) 60%, transparent)' }}>
           <Trash size={11} />
         </button>
       </div>

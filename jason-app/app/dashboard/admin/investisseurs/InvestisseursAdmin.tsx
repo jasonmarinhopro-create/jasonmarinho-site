@@ -6,6 +6,7 @@
 // l'estimateur, avec lien vers la fiche membre complète.
 
 import { useState } from 'react'
+import AdminHero from '../_ui/AdminHero'
 import {
   Briefcase, MagnifyingGlass, X, ArrowSquareOut,
   MapPin, CurrencyEur, FolderOpen,
@@ -60,23 +61,19 @@ export default function InvestisseursAdmin({ investors, totalProjects }: { inves
 
   return (
     <div style={s.wrap}>
-      {/* ── Header ── */}
-      <div>
-        <h2 style={s.title}>
-          Admin <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>Investisseurs</em>
-        </h2>
-        <p style={s.desc}>
-          Comptes inscrits via la carte « Investisseur » ou marqués depuis la page Membres,
-          avec leurs projets d&apos;acquisition sauvegardés depuis l&apos;estimateur.
-        </p>
-      </div>
+      <AdminHero
+        section="Investisseurs"
+        title="Les investisseurs"
+        em="et leurs projets"
+        desc="Comptes inscrits avec la carte « Investisseur » ou marqués depuis Membres, avec les projets d'achat enregistrés depuis l'estimateur."
+      />
 
       {/* ── Stats ── */}
       <div style={s.statsRow}>
         {[
-          { icon: <Briefcase size={16} weight="fill" />, value: investors.length, label: 'investisseur' + (investors.length > 1 ? 's' : ''), color: '#60BEFF' },
+          { icon: <Briefcase size={16} weight="fill" />, value: investors.length, label: 'investisseur' + (investors.length > 1 ? 's' : ''), color: '#6E5446' },
           { icon: <FolderOpen size={16} weight="fill" />, value: totalProjects, label: 'projet' + (totalProjects > 1 ? 's' : '') + ' analysé' + (totalProjects > 1 ? 's' : ''), color: 'var(--accent-text)' },
-          { icon: <CurrencyEur size={16} />, value: activeCount, label: 'avec au moins 1 projet', color: 'var(--success-1)' },
+          { icon: <CurrencyEur size={16} />, value: activeCount, label: 'avec au moins 1 projet', color: 'var(--accent-text)' },
         ].map(({ icon, value, label, color }) => (
           <div key={label} style={s.statChip}>
             <span style={{ color, lineHeight: 1, flexShrink: 0 }}>{icon}</span>
@@ -220,10 +217,10 @@ const s: Record<string, React.CSSProperties> = {
   },
   avatar: {
     width: '48px', height: '48px', flexShrink: 0, borderRadius: '14px',
-    background: 'rgba(96,190,255,0.12)', border: '1.5px solid rgba(96,190,255,0.28)',
+    background: 'color-mix(in srgb, #6E5446 12%, transparent)', border: '1.5px solid color-mix(in srgb, #6E5446 28%, transparent)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
-  avatarText: { fontFamily: 'var(--font-fraunces), serif', fontSize: '16px', fontWeight: 600, color: '#60BEFF' },
+  avatarText: { fontFamily: 'var(--font-fraunces), serif', fontSize: '16px', fontWeight: 600, color: '#6E5446' },
   name: {
     fontSize: '15px', fontWeight: 600, color: 'var(--text)',
     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,

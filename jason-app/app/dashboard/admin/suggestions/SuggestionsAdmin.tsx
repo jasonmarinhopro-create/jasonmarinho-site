@@ -1,12 +1,13 @@
 'use client'
 
 import { useMemo, useState, useTransition } from 'react'
-import Link from 'next/link'
 import {
-  ArrowLeft, MagnifyingGlass, Trash, X, Check, Funnel,
+  MagnifyingGlass, Trash, X, Check, Funnel,
   Lightbulb, GraduationCap, Handshake, EnvelopeSimple,
 } from '@phosphor-icons/react/dist/ssr'
 import { deleteSuggestion } from '../actions'
+import AdminHero from '../_ui/AdminHero'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 interface Suggestion {
   id: string
@@ -27,6 +28,7 @@ export default function SuggestionsAdmin({ initialSuggestions }: { initialSugges
   const [filter, setFilter] = useState<'all' | 'formation' | 'partenaire'>('all')
   const [feedback, setFeedback] = useState<{ id: string; type: 'ok' | 'err'; msg: string } | null>(null)
   const [isPending, startT] = useTransition()
+  const { confirm, dialog } = useConfirm()
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -52,8 +54,8 @@ export default function SuggestionsAdmin({ initialSuggestions }: { initialSugges
     setTimeout(() => setFeedback(null), 2400)
   }
 
-  function handleDelete(id: string) {
-    if (!confirm('Supprimer cette suggestion ? Action irréversible.')) return
+  async function handleDelete(id: string) {
+    if (!(await confirm({ message: 'Supprimer cette suggestion ? Action irréversible.', confirmLabel: 'Supprimer', danger: true }))) return
     const snapshot = items
     setItems(prev => prev.filter(it => it.id !== id))
     startT(async () => {
@@ -69,22 +71,20 @@ export default function SuggestionsAdmin({ initialSuggestions }: { initialSugges
 
   return (
     <div style={s.root}>
-      <header style={s.header}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' as const }}>
-          <Link href="/dashboard/admin" style={s.backLink}>
-            <ArrowLeft size={13} weight="bold" />
-            Admin
-          </Link>
-          <h1 style={s.title}>Suggestions utilisateurs</h1>
-        </div>
-      </header>
+      {dialog}
+      <AdminHero
+        section="Suggestions"
+        title="Ce que tes membres"
+        em="aimeraient voir"
+        desc="Idées de formations et de partenaires envoyées depuis l'app. Garde celles qui reviennent souvent, supprime le reste."
+      />
 
       {/* KPIs */}
       <div style={s.kpiRow}>
         <Kpi label="Total" value={stats.total} color="var(--text)" icon={<Lightbulb size={16} weight="duotone" />} />
         <Kpi label="Formations" value={stats.formations} color="var(--accent-text)" icon={<GraduationCap size={16} weight="duotone" />} />
-        <Kpi label="Partenaires" value={stats.partenaires} color="#93C5FD" icon={<Handshake size={16} weight="duotone" />} />
-        <Kpi label="7 derniers jours" value={stats.last7days} color="var(--success-1)" icon={<Lightbulb size={16} weight="duotone" />}
+        <Kpi label="Partenaires" value={stats.partenaires} color="#6E5446" icon={<Handshake size={16} weight="duotone" />} />
+        <Kpi label="7 derniers jours" value={stats.last7days} color="var(--accent-text)" icon={<Lightbulb size={16} weight="duotone" />}
           hint={stats.last7days > 0 ? `${stats.last7days} récent${stats.last7days > 1 ? 'es' : 'e'}` : 'rien de récent'}
         />
       </div>
@@ -94,7 +94,7 @@ export default function SuggestionsAdmin({ initialSuggestions }: { initialSugges
         <div style={s.filterRow}>
           <FilterChip active={filter === 'all'} onClick={() => setFilter('all')} label="Toutes" count={stats.total} />
           <FilterChip active={filter === 'formation'} onClick={() => setFilter('formation')} label="Formations" count={stats.formations} color="var(--accent-text)" />
-          <FilterChip active={filter === 'partenaire'} onClick={() => setFilter('partenaire')} label="Partenaires" count={stats.partenaires} color="#93C5FD" />
+          <FilterChip active={filter === 'partenaire'} onClick={() => setFilter('partenaire')} label="Partenaires" count={stats.partenaires} color="#6E5446" />
         </div>
         <div style={s.searchWrap}>
           <MagnifyingGlass size={13} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -137,7 +137,7 @@ export default function SuggestionsAdmin({ initialSuggestions }: { initialSugges
               <p style={s.message}>{it.message}</p>
               <div style={s.rowActions}>
                 {fbItem ? (
-                  <span style={{ ...s.feedback, color: fbItem.type === 'ok' ? 'var(--success-1)' : '#f87171' }}>
+                  <span style={{ ...s.feedback, color: fbItem.type === 'ok' ? 'var(--accent-text)' : 'var(--danger-text)' }}>
                     {fbItem.type === 'ok' ? <Check size={13} weight="bold" /> : <X size={13} weight="bold" />}
                     {fbItem.msg}
                   </span>
@@ -210,7 +210,7 @@ const s: Record<string, React.CSSProperties> = {
   rowHead: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const, justifyContent: 'space-between' },
   typeTag: { display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '999px', fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.3px', textTransform: 'uppercase' as const, border: '1px solid' },
   typeFormation: { background: 'var(--accent-bg)', color: 'var(--accent-text)', borderColor: 'var(--accent-border)' },
-  typePartenaire: { background: 'rgba(147,197,253,.10)', color: '#93C5FD', borderColor: 'rgba(147,197,253,.22)' },
+  typePartenaire: { background: 'color-mix(in srgb, #6E5446 10%, transparent)', color: '#6E5446', borderColor: 'color-mix(in srgb, #6E5446 22%, transparent)' },
   metaCol: { display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' as const, marginLeft: 'auto' },
   metaItem: { display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11.5px', color: 'var(--text-2)' },
   metaDate: { fontSize: '11.5px', color: 'var(--text-3)' },
@@ -218,7 +218,7 @@ const s: Record<string, React.CSSProperties> = {
 
   rowActions: { display: 'flex', gap: '8px', justifyContent: 'flex-end' },
   actionBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '7px 14px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', border: '1px solid', fontFamily: 'inherit' },
-  actionDelete: { background: 'transparent', borderColor: 'rgba(248,113,113,0.4)', color: '#f87171' },
+  actionDelete: { background: 'transparent', borderColor: 'color-mix(in srgb, var(--danger) 40%, transparent)', color: 'var(--danger-text)' },
 
   feedback: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 12px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, background: 'var(--bg-2)', border: '1px solid var(--border)' },
 }

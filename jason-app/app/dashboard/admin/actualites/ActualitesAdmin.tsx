@@ -6,6 +6,8 @@ import {
   Eye, EyeSlash, CheckCircle, XCircle, Globe,
 } from '@phosphor-icons/react/dist/ssr'
 import { addActualite, updateActualite, deleteActualite, togglePublish } from './actions'
+import AdminHero from '../_ui/AdminHero'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 interface Actualite {
   id: string
@@ -19,20 +21,21 @@ interface Actualite {
   read_time_minutes: number | null
 }
 
+// Même palette que la page Actualités côté hôte (ActualitesView.tsx)
 const CATEGORIES = [
-  { value: 'reglementation',      label: 'Réglementation',    color: 'var(--info)', bg: 'rgba(96,165,250,0.12)' },
-  { value: 'fiscalite',           label: 'Fiscalité',         color: 'var(--success-1)', bg: 'var(--success-bg)' },
-  { value: 'juridique',           label: 'Juridique',         color: 'var(--danger)', bg: 'rgba(248,113,113,0.12)' },
-  { value: 'plateformes',         label: 'Plateformes OTA',   color: '#fb923c', bg: 'rgba(251,146,60,0.12)' },
-  { value: 'marche',              label: 'Marché',            color: '#f472b6', bg: 'rgba(244,114,182,0.12)' },
-  { value: 'outils',              label: 'Outils & Tech',     color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' },
-  { value: 'gites',               label: 'Gîtes & Meublés',   color: 'var(--warning)', bg: 'rgba(245,158,11,0.12)' },
-  { value: 'chambres-hotes',      label: "Chambres d'hôtes",  color: '#ec4899', bg: 'rgba(236,72,153,0.12)' },
-  { value: 'conciergerie',        label: 'Conciergeries',     color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)' },
-  { value: 'reservation-directe', label: 'Réserv. directe',  color: 'var(--success-1)', bg: 'rgba(16,185,129,0.12)' },
-  { value: 'communes',            label: 'Communes & Villes', color: '#64748b', bg: 'rgba(100,116,139,0.12)' },
-  { value: 'driing',              label: 'Driing',            color: '#FFD56B', bg: 'rgba(255,213,107,0.12)' },
-  { value: 'general',             label: 'Général',           color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' },
+  { value: 'reglementation',      label: 'Réglementation',      color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  { value: 'fiscalite',           label: 'Fiscalité',           color: '#8A5A12', bg: 'rgba(255,213,107,0.20)' },
+  { value: 'juridique',           label: 'Juridique',           color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  { value: 'plateformes',         label: 'Plateformes OTA',     color: '#C2344A', bg: 'rgba(224,71,91,0.10)' },
+  { value: 'marche',              label: 'Marché',              color: '#B83A7C', bg: 'rgba(244,114,182,0.14)' },
+  { value: 'outils',              label: 'Outils & Tech',       color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  { value: 'gites',               label: 'Gîtes & Meublés',     color: '#8A5A12', bg: 'rgba(255,213,107,0.20)' },
+  { value: 'chambres-hotes',      label: "Chambres d'hôtes",    color: '#B83A7C', bg: 'rgba(244,114,182,0.14)' },
+  { value: 'conciergerie',        label: 'Conciergeries',       color: '#6E5446', bg: 'rgba(139,109,94,0.14)' },
+  { value: 'reservation-directe', label: 'Réserv. directe',     color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  { value: 'communes',            label: 'Communes & Villes',   color: '#6E5446', bg: 'rgba(139,109,94,0.14)' },
+  { value: 'driing',              label: 'Driing',              color: '#8A5A12', bg: 'rgba(255,213,107,0.20)' },
+  { value: 'general',             label: 'Général',             color: '#6E5446', bg: 'rgba(139,109,94,0.14)' },
 ]
 
 function getCat(value: string) {
@@ -44,9 +47,9 @@ function formatDate(iso: string) {
 }
 
 function FeedbackPill({ type, msg }: { type: 'ok' | 'err'; msg: string }) {
-  const color = type === 'ok' ? 'var(--success-1)' : 'var(--danger)'
+  const color = type === 'ok' ? 'var(--accent-text)' : 'var(--danger)'
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', fontWeight: 500, color, background: `${color}14`, border: `1px solid ${color}30`, padding: '4px 10px', borderRadius: '8px' }}>
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12px', fontWeight: 500, color, background: `color-mix(in srgb, ${color} 8%, transparent)`, border: `1px solid color-mix(in srgb, ${color} 19%, transparent)`, padding: '4px 10px', borderRadius: '8px' }}>
       {type === 'ok' ? <CheckCircle size={13} weight="fill" /> : <XCircle size={13} weight="fill" />}
       {msg}
     </span>
@@ -140,7 +143,7 @@ function ActualiteForm({
             name="is_published"
             value="true"
             defaultChecked={defaultValues?.is_published ?? false}
-            style={{ accentColor: 'var(--success-1)', width: '15px', height: '15px', cursor: 'pointer' }}
+            style={{ accentColor: 'var(--accent-text)', width: '15px', height: '15px', cursor: 'pointer' }}
           />
           Publier immédiatement
         </label>
@@ -168,6 +171,7 @@ export default function ActualitesAdmin({ articles }: { articles: Actualite[] })
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
+  const { confirm, dialog } = useConfirm()
   const [feedback, setFeedback] = useState<{ id: string; type: 'ok' | 'err'; msg: string } | null>(null)
   const [filterCat, setFilterCat] = useState('all')
 
@@ -192,7 +196,8 @@ export default function ActualitesAdmin({ articles }: { articles: Actualite[] })
     })
   }
 
-  function handleDelete(id: string) {
+  async function handleDelete(id: string) {
+    if (!(await confirm({ message: 'Supprimer cette actualité ? Pour la retirer sans la perdre, dépublie-la plutôt.', confirmLabel: 'Supprimer', danger: true }))) return
     startTransition(async () => {
       const res = await deleteActualite(id)
       if (res.success) notify(id, 'ok', 'Supprimé')
@@ -214,11 +219,13 @@ export default function ActualitesAdmin({ articles }: { articles: Actualite[] })
   return (
     <div style={s.wrap}>
 
-      {/* Header */}
-      <div style={s.pageIntro} className="fade-up">
-        <h2 style={s.pageTitle}>Actualités LCD</h2>
-        <p style={s.pageDesc}>Gérez le fil d&apos;actualités visible par les membres.</p>
-      </div>
+      {dialog}
+      <AdminHero
+        section="Actualités"
+        title="Le fil de veille"
+        em="de tes membres"
+        desc="Ajoute, corrige ou masque les actualités de la page Actualités. La veille quotidienne en publie aussi automatiquement, doublons écartés."
+      />
 
       {/* Stats bar */}
       <div style={s.statsBar} className="fade-up">
@@ -227,11 +234,11 @@ export default function ActualitesAdmin({ articles }: { articles: Actualite[] })
           <span style={s.statLbl}>article{articles.length > 1 ? 's' : ''} au total</span>
         </div>
         <div style={s.statChip}>
-          <span style={{ ...s.statNum, color: 'var(--success-1)' }}>{publishedCount}</span>
+          <span style={{ ...s.statNum, color: 'var(--accent-text)' }}>{publishedCount}</span>
           <span style={s.statLbl}>publiés</span>
         </div>
         <div style={s.statChip}>
-          <span style={{ ...s.statNum, color: '#fb923c' }}>{articles.length - publishedCount}</span>
+          <span style={{ ...s.statNum, color: '#B7791F' }}>{articles.length - publishedCount}</span>
           <span style={s.statLbl}>brouillons</span>
         </div>
 
@@ -270,7 +277,7 @@ export default function ActualitesAdmin({ articles }: { articles: Actualite[] })
                 style={{
                   ...s.filterBtn,
                   ...(filterCat === val
-                    ? { background: cat ? cat.bg : 'var(--border)', color: cat ? cat.color : 'var(--text)', borderColor: cat ? `${cat.color}30` : 'var(--border-2)' }
+                    ? { background: cat ? cat.bg : 'var(--border)', color: cat ? cat.color : 'var(--text)', borderColor: cat ? `color-mix(in srgb, ${cat.color} 19%, transparent)` : 'var(--border-2)' }
                     : {}),
                 }}
               >
@@ -309,7 +316,7 @@ export default function ActualitesAdmin({ articles }: { articles: Actualite[] })
                   <>
                     <div style={s.itemHead}>
                       <div style={s.itemMeta}>
-                        <span style={{ ...s.catBadge, color: cat.color, background: cat.bg, borderColor: `${cat.color}25` }}>
+                        <span style={{ ...s.catBadge, color: cat.color, background: cat.bg, borderColor: `color-mix(in srgb, ${cat.color} 15%, transparent)` }}>
                           {cat.label}
                         </span>
                         <span style={{ ...s.statusBadge, ...(article.is_published ? s.statusPublished : s.statusDraft) }}>
@@ -327,13 +334,13 @@ export default function ActualitesAdmin({ articles }: { articles: Actualite[] })
                                 onClick={() => handleToggle(article.id, article.is_published)}
                                 disabled={isPending}
                                 title={article.is_published ? 'Dépublier' : 'Publier'}
-                                style={{ ...s.iconBtn, color: article.is_published ? '#fb923c' : 'var(--success-1)' }}
+                                style={{ ...s.iconBtn, color: article.is_published ? '#B7791F' : 'var(--accent-text)' }}
                               >
                                 {article.is_published ? <EyeSlash size={15} /> : <Eye size={15} />}
                               </button>
                               <button
                                 onClick={() => setEditingId(article.id)}
-                                style={{ ...s.iconBtn, color: 'var(--info)' }}
+                                style={{ ...s.iconBtn, color: '#6E5446' }}
                                 title="Modifier"
                               >
                                 <PencilSimple size={15} />
@@ -443,7 +450,7 @@ const s: Record<string, React.CSSProperties> = {
   itemMeta: { display: 'flex', alignItems: 'center', gap: 'var(--s-2)', flexWrap: 'wrap' as const },
   catBadge: { fontSize: 'var(--t-xs)', fontWeight: 700, letterSpacing: '0.6px', textTransform: 'uppercase' as const, padding: '3px 9px', borderRadius: 'var(--r-pill)', border: '1px solid' },
   statusBadge: { fontSize: 'var(--t-xs)', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' as const, padding: '3px 9px', borderRadius: 'var(--r-pill)', border: '1px solid' },
-  statusPublished: { color: 'var(--success-1)', background: 'var(--success-bg)', borderColor: 'var(--success-border)' },
+  statusPublished: { color: 'var(--accent-text)', background: 'var(--accent-bg)', borderColor: 'var(--accent-border)' },
   statusDraft: { color: 'var(--text-3)', background: 'var(--surface-2)', borderColor: 'var(--border)' },
   dateText: { fontSize: 'var(--t-xs)', color: 'var(--text-muted)', fontWeight: 500 },
 

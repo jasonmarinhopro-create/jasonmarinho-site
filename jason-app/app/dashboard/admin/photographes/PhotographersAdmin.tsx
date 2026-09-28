@@ -4,6 +4,8 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { Camera, CheckCircle, X, Clock, ArrowSquareOut, Warning, Star, EyeSlash, Eye, Trash, ChatCircle } from '@phosphor-icons/react/dist/ssr'
 import { hidePhotographer, unhidePhotographer, deleteOrphanPhotographer } from './actions'
+import AdminHero from '../_ui/AdminHero'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 type Photographer = {
   id: string; email: string; full_name: string; ville: string
@@ -33,27 +35,28 @@ interface Props {
 const FOUNDER_QUOTA = 20
 
 function fmtAge(iso: string | null): string {
-  if (!iso) return '—'
+  if (!iso) return '-'
   const ms = Date.now() - new Date(iso).getTime()
   const h = Math.floor(ms / 3600_000)
   if (h < 1) return 'qq min'
   if (h < 24) return `${h} h`
   return `${Math.floor(h / 24)} j`
 }
-function fmtEur(n: number | null): string { return n == null ? '—' : `${n} €` }
+function fmtEur(n: number | null): string { return n == null ? '-' : `${n} €` }
 function fmtTarif(p: Photographer): string {
-  if (!p.tarif_min && !p.tarif_max) return '—'
+  if (!p.tarif_min && !p.tarif_max) return '-'
   return `${fmtEur(p.tarif_min)} – ${fmtEur(p.tarif_max)}`
 }
 
 export default function PhotographersAdmin({ active, pendingPayment, hidden, cancelled, founderActiveCount }: Props) {
   const router = useRouter()
   const [busy, startBusy] = useTransition()
+  const { confirm, dialog } = useConfirm()
   const [err, setErr] = useState<string | null>(null)
   const [ok, setOk] = useState<string | null>(null)
 
-  function handleHide(p: Photographer) {
-    if (!window.confirm(`Masquer ${p.full_name} de l'annuaire public ? L'abonnement Stripe reste actif (le pro continue à payer).`)) return
+  async function handleHide(p: Photographer) {
+    if (!(await confirm({ message: `Masquer ${p.full_name} de l'annuaire public ? L'abonnement Stripe reste actif (le pro continue à payer).`, confirmLabel: 'Masquer', danger: true }))) return
     setErr(null); setOk(null)
     startBusy(async () => {
       const res = await hidePhotographer(p.id)
@@ -69,8 +72,8 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
       else { setOk(`${p.full_name} réactivé.`); router.refresh() }
     })
   }
-  function handleDeleteOrphan(p: Photographer) {
-    if (!window.confirm(`Supprimer définitivement ${p.full_name} (orphelin sans paiement Stripe) ? Le compte Supabase Auth est aussi supprimé.`)) return
+  async function handleDeleteOrphan(p: Photographer) {
+    if (!(await confirm({ message: `Supprimer définitivement ${p.full_name} (orphelin sans paiement Stripe) ? Le compte Supabase Auth est aussi supprimé.`, confirmLabel: 'Supprimer', danger: true }))) return
     setErr(null); setOk(null)
     startBusy(async () => {
       const res = await deleteOrphanPhotographer(p.id)
@@ -81,18 +84,18 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
 
   return (
     <section style={s.wrap}>
+      {dialog}
+      <AdminHero
+        section="Annuaire photographes"
+        title="Les photographes"
+        em="de l'annuaire"
+        desc="Inscription en libre-service, sans validation : tu interviens seulement pour masquer ou réactiver une fiche, ou supprimer un compte resté sans paiement."
+      />
       <header style={s.head}>
-        <div>
-          <h2 style={s.title}>
-            <Camera size={20} weight="duotone" style={{ verticalAlign: 'middle', marginRight: '8px', color: 'var(--accent-text)' }} />
-            Annuaire photographes <em style={s.titleEm}>· admin</em>
-          </h2>
-          <p style={s.sub}>Flow self-service automatique : pas de validation manuelle. Tu interviens uniquement pour modérer (masquer/réactiver) ou nettoyer des orphelins.</p>
-        </div>
         <div style={s.stats}>
-          <Kpi v={active.length} l="actifs" color="var(--success-1)" />
-          <Kpi v={`${founderActiveCount}/${FOUNDER_QUOTA}`} l="fondateurs" color="#FFD56B" />
-          <Kpi v={pendingPayment.length} l="paiement en cours" color="#d97706" />
+          <Kpi v={active.length} l="actifs" color="var(--accent-text)" />
+          <Kpi v={`${founderActiveCount}/${FOUNDER_QUOTA}`} l="fondateurs" color="#B7791F" />
+          <Kpi v={pendingPayment.length} l="paiement en cours" color="#B7791F" />
           <Kpi v={hidden.length} l="masqués" color="var(--text-muted)" />
         </div>
       </header>
@@ -119,13 +122,13 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
             <div key={p.id} style={s.row}>
               <div>
                 <div style={s.cellName}>
-                  {p.tier === 'fondateur' && <Star size={11} weight="fill" color="#FFD56B" style={{ marginRight: 4 }} />}
+                  {p.tier === 'fondateur' && <Star size={11} weight="fill" color="#B7791F" style={{ marginRight: 4 }} />}
                   {p.full_name}
                 </div>
                 <div style={s.cellSub}>{p.email}</div>
               </div>
               <div style={s.cellMid}>{p.ville}{p.zone_couverte ? <span style={s.cellSub}> · {p.zone_couverte}</span> : null}</div>
-              <div style={s.cellMid}>{p.specialite ?? '—'}<br/><span style={s.cellSub}>{fmtTarif(p)}</span></div>
+              <div style={s.cellMid}>{p.specialite ?? '-'}<br/><span style={s.cellSub}>{fmtTarif(p)}</span></div>
               <div style={s.cellMid}>
                 <Eye size={11} weight="bold" /> {p.views_count} · <ChatCircle size={11} weight="bold" /> {p.contacts_count}
                 <br/><span style={s.cellSub}>actif depuis {fmtAge(p.created_at)}</span>
@@ -223,7 +226,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
                 <div style={s.cellMid}>{p.email}</div>
                 <div style={s.cellMid}>résilié il y a {fmtAge(p.updated_at)}</div>
                 <div style={s.actions}>
-                  <span style={s.cellSub}>Stripe : {p.stripe_subscription_status ?? '—'}</span>
+                  <span style={s.cellSub}>Stripe : {p.stripe_subscription_status ?? '-'}</span>
                 </div>
               </div>
             ))}
@@ -253,8 +256,8 @@ const s: Record<string, React.CSSProperties> = {
   kpi: { display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-start' },
   kpiV: { fontSize: '20px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', lineHeight: 1 },
   kpiL: { fontSize: '10.5px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.5px', marginTop: '4px' },
-  errBanner: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '8px', fontSize: '13px', color: 'var(--danger)', marginBottom: '14px' },
-  okBanner: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '8px', fontSize: '13px', color: 'var(--success-1)', marginBottom: '14px' },
+  errBanner: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'color-mix(in srgb, var(--danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 25%, transparent)', borderRadius: '8px', fontSize: '13px', color: 'var(--danger)', marginBottom: '14px' },
+  okBanner: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'color-mix(in srgb, var(--accent-text) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--accent-text) 25%, transparent)', borderRadius: '8px', fontSize: '13px', color: 'var(--accent-text)', marginBottom: '14px' },
   sectionTitle: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase' as const, letterSpacing: '0.5px', margin: '24px 0 12px' },
   empty: { padding: '24px', textAlign: 'center' as const, background: 'var(--surface)', border: '1px dashed var(--border)', borderRadius: '10px', fontSize: '13px', color: 'var(--text-muted)' },
   table: { display: 'flex', flexDirection: 'column' as const, gap: 6, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 8 },
@@ -267,7 +270,7 @@ const s: Record<string, React.CSSProperties> = {
   linkBtn: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 10px', background: 'transparent', border: '1px solid var(--border)', borderRadius: 7, fontSize: 11.5, fontWeight: 500, color: 'var(--accent-text)', textDecoration: 'none' },
   btnPrimary: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 12px', background: 'var(--accent-text)', color: 'var(--bg)', border: 'none', borderRadius: 7, fontSize: 11.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
   btnSecondary: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 10px', background: 'transparent', color: 'var(--text-2)', border: '1px solid var(--border)', borderRadius: 7, fontSize: 11.5, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' },
-  btnDanger: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 10px', background: 'transparent', color: 'var(--danger)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 7, fontSize: 11.5, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' },
+  btnDanger: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 10px', background: 'transparent', color: 'var(--danger)', border: '1px solid color-mix(in srgb, var(--danger) 30%, transparent)', borderRadius: 7, fontSize: 11.5, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' },
   collapseSection: { marginTop: 24 },
   collapseSummary: { cursor: 'pointer', fontSize: 12, fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase' as const, letterSpacing: 0.5, padding: '8px 0', userSelect: 'none' as const, listStyle: 'none' as const, display: 'inline-flex', alignItems: 'center' },
   helpText: { fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6, margin: '4px 0 10px', maxWidth: 720 },

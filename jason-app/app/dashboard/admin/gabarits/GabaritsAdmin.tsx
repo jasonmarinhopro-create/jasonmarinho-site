@@ -7,6 +7,8 @@ import {
   MagnifyingGlass, CaretDown, CaretUp, Globe,
 } from '@phosphor-icons/react/dist/ssr'
 import { addTemplate, deleteTemplate, updateTemplate } from './actions'
+import AdminHero from '../_ui/AdminHero'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 interface Template {
   id: string
@@ -39,30 +41,30 @@ const CATEGORY_TO_TIMING: Record<string, TimingBucket> = {
 }
 
 const TIMING_BUCKETS: { value: TimingBucket | 'all'; label: string; color: string; bg: string }[] = [
-  { value: 'avant-arrivee',  label: "Avant l'arrivée",   color: '#FFD56B', bg: 'rgba(255,213,107,0.12)' },
-  { value: 'pendant-sejour', label: 'Pendant le séjour', color: '#60BEFF', bg: 'rgba(96,190,255,0.1)'   },
-  { value: 'apres-depart',   label: 'Après le départ',   color: '#F97583', bg: 'rgba(249,117,131,0.1)'  },
+  { value: 'avant-arrivee',  label: "Avant l'arrivée",   color: '#B7791F', bg: 'rgba(255,213,107,0.12)' },
+  { value: 'pendant-sejour', label: 'Pendant le séjour', color: '#6E5446', bg: 'color-mix(in srgb, #6E5446 10%, transparent)'   },
+  { value: 'apres-depart',   label: 'Après le départ',   color: '#C2344A', bg: 'color-mix(in srgb, #C2344A 10%, transparent)'  },
 ]
 
 const CATEGORIES = [
-  { value: 'confirmation', label: 'Confirmation',   color: '#818cf8', bg: 'rgba(129,140,248,0.12)' },
-  { value: 'checkin',      label: 'Check-in',       color: '#4ade80', bg: 'rgba(74,222,128,0.12)'  },
-  { value: 'checkout',     label: 'Check-out',      color: '#fb923c', bg: 'rgba(251,146,60,0.12)'  },
-  { value: 'bienvenue',    label: 'Bienvenue',      color: '#fcd34d', bg: 'rgba(252,211,77,0.12)'  },
-  { value: 'avis',         label: 'Avis',           color: '#c084fc', bg: 'rgba(192,132,252,0.12)' },
-  { value: 'probleme',     label: 'Problème',       color: 'var(--danger)', bg: 'rgba(248,113,113,0.12)' },
-  { value: 'extra',        label: 'Extra',          color: '#2dd4bf', bg: 'rgba(45,212,191,0.12)'  },
-  { value: 'upsell',       label: 'Upsell',         color: '#ffd56b', bg: 'rgba(255,213,107,0.12)' },
-  { value: 'securite',     label: 'Sécurité',       color: '#94a3b8', bg: 'rgba(148,163,184,0.12)' },
-  { value: 'conciergerie', label: 'Conciergerie',   color: '#f472b6', bg: 'rgba(244,114,182,0.12)' },
-  { value: 'saisonnier',   label: 'Saisonnier',     color: 'var(--warning)', bg: 'rgba(251,191,36,0.12)'  },
-  { value: 'airbnb',       label: 'Airbnb',         color: '#ff6b72', bg: 'rgba(255,107,114,0.12)' },
-  { value: 'facebook',     label: 'Groupe Facebook', color: '#818cf8', bg: 'rgba(129,140,248,0.12)' },
-  { value: 'autre',        label: 'Autre',          color: '#64748b', bg: 'rgba(100,116,139,0.1)'  },
+  { value: 'confirmation', label: 'Confirmation',   color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 12%, transparent)' },
+  { value: 'checkin',      label: 'Check-in',       color: 'var(--accent-text)', bg: 'rgba(74,222,128,0.12)'  },
+  { value: 'checkout',     label: 'Check-out',      color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 12%, transparent)'  },
+  { value: 'bienvenue',    label: 'Bienvenue',      color: '#B7791F', bg: 'rgba(252,211,77,0.12)'  },
+  { value: 'avis',         label: 'Avis',           color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 12%, transparent)' },
+  { value: 'probleme',     label: 'Problème',       color: 'var(--danger)', bg: 'color-mix(in srgb, var(--danger) 12%, transparent)' },
+  { value: 'extra',        label: 'Extra',          color: 'var(--accent-text)', bg: 'color-mix(in srgb, var(--accent-text) 12%, transparent)'  },
+  { value: 'upsell',       label: 'Upsell',         color: '#B7791F', bg: 'rgba(255,213,107,0.12)' },
+  { value: 'securite',     label: 'Sécurité',       color: 'var(--text-3)', bg: 'color-mix(in srgb, #6E5446 12%, transparent)' },
+  { value: 'conciergerie', label: 'Conciergerie',   color: '#B83A7C', bg: 'color-mix(in srgb, #B83A7C 12%, transparent)' },
+  { value: 'saisonnier',   label: 'Saisonnier',     color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 12%, transparent)'  },
+  { value: 'airbnb',       label: 'Airbnb',         color: '#C2344A', bg: 'color-mix(in srgb, #C2344A 12%, transparent)' },
+  { value: 'facebook',     label: 'Groupe Facebook', color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 12%, transparent)' },
+  { value: 'autre',        label: 'Autre',          color: 'var(--text-3)', bg: 'color-mix(in srgb, #6E5446 10%, transparent)'  },
 ]
 
 function getCat(value: string) {
-  return CATEGORIES.find(c => c.value === value) ?? { color: '#64748b', bg: 'rgba(100,116,139,0.1)', label: value }
+  return CATEGORIES.find(c => c.value === value) ?? { color: 'var(--text-3)', bg: 'color-mix(in srgb, #6E5446 10%, transparent)', label: value }
 }
 
 // ─── Shared form ────────────────────────────────────────────────────────────
@@ -86,7 +88,7 @@ function TemplateForm({
     <form onSubmit={onSubmit}>
       {!isEdit && (
         <p style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-2)', marginBottom: '18px', textTransform: 'uppercase', letterSpacing: '0.6px' }}>
-          Nouveau gabarit
+          Nouveau modèle
         </p>
       )}
 
@@ -127,7 +129,7 @@ function TemplateForm({
           rows={7}
           defaultValue={defaultValues?.content ?? ''}
           style={{ ...s.input, resize: 'vertical', fontFamily: 'inherit', lineHeight: 1.55 }}
-          placeholder="Texte du gabarit en français..."
+          placeholder="Texte du modèle en français..."
         />
       </div>
 
@@ -159,7 +161,7 @@ function TemplateForm({
       {/* Actions */}
       <div style={{ display: 'flex', gap: '8px' }}>
         <button type="submit" style={s.submitBtn} disabled={isPending}>
-          {isPending ? 'Enregistrement...' : isEdit ? 'Enregistrer les modifications' : 'Ajouter le gabarit'}
+          {isPending ? 'Enregistrement...' : isEdit ? 'Enregistrer les modifications' : 'Ajouter le modèle'}
         </button>
         {onCancel && (
           <button type="button" onClick={onCancel} style={s.cancelBtn}>Annuler</button>
@@ -181,6 +183,7 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
   const [filterCat, setFilterCat]     = useState('all')
   const [filterTiming, setFilterTiming] = useState<TimingBucket | 'all'>('all')
   const [isPending, startTransition]  = useTransition()
+  const { confirm, dialog } = useConfirm()
   const [feedback, setFeedback]     = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
 
   function flash(type: 'ok' | 'err', msg: string) {
@@ -195,7 +198,7 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
       const res = await addTemplate(fd)
       if (res.success) {
         setShowAdd(false)
-        flash('ok', 'Gabarit ajouté')
+        flash('ok', 'Modèle ajouté')
         router.refresh()
       } else {
         flash('err', res.error ?? 'Erreur')
@@ -203,13 +206,13 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
     })
   }
 
-  function handleDelete(id: string) {
-    if (!confirm('Supprimer ce gabarit ?')) return
+  async function handleDelete(id: string) {
+    if (!(await confirm({ message: 'Supprimer ce modèle ?', confirmLabel: 'Supprimer', danger: true }))) return
     startTransition(async () => {
       const res = await deleteTemplate(id)
       if (res.success) {
         setTemplates(ts => ts.filter(x => x.id !== id))
-        flash('ok', 'Gabarit supprimé')
+        flash('ok', 'Modèle supprimé')
       } else {
         flash('err', res.error ?? 'Erreur')
       }
@@ -234,7 +237,7 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
           tags:     tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : null,
         }))
         setEditingId(null)
-        flash('ok', 'Gabarit mis à jour')
+        flash('ok', 'Modèle mis à jour')
       } else {
         flash('err', res.error ?? 'Erreur')
       }
@@ -274,14 +277,18 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
 
   return (
     <div>
+      {dialog}
+      <AdminHero
+        section="Modèles de messages"
+        title="Les messages prêts"
+        em="à copier-coller"
+        desc="Modèles affichés dans Outils & calculs, Modèles de messages : avant l'arrivée, pendant le séjour, après le départ."
+      />
       {/* ── Header ── */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '28px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
         <div>
-          <h2 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 500, color: 'var(--text)', marginBottom: '5px' }}>
-            Gabarits de messages
-          </h2>
-          <p style={{ fontSize: '13px', color: 'var(--text-3)' }}>
-            {templates.length} gabarit{templates.length !== 1 ? 's' : ''} · {usedCats.length} catégorie{usedCats.length !== 1 ? 's' : ''}
+          <p style={{ fontSize: '13px', color: 'var(--text-3)', margin: 0 }}>
+            {templates.length} modèle{templates.length !== 1 ? 's' : ''} · {usedCats.length} catégorie{usedCats.length !== 1 ? 's' : ''}
           </p>
         </div>
         <button
@@ -289,14 +296,15 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
           disabled={isPending}
           style={{
             display: 'flex', alignItems: 'center', gap: '7px',
-            padding: '9px 16px', borderRadius: '10px', fontSize: '13px', fontWeight: 500, cursor: 'pointer',
-            background:   showAdd ? 'var(--danger-bg)' : 'rgba(255,213,107,0.1)',
-            border:       showAdd ? '1px solid rgba(248,113,113,0.25)' : '1px solid rgba(255,213,107,0.2)',
-            color:        showAdd ? 'var(--danger)' : 'var(--accent-text)',
+            padding: '9px 16px', borderRadius: '10px', fontSize: '13px', cursor: 'pointer',
+            fontFamily: 'inherit', fontWeight: 600,
+            background:   showAdd ? 'var(--danger-bg)' : 'var(--accent-text)',
+            border:       showAdd ? '1px solid color-mix(in srgb, var(--danger) 25%, transparent)' : '1px solid var(--accent-text)',
+            color:        showAdd ? 'var(--danger-text)' : 'var(--bg)',
           }}
         >
           {showAdd ? <X size={14} /> : <Plus size={14} />}
-          {showAdd ? 'Annuler' : 'Nouveau gabarit'}
+          {showAdd ? 'Annuler' : 'Nouveau modèle'}
         </button>
       </div>
 
@@ -307,8 +315,8 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
           padding: '10px 14px', borderRadius: '10px', border: '1px solid',
           fontSize: '13px', marginBottom: '16px',
           background:   feedback.type === 'ok' ? 'rgba(74,222,128,0.08)' : 'var(--danger-bg)',
-          borderColor:  feedback.type === 'ok' ? 'rgba(74,222,128,0.3)'  : 'rgba(248,113,113,0.3)',
-          color:        feedback.type === 'ok' ? '#4ade80' : 'var(--danger)',
+          borderColor:  feedback.type === 'ok' ? 'rgba(74,222,128,0.3)'  : 'color-mix(in srgb, var(--danger) 30%, transparent)',
+          color:        feedback.type === 'ok' ? 'var(--accent-text)' : 'var(--danger)',
         }}>
           {feedback.type === 'ok' ? <Check size={14} /> : <X size={14} />}
           {feedback.msg}
@@ -345,7 +353,7 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
                 style={{
                   padding: '5px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: 500, cursor: 'pointer',
                   background:   filterTiming === b.value ? b.bg : 'transparent',
-                  border:       filterTiming === b.value ? `1px solid ${b.color}40` : '1px solid var(--border)',
+                  border:       filterTiming === b.value ? `1px solid color-mix(in srgb, ${b.color} 25%, transparent)` : '1px solid var(--border)',
                   color:        filterTiming === b.value ? b.color : 'var(--text-3)',
                 }}
               >
@@ -399,7 +407,7 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
                 style={{
                   padding: '4px 12px', borderRadius: '100px', fontSize: '12px', fontWeight: 500, cursor: 'pointer',
                   background:   filterCat === cat.value ? cat.bg : 'transparent',
-                  border:       filterCat === cat.value ? `1px solid ${cat.color}50` : '1px solid var(--border)',
+                  border:       filterCat === cat.value ? `1px solid color-mix(in srgb, ${cat.color} 31%, transparent)` : '1px solid var(--border)',
                   color:        filterCat === cat.value ? cat.color : 'var(--text-3)',
                 }}
               >
@@ -422,7 +430,7 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         {filtered.length === 0 && (
           <div style={{ textAlign: 'center', padding: '52px 20px', color: 'var(--text-3)', fontSize: '14px' }}>
-            {search || filterCat !== 'all' ? 'Aucun résultat pour cette recherche.' : 'Aucun gabarit pour l\'instant.'}
+            {search || filterCat !== 'all' ? 'Aucun résultat pour cette recherche.' : 'Aucun modèle pour l\'instant.'}
           </div>
         )}
 
@@ -436,7 +444,7 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
               key={t.id}
               style={{
                 background: 'var(--surface)',
-                border: isEditing ? `1px solid ${cat.color}40` : '1px solid var(--surface-2)',
+                border: isEditing ? `1px solid color-mix(in srgb, ${cat.color} 25%, transparent)` : '1px solid var(--surface-2)',
                 borderRadius: '12px', overflow: 'hidden',
                 transition: 'border-color 0.2s',
               }}
@@ -473,7 +481,7 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap', marginBottom: '6px' }}>
                           <span style={{
                             fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '100px',
-                            background: cat.bg, color: cat.color, border: `1px solid ${cat.color}30`,
+                            background: cat.bg, color: cat.color, border: `1px solid color-mix(in srgb, ${cat.color} 19%, transparent)`,
                           }}>
                             {cat.label}
                           </span>
@@ -483,7 +491,7 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
                             </span>
                           )}
                           {t.corps_en && (
-                            <span style={{ fontSize: '10px', padding: '1px 6px', borderRadius: '4px', background: 'rgba(129,140,248,0.08)', color: '#818cf8', border: '1px solid rgba(129,140,248,0.2)' }}>
+                            <span style={{ fontSize: '10px', padding: '1px 6px', borderRadius: '4px', background: 'color-mix(in srgb, #B7791F 8%, transparent)', color: '#B7791F', border: '1px solid color-mix(in srgb, #B7791F 20%, transparent)' }}>
                               EN
                             </span>
                           )}
@@ -521,7 +529,7 @@ export default function GabaritsAdmin({ templates: initialTemplates }: { templat
                           </button>
                           <button
                             onClick={() => handleDelete(t.id)}
-                            style={{ ...s.iconBtn, color: 'rgba(248,113,113,0.55)' }}
+                            style={{ ...s.iconBtn, color: 'color-mix(in srgb, var(--danger) 55%, transparent)' }}
                             title="Supprimer"
                           >
                             <Trash size={13} />

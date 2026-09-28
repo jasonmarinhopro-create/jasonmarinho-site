@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+import AdminHero from '../_ui/AdminHero'
 import {
   HouseLine, Coffee, Buildings, Handshake,
   Scales, CurrencyEur, ClipboardText, Globe, Briefcase, FileText, Megaphone, ShieldCheck, Gavel,
@@ -19,10 +20,10 @@ const PROFILES: {
   bg: string
   Icon: React.ElementType
 }[] = [
-  { id: 'gites',        label: 'Gîtes',               desc: 'Logement entier · EI ou SASU',           color: '#d97706', bg: 'rgba(245,158,11,0.12)',   Icon: HouseLine },
-  { id: 'chambres',     label: "Chambres d'hôtes",     desc: 'PDJ obligatoire · Présence propriétaire', color: '#db2777', bg: 'rgba(236,72,153,0.12)',   Icon: Coffee },
-  { id: 'conciergerie', label: 'Conciergeries',        desc: 'Prestation de services · Multi-biens',   color: '#7c3aed', bg: 'rgba(139,92,246,0.12)',   Icon: Buildings },
-  { id: 'direct',       label: 'Réservation directe',  desc: 'Sans Airbnb · Contrats & paiements',     color: '#059669', bg: 'rgba(16,185,129,0.12)',   Icon: Handshake },
+  { id: 'gites',        label: 'Gîtes',               desc: 'Logement entier · EI ou SASU',           color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 12%, transparent)',   Icon: HouseLine },
+  { id: 'chambres',     label: "Chambres d'hôtes",     desc: 'PDJ obligatoire · Présence propriétaire', color: '#B83A7C', bg: 'color-mix(in srgb, #B83A7C 12%, transparent)',   Icon: Coffee },
+  { id: 'conciergerie', label: 'Conciergeries',        desc: 'Prestation de services · Multi-biens',   color: '#6E5446', bg: 'color-mix(in srgb, #6E5446 12%, transparent)',   Icon: Buildings },
+  { id: 'direct',       label: 'Réservation directe',  desc: 'Sans Airbnb · Contrats & paiements',     color: '#2F7D52', bg: 'color-mix(in srgb, #2F7D52 12%, transparent)',   Icon: Handshake },
 ]
 
 const GUIDE_CARDS: {
@@ -34,21 +35,21 @@ const GUIDE_CARDS: {
   bg: string
 }[] = [
   // Gîtes
-  { id: 'gites-statut',        profile: 'gites',        title: 'Statut juridique : EI ou SASU ?',                   Icon: Scales,       color: 'var(--warning)', bg: 'rgba(245,158,11,0.12)' },
-  { id: 'gites-fiscalite',     profile: 'gites',        title: 'Classement & impact fiscal (loi Le Meur 2025)',      Icon: CurrencyEur,  color: 'var(--success-1)', bg: 'var(--success-bg)' },
-  { id: 'gites-obligations',   profile: 'gites',        title: 'Obligations légales du gîte',                       Icon: ClipboardText, color: 'var(--info)', bg: 'rgba(96,165,250,0.12)' },
+  { id: 'gites-statut',        profile: 'gites',        title: 'Statut juridique : EI ou SASU ?',                   Icon: Scales,       color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 12%, transparent)' },
+  { id: 'gites-fiscalite',     profile: 'gites',        title: 'Classement & impact fiscal (loi Le Meur 2025)',      Icon: CurrencyEur,  color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  { id: 'gites-obligations',   profile: 'gites',        title: 'Obligations légales du gîte',                       Icon: ClipboardText, color: '#6E5446', bg: 'color-mix(in srgb, #6E5446 12%, transparent)' },
   // Chambres
-  { id: 'chambres-regles',     profile: 'chambres',     title: 'Les règles légales strictes (loi 2006)',             Icon: Gavel,        color: '#fb7185', bg: 'rgba(251,113,133,0.12)' },
-  { id: 'chambres-fiscalite',  profile: 'chambres',     title: "Fiscalité spécifique chambres d'hôtes",             Icon: CurrencyEur,  color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' },
-  { id: 'chambres-plateformes',profile: 'chambres',     title: 'Canaux de réservation adaptés',                     Icon: Globe,        color: '#2dd4bf', bg: 'rgba(45,212,191,0.12)' },
+  { id: 'chambres-regles',     profile: 'chambres',     title: 'Les règles légales strictes (loi 2006)',             Icon: Gavel,        color: '#B83A7C', bg: 'color-mix(in srgb, #B83A7C 12%, transparent)' },
+  { id: 'chambres-fiscalite',  profile: 'chambres',     title: "Fiscalité spécifique chambres d'hôtes",             Icon: CurrencyEur,  color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 12%, transparent)' },
+  { id: 'chambres-plateformes',profile: 'chambres',     title: 'Canaux de réservation adaptés',                     Icon: Globe,        color: 'var(--accent-text)', bg: 'color-mix(in srgb, var(--accent-text) 12%, transparent)' },
   // Conciergeries
-  { id: 'concierge-hoguet',    profile: 'conciergerie', title: "Loi Hoguet : quand s'applique-t-elle ?",            Icon: Scales,       color: '#818cf8', bg: 'rgba(129,140,248,0.12)' },
-  { id: 'concierge-statut',    profile: 'conciergerie', title: 'Statuts recommandés & TVA',                         Icon: Briefcase,    color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' },
-  { id: 'concierge-contrats',  profile: 'conciergerie', title: 'Contrats & tarification',                           Icon: FileText,     color: '#2dd4bf', bg: 'rgba(45,212,191,0.12)' },
+  { id: 'concierge-hoguet',    profile: 'conciergerie', title: "Loi Hoguet : quand s'applique-t-elle ?",            Icon: Scales,       color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 12%, transparent)' },
+  { id: 'concierge-statut',    profile: 'conciergerie', title: 'Statuts recommandés & TVA',                         Icon: Briefcase,    color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 12%, transparent)' },
+  { id: 'concierge-contrats',  profile: 'conciergerie', title: 'Contrats & tarification',                           Icon: FileText,     color: 'var(--accent-text)', bg: 'color-mix(in srgb, var(--accent-text) 12%, transparent)' },
   // Direct
-  { id: 'direct-contrat',      profile: 'direct',       title: 'Contrat obligatoire sans plateforme',               Icon: FileText,     color: 'var(--success-1)', bg: 'var(--success-bg)' },
-  { id: 'direct-assurance',    profile: 'direct',       title: "Assurance : pas d'AirCover hors Airbnb",            Icon: ShieldCheck,  color: '#fb7185', bg: 'rgba(251,113,133,0.12)' },
-  { id: 'direct-visibilite',   profile: 'direct',       title: 'Se rendre visible sans Airbnb',                     Icon: Megaphone,    color: 'var(--warning)', bg: 'rgba(251,191,36,0.12)' },
+  { id: 'direct-contrat',      profile: 'direct',       title: 'Contrat obligatoire sans plateforme',               Icon: FileText,     color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  { id: 'direct-assurance',    profile: 'direct',       title: "Assurance : pas d'AirCover hors Airbnb",            Icon: ShieldCheck,  color: '#B83A7C', bg: 'color-mix(in srgb, #B83A7C 12%, transparent)' },
+  { id: 'direct-visibilite',   profile: 'direct',       title: 'Se rendre visible sans Airbnb',                     Icon: Megaphone,    color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 12%, transparent)' },
 ]
 
 export default async function AdminGuidesPage() {
@@ -80,14 +81,12 @@ export default async function AdminGuidesPage() {
     <>
       <div style={{ padding: 'clamp(24px,3vw,40px)', width: '100%' }}>
 
-        {/* Intro */}
-        <div style={s.intro} className="fade-up">
-          <h2 style={s.pageTitle}>Guide LCD</h2>
-          <p style={s.pageDesc}>
-            Structure du Guide LCD par profil : 4 activités couvertes, 12 fiches de règles.
-            Le contenu est maintenu dans le code, les actualités par profil sont gérées via la section Actualités.
-          </p>
-        </div>
+        <AdminHero
+          section="Guide LCD"
+          title="Les règles de la location,"
+          em="par profil"
+          desc={`${PROFILES.length} activités couvertes, ${GUIDE_CARDS.length} fiches de règles. Le texte des fiches vit dans le code (GuideCards.tsx) ; les actualités de chaque profil se gèrent dans Actualités.`}
+        />
 
         {/* Quick actions */}
         <div style={s.actions} className="fade-up d1">
@@ -102,21 +101,21 @@ export default async function AdminGuidesPage() {
             <Newspaper size={18} />
             <div>
               <div style={s.actionTitle}>Gérer les Actualités</div>
-              <div style={s.actionDesc}>Ajouter / publier des articles par profil</div>
+              <div style={s.actionDesc}>Ajouter ou publier des articles par profil</div>
             </div>
           </Link>
         </div>
 
         {/* Profiles overview */}
         <div className="fade-up d2" style={{ marginBottom: '36px' }}>
-          <div style={s.sectionLabel}>4 profils couverts</div>
+          <div style={s.sectionLabel}>{PROFILES.length} profils couverts</div>
           <div style={s.profilesGrid}>
             {PROFILES.map(p => {
               const cards = GUIDE_CARDS.filter(c => c.profile === p.id)
               const counts = catCounts[p.id] ?? { total: 0, published: 0 }
               const Icon = p.Icon
               return (
-                <div key={p.id} style={{ ...s.profileCard, borderColor: `${p.color}20` }} className="glass-card">
+                <div key={p.id} style={{ ...s.profileCard, borderColor: `color-mix(in srgb, ${p.color} 13%, transparent)` }} className="glass-card">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
                     <div style={{ ...s.profileIconBox, background: p.bg, color: p.color }}>
                       <Icon size={18} weight="fill" />
@@ -138,7 +137,7 @@ export default async function AdminGuidesPage() {
                     })}
                   </div>
                   <div style={s.profileFooter}>
-                    <span style={{ fontSize: '11px', color: counts.published > 0 ? 'var(--success-1)' : 'var(--text-muted)', fontWeight: 500 }}>
+                    <span style={{ fontSize: '11px', color: counts.published > 0 ? 'var(--accent-text)' : 'var(--text-muted)', fontWeight: 500 }}>
                       {counts.published} actu{counts.published !== 1 ? 's' : ''} publiée{counts.published !== 1 ? 's' : ''}
                     </span>
                     {counts.total > counts.published && (

@@ -4,6 +4,8 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { Sparkle, CheckCircle, X, Clock, ArrowSquareOut, Warning, Star, ShieldCheck, EyeSlash, Eye, Trash, ChatCircle } from '@phosphor-icons/react/dist/ssr'
 import { hideCleaner, unhideCleaner, deleteOrphanCleaner } from './actions'
+import AdminHero from '../_ui/AdminHero'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 type Cleaner = {
   id: string; email: string; full_name: string; pseudo: string | null; ville: string
@@ -43,7 +45,7 @@ const EQUIPE_LABELS: Record<string, string> = {
 }
 
 function fmtAge(iso: string | null): string {
-  if (!iso) return '—'
+  if (!iso) return '-'
   const ms = Date.now() - new Date(iso).getTime()
   const h = Math.floor(ms / 3600_000)
   if (h < 1) return 'qq min'
@@ -53,19 +55,20 @@ function fmtAge(iso: string | null): string {
 function fmtTarif(c: Cleaner): string {
   if (c.tarif_forfait_min && c.tarif_forfait_max) return `${c.tarif_forfait_min}–${c.tarif_forfait_max} €`
   if (c.tarif_heure) return `${c.tarif_heure} €/h`
-  return '—'
+  return '-'
 }
 
 export default function CleanersAdmin({ active, pendingPayment, hidden, cancelled, founderActiveCount }: Props) {
   const router = useRouter()
   const [busy, startBusy] = useTransition()
+  const { confirm, dialog } = useConfirm()
   const [err, setErr] = useState<string | null>(null)
   const [ok, setOk] = useState<string | null>(null)
 
   function name(c: Cleaner) { return c.pseudo || c.full_name }
 
-  function handleHide(c: Cleaner) {
-    if (!window.confirm(`Masquer ${name(c)} de l'annuaire public ? L'abonnement Stripe reste actif.`)) return
+  async function handleHide(c: Cleaner) {
+    if (!(await confirm({ message: `Masquer ${name(c)} de l'annuaire public ? L'abonnement Stripe reste actif.`, confirmLabel: 'Masquer', danger: true }))) return
     setErr(null); setOk(null)
     startBusy(async () => {
       const res = await hideCleaner(c.id)
@@ -81,8 +84,8 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
       else { setOk(`${name(c)} réactivé.`); router.refresh() }
     })
   }
-  function handleDeleteOrphan(c: Cleaner) {
-    if (!window.confirm(`Supprimer définitivement ${name(c)} (orphelin sans paiement Stripe) ? Le compte Supabase Auth est aussi supprimé.`)) return
+  async function handleDeleteOrphan(c: Cleaner) {
+    if (!(await confirm({ message: `Supprimer définitivement ${name(c)} (orphelin sans paiement Stripe) ? Le compte Supabase Auth est aussi supprimé.`, confirmLabel: 'Supprimer', danger: true }))) return
     setErr(null); setOk(null)
     startBusy(async () => {
       const res = await deleteOrphanCleaner(c.id)
@@ -93,18 +96,18 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
 
   return (
     <section style={s.wrap}>
+      {dialog}
+      <AdminHero
+        section="Annuaire ménage"
+        title="Les équipes de ménage"
+        em="de l'annuaire"
+        desc="Inscription en libre-service, sans validation : tu interviens seulement pour masquer ou réactiver une fiche, ou supprimer un compte resté sans paiement."
+      />
       <header style={s.head}>
-        <div>
-          <h2 style={s.title}>
-            <Sparkle size={20} weight="duotone" style={{ verticalAlign: 'middle', marginRight: '8px', color: 'var(--accent-text)' }} />
-            Annuaire ménage <em style={s.titleEm}>· admin</em>
-          </h2>
-          <p style={s.sub}>Flow self-service automatique : pas de validation manuelle. Tu interviens uniquement pour modérer (masquer/réactiver) ou nettoyer des orphelins.</p>
-        </div>
         <div style={s.stats}>
-          <Kpi v={active.length} l="actifs" color="var(--success-1)" />
-          <Kpi v={`${founderActiveCount}/${FOUNDER_QUOTA}`} l="fondateurs" color="#FFD56B" />
-          <Kpi v={pendingPayment.length} l="paiement en cours" color="#d97706" />
+          <Kpi v={active.length} l="actifs" color="var(--accent-text)" />
+          <Kpi v={`${founderActiveCount}/${FOUNDER_QUOTA}`} l="fondateurs" color="#B7791F" />
+          <Kpi v={pendingPayment.length} l="paiement en cours" color="#B7791F" />
           <Kpi v={hidden.length} l="masqués" color="var(--text-muted)" />
         </div>
       </header>
@@ -130,15 +133,15 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
             <div key={c.id} style={s.row}>
               <div>
                 <div style={s.cellName}>
-                  {c.tier === 'fondateur' && <Star size={11} weight="fill" color="#FFD56B" style={{ marginRight: 4 }} />}
+                  {c.tier === 'fondateur' && <Star size={11} weight="fill" color="#B7791F" style={{ marginRight: 4 }} />}
                   {name(c)}
-                  {c.assurance_rc_pro && <ShieldCheck size={11} weight="fill" color="var(--success-1)" style={{ marginLeft: 4 }} />}
+                  {c.assurance_rc_pro && <ShieldCheck size={11} weight="fill" color="var(--accent-text)" style={{ marginLeft: 4 }} />}
                 </div>
                 <div style={s.cellSub}>{c.email}</div>
               </div>
               <div style={s.cellMid}>{c.ville}{c.zone_couverte ? <span style={s.cellSub}> · {c.zone_couverte}</span> : null}</div>
               <div style={s.cellMid}>
-                {c.equipe_type ? EQUIPE_LABELS[c.equipe_type] : '—'}{c.logements_geres ? ` · ${c.logements_geres} log.` : ''}
+                {c.equipe_type ? EQUIPE_LABELS[c.equipe_type] : '-'}{c.logements_geres ? ` · ${c.logements_geres} log.` : ''}
                 <br/><span style={s.cellSub}>{fmtTarif(c)}</span>
               </div>
               <div style={s.cellMid}>
@@ -235,7 +238,7 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
                 <div style={s.cellMid}>{c.email}</div>
                 <div style={s.cellMid}>résilié il y a {fmtAge(c.updated_at)}</div>
                 <div style={s.actions}>
-                  <span style={s.cellSub}>Stripe : {c.stripe_subscription_status ?? '—'}</span>
+                  <span style={s.cellSub}>Stripe : {c.stripe_subscription_status ?? '-'}</span>
                 </div>
               </div>
             ))}
@@ -265,8 +268,8 @@ const s: Record<string, React.CSSProperties> = {
   kpi: { display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-start' },
   kpiV: { fontSize: '20px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', lineHeight: 1 },
   kpiL: { fontSize: '10.5px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.5px', marginTop: '4px' },
-  errBanner: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '8px', fontSize: '13px', color: 'var(--danger)', marginBottom: '14px' },
-  okBanner: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '8px', fontSize: '13px', color: 'var(--success-1)', marginBottom: '14px' },
+  errBanner: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'color-mix(in srgb, var(--danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 25%, transparent)', borderRadius: '8px', fontSize: '13px', color: 'var(--danger)', marginBottom: '14px' },
+  okBanner: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'color-mix(in srgb, var(--accent-text) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--accent-text) 25%, transparent)', borderRadius: '8px', fontSize: '13px', color: 'var(--accent-text)', marginBottom: '14px' },
   sectionTitle: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase' as const, letterSpacing: '0.5px', margin: '24px 0 12px' },
   empty: { padding: '24px', textAlign: 'center' as const, background: 'var(--surface)', border: '1px dashed var(--border)', borderRadius: '10px', fontSize: '13px', color: 'var(--text-muted)' },
   table: { display: 'flex', flexDirection: 'column' as const, gap: 6, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 8 },
@@ -279,7 +282,7 @@ const s: Record<string, React.CSSProperties> = {
   linkBtn: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 10px', background: 'transparent', border: '1px solid var(--border)', borderRadius: 7, fontSize: 11.5, fontWeight: 500, color: 'var(--accent-text)', textDecoration: 'none' },
   btnPrimary: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 12px', background: 'var(--accent-text)', color: 'var(--bg)', border: 'none', borderRadius: 7, fontSize: 11.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
   btnSecondary: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 10px', background: 'transparent', color: 'var(--text-2)', border: '1px solid var(--border)', borderRadius: 7, fontSize: 11.5, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' },
-  btnDanger: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 10px', background: 'transparent', color: 'var(--danger)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 7, fontSize: 11.5, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' },
+  btnDanger: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '6px 10px', background: 'transparent', color: 'var(--danger)', border: '1px solid color-mix(in srgb, var(--danger) 30%, transparent)', borderRadius: 7, fontSize: 11.5, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' },
   collapseSection: { marginTop: 24 },
   collapseSummary: { cursor: 'pointer', fontSize: 12, fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase' as const, letterSpacing: 0.5, padding: '8px 0', userSelect: 'none' as const, listStyle: 'none' as const, display: 'inline-flex', alignItems: 'center' },
   helpText: { fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6, margin: '4px 0 10px', maxWidth: 720 },

@@ -7,6 +7,7 @@ import {
   X, Check, Warning, Phone, EnvelopeSimple, Funnel, Sparkle,
 } from '@phosphor-icons/react/dist/ssr'
 import { validateReport, deleteReport, updateReport, normalizeAllReportIdentifiers } from '../actions'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 interface Report {
   id: string
@@ -59,6 +60,7 @@ export default function SignalementsAdmin({
   const [editingId, setEditingId] = useState<string | null>(null)
   const [normalizeMsg, setNormalizeMsg] = useState<string | null>(null)
   const [isPending, startT] = useTransition()
+  const { confirm, dialog } = useConfirm()
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -86,8 +88,8 @@ export default function SignalementsAdmin({
     setReports(prev => prev.map(r => r.id === id ? { ...r, is_validated: true } : r))
     startT(async () => { await validateReport(id) })
   }
-  function handleDelete(id: string) {
-    if (!confirm('Supprimer ce signalement ? Action irréversible.')) return
+  async function handleDelete(id: string) {
+    if (!(await confirm({ message: 'Supprimer ce signalement ? Action irréversible.', confirmLabel: 'Supprimer', danger: true }))) return
     setReports(prev => prev.filter(r => r.id !== id))
     startT(async () => { await deleteReport(id) })
   }
@@ -106,8 +108,12 @@ export default function SignalementsAdmin({
       }
     })
   }
-  function handleBatchNormalize() {
-    if (!confirm('Lancer la normalisation de tous les identifiants ?\nLes numéros avec un point/espace en fin seront corrigés, les FR sans préfixe deviendront +33...')) return
+  async function handleBatchNormalize() {
+    if (!(await confirm({
+      title: 'Normaliser les identifiants',
+      message: 'Les numéros terminés par un point ou une espace seront corrigés, et les numéros français sans indicatif passeront en +33.',
+      confirmLabel: 'Normaliser',
+    }))) return
     setNormalizeMsg('Normalisation en cours…')
     startT(async () => {
       const res = await normalizeAllReportIdentifiers()
@@ -118,6 +124,7 @@ export default function SignalementsAdmin({
 
   return (
     <div style={embedded ? s.rootEmbedded : s.root}>
+      {dialog}
       {!embedded && (
         <header style={s.header}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' as const }}>
@@ -166,14 +173,14 @@ export default function SignalementsAdmin({
         <div style={{
           padding: '14px 16px',
           marginBottom: '14px',
-          background: diagnostic.kind === 'empty' ? 'rgba(96,165,250,0.10)' : 'rgba(248,113,113,0.10)',
-          border: `1px solid ${diagnostic.kind === 'empty' ? 'rgba(96,165,250,0.30)' : 'rgba(248,113,113,0.30)'}`,
+          background: diagnostic.kind === 'empty' ? 'color-mix(in srgb, #6E5446 10%, transparent)' : 'color-mix(in srgb, var(--danger) 10%, transparent)',
+          border: `1px solid ${diagnostic.kind === 'empty' ? 'color-mix(in srgb, #6E5446 30%, transparent)' : 'color-mix(in srgb, var(--danger) 30%, transparent)'}`,
           borderRadius: '12px',
           display: 'flex', alignItems: 'flex-start', gap: '10px',
           fontSize: '13px', color: 'var(--text)', lineHeight: 1.55,
         }}>
           <Warning size={18} weight="fill" style={{
-            color: diagnostic.kind === 'empty' ? '#60a5fa' : '#f87171',
+            color: diagnostic.kind === 'empty' ? '#6E5446' : 'var(--danger-text)',
             flexShrink: 0, marginTop: '1px',
           }} />
           <div>
@@ -190,10 +197,10 @@ export default function SignalementsAdmin({
       {/* KPIs */}
       <div style={s.kpiRow}>
         <Kpi label="Total" value={stats.total} color="var(--text)" />
-        <Kpi label="En attente" value={stats.pending} color="#fb923c" />
-        <Kpi label="Validés" value={stats.validated} color="var(--success-1)" />
+        <Kpi label="En attente" value={stats.pending} color="#B7791F" />
+        <Kpi label="Validés" value={stats.validated} color="var(--accent-text)" />
         <Kpi label="Identifiants suspects" value={stats.suspiciousIdentifiers} color={stats.suspiciousIdentifiers > 0 ? 'var(--danger)' : 'var(--text-muted)'}
-          hint={stats.suspiciousIdentifiers > 0 ? 'point/espace en fin de chaîne — clique sur Normaliser' : 'aucun'}
+          hint={stats.suspiciousIdentifiers > 0 ? 'point ou espace en fin : clique sur Normaliser' : 'aucun'}
         />
       </div>
 
@@ -201,8 +208,8 @@ export default function SignalementsAdmin({
       <div style={s.toolbar}>
         <div style={s.filterRow}>
           <FilterChip active={filter === 'all'}        onClick={() => setFilter('all')}        label="Tout"        count={stats.total} />
-          <FilterChip active={filter === 'pending'}    onClick={() => setFilter('pending')}    label="En attente"  count={stats.pending} color="#fb923c" />
-          <FilterChip active={filter === 'validated'}  onClick={() => setFilter('validated')}  label="Validés"     count={stats.validated} color="var(--success-1)" />
+          <FilterChip active={filter === 'pending'}    onClick={() => setFilter('pending')}    label="En attente"  count={stats.pending} color="#B7791F" />
+          <FilterChip active={filter === 'validated'}  onClick={() => setFilter('validated')}  label="Validés"     count={stats.validated} color="var(--accent-text)" />
         </div>
         <div style={s.searchWrap}>
           <MagnifyingGlass size={13} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -294,7 +301,7 @@ function ReportRow({
               {IDENTIFIER_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
             </select>
           </Field>
-          <Field label="Identifiant" hint={isSuspect ? '⚠️ point/espace en fin' : undefined}>
+          <Field label="Identifiant" hint={isSuspect ? 'point ou espace en fin' : undefined}>
             <input value={fIdent} onChange={e => setFIdent(e.target.value)} style={s.input} placeholder="+33612345678 ou email@..." />
           </Field>
           <Field label="Nom (optionnel)">
@@ -347,21 +354,21 @@ function ReportRow({
             <div style={s.cardSub}>
               <span style={{ ...s.identifier, ...(isSuspect ? { color: 'var(--danger)' } : {}) }}>
                 {r.identifier}
-                {isSuspect && <span title="Identifiant terminé par un . ou espace"> ⚠️</span>}
+                {isSuspect && <Warning size={12} weight="fill" color="#B7791F" style={{ marginLeft: 4, verticalAlign: '-1px' }} aria-label="Identifiant terminé par un point ou une espace" />}
               </span>
               <span style={{ color: 'var(--text-muted)' }}> · {r.identifier_type ?? 'phone'}</span>
             </div>
           </div>
         </div>
         <div style={s.badgeRow}>
-          <span style={{ ...s.badge, background: 'rgba(248,113,113,.1)', color: 'var(--danger)', borderColor: 'rgba(248,113,113,.2)' }}>
+          <span style={{ ...s.badge, background: 'color-mix(in srgb, var(--danger) 10%, transparent)', color: 'var(--danger)', borderColor: 'color-mix(in srgb, var(--danger) 20%, transparent)' }}>
             {r.incident_type ?? 'Non précisé'}
           </span>
           <span style={{
             ...s.badge,
             ...(r.is_validated
-              ? { background: 'rgba(52,211,153,.1)', color: 'var(--success-1)', borderColor: 'rgba(52,211,153,.2)' }
-              : { background: 'rgba(251,146,60,.1)', color: '#fb923c', borderColor: 'rgba(251,146,60,.2)' }),
+              ? { background: 'color-mix(in srgb, var(--accent-text) 10%, transparent)', color: 'var(--accent-text)', borderColor: 'color-mix(in srgb, var(--accent-text) 20%, transparent)' }
+              : { background: 'color-mix(in srgb, #B7791F 10%, transparent)', color: '#B7791F', borderColor: 'color-mix(in srgb, #B7791F 20%, transparent)' }),
           }}>
             {r.is_validated ? 'Validé' : 'En attente'}
           </span>
@@ -542,14 +549,14 @@ const s: Record<string, React.CSSProperties> = {
   btnSuccess: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     padding: '6px 12px', borderRadius: '8px',
-    background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.30)',
-    color: 'var(--success-1)', fontSize: '12px', fontWeight: 600,
+    background: 'color-mix(in srgb, var(--accent-text) 12%, transparent)', border: '1px solid color-mix(in srgb, var(--accent-text) 30%, transparent)',
+    color: 'var(--accent-text)', fontSize: '12px', fontWeight: 600,
     fontFamily: 'inherit', cursor: 'pointer',
   },
   btnDanger: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     padding: '6px 12px', borderRadius: '8px',
-    background: 'rgba(248,113,113,0.10)', border: '1px solid rgba(248,113,113,0.25)',
+    background: 'color-mix(in srgb, var(--danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 25%, transparent)',
     color: 'var(--danger)', fontSize: '12px', fontWeight: 600,
     fontFamily: 'inherit', cursor: 'pointer',
   },

@@ -153,6 +153,7 @@ export default async function AdminPage() {
   return (
     <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
       <AdminUI
+        todayLabel={new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Europe/Paris' })}
         recentSignups={overview.recentSignups}
         monthlySignupsChart={overview.monthlySignupsChart}
         liveVisitors={liveVisitors}

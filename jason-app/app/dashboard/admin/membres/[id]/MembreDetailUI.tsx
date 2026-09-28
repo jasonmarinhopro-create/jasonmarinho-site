@@ -100,8 +100,9 @@ function formatDateShort(iso: string) {
 }
 
 const PLAN_CFG: Record<string, { label: string; color: string; bg: string; mrr: number }> = {
-  driing:     { label: 'Membre Driing', color: 'var(--accent-text)', bg: 'var(--accent-bg-2)', mrr: 0 },
-  standard:   { label: 'Standard',      color: '#15803d',            bg: 'var(--success-border)', mrr: 1.98 },
+  driing:     { label: 'Membre Driing', color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 12%, transparent)', mrr: 0 },
+  // Standard vendu à l'année : 19,98 € TTC, soit 1,665 € par mois
+  standard:   { label: 'Standard',      color: 'var(--accent-text)', bg: 'var(--accent-bg)', mrr: 19.98 / 12 },
   decouverte: { label: 'Découverte',    color: 'var(--text-3)',      bg: 'var(--surface-2)',   mrr: 0 },
 }
 
@@ -182,14 +183,14 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
   const notStartedFormations = formations.filter(f => f.progress === 0)
 
   const statTiles = [
-    { icon: <UsersFour size={16} />, value: stats.voyageurs,      label: 'Voyageurs',       color: '#93C5FD' },
-    { icon: <CalendarBlank size={16} />, value: stats.sejours,    label: 'Séjours',          color: '#34D399' },
-    { icon: <BookmarkSimple size={16} />, value: stats.favorites,  label: 'Gabarits favoris', color: '#FFD56B' },
-    { icon: <PencilSimple size={16} />, value: stats.customizations, label: 'Gabarits perso.', color: '#C084FC' },
-    { icon: <Flag size={16} />, value: stats.signalements,        label: 'Signalements',     color: '#F87171' },
-    { icon: <Lightbulb size={16} />, value: stats.suggestions,    label: 'Suggestions',      color: '#FB923C' },
-    { icon: <FacebookLogo size={16} />, value: stats.communityGroupsCount, label: 'Groupes FB rejoints', color: '#60A5FA' },
-    { icon: <MagnifyingGlass size={16} />, value: stats.auditsCount, label: 'Audits GBP', color: '#A78BFA' },
+    { icon: <UsersFour size={16} />, value: stats.voyageurs,      label: 'Voyageurs',       color: '#6E5446' },
+    { icon: <CalendarBlank size={16} />, value: stats.sejours,    label: 'Séjours',          color: 'var(--accent-text)' },
+    { icon: <BookmarkSimple size={16} />, value: stats.favorites,  label: 'Gabarits favoris', color: '#B7791F' },
+    { icon: <PencilSimple size={16} />, value: stats.customizations, label: 'Gabarits perso.', color: '#B7791F' },
+    { icon: <Flag size={16} />, value: stats.signalements,        label: 'Signalements',     color: 'var(--danger-text)' },
+    { icon: <Lightbulb size={16} />, value: stats.suggestions,    label: 'Suggestions',      color: '#B7791F' },
+    { icon: <FacebookLogo size={16} />, value: stats.communityGroupsCount, label: 'Groupes FB rejoints', color: '#6E5446' },
+    { icon: <MagnifyingGlass size={16} />, value: stats.auditsCount, label: 'Audits fiche Google', color: '#B7791F' },
   ]
 
   const joinedGroups = community?.joinedGroups ?? []
@@ -202,11 +203,11 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
       {/* ── Back button ── */}
       <button onClick={() => router.push('/dashboard/admin/membres')} style={s.backBtn}>
         <ArrowLeft size={16} />
-        Membres
+        Tous les membres
       </button>
 
       {/* ── Profile card ── */}
-      <div style={s.profileCard} className="glass-card fade-up">
+      <div style={s.profileCard} className="fade-up">
         <div style={s.bigAvatar}>
           <span style={s.bigAvatarText}>{initials}</span>
         </div>
@@ -214,7 +215,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
           <div style={s.profileNameRow}>
             <h1 style={s.profileName}>{profile.full_name || '-'}</h1>
             {profile.role === 'admin' && (
-              <span style={{ ...s.pill, background: 'rgba(192,132,252,0.12)', color: '#C084FC' }}>Admin</span>
+              <span style={{ ...s.pill, background: 'color-mix(in srgb, #B7791F 12%, transparent)', color: '#B7791F' }}>Admin</span>
             )}
           </div>
           <a href={`mailto:${profile.email}`} style={s.emailLink}>
@@ -227,12 +228,12 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
               {planCfg.label}
             </span>
             {planCfg.mrr > 0 && (
-              <span style={{ ...s.pill, background: 'rgba(52,211,153,0.1)', color: 'var(--success-1)' }}>
-                + {planCfg.mrr.toFixed(2)} € / mois
+              <span style={{ ...s.pill, background: 'color-mix(in srgb, var(--accent-text) 10%, transparent)', color: 'var(--accent-text)' }}>
+                + {planCfg.mrr.toFixed(2).replace('.', ',')} € / mois
               </span>
             )}
             {profile.is_investor && (
-              <span style={{ ...s.pill, background: 'rgba(96,190,255,0.12)', color: '#60BEFF' }}>
+              <span style={{ ...s.pill, background: 'color-mix(in srgb, #6E5446 12%, transparent)', color: '#6E5446' }}>
                 <Briefcase size={11} weight="fill" />
                 Investisseur
               </span>
@@ -247,8 +248,8 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: '5px',
               padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 500,
-              color: planFeedback.type === 'ok' ? 'var(--success-1)' : 'var(--danger)',
-              background: planFeedback.type === 'ok' ? 'rgba(52,211,153,0.1)' : 'rgba(248,113,113,0.1)',
+              color: planFeedback.type === 'ok' ? 'var(--accent-text)' : 'var(--danger)',
+              background: planFeedback.type === 'ok' ? 'color-mix(in srgb, var(--accent-text) 10%, transparent)' : 'color-mix(in srgb, var(--danger) 10%, transparent)',
             }}>
               {planFeedback.msg}
             </div>
@@ -259,7 +260,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
               onChange={e => handlePlanChange(e.target.value)}
               style={{
                 background: planCfg.bg, color: planCfg.color,
-                border: `1px solid ${planCfg.color}30`,
+                border: `1px solid color-mix(in srgb, ${planCfg.color} 19%, transparent)`,
                 borderRadius: '10px', padding: '8px 12px',
                 fontSize: '13px', fontWeight: 600,
                 cursor: (isPending || profile.role === 'admin') ? 'not-allowed' : 'pointer',
@@ -267,9 +268,9 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
                 opacity: profile.role === 'admin' ? 0.4 : 1,
               }}
             >
-              <option value="decouverte" style={{ background: '#040d0b', color: '#f0f4ff' }}>Découverte</option>
-              <option value="standard" style={{ background: '#040d0b', color: 'var(--success-1)' }}>Standard</option>
-              <option value="driing" style={{ background: '#040d0b', color: '#FFD56B' }}>Membre Driing</option>
+              <option value="decouverte" style={{ background: 'var(--surface)', color: 'var(--text)' }}>Découverte</option>
+              <option value="standard" style={{ background: 'var(--surface)', color: 'var(--accent-text)' }}>Standard</option>
+              <option value="driing" style={{ background: 'var(--surface)', color: '#B7791F' }}>Membre Driing</option>
             </select>
           )}
         </div>
@@ -353,7 +354,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
         <div style={s.section} className="fade-up">
           <div style={s.sectionHeader}>
             <div style={s.sectionTitle}>
-              <Briefcase size={16} color="#60BEFF" weight="fill" />
+              <Briefcase size={16} color="#6E5446" weight="fill" />
               Espace investisseur ({projectList.length} projet{projectList.length > 1 ? 's' : ''})
             </div>
           </div>
@@ -365,7 +366,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {projectList.map(p => (
                 <div key={p.id} style={s.commItem}>
-                  <FolderOpen size={14} color="#60BEFF" weight="fill" style={{ flexShrink: 0 }} />
+                  <FolderOpen size={14} color="#6E5446" weight="fill" style={{ flexShrink: 0 }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: '13px', color: 'var(--text)', fontWeight: 600 }}>{p.nom}</div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11.5px', color: 'var(--text-2)', marginTop: '2px', flexWrap: 'wrap' }}>
@@ -395,7 +396,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
         </div>
         <div style={s.statsGrid}>
           {statTiles.map(tile => (
-            <div key={tile.label} style={{ ...s.statTile, borderColor: `${tile.color}25`, background: `${tile.color}08` }}>
+            <div key={tile.label} style={{ ...s.statTile, borderColor: `color-mix(in srgb, ${tile.color} 15%, transparent)`, background: `color-mix(in srgb, ${tile.color} 3%, transparent)` }}>
               <span style={{ color: tile.color }}>{tile.icon}</span>
               <span style={{
                 fontFamily: 'var(--font-fraunces), serif', fontSize: '26px', fontWeight: 400,
@@ -413,11 +414,11 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
       <div style={s.section} className="fade-up">
         <div style={s.sectionHeader}>
           <div style={s.sectionTitle}>
-            <FacebookLogo size={16} color="#60A5FA" weight="fill" />
+            <FacebookLogo size={16} color="#6E5446" weight="fill" />
             Communauté Facebook ({stats.communityGroupsCount} groupe{stats.communityGroupsCount > 1 ? 's' : ''})
           </div>
           {stats.communityTotalReach > 0 && (
-            <span style={{ ...s.pill, background: 'rgba(96,165,250,0.1)', color: '#60A5FA' }}>
+            <span style={{ ...s.pill, background: 'color-mix(in srgb, #6E5446 10%, transparent)', color: '#6E5446' }}>
               <Lightning size={11} weight="fill" />
               Portée {formatReach(stats.communityTotalReach)} membres
             </span>
@@ -431,7 +432,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {joinedGroups.map(g => (
               <div key={g.id} style={s.commItem}>
-                <FacebookLogo size={14} color="#60A5FA" weight="fill" />
+                <FacebookLogo size={14} color="#6E5446" weight="fill" />
                 <span style={{ flex: 1, fontSize: '13.5px', color: 'var(--text)' }}>
                   {g.name ?? 'Groupe sans nom'}
                 </span>
@@ -448,11 +449,11 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
       <div style={s.section} className="fade-up">
         <div style={s.sectionHeader}>
           <div style={s.sectionTitle}>
-            <MagnifyingGlass size={16} color="#A78BFA" weight="fill" />
+            <MagnifyingGlass size={16} color="#B7791F" weight="fill" />
             Audits GBP ({stats.auditsCount} dont {stats.auditsCompleted} complété{stats.auditsCompleted > 1 ? 's' : ''})
           </div>
           {stats.auditsBestScore > 0 && (
-            <span style={{ ...s.pill, background: 'rgba(167,139,250,0.1)', color: '#A78BFA' }}>
+            <span style={{ ...s.pill, background: 'color-mix(in srgb, #B7791F 10%, transparent)', color: '#B7791F' }}>
               <Trophy size={11} weight="fill" />
               Meilleur score : {stats.auditsBestScore}/100
             </span>
@@ -466,7 +467,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {auditList.map(a => (
               <div key={a.id} style={s.commItem}>
-                <MagnifyingGlass size={14} color="#A78BFA" weight="fill" />
+                <MagnifyingGlass size={14} color="#B7791F" weight="fill" />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: '13px', color: 'var(--text)' }}>
                     {a.business_name ?? 'Sans nom'}
@@ -476,7 +477,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
                   </div>
                 </div>
                 {a.completed_at ? (
-                  <span style={{ ...s.pill, background: 'rgba(167,139,250,0.12)', color: '#A78BFA' }}>
+                  <span style={{ ...s.pill, background: 'color-mix(in srgb, #B7791F 12%, transparent)', color: '#B7791F' }}>
                     {a.score_global}/100
                   </span>
                 ) : (
@@ -502,12 +503,12 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
           </div>
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {completedFormations.length > 0 && (
-              <span style={{ ...s.pill, background: 'rgba(52,211,153,0.1)', color: 'var(--success-1)' }}>
+              <span style={{ ...s.pill, background: 'color-mix(in srgb, var(--accent-text) 10%, transparent)', color: 'var(--accent-text)' }}>
                 {completedFormations.length} terminée{completedFormations.length > 1 ? 's' : ''}
               </span>
             )}
             {inProgressFormations.length > 0 && (
-              <span style={{ ...s.pill, background: 'rgba(255,213,107,0.1)', color: '#FFD56B' }}>
+              <span style={{ ...s.pill, background: 'rgba(255,213,107,0.1)', color: '#B7791F' }}>
                 {inProgressFormations.length} en cours
               </span>
             )}
@@ -524,12 +525,12 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
               <div key={uf.id} style={s.formationItem}>
                 <div style={{
                   width: '36px', height: '36px', flexShrink: 0, borderRadius: '10px',
-                  background: uf.progress === 100 ? 'var(--success-bg)' : 'rgba(255,213,107,0.08)',
-                  border: `1px solid ${uf.progress === 100 ? 'var(--success-border)' : 'rgba(255,213,107,0.15)'}`,
+                  background: uf.progress === 100 ? 'var(--accent-bg)' : 'rgba(255,213,107,0.08)',
+                  border: `1px solid ${uf.progress === 100 ? 'var(--accent-border)' : 'rgba(255,213,107,0.15)'}`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
                   {uf.progress === 100
-                    ? <Check size={16} color="#34D399" weight="bold" />
+                    ? <Check size={16} color="var(--accent-text)" weight="bold" />
                     : <GraduationCap size={16} color="var(--accent-text)" />
                   }
                 </div>
@@ -550,19 +551,19 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
                         height: '100%', borderRadius: '100px',
                         width: `${uf.progress}%`,
                         background: uf.progress === 100
-                          ? 'linear-gradient(90deg, #34D399, #10B981)'
-                          : 'linear-gradient(90deg, var(--accent-text), #FFB347)',
+                          ? 'linear-gradient(90deg, var(--accent-text), var(--accent-text))'
+                          : 'linear-gradient(90deg, var(--accent-text), #FFD56B)',
                         transition: 'width 0.4s ease',
                       }} />
                     </div>
                     <span style={{
                       fontSize: '12px', fontWeight: 600, minWidth: '36px', textAlign: 'right',
-                      color: uf.progress === 100 ? 'var(--success-1)' : 'var(--accent-text)',
+                      color: uf.progress === 100 ? 'var(--accent-text)' : 'var(--accent-text)',
                     }}>
                       {uf.progress}%
                     </span>
                     {uf.progress === 100 && (
-                      <span style={{ ...s.pill, background: 'var(--success-bg)', color: 'var(--success-1)', fontSize: '10px', padding: '2px 7px' }}>
+                      <span style={{ ...s.pill, background: 'var(--accent-bg)', color: 'var(--accent-text)', fontSize: '10px', padding: '2px 7px' }}>
                         Terminée
                       </span>
                     )}
@@ -624,12 +625,13 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'flex-start', gap: 'var(--s-5)',
     padding: 'var(--s-6)', borderRadius: 'var(--r-xl)',
     flexWrap: 'wrap' as const,
-    boxShadow: 'var(--shadow-sm)',
-    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
+    // En-tête vert, même fond que HubHero (DA 28/09/2026)
+    background: 'linear-gradient(135deg, var(--accent-bg) 0%, rgba(99,214,131,0.10) 55%, rgba(255,213,107,0.14) 100%)',
+    border: '1px solid var(--accent-border)',
   },
   bigAvatar: {
     width: '68px', height: '68px', flexShrink: 0, borderRadius: '50%',
-    background: 'rgba(0,76,63,0.6)',
+    background: 'var(--surface)',
     border: '2px solid var(--accent-border)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     boxShadow: '0 0 0 4px var(--accent-bg)',
@@ -705,7 +707,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   savedBanner: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
-    fontSize: '12px', color: 'var(--success-1)', marginBottom: '12px',
+    fontSize: '12px', color: 'var(--accent-text)', marginBottom: '12px',
   },
 
   primaryBtn: {

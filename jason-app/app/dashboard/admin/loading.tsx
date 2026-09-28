@@ -49,8 +49,10 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 'var(--s-6)',
   },
   hero: {
-    border: '1px solid var(--border)',
-    borderRadius: 'var(--r-xl)',
+    // Même fond que HubHero, en-tête commun des pages admin
+    background: 'linear-gradient(135deg, var(--accent-bg) 0%, rgba(99,214,131,0.10) 55%, rgba(255,213,107,0.14) 100%)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: '20px',
     padding: 'clamp(22px,3vw,36px)',
     display: 'flex',
     flexDirection: 'column',

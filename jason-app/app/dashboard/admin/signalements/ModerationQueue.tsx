@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { CheckCircle, X, Warning, Eye, Megaphone, Trash, ArrowsClockwise } from '@phosphor-icons/react/dist/ssr'
 import { approvePublicSignalement, rejectPublicSignalement, removePublicSignalement, forceStaticRebuild } from './moderation-actions'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 type Pending = {
   id: string
@@ -57,6 +58,7 @@ function fmtAge(iso: string): string {
 export default function ModerationQueue({ pending, removalRequests, approved, approvedCount }: Props) {
   const router = useRouter()
   const [isProcessing, startProcessing] = useTransition()
+  const { prompt, dialog } = useConfirm()
   const [editingSummary, setEditingSummary] = useState<Record<string, string>>({})
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [removalToConfirm, setRemovalToConfirm] = useState<string | null>(null)
@@ -86,7 +88,10 @@ export default function ModerationQueue({ pending, removalRequests, approved, ap
 
   async function handleReject(p: Pending) {
     setErrorMsg(null)
-    const reason = window.prompt('Motif du refus (optionnel) :') ?? undefined
+    // Annuler la fenêtre annule le refus (avant : window.prompt annulé refusait quand même)
+    const motif = await prompt({ title: 'Refuser la publication', message: 'Motif du refus (optionnel), gardé dans le journal.', confirmLabel: 'Refuser', danger: true })
+    if (motif === null) return
+    const reason = motif || undefined
     startProcessing(async () => {
       const res = await rejectPublicSignalement(p.id, reason)
       if (res.error) setErrorMsg(res.error)
@@ -96,7 +101,9 @@ export default function ModerationQueue({ pending, removalRequests, approved, ap
 
   async function handleRemove(reportId: string) {
     setErrorMsg(null)
-    const reason = window.prompt('Motif du retrait (sera loggé) :') ?? undefined
+    const motif = await prompt({ title: 'Retirer du site', message: 'Motif du retrait, gardé dans le journal.', confirmLabel: 'Retirer', danger: true })
+    if (motif === null) return
+    const reason = motif || undefined
     startProcessing(async () => {
       const res = await removePublicSignalement(reportId, reason)
       if (res.error) setErrorMsg(res.error)
@@ -110,12 +117,13 @@ export default function ModerationQueue({ pending, removalRequests, approved, ap
     startProcessing(async () => {
       const res = await forceStaticRebuild()
       if (res.error) setRebuildMsg({ kind: 'err', text: res.error })
-      else setRebuildMsg({ kind: 'ok', text: '✓ Rebuild déclenché. Compte 1-2 minutes pour voir le résultat sur jasonmarinho.com/securite/signalements.' })
+      else setRebuildMsg({ kind: 'ok', text: 'Mise à jour du site lancée. Compte 1 à 2 minutes avant de voir le résultat sur jasonmarinho.com/securite/signalements.' })
     })
   }
 
   return (
     <section style={s.wrap}>
+      {dialog}
       <header style={s.head}>
         <div>
           <h2 style={s.title}>
@@ -123,13 +131,13 @@ export default function ModerationQueue({ pending, removalRequests, approved, ap
             Modération signalements <em style={s.titleEm}>publics</em>
           </h2>
           <p style={s.sub}>
-            Signalements pour lesquels l'hôte a opt-in à une publication anonymisée. Décision attendue sous 24h, retrait des PII strict.
+            Signalements que l'hôte a accepté de publier sous forme anonyme. Décision attendue sous 24 h, aucune donnée personnelle ne doit rester dans le texte publié.
           </p>
         </div>
         <div style={s.stats}>
           <div style={s.stat}><span style={s.statN}>{pending.length}</span><span style={s.statL}>en attente</span></div>
           <div style={s.stat}><span style={{ ...s.statN, color: removalRequests.length > 0 ? 'var(--danger)' : 'var(--text-2)' }}>{removalRequests.length}</span><span style={s.statL}>retraits demandés</span></div>
-          <div style={s.stat}><span style={{ ...s.statN, color: 'var(--success-1)' }}>{approvedCount}</span><span style={s.statL}>en ligne</span></div>
+          <div style={s.stat}><span style={{ ...s.statN, color: 'var(--accent-text)' }}>{approvedCount}</span><span style={s.statL}>en ligne</span></div>
         </div>
       </header>
 
@@ -144,15 +152,15 @@ export default function ModerationQueue({ pending, removalRequests, approved, ap
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--text-2)' }}>Site public</div>
           <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '2px', lineHeight: 1.5 }}>
-            Après chaque approbation, le site jasonmarinho.com se rebuild auto si <code>VERCEL_DEPLOY_HOOK_URL</code> est posé. Sinon, force ici.
+            Après chaque approbation, jasonmarinho.com se met à jour tout seul si <code>VERCEL_DEPLOY_HOOK_URL</code> est configuré. Sinon, lance la mise à jour ici.
           </div>
         </div>
         <button onClick={handleRebuild} disabled={isProcessing} style={s.btnSecondary}>
-          <ArrowsClockwise size={13} weight="bold" /> Forcer le rebuild
+          <ArrowsClockwise size={13} weight="bold" /> Mettre à jour le site
         </button>
       </div>
       {rebuildMsg && (
-        <div style={{ ...s.errorBanner, background: rebuildMsg.kind === 'ok' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', borderColor: rebuildMsg.kind === 'ok' ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.25)', color: rebuildMsg.kind === 'ok' ? 'var(--success-1)' : 'var(--danger)' }}>
+        <div style={{ ...s.errorBanner, background: rebuildMsg.kind === 'ok' ? 'color-mix(in srgb, var(--accent-text) 10%, transparent)' : 'color-mix(in srgb, var(--danger) 10%, transparent)', borderColor: rebuildMsg.kind === 'ok' ? 'color-mix(in srgb, var(--accent-text) 25%, transparent)' : 'color-mix(in srgb, var(--danger) 25%, transparent)', color: rebuildMsg.kind === 'ok' ? 'var(--accent-text)' : 'var(--danger)' }}>
           {rebuildMsg.text}
         </div>
       )}
@@ -200,7 +208,7 @@ export default function ModerationQueue({ pending, removalRequests, approved, ap
         </h3>
         {pending.length === 0 ? (
           <div style={s.empty}>
-            <CheckCircle size={28} weight="duotone" color="var(--success-1)" />
+            <CheckCircle size={28} weight="duotone" color="var(--accent-text)" />
             <p style={{ margin: '8px 0 0', fontSize: '13px', color: 'var(--text-muted)' }}>
               Aucun signalement en attente. Tu peux respirer.
             </p>
@@ -209,7 +217,7 @@ export default function ModerationQueue({ pending, removalRequests, approved, ap
           pending.map(p => (
             <div key={p.id} style={s.pendingCard}>
               <div style={s.pendingHead}>
-                <span style={{ ...s.badge, background: 'rgba(251,191,36,0.15)', color: '#d97706' }}>
+                <span style={{ ...s.badge, background: 'color-mix(in srgb, #B7791F 15%, transparent)', color: '#B7791F' }}>
                   {p.incident_type ?? 'Incident'}
                 </span>
                 <span style={s.pendingDate}>Signalé {fmtAge(p.reported_at)}</span>
@@ -312,8 +320,8 @@ const s: Record<string, React.CSSProperties> = {
   stat: { display: 'flex', flexDirection: 'column' as const, alignItems: 'center' },
   statN: { fontSize: '22px', fontFamily: 'var(--font-fraunces), serif', fontWeight: 600, color: 'var(--text)', lineHeight: 1 },
   statL: { fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.5px', marginTop: '4px' },
-  errorBanner: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '8px', fontSize: '13px', color: 'var(--danger)', marginBottom: '14px' },
-  urgentSection: { padding: '14px', background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '10px', marginBottom: '20px' },
+  errorBanner: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', background: 'color-mix(in srgb, var(--danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 25%, transparent)', borderRadius: '8px', fontSize: '13px', color: 'var(--danger)', marginBottom: '14px' },
+  urgentSection: { padding: '14px', background: 'color-mix(in srgb, var(--danger) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 20%, transparent)', borderRadius: '10px', marginBottom: '20px' },
   sectionTitle: { fontSize: '13px', fontWeight: 600, color: 'var(--text-2)', margin: '0 0 12px', textTransform: 'uppercase' as const, letterSpacing: '0.5px' },
   removalCard: { padding: '14px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '8px', marginBottom: '10px' },
   removalHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', marginBottom: '8px', flexWrap: 'wrap' as const },
@@ -325,7 +333,7 @@ const s: Record<string, React.CSSProperties> = {
   pendingHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' },
   pendingDate: { fontSize: '11px', color: 'var(--text-muted)' },
   badge: { fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '12px' },
-  privateBlock: { padding: '10px 12px', background: 'rgba(239,68,68,0.04)', border: '1px solid rgba(239,68,68,0.12)', borderRadius: '8px', marginBottom: '12px' },
+  privateBlock: { padding: '10px 12px', background: 'color-mix(in srgb, var(--danger) 4%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 12%, transparent)', borderRadius: '8px', marginBottom: '12px' },
   privateLabel: { fontSize: '10px', fontWeight: 700, color: 'var(--danger)', letterSpacing: '0.5px', marginBottom: '6px' },
   privateRow: { fontSize: '12.5px', color: 'var(--text-2)', marginBottom: '3px' },
   privateDesc: { fontSize: '12.5px', color: 'var(--text-2)', marginTop: '6px', lineHeight: 1.55, fontStyle: 'italic' },
@@ -336,7 +344,7 @@ const s: Record<string, React.CSSProperties> = {
   fieldTextarea: { width: '100%', padding: '8px 10px', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text)', fontSize: '13px', fontFamily: 'inherit', resize: 'vertical' as const, minHeight: '80px' },
   publishedPreview: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px' },
   actionsRow: { display: 'flex', gap: '8px', justifyContent: 'flex-end' },
-  disabledHint: { display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 11px', background: 'rgba(217,119,6,0.08)', border: '1px solid rgba(217,119,6,0.2)', borderRadius: '7px', fontSize: '12px', color: '#d97706', marginBottom: '10px', lineHeight: 1.5 },
+  disabledHint: { display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 11px', background: 'color-mix(in srgb, #B7791F 8%, transparent)', border: '1px solid color-mix(in srgb, #B7791F 20%, transparent)', borderRadius: '7px', fontSize: '12px', color: '#B7791F', marginBottom: '10px', lineHeight: 1.5 },
   rebuildBox: { display: 'flex', alignItems: 'center', gap: '14px', padding: '12px 14px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '10px', marginBottom: '14px', flexWrap: 'wrap' as const },
   btnPrimary: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', background: 'var(--accent-text)', color: 'var(--bg)', border: 'none', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' },
   btnSecondary: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', background: 'transparent', color: 'var(--text-2)', border: '1px solid var(--border)', borderRadius: '8px', fontSize: '12.5px', fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' },

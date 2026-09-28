@@ -6,6 +6,8 @@ import {
   MagnifyingGlass, ArrowSquareOut, Warning, Info, ArrowClockwise, CaretDown, CaretUp, Eye, GoogleLogo, Copy, Check,
 } from '@phosphor-icons/react/dist/ssr'
 import { refreshIndexationNow, markSubmitted, unmarkSubmitted } from './actions'
+import AdminHero from '../_ui/AdminHero'
+import { heroCta } from '@/components/dashboard/HubHero'
 
 // Dupliqué (pas importé) de lib/google/search-console.ts : ce fichier
 // importe le module Node `crypto` (côté serveur, via lib/security/crypto.ts),
@@ -43,7 +45,7 @@ export interface PageStatus {
 type Tab = 'a_soumettre' | 'jamais' | 'pas_indexees' | 'indexees' | 'toutes'
 
 function fmtDate(d: string | null): string {
-  if (!d) return '—'
+  if (!d) return '-'
   const date = new Date(d)
   if (isNaN(date.getTime())) return d
   return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
@@ -53,7 +55,7 @@ function fmtDateTime(d: string | null): string {
   if (!d) return 'jamais'
   const date = new Date(d)
   if (isNaN(date.getTime())) return d
-  return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+  return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' })
 }
 
 // Traductions des coverageState renvoyés par l'API Search Console — liste
@@ -75,12 +77,12 @@ const COVERAGE_LABELS: Record<string, string> = {
 }
 
 function statusBadge(p: PageStatus): { label: string; color: string; bg: string } {
-  if (p.httpStatus && p.httpStatus >= 400) return { label: `Page ${p.httpStatus}`, color: '#ef4444', bg: 'rgba(239,68,68,0.10)' }
+  if (p.httpStatus && p.httpStatus >= 400) return { label: `Page ${p.httpStatus}`, color: 'var(--danger-text)', bg: 'color-mix(in srgb, var(--danger) 10%, transparent)' }
   if (!p.lastCheckedAt) return { label: 'Jamais vérifiée', color: 'var(--text-muted)', bg: 'var(--surface)' }
-  if (p.error) return { label: 'Erreur de vérification', color: '#f59e0b', bg: 'rgba(245,158,11,0.10)' }
-  if (p.indexed) return { label: 'Indexée', color: '#4ade80', bg: 'rgba(74,222,128,0.10)' }
+  if (p.error) return { label: 'Erreur de vérification', color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 10%, transparent)' }
+  if (p.indexed) return { label: 'Indexée', color: 'var(--accent-text)', bg: 'rgba(74,222,128,0.10)' }
   const label = (p.coverageState && COVERAGE_LABELS[p.coverageState]) || p.coverageState || 'Pas indexée'
-  return { label, color: '#60a5fa', bg: 'rgba(96,165,250,0.10)' }
+  return { label, color: '#6E5446', bg: 'color-mix(in srgb, #6E5446 10%, transparent)' }
 }
 
 export default function IndexationUI({ pages, fetchError, lastChecked, apiConfigured }: {
@@ -164,7 +166,7 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
         try {
           res = await refreshIndexationNow()
         } catch {
-          setRefreshMsg({ type: 'err', text: `${totalChecked} vérifiées avant l'interruption — réessaie.` })
+          setRefreshMsg({ type: 'err', text: `${totalChecked} vérifiées avant l'interruption, réessaie.` })
           router.refresh()
           return
         }
@@ -220,27 +222,26 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
 
   return (
     <div style={s.wrap}>
-      <div style={s.header}>
-        <div>
-          <h1 style={s.title}>Indexation Google</h1>
-          <p style={s.subtitle}>Dernière vérification {lastChecked ? fmtDateTime(lastChecked) : 'jamais'}</p>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {refreshMsg && (
-            <span style={{ fontSize: '12.5px', color: refreshMsg.type === 'ok' ? 'var(--success-1)' : 'var(--danger)' }}>
-              {refreshMsg.text}
-            </span>
-          )}
-          <button onClick={handleRefresh} disabled={isPending || !apiConfigured} style={{ ...s.refreshBtn, opacity: (isPending || !apiConfigured) ? 0.5 : 1 }}>
-            <ArrowClockwise size={14} weight="bold" style={isPending ? { animation: 'spin 0.8s linear infinite' } : undefined} />
-            Vérifier l&apos;indexation
-          </button>
-        </div>
-      </div>
+      <AdminHero
+        section="Indexation Google"
+        title="Tes pages,"
+        em="bien vues par Google"
+        desc={<>Repère les pages du site que Google n&apos;a pas encore indexées et demande leur indexation dans Search Console. Dernière vérification : <span suppressHydrationWarning>{lastChecked ? fmtDateTime(lastChecked) : 'jamais'}</span>.</>}
+      >
+        <button onClick={handleRefresh} disabled={isPending || !apiConfigured} style={{ ...heroCta, border: 'none', cursor: 'pointer', fontFamily: 'inherit', opacity: (isPending || !apiConfigured) ? 0.5 : 1 }}>
+          <ArrowClockwise size={16} weight="bold" style={isPending ? { animation: 'spin 0.8s linear infinite' } : undefined} />
+          Vérifier l&apos;indexation
+        </button>
+        {refreshMsg && (
+          <span style={{ fontSize: '13px', color: refreshMsg.type === 'ok' ? 'var(--accent-text)' : 'var(--danger-text)' }}>
+            {refreshMsg.text}
+          </span>
+        )}
+      </AdminHero>
 
       {googleConnected && (
         <div style={s.infoBox}>
-          <Info size={16} weight="fill" style={{ color: 'var(--success-1)', flexShrink: 0, marginTop: '1px' }} />
+          <Info size={16} weight="fill" style={{ color: 'var(--accent-text)', flexShrink: 0, marginTop: '1px' }} />
           <span style={{ fontSize: '13px', color: 'var(--text-2)' }}>
             Google Search Console connecté. Clique sur &laquo;&nbsp;Vérifier l&apos;indexation&nbsp;&raquo; pour lancer
             une première vérification.
@@ -283,14 +284,14 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
             {bannerOpen ? <CaretUp size={13} /> : <CaretDown size={13} />}
             <strong>{notPublished.length} pages pas encore publiées sur le site</strong>
             <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>
-              — leur adresse renvoie une erreur, rien à demander à Google tant qu&apos;elles ne sont pas en ligne.
+              : leur adresse renvoie une erreur, rien à demander à Google tant qu&apos;elles ne sont pas en ligne.
             </span>
           </button>
           {bannerOpen && (
             <div style={{ marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
               {notPublished.map(p => (
                 <span key={p.url} style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'ui-monospace, monospace' }}>
-                  {p.path} <span style={{ color: '#ef4444' }}>({p.httpStatus})</span>
+                  {p.path} <span style={{ color: 'var(--danger-text)' }}>({p.httpStatus})</span>
                 </span>
               ))}
             </div>
@@ -339,8 +340,8 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
                   <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '3px' }}>
                     Vérifiée {fmtDateTime(p.lastCheckedAt)}
                     {p.lastmod && <> · modifiée {fmtDate(p.lastmod)}</>}
-                    {submittedAt && <span style={{ color: 'var(--success-1)' }}> · demandée le {fmtDate(submittedAt)}</span>}
-                    {p.error && <span style={{ color: '#f59e0b' }}> · {p.error}</span>}
+                    {submittedAt && <span style={{ color: 'var(--accent-text)' }}> · demandée le {fmtDate(submittedAt)}</span>}
+                    {p.error && <span style={{ color: '#B7791F' }}> · {p.error}</span>}
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }} className="jm-idx-actions">
@@ -348,8 +349,8 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
                     submittedAt ? (
                       <button
                         onClick={() => handleUnmarkSubmitted(p.url, submittedAt)}
-                        style={{ ...s.smallBtn, cursor: 'pointer', color: 'var(--success-1)', borderColor: 'var(--success-1)' }}
-                        title="Annuler — la remettre dans « À soumettre »"
+                        style={{ ...s.smallBtn, cursor: 'pointer', color: 'var(--accent-text)', borderColor: 'var(--accent-text)' }}
+                        title="Annuler : la remettre dans « À soumettre »"
                       >
                         <Check size={13} weight="bold" /> Demandée
                       </button>
@@ -373,10 +374,10 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
                   ) : (
                     <>
                       <button onClick={() => handleCopy(p.url)} style={{ ...s.smallBtn, cursor: 'pointer' }} title="Copier l'URL (à coller dans la barre de recherche Search Console)">
-                        {copiedUrl === p.url ? <Check size={13} weight="bold" style={{ color: 'var(--success-1)' }} /> : <Copy size={13} />}
+                        {copiedUrl === p.url ? <Check size={13} weight="bold" style={{ color: 'var(--accent-text)' }} /> : <Copy size={13} />}
                         {copiedUrl === p.url ? 'Copié' : 'Copier'}
                       </button>
-                      <a href={searchConsolePropertyLink()} target="_blank" rel="noopener noreferrer" style={s.smallBtn} title="Ouvrir Search Console (colle l'URL copiée dans la barre de recherche) — lien direct disponible après une vérification">
+                      <a href={searchConsolePropertyLink()} target="_blank" rel="noopener noreferrer" style={s.smallBtn} title="Ouvrir Search Console (colle l'URL copiée dans la barre de recherche), lien direct disponible après une vérification">
                         <ArrowSquareOut size={13} /> Inspecter
                       </a>
                     </>

@@ -8,12 +8,14 @@
 // d'actions en attente (priorité automatique).
 
 import { useMemo, useState, useTransition } from 'react'
-import Link from 'next/link'
 import {
-  ArrowLeft, Check, X, EnvelopeSimple, Trash, MagnifyingGlass,
-  Crown, CheckCircle, Warning, Lightbulb, GraduationCap, Handshake,
-  ShieldStar, Heart,
+  Check, X, EnvelopeSimple, Trash, MagnifyingGlass,
+  Crown, CheckCircle, Lightbulb, GraduationCap, Handshake,
+  ShieldStar, Heart, ArrowRight,
 } from '@phosphor-icons/react/dist/ssr'
+import AdminHero, { adminAsideCard } from '../_ui/AdminHero'
+import { AMBER, BROWN, tint } from '../_ui/theme'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 import {
   confirmDriingMember, rejectDriingMember,
   deleteSuggestion,
@@ -79,6 +81,7 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
   const [search, setSearch] = useState('')
   const [feedback, setFeedback] = useState<{ id: string; type: 'ok' | 'err'; msg: string } | null>(null)
   const [isPending, startT] = useTransition()
+  const { confirm, dialog } = useConfirm()
 
   // Counts pour les badges + auto-sélection de la tab prioritaire.
   // Le badge "Signalements" agrège : reports privés non validés +
@@ -119,8 +122,11 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
       }
     })
   }
-  function driingReject(id: string) {
-    if (!confirm('Rejeter cette demande ?')) return
+  async function driingReject(id: string, retirer = false) {
+    if (!(await confirm({
+      message: retirer ? 'Retirer ce membre de Driing ? Il repassera en formule Découverte.' : 'Refuser cette demande Driing ?',
+      confirmLabel: retirer ? 'Retirer' : 'Refuser', danger: true,
+    }))) return
     const snap = driing
     setDriing(prev => prev.filter(m => m.id !== id))
     startT(async () => {
@@ -135,8 +141,8 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
   //    count du badge tab uniquement.
 
   // ── Suggestions actions ──
-  function suggestionDelete(id: string) {
-    if (!confirm('Supprimer cette suggestion ?')) return
+  async function suggestionDelete(id: string) {
+    if (!(await confirm({ message: 'Supprimer cette suggestion ?', confirmLabel: 'Supprimer', danger: true }))) return
     const snap = suggestions
     setSuggestions(prev => prev.filter(s => s.id !== id))
     startT(async () => {
@@ -161,23 +167,29 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
 
   return (
     <div style={s.root}>
-      <header style={s.header}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' as const }}>
-          <Link href="/dashboard/admin" style={s.backLink}>
-            <ArrowLeft size={13} weight="bold" /> Admin
-          </Link>
-          <div>
-            <h1 style={s.title}>QG des demandes</h1>
-            <p style={s.subtitle}>Un seul endroit pour valider, refuser et nettoyer tout ce qui demande ton attention.</p>
+      {dialog}
+      <AdminHero
+        section="QG demandes"
+        title="Tout ce qui attend"
+        em="ta réponse"
+        desc="Demandes Driing, signalements de voyageurs et suggestions des membres : valide, refuse ou range, au même endroit."
+        aside={
+          <div style={adminAsideCard}>
+            <div style={s.asideTitle}>{totalPending > 0 ? `${totalPending} en attente` : 'Rien en attente'}</div>
+            {([
+              ['driing', 'Demandes Driing', counts.driing],
+              ['reports', 'Signalements', counts.reports],
+              ['suggestions', 'Suggestions', counts.suggestions],
+            ] as const).map(([key, label, n]) => (
+              <button key={key} type="button" onClick={() => setTab(key)} style={{ ...s.asideRow, ...(tab === key ? s.asideRowOn : {}) }}>
+                <span style={{ flex: 1, textAlign: 'left' }}>{label}</span>
+                <strong style={{ color: n > 0 ? 'var(--text)' : 'var(--text-3)' }}>{n}</strong>
+                <ArrowRight size={13} style={{ color: 'var(--text-muted)' }} />
+              </button>
+            ))}
           </div>
-        </div>
-        {totalPending > 0 && (
-          <div style={s.totalBadge}>
-            <Warning size={14} weight="fill" />
-            {totalPending} {totalPending > 1 ? 'actions en attente' : 'action en attente'}
-          </div>
-        )}
-      </header>
+        }
+      />
 
       {/* Tabs */}
       <div style={s.tabs} role="tablist" aria-label="Catégories d'actions">
@@ -187,7 +199,7 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
           icon={<Heart size={14} weight="fill" />}
           label="Membres Driing"
           count={counts.driing}
-          color="#7c3aed"
+          color={AMBER}
         />
         <TabBtn
           active={tab === 'reports'}
@@ -195,7 +207,7 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
           icon={<ShieldStar size={14} weight="fill" />}
           label="Signalements"
           count={counts.reports}
-          color="#fb923c"
+          color="var(--danger-text)"
         />
         <TabBtn
           active={tab === 'suggestions'}
@@ -203,7 +215,7 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
           icon={<Lightbulb size={14} weight="fill" />}
           label="Suggestions"
           count={counts.suggestions}
-          color="#FCD34D"
+          color={BROWN}
         />
       </div>
 
@@ -236,7 +248,7 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
             return (
               <div key={m.id} style={s.row}>
                 <div style={s.rowMain}>
-                  <div style={{ ...s.avatar, background: isPendingItem ? 'rgba(251,146,60,0.12)' : 'rgba(124,58,237,0.12)', color: isPendingItem ? '#fb923c' : '#7c3aed' }}>
+                  <div style={{ ...s.avatar, background: isPendingItem ? tint(AMBER) : 'var(--accent-bg)', color: isPendingItem ? AMBER : 'var(--accent-text)' }}>
                     {(m.full_name || m.email).slice(0, 1).toUpperCase()}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -246,14 +258,14 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
                     </div>
                     <div style={s.cellMeta}>
                       Inscrit {fmtDate(m.created_at)}
-                      {isOld && <span style={{ color: '#fb923c', fontWeight: 600, marginLeft: '6px' }}>· ⚠️ attend depuis {days} j</span>}
-                      {m.stripe_customer_id && <span style={{ color: 'var(--accent-text)', fontWeight: 600, marginLeft: '6px' }}>· Stripe ✓</span>}
+                      {isOld && <span style={{ color: AMBER, fontWeight: 600, marginLeft: '6px' }}>· attend depuis {days} j</span>}
+                      {m.stripe_customer_id && <span style={{ color: 'var(--accent-text)', fontWeight: 600, marginLeft: '6px' }}>· client Stripe</span>}
                     </div>
                   </div>
                   {isPendingItem ? (
-                    <span style={{ ...s.badge, background: 'rgba(251,146,60,.12)', color: '#fb923c', border: '1px solid rgba(251,146,60,.22)' }}>En attente</span>
+                    <span style={{ ...s.badge, background: tint(AMBER), color: AMBER, border: `1px solid ${tint(AMBER, 30)}` }}>En attente</span>
                   ) : (
-                    <span style={{ ...s.badge, background: 'rgba(124,58,237,.12)', color: '#7c3aed', border: '1px solid rgba(124,58,237,.22)' }}>
+                    <span style={{ ...s.badge, background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)' }}>
                       <Crown size={11} weight="fill" /> Driing
                     </span>
                   )}
@@ -271,7 +283,7 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
                       </button>
                     </>
                   ) : (
-                    <button onClick={() => driingReject(m.id)} disabled={isPending} style={{ ...s.btn, ...s.btnReject }}>
+                    <button onClick={() => driingReject(m.id, true)} disabled={isPending} style={{ ...s.btn, ...s.btnReject }}>
                       <X size={13} weight="bold" /> Retirer
                     </button>
                   )}
@@ -319,13 +331,13 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
                     fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.3px', textTransform: 'uppercase' as const,
                     ...(isFormation
                       ? { background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)' }
-                      : { background: 'rgba(147,197,253,.10)', color: '#93C5FD', border: '1px solid rgba(147,197,253,.22)' }),
+                      : { background: tint(BROWN), color: BROWN, border: `1px solid ${tint(BROWN, 30)}` }),
                   }}>
                     {isFormation ? <GraduationCap size={11} weight="fill" /> : <Handshake size={11} weight="fill" />}
                     {isFormation ? 'Formation' : 'Partenaire'}
                   </span>
                   <span style={{ fontSize: '11.5px', color: 'var(--text-3)' }}>
-                    {sg.user_email ?? '—'} · {fmtDate(sg.created_at)}
+                    {sg.user_email ?? 'anonyme'} · {fmtDate(sg.created_at)}
                   </span>
                 </div>
                 <p style={{ fontSize: '13.5px', color: 'var(--text)', lineHeight: 1.6, margin: '8px 0', whiteSpace: 'pre-wrap' as const, wordBreak: 'break-word' as const }}>
@@ -358,7 +370,7 @@ function TabBtn({ active, onClick, icon, label, count, color }: {
       aria-selected={active}
       style={{
         ...s.tabBtn,
-        ...(active ? { borderColor: color, color, background: color + '12' } : {}),
+        ...(active ? { borderColor: color, color, background: tint(color, 10) } : {}),
       }}
     >
       <span aria-hidden="true" style={{ color }}>{icon}</span>
@@ -377,7 +389,7 @@ function TabBtn({ active, onClick, icon, label, count, color }: {
 function Empty({ label }: { label: string }) {
   return (
     <div style={s.empty}>
-      <CheckCircle size={26} weight="duotone" style={{ color: 'var(--success-1)' }} />
+      <CheckCircle size={26} weight="duotone" style={{ color: 'var(--accent-text)' }} />
       <p style={{ margin: 0 }}>{label}</p>
     </div>
   )
@@ -390,7 +402,7 @@ function FbPill({ fb }: { fb: { type: 'ok' | 'err'; msg: string } }) {
       padding: '7px 12px', borderRadius: '8px',
       fontSize: '12.5px', fontWeight: 600,
       background: 'var(--bg-2)', border: '1px solid var(--border)',
-      color: fb.type === 'ok' ? 'var(--success-1)' : '#f87171',
+      color: fb.type === 'ok' ? 'var(--accent-text)' : 'var(--danger-text)',
     }}>
       {fb.type === 'ok' ? <Check size={13} weight="bold" /> : <X size={13} weight="bold" />}
       {fb.msg}
@@ -400,18 +412,14 @@ function FbPill({ fb }: { fb: { type: 'ok' | 'err'; msg: string } }) {
 
 // ─── Styles ───────────────────────────────────────────────────────────
 const s: Record<string, React.CSSProperties> = {
-  root: { width: '100%', padding: 'clamp(16px, 3vw, 44px)', display: 'flex', flexDirection: 'column' as const, gap: '18px' },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap' as const, gap: '14px' },
-  backLink: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '6px 12px', borderRadius: '8px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)', textDecoration: 'none', fontSize: '12.5px', fontWeight: 500 },
-  title: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 400, color: 'var(--text)', margin: 0, letterSpacing: '-0.01em' },
-  subtitle: { fontSize: '13px', color: 'var(--text-2)', margin: '4px 0 0', lineHeight: 1.5 },
-  totalBadge: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    padding: '8px 14px', borderRadius: '999px',
-    background: 'rgba(251,146,60,0.12)', color: '#fb923c',
-    border: '1px solid rgba(251,146,60,0.25)',
-    fontSize: '12.5px', fontWeight: 700,
+  root: { width: '100%', padding: 'clamp(16px, 3vw, 44px)', display: 'flex', flexDirection: 'column' as const, gap: '16px' },
+  asideTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', color: 'var(--text)' },
+  asideRow: {
+    display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 12px', borderRadius: '10px', width: '100%',
+    background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--text-2)',
+    fontSize: '13px', fontFamily: 'inherit', cursor: 'pointer',
   },
+  asideRowOn: { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--text)' },
 
   tabs: { display: 'flex', gap: '8px', flexWrap: 'wrap' as const },
   tabBtn: {
@@ -443,6 +451,6 @@ const s: Record<string, React.CSSProperties> = {
 
   rowActions: { display: 'flex', gap: '8px', justifyContent: 'flex-end', flexWrap: 'wrap' as const },
   btn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '7px 14px', borderRadius: '8px', fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', border: '1px solid', fontFamily: 'inherit' },
-  btnConfirm: { background: 'var(--success-1)', borderColor: 'var(--success-1)', color: 'var(--bg)' },
-  btnReject: { background: 'transparent', borderColor: 'rgba(248,113,113,0.4)', color: '#f87171' },
+  btnConfirm: { background: 'var(--accent-text)', borderColor: 'var(--accent-text)', color: 'var(--bg)' },
+  btnReject: { background: 'transparent', borderColor: 'var(--danger-border)', color: 'var(--danger-text)' },
 }

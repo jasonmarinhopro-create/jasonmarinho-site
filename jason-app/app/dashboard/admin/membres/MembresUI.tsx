@@ -14,6 +14,8 @@ import {
   adminCreateAccount, changeUserPlan, deleteUser, deleteAllBots,
   getMemberDetails, toggleContributor, toggleInvestor, updateMemberName,
 } from '../actions'
+import AdminHero from '../_ui/AdminHero'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -62,12 +64,12 @@ function isBotLike(name: string | null, email: string): boolean {
 
 // Hash-based avatar color so every member gets a consistent unique color
 const PALETTE = [
-  { bg: 'rgba(255,213,107,0.14)', border: 'rgba(255,213,107,0.32)', text: '#FFD56B' },
-  { bg: 'var(--success-bg)',  border: 'var(--success-border)',  text: 'var(--success-1)' },
-  { bg: 'rgba(96,190,255,0.12)',  border: 'rgba(96,190,255,0.28)',  text: '#60BEFF' },
-  { bg: 'rgba(249,117,131,0.12)', border: 'rgba(249,117,131,0.28)', text: '#F97583' },
-  { bg: 'rgba(192,132,252,0.12)', border: 'rgba(192,132,252,0.28)', text: '#C084FC' },
-  { bg: 'rgba(251,146,60,0.12)',  border: 'rgba(251,146,60,0.28)',  text: '#FB923C' },
+  { bg: 'rgba(255,213,107,0.14)', border: 'rgba(255,213,107,0.32)', text: '#B7791F' },
+  { bg: 'var(--accent-bg)',  border: 'var(--accent-border)',  text: 'var(--accent-text)' },
+  { bg: 'color-mix(in srgb, #6E5446 12%, transparent)',  border: 'color-mix(in srgb, #6E5446 28%, transparent)',  text: '#6E5446' },
+  { bg: 'color-mix(in srgb, #C2344A 12%, transparent)', border: 'color-mix(in srgb, #C2344A 28%, transparent)', text: '#C2344A' },
+  { bg: 'color-mix(in srgb, #B7791F 12%, transparent)', border: 'color-mix(in srgb, #B7791F 28%, transparent)', text: '#B7791F' },
+  { bg: 'color-mix(in srgb, #B7791F 12%, transparent)',  border: 'color-mix(in srgb, #B7791F 28%, transparent)',  text: '#B7791F' },
 ]
 function palette(str: string) {
   let h = 0; for (const c of str) h = (h + c.charCodeAt(0)) % PALETTE.length
@@ -100,6 +102,8 @@ export default function MembresUI({ members }: { members: Member[] }) {
     try { localStorage.setItem('membres-view-mode', mode) } catch {}
   }
   const [isPending, startTransition] = useTransition()
+  const { confirm, dialog } = useConfirm()
+  const confirmDelete = (m: Member) => confirm({ message: `Supprimer définitivement le compte de ${m.full_name || m.email} ? Action irréversible.`, confirmLabel: 'Supprimer', danger: true })
   const [feedback, setFeedback]   = useState<{ id: string; type: 'ok'|'err'; msg: string } | null>(null)
   const [botsFeedback, setBotsFeedback] = useState<{ type: 'ok'|'err'; msg: string } | null>(null)
 
@@ -184,8 +188,8 @@ export default function MembresUI({ members }: { members: Member[] }) {
     })
   }
 
-  function handleDeleteAllBots() {
-    if (!confirm(`Supprimer définitivement ${totalBots} bot(s) suspect(s) ?`)) return
+  async function handleDeleteAllBots() {
+    if (!(await confirm({ message: `Supprimer définitivement ${totalBots} compte${totalBots > 1 ? 's' : ''} qui ressemble${totalBots > 1 ? 'nt' : ''} à des robots ?`, confirmLabel: 'Supprimer', danger: true }))) return
     startTransition(async () => {
       const res = await deleteAllBots()
       if (res?.error) setBotsFeedback({ type: 'err', msg: String(res.error) })
@@ -221,6 +225,13 @@ export default function MembresUI({ members }: { members: Member[] }) {
 
   return (
     <div style={s.wrap}>
+      {dialog}
+      <AdminHero
+        section="Membres"
+        title="Tous tes membres,"
+        em="au même endroit"
+        desc={`${members.length} comptes, dont ${totalStandard} en Standard et ${totalDriing} Driing. Clique sur un membre pour voir son activité, changer sa formule ou ses accès.`}
+      />
       {/* dangerouslySetInnerHTML : React échappe les apostrophes/quotes du CSS
           en texte JSX → mismatch d'hydratation (même fix que le check-in) */}
       <style dangerouslySetInnerHTML={{ __html: `
@@ -256,13 +267,13 @@ export default function MembresUI({ members }: { members: Member[] }) {
       <div className="jm-stats-row" style={s.statsRow}>
         {[
           { filter: 'all',          icon: <Users size={16} />,                     value: members.length,     label: 'membres',       color: 'var(--text)' },
-          { filter: 'standard',     icon: <Star size={16} weight="fill" />,        value: totalStandard,      label: 'Standard',      color: '#15803d' },
-          { filter: 'driing',       icon: <Lightning size={16} weight="fill" />,   value: totalDriing,        label: 'Driing',        color: '#7c3aed' },
-          { filter: 'contrib',      icon: <Heart size={16} weight="fill" />,       value: totalContrib,       label: 'contributeurs', color: '#db2777' },
-          { filter: 'investor',     icon: <Briefcase size={16} weight="fill" />,   value: totalInvestors,     label: 'investisseurs', color: '#60BEFF' },
-          { filter: 'photographer', icon: <Camera size={16} weight="fill" />,      value: totalPhotographers, label: 'photographes',  color: '#C084FC' },
-          { filter: 'cleaner',      icon: <Sparkle size={16} weight="fill" />,     value: totalCleaners,      label: 'ménage',        color: 'var(--success-1)' },
-          { filter: null,           icon: <CurrencyEur size={16} />,               value: `${(totalStandard * 1.98).toFixed(2)} €`, label: 'MRR', color: '#15803d' },
+          { filter: 'standard',     icon: <Star size={16} weight="fill" />,        value: totalStandard,      label: 'Standard',      color: 'var(--accent-text)' },
+          { filter: 'driing',       icon: <Lightning size={16} weight="fill" />,   value: totalDriing,        label: 'Driing',        color: '#B7791F' },
+          { filter: 'contrib',      icon: <Heart size={16} weight="fill" />,       value: totalContrib,       label: 'contributeurs', color: '#B83A7C' },
+          { filter: 'investor',     icon: <Briefcase size={16} weight="fill" />,   value: totalInvestors,     label: 'investisseurs', color: '#6E5446' },
+          { filter: 'photographer', icon: <Camera size={16} weight="fill" />,      value: totalPhotographers, label: 'photographes',  color: '#B7791F' },
+          { filter: 'cleaner',      icon: <Sparkle size={16} weight="fill" />,     value: totalCleaners,      label: 'ménage',        color: 'var(--accent-text)' },
+          { filter: null,           icon: <CurrencyEur size={16} />,               value: `${(totalStandard * 19.98 / 12).toFixed(2).replace('.', ',')} €`, label: 'par mois', color: 'var(--accent-text)' },
         ].map(({ filter: f, icon, value, label, color }) => {
           const active = f !== null && filterPlan === f && f !== 'all'
           return (
@@ -304,7 +315,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
           ) : (
             <button disabled={isPending} onClick={handleDeleteAllBots} style={s.deleteBotsBtn}>
               <Robot size={13} />
-              {totalBots} bots suspects, nettoyer
+              {totalBots} compte{totalBots > 1 ? 's' : ''} robot{totalBots > 1 ? 's' : ''} à supprimer
             </button>
           )
         )}
@@ -384,8 +395,8 @@ export default function MembresUI({ members }: { members: Member[] }) {
               key={m.id} member={m}
               isPending={isPending}
               onOpenPanel={openPanel}
-              onDelete={() => {
-                if (!confirm(`Supprimer définitivement ${m.full_name || m.email} ?`)) return
+              onDelete={async () => {
+                if (!(await confirmDelete(m))) return
                 action(m.id, () => deleteUser(m.id), 'Supprimé')
               }}
             />
@@ -402,8 +413,8 @@ export default function MembresUI({ members }: { members: Member[] }) {
               onChangePlan={(plan) => action(m.id, () => changeUserPlan(m.id, plan), 'Plan mis à jour')}
               onToggleContrib={() => action(m.id, () => toggleContributor(m.id, !m.is_contributor), m.is_contributor ? 'Contributeur retiré' : 'Contributeur activé')}
               onToggleInvestor={() => action(m.id, () => toggleInvestor(m.id, !m.is_investor), m.is_investor ? 'Investisseur retiré' : 'Investisseur activé')}
-              onDelete={() => {
-                if (!confirm(`Supprimer définitivement ${m.full_name || m.email} ?`)) return
+              onDelete={async () => {
+                if (!(await confirmDelete(m))) return
                 action(m.id, () => deleteUser(m.id), 'Supprimé')
               }}
               onSaveName={(name) => action(m.id, () => updateMemberName(m.id, name), 'Nom mis à jour')}
@@ -514,9 +525,9 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
   }
 
   const isStandard = m.plan === 'standard'
-  const planColor  = isAdmin ? '#7c3aed' : isDriing ? '#7c3aed' : isStandard ? '#15803d' : 'var(--text-2)'
-  const planBg     = isAdmin ? 'rgba(124,58,237,0.14)' : isDriing ? 'rgba(124,58,237,0.14)' : isStandard ? 'rgba(21,128,61,0.14)' : 'var(--border)'
-  const planBorder = isAdmin ? 'rgba(124,58,237,0.35)' : isDriing ? 'rgba(124,58,237,0.35)' : isStandard ? 'rgba(21,128,61,0.32)' : 'var(--border)'
+  const planColor  = isAdmin ? '#B7791F' : isDriing ? '#B7791F' : isStandard ? 'var(--accent-text)' : 'var(--text-2)'
+  const planBg     = isAdmin ? 'color-mix(in srgb, #B7791F 14%, transparent)' : isDriing ? 'color-mix(in srgb, #B7791F 14%, transparent)' : isStandard ? 'color-mix(in srgb, var(--accent-text) 14%, transparent)' : 'var(--border)'
+  const planBorder = isAdmin ? 'color-mix(in srgb, #B7791F 35%, transparent)' : isDriing ? 'color-mix(in srgb, #B7791F 35%, transparent)' : isStandard ? 'color-mix(in srgb, var(--accent-text) 32%, transparent)' : 'var(--border)'
   const planLabel  = isAdmin ? 'Admin' : isDriing ? 'Membre Driing' : isStandard ? 'Standard' : 'Découverte'
 
   return (
@@ -530,7 +541,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
       {/* ── Identity ── */}
       <div style={s.cardTop}>
         {/* Avatar */}
-        <div style={{ ...s.avatar, background: pal.bg, border: `1.5px solid ${suspect ? 'rgba(248,113,113,0.35)' : pal.border}` }}>
+        <div style={{ ...s.avatar, background: pal.bg, border: `1.5px solid ${suspect ? 'color-mix(in srgb, var(--danger) 35%, transparent)' : pal.border}` }}>
           <span style={{ ...s.avatarText, color: suspect ? 'var(--danger)' : pal.text }}>
             {suspect ? <Robot size={18} /> : ini}
           </span>
@@ -639,7 +650,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
                 style={{
                   ...s.actionBtn,
                   ...(m.is_investor
-                    ? { background: 'rgba(96,190,255,0.1)', borderColor: 'rgba(96,190,255,0.28)', color: '#60BEFF' }
+                    ? { background: 'color-mix(in srgb, #6E5446 10%, transparent)', borderColor: 'color-mix(in srgb, #6E5446 28%, transparent)', color: '#6E5446' }
                     : {}
                   ),
                 }}
@@ -657,7 +668,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
                 style={{
                   ...s.actionBtn,
                   ...(m.is_contributor
-                    ? { background: 'rgba(244,114,182,0.1)', borderColor: 'rgba(244,114,182,0.25)', color: '#f472b6' }
+                    ? { background: 'color-mix(in srgb, #B83A7C 10%, transparent)', borderColor: 'color-mix(in srgb, #B83A7C 25%, transparent)', color: '#B83A7C' }
                     : {}
                   ),
                 }}
@@ -711,8 +722,8 @@ function MemberListRow({ member: m, isPending, onOpenPanel, onDelete }: MemberLi
   const suspect  = isBotLike(m.full_name, m.email)
   const formations = m.user_formations?.length ?? 0
 
-  const planColor  = isAdmin ? '#7c3aed' : isDriing ? '#7c3aed' : isStandard ? '#15803d' : 'var(--text-2)'
-  const planBg     = isAdmin ? 'rgba(124,58,237,0.14)' : isDriing ? 'rgba(124,58,237,0.14)' : isStandard ? 'rgba(21,128,61,0.14)' : 'var(--border)'
+  const planColor  = isAdmin ? '#B7791F' : isDriing ? '#B7791F' : isStandard ? 'var(--accent-text)' : 'var(--text-2)'
+  const planBg     = isAdmin ? 'color-mix(in srgb, #B7791F 14%, transparent)' : isDriing ? 'color-mix(in srgb, #B7791F 14%, transparent)' : isStandard ? 'color-mix(in srgb, var(--accent-text) 14%, transparent)' : 'var(--border)'
   const planLabel  = isAdmin ? 'Admin' : isDriing ? 'Membre Driing' : isStandard ? 'Standard' : 'Découverte'
 
   return (
@@ -722,7 +733,7 @@ function MemberListRow({ member: m, isPending, onOpenPanel, onDelete }: MemberLi
       onClick={() => router.push(`/dashboard/admin/membres/${m.id}`)}
       title="Ouvrir la fiche complète"
     >
-      <div style={{ ...s.avatar, width: '38px', height: '38px', borderRadius: '11px', flexShrink: 0, background: pal.bg, border: `1.5px solid ${suspect ? 'rgba(248,113,113,0.35)' : pal.border}` }}>
+      <div style={{ ...s.avatar, width: '38px', height: '38px', borderRadius: '11px', flexShrink: 0, background: pal.bg, border: `1.5px solid ${suspect ? 'color-mix(in srgb, var(--danger) 35%, transparent)' : pal.border}` }}>
         <span style={{ ...s.avatarText, fontSize: '13px', color: suspect ? 'var(--danger)' : pal.text }}>
           {suspect ? <Robot size={15} /> : ini}
         </span>
@@ -783,21 +794,21 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
   const ini  = member ? initials(member.full_name, member.email) : '?'
 
   const planDisplay: Record<string, { label: string; color: string; bg: string }> = {
-    driing:     { label: 'Membre Driing', color: '#7c3aed', bg: 'rgba(124,58,237,0.14)' },
-    standard:   { label: 'Standard',      color: '#15803d', bg: 'rgba(21,128,61,0.14)' },
+    driing:     { label: 'Membre Driing', color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 14%, transparent)' },
+    standard:   { label: 'Standard',      color: 'var(--accent-text)', bg: 'color-mix(in srgb, var(--accent-text) 14%, transparent)' },
     decouverte: { label: 'Découverte',    color: 'var(--text-2)', bg: 'var(--border)' },
   }
   const planCfg = planDisplay[member?.plan ?? 'decouverte'] ?? planDisplay.decouverte
 
   const statTiles = details ? [
-    { icon: <UsersFour size={14} />,    value: details.voyageurs,      label: 'Voyageurs',       color: '#93C5FD' },
-    { icon: <CalendarBlank size={14} />, value: details.sejours,       label: 'Séjours',          color: 'var(--success-1)' },
+    { icon: <UsersFour size={14} />,    value: details.voyageurs,      label: 'Voyageurs',       color: '#6E5446' },
+    { icon: <CalendarBlank size={14} />, value: details.sejours,       label: 'Séjours',          color: 'var(--accent-text)' },
     { icon: <BookmarkSimple size={14} />, value: details.favorites,    label: 'Gabarits favoris', color: 'var(--accent-text)' },
-    { icon: <PencilSimple size={14} />, value: details.customizations, label: 'Gabarits perso',   color: '#C084FC' },
+    { icon: <PencilSimple size={14} />, value: details.customizations, label: 'Gabarits perso',   color: '#B7791F' },
     { icon: <Flag size={14} />,          value: details.signalements,  label: 'Signalements',     color: 'var(--danger)' },
-    { icon: <Lightbulb size={14} />,     value: details.suggestions,   label: 'Suggestions',      color: '#FB923C' },
-    { icon: <UsersFour size={14} />,    value: details.communityGroupsCount, label: 'Groupes FB',  color: '#60A5FA' },
-    { icon: <MagnifyingGlass size={14} />, value: details.auditsCount,        label: 'Audits GBP',  color: '#A78BFA' },
+    { icon: <Lightbulb size={14} />,     value: details.suggestions,   label: 'Suggestions',      color: '#B7791F' },
+    { icon: <UsersFour size={14} />,    value: details.communityGroupsCount, label: 'Groupes FB',  color: '#6E5446' },
+    { icon: <MagnifyingGlass size={14} />, value: details.auditsCount,        label: 'Audits GBP',  color: '#B7791F' },
   ] : []
 
   // Format reach (245 000 → "245 k")
@@ -826,7 +837,7 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
           width: 'min(420px, 94vw)',
           background: 'var(--bg-2)',
           borderLeft: '1px solid var(--border-2)',
-          boxShadow: '-24px 0 64px rgba(0,0,0,0.45)',
+          boxShadow: open ? '-24px 0 64px rgba(0,0,0,0.45)' : 'none',
           zIndex: 160, display: 'flex', flexDirection: 'column',
           transform: open ? 'translateX(0)' : 'translateX(100%)',
           transition: 'transform 0.3s cubic-bezier(0.32,0,0.15,1)',
@@ -864,13 +875,13 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                       {planCfg.label}
                     </span>
                     {member.role === 'admin' && (
-                      <span style={{ ...ps.planPill, background: 'rgba(192,132,252,0.12)', color: '#C084FC' }}>Admin</span>
+                      <span style={{ ...ps.planPill, background: 'color-mix(in srgb, #B7791F 12%, transparent)', color: '#B7791F' }}>Admin</span>
                     )}
                     {member.is_investor && (
-                      <span style={{ ...ps.planPill, background: 'rgba(96,190,255,0.12)', color: '#60BEFF' }}>Investisseur</span>
+                      <span style={{ ...ps.planPill, background: 'color-mix(in srgb, #6E5446 12%, transparent)', color: '#6E5446' }}>Investisseur</span>
                     )}
                     {member.is_contributor && (
-                      <span style={{ ...ps.planPill, background: 'rgba(244,114,182,0.1)', color: '#f472b6' }}>Contributeur</span>
+                      <span style={{ ...ps.planPill, background: 'color-mix(in srgb, #B83A7C 10%, transparent)', color: '#B83A7C' }}>Contributeur</span>
                     )}
                   </div>
                   <div style={ps.memberSince}>Membre depuis le {formatDate(member.created_at)}</div>
@@ -891,7 +902,7 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                   <>
                     <div style={ps.statsGrid}>
                       {statTiles.map(tile => (
-                        <div key={tile.label} style={{ ...ps.statTile, borderColor: `${tile.color}22`, background: `${tile.color}08` }}>
+                        <div key={tile.label} style={{ ...ps.statTile, borderColor: `color-mix(in srgb, ${tile.color} 13%, transparent)`, background: `color-mix(in srgb, ${tile.color} 3%, transparent)` }}>
                           <span style={{ color: tile.color }}>{tile.icon}</span>
                           <span style={{ ...ps.statNum, color: tile.value > 0 ? 'var(--text)' : 'var(--text-muted)' }}>
                             {tile.value}
@@ -909,14 +920,14 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                             display: 'flex', alignItems: 'center', gap: '10px',
                             padding: '10px 12px', borderRadius: '10px',
                             background: 'var(--info-bg)',
-                            border: '1px solid rgba(96,165,250,0.18)',
+                            border: '1px solid color-mix(in srgb, #6E5446 18%, transparent)',
                           }}>
-                            <UsersFour size={14} color="#60A5FA" weight="fill" />
+                            <UsersFour size={14} color="#6E5446" weight="fill" />
                             <span style={{ flex: 1, fontSize: '12.5px', color: 'var(--text)' }}>
                               <strong>{details.communityGroupsCount}</strong> groupe{details.communityGroupsCount > 1 ? 's' : ''} Facebook rejoint{details.communityGroupsCount > 1 ? 's' : ''}
                             </span>
                             {details.communityTotalReach > 0 && (
-                              <span style={{ fontSize: '11px', fontWeight: 600, color: '#60A5FA' }}>
+                              <span style={{ fontSize: '11px', fontWeight: 600, color: '#6E5446' }}>
                                 Portée {fmtReach(details.communityTotalReach)}
                               </span>
                             )}
@@ -926,10 +937,10 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                           <div style={{
                             display: 'flex', alignItems: 'center', gap: '10px',
                             padding: '10px 12px', borderRadius: '10px',
-                            background: 'rgba(167,139,250,0.06)',
-                            border: '1px solid rgba(167,139,250,0.18)',
+                            background: 'color-mix(in srgb, #B7791F 6%, transparent)',
+                            border: '1px solid color-mix(in srgb, #B7791F 18%, transparent)',
                           }}>
-                            <MagnifyingGlass size={14} color="#A78BFA" weight="fill" />
+                            <MagnifyingGlass size={14} color="#B7791F" weight="fill" />
                             <span style={{ flex: 1, fontSize: '12.5px', color: 'var(--text)' }}>
                               <strong>{details.auditsCount}</strong> audit{details.auditsCount > 1 ? 's' : ''} GBP
                               {details.auditsCompleted > 0 && (
@@ -956,7 +967,7 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                     {member.user_formations.map(uf => (
                       <div key={uf.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                        <GraduationCap size={14} color="#34D399" style={{ flexShrink: 0, marginTop: '2px' }} />
+                        <GraduationCap size={14} color="var(--accent-text)" style={{ flexShrink: 0, marginTop: '2px' }} />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {uf.formation?.title ?? 'Formation inconnue'}
@@ -964,14 +975,14 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                           <div style={{ fontSize: '11px', color: 'var(--text-3)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                             Inscrit le {formatDate(uf.enrolled_at)}
                             {uf.progress === 100 && (
-                              <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--success-1)', background: 'var(--success-bg)', padding: '1px 6px', borderRadius: '100px' }}>
+                              <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--accent-text)', background: 'var(--accent-bg)', padding: '1px 6px', borderRadius: '100px' }}>
                                 Terminée
                               </span>
                             )}
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <div style={{ flex: 1, height: '4px', background: 'var(--border)', borderRadius: '100px', overflow: 'hidden' }}>
-                              <div style={{ height: '100%', borderRadius: '100px', width: `${uf.progress}%`, background: uf.progress === 100 ? 'var(--success-1)' : 'var(--accent-text)', transition: 'width 0.3s' }} />
+                              <div style={{ height: '100%', borderRadius: '100px', width: `${uf.progress}%`, background: uf.progress === 100 ? 'var(--accent-text)' : 'var(--accent-text)', transition: 'width 0.3s' }} />
                             </div>
                             <span style={{ fontSize: '11px', color: 'var(--text-3)', width: '30px', textAlign: 'right' }}>{uf.progress}%</span>
                           </div>
@@ -992,9 +1003,9 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
 // ── FeedbackPill ──────────────────────────────────────────────────────────────
 
 function FeedbackPill({ type, msg }: { type: 'ok'|'err'; msg: string }) {
-  const c = type === 'ok' ? 'var(--success-1)' : 'var(--danger)'
+  const c = type === 'ok' ? 'var(--accent-text)' : 'var(--danger)'
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '5px 10px', borderRadius: '7px', fontSize: '12px', fontWeight: 500, color: c, background: `${c}14`, border: `1px solid ${c}28` }}>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '5px 10px', borderRadius: '7px', fontSize: '12px', fontWeight: 500, color: c, background: `color-mix(in srgb, ${c} 8%, transparent)`, border: `1px solid color-mix(in srgb, ${c} 16%, transparent)` }}>
       {type === 'ok' ? <CheckCircle size={12} weight="fill" /> : <XCircle size={12} weight="fill" />}
       {msg}
     </div>
@@ -1023,7 +1034,7 @@ const s: Record<string, React.CSSProperties> = {
   statLabel: { fontSize: '12px', color: 'var(--text-2)', whiteSpace: 'nowrap' as const, overflow: 'hidden', textOverflow: 'ellipsis' as const },
   deleteBotsBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
-    background: 'var(--danger-bg)', border: '1px solid rgba(248,113,113,0.2)',
+    background: 'var(--danger-bg)', border: '1px solid color-mix(in srgb, var(--danger) 20%, transparent)',
     borderRadius: '9px', padding: '7px 13px',
     color: 'var(--danger)', cursor: 'pointer', fontSize: '12px', fontWeight: 600,
     fontFamily: 'var(--font-outfit), sans-serif',
@@ -1220,33 +1231,33 @@ const s: Record<string, React.CSSProperties> = {
   contribChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
-    background: 'rgba(244,114,182,0.1)', color: '#f472b6',
-    border: '1px solid rgba(244,114,182,0.22)',
+    background: 'color-mix(in srgb, #B83A7C 10%, transparent)', color: '#B83A7C',
+    border: '1px solid color-mix(in srgb, #B83A7C 22%, transparent)',
   },
   investorChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
-    background: 'rgba(96,190,255,0.10)', color: '#60BEFF',
-    border: '1px solid rgba(96,190,255,0.25)',
+    background: 'color-mix(in srgb, #6E5446 10%, transparent)', color: '#6E5446',
+    border: '1px solid color-mix(in srgb, #6E5446 25%, transparent)',
   },
   photographerChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
-    background: 'rgba(192,132,252,0.10)', color: '#C084FC',
-    border: '1px solid rgba(192,132,252,0.25)',
+    background: 'color-mix(in srgb, #B7791F 10%, transparent)', color: '#B7791F',
+    border: '1px solid color-mix(in srgb, #B7791F 25%, transparent)',
   },
   cleanerChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
-    background: 'rgba(16,185,129,0.10)', color: 'var(--success-1)',
-    border: '1px solid rgba(16,185,129,0.25)',
+    background: 'color-mix(in srgb, var(--accent-text) 10%, transparent)', color: 'var(--accent-text)',
+    border: '1px solid color-mix(in srgb, var(--accent-text) 25%, transparent)',
   },
   formChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: 'var(--t-xs)', fontWeight: 600, padding: '3px 9px',
     borderRadius: 'var(--r-pill)',
-    background: 'var(--success-bg)', color: 'var(--success-1)',
-    border: '1px solid var(--success-border)', cursor: 'pointer',
+    background: 'var(--accent-bg)', color: 'var(--accent-text)',
+    border: '1px solid var(--accent-border)', cursor: 'pointer',
     transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth)',
   },
   emptyChip: {

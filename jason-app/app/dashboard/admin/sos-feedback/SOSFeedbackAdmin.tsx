@@ -2,8 +2,9 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
+import AdminHero from '../_ui/AdminHero'
 import {
-  WarningOctagon, ChatCircleDots, Lightbulb, CheckCircle, XCircle, ArrowLeft, Lifebuoy,
+  WarningOctagon, ChatCircleDots, Lightbulb, CheckCircle, XCircle,
 } from '@phosphor-icons/react/dist/ssr'
 import { updateSOSFeedbackStatus } from '@/app/actions/sos-feedback'
 
@@ -35,8 +36,8 @@ const TYPE_ICONS: Record<FeedbackItem['feedback_type'], typeof WarningOctagon> =
 
 const TYPE_COLORS: Record<FeedbackItem['feedback_type'], string> = {
   error: 'var(--danger)',
-  testimony: '#2563eb',
-  suggestion: '#d97706',
+  testimony: '#6E5446',
+  suggestion: '#B7791F',
 }
 
 const STATUS_LABELS: Record<FeedbackItem['status'], string> = {
@@ -104,21 +105,12 @@ export default function SOSFeedbackAdmin({ items: initial }: { items: FeedbackIt
 
   return (
     <div style={s.wrap}>
-      <Link href="/dashboard/admin" style={s.backLink}>
-        <ArrowLeft size={14} weight="bold" />
-        Retour à l&apos;admin
-      </Link>
-
-      <div style={s.header}>
-        <div style={s.badge}>
-          <Lifebuoy size={12} weight="fill" />
-          SOS Hôte
-        </div>
-        <h1 style={s.title}>Feedback communauté</h1>
-        <p style={s.subtitle}>
-          Signalements, témoignages et suggestions envoyés par les hôtes sur les scénarios SOS.
-        </p>
-      </div>
+      <AdminHero
+        section="Retours SOS"
+        title="Les retours des hôtes"
+        em="sur les fiches SOS"
+        desc="Erreurs signalées, témoignages et suggestions envoyés depuis les scénarios SOS. Approuve ce qui mérite une mise à jour, refuse le reste."
+      />
 
       <div style={s.filters}>
         <div style={s.filterGroup}>
@@ -174,7 +166,7 @@ export default function SOSFeedbackAdmin({ items: initial }: { items: FeedbackIt
                     <div style={{
                       display: 'inline-flex', alignItems: 'center', gap: '5px',
                       padding: '3px 8px', borderRadius: '999px',
-                      background: `${color}15`, color, fontSize: '11px', fontWeight: 600,
+                      background: `color-mix(in srgb, ${color} 8%, transparent)`, color, fontSize: '11px', fontWeight: 600,
                     }}>
                       <Icon size={12} weight="fill" />
                       {TYPE_LABELS[item.feedback_type]}
@@ -244,9 +236,9 @@ export default function SOSFeedbackAdmin({ items: initial }: { items: FeedbackIt
                 {fb && (
                   <div style={{
                     ...s.notif,
-                    background: fb.ok ? 'rgba(16,185,129,0.10)' : 'rgba(220,38,38,0.10)',
-                    color: fb.ok ? '#059669' : 'var(--danger)',
-                    borderColor: fb.ok ? 'rgba(16,185,129,0.30)' : 'rgba(220,38,38,0.30)',
+                    background: fb.ok ? 'color-mix(in srgb, var(--accent-text) 10%, transparent)' : 'color-mix(in srgb, var(--danger) 10%, transparent)',
+                    color: fb.ok ? 'var(--accent-text)' : 'var(--danger)',
+                    borderColor: fb.ok ? 'color-mix(in srgb, var(--accent-text) 30%, transparent)' : 'color-mix(in srgb, var(--danger) 30%, transparent)',
                   }}>
                     {fb.msg}
                   </div>
@@ -262,9 +254,9 @@ export default function SOSFeedbackAdmin({ items: initial }: { items: FeedbackIt
 
 function statusStyle(status: FeedbackItem['status']): React.CSSProperties {
   const map: Record<FeedbackItem['status'], React.CSSProperties> = {
-    pending: { background: 'rgba(217,119,6,0.10)', color: '#b45309', borderColor: 'rgba(217,119,6,0.25)' },
-    approved: { background: 'rgba(16,185,129,0.10)', color: '#059669', borderColor: 'rgba(16,185,129,0.25)' },
-    rejected: { background: 'rgba(220,38,38,0.10)', color: 'var(--danger)', borderColor: 'rgba(220,38,38,0.25)' },
+    pending: { background: 'color-mix(in srgb, #B7791F 10%, transparent)', color: '#8A5A12', borderColor: 'color-mix(in srgb, #B7791F 25%, transparent)' },
+    approved: { background: 'color-mix(in srgb, var(--accent-text) 10%, transparent)', color: 'var(--accent-text)', borderColor: 'color-mix(in srgb, var(--accent-text) 25%, transparent)' },
+    rejected: { background: 'color-mix(in srgb, var(--danger) 10%, transparent)', color: 'var(--danger)', borderColor: 'color-mix(in srgb, var(--danger) 25%, transparent)' },
     done: { background: 'var(--accent-bg)', color: 'var(--accent-text)', borderColor: 'var(--accent-border)' },
   }
   return map[status]
@@ -284,8 +276,8 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '10.5px', fontWeight: 700,
     letterSpacing: '0.6px', textTransform: 'uppercase' as const,
     color: 'var(--danger)',
-    background: 'rgba(220,38,38,0.10)',
-    border: '1px solid rgba(220,38,38,0.25)',
+    background: 'color-mix(in srgb, var(--danger) 10%, transparent)',
+    border: '1px solid color-mix(in srgb, var(--danger) 25%, transparent)',
     borderRadius: '999px',
     padding: '3px 9px',
     marginBottom: '10px',
@@ -405,13 +397,13 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'inherit', cursor: 'pointer',
   },
   actionApprove: {
-    background: 'rgba(16,185,129,0.08)',
-    borderColor: 'rgba(16,185,129,0.30)',
-    color: '#059669',
+    background: 'color-mix(in srgb, var(--accent-text) 8%, transparent)',
+    borderColor: 'color-mix(in srgb, var(--accent-text) 30%, transparent)',
+    color: 'var(--accent-text)',
   },
   actionReject: {
-    background: 'rgba(220,38,38,0.08)',
-    borderColor: 'rgba(220,38,38,0.30)',
+    background: 'color-mix(in srgb, var(--danger) 8%, transparent)',
+    borderColor: 'color-mix(in srgb, var(--danger) 30%, transparent)',
     color: 'var(--danger)',
   },
   actionDone: {

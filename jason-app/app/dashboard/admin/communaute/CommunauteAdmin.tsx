@@ -6,6 +6,8 @@ import {
   Users, PencilSimple, Check, FolderSimple, Tag,
 } from '@phosphor-icons/react/dist/ssr'
 import { addGroup, updateGroup, deleteGroup, updateGroupMembersCount } from './actions'
+import AdminHero from '../_ui/AdminHero'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 interface Group {
   id: string
@@ -117,6 +119,7 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
   const [editingId, setEditingId]     = useState<string | null>(null)
   const [editingCount, setEditingCount] = useState<{ id: string; val: string } | null>(null)
   const [isPending, startTransition]  = useTransition()
+  const { confirm, dialog } = useConfirm()
   const [feedback, setFeedback]       = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
 
   function showFeedback(type: 'ok' | 'err', msg: string) {
@@ -164,8 +167,8 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
     })
   }
 
-  function handleDelete(id: string) {
-    if (!confirm('Supprimer ce groupe ?')) return
+  async function handleDelete(id: string) {
+    if (!(await confirm({ message: 'Supprimer ce groupe ?', confirmLabel: 'Supprimer', danger: true }))) return
     startTransition(async () => {
       const res = await deleteGroup(id)
       if (res.success) {
@@ -193,12 +196,16 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
 
   return (
     <div>
+      {dialog}
+      <AdminHero
+        section="Groupes Facebook"
+        title="Les groupes où tes hôtes"
+        em="trouvent des voyageurs"
+        desc="Liste affichée dans Trouver des voyageurs, onglet Groupes Facebook. Ajoute, corrige ou retire un groupe ici."
+      />
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h2 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 500, color: 'var(--text)', marginBottom: '4px' }}>
-            Groupes communautaires
-          </h2>
           <p style={{ fontSize: '13px', color: 'var(--text-3)' }}>
             {groups.length} groupe{groups.length !== 1 ? 's' : ''}
             {existingCategories.length > 0 && (
@@ -219,9 +226,9 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
         <div style={{
           display: 'flex', alignItems: 'center', gap: '8px',
           padding: '10px 14px', borderRadius: '10px', border: '1px solid',
-          background: feedback.type === 'ok' ? 'rgba(99,214,131,0.12)' : 'rgba(239,68,68,0.12)',
-          borderColor: feedback.type === 'ok' ? 'rgba(99,214,131,0.25)' : 'rgba(239,68,68,0.25)',
-          color: feedback.type === 'ok' ? '#63D683' : 'var(--danger)',
+          background: feedback.type === 'ok' ? 'color-mix(in srgb, var(--accent-text) 12%, transparent)' : 'color-mix(in srgb, var(--danger) 12%, transparent)',
+          borderColor: feedback.type === 'ok' ? 'color-mix(in srgb, var(--accent-text) 25%, transparent)' : 'color-mix(in srgb, var(--danger) 25%, transparent)',
+          color: feedback.type === 'ok' ? 'var(--accent-text)' : 'var(--danger)',
           fontSize: '13px', marginBottom: '16px',
         }}>
           {feedback.msg}
@@ -281,11 +288,11 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
                     {/* Platform icon */}
                     <div style={{
                       width: '36px', height: '36px', flexShrink: 0, borderRadius: '9px',
-                      background: isFb ? 'rgba(59,130,246,0.1)' : 'rgba(37,211,102,0.1)',
+                      background: isFb ? 'color-mix(in srgb, #6E5446 10%, transparent)' : 'rgba(37,211,102,0.1)',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}>
                       {isFb
-                        ? <FacebookLogo size={18} color="#3B82F6" />
+                        ? <FacebookLogo size={18} color="#6E5446" />
                         : <WhatsappLogo size={18} color="#25D366" />}
                     </div>
 
@@ -322,7 +329,7 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
                             autoFocus
                           />
                           <button onClick={() => handleSaveCount(g.id)} style={s.iconBtn} disabled={isPending}>
-                            <Check size={13} color="#63D683" />
+                            <Check size={13} color="var(--accent-text)" />
                           </button>
                           <button onClick={() => setEditingCount(null)} style={s.iconBtn}>
                             <X size={13} />
@@ -354,7 +361,7 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
                     {/* Delete */}
                     <button
                       onClick={() => handleDelete(g.id)}
-                      style={{ ...s.iconBtn, color: 'rgba(239,68,68,0.6)' }}
+                      style={{ ...s.iconBtn, color: 'color-mix(in srgb, var(--danger) 60%, transparent)' }}
                       disabled={isPending}
                     >
                       <Trash size={14} />

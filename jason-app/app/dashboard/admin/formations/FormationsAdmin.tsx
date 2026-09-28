@@ -4,6 +4,8 @@ import { useState, useTransition, useMemo } from 'react'
 import Link from 'next/link'
 import { Eye, EyeSlash, Trash, GraduationCap, Users, ArrowCounterClockwise, MagnifyingGlass, PencilSimple } from '@phosphor-icons/react/dist/ssr'
 import { toggleFormationPublished, deleteFormation, republishAllFormations } from './actions'
+import AdminHero from '../_ui/AdminHero'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 interface Formation {
   id: string
@@ -26,9 +28,9 @@ const LEVEL_LABELS: Record<string, string> = {
 }
 
 const LEVEL_COLORS: Record<string, { bg: string; color: string }> = {
-  debutant:     { bg: 'rgba(99,214,131,0.1)',  color: '#63D683' },
+  debutant:     { bg: 'color-mix(in srgb, var(--accent-text) 10%, transparent)',  color: 'var(--accent-text)' },
   intermediaire:{ bg: 'rgba(255,213,107,0.1)', color: 'var(--accent-text)' },
-  avance:       { bg: 'rgba(239,68,68,0.1)',   color: 'var(--danger)' },
+  avance:       { bg: 'color-mix(in srgb, var(--danger) 10%, transparent)',   color: 'var(--danger)' },
 }
 
 type LevelFilter = 'all' | 'debutant' | 'intermediaire' | 'avance'
@@ -37,6 +39,7 @@ type StatusFilter = 'all' | 'published' | 'draft'
 export default function FormationsAdmin({ formations: initialFormations }: { formations: Formation[] }) {
   const [formations, setFormations] = useState(initialFormations)
   const [isPending, startTransition] = useTransition()
+  const { confirm, dialog } = useConfirm()
   const [feedback, setFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
 
   // Filters
@@ -61,8 +64,8 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
     })
   }
 
-  function handleDelete(id: string) {
-    if (!confirm('Supprimer cette formation ? Cette action est irréversible.')) return
+  async function handleDelete(id: string) {
+    if (!(await confirm({ message: 'Supprimer cette formation ? Cette action est irréversible.', confirmLabel: 'Supprimer', danger: true }))) return
     startTransition(async () => {
       const res = await deleteFormation(id)
       if (res.success) {
@@ -101,11 +104,15 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
 
   return (
     <div>
+      {dialog}
+      <AdminHero
+        section="Formations"
+        title="Tes formations,"
+        em="leçon par leçon"
+        desc="Publie, dépublie ou modifie les leçons en base. Le texte en base passe avant celui du code : une correction faite ici s'affiche tout de suite chez les membres."
+      />
       {/* Header */}
       <div style={{ marginBottom: '20px' }}>
-        <h2 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 500, color: 'var(--text)', marginBottom: '12px' }}>
-          Gestion des formations
-        </h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
           <span style={styles.statChip}>
             <Eye size={13} />
@@ -183,9 +190,9 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
         <div style={{
           display: 'flex', alignItems: 'center', gap: '8px',
           padding: '10px 14px', borderRadius: '10px', border: '1px solid',
-          background: feedback.type === 'ok' ? 'rgba(99,214,131,0.12)' : 'rgba(239,68,68,0.12)',
-          borderColor: feedback.type === 'ok' ? 'rgba(99,214,131,0.25)' : 'rgba(239,68,68,0.25)',
-          color: feedback.type === 'ok' ? '#63D683' : 'var(--danger)',
+          background: feedback.type === 'ok' ? 'color-mix(in srgb, var(--accent-text) 12%, transparent)' : 'color-mix(in srgb, var(--danger) 12%, transparent)',
+          borderColor: feedback.type === 'ok' ? 'color-mix(in srgb, var(--accent-text) 25%, transparent)' : 'color-mix(in srgb, var(--danger) 25%, transparent)',
+          color: feedback.type === 'ok' ? 'var(--accent-text)' : 'var(--danger)',
           fontSize: '13px', marginBottom: '16px',
         }}>
           {feedback.msg}
@@ -216,8 +223,8 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
             <div key={f.id} style={{ ...styles.card, opacity: f.is_published ? 1 : 0.65 }}>
               <div style={{ padding: '16px', display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
                 {/* Icon */}
-                <div style={{ ...styles.iconWrap, background: f.is_published ? 'rgba(99,214,131,0.1)' : 'var(--surface)' }}>
-                  <GraduationCap size={18} color={f.is_published ? '#63D683' : 'var(--text-muted)'} />
+                <div style={{ ...styles.iconWrap, background: f.is_published ? 'color-mix(in srgb, var(--accent-text) 10%, transparent)' : 'var(--surface)' }}>
+                  <GraduationCap size={18} color={f.is_published ? 'var(--accent-text)' : 'var(--text-muted)'} />
                 </div>
 
                 {/* Content */}
@@ -260,7 +267,7 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
                   </Link>
                   <button
                     onClick={() => handleToggle(f.id, f.is_published)}
-                    style={{ ...styles.actionBtn, color: f.is_published ? '#63D683' : 'var(--text-3)' }}
+                    style={{ ...styles.actionBtn, color: f.is_published ? 'var(--accent-text)' : 'var(--text-3)' }}
                     title={f.is_published ? 'Passer en brouillon' : 'Publier'}
                     disabled={isPending}
                   >
@@ -268,7 +275,7 @@ export default function FormationsAdmin({ formations: initialFormations }: { for
                   </button>
                   <button
                     onClick={() => handleDelete(f.id)}
-                    style={{ ...styles.actionBtn, color: 'rgba(239,68,68,0.6)' }}
+                    style={{ ...styles.actionBtn, color: 'color-mix(in srgb, var(--danger) 60%, transparent)' }}
                     title="Supprimer"
                     disabled={isPending}
                   >
@@ -288,7 +295,7 @@ const styles: Record<string, React.CSSProperties> = {
   statChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     padding: '4px 10px', borderRadius: '100px',
-    background: 'rgba(99,214,131,0.1)', color: '#63D683',
+    background: 'color-mix(in srgb, var(--accent-text) 10%, transparent)', color: 'var(--accent-text)',
     fontSize: '12px', fontWeight: 500,
   },
   republishBtn: {
