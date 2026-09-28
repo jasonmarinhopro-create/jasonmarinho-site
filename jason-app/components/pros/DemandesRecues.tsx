@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from 'react'
 import { Envelope, Tray, CaretDown, CaretUp, NotePencil, Check, Copy, Trash, AddressBook } from '@phosphor-icons/react/dist/ssr'
+import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 export interface ProContact {
   id: string
@@ -13,12 +15,15 @@ export interface ProContact {
   created_at: string
 }
 
+// Couleurs de la marque (DA 28/09/2026) : plus de bleu, violet ni vert menthe
+const mix = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%, transparent)`
+const tone = (c: string) => ({ color: c, bg: mix(c, 12), border: mix(c, 30) })
 const STATUS_META: Record<string, { label: string; color: string; bg: string; border: string }> = {
-  nouvelle:     { label: 'Nouvelle',      color: '#60a5fa', bg: 'rgba(96,165,250,0.10)',  border: 'rgba(96,165,250,0.30)' },
-  repondue:     { label: 'Répondue',      color: '#FFD56B', bg: 'rgba(255,213,107,0.10)', border: 'rgba(255,213,107,0.30)' },
-  devis_envoye: { label: 'Devis envoyé',  color: '#a78bfa', bg: 'rgba(167,139,250,0.10)', border: 'rgba(167,139,250,0.30)' },
-  gagnee:       { label: 'Gagnée 🎉',     color: '#34d399', bg: 'rgba(52,211,153,0.10)',  border: 'rgba(52,211,153,0.30)' },
-  perdue:       { label: 'Perdue',        color: '#94a3b8', bg: 'rgba(148,163,184,0.10)', border: 'rgba(148,163,184,0.30)' },
+  nouvelle:     { label: 'Nouvelle',      ...tone('#B83A7C') },
+  repondue:     { label: 'Répondue',      ...tone('#B7791F') },
+  devis_envoye: { label: 'Devis envoyé',  ...tone('#6E5446') },
+  gagnee:       { label: 'Gagnée',        ...tone('var(--accent-text)') },
+  perdue:       { label: 'Perdue',        ...tone('var(--text-3)') },
 }
 const STATUS_ORDER = ['nouvelle', 'repondue', 'devis_envoye', 'gagnee', 'perdue'] as const
 
@@ -43,9 +48,10 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
   const [, startTransition] = useTransition()
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [addedIds, setAddedIds] = useState<Record<string, 'ok' | 'deja'>>({})
+  const { confirm, dialog } = useConfirm()
 
-  function removeDemande(id: string) {
-    if (!confirm('Supprimer cette demande ? Elle disparaîtra définitivement de ta liste.')) return
+  async function removeDemande(id: string) {
+    if (!(await confirm({ message: 'Supprimer cette demande ? Elle disparaîtra définitivement de ta liste.', confirmLabel: 'Supprimer', danger: true }))) return
     const prev = contacts
     setContacts(cs => cs.filter(c => c.id !== id))
     setOpenId(null)
@@ -63,6 +69,7 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
   }
 
   const nouvelles = contacts.filter(c => c.status === 'nouvelle').length
+  const countOf = (st: string) => contacts.filter(c => c.status === st).length
 
   function changeStatus(id: string, status: string) {
     const prev = contacts
@@ -87,6 +94,30 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
 
   return (
     <section style={{ ...s.wrap, ...(standalone ? { marginTop: 0 } : {}) }}>
+      {dialog}
+      {standalone ? (
+        <HubHero
+          eyebrowIcon={<Tray size={14} weight="fill" />}
+          eyebrow="Demandes reçues"
+          title={<>Les hôtes qui <HeroEm>te contactent</HeroEm></>}
+          desc="Chaque message envoyé depuis ta fiche arrive ici et par email. Réponds, note où tu en es, puis marque le résultat : tu sais toujours qui relancer."
+          steps={[['Réponds', 'par email'], ['Note', 'le devis envoyé'], ['Marque', 'gagnée ou perdue']]}
+          aside={
+            <div style={{ ...heroCard, flex: '1 1 100%', minWidth: 0 }}>
+              <div style={s.asideTitle}>{nouvelles > 0 ? `${nouvelles} nouvelle${nouvelles > 1 ? 's' : ''} demande${nouvelles > 1 ? 's' : ''}` : 'Aucune demande en attente'}</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {STATUS_ORDER.map(st => (
+                  <span key={st} style={s.asideRow}>
+                    <span style={{ width: 8, height: 8, borderRadius: 999, background: STATUS_META[st].color, flexShrink: 0 }} />
+                    <span style={{ flex: 1 }}>{STATUS_META[st].label}</span>
+                    <strong style={{ color: 'var(--text)' }}>{countOf(st)}</strong>
+                  </span>
+                ))}
+              </div>
+            </div>
+          }
+        />
+      ) : (
       <div style={s.head} className="fade-up">
         <div>
           <h2 style={{ ...s.title, ...(standalone ? { fontSize: 'clamp(26px,3vw,38px)' } : {}) }}>
@@ -100,13 +131,14 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
           <span style={s.newPill}>{nouvelles} nouvelle{nouvelles > 1 ? 's' : ''}</span>
         )}
       </div>
+      )}
 
       {contacts.length === 0 ? (
         <div style={s.empty} className="fade-up">
           <Tray size={30} color="var(--text-muted)" />
           <p style={s.emptyTitle}>Aucune demande pour le moment</p>
           <p style={s.emptyDesc}>
-            Quand un hôte t&apos;écrira depuis ta fiche publique, sa demande apparaîtra ici avec son email et son message — en plus de la notification que tu reçois par email.
+            Quand un hôte t&apos;écrira depuis ta fiche publique, sa demande apparaîtra ici avec son email et son message, en plus de la notification que tu reçois par email.
           </p>
         </div>
       ) : (
@@ -116,7 +148,7 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
             const open = openId === c.id
             const date = new Date(c.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
             return (
-              <div key={c.id} style={{ ...s.row, borderColor: c.status === 'nouvelle' ? 'rgba(96,165,250,0.35)' : 'var(--border)' }}>
+              <div key={c.id} style={{ ...s.row, borderColor: c.status === 'nouvelle' ? STATUS_META.nouvelle.border : 'var(--border)' }}>
                 <button onClick={() => setOpenId(open ? null : c.id)} style={s.rowHead}>
                   <div style={{ flex: 1, minWidth: 0, textAlign: 'left' as const }}>
                     <div style={s.rowName}>
@@ -188,7 +220,7 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
                       <textarea
                         value={notesDraft[c.id] ?? c.pro_notes ?? ''}
                         onChange={e => setNotesDraft(d => ({ ...d, [c.id]: e.target.value }))}
-                        placeholder={`Ex : devis 450 € envoyé le 12/07, relancer ${metier === 'équipe' ? 'l\'hôte' : 'l\'hôte'} lundi…`}
+                        placeholder="Ex : devis 450 € envoyé le 12/07, relancer l'hôte lundi…"
                         rows={2}
                         style={s.notesInput}
                       />
@@ -227,9 +259,11 @@ const s: Record<string, React.CSSProperties> = {
   newPill: {
     display: 'inline-flex', alignItems: 'center',
     padding: '5px 12px', borderRadius: 999, flexShrink: 0,
-    background: 'rgba(96,165,250,0.10)', border: '1px solid rgba(96,165,250,0.30)',
-    color: '#60a5fa', fontSize: 12, fontWeight: 700,
+    background: STATUS_META.nouvelle.bg, border: `1px solid ${STATUS_META.nouvelle.border}`,
+    color: STATUS_META.nouvelle.color, fontSize: 12, fontWeight: 700,
   },
+  asideTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 18, color: 'var(--text)', marginBottom: 2 },
+  asideRow: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-2)' },
   empty: {
     padding: '36px 24px', textAlign: 'center' as const,
     background: 'var(--surface)', border: '1px dashed var(--border-2)',
@@ -306,8 +340,8 @@ const s: Record<string, React.CSSProperties> = {
   deleteBtn: {
     display: 'inline-flex', alignItems: 'center', gap: 6,
     padding: '7px 12px', borderRadius: 8,
-    background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.25)',
-    color: 'var(--danger)', fontSize: 12, fontWeight: 600,
+    background: 'var(--danger-bg)', border: '1px solid var(--danger-border)',
+    color: 'var(--danger-text)', fontSize: 12, fontWeight: 600,
     cursor: 'pointer', fontFamily: 'inherit',
   },
   notesSave: {

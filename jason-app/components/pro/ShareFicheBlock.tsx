@@ -50,7 +50,7 @@ export default function ShareFicheBlock({ url, displayName }: Props) {
   async function share() {
     if (navigator.share) {
       try {
-        await navigator.share({ title: `${displayName} — annuaire LCD Jason Marinho`, url })
+        await navigator.share({ title: `${displayName}, annuaire LCD Jason Marinho`, url })
         return
       } catch { /* annulé par l'utilisateur */ }
     }
@@ -71,13 +71,13 @@ export default function ShareFicheBlock({ url, displayName }: Props) {
         </h3>
         <p style={s.hint}>
           Ta fiche a sa propre adresse : mets-la sur ta carte de visite, ton
-          Instagram, tes devis. Chaque visite peut devenir un client — sans
+          Instagram, tes devis. Chaque visite peut devenir un client, sans
           commission.
         </p>
         <div style={s.urlRow}>
           <span style={s.urlText}>{url.replace('https://', '')}</span>
           <button onClick={copy} style={s.iconBtn} title="Copier le lien">
-            {copied ? <Check size={13} weight="bold" color="var(--success-1)" /> : <Copy size={13} />}
+            {copied ? <Check size={13} weight="bold" color="var(--accent-text)" /> : <Copy size={13} />}
           </button>
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -103,8 +103,8 @@ export default function ShareFicheBlock({ url, displayName }: Props) {
 const s: Record<string, React.CSSProperties> = {
   card: {
     display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' as const,
-    background: 'var(--surface)', border: '1px solid var(--border-2)',
-    borderRadius: 14, padding: '18px 20px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: 16, padding: '18px 20px',
   },
   title: {
     display: 'inline-flex', alignItems: 'center', gap: 8,

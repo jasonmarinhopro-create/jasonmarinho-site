@@ -12,6 +12,8 @@ import {
 import { createClient } from '@/lib/supabase/client'
 import { compressImage } from '@/lib/images/compress'
 import { addPlanningLink, removePlanningLink, preparePhotoUploads, markMenageTermine, annulerMenageTermine } from './actions'
+import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 export interface PlanningClient { linkId: string; hostId: string; label: string; expired: boolean }
 export interface PlanningSlot {
@@ -29,6 +31,7 @@ const STEPS = [
   { title: 'Il t’envoie le lien', desc: 'Par SMS, WhatsApp ou email.' },
   { title: 'Tu le colles ici', desc: 'Une seule fois : ses ménages se mettent à jour tout seuls.' },
 ]
+const AMBER = '#B7791F'
 
 function dayLabel(date: string, today: string): string {
   const d = new Date(date + 'T12:00:00')
@@ -55,6 +58,8 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
   const [linkInput, setLinkInput] = useState('')
   const [labelInput, setLabelInput] = useState('')
   const [linkMsg, setLinkMsg] = useState<{ ok: boolean; text: string } | null>(null)
+  const [cancelErr, setCancelErr] = useState<string | null>(null)
+  const { confirm, dialog } = useConfirm()
 
   const byDay = useMemo(() => {
     const m = new Map<string, PlanningSlot[]>()
@@ -65,6 +70,13 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
   const weekEnd = new Date(new Date(today + 'T12:00:00').getTime() + 6 * 86_400_000).toISOString().slice(0, 10)
   const thisWeek = slots.filter(s => s.date >= today && s.date <= weekEnd)
   const doneWeek = thisWeek.filter(s => s.done).length
+  const todayList = slots.filter(s => s.date === today)
+  const todayLeft = todayList.filter(s => !s.done).length
+  const rushWeek = thisWeek.filter(s => s.sameDay && !s.done).length
+  const lateCount = slots.filter(s => s.date < today && !s.done).length
+  const activeClients = clients.filter(c => !c.expired).length
+  const expiredClients = clients.length - activeClients
+  const todayNice = new Date(today + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })
 
   function openDone(id: string) { setOpenId(id); setFiles([]); setNote(''); setError(null) }
 
@@ -95,11 +107,12 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
     }
   }
 
-  function annuler(s: PlanningSlot) {
-    if (!confirm('Annuler « terminé » pour ce ménage ? Les photos seront supprimées.')) return
+  async function annuler(s: PlanningSlot) {
+    if (!(await confirm({ message: 'Annuler « terminé » pour ce ménage ? Les photos envoyées seront supprimées.', confirmLabel: 'Annuler « terminé »', cancelLabel: 'Garder', danger: true }))) return
+    setCancelErr(null)
     startTransition(async () => {
       const res = await annulerMenageTermine({ hostId: s.hostId, date: s.date, logementName: s.logementName })
-      if ('error' in res) alert(res.error)
+      if ('error' in res) setCancelErr(res.error)
     })
   }
 
@@ -113,8 +126,8 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
     })
   }
 
-  function retirerLien(c: PlanningClient) {
-    if (!confirm(`Retirer le planning de ${c.label} ? Tu pourras le rajouter avec son lien.`)) return
+  async function retirerLien(c: PlanningClient) {
+    if (!(await confirm({ message: `Retirer le planning de ${c.label} ? Tu pourras le rajouter avec son lien.`, confirmLabel: 'Retirer', danger: true }))) return
     startTransition(async () => { await removePlanningLink(c.linkId) })
   }
 
@@ -130,18 +143,29 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
 
   return (
     <div>
-      <div style={s.head}>
-        <div>
-          <h1 style={s.title}>Mes ménages</h1>
-          <p style={s.sub}>Tous les ménages de tes clients sur les 2 prochaines semaines, mis à jour avec leurs réservations Airbnb, Booking et directes. Quand c’est fini, marque « Terminé » avec quelques photos : ton client est prévenu tout de suite.</p>
-        </div>
-        {slots.length > 0 && (
-          <div style={s.kpi}>
-            <CalendarCheck size={16} weight="duotone" />
-            <span><strong>{doneWeek}/{thisWeek.length}</strong> cette semaine</span>
+      {dialog}
+      <HubHero
+        eyebrowIcon={<Broom size={14} weight="fill" />}
+        eyebrow={`Mes ménages · ${todayNice}`}
+        title={<>Tes ménages, <HeroEm>planifiés tout seuls</HeroEm></>}
+        desc="Les ménages de tes clients sur 2 semaines, calculés à partir de leurs réservations Airbnb, Booking et directes. Quand c’est fini, marque « Terminé » avec quelques photos : ton client est prévenu tout de suite."
+        steps={[['Colle', 'le lien de ton client'], ['Fais', 'le ménage prévu'], ['Marque', '« Terminé » avec photos']]}
+        aside={
+          <div style={{ ...heroCard, flex: '1 1 100%', minWidth: 0 }}>
+            <div style={s.asideTitle}>Aujourd’hui</div>
+            <div style={s.asideBig}>
+              {todayList.length === 0 ? 'Aucun ménage' : todayLeft === 0 ? 'Tout est fait' : `${todayLeft} ménage${todayLeft > 1 ? 's' : ''} à faire`}
+            </div>
+            <div style={s.asideRows}>
+              <span style={s.asideRow}><CalendarCheck size={15} weight="duotone" color="var(--accent-text)" /> <strong>{doneWeek}/{thisWeek.length}</strong>&nbsp;faits sur 7 jours</span>
+              {rushWeek > 0 && <span style={s.asideRow}><Lightning size={15} weight="fill" color={AMBER} /> <strong>{rushWeek}</strong>&nbsp;avec arrivée le jour même</span>}
+              {lateCount > 0 && <span style={s.asideRow}><Warning size={15} weight="fill" color="var(--danger-text)" /> <strong>{lateCount}</strong>&nbsp;d’hier pas encore marqué{lateCount > 1 ? 's' : ''}</span>}
+              <span style={s.asideRow}><LinkSimple size={15} color="var(--accent-text)" /> <strong>{activeClients}</strong>&nbsp;client{activeClients > 1 ? 's' : ''} connecté{activeClients > 1 ? 's' : ''}{expiredClients > 0 ? `, ${expiredClients} lien${expiredClients > 1 ? 's' : ''} expiré${expiredClients > 1 ? 's' : ''}` : ''}</span>
+            </div>
           </div>
-        )}
-      </div>
+        }
+      />
+      {cancelErr && <div style={{ ...s.error, marginBottom: 14 }}><Warning size={13} /> {cancelErr}</div>}
 
       <style>{`
         .pm-grid { display: grid; grid-template-columns: minmax(0, 1fr) clamp(340px, 24vw, 420px); gap: 24px; align-items: start; }
@@ -293,7 +317,7 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
                 <Plus size={14} weight="bold" /> Ajouter ce planning
               </button>
             </div>
-            {linkMsg && <div style={{ ...s.hint, color: linkMsg.ok ? 'var(--success-text)' : 'var(--danger-text)' }}>{linkMsg.ok ? <LinkSimple size={12} /> : <Warning size={12} />} {linkMsg.text}</div>}
+            {linkMsg && <div style={{ ...s.hint, color: linkMsg.ok ? 'var(--accent-text)' : 'var(--danger-text)' }}>{linkMsg.ok ? <LinkSimple size={12} /> : <Warning size={12} />} {linkMsg.text}</div>}
           </section>
           <section style={s.tip}>
             <div style={{ ...s.logement, fontSize: 14 }}>Bon à savoir</div>
@@ -310,19 +334,20 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
 }
 
 const s: Record<string, React.CSSProperties> = {
-  head: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap', marginBottom: 22 },
-  title: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(22px,2.6vw,30px)', fontWeight: 400, color: 'var(--text)', margin: '0 0 6px' },
+  asideTitle: { fontSize: 12, fontWeight: 700, letterSpacing: '.5px', textTransform: 'uppercase', color: 'var(--text-3)' },
+  asideBig: { fontFamily: 'var(--font-fraunces), serif', fontSize: 24, color: 'var(--text)', lineHeight: 1.2 },
+  asideRows: { display: 'flex', flexDirection: 'column', gap: 7, marginTop: 4 },
+  asideRow: { display: 'flex', alignItems: 'center', gap: 7, fontSize: 13, color: 'var(--text-2)', flexWrap: 'wrap' },
   sub: { fontSize: 13.5, color: 'var(--text-3)', lineHeight: 1.6, maxWidth: 620, margin: '4px 0 0' },
-  kpi: { display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 14px', borderRadius: 999, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)', fontSize: 13 },
   day: { fontSize: 12, fontWeight: 700, letterSpacing: '.4px', textTransform: 'uppercase', color: 'var(--text-3)', margin: '0 0 8px' },
   card: { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, padding: '14px 16px', display: 'flex', flexDirection: 'column' },
-  cardDone: { borderColor: 'var(--success-border)', background: 'var(--success-bg)' },
+  cardDone: { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' },
   cardTop: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 },
   logement: { fontSize: 15.5, fontWeight: 600, color: 'var(--text)' },
   meta: { display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 4 },
   metaItem: { display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 12.5, color: 'var(--text-2)' },
-  doneBadge: { display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 600, color: 'var(--success-text)', whiteSpace: 'nowrap' },
-  rushBadge: { display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11.5, fontWeight: 600, color: 'var(--warning-text)', background: 'var(--warning-bg)', border: '1px solid var(--warning-border)', padding: '3px 8px', borderRadius: 999, whiteSpace: 'nowrap' },
+  doneBadge: { display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 600, color: 'var(--accent-text)', whiteSpace: 'nowrap' },
+  rushBadge: { display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11.5, fontWeight: 600, color: '#8A5A12', background: 'rgba(255,213,107,0.22)', border: '1px solid rgba(183,121,31,0.30)', padding: '3px 8px', borderRadius: 999, whiteSpace: 'nowrap' },
   address: { display: 'flex', width: 'fit-content', alignItems: 'center', gap: 5, fontSize: 12.5, color: 'var(--accent-text)', marginTop: 8, textDecoration: 'none' },
   notes: { fontSize: 13, color: 'var(--text-2)', lineHeight: 1.55, marginTop: 6 },
   thumbs: { display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 },
@@ -331,9 +356,8 @@ const s: Record<string, React.CSSProperties> = {
   fileLabel: { display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 10, border: '1px dashed var(--border-2)', color: 'var(--text-2)', fontSize: 13.5, cursor: 'pointer', width: 'fit-content' },
   textarea: { width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)', fontSize: 13.5, fontFamily: 'inherit', resize: 'vertical' },
   input: { width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)', fontSize: 13.5, fontFamily: 'inherit', minWidth: 0 },
-  // Vert de marque + texte blanc : lisible en thème clair comme sombre
-  // (l'ancien jaune --accent avec texte --bg était illisible en clair).
-  primary: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px 16px', borderRadius: 10, border: '1px solid var(--green-mid)', background: 'var(--green)', color: '#fff', fontWeight: 600, fontSize: 13.5, cursor: 'pointer', fontFamily: 'inherit', width: 'fit-content' },
+  // Vert de marque, même bouton que le reste de l'app (heroCta)
+  primary: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px 16px', borderRadius: 10, border: '1px solid var(--accent-text)', background: 'var(--accent-text)', color: 'var(--bg)', fontWeight: 600, fontSize: 13.5, cursor: 'pointer', fontFamily: 'inherit', width: 'fit-content' },
   primaryFull: { width: '100%', padding: '11px 16px' },
   primaryDisabled: { opacity: 0.7, cursor: 'not-allowed' },
   fieldLabel: { display: 'flex', flexDirection: 'column', gap: 5, fontSize: 12, fontWeight: 600, color: 'var(--text-2)' },

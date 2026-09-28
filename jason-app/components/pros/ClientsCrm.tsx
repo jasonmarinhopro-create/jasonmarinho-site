@@ -5,6 +5,8 @@ import {
   AddressBook, Plus, X, Phone, Envelope, MapPin, House,
   CaretDown, CaretUp, Trash, Check, NotePencil,
 } from '@phosphor-icons/react/dist/ssr'
+import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 export interface ProClient {
   id: string
@@ -28,10 +30,13 @@ export interface ProClientInput {
   notes?: string
 }
 
+// Couleurs de la marque (DA 28/09/2026) : plus de bleu ni de vert menthe
+const mix = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%, transparent)`
+const tone = (c: string) => ({ color: c, bg: mix(c, 12), border: mix(c, 30) })
 const STATUT_META: Record<string, { label: string; color: string; bg: string; border: string }> = {
-  prospect: { label: 'Prospect',       color: '#60a5fa', bg: 'rgba(96,165,250,0.10)',  border: 'rgba(96,165,250,0.30)' },
-  client:   { label: 'Client',         color: '#34d399', bg: 'rgba(52,211,153,0.10)',  border: 'rgba(52,211,153,0.30)' },
-  fidele:   { label: 'Client fidèle',  color: '#FFD56B', bg: 'rgba(255,213,107,0.10)', border: 'rgba(255,213,107,0.30)' },
+  prospect: { label: 'Prospect',       ...tone('#6E5446') },
+  client:   { label: 'Client',         ...tone('var(--accent-text)') },
+  fidele:   { label: 'Client fidèle',  ...tone('#B7791F') },
 }
 const STATUT_ORDER = ['prospect', 'client', 'fidele'] as const
 
@@ -55,6 +60,7 @@ export default function ClientsCrm({ clients: initial, onCreate, onUpdate, onDel
   const [formError, setFormError] = useState('')
   const [savedId, setSavedId] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
+  const { confirm, dialog } = useConfirm()
 
   const counts = {
     prospect: clients.filter(c => c.statut === 'prospect').length,
@@ -116,8 +122,8 @@ export default function ClientsCrm({ clients: initial, onCreate, onUpdate, onDel
     })
   }
 
-  function remove(id: string) {
-    if (!confirm('Supprimer ce client de ton carnet ? (les demandes reçues ne sont pas touchées)')) return
+  async function remove(id: string) {
+    if (!(await confirm({ message: 'Supprimer ce client de ton carnet ? Les demandes reçues ne sont pas touchées.', confirmLabel: 'Supprimer', danger: true }))) return
     const prev = clients
     setClients(cs => cs.filter(c => c.id !== id))
     setOpenId(null)
@@ -129,36 +135,32 @@ export default function ClientsCrm({ clients: initial, onCreate, onUpdate, onDel
 
   return (
     <section>
-      {/* En-tete */}
-      <div style={s.head} className="fade-up">
-        <div>
-          <h2 style={s.title}>
-            Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>clients</em>
-          </h2>
-          <p style={s.sub}>
-            Ton carnet d&apos;hôtes : coordonnées complètes, logement concerné, statut et notes. Ajoute un client à la main ou convertis une demande reçue en un clic.
-          </p>
-        </div>
-        <button onClick={() => { setShowAdd(v => !v); setFormError('') }} className="btn-primary" style={{ flexShrink: 0 }}>
-          {showAdd ? <X size={15} weight="bold" /> : <Plus size={15} weight="bold" />}
-          {showAdd ? 'Fermer' : 'Ajouter un client'}
+      {dialog}
+      <HubHero
+        eyebrowIcon={<AddressBook size={14} weight="fill" />}
+        eyebrow="Mes clients"
+        title={<>Ton carnet <HeroEm>d&apos;hôtes</HeroEm></>}
+        desc="Coordonnées, logement concerné, statut et notes de chaque hôte. Ajoute un client à la main ou convertis une demande reçue en un clic."
+        aside={
+          <div style={{ ...heroCard, flex: '1 1 100%', minWidth: 0 }}>
+            <div style={s.asideTitle}>{clients.length} contact{clients.length > 1 ? 's' : ''} dans ton carnet</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {STATUT_ORDER.map(st => (
+                <span key={st} style={s.asideRow}>
+                  <span style={{ width: 8, height: 8, borderRadius: 999, background: STATUT_META[st].color, flexShrink: 0 }} />
+                  <span style={{ flex: 1 }}>{STATUT_META[st].label}{counts[st] > 1 ? 's' : ''}</span>
+                  <strong style={{ color: 'var(--text)' }}>{counts[st]}</strong>
+                </span>
+              ))}
+            </div>
+          </div>
+        }
+      >
+        <button onClick={() => { setShowAdd(v => !v); setFormError('') }} style={{ ...heroCta, border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
+          {showAdd ? <X size={16} weight="bold" /> : <Plus size={16} weight="bold" />}
+          {showAdd ? 'Fermer le formulaire' : 'Ajouter un client'}
         </button>
-      </div>
-
-      {/* Compteurs par statut */}
-      {clients.length > 0 && (
-        <div style={s.statsRow} className="fade-up">
-          {STATUT_ORDER.map(st => {
-            const m = STATUT_META[st]
-            return (
-              <div key={st} style={s.statCard}>
-                <span style={{ ...s.statVal, color: m.color }}>{counts[st]}</span>
-                <span style={s.statLbl}>{m.label}{counts[st] > 1 ? 's' : ''}</span>
-              </div>
-            )
-          })}
-        </div>
-      )}
+      </HubHero>
 
       {/* Formulaire d'ajout */}
       {showAdd && (
@@ -313,6 +315,8 @@ export default function ClientsCrm({ clients: initial, onCreate, onUpdate, onDel
 }
 
 const s: Record<string, React.CSSProperties> = {
+  asideTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 18, color: 'var(--text)', marginBottom: 2 },
+  asideRow: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-2)' },
   head: {
     display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
     gap: 14, flexWrap: 'wrap' as const, marginBottom: 18,
@@ -406,8 +410,8 @@ const s: Record<string, React.CSSProperties> = {
   deleteBtn: {
     display: 'inline-flex', alignItems: 'center', gap: 6,
     padding: '8px 13px', borderRadius: 8,
-    background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.25)',
-    color: 'var(--danger)', fontSize: 12, fontWeight: 600,
+    background: 'var(--danger-bg)', border: '1px solid var(--danger-border)',
+    color: 'var(--danger-text)', fontSize: 12, fontWeight: 600,
     cursor: 'pointer', fontFamily: 'inherit',
   },
 }
