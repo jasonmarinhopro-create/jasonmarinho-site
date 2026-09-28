@@ -32,6 +32,18 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE, { auth: { persistSessi
 // Formations concernées par les chiffres fiscaux (aperçu du 28/09/2026)
 const FISCAL_SLUGS = ['fiscalite-reglementation-lcd-france-2026', 'creer-conciergerie-lcd']
 
+const TVA_REVIEW = process.env.TVA_REVIEW === '1'
+const TVA_RX = /37[\s\u202f\u00a0.]?500|41[\s\u202f\u00a0.]?250|91[\s\u202f\u00a0.]?900|85[\s\u202f\u00a0.]?800|25[\s\u202f\u00a0.]?000\s?€[^|\n]{0,40}(TVA|franchise)|para-?h[ôo]tel/i
+
+// Extrait court (≤ 140 caractères) centré sur le seuil trouvé
+function tvaLines(text) {
+  return text.split('\n').filter(l => TVA_RX.test(l)).slice(0, 6).map(l => {
+    const i = Math.max(0, l.search(TVA_RX) - 60)
+    const cut = l.slice(i, i + 140).trim()
+    return (i > 0 ? '…' : '') + cut + (i + 140 < l.length ? '…' : '')
+  })
+}
+
 function snippets(before, after) {
   // Extraits courts (≤ 140 caractères) autour des passages modifiés
   const a = after.split('\n')
@@ -74,6 +86,11 @@ async function main() {
     const review = FISCAL_SLUGS.includes(slug)
       ? afterFiscal.split('\n').filter(line => /1 180|1 520|1 720|17,2|71\s?%|77 ?700|188 ?700|Total|[ÉéE]conomie/.test(line))
       : []
+    // Seuils de TVA (toutes formations) : 37 500 € ne vaut que pour les
+    // prestations de services (conciergerie), l'hébergement para-hôtelier est
+    // à 85 000 €. Extraits courts affichés pour relecture, rien n'est modifié.
+    const tvaReview = TVA_REVIEW ? tvaLines(afterFiscal) : []
+    for (const line of tvaReview) console.log(`  TVA à relire (${slug} ${mod.module_number}.${l.lesson_number}) : ${line}`)
     title = dashFix(title, { isTitle: true })
     if (content === before && title === l.title) {
       for (const line of review) console.log(`  ? inchangé, à relire (${slug} ${mod.module_number}.${l.lesson_number}) : ${line.trim().slice(0, 140)}`)

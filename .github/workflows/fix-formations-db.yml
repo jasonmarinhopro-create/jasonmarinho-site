@@ -12,6 +12,11 @@ on:
         type: boolean
         required: false
         default: false
+      tva_review:
+        description: "Lister les passages qui citent un seuil de TVA (relecture)"
+        type: boolean
+        required: false
+        default: false
 
 concurrency:
   group: formations-db
@@ -39,4 +44,5 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           DRY_RUN: ${{ inputs.apply && '0' || '1' }}
+          TVA_REVIEW: ${{ inputs.tva_review && '1' || '0' }}
         run: node scripts/fix-formations-db.mjs
