@@ -213,7 +213,7 @@ function computeInsights(s: {
     logements = {
       message: 'Beau portefeuille. Compare leurs performances entre eux',
       ctaLabel: 'Voir les performances',
-      ctaHref: '/dashboard/performances',
+      ctaHref: '/dashboard/finances/performances',
       tone: 'opportunity',
     }
   }

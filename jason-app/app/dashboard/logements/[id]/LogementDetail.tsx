@@ -529,7 +529,7 @@ export default function LogementDetail({ logement: l, sejours, contractsCount, i
               <ChatText size={14} weight="bold" />
               Messages de ce bien
             </Link>
-            <Link href={`/dashboard/revenus?logement=${encodeURIComponent(l.nom)}`} style={s.btnSecondary}>
+            <Link href={`/dashboard/finances/logement/${l.id}`} style={s.btnSecondary}>
               <CurrencyEur size={14} weight="bold" />
               Revenus de ce bien
             </Link>

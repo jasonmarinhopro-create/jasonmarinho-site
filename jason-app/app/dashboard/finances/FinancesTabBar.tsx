@@ -1,30 +1,33 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { ChartBar, Bank, ChartLineUp } from '@phosphor-icons/react/dist/ssr'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { ChartBar, ListBullets, ChartLineUp, Scales, CreditCard } from '@phosphor-icons/react/dist/ssr'
 
 /**
- * Barre d'onglets pour /dashboard/finances/*.
- * L'onglet actif est déduit du pathname (client-side). Utilise <Link> :
- * chaque tab est une vraie URL indexable et bookmark-able.
+ * Onglets de /dashboard/finances/*. La période (?periode=) suit l'utilisateur
+ * entre Revenus, Journal et Performances.
  */
+const TABS = [
+  { href: '/dashboard/finances/revenus',       label: 'Revenus',            Icon: ChartBar,    periode: true },
+  { href: '/dashboard/finances/journal',       label: 'Journal',            Icon: ListBullets, periode: true },
+  { href: '/dashboard/finances/performances',  label: 'Performances',       Icon: ChartLineUp, periode: true },
+  { href: '/dashboard/finances/fiscalite',     label: 'Fiscalité',          Icon: Scales,      periode: false },
+  { href: '/dashboard/finances/encaissements', label: 'Paiements en ligne', Icon: CreditCard,  periode: false },
+]
+
 export default function FinancesTabBar() {
   const pathname = usePathname() ?? ''
-  const tabs = [
-    { href: '/dashboard/finances/revenus',       label: 'Revenus',       Icon: ChartBar },
-    { href: '/dashboard/finances/performances',  label: 'Performances',  Icon: ChartLineUp },
-    { href: '/dashboard/finances/encaissements', label: 'Encaissements', Icon: Bank },
-  ]
+  const periode = useSearchParams()?.get('periode')
 
   return (
     <nav style={s.bar} aria-label="Onglets Mes finances">
-      {tabs.map(({ href, label, Icon }) => {
+      {TABS.map(({ href, label, Icon, periode: keep }) => {
         const active = pathname === href || pathname.startsWith(href + '/')
         return (
           <Link
             key={href}
-            href={href}
+            href={keep && periode ? `${href}?periode=${periode}` : href}
             style={{ ...s.tab, ...(active ? s.tabActive : {}) }}
             aria-current={active ? 'page' : undefined}
           >
@@ -49,7 +52,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   tab: {
     display: 'inline-flex', alignItems: 'center', gap: 8,
-    padding: '12px 16px',
+    padding: '12px 14px',
     fontSize: 13.5, fontWeight: 500,
     color: 'var(--text-3)',
     textDecoration: 'none',

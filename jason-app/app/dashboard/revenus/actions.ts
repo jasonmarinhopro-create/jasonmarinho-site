@@ -40,7 +40,7 @@ export async function createRevenusEntry(input: EntryInput) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
-  revalidatePath('/dashboard/finances/revenus')
+  revalidatePath('/dashboard/finances', 'layout')
   return { entry: data }
 }
 
@@ -61,7 +61,7 @@ export async function cancelContractRevenus(id: string) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
-  revalidatePath('/dashboard/finances/revenus')
+  revalidatePath('/dashboard/finances', 'layout')
   return { success: true }
 }
 
@@ -81,7 +81,7 @@ export async function cancelSejourRevenus(id: string) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
-  revalidatePath('/dashboard/finances/revenus')
+  revalidatePath('/dashboard/finances', 'layout')
   return { success: true }
 }
 
@@ -98,7 +98,7 @@ export async function deleteRevenusEntry(id: string) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
-  revalidatePath('/dashboard/finances/revenus')
+  revalidatePath('/dashboard/finances', 'layout')
   return { success: true }
 }
 
@@ -138,7 +138,7 @@ export async function bulkImportRevenusEntries(entries: EntryInput[]) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
-  revalidatePath('/dashboard/finances/revenus')
+  revalidatePath('/dashboard/finances', 'layout')
   return { inserted: data?.length ?? 0, skipped, entries: data ?? [] }
 }
 
@@ -167,7 +167,7 @@ export async function createCharge(input: ChargeInput) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
-  revalidatePath('/dashboard/finances/revenus')
+  revalidatePath('/dashboard/finances', 'layout')
   return { charge: data }
 }
 
@@ -187,7 +187,7 @@ export async function updateCharge(id: string, input: Partial<ChargeInput>) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
-  revalidatePath('/dashboard/finances/revenus')
+  revalidatePath('/dashboard/finances', 'layout')
   return { success: true }
 }
 
@@ -204,7 +204,7 @@ export async function deleteCharge(id: string) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
-  revalidatePath('/dashboard/finances/revenus')
+  revalidatePath('/dashboard/finances', 'layout')
   return { success: true }
 }
 
@@ -226,7 +226,7 @@ export async function setEntryADeclarer(id: string, source: 'entry' | 'sejour', 
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
-  revalidatePath('/dashboard/finances/revenus')
+  revalidatePath('/dashboard/finances', 'layout')
   return { success: true }
 }
 
@@ -245,7 +245,7 @@ export async function setObjectifAnnuel(montant: number | null, annee: number) {
       .eq('user_id', user.id)
     if (error) return { error: error.message }
     revalidatePath('/dashboard/revenus')
-    revalidatePath('/dashboard/finances/revenus')
+    revalidatePath('/dashboard/finances', 'layout')
     return { success: true }
   }
 
@@ -260,6 +260,6 @@ export async function setObjectifAnnuel(montant: number | null, annee: number) {
 
   if (error) return { error: error.message }
   revalidatePath('/dashboard/revenus')
-  revalidatePath('/dashboard/finances/revenus')
+  revalidatePath('/dashboard/finances', 'layout')
   return { success: true }
 }

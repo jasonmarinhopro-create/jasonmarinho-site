@@ -138,3 +138,12 @@ describe('périodes et portée', () => {
     expect(canalOf('leboncoin')).toBe('autre')
   })
 })
+
+describe('nuitsParJour', () => {
+  it('compte chaque nuit sur son jour (lundi = 0)', async () => {
+    const { nuitsParJour } = await import('./engine')
+    // 2026-09-14 est un lundi : nuits lun, mar, mer
+    const r = nuitsParJour([{ logementNom: 'S', logementId: null, arrivee: '2026-09-14', depart: '2026-09-17', canal: 'airbnb', avecMontant: true, createdAt: null }], '2026-09-01', '2026-09-30', '2026-09-28')
+    expect(r).toEqual([1, 1, 1, 0, 0, 0, 0])
+  })
+})

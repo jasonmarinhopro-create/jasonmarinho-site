@@ -89,7 +89,7 @@ export default function ActionUrgente({ unsignedContracts, pendingPayments, toda
   // Paiement en attente (priorité 2)
   const others = pendingPayments.length - 1
   return (
-    <Link href="/dashboard/revenus" style={{ textDecoration: 'none', display: 'block' }}>
+    <Link href="/dashboard/finances/revenus" style={{ textDecoration: 'none', display: 'block' }}>
       <div style={{ ...s.card, borderLeftColor: '#3b82f6', borderLeftWidth: '3px' }} className="glass-card action-urgent-hover">
         <div style={{ ...s.iconWrap, background: '#3b82f615', color: '#3b82f6' }}>
           <CurrencyEur size={20} weight="fill" />

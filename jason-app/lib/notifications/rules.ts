@@ -228,7 +228,7 @@ async function ruleStripeIncomplete(userId: string): Promise<number> {
     title: 'Finalise ton onboarding Stripe',
     body: `Tu as ${count} contrat${count > 1 ? 's' : ''} avec paiement Stripe activé, mais ton compte n'est pas finalisé. Tu ne peux pas encore recevoir tes virements.`,
     ctaLabel: 'Finaliser maintenant',
-    ctaHref: '/dashboard/encaissements',
+    ctaHref: '/dashboard/finances/encaissements',
     severity: 'warning',
     metadata: { contracts_count: count },
     // Re-notifié 1× par mois si toujours pas fait

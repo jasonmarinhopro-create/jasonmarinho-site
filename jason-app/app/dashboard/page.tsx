@@ -939,7 +939,7 @@ export default async function DashboardPage() {
         {/* ── Objectif revenu annuel ──────────────────────────────────── */}
         {objectifAnnuel !== null && objectifAnnuel > 0 && (
           <section style={s.section} className="fade-up d3">
-            <Link href="/dashboard/revenus" style={s.objectifCard}>
+            <Link href="/dashboard/finances/revenus" style={s.objectifCard}>
               <div style={s.objectifHead}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Trophy size={14} weight="fill" color="#15803d" />

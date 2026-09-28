@@ -468,7 +468,10 @@ export function totaux(lines: RevenueLine[], charges: ChargeLine[], occupation: 
   let ch = 0
   for (const c of charges) {
     if (c.dureeAmortissement != null || c.categorie === 'amortissement') continue
-    if (inRange(c.date, start, realEnd)) ch += c.montant
+    if (!inRange(c.date, start, realEnd)) continue
+    // Une commission saisie en charge reste une commission
+    if (c.categorie === 'commissions_plateforme') commissions += c.montant
+    else ch += c.montant
   }
   const sansMontant = occupation.filter(o => !o.avecMontant && inRange(o.arrivee, start, realEnd)).length
   return {
@@ -499,7 +502,9 @@ export function serieMensuelle(lines: RevenueLine[], charges: ChargeLine[], mont
   for (const c of charges) {
     if (c.dureeAmortissement != null || c.categorie === 'amortissement' || c.date > today) continue
     const p = map.get(monthKey(c.date))
-    if (p) p.charges += c.montant
+    if (!p) continue
+    if (c.categorie === 'commissions_plateforme') p.commissions += c.montant
+    else p.charges += c.montant
   }
   return [...map.values()].map(p => ({
     ...p,
@@ -624,4 +629,23 @@ export function remplissageAVenir(occupation: OccupationStay[], jours: number, n
 
 export function round2(n: number): number {
   return Math.round(n * 100) / 100
+}
+
+/** Nuits réservées par jour de la semaine (0 = lundi … 6 = dimanche) sur la période, jusqu'à aujourd'hui */
+export function nuitsParJour(occupation: OccupationStay[], start: string, end: string, today: string): number[] {
+  const realEnd = end < today ? end : today
+  const out = [0, 0, 0, 0, 0, 0, 0]
+  for (const o of occupation) {
+    let d = o.arrivee > start ? o.arrivee : start
+    const last = addDays(o.depart, -1)
+    const stop = last < realEnd ? last : realEnd
+    let guard = 0
+    while (d <= stop && guard < 400) {
+      const dow = (new Date(`${d}T12:00:00Z`).getUTCDay() + 6) % 7
+      out[dow] += 1
+      d = addDays(d, 1)
+      guard += 1
+    }
+  }
+  return out
 }

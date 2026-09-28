@@ -54,7 +54,7 @@ export default function EtatDesLieux({
   return (
     <div style={s.grid}>
       {/* 1, Revenu prévisionnel — résas à venir avec montant connu */}
-      <Link href="/dashboard/revenus" style={{ textDecoration: 'none' }}>
+      <Link href="/dashboard/finances/revenus" style={{ textDecoration: 'none' }}>
         <div style={s.card} className="kpi-hover">
           <div style={{ ...s.icon, color: previsColor, background: previsColor + '18', border: `1px solid ${previsColor}30` }}>
             <TrendUp size={18} weight="fill" />
@@ -68,7 +68,7 @@ export default function EtatDesLieux({
       </Link>
 
       {/* 2, Revenu du mois */}
-      <Link href="/dashboard/revenus" style={{ textDecoration: 'none' }}>
+      <Link href="/dashboard/finances/revenus" style={{ textDecoration: 'none' }}>
         <div style={s.card} className="kpi-hover">
           <div style={{ ...s.icon, color: 'var(--success-1)', background: '#10b98118', border: '1px solid #10b98130' }}>
             <CurrencyEur size={18} weight="fill" />

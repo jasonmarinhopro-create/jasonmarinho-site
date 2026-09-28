@@ -13,6 +13,8 @@ interface Props {
   summary: EncaissementsSummary
   impayes: ContractImpaye[]
   planLabel: string
+  /** Précision quand un logement est sélectionné (le solde Stripe est celui du compte) */
+  scopeNote?: string
 }
 
 const PAYOUT_STATUS_LABEL: Record<string, { label: string; color: string }> = {
@@ -109,7 +111,7 @@ function ResendPaymentButton({ contractId, name }: { contractId: string; name: s
   )
 }
 
-export default function EncaissementsView({ summary, impayes }: Props) {
+export default function EncaissementsView({ summary, impayes, scopeNote }: Props) {
   const isOnboarded = summary.hasOnboarded
 
   // Total impayé attendu (pour la stat en haut)
@@ -131,20 +133,10 @@ export default function EncaissementsView({ summary, impayes }: Props) {
 
   return (
     <div style={s.page}>
-      <header style={s.hero}>
-        <span style={s.heroBadge}>
-          <Bank size={13} weight="fill" /> Stripe Connect
-        </span>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' as const }}>
-          <h1 style={s.heroTitle}>
-            Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>encaissements</em>
-          </h1>
-          <TourTrigger />
-        </div>
-        <p style={s.heroDesc}>
-          Solde disponible, prochains virements, encaissé du mois, paiements à relancer. Tout au même endroit, en temps réel.
-        </p>
-      </header>
+      <p style={{ margin: 0, fontSize: '13.5px', color: 'var(--text-3)', lineHeight: 1.55, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' as const }}>
+        <span>Les loyers et acomptes payés par carte sur tes contrats directs (Stripe).{scopeNote ? ` ${scopeNote}` : ''} Les versements Airbnb et Booking n&apos;apparaissent pas ici : ils sont dans Revenus et Journal.</span>
+        <TourTrigger />
+      </p>
 
       {!summary.hasAccount && (
         <div style={s.banner}>
@@ -388,7 +380,7 @@ export default function EncaissementsView({ summary, impayes }: Props) {
 
       <p style={s.footer}>
         <Calendar size={11} weight="fill" />
-        Données rafraîchies à chaque chargement de page (force-dynamic). Stripe paie tous les jours ouvrés (compte standard EU, délai 2-3 jours).
+        Chiffres lus en direct chez Stripe. Stripe verse ton solde sur ton compte bancaire tous les jours ouvrés (2 à 3 jours de délai en Europe).
       </p>
     </div>
   )
@@ -422,7 +414,7 @@ function StatBox({ label, value, sub, icon, accent, tone }: {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(14px, 3vw, 44px)', width: '100%', display: 'flex', flexDirection: 'column' as const, gap: 'clamp(18px, 2.5vw, 26px)' },
+  page: { padding: '20px var(--dash-page-px) 48px', width: '100%', display: 'flex', flexDirection: 'column' as const, gap: 16 },
   hero: { marginBottom: '4px' },
   heroBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '7px',

@@ -52,6 +52,8 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/finances/revenus': 'Mes finances',
   '/dashboard/finances/encaissements': 'Mes finances',
   '/dashboard/finances/performances': 'Mes finances',
+  '/dashboard/finances/journal': 'Mes finances',
+  '/dashboard/finances/fiscalite': 'Mes finances',
   '/dashboard/performances': 'Performances',
   '/dashboard/profil': 'Mon compte',
   '/dashboard/abonnement': 'Abonnement',
