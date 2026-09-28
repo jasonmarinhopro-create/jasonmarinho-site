@@ -13,7 +13,8 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import { Card, CardHead, Notice, ui, dateCourte } from '../finances/_ui/ui'
-import { INCIDENT_GROUPS, POSITIVE_TYPES, isPositive, verdictOf, type Verdict } from '@/lib/securite/identifiers'
+import { ALL_INCIDENT_TYPES, POSITIVE_TYPES, isPositive, verdictOf, type Verdict } from '@/lib/securite/identifiers'
+import Select from '@/components/ui/Select'
 import { searchGuest, reportGuest, withdrawMyReport, contestReport, type SearchHit } from './actions'
 import { markStepIfNotYet } from '@/lib/onboarding/client'
 
@@ -396,19 +397,18 @@ export default function SecuriteView({ totalNegative, totalPositive, myReports, 
                     </div>
                   </fieldset>
 
-                  <label style={s.fieldCol}>
+                  <div style={s.fieldCol}>
                     <span style={s.label}>{mode === 'positif' ? 'Ce qui s\'est bien passé' : 'Motif'}</span>
-                    <select value={form.incident_type} onChange={e => setForm(f => ({ ...f, incident_type: e.target.value }))} style={s.input} required>
-                      {mode === 'probleme' && <option value="" disabled>Choisis un motif</option>}
-                      {mode === 'positif'
-                        ? POSITIVE_TYPES.map(t => <option key={t} value={t}>{t}</option>)
-                        : INCIDENT_GROUPS.map(g => (
-                          <optgroup key={g.label} label={g.label}>
-                            {g.types.map(t => <option key={t} value={t}>{t}</option>)}
-                          </optgroup>
-                        ))}
-                    </select>
-                  </label>
+                    <Select
+                      value={form.incident_type}
+                      onChange={v => setForm(f => ({ ...f, incident_type: v }))}
+                      options={(mode === 'positif' ? [...POSITIVE_TYPES] : ALL_INCIDENT_TYPES).map(tp => ({ value: tp, label: tp }))}
+                      placeholder="Choisis un motif"
+                      ariaLabel={mode === 'positif' ? 'Ce qui s\'est bien passé' : 'Motif du signalement'}
+                      minWidth="100%"
+                      triggerStyle={{ width: '100%' }}
+                    />
+                  </div>
 
                   <label style={s.fieldCol}>
                     <span style={s.label}>Les faits</span>

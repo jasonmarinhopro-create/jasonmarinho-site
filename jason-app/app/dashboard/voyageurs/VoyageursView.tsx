@@ -7,11 +7,13 @@ import Select from '@/components/ui/Select'
 import { useRouter } from 'next/navigation'
 import {
   Plus, MagnifyingGlass, Warning,
-  X, User, Envelope, Phone, Note, Trash, CalendarBlank,
-  Users, ShieldCheck, CurrencyEur, Star, SquaresFour, Rows, ProhibitInset, Faders, IdentificationCard,
+  X, User, Envelope, Phone, Trash, CalendarBlank, PencilSimple, CaretRight, FileText,
+  Users, Star, SquaresFour, Rows, ProhibitInset, Faders, IdentificationCard,
 } from '@phosphor-icons/react/dist/ssr'
 import { addVoyageur, updateVoyageur, deleteVoyageur, checkVoyageurSignale, type VoyageurData } from './actions'
 import TourTrigger from '@/components/dashboard/TourTrigger'
+import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
+import { Card, CardHead, Notice, ui } from '../finances/_ui/ui'
 
 type Sejour = { id: string; date_arrivee: string; date_depart: string; montant: number | null }
 type Voyageur = {
@@ -53,6 +55,30 @@ function missingNationality(v: Voyageur, today: string) {
 
 const COUNTRIES = NATIONALITES
 
+// Un seul statut par voyageur, par ordre d'importance
+type Status = 'signale' | 'bloque' | 'fidele' | 'recurrent'
+function statusOf(v: Voyageur): Status | null {
+  if (v.is_flagged) return 'signale'
+  if (v.bloque) return 'bloque'
+  if (v.sejours.length >= 4) return 'fidele'
+  if (v.sejours.length >= 2) return 'recurrent'
+  return null
+}
+const BADGE: Record<Status | 'nat', React.CSSProperties> = {
+  signale: { background: 'var(--danger-bg)', color: 'var(--danger)', borderColor: 'rgba(239,68,68,0.30)' },
+  bloque: { background: 'var(--bg-2)', color: 'var(--text-3)', borderColor: 'var(--border-2)' },
+  fidele: { background: 'rgba(255,213,107,0.18)', color: '#8A5A12', borderColor: 'rgba(183,121,31,0.30)' },
+  recurrent: { background: 'var(--accent-bg)', color: 'var(--accent-text)', borderColor: 'var(--accent-border)' },
+  nat: { background: 'rgba(255,213,107,0.14)', color: '#8A5A12', borderColor: 'rgba(183,121,31,0.30)' },
+}
+const BADGE_LABEL: Record<Status, string> = { signale: 'Signalé', bloque: 'Bloqué', fidele: 'Fidèle', recurrent: 'Récurrent' }
+const BADGE_ICON: Record<Status, React.ReactNode> = {
+  signale: <Warning size={11} weight="fill" />,
+  bloque: <ProhibitInset size={11} weight="fill" />,
+  fidele: <Star size={11} weight="fill" />,
+  recurrent: null,
+}
+
 const EMPTY_FORM: VoyageurData = { prenom: '', nom: '', email: '', telephone: '', notes: '', nationalite: null, checkin_expected_count: null }
 
 // ─── Filtres personnalisables ────────────────────────────────────────────────
@@ -69,7 +95,7 @@ const FILTER_DEFS: { key: FilterKey; label: string; desc: string; test: (v: Voya
   { key: 'fideles',      label: 'Fidèles',      desc: '4 séjours ou plus',          test: v => v.sejours.length >= 4 },
   { key: 'signales',     label: 'Signalés',     desc: 'Signalés par un autre hôte', test: v => v.is_flagged },
   { key: 'bloques',      label: 'Bloqués',      desc: 'Que tu as bloqués',          test: v => v.bloque === true },
-  { key: 'sans-contact', label: 'Sans contact', desc: 'Ni email ni téléphone',      test: v => !v.email && !v.telephone },
+  { key: 'sans-contact', label: 'Sans contact', desc: 'Ni e-mail ni téléphone',      test: v => !v.email && !v.telephone },
 ]
 
 const DEFAULT_VISIBLE_FILTERS: FilterKey[] = ['a-venir', 'sans-nationalite', 'recurrents', 'signales']
@@ -258,98 +284,162 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
     })
   }
 
+  // Ce qui demande une action (bandeau de droite du hero)
+  const todo = useMemo(() => ({
+    sansNat: voyageurs.filter(v => missingNationality(v, todayISO)).length,
+    signales: voyageurs.filter(v => v.is_flagged).length,
+    sansContact: voyageurs.filter(v => !v.email && !v.telephone).length,
+    aVenir: voyageurs.filter(v => v.sejours.some(sj => sj.date_arrivee >= todayISO)).length,
+    surPlace: voyageurs.filter(v => v.sejours.some(sj => sj.date_arrivee <= todayISO && sj.date_depart >= todayISO)).length,
+  }), [voyageurs, todayISO])
+
+  function showFilter(key: FilterKey) {
+    if (!visibleFilters.includes(key)) toggleVisibleFilter(key)
+    setFilter(key)
+    setSearch('')
+    setTimeout(() => listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 30)
+  }
+  const listRef = useRef<HTMLDivElement>(null)
+
+  type TodoRow = { n: number; label: string; tone: 'red' | 'amber' | 'muted'; onClick?: () => void; href?: string }
+  const todoRowsAll: TodoRow[] = [
+    { n: pendingDeclarations, label: pendingDeclarations > 1 ? 'déclarations à faire' : 'déclaration à faire', tone: 'amber', href: '/dashboard/voyageurs/declarations' },
+    { n: todo.sansNat, label: todo.sansNat > 1 ? 'voyageurs à venir sans nationalité' : 'voyageur à venir sans nationalité', tone: 'amber', onClick: () => showFilter('sans-nationalite') },
+    { n: todo.signales, label: todo.signales > 1 ? 'voyageurs signalés par des hôtes' : 'voyageur signalé par un hôte', tone: 'red', onClick: () => showFilter('signales') },
+    { n: todo.sansContact, label: todo.sansContact > 1 ? 'voyageurs sans e-mail ni téléphone (pas vérifiables)' : 'voyageur sans e-mail ni téléphone (pas vérifiable)', tone: 'muted', onClick: () => showFilter('sans-contact') },
+  ]
+  const todoRows = todoRowsAll.filter(r => r.n > 0)
+
   return (
-    <div style={s.page}>
-      <style>{MEDIA_CSS}</style>
-      {/* Header toolbar */}
-      <div style={s.toolbar} className="fade-up">
-        <div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' as const }}>
-            <h2 style={s.pageTitle}>
-              Mes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>voyageurs</em>
-            </h2>
-            <TourTrigger />
+    <div style={ui.page}>
+      <HubHero
+        eyebrowIcon={<Users size={14} weight="fill" />}
+        eyebrow="Mes voyageurs"
+        title={<>Ton carnet de <HeroEm>voyageurs</HeroEm></>}
+        desc="Leurs coordonnées, leurs séjours et leur nationalité : de quoi faire les déclarations, vérifier chaque voyageur et faire revenir les meilleurs en direct."
+        aside={tableReady && voyageurs.length > 0 ? (
+          <div style={{ ...heroCard, width: '100%' }}>
+            <div style={s.asideTitle}>{todoRows.length > 0 ? 'À régler' : 'Tout est en ordre'}</div>
+            {todoRows.length > 0 ? (
+              <ul style={s.todoList}>
+                {todoRows.map(r => {
+                  const color = r.tone === 'red' ? 'var(--danger)' : r.tone === 'amber' ? '#B7791F' : 'var(--text-3)'
+                  const inner = <><strong style={{ ...s.todoNum, color }}>{r.n}</strong><span style={{ flex: 1 }}>{r.label}</span><CaretRight size={13} color="var(--text-3)" /></>
+                  return (
+                    <li key={r.label}>
+                      {r.href
+                        ? <Link href={r.href} style={s.todoRow}>{inner}</Link>
+                        : <button type="button" onClick={r.onClick} style={s.todoRow}>{inner}</button>}
+                    </li>
+                  )
+                })}
+              </ul>
+            ) : (
+              <p style={{ margin: 0, fontSize: 13, color: 'var(--text-2)', lineHeight: 1.5 }}>
+                Nationalités renseignées, déclarations faites, aucun voyageur signalé.
+              </p>
+            )}
+            <div style={s.asideStats}>
+              <span><strong style={s.asideStatNum}>{globalStats.total}</strong> voyageur{globalStats.total > 1 ? 's' : ''}</span>
+              <span><strong style={s.asideStatNum}>{todo.aVenir}</strong> à venir</span>
+              <span><strong style={s.asideStatNum}>{globalStats.recurrents}</strong> récurrent{globalStats.recurrents > 1 ? 's' : ''}</span>
+            </div>
           </div>
-          <p style={s.pageDesc}>
-            Ton carnet : contacts, séjours et nationalité (indispensable pour les déclarations). Clique un voyageur pour ses séjours, contrats et paiements.
-          </p>
-        </div>
+        ) : undefined}
+      >
         {tableReady && (
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '6px' }}>
-            {/* Déclarations obligatoires (SIBA, fiche de police) : page dédiée,
-                compteur des déclarations en attente. Les contrats ont leur
-                entrée dans le menu (pas de doublon ici). */}
-            <Link href="/dashboard/voyageurs/declarations" style={s.declBtn}>
-              <IdentificationCard size={15} weight="fill" />
-              Déclarations
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+            <button type="button" onClick={openAdd} style={heroCta} data-tour="voyageur-create">
+              <Plus size={16} weight="bold" /> Ajouter un voyageur
+            </button>
+            <Link href="/dashboard/voyageurs/declarations" style={s.heroGhost}>
+              <IdentificationCard size={15} weight="fill" /> Déclarations
               {pendingDeclarations > 0 && <span style={s.declCount}>{pendingDeclarations}</span>}
             </Link>
-            <button onClick={openAdd} className="btn-primary" style={{ flexShrink: 0 }} data-tour="voyageur-create">
-              <Plus size={16} weight="bold" />
-              Ajouter un voyageur
-            </button>
+            <TourTrigger />
           </div>
         )}
-      </div>
-
-      <>
-
-      {/* Stats globales */}
-      {tableReady && voyageurs.length > 0 && (
-        <div style={s.statsGrid} className="fade-up voy-stats-grid">
-          <div style={s.statCard}>
-            <span style={{ ...s.statIcon, background: 'var(--accent-bg)' }}>
-              <Users size={14} weight="fill" color="var(--accent-text)" />
-            </span>
-            <div>
-              <div style={s.globalStatValue}>{globalStats.total}</div>
-              <div style={s.globalStatLabel}>Voyageur{globalStats.total > 1 ? 's' : ''}</div>
-            </div>
-          </div>
-          <div style={s.statCard}>
-            <span style={{ ...s.statIcon, background: 'rgba(255,213,107,0.16)' }}>
-              <Star size={14} weight="fill" color="#B7791F" />
-            </span>
-            <div>
-              <div style={s.globalStatValue}>{globalStats.recurrents}</div>
-              <div style={s.globalStatLabel}>Récurrent{globalStats.recurrents > 1 ? 's' : ''} (≥2 séjours)</div>
-            </div>
-          </div>
-          <div style={s.statCard}>
-            <span style={{ ...s.statIcon, background: 'var(--accent-bg)' }}>
-              <CurrencyEur size={14} weight="fill" color="var(--accent-text)" />
-            </span>
-            <div>
-              <div style={s.globalStatValue}>{globalStats.caTotal.toLocaleString('fr-FR')} €</div>
-              <div style={s.globalStatLabel}>CA cumulé</div>
-            </div>
-          </div>
-          <div style={s.statCard}>
-            <span style={{ ...s.statIcon, background: globalStats.signales > 0 ? 'rgba(239,68,68,0.10)' : 'var(--surface-2)' }}>
-              <ShieldCheck size={14} weight="fill" color={globalStats.signales > 0 ? 'var(--danger)' : 'var(--text-muted)'} />
-            </span>
-            <div>
-              <div style={{ ...s.globalStatValue, color: globalStats.signales > 0 ? 'var(--danger)' : 'var(--text)' }}>{globalStats.signales}</div>
-              <div style={s.globalStatLabel}>Signalé{globalStats.signales > 1 ? 's' : ''} / bloqué{globalStats.signales > 1 ? 's' : ''}</div>
-            </div>
-          </div>
-        </div>
-      )}
+      </HubHero>
 
       {/* Table not ready */}
       {!tableReady && (
-        <div style={s.setupBanner} className="fade-up">
-          <Warning size={18} color="#FFD56B" />
-          <span>La table <code>voyageurs</code> n&apos;existe pas encore. Lance la migration <code>supabase-voyageurs-migration.sql</code> dans Supabase.</span>
-        </div>
+        <Notice tone="warn">La liste des voyageurs est indisponible pour le moment. Réessaie dans quelques minutes ou préviens Jason.</Notice>
       )}
 
       {tableReady && (
         <>
-          {/* Filtres + recherche + tri + toggle vue */}
+          {/* Empty state */}
+          {voyageurs.length === 0 && (
+            <Card>
+              <CardHead title="Trois façons d'ajouter tes voyageurs" sub="Ton carnet se remplit tout seul au fil de tes réservations." />
+              <div style={s.waysGrid}>
+                <div style={s.way}>
+                  <span style={s.wayIcon}><Plus size={18} color="var(--accent-text)" /></span>
+                  <strong style={s.wayTitle}>À la main</strong>
+                  <span style={s.wayText}>Prénom, nom, e-mail ou téléphone, nationalité : 30 secondes.</span>
+                  <button type="button" onClick={openAdd} style={{ ...ui.btn, alignSelf: 'flex-start', marginTop: 4 }}>Ajouter un voyageur</button>
+                </div>
+                <div style={s.way}>
+                  <span style={s.wayIcon}><CalendarBlank size={18} color="var(--accent-text)" /></span>
+                  <strong style={s.wayTitle}>Depuis une réservation Airbnb ou Booking</strong>
+                  <span style={s.wayText}>Les réservations synchronisées n&apos;ont ni nom ni contact : ouvre-la et clique « Ajouter le voyageur ».</span>
+                  <Link href="/dashboard/reservations" style={{ ...ui.link, fontSize: 13 }}>Mes réservations</Link>
+                </div>
+                <div style={s.way}>
+                  <span style={s.wayIcon}><FileText size={18} color="var(--accent-text)" /></span>
+                  <strong style={s.wayTitle}>Avec une réservation directe</strong>
+                  <span style={s.wayText}>« Nouvelle réservation directe » crée le voyageur, son séjour et son contrat en une fois.</span>
+                  <Link href="/dashboard/contrats" style={{ ...ui.link, fontSize: 13 }}>Contrats & paiements</Link>
+                </div>
+              </div>
+            </Card>
+          )}
+
           {voyageurs.length > 0 && (
-            <>
-              <div style={s.filterBar} className="fade-up">
+            <div ref={listRef} style={{ ...ui.card, padding: 'clamp(14px,2vw,20px)', scrollMarginTop: 16 }}>
+              {/* Recherche + tri + vue */}
+              <div style={s.toolsRow}>
+                <div style={s.searchWrap}>
+                  <MagnifyingGlass size={16} color="var(--text-3)" style={{ flexShrink: 0 }} />
+                  <input
+                    type="text"
+                    placeholder="Nom, e-mail, téléphone, tag…"
+                    aria-label="Rechercher un voyageur"
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    style={s.searchInput}
+                  />
+                  {search && (
+                    <button onClick={() => setSearch('')} style={s.clearBtn} aria-label="Effacer la recherche">
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+                <div style={s.filterRight}>
+                  <Select
+                    value={sortBy}
+                    onChange={v => setSortBy(v)}
+                    options={[
+                      { value: 'recent', label: 'Modifiés récemment' },
+                      { value: 'name', label: 'Nom (A à Z)' },
+                      { value: 'sejours', label: 'Plus de séjours' },
+                      { value: 'ca', label: 'Plus gros montant' },
+                    ]}
+                    ariaLabel="Trier les voyageurs"
+                  />
+                  <div style={s.viewToggle} role="group" aria-label="Affichage">
+                    <button onClick={() => setViewMode('cards')} aria-pressed={viewMode === 'cards'} style={{ ...s.viewBtn, ...(viewMode === 'cards' ? s.viewBtnActive : {}) }} title="Cartes">
+                      <SquaresFour size={14} weight="fill" />
+                    </button>
+                    <button onClick={() => setViewMode('table')} aria-pressed={viewMode === 'table'} style={{ ...s.viewBtn, ...(viewMode === 'table' ? s.viewBtnActive : {}) }} title="Tableau">
+                      <Rows size={14} weight="bold" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Filtres */}
+              <div style={s.filterBar}>
                 <div style={s.filterChips}>
                   <button onClick={() => setFilter('all')} style={{ ...s.filterChip, ...(filter === 'all' ? s.filterChipActive : {}) }}>
                     Tous <span style={s.chipCount}>{voyageurs.length}</span>
@@ -367,7 +457,6 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
                       </button>
                     )
                   })}
-                  {/* Choix des filtres affichés */}
                   <div ref={filterConfigRef} style={{ position: 'relative' }}>
                     <button
                       onClick={() => setFilterConfigOpen(o => !o)}
@@ -399,267 +488,169 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
                     )}
                   </div>
                 </div>
-                <div style={s.filterRight}>
-                  <Select
-                    value={sortBy}
-                    onChange={v => setSortBy(v)}
-                    options={[
-                      { value: 'recent', label: 'Plus récents' },
-                      { value: 'name', label: 'Nom (A–Z)' },
-                      { value: 'sejours', label: 'Plus de séjours' },
-                      { value: 'ca', label: 'CA décroissant' },
-                    ]}
-                    ariaLabel="Trier les voyageurs"
-                  />
-                  <div style={s.viewToggle}>
-                    <button onClick={() => setViewMode('cards')} style={{ ...s.viewBtn, ...(viewMode === 'cards' ? s.viewBtnActive : {}) }} title="Vue cards">
-                      <SquaresFour size={13} weight="fill" />
-                    </button>
-                    <button onClick={() => setViewMode('table')} style={{ ...s.viewBtn, ...(viewMode === 'table' ? s.viewBtnActive : {}) }} title="Vue tableau">
-                      <Rows size={13} weight="bold" />
-                    </button>
-                  </div>
+              </div>
+
+              {/* Aucun résultat */}
+              {filtered.length === 0 && (
+                <div style={s.emptyState}>
+                  <p style={s.emptyTitle}>
+                    {search ? <>Aucun résultat pour &laquo;&nbsp;{search}&nbsp;&raquo;</> : 'Aucun voyageur dans ce filtre'}
+                  </p>
+                  <button onClick={() => { setSearch(''); setFilter('all') }} style={ui.btnGhost}>Voir tous les voyageurs</button>
                 </div>
-              </div>
-              <div style={s.searchWrap} className="fade-up">
-                <MagnifyingGlass size={16} color="var(--text-muted)" style={{ flexShrink: 0 }} />
-                <input
-                  type="text"
-                  placeholder="Rechercher par nom, email, téléphone, tag…"
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  style={s.searchInput}
-                />
-                {search && (
-                  <button onClick={() => setSearch('')} style={s.clearBtn}>
-                    <X size={14} />
-                  </button>
-                )}
-              </div>
-            </>
-          )}
+              )}
 
-          {/* Empty state */}
-          {voyageurs.length === 0 && (
-            <div style={s.emptyState} className="fade-up glass-card">
-              <User size={40} color="var(--text-muted)" />
-              <p style={s.emptyTitle}>Aucun voyageur pour l&apos;instant</p>
-              <p style={s.emptyDesc}>Ajoute tes voyageurs pour garder leurs coordonnées, suivre leurs séjours et préparer les déclarations. Une réservation Airbnb ou Booking synchronisée ? Ajoute son voyageur depuis Mes réservations.</p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '8px' }}>
-                <button onClick={openAdd} className="btn-primary">
-                  <Plus size={15} weight="bold" />
-                  Ajouter un voyageur
-                </button>
-                <a
-                  href="/dashboard/aide/logements-voyageurs/ajouter-voyageur"
-                  style={{ fontSize: '12.5px', color: 'var(--text-2)', textDecoration: 'none' }}
-                >
-                  Comment ça marche ?
-                </a>
-              </div>
-            </div>
-          )}
-
-          {/* No search results */}
-          {voyageurs.length > 0 && filtered.length === 0 && (
-            <div style={s.emptyState} className="fade-up">
-              <p style={s.emptyTitle}>
-                {search ? <>Aucun résultat pour &laquo;&nbsp;{search}&nbsp;&raquo;</> : 'Aucun voyageur dans ce filtre'}
-              </p>
-              <button onClick={() => { setSearch(''); setFilter('all') }} className="btn-ghost" style={{ fontSize: '13px' }}>Voir tous les voyageurs</button>
-            </div>
-          )}
-
-          {/* List, vue Cards */}
-          {filtered.length > 0 && viewMode === 'cards' && (
-            <div style={s.tileGrid} className="fade-up">
-              {filtered.map(v => {
-                const initials = `${v.prenom[0]}${v.nom[0]}`.toUpperCase()
-                const color = avatarColor(v.prenom + v.nom)
-                const ca = caOf(v)
-                const recurrent = v.sejours.length >= 2
-                const fidele = v.sejours.length >= 4
-                const noNat = missingNationality(v, todayISO)
-                const stay = stayInfo(v.sejours, todayISO)
-                return (
-                  <div
-                    key={v.id}
-                    onClick={() => router.push(`/dashboard/voyageurs/${v.id}`)}
-                    style={{ ...s.tile, opacity: v.bloque ? 0.6 : 1 }}
-                    className="dash-help-row"
-                  >
-                    {/* Actions en haut à droite */}
-                    <div style={s.tileActions} onClick={e => e.stopPropagation()}>
-                      <button onClick={e => openEdit(v, e)} style={s.actionBtn} title="Modifier">
-                        <Note size={14} />
-                      </button>
-                      <button onClick={e => handleDelete(v, e)} style={s.actionBtn} title="Supprimer" aria-label="Supprimer">
-                        <Trash size={14} />
-                      </button>
-                    </div>
-
-                    {/* Avatar + nom */}
-                    <div style={s.tileHead}>
-                      <div style={{ ...s.tileAvatar, background: color }}>
-                        <span style={s.tileAvatarText}>{initials}</span>
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={s.tileName}>
-                          {v.prenom} {v.nom}
-                          {v.nationalite && <span style={s.natCode} title={COUNTRIES.find(c => c.code === v.nationalite)?.name ?? v.nationalite}>{v.nationalite}</span>}
-                        </div>
-                        {v.email && <div style={s.tileMeta}>{v.email}</div>}
-                        {v.telephone && <div style={s.tileMeta}>{v.telephone}</div>}
-                      </div>
-                    </div>
-
-                    {/* Badges */}
-                    {(v.is_flagged || v.bloque || fidele || recurrent || noNat || (v.tags && v.tags.length > 0)) && (
-                      <div style={s.tileBadges}>
-                        {noNat && (
-                          <span style={s.natBadge} title="Séjour à venir : renseigne la nationalité pour créer la déclaration (fiche de police, SIBA)">
-                            <IdentificationCard size={11} weight="fill" />
-                            Nationalité manquante
-                          </span>
-                        )}
-                        {v.is_flagged && (
-                          <span style={s.flagBadge}>
-                            <Warning size={11} weight="fill" />
-                            Signalé
-                          </span>
-                        )}
-                        {v.bloque && (
-                          <span style={{ ...s.flagBadge, background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.30)', color: 'var(--text-muted)' }}>
-                            <ProhibitInset size={11} weight="fill" />
-                            Bloqué
-                          </span>
-                        )}
-                        {!v.is_flagged && !v.bloque && fidele && (
-                          <span style={{ ...s.flagBadge, background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.30)', color: 'var(--success-1)' }}>
-                            Fidèle
-                          </span>
-                        )}
-                        {!v.is_flagged && !v.bloque && !fidele && recurrent && (
-                          <span style={{ ...s.flagBadge, background: 'var(--accent-bg)', borderColor: 'var(--accent-border)', color: 'var(--accent-text)' }}>
-                            Récurrent
-                          </span>
-                        )}
-                        {v.tags && v.tags.slice(0, 2).map(t => (
-                          <span key={t} style={s.tagChip}>{t}</span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Stats bas de carte */}
-                    <div style={s.tileFooter}>
-                      <div style={s.tileStat}>
-                        <span style={s.tileStatVal}>{v.sejours.length}</span>
-                        <span style={s.tileStatLabel}>séjour{v.sejours.length !== 1 ? 's' : ''}</span>
-                      </div>
-                      {ca > 0 && (
-                        <div style={s.tileStat}>
-                          <span style={{ ...s.tileStatVal, color: 'var(--accent-text)' }}>{ca.toLocaleString('fr-FR')} €</span>
-                          <span style={s.tileStatLabel}>CA</span>
-                        </div>
-                      )}
-                      {stay && (
-                        <div style={{ ...s.tileStat, marginLeft: 'auto', alignItems: 'flex-end' as const }}>
-                          <span style={{ ...s.tileStatVal, fontSize: '13px', color: stay.upcoming ? 'var(--accent-text)' : 'var(--text-2)' }}>
-                            <CalendarBlank size={12} weight="bold" style={{ verticalAlign: '-1px', marginRight: '4px' }} />{fmtDay(stay.date)}
-                          </span>
-                          <span style={s.tileStatLabel}>{stay.label}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          )}
-
-          {/* List, vue Tableau */}
-          {filtered.length > 0 && viewMode === 'table' && (
-            <div style={s.tableWrap} className="fade-up">
-              <table style={s.tableEl}>
-                <thead>
-                  <tr>
-                    <th style={s.tableTh}>Nom</th>
-                    <th style={s.tableTh}>Contact</th>
-                    <th style={s.tableThNum}>Séjours</th>
-                    <th style={s.tableThNum}>CA</th>
-                    <th style={s.tableTh}>Tags</th>
-                    <th style={s.tableTh}>Statut</th>
-                    <th style={s.tableTh}></th>
-                  </tr>
-                </thead>
-                <tbody>
+              {/* Vue cartes */}
+              {filtered.length > 0 && viewMode === 'cards' && (
+                <div style={s.tileGrid}>
                   {filtered.map(v => {
-                    const initials = `${v.prenom[0]}${v.nom[0]}`.toUpperCase()
+                    const initials = `${v.prenom[0] ?? ''}${v.nom[0] ?? ''}`.toUpperCase()
                     const color = avatarColor(v.prenom + v.nom)
                     const ca = caOf(v)
+                    const status = statusOf(v)
+                    const noNat = missingNationality(v, todayISO)
+                    const stay = stayInfo(v.sejours, todayISO)
                     return (
-                      <tr key={v.id} onClick={() => router.push(`/dashboard/voyageurs/${v.id}`)} style={{ ...s.tableRow, opacity: v.bloque ? 0.6 : 1 }}>
-                        <td style={s.tableTd}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <div style={{ ...s.tableAvatar, background: color }}>{initials}</div>
-                            <span style={{ fontWeight: 600, color: 'var(--text)' }}>{v.prenom} {v.nom}</span>
+                      <div
+                        key={v.id}
+                        onClick={() => router.push(`/dashboard/voyageurs/${v.id}`)}
+                        style={{ ...s.tile, opacity: v.bloque ? 0.65 : 1, ...(v.is_flagged ? { borderColor: 'rgba(239,68,68,0.35)' } : {}) }}
+                        className="dash-help-row"
+                      >
+                        <div style={s.tileActions} onClick={e => e.stopPropagation()}>
+                          <button onClick={e => openEdit(v, e)} style={s.actionBtn} title="Modifier" aria-label={`Modifier ${v.prenom} ${v.nom}`}>
+                            <PencilSimple size={14} />
+                          </button>
+                          <button onClick={e => handleDelete(v, e)} style={s.actionBtn} title="Supprimer" aria-label={`Supprimer ${v.prenom} ${v.nom}`}>
+                            <Trash size={14} />
+                          </button>
+                        </div>
+
+                        <div style={s.tileHead}>
+                          <div style={{ ...s.tileAvatar, background: color }}>
+                            <span style={s.tileAvatarText}>{initials}</span>
                           </div>
-                        </td>
-                        <td style={{ ...s.tableTd, color: 'var(--text-2)' }}>
-                          {v.email || v.telephone || <span style={{ color: 'var(--text-muted)' }}>-</span>}
-                        </td>
-                        <td style={s.tableTdNum}>{v.sejours.length}</td>
-                        <td style={s.tableTdNum}>{ca > 0 ? `${ca.toLocaleString('fr-FR')} €` : '-'}</td>
-                        <td style={s.tableTd}>
-                          {v.tags && v.tags.length > 0 ? (
-                            <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '4px' }}>
-                              {v.tags.slice(0, 3).map(t => (
-                                <span key={t} style={s.tagChip}>{t}</span>
-                              ))}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <Link href={`/dashboard/voyageurs/${v.id}`} onClick={e => e.stopPropagation()} style={s.tileName}>
+                              {v.prenom} {v.nom}
+                            </Link>
+                            <div style={s.tileMeta}>
+                              {v.nationalite
+                                ? <span title={COUNTRIES.find(c => c.code === v.nationalite)?.name ?? v.nationalite}>{COUNTRIES.find(c => c.code === v.nationalite)?.name ?? v.nationalite}</span>
+                                : <span style={{ color: noNat ? '#B7791F' : 'var(--text-3)' }}>Nationalité inconnue</span>}
                             </div>
-                          ) : <span style={{ color: 'var(--text-muted)' }}>-</span>}
-                        </td>
-                        <td style={s.tableTd}>
-                          {v.is_flagged ? (
-                            <span style={{ ...s.flagBadge, marginTop: 0 }}>
-                              <Warning size={11} weight="fill" />
-                              Signalé
-                            </span>
-                          ) : v.bloque ? (
-                            <span style={{ ...s.flagBadge, background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.30)', color: 'var(--text-muted)' }}>
-                              <ProhibitInset size={11} weight="fill" />
-                              Bloqué
-                            </span>
-                          ) : v.sejours.length >= 4 ? (
-                            <span style={{ ...s.flagBadge, background: 'rgba(16,185,129,0.10)', borderColor: 'rgba(16,185,129,0.30)', color: 'var(--success-1)' }}>
-                              Fidèle
-                            </span>
-                          ) : v.sejours.length >= 2 ? (
-                            <span style={{ ...s.flagBadge, background: 'var(--accent-bg)', borderColor: 'var(--accent-border)', color: 'var(--accent-text)' }}>
-                              Récurrent
-                            </span>
-                          ) : <span style={{ color: 'var(--text-muted)' }}>Nouveau</span>}
-                          {missingNationality(v, todayISO) && (
-                            <span style={{ ...s.natBadge, marginLeft: '6px' }} title="Séjour à venir : renseigne la nationalité pour la déclaration">
-                              <IdentificationCard size={11} weight="fill" /> Nationalité
-                            </span>
-                          )}
-                        </td>
-                        <td style={s.tableTd} onClick={e => e.stopPropagation()}>
-                          <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>
-                            <button onClick={e => openEdit(v, e)} style={s.actionBtn} title="Modifier">
-                              <Note size={14} />
-                            </button>
-                            <button onClick={e => handleDelete(v, e)} style={s.actionBtn} title="Supprimer" aria-label="Supprimer">
-                              <Trash size={14} />
-                            </button>
                           </div>
-                        </td>
-                      </tr>
+                        </div>
+
+                        <div style={s.contactLines}>
+                          <span style={s.contactLine}><Envelope size={13} color="var(--text-3)" style={{ flexShrink: 0 }} />{v.email || <em style={s.missing}>pas d&apos;e-mail</em>}</span>
+                          <span style={s.contactLine}><Phone size={13} color="var(--text-3)" style={{ flexShrink: 0 }} />{v.telephone || <em style={s.missing}>pas de téléphone</em>}</span>
+                        </div>
+
+                        {(status || noNat || (v.tags && v.tags.length > 0)) && (
+                          <div style={s.tileBadges}>
+                            {status && <span style={{ ...s.badge, ...BADGE[status] }}>{BADGE_ICON[status]}{BADGE_LABEL[status]}</span>}
+                            {noNat && (
+                              <span style={{ ...s.badge, ...BADGE.nat }} title="Séjour à venir : renseigne la nationalité pour créer la déclaration (fiche de police, SIBA)">
+                                <IdentificationCard size={11} weight="fill" /> Nationalité à renseigner
+                              </span>
+                            )}
+                            {v.tags && v.tags.slice(0, 2).map(tg => <span key={tg} style={s.tagChip}>{tg}</span>)}
+                          </div>
+                        )}
+
+                        <div style={s.tileFooter}>
+                          <div style={s.tileStat}>
+                            <span style={s.tileStatVal}>{v.sejours.length}</span>
+                            <span style={s.tileStatLabel}>séjour{v.sejours.length !== 1 ? 's' : ''}</span>
+                          </div>
+                          {ca > 0 && (
+                            <div style={s.tileStat}>
+                              <span style={s.tileStatVal}>{ca.toLocaleString('fr-FR')} €</span>
+                              <span style={s.tileStatLabel}>au total</span>
+                            </div>
+                          )}
+                          {stay && (
+                            <div style={{ ...s.tileStat, marginLeft: 'auto', alignItems: 'flex-end' as const }}>
+                              <span style={{ ...s.tileStatVal, fontSize: '13px', color: stay.upcoming ? 'var(--accent-text)' : 'var(--text-2)' }}>
+                                {fmtDay(stay.date)}
+                              </span>
+                              <span style={s.tileStatLabel}>{stay.label}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     )
                   })}
-                </tbody>
-              </table>
+                </div>
+              )}
+
+              {/* Vue tableau */}
+              {filtered.length > 0 && viewMode === 'table' && (
+                <div style={s.tableWrap}>
+                  <table style={s.tableEl}>
+                    <thead>
+                      <tr>
+                        <th style={s.tableTh}>Voyageur</th>
+                        <th style={s.tableTh}>Contact</th>
+                        <th style={s.tableTh}>Prochain séjour</th>
+                        <th style={s.tableThNum}>Séjours</th>
+                        <th style={s.tableThNum}>Montant</th>
+                        <th style={s.tableTh}>Statut</th>
+                        <th style={s.tableTh} aria-label="Actions"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filtered.map(v => {
+                        const initials = `${v.prenom[0] ?? ''}${v.nom[0] ?? ''}`.toUpperCase()
+                        const color = avatarColor(v.prenom + v.nom)
+                        const ca = caOf(v)
+                        const status = statusOf(v)
+                        const stay = stayInfo(v.sejours, todayISO)
+                        const noNat = missingNationality(v, todayISO)
+                        return (
+                          <tr key={v.id} onClick={() => router.push(`/dashboard/voyageurs/${v.id}`)} style={{ ...s.tableRow, opacity: v.bloque ? 0.65 : 1 }}>
+                            <td style={s.tableTd}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <div style={{ ...s.tableAvatar, background: color }}>{initials}</div>
+                                <div style={{ minWidth: 0 }}>
+                                  <div style={{ fontWeight: 600, color: 'var(--text)', whiteSpace: 'nowrap' }}>{v.prenom} {v.nom}</div>
+                                  <div style={{ fontSize: 12, color: noNat ? '#B7791F' : 'var(--text-3)' }}>{v.nationalite ? (COUNTRIES.find(c => c.code === v.nationalite)?.name ?? v.nationalite) : 'Nationalité inconnue'}</div>
+                                </div>
+                              </div>
+                            </td>
+                            <td style={{ ...s.tableTd, color: 'var(--text-2)' }}>
+                              <div style={{ whiteSpace: 'nowrap' }}>{v.email || <span style={{ color: 'var(--text-3)' }}>pas d&apos;e-mail</span>}</div>
+                              {v.telephone && <div style={{ fontSize: 12, color: 'var(--text-3)', whiteSpace: 'nowrap' }}>{v.telephone}</div>}
+                            </td>
+                            <td style={{ ...s.tableTd, whiteSpace: 'nowrap' }}>
+                              {stay ? <><span style={{ color: stay.upcoming ? 'var(--accent-text)' : 'var(--text-2)', fontWeight: 600 }}>{fmtDay(stay.date)}</span><div style={{ fontSize: 12, color: 'var(--text-3)' }}>{stay.label}</div></> : <span style={{ color: 'var(--text-3)' }}>Aucun</span>}
+                            </td>
+                            <td style={s.tableTdNum}>{v.sejours.length}</td>
+                            <td style={s.tableTdNum}>{ca > 0 ? `${ca.toLocaleString('fr-FR')} €` : <span style={{ color: 'var(--text-3)' }}>0 €</span>}</td>
+                            <td style={s.tableTd}>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                                {status ? <span style={{ ...s.badge, ...BADGE[status] }}>{BADGE_ICON[status]}{BADGE_LABEL[status]}</span> : <span style={{ color: 'var(--text-3)' }}>Nouveau</span>}
+                                {noNat && <span style={{ ...s.badge, ...BADGE.nat }} title="Séjour à venir : renseigne la nationalité pour la déclaration"><IdentificationCard size={11} weight="fill" /> Nationalité</span>}
+                              </div>
+                            </td>
+                            <td style={s.tableTd} onClick={e => e.stopPropagation()}>
+                              <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>
+                                <button onClick={e => openEdit(v, e)} style={s.actionBtn} title="Modifier" aria-label={`Modifier ${v.prenom} ${v.nom}`}>
+                                  <PencilSimple size={14} />
+                                </button>
+                                <button onClick={e => handleDelete(v, e)} style={s.actionBtn} title="Supprimer" aria-label={`Supprimer ${v.prenom} ${v.nom}`}>
+                                  <Trash size={14} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           )}
         </>
@@ -706,7 +697,7 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
               </div>
 
               <div style={s.field}>
-                <label style={s.label}>Email</label>
+                <label style={s.label}>E-mail</label>
                 <div style={s.inputWrap} className="form-input-wrap">
                   <Envelope size={15} color="var(--text-muted)" />
                   <input
@@ -894,13 +885,14 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
                     <Warning size={18} weight="fill" color="#ef4444" />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--danger)', marginBottom: '4px' }}>
-                        ⚠️ Voyageur signalé par la communauté
+                        Voyageur signalé par d&apos;autres hôtes
                       </div>
                       <p style={{ fontSize: '12.5px', color: 'var(--text-2)', margin: 0, lineHeight: 1.5 }}>
-                        Cet email ou ce téléphone a été signalé <strong>{signaleAlert.count} fois</strong>.
+                        Cet e-mail ou ce téléphone a été signalé <strong>{signaleAlert.count} fois</strong>.
                         {signaleAlert.motifs && signaleAlert.motifs.length > 0 && (
                           <> Motifs : <strong>{signaleAlert.motifs.join(', ')}</strong>.</>
-                        )} Vérifie soigneusement avant d&apos;accepter une réservation.
+                        )} Lis les faits avant d&apos;accepter une réservation :{' '}
+                        <Link href={`/dashboard/securite?q=${encodeURIComponent(form.email?.trim() || form.telephone?.trim() || '')}`} target="_blank" style={{ color: 'var(--accent-text)', fontWeight: 600 }}>voir dans Sécurité voyageur</Link>.
                       </p>
                     </div>
                   </div>
@@ -934,19 +926,39 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
         </div>
       )}
 
-      </>
-      {/* /Vue Voyageurs */}
     </div>
   )
 }
 
-const MEDIA_CSS = `
-  @media (max-width: 1023px) {
-    .voy-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
-  }
-`
 
 const s: Record<string, React.CSSProperties> = {
+  asideTitle: { fontSize: 12, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  todoList: { listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 2 },
+  todoRow: {
+    width: '100%', display: 'flex', alignItems: 'center', gap: 10, padding: '7px 8px', margin: '0 -8px', borderRadius: 10,
+    background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13.5, color: 'var(--text-2)',
+    textAlign: 'left', textDecoration: 'none', boxSizing: 'content-box',
+  },
+  todoNum: { fontFamily: 'var(--font-fraunces), serif', fontSize: 20, minWidth: 26, lineHeight: 1 },
+  asideStats: { display: 'flex', gap: 14, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid var(--border)', fontSize: 12.5, color: 'var(--text-3)' },
+  asideStatNum: { color: 'var(--text)', fontWeight: 700 },
+  heroGhost: {
+    display: 'inline-flex', alignItems: 'center', gap: 8, padding: '11px 16px', borderRadius: 12,
+    background: 'var(--surface)', border: '1px solid var(--border-2)', color: 'var(--text)', fontSize: 14, fontWeight: 600, textDecoration: 'none',
+  },
+  waysGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: 12 },
+  way: { display: 'flex', flexDirection: 'column', gap: 6, padding: 16, borderRadius: 14, background: 'var(--bg)', border: '1px solid var(--border)' },
+  wayIcon: { width: 36, height: 36, borderRadius: 10, background: 'var(--accent-bg)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' },
+  wayTitle: { fontSize: 14.5, color: 'var(--text)' },
+  wayText: { fontSize: 13, color: 'var(--text-3)', lineHeight: 1.5 },
+  toolsRow: { display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', marginBottom: 12, position: 'relative', zIndex: 71 },
+  contactLines: { display: 'flex', flexDirection: 'column', gap: 4 },
+  contactLine: { display: 'flex', alignItems: 'center', gap: 7, fontSize: 12.5, color: 'var(--text-2)', minWidth: 0, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' },
+  missing: { fontStyle: 'normal', color: 'var(--text-3)' },
+  badge: {
+    display: 'inline-flex', alignItems: 'center', gap: 4, borderRadius: 999, padding: '2px 8px',
+    fontSize: 11.5, fontWeight: 600, border: '1px solid transparent', whiteSpace: 'nowrap',
+  },
   page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
   declBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '9px 14px', borderRadius: '10px',
@@ -976,14 +988,13 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   searchWrap: {
-    display: 'flex', alignItems: 'center', gap: '10px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
+    flex: '1 1 260px', minWidth: 0, display: 'flex', alignItems: 'center', gap: '10px',
+    background: 'var(--bg)', border: '1px solid var(--border-2)',
     borderRadius: '12px', padding: '10px 14px',
-    marginBottom: '16px',
   },
   searchInput: {
-    flex: 1, background: 'none', border: 'none', outline: 'none',
-    fontSize: '14px', color: 'var(--text)',
+    flex: 1, minWidth: 0, background: 'none', border: 'none', outline: 'none',
+    fontSize: '14px', color: 'var(--text)', fontFamily: 'inherit',
   },
   clearBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
@@ -1008,15 +1019,15 @@ const s: Record<string, React.CSSProperties> = {
 
   tileGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-    gap: '14px',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 290px), 1fr))',
+    gap: '12px', marginTop: '14px',
   },
   tile: {
     position: 'relative' as const,
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '14px', padding: '18px',
+    background: 'var(--bg)', border: '1px solid var(--border)',
+    borderRadius: '14px', padding: '16px',
     cursor: 'pointer', transition: 'border-color 0.15s, transform 0.15s',
-    display: 'flex', flexDirection: 'column' as const, gap: '14px',
+    display: 'flex', flexDirection: 'column' as const, gap: '12px', minWidth: 0,
   },
   tileActions: {
     position: 'absolute' as const, top: '10px', right: '10px',
@@ -1035,8 +1046,8 @@ const s: Record<string, React.CSSProperties> = {
     fontWeight: 600, color: '#fff',
   },
   tileName: {
-    fontSize: '14.5px', fontWeight: 600, color: 'var(--text)',
-    marginBottom: '3px',
+    display: 'block', fontSize: '15px', fontWeight: 600, color: 'var(--text)', textDecoration: 'none',
+    marginBottom: '2px',
     overflow: 'hidden' as const, textOverflow: 'ellipsis' as const, whiteSpace: 'nowrap' as const,
   },
   tileMeta: {
@@ -1181,7 +1192,6 @@ const s: Record<string, React.CSSProperties> = {
   filterBar: {
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
     gap: '12px', flexWrap: 'wrap' as const,
-    marginBottom: '10px',
     // L'animation fade-up crée un contexte d'empilement par section : sans
     // z-index ici, le popover des filtres passerait SOUS les cartes voyageurs.
     position: 'relative' as const, zIndex: 70,
@@ -1284,10 +1294,9 @@ const s: Record<string, React.CSSProperties> = {
 
   // Tableau
   tableWrap: {
-    overflowX: 'auto' as const,
-    background: 'var(--surface)',
-    border: '1px solid var(--border-2)',
-    borderRadius: '14px',
+    overflowX: 'auto' as const, marginTop: '14px',
+    border: '1px solid var(--border)',
+    borderRadius: '12px',
   },
   tableEl: {
     width: '100%',

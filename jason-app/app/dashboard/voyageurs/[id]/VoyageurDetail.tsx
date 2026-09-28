@@ -8,6 +8,7 @@ import {
   CurrencyEur, Seal, Link as LinkIcon, ShieldWarning, Star, FileText, Lock,
   ListChecks, CheckSquare, Square, Bandaids, DownloadSimple,
   Prohibit, ArrowCounterClockwise, UsersThree,
+  Tag, MapPin, ShieldCheck, ClockCounterClockwise, PaperPlaneTilt, SignIn, SignOut, UserPlus, PenNib, CheckCircle, Circle,
 } from '@phosphor-icons/react/dist/ssr'
 import { updateVoyageur, addSejour, updateSejour, deleteSejour, cancelSejour, restoreSejour, generateCheckinLink, setCheckinExpectedCount, type VoyageurData, type SejourData } from '../actions'
 import { updateContractChecklist } from '../../calendrier/actions'
@@ -54,16 +55,16 @@ type Voyageur = {
   checkin_expected_count?: number | null
 }
 
-const SOURCE_LABELS: Record<string, { label: string; emoji: string }> = {
-  airbnb:           { label: 'Airbnb',           emoji: '🏠' },
-  booking:          { label: 'Booking.com',      emoji: '🛎️' },
-  vrbo:             { label: 'Vrbo',             emoji: '🌴' },
-  abritel:          { label: 'Abritel',          emoji: '🏡' },
-  gites_de_france:  { label: 'Gîtes de France',  emoji: '🌳' },
-  driing:           { label: 'Driing',           emoji: '🔔' },
-  direct:           { label: 'Direct',           emoji: '📞' },
-  recommandation:   { label: 'Recommandation',   emoji: '💌' },
-  autre:            { label: 'Autre',            emoji: '✨' },
+const SOURCE_LABELS: Record<string, { label: string }> = {
+  airbnb:           { label: 'Airbnb' },
+  booking:          { label: 'Booking.com' },
+  vrbo:             { label: 'Vrbo' },
+  abritel:          { label: 'Abritel' },
+  gites_de_france:  { label: 'Gîtes de France' },
+  driing:           { label: 'Driing' },
+  direct:           { label: 'Direct' },
+  recommandation:   { label: 'Recommandation' },
+  autre:            { label: 'Autre' },
 }
 
 type Sejour = {
@@ -111,7 +112,7 @@ function nights(arrivee: string, depart: string) {
 }
 
 const CONTRAT_LABELS: Record<string, { label: string; color: string; bg: string }> = {
-  signe:       { label: 'Signé',       color: 'var(--success-1)', bg: 'var(--success-bg)' },
+  signe:       { label: 'Signé',       color: 'var(--accent-text)', bg: 'var(--success-bg)' },
   en_attente:  { label: 'En attente',  color: 'var(--accent-text)', bg: 'var(--accent-bg-2)' },
   non_requis:  { label: 'Non requis',  color: 'var(--text-muted)', bg: 'var(--surface-2)' },
   nouveau:     { label: 'Nouveau',     color: '#7EB8F7', bg: 'rgba(126,184,247,0.12)' },
@@ -299,7 +300,7 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
                   height: '34px', borderRadius: '8px', border: 'none',
                   fontSize: '13px', fontWeight: isSel ? 700 : 400,
                   background: isSel ? 'var(--accent-bg-2)' : isToday2 ? 'rgba(52,211,153,0.1)' : 'transparent',
-                  color: isSel ? 'var(--accent-text)' : isToday2 ? 'var(--success-1)' : '#a5c4b0',
+                  color: isSel ? 'var(--accent-text)' : isToday2 ? 'var(--accent-text)' : '#a5c4b0',
                   cursor: 'pointer',
                   outline: isSel ? '1.5px solid var(--accent-border)' : 'none',
                   transition: 'background 0.1s',
@@ -379,9 +380,11 @@ interface Props {
   checkinCompanions?: CheckinCompanion[]
   /** Statut guest_declarations ('a_faire' | 'faite' | 'ignoree') par sejour_id */
   declarationStatutBySejour?: Record<string, string>
+  /** 'YYYY-MM-DD' à Paris, calculé côté serveur (évite l'écart serveur / navigateur) */
+  today?: string
 }
 
-export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur, logements = [], plan = 'decouverte', checkinCompanions = [], declarationStatutBySejour = {} }: Props) {
+export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur, logements = [], plan = 'decouverte', checkinCompanions = [], declarationStatutBySejour = {}, today }: Props) {
   const isDecouverte = plan === 'decouverte'
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -659,7 +662,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   const color = avatarColor(voyageur.prenom + voyageur.nom)
 
   // ─── Stats voyageur (CA, séjours, durée moyenne, dernière venue, statut auto) ──
-  const todayISO = new Date().toISOString().slice(0, 10)
+  const todayISO = today ?? new Date().toISOString().slice(0, 10)
   // Les séjours annulés restent visibles (badge) mais sortent des décomptes
   const activeSejours = sejours.filter(s => !s.annule_at)
   const stats = (() => {
@@ -681,11 +684,11 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     if (isFlagged) {
       statut = { label: 'Signalé', color: 'var(--danger)', bg: 'rgba(239,68,68,0.10)', border: 'rgba(239,68,68,0.30)' }
     } else if (totalCA >= 5000 || nbSejours >= 5) {
-      statut = { label: 'VIP', color: '#a78bfa', bg: 'rgba(167,139,250,0.10)', border: 'rgba(167,139,250,0.30)' }
+      statut = { label: 'VIP', color: '#8A5A12', bg: 'rgba(255,213,107,0.22)', border: 'rgba(183,121,31,0.35)' }
     } else if (nbSejours >= 4) {
-      statut = { label: 'Fidèle', color: 'var(--success-1)', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.30)' }
+      statut = { label: 'Fidèle', color: '#8A5A12', bg: 'rgba(255,213,107,0.16)', border: 'rgba(183,121,31,0.30)' }
     } else if (nbSejours >= 2) {
-      statut = { label: 'Récurrent', color: 'var(--info)', bg: 'rgba(96,165,250,0.10)', border: 'rgba(96,165,250,0.30)' }
+      statut = { label: 'Récurrent', color: 'var(--accent-text)', bg: 'var(--accent-bg)', border: 'var(--accent-border)' }
     } else {
       statut = { label: 'Nouveau', color: 'var(--text-muted)', bg: 'var(--surface)', border: 'var(--border)' }
     }
@@ -706,26 +709,19 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   // Date à utiliser pour le calendrier : prochain à venir, sinon dernier passé
   const calendrierTargetDate = stats.nextStay?.date_arrivee ?? stats.lastVisit ?? null
 
-  // ─── Score de confiance (algorithmique) ──
-  const trustScore = (() => {
-    let score = 50 // base neutre
-    if (idVerifie) score += 25
-    if (activeSejours.length >= 2) score += 10
-    if (activeSejours.length >= 4) score += 15
-    if (notePrivee && notePrivee >= 4) score += 10
-    if (isFlagged) score -= 60
-    if (bloque) score -= 100
-    return Math.max(0, Math.min(100, score))
-  })()
-  const trustLabel =
-    trustScore >= 80 ? { label: 'Très fiable',  color: 'var(--success-1)', bg: 'rgba(16,185,129,0.10)', border: 'rgba(16,185,129,0.30)' } :
-    trustScore >= 60 ? { label: 'Fiable',        color: 'var(--success-1)', bg: 'var(--success-bg)', border: 'var(--success-border)' } :
-    trustScore >= 40 ? { label: 'Neutre',        color: 'var(--text-2)', bg: 'var(--surface)',  border: 'var(--border)' } :
-    trustScore >= 20 ? { label: 'À surveiller',  color: 'var(--warning)', bg: 'var(--warning-bg)', border: 'rgba(245,158,11,0.30)' } :
-                       { label: 'Risque élevé',  color: 'var(--danger)', bg: 'rgba(239,68,68,0.10)',  border: 'rgba(239,68,68,0.30)' }
+  // ─── Vérifications (faits, pas de score inventé) ──
+  const hasSignedContract = activeSejours.some(sj => sj.contrat_statut === 'signe')
+  const checks: Array<{ ok: boolean; label: string; hint?: string; tone?: 'danger' }> = [
+    isFlagged
+      ? { ok: false, label: 'Signalé par d\'autres hôtes', hint: 'Lis les faits dans Sécurité voyageur', tone: 'danger' }
+      : { ok: !!(voyageur.email || voyageur.telephone), label: voyageur.email || voyageur.telephone ? 'Aucun signalement dans la base des hôtes' : 'Pas vérifiable', hint: voyageur.email || voyageur.telephone ? undefined : 'Ajoute un e-mail ou un téléphone' },
+    { ok: idVerifie, label: 'Pièce d\'identité vérifiée', hint: idVerifie ? undefined : 'Coche la case ci-dessous une fois vérifiée' },
+    { ok: !!voyageur.checkin_completed_at, label: 'Check-in en ligne rempli', hint: voyageur.checkin_completed_at ? undefined : voyageur.checkin_sent_at ? 'Lien envoyé, en attente du voyageur' : 'Envoie-lui le lien ci-dessous' },
+    { ok: hasSignedContract, label: 'Contrat signé', hint: hasSignedContract ? undefined : 'Pour une réservation directe' },
+  ]
 
   // ─── Timeline d'événements (calculée depuis séjours + contrat) ──
-  type TimelineEvent = { date: string; icon: string; label: string; subtitle?: string; tone: 'past' | 'today' | 'future' }
+  type TimelineEvent = { date: string; icon: 'annule' | 'signe' | 'envoye' | 'arrivee' | 'depart' | 'ajout'; label: string; subtitle?: string; tone: 'past' | 'today' | 'future' }
   const timeline: TimelineEvent[] = (() => {
     const events: TimelineEvent[] = []
     sejours.forEach(sj => {
@@ -736,7 +732,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       if (sj.annule_at) {
         events.push({
           date: sj.annule_at.slice(0, 10),
-          icon: '🚫',
+          icon: 'annule',
           label: 'Séjour annulé',
           subtitle: `${formatDate(sj.date_arrivee)} → ${formatDate(sj.date_depart)}${sj.logement ? ` · ${sj.logement}` : ''}`,
           tone: 'past',
@@ -748,7 +744,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       if (sj.contrat_statut === 'signe' && sj.contrat_date_signature) {
         events.push({
           date: sj.contrat_date_signature,
-          icon: '✍️',
+          icon: 'signe',
           label: 'Contrat signé',
           subtitle: sj.logement ?? undefined,
           tone: tone(sj.contrat_date_signature),
@@ -756,7 +752,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       } else if (sj.contrat_statut === 'en_attente') {
         events.push({
           date: sj.date_arrivee,
-          icon: '📨',
+          icon: 'envoye',
           label: 'Contrat envoyé, en attente de signature',
           subtitle: sj.logement ?? undefined,
           tone: 'future',
@@ -766,7 +762,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       // Arrivée
       events.push({
         date: sj.date_arrivee,
-        icon: '🛬',
+        icon: 'arrivee',
         label: 'Arrivée',
         subtitle: sj.logement ? `${sj.logement}${sj.montant ? ` · ${sj.montant} €` : ''}` : undefined,
         tone: tone(sj.date_arrivee),
@@ -775,7 +771,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       // Départ
       events.push({
         date: sj.date_depart,
-        icon: '🛫',
+        icon: 'depart',
         label: 'Départ',
         subtitle: `${nights(sj.date_arrivee, sj.date_depart)} nuit${nights(sj.date_arrivee, sj.date_depart) > 1 ? 's' : ''}`,
         tone: tone(sj.date_depart),
@@ -785,7 +781,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     // Ajout de la création du voyageur
     events.push({
       date: voyageur.created_at.slice(0, 10),
-      icon: '👤',
+      icon: 'ajout',
       label: 'Voyageur ajouté',
       tone: 'past',
     })
@@ -962,18 +958,15 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           flex-wrap: wrap;
           flex-shrink: 0;
         }
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
           .voyageur-layout {
-            grid-template-columns: 1fr !important;
+            grid-template-columns: minmax(0, 1fr) !important;
           }
           .voyageur-left {
             position: static !important;
           }
         }
         @media (max-width: 600px) {
-          .sejour-row-mobile {
-            flex-direction: column !important;
-          }
           .sejour-actions {
             width: 100%;
             justify-content: flex-start;
@@ -987,7 +980,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       {/* Back */}
       <button onClick={() => router.push('/dashboard/voyageurs')} style={s.backBtn} className="fade-up">
         <ArrowLeft size={16} />
-        Mes Voyageurs
+        Mes voyageurs
       </button>
 
       {/* Flag banner */}
@@ -995,15 +988,12 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
         <div style={s.flagBanner} className="fade-up">
           <Warning size={18} weight="fill" color="#ef4444" />
           <div>
-            <strong>Ce voyageur est signalé</strong> dans la base Sécurité Voyageur.
-            Consultez la fiche avant d&apos;accepter une réservation.
+            <strong>Ce voyageur est signalé par d&apos;autres hôtes.</strong>{' '}
+            Lis les faits avant d&apos;accepter une réservation :{' '}
+            <a href={`/dashboard/securite?q=${encodeURIComponent(voyageur.email || voyageur.telephone || `${voyageur.prenom} ${voyageur.nom}`)}`} style={{ color: 'var(--danger)', fontWeight: 600 }}>voir dans Sécurité voyageur</a>.
           </div>
         </div>
       )}
-
-      {/* Layout 2 colonnes (devient 1 col en < 900px) */}
-      <div className="voyageur-layout" style={s.layoutGrid}>
-        <div className="voyageur-left" style={s.leftColumn}>
 
       {/* Profile card.
           zIndex conditionnel : .fade-up (will-change) et .glass-card
@@ -1013,7 +1003,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           ouvert, on remonte toute la carte au-dessus de ses sœurs. */}
       <div
         style={{ ...s.profileCard, ...(profileNatOpen ? { position: 'relative' as const, zIndex: 60 } : {}) }}
-        className="fade-up glass-card"
+        className="fade-up"
       >
         <div style={{ ...s.bigAvatar, background: color }}>
           <span style={s.bigAvatarText}>{initials}</span>
@@ -1049,7 +1039,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               </div>
               <div style={s.profileEditRow}>
                 <div style={s.field}>
-                  <label style={s.label}>Email</label>
+                  <label style={s.label}>E-mail</label>
                   <div style={s.inputWrap} className="form-input-wrap">
                     <Envelope size={14} color="var(--text-muted)" />
                     <input
@@ -1233,7 +1223,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                 ) : (
                   <button onClick={() => openProfileEdit()} style={s.addFieldBtn}>
                     <Envelope size={14} />
-                    Ajouter un email
+                    Ajouter un e-mail
                   </button>
                 )}
                 {voyageur.telephone ? (
@@ -1251,7 +1241,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 
               {/* Quick actions communication */}
               {(voyageur.email || voyageur.telephone) && (
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const, justifyContent: 'center', marginTop: '4px' }}>
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const, justifyContent: 'flex-start', marginTop: '4px' }}>
                   {voyageur.email && (
                     <a
                       href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(voyageur.email)}&su=${encodeURIComponent(`Bonjour ${voyageur.prenom}`)}`}
@@ -1267,7 +1257,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                       title="Ouvre Gmail dans un nouvel onglet"
                     >
                       <Envelope size={13} weight="fill" />
-                      Envoyer un email
+                      Envoyer un e-mail
                     </a>
                   )}
                   {voyageur.telephone && (
@@ -1290,7 +1280,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 
               {/* Liens inter-modules (calendrier + logement) */}
               {(calendrierTargetDate || logementsFrequentes.length > 0) && (
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const, justifyContent: 'center', marginTop: '4px' }}>
+                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const, justifyContent: 'flex-start', marginTop: '4px' }}>
                   {calendrierTargetDate && (
                     <a
                       href={`/dashboard/calendrier`}
@@ -1334,25 +1324,25 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   )}
                 </div>
               )}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px', flexWrap: 'wrap' as const, justifyContent: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px', flexWrap: 'wrap' as const, justifyContent: 'flex-start' }}>
                 <span style={{ ...s.statutBadge, color: stats.statut.color, background: stats.statut.bg, borderColor: stats.statut.border }}>
                   {stats.statut.label}
                 </span>
                 {bloque && (
                   <span style={{ ...s.statutBadge, color: '#94a3b8', background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.30)' }}>
-                    🚫 Bloqué
+                    <Prohibit size={12} weight="bold" /> Bloqué
                   </span>
                 )}
                 {source && SOURCE_LABELS[source] && (
                   <span style={{ ...s.statutBadge, color: 'var(--text-2)', background: 'var(--surface-2)', borderColor: 'var(--border)' }}>
-                    {SOURCE_LABELS[source].emoji} {SOURCE_LABELS[source].label}
+                    {SOURCE_LABELS[source].label}
                   </span>
                 )}
                 <span style={s.since}>Ajouté le {formatDate(voyageur.created_at)}</span>
               </div>
 
               {/* Note privée (étoiles) */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px', justifyContent: 'flex-start' }}>
                 <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 500, letterSpacing: '0.4px', textTransform: 'uppercase' as const }}>
                   Note
                 </span>
@@ -1377,7 +1367,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               {sejours.length > 0 && (
                 <div style={s.voyageurStats}>
                   <div style={s.voyageurStat}>
-                    <span style={s.voyageurStatLabel}>CA total</span>
+                    <span style={s.voyageurStatLabel}>Total des séjours</span>
                     <span style={s.voyageurStatValue}>{stats.totalCA.toLocaleString('fr-FR')} €</span>
                   </div>
                   <div style={s.voyageurStat}>
@@ -1386,7 +1376,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   </div>
                   <div style={s.voyageurStat}>
                     <span style={s.voyageurStatLabel}>Durée moyenne</span>
-                    <span style={s.voyageurStatValue}>{stats.dureeMoyenne}n.</span>
+                    <span style={s.voyageurStatValue}>{stats.dureeMoyenne} nuit{stats.dureeMoyenne > 1 ? 's' : ''}</span>
                   </div>
                   <div style={s.voyageurStat}>
                     <span style={s.voyageurStatLabel}>Dernière venue</span>
@@ -1408,11 +1398,15 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
         </div>
       </div>
 
+      {/* Layout 2 colonnes : séjours à gauche, fiche à droite (1 colonne sous 1100 px) */}
+      <div className="voyageur-layout" style={s.layoutGrid}>
+        <div className="voyageur-left" style={s.leftColumn}>
+
       {/* Notes */}
       <div style={s.section} className="fade-up">
         <div style={s.sectionHeader}>
           <div style={s.sectionTitle}>
-            <Note size={16} color="var(--text-3)" />
+            <Note size={16} color="var(--accent-text)" />
             Notes privées
           </div>
           {!editingNotes && (
@@ -1453,7 +1447,8 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       <div style={s.section} className="fade-up">
         <div style={s.sectionHeader}>
           <div style={s.sectionTitle}>
-            🏷️ Tags
+            <Tag size={16} color="var(--accent-text)" />
+            Tags
           </div>
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px', marginBottom: '8px' }}>
@@ -1511,7 +1506,8 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       <div style={s.section} className="fade-up">
         <div style={s.sectionHeader}>
           <div style={s.sectionTitle}>
-            📍 Source d&apos;acquisition
+            <MapPin size={16} color="var(--accent-text)" />
+            D&apos;où vient ce voyageur
           </div>
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '6px' }}>
@@ -1532,7 +1528,6 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   cursor: 'pointer', fontFamily: 'inherit',
                 }}
               >
-                <span>{def.emoji}</span>
                 {def.label}
               </button>
             )
@@ -1544,38 +1539,30 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       <div style={s.section} className="fade-up">
         <div style={s.sectionHeader}>
           <div style={s.sectionTitle}>
-            🔒 Vérification & sécurité
+            <ShieldCheck size={16} color="var(--accent-text)" />
+            Vérifications
           </div>
         </div>
 
-        {/* Score de confiance */}
-        <div style={{
-          padding: '12px 14px',
-          background: trustLabel.bg,
-          border: `1px solid ${trustLabel.border}`,
-          borderRadius: '10px',
-          marginBottom: '14px',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px',
-        }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', marginBottom: '4px' }}>
-              Score de confiance
-            </div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-              <span style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '24px', fontWeight: 500, color: trustLabel.color, lineHeight: 1 }}>
-                {trustScore}
+        {/* Ce qui est vérifié pour ce voyageur */}
+        <ul style={{ listStyle: 'none', margin: '0 0 14px', padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {checks.map(c => (
+            <li key={c.label} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+              {c.tone === 'danger'
+                ? <Warning size={17} weight="fill" color="var(--danger)" style={{ flexShrink: 0, marginTop: 1 }} />
+                : c.ok ? <CheckCircle size={17} weight="fill" color="var(--accent-text)" style={{ flexShrink: 0, marginTop: 1 }} />
+                : <Circle size={17} color="var(--text-3)" style={{ flexShrink: 0, marginTop: 1 }} />}
+              <span style={{ minWidth: 0 }}>
+                <span style={{ fontSize: 13.5, fontWeight: 600, color: c.tone === 'danger' ? 'var(--danger)' : c.ok ? 'var(--text)' : 'var(--text-2)' }}>{c.label}</span>
+                {c.hint && <span style={{ display: 'block', fontSize: 12, color: 'var(--text-3)' }}>
+                  {c.tone === 'danger'
+                    ? <a href={`/dashboard/securite?q=${encodeURIComponent(voyageur.email || voyageur.telephone || `${voyageur.prenom} ${voyageur.nom}`)}`} style={{ color: 'var(--danger)', fontWeight: 600 }}>{c.hint}</a>
+                    : c.hint}
+                </span>}
               </span>
-              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>/ 100</span>
-              <span style={{ marginLeft: '6px', fontSize: '11px', fontWeight: 600, color: trustLabel.color, letterSpacing: '0.3px' }}>
-                {trustLabel.label}
-              </span>
-            </div>
-          </div>
-          {/* Mini barre de progression */}
-          <div style={{ width: '70px', height: '6px', background: 'var(--surface-2)', borderRadius: '4px', overflow: 'hidden', flexShrink: 0 }}>
-            <div style={{ width: `${trustScore}%`, height: '100%', background: trustLabel.color, transition: 'width 0.3s' }} />
-          </div>
-        </div>
+            </li>
+          ))}
+        </ul>
 
         {/* ID vérifiée */}
         <div style={{ marginBottom: '12px' }}>
@@ -1584,12 +1571,12 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               type="checkbox"
               checked={idVerifie}
               onChange={(e) => { setIdVerifie(e.target.checked); persistField({ id_verifie: e.target.checked }) }}
-              style={{ width: '15px', height: '15px', accentColor: 'var(--success-1)' }}
+              style={{ width: '15px', height: '15px', accentColor: 'var(--accent-text)' }}
             />
             <span style={{ fontSize: '13px', color: 'var(--text-2)', fontWeight: 500 }}>
-              Pièce d&apos;identité vérifiée
+              J&apos;ai vérifié sa pièce d&apos;identité
             </span>
-            {idVerifie && <Check size={12} weight="bold" color="#10b981" />}
+            {idVerifie && <Check size={12} weight="bold" color="var(--accent-text)" />}
           </label>
 
           {idVerifie && (
@@ -1651,7 +1638,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               Check-in en ligne
             </span>
             {voyageur.checkin_completed_at ? (
-              <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--success-1, #34d399)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--accent-text)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 <Check size={11} weight="bold" />
                 Complété le {new Date(voyageur.checkin_completed_at).toLocaleDateString('fr-FR')}
               </span>
@@ -1663,7 +1650,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           </div>
           <p style={{ fontSize: '11.5px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
             Envoie ce lien au voyageur : il remplit lui-même son identité (nationalité,
-            date de naissance, pièce d&apos;identité…) — la fiche se met à jour et, pour
+            date de naissance, pièce d&apos;identité…) : la fiche se met à jour et, pour
             un logement portugais configuré, le boletim part automatiquement au SIBA.
           </p>
 
@@ -1693,7 +1680,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               }}
             />
             {expectedCountSaved && (
-              <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--success-1, #34d399)', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+              <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--accent-text)', display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
                 <Check size={11} weight="bold" /> Enregistré
               </span>
             )}
@@ -1714,7 +1701,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               display: 'inline-flex', alignItems: 'center', gap: '6px',
               padding: '7px 12px', fontSize: '12px', fontWeight: 600,
               background: checkinCopied ? 'var(--success-bg, rgba(52,211,153,0.12))' : 'var(--accent-bg)',
-              color: checkinCopied ? 'var(--success-1, #34d399)' : 'var(--accent-text)',
+              color: checkinCopied ? 'var(--accent-text)' : 'var(--accent-text)',
               border: `1px solid ${checkinCopied ? 'rgba(52,211,153,0.3)' : 'var(--accent-border)'}`,
               borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit',
               opacity: checkinLoading ? 0.6 : 1,
@@ -1778,11 +1765,11 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                     )}
                     {c.nationalite && <span style={{ color: 'var(--text-muted)' }}>{c.nationalite}</span>}
                     <span style={{ marginLeft: 'auto', display: 'inline-flex', gap: '8px', fontSize: '11px' }}>
-                      <span style={{ color: c.id_numero ? 'var(--success-1)' : 'var(--text-muted)' }} title="Pièce d'identité">
-                        {c.id_numero ? '✓ doc' : '– doc'}
+                      <span style={{ color: c.id_numero ? 'var(--accent-text)' : 'var(--text-muted)' }} title="Pièce d'identité">
+                        {c.id_numero ? '✓ pièce' : 'pièce manquante'}
                       </span>
-                      <span style={{ color: c.signed_at ? 'var(--success-1)' : 'var(--text-muted)' }} title="Signature électronique">
-                        {c.signed_at ? '✓ signé' : '– signé'}
+                      <span style={{ color: c.signed_at ? 'var(--accent-text)' : 'var(--text-muted)' }} title="Signature électronique">
+                        {c.signed_at ? '✓ signé' : 'pas signé'}
                       </span>
                     </span>
                   </div>
@@ -1834,13 +1821,13 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                 borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit',
               }}
             >
-              🚫 Bloquer ce voyageur
+              <Prohibit size={13} weight="bold" style={{ verticalAlign: '-2px', marginRight: 4 }} />Bloquer ce voyageur
             </button>
           ) : (
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                 <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--danger)' }}>
-                  🚫 Voyageur bloqué
+                  <Prohibit size={13} weight="bold" style={{ verticalAlign: '-2px', marginRight: 4 }} />Voyageur bloqué
                 </span>
               </div>
               {bloqueMotif && (
@@ -2111,7 +2098,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   {cl === undefined ? (
                     <p style={s.clEmpty}>Chargement…</p>
                   ) : (() => {
-                    const barColor = pct === 100 ? 'var(--success-1)' : pct >= 50 ? '#eab308' : '#f97316'
+                    const barColor = pct === 100 ? 'var(--accent-text)' : pct >= 50 ? '#eab308' : '#f97316'
                     return (
                       <>
                         {/* Progress bar */}
@@ -2131,7 +2118,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                             <div key={phase.label} style={{ marginBottom: '14px' }}>
                               <div style={s.clPhaseLabel}>
                                 {phase.label}
-                                <span style={{ ...s.clPhaseBadge, color: phaseDone === phase.items.length ? 'var(--success-1)' : 'var(--text-muted)' }}>
+                                <span style={{ ...s.clPhaseBadge, color: phaseDone === phase.items.length ? 'var(--accent-text)' : 'var(--text-muted)' }}>
                                   {phaseDone}/{phase.items.length}
                                 </span>
                               </div>
@@ -2183,17 +2170,20 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
         <div style={s.section} className="fade-up">
           <div style={s.sectionHeader}>
             <div style={s.sectionTitle}>
-              ⏱️ Historique chronologique
+              <ClockCounterClockwise size={16} color="var(--accent-text)" />
+              Historique
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' as const, gap: '0' }}>
             {timeline.map((ev, i) => {
-              const opacity = ev.tone === 'past' ? 0.7 : 1
-              const accent = ev.tone === 'today' ? 'var(--accent-text)' : ev.tone === 'future' ? 'var(--success-1)' : 'var(--text-muted)'
+              const opacity = 1
+              const accent = ev.tone === 'past' ? 'var(--text-3)' : 'var(--accent-text)'
               return (
                 <div key={i} style={{ display: 'flex', gap: '12px', opacity, padding: '8px 0', borderBottom: i < timeline.length - 1 ? '1px dashed var(--border)' : 'none' }}>
                   <div style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '4px', flexShrink: 0, position: 'relative' as const }}>
-                    <span style={{ fontSize: '18px', lineHeight: 1 }}>{ev.icon}</span>
+                    <span style={{ width: 28, height: 28, borderRadius: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: ev.tone === 'past' ? 'var(--bg-2)' : 'var(--accent-bg)', color: ev.icon === 'annule' ? 'var(--danger)' : ev.tone === 'past' ? 'var(--text-3)' : 'var(--accent-text)' }}>
+                      {ev.icon === 'annule' ? <Prohibit size={15} /> : ev.icon === 'signe' ? <PenNib size={15} /> : ev.icon === 'envoye' ? <PaperPlaneTilt size={15} /> : ev.icon === 'arrivee' ? <SignIn size={15} /> : ev.icon === 'depart' ? <SignOut size={15} /> : <UserPlus size={15} />}
+                    </span>
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: '11px', fontWeight: 600, color: accent, letterSpacing: '0.3px', textTransform: 'uppercase' as const, marginBottom: '2px' }}>
@@ -2227,7 +2217,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   </h3>
                 </>
               ) : (
-                <h3 style={{ ...s.modalTitle, color: 'var(--success-1)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <h3 style={{ ...s.modalTitle, color: 'var(--accent-text)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Star size={20} weight="fill" color="#34D399" />
                   Témoignage positif
                 </h3>
@@ -2236,11 +2226,11 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
             </div>
             {reportSuccess ? (
               <div style={{ padding: '32px 24px', textAlign: 'center' }}>
-                <div style={{ fontSize: '40px', marginBottom: '12px' }}>{reportModal === 'positive' ? '⭐' : '✅'}</div>
+                <div style={{ marginBottom: '12px' }}>{reportModal === 'positive' ? <Star size={40} weight="fill" color="#B7791F" /> : <CheckCircle size={40} weight="fill" color="var(--accent-text)" />}</div>
                 <p style={{ fontSize: '15px', color: 'var(--text-2)', margin: 0 }}>
                   {reportModal === 'positive'
-                    ? 'Témoignage envoyé. Merci pour votre retour !'
-                    : 'Signalement envoyé. Il sera examiné par la modération.'}
+                    ? 'Témoignage envoyé. Merci pour ton retour !'
+                    : 'Signalement envoyé. Jason le relit avant qu\'il apparaisse dans les recherches des hôtes.'}
                 </p>
                 <button onClick={() => setReportModal(null)} className="btn-primary" style={{ marginTop: '20px' }}>
                   Fermer
@@ -2284,8 +2274,8 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                     rows={4}
                     style={s.notesTextarea}
                     placeholder={reportModal === 'positive'
-                      ? 'Décrivez votre expérience positive avec ce voyageur…'
-                      : "Décrivez l'incident de manière précise et factuelle…"
+                      ? 'Décris ce qui s\'est bien passé avec ce voyageur…'
+                      : "Décris les faits, précisément et sans supposition…"
                     }
                   />
                 </div>
@@ -2301,7 +2291,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                       cursor: isReporting ? 'not-allowed' : 'pointer',
                       fontSize: '13px', fontWeight: 500,
                       background: reportModal === 'positive' ? 'var(--success-border)' : 'rgba(239,68,68,0.12)',
-                      color: reportModal === 'positive' ? 'var(--success-1)' : 'var(--danger)',
+                      color: reportModal === 'positive' ? 'var(--accent-text)' : 'var(--danger)',
                     }}
                   >
                     {reportModal === 'positive' ? <Star size={14} /> : <ShieldWarning size={14} />}
@@ -2377,7 +2367,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                               : <House size={13} color="var(--text-muted)" />
                             }
                           </div>
-                          <span style={{ flex: 1, fontSize: '13px', fontWeight: isSel ? 600 : 400, color: isSel ? 'var(--success-1)' : 'var(--text)' }}>
+                          <span style={{ flex: 1, fontSize: '13px', fontWeight: isSel ? 600 : 400, color: isSel ? 'var(--accent-text)' : 'var(--text)' }}>
                             {l.nom}
                           </span>
                         </button>
@@ -2489,7 +2479,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                                 cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s',
                               }}
                             >
-                              {via === 'jason' ? '✍️ Contrat Jason' : '🌐 Plateforme'}
+                              {via === 'jason' ? 'Contrat de l\'app' : 'Plateforme'}
                             </button>
                           )
                         })}
@@ -2546,7 +2536,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                                   : 'transparent',
                                 color: active
                                   ? 'var(--accent-text)'
-                                  : (def.isDirect ? 'var(--success-1)' : 'var(--text-2)'),
+                                  : (def.isDirect ? 'var(--accent-text)' : 'var(--text-2)'),
                                 boxShadow: active ? '0 0 0 2px var(--accent-bg)' : 'none',
                                 transition: 'all 0.12s',
                               }}
@@ -2647,32 +2637,31 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%', maxWidth: '1600px', margin: '0 auto' },
+  page: { padding: '20px var(--dash-page-px) 48px', width: '100%' },
   layoutGrid: {
     display: 'grid',
-    gridTemplateColumns: 'minmax(320px, 420px) 1fr',
+    gridTemplateColumns: 'minmax(0, 1fr) minmax(300px, 400px)',
     gap: '20px',
     alignItems: 'flex-start',
   },
   leftColumn: {
-    display: 'flex', flexDirection: 'column' as const, gap: '16px',
-    position: 'sticky' as const, top: '20px',
+    display: 'flex', flexDirection: 'column' as const, gap: '16px', minWidth: 0, order: 2,
   },
   rightColumn: {
     display: 'flex', flexDirection: 'column' as const, gap: '16px',
-    minWidth: 0,
+    minWidth: 0, order: 1,
   },
 
   // Stats voyageur
   voyageurStats: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))',
     gap: '8px',
-    marginTop: '16px',
+    marginTop: '12px',
     width: '100%',
   },
   voyageurStat: {
-    background: 'var(--surface-2)', border: '1px solid var(--border)',
+    background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '10px', padding: '10px 12px',
     display: 'flex', flexDirection: 'column' as const, gap: '2px',
   },
@@ -2705,26 +2694,27 @@ const s: Record<string, React.CSSProperties> = {
     marginBottom: '20px',
   },
   profileCard: {
-    display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '14px',
-    padding: '22px 20px', borderRadius: '18px',
-    textAlign: 'center' as const,
+    display: 'flex', flexWrap: 'wrap' as const, alignItems: 'flex-start', gap: '18px 22px',
+    padding: 'clamp(18px,2.6vw,28px)', borderRadius: '20px', marginBottom: '20px',
+    background: 'linear-gradient(135deg, var(--accent-bg) 0%, rgba(99,214,131,0.10) 55%, rgba(255,213,107,0.14) 100%)',
+    border: '1px solid var(--accent-border)',
   },
   bigAvatar: {
-    width: '80px', height: '80px', borderRadius: '50%', flexShrink: 0,
+    width: '68px', height: '68px', borderRadius: '50%', flexShrink: 0,
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   bigAvatarText: {
     fontFamily: 'var(--font-fraunces), serif', fontSize: '28px', fontWeight: 600, color: '#fff',
   },
-  profileInfo: { width: '100%', minWidth: 0, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: '8px' },
-  profileNameRow: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const, justifyContent: 'center' },
+  profileInfo: { flex: '1 1 420px', minWidth: 0, display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-start', gap: '8px' },
+  profileNameRow: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const, justifyContent: 'flex-start' },
   profileName: {
-    fontFamily: 'var(--font-fraunces), serif', fontSize: '22px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(24px,2.6vw,32px)', letterSpacing: '-0.4px',
     fontWeight: 400, color: 'var(--text)', margin: 0,
   },
   profileEditForm: { display: 'flex', flexDirection: 'column' as const, gap: '12px', width: '100%' },
   profileEditRow: { display: 'flex', gap: '12px', flexWrap: 'wrap' as const },
-  contactList: { display: 'flex', flexWrap: 'wrap' as const, gap: '10px', justifyContent: 'center' },
+  contactList: { display: 'flex', flexWrap: 'wrap' as const, gap: '14px', justifyContent: 'flex-start' },
   contactItem: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     fontSize: '13px', color: 'var(--text-2)', textDecoration: 'none',
@@ -2739,8 +2729,8 @@ const s: Record<string, React.CSSProperties> = {
   since: { fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' },
 
   section: {
-    background: 'var(--surface)', border: '1px solid var(--surface-2)',
-    borderRadius: '16px', padding: '20px', marginBottom: '16px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: 'var(--r-xl, 18px)', padding: 'clamp(16px, 2.2vw, 22px)', marginBottom: '16px',
   },
   sectionHeader: {
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -2748,7 +2738,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   sectionTitle: {
     display: 'flex', alignItems: 'center', gap: '8px',
-    fontSize: '13px', fontWeight: 500, color: 'var(--text-2)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '17px', fontWeight: 500, color: 'var(--text)',
   },
   editBtn: {
     display: 'flex', alignItems: 'center', gap: '5px',
@@ -2766,7 +2756,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.2)',
     borderRadius: '8px', padding: '4px 10px',
-    fontSize: '12px', color: 'var(--success-1)', cursor: 'pointer',
+    fontSize: '12px', color: 'var(--accent-text)', cursor: 'pointer',
     transition: 'all 0.15s',
   },
   notesText: { fontSize: '14px', color: 'var(--text-2)', lineHeight: 1.7, margin: 0 },
@@ -2780,12 +2770,12 @@ const s: Record<string, React.CSSProperties> = {
 
   sejourList: { display: 'flex', flexDirection: 'column', gap: 'var(--s-3)' },
   sejourRow: {
-    display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 'var(--s-3)',
+    display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 'var(--s-3)',
     background: 'var(--bg)', border: '1px solid var(--border)',
     borderRadius: 'var(--r-lg)', padding: 'var(--s-4) var(--s-4)',
     transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
   },
-  sejourLeft: { flex: 1, minWidth: 0 },
+  sejourLeft: { flex: '1 1 260px', minWidth: 0 },
   sejourDates: {
     display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--s-2)',
     fontSize: 'var(--t-base)', fontWeight: 600, color: 'var(--text)', marginBottom: 'var(--s-2)',
@@ -2822,9 +2812,9 @@ const s: Record<string, React.CSSProperties> = {
   },
   depositBtn: {
     display: 'inline-flex', alignItems: 'center', gap: 'var(--s-1)',
-    background: 'var(--info-bg)', border: '1px solid var(--info-border)',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
     borderRadius: 'var(--r-sm)', padding: '6px 12px',
-    fontSize: 'var(--t-xs)', fontWeight: 600, color: 'var(--info)',
+    fontSize: 'var(--t-xs)', fontWeight: 600, color: 'var(--accent-text)',
     cursor: 'pointer',
     transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
     flexShrink: 0,
@@ -2839,7 +2829,7 @@ const s: Record<string, React.CSSProperties> = {
     flexShrink: 0,
   },
   checklistBtnActive: {
-    background: 'var(--success-bg)', borderColor: 'var(--success-1)', color: 'var(--success-1)',
+    background: 'var(--success-bg)', borderColor: 'var(--accent-text)', color: 'var(--accent-text)',
   },
   clPanel: {
     margin: '0 0 8px 0', padding: '18px 20px',

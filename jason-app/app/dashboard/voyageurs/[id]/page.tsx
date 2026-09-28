@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import TitleSetter from '@/components/layout/TitleSetter'
 import VoyageurDetail from './VoyageurDetail'
+import { parisToday } from '@/lib/stripe/deposit-window'
 import { flaggedVoyageurs } from '@/lib/securite/lookup'
 import { isPositive } from '@/lib/securite/identifiers'
 
@@ -97,6 +98,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
         plan={profile.plan ?? 'decouverte'}
         checkinCompanions={companionsRes.data ?? []}
         declarationStatutBySejour={declarationStatutBySejour}
+        today={parisToday()}
       />
     </>
   )
