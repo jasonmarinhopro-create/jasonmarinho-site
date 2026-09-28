@@ -68,19 +68,23 @@ async function main() {
     const afterFiscal = content
     content = dashFix(content)
     const dashes = (afterFiscal.match(/—/g) ?? []).length
-    // Montants dérivés du 17,2 % restés dans le texte : à signaler pour relecture
-    if (FISCAL_SLUGS.includes(slug)) {
-      for (const line of afterFiscal.split('\n')) {
-        if (/1 180|1 520|17,2|71\s?%/.test(line)) console.log(`  ! à relire (${mod.module_number}.${l.lesson_number}) : ${line.trim().slice(0, 140)}`)
-      }
-    }
+    // Anciens chiffres ou montants qui en dépendent, restés dans le texte :
+    // affichés pour relecture (les tableaux « avant la loi Le Meur » y figurent,
+    // c'est normal)
+    const review = FISCAL_SLUGS.includes(slug)
+      ? afterFiscal.split('\n').filter(line => /1 180|1 520|1 720|17,2|71\s?%|77 ?700|188 ?700|Total|[ÉéE]conomie/.test(line))
+      : []
     title = dashFix(title, { isTitle: true })
-    if (content === before && title === l.title) continue
+    if (content === before && title === l.title) {
+      for (const line of review) console.log(`  ? inchangé, à relire (${slug} ${mod.module_number}.${l.lesson_number}) : ${line.trim().slice(0, 140)}`)
+      continue
+    }
 
     changed += 1
     console.log(`\n~ ${slug} ${mod.module_number}.${l.lesson_number} ${title}${title !== l.title ? ' (titre corrigé)' : ''}`)
     for (const s of snippets(before, afterFiscal)) console.log(`    ${s}`)
     if (dashes > 0) console.log(`    ${dashes} tiret(s) cadratin(s) remplacé(s)`)
+    for (const line of review) console.log(`    à relire : ${line.trim().slice(0, 140)}`)
     if (DRY_RUN) continue
 
     const { error } = await supabase
