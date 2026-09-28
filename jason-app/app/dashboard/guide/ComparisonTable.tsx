@@ -32,17 +32,17 @@ const ROWS: Row[] = [
   {
     label: 'Plafond micro-BIC / micro-entreprise',
     values: {
-      gites:        { value: '77 700 € (classé)\n15 000 € (non classé)', tone: 'neutral' },
-      chambres:     { value: '77 700 €', tone: 'neutral' },
-      conciergerie: { value: '77 700 € (presta)', tone: 'neutral' },
+      gites:        { value: '83 600 € (classé)\n15 000 € (non classé)', tone: 'neutral' },
+      chambres:     { value: '83 600 €', tone: 'neutral' },
+      conciergerie: { value: '83 600 € (presta)', tone: 'neutral' },
       direct:       { value: 'Idem gîte', tone: 'neutral' },
     },
   },
   {
     label: 'Abattement micro-BIC',
     values: {
-      gites:        { value: '71 % classé / 30 % non classé', tone: 'warn' },
-      chambres:     { value: '71 % classé / 50 % non classé', tone: 'ok' },
+      gites:        { value: '50 % classé / 30 % non classé', tone: 'warn' },
+      chambres:     { value: '50 %', tone: 'neutral' },
       conciergerie: { value: '50 % (presta de services)', tone: 'neutral' },
       direct:       { value: 'Selon le bien (gîte/chambre)', tone: 'neutral' },
     },
@@ -52,7 +52,7 @@ const ROWS: Row[] = [
     values: {
       gites:        { value: 'Non (sauf classé + repas/services)', tone: 'ok' },
       chambres:     { value: '10 % petit-déj > 37 500 €', tone: 'warn' },
-      conciergerie: { value: '20 % obligatoire > 36 800 €', tone: 'warn' },
+      conciergerie: { value: '20 % au-delà de 37 500 €', tone: 'warn' },
       direct:       { value: 'Idem gîte', tone: 'ok' },
     },
   },

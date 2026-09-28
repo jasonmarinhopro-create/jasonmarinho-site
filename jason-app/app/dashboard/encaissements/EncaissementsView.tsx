@@ -1,10 +1,10 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import {
   CurrencyEur, ArrowsClockwise, Bank, CheckCircle, Warning,
-  Calendar, EnvelopeSimple, Info, ArrowSquareOut, Receipt, Clock,
+  Calendar, EnvelopeSimple, Info, ArrowSquareOut, Receipt, Clock, PaperPlaneTilt, PenNib,
 } from '@phosphor-icons/react/dist/ssr'
 import type { EncaissementsSummary, ContractImpaye } from '@/lib/stripe/connect-queries'
 import TourTrigger from '@/components/dashboard/TourTrigger'
@@ -44,7 +44,7 @@ function fmtRelativeDate(unixSeconds: number): string {
 
 function buildRappelMailto(c: ContractImpaye): string {
   if (!c.locataire_email) return '#'
-  const subject = encodeURIComponent(`Rappel paiement — séjour à ${c.logement_nom ?? 'votre logement'}`)
+  const subject = encodeURIComponent(`Rappel paiement : séjour à ${c.logement_nom ?? 'votre logement'}`)
   const arrivee = c.date_arrivee
     ? new Date(c.date_arrivee).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
     : ''
@@ -53,7 +53,7 @@ function buildRappelMailto(c: ContractImpaye): string {
 
 Je n'ai pas encore reçu le paiement pour votre séjour à ${c.logement_nom ?? 'mon logement'} prévu le ${arrivee}.
 
-Pour finaliser votre réservation, merci de procéder au règlement de ${c.montant_loyer ? `${c.montant_loyer.toLocaleString('fr-FR')} €` : 'votre acompte'} via le lien sécurisé qui vous a été envoyé.
+Pour finaliser votre réservation, merci de procéder au règlement de ${c.montant_du ? `${c.montant_du.toLocaleString('fr-FR')} €` : 'votre acompte'} via le lien sécurisé qui vous a été envoyé.
 
 Si vous avez perdu le lien ou rencontrez un problème, n'hésitez pas à me répondre, je vous le renvoie.
 
@@ -62,12 +62,59 @@ Merci d'avance,
   return `mailto:${c.locataire_email}?subject=${subject}&body=${body}`
 }
 
+function ResendPaymentButton({ contractId, name }: { contractId: string; name: string }) {
+  const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const [error, setError] = useState<string | null>(null)
+
+  async function send() {
+    setState('sending')
+    setError(null)
+    try {
+      const res = await fetch('/api/contracts/resend-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contract_id: contractId }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error ?? "L'envoi a échoué.")
+      setState('sent')
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "L'envoi a échoué.")
+      setState('error')
+    }
+  }
+
+  if (state === 'sent') {
+    return (
+      <span style={{ ...s.btnGhost, color: 'var(--accent-text)', borderColor: 'var(--accent-border)' }} role="status">
+        <CheckCircle size={13} weight="fill" />
+        Lien envoyé
+      </span>
+    )
+  }
+  return (
+    <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px' }}>
+      <button
+        type="button"
+        onClick={send}
+        disabled={state === 'sending'}
+        style={{ ...s.btnRappel, border: 'none', cursor: state === 'sending' ? 'wait' : 'pointer', opacity: state === 'sending' ? 0.7 : 1 }}
+        aria-label={`Renvoyer le lien de paiement à ${name}`}
+      >
+        <PaperPlaneTilt size={13} weight="fill" />
+        {state === 'sending' ? 'Envoi…' : 'Renvoyer le lien'}
+      </button>
+      {error && <span style={{ fontSize: '11px', color: '#f87171', maxWidth: '240px', textAlign: 'right' }}>{error}</span>}
+    </span>
+  )
+}
+
 export default function EncaissementsView({ summary, impayes }: Props) {
   const isOnboarded = summary.hasOnboarded
 
   // Total impayé attendu (pour la stat en haut)
   const totalImpaye = useMemo(
-    () => impayes.reduce((sum, c) => sum + (c.montant_loyer ?? 0), 0),
+    () => impayes.reduce((sum, c) => sum + (c.montant_du ?? 0), 0),
     [impayes],
   )
 
@@ -145,9 +192,9 @@ export default function EncaissementsView({ summary, impayes }: Props) {
             il apparaîtra ici avec le détail du virement, la date d'arrivée et le statut.
           </p>
           <div style={s.emptyReadyHint}>
-            En attendant, tu peux activer le paiement Stripe sur tes contrats existants depuis l'onglet{' '}
-            <Link href="/dashboard/voyageurs" style={{ color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 600 }}>
-              Mes voyageurs
+            En attendant, le paiement en ligne s'active à la création d'un contrat, depuis{' '}
+            <Link href="/dashboard/contrats" style={{ color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 600 }}>
+              Contrats & paiements
             </Link>.
           </div>
         </div>
@@ -157,14 +204,14 @@ export default function EncaissementsView({ summary, impayes }: Props) {
       <div style={s.statsGrid}>
         <StatBox
           label="Solde disponible"
-          value={isOnboarded ? fmtEur(summary.balance.available) : '—'}
+          value={isOnboarded ? fmtEur(summary.balance.available) : '-'}
           sub={isOnboarded && summary.balance.pending > 0 ? `+ ${fmtEur(summary.balance.pending)} en attente` : isOnboarded ? 'Aucun montant en attente' : 'Onboarding non terminé'}
           icon={<CurrencyEur size={16} weight="fill" />}
           accent
         />
         <StatBox
           label="Prochain virement"
-          value={summary.nextPayout ? fmtEur(summary.nextPayout.amount) : isOnboarded ? 'Aucun prévu' : '—'}
+          value={summary.nextPayout ? fmtEur(summary.nextPayout.amount) : isOnboarded ? 'Aucun prévu' : '-'}
           sub={summary.nextPayout?.arrivalDate
             ? `Arrivée ${fmtDate(summary.nextPayout.arrivalDate)} (${fmtRelativeDate(summary.nextPayout.arrivalDate)})`
             : isOnboarded ? 'Tu seras payé dès que tu auras du solde disponible' : ''}
@@ -196,7 +243,8 @@ export default function EncaissementsView({ summary, impayes }: Props) {
             <Warning size={18} weight="fill" color="#FFD56B" /> Paiements à relancer
           </h2>
           <p style={s.sectionDesc}>
-            Séjours dont l'arrivée est imminente ou passée, et dont le paiement Stripe n'a pas été encaissé.
+            Séjours dont l'arrivée est dans 7 jours ou moins (ou passée) et dont le paiement en ligne n'est pas encaissé.
+            « Renvoyer le lien » envoie au voyageur l'email de paiement avec le lien sécurisé, dans la langue du contrat.
           </p>
           <div style={s.list}>
             {impayes.map(c => {
@@ -214,25 +262,35 @@ export default function EncaissementsView({ summary, impayes }: Props) {
                       )}
                       {!isLate && (
                         <span style={s.soonBadge}>
-                          Arrivée {c.date_arrivee ? fmtRelativeDate(new Date(c.date_arrivee).getTime() / 1000) : 'bientôt'}
+                          Arrivée {c.daysOverdue === 0 ? "aujourd'hui" : c.daysOverdue === -1 ? 'demain' : `dans ${-c.daysOverdue} j`}
                         </span>
                       )}
                     </div>
                     <div style={s.rowSub}>
-                      {c.logement_nom ?? '—'} · {c.montant_loyer ? `${c.montant_loyer.toLocaleString('fr-FR')} €` : '—'}
-                      {c.date_arrivee && ` · ${new Date(c.date_arrivee).toLocaleDateString('fr-FR')}`}
+                      {c.logement_nom ?? '-'} · {c.montant_du ? `${c.montant_du.toLocaleString('fr-FR')} €` : '-'}
+                      {c.acompte_percent < 100 && ` (acompte ${c.acompte_percent} %)`}
+                      {c.date_arrivee && ` · ${new Date(`${c.date_arrivee}T12:00:00Z`).toLocaleDateString('fr-FR', { timeZone: 'UTC' })}`}
                     </div>
                   </div>
                   <div style={s.rowActions}>
-                    {c.locataire_email ? (
-                      <a
-                        href={buildRappelMailto(c)}
-                        style={s.btnRappel}
-                        aria-label={`Envoyer un rappel paiement à ${fullName}`}
-                      >
-                        <EnvelopeSimple size={13} weight="fill" />
-                        Rappel paiement
-                      </a>
+                    {c.statut !== 'signe' ? (
+                      <Link href="/dashboard/contrats" style={s.btnGhost} title="Le lien de paiement part avec la signature">
+                        <PenNib size={13} weight="fill" />
+                        Pas encore signé
+                      </Link>
+                    ) : c.locataire_email ? (
+                      <>
+                        <ResendPaymentButton contractId={c.id} name={fullName} />
+                        <a
+                          href={buildRappelMailto(c)}
+                          style={s.btnGhost}
+                          aria-label={`Écrire à ${fullName} depuis ta messagerie`}
+                          title="Écrire depuis ta messagerie"
+                        >
+                          <EnvelopeSimple size={13} weight="fill" />
+                          Écrire
+                        </a>
+                      </>
                     ) : (
                       <span style={{ ...s.btnRappel, opacity: 0.4, cursor: 'not-allowed' }} title="Email du voyageur manquant">
                         <EnvelopeSimple size={13} weight="fill" />
@@ -486,11 +544,19 @@ const s: Record<string, React.CSSProperties> = {
   },
   rowTitle: { fontSize: '13.5px', fontWeight: 600, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const },
   rowSub: { fontSize: '11.5px', color: 'var(--text-3)', marginTop: '2px' },
-  rowActions: { display: 'flex', gap: '6px', flexShrink: 0 },
+  rowActions: { display: 'flex', gap: '6px', flexShrink: 0, alignItems: 'flex-start', flexWrap: 'wrap' as const },
   btnRappel: {
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     padding: '8px 14px', borderRadius: '8px',
     background: 'var(--accent-text)', color: 'var(--bg)',
+    fontSize: '12px', fontWeight: 600,
+    textDecoration: 'none', fontFamily: 'inherit',
+  },
+  btnGhost: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    padding: '8px 12px', borderRadius: '8px',
+    background: 'transparent', color: 'var(--text-2)',
+    border: '1px solid var(--border)',
     fontSize: '12px', fontWeight: 600,
     textDecoration: 'none', fontFamily: 'inherit',
   },

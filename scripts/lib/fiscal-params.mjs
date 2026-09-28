@@ -5,8 +5,8 @@
 export const FISCAL_PARAMS_2026 = {
   microBic: {
     nonClasse: { abattement: 0.30, plafond: 15000, label: 'Meublé non classé' },
-    classe:    { abattement: 0.50, plafond: 77700, label: 'Meublé classé Atout France' },
-    cdh:       { abattement: 0.50, plafond: 77700, label: "Chambres d'hôtes" },
+    classe:    { abattement: 0.50, plafond: 83600, label: 'Meublé classé Atout France' }, // revenus 2026 (77 700 € en 2025)
+    cdh:       { abattement: 0.50, plafond: 83600, label: "Chambres d'hôtes" },
   },
   versementLiberatoire: {
     plafondRfr1part: 27478,

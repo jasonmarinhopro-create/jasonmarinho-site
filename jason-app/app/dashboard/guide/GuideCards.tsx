@@ -212,7 +212,7 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'Classement & impact fiscal (loi Le Meur 2025)',
     subtitle: "L'abattement varie selon le classement",
     rules: [
-      { type: 'ok',   text: <><strong>Classé Atout France (1–5★)</strong> : micro-BIC abattement <strong>71 %</strong>, plafond 77 700 €/an</> },
+      { type: 'ok',   text: <><strong>Classé Atout France (1–5★)</strong> : micro-BIC abattement <strong>50 %</strong>, plafond 83 600 €/an (revenus 2026)</> },
       { type: 'warn', text: <><strong>Non classé depuis 2025</strong> : abattement tombé à <strong>30 %</strong>, plafond 15 000 €/an, fort impact si tu n&apos;es pas classé</> },
       { type: 'info', text: <>Régime <strong>réel simplifié</strong> : déduction charges réelles (amortissement, travaux, intérêts), souvent plus avantageux au-delà de 30 k€</> },
     ],
@@ -339,7 +339,7 @@ const GUIDE_CARDS: GuideCard[] = [
     subtitle: 'Différente du meublé de tourisme classique',
     rules: [
       { type: 'ok',   text: <>Si revenus &lt; <strong>760 €/an</strong> : exonération fiscale totale possible</> },
-      { type: 'info', text: <>Micro-BIC <strong>71 % abattement</strong> si classées Gîtes de France ou Clévacances, <strong>50 %</strong> si non classées</> },
+      { type: 'info', text: <>Micro-BIC : <strong>50 % d&apos;abattement</strong>, plafond 83 600 € pour les revenus 2026, comme les meublés classés (Conseil d&apos;État, 16/09/2025). L&apos;ancien taux de 71 % ne s&apos;applique plus</> },
       { type: 'warn', text: <>Classement <strong>Atout France (meublé de tourisme) interdit</strong> pour les chambres d&apos;hôtes, régime différent</> },
       { type: 'ok',   text: <>Labels possibles : <strong>Gîtes de France</strong> (épis) et <strong>Clévacances</strong> (clés), recommandés pour le référencement et la fiscalité</> },
     ],
@@ -427,9 +427,9 @@ const GUIDE_CARDS: GuideCard[] = [
     title: 'Statuts recommandés & TVA',
     subtitle: 'Choisir la bonne structure pour scaler',
     rules: [
-      { type: 'ok',   text: <><strong>Micro-entreprise</strong> : pour démarrer, plafond 77 700 €/an (prestations de services), franchise TVA jusqu&apos;à 36 800 €</> },
+      { type: 'ok',   text: <><strong>Micro-entreprise</strong> : pour démarrer, plafond 83 600 €/an (prestations de services, 2026), franchise TVA jusqu&apos;à 37 500 €</> },
       { type: 'ok',   text: <><strong>SASU/SAS</strong> : pour aller au-delà, protéger son patrimoine, avoir des associés ou employés</> },
-      { type: 'warn', text: <><strong>TVA 20 %</strong> obligatoire dès 36 800 € de CA, à intégrer dans ta tarification dès le départ</> },
+      { type: 'warn', text: <><strong>TVA 20 %</strong> au-delà de 37 500 € de CA (dès que tu dépasses 41 250 € en cours d&apos;année), à intégrer dans ta tarification dès le départ</> },
       { type: 'info', text: <><strong>RC Pro obligatoire</strong> dans tous les cas, couvre les dommages causés lors des prestations</> },
     ],
     articles: [

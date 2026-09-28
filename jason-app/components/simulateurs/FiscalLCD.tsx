@@ -12,8 +12,8 @@ export default function FiscalLCD({ accountStats }: { accountStats?: AccountStat
   // Régime initial déduit du classement majoritaire des logements de l'hôte.
   // Sinon non_classe par défaut (conservateur).
   // 'non_classe' = meublé tourisme non classé : 30 % / 15 000 € (loi Le Meur 2025+)
-  // 'classe'     = meublé tourisme classé Atout France : 50 % / 77 700 € (loi Le Meur 2025+)
-  // 'cdh'        = chambres d'hôtes : 50 % / 77 700 € depuis la décision CE du 16/09/2025
+  // 'classe'     = meublé tourisme classé Atout France : 50 % / 83 600 € en 2026 (loi Le Meur)
+  // 'cdh'        = chambres d'hôtes : 50 % / 83 600 € (CE 16/09/2025, 71 % non rétabli par la LFi 2026)
   const [regime, setRegime] = useState<'non_classe' | 'classe' | 'cdh'>(
     accountStats?.defaultRegimeFiscal ?? 'non_classe'
   )
@@ -105,7 +105,7 @@ export default function FiscalLCD({ accountStats }: { accountStats?: AccountStat
             <div style={{ ...s.resultValue, color: 'var(--success-1)', fontSize: '20px' }}>− {fmtEur(result.economieClassement)} de base imposable</div>
             <div style={s.resultHint}>
               Économie estimée d&apos;impôt : ~{fmtEur(result.economieClassement * 0.30)} (à TMI 30 %).
-              Le classement fait aussi passer ton plafond CA de 15 000 € à 77 700 €.
+              Le classement fait aussi passer ton plafond CA de 15 000 € à 83 600 € (revenus 2026).
             </div>
           </div>
         )}
@@ -118,7 +118,7 @@ export default function FiscalLCD({ accountStats }: { accountStats?: AccountStat
             <div style={s.resultHint}>
               Depuis la <strong>décision du Conseil d&apos;État du 16 septembre 2025</strong>, les chambres
               d&apos;hôtes relèvent du 2° de l&apos;article 50-0 du CGI : abattement de 50 % et plafond
-              de 77 700 € (mêmes paramètres que les meublés de tourisme classés).
+              de 83 600 € pour les revenus 2026 (mêmes paramètres que les meublés de tourisme classés).
               L&apos;ancien régime à 71 % d&apos;abattement n&apos;est plus applicable.
               <br />Limite légale d&apos;activité : 5 chambres et 15 voyageurs simultanés
               (art. L.324-3 du Code du tourisme).

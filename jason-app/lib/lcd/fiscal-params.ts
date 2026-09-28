@@ -23,13 +23,15 @@ export const FISCAL_PARAMS_2026 = {
     classe: {
       abattement: 0.50,          // 50 % depuis loi Le Meur (avant 71 %)
       abattementMinimum: 305,
-      plafond: 77700,
+      // Revenus 2026 à 2028 : 83 600 € (revalorisation triennale, LégiFiscal).
+      // 77 700 € s'appliquait aux revenus 2025.
+      plafond: 83600,
       label: 'Meublé classé Atout France',
     },
     chambresHotes: {
-      abattement: 0.50,          // 50 % depuis CE 16/09/2025
+      abattement: 0.50,          // 50 % depuis CE 16/09/2025, non rétabli à 71 % par la LFi 2026
       abattementMinimum: 305,
-      plafond: 77700,
+      plafond: 83600,            // revenus 2026 (77 700 € pour 2025)
       label: "Chambres d'hôtes",
     },
   },
@@ -97,7 +99,7 @@ export const FISCAL_PARAMS_2026 = {
   meta: {
     annee: 2026,
     versionLoi: 'Loi Le Meur (2025) + LFi 2026',
-    derniereMaj: '2026-05-17',
+    derniereMaj: '2026-09-27',
   },
 } as const
 
@@ -120,7 +122,7 @@ export function estimateRegimeFromCA(
     }
   }
   const isClasse = !!opts.isClasse
-  // Si classé, le plafond micro est 77 700 € (sinon 15 000 € en non classé)
+  // Si classé, le plafond micro est 83 600 € en 2026 (sinon 15 000 € en non classé)
   const effectifPlafond = isClasse
     ? FISCAL_PARAMS_2026.microBic.classe.plafond
     : FISCAL_PARAMS_2026.microBic.nonClasse.plafond

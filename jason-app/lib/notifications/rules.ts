@@ -9,6 +9,7 @@
 // Chaque règle est défensive : elle ne throw jamais, log et continue. Une
 // règle cassée ne doit pas empêcher les autres de tourner.
 
+import { FISCAL_PARAMS_2026 } from '@/lib/lcd/fiscal-params'
 import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
 import { createNotification } from './create'
 
@@ -136,7 +137,7 @@ async function ruleDepartAujourdhui(userId: string): Promise<number> {
 
 // ─── Règle 2 : Approche plafond fiscal micro-BIC ──────────────────────
 // Seuils 2025 LCD non classé : 15 000 € (au-delà, sortie du régime).
-// Seuils 2025 LCD classé : 77 700 € (micro-BIC général).
+// Seuil LCD classé : 83 600 € pour les revenus 2026 (77 700 € en 2025).
 // On alerte aux paliers 80 % et 100 %.
 async function rulePlafondMicro(userId: string): Promise<number> {
   const supabase = svc()
@@ -167,7 +168,7 @@ async function rulePlafondMicro(userId: string): Promise<number> {
   const seuils = [
     { plafond: 15000, label: 'micro-BIC LCD non classé', code: 'micro_15k' },
     { plafond: 23000, label: 'plafond rattachement BIC professionnel', code: 'micro_23k' },
-    { plafond: 77700, label: 'micro-BIC général (LCD classé)', code: 'micro_77k' },
+    { plafond: FISCAL_PARAMS_2026.microBic.classe.plafond, label: 'micro-BIC général (LCD classé)', code: 'micro_77k' },
   ]
 
   let created = 0

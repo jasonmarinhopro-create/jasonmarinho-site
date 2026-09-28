@@ -36,10 +36,10 @@ const PERIOD_LABELS: Record<Period, string> = {
 const SOURCE_LABELS: Record<string, { label: string; color: string }> = {
   airbnb:           { label: 'Airbnb',          color: '#FF5A5F' },
   booking:          { label: 'Booking.com',     color: '#003580' },
-  abritel:          { label: 'Abritel / Vrbo',  color: '#3B82F6' },
-  vrbo:             { label: 'Vrbo',            color: '#3B82F6' },
+  abritel:          { label: 'Abritel / Vrbo',  color: '#8B6D5E' },
+  vrbo:             { label: 'Vrbo',            color: '#8B6D5E' },
   direct:           { label: 'Direct',          color: 'var(--success-1)' },
-  bouche_a_oreille: { label: 'Bouche a oreille', color: '#A78BFA' },
+  bouche_a_oreille: { label: 'Bouche-à-oreille', color: '#B7791F' },
   autre:            { label: 'Autre',           color: '#94A3B8' },
 }
 
@@ -885,7 +885,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
       if (Math.abs(diff) >= 5) {
         const text = diff > 0
           ? `Bravo : ton occupation (${myOccPct} %) dépasse la moyenne ${bench.ville} (${bench.occupationAnnuellePct} %) de ${diff} pts`
-          : `Tu es ${Math.abs(diff)} pts sous la moyenne ${bench.ville} (${bench.occupationAnnuellePct} %) — il y a une marge de remplissage`
+          : `Tu es ${Math.abs(diff)} pts sous la moyenne ${bench.ville} (${bench.occupationAnnuellePct} %) : il y a une marge de remplissage`
         out.push({ kind: diff > 0 ? 'top' : 'low', text })
       }
       // Prix vs ADR local
@@ -895,8 +895,8 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
           out.push({
             kind: 'benchmark',
             text: priceDiff > 0
-              ? `Ton prix moyen (${fmtEur(hotelKpis.adr)}) est ${priceDiff} % au-dessus du marché ${bench.ville} (${fmtEur(bench.adrEur)}) — vérifie que tu ne te brides pas en occupation`
-              : `Ton prix moyen (${fmtEur(hotelKpis.adr)}) est ${Math.abs(priceDiff)} % sous le marché ${bench.ville} (${fmtEur(bench.adrEur)}) — tu peux probablement le monter`,
+              ? `Ton prix moyen (${fmtEur(hotelKpis.adr)}) est ${priceDiff} % au-dessus du marché ${bench.ville} (${fmtEur(bench.adrEur)}) : vérifie que tu ne te brides pas en occupation`
+              : `Ton prix moyen (${fmtEur(hotelKpis.adr)}) est ${Math.abs(priceDiff)} % sous le marché ${bench.ville} (${fmtEur(bench.adrEur)}) : tu peux probablement le monter`,
           })
         }
       }
@@ -908,7 +908,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
       if (premPct < 10 && hotelKpis.semaineAdr > 30) {
         out.push({
           kind: 'tip',
-          text: `Tes weekends ne sont que ${premPct} % au-dessus de la semaine — la plupart des hôtes appliquent +20 à +40 %`,
+          text: `Tes weekends ne sont que ${premPct} % au-dessus de la semaine : la plupart des hôtes appliquent +20 à +40 %`,
         })
       } else if (premPct >= 30) {
         out.push({
@@ -933,7 +933,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
 
   // ─── export CSV ────────────────────────────────────────────────────────
   function exportCsv() {
-    const headers = ['Logement', 'Ville', 'Occupation %', 'Revenu €', 'Prix moyen/nuit €', 'Nuits', 'Sejours', 'Duree moy.', 'Anticipation moy.']
+    const headers = ['Logement', 'Ville', 'Occupation %', 'Revenu €', 'Prix moyen/nuit €', 'Nuits', 'Séjours', 'Durée moy.', 'Anticipation moy.']
     const rows = comparator.map(c => [
       c.nom, c.ville,
       Math.round(c.occupation * 100),
@@ -1053,7 +1053,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
       <div style={s.filters}>
         <div style={s.filterGroup}>
           <Funnel size={16} color="var(--text-3)" />
-          <span style={s.filterLabel}>Periode</span>
+          <span style={s.filterLabel}>Période</span>
           <div style={s.chipRow}>
             {(Object.keys(PERIOD_LABELS) as Period[]).map(p => (
               <button
@@ -1127,13 +1127,13 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
           icon={<Bed size={22} weight="duotone" />}
           label="Prix moyen / nuit"
           value={fmtEur(stats.prixMoyen)}
-          color="#7EB8F7"
+          color="#8B6D5E"
         />
         <KpiCard
           icon={<CalendarBlank size={22} weight="duotone" />}
           label="Nb séjours"
           value={String(stats.countSejours)}
-          color="#A78BFA"
+          color="#B7791F"
         />
       </div>
 
@@ -1162,7 +1162,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
           <MiniKpi
             label="Prix weekend"
             hint="Moyenne ven + sam"
-            value={hotelKpis.weekendAdr > 0 ? fmtEur(hotelKpis.weekendAdr) : '—'}
+            value={hotelKpis.weekendAdr > 0 ? fmtEur(hotelKpis.weekendAdr) : '-'}
             sub={hotelKpis.semaineAdr > 0 && hotelKpis.weekendAdr > 0
               ? `${hotelKpis.weekendPremiumPct >= 0 ? '+' : ''}${Math.round(hotelKpis.weekendPremiumPct * 100)} % vs semaine`
               : 'pas assez de data'}
@@ -1171,7 +1171,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
           <MiniKpi
             label="Prix semaine"
             hint="Moyenne lun à jeu"
-            value={hotelKpis.semaineAdr > 0 ? fmtEur(hotelKpis.semaineAdr) : '—'}
+            value={hotelKpis.semaineAdr > 0 ? fmtEur(hotelKpis.semaineAdr) : '-'}
             sub="lun → jeu"
           />
           <MiniKpi
@@ -1185,10 +1185,10 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
       ) : (
         <PremiumLock
           title="Indicateurs hôteliers (RevPAR, ADR, weekend premium)"
-          description="Les métriques standards utilisées par les pros de l'hôtellerie pour piloter leur activité — pas juste le taux d'occupation basique."
+          description="Les métriques standards utilisées par les pros de l'hôtellerie pour piloter leur activité : pas juste le taux d'occupation basique."
           bullets={[
             'RevPAR (Revenue Per Available Night) : la métrique #1 en hôtellerie',
-            'ADR (prix moyen par nuit louée) — différent du prix affiché',
+            'ADR (prix moyen par nuit louée) : différent du prix affiché',
             'Différentiel prix weekend / semaine avec recommandation auto',
             'Potentiel revenus annuel à occupation maximale',
           ]}
@@ -1204,7 +1204,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
                 Benchmark marché &middot; {currentBenchmark.bench.ville}
                 {currentBenchmark.bench.tier === 'national' && <span style={{ fontSize: '11px', color: 'var(--text-3)', fontWeight: 400 }}> · moyenne pays (ville non listée)</span>}
               </h3>
-              <p style={s.cardSub}>Comparatif indicatif vs marché LCD local — source : {currentBenchmark.bench.source}</p>
+              <p style={s.cardSub}>Comparatif indicatif avec le marché LCD local (source : {currentBenchmark.bench.source})</p>
             </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px' }}>
@@ -1313,7 +1313,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
       ) : null}
 
       {/* ═══════════════════════════════════════════════════════════════════
-          BLOCS ANALYSES AVANCÉES — réservés au plan Standard / Driing
+          BLOCS ANALYSES AVANCÉES : réservés au plan Standard / Driing
           (carte teaser unlock pour les comptes Découverte)
          ═══════════════════════════════════════════════════════════════════ */}
 
@@ -1350,7 +1350,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
           <div style={s.cardHead}>
             <div>
               <h3 style={s.cardTitle}>Performance par jour de semaine</h3>
-              <p style={s.cardSub}>Combien de nuits réservées chaque jour de la semaine sur la période — pour ajuster tes prix lun→dim</p>
+              <p style={s.cardSub}>Combien de nuits réservées chaque jour de la semaine sur la période : pour ajuster tes prix lun→dim</p>
             </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px' }}>
@@ -1364,7 +1364,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
               }}>
                 <div style={{ fontSize: '11px', fontWeight: 600, opacity: 0.85, marginBottom: '4px' }}>{d.label}</div>
                 <div style={{ fontSize: '20px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif' }}>{d.nuits}</div>
-                <div style={{ fontSize: '10px', opacity: 0.7, marginTop: '4px' }}>{d.adr > 0 ? fmtEur(d.adr) : '—'}</div>
+                <div style={{ fontSize: '10px', opacity: 0.7, marginTop: '4px' }}>{d.adr > 0 ? fmtEur(d.adr) : '-'}</div>
               </div>
             ))}
           </div>
@@ -1375,7 +1375,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
       ) : !isPremium ? (
         <PremiumLock
           title="Heatmap jour de semaine"
-          description="Visualise instantanément quels jours rapportent le plus — du lundi au dimanche. Indispensable pour ajuster tes prix weekend/semaine."
+          description="Visualise instantanément quels jours rapportent le plus : du lundi au dimanche. Indispensable pour ajuster tes prix weekend/semaine."
           bullets={[
             'Code couleur d\'intensité par jour (vert plus ou moins foncé)',
             'Nombre de nuits + ADR moyen par jour',
@@ -1467,7 +1467,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
       ) : !isPremium ? (
         <PremiumLock
           title="Distance aux plafonds légaux"
-          description="Ne te fais pas surprendre par une bascule fiscale ou réglementaire. Suivi en temps réel des plafonds qui te concernent (FR : 120 j résidence principale, 15 000 €, 23 000 € LMP — PT : 15 000 € IVA, 200 000 € contabilidade organizada)."
+          description="Ne te fais pas surprendre par une bascule fiscale ou réglementaire. Suivi en temps réel des plafonds qui te concernent (FR : 120 j résidence principale, 15 000 €, 23 000 € LMP ; PT : 15 000 € IVA, 200 000 € contabilidade organizada)."
           bullets={[
             'Jauges visuelles avec seuils de couleur (vert / orange / rouge)',
             'Adaptation automatique selon le pays de ton logement',
@@ -1481,7 +1481,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
         <section style={s.card}>
           <div style={s.cardHead}>
             <div>
-              <h3 style={s.cardTitle}>Sources de réservation — par % de revenu</h3>
+              <h3 style={s.cardTitle}>Sources de réservation : par % de revenu</h3>
               <p style={s.cardSub}>Ce qui rapporte réellement, pas juste ce qui amène le plus de voyageurs</p>
             </div>
           </div>
@@ -1512,11 +1512,11 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
         </section>
       ) : !isPremium ? (
         <PremiumLock
-          title="Sources de réservation — par % de revenu"
+          title="Sources de réservation : par % de revenu"
           description="Pas juste le nombre de voyageurs, mais combien chaque canal te rapporte vraiment. Indispensable pour savoir où investir tes efforts d'acquisition."
           bullets={[
             'Part du CA réel par canal (Airbnb, Booking, direct, etc.)',
-            'ADR par canal — souvent les directs rapportent plus par nuit',
+            'ADR par canal : souvent les directs rapportent plus par nuit',
             'Découvre quel canal est rentable en revenu (pas qu\'en volume)',
           ]}
         />
@@ -1782,7 +1782,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
             </div>
             <span style={{
               fontSize: '11px', fontWeight: 700, padding: '3px 9px', borderRadius: '999px',
-              background: 'rgba(167,139,250,0.15)', color: '#A78BFA', border: '1px solid rgba(167,139,250,0.35)',
+              background: 'rgba(183,121,31,0.15)', color: '#B7791F', border: '1px solid rgba(183,121,31,0.35)',
             }}>
               À venir
             </span>
@@ -1806,14 +1806,14 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
                 borderLeftColor:
                   ins.kind === 'top' ? 'var(--success-1)'
                   : ins.kind === 'low' ? '#F59E0B'
-                  : ins.kind === 'benchmark' ? '#A78BFA'
+                  : ins.kind === 'benchmark' ? '#B7791F'
                   : 'var(--accent-text)',
               }}
             >
               {ins.kind === 'top' && <Trophy size={18} weight="fill" color="#34D399" />}
               {ins.kind === 'low' && <Warning size={18} weight="fill" color="#F59E0B" />}
               {ins.kind === 'tip' && <Sparkle size={18} weight="fill" color="var(--accent-text)" />}
-              {ins.kind === 'benchmark' && <Sparkle size={18} weight="fill" color="#A78BFA" />}
+              {ins.kind === 'benchmark' && <Sparkle size={18} weight="fill" color="#B7791F" />}
               <span>{ins.text}</span>
             </div>
           ))}
@@ -1844,7 +1844,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
         <div style={s.cardHead}>
           <div>
             <h3 style={s.cardTitle}>Revenus - 12 derniers mois</h3>
-            <p style={s.cardSub}>Revenu mensuel calcule sur les sejours</p>
+            <p style={s.cardSub}>Revenu mensuel calculé sur les séjours</p>
           </div>
         </div>
         <BarChart
@@ -1885,8 +1885,8 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
         <section style={s.card}>
           <div style={s.cardHead}>
             <div>
-              <h3 style={s.cardTitle}>Sources de reservation</h3>
-              <p style={s.cardSub}>D'ou viennent tes voyageurs</p>
+              <h3 style={s.cardTitle}>Sources de réservation</h3>
+              <p style={s.cardSub}>D'où viennent tes voyageurs</p>
             </div>
           </div>
           {sources.length > 0 ? (
@@ -1932,7 +1932,7 @@ export default function PerformancesView({ sejours, logements, voyageurs, benchm
                 <th style={{ ...s.th, textAlign: 'right' }}>€/nuit</th>
                 <th style={{ ...s.th, textAlign: 'right' }}>Nuits</th>
                 <th style={{ ...s.th, textAlign: 'right' }}>Sejours</th>
-                <th style={{ ...s.th, textAlign: 'right' }}>Duree moy.</th>
+                <th style={{ ...s.th, textAlign: 'right' }}>Durée moy.</th>
                 <th style={{ ...s.th, textAlign: 'right' }}>Anticipation</th>
               </tr>
             </thead>
@@ -2086,7 +2086,7 @@ function BenchRow({ label, mineValue, mineNum, marketValue, marketNum, betterIfH
           marginTop: '10px', fontSize: '11px', fontWeight: 500,
           color: 'var(--text-muted)', fontStyle: 'italic',
         }}>
-          Pas encore de data — repère marché
+          Pas encore de data : repère marché
         </div>
       )}
     </div>
@@ -2147,7 +2147,7 @@ function BarChart({ items, maxValue }: {
 }
 
 // ─── Donut SVG ────────────────────────────────────────────────────────────
-const DONUT_COLORS = ['#FFD56B', 'var(--success-1)', '#7EB8F7', '#A78BFA', 'var(--danger)', '#FB923C', '#22D3EE', '#F472B6']
+const DONUT_COLORS = ['#FFD56B', 'var(--success-1)', '#8B6D5E', '#B7791F', 'var(--danger)', '#FB923C', '#6B8E6B', '#F472B6']
 
 function Donut({ items, total, centerLabel }: {
   items: { label: string; value: number; color: string }[]

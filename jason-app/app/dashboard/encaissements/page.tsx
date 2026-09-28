@@ -31,7 +31,7 @@ export default async function EncaissementsPage() {
     getEncaissementsSummary(stripeAccountId),
     supabase
       .from('contracts')
-      .select('id, locataire_prenom, locataire_nom, locataire_email, logement_nom, montant_loyer, date_arrivee, date_depart, statut, stripe_payment_status, stripe_payment_enabled')
+      .select('id, locataire_prenom, locataire_nom, locataire_email, logement_nom, montant_loyer, acompte_percent, date_arrivee, date_depart, statut, stripe_payment_status, stripe_payment_enabled')
       .eq('user_id', profile.userId)
       .neq('statut', 'annule')
       .order('date_arrivee', { ascending: false })

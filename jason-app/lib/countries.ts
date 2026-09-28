@@ -55,7 +55,7 @@ export type CountryConfig = {
     /** Coefficient d'imputation des revenus imposables (0.50 = 50%) */
     taxableIncomeRatio: number     // 0.50 (FR micro-BIC LCD non classé), 0.35 (PT cat. B AL)
     /** Plafond CA pour rester en régime simplifié (€/an) */
-    simpleRegimeCap: number        // 77700 (FR), 200000 (PT - approximatif)
+    simpleRegimeCap: number        // 83600 (FR, revenus 2026), 200000 (PT - approximatif)
     /** Note pour l'hôte */
     note: string
   }
@@ -98,8 +98,8 @@ export const COUNTRIES: Record<CountryCode, CountryConfig> = {
     taxation: {
       simpleRegimeName: 'Micro-BIC',
       taxableIncomeRatio: 0.50,
-      simpleRegimeCap: 77700,
-      note: "Micro-BIC LCD non classé 2026 : abattement forfaitaire 50 % (au-delà du seuil de 15 000 €, conditions strictes). Meublé classé : 71 % d'abattement.",
+      simpleRegimeCap: 83600,
+      note: "Micro-BIC 2026 : meublé non classé 30 % d'abattement jusqu'à 15 000 € de recettes ; meublé classé ou chambres d'hôtes 50 % jusqu'à 83 600 €. Au-delà : régime réel.",
     },
     vat: {
       lcdRate: 10,

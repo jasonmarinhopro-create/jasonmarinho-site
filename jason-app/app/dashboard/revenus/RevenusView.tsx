@@ -1,5 +1,6 @@
 'use client'
 
+import { FISCAL_PARAMS_2026 } from '@/lib/lcd/fiscal-params'
 import { useState, useMemo, useTransition, useEffect } from 'react'
 import {
   CurrencyEur, Clock, TrendUp, CalendarBlank,
@@ -92,10 +93,10 @@ const TYPE_OPTIONS = ['loyer', 'caution', 'frais_menage', 'autre'] as const
 // ─── Charges ─────────────────────────────────────────────────────────────────
 
 const CHARGE_CATEGORIES: Array<{ slug: string; label: string; emoji: string; color: string }> = [
-  { slug: 'menage',                 label: 'Ménage',           emoji: '🧹', color: '#60a5fa' },
+  { slug: 'menage',                 label: 'Ménage',           emoji: '🧹', color: '#2F9E5B' },
   { slug: 'energie',                label: 'Énergie',          emoji: '⚡', color: '#f59e0b' },
   { slug: 'commissions_plateforme', label: 'Commissions',      emoji: '💸', color: '#ef4444' },
-  { slug: 'taxe_fonciere',          label: 'Taxe foncière',    emoji: '🏛️', color: '#a78bfa' },
+  { slug: 'taxe_fonciere',          label: 'Taxe foncière',    emoji: '🏛️', color: '#B7791F' },
   { slug: 'taxe_sejour',            label: 'Taxe de séjour',   emoji: '🛌', color: '#0ea5e9' },
   { slug: 'assurance',              label: 'Assurance',        emoji: '🛡️', color: '#34d399' },
   { slug: 'travaux',                label: 'Travaux',          emoji: '🔨', color: '#fb923c' },
@@ -1089,7 +1090,7 @@ export default function RevenusView({
           </div>
         ) : currentObjectif ? (() => {
           const pct = Math.min(100, Math.round((kpis.cetteAnneeEnc / currentObjectif) * 100))
-          const barColor = pct >= 100 ? '#10b981' : pct >= 70 ? 'var(--accent-text)' : pct >= 30 ? '#60a5fa' : 'var(--text-muted)'
+          const barColor = pct >= 100 ? '#10b981' : pct >= 70 ? 'var(--accent-text)' : pct >= 30 ? '#2F9E5B' : 'var(--text-muted)'
           return (
             <>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const, width: '100%' }}>
@@ -1188,13 +1189,13 @@ export default function RevenusView({
                     position: 'absolute' as const, left: '8px', right: '8px',
                     bottom: `${pct}%`,
                     height: '1px',
-                    background: 'rgba(96,165,250,0.6)',
-                    borderTop: '1px dashed rgba(96,165,250,0.8)',
+                    background: 'rgba(47,158,91,0.6)',
+                    borderTop: '1px dashed rgba(47,158,91,0.8)',
                     zIndex: 1, pointerEvents: 'none' as const,
                   }}>
                     <span style={{
                       position: 'absolute' as const, right: 0, top: '-16px',
-                      fontSize: '10px', fontWeight: 600, color: '#60a5fa',
+                      fontSize: '10px', fontWeight: 600, color: '#2F9E5B',
                       letterSpacing: '0.3px',
                     }}>
                       🎯 {Math.round(monthlyTarget)} €/mois
@@ -1255,7 +1256,7 @@ export default function RevenusView({
                             bottom: `${totalH}%`,
                             left: 0, right: 0,
                             height: `${prevuH}%`,
-                            background: 'repeating-linear-gradient(45deg, rgba(96,165,250,0.45) 0, rgba(96,165,250,0.45) 4px, rgba(96,165,250,0.20) 4px, rgba(96,165,250,0.20) 8px)',
+                            background: 'repeating-linear-gradient(45deg, rgba(47,158,91,0.45) 0, rgba(47,158,91,0.45) 4px, rgba(47,158,91,0.20) 4px, rgba(47,158,91,0.20) 8px)',
                             borderRadius: '3px 3px 0 0',
                           }} title={`Prévu : ${fmt(month.prevu)}`} />
                         )}
@@ -1454,7 +1455,7 @@ export default function RevenusView({
           <div style={{ marginBottom: '12px' }}>
             <h2 style={{ ...s.cardTitle, marginBottom: '4px' }}>Estimation fiscale {thisYear}</h2>
             <p style={{ ...s.cardSub, margin: 0 }}>
-              Indicatif. Régime simplifié appliqué selon le pays de chaque logement. Pas un conseil fiscal — consulter un comptable pour la déclaration officielle.
+              Indicatif. Régime simplifié appliqué selon le pays de chaque logement. Pas un conseil fiscal : consulter un comptable pour la déclaration officielle.
               Tu peux exclure des entrées de ce calcul via l&apos;icône <EyeSlash size={11} weight="bold" style={{ verticalAlign: 'middle' }} /> dans le journal (cadeau, remboursement, usage perso). Tu restes seul responsable de ta déclaration aux impôts.
             </p>
           </div>
@@ -1487,9 +1488,9 @@ export default function RevenusView({
                       <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.3px', textTransform: 'uppercase' as const }}>Net (après commissions)</div>
                       <div style={{ fontSize: '15px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: '#10b981' }}>{fmt(c.net)}</div>
                     </div>
-                    <div style={{ padding: '8px 10px', background: 'rgba(96,165,250,0.06)', borderRadius: '8px', border: '1px solid rgba(96,165,250,0.18)' }}>
-                      <div style={{ fontSize: '10px', fontWeight: 600, color: '#60a5fa', letterSpacing: '0.3px', textTransform: 'uppercase' as const }}>Base imposable estimée</div>
-                      <div style={{ fontSize: '15px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: '#60a5fa' }}>{fmt(taxableEstimate)}</div>
+                    <div style={{ padding: '8px 10px', background: 'rgba(47,158,91,0.06)', borderRadius: '8px', border: '1px solid rgba(47,158,91,0.18)' }}>
+                      <div style={{ fontSize: '10px', fontWeight: 600, color: '#2F9E5B', letterSpacing: '0.3px', textTransform: 'uppercase' as const }}>Base imposable estimée</div>
+                      <div style={{ fontSize: '15px', fontWeight: 700, fontFamily: 'var(--font-fraunces), serif', color: '#2F9E5B' }}>{fmt(taxableEstimate)}</div>
                       <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>
                         coef. {(country.taxation.taxableIncomeRatio * 100).toFixed(0)} %
                       </div>
@@ -1516,7 +1517,7 @@ export default function RevenusView({
           <div style={s.journalHead}>
             <div>
               <h2 style={{ ...s.cardTitle, marginBottom: '2px' }}>
-                <Scales size={16} weight="fill" style={{ verticalAlign: 'middle', marginRight: '6px', color: '#a78bfa' }} />
+                <Scales size={16} weight="fill" style={{ verticalAlign: 'middle', marginRight: '6px', color: '#B7791F' }} />
                 Honoraires conciergerie
               </h2>
               <p style={{ ...s.cardSub, margin: 0 }}>
@@ -1527,9 +1528,9 @@ export default function RevenusView({
               <span style={{
                 fontSize: '12px', fontWeight: 600,
                 padding: '6px 12px',
-                background: 'rgba(167,139,250,0.10)',
-                color: '#a78bfa',
-                border: '1px solid rgba(167,139,250,0.25)',
+                background: 'rgba(183,121,31,0.10)',
+                color: '#B7791F',
+                border: '1px solid rgba(183,121,31,0.25)',
                 borderRadius: '8px',
               }}>
                 Total : {fmt(honorairesStats.totalHonoraires)}
@@ -1548,14 +1549,14 @@ export default function RevenusView({
                 flexWrap: 'wrap' as const,
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: '180px' }}>
-                  <House size={14} weight="fill" color="#a78bfa" style={{ flexShrink: 0 }} />
+                  <House size={14} weight="fill" color="#B7791F" style={{ flexShrink: 0 }} />
                   <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text)' }}>{item.nom}</span>
                   <span style={{
                     fontSize: '10px', fontWeight: 700, letterSpacing: '0.4px',
                     padding: '2px 7px',
-                    background: 'rgba(167,139,250,0.10)',
-                    color: '#a78bfa',
-                    border: '1px solid rgba(167,139,250,0.25)',
+                    background: 'rgba(183,121,31,0.10)',
+                    color: '#B7791F',
+                    border: '1px solid rgba(183,121,31,0.25)',
                     borderRadius: '100px',
                   }}>
                     {item.pct} %
@@ -1568,7 +1569,7 @@ export default function RevenusView({
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-end' }}>
                     <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.3px' }}>Honoraires</span>
-                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#a78bfa' }}>{fmt(item.honoraires)}</span>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#B7791F' }}>{fmt(item.honoraires)}</span>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column' as const, alignItems: 'flex-end' }}>
                     <span style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: '0.3px' }}>Net propriétaire</span>
@@ -1922,7 +1923,7 @@ export default function RevenusView({
               <p style={{ margin: 0, fontSize: '13px', lineHeight: 1.6, color: 'var(--text-2)' }}>
                 La déductibilité dépend de <strong style={{ color: 'var(--text)' }}>ton régime fiscal</strong>, pas
                 du type de charge. La box internet, le mobilier ou les travaux ne sont « déductibles »
-                que si tu es dans un régime qui déduit les charges réelles — sinon un abattement forfaitaire
+                que si tu es dans un régime qui déduit les charges réelles : sinon un abattement forfaitaire
                 les couvre déjà.
               </p>
             </div>
@@ -1938,7 +1939,7 @@ export default function RevenusView({
                   <div style={s.chargesInfoCol}>
                     <div style={s.chargesInfoColTitle}>🇫🇷 France</div>
                     <div style={s.chargesInfoRule}>
-                      <span style={{ ...s.chargesInfoTag, background: 'rgba(96,165,250,0.12)', color: '#60a5fa' }}>Micro-BIC (30 / 50 / 71 %)</span>
+                      <span style={{ ...s.chargesInfoTag, background: 'rgba(47,158,91,0.12)', color: '#2F9E5B' }}>Micro-BIC (30 % ou 50 %)</span>
                       <p style={s.chargesInfoText}>
                         L&apos;abattement forfaitaire remplace <strong>toutes</strong> tes charges. Tu ne
                         déduis rien en plus, quel que soit ce que tu as payé.
@@ -1966,7 +1967,7 @@ export default function RevenusView({
                   <div style={s.chargesInfoCol}>
                     <div style={s.chargesInfoColTitle}>🇵🇹 Portugal</div>
                     <div style={s.chargesInfoRule}>
-                      <span style={{ ...s.chargesInfoTag, background: 'rgba(96,165,250,0.12)', color: '#60a5fa' }}>Regime Simplificado (coef. 0,35)</span>
+                      <span style={{ ...s.chargesInfoTag, background: 'rgba(47,158,91,0.12)', color: '#2F9E5B' }}>Regime Simplificado (coef. 0,35)</span>
                       <p style={s.chargesInfoText}>
                         Le coefficient remplace <strong>toutes</strong> tes charges réelles. C&apos;est le régime
                         par défaut de la plupart des Alojamento Local : aucune dépense (box, ménage, mobilier…)
@@ -1989,7 +1990,7 @@ export default function RevenusView({
             ) : (
               <p style={s.chargesInfoText}>
                 Aucun de tes logements n&apos;est en France ou au Portugal : ce guide ne couvre pas encore
-                ton pays. Le principe général reste le même partout — vérifie si ton régime fiscal local
+                ton pays. Le principe général reste le même partout : vérifie si ton régime fiscal local
                 applique un abattement forfaitaire (auquel cas les charges réelles ne se déduisent pas
                 en plus) ou permet une comptabilité réelle (auquel cas oui). Un expert-comptable local
                 te le confirmera.
@@ -2006,7 +2007,7 @@ export default function RevenusView({
                     ? ' en Contabilidade Organizada.'
                     : ' dans un régime qui déduit les charges réelles.'}
               {' '}Sinon, continue quand même à enregistrer tes charges ici pour piloter ta rentabilité
-              réelle — elles n&apos;auront simplement aucun effet sur le calcul d&apos;impôt simulé plus
+              réelle : elles n&apos;auront simplement aucun effet sur le calcul d&apos;impôt simulé plus
               bas, déjà couvert par l&apos;abattement. Cette page reste un outil de suivi, pas une
               déclaration : vérifie ta situation avec un expert-comptable.
             </div>
@@ -2246,7 +2247,7 @@ export default function RevenusView({
                           ? { background: 'rgba(74,222,128,0.10)', color: '#4ade80' }
                           : r.statut === 'amorti'
                             ? { background: 'rgba(148,163,184,0.10)', color: 'var(--text-muted)' }
-                            : { background: 'rgba(96,165,250,0.10)', color: '#60a5fa' }),
+                            : { background: 'rgba(47,158,91,0.10)', color: '#2F9E5B' }),
                       }}>
                         {r.statut === 'en_cours' ? 'En cours' : r.statut === 'amorti' ? 'Amorti' : 'À venir'}
                       </span>
@@ -2371,9 +2372,9 @@ const REGIMES_FR: FiscalRegimeCard[] = [
     key: 'micro-nc',
     label: 'Micro-BIC',
     sublabel: 'Meublé non classé',
-    color: '#60a5fa',
-    bg: 'rgba(96,165,250,0.07)',
-    border: 'rgba(96,165,250,0.2)',
+    color: '#2F9E5B',
+    bg: 'rgba(47,158,91,0.07)',
+    border: 'rgba(47,158,91,0.2)',
     seuil: '15 000 €',
     abattement: '30 %',
     forWho: 'Tu loues sur Airbnb ou Booking sans classement officiel, et tes revenus restent sous 15 000 €/an.',
@@ -2388,9 +2389,9 @@ const REGIMES_FR: FiscalRegimeCard[] = [
     bg: 'rgba(52,211,153,0.07)',
     border: 'rgba(52,211,153,0.2)',
     seuil: '83 600 €',
-    abattement: '50 %, 71 %',
+    abattement: '50 %',
     forWho: 'Ton logement a obtenu un classement tourisme (étoiles) ou tu gères des chambres d\'hôtes.',
-    avantage: 'Abattement de 50 % (classé) ou 71 % (chambres d\'hôtes), un classement peut diviser ta base imposable par deux.',
+    avantage: 'Abattement de 50 % au lieu de 30 %, et plafond relevé de 15 000 € à 83 600 € (revenus 2026) : le classement réduit nettement ta base imposable.',
     attention: 'Le classement implique une démarche officielle auprès d\'un organisme agréé.',
   },
   {
@@ -2416,9 +2417,9 @@ const REGIMES_PT: FiscalRegimeCard[] = [
     key: 'simplificado',
     label: 'Regime Simplificado',
     sublabel: 'Categoria B (AL Continental)',
-    color: '#60a5fa',
-    bg: 'rgba(96,165,250,0.07)',
-    border: 'rgba(96,165,250,0.2)',
+    color: '#2F9E5B',
+    bg: 'rgba(47,158,91,0.07)',
+    border: 'rgba(47,158,91,0.2)',
     seuil: '200 000 €',
     abattement: 'coef. 0,35',
     forWho: 'Tu déclares ton AL en Categoria B et ton CA reste sous 200 000 €/an. Régime par défaut pour la plupart des hôtes.',
@@ -2441,7 +2442,7 @@ const REGIMES_PT: FiscalRegimeCard[] = [
   {
     key: 'organizada',
     label: 'Contabilidade Organizada',
-    sublabel: 'Régime réel — toutes catégories',
+    sublabel: 'Régime réel : toutes catégories',
     color: '#f59e0b',
     bg: 'rgba(245,158,11,0.07)',
     border: 'rgba(245,158,11,0.2)',
@@ -2726,15 +2727,17 @@ const FISCAL_CONFIGS: Record<FiscalCountry, FiscalConfig> = {
     subtitle: "Quel régime s'applique à tes revenus de location meublée ?",
     seuils: [
       { key: 'micro-nc',   label: 'Micro-BIC non classé',   valeur: 15000,  color: '#f59e0b', bg: 'rgba(245,158,11,0.10)' },
-      { key: 'micro-c',    label: 'Micro-BIC classé',       valeur: 77700,  color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
-      { key: 'tva',        label: 'Franchise TVA (presta)', valeur: 36800,  color: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
+      { key: 'micro-c',    label: 'Micro-BIC classé',       valeur: FISCAL_PARAMS_2026.microBic.classe.plafond,  color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
+      { key: 'tva',        label: 'Franchise TVA (presta)', valeur: FISCAL_PARAMS_2026.tva.seuilFranchise,  color: '#B7791F', bg: 'rgba(183,121,31,0.10)' },
     ],
-    coefStandard: 0.70, coefAvantageux: 0.29,
-    labelStandard: 'Micro-BIC NC (30 %)', labelAvantageux: 'Micro-BIC ★ (71 %)',
+    // Loi Le Meur : 30 % non classé, 50 % classé (et chambres d'hôtes). Avant sept. 2026 la page
+    // affichait encore l'ancien 71 %, qui surestimait l'avantage du classement.
+    coefStandard: 1 - FISCAL_PARAMS_2026.microBic.nonClasse.abattement, coefAvantageux: 1 - FISCAL_PARAMS_2026.microBic.classe.abattement,
+    labelStandard: 'Micro-BIC non classé (30 %)', labelAvantageux: 'Micro-BIC classé (50 %)',
     getReco: (a, c) => a === 0 ? null
-      : a > 77700 ? { label: 'Régime réel obligatoire', detail: 'Tu dépasses le plafond micro-BIC. Le régime réel est imposé.' }
+      : a > FISCAL_PARAMS_2026.microBic.classe.plafond ? { label: 'Régime réel obligatoire', detail: 'Tu dépasses le plafond micro-BIC. Le régime réel est imposé.' }
       : c >= a * 0.30 && c > 1000 ? { label: 'Régime réel recommandé', detail: `Tes charges représentent ${Math.round((c/a)*100)} % de ton CA, le réel sera plus avantageux.` }
-      : a > 15000 ? { label: 'Micro-BIC classé recommandé', detail: 'Pense à faire classer ton meublé pour profiter du plafond 77 700 € + 71 % d\'abattement.' }
+      : a > 15000 ? { label: 'Micro-BIC classé recommandé', detail: 'Pense à faire classer ton meublé : plafond de 83 600 € (revenus 2026) et 50 % d\'abattement au lieu de 30 %.' }
       : { label: 'Micro-BIC non classé OK', detail: 'Le micro-BIC simplifie la déclaration. Si tes charges dépassent 30 %, le réel sera plus avantageux.' },
     regimes: REGIMES_FR,
     sources: [
@@ -2746,7 +2749,7 @@ const FISCAL_CONFIGS: Record<FiscalCountry, FiscalConfig> = {
     flag: '🇵🇹', countryName: 'Portugal',
     subtitle: "Quel régime s'applique à tes revenus Alojamento Local au Portugal ?",
     seuils: [
-      { key: 'iva',        label: 'Seuil IVA AL',           valeur: 15000,  color: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
+      { key: 'iva',        label: 'Seuil IVA AL',           valeur: 15000,  color: '#B7791F', bg: 'rgba(183,121,31,0.10)' },
       { key: 'simpl',      label: 'Régime simplifié AL',    valeur: 200000, color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
     ],
     coefStandard: 0.35, coefAvantageux: 0.35,
@@ -2767,7 +2770,7 @@ const FISCAL_CONFIGS: Record<FiscalCountry, FiscalConfig> = {
     subtitle: "¿Qué régimen aplica a tus rendimientos por apartamentos turísticos ?",
     seuils: [
       { key: 'modulos',    label: 'Estimación objetiva',    valeur: 250000, color: '#10b981', bg: 'rgba(16,185,129,0.10)' },
-      { key: 'iva',        label: 'Auto-liquidación IVA',   valeur: 30000,  color: '#a78bfa', bg: 'rgba(167,139,250,0.10)' },
+      { key: 'iva',        label: 'Auto-liquidación IVA',   valeur: 30000,  color: '#B7791F', bg: 'rgba(183,121,31,0.10)' },
     ],
     // ES : estimación directa = CA - dépenses (régime réel)
     //      estimación objetiva (módulos) = forfait avec coefficient ~0.40-0.45 sur le CA
@@ -2894,39 +2897,39 @@ function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel
         {country === 'PT' ? (
           <>
             <SeuilPill label="Categoria B" seuil="< 200 000 €" pct="coef. 0.35" color="#34d399" />
-            <SeuilPill label="IVA seuil"   seuil="> 15 000 €"  pct="IVA due"     color="#a78bfa" />
-            <SeuilPill label="Continental" seuil="—"           pct="IVA 6 %"     color="#60a5fa" />
+            <SeuilPill label="IVA seuil"   seuil="> 15 000 €"  pct="IVA due"     color="#B7791F" />
+            <SeuilPill label="Continental" seuil="-"           pct="IVA 6 %"     color="#2F9E5B" />
             <div style={sf.seuilSep} className="fisc-seuil-sep" />
-            <SeuilPill label="Açores/Madeira" seuil="—"        pct="IVA 5 %"     color="#fb923c" />
+            <SeuilPill label="Açores/Madeira" seuil="-"        pct="IVA 5 %"     color="#fb923c" />
           </>
         ) : country === 'ES' ? (
           <>
             <SeuilPill label="Estim. objetiva" seuil="< 250 000 €" pct="módulos" color="#34d399" />
             <SeuilPill label="Estim. directa"  seuil="> 250 000 €" pct="réel"     color="#f59e0b" />
-            <SeuilPill label="IVA AT"          seuil="10 %"        pct="si services" color="#a78bfa" />
+            <SeuilPill label="IVA AT"          seuil="10 %"        pct="si services" color="#B7791F" />
             <div style={sf.seuilSep} className="fisc-seuil-sep" />
-            <SeuilPill label="Tasa turística"  seuil="—"           pct="par CCAA" color="#60a5fa" />
+            <SeuilPill label="Tasa turística"  seuil="-"           pct="par CCAA" color="#2F9E5B" />
           </>
         ) : country === 'IT' ? (
           <>
             <SeuilPill label="Cedolare secca" seuil="≤ 4 unités" pct="21 %" color="#34d399" />
             <SeuilPill label="Cedolare 26 %"  seuil="> 4 unités" pct="26 %" color="#f59e0b" />
-            <SeuilPill label="CIN"            seuil="obligatoire" pct="2024+" color="#a78bfa" />
+            <SeuilPill label="CIN"            seuil="obligatoire" pct="2024+" color="#B7791F" />
             <div style={sf.seuilSep} className="fisc-seuil-sep" />
-            <SeuilPill label="Imposta soggiorno" seuil="par commune" pct="3-7 €/nuit" color="#60a5fa" />
+            <SeuilPill label="Imposta soggiorno" seuil="par commune" pct="3-7 €/nuit" color="#2F9E5B" />
           </>
         ) : country === 'BE' ? (
           <>
             <SeuilPill label="Mobiliers"        seuil="30 %"        pct="forfait" color="#34d399" />
             <SeuilPill label="Pros (volume)"    seuil="> 25 000 €"  pct="barème IPP" color="#f59e0b" />
-            <SeuilPill label="TVA"              seuil="6 %"         pct="hébergement" color="#a78bfa" />
+            <SeuilPill label="TVA"              seuil="6 %"         pct="hébergement" color="#B7791F" />
             <div style={sf.seuilSep} className="fisc-seuil-sep" />
-            <SeuilPill label="Taxe séjour"      seuil="par commune" pct="3-5 €/nuit" color="#60a5fa" />
+            <SeuilPill label="Taxe séjour"      seuil="par commune" pct="3-5 €/nuit" color="#2F9E5B" />
           </>
         ) : country === 'DE' ? (
           <>
             <SeuilPill label="Kleinunternehmer" seuil="< 22 000 €"  pct="USt-frei"  color="#34d399" />
-            <SeuilPill label="USt"              seuil="7 %"         pct="hébergement" color="#a78bfa" />
+            <SeuilPill label="USt"              seuil="7 %"         pct="hébergement" color="#B7791F" />
             <SeuilPill label="ESt barème"       seuil="14-45 %"     pct="progressif" color="#f59e0b" />
             <div style={sf.seuilSep} className="fisc-seuil-sep" />
             <SeuilPill label="⚠ Permis Berlin/München" seuil="8 sem./an" pct="sans permis" color="#ef4444" />
@@ -2935,23 +2938,23 @@ function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel
           <>
             <SeuilPill label="Box 3"            seuil="< 50 000 €"  pct="forfait"   color="#34d399" />
             <SeuilPill label="Box 1"            seuil="> 50 000 €"  pct="barème IB" color="#f59e0b" />
-            <SeuilPill label="BTW"              seuil="9 %"         pct="< 90 jours" color="#a78bfa" />
+            <SeuilPill label="BTW"              seuil="9 %"         pct="< 90 jours" color="#B7791F" />
             <div style={sf.seuilSep} className="fisc-seuil-sep" />
             <SeuilPill label="⚠ Amsterdam"      seuil="30 j/an max" pct="particulier" color="#ef4444" />
           </>
         ) : country === 'AT' ? (
           <>
             <SeuilPill label="Kleinunternehmer" seuil="< 55 000 €"  pct="USt-frei"  color="#34d399" />
-            <SeuilPill label="USt"              seuil="10 %"        pct="hébergement" color="#a78bfa" />
+            <SeuilPill label="USt"              seuil="10 %"        pct="hébergement" color="#B7791F" />
             <SeuilPill label="Gewerbe"          seuil="> 4 unités"  pct="commerçant" color="#f59e0b" />
             <div style={sf.seuilSep} className="fisc-seuil-sep" />
-            <SeuilPill label="Ortstaxe Wien"    seuil="~3,02 %"     pct="prix HT"   color="#60a5fa" />
+            <SeuilPill label="Ortstaxe Wien"    seuil="~3,02 %"     pct="prix HT"   color="#2F9E5B" />
           </>
         ) : (
           <>
-            <SeuilPill label="Non classé" seuil="< 15 000 €" pct="30 %" color="#60a5fa" />
+            <SeuilPill label="Non classé" seuil="< 15 000 €" pct="30 %" color="#2F9E5B" />
             <SeuilPill label="Classé ★"   seuil="< 83 600 €" pct="50 %" color="#34d399" />
-            <SeuilPill label="Ch. d'hôtes" seuil="< 188 700 €" pct="71 %" color="#a78bfa" />
+            <SeuilPill label="Ch. d'hôtes" seuil="< 83 600 €" pct="50 %" color="#B7791F" />
             <div style={sf.seuilSep} className="fisc-seuil-sep" />
             <SeuilPill label="LMP si"      seuil="> 23 000 €" pct="+ 50 % revenus" color="#fb923c" />
           </>
@@ -3017,8 +3020,8 @@ function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel
         <div style={{
           ...sf.recoBox,
           marginTop: '10px',
-          borderColor: chargesAnnee === 0 ? 'var(--border)' : shouldSwitchToReel ? 'rgba(16,185,129,0.35)' : 'rgba(96,165,250,0.3)',
-          background: chargesAnnee === 0 ? 'var(--surface-2)' : shouldSwitchToReel ? 'rgba(16,185,129,0.06)' : 'rgba(96,165,250,0.05)',
+          borderColor: chargesAnnee === 0 ? 'var(--border)' : shouldSwitchToReel ? 'rgba(16,185,129,0.35)' : 'rgba(47,158,91,0.3)',
+          background: chargesAnnee === 0 ? 'var(--surface-2)' : shouldSwitchToReel ? 'rgba(16,185,129,0.06)' : 'rgba(47,158,91,0.05)',
         }}>
           <div style={sf.recoHeader}>
             <span style={sf.recoLabel}>🧮 Dois-tu changer de régime ?</span>
@@ -3074,26 +3077,26 @@ function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel
 
       {/* Alert si revenus annuels proches des seuils (FR uniquement) */}
       {country === 'FR' && annuel >= 12000 && annuel < 15500 && (
-        <div style={{ ...sf.alert, borderColor: 'rgba(96,165,250,0.3)', background: 'rgba(96,165,250,0.07)' }}>
-          <Info size={14} style={{ color: '#60a5fa', flexShrink: 0 }} />
+        <div style={{ ...sf.alert, borderColor: 'rgba(47,158,91,0.3)', background: 'rgba(47,158,91,0.07)' }}>
+          <Info size={14} style={{ color: '#2F9E5B', flexShrink: 0 }} />
           <span>Tes revenus cette année approchent le seuil micro-BIC non classé (15 000 €). Si tu le dépasses, tu bascules automatiquement au régime réel ou micro-BIC classé.</span>
         </div>
       )}
       {/* Alert IVA Portugal */}
       {country === 'PT' && annuel >= 12000 && annuel < 16000 && (
-        <div style={{ ...sf.alert, borderColor: 'rgba(167,139,250,0.3)', background: 'rgba(167,139,250,0.07)' }}>
-          <Info size={14} style={{ color: '#a78bfa', flexShrink: 0 }} />
+        <div style={{ ...sf.alert, borderColor: 'rgba(183,121,31,0.3)', background: 'rgba(183,121,31,0.07)' }}>
+          <Info size={14} style={{ color: '#B7791F', flexShrink: 0 }} />
           <span>Tu approches le seuil IVA Alojamento Local (15 000 € au Portugal continental). Au-delà tu devras facturer l&apos;IVA (6 % continental, 5 % Açores/Madeira) et la reverser trimestriellement.</span>
         </div>
       )}
       {country === 'FR' && annuel >= 18000 && (
         <div style={{
           marginTop: '12px', padding: '16px 18px', borderRadius: '14px',
-          background: annuel >= 23000 ? 'rgba(251,146,60,0.07)' : 'rgba(96,165,250,0.05)',
-          border: `1px solid ${annuel >= 23000 ? 'rgba(251,146,60,0.3)' : 'rgba(96,165,250,0.22)'}`,
+          background: annuel >= 23000 ? 'rgba(251,146,60,0.07)' : 'rgba(47,158,91,0.05)',
+          border: `1px solid ${annuel >= 23000 ? 'rgba(251,146,60,0.3)' : 'rgba(47,158,91,0.22)'}`,
         }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '10px' }}>
-            <Warning size={16} style={{ color: annuel >= 23000 ? '#fb923c' : '#60a5fa', flexShrink: 0, marginTop: '2px' }} weight="fill" />
+            <Warning size={16} style={{ color: annuel >= 23000 ? '#fb923c' : '#2F9E5B', flexShrink: 0, marginTop: '2px' }} weight="fill" />
             <div>
               <div style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--text)', marginBottom: '4px' }}>
                 {annuel >= 23000 ? 'Tu as franchi le seuil 23 000 € · attention au LMP' : "Tu approches le seuil 23 000 € · à anticiper"}
@@ -3171,7 +3174,7 @@ function FiscaliteSection({ annuel, chargesAnnee = 0, country = 'FR' }: { annuel
             <Info size={12} style={{ flexShrink: 0, marginTop: '1px' }} />
             <span>
               Guide informatif {config.countryName} basé sur la réglementation en vigueur en 2026
-              {sources.length > 0 ? ' — ' : '. '}
+              {sources.length > 0 ? ' : ' : '. '}
               {sources.map((src, i) => (
                 <span key={src.url}>
                   {i > 0 && ', '}

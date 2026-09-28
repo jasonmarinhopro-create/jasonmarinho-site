@@ -143,7 +143,7 @@ function computeInsights(s: {
   autresRevenusRenseignes: boolean
 }): AccountStats['insights'] {
   const plafondNc = FISCAL_PARAMS_2026.microBic.nonClasse.plafond  // 15 000
-  const plafondCl = FISCAL_PARAMS_2026.microBic.classe.plafond     // 77 700
+  const plafondCl = FISCAL_PARAMS_2026.microBic.classe.plafond     // 83 600 (revenus 2026)
 
   // ── CA tile ──
   let ca: Insight | null = null
@@ -269,7 +269,7 @@ function computeInsights(s: {
     }
   } else if (s.regime === 'micro-classe') {
     regime = {
-      message: 'Tu profites de 50 % d\'abattement. Surveille le plafond 77 700 €',
+      message: `Tu profites de 50 % d'abattement. Surveille le plafond ${plafondCl.toLocaleString('fr-FR')} €`,
       ctaLabel: 'Voir le détail',
       ctaHref: '/dashboard/simulateurs#fiscal',
       tone: 'neutral',

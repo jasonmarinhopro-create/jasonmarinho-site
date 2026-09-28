@@ -29,7 +29,7 @@ Ménage, énergie, assurance, travaux : saisis-les pour voir ton **bénéfice ne
 
 ## L'estimation de ton imposition
 
-L'app compare ta base imposable selon les régimes : **micro-BIC** (abattement de 30, 50 ou 71 % selon le type de location), **régime réel** (LMNP) et signale le passage possible en **LMP**. Pour un logement au Portugal, elle utilise le **regime simplificado**.
+L'app compare ta base imposable selon les régimes : **micro-BIC** (abattement de 30 % pour un meublé non classé, 50 % pour un meublé classé ou des chambres d'hôtes), **régime réel** (LMNP) et signale le passage possible en **LMP**. Pour un logement au Portugal, elle utilise le **regime simplificado**.
 
 > C'est une estimation pour t'orienter, pas une déclaration. Pour trancher, fais valider par un comptable, surtout au régime réel.
 
