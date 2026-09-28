@@ -31,11 +31,11 @@ type BuiltIn = {
 }
 
 const BUILTIN: BuiltIn[] = [
-  { key: 'airbnb',  label: 'Airbnb',  color: '#FF5A5F', bg: 'rgba(255,90,95,0.13)',  icon: <House size={18} weight="duotone" />,              placeholder: 'https://www.airbnb.fr/hosting/reservations' },
-  { key: 'booking', label: 'Booking', color: '#D97706', bg: 'rgba(217,119,6,0.13)',  icon: <BookOpen size={18} weight="duotone" />,           placeholder: 'https://admin.booking.com/extranet_ng/manage/messaging' },
+  { key: 'airbnb',  label: 'Airbnb',  color: '#E0475B', bg: 'rgba(224,71,91,0.10)',  icon: <House size={18} weight="duotone" />,              placeholder: 'https://www.airbnb.fr/hosting/reservations' },
+  { key: 'booking', label: 'Booking', color: '#B7791F', bg: 'rgba(217,119,6,0.10)',  icon: <BookOpen size={18} weight="duotone" />,           placeholder: 'https://admin.booking.com/extranet_ng/manage/messaging' },
   { key: 'driing',  label: 'Driing',  color: 'var(--accent-text)', bg: 'var(--accent-bg)', icon: <Bell size={18} weight="duotone" />,         placeholder: 'https://driing.com/hote/messages' },
-  { key: 'vrbo',    label: 'Vrbo',    color: '#4ade80', bg: 'rgba(74,222,128,0.13)', icon: <GlobeHemisphereWest size={18} weight="duotone" />, placeholder: 'https://www.vrbo.com/hosting' },
-  { key: 'abritel', label: 'Abritel', color: '#fbbf24', bg: 'rgba(251,191,36,0.13)', icon: <Storefront size={18} weight="duotone" />,         placeholder: 'https://admin.abritel.fr' },
+  { key: 'vrbo',    label: 'Vrbo',    color: '#8B6D5E', bg: 'rgba(139,109,94,0.12)', icon: <GlobeHemisphereWest size={18} weight="duotone" />, placeholder: 'https://www.vrbo.com/hosting' },
+  { key: 'abritel', label: 'Abritel', color: '#8A5A12', bg: 'rgba(255,213,107,0.18)', icon: <Storefront size={18} weight="duotone" />,         placeholder: 'https://admin.abritel.fr' },
   { key: 'gmb',     label: 'Fiche Google', color: 'var(--accent-text)', bg: 'var(--accent-bg)', icon: <MapPin size={18} weight="duotone" />,   placeholder: 'https://business.google.com/dashboard' },
 ]
 
@@ -64,7 +64,10 @@ export default function MesPlateformesWidget({ initialData }: { initialData: Pla
       <header style={s.head}>
         <div style={s.titleWrap}>
           <span style={s.titleIcon}><LinkIcon size={15} weight="duotone" /></span>
-          <h3 style={s.title}>Mes plateformes</h3>
+          <div>
+            <h3 style={s.title}>Mes plateformes</h3>
+            {total > 0 && <p style={s.sub}>Tes messageries et tableaux de bord, en un clic</p>}
+          </div>
         </div>
         <button
           onClick={() => setEditOpen(true)}
@@ -72,7 +75,7 @@ export default function MesPlateformesWidget({ initialData }: { initialData: Pla
           aria-label="Configurer mes liens plateformes"
         >
           <PencilSimple size={12} weight="bold" />
-          {total === 0 ? <span>Configurer</span> : null}
+          <span>{total === 0 ? 'Configurer' : 'Modifier'}</span>
         </button>
       </header>
 
@@ -82,7 +85,7 @@ export default function MesPlateformesWidget({ initialData }: { initialData: Pla
           <span>Ajoute tes liens Airbnb, Booking, etc. pour y accéder en 1 clic.</span>
         </button>
       ) : (
-        <div style={s.grid} className="plateformes-grid">
+        <div style={s.grid}>
           {activeBuiltIn.map(b => {
             const href = urlForKey(data, b.key)!
             return (
@@ -91,7 +94,7 @@ export default function MesPlateformesWidget({ initialData }: { initialData: Pla
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ ...s.tile, borderColor: `${b.color}40`, background: b.bg }}
+                style={{ ...s.tile, borderColor: `color-mix(in srgb, ${b.color} 30%, transparent)`, background: b.bg }}
                 title={`Ouvrir ${b.label}`}
               >
                 <span style={{ color: b.color }}>{b.icon}</span>
@@ -108,8 +111,8 @@ export default function MesPlateformesWidget({ initialData }: { initialData: Pla
               rel="noopener noreferrer"
               style={{
                 ...s.tile,
-                borderColor: c.color ? `${c.color}40` : 'var(--border)',
-                background: c.color ? `${c.color}15` : 'var(--surface-2)',
+                borderColor: c.color ? `color-mix(in srgb, ${c.color} 30%, transparent)` : 'var(--border)',
+                background: c.color ? `color-mix(in srgb, ${c.color} 9%, transparent)` : 'var(--surface-2)',
               }}
               title={`Ouvrir ${c.label}`}
             >
@@ -131,21 +134,6 @@ export default function MesPlateformesWidget({ initialData }: { initialData: Pla
         />
       )}
 
-      {/* Responsive grid : 2 col mobile / 3 col tablet / 4-5 col desktop */}
-      <style>{`
-        .plateformes-grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-        @media (min-width: 640px) {
-          .plateformes-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        }
-        @media (min-width: 980px) {
-          .plateformes-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-        }
-        @media (min-width: 1280px) {
-          .plateformes-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-        }
-      `}</style>
     </section>
   )
 }
@@ -315,23 +303,25 @@ const s: Record<string, React.CSSProperties> = {
     justifyContent: 'space-between',
     gap: '10px',
   },
-  titleWrap: { display: 'flex', alignItems: 'center', gap: '8px' },
+  titleWrap: { display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 },
   titleIcon: {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: 26, height: 26,
-    borderRadius: 7,
+    width: 34, height: 34, flexShrink: 0,
+    borderRadius: 10, border: '1px solid var(--accent-border)',
     background: 'var(--accent-bg)',
     color: 'var(--accent-text)',
   },
   title: {
     margin: 0,
     fontFamily: 'var(--font-fraunces), serif',
-    fontSize: '16px',
-    fontWeight: 400,
+    fontSize: '18px',
+    fontWeight: 500,
     color: 'var(--text)',
+    letterSpacing: '-0.01em',
   },
+  sub: { margin: '1px 0 0', fontSize: '12.5px', color: 'var(--text-3)', lineHeight: 1.35 },
   editBtn: {
     display: 'inline-flex',
     alignItems: 'center',
@@ -366,8 +356,12 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   // Grid + tile
+  // La carte vit dans la colonne de droite de l'accueil (~340 px) : grille
+  // qui s'adapte à la largeur de la carte, jamais des tuiles réduites à
+  // l'icône (avant : 5 colonnes fixes au-delà de 1280 px d'écran).
   grid: {
     display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 140px), 1fr))',
     gap: '8px',
   },
   tile: {
@@ -379,8 +373,9 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '10px',
     textDecoration: 'none',
     color: 'var(--text)',
-    fontSize: '13px',
-    fontWeight: 500,
+    fontSize: '13.5px',
+    fontWeight: 600,
+    minWidth: 0,
     transition: 'transform .15s ease, background .15s ease',
     minHeight: 44, // a11y tap target
   },

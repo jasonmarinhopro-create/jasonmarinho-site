@@ -60,7 +60,7 @@ export default function AbonnementCard({ planLabel, subscription }: Props) {
         <div style={s.metaList}>
           {sub.status === 'past_due' ? (
             <div style={{ ...s.meta, color: 'var(--warning)' }}>
-              <WarningCircle size={13} weight="fill" /> Paiement en échec — action requise
+              <WarningCircle size={13} weight="fill" /> Paiement en échec : action requise
             </div>
           ) : sub.cancelAtPeriodEnd ? (
             <div style={{ ...s.meta, color: 'var(--warning)' }}>
@@ -105,25 +105,25 @@ const s: Record<string, React.CSSProperties> = {
   card: {
     background: 'var(--surface)',
     border: '1px solid var(--border)',
-    borderRadius: '16px',
-    padding: '20px 22px',
+    borderRadius: 'var(--r-xl, 18px)',
+    padding: 'clamp(16px, 2.2vw, 22px)',
     display: 'flex',
     flexDirection: 'column',
     gap: '12px',
   },
   head: { display: 'flex', alignItems: 'center', gap: '10px' },
   icon: {
-    width: 30, height: 30, borderRadius: 8,
+    width: 36, height: 36, borderRadius: 11,
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-    background: 'var(--accent-bg)',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
     color: 'var(--accent-text)',
     flexShrink: 0,
   },
   title: {
     margin: 0,
     fontFamily: 'var(--font-fraunces), serif',
-    fontSize: '17px', fontWeight: 400,
-    color: 'var(--text)',
+    fontSize: '18px', fontWeight: 500,
+    color: 'var(--text)', letterSpacing: '-0.01em',
   },
   row: {
     display: 'flex', alignItems: 'center', gap: '10px',

@@ -47,31 +47,29 @@ export function SectionCard({
   )
 }
 
+// Carte de section (DA 28/09/2026) : même en-tête que les autres pages
+// (titre Fraunces, icône verte), sans bandeau gris.
 const sc: Record<string, React.CSSProperties> = {
   card: {
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: 'var(--r-xl)', overflow: 'hidden',
-    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
+    borderRadius: 'var(--r-xl, 18px)', padding: 'clamp(16px, 2.2vw, 22px)', minWidth: 0,
   },
   header: {
-    display: 'flex', alignItems: 'center', gap: 'var(--s-4)',
-    padding: 'var(--s-5) var(--s-6)', borderBottom: '1px solid var(--border)',
-    background: 'var(--bg-2)',
+    display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '18px',
   },
   iconWrap: {
-    width: '42px', height: '42px', borderRadius: 'var(--r-md)',
+    width: '36px', height: '36px', borderRadius: '11px',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    flexShrink: 0,
+    flexShrink: 0, border: '1px solid var(--accent-border)',
   },
   title: {
-    fontSize: 'var(--t-md)', fontWeight: 600, color: 'var(--text)',
-    margin: '0 0 var(--s-1)', letterSpacing: 'var(--ls-snug)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 500,
+    color: 'var(--text)', margin: '0 0 2px', letterSpacing: '-0.01em',
   },
   desc: {
-    fontSize: 'var(--t-xs)', color: 'var(--text-3)', margin: 0,
-    lineHeight: 'var(--lh-snug)',
+    fontSize: '13px', color: 'var(--text-3)', margin: 0, lineHeight: 1.45,
   },
-  body: { padding: 'var(--s-6)' },
+  body: {},
 }
 
 // ─── Field row ──────────────────────────────────────────────────────────────
@@ -104,7 +102,7 @@ export const f: Record<string, React.CSSProperties> = {
     fontSize: 'var(--t-xs)', fontWeight: 600, color: 'var(--text-2)',
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: 'var(--r-sm)', padding: '6px 12px', cursor: 'pointer',
-    flexShrink: 0,
+    flexShrink: 0, fontFamily: 'inherit',
     transition: 'background var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth)',
   },
   input: {
@@ -118,7 +116,7 @@ export const f: Record<string, React.CSSProperties> = {
   } as React.CSSProperties,
   cancelBtn: {
     fontSize: 'var(--t-sm)', color: 'var(--text-muted)',
-    background: 'none', border: 'none', cursor: 'pointer', padding: 'var(--s-2)',
+    background: 'none', border: 'none', cursor: 'pointer', padding: 'var(--s-2)', fontFamily: 'inherit',
     transition: 'color var(--d-base) var(--ease-smooth)',
   },
   readOnly: {
@@ -544,7 +542,7 @@ export function DangerZone() {
             <p style={dz.desc}>
               Si tu ne veux plus utiliser ton espace, tu peux le supprimer en 1 clic.
               Toutes tes données (logements, voyageurs, séjours, contrats, posts) seront
-              effacées et ton abonnement résilié. Conforme RGPD + droit de rétractation 14 jours.
+              effacées et ton abonnement résilié. Conforme au RGPD et au droit de rétractation de 14 jours.
             </p>
           </div>
         </div>
@@ -632,9 +630,8 @@ const dz: Record<string, React.CSSProperties> = {
   card: {
     background: 'var(--surface)',
     border: '1px solid var(--border-2)',
-    borderRadius: '14px',
-    padding: '18px 20px',
-    marginTop: '24px',
+    borderRadius: 'var(--r-xl, 18px)',
+    padding: 'clamp(16px, 2.2vw, 22px)',
     display: 'flex',
     flexDirection: 'column',
     gap: '14px',
@@ -647,8 +644,8 @@ const dz: Record<string, React.CSSProperties> = {
     flexShrink: 0,
   },
   title: {
-    fontSize: '14.5px', fontWeight: 600, color: 'var(--text)',
-    margin: '0 0 4px',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 500,
+    color: 'var(--text)', margin: '0 0 4px', letterSpacing: '-0.01em',
   },
   desc: {
     fontSize: '12.5px', color: 'var(--text-2)', margin: 0, lineHeight: 1.55,
@@ -731,6 +728,6 @@ function addBtn(color: string, bg: string, border: string): React.CSSProperties 
     display: 'inline-flex', alignItems: 'center', gap: '6px',
     background: bg, border: `1px solid ${border}`,
     borderRadius: '10px', padding: '9px 16px',
-    fontSize: '13px', fontWeight: 600, color, cursor: 'pointer',
+    fontSize: '13px', fontWeight: 600, color, cursor: 'pointer', fontFamily: 'inherit',
   }
 }

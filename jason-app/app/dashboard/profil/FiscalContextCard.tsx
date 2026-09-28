@@ -75,7 +75,7 @@ export default function FiscalContextCard({ initialValue }: Props) {
         {error && <div style={s.error}>{error}</div>}
         <div style={s.hint}>
           <Info size={12} weight="regular" style={{ flexShrink: 0, marginTop: 1 }} />
-          <span>Information privée, jamais partagée. Utilisée uniquement pour affiner ton statut LMNP/LMP côté simulateurs et activity overview.</span>
+          <span>Information privée, jamais partagée. Elle sert seulement à affiner ton statut LMNP ou LMP dans les simulateurs et dans Mes finances.</span>
         </div>
       </div>
 
@@ -89,10 +89,11 @@ export default function FiscalContextCard({ initialValue }: Props) {
 
 const s: Record<string, React.CSSProperties> = {
   card: {
-    padding: 'clamp(18px, 2.5vw, 26px)',
+    padding: 'clamp(16px, 2.2vw, 22px)',
     background: 'var(--surface)',
     border: '1px solid var(--border)',
-    borderRadius: '16px',
+    borderRadius: 'var(--r-xl, 18px)',
+    minWidth: 0,
   },
   head: {
     display: 'flex',
@@ -101,10 +102,11 @@ const s: Record<string, React.CSSProperties> = {
     marginBottom: '18px',
   },
   iconWrap: {
-    width: '40px',
-    height: '40px',
+    width: '36px',
+    height: '36px',
     borderRadius: '11px',
-    background: 'linear-gradient(135deg, rgba(99,214,131,0.15), rgba(99,214,131,0.04))',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -113,7 +115,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   title: {
     fontFamily: 'var(--font-fraunces), serif',
-    fontSize: '17px',
+    fontSize: '18px',
     fontWeight: 500,
     color: 'var(--text)',
     margin: 0,
@@ -121,8 +123,8 @@ const s: Record<string, React.CSSProperties> = {
   },
   desc: {
     fontSize: '13px',
-    color: 'var(--text-2)',
-    margin: '4px 0 0',
+    color: 'var(--text-3)',
+    margin: '2px 0 0',
     lineHeight: 1.45,
   },
   fieldWrap: {

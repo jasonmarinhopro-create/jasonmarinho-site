@@ -857,6 +857,31 @@ export default async function DashboardPage() {
                 )}
               </section>
             )}
+            {/* Actualités du secteur : dans la colonne principale (avant : seules
+                en bas de page, avec un grand vide à gauche au-dessus) */}
+            {latestNews.length > 0 && (
+              <section style={s.card}>
+                <div style={s.cardHead}>
+                  <h3 style={{ ...s.cardTitle, display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                    <Newspaper size={17} color="var(--accent-text)" weight="duotone" />
+                    Actualités du secteur
+                    {freshNewsCount > 0 && (
+                      <span style={s.newsFreshBadge}>
+                        {freshNewsCount} nouvelle{freshNewsCount > 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </h3>
+                  <Link href="/dashboard/actualites" style={s.upcomingLink}>
+                    Toutes les actualités <ArrowRight size={11} weight="bold" />
+                  </Link>
+                </div>
+                <div style={s.newsGrid}>
+                  {latestNews.map(article => (
+                    <NewsCard key={article.id} article={article} />
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
 
           <aside style={s.colSide}>
@@ -954,31 +979,6 @@ export default async function DashboardPage() {
           </aside>
         </div>
 
-        {/* ── Actualités du secteur (en bas de page, pleine largeur) */}
-        {latestNews.length > 0 && (
-          <section style={s.section}>
-            <div style={s.sectionHead}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Newspaper size={16} color="var(--accent-text)" weight="duotone" />
-                <h3 style={s.sectionTitle}>Actualités du secteur</h3>
-                {freshNewsCount > 0 && (
-                  <span style={s.newsFreshBadge}>
-                    {freshNewsCount} nouvelle{freshNewsCount > 1 ? 's' : ''}
-                  </span>
-                )}
-              </div>
-              <Link href="/dashboard/actualites" style={s.seeAll}>
-                Tout voir <ArrowRight size={12} weight="bold" />
-              </Link>
-            </div>
-            <div style={s.newsGrid}>
-              {latestNews.map(article => (
-                <NewsCard key={article.id} article={article} />
-              ))}
-            </div>
-          </section>
-        )}
-
       </div>
     </>
   )
@@ -1026,7 +1026,9 @@ function NewsCard({ article }: { article: NewsArticle }) {
   const shortDesc = summary.length > 110
     ? summary.slice(0, 110).trimEnd() + '…'
     : summary
-  const href = article.source_url ?? '/dashboard/actualites'
+  // Sans source : l'article précis sur la page Actualités (avant : les 3
+  // cartes affichaient « Voir toutes les actualités », ambigu)
+  const href = article.source_url ?? `/dashboard/actualites#actu-${article.id}`
 
   return (
     <a
@@ -1043,8 +1045,8 @@ function NewsCard({ article }: { article: NewsArticle }) {
         <div style={s.newsTitle}>{article.title}</div>
         <div style={s.newsDesc}>{shortDesc}</div>
         <div style={s.newsFooter}>
-          <span style={s.newsReadMore}>{article.source_url ? 'Lire l\'article' : 'Voir toutes les actualités'}</span>
-          <ArrowRight size={11} color={tc.color} />
+          <span style={s.newsReadMore}>{article.source_url ? 'Lire la source' : 'Lire l\'actualité'}</span>
+          <ArrowRight size={11} color="var(--accent-text)" />
         </div>
       </div>
     </a>
@@ -1133,15 +1135,11 @@ const s: Record<string, React.CSSProperties> = {
   upcomingEmptySub: { fontSize: 12.5, color: 'var(--text-2)', marginTop: 2 },
 
   // ── Actualités ────────────────────────────────────────────────────────────
-  section:      { marginTop: 8 },
-  sectionTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 18, fontWeight: 500, color: 'var(--text)', margin: 0 },
-  sectionHead:  { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 14, flexWrap: 'wrap' },
   newsFreshBadge: { fontSize: 10.5, fontWeight: 700, letterSpacing: '0.3px', color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 999, padding: '2px 8px', lineHeight: 1.4, whiteSpace: 'nowrap' },
-  seeAll:       { display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12.5, color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 600 },
-  newsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 260px), 1fr))', gap: 14 },
+  newsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 230px), 1fr))', gap: 10 },
   newsCard: {
-    display: 'flex', flexDirection: 'column', gap: 10, padding: '18px 20px', borderRadius: 16,
-    border: '1px solid var(--border)', borderLeft: '3px solid', background: 'var(--surface)', height: '100%',
+    display: 'flex', flexDirection: 'column', gap: 8, padding: '14px 16px', borderRadius: 12,
+    border: '1px solid var(--border)', borderLeft: '3px solid', background: 'var(--bg)', height: '100%',
   },
   newsTag: {
     display: 'inline-flex', width: 'fit-content', fontSize: 10.5, fontWeight: 700, letterSpacing: '0.5px',

@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { CheckCircle, Circle, ArrowRight } from '@phosphor-icons/react/dist/ssr'
+import { CheckCircle, Circle, ArrowRight, UserCircle } from '@phosphor-icons/react/dist/ssr'
+import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import ProfilForm, { DangerZone } from './ProfilForm'
 import AccountCard from './AccountCard'
 import ChezNousIdentity from './ChezNousIdentity'
@@ -63,44 +64,54 @@ export default function ProfilView({ userId, email, createdAt, fullName, planLab
   return (
     <div className="profil-page">
       <style>{`
-        .profil-page { padding: clamp(20px,3vw,44px); width: 100%; }
-        .profil-hero { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px; padding: clamp(20px,3vw,32px); margin-bottom: 20px; border-radius: 20px;
-          background: linear-gradient(135deg, var(--accent-bg) 0%, rgba(99,214,131,0.10) 55%, rgba(255,213,107,0.14) 100%); border: 1px solid var(--accent-border); }
+        .profil-page { padding: 20px var(--dash-page-px) 48px; width: 100%; }
         .profil-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
         .profil-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
         .profil-layout [id] { scroll-margin-top: 90px; }
         @media (min-width: 1200px) { .profil-layout { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); } }
       `}</style>
 
-      <section className="profil-hero fade-up">
-        <div style={s.av}>{initials}</div>
-        <div style={{ flex: '1 1 260px', minWidth: 0 }}>
-          <h1 style={s.name}>{fullName || email}</h1>
-          <p style={s.email}>{email}</p>
-          <div style={s.badges}>
-            <span style={s.plan}>{planLabel === 'Administrateur' ? planLabel : `Formule ${planLabel}`}</span>
-            {createdAt && <span style={s.since}>Membre depuis {fmtMemberSince(createdAt)}</span>}
-            {planLabel === 'Découverte' && <Link href="/dashboard/abonnement" style={s.upgrade}>Passer en Standard <ArrowRight size={12} weight="bold" /></Link>}
+      {/* En-tête (DA 28/09/2026) : bandeau vert HubHero comme les autres
+          pages ; à droite, ce qui manque encore pour des contrats complets. */}
+      <HubHero
+        eyebrowIcon={<UserCircle size={14} weight="fill" />}
+        eyebrow="Mon compte"
+        title={ready ? <>Ton compte est <HeroEm>prêt</HeroEm></> : <>Prépare tes <HeroEm>contrats</HeroEm></>}
+        desc="Ce qui apparaît sur tes contrats et tes factures, comment tu encaisses, et ton abonnement. Chaque carte s'enregistre à part."
+        aside={
+          <div style={{ ...heroCard, width: '100%' }}>
+            <div style={s.readyHead}>
+              <span style={s.readyTitle}>Prêt pour tes contrats</span>
+              <span style={{ ...s.readyCount, color: ready ? 'var(--accent-text)' : 'var(--text)' }}>{done}/{checks.length}</span>
+            </div>
+            <span style={s.bar}><span style={{ ...s.barFill, width: `${(done / checks.length) * 100}%` }} /></span>
+            <ul style={s.readyList}>
+              {checks.map(c => (
+                <li key={c.label}>
+                  {c.done ? (
+                    <span style={s.readyDone}><CheckCircle size={15} weight="fill" color="var(--accent-text)" /> {c.label}</span>
+                  ) : (
+                    <a href={c.href} style={s.readyTodo}><Circle size={15} /> {c.label} <ArrowRight size={11} weight="bold" /></a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        }
+      >
+        <div style={s.who}>
+          <div style={s.av}>{initials}</div>
+          <div style={{ minWidth: 0 }}>
+            <div style={s.name}>{fullName || email}</div>
+            {fullName && <div style={s.email}>{email}</div>}
           </div>
         </div>
-        <div style={s.ready}>
-          <div style={s.readyHead}>
-            <span style={s.readyTitle}>Prêt pour tes contrats</span>
-            <span style={{ ...s.readyCount, color: ready ? 'var(--accent-text)' : 'var(--text)' }}>{done}/{checks.length}</span>
-          </div>
-          <ul style={s.readyList}>
-            {checks.map(c => (
-              <li key={c.label}>
-                {c.done ? (
-                  <span style={s.readyDone}><CheckCircle size={14} weight="fill" /> {c.label}</span>
-                ) : (
-                  <a href={c.href} style={s.readyTodo}><Circle size={14} /> {c.label} <ArrowRight size={11} weight="bold" /></a>
-                )}
-              </li>
-            ))}
-          </ul>
+        <div style={s.badges}>
+          <span style={s.plan}>{planLabel === 'Administrateur' ? planLabel : `Formule ${planLabel}`}</span>
+          {createdAt && <span style={s.since}>Membre depuis {fmtMemberSince(createdAt)}</span>}
+          {planLabel === 'Découverte' && <Link href="/dashboard/abonnement" style={s.upgrade}>Passer en Standard <ArrowRight size={12} weight="bold" /></Link>}
         </div>
-      </section>
+      </HubHero>
 
       <div className="profil-layout">
         <div className="profil-col">
@@ -134,7 +145,7 @@ export default function ProfilView({ userId, email, createdAt, fullName, planLab
         </div>
       </div>
 
-      <div style={{ marginTop: '24px' }}>
+      <div style={{ marginTop: '16px' }}>
         <DangerZone />
       </div>
     </div>
@@ -142,22 +153,24 @@ export default function ProfilView({ userId, email, createdAt, fullName, planLab
 }
 
 const s: Record<string, React.CSSProperties> = {
+  who: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' },
   av: {
-    width: '72px', height: '72px', borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+    width: '46px', height: '46px', borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
     background: 'var(--surface)', border: '2px solid var(--accent-border)', color: 'var(--accent-text)',
-    fontFamily: 'var(--font-fraunces), serif', fontSize: '26px', fontWeight: 600,
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 600,
   },
-  name: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(22px,2.6vw,30px)', fontWeight: 400, color: 'var(--text)', margin: '0 0 2px', overflowWrap: 'anywhere' },
-  email: { fontSize: '13.5px', color: 'var(--text-2)', margin: '0 0 12px', overflowWrap: 'anywhere' },
+  name: { fontSize: '15px', fontWeight: 700, color: 'var(--text)', overflowWrap: 'anywhere' },
+  email: { fontSize: '13px', color: 'var(--text-2)', overflowWrap: 'anywhere' },
   badges: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px 10px' },
   plan: { fontSize: '12px', fontWeight: 700, color: 'var(--accent-text)', background: 'var(--surface)', border: '1px solid var(--accent-border)', padding: '4px 10px', borderRadius: '999px' },
   since: { fontSize: '12px', color: 'var(--text-2)', background: 'var(--surface)', border: '1px solid var(--border)', padding: '4px 10px', borderRadius: '999px' },
   upgrade: { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12.5px', fontWeight: 700, color: 'var(--accent-text)', textDecoration: 'none' },
-  ready: { flex: '1 1 300px', maxWidth: '420px', padding: '14px 16px', borderRadius: '14px', background: 'var(--surface)', border: '1px solid var(--border)' },
-  readyHead: { display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '8px' },
-  readyTitle: { fontSize: '12px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', color: 'var(--text-2)' },
-  readyCount: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 600 },
-  readyList: { listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '5px' },
+  readyHead: { display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' },
+  readyTitle: { fontSize: '12px', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', color: 'var(--text-3)' },
+  readyCount: { fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 500 },
+  bar: { display: 'block', height: 7, borderRadius: 6, background: 'var(--surface-2)', overflow: 'hidden' },
+  barFill: { display: 'block', height: '100%', borderRadius: 6, background: 'var(--accent-text)' },
+  readyList: { listStyle: 'none', margin: '4px 0 0', padding: 0, display: 'flex', flexDirection: 'column', gap: '6px' },
   readyDone: { display: 'flex', alignItems: 'center', gap: '7px', fontSize: '13px', color: 'var(--text-3)' },
   readyTodo: { display: 'flex', alignItems: 'center', gap: '7px', fontSize: '13px', fontWeight: 600, color: 'var(--accent-text)', textDecoration: 'none' },
 }

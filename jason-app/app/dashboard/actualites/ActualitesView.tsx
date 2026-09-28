@@ -242,9 +242,11 @@ export default function ActualitesView({
     return (
       <div
         key={article.id}
+        id={`actu-${article.id}`}
         style={{
           ...s.card,
           ...(isAuthenticated && !isRead ? s.cardUnread : {}),
+          scrollMarginTop: 90,
         }}
         className="glass-card actu-card"
       >
