@@ -22,11 +22,11 @@ type ProfileFilter = 'all' | 'commun' | 'gites' | 'chambres' | 'conciergerie' | 
 // Couleurs uniquement (sans icônes) pour le rendu des filter tabs.
 // La version complète avec icônes vit dans GuideCards.tsx.
 const PROFILE_DEFS: Record<Exclude<ProfileFilter, 'all'>, { color: string; bg: string }> = {
-  commun:       { color: '#0d9488', bg: 'rgba(13,148,136,0.12)' },
-  gites:        { color: '#d97706', bg: 'rgba(245,158,11,0.12)' },
-  chambres:     { color: '#db2777', bg: 'rgba(236,72,153,0.12)' },
-  conciergerie: { color: '#7c3aed', bg: 'rgba(139,92,246,0.12)' },
-  direct:       { color: '#059669', bg: 'rgba(16,185,129,0.12)' },
+  commun:       { color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  gites:        { color: '#8A5A12', bg: 'rgba(255,213,107,0.20)' },
+  chambres:     { color: '#B83A7C', bg: 'rgba(244,114,182,0.14)' },
+  conciergerie: { color: '#6E5446', bg: 'rgba(139,109,94,0.14)' },
+  direct:       { color: '#2F7D52', bg: 'rgba(47,158,91,0.12)' },
 }
 
 const FILTER_TABS: { id: ProfileFilter; label: string; Icon: React.ElementType | null }[] = [
@@ -164,7 +164,7 @@ export default function GuideUI({ guideCards, cardCount }: GuideUIProps) {
             <div style={s.parcoursLabel}>Par où commencer ?</div>
             <div style={s.parcoursList}>
               <button onClick={() => handleFilter('gites')} style={s.parcoursCard}>
-                <span style={{ ...s.parcoursIcon, background: 'rgba(245,158,11,0.14)', color: '#d97706' }}>
+                <span style={{ ...s.parcoursIcon, background: 'rgba(255,213,107,0.20)', color: '#8A5A12' }}>
                   <HouseLine size={18} weight="fill" />
                 </span>
                 <div>
@@ -173,7 +173,7 @@ export default function GuideUI({ guideCards, cardCount }: GuideUIProps) {
                 </div>
               </button>
               <button onClick={() => handleFilter('direct')} style={s.parcoursCard}>
-                <span style={{ ...s.parcoursIcon, background: 'rgba(16,185,129,0.14)', color: '#059669' }}>
+                <span style={{ ...s.parcoursIcon, background: 'rgba(47,158,91,0.12)', color: '#2F7D52' }}>
                   <Handshake size={18} weight="fill" />
                 </span>
                 <div>
@@ -182,7 +182,7 @@ export default function GuideUI({ guideCards, cardCount }: GuideUIProps) {
                 </div>
               </button>
               <button onClick={() => handleFilter('conciergerie')} style={s.parcoursCard}>
-                <span style={{ ...s.parcoursIcon, background: 'rgba(139,92,246,0.14)', color: '#7c3aed' }}>
+                <span style={{ ...s.parcoursIcon, background: 'rgba(139,109,94,0.14)', color: '#6E5446' }}>
                   <Buildings size={18} weight="fill" />
                 </span>
                 <div>
@@ -202,7 +202,7 @@ export default function GuideUI({ guideCards, cardCount }: GuideUIProps) {
         </span>
         <input
           type="text"
-          placeholder="Rechercher dans le guide… (ex : DPE, Hoguet, RGPD)"
+          placeholder="Rechercher : DPE, Hoguet, RGPD…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={s.searchInput}
@@ -356,8 +356,8 @@ const s: Record<string, React.CSSProperties> = {
   },
   updatedDot: {
     width: '6px', height: '6px', borderRadius: '50%',
-    background: 'var(--success-1)',
-    boxShadow: '0 0 0 3px rgba(16,185,129,0.18)',
+    background: 'var(--accent-text)',
+    boxShadow: '0 0 0 3px var(--accent-bg)',
   },
 
   filterWrap: { display: 'flex', flexWrap: 'wrap' as const, gap: '8px', marginBottom: '28px' },
@@ -366,7 +366,7 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '13px', fontWeight: 500, padding: '8px 16px',
     borderRadius: '100px', border: '1.5px solid var(--border)',
     background: 'var(--surface)', color: 'var(--text-2)',
-    cursor: 'pointer', transition: 'all 0.18s', whiteSpace: 'nowrap' as const,
+    cursor: 'pointer', transition: 'all 0.18s', whiteSpace: 'nowrap' as const, fontFamily: 'inherit',
   },
 
   card: { padding: '22px', borderRadius: '20px', display: 'flex', flexDirection: 'column' as const, gap: '0', position: 'relative' as const },

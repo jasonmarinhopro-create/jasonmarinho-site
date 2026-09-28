@@ -6,10 +6,10 @@ import { HouseLine, Coffee, Buildings, Handshake, Table, ArrowRight, CheckCircle
 type Cell = { value: string; tone?: 'ok' | 'warn' | 'neutral' }
 
 const PROFILES = [
-  { id: 'gites',        label: 'Gîtes',               icon: HouseLine, color: '#d97706', bg: 'var(--warning-bg)' },
-  { id: 'chambres',     label: "Chambres d'hôtes",    icon: Coffee,    color: '#db2777', bg: 'rgba(236,72,153,0.10)' },
-  { id: 'conciergerie', label: 'Conciergeries',       icon: Buildings, color: '#7c3aed', bg: 'rgba(139,92,246,0.10)' },
-  { id: 'direct',       label: 'Réservation directe', icon: Handshake, color: '#059669', bg: 'rgba(16,185,129,0.10)' },
+  { id: 'gites',        label: 'Gîtes',               icon: HouseLine, color: '#8A5A12', bg: 'rgba(255,213,107,0.20)' },
+  { id: 'chambres',     label: "Chambres d'hôtes",    icon: Coffee,    color: '#B83A7C', bg: 'rgba(244,114,182,0.14)' },
+  { id: 'conciergerie', label: 'Conciergeries',       icon: Buildings, color: '#6E5446', bg: 'rgba(139,109,94,0.14)' },
+  { id: 'direct',       label: 'Réservation directe', icon: Handshake, color: '#2F7D52', bg: 'rgba(47,158,91,0.12)' },
 ] as const
 
 type ProfileId = (typeof PROFILES)[number]['id']
@@ -104,8 +104,8 @@ const ROWS: Row[] = [
 ]
 
 function ToneIcon({ tone }: { tone?: Cell['tone'] }) {
-  if (tone === 'ok') return <CheckCircle size={11} weight="fill" color="#10b981" />
-  if (tone === 'warn') return <MinusCircle size={11} weight="fill" color="#f59e0b" />
+  if (tone === 'ok') return <CheckCircle size={11} weight="fill" color="var(--accent-text)" />
+  if (tone === 'warn') return <MinusCircle size={11} weight="fill" color="#B7791F" />
   return null
 }
 
