@@ -144,8 +144,12 @@ export const loadFinances = cache(async (): Promise<FinanceData | null> => {
   if (logement) objectif = logement.objectif ?? (choices.length <= 1 ? legacy : null)
   else if (scope.logement) objectif = null
   else {
-    const sum = logements.reduce((s, l) => s + (l.objectif ?? 0), 0)
-    objectif = sum > 0 ? sum : legacy
+    // Somme des objectifs seulement si CHAQUE logement en a un (sinon on
+    // comparerait l'objectif d'un logement aux revenus de tous)
+    const withObj = logements.filter(l => l.objectif)
+    if (withObj.length === 0) objectif = legacy
+    else if (withObj.length === logements.length) objectif = withObj.reduce((s, l) => s + (l.objectif ?? 0), 0)
+    else objectif = null
   }
 
   return {

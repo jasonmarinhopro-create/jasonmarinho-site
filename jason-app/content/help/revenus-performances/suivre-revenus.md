@@ -1,42 +1,48 @@
 ---
 title: "Suivre tes revenus et tes charges"
-excerpt: "Mes finances : le journal des paiements, les charges et l'estimation de ton imposition."
+excerpt: "Mes finances, logement par logement : ton bénéfice, le journal, l'objectif et la fiscalité."
 order: 1
-relatedPages: [/dashboard/finances/revenus]
-updatedAt: "2026-09-27"
+relatedPages: [/dashboard/finances/revenus, /dashboard/finances/journal, /dashboard/finances/fiscalite]
+updatedAt: "2026-09-28"
 ---
 
-## Les 3 onglets de Mes finances
+## Un logement à la fois
 
-- **Revenus** : tout ce que tu as encaissé, tes charges, ton net
-- **Performances** : occupation, prix moyen, saisonnalité
-- **Encaissements** : les paiements reçus par Stripe
+En haut de **Mes finances**, choisis un logement : tous les onglets affichent alors ses chiffres à lui. Avec plusieurs logements, **Tous les logements** les additionne et montre un tableau par logement. C'est le même choix que le sélecteur en bas du menu.
 
-L'onglet Revenus est inclus dans toutes les formules, y compris Découverte. Les analyses détaillées de l'onglet Performances sont en Standard.
+## Les 5 onglets
 
-## Le journal des paiements
+- **Revenus** : ton bénéfice, mois par mois, par canal, et ton objectif
+- **Journal** : chaque revenu et chaque charge, avec la saisie, l'import et l'export
+- **Performances** : occupation, prix moyen par nuit, comparaison avec le marché
+- **Fiscalité** : micro-BIC ou régime réel, plafonds et échéances
+- **Paiements en ligne** : les loyers payés par carte sur tes contrats directs (Stripe)
 
-L'onglet **Revenus** reprend automatiquement tes **contrats** et tes **séjours saisis**. Un séjour relié à un contrat n'est compté qu'une fois.
+Revenus, Journal et Fiscalité sont inclus dans toutes les formules. Dans Performances, la comparaison avec le marché, les canaux et le rythme de réservation sont en Standard.
 
-Pour le reste :
+## Comment les chiffres sont comptés
 
-- **Importer un CSV** : l'export de tes paiements Airbnb ou Booking, pour récupérer ton historique en une fois
-- **Ajouter manuellement** : un virement, des espèces, un chèque
+- Un **séjour** compte à sa **date d'arrivée**, une saisie manuelle à sa date de paiement. Même règle dans tous les onglets et sur l'Accueil.
+- **Revenus** : les séjours déjà arrivés. Les séjours réservés pour plus tard sont affichés à part (« déjà réservé »).
+- **Bénéfice** = revenus − commissions des plateformes − charges.
+- Une **caution** n'est jamais un revenu.
+- Un séjour relié à un contrat signé n'est compté qu'une fois.
 
-## Les charges
+## Le journal
 
-Ménage, énergie, assurance, travaux : saisis-les pour voir ton **bénéfice net**. L'app distingue ce qui est **déductible tout de suite** de ce qui est **à amortir** sur plusieurs années (mobilier, travaux), avec la dotation annuelle.
+Les séjours avec un montant et les contrats signés y arrivent tout seuls. Pour le reste :
 
-## L'estimation de ton imposition
+- **+ Revenu** : un virement, des espèces, un chèque
+- **+ Charge** : ménage, énergie, assurance, taxe foncière… et les **investissements amortis** (achat du bien hors terrain, mobilier, gros travaux) avec leur durée
+- **Importer** : l'export de tes paiements Airbnb ou Booking
+- **Exporter** : un fichier CSV pour ton comptable
 
-L'app compare ta base imposable selon les régimes : **micro-BIC** (abattement de 30 % pour un meublé non classé, 50 % pour un meublé classé ou des chambres d'hôtes), **régime réel** (LMNP) et signale le passage possible en **LMP**. Pour un logement au Portugal, elle utilise le **regime simplificado**.
+Le menu **…** d'une ligne permet de la sortir de la fiscalité (cadeau, remboursement), de supprimer une saisie ou d'annuler un séjour ou un contrat (avec confirmation : c'est le séjour ou le contrat lui-même qui est annulé).
 
-> C'est une estimation pour t'orienter, pas une déclaration. Pour trancher, fais valider par un comptable, surtout au régime réel.
+## Les réservations importées sans montant
 
-## Ton objectif annuel
+Une réservation Airbnb ou Booking synchronisée par le calendrier compte dans l'**occupation**, mais pas dans les revenus tant qu'elle n'a pas de montant. Ajoute le voyageur et le montant depuis **Mes réservations**.
 
-Fixe le chiffre d'affaires que tu vises : l'Accueil te montre où tu en es.
+## Ton objectif
 
-## Supprimer une ligne
-
-La corbeille d'une ligne de contrat ou de séjour **annule le contrat ou le séjour lui-même**, pas seulement la ligne : l'app te demande de confirmer. Un contrat annulé par erreur se réactive depuis Contrats & paiements.
+Chaque logement a son objectif de chiffre d'affaires pour l'année. La barre montre ce qui est déjà gagné et ce qui est déjà réservé d'ici le 31 décembre.

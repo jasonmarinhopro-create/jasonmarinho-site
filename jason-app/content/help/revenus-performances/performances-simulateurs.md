@@ -1,34 +1,35 @@
 ---
-title: "Performances et simulateurs"
-excerpt: "Lire tes indicateurs, comparer tes logements et faire tes calculs fiscaux."
+title: "Performances, fiscalité et simulateurs"
+excerpt: "Lire ton occupation et ton prix moyen, choisir ton régime fiscal, faire tes calculs."
 order: 2
-relatedPages: [/dashboard/finances/performances, /dashboard/simulateurs, /dashboard/calculateurs]
-updatedAt: "2026-09-27"
+relatedPages: [/dashboard/finances/performances, /dashboard/finances/fiscalite, /dashboard/simulateurs, /dashboard/calculateurs]
+updatedAt: "2026-09-28"
 ---
 
 ## Performances
 
-Dans **Mes finances → Performances**, calculées à partir de tes séjours :
+- **Taux d'occupation** : nuits louées sur les nuits disponibles de la période (jusqu'à aujourd'hui). Les réservations Airbnb et Booking importées comptent, même sans montant.
+- **Prix moyen par nuit** : sur les séjours qui ont un montant.
+- **Revenu par nuit disponible** : prix moyen × occupation, l'indicateur qui combine les deux.
+- La flèche compare avec la même période un an plus tôt.
 
-- **Occupation**, nuits vendues et durée moyenne des séjours
-- **Revenu par mois** et comparaison de tes logements
-- **D'où viennent tes voyageurs**
-- En Standard, des analyses en plus : performance par jour de la semaine, comparaison avec l'année précédente, recommandation de prix par mois, saisonnalité comparée au marché, distance aux plafonds légaux (120 nuits en France), fidélité des voyageurs et rentabilité nette
+En Standard : la comparaison avec le marché de ta ville (moyennes annuelles publiques, la source est indiquée), la part des nuits déjà réservées sur les 30 et 90 prochains jours, les canaux (prix et net par nuit après commission) et les nuits louées par jour de la semaine.
 
-Plus tu as de séjours saisis ou synchronisés, plus les chiffres sont justes. Les premiers mois, l'app peut afficher « Pas encore assez de données ».
+## Fiscalité
 
-## Les simulateurs fiscaux
+L'onglet **Fiscalité** estime tes revenus de location meublée de l'année :
 
-**Outils & calculs → Simulateurs fiscaux** :
+- Le **régime de chaque logement** vient de sa fiche : type « chambres d'hôtes » ou étoiles de classement. Un logement classé ? Renseigne ses étoiles dans sa fiche.
+- **Micro-BIC 2026** : 30 % d'abattement pour un meublé non classé (jusqu'à 15 000 € de recettes), 50 % pour un meublé classé ou des chambres d'hôtes (jusqu'à 83 600 €). Les recettes se comptent **brutes**, commissions comprises.
+- **Régime réel** : recettes − commissions − charges − amortissements. Sans amortissement saisi dans le Journal, la comparaison est incomplète et l'app le dit.
+- Les **plafonds** se calculent sur **tous tes logements ensemble**, même quand un seul est sélectionné.
+- Choisis ta tranche d'imposition pour voir l'impôt estimé (tranche + 18,6 % de prélèvements sociaux).
+- Pour un logement au Portugal : régime simplifié (coefficient 0,35) et seuil d'exonération d'IVA de 15 000 €.
 
-- **Micro-BIC ou réel** : quel régime te fait payer le moins d'impôts
-- **EI ou SASU** : comparer les statuts
-- **Rentabilité** : ce que rapporte vraiment un logement, charges et crédit compris
-- **Taxe de séjour** : combien collecter selon ta commune et ton classement
-- **Franchise TVA** : savoir si tu restes sous le seuil
+> Source : seuils micro-BIC 2026 (LégiFiscal), prélèvements sociaux de 18,6 % sur la location meublée (impots.gouv.fr), seuil IVA de 15 000 € depuis 2025 (Ordem dos Contabilistas Certificados).
 
-## Prix & marché
+C'est une estimation pour t'orienter : fais valider ton choix de régime par un comptable.
 
-**Outils & calculs → Prix & marché** : tes prix par plateforme (**Mes prix**), une estimation de revenus pour une ville, les prix du marché et la comparaison de plusieurs villes.
+## Les simulateurs
 
-> Les simulateurs donnent des ordres de grandeur avec les règles en vigueur. Pour une décision importante (changement de régime, création de société), fais-toi confirmer le calcul par un professionnel.
+**Outils & calculs → Simulateurs fiscaux** : micro-BIC ou réel, EI ou SASU, rentabilité, taxe de séjour. **Prix & marché** : tes prix par plateforme et les prix du marché d'une ville.

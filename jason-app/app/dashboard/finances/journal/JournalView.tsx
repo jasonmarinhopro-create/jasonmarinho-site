@@ -73,6 +73,9 @@ export default function JournalView({ rows, logementNoms, logements, defaultLoge
     const needle = q.trim().toLowerCase()
     return rows.filter(r => {
       if (hidden.has(r.key)) return false
+      // Les séjours pas encore arrivés ont leur filtre « Réservé » : sans ça, ils
+      // passaient en tête du journal (dates futures) et cachaient le passé
+      if (filter !== 'a_venir' && r.statut === 'a_venir') return false
       if (filter === 'revenus' && r.type !== 'revenu') return false
       if (filter === 'charges' && r.type !== 'charge') return false
       if (filter === 'a_encaisser' && r.statut !== 'a_encaisser') return false
@@ -82,6 +85,11 @@ export default function JournalView({ rows, logementNoms, logements, defaultLoge
       return `${r.label} ${r.detail ?? ''} ${r.logementNom} ${r.canal ?? ''} ${cat}`.toLowerCase().includes(needle)
     })
   }, [rows, filter, q, hidden])
+
+  const counts = useMemo(() => ({
+    aVenir: rows.filter(r => r.statut === 'a_venir' && !hidden.has(r.key)).length,
+    aEncaisser: rows.filter(r => r.statut === 'a_encaisser' && !hidden.has(r.key)).length,
+  }), [rows, hidden])
 
   const shown = filtered.slice(0, limit)
   const groups = useMemo(() => {
@@ -147,12 +155,16 @@ export default function JournalView({ rows, logementNoms, logements, defaultLoge
       <Card style={{ padding: 0 }}>
         <div style={s.toolbar}>
           <div style={s.filters} role="tablist" aria-label="Filtrer le journal">
-            {FILTERS.map(f => (
-              <button key={f.key} type="button" role="tab" aria-selected={filter === f.key} onClick={() => { setFilter(f.key); setLimit(PAGE) }}
-                style={{ ...s.filter, ...(filter === f.key ? s.filterActive : {}) }}>
-                {f.label}
-              </button>
-            ))}
+            {FILTERS.map(f => {
+              const count = f.key === 'a_venir' ? counts.aVenir : f.key === 'a_encaisser' ? counts.aEncaisser : 0
+              if ((f.key === 'a_venir' || f.key === 'a_encaisser') && count === 0 && filter !== f.key) return null
+              return (
+                <button key={f.key} type="button" role="tab" aria-selected={filter === f.key} onClick={() => { setFilter(f.key); setLimit(PAGE) }}
+                  style={{ ...s.filter, ...(filter === f.key ? s.filterActive : {}) }}>
+                  {f.label}{count > 0 ? ` (${count})` : ''}
+                </button>
+              )
+            })}
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <button type="button" style={ui.btn} onClick={() => setModal({ kind: 'revenu' })}><Plus size={14} weight="bold" /> Revenu</button>

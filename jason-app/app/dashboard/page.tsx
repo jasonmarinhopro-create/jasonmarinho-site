@@ -17,7 +17,7 @@ import TodayBoard, { type TodayItem, type TodayAction } from './TodayBoard'
 import { loadHostMenageSlots, menageKey } from '@/lib/menage/host-slots'
 import { contractTodos } from '@/lib/contracts/todo'
 import ReviewPrompt from './ReviewPrompt'
-import { sejoursSansContrat } from '@/lib/finances/dedup'
+import { buildRevenueLines, totaux as finTotaux } from '@/lib/finances/engine'
 import DeclarationsWidget from '@/components/dashboard/DeclarationsWidget'
 import OnboardingTour from './OnboardingTour'
 import { icalReservationsForDisplay } from '@/lib/ical/display'
@@ -115,9 +115,10 @@ export default async function DashboardPage() {
     // Une seule requête pour TOUTE l'année : on splitera par mois en JS (économise 2 round-trips)
     supabase
       .from('revenus_entries')
-      .select('montant, date_paiement')
+      .select('id, montant, date_paiement, type_paiement, logement_nom')
       .eq('user_id', userId)
-      .gte('date_paiement', `${yearPfx}-01-01`)
+      // Depuis le mois précédent (en janvier : décembre de l'an dernier)
+      .gte('date_paiement', `${prevMPfx < `${yearPfx}-01` ? prevMPfx : yearPfx + '-01'}-01`)
       .lt('date_paiement', `${parseInt(yearPfx) + 1}-01-01`),
     supabase
       .from('revenus_objectifs')
@@ -161,13 +162,13 @@ export default async function DashboardPage() {
     // l'objectif reste à 0 alors que /revenus affiche le bon total.
     supabase
       .from('sejours')
-      .select('id, montant, date_arrivee')
+      .select('id, montant, date_arrivee, date_depart, logement, contrat_plateforme, commission_montant')
       .eq('user_id', userId)
       .is('annule_at', null)
       .not('montant', 'is', null)
       .gt('montant', 0)
-      .gte('date_arrivee', `${yearPfx}-01-01`)
-      .lt('date_arrivee', `${parseInt(yearPfx) + 1}-01-01`),
+      // Depuis le mois précédent, séjours à venir compris (prévisionnel)
+      .gte('date_arrivee', `${prevMPfx < `${yearPfx}-01` ? prevMPfx : yearPfx + '-01'}-01`),
     // Liens plateformes du profil (inbox Airbnb/Booking/Driing/GMB + custom)
     supabase
       .from('profiles')
@@ -277,9 +278,6 @@ export default async function DashboardPage() {
   const { data: icalFeedsRaw }   = pick<{ data: Array<{ id: string; url: string | null; name: string | null }> | null }>(19, { data: [] })
   const { data: logementsIcal }  = pick<{ data: Array<{ nom: string | null; ical_airbnb: string | null; ical_booking: string | null; ical_vrbo: string | null; ical_autre: string | null }> | null }>(20, { data: [] })
 
-  // Séjours liés à un contrat actif : déjà comptés par le loyer du contrat
-  // (sinon CA du mois, cumul annuel et prévisionnel comptés deux fois).
-  const sejoursYearAll = sejoursSansContrat(sejoursYearRaw ?? [], contracts ?? [])
 
   const latestNews = allCachedNews.slice(0, 3)
   // Nombre d'actus publiées depuis la dernière visite de la page Actualités,
@@ -289,16 +287,6 @@ export default async function DashboardPage() {
     a => (a.published_at ?? a.created_at ?? '') > lastSeenNews
   ).length
 
-  // Split de la requête revenus annuelle en this month / prev month / year (JS, gratuit)
-  const yearEntries     = entriesYearAll ?? []
-  const entriesThisMois = yearEntries.filter(e => e.date_paiement?.startsWith(monthPfx))
-  const entriesPrevMois = yearEntries.filter(e => e.date_paiement?.startsWith(prevMPfx))
-  const entriesThisYear = yearEntries
-
-  // Idem pour les séjours (carnet voyageurs) — split JS depuis la requête année.
-  const yearSejours      = sejoursYearAll ?? []
-  const sejoursThisMois  = yearSejours.filter(s => s.date_arrivee?.startsWith(monthPfx))
-  const sejoursPrevMois  = yearSejours.filter(s => s.date_arrivee?.startsWith(prevMPfx))
 
   const ufLearn = (userFormationsLearn ?? []) as Array<{
     formation_id: string
@@ -551,41 +539,24 @@ export default async function DashboardPage() {
     : pendingPayments.length > 0 ? '/dashboard/contrats'
     : '/dashboard/calendrier'
 
-  // ── KPIs financiers
-  const isPaid = (c: typeof allC[0]) =>
-    c.stripe_payment_status === 'paid' || (!c.stripe_payment_enabled && c.statut === 'signe')
-
-  // Revenus contrats ce mois
-  const contratsThisMois = allC
-    .filter(c => c.date_arrivee?.startsWith(monthPfx) && isPaid(c))
-    .reduce((acc, c) => acc + (c.montant_loyer ?? 0), 0)
-
-  // Revenus contrats mois précédent
-  const contratsPrevMois = allC
-    .filter(c => c.date_arrivee?.startsWith(prevMPfx) && isPaid(c))
-    .reduce((acc, c) => acc + (c.montant_loyer ?? 0), 0)
-
-  // Revenus manuels (entries) ce mois + mois précédent
-  const entriesThisSum = (entriesThisMois ?? []).reduce((acc, e) => acc + (e.montant ?? 0), 0)
-  const entriesPrevSum = (entriesPrevMois ?? []).reduce((acc, e) => acc + (e.montant ?? 0), 0)
-
-  // Revenus séjours (carnet voyageurs) ce mois + mois précédent
-  const sejoursThisSum = sejoursThisMois.reduce((acc, s) => acc + (s.montant ?? 0), 0)
-  const sejoursPrevSum = sejoursPrevMois.reduce((acc, s) => acc + (s.montant ?? 0), 0)
-
-  const revenusThisMois = contratsThisMois + entriesThisSum + sejoursThisSum
-  const revenusPrevMois = contratsPrevMois + entriesPrevSum + sejoursPrevSum
+  // ── KPIs financiers : même moteur que Mes finances (lib/finances/engine.ts).
+  // Un séjour compte à sa date d'arrivée, revenus = arrivées jusqu'à
+  // aujourd'hui, cautions exclues, séjour lié à un contrat signé compté une
+  // fois. Avant (sept. 2026), l'accueil avait ses propres règles (contrats
+  // comptés seulement une fois payés, cautions incluses) : ses montants ne
+  // correspondaient pas à ceux de Mes finances.
+  const finLines = buildRevenueLines({
+    sejours: (sejoursYearRaw ?? []) as any[],
+    contracts: allC as any[],
+    entries: (entriesYearAll ?? []) as any[],
+    today,
+  })
+  const monthEnd = (ym: string) => new Date(Date.UTC(Number(ym.slice(0, 4)), Number(ym.slice(5, 7)), 0)).toISOString().slice(0, 10)
+  const revenusThisMois = finTotaux(finLines, [], [], `${monthPfx}-01`, monthEnd(monthPfx), today).revenus
+  const revenusPrevMois = finTotaux(finLines, [], [], `${prevMPfx}-01`, monthEnd(prevMPfx), today).revenus
 
   // ── Revenu annuel YTD + objectif
-  const contratsThisYear = allC
-    .filter(c => c.date_arrivee?.startsWith(yearPfx) && isPaid(c))
-    .reduce((acc, c) => acc + (c.montant_loyer ?? 0), 0)
-  const entriesThisYearSum = (entriesThisYear ?? []).reduce((acc, e) => acc + (e.montant ?? 0), 0)
-  // Séjours du carnet voyageurs : même logique que /revenus (page de vérité).
-  // Évite que l'objectif annuel reste à 0 alors qu'on a déjà encaissé via
-  // l'onglet Mes voyageurs.
-  const sejoursThisYearSum = (sejoursYearAll ?? []).reduce((acc, s) => acc + (s.montant ?? 0), 0)
-  const revenuYTD = contratsThisYear + entriesThisYearSum + sejoursThisYearSum
+  const revenuYTD = finTotaux(finLines, [], [], `${yearPfx}-01-01`, `${yearPfx}-12-31`, today).revenus
   const objectifAnnuel = objectifData?.objectif_ca_annuel ? Number(objectifData.objectif_ca_annuel) : null
   const objectifPct = objectifAnnuel && objectifAnnuel > 0
     ? Math.min(100, Math.round((revenuYTD / objectifAnnuel) * 100))
@@ -602,13 +573,9 @@ export default async function DashboardPage() {
   // Les résas iCal pures (Airbnb sans contrat) ne sont pas comptées car on
   // n'a pas l'info financière — elles restent visibles dans "Prochaines
   // arrivées" plus bas.
-  const revenuPrevisionnelContracts = allC
-    .filter(c => c.date_arrivee > today)
-    .reduce((acc, c) => acc + (c.montant_loyer ?? 0), 0)
-  const revenuPrevisionnelSejours = (sejoursYearAll ?? [])
-    .filter(s => s.date_arrivee > today)
-    .reduce((acc, s) => acc + (s.montant ?? 0), 0)
-  const revenuPrevisionnel = revenuPrevisionnelContracts + revenuPrevisionnelSejours
+  const revenuPrevisionnel = finLines
+    .filter(l => !l.horsRevenus && l.date > today)
+    .reduce((acc, l) => acc + l.brut, 0)
 
   const planLabel = profile?.role === 'admin' ? 'Administrateur'
     : profile?.plan === 'driing' ? 'Membre Driing'

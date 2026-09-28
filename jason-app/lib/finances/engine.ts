@@ -519,6 +519,8 @@ export interface CanalStat {
   commission: number
   /** Séjours sans commission connue */
   sansCommission: number
+  /** Revenus des séjours dont la commission est connue (base du taux de commission) */
+  brutCommissionConnue: number
   net: number
   nbSejours: number
   nuits: number
@@ -529,16 +531,16 @@ export function parCanal(lines: RevenueLine[], start: string, end: string, today
   const map = new Map<Canal, CanalStat>()
   for (const l of lines) {
     if (l.horsRevenus || !inRange(l.date, start, realEnd)) continue
-    const s = map.get(l.canal) ?? { canal: l.canal, brut: 0, commission: 0, sansCommission: 0, net: 0, nbSejours: 0, nuits: 0 }
+    const s = map.get(l.canal) ?? { canal: l.canal, brut: 0, commission: 0, sansCommission: 0, brutCommissionConnue: 0, net: 0, nbSejours: 0, nuits: 0 }
     s.brut += l.brut
     if (l.commission == null) s.sansCommission += 1
-    else s.commission += l.commission
+    else { s.commission += l.commission; s.brutCommissionConnue += l.brut }
     if (l.kind !== 'saisie') s.nbSejours += 1
     s.nuits += l.nuits ?? 0
     map.set(l.canal, s)
   }
   return [...map.values()]
-    .map(s => ({ ...s, brut: round2(s.brut), commission: round2(s.commission), net: round2(s.brut - s.commission) }))
+    .map(s => ({ ...s, brut: round2(s.brut), commission: round2(s.commission), brutCommissionConnue: round2(s.brutCommissionConnue), net: round2(s.brut - s.commission) }))
     .sort((a, b) => b.brut - a.brut)
 }
 
