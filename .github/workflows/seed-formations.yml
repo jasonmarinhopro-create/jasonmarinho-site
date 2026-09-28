@@ -1,0 +1,53 @@
+name: Publier le contenu des formations
+
+# Copie le contenu des leçons (jason-app/app/dashboard/formations/<slug>/content.ts)
+# dans la base (formation_modules / formation_lessons), que l'app lit en priorité.
+#
+# Lancement manuel uniquement (Actions → « Publier le contenu des formations »
+# → Run workflow) : une leçon modifiée dans l'éditeur admin
+# (/dashboard/admin/formations) serait écrasée par sa version content.ts.
+# Par défaut, mode aperçu : liste les leçons qui changeraient, sans rien écrire.
+# Relancer avec « Écrire en base » coché pour publier. Idempotent.
+on:
+  workflow_dispatch:
+    inputs:
+      formations:
+        description: "Formations à publier (slugs séparés par des virgules, vide = toutes)"
+        required: false
+        default: ''
+      apply:
+        description: "Écrire en base (décoché = aperçu seulement)"
+        type: boolean
+        required: false
+        default: false
+
+concurrency:
+  group: seed-formations
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: jason-app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: jason-app/package-lock.json
+
+      - run: npm ci
+
+      - run: npm install --no-save tsx@4
+
+      - name: ${{ inputs.apply && 'Publier les formations' || 'Aperçu des changements' }}
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SEED_ONLY: ${{ inputs.formations }}
+          DRY_RUN: ${{ inputs.apply && '0' || '1' }}
+        run: node scripts/seed-formations-content.mjs

@@ -13,6 +13,15 @@
  *   node scripts/seed-formations-content.mjs
  *
  * Idempotent: re-running upserts modules/lessons (UNIQUE constraints kick in).
+ * Only lessons whose title or content differ from the database are written.
+ *
+ * Options (env):
+ *   SEED_ONLY=slug-a,slug-b  seed only these formations (default: all)
+ *   DRY_RUN=1                write nothing, list what would change
+ *
+ * Warning: a lesson edited in /dashboard/admin/formations is overwritten by
+ * its content.ts version. Run with DRY_RUN=1 first (the GitHub workflow
+ * seed-formations.yml does it by default).
  *
  * After a successful run, the content.ts files become a fallback only,
  * and could be slimmed down (modules + lessons content removed) in a
@@ -23,24 +32,28 @@ import { createClient } from '@supabase/supabase-js'
 import { readdirSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { register } from 'node:module'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const FORMATIONS_DIR = join(__dirname, '..', 'app', 'dashboard', 'formations')
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY
+const DRY_RUN = process.env.DRY_RUN === '1' || process.env.DRY_RUN === 'true'
+const ONLY = (process.env.SEED_ONLY ?? '').split(',').map(x => x.trim()).filter(Boolean)
+let errors = 0
 
 if (!SUPABASE_URL || !SERVICE_ROLE) {
   console.error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in env.')
   process.exit(1)
 }
 
-// Register tsx loader so we can dynamically import .ts files
+// tsx charge les content.ts (tsImport : chaque fichier en module ES isolé ;
+// l'ancien register('tsx/esm') via node:module est refusé par tsx >= 4)
+let tsImport
 try {
-  register('tsx/esm', pathToFileURL('./'))
+  ({ tsImport } = await import('tsx/esm/api'))
 } catch {
-  console.error('Could not register tsx loader. Run: npm i -D tsx')
+  console.error('tsx introuvable. Lance : npm i --no-save tsx')
   process.exit(1)
 }
 
@@ -53,22 +66,24 @@ function listSlugDirs() {
     .filter(d => d.isDirectory())
     .map(d => d.name)
     .filter(name => existsSync(join(FORMATIONS_DIR, name, 'content.ts')))
+    .filter(name => ONLY.length === 0 || ONLY.includes(name))
 }
 
 async function loadContent(slug) {
   const path = pathToFileURL(join(FORMATIONS_DIR, slug, 'content.ts')).href
-  const mod = await import(path)
+  const mod = await tsImport(path, import.meta.url)
   const exported = Object.values(mod).find(v => v && typeof v === 'object' && 'modules' in v)
   if (!exported) throw new Error(`No formation export found in ${slug}/content.ts`)
   return exported
 }
 
 async function getFormationId(slug) {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('formations')
     .select('id')
     .eq('slug', slug)
-    .single()
+    .maybeSingle()
+  if (error) throw new Error(`lecture de la formation impossible : ${error.message}`)
   return data?.id ?? null
 }
 
@@ -82,52 +97,93 @@ async function seedFormation(slug) {
   }
 
   // Update objectifs on formations
-  if (Array.isArray(content.objectifs) && content.objectifs.length > 0) {
-    await supabase
+  if (!DRY_RUN && Array.isArray(content.objectifs) && content.objectifs.length > 0) {
+    const { error } = await supabase
       .from('formations')
       .update({ objectifs: content.objectifs })
       .eq('id', formationId)
+    if (error) { errors += 1; console.log('  ! objectifs error:', error.message) }
   }
 
   let totalLessons = 0
+  let changed = 0
+  let created = 0
   for (const mod of content.modules ?? []) {
-    // Upsert module
-    const { data: moduleRow, error: modErr } = await supabase
+    const { data: existingModule, error: readModErr } = await supabase
       .from('formation_modules')
-      .upsert(
-        {
-          formation_id: formationId,
-          module_number: mod.id,
-          title: mod.title,
-          duration: mod.duration ?? null,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: 'formation_id,module_number' }
-      )
-      .select('id')
-      .single()
+      .select('id, title')
+      .eq('formation_id', formationId)
+      .eq('module_number', mod.id)
+      .maybeSingle()
+    if (readModErr) throw new Error(`lecture du module ${mod.id} impossible : ${readModErr.message}`)
 
-    if (modErr || !moduleRow) {
-      console.log(`  ! module ${mod.id} error:`, modErr?.message)
-      continue
+    let moduleId = existingModule?.id ?? null
+    const existingLessons = new Map()
+    if (moduleId) {
+      const { data: rows, error: readLessonsErr } = await supabase
+        .from('formation_lessons')
+        .select('lesson_number, title, content')
+        .eq('module_id', moduleId)
+      if (readLessonsErr) throw new Error(`lecture des leçons du module ${mod.id} impossible : ${readLessonsErr.message}`)
+      for (const r of rows ?? []) existingLessons.set(r.lesson_number, r)
+    }
+
+    if (!DRY_RUN) {
+      const { data: moduleRow, error: modErr } = await supabase
+        .from('formation_modules')
+        .upsert(
+          {
+            formation_id: formationId,
+            module_number: mod.id,
+            title: mod.title,
+            duration: mod.duration ?? null,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'formation_id,module_number' }
+        )
+        .select('id')
+        .single()
+
+      if (modErr || !moduleRow) {
+        errors += 1
+        console.log(`  ! module ${mod.id} error:`, modErr?.message)
+        continue
+      }
+      moduleId = moduleRow.id
     }
 
     for (const lesson of mod.lessons ?? []) {
+      const before = existingLessons.get(lesson.id)
+      const nextContent = lesson.content ?? ''
+      if (before && before.title === lesson.title && (before.content ?? '') === nextContent) {
+        totalLessons += 1
+        continue
+      }
+      if (before) {
+        changed += 1
+        console.log(`  ~ ${mod.id}.${lesson.id} ${lesson.title}${before.title !== lesson.title ? ` (titre en base : ${before.title})` : ''}`)
+      } else {
+        created += 1
+        console.log(`  + ${mod.id}.${lesson.id} ${lesson.title}`)
+      }
+      if (DRY_RUN) { totalLessons += 1; continue }
+
       const { error: lessonErr } = await supabase
         .from('formation_lessons')
         .upsert(
           {
-            module_id: moduleRow.id,
+            module_id: moduleId,
             lesson_number: lesson.id,
             title: lesson.title,
             duration: lesson.duration ?? null,
-            content: lesson.content ?? '',
+            content: nextContent,
             updated_at: new Date().toISOString(),
           },
           { onConflict: 'module_id,lesson_number' }
         )
 
       if (lessonErr) {
+        errors += 1
         console.log(`  ! lesson ${mod.id}.${lesson.id} error:`, lessonErr.message)
       } else {
         totalLessons += 1
@@ -135,8 +191,8 @@ async function seedFormation(slug) {
     }
   }
 
-  console.log(`  ✓ ${content.modules?.length ?? 0} modules, ${totalLessons} leçons`)
-  return { modules: content.modules?.length ?? 0, lessons: totalLessons }
+  console.log(`  ${DRY_RUN ? 'aperçu' : '✓'} : ${changed} leçon(s) modifiée(s), ${created} nouvelle(s), ${totalLessons - changed - created} identique(s)`)
+  return { modules: content.modules?.length ?? 0, lessons: totalLessons, changed, created }
 }
 
 async function main() {
@@ -146,13 +202,23 @@ async function main() {
   let totalModules = 0
   let totalLessons = 0
   let skipped = 0
+  let changed = 0
+  let created = 0
+  if (DRY_RUN) console.log('Mode aperçu (DRY_RUN) : rien ne sera écrit en base.')
+  if (ONLY.length > 0 && slugs.length !== ONLY.length) {
+    console.error(`Formation(s) introuvable(s) : ${ONLY.filter(x => !slugs.includes(x)).join(', ')}`)
+    errors += 1
+  }
   for (const slug of slugs) {
     try {
       const r = await seedFormation(slug)
       if (r.skipped) skipped += 1
       totalModules += r.modules ?? 0
       totalLessons += r.lessons ?? 0
+      changed += r.changed ?? 0
+      created += r.created ?? 0
     } catch (e) {
+      errors += 1
       console.error(`✗ ${slug}:`, e.message)
     }
   }
@@ -161,6 +227,11 @@ async function main() {
   console.log(`Formations seeded: ${slugs.length - skipped} / ${slugs.length}`)
   console.log(`Modules upserted:  ${totalModules}`)
   console.log(`Lessons upserted:  ${totalLessons}`)
+  console.log(`${DRY_RUN ? 'Would change' : 'Changed'}: ${changed} lesson(s), ${DRY_RUN ? 'would create' : 'created'}: ${created}`)
+  if (errors > 0) {
+    console.error(`${errors} erreur(s)`)
+    process.exit(1)
+  }
 }
 
 main().catch(err => {
