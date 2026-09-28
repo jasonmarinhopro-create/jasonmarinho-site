@@ -10,25 +10,26 @@ import {
 import type { Actualite } from './page'
 import { markActualiteRead, markAllActualitesRead, toggleActualiteFavorite } from './actions'
 import AskQuestionCard from '@/components/chez-nous/AskQuestionCard'
+import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 
 // Nombre d'articles affichés au premier rendu (puis +PAGE_SIZE par clic "Voir plus")
 const PAGE_SIZE = 24
 
 const CATEGORIES = [
   { value: 'all',                 label: 'Tout',                color: 'var(--text-2)', bg: 'var(--border)' },
-  { value: 'reglementation',      label: 'Réglementation',      color: 'var(--info)',       bg: 'rgba(96,165,250,0.12)' },
-  { value: 'fiscalite',           label: 'Fiscalité',           color: 'var(--success-1)',       bg: 'var(--success-bg)' },
-  { value: 'juridique',           label: 'Juridique',           color: 'var(--danger)',       bg: 'rgba(248,113,113,0.12)' },
-  { value: 'plateformes',         label: 'Plateformes OTA',     color: '#fb923c',       bg: 'rgba(251,146,60,0.12)' },
-  { value: 'marche',              label: 'Marché',              color: '#f472b6',       bg: 'rgba(244,114,182,0.12)' },
-  { value: 'outils',              label: 'Outils & Tech',       color: '#a78bfa',       bg: 'rgba(167,139,250,0.12)' },
-  { value: 'gites',               label: 'Gîtes & Meublés',     color: 'var(--warning)',       bg: 'rgba(245,158,11,0.12)' },
-  { value: 'chambres-hotes',      label: "Chambres d'hôtes",    color: '#ec4899',       bg: 'rgba(236,72,153,0.12)' },
-  { value: 'conciergerie',        label: 'Conciergeries',       color: '#8b5cf6',       bg: 'rgba(139,92,246,0.12)' },
-  { value: 'reservation-directe', label: 'Réserv. directe',    color: 'var(--success-1)',       bg: 'rgba(16,185,129,0.12)' },
-  { value: 'communes',            label: 'Communes & Villes',   color: '#64748b',       bg: 'rgba(100,116,139,0.12)' },
-  { value: 'driing',              label: 'Driing',              color: '#FFD56B',       bg: 'rgba(255,213,107,0.12)' },
-  { value: 'general',             label: 'Général',             color: '#94a3b8',       bg: 'rgba(148,163,184,0.12)' },
+  { value: 'reglementation',      label: 'Réglementation',      color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  { value: 'fiscalite',           label: 'Fiscalité',           color: '#8A5A12', bg: 'rgba(255,213,107,0.20)' },
+  { value: 'juridique',           label: 'Juridique',           color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  { value: 'plateformes',         label: 'Plateformes OTA',     color: '#C2344A', bg: 'rgba(224,71,91,0.10)' },
+  { value: 'marche',              label: 'Marché',              color: '#B83A7C', bg: 'rgba(244,114,182,0.14)' },
+  { value: 'outils',              label: 'Outils & Tech',       color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  { value: 'gites',               label: 'Gîtes & Meublés',     color: '#8A5A12', bg: 'rgba(255,213,107,0.20)' },
+  { value: 'chambres-hotes',      label: "Chambres d'hôtes",    color: '#B83A7C', bg: 'rgba(244,114,182,0.14)' },
+  { value: 'conciergerie',        label: 'Conciergeries',       color: '#6E5446', bg: 'rgba(139,109,94,0.14)' },
+  { value: 'reservation-directe', label: 'Réserv. directe',    color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  { value: 'communes',            label: 'Communes & Villes',   color: '#6E5446', bg: 'rgba(139,109,94,0.14)' },
+  { value: 'driing',              label: 'Driing',              color: '#8A5A12', bg: 'rgba(255,213,107,0.20)' },
+  { value: 'general',             label: 'Général',             color: '#6E5446', bg: 'rgba(139,109,94,0.14)' },
 ]
 
 function getCat(value: string) {
@@ -62,10 +63,10 @@ function deadlineLabel(deadlineDate: string) {
   if (days === 0) return { label: "Aujourd'hui", color: 'var(--danger)', urgent: true }
   if (days === 1) return { label: 'Demain', color: 'var(--danger)', urgent: true }
   if (days <= 7) return { label: `Dans ${days} jours`, color: 'var(--danger)', urgent: true }
-  if (days <= 30) return { label: `Dans ${days} jours`, color: '#d97706', urgent: false }
-  if (days <= 90) return { label: `Dans ${days} jours`, color: '#0369a1', urgent: false }
+  if (days <= 30) return { label: `Dans ${days} jours`, color: '#B7791F', urgent: false }
+  if (days <= 90) return { label: `Dans ${days} jours`, color: 'var(--accent-text)', urgent: false }
   const dl2 = new Date(deadlineDate + 'T12:00:00')
-  return { label: dl2.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }), color: '#0369a1', urgent: false }
+  return { label: dl2.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }), color: 'var(--accent-text)', urgent: false }
 }
 
 export default function ActualitesView({
@@ -252,7 +253,7 @@ export default function ActualitesView({
       >
         {/* Top: catégorie + date + non-lu */}
         <div style={s.cardMeta}>
-          <span style={{ ...s.catBadge, color: cat.color, background: cat.bg, borderColor: `${cat.color}25` }}>
+          <span style={{ ...s.catBadge, color: cat.color, background: cat.bg, borderColor: `color-mix(in srgb, ${cat.color} 15%, transparent)` }}>
             {cat.label}
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -266,8 +267,8 @@ export default function ActualitesView({
           <div style={{
             ...s.deadlineBadge,
             color: dl.color,
-            background: `${dl.color}14`,
-            borderColor: `${dl.color}32`,
+            background: `color-mix(in srgb, ${dl.color} 8%, transparent)`,
+            borderColor: `color-mix(in srgb, ${dl.color} 20%, transparent)`,
           }}>
             <Hourglass size={12} weight="fill" />
             <span>Échéance · <strong>{dl.label}</strong></span>
@@ -352,41 +353,42 @@ export default function ActualitesView({
   return (
     <div style={s.page} className="actualites-no-fade">
 
-      {/* Intro + compteur unread */}
-      <div style={s.intro} className="fade-up">
-        <h2 style={s.pageTitle}>
-          Actualités <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>LCD</em>
-        </h2>
-        <p style={s.pageDesc}>
-          Réglementation, fiscalité, marché, gîtes, chambres d&apos;hôtes, conciergeries et réservation directe, triées et résumées pour toi.
-        </p>
-        {isAuthenticated && articles.length > 0 && (
-          <div style={s.headerStats}>
-            <span style={s.statChip}>
-              <Newspaper size={12} /> <strong>{articles.length}</strong> articles
-            </span>
-            {unreadCount > 0 ? (
-              <span style={{ ...s.statChip, color: 'var(--danger)', background: 'rgba(220,38,38,0.10)', borderColor: 'rgba(220,38,38,0.28)' }}>
-                <span style={s.unreadDot} />
-                <strong>{unreadCount}</strong> non lu{unreadCount > 1 ? 's' : ''}
-              </span>
-            ) : (
-              <span style={{ ...s.statChip, color: '#15803d', background: 'rgba(21,128,61,0.10)', borderColor: 'rgba(21,128,61,0.28)' }}>
-                <CheckCircle size={12} weight="fill" /> À jour
-              </span>
-            )}
-            <Link href="/dashboard/actualites/favoris" style={s.statChipLink}>
-              <BookmarkSimple size={12} weight="fill" /> Favoris
-              {favorites.size > 0 && <strong style={{ marginLeft: '4px' }}>{favorites.size}</strong>}
-            </Link>
-            {unreadCount > 0 && (
-              <button onClick={handleMarkAllRead} style={s.markAllBtn}>
-                <Check size={12} weight="bold" /> Tout marquer lu
-              </button>
-            )}
+      {/* En-tête (DA 28/09/2026) : bandeau vert HubHero comme les autres
+          pages ; à droite, ce qu'il te reste à lire et tes favoris. */}
+      <HubHero
+        eyebrowIcon={<Newspaper size={14} weight="fill" />}
+        eyebrow="Actualités LCD"
+        title={<>Ce qui change <HeroEm>pour ta location</HeroEm></>}
+        desc="Réglementation, fiscalité, plateformes, marché : les nouvelles qui comptent pour un hôte, vérifiées et résumées en quelques lignes, avec ce que tu dois faire."
+        aside={isAuthenticated && articles.length > 0 ? (
+          <div style={{ ...heroCard, width: '100%' }}>
+            <div style={s.asideTitle}>Ton fil</div>
+            <div style={s.asideStats}>
+              <div style={s.asideStat}>
+                <span style={{ ...s.asideNum, color: unreadCount > 0 ? 'var(--accent-text)' : 'var(--text)' }}>{unreadCount}</span>
+                <span style={s.asideLbl}>{unreadCount > 1 ? 'non lues' : 'non lue'}</span>
+              </div>
+              <div style={s.asideStat}>
+                <span style={s.asideNum}>{articles.length}</span>
+                <span style={s.asideLbl}>actualité{articles.length > 1 ? 's' : ''}</span>
+              </div>
+            </div>
+            <div style={s.asideActions}>
+              {unreadCount > 0 ? (
+                <button onClick={handleMarkAllRead} style={s.markAllBtn}>
+                  <Check size={12} weight="bold" /> Tout marquer lu
+                </button>
+              ) : (
+                <span style={s.upToDate}><CheckCircle size={13} weight="fill" /> Tu es à jour</span>
+              )}
+              <Link href="/dashboard/actualites/favoris" style={s.statChipLink}>
+                <BookmarkSimple size={12} weight="fill" /> Favoris
+                {favorites.size > 0 && <strong style={{ marginLeft: '4px' }}>{favorites.size}</strong>}
+              </Link>
+            </div>
           </div>
-        )}
-      </div>
+        ) : undefined}
+      />
 
       {articles.length === 0 ? (
         /* Empty state */
@@ -423,7 +425,7 @@ export default function ActualitesView({
           {upcomingDeadlines.length > 0 && (
             <section style={s.deadlineSection} className="fade-up">
               <div style={s.sectionHead}>
-                <Hourglass size={14} weight="fill" color="#dc2626" />
+                <Hourglass size={14} weight="fill" color="#B7791F" />
                 <span style={s.sectionLabel}>Échéances à venir</span>
               </div>
               <div style={s.deadlineGrid}>
@@ -432,13 +434,13 @@ export default function ActualitesView({
                   if (!dl) return null
                   const cat = getCat(a.category)
                   return (
-                    <div key={a.id} style={{ ...s.deadlineCard, borderColor: `${dl.color}40` }}>
-                      <div style={{ ...s.deadlinePill, color: dl.color, background: `${dl.color}14`, borderColor: `${dl.color}32` }}>
+                    <div key={a.id} style={{ ...s.deadlineCard, borderColor: `color-mix(in srgb, ${dl.color} 25%, transparent)` }}>
+                      <div style={{ ...s.deadlinePill, color: dl.color, background: `color-mix(in srgb, ${dl.color} 8%, transparent)`, borderColor: `color-mix(in srgb, ${dl.color} 20%, transparent)` }}>
                         <Hourglass size={11} weight="fill" /> {dl.label}
                       </div>
                       <div style={s.deadlineTitle}>{a.title}</div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: 'auto' }}>
-                        <span style={{ ...s.catBadge, color: cat.color, background: cat.bg, borderColor: `${cat.color}25` }}>
+                        <span style={{ ...s.catBadge, color: cat.color, background: cat.bg, borderColor: `color-mix(in srgb, ${cat.color} 15%, transparent)` }}>
                           {cat.label}
                         </span>
                         {a.source_url && (
@@ -522,7 +524,7 @@ export default function ActualitesView({
                       style={{
                         ...s.filterBtn,
                         ...(activeFilter === cat.value
-                          ? { color: cat.color, background: cat.bg, borderColor: `${cat.color}30`, fontWeight: 600 }
+                          ? { color: cat.color, background: cat.bg, borderColor: `color-mix(in srgb, ${cat.color} 19%, transparent)`, fontWeight: 600 }
                           : {}),
                       }}
                     >
@@ -574,7 +576,7 @@ export default function ActualitesView({
               {searchQuery
                 ? `Aucun résultat pour "${searchQuery}". Essaye d'autres mots-clés.`
                 : showUnreadOnly
-                  ? 'Tous les articles de cette catégorie sont déjà lus. ✓'
+                  ? 'Tous les articles de cette catégorie sont déjà lus.'
                   : 'Aucun article dans cette catégorie pour le moment.'}
             </div>
           )}
@@ -646,7 +648,7 @@ export default function ActualitesView({
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+  page: { padding: '20px var(--dash-page-px) 48px', width: '100%' },
 
   // ── Recherche
   searchWrap: {
@@ -743,18 +745,14 @@ const s: Record<string, React.CSSProperties> = {
     margin: 0,
   },
 
-  intro: { marginBottom: '28px', maxWidth: '720px' },
-  pageTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '8px' },
-  pageDesc: { fontSize: '15px', fontWeight: 300, color: 'var(--text-2)', lineHeight: 1.7 },
+  asideTitle: { fontSize: 12, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  asideStats: { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px 14px' },
+  asideStat: { display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 },
+  asideNum: { fontFamily: 'var(--font-fraunces), serif', fontSize: 26, lineHeight: 1.05, fontWeight: 500, color: 'var(--text)' },
+  asideLbl: { fontSize: 12, color: 'var(--text-3)', lineHeight: 1.35 },
+  asideActions: { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', paddingTop: 10, borderTop: '1px solid var(--border)' },
+  upToDate: { display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12.5, fontWeight: 600, color: 'var(--accent-text)' },
 
-  // Stats header
-  headerStats: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const, marginTop: '14px' },
-  statChip: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    padding: '5px 11px', borderRadius: '100px',
-    fontSize: '12px', fontWeight: 500,
-    background: 'var(--surface)', color: 'var(--text-2)', border: '1px solid var(--border)',
-  },
   statChipLink: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     padding: '5px 11px', borderRadius: '100px',
@@ -764,15 +762,15 @@ const s: Record<string, React.CSSProperties> = {
   },
   markAllBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
-    padding: '5px 11px', borderRadius: '100px',
-    fontSize: '12px', fontWeight: 600,
-    background: 'transparent', color: 'var(--text-2)',
-    border: '1px dashed var(--border-2)', cursor: 'pointer',
-    fontFamily: 'var(--font-outfit), sans-serif',
+    padding: '7px 13px', borderRadius: '100px',
+    fontSize: '12.5px', fontWeight: 700,
+    background: 'var(--accent-text)', color: 'var(--bg)',
+    border: 'none', cursor: 'pointer',
+    fontFamily: 'inherit',
   },
   unreadDot: {
     display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%',
-    background: 'var(--danger)', flexShrink: 0,
+    background: 'var(--accent-text)', flexShrink: 0,
   },
 
   // Sections
@@ -841,8 +839,8 @@ const s: Record<string, React.CSSProperties> = {
     fontFamily: 'var(--font-outfit), sans-serif', marginLeft: 'auto',
   },
   unreadToggleOn: {
-    background: 'rgba(220,38,38,0.08)', color: 'var(--danger)',
-    borderColor: 'rgba(220,38,38,0.28)',
+    background: 'var(--accent-bg)', color: 'var(--accent-text)',
+    borderColor: 'var(--accent-border)',
   },
   filterScroll: {
     display: 'flex', gap: '6px',
@@ -850,7 +848,7 @@ const s: Record<string, React.CSSProperties> = {
     paddingBottom: '4px',
     scrollbarWidth: 'none' as const,
   } as React.CSSProperties,
-  filterBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '7px 13px', borderRadius: '100px', fontSize: '12.5px', fontWeight: 500, color: 'var(--text-3)', background: 'var(--surface)', border: '1px solid var(--border-2)', cursor: 'pointer', transition: 'all 0.15s', whiteSpace: 'nowrap' as const, flexShrink: 0 },
+  filterBtn: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '7px 13px', borderRadius: '100px', fontSize: '12.5px', fontWeight: 500, color: 'var(--text-3)', background: 'var(--surface)', border: '1px solid var(--border-2)', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s', whiteSpace: 'nowrap' as const, flexShrink: 0 },
   filterCount: { fontSize: '10px', fontWeight: 700, background: 'var(--border)', color: 'var(--text-muted)', padding: '1px 6px', borderRadius: '100px', lineHeight: '1.4' },
 
   // Cards
@@ -863,7 +861,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   cardUnread: {
     background: 'var(--surface)',
-    boxShadow: 'inset 3px 0 0 var(--danger)',
+    boxShadow: 'inset 3px 0 0 var(--accent-text)',
   },
   cardMeta: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 'var(--s-2)', flexWrap: 'wrap' as const },
   catBadge: {

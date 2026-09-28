@@ -1,4 +1,5 @@
 import { Check, Wrench, Star, CheckCircle, XCircle, ShieldStar, Crown, LockKey } from '@phosphor-icons/react/dist/ssr'
+import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import DriingRequestForm from './DriingRequestForm'
 import SubscribeButton from './SubscribeButton'
 import ManageButton from './ManageButton'
@@ -64,12 +65,50 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
     <>
 
       <div style={styles.page}>
-        <div style={styles.intro} className="fade-up">
-          <h2 style={styles.pageTitle}>
-            Ton <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>abonnement</em>
-          </h2>
-          <p style={styles.pageDesc}>Ce que comprend ta formule, et ce que tu débloques en passant à la suivante.</p>
-        </div>
+        {/* En-tête (DA 28/09/2026) : bandeau vert HubHero ; à droite, l'offre
+            Fondateur (formule gratuite) ou le prochain renouvellement. */}
+        <HubHero
+          eyebrowIcon={<Star size={14} weight="fill" />}
+          eyebrow="Mon abonnement"
+          title={isAdmin ? <>Accès <HeroEm>administrateur</HeroEm></> : <>Formule <HeroEm>{isDriing ? 'Membre Driing' : isStandard ? 'Standard' : 'Découverte'}</HeroEm></>}
+          desc={isAdmin
+            ? 'Tout est ouvert, sans abonnement.'
+            : isDriing
+              ? 'Toute la plateforme est incluse avec ton abonnement Driing, sans paiement séparé.'
+              : isStandard
+                ? 'Merci de soutenir l’app. Ici, ton renouvellement, tes factures et la gestion de ton abonnement.'
+                : 'Le quotidien de ta location est gratuit. Standard ajoute les contrats signés en ligne avec paiement et caution, et toutes les formations.'}
+          aside={isDecouverte ? (
+            <div style={{ ...heroCard, width: '100%' }}>
+              <div style={styles.asideTitle}>{founderExhausted ? 'Formule Standard' : 'Offre Fondateur'}</div>
+              {founderExhausted ? (
+                <div style={styles.asidePrice}>38,98 € <span style={styles.priceLabel}>/ an TTC</span></div>
+              ) : (
+                <>
+                  <div style={styles.asidePrice}>19,98 € <span style={styles.priceLabel}>/ an TTC, à vie</span> <span style={styles.priceStrike}>38,98 €</span></div>
+                  <span style={styles.seatBar}><span style={{ ...styles.seatFill, width: `${founderPct}%` }} /></span>
+                  <div style={{ fontSize: 12.5, color: founderUrgent ? '#B7791F' : 'var(--text-2)', fontWeight: founderUrgent ? 700 : 500 }}>
+                    Plus que {founderRemaining} place{founderRemaining > 1 ? 's' : ''} sur {FOUNDER_TOTAL_SEATS}
+                  </div>
+                </>
+              )}
+              <a href="#offre-standard" style={styles.asideLink}>Voir ce que tu débloques</a>
+            </div>
+          ) : (isStandard || isDriing) && subDetails?.currentPeriodEnd ? (
+            <div style={{ ...heroCard, width: '100%' }}>
+              <div style={styles.asideTitle}>{subDetails.cancelAtPeriodEnd ? 'Se termine le' : 'Prochain renouvellement'}</div>
+              <div style={styles.asidePrice}>
+                {new Date(subDetails.currentPeriodEnd * 1000).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Paris' })}
+              </div>
+              {subDetails.amount != null && !subDetails.cancelAtPeriodEnd && (
+                <div style={{ fontSize: 13, color: 'var(--text-2)' }}>
+                  {(subDetails.amount / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} € / {subDetails.interval === 'month' ? 'mois' : 'an'} TTC
+                  {subDetails.isFounding && <> · tarif Fondateur</>}
+                </div>
+              )}
+            </div>
+          ) : undefined}
+        />
 
         {subscriptionResult === 'success' && (
           <div style={styles.alertSuccess} className="fade-up">
@@ -92,7 +131,6 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
             {/* ── Plan Administrateur, visible uniquement pour Jason ── */}
             {isAdmin && (
               <div style={styles.adminBanner} className="glass-card fade-up">
-                <div style={styles.adminGlow} />
                 <div style={{ ...styles.planLabel, color: 'var(--accent-text)' }}>
                   <div style={{ ...styles.dot, background: 'var(--accent-text)' }} />
                   Plan actuel
@@ -120,20 +158,19 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
 
             {isDriing && (
               <div style={styles.driingBanner} className="glass-card fade-up">
-                <div style={styles.driingGlow} />
                 <div style={{ ...styles.planLabel, color: 'var(--accent-text)' }}>
                   <div style={{ ...styles.dot, background: 'var(--accent-text)' }} />
                   Plan actuel
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <div style={{ ...styles.planName, color: 'var(--accent-text)' }}>Membre Driing</div>
-                  <Star size={18} color="#FFD56B" weight="fill" />
+                  <Star size={18} color="#B7791F" weight="fill" />
                 </div>
                 <p style={styles.planDesc}>Accès complet à la plateforme, aux formations et à la communauté privée Driing.</p>
                 <div style={styles.featureList}>
                   {DRIING_FEATURES.map(f => (
                     <div key={f} style={styles.featureItem}>
-                      <Check size={13} color="#FFD56B" weight="bold" />
+                      <Check size={13} color="var(--accent-text)" weight="bold" />
                       {f}
                     </div>
                   ))}
@@ -203,8 +240,7 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
                   <Star size={12} weight="fill" />
                   Passer en Standard
                 </div>
-                <div style={styles.upgradeCard} className="fade-up d1">
-                  <div style={styles.upgradeGlow} />
+                <div id="offre-standard" style={styles.upgradeCard} className="fade-up d1">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const }}>
                     <div style={styles.upgradeName}>Standard</div>
                     {!founderExhausted && (
@@ -218,9 +254,9 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
                     background: founderExhausted
                       ? 'var(--surface-2)'
                       : founderUrgent
-                        ? 'rgba(255,140,80,.10)'
+                        ? 'rgba(255,213,107,0.18)'
                         : 'var(--accent-bg)',
-                    border: `1px solid ${founderExhausted ? 'var(--border)' : founderUrgent ? 'rgba(255,90,30,.35)' : 'var(--accent-border)'}`,
+                    border: `1px solid ${founderExhausted ? 'var(--border)' : founderUrgent ? 'rgba(255,213,107,0.45)' : 'var(--accent-border)'}`,
                     borderRadius: '12px',
                     padding: '12px 14px',
                     display: 'flex',
@@ -234,7 +270,7 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
                       fontSize: '12.5px',
                       fontWeight: 600,
                       lineHeight: 1.4,
-                      color: founderExhausted ? 'var(--text-2)' : founderUrgent ? '#ff7a3d' : 'var(--accent-text)',
+                      color: founderExhausted ? 'var(--text-2)' : founderUrgent ? '#8A5A12' : 'var(--accent-text)',
                     }}>
                       <LockKey size={14} weight="fill" />
                       {founderExhausted ? (
@@ -253,10 +289,10 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
                         height: '100%',
                         width: `${founderPct}%`,
                         background: founderExhausted
-                          ? 'rgba(255,255,255,.2)'
+                          ? 'var(--text-muted)'
                           : founderUrgent
-                            ? 'linear-gradient(90deg,#ff7a3d,#ff5722)'
-                            : 'linear-gradient(90deg,#d4a400,#ffc94d)',
+                            ? '#B7791F'
+                            : 'var(--accent-text)',
                         borderRadius: '100px',
                         transition: 'width .7s cubic-bezier(.4,0,.2,1)',
                       }} />
@@ -330,17 +366,16 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
             {!isDriing && (
               <>
                 <div style={{ ...styles.sectionLabel, marginTop: '8px' }} className="fade-up">
-                  <Star size={12} color="#FFD56B" weight="fill" />
+                  <Star size={12} color="#B7791F" weight="fill" />
                   Inclus avec Driing
                 </div>
                 <div style={styles.driingRow} className="fade-up d2">
-                  <div style={styles.driingRowGlow} />
                   <div style={{ ...styles.upgradeName, color: 'var(--accent-text)' }}>Membre Driing</div>
                   <p style={styles.planDesc}>Tu es client Driing ? Toute la plateforme est incluse sans surcoût, aucun paiement séparé.</p>
                   <div style={styles.perks} className="abo-perks">
                     {DRIING_FEATURES.map(p => (
                       <span key={p} style={styles.perk}>
-                        <Check size={10} color="#FFD56B" weight="bold" />
+                        <Check size={10} color="var(--accent-text)" weight="bold" />
                         {p}
                       </span>
                     ))}
@@ -375,19 +410,13 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
-  intro: { marginBottom: 'var(--s-8)' },
-  pageTitle: {
-    fontFamily: 'var(--font-fraunces), serif',
-    fontSize: 'clamp(28px,3vw,40px)', fontWeight: 400,
-    color: 'var(--text)', marginBottom: 'var(--s-3)',
-    letterSpacing: 'var(--ls-tight)',
-  },
-  pageDesc: {
-    fontSize: 'var(--t-md)', fontWeight: 400, color: 'var(--text-2)',
-    maxWidth: '560px', lineHeight: 'var(--lh-relax)',
-  },
-  mainGrid: { gap: 'var(--s-7)' },
+  page: { padding: '20px var(--dash-page-px) 48px', width: '100%' },
+  asideTitle: { fontSize: 12, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  asidePrice: { fontFamily: 'var(--font-fraunces), serif', fontSize: 24, fontWeight: 500, color: 'var(--text)', lineHeight: 1.15 },
+  asideLink: { fontSize: 13, fontWeight: 700, color: 'var(--accent-text)', textDecoration: 'underline', textUnderlineOffset: 3 },
+  seatBar: { display: 'block', height: 7, borderRadius: 6, background: 'var(--surface-2)', overflow: 'hidden' },
+  seatFill: { display: 'block', height: '100%', borderRadius: 6, background: 'var(--accent-text)' },
+  mainGrid: { gap: 'var(--s-6)' },
   leftCol: {},
   rightCol: { display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-4)' },
 
@@ -426,8 +455,8 @@ const styles: Record<string, React.CSSProperties> = {
   priceLabel: { fontSize: 'var(--t-sm)', color: 'var(--text-muted)' },
   priceStrike: { fontSize: 'var(--t-xs)', color: 'var(--text-muted)', textDecoration: 'line-through', marginLeft: 'var(--s-1)' },
 
-  fmPill: { display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.25)', color: '#a07500', fontSize: '10px', fontWeight: 700, letterSpacing: '0.3px', padding: '3px 9px', borderRadius: '100px' },
-  fmDot: { width: '4px', height: '4px', borderRadius: '50%', background: '#d4a400', flexShrink: 0 },
+  fmPill: { display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(255,213,107,0.1)', border: '1px solid rgba(255,213,107,0.25)', color: '#8A5A12', fontSize: '10px', fontWeight: 700, letterSpacing: '0.3px', padding: '3px 9px', borderRadius: '100px' },
+  fmDot: { width: '4px', height: '4px', borderRadius: '50%', background: '#B7791F', flexShrink: 0 },
 
   /* Admin banner */
   adminBanner: {
@@ -436,44 +465,29 @@ const styles: Record<string, React.CSSProperties> = {
     background: 'linear-gradient(135deg, var(--accent-bg) 0%, rgba(255,213,107,0.10) 100%)',
     border: '1px solid var(--accent-border)', borderRadius: '20px',
   },
-  adminGlow: {
-    position: 'absolute', top: '-60px', right: '-60px',
-    width: '220px', height: '220px', borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(255,213,107,0.18) 0%, transparent 70%)',
-    pointerEvents: 'none',
-  },
 
   /* Current plan cards : mesh gradient + halo accent 2026 */
   currentBanner: {
     position: 'relative' as const, overflow: 'hidden' as const,
     padding: 'var(--s-8)', display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-4)',
-    background: 'radial-gradient(ellipse 80% 60% at 100% 0%, var(--accent-bg), transparent 60%), var(--surface)',
+    background: 'var(--surface)',
     border: '1px solid var(--accent-border)',
-    borderRadius: 'var(--r-xl)',
-    boxShadow: 'var(--shadow-md)',
+    borderRadius: 'var(--r-xl, 18px)',
   },
   standardBanner: {
     position: 'relative' as const, overflow: 'hidden' as const,
     padding: 'var(--s-8)', display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-4)',
-    background: 'radial-gradient(ellipse 80% 60% at 100% 0%, var(--accent-bg-2), transparent 60%), linear-gradient(135deg, rgba(0,76,63,0.10) 0%, transparent 70%)',
+    background: 'var(--surface)',
     border: '1px solid var(--accent-border)',
-    borderRadius: 'var(--r-xl)',
-    boxShadow: 'var(--shadow-md)',
+    borderRadius: 'var(--r-xl, 18px)',
   },
   driingBanner: {
     position: 'relative' as const, overflow: 'hidden' as const,
     padding: 'var(--s-8)',
     display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-4)',
-    background: 'radial-gradient(ellipse 80% 60% at 100% 0%, var(--accent-bg-2), transparent 60%), var(--surface)',
-    border: '1px solid var(--accent-border-2)',
-    borderRadius: 'var(--r-xl)',
-    boxShadow: 'var(--shadow-md)',
-  },
-  driingGlow: {
-    position: 'absolute' as const, top: '-60px', right: '-60px',
-    width: '200px', height: '200px', borderRadius: '50%',
-    background: 'radial-gradient(circle, var(--accent-bg-2) 0%, transparent 70%)',
-    pointerEvents: 'none' as const,
+    background: 'var(--surface)',
+    border: '1px solid var(--accent-border)',
+    borderRadius: 'var(--r-xl, 18px)',
   },
 
   /* Right column */
@@ -482,27 +496,25 @@ const styles: Record<string, React.CSSProperties> = {
   upgradeCard: {
     position: 'relative', overflow: 'hidden',
     display: 'flex', flexDirection: 'column', gap: '14px',
-    background: 'linear-gradient(135deg, rgba(0,76,63,0.1) 0%, rgba(0,76,63,0.04) 100%)',
-    border: '1px solid rgba(0,76,63,0.2)', borderRadius: '16px', padding: '24px',
+    background: 'var(--surface)',
+    border: '1px solid var(--accent-border)', borderRadius: 'var(--r-xl, 18px)', padding: 'clamp(18px, 2.4vw, 26px)',
   },
-  upgradeGlow: { position: 'absolute', top: '-40px', right: '-40px', width: '150px', height: '150px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(52,211,153,0.06) 0%, transparent 70%)', pointerEvents: 'none' },
   upgradeName: { fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 400, color: 'var(--text)' },
   ctaStandard: { display: 'inline-flex', alignItems: 'center', gap: '7px', background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.25)', color: 'var(--accent-text)', fontSize: '13px', fontWeight: 600, padding: '11px 18px', borderRadius: '10px', textDecoration: 'none', transition: 'all .2s', marginTop: '4px' },
 
   driingRow: {
     position: 'relative', overflow: 'hidden',
     display: 'flex', flexDirection: 'column', gap: '14px',
-    background: 'rgba(255,213,107,0.04)', border: '1px solid rgba(255,213,107,0.15)',
-    borderRadius: '16px', padding: '24px',
+    background: 'var(--surface)', border: '1px solid var(--border)',
+    borderRadius: 'var(--r-xl, 18px)', padding: 'clamp(18px, 2.4vw, 26px)',
   },
-  driingRowGlow: { position: 'absolute', top: '-40px', right: '-40px', width: '150px', height: '150px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,213,107,0.08) 0%, transparent 70%)', pointerEvents: 'none' },
   perks: { display: 'flex', flexWrap: 'wrap', gap: '8px' },
   perk: { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: 'var(--text-2)' },
 
   manageCard: {
     display: 'flex', flexDirection: 'column', gap: '14px',
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '16px', padding: '24px',
+    borderRadius: 'var(--r-xl, 18px)', padding: 'clamp(18px, 2.4vw, 26px)',
   },
   ctaManage: { display: 'inline-flex', alignItems: 'center', gap: '7px', color: 'var(--text-2)', fontSize: '13px', fontWeight: 500, textDecoration: 'none' },
 

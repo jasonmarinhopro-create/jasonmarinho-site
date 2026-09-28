@@ -5,23 +5,25 @@ import { ArrowLeft, BookmarkSimple, ArrowUpRight, Newspaper } from '@phosphor-ic
 
 export const metadata = { title: 'Mes favoris, Actualités LCD' }
 
+// Mêmes couleurs que la page Actualités (couleurs de la marque, sans bleu ni violet)
 const CAT_COLORS: Record<string, { color: string; bg: string; label: string }> = {
-  reglementation:     { color: 'var(--info)', bg: 'rgba(96,165,250,0.12)',  label: 'Réglementation' },
-  fiscalite:          { color: 'var(--success-1)', bg: 'var(--success-bg)',  label: 'Fiscalité' },
-  gites:              { color: 'var(--warning)', bg: 'rgba(245,158,11,0.12)',  label: 'Gîtes & Meublés' },
-  'chambres-hotes':   { color: '#ec4899', bg: 'rgba(236,72,153,0.12)',  label: "Chambres d'hôtes" },
-  conciergerie:       { color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)',  label: 'Conciergeries' },
-  'reservation-directe': { color: 'var(--success-1)', bg: 'rgba(16,185,129,0.12)', label: 'Réserv. directe' },
-  marche:             { color: '#f472b6', bg: 'rgba(244,114,182,0.12)', label: 'Marché' },
-  communes:           { color: '#64748b', bg: 'rgba(100,116,139,0.12)', label: 'Communes & Villes' },
-  plateformes:        { color: '#fb923c', bg: 'rgba(251,146,60,0.12)',  label: 'Plateformes OTA' },
-  outils:             { color: '#a78bfa', bg: 'rgba(167,139,250,0.12)', label: 'Outils & Tech' },
-  general:            { color: '#94a3b8', bg: 'rgba(148,163,184,0.12)', label: 'Général' },
+  reglementation:        { color: 'var(--accent-text)', bg: 'var(--accent-bg)', label: 'Réglementation' },
+  fiscalite:             { color: '#8A5A12', bg: 'rgba(255,213,107,0.20)', label: 'Fiscalité' },
+  juridique:             { color: 'var(--accent-text)', bg: 'var(--accent-bg)', label: 'Juridique' },
+  gites:                 { color: '#8A5A12', bg: 'rgba(255,213,107,0.20)', label: 'Gîtes & Meublés' },
+  'chambres-hotes':      { color: '#B83A7C', bg: 'rgba(244,114,182,0.14)', label: "Chambres d'hôtes" },
+  conciergerie:          { color: '#6E5446', bg: 'rgba(139,109,94,0.14)', label: 'Conciergeries' },
+  'reservation-directe': { color: 'var(--accent-text)', bg: 'var(--accent-bg)', label: 'Réserv. directe' },
+  marche:                { color: '#B83A7C', bg: 'rgba(244,114,182,0.14)', label: 'Marché' },
+  communes:              { color: '#6E5446', bg: 'rgba(139,109,94,0.14)', label: 'Communes & Villes' },
+  plateformes:           { color: '#C2344A', bg: 'rgba(224,71,91,0.10)', label: 'Plateformes OTA' },
+  outils:                { color: 'var(--accent-text)', bg: 'var(--accent-bg)', label: 'Outils & Tech' },
+  general:               { color: '#6E5446', bg: 'rgba(139,109,94,0.14)', label: 'Général' },
 }
 
 function formatDate(iso: string | null) {
   if (!iso) return ''
-  return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
+  return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'Europe/Paris' })
 }
 function getDomain(url: string | null) {
   if (!url) return null
@@ -66,7 +68,7 @@ export default async function FavorisActualitesPage() {
             <BookmarkSimple size={32} color="var(--text-muted)" weight="duotone" />
             <h3 style={s.emptyTitle}>Aucun favori pour l&apos;instant</h3>
             <p style={s.emptyDesc}>
-              Marque un article ⭐ depuis la liste pour le retrouver ici.
+              Touche l'icône signet d'un article dans la liste pour le retrouver ici.
             </p>
             <Link href="/dashboard/actualites" style={s.emptyCta}>
               Parcourir les actualités <ArrowUpRight size={13} weight="bold" />
@@ -80,7 +82,7 @@ export default async function FavorisActualitesPage() {
               return (
                 <div key={a.id} style={s.card} className="glass-card">
                   <div style={s.cardMeta}>
-                    <span style={{ ...s.badge, color: cat.color, background: cat.bg, borderColor: `${cat.color}25` }}>
+                    <span style={{ ...s.badge, color: cat.color, background: cat.bg, borderColor: `color-mix(in srgb, ${cat.color} 15%, transparent)` }}>
                       {cat.label}
                     </span>
                     <span style={s.dateLabel}>{formatDate(a.published_at ?? a.created_at)}</span>
@@ -103,7 +105,7 @@ export default async function FavorisActualitesPage() {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(20px,3vw,44px)', width: '100%' },
+  page: { padding: '20px var(--dash-page-px) 48px', width: '100%' },
   backLink: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 500, color: 'var(--text-2)', textDecoration: 'none', marginBottom: '20px' },
   intro: { marginBottom: '24px' },
   title: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(24px,3vw,38px)', fontWeight: 400, color: 'var(--text)', marginBottom: '8px' },
