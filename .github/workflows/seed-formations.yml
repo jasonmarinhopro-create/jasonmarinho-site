@@ -26,7 +26,7 @@ on:
         default: false
 
 concurrency:
-  group: seed-formations
+  group: formations-db
   cancel-in-progress: false
 
 jobs:
