@@ -1,7 +1,6 @@
 // Configuration des plateformes de réservation
 // Utilisé dans :
 // - VoyageurDetail (sélection plateforme + auto-suggestion commission)
-// - RevenusView (calcul du revenu net après commissions)
 // - Statistiques par plateforme
 
 export type PlatformKey =
