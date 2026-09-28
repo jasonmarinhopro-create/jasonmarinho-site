@@ -171,7 +171,6 @@ async function seedFormation(slug) {
             module_number: mod.id,
             title: mod.title,
             duration: mod.duration ?? null,
-            updated_at: new Date().toISOString(),
           },
           { onConflict: 'formation_id,module_number' }
         )
@@ -212,7 +211,6 @@ async function seedFormation(slug) {
             title: lesson.title,
             duration: lesson.duration ?? null,
             content: nextContent,
-            updated_at: new Date().toISOString(),
           },
           { onConflict: 'module_id,lesson_number' }
         )

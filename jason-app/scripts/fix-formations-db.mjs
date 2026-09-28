@@ -89,7 +89,7 @@ async function main() {
 
     const { error } = await supabase
       .from('formation_lessons')
-      .update({ title, content, updated_at: new Date().toISOString() })
+      .update({ title, content }) // pas de colonne updated_at en base (la migration 023 n'a pas recréé la table)
       .eq('id', l.id)
     if (error) { errors += 1; console.log(`  ! erreur : ${error.message}`) }
   }
