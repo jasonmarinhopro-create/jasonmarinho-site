@@ -178,13 +178,13 @@ export async function rejectCleaner(cleanerId: string, reason: string): Promise<
   await getResend().emails.send({
     from: FROM_EMAIL,
     to: cl.email,
-    subject: `Candidature ménage LCD — décision`,
+    subject: `Ta candidature ménage LCD : notre réponse`,
     html: buildEmail({
       title: 'Candidature non retenue',
       body: `
         ${emailP(`Bonjour ${cl.full_name},`)}
         ${emailP(`Merci de ton intérêt pour rejoindre l'annuaire des équipes de ménage LCD de Jason Marinho.`)}
-        ${emailP(`Après examen de ton dossier, nous ne pouvons malheureusement pas le retenir pour le moment. Notre annuaire est curé manuellement pour préserver une qualité homogène — ce n'est en aucun cas un jugement sur ton activité.`)}
+        ${emailP(`Après examen de ton dossier, nous ne pouvons malheureusement pas le retenir pour le moment. Notre annuaire est curé manuellement pour préserver une qualité homogène, ce n'est en aucun cas un jugement sur ton activité.`)}
         ${emailInfoBlock([{ label: 'Motif', value: escHtml(reason.trim()) }], '#F97583')}
         ${emailP(`Tu peux re-postuler à tout moment si ta situation évolue (élargissement de zone, montée en capacité, nouvelles références LCD, etc.). Bonne continuation.`)}
       `,

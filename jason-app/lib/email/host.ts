@@ -90,7 +90,7 @@ export async function sendPaiementReceivedEmail(opts: {
   if (!r) return
 
   const typeLabel = opts.type === 'loyer' ? 'Loyer' : 'Caution'
-  const subject = `${typeLabel} reçu de ${opts.guestFullName} — ${formatEur(opts.montant)}`
+  const subject = `${typeLabel} reçu de ${opts.guestFullName} : ${formatEur(opts.montant)}`
 
   const body = `
     ${emailP(`Salut ${escHtml(opts.hostFirstName)},`)}

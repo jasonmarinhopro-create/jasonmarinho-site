@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import {
@@ -431,6 +431,7 @@ export default function ReservationsView({
         <ReservationDrawer
           r={selected}
           today={today}
+          logementId={logements.find(l => l.nom === selected.logement_name)?.id ?? null}
           onClose={() => setSelected(null)}
           onAttachGuest={r => { setSelected(null); setQuick({ kind: 'attach', r }) }}
         />
@@ -566,9 +567,10 @@ const MOBILE_CSS = `
 
 // ─── Drawer détail ────────────────────────────────────────────────────────
 
-function ReservationDrawer({ r, today, onClose, onAttachGuest }: {
+function ReservationDrawer({ r, today, logementId, onClose, onAttachGuest }: {
   r: Reservation
   today: string
+  logementId: string | null
   onClose: () => void
   onAttachGuest: (r: Reservation) => void
 }) {
@@ -580,86 +582,123 @@ function ReservationDrawer({ r, today, onClose, onAttachGuest }: {
   const canCreateContract = needsContract(r, today)
   const n = nights(r.date_arrivee, r.date_depart)
   const perNight = r.montant && n > 0 ? Math.round(r.montant / n) : null
+  // Avancement du séjour en cours (nuits passées / nuits)
+  const done = status === 'past' ? n : status === 'ongoing' ? Math.min(n, nights(r.date_arrivee, today)) : 0
+  const daysTo = nights(today, r.date_arrivee)
+  const when = status === 'past' ? 'Séjour terminé'
+    : status === 'ongoing' ? `Sur place, départ ${r.date_depart === today ? 'aujourd\'hui' : `dans ${nights(today, r.date_depart)} jour${nights(today, r.date_depart) > 1 ? 's' : ''}`}`
+      : daysTo === 0 ? 'Arrivée aujourd\'hui' : daysTo === 1 ? 'Arrivée demain' : `Arrivée dans ${daysTo} jours`
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
 
   return (
     <>
       <div onClick={onClose} style={d.backdrop} />
-      <aside style={d.drawer}>
+      <aside style={d.drawer} role="dialog" aria-modal="true" aria-label={r.voyageur_name}>
+        {/* En-tête vert, comme les bandeaux de l'app */}
         <div style={d.head}>
-          <div style={{ ...d.accent, background: platform.color }} />
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={d.headMeta}>{platform.label} · {st.label}</div>
-            <div style={d.headName}>{r.voyageur_name}</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+            <span style={{ ...d.pill, color: platform.color, borderColor: `color-mix(in srgb, ${platform.color} 35%, transparent)`, background: 'var(--surface)' }}>
+              <span style={{ ...c.dot, background: platform.color }} /> {platform.label}
+            </span>
+            <span style={{ ...d.pill, ...(status === 'ongoing' ? { color: 'var(--accent-text)', borderColor: 'var(--accent-border)' } : {}) }}>{st.label}</span>
+            <span style={{ flex: 1 }} />
+            <button onClick={onClose} style={d.closeBtn} aria-label="Fermer"><X size={16} weight="bold" /></button>
           </div>
-          <button onClick={onClose} style={d.closeBtn} title="Fermer"><X size={16} /></button>
+          <div style={d.headName}>{r.voyageur_name}</div>
+          {logementId ? (
+            <Link href={`/dashboard/logements/${logementId}`} style={d.headLogement}><House size={14} weight="fill" /> {r.logement_name} <ArrowRight size={12} weight="bold" /></Link>
+          ) : (
+            <span style={d.headLogement}><House size={14} weight="fill" /> {r.logement_name}</span>
+          )}
         </div>
 
         <div style={d.body}>
-          {/* Résumé */}
+          {/* Séjour : arrivée → départ, avec l'avancement */}
+          <div style={d.stayCard}>
+            <div style={d.stayRow}>
+              <div style={d.stayEnd}>
+                <span style={d.blockLbl}>Arrivée</span>
+                <span style={d.stayDate}>{fmtDate(r.date_arrivee, { weekday: 'short', day: 'numeric', month: 'short' })}</span>
+              </div>
+              <div style={d.stayMid}>
+                <span style={d.stayNights}>{n} nuit{n > 1 ? 's' : ''}</span>
+                <div style={d.track}><div style={{ ...d.trackFill, width: `${n ? (done / n) * 100 : 0}%` }} /></div>
+              </div>
+              <div style={{ ...d.stayEnd, alignItems: 'flex-end', textAlign: 'right' }}>
+                <span style={d.blockLbl}>Départ</span>
+                <span style={d.stayDate}>{fmtDate(r.date_depart, { weekday: 'short', day: 'numeric', month: 'short' })}</span>
+              </div>
+            </div>
+            <div style={d.stayFoot}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><CalendarBlank size={13} weight="bold" /> {when}</span>
+              {status !== 'past' && <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Broom size={13} weight="bold" /> Ménage le {fmtDate(r.date_depart, { day: 'numeric', month: 'short' })}</span>}
+            </div>
+          </div>
+
           <div style={d.blockGrid}>
             <div style={d.block}>
-              <div style={d.blockLbl}>Arrivée</div>
-              <div style={d.blockVal}>{fmtDate(r.date_arrivee, { weekday: 'short', day: 'numeric', month: 'short' })}</div>
-            </div>
-            <div style={d.block}>
-              <div style={d.blockLbl}>Départ</div>
-              <div style={d.blockVal}>{fmtDate(r.date_depart, { weekday: 'short', day: 'numeric', month: 'short' })}</div>
-            </div>
-            <div style={d.block}>
-              <div style={d.blockLbl}>Nuits</div>
-              <div style={d.blockVal}>{n}</div>
-            </div>
-            <div style={d.block}>
               <div style={d.blockLbl}>Montant</div>
-              <div style={{ ...d.blockVal, color: 'var(--accent-text)' }}>{r.montant != null ? fmtEur(r.montant) : '-'}</div>
-              {perNight && <div style={d.blockHint}>{perNight} € / nuit</div>}
+              <div style={{ ...d.blockVal, color: r.montant != null ? 'var(--accent-text)' : 'var(--text-3)' }}>{r.montant != null ? fmtEur(r.montant) : 'Inconnu'}</div>
+              <div style={d.blockHint}>{perNight ? `${perNight} € par nuit` : r.source === 'ical' ? 'non transmis par la plateforme' : ''}</div>
+            </div>
+            <div style={d.block}>
+              <div style={d.blockLbl}>Voyageurs</div>
+              <div style={d.blockVal}>{r.nb_voyageurs ?? '?'}</div>
+              <div style={d.blockHint}>{r.nb_voyageurs ? `personne${r.nb_voyageurs > 1 ? 's' : ''}` : 'non renseigné'}</div>
             </div>
           </div>
 
-          {/* Logement */}
-          <div style={d.section}>
-            <div style={d.sectionLbl}>Logement</div>
-            <div style={d.rowInfo}><House size={15} weight="duotone" /> <strong>{r.logement_name}</strong></div>
-          </div>
+          {/* Ce qui reste à faire, en premier */}
+          <ContextualAlerts r={r} today={today} />
 
-          {/* Voyageur contact */}
+          {/* Réservation importée d'Airbnb / Booking : l'app ne connaît que les dates */}
+          {r.source === 'ical' && (
+            <div style={d.note}>
+              <strong style={{ color: 'var(--text)' }}>Réservation synchronisée depuis {platform.label}</strong>
+              <span>La plateforme ne transmet ni le nom, ni le contact, ni le montant. Le ménage après le départ est déjà planifié. Ajoute le voyageur pour garder son contact et préparer la déclaration s&apos;il est étranger.</span>
+            </div>
+          )}
+
+          {/* Voyageur */}
           {(r.voyageur_email || r.voyageur_phone) && (
             <div style={d.section}>
-              <div style={d.sectionLbl}>Contact voyageur</div>
-              {r.voyageur_email && (
-                <a href={`mailto:${r.voyageur_email}`} style={d.rowLink}>
-                  <Envelope size={15} weight="duotone" /> {r.voyageur_email}
-                </a>
-              )}
-              {r.voyageur_phone && (
-                <a href={`tel:${r.voyageur_phone}`} style={d.rowLink}>
-                  <Phone size={15} weight="duotone" /> {r.voyageur_phone}
-                </a>
-              )}
+              <div style={d.sectionLbl}>Voyageur</div>
+              <div style={d.contactCard}>
+                <span style={d.avatar}>{initials(r.voyageur_name)}</span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>{r.voyageur_name}</div>
+                  <div style={{ fontSize: 12.5, color: 'var(--text-2)', overflowWrap: 'anywhere' }}>{[r.voyageur_email, r.voyageur_phone].filter(Boolean).join(' · ')}</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {r.voyageur_email && <a href={`mailto:${r.voyageur_email}`} style={d.actionSecondary}><Envelope size={14} weight="bold" /> Écrire</a>}
+                {r.voyageur_phone && <a href={`tel:${r.voyageur_phone.replace(/\s/g, '')}`} style={d.actionSecondary}><Phone size={14} weight="bold" /> Appeler</a>}
+              </div>
             </div>
           )}
 
           {/* Contrat / paiement */}
           {(r.contract_status || r.payment_status) && (
             <div style={d.section}>
-              <div style={d.sectionLbl}>Contrat &amp; paiement</div>
-              {r.contract_status && (
-                <div style={d.rowInfo}>Contrat : <strong style={{ color: r.contract_status === 'signe' ? 'var(--accent-text)' : '#B7791F' }}>{prettyContractStatus(r.contract_status)}</strong></div>
-              )}
-              {r.payment_status && (
-                <div style={d.rowInfo}>Loyer payé en ligne : <strong>{prettyPaymentStatus(r.payment_status)}</strong></div>
-              )}
-            </div>
-          )}
-
-          {/* Réservation importée d'Airbnb / Booking : l'app ne connaît que les dates */}
-          {r.source === 'ical' && (
-            <div style={d.section}>
-              <div style={d.sectionLbl}>Réservation synchronisée</div>
-              <div style={{ ...d.rowInfo, display: 'block', lineHeight: 1.55 }}>
-                Importée depuis {PLATFORM_META[r.platform]?.label ?? 'la plateforme'} par la synchro du calendrier :
-                la plateforme ne transmet ni le nom, ni le contact, ni le montant. Le ménage après le départ est déjà planifié.
-                Ajoute le voyageur pour garder son contact et préparer la déclaration s&apos;il est étranger.
+              <div style={d.sectionLbl}>Contrat et paiement</div>
+              <div style={d.blockGrid}>
+                {r.contract_status && (
+                  <div style={d.block}>
+                    <div style={d.blockLbl}>Contrat</div>
+                    <div style={{ ...d.blockVal, fontSize: 15, color: r.contract_status === 'signe' ? 'var(--accent-text)' : '#8A5A12' }}>{prettyContractStatus(r.contract_status)}</div>
+                  </div>
+                )}
+                {r.payment_status && (
+                  <div style={d.block}>
+                    <div style={d.blockLbl}>Loyer en ligne</div>
+                    <div style={{ ...d.blockVal, fontSize: 15, color: r.payment_status === 'paid' ? 'var(--accent-text)' : r.payment_status === 'failed' ? 'var(--danger)' : '#8A5A12' }}>{prettyPaymentStatus(r.payment_status)}</div>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -668,28 +707,30 @@ function ReservationDrawer({ r, today, onClose, onAttachGuest }: {
           <div style={d.actions}>
             {r.source === 'ical' && (
               <button type="button" onClick={() => onAttachGuest(r)} style={d.actionPrimary}>
-                <UserPlus size={14} weight="bold" /> Ajouter le voyageur
+                <UserPlus size={15} weight="bold" /> Ajouter le voyageur
               </button>
             )}
             {canCreateContract && (
               <Link href={`/dashboard/voyageurs/${r.voyageur_id}?contract=${r.sourceId}`} style={d.actionPrimary}>
-                <FileText size={14} weight="bold" /> Créer le contrat
+                <FileText size={15} weight="bold" /> Créer le contrat
               </Link>
             )}
             {r.voyageur_id && (
               <Link href={`/dashboard/voyageurs/${r.voyageur_id}`} style={canCreateContract ? d.actionSecondary : d.actionPrimary}>
-                <Users size={14} weight="bold" /> Voir la fiche voyageur
+                <Users size={15} weight="bold" /> Voir la fiche voyageur
               </Link>
             )}
-            {r.source === 'contract' && (
-              <Link href="/dashboard/contrats" style={d.actionSecondary}>
-                <ArrowSquareOut size={13} weight="bold" /> Contrats &amp; paiements
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {r.source === 'contract' && (
+                <Link href="/dashboard/contrats" style={{ ...d.actionSecondary, flex: '1 1 160px' }}>
+                  <ArrowSquareOut size={14} weight="bold" /> Contrats et paiements
+                </Link>
+              )}
+              <Link href={`/dashboard/calendrier${logementId ? `?logement=${encodeURIComponent(r.logement_name)}` : ''}`} style={{ ...d.actionSecondary, flex: '1 1 160px' }}>
+                <CalendarBlank size={14} weight="bold" /> Voir au calendrier
               </Link>
-            )}
+            </div>
           </div>
-
-          {/* Alertes contextuelles */}
-          <ContextualAlerts r={r} today={today} />
         </div>
       </aside>
     </>
@@ -725,11 +766,11 @@ function ContextualAlerts({ r, today }: { r: Reservation; today: string }) {
           ...d.alert,
           background:
             a.level === 'danger' ? 'var(--danger-bg)'
-              : a.level === 'warn' ? 'rgba(255,213,107,0.16)'
+              : a.level === 'warn' ? 'color-mix(in srgb, #B7791F 10%, transparent)'
                 : 'var(--accent-bg)',
           borderColor:
-            a.level === 'danger' ? 'rgba(239,68,68,0.30)'
-              : a.level === 'warn' ? 'rgba(183,121,31,0.30)'
+            a.level === 'danger' ? 'color-mix(in srgb, var(--danger) 30%, transparent)'
+              : a.level === 'warn' ? 'color-mix(in srgb, #B7791F 30%, transparent)'
                 : 'var(--accent-border)',
           color:
             a.level === 'danger' ? 'var(--danger)'
@@ -852,25 +893,38 @@ const t: Record<string, React.CSSProperties> = {
 }
 
 const d: Record<string, React.CSSProperties> = {
-  backdrop: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(6px)', zIndex: 300 },
-  drawer: { position: 'fixed', top: 0, right: 0, bottom: 0, width: 'min(460px, 92vw)', background: 'var(--bg)', borderLeft: '1px solid var(--border-2)', boxShadow: '-20px 0 60px rgba(0,0,0,0.35)', zIndex: 310, display: 'flex', flexDirection: 'column' as const, animation: 'slideInRight 0.25s ease' },
-  head: { display: 'flex', alignItems: 'flex-start', gap: 12, padding: '18px 20px', borderBottom: '1px solid var(--border)', position: 'relative' as const },
-  accent: { position: 'absolute' as const, top: 0, left: 0, right: 0, height: 4 },
-  headMeta: { fontSize: 10.5, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 0.5 },
-  headName: { fontFamily: 'var(--font-fraunces), serif', fontSize: 20, fontWeight: 500, color: 'var(--text)', marginTop: 4, letterSpacing: '-0.01em' },
-  closeBtn: { background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)', borderRadius: 8, width: 32, height: 32, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  body: { padding: '18px 20px 40px', overflowY: 'auto' as const, display: 'flex', flexDirection: 'column' as const, gap: 18 },
-  blockGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 },
-  block: { padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10 },
-  blockLbl: { fontSize: 10.5, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 0.4, fontWeight: 600, marginBottom: 4 },
-  blockVal: { fontFamily: 'var(--font-fraunces), serif', fontSize: 15, fontWeight: 500, color: 'var(--text)' },
-  blockHint: { fontSize: 11, color: 'var(--text-muted)', marginTop: 2 },
-  section: { display: 'flex', flexDirection: 'column' as const, gap: 6 },
-  sectionLbl: { fontSize: 10.5, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 0.6, fontWeight: 700, marginBottom: 4 },
-  rowInfo: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-2)', padding: '6px 0' },
-  rowLink: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--accent-text)', padding: '6px 0', textDecoration: 'none' },
-  actions: { display: 'flex', flexDirection: 'column' as const, gap: 8, marginTop: 4 },
-  actionPrimary: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '10px 14px', background: 'var(--accent-text)', color: 'var(--bg)', border: 'none', borderRadius: 9, fontSize: 13, fontWeight: 600, textDecoration: 'none', cursor: 'pointer', fontFamily: 'inherit' },
-  actionSecondary: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '10px 14px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)', borderRadius: 9, fontSize: 13, fontWeight: 500, textDecoration: 'none' },
-  alert: { padding: '10px 12px', border: '1px solid', borderRadius: 8, fontSize: 12.5, lineHeight: 1.5 },
+  backdrop: { position: 'fixed', inset: 0, background: 'rgba(10,20,15,0.40)', backdropFilter: 'blur(4px)', zIndex: 300 },
+  drawer: { position: 'fixed', top: 0, right: 0, bottom: 0, width: 'min(480px, 100vw)', background: 'var(--bg)', borderLeft: '1px solid var(--border)', boxShadow: '-20px 0 60px rgba(0,0,0,0.25)', zIndex: 310, display: 'flex', flexDirection: 'column' as const, animation: 'slideInRight 0.25s ease' },
+  head: {
+    display: 'flex', flexDirection: 'column' as const, gap: 8, padding: '16px 20px 18px', borderBottom: '1px solid var(--accent-border)',
+    background: 'linear-gradient(135deg, var(--accent-bg) 0%, rgba(99,214,131,0.10) 55%, rgba(255,213,107,0.14) 100%)',
+  },
+  pill: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '3px 10px', borderRadius: 999, fontSize: 12, fontWeight: 700, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)' },
+  headName: { fontFamily: 'var(--font-fraunces), serif', fontSize: 26, fontWeight: 400, color: 'var(--text)', lineHeight: 1.15, letterSpacing: '-0.01em', overflowWrap: 'anywhere' as const },
+  headLogement: { display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 600, color: 'var(--accent-text)', textDecoration: 'none', width: 'fit-content' },
+  closeBtn: { background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)', borderRadius: 10, width: 34, height: 34, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  body: { padding: '18px 20px 40px', overflowY: 'auto' as const, display: 'flex', flexDirection: 'column' as const, gap: 16 },
+  stayCard: { display: 'flex', flexDirection: 'column' as const, gap: 12, padding: '14px 16px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16 },
+  stayRow: { display: 'flex', alignItems: 'center', gap: 12 },
+  stayEnd: { display: 'flex', flexDirection: 'column' as const, gap: 3, minWidth: 0 },
+  stayDate: { fontFamily: 'var(--font-fraunces), serif', fontSize: 18, color: 'var(--text)', whiteSpace: 'nowrap' as const },
+  stayMid: { flex: 1, minWidth: 60, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: 6 },
+  stayNights: { fontSize: 12, fontWeight: 700, color: 'var(--text-2)' },
+  track: { width: '100%', height: 6, borderRadius: 999, background: 'var(--border)', overflow: 'hidden' },
+  trackFill: { height: '100%', borderRadius: 999, background: 'var(--accent-text)' },
+  stayFoot: { display: 'flex', flexWrap: 'wrap' as const, justifyContent: 'space-between', gap: 8, fontSize: 12.5, color: 'var(--text-2)', paddingTop: 10, borderTop: '1px solid var(--border)' },
+  blockGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 10 },
+  block: { padding: '12px 14px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, minWidth: 0 },
+  blockLbl: { fontSize: 11, color: 'var(--text-3)', textTransform: 'uppercase' as const, letterSpacing: 0.5, fontWeight: 700 },
+  blockVal: { fontFamily: 'var(--font-fraunces), serif', fontSize: 20, color: 'var(--text)', marginTop: 4, lineHeight: 1.2 },
+  blockHint: { fontSize: 12, color: 'var(--text-3)', marginTop: 2 },
+  note: { display: 'flex', flexDirection: 'column' as const, gap: 4, padding: '12px 14px', borderRadius: 14, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', fontSize: 13, color: 'var(--text-2)', lineHeight: 1.55 },
+  section: { display: 'flex', flexDirection: 'column' as const, gap: 8 },
+  sectionLbl: { fontSize: 11, color: 'var(--text-3)', textTransform: 'uppercase' as const, letterSpacing: 0.6, fontWeight: 700 },
+  contactCard: { display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14 },
+  avatar: { width: 36, height: 36, borderRadius: '50%', background: 'var(--accent-bg)', color: 'var(--accent-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12.5, fontWeight: 800, flexShrink: 0 },
+  actions: { display: 'flex', flexDirection: 'column' as const, gap: 8, marginTop: 2 },
+  actionPrimary: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '12px 16px', background: 'var(--accent-text)', color: 'var(--bg)', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 700, textDecoration: 'none', cursor: 'pointer', fontFamily: 'inherit' },
+  actionSecondary: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '10px 14px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: 12, fontSize: 13, fontWeight: 600, textDecoration: 'none' },
+  alert: { padding: '10px 12px', border: '1px solid', borderRadius: 12, fontSize: 13, lineHeight: 1.5 },
 }

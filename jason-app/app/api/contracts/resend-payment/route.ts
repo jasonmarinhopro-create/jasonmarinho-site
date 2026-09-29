@@ -4,6 +4,7 @@ import { createClient as createAuthClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { logger } from '@/lib/logger'
 import { CONTRACT_EMAIL_I18N, toEmailLang } from '@/lib/email/contract-i18n'
+import { lightify } from '@/lib/email/template'
 import { depositWindow, depositOpensOn } from '@/lib/stripe/deposit-window'
 const log = logger('api/contracts/resend-payment')
 
@@ -175,7 +176,7 @@ export async function POST(request: NextRequest) {
       from: FROM_EMAIL,
       to: contract.locataire_email,
       subject: et.reminderSubject(propertyLabel),
-      html: emailHtml,
+      html: lightify(emailHtml),
     })
 
     if (emailErr) {

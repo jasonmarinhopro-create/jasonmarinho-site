@@ -198,13 +198,13 @@ export async function rejectPhotographer(photographerId: string, reason: string)
   await getResend().emails.send({
     from: FROM_EMAIL,
     to: ph.email,
-    subject: `Candidature photographe LCD — décision`,
+    subject: `Ta candidature photographe LCD : notre réponse`,
     html: buildEmail({
       title: 'Candidature non retenue',
       body: `
         ${emailP(`Bonjour ${ph.full_name},`)}
         ${emailP(`Merci de ton intérêt pour rejoindre l'annuaire des photographes LCD de Jason Marinho.`)}
-        ${emailP(`Après examen de ton portfolio et de ta candidature, nous ne pouvons malheureusement pas la retenir pour le moment. Notre annuaire est curé manuellement pour préserver une qualité homogène — ce n'est en aucun cas un jugement sur ton travail.`)}
+        ${emailP(`Après examen de ton portfolio et de ta candidature, nous ne pouvons malheureusement pas la retenir pour le moment. Notre annuaire est curé manuellement pour préserver une qualité homogène, ce n'est en aucun cas un jugement sur ton travail.`)}
         ${emailInfoBlock([{ label: 'Motif', value: escHtml(reason.trim()) }], '#F97583')}
         ${emailP(`Tu peux re-postuler à tout moment si ta situation évolue (nouveaux référencements LCD au portfolio, élargissement de zone, etc.). Bonne continuation à toi.`)}
       `,

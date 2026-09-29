@@ -9,7 +9,7 @@ import {
   FacebookLogo, CaretDown, ChartBar, CalendarBlank, Heart,
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
-  ChartLineUp, HouseLine, Briefcase, ShareNetwork, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
+  ChartLineUp, HouseLine, Briefcase, ShareNetwork, PaperPlaneTilt, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
   Broom, Check, Plus,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
@@ -117,6 +117,7 @@ const adminMain = [
   { href: '/dashboard/admin/menage',       label: 'Ménage',          Icon: Sparkle },
   { href: '/dashboard/admin/investisseurs', label: 'Investisseurs',  Icon: Briefcase },
   { href: '/dashboard/admin/social',       label: 'Réseaux sociaux', Icon: ShareNetwork },
+  { href: '/dashboard/admin/prospection',  label: 'Prospection',     Icon: PaperPlaneTilt },
   // Tout en bas, hors du groupe "Contenu" (retiré de la sidebar — jamais
   // utilisé, cf. Formations/Gabarits/Actualités/Communauté/Guide LCD
   // ci-dessous, toujours accessibles en direct par URL si besoin).

@@ -14,7 +14,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { Resend } from 'resend'
 import { CONTRACT_EMAIL_I18N, toEmailLang } from '@/lib/email/contract-i18n'
 import { addDaysIso, parisToday, DEPOSIT_OPEN_DAYS_BEFORE } from '@/lib/stripe/deposit-window'
-import { escHtml } from '@/lib/email/template'
+import { escHtml, lightify } from '@/lib/email/template'
 
 export type DepositReminderRow = {
   id: string
@@ -89,7 +89,7 @@ export function depositOpenEmail(row: DepositReminderRow, appUrl: string): { sub
 </body>
 </html>`
 
-  return { subject: et.depositOpenSubject(row.logement_nom ?? row.logement_adresse), html }
+  return { subject: et.depositOpenSubject(row.logement_nom ?? row.logement_adresse), html: lightify(html) }
 }
 
 /** Cherche les contrats du jour et envoie les emails. Retourne le nombre envoyé. */

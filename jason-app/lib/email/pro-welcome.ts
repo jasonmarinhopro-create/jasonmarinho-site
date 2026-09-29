@@ -44,20 +44,20 @@ export async function sendProWelcomeEmail(args: ProWelcomeArgs): Promise<void> {
   const annuaireLabel = isPhotographer ? 'photographes LCD' : 'équipes de ménage LCD'
   const fiche = isPhotographer ? 'ta fiche photographe' : 'ta fiche équipe ménage'
 
-  const subject = `${displayName}, ${fiche} est en ligne 🎉`
+  const subject = `${displayName}, ${fiche} est en ligne`
 
   const html = buildEmail({
     title: 'Bienvenue dans l\'annuaire',
     preview: `${fiche} est désormais publique. Voici les liens pour la gérer.`,
     body: `
       ${emailP(`Bonjour ${escHtml(fullName)},`)}
-      ${emailP(`Excellente nouvelle : ton paiement Stripe est confirmé et ${fiche} est <strong>en ligne dans l'annuaire des ${annuaireLabel} de Jason Marinho</strong> 🎉`)}
+      ${emailP(`Excellente nouvelle : ton paiement Stripe est confirmé et ${fiche} est <strong>en ligne dans l'annuaire des ${annuaireLabel} de Jason Marinho</strong>.`)}
       ${isFondateur
-        ? emailP(`Tu fais partie ${isPhotographer ? 'des 20 premiers photographes fondateurs' : 'des 20 premières équipes fondatrices'} — ton tarif de <strong>${annual} TTC / an est verrouillé à vie</strong> tant que ton abonnement reste actif.`)
+        ? emailP(`Tu fais partie ${isPhotographer ? 'des 20 premiers photographes fondateurs' : 'des 20 premières équipes fondatrices'} : ton tarif de <strong>${annual} TTC / an est verrouillé à vie</strong> tant que ton abonnement reste actif.`)
         : emailP(`Ton abonnement annuel est de <strong>${annual} TTC / an</strong>, résiliable à tout moment sans engagement.`)
       }
       ${emailInfoBlock([
-        { label: 'Statut', value: isFondateur ? '🌟 Membre Fondateur (à vie)' : 'Standard' },
+        { label: 'Statut', value: isFondateur ? 'Membre Fondateur (à vie)' : 'Standard' },
         { label: 'Tarif', value: `${annual} TTC / an` },
         { label: 'Ville', value: escHtml(ville) },
         { label: 'Identifiant', value: escHtml(email) },
@@ -68,7 +68,7 @@ export async function sendProWelcomeEmail(args: ProWelcomeArgs): Promise<void> {
 
       ${emailP(`<strong>Éditer ${fiche}</strong> (bio, tarifs, zone, prestations) :`)}
       ${emailBtn(`${APP_URL}${dashboardPath}`, 'Accéder à mon espace', 'secondary')}
-      ${emailNote(`Connecte-toi avec l'email <strong>${escHtml(email)}</strong> et le mot de passe choisi à l'inscription. Première connexion : passe par <a href="${loginUrl}" style="color:#FFD56B;text-decoration:underline">cette page</a>.`)}
+      ${emailNote(`Connecte-toi avec l'email <strong>${escHtml(email)}</strong> et le mot de passe choisi à l'inscription. Première connexion : passe par <a href="${loginUrl}" style="color:#004C3F;text-decoration:underline">cette page</a>.`)}
 
       ${emailP(`<strong>Gérer ton abonnement</strong> (factures, changement de carte, résiliation) : depuis ton espace dashboard, bouton « Gérer mon abonnement ». Stripe te facturera automatiquement chaque année à la même date.`)}
 

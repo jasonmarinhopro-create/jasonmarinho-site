@@ -1,0 +1,104 @@
+import { describe, it, expect } from 'vitest'
+import {
+  addDaysIso, isoWeekday, nextAllowedDay, scheduleStep, afterSend, renderTemplate, guessFirstName,
+  replySubject, complianceFooter, textToHtml, extractEmails, bestEmail, bouncedAddresses, isBounceSender,
+} from './engine'
+
+const WEEK = [1, 2, 3, 4, 5]
+const rules = { repeat_after_days: null, max_repeats: 0, then_sequence_id: null, end_stage: null }
+
+describe('dates', () => {
+  it('jour de la semaine ISO', () => {
+    expect(isoWeekday('2026-09-28')).toBe(1) // lundi
+    expect(isoWeekday('2026-10-04')).toBe(7) // dimanche
+  })
+  it('report au prochain jour ouvré', () => {
+    expect(nextAllowedDay('2026-10-03', WEEK)).toBe('2026-10-05') // samedi → lundi
+    expect(nextAllowedDay('2026-10-01', WEEK)).toBe('2026-10-01')
+  })
+  it('J+2 un jeudi tombe le lundi', () => {
+    expect(scheduleStep('2026-10-01', 2, WEEK)).toBe('2026-10-05')
+    expect(addDaysIso('2026-12-31', 1)).toBe('2027-01-01')
+  })
+})
+
+describe('afterSend', () => {
+  it('passe à l\'étape suivante avec son délai', () => {
+    expect(afterSend(0, [0, 3, 7], rules, 0, '2026-09-29', WEEK)).toEqual({ kind: 'next', next_step: 1, next_send_on: '2026-10-02' })
+  })
+  it('termine et enchaîne après la dernière étape', () => {
+    expect(afterSend(2, [0, 3, 7], { ...rules, then_sequence_id: 'seq-b', end_stage: 'pas_interesse' }, 0, '2026-09-29', WEEK))
+      .toEqual({ kind: 'done', chain_to: 'seq-b', end_stage: 'pas_interesse' })
+  })
+  it('boucle tant qu\'il reste des tours', () => {
+    const r = { ...rules, repeat_after_days: 60, max_repeats: 1 }
+    expect(afterSend(1, [0, 4], r, 0, '2026-09-29', WEEK)).toEqual({ kind: 'loop', next_step: 0, next_send_on: '2026-11-30', loop_count: 1 })
+    expect(afterSend(1, [0, 4], r, 1, '2026-09-29', WEEK).kind).toBe('done')
+  })
+})
+
+describe('gabarits', () => {
+  it('remplace les variables', () => {
+    expect(renderTemplate('Bonjour {prenom}, tu es à {ville} ?', { prenom: 'Marie', ville: 'Lyon' })).toBe('Bonjour Marie, tu es à Lyon ?')
+  })
+  it('variable vide sans espace orphelin', () => {
+    expect(renderTemplate('Bonjour {prenom},\nMerci', { prenom: '' })).toBe('Bonjour,\nMerci')
+    expect(renderTemplate('Des hôtes{ à ville} cherchent', {})).toBe('Des hôtes cherchent')
+    expect(renderTemplate('Des hôtes{ à ville} cherchent', { ville: 'Nice' })).toBe('Des hôtes à Nice cherchent')
+  })
+  it('prénom deviné seulement quand c\'est plausible', () => {
+    expect(guessFirstName(null, 'MARIE DUPONT')).toBe('Marie')
+    expect(guessFirstName(null, 'Studio Lumière')).toBe('')
+    expect(guessFirstName(null, 'Dupont')).toBe('')
+    expect(guessFirstName('jean-luc', null)).toBe('Jean-Luc')
+  })
+  it('objet de relance', () => {
+    expect(replySubject('Ta fiche')).toBe('Re: Ta fiche')
+    expect(replySubject('Re: Ta fiche')).toBe('Re: Ta fiche')
+  })
+})
+
+describe('information et désinscription', () => {
+  it('premier message : origine + lien', () => {
+    const f = complianceFooter({ source: 'google', firstMessage: true, unsubscribeUrl: 'https://x/d/1' })
+    expect(f).toContain('Google Maps')
+    expect(f).toContain('https://x/d/1')
+  })
+  it('relance : lien seul', () => {
+    const f = complianceFooter({ source: 'google', firstMessage: false, unsubscribeUrl: 'https://x/d/1' })
+    expect(f).not.toContain('Google')
+    expect(f).toContain('https://x/d/1')
+  })
+  it('HTML échappé avec liens cliquables', () => {
+    const h = textToHtml('Salut <b>\n\nVoir https://jasonmarinho.com/tarifs.', 'Stop : https://x/d/1')
+    expect(h).toContain('&lt;b&gt;')
+    expect(h).toContain('<a href="https://jasonmarinho.com/tarifs">')
+    expect(h).toContain('<a href="https://x/d/1">')
+  })
+})
+
+describe('e-mails d\'un site', () => {
+  it('extrait et filtre', () => {
+    const html = '<a href="mailto:Contact@Studio-Marie.fr">écrire</a> logo@2x.png noreply@wix.com bonjour [at] studio-marie.fr x@sentry.io'
+    const list = extractEmails(html)
+    expect(list).toContain('contact@studio-marie.fr')
+    expect(list).toContain('bonjour@studio-marie.fr')
+    expect(list.some(e => e.includes('noreply') || e.includes('sentry') || e.includes('@2x'))).toBe(false)
+  })
+  it('préfère le domaine du site', () => {
+    expect(bestEmail(['marie@gmail.com', 'contact@studio-marie.fr'], 'https://www.studio-marie.fr/')).toBe('contact@studio-marie.fr')
+    expect(bestEmail(['rgpd@x.fr', 'hello@x.fr'], 'https://x.fr')).toBe('hello@x.fr')
+    expect(bestEmail([], 'https://x.fr')).toBeNull()
+  })
+})
+
+describe('rebonds', () => {
+  it('lit les adresses en échec', () => {
+    const dsn = 'Final-Recipient: rfc822; old@studio.fr\nAction: failed\nX-Failed-Recipients: autre@studio.fr'
+    expect(bouncedAddresses(dsn).sort()).toEqual(['autre@studio.fr', 'old@studio.fr'])
+  })
+  it('reconnaît un expéditeur de rebond', () => {
+    expect(isBounceSender('Mail Delivery Subsystem <mailer-daemon@googlemail.com>')).toBe(true)
+    expect(isBounceSender('Marie <marie@studio.fr>')).toBe(false)
+  })
+})

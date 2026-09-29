@@ -21,6 +21,9 @@ const nextConfig = {
     // router.refresh() explicitement donc l'utilisateur voit son propre
     // changement immédiatement malgré ce cache.
     staleTimes: { dynamic: 30 },
+    // Prospection (lib/outreach) : SMTP / IMAP de la boîte de Jason, modules
+    // Node chargés tels quels côté serveur plutôt qu'empaquetés.
+    serverComponentsExternalPackages: ['nodemailer', 'imapflow'],
   },
 
   async redirects() {

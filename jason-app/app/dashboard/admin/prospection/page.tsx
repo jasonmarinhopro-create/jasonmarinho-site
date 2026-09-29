@@ -1,0 +1,96 @@
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import { getServiceClient } from '@/lib/supabase/service'
+import { outreachConfig } from '@/lib/outreach/mailer'
+import { parisToday } from '@/lib/stripe/deposit-window'
+import ProspectionScreen from './ProspectionScreen'
+import type { ContactRow, SequenceRow, SettingsRow, StepRow } from './shared'
+
+export const metadata = { title: 'Prospection, Admin' }
+export const dynamic = 'force-dynamic'
+// « Lancer un passage » et la recherche d'e-mails sur les sites prennent du temps
+export const maxDuration = 60
+
+export default async function ProspectionPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/auth/login')
+  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
+  if (profile?.role !== 'admin') redirect('/dashboard')
+
+  const db = getServiceClient()
+  const since7 = new Date(Date.now() - 7 * 86400_000).toISOString()
+  const since30 = new Date(Date.now() - 30 * 86400_000).toISOString()
+  const today = parisToday()
+  const dayStart = (() => {
+    for (const off of ['+02:00', '+01:00']) {
+      const t = new Date(`${today}T00:00:00${off}`)
+      if (parisToday(t) === today && parisToday(new Date(t.getTime() - 1)) !== today) return t.toISOString()
+    }
+    return `${today}T00:00:00Z`
+  })()
+
+  const [seqRes, { data: steps }, { data: enr }, { data: contacts }, { data: settings }, sentToday, sent7, sent30, errors7, replies30, contacted30] = await Promise.all([
+    db.from('outreach_sequences').select('id, nom, audience, description, trigger, trigger_stage, enabled, stop_on_reply, repeat_after_days, max_repeats, then_sequence_id, end_stage, position').order('position'),
+    db.from('outreach_steps').select('id, sequence_id, position, delay_days, subject, body, same_thread').order('position'),
+    db.from('outreach_enrollments').select('sequence_id, contact_id, status, next_step').limit(20000),
+    db.from('outreach_contacts').select('id, audience, email, prenom, nom, entreprise, ville, departement, site_web, telephone, instagram, source, source_detail, stage, notes, last_contacted_at, replied_at, created_at').order('created_at', { ascending: false }).limit(5000),
+    db.from('outreach_settings').select('daily_cap, send_days, paused, signature, last_run_at, last_run_summary').eq('id', 1).maybeSingle(),
+    db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye').gte('sent_at', dayStart),
+    db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye').gte('sent_at', since7),
+    db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye').gte('sent_at', since30),
+    db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'erreur').gte('sent_at', since7),
+    db.from('outreach_contacts').select('id', { count: 'exact', head: true }).gte('replied_at', since30),
+    db.from('outreach_contacts').select('id', { count: 'exact', head: true }).gte('last_contacted_at', since30),
+  ])
+
+  if (seqRes.error && /does not exist|relation/i.test(seqRes.error.message)) {
+    return (
+      <div style={{ padding: '24px', borderRadius: '18px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', lineHeight: 1.6 }}>
+        <strong style={{ color: 'var(--text)' }}>Prospection : base pas encore prête.</strong> Applique la migration <code>20260929_115_prospection.sql</code> dans Supabase, puis recharge la page.
+      </div>
+    )
+  }
+
+  const stepsBySeq = new Map<string, StepRow[]>()
+  for (const st of steps ?? []) {
+    const list = stepsBySeq.get(st.sequence_id) ?? []
+    list.push({ id: st.id, position: st.position, delay_days: st.delay_days, subject: st.subject, body: st.body, same_thread: st.same_thread })
+    stepsBySeq.set(st.sequence_id, list)
+  }
+  const activeByContact = new Map<string, string>()
+  const counts = new Map<string, { en_cours: number; terminee: number; arretee: number; atStep: number[] }>()
+  for (const e of enr ?? []) {
+    const c = counts.get(e.sequence_id) ?? { en_cours: 0, terminee: 0, arretee: 0, atStep: [] }
+    c[e.status as 'en_cours' | 'terminee' | 'arretee']++
+    if (e.status === 'en_cours') {
+      c.atStep[e.next_step] = (c.atStep[e.next_step] ?? 0) + 1
+      activeByContact.set(e.contact_id, e.sequence_id)
+    }
+    counts.set(e.sequence_id, c)
+  }
+  const sequences: SequenceRow[] = (seqRes.data ?? []).map(sq => {
+    const c = counts.get(sq.id) ?? { en_cours: 0, terminee: 0, arretee: 0, atStep: [] }
+    const st = (stepsBySeq.get(sq.id) ?? []).sort((a, b) => a.position - b.position)
+    return { ...sq, steps: st, counts: { en_cours: c.en_cours, terminee: c.terminee, arretee: c.arretee }, atStep: st.map((_, i) => c.atStep[i] ?? 0) } as SequenceRow
+  })
+  const contactRows: ContactRow[] = (contacts ?? []).map(c => ({ ...c, active_sequence_id: activeByContact.get(c.id) ?? null }) as ContactRow)
+  const cfg = outreachConfig()
+  const settingsRow: SettingsRow = {
+    daily_cap: settings?.daily_cap ?? 25, send_days: settings?.send_days ?? [1, 2, 3, 4, 5], paused: settings?.paused ?? false,
+    signature: settings?.signature ?? null, last_run_at: settings?.last_run_at ?? null, last_run_summary: settings?.last_run_summary ?? null,
+  }
+
+  return (
+    <ProspectionScreen
+      sequences={sequences}
+      contacts={contactRows}
+      settings={settingsRow}
+      config={{ configured: !!cfg, from: cfg?.fromEmail ?? null, placesKey: !!process.env.GOOGLE_PLACES_API_KEY }}
+      stats={{
+        sentToday: sentToday.count ?? 0, sent7: sent7.count ?? 0, sent30: sent30.count ?? 0, errors7: errors7.count ?? 0,
+        replies30: replies30.count ?? 0, contacted30: contacted30.count ?? 0,
+      }}
+    />
+  )
+}

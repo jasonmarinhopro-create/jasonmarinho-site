@@ -239,7 +239,7 @@ export async function POST(req: NextRequest) {
       void getResend().emails.send({
         from: 'Jason Marinho <noreply@jasonmarinho.com>',
         to: 'contact@jasonmarinho.com',
-        subject: `Nouvelle inscription ${profilLabel} — ${fullName || normalized}`,
+        subject: `Nouvelle inscription ${profilLabel} : ${fullName || normalized}`,
         html: buildEmail({
           title: 'Une nouvelle personne vient de rejoindre !',
           preview: `${fullName || normalized} vient de créer un compte ${profilLabel.toLowerCase()} sur ta plateforme.`,

@@ -25,8 +25,10 @@
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "dotenv": "^17.4.0",
+    "imapflow": "^2.1.2",
     "jspdf": "^4.2.1",
     "next": "14.2.35",
+    "nodemailer": "^10.0.12",
     "qr-code-styling": "^1.9.2",
     "react": "^18",
     "react-dom": "^18",
@@ -37,6 +39,7 @@
   "devDependencies": {
     "@next/bundle-analyzer": "^16.2.4",
     "@types/node": "^20",
+    "@types/nodemailer": "^8.0.2",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8.57.1",
