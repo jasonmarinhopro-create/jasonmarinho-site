@@ -16,6 +16,7 @@ Dans la fiche de ton logement, la carte **Contrat** garde tes règles : arrhes o
 
 ## Voir le contrat avant de l'envoyer
 
+- Depuis **Contrats & paiements**, bouton **Voir mon contrat** en haut de la page (choisis le logement si tu en as plusieurs).
 - Depuis la fiche de ton logement, carte **Contrat** → **Voir le contrat de ce logement** : le contrat complet tel que ton voyageur le recevra (voyageur, dates et prix d'exemple). Chaque article que tu peux changer a un bouton **Modifier** qui t'emmène à la bonne carte de ta fiche ; les autres portent la mention « Texte légal ».
 - Dans l'assistant, à la dernière étape : **Voir le contrat** ouvre un onglet avec le contrat exact que tu es en train de préparer. Rien n'est envoyé tant que tu n'as pas cliqué sur **Créer le contrat**.
 

@@ -6,7 +6,7 @@
 // non vides) et la liste de tous les contrats.
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
-import { PenNib, CurrencyEur, LockKey, CheckCircle, Copy, Plus, CaretDown, CaretRight, House, FileText, Warning } from '@phosphor-icons/react/dist/ssr'
+import { PenNib, CurrencyEur, LockKey, CheckCircle, Copy, Plus, CaretDown, CaretRight, House, FileText, Warning, Eye } from '@phosphor-icons/react/dist/ssr'
 import { contractTodos, contractTodoCount } from '@/lib/contracts/todo'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import { Card, CardHead, Notice, ui } from '../finances/_ui/ui'
@@ -114,7 +114,10 @@ export default function ContratsView({ contracts, candidates, voyageurs, logemen
           </div>
         }
       >
-        <NewContractMenu candidates={candidates} onNewReservation={() => setQuickOpen(true)} />
+        <div style={s.ctaRow}>
+          <NewContractMenu candidates={candidates} onNewReservation={() => setQuickOpen(true)} />
+          <PreviewContractMenu logements={logements} />
+        </div>
       </HubHero>
 
       {contracts.length > 0 && count > 0 && (
@@ -202,16 +205,7 @@ function NewContractMenu({ candidates, onNewReservation }: {
   candidates: ContractCandidate[]
   onNewReservation: () => void
 }) {
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    if (!open) return
-    const onDown = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false) }
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
-    document.addEventListener('mousedown', onDown)
-    document.addEventListener('keydown', onKey)
-    return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey) }
-  }, [open])
+  const { open, setOpen, ref } = useMenu()
   return (
     <div ref={ref} style={{ position: 'relative', display: 'inline-block', zIndex: 20 }}>
       <button type="button" onClick={() => setOpen(o => !o)} style={{ ...heroCta, border: 'none', cursor: 'pointer', fontFamily: 'inherit' }} aria-expanded={open}>
@@ -241,6 +235,56 @@ function NewContractMenu({ candidates, onNewReservation }: {
             </ul>
           )}
           {candidates.length > 8 && <p style={s.menuMore}>+ {candidates.length - 8} autres dans Mes réservations</p>}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/** Menu déroulant fermé au clic extérieur ou par Échap */
+function useMenu() {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false) }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey) }
+  }, [open])
+  return { open, setOpen, ref }
+}
+
+// Aperçu du contrat (demande de Jason, 29/09/2026) : le contrat d'exemple d'un
+// logement, tel que le voyageur le verra, sans rien envoyer. Un seul logement :
+// lien direct ; plusieurs : choix du logement.
+function PreviewContractMenu({ logements }: { logements: Array<{ id: string; nom: string }> }) {
+  const { open, setOpen, ref } = useMenu()
+  if (logements.length === 0) return null
+  const label = <><Eye size={16} weight="bold" /> Voir mon contrat</>
+  if (logements.length === 1) {
+    return <Link href={`/apercu-contrat/${logements[0].id}`} style={s.ctaGhost}>{label}</Link>
+  }
+  return (
+    <div ref={ref} style={{ position: 'relative', display: 'inline-block', zIndex: 19 }}>
+      <button type="button" onClick={() => setOpen(o => !o)} style={s.ctaGhost} aria-expanded={open}>
+        {label} <CaretDown size={13} weight="bold" />
+      </button>
+      {open && (
+        <div style={s.menu} role="menu">
+          <div style={s.menuTitle}>Le contrat de quel logement ?</div>
+          <p style={s.menuHint}>Un exemple rempli avec ta fiche logement, tel que ton voyageur le recevra. Rien n'est envoyé.</p>
+          <ul style={s.menuList}>
+            {logements.map(l => (
+              <li key={l.id}>
+                <Link href={`/apercu-contrat/${l.id}`} style={{ ...s.menuItem, flexDirection: 'row', alignItems: 'center', gap: 8 }} role="menuitem">
+                  <House size={13} weight="fill" color="var(--accent-text)" />
+                  <span style={s.menuGuest}>{l.nom}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
@@ -284,7 +328,7 @@ const s: Record<string, React.CSSProperties> = {
   payOk: { display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: 'var(--accent-text)' },
   payWarn: { display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, color: AMBER },
   menu: {
-    position: 'absolute', left: 0, top: 'calc(100% + 6px)', zIndex: 41, width: 'min(360px, calc(100vw - 48px))',
+    position: 'absolute', left: 0, top: 'calc(100% + 6px)', zIndex: 41, width: 'min(360px, 78vw)',
     background: 'var(--bg-2)', border: '1px solid var(--border-2)', borderRadius: '12px',
     boxShadow: '0 12px 32px rgba(0,0,0,0.18)', padding: '10px',
   },
@@ -298,6 +342,13 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: '8px', border: '1px dashed var(--accent-border)', background: 'var(--accent-bg)',
     color: 'var(--accent-text)', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
   },
+  ctaRow: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px' },
+  ctaGhost: {
+    display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '11px 18px', borderRadius: '12px',
+    background: 'var(--surface)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)',
+    fontSize: '14.5px', fontWeight: 700, textDecoration: 'none', cursor: 'pointer', fontFamily: 'inherit',
+  },
+  menuHint: { fontSize: '12.5px', color: 'var(--text-3)', lineHeight: 1.5, margin: '0 6px 8px' },
   menuEmpty: { fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.5, margin: '0 6px 6px' },
   menuMore: { fontSize: '12px', color: 'var(--text-3)', margin: '6px 10px 2px' },
   todoGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '12px' },
