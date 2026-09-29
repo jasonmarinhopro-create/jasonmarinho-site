@@ -107,32 +107,42 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
   },
 ]
 
-const adminMain = [
-  { href: '/dashboard/admin',             label: 'Vue d\'ensemble', Icon: Gear },
-  { href: '/dashboard/admin/membres',     label: 'Membres',         Icon: UsersThree },
-  // QG : fusion de Membres Driing + Signalements + Suggestions en une
-  // seule page avec 3 tabs. Évite la dispersion sur 3 entrées sidebar.
-  { href: '/dashboard/admin/qg',          label: 'QG demandes',     Icon: ShieldCheck },
-  { href: '/dashboard/admin/photographes', label: 'Photographes',   Icon: Camera },
-  { href: '/dashboard/admin/menage',       label: 'Ménage',          Icon: Sparkle },
-  { href: '/dashboard/admin/investisseurs', label: 'Investisseurs',  Icon: Briefcase },
-  { href: '/dashboard/admin/social',       label: 'Réseaux sociaux', Icon: ShareNetwork },
-  { href: '/dashboard/admin/prospection',  label: 'Prospection',     Icon: PaperPlaneTilt },
-  // Tout en bas, hors du groupe "Contenu" (retiré de la sidebar — jamais
-  // utilisé, cf. Formations/Gabarits/Actualités/Communauté/Guide LCD
-  // ci-dessous, toujours accessibles en direct par URL si besoin).
-  { href: '/dashboard/admin/indexation',  label: 'Indexation',  Icon: MagnifyingGlass },
-]
-
-// Routes conservées (accessibles en direct par URL) mais retirées de la
-// sidebar admin — jamais utilisées au quotidien, elles n'encombrent plus
-// le menu. Le sous-menu "Contenu" qui les affichait a été supprimé.
-const adminContent = [
-  { href: '/dashboard/admin/formations',  label: 'Formations',  Icon: GraduationCap },
-  { href: '/dashboard/admin/gabarits',    label: 'Gabarits',    Icon: FileText },
-  { href: '/dashboard/admin/actualites',  label: 'Actualités',  Icon: Newspaper },
-  { href: '/dashboard/admin/communaute',  label: 'Communauté',  Icon: FacebookLogo },
-  { href: '/dashboard/admin/guides',      label: 'Guide LCD',   Icon: BookOpen },
+// Sidebar admin segmentée (29/09/2026, demande de Jason : « ça commence à
+// faire beaucoup ») : 4 blocs titrés. « Contenu » est replié par défaut
+// (ouvert automatiquement quand on est sur une de ses pages).
+type AdminItem = { href: string; label: string; Icon: React.ElementType }
+const adminGroups: Array<{ key: string; label: string; items: AdminItem[]; collapsible?: boolean }> = [
+  {
+    key: 'pilotage', label: 'Pilotage', items: [
+      { href: '/dashboard/admin',             label: 'Vue d\'ensemble', Icon: Gear },
+      // QG : demandes Driing, signalements et suggestions en une seule page
+      { href: '/dashboard/admin/qg',          label: 'QG demandes',     Icon: ShieldCheck },
+    ],
+  },
+  {
+    key: 'comptes', label: 'Utilisateurs', items: [
+      { href: '/dashboard/admin/membres',       label: 'Membres',           Icon: UsersThree },
+      { href: '/dashboard/admin/photographes',  label: 'Photographes',      Icon: Camera },
+      { href: '/dashboard/admin/menage',        label: 'Équipes de ménage', Icon: Sparkle },
+      { href: '/dashboard/admin/investisseurs', label: 'Investisseurs',     Icon: Briefcase },
+    ],
+  },
+  {
+    key: 'croissance', label: 'Acquisition', items: [
+      { href: '/dashboard/admin/prospection', label: 'Prospection',     Icon: PaperPlaneTilt },
+      { href: '/dashboard/admin/social',      label: 'Réseaux sociaux', Icon: ShareNetwork },
+      { href: '/dashboard/admin/indexation',  label: 'Référencement',   Icon: MagnifyingGlass },
+    ],
+  },
+  {
+    key: 'contenu', label: 'Contenu', collapsible: true, items: [
+      { href: '/dashboard/admin/actualites', label: 'Actualités',          Icon: Newspaper },
+      { href: '/dashboard/admin/formations', label: 'Formations',          Icon: GraduationCap },
+      { href: '/dashboard/admin/guides',     label: 'Guide LCD',           Icon: BookOpen },
+      { href: '/dashboard/admin/gabarits',   label: 'Modèles de messages', Icon: FileText },
+      { href: '/dashboard/admin/communaute', label: 'Groupes Facebook',    Icon: FacebookLogo },
+    ],
+  },
 ]
 
 interface SidebarProps {
@@ -204,6 +214,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   // Quand actif (admin uniquement), remplace la sidebar hôte par une
   // sidebar admin dédiée. Persisté en localStorage. Toggle depuis menu user.
   const [adminMode, setAdminMode] = useState(false)
+  const [contentOpen, setContentOpen] = useState(false)
   useEffect(() => {
     const stored = typeof window !== 'undefined' ? localStorage.getItem('admin-mode') : null
     const active = stored === 'true' && !!isAdmin
@@ -274,8 +285,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   // sous-page (les 2 sont prefixes valides du pathname).
   const allHrefs = useMemo(() => [
     ...navGroups.flatMap(g => g.items.map(i => i.href)),
-    ...adminMain.map(i => i.href),
-    ...adminContent.map(i => i.href),
+    ...adminGroups.flatMap(g => g.items.map(i => i.href)),
     // Espaces pros : necessaires au "match le plus profond gagne", sinon
     // "Ma fiche" reste active sur /demandes (les 2 items allumes).
     '/dashboard/ma-fiche-photographe',
@@ -464,7 +474,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                     <span style={styles.adminBadgeDot} />
                     <span style={styles.adminBadgeLabel}>Mode admin</span>
                   </div>
-                  <div style={styles.adminHelper}>Tu vois la sidebar admin. Repasse en mode hôte pour retrouver ton dashboard.</div>
+                  <div style={styles.adminHelper}>Menu d'administration. Ton espace hôte est à un clic.</div>
                 </div>
               )}
               <button
@@ -524,11 +534,29 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                   En mode reduit on garde juste une fine ligne pour separer. */}
               {collapsed && <div style={{ height: '1px', background: 'var(--nav-border)', margin: '4px 8px 10px' }} />}
 
-              <div style={styles.navSection}>
-                {adminMain.map(({ href, label, Icon }) => (
-                  <NavItem key={href} href={href} label={label} Icon={Icon} adminColor />
-                ))}
-              </div>
+              {adminGroups.map(g => {
+                const open = !g.collapsible || contentOpen || g.items.some(i => pathname?.startsWith(i.href))
+                return (
+                  <div key={g.key}>
+                    {!collapsed && (g.collapsible ? (
+                      <button type="button" onClick={() => setContentOpen(o => !o)} aria-expanded={open} style={{ ...styles.sectionLabel, ...styles.sectionToggle }}>
+                        {g.label}
+                        <CaretDown size={10} weight="bold" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }} />
+                      </button>
+                    ) : (
+                      <div style={styles.sectionLabel}>{g.label}</div>
+                    ))}
+                    {collapsed && g.key !== 'pilotage' && <div style={{ height: '1px', background: 'var(--nav-border)', margin: '6px 8px' }} />}
+                    {(open || collapsed) && (
+                      <div style={styles.navSection}>
+                        {g.items.map(({ href, label, Icon }) => (
+                          <NavItem key={href} href={href} label={label} Icon={Icon} adminColor />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </>
           )}
         </nav>
@@ -741,6 +769,10 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '10px', fontWeight: 600, letterSpacing: '0.9px',
     textTransform: 'uppercase', color: 'var(--text-muted)',
     padding: '14px 8px 6px',
+  },
+  sectionToggle: {
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
+    background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' as const,
   },
   navSection: {
     display: 'flex', flexDirection: 'column', gap: '2px',

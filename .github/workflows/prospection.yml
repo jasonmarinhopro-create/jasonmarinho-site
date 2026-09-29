@@ -1,0 +1,86 @@
+name: Prospection
+
+# Pilote la prospection sans ouvrir l'admin : appelle POST /api/outreach/ops
+# de l'app (même secret que la publication des réseaux sociaux).
+#   etat      : migrations, boîte d'envoi, contacts par étape, séquences
+#   importer  : Google Maps + e-mail publié sur le site, ville par ville
+#   activer   : installe et active les séquences des audiences choisies
+#   envoyer   : lance un passage (réponses, inscriptions, envois dus)
+# Les journaux sont publics (dépôt public) : la route ne renvoie que des
+# nombres et des noms de séquences, jamais d'adresse e-mail.
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'etat, importer, activer, envoyer'
+        required: true
+        default: etat
+        type: choice
+        options: [etat, importer, activer, envoyer]
+      audiences:
+        description: 'Audiences (menage, photographe, séparées par des virgules)'
+        required: false
+        default: 'menage,photographe'
+      villes:
+        description: 'Villes à prospecter (import), séparées par des virgules'
+        required: false
+        default: 'Paris,Lyon,Marseille,Bordeaux,Nice,Toulouse,Montpellier,Nantes,Lille,Annecy,La Rochelle,Biarritz,Saint-Malo,Strasbourg,Rennes,Aix-en-Provence,Cannes,Arcachon,Avignon,Chamonix'
+      plafond:
+        description: 'Plafond d envois par jour (activer), 80 au plus'
+        required: false
+        default: '25'
+
+concurrency:
+  group: prospection
+  cancel-in-progress: false
+
+jobs:
+  ops:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      APP_URL: https://app.jasonmarinho.com
+      SECRET: ${{ secrets.SOCIAL_CRON_SECRET }}
+    steps:
+      - name: Appel de l'app
+        env:
+          OP: ${{ inputs.operation }}
+          AUDIENCES: ${{ inputs.audiences }}
+          VILLES: ${{ inputs.villes }}
+          PLAFOND: ${{ inputs.plafond }}
+        run: |
+          set -u
+          call() {
+            curl -sS --max-time 75 -X POST "$APP_URL/api/outreach/ops" \
+              -H "authorization: Bearer $SECRET" -H 'content-type: application/json' -d "$1"
+            echo
+          }
+          case "$OP" in
+            etat)
+              call '{"op":"status"}' | jq . ;;
+            activer)
+              AUD_JSON=$(echo "$AUDIENCES" | jq -Rc 'split(",") | map(gsub("^\\s+|\\s+$";""))')
+              call "$(jq -nc --argjson a "$AUD_JSON" --arg cap "$PLAFOND" '{op:"activate",audiences:$a,daily_cap:($cap|tonumber)}')" | jq . ;;
+            envoyer)
+              call '{"op":"run"}' | jq . ;;
+            importer)
+              total=0
+              IFS=',' read -ra AUDS <<< "$AUDIENCES"
+              IFS=',' read -ra CITIES <<< "$VILLES"
+              for a in "${AUDS[@]}"; do
+                a=$(echo "$a" | xargs)
+                if [ "$a" = "menage" ]; then QUERIES=("ménage location saisonnière" "ménage airbnb"); else QUERIES=("photographe immobilier" "photographe location saisonnière"); fi
+                for v in "${CITIES[@]}"; do
+                  v=$(echo "$v" | xargs)
+                  for q in "${QUERIES[@]}"; do
+                    body=$(jq -nc --arg a "$a" --arg q "$q $v" '{op:"import",audience:$a,query:$q}')
+                    res=$(call "$body")
+                    echo "$a | $q $v : $(echo "$res" | jq -c '{resultats_maps, sites_visites, emails_trouves, ajoutes, error}' 2>/dev/null || echo "$res" | head -c 200)"
+                    n=$(echo "$res" | jq -r '.ajoutes // 0' 2>/dev/null || echo 0)
+                    total=$((total + n))
+                  done
+                done
+              done
+              echo "Total ajouté : $total contacts"
+              call '{"op":"status"}' | jq '{contacts, envoyes_total}' ;;
+          esac

@@ -11,6 +11,7 @@ import {
   textToHtml, DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL, normalizeTag, LEGACY_DEFAULT_SIGNATURE, CLOSED_STAGES, type Audience, type Source, type Stage,
 } from './engine'
 import { isPermanentAddressError, outreachConfig, scanInbox, sendOutreachMail } from './mailer'
+import { PLAYBOOK } from './playbook'
 
 const log = logger('outreach')
 type Db = SupabaseClient<any, 'public', any>
@@ -413,4 +414,33 @@ export async function sendTest(stepSubject: string, stepBody: string, settings: 
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message.slice(0, 200) : 'Envoi impossible' }
   }
+}
+
+// ─── Séquences proposées ────────────────────────────────────────────────────
+
+/** Installe les séquences de playbook.ts qui manquent (en pause), puis relie les enchaînements. Renvoie le nombre ajouté. */
+export async function installPlaybookSequences(db: Db): Promise<number> {
+  const { data: existing } = await db.from('outreach_sequences').select('id, playbook_key')
+  const byKey = new Map((existing ?? []).filter(s => s.playbook_key).map(s => [s.playbook_key as string, s.id as string]))
+  let added = 0
+  for (const [i, p] of PLAYBOOK.entries()) {
+    if (byKey.has(p.key)) continue
+    const { data: seq, error } = await db.from('outreach_sequences').insert({
+      nom: p.nom, audience: p.audience, description: p.description, trigger: p.trigger, trigger_stage: p.trigger_stage ?? null,
+      enabled: false, stop_on_reply: p.stop_on_reply ?? true, repeat_after_days: p.repeat_after_days ?? null,
+      max_repeats: p.max_repeats ?? 0, end_stage: p.end_stage ?? null, playbook_key: p.key, position: i,
+    }).select('id').single()
+    if (error || !seq) throw new Error(error?.message ?? 'Création impossible')
+    byKey.set(p.key, seq.id)
+    await db.from('outreach_steps').insert(p.steps.map((st, j) => ({
+      sequence_id: seq.id, position: j, delay_days: st.delay_days, subject: st.subject, body: st.body, same_thread: st.same_thread ?? j > 0,
+    })))
+    added++
+  }
+  for (const p of PLAYBOOK) {
+    if (p.then_key && byKey.get(p.key) && byKey.get(p.then_key)) {
+      await db.from('outreach_sequences').update({ then_sequence_id: byKey.get(p.then_key) }).eq('id', byKey.get(p.key)!).is('then_sequence_id', null)
+    }
+  }
+  return added
 }
