@@ -79,6 +79,11 @@ export type LogementData = {
   conditions_annulation_en?: string | null
   reglement_interieur_pt?: string | null
   reglement_interieur_en?: string | null
+  /** Réglages du contrat (migration 118, lib/contracts/details.ts) */
+  contrat_options?: { regime: 'arrhes' | 'acompte'; delai_caution_jours: number; charges_incluses: boolean } | null
+  clauses_particulieres?: string | null
+  clauses_particulieres_pt?: string | null
+  clauses_particulieres_en?: string | null
   animaux_acceptes: boolean
   fumeur_accepte: boolean
   methodes_paiement?: string

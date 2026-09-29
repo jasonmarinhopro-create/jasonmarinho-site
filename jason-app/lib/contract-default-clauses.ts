@@ -10,10 +10,20 @@ export type ClauseLang = 'fr' | 'pt' | 'en'
 
 export const DEFAULT_ANNULATION: Record<ClauseLang, string> =
   {
-    fr: "En cas d'annulation par le locataire plus de 30 jours avant l'arrivée, l'acompte versé est remboursé intégralement. En cas d'annulation moins de 30 jours avant l'arrivée, l'acompte reste acquis au bailleur.",
-    pt: 'Em caso de cancelamento pelo hóspede com mais de 30 dias de antecedência em relação à chegada, o sinal pago é reembolsado na íntegra. Em caso de cancelamento com menos de 30 dias de antecedência, o sinal fica adquirido pelo senhorio.',
-    en: 'If the tenant cancels more than 30 days before arrival, the deposit paid is refunded in full. If cancelled less than 30 days before arrival, the deposit is retained by the landlord.',
+    fr: "En cas d'annulation par le locataire plus de 30 jours avant l'arrivée, les sommes versées à la réservation sont remboursées intégralement. En cas d'annulation moins de 30 jours avant l'arrivée, elles restent acquises au bailleur.",
+    pt: 'Em caso de cancelamento pelo hóspede com mais de 30 dias de antecedência em relação à chegada, os montantes pagos na reserva são reembolsados na íntegra. Em caso de cancelamento com menos de 30 dias de antecedência, ficam adquiridos pelo senhorio.',
+    en: 'If the guest cancels more than 30 days before arrival, the sums paid on booking are refunded in full. If cancelled less than 30 days before arrival, they are retained by the landlord.',
   }
+
+/**
+ * Anciennes versions françaises du texte par défaut (« l'acompte versé »,
+ * jusqu'au 29/09/2026) : un contrat qui les porte encore reçoit la traduction
+ * par défaut actuelle. Le mot « acompte » a un sens juridique précis (réservation
+ * ferme) que le régime choisi sur le contrat (arrhes ou acompte) dit désormais.
+ */
+export const LEGACY_DEFAULT_ANNULATION_FR = [
+  "En cas d'annulation par le locataire plus de 30 jours avant l'arrivée, l'acompte versé est remboursé intégralement. En cas d'annulation moins de 30 jours avant l'arrivée, l'acompte reste acquis au bailleur.",
+]
 
 export const DEFAULT_REGLEMENT: Record<ClauseLang, string> =
   {
@@ -36,11 +46,13 @@ export function resolveClauseText(
   base: string | null | undefined,
   translated: string | null | undefined,
   lang: ClauseLang,
-  defaults: Record<ClauseLang, string>
+  defaults: Record<ClauseLang, string>,
+  legacyFr: string[] = [],
 ): string {
   const baseText = base ?? ''
   if (lang === 'fr') return baseText
   if (translated) return translated
-  if (baseText.trim() === defaults.fr.trim()) return defaults[lang]
+  const trimmed = baseText.trim()
+  if (trimmed === defaults.fr.trim() || legacyFr.some(l => l.trim() === trimmed)) return defaults[lang]
   return baseText
 }

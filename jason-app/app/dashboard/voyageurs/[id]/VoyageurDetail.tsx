@@ -358,6 +358,12 @@ type LogementOption = {
   proprietaire_nom?: string | null
   proprietaire_email?: string | null
   proprietaire_telephone?: string | null
+  frais_menage?: number | null
+  caution?: number | null
+  contrat_options?: unknown
+  clauses_particulieres?: string | null
+  clauses_particulieres_pt?: string | null
+  clauses_particulieres_en?: string | null
 }
 
 type CheckinCompanion = {

@@ -62,7 +62,7 @@ const FR_LAW: TemplatesByLang = {
       "sera celui du lieu de situation du bien loué.",
     declarationVoyageur:
       "Pour les voyageurs de nationalité étrangère, le bailleur procédera à l'établissement " +
-      "d'une fiche individuelle de police (arrêté du 1er octobre 2015) qui sera conservée " +
+      "d'une fiche individuelle de police (articles R814-1 à R814-3 du CESEDA) qui sera conservée " +
       "pendant six mois et transmise sur réquisition aux services de police ou de gendarmerie.",
     signatureElectronique:
       "La signature électronique apposée ci-dessous constitue une signature électronique simple " +
@@ -75,7 +75,7 @@ const FR_LAW: TemplatesByLang = {
       "l'exécution du contrat (Art. 6.1.b RGPD). Elles sont conservées 5 ans à compter de la fin " +
       "du séjour (prescription civile, Art. 2224 Code civil). Vous disposez d'un droit d'accès, " +
       "de rectification et d'effacement auprès du bailleur.",
-    numeroLabel: "Numéro de déclaration en mairie",
+    numeroLabel: "Numéro d'enregistrement du meublé",
     disclaimer: null,
   },
   pt: {
@@ -94,7 +94,7 @@ const FR_LAW: TemplatesByLang = {
       "situa o imóvel arrendado.",
     declarationVoyageur:
       "Para os hóspedes de nacionalidade estrangeira, o senhorio procederá ao preenchimento de uma " +
-      "ficha individual de polícia (despacho de 1 de outubro de 2015), conservada durante seis meses " +
+      "ficha individual de polícia (art. R814-1 a R814-3 do CESEDA francês), conservada durante seis meses " +
       "e transmitida a pedido das autoridades policiais francesas.",
     signatureElectronique:
       "A assinatura eletrónica aposta abaixo constitui uma assinatura eletrónica simples na aceção " +
@@ -107,7 +107,7 @@ const FR_LAW: TemplatesByLang = {
       "(Art. 6.º, n.º 1, alínea b), do RGPD). São conservados durante 5 anos a contar do final da " +
       "estadia (prescrição civil francesa, Art. 2224.º do Código Civil). Tem direito de acesso, " +
       "retificação e apagamento junto do senhorio.",
-    numeroLabel: "Número de declaração na Câmara Municipal (mairie)",
+    numeroLabel: "Número de registo do alojamento (França)",
     disclaimer: null,
   },
   en: {
@@ -126,7 +126,7 @@ const FR_LAW: TemplatesByLang = {
       "property is located.",
     declarationVoyageur:
       "For guests of foreign nationality, the landlord will complete an individual police form " +
-      "(order of 1 October 2015), kept for six months and provided to French police or gendarmerie " +
+      "(Art. R814-1 to R814-3 of the French CESEDA), kept for six months and provided to French police or gendarmerie " +
       "upon request.",
     signatureElectronique:
       "The electronic signature affixed below constitutes a simple electronic signature within the " +
@@ -139,7 +139,7 @@ const FR_LAW: TemplatesByLang = {
       "performance (Art. 6.1.b GDPR). It is kept for 5 years from the end of the stay (French civil " +
       "limitation period, Art. 2224 of the Civil Code). You have the right to access, rectify and " +
       "erase your data by contacting the landlord.",
-    numeroLabel: "Town hall (mairie) declaration number",
+    numeroLabel: "Furnished rental registration number",
     disclaimer: null,
   },
 }

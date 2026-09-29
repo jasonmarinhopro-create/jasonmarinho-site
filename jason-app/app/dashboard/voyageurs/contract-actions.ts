@@ -1,6 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { buildEtatDescriptif, type ContractDetails, type LogementForContract } from '@/lib/contracts/details'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
@@ -75,7 +76,17 @@ export type ContractData = {
   /** Langue principale du contrat (fr ou pt) — toujours affiché aussi en
    *  anglais en complément sur /sign/[token] (cf. migration 099). */
   langue?: 'fr' | 'pt'
+
+  /** Prix détaillé, arrhes ou acompte, délai de la caution (migration 118).
+   *  L'état descriptif (details.etat) est repris ici côté serveur depuis la
+   *  fiche logement, pas depuis le navigateur. */
+  details?: ContractDetails
+  clauses_particulieres?: string
+  clauses_particulieres_pt?: string
+  clauses_particulieres_en?: string
 }
+
+const DETAIL_COLUMNS = ['details', 'clauses_particulieres', 'clauses_particulieres_pt', 'clauses_particulieres_en'] as const
 
 // ─── Créer un contrat ─────────────────────────────────────────────────────────
 
@@ -94,18 +105,26 @@ export async function createContract(data: ContractData): Promise<{
     ? { contrat_envoye: true }
     : {}
 
-  const { data: row, error } = await supabase
-    .from('contracts')
-    .insert({
-      ...data,
-      user_id: user.id,
-      statut: 'en_attente',
-      checklist_status: initialChecklist,
-    })
-    .select('id, token')
-    .single()
+  // État descriptif des lieux (Code du tourisme L324-2) : repris de la fiche
+  // logement au moment de la création, figé sur le contrat.
+  let details: ContractDetails | undefined = data.details
+  if (data.logement_id) {
+    const { data: lg } = await supabase.from('logements')
+      .select('type_logement, surface_m2, nb_chambres, nb_lits, nb_sdb, equipements, classement_etoiles, numero_enregistrement, numero_al, pays')
+      .eq('id', data.logement_id).eq('user_id', user.id).maybeSingle()
+    if (lg) details = { ...(details ?? {}), etat: buildEtatDescriptif(lg as LogementForContract) }
+  }
 
-  if (error) return { error: error.message }
+  const base = { ...data, details, user_id: user.id, statut: 'en_attente', checklist_status: initialChecklist }
+  let { data: row, error } = await supabase.from('contracts').insert(base).select('id, token').single()
+  // Migration 118 pas encore appliquée : contrat créé sans les nouvelles mentions
+  if (error && /column|schema cache/i.test(error.message) && DETAIL_COLUMNS.some(c => error!.message.includes(c))) {
+    const fallback: Record<string, unknown> = { ...base }
+    for (const c of DETAIL_COLUMNS) delete fallback[c]
+    ;({ data: row, error } = await supabase.from('contracts').insert(fallback).select('id, token').single())
+  }
+
+  if (error || !row) return { error: error?.message ?? 'Contrat non créé.' }
 
   // Mettre à jour le statut du séjour associé + stocker le lien dès la création
   const signUrl = `${APP_URL}/sign/${row.token}`

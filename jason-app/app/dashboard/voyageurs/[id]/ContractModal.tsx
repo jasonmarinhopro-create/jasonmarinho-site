@@ -5,6 +5,7 @@ import { useState, useTransition, useRef, useEffect } from 'react'
 import { X, FileText, Check, Copy, Envelope, CalendarBlank, Clock, Warning, House, Lock } from '@phosphor-icons/react/dist/ssr'
 import { createContract, type ContractData } from '../contract-actions'
 import { DEFAULT_ANNULATION as DEFAULT_ANNULATION_I18N, DEFAULT_REGLEMENT as DEFAULT_REGLEMENT_I18N } from '@/lib/contract-default-clauses'
+import { contratOptions, type RegimeAvance } from '@/lib/contracts/details'
 
 // Valeur française utilisée comme pré-remplissage par défaut (langue de
 // référence) — les traductions PT/EN correspondantes se retrouvent
@@ -64,6 +65,28 @@ export type LogementOption = {
   proprietaire_nom?: string | null
   proprietaire_email?: string | null
   proprietaire_telephone?: string | null
+  frais_menage?: number | null
+  caution?: number | null
+  contrat_options?: unknown
+  clauses_particulieres?: string | null
+  clauses_particulieres_pt?: string | null
+  clauses_particulieres_en?: string | null
+}
+
+/** Réglages du contrat repris de la fiche logement (carte « Contrat ») */
+function contractFieldsFromLogement(l: LogementOption | null) {
+  const o = contratOptions(l?.contrat_options)
+  return {
+    frais_menage: Number(l?.frais_menage) > 0 ? Number(l?.frais_menage) : 0,
+    // Caution de la fiche logement (carte Tarifs), avant : toujours 0 à remplir à la main
+    montant_caution: Number(l?.caution) > 0 ? Number(l?.caution) : 0,
+    regime: o.regime as RegimeAvance,
+    delai_caution_jours: o.delai_caution_jours,
+    charges_incluses: o.charges_incluses,
+    clauses_particulieres: l?.clauses_particulieres ?? '',
+    clauses_particulieres_pt: l?.clauses_particulieres_pt ?? '',
+    clauses_particulieres_en: l?.clauses_particulieres_en ?? '',
+  }
 }
 
 /** Découpe "Prénom Nom" au premier espace, pour reconstruire bailleur_prenom/bailleur_nom
@@ -159,7 +182,6 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
 
     // Financier, pré-rempli selon les méthodes de paiement du logement
     montant_loyer: sejour.montant ?? 0,
-    montant_caution: 0,
     acompte_percent: 100,
 
     // Langue du contrat (fr ou pt) : le corps du contrat est toujours affiché
@@ -193,6 +215,11 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
     reglement_interieur_en: initialLogement?.reglement_interieur_en ?? '',
     animaux_acceptes: initialLogement?.animaux_acceptes ?? false,
     fumeur_accepte: initialLogement?.fumeur_accepte ?? false,
+
+    // Prix détaillé, arrhes ou acompte, caution, clauses particulières
+    ...contractFieldsFromLogement(initialLogement),
+    taxe_sejour: 0,
+    taxe_sejour_mode: 'incluse' as 'incluse' | 'en_sus',
   })
 
   function set(field: string, value: string | number | boolean) {
@@ -249,6 +276,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       fumeur_accepte: l.fumeur_accepte,
       methodes_keys: l.methodes_paiement ?? 'virement',
       ...paymentFields,
+      ...contractFieldsFromLogement(l),
     }))
   }
 
@@ -357,6 +385,17 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       fumeur_accepte: form.fumeur_accepte,
       pays: contractPays,
       langue: form.langue,
+      details: {
+        frais_menage: form.frais_menage > 0 ? form.frais_menage : null,
+        taxe_sejour: form.taxe_sejour > 0 ? form.taxe_sejour : null,
+        taxe_sejour_mode: form.taxe_sejour_mode,
+        charges_incluses: form.charges_incluses,
+        regime: form.regime,
+        delai_caution_jours: form.delai_caution_jours,
+      },
+      clauses_particulieres: form.clauses_particulieres.trim() || undefined,
+      clauses_particulieres_pt: form.clauses_particulieres_pt.trim() || undefined,
+      clauses_particulieres_en: form.clauses_particulieres_en.trim() || undefined,
     }
 
     startTransition(async () => {
@@ -711,6 +750,62 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                   </p>
                 )}
               </div>
+              {/* Détail du prix (Code du tourisme L324-2 : le prix figure au contrat) */}
+              <div style={row}>
+                <div style={{ flex: 1 }}>
+                  <label style={fieldLabel}>Dont frais de ménage (€)</label>
+                  <input style={inputStyle} type="number" min={0} step={0.01} value={form.frais_menage}
+                    onChange={e => set('frais_menage', parseFloat(e.target.value) || 0)} />
+                  <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '4px 0 0' }}>Compris dans le loyer total, affiché à part sur le contrat.</p>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={fieldLabel}>Taxe de séjour (€, tout le séjour)</label>
+                  <input style={inputStyle} type="number" min={0} step={0.01} value={form.taxe_sejour}
+                    onChange={e => set('taxe_sejour', parseFloat(e.target.value) || 0)} />
+                  <select style={{ ...inputStyle, marginTop: '6px' }} value={form.taxe_sejour_mode} onChange={e => set('taxe_sejour_mode', e.target.value)}>
+                    <option value="incluse">Comprise dans le loyer total</option>
+                    <option value="en_sus">À régler en plus du loyer</option>
+                  </select>
+                </div>
+              </div>
+              <ToggleField label="Charges comprises (eau, électricité, chauffage, internet)" value={form.charges_incluses} onChange={v => set('charges_incluses', v)} />
+
+              {/* Arrhes ou acompte : sans précision, la loi présume des arrhes (L214-1 Code de la consommation) */}
+              {(logements.find(l => l.id === selectedLogementId)?.pays ?? 'FR') === 'FR' && (
+                <div>
+                  <label style={fieldLabel}>Les sommes versées à la réservation sont</label>
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                    {(['arrhes', 'acompte'] as const).map(r => {
+                      const checked = form.regime === r
+                      return (
+                        <button key={r} type="button" onClick={() => set('regime', r)} style={{
+                          flex: 1, padding: '10px 14px', borderRadius: '10px', cursor: 'pointer', textAlign: 'left' as const,
+                          fontSize: '13px', fontWeight: checked ? 600 : 400, fontFamily: 'inherit',
+                          background: checked ? 'var(--accent-bg)' : 'var(--surface)',
+                          border: `1px solid ${checked ? 'color-mix(in srgb, var(--accent-text) 40%, transparent)' : 'var(--border)'}`,
+                          color: checked ? 'var(--accent-text)' : 'var(--text-2)',
+                        }}>
+                          {r === 'arrhes' ? 'Des arrhes (conseillé)' : 'Un acompte'}
+                          <span style={{ display: 'block', fontSize: '11.5px', fontWeight: 400, color: 'var(--text-3)', marginTop: '3px' }}>
+                            {r === 'arrhes'
+                              ? 'Le voyageur qui annule les perd, toi tu rends le double si tu annules.'
+                              : 'Réservation ferme : le voyageur reste redevable du prix s’il annule.'}
+                          </span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {form.montant_caution > 0 && (
+                <div>
+                  <label style={fieldLabel}>Caution restituée au plus tard (jours après le départ)</label>
+                  <input style={{ ...inputStyle, maxWidth: '140px' }} type="number" min={1} max={60} value={form.delai_caution_jours}
+                    onChange={e => set('delai_caution_jours', Math.max(1, Math.min(60, parseInt(e.target.value) || 7)))} />
+                </div>
+              )}
+
               <div>
                 <label style={fieldLabel}>Méthodes de paiement acceptées</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '8px', marginTop: '4px' }}>
@@ -777,7 +872,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
           {/* ── Step: Clauses ──────────────────────────────────────────────── */}
           {step === 'clauses' && (
             <>
-              <p style={stepHint}>Ces clauses sont pré-remplies selon les bonnes pratiques françaises. Modifiez-les si besoin.</p>
+              <p style={stepHint}>Ces clauses reprennent ta fiche logement (carte « Contrat »). Tu peux les ajuster pour ce voyageur.</p>
               <div>
                 <label style={fieldLabel}>Conditions d&apos;annulation * <span style={{ color: 'var(--text-3)', fontWeight: 400 }}>(obligatoire)</span></label>
                 <textarea
@@ -793,6 +888,16 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                   value={form.reglement_interieur}
                   onChange={e => set('reglement_interieur', e.target.value)}
                 />
+              </div>
+              <div>
+                <label style={fieldLabel}>Clauses particulières <span style={{ color: 'var(--text-3)', fontWeight: 400 }}>(facultatif)</span></label>
+                <textarea
+                  style={{ ...inputStyle, height: '90px', resize: 'vertical' as const, fontFamily: 'inherit' }}
+                  value={form.clauses_particulieres}
+                  placeholder="Ex : linge de lit et serviettes fournis. Accès à la piscine de 9 h à 20 h. Bois de chauffage en supplément (15 € le stère)."
+                  onChange={e => set('clauses_particulieres', e.target.value)}
+                />
+                <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '4px 0 0' }}>Ajoutées au contrat dans un article à part. Elles ne peuvent pas retirer au voyageur un droit que la loi lui donne.</p>
               </div>
               <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' as const }}>
                 <ToggleField

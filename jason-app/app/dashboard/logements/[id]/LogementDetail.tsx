@@ -23,6 +23,7 @@ import { EditableCard } from './EditableCard'
 import IcalSyncSection, { SOURCE_FG } from './IcalSyncSection'
 import PhotosCard from './PhotosCard'
 import type { VoyageurOption } from './QuickSejourModal'
+import { contratOptions, type RegimeAvance } from '@/lib/contracts/details'
 import { updateLogement, type LogementIcalFeedStatus } from '../actions'
 
 const QuickSejourModal = dynamic(() => import('./QuickSejourModal'), { ssr: false })
@@ -60,7 +61,7 @@ function LangTextarea({
               style={{
                 ...s.langTab,
                 background: on ? 'var(--accent-bg)' : 'var(--surface)',
-                borderColor: on ? 'var(--accent-text)' : 'var(--border)',
+                border: `1px solid ${on ? 'var(--accent-text)' : 'var(--border)'}`,
                 color: on ? 'var(--accent-text)' : 'var(--text-2)',
               }}
             >
@@ -132,6 +133,10 @@ type Logement = {
   conditions_annulation_en: string | null
   reglement_interieur_pt: string | null
   reglement_interieur_en: string | null
+  contrat_options?: unknown
+  clauses_particulieres?: string | null
+  clauses_particulieres_pt?: string | null
+  clauses_particulieres_en?: string | null
   animaux_acceptes: boolean
   fumeur_accepte: boolean
   methodes_paiement: string | null
@@ -325,6 +330,13 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
   const [draftReglement, setDraftReglement] = useState(l.reglement_interieur ?? '')
   const [draftReglementPt, setDraftReglementPt] = useState(l.reglement_interieur_pt ?? '')
   const [draftReglementEn, setDraftReglementEn] = useState(l.reglement_interieur_en ?? '')
+  const contratOpts = contratOptions(l.contrat_options)
+  const [draftRegime, setDraftRegime] = useState<RegimeAvance>(contratOpts.regime)
+  const [draftDelaiCaution, setDraftDelaiCaution] = useState(contratOpts.delai_caution_jours)
+  const [draftCharges, setDraftCharges] = useState(contratOpts.charges_incluses)
+  const [draftClauses, setDraftClauses] = useState(l.clauses_particulieres ?? '')
+  const [draftClausesPt, setDraftClausesPt] = useState(l.clauses_particulieres_pt ?? '')
+  const [draftClausesEn, setDraftClausesEn] = useState(l.clauses_particulieres_en ?? '')
   const [draftTarifNuit, setDraftTarifNuit] = useState<number | null>(l.tarif_nuitee_moyen)
   const [draftFraisMenage, setDraftFraisMenage] = useState<number | null>(l.frais_menage)
   const [draftCaution, setDraftCaution] = useState<number | null>(l.caution)
@@ -392,6 +404,16 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
     reglement_interieur_pt: draftReglementPt || null,
     reglement_interieur_en: draftReglementEn || null,
   })
+  const saveContrat = () => updateLogement(l.id, {
+    contrat_options: { regime: draftRegime, delai_caution_jours: draftDelaiCaution, charges_incluses: draftCharges },
+    clauses_particulieres: draftClauses.trim() || null,
+    clauses_particulieres_pt: draftClausesPt.trim() || null,
+    clauses_particulieres_en: draftClausesEn.trim() || null,
+  })
+  const resetContrat = () => {
+    setDraftRegime(contratOpts.regime); setDraftDelaiCaution(contratOpts.delai_caution_jours); setDraftCharges(contratOpts.charges_incluses)
+    setDraftClauses(l.clauses_particulieres ?? ''); setDraftClausesPt(l.clauses_particulieres_pt ?? ''); setDraftClausesEn(l.clauses_particulieres_en ?? '')
+  }
   const saveTarifs = () => updateLogement(l.id, {
     tarif_nuitee_moyen: draftTarifNuit,
     frais_menage: draftFraisMenage,
@@ -1127,6 +1149,77 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
               }
             />
           </div>
+
+          {/* Contrat : réglages repris par l'assistant de contrat */}
+          <EditableCard
+            id="contrat"
+            title="Contrat"
+            subtitle="Tes règles, reprises dans chaque contrat de ce logement"
+            icon={<FileText size={17} weight="fill" />}
+            onSave={saveContrat}
+            onCancel={resetContrat}
+            hasValue
+            view={
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={s.tiles}>
+                  {(l.pays ?? 'FR') === 'FR' && (
+                    <div style={s.tile}>
+                      <span style={s.tileLabel}>Sommes versées à la réservation</span>
+                      <span style={s.tileValue}>{contratOpts.regime === 'acompte' ? 'Acompte' : 'Arrhes'}</span>
+                    </div>
+                  )}
+                  <div style={s.tile}>
+                    <span style={s.tileLabel}>Caution rendue sous</span>
+                    <span style={s.tileValue}>{contratOpts.delai_caution_jours} jours</span>
+                  </div>
+                  <div style={s.tile}>
+                    <span style={s.tileLabel}>Charges</span>
+                    <span style={s.tileValue}>{contratOpts.charges_incluses ? 'Comprises' : 'En plus'}</span>
+                  </div>
+                </div>
+                {l.clauses_particulieres
+                  ? <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <span style={s.tileLabel}>Clauses particulières</span>
+                      <p style={{ ...s.descText, whiteSpace: 'pre-wrap' }}>{l.clauses_particulieres}</p>
+                      <LangBadges pt={!!l.clauses_particulieres_pt} en={!!l.clauses_particulieres_en} />
+                    </div>
+                  : <p style={s.emptyHint}>Pas de clause particulière. Ajoute ici ce qui est propre à ce logement : linge fourni, accès piscine, bois de chauffage…</p>}
+                <p style={{ ...s.emptyHint, margin: 0 }}>Le contrat reprend aussi tout seul l&apos;état descriptif du logement (type, surface, pièces, couchages, équipements, classement, numéro d&apos;enregistrement) depuis Caractéristiques et Équipements.</p>
+              </div>
+            }
+            edit={
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <div style={s.editGrid2}>
+                  {(l.pays ?? 'FR') === 'FR' && (
+                    <Field label="Sommes versées à la réservation">
+                      <select style={s.editInput} value={draftRegime} onChange={e => setDraftRegime(e.target.value === 'acompte' ? 'acompte' : 'arrhes')}>
+                        <option value="arrhes">Arrhes (conseillé) : le voyageur qui annule les perd, tu rends le double si tu annules</option>
+                        <option value="acompte">Acompte : réservation ferme, le voyageur reste redevable du prix</option>
+                      </select>
+                    </Field>
+                  )}
+                  <Field label="Caution rendue au plus tard (jours après le départ)">
+                    <input style={s.editInput} type="number" min={1} max={60} value={draftDelaiCaution} onChange={e => setDraftDelaiCaution(Math.max(1, Math.min(60, parseInt(e.target.value) || 7)))} />
+                  </Field>
+                  <Field label="Charges (eau, électricité, chauffage, internet)">
+                    <select style={s.editInput} value={draftCharges ? 'oui' : 'non'} onChange={e => setDraftCharges(e.target.value === 'oui')}>
+                      <option value="oui">Comprises dans le prix</option>
+                      <option value="non">En plus du prix</option>
+                    </select>
+                  </Field>
+                </div>
+                <div>
+                  <span style={{ ...s.tileLabel, display: 'block', marginBottom: '6px' }}>Clauses particulières</span>
+                  <LangTextarea
+                    fr={draftClauses} pt={draftClausesPt} en={draftClausesEn}
+                    onChangeFr={setDraftClauses} onChangePt={setDraftClausesPt} onChangeEn={setDraftClausesEn}
+                    placeholder={'Ex. : linge de lit et serviettes fournis.\nAccès à la piscine de 9 h à 20 h.\nBois de chauffage en supplément : 15 € le stère.'}
+                  />
+                  <p style={{ ...s.emptyHint, marginTop: '6px' }}>Une clause ne peut pas retirer au voyageur un droit que la loi lui donne.</p>
+                </div>
+              </div>
+            }
+          />
 
           {/* Annonces */}
           <EditableCard

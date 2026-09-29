@@ -3,12 +3,16 @@ title: "Créer un contrat et le faire signer en ligne"
 excerpt: "L'assistant en 5 étapes, l'email envoyé au voyageur et ce qu'il voit."
 order: 1
 relatedPages: [/dashboard/contrats, /dashboard/voyageurs]
-updatedAt: "2026-09-27"
+updatedAt: "2026-09-29"
 ---
 
 ## Avant de commencer
 
 Les contrats font partie de la formule **Standard**. Vérifie aussi que **Mon compte** est prêt : la carte « Prêt pour tes contrats » t'indique ce qui manque (nom, adresse du bailleur, Stripe ou IBAN, numéro SIRET ou NIF).
+
+## Règle ton contrat une fois par logement
+
+Dans la fiche de ton logement, la carte **Contrat** garde tes règles : arrhes ou acompte, délai de restitution de la caution, charges comprises ou non, et tes **clauses particulières** (linge fourni, accès à la piscine, bois de chauffage…), en français, portugais et anglais. Les cartes **Caractéristiques** et **Équipements** alimentent l'état descriptif, **Tarifs** les frais de ménage et la caution. Chaque nouveau contrat reprend tout ça.
 
 ## Lancer l'assistant
 
@@ -19,9 +23,13 @@ Les contrats font partie de la formule **Standard**. Vérifie aussi que **Mon co
 
 1. **Bailleur** : toi, ou le propriétaire si tu gères le logement pour lui (repris automatiquement de la fiche logement)
 2. **Locataire** : particulier ou professionnel, et **langue du contrat** (français ou portugais)
-3. **Bien** : description, adresse, capacité, repris de la fiche logement
-4. **Financier** : loyer, caution, acompte (50 % ou 100 % à la réservation) et moyen de paiement (Stripe, virement, espèces…)
-5. **Clauses** : conditions d'annulation et règlement intérieur. Des textes par défaut sont proposés, tu peux les modifier
+3. **Bien** : description, adresse, capacité, repris de la fiche logement (l'état descriptif est ajouté tout seul)
+4. **Financier** : loyer total, dont frais de ménage, taxe de séjour (comprise ou en plus), charges, caution et son délai de restitution, part payée à la réservation (50 % ou 100 %), arrhes ou acompte, et moyen de paiement (Stripe, virement, espèces…)
+5. **Clauses** : conditions d'annulation, règlement intérieur et clauses particulières. Tout est repris de ta fiche logement, tu peux l'ajuster pour ce voyageur
+
+## Sans envoyer ton RIB
+
+Coche **Paiement en ligne (Stripe)** : le voyageur paie par carte sur la page du contrat, l'argent arrive sur ton compte Stripe, sans commission de l'app, et il ne voit jamais ton IBAN. Pour la caution, le voyageur reçoit un lien 2 jours avant l'arrivée : le montant est bloqué sur sa carte, pas encaissé. Stripe se connecte dans **Mon compte → Encaissements**.
 
 ## L'envoi
 

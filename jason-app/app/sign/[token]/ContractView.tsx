@@ -11,7 +11,10 @@ import ContractIbanBlock from './ContractIbanBlock'
 import { getContractTemplate } from '@/lib/contract-templates'
 import { getCountry } from '@/lib/countries'
 import { SIGN_UI, formatDateLang, type UiLang } from '@/lib/sign-ui-i18n'
-import { DEFAULT_ANNULATION, DEFAULT_REGLEMENT, resolveClauseText } from '@/lib/contract-default-clauses'
+import { DEFAULT_ANNULATION, DEFAULT_REGLEMENT, LEGACY_DEFAULT_ANNULATION_FR, resolveClauseText } from '@/lib/contract-default-clauses'
+import {
+  EXTRA_UI, etatDescriptifLines, regimeText, bailleurCancelText, arriveeText, priceLines, type ContractDetails,
+} from '@/lib/contracts/details'
 
 interface ContractRow {
   id: string
@@ -52,6 +55,12 @@ interface ContractRow {
   reglement_interieur: string | null
   reglement_interieur_pt?: string | null
   reglement_interieur_en?: string | null
+  /** Mentions ajoutées le 29/09/2026 (migration 118). Absent sur un contrat
+   *  plus ancien : il reste affiché tel qu'il a été signé. */
+  details?: ContractDetails | null
+  clauses_particulieres?: string | null
+  clauses_particulieres_pt?: string | null
+  clauses_particulieres_en?: string | null
 }
 
 interface Props {
@@ -105,8 +114,19 @@ export default function ContractView({
   const conditionsAnnulation = resolveClauseText(
     contract.conditions_annulation,
     lang === 'pt' ? contract.conditions_annulation_pt : contract.conditions_annulation_en,
-    lang, DEFAULT_ANNULATION
+    lang, DEFAULT_ANNULATION, LEGACY_DEFAULT_ANNULATION_FR
   )
+  // Contrat enrichi (créé depuis le 29/09/2026) : état descriptif, prix
+  // détaillé, caution, annulation par le bailleur, identité, assurance.
+  const d = contract.details ?? null
+  const ex = EXTRA_UI[lang]
+  const regime = d?.regime ?? 'arrhes'
+  const money = (v: number) => `${v.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`
+  const etatLines = d ? etatDescriptifLines(d.etat, lang, contractPays) : []
+  const clausesParticulieres = (lang === 'pt' ? contract.clauses_particulieres_pt : lang === 'en' ? contract.clauses_particulieres_en : null) || contract.clauses_particulieres || null
+  // Numérotation continue des articles (le nombre d'articles varie selon le contrat)
+  let artNo = 0
+  const art = (label: string) => `${ex.articleWord} ${++artNo}, ${label.replace(/^(Article|Artigo)\s+\d+,\s*/, '')}`
   const reglementInterieur = contract.reglement_interieur ? resolveClauseText(
     contract.reglement_interieur,
     lang === 'pt' ? contract.reglement_interieur_pt : contract.reglement_interieur_en,
@@ -196,7 +216,7 @@ export default function ContractView({
         <div style={contractBody} className="contract-print">
           {/* Art. 1, Parties */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{t.art1}</h2>
+            <h2 style={sectionTitle}>{art(t.art1)}</h2>
             <div style={partyGrid}>
               <div style={partyBox}>
                 <p style={partyLabel}>{t.bailleurLabel}</p>
@@ -226,13 +246,22 @@ export default function ContractView({
 
           {/* Art. 2, Bien loué */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{t.art2}</h2>
+            <h2 style={sectionTitle}>{art(t.art2)}</h2>
             <p style={contractText}>{t.bienLoueIntro}</p>
             <p style={{ ...contractText, fontWeight: 600, color: '#f0ebe1', marginTop: '8px' }}>
               {contract.logement_adresse || <em style={{ color: '#6b9a7e', fontWeight: 400 }}>{t.addressMissing}</em>}
             </p>
             {description && (
               <p style={{ ...contractText, marginTop: '8px' }}>{description}</p>
+            )}
+            {d && (
+              <div style={{ marginTop: '12px' }}>
+                <p style={{ ...contractText, fontWeight: 600, color: '#f0ebe1' }}>{ex.etatTitle}</p>
+                {etatLines.map(l => (
+                  <p key={l.label} style={{ ...contractText, fontSize: '13px' }}>{l.label}&nbsp;: {l.value}</p>
+                ))}
+                <p style={{ ...contractText, fontSize: '13px' }}>{tpl.numeroLabel}&nbsp;: {d.etat?.numero || ex.numeroMissing}</p>
+              </div>
             )}
             <p style={{ ...contractText, marginTop: '8px' }}>
               <strong>{t.capaciteMax(contract.capacite_max)}</strong>
@@ -247,7 +276,7 @@ export default function ContractView({
 
           {/* Art. 3, Durée */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{t.art3}</h2>
+            <h2 style={sectionTitle}>{art(t.art3)}</h2>
             <div style={datesGrid}>
               <div style={dateBox}>
                 <p style={dateLabel}>{t.arrivee}</p>
@@ -268,22 +297,25 @@ export default function ContractView({
 
           {/* Art. 4, Prix */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{t.art4}</h2>
+            <h2 style={sectionTitle}>{art(t.art4)}</h2>
             <div style={pricesGrid}>
               <div style={priceBox}>
                 <p style={priceLabel}>{t.loyerTotal}</p>
                 <p style={priceValue}>{Number(contract.montant_loyer).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
+                {d && priceLines(Number(contract.montant_loyer), d, lang, money).slice(1).map(l => (
+                  <p key={l.label} style={{ fontSize: '12px', color: l.sub ? 'var(--text-muted, #6b9a7e)' : '#f0ebe1', marginTop: '4px' }}>{l.label}&nbsp;: {l.value}</p>
+                ))}
               </div>
               <div style={priceBox}>
                 <p style={priceLabel}>{t.deposit}</p>
                 <p style={priceValue}>{Number(contract.montant_caution).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
-                <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>{t.depositRefund}</p>
+                {!d && <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>{t.depositRefund}</p>}
               </div>
             </div>
             {acomptePercent < 100 && (
               <div style={{ ...pricesGrid, marginTop: '10px' }}>
                 <div style={priceBox}>
-                  <p style={priceLabel}>{t.acompte(acomptePercent)}</p>
+                  <p style={priceLabel}>{d && contractPays === 'FR' ? (regime === 'acompte' ? ex.acompteLabel(acomptePercent) : ex.arrhesLabel(acomptePercent)) : t.acompte(acomptePercent)}</p>
                   <p style={priceValue}>{montantAcompte.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
                   <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>{t.acompteHint}</p>
                 </div>
@@ -293,6 +325,12 @@ export default function ContractView({
                   <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>{t.soldeHint}</p>
                 </div>
               </div>
+            )}
+            {d && (
+              <>
+                {regimeText(regime, lang, contractPays) && <p style={{ ...contractText, marginTop: '12px', fontSize: '13px' }}>{regimeText(regime, lang, contractPays)}</p>}
+                <p style={{ ...contractText, marginTop: '8px', fontSize: '13px' }}>{d.charges_incluses === false ? ex.chargesNonIncluses : ex.chargesIncluses}</p>
+              </>
             )}
             <p style={{ ...contractText, marginTop: '12px', marginBottom: '8px' }}>
               <strong>{t.paymentTerms}</strong>
@@ -321,22 +359,52 @@ export default function ContractView({
 
           <div style={divider} />
 
+          {d && (
+            <>
+              <section style={contractSection}>
+                <h2 style={sectionTitle}>{art(ex.cautionTitle)}</h2>
+                <p style={contractText}>{Number(contract.montant_caution) > 0 ? ex.cautionText(money(Number(contract.montant_caution)), d.delai_caution_jours ?? 7) : ex.noCaution}</p>
+              </section>
+              <div style={divider} />
+            </>
+          )}
+
           {/* Art. 5, Conditions d'annulation (texte libre rédigé par le bailleur —
               traduit seulement si les champs PT/EN de la fiche logement sont
               remplis, ou si c'est le texte par défaut non modifié) */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{t.art5}</h2>
+            <h2 style={sectionTitle}>{art(t.art5)}</h2>
             <p style={{ ...contractText, whiteSpace: 'pre-line' }}>{conditionsAnnulation}</p>
           </section>
 
           <div style={divider} />
 
+          {d && (
+            <>
+              <section style={contractSection}>
+                <h2 style={sectionTitle}>{art(ex.bailleurCancelTitle)}</h2>
+                <p style={contractText}>{bailleurCancelText(regime, lang, contractPays)}</p>
+              </section>
+              <div style={divider} />
+            </>
+          )}
+
           {/* Art. 6, Règlement intérieur (idem) */}
           {reglementInterieur && (
             <>
               <section style={contractSection}>
-                <h2 style={sectionTitle}>{t.art6}</h2>
+                <h2 style={sectionTitle}>{art(t.art6)}</h2>
                 <p style={{ ...contractText, whiteSpace: 'pre-line' }}>{reglementInterieur}</p>
+              </section>
+              <div style={divider} />
+            </>
+          )}
+
+          {d && (
+            <>
+              <section style={contractSection}>
+                <h2 style={sectionTitle}>{art(ex.arriveeTitle)}</h2>
+                <p style={contractText}>{arriveeText(lang, contractPays)}</p>
               </section>
               <div style={divider} />
             </>
@@ -344,14 +412,14 @@ export default function ContractView({
 
           {/* Art. 7, Obligations légales */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{t.art7}</h2>
+            <h2 style={sectionTitle}>{art(t.art7)}</h2>
             <p style={contractText}>
               <strong>{t.bailleurCommit}</strong> {tpl.obligationsBailleur}
             </p>
             <p style={{ ...contractText, marginTop: '10px' }}>
               <strong>{t.locataireCommit}</strong> {tpl.obligationsLocataire} {t.capaciteReminder(contract.capacite_max)}
             </p>
-            {tpl.declarationVoyageur && (
+            {tpl.declarationVoyageur && !(d && contractPays === 'FR') && (
               <p style={{ ...contractText, marginTop: '10px', fontSize: '13px', opacity: 0.85 }}>
                 <strong>{t.foreignGuestDeclaration}</strong> {tpl.declarationVoyageur}
               </p>
@@ -360,9 +428,29 @@ export default function ContractView({
 
           <div style={divider} />
 
+          {d && (
+            <>
+              <section style={contractSection}>
+                <h2 style={sectionTitle}>{art(ex.assuranceTitle)}</h2>
+                <p style={contractText}>{ex.assuranceText}</p>
+              </section>
+              <div style={divider} />
+            </>
+          )}
+
+          {clausesParticulieres && (
+            <>
+              <section style={contractSection}>
+                <h2 style={sectionTitle}>{art(ex.clausesTitle)}</h2>
+                <p style={{ ...contractText, whiteSpace: 'pre-line' }}>{clausesParticulieres}</p>
+              </section>
+              <div style={divider} />
+            </>
+          )}
+
           {/* Art. 8, RGPD */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{t.art8}</h2>
+            <h2 style={sectionTitle}>{art(t.art8)}</h2>
             <p style={contractText}>{tpl.rgpd}</p>
           </section>
 
@@ -370,7 +458,7 @@ export default function ContractView({
 
           {/* Art. 9, Loi applicable */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{t.art9}</h2>
+            <h2 style={sectionTitle}>{art(t.art9)}</h2>
             <p style={contractText}>{tpl.loiApplicable}</p>
           </section>
 
@@ -378,7 +466,7 @@ export default function ContractView({
 
           {/* Art. 10, Signature électronique */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{t.art10}</h2>
+            <h2 style={sectionTitle}>{art(t.art10)}</h2>
             <p style={contractText}>{tpl.signatureElectronique}</p>
           </section>
 

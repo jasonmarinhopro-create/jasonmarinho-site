@@ -102,8 +102,13 @@ export default async function SignPage({
     logementIban = logement?.iban ?? null
     logementBic = logement?.bic ?? null
   }
-  const hostIban = logementIban ?? bailProfile?.iban ?? null
-  const hostBic = logementIban ? logementBic : (bailProfile?.bic ?? null)
+  // IBAN affiché seulement si le virement fait partie des moyens de paiement
+  // choisis (ou s'il n'y a pas de paiement en ligne). Avant : affiché dès qu'il
+  // était renseigné, même pour un hôte qui ne voulait être payé que par carte
+  // (retour d'hôte, 29/09/2026 : « pas fan d'envoyer mon RIB »).
+  const wantsTransfer = /virement|transfer/i.test(String(contract.modalites_paiement ?? '')) || !contract.stripe_payment_enabled
+  const hostIban = wantsTransfer ? (logementIban ?? bailProfile?.iban ?? null) : null
+  const hostBic = !hostIban ? null : logementIban ? logementBic : (bailProfile?.bic ?? null)
 
   // Caution
   const hasDeposit = Number(contract.montant_caution) > 0
