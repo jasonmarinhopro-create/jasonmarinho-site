@@ -12,6 +12,7 @@ import {
 } from './engine'
 import { isPermanentAddressError, outreachConfig, scanInbox, sendOutreachMail } from './mailer'
 import { PLAYBOOK } from './playbook'
+import { checkSpf } from './spf'
 
 const log = logger('outreach')
 type Db = SupabaseClient<any, 'public', any>
@@ -281,7 +282,12 @@ export async function runOutreach(db: Db, opts: { budgetMs?: number; force?: boo
   if (!cfg) summary.skipped = 'Boîte d\'envoi non configurée'
   else if (settings.paused) summary.skipped = 'Envois en pause'
   else if (!opts.force && !settings.send_days.includes(isoWeekday(today))) summary.skipped = 'Pas un jour d\'envoi'
-  else await sendDue(db, settings, today, started, budget, summary)
+  else {
+    // Garde-fou : pas d'envoi tant que le SPF du domaine n'autorise pas le serveur d'envoi
+    const spf = await checkSpf(cfg.fromEmail, cfg.smtpHost)
+    if (!spf.ok) summary.skipped = `Envois retenus : le SPF de ${spf.domain} n'autorise pas ${cfg.smtpHost} (DNS à corriger)`
+    else await sendDue(db, settings, today, started, budget, summary)
+  }
 
   const text = [
     `${summary.sent} envoyé${summary.sent > 1 ? 's' : ''}`,

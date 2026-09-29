@@ -11,6 +11,7 @@ import { getServiceClient } from '@/lib/supabase/service'
 import { outreachConfig } from '@/lib/outreach/mailer'
 import { installPlaybookSequences, loadSettings, runOutreach, sendTest } from '@/lib/outreach/service'
 import { relaunchOutreach } from '@/lib/outreach/relaunch'
+import { checkSpf } from '@/lib/outreach/spf'
 import { searchGooglePlaces, findEmailOnSite } from '@/lib/outreach/sources'
 import type { Audience } from '@/lib/outreach/engine'
 
@@ -78,12 +79,14 @@ async function status(db: Db) {
   }
   const { count: sentTotal } = await db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye')
   const cfg = outreachConfig()
+  const spf = cfg ? await checkSpf(cfg.fromEmail, cfg.smtpHost) : null
   return {
     ok: true,
     migration115: true,
     migration116: !m116.error,
     boite_configuree: !!cfg,
     serveur_smtp: cfg?.smtpHost ?? null,
+    spf_ok: spf?.ok ?? false,
     cle_google_maps: !!process.env.GOOGLE_PLACES_API_KEY,
     reglages: settings ? { plafond: settings.daily_cap, jours: settings.send_days, pause: settings.paused, dernier_passage: settings.last_run_at, resume: settings.last_run_summary } : null,
     contacts,
