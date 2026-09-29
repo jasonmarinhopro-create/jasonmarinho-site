@@ -61,10 +61,11 @@ jobs:
               echo "DNS de jasonmarinho.com (délivrabilité) :"
               echo "SPF   : $(dig +short TXT jasonmarinho.com | grep -i 'v=spf1' || echo 'ABSENT')"
               echo "DMARC : $(dig +short TXT _dmarc.jasonmarinho.com | grep -i 'v=dmarc1' || echo 'ABSENT')"
-              for sel in hostingermail1 hostingermail2 hostingermail3 hostingermail resend; do
+              for sel in hostingermail-a hostingermail-b hostingermail-c resend; do
                 v=$(dig +short TXT "$sel._domainkey.jasonmarinho.com" | head -c 60); [ -n "$v" ] && echo "DKIM ($sel) : présent"
               done
-              echo "MX    : $(dig +short MX jasonmarinho.com | tr '\n' ' ')" ;;
+              echo "MX    : $(dig +short MX jasonmarinho.com | tr '\n' ' ')"
+              echo "Photo de signature : $(curl -s -o /dev/null -w '%{http_code} %{content_type}' https://jasonmarinho.com/signature-jason.jpg)" ;;
             essai)
               call '{"op":"test"}' | jq . ;;
             activer)
