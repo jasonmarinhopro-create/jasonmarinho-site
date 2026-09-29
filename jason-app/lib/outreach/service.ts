@@ -156,6 +156,9 @@ export interface RunSummary {
  * (Hostinger Business Email : 10 e-mails par minute, 100 par jour sur
  * l'offre gratuite) : 6,5 à 8,5 s garde toujours sous 10 par minute.
  */
+/** Date lointaine posée sur une étape pendant son envoi (verrou entre passages simultanés) */
+const CLAIM_DATE = '2999-12-31'
+
 export const SEND_GAP_MS = 6_500
 const SEND_GAP_JITTER_MS = 2_000
 
@@ -267,6 +270,10 @@ export async function runOutreach(db: Db, opts: { budgetMs?: number; force?: boo
   const settings = await loadSettings(db)
   const today = parisToday()
   const summary: RunSummary = { configured: !!cfg, replies: 0, bounces: 0, signups: 0, autoEnrolled: 0, sent: 0, errors: 0 }
+
+  // Étapes restées réservées par un passage interrompu (délai Vercel) : de nouveau dues
+  await db.from('outreach_enrollments').update({ next_send_on: today }).eq('status', 'en_cours').eq('next_send_on', CLAIM_DATE)
+    .lt('updated_at', new Date(Date.now() - 15 * 60_000).toISOString())
 
   // Passage de relance (suite d'un passage à court de temps) : envois seulement
   if (!opts.sendOnly) {
@@ -380,6 +387,16 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
     if (Date.now() - started + gap + 5_000 > budget) { summary.more = true; break }
     if (gap) await new Promise(r => setTimeout(r, gap))
     attempts++
+    // Verrou : un autre passage (relance, bouton, cron) a pu lire la même file.
+    // 1. un e-mail déjà parti pour cette étape de ce parcours n'est jamais renvoyé ;
+    // 2. l'étape est « réservée » (date repoussée) avant l'envoi, seulement si
+    //    personne ne l'a prise entre-temps.
+    const { count: already } = await db.from('outreach_sends').select('id', { count: 'exact', head: true })
+      .eq('enrollment_id', e.id).eq('step_position', e.next_step).eq('status', 'envoye').gte('sent_at', new Date(Date.now() - 20 * 3600_000).toISOString())
+    if (already) continue
+    const { data: claimed } = await db.from('outreach_enrollments').update({ next_send_on: CLAIM_DATE, updated_at: new Date().toISOString() })
+      .eq('id', e.id).eq('status', 'en_cours').eq('next_step', e.next_step).lte('next_send_on', today).select('id')
+    if (!claimed?.length) continue
     try {
       const { messageId } = await sendOutreachMail(cfg, {
         to: c.email, subject, text: `${text}\n\n--\n${footer}`, html: textToHtml(bodyText, footer, signature, photo),
@@ -410,6 +427,8 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
       c.stage = c.stage === 'a_contacter' ? 'contacte' : c.stage
     } catch (err) {
       summary.errors++
+      // Envoi raté : l'étape redevient due (elle était réservée)
+      await db.from('outreach_enrollments').update({ next_send_on: today }).eq('id', e.id).eq('next_send_on', CLAIM_DATE)
       const message = err instanceof Error ? err.message.slice(0, 300) : 'Erreur inconnue'
       await db.from('outreach_sends').insert({ enrollment_id: e.id, contact_id: c.id, sequence_id: e.sequence_id, step_position: e.next_step, email: c.email, subject, status: 'erreur', error: message })
       if (isPermanentAddressError(err)) await suppress(db, c.email, 'rebond')
@@ -436,6 +455,34 @@ export async function sendTest(stepSubject: string, stepBody: string, settings: 
     return { ok: true, to: cfg.fromEmail }
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message.slice(0, 200) : 'Envoi impossible' }
+  }
+}
+
+/**
+ * E-mail tel qu'il est parti (onglet Envois de l'admin) : reconstruit à partir
+ * de l'étape de la séquence et de la fiche du contact, avec la même mise en
+ * forme que l'envoi. `edited` : le texte de l'étape a changé depuis l'envoi.
+ */
+export async function renderSentEmail(db: Db, sendId: string): Promise<{ to: string; subject: string; sent_at: string; html: string; text: string; edited: boolean } | null> {
+  const { data: send } = await db.from('outreach_sends').select('id, contact_id, sequence_id, step_position, email, subject, sent_at').eq('id', sendId).maybeSingle()
+  if (!send) return null
+  const [{ data: c }, { data: step }, settings] = await Promise.all([
+    db.from('outreach_contacts').select('prenom, nom, entreprise, ville, source, unsubscribe_token').eq('id', send.contact_id).maybeSingle(),
+    db.from('outreach_steps').select('body, updated_at').eq('sequence_id', send.sequence_id).eq('position', send.step_position).maybeSingle(),
+    loadSettings(db),
+  ])
+  if (!step) return { to: send.email, subject: send.subject, sent_at: send.sent_at, html: '', text: '(étape supprimée depuis l\'envoi)', edited: true }
+  const { count: before } = await db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('contact_id', send.contact_id).eq('status', 'envoye').lt('sent_at', send.sent_at)
+  const vars = { prenom: guessFirstName(c?.prenom ?? null, c?.nom ?? null), nom: c?.nom ?? null, entreprise: c?.entreprise ?? null, ville: c?.ville ?? null }
+  const urls = unsubscribeUrls(c?.unsubscribe_token ?? '00000000-0000-0000-0000-000000000000')
+  const footer = complianceFooter({ source: (c?.source ?? 'manuel') as Source, firstMessage: !before, unsubscribeUrl: urls.page })
+  const signature = settings.signature?.trim() || DEFAULT_SIGNATURE
+  const bodyText = renderTemplate(step.body, vars).trim()
+  return {
+    to: send.email, subject: send.subject, sent_at: send.sent_at,
+    html: textToHtml(bodyText, footer, signature, settings.signature_photo ? SIGNATURE_PHOTO_URL : null),
+    text: `${bodyText}\n\n${signature}\n\n--\n${footer}`,
+    edited: !!step.updated_at && new Date(step.updated_at).getTime() > new Date(send.sent_at).getTime(),
   }
 }
 

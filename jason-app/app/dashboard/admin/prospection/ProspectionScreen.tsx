@@ -3,9 +3,9 @@
 
 import AdminHero, { adminAsideCard } from '../_ui/AdminHero'
 import ProspectionView from './ProspectionView'
-import type { ContactRow, MailConfig, SequenceRow, SettingsRow, Stats } from './shared'
+import type { ContactRow, MailConfig, SendRow, SequenceRow, SettingsRow, Stats } from './shared'
 
-export default function ProspectionScreen(props: { sequences: SequenceRow[]; contacts: ContactRow[]; settings: SettingsRow; config: MailConfig; stats: Stats; today: string }) {
+export default function ProspectionScreen(props: { sequences: SequenceRow[]; contacts: ContactRow[]; settings: SettingsRow; config: MailConfig; stats: Stats; today: string; sends: SendRow[] }) {
   const { stats, settings, config, sequences } = props
   const running = sequences.filter(s => s.enabled).length
   const inProgress = sequences.reduce((n, s) => n + s.counts.en_cours, 0)
@@ -36,7 +36,7 @@ export default function ProspectionScreen(props: { sequences: SequenceRow[]; con
           </div>
         }
       />
-      <ProspectionView sequences={props.sequences} contacts={props.contacts} settings={settings} config={config} today={props.today} />
+      <ProspectionView sequences={props.sequences} contacts={props.contacts} settings={settings} config={config} today={props.today} sends={props.sends} />
     </div>
   )
 }

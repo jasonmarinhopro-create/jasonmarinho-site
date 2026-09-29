@@ -78,6 +78,17 @@ async function status(db: Db) {
     contacts[a] = by
   }
   const { count: sentTotal } = await db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye')
+  // Envois des dernières 24 h : doublons éventuels (même contact, même étape)
+  const { data: recent } = await db.from('outreach_sends').select('contact_id, sequence_id, step_position, status').gte('sent_at', new Date(Date.now() - 24 * 3600_000).toISOString()).limit(2000)
+  const okRecent = (recent ?? []).filter(r => r.status === 'envoye')
+  const perKey = new Map<string, number>()
+  for (const r of okRecent) { const k = `${r.contact_id}|${r.sequence_id}|${r.step_position}`; perKey.set(k, (perKey.get(k) ?? 0) + 1) }
+  const dupKeys = Array.from(perKey.values()).filter(n => n > 1)
+  const envois24h = {
+    envoyes: okRecent.length, erreurs: (recent ?? []).length - okRecent.length,
+    contacts_distincts: new Set(okRecent.map(r => r.contact_id)).size,
+    doublons: dupKeys.reduce((a, n) => a + n - 1, 0), contacts_en_double: dupKeys.length,
+  }
   const cfg = outreachConfig()
   const spf = cfg ? await checkSpf(cfg.fromEmail, cfg.smtpHost) : null
   return {
@@ -92,6 +103,7 @@ async function status(db: Db) {
     contacts,
     sequences: (seqs ?? []).map(s => ({ nom: s.nom, audience: s.audience, active: s.enabled, declencheur: s.trigger, en_cours: inSeq.get(s.id) ?? 0 })),
     envoyes_total: sentTotal ?? 0,
+    envois_24h: envois24h,
   }
 }
 

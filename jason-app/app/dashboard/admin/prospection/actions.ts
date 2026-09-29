@@ -6,7 +6,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getServiceClient } from '@/lib/supabase/service'
-import { enroll, installPlaybookSequences, loadSettings, onTagsAdded, runOutreach, sendTest, setStage, stopEnrollments, type RunSummary } from '@/lib/outreach/service'
+import { enroll, installPlaybookSequences, loadSettings, renderSentEmail, onTagsAdded, runOutreach, sendTest, setStage, stopEnrollments, type RunSummary } from '@/lib/outreach/service'
 import { relaunchOutreach } from '@/lib/outreach/relaunch'
 import { searchGooglePlaces, searchSirene, findEmailOnSite, type FoundContact } from '@/lib/outreach/sources'
 import { cleanTag, mergeTags, normalizeTag, type Audience, type Stage } from '@/lib/outreach/engine'
@@ -404,5 +404,15 @@ export async function contactHistory(contactId: string): Promise<Res<{
       db.from('outreach_enrollments').select('sequence_id, status, stop_reason, next_step, next_send_on, loop_count').eq('contact_id', contactId).order('created_at', { ascending: false }),
     ])
     return { sends: sends ?? [], enrollments: enrollments ?? [] }
+  })
+}
+
+/** Un e-mail envoyé, tel que le contact l'a reçu (onglet Envois). */
+export async function sentEmailPreview(sendId: string): Promise<Res<NonNullable<Awaited<ReturnType<typeof renderSentEmail>>>>> {
+  return wrap(async () => {
+    const db = await requireAdmin()
+    const mail = await renderSentEmail(db, sendId)
+    if (!mail) throw new Error('Envoi introuvable.')
+    return mail
   })
 }

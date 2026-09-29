@@ -4,7 +4,7 @@ import { getServiceClient } from '@/lib/supabase/service'
 import { outreachConfig } from '@/lib/outreach/mailer'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import ProspectionScreen from './ProspectionScreen'
-import type { ContactRow, SequenceRow, SettingsRow, StepRow } from './shared'
+import type { ContactRow, SendRow, SequenceRow, SettingsRow, StepRow } from './shared'
 
 const SEQ_COLS = 'id, nom, audience, description, trigger, trigger_stage, enabled, stop_on_reply, repeat_after_days, max_repeats, then_sequence_id, end_stage, position'
 const CONTACT_COLS = 'id, audience, email, prenom, nom, entreprise, ville, departement, site_web, telephone, instagram, source, source_detail, stage, notes, tags, last_contacted_at, replied_at, created_at'
@@ -41,7 +41,7 @@ export default async function ProspectionPage() {
     return `${today}T00:00:00Z`
   })()
 
-  const [seqRes, { data: steps }, { data: enr }, contactsRes, { data: settings }, sentToday, sent7, sent30, errors7, replies30, contacted30] = await Promise.all([
+  const [seqRes, { data: steps }, { data: enr }, contactsRes, { data: settings }, { data: sends }, sentToday, sent7, sent30, errors7, replies30, contacted30] = await Promise.all([
     // Colonnes de la migration 116 (trigger_tag, next_action…) : repli sans elles si elle n'est pas appliquée
     withFallback(
       () => db.from('outreach_sequences').select(`${SEQ_COLS}, trigger_tag`).order('position'),
@@ -54,6 +54,7 @@ export default async function ProspectionPage() {
       () => db.from('outreach_contacts').select(CONTACT_COLS).order('created_at', { ascending: false }).limit(5000),
     ),
     db.from('outreach_settings').select('*').eq('id', 1).maybeSingle(),
+    db.from('outreach_sends').select('id, contact_id, sequence_id, step_position, email, subject, status, error, sent_at').gte('sent_at', since30).order('sent_at', { ascending: false }).limit(3000),
     db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye').gte('sent_at', dayStart),
     db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye').gte('sent_at', since7),
     db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye').gte('sent_at', since30),
@@ -103,6 +104,7 @@ export default async function ProspectionPage() {
   return (
     <ProspectionScreen
       today={today}
+      sends={(sends ?? []) as SendRow[]}
       sequences={sequences}
       contacts={contactRows}
       settings={settingsRow}

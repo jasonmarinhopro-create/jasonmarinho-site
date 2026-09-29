@@ -5,15 +5,16 @@
 // du rôle admin), prévisualisable avec des données fictives.
 
 import { useState } from 'react'
-import { Camera, Broom, House, Lightning, AddressBook, MagnifyingGlass, Gear, WarningCircle } from '@phosphor-icons/react/dist/ssr'
+import { Camera, Broom, House, Lightning, AddressBook, MagnifyingGlass, Gear, WarningCircle, PaperPlaneTilt } from '@phosphor-icons/react/dist/ssr'
 import type { Audience } from '@/lib/outreach/engine'
 import SequencesTab from './SequencesTab'
 import ContactsTab from './ContactsTab'
 import SourcesTab from './SourcesTab'
 import SettingsTab from './SettingsTab'
-import { ui, type ContactRow, type MailConfig, type SequenceRow, type SettingsRow } from './shared'
+import EnvoisTab from './EnvoisTab'
+import { ui, type ContactRow, type MailConfig, type SendRow, type SequenceRow, type SettingsRow } from './shared'
 
-type Tab = 'sequences' | 'contacts' | 'sources' | 'reglages'
+type Tab = 'sequences' | 'contacts' | 'envois' | 'sources' | 'reglages'
 
 const AUD: Array<{ key: Audience; label: string; Icon: React.ElementType }> = [
   { key: 'photographe', label: 'Photographes', Icon: Camera },
@@ -23,12 +24,13 @@ const AUD: Array<{ key: Audience; label: string; Icon: React.ElementType }> = [
 const TABS: Array<{ key: Tab; label: string; Icon: React.ElementType }> = [
   { key: 'sequences', label: 'Séquences', Icon: Lightning },
   { key: 'contacts', label: 'Contacts', Icon: AddressBook },
+  { key: 'envois', label: 'Envois', Icon: PaperPlaneTilt },
   { key: 'sources', label: 'Trouver des contacts', Icon: MagnifyingGlass },
   { key: 'reglages', label: 'Réglages', Icon: Gear },
 ]
 
-export default function ProspectionView({ sequences, contacts, settings, config, today, initialTab = 'sequences' }: {
-  sequences: SequenceRow[]; contacts: ContactRow[]; settings: SettingsRow; config: MailConfig; today: string; initialTab?: Tab
+export default function ProspectionView({ sequences, contacts, settings, config, today, sends = [], initialTab = 'sequences' }: {
+  sequences: SequenceRow[]; contacts: ContactRow[]; settings: SettingsRow; config: MailConfig; today: string; sends?: SendRow[]; initialTab?: Tab
 }) {
   const [audience, setAudience] = useState<Audience>('photographe')
   const [tab, setTab] = useState<Tab>(initialTab)
@@ -64,6 +66,7 @@ export default function ProspectionView({ sequences, contacts, settings, config,
 
       {tab === 'sequences' && <SequencesTab audience={audience} sequences={sequences} contacts={contacts} />}
       {tab === 'contacts' && <ContactsTab audience={audience} contacts={contacts} sequences={sequences} today={today} />}
+      {tab === 'envois' && <EnvoisTab audience={audience} sends={sends} contacts={contacts} sequences={sequences} dailyCap={settings.daily_cap} />}
       {tab === 'sources' && <SourcesTab audience={audience} placesKey={config.placesKey} />}
       {tab === 'reglages' && <SettingsTab settings={settings} config={config} />}
     </div>

@@ -49,6 +49,7 @@ export interface ContactRow {
   created_at: string
   active_sequence_id: string | null
 }
+export interface SendRow { id: string; contact_id: string | null; sequence_id: string | null; step_position: number | null; email: string; subject: string; status: 'envoye' | 'erreur'; error: string | null; sent_at: string }
 export interface Stats { sentToday: number; sent7: number; sent30: number; errors7: number; replies30: number; contacted30: number }
 export interface SettingsRow { daily_cap: number; send_days: number[]; paused: boolean; signature: string | null; signature_photo: boolean; last_run_at: string | null; last_run_summary: string | null }
 export interface MailConfig { configured: boolean; from: string | null; host: string | null; placesKey: boolean }
