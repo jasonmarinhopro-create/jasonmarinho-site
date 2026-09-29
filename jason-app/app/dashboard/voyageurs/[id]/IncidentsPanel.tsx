@@ -3,8 +3,9 @@
 import { useEffect, useState, useTransition } from 'react'
 import {
   Warning, X, Trash, CheckCircle, ArrowsClockwise,
-  Plus, CurrencyEur, Camera,
+  Plus, CurrencyEur, Camera, Bed, Hammer, Broom, WarningOctagon, Siren, Clock, SpeakerSlash, NotePencil,
 } from '@phosphor-icons/react/dist/ssr'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 import {
   listIncidentsBySejours,
   createIncident,
@@ -15,22 +16,23 @@ import {
   type IncidentStatut,
 } from '../incident-actions'
 
-const TYPE_OPTIONS: { value: IncidentType; label: string; emoji: string; color: string }[] = [
-  { value: 'linge_tache',         label: 'Linge tache',         emoji: '🛏️', color: 'var(--danger)' },
-  { value: 'casse',               label: 'Casse / objet brise', emoji: '💥', color: '#F59E0B' },
-  { value: 'salete',              label: 'Salete',              emoji: '🧹', color: '#A78BFA' },
-  { value: 'degradation',         label: 'Degradation',         emoji: '⚠️', color: '#F43F5E' },
-  { value: 'vol',                 label: 'Vol',                 emoji: '🚨', color: '#DC2626' },
-  { value: 'retard_restitution',  label: 'Retard restitution',  emoji: '⏰', color: '#FB923C' },
-  { value: 'plainte_voisin',      label: 'Plainte voisin',      emoji: '🔇', color: 'var(--warning)' },
-  { value: 'autre',               label: 'Autre',               emoji: '📝', color: '#94A3B8' },
+// Icônes Phosphor (avant : emojis), couleurs de la marque
+const TYPE_OPTIONS: { value: IncidentType; label: string; Icon: React.ElementType; color: string }[] = [
+  { value: 'linge_tache',         label: 'Linge taché',         Icon: Bed,            color: '#B83A7C' },
+  { value: 'casse',               label: 'Casse, objet brisé',  Icon: Hammer,         color: '#B7791F' },
+  { value: 'salete',              label: 'Saleté',              Icon: Broom,          color: '#6E5446' },
+  { value: 'degradation',         label: 'Dégradation',         Icon: WarningOctagon, color: 'var(--danger)' },
+  { value: 'vol',                 label: 'Vol',                 Icon: Siren,          color: 'var(--danger)' },
+  { value: 'retard_restitution',  label: 'Départ en retard',    Icon: Clock,          color: '#B7791F' },
+  { value: 'plainte_voisin',      label: 'Plainte d\'un voisin', Icon: SpeakerSlash,   color: '#6E5446' },
+  { value: 'autre',               label: 'Autre',               Icon: NotePencil,     color: 'var(--text-3)' },
 ]
 
 const STATUT_OPTIONS: { value: IncidentStatut; label: string; color: string; bg: string }[] = [
-  { value: 'ouvert',     label: 'Ouvert',         color: 'var(--danger)', bg: 'rgba(248,113,113,0.12)' },
-  { value: 'resolu',     label: 'Resolu',         color: 'var(--success-1)', bg: 'var(--success-bg)' },
-  { value: 'rembourse',  label: 'Rembourse',      color: '#7EB8F7', bg: 'rgba(126,184,247,0.12)' },
-  { value: 'annule',     label: 'Annule',         color: 'var(--text-3)', bg: 'var(--surface-2)' },
+  { value: 'ouvert',     label: 'Ouvert',         color: 'var(--danger)', bg: 'color-mix(in srgb, var(--danger) 12%, transparent)' },
+  { value: 'resolu',     label: 'Résolu',         color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  { value: 'rembourse',  label: 'Remboursé',      color: '#6E5446', bg: 'color-mix(in srgb, #6E5446 12%, transparent)' },
+  { value: 'annule',     label: 'Annulé',         color: 'var(--text-3)', bg: 'var(--surface-2)' },
 ]
 
 function getType(t: IncidentType) {
@@ -55,6 +57,7 @@ export default function IncidentsPanel({ sejourId, voyageurId, open, onCountChan
   const [loading, setLoading] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const [pending, startTransition] = useTransition()
+  const { confirm, dialog } = useConfirm()
 
   // Load on open
   useEffect(() => {
@@ -86,8 +89,8 @@ export default function IncidentsPanel({ sejourId, voyageurId, open, onCountChan
     })
   }
 
-  function handleDelete(id: string) {
-    if (!confirm('Supprimer cet incident ?')) return
+  async function handleDelete(id: string) {
+    if (!(await confirm({ title: 'Supprimer cet incident ?', message: 'La fiche de l\'incident et son montant sont supprimés.', confirmLabel: 'Supprimer', danger: true }))) return
     startTransition(async () => {
       await deleteIncident(id, voyageurId)
       refresh()
@@ -96,10 +99,11 @@ export default function IncidentsPanel({ sejourId, voyageurId, open, onCountChan
 
   return (
     <div style={s.panel}>
+      {dialog}
       <div style={s.head}>
         <div style={s.headLabel}>
           <Warning size={16} weight="duotone" color="var(--accent-text)" />
-          <span>Incidents du sejour</span>
+          <span>Incidents du séjour</span>
         </div>
         {!showForm && (
           <button onClick={() => setShowForm(true)} style={s.addBtn}>
@@ -119,11 +123,11 @@ export default function IncidentsPanel({ sejourId, voyageurId, open, onCountChan
       )}
 
       {loading && !items && (
-        <div style={s.loading}>Chargement...</div>
+        <div style={s.loading}>Chargement…</div>
       )}
 
       {items && items.length === 0 && !showForm && (
-        <p style={s.empty}>Aucun incident pour ce sejour. Tout va bien.</p>
+        <p style={s.empty}>Aucun incident pour ce séjour. Tout va bien.</p>
       )}
 
       {items && items.length > 0 && (
@@ -137,7 +141,7 @@ export default function IncidentsPanel({ sejourId, voyageurId, open, onCountChan
                 opacity: it.statut === 'annule' ? 0.55 : 1,
               }}>
                 <div style={s.itemHead}>
-                  <span style={s.itemEmoji}>{typeInfo.emoji}</span>
+                  <span style={{ ...s.itemEmoji, color: typeInfo.color, background: `color-mix(in srgb, ${typeInfo.color} 12%, transparent)` }}><typeInfo.Icon size={16} weight="fill" /></span>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={s.itemType}>{typeInfo.label}</div>
                     <div style={s.itemDate}>{fmtDate(it.created_at)}</div>
@@ -150,7 +154,7 @@ export default function IncidentsPanel({ sejourId, voyageurId, open, onCountChan
                       ...s.statutSelect,
                       color: statutInfo.color,
                       background: statutInfo.bg,
-                      borderColor: statutInfo.color + '40',
+                      borderColor: `color-mix(in srgb, ${statutInfo.color} 30%, transparent)`,
                     }}
                   >
                     {STATUT_OPTIONS.map(o => (
@@ -233,14 +237,14 @@ function CreateForm({ sejourId, voyageurId, onClose, onCreated }: {
               style={{
                 ...s.typeChip,
                 ...(type === opt.value ? {
-                  background: opt.color + '20',
+                  background: `color-mix(in srgb, ${opt.color} 12%, transparent)`,
                   borderColor: opt.color,
                   color: opt.color,
                   fontWeight: 600,
                 } : {}),
               }}
             >
-              <span>{opt.emoji}</span>
+              <opt.Icon size={14} weight={type === opt.value ? 'fill' : 'bold'} />
               <span>{opt.label}</span>
             </button>
           ))}
@@ -252,7 +256,7 @@ function CreateForm({ sejourId, voyageurId, onClose, onCreated }: {
         <textarea
           value={description}
           onChange={e => setDescription(e.target.value)}
-          placeholder="Decrire l'incident, les degats constates, les actions entreprises..."
+          placeholder="Décris l'incident, les dégâts constatés, ce que tu as fait…"
           rows={3}
           style={s.textarea}
         />
@@ -260,7 +264,7 @@ function CreateForm({ sejourId, voyageurId, onClose, onCreated }: {
 
       <div style={s.row2}>
         <div style={s.field}>
-          <label style={s.label}>Caution a appliquer (€)</label>
+          <label style={s.label}>Montant retenu sur la caution (€)</label>
           <input
             type="number"
             min="0"
@@ -288,7 +292,7 @@ function CreateForm({ sejourId, voyageurId, onClose, onCreated }: {
       <div style={s.formActions}>
         <button onClick={onClose} disabled={pending} style={s.btnGhost}>Annuler</button>
         <button onClick={submit} disabled={pending} style={s.btnPrimary}>
-          {pending ? 'Enregistrement...' : 'Enregistrer'}
+          {pending ? 'Enregistrement…' : 'Enregistrer'}
         </button>
       </div>
     </div>
@@ -331,7 +335,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', flexDirection: 'column', gap: 6,
   },
   itemHead: { display: 'flex', alignItems: 'center', gap: 10 },
-  itemEmoji: { fontSize: 18, lineHeight: 1 },
+  itemEmoji: { width: 30, height: 30, borderRadius: 9, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   itemType: { fontSize: 13.5, fontWeight: 600, color: 'var(--text)' },
   itemDate: { fontSize: 11, color: 'var(--text-3)', marginTop: 1 },
   statutSelect: {
@@ -395,7 +399,7 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text)', fontSize: 13, fontFamily: 'inherit',
   },
   row2: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 },
-  error: { padding: '6px 10px', background: 'rgba(248,113,113,0.1)', color: 'var(--danger)', borderRadius: 6, fontSize: 12 },
+  error: { padding: '6px 10px', background: 'color-mix(in srgb, var(--danger) 10%, transparent)', color: 'var(--danger)', borderRadius: 6, fontSize: 12 },
   formActions: { display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 4 },
   btnGhost: {
     padding: '7px 14px', borderRadius: 8,

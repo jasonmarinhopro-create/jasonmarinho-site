@@ -2,7 +2,7 @@
 
 import { holdMayExpireBeforeCheckout } from '@/lib/stripe/deposit-window'
 import { useState, useTransition, useRef, useEffect } from 'react'
-import { X, FileText, Check, Copy, Envelope, CalendarBlank, Clock } from '@phosphor-icons/react/dist/ssr'
+import { X, FileText, Check, Copy, Envelope, CalendarBlank, Clock, Warning, House, Lock } from '@phosphor-icons/react/dist/ssr'
 import { createContract, type ContractData } from '../contract-actions'
 import { DEFAULT_ANNULATION as DEFAULT_ANNULATION_I18N, DEFAULT_REGLEMENT as DEFAULT_REGLEMENT_I18N } from '@/lib/contract-default-clauses'
 
@@ -89,7 +89,7 @@ type Step = 'bailleur' | 'locataire' | 'bien' | 'financier' | 'clauses' | 'done'
 const STEPS: Step[] = ['bailleur', 'locataire', 'bien', 'financier', 'clauses']
 
 const STEP_LABELS: Record<Step, string> = {
-  bailleur:  '1. Vous (bailleur)',
+  bailleur:  '1. Toi, le bailleur',
   locataire: '2. Locataire',
   bien:      '3. Logement',
   financier: '4. Financier',
@@ -411,7 +411,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                 key={s}
                 style={{
                   ...progressDot,
-                  background: i <= currentStepIndex ? 'var(--accent-text)' : 'var(--surface-2, #1e3d2f)',
+                  background: i <= currentStepIndex ? 'var(--accent-text)' : 'var(--border)',
                   border: i === currentStepIndex ? '2px solid var(--accent-text)' : '2px solid transparent',
                   transform: i === currentStepIndex ? 'scale(1.2)' : 'scale(1)',
                 }}
@@ -424,7 +424,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
           {/* ── Step: Bailleur ─────────────────────────────────────────────── */}
           {step === 'bailleur' && (
             <>
-              <p style={stepHint}>Vos informations en tant que propriétaire-bailleur.</p>
+              <p style={stepHint}>Tes informations de propriétaire, reprises dans le contrat.</p>
               <div style={row}>
                 <Field label="Prénom *" value={form.bailleur_prenom} onChange={v => set('bailleur_prenom', v)} placeholder="Jason" />
                 <Field label="Nom *" value={form.bailleur_nom} onChange={v => set('bailleur_nom', v)} placeholder="Marinho" />
@@ -438,7 +438,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
           {/* ── Step: Locataire ────────────────────────────────────────────── */}
           {step === 'locataire' && (
             <>
-              <p style={stepHint}>Les informations de votre voyageur.</p>
+              <p style={stepHint}>Les informations de ton voyageur.</p>
               <div style={row}>
                 <Field label="Prénom *" value={form.locataire_prenom} onChange={v => set('locataire_prenom', v)} placeholder="Martin" />
                 <Field label="Nom *" value={form.locataire_nom} onChange={v => set('locataire_nom', v)} placeholder="Dupont" />
@@ -446,7 +446,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
               <Field label="Email" value={form.locataire_email} onChange={v => set('locataire_email', v)} placeholder="martin@email.com" type="email" />
               <Field label="Téléphone" value={form.locataire_telephone} onChange={v => set('locataire_telephone', v)} placeholder="+33 6 12 34 56 78" type="tel" />
               {!form.locataire_email && (
-                <p style={warnText}>⚠️ Sans email, le lien de signature ne pourra pas être envoyé automatiquement.</p>
+                <p style={{ ...warnText, display: 'flex', gap: '6px', alignItems: 'flex-start' }}><Warning size={14} weight="fill" style={{ flexShrink: 0, marginTop: '2px' }} /> Sans e-mail, le lien de signature ne pourra pas être envoyé automatiquement.</p>
               )}
 
               {/* Locataire professionnel : pour une location au nom d'une
@@ -472,7 +472,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                           transition: 'all 0.15s',
                         }}
                       >
-                        {t === 'particulier' ? 'Particulier' : '🏢 Professionnel (structure)'}
+                        {t === 'particulier' ? 'Particulier' : 'Professionnel (structure)'}
                       </button>
                     )
                   })}
@@ -520,7 +520,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                           transition: 'all 0.15s',
                         }}
                       >
-                        {l === 'fr' ? '🇫🇷 Français + English' : '🇵🇹 Português + English'}
+                        {l === 'fr' ? 'Français + English' : 'Português + English'}
                       </button>
                     )
                   })}
@@ -542,19 +542,19 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                 <div style={{
                   display: 'flex', alignItems: 'center', gap: '12px',
                   padding: '12px 14px', borderRadius: '12px',
-                  background: 'var(--success-bg)',
-                  border: '1px solid rgba(52,211,153,0.25)',
+                  background: 'var(--accent-bg)',
+                  border: '1px solid color-mix(in srgb, var(--accent-text) 25%, transparent)',
                   marginBottom: '4px',
                 }}>
                   <div style={{
                     width: '34px', height: '34px', flexShrink: 0,
-                    background: 'var(--success-border)', borderRadius: '9px',
+                    background: 'var(--accent-border)', borderRadius: '9px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
-                    <Check size={16} color="#34D399" weight="bold" />
+                    <Check size={16} color="var(--accent-text)" weight="bold" />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: 'var(--success-1)' }}>{form.logement_nom}</p>
+                    <p style={{ margin: 0, fontSize: '14px', fontWeight: 600, color: 'var(--accent-text)' }}>{form.logement_nom}</p>
                     <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{form.logement_adresse}</p>
                   </div>
                   {logements.length > 1 && (
@@ -588,7 +588,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                             background: 'var(--surface-2)', border: '1px solid var(--border)',
                             borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
                           }}>
-                            <span style={{ fontSize: '14px' }}>🏠</span>
+                            <House size={15} weight="fill" color="var(--accent-text)" />
                           </div>
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <p style={{ margin: 0, fontSize: '14px', fontWeight: 500, color: 'var(--text)' }}>{l.nom}</p>
@@ -668,7 +668,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                     <p style={{ fontSize: '11px', color: 'var(--text-2)', margin: '6px 0 0', lineHeight: 1.5 }}>
                       Par carte, le lien de caution part au voyageur 2 jours avant l&apos;arrivée : une carte ne reste bloquée qu&apos;environ 7 jours.
                       {holdMayExpireBeforeCheckout(form.date_arrivee, form.date_depart) && (
-                        <strong style={{ color: '#d97706' }}> Séjour de plus de 4 nuits : la carte sera débloquée avant ton état des lieux de sortie, préfère une caution par virement.</strong>
+                        <strong style={{ color: '#8A5A12' }}> Séjour de plus de 4 nuits : la carte sera débloquée avant ton état des lieux de sortie, préfère une caution par virement.</strong>
                       )}
                     </p>
                   )}
@@ -693,9 +693,9 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                         style={{
                           flex: 1, padding: '10px 14px', borderRadius: '10px', cursor: 'pointer',
                           fontSize: '13px', fontWeight: checked ? 600 : 400,
-                          background: checked ? 'var(--success-bg)' : 'var(--surface)',
-                          border: `1px solid ${checked ? 'rgba(52,211,153,0.4)' : 'var(--border)'}`,
-                          color: checked ? 'var(--success-1)' : 'var(--text-2)',
+                          background: checked ? 'var(--accent-bg)' : 'var(--surface)',
+                          border: `1px solid ${checked ? 'color-mix(in srgb, var(--accent-text) 40%, transparent)' : 'var(--border)'}`,
+                          color: checked ? 'var(--accent-text)' : 'var(--text-2)',
                           transition: 'all 0.15s',
                         }}
                       >
@@ -715,13 +715,13 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                 <label style={fieldLabel}>Méthodes de paiement acceptées</label>
                 <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '8px', marginTop: '4px' }}>
                   {([
-                    { value: 'virement', label: '🏦 Virement bancaire',     disabled: false },
-                    { value: 'stripe',   label: '💳 Stripe (en ligne)',      disabled: !bailleur.stripeReady },
-                    { value: 'especes',  label: '💵 Espèces',               disabled: false },
-                    { value: 'cheque',   label: '📄 Chèque',                disabled: false },
-                    { value: 'paypal',   label: '🅿️ PayPal',               disabled: false },
-                    { value: 'airbnb',   label: '🏠 Airbnb / Booking',      disabled: false },
-                    { value: 'carte',    label: '💳 Carte bancaire (TPE)',   disabled: false },
+                    { value: 'virement', label: 'Virement bancaire',     disabled: false },
+                    { value: 'stripe',   label: 'Paiement en ligne (Stripe)',      disabled: !bailleur.stripeReady },
+                    { value: 'especes',  label: 'Espèces',               disabled: false },
+                    { value: 'cheque',   label: 'Chèque',                disabled: false },
+                    { value: 'paypal',   label: 'PayPal',               disabled: false },
+                    { value: 'airbnb',   label: 'Airbnb / Booking',      disabled: false },
+                    { value: 'carte',    label: 'Carte bancaire (TPE)',   disabled: false },
                   ] as { value: string; label: string; disabled: boolean }[]).map(opt => {
                     const LABELS: Record<string, string> = {
                       virement: 'Virement bancaire', stripe: 'Paiement en ligne (Stripe)',
@@ -749,25 +749,25 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                           padding: '7px 13px', borderRadius: '10px', cursor: isDisabled ? 'not-allowed' : 'pointer',
                           fontSize: '13px', fontWeight: checked ? 600 : 400, border: 'none',
                           background: isDisabled
-                            ? 'rgba(165,196,176,0.05)'
-                            : checked ? 'var(--success-bg)' : 'var(--surface)',
+                            ? 'var(--bg-2)'
+                            : checked ? 'var(--accent-bg)' : 'var(--surface)',
                           outline: isDisabled
-                            ? '1px solid rgba(165,196,176,0.1)'
-                            : checked ? '1px solid rgba(52,211,153,0.4)' : '1px solid var(--border)',
-                          color: isDisabled ? 'rgba(165,196,176,0.3)' : checked ? 'var(--success-1)' : 'var(--text-2)',
+                            ? '1px solid var(--border)'
+                            : checked ? '1px solid color-mix(in srgb, var(--accent-text) 40%, transparent)' : '1px solid var(--border)',
+                          color: isDisabled ? 'var(--text-muted)' : checked ? 'var(--accent-text)' : 'var(--text-2)',
                           transition: 'all 0.15s',
                           opacity: isDisabled ? 0.6 : 1,
                         }}
                       >
                         {opt.label}
-                        {isDisabled && <span style={{ fontSize: '10px', marginLeft: '2px' }}>🔒</span>}
+                        {isDisabled && <Lock size={11} weight="bold" style={{ marginLeft: '2px' }} />}
                       </button>
                     )
                   })}
                 </div>
                 {!bailleur.stripeReady && (
-                  <p style={{ margin: '8px 0 0', fontSize: '11px', color: '#6b9a7e', lineHeight: 1.5 }}>
-                    🔒 Stripe non configuré, connecte ton compte dans <strong>Mon compte → Encaissements</strong> pour l&apos;activer.
+                  <p style={{ margin: '8px 0 0', fontSize: '11px', color: 'var(--text-3)', lineHeight: 1.5 }}>
+                    <Lock size={11} weight="bold" style={{ verticalAlign: '-1px' }} /> Paiement en ligne pas encore activé : connecte Stripe dans <strong>Mon compte, Encaissements</strong>.
                   </p>
                 )}
               </div>
@@ -779,7 +779,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
             <>
               <p style={stepHint}>Ces clauses sont pré-remplies selon les bonnes pratiques françaises. Modifiez-les si besoin.</p>
               <div>
-                <label style={fieldLabel}>Conditions d&apos;annulation * <span style={{ color: '#6b9a7e', fontWeight: 400 }}>(obligatoire)</span></label>
+                <label style={fieldLabel}>Conditions d&apos;annulation * <span style={{ color: 'var(--text-3)', fontWeight: 400 }}>(obligatoire)</span></label>
                 <textarea
                   style={{ ...inputStyle, height: '90px', resize: 'vertical' as const, fontFamily: 'inherit' }}
                   value={form.conditions_annulation}
@@ -812,7 +812,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
           {/* ── Step: Done ─────────────────────────────────────────────────── */}
           {step === 'done' && (
             <div style={doneBox}>
-              <div style={{ fontSize: '48px', textAlign: 'center' as const, marginBottom: '16px' }}>📄</div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px' }}><span style={{ width: 64, height: 64, borderRadius: 18, background: 'var(--accent-bg)', color: 'var(--accent-text)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><FileText size={32} weight="duotone" /></span></div>
               <p style={doneText}>
                 Le contrat a été créé avec succès.
                 {form.locataire_email ? (
@@ -830,7 +830,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                     {signUrl}
                   </a>
                   <button onClick={copyLink} style={copyBtn}>
-                    {copied ? <Check size={14} color="#34D399" /> : <Copy size={14} />}
+                    {copied ? <Check size={14} color="var(--accent-text)" /> : <Copy size={14} />}
                     {copied ? 'Copié !' : 'Copier'}
                   </button>
                 </div>
@@ -848,7 +848,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                 </a>
                 {form.locataire_email && (
                   <div style={sentNotice}>
-                    <Envelope size={14} color="#34D399" />
+                    <Envelope size={14} color="var(--accent-text)" />
                     Email envoyé à {form.locataire_email}
                   </div>
                 )}
@@ -941,7 +941,7 @@ function ToggleField({
         onChange={e => onChange(e.target.checked)}
         style={{ width: '16px', height: '16px', accentColor: 'var(--accent-text)' }}
       />
-      <span style={{ fontSize: '14px', color: 'var(--text-2, #a5c4b0)' }}>{label}</span>
+      <span style={{ fontSize: '14px', color: 'var(--text-2)' }}>{label}</span>
     </label>
   )
 }
@@ -1009,7 +1009,7 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
         style={{
           display: 'flex', alignItems: 'center', gap: '8px', width: '100%',
           background: 'var(--surface)',
-          border: `1px solid ${open ? '#4a7260' : 'var(--border)'}`,
+          border: `1px solid ${open ? 'var(--text-3)' : 'var(--border)'}`,
           borderRadius: '10px', padding: '10px 12px',
           fontSize: '14px', color: selectedDate ? 'var(--text)' : 'var(--text-muted)',
           cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
@@ -1027,21 +1027,21 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
           style={{
             position: 'fixed', top: popupPos.top, left: popupPos.left,
             zIndex: 9999, minWidth: popupPos.width,
-            background: 'var(--bg-2, #0f2018)', border: '1px solid #2a5040',
+            background: 'var(--surface)', border: '1px solid var(--border)',
             borderRadius: '16px', padding: '14px 14px 10px',
             boxShadow: '0 20px 60px rgba(0,0,0,0.7)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
             <button type="button" onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))} style={calNavBtnStyle}>‹</button>
-            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text, #f0ebe1)', textTransform: 'capitalize' as const }}>
+            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text)', textTransform: 'capitalize' as const }}>
               {monthName}
             </span>
             <button type="button" onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))} style={calNavBtnStyle}>›</button>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', marginBottom: '2px' }}>
             {DAYS.map(d => (
-              <div key={d} style={{ textAlign: 'center', fontSize: '10px', fontWeight: 600, color: '#4a7260', padding: '3px 0', letterSpacing: '0.5px' }}>{d}</div>
+              <div key={d} style={{ textAlign: 'center', fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', padding: '3px 0', letterSpacing: '0.5px' }}>{d}</div>
             ))}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '2px' }}>
@@ -1056,8 +1056,8 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   height: '34px', borderRadius: '8px', border: 'none',
                   fontSize: '13px', fontWeight: isSel ? 700 : 400,
-                  background: isSel ? 'var(--accent-bg-2)' : isToday2 ? 'rgba(52,211,153,0.1)' : 'transparent',
-                  color: isSel ? 'var(--accent-text)' : isToday2 ? 'var(--success-1)' : '#a5c4b0',
+                  background: isSel ? 'var(--accent-bg-2)' : isToday2 ? 'color-mix(in srgb, var(--accent-text) 10%, transparent)' : 'transparent',
+                  color: isSel ? 'var(--accent-text)' : isToday2 ? 'var(--accent-text)' : 'var(--text-2)',
                   cursor: 'pointer',
                   outline: isSel ? '1.5px solid var(--accent-border-2)' : 'none',
                   transition: 'background 0.1s',
@@ -1072,8 +1072,8 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
 }
 
 const calNavBtnStyle: React.CSSProperties = {
-  background: 'var(--surface)', border: '1px solid #1e3d2f',
-  borderRadius: '8px', color: '#a5c4b0', fontSize: '18px',
+  background: 'var(--surface)', border: '1px solid var(--border)',
+  borderRadius: '8px', color: 'var(--text-2)', fontSize: '18px',
   width: '32px', height: '32px',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
   cursor: 'pointer', lineHeight: '1',
@@ -1122,7 +1122,7 @@ function TimePickerInput({ value, onChange }: { value: string; onChange: (v: str
         style={{
           display: 'flex', alignItems: 'center', gap: '8px', width: '100%',
           background: 'var(--surface)',
-          border: `1px solid ${open ? '#4a7260' : 'var(--border)'}`,
+          border: `1px solid ${open ? 'var(--text-3)' : 'var(--border)'}`,
           borderRadius: '10px', padding: '10px 12px',
           fontSize: '14px', color: value ? 'var(--text)' : 'var(--text-muted)',
           cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
@@ -1191,7 +1191,7 @@ const modal: React.CSSProperties = {
 const modalHeader: React.CSSProperties = {
   display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
   padding: '22px 24px 16px',
-  borderBottom: '1px solid var(--border, #1e3d2f)',
+  borderBottom: '1px solid var(--border)',
 }
 
 const modalTag: React.CSSProperties = {
@@ -1271,18 +1271,18 @@ const errorStyle: React.CSSProperties = {
 const footer: React.CSSProperties = {
   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
   padding: '16px 24px 20px',
-  borderTop: '1px solid var(--border, #1e3d2f)',
+  borderTop: '1px solid var(--border)',
 }
 
 const ghostBtn: React.CSSProperties = {
   background: 'none', border: 'none', cursor: 'pointer',
-  fontSize: '14px', color: 'var(--text-muted, #6b9a7e)',
+  fontSize: '14px', color: 'var(--text-muted)',
   padding: '8px 0',
 }
 
 const primaryBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '6px',
-  background: '#FFD56B', color: '#0a1a14',
+  background: 'var(--accent-text)', color: 'var(--bg)',
   border: 'none', borderRadius: '12px',
   padding: '10px 20px', fontSize: '14px', fontWeight: 600,
   cursor: 'pointer',
@@ -1295,20 +1295,20 @@ const doneBox: React.CSSProperties = {
 }
 
 const doneText: React.CSSProperties = {
-  fontSize: '14px', color: 'var(--text-2, #a5c4b0)',
+  fontSize: '14px', color: 'var(--text-2)',
   lineHeight: 1.7, margin: 0,
 }
 
 const linkBox: React.CSSProperties = {
-  background: 'var(--surface, #0a1a14)',
-  border: '1px solid var(--border, #1e3d2f)',
+  background: 'var(--surface)',
+  border: '1px solid var(--border)',
   borderRadius: '12px', padding: '14px 16px',
 }
 
 const linkLabel: React.CSSProperties = {
   fontSize: '11px', fontWeight: 600,
   letterSpacing: '1px', textTransform: 'uppercase' as const,
-  color: 'var(--text-muted, #6b9a7e)', margin: '0 0 8px',
+  color: 'var(--text-muted)', margin: '0 0 8px',
 }
 
 const linkRow: React.CSSProperties = {
@@ -1322,9 +1322,9 @@ const linkText: React.CSSProperties = {
 
 const copyBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '4px',
-  background: 'none', border: '1px solid var(--border, #1e3d2f)',
+  background: 'none', border: '1px solid var(--border)',
   borderRadius: '8px', padding: '5px 12px',
-  fontSize: '12px', color: 'var(--text-2, #a5c4b0)',
+  fontSize: '12px', color: 'var(--text-2)',
   cursor: 'pointer', flexShrink: 0,
 }
 
@@ -1339,13 +1339,13 @@ const previewBtn: React.CSSProperties = {
 
 const sentNotice: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '6px',
-  background: 'var(--success-bg)',
-  border: '1px solid rgba(52,211,153,0.2)',
+  background: 'var(--accent-bg)',
+  border: '1px solid color-mix(in srgb, var(--accent-text) 20%, transparent)',
   borderRadius: '10px', padding: '8px 16px',
-  fontSize: '13px', color: 'var(--success-1)',
+  fontSize: '13px', color: 'var(--accent-text)',
 }
 
 const legalNotice: React.CSSProperties = {
-  fontSize: '11px', color: 'var(--text-muted, #4a7260)',
+  fontSize: '11px', color: 'var(--text-muted)',
   lineHeight: 1.6, margin: 0,
 }

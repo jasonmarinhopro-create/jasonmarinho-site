@@ -108,7 +108,7 @@ const s: Record<string, React.CSSProperties> = {
   link: { color: 'var(--accent-text)', textDecoration: 'none' },
   badgeDone: {
     padding: '4px 10px', borderRadius: '999px', fontSize: '11.5px', fontWeight: 600,
-    color: '#10b981', background: 'rgba(16,185,129,0.12)', whiteSpace: 'nowrap',
+    color: 'var(--accent-text)', background: 'color-mix(in srgb, var(--accent-text) 12%, transparent)', whiteSpace: 'nowrap',
   },
   badgeIgnored: {
     padding: '4px 10px', borderRadius: '999px', fontSize: '11.5px', fontWeight: 600,

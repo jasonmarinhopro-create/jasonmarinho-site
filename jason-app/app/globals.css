@@ -801,6 +801,16 @@ textarea {
   accent-color: var(--accent-text);
 }
 
+/* Boutons et champs : police de l'app (par défaut, le navigateur leur donne
+ * sa police système, d'où des boutons en Arial quand le style en ligne
+ * oubliait fontFamily: 'inherit'). Un style en ligne garde la priorité. */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
 /* ── THEME TOGGLE BUTTON ── */
 .theme-toggle {
   display: flex; align-items: center; justify-content: center;

@@ -15,6 +15,7 @@ import { updateContractChecklist } from '../../calendrier/actions'
 import { reportGuest } from '../../securite/actions'
 import { ALL_INCIDENT_TYPES, POSITIVE_TYPES as POSITIVE_TYPES_LIST } from '@/lib/securite/identifiers'
 import IncidentsPanel from './IncidentsPanel'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 import ForeignGuestAlert from '@/components/voyageurs/ForeignGuestAlert'
 import { PLATFORMS, suggestCommission, type PlatformKey } from '@/lib/platforms'
 import { NATIONALITES } from '@/lib/nationalites'
@@ -96,7 +97,7 @@ type DepositContract = {
 }
 
 function avatarColor(name: string) {
-  const palette = ['#2D9A7B', '#4F7DB8', '#9B5E8C', '#D4875A', '#6B8E6B', '#8B6D5E']
+  const palette = ['#2D9A7B', '#B7791F', '#B83A7C', '#D4875A', '#6B8E6B', '#8B6D5E']
   let h = 0
   for (let i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h)
   return palette[Math.abs(h) % palette.length]
@@ -112,10 +113,10 @@ function nights(arrivee: string, depart: string) {
 }
 
 const CONTRAT_LABELS: Record<string, { label: string; color: string; bg: string }> = {
-  signe:       { label: 'Signé',       color: 'var(--accent-text)', bg: 'var(--success-bg)' },
+  signe:       { label: 'Signé',       color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
   en_attente:  { label: 'En attente',  color: 'var(--accent-text)', bg: 'var(--accent-bg-2)' },
   non_requis:  { label: 'Non requis',  color: 'var(--text-muted)', bg: 'var(--surface-2)' },
-  nouveau:     { label: 'Nouveau',     color: '#7EB8F7', bg: 'rgba(126,184,247,0.12)' },
+  nouveau:     { label: 'Nouveau',     color: '#6E5446', bg: 'color-mix(in srgb, #6E5446 12%, transparent)' },
 }
 
 const CHECKLIST_PHASES = [
@@ -247,7 +248,7 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
         style={{
           display: 'flex', alignItems: 'center', gap: '8px', width: '100%',
           background: 'var(--surface)',
-          border: `1px solid ${open ? '#4a7260' : 'var(--border)'}`,
+          border: `1px solid ${open ? 'var(--text-3)' : 'var(--border)'}`,
           borderRadius: '10px', padding: '10px 12px',
           fontSize: '14px', color: selectedDate ? 'var(--text)' : 'var(--text-muted)',
           cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
@@ -265,7 +266,7 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
           style={{
             position: 'fixed', top: popupPos.top, left: popupPos.left,
             zIndex: 9999, minWidth: popupPos.width,
-            background: '#0f2018', border: '1px solid #2a5040',
+            background: 'var(--surface)', border: '1px solid var(--border)',
             borderRadius: '16px', padding: '14px 14px 10px',
             boxShadow: '0 20px 60px rgba(0,0,0,0.7)',
           }}
@@ -273,7 +274,7 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
           {/* Month navigation */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
             <button type="button" onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))} style={calNavBtnStyle}>‹</button>
-            <span style={{ fontSize: '13px', fontWeight: 600, color: '#f0ebe1', textTransform: 'capitalize' as const }}>
+            <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text)', textTransform: 'capitalize' as const }}>
               {monthName}
             </span>
             <button type="button" onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))} style={calNavBtnStyle}>›</button>
@@ -282,7 +283,7 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
           {/* Weekday headers */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', marginBottom: '2px' }}>
             {DAYS.map(d => (
-              <div key={d} style={{ textAlign: 'center', fontSize: '10px', fontWeight: 600, color: '#4a7260', padding: '3px 0', letterSpacing: '0.5px' }}>{d}</div>
+              <div key={d} style={{ textAlign: 'center', fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', padding: '3px 0', letterSpacing: '0.5px' }}>{d}</div>
             ))}
           </div>
 
@@ -299,8 +300,8 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   height: '34px', borderRadius: '8px', border: 'none',
                   fontSize: '13px', fontWeight: isSel ? 700 : 400,
-                  background: isSel ? 'var(--accent-bg-2)' : isToday2 ? 'rgba(52,211,153,0.1)' : 'transparent',
-                  color: isSel ? 'var(--accent-text)' : isToday2 ? 'var(--accent-text)' : '#a5c4b0',
+                  background: isSel ? 'var(--accent-bg-2)' : isToday2 ? 'color-mix(in srgb, var(--accent-text) 10%, transparent)' : 'transparent',
+                  color: isSel ? 'var(--accent-text)' : isToday2 ? 'var(--accent-text)' : 'var(--text-2)',
                   cursor: 'pointer',
                   outline: isSel ? '1.5px solid var(--accent-border)' : 'none',
                   transition: 'background 0.1s',
@@ -315,8 +316,8 @@ function CalendarInput({ value, onChange }: { value: string; onChange: (v: strin
 }
 
 const calNavBtnStyle: React.CSSProperties = {
-  background: 'var(--surface)', border: '1px solid #1e3d2f',
-  borderRadius: '8px', color: '#a5c4b0', fontSize: '18px',
+  background: 'var(--surface)', border: '1px solid var(--border)',
+  borderRadius: '8px', color: 'var(--text-2)', fontSize: '18px',
   width: '32px', height: '32px',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
   cursor: 'pointer', lineHeight: 1,
@@ -389,6 +390,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
+  const { confirm, dialog: confirmDialog } = useConfirm()
 
   // Contract modal
   const [contractSejour, setContractSejour] = useState<Sejour | null>(null)
@@ -682,7 +684,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
     // Statut auto
     let statut: { label: string; color: string; bg: string; border: string }
     if (isFlagged) {
-      statut = { label: 'Signalé', color: 'var(--danger)', bg: 'rgba(239,68,68,0.10)', border: 'rgba(239,68,68,0.30)' }
+      statut = { label: 'Signalé', color: 'var(--danger)', bg: 'color-mix(in srgb, var(--danger) 10%, transparent)', border: 'color-mix(in srgb, var(--danger) 30%, transparent)' }
     } else if (totalCA >= 5000 || nbSejours >= 5) {
       statut = { label: 'VIP', color: '#8A5A12', bg: 'rgba(255,213,107,0.22)', border: 'rgba(183,121,31,0.35)' }
     } else if (nbSejours >= 4) {
@@ -893,15 +895,15 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 
   // Les actions de cette page (updateVoyageur, addSejour, deleteSejour…) appellent
   // revalidatePath sur la fiche : pas de router.refresh() en plus (double rendu).
-  function handleDeleteSejour(id: string) {
-    if (!confirm('Supprimer ce séjour ? Le contrat lié sera annulé. Pour garder la trace, préfère « Annuler » le séjour.')) return
+  async function handleDeleteSejour(id: string) {
+    if (!(await confirm({ title: 'Supprimer ce séjour ?', message: 'Le contrat lié sera annulé. Pour garder une trace, préfère « Annuler » le séjour.', confirmLabel: 'Supprimer', danger: true }))) return
     startTransition(async () => {
       await deleteSejour(id, voyageur.id)
     })
   }
 
-  function handleCancelSejour(id: string) {
-    if (!confirm('Annuler ce séjour ? Il restera visible dans l\u2019historique mais sortira du calendrier, du CA et des déclarations.')) return
+  async function handleCancelSejour(id: string) {
+    if (!(await confirm({ title: 'Annuler ce séjour ?', message: 'Il reste visible dans l\u2019historique mais sort du calendrier, des revenus et des déclarations.', confirmLabel: 'Annuler le séjour', cancelLabel: 'Garder' }))) return
     startTransition(async () => {
       await cancelSejour(id, voyageur.id)
     })
@@ -945,6 +947,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 
   return (
     <div style={s.page}>
+      {confirmDialog}
       <style>{`
         /* Séjour row : hover lift + border highlight */
         .jm-sejour-row { transition: border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth); }
@@ -986,7 +989,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       {/* Flag banner */}
       {isFlagged && (
         <div style={s.flagBanner} className="fade-up">
-          <Warning size={18} weight="fill" color="#ef4444" />
+          <Warning size={18} weight="fill" color="var(--danger)" />
           <div>
             <strong>Ce voyageur est signalé par d&apos;autres hôtes.</strong>{' '}
             Lis les faits avant d&apos;accepter une réservation :{' '}
@@ -1329,7 +1332,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   {stats.statut.label}
                 </span>
                 {bloque && (
-                  <span style={{ ...s.statutBadge, color: '#94a3b8', background: 'rgba(148,163,184,0.12)', borderColor: 'rgba(148,163,184,0.30)' }}>
+                  <span style={{ ...s.statutBadge, color: 'var(--text-3)', background: 'color-mix(in srgb, var(--text-3) 12%, transparent)', borderColor: 'color-mix(in srgb, var(--text-3) 30%, transparent)' }}>
                     <Prohibit size={12} weight="bold" /> Bloqué
                   </span>
                 )}
@@ -1356,7 +1359,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                         style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '2px', display: 'flex' }}
                         title={`${n} étoile${n > 1 ? 's' : ''}`}
                       >
-                        <Star size={14} weight={filled ? 'fill' : 'regular'} color={filled ? 'var(--warning)' : 'var(--text-muted)'} />
+                        <Star size={14} weight={filled ? 'fill' : 'regular'} color={filled ? '#B7791F' : 'var(--text-muted)'} />
                       </button>
                     )
                   })}
@@ -1643,7 +1646,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                 Complété le {new Date(voyageur.checkin_completed_at).toLocaleDateString('fr-FR')}
               </span>
             ) : voyageur.checkin_sent_at ? (
-              <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--warning, #f59e0b)' }}>
+              <span style={{ fontSize: '11px', fontWeight: 600, color: '#B7791F' }}>
                 En attente du voyageur
               </span>
             ) : null}
@@ -1700,9 +1703,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               alignSelf: 'flex-start',
               display: 'inline-flex', alignItems: 'center', gap: '6px',
               padding: '7px 12px', fontSize: '12px', fontWeight: 600,
-              background: checkinCopied ? 'var(--success-bg, rgba(52,211,153,0.12))' : 'var(--accent-bg)',
+              background: checkinCopied ? 'var(--success-bg, color-mix(in srgb, var(--accent-text) 12%, transparent))' : 'var(--accent-bg)',
               color: checkinCopied ? 'var(--accent-text)' : 'var(--accent-text)',
-              border: `1px solid ${checkinCopied ? 'rgba(52,211,153,0.3)' : 'var(--accent-border)'}`,
+              border: `1px solid ${checkinCopied ? 'color-mix(in srgb, var(--accent-text) 30%, transparent)' : 'var(--accent-border)'}`,
               borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit',
               opacity: checkinLoading ? 0.6 : 1,
             }}
@@ -1734,7 +1737,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               <span style={{
                 fontSize: '10.5px', fontWeight: 600, letterSpacing: '0.4px', textTransform: 'uppercase' as const,
                 color: (typeof voyageur.checkin_expected_count === 'number' && checkinCompanions.length + 1 < voyageur.checkin_expected_count)
-                  ? 'var(--warning, #f59e0b)' : 'var(--text-muted)',
+                  ? '#B7791F' : 'var(--text-muted)',
               }}>
                 Groupe déclaré · {checkinCompanions.length + 1} voyageur{checkinCompanions.length + 1 > 1 ? 's' : ''} (dont {voyageur.prenom})
                 {typeof voyageur.checkin_expected_count === 'number' && ` / ${voyageur.checkin_expected_count} attendu${voyageur.checkin_expected_count > 1 ? 's' : ''}`}
@@ -1759,17 +1762,17 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   }}>
                     <strong style={{ color: 'var(--text)' }}>{c.prenom} {c.nom}</strong>
                     {age !== null && (
-                      <span style={{ color: age < 15 ? 'var(--warning)' : 'var(--text-muted)' }}>
+                      <span style={{ color: age < 15 ? '#B7791F' : 'var(--text-muted)' }}>
                         {age} an{age > 1 ? 's' : ''}{age < 15 ? ' · enfant' : ''}
                       </span>
                     )}
                     {c.nationalite && <span style={{ color: 'var(--text-muted)' }}>{c.nationalite}</span>}
                     <span style={{ marginLeft: 'auto', display: 'inline-flex', gap: '8px', fontSize: '11px' }}>
                       <span style={{ color: c.id_numero ? 'var(--accent-text)' : 'var(--text-muted)' }} title="Pièce d'identité">
-                        {c.id_numero ? '✓ pièce' : 'pièce manquante'}
+                        {c.id_numero ? 'pièce OK' : 'pièce manquante'}
                       </span>
                       <span style={{ color: c.signed_at ? 'var(--accent-text)' : 'var(--text-muted)' }} title="Signature électronique">
-                        {c.signed_at ? '✓ signé' : 'pas signé'}
+                        {c.signed_at ? 'signé' : 'pas signé'}
                       </span>
                     </span>
                   </div>
@@ -1778,7 +1781,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
             </div>
           )}
           {voyageur.checkin_completed_at && checkinCompanions.length === 0 && (
-            <p style={{ fontSize: '11.5px', color: 'var(--warning)', margin: 0, lineHeight: 1.5 }}>
+            <p style={{ fontSize: '11.5px', color: '#B7791F', margin: 0, lineHeight: 1.5 }}>
               {typeof voyageur.checkin_expected_count === 'number' && voyageur.checkin_expected_count > 1
                 ? `Check-in complété SANS accompagnant alors que ${voyageur.checkin_expected_count} voyageurs étaient attendus : renvoie-lui le lien pour compléter le reste du groupe.`
                 : <>Check-in complété SANS accompagnant : {voyageur.prenom} a déclaré voyager seul.
@@ -1815,9 +1818,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                 display: 'inline-flex', alignItems: 'center', gap: '6px',
                 padding: '6px 12px',
                 fontSize: '12px', fontWeight: 500,
-                background: 'rgba(239,68,68,0.05)',
+                background: 'color-mix(in srgb, var(--danger) 5%, transparent)',
                 color: 'var(--danger)',
-                border: '1px solid rgba(239,68,68,0.20)',
+                border: '1px solid color-mix(in srgb, var(--danger) 20%, transparent)',
                 borderRadius: '8px', cursor: 'pointer', fontFamily: 'inherit',
               }}
             >
@@ -1852,7 +1855,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           )}
 
           {showBlockDialog && (
-            <div style={{ marginTop: '10px', padding: '12px', background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.18)', borderRadius: '10px' }}>
+            <div style={{ marginTop: '10px', padding: '12px', background: 'color-mix(in srgb, var(--danger) 6%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 18%, transparent)', borderRadius: '10px' }}>
               <p style={{ fontSize: '12px', color: 'var(--text-2)', margin: '0 0 8px', lineHeight: 1.5 }}>
                 Bloquer un voyageur ne supprime pas son historique mais l&apos;empêche d&apos;avoir de nouveaux séjours. Donnez un motif (optionnel) :
               </p>
@@ -1936,7 +1939,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                     {formatDate(sj.date_arrivee)} → {formatDate(sj.date_depart)}
                     <span style={s.nightsBadge}>{n} nuit{n > 1 ? 's' : ''}</span>
                     {isCancelled && (
-                      <span style={{ ...s.nightsBadge, color: 'var(--danger)', background: 'rgba(239,68,68,0.10)', border: '1px solid rgba(239,68,68,0.30)', textDecoration: 'none' }}>
+                      <span style={{ ...s.nightsBadge, color: 'var(--danger)', background: 'color-mix(in srgb, var(--danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 30%, transparent)', textDecoration: 'none' }}>
                         <Prohibit size={11} style={{ verticalAlign: '-1px' }} /> Annulé le {formatDate(sj.annule_at!.slice(0, 10))}
                       </span>
                     )}
@@ -2038,7 +2041,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   <button onClick={() => openEditSejour(sj)} style={s.sejourActionBtn} className="jm-sejour-action" title="Modifier">
                     <Pencil size={14} />
                   </button>
-                  <button onClick={() => handleCancelSejour(sj.id)} style={{ ...s.sejourActionBtn, color: 'var(--warning)' }} className="jm-sejour-action" title="Annuler ce séjour (conserve l'historique)">
+                  <button onClick={() => handleCancelSejour(sj.id)} style={{ ...s.sejourActionBtn, color: '#B7791F' }} className="jm-sejour-action" title="Annuler ce séjour (conserve l'historique)">
                     <Prohibit size={14} />
                   </button>
                   <button onClick={() => handleDeleteSejour(sj.id)} style={{ ...s.sejourActionBtn, color: 'var(--danger)' }} className="jm-sejour-action" title="Supprimer">
@@ -2066,7 +2069,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                         style={{
                           ...s.checklistBtn,
                           ...(incExpanded ? s.checklistBtnActive : {}),
-                          ...(hasOpen ? { color: 'var(--danger)', borderColor: 'rgba(248,113,113,0.4)' } : {}),
+                          ...(hasOpen ? { color: 'var(--danger)', borderColor: 'color-mix(in srgb, var(--danger) 40%, transparent)' } : {}),
                         }}
                         title="Incidents du séjour"
                       >
@@ -2098,7 +2101,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   {cl === undefined ? (
                     <p style={s.clEmpty}>Chargement…</p>
                   ) : (() => {
-                    const barColor = pct === 100 ? 'var(--accent-text)' : pct >= 50 ? '#eab308' : '#f97316'
+                    const barColor = pct === 100 ? 'var(--accent-text)' : pct >= 50 ? '#B7791F' : 'var(--danger-text)'
                     return (
                       <>
                         {/* Progress bar */}
@@ -2132,7 +2135,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                                       style={{ ...s.clItem, ...(checked ? s.clItemDone : {}) }}
                                     >
                                       {checked
-                                        ? <CheckSquare size={15} color="#10b981" weight="fill" style={{ flexShrink: 0 }} />
+                                        ? <CheckSquare size={15} color="var(--accent-text)" weight="fill" style={{ flexShrink: 0 }} />
                                         : <Square size={15} color="var(--text-muted)" style={{ flexShrink: 0 }} />}
                                       <span style={{ textDecoration: checked ? 'line-through' : 'none', color: checked ? 'var(--text-muted)' : 'var(--text-2)' }}>
                                         {it.label}
@@ -2212,13 +2215,13 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               {reportModal === 'report' ? (
                 <>
                   <h3 style={{ ...s.modalTitle, color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <ShieldWarning size={20} weight="fill" color="#ef4444" />
+                    <ShieldWarning size={20} weight="fill" color="var(--danger)" />
                     Signaler un incident
                   </h3>
                 </>
               ) : (
                 <h3 style={{ ...s.modalTitle, color: 'var(--accent-text)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Star size={20} weight="fill" color="#34D399" />
+                  <Star size={20} weight="fill" color="var(--accent-text)" />
                   Témoignage positif
                 </h3>
               )}
@@ -2290,7 +2293,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                       padding: '9px 18px', borderRadius: '10px', border: 'none',
                       cursor: isReporting ? 'not-allowed' : 'pointer',
                       fontSize: '13px', fontWeight: 500,
-                      background: reportModal === 'positive' ? 'var(--success-border)' : 'rgba(239,68,68,0.12)',
+                      background: reportModal === 'positive' ? 'var(--accent-border)' : 'color-mix(in srgb, var(--danger) 12%, transparent)',
                       color: reportModal === 'positive' ? 'var(--accent-text)' : 'var(--danger)',
                     }}
                   >
@@ -2351,19 +2354,19 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                             display: 'flex', alignItems: 'center', gap: '10px',
                             padding: '9px 12px', borderRadius: '10px', cursor: 'pointer',
                             textAlign: 'left' as const, fontFamily: 'inherit',
-                            background: isSel ? 'rgba(52,211,153,0.1)' : 'var(--surface)',
-                            border: `1px solid ${isSel ? 'rgba(52,211,153,0.35)' : 'var(--border)'}`,
+                            background: isSel ? 'color-mix(in srgb, var(--accent-text) 10%, transparent)' : 'var(--surface)',
+                            border: `1px solid ${isSel ? 'color-mix(in srgb, var(--accent-text) 35%, transparent)' : 'var(--border)'}`,
                             transition: 'all 0.15s',
                           }}
                         >
                           <div style={{
                             width: '28px', height: '28px', flexShrink: 0, borderRadius: '7px',
-                            background: isSel ? 'var(--success-border)' : 'var(--surface-2)',
+                            background: isSel ? 'var(--accent-border)' : 'var(--surface-2)',
                             border: '1px solid var(--border)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                           }}>
                             {isSel
-                              ? <Check size={13} color="#34D399" weight="bold" />
+                              ? <Check size={13} color="var(--accent-text)" weight="bold" />
                               : <House size={13} color="var(--text-muted)" />
                             }
                           </div>
@@ -2530,7 +2533,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                                 borderRadius: '100px', fontFamily: 'inherit', cursor: 'pointer',
                                 border: active
                                   ? '1px solid var(--accent-text)'
-                                  : (def.isDirect ? '1px solid rgba(52,211,153,0.35)' : '1px solid var(--border)'),
+                                  : (def.isDirect ? '1px solid color-mix(in srgb, var(--accent-text) 35%, transparent)' : '1px solid var(--border)'),
                                 background: active
                                   ? 'var(--accent-bg)'
                                   : 'transparent',
@@ -2688,7 +2691,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   flagBanner: {
     display: 'flex', alignItems: 'flex-start', gap: '12px',
-    background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
+    background: 'color-mix(in srgb, var(--danger) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 20%, transparent)',
     borderRadius: '12px', padding: '14px 18px',
     fontSize: '14px', color: 'var(--text-2)', lineHeight: 1.6,
     marginBottom: '20px',
@@ -2747,14 +2750,14 @@ const s: Record<string, React.CSSProperties> = {
   },
   reportBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
-    background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
+    background: 'color-mix(in srgb, var(--danger) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 20%, transparent)',
     borderRadius: '8px', padding: '4px 10px',
     fontSize: '12px', color: 'var(--danger)', cursor: 'pointer',
     transition: 'all 0.15s',
   },
   testimonyBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
-    background: 'var(--success-bg)', border: '1px solid rgba(52,211,153,0.2)',
+    background: 'var(--accent-bg)', border: '1px solid color-mix(in srgb, var(--accent-text) 20%, transparent)',
     borderRadius: '8px', padding: '4px 10px',
     fontSize: '12px', color: 'var(--accent-text)', cursor: 'pointer',
     transition: 'all 0.15s',
@@ -2821,7 +2824,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   checklistBtn: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
-    background: 'var(--success-bg)', border: '1px solid var(--success-border)',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
     borderRadius: 'var(--r-sm)', padding: '6px 12px',
     fontSize: 'var(--t-xs)', fontWeight: 600, color: 'var(--text-muted)',
     cursor: 'pointer',
@@ -2829,11 +2832,11 @@ const s: Record<string, React.CSSProperties> = {
     flexShrink: 0,
   },
   checklistBtnActive: {
-    background: 'var(--success-bg)', borderColor: 'var(--accent-text)', color: 'var(--accent-text)',
+    background: 'var(--accent-bg)', borderColor: 'var(--accent-text)', color: 'var(--accent-text)',
   },
   clPanel: {
     margin: '0 0 8px 0', padding: '18px 20px',
-    background: 'rgba(0,76,63,0.06)', border: '1px solid rgba(16,185,129,0.12)',
+    background: 'rgba(0,76,63,0.06)', border: '1px solid color-mix(in srgb, var(--accent-text) 12%, transparent)',
     borderTop: 'none', borderRadius: '0 0 12px 12px',
   },
   clEmpty: { fontSize: '13px', color: 'var(--text-muted)', margin: 0, fontStyle: 'italic' },
@@ -2849,7 +2852,7 @@ const s: Record<string, React.CSSProperties> = {
     padding: '5px 6px', borderRadius: '7px', transition: 'background 0.12s',
     fontSize: '13px',
   },
-  clItemDone: { background: 'rgba(16,185,129,0.06)' },
+  clItemDone: { background: 'color-mix(in srgb, var(--accent-text) 6%, transparent)' },
 
   /* Modal */
   overlay: {

@@ -36,19 +36,19 @@ interface Props {
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
 const DEPOSIT_LABELS: Record<string, { label: string; color: string; bg: string }> = {
-  pending:  { label: 'En attente de paiement', color: '#a5c4b0', bg: 'rgba(165,196,176,0.08)' },
-  held:     { label: 'Caution retenue ✓',       color: 'var(--success-1)', bg: 'var(--success-bg)' },
-  captured: { label: 'Encaissée',               color: '#FFD56B', bg: 'rgba(255,213,107,0.08)' },
-  released: { label: 'Libérée',                  color: '#6b9a7e', bg: 'rgba(107,154,126,0.08)' },
-  expired:  { label: 'Expirée : la carte n’est plus bloquée', color: '#d97706', bg: 'rgba(217,119,6,0.10)' },
-  failed:   { label: 'Échec paiement',           color: 'var(--danger)', bg: 'rgba(239,68,68,0.08)' },
+  pending:  { label: 'En attente de paiement', color: 'var(--text-2)', bg: 'var(--bg-2)' },
+  held:     { label: 'Caution retenue ✓',       color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  captured: { label: 'Encaissée',               color: '#8A5A12', bg: 'rgba(255,213,107,0.08)' },
+  released: { label: 'Libérée',                  color: 'var(--text-3)', bg: 'var(--bg-2)' },
+  expired:  { label: 'Expirée : la carte n’est plus bloquée', color: '#8A5A12', bg: 'color-mix(in srgb, #B7791F 10%, transparent)' },
+  failed:   { label: 'Échec paiement',           color: 'var(--danger)', bg: 'color-mix(in srgb, var(--danger) 8%, transparent)' },
 }
 
 const PAYMENT_LABELS: Record<string, { label: string; color: string; bg: string }> = {
-  pending:  { label: 'En attente de paiement', color: '#a5c4b0', bg: 'rgba(165,196,176,0.08)' },
-  paid:     { label: 'Réglé ✓',                color: 'var(--success-1)', bg: 'var(--success-bg)' },
-  refunded: { label: 'Remboursé',              color: '#FFD56B', bg: 'rgba(255,213,107,0.08)' },
-  failed:   { label: 'Échec paiement',          color: 'var(--danger)', bg: 'rgba(239,68,68,0.08)' },
+  pending:  { label: 'En attente de paiement', color: 'var(--text-2)', bg: 'var(--bg-2)' },
+  paid:     { label: 'Réglé ✓',                color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  refunded: { label: 'Remboursé',              color: '#8A5A12', bg: 'rgba(255,213,107,0.08)' },
+  failed:   { label: 'Échec paiement',          color: 'var(--danger)', bg: 'color-mix(in srgb, var(--danger) 8%, transparent)' },
 }
 
 export default function DepositModal({ contract, hostIban, hostBic, onClose }: Props) {
@@ -207,7 +207,7 @@ export default function DepositModal({ contract, hostIban, hostBic, onClose }: P
                 Paiement de la réservation
               </p>
               <div style={{ ...amountBox, borderColor: 'rgba(255,213,107,0.25)', background: 'rgba(255,213,107,0.06)' }}>
-                <p style={{ ...amountLabel, color: '#FFD56B' }}>Loyer total</p>
+                <p style={{ ...amountLabel, color: '#8A5A12' }}>Loyer total</p>
                 <p style={amountValue}>{paymentAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
               </div>
               {paymentStatusMeta && (
@@ -290,25 +290,25 @@ export default function DepositModal({ contract, hostIban, hostBic, onClose }: P
 
               {done === 'captured' && (
                 <div style={successBox}>
-                  <strong style={{ color: '#FFD56B' }}>Caution encaissée ✓</strong>
-                  <p style={hint}>Le montant a été transféré vers votre compte Stripe.</p>
+                  <strong style={{ color: '#8A5A12' }}>Caution encaissée ✓</strong>
+                  <p style={hint}>Le montant a été versé sur ton compte Stripe.</p>
                 </div>
               )}
               {done === 'released' && (
                 <div style={successBox}>
-                  <strong style={{ color: 'var(--success-1)' }}>Caution libérée ✓</strong>
+                  <strong style={{ color: 'var(--accent-text)' }}>Caution libérée ✓</strong>
                   <p style={hint}>Le blocage carte a été annulé. Le locataire est libéré.</p>
                 </div>
               )}
 
               {depositStatus === 'captured' && !done && (
-                <p style={hint}>La caution a déjà été encaissée sur votre compte Stripe.</p>
+                <p style={hint}>La caution a déjà été encaissée sur ton compte Stripe.</p>
               )}
               {depositStatus === 'released' && !done && (
                 <p style={hint}>La caution a été libérée. Le locataire n&apos;a pas été débité.</p>
               )}
               {longStay && depositStatus !== 'captured' && depositStatus !== 'released' && (
-                <p style={{ ...hint, color: '#d97706' }}>
+                <p style={{ ...hint, color: '#8A5A12' }}>
                   <Warning size={13} weight="fill" style={{ verticalAlign: '-2px', marginRight: '5px' }} />
                   Séjour de plus de 4 nuits : la carte ne reste bloquée qu&apos;environ 7 jours, elle sera débloquée avant l&apos;état des lieux de sortie. Pour ce séjour, une caution par virement est plus sûre.
                 </p>
@@ -361,11 +361,11 @@ export default function DepositModal({ contract, hostIban, hostBic, onClose }: P
 
           {/* Renvoyer l'email au voyageur */}
           {((!paymentStatus || paymentStatus === 'pending') || (!depositStatus || depositStatus === 'pending')) && (
-            <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--border, #1e3d2f)' }}>
+            <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid var(--border)' }}>
               {resent ? (
                 <div style={{ ...successBox, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Check size={14} weight="bold" color="#34D399" />
-                  <p style={{ margin: 0, fontSize: '13px', color: 'var(--success-1)', fontWeight: 500 }}>
+                  <Check size={14} weight="bold" color="var(--accent-text)" />
+                  <p style={{ margin: 0, fontSize: '13px', color: 'var(--accent-text)', fontWeight: 500 }}>
                     Email renvoyé à {contract.locataire_prenom} {contract.locataire_nom} ✓
                   </p>
                 </div>
@@ -414,12 +414,12 @@ const modal: React.CSSProperties = {
 const header: React.CSSProperties = {
   display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
   padding: '20px 22px 16px',
-  borderBottom: '1px solid var(--border, #1e3d2f)',
+  borderBottom: '1px solid var(--border)',
 }
 
 const tag: React.CSSProperties = {
   fontSize: '11px', fontWeight: 600, letterSpacing: '1px',
-  textTransform: 'uppercase', color: '#a29bfe', margin: '0 0 4px',
+  textTransform: 'uppercase', color: 'var(--accent-text)', margin: '0 0 4px',
 }
 
 const title: React.CSSProperties = {
@@ -430,7 +430,7 @@ const title: React.CSSProperties = {
 
 const closeBtn: React.CSSProperties = {
   background: 'none', border: 'none', cursor: 'pointer',
-  color: 'var(--text-3, #6b9a7e)', padding: '4px',
+  color: 'var(--text-3)', padding: '4px',
 }
 
 const body: React.CSSProperties = {
@@ -470,17 +470,17 @@ const captureBtn: React.CSSProperties = {
   background: 'rgba(255,213,107,0.12)',
   border: '1px solid rgba(255,213,107,0.3)',
   borderRadius: '12px',
-  fontSize: '14px', fontWeight: 600, color: '#FFD56B',
+  fontSize: '14px', fontWeight: 600, color: '#8A5A12',
   cursor: 'pointer',
 }
 
 const releaseBtn: React.CSSProperties = {
   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
   width: '100%', padding: '13px',
-  background: 'var(--success-bg)',
-  border: '1px solid rgba(52,211,153,0.2)',
+  background: 'var(--accent-bg)',
+  border: '1px solid color-mix(in srgb, var(--accent-text) 20%, transparent)',
   borderRadius: '12px',
-  fontSize: '14px', fontWeight: 600, color: 'var(--success-1)',
+  fontSize: '14px', fontWeight: 600, color: 'var(--accent-text)',
   cursor: 'pointer',
 }
 
@@ -489,16 +489,16 @@ const legal: React.CSSProperties = {
 }
 
 const successBox: React.CSSProperties = {
-  background: 'var(--success-bg)',
-  border: '1px solid rgba(52,211,153,0.15)',
+  background: 'var(--accent-bg)',
+  border: '1px solid color-mix(in srgb, var(--accent-text) 15%, transparent)',
   borderRadius: '10px', padding: '14px',
 }
 
 const errorBox: React.CSSProperties = {
   display: 'flex', alignItems: 'center', gap: '8px',
   fontSize: '13px', color: 'var(--danger)',
-  background: 'rgba(239,68,68,0.08)',
-  border: '1px solid rgba(239,68,68,0.2)',
+  background: 'color-mix(in srgb, var(--danger) 8%, transparent)',
+  border: '1px solid color-mix(in srgb, var(--danger) 20%, transparent)',
   borderRadius: '8px', padding: '10px 14px', marginTop: '12px',
 }
 
@@ -509,9 +509,9 @@ const linkRow: React.CSSProperties = {
 const copyBtn: React.CSSProperties = {
   display: 'inline-flex', alignItems: 'center', gap: '6px',
   padding: '8px 14px', borderRadius: '10px',
-  background: 'rgba(162,155,254,0.12)',
-  border: '1px solid rgba(162,155,254,0.25)',
-  color: '#a29bfe', fontSize: '13px', fontWeight: 500,
+  background: 'color-mix(in srgb, var(--accent-text) 12%, transparent)',
+  border: '1px solid color-mix(in srgb, var(--accent-text) 25%, transparent)',
+  color: 'var(--accent-text)', fontSize: '13px', fontWeight: 500,
   cursor: 'pointer',
 }
 
@@ -523,10 +523,10 @@ const viewLink: React.CSSProperties = {
 const resendBtn: React.CSSProperties = {
   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
   width: '100%', padding: '11px',
-  background: 'var(--success-bg)',
-  border: '1px solid rgba(52,211,153,0.2)',
+  background: 'var(--accent-bg)',
+  border: '1px solid color-mix(in srgb, var(--accent-text) 20%, transparent)',
   borderRadius: '12px',
-  fontSize: '13px', fontWeight: 500, color: 'var(--success-1)',
+  fontSize: '13px', fontWeight: 500, color: 'var(--accent-text)',
   cursor: 'pointer',
 }
 
@@ -568,10 +568,10 @@ function IbanField({
           flexShrink: 0,
           display: 'inline-flex', alignItems: 'center', gap: '5px',
           padding: '5px 12px', borderRadius: '8px',
-          background: isCopied ? 'var(--success-border)' : 'rgba(99,91,255,0.2)',
-          border: isCopied ? '1px solid rgba(52,211,153,0.3)' : '1px solid rgba(99,91,255,0.35)',
+          background: isCopied ? 'var(--accent-border)' : 'color-mix(in srgb, var(--accent-text) 20%, transparent)',
+          border: isCopied ? '1px solid color-mix(in srgb, var(--accent-text) 30%, transparent)' : '1px solid color-mix(in srgb, var(--accent-text) 35%, transparent)',
           fontSize: '12px', fontWeight: 600,
-          color: isCopied ? 'var(--success-1)' : '#a29bfe',
+          color: isCopied ? 'var(--accent-text)' : 'var(--accent-text)',
           cursor: 'pointer',
           whiteSpace: 'nowrap',
         }}

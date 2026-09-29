@@ -1,7 +1,11 @@
 'use client'
 
-import { Warning, ArrowSquareOut, CheckCircle } from '@phosphor-icons/react/dist/ssr'
+import { Warning, ArrowSquareOut, CheckCircle, Clock } from '@phosphor-icons/react/dist/ssr'
 import { getCountry } from '@/lib/countries'
+import { nationaliteName } from '@/lib/nationalites'
+
+const AMBER = '#B7791F'
+const AMBER_DARK = '#8A5A12'
 
 type Props = {
   /** Pays du logement (ISO-2) */
@@ -38,8 +42,8 @@ export default function ForeignGuestAlert({ logementPays, voyageurNationalite, d
   if (declared) {
     return (
       <div style={s.doneBox}>
-        <CheckCircle size={15} weight="fill" color="var(--success-1, #4ade80)" />
-        <span style={s.doneText}>{config.flag} {decl.label} déjà envoyée pour ce séjour.</span>
+        <CheckCircle size={15} weight="fill" color="var(--accent-text)" />
+        <span style={s.doneText}>{decl.label} déjà envoyée pour ce séjour.</span>
       </div>
     )
   }
@@ -47,28 +51,31 @@ export default function ForeignGuestAlert({ logementPays, voyageurNationalite, d
   // Calcul de la deadline si on a la date d'arrivée
   let deadlineLabel: string | null = null
   if (dateArrivee) {
-    const arrivee = new Date(dateArrivee + 'T12:00:00')
+    // En français (l'hôte utilise l'app en français, même pour un logement
+    // portugais : avant, la date s'affichait en portugais) et en UTC pour
+    // que le serveur et le navigateur affichent la même chose.
+    const arrivee = new Date(dateArrivee.slice(0, 10) + 'T12:00:00Z')
     const deadline = new Date(arrivee.getTime() + decl.deadlineHours * 3600 * 1000)
-    deadlineLabel = deadline.toLocaleDateString(config.locale, {
-      weekday: 'long', day: 'numeric', month: 'long',
+    deadlineLabel = deadline.toLocaleDateString('fr-FR', {
+      weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC',
     })
   }
 
   return (
     <div style={s.box}>
       <div style={s.head}>
-        <Warning size={16} weight="fill" color="#f59e0b" />
-        <span style={s.title}>{config.flag} {decl.label}</span>
-        <span style={s.badge}>{decl.deadlineHours}h max</span>
+        <Warning size={16} weight="fill" color={AMBER} />
+        <span style={s.title}>{decl.label}</span>
+        <span style={s.badge}>{decl.deadlineHours} h max</span>
       </div>
       <p style={s.text}>
-        {voyageurNom ? <><strong>{voyageurNom}</strong> est </> : 'Le voyageur est '}
-        de nationalité <strong>{voyageurNationalite}</strong> et séjourne dans ton logement <strong>{config.name}</strong>.
+        {voyageurNom ? <strong>{voyageurNom}</strong> : 'Le voyageur'} (nationalité : <strong>{nationaliteName(voyageurNationalite) ?? voyageurNationalite}</strong>)
+        {' '}séjourne dans ton logement {pays === 'PT' ? 'au Portugal' : pays === 'FR' ? 'en France' : `(${config.name})`}.
         {' '}{decl.note}
       </p>
       {deadlineLabel && (
         <p style={s.deadline}>
-          ⏰ À déclarer avant le <strong>{deadlineLabel}</strong> (soit {decl.deadlineHours}h après l'arrivée).
+          <Clock size={13} weight="bold" style={{ verticalAlign: '-2px' }} /> À déclarer avant le <strong>{deadlineLabel}</strong> ({decl.deadlineHours} h après l&apos;arrivée).
         </p>
       )}
       {decl.portalUrl && (
@@ -83,8 +90,8 @@ export default function ForeignGuestAlert({ logementPays, voyageurNationalite, d
 const s: Record<string, React.CSSProperties> = {
   doneBox: {
     display: 'flex', alignItems: 'center', gap: '8px',
-    background: 'rgba(74,222,128,0.08)',
-    border: '1px solid rgba(74,222,128,0.22)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '10px',
     padding: '10px 14px',
     marginTop: '10px',
@@ -93,8 +100,8 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '12px', fontWeight: 600, color: 'var(--text-2)',
   },
   box: {
-    background: 'var(--warning-bg)',
-    border: '1px solid rgba(245,158,11,0.28)',
+    background: `color-mix(in srgb, ${AMBER} 8%, var(--surface))`,
+    border: `1px solid color-mix(in srgb, ${AMBER} 28%, transparent)`,
     borderRadius: '10px',
     padding: '12px 14px',
     marginTop: '10px',
@@ -103,11 +110,11 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '8px',
     marginBottom: '6px', flexWrap: 'wrap' as const,
   },
-  title: { fontSize: '13px', fontWeight: 700, color: 'var(--warning)' },
+  title: { fontSize: '13px', fontWeight: 700, color: AMBER_DARK },
   badge: {
     fontSize: '10px', fontWeight: 700,
     padding: '2px 7px', borderRadius: '999px',
-    background: 'var(--warning-border)', color: 'var(--warning)',
+    background: `color-mix(in srgb, ${AMBER} 16%, transparent)`, color: AMBER_DARK,
     letterSpacing: '0.3px',
   },
   text: {

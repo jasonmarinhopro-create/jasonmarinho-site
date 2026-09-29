@@ -12,6 +12,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import { addVoyageur, updateVoyageur, deleteVoyageur, checkVoyageurSignale, type VoyageurData } from './actions'
 import TourTrigger from '@/components/dashboard/TourTrigger'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import { Card, CardHead, Notice, ui } from '../finances/_ui/ui'
 
@@ -65,7 +66,7 @@ function statusOf(v: Voyageur): Status | null {
   return null
 }
 const BADGE: Record<Status | 'nat', React.CSSProperties> = {
-  signale: { background: 'var(--danger-bg)', color: 'var(--danger)', borderColor: 'rgba(239,68,68,0.30)' },
+  signale: { background: 'var(--danger-bg)', color: 'var(--danger)', borderColor: 'color-mix(in srgb, var(--danger) 30%, transparent)' },
   bloque: { background: 'var(--bg-2)', color: 'var(--text-3)', borderColor: 'var(--border-2)' },
   fidele: { background: 'rgba(255,213,107,0.18)', color: '#8A5A12', borderColor: 'rgba(183,121,31,0.30)' },
   recurrent: { background: 'var(--accent-bg)', color: 'var(--accent-text)', borderColor: 'var(--accent-border)' },
@@ -117,6 +118,7 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
     if (typeof window !== 'undefined' && window.location.hash === '#contrats') router.replace('/dashboard/contrats')
   }, [router])
   const [isPending, startTransition] = useTransition()
+  const { confirm, dialog: confirmDialog } = useConfirm()
   const [search, setSearch] = useState('')
   const [modal, setModal] = useState<'add' | 'edit' | null>(null)
   const [editTarget, setEditTarget] = useState<Voyageur | null>(null)
@@ -275,9 +277,9 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
     e.stopPropagation()
     const n = v.sejours.length
     const msg = n > 0
-      ? `Supprimer ${v.prenom} ${v.nom} ? Ses ${n} séjour${n > 1 ? 's' : ''} seront aussi supprimé${n > 1 ? 's' : ''}, avec leurs montants dans tes revenus. C'est définitif.`
-      : `Supprimer ${v.prenom} ${v.nom} ? C'est définitif.`
-    if (!confirm(msg)) return
+      ? `Ses ${n} séjour${n > 1 ? 's' : ''} seront aussi supprimé${n > 1 ? 's' : ''}, avec leurs montants dans tes revenus. C'est définitif.`
+      : `C'est définitif.`
+    if (!(await confirm({ title: `Supprimer ${v.prenom} ${v.nom} ?`, message: msg, confirmLabel: 'Supprimer', danger: true }))) return
     const id = v.id
     startTransition(async () => {
       await deleteVoyageur(id)
@@ -312,6 +314,7 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
 
   return (
     <div style={ui.page}>
+      {confirmDialog}
       <HubHero
         eyebrowIcon={<Users size={14} weight="fill" />}
         eyebrow="Mes voyageurs"
@@ -514,7 +517,7 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
                       <div
                         key={v.id}
                         onClick={() => router.push(`/dashboard/voyageurs/${v.id}`)}
-                        style={{ ...s.tile, opacity: v.bloque ? 0.65 : 1, ...(v.is_flagged ? { borderColor: 'rgba(239,68,68,0.35)' } : {}) }}
+                        style={{ ...s.tile, opacity: v.bloque ? 0.65 : 1, ...(v.is_flagged ? { borderColor: 'color-mix(in srgb, var(--danger) 35%, transparent)' } : {}) }}
                         className="dash-help-row"
                       >
                         <div style={s.tileActions} onClick={e => e.stopPropagation()}>
@@ -876,13 +879,13 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
               {signaleAlert && (
                 <div style={{
                   padding: '14px 16px',
-                  background: 'rgba(239,68,68,0.06)',
-                  border: '1px solid rgba(239,68,68,0.25)',
+                  background: 'color-mix(in srgb, var(--danger) 6%, transparent)',
+                  border: '1px solid color-mix(in srgb, var(--danger) 25%, transparent)',
                   borderRadius: '11px',
                   display: 'flex', flexDirection: 'column' as const, gap: '8px',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                    <Warning size={18} weight="fill" color="#ef4444" />
+                    <Warning size={18} weight="fill" color="var(--danger)" />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--danger)', marginBottom: '4px' }}>
                         Voyageur signalé par d&apos;autres hôtes
@@ -907,7 +910,7 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
                     <button
                       type="button"
                       onClick={() => { setAllowDespiteSignal(true); setSignaleAlert(null); document.querySelector('form')?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true })) }}
-                      style={{ padding: '6px 12px', fontSize: '12px', fontWeight: 600, background: 'rgba(239,68,68,0.10)', color: 'var(--danger)', border: '1px solid rgba(239,68,68,0.30)', borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit' }}
+                      style={{ padding: '6px 12px', fontSize: '12px', fontWeight: 600, background: 'color-mix(in srgb, var(--danger) 10%, transparent)', color: 'var(--danger)', border: '1px solid color-mix(in srgb, var(--danger) 30%, transparent)', borderRadius: '7px', cursor: 'pointer', fontFamily: 'inherit' }}
                     >
                       Ajouter quand même
                     </button>
@@ -968,7 +971,7 @@ const s: Record<string, React.CSSProperties> = {
   declCount: {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minWidth: '20px', height: '20px',
     padding: '0 6px', borderRadius: '999px', fontSize: '11px', fontWeight: 700,
-    background: 'var(--warning-border)', color: 'var(--warning)',
+    background: 'color-mix(in srgb, #B7791F 30%, transparent)', color: '#B7791F',
   },
   toolbar: {
     display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
@@ -1090,8 +1093,8 @@ const s: Record<string, React.CSSProperties> = {
   },
   flagBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
-    background: 'rgba(239,68,68,0.12)', color: 'var(--danger)',
-    border: '1px solid rgba(239,68,68,0.2)',
+    background: 'color-mix(in srgb, var(--danger) 12%, transparent)', color: 'var(--danger)',
+    border: '1px solid color-mix(in srgb, var(--danger) 20%, transparent)',
     borderRadius: '100px', padding: '2px 7px',
     fontSize: '11px', fontWeight: 600,
   },
@@ -1271,8 +1274,8 @@ const s: Record<string, React.CSSProperties> = {
   // Tag chip dans la liste
   natBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
-    background: 'rgba(217,119,6,0.10)', color: '#b45309',
-    border: '1px solid rgba(217,119,6,0.30)',
+    background: 'color-mix(in srgb, #B7791F 10%, transparent)', color: '#8A5A12',
+    border: '1px solid color-mix(in srgb, #B7791F 30%, transparent)',
     borderRadius: '100px', padding: '2px 7px',
     fontSize: '11px', fontWeight: 600,
   },
