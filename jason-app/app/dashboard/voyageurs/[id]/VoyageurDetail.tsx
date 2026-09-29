@@ -360,6 +360,14 @@ type LogementOption = {
   proprietaire_telephone?: string | null
   frais_menage?: number | null
   caution?: number | null
+  type_logement?: string | null
+  surface_m2?: number | null
+  nb_chambres?: number | null
+  nb_lits?: number | null
+  nb_sdb?: number | null
+  equipements?: string[] | null
+  classement_etoiles?: number | null
+  numero_enregistrement?: string | null
   contrat_options?: unknown
   clauses_particulieres?: string | null
   clauses_particulieres_pt?: string | null

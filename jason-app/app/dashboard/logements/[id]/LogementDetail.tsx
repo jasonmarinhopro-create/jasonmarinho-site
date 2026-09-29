@@ -17,7 +17,7 @@ import {
   Sparkle, ShieldCheck, Check, Copy, ArrowRight, ChatText, Car, SwimmingPool, Snowflake, Fire, WashingMachine, ForkKnife,
   Television, Tree, Chair, Plant, Wheelchair, Elevator, Campfire, Bathtub, PawPrint, Cigarette, Broom, Bed, Door, Shower,
   Ruler, Plus, Globe, FileText, Scroll, Handshake, Info, Printer, SignIn, SignOut, Tag, LinkSimple, Warning, CheckCircle,
-  Circle, TrendUp, Translate, ListChecks,
+  Circle, TrendUp, Translate, ListChecks, Eye,
 } from '@phosphor-icons/react/dist/ssr'
 import { EditableCard } from './EditableCard'
 import IcalSyncSection, { SOURCE_FG } from './IcalSyncSection'
@@ -1184,6 +1184,11 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
                       <LangBadges pt={!!l.clauses_particulieres_pt} en={!!l.clauses_particulieres_en} />
                     </div>
                   : <p style={s.emptyHint}>Pas de clause particulière. Ajoute ici ce qui est propre à ce logement : linge fourni, accès piscine, bois de chauffage…</p>}
+                <Link href={`/apercu-contrat/${l.id}`} style={s.linkRow}>
+                  <Eye size={16} weight="bold" />
+                  <span style={{ flex: 1 }}><strong>Voir le contrat de ce logement</strong>, tel que ton voyageur le recevra, avec un lien « Modifier » sur chaque article</span>
+                  <ArrowRight size={13} weight="bold" />
+                </Link>
                 <p style={{ ...s.emptyHint, margin: 0 }}>Le contrat reprend aussi tout seul l&apos;état descriptif du logement (type, surface, pièces, couchages, équipements, classement, numéro d&apos;enregistrement) depuis Caractéristiques et Équipements.</p>
               </div>
             }

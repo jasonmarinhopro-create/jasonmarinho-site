@@ -87,7 +87,13 @@ interface Props {
   montantSolde: number
   paymentParam?: string
   depositParam?: string
+  /** Aperçu pour l'hôte (fiche logement, assistant) : pas de signature ni de
+   *  paiement, bandeau d'explication, lien « Modifier » sur chaque article
+   *  que l'hôte peut changer, « Texte légal » sur les autres. */
+  preview?: { title: string; note: string; editLinks?: Partial<Record<EditKey, string>>; backHref?: string; backLabel?: string }
 }
+
+export type EditKey = 'parties' | 'bien' | 'duree' | 'prix' | 'caution' | 'annulation' | 'reglement' | 'clauses'
 
 const LANG_OPTIONS: UiLang[] = ['fr', 'pt', 'en']
 const LANG_FLAG: Record<UiLang, string> = { fr: '🇫🇷', pt: '🇵🇹', en: '🇬🇧' }
@@ -96,7 +102,7 @@ const LANG_NAME: Record<UiLang, string> = { fr: 'Français', pt: 'Português', e
 export default function ContractView({
   token, contract, contractPays, initialLang, isViewerBailleur, expired, cancelled, alreadySigned, n,
   hostIban, hostBic, stripeReady, paymentEnabled, paymentAlreadyDone, hasDeposit, depositAlreadyHeld, depositState, depositOpens,
-  acomptePercent, montantAcompte, montantSolde, paymentParam, depositParam,
+  acomptePercent, montantAcompte, montantSolde, paymentParam, depositParam, preview,
 }: Props) {
   const [lang, setLang] = useState<UiLang>(initialLang)
   const t = SIGN_UI[lang]
@@ -125,6 +131,14 @@ export default function ContractView({
   const etatLines = d ? etatDescriptifLines(d.etat, lang, contractPays) : []
   const clausesParticulieres = (lang === 'pt' ? contract.clauses_particulieres_pt : lang === 'en' ? contract.clauses_particulieres_en : null) || contract.clauses_particulieres || null
   // Numérotation continue des articles (le nombre d'articles varie selon le contrat)
+  // Aperçu : « Modifier » (vers la carte de la fiche) ou « Texte légal »
+  const edit = (key?: EditKey) => {
+    if (!preview) return null
+    const href = key ? preview.editLinks?.[key] : undefined
+    return href
+      ? <a href={href} className="no-print" style={editPill}>Modifier</a>
+      : <span className="no-print" style={legalPill}>{key ? 'Modifiable' : 'Texte légal'}</span>
+  }
   let artNo = 0
   const art = (label: string) => `${ex.articleWord} ${++artNo}, ${label.replace(/^(Article|Artigo)\s+\d+,\s*/, '')}`
   const reglementInterieur = contract.reglement_interieur ? resolveClauseText(
@@ -165,6 +179,16 @@ export default function ContractView({
             </button>
           ))}
         </div>
+
+        {preview && (
+          <div style={previewBanner} className="no-print">
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <strong style={{ display: 'block', color: '#f0ebe1', fontSize: '15px' }}>{preview.title}</strong>
+              <span style={{ fontSize: '13px' }}>{preview.note}</span>
+            </div>
+            {preview.backHref && <a href={preview.backHref} style={{ ...editPill, fontSize: '13px', padding: '8px 14px' }}>{preview.backLabel ?? 'Retour'}</a>}
+          </div>
+        )}
 
         {/* Header */}
         <div style={header}>
@@ -216,7 +240,7 @@ export default function ContractView({
         <div style={contractBody} className="contract-print">
           {/* Art. 1, Parties */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{art(t.art1)}</h2>
+            <h2 style={sectionTitle}>{art(t.art1)}{edit('parties')}</h2>
             <div style={partyGrid}>
               <div style={partyBox}>
                 <p style={partyLabel}>{t.bailleurLabel}</p>
@@ -246,7 +270,7 @@ export default function ContractView({
 
           {/* Art. 2, Bien loué */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{art(t.art2)}</h2>
+            <h2 style={sectionTitle}>{art(t.art2)}{edit('bien')}</h2>
             <p style={contractText}>{t.bienLoueIntro}</p>
             <p style={{ ...contractText, fontWeight: 600, color: '#f0ebe1', marginTop: '8px' }}>
               {contract.logement_adresse || <em style={{ color: '#6b9a7e', fontWeight: 400 }}>{t.addressMissing}</em>}
@@ -276,7 +300,7 @@ export default function ContractView({
 
           {/* Art. 3, Durée */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{art(t.art3)}</h2>
+            <h2 style={sectionTitle}>{art(t.art3)}{edit('duree')}</h2>
             <div style={datesGrid}>
               <div style={dateBox}>
                 <p style={dateLabel}>{t.arrivee}</p>
@@ -297,7 +321,7 @@ export default function ContractView({
 
           {/* Art. 4, Prix */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{art(t.art4)}</h2>
+            <h2 style={sectionTitle}>{art(t.art4)}{edit('prix')}</h2>
             <div style={pricesGrid}>
               <div style={priceBox}>
                 <p style={priceLabel}>{t.loyerTotal}</p>
@@ -362,7 +386,7 @@ export default function ContractView({
           {d && (
             <>
               <section style={contractSection}>
-                <h2 style={sectionTitle}>{art(ex.cautionTitle)}</h2>
+                <h2 style={sectionTitle}>{art(ex.cautionTitle)}{edit('caution')}</h2>
                 <p style={contractText}>{Number(contract.montant_caution) > 0 ? ex.cautionText(money(Number(contract.montant_caution)), d.delai_caution_jours ?? 7) : ex.noCaution}</p>
               </section>
               <div style={divider} />
@@ -373,7 +397,7 @@ export default function ContractView({
               traduit seulement si les champs PT/EN de la fiche logement sont
               remplis, ou si c'est le texte par défaut non modifié) */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{art(t.art5)}</h2>
+            <h2 style={sectionTitle}>{art(t.art5)}{edit('annulation')}</h2>
             <p style={{ ...contractText, whiteSpace: 'pre-line' }}>{conditionsAnnulation}</p>
           </section>
 
@@ -382,7 +406,7 @@ export default function ContractView({
           {d && (
             <>
               <section style={contractSection}>
-                <h2 style={sectionTitle}>{art(ex.bailleurCancelTitle)}</h2>
+                <h2 style={sectionTitle}>{art(ex.bailleurCancelTitle)}{edit()}</h2>
                 <p style={contractText}>{bailleurCancelText(regime, lang, contractPays)}</p>
               </section>
               <div style={divider} />
@@ -393,7 +417,7 @@ export default function ContractView({
           {reglementInterieur && (
             <>
               <section style={contractSection}>
-                <h2 style={sectionTitle}>{art(t.art6)}</h2>
+                <h2 style={sectionTitle}>{art(t.art6)}{edit('reglement')}</h2>
                 <p style={{ ...contractText, whiteSpace: 'pre-line' }}>{reglementInterieur}</p>
               </section>
               <div style={divider} />
@@ -403,7 +427,7 @@ export default function ContractView({
           {d && (
             <>
               <section style={contractSection}>
-                <h2 style={sectionTitle}>{art(ex.arriveeTitle)}</h2>
+                <h2 style={sectionTitle}>{art(ex.arriveeTitle)}{edit()}</h2>
                 <p style={contractText}>{arriveeText(lang, contractPays)}</p>
               </section>
               <div style={divider} />
@@ -412,7 +436,7 @@ export default function ContractView({
 
           {/* Art. 7, Obligations légales */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{art(t.art7)}</h2>
+            <h2 style={sectionTitle}>{art(t.art7)}{edit()}</h2>
             <p style={contractText}>
               <strong>{t.bailleurCommit}</strong> {tpl.obligationsBailleur}
             </p>
@@ -431,7 +455,7 @@ export default function ContractView({
           {d && (
             <>
               <section style={contractSection}>
-                <h2 style={sectionTitle}>{art(ex.assuranceTitle)}</h2>
+                <h2 style={sectionTitle}>{art(ex.assuranceTitle)}{edit()}</h2>
                 <p style={contractText}>{ex.assuranceText}</p>
               </section>
               <div style={divider} />
@@ -441,7 +465,7 @@ export default function ContractView({
           {clausesParticulieres && (
             <>
               <section style={contractSection}>
-                <h2 style={sectionTitle}>{art(ex.clausesTitle)}</h2>
+                <h2 style={sectionTitle}>{art(ex.clausesTitle)}{edit('clauses')}</h2>
                 <p style={{ ...contractText, whiteSpace: 'pre-line' }}>{clausesParticulieres}</p>
               </section>
               <div style={divider} />
@@ -450,7 +474,7 @@ export default function ContractView({
 
           {/* Art. 8, RGPD */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{art(t.art8)}</h2>
+            <h2 style={sectionTitle}>{art(t.art8)}{edit()}</h2>
             <p style={contractText}>{tpl.rgpd}</p>
           </section>
 
@@ -458,7 +482,7 @@ export default function ContractView({
 
           {/* Art. 9, Loi applicable */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{art(t.art9)}</h2>
+            <h2 style={sectionTitle}>{art(t.art9)}{edit()}</h2>
             <p style={contractText}>{tpl.loiApplicable}</p>
           </section>
 
@@ -466,7 +490,7 @@ export default function ContractView({
 
           {/* Art. 10, Signature électronique */}
           <section style={contractSection}>
-            <h2 style={sectionTitle}>{art(t.art10)}</h2>
+            <h2 style={sectionTitle}>{art(t.art10)}{edit()}</h2>
             <p style={contractText}>{tpl.signatureElectronique}</p>
           </section>
 
@@ -481,7 +505,7 @@ export default function ContractView({
         </div>
 
         {/* Signature canvas (si non signé) */}
-        {!alreadySigned && !expired && !cancelled && (
+        {!preview && !alreadySigned && !expired && !cancelled && (
           <div className="no-print">
             {isViewerBailleur ? (
               <div style={warningBanner}>
@@ -498,7 +522,7 @@ export default function ContractView({
         )}
 
         {/* ── Paiements (uniquement si actionnable : Stripe prêt ou IBAN configuré) ── */}
-        {alreadySigned && ((paymentEnabled && stripeReady) || (hasDeposit && stripeReady) || hostIban) && (
+        {!preview && alreadySigned && ((paymentEnabled && stripeReady) || (hasDeposit && stripeReady) || hostIban) && (
           <div style={paymentsBlock} className="no-print">
             <p style={paymentsTitle}>{t.finalizeTitle}</p>
 
@@ -650,6 +674,24 @@ const container: React.CSSProperties = {
   maxWidth: '760px',
   margin: '0 auto',
   animation: 'fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both',
+}
+
+const previewBanner: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap',
+  background: 'rgba(255,213,107,0.10)', border: '1px solid rgba(255,213,107,0.35)',
+  borderRadius: '14px', padding: '14px 18px', marginBottom: '24px', color: '#e8dfc8', lineHeight: 1.5,
+}
+
+const editPill: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', marginLeft: '10px', padding: '3px 10px', borderRadius: '999px',
+  fontFamily: 'inherit', fontSize: '11px', fontWeight: 700, letterSpacing: 0, verticalAlign: 'middle',
+  background: '#FFD56B', color: '#0a1a14', textDecoration: 'none', whiteSpace: 'nowrap',
+}
+
+const legalPill: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', marginLeft: '10px', padding: '3px 10px', borderRadius: '999px',
+  fontFamily: 'inherit', fontSize: '11px', fontWeight: 600, verticalAlign: 'middle',
+  border: '1px solid #2c5040', color: '#8fb3a0', whiteSpace: 'nowrap',
 }
 
 const langSwitcher: React.CSSProperties = {

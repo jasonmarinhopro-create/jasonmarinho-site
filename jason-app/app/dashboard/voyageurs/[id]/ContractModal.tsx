@@ -2,10 +2,11 @@
 
 import { holdMayExpireBeforeCheckout } from '@/lib/stripe/deposit-window'
 import { useState, useTransition, useRef, useEffect } from 'react'
-import { X, FileText, Check, Copy, Envelope, CalendarBlank, Clock, Warning, House, Lock } from '@phosphor-icons/react/dist/ssr'
+import { X, FileText, Check, Copy, Envelope, CalendarBlank, Clock, Warning, House, Lock, Eye } from '@phosphor-icons/react/dist/ssr'
 import { createContract, type ContractData } from '../contract-actions'
 import { DEFAULT_ANNULATION as DEFAULT_ANNULATION_I18N, DEFAULT_REGLEMENT as DEFAULT_REGLEMENT_I18N } from '@/lib/contract-default-clauses'
-import { contratOptions, type RegimeAvance } from '@/lib/contracts/details'
+import { buildEtatDescriptif, contratOptions, type RegimeAvance } from '@/lib/contracts/details'
+import { showsIban, WIZARD_PREVIEW_KEY } from '@/lib/contracts/preview'
 
 // Valeur française utilisée comme pré-remplissage par défaut (langue de
 // référence) — les traductions PT/EN correspondantes se retrouvent
@@ -38,6 +39,8 @@ type BailleurProfile = {
   nom: string
   email: string
   adresse?: string | null
+  iban?: string | null
+  bic?: string | null
   stripeReady?: boolean
 }
 
@@ -67,6 +70,14 @@ export type LogementOption = {
   proprietaire_telephone?: string | null
   frais_menage?: number | null
   caution?: number | null
+  type_logement?: string | null
+  surface_m2?: number | null
+  nb_chambres?: number | null
+  nb_lits?: number | null
+  nb_sdb?: number | null
+  equipements?: string[] | null
+  classement_etoiles?: number | null
+  numero_enregistrement?: string | null
   contrat_options?: unknown
   clauses_particulieres?: string | null
   clauses_particulieres_pt?: string | null
@@ -408,6 +419,48 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
       setStep('done')
       onSuccess()
     })
+  }
+
+  /** Aperçu dans un nouvel onglet, avec ce qui est saisi (rien n'est enregistré) */
+  function openPreview() {
+    const lg = selectedLogementId ? logements.find(l => l.id === selectedLogementId) ?? null : null
+    const pays = lg?.pays ?? 'FR'
+    const nights = Math.max(1, Math.round((Date.parse(form.date_depart) - Date.parse(form.date_arrivee)) / 86400000) || 1)
+    const contract = {
+      id: '00000000-apercu', statut: 'en_attente', token_expires_at: form.date_arrivee, signature_date: null, signature_image: null,
+      created_at: new Date().toISOString(), langue: form.langue,
+      bailleur_prenom: form.bailleur_prenom, bailleur_nom: form.bailleur_nom, bailleur_adresse: form.bailleur_adresse || null,
+      bailleur_email: form.bailleur_email || null, bailleur_telephone: form.bailleur_telephone || null,
+      locataire_prenom: form.locataire_prenom, locataire_nom: form.locataire_nom, locataire_email: form.locataire_email || null,
+      locataire_telephone: form.locataire_telephone || null, locataire_type: form.locataire_type,
+      locataire_structure: form.locataire_structure || null, locataire_nif: form.locataire_nif || null,
+      logement_adresse: form.logement_adresse, logement_description: form.logement_description || null,
+      logement_description_pt: form.logement_description_pt || null, logement_description_en: form.logement_description_en || null,
+      capacite_max: form.capacite_max, date_arrivee: form.date_arrivee, date_depart: form.date_depart,
+      heure_arrivee: form.heure_arrivee, heure_depart: form.heure_depart,
+      montant_loyer: form.montant_loyer, montant_caution: form.montant_caution,
+      modalites_paiement: form.modalites_paiement, stripe_payment_enabled: form.stripe_payment_enabled,
+      animaux_acceptes: form.animaux_acceptes, fumeur_accepte: form.fumeur_accepte,
+      conditions_annulation: form.conditions_annulation, conditions_annulation_pt: form.conditions_annulation_pt || null, conditions_annulation_en: form.conditions_annulation_en || null,
+      reglement_interieur: form.reglement_interieur || null, reglement_interieur_pt: form.reglement_interieur_pt || null, reglement_interieur_en: form.reglement_interieur_en || null,
+      details: {
+        etat: lg ? buildEtatDescriptif(lg) : undefined,
+        frais_menage: form.frais_menage > 0 ? form.frais_menage : null,
+        taxe_sejour: form.taxe_sejour > 0 ? form.taxe_sejour : null,
+        taxe_sejour_mode: form.taxe_sejour_mode, charges_incluses: form.charges_incluses,
+        regime: form.regime, delai_caution_jours: form.delai_caution_jours,
+      },
+      clauses_particulieres: form.clauses_particulieres || null,
+      clauses_particulieres_pt: form.clauses_particulieres_pt || null, clauses_particulieres_en: form.clauses_particulieres_en || null,
+    }
+    const wantIban = showsIban(form.modalites_paiement, form.stripe_payment_enabled)
+    const iban = wantIban ? (bailleur.iban ?? null) : null
+    try {
+      localStorage.setItem(WIZARD_PREVIEW_KEY, JSON.stringify({ contract, pays, nights, acomptePercent: form.acompte_percent, hostIban: iban, hostBic: iban ? bailleur.bic ?? null : null }))
+      window.open('/apercu-contrat/assistant', '_blank', 'noopener')
+    } catch {
+      setError('Aperçu impossible dans ce navigateur (stockage bloqué).')
+    }
   }
 
   function copyLink() {
@@ -979,6 +1032,11 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
             >
               {currentStepIndex === 0 ? 'Annuler' : '← Retour'}
             </button>
+            {isLastStep && (
+              <button type="button" onClick={openPreview} style={{ ...ghostBtn, marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                <Eye size={14} /> Voir le contrat
+              </button>
+            )}
             <button
               type="button"
               onClick={handleNext}
