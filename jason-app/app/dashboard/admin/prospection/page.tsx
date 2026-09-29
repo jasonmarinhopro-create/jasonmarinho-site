@@ -86,7 +86,7 @@ export default async function ProspectionPage() {
       sequences={sequences}
       contacts={contactRows}
       settings={settingsRow}
-      config={{ configured: !!cfg, from: cfg?.fromEmail ?? null, placesKey: !!process.env.GOOGLE_PLACES_API_KEY }}
+      config={{ configured: !!cfg, from: cfg?.fromEmail ?? null, host: cfg?.smtpHost ?? null, placesKey: !!process.env.GOOGLE_PLACES_API_KEY }}
       stats={{
         sentToday: sentToday.count ?? 0, sent7: sent7.count ?? 0, sent30: sent30.count ?? 0, errors7: errors7.count ?? 0,
         replies30: replies30.count ?? 0, contacted30: contacted30.count ?? 0,

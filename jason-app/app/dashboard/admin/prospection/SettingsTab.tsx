@@ -20,6 +20,7 @@ export default function SettingsTab({ settings, config }: { settings: SettingsRo
   const [signature, setSignature] = useState(settings.signature ?? 'Jason Marinho\nhttps://jasonmarinho.com')
   const [busy, setBusy] = useState<string | null>(null)
   const [msg, setMsg] = useState<{ ok?: string; err?: string } | null>(null)
+  const hostinger = /hostinger/i.test(config.host ?? '')
 
   async function save() {
     setBusy('save')
@@ -33,7 +34,7 @@ export default function SettingsTab({ settings, config }: { settings: SettingsRo
     setBusy(null)
     if (!res.ok) return setMsg({ err: res.error })
     const d = res.data!
-    setMsg({ ok: `Passage terminé : ${d.sent} envoyé${d.sent > 1 ? 's' : ''}, ${d.replies} réponse${d.replies > 1 ? 's' : ''}, ${d.bounces} rebond${d.bounces > 1 ? 's' : ''}, ${d.signups} inscription${d.signups > 1 ? 's' : ''} détectée${d.signups > 1 ? 's' : ''}${d.errors ? `, ${d.errors} erreur${d.errors > 1 ? 's' : ''}` : ''}${d.skipped ? ` (${d.skipped})` : ''}.` })
+    setMsg({ ok: `Passage terminé : ${d.sent} envoyé${d.sent > 1 ? 's' : ''}, ${d.replies} réponse${d.replies > 1 ? 's' : ''}, ${d.bounces} rebond${d.bounces > 1 ? 's' : ''}, ${d.signups} inscription${d.signups > 1 ? 's' : ''} détectée${d.signups > 1 ? 's' : ''}${d.errors ? `, ${d.errors} erreur${d.errors > 1 ? 's' : ''}` : ''}${d.skipped ? ` (${d.skipped})` : ''}.${d.more ? ' La suite part en arrière-plan, au rythme de la boîte.' : ''}` })
   }
 
   return (
@@ -43,19 +44,20 @@ export default function SettingsTab({ settings, config }: { settings: SettingsRo
           <Head icon={<EnvelopeSimple size={18} weight="fill" />} title="Boîte d'envoi" sub="Les e-mails partent de ta vraie boîte, comme si tu écrivais toi-même : les réponses arrivent chez toi." />
           {config.configured ? (
             <div style={{ ...ui.notice, background: 'var(--accent-bg)', borderColor: 'var(--accent-border)', color: 'var(--accent-text)' }}>
-              <CheckCircle size={16} weight="fill" /> Branchée : envoi depuis <strong>{config.from}</strong>, réponses lues chaque jour d&apos;envoi.
+              <CheckCircle size={16} weight="fill" style={{ flexShrink: 0, marginTop: '1px' }} /> <span>Branchée : envoi depuis <strong>{config.from}</strong>, réponses lues chaque jour d&apos;envoi.</span>
             </div>
           ) : (
             <div style={{ ...ui.notice }}>
-              <WarningCircle size={16} weight="fill" style={{ color: AMBER, flexShrink: 0, marginTop: '1px' }} /> Pas encore branchée : aucun e-mail ne peut partir.
+              <WarningCircle size={16} weight="fill" style={{ color: AMBER, flexShrink: 0, marginTop: '1px' }} /> <span>Pas encore branchée : aucun e-mail ne peut partir.</span>
             </div>
           )}
           <ol style={s.list}>
-            <li>Prends une adresse à ton nom sur ton domaine (ex. jason@jasonmarinho.com, Google Workspace conseillé). Évite contact@ : une vraie personne répond mieux.</li>
-            <li>Google : active la validation en deux étapes, puis crée un <strong>mot de passe d&apos;application</strong> (Compte Google, Sécurité).</li>
-            <li>Sur Vercel, projet du dashboard, ajoute : <code style={s.code}>OUTREACH_SMTP_HOST</code> = smtp.gmail.com, <code style={s.code}>OUTREACH_SMTP_USER</code> = ton adresse, <code style={s.code}>OUTREACH_SMTP_PASS</code> = le mot de passe d&apos;application. Facultatif : <code style={s.code}>OUTREACH_FROM_NAME</code>.</li>
+            <li>Une adresse à ton nom sur ton domaine, ex. <strong>jason@jasonmarinho.com</strong> (Hostinger Business Email). Évite contact@ : une vraie personne répond mieux.</li>
+            <li>Dans Hostinger, garde une copie des messages dans la boîte même si tu les rediriges vers Gmail : l&apos;app y lit les réponses et les rebonds pour arrêter les relances.</li>
+            <li>Sur Vercel, projet du dashboard, Settings, Environment Variables : <code style={s.code}>OUTREACH_SMTP_HOST</code> = smtp.hostinger.com, <code style={s.code}>OUTREACH_SMTP_PORT</code> = 465, <code style={s.code}>OUTREACH_SMTP_USER</code> = l&apos;adresse complète, <code style={s.code}>OUTREACH_SMTP_PASS</code> = le mot de passe de la boîte. La lecture des réponses passe par imap.hostinger.com (port 993) sans autre réglage. Facultatif : <code style={s.code}>OUTREACH_FROM_NAME</code>.</li>
             <li>Redéploie, puis clique « M&apos;envoyer un essai » dans une séquence.</li>
           </ol>
+          <p style={ui.sub}>Autre fournisseur : Google Workspace (smtp.gmail.com, mot de passe d&apos;application) ou Zoho fonctionnent de la même façon.</p>
           <p style={ui.sub}>Pourquoi pas Resend : ses conditions interdisent la prospection. Un compte fermé couperait aussi les e-mails de l&apos;app (contrats, cautions).</p>
         </section>
 
@@ -63,7 +65,7 @@ export default function SettingsTab({ settings, config }: { settings: SettingsRo
           <Head icon={<ShieldCheck size={18} weight="fill" />} title="Pour arriver en boîte de réception" sub="Les bonnes pratiques qui évitent les courriers indésirables." />
           <ul style={s.list}>
             <li>Commence à 15 à 25 e-mails par jour la première semaine, puis augmente doucement.</li>
-            <li>Vérifie que ton domaine a SPF, DKIM et DMARC (Google Workspace, Admin, Authentifier les e-mails).</li>
+            <li>Vérifie que ton domaine a SPF, DKIM et DMARC. Chez Hostinger : bouton « Résoudre » de l&apos;alerte « enregistrements manquants ». Un seul enregistrement SPF par domaine : s&apos;il en existe déjà un, fusionne-les.</li>
             <li>Des e-mails courts, en texte simple, sans image ni pièce jointe : c&apos;est déjà le cas des séquences.</li>
             <li>Réponds vite aux réponses : c&apos;est là que se font les inscriptions.</li>
             <li>Chaque e-mail porte un lien de désinscription en un clic et l&apos;en-tête de désinscription des messageries.</li>
@@ -78,6 +80,13 @@ export default function SettingsTab({ settings, config }: { settings: SettingsRo
             Plafond par jour
             <input type="number" min={1} max={200} value={cap} onChange={e => setCap(parseInt(e.target.value) || 1)} style={{ ...ui.input, maxWidth: '140px' }} />
           </label>
+          {hostinger && cap > 80 && (
+            <div style={ui.notice}>
+              <WarningCircle size={16} weight="fill" style={{ color: AMBER, flexShrink: 0, marginTop: '1px' }} />
+              <span>L&apos;offre Business Email gratuite de Hostinger permet 100 e-mails par jour, tes propres messages compris. Garde de la marge : 80 au plus.</span>
+            </div>
+          )}
+          <p style={ui.sub}>Environ 7 secondes entre deux e-mails (jamais plus de 10 par minute, la limite de Hostinger) : un passage envoie quelques e-mails puis se relance tout seul jusqu&apos;au plafond.</p>
           <div style={ui.label}>
             Jours d&apos;envoi
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
@@ -107,7 +116,7 @@ export default function SettingsTab({ settings, config }: { settings: SettingsRo
           <p style={ui.sub}>Un passage manuel envoie aussi les e-mails du jour, même un jour sans envoi, dans la limite du plafond.</p>
         </section>
 
-        {msg && <div style={{ ...ui.notice, ...(msg.ok ? { background: 'var(--accent-bg)', borderColor: 'var(--accent-border)', color: 'var(--accent-text)' } : { background: tint('var(--danger)', 8), borderColor: tint('var(--danger)', 30), color: 'var(--danger)' }) }}>{msg.ok ? <CheckCircle size={16} weight="fill" /> : <WarningCircle size={16} weight="fill" />} {msg.ok ?? msg.err}</div>}
+        {msg && <div style={{ ...ui.notice, ...(msg.ok ? { background: 'var(--accent-bg)', borderColor: 'var(--accent-border)', color: 'var(--accent-text)' } : { background: tint('var(--danger)', 8), borderColor: tint('var(--danger)', 30), color: 'var(--danger)' }) }}>{msg.ok ? <CheckCircle size={16} weight="fill" style={{ flexShrink: 0, marginTop: '1px' }} /> : <WarningCircle size={16} weight="fill" style={{ flexShrink: 0, marginTop: '1px' }} />} <span>{msg.ok ?? msg.err}</span></div>}
       </div>
     </div>
   )

@@ -46,7 +46,7 @@ export interface ContactRow {
 }
 export interface Stats { sentToday: number; sent7: number; sent30: number; errors7: number; replies30: number; contacted30: number }
 export interface SettingsRow { daily_cap: number; send_days: number[]; paused: boolean; signature: string | null; last_run_at: string | null; last_run_summary: string | null }
-export interface MailConfig { configured: boolean; from: string | null; placesKey: boolean }
+export interface MailConfig { configured: boolean; from: string | null; host: string | null; placesKey: boolean }
 
 export const STAGE_COLOR: Record<Stage, string> = {
   a_trouver: 'var(--text-3)',

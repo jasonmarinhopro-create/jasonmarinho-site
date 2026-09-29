@@ -123,7 +123,17 @@ export interface RunSummary {
   sent: number
   errors: number
   skipped?: string
+  /** Envois encore dus quand le temps du passage est écoulé : relancer un passage */
+  more?: boolean
 }
+
+/**
+ * Écart entre deux envois. Les boîtes mutualisées limitent le débit
+ * (Hostinger Business Email : 10 e-mails par minute, 100 par jour sur
+ * l'offre gratuite) : 6,5 à 8,5 s garde toujours sous 10 par minute.
+ */
+export const SEND_GAP_MS = 6_500
+const SEND_GAP_JITTER_MS = 2_000
 
 const OPEN_FOR_SIGNUP: Stage[] = ['a_trouver', 'a_contacter', 'contacte', 'a_repondu', 'interesse', 'pas_interesse']
 
@@ -209,7 +219,7 @@ async function handleInbox(db: Db, settings: Settings): Promise<{ replies: numbe
  * inscriptions automatiques, puis envois dus dans la limite du plafond
  * quotidien et du temps disponible.
  */
-export async function runOutreach(db: Db, opts: { budgetMs?: number; force?: boolean } = {}): Promise<RunSummary> {
+export async function runOutreach(db: Db, opts: { budgetMs?: number; force?: boolean; sendOnly?: boolean } = {}): Promise<RunSummary> {
   const started = Date.now()
   const budget = opts.budgetMs ?? 45_000
   const cfg = outreachConfig()
@@ -217,13 +227,16 @@ export async function runOutreach(db: Db, opts: { budgetMs?: number; force?: boo
   const today = parisToday()
   const summary: RunSummary = { configured: !!cfg, replies: 0, bounces: 0, signups: 0, autoEnrolled: 0, sent: 0, errors: 0 }
 
-  try {
-    const inbox = await handleInbox(db, settings)
-    summary.replies = inbox.replies
-    summary.bounces = inbox.bounces
-  } catch (e) { log.error('lecture de la boîte', e) }
-  try { summary.signups = await syncSignups(db) } catch (e) { log.error('inscriptions', e) }
-  try { summary.autoEnrolled = await autoEnroll(db, today) } catch (e) { log.error('inscription auto', e) }
+  // Passage de relance (suite d'un passage à court de temps) : envois seulement
+  if (!opts.sendOnly) {
+    try {
+      const inbox = await handleInbox(db, settings)
+      summary.replies = inbox.replies
+      summary.bounces = inbox.bounces
+    } catch (e) { log.error('lecture de la boîte', e) }
+    try { summary.signups = await syncSignups(db) } catch (e) { log.error('inscriptions', e) }
+    try { summary.autoEnrolled = await autoEnroll(db, today) } catch (e) { log.error('inscription auto', e) }
+  }
 
   if (!cfg) summary.skipped = 'Boîte d\'envoi non configurée'
   else if (settings.paused) summary.skipped = 'Envois en pause'
@@ -238,7 +251,8 @@ export async function runOutreach(db: Db, opts: { budgetMs?: number; force?: boo
     summary.signups ? `${summary.signups} inscription${summary.signups > 1 ? 's' : ''}` : '',
     summary.skipped ?? '',
   ].filter(Boolean).join(' · ')
-  await db.from('outreach_settings').update({ last_run_at: new Date().toISOString(), last_run_summary: text }).eq('id', 1)
+  const label = `${opts.sendOnly ? 'Suite du passage : ' : ''}${text}${summary.more ? ' · la suite part dans la foulée' : ''}`
+  await db.from('outreach_settings').update({ last_run_at: new Date().toISOString(), last_run_summary: label }).eq('id', 1)
   return summary
 }
 
@@ -285,8 +299,9 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
   const alreadyWritten = new Set((prior ?? []).map(p => p.contact_id))
   const signature = settings.signature?.trim() || DEFAULT_SIGNATURE
 
+  let attempts = 0
   for (const e of due as DueRow[]) {
-    if (remaining <= 0 || Date.now() - started > budget) break
+    if (remaining <= 0) break
     const c = contactMap.get(e.contact_id)
     if (!c || !c.email || blocked.has(c.email_norm) || CLOSED_STAGES.includes(c.stage) || c.stage === 'a_repondu') {
       await db.from('outreach_enrollments').update({ status: 'arretee', stop_reason: 'contact', updated_at: new Date().toISOString() }).eq('id', e.id)
@@ -311,6 +326,12 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
     const urls = unsubscribeUrls(c.unsubscribe_token)
     const footer = complianceFooter({ source: c.source as Source, firstMessage: !alreadyWritten.has(c.id), unsubscribeUrl: urls.page })
     const text = `${renderTemplate(step.body, vars).trim()}\n\n${signature}`
+    // Rythme humain et limite de débit de la boîte : pause avant chaque envoi
+    // sauf le premier, et arrêt propre si la pause dépasse le temps restant.
+    const gap = attempts ? SEND_GAP_MS + Math.floor(Math.random() * SEND_GAP_JITTER_MS) : 0
+    if (Date.now() - started + gap + 5_000 > budget) { summary.more = true; break }
+    if (gap) await new Promise(r => setTimeout(r, gap))
+    attempts++
     try {
       const { messageId } = await sendOutreachMail(cfg, {
         to: c.email, subject, text: `${text}\n\n--\n${footer}`, html: textToHtml(text, footer),
@@ -339,8 +360,6 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
         updated_at: new Date().toISOString(),
       }).eq('id', c.id)
       c.stage = c.stage === 'a_contacter' ? 'contacte' : c.stage
-      // Rythme humain entre deux envois
-      await new Promise(r => setTimeout(r, 1200 + Math.floor(Math.random() * 1500)))
     } catch (err) {
       summary.errors++
       const message = err instanceof Error ? err.message.slice(0, 300) : 'Erreur inconnue'

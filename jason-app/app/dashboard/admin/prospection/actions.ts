@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getServiceClient } from '@/lib/supabase/service'
 import { PLAYBOOK } from '@/lib/outreach/playbook'
 import { enroll, loadSettings, runOutreach, sendTest, setStage, stopEnrollments, type RunSummary } from '@/lib/outreach/service'
+import { relaunchOutreach } from '@/lib/outreach/relaunch'
 import { searchGooglePlaces, searchSirene, findEmailOnSite, type FoundContact } from '@/lib/outreach/sources'
 import type { Audience, Stage } from '@/lib/outreach/engine'
 import type { CsvContact } from '@/lib/outreach/csv'
@@ -335,6 +336,7 @@ export async function runNow(): Promise<Res<RunSummary>> {
   return wrap(async () => {
     const db = await requireAdmin()
     const summary = await runOutreach(db, { budgetMs: 40_000, force: true })
+    if (summary.more) await relaunchOutreach(1, true)
     revalidatePath(PATH)
     return summary
   })
