@@ -216,7 +216,7 @@ function FilterChip({ active, onClick, label, count, color }: { active: boolean;
     <button onClick={onClick} style={{
       ...s.filterChip,
       ...(active ? s.filterChipActive : {}),
-      ...(active && color ? { borderColor: color, color } : {}),
+      ...(active && color ? { border: `1px solid ${color}`, color } : {}),
     }}>
       {label}
       <span style={s.filterChipCount}>{count}</span>
@@ -240,7 +240,7 @@ const s: Record<string, React.CSSProperties> = {
   toolbar: { display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap' as const },
   filterRow: { display: 'flex', gap: '6px', flexWrap: 'wrap' as const },
   filterChip: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '999px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)', fontSize: '12px', fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' },
-  filterChipActive: { background: 'var(--accent-bg)', borderColor: 'var(--accent-text)', color: 'var(--accent-text)', fontWeight: 600 },
+  filterChipActive: { background: 'var(--accent-bg)', border: '1px solid var(--accent-text)', color: 'var(--accent-text)', fontWeight: 600 },
   filterChipCount: { fontSize: '10.5px', fontWeight: 700, padding: '1px 7px', borderRadius: '999px', background: 'rgba(255,255,255,0.06)' },
 
   searchWrap: { position: 'relative', flex: '1 1 240px', maxWidth: '400px' },

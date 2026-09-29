@@ -517,7 +517,7 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
                       <div
                         key={v.id}
                         onClick={() => router.push(`/dashboard/voyageurs/${v.id}`)}
-                        style={{ ...s.tile, opacity: v.bloque ? 0.65 : 1, ...(v.is_flagged ? { borderColor: 'color-mix(in srgb, var(--danger) 35%, transparent)' } : {}) }}
+                        style={{ ...s.tile, opacity: v.bloque ? 0.65 : 1, ...(v.is_flagged ? { border: '1px solid color-mix(in srgb, var(--danger) 35%, transparent)' } : {}) }}
                         className="dash-help-row"
                       >
                         <div style={s.tileActions} onClick={e => e.stopPropagation()}>

@@ -197,7 +197,7 @@ export default function SequencesTab({ audience, sequences, contacts }: { audien
                 const days = cumulative(seq.steps)
                 return (
                   <button key={seq.id} type="button" onClick={() => select(seq.id)} style={{ ...s.seqCard, ...(on ? s.seqCardOn : {}) }}>
-                    <span style={{ ...ui.pill, alignSelf: 'flex-start', ...(seq.enabled ? { color: 'var(--accent-text)', borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' } : {}) }}>
+                    <span style={{ ...ui.pill, alignSelf: 'flex-start', ...(seq.enabled ? { color: 'var(--accent-text)', border: '1px solid var(--accent-border)', background: 'var(--accent-bg)' } : {}) }}>
                       <span style={{ width: 6, height: 6, borderRadius: 9, background: seq.enabled ? 'var(--accent-text)' : 'var(--text-3)' }} /> {seq.enabled ? 'En marche' : 'En pause'}
                     </span>
                     <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text)', lineHeight: 1.35 }}>{seq.nom}</span>
@@ -412,7 +412,9 @@ const s: Record<string, React.CSSProperties> = {
   pathHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', padding: '12px 14px', borderRadius: '14px', background: 'var(--surface)', border: '1px solid var(--border)' },
   groupHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '10px', fontSize: '13px', color: 'var(--text-2)', padding: '0 2px' },
   seqCard: { display: 'flex', flexDirection: 'column', gap: '8px', padding: '14px 16px', borderRadius: '16px', background: 'var(--surface)', border: '1px solid var(--border)', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', width: '100%' },
-  seqCardOn: { borderColor: 'var(--accent-text)', boxShadow: '0 0 0 3px var(--accent-bg)' },
+  // `border` complet, jamais `borderColor` seul : React efface la couleur au
+  // déselectionnement et la bordure restait noire (couleur du texte)
+  seqCardOn: { border: '1px solid var(--accent-text)', boxShadow: '0 0 0 3px var(--accent-bg)' },
   trigLine: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12.5px', color: 'var(--text-2)' },
   dayChip: { fontSize: '11px', fontWeight: 700, padding: '2px 7px', borderRadius: '7px', background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--text-2)' },
   cardFoot: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12.5px', color: 'var(--text-2)', borderTop: '1px solid var(--border)', paddingTop: '8px' },

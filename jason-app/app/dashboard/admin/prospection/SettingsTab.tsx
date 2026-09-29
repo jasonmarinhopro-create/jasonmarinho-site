@@ -147,5 +147,5 @@ const s: Record<string, React.CSSProperties> = {
   code: { fontFamily: 'ui-monospace, Menlo, monospace', fontSize: '12px', padding: '1px 5px', borderRadius: '5px', background: 'var(--bg)', border: '1px solid var(--border)' },
   day: { padding: '7px 12px', borderRadius: '10px', border: '1px solid var(--border)', background: 'var(--surface)', fontSize: '13px', fontWeight: 700, color: 'var(--text-2)', cursor: 'pointer', fontFamily: 'inherit' },
   sigPreview: { display: 'flex', flexDirection: 'column', gap: '2px', padding: '12px 16px 14px', borderRadius: '12px', background: '#FFFFFF', border: '1px solid var(--border)' },
-  dayOn: { background: 'var(--accent-bg)', borderColor: 'var(--accent-text)', color: 'var(--accent-text)' },
+  dayOn: { background: 'var(--accent-bg)', border: '1px solid var(--accent-text)', color: 'var(--accent-text)' },
 }

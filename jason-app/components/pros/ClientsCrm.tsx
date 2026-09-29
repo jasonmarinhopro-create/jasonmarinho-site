@@ -194,7 +194,7 @@ export default function ClientsCrm({ clients: initial, onCreate, onUpdate, onDel
                   const active = form.statut === st
                   return (
                     <button type="button" key={st} onClick={() => setForm(f => ({ ...f, statut: st }))}
-                      style={{ ...s.statutBtn, ...(active ? { color: m.color, background: m.bg, borderColor: m.border, fontWeight: 700 } : {}) }}>
+                      style={{ ...s.statutBtn, ...(active ? { color: m.color, background: m.bg, border: `1px solid ${m.border}`, fontWeight: 700 } : {}) }}>
                       {m.label}
                     </button>
                   )
@@ -282,7 +282,7 @@ export default function ClientsCrm({ clients: initial, onCreate, onUpdate, onDel
                             const active = editForm.statut === st
                             return (
                               <button type="button" key={st} onClick={() => setEditForm(f => ({ ...f, statut: st }))}
-                                style={{ ...s.statutBtn, ...(active ? { color: mm.color, background: mm.bg, borderColor: mm.border, fontWeight: 700 } : {}) }}>
+                                style={{ ...s.statutBtn, ...(active ? { color: mm.color, background: mm.bg, border: `1px solid ${mm.border}`, fontWeight: 700 } : {}) }}>
                                 {mm.label}
                               </button>
                             )

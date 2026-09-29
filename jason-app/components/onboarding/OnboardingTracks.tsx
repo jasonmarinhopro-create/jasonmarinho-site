@@ -238,8 +238,8 @@ export function OnboardingTracks({
                       disabled={step.detect === 'auto' || isLocked}
                       style={{
                         ...s.checkbox,
-                        ...(isDone ? { background: 'var(--accent-text)', borderColor: 'var(--accent-text)', color: 'var(--bg)' } : {}),
-                        ...(isCurrent ? { borderColor: pinnedTrack.color, color: pinnedTrack.color } : {}),
+                        ...(isDone ? { background: 'var(--accent-text)', border: '1px solid var(--accent-text)', color: 'var(--bg)' } : {}),
+                        ...(isCurrent ? { border: `1px solid ${pinnedTrack.color}`, color: pinnedTrack.color } : {}),
                         cursor: step.detect === 'manual' && !isLocked ? 'pointer' : 'default',
                       }}
                       aria-label={isDone ? 'Marquer comme non fait' : 'Marquer comme fait'}

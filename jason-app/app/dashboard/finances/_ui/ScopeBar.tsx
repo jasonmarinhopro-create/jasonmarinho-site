@@ -56,5 +56,5 @@ const s: Record<string, React.CSSProperties> = {
     padding: '7px 13px', borderRadius: 999, border: '1px solid var(--border-2)', background: 'var(--surface)',
     color: 'var(--text-2)', fontSize: 13, fontWeight: 500, fontFamily: 'inherit', cursor: 'pointer', whiteSpace: 'nowrap',
   },
-  pillActive: { background: 'var(--accent-text)', borderColor: 'var(--accent-text)', color: 'var(--bg)', fontWeight: 600 },
+  pillActive: { background: 'var(--accent-text)', border: '1px solid var(--accent-text)', color: 'var(--bg)', fontWeight: 600 },
 }

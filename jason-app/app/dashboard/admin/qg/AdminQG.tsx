@@ -370,7 +370,7 @@ function TabBtn({ active, onClick, icon, label, count, color }: {
       aria-selected={active}
       style={{
         ...s.tabBtn,
-        ...(active ? { borderColor: color, color, background: tint(color, 10) } : {}),
+        ...(active ? { border: `1px solid ${color}`, color, background: tint(color, 10) } : {}),
       }}
     >
       <span aria-hidden="true" style={{ color }}>{icon}</span>
@@ -419,7 +419,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--text-2)',
     fontSize: '13px', fontFamily: 'inherit', cursor: 'pointer',
   },
-  asideRowOn: { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--text)' },
+  asideRowOn: { border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--text)' },
 
   tabs: { display: 'flex', gap: '8px', flexWrap: 'wrap' as const },
   tabBtn: {

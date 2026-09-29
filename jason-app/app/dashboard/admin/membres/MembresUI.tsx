@@ -284,7 +284,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
                 ...s.statChip,
                 cursor: f ? 'pointer' : 'default',
                 fontFamily: 'inherit', textAlign: 'left' as const,
-                ...(active ? { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' } : {}),
+                ...(active ? { border: '1px solid var(--accent-border)', background: 'var(--accent-bg)' } : {}),
               }}
               title={f ? 'Filtrer la liste' : undefined}
             >
@@ -533,7 +533,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
   return (
     <div
       className="jm-membre-card"
-      style={{ ...s.card, cursor: 'pointer', ...(suspect ? { borderColor: 'var(--danger-border)' } : {}) }}
+      style={{ ...s.card, cursor: 'pointer', ...(suspect ? { border: '1px solid var(--danger-border)' } : {}) }}
       onClick={() => router.push(`/dashboard/admin/membres/${m.id}`)}
       title="Ouvrir la fiche complète"
     >

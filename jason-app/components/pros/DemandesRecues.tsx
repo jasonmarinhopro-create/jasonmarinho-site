@@ -202,7 +202,7 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
                               onClick={() => changeStatus(c.id, st)}
                               style={{
                                 ...s.statusBtn,
-                                ...(active ? { color: m.color, background: m.bg, borderColor: m.border, fontWeight: 700 } : {}),
+                                ...(active ? { color: m.color, background: m.bg, border: `1px solid ${m.border}`, fontWeight: 700 } : {}),
                               }}
                             >
                               {m.label}

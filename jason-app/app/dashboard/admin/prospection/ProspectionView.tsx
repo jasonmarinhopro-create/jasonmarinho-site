@@ -74,7 +74,7 @@ const s: Record<string, React.CSSProperties> = {
   bar: { display: 'flex', flexWrap: 'wrap', gap: '10px 16px', alignItems: 'center', justifyContent: 'space-between' },
   audiences: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
   aud: { display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '8px 13px', borderRadius: '999px', border: '1px solid var(--border)', background: 'var(--surface)', fontSize: '13.5px', fontWeight: 700, color: 'var(--text-2)', cursor: 'pointer', fontFamily: 'inherit' },
-  audOn: { borderColor: 'var(--accent-text)', background: 'var(--accent-bg)', color: 'var(--accent-text)' },
+  audOn: { border: '1px solid var(--accent-text)', background: 'var(--accent-bg)', color: 'var(--accent-text)' },
   count: { fontSize: '11px', fontWeight: 800, padding: '1px 7px', borderRadius: '999px', background: 'var(--bg)', color: 'var(--text-2)' },
   tabs: { display: 'flex', flexWrap: 'wrap', gap: '4px', padding: '4px', borderRadius: '14px', border: '1px solid var(--border)', background: 'var(--surface)' },
   tab: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 12px', borderRadius: '10px', border: 'none', background: 'transparent', fontSize: '13px', fontWeight: 700, color: 'var(--text-2)', cursor: 'pointer', fontFamily: 'inherit' },

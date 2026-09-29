@@ -262,7 +262,7 @@ function FilterChip({ active, onClick, label, count, color }: { active: boolean;
     <button onClick={onClick} style={{
       ...s.filterChip,
       ...(active ? s.filterChipActive : {}),
-      ...(active && color ? { borderColor: color, color } : {}),
+      ...(active && color ? { border: `1px solid ${color}`, color } : {}),
     }}>
       {label}
       <span style={s.filterChipCount}>{count}</span>

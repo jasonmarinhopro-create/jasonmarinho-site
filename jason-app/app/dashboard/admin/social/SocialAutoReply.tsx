@@ -246,7 +246,7 @@ const s: Record<string, any> = {
     padding: '7px 14px', borderRadius: 100, fontSize: 13, fontWeight: 500,
     border: '1px solid var(--border)', background: 'var(--bg-2)', color: 'var(--text-2)', cursor: 'pointer',
   },
-  pillActive: { background: 'var(--accent-text)', color: 'var(--bg)', borderColor: 'var(--accent-text)' },
+  pillActive: { background: 'var(--accent-text)', color: 'var(--bg)', border: '1px solid var(--accent-text)' },
   input: {
     width: '100%', padding: '9px 12px', borderRadius: 9, border: '1px solid var(--border)',
     background: 'var(--bg-2)', color: 'var(--text)', fontSize: 13.5, fontFamily: 'inherit',

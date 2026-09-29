@@ -377,11 +377,11 @@ export default function SecuriteView({ totalNegative, totalPositive, myReports, 
               )}
               <div style={s.segment} role="tablist" aria-label="Type de retour">
                 <button type="button" role="tab" aria-selected={mode === 'probleme'} onClick={() => { setMode(m => m === 'probleme' ? null : 'probleme'); setForm(f => ({ ...f, incident_type: '' })) }}
-                  style={{ ...s.segBtn, ...(mode === 'probleme' ? { background: 'var(--danger-bg)', color: RED, borderColor: 'rgba(239,68,68,0.35)' } : {}) }}>
+                  style={{ ...s.segBtn, ...(mode === 'probleme' ? { background: 'var(--danger-bg)', color: RED, border: '1px solid rgba(239,68,68,0.35)' } : {}) }}>
                   <Warning size={16} weight={mode === 'probleme' ? 'fill' : 'regular'} /> J&apos;ai eu un problème
                 </button>
                 <button type="button" role="tab" aria-selected={mode === 'positif'} onClick={() => { setMode(m => m === 'positif' ? null : 'positif'); setForm(f => ({ ...f, incident_type: POSITIVE_TYPES[0] })) }}
-                  style={{ ...s.segBtn, ...(mode === 'positif' ? { background: 'var(--accent-bg)', color: 'var(--accent-text)', borderColor: 'var(--accent-border)' } : {}) }}>
+                  style={{ ...s.segBtn, ...(mode === 'positif' ? { background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)' } : {}) }}>
                   <Star size={16} weight={mode === 'positif' ? 'fill' : 'regular'} /> Tout s&apos;est bien passé
                 </button>
               </div>

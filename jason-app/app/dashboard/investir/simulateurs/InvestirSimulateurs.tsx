@@ -51,5 +51,5 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)',
     fontSize: 13.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
   },
-  tabActive: { background: 'var(--accent-bg)', color: 'var(--accent-text)', borderColor: 'var(--accent-border)' },
+  tabActive: { background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)' },
 }

@@ -2069,7 +2069,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                         style={{
                           ...s.checklistBtn,
                           ...(incExpanded ? s.checklistBtnActive : {}),
-                          ...(hasOpen ? { color: 'var(--danger)', borderColor: 'color-mix(in srgb, var(--danger) 40%, transparent)' } : {}),
+                          ...(hasOpen ? { color: 'var(--danger)', border: '1px solid color-mix(in srgb, var(--danger) 40%, transparent)' } : {}),
                         }}
                         title="Incidents du séjour"
                       >

@@ -605,7 +605,7 @@ function ReservationDrawer({ r, today, logementId, onClose, onAttachGuest }: {
             <span style={{ ...d.pill, color: platform.color, borderColor: `color-mix(in srgb, ${platform.color} 35%, transparent)`, background: 'var(--surface)' }}>
               <span style={{ ...c.dot, background: platform.color }} /> {platform.label}
             </span>
-            <span style={{ ...d.pill, ...(status === 'ongoing' ? { color: 'var(--accent-text)', borderColor: 'var(--accent-border)' } : {}) }}>{st.label}</span>
+            <span style={{ ...d.pill, ...(status === 'ongoing' ? { color: 'var(--accent-text)', border: '1px solid var(--accent-border)' } : {}) }}>{st.label}</span>
             <span style={{ flex: 1 }} />
             <button onClick={onClose} style={d.closeBtn} aria-label="Fermer"><X size={16} weight="bold" /></button>
           </div>
@@ -867,7 +867,7 @@ const c: Record<string, React.CSSProperties> = {
     width: 52, flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
     padding: '8px 0', borderRadius: 12, background: 'var(--surface)', border: '1px solid var(--border)',
   },
-  dateTileOn: { background: 'var(--accent-bg)', borderColor: 'var(--accent-border)' },
+  dateTileOn: { background: 'var(--accent-bg)', border: '1px solid var(--accent-border)' },
   dateDay: { fontFamily: 'var(--font-fraunces), serif', fontSize: 22, lineHeight: 1, color: 'var(--text)' },
   dateMonth: { fontSize: 11, fontWeight: 600, color: 'var(--text-3)', marginTop: 3 },
   name: { fontSize: 15, fontWeight: 600, color: 'var(--text)', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },

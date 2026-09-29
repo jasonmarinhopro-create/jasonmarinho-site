@@ -592,7 +592,7 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
                         key={iso}
                         type="button"
                         onClick={() => setCadenceWeekdays(prev => active ? prev.filter(d => d !== iso) : [...prev, iso].sort())}
-                        style={{ ...s.dayChip, ...(active ? { background: 'var(--accent-text)', color: 'var(--bg)', borderColor: 'var(--accent-text)' } : {}) }}
+                        style={{ ...s.dayChip, ...(active ? { background: 'var(--accent-text)', color: 'var(--bg)', border: '1px solid var(--accent-text)' } : {}) }}
                       >
                         {label}
                       </button>
@@ -679,7 +679,7 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
                       <button
                         key={p}
                         onClick={() => setPreviewPlatform(p)}
-                        style={{ ...s.previewTab, ...(activePreview === p ? { borderColor: meta.color, color: meta.color } : {}) }}
+                        style={{ ...s.previewTab, ...(activePreview === p ? { border: `1px solid ${meta.color}`, color: meta.color } : {}) }}
                       >
                         {meta.label}
                       </button>

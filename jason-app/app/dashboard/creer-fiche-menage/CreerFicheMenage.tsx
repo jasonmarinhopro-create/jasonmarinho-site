@@ -249,6 +249,6 @@ const s: Record<string, React.CSSProperties> = {
   hint: { fontSize: 11.5, color: 'var(--text-muted)', lineHeight: 1.5 },
   chipRow: { display: 'flex', flexWrap: 'wrap' as const, gap: 6 },
   chip: { padding: '6px 11px', border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text-2)', borderRadius: 999, fontSize: 12.5, cursor: 'pointer', fontFamily: 'inherit' },
-  chipOn: { background: 'var(--accent-text)', color: 'var(--bg)', borderColor: 'var(--accent-text)' },
+  chipOn: { background: 'var(--accent-text)', color: 'var(--bg)', border: '1px solid var(--accent-text)' },
   btn: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '13px 22px', background: 'var(--accent-text)', color: 'var(--bg)', fontWeight: 600, fontSize: 14.5, border: 'none', borderRadius: 10, marginTop: 8 },
 }

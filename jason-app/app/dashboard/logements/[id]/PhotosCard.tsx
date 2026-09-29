@@ -207,7 +207,7 @@ function Viewer({ photos, index, cover, onIndex, onClose, onCover, onRemove }: {
 
 const s: Record<string, React.CSSProperties> = {
   card: { display: 'flex', flexDirection: 'column', gap: 10, padding: 10, borderRadius: 18, background: 'var(--surface)', border: '1px solid var(--border)', width: '100%', minWidth: 0, boxSizing: 'border-box' },
-  dragOn: { borderColor: 'var(--accent-text)', boxShadow: '0 0 0 3px var(--accent-bg)' },
+  dragOn: { border: '1px solid var(--accent-text)', boxShadow: '0 0 0 3px var(--accent-bg)' },
   empty: {
     display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, textAlign: 'center',
     minHeight: 200, padding: '22px 18px', borderRadius: 12, border: '1.5px dashed var(--accent-border)', background: 'var(--accent-bg)',

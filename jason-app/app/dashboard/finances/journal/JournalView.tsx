@@ -460,7 +460,7 @@ const s: Record<string, React.CSSProperties> = {
   toolbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', padding: 16 },
   filters: { display: 'flex', gap: 4, overflowX: 'auto', maxWidth: '100%' },
   filter: { padding: '6px 12px', borderRadius: 999, border: '1px solid var(--border)', background: 'var(--surface)', fontSize: 13, color: 'var(--text-3)', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' },
-  filterActive: { background: 'var(--accent-bg)', borderColor: 'var(--accent-border)', color: 'var(--accent-text)', fontWeight: 600 },
+  filterActive: { background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)', fontWeight: 600 },
   search: { display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg)' },
   searchInput: { flex: 1, border: 'none', outline: 'none', background: 'transparent', color: 'var(--text)', fontSize: 13.5, fontFamily: 'inherit', minWidth: 0 },
   monthHead: { display: 'flex', justifyContent: 'space-between', gap: 8, padding: '10px 16px', background: 'var(--bg-2)', fontSize: 12.5, fontWeight: 700, color: 'var(--text-2)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' },

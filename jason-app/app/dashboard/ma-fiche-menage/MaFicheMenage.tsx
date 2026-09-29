@@ -419,7 +419,7 @@ const s: Record<string, React.CSSProperties> = {
   input: { padding: '10px 12px', border: '1px solid var(--border)', borderRadius: 8, background: 'var(--bg)', color: 'var(--text)', fontSize: 14, fontFamily: 'inherit', width: '100%' },
   chipGrid: { display: 'flex', flexWrap: 'wrap' as const, gap: 8, padding: 10, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8 },
   chip: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 13px', borderRadius: 999, background: 'transparent', border: '1px solid var(--border)', fontSize: 12.5, color: 'var(--text-2)', cursor: 'pointer' },
-  chipOn: { background: 'var(--accent-bg)', borderColor: 'var(--accent-border)', color: 'var(--accent-text)', fontWeight: 600 },
+  chipOn: { background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)', fontWeight: 600 },
   rcRow: { display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 10, fontSize: 13.5, color: 'var(--text)', cursor: 'pointer' },
   actions: { display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 10 },
   btnPrimary: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 18px', background: 'var(--accent-text)', color: 'var(--bg)', border: 'none', borderRadius: 8, fontSize: 13.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
