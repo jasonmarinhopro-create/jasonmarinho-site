@@ -91,7 +91,7 @@ jobs:
                     left=$(echo "$res" | jq -r '.reste_a_visiter // 0' 2>/dev/null || echo 0)
                     [ "$left" -gt 0 ] || break
                   done
-                  sleep 2
+                  sleep 8
                 done
               done
               echo "Total ajouté : $total contacts"

@@ -122,13 +122,21 @@ async function importFromOsm(db: Db, audience: Audience | undefined, ville: stri
   const sel = audience === 'photographe'
     ? `nwr["craft"="photographer"](area.a);nwr["shop"="photo"](area.a);`
     : `nwr["craft"="cleaning"](area.a);nwr["office"]["name"~"${re}",i](area.a);nwr["craft"]["name"~"${re}",i](area.a);nwr["shop"]["name"~"conciergerie|ménage|menage",i](area.a);`
-  const ql = `[out:json][timeout:25];area["name"="${city}"]["boundary"="administrative"]["admin_level"="8"]->.a;(${sel});out tags 300;`
-  const res = await fetch('https://overpass-api.de/api/interpreter', {
-    method: 'POST', body: `data=${encodeURIComponent(ql)}`,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'JasonMarinhoBot/1.0 (+https://jasonmarinho.com)' },
-    cache: 'no-store', signal: AbortSignal.timeout(30_000),
-  })
-  if (!res.ok) throw new Error(`OpenStreetMap indisponible (${res.status})`)
+  const ql = `[out:json][timeout:20];area["name"="${city}"]["boundary"="administrative"]["admin_level"="8"]->.a;(${sel});out tags 300;`
+  // Serveur principal souvent saturé (504, 429) : serveurs miroirs en secours
+  let res: Response | null = null
+  for (const endpoint of ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter']) {
+    if (Date.now() - started > 25_000) break
+    try {
+      res = await fetch(endpoint, {
+        method: 'POST', body: `data=${encodeURIComponent(ql)}`,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'JasonMarinhoBot/1.0 (+https://jasonmarinho.com)' },
+        cache: 'no-store', signal: AbortSignal.timeout(20_000),
+      })
+      if (res.ok) break
+    } catch { res = null }
+  }
+  if (!res || !res.ok) throw new Error(`OpenStreetMap indisponible (${res?.status ?? 'délai dépassé'})`)
   const data = await res.json() as { elements?: Array<{ tags?: Record<string, string> }> }
   const cands: Candidate[] = (data.elements ?? []).map(e => {
     const t = e.tags ?? {}
