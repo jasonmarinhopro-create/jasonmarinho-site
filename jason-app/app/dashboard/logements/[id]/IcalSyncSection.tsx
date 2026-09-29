@@ -1,9 +1,12 @@
 'use client'
 
+// État de synchronisation des calendriers Airbnb / Booking / Vrbo d'un
+// logement, affiché dans la carte « Calendriers connectés » de la fiche
+// (les liens eux-mêmes se modifient dans cette carte, LogementDetail.tsx).
+
 import { useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ArrowsClockwise, CheckCircle, Warning, CalendarBlank, Link as LinkIcon } from '@phosphor-icons/react/dist/ssr'
+import { ArrowsClockwise, CheckCircle, Warning } from '@phosphor-icons/react/dist/ssr'
 import type { LogementIcalFeedStatus } from '../actions'
 import { syncLogementIcalFeeds } from '../actions'
 
@@ -12,14 +15,8 @@ interface Props {
   status: LogementIcalFeedStatus[]
 }
 
-const SOURCE_BG: Record<string, string> = {
-  airbnb:  'color-mix(in srgb, #E0475B 10%, transparent)',
-  booking: 'color-mix(in srgb, #D97706 10%, transparent)',
-  vrbo:    'color-mix(in srgb, #8B6D5E 12%, transparent)',
-  autre:   'var(--accent-bg)',
-}
-
-const SOURCE_FG: Record<string, string> = {
+// Mêmes couleurs de plateforme que le calendrier (lib/ical/calendar-label.ts)
+export const SOURCE_FG: Record<string, string> = {
   airbnb:  '#E0475B',
   booking: '#D97706',
   vrbo:    '#8B6D5E',
@@ -34,47 +31,16 @@ function fmtRelative(iso: string | null): string {
   if (min < 1) return 'À l\'instant'
   if (min < 60) return `Il y a ${min} min`
   const h = Math.floor(min / 60)
-  if (h < 24) return `Il y a ${h}h`
+  if (h < 24) return `Il y a ${h} h`
   const days = Math.floor(h / 24)
-  if (days < 7) return `Il y a ${days}j`
-  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
+  if (days < 7) return `Il y a ${days} j`
+  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Paris' })
 }
 
 export default function IcalSyncSection({ logementId, status }: Props) {
   const router = useRouter()
   const [syncing, setSyncing] = useState(false)
   const [feedback, setFeedback] = useState<{ ok?: string; err?: string } | null>(null)
-
-  if (status.length === 0) {
-    return (
-      <div style={section}>
-        <div style={sectionHeader}>
-          <h3 style={sectionTitle}>
-            <CalendarBlank size={15} weight="fill" />
-            Synchronisation calendrier
-          </h3>
-        </div>
-        <div style={emptyBox}>
-          <LinkIcon size={20} weight="duotone" color="var(--text-muted)" />
-          <div>
-            <div style={{ fontSize: '13px', color: 'var(--text)', fontWeight: 500, marginBottom: '4px' }}>
-              Aucune URL iCal configurée
-            </div>
-            <div style={{ fontSize: '12px', color: 'var(--text-2)', lineHeight: 1.5 }}>
-              <Link
-                href={`/dashboard/logements?edit=${logementId}&from=detail`}
-                style={{ color: 'var(--accent-text)', fontWeight: 500 }}
-              >
-                Ajoute le lien iCal
-              </Link>{' '}
-              de ton annonce Airbnb, Booking ou Vrbo pour importer
-              automatiquement les dates réservées.
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   async function handleSyncAll() {
     setSyncing(true)
@@ -85,7 +51,7 @@ export default function IcalSyncSection({ logementId, status }: Props) {
     } else if (res.errors.length > 0) {
       setFeedback({ err: res.errors.join(' · ') })
     } else {
-      setFeedback({ ok: `${res.synced} événement${res.synced > 1 ? 's' : ''} importé${res.synced > 1 ? 's' : ''}` })
+      setFeedback({ ok: `${res.synced} date${res.synced > 1 ? 's' : ''} importée${res.synced > 1 ? 's' : ''}` })
     }
     setSyncing(false)
     router.refresh()
@@ -93,224 +59,61 @@ export default function IcalSyncSection({ logementId, status }: Props) {
   }
 
   return (
-    <div style={section}>
-      <div style={sectionHeader}>
-        <h3 style={sectionTitle}>
-          <CalendarBlank size={15} weight="fill" />
-          Synchronisation calendrier
-        </h3>
-        <button
-          type="button"
-          onClick={handleSyncAll}
-          disabled={syncing}
-          style={{
-            ...syncBtn,
-            opacity: syncing ? 0.6 : 1,
-            cursor: syncing ? 'wait' : 'pointer',
-          }}
-        >
-          <ArrowsClockwise
-            size={12}
-            weight="bold"
-            style={syncing ? { animation: 'spin 0.8s linear infinite' } : undefined}
-          />
-          {syncing ? 'Synchronisation…' : 'Synchroniser maintenant'}
-        </button>
-      </div>
-
-      <div style={feedsList}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div style={feedsGrid}>
         {status.map(f => {
           const synced = !!f.lastSynced
+          const c = SOURCE_FG[f.source] ?? 'var(--accent-text)'
           return (
-            <div key={f.source} style={feedRow}>
-              <span style={{
-                ...sourceChip,
-                background: SOURCE_BG[f.source] ?? 'var(--surface)',
-                color: SOURCE_FG[f.source] ?? 'var(--text)',
-                borderColor: SOURCE_FG[f.source] ?? 'var(--border)',
-              }}>
-                {f.label}
-              </span>
-              <div style={feedInfo}>
-                <span style={{
-                  ...syncStatus,
-                  color: synced ? 'var(--accent-text)' : 'var(--text-muted)',
-                }}>
-                  {synced ? <CheckCircle size={11} weight="fill" /> : <Warning size={11} weight="fill" />}
-                  {fmtRelative(f.lastSynced)}
-                </span>
-                {synced && (
-                  <span style={eventCount}>
-                    {f.eventsCount} évén.{f.eventsCount > 1 ? '' : ''}
-                  </span>
-                )}
+            <div key={f.source} style={{ ...feedTile, borderColor: `color-mix(in srgb, ${c} 30%, var(--border))` }}>
+              <span style={{ ...dot, background: c }} />
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ fontSize: '13.5px', fontWeight: 600, color: 'var(--text)' }}>{f.label}</div>
+                <div style={{ ...syncStatus, color: synced ? 'var(--accent-text)' : 'var(--text-3)' }}>
+                  {synced ? <CheckCircle size={12} weight="fill" /> : <Warning size={12} weight="fill" />}
+                  <span suppressHydrationWarning>{fmtRelative(f.lastSynced)}</span>
+                  {synced && <span style={{ color: 'var(--text-3)' }}>· {f.eventsCount} date{f.eventsCount > 1 ? 's' : ''}</span>}
+                </div>
               </div>
             </div>
           )
         })}
       </div>
 
-      {feedback?.ok && (
-        <div style={feedbackOk}>
-          <CheckCircle size={12} weight="fill" />
-          {feedback.ok}
-        </div>
-      )}
-      {feedback?.err && (
-        <div style={feedbackErr}>
-          <Warning size={12} weight="fill" />
-          {feedback.err}
-        </div>
-      )}
-
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+        <button
+          type="button"
+          onClick={handleSyncAll}
+          disabled={syncing}
+          style={{ ...syncBtn, opacity: syncing ? 0.6 : 1, cursor: syncing ? 'wait' : 'pointer' }}
+        >
+          <ArrowsClockwise size={13} weight="bold" style={syncing ? { animation: 'spin 0.8s linear infinite' } : undefined} />
+          {syncing ? 'Synchronisation…' : 'Synchroniser maintenant'}
+        </button>
+        {feedback?.ok && <span style={{ ...fb, color: 'var(--accent-text)' }}><CheckCircle size={13} weight="fill" /> {feedback.ok}</span>}
+        {feedback?.err && <span style={{ ...fb, color: 'var(--danger-text)' }}><Warning size={13} weight="fill" /> {feedback.err}</span>}
+      </div>
       <p style={hint}>
-        Les dates sont importées automatiquement à chaque sauvegarde. La synchro n&apos;est pas
-        temps réel : utilisez « Synchroniser » avant de proposer un créneau à un client.
+        Les dates se mettent à jour toutes seules plusieurs fois par jour. Synchronise à la main avant
+        de confirmer une réservation en direct.
       </p>
-
-      <style jsx>{`
-        @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
-      `}</style>
     </div>
   )
 }
 
-// ─── Styles ───────────────────────────────────────────────────────────────────
-
-const section: React.CSSProperties = {
-  background: 'var(--surface)',
-  border: '1px solid var(--border-2)',
-  borderRadius: '14px',
-  padding: '18px 20px',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '12px',
+const feedsGrid: React.CSSProperties = {
+  display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 200px), 1fr))', gap: '8px',
 }
-
-const sectionHeader: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  gap: '12px',
-  flexWrap: 'wrap',
+const feedTile: React.CSSProperties = {
+  display: 'flex', alignItems: 'center', gap: '10px', padding: '11px 13px',
+  background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '12px',
 }
-
-const sectionTitle: React.CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '8px',
-  fontFamily: 'var(--font-fraunces), serif',
-  fontSize: '15px',
-  fontWeight: 500,
-  color: 'var(--text)',
-  margin: 0,
-}
-
+const dot: React.CSSProperties = { width: '10px', height: '10px', borderRadius: '999px', flexShrink: 0 }
+const syncStatus: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', marginTop: '2px', flexWrap: 'wrap' }
 const syncBtn: React.CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '6px',
-  padding: '6px 12px',
-  fontSize: '12px',
-  fontWeight: 600,
-  color: 'var(--bg)',
-  background: 'var(--accent-text)',
-  border: 'none',
-  borderRadius: '8px',
+  display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 13px', fontSize: '12.5px', fontWeight: 600,
+  color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: '10px',
   fontFamily: 'inherit',
-  transition: 'opacity 0.15s ease',
 }
-
-const feedsList: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '8px',
-}
-
-const feedRow: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '12px',
-  padding: '10px 12px',
-  background: 'var(--bg-2)',
-  border: '1px solid var(--border)',
-  borderRadius: '10px',
-  fontSize: '13px',
-}
-
-const sourceChip: React.CSSProperties = {
-  fontSize: '11.5px',
-  fontWeight: 600,
-  padding: '3px 9px',
-  borderRadius: '999px',
-  border: '1px solid',
-  whiteSpace: 'nowrap',
-}
-
-const feedInfo: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '12px',
-  marginLeft: 'auto',
-  fontSize: '12px',
-  color: 'var(--text-2)',
-}
-
-const syncStatus: React.CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '5px',
-  fontWeight: 500,
-}
-
-const eventCount: React.CSSProperties = {
-  padding: '2px 7px',
-  background: 'var(--surface)',
-  borderRadius: '6px',
-  fontSize: '11.5px',
-  fontWeight: 500,
-  color: 'var(--text)',
-}
-
-const emptyBox: React.CSSProperties = {
-  display: 'flex',
-  gap: '12px',
-  padding: '14px',
-  background: 'var(--bg-2)',
-  border: '1px dashed var(--border)',
-  borderRadius: '10px',
-  alignItems: 'flex-start',
-}
-
-const feedbackOk: React.CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '6px',
-  padding: '7px 11px',
-  fontSize: '12px',
-  fontWeight: 500,
-  color: 'var(--accent-text)',
-  background: 'color-mix(in srgb, var(--accent-text) 8%, transparent)',
-  border: '1px solid color-mix(in srgb, var(--accent-text) 20%, transparent)',
-  borderRadius: '8px',
-}
-
-const feedbackErr: React.CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '6px',
-  padding: '7px 11px',
-  fontSize: '12px',
-  fontWeight: 500,
-  color: 'var(--danger)',
-  background: 'color-mix(in srgb, var(--danger) 8%, transparent)',
-  border: '1px solid color-mix(in srgb, var(--danger) 20%, transparent)',
-  borderRadius: '8px',
-}
-
-const hint: React.CSSProperties = {
-  fontSize: '11.5px',
-  color: 'var(--text-muted)',
-  lineHeight: 1.5,
-  margin: 0,
-}
+const fb: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '12.5px', fontWeight: 600 }
+const hint: React.CSSProperties = { fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.5, margin: 0 }

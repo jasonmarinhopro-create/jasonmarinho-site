@@ -49,14 +49,18 @@ export default function SibaConfigCard({ logementId, initial, configured }: Prop
     setConfig(c => ({ ...c, [k]: v }))
 
   return (
-    <div style={s.card}>
+    <div id="siba" style={s.card}>
       <button onClick={() => setOpen(v => !v)} style={s.head}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <PaperPlaneTilt size={15} weight="fill" color="var(--accent-text)" />
-          <span style={s.title}>Déclarations SIBA (Portugal)</span>
-          {configured
-            ? <span style={s.badgeOk}><Check size={11} weight="bold" /> Configuré</span>
-            : <span style={s.badgeTodo}>À configurer</span>}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0, textAlign: 'left' }}>
+          <span style={s.iconBox}><PaperPlaneTilt size={16} weight="fill" /></span>
+          <div style={{ minWidth: 0 }}>
+            <span style={s.title}>Déclarations SIBA</span>
+            <div style={{ marginTop: '4px' }}>
+              {configured
+                ? <span style={s.badgeOk}><Check size={11} weight="bold" /> Configuré</span>
+                : <span style={s.badgeTodo}>À configurer</span>}
+            </div>
+          </div>
         </div>
         {open ? <CaretUp size={14} /> : <CaretDown size={14} />}
       </button>
@@ -115,34 +119,39 @@ function Field({ label, value, onChange, placeholder }: {
 const s: Record<string, React.CSSProperties> = {
   card: {
     background: 'var(--surface)',
-    border: '1px solid var(--border-2)',
-    borderRadius: '14px',
-    margin: '0 var(--dash-page-px, 24px) 24px',
+    border: '1px solid var(--border)',
+    borderRadius: '18px',
     overflow: 'hidden',
+    scrollMarginTop: '90px',
+  },
+  iconBox: {
+    width: '36px', height: '36px', borderRadius: '11px', flexShrink: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    background: 'var(--accent-bg)', color: 'var(--accent-text)',
   },
   head: {
     width: '100%',
     display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px',
-    padding: '14px 18px',
+    padding: '18px 22px',
     background: 'transparent', border: 'none', cursor: 'pointer',
     color: 'var(--text-2)', fontFamily: 'var(--font-outfit), sans-serif',
   },
-  title: { fontSize: '13.5px', fontWeight: 700, color: 'var(--text)' },
+  title: { fontFamily: 'var(--font-fraunces), serif', fontSize: '18px', fontWeight: 400, color: 'var(--text)' },
   badgeOk: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
-    fontSize: '10.5px', fontWeight: 700, color: 'var(--success-1)',
-    background: 'var(--success-bg, rgba(16,185,129,0.10))',
-    border: '1px solid var(--success-border, rgba(16,185,129,0.3))',
+    fontSize: '10.5px', fontWeight: 700, color: 'var(--accent-text)',
+    background: 'var(--accent-bg)',
+    border: '1px solid var(--accent-border)',
     borderRadius: '999px', padding: '2px 8px',
   },
   badgeTodo: {
-    fontSize: '10.5px', fontWeight: 700, color: 'var(--warning)',
-    background: 'var(--warning-bg, rgba(245,158,11,0.10))',
-    border: '1px solid rgba(245,158,11,0.3)',
+    fontSize: '10.5px', fontWeight: 700, color: '#8A5A12',
+    background: 'color-mix(in srgb, #B7791F 12%, transparent)',
+    border: '1px solid color-mix(in srgb, #B7791F 30%, transparent)',
     borderRadius: '999px', padding: '2px 8px',
   },
   body: {
-    padding: '0 18px 18px',
+    padding: '0 22px 20px',
     display: 'flex', flexDirection: 'column', gap: '14px',
   },
   hint: { fontSize: '12.5px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.55 },

@@ -1,11 +1,15 @@
 'use client'
 
-import { ReactNode, useEffect, useState } from 'react'
-import { PencilSimple } from '@phosphor-icons/react/dist/ssr'
+import { ReactNode, useEffect, useRef, useState } from 'react'
+import { PencilSimple, Check } from '@phosphor-icons/react/dist/ssr'
 
 type Props = {
   title: ReactNode
   icon?: ReactNode
+  /** Une ligne sous le titre : à quoi sert la section */
+  subtitle?: ReactNode
+  /** Ancre de la carte (`#id`). `#modifier-<id>` ouvre directement le formulaire. */
+  id?: string
   view: ReactNode
   edit: ReactNode
   onSave: () => Promise<{ error?: string } | void>
@@ -13,12 +17,16 @@ type Props = {
   /** When true, the card has no value to display in view mode — show a CTA. */
   emptyView?: ReactNode
   hasValue?: boolean
+  /** Libellé du bouton quand la section est vide (« Ajouter… ») */
+  addLabel?: string
 }
 
-export function EditableCard({ title, icon, view, edit, onSave, onCancel, emptyView, hasValue = true }: Props) {
+export function EditableCard({ title, icon, subtitle, id, view, edit, onSave, onCancel, emptyView, hasValue = true, addLabel }: Props) {
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [saved, setSaved] = useState(false)
+  const ref = useRef<HTMLElement>(null)
 
   useEffect(() => {
     if (!editing) return
@@ -29,6 +37,20 @@ export function EditableCard({ title, icon, view, edit, onSave, onCancel, emptyV
     return () => window.removeEventListener('keydown', onKey)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editing])
+
+  // Lien « À compléter » de la fiche : #modifier-<id> ouvre le formulaire
+  useEffect(() => {
+    if (!id) return
+    const open = () => {
+      if (window.location.hash !== `#modifier-${id}`) return
+      setEditing(true)
+      ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      window.history.replaceState(null, '', `#${id}`)
+    }
+    open()
+    window.addEventListener('hashchange', open)
+    return () => window.removeEventListener('hashchange', open)
+  }, [id])
 
   async function handleSave() {
     setSaving(true)
@@ -41,6 +63,8 @@ export function EditableCard({ title, icon, view, edit, onSave, onCancel, emptyV
         return
       }
       setEditing(false)
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2200)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erreur inattendue')
     }
@@ -53,22 +77,28 @@ export function EditableCard({ title, icon, view, edit, onSave, onCancel, emptyV
     setError(null)
   }
 
+  const empty = !hasValue && !editing
+
   return (
-    <div style={card}>
+    <section ref={ref} id={id} style={{ ...card, ...(editing ? cardEditing : {}) }}>
       <header style={header}>
-        <h3 style={titleStyle}>
-          {icon}
-          {title}
-        </h3>
-        {!editing && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
+          {icon && <span style={iconBox}>{icon}</span>}
+          <div style={{ minWidth: 0 }}>
+            <h3 style={titleStyle}>{title}</h3>
+            {subtitle && <p style={subtitleStyle}>{subtitle}</p>}
+          </div>
+        </div>
+        {saved && !editing && <span style={savedPill}><Check size={12} weight="bold" /> Enregistré</span>}
+        {!editing && !saved && (
           <button
             type="button"
             onClick={() => setEditing(true)}
-            style={editBtn}
-            aria-label={typeof title === 'string' ? `Modifier ${title}` : 'Modifier la section'}
+            style={empty ? addBtn : editBtn}
+            aria-label={typeof title === 'string' ? `Modifier : ${title}` : 'Modifier la section'}
           >
             <PencilSimple size={13} weight="bold" />
-            <span style={editBtnLabel}>Modifier</span>
+            <span>{empty ? (addLabel ?? 'Compléter') : 'Modifier'}</span>
           </button>
         )}
       </header>
@@ -90,65 +120,88 @@ export function EditableCard({ title, icon, view, edit, onSave, onCancel, emptyV
           </div>
         </footer>
       )}
-    </div>
+    </section>
   )
 }
 
 const card: React.CSSProperties = {
   background: 'var(--surface)',
-  border: '1px solid var(--border-2)',
-  borderRadius: '14px',
-  padding: '18px 20px',
+  border: '1px solid var(--border)',
+  borderRadius: '18px',
+  padding: '20px 22px',
   display: 'flex',
   flexDirection: 'column',
-  gap: '12px',
+  gap: '16px',
+  minWidth: 0,
+  scrollMarginTop: '90px',
+  transition: 'border-color .15s ease, box-shadow .15s ease',
+}
+
+const cardEditing: React.CSSProperties = {
+  borderColor: 'var(--accent-border)',
+  boxShadow: '0 0 0 3px var(--accent-bg)',
 }
 
 const header: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
-  alignItems: 'center',
+  alignItems: 'flex-start',
   gap: '12px',
 }
 
+const iconBox: React.CSSProperties = {
+  width: '36px', height: '36px', borderRadius: '11px', flexShrink: 0,
+  display: 'flex', alignItems: 'center', justifyContent: 'center',
+  background: 'var(--accent-bg)', color: 'var(--accent-text)',
+}
+
 const titleStyle: React.CSSProperties = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '8px',
   fontFamily: 'var(--font-fraunces), serif',
-  fontSize: '15px',
-  fontWeight: 500,
+  fontSize: '18px',
+  fontWeight: 400,
   color: 'var(--text)',
   margin: 0,
+  lineHeight: 1.25,
+}
+
+const subtitleStyle: React.CSSProperties = {
+  fontSize: '12.5px', color: 'var(--text-3)', margin: '3px 0 0', lineHeight: 1.45,
 }
 
 const editBtn: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
   gap: '5px',
-  padding: '5px 10px',
-  fontSize: '11.5px',
-  fontWeight: 500,
+  padding: '6px 11px',
+  fontSize: '12px',
+  fontWeight: 600,
   color: 'var(--text-2)',
   background: 'transparent',
   border: '1px solid var(--border)',
-  borderRadius: '8px',
+  borderRadius: '9px',
   cursor: 'pointer',
   fontFamily: 'inherit',
-  transition: 'all 0.15s ease',
+  flexShrink: 0,
 }
 
-const editBtnLabel: React.CSSProperties = {
-  fontSize: '11.5px',
+const addBtn: React.CSSProperties = {
+  ...editBtn,
+  color: 'var(--accent-text)',
+  background: 'var(--accent-bg)',
+  border: '1px solid var(--accent-border)',
+}
+
+const savedPill: React.CSSProperties = {
+  display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '6px 11px', borderRadius: '9px',
+  fontSize: '12px', fontWeight: 600, color: 'var(--accent-text)', background: 'var(--accent-bg)', flexShrink: 0,
 }
 
 const footer: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   gap: '8px',
-  borderTop: '1px solid var(--border-2)',
-  paddingTop: '12px',
-  marginTop: '4px',
+  borderTop: '1px solid var(--border)',
+  paddingTop: '14px',
 }
 
 const footerActions: React.CSSProperties = {
@@ -159,29 +212,29 @@ const footerActions: React.CSSProperties = {
 
 const errMsg: React.CSSProperties = {
   fontSize: '12.5px',
-  color: 'var(--danger)',
+  color: 'var(--danger-text)',
 }
 
 const ghostBtn: React.CSSProperties = {
-  padding: '8px 14px',
+  padding: '9px 15px',
   fontSize: '13px',
-  fontWeight: 500,
+  fontWeight: 600,
   color: 'var(--text-2)',
   background: 'transparent',
   border: '1px solid var(--border)',
-  borderRadius: '9px',
+  borderRadius: '10px',
   cursor: 'pointer',
   fontFamily: 'inherit',
 }
 
 const primaryBtn: React.CSSProperties = {
-  padding: '8px 16px',
+  padding: '9px 18px',
   fontSize: '13px',
-  fontWeight: 600,
+  fontWeight: 700,
   color: 'var(--bg)',
   background: 'var(--accent-text)',
   border: 'none',
-  borderRadius: '9px',
+  borderRadius: '10px',
   cursor: 'pointer',
   fontFamily: 'inherit',
 }

@@ -6,6 +6,8 @@ import LogementDetail from './LogementDetail'
 import TitleSetter from '@/components/layout/TitleSetter'
 import SibaConfigCard from '@/components/logements/SibaConfigCard'
 import { getLogementIcalStatus } from '../actions'
+import { icalReservationsForDisplay } from '@/lib/ical/display'
+import { normalizeIcalUrl } from '@/lib/menage/ical-occupations'
 
 export default async function LogementDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -37,7 +39,15 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
 
   // Séjours rattachés (matching par nom, logement_id n'existe pas encore sur sejours)
   // + statut iCal + liste voyageurs pour la modale rapide (en parallèle, indépendants)
-  const [{ data: sejours }, icalStatus, { data: allVoyageurs }] = await Promise.all([
+  // Réservations Airbnb / Booking / Vrbo de CE logement (flux reliés par
+  // l'URL iCal de la fiche), depuis le 1er janvier : prochains séjours et taux
+  // d'occupation de la fiche (avant : seuls les séjours saisis à la main).
+  const today = parisToday()
+  const logementUrls = new Set(
+    [logement.ical_airbnb, logement.ical_booking, logement.ical_vrbo, logement.ical_autre]
+      .map((u: string | null) => normalizeIcalUrl(u)).filter(Boolean),
+  )
+  const [{ data: sejours }, icalStatus, { data: allVoyageurs }, { data: feeds }] = await Promise.all([
     supabase
       .from('sejours')
       .select('id, voyageur_id, logement, date_arrivee, date_depart, montant, contrat_statut, contrat_date_signature, contrat_lien, voyageurs(id, prenom, nom, email, telephone)')
@@ -51,7 +61,20 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
       .select('id, prenom, nom, email, telephone')
       .eq('user_id', profile.userId)
       .order('nom'),
+    supabase.from('ical_feeds').select('id, url, name').eq('user_id', profile.userId),
   ])
+  const myFeeds = (feeds ?? []).filter(f => logementUrls.has(normalizeIcalUrl(f.url)))
+  const { data: events } = myFeeds.length
+    ? await supabase
+        .from('ical_events')
+        .select('id, feed_id, title, description, start_date, end_date')
+        .eq('user_id', profile.userId)
+        .in('feed_id', myFeeds.map(f => f.id))
+        .gte('end_date', `${today.slice(0, 4)}-01-01`)
+        .limit(500)
+    : { data: [] }
+  const icalResas = icalReservationsForDisplay([logement], myFeeds, events ?? [])
+    .map(r => ({ id: r.id, label: r.label, platform: r.platform, dateArrivee: r.dateArrivee, dateDepart: r.dateDepart }))
 
   // Supabase retourne voyageurs sous forme d'array (relation 1-1), on aplatit
   const sejoursList = ((sejours ?? []) as any[]).map(s => ({
@@ -79,11 +102,11 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
         contractsCount={contractsByLogementId?.length ?? 0}
         icalStatus={icalStatus}
         voyageurs={allVoyageurs ?? []}
-        today={parisToday()}
-      />
-      {/* Config SIBA accessible EN AMONT (avant, uniquement via le modal
-          d'une déclaration en attente — impossible si le widget est vide) */}
-      {logement.pays === 'PT' && (
+        today={today}
+        icalResas={icalResas}
+        sideExtra={logement.pays === 'PT' ? (
+        // Config SIBA accessible EN AMONT (avant, uniquement via le modal
+        // d'une déclaration en attente, impossible si le widget est vide)
         <SibaConfigCard
           logementId={logement.id}
           configured={!!(logement.siba_unidade && logement.siba_chave)}
@@ -99,7 +122,8 @@ export default async function LogementDetailPage({ params }: { params: Promise<{
             siba_auto_envoi: logement.siba_auto_envoi ?? true,
           }}
         />
-      )}
+        ) : null}
+      />
     </>
   )
 }

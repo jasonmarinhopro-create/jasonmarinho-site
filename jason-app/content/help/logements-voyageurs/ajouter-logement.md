@@ -3,7 +3,7 @@ title: "Ajouter un logement"
 excerpt: "Où créer ta fiche logement, les champs utiles et ce qu'ils préremplissent ensuite."
 order: 1
 relatedPages: [/dashboard/logements]
-updatedAt: "2026-09-27"
+updatedAt: "2026-09-29"
 ---
 
 ## Pourquoi commencer par le logement
@@ -26,6 +26,18 @@ Ouvre le **sélecteur de logement** en bas du menu, puis **Gérer mes logements*
 - **Code d'accès et Wi-Fi** : pour tes messages d'arrivée
 - **Contacts utiles** : ménage et urgence
 - **Liens de l'annonce** (Airbnb, Booking, site direct, fiche Google) : utilisés par les outils de visibilité
+
+## La fiche du logement
+
+Clique sur un logement pour ouvrir sa fiche. Tout se modifie sur place, carte par carte, avec le bouton **Modifier** (ou **Compléter** quand la carte est vide).
+
+- **Photos** : ajoute jusqu'à 12 photos en cliquant ou en les glissant dans le cadre. Elles sont compressées automatiquement. Clique sur une photo pour l'agrandir, la mettre en couverture ou la supprimer
+- **Ta fiche est presque prête** : la liste de ce qui manque (photos, calendrier, numéro d'enregistrement, arrivée des voyageurs, tarifs, textes du contrat). Un clic ouvre directement la bonne carte
+- **Chiffres de l'année** : montant des séjours saisis, taux d'occupation (réservations Airbnb et Booking comprises), nombre de réservations et prochaine arrivée
+- **Réservations à venir** : tes séjours et tes réservations Airbnb, Booking ou Vrbo synchronisées. Sur une réservation synchronisée, **Compléter** ajoute le voyageur (nom, nationalité, montant) pour que la déclaration parte
+- **Calendriers connectés** : colle ici les liens d'export Airbnb, Booking ou Vrbo, et vérifie la dernière synchronisation
+
+Laisse les **conditions d'annulation** ou le **règlement intérieur** vides si tu veux garder les textes par défaut : l'assistant de contrat les préremplit.
 
 ## Tu gères le logement pour un propriétaire
 

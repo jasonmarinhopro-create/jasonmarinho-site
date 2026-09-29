@@ -68,8 +68,8 @@ export type LogementData = {
   bic?: string | null
 
   // Conditions & règlement
-  reglement_interieur?: string
-  conditions_annulation?: string
+  reglement_interieur?: string | null
+  conditions_annulation?: string | null
   /** Traductions PT/EN, saisies une fois pour toutes sur la fiche — le
    *  sélecteur de langue FR/PT/EN du contrat (/sign/[token]) ne peut pas
    *  traduire un texte libre automatiquement, donc ce sont ces versions
