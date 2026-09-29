@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   addDaysIso, isoWeekday, nextAllowedDay, scheduleStep, afterSend, renderTemplate, guessFirstName,
-  replySubject, complianceFooter, textToHtml, extractEmails, bestEmail, bouncedAddresses, isBounceSender,
+  replySubject, complianceFooter, textToHtml, signatureToHtml, DEFAULT_SIGNATURE, extractEmails, bestEmail, bouncedAddresses, isBounceSender,
 } from './engine'
 
 const WEEK = [1, 2, 3, 4, 5]
@@ -74,6 +74,16 @@ describe('information et désinscription', () => {
     expect(h).toContain('&lt;b&gt;')
     expect(h).toContain('<a href="https://jasonmarinho.com/tarifs">')
     expect(h).toContain('<a href="https://x/d/1">')
+  })
+  it('signature mise en forme comme dans Gmail', () => {
+    const h = signatureToHtml(DEFAULT_SIGNATURE)
+    expect(h).toContain('font-weight:700;">Jason Marinho</div>')
+    expect(h).toContain('href="mailto:contact@jasonmarinho.com"')
+    expect(h).toContain('href="tel:0630212592"')
+    expect(h).toContain('href="https://jasonmarinho.com"')
+    expect(h).toContain('>75015 Paris</div>')
+    expect(signatureToHtml('<script>')).toContain('&lt;script&gt;')
+    expect(textToHtml('Salut', 'Stop', DEFAULT_SIGNATURE)).toContain('Entrepreneur')
   })
 })
 

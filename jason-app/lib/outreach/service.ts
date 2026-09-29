@@ -8,7 +8,7 @@ import { parisToday } from '@/lib/stripe/deposit-window'
 import { logger } from '@/lib/logger'
 import {
   afterSend, complianceFooter, guessFirstName, isoWeekday, renderTemplate, replySubject, scheduleStep,
-  textToHtml, CLOSED_STAGES, type Audience, type Source, type Stage,
+  textToHtml, DEFAULT_SIGNATURE, LEGACY_DEFAULT_SIGNATURE, CLOSED_STAGES, type Audience, type Source, type Stage,
 } from './engine'
 import { isPermanentAddressError, outreachConfig, scanInbox, sendOutreachMail } from './mailer'
 
@@ -33,14 +33,13 @@ export async function loadSettings(db: Db): Promise<Settings> {
     daily_cap: data?.daily_cap ?? 25,
     send_days: data?.send_days ?? [1, 2, 3, 4, 5],
     paused: data?.paused ?? false,
-    signature: data?.signature ?? null,
+    signature: data?.signature && data.signature.trim() !== LEGACY_DEFAULT_SIGNATURE ? data.signature : null,
     last_imap_check: data?.last_imap_check ?? null,
     last_run_at: data?.last_run_at ?? null,
     last_run_summary: data?.last_run_summary ?? null,
   }
 }
 
-export const DEFAULT_SIGNATURE = 'Jason Marinho\nhttps://jasonmarinho.com'
 
 export function unsubscribeUrls(token: string) {
   return {
@@ -325,7 +324,8 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
     const subject = inThread ? replySubject(e.thread_subject || baseSubject) : baseSubject
     const urls = unsubscribeUrls(c.unsubscribe_token)
     const footer = complianceFooter({ source: c.source as Source, firstMessage: !alreadyWritten.has(c.id), unsubscribeUrl: urls.page })
-    const text = `${renderTemplate(step.body, vars).trim()}\n\n${signature}`
+    const bodyText = renderTemplate(step.body, vars).trim()
+    const text = `${bodyText}\n\n${signature}`
     // Rythme humain et limite de débit de la boîte : pause avant chaque envoi
     // sauf le premier, et arrêt propre si la pause dépasse le temps restant.
     const gap = attempts ? SEND_GAP_MS + Math.floor(Math.random() * SEND_GAP_JITTER_MS) : 0
@@ -334,7 +334,7 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
     attempts++
     try {
       const { messageId } = await sendOutreachMail(cfg, {
-        to: c.email, subject, text: `${text}\n\n--\n${footer}`, html: textToHtml(text, footer),
+        to: c.email, subject, text: `${text}\n\n--\n${footer}`, html: textToHtml(bodyText, footer, signature),
         inReplyTo: inThread ? e.thread_message_id : null, unsubscribeUrl: urls.page, oneClickUrl: urls.oneClick,
       })
       await db.from('outreach_sends').insert({ enrollment_id: e.id, contact_id: c.id, sequence_id: e.sequence_id, step_position: e.next_step, email: c.email, subject, message_id: messageId, status: 'envoye' })
@@ -377,11 +377,13 @@ export async function sendTest(stepSubject: string, stepBody: string, settings: 
   const vars = { prenom: 'Marie', nom: 'Dupont', entreprise: 'Studio Lumière', ville: 'Lyon' }
   const urls = unsubscribeUrls('00000000-0000-0000-0000-000000000000')
   const footer = complianceFooter({ source: 'google', firstMessage: true, unsubscribeUrl: urls.page })
-  const text = `${renderTemplate(stepBody, vars).trim()}\n\n${settings.signature?.trim() || DEFAULT_SIGNATURE}`
+  const signature = settings.signature?.trim() || DEFAULT_SIGNATURE
+  const bodyText = renderTemplate(stepBody, vars).trim()
+  const text = `${bodyText}\n\n${signature}`
   try {
     await sendOutreachMail(cfg, {
       to: cfg.fromEmail, subject: `[Essai] ${renderTemplate(stepSubject, vars)}`,
-      text: `${text}\n\n--\n${footer}`, html: textToHtml(text, footer), unsubscribeUrl: urls.page, oneClickUrl: urls.oneClick,
+      text: `${text}\n\n--\n${footer}`, html: textToHtml(bodyText, footer, signature), unsubscribeUrl: urls.page, oneClickUrl: urls.oneClick,
     })
     return { ok: true, to: cfg.fromEmail }
   } catch (e) {

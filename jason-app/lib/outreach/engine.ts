@@ -188,13 +188,45 @@ export function escapeHtml(s: string): string {
 }
 
 /** Paragraphes et liens cliquables, sans image ni pixel de suivi. */
-export function textToHtml(text: string, footer: string): string {
-  const para = (block: string) => escapeHtml(block)
-    .replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)])/g, '<a href="$1">$1</a>')
-    .replace(/\n/g, '<br>')
+/**
+ * Signature par défaut : celle de la boîte Gmail de Jason (contact@), sans
+ * le logo (une image dans un premier e-mail pèse sur la délivrabilité).
+ */
+export const DEFAULT_SIGNATURE = 'Jason Marinho\nEntrepreneur\ncontact@jasonmarinho.com\n06 30 21 25 92\n75015 Paris\njasonmarinho.com'
+/** Ancienne signature par défaut, remplacée par la nouvelle si elle est restée telle quelle */
+export const LEGACY_DEFAULT_SIGNATURE = 'Jason Marinho\nhttps://jasonmarinho.com'
+
+const linkify = (escaped: string) => escaped
+  .replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)])/g, '<a href="$1">$1</a>')
+
+/**
+ * Signature en HTML, mise en forme comme la signature Gmail : nom en gras,
+ * fonction, puis coordonnées en gris (e-mail, téléphone et site cliquables).
+ */
+export function signatureToHtml(signature: string): string {
+  const lines = signature.trim().split(/\n/).map(l => l.trim()).filter(Boolean)
+  const line = (raw: string, i: number) => {
+    const e = escapeHtml(raw)
+    let html = linkify(e)
+    if (html === e) {
+      if (/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(raw)) html = `<a href="mailto:${e}" style="color:#9b9b9b;">${e}</a>`
+      else if (/^\+?[\d .]{9,}$/.test(raw)) html = `<a href="tel:${raw.replace(/[ .]/g, '')}" style="color:#9b9b9b;text-decoration:none;">${e}</a>`
+      else if (/^(www\.)?[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}(\/\S*)?$/i.test(raw)) html = `<a href="https://${e}" style="color:#1155cc;">${e}</a>`
+    }
+    const style = i === 0 ? 'color:#4a4a4a;font-weight:700;' : i === 1 ? 'color:#4a4a4a;' : 'color:#9b9b9b;'
+    return `<div style="${style}">${html}</div>`
+  }
+  const head = lines.slice(0, 2).map(line).join('')
+  const rest = lines.slice(2).map((l, i) => line(l, i + 2)).join('')
+  return `<div style="margin:18px 0 0;font-family:Helvetica,Arial,sans-serif;font-size:13.5px;line-height:1.5;">${head}${rest ? `<div style="height:8px;"></div>${rest}` : ''}</div>`
+}
+
+export function textToHtml(text: string, footer: string, signature?: string): string {
+  const para = (block: string) => linkify(escapeHtml(block)).replace(/\n/g, '<br>')
   const body = text.trim().split(/\n{2,}/).map(b => `<p style="margin:0 0 14px;">${para(b)}</p>`).join('')
+  const sig = signature?.trim() ? signatureToHtml(signature) : ''
   const foot = footer.trim().split(/\n/).map(l => para(l)).join('<br>')
-  return `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14.5px;line-height:1.6;color:#1f2a24;">${body}<p style="margin:22px 0 0;font-size:12px;color:#6b7a72;">${foot}</p></div>`
+  return `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14.5px;line-height:1.6;color:#1f2a24;">${body}${sig}<p style="margin:22px 0 0;font-size:12px;color:#6b7a72;">${foot}</p></div>`
 }
 
 // ─── E-mails trouvés sur un site ────────────────────────────────────────────

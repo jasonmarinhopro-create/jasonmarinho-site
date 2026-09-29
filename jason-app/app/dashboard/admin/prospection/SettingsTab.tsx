@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { EnvelopeSimple, Gauge, Play, CheckCircle, WarningCircle, ShieldCheck } from '@phosphor-icons/react/dist/ssr'
 import { AMBER, tint } from '../_ui/theme'
 import { saveSettings, runNow } from './actions'
+import { DEFAULT_SIGNATURE, LEGACY_DEFAULT_SIGNATURE, signatureToHtml } from '@/lib/outreach/engine'
 import { ui, type MailConfig, type SettingsRow } from './shared'
 
 const DAYS = [
@@ -17,7 +18,7 @@ export default function SettingsTab({ settings, config }: { settings: SettingsRo
   const [cap, setCap] = useState(settings.daily_cap)
   const [days, setDays] = useState<number[]>(settings.send_days)
   const [paused, setPaused] = useState(settings.paused)
-  const [signature, setSignature] = useState(settings.signature ?? 'Jason Marinho\nhttps://jasonmarinho.com')
+  const [signature, setSignature] = useState(settings.signature && settings.signature.trim() !== LEGACY_DEFAULT_SIGNATURE ? settings.signature : DEFAULT_SIGNATURE)
   const [busy, setBusy] = useState<string | null>(null)
   const [msg, setMsg] = useState<{ ok?: string; err?: string } | null>(null)
   const hostinger = /hostinger/i.test(config.host ?? '')
@@ -104,8 +105,14 @@ export default function SettingsTab({ settings, config }: { settings: SettingsRo
           </label>
           <label style={ui.label}>
             Signature (ajoutée sous chaque e-mail)
-            <textarea value={signature} onChange={e => setSignature(e.target.value)} rows={3} style={ui.textarea} />
+            <textarea value={signature} onChange={e => setSignature(e.target.value)} rows={6} style={ui.textarea} />
           </label>
+          <div style={s.sigPreview}>
+            <span style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase', color: 'var(--text-3)' }}>Aperçu dans l&apos;e-mail</span>
+            {/* signatureToHtml échappe chaque ligne avant de la mettre en forme */}
+            <div dangerouslySetInnerHTML={{ __html: signatureToHtml(signature || DEFAULT_SIGNATURE) }} />
+          </div>
+          <p style={ui.sub}>Reprise de ta signature Gmail (contact@), sans le logo : une image dans un premier e-mail le fait plus souvent classer en indésirables. Ligne 1 en gras, ligne 2 ta fonction, puis tes coordonnées.</p>
           <button type="button" onClick={save} disabled={busy === 'save'} style={{ ...ui.btn, alignSelf: 'flex-start' }}>{busy === 'save' ? 'Enregistrement…' : 'Enregistrer'}</button>
         </section>
 
@@ -139,5 +146,6 @@ const s: Record<string, React.CSSProperties> = {
   list: { margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '13.5px', color: 'var(--text-2)', lineHeight: 1.55 },
   code: { fontFamily: 'ui-monospace, Menlo, monospace', fontSize: '12px', padding: '1px 5px', borderRadius: '5px', background: 'var(--bg)', border: '1px solid var(--border)' },
   day: { padding: '7px 12px', borderRadius: '10px', border: '1px solid var(--border)', background: 'var(--surface)', fontSize: '13px', fontWeight: 700, color: 'var(--text-2)', cursor: 'pointer', fontFamily: 'inherit' },
+  sigPreview: { display: 'flex', flexDirection: 'column', gap: '2px', padding: '12px 16px 14px', borderRadius: '12px', background: '#FFFFFF', border: '1px solid var(--border)' },
   dayOn: { background: 'var(--accent-bg)', borderColor: 'var(--accent-text)', color: 'var(--accent-text)' },
 }
