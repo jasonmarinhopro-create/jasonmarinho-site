@@ -128,7 +128,7 @@ export default function InstallAppWidget() {
       try {
         await navigator.share({
           title: document.title,
-          text: 'Jason Marinho — mon espace LCD',
+          text: 'Jason Marinho, mon espace LCD',
           url: window.location.href,
         })
         return

@@ -15,6 +15,7 @@ import ImportCSVModal from '@/app/dashboard/revenus/ImportCSVModal'
 import { CHARGE_CATEGORIES, chargeCategory } from '@/lib/finances/categories'
 import { monthLabel } from '@/lib/finances/engine'
 import { Card, COLORS, dateCourte, eur, eurPrecis, ui } from '../_ui/ui'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 export interface JournalRow {
   key: string
@@ -64,6 +65,7 @@ export default function JournalView({ rows, logementNoms, logements, defaultLoge
   const [q, setQ] = useState('')
   const [limit, setLimit] = useState(PAGE)
   const [hidden, setHidden] = useState<Set<string>>(new Set())
+  const { confirm: ask, dialog } = useConfirm()
   const [menu, setMenu] = useState<string | null>(null)
   const [modal, setModal] = useState<null | { kind: 'revenu' } | { kind: 'charge'; row?: JournalRow } | { kind: 'import' }>(null)
   const [error, setError] = useState<string | null>(null)
@@ -152,6 +154,7 @@ export default function JournalView({ rows, logementNoms, logements, defaultLoge
 
   return (
     <>
+      {dialog}
       <Card style={{ padding: 0 }}>
         <div style={s.toolbar}>
           <div style={s.filters} role="tablist" aria-label="Filtrer le journal">
@@ -203,13 +206,13 @@ export default function JournalView({ rows, logementNoms, logements, defaultLoge
                   {list.map(r => (
                     <Row key={r.key} r={r} showLogement={showLogement} menuOpen={menu === r.key}
                       onMenu={() => setMenu(menu === r.key ? null : r.key)}
-                      onAction={(action) => {
+                      onAction={async (action) => {
                         if (action === 'delete-entry') run(r.key, () => deleteRevenusEntry(r.sourceId))
-                        else if (action === 'cancel-sejour') { if (confirm("Annuler ce séjour ? Il disparaît des revenus, du calendrier et du planning ménage. Tu peux le restaurer depuis la fiche voyageur.")) run(r.key, () => cancelSejourRevenus(r.sourceId)); else setMenu(null) }
-                        else if (action === 'cancel-contract') { if (confirm('Annuler ce contrat ? Il pourra être réactivé depuis Contrats & paiements.')) run(r.key, () => cancelContractRevenus(r.sourceId)); else setMenu(null) }
+                        else if (action === 'cancel-sejour') { if (await ask({ message: "Annuler ce séjour ? Il disparaît des revenus, du calendrier et du planning ménage. Tu peux le restaurer depuis la fiche voyageur.", confirmLabel: 'Annuler le séjour', cancelLabel: 'Garder', danger: true })) run(r.key, () => cancelSejourRevenus(r.sourceId)); else setMenu(null) }
+                        else if (action === 'cancel-contract') { if (await ask({ message: 'Annuler ce contrat ? Il pourra être réactivé depuis Contrats & paiements.', confirmLabel: 'Annuler le contrat', cancelLabel: 'Garder', danger: true })) run(r.key, () => cancelContractRevenus(r.sourceId)); else setMenu(null) }
                         else if (action === 'toggle-declarer') run(r.key, () => setEntryADeclarer(r.sourceId, r.kind === 'sejour' ? 'sejour' : 'entry', r.aDeclarer === false), false)
                         else if (action === 'edit-charge') { setMenu(null); setModal({ kind: 'charge', row: r }) }
-                        else if (action === 'delete-charge') { if (confirm('Supprimer cette charge ?')) run(r.key, () => deleteCharge(r.sourceId)); else setMenu(null) }
+                        else if (action === 'delete-charge') { if (await ask({ message: 'Supprimer cette charge ?', confirmLabel: 'Supprimer', danger: true })) run(r.key, () => deleteCharge(r.sourceId)); else setMenu(null) }
                       }}
                     />
                   ))}

@@ -39,7 +39,7 @@ const COPY: Record<string, Copy> = {
     description: 'Le suivi complet de ton activité LCD : revenus, charges, fiscalité et performances détaillées.',
     intro: 'Ce qui t\'attend en Standard',
     features: [
-      { icon: Receipt,      title: 'Saisie & import des revenus',   desc: 'Loyers, ménages, charges Airbnb/Booking — saisie manuelle + import CSV en masse.' },
+      { icon: Receipt,      title: 'Saisie & import des revenus',   desc: 'Loyers, ménages, charges Airbnb/Booking : saisie manuelle + import CSV en masse.' },
       { icon: ChartBar,     title: 'Tableau de bord financier',     desc: 'CA, marge, taux d\'occupation, par logement et par mois, en un coup d\'œil.' },
       { icon: Calculator,   title: 'Charges déductibles classées',  desc: 'Catégorisation auto (taxe foncière, assurance, conciergerie, travaux…) avec récap fiscal.' },
       { icon: ChartLineUp,  title: 'Objectif annuel + projections', desc: 'Définis un objectif de CA, suis l\'avancement et anticipe la fin d\'année.' },
@@ -54,7 +54,7 @@ const COPY: Record<string, Copy> = {
       { icon: FileText,    title: 'Contrats illimités + PDF',      desc: 'Génère un contrat de location courte durée en 30 secondes, signé électroniquement.' },
       { icon: Receipt,     title: 'Paiement Stripe sécurisé',      desc: 'Loyer encaissé, caution bloquée, libération automatique après le départ.' },
       { icon: Sparkle,    title: 'État des lieux + livret',       desc: 'Photos horodatées, livret d\'accueil digital partageable par lien ou QR code.' },
-      { icon: ChartLineUp, title: 'Performances détaillées',       desc: 'Taux de transformation, durée moyenne, panier moyen — par logement.' },
+      { icon: ChartLineUp, title: 'Performances détaillées',       desc: 'Taux de transformation, durée moyenne, panier moyen, par logement.' },
     ],
   },
   partenaires: {
@@ -69,12 +69,12 @@ const COPY: Record<string, Copy> = {
   },
   actualites: {
     title: 'Toutes les actualités, Standard',
-    description: 'Reste à jour : réglementation, fiscalité, plateformes, marché — l\'essentiel filtré pour les hôtes LCD.',
+    description: 'Reste à jour : réglementation, fiscalité, plateformes, marché : l\'essentiel filtré pour les hôtes LCD.',
     intro: 'Ce qui t\'attend en Standard',
     features: [
       { icon: Newspaper,  title: 'Tout l\'historique d\'actus',   desc: 'Accède à toutes les analyses publiées, pas seulement les plus récentes.' },
       { icon: Sparkle,   title: 'Filtres + favoris',             desc: 'Catégories, recherche par mot-clé, sauvegarde de tes articles préférés.' },
-      { icon: ChartLineUp, title: 'Veille hebdomadaire',          desc: 'Récap des changements régulièrement publié — gain de temps assuré.' },
+      { icon: ChartLineUp, title: 'Veille hebdomadaire',          desc: 'Récap des changements régulièrement publié, gain de temps assuré.' },
     ],
   },
 }

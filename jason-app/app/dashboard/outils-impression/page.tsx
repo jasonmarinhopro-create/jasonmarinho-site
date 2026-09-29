@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import OutilsImpressionView from './OutilsImpressionView'
 
 export const metadata = {
-  title: 'Outils Impression — QR Code & Affiches',
+  title: 'Outils impression · QR code & affiches',
 }
 
 export default async function OutilsImpressionPage() {

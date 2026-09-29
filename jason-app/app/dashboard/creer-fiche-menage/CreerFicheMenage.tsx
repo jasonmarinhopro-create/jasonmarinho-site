@@ -99,7 +99,7 @@ export default function CreerFicheMenage({ email, defaultFullName, tier }: Props
     <div style={s.wrap}>
       <div style={s.head}>
         <h1 style={s.title}><Sparkle weight="duotone" size={26} style={{ verticalAlign: 'middle', marginRight: 8 }} />Créer ma fiche <em style={s.titleEm}>équipe ménage LCD</em></h1>
-        <p style={s.sub}>Connecté en tant que <strong style={{ color: 'var(--text)' }}>{email}</strong>. Pas besoin de remettre tes identifiants — on rattache la fiche à ton compte existant.</p>
+        <p style={s.sub}>Connecté en tant que <strong style={{ color: 'var(--text)' }}>{email}</strong>. Pas besoin de remettre tes identifiants : on rattache la fiche à ton compte existant.</p>
       </div>
 
       <div style={s.pricingBox}>

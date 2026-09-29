@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe/client'
+import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
@@ -9,6 +10,10 @@ const MAX_AMOUNT = 50000 // 500,00 € maximum
 // POST /api/stripe/tip/create, route publique, aucune auth requise
 // Body: { amount: number }, montant en centimes (ex: 298 pour 2,98 €)
 export async function POST(request: NextRequest) {
+  // Route publique : sans limite, n'importe qui pouvait créer des sessions Stripe en boucle
+  const limit = await rateLimit('tip:create', getClientIp(request), 10, 60 * 60_000)
+  if (!limit.allowed) return NextResponse.json({ error: 'Trop de tentatives, réessaie plus tard.' }, { status: 429 })
+
   const body = await request.json().catch(() => ({}))
   const { amount } = body as { amount?: number }
 

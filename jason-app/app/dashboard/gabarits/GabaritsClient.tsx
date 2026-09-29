@@ -13,6 +13,7 @@ import type { Template, UserTemplateCustomization, UserPinnedTemplate } from '@/
 import type { LogementOption, NextContractInfo } from './page'
 import { infosPratiquesToFillMap } from '@/lib/logements/infos-pratiques'
 import { markStepIfNotYet } from '@/lib/onboarding/client'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 // ── Mapping catégorie → moment d'envoi ─────────────────────────────────────
 type TimingBucket = 'avant-arrivee' | 'pendant-sejour' | 'apres-depart'
@@ -296,6 +297,7 @@ export default function GabaritsClient({
   hostFullName,
   userId,
 }: GabaritsClientProps) {
+  const { confirm: ask, dialog } = useConfirm()
 
   const [favorites, setFavorites]           = useState<Set<string>>(new Set(initialFavorites))
   const [customizations, setCustomizations] = useState<Record<string, UserTemplateCustomization>>(
@@ -416,7 +418,7 @@ export default function GabaritsClient({
       logement_id: selectedLogementId, position: next.length - 1,
       updated_at: new Date().toISOString(),
     })
-    showToast(`📌 Ajouté à tes messages — n°${next.length}`)
+    showToast(`📌 Ajouté à tes messages (n°${next.length})`)
     void markStepIfNotYet('gabarit')
   }
 
@@ -424,7 +426,7 @@ export default function GabaritsClient({
     if (!userId) return
     // Confirmation pour éviter les fat-finger taps sur mobile (la croix est
     // à côté du caret expand → un mauvais tap supprimait silencieusement).
-    if (!window.confirm('Retirer ce message de ta séquence ?')) return
+    if (!(await ask({ message: 'Retirer ce message de ta séquence ?', confirmLabel: 'Retirer' }))) return
     const next = pinned[bucket].filter(id => id !== templateId)
     updatePinnedBucket(bucket, next)
     // persistPinnedOrder fait un DELETE + INSERT complet de la bucket
@@ -751,6 +753,7 @@ export default function GabaritsClient({
 
   return (
     <>
+      {dialog}
       <style dangerouslySetInnerHTML={{ __html: `
         /* Gabarits — labels Épingler/Copier cachés sur très petit écran pour
            garder le header compact à 1 ligne (icônes seules) */
@@ -1219,7 +1222,7 @@ export default function GabaritsClient({
                   borderRadius: '10px',
                   fontSize: '11.5px', color: 'var(--text-3)', lineHeight: 1.5,
                 }}>
-                  💾 Tes infos seront <strong style={{ color: 'var(--text-2)' }}>mémorisées pour {fillTemplate.logementNom}</strong> — la prochaine copie pré-remplit automatiquement.
+                  💾 Tes infos seront <strong style={{ color: 'var(--text-2)' }}>mémorisées pour {fillTemplate.logementNom}</strong> : la prochaine copie pré-remplit automatiquement.
                 </div>
               )}
             </div>

@@ -617,7 +617,7 @@ function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; auth
               onClick={toggleInlineReply}
               style={s.replyBtn}
               title={replyCountLocal > 0
-                ? `${replyCountLocal} commentaire${replyCountLocal > 1 ? 's' : ''} — clique pour ajouter le tien`
+                ? `${replyCountLocal} commentaire${replyCountLocal > 1 ? 's' : ''}, clique pour ajouter le tien`
                 : 'Ajouter un commentaire rapide'}
             >
               <ChatCircle size={13} weight="fill" />

@@ -64,7 +64,7 @@ const T: Record<Lang, {
     printLabel: 'Télécharger / Imprimer la facture (PDF)',
     notIssuedTitle: "Cette facture n'a pas encore été émise",
     notIssuedBody: 'Contactez le propriétaire pour obtenir la facture de ce contrat.',
-    notCertifiedWarning: "⚠️ Ce document n'est pas une fatura portugaise valide au sens fiscal. Pour un logement en Alojamento Local (Portugal), la loi impose l'émission via le Portail des Finances portugais (e-fatura, gratuit) ou un logiciel de facturation certifié — ce document sert uniquement de récapitulatif informatif.",
+    notCertifiedWarning: "⚠️ Ce document n'est pas une fatura portugaise valide au sens fiscal. Pour un logement en Alojamento Local (Portugal), la loi impose l'émission via le Portail des Finances portugais (e-fatura, gratuit) ou un logiciel de facturation certifié. Ce document sert uniquement de récapitulatif informatif.",
     locale: 'fr-FR',
   },
   pt: {
@@ -86,7 +86,7 @@ const T: Record<Lang, {
     printLabel: 'Descarregar / Imprimir a fatura (PDF)',
     notIssuedTitle: 'Esta fatura ainda não foi emitida',
     notIssuedBody: 'Contacte o proprietário para obter a fatura deste contrato.',
-    notCertifiedWarning: '⚠️ Este documento não constitui uma fatura válida para efeitos fiscais em Portugal. Para um Alojamento Local, a lei exige a emissão através do Portal das Finanças (e-fatura, gratuito) ou de um programa de faturação certificado — este documento serve apenas como resumo informativo.',
+    notCertifiedWarning: '⚠️ Este documento não constitui uma fatura válida para efeitos fiscais em Portugal. Para um Alojamento Local, a lei exige a emissão através do Portal das Finanças (e-fatura, gratuito) ou de um programa de faturação certificado. Este documento serve apenas como resumo informativo.',
     locale: 'pt-PT',
   },
 }

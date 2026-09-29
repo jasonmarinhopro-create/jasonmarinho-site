@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: Props) {
   const data = affiche.data as Record<string, unknown>
   const nom = (data.logementNom as string) ?? 'Logement'
   return {
-    title: `Affiche — ${nom}`,
+    title: `Affiche · ${nom}`,
     description: `QR code WiFi et informations de contact pour ${nom}`,
   }
 }

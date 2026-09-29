@@ -18,6 +18,7 @@ import MentionAutocomplete from '@/components/chez-nous/MentionAutocomplete'
 import ReportButton from '@/components/chez-nous/ReportButton'
 import ImageGrid from '@/components/chez-nous/ImageGrid'
 import ImageUploader from '@/components/chez-nous/ImageUploader'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 import {
   createReply, deletePost, deleteReply, togglePinPost, toggleLockPost,
   updatePost, updateReply, togglePostVote, acceptReply,
@@ -69,6 +70,7 @@ type Props = {
 
 export default function PostDetail({ post, replies, usersMap, currentUserId, isAdmin }: Props) {
   const router = useRouter()
+  const { confirm: ask, dialog } = useConfirm()
   const cat    = CATEGORIES[post.category]
   const author = usersMap[post.author_id]
   const av     = colorFromId(post.author_id)
@@ -94,8 +96,8 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
     }
   }, [canEdit])
 
-  const onDelete = () => {
-    if (!confirm('Supprimer cette discussion ?')) return
+  const onDelete = async () => {
+    if (!(await ask({ message: 'Supprimer cette discussion ?', confirmLabel: 'Supprimer', danger: true }))) return
     startTransition(async () => {
       const res = await deletePost(post.id)
       if (res.ok) router.push('/dashboard/chez-nous')
@@ -128,6 +130,8 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
   }
 
   return (
+    <>
+    {dialog}
     <div style={s.page}>
       <style>{`
         /* Aside cards : hover subtil */
@@ -365,6 +369,7 @@ export default function PostDetail({ post, replies, usersMap, currentUserId, isA
         </aside>
       </div>
     </div>
+    </>
   )
 }
 
@@ -495,6 +500,7 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
   isChild: boolean
 }) {
   const router = useRouter()
+  const { confirm: ask, dialog } = useConfirm()
   const [editing, setEditing] = useState(false)
   const [replying, setReplying] = useState(false)
   const [replyBody, setReplyBody] = useState('')
@@ -529,8 +535,8 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
     })
   }
 
-  const onDelete = () => {
-    if (!confirm('Supprimer cette réponse ?')) return
+  const onDelete = async () => {
+    if (!(await ask({ message: 'Supprimer cette réponse ?', confirmLabel: 'Supprimer', danger: true }))) return
     startTransition(async () => {
       const res = await deleteReply(reply.id, postId)
       if (res.ok) router.refresh()
@@ -551,6 +557,8 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
   }
 
   return (
+    <>
+    {dialog}
     <div className="cn-reply-card" style={{
       ...s.replyCard,
       borderColor: isAccepted ? 'var(--success-1)' : 'var(--border)',
@@ -680,6 +688,7 @@ function ReplyBlock({ reply, postId, authorId, authorName, authorInitials, avata
         )}
       </div>
     </div>
+    </>
   )
 }
 

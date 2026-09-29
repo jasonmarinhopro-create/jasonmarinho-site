@@ -120,7 +120,7 @@ export function buildPrevisionnelPdf(input: PrevisionnelInput): jsPDF {
   doc.text('Jason Marinho', M, 12)
   doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5)
   doc.setTextColor(200, 216, 210)
-  doc.text('Plateforme de gestion — Location courte durée', M, 18)
+  doc.text('Plateforme de gestion · Location courte durée', M, 18)
   doc.setFontSize(8)
   doc.text('jasonmarinho.com', W - M, 12, { align: 'right' })
   doc.text(`Réf. ${ref}`, W - M, 18, { align: 'right' })
@@ -131,7 +131,7 @@ export function buildPrevisionnelPdf(input: PrevisionnelInput): jsPDF {
   doc.text('Prévisionnel de revenus locatifs', M, y)
   y += 6
   doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5); doc.setTextColor(...MUTED)
-  doc.text(`Location courte durée (meublé de tourisme) — ${r.city}`, M, y)
+  doc.text(`Location courte durée (meublé de tourisme) · ${r.city}`, M, y)
   y += 5
   doc.setFontSize(9)
   const dateStr = today.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -355,7 +355,7 @@ export function buildPrevisionnelPdf(input: PrevisionnelInput): jsPDF {
     doc.setDrawColor(...LINE); doc.setLineWidth(0.2)
     doc.line(M, 287, W - M, 287)
     doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...MUTED)
-    doc.text(`Généré via jasonmarinho.com${input.hoteName ? ` — ${input.hoteName}` : ''}`, M, 291)
+    doc.text(`Généré via jasonmarinho.com${input.hoteName ? ` · ${input.hoteName}` : ''}`, M, 291)
     doc.text(`Réf. ${ref}`, W / 2, 291, { align: 'center' })
     doc.text(`Page ${p}/${pageCount}`, W - M, 291, { align: 'right' })
   }

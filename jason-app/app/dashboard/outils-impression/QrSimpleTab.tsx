@@ -696,8 +696,8 @@ export default function QrSimpleTab({ plan, logements }: Props) {
             <>
               <p style={s.previewNote}>
                 {transparentBg
-                  ? 'Fond transparent — intègre ce QR code dans tes propres designs Canva, Word, Figma…'
-                  : 'Fond couleur unie — prêt à imprimer ou utiliser tel quel.'}
+                  ? 'Fond transparent : intègre ce QR code dans tes propres designs Canva, Word, Figma…'
+                  : 'Fond couleur unie : prêt à imprimer ou utiliser tel quel.'}
               </p>
               <div style={s.dlButtons} className="qrsimple-dl-buttons">
                 <button onClick={downloadPng} style={s.dlBtn}>

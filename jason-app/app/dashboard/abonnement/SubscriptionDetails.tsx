@@ -6,6 +6,7 @@ import {
   ArrowRight, ArrowSquareOut, CircleNotch, ArrowsCounterClockwise,
 } from '@phosphor-icons/react/dist/ssr'
 import type { SubscriptionDetails, InvoiceSummary } from '@/lib/stripe/subscription-info'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 type Props = {
   details: SubscriptionDetails
@@ -42,6 +43,7 @@ export default function SubscriptionDetails({ details, invoices }: Props) {
   const [switching, setSwitching] = useState(false)
   const [reactivating, setReactivating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { confirm: ask, dialog } = useConfirm()
 
   const isCancelScheduled = details.cancelAtPeriodEnd === true
   const isPastDue = details.status === 'past_due'
@@ -49,7 +51,7 @@ export default function SubscriptionDetails({ details, invoices }: Props) {
 
   async function handleSwitchInterval() {
     const target = details.isMonthly ? 'annuel' : 'mensuel'
-    if (!confirm(`Passer ton abonnement en ${target} ? Le changement est immédiat : la différence est calculée au prorata et appliquée à ta prochaine facture.`)) return
+    if (!(await ask({ message: `Passer ton abonnement en ${target} ? Le changement est immédiat : la différence est calculée au prorata et appliquée à ta prochaine facture.`, confirmLabel: `Passer en ${target}` }))) return
     setSwitching(true)
     setError(null)
     try {
@@ -64,7 +66,7 @@ export default function SubscriptionDetails({ details, invoices }: Props) {
   }
 
   async function handleReactivate() {
-    if (!confirm("Réactiver ton abonnement ? La résiliation programmée sera annulée et l'abonnement continue.")) return
+    if (!(await ask({ message: "Réactiver ton abonnement ? La résiliation programmée sera annulée et l'abonnement continue.", confirmLabel: 'Réactiver' }))) return
     setReactivating(true)
     setError(null)
     try {
@@ -87,6 +89,8 @@ export default function SubscriptionDetails({ details, invoices }: Props) {
   }
 
   return (
+    <>
+    {dialog}
     <div style={s.wrap}>
       {/* ── État + date renouvellement ───────────────────────────── */}
       <div style={s.statusRow}>
@@ -201,6 +205,7 @@ export default function SubscriptionDetails({ details, invoices }: Props) {
 
       <style>{`@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }`}</style>
     </div>
+    </>
   )
 }
 

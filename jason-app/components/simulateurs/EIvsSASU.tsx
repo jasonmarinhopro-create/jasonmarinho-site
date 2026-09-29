@@ -66,18 +66,18 @@ export default function EIvsSASU({ accountStats }: { accountStats?: AccountStats
       </div>
 
       <div style={s.results}>
-        <div style={{ ...s.resultBox, ...(result.meilleur === 'ei' ? { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' } : {}) }}>
+        <div style={{ ...s.resultBox, ...(result.meilleur === 'ei' ? { border: '1px solid var(--accent-border)', background: 'var(--accent-bg)' } : {}) }}>
           <div style={s.resultLabel}>EI · TNS · IR</div>
           <div style={s.resultValue}>{fmtEur(result.ei.net)}</div>
           <div style={s.resultHint}>Cotisations ~{Math.round(FISCAL_PARAMS_2026.ei.tauxCotisationsTns * 100)} % (estimation) : {fmtEur(result.ei.cotis)}<br />IR ({tmi} %) : {fmtEur(result.ei.ir)}</div>
         </div>
-        <div style={{ ...s.resultBox, ...(result.meilleur === 'sasu' ? { borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' } : {}) }}>
+        <div style={{ ...s.resultBox, ...(result.meilleur === 'sasu' ? { border: '1px solid var(--accent-border)', background: 'var(--accent-bg)' } : {}) }}>
           <div style={s.resultLabel}>SASU · 100 % dividendes</div>
           <div style={s.resultValue}>{fmtEur(result.sasu.net)}</div>
           <div style={s.resultHint}>IS (15/25 %) : {fmtEur(result.sasu.is)}<br />Flat tax 31,4 % : {fmtEur(result.sasu.flatTax)}</div>
         </div>
         {benef > 0 && (
-          <div style={{ ...s.resultBox, gridColumn: '1 / -1', background: 'var(--accent-bg)', borderColor: 'var(--accent-border)' }}>
+          <div style={{ ...s.resultBox, gridColumn: '1 / -1', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)' }}>
             <div style={s.resultLabel}>Différence en ta poche</div>
             <div style={{ ...s.resultValue, color: 'var(--accent-text)', fontSize: '20px' }}>
               {result.meilleur === 'sasu' ? 'SASU' : 'EI'} : + {fmtEur(result.diff)}

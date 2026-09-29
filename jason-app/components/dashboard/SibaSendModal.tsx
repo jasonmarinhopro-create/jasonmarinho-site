@@ -169,7 +169,7 @@ export default function SibaSendModal({ declarationId, onClose, onSent }: Props)
           <div style={s.content}>
             <div style={s.infoBox}>
               <Info size={15} weight="fill" style={{ flexShrink: 0, color: 'var(--accent-text)' }} />
-              <span>Vérifie et complète l&apos;identité du voyageur. Les champs vides sont ceux que SIBA exige et que tu n&apos;as pas encore renseignés sur sa fiche — ils y seront enregistrés au passage.</span>
+              <span>Vérifie et complète l&apos;identité du voyageur. Les champs vides sont ceux que SIBA exige et que tu n&apos;as pas encore renseignés sur sa fiche : ils y seront enregistrés au passage.</span>
             </div>
             <div style={s.grid2}>
               <Field label="Prénom" value={guest.prenom} onChange={v => setGuest(g => ({ ...g, prenom: v }))} />

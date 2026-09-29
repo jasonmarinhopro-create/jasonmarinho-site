@@ -126,7 +126,14 @@ function rebuildSitemap() {
   if (!blogSectionRegex.test(xml)) {
     throw new Error('Section Blog introuvable dans sitemap.xml')
   }
-  xml = xml.replace(blogSectionRegex, `$1${catEntries}\n${blogEntries}\n</urlset>\n`)
+  // Page d'accueil du blog : elle vivait dans cette section et disparaissait à chaque régénération
+  const blogIndex = `  <url>
+    <loc>https://jasonmarinho.com/blog</loc>
+    <lastmod>${sorted[0].date}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>`
+  xml = xml.replace(blogSectionRegex, `$1${blogIndex}\n${catEntries}\n${blogEntries}\n</urlset>\n`)
 
   writeFileSync(sitePath, xml, 'utf8')
   console.log(`✓ sitemap.xml : ${sorted.length} URLs blog + pages catégories`)
@@ -182,6 +189,14 @@ const CAT_DESCRIPTIONS = {
   driing:         'Driing, la plateforme de réservation sans commission co-fondée par Jason Marinho : actualités et guides.',
 }
 
+// Titre ≤ 60 caractères (Google coupe au-delà) : suffixe seulement s'il tient
+function catTitle(label, n) {
+  const base = `${label} : ${n} article${n > 1 ? 's' : ''} sur la location courte durée`
+  const short = `${label} : ${n} article${n > 1 ? 's' : ''} LCD`
+  for (const t of [`${base} | Jason Marinho`, base, `${short} | Jason Marinho`]) if (t.length <= 60) return t
+  return short
+}
+
 function buildCategoryPage(slug, cat, arts) {
   const url = `https://jasonmarinho.com/blog/categorie/${slug}`
   const desc = CAT_DESCRIPTIONS[slug] || `Tous les articles ${cat.label} du blog LCD de Jason Marinho.`
@@ -225,7 +240,7 @@ function buildCategoryPage(slug, cat, arts) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${cat.label} : Blog location courte durée (${arts.length} articles) | Jason Marinho</title>
+<title>${catTitle(cat.label, arts.length)}</title>
 <meta name="description" content="${escAttr(desc)}">
 <link rel="canonical" href="${url}">
 <meta property="og:title" content="${cat.label} : Blog LCD | Jason Marinho">

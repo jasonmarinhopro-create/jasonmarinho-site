@@ -737,7 +737,7 @@ async function renderPosterCanvas(
     ctx.translate(W / 2, H / 2)
     ctx.rotate(-Math.PI / 5)
     for (let i = -2; i <= 2; i++) {
-      ctx.fillText('APERÇU — STANDARD', 0, i * 130)
+      ctx.fillText('APERÇU · STANDARD', 0, i * 130)
     }
     ctx.restore()
   }

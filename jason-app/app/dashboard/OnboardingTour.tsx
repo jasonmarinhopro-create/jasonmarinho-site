@@ -30,7 +30,7 @@ export const DASHBOARD_HOME_STEPS: TourStep[] = [
     id: 'calendrier',
     targetSelector: 'a[href="/dashboard/calendrier"]',
     title: "Ton quotidien : le Calendrier",
-    body: "Arrivées, départs, ménages, mois par mois. Synchronisé avec Airbnb et Booking via iCal — tu n'as plus à jongler entre les plateformes.",
+    body: "Arrivées, départs, ménages, mois par mois. Synchronisé avec Airbnb et Booking via iCal : tu n'as plus à jongler entre les plateformes.",
   },
   {
     id: 'reservations',
@@ -66,7 +66,7 @@ export const DASHBOARD_HOME_STEPS: TourStep[] = [
     id: 'done',
     targetSelector: null,
     title: "Tu as la carte. Bonne route ✨",
-    body: "Le widget « Parcours » en bas à droite te guide étape par étape, et une visite guidée se lance à ta première visite des pages clés — relançable via « Comment ça marche ? » en haut de chaque page.",
+    body: "Le widget « Parcours » en bas à droite te guide étape par étape, et une visite guidée se lance à ta première visite des pages clés, relançable via « Comment ça marche ? » en haut de chaque page.",
   },
 ]
 
@@ -238,7 +238,7 @@ export const ENCAISSEMENTS_STEPS: TourStep[] = [
     id: 'payouts',
     targetSelector: null,
     title: "Virements récents avec statut",
-    body: "Stripe paie tous les jours ouvrés (compte standard EU, délai 2-3 jours). Tu vois chaque payout : Versé / En transit / En attente / Échec — avec la raison si échec. Si tu vois plusieurs « Échec », c'est qu'il y a un problème avec ton RIB Stripe.",
+    body: "Stripe paie tous les jours ouvrés (compte standard EU, délai 2-3 jours). Tu vois chaque payout : Versé / En transit / En attente / Échec, avec la raison si échec. Si tu vois plusieurs « Échec », c'est qu'il y a un problème avec ton RIB Stripe.",
   },
   {
     id: 'impayes',
@@ -250,7 +250,7 @@ export const ENCAISSEMENTS_STEPS: TourStep[] = [
     id: 'failed',
     targetSelector: null,
     title: "Échecs de paiement des 30 derniers jours",
-    body: "Section dédiée pour les CB refusées (fonds insuffisants, 3D-Secure échoué, carte expirée). Tu vois le voyageur + la raison + le montant — utile pour rappeler avant que le séjour soit annulé par sécurité.",
+    body: "Section dédiée pour les CB refusées (fonds insuffisants, 3D-Secure échoué, carte expirée). Tu vois le voyageur + la raison + le montant : utile pour rappeler avant que le séjour soit annulé par sécurité.",
   },
 ]
 

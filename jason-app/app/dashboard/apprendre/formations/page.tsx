@@ -3,5 +3,5 @@
 // server actions, son onboarding tour, ses 17 sous-pages, etc.
 import FormationsPage from '@/app/dashboard/formations/page'
 
-export const metadata = { title: 'Formations — Apprendre' }
+export const metadata = { title: 'Formations · Apprendre' }
 export default FormationsPage

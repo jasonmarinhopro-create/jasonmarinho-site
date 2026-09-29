@@ -428,7 +428,7 @@ RIB : [IBAN]
       recourses: [
         'Conciliateur de justice (gratuit, obligatoire pour litiges < 5 000 €)',
         'Tribunal judiciaire pour les montants importants',
-        'Médiateur du tourisme et du voyage (MTV) — vérifier sa compétence selon ton statut',
+        'Médiateur du tourisme et du voyage (MTV) : vérifier sa compétence selon ton statut',
         'Assurance PNO ou MRH avec extension saisonnière',
       ],
       prevention: [
@@ -450,7 +450,7 @@ RIB : [IBAN]
 
     // ── Airbnb ────────────────────────────────────────────────────────────
     airbnb: {
-      reassurance: "Un avis injuste, ça pique. Mais c'est rarement la fin du monde. Airbnb ne supprime PAS un avis 'juste parce qu'il est sévère' — il faut identifier la violation précise de la politique de contenu. C'est cette précision qui fait gagner le dossier.",
+      reassurance: "Un avis injuste, ça pique. Mais c'est rarement la fin du monde. Airbnb ne supprime PAS un avis 'juste parce qu'il est sévère' : il faut identifier la violation précise de la politique de contenu. C'est cette précision qui fait gagner le dossier.",
       delayBox: {
         type: 'soft',
         label: 'Délai · Airbnb examine sous 24-72 h',
@@ -519,7 +519,7 @@ Cordialement,
 
 Merci pour votre retour. Nous regrettons que votre séjour n'ait pas répondu à vos attentes.
 
-Nous tenons à préciser que [un élément factuel qui contredit l'avis, en une phrase neutre — ex : "le logement avait été nettoyé en profondeur la veille de votre arrivée et photographié pour preuve"].
+Nous tenons à préciser que [un élément factuel qui contredit l'avis, en une phrase neutre, ex : "le logement avait été nettoyé en profondeur la veille de votre arrivée et photographié pour preuve"].
 
 Nous restons à l'écoute pour améliorer en permanence l'expérience de nos voyageurs.
 
@@ -540,7 +540,7 @@ Nous restons à l'écoute pour améliorer en permanence l'expérience de nos voy
         'Stratégie "noyer l\'avis" : 5-10 nouveaux avis positifs rapidement, l\'algorithme fait son travail',
       ],
       prevention: [
-        'Avant chaque check-out, demande au voyageur s\'il a passé un bon séjour et s\'il y a quoi que ce soit à signaler — traite les problèmes AVANT le départ',
+        'Avant chaque check-out, demande au voyageur s\'il a passé un bon séjour et s\'il y a quoi que ce soit à signaler : traite les problèmes AVANT le départ',
         'Optimise le timing de demande d\'avis (message automatique le jour du départ, pas 3 jours après)',
         'Réponds à TOUS les avis, même les bons (signal d\'hôte engagé)',
         'Garde un dossier d\'éléments factuels (photos d\'entretien, état des lieux) prêts à dégainer en cas de litige',
@@ -622,7 +622,7 @@ Cordialement,
       recourses: [
         'Account Manager Booking si tu en as un (canal prioritaire)',
         'Téléphone partenaire Booking pour escalade : 0805 088 074',
-        'Médiateur du tourisme et du voyage (MTV) — vérifier si Booking est adhérent',
+        'Médiateur du tourisme et du voyage (MTV) : vérifier si Booking est adhérent',
         'Stratégie volume : collecter rapidement de nouveaux avis positifs',
       ],
       prevention: [
@@ -812,7 +812,7 @@ Cordialement,
       ],
       prevention: [
         'Règlement intérieur signé numériquement AVANT l\'arrivée avec mention explicite "pas de fêtes" + capacité max',
-        'Capteur de bruit (Minut, NoiseAware) — alerte automatique et preuve horodatée',
+        'Capteur de bruit (Minut, NoiseAware) : alerte automatique et preuve horodatée',
         'Caméra extérieure si déclarée à la CNIL (interdit en intérieur)',
         'Mention claire "pas de fêtes" + capacité réelle dans l\'annonce',
         'Vérification du profil voyageur avant acceptation (avis, vérification d\'identité Airbnb)',
@@ -1041,7 +1041,7 @@ Cordialement,
       prevention: [
         'Contrat de location saisonnière complet avec clauses de sanctions (obligatoire art. L324-2)',
         'Règlement intérieur signé numériquement avant arrivée',
-        'Capteur de bruit (Minut, NoiseAware) — alerte + preuve',
+        'Capteur de bruit (Minut, NoiseAware) : alerte + preuve',
         'Caméra extérieure CNIL-compliant',
         'Caution suffisante (15-30 % du séjour minimum)',
         'Filtrage des réservations en direct via Driing (avis communautaires)',

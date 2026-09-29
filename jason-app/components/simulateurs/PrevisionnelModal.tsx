@@ -120,7 +120,7 @@ export default function PrevisionnelModal({ result, paysLabel, typeLabel, typeKe
         <div style={s.content}>
           <div style={s.infoBox}>
             Document prêt pour un dossier de prêt : revenus escomptés, prévisionnel d&apos;exploitation,
-            saisonnalité et sources. Tous les champs ci-dessous sont <strong>optionnels</strong> — sans eux,
+            saisonnalité et sources. Tous les champs ci-dessous sont <strong>optionnels</strong> : sans eux,
             le PDF sort avec le revenu et les charges standard du secteur.
           </div>
 

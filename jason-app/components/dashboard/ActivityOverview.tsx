@@ -21,7 +21,7 @@ export function ActivityOverview({ stats }: { stats: AccountStats }) {
           </div>
           <div style={ao.greetSub}>
             {hasActivity
-              ? `Voici tes chiffres réels sur 12 mois glissants — ils alimentent automatiquement les simulateurs ci-dessous.`
+              ? `Voici tes chiffres réels sur 12 mois glissants : ils alimentent automatiquement les simulateurs ci-dessous.`
               : `Ajoute tes premiers séjours pour personnaliser les simulations avec tes vrais chiffres.`}
           </div>
         </div>

@@ -7,6 +7,7 @@ import { FileText, MagnifyingGlass, House, ArrowSquareOut, ArrowCounterClockwise
 import { Card, CardHead, Stat, ui } from '../finances/_ui/ui'
 import { restoreContract } from '../voyageurs/contract-actions'
 import type { ContractRow } from './types'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 interface Props {
   contracts: ContractRow[]
@@ -213,9 +214,10 @@ function ContractRow({ contract: c }: { contract: ContractRow }) {
   // l'action : la ligne reprend son vrai statut sans rechargement manuel).
   const [restoring, startRestore] = useTransition()
   const [restoreError, setRestoreError] = useState('')
-  function restore() {
+  const { confirm: ask, dialog } = useConfirm()
+  async function restore() {
     const next = c.signature_date ? 'signé' : 'en attente de signature'
-    if (!confirm(`Réactiver ce contrat ? Il repassera en « ${next} ».`)) return
+    if (!(await ask({ message: `Réactiver ce contrat ? Il repassera en « ${next} ».`, confirmLabel: 'Réactiver' }))) return
     setRestoreError('')
     startRestore(async () => {
       const res = await restoreContract(c.id)
@@ -224,6 +226,8 @@ function ContractRow({ contract: c }: { contract: ContractRow }) {
   }
 
   return (
+    <>
+    {dialog}
     <div style={s.row} className="ctr-row">
       <div style={s.rowAvatar}>{initials}</div>
       <div style={{ flex: 1, minWidth: 0 }} className="ctr-main">
@@ -278,6 +282,7 @@ function ContractRow({ contract: c }: { contract: ContractRow }) {
         )}
       </div>
     </div>
+    </>
   )
 }
 

@@ -7,6 +7,7 @@ import { FacebookLogo, Copy, Check, House, FloppyDisk, Trash, BookmarkSimple, Pl
 import { saveFacebookPost, deleteFacebookPost } from './actions'
 import { markStepIfNotYet } from '@/lib/onboarding/client'
 import InlineStyle from '@/components/ui/InlineStyle'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 interface Template { id: string; title: string; content: string }
 interface Logement { id: string; nom: string; lien_driing: string | null }
@@ -28,6 +29,7 @@ function applyVariables(content: string, lienDriing: string | null): string {
 export default function FacebookTemplatesSection({ templates, logements, savedPosts }: Props) {
   const router = useRouter()
   const [, startTransition] = useTransition()
+  const { confirm: ask, dialog } = useConfirm()
 
   // Logement par défaut : le premier qui a un lien Driing, sinon le premier tout court.
   const defaultLogementId = useMemo(() => {
@@ -149,7 +151,7 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
 
   async function handleDelete() {
     if (!editingPost) return
-    if (!confirm(`Supprimer le post "${editingPost.title}" ?`)) return
+    if (!(await ask({ message: `Supprimer le post « ${editingPost.title} » ?`, confirmLabel: 'Supprimer', danger: true }))) return
     const res = await deleteFacebookPost(editingPost.id)
     if (res.error) {
       setSaveError(res.error)
@@ -171,6 +173,8 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
   const noLinkOnSelected = selectedLogement && !selectedLogement.lien_driing
 
   return (
+    <>
+    {dialog}
     <section style={s.wrap} className="fade-up">
       {/* En-tête compact : ton post prêt à coller */}
       <div style={s.header}>
@@ -440,6 +444,7 @@ export default function FacebookTemplatesSection({ templates, logements, savedPo
       </button>
       </>)}
     </section>
+    </>
   )
 }
 

@@ -1,5 +1,5 @@
 // Générateur PDF « Fiche individuelle de police » (France) — arrêté du
-// 1er octobre 2015, art. R.813-2 CESEDA. Obligatoire pour tout voyageur
+// 1er octobre 2015, art. R814-1 à R814-3 du CESEDA. Obligatoire pour tout voyageur
 // étranger ; à conserver 6 mois par l'hébergeur et à transmettre à la
 // police sur réquisition. Il n'existe PAS de télé-service national : le
 // PDF pré-rempli (et signé via le check-in en ligne) EST la conformité.
@@ -139,7 +139,7 @@ function renderFichePage(
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(9)
   doc.setTextColor(...MUTED)
-  doc.text('Arrêté du 1er octobre 2015 — article R.813-2 du CESEDA', W / 2, y, { align: 'center' })
+  doc.text('Arrêté du 1er octobre 2015 · articles R814-1 à R814-3 du CESEDA', W / 2, y, { align: 'center' })
   y += 4.5
   doc.text('À remplir par les étrangers hébergés dans un meublé de tourisme / hébergement touristique', W / 2, y, { align: 'center' })
   y += 8

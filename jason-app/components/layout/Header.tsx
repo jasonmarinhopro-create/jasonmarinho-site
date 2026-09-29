@@ -397,8 +397,8 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
             <button
               style={styles.sosBtn}
               className="dash-sos-btn"
-              aria-label="SOS Hôte — En cas de problème"
-              title="SOS Hôte — En cas de problème"
+              aria-label="SOS Hôte : en cas de problème"
+              title="SOS Hôte : en cas de problème"
               onClick={() => setSosOpen(true)}
             >
               <Lifebuoy size={18} weight="regular" />

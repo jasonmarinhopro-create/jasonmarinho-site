@@ -1381,7 +1381,7 @@ export default function CalendrierView({
                           style={{
                             ...s.sourcesRow,
                             ...(visible
-                              ? { borderColor: `${CAT.arrivee.color}55`, background: `${CAT.arrivee.color}10` }
+                              ? { border: `1px solid ${CAT.arrivee.color}55`, background: `${CAT.arrivee.color}10` }
                               : { opacity: 0.55 }),
                           }}
                         >
@@ -1401,7 +1401,7 @@ export default function CalendrierView({
                           style={{
                             ...s.sourcesRow,
                             ...(visible
-                              ? { borderColor: `${src.color}55`, background: `${src.color}10` }
+                              ? { border: `1px solid ${src.color}55`, background: `${src.color}10` }
                               : { opacity: 0.55 }),
                           }}
                         >
