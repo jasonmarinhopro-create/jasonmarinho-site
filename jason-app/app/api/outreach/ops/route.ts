@@ -30,12 +30,13 @@ const hostOf = (u: string) => { try { return new URL(/^https?:\/\//i.test(u) ? u
 
 export async function POST(req: Request) {
   if (!authorized(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
-  const body = await req.json().catch(() => ({})) as { op?: string; audience?: Audience; query?: string; audiences?: Audience[]; daily_cap?: number }
+  const body = await req.json().catch(() => ({})) as { op?: string; audience?: Audience; query?: string; ville?: string; audiences?: Audience[]; daily_cap?: number }
   const db = getServiceClient()
   try {
     switch (body.op) {
       case 'status': return NextResponse.json(await status(db))
       case 'import': return NextResponse.json(await importFromMaps(db, body.audience, body.query))
+      case 'import_osm': return NextResponse.json(await importFromOsm(db, body.audience, body.ville))
       case 'activate': return NextResponse.json(await activate(db, body.audiences ?? ['photographe', 'menage'], body.daily_cap))
       case 'test': {
         // E-mail d'essai (1er e-mail du premier contact photographes) envoyé à la boîte d'envoi elle-même
@@ -50,7 +51,7 @@ export async function POST(req: Request) {
         const relaunched = summary.more ? await relaunchOutreach(1, true) : false
         return NextResponse.json({ ok: true, relaunched, ...summary })
       }
-      default: return NextResponse.json({ error: 'op inconnue (status, import, activate, test, run)' }, { status: 400 })
+      default: return NextResponse.json({ error: 'op inconnue (status, import, import_osm, activate, test, run)' }, { status: 400 })
     }
   } catch (e) {
     return NextResponse.json({ ok: false, error: e instanceof Error ? e.message.slice(0, 300) : 'erreur' }, { status: 500 })
@@ -91,12 +92,55 @@ async function status(db: Db) {
   }
 }
 
+type Candidate = { nom: string | null; entreprise: string | null; ville: string | null; departement: string | null; site_web: string | null; telephone: string | null; detail: string }
+
 /** Une recherche Google Maps (20 résultats), e-mail publié sur le site de chaque pro, ajout en « À contacter ». */
 async function importFromMaps(db: Db, audience: Audience | undefined, query: string | undefined) {
   if (!audience || !AUDIENCES.includes(audience)) throw new Error('audience manquante')
   if (!query || query.trim().length < 3) throw new Error('recherche manquante')
   const started = Date.now()
   const { results } = await searchGooglePlaces({ audience, query })
+  const cands: Candidate[] = results.map(r => ({ nom: r.nom ?? null, entreprise: r.entreprise ?? null, ville: r.ville ?? null, departement: r.departement ?? null, site_web: r.site_web ?? null, telephone: r.telephone ?? null, detail: r.source_detail ?? 'Google Maps' }))
+  return { recherche: query, ...(await importCandidates(db, audience, cands, started)) }
+}
+
+/**
+ * OpenStreetMap (Overpass, gratuit, sans clé) : photographes (craft=photographer,
+ * shop=photo) ou entreprises de ménage / nettoyage / conciergerie d'une ville,
+ * avec leur site web. L'e-mail vient toujours du site du pro (pas des données
+ * OSM), pour que la mention d'origine du premier e-mail reste exacte.
+ */
+async function importFromOsm(db: Db, audience: Audience | undefined, ville: string | undefined) {
+  if (!audience || !['photographe', 'menage'].includes(audience)) throw new Error('audience photographe ou menage')
+  const city = (ville ?? '').replace(/["\\]/g, '').trim()
+  if (city.length < 2) throw new Error('ville manquante')
+  const started = Date.now()
+  const re = 'ménage|menage|nettoyage|conciergerie|cleaning|propreté|proprete'
+  const sel = audience === 'photographe'
+    ? `nwr["craft"="photographer"](area.a);nwr["shop"="photo"](area.a);`
+    : `nwr["craft"="cleaning"](area.a);nwr["office"]["name"~"${re}",i](area.a);nwr["craft"]["name"~"${re}",i](area.a);nwr["shop"]["name"~"conciergerie|ménage|menage",i](area.a);`
+  const ql = `[out:json][timeout:25];area["name"="${city}"]["boundary"="administrative"]["admin_level"="8"]->.a;(${sel});out tags 300;`
+  const res = await fetch('https://overpass-api.de/api/interpreter', {
+    method: 'POST', body: `data=${encodeURIComponent(ql)}`,
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'JasonMarinhoBot/1.0 (+https://jasonmarinho.com)' },
+    cache: 'no-store', signal: AbortSignal.timeout(30_000),
+  })
+  if (!res.ok) throw new Error(`OpenStreetMap indisponible (${res.status})`)
+  const data = await res.json() as { elements?: Array<{ tags?: Record<string, string> }> }
+  const cands: Candidate[] = (data.elements ?? []).map(e => {
+    const t = e.tags ?? {}
+    const site = t.website || t['contact:website'] || t.url || null
+    const cp = t['addr:postcode'] || null
+    return {
+      nom: t.name ?? null, entreprise: t.name ?? null, ville: t['addr:city'] || city, departement: cp ? cp.slice(0, 2) : null,
+      site_web: site, telephone: t.phone || t['contact:phone'] || null, detail: `OpenStreetMap, ${city}`,
+    }
+  }).filter(c => c.nom)
+  return { ville: city, ...(await importCandidates(db, audience, cands, started)) }
+}
+
+/** Sites déjà connus ignorés, e-mail cherché sur chaque site (5 à la fois), ajout en « À contacter ». */
+async function importCandidates(db: Db, audience: Audience, results: Candidate[], started: number) {
   const withSite = results.filter(r => r.site_web && hostOf(r.site_web))
 
   // Sites déjà connus (contact existant, toutes audiences) : pas de nouvelle visite
@@ -111,7 +155,7 @@ async function importFromMaps(db: Db, audience: Audience | undefined, query: str
   })
 
   // Visite des sites, 5 à la fois, dans le temps disponible
-  const found: Array<{ row: typeof todo[number]; email: string }> = []
+  const found: Array<{ row: Candidate; email: string }> = []
   let crawled = 0
   for (let i = 0; i < todo.length; i += 5) {
     if (Date.now() - started > 40_000) break
@@ -133,15 +177,16 @@ async function importFromMaps(db: Db, audience: Audience | undefined, query: str
       audience, email: f.email, nom: r.nom?.slice(0, 200) ?? null, entreprise: r.entreprise?.slice(0, 200) ?? null,
       ville: r.ville?.slice(0, 80) ?? null, departement: r.departement?.slice(0, 3) ?? null, site_web: r.site_web?.slice(0, 300) ?? null,
       telephone: r.telephone?.slice(0, 40) ?? null, source: 'site',
-      source_detail: `E-mail publié sur ${r.site_web} (${r.source_detail ?? 'Google Maps'})`.slice(0, 300),
+      source_detail: `E-mail publié sur ${r.site_web} (${r.detail})`.slice(0, 300),
       stage: 'a_contacter',
     })
     if (error) duplicates++
     else added++
   }
   return {
-    ok: true, recherche: query, resultats_maps: results.length, avec_site: withSite.length, sites_deja_connus: withSite.length - todo.length,
-    sites_visites: crawled, emails_trouves: found.length, ajoutes: added, doublons_ou_opposes: duplicates, secondes: Math.round((Date.now() - started) / 1000),
+    ok: true, resultats: results.length, avec_site: withSite.length, sites_deja_connus: withSite.length - todo.length,
+    sites_visites: crawled, reste_a_visiter: todo.length - crawled, emails_trouves: found.length, ajoutes: added, doublons_ou_opposes: duplicates,
+    secondes: Math.round((Date.now() - started) / 1000),
   }
 }
 
