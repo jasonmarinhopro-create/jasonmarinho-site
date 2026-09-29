@@ -8,7 +8,7 @@ import { parisToday } from '@/lib/stripe/deposit-window'
 import { logger } from '@/lib/logger'
 import {
   afterSend, complianceFooter, guessFirstName, isoWeekday, renderTemplate, replySubject, scheduleStep,
-  textToHtml, DEFAULT_SIGNATURE, LEGACY_DEFAULT_SIGNATURE, CLOSED_STAGES, type Audience, type Source, type Stage,
+  textToHtml, DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL, normalizeTag, LEGACY_DEFAULT_SIGNATURE, CLOSED_STAGES, type Audience, type Source, type Stage,
 } from './engine'
 import { isPermanentAddressError, outreachConfig, scanInbox, sendOutreachMail } from './mailer'
 
@@ -22,18 +22,22 @@ export interface Settings {
   send_days: number[]
   paused: boolean
   signature: string | null
+  /** Photo dans la signature (migration 116, vraie par défaut) */
+  signature_photo: boolean
   last_imap_check: string | null
   last_run_at: string | null
   last_run_summary: string | null
 }
 
 export async function loadSettings(db: Db): Promise<Settings> {
-  const { data } = await db.from('outreach_settings').select('daily_cap, send_days, paused, signature, last_imap_check, last_run_at, last_run_summary').eq('id', 1).maybeSingle()
+  // Ligne unique : `*` tolère les colonnes ajoutées après coup (signature_photo, migration 116)
+  const { data } = await db.from('outreach_settings').select('*').eq('id', 1).maybeSingle()
   return {
     daily_cap: data?.daily_cap ?? 25,
     send_days: data?.send_days ?? [1, 2, 3, 4, 5],
     paused: data?.paused ?? false,
     signature: data?.signature && data.signature.trim() !== LEGACY_DEFAULT_SIGNATURE ? data.signature : null,
+    signature_photo: data?.signature_photo ?? true,
     last_imap_check: data?.last_imap_check ?? null,
     last_run_at: data?.last_run_at ?? null,
     last_run_summary: data?.last_run_summary ?? null,
@@ -96,19 +100,38 @@ export async function stopEnrollments(db: Db, contactIds: string[], reason: stri
  * Change l'étape du pipeline : arrête ce qui doit l'être puis démarre les
  * séquences actives déclenchées par cette étape.
  */
-export async function setStage(db: Db, contactIds: string[], stage: Stage, extra: Record<string, unknown> = {}) {
-  if (!contactIds.length) return
+export async function setStage(db: Db, contactIds: string[], stage: Stage, extra: Record<string, unknown> = {}): Promise<string[]> {
+  if (!contactIds.length) return []
   await db.from('outreach_contacts').update({ stage, updated_at: new Date().toISOString(), ...extra }).in('id', contactIds)
   if (stage === 'a_repondu') await stopEnrollments(db, contactIds, 'reponse', true)
   else if (['desinscrit', 'invalide', 'pas_interesse', 'interesse', 'inscrit', 'client'].includes(stage)) await stopEnrollments(db, contactIds, stage)
   // Séquences déclenchées par cette étape, pour l'audience de chaque contact
-  const { data: seqs } = await db.from('outreach_sequences').select('id, audience').eq('trigger', 'etape').eq('trigger_stage', stage).eq('enabled', true)
-  if (!seqs?.length) return
+  const { data: seqs } = await db.from('outreach_sequences').select('id, nom, audience').eq('trigger', 'etape').eq('trigger_stage', stage).eq('enabled', true)
+  return enrollByAudience(db, seqs ?? [], contactIds)
+}
+
+/** Inscrit chaque contact dans les séquences de son audience ; renvoie le nom des séquences où au moins un contact est entré. */
+async function enrollByAudience(db: Db, seqs: Array<{ id: string; nom: string; audience: string }>, contactIds: string[]): Promise<string[]> {
+  if (!seqs.length) return []
   const { data: contacts } = await db.from('outreach_contacts').select('id, audience').in('id', contactIds)
+  const started: string[] = []
   for (const s of seqs) {
     const ids = (contacts ?? []).filter(c => c.audience === s.audience).map(c => c.id)
-    if (ids.length) await enroll(db, s.id, ids)
+    if (ids.length && (await enroll(db, s.id, ids)) > 0) started.push(s.nom)
   }
+  return started
+}
+
+/**
+ * Étiquettes ajoutées à des contacts : lance les séquences actives déclenchées
+ * par l'une d'elles (`trigger = 'etiquette'`, migration 116).
+ */
+export async function onTagsAdded(db: Db, contactIds: string[], tags: string[]): Promise<string[]> {
+  if (!contactIds.length || !tags.length) return []
+  const { data: seqs, error } = await db.from('outreach_sequences').select('id, nom, audience, trigger_tag').eq('trigger', 'etiquette').eq('enabled', true)
+  if (error) return []
+  const wanted = new Set(tags.map(normalizeTag))
+  return enrollByAudience(db, (seqs ?? []).filter(s => s.trigger_tag && wanted.has(normalizeTag(s.trigger_tag))), contactIds)
 }
 
 // ─── Passage du cron ────────────────────────────────────────────────────────
@@ -297,6 +320,7 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
   const { data: prior } = await db.from('outreach_sends').select('contact_id').in('contact_id', contactIds).eq('status', 'envoye')
   const alreadyWritten = new Set((prior ?? []).map(p => p.contact_id))
   const signature = settings.signature?.trim() || DEFAULT_SIGNATURE
+  const photo = settings.signature_photo ? SIGNATURE_PHOTO_URL : null
 
   let attempts = 0
   for (const e of due as DueRow[]) {
@@ -334,7 +358,7 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
     attempts++
     try {
       const { messageId } = await sendOutreachMail(cfg, {
-        to: c.email, subject, text: `${text}\n\n--\n${footer}`, html: textToHtml(bodyText, footer, signature),
+        to: c.email, subject, text: `${text}\n\n--\n${footer}`, html: textToHtml(bodyText, footer, signature, photo),
         inReplyTo: inThread ? e.thread_message_id : null, unsubscribeUrl: urls.page, oneClickUrl: urls.oneClick,
       })
       await db.from('outreach_sends').insert({ enrollment_id: e.id, contact_id: c.id, sequence_id: e.sequence_id, step_position: e.next_step, email: c.email, subject, message_id: messageId, status: 'envoye' })
@@ -383,7 +407,7 @@ export async function sendTest(stepSubject: string, stepBody: string, settings: 
   try {
     await sendOutreachMail(cfg, {
       to: cfg.fromEmail, subject: `[Essai] ${renderTemplate(stepSubject, vars)}`,
-      text: `${text}\n\n--\n${footer}`, html: textToHtml(bodyText, footer, signature), unsubscribeUrl: urls.page, oneClickUrl: urls.oneClick,
+      text: `${text}\n\n--\n${footer}`, html: textToHtml(bodyText, footer, signature, settings.signature_photo ? SIGNATURE_PHOTO_URL : null), unsubscribeUrl: urls.page, oneClickUrl: urls.oneClick,
     })
     return { ok: true, to: cfg.fromEmail }
   } catch (e) {

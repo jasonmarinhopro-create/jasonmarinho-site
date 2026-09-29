@@ -5,10 +5,11 @@ import AdminHero, { adminAsideCard } from '../_ui/AdminHero'
 import ProspectionView from './ProspectionView'
 import type { ContactRow, MailConfig, SequenceRow, SettingsRow, Stats } from './shared'
 
-export default function ProspectionScreen(props: { sequences: SequenceRow[]; contacts: ContactRow[]; settings: SettingsRow; config: MailConfig; stats: Stats }) {
+export default function ProspectionScreen(props: { sequences: SequenceRow[]; contacts: ContactRow[]; settings: SettingsRow; config: MailConfig; stats: Stats; today: string }) {
   const { stats, settings, config, sequences } = props
   const running = sequences.filter(s => s.enabled).length
   const inProgress = sequences.reduce((n, s) => n + s.counts.en_cours, 0)
+  const dueReminders = props.contacts.filter(c => c.next_action && c.next_action_on && c.next_action_on <= props.today).length
   const rate = stats.contacted30 ? Math.round((stats.replies30 / stats.contacted30) * 100) : null
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: 'var(--dash-page-px)', width: '100%', boxSizing: 'border-box' }}>
@@ -25,6 +26,7 @@ export default function ProspectionScreen(props: { sequences: SequenceRow[]; con
               <span style={{ fontSize: '13px', color: 'var(--text-3)' }}>/ {settings.daily_cap} e-mails envoyés</span>
             </div>
             <div style={bar}><div style={{ ...barFill, width: `${Math.min(100, (stats.sentToday / Math.max(1, settings.daily_cap)) * 100)}%` }} /></div>
+            {dueReminders > 0 && <Row k="Rappels à faire" v={`${dueReminders}`} warn />}
             <Row k="Envoyés sur 7 jours" v={`${stats.sent7}`} />
             <Row k="Réponses sur 30 jours" v={`${stats.replies30}${rate !== null ? ` (${rate} %)` : ''}`} />
             <Row k="Séquences en marche" v={`${running}, ${inProgress} personne${inProgress > 1 ? 's' : ''} dedans`} />
@@ -34,7 +36,7 @@ export default function ProspectionScreen(props: { sequences: SequenceRow[]; con
           </div>
         }
       />
-      <ProspectionView sequences={props.sequences} contacts={props.contacts} settings={settings} config={config} />
+      <ProspectionView sequences={props.sequences} contacts={props.contacts} settings={settings} config={config} today={props.today} />
     </div>
   )
 }

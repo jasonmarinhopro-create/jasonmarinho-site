@@ -193,8 +193,34 @@ export function escapeHtml(s: string): string {
  * le logo (une image dans un premier e-mail pèse sur la délivrabilité).
  */
 export const DEFAULT_SIGNATURE = 'Jason Marinho\nEntrepreneur\ncontact@jasonmarinho.com\n06 30 21 25 92\n75015 Paris\njasonmarinho.com'
+/** Photo ronde de Jason (192 px, affichée en 64 px), hébergée sur le site : JPEG car beaucoup de messageries ignorent le WebP */
+export const SIGNATURE_PHOTO_URL = 'https://jasonmarinho.com/signature-jason.jpg'
 /** Ancienne signature par défaut, remplacée par la nouvelle si elle est restée telle quelle */
 export const LEGACY_DEFAULT_SIGNATURE = 'Jason Marinho\nhttps://jasonmarinho.com'
+
+/** Étiquette : espaces réduits, 40 caractères max, casse d'origine gardée pour l'affichage */
+export function cleanTag(tag: string): string {
+  return tag.replace(/\s+/g, ' ').trim().slice(0, 40)
+}
+/** Comparaison d'étiquettes sans tenir compte de la casse ni des accents */
+export function normalizeTag(tag: string): string {
+  return cleanTag(tag).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+}
+/** Ajoute des étiquettes sans doublon (comparaison normalisée) */
+export function mergeTags(current: string[], added: string[]): string[] {
+  const out = [...current]
+  const seen = new Set(current.map(normalizeTag))
+  for (const t of added.map(cleanTag).filter(Boolean)) {
+    if (!seen.has(normalizeTag(t))) { seen.add(normalizeTag(t)); out.push(t) }
+  }
+  return out
+}
+
+/** Jours sans nouvelle : depuis le dernier e-mail, la dernière réponse ou l'ajout du contact */
+export function daysWithoutNews(c: { last_contacted_at: string | null; replied_at: string | null; created_at: string }, now = Date.now()): number {
+  const last = Math.max(...[c.last_contacted_at, c.replied_at, c.created_at].filter(Boolean).map(d => new Date(d as string).getTime()))
+  return Math.max(0, Math.floor((now - last) / 86400_000))
+}
 
 const linkify = (escaped: string) => escaped
   .replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)])/g, '<a href="$1">$1</a>')
@@ -203,7 +229,7 @@ const linkify = (escaped: string) => escaped
  * Signature en HTML, mise en forme comme la signature Gmail : nom en gras,
  * fonction, puis coordonnées en gris (e-mail, téléphone et site cliquables).
  */
-export function signatureToHtml(signature: string): string {
+export function signatureToHtml(signature: string, photoUrl?: string | null): string {
   const lines = signature.trim().split(/\n/).map(l => l.trim()).filter(Boolean)
   const line = (raw: string, i: number) => {
     const e = escapeHtml(raw)
@@ -218,13 +244,19 @@ export function signatureToHtml(signature: string): string {
   }
   const head = lines.slice(0, 2).map(line).join('')
   const rest = lines.slice(2).map((l, i) => line(l, i + 2)).join('')
-  return `<div style="margin:18px 0 0;font-family:Helvetica,Arial,sans-serif;font-size:13.5px;line-height:1.5;">${head}${rest ? `<div style="height:8px;"></div>${rest}` : ''}</div>`
+  const text = `${head}${rest ? `<div style="height:8px;line-height:8px;font-size:1px;">&nbsp;</div>${rest}` : ''}`
+  const font = 'font-family:Helvetica,Arial,sans-serif;font-size:13.5px;line-height:1.5;'
+  if (!photoUrl) return `<div style="margin:18px 0 0;${font}">${text}</div>`
+  // Tableau comme la signature Gmail : photo à gauche, coordonnées à droite
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:18px 0 0;border-collapse:collapse;"><tr>`
+    + `<td valign="top" style="padding:2px 16px 0 0;"><img src="${escapeHtml(photoUrl)}" width="64" height="64" alt="${escapeHtml(lines[0] ?? '')}" style="display:block;width:64px;height:64px;border-radius:50%;border:0;"></td>`
+    + `<td valign="top" style="${font}">${text}</td></tr></table>`
 }
 
-export function textToHtml(text: string, footer: string, signature?: string): string {
+export function textToHtml(text: string, footer: string, signature?: string, photoUrl?: string | null): string {
   const para = (block: string) => linkify(escapeHtml(block)).replace(/\n/g, '<br>')
   const body = text.trim().split(/\n{2,}/).map(b => `<p style="margin:0 0 14px;">${para(b)}</p>`).join('')
-  const sig = signature?.trim() ? signatureToHtml(signature) : ''
+  const sig = signature?.trim() ? signatureToHtml(signature, photoUrl) : ''
   const foot = footer.trim().split(/\n/).map(l => para(l)).join('<br>')
   return `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14.5px;line-height:1.6;color:#1f2a24;">${body}${sig}<p style="margin:22px 0 0;font-size:12px;color:#6b7a72;">${foot}</p></div>`
 }

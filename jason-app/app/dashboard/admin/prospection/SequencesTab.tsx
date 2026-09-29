@@ -35,7 +35,7 @@ const newKey = () => `k${++keySeq}`
 
 function toDraft(s: SequenceRow): Draft {
   return {
-    id: s.id, nom: s.nom, audience: s.audience, description: s.description, trigger: s.trigger, trigger_stage: s.trigger_stage,
+    id: s.id, nom: s.nom, audience: s.audience, description: s.description, trigger: s.trigger, trigger_stage: s.trigger_stage, trigger_tag: s.trigger_tag ?? null,
     stop_on_reply: s.stop_on_reply, repeat_after_days: s.repeat_after_days, max_repeats: s.max_repeats,
     then_sequence_id: s.then_sequence_id, end_stage: s.end_stage,
     steps: s.steps.map(st => ({ key: st.id, id: st.id, delay_days: st.delay_days, subject: st.subject, body: st.body, same_thread: st.same_thread })),
@@ -56,6 +56,7 @@ export default function SequencesTab({ audience, sequences, contacts }: { audien
   const [busy, setBusy] = useState<string | null>(null)
   const [msg, setMsg] = useState<{ ok?: string; err?: string } | null>(null)
   const [preview, setPreview] = useState<Record<string, boolean>>({})
+  const knownTags = useMemo(() => Array.from(new Set(contacts.filter(c => c.audience === audience).flatMap(c => c.tags ?? []))).sort((x, y) => x.localeCompare(y, 'fr')), [contacts, audience])
 
   // Changement d'audience : première séquence de la liste
   useEffect(() => {
@@ -85,7 +86,7 @@ export default function SequencesTab({ audience, sequences, contacts }: { audien
   function newSequence() {
     setSelectedId(null)
     setDraft({
-      nom: 'Nouvelle séquence', audience, description: null, trigger: 'manuel', trigger_stage: null, stop_on_reply: true,
+      nom: 'Nouvelle séquence', audience, description: null, trigger: 'manuel', trigger_stage: null, trigger_tag: null, stop_on_reply: true,
       repeat_after_days: null, max_repeats: 0, then_sequence_id: null, end_stage: null,
       steps: [{ key: newKey(), delay_days: 0, subject: 'Bonjour {prenom}', body: 'Bonjour {prenom},\n\n', same_thread: false }],
     })
@@ -201,7 +202,7 @@ export default function SequencesTab({ audience, sequences, contacts }: { audien
                       <span style={{ width: 6, height: 6, borderRadius: 9, background: seq.enabled ? 'var(--accent-text)' : 'var(--text-3)' }} /> {seq.enabled ? 'En marche' : 'En pause'}
                     </span>
                     <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text)', lineHeight: 1.35 }}>{seq.nom}</span>
-                    <span style={s.trigLine}><Lightning size={12} weight="fill" /> {seq.trigger === 'etape' ? `Arrive à « ${STAGE_LABEL[seq.trigger_stage as Stage] ?? ''} »` : TRIGGER_LABEL[seq.trigger]}</span>
+                    <span style={s.trigLine}><Lightning size={12} weight="fill" /> {seq.trigger === 'etape' ? `Arrive à « ${STAGE_LABEL[seq.trigger_stage as Stage] ?? ''} »` : seq.trigger === 'etiquette' ? `Étiquette « ${seq.trigger_tag ?? ''} »` : TRIGGER_LABEL[seq.trigger]}</span>
                     <span style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', alignItems: 'center' }}>
                       {days.map((d, i) => (
                         <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
@@ -273,7 +274,14 @@ export default function SequencesTab({ audience, sequences, contacts }: { audien
                         {STAGES.filter(st => !['a_trouver', 'desinscrit', 'invalide'].includes(st.key)).map(st => <option key={st.key} value={st.key}>Le contact passe en « {st.label} »</option>)}
                       </select>
                     )}
+                    {draft.trigger === 'etiquette' && (
+                      <>
+                        <input list="prosp-tags" value={draft.trigger_tag ?? ''} onChange={e => upd({ trigger_tag: e.target.value })} placeholder="Ex. Salon Lyon, Recommandé, Chaud…" style={ui.input} aria-label="Étiquette qui déclenche la séquence" />
+                        <datalist id="prosp-tags">{knownTags.map(t => <option key={t} value={t} />)}</datalist>
+                      </>
+                    )}
                     <span style={ui.sub}>
+                      {draft.trigger === 'etiquette' && 'Le contact entre dès que tu lui ajoutes cette étiquette (sur sa fiche, ou à plusieurs depuis la sélection).'}
                       {draft.trigger === 'manuel' && 'Tu choisis qui entre : bouton « Lancer » ou sélection dans l\'onglet Contacts.'}
                       {draft.trigger === 'nouveau_contact' && 'À chaque passage, les contacts « À contacter » de l\'audience, jamais contactés, entrent tout seuls.'}
                       {draft.trigger === 'etape' && 'Le contact entre dès qu\'il arrive à cette étape (à la main, ou quand l\'app détecte son inscription).'}

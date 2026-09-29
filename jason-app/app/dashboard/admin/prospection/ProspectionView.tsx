@@ -27,8 +27,8 @@ const TABS: Array<{ key: Tab; label: string; Icon: React.ElementType }> = [
   { key: 'reglages', label: 'Réglages', Icon: Gear },
 ]
 
-export default function ProspectionView({ sequences, contacts, settings, config, initialTab = 'sequences' }: {
-  sequences: SequenceRow[]; contacts: ContactRow[]; settings: SettingsRow; config: MailConfig; initialTab?: Tab
+export default function ProspectionView({ sequences, contacts, settings, config, today, initialTab = 'sequences' }: {
+  sequences: SequenceRow[]; contacts: ContactRow[]; settings: SettingsRow; config: MailConfig; today: string; initialTab?: Tab
 }) {
   const [audience, setAudience] = useState<Audience>('photographe')
   const [tab, setTab] = useState<Tab>(initialTab)
@@ -63,7 +63,7 @@ export default function ProspectionView({ sequences, contacts, settings, config,
       </div>
 
       {tab === 'sequences' && <SequencesTab audience={audience} sequences={sequences} contacts={contacts} />}
-      {tab === 'contacts' && <ContactsTab audience={audience} contacts={contacts} sequences={sequences} />}
+      {tab === 'contacts' && <ContactsTab audience={audience} contacts={contacts} sequences={sequences} today={today} />}
       {tab === 'sources' && <SourcesTab audience={audience} placesKey={config.placesKey} />}
       {tab === 'reglages' && <SettingsTab settings={settings} config={config} />}
     </div>

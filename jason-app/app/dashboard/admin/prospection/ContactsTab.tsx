@@ -8,29 +8,43 @@ import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import {
   MagnifyingGlass, Plus, X, Globe, EnvelopeSimple, Rocket, Trash, ListBullets, Kanban, ArrowSquareOut, CheckCircle,
-  WarningCircle, Phone, InstagramLogo, MagicWand,
+  WarningCircle, Phone, InstagramLogo, MagicWand, Tag, Bell,
 } from '@phosphor-icons/react/dist/ssr'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
-import { STAGES, STAGE_LABEL, SOURCE_LABEL, type Audience, type Stage } from '@/lib/outreach/engine'
-import { tint } from '../_ui/theme'
-import { changeStage, deleteContacts, enrollInSequence, findEmails, saveContact, contactHistory, stopContacts } from './actions'
-import { ui, stagePill, displayName, fmtDay, STAGE_COLOR, type ContactRow, type SequenceRow } from './shared'
+import { STAGES, STAGE_LABEL, SOURCE_LABEL, cleanTag, mergeTags, normalizeTag, type Audience, type Stage } from '@/lib/outreach/engine'
+import { AMBER, tint } from '../_ui/theme'
+import { changeStage, deleteContacts, enrollInSequence, findEmails, saveContact, contactHistory, stopContacts, tagContacts, updateContactMeta } from './actions'
+import PipelineBoard from './PipelineBoard'
+import { ui, stagePill, displayName, fmtDay, type ContactRow, type SequenceRow } from './shared'
 
 const PAGE = 80
 
-export default function ContactsTab({ audience, contacts, sequences }: { audience: Audience; contacts: ContactRow[]; sequences: SequenceRow[] }) {
+const VIEW_KEY = 'prospection-contacts-view'
+
+export default function ContactsTab({ audience, contacts, sequences, today }: { audience: Audience; contacts: ContactRow[]; sequences: SequenceRow[]; today: string }) {
   const { confirm, dialog } = useConfirm()
   const [q, setQ] = useState('')
   const [stage, setStage] = useState<Stage | 'tous'>('tous')
-  const [view, setView] = useState<'liste' | 'pipeline'>('liste')
+  const [tagFilter, setTagFilter] = useState('')
+  const [view, setView] = useState<'liste' | 'pipeline'>('pipeline')
+  const [bulkTag, setBulkTag] = useState('')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [limit, setLimit] = useState(PAGE)
   const [busy, setBusy] = useState<string | null>(null)
   const [msg, setMsg] = useState<{ ok?: string; err?: string } | null>(null)
-  const [open, setOpen] = useState<ContactRow | 'new' | null>(null)
+  const [open, setOpen] = useState<ContactRow | { stage: Stage } | null>(null)
   const [bulkSeq, setBulkSeq] = useState('')
 
+  // Vue choisie gardée sur cet appareil
+  useEffect(() => { try { const v = localStorage.getItem(VIEW_KEY); if (v === 'liste' || v === 'pipeline') setView(v) } catch { /* stockage indisponible */ } }, [])
+  const chooseView = (v: 'liste' | 'pipeline') => { setView(v); try { localStorage.setItem(VIEW_KEY, v) } catch { /* stockage indisponible */ } }
+
   const mine = useMemo(() => contacts.filter(c => c.audience === audience), [contacts, audience])
+  const knownTags = useMemo(() => {
+    const m = new Map<string, { tag: string; n: number }>()
+    for (const c of mine) for (const t of c.tags ?? []) { const k = normalizeTag(t); const cur = m.get(k); m.set(k, { tag: cur?.tag ?? t, n: (cur?.n ?? 0) + 1 }) }
+    return Array.from(m.values()).sort((a, b) => b.n - a.n)
+  }, [mine])
   const counts = useMemo(() => {
     const m = new Map<Stage, number>()
     for (const c of mine) m.set(c.stage, (m.get(c.stage) ?? 0) + 1)
@@ -38,12 +52,16 @@ export default function ContactsTab({ audience, contacts, sequences }: { audienc
   }, [mine])
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase()
-    return mine.filter(c => (stage === 'tous' || c.stage === stage) && (!needle || [c.email, c.nom, c.prenom, c.entreprise, c.ville, c.departement].some(v => v?.toLowerCase().includes(needle))))
-  }, [mine, q, stage])
+    const tagKey = tagFilter ? normalizeTag(tagFilter) : ''
+    return mine.filter(c => (stage === 'tous' || c.stage === stage)
+      && (!tagKey || (c.tags ?? []).some(t => normalizeTag(t) === tagKey))
+      && (!needle || [c.email, c.nom, c.prenom, c.entreprise, c.ville, c.departement, ...(c.tags ?? [])].some(v => v?.toLowerCase().includes(needle))))
+  }, [mine, q, stage, tagFilter])
   const seqs = sequences.filter(s => s.audience === audience)
   const seqName = (id: string | null) => seqs.find(s => s.id === id)?.nom ?? null
 
-  useEffect(() => { setSelected(new Set()); setLimit(PAGE) }, [audience, stage, q])
+  useEffect(() => { setSelected(new Set()); setLimit(PAGE) }, [audience, stage, q, tagFilter])
+  useEffect(() => { setTagFilter('') }, [audience])
 
   function flash(m: { ok?: string; err?: string }) { setMsg(m); if (m.ok) setTimeout(() => setMsg(null), 4000) }
   const toggleOne = (id: string) => setSelected(p => { const n = new Set(p); if (n.has(id)) n.delete(id); else n.add(id); return n })
@@ -66,6 +84,18 @@ export default function ContactsTab({ audience, contacts, sequences }: { audienc
     if (!res.ok) return flash({ err: res.error })
     flash({ ok: `${ids.length} contact${ids.length > 1 ? 's' : ''} en « ${STAGE_LABEL[st]} »` })
     setSelected(new Set())
+  }
+  async function bulkTagAction(mode: 'ajouter' | 'retirer') {
+    const t = cleanTag(bulkTag)
+    if (!t) return flash({ err: 'Écris une étiquette.' })
+    setBusy('tag')
+    const res = await tagContacts(ids, t, mode)
+    setBusy(null)
+    if (!res.ok) return flash({ err: res.error })
+    const n = res.data?.changed ?? 0
+    const started = res.data?.started ?? []
+    flash({ ok: `Étiquette « ${t} » ${mode === 'ajouter' ? 'ajoutée à' : 'retirée de'} ${n} contact${n > 1 ? 's' : ''}${started.length ? `, séquence ${started.map(x => `« ${x} »`).join(', ')} lancée` : ''}` })
+    setBulkTag('')
   }
   async function bulkFind() {
     const target = mine.filter(c => selected.has(c.id) && !c.email && c.site_web).map(c => c.id)
@@ -105,9 +135,15 @@ export default function ContactsTab({ audience, contacts, sequences }: { audienc
           <option value="tous">Toutes les étapes ({mine.length})</option>
           {STAGES.map(st => <option key={st.key} value={st.key}>{st.label} ({counts.get(st.key) ?? 0})</option>)}
         </select>
+        {knownTags.length > 0 && (
+          <select value={tagFilter} onChange={e => setTagFilter(e.target.value)} style={{ ...ui.input, width: 'auto', minWidth: '170px' }} aria-label="Étiquette">
+            <option value="">Toutes les étiquettes</option>
+            {knownTags.map(t => <option key={t.tag} value={t.tag}>{t.tag} ({t.n})</option>)}
+          </select>
+        )}
         <div style={s.seg}>
-          <button type="button" onClick={() => setView('liste')} style={{ ...s.segBtn, ...(view === 'liste' ? s.segOn : {}) }}><ListBullets size={14} weight="bold" /> Liste</button>
-          <button type="button" onClick={() => setView('pipeline')} style={{ ...s.segBtn, ...(view === 'pipeline' ? s.segOn : {}) }}><Kanban size={14} weight="bold" /> Pipeline</button>
+          <button type="button" onClick={() => chooseView('pipeline')} style={{ ...s.segBtn, ...(view === 'pipeline' ? s.segOn : {}) }}><Kanban size={14} weight="bold" /> Pipeline</button>
+          <button type="button" onClick={() => chooseView('liste')} style={{ ...s.segBtn, ...(view === 'liste' ? s.segOn : {}) }}><ListBullets size={14} weight="bold" /> Liste</button>
         </div>
         <span style={{ flex: 1 }} />
         {toFindCount > 0 && (
@@ -115,7 +151,7 @@ export default function ContactsTab({ audience, contacts, sequences }: { audienc
             <MagicWand size={14} weight="bold" /> {toFindCount} e-mail{toFindCount > 1 ? 's' : ''} à chercher
           </button>
         )}
-        <button type="button" onClick={() => setOpen('new')} style={ui.btn}><Plus size={14} weight="bold" /> Ajouter</button>
+        <button type="button" onClick={() => setOpen({ stage: 'a_contacter' })} style={ui.btn}><Plus size={14} weight="bold" /> Ajouter</button>
       </div>
 
       {msg && <div style={{ ...ui.notice, ...(msg.ok ? { background: 'var(--accent-bg)', borderColor: 'var(--accent-border)', color: 'var(--accent-text)' } : { background: tint('var(--danger)', 8), borderColor: tint('var(--danger)', 30), color: 'var(--danger)' }) }}>{msg.ok ? <CheckCircle size={16} weight="fill" /> : <WarningCircle size={16} weight="fill" />} {msg.ok ?? msg.err}</div>}
@@ -132,6 +168,13 @@ export default function ContactsTab({ audience, contacts, sequences }: { audienc
             <option value="">Changer d&apos;étape…</option>
             {STAGES.map(st => <option key={st.key} value={st.key}>{st.label}</option>)}
           </select>
+          <span style={s.tagBox}>
+            <Tag size={13} color="var(--text-3)" />
+            <input list="contacts-tags" value={bulkTag} onChange={e => setBulkTag(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') bulkTagAction('ajouter') }} placeholder="Étiquette" style={s.tagInput} aria-label="Étiquette à ajouter ou retirer" />
+            <datalist id="contacts-tags">{knownTags.map(t => <option key={t.tag} value={t.tag} />)}</datalist>
+            <button type="button" onClick={() => bulkTagAction('ajouter')} disabled={busy === 'tag'} style={s.tagBtn}>Ajouter</button>
+            <button type="button" onClick={() => bulkTagAction('retirer')} disabled={busy === 'tag'} style={{ ...s.tagBtn, color: 'var(--text-3)' }}>Retirer</button>
+          </span>
           <button type="button" onClick={bulkFind} disabled={busy === 'find'} style={ui.btnGhost}><Globe size={14} weight="bold" /> {busy === 'find' ? 'Recherche…' : 'Chercher les e-mails'}</button>
           <button type="button" onClick={bulkStop} disabled={busy === 'stop'} style={ui.btnGhost}>Arrêter les séquences</button>
           <button type="button" onClick={bulkDelete} style={ui.btnDanger}><Trash size={14} weight="bold" /></button>
@@ -159,6 +202,12 @@ export default function ContactsTab({ audience, contacts, sequences }: { audienc
                   {c.ville && <> · {c.ville}{c.departement ? ` (${c.departement})` : ''}</>}
                   {c.active_sequence_id && <> · <Rocket size={12} /> {seqName(c.active_sequence_id)}</>}
                 </span>
+                {((c.tags?.length ?? 0) > 0 || c.next_action) && (
+                  <span style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', alignItems: 'center' }} suppressHydrationWarning>
+                    {(c.tags ?? []).map(t => <span key={t} style={s.tagChip}><Tag size={10} weight="fill" /> {t}</span>)}
+                    {c.next_action && <span style={{ fontSize: '12px', fontWeight: 600, color: c.next_action_on && c.next_action_on <= today ? 'var(--danger)' : 'var(--text-2)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}><Bell size={12} weight={c.next_action_on && c.next_action_on <= today ? 'fill' : 'regular'} /> {c.next_action}{c.next_action_on ? ` · ${fmtDay(`${c.next_action_on}T12:00:00Z`)}` : ''}</span>}
+                  </span>
+                )}
               </button>
               <div style={s.rowSide}>
                 <span style={stagePill(c.stage)}>{STAGE_LABEL[c.stage]}</span>
@@ -169,35 +218,23 @@ export default function ContactsTab({ audience, contacts, sequences }: { audienc
           {filtered.length > limit && <button type="button" onClick={() => setLimit(l => l + PAGE)} style={{ ...ui.btnGhost, margin: '12px auto', display: 'flex' }}>Voir {Math.min(PAGE, filtered.length - limit)} de plus</button>}
         </div>
       ) : (
-        <div style={s.board}>
-          {STAGES.map(st => {
-            const col = filtered.filter(c => c.stage === st.key)
-            return (
-              <div key={st.key} style={s.col}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ width: 8, height: 8, borderRadius: 9, background: STAGE_COLOR[st.key] }} />
-                  <strong style={{ fontSize: '13px', color: 'var(--text)' }}>{st.label}</strong>
-                  <span style={{ ...ui.pill, padding: '1px 8px' }}>{col.length}</span>
-                </div>
-                <span style={{ fontSize: '11.5px', color: 'var(--text-3)' }}>{st.hint}</span>
-                {col.slice(0, 40).map(c => (
-                  <button key={c.id} type="button" onClick={() => setOpen(c)} style={s.kCard}>
-                    <strong style={{ fontSize: '13px', color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName(c)}</strong>
-                    <span style={{ fontSize: '11.5px', color: 'var(--text-3)' }}>{[c.ville, c.last_contacted_at ? `écrit le ${fmtDay(c.last_contacted_at)}` : null].filter(Boolean).join(' · ') || (c.email ?? 'e-mail à trouver')}</span>
-                  </button>
-                ))}
-                {col.length > 40 && <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>et {col.length - 40} de plus</span>}
-              </div>
-            )
-          })}
-        </div>
+        <PipelineBoard
+          contacts={filtered}
+          sequences={seqs}
+          today={today}
+          onOpen={c => setOpen(c)}
+          onAdd={st => setOpen({ stage: st })}
+          onMessage={flash}
+        />
       )}
 
       {open && (
         <ContactPanel
-          contact={open === 'new' ? null : open}
+          contact={'id' in open ? open : null}
+          newStage={'id' in open ? null : open.stage}
           audience={audience}
           sequences={seqs}
+          knownTags={knownTags.map(t => t.tag)}
           onClose={() => setOpen(null)}
           onSaved={m => { flash({ ok: m }); setOpen(null) }}
         />
@@ -206,9 +243,14 @@ export default function ContactsTab({ audience, contacts, sequences }: { audienc
   )
 }
 
-function ContactPanel({ contact, audience, sequences, onClose, onSaved }: {
-  contact: ContactRow | null; audience: Audience; sequences: SequenceRow[]; onClose: () => void; onSaved: (msg: string) => void
+function ContactPanel({ contact, newStage, audience, sequences, knownTags, onClose, onSaved }: {
+  contact: ContactRow | null; newStage: Stage | null; audience: Audience; sequences: SequenceRow[]; knownTags: string[]; onClose: () => void; onSaved: (msg: string) => void
 }) {
+  const [tags, setTags] = useState<string[]>(contact?.tags ?? [])
+  const [tagDraft, setTagDraft] = useState('')
+  const [nextAction, setNextAction] = useState(contact?.next_action ?? '')
+  const [nextOn, setNextOn] = useState(contact?.next_action_on ?? '')
+  const addTag = (t: string) => { const c = cleanTag(t); if (c) setTags(p => mergeTags(p, [c])); setTagDraft('') }
   const [f, setF] = useState({
     email: contact?.email ?? '', prenom: contact?.prenom ?? '', nom: contact?.nom ?? '', entreprise: contact?.entreprise ?? '',
     ville: contact?.ville ?? '', departement: contact?.departement ?? '', site_web: contact?.site_web ?? '', telephone: contact?.telephone ?? '',
@@ -228,10 +270,18 @@ function ContactPanel({ contact, audience, sequences, onClose, onSaved }: {
 
   async function submit() {
     setBusy(true); setErr(null)
-    const res = await saveContact({ id: contact?.id, audience, ...f })
+    const res = await saveContact({ id: contact?.id, audience, ...f, stage: contact ? null : newStage })
+    if (!res.ok) { setBusy(false); return setErr(res.error) }
+    const pending = tagDraft.trim() ? mergeTags(tags, [tagDraft]) : tags
+    const metaChanged = JSON.stringify(pending) !== JSON.stringify(contact?.tags ?? []) || (nextAction.trim() || null) !== (contact?.next_action ?? null) || (nextOn || null) !== (contact?.next_action_on ?? null)
+    let started: string[] = []
+    if (metaChanged) {
+      const meta = await updateContactMeta(res.data!.id, { tags: pending, next_action: nextAction.trim() || null, next_action_on: nextAction.trim() ? (nextOn || null) : null })
+      if (!meta.ok) { setBusy(false); return setErr(meta.error) }
+      started = meta.data?.started ?? []
+    }
     setBusy(false)
-    if (!res.ok) return setErr(res.error)
-    onSaved(contact ? 'Contact enregistré' : 'Contact ajouté')
+    onSaved(`${contact ? 'Contact enregistré' : newStage && !['a_trouver', 'a_contacter'].includes(newStage) ? `Contact ajouté en « ${STAGE_LABEL[newStage]} »` : 'Contact ajouté'}${started.length ? `, séquence ${started.map(x => `« ${x} »`).join(', ')} lancée` : ''}`)
   }
   async function moveTo(st: Stage) {
     if (!contact) return
@@ -239,7 +289,8 @@ function ContactPanel({ contact, audience, sequences, onClose, onSaved }: {
     const res = await changeStage([contact.id], st)
     setStageBusy(false)
     if (!res.ok) return setErr(res.error)
-    onSaved(`Contact passé en « ${STAGE_LABEL[st]} »`)
+    const started = res.data?.started ?? []
+    onSaved(`Contact passé en « ${STAGE_LABEL[st]} »${started.length ? `, séquence ${started.map(x => `« ${x} »`).join(', ')} lancée` : ''}`)
   }
 
   const field = (key: keyof typeof f, label: string, type = 'text', wide = false) => (
@@ -277,6 +328,28 @@ function ContactPanel({ contact, audience, sequences, onClose, onSaved }: {
             {contact.instagram && <a href={`https://instagram.com/${contact.instagram.replace(/^@/, '')}`} target="_blank" rel="noopener noreferrer" style={ui.btnGhost}><InstagramLogo size={13} /> Instagram</a>}
           </div>
         )}
+
+        {!contact && newStage && newStage !== 'a_contacter' && <p style={{ ...ui.sub, color: 'var(--text-2)' }}>Ajouté dans l&apos;étape « {STAGE_LABEL[newStage]} »{newStage === 'a_trouver' ? ' (sans e-mail)' : ''}.</p>}
+
+        <div style={s.metaBox}>
+          <span style={s.metaTitle}><Tag size={14} weight="fill" /> Étiquettes</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center' }}>
+            {tags.map(t => (
+              <span key={t} style={s.tagChip}>
+                {t}
+                <button type="button" onClick={() => setTags(p => p.filter(x => x !== t))} style={s.tagX} aria-label={`Retirer ${t}`}><X size={10} weight="bold" /></button>
+              </span>
+            ))}
+            <input list="panel-tags" value={tagDraft} onChange={e => setTagDraft(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTag(tagDraft) } }} onBlur={() => tagDraft.trim() && addTag(tagDraft)} placeholder={tags.length ? 'Ajouter…' : 'Ex. Salon Lyon, Chaud, Recommandé…'} style={s.tagField} aria-label="Nouvelle étiquette" />
+            <datalist id="panel-tags">{knownTags.filter(t => !tags.includes(t)).map(t => <option key={t} value={t} />)}</datalist>
+          </div>
+          <span style={ui.sub}>Une séquence peut démarrer quand tu ajoutes une étiquette (onglet Séquences, « Quand »).</span>
+          <span style={{ ...s.metaTitle, marginTop: '6px' }}><Bell size={14} weight="fill" /> Rappel</span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            <input value={nextAction} onChange={e => setNextAction(e.target.value)} placeholder="Ex. L'appeler, envoyer un exemple de fiche…" style={{ ...ui.input, flex: '1 1 220px' }} aria-label="Prochaine action" />
+            <input type="date" value={nextOn} onChange={e => setNextOn(e.target.value)} style={{ ...ui.input, width: 'auto', flex: '0 0 auto' }} aria-label="Date du rappel" />
+          </div>
+        </div>
 
         <div style={s.formGrid}>
           {field('email', 'E-mail', 'email', true)}
@@ -349,11 +422,16 @@ const s: Record<string, React.CSSProperties> = {
   rowMain: { flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '4px', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontFamily: 'inherit' },
   rowMeta: { display: 'flex', alignItems: 'center', gap: '5px', flexWrap: 'wrap', fontSize: '12.5px', color: 'var(--text-2)', minWidth: 0, overflowWrap: 'anywhere' },
   rowSide: { display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', flexShrink: 0 },
-  board: { display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px', alignItems: 'flex-start' },
-  col: { flex: '0 0 230px', display: 'flex', flexDirection: 'column', gap: '8px', padding: '12px', borderRadius: '16px', background: 'var(--surface)', border: '1px solid var(--border)' },
-  kCard: { display: 'flex', flexDirection: 'column', gap: '3px', padding: '9px 11px', borderRadius: '11px', border: '1px solid var(--border)', background: 'var(--bg)', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', minWidth: 0 },
   overlay: { position: 'fixed', inset: 0, background: 'rgba(10,20,15,0.35)', zIndex: 1000, display: 'flex', justifyContent: 'flex-end' },
   panel: { width: 'min(560px, 100%)', height: '100%', overflowY: 'auto', background: 'var(--surface)', borderLeft: '1px solid var(--border)', padding: '22px 20px', display: 'flex', flexDirection: 'column', gap: '14px', boxSizing: 'border-box' },
   formGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '10px' },
+  tagBox: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 4px 3px 10px', borderRadius: '11px', border: '1px solid var(--border)', background: 'var(--bg)' },
+  tagInput: { border: 'none', background: 'transparent', padding: '5px 0', fontSize: '13px', color: 'var(--text)', fontFamily: 'inherit', outline: 'none', width: '120px' },
+  tagBtn: { padding: '5px 9px', borderRadius: '8px', border: 'none', background: 'var(--surface)', color: 'var(--accent-text)', fontSize: '12.5px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
+  tagChip: { display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11.5px', fontWeight: 700, padding: '2px 8px', borderRadius: '999px', background: tint(AMBER, 12), color: '#8A5A12' },
+  tagX: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 16, height: 16, borderRadius: 9, border: 'none', background: 'transparent', color: '#8A5A12', cursor: 'pointer', padding: 0 },
+  tagField: { flex: '1 1 140px', minWidth: '120px', border: 'none', borderBottom: '1px dashed var(--border)', background: 'transparent', padding: '5px 2px', fontSize: '13px', color: 'var(--text)', fontFamily: 'inherit', outline: 'none' },
+  metaBox: { display: 'flex', flexDirection: 'column', gap: '8px', padding: '12px 14px', borderRadius: '14px', background: 'var(--bg)', border: '1px solid var(--border)' },
+  metaTitle: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12.5px', fontWeight: 800, color: 'var(--text)' },
   histRow: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-2)', padding: '6px 0', borderBottom: '1px dashed var(--border)' },
 }

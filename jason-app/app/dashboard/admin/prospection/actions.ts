@@ -7,10 +7,10 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getServiceClient } from '@/lib/supabase/service'
 import { PLAYBOOK } from '@/lib/outreach/playbook'
-import { enroll, loadSettings, runOutreach, sendTest, setStage, stopEnrollments, type RunSummary } from '@/lib/outreach/service'
+import { enroll, loadSettings, onTagsAdded, runOutreach, sendTest, setStage, stopEnrollments, type RunSummary } from '@/lib/outreach/service'
 import { relaunchOutreach } from '@/lib/outreach/relaunch'
 import { searchGooglePlaces, searchSirene, findEmailOnSite, type FoundContact } from '@/lib/outreach/sources'
-import type { Audience, Stage } from '@/lib/outreach/engine'
+import { cleanTag, mergeTags, normalizeTag, type Audience, type Stage } from '@/lib/outreach/engine'
 import type { CsvContact } from '@/lib/outreach/csv'
 
 const PATH = '/dashboard/admin/prospection'
@@ -27,6 +27,13 @@ async function requireAdmin() {
 type Res<T = unknown> = { ok: true; data?: T } | { ok: false; error: string }
 async function wrap<T>(fn: () => Promise<T>): Promise<Res<T>> {
   try { return { ok: true, data: await fn() } } catch (e) { return { ok: false, error: e instanceof Error ? e.message : 'Erreur inattendue' } }
+}
+
+/** Colonne ou valeur inconnue : la migration 116 n'est pas encore appliquée */
+function migrationHint(message: string): string {
+  return /trigger_tag|next_action|signature_photo|trigger_check|column .* does not exist/i.test(message)
+    ? 'Applique d\'abord la migration 20260929_116_prospection_pipeline.sql dans Supabase.'
+    : message
 }
 
 const AUDIENCES: Audience[] = ['photographe', 'menage', 'hote', 'autre']
@@ -69,8 +76,9 @@ export interface SequenceInput {
   nom: string
   audience: Audience
   description: string | null
-  trigger: 'manuel' | 'nouveau_contact' | 'etape'
+  trigger: 'manuel' | 'nouveau_contact' | 'etape' | 'etiquette'
   trigger_stage: Stage | null
+  trigger_tag: string | null
   stop_on_reply: boolean
   repeat_after_days: number | null
   max_repeats: number
@@ -85,6 +93,7 @@ export async function saveSequence(input: SequenceInput): Promise<Res<{ id: stri
     if (!input.nom.trim()) throw new Error('Donne un nom à la séquence.')
     if (!AUDIENCES.includes(input.audience)) throw new Error('Audience inconnue.')
     if (input.trigger === 'etape' && !input.trigger_stage) throw new Error('Choisis l\'étape qui déclenche la séquence.')
+    if (input.trigger === 'etiquette' && !cleanTag(input.trigger_tag ?? '')) throw new Error('Choisis l\'étiquette qui déclenche la séquence.')
     if (!input.steps.length) throw new Error('Ajoute au moins un e-mail.')
     for (const [i, st] of input.steps.entries()) {
       if (!st.subject.trim() || !st.body.trim()) throw new Error(`L'e-mail ${i + 1} n'a pas d'objet ou de texte.`)
@@ -94,6 +103,7 @@ export async function saveSequence(input: SequenceInput): Promise<Res<{ id: stri
     const row = {
       nom: input.nom.trim().slice(0, 120), audience: input.audience, description: input.description?.trim() || null,
       trigger: input.trigger, trigger_stage: input.trigger === 'etape' ? input.trigger_stage : null,
+      ...(input.trigger === 'etiquette' || input.trigger_tag ? { trigger_tag: input.trigger === 'etiquette' ? cleanTag(input.trigger_tag ?? '') : null } : {}),
       stop_on_reply: input.stop_on_reply,
       repeat_after_days: input.repeat_after_days && input.max_repeats > 0 ? Math.min(365, Math.max(7, input.repeat_after_days)) : null,
       max_repeats: input.repeat_after_days ? Math.min(5, Math.max(0, input.max_repeats)) : 0,
@@ -102,10 +112,10 @@ export async function saveSequence(input: SequenceInput): Promise<Res<{ id: stri
     let id = input.id
     if (id) {
       const { error } = await db.from('outreach_sequences').update(row).eq('id', id)
-      if (error) throw new Error(error.message)
+      if (error) throw new Error(migrationHint(error.message))
     } else {
       const { data, error } = await db.from('outreach_sequences').insert({ ...row, enabled: false }).select('id').single()
-      if (error || !data) throw new Error(error?.message ?? 'Création impossible')
+      if (error || !data) throw new Error(error ? migrationHint(error.message) : 'Création impossible')
       id = data.id as string
     }
     // Étapes : mise à jour de celles qui restent, ajout des nouvelles, suppression des retirées
@@ -158,7 +168,7 @@ export async function stopContacts(contactIds: string[]): Promise<Res> {
   })
 }
 
-export async function changeStage(contactIds: string[], stage: Stage): Promise<Res> {
+export async function changeStage(contactIds: string[], stage: Stage): Promise<Res<{ started: string[] }>> {
   return wrap(async () => {
     const db = await requireAdmin()
     if (!STAGE_KEYS.includes(stage)) throw new Error('Étape inconnue.')
@@ -167,8 +177,53 @@ export async function changeStage(contactIds: string[], stage: Stage): Promise<R
       const rows = (data ?? []).filter(c => c.email_norm).map(c => ({ email_norm: c.email_norm, reason: 'manuel' }))
       if (rows.length) await db.from('outreach_suppressions').upsert(rows, { onConflict: 'email_norm', ignoreDuplicates: true })
     }
-    await setStage(db, contactIds, stage)
+    const started = await setStage(db, contactIds, stage)
     revalidatePath(PATH)
+    return { started }
+  })
+}
+
+/** Étiquettes et rappel d'un contact. Les étiquettes nouvelles lancent leurs séquences. */
+export async function updateContactMeta(id: string, input: { tags: string[]; next_action: string | null; next_action_on: string | null }): Promise<Res<{ started: string[] }>> {
+  return wrap(async () => {
+    const db = await requireAdmin()
+    const { data: before } = await db.from('outreach_contacts').select('tags').eq('id', id).maybeSingle()
+    const tags = mergeTags([], input.tags).slice(0, 20)
+    const had = new Set(((before?.tags as string[] | null) ?? []).map(normalizeTag))
+    const added = tags.filter(t => !had.has(normalizeTag(t)))
+    const on = input.next_action_on && /^\d{4}-\d{2}-\d{2}$/.test(input.next_action_on) ? input.next_action_on : null
+    const { error } = await db.from('outreach_contacts').update({
+      tags, next_action: clean(input.next_action, 160), next_action_on: on, updated_at: new Date().toISOString(),
+    }).eq('id', id)
+    if (error) throw new Error(migrationHint(error.message))
+    const started = await onTagsAdded(db, [id], added)
+    revalidatePath(PATH)
+    return { started }
+  })
+}
+
+/** Ajoute ou retire une étiquette sur plusieurs contacts (sélection). */
+export async function tagContacts(ids: string[], tag: string, mode: 'ajouter' | 'retirer'): Promise<Res<{ changed: number; started: string[] }>> {
+  return wrap(async () => {
+    const db = await requireAdmin()
+    const t = cleanTag(tag)
+    if (!t) throw new Error('Étiquette vide.')
+    const { data } = await db.from('outreach_contacts').select('id, tags').in('id', ids.slice(0, 1000))
+    let changed = 0
+    const gained: string[] = []
+    for (const c of data ?? []) {
+      const cur = (c.tags as string[] | null) ?? []
+      const has = cur.some(x => normalizeTag(x) === normalizeTag(t))
+      if (mode === 'ajouter' && has) continue
+      if (mode === 'retirer' && !has) continue
+      const next = mode === 'ajouter' ? mergeTags(cur, [t]) : cur.filter(x => normalizeTag(x) !== normalizeTag(t))
+      await db.from('outreach_contacts').update({ tags: next, updated_at: new Date().toISOString() }).eq('id', c.id)
+      if (mode === 'ajouter') gained.push(c.id)
+      changed++
+    }
+    const started = mode === 'ajouter' ? await onTagsAdded(db, gained, [t]) : []
+    revalidatePath(PATH)
+    return { changed, started }
   })
 }
 
@@ -185,6 +240,8 @@ export interface ContactInput {
   telephone?: string | null
   instagram?: string | null
   notes?: string | null
+  /** Étape de départ d'un nouveau contact (« Ajouter une carte » dans une colonne du pipeline) */
+  stage?: Stage | null
 }
 
 const clean = (v?: string | null, max = 200) => (v ?? '').trim().slice(0, max) || null
@@ -210,8 +267,12 @@ export async function saveContact(input: ContactInput): Promise<Res<{ id: string
       revalidatePath(PATH)
       return { id: input.id }
     }
-    const { data, error } = await db.from('outreach_contacts').insert({ ...row, source: 'manuel', stage: email ? 'a_contacter' : 'a_trouver' }).select('id').single()
+    const wanted = input.stage && STAGE_KEYS.includes(input.stage) ? input.stage : null
+    const initial: Stage = wanted && (email || wanted !== 'a_contacter') ? wanted : email ? 'a_contacter' : 'a_trouver'
+    const { data, error } = await db.from('outreach_contacts').insert({ ...row, source: 'manuel', stage: initial }).select('id').single()
     if (error || !data) throw new Error(error && /duplicate|unique/i.test(error.message) ? 'Cette adresse est déjà dans tes contacts.' : (error?.message ?? 'Ajout impossible'))
+    // Une carte posée directement dans une étape lance les séquences de cette étape
+    if (!['a_trouver', 'a_contacter'].includes(initial)) await setStage(db, [data.id as string], initial)
     revalidatePath(PATH)
     return { id: data.id as string }
   })
@@ -319,7 +380,7 @@ export async function findEmails(contactIds: string[]): Promise<Res<{ found: num
 
 // ─── Réglages et envois ─────────────────────────────────────────────────────
 
-export async function saveSettings(input: { daily_cap: number; send_days: number[]; paused: boolean; signature: string }): Promise<Res> {
+export async function saveSettings(input: { daily_cap: number; send_days: number[]; paused: boolean; signature: string; signature_photo: boolean }): Promise<Res> {
   return wrap(async () => {
     const db = await requireAdmin()
     const days = input.send_days.filter(d => d >= 1 && d <= 7)
@@ -328,6 +389,9 @@ export async function saveSettings(input: { daily_cap: number; send_days: number
       daily_cap: Math.min(200, Math.max(1, Math.round(input.daily_cap))), send_days: days, paused: input.paused,
       signature: input.signature.trim().slice(0, 500) || null, updated_at: new Date().toISOString(),
     }).eq('id', 1)
+    // Colonne de la migration 116 : écrite à part pour que le reste s'enregistre même sans elle
+    const { error } = await db.from('outreach_settings').update({ signature_photo: input.signature_photo }).eq('id', 1)
+    if (error && !input.signature_photo) throw new Error(migrationHint(error.message))
     revalidatePath(PATH)
   })
 }

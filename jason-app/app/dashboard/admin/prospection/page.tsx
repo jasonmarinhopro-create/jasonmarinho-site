@@ -6,6 +6,17 @@ import { parisToday } from '@/lib/stripe/deposit-window'
 import ProspectionScreen from './ProspectionScreen'
 import type { ContactRow, SequenceRow, SettingsRow, StepRow } from './shared'
 
+const SEQ_COLS = 'id, nom, audience, description, trigger, trigger_stage, enabled, stop_on_reply, repeat_after_days, max_repeats, then_sequence_id, end_stage, position'
+const CONTACT_COLS = 'id, audience, email, prenom, nom, entreprise, ville, departement, site_web, telephone, instagram, source, source_detail, stage, notes, tags, last_contacted_at, replied_at, created_at'
+
+type Q = PromiseLike<{ data: unknown; error: { message: string; code?: string } | null }>
+/** Requête avec les colonnes récentes, puis sans elles si la base ne les connaît pas encore (code 42703). */
+async function withFallback(full: () => Q, fallback: () => Q) {
+  const res = await full()
+  if (res.error && (res.error.code === '42703' || /column .* does not exist/i.test(res.error.message))) return fallback()
+  return res
+}
+
 export const metadata = { title: 'Prospection, Admin' }
 export const dynamic = 'force-dynamic'
 // « Lancer un passage » et la recherche d'e-mails sur les sites prennent du temps
@@ -30,12 +41,19 @@ export default async function ProspectionPage() {
     return `${today}T00:00:00Z`
   })()
 
-  const [seqRes, { data: steps }, { data: enr }, { data: contacts }, { data: settings }, sentToday, sent7, sent30, errors7, replies30, contacted30] = await Promise.all([
-    db.from('outreach_sequences').select('id, nom, audience, description, trigger, trigger_stage, enabled, stop_on_reply, repeat_after_days, max_repeats, then_sequence_id, end_stage, position').order('position'),
+  const [seqRes, { data: steps }, { data: enr }, contactsRes, { data: settings }, sentToday, sent7, sent30, errors7, replies30, contacted30] = await Promise.all([
+    // Colonnes de la migration 116 (trigger_tag, next_action…) : repli sans elles si elle n'est pas appliquée
+    withFallback(
+      () => db.from('outreach_sequences').select(`${SEQ_COLS}, trigger_tag`).order('position'),
+      () => db.from('outreach_sequences').select(SEQ_COLS).order('position'),
+    ),
     db.from('outreach_steps').select('id, sequence_id, position, delay_days, subject, body, same_thread').order('position'),
     db.from('outreach_enrollments').select('sequence_id, contact_id, status, next_step').limit(20000),
-    db.from('outreach_contacts').select('id, audience, email, prenom, nom, entreprise, ville, departement, site_web, telephone, instagram, source, source_detail, stage, notes, last_contacted_at, replied_at, created_at').order('created_at', { ascending: false }).limit(5000),
-    db.from('outreach_settings').select('daily_cap, send_days, paused, signature, last_run_at, last_run_summary').eq('id', 1).maybeSingle(),
+    withFallback(
+      () => db.from('outreach_contacts').select(`${CONTACT_COLS}, next_action, next_action_on`).order('created_at', { ascending: false }).limit(5000),
+      () => db.from('outreach_contacts').select(CONTACT_COLS).order('created_at', { ascending: false }).limit(5000),
+    ),
+    db.from('outreach_settings').select('*').eq('id', 1).maybeSingle(),
     db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye').gte('sent_at', dayStart),
     db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye').gte('sent_at', since7),
     db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye').gte('sent_at', since30),
@@ -44,7 +62,8 @@ export default async function ProspectionPage() {
     db.from('outreach_contacts').select('id', { count: 'exact', head: true }).gte('last_contacted_at', since30),
   ])
 
-  if (seqRes.error && /does not exist|relation/i.test(seqRes.error.message)) {
+  const contacts = contactsRes.data as Array<Record<string, unknown> & { id: string }> | null
+  if (seqRes.error && /relation|does not exist/i.test(seqRes.error.message) && !/column/i.test(seqRes.error.message)) {
     return (
       <div style={{ padding: '24px', borderRadius: '18px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', lineHeight: 1.6 }}>
         <strong style={{ color: 'var(--text)' }}>Prospection : base pas encore prête.</strong> Applique la migration <code>20260929_115_prospection.sql</code> dans Supabase, puis recharge la page.
@@ -69,20 +88,21 @@ export default async function ProspectionPage() {
     }
     counts.set(e.sequence_id, c)
   }
-  const sequences: SequenceRow[] = (seqRes.data ?? []).map(sq => {
+  const sequences: SequenceRow[] = ((seqRes.data ?? []) as Array<Record<string, unknown> & { id: string }>).map(sq => {
     const c = counts.get(sq.id) ?? { en_cours: 0, terminee: 0, arretee: 0, atStep: [] }
     const st = (stepsBySeq.get(sq.id) ?? []).sort((a, b) => a.position - b.position)
-    return { ...sq, steps: st, counts: { en_cours: c.en_cours, terminee: c.terminee, arretee: c.arretee }, atStep: st.map((_, i) => c.atStep[i] ?? 0) } as SequenceRow
+    return { trigger_tag: null, ...sq, steps: st, counts: { en_cours: c.en_cours, terminee: c.terminee, arretee: c.arretee }, atStep: st.map((_, i) => c.atStep[i] ?? 0) } as SequenceRow
   })
-  const contactRows: ContactRow[] = (contacts ?? []).map(c => ({ ...c, active_sequence_id: activeByContact.get(c.id) ?? null }) as ContactRow)
+  const contactRows: ContactRow[] = (contacts ?? []).map(c => ({ next_action: null, next_action_on: null, ...c, tags: (c.tags as string[] | null) ?? [], active_sequence_id: activeByContact.get(c.id) ?? null }) as unknown as ContactRow)
   const cfg = outreachConfig()
   const settingsRow: SettingsRow = {
     daily_cap: settings?.daily_cap ?? 25, send_days: settings?.send_days ?? [1, 2, 3, 4, 5], paused: settings?.paused ?? false,
-    signature: settings?.signature ?? null, last_run_at: settings?.last_run_at ?? null, last_run_summary: settings?.last_run_summary ?? null,
+    signature: settings?.signature ?? null, signature_photo: settings?.signature_photo ?? true, last_run_at: settings?.last_run_at ?? null, last_run_summary: settings?.last_run_summary ?? null,
   }
 
   return (
     <ProspectionScreen
+      today={today}
       sequences={sequences}
       contacts={contactRows}
       settings={settingsRow}

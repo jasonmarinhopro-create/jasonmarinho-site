@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { EnvelopeSimple, Gauge, Play, CheckCircle, WarningCircle, ShieldCheck } from '@phosphor-icons/react/dist/ssr'
 import { AMBER, tint } from '../_ui/theme'
 import { saveSettings, runNow } from './actions'
-import { DEFAULT_SIGNATURE, LEGACY_DEFAULT_SIGNATURE, signatureToHtml } from '@/lib/outreach/engine'
+import { DEFAULT_SIGNATURE, LEGACY_DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL, signatureToHtml } from '@/lib/outreach/engine'
 import { ui, type MailConfig, type SettingsRow } from './shared'
 
 const DAYS = [
@@ -18,6 +18,7 @@ export default function SettingsTab({ settings, config }: { settings: SettingsRo
   const [cap, setCap] = useState(settings.daily_cap)
   const [days, setDays] = useState<number[]>(settings.send_days)
   const [paused, setPaused] = useState(settings.paused)
+  const [photo, setPhoto] = useState(settings.signature_photo)
   const [signature, setSignature] = useState(settings.signature && settings.signature.trim() !== LEGACY_DEFAULT_SIGNATURE ? settings.signature : DEFAULT_SIGNATURE)
   const [busy, setBusy] = useState<string | null>(null)
   const [msg, setMsg] = useState<{ ok?: string; err?: string } | null>(null)
@@ -25,7 +26,7 @@ export default function SettingsTab({ settings, config }: { settings: SettingsRo
 
   async function save() {
     setBusy('save')
-    const res = await saveSettings({ daily_cap: cap, send_days: days, paused, signature })
+    const res = await saveSettings({ daily_cap: cap, send_days: days, paused, signature, signature_photo: photo })
     setBusy(null)
     setMsg(res.ok ? { ok: 'Réglages enregistrés' } : { err: res.error })
   }
@@ -110,9 +111,13 @@ export default function SettingsTab({ settings, config }: { settings: SettingsRo
           <div style={s.sigPreview}>
             <span style={{ fontSize: '11px', fontWeight: 800, letterSpacing: '0.5px', textTransform: 'uppercase', color: 'var(--text-3)' }}>Aperçu dans l&apos;e-mail</span>
             {/* signatureToHtml échappe chaque ligne avant de la mettre en forme */}
-            <div dangerouslySetInnerHTML={{ __html: signatureToHtml(signature || DEFAULT_SIGNATURE) }} />
+            <div dangerouslySetInnerHTML={{ __html: signatureToHtml(signature || DEFAULT_SIGNATURE, photo ? SIGNATURE_PHOTO_URL : null) }} />
           </div>
-          <p style={ui.sub}>Reprise de ta signature Gmail (contact@), sans le logo : une image dans un premier e-mail le fait plus souvent classer en indésirables. Ligne 1 en gras, ligne 2 ta fonction, puis tes coordonnées.</p>
+          <label style={{ display: 'flex', gap: '8px', alignItems: 'center', fontSize: '13.5px', color: 'var(--text-2)', cursor: 'pointer' }}>
+            <input type="checkbox" checked={photo} onChange={e => setPhoto(e.target.checked)} style={{ accentColor: 'var(--accent-text)' }} />
+            Afficher ma photo, comme dans Gmail
+          </label>
+          <p style={ui.sub}>Reprise de ta signature Gmail (contact@). Ta photo est une petite image (6 Ko) hébergée sur jasonmarinho.com, ton propre domaine : c&apos;est ce qui limite le risque d&apos;indésirables. Ligne 1 en gras, ligne 2 ta fonction, puis tes coordonnées.</p>
           <button type="button" onClick={save} disabled={busy === 'save'} style={{ ...ui.btn, alignSelf: 'flex-start' }}>{busy === 'save' ? 'Enregistrement…' : 'Enregistrer'}</button>
         </section>
 

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   addDaysIso, isoWeekday, nextAllowedDay, scheduleStep, afterSend, renderTemplate, guessFirstName,
-  replySubject, complianceFooter, textToHtml, signatureToHtml, DEFAULT_SIGNATURE, extractEmails, bestEmail, bouncedAddresses, isBounceSender,
+  replySubject, complianceFooter, textToHtml, signatureToHtml, DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL, cleanTag, normalizeTag, mergeTags, daysWithoutNews, extractEmails, bestEmail, bouncedAddresses, isBounceSender,
 } from './engine'
 
 const WEEK = [1, 2, 3, 4, 5]
@@ -110,5 +110,26 @@ describe('rebonds', () => {
   it('reconnaît un expéditeur de rebond', () => {
     expect(isBounceSender('Mail Delivery Subsystem <mailer-daemon@googlemail.com>')).toBe(true)
     expect(isBounceSender('Marie <marie@studio.fr>')).toBe(false)
+  })
+})
+
+describe('pipeline : étiquettes et relances', () => {
+  it('étiquettes nettoyées, comparées sans casse ni accents, sans doublon', () => {
+    expect(cleanTag('  Salon   Lyon ')).toBe('Salon Lyon')
+    expect(normalizeTag('Recommandé')).toBe(normalizeTag('recommande'))
+    expect(mergeTags(['Chaud'], ['chaud', ' Salon Lyon', ''])).toEqual(['Chaud', 'Salon Lyon'])
+  })
+  it('jours sans nouvelle : dernier e-mail, dernière réponse ou ajout', () => {
+    const now = new Date('2026-09-29T12:00:00Z').getTime()
+    expect(daysWithoutNews({ created_at: '2026-09-19T10:00:00Z', last_contacted_at: null, replied_at: null }, now)).toBe(10)
+    expect(daysWithoutNews({ created_at: '2026-09-01T10:00:00Z', last_contacted_at: '2026-09-26T10:00:00Z', replied_at: '2026-09-28T09:00:00Z' }, now)).toBe(1)
+  })
+  it('signature avec photo : tableau photo à gauche, sans photo : texte seul', () => {
+    const withPhoto = signatureToHtml(DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL)
+    expect(withPhoto).toContain(`src="${SIGNATURE_PHOTO_URL}"`)
+    expect(withPhoto).toContain('width="64"')
+    expect(withPhoto).toContain('alt="Jason Marinho"')
+    expect(signatureToHtml(DEFAULT_SIGNATURE)).not.toContain('<img')
+    expect(SIGNATURE_PHOTO_URL).toMatch(/^https:\/\/jasonmarinho\.com\/.+\.jpg$/)
   })
 })

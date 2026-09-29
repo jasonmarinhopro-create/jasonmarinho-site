@@ -9,8 +9,9 @@ export interface SequenceRow {
   nom: string
   audience: Audience
   description: string | null
-  trigger: 'manuel' | 'nouveau_contact' | 'etape'
+  trigger: 'manuel' | 'nouveau_contact' | 'etape' | 'etiquette'
   trigger_stage: Stage | null
+  trigger_tag: string | null
   enabled: boolean
   stop_on_reply: boolean
   repeat_after_days: number | null
@@ -39,13 +40,17 @@ export interface ContactRow {
   source_detail: string | null
   stage: Stage
   notes: string | null
+  tags: string[]
+  /** Rappel (migration 116) */
+  next_action: string | null
+  next_action_on: string | null
   last_contacted_at: string | null
   replied_at: string | null
   created_at: string
   active_sequence_id: string | null
 }
 export interface Stats { sentToday: number; sent7: number; sent30: number; errors7: number; replies30: number; contacted30: number }
-export interface SettingsRow { daily_cap: number; send_days: number[]; paused: boolean; signature: string | null; last_run_at: string | null; last_run_summary: string | null }
+export interface SettingsRow { daily_cap: number; send_days: number[]; paused: boolean; signature: string | null; signature_photo: boolean; last_run_at: string | null; last_run_summary: string | null }
 export interface MailConfig { configured: boolean; from: string | null; host: string | null; placesKey: boolean }
 
 export const STAGE_COLOR: Record<Stage, string> = {
@@ -65,6 +70,7 @@ export const TRIGGER_LABEL = {
   manuel: 'Ajout manuel',
   nouveau_contact: 'Automatique : chaque contact « À contacter »',
   etape: 'Arrivée à une étape du pipeline',
+  etiquette: 'Ajout d\'une étiquette',
 } as const
 
 export function displayName(c: Pick<ContactRow, 'prenom' | 'nom' | 'entreprise' | 'email'>): string {
