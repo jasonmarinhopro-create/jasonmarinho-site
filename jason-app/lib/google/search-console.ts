@@ -16,6 +16,19 @@ const SERVICE_KEY = 'search_console'
 // "https://jasonmarinho.com/".
 export const SEARCH_CONSOLE_SITE_URL = 'sc-domain:jasonmarinho.com'
 
+/**
+ * La connexion Google ne marche plus (jeton révoqué ou expiré, accès à la
+ * propriété retiré). Toutes les pages échoueraient pareil : la vérification
+ * s'arrête au lieu d'écrire une erreur sur chaque ligne (29/09/2026 : 526
+ * pages marquées « Erreur de vérification », statuts connus écrasés).
+ */
+export class SearchConsoleAuthError extends Error {
+  constructor(detail: string) {
+    super(`Connexion à Google Search Console expirée (${detail}) : reconnecte-la depuis Admin → Indexation.`)
+    this.name = 'SearchConsoleAuthError'
+  }
+}
+
 export async function isConfigured(): Promise<boolean> {
   const db = serviceClient()
   const { data } = await db.from('google_oauth_tokens').select('service').eq('service', SERVICE_KEY).maybeSingle()
@@ -29,11 +42,21 @@ async function getAccessToken(): Promise<string> {
 
   const db = serviceClient()
   const { data } = await db.from('google_oauth_tokens').select('refresh_token').eq('service', SERVICE_KEY).maybeSingle()
-  if (!data) throw new Error('Google Search Console non connecté — va dans Admin → Indexation pour te connecter')
+  if (!data) throw new SearchConsoleAuthError('non connecté')
 
   const refreshToken = decryptToken(data.refresh_token)
-  const { accessToken, expiresIn } = await refreshAccessToken(refreshToken)
-  cachedToken = { token: accessToken, expiresAt: Date.now() + expiresIn * 1000 }
+  let fresh: { accessToken: string; expiresIn: number }
+  try {
+    fresh = await refreshAccessToken(refreshToken)
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e)
+    // 400 invalid_grant : jeton révoqué, mot de passe changé, ou application
+    // Google Cloud restée « En test » (jetons valables 7 jours seulement).
+    if (/invalid_grant|: 40[013] /.test(message)) throw new SearchConsoleAuthError(/invalid_grant/.test(message) ? 'jeton refusé par Google' : message.slice(0, 80))
+    throw e
+  }
+  if (!fresh.accessToken) throw new SearchConsoleAuthError('aucun jeton renvoyé')
+  cachedToken = { token: fresh.accessToken, expiresAt: Date.now() + (fresh.expiresIn || 3000) * 1000 }
   return cachedToken.token
 }
 
@@ -50,14 +73,35 @@ export interface UrlInspectionResult {
   inspectionLink: string | null
 }
 
-export async function inspectUrl(url: string): Promise<UrlInspectionResult> {
-  const accessToken = await getAccessToken()
-  const res = await fetch(INSPECT_URL, {
+/** Message court tiré de la réponse d'erreur de Google (sinon le JSON entier finissait dans la liste) */
+function googleErrorMessage(status: number, text: string): string {
+  try {
+    const msg = JSON.parse(text)?.error?.message
+    if (typeof msg === 'string' && msg) return `${status} ${msg.slice(0, 140)}`
+  } catch { /* texte brut */ }
+  return `${status} ${text.slice(0, 140)}`
+}
+
+async function inspectOnce(url: string, accessToken: string): Promise<Response> {
+  return fetch(INSPECT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
     body: JSON.stringify({ inspectionUrl: url, siteUrl: SEARCH_CONSOLE_SITE_URL }),
   })
-  if (!res.ok) throw new Error(`inspect ${url} : ${res.status} ${await res.text()}`)
+}
+
+export async function inspectUrl(url: string): Promise<UrlInspectionResult> {
+  let res = await inspectOnce(url, await getAccessToken())
+  // 401 avec un jeton en cache : il a pu être révoqué avant son expiration.
+  // Un nouvel essai avec un jeton tout neuf tranche.
+  if (res.status === 401) {
+    cachedToken = null
+    res = await inspectOnce(url, await getAccessToken())
+  }
+  if (res.status === 401 || res.status === 403) {
+    throw new SearchConsoleAuthError(googleErrorMessage(res.status, await res.text()))
+  }
+  if (!res.ok) throw new Error(googleErrorMessage(res.status, await res.text()))
   const json = await res.json()
   const result = json.inspectionResult?.indexStatusResult
   const coverageState: string | null = result?.coverageState ?? null

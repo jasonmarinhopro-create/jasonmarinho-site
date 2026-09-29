@@ -18,7 +18,7 @@ async function requireAdmin() {
 // en reste. Le bouton "Vérifier l'indexation" (IndexationUI) rappelle cette
 // action en boucle tant que remaining > 0, pour que le clic unique aille
 // jusqu'au bout sans que l'utilisateur ait à recliquer manuellement.
-export async function refreshIndexationNow(): Promise<{ checked?: number; remaining?: number; error?: string }> {
+export async function refreshIndexationNow(): Promise<{ checked?: number; remaining?: number; error?: string; authExpired?: boolean }> {
   try {
     await requireAdmin()
   } catch (e) {

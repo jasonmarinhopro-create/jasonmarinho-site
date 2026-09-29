@@ -14,22 +14,21 @@
 
 import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { fetchSitemapEntries } from '@/lib/seo/sitemap'
-import { inspectUrl, isConfigured } from '@/lib/google/search-console'
+import { inspectUrl, isConfigured, SearchConsoleAuthError } from '@/lib/google/search-console'
 import { logger } from '@/lib/logger'
 
 const log = logger('lib/seo/check-indexation')
 const CONCURRENCY = 5
 const BUDGET_MS = 50_000 // le cron et l'action serveur ont maxDuration=60
 
-async function checkOne(url: string): Promise<{
-  url: string
-  http_status: number | null
-  coverage_state: string | null
-  verdict: string | null
-  indexed: boolean
-  inspection_link: string | null
-  error: string | null
-}> {
+type CheckResult =
+  | { kind: 'ok'; row: { url: string; http_status: number | null; coverage_state: string | null; verdict: string | null; indexed: boolean; inspection_link: string | null; error: null } }
+  // Échec ponctuel : on n'écrit que l'erreur, le dernier statut connu reste
+  // (avant : indexed=false + coverage_state=null écrasaient une page indexée).
+  | { kind: 'error'; row: { url: string; http_status: number | null; error: string } }
+  | { kind: 'auth'; message: string }
+
+async function checkOne(url: string): Promise<CheckResult> {
   // 1. La page répond-elle ? Pas la peine d'interroger Google sur un 404.
   let httpStatus: number | null = null
   try {
@@ -40,16 +39,17 @@ async function checkOne(url: string): Promise<{
   }
 
   if (httpStatus && httpStatus >= 400) {
-    return { url, http_status: httpStatus, coverage_state: null, verdict: null, indexed: false, inspection_link: null, error: null }
+    return { kind: 'ok', row: { url, http_status: httpStatus, coverage_state: null, verdict: null, indexed: false, inspection_link: null, error: null } }
   }
 
   // 2. Statut réel côté Google.
   try {
     const result = await inspectUrl(url)
-    return { url, http_status: httpStatus, coverage_state: result.coverageState, verdict: result.verdict, indexed: result.indexed, inspection_link: result.inspectionLink, error: null }
+    return { kind: 'ok', row: { url, http_status: httpStatus, coverage_state: result.coverageState, verdict: result.verdict, indexed: result.indexed, inspection_link: result.inspectionLink, error: null } }
   } catch (e) {
+    if (e instanceof SearchConsoleAuthError) return { kind: 'auth', message: e.message }
     const message = e instanceof Error ? e.message : String(e)
-    return { url, http_status: httpStatus, coverage_state: null, verdict: null, indexed: false, inspection_link: null, error: message }
+    return { kind: 'error', row: { url, http_status: httpStatus, error: message } }
   }
 }
 
@@ -61,9 +61,9 @@ function isQuotaError(message: string): boolean {
   return /429|RESOURCE_EXHAUSTED|quota/i.test(message)
 }
 
-export async function checkAllUrls(): Promise<{ checked: number; remaining: number; error?: string }> {
+export async function checkAllUrls(): Promise<{ checked: number; remaining: number; error?: string; authExpired?: boolean }> {
   if (!(await isConfigured())) {
-    return { checked: 0, remaining: 0, error: 'Google Search Console non connecté (Admin → Indexation)' }
+    return { checked: 0, remaining: 0, error: 'Google Search Console non connecté (Admin → Indexation)', authExpired: true }
   }
 
   // Tout le corps est protégé : un pépin réseau (sitemap, Supabase, Google)
@@ -76,39 +76,57 @@ export async function checkAllUrls(): Promise<{ checked: number; remaining: numb
     const entries = await fetchSitemapEntries()
     const db = serviceClient()
 
-    const { data: statusRows } = await db.from('seo_indexation_status').select('url, last_checked_at')
-    const lastCheckedByUrl = new Map((statusRows ?? []).map(r => [r.url, r.last_checked_at as string | null]))
-    const alreadyCheckedBefore = entries.filter(e => lastCheckedByUrl.get(e.url)).length
+    const { data: statusRows } = await db.from('seo_indexation_status').select('url, last_checked_at, error')
+    const byUrl = new Map((statusRows ?? []).map(r => [r.url as string, r as { last_checked_at: string | null; error: string | null }]))
 
-    // Jamais vérifiées d'abord (last_checked_at absent → tri en tête).
+    // À faire en priorité : jamais vérifiées ou en erreur à la dernière
+    // vérification. Puis les plus anciennes (le cron quotidien repasse ainsi
+    // sur tout le sitemap au fil des jours).
+    const needsCheck = (url: string) => { const r = byUrl.get(url); return !r?.last_checked_at || !!r.error }
     const ordered = [...entries].sort((a, b) => {
-      const aChecked = lastCheckedByUrl.get(a.url) ?? ''
-      const bChecked = lastCheckedByUrl.get(b.url) ?? ''
-      return aChecked.localeCompare(bChecked)
+      const na = needsCheck(a.url) ? 0 : 1
+      const nb = needsCheck(b.url) ? 0 : 1
+      if (na !== nb) return na - nb
+      return (byUrl.get(a.url)?.last_checked_at ?? '').localeCompare(byUrl.get(b.url)?.last_checked_at ?? '')
     })
+    const todo = ordered.filter(e => needsCheck(e.url)).length
 
     let checked = 0
+    let todoDone = 0
     for (let i = 0; i < ordered.length; i += CONCURRENCY) {
       if (Date.now() - t0 > BUDGET_MS) break
 
       const batch = ordered.slice(i, i + CONCURRENCY)
       const results = await Promise.all(batch.map(e => checkOne(e.url)))
-      const { error } = await db.from('seo_indexation_status').upsert(
-        results.map(r => ({ ...r, last_checked_at: new Date().toISOString() })),
-        { onConflict: 'url' },
-      )
-      if (error) log.error('upsert seo_indexation_status', { msg: error.message })
-      checked += results.length
 
-      const quotaHit = results.find(r => r.error && isQuotaError(r.error))
+      const auth = results.find(r => r.kind === 'auth')
+      if (auth && auth.kind === 'auth') {
+        // Rien n'est écrit pour ce lot : les statuts connus restent intacts.
+        log.error('Search Console : connexion expirée', { msg: auth.message })
+        return { checked, remaining: Math.max(0, todo - todoDone), error: auth.message, authExpired: true }
+      }
+
+      const now = new Date().toISOString()
+      const ok = results.flatMap(r => r.kind === 'ok' ? [{ ...r.row, last_checked_at: now }] : [])
+      const failed = results.flatMap(r => r.kind === 'error' ? [r.row] : [])
+      if (ok.length) {
+        const { error } = await db.from('seo_indexation_status').upsert(ok, { onConflict: 'url' })
+        if (error) log.error('upsert seo_indexation_status', { msg: error.message })
+      }
+      if (failed.length) {
+        const { error } = await db.from('seo_indexation_status').upsert(failed, { onConflict: 'url' })
+        if (error) log.error('upsert seo_indexation_status (erreurs)', { msg: error.message })
+      }
+      checked += results.length
+      todoDone += batch.filter(e => needsCheck(e.url)).length
+
+      const quotaHit = failed.find(r => isQuotaError(r.error))
       if (quotaHit) {
-        const remaining = Math.max(0, ordered.length - alreadyCheckedBefore - checked)
-        return { checked, remaining, error: 'Quota Google Search Console atteint (2000 vérifications/jour) — réessaie demain, ou laisse le cron quotidien continuer tout seul.' }
+        return { checked, remaining: Math.max(0, todo - todoDone), error: 'Quota Google Search Console atteint (2000 vérifications/jour) — réessaie demain, ou laisse le cron quotidien continuer tout seul.' }
       }
     }
 
-    const remaining = Math.max(0, ordered.length - alreadyCheckedBefore - checked)
-    return { checked, remaining }
+    return { checked, remaining: Math.max(0, todo - todoDone) }
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e)
     log.error('checkAllUrls', { msg: message })

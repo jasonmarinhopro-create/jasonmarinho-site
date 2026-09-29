@@ -370,6 +370,13 @@ import { House } from '@phosphor-icons/react'
 - Corrigé : `api/track/visit.js` + `api/track/click.js` fusionnés en une route dynamique `api/track/[type].js` (mêmes URL, `nav.js` inchangé), endpoint temporaire `api/debug-signalements.js` supprimé. 11 fonctions au 27/09/2026.
 - **Avant d'ajouter une fonction** : compter (`find api -type f | wc -l`). Si on atteint 12, regrouper plutôt par route dynamique (`api/<domaine>/[type].js` + `req.query.type`) que créer un nouveau fichier. Garde-fou : `.github/workflows/static-site-check.yml` échoue dès le push au-delà de 12.
 
+## Indexation Google (admin Référencement, 29/09/2026)
+
+- `/dashboard/admin/indexation` : statut de chaque page du sitemap via l'API URL Inspection de Search Console (OAuth, refresh_token chiffré dans `google_oauth_tokens`, `lib/google/search-console.ts`), écrit dans `seo_indexation_status` par `checkAllUrls` (`lib/seo/check-indexation.ts`), lancé par le bouton « Vérifier l'indexation » et par le workflow GitHub quotidien `check-indexation.yml` (6 h UTC, `/api/cron/check-indexation`).
+- **Incident du 29/09/2026** : la connexion Google a expiré (401 sur chaque page). La vérification quotidienne a écrit `indexed=false` + `coverage_state=null` + l'erreur sur les 526 pages : statuts connus écrasés, « À soumettre » passé d'environ 70 à 280, tout en « Erreur de vérification ». Corrigé : `SearchConsoleAuthError` (refresh `invalid_grant`, 401 après un nouvel essai avec un jeton neuf, 403) arrête la passe sans rien écrire ; une erreur ponctuelle n'écrit que `error` + `http_status` (le dernier statut connu reste) ; la route cron répond 503 (le workflow échoue, e-mail d'échec GitHub). Priorité de vérification : jamais vérifiées et en erreur d'abord, puis les plus anciennes ; la boucle du bouton s'arrête si le reste ne diminue plus.
+- UI : onglet « Erreurs », statut inconnu (erreur sans statut antérieur) exclu de « À soumettre », bandeau « Connexion expirée » avec « Reconnecter » (`/api/google/connect`) dès 5 erreurs d'authentification, résumé des compteurs à droite du bandeau, pleine largeur avec liste sur 2 colonnes au-delà de ~1400 px, onglets en `borderBottom` complet.
+- Si la connexion expire tous les 7 jours : l'application OAuth Google Cloud est restée « En test » ; la passer « En production » (écran de consentement / Audience).
+
 ## Trafic & analytics (visiteurs en direct + canal)
 
 - **Pas de gtag** (cf. Performance) : le trafic en direct + canal d'acquisition affiché dans l'admin est un tracking maison léger, pas Vercel Analytics (pas d'API exposée pour ça) ni Google Analytics.

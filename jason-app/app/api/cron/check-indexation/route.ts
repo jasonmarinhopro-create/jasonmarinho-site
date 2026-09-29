@@ -22,5 +22,7 @@ export async function GET(req: Request) {
   }
 
   const result = await checkAllUrls()
-  return NextResponse.json(result)
+  // Connexion Google expirée : le workflow GitHub échoue (e-mail d'échec à
+  // Jason) au lieu de passer au vert sans rien vérifier.
+  return NextResponse.json(result, { status: result.authExpired ? 503 : 200 })
 }

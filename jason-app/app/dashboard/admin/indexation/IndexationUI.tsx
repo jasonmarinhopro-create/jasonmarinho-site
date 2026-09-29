@@ -6,7 +6,7 @@ import {
   MagnifyingGlass, ArrowSquareOut, Warning, Info, ArrowClockwise, CaretDown, CaretUp, Eye, GoogleLogo, Copy, Check,
 } from '@phosphor-icons/react/dist/ssr'
 import { refreshIndexationNow, markSubmitted, unmarkSubmitted } from './actions'
-import AdminHero from '../_ui/AdminHero'
+import AdminHero, { adminAsideCard } from '../_ui/AdminHero'
 import { heroCta } from '@/components/dashboard/HubHero'
 
 // Dupliqué (pas importé) de lib/google/search-console.ts : ce fichier
@@ -42,7 +42,7 @@ export interface PageStatus {
   error: string | null
 }
 
-type Tab = 'a_soumettre' | 'jamais' | 'pas_indexees' | 'indexees' | 'toutes'
+type Tab = 'a_soumettre' | 'jamais' | 'pas_indexees' | 'indexees' | 'erreurs' | 'toutes'
 
 function fmtDate(d: string | null): string {
   if (!d) return '-'
@@ -76,10 +76,23 @@ const COVERAGE_LABELS: Record<string, string> = {
   'Page with redirect': 'Redirection',
 }
 
+// Statut inconnu : la dernière vérification a échoué et aucun statut
+// antérieur n'est connu (lignes écrasées le 29/09/2026 par la connexion
+// Google expirée). Hors des onglets « À soumettre » / « Pas encore dans
+// Google » : on ne sait pas si la page est indexée.
+function isUnknown(p: PageStatus): boolean {
+  return !!p.error && !p.indexed && !p.coverageState
+}
+
+// Erreur due à la connexion Google (jeton expiré ou révoqué), pas à la page.
+function isAuthError(message: string | null): boolean {
+  return !!message && /\b401\b|\b403\b|invalid_grant|UNAUTHENTICATED|OAuth|Connexion à Google/i.test(message)
+}
+
 function statusBadge(p: PageStatus): { label: string; color: string; bg: string } {
   if (p.httpStatus && p.httpStatus >= 400) return { label: `Page ${p.httpStatus}`, color: 'var(--danger-text)', bg: 'color-mix(in srgb, var(--danger) 10%, transparent)' }
   if (!p.lastCheckedAt) return { label: 'Jamais vérifiée', color: 'var(--text-muted)', bg: 'var(--surface)' }
-  if (p.error) return { label: 'Erreur de vérification', color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 10%, transparent)' }
+  if (isUnknown(p)) return { label: 'Erreur de vérification', color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 10%, transparent)' }
   if (p.indexed) return { label: 'Indexée', color: 'var(--accent-text)', bg: 'rgba(74,222,128,0.10)' }
   const label = (p.coverageState && COVERAGE_LABELS[p.coverageState]) || p.coverageState || 'Pas indexée'
   return { label, color: '#6E5446', bg: 'color-mix(in srgb, #6E5446 10%, transparent)' }
@@ -123,8 +136,12 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
   const notPublished = useMemo(() => pages.filter(p => p.httpStatus && p.httpStatus >= 400), [pages])
   const live = useMemo(() => pages.filter(p => !p.httpStatus || p.httpStatus < 400), [pages])
   const neverChecked = useMemo(() => live.filter(p => !p.lastCheckedAt), [live])
-  const notIndexed = useMemo(() => live.filter(p => p.lastCheckedAt && !p.indexed), [live])
+  const notIndexed = useMemo(() => live.filter(p => p.lastCheckedAt && !p.indexed && !isUnknown(p)), [live])
   const indexed = useMemo(() => live.filter(p => p.indexed), [live])
+  const errored = useMemo(() => live.filter(p => p.error), [live])
+  const authErrored = useMemo(() => errored.filter(p => isAuthError(p.error)).length, [errored])
+  const [authExpired, setAuthExpired] = useState(false)
+  const showReconnect = apiConfigured && (authExpired || authErrored >= 5)
   // Pas indexées ET jamais encore demandées à Google — la vraie file
   // d'action, contrairement à "Pas encore dans Google" qui garde aussi
   // celles déjà demandées (en attente que Google les traite).
@@ -138,6 +155,7 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
     jamais: neverChecked,
     pas_indexees: notIndexed,
     indexees: indexed,
+    erreurs: errored,
     toutes: pages,
   }
 
@@ -156,6 +174,7 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
     setRefreshMsg(null)
     startTransition(async () => {
       let totalChecked = 0
+      let lastRemaining = Infinity
       for (let pass = 0; pass < 30; pass++) {
         // Un raté réseau ponctuel en appelant la server action elle-même
         // (pas une erreur métier renvoyée par checkAllUrls, qui est déjà
@@ -171,17 +190,22 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
           return
         }
         if (res.error) {
+          if (res.authExpired) setAuthExpired(true)
           setRefreshMsg({ type: 'err', text: res.error })
           router.refresh()
           return
         }
+        setAuthExpired(false)
         totalChecked += res.checked ?? 0
         const remaining = res.remaining ?? 0
-        if (remaining > 0) {
+        // Pages qui restent en erreur d'une passe à l'autre : on s'arrête
+        // au lieu de les revérifier 30 fois de suite.
+        if (remaining > 0 && remaining < lastRemaining) {
+          lastRemaining = remaining
           setRefreshMsg({ type: 'ok', text: `${totalChecked} vérifiées, ${remaining} restantes… (ne quitte pas la page)` })
           router.refresh()
         } else {
-          setRefreshMsg({ type: 'ok', text: `${totalChecked} pages vérifiées.` })
+          setRefreshMsg({ type: 'ok', text: remaining > 0 ? `${totalChecked} vérifiées, ${remaining} toujours en erreur (onglet Erreurs).` : `${totalChecked} pages vérifiées.` })
           router.refresh()
           return
         }
@@ -227,6 +251,28 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
         title="Tes pages,"
         em="bien vues par Google"
         desc={<>Repère les pages du site que Google n&apos;a pas encore indexées et demande leur indexation dans Search Console. Dernière vérification : <span suppressHydrationWarning>{lastChecked ? fmtDateTime(lastChecked) : 'jamais'}</span>.</>}
+        aside={
+          <div style={adminAsideCard}>
+            <span style={s.asideTitle}>Sur {live.length} pages en ligne</span>
+            {[
+              { label: 'Indexées', n: indexed.length, color: 'var(--accent-text)' },
+              { label: 'À soumettre', n: aSoumettre.length, color: 'var(--text)' },
+              { label: 'Demandées, en attente de Google', n: notIndexed.length - aSoumettre.length, color: 'var(--text-2)' },
+              { label: 'Statut inconnu (erreur)', n: live.filter(isUnknown).length, color: '#B7791F' },
+              { label: 'Jamais vérifiées', n: neverChecked.length, color: 'var(--text-muted)' },
+            ].filter(r => r.n > 0 || r.label === 'Indexées').map(r => (
+              <div key={r.label} style={s.asideRow}>
+                <span>{r.label}</span>
+                <strong style={{ color: r.color }}>{r.n}</strong>
+              </div>
+            ))}
+            {apiConfigured && (
+              <a href="/api/google/connect" style={s.asideLink}>
+                <GoogleLogo size={13} weight="bold" /> Reconnecter Google Search Console
+              </a>
+            )}
+          </div>
+        }
       >
         <button onClick={handleRefresh} disabled={isPending || !apiConfigured} style={{ ...heroCta, border: 'none', cursor: 'pointer', fontFamily: 'inherit', opacity: (isPending || !apiConfigured) ? 0.5 : 1 }}>
           <ArrowClockwise size={16} weight="bold" style={isPending ? { animation: 'spin 0.8s linear infinite' } : undefined} />
@@ -253,6 +299,22 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
         <div style={s.errorBox}>
           <Warning size={16} weight="fill" style={{ color: 'var(--danger)', flexShrink: 0 }} />
           <span style={{ fontSize: '13px', color: 'var(--danger)' }}>Connexion Google échouée ({googleError}).</span>
+        </div>
+      )}
+
+      {showReconnect && (
+        <div style={s.warnBox}>
+          <Warning size={18} weight="fill" style={{ color: '#B7791F', flexShrink: 0, marginTop: '1px' }} />
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '14px', flexWrap: 'wrap' as const }}>
+            <span style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.55, flex: '1 1 420px' }}>
+              <strong style={{ color: 'var(--text)' }}>La connexion à Google Search Console a expiré.</strong>{' '}
+              Google refuse les vérifications{authErrored > 0 && <> ({authErrored} pages en erreur)</>} : ce n&apos;est pas un problème de tes pages.
+              Reconnecte-la, puis clique sur &laquo;&nbsp;Vérifier l&apos;indexation&nbsp;&raquo; : les vrais statuts reviennent.
+            </span>
+            <a href="/api/google/connect" style={s.connectBtn}>
+              <GoogleLogo size={14} weight="bold" /> Reconnecter
+            </a>
+          </div>
         </div>
       )}
 
@@ -305,8 +367,9 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
           { id: 'jamais' as const, label: 'Jamais vérifiées', count: neverChecked.length },
           { id: 'pas_indexees' as const, label: 'Pas encore dans Google', count: notIndexed.length },
           { id: 'indexees' as const, label: 'Indexées', count: indexed.length },
+          { id: 'erreurs' as const, label: 'Erreurs', count: errored.length },
           { id: 'toutes' as const, label: 'Toutes', count: pages.length },
-        ]).map(t => (
+        ]).filter(t => t.id !== 'erreurs' || t.count > 0 || tab === 'erreurs').map(t => (
           <button key={t.id} onClick={() => setTab(t.id)} style={{ ...s.tab, ...(tab === t.id ? s.tabActive : {}) }}>
             {t.label}
             <span style={{ ...s.tabCount, ...(tab === t.id ? s.tabCountActive : {}) }}>{t.count}</span>
@@ -341,7 +404,7 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
                     Vérifiée {fmtDateTime(p.lastCheckedAt)}
                     {p.lastmod && <> · modifiée {fmtDate(p.lastmod)}</>}
                     {submittedAt && <span style={{ color: 'var(--accent-text)' }}> · demandée le {fmtDate(submittedAt)}</span>}
-                    {p.error && <span style={{ color: '#B7791F' }}> · {p.error}</span>}
+                    {p.error && <span style={{ color: '#B7791F' }}> · {isAuthError(p.error) ? 'connexion Google expirée, statut non vérifié' : p.error}</span>}
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }} className="jm-idx-actions">
@@ -349,7 +412,7 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
                     submittedAt ? (
                       <button
                         onClick={() => handleUnmarkSubmitted(p.url, submittedAt)}
-                        style={{ ...s.smallBtn, cursor: 'pointer', color: 'var(--accent-text)', borderColor: 'var(--accent-text)' }}
+                        style={{ ...s.smallBtn, cursor: 'pointer', color: 'var(--accent-text)', border: '1px solid var(--accent-text)' }}
                         title="Annuler : la remettre dans « À soumettre »"
                       >
                         <Check size={13} weight="bold" /> Demandée
@@ -409,7 +472,16 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
 }
 
 const s: Record<string, React.CSSProperties> = {
-  wrap: { display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: '1200px', padding: 'clamp(20px,3vw,44px)' },
+  // Pleine largeur (CLAUDE.md, grands écrans) : pas de maxWidth sur la page.
+  wrap: { display: 'flex', flexDirection: 'column', gap: '14px', width: '100%', boxSizing: 'border-box', padding: 'clamp(20px,3vw,44px)' },
+  asideTitle: { fontSize: '12px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-muted)' },
+  asideRow: { display: 'flex', justifyContent: 'space-between', gap: '12px', fontSize: '13.5px', color: 'var(--text-2)' },
+  asideLink: { display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '4px', fontSize: '12.5px', fontWeight: 600, color: 'var(--accent-text)', textDecoration: 'none' },
+  warnBox: {
+    display: 'flex', gap: '10px', alignItems: 'flex-start',
+    background: 'color-mix(in srgb, #B7791F 8%, var(--surface))', border: '1px solid color-mix(in srgb, #B7791F 35%, transparent)',
+    borderRadius: '12px', padding: '14px 16px',
+  },
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' },
   title: {
     fontFamily: 'var(--font-fraunces), serif', fontSize: '26px', fontWeight: 500,
@@ -463,11 +535,13 @@ const s: Record<string, React.CSSProperties> = {
   tab: {
     display: 'flex', alignItems: 'center', gap: '7px',
     padding: '8px 14px', borderRadius: '9px 9px 0 0', fontSize: '13px', fontWeight: 500,
-    background: 'none', border: 'none', borderBottom: '2px solid transparent',
+    background: 'none', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: '2px solid transparent',
     color: 'var(--text-3)', cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
   },
   tabActive: {
-    color: 'var(--accent-text)', borderBottomColor: 'var(--accent-text)', fontWeight: 600,
+    // borderBottom complet : avec borderBottomColor seul, React effaçait la
+    // couleur au changement d'onglet et l'ancien onglet gardait un trait noir.
+    color: 'var(--accent-text)', borderBottom: '2px solid var(--accent-text)', fontWeight: 600,
   },
   tabCount: {
     fontSize: '10.5px', fontWeight: 700, padding: '1px 7px',
@@ -483,7 +557,8 @@ const s: Record<string, React.CSSProperties> = {
     background: 'none', border: 'none', outline: 'none',
     fontSize: '13px', color: 'var(--text)', width: '100%', fontFamily: 'var(--font-outfit), sans-serif',
   },
-  list: { display: 'flex', flexDirection: 'column', gap: '6px' },
+  // 2 colonnes quand l'écran le permet (au-delà de ~1400 px de contenu)
+  list: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 640px), 1fr))', gap: '6px' },
   row: {
     display: 'flex', alignItems: 'center', gap: '12px',
     padding: '12px 14px', borderRadius: '10px',
@@ -491,7 +566,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   rowUrl: {
     fontSize: '13px', color: 'var(--text)', fontFamily: 'ui-monospace, monospace',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '640px',
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0, maxWidth: '100%',
   },
   badge: {
     fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px', whiteSpace: 'nowrap',
@@ -502,5 +577,5 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--bg-2)', border: '1px solid var(--border)',
     borderRadius: '8px', padding: '6px 10px', textDecoration: 'none', whiteSpace: 'nowrap',
   },
-  empty: { fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', padding: '24px 0', margin: 0 },
+  empty: { fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', padding: '24px 0', margin: 0, gridColumn: '1 / -1' },
 }
