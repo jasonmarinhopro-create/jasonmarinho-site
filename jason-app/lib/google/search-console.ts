@@ -35,6 +35,13 @@ export async function isConfigured(): Promise<boolean> {
   return !!data
 }
 
+/** Date de la dernière (re)connexion à Google : les erreurs d'accès plus anciennes sont périmées */
+export async function connectedAt(): Promise<string | null> {
+  const db = serviceClient()
+  const { data } = await db.from('google_oauth_tokens').select('updated_at').eq('service', SERVICE_KEY).maybeSingle()
+  return (data?.updated_at as string | undefined) ?? null
+}
+
 let cachedToken: { token: string; expiresAt: number } | null = null
 
 async function getAccessToken(): Promise<string> {
@@ -82,9 +89,23 @@ function googleErrorMessage(status: number, text: string): string {
   return `${status} ${text.slice(0, 140)}`
 }
 
+/** Validité et droits d'un jeton selon Google (tokeninfo) : durée restante et présence du droit Search Console */
+async function tokenDiagnostic(token: string): Promise<string> {
+  try {
+    const r = await fetch(`https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(token)}`, { cache: 'no-store' })
+    const j = await r.json().catch(() => ({})) as { scope?: string; expires_in?: string; error?: string; error_description?: string }
+    if (!r.ok) return `jeton inconnu de Google (${r.status} ${j.error ?? ''} ${j.error_description ?? ''})`.trim()
+    const hasScope = (j.scope ?? '').includes('webmasters')
+    return `jeton valide ${j.expires_in ?? '?'} s, droit Search Console ${hasScope ? 'présent' : 'ABSENT'}, jeton de ${token.length} caractères`
+  } catch (e) {
+    return `diagnostic impossible (${e instanceof Error ? e.message : 'erreur'})`
+  }
+}
+
 async function inspectOnce(url: string, accessToken: string): Promise<Response> {
   return fetch(INSPECT_URL, {
     method: 'POST',
+    cache: 'no-store',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
     body: JSON.stringify({ inspectionUrl: url, siteUrl: SEARCH_CONSOLE_SITE_URL }),
   })
@@ -96,7 +117,13 @@ export async function inspectUrl(url: string): Promise<UrlInspectionResult> {
   // Un nouvel essai avec un jeton tout neuf tranche.
   if (res.status === 401) {
     cachedToken = null
-    res = await inspectOnce(url, await getAccessToken())
+    const fresh = await getAccessToken()
+    res = await inspectOnce(url, fresh)
+    if (res.status === 401) {
+      // Diagnostic (29/09/2026 : jeton tout neuf refusé quelques minutes après
+      // une reconnexion) : ce que Google dit de ce jeton, sans donnée perso.
+      throw new SearchConsoleAuthError(`${googleErrorMessage(401, await res.text()).slice(0, 60)} ; ${await tokenDiagnostic(fresh)}`)
+    }
   }
   if (res.status === 401 || res.status === 403) {
     throw new SearchConsoleAuthError(googleErrorMessage(res.status, await res.text()))

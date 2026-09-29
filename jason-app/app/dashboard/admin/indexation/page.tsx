@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { fetchSitemapEntries } from '@/lib/seo/sitemap'
-import { isConfigured } from '@/lib/google/search-console'
+import { isConfigured, connectedAt } from '@/lib/google/search-console'
 import IndexationUI, { type PageStatus } from './IndexationUI'
 
 export const metadata = { title: 'Indexation, Jason Marinho' }
@@ -68,6 +68,7 @@ export default async function IndexationPage() {
       fetchError={fetchError}
       lastChecked={lastChecked}
       apiConfigured={await isConfigured()}
+      connectedAt={await connectedAt()}
     />
   )
 }

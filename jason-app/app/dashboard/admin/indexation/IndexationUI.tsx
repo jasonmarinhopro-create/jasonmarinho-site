@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useTransition } from 'react'
+import { useEffect, useMemo, useState, useTransition } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import {
   MagnifyingGlass, ArrowSquareOut, Warning, Info, ArrowClockwise, CaretDown, CaretUp, Eye, GoogleLogo, Copy, Check,
@@ -98,11 +98,13 @@ function statusBadge(p: PageStatus): { label: string; color: string; bg: string 
   return { label, color: '#6E5446', bg: 'color-mix(in srgb, #6E5446 10%, transparent)' }
 }
 
-export default function IndexationUI({ pages, fetchError, lastChecked, apiConfigured }: {
+export default function IndexationUI({ pages, fetchError, lastChecked, apiConfigured, connectedAt = null }: {
   pages: PageStatus[]
   fetchError: string | null
   lastChecked: string | null
   apiConfigured: boolean
+  /** Dernière (re)connexion à Google : une erreur d'accès plus ancienne est périmée */
+  connectedAt?: string | null
 }) {
   const [search, setSearch] = useState('')
   // Tant que l'API n'est pas configurée, tout est "jamais vérifié" — partir
@@ -119,6 +121,12 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
   const router = useRouter()
   const searchParams = useSearchParams()
   const googleConnected = searchParams.get('google_connected') === '1'
+  // Le message « connecté » ne doit pas rester affiché à chaque rechargement
+  useEffect(() => {
+    if (!googleConnected && !searchParams.get('google_error')) return
+    const t = setTimeout(() => router.replace('/dashboard/admin/indexation', { scroll: false }), 8000)
+    return () => clearTimeout(t)
+  }, [googleConnected, searchParams, router])
   const googleError = searchParams.get('google_error')
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null)
 
@@ -139,7 +147,11 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
   const notIndexed = useMemo(() => live.filter(p => p.lastCheckedAt && !p.indexed && !isUnknown(p)), [live])
   const indexed = useMemo(() => live.filter(p => p.indexed), [live])
   const errored = useMemo(() => live.filter(p => p.error), [live])
-  const authErrored = useMemo(() => errored.filter(p => isAuthError(p.error)).length, [errored])
+  // Erreur d'accès enregistrée avant la dernière reconnexion : la page attend
+  // simplement d'être revérifiée, la connexion n'est plus en cause.
+  const isStaleAuth = (p: PageStatus) => isAuthError(p.error) && !!connectedAt && (!p.lastCheckedAt || p.lastCheckedAt < connectedAt)
+  const authErrored = useMemo(() => errored.filter(p => isAuthError(p.error) && !isStaleAuth(p)).length, [errored, connectedAt]) // eslint-disable-line react-hooks/exhaustive-deps
+  const toRecheck = useMemo(() => errored.filter(isStaleAuth).length, [errored, connectedAt]) // eslint-disable-line react-hooks/exhaustive-deps
   const [authExpired, setAuthExpired] = useState(false)
   const showReconnect = apiConfigured && (authExpired || authErrored >= 5)
   // Pas indexées ET jamais encore demandées à Google — la vraie file
@@ -318,6 +330,15 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
         </div>
       )}
 
+      {!showReconnect && toRecheck > 0 && !isPending && (
+        <div style={s.infoBox}>
+          <Info size={16} weight="fill" style={{ color: 'var(--accent-text)', flexShrink: 0, marginTop: '1px' }} />
+          <span style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.5 }}>
+            {toRecheck} page{toRecheck > 1 ? 's' : ''} n&apos;{toRecheck > 1 ? 'ont' : 'a'} pas encore été revérifiée{toRecheck > 1 ? 's' : ''} depuis ta reconnexion. Clique sur &laquo;&nbsp;Vérifier l&apos;indexation&nbsp;&raquo; pour finir.
+          </span>
+        </div>
+      )}
+
       {!apiConfigured && (
         <div style={s.infoBox}>
           <Info size={16} weight="fill" style={{ color: 'var(--accent-text)', flexShrink: 0, marginTop: '1px' }} />
@@ -404,7 +425,7 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
                     Vérifiée {fmtDateTime(p.lastCheckedAt)}
                     {p.lastmod && <> · modifiée {fmtDate(p.lastmod)}</>}
                     {submittedAt && <span style={{ color: 'var(--accent-text)' }}> · demandée le {fmtDate(submittedAt)}</span>}
-                    {p.error && <span style={{ color: '#B7791F' }}> · {isAuthError(p.error) ? 'connexion Google expirée, statut non vérifié' : p.error}</span>}
+                    {p.error && <span style={{ color: '#B7791F' }}> · {isStaleAuth(p) ? 'à revérifier (erreur d’avant ta reconnexion)' : isAuthError(p.error) ? 'connexion Google expirée, statut non vérifié' : p.error}</span>}
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }} className="jm-idx-actions">

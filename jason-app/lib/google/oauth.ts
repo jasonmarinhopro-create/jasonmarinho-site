@@ -33,6 +33,8 @@ export async function exchangeCodeForTokens(code: string, redirectUri: string): 
 
   const res = await fetch(TOKEN_URL, {
     method: 'POST',
+    // Jamais de cache Next.js sur l'échange de jetons (un jeton périmé resservi = 401)
+    cache: 'no-store',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
       code,
@@ -54,6 +56,8 @@ export async function refreshAccessToken(refreshToken: string): Promise<{ access
 
   const res = await fetch(TOKEN_URL, {
     method: 'POST',
+    // Jamais de cache Next.js sur l'échange de jetons (un jeton périmé resservi = 401)
+    cache: 'no-store',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
       refresh_token: refreshToken,
