@@ -56,10 +56,12 @@ export default function EnvoisTab({ audience, sends, contacts, sequences, dailyC
 
   // Chiffres par séquence puis par e-mail de la séquence
   const perStep = useMemo(() => {
-    const m = new Map<string, { seq: string; step: number; subject: string; sent: number; replies: number }>()
+    const m = new Map<string, { seq: string; step: number; subject: string; sent: number; replies: number; opens: number | null; people: number }>()
     for (const s of ok) {
       const k = `${s.sequence_id}|${s.step_position}`
-      const cur = m.get(k) ?? { seq: seqById.get(s.sequence_id ?? '')?.nom ?? 'Séquence supprimée', step: (s.step_position ?? 0) + 1, subject: s.subject.replace(/^Re:\s*/i, ''), sent: 0, replies: 0 }
+      const sq = seqById.get(s.sequence_id ?? '')
+      const st = sq?.stepStats?.[s.step_position ?? -1]
+      const cur = m.get(k) ?? { seq: sq?.nom ?? 'Séquence supprimée', step: (s.step_position ?? 0) + 1, subject: s.subject.replace(/^Re:\s*/i, ''), sent: 0, replies: 0, opens: st?.opens ?? null, people: st?.people ?? 0 }
       cur.sent++
       if (repliedSendIds.has(s.id)) cur.replies++
       m.set(k, cur)
@@ -132,7 +134,7 @@ export default function EnvoisTab({ audience, sends, contacts, sequences, dailyC
             <span style={s.icon}><ChartBar size={17} weight="fill" /></span>
             <div>
               <h3 style={ui.cardTitle}>Ce qui marche</h3>
-              <p style={ui.sub}>Réponses obtenues par e-mail de chaque séquence (30 jours).</p>
+              <p style={ui.sub}>Réponses par e-mail de chaque séquence (30 jours) et taux d&apos;ouverture global.</p>
             </div>
           </div>
           {!perStep.length && <p style={ui.sub}>Les chiffres apparaissent après les premiers envois.</p>}
@@ -145,11 +147,13 @@ export default function EnvoisTab({ audience, sends, contacts, sequences, dailyC
                   <strong style={{ color: 'var(--text)', whiteSpace: 'nowrap' }}>{p.replies} / {p.sent} · {rate} %</strong>
                 </div>
                 <span style={{ fontSize: '12px', color: 'var(--text-3)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>« {p.subject} »</span>
+                {p.opens != null && p.people > 0 && <span style={{ fontSize: '12px', color: 'var(--text-2)' }}>Ouvert par {p.opens} sur {p.people} ({Math.round((p.opens / p.people) * 100)} %)</span>}
                 <div style={s.bar}><div style={{ ...s.barFill, width: `${Math.min(100, rate * 4)}%` }} /></div>
               </div>
             )
           })}
           <p style={{ ...ui.sub, marginTop: '4px' }}>Repère : en prospection B2B, 5 à 10 % de réponses est un bon score. Une étape sous 2 % après 50 envois mérite un nouvel objet.</p>
+          <p style={{ ...ui.sub, marginTop: '0' }}>Ouvertures : taux global et anonyme, comme le permet la CNIL sans consentement (recommandation du 12 mars 2026). On ne sait pas qui a ouvert. Chiffre approché : Apple Mail en ajoute, les messageries qui bloquent les images en retirent. Les réponses restent le vrai indicateur.</p>
         </section>
       </div>
 

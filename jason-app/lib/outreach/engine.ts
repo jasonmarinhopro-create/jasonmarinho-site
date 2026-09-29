@@ -3,6 +3,8 @@
 // enchaînement), gabarits {prenom}, texte d'information CNIL, extraction
 // d'e-mails d'un site et des adresses en échec d'un rebond.
 
+import { isKnownFirstName } from './first-names'
+
 export type Audience = 'photographe' | 'menage' | 'hote' | 'autre'
 export type Stage =
   | 'a_trouver' | 'a_contacter' | 'contacte' | 'a_repondu' | 'interesse'
@@ -133,14 +135,20 @@ export function renderTemplate(tpl: string, vars: TemplateVars): string {
   return out
 }
 
-/** Prénom plausible : champ prénom, sinon premier mot du nom s'il ressemble à un prénom. */
+/**
+ * Prénom plausible : champ prénom (saisi, CSV, dirigeant de l'annuaire), sinon
+ * premier mot du nom seulement s'il figure dans la liste des prénoms courants.
+ * Un nom d'entreprise (« The Paris Photographer », « Noir Noir ») donne « » :
+ * « Bonjour {prenom}, » devient alors « Bonjour, ».
+ */
 export function guessFirstName(prenom?: string | null, nom?: string | null): string {
   const p = (prenom ?? '').trim()
   if (p) return capitalize(p.split(/\s+/)[0])
   const n = (nom ?? '').trim()
   if (!n || /\b(sarl|sas|eurl|sasu|sci|studio|photo|photographie|nettoyage|services?|agence|conciergerie)\b/i.test(n)) return ''
-  const first = n.split(/\s+/)[0]
-  return /^[A-Za-zÀ-ÖØ-öø-ÿ'-]{2,20}$/.test(first) && n.split(/\s+/).length >= 2 ? capitalize(first) : ''
+  const words = n.split(/\s+/)
+  const first = words[0]
+  return words.length >= 2 && /^[A-Za-zÀ-ÖØ-öø-ÿ'-]{2,20}$/.test(first) && isKnownFirstName(first) ? capitalize(first) : ''
 }
 
 function capitalize(s: string): string {
@@ -178,6 +186,7 @@ export function complianceFooter(opts: { source: Source; firstMessage: boolean; 
     )
   }
   lines.push(`Pour ne plus recevoir de message de ma part : ${opts.unsubscribeUrl}`)
+  if (opts.firstMessage) lines.push(`Seul un taux d'ouverture global et anonyme de mes messages est mesuré, sans suivi individuel.`)
   return lines.join('\n')
 }
 

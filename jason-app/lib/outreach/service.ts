@@ -3,6 +3,7 @@
 // règles pures et mailer.ts pour l'envoi.
 
 import 'server-only'
+import { randomUUID } from 'node:crypto'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import { logger } from '@/lib/logger'
@@ -46,6 +47,15 @@ export async function loadSettings(db: Db): Promise<Settings> {
   }
 }
 
+
+/**
+ * Adresse de la photo de signature d'un envoi : elle passe par l'app, qui
+ * compte une ouverture puis redirige vers la vraie photo. Seul un compteur
+ * anonyme par e-mail de séquence est tenu (CNIL, recommandation du 12/03/2026).
+ */
+export function openTrackingUrl(sendId: string): string {
+  return `${APP_URL}/api/outreach/o/${sendId}`
+}
 
 export function unsubscribeUrls(token: string) {
   return {
@@ -397,12 +407,15 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
     const { data: claimed } = await db.from('outreach_enrollments').update({ next_send_on: CLAIM_DATE, updated_at: new Date().toISOString() })
       .eq('id', e.id).eq('status', 'en_cours').eq('next_step', e.next_step).lte('next_send_on', today).select('id')
     if (!claimed?.length) continue
+    // Identifiant de l'envoi connu avant l'envoi : la photo de la signature
+    // passe par /api/outreach/o/<id> (taux d'ouverture anonyme, voir openTrackingUrl)
+    const sendId = randomUUID()
     try {
       const { messageId } = await sendOutreachMail(cfg, {
-        to: c.email, subject, text: `${text}\n\n--\n${footer}`, html: textToHtml(bodyText, footer, signature, photo),
+        to: c.email, subject, text: `${text}\n\n--\n${footer}`, html: textToHtml(bodyText, footer, signature, photo ? openTrackingUrl(sendId) : null),
         inReplyTo: inThread ? e.thread_message_id : null, unsubscribeUrl: urls.page, oneClickUrl: urls.oneClick,
       })
-      await db.from('outreach_sends').insert({ enrollment_id: e.id, contact_id: c.id, sequence_id: e.sequence_id, step_position: e.next_step, email: c.email, subject, message_id: messageId, status: 'envoye' })
+      await db.from('outreach_sends').insert({ id: sendId, enrollment_id: e.id, contact_id: c.id, sequence_id: e.sequence_id, step_position: e.next_step, email: c.email, subject, message_id: messageId, status: 'envoye' })
       alreadyWritten.add(c.id)
       summary.sent++
       remaining--

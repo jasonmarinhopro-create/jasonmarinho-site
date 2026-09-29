@@ -23,6 +23,8 @@ export interface SequenceRow {
   counts: { en_cours: number; terminee: number; arretee: number }
   /** Personnes en cours dont le prochain e-mail est l'étape i */
   atStep: number[]
+  /** Par e-mail : envois, personnes distinctes, ouvertures anonymes (null : migration 117 absente) */
+  stepStats: Array<{ sent: number; people: number; opens: number | null }>
 }
 export interface ContactRow {
   id: string

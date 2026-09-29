@@ -41,7 +41,7 @@ export default async function ProspectionPage() {
     return `${today}T00:00:00Z`
   })()
 
-  const [seqRes, { data: steps }, { data: enr }, contactsRes, { data: settings }, { data: sends }, sentToday, sent7, sent30, errors7, replies30, contacted30] = await Promise.all([
+  const [seqRes, { data: steps }, { data: enr }, contactsRes, { data: settings }, { data: sends }, sentToday, sent7, sent30, errors7, replies30, contacted30, { data: allSends }, openRes] = await Promise.all([
     // Colonnes de la migration 116 (trigger_tag, next_action…) : repli sans elles si elle n'est pas appliquée
     withFallback(
       () => db.from('outreach_sequences').select(`${SEQ_COLS}, trigger_tag`).order('position'),
@@ -61,6 +61,10 @@ export default async function ProspectionPage() {
     db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'erreur').gte('sent_at', since7),
     db.from('outreach_contacts').select('id', { count: 'exact', head: true }).gte('replied_at', since30),
     db.from('outreach_contacts').select('id', { count: 'exact', head: true }).gte('last_contacted_at', since30),
+    // Par e-mail de séquence, depuis le début : envois et personnes distinctes
+    db.from('outreach_sends').select('contact_id, sequence_id, step_position').eq('status', 'envoye').limit(20000),
+    // Ouvertures anonymes (migration 117, absente = pas de chiffre)
+    db.from('outreach_open_stats').select('sequence_id, step_position, opens'),
   ])
 
   const contacts = contactsRes.data as Array<Record<string, unknown> & { id: string }> | null
@@ -89,10 +93,25 @@ export default async function ProspectionPage() {
     }
     counts.set(e.sequence_id, c)
   }
+  const sentByStep = new Map<string, { sent: number; people: Set<string> }>()
+  for (const x of allSends ?? []) {
+    const k = `${x.sequence_id}|${x.step_position}`
+    const cur = sentByStep.get(k) ?? { sent: 0, people: new Set<string>() }
+    cur.sent++
+    if (x.contact_id) cur.people.add(x.contact_id)
+    sentByStep.set(k, cur)
+  }
+  const opensTracked = !openRes.error
+  const opensByStep = new Map((openRes.data ?? []).map(o => [`${o.sequence_id}|${o.step_position}`, o.opens as number]))
   const sequences: SequenceRow[] = ((seqRes.data ?? []) as Array<Record<string, unknown> & { id: string }>).map(sq => {
     const c = counts.get(sq.id) ?? { en_cours: 0, terminee: 0, arretee: 0, atStep: [] }
     const st = (stepsBySeq.get(sq.id) ?? []).sort((a, b) => a.position - b.position)
-    return { trigger_tag: null, ...sq, steps: st, counts: { en_cours: c.en_cours, terminee: c.terminee, arretee: c.arretee }, atStep: st.map((_, i) => c.atStep[i] ?? 0) } as SequenceRow
+    const stepStats = st.map((_, i) => {
+      const k = `${sq.id}|${i}`
+      const b = sentByStep.get(k)
+      return { sent: b?.sent ?? 0, people: b?.people.size ?? 0, opens: opensTracked ? opensByStep.get(k) ?? 0 : null }
+    })
+    return { trigger_tag: null, ...sq, steps: st, counts: { en_cours: c.en_cours, terminee: c.terminee, arretee: c.arretee }, atStep: st.map((_, i) => c.atStep[i] ?? 0), stepStats } as SequenceRow
   })
   const contactRows: ContactRow[] = (contacts ?? []).map(c => ({ next_action: null, next_action_on: null, ...c, tags: (c.tags as string[] | null) ?? [], active_sequence_id: activeByContact.get(c.id) ?? null }) as unknown as ContactRow)
   const cfg = outreachConfig()

@@ -301,6 +301,8 @@ export default function SequencesTab({ audience, sequences, contacts }: { audien
 
                 {draft.steps.map((st, i) => {
                   const here = selected?.atStep[i] ?? 0
+                  // Chiffres de l'e-mail enregistré à cette place (pas d'un e-mail ajouté ou déplacé non enregistré)
+                  const stats = st.id ? selected?.stepStats?.[selected.steps.findIndex(x => x.id === st.id)] : undefined
                   const isPreview = !!preview[st.key]
                   const vars = { ...EXAMPLE, prenom: guessFirstName(EXAMPLE.prenom, EXAMPLE.nom) }
                   return (
@@ -327,7 +329,7 @@ export default function SequencesTab({ audience, sequences, contacts }: { audien
                           <span style={s.stepIcon}><EnvelopeSimple size={15} weight="bold" /></span>
                           <span style={s.kicker}>E-mail {i + 1}</span>
                           <span style={{ flex: 1 }} />
-                          {here > 0 && <span style={{ ...ui.pill, color: 'var(--accent-text)', borderColor: 'var(--accent-border)', background: 'var(--accent-bg)' }}><Users size={12} /> {here} ici</span>}
+                          {here > 0 && <span title="Personnes qui recevront cet e-mail au prochain envoi prévu" style={{ ...ui.pill, color: 'var(--accent-text)', border: '1px solid var(--accent-border)', background: 'var(--accent-bg)' }}><Users size={12} /> {here} en attente</span>}
                           <button type="button" onClick={() => setPreview(p => ({ ...p, [st.key]: !p[st.key] }))} style={s.iconBtn} aria-label={isPreview ? 'Modifier' : 'Aperçu'} title={isPreview ? 'Modifier' : 'Aperçu avec un exemple'}>
                             {isPreview ? <PencilSimple size={14} weight="bold" /> : <Eye size={14} weight="bold" />}
                           </button>
@@ -335,6 +337,7 @@ export default function SequencesTab({ audience, sequences, contacts }: { audien
                           <button type="button" onClick={() => moveStep(i, 1)} disabled={i === draft.steps.length - 1} style={{ ...s.iconBtn, opacity: i === draft.steps.length - 1 ? 0.35 : 1 }} aria-label="Descendre"><ArrowDown size={14} weight="bold" /></button>
                           <button type="button" onClick={() => setDraft(d => d ? { ...d, steps: d.steps.filter(x => x.key !== st.key) } : d)} disabled={draft.steps.length === 1} style={{ ...s.iconBtn, opacity: draft.steps.length === 1 ? 0.35 : 1 }} aria-label="Supprimer l'e-mail"><Trash size={14} weight="bold" /></button>
                         </div>
+                        {stats && stats.sent > 0 && <StepStats stats={stats} />}
                         {isPreview ? (
                           <div style={s.previewBox}>
                             <div style={{ fontSize: '13.5px', fontWeight: 700, color: 'var(--text)' }}>{i > 0 && st.same_thread ? 'Re: ' : ''}{renderTemplate(i > 0 && st.same_thread ? draft.steps[0].subject : st.subject, vars)}</div>
@@ -453,4 +456,19 @@ const s: Record<string, React.CSSProperties> = {
   previewBox: { display: 'flex', flexDirection: 'column', gap: '10px', padding: '12px 14px', borderRadius: '12px', background: 'var(--bg)', border: '1px solid var(--border)' },
   endCard: { width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', padding: '14px 16px', borderRadius: '16px', background: 'var(--surface)', border: '1px dashed var(--accent-border)', boxSizing: 'border-box', marginBottom: '14px' },
   saveBar: { position: 'sticky', bottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', padding: '12px 14px', borderRadius: '14px', background: 'var(--surface)', border: '1px solid var(--accent-border)', boxShadow: '0 6px 24px rgba(0,0,0,0.12)', zIndex: 5 },
+}
+
+/** Envoyé à / ouvert par : ce que cet e-mail a donné depuis le début */
+function StepStats({ stats }: { stats: { sent: number; people: number; opens: number | null } }) {
+  const extra = stats.sent - stats.people
+  const rate = stats.opens != null && stats.people ? Math.round((stats.opens / stats.people) * 100) : null
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 14px', fontSize: '12.5px', color: 'var(--text-2)', padding: '8px 10px', borderRadius: '10px', background: 'var(--bg-2)' }}>
+      <span>Envoyé à <strong style={{ color: 'var(--text)' }}>{stats.people}</strong> {stats.people > 1 ? 'personnes' : 'personne'}</span>
+      {extra > 0 && <span style={{ color: AMBER }} title="Le même e-mail est parti plusieurs fois à certaines personnes (incident du 29/09/2026, corrigé)">{stats.sent} envois, dont {extra} en double</span>}
+      {stats.opens == null
+        ? <span style={{ color: 'var(--text-3)' }}>Ouvertures : applique la migration 117</span>
+        : <span title="Taux global et anonyme (CNIL) : compté via la photo de la signature. Apple Mail en ajoute, les messageries qui bloquent les images en retirent.">Ouvert par <strong style={{ color: 'var(--text)' }}>{stats.opens}</strong>{rate != null && <> ({rate} %)</>}</span>}
+    </div>
+  )
 }
