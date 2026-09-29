@@ -201,16 +201,33 @@ async function syncSignups(db: Db): Promise<number> {
 }
 
 /** Séquences « automatiques » : contacts « À contacter » jamais contactés. */
-async function autoEnroll(db: Db, today: string): Promise<number> {
+/**
+ * Séquences « nouveau contact » : les contacts « À contacter » jamais écrits
+ * entrent, mais seulement autant que le plafond du jour peut en absorber
+ * (plafond moins les envois déjà dus). Sinon des centaines de premiers
+ * e-mails s'empilent et les relances (J+3, J+7) partent avec des semaines
+ * de retard.
+ */
+async function autoEnroll(db: Db, today: string, dailyCap: number): Promise<number> {
   const { data: seqs } = await db.from('outreach_sequences').select('id, audience').eq('trigger', 'nouveau_contact').eq('enabled', true)
+  if (!seqs?.length) return 0
+  const { count: due } = await db.from('outreach_enrollments').select('id', { count: 'exact', head: true }).eq('status', 'en_cours').lte('next_send_on', today)
+  let room = Math.max(0, dailyCap - (due ?? 0))
+  if (!room) return 0
+  // Part égale entre les séquences (photographes, ménage…), le reste au suivant
+  const share = Math.max(1, Math.ceil(room / seqs.length))
   let n = 0
-  for (const s of seqs ?? []) {
-    const { data: contacts } = await db.from('outreach_contacts').select('id').eq('audience', s.audience).eq('stage', 'a_contacter').is('last_contacted_at', null).not('email_norm', 'is', null).limit(300)
+  for (const s of seqs) {
+    if (room <= 0) break
+    const { data: contacts } = await db.from('outreach_contacts').select('id').eq('audience', s.audience).eq('stage', 'a_contacter').is('last_contacted_at', null).not('email_norm', 'is', null).order('created_at').limit(300)
     const ids = (contacts ?? []).map(c => c.id)
     if (!ids.length) continue
-    const { data: busy } = await db.from('outreach_enrollments').select('contact_id').in('contact_id', ids).eq('status', 'en_cours')
+    const { data: busy } = await db.from('outreach_enrollments').select('contact_id').in('contact_id', ids)
     const busySet = new Set((busy ?? []).map(b => b.contact_id))
-    n += await enroll(db, s.id, ids.filter(id => !busySet.has(id)), { today })
+    const take = ids.filter(id => !busySet.has(id)).slice(0, Math.min(share, room))
+    const added = await enroll(db, s.id, take, { today })
+    n += added
+    room -= added
   }
   return n
 }
@@ -258,7 +275,7 @@ export async function runOutreach(db: Db, opts: { budgetMs?: number; force?: boo
       summary.bounces = inbox.bounces
     } catch (e) { log.error('lecture de la boîte', e) }
     try { summary.signups = await syncSignups(db) } catch (e) { log.error('inscriptions', e) }
-    try { summary.autoEnrolled = await autoEnroll(db, today) } catch (e) { log.error('inscription auto', e) }
+    try { summary.autoEnrolled = await autoEnroll(db, today, settings.daily_cap) } catch (e) { log.error('inscription auto', e) }
   }
 
   if (!cfg) summary.skipped = 'Boîte d\'envoi non configurée'

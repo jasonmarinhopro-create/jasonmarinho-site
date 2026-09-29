@@ -9,7 +9,7 @@
 import { NextResponse } from 'next/server'
 import { getServiceClient } from '@/lib/supabase/service'
 import { outreachConfig } from '@/lib/outreach/mailer'
-import { installPlaybookSequences, runOutreach } from '@/lib/outreach/service'
+import { installPlaybookSequences, loadSettings, runOutreach, sendTest } from '@/lib/outreach/service'
 import { relaunchOutreach } from '@/lib/outreach/relaunch'
 import { searchGooglePlaces, findEmailOnSite } from '@/lib/outreach/sources'
 import type { Audience } from '@/lib/outreach/engine'
@@ -37,12 +37,20 @@ export async function POST(req: Request) {
       case 'status': return NextResponse.json(await status(db))
       case 'import': return NextResponse.json(await importFromMaps(db, body.audience, body.query))
       case 'activate': return NextResponse.json(await activate(db, body.audiences ?? ['photographe', 'menage'], body.daily_cap))
+      case 'test': {
+        // E-mail d'essai (1er e-mail du premier contact photographes) envoyé à la boîte d'envoi elle-même
+        const { data: seq } = await db.from('outreach_sequences').select('id').eq('playbook_key', 'photo_premier_contact').maybeSingle()
+        const { data: step } = seq ? await db.from('outreach_steps').select('subject, body').eq('sequence_id', seq.id).order('position').limit(1).maybeSingle() : { data: null }
+        if (!step) throw new Error('séquence « Photographes : premier contact » introuvable')
+        const res = await sendTest(step.subject, step.body, await loadSettings(db))
+        return NextResponse.json({ ok: res.ok, envoye_a_la_boite_d_envoi: res.ok, error: res.error ?? null })
+      }
       case 'run': {
         const summary = await runOutreach(db, { budgetMs: 45_000, force: true })
         const relaunched = summary.more ? await relaunchOutreach(1, true) : false
         return NextResponse.json({ ok: true, relaunched, ...summary })
       }
-      default: return NextResponse.json({ error: 'op inconnue (status, import, activate, run)' }, { status: 400 })
+      default: return NextResponse.json({ error: 'op inconnue (status, import, activate, test, run)' }, { status: 400 })
     }
   } catch (e) {
     return NextResponse.json({ ok: false, error: e instanceof Error ? e.message.slice(0, 300) : 'erreur' }, { status: 500 })
@@ -142,6 +150,9 @@ async function activate(db: Db, audiences: Audience[], cap?: number) {
   const list = audiences.filter(a => AUDIENCES.includes(a))
   if (!list.length) throw new Error('aucune audience')
   const installed = await installPlaybookSequences(db)
+  // Premier contact automatique : tout contact « À contacter » y entre, au rythme du plafond
+  await db.from('outreach_sequences').update({ trigger: 'nouveau_contact', updated_at: new Date().toISOString() })
+    .in('playbook_key', list.map(a => `${a === 'photographe' ? 'photo' : a}_premier_contact`)).eq('trigger', 'manuel')
   const { data: seqs, error } = await db.from('outreach_sequences').update({ enabled: true, updated_at: new Date().toISOString() }).in('audience', list).select('nom, audience')
   if (error) throw new Error(error.message)
   // Montée en charge : 25 par jour par défaut, jamais plus de 80 (boîte Hostinger gratuite : 100 par jour, messages de Jason compris)

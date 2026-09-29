@@ -40,7 +40,7 @@ export const PLAYBOOK: PlaybookSequence[] = [
     nom: 'Photographes : premier contact',
     audience: 'photographe',
     description: 'Présente l\'annuaire et pose une seule question. 4 e-mails sur 2 semaines, puis la relance de saison.',
-    trigger: 'manuel',
+    trigger: 'nouveau_contact',
     then_key: 'photo_relance_saison',
     steps: [
       {
@@ -197,7 +197,7 @@ Tu y vois aussi combien d'hôtes ont consulté ta fiche ce mois-ci.`,
     nom: 'Ménage : premier contact',
     audience: 'menage',
     description: 'Présente l\'annuaire et le planning partagé. 4 e-mails sur 2 semaines, puis la relance de saison.',
-    trigger: 'manuel',
+    trigger: 'nouveau_contact',
     then_key: 'menage_relance_saison',
     steps: [
       {

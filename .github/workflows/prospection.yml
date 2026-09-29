@@ -12,11 +12,11 @@ on:
   workflow_dispatch:
     inputs:
       operation:
-        description: 'etat, importer, activer, envoyer'
+        description: 'etat, essai, importer, activer, envoyer'
         required: true
         default: etat
         type: choice
-        options: [etat, importer, activer, envoyer]
+        options: [etat, essai, importer, activer, envoyer]
       audiences:
         description: 'Audiences (menage, photographe, séparées par des virgules)'
         required: false
@@ -57,7 +57,16 @@ jobs:
           }
           case "$OP" in
             etat)
-              call '{"op":"status"}' | jq . ;;
+              call '{"op":"status"}' | jq .
+              echo "DNS de jasonmarinho.com (délivrabilité) :"
+              echo "SPF   : $(dig +short TXT jasonmarinho.com | grep -i 'v=spf1' || echo 'ABSENT')"
+              echo "DMARC : $(dig +short TXT _dmarc.jasonmarinho.com | grep -i 'v=dmarc1' || echo 'ABSENT')"
+              for sel in hostingermail1 hostingermail2 hostingermail3 hostingermail resend; do
+                v=$(dig +short TXT "$sel._domainkey.jasonmarinho.com" | head -c 60); [ -n "$v" ] && echo "DKIM ($sel) : présent"
+              done
+              echo "MX    : $(dig +short MX jasonmarinho.com | tr '\n' ' ')" ;;
+            essai)
+              call '{"op":"test"}' | jq . ;;
             activer)
               AUD_JSON=$(echo "$AUDIENCES" | jq -Rc 'split(",") | map(gsub("^\\s+|\\s+$";""))')
               call "$(jq -nc --argjson a "$AUD_JSON" --arg cap "$PLAFOND" '{op:"activate",audiences:$a,daily_cap:($cap|tonumber)}')" | jq . ;;
