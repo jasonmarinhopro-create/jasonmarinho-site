@@ -371,6 +371,11 @@ import { House } from '@phosphor-icons/react'
 - **Vercel : Jason reste en Hobby pour l'instant** (décision sept. 2026, revenus encore faibles), en connaissant la clause non commerciale. Surveiller la page Usage.
 - Pistes non faites : ignorer les builds d'un projet quand seul l'autre a changé (`ignoreCommand`, à tester avec les deploy hooks des fiches pros), Supabase Pro pour les sauvegardes.
 
+## Déploiements Vercel : 100 par jour (Hobby)
+
+- Le 29/09/2026 au soir, les déploiements ont été refusés (« Deployment rate limited — retry in 24 hours ») : chaque push créait 4 déploiements (site + dashboard, sur `main` ET sur la branche de travail `claude/...`). Une mise à jour refusée n'est **pas** redéployée toute seule : il faut un nouveau push (ou « Redeploy » dans Vercel) une fois la limite passée.
+- Les deux `vercel.json` ont `"git": { "deploymentEnabled": { "claude/**": false } }` : les branches de travail ne déploient plus, seul `main` déploie. Regrouper les corrections dans moins de pushes. Pour vérifier un déploiement : statuts du commit (`api.github.com/repos/<dépôt>/commits/<sha>/statuses`, contextes « Vercel – jasonmarinho-dashboard » et « Vercel – jasonmarinho-site »).
+
 ## Fonctions serverless du site statique : 12 maximum
 
 - Le forfait Vercel Hobby refuse tout déploiement qui contient plus de **12 fonctions serverless** (chaque fichier sous `api/` du site statique ; le dashboard Next.js n'est pas concerné). Le 27/09/2026, l'ajout de `api/photographer/portfolio.js` (13e fonction) a fait échouer tous les déploiements du site pendant plusieurs heures.

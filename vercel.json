@@ -2,6 +2,7 @@
   "buildCommand": "node scripts/sync-counts.mjs && node scripts/build-signalements.mjs && node scripts/build-photographers.mjs && node scripts/build-cleaners.mjs && node scripts/build-phosphor-subset.mjs",
   "outputDirectory": ".",
   "regions": ["lhr1"],
+  "git": { "deploymentEnabled": { "claude/**": false } },
   "cleanUrls": true,
   "trailingSlash": false,
   "headers": [

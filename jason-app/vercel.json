@@ -3,6 +3,7 @@
   "regions": [
     "lhr1"
   ],
+  "git": { "deploymentEnabled": { "claude/**": false } },
   "crons": [
     {
       "path": "/api/cron/notifications-engine",
