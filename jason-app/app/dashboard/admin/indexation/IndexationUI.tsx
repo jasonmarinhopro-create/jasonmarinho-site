@@ -578,8 +578,8 @@ const s: Record<string, React.CSSProperties> = {
     background: 'none', border: 'none', outline: 'none',
     fontSize: '13px', color: 'var(--text)', width: '100%', fontFamily: 'var(--font-outfit), sans-serif',
   },
-  // 2 colonnes quand l'écran le permet (au-delà de ~1400 px de contenu)
-  list: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 640px), 1fr))', gap: '6px' },
+  // Une page par ligne, sur toute la largeur (demande de Jason : 2 colonnes moins pratiques à parcourir)
+  list: { display: 'flex', flexDirection: 'column', gap: '6px' },
   row: {
     display: 'flex', alignItems: 'center', gap: '12px',
     padding: '12px 14px', borderRadius: '10px',
@@ -598,5 +598,5 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--bg-2)', border: '1px solid var(--border)',
     borderRadius: '8px', padding: '6px 10px', textDecoration: 'none', whiteSpace: 'nowrap',
   },
-  empty: { fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', padding: '24px 0', margin: 0, gridColumn: '1 / -1' },
+  empty: { fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', padding: '24px 0', margin: 0 },
 }
