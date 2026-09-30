@@ -59,3 +59,10 @@ jobs:
             curl -s -o /dev/null -w "%{time_total}\n" "$SUPABASE_URL/rest/v1/profiles?select=id&limit=1" \
               -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY"
           done | awk '{s=s sprintf("%d ms ", $1*1000)} END {print "::notice title=Requête simple x5::" s}'
+          # Rafale : 30 requêtes simultanées (comme l'ouverture de l'app).
+          # Si Supabase les met en file, le total explose.
+          start=$(date +%s%3N)
+          seq 1 30 | xargs -P 30 -I{} curl -s -o /dev/null -w "%{time_total}\n" "$SUPABASE_URL/rest/v1/profiles?select=id&limit=1" \
+            -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" > rafale.txt
+          end=$(date +%s%3N)
+          sort -n rafale.txt | awk -v tot=$((end-start)) '{a[NR]=$1} END {printf "::notice title=Rafale de 30 requêtes::total %d ms, la plus rapide %d ms, médiane %d ms, la plus lente %d ms\n", tot, a[1]*1000, a[int(NR/2)]*1000, a[NR]*1000}'
