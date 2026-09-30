@@ -88,7 +88,7 @@ export default {
           'Une plateforme agréée pour recevoir tes factures électroniques : obligatoire depuis le 1er septembre 2026 (voir ' + L('/blog/indy-lmnp-location-courte-duree-avis-2026', 'mon article sur Indy, gratuit pour la réception') + ')',
           'Un contrat de mandat solide avec chaque propriétaire, et des contrats signés avec les voyageurs pour les réservations directes : ' + L('/services/contrats', 'l\'espace contrats de l\'app') + ' s\'en charge',
         ] },
-        { type: 'p', text: 'Pour le reste du lancement (tarifs, premiers clients, outils), mon guide ' + L('/blog/creer-conciergerie-airbnb-2025', 'créer sa conciergerie Airbnb') + ' reprend chaque étape.' },
+        { type: 'p', text: 'Pour le reste du lancement (tarifs, premiers clients, outils), mon guide ' + L('/blog/creer-conciergerie-airbnb-2025', 'créer sa conciergerie Airbnb') + ' reprend chaque étape, et ' + L('/partenaires/legalplace', 'ma page partenaire LegalPlace') + ' résume l\'offre.' },
       ],
     },
     {

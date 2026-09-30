@@ -94,7 +94,7 @@ export default {
     {
       h2: '7. Mon avis',
       content: [
-        { type: 'p', text: 'Pour un hôte au micro-BIC, Indy gratuit est une évidence depuis septembre : tu te mets en règle avec la facture électronique et tu suis tes chiffres sans rien payer. Pour un hôte au réel avec un dossier simple, l\'offre LMNP te permet de faire ta déclaration toi-même, guidé pas à pas, et de garder la main sur tes chiffres toute l\'année. Pour un dossier complexe, ou si tu préfères déléguer, l\'option expert-comptable d\'Indy te laisse le choix sans changer d\'outil. C\'est aussi simple que ça, et c\'est pour ça que j\'ai accepté ce partenariat.' },
+        { type: 'p', text: 'Pour un hôte au micro-BIC, Indy gratuit est une évidence depuis septembre : tu te mets en règle avec la facture électronique et tu suis tes chiffres sans rien payer. Pour un hôte au réel avec un dossier simple, l\'offre LMNP te permet de faire ta déclaration toi-même, guidé pas à pas, et de garder la main sur tes chiffres toute l\'année. Pour un dossier complexe, ou si tu préfères déléguer, l\'option expert-comptable d\'Indy te laisse le choix sans changer d\'outil. C\'est aussi simple que ça, et c\'est pour ça que j\'ai accepté ce partenariat. L\'offre en résumé est aussi sur ' + L('/partenaires/indy', 'ma page partenaire Indy') + '.' },
         { type: 'html', html: box('<strong>Ton premier mois offert :</strong> crée ton compte Indy gratuitement, puis passe à l\'offre LMNP quand tu en as besoin, sans engagement.', 'Créer mon compte Indy') },
       ],
     },

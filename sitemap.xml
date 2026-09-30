@@ -829,6 +829,18 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://jasonmarinho.com/partenaires/indy</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/partenaires/legalplace</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://jasonmarinho.com/services/audit-gbp</loc>
     <lastmod>2026-04-27</lastmod>
     <changefreq>monthly</changefreq>

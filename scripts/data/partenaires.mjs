@@ -76,7 +76,7 @@ export const OUTILS = [
     desc: 'Compta LMNP, liasse fiscale 2031 et facture électronique (plateforme agréée) pour ta location meublée.',
     liens: [
       { label: 'Essayer Indy', href: INDY, sponsored: true },
-      { label: 'Mon avis', href: '/blog/indy-lmnp-location-courte-duree-avis-2026' },
+      { label: "L'offre en détail", href: '/partenaires/indy' },
     ],
   },
   {
@@ -85,7 +85,7 @@ export const OUTILS = [
     desc: 'Création de SCI, SASU ou micro-entreprise, modification de statuts et domiciliation, en ligne.',
     liens: [
       { label: 'Créer ma société', href: LEGALPLACE_SOCIETE, sponsored: true },
-      { label: 'Mon guide', href: '/blog/creer-societe-conciergerie-en-ligne-legalplace-2026' },
+      { label: "L'offre en détail", href: '/partenaires/legalplace' },
     ],
   },
   {
