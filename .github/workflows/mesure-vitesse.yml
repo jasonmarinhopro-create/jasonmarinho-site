@@ -25,6 +25,8 @@ jobs:
             region=$(grep -i '^x-vercel-id' "$hdr" | tr -d '\r' | cut -d' ' -f2 | cut -d: -f1-3)
             echo "::notice title=$label::$out vercel=$region"
           }
+          # Page contrat AVANT réveil (fonction peut-être endormie)
+          mesure "page contrat avant réveil" https://app.jasonmarinho.com/sign/mesure-vitesse-inexistant
           # Page de réveil appelée par le site (doit répondre 200)
           mesure "reveil" https://app.jasonmarinho.com/reveil
           # Fonction serveur d'abord (peut être « froide »), puis à chaud
