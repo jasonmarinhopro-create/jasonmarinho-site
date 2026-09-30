@@ -97,15 +97,17 @@ export async function middleware(request: NextRequest) {
     // Mode admin resté actif sur l'appareil (cookie posé par Sidebar.tsx) :
     // à l'ouverture de l'app, direct sur la Vue d'ensemble, avant tout rendu
     // (avant : Accueil hôte calculé en entier, ~10 s, puis redirection).
-    // Seulement pour un chargement de page complet : une navigation dans
-    // l'app (en-tête RSC) n'est jamais redirigée, sinon le navigateur garde
-    // la redirection en cache et « Mode hôte » renvoyait sur l'admin.
+    // Seulement pour un chargement de page complet (Sec-Fetch-Dest: document) :
+    // une navigation ou un préchargement dans l'app n'est jamais redirigé,
+    // sinon le routeur garde la redirection en cache et « Mode hôte »
+    // renvoyait sur l'admin. Attention : Next retire les en-têtes RSC et
+    // Next-Router-Prefetch avant le middleware, ils ne servent à rien ici
+    // (première version, remarqué par Jason le 30/09/2026).
     // Pas un droit : /dashboard/admin revérifie le rôle.
     if (
       path === '/dashboard' &&
       request.cookies.get('jm-admin-mode')?.value === '1' &&
-      !request.headers.get('rsc') &&
-      !request.headers.get('next-router-prefetch')
+      request.headers.get('sec-fetch-dest') === 'document'
     ) {
       const url = request.nextUrl.clone()
       url.pathname = '/dashboard/admin'

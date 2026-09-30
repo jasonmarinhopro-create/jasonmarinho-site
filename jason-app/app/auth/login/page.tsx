@@ -139,7 +139,7 @@ function LoginInner() {
       // Navigation document : bypasse le Router Cache (pas de pollution
       // possible) et l'aiguillage pro/investisseur est fait côté serveur
       // par la page /dashboard.
-      window.location.assign('/dashboard')
+      window.location.assign('/ouverture')
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
@@ -260,7 +260,9 @@ function LoginInner() {
     // Router Cache (la pollution que refresh() devait purger n'existe plus
     // par construction). L'aiguillage pro/investisseur est désormais fait
     // CÔTÉ SERVEUR par la page /dashboard (redirect immédiat, zéro flash).
-    window.location.assign('/dashboard')
+    // Via /ouverture (page statique) : écran de chargement vert tout de
+    // suite au lieu d'une page blanche pendant le calcul du tableau de bord.
+    window.location.assign('/ouverture')
   }
 
   async function handleResendConfirmation() {

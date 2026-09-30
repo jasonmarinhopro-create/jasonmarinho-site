@@ -533,7 +533,7 @@
 
     + '</ul>'
     + '<div class="n-right">'
-      + '<a href="https://app.jasonmarinho.com/dashboard" class="nb-o"><i class="ph ph-user"></i> Mon espace</a>'
+      + '<a href="https://app.jasonmarinho.com/ouverture" class="nb-o"><i class="ph ph-user"></i> Mon espace</a>'
       + '<a href="https://app.jasonmarinho.com/auth/register" class="nb-c">Commencer <i class="ph-bold ph-arrow-right"></i></a>'
     + '</div>'
     + '<button class="hbg" id="hbg" aria-label="Menu"><span></span><span></span><span></span></button>'
@@ -655,7 +655,7 @@
 
 
     + '<div class="mob-ctas">'
-      + '<a href="https://app.jasonmarinho.com/dashboard" class="mc-o"><i class="ph ph-user"></i> Mon espace</a>'
+      + '<a href="https://app.jasonmarinho.com/ouverture" class="mc-o"><i class="ph ph-user"></i> Mon espace</a>'
       + '<a href="https://app.jasonmarinho.com/auth/register" class="mc-c">Commencer <i class="ph-bold ph-arrow-right"></i></a>'
     + '</div>'
 
@@ -881,7 +881,7 @@
     document.addEventListener('focusin', onIntent);
     document.addEventListener('click', function (e) {
       var a = appLink(e.target);
-      if (a && a.href.indexOf('/dashboard') !== -1) { try { localStorage.setItem('jm-membre', '1'); } catch (err) {} }
+      if (a && (a.href.indexOf('/dashboard') !== -1 || a.href.indexOf('/ouverture') !== -1)) { try { localStorage.setItem('jm-membre', '1'); } catch (err) {} }
     }, true);
 
     var membre = false;
