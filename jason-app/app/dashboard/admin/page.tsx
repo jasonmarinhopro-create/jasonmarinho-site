@@ -2,7 +2,8 @@ import { getServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
 import { unstable_cache } from 'next/cache'
 import { getProfile } from '@/lib/queries/profile'
-import AdminUI from './AdminUI'
+import { Suspense } from 'react'
+import AdminUI, { AffilaeCard } from './AdminUI'
 import { getAffilaeOverview } from '@/lib/affiliation/affilae'
 import { getLiveVisitorsCount, getChannelBreakdown, getTopPages, getAffiliateClicks, getAppErrors, CHANNEL_LABELS } from '@/lib/queries/site-traffic'
 
@@ -145,11 +146,10 @@ export default async function AdminPage() {
   if (profile.role !== 'admin') redirect('/dashboard')
 
   const admin = getServiceClient()
-  const [overview, liveVisitors, channelBreakdown, affilae] = await Promise.all([
+  const [overview, liveVisitors, channelBreakdown] = await Promise.all([
     getAdminOverview(),
     getLiveVisitorsCount(admin),
     getChannelBreakdown(admin),
-    getAffilaeOverview(),
   ])
 
   return (
@@ -163,10 +163,20 @@ export default async function AdminPage() {
         topPages={overview.topPages}
         affiliateClicks={overview.affiliateClicks}
         appErrors={overview.appErrors}
-        affilae={affilae}
+        affilaeSlot={<Suspense fallback={<AffilaeSkeleton />}><AffilaeSection /></Suspense>}
         stats={overview.stats}
       />
     </div>
   )
 
+}
+
+// Affilae (API externe, jusqu'à ~2 s sans cache) : diffusé à part, la
+// Vue d'ensemble s'affiche sans l'attendre
+async function AffilaeSection() {
+  return <AffilaeCard data={await getAffilaeOverview()} />
+}
+
+function AffilaeSkeleton() {
+  return <div style={{ height: 150, borderRadius: 14, background: 'var(--surface)', border: '1px solid var(--border)' }} aria-busy="true" />
 }

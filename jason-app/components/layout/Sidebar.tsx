@@ -241,6 +241,21 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     router.push(next ? '/dashboard/admin' : '/dashboard')
   }
 
+  // Téléphone : les liens du menu ne sont pas visibles tant que le tiroir est
+  // fermé, donc Next ne les précharge jamais. À l'ouverture, on précharge
+  // chaque page du menu : au toucher, son squelette s'affiche tout de suite
+  // au lieu d'attendre le serveur (remarqué par Jason : « la navigation est longue »).
+  useEffect(() => {
+    if (!mobileOpen) return
+    const hrefs = adminMode
+      ? adminGroups.flatMap(g => g.items.map(i => i.href))
+      : navGroups.flatMap(g => g.items.map(i => i.href))
+          // Mes finances : son layout calcule déjà les chiffres, trop lourd à précharger
+          .filter(h => !h.startsWith('/dashboard/finances'))
+    const t = window.setTimeout(() => hrefs.forEach(h => { try { router.prefetch(h) } catch { /* ignore */ } }), 150)
+    return () => window.clearTimeout(t)
+  }, [mobileOpen, adminMode, router])
+
   // ── Menu user (bas de sidebar, s'ouvre vers le haut) ──
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   // Menu ouvert par un admin : précharge la page vers laquelle l'interrupteur

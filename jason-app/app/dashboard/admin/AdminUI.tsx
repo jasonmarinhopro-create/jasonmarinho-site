@@ -78,7 +78,7 @@ export default function AdminUI({
   todayLabel,
   stats,
   recentSignups, monthlySignupsChart,
-  liveVisitors, channelBreakdown, topPages, affiliateClicks, appErrors, affilae,
+  liveVisitors, channelBreakdown, topPages, affiliateClicks, appErrors, affilaeSlot,
 }: {
   todayLabel: string
   stats: Stats
@@ -89,7 +89,8 @@ export default function AdminUI({
   topPages: TopPage[]
   affiliateClicks: AffiliateClicks
   appErrors: AppErrors
-  affilae: AffilaeOverview
+  /** Carte Affilae, chargée à part (appel externe) pour ne pas retarder la page */
+  affilaeSlot?: React.ReactNode
 }) {
   const decouverte = Math.max(0, stats.totalUsers - stats.standardMembers - stats.driingMembers)
   // Seul Standard est payant ; Driing = gratuit pour les clients Driing existants
@@ -236,7 +237,7 @@ export default function AdminUI({
           </section>
 
           <AffiliateClicksCard data={affiliateClicks} />
-          <AffilaeCard data={affilae} />
+          {affilaeSlot}
         </div>
 
         <div style={s.colSide}>
@@ -442,7 +443,7 @@ const AFF_STATUS: Record<string, { label: string; color: string }> = {
 }
 const euros = (cents: number) => (cents / 100).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
 
-function AffilaeCard({ data }: { data: AffilaeOverview }) {
+export function AffilaeCard({ data }: { data: AffilaeOverview }) {
   return (
     <section className="fade-up">
       <div style={s.sectionLabel}><Handshake size={14} /> Affiliation · ventes suivies par Affilae</div>

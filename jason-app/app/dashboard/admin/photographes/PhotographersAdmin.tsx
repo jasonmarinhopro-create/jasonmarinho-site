@@ -6,6 +6,7 @@ import { Camera, CheckCircle, X, Clock, ArrowSquareOut, Warning, Star, EyeSlash,
 import { hidePhotographer, unhidePhotographer, deleteOrphanPhotographer } from './actions'
 import AdminHero from '../_ui/AdminHero'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
+import InlineStyle from '@/components/ui/InlineStyle'
 
 type Photographer = {
   id: string; email: string; full_name: string; ville: string
@@ -84,6 +85,16 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
 
   return (
     <section style={s.wrap}>
+      {/* Téléphone et tablette : chaque ligne devient une carte (le tableau à
+          5 colonnes débordait et coupait les boutons, remarqué par Jason) */}
+      <InlineStyle css={`
+        .adm-row > * { min-width: 0; overflow-wrap: anywhere }
+        @media (max-width: 900px) {
+          .adm-thead { display: none !important }
+          .adm-row { grid-template-columns: 1fr !important; gap: 6px !important }
+          .adm-row > :last-child { justify-content: flex-start !important; margin-top: 4px }
+        }
+      `} />
       {dialog}
       <AdminHero
         section="Annuaire photographes"
@@ -111,7 +122,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
         <div style={s.empty}>Aucune fiche active. Les premiers paiements activeront automatiquement les fiches.</div>
       ) : (
         <div style={s.table}>
-          <div style={s.theadGrid}>
+          <div style={s.theadGrid} className="adm-thead">
             <span>Photographe</span>
             <span>Ville</span>
             <span>Spé / Tarif</span>
@@ -119,7 +130,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
             <span style={{ textAlign: 'right' as const }}>Actions</span>
           </div>
           {active.map(p => (
-            <div key={p.id} style={s.row}>
+            <div key={p.id} style={s.row} className="adm-row">
               <div>
                 <div style={s.cellName}>
                   {p.tier === 'fondateur' && <Star size={11} weight="fill" color="#B7791F" style={{ marginRight: 4 }} />}
@@ -160,7 +171,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
           </summary>
           <p style={s.helpText}>Inscriptions qui ont créé un compte mais sans paiement Stripe finalisé. Auto-nettoyés au prochain signup avec le même email (rollback intégré). Tu peux aussi forcer la suppression ici.</p>
           <div style={s.table}>
-            <div style={s.theadGrid}>
+            <div style={s.theadGrid} className="adm-thead">
               <span>Photographe</span>
               <span>Ville</span>
               <span>Email</span>
@@ -168,7 +179,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
               <span style={{ textAlign: 'right' as const }}>Action</span>
             </div>
             {pendingPayment.map(p => (
-              <div key={p.id} style={s.row}>
+              <div key={p.id} style={s.row} className="adm-row">
                 <div style={s.cellName}>{p.full_name}</div>
                 <div style={s.cellMid}>{p.ville}</div>
                 <div style={s.cellMid}>{p.email}</div>
@@ -194,7 +205,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
           <p style={s.helpText}>Retirées de l'annuaire par toi (abonnement Stripe toujours actif). Tu peux les réactiver à tout moment.</p>
           <div style={s.table}>
             {hidden.map(p => (
-              <div key={p.id} style={s.row}>
+              <div key={p.id} style={s.row} className="adm-row">
                 <div style={s.cellName}>{p.full_name}</div>
                 <div style={s.cellMid}>{p.ville}</div>
                 <div style={s.cellMid}>{p.email}</div>
@@ -220,7 +231,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
           <p style={s.helpText}>Abonnement Stripe arrêté (volonté du pro ou non-paiement). La fiche n'est plus visible dans l'annuaire.</p>
           <div style={s.table}>
             {cancelled.map(p => (
-              <div key={p.id} style={s.row}>
+              <div key={p.id} style={s.row} className="adm-row">
                 <div style={s.cellName}>{p.full_name}</div>
                 <div style={s.cellMid}>{p.ville}</div>
                 <div style={s.cellMid}>{p.email}</div>
@@ -261,8 +272,8 @@ const s: Record<string, React.CSSProperties> = {
   sectionTitle: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase' as const, letterSpacing: '0.5px', margin: '24px 0 12px' },
   empty: { padding: '24px', textAlign: 'center' as const, background: 'var(--surface)', border: '1px dashed var(--border)', borderRadius: '10px', fontSize: '13px', color: 'var(--text-muted)' },
   table: { display: 'flex', flexDirection: 'column' as const, gap: 6, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 8 },
-  theadGrid: { display: 'grid', gridTemplateColumns: '2fr 1.5fr 2fr 1.5fr 1.5fr', gap: 12, padding: '10px 14px 6px', fontSize: 10.5, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 0.5 },
-  row: { display: 'grid', gridTemplateColumns: '2fr 1.5fr 2fr 1.5fr 1.5fr', gap: 12, padding: '12px 14px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, alignItems: 'center' },
+  theadGrid: { display: 'grid', gridTemplateColumns: 'minmax(0,2fr) minmax(0,1.5fr) minmax(0,2fr) minmax(0,1.5fr) minmax(0,1.5fr)', gap: 12, padding: '10px 14px 6px', fontSize: 10.5, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 0.5 },
+  row: { display: 'grid', gridTemplateColumns: 'minmax(0,2fr) minmax(0,1.5fr) minmax(0,2fr) minmax(0,1.5fr) minmax(0,1.5fr)', gap: 12, padding: '12px 14px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, alignItems: 'center' },
   cellName: { fontSize: 13.5, fontWeight: 600, color: 'var(--text)' },
   cellMid: { fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.5 },
   cellSub: { fontSize: 11.5, color: 'var(--text-muted)' },

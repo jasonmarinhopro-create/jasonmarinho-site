@@ -6,6 +6,7 @@ import { Sparkle, CheckCircle, X, Clock, ArrowSquareOut, Warning, Star, ShieldCh
 import { hideCleaner, unhideCleaner, deleteOrphanCleaner } from './actions'
 import AdminHero from '../_ui/AdminHero'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
+import InlineStyle from '@/components/ui/InlineStyle'
 
 type Cleaner = {
   id: string; email: string; full_name: string; pseudo: string | null; ville: string
@@ -96,6 +97,16 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
 
   return (
     <section style={s.wrap}>
+      {/* Téléphone et tablette : chaque ligne devient une carte (le tableau à
+          5 colonnes débordait et coupait les boutons, remarqué par Jason) */}
+      <InlineStyle css={`
+        .adm-row > * { min-width: 0; overflow-wrap: anywhere }
+        @media (max-width: 900px) {
+          .adm-thead { display: none !important }
+          .adm-row { grid-template-columns: 1fr !important; gap: 6px !important }
+          .adm-row > :last-child { justify-content: flex-start !important; margin-top: 4px }
+        }
+      `} />
       {dialog}
       <AdminHero
         section="Annuaire ménage"
@@ -122,7 +133,7 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
         <div style={s.empty}>Aucune équipe active. Les premiers paiements activeront automatiquement les fiches.</div>
       ) : (
         <div style={s.table}>
-          <div style={s.theadGrid}>
+          <div style={s.theadGrid} className="adm-thead">
             <span>Équipe</span>
             <span>Ville</span>
             <span>Équipe / Tarif</span>
@@ -130,7 +141,7 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
             <span style={{ textAlign: 'right' as const }}>Actions</span>
           </div>
           {active.map(c => (
-            <div key={c.id} style={s.row}>
+            <div key={c.id} style={s.row} className="adm-row">
               <div>
                 <div style={s.cellName}>
                   {c.tier === 'fondateur' && <Star size={11} weight="fill" color="#B7791F" style={{ marginRight: 4 }} />}
@@ -174,7 +185,7 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
           </summary>
           <p style={s.helpText}>Inscriptions qui ont créé un compte mais sans paiement Stripe finalisé. Auto-nettoyés au prochain signup avec le même email (rollback intégré).</p>
           <div style={s.table}>
-            <div style={s.theadGrid}>
+            <div style={s.theadGrid} className="adm-thead">
               <span>Équipe</span>
               <span>Ville</span>
               <span>Email</span>
@@ -182,7 +193,7 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
               <span style={{ textAlign: 'right' as const }}>Action</span>
             </div>
             {pendingPayment.map(c => (
-              <div key={c.id} style={s.row}>
+              <div key={c.id} style={s.row} className="adm-row">
                 <div style={s.cellName}>{name(c)}</div>
                 <div style={s.cellMid}>{c.ville}</div>
                 <div style={s.cellMid}>{c.email}</div>
@@ -207,7 +218,7 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
           <p style={s.helpText}>Retirées de l'annuaire par toi (abonnement Stripe toujours actif).</p>
           <div style={s.table}>
             {hidden.map(c => (
-              <div key={c.id} style={s.row}>
+              <div key={c.id} style={s.row} className="adm-row">
                 <div style={s.cellName}>{name(c)}</div>
                 <div style={s.cellMid}>{c.ville}</div>
                 <div style={s.cellMid}>{c.email}</div>
@@ -232,7 +243,7 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
           <p style={s.helpText}>Abonnement Stripe arrêté. La fiche n'est plus visible.</p>
           <div style={s.table}>
             {cancelled.map(c => (
-              <div key={c.id} style={s.row}>
+              <div key={c.id} style={s.row} className="adm-row">
                 <div style={s.cellName}>{name(c)}</div>
                 <div style={s.cellMid}>{c.ville}</div>
                 <div style={s.cellMid}>{c.email}</div>
@@ -273,8 +284,8 @@ const s: Record<string, React.CSSProperties> = {
   sectionTitle: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase' as const, letterSpacing: '0.5px', margin: '24px 0 12px' },
   empty: { padding: '24px', textAlign: 'center' as const, background: 'var(--surface)', border: '1px dashed var(--border)', borderRadius: '10px', fontSize: '13px', color: 'var(--text-muted)' },
   table: { display: 'flex', flexDirection: 'column' as const, gap: 6, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 10, padding: 8 },
-  theadGrid: { display: 'grid', gridTemplateColumns: '2fr 1.5fr 2fr 1.5fr 1.5fr', gap: 12, padding: '10px 14px 6px', fontSize: 10.5, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 0.5 },
-  row: { display: 'grid', gridTemplateColumns: '2fr 1.5fr 2fr 1.5fr 1.5fr', gap: 12, padding: '12px 14px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, alignItems: 'center' },
+  theadGrid: { display: 'grid', gridTemplateColumns: 'minmax(0,2fr) minmax(0,1.5fr) minmax(0,2fr) minmax(0,1.5fr) minmax(0,1.5fr)', gap: 12, padding: '10px 14px 6px', fontSize: 10.5, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 0.5 },
+  row: { display: 'grid', gridTemplateColumns: 'minmax(0,2fr) minmax(0,1.5fr) minmax(0,2fr) minmax(0,1.5fr) minmax(0,1.5fr)', gap: 12, padding: '12px 14px', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 8, alignItems: 'center' },
   cellName: { fontSize: 13.5, fontWeight: 600, color: 'var(--text)' },
   cellMid: { fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.5 },
   cellSub: { fontSize: 11.5, color: 'var(--text-muted)' },

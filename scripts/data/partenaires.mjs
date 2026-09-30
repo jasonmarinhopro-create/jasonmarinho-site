@@ -85,7 +85,7 @@ export const OUTILS = [
     desc: 'Création de SCI, SASU ou micro-entreprise, modification de statuts et domiciliation, en ligne.',
     liens: [
       { label: 'Créer ma société', href: LEGALPLACE_SOCIETE, sponsored: true },
-      { label: 'Conciergerie : statut', href: '/blog/creer-conciergerie-airbnb-2025' },
+      { label: 'Mon guide', href: '/blog/creer-societe-conciergerie-en-ligne-legalplace-2026' },
     ],
   },
   {
