@@ -27,6 +27,7 @@ jobs:
           echo "::notice title=Mesures::$total mesure(s) de lenteur (80 plus récentes au maximum)"
           # Heure de Paris, une ligne par mesure, 10 lignes par annotation
           echo "$rows" | jq -r '.[] | "\(.created_at | sub("\\.[0-9]+"; "") | sub("\\+00:00$"; "Z") | fromdateiso8601 + 7200 | strftime("%d/%m %H:%M")) \(.source) \(.message)"' > lignes.txt
+          [ -s lignes.txt ] || exit 0
           split -l 10 lignes.txt part_
           n=0
           for f in part_*; do
