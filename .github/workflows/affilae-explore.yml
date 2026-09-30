@@ -1,0 +1,24 @@
+# Découverte de l'API Affilae (compte éditeur de Jason) avant de la brancher
+# sur l'admin. Journaux publics : le script n'affiche que des codes HTTP, des
+# noms de champs et des identifiants non sensibles (jamais de montant ni de clé).
+name: Affilae (découverte de l'API)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/workflows/affilae-explore.yml', 'scripts/affilae-explore.mjs']
+
+jobs:
+  explore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Explorer l'API
+        env:
+          AFFILAE_API_KEY: ${{ secrets.AFFILAE_API_KEY }}
+        run: node scripts/affilae-explore.mjs
