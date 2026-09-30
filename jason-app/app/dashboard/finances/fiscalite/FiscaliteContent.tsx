@@ -156,14 +156,14 @@ function France({ fr, year, current }: { fr: FiscalFR; year: number; current: nu
       {/* Partenaire Indy (30/09/2026) : lien affilié, toujours rel="sponsored" + mention visible */}
       <Card>
         <CardHead
-          title={<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><Calculator size={18} weight="duotone" color="var(--accent-text)" />Ta compta et ta déclaration, sans expert-comptable</span>}
+          title={<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><Calculator size={18} weight="duotone" color="var(--accent-text)" />Ta compta et ta déclaration, simplifiées</span>}
           sub={fr.verdict === 'reel_conseille' || fr.verdict === 'reel_obligatoire' || fr.verdict === 'reel_ou_classement'
-            ? 'Au réel, il faut une comptabilité, les amortissements et la liasse 2031 : un logiciel suffit pour un dossier simple.'
+            ? 'Au réel, il faut une comptabilité, les amortissements et la liasse 2031 : pour un dossier simple, tu peux les faire toi-même.'
             : 'Au micro-BIC, pas de liasse à produire, mais la facture électronique est devenue obligatoire.'}
         />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.6 }}>
           <div>
-            <strong style={{ color: 'var(--text)' }}>Indy</strong>, partenaire de l&apos;app : l&apos;offre gratuite suit tes recettes et reçoit tes factures électroniques (obligatoire pour les loueurs en meublé depuis le 1er septembre 2026, Indy est plateforme agréée). Son offre LMNP calcule tes amortissements, prépare la liasse 2031 et la télétransmet aux impôts. Premier mois offert, sans engagement.
+            <strong style={{ color: 'var(--text)' }}>Indy</strong>, partenaire de l&apos;app : l&apos;offre gratuite suit tes recettes et reçoit tes factures électroniques (obligatoire pour les loueurs en meublé depuis le 1er septembre 2026, Indy est plateforme agréée). Son offre LMNP calcule tes amortissements, prépare la liasse 2031 et la télétransmet aux impôts, avec une option expert-comptable si tu préfères déléguer. Premier mois offert, sans engagement.
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <a href="https://urlr.me/FEqNfy" target="_blank" rel="sponsored noopener" style={ui.btn}>Essayer Indy, 1er mois offert <ArrowRight size={14} weight="bold" /></a>
