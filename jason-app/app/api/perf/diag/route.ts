@@ -5,7 +5,7 @@
 // d'événements. Réponse : durées seulement, aucune donnée.
 // Protégé par CRON_SECRET ou SOCIAL_CRON_SECRET (en-tête Bearer).
 import { NextResponse } from 'next/server'
-import { getServiceClient } from '@/lib/supabase/service'
+import { getServiceClient, serviceRestHeaders } from '@/lib/supabase/service'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -39,8 +39,7 @@ async function loopLag() {
 export async function GET(req: Request) {
   if (!authorized(req)) return NextResponse.json({ error: 'non autorisé' }, { status: 401 })
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY!
-  const headers = { apikey: key, Authorization: `Bearer ${key}` }
+  const headers = serviceRestHeaders()
   const rest = `${url}/rest/v1/profiles?select=id&limit=1`
   const db = getServiceClient()
 

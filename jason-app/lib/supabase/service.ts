@@ -27,3 +27,9 @@ export function getServiceClient(): SupabaseClient<any, 'public', any> {
   )
   return cached
 }
+
+/** En-têtes REST du service role, pour un appel fetch brut (diagnostic de lenteur). */
+export function serviceRestHeaders(): Record<string, string> {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY!
+  return { apikey: key, Authorization: `Bearer ${key}` }
+}

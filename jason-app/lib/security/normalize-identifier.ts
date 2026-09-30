@@ -12,7 +12,9 @@
  */
 export function normalizePhone(raw: string): string {
   if (!raw) return ''
-  let s = String(raw).trim()
+  // Caractères invisibles (marques de sens d'écriture ajoutées par certains
+  // téléphones au copier-coller) : sinon le « + » initial n'était pas vu
+  let s = String(raw).replace(/[\u200B-\u200F\u202A-\u202E\u2060-\u2069\uFEFF]/g, '').trim()
   // Préserve le + s'il est au début
   const hasPlus = s.startsWith('+')
   // Vire tout ce qui n'est pas un chiffre

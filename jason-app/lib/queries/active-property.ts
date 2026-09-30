@@ -42,13 +42,15 @@ const fetchAllPropertiesForUser = (userId: string) => unstable_cache(
   async () => {
     const admin = getServiceClient()
     const [ownedRes, sejoursRes, contractsRes] = await Promise.all([
-      admin.from('logements').select('id, nom, ville').eq('user_id', userId).order('created_at', { ascending: true }),
+      // Pas de colonne « ville » sur logements : la requête échouait (400 dans
+      // les journaux Supabase du 30/09/2026) et la liste restait vide.
+      admin.from('logements').select('id, nom').eq('user_id', userId).order('created_at', { ascending: true }),
       admin.from('sejours').select('logement').eq('user_id', userId).not('logement', 'is', null),
       admin.from('contracts').select('logement_nom').eq('user_id', userId).not('logement_nom', 'is', null),
     ])
     return { ownedRes, sejoursRes, contractsRes }
   },
-  ['active-property-data', userId],
+  ['active-property-data-v2', userId],
   { revalidate: 300, tags: [`logements:${userId}`] },
 )()
 
@@ -67,14 +69,14 @@ const fetchLogementsByName = (userId: string, names: string[]) => unstable_cache
     const admin2 = getServiceClient()
     const results = await Promise.all(
       names.map(nom =>
-        admin2.from('logements').select('id, nom, ville').ilike('nom', nom).limit(1).maybeSingle()
+        admin2.from('logements').select('id, nom').ilike('nom', nom).limit(1).maybeSingle()
       )
     )
     return results
       .map(({ data: r }) => r)
-      .filter((r): r is { id: string; nom: string; ville: string | null } => !!r)
+      .filter((r): r is { id: string; nom: string } => !!r)
   },
-  ['active-property-name-match', userId, ...[...names].sort()],
+  ['active-property-name-match-v2', userId, ...[...names].sort()],
   { revalidate: 300, tags: [`logements:${userId}`] },
 )()
 
@@ -91,10 +93,10 @@ export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {
 
   const allProperties: PropertyLite[] = []
   const seenIds = new Set<string>()
-  const addLogement = (r: { id: string; nom: string | null; ville: string | null }) => {
+  const addLogement = (r: { id: string; nom: string | null }) => {
     if (seenIds.has(r.id)) return
     seenIds.add(r.id)
-    allProperties.push({ id: r.id, nom: r.nom ?? 'Sans nom', ville: r.ville ?? null })
+    allProperties.push({ id: r.id, nom: r.nom ?? 'Sans nom', ville: null })
   }
 
   // 1. Logements possedes (user_id match)
