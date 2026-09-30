@@ -10,8 +10,8 @@
    * pour éviter les icônes cassées (cas du footer qui mélange ph et ph-bold). */
   // URL écrites en entier : scripts/build-phosphor-subset.mjs y réécrit le
   // ?v= (hash du contenu) à chaque build.
-  [['phosphor-bold-subset','/fonts/phosphor-bold-subset.css?v=a872f92e5a'],
-   ['phosphor-regular-subset','/fonts/phosphor-regular-subset.css?v=811eafe0e6']].forEach(function(s){
+  [['phosphor-bold-subset','/fonts/phosphor-bold-subset.css?v=f8a9c210db'],
+   ['phosphor-regular-subset','/fonts/phosphor-regular-subset.css?v=a9d374e172']].forEach(function(s){
     if (!document.querySelector('link[href*="'+s[0]+'"]')) {
       var l = document.createElement('link');
       l.rel = 'stylesheet'; l.type = 'text/css';
@@ -351,7 +351,7 @@
   /* ── NAV HTML ── */
   var h = '<nav id="nav">'
     + '<a href="/" class="n-logo">'
-      + '<img src="/logo.webp" alt="Jason Marinho" class="nav-logo-img" width="34" height="34" loading="eager">'
+      + '<img src="/logo-nav.webp" alt="Jason Marinho" class="nav-logo-img" width="34" height="34" loading="eager">'
       + '<span class="n-brand">Jason <em>Marinho</em></span>'
     + '</a>'
     + '<ul class="n-links">'

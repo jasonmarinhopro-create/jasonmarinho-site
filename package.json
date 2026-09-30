@@ -18,6 +18,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@phosphor-icons/web": "^2.1.1"
+    "@phosphor-icons/web": "^2.1.1",
+    "subset-font": "^2.9.0"
   }
 }

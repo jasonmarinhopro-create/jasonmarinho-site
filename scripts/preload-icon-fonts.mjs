@@ -20,8 +20,8 @@ const TARGETS = [
     .map(d => path.join(ROOT, 'pour-qui', d, 'index.html')),
 ]
 
-const PRELOAD_TAGS = `<link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor.woff2" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor-Bold.woff2" crossorigin>`
+const PRELOAD_TAGS = `<link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor-subset.woff2?v=815063bb3e" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor-Bold-subset.woff2?v=91ad2b3238" crossorigin>`
 
 let updated = 0
 let skipped = 0
@@ -35,7 +35,7 @@ for (const file of TARGETS) {
   }
 
   // Insère après le preload Google Fonts existant (ou avant <noscript>)
-  const anchor = '<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=a872f92e5a">'
+  const anchor = '<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">'
   if (!html.includes(anchor)) {
     skipped++
     continue

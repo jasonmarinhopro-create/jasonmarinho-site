@@ -222,7 +222,7 @@
       + '<div class="ft-hero">'
         + '<div class="ft-brand">'
           + '<a class="ft-brand-logo" href="/">'
-            + '<img src="/logo.webp" alt="Jason Marinho" width="36" height="36" loading="lazy">'
+            + '<img src="/logo-nav.webp" alt="Jason Marinho" width="36" height="36" loading="lazy">'
             + '<span class="ft-brand-name">Jason <em>Marinho</em></span>'
           + '</a>'
           + '<p class="ft-brand-desc">Expert LCD et co-fondateur de Driing. J\'aide les hôtes et conciergeries à piloter leur activité avec des chiffres clairs, honnêtement et efficacement.</p>'

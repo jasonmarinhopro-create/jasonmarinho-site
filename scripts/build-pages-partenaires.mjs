@@ -179,7 +179,7 @@ function page(p) {
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
 ${phosphorLinks()}
 ${jsonLd(p)}
 <!-- Généré par scripts/build-pages-partenaires.mjs depuis scripts/data/partenaires-pages.mjs : ne pas éditer à la main -->

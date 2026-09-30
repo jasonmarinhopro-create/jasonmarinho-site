@@ -1,10 +1,6 @@
 @font-face {
   font-family: "Phosphor-Light";
-  src:
-    url("/fonts/Phosphor-Light.woff2") format("woff2"),
-    url("/fonts/Phosphor-Light.woff") format("woff"),
-    url("/fonts/Phosphor-Light.ttf") format("truetype"),
-    url("/fonts/Phosphor-Light.svg#Phosphor-Light") format("svg");
+  src: url("/fonts/Phosphor-Light-subset.woff2?v=dadc5bfcac") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -40,22 +36,25 @@
 .ph-light.ph-armchair:before { content: "\e012"; }
 .ph-light.ph-arrow-counter-clockwise:before { content: "\e038"; }
 .ph-light.ph-arrow-down:before { content: "\e03e"; }
-.ph-light.ph-arrow-fat-up:before { content: "\e52e"; }
 .ph-light.ph-arrow-left:before { content: "\e058"; }
 .ph-light.ph-arrow-right:before { content: "\e06c"; }
 .ph-light.ph-arrow-square-out:before { content: "\e5de"; }
 .ph-light.ph-arrow-up-right:before { content: "\e092"; }
+.ph-light.ph-arrows-clockwise:before { content: "\e094"; }
+.ph-light.ph-bank:before { content: "\e0b4"; }
 .ph-light.ph-bed:before { content: "\e0cc"; }
 .ph-light.ph-bell-ringing:before { content: "\e5e8"; }
 .ph-light.ph-book-open:before { content: "\e0e6"; }
 .ph-light.ph-bookmark-simple:before { content: "\e0ea"; }
 .ph-light.ph-books:before { content: "\e758"; }
 .ph-light.ph-briefcase:before { content: "\e0ee"; }
+.ph-light.ph-broom:before { content: "\ec54"; }
 .ph-light.ph-buildings:before { content: "\e102"; }
 .ph-light.ph-calculator:before { content: "\e538"; }
 .ph-light.ph-calendar:before { content: "\e108"; }
 .ph-light.ph-calendar-blank:before { content: "\e10a"; }
 .ph-light.ph-calendar-check:before { content: "\e712"; }
+.ph-light.ph-calendar-plus:before { content: "\e714"; }
 .ph-light.ph-calendar-x:before { content: "\e10c"; }
 .ph-light.ph-camera:before { content: "\e10e"; }
 .ph-light.ph-caret-down:before { content: "\e136"; }
@@ -73,9 +72,9 @@
 .ph-light.ph-chats-circle:before { content: "\e17e"; }
 .ph-light.ph-check:before { content: "\e182"; }
 .ph-light.ph-check-circle:before { content: "\e184"; }
+.ph-light.ph-check-square:before { content: "\e186"; }
 .ph-light.ph-clipboard-text:before { content: "\e198"; }
 .ph-light.ph-clock:before { content: "\e19a"; }
-.ph-light.ph-clock-clockwise:before { content: "\e19e"; }
 .ph-light.ph-clock-countdown:before { content: "\ed2c"; }
 .ph-light.ph-clock-counter-clockwise:before { content: "\e1a0"; }
 .ph-light.ph-coffee:before { content: "\e1c2"; }
@@ -90,11 +89,12 @@
 .ph-light.ph-device-mobile-camera:before { content: "\e1e2"; }
 .ph-light.ph-door:before { content: "\e61c"; }
 .ph-light.ph-door-open:before { content: "\e7e6"; }
-.ph-light.ph-dots-three-circle:before { content: "\e200"; }
 .ph-light.ph-download-simple:before { content: "\e20c"; }
 .ph-light.ph-envelope:before { content: "\e214"; }
+.ph-light.ph-envelope-simple:before { content: "\e218"; }
 .ph-light.ph-eye:before { content: "\e220"; }
 .ph-light.ph-facebook-logo:before { content: "\e226"; }
+.ph-light.ph-file-pdf:before { content: "\e702"; }
 .ph-light.ph-file-text:before { content: "\e23a"; }
 .ph-light.ph-files:before { content: "\e710"; }
 .ph-light.ph-fingerprint:before { content: "\e23e"; }
@@ -126,6 +126,7 @@
 .ph-light.ph-lightbulb:before { content: "\e2dc"; }
 .ph-light.ph-lightning:before { content: "\e2de"; }
 .ph-light.ph-link:before { content: "\e2e2"; }
+.ph-light.ph-link-break:before { content: "\e2e4"; }
 .ph-light.ph-linkedin-logo:before { content: "\e2ee"; }
 .ph-light.ph-list-checks:before { content: "\eadc"; }
 .ph-light.ph-lock:before { content: "\e2fa"; }
@@ -147,6 +148,7 @@
 .ph-light.ph-paint-brush:before { content: "\e6f0"; }
 .ph-light.ph-paper-plane-tilt:before { content: "\e398"; }
 .ph-light.ph-path:before { content: "\e39c"; }
+.ph-light.ph-pencil-simple:before { content: "\e3b4"; }
 .ph-light.ph-percent:before { content: "\e3b6"; }
 .ph-light.ph-play-circle:before { content: "\e3d2"; }
 .ph-light.ph-plugs-connected:before { content: "\eb5a"; }
@@ -164,6 +166,8 @@
 .ph-light.ph-shield-warning:before { content: "\e412"; }
 .ph-light.ph-shovel:before { content: "\e9e6"; }
 .ph-light.ph-sign-in:before { content: "\e428"; }
+.ph-light.ph-signature:before { content: "\ebac"; }
+.ph-light.ph-siren:before { content: "\e9b8"; }
 .ph-light.ph-sliders:before { content: "\e432"; }
 .ph-light.ph-sliders-horizontal:before { content: "\e434"; }
 .ph-light.ph-snowflake:before { content: "\e5aa"; }
@@ -179,7 +183,6 @@
 .ph-light.ph-table:before { content: "\e476"; }
 .ph-light.ph-tag:before { content: "\e478"; }
 .ph-light.ph-target:before { content: "\e47c"; }
-.ph-light.ph-text-b:before { content: "\e5be"; }
 .ph-light.ph-thumbs-down:before { content: "\e48c"; }
 .ph-light.ph-thumbs-up:before { content: "\e48e"; }
 .ph-light.ph-timer:before { content: "\e492"; }

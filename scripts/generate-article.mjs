@@ -277,7 +277,7 @@ function generateArticleHTML(art) {
 <meta property="article:section" content="${cat.section}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://jasonmarinho.com/couverture-jason.webp">
-<link rel="stylesheet" href="/fonts/site-fonts.css">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold.css">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular.css">
 <style>

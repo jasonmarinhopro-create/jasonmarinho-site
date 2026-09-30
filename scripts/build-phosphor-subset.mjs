@@ -10,7 +10,7 @@
  * Idempotent: re-run anytime, regenerates the subset files in place and
  * rewrites every `?v=` reference to the subsets with a content hash.
  */
-import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs'
+import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs'
 import { join, dirname, resolve } from 'node:path'
 import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
@@ -79,11 +79,38 @@ const variants = [
   // build, toute nouvelle icône ph-light restait absente du subset (carré vide).
   { variant: 'light',   prefix: 'ph-light' },
 ]
+// ── Police d'icônes réduite aux glyphes utilisés (30/09/2026) ─────────
+// Le subset CSS ne gardait que les règles, mais chaque page téléchargeait
+// encore les polices complètes (~150 Ko chacune, 3 graisses, préchargées en
+// priorité haute) : ~450 Ko qui retardaient l'affichage sur téléphone
+// (PageSpeed mobile : LCP 6,1 s). On découpe maintenant la police elle-même
+// (subset-font, harfbuzz) : quelques Ko par graisse. En cas d'échec, on garde
+// les polices complètes (le build ne casse jamais).
+const FONT_FILES = { regular: 'Phosphor', bold: 'Phosphor-Bold', light: 'Phosphor-Light' }
+let subsetFont = null
+try { subsetFont = (await import('subset-font')).default } catch (e) { console.warn('subset-font indisponible, polices complètes gardées :', e.message) }
+
+const fontUrl = {}
 for (const { variant, prefix } of variants) {
   const src = join(FONTS_DIR, `phosphor-${variant}.css`)
   const dst = join(FONTS_DIR, `phosphor-${variant}-subset.css`)
   const srcCss = readFileSync(src, 'utf8')
-  const subset = buildSubset(srcCss, prefix, used)
+  let subset = buildSubset(srcCss, prefix, used)
+  const base = FONT_FILES[variant]
+  fontUrl[variant] = `/fonts/${base}.woff2`
+  if (subsetFont) {
+    try {
+      const chars = [...subset.matchAll(/content:\s*"\\([0-9a-f]+)"/gi)].map(m => String.fromCodePoint(parseInt(m[1], 16))).join('')
+      const out = await subsetFont(readFileSync(join(FONTS_DIR, `${base}.woff2`)), chars, { targetFormat: 'woff2' })
+      writeFileSync(join(FONTS_DIR, `${base}-subset.woff2`), out)
+      const v = createHash('sha256').update(out).digest('hex').slice(0, 10)
+      fontUrl[variant] = `/fonts/${base}-subset.woff2?v=${v}`
+      subset = subset.replace(/src:[^;]+;/, `src: url("${fontUrl[variant]}") format("woff2");`)
+      console.log(`  police ${variant.padEnd(7)} : ${Math.round(statSync(join(FONTS_DIR, `${base}.woff2`)).size / 1024)} Ko → ${(out.length / 1024).toFixed(1)} Ko`)
+    } catch (e) {
+      console.warn(`  police ${variant} : découpe impossible, police complète gardée (${e.message})`)
+    }
+  }
   writeFileSync(dst, subset)
   const before = Buffer.byteLength(srcCss)
   const after = Buffer.byteLength(subset)
@@ -104,10 +131,21 @@ for (const { variant } of variants) {
   versions[variant] = createHash('sha256').update(css).digest('hex').slice(0, 10)
 }
 const REF_RE = /(\/fonts\/phosphor-(regular|bold|light)-subset\.css)\?v=[A-Za-z0-9-]+/g
+// Préchargements des polices d'icônes : vers la police découpée (même URL
+// que dans le CSS, sinon le navigateur télécharge deux fois).
+const FONT_REF_RE = /\/fonts\/Phosphor(-Bold|-Light)?(?:-subset)?\.woff2(?:\?v=[A-Za-z0-9-]+)?/g
+const FONT_VARIANT = { '': 'regular', '-Bold': 'bold', '-Light': 'light' }
+// Polices du texte : même cache d'un an, donc URL versionnée elle aussi.
+const siteFontsV = createHash('sha256').update(readFileSync(join(FONTS_DIR, 'site-fonts.css'))).digest('hex').slice(0, 10)
+const SITE_FONTS_RE = /\/fonts\/site-fonts\.css(?:\?v=[A-Za-z0-9-]+)?/g
 let rewritten = 0
 for (const file of walk(ROOT)) {
+  if (file.endsWith('build-phosphor-subset.mjs')) continue
   const text = readFileSync(file, 'utf8')
-  const next = text.replace(REF_RE, (_, url, variant) => `${url}?v=${versions[variant]}`)
+  const next = text
+    .replace(REF_RE, (_, url, variant) => `${url}?v=${versions[variant]}`)
+    .replace(FONT_REF_RE, (_, w = '') => fontUrl[FONT_VARIANT[w]])
+    .replace(SITE_FONTS_RE, `/fonts/site-fonts.css?v=${siteFontsV}`)
   if (next !== text) {
     writeFileSync(file, next)
     rewritten++

@@ -164,8 +164,8 @@ function buildFichePage(c) {
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=a872f92e5a">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">
 <style>
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -437,8 +437,8 @@ function buildAnnuaireListPage(items) {
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
 <link rel="manifest" href="/manifest.json?v=2026-06">
-<link rel="stylesheet" href="/fonts/site-fonts.css">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=a872f92e5a">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">
 <style>
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}

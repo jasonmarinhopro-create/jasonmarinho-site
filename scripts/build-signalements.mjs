@@ -128,9 +128,9 @@ function buildFichePage(item) {
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=a872f92e5a">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=811eafe0e6">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=a9d374e172">
 <style>
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
 *,*::before,*::after{box-sizing:border-box}
@@ -339,9 +339,9 @@ function buildListPage(items) {
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=a872f92e5a">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=811eafe0e6">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=a9d374e172">
 <style>
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77}
 *,*::before,*::after{box-sizing:border-box}
