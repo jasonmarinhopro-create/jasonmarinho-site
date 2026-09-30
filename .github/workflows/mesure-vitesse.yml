@@ -25,14 +25,16 @@ jobs:
             region=$(grep -i '^x-vercel-id' "$hdr" | tr -d '\r' | cut -d' ' -f2 | cut -d: -f1-3)
             echo "::notice title=$label::$out vercel=$region"
           }
-          # 1er passage : la fonction peut être froide
-          mesure "1 login (1er appel)" https://app.jasonmarinho.com/auth/login
-          mesure "1 dashboard sans session (1er appel)" https://app.jasonmarinho.com/dashboard
-          mesure "1 site accueil" https://jasonmarinho.com/
-          sleep 2
-          for i in 2 3 4; do
-            mesure "$i login" https://app.jasonmarinho.com/auth/login
-            mesure "$i dashboard sans session" https://app.jasonmarinho.com/dashboard
+          # Fonction serveur d'abord (peut être « froide »), puis à chaud
+          for i in 1 2 3 4 5; do
+            mesure "fonction api $i" https://app.jasonmarinho.com/api/notifications/unread-counts
           done
-          mesure "api compteur (sans session)" https://app.jasonmarinho.com/api/notifications/unread-counts
-          mesure "manifest" https://app.jasonmarinho.com/manifest.json
+          # Page publique rendue par le serveur avec une requête en base
+          for i in 1 2 3; do
+            mesure "page contrat (base) $i" https://app.jasonmarinho.com/sign/mesure-vitesse-inexistant
+          done
+          for i in 1 2; do
+            mesure "login $i" https://app.jasonmarinho.com/auth/login
+            mesure "dashboard sans session $i" https://app.jasonmarinho.com/dashboard
+          done
+          mesure "site accueil" https://jasonmarinho.com/
