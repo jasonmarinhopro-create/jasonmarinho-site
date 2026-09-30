@@ -1,0 +1,38 @@
+# Mesure la vitesse réelle de l'app et du site (DNS, connexion TLS, temps de
+# réponse du serveur), fonction « froide » puis « chaude ». Résultats en
+# annotations du job (lisibles sans connexion). Aucune donnée privée : pages
+# publiques et redirections seulement.
+name: Mesure de vitesse
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/workflows/mesure-vitesse.yml']
+
+jobs:
+  mesure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mesurer
+        run: |
+          fmt='dns=%{time_namelookup}s tls=%{time_appconnect}s serveur=%{time_starttransfer}s total=%{time_total}s code=%{http_code}'
+          mesure() {
+            local label="$1" url="$2"
+            local out hdr region
+            hdr=$(mktemp)
+            out=$(curl -s -o /dev/null -D "$hdr" -w "$fmt" "$url")
+            region=$(grep -i '^x-vercel-id' "$hdr" | tr -d '\r' | cut -d' ' -f2 | cut -d: -f1-3)
+            echo "::notice title=$label::$out vercel=$region"
+          }
+          # 1er passage : la fonction peut être froide
+          mesure "1 login (1er appel)" https://app.jasonmarinho.com/auth/login
+          mesure "1 dashboard sans session (1er appel)" https://app.jasonmarinho.com/dashboard
+          mesure "1 site accueil" https://jasonmarinho.com/
+          sleep 2
+          for i in 2 3 4; do
+            mesure "$i login" https://app.jasonmarinho.com/auth/login
+            mesure "$i dashboard sans session" https://app.jasonmarinho.com/dashboard
+          done
+          mesure "api compteur (sans session)" https://app.jasonmarinho.com/api/notifications/unread-counts
+          mesure "manifest" https://app.jasonmarinho.com/manifest.json
