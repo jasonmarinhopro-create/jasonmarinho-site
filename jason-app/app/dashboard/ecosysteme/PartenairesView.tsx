@@ -77,8 +77,12 @@ export default function PartenairesView({
   // Même catalogue que la page publique /partenaires (lib/ecosysteme/partenaires.ts).
   // Un outil peut appartenir à plusieurs catégories : filtré par inclusion,
   // rangé sous sa 1re catégorie quand aucun filtre n'est actif.
+  // Les offres (Indy, LegalPlace…) sont aussi rangées dans leur catégorie :
+  // sinon une catégorie qui ne contient qu'une offre (Création & juridique,
+  // LegalPlace) n'apparaissait jamais. Votes réservés aux outils référencés.
   const catalog = PARTNER_CATALOG.map(p => ({ ...p, slug: partnerSlug(p.nom) }))
-  const filteredCatalog = activeCategory ? catalog.filter(t => t.cats.includes(activeCategory)) : catalog
+  const byCategory = [...PARTNER_OFFERS, ...PARTNER_CATALOG].map(p => ({ ...p, slug: partnerSlug(p.nom) }))
+  const filteredCatalog = activeCategory ? byCategory.filter(t => t.cats.includes(activeCategory)) : byCategory
   const grouped: Record<string, typeof catalog> = {}
   filteredCatalog.forEach(t => {
     const key = activeCategory ?? t.cats[0]
@@ -241,7 +245,7 @@ export default function PartenairesView({
             Tout
           </button>
           {PARTNER_CATEGORIES.map(cat => {
-            const count = catalog.filter(t => t.cats.includes(cat.id)).length
+            const count = byCategory.filter(t => t.cats.includes(cat.id)).length
             if (count === 0) return null
             return (
               <button
@@ -264,6 +268,18 @@ export default function PartenairesView({
             </div>
             <div style={styles.catGrid} className="dash-grid-2">
               {grouped[cat.id].map(t => {
+                if (t.badge) return (
+                  <div key={t.slug} style={{ ...styles.toolCard, border: '1px solid color-mix(in srgb, var(--accent-text) 30%, transparent)' }}>
+                    <div style={styles.toolHead}>
+                      <span style={{ ...styles.mono, background: t.couleur }}>{t.mono}</span>
+                      <div style={styles.toolName}>{t.nom}</div>
+                      <span style={{ ...styles.discountBadge, marginLeft: 'auto' }}>{BADGE_LABEL[t.badge]}</span>
+                    </div>
+                    {t.offre && <p style={{ ...styles.toolDesc, fontWeight: 600, color: 'var(--text)' }}>{t.offre}</p>}
+                    <p style={styles.toolDesc}>{t.desc}</p>
+                    <PartnerLinks entry={t} />
+                  </div>
+                )
                 const count = counts[t.slug] ?? 0
                 const isVoted = voted.has(t.slug)
                 return (

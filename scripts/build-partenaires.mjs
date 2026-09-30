@@ -144,7 +144,7 @@ ${CATEGORIES.map(c => `        <button type="button" class="mk-f" data-f="${c.id
 
       <div>
         <p class="mk-note"><i class="ph ph-info"></i><span>Les outils marqués <strong>Lien affilié</strong> ou <strong>Parrainage</strong> me rapportent une commission si tu t'abonnes via mon lien, sans aucun surcoût pour toi. Tous les autres sont référencés sans aucune rémunération.</span></p>
-        <p class="mk-count" aria-live="polite"><span id="mk-n">${OUTILS.length}</span> outils</p>
+        <p class="mk-count" aria-live="polite"><span id="mk-n">${OUTILS.length}</span> <span id="mk-w">outils</span></p>
         <div class="mk-grid">
 ${OUTILS.map(carte).join('\n')}
         </div>
@@ -163,6 +163,7 @@ ${OUTILS.map(carte).join('\n')}
       });
       btns.forEach(function(b){b.classList.toggle('on',b.getAttribute('data-f')===f)});
       if(n)n.textContent=shown;
+      var w=document.getElementById('mk-w');if(w)w.textContent=shown>1?'outils':'outil';
       if(scroll){var g=sec.querySelector('.mk-layout');var y=g.getBoundingClientRect().top+window.pageYOffset-90;if(Math.abs(window.pageYOffset-y)>200)window.scrollTo({top:y,behavior:'smooth'})}
       try{history.replaceState(null,'',f==='all'?location.pathname:'#'+f)}catch(e){}
     }

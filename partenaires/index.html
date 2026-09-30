@@ -254,7 +254,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     .mk-head{text-align:center;max-width:760px;margin:0 auto 44px}
     .mk-head .h2{font-size:clamp(1.9rem,3.6vw,2.9rem);margin-bottom:14px}
     .mk-head p{font-size:clamp(16px,1.6vw,19px);color:var(--tm);line-height:1.6;margin:0;font-family:'Fraunces',serif;font-weight:300}
-    .mk-tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;max-width:1000px;margin:0 auto 64px}
+    .mk-tiles{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;max-width:1000px;margin:0 auto 64px}
     .mk-tile{display:flex;flex-direction:column;align-items:center;gap:14px;background:none;border:0;cursor:pointer;padding:14px 8px;border-radius:14px;font-family:'Outfit',sans-serif;font-size:14.5px;color:var(--td);line-height:1.4;transition:background .15s}
     .mk-tile i{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:14px;background:var(--cr);font-size:24px;color:var(--g);transition:background .15s,color .15s}
     .mk-tile:hover{background:rgba(0,76,63,.03)}
@@ -325,6 +325,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
       <button type="button" class="mk-tile" data-f="banque"><i class="ph ph-credit-card"></i>Banque & paiement</button>
       <button type="button" class="mk-tile" data-f="acces"><i class="ph ph-lock-key"></i>Accès & sécurité</button>
       <button type="button" class="mk-tile" data-f="compta"><i class="ph ph-calculator"></i>Comptabilité & fiscalité</button>
+      <button type="button" class="mk-tile" data-f="juridique"><i class="ph ph-scales"></i>Création & juridique</button>
     </div>
 
     <div class="mk-layout">
@@ -348,7 +349,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
 
       <div>
         <p class="mk-note"><i class="ph ph-info"></i><span>Les outils marqués <strong>Lien affilié</strong> ou <strong>Parrainage</strong> me rapportent une commission si tu t'abonnes via mon lien, sans aucun surcoût pour toi. Tous les autres sont référencés sans aucune rémunération.</span></p>
-        <p class="mk-count" aria-live="polite"><span id="mk-n">34</span> outils</p>
+        <p class="mk-count" aria-live="polite"><span id="mk-n">34</span> <span id="mk-w">outils</span></p>
         <div class="mk-grid">
       <article class="mk-card is-offre" data-cats="direct messagerie" data-offre="1">
         <div class="mk-head-c">
@@ -672,6 +673,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
       });
       btns.forEach(function(b){b.classList.toggle('on',b.getAttribute('data-f')===f)});
       if(n)n.textContent=shown;
+      var w=document.getElementById('mk-w');if(w)w.textContent=shown>1?'outils':'outil';
       if(scroll){var g=sec.querySelector('.mk-layout');var y=g.getBoundingClientRect().top+window.pageYOffset-90;if(Math.abs(window.pageYOffset-y)>200)window.scrollTo({top:y,behavior:'smooth'})}
       try{history.replaceState(null,'',f==='all'?location.pathname:'#'+f)}catch(e){}
     }

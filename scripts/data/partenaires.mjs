@@ -23,7 +23,7 @@ export const CATEGORIES = [
 ]
 
 // Catégories mises en avant dans la rangée d'icônes (desktop)
-export const RACCOURCIS = ['gestion', 'messagerie', 'direct', 'banque', 'acces', 'compta']
+export const RACCOURCIS = ['gestion', 'messagerie', 'direct', 'banque', 'acces', 'compta', 'juridique']
 
 const LODGIFY_DEMO = 'https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv'
 const HOSPITABLE = 'https://hospitable.com/partners/refer?utm_source=affiliates&utm_medium=blog&utm_campaign=BASWTYN7'
