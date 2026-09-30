@@ -41,12 +41,14 @@ function parseFilter(raw: string | null): Filter {
   return 'all'
 }
 
-export default function NotificationsView({ items: initial, today, initialFilter, pushDevices = 0 }: {
+export default function NotificationsView({ items: initial, today, initialFilter, pushDevices = 0, pushPublicKey = null }: {
   items: FeedItem[]
   today: string
   initialFilter: string | null
   /** Appareils où les notifications sur le téléphone sont activées */
   pushDevices?: number
+  /** Clé publique Web Push lue côté serveur (null : envoi pas configuré) */
+  pushPublicKey?: string | null
 }) {
   const router = useRouter()
   const [items, setItems] = useState(initial)
@@ -179,7 +181,7 @@ export default function NotificationsView({ items: initial, today, initialFilter
         </div>
 
         <aside style={{ flex: '0 1 340px', minWidth: 280, display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <PushSettings devices={pushDevices} />
+          <PushSettings devices={pushDevices} publicKey={pushPublicKey} />
           <Card>
             <div style={s.sideTitle}>Ce que l&apos;app te signale</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 10 }}>

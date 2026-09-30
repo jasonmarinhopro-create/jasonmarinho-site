@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getProfile } from '@/lib/queries/profile'
 import { loadFeed } from '@/lib/notifications/feed'
 import { createClient } from '@/lib/supabase/server'
+import { vapidPublicKey } from '@/lib/notifications/push'
 import NotificationsView from './NotificationsView'
 
 // Toujours l'état réel. Les règles (arrivée demain, contrat à signer…) ne
@@ -19,5 +20,5 @@ export default async function NotificationsPage({ searchParams }: { searchParams
     // Appareils abonnés aux notifications sur le téléphone (migration 119, tolérée absente)
     supabase.from('push_subscriptions').select('id', { count: 'exact', head: true }).eq('user_id', profile.userId),
   ])
-  return <NotificationsView items={feed.items} today={feed.today} initialFilter={searchParams.filtre ?? null} pushDevices={devicesRes.count ?? 0} />
+  return <NotificationsView items={feed.items} today={feed.today} initialFilter={searchParams.filtre ?? null} pushDevices={devicesRes.count ?? 0} pushPublicKey={vapidPublicKey()} />
 }

@@ -1,6 +1,8 @@
 // Envoi des notifications sur le téléphone (Web Push), SERVER ONLY.
-// Clés VAPID dans les variables d'environnement : NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-// VAPID_PRIVATE_KEY, VAPID_SUBJECT (mailto:). Sans elles, rien n'est envoyé et
+// Clés VAPID dans les variables d'environnement : VAPID_PUBLIC_KEY,
+// VAPID_PRIVATE_KEY, VAPID_SUBJECT (mailto:). Pas de préfixe NEXT_PUBLIC_
+// (Vercel le signale comme exposé au navigateur) : la clé publique est lue ici
+// côté serveur et passée à la page (vapidPublicKey). Sans elles, rien n'est envoyé et
 // la page Notifications l'indique. Abonnements : table push_subscriptions
 // (migration 20260930_119), un par appareil.
 import 'server-only'
@@ -10,9 +12,14 @@ import { isGoneStatus, type PushPayload } from './push-rules'
 
 let configured: boolean | null = null
 
+/** Clé publique à donner au navigateur (null si l'envoi n'est pas configuré) */
+export function vapidPublicKey(): string | null {
+  return pushConfigured() ? (process.env.VAPID_PUBLIC_KEY || process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || null) : null
+}
+
 export function pushConfigured(): boolean {
   if (configured !== null) return configured
-  const pub = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+  const pub = process.env.VAPID_PUBLIC_KEY || process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
   const priv = process.env.VAPID_PRIVATE_KEY
   if (!pub || !priv) return (configured = false)
   try {

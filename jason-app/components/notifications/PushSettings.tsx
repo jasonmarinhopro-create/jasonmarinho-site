@@ -9,8 +9,6 @@ import { DeviceMobile, CheckCircle, BellRinging, Export, PlusSquare } from '@pho
 
 type State = 'loading' | 'noconfig' | 'unsupported' | 'ios-install' | 'denied' | 'off' | 'on'
 
-const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? ''
-
 function keyBytes(base64: string): Uint8Array {
   const pad = '='.repeat((4 - (base64.length % 4)) % 4)
   const raw = atob((base64 + pad).replace(/-/g, '+').replace(/_/g, '/'))
@@ -30,7 +28,8 @@ async function post(body: unknown): Promise<{ ok?: boolean; error?: string; sent
   return r.json().catch(() => ({ error: 'Réponse illisible.' }))
 }
 
-export default function PushSettings({ devices }: { devices: number }) {
+export default function PushSettings({ devices, publicKey }: { devices: number; publicKey: string | null }) {
+  const PUBLIC_KEY = publicKey ?? ''
   const [state, setState] = useState<State>('loading')
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<{ tone: 'ok' | 'err'; text: string } | null>(null)
@@ -47,7 +46,7 @@ export default function PushSettings({ devices }: { devices: number }) {
         setState(sub ? 'on' : 'off')
       } catch { setState('off') }
     })()
-  }, [])
+  }, [PUBLIC_KEY])
 
   async function enable() {
     setBusy(true); setMsg(null)
