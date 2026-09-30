@@ -1,7 +1,9 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { markStepIfNotYet } from '@/lib/onboarding/client'
+import { canPromptInstall, promptInstall, onInstallChange } from '@/lib/pwa/install-client'
 
 /* Install widget pour le dashboard.
    Version React du widget vanilla qui était sur le site marketing.
@@ -10,46 +12,23 @@ import { markStepIfNotYet } from '@/lib/onboarding/client'
    - Marque la step 'install_app' via markStepIfNotYet quand on détecte
      une installation réussie (event 'appinstalled' OU standalone détecté).
    - Délai d'apparition plus long (8s) pour ne pas casser le first paint
-     du dashboard chargé. */
+     du dashboard chargé.
+   - 30/09/2026 : le bouton ouvre la fenêtre d'installation du navigateur
+     quand il en propose une (Android, Chrome, Edge), sinon la page guidée
+     /installer (étapes iPhone illustrées, QR code depuis un ordinateur). */
 
 const STORAGE_KEY = 'jm-install-widget'
 const DISMISS_DAYS = 7
 
-declare global {
-  interface Window {
-    MSStream?: unknown
-  }
-  interface Navigator {
-    standalone?: boolean
-  }
-}
-
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
-}
-
 export default function InstallAppWidget() {
+  const router = useRouter()
   const [visible, setVisible] = useState(false)
-  const [showIOSGuide, setShowIOSGuide] = useState(false)
-  const [bookmarkHint, setBookmarkHint] = useState<string | null>(null)
-  const beforeInstallEventRef = useRef<BeforeInstallPromptEvent | null>(null)
-  const [, setTick] = useState(0)
-
-  // Détection navigateur (UA sniffing minimal)
-  const isClient = typeof window !== 'undefined'
-  const ua = isClient ? navigator.userAgent : ''
-  const isIOS = /iPhone|iPad|iPod/.test(ua) && !window.MSStream
-  const isAndroid = /Android/.test(ua)
-  const isFirefox = /Firefox|FxiOS/.test(ua)
 
   useEffect(() => {
-    if (!isClient) return
-
     // Skip si déjà installé (standalone)
     const isStandalone =
       window.matchMedia?.('(display-mode: standalone)').matches ||
-      window.navigator.standalone === true
+      (window.navigator as Navigator & { standalone?: boolean }).standalone === true
 
     if (isStandalone) {
       // App déjà installée → marquer l'onboarding done une fois pour toutes
@@ -69,32 +48,23 @@ export default function InstallAppWidget() {
       } catch {}
     }
 
-    // Capture le prompt natif d'installation
-    function onBeforeInstall(e: Event) {
-      e.preventDefault()
-      beforeInstallEventRef.current = e as BeforeInstallPromptEvent
-      setTick(t => t + 1)
-    }
-
-    // Quand l'app est effectivement installée
-    function onAppInstalled() {
+    // Quand l'app est effectivement installée (événement relayé par le
+    // script du layout racine, qui garde aussi la proposition d'installation)
+    const off = onInstallChange(() => {
+      if (!window.__jmInstalled) return
       try { localStorage.setItem(STORAGE_KEY, String(Date.now() + 365 * 86400 * 1000)) } catch {}
       void markStepIfNotYet('install_app')
       setVisible(false)
-    }
-
-    window.addEventListener('beforeinstallprompt', onBeforeInstall)
-    window.addEventListener('appinstalled', onAppInstalled)
+    })
 
     // Affichage après un délai (immédiat si ?install=1)
     const timer = setTimeout(() => setVisible(true), forceShow ? 0 : 8000)
 
     return () => {
       clearTimeout(timer)
-      window.removeEventListener('beforeinstallprompt', onBeforeInstall)
-      window.removeEventListener('appinstalled', onAppInstalled)
+      off()
     }
-  }, [isClient])
+  }, [])
 
   function dismiss() {
     try { localStorage.setItem(STORAGE_KEY, String(Date.now())) } catch {}
@@ -102,43 +72,14 @@ export default function InstallAppWidget() {
   }
 
   async function handleInstallClick() {
-    // CAS 1 : prompt natif disponible (Chrome / Edge / Android)
-    const evt = beforeInstallEventRef.current
-    if (evt) {
-      evt.prompt()
-      try {
-        const { outcome } = await evt.userChoice
-        if (outcome === 'accepted') {
-          void markStepIfNotYet('install_app')
-          setVisible(false)
-        }
-      } catch {}
-      beforeInstallEventRef.current = null
-      return
+    // Android, Chrome, Edge : la fenêtre d'installation du navigateur, en un tap
+    if (canPromptInstall()) {
+      const outcome = await promptInstall()
+      if (outcome === 'accepted') { void markStepIfNotYet('install_app'); setVisible(false) }
+      if (outcome !== 'unavailable') return
     }
-
-    // CAS 2 : iOS Safari → overlay visuel
-    if (isIOS) {
-      setShowIOSGuide(true)
-      return
-    }
-
-    // CAS 3 : Mobile sans support natif (Firefox Android) → partage natif
-    if (typeof navigator !== 'undefined' && navigator.share && (isAndroid || isFirefox)) {
-      try {
-        await navigator.share({
-          title: document.title,
-          text: 'Jason Marinho, mon espace LCD',
-          url: window.location.href,
-        })
-        return
-      } catch {}
-    }
-
-    // CAS 4 : Desktop sans support → bookmark hint
-    const isMac = /Mac/.test(navigator.platform)
-    setBookmarkHint(`${isMac ? '⌘' : 'Ctrl'} + D pour ajouter aux favoris`)
-    setTimeout(() => setBookmarkHint(null), 5000)
+    // Ailleurs (iPhone, Firefox…) : la page guidée, adaptée à l'appareil
+    router.push('/installer')
   }
 
   if (!visible) return null
@@ -192,68 +133,11 @@ export default function InstallAppWidget() {
           </div>
           <button onClick={dismiss} className="jm-iw-close" style={s.close} aria-label="Fermer">×</button>
         </div>
-        <button onClick={handleInstallClick} style={s.cta} disabled={!!bookmarkHint}>
-          {bookmarkHint ?? "Installer l'app"}
+        <button onClick={handleInstallClick} style={s.cta}>
+          Installer l&apos;app
         </button>
       </div>
 
-      {showIOSGuide && (
-        <IOSGuideOverlay onClose={() => setShowIOSGuide(false)} />
-      )}
-    </>
-  )
-}
-
-function IOSGuideOverlay({ onClose }: { onClose: () => void }) {
-  return (
-    <>
-      <style>{`
-        @keyframes jm-ios-overlay-in { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes jm-ios-card-in {
-          from { transform: translateY(20px); }
-          to   { transform: translateY(0); }
-        }
-      `}</style>
-      <div onClick={onClose} style={s.iosOverlay}>
-        <div onClick={e => e.stopPropagation()} style={s.iosCard}>
-          <div style={s.iosHead}>
-            <h3 style={s.iosTitle}>Ajoute Jason à ton écran d&apos;accueil</h3>
-            <button onClick={onClose} style={s.iosClose} aria-label="Fermer">×</button>
-          </div>
-          <div style={s.iosStep}>
-            <div style={s.iosStepNum}>1</div>
-            <div style={s.iosStepText}>
-              Touche l&apos;icône <strong style={s.iosStrong}>Partager</strong>{' '}
-              <span style={s.pictogram} aria-hidden="true">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1L4 5h2.5v6h3V5H12L8 1zm6 12H2v-2H1v3a1 1 0 001 1h12a1 1 0 001-1v-3h-1v2z"/></svg>
-              </span>
-              en bas de l&apos;écran.
-            </div>
-          </div>
-          <div style={s.iosStep}>
-            <div style={s.iosStepNum}>2</div>
-            <div style={s.iosStepText}>
-              Fais défiler la liste, puis touche <strong style={s.iosStrong}>« Sur l&apos;écran d&apos;accueil »</strong>{' '}
-              <span style={s.pictogram} aria-hidden="true">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a1 1 0 011 1v6h6a1 1 0 010 2H9v6a1 1 0 01-2 0V9H1a1 1 0 010-2h6V1a1 1 0 011-1z"/></svg>
-              </span>
-              <div style={s.iosHint}>
-                Tu ne la vois pas&nbsp;? Touche <strong style={s.iosStrong}>« En voir plus »</strong> en bas de la feuille, l&apos;option se trouve dans la liste complète.
-              </div>
-            </div>
-          </div>
-          <div style={s.iosStep}>
-            <div style={s.iosStepNum}>3</div>
-            <div style={s.iosStepText}>
-              Laisse <strong style={s.iosStrong}>« Ouvrir en tant qu&apos;app web »</strong> activé, puis touche <strong style={s.iosStrong}>Ajouter</strong>. Ouvre ensuite l&apos;app depuis sa nouvelle icône (sans barre d&apos;adresse Safari).
-              <div style={s.iosHint}>
-                Un ancien raccourci qui ouvre Safari n&apos;est pas l&apos;app : supprime-le et refais l&apos;ajout depuis cette page.
-              </div>
-            </div>
-          </div>
-          <div style={s.iosArrow} aria-hidden="true">↓</div>
-        </div>
-      </div>
     </>
   )
 }
@@ -279,44 +163,4 @@ const s: Record<string, React.CSSProperties> = {
     justifyContent: 'center', gap: '7px',
   },
 
-  iosOverlay: {
-    position: 'fixed', inset: 0, zIndex: 99999,
-    background: 'rgba(0,15,10,.86)', backdropFilter: 'blur(8px)',
-    display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
-    animation: 'jm-ios-overlay-in .25s forwards',
-  },
-  iosCard: {
-    background: '#FDFCF9', color: '#0F1A0D', width: '100%', maxWidth: '480px',
-    borderRadius: '20px 20px 0 0', padding: '24px 20px 32px',
-    animation: 'jm-ios-card-in .3s cubic-bezier(.22,.61,.36,1) forwards',
-  },
-  iosHead: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' },
-  iosTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 400, margin: 0, letterSpacing: '-.3px' },
-  iosClose: {
-    background: 'rgba(15,26,13,.06)', border: 'none', cursor: 'pointer',
-    width: '32px', height: '32px', borderRadius: '50%', fontSize: '20px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(15,26,13,.55)',
-  },
-  iosStep: { display: 'flex', gap: '14px', padding: '12px 0', borderTop: '1px solid rgba(0,76,63,.08)' },
-  iosStepNum: {
-    width: '28px', height: '28px', borderRadius: '50%', flexShrink: 0,
-    background: '#004C3F', color: '#FFD56B', fontSize: '13px', fontWeight: 700,
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-  },
-  iosStepText: { fontSize: '14px', lineHeight: 1.55, paddingTop: '3px', flex: 1, color: '#0F1A0D' },
-  iosStrong: { color: '#004C3F', fontWeight: 600 },
-  iosHint: {
-    marginTop: '8px', fontSize: '12.5px', color: 'rgba(15,26,13,.55)',
-    background: 'rgba(0,76,63,.05)', borderRadius: '8px', padding: '8px 10px',
-  },
-  pictogram: {
-    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-    width: '24px', height: '24px', verticalAlign: 'middle', margin: '0 2px',
-    background: 'rgba(0,76,63,.08)', borderRadius: '6px', color: '#004C3F',
-  },
-  iosArrow: {
-    display: 'block', textAlign: 'center', fontSize: '26px',
-    color: 'rgba(0,76,63,.4)', margin: '14px 0 6px',
-    animation: 'jm-ios-bounce 1.4s infinite',
-  },
 }

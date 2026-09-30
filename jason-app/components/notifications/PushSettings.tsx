@@ -5,6 +5,7 @@
 // Apple ne l'autorise que depuis l'app installée sur l'écran d'accueil
 // (iOS 16.4 et plus) : on l'explique au lieu d'afficher un bouton qui échoue.
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { DeviceMobile, CheckCircle, BellRinging, Export, PlusSquare } from '@phosphor-icons/react/dist/ssr'
 import { pushDeviceState } from '@/lib/notifications/push-client'
 
@@ -90,6 +91,7 @@ export default function PushSettings({ devices, publicKey }: { devices: number; 
           <div style={s.step}><PlusSquare size={15} weight="bold" /> Laisse <strong>Ouvrir en tant qu&apos;app web</strong> activé, puis <strong>Ajouter</strong></div>
           <div style={s.step}><BellRinging size={15} weight="bold" /> Ouvre l&apos;app depuis la nouvelle icône (sans barre d&apos;adresse) et reviens ici</div>
           <div style={{ ...s.text, fontSize: 12 }}>Supprime l&apos;ancien raccourci s&apos;il ouvre Safari. iOS 16.4 ou plus récent.</div>
+          <Link href="/installer" style={s.secondary}>Voir le guide pas à pas, avec les images</Link>
         </div>
       )}
 
@@ -135,7 +137,7 @@ const s: Record<string, React.CSSProperties> = {
   step: { display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: 'var(--text)', lineHeight: 1.45 },
   num: { width: 15, height: 15, flexShrink: 0, borderRadius: 99, fontSize: 10, fontWeight: 800, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'var(--accent-text)', color: 'var(--bg)', marginTop: 2 },
   primary: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '11px 16px', borderRadius: 11, border: 'none', background: 'var(--accent-text)', color: 'var(--bg)', fontSize: 14, fontWeight: 700, cursor: 'pointer' },
-  secondary: { padding: '8px 13px', borderRadius: 10, border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--accent-text)', fontSize: 13, fontWeight: 700, cursor: 'pointer' },
+  secondary: { alignSelf: 'flex-start', textDecoration: 'none', padding: '8px 13px', borderRadius: 10, border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--accent-text)', fontSize: 13, fontWeight: 700, cursor: 'pointer' },
   ghost: { padding: '8px 13px', borderRadius: 10, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-2)', fontSize: 13, fontWeight: 600, cursor: 'pointer' },
   on: { display: 'flex', alignItems: 'center', gap: 7, fontSize: 13.5, fontWeight: 700, color: 'var(--accent-text)' },
   msg: { fontSize: 12.5, lineHeight: 1.5, fontWeight: 600 },

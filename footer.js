@@ -274,6 +274,7 @@
             + '<a href="/contact">Contact</a>'
             + '<a href="https://driing.co" target="_blank" rel="noopener">Driing<span class="ft-ext"><i class="ph ph-arrow-up-right"></i></span></a>'
             + '<a href="https://app.jasonmarinho.com">Espace membre</a>'
+            + '<a href="https://app.jasonmarinho.com/installer">Installer l\'app</a>'
           + '</div>'
         + '</div>'
       + '</div>'

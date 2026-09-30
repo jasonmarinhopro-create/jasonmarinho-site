@@ -15,6 +15,13 @@ export interface ChangelogEntry {
 export const CHANGELOG: ChangelogEntry[] = [
   // ─── Septembre 2026 ────────────────────────────────────────────
   {
+    id: 'app-telephone-sep-2026',
+    date: '2026-09-30',
+    tag: 'nouveau',
+    title: 'L\'app sur ton téléphone, avec les notifications',
+    description: 'Installe l\'app en quelques secondes (un bouton sur Android, les étapes en images sur iPhone, un QR code depuis l\'ordinateur) : menu de ton compte, « Installer l\'app ». Puis active les notifications pour être prévenu d\'une réservation, d\'un contrat signé ou d\'un paiement.',
+  },
+  {
     id: 'notifications-sep-2026',
     date: '2026-09-29',
     tag: 'amélioration',

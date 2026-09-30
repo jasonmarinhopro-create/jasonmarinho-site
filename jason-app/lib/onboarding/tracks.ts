@@ -89,7 +89,7 @@ export const ONBOARDING_TRACKS: OnboardingTrackDef[] = [
         title: 'Installe l\'app sur ton téléphone',
         description: 'Un raccourci sur ton écran d\'accueil, comme une vraie app : ton planning et tes arrivées toujours sous la main.',
         ctaLabel: 'Installer',
-        ctaHref: '/dashboard?install=1',
+        ctaHref: '/installer',
         detect: 'manual',
       },
     ],

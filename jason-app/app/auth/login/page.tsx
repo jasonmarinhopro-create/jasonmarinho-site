@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import InstallAppLink from '@/components/pwa/InstallAppLink'
 import {
   ArrowRight, Eye, EyeSlash,
   GraduationCap, Calculator, ChatText, UsersThree, Megaphone, ShieldCheck,
@@ -402,6 +403,10 @@ function LoginInner() {
               <Link href={ctx.registerHref} style={s.footerLink}>{ctx.registerLabel}</Link>
             )}
           </p>
+
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 14 }}>
+            <InstallAppLink style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--accent-text, #004C3F)', textDecoration: 'none', padding: '8px 14px', borderRadius: 99, border: '1px solid rgba(0,76,63,0.18)' }} />
+          </div>
 
           <div style={s.trustRow}>
             <ShieldCheck size={13} color="rgba(0,76,63,0.35)" weight="bold" />

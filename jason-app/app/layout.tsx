@@ -3,6 +3,7 @@ import { Fraunces, Outfit } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import ErrorReporter from '@/components/ErrorReporter'
+import { INSTALL_CAPTURE_SCRIPT } from '@/lib/pwa/capture-script'
 import './globals.css'
 
 const fraunces = Fraunces({
@@ -39,6 +40,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* Anti-flash script: applies stored theme before React hydrates */}
         <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark'||t==='amoled')document.documentElement.setAttribute('data-theme',t);}catch(e){}` }} />
+        {/* Proposition d'installation (Android, Chrome, Edge) gardée pour le bouton « Installer l'app » */}
+        <script dangerouslySetInnerHTML={{ __html: INSTALL_CAPTURE_SCRIPT }} />
       </head>
       <body>
         {children}

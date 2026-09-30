@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
+import InstallAppLink from '@/components/pwa/InstallAppLink'
 import { usePathname, useSearchParams } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, FileText,
@@ -616,6 +617,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
               <Link href="/dashboard/aide" onClick={() => setUserMenuOpen(false)} style={styles.userMenuItem}>
                 <Question size={15} />Centre d&apos;aide
               </Link>
+              <InstallAppLink label="Installer l'app" onClick={() => setUserMenuOpen(false)} style={{ ...styles.userMenuItem, gap: 10 }} />
 
               {/* Espaces : la liste n'apparaît que si on en a au moins 2 */}
               {(() => {
