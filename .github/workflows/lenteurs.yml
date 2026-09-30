@@ -66,3 +66,13 @@ jobs:
             -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" > rafale.txt
           end=$(date +%s%3N)
           sort -n rafale.txt | awk -v tot=$((end-start)) '{a[NR]=$1} END {printf "::notice title=Rafale de 30 requêtes::total %d ms, la plus rapide %d ms, médiane %d ms, la plus lente %d ms\n", tot, a[1]*1000, a[int(NR/2)]*1000, a[NR]*1000}'
+
+      - name: Tester depuis le serveur de l'app
+        env:
+          SECRET: ${{ secrets.SOCIAL_CRON_SECRET }}
+        run: |
+          # Deux fois : la première réveille peut-être la fonction
+          for i in 1 2; do
+            r=$(curl -sS --max-time 70 "https://app.jasonmarinho.com/api/perf/diag" -H "authorization: Bearer $SECRET")
+            echo "::notice title=Depuis le serveur de l'app $i::$(echo "$r" | jq -c .)"
+          done
