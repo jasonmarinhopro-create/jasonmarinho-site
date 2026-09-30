@@ -5,6 +5,8 @@
 // un second message au bout de 4 s. Composant serveur, sans JavaScript
 // (animations CSS seulement). Ne s'affiche qu'au premier chargement : les
 // changements de page gardent le menu et montrent le squelette de la page.
+// Réutilisé par la page statique /ouverture (lancement de l'app installée)
+// et pendant le passage mode admin / mode hôte (Sidebar.tsx).
 import InlineStyle from '@/components/ui/InlineStyle'
 
 const CSS = `
@@ -25,7 +27,10 @@ const CSS = `
 @media (prefers-reduced-motion: reduce){.jm-splash img,.jm-splash-bar span{animation:none}}
 `
 
-export default function ShellFallback() {
+export default function ShellFallback({
+  message = 'Ton espace se prépare…',
+  later = 'Encore un instant, on rassemble tes réservations et tes chiffres.',
+}: { message?: string; later?: string } = {}) {
   return (
     <div className="jm-splash" role="status" aria-live="polite">
       <InlineStyle css={CSS} />
@@ -34,8 +39,8 @@ export default function ShellFallback() {
       <p className="jm-splash-name">Jason <em>Marinho</em></p>
       <div className="jm-splash-bar" aria-hidden="true"><span /></div>
       <p className="jm-splash-msg">
-        <span className="m1">Ton espace se prépare…</span>
-        <span className="m2">Encore un instant, on rassemble tes réservations et tes chiffres.</span>
+        <span className="m1">{message}</span>
+        <span className="m2">{later}</span>
       </p>
     </div>
   )

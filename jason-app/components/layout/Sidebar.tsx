@@ -1,7 +1,9 @@
 'use client'
 
 import { writeAdminModeCookie } from '@/lib/admin-mode'
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo, useTransition } from 'react'
+import { createPortal } from 'react-dom'
+import ShellFallback from '@/components/layout/ShellFallback'
 import Link from 'next/link'
 import InstallAppLink from '@/components/pwa/InstallAppLink'
 import { usePathname, useSearchParams } from 'next/navigation'
@@ -229,8 +231,16 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     // retour silencieux en mode hôte.
     if (active && pathname === '/dashboard') router.replace('/dashboard/admin')
   }, [isAdmin, pathname, router])
+  // Passage d'un mode à l'autre : la page d'arrivée peut mettre plusieurs
+  // secondes à se calculer (Accueil hôte : 6 à 11 s pendant les ralentissements
+  // de Supabase du 30/09/2026). Sans rien à l'écran, l'ancienne page restait
+  // affichée et Jason croyait que le passage n'avait pas marché.
+  const [switching, startSwitch] = useTransition()
+  const [switchTarget, setSwitchTarget] = useState<'admin' | 'hote' | null>(null)
+  useEffect(() => { if (!switching) setSwitchTarget(null) }, [switching])
   function toggleAdminMode() {
     const next = !adminMode
+    setSwitchTarget(next ? 'admin' : 'hote')
     setAdminMode(next)
     try { localStorage.setItem('admin-mode', String(next)) } catch {}
     writeAdminModeCookie(next)
@@ -241,7 +251,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     // hote alors que le user n'a plus le contexte admin).
     // (Hors du setState : un effet de bord dans une fonction de mise à jour
     // peut être rejoué par React.)
-    router.push(next ? '/dashboard/admin' : '/dashboard')
+    startSwitch(() => router.push(next ? '/dashboard/admin' : '/dashboard'))
   }
 
   // Téléphone : les liens du menu ne sont pas visibles tant que le tiroir est
@@ -386,6 +396,13 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
 
   return (
     <>
+      {switching && switchTarget && typeof document !== 'undefined' && createPortal(
+        <ShellFallback
+          message={switchTarget === 'admin' ? 'Passage en mode admin…' : 'Retour à ton espace hôte…'}
+          later="Encore un instant, la page se charge."
+        />,
+        document.body,
+      )}
       {/* Mobile overlay */}
       {mobileOpen && (
         <div

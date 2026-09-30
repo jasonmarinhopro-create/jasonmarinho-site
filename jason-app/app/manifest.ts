@@ -6,7 +6,8 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: 'Jason Marinho',
     description: "Formations, outils et communauté pour développer ton activité LCD.",
     id: '/dashboard',
-    start_url: '/dashboard',
+    // Page statique de lancement : écran de chargement immédiat (app/ouverture)
+    start_url: '/ouverture',
     scope: '/',
     lang: 'fr',
     display: 'standalone',
