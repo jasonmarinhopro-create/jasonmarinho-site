@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 28 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 30 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Synchronisation iCal en LCD : 6 règles pour éviter la double réservation entre Airbnb, Booking et ton canal direct</title>
+      <link>https://jasonmarinho.com/blog/synchronisation-ical-lcd-6-regles-eviter-double-reservation-airbnb-booking</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/synchronisation-ical-lcd-6-regles-eviter-double-reservation-airbnb-booking</guid>
+      <pubDate>Wed, 30 Sep 2026 08:00:00 GMT</pubDate>
+      <description>Flux iCal, hub central, buffer entre séjours, rafraîchissement manuel : 6 règles concrètes pour synchroniser tes calendriers LCD sans double réservation en 2026.</description>
+      <category>Automatisation</category>
+    </item>
     <item>
       <title>Adaptateurs de prises et chargeurs USB en LCD : 7 essentiels à fournir à tes voyageurs étrangers en 2026</title>
       <link>https://jasonmarinho.com/blog/adaptateurs-prises-usb-lcd-voyageurs-etrangers-2026</link>
@@ -397,14 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/accueillir-groupe-lcd-7-regles-preserver-logement-voisins</guid>
       <pubDate>Mon, 15 Jun 2026 08:00:00 GMT</pubDate>
       <description>Enterrements de vie de garçon, amis en week-end, séminaires : les groupes paient mieux mais font 5 fois plus de dégâts qu&apos;un couple. Les 7 règles pour encadrer leur séjour sans incident.</description>
-      <category>Expérience</category>
-    </item>
-    <item>
-      <title>Arnaques Airbnb 2026 : classement des 9 arnaques voyageurs les plus fréquentes</title>
-      <link>https://jasonmarinho.com/blog/arnaques-airbnb-2026-classement-types-arnaques-hotes</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/arnaques-airbnb-2026-classement-types-arnaques-hotes</guid>
-      <pubDate>Sun, 14 Jun 2026 08:00:00 GMT</pubDate>
-      <description>Rapport 2026 sur les arnaques Airbnb et Booking subies par les hôtes LCD : 9 types d&apos;arnaques classés par fréquence, signaux d&apos;alerte, comment réagir.</description>
       <category>Expérience</category>
     </item>
   </channel>
