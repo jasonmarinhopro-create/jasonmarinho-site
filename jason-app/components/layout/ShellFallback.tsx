@@ -24,15 +24,28 @@ const CSS = `
 @keyframes jmPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
 @keyframes jmIn{to{opacity:1}}
 @keyframes jmOut{to{opacity:0}}
+.jm-splash--delayed{animation:jmAppear .25s ease .45s both}
+.jm-splash--out{pointer-events:none;animation:jmVanish .35s ease .05s forwards}
+@keyframes jmAppear{from{opacity:0}to{opacity:1}}
+@keyframes jmVanish{to{opacity:0;visibility:hidden}}
 @media (prefers-reduced-motion: reduce){.jm-splash img,.jm-splash-bar span{animation:none}}
 `
+
+// Variantes (30/09/2026, Jason : « quand ça va vite, l'écran apparaît 0,1 s
+// puis ça saute, on dirait un bug ») :
+// - instant : visible tout de suite (suite de l'écran de /ouverture) ;
+// - delayed : n'apparaît qu'après 0,45 s, donc jamais quand la page est rapide ;
+// - out : posé par-dessus la page arrivée, s'efface en fondu (0,35 s).
+export type SplashVariant = 'instant' | 'delayed' | 'out'
 
 export default function ShellFallback({
   message = 'Ton espace se prépare…',
   later = 'Encore un instant, on rassemble tes réservations et tes chiffres.',
-}: { message?: string; later?: string } = {}) {
+  variant = 'instant',
+}: { message?: string; later?: string; variant?: SplashVariant } = {}) {
+  const cls = variant === 'delayed' ? ' jm-splash--delayed' : variant === 'out' ? ' jm-splash--out' : ''
   return (
-    <div className="jm-splash" role="status" aria-live="polite">
+    <div className={`jm-splash${cls}`} role={variant === 'out' ? undefined : 'status'} aria-live={variant === 'out' ? undefined : 'polite'} aria-hidden={variant === 'out' ? true : undefined}>
       <InlineStyle css={CSS} />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/icon-192.png" alt="" width={88} height={88} />

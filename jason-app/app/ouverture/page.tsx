@@ -15,7 +15,9 @@ export const metadata: Metadata = {
 }
 
 // Laisse le temps d'afficher l'écran (deux images) avant de partir
-const GO = `requestAnimationFrame(function(){setTimeout(function(){location.replace('/dashboard'+location.search)},30)})`
+// Cookie court « jm-launch » : le dashboard enchaîne alors le même écran sans
+// délai puis l'efface en fondu (app/dashboard/layout.tsx).
+const GO = `document.cookie='jm-launch=1; Path=/; Max-Age=20; SameSite=Lax; Secure';requestAnimationFrame(function(){setTimeout(function(){location.replace('/dashboard'+location.search)},30)})`
 
 export default function Ouverture() {
   return (

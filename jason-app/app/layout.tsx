@@ -21,6 +21,12 @@ const outfit = Outfit({
   variable: '--font-outfit',
 })
 
+// [largeur, hauteur, ratio] des écrans d'iPhone (portrait), de l'iPhone 8 au 17 Pro Max
+const SPLASH_SIZES: Array<[number, number, number]> = [
+  [440, 956, 3], [402, 874, 3], [420, 912, 3], [430, 932, 3], [393, 852, 3], [428, 926, 3],
+  [390, 844, 3], [375, 812, 3], [414, 896, 3], [414, 896, 2], [414, 736, 3], [375, 667, 2],
+]
+
 export const metadata: Metadata = {
   title: 'Mon espace, Jason Marinho',
   description: 'Formations, gabarits et ressources pour développer ton activité de location courte durée.',
@@ -28,7 +34,17 @@ export const metadata: Metadata = {
   applicationName: 'Jason Marinho',
   // iPhone : ajoutée à l'écran d'accueil, l'app s'ouvre en plein écran (sans
   // Safari), condition pour recevoir les notifications sur le téléphone
-  appleWebApp: { capable: true, title: 'Jason Marinho', statusBarStyle: 'default' },
+  // Images de démarrage iPhone (30/09/2026) : affichées dès le toucher de
+  // l'icône, avant même le chargement de /ouverture (dernier blanc au
+  // lancement). Captures de l'écran de /ouverture par taille d'écran,
+  // dans public/splash/ (même écran, donc pas de saut visible).
+  appleWebApp: {
+    capable: true, title: 'Jason Marinho', statusBarStyle: 'default',
+    startupImage: SPLASH_SIZES.map(([w, h, r]) => ({
+      url: `/splash/apple-splash-${w * r}x${h * r}.png`,
+      media: `(device-width: ${w}px) and (device-height: ${h}px) and (-webkit-device-pixel-ratio: ${r}) and (orientation: portrait)`,
+    })),
+  },
   // Les icônes (favicon.ico, icon.png, apple-icon.png) sont auto-détectées
   // par Next.js App Router depuis app/. Pas besoin de les déclarer ici.
 }

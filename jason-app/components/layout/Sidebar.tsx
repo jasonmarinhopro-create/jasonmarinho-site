@@ -235,9 +235,20 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   // secondes à se calculer (Accueil hôte : 6 à 11 s pendant les ralentissements
   // de Supabase du 30/09/2026). Sans rien à l'écran, l'ancienne page restait
   // affichée et Jason croyait que le passage n'avait pas marché.
+  // L'écran n'apparaît qu'au-delà de 0,45 s (sinon flash de 0,1 s quand la
+  // page est rapide, pris pour un bug) et s'efface en fondu à l'arrivée.
   const [switching, startSwitch] = useTransition()
   const [switchTarget, setSwitchTarget] = useState<'admin' | 'hote' | null>(null)
-  useEffect(() => { if (!switching) setSwitchTarget(null) }, [switching])
+  const [switchScreen, setSwitchScreen] = useState<'off' | 'on' | 'out'>('off')
+  useEffect(() => {
+    if (switching) {
+      const t = window.setTimeout(() => setSwitchScreen('on'), 450)
+      return () => window.clearTimeout(t)
+    }
+    setSwitchScreen(prev => (prev === 'on' ? 'out' : 'off'))
+    const t = window.setTimeout(() => { setSwitchScreen('off'); setSwitchTarget(null) }, 450)
+    return () => window.clearTimeout(t)
+  }, [switching])
   function toggleAdminMode() {
     const next = !adminMode
     setSwitchTarget(next ? 'admin' : 'hote')
@@ -396,8 +407,9 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
 
   return (
     <>
-      {switching && switchTarget && typeof document !== 'undefined' && createPortal(
+      {switchScreen !== 'off' && switchTarget && typeof document !== 'undefined' && createPortal(
         <ShellFallback
+          variant={switchScreen === 'out' ? 'out' : 'instant'}
           message={switchTarget === 'admin' ? 'Passage en mode admin…' : 'Retour à ton espace hôte…'}
           later="Encore un instant, la page se charge."
         />,

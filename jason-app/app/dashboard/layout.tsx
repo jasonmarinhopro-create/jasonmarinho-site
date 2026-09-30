@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { headers } from 'next/headers'
+import { headers, cookies } from 'next/headers'
 import { Suspense } from 'react'
 import Sidebar from '@/components/layout/Sidebar'
 import Header from '@/components/layout/Header'
@@ -30,15 +30,23 @@ function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: string): 
 // le layout attendait le profil, les espaces, la cloche et l'onboarding avant
 // d'envoyer le moindre octet. Le cadre (barre latérale, en-tête, squelette)
 // part maintenant tout de suite, le reste arrive en streaming.
+//
+// Écran rapide sans à-coup : à l'ouverture de l'app (cookie court posé par
+// /ouverture), l'écran continue celui de /ouverture sans délai puis s'efface
+// en fondu sur la page arrivée. Sinon, il n'apparaît qu'après 0,45 s : une
+// page rapide s'affiche directement, sans flash vert de 0,1 s.
+const LAUNCH_COOKIE = 'jm-launch'
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const launch = cookies().get(LAUNCH_COOKIE)?.value === '1'
   return (
-    <Suspense fallback={<ShellFallback />}>
-      <DashboardShell>{children}</DashboardShell>
+    <Suspense fallback={<ShellFallback variant={launch ? 'instant' : 'delayed'} />}>
+      <DashboardShell launch={launch}>{children}</DashboardShell>
     </Suspense>
   )
 }
 
-async function DashboardShell({ children }: { children: React.ReactNode }) {
+async function DashboardShell({ children, launch = false }: { children: React.ReactNode; launch?: boolean }) {
   const hdrs = await headers()
   const pathname = hdrs.get('x-pathname') ?? '/dashboard'
   const mwAuthMs = Number(hdrs.get('x-mw-auth-ms'))
@@ -178,6 +186,7 @@ async function DashboardShell({ children }: { children: React.ReactNode }) {
         )}
         <InstallAppWidget />
         <PerfReporter />
+        {launch && <ShellFallback variant="out" message="Ouverture de ton espace…" />}
       </div>
     </ThemeProvider>
   )
