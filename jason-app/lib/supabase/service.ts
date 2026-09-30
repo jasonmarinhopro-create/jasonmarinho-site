@@ -14,6 +14,7 @@
 //     autorisée (eq('user_id', …)), jamais de lecture « ouverte ».
 import 'server-only'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { timedFetch } from '@/lib/perf/query-log'
 
 let cached: SupabaseClient<any, 'public', any> | null = null
 
@@ -22,7 +23,7 @@ export function getServiceClient(): SupabaseClient<any, 'public', any> {
   cached = createClient<any, 'public', any>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
+    { auth: { autoRefreshToken: false, persistSession: false }, global: { fetch: timedFetch } },
   )
   return cached
 }

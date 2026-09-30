@@ -145,7 +145,9 @@ export default async function AdminPage() {
   // getProfile : getUser() + profil en cache, déjà dédupliqués avec le layout
   const profile = await getProfile()
   if (!profile) redirect('/auth/login')
-  if (profile.role !== 'admin') redirect('/dashboard')
+  // Pas admin : on retire aussi le cookie du mode admin (sinon le middleware
+  // renverrait ici depuis /dashboard, en boucle)
+  if (profile.role !== 'admin') redirect('/api/me/admin-mode')
 
   const admin = getServiceClient()
   const [overview, liveVisitors, channelBreakdown] = await Promise.all([

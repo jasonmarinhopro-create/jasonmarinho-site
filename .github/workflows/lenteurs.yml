@@ -36,3 +36,26 @@ jobs:
             echo "::notice title=Lenteurs $n::$body"
           done
           cat lignes.txt
+
+      - name: Tester la base
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          # Temps de réponse de la base depuis GitHub (hors Europe : ~80 ms
+          # d'aller-retour en plus) et nombre de lignes des grosses tables.
+          # Aucune donnée lue, seulement des comptes.
+          lignes=""
+          for t in profiles contracts sejours logements ical_events ical_feeds notifications chez_nous_notifications site_visits affiliate_clicks app_errors calendar_events revenus_entries outreach_sends; do
+            out=$(curl -s -o /dev/null -D - -w "TIME:%{time_total}" -I "$SUPABASE_URL/rest/v1/$t?select=*" \
+              -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" -H "Prefer: count=exact")
+            n=$(echo "$out" | tr -d '\r' | grep -i '^content-range' | sed 's/.*\///')
+            ms=$(echo "$out" | grep -o 'TIME:[0-9.]*' | cut -d: -f2 | awk '{printf "%d", $1*1000}')
+            lignes="$lignes$t : ${n:-?} lignes, compté en ${ms} ms%0A"
+          done
+          echo "::notice title=Base de données::$lignes"
+          # Même requête simple 5 fois : latence de base
+          for i in 1 2 3 4 5; do
+            curl -s -o /dev/null -w "%{time_total}\n" "$SUPABASE_URL/rest/v1/profiles?select=id&limit=1" \
+              -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY"
+          done | awk '{s=s sprintf("%d ms ", $1*1000)} END {print "::notice title=Requête simple x5::" s}'

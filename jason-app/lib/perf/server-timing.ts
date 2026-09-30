@@ -5,7 +5,8 @@
 // workflow « Lenteurs ». Aucune donnée personnelle : chemins et durées.
 import 'server-only'
 import { getServiceClient } from '@/lib/supabase/service'
-import { slowMessage } from './format'
+import { slowMessage, slowestCalls } from './format'
+import { queryLog } from './query-log'
 
 const SLOW_MS = 1500
 
@@ -33,8 +34,13 @@ export function perfTimer(label: string, extra: Array<[string, number]> = []) {
       if (total < SLOW_MS) return
       try {
         const db = getServiceClient()
+        const calls = queryLog() ?? []
+        const worst = slowestCalls(calls, 5).filter(([, ms]) => ms >= 300)
+        const detail: Array<[string, number]> = worst.length
+          ? [...steps, ...worst.map(([n, ms], i): [string, number] => [i === 0 ? `· ${calls.length} appels, plus lents : ${n}` : n, ms])]
+          : steps
         const write = db.from('app_errors').insert({
-          source: 'server', route: 'perf', message: slowMessage('Serveur lent', label, total, steps),
+          source: 'server', route: 'perf', message: slowMessage('Serveur lent', label, total, detail),
         } as never).then(() => {}, () => {})
         keepAlive(Promise.resolve(write))
       } catch { /* jamais bloquant */ }
