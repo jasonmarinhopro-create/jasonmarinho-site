@@ -6,6 +6,7 @@
 // (iOS 16.4 et plus) : on l'explique au lieu d'afficher un bouton qui échoue.
 import { useEffect, useState } from 'react'
 import { DeviceMobile, CheckCircle, BellRinging, Export, PlusSquare } from '@phosphor-icons/react/dist/ssr'
+import { pushDeviceState } from '@/lib/notifications/push-client'
 
 type State = 'loading' | 'noconfig' | 'unsupported' | 'ios-install' | 'ios-old' | 'denied' | 'off' | 'on'
 
@@ -13,14 +14,6 @@ function keyBytes(base64: string): Uint8Array {
   const pad = '='.repeat((4 - (base64.length % 4)) % 4)
   const raw = atob((base64 + pad).replace(/-/g, '+').replace(/_/g, '/'))
   return Uint8Array.from(raw, c => c.charCodeAt(0))
-}
-
-function isIos(): boolean {
-  const ua = navigator.userAgent
-  return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
-}
-function isStandalone(): boolean {
-  return window.matchMedia?.('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true
 }
 
 async function post(body: unknown): Promise<{ ok?: boolean; error?: string; sent?: number }> {
@@ -35,17 +28,8 @@ export default function PushSettings({ devices, publicKey }: { devices: number; 
   const [msg, setMsg] = useState<{ tone: 'ok' | 'err'; text: string } | null>(null)
 
   useEffect(() => {
-    (async () => {
-      if (!PUBLIC_KEY) return setState('noconfig')
-      const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window
-      if (!supported) return setState(isIos() && !isStandalone() ? 'ios-install' : isIos() ? 'ios-old' : 'unsupported')
-      if (Notification.permission === 'denied') return setState('denied')
-      try {
-        const reg = await navigator.serviceWorker.getRegistration('/')
-        const sub = reg ? await reg.pushManager.getSubscription() : null
-        setState(sub ? 'on' : 'off')
-      } catch { setState('off') }
-    })()
+    if (!PUBLIC_KEY) { setState('noconfig'); return }
+    pushDeviceState().then(setState)
   }, [PUBLIC_KEY])
 
   async function enable() {
@@ -85,7 +69,7 @@ export default function PushSettings({ devices, publicKey }: { devices: number; 
   }
 
   return (
-    <div id="telephone" style={s.card}>
+    <div id="telephone" data-state={state} style={s.card}>
       <div style={s.head}>
         <span style={s.icon}><DeviceMobile size={18} weight="fill" /></span>
         <div style={{ minWidth: 0 }}>

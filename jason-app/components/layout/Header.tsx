@@ -7,7 +7,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import Sidebar from './Sidebar'
-import NotificationPanel from './NotificationPanel'
+import NotificationPanel, { prefetchNotificationFeed, refreshNotificationFeed } from './NotificationPanel'
 import SOSModal from '@/components/sos/SOSModal'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, usePathname } from 'next/navigation'
@@ -63,7 +63,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/nouveautes': 'Nouveautés',
   '/dashboard/chez-nous': 'Entre Hôtes',
   '/dashboard/chez-nous/notifications': 'Notifications',
-  '/dashboard/notifications': 'Mes alertes',
+  '/dashboard/notifications': 'Notifications',
   '/dashboard/logements': 'Mes logements',
   '/dashboard/calendrier': 'Calendrier',
   '/dashboard/calendrier/menage': 'Ménage',
@@ -209,8 +209,8 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
       .then(res => res.ok ? res.json() : null)
       .then(data => {
         if (!data) return
-        if (typeof data.chezNousUnread === 'number') setChezNousUnread(data.chezNousUnread)
-        if (typeof data.appNotifUnread === 'number') setAppNotifUnread(data.appNotifUnread)
+        if (typeof data.chezNousUnread === 'number') setChezNousUnread(prev => { if (prev !== data.chezNousUnread) refreshNotificationFeed(); return data.chezNousUnread })
+        if (typeof data.appNotifUnread === 'number') setAppNotifUnread(prev => { if (prev !== data.appNotifUnread) refreshNotificationFeed(); return data.appNotifUnread })
       })
       .catch(err => console.warn('[Header notif counts]', err))
   }, [userId])
@@ -218,12 +218,15 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   useEffect(() => {
     if (!userId) return
     refreshCounts()
+    // Cloche instantanée : le fil est préchargé une fois la page affichée
+    const warm = window.setTimeout(prefetchNotificationFeed, 2500)
     const tick = () => { if (document.visibilityState === 'visible') refreshCounts() }
     const id = window.setInterval(tick, 60_000)
     document.addEventListener('visibilitychange', tick)
     window.addEventListener('notif-refresh-count', refreshCounts)
     return () => {
       window.clearInterval(id)
+      window.clearTimeout(warm)
       document.removeEventListener('visibilitychange', tick)
       window.removeEventListener('notif-refresh-count', refreshCounts)
     }
@@ -423,6 +426,9 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
                 className="dash-icon-btn"
                 aria-label={`Notifications${totalUnread > 0 ? `, ${totalUnread} non lue${totalUnread > 1 ? 's' : ''}` : ''}`}
                 onClick={handleOpenNotif}
+                onPointerEnter={prefetchNotificationFeed}
+                onTouchStart={prefetchNotificationFeed}
+                onFocus={prefetchNotificationFeed}
                 data-notif-bell=""
                 aria-expanded={notifOpen}
               >

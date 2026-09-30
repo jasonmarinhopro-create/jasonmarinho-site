@@ -110,6 +110,12 @@ export default function NotificationsView({ items: initial, today, initialFilter
         .notif-row:focus-visible { outline: 2px solid var(--accent-text); outline-offset: -2px }
         .notif-chip:hover { border-color: var(--accent-border) !important }
         @media (max-width: 720px) { .notif-chips { flex-wrap: nowrap !important; overflow-x: auto; margin-left: -4px; margin-right: -4px; padding: 0 4px 4px; scrollbar-width: none } .notif-chip { flex-shrink: 0 } }
+        @media (max-width: 900px) {
+          .notif-aside { display: contents !important }
+          .notif-aside > * { flex: 1 1 100%; min-width: 0; order: 2 }
+          .notif-main { order: 1 }
+          .notif-aside > #telephone:not([data-state="on"]):not([data-state="loading"]):not([data-state="noconfig"]) { order: 0 }
+        }
       `} />
       <HubHero
         eyebrowIcon={<Bell size={14} weight="fill" />}
@@ -144,7 +150,7 @@ export default function NotificationsView({ items: initial, today, initialFilter
       />
 
       <div style={s.cols}>
-        <div style={{ flex: '1 1 620px', minWidth: 0 }}>
+        <div className="notif-main" style={{ flex: '999 1 620px', minWidth: 0 }}>
           <div style={s.chips} className="notif-chips" role="tablist" aria-label="Filtrer les notifications">
             <Chip on={filter === 'all'} onClick={() => choose('all')} label="Toutes" n={items.length} />
             <Chip on={filter === 'unread'} onClick={() => choose('unread')} label="Non lues" n={unread} />
@@ -180,7 +186,7 @@ export default function NotificationsView({ items: initial, today, initialFilter
           </Card>
         </div>
 
-        <aside style={{ flex: '0 1 340px', minWidth: 280, display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <aside className="notif-aside" style={{ flex: '1 1 340px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
           <PushSettings devices={pushDevices} publicKey={pushPublicKey} />
           <Card>
             <div style={s.sideTitle}>Ce que l&apos;app te signale</div>
