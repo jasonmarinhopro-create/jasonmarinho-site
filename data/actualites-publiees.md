@@ -28,3 +28,4 @@ sauf pour retirer une ligne masquée dans le dashboard.
 - 2026-09-25 · marche · Bilan été 2026 : taux d'occupation en hausse, le littoral domine (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
 - 2026-09-26 · fiscalite · Meublé classé : le plafond micro-BIC monte à 83 600 euros pour 2026 (https://www.koliving.fr/meuble-tourisme-plafond-micro-bic-83600-euros-revenus-2026/)
 - 2026-09-28 · reglementation · Voyageur qui refuse de partir : la loi Ripost permet l'expulsion en 72h (https://www.meuble-tourisme-76.fr/news/loi-ripost-et-meuble-de-tourisme)
+- 2026-09-30 · plateformes · Booking.com : tes virements sont mensuels depuis juillet (https://partner.booking.com/fr/aide/conditions-paiements/produits-paiements/d%C3%A9couvrez-les-paiements-par-bookingcom)
