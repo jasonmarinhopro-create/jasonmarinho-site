@@ -82,7 +82,7 @@ const html = `<!-- MARKET:START -->
     .mk-f.star.on{color:#7a5a00}
     .mk-f.star.on::after{background:var(--y)}
     .mk-sep{height:1px;background:rgba(0,76,63,.1);margin:8px 0}
-    .mk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;align-items:stretch}
+    .mk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;align-items:stretch}
     .mk-card{display:flex;flex-direction:column;background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:16px;padding:22px;min-width:0;transition:border-color .15s,box-shadow .15s,transform .15s}
     .mk-card:hover{border-color:rgba(0,76,63,.22);box-shadow:0 10px 28px rgba(0,76,63,.07);transform:translateY(-2px)}
     .mk-card.is-offre{border-color:rgba(255,213,107,.7);background:linear-gradient(180deg,rgba(255,213,107,.07),#fff 60%)}
@@ -99,11 +99,12 @@ const html = `<!-- MARKET:START -->
     .mk-offre{font-size:14.5px;font-weight:600;color:var(--td);margin:0 0 6px;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .mk-offre.is-cat{color:var(--tm);font-weight:500}
     .mk-desc{font-size:14px;line-height:1.6;color:var(--tl);margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;height:calc(1.6em * 3)}
-    .mk-liens{display:flex;align-items:center;gap:14px;margin-top:auto;padding-top:18px;white-space:nowrap}
-    .mk-l{font-size:13.5px;font-weight:600;color:var(--g);text-decoration:none;display:inline-flex;align-items:center;gap:5px}
+    .mk-liens{display:flex;align-items:center;flex-wrap:wrap;gap:10px 12px;margin-top:auto;padding-top:18px}
+    .mk-l{white-space:nowrap}
+    .mk-l{font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:inline-flex;align-items:center;gap:5px}
     .mk-l i{font-size:11px}
     .mk-l:hover{text-decoration:underline}
-    .mk-l1{background:var(--g);color:#fff;padding:9px 14px;border-radius:8px}
+    .mk-l1{background:var(--g);color:#fff;padding:9px 12px;border-radius:8px}
     .mk-l1:hover{background:var(--gd);text-decoration:none}
     .mk-note{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.6;color:var(--tl);background:var(--cr);border-radius:12px;padding:14px 16px;margin:0 0 36px}
     .mk-note i{font-size:17px;color:var(--g);margin-top:1px}
