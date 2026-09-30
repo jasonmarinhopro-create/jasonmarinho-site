@@ -3,7 +3,7 @@ title: "Tes notifications"
 excerpt: "Nouvelle réservation, contrat signé, paiement, check-in, ménage terminé, réponse à ta question : tout arrive dans la cloche."
 order: 4
 relatedPages: [/dashboard/notifications]
-updatedAt: "2026-09-29"
+updatedAt: "2026-09-30"
 ---
 
 La cloche en haut à droite réunit tout ce qui se passe sur ton activité, classé par jour. Le chiffre rouge compte ce que tu n'as pas encore lu.
@@ -23,6 +23,16 @@ La cloche en haut à droite réunit tout ce qui se passe sur ton activité, clas
 L'app compare ton calendrier à chaque synchronisation : une réservation qui apparaît, change de dates ou disparaît crée une notification. La plateforme ne transmet que les dates, pas le nom du voyageur : clique sur **Compléter la réservation** pour l'ajouter (utile pour sa déclaration).
 
 La première synchronisation d'un calendrier ne crée pas de notification pour les réservations déjà présentes.
+
+## Sur ton téléphone
+
+Tu peux recevoir les notifications sur ton téléphone ou ton ordinateur, même quand l'app est fermée : page **Notifications**, bloc **Sur ton téléphone**, bouton **Activer sur cet appareil**, puis accepte la demande du navigateur. Une notification d'essai part tout de suite.
+
+- **Android, ordinateur** : fonctionne dans Chrome, Edge et Firefox, directement depuis le navigateur.
+- **iPhone et iPad** : Apple ne l'autorise que depuis l'app installée (iOS 16.4 ou plus). Dans Safari, touche **Partager** puis **Sur l'écran d'accueil**, ouvre l'app depuis son icône, puis active les notifications.
+- À activer sur chaque appareil. **Désactiver** l'arrête sur l'appareil utilisé seulement.
+
+Les rappels répétés (inscription Stripe à terminer) restent dans la cloche sans être envoyés sur le téléphone.
 
 ## Lire et trier
 

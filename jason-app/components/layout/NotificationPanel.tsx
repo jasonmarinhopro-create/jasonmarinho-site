@@ -9,7 +9,7 @@
 // page qui la traite et se marque lue au clic.
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { X, CheckCircle, ArrowRight, Checks } from '@phosphor-icons/react/dist/ssr'
+import { X, CheckCircle, ArrowRight, Checks, DeviceMobile } from '@phosphor-icons/react/dist/ssr'
 import InlineStyle from '@/components/ui/InlineStyle'
 import FeedRow from '@/components/notifications/FeedRow'
 import { markFeedRead, markAllNotificationsRead } from '@/lib/notifications/actions'
@@ -157,9 +157,14 @@ export default function NotificationPanel({ open, onClose, totalUnread, onNewsSe
         ))}
       </div>
 
-      <Link href="/dashboard/notifications" onClick={onClose} style={s.footer}>
-        Voir toutes les notifications <ArrowRight size={13} weight="bold" />
-      </Link>
+      <div style={s.footerRow}>
+        <Link href="/dashboard/notifications" onClick={onClose} style={s.footer}>
+          Voir toutes les notifications <ArrowRight size={13} weight="bold" />
+        </Link>
+        <Link href="/dashboard/notifications#telephone" onClick={onClose} style={s.phone} title="Recevoir les notifications sur ton téléphone">
+          <DeviceMobile size={15} weight="bold" /> Sur mon téléphone
+        </Link>
+      </div>
     </div>
   )
 }
@@ -186,5 +191,7 @@ const s: Record<string, React.CSSProperties> = {
   empty: { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 6, padding: '34px 28px' },
   emptyIcon: { width: 44, height: 44, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', marginBottom: 4 },
   skeleton: { height: 58, borderRadius: 12, background: 'var(--surface)', marginTop: 8 },
-  footer: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '12px 16px', borderTop: '1px solid var(--border)', color: 'var(--accent-text)', fontSize: 13.5, fontWeight: 700, textDecoration: 'none', background: 'var(--bg-2)' },
+  footerRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '10px 14px 10px 18px', borderTop: '1px solid var(--border)', background: 'var(--bg-2)', flexWrap: 'wrap' },
+  footer: { display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--accent-text)', fontSize: 13.5, fontWeight: 700, textDecoration: 'none' },
+  phone: { display: 'inline-flex', alignItems: 'center', gap: 5, padding: '6px 10px', borderRadius: 99, border: '1px solid var(--accent-border)', color: 'var(--accent-text)', fontSize: 12, fontWeight: 700, textDecoration: 'none' },
 }

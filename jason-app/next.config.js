@@ -23,7 +23,7 @@ const nextConfig = {
     staleTimes: { dynamic: 30 },
     // Prospection (lib/outreach) : SMTP / IMAP de la boîte de Jason, modules
     // Node chargés tels quels côté serveur plutôt qu'empaquetés.
-    serverComponentsExternalPackages: ['nodemailer', 'imapflow'],
+    serverComponentsExternalPackages: ['nodemailer', 'imapflow', 'web-push'],
   },
 
   async redirects() {
@@ -101,6 +101,14 @@ const nextConfig = {
           { key: 'X-XSS-Protection', value: '1; mode=block' },
           { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate' },
           { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+        ],
+      },
+      {
+        // Service worker des notifications : toujours la dernière version
+        source: '/sw.js',
+        headers: [
+          { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' },
+          { key: 'Content-Type', value: 'application/javascript; charset=utf-8' },
         ],
       },
       {

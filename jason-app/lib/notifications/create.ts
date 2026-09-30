@@ -9,6 +9,7 @@ import 'server-only'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getServiceClient } from '@/lib/supabase/service'
 import { cleanText } from './present'
+import { pushPayload, shouldPush } from './push-rules'
 import type { NotificationCategory, NotificationSeverity } from './types'
 
 export interface CreateNotificationInput {
@@ -54,6 +55,15 @@ export async function createNotification(input: CreateNotificationInput): Promis
       // 23505 = unique_violation = déjà notifié, pas une erreur
       if (error.code !== '23505') console.error('[createNotification]', error)
       return false
+    }
+    // Sur le téléphone aussi (si l'hôte l'a activé) : attendu, mais plafonné à
+    // 4 s pour ne jamais ralentir l'action qui a créé la notification
+    if (shouldPush(input.type)) {
+      const { sendPushToUser } = await import('./push')
+      await Promise.race([
+        sendPushToUser(input.recipientId, pushPayload({ title: cleanText(input.title) ?? input.title, body: cleanText(input.body), href: input.ctaHref, type: input.type, dedupKey: input.dedupKey })),
+        new Promise(r => setTimeout(r, 4000)),
+      ])
     }
     return true
   } catch (e) {

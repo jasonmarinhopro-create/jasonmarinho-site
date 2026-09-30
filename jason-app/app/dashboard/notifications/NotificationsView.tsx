@@ -11,6 +11,7 @@ import { Bell, Checks, CheckCircle, EnvelopeSimple } from '@phosphor-icons/react
 import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import InlineStyle from '@/components/ui/InlineStyle'
 import FeedRow, { GroupIcon } from '@/components/notifications/FeedRow'
+import PushSettings from '@/components/notifications/PushSettings'
 import { Card, ui } from '../finances/_ui/ui'
 import { markFeedRead, markAllNotificationsRead } from '@/lib/notifications/actions'
 import {
@@ -40,10 +41,12 @@ function parseFilter(raw: string | null): Filter {
   return 'all'
 }
 
-export default function NotificationsView({ items: initial, today, initialFilter }: {
+export default function NotificationsView({ items: initial, today, initialFilter, pushDevices = 0 }: {
   items: FeedItem[]
   today: string
   initialFilter: string | null
+  /** Appareils où les notifications sur le téléphone sont activées */
+  pushDevices?: number
 }) {
   const router = useRouter()
   const [items, setItems] = useState(initial)
@@ -176,6 +179,7 @@ export default function NotificationsView({ items: initial, today, initialFilter
         </div>
 
         <aside style={{ flex: '0 1 340px', minWidth: 280, display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <PushSettings devices={pushDevices} />
           <Card>
             <div style={s.sideTitle}>Ce que l&apos;app te signale</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 10 }}>
@@ -194,7 +198,7 @@ export default function NotificationsView({ items: initial, today, initialFilter
             <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
               <span style={{ color: 'var(--accent-text)', marginTop: 2 }}><EnvelopeSimple size={18} weight="fill" /></span>
               <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.55 }}>
-                Contrat signé, paiement reçu, check-in rempli et réponse à ta question t&apos;arrivent aussi par e-mail. Les nouvelles réservations Airbnb et Booking sont repérées à chaque synchronisation du calendrier.
+                Contrat signé, paiement reçu, check-in rempli et réponse à ta question t&apos;arrivent aussi par e-mail, et sur ton téléphone si tu l&apos;as activé. Les nouvelles réservations Airbnb et Booking sont repérées à chaque synchronisation du calendrier.
               </p>
             </div>
           </Card>

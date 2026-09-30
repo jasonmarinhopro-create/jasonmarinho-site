@@ -842,3 +842,50 @@
     }, true);
   } catch (e) { /* fail-silent */ }
 }());
+
+/* ── Réveil de l'app avant le clic sur « Mon espace » (30/09/2026) ──
+   Sur l'offre Vercel gratuite, la fonction qui rend les pages de
+   app.jasonmarinho.com s'endort quand personne ne s'en sert : le premier
+   appel coûtait jusqu'à 1 s de plus. On ouvre la connexion tôt, on réveille
+   l'app au survol (ou au toucher) d'un lien vers elle, et dès le chargement
+   pour un membre qui a déjà cliqué sur « Mon espace » (au plus toutes les
+   5 min). Aucune donnée envoyée. */
+(function () {
+  if (window.__jmAppWarm) return;
+  window.__jmAppWarm = true;
+  try {
+    var APP = 'https://app.jasonmarinho.com';
+    var head = document.head || document.getElementsByTagName('head')[0];
+    var pc = document.createElement('link');
+    pc.rel = 'preconnect'; pc.href = APP;
+    head.appendChild(pc);
+
+    var done = false;
+    function warm() {
+      if (done) return;
+      done = true;
+      try {
+        var last = Number(sessionStorage.getItem('jm-app-warm') || 0);
+        if (Date.now() - last < 5 * 60 * 1000) return;
+        sessionStorage.setItem('jm-app-warm', String(Date.now()));
+      } catch (e) { /* stockage bloqué : on réveille quand même */ }
+      try { fetch(APP + '/reveil', { mode: 'no-cors', credentials: 'omit', cache: 'no-store', keepalive: true }).catch(function () {}); } catch (e) {}
+    }
+    function appLink(t) {
+      var a = t && t.closest ? t.closest('a[href^="' + APP + '"]') : null;
+      return a;
+    }
+    function onIntent(e) { if (appLink(e.target)) warm(); }
+    document.addEventListener('pointerover', onIntent, { passive: true });
+    document.addEventListener('touchstart', onIntent, { passive: true });
+    document.addEventListener('focusin', onIntent);
+    document.addEventListener('click', function (e) {
+      var a = appLink(e.target);
+      if (a && a.href.indexOf('/dashboard') !== -1) { try { localStorage.setItem('jm-membre', '1'); } catch (err) {} }
+    }, true);
+
+    var membre = false;
+    try { membre = localStorage.getItem('jm-membre') === '1'; } catch (e) {}
+    if (membre) (window.requestIdleCallback || function (f) { setTimeout(f, 1200); })(warm);
+  } catch (e) { /* fail-silent */ }
+}());
