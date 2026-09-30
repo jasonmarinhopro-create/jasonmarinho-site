@@ -1,555 +1,190 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+// Panneau de la cloche (refonte 29/09/2026, demande de Jason : « la partie
+// notification doit être 100 % revue »). Avant : 3 onglets (alertes limitées
+// à 4 non lues sans date, nouveautés de juin, et un simple compteur pour
+// Entre Hôtes sans les messages), emojis, bleu et rouge codés en dur.
+// Maintenant : un seul fil (alertes de l'app, Questions & réponses,
+// nouveautés), classé par jour à l'heure de Paris, chaque ligne mène à la
+// page qui la traite et se marque lue au clic.
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { X, Sparkle, ArrowUp, Wrench, Star, ArrowRight, ChatCircleDots, Bell, Warning, Info, CheckCircle } from '@phosphor-icons/react/dist/ssr'
-import { CHANGELOG, ChangelogTag } from '@/lib/constants/changelog'
-import { markNotificationRead } from '@/lib/notifications/actions'
-import type { AppNotification } from '@/lib/notifications/types'
+import { X, CheckCircle, ArrowRight, Checks } from '@phosphor-icons/react/dist/ssr'
+import InlineStyle from '@/components/ui/InlineStyle'
+import FeedRow from '@/components/notifications/FeedRow'
+import { markFeedRead, markAllNotificationsRead } from '@/lib/notifications/actions'
+import { bucketize, BUCKET_LABEL, type FeedItem } from '@/lib/notifications/present'
 
-const VISIBLE_COUNT = 3
-const ALERTES_VISIBLE = 4
-// Le rules-engine fait plusieurs requêtes DB : pas la peine de le re-lancer
-// à chaque ouverture de la cloche, ça ne fait que ralentir l'affichage pour
-// rien la plupart du temps (les alertes déjà en DB ne changent pas d'une
-// ouverture à l'autre dans ce laps de temps).
+// Les règles (arrivée demain, contrat à signer…) coûtent plusieurs requêtes :
+// au plus une fois toutes les 15 min par onglet, en tâche de fond.
 const RULES_THROTTLE_MS = 15 * 60 * 1000
 const RULES_THROTTLE_KEY = 'notif-rules-last-run'
+const PANEL_LIMIT = 20
 
 interface NotificationPanelProps {
   open: boolean
   onClose: () => void
-  readIds: Set<string>
-  onMarkAllRead: () => void
-  /** Compteur de notifications Entre Hôtes non lues (récupéré dans Header). */
-  chezNousUnread?: number
-  /** Compteur d'alertes contextuelles non lues (table `notifications`). */
-  appNotifUnread?: number
+  /** Nombre total de non lues (badge de la cloche) */
+  totalUnread: number
+  /** Nouveautés de l'app vues (le Header garde leur compteur) */
+  onNewsSeen: () => void
 }
 
-type Tab = 'alertes' | 'nouveautes' | 'cheznous'
+type Filter = 'all' | 'unread'
 
-// Note : pour 'amélioration', on utilise var(--accent-text) au lieu d'un jaune
-// hardcodé (#FFD56B). En mode clair le jaune est invisible sur fond blanc,
-// alors que --accent-text est calibré pour rester lisible dans les deux thèmes.
-const TAG_CONFIG: Record<ChangelogTag, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
-  nouveau:      { label: 'Nouveau',       color: 'var(--success-1)',           bg: 'rgba(16,185,129,0.12)',  icon: <Sparkle size={11} weight="fill" /> },
-  amélioration: { label: 'Amélioration',  color: 'var(--accent-text)', bg: 'var(--accent-bg-2)',    icon: <ArrowUp  size={11} weight="bold" /> },
-  correction:   { label: 'Correction',    color: '#2563eb',           bg: 'rgba(37,99,235,0.10)',   icon: <Wrench   size={11} weight="fill" /> },
-  important:    { label: 'Important',     color: '#db2777',           bg: 'rgba(219,39,119,0.10)',  icon: <Star     size={11} weight="fill" /> },
+function broadcast(delta: { app?: number; qr?: number }) {
+  window.dispatchEvent(new CustomEvent('notif-count-delta', { detail: delta }))
 }
 
-function formatDate(iso: string): string {
-  const d = new Date(iso)
-  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })
-}
-
-export default function NotificationPanel({ open, onClose, readIds, onMarkAllRead, chezNousUnread = 0, appNotifUnread = 0 }: NotificationPanelProps) {
+export default function NotificationPanel({ open, onClose, totalUnread, onNewsSeen }: NotificationPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null)
-  const [tab, setTab] = useState<Tab>('alertes')
-  const [alertes, setAlertes] = useState<AppNotification[]>([])
-  const [alertesLoading, setAlertesLoading] = useState(false)
+  const [items, setItems] = useState<FeedItem[]>([])
+  const [today, setToday] = useState<string>('')
+  const [loading, setLoading] = useState(false)
+  const [filter, setFilter] = useState<Filter>('all')
 
-  // Auto-switch à l'ouverture vers l'onglet le plus pressant :
-  // 1. Alertes contextuelles (priorité métier max)
-  // 2. Entre Hôtes (interactions sociales)
-  // 3. Nouveautés produit (info passive)
+  const fetchFeed = useCallback(() =>
+    fetch(`/api/notifications/list?limit=${PANEL_LIMIT}`, { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : null)
+      .then(j => { if (j) { setItems(j.items ?? []); setToday(j.today ?? '') } })
+      .catch(() => {}), [])
+
   useEffect(() => {
     if (!open) return
-    const productUnread = CHANGELOG.filter(e => !readIds.has(e.id)).length
-    if (appNotifUnread > 0) setTab('alertes')
-    else if (chezNousUnread > 0 && productUnread === 0) setTab('cheznous')
-    else setTab('nouveautes')
-  }, [open, chezNousUnread, appNotifUnread, readIds])
-
-  // Fetch des alertes non lues quand le panel s'ouvre. Le rules-engine
-  // (best-effort, idempotent grâce à dedup_key) tourne EN PARALLÈLE au lieu
-  // de bloquer l'affichage, et seulement 1×/15 min par session : avant, il
-  // était systématiquement attendu avant même de lancer le fetch de la
-  // liste, ce qui rendait l'ouverture de la cloche visiblement lente à
-  // chaque clic.
-  useEffect(() => {
-    if (!open) return
-    setAlertesLoading(true)
-
-    const fetchList = () =>
-      fetch('/api/notifications/list?limit=' + ALERTES_VISIBLE + '&unreadOnly=1', { cache: 'no-store' })
-        .then(r => r.ok ? r.json() : { notifications: [] })
-        .then(j => setAlertes(j.notifications ?? []))
-        .catch(() => setAlertes([]))
-
-    fetchList().finally(() => setAlertesLoading(false))
-
+    setLoading(true)
+    fetchFeed().finally(() => setLoading(false))
     let lastRun = 0
-    try { lastRun = Number(sessionStorage.getItem(RULES_THROTTLE_KEY) ?? 0) } catch { /* privacy mode */ }
+    try { lastRun = Number(sessionStorage.getItem(RULES_THROTTLE_KEY) ?? 0) } catch { /* navigation privée */ }
     if (Date.now() - lastRun < RULES_THROTTLE_MS) return
-
-    try { sessionStorage.setItem(RULES_THROTTLE_KEY, String(Date.now())) } catch { /* privacy mode */ }
-    // Best-effort : si l'engine échoue, on garde les données déjà affichées.
-    // On ne re-fetch la liste que s'il a effectivement créé de nouvelles alertes.
+    try { sessionStorage.setItem(RULES_THROTTLE_KEY, String(Date.now())) } catch { /* navigation privée */ }
     fetch('/api/notifications/run-rules', { method: 'POST' })
       .then(r => r.ok ? r.json() : null)
-      .then(result => { if (result?.total > 0) fetchList() })
+      .then(res => { if (res?.total > 0) { fetchFeed(); window.dispatchEvent(new Event('notif-refresh-count')) } })
       .catch(() => null)
-  }, [open])
+  }, [open, fetchFeed])
 
-  // Marque une alerte comme lue (clic sur la croix, ou sur son CTA) et la
-  // retire immédiatement de la liste affichée + décrémente le badge de la
-  // cloche (Header écoute cet évènement, même mécanisme que la page
-  // /dashboard/notifications). Revert optimiste si l'appel serveur échoue.
-  function dismissAlerte(id: string) {
-    const prevAlertes = alertes
-    const prevUnread = appNotifUnread
-    setAlertes(prev => prev.filter(n => n.id !== id))
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('notif-count-changed', { detail: { appNotifUnread: Math.max(0, prevUnread - 1) } }))
+  // Fermeture : clic extérieur, Échap
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e: MouseEvent) => {
+      const t = e.target as HTMLElement
+      if (panelRef.current && !panelRef.current.contains(t) && !t.closest?.('[data-notif-bell]')) onClose()
     }
-    markNotificationRead(id).then(res => {
-      if (!res.ok) {
-        setAlertes(prevAlertes)
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('notif-count-changed', { detail: { appNotifUnread: prevUnread } }))
-        }
-      }
-    }).catch(() => {
-      setAlertes(prevAlertes)
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('notif-count-changed', { detail: { appNotifUnread: prevUnread } }))
-      }
-    })
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey) }
+  }, [open, onClose])
+
+  function markRead(targets: FeedItem[]) {
+    const unread = targets.filter(i => !i.read)
+    if (unread.length === 0) return
+    const keys = new Set(unread.map(i => i.key))
+    setItems(prev => prev.map(i => keys.has(i.key) ? { ...i, read: true } : i))
+    broadcast({ app: -unread.filter(i => i.source === 'app').length, qr: -unread.filter(i => i.source === 'qr').length })
+    if (unread.some(i => i.source === 'changelog')) onNewsSeen()
+    markFeedRead(unread.map(i => i.key)).then(res => {
+      if (!res.ok) { fetchFeed(); window.dispatchEvent(new Event('notif-refresh-count')) }
+    }).catch(() => { fetchFeed(); window.dispatchEvent(new Event('notif-refresh-count')) })
   }
 
-  // Close on outside click
-  useEffect(() => {
-    function onOutside(e: MouseEvent) {
-      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
-        onClose()
-      }
-    }
-    if (open) document.addEventListener('mousedown', onOutside)
-    return () => document.removeEventListener('mousedown', onOutside)
-  }, [open, onClose])
-
-  // Close on Escape
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose()
-    }
-    if (open) document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [open, onClose])
-
-  const unreadCount = CHANGELOG.filter(e => !readIds.has(e.id)).length
-  const visibleEntries = CHANGELOG.slice(0, VISIBLE_COUNT)
+  function markAll() {
+    setItems(prev => prev.map(i => ({ ...i, read: true })))
+    window.dispatchEvent(new CustomEvent('notif-count-changed', { detail: { appNotifUnread: 0, chezNousUnread: 0 } }))
+    onNewsSeen()
+    markAllNotificationsRead().then(res => { if (!res.ok) { fetchFeed(); window.dispatchEvent(new Event('notif-refresh-count')) } })
+  }
 
   if (!open) return null
 
+  const shown = filter === 'unread' ? items.filter(i => !i.read) : items
+  const unreadHere = items.filter(i => !i.read).length
+  const sections = today ? bucketize(shown, today) : [{ bucket: 'today' as const, items: shown }]
+
   return (
-    <div
-      ref={panelRef}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Nouveautés de la plateforme"
-      style={{
-        position: 'fixed',
-        top: 'calc(var(--header-h, 60px) + 8px)',
-        right: 0,
-        width: 'min(380px, 100vw)',
-        background: 'var(--bg-2)',
-        border: '1px solid var(--border-2)',
-        borderRight: 'none',
-        borderRadius: '16px 0 0 16px',
-        boxShadow: '-8px 16px 48px rgba(0,0,0,0.3)',
-        zIndex: 160,
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        animation: 'notifPop 0.2s cubic-bezier(0.16,1,0.3,1)',
-      }}
-    >
-      <style>{`
-        @keyframes notifPop {
-          from { opacity: 0; transform: translateX(24px); }
-          to   { opacity: 1; transform: translateX(0); }
-        }
-      `}</style>
+    <div ref={panelRef} role="dialog" aria-label="Notifications" style={s.panel} className="notif-panel">
+      <InlineStyle css={`
+        @keyframes notifIn { from { opacity: 0; transform: translateY(-6px) } to { opacity: 1; transform: none } }
+        .notif-row:hover { background: var(--surface) !important }
+        .notif-row:focus-visible { outline: 2px solid var(--accent-text); outline-offset: -2px }
+        @media (max-width: 640px) { .notif-long { display: none } .notif-panel { top: calc(var(--header-h, 60px) + 4px) !important; right: 8px !important; left: 8px !important; width: auto !important; max-height: calc(100dvh - var(--header-h, 60px) - 16px) !important } }
+      `} />
 
-      {/* Header */}
-      <div style={s.header}>
-        <div style={s.headerLeft}>
+      <div style={s.head}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
           <span style={s.title}>Notifications</span>
+          {totalUnread > 0 && <span style={s.count}>{totalUnread > 99 ? '99+' : totalUnread} non lue{totalUnread > 1 ? 's' : ''}</span>}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          {tab === 'nouveautes' && unreadCount > 0 && (
-            <button onClick={onMarkAllRead} style={s.markAllBtn} title="Tout marquer comme lu">
-              Tout lu
+        <button type="button" onClick={onClose} style={s.close} aria-label="Fermer"><X size={15} weight="bold" /></button>
+      </div>
+
+      <div style={s.toolbar}>
+        <div style={s.pills} role="tablist">
+          {(['all', 'unread'] as Filter[]).map(f => (
+            <button key={f} type="button" role="tab" aria-selected={filter === f} onClick={() => setFilter(f)}
+              style={{ ...s.pill, ...(filter === f ? s.pillOn : {}) }}>
+              {f === 'all' ? 'Toutes' : `Non lues${unreadHere ? ` (${unreadHere})` : ''}`}
             </button>
-          )}
-          <button onClick={onClose} style={s.closeBtn} aria-label="Fermer">
-            <X size={15} weight="bold" />
-          </button>
+          ))}
         </div>
-      </div>
-
-      {/* Onglets */}
-      <div style={s.tabs}>
-        <button
-          onClick={() => setTab('alertes')}
-          style={{ ...s.tab, ...(tab === 'alertes' ? s.tabActive : {}) }}
-          aria-selected={tab === 'alertes'}
-        >
-          <Bell size={12} weight={tab === 'alertes' ? 'fill' : 'regular'} />
-          Alertes
-          {appNotifUnread > 0 && (
-            <span style={s.tabBadge}>{appNotifUnread > 9 ? '9+' : appNotifUnread}</span>
-          )}
-        </button>
-        <button
-          onClick={() => setTab('nouveautes')}
-          style={{ ...s.tab, ...(tab === 'nouveautes' ? s.tabActive : {}) }}
-          aria-selected={tab === 'nouveautes'}
-        >
-          <Sparkle size={12} weight={tab === 'nouveautes' ? 'fill' : 'regular'} />
-          Nouveautés
-          {unreadCount > 0 && (
-            <span style={s.tabBadge}>{unreadCount}</span>
-          )}
-        </button>
-        <button
-          onClick={() => setTab('cheznous')}
-          style={{ ...s.tab, ...(tab === 'cheznous' ? s.tabActive : {}) }}
-          aria-selected={tab === 'cheznous'}
-        >
-          <ChatCircleDots size={12} weight={tab === 'cheznous' ? 'fill' : 'regular'} />
-          Entre Hôtes
-          {chezNousUnread > 0 && (
-            <span style={s.tabBadge}>{chezNousUnread > 9 ? '9+' : chezNousUnread}</span>
-          )}
-        </button>
-      </div>
-
-      {/* Divider */}
-      <div style={s.divider} />
-
-      {/* Contenu — Alertes contextuelles (rules-engine) */}
-      {tab === 'alertes' && (
-        <div style={s.list}>
-          {alertesLoading && alertes.length === 0 ? (
-            <div style={s.cnEmpty}>
-              <div style={{ fontSize: '13px', color: 'var(--text-3)' }}>Chargement…</div>
-            </div>
-          ) : alertes.length === 0 ? (
-            <div style={s.cnEmpty}>
-              <div style={{ fontSize: '24px', marginBottom: '8px' }}>🎉</div>
-              <div style={{ fontSize: '13px', color: 'var(--text-2)', fontWeight: 500 }}>Tu es à jour</div>
-              <div style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '4px' }}>
-                Aucune alerte contextuelle. On te préviendra quand quelque chose demande ton attention.
-              </div>
-            </div>
-          ) : (
-            alertes.map((n, i) => {
-              const isLast = i === alertes.length - 1
-              const isUnread = !n.read_at
-              const sevColor =
-                n.severity === 'error'   ? '#f87171' :
-                n.severity === 'warning' ? '#FFD56B' :
-                n.severity === 'success' ? 'var(--success-1)' : 'var(--text-3)'
-              const SevIcon =
-                n.severity === 'success' ? CheckCircle :
-                n.severity === 'warning' || n.severity === 'error' ? Warning :
-                Info
-              return (
-                <div
-                  key={n.id}
-                  style={{
-                    ...s.entry,
-                    ...(isLast ? {} : { borderBottom: '1px solid var(--border)' }),
-                    opacity: isUnread ? 1 : 0.6,
-                  }}
-                >
-                  <div style={s.dotWrap}>
-                    <div style={{
-                      width: '22px', height: '22px', borderRadius: '7px',
-                      background: sevColor + '14', border: '1px solid ' + sevColor + '33',
-                      color: sevColor,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }} aria-hidden="true">
-                      <SevIcon size={12} weight="fill" />
-                    </div>
-                  </div>
-                  <div style={s.entryBody}>
-                    <div style={s.entryTitle}>{n.title}</div>
-                    {n.body && <div style={s.entryDesc}>{n.body}</div>}
-                    {n.cta_href && (
-                      <Link
-                        href={n.cta_href}
-                        onClick={() => { if (isUnread) dismissAlerte(n.id); onClose() }}
-                        style={{
-                          display: 'inline-flex', alignItems: 'center', gap: '4px',
-                          marginTop: '6px', fontSize: '11.5px', fontWeight: 600,
-                          color: 'var(--accent-text)', textDecoration: 'none',
-                        }}
-                      >
-                        {n.cta_label ?? 'Voir'} <ArrowRight size={10} weight="bold" />
-                      </Link>
-                    )}
-                  </div>
-                  {isUnread && (
-                    <button
-                      onClick={() => dismissAlerte(n.id)}
-                      style={s.dismissBtn}
-                      aria-label="Marquer cette alerte comme lue"
-                      title="Marquer comme lue"
-                    >
-                      <X size={12} weight="bold" />
-                    </button>
-                  )}
-                </div>
-              )
-            })
-          )}
-        </div>
-      )}
-
-      {/* Contenu — Nouveautés produit */}
-      {tab === 'nouveautes' && (
-        <div style={s.list}>
-          {visibleEntries.map((entry, i) => {
-            const isRead = readIds.has(entry.id)
-            const tagCfg = TAG_CONFIG[entry.tag]
-            const isLast = i === visibleEntries.length - 1
-            return (
-              <div
-                key={entry.id}
-                style={{
-                  ...s.entry,
-                  ...(isLast ? {} : { borderBottom: '1px solid var(--border)' }),
-                  opacity: isRead ? 0.5 : 1,
-                }}
-              >
-                <div style={s.dotWrap}>
-                  <div style={{
-                    ...s.dot,
-                    background: isRead ? 'transparent' : tagCfg.color,
-                    border: isRead ? '1.5px solid var(--border)' : 'none',
-                  }} />
-                </div>
-                <div style={s.entryBody}>
-                  <div style={s.entryMeta}>
-                    <span style={{ ...s.tag, color: tagCfg.color, background: tagCfg.bg }}>
-                      {tagCfg.icon}
-                      {tagCfg.label}
-                    </span>
-                    <span style={s.date}>{formatDate(entry.date)}</span>
-                  </div>
-                  <div style={s.entryTitle}>{entry.title}</div>
-                  <div style={s.entryDesc}>{entry.description}</div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      )}
-
-      {/* Contenu — Forum Entre Hôtes */}
-      {tab === 'cheznous' && (
-        <div style={s.list}>
-          {chezNousUnread > 0 ? (
-            <div style={s.cnNotice}>
-              <div style={s.cnIcon}>
-                <ChatCircleDots size={22} weight="fill" color="var(--accent-text)" />
-              </div>
-              <div style={s.cnText}>
-                <div style={s.cnTitle}>
-                  {chezNousUnread} notification{chezNousUnread > 1 ? 's' : ''} non lue{chezNousUnread > 1 ? 's' : ''}
-                </div>
-                <div style={s.cnDesc}>
-                  Quelqu&apos;un t&apos;a répondu, mentionné ou réagi à ton activité dans le forum Entre Hôtes.
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div style={s.cnEmpty}>
-              <div style={{ fontSize: '24px', marginBottom: '8px' }}>📭</div>
-              <div style={{ fontSize: '13px', color: 'var(--text-2)', fontWeight: 500 }}>Tu es à jour</div>
-              <div style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '4px' }}>
-                Aucune nouvelle notification du forum.
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Divider */}
-      <div style={s.divider} />
-
-      {/* Footer, lien adapté à l'onglet */}
-      <div style={s.footer}>
-        {tab === 'alertes' && (
-          <Link href="/dashboard/notifications" onClick={onClose} style={s.learnMoreBtn}>
-            Voir toutes mes alertes
-            <ArrowRight size={13} weight="bold" />
-          </Link>
-        )}
-        {tab === 'nouveautes' && (
-          <Link href="/dashboard/nouveautes" onClick={onClose} style={s.learnMoreBtn}>
-            En savoir plus
-            <ArrowRight size={13} weight="bold" />
-          </Link>
-        )}
-        {tab === 'cheznous' && (
-          <Link href="/dashboard/chez-nous/notifications" onClick={onClose} style={s.learnMoreBtn}>
-            Voir mes notifications Entre Hôtes
-            <ArrowRight size={13} weight="bold" />
-          </Link>
+        {unreadHere > 0 && (
+          <button type="button" onClick={markAll} style={s.markAll}><Checks size={14} weight="bold" /> Tout <span className="notif-long">marquer comme </span>lu</button>
         )}
       </div>
+
+      <div style={s.list}>
+        {loading && items.length === 0 ? (
+          <div style={{ padding: '6px 14px 14px' }}>
+            {[0, 1, 2].map(i => <div key={i} style={s.skeleton} />)}
+          </div>
+        ) : shown.length === 0 ? (
+          <div style={s.empty}>
+            <span style={s.emptyIcon}><CheckCircle size={22} weight="fill" /></span>
+            <strong style={{ color: 'var(--text)', fontSize: 14 }}>Tu es à jour</strong>
+            <span style={{ fontSize: 12.5, color: 'var(--text-3)', lineHeight: 1.5 }}>
+              {filter === 'unread' ? 'Aucune notification non lue.' : 'Nouvelles réservations, contrats signés, paiements, check-in et réponses à tes questions arriveront ici.'}
+            </span>
+          </div>
+        ) : sections.map(sec => (
+          <div key={sec.bucket}>
+            <div style={s.section}>{BUCKET_LABEL[sec.bucket]}</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 2, padding: '0 6px' }}>
+              {sec.items.map(it => (
+                <FeedRow key={it.key} item={it} compact onOpen={i => { markRead([i]); if (i.href) onClose() }} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <Link href="/dashboard/notifications" onClick={onClose} style={s.footer}>
+        Voir toutes les notifications <ArrowRight size={13} weight="bold" />
+      </Link>
     </div>
   )
 }
 
 const s: Record<string, React.CSSProperties> = {
-  header: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    padding: '14px 16px 12px',
-    flexShrink: 0,
+  panel: {
+    position: 'fixed', top: 'calc(var(--header-h, 60px) + 8px)', right: 16, width: 'min(420px, calc(100vw - 32px))',
+    maxHeight: 'min(640px, calc(100vh - var(--header-h, 60px) - 24px))',
+    background: 'var(--bg-2)', border: '1px solid var(--border-2)', borderRadius: 16,
+    boxShadow: '0 18px 48px rgba(0,0,0,0.18)', zIndex: 160, display: 'flex', flexDirection: 'column', overflow: 'hidden',
+    animation: 'notifIn 0.18s cubic-bezier(0.16,1,0.3,1)',
   },
-  headerLeft: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-  },
-  title: {
-    fontFamily: 'var(--font-fraunces), serif',
-    fontSize: '16px', fontWeight: 400,
-    color: 'var(--text)', letterSpacing: '-0.3px',
-  },
-  unreadPill: {
-    fontSize: '10px', fontWeight: 700,
-    padding: '2px 8px', borderRadius: '100px',
-    background: 'rgba(99,214,131,0.15)', color: '#63D683',
-    letterSpacing: '0.2px',
-  },
-  tabs: {
-    display: 'flex', gap: '4px',
-    padding: '0 12px 10px',
-  },
-  tab: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    padding: '7px 12px', borderRadius: '8px',
-    background: 'transparent', border: '1px solid transparent',
-    color: 'var(--text-3)', fontSize: '12.5px',
-    cursor: 'pointer', fontFamily: 'inherit',
-    transition: 'all 0.12s',
-  },
-  tabActive: {
-    background: 'var(--surface)',
-    border: '1px solid var(--border)',
-    color: 'var(--text)',
-    fontWeight: 600,
-  },
-  tabBadge: {
-    fontSize: '10px', fontWeight: 700,
-    padding: '1px 6px', borderRadius: '999px',
-    background: 'var(--danger)', color: '#fff',
-    minWidth: '16px', textAlign: 'center' as const,
-    lineHeight: 1.4,
-  },
-
-  cnNotice: {
-    display: 'flex', alignItems: 'flex-start', gap: '12px',
-    padding: '18px 16px',
-  },
-  cnIcon: {
-    width: '40px', height: '40px',
-    background: 'var(--accent-bg-2)',
-    border: '1px solid var(--accent-border)',
-    borderRadius: '10px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    flexShrink: 0,
-  },
-  cnText: { flex: 1, minWidth: 0 },
-  cnTitle: {
-    fontSize: '13px', fontWeight: 600,
-    color: 'var(--text)', marginBottom: '4px',
-  },
-  cnDesc: {
-    fontSize: '12px', color: 'var(--text-3)',
-    lineHeight: 1.5,
-  },
-  cnEmpty: {
-    textAlign: 'center' as const,
-    padding: '32px 16px',
-  },
-  markAllBtn: {
-    background: 'none', border: '1px solid var(--border)',
-    borderRadius: '6px', padding: '4px 9px',
-    fontSize: '11px', fontWeight: 500, color: 'var(--text-3)',
-    cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
-  },
-  closeBtn: {
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '7px', width: '28px', height: '28px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    cursor: 'pointer', color: 'var(--text-3)', flexShrink: 0,
-  },
-  divider: { height: '1px', background: 'var(--border)', flexShrink: 0 },
-
-  list: { display: 'flex', flexDirection: 'column' },
-  entry: {
-    display: 'flex', alignItems: 'flex-start', gap: '0',
-    padding: '14px 16px',
-  },
-  dotWrap: {
-    paddingTop: '4px', marginRight: '12px', flexShrink: 0,
-  },
-  dot: {
-    width: '8px', height: '8px', borderRadius: '50%',
-    transition: 'background 0.2s',
-  },
-  entryBody: { flex: 1, minWidth: 0 },
-  dismissBtn: {
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '6px', width: '22px', height: '22px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    cursor: 'pointer', color: 'var(--text-3)', flexShrink: 0,
-    marginLeft: '8px', marginTop: '2px',
-  },
-  entryMeta: {
-    display: 'flex', alignItems: 'center', gap: '7px',
-    marginBottom: '5px', flexWrap: 'wrap' as const,
-  },
-  tag: {
-    display: 'inline-flex', alignItems: 'center', gap: '4px',
-    fontSize: '10px', fontWeight: 600,
-    padding: '2px 7px', borderRadius: '100px',
-    letterSpacing: '0.2px',
-  },
-  date: { fontSize: '11px', color: 'var(--text-muted)' },
-  entryTitle: {
-    fontSize: '13px', fontWeight: 600,
-    color: 'var(--text)', marginBottom: '3px', lineHeight: '1.35',
-  },
-  entryDesc: {
-    fontSize: '12px', color: 'var(--text-3)', lineHeight: '1.5',
-    display: '-webkit-box',
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: 'vertical',
-    overflow: 'hidden',
-  } as React.CSSProperties,
-
-  footer: {
-    padding: '10px 16px',
-    display: 'flex', justifyContent: 'center',
-  },
-  learnMoreBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    padding: '9px 20px', borderRadius: '10px',
-    background: 'rgba(255,213,107,0.08)',
-    border: '1px solid rgba(255,213,107,0.22)',
-    color: 'var(--accent-text)',
-    fontSize: '13px', fontWeight: 600,
-    textDecoration: 'none',
-    width: '100%', justifyContent: 'center' as const,
-    transition: 'background 0.15s',
-    fontFamily: 'var(--font-outfit), sans-serif',
-  },
+  head: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, padding: '14px 14px 8px 18px' },
+  title: { fontFamily: 'var(--font-fraunces), serif', fontSize: 19, color: 'var(--text)' },
+  count: { fontSize: 11.5, fontWeight: 700, color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 99, padding: '2px 9px', whiteSpace: 'nowrap' },
+  close: { width: 30, height: 30, borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 },
+  toolbar: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '4px 14px 10px 14px', flexWrap: 'wrap', borderBottom: '1px solid var(--border)' },
+  pills: { display: 'flex', gap: 4 },
+  pill: { padding: '6px 11px', borderRadius: 99, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-2)', fontSize: 12.5, fontWeight: 600, cursor: 'pointer' },
+  pillOn: { border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--accent-text)' },
+  markAll: { display: 'inline-flex', alignItems: 'center', gap: 5, border: 'none', background: 'none', color: 'var(--accent-text)', fontSize: 12.5, fontWeight: 700, cursor: 'pointer', padding: '4px 2px' },
+  list: { flex: 1, overflowY: 'auto', paddingBottom: 6, overscrollBehavior: 'contain' },
+  section: { fontSize: 11, fontWeight: 700, letterSpacing: '0.6px', textTransform: 'uppercase', color: 'var(--text-3)', padding: '12px 18px 6px' },
+  empty: { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 6, padding: '34px 28px' },
+  emptyIcon: { width: 44, height: 44, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', marginBottom: 4 },
+  skeleton: { height: 58, borderRadius: 12, background: 'var(--surface)', marginTop: 8 },
+  footer: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '12px 16px', borderTop: '1px solid var(--border)', color: 'var(--accent-text)', fontSize: 13.5, fontWeight: 700, textDecoration: 'none', background: 'var(--bg-2)' },
 }

@@ -5,7 +5,7 @@
 // `Authorization: Bearer <CRON_SECRET>`. On vérifie ce header sinon 401.
 
 import { NextResponse } from 'next/server'
-import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { getServiceClient } from '@/lib/supabase/service'
 import { runNotificationRules, purgeExpiredNotifications } from '@/lib/notifications/rules'
 import { syncStaleFeeds } from '@/lib/ical/background'
 import { sendDepositOpenEmails } from '@/lib/contracts/deposit-reminders'
@@ -27,11 +27,7 @@ export async function GET(req: Request) {
     }
   }
 
-  const supabase = createServiceClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
+  const supabase = getServiceClient()
 
   // On cible les utilisateurs actifs récemment (visite des 30 derniers jours)
   // pour éviter de tourner les règles pour des comptes dormants. Si
@@ -69,10 +65,11 @@ export async function GET(req: Request) {
   const t0 = Date.now()
   let totalCreated = 0
   let usersProcessed = 0
-  for (const u of users ?? []) {
-    const r = await runNotificationRules(u.id as string)
-    totalCreated += r.total
-    usersProcessed++
+  // Par paquets de 5 (avant : un hôte après l'autre), en gardant du temps pour la purge
+  const ids = (users ?? []).map(u => u.id as string)
+  for (let i = 0; i < ids.length && Date.now() - t0 < 25_000; i += 5) {
+    const res = await Promise.all(ids.slice(i, i + 5).map(id => runNotificationRules(id)))
+    for (const r of res) { totalCreated += r.total; usersProcessed++ }
   }
 
   const purged = await purgeExpiredNotifications()

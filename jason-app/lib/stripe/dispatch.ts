@@ -5,7 +5,7 @@ import { invalidateProfileCache } from '@/lib/queries/profile'
 import { sendPaiementReceivedEmail } from '@/lib/email/host'
 import { sendProWelcomeEmail } from '@/lib/email/pro-welcome'
 import { logger } from '@/lib/logger'
-import { createNotification } from '@/lib/notifications/create'
+import { createNotification, sejourHref } from '@/lib/notifications/create'
 import { parisToday } from '@/lib/stripe/deposit-window'
 
 const log = logger('lib/stripe/dispatch')
@@ -22,12 +22,32 @@ async function notifyHostPayment(
   try {
     const { data: c } = await db
       .from('contracts')
-      .select('bailleur_email, bailleur_prenom, locataire_prenom, locataire_nom, date_arrivee, montant_loyer, montant_caution, sejour_id')
+      .select('user_id, bailleur_email, bailleur_prenom, locataire_prenom, locataire_nom, logement_nom, date_arrivee, montant_loyer, montant_caution, sejour_id')
       .eq('id', contractId)
       .single()
-    if (!c?.bailleur_email) return
+    if (!c) return
     const montant = type === 'loyer' ? Number(c.montant_loyer ?? 0) : Number(c.montant_caution ?? 0)
     if (montant <= 0) return
+    const href = await sejourHref(db, c.sejour_id)
+    const guest = `${c.locataire_prenom ?? ''} ${c.locataire_nom ?? ''}`.trim() || 'Ton voyageur'
+    const eur = `${montant.toLocaleString('fr-FR', { maximumFractionDigits: 2 })} €`
+    // Notification dans l'app (avant : e-mail seulement)
+    if (c.user_id) {
+      await createNotification({
+        recipientId: c.user_id,
+        category: 'sejour',
+        type: type === 'loyer' ? 'loyer_paye' : 'caution_bloquee',
+        title: type === 'loyer' ? `Loyer payé par ${guest} : ${eur}` : `Caution de ${guest} bloquée : ${eur}`,
+        body: type === 'loyer'
+          ? `${c.logement_nom ? `${c.logement_nom}. ` : ''}Le paiement arrive sur ton compte Stripe, puis sur ton compte bancaire selon le calendrier de versement de Stripe.`
+          : `${c.logement_nom ? `${c.logement_nom}. ` : ''}Rien n'est débité : la carte est bloquée environ 7 jours. Libère la caution après l'état des lieux, ou encaisse-la en cas de dégâts.`,
+        ctaLabel: 'Voir la fiche voyageur',
+        ctaHref: href,
+        severity: 'success',
+        dedupKey: `${type === 'loyer' ? 'loyer_paye' : 'caution_bloquee'}:${contractId}`,
+      })
+    }
+    if (!c.bailleur_email) return
     await sendPaiementReceivedEmail({
       to: c.bailleur_email,
       hostFirstName: c.bailleur_prenom ?? '',
@@ -35,7 +55,7 @@ async function notifyHostPayment(
       type,
       montant,
       dateArrivee: c.date_arrivee ?? undefined,
-      dashboardUrl: c.sejour_id ? `${APP_URL}/dashboard/voyageurs?sejour=${c.sejour_id}` : `${APP_URL}/dashboard/calendrier`,
+      dashboardUrl: `${APP_URL}${href}`,
     })
   } catch (e) {
     console.warn('[dispatch] notifyHostPayment failed', e)
@@ -155,7 +175,7 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
             ? 'La carte n\'est plus bloquée : le délai de Stripe (environ 7 jours) est passé. Le séjour n\'est pas terminé : tu peux renvoyer le lien de caution au voyageur.'
             : 'La carte n\'est plus bloquée : le délai de Stripe (environ 7 jours) est passé avant que tu libères ou encaisses la caution.',
           ctaLabel: 'Voir le séjour',
-          ctaHref: c.sejour_id ? `/dashboard/voyageurs?sejour=${c.sejour_id}` : '/dashboard/contrats',
+          ctaHref: await sejourHref(db, c.sejour_id),
           severity: 'warning',
           dedupKey: `deposit_expired:${c.id}:${pi.id}`,
         }).catch(() => {})

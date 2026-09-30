@@ -6,6 +6,7 @@ import { Resend } from 'resend'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnySupabase = any
 import { buildEmail, emailInfoBlock, emailP, escHtml } from './template'
+import { createNotification } from '@/lib/notifications/create'
 
 const FROM = 'Jason Marinho <noreply@jasonmarinho.com>'
 
@@ -17,16 +18,32 @@ export async function notifyHostCheckinSubmitted(supabase: AnySupabase, opts: {
   /** Nom de l'accompagnant qui vient de s'ajouter (kind = 'companion') */
   companionName?: string
 }): Promise<void> {
-  if (!process.env.RESEND_API_KEY) return
-
   const [{ data: profile }, { data: voyageur }, { data: companions }] = await Promise.all([
     supabase.from('profiles').select('email, full_name').eq('id', opts.userId).maybeSingle(),
     supabase.from('voyageurs').select('prenom, nom').eq('id', opts.voyageurId).maybeSingle(),
     supabase.from('checkin_companions').select('prenom, nom, id_numero, date_naissance, siba_sent_at').eq('voyageur_id', opts.voyageurId).eq('user_id', opts.userId),
   ])
-  if (!profile?.email || !voyageur) return
-
+  if (!voyageur) return
   const mainName = `${voyageur.prenom ?? ''} ${voyageur.nom ?? ''}`.trim()
+
+  // Notification dans l'app (avant : e-mail seulement)
+  await createNotification({
+    recipientId: opts.userId,
+    category: 'sejour',
+    type: 'checkin_rempli',
+    title: opts.kind === 'companion'
+      ? `Check-in : ${opts.companionName} a rejoint le groupe de ${mainName}`
+      : opts.kind === 'main-first' ? `${mainName} a rempli son check-in` : `${mainName} a modifié son check-in`,
+    body: opts.kind === 'companion'
+      ? 'Sa fiche (identité et signature) est dans la fiche du voyageur principal.'
+      : 'Identité, document et signature sont dans sa fiche. Les déclarations obligatoires en tiennent compte.',
+    ctaLabel: 'Voir la fiche voyageur',
+    ctaHref: `/dashboard/voyageurs/${opts.voyageurId}`,
+    severity: 'success',
+    dedupKey: `checkin_rempli:${opts.voyageurId}:${opts.kind}:${opts.companionName ?? ''}:${new Date().toISOString().slice(0, 13)}`,
+  })
+
+  if (!process.env.RESEND_API_KEY || !profile?.email) return
   const comps = companions ?? []
   const groupSize = comps.length + 1
 

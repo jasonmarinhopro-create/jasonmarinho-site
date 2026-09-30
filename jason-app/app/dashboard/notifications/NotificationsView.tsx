@@ -1,323 +1,233 @@
 'use client'
 
-import { useState, useTransition, useMemo } from 'react'
-import Link from 'next/link'
+// Page Notifications (refonte 29/09/2026). Un seul fil : alertes de l'app,
+// Questions & réponses et nouveautés, classé par jour (heure de Paris), filtré
+// par thème. À droite au-delà de ~1200 px : ce qui est en attente par thème et
+// ce que l'app signale. Aucune notification n'est marquée lue à l'ouverture :
+// seulement au clic, ou avec « Tout marquer comme lu ».
+import { useEffect, useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Bell, Checks, CheckCircle, EnvelopeSimple } from '@phosphor-icons/react/dist/ssr'
+import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
+import InlineStyle from '@/components/ui/InlineStyle'
+import FeedRow, { GroupIcon } from '@/components/notifications/FeedRow'
+import { Card, ui } from '../finances/_ui/ui'
+import { markFeedRead, markAllNotificationsRead } from '@/lib/notifications/actions'
 import {
-  Bell, CheckCircle, Warning, Info, House, Receipt, Bank, BookOpen,
-  ChatCircleDots, Check, ArrowRight,
-} from '@phosphor-icons/react/dist/ssr'
-import type { AppNotification, NotificationCategory } from '@/lib/notifications/types'
-import { markNotificationRead, markAllNotificationsRead } from '@/lib/notifications/actions'
-import { useToast } from '@/components/ui/Toast'
+  bucketize, BUCKET_LABEL, countByGroup, GROUP_META, GROUP_ORDER,
+  type FeedItem, type NotifGroup,
+} from '@/lib/notifications/present'
 
-interface Props {
-  initialNotifications: AppNotification[]
+const RULES_THROTTLE_MS = 15 * 60 * 1000
+const RULES_THROTTLE_KEY = 'notif-rules-last-run'
+
+type Filter = 'all' | 'unread' | NotifGroup
+
+/** Ce que l'app signale, par thème (texte de la colonne de droite) */
+const WHAT: Record<NotifGroup, string> = {
+  reservations: 'Nouvelle réservation Airbnb, Booking ou Vrbo, dates modifiées, annulation, arrivée demain.',
+  paiements: 'Contrat signé, contrat pas encore signé à 7 jours de l\'arrivée, loyer payé, caution bloquée, à libérer ou expirée.',
+  voyageurs: 'Check-in en ligne rempli ou modifié, accompagnant ajouté.',
+  menage: 'Ménage marqué terminé par ton équipe, avec ses photos.',
+  compte: 'Calendrier qui ne se synchronise plus, inscription Stripe à terminer, plafonds fiscaux proches.',
+  questions: 'Réponse à ta question, mention, réponse retenue.',
+  nouveautes: 'Les nouveautés de l\'app qui changent ton quotidien.',
 }
 
-const CATEGORY_META: Record<NotificationCategory, { label: string; icon: React.ReactNode; color: string }> = {
-  sejour:    { label: 'Séjour',        icon: <House size={14} weight="fill" />,           color: 'var(--accent-text)' },
-  fiscal:    { label: 'Fiscal',        icon: <Receipt size={14} weight="fill" />,         color: '#FFD56B' },
-  sync:      { label: 'Synchro',       icon: <Bank size={14} weight="fill" />,            color: '#60A5FA' },
-  guide:     { label: 'Guide',         icon: <BookOpen size={14} weight="fill" />,        color: '#A78BFA' },
-  chez_nous: { label: 'Entre Hôtes',     icon: <ChatCircleDots size={14} weight="fill" />,  color: '#F472B6' },
-  system:    { label: 'Système',       icon: <Bell size={14} weight="fill" />,            color: 'var(--text-3)' },
+function parseFilter(raw: string | null): Filter {
+  if (raw === 'unread' || raw === 'all') return raw
+  if (raw && (GROUP_ORDER as string[]).includes(raw)) return raw as NotifGroup
+  return 'all'
 }
 
-const SEVERITY_META: Record<string, { icon: React.ReactNode; color: string }> = {
-  info:    { icon: <Info size={14} weight="fill" />,        color: 'var(--text-3)' },
-  warning: { icon: <Warning size={14} weight="fill" />,     color: '#FFD56B' },
-  error:   { icon: <Warning size={14} weight="fill" />,     color: '#f87171' },
-  success: { icon: <CheckCircle size={14} weight="fill" />, color: 'var(--success-1)' },
-}
+export default function NotificationsView({ items: initial, today, initialFilter }: {
+  items: FeedItem[]
+  today: string
+  initialFilter: string | null
+}) {
+  const router = useRouter()
+  const [items, setItems] = useState(initial)
+  const [filter, setFilter] = useState<Filter>(parseFilter(initialFilter))
+  useEffect(() => { setItems(initial) }, [initial])
 
-function fmtRelative(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime()
-  const min = Math.floor(diff / 60_000)
-  const h = Math.floor(min / 60)
-  const j = Math.floor(h / 24)
-  if (min < 1) return 'à l\'instant'
-  if (min < 60) return `il y a ${min} min`
-  if (h < 24) return `il y a ${h} h`
-  if (j === 1) return 'hier'
-  if (j < 7) return `il y a ${j} j`
-  return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
-}
+  // Règles en tâche de fond, puis rafraîchissement s'il y a du nouveau
+  useEffect(() => {
+    let last = 0
+    try { last = Number(sessionStorage.getItem(RULES_THROTTLE_KEY) ?? 0) } catch { /* navigation privée */ }
+    if (Date.now() - last < RULES_THROTTLE_MS) return
+    try { sessionStorage.setItem(RULES_THROTTLE_KEY, String(Date.now())) } catch { /* navigation privée */ }
+    fetch('/api/notifications/run-rules', { method: 'POST' })
+      .then(r => r.ok ? r.json() : null)
+      .then(res => { if (res?.total > 0) { router.refresh(); window.dispatchEvent(new Event('notif-refresh-count')) } })
+      .catch(() => null)
+  }, [router])
 
-type Filter = 'all' | 'unread' | NotificationCategory
+  const unreadByGroup = useMemo(() => countByGroup(items), [items])
+  const totalByGroup = useMemo(() => countByGroup(items, false), [items])
+  const unread = items.filter(i => !i.read).length
 
-export default function NotificationsView({ initialNotifications }: Props) {
-  const [items, setItems] = useState(initialNotifications)
-  const [filter, setFilter] = useState<Filter>('unread')
-  const [pending, startTransition] = useTransition()
-  const toast = useToast()
+  const shown = useMemo(() => items.filter(i =>
+    filter === 'all' ? true : filter === 'unread' ? !i.read : i.group === filter), [items, filter])
+  const sections = bucketize(shown, today)
 
-  const filtered = useMemo(() => {
-    if (filter === 'all') return items
-    if (filter === 'unread') return items.filter(n => !n.read_at)
-    return items.filter(n => n.category === filter)
-  }, [items, filter])
+  function choose(f: Filter) {
+    setFilter(f)
+    const url = f === 'all' ? '/dashboard/notifications' : `/dashboard/notifications?filtre=${f}`
+    window.history.replaceState(null, '', url)
+  }
 
-  const unreadCount = items.filter(n => !n.read_at).length
-
-  function handleMarkOne(id: string) {
-    // Optimiste
-    setItems(prev => prev.map(n => n.id === id ? { ...n, read_at: new Date().toISOString() } : n))
-    broadcastCount(Math.max(0, unreadCount - 1))
-    startTransition(async () => {
-      const res = await markNotificationRead(id)
-      if (!res.ok) {
-        setItems(prev => prev.map(n => n.id === id ? { ...n, read_at: null } : n))
-        broadcastCount(unreadCount)
-        toast.error('Impossible de marquer comme lue, réessaie')
-      }
+  function markRead(targets: FeedItem[]) {
+    const todo = targets.filter(i => !i.read)
+    if (todo.length === 0) return
+    const keys = new Set(todo.map(i => i.key))
+    setItems(prev => prev.map(i => keys.has(i.key) ? { ...i, read: true } : i))
+    window.dispatchEvent(new CustomEvent('notif-count-delta', { detail: {
+      app: -todo.filter(i => i.source === 'app').length, qr: -todo.filter(i => i.source === 'qr').length,
+    } }))
+    markFeedRead(todo.map(i => i.key)).then(res => {
+      if (!res.ok) { setItems(initial); window.dispatchEvent(new Event('notif-refresh-count')) }
+      else if (todo.some(i => i.source === 'changelog')) window.dispatchEvent(new Event('notif-refresh-count'))
     })
   }
 
-  function handleMarkAll() {
-    if (unreadCount === 0) return
-    const now = new Date().toISOString()
-    const snapshot = items
-    const count = unreadCount
-    setItems(prev => prev.map(n => n.read_at ? n : { ...n, read_at: now }))
-    startTransition(async () => {
-      const res = await markAllNotificationsRead()
-      if (!res.ok) {
-        setItems(snapshot)
-        toast.error('Impossible de tout marquer lu, réessaie')
-      } else {
-        toast.success(`${count} notification${count > 1 ? 's' : ''} marquée${count > 1 ? 's' : ''} lue${count > 1 ? 's' : ''}`)
-        // Notifie le Header pour que le badge de la cloche se vide tout de suite
-        // sans attendre un changement de pathname.
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('notif-count-changed', { detail: { appNotifUnread: 0 } }))
-        }
-      }
-    })
+  function markAll() {
+    setItems(prev => prev.map(i => ({ ...i, read: true })))
+    window.dispatchEvent(new CustomEvent('notif-count-changed', { detail: { appNotifUnread: 0, chezNousUnread: 0 } }))
+    markAllNotificationsRead().then(res => { if (!res.ok) setItems(initial); router.refresh() })
   }
 
-  // Idem pour mark-one : décrémente le compteur Header à chaque clic.
-  function broadcastCount(nextUnread: number) {
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('notif-count-changed', { detail: { appNotifUnread: nextUnread } }))
-    }
-  }
-
-  const filterBtns: Array<{ key: Filter; label: string; count?: number }> = [
-    { key: 'unread', label: 'Non lues', count: unreadCount },
-    { key: 'all',    label: 'Toutes',   count: items.length },
-    { key: 'sejour', label: 'Séjour' },
-    { key: 'fiscal', label: 'Fiscal' },
-    { key: 'sync',   label: 'Synchro' },
-  ]
+  const groupsWithItems = GROUP_ORDER.filter(g => totalByGroup[g] > 0)
 
   return (
-    <div style={s.page}>
-      <header style={s.hero}>
-        <span style={s.heroBadge}>
-          <Bell size={13} weight="fill" /> Mes alertes
-        </span>
-        <h1 style={s.heroTitle}>
-          Tes <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>notifications</em>
-        </h1>
-        <p style={s.heroDesc}>
-          Arrivées imminentes, plafonds fiscaux, paiements à relancer, synchros à vérifier. Tout ce qui demande ton attention.
-        </p>
-      </header>
-
-      <div style={s.toolbar}>
-        <div style={s.filters} role="tablist" aria-label="Filtres notifications">
-          {filterBtns.map(f => (
-            <button
-              key={f.key}
-              role="tab"
-              aria-selected={filter === f.key}
-              onClick={() => setFilter(f.key)}
-              style={{ ...s.filterBtn, ...(filter === f.key ? s.filterBtnActive : {}) }}
-            >
-              {f.label}
-              {f.count !== undefined && f.count > 0 && (
-                <span style={s.filterCount}>{f.count}</span>
-              )}
-            </button>
-          ))}
-        </div>
-        {unreadCount > 0 && (
-          <button onClick={handleMarkAll} disabled={pending} style={s.markAllBtn} aria-label="Marquer toutes les notifications comme lues">
-            <Check size={13} weight="bold" /> Tout marquer lu
-          </button>
-        )}
-      </div>
-
-      {filtered.length === 0 ? (
-        <div style={s.empty}>
-          <div style={s.emptyIcon} aria-hidden="true">
-            <Bell size={32} weight="duotone" color="var(--text-3)" />
+    <div style={ui.page}>
+      <InlineStyle css={`
+        .notif-row:hover { background: var(--surface) !important }
+        .notif-row:focus-visible { outline: 2px solid var(--accent-text); outline-offset: -2px }
+        .notif-chip:hover { border-color: var(--accent-border) !important }
+        @media (max-width: 720px) { .notif-chips { flex-wrap: nowrap !important; overflow-x: auto; margin-left: -4px; margin-right: -4px; padding: 0 4px 4px; scrollbar-width: none } .notif-chip { flex-shrink: 0 } }
+      `} />
+      <HubHero
+        eyebrowIcon={<Bell size={14} weight="fill" />}
+        eyebrow="Notifications"
+        title={<>Ce qui s&apos;est passé, <HeroEm>au même endroit</HeroEm></>}
+        desc="Réservations, contrats, paiements, voyageurs, ménage et réponses à tes questions. Chaque notification t'emmène sur la page qui la traite."
+        aside={
+          <div style={{ ...heroCard, width: '100%' }}>
+            <div style={s.asideTitle}>{unread > 0 ? 'À lire' : 'Tout est lu'}</div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+              <strong style={s.big}>{unread}</strong>
+              <span style={{ fontSize: 13.5, color: 'var(--text-2)' }}>non lue{unread > 1 ? 's' : ''}</span>
+            </div>
+            {unread > 0 ? (
+              <>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {GROUP_ORDER.filter(g => unreadByGroup[g] > 0).map(g => (
+                    <button key={g} type="button" onClick={() => choose(g)} style={s.asideRow}>
+                      <GroupIcon group={g} size={24} />
+                      <span style={{ flex: 1 }}>{GROUP_META[g].label}</span>
+                      <strong style={{ color: 'var(--text)' }}>{unreadByGroup[g]}</strong>
+                    </button>
+                  ))}
+                </div>
+                <button type="button" onClick={markAll} style={s.markAll}><Checks size={15} weight="bold" /> Tout marquer comme lu</button>
+              </>
+            ) : (
+              <span style={{ fontSize: 13, color: 'var(--text-2)', lineHeight: 1.5 }}>Rien de neuf depuis ta dernière visite.</span>
+            )}
           </div>
-          <p style={s.emptyTitle}>
-            {filter === 'unread' ? 'Tu es à jour 🎉' : 'Aucune notification'}
-          </p>
-          <p style={s.emptyBody}>
-            {filter === 'unread'
-              ? 'Tu as lu toutes tes alertes. On te préviendra dès qu\'il se passe quelque chose.'
-              : 'Aucune notification dans cette catégorie pour l\'instant.'}
-          </p>
+        }
+      />
+
+      <div style={s.cols}>
+        <div style={{ flex: '1 1 620px', minWidth: 0 }}>
+          <div style={s.chips} className="notif-chips" role="tablist" aria-label="Filtrer les notifications">
+            <Chip on={filter === 'all'} onClick={() => choose('all')} label="Toutes" n={items.length} />
+            <Chip on={filter === 'unread'} onClick={() => choose('unread')} label="Non lues" n={unread} />
+            {groupsWithItems.map(g => (
+              <Chip key={g} on={filter === g} onClick={() => choose(g)} label={GROUP_META[g].label} n={totalByGroup[g]} color={GROUP_META[g].color} />
+            ))}
+          </div>
+
+          <Card style={{ padding: 8 }}>
+            {shown.length === 0 ? (
+              <div style={s.empty}>
+                <span style={s.emptyIcon}><CheckCircle size={24} weight="fill" /></span>
+                <strong style={{ fontSize: 15, color: 'var(--text)' }}>{filter === 'unread' ? 'Tout est lu' : 'Rien ici pour l\'instant'}</strong>
+                <span style={{ fontSize: 13, color: 'var(--text-3)', lineHeight: 1.55, maxWidth: 420 }}>
+                  {filter === 'all'
+                    ? 'Dès qu\'une réservation arrive, qu\'un voyageur signe ou paie, ou qu\'on te répond, tu le verras ici.'
+                    : 'Aucune notification dans ce filtre.'}
+                </span>
+              </div>
+            ) : sections.map(sec => (
+              <section key={sec.bucket} style={{ marginBottom: 6 }}>
+                <div style={s.section}>
+                  <span>{BUCKET_LABEL[sec.bucket]}</span>
+                  {sec.items.some(i => !i.read) && (
+                    <button type="button" onClick={() => markRead(sec.items)} style={s.sectionBtn}>Marquer comme lu</button>
+                  )}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {sec.items.map(it => <FeedRow key={it.key} item={it} onOpen={i => markRead([i])} />)}
+                </div>
+              </section>
+            ))}
+          </Card>
         </div>
-      ) : (
-        <ul style={s.list}>
-          {filtered.map(n => {
-            const cat = CATEGORY_META[n.category]
-            const sev = SEVERITY_META[n.severity] ?? SEVERITY_META.info
-            const isUnread = !n.read_at
-            return (
-              <li key={n.id} style={{ ...s.item, ...(isUnread ? s.itemUnread : {}) }}>
-                <div style={{ ...s.itemIcon, color: sev.color, background: sev.color + '14', borderColor: sev.color + '33' }} aria-hidden="true">
-                  {sev.icon}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={s.itemHead}>
-                    <span style={{ ...s.itemBadge, color: cat.color, borderColor: cat.color + '33' }}>
-                      {cat.icon} {cat.label}
-                    </span>
-                    <span style={s.itemDate}>{fmtRelative(n.created_at)}</span>
-                  </div>
-                  <p style={s.itemTitle}>{n.title}</p>
-                  {n.body && <p style={s.itemBody}>{n.body}</p>}
-                  <div style={s.itemActions}>
-                    {n.cta_href && (
-                      <Link href={n.cta_href} style={s.itemCta} onClick={() => isUnread && handleMarkOne(n.id)}>
-                        {n.cta_label ?? 'Voir'} <ArrowRight size={11} weight="bold" />
-                      </Link>
-                    )}
-                    {isUnread && (
-                      <button
-                        onClick={() => handleMarkOne(n.id)}
-                        disabled={pending}
-                        style={s.itemMarkRead}
-                        aria-label="Marquer cette notification comme lue"
-                      >
-                        <Check size={11} weight="bold" /> Marquer lue
-                      </button>
-                    )}
+
+        <aside style={{ flex: '0 1 340px', minWidth: 280, display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <Card>
+            <div style={s.sideTitle}>Ce que l&apos;app te signale</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 10 }}>
+              {GROUP_ORDER.map(g => (
+                <div key={g} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                  <GroupIcon group={g} size={28} />
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>{GROUP_META[g].label}</div>
+                    <div style={{ fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.5 }}>{WHAT[g]}</div>
                   </div>
                 </div>
-              </li>
-            )
-          })}
-        </ul>
-      )}
+              ))}
+            </div>
+          </Card>
+          <Card>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+              <span style={{ color: 'var(--accent-text)', marginTop: 2 }}><EnvelopeSimple size={18} weight="fill" /></span>
+              <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.55 }}>
+                Contrat signé, paiement reçu, check-in rempli et réponse à ta question t&apos;arrivent aussi par e-mail. Les nouvelles réservations Airbnb et Booking sont repérées à chaque synchronisation du calendrier.
+              </p>
+            </div>
+          </Card>
+        </aside>
+      </div>
     </div>
   )
 }
 
+function Chip({ on, onClick, label, n, color }: { on: boolean; onClick: () => void; label: string; n: number; color?: string }) {
+  return (
+    <button type="button" role="tab" aria-selected={on} onClick={onClick} className="notif-chip"
+      style={{ ...s.chip, ...(on ? s.chipOn : {}) }}>
+      {color && <span style={{ width: 8, height: 8, borderRadius: 99, background: color }} aria-hidden="true" />}
+      {label}
+      <span style={{ ...s.chipN, ...(on ? { color: 'var(--accent-text)' } : {}) }}>{n}</span>
+    </button>
+  )
+}
+
 const s: Record<string, React.CSSProperties> = {
-  page: { padding: 'clamp(14px, 3vw, 44px)', width: '100%', display: 'flex', flexDirection: 'column' as const, gap: 'clamp(18px, 2.5vw, 24px)' },
-  hero: { marginBottom: '4px' },
-  heroBadge: {
-    display: 'inline-flex', alignItems: 'center', gap: '7px',
-    fontSize: '11px', fontWeight: 700, letterSpacing: '0.7px', textTransform: 'uppercase' as const,
-    color: 'var(--accent-text)', background: 'rgba(255,213,107,0.08)',
-    border: '1px solid rgba(255,213,107,0.18)',
-    borderRadius: '999px', padding: '4px 12px', marginBottom: '12px',
-  },
-  heroTitle: {
-    fontFamily: 'var(--font-fraunces), serif',
-    fontSize: 'clamp(26px,3vw,38px)', fontWeight: 400,
-    color: 'var(--text)', margin: '0 0 8px',
-  },
-  heroDesc: { fontSize: '14px', lineHeight: 1.6, color: 'var(--text-2)', maxWidth: '600px', margin: 0 },
-
-  toolbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: '12px' },
-  filters: {
-    display: 'flex', gap: '6px',
-    padding: '5px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '12px',
-    flexWrap: 'wrap' as const,
-  },
-  filterBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    padding: '7px 14px', fontSize: '12.5px', fontWeight: 500,
-    color: 'var(--text-2)', background: 'transparent',
-    border: 'none', borderRadius: '8px', cursor: 'pointer',
-    fontFamily: 'inherit',
-  },
-  filterBtnActive: {
-    background: 'var(--accent-bg)', color: 'var(--accent-text)',
-    fontWeight: 600,
-  },
-  filterCount: {
-    fontSize: '10.5px', fontWeight: 700,
-    padding: '1px 7px', borderRadius: '999px',
-    background: 'rgba(255,213,107,0.12)', color: 'var(--accent-text)',
-  },
-  markAllBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    padding: '8px 14px', borderRadius: '10px', cursor: 'pointer',
-    background: 'var(--accent-text)', color: 'var(--bg)',
-    fontSize: '12.5px', fontWeight: 600, fontFamily: 'inherit',
-    border: 'none',
-  },
-
-  empty: {
-    display: 'flex', flexDirection: 'column' as const,
-    alignItems: 'center', textAlign: 'center' as const,
-    padding: 'clamp(40px, 6vw, 80px) 20px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '16px',
-  },
-  emptyIcon: {
-    width: '64px', height: '64px', borderRadius: '20px',
-    background: 'var(--bg-2)', display: 'flex',
-    alignItems: 'center', justifyContent: 'center',
-    marginBottom: '14px',
-  },
-  emptyTitle: { fontSize: '17px', fontWeight: 600, color: 'var(--text)', margin: '0 0 6px' },
-  emptyBody: { fontSize: '13px', color: 'var(--text-2)', maxWidth: '320px', lineHeight: 1.6, margin: 0 },
-
-  list: { display: 'flex', flexDirection: 'column' as const, gap: '8px', listStyle: 'none', padding: 0, margin: 0 },
-  item: {
-    display: 'flex', gap: '14px',
-    padding: '14px 16px', borderRadius: '12px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    transition: 'background .15s, border-color .15s',
-  },
-  itemUnread: {
-    background: 'linear-gradient(135deg, var(--surface) 0%, rgba(255,213,107,0.05) 100%)',
-    borderColor: 'rgba(255,213,107,0.22)',
-  },
-  itemIcon: {
-    width: '36px', height: '36px', borderRadius: '11px',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    flexShrink: 0, border: '1px solid',
-  },
-  itemHead: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-    marginBottom: '4px', flexWrap: 'wrap' as const,
-  },
-  itemBadge: {
-    display: 'inline-flex', alignItems: 'center', gap: '4px',
-    fontSize: '10.5px', fontWeight: 700, letterSpacing: '0.3px',
-    padding: '2px 7px', borderRadius: '999px',
-    border: '1px solid', textTransform: 'uppercase' as const,
-  },
-  itemDate: { fontSize: '11px', color: 'var(--text-3)' },
-  itemTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--text)', margin: '0 0 4px', lineHeight: 1.4 },
-  itemBody: { fontSize: '12.5px', color: 'var(--text-2)', margin: '0 0 8px', lineHeight: 1.55 },
-  itemActions: {
-    display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' as const, marginTop: '6px',
-  },
-  itemCta: {
-    display: 'inline-flex', alignItems: 'center', gap: '4px',
-    padding: '6px 12px', borderRadius: '8px',
-    background: 'var(--accent-bg)', color: 'var(--accent-text)',
-    fontSize: '12px', fontWeight: 600,
-    textDecoration: 'none', fontFamily: 'inherit',
-  },
-  itemMarkRead: {
-    display: 'inline-flex', alignItems: 'center', gap: '4px',
-    padding: '6px 10px', borderRadius: '8px', cursor: 'pointer',
-    background: 'transparent', color: 'var(--text-3)',
-    border: '1px solid var(--border)',
-    fontSize: '11.5px', fontWeight: 500, fontFamily: 'inherit',
-  },
+  asideTitle: { fontSize: 12, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  big: { fontFamily: 'var(--font-fraunces), serif', fontSize: 34, color: 'var(--text)', lineHeight: 1 },
+  asideRow: { display: 'flex', alignItems: 'center', gap: 9, padding: '5px 0', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13.5, color: 'var(--text-2)', textAlign: 'left' },
+  markAll: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 6, padding: '9px 14px', borderRadius: 10, border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--accent-text)', fontSize: 13.5, fontWeight: 700, cursor: 'pointer' },
+  cols: { display: 'flex', flexWrap: 'wrap', gap: 20, alignItems: 'flex-start' },
+  chips: { display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 },
+  chip: { display: 'inline-flex', alignItems: 'center', gap: 7, padding: '7px 12px', borderRadius: 99, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', fontSize: 13, fontWeight: 600, cursor: 'pointer' },
+  chipOn: { border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--accent-text)' },
+  chipN: { fontSize: 12, color: 'var(--text-3)', fontWeight: 700 },
+  section: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, padding: '12px 12px 6px', fontSize: 11.5, fontWeight: 700, letterSpacing: '0.6px', textTransform: 'uppercase', color: 'var(--text-3)' },
+  sectionBtn: { border: 'none', background: 'none', color: 'var(--accent-text)', fontSize: 12, fontWeight: 700, cursor: 'pointer', textTransform: 'none', letterSpacing: 0 },
+  empty: { display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: 8, padding: '48px 24px' },
+  emptyIcon: { width: 48, height: 48, borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', marginBottom: 4 },
+  sideTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 17, color: 'var(--text)' },
 }

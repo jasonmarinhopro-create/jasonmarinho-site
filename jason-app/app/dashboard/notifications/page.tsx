@@ -1,24 +1,17 @@
 import { redirect } from 'next/navigation'
 import { getProfile } from '@/lib/queries/profile'
-import { getNotifications } from '@/lib/notifications/queries'
-import { runNotificationRules } from '@/lib/notifications/rules'
+import { loadFeed } from '@/lib/notifications/feed'
 import NotificationsView from './NotificationsView'
 
-// Force le rendu dynamique : la page doit toujours afficher l'état réel,
-// pas une version cachée.
+// Toujours l'état réel. Les règles (arrivée demain, contrat à signer…) ne
+// bloquent plus l'affichage : la vue les lance en tâche de fond (au plus
+// toutes les 15 min) et se rafraîchit s'il y a du nouveau.
 export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const metadata = { title: 'Notifications' }
 
-export default async function NotificationsPage() {
+export default async function NotificationsPage({ searchParams }: { searchParams: { filtre?: string } }) {
   const profile = await getProfile()
   if (!profile) redirect('/auth/login')
-
-  // À chaque visite, on (re-)trigger les règles pour rafraîchir les alertes
-  // contextuelles. Best-effort, dédupliqué côté DB par unique constraint sur
-  // (recipient_id, dedup_key), donc safe à appeler souvent.
-  await runNotificationRules(profile.userId)
-
-  const notifications = await getNotifications({ limit: 100 })
-
-  return <NotificationsView initialNotifications={notifications} />
+  const feed = await loadFeed({ limit: 100 })
+  return <NotificationsView items={feed.items} today={feed.today} initialFilter={searchParams.filtre ?? null} />
 }

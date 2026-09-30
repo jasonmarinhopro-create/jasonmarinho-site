@@ -1,5 +1,7 @@
 import { getProfile } from '@/lib/queries/profile'
-import Header from '@/components/layout/Header'
+// Titre dans l'en-tête du dashboard (avant, 29/09/2026 : un 2e Header complet
+// était rendu dans la page, avec sa cloche et son menu, en plus de celui du layout)
+import TitleSetter from '@/components/layout/TitleSetter'
 import FormationView from '@/components/formations/FormationView'
 import { createClient } from '@/lib/supabase/server'
 import { getFormationDbContent, type FormationContent } from '@/lib/queries/formation-db-content'
@@ -97,7 +99,7 @@ export async function buildFormationPage({
 
       return (
         <>
-          <Header title={headerTitle} userName={profile?.full_name ?? undefined} />
+          <TitleSetter title={headerTitle} />
           <FormationLockedPreview
             formationTitle={staticContent.title}
             formationDescription={staticContent.description}
@@ -186,7 +188,7 @@ export async function buildFormationPage({
 
   return (
     <>
-      <Header title={headerTitle} userName={profile?.full_name ?? undefined} />
+      <TitleSetter title={headerTitle} />
       {/* JSON-LD pour les moteurs de recherche / partage social */}
       <script
         type="application/ld+json"

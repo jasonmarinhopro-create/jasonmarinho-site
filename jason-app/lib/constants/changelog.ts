@@ -13,6 +13,49 @@ export interface ChangelogEntry {
 // outils opérationnels) et on retire les détails techniques / refontes
 // internes / micro-ajustements UX qui n'apportent rien au quotidien d'un hôte.
 export const CHANGELOG: ChangelogEntry[] = [
+  // ─── Septembre 2026 ────────────────────────────────────────────
+  {
+    id: 'notifications-sep-2026',
+    date: '2026-09-29',
+    tag: 'amélioration',
+    title: 'Notifications repensées : tout ce qui se passe, au même endroit',
+    description: 'Nouvelle réservation Airbnb ou Booking, dates modifiées ou annulation, contrat signé, loyer payé, caution bloquée, check-in rempli, ménage terminé, réponse à ta question : un seul fil, classé par jour, avec un lien direct vers la bonne page.',
+  },
+  {
+    id: 'contrat-complet-sep-2026',
+    date: '2026-09-29',
+    tag: 'nouveau',
+    title: 'Contrat plus complet, et un aperçu avant de l\'envoyer',
+    description: 'État descriptif du logement, prix détaillé (ménage, taxe de séjour), arrhes ou acompte, caution, arrivée et pièce d\'identité, clauses particulières. Bouton « Voir mon contrat » dans Contrats & paiements pour voir le contrat de chaque logement tel que ton voyageur le recevra.',
+  },
+  {
+    id: 'fiche-logement-sep-2026',
+    date: '2026-09-29',
+    tag: 'amélioration',
+    title: 'Fiche logement plus visuelle, avec tes photos',
+    description: 'Jusqu\'à 12 photos, réservations Airbnb et Booking visibles sur la fiche, chiffres de l\'année, et tout ce qui manque pour que la fiche soit complète.',
+  },
+  {
+    id: 'finances-logement-sep-2026',
+    date: '2026-09-28',
+    tag: 'nouveau',
+    title: 'Mes finances, logement par logement',
+    description: 'Revenus, journal, performances, fiscalité et paiements en ligne pour chaque logement, avec la vue « Tous les logements » quand tu veux le total.',
+  },
+  {
+    id: 'securite-voyageur-sep-2026',
+    date: '2026-09-28',
+    tag: 'amélioration',
+    title: 'Sécurité voyageur plus fiable',
+    description: 'Recherche par e-mail, téléphone sous toutes ses formes ou nom complet, et tes voyageurs des 60 prochains jours vérifiés automatiquement.',
+  },
+  {
+    id: 'planning-menage-sep-2026',
+    date: '2026-09-27',
+    tag: 'nouveau',
+    title: 'Planning ménage partagé avec ton équipe',
+    description: 'Les ménages se calculent tout seuls depuis Airbnb, Booking et tes réservations directes. Ton équipe reçoit le planning, marque le ménage fait et ajoute des photos.',
+  },
   {
     id: 'pricing-annuel-only-jun-2026',
     date: '2026-06-23',

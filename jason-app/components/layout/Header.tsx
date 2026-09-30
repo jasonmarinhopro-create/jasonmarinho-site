@@ -13,6 +13,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter, usePathname } from 'next/navigation'
 import { useTheme } from '@/components/ThemeProvider'
 import { CHANGELOG } from '@/lib/constants/changelog'
+import { CHANGELOG_IN_FEED } from '@/lib/notifications/present'
 import { subscribeDashboardTitle } from '@/lib/dashboard-title-store'
 
 // Mapping pathname → titre du header (routes statiques)
@@ -199,25 +200,34 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   // client entre routes soeurs) — via le même endpoint/logique que le
   // serveur, pour ne pas réintroduire le badge "fantôme" (notification
   // expirée mais pas encore purgée) qu'un calcul dupliqué recréerait.
-  useEffect(() => {
+  // Rafraîchi aussi toutes les minutes quand l'onglet est visible, et au retour
+  // sur l'onglet (refonte 29/09/2026) : une nouvelle réservation, un contrat
+  // signé ou un paiement apparaît sans recharger la page.
+  const refreshCounts = useCallback(() => {
     if (!userId) return
-    let cancelled = false
-    fetch('/api/notifications/unread-counts')
+    fetch('/api/notifications/unread-counts', { cache: 'no-store' })
       .then(res => res.ok ? res.json() : null)
       .then(data => {
-        if (cancelled || !data) return
+        if (!data) return
         if (typeof data.chezNousUnread === 'number') setChezNousUnread(data.chezNousUnread)
         if (typeof data.appNotifUnread === 'number') setAppNotifUnread(data.appNotifUnread)
       })
       .catch(err => console.warn('[Header notif counts]', err))
-    return () => { cancelled = true }
   }, [userId])
 
-  // Quand l'utilisateur visite la page concernée, le badge correspondant se vide.
   useEffect(() => {
-    if (pathname === '/dashboard/chez-nous/notifications') setChezNousUnread(0)
-    if (pathname === '/dashboard/notifications') setAppNotifUnread(0)
-  }, [pathname])
+    if (!userId) return
+    refreshCounts()
+    const tick = () => { if (document.visibilityState === 'visible') refreshCounts() }
+    const id = window.setInterval(tick, 60_000)
+    document.addEventListener('visibilitychange', tick)
+    window.addEventListener('notif-refresh-count', refreshCounts)
+    return () => {
+      window.clearInterval(id)
+      document.removeEventListener('visibilitychange', tick)
+      window.removeEventListener('notif-refresh-count', refreshCounts)
+    }
+  }, [userId, refreshCounts])
 
   // Synchro reactive : si l'utilisateur marque ses alertes lues depuis la page
   // notifications (ou via le panel cloche), le badge se met à jour SANS attendre
@@ -228,8 +238,18 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
       if (typeof detail?.appNotifUnread === 'number') setAppNotifUnread(detail.appNotifUnread)
       if (typeof detail?.chezNousUnread === 'number') setChezNousUnread(detail.chezNousUnread)
     }
+    // Variation relative (une notification lue dans la cloche ou la page)
+    function onDelta(e: Event) {
+      const d = (e as CustomEvent<{ app?: number; qr?: number }>).detail
+      if (d?.app) setAppNotifUnread(n => Math.max(0, n + d.app!))
+      if (d?.qr) setChezNousUnread(n => Math.max(0, n + d.qr!))
+    }
     window.addEventListener('notif-count-changed', onCountChange as EventListener)
-    return () => window.removeEventListener('notif-count-changed', onCountChange as EventListener)
+    window.addEventListener('notif-count-delta', onDelta as EventListener)
+    return () => {
+      window.removeEventListener('notif-count-changed', onCountChange as EventListener)
+      window.removeEventListener('notif-count-delta', onDelta as EventListener)
+    }
   }, [])
 
   // Titre final : prop forcée > store (TitleSetter) > mapping pathname
@@ -253,27 +273,18 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
     setReadIds(computeReadIds(lastSeenNouveautesAt))
   }, [lastSeenNouveautesAt])
 
-  const unreadCount = CHANGELOG.filter(e => !readIds.has(e.id)).length
-
-  const markAllReadOnServer = useCallback(() => {
-    fetch('/api/me/mark-seen', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ kind: 'nouveautes' }),
-    }).catch(() => { /* best-effort, sera retenté au prochain mount */ })
-  }, [])
+  // Seules les dernières nouveautés sont dans le fil : elles seules comptent (avant : les 30, badge « 9+ » pour un nouvel inscrit)
+  const unreadCount = CHANGELOG.slice(0, CHANGELOG_IN_FEED).filter(e => !readIds.has(e.id)).length
 
   const handleOpenNotif = useCallback(() => {
-    setNotifOpen(true)
+    setNotifOpen(o => !o)
     setDropdownOpen(false)
-    setReadIds(new Set(CHANGELOG.map(e => e.id)))
-    markAllReadOnServer()
-  }, [markAllReadOnServer])
+  }, [])
 
-  const handleMarkAllRead = useCallback(() => {
+  // Nouveautés vues depuis le fil : l'action serveur enregistre déjà la date
+  const handleNewsSeen = useCallback(() => {
     setReadIds(new Set(CHANGELOG.map(e => e.id)))
-    markAllReadOnServer()
-  }, [markAllReadOnServer])
+  }, [])
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -329,10 +340,8 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
       <NotificationPanel
         open={notifOpen}
         onClose={() => setNotifOpen(false)}
-        readIds={readIds}
-        onMarkAllRead={handleMarkAllRead}
-        chezNousUnread={chezNousUnread}
-        appNotifUnread={appNotifUnread}
+        totalUnread={unreadCount + chezNousUnread + appNotifUnread}
+        onNewsSeen={handleNewsSeen}
       />
 
       <SOSModal
@@ -414,6 +423,8 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
                 className="dash-icon-btn"
                 aria-label={`Notifications${totalUnread > 0 ? `, ${totalUnread} non lue${totalUnread > 1 ? 's' : ''}` : ''}`}
                 onClick={handleOpenNotif}
+                data-notif-bell=""
+                aria-expanded={notifOpen}
               >
                 <Bell size={18} weight="regular" />
                 {totalUnread > 0 && (

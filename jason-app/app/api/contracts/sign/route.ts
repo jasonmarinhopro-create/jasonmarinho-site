@@ -8,6 +8,8 @@ import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { logger } from '@/lib/logger'
 import { depositWindow, depositOpensOn } from '@/lib/stripe/deposit-window'
 import { createDeclarationForSignedContract, type DeclarationCreateResult } from '@/lib/declarations/create'
+import { createNotification, sejourHref } from '@/lib/notifications/create'
+import { stayLabel } from '@/lib/notifications/present'
 
 export const dynamic = 'force-dynamic'
 
@@ -105,7 +107,7 @@ export async function POST(request: NextRequest) {
       .select('id, statut, sejour_id, user_id, token_expires_at, locataire_email, bailleur_email, ' +
               'locataire_prenom, locataire_nom, bailleur_prenom, bailleur_nom, ' +
               'logement_adresse, montant_loyer, montant_caution, modalites_paiement, stripe_payment_enabled, checklist_status, langue, ' +
-              'date_arrivee, date_depart')
+              'date_arrivee, date_depart, logement_nom')
       .eq('token', token)
       .single()
 
@@ -217,6 +219,23 @@ export async function POST(request: NextRequest) {
         // Non bloquant, la signature a réussi, on log juste l'erreur
         log.warn('sejourSync', { err: sejourError })
       }
+    }
+
+    // ── Étape 3ter : Notification dans l'app (avant : e-mail seulement) ──────
+    if (contract.user_id) {
+      const guest = `${contract.locataire_prenom ?? ''} ${contract.locataire_nom ?? ''}`.trim() || 'Ton voyageur'
+      const sejour = contract.date_arrivee && contract.date_depart ? stayLabel(contract.date_arrivee.slice(0, 10), contract.date_depart.slice(0, 10)) : null
+      await createNotification({
+        recipientId: contract.user_id,
+        category: 'sejour',
+        type: 'contrat_signe',
+        title: `${guest} a signé son contrat`,
+        body: [contract.logement_nom || contract.logement_adresse, sejour].filter(Boolean).join(', ') + (contract.stripe_payment_enabled ? '. Il peut maintenant payer le loyer en ligne.' : '.'),
+        ctaLabel: 'Voir la fiche voyageur',
+        ctaHref: await sejourHref(db, contract.sejour_id),
+        severity: 'success',
+        dedupKey: `contrat_signe:${contract.id}`,
+      })
     }
 
     // ── Étape 3bis : Déclaration voyageur obligatoire (SIBA, fiche police…) ──

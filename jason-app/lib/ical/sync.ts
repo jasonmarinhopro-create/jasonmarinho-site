@@ -168,6 +168,13 @@ async function doSync(
     const parsed = parseIcalText(text)
     if (parsed.length === 0) return { error: EMPTY_FEED }
 
+    // Contenu avant la synchro : sert au nettoyage et à repérer les
+    // réservations nouvelles, modifiées ou annulées (notifications).
+    const { data: existing } = await supabase
+      .from('ical_events')
+      .select('id, uid, title, description, start_date, end_date')
+      .eq('feed_id', feedId)
+
     const { error: upsertErr } = await supabase
       .from('ical_events')
       .upsert(
@@ -189,10 +196,6 @@ async function doSync(
     // Nettoyage : supprime les events qui ne sont plus dans le feed (résa annulée
     // côté plateforme). Sans ça, les fantômes restent dans le calendrier à vie.
     const validUids = new Set(parsed.map(e => e.uid))
-    const { data: existing } = await supabase
-      .from('ical_events')
-      .select('id, uid')
-      .eq('feed_id', feedId)
     const toDelete = (existing ?? [])
       .filter(e => !validUids.has(e.uid))
       .map(e => e.id)
@@ -204,6 +207,23 @@ async function doSync(
       .from('ical_feeds')
       .update({ last_synced: new Date().toISOString() })
       .eq('id', feedId)
+
+    // Notifications : nouvelle réservation, dates changées, annulation.
+    // Best-effort, jamais bloquant pour la synchro.
+    if ((existing ?? []).length > 0) {
+      try {
+        const { notifyIcalChanges } = await import('@/lib/notifications/ical-notify')
+        const toRow = (e: { uid: string; title: string | null; description: string | null; start_date: string | null; end_date: string | null }) =>
+          ({ uid: e.uid, feed_id: feedId, title: e.title, description: e.description, start_date: e.start_date, end_date: e.end_date })
+        const { data: feed } = await supabase.from('ical_feeds').select('name').eq('id', feedId).maybeSingle()
+        await notifyIcalChanges(supabase, {
+          userId,
+          feed: { id: feedId, url, name: (feed as { name?: string | null } | null)?.name ?? null },
+          before: (existing ?? []).map(toRow),
+          after: parsed.map(e => toRow({ uid: e.uid, title: e.title, description: e.description, start_date: e.startDate, end_date: e.endDate })),
+        })
+      } catch (e) { console.warn('[ical] notifications', e) }
+    }
 
     return { synced: parsed.length }
   } catch (e: any) {

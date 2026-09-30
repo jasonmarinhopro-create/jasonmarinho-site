@@ -1,29 +1,15 @@
-// Helper côté serveur pour créer une notification de façon idempotente.
+// Création d'une notification, de façon idempotente (SERVER ONLY).
 //
-// Utilise le service role pour bypasser RLS (le rules-engine tourne hors
-// contexte utilisateur). Le upsert sur `dedup_key` garantit qu'une même
-// règle peut être ré-exécutée sans créer de doublons (ex: le check
-// "arrivée demain" peut tourner toutes les heures sans flooder).
-
-import { createClient as createServiceClient, type SupabaseClient } from '@supabase/supabase-js'
+// Service role : les notifications naissent hors du contexte de leur
+// destinataire (cron, webhook Stripe, signature du voyageur, équipe de
+// ménage). La clé unique (recipient_id, dedup_key) garantit qu'une même
+// règle peut tourner plusieurs fois sans doublon (ex. « arrivée demain »
+// vérifiée à chaque ouverture de la cloche).
+import 'server-only'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { getServiceClient } from '@/lib/supabase/service'
+import { cleanText } from './present'
 import type { NotificationCategory, NotificationSeverity } from './types'
-
-// On laisse le schema en `any` car pas de Database type généré localement.
-// (Sans ce cast explicite, supabase-js 2.99 résout le schema interne et
-// toutes les tables remontent en type `never` → build error.)
-type ServiceClient = SupabaseClient<any, 'public', any>
-
-let _serviceClient: ServiceClient | null = null
-
-function getServiceClient(): ServiceClient {
-  if (_serviceClient) return _serviceClient
-  _serviceClient = createServiceClient<any, 'public', any>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
-  return _serviceClient
-}
 
 export interface CreateNotificationInput {
   recipientId: string
@@ -41,47 +27,54 @@ export interface CreateNotificationInput {
 
 /**
  * Crée (ou ignore si déjà existante) une notification.
- * Renvoie `true` si une nouvelle a été créée, `false` si déduplication.
+ * Renvoie `true` si une nouvelle a été créée, `false` si déduplication ou erreur.
+ * Ne lève jamais : une notification ne doit pas faire échouer l'action qui la déclenche.
  */
 export async function createNotification(input: CreateNotificationInput): Promise<boolean> {
-  const supabase = getServiceClient()
-  const { error } = await supabase
-    .from('notifications')
-    .insert({
-      recipient_id:  input.recipientId,
-      category:      input.category,
-      type:          input.type,
-      title:         input.title,
-      body:          input.body ?? null,
-      cta_label:     input.ctaLabel ?? null,
-      cta_href:      input.ctaHref ?? null,
-      severity:      input.severity ?? 'info',
-      metadata:      input.metadata ?? {},
-      dedup_key:     input.dedupKey,
-      expires_at:    input.expiresAt
-        ? (typeof input.expiresAt === 'string' ? input.expiresAt : input.expiresAt.toISOString())
-        : null,
-    })
-
-  if (error) {
-    // Code 23505 = unique_violation = déduplication = pas une erreur métier
-    if (error.code === '23505') return false
-    console.error('[createNotification]', error)
+  try {
+    const { error } = await getServiceClient()
+      .from('notifications')
+      .insert({
+        recipient_id:  input.recipientId,
+        category:      input.category,
+        type:          input.type,
+        // Garde-fou DA : ni emoji ni tiret cadratin dans les textes visibles
+        title:         cleanText(input.title) ?? input.title,
+        body:          cleanText(input.body) ?? null,
+        cta_label:     input.ctaLabel ?? null,
+        cta_href:      input.ctaHref ?? null,
+        severity:      input.severity ?? 'info',
+        metadata:      input.metadata ?? {},
+        dedup_key:     input.dedupKey.slice(0, 250),
+        expires_at:    input.expiresAt
+          ? (typeof input.expiresAt === 'string' ? input.expiresAt : input.expiresAt.toISOString())
+          : null,
+      })
+    if (error) {
+      // 23505 = unique_violation = déjà notifié, pas une erreur
+      if (error.code !== '23505') console.error('[createNotification]', error)
+      return false
+    }
+    return true
+  } catch (e) {
+    console.error('[createNotification] crash', e)
     return false
   }
-  return true
 }
 
-/**
- * Crée plusieurs notifications en batch. Retourne le nombre de NOUVELLES
- * notifications (hors dédup).
- */
-export async function createNotificationsBatch(
-  inputs: CreateNotificationInput[],
-): Promise<number> {
-  let created = 0
-  for (const i of inputs) {
-    if (await createNotification(i)) created++
+/** Crée plusieurs notifications. Retourne le nombre de nouvelles (hors doublons). */
+export async function createNotificationsBatch(inputs: CreateNotificationInput[]): Promise<number> {
+  const res = await Promise.all(inputs.map(i => createNotification(i)))
+  return res.filter(Boolean).length
+}
+
+/** Lien vers la fiche du voyageur d'un séjour (repli : Contrats & paiements) */
+export async function sejourHref(db: SupabaseClient, sejourId: string | null | undefined, fallback = '/dashboard/contrats'): Promise<string> {
+  if (!sejourId) return fallback
+  try {
+    const { data } = await db.from('sejours').select('voyageur_id').eq('id', sejourId).maybeSingle()
+    return data?.voyageur_id ? `/dashboard/voyageurs/${data.voyageur_id}` : fallback
+  } catch {
+    return fallback
   }
-  return created
 }
