@@ -21,8 +21,8 @@ const ROUTES = [
   '/publisher/conversions.list',
   '/publisher/programs.list',
 ]
-const SENSITIVE = /mail|phone|token|key|secret|password|iban|bic|address|amount|commission|price|total|revenue|value|payment|balance|siret|vat|name$/i
-const SAFE_VALUE = /^(id|_id|profileId|programId|partnershipId|status|state|type|currency|trackingId|affiliateTrackingId|ae|slug|program\.name|name)$/
+const SENSITIVE = /mail|phone|token|secret|password|iban|bic|address|amount|commission|price|revenue|value|payment|balance|siret|vat|name$/i
+const SAFE_VALUE = /^(id|_id|profileId|programId|partnershipId|status|state|type|currency|trackingId|affiliateTrackingId|ae|slug|program\.name|name|message|error|source|statusCode|advertiser|program|urlType|requestOrigin|total|count)$/
 
 function shape(v, path = '', depth = 0, out = []) {
   if (depth > 4 || out.length > 80) return out
@@ -32,9 +32,10 @@ function shape(v, path = '', depth = 0, out = []) {
   } else if (v && typeof v === 'object') {
     for (const [k, val] of Object.entries(v)) shape(val, path ? `${path}.${k}` : k, depth + 1, out)
   } else {
-    const last = path.split('.').pop().replace(/\[0\]$/, '')
+    const last = path.split('.').pop().replace(/\[\d+\]$/, '')
+    const isValidationKey = /validation\.keys/.test(path)
     const programName = last === 'name' && /program|advertiser|brand|campaign/i.test(path)
-    const show = (programName || (SAFE_VALUE.test(last) && !SENSITIVE.test(last))) && String(v).length < 60
+    const show = (isValidationKey || programName || (SAFE_VALUE.test(last) && !SENSITIVE.test(last))) && String(v).length < 120
     out.push(`${path} : ${typeof v}${show ? ` = ${v}` : ''}`)
   }
   return out
@@ -78,4 +79,35 @@ for (const route of ROUTES) {
   const res = await tryRoute(found.base + route, found.header)
   console.log(`\n--- ${route} -> HTTP ${res.status}${res.error ? ' ' + res.error : ''} (${res.len ?? 0} octets)`)
   if (res.json) for (const line of shape(res.json)) console.log('   ' + line)
+}
+
+// ── 2e passage : conversions, commissions, noms des programmes ──
+const H = found.header
+const B = found.base
+const me = await tryRoute(B + '/publisher/publishers.me', H)
+const profileId = me.json?.affiliateProfiles?.data?.[0]?.id
+const parts = (await tryRoute(B + '/publisher/partnerships.list', H)).json?.partnerships?.data ?? []
+console.log(`\n=== Partenariats (${parts.length}) ===`)
+for (const p of parts) {
+  console.log(`   id=${p.id} statut=${p.status} trackingId=${p.trackingId} advertiser=${p.advertiser} clés=${Object.keys(p).join(',')}`)
+}
+const extra = [
+  `/publisher/conversions.list?profile=${profileId}`,
+  `/publisher/conversions.list?affiliateProfile=${profileId}`,
+  `/publisher/conversions.list?partnership=${parts[0]?.id}`,
+  `/publisher/conversions.list?profile.id=${profileId}`,
+  '/publisher/commissions',
+  '/publisher/rewards.list',
+  '/publisher/payments.list',
+  '/publisher/invoices.list',
+  '/publisher/clicks.list',
+  '/publisher/stats',
+  '/publisher/advertisers.list',
+  ...parts.map(p => `/publisher/advertisers.get?id=${p.advertiser}`),
+  ...parts.map(p => `/publisher/partnerships.get?id=${p.id}`),
+]
+for (const route of extra) {
+  const res = await tryRoute(B + route, H)
+  console.log(`\n--- ${route.replace(profileId ?? '§', '<profil>')} -> HTTP ${res.status} (${res.len ?? 0} octets)`)
+  if (res.json) for (const line of shape(res.json).slice(0, 45)) console.log('   ' + line)
 }
