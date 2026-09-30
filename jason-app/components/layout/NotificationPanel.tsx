@@ -107,7 +107,8 @@ export default function NotificationPanel({ open, onClose, totalUnread, onNewsSe
         @keyframes notifIn { from { opacity: 0; transform: translateY(-6px) } to { opacity: 1; transform: none } }
         .notif-row:hover { background: var(--surface) !important }
         .notif-row:focus-visible { outline: 2px solid var(--accent-text); outline-offset: -2px }
-        @media (max-width: 640px) { .notif-long { display: none } .notif-panel { top: calc(var(--header-h, 60px) + 4px) !important; right: 8px !important; left: 8px !important; width: auto !important; max-height: calc(100dvh - var(--header-h, 60px) - 16px) !important } }
+        @media (max-width: 640px) { .notif-long { display: none } .notif-panel { top: var(--header-h, 60px) !important; right: 0 !important; left: 0 !important; bottom: 0 !important; width: auto !important; max-height: none !important; border-radius: 16px 16px 0 0 !important; border-left: none !important; border-right: none !important; border-bottom: none !important; animation-name: notifSheet !important } .notif-foot { padding-bottom: calc(10px + env(safe-area-inset-bottom)) !important } }
+        @keyframes notifSheet { from { transform: translateY(24px); opacity: 0 } to { transform: none; opacity: 1 } }
       `} />
 
       <div style={s.head}>
@@ -157,7 +158,7 @@ export default function NotificationPanel({ open, onClose, totalUnread, onNewsSe
         ))}
       </div>
 
-      <div style={s.footerRow}>
+      <div style={s.footerRow} className="notif-foot">
         <Link href="/dashboard/notifications" onClick={onClose} style={s.footer}>
           Voir toutes les notifications <ArrowRight size={13} weight="bold" />
         </Link>

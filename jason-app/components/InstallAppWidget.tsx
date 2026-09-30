@@ -245,7 +245,10 @@ function IOSGuideOverlay({ onClose }: { onClose: () => void }) {
           <div style={s.iosStep}>
             <div style={s.iosStepNum}>3</div>
             <div style={s.iosStepText}>
-              Touche <strong style={s.iosStrong}>Ajouter</strong> en haut à droite. C&apos;est fait&nbsp;!
+              Laisse <strong style={s.iosStrong}>« Ouvrir en tant qu&apos;app web »</strong> activé, puis touche <strong style={s.iosStrong}>Ajouter</strong>. Ouvre ensuite l&apos;app depuis sa nouvelle icône (sans barre d&apos;adresse Safari).
+              <div style={s.iosHint}>
+                Un ancien raccourci qui ouvre Safari n&apos;est pas l&apos;app : supprime-le et refais l&apos;ajout depuis cette page.
+              </div>
             </div>
           </div>
           <div style={s.iosArrow} aria-hidden="true">↓</div>

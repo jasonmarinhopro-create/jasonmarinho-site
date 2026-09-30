@@ -24,6 +24,10 @@ export const metadata: Metadata = {
   title: 'Mon espace, Jason Marinho',
   description: 'Formations, gabarits et ressources pour développer ton activité de location courte durée.',
   robots: 'noindex, nofollow',
+  applicationName: 'Jason Marinho',
+  // iPhone : ajoutée à l'écran d'accueil, l'app s'ouvre en plein écran (sans
+  // Safari), condition pour recevoir les notifications sur le téléphone
+  appleWebApp: { capable: true, title: 'Jason Marinho', statusBarStyle: 'default' },
   // Les icônes (favicon.ico, icon.png, apple-icon.png) sont auto-détectées
   // par Next.js App Router depuis app/. Pas besoin de les déclarer ici.
 }

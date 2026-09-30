@@ -7,7 +7,7 @@
 import { useEffect, useState } from 'react'
 import { DeviceMobile, CheckCircle, BellRinging, Export, PlusSquare } from '@phosphor-icons/react/dist/ssr'
 
-type State = 'loading' | 'noconfig' | 'unsupported' | 'ios-install' | 'denied' | 'off' | 'on'
+type State = 'loading' | 'noconfig' | 'unsupported' | 'ios-install' | 'ios-old' | 'denied' | 'off' | 'on'
 
 function keyBytes(base64: string): Uint8Array {
   const pad = '='.repeat((4 - (base64.length % 4)) % 4)
@@ -38,7 +38,7 @@ export default function PushSettings({ devices, publicKey }: { devices: number; 
     (async () => {
       if (!PUBLIC_KEY) return setState('noconfig')
       const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window
-      if (!supported) return setState(isIos() && !isStandalone() ? 'ios-install' : 'unsupported')
+      if (!supported) return setState(isIos() && !isStandalone() ? 'ios-install' : isIos() ? 'ios-old' : 'unsupported')
       if (Notification.permission === 'denied') return setState('denied')
       try {
         const reg = await navigator.serviceWorker.getRegistration('/')
@@ -100,12 +100,16 @@ export default function PushSettings({ devices, publicKey }: { devices: number; 
 
       {state === 'ios-install' && (
         <div style={s.steps}>
-          <div style={s.text}>Sur iPhone, Apple ne l&apos;autorise que depuis l&apos;app installée :</div>
-          <div style={s.step}><Export size={15} weight="bold" /> Dans Safari, touche <strong>Partager</strong></div>
-          <div style={s.step}><PlusSquare size={15} weight="bold" /> Choisis <strong>Sur l&apos;écran d&apos;accueil</strong></div>
-          <div style={s.step}><BellRinging size={15} weight="bold" /> Ouvre l&apos;app depuis son icône et reviens ici</div>
+          <div style={s.text}>Sur iPhone, Apple ne l&apos;autorise que depuis l&apos;app installée. Un raccourci qui ouvre Safari ne suffit pas :</div>
+          <div style={s.step}><span style={s.num}>1</span> Ouvre <strong>app.jasonmarinho.com</strong> dans Safari (pas le site jasonmarinho.com)</div>
+          <div style={s.step}><Export size={15} weight="bold" /> Touche <strong>Partager</strong>, puis <strong>Sur l&apos;écran d&apos;accueil</strong></div>
+          <div style={s.step}><PlusSquare size={15} weight="bold" /> Laisse <strong>Ouvrir en tant qu&apos;app web</strong> activé, puis <strong>Ajouter</strong></div>
+          <div style={s.step}><BellRinging size={15} weight="bold" /> Ouvre l&apos;app depuis la nouvelle icône (sans barre d&apos;adresse) et reviens ici</div>
+          <div style={{ ...s.text, fontSize: 12 }}>Supprime l&apos;ancien raccourci s&apos;il ouvre Safari. iOS 16.4 ou plus récent.</div>
         </div>
       )}
+
+      {state === 'ios-old' && <div style={s.text}>L&apos;app est bien installée, mais cet iPhone est trop ancien pour les notifications : mets-le à jour (iOS 16.4 ou plus récent).</div>}
 
       {state === 'unsupported' && <div style={s.text}>Ce navigateur ne gère pas les notifications. Essaie Chrome, Edge, Firefox ou Safari à jour.</div>}
 
@@ -144,7 +148,8 @@ const s: Record<string, React.CSSProperties> = {
   sub: { fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.5, marginTop: 2 },
   text: { fontSize: 13, color: 'var(--text-2)', lineHeight: 1.55 },
   steps: { display: 'flex', flexDirection: 'column', gap: 7 },
-  step: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text)' },
+  step: { display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, color: 'var(--text)', lineHeight: 1.45 },
+  num: { width: 15, height: 15, flexShrink: 0, borderRadius: 99, fontSize: 10, fontWeight: 800, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'var(--accent-text)', color: 'var(--bg)', marginTop: 2 },
   primary: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 7, padding: '11px 16px', borderRadius: 11, border: 'none', background: 'var(--accent-text)', color: 'var(--bg)', fontSize: 14, fontWeight: 700, cursor: 'pointer' },
   secondary: { padding: '8px 13px', borderRadius: 10, border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--accent-text)', fontSize: 13, fontWeight: 700, cursor: 'pointer' },
   ghost: { padding: '8px 13px', borderRadius: 10, border: '1px solid var(--border)', background: 'transparent', color: 'var(--text-2)', fontSize: 13, fontWeight: 600, cursor: 'pointer' },

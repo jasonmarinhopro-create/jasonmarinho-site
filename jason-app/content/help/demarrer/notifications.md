@@ -29,7 +29,12 @@ La première synchronisation d'un calendrier ne crée pas de notification pour l
 Tu peux recevoir les notifications sur ton téléphone ou ton ordinateur, même quand l'app est fermée : page **Notifications**, bloc **Sur ton téléphone**, bouton **Activer sur cet appareil**, puis accepte la demande du navigateur. Une notification d'essai part tout de suite.
 
 - **Android, ordinateur** : fonctionne dans Chrome, Edge et Firefox, directement depuis le navigateur.
-- **iPhone et iPad** : Apple ne l'autorise que depuis l'app installée (iOS 16.4 ou plus). Dans Safari, touche **Partager** puis **Sur l'écran d'accueil**, ouvre l'app depuis son icône, puis active les notifications.
+- **iPhone et iPad** : Apple ne l'autorise que depuis l'app installée (iOS 16.4 ou plus). Un simple raccourci qui ouvre Safari ne suffit pas :
+  1. Ouvre **app.jasonmarinho.com** dans Safari (et non le site jasonmarinho.com).
+  2. Touche **Partager**, puis **Sur l'écran d'accueil**.
+  3. Laisse **Ouvrir en tant qu'app web** activé, puis touche **Ajouter**.
+  4. Ouvre l'app depuis sa nouvelle icône : elle s'affiche en plein écran, sans barre d'adresse. Active alors les notifications.
+  Si tu avais déjà un raccourci qui ouvre Safari, supprime-le.
 - À activer sur chaque appareil. **Désactiver** l'arrête sur l'appareil utilisé seulement.
 
 Les rappels répétés (inscription Stripe à terminer) restent dans la cloche sans être envoyés sur le téléphone.
