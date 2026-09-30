@@ -450,8 +450,15 @@ export function AffilaeCard({ data }: { data: AffilaeOverview }) {
       {data.state === 'absent' ? (
         <div style={s.card}><div style={s.empty}>Ajoute la variable AFFILAE_API_KEY dans Vercel (projet jasonmarinho-dashboard) pour voir tes conversions et commissions ici.</div></div>
       ) : data.state === 'erreur' ? (
-        <div style={s.card}><div style={s.empty}>{data.message}</div></div>
+        <div style={s.card}>
+          <div style={s.empty}>{data.message}</div>
+          <button type="button" onClick={() => window.location.reload()} style={{ marginTop: 10, fontSize: 12.5, fontWeight: 600, color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 8, padding: '6px 12px', cursor: 'pointer' }}>Réessayer</button>
+        </div>
       ) : (
+        <>
+        {data.missing.length > 0 && (
+          <div style={{ ...s.empty, marginBottom: 10 }}>Affilae a été lent : {data.missing.join(' et ')} pas encore chargé{data.missing.length > 1 ? 's' : ''}. Recharge la page dans quelques minutes pour les voir.</div>
+        )}
         <div style={s.trafficGrid}>
           <div style={s.card}>
             <div style={s.liveTop}><span style={s.liveLabel}>Commissions (toutes)</span></div>
@@ -503,6 +510,7 @@ export function AffilaeCard({ data }: { data: AffilaeOverview }) {
             <a href="https://affilae.com" target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-text)', marginTop: 10, display: 'inline-block' }}>Ouvrir Affilae</a>
           </div>
         </div>
+        </>
       )}
     </section>
   )
