@@ -15,6 +15,7 @@ export const CATEGORIES = [
   { id: 'prix', label: 'Tarification dynamique', icon: 'chart-line-up' },
   { id: 'acces', label: 'Accès & sécurité', icon: 'lock-key' },
   { id: 'compta', label: 'Comptabilité & fiscalité', icon: 'calculator' },
+  { id: 'juridique', label: 'Création & juridique', icon: 'scales' },
   { id: 'menage', label: 'Ménage & opérations', icon: 'sparkle' },
   { id: 'photo', label: 'Photo & visite virtuelle', icon: 'camera' },
   { id: 'marche', label: 'Étude de marché', icon: 'chart-bar' },
@@ -29,6 +30,10 @@ const HOSPITABLE = 'https://hospitable.com/partners/refer?utm_source=affiliates&
 const SHINE = 'https://app.shine.fr/register?referral=WYDP4644'
 // Indy (partenariat validé le 30/09/2026) : lien « spécial immobilier » fourni par Indy
 const INDY = 'https://urlr.me/FEqNfy'
+// LegalPlace (partenariat Affilae du 30/09/2026, numéro d'affilié 1773) : les
+// paramètres du lien traqué généré par Jason, ajoutés à chaque page du kit
+export const LEGALPLACE_AE = 'utm_source=affilae&utm_medium=partner&utm_campaign=Jason%20Marinho&ae=1773'
+const LEGALPLACE_SOCIETE = `https://creation.legalplace.fr/creation-entreprise-2?${LEGALPLACE_AE}`
 
 export const OUTILS = [
   // ── Offres (toujours en tête) ──
@@ -72,6 +77,15 @@ export const OUTILS = [
     liens: [
       { label: 'Essayer Indy', href: INDY, sponsored: true },
       { label: 'Mon avis', href: '/blog/indy-lmnp-location-courte-duree-avis-2026' },
+    ],
+  },
+  {
+    nom: 'LegalPlace', mono: 'L', couleur: '#1D3557', cats: ['juridique'],
+    badge: 'affilie', offre: 'Statuts en ligne',
+    desc: 'Création de SCI, SASU ou micro-entreprise, modification de statuts et domiciliation, en ligne.',
+    liens: [
+      { label: 'Créer ma société', href: LEGALPLACE_SOCIETE, sponsored: true },
+      { label: 'Conciergerie : statut', href: '/blog/creer-conciergerie-airbnb-2025' },
     ],
   },
   {

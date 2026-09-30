@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Encadrés affiliés/parrainage (Hospitable, Shine, Indy) injectés dans les pages
+// Encadrés affiliés/parrainage (Hospitable, Shine, Indy, LegalPlace) injectés dans les pages
 // qui parlent déjà de l'outil. Idempotent : chaque encadré est entouré de
 // marqueurs <!-- AFF:<id>:START/END --> et remplacé à chaque passage. À
 // relancer après régénération d'un article (scripts/generate-article.mjs).
@@ -20,6 +20,11 @@ const HOSPITABLE_BLOG = 'https://hospitable.com/partners/refer?utm_source=affili
 const SHINE = 'https://app.shine.fr/register?referral=WYDP4644'
 // Indy (partenariat du 30/09/2026) : lien « spécial immobilier » fourni par Indy
 const INDY = 'https://urlr.me/FEqNfy'
+// LegalPlace (partenariat du 30/09/2026, numéro d'affilié 1773)
+const LP = 'utm_source=affilae&utm_medium=partner&utm_campaign=Jason%20Marinho&ae=1773'
+const LP_SOCIETE = `https://creation.legalplace.fr/creation-entreprise-2?${LP}`
+const LP_MICRO = `https://www.legalplace.fr/contrats/creation-micro-entreprise/?${LP}`
+const LP_DOMICILIATION = `https://landing.legalplace.fr/domiciliation?${LP}`
 
 const btn = (href, label) => `<a href="${href}" target="_blank" rel="sponsored noopener" style="display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:14px;padding:10px 16px;border-radius:9px;text-decoration:none;background:#004c3f;color:#fff">${label}</a>`
 const box = (id, intro, button, mention) => `<!-- AFF:${id}:START -->
@@ -56,12 +61,24 @@ const indyVous = box('indy-vous',
   btn(INDY, 'Essayer Indy gratuitement'),
   "Lien affilié : si vous vous inscrivez via ce lien, Indy me verse une commission, sans aucun surcoût pour vous (vous avez au contraire votre premier mois offert). Mon avis reste indépendant. <a href=\"/blog/indy-lmnp-location-courte-duree-avis-2026\" style=\"color:#004c3f\">Lire mon avis complet sur Indy</a>.")
 
+const LP_MENTION = "Lien affilié : si tu passes par ce lien, LegalPlace me verse une commission, sans aucun surcoût pour toi. Si tu es à l'aise avec les formalités, tu peux aussi tout faire toi-même sur le guichet unique de l'INPI (gratuit pour une micro-entreprise)."
+const legalplaceConciergerie = box('legalplace-conciergerie',
+  "<strong>Créer ta structure en ligne :</strong> LegalPlace rédige et dépose les statuts de ta SASU ou SARL, ou crée ta micro-entreprise, et propose aussi la domiciliation si tu ne veux pas mettre ton adresse perso.",
+  btn(LP_SOCIETE, 'Créer ma société') + ' ' + btn(LP_MICRO, 'Créer ma micro-entreprise') + ' ' + btn(LP_DOMICILIATION, 'Domicilier mon entreprise'),
+  LP_MENTION)
+const legalplaceMenage = box('legalplace-menage',
+  "<strong>Démarrer en micro-entreprise :</strong> LegalPlace s'occupe de la déclaration en ligne si tu préfères être guidé.",
+  btn(LP_MICRO, 'Créer ma micro-entreprise'),
+  LP_MENTION)
+
 // [fichier, id, texte avant lequel insérer l'encadré, contenu]
 const PLACEMENTS = [
   ['comparatif-smoobu-hospitable/index.html', 'hospitable-vous', '</section>\n\n<section id="verdict">', hospitableVous],
   ['blog/messagerie-unifiee-3-plateformes-tester/index.html', 'hospitable-tu', '<h2 class="art-h2">2. Smoobu : l\'option européenne complète</h2>', hospitableTu],
   ['blog/logiciels-conciergerie-comparatif-2026/index.html', 'hospitable-tu', '<h2 class="art-h2">2. Smoobu : l\'option européenne tout-en-un</h2>', hospitableTu],
   ['blog/hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls/index.html', 'hospitable-tu', '<h2 class="art-h2">4. L\'automatisation au-delà du pricing', hospitableTu],
+  ['blog/creer-conciergerie-airbnb-2025/index.html', 'legalplace-conciergerie', '<h2 class="art-h2">Étape 2 : Trouver ses premiers clients', legalplaceConciergerie],
+  ['blog/devenir-prestataire-menage-airbnb-se-lancer/index.html', 'legalplace-menage', '<h2 class="art-h2">Fixer tes tarifs sans te brader', legalplaceMenage],
   ['comparatif-indy-tiime-henrri/index.html', 'indy-vous', '</section>\n\n<section id="tiime">', indyVous],
   ['blog/declarer-lmnp-sans-expert-comptable-decla-fr/index.html', 'indy-tu', '<h2 class="art-h2">5. Les limites : quand ce n\'est pas fait pour toi', indyTu],
   ['blog/regime-reel-vs-micro-bic-decision-2026/index.html', 'indy-tu', '<h2 class="art-h2">4. Comment basculer en régime réel', indyTu],

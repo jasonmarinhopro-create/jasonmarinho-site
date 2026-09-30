@@ -36,6 +36,11 @@
       "icon": "calculator"
     },
     {
+      "id": "juridique",
+      "label": "Création & juridique",
+      "icon": "scales"
+    },
+    {
       "id": "menage",
       "label": "Ménage & opérations",
       "icon": "sparkle"
@@ -163,6 +168,28 @@
         {
           "label": "Mon avis",
           "href": "https://jasonmarinho.com/blog/indy-lmnp-location-courte-duree-avis-2026"
+        }
+      ]
+    },
+    {
+      "nom": "LegalPlace",
+      "mono": "L",
+      "couleur": "#1D3557",
+      "cats": [
+        "juridique"
+      ],
+      "badge": "affilie",
+      "offre": "Statuts en ligne",
+      "desc": "Création de SCI, SASU ou micro-entreprise, modification de statuts et domiciliation, en ligne.",
+      "liens": [
+        {
+          "label": "Créer ma société",
+          "href": "https://creation.legalplace.fr/creation-entreprise-2?utm_source=affilae&utm_medium=partner&utm_campaign=Jason%20Marinho&ae=1773",
+          "sponsored": true
+        },
+        {
+          "label": "Conciergerie : statut",
+          "href": "https://jasonmarinho.com/blog/creer-conciergerie-airbnb-2025"
         }
       ]
     },
