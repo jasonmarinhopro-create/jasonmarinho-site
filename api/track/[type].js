@@ -31,9 +31,15 @@ function getClientIp(req) {
 const BOT_UA = /bot|crawler|spider|crawling|preview|scan|monitor|lighthouse|headless|python|curl|wget/i
 
 // "app.lodgify.com" -> "lodgify", "www.smoobu.com" -> "smoobu"
+// Liens raccourcis fournis par un partenaire : le domaine ne dit pas qui c'est
+const SHORT_LINKS = { 'urlr.me/FEqNfy': 'indy' }
+
 function partnerFromUrl(u) {
   try {
-    const parts = new URL(u).hostname.toLowerCase().split('.')
+    const url = new URL(u)
+    const short = SHORT_LINKS[url.hostname.toLowerCase() + url.pathname]
+    if (short) return short
+    const parts = url.hostname.toLowerCase().split('.')
     return parts.length >= 2 ? parts[parts.length - 2] : parts[0]
   } catch { return '' }
 }

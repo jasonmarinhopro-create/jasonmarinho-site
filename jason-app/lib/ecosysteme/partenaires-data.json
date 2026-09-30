@@ -145,6 +145,28 @@
       ]
     },
     {
+      "nom": "Indy",
+      "mono": "I",
+      "couleur": "#10B981",
+      "cats": [
+        "compta"
+      ],
+      "badge": "affilie",
+      "offre": "1er mois offert",
+      "desc": "Compta LMNP, liasse fiscale 2031 et facture électronique (plateforme agréée) pour ta location meublée.",
+      "liens": [
+        {
+          "label": "Essayer Indy",
+          "href": "https://urlr.me/FEqNfy",
+          "sponsored": true
+        },
+        {
+          "label": "Mon avis",
+          "href": "https://jasonmarinho.com/blog/indy-lmnp-location-courte-duree-avis-2026"
+        }
+      ]
+    },
+    {
       "nom": "Krossbooking",
       "mono": "K",
       "couleur": "#0E7490",
@@ -407,21 +429,6 @@
         {
           "label": "Voir le comparatif",
           "href": "https://jasonmarinho.com/comparatif-ring-eufy-reolink"
-        }
-      ]
-    },
-    {
-      "nom": "Indy",
-      "mono": "I",
-      "couleur": "#10B981",
-      "cats": [
-        "compta"
-      ],
-      "desc": "Comptabilité en ligne automatisée pour les indépendants.",
-      "liens": [
-        {
-          "label": "Voir le comparatif",
-          "href": "https://jasonmarinho.com/comparatif-indy-tiime-henrri"
         }
       ]
     },

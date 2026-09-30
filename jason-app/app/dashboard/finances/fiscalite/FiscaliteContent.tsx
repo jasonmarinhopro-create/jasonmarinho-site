@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Scales, CalendarBlank, Info, ArrowRight } from '@phosphor-icons/react/dist/ssr'
+import { Scales, CalendarBlank, Info, ArrowRight, Calculator } from '@phosphor-icons/react/dist/ssr'
 import type { FinanceData } from '@/lib/finances/load'
 import { inScope } from '@/lib/finances/engine'
 import {
@@ -150,6 +150,26 @@ function France({ fr, year, current }: { fr: FiscalFR; year: number; current: nu
           <div><strong style={{ color: 'var(--text)' }}>Au printemps {year + 1}</strong> : déclaration de tes revenus {year}. En micro-BIC, sur la déclaration 2042-C-PRO. Au réel, la liasse 2031 est à déposer avant, en général début mai.</div>
           <div><strong style={{ color: 'var(--text)' }}>Avant le 15 décembre</strong> : cotisation foncière des entreprises (CFE), sur ton espace professionnel impots.gouv.fr. Pas de CFE si tes recettes ne dépassent pas 5 000 €.</div>
           <div><strong style={{ color: 'var(--text)' }}>Chaque mois ou trimestre</strong> : reversement de la taxe de séjour à ta commune pour les réservations directes (les plateformes s&apos;en chargent pour leurs réservations).</div>
+        </div>
+      </Card>
+
+      {/* Partenaire Indy (30/09/2026) : lien affilié, toujours rel="sponsored" + mention visible */}
+      <Card>
+        <CardHead
+          title={<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><Calculator size={18} weight="duotone" color="var(--accent-text)" />Ta compta et ta déclaration, sans expert-comptable</span>}
+          sub={fr.verdict === 'reel_conseille' || fr.verdict === 'reel_obligatoire' || fr.verdict === 'reel_ou_classement'
+            ? 'Au réel, il faut une comptabilité, les amortissements et la liasse 2031 : un logiciel suffit pour un dossier simple.'
+            : 'Au micro-BIC, pas de liasse à produire, mais la facture électronique est devenue obligatoire.'}
+        />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.6 }}>
+          <div>
+            <strong style={{ color: 'var(--text)' }}>Indy</strong>, partenaire de l&apos;app : l&apos;offre gratuite suit tes recettes et reçoit tes factures électroniques (obligatoire pour les loueurs en meublé depuis le 1er septembre 2026, Indy est plateforme agréée). Son offre LMNP calcule tes amortissements, prépare la liasse 2031 et la télétransmet aux impôts. Premier mois offert, sans engagement.
+          </div>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <a href="https://urlr.me/FEqNfy" target="_blank" rel="sponsored noopener" style={ui.btn}>Essayer Indy, 1er mois offert <ArrowRight size={14} weight="bold" /></a>
+            <a href="https://jasonmarinho.com/blog/indy-lmnp-location-courte-duree-avis-2026" target="_blank" rel="noopener" style={ui.btnGhost}>Mon avis sur Indy</a>
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Lien affilié : Indy verse une commission à Jason Marinho si tu t&apos;inscris par ce lien, sans aucun surcoût pour toi.</div>
         </div>
       </Card>
 

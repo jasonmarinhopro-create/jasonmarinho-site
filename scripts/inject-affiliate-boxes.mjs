@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Encadrés affiliés/parrainage (Hospitable, Shine) injectés dans les pages
+// Encadrés affiliés/parrainage (Hospitable, Shine, Indy) injectés dans les pages
 // qui parlent déjà de l'outil. Idempotent : chaque encadré est entouré de
 // marqueurs <!-- AFF:<id>:START/END --> et remplacé à chaque passage. À
 // relancer après régénération d'un article (scripts/generate-article.mjs).
@@ -18,6 +18,8 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
 const HOSPITABLE_BLOG = 'https://hospitable.com/partners/refer?utm_source=affiliates&utm_medium=blog&utm_campaign=BASWTYN7'
 const SHINE = 'https://app.shine.fr/register?referral=WYDP4644'
+// Indy (partenariat du 30/09/2026) : lien « spécial immobilier » fourni par Indy
+const INDY = 'https://urlr.me/FEqNfy'
 
 const btn = (href, label) => `<a href="${href}" target="_blank" rel="sponsored noopener" style="display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:14px;padding:10px 16px;border-radius:9px;text-decoration:none;background:#004c3f;color:#fff">${label}</a>`
 const box = (id, intro, button, mention) => `<!-- AFF:${id}:START -->
@@ -44,12 +46,26 @@ const shineTu = box('shine-tu',
   btn(SHINE, 'Ouvrir mon compte Shine'),
   "Lien de parrainage : si tu ouvres un compte via ce lien, je touche une prime de parrainage, sans aucun surcoût pour toi. Je ne recommande Shine que comme une option parmi d'autres (Qonto, Blank, Finom) : compare selon tes besoins.")
 
+const indyTu = box('indy-tu',
+  "<strong>Ta compta LMNP avec Indy :</strong> offre gratuite (suivi, facture électronique en plateforme agréée), puis offre LMNP avec amortissements et liasse 2031 télétransmise. <strong>Premier mois offert</strong>, sans engagement, avec ce lien.",
+  btn(INDY, 'Essayer Indy gratuitement'),
+  "Lien affilié : si tu t'inscris via ce lien, Indy me verse une commission, sans aucun surcoût pour toi (tu as au contraire ton premier mois offert). <a href=\"/blog/indy-lmnp-location-courte-duree-avis-2026\" style=\"color:#004c3f\">Lire mon avis complet sur Indy, limites comprises</a>.")
+
+const indyVous = box('indy-vous',
+  "<strong>Essayer Indy :</strong> offre gratuite à vie, puis offre LMNP avec amortissements et liasse 2031 télétransmise. <strong>Premier mois offert</strong>, sans engagement, avec ce lien.",
+  btn(INDY, 'Essayer Indy gratuitement'),
+  "Lien affilié : si vous vous inscrivez via ce lien, Indy me verse une commission, sans aucun surcoût pour vous (vous avez au contraire votre premier mois offert). Mon avis reste indépendant. <a href=\"/blog/indy-lmnp-location-courte-duree-avis-2026\" style=\"color:#004c3f\">Lire mon avis complet sur Indy</a>.")
+
 // [fichier, id, texte avant lequel insérer l'encadré, contenu]
 const PLACEMENTS = [
   ['comparatif-smoobu-hospitable/index.html', 'hospitable-vous', '</section>\n\n<section id="verdict">', hospitableVous],
   ['blog/messagerie-unifiee-3-plateformes-tester/index.html', 'hospitable-tu', '<h2 class="art-h2">2. Smoobu : l\'option européenne complète</h2>', hospitableTu],
   ['blog/logiciels-conciergerie-comparatif-2026/index.html', 'hospitable-tu', '<h2 class="art-h2">2. Smoobu : l\'option européenne tout-en-un</h2>', hospitableTu],
   ['blog/hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls/index.html', 'hospitable-tu', '<h2 class="art-h2">4. L\'automatisation au-delà du pricing', hospitableTu],
+  ['comparatif-indy-tiime-henrri/index.html', 'indy-vous', '</section>\n\n<section id="tiime">', indyVous],
+  ['blog/declarer-lmnp-sans-expert-comptable-decla-fr/index.html', 'indy-tu', '<h2 class="art-h2">5. Les limites : quand ce n\'est pas fait pour toi', indyTu],
+  ['blog/regime-reel-vs-micro-bic-decision-2026/index.html', 'indy-tu', '<h2 class="art-h2">4. Comment basculer en régime réel', indyTu],
+  ['blog/lmnp-vs-lmp-changement-2026-impact/index.html', 'indy-tu', '<h2 class="art-h2">4. Optimiser sa fiscalité LCD en 2026', indyTu],
   ['blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026/index.html', 'shine-tu', '<ul class="art-ul"><li>Ouverture 100 % en ligne recommandée', shineTu],
 ]
 

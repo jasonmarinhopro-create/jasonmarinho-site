@@ -74,6 +74,9 @@ function buildBodyContent(sections) {
         parts.push(`<div class="art-tip"><i class="ph ph-lightbulb"></i> <span>${b.text}</span></div>`)
       } else if (b.type === 'cta') {
         parts.push(`<div class="art-cta-box"><p>${b.text}</p><a href="${b.href}" class="btn-p">${b.button} <i class="ph-bold ph-arrow-right"></i></a></div>`)
+      } else if (b.type === 'html') {
+        // Bloc HTML écrit à la main (ex. encadré de lien affilié avec sa mention)
+        parts.push(b.html)
       }
     }
     return parts.join('\n')

@@ -27,6 +27,8 @@ export const RACCOURCIS = ['gestion', 'messagerie', 'direct', 'banque', 'acces',
 const LODGIFY_DEMO = 'https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv'
 const HOSPITABLE = 'https://hospitable.com/partners/refer?utm_source=affiliates&utm_medium=blog&utm_campaign=BASWTYN7'
 const SHINE = 'https://app.shine.fr/register?referral=WYDP4644'
+// Indy (partenariat validé le 30/09/2026) : lien « spécial immobilier » fourni par Indy
+const INDY = 'https://urlr.me/FEqNfy'
 
 export const OUTILS = [
   // ── Offres (toujours en tête) ──
@@ -64,6 +66,15 @@ export const OUTILS = [
     ],
   },
   {
+    nom: 'Indy', mono: 'I', couleur: '#10B981', cats: ['compta'],
+    badge: 'affilie', offre: '1er mois offert',
+    desc: 'Compta LMNP, liasse fiscale 2031 et facture électronique (plateforme agréée) pour ta location meublée.',
+    liens: [
+      { label: 'Essayer Indy', href: INDY, sponsored: true },
+      { label: 'Mon avis', href: '/blog/indy-lmnp-location-courte-duree-avis-2026' },
+    ],
+  },
+  {
     nom: 'Krossbooking', mono: 'K', couleur: '#0E7490', cats: ['gestion'],
     badge: 'membre', offre: 'Tarif négocié membres',
     desc: 'Channel manager italien avec PMS et moteur de réservation. Réduction réservée aux membres.',
@@ -89,7 +100,6 @@ export const OUTILS = [
   { nom: 'Ring', mono: 'R', couleur: '#0284C7', cats: ['acces'], desc: 'Sonnettes vidéo et caméras extérieures, historique vidéo sur abonnement.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-ring-eufy-reolink' }] },
   { nom: 'Eufy', mono: 'E', couleur: '#0369A1', cats: ['acces'], desc: 'Caméras et sonnettes avec stockage local, sans abonnement obligatoire.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-ring-eufy-reolink' }] },
   { nom: 'Reolink', mono: 'R', couleur: '#1E40AF', cats: ['acces'], desc: 'Caméras de surveillance wifi ou filaires, avec stockage local.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-ring-eufy-reolink' }] },
-  { nom: 'Indy', mono: 'I', couleur: '#10B981', cats: ['compta'], desc: 'Comptabilité en ligne automatisée pour les indépendants.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-indy-tiime-henrri' }] },
   { nom: 'Tiime', mono: 'T', couleur: '#0EA5E9', cats: ['compta'], desc: 'Comptabilité et facturation en ligne, avec une offre gratuite.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-indy-tiime-henrri' }] },
   { nom: 'Henrri', mono: 'H', couleur: '#DB2777', cats: ['compta'], desc: 'Logiciel de facturation en ligne gratuit.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-indy-tiime-henrri' }] },
   { nom: 'Jedeclaremonmeuble', mono: 'J', couleur: '#B45309', cats: ['compta'], desc: 'Comptabilité et déclaration LMNP en ligne, avec accompagnement.', liens: [{ label: 'Site officiel', href: 'https://www.jedeclaremonmeuble.com', externe: true }] },
