@@ -167,6 +167,7 @@ function France({ fr, year, current }: { fr: FiscalFR; year: number; current: nu
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <a href="https://urlr.me/FEqNfy" target="_blank" rel="sponsored noopener" style={ui.btn}>Essayer Indy, 1er mois offert <ArrowRight size={14} weight="bold" /></a>
+            <a href="https://www.indy.fr/facturation-electronique/?utm_source=1994&utm_medium=affiliate&utm_campaign=affilae&utm_content=facturation&promocode=PREMIERMOIS&ae=1994" target="_blank" rel="sponsored noopener" style={ui.btnGhost}>Facture électronique : m&apos;inscrire gratuitement</a>
             <a href="https://jasonmarinho.com/blog/indy-lmnp-location-courte-duree-avis-2026" target="_blank" rel="noopener" style={ui.btnGhost}>Mon avis sur Indy</a>
           </div>
           <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Lien affilié : Indy verse une commission à Jason Marinho si tu t&apos;inscris par ce lien, sans aucun surcoût pour toi.</div>

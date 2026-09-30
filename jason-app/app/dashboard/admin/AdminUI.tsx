@@ -11,6 +11,7 @@ import {
   Crown, Lifebuoy,
 } from '@phosphor-icons/react/dist/ssr'
 import { resolveAppErrorGroup } from './actions'
+import type { AffilaeOverview } from '@/lib/affiliation/affilae'
 import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashboard/HubHero'
 
 interface RecentSignup {
@@ -77,7 +78,7 @@ export default function AdminUI({
   todayLabel,
   stats,
   recentSignups, monthlySignupsChart,
-  liveVisitors, channelBreakdown, topPages, affiliateClicks, appErrors,
+  liveVisitors, channelBreakdown, topPages, affiliateClicks, appErrors, affilae,
 }: {
   todayLabel: string
   stats: Stats
@@ -88,6 +89,7 @@ export default function AdminUI({
   topPages: TopPage[]
   affiliateClicks: AffiliateClicks
   appErrors: AppErrors
+  affilae: AffilaeOverview
 }) {
   const decouverte = Math.max(0, stats.totalUsers - stats.standardMembers - stats.driingMembers)
   // Seul Standard est payant ; Driing = gratuit pour les clients Driing existants
@@ -234,6 +236,7 @@ export default function AdminUI({
           </section>
 
           <AffiliateClicksCard data={affiliateClicks} />
+          <AffilaeCard data={affilae} />
         </div>
 
         <div style={s.colSide}>
@@ -425,6 +428,81 @@ function AffiliateClicksCard({ data }: { data: AffiliateClicks }) {
           )}
         </div>
       </div>
+    </section>
+  )
+}
+
+// Compte Affilae (Indy et les autres programmes Affilae) : ventes réelles et
+// commissions, en face des clics mesurés sur le site. Relu toutes les 10 min.
+const AFF_STATUS: Record<string, { label: string; color: string }> = {
+  actif: { label: 'Actif', color: 'var(--accent-text)' },
+  en_attente: { label: 'Candidature en attente', color: '#B7791F' },
+  refuse: { label: 'Refusé', color: 'var(--danger)' },
+  autre: { label: 'Autre', color: 'var(--text-3)' },
+}
+const euros = (cents: number) => (cents / 100).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
+
+function AffilaeCard({ data }: { data: AffilaeOverview }) {
+  return (
+    <section className="fade-up">
+      <div style={s.sectionLabel}><Handshake size={14} /> Affiliation · ventes suivies par Affilae</div>
+      {data.state === 'absent' ? (
+        <div style={s.card}><div style={s.empty}>Ajoute la variable AFFILAE_API_KEY dans Vercel (projet jasonmarinho-dashboard) pour voir tes conversions et commissions ici.</div></div>
+      ) : data.state === 'erreur' ? (
+        <div style={s.card}><div style={s.empty}>{data.message}</div></div>
+      ) : (
+        <div style={s.trafficGrid}>
+          <div style={s.card}>
+            <div style={s.liveTop}><span style={s.liveLabel}>Commissions (toutes)</span></div>
+            <div style={{ ...s.liveValue, color: 'var(--text)' }}>{euros(data.summary.totals.commissionCents)}</div>
+            <div style={s.liveSub}>
+              {data.summary.totals.conversions} conversion{data.summary.totals.conversions > 1 ? 's' : ''}
+              {data.summary.totals.byStatus.validee > 0 ? ` · ${euros(data.summary.totals.byStatus.validee)} validées` : ''}
+              {data.summary.totals.byStatus.en_attente > 0 ? ` · ${euros(data.summary.totals.byStatus.en_attente)} en attente` : ''}
+              {data.summary.totals.byStatus.payee > 0 ? ` · ${euros(data.summary.totals.byStatus.payee)} payées` : ''}
+            </div>
+          </div>
+          <div style={s.card}>
+            <div style={s.liveTop}><span style={s.liveLabel}>Par programme</span></div>
+            {data.summary.programs.length === 0 ? (
+              <div style={s.empty}>Aucun partenariat pour l&apos;instant.</div>
+            ) : (
+              <div style={s.channelList}>
+                {data.summary.programs.map(p => (
+                  <div key={p.id} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <div style={s.channelRow}>
+                      <span style={{ ...s.channelName, fontWeight: 600, color: 'var(--text)' }}>{p.name}</span>
+                      <span style={s.channelPct}>{euros(p.commissionCents)}</span>
+                    </div>
+                    <div style={{ fontSize: 11.5, color: 'var(--text-3)' }}>
+                      <span style={{ color: AFF_STATUS[p.status].color, fontWeight: 600 }}>{AFF_STATUS[p.status].label}</span>
+                      {p.trackingId != null ? ` · n° d'affilié ${p.trackingId}` : ''}
+                      {p.clicks != null ? ` · ${p.clicks} clic${p.clicks > 1 ? 's' : ''}` : ''}
+                      {` · ${p.conversions} conversion${p.conversions > 1 ? 's' : ''}`}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div style={s.card}>
+            <div style={s.liveTop}><span style={s.liveLabel}>Dernières conversions</span></div>
+            {data.summary.recent.length === 0 ? (
+              <div style={s.empty}>Pas encore de vente. Les clics comptés par Affilae : {data.summary.totals.clicks ?? 0}.</div>
+            ) : (
+              <div style={s.channelList}>
+                {data.summary.recent.map((r, i) => (
+                  <div key={i} style={s.channelRow}>
+                    <span style={s.channelName}>{r.program}{r.date ? ` · ${new Date(r.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', timeZone: 'Europe/Paris' })}` : ''}</span>
+                    <span style={s.channelPct}>{euros(r.commissionCents)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            <a href="https://affilae.com" target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-text)', marginTop: 10, display: 'inline-block' }}>Ouvrir Affilae</a>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

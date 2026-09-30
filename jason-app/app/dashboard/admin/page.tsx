@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { unstable_cache } from 'next/cache'
 import { getProfile } from '@/lib/queries/profile'
 import AdminUI from './AdminUI'
+import { getAffilaeOverview } from '@/lib/affiliation/affilae'
 import { getLiveVisitorsCount, getChannelBreakdown, getTopPages, getAffiliateClicks, getAppErrors, CHANNEL_LABELS } from '@/lib/queries/site-traffic'
 
 // Service client : la RLS limite chaque utilisateur à SES données (profile,
@@ -144,10 +145,11 @@ export default async function AdminPage() {
   if (profile.role !== 'admin') redirect('/dashboard')
 
   const admin = getServiceClient()
-  const [overview, liveVisitors, channelBreakdown] = await Promise.all([
+  const [overview, liveVisitors, channelBreakdown, affilae] = await Promise.all([
     getAdminOverview(),
     getLiveVisitorsCount(admin),
     getChannelBreakdown(admin),
+    getAffilaeOverview(),
   ])
 
   return (
@@ -161,6 +163,7 @@ export default async function AdminPage() {
         topPages={overview.topPages}
         affiliateClicks={overview.affiliateClicks}
         appErrors={overview.appErrors}
+        affilae={affilae}
         stats={overview.stats}
       />
     </div>

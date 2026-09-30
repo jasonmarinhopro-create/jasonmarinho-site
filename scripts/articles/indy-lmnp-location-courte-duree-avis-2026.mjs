@@ -4,11 +4,17 @@
 // toute mise à jour (grille officielle indy.fr).
 
 const INDY = 'https://urlr.me/FEqNfy'
+// Liens par thème (kit partenaire Indy) : numéro d'affilié 1994 (trackingId
+// Affilae, confirmé par l'API le 30/09/2026), code PREMIERMOIS = 1er mois offert
+const INDY_AE = 'utm_source=1994&utm_medium=affiliate&utm_campaign=affilae&promocode=PREMIERMOIS&ae=1994'
+const INDY_FE = `https://www.indy.fr/facturation-electronique/?${INDY_AE}&utm_content=facturation`
+const INDY_CREATION = `https://www.indy.fr/creation-lmnp/?${INDY_AE}&utm_content=creation-lmnp`
+const S = (href, label) => `<a href="${href}" target="_blank" rel="sponsored noopener" style="color:var(--g);font-weight:600">${label}</a> <span style="font-size:12px;color:#6B7280">(lien affilié)</span>`
 const L = (href, label) => `<a href="${href}" style="color:var(--g);font-weight:500">${label}</a>`
 
-const box = (intro, cta) => `<div style="margin:18px 0 22px;padding:16px 18px;border:1px solid rgba(0,76,63,.18);border-radius:12px;background:rgba(0,76,63,.04)">
+const box = (intro, cta, href = INDY) => `<div style="margin:18px 0 22px;padding:16px 18px;border:1px solid rgba(0,76,63,.18);border-radius:12px;background:rgba(0,76,63,.04)">
 <p style="margin:0 0 12px;font-size:15px;line-height:1.55;color:#111827">${intro}</p>
-<a href="${INDY}" target="_blank" rel="sponsored noopener" style="display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:14px;padding:10px 16px;border-radius:9px;text-decoration:none;background:#004c3f;color:#fff">${cta}</a>
+<a href="${href}" target="_blank" rel="sponsored noopener" style="display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:14px;padding:10px 16px;border-radius:9px;text-decoration:none;background:#004c3f;color:#fff">${cta}</a>
 <p style="margin:10px 0 0;font-size:12.5px;line-height:1.5;color:#6B7280">Lien affilié : si tu t'inscris via ce lien, Indy me verse une commission, sans aucun surcoût pour toi (tu as au contraire ton premier mois offert). Mon avis reste indépendant, limites comprises.</p>
 </div>`
 
@@ -39,7 +45,7 @@ export default {
           'Suivi des recettes et des dépenses, relié à ton compte bancaire',
           'Facturation et facture électronique (réception et émission) sans frais',
           'Compte pro Indy gratuit, si tu veux séparer tes revenus LCD de tes dépenses perso',
-          'Création de ton activité LMNP (formalité de début d\'activité et numéro SIRET) sans frais',
+          'Création de ton activité LMNP (formalité de début d\'activité et numéro SIRET) sans frais : ' + S(INDY_CREATION, 'créer mon LMNP avec Indy'),
         ] },
         { type: 'tip', text: 'Au micro-BIC, tu n\'as pas de liasse fiscale à produire : tes recettes brutes vont directement sur ta déclaration de revenus (2042-C-PRO). Garde tout de même un suivi propre, il te servira le jour où tu voudras comparer avec le réel.' },
       ],
@@ -49,6 +55,7 @@ export default {
       content: [
         { type: 'p', text: 'Depuis le 1er septembre 2026, toutes les entreprises assujetties à la TVA doivent pouvoir recevoir leurs factures fournisseurs au format électronique, via une plateforme agréée. Un loueur en meublé est concerné même s\'il est exonéré de TVA ou en franchise : il est assujetti, simplement exonéré. Concrètement, tes factures de ménage, de conciergerie, de linge ou de travaux arriveront de plus en plus par ce canal. Au 1er septembre 2027 viendront l\'émission des factures électroniques et la transmission des données de vente (e-reporting), mais seulement pour les entreprises qui ne sont pas exonérées de TVA : un loueur en meublé exonéré reste concerné par la seule réception.' },
         { type: 'p', text: 'Indy est immatriculée comme plateforme agréée par l\'administration fiscale depuis le 9 janvier 2026, et cette fonction est comprise dans l\'offre gratuite. Pour un hôte qui n\'avait aucun outil, c\'est la façon la plus simple de se mettre en règle sans rien payer : tu crées ton compte, tu choisis Indy comme plateforme, et tes fournisseurs peuvent t\'adresser leurs factures. Indy montre l\'inscription pas à pas dans <a href="https://www.youtube.com/watch?v=eyymdeQWxLo" rel="nofollow noopener" target="_blank" style="color:var(--g);font-weight:500">une vidéo de 2 minutes</a>.' },
+        { type: 'html', html: box('<strong>Te mettre en règle gratuitement :</strong> crée ton compte Indy et choisis-le comme plateforme agréée pour recevoir tes factures électroniques. Gratuit et illimité, premier mois offert sur les offres payantes.', 'Recevoir mes factures électroniques avec Indy', INDY_FE) },
         { type: 'tip', text: 'Ne confonds pas la facture électronique entre professionnels et le reçu que tu remets à tes voyageurs. Pour tes réservations directes, l\'' + L('/services/contrats', 'espace contrats de l\'app Jason Marinho') + ' génère le contrat signé en ligne, encaisse le loyer et produit la facture du séjour.' },
       ],
     },
