@@ -3,7 +3,7 @@
 import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { checkAllUrls } from '@/lib/seo/check-indexation'
+import { checkAllUrls, checkSingleUrl, type SingleCheck } from '@/lib/seo/check-indexation'
 
 async function requireAdmin() {
   const supabase = await createClient()
@@ -27,6 +27,18 @@ export async function refreshIndexationNow(): Promise<{ checked?: number; remain
   const result = await checkAllUrls()
   revalidatePath('/dashboard/admin/indexation')
   return result
+}
+
+// Bouton « Vérifier » d'une seule ligne : la page seulement, sans relancer
+// tout le sitemap. Pas de revalidatePath : la ligne se met à jour côté client
+// avec le résultat renvoyé (la page serveur retélécharge le sitemap).
+export async function checkUrlNow(url: string): Promise<{ result?: SingleCheck; error?: string; authExpired?: boolean }> {
+  try {
+    await requireAdmin()
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : 'Erreur inattendue' }
+  }
+  return checkSingleUrl(url)
 }
 
 // Google n'a pas d'API d'écriture pour demander l'indexation d'une page

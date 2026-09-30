@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import {
   MagnifyingGlass, ArrowSquareOut, Warning, Info, ArrowClockwise, CaretDown, CaretUp, Eye, GoogleLogo, Copy, Check,
 } from '@phosphor-icons/react/dist/ssr'
-import { refreshIndexationNow, markSubmitted, unmarkSubmitted } from './actions'
+import { refreshIndexationNow, markSubmitted, unmarkSubmitted, checkUrlNow } from './actions'
 import AdminHero, { adminAsideCard } from '../_ui/AdminHero'
 import { heroCta } from '@/components/dashboard/HubHero'
 
@@ -98,7 +98,7 @@ function statusBadge(p: PageStatus): { label: string; color: string; bg: string 
   return { label, color: '#6E5446', bg: 'color-mix(in srgb, #6E5446 10%, transparent)' }
 }
 
-export default function IndexationUI({ pages, fetchError, lastChecked, apiConfigured, connectedAt = null }: {
+export default function IndexationUI({ pages: serverPages, fetchError, lastChecked, apiConfigured, connectedAt = null }: {
   pages: PageStatus[]
   fetchError: string | null
   lastChecked: string | null
@@ -117,6 +117,11 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
   // Override optimiste par URL pour le bouton "C'est fait" — voir
   // handleMarkSubmitted plus bas.
   const [submittedOverrides, setSubmittedOverrides] = useState<Record<string, string | null>>({})
+  // Résultat du bouton « Vérifier » d'une ligne, appliqué tout de suite
+  // (sans recharger toute la page, qui retélécharge le sitemap)
+  const [checked, setChecked] = useState<Record<string, Partial<PageStatus>>>({})
+  const [checking, setChecking] = useState<Set<string>>(new Set())
+  const pages = useMemo(() => serverPages.map(p => (checked[p.url] ? { ...p, ...checked[p.url] } : p)), [serverPages, checked])
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -243,6 +248,26 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
         setSubmittedOverrides(prev => ({ ...prev, [url]: null }))
         setRefreshMsg({ type: 'err', text: res.error! })
       }
+    })
+  }
+
+  function handleCheckOne(p: PageStatus) {
+    setChecking(prev => new Set(prev).add(p.url))
+    setRefreshMsg(null)
+    checkUrlNow(p.url).then(res => {
+      if (res.result) {
+        const r = res.result
+        setChecked(prev => ({ ...prev, [p.url]: { httpStatus: r.httpStatus, coverageState: r.coverageState, indexed: r.indexed, inspectionLink: r.inspectionLink, lastCheckedAt: r.lastCheckedAt, error: null } }))
+        const label = statusBadge({ ...p, httpStatus: r.httpStatus, coverageState: r.coverageState, indexed: r.indexed, lastCheckedAt: r.lastCheckedAt, error: null }).label
+        setRefreshMsg({ type: 'ok', text: `${p.path} : ${label}.` })
+      } else {
+        if (res.authExpired) setAuthExpired(true)
+        setRefreshMsg({ type: 'err', text: `${p.path} : ${res.error ?? 'vérification impossible'}` })
+      }
+    }).catch(() => {
+      setRefreshMsg({ type: 'err', text: `${p.path} : vérification interrompue, réessaie.` })
+    }).finally(() => {
+      setChecking(prev => { const n = new Set(prev); n.delete(p.url); return n })
     })
   }
 
@@ -429,6 +454,17 @@ export default function IndexationUI({ pages, fetchError, lastChecked, apiConfig
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }} className="jm-idx-actions">
+                  {apiConfigured && (
+                    <button
+                      onClick={() => handleCheckOne(p)}
+                      disabled={checking.has(p.url) || isPending}
+                      style={{ ...s.smallBtn, cursor: checking.has(p.url) ? 'wait' : 'pointer', opacity: isPending ? 0.5 : 1 }}
+                      title="Vérifier le statut Google de cette page seulement"
+                    >
+                      <ArrowClockwise size={13} style={checking.has(p.url) ? { animation: 'spin 0.8s linear infinite' } : undefined} />
+                      {checking.has(p.url) ? 'Vérification…' : 'Vérifier'}
+                    </button>
+                  )}
                   {!p.indexed && (
                     submittedAt ? (
                       <button

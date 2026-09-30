@@ -133,3 +133,39 @@ export async function checkAllUrls(): Promise<{ checked: number; remaining: numb
     return { checked: 0, remaining: 0, error: `Vérification interrompue (${message}) — réessaie.` }
   }
 }
+
+export type SingleCheck = {
+  url: string
+  httpStatus: number | null
+  coverageState: string | null
+  indexed: boolean
+  inspectionLink: string | null
+  lastCheckedAt: string
+  error: string | null
+}
+
+// Une seule page (bouton « Vérifier » d'une ligne de l'admin, 30/09/2026 :
+// Jason ne voulait pas relancer tout le sitemap pour deux nouvelles pages).
+// Mêmes règles d'écriture que checkAllUrls : une erreur d'accès Google
+// n'écrit rien, une erreur ponctuelle n'efface pas le dernier statut connu.
+export async function checkSingleUrl(url: string): Promise<{ result?: SingleCheck; error?: string; authExpired?: boolean }> {
+  let parsed: URL
+  try { parsed = new URL(url) } catch { return { error: 'Adresse invalide.' } }
+  if (parsed.protocol !== 'https:' || parsed.hostname !== 'jasonmarinho.com') return { error: 'Seules les pages de jasonmarinho.com se vérifient ici.' }
+  if (!(await isConfigured())) return { error: 'Google Search Console non connecté.', authExpired: true }
+
+  const r = await checkOne(parsed.href)
+  if (r.kind === 'auth') {
+    log.error('Search Console : connexion expirée', { msg: r.message })
+    return { error: r.message, authExpired: true }
+  }
+  const db = serviceClient()
+  const now = new Date().toISOString()
+  if (r.kind === 'ok') {
+    const { error } = await db.from('seo_indexation_status').upsert({ ...r.row, last_checked_at: now }, { onConflict: 'url' })
+    if (error) log.error('upsert seo_indexation_status (une page)', { msg: error.message })
+    return { result: { url: r.row.url, httpStatus: r.row.http_status, coverageState: r.row.coverage_state, indexed: r.row.indexed, inspectionLink: r.row.inspection_link, lastCheckedAt: now, error: null } }
+  }
+  await db.from('seo_indexation_status').upsert(r.row, { onConflict: 'url' })
+  return { error: isQuotaError(r.row.error) ? 'Quota Google atteint (2000 vérifications par jour) : réessaie demain.' : r.row.error }
+}
