@@ -21,8 +21,8 @@ const ROUTES = [
   '/publisher/conversions.list',
   '/publisher/programs.list',
 ]
-const SENSITIVE = /mail|phone|token|secret|password|iban|bic|address|amount|commission|price|revenue|value|payment|balance|siret|vat|name$/i
-const SAFE_VALUE = /^(id|_id|profileId|programId|partnershipId|status|state|type|currency|trackingId|affiliateTrackingId|ae|slug|program\.name|name|message|error|source|statusCode|advertiser|program|urlType|requestOrigin|total|count)$/
+const SENSITIVE = /mail|phone|token|secret|password|iban|bic|address|amount|commission|price|total|count|revenue|value|payment|balance|siret|vat|name$/i
+const SAFE_VALUE = /^(id|_id|profileId|programId|partnershipId|status|state|type|currency|trackingId|affiliateTrackingId|ae|slug|program\.name|name|message|error|source|statusCode|advertiser|program|urlType|requestOrigin)$/
 
 function shape(v, path = '', depth = 0, out = []) {
   if (depth > 4 || out.length > 80) return out
@@ -75,7 +75,7 @@ if (!found) {
 }
 
 console.log(`\n=== Base retenue : ${found.base} (${found.label}) ===`)
-for (const route of ROUTES) {
+for (const route of ROUTES.slice(0, 1)) {
   const res = await tryRoute(found.base + route, found.header)
   console.log(`\n--- ${route} -> HTTP ${res.status}${res.error ? ' ' + res.error : ''} (${res.len ?? 0} octets)`)
   if (res.json) for (const line of shape(res.json)) console.log('   ' + line)
@@ -92,21 +92,20 @@ for (const p of parts) {
   console.log(`   id=${p.id} statut=${p.status} trackingId=${p.trackingId} advertiser=${p.advertiser} clés=${Object.keys(p).join(',')}`)
 }
 const extra = [
-  `/publisher/conversions.list?profile=${profileId}`,
   `/publisher/conversions.list?affiliateProfile=${profileId}`,
-  `/publisher/conversions.list?partnership=${parts[0]?.id}`,
-  `/publisher/conversions.list?profile.id=${profileId}`,
-  '/publisher/commissions',
-  '/publisher/rewards.list',
-  '/publisher/payments.list',
-  '/publisher/invoices.list',
-  '/publisher/clicks.list',
-  '/publisher/stats',
-  '/publisher/advertisers.list',
-  ...parts.map(p => `/publisher/advertisers.get?id=${p.advertiser}`),
-  ...parts.map(p => `/publisher/partnerships.get?id=${p.id}`),
+  `/publisher/payments.list?affiliateProfile=${profileId}`,
+  ...parts.map(p => `/publisher/programs.list?id=${p.program}`),
+  ...parts.map(p => `/publisher/programs.get?id=${p.program}`),
 ]
+// Clé « stats » du partenariat actif : noms des champs seulement
+for (const p of parts) if (p.stats) console.log(`   stats(${p.status}) : ${shape(p.stats).join(' | ').slice(0, 600)}`)
+// Paramètre ae du lien cliqué (numéro d'affilié, public dans tous les liens)
+const clicks = (await tryRoute(B + '/publisher/clicks.list', H)).json?.clicks?.data ?? []
+for (const c of clicks) {
+  try { const u = new URL(c.landingPage); console.log(`   clic : ${u.hostname}${u.pathname} ae=${u.searchParams.get('ae')} utm_source=${u.searchParams.get('utm_source')} partenariat=${c.partnershipName}`) } catch { console.log('   clic : landingPage illisible') }
+}
 for (const route of extra) {
+  await new Promise(r => setTimeout(r, 1500)) // limite de débit d'Affilae
   const res = await tryRoute(B + route, H)
   console.log(`\n--- ${route.replace(profileId ?? '§', '<profil>')} -> HTTP ${res.status} (${res.len ?? 0} octets)`)
   if (res.json) for (const line of shape(res.json).slice(0, 45)) console.log('   ' + line)
