@@ -1,6 +1,9 @@
 import { getProfile } from '@/lib/queries/profile'
 import { getUserSpaces } from '@/lib/queries/spaces'
 import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
+import { perfTimer } from '@/lib/perf/server-timing'
+import { ADMIN_MODE_COOKIE } from '@/lib/admin-mode'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import {
@@ -55,7 +58,13 @@ function monthPrefix(today: string, offset = 0) {
 }
 
 export default async function DashboardPage() {
+  const timer = perfTimer('page /dashboard')
   const profile  = await getProfile()
+
+  // Mode admin resté actif (réglage de l'appareil) : direct sur la Vue
+  // d'ensemble, sans rendre l'Accueil hôte puis rediriger côté navigateur
+  // (avant : deux pages complètes à l'ouverture de l'app, 8 s sur téléphone).
+  if (profile?.role === 'admin' && cookies().get(ADMIN_MODE_COOKIE)?.value === '1') redirect('/dashboard/admin')
 
   // ── Aiguillage post-login côté SERVEUR ────────────────────────────────
   // Remplace getPostLoginPathAction (server action appelée par la page de
@@ -72,6 +81,7 @@ export default async function DashboardPage() {
   // Investisseur pur → son espace (le dashboard hôte serait vide)
   if (primary.key === 'investor') redirect(primary.href)
 
+  timer.mark('espaces')
   const supabase = await createClient()
   const userId   = profile?.userId ?? ''
   const completedSteps = profile?.onboarding_completed_steps ?? []
@@ -655,7 +665,10 @@ export default async function DashboardPage() {
   const todayArrivalItems: TodayItem[] = todayArrivals.map(occLabel)
   const todayDepartureItems: TodayItem[] = todayDepartures.map(occLabel)
 
+  timer.mark('requêtes')
   const menageToday = await menageTodayPromise
+  timer.mark('ménages du jour')
+  timer.done()
   const todayMenageItems: TodayItem[] | null = menageToday
     ? (() => {
         const [slots, { data: comps }, { data: doneEv }] = menageToday

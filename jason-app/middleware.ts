@@ -55,7 +55,9 @@ export async function middleware(request: NextRequest) {
   // Supabase. On évite getSession() (décodage local) qui peut diverger du
   // serveur et causer ERR_TOO_MANY_REDIRECTS quand les cookies sont
   // partiellement expirés / révoqués / corrompus.
+  const authStart = Date.now()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
+  const authMs = Date.now() - authStart
   const isAuthed = !!user
 
   // Détection de session "fantôme" : un cookie auth présent mais refusé
@@ -92,7 +94,15 @@ export async function middleware(request: NextRequest) {
       }
       return NextResponse.redirect(url)
     }
-    return supabaseResponse
+    // Durée de la vérification de session, transmise au chronomètre du
+    // layout (lib/perf/server-timing.ts). En-têtes reconstruits à partir de
+    // la requête à jour (cookies éventuellement rafraîchis par Supabase).
+    const h = new Headers(request.headers)
+    h.set('x-pathname', path)
+    h.set('x-mw-auth-ms', String(authMs))
+    const res = NextResponse.next({ request: { headers: h } })
+    supabaseResponse.cookies.getAll().forEach(c => res.cookies.set(c))
+    return res
   }
 
   if (isAuthed && path.startsWith('/auth')) {

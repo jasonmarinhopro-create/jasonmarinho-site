@@ -1,4 +1,5 @@
 import { getServiceClient } from '@/lib/supabase/service'
+import { perfTimer } from '@/lib/perf/server-timing'
 import { redirect } from 'next/navigation'
 import { unstable_cache } from 'next/cache'
 import { getProfile } from '@/lib/queries/profile'
@@ -140,6 +141,7 @@ const getAdminOverview = unstable_cache(async () => {
 }, ['admin-overview-v1'], { revalidate: 60, tags: ['admin-overview'] })
 
 export default async function AdminPage() {
+  const timer = perfTimer('page /dashboard/admin')
   // getProfile : getUser() + profil en cache, déjà dédupliqués avec le layout
   const profile = await getProfile()
   if (!profile) redirect('/auth/login')
@@ -151,6 +153,8 @@ export default async function AdminPage() {
     getLiveVisitorsCount(admin),
     getChannelBreakdown(admin),
   ])
+  timer.mark('vue d\'ensemble et trafic')
+  timer.done()
 
   return (
     <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>

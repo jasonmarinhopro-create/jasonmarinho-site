@@ -8,6 +8,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import type { AppNotification } from './types'
+import { getAuthUser } from '@/lib/supabase/auth-user'
 
 export async function getNotifications(opts?: {
   unreadOnly?: boolean
@@ -55,8 +56,9 @@ export async function getNotifications(opts?: {
 // est déjà invisible dans le panneau, ce qui affiche un badge "fantôme".
 export async function getUnreadCount(): Promise<number> {
   try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    // getAuthUser : même vérification getUser(), partagée avec le layout
+    // (avant : 2 allers-retours d'auth de plus à chaque ouverture)
+    const [supabase, user] = await Promise.all([createClient(), getAuthUser()])
     if (!user) return 0
     const { data, error } = await supabase
       .from('notifications')
@@ -79,8 +81,9 @@ export async function getUnreadCount(): Promise<number> {
 // notion d'expiration sur cette table, un count exact DB suffit.
 export async function getChezNousUnreadCount(): Promise<number> {
   try {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    // getAuthUser : même vérification getUser(), partagée avec le layout
+    // (avant : 2 allers-retours d'auth de plus à chaque ouverture)
+    const [supabase, user] = await Promise.all([createClient(), getAuthUser()])
     if (!user) return 0
     const { count, error } = await supabase
       .from('chez_nous_notifications')

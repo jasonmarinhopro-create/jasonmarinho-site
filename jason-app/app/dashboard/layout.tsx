@@ -15,6 +15,9 @@ import { persistOnboardingCompleted } from '@/lib/onboarding/persist-complete'
 import InstallAppWidget from '@/components/InstallAppWidget'
 import DashboardLoading from './loading'
 import PageFadeWrapper from '@/components/dashboard/PageFadeWrapper'
+import ShellFallback from '@/components/layout/ShellFallback'
+import PerfReporter from '@/components/perf/PerfReporter'
+import { perfTimer } from '@/lib/perf/server-timing'
 
 function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: string): string {
   if (role === 'admin') return 'Administrateur'
@@ -23,9 +26,23 @@ function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: string): 
   return 'Découverte'
 }
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+// Ouverture de l'app (30/09/2026, Jason : « 10 secondes de page blanche ») :
+// le layout attendait le profil, les espaces, la cloche et l'onboarding avant
+// d'envoyer le moindre octet. Le cadre (barre latérale, en-tête, squelette)
+// part maintenant tout de suite, le reste arrive en streaming.
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<ShellFallback />}>
+      <DashboardShell>{children}</DashboardShell>
+    </Suspense>
+  )
+}
+
+async function DashboardShell({ children }: { children: React.ReactNode }) {
   const hdrs = await headers()
   const pathname = hdrs.get('x-pathname') ?? '/dashboard'
+  const mwAuthMs = Number(hdrs.get('x-mw-auth-ms'))
+  const timer = perfTimer('layout ' + pathname, Number.isFinite(mwAuthMs) && mwAuthMs > 0 ? [['vérif session', mwAuthMs]] : [])
 
   // PERF : les 3 requêtes indépendantes du profil démarrent AVANT l'await
   // du profil (sinon un étage réseau complet s'ajoute en série : getUser
@@ -44,6 +61,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   // dépend du profil : lancé juste après, en parallèle des 3 autres.
   const profile = await getProfile()
   if (!profile) redirect('/auth/login')
+  timer.mark('profil')
 
   // L'espace courant pour l'onboarding (purement server) — la sidebar et le
   // header le recalculent client-side via usePathname() pour survivre au
@@ -83,6 +101,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
     appNotifUnreadPromise,
     chezNousUnreadPromise,
   ])
+  timer.mark(onboardingOff ? 'menu et cloche' : 'menu, cloche et parcours')
+  timer.done()
 
   const isAdmin = profile.role === 'admin'
   const planLabel = planToLabel(profile.plan, profile.role)
@@ -157,6 +177,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           />
         )}
         <InstallAppWidget />
+        <PerfReporter />
       </div>
     </ThemeProvider>
   )

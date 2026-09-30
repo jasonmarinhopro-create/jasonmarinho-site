@@ -1,0 +1,37 @@
+# Lit les mesures de lenteur enregistrées par l'app (app_errors, route
+# « perf ») : ouvertures et changements de page de plus de 3 s sur le
+# téléphone, rendus serveur de plus de 1,5 s, avec le détail des étapes.
+# Résultats en annotations du job (lisibles sans connexion). Aucune donnée
+# personnelle : dates, chemins (identifiants retirés) et durées seulement.
+name: Lenteurs
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/lenteurs-trigger']
+
+jobs:
+  lire:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lire les mesures
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          rows=$(curl -sf "$SUPABASE_URL/rest/v1/app_errors?route=eq.perf&select=created_at,source,message&order=created_at.desc&limit=80" \
+            -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY")
+          total=$(echo "$rows" | jq 'length')
+          echo "::notice title=Mesures::$total mesure(s) de lenteur (80 plus récentes au maximum)"
+          # Heure de Paris, une ligne par mesure, 10 lignes par annotation
+          echo "$rows" | jq -r '.[] | "\(.created_at | sub("\\.[0-9]+"; "") | sub("\\+00:00$"; "Z") | fromdateiso8601 + 7200 | strftime("%d/%m %H:%M")) \(.source) \(.message)"' > lignes.txt
+          split -l 10 lignes.txt part_
+          n=0
+          for f in part_*; do
+            n=$((n+1))
+            body=$(sed ':a;N;$!ba;s/\n/%0A/g' "$f")
+            echo "::notice title=Lenteurs $n::$body"
+          done
+          cat lignes.txt

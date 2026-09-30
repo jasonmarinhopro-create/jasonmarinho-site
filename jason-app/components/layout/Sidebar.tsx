@@ -1,5 +1,6 @@
 'use client'
 
+import { writeAdminModeCookie } from '@/lib/admin-mode'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import InstallAppLink from '@/components/pwa/InstallAppLink'
@@ -220,6 +221,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     const stored = typeof window !== 'undefined' ? localStorage.getItem('admin-mode') : null
     const active = stored === 'true' && !!isAdmin
     setAdminMode(active)
+    writeAdminModeCookie(active)
     // Reconnexion avec le mode admin resté actif : la sidebar bascule sur
     // "Vue d'ensemble" mais le login redirige toujours vers /dashboard
     // (l'accueil hôte) — incohérent (sidebar admin + contenu hôte affichés
@@ -231,6 +233,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     const next = !adminMode
     setAdminMode(next)
     try { localStorage.setItem('admin-mode', String(next)) } catch {}
+    writeAdminModeCookie(next)
     // Navigation auto vers la page pertinente : entrer en mode admin
     // ouvre la Vue d'ensemble admin ; en sortir revient a l'Accueil hote.
     // Sinon Jason restait sur la derniere page consultee dans l'autre mode,
