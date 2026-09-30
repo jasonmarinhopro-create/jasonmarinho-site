@@ -1,6 +1,7 @@
 # Découverte de l'API Affilae (compte éditeur de Jason) avant de la brancher
 # sur l'admin. Journaux publics : le script n'affiche que des codes HTTP, des
 # noms de champs et des identifiants non sensibles (jamais de montant ni de clé).
+# Relancé en modifiant ce fichier sur une branche claude/** (ou à la main).
 name: Affilae (découverte de l'API)
 
 on:
