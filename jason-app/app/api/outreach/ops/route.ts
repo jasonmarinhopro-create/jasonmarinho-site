@@ -140,16 +140,18 @@ async function importFromOsm(db: Db, audience: Audience | undefined, ville: stri
   const sel = audience === 'photographe'
     ? `nwr["craft"="photographer"](area.a);nwr["shop"="photo"](area.a);nwr["name"~"photograph",i]["website"](area.a);nwr["name"~"photograph",i]["contact:website"](area.a);`
     : `nwr["craft"="cleaning"](area.a);nwr["office"]["name"~"${re}",i](area.a);nwr["craft"]["name"~"${re}",i](area.a);nwr["shop"]["name"~"conciergerie|ménage|menage",i](area.a);nwr["name"~"${re}|airbnb|location saisonnière|gestion locative",i]["website"](area.a);nwr["name"~"${re}|airbnb|gestion locative",i]["contact:website"](area.a);`
-  const ql = `[out:json][timeout:20];area["name"="${city}"]["boundary"="administrative"]["admin_level"="8"]->.a;(${sel});out tags 300;`
-  // Serveur principal souvent saturé (504, 429) : serveurs miroirs en secours
+  const ql = `[out:json][timeout:14];area["name"="${city}"]["boundary"="administrative"]["admin_level"="8"]->.a;(${sel});out tags 300;`
+  // Serveur principal souvent saturé (504, 429, 01/10/2026 : une ville sur deux
+  // en échec) : 4 serveurs essayés, 14 s chacun au plus, 32 s en tout
   let res: Response | null = null
-  for (const endpoint of ['https://overpass-api.de/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter']) {
-    if (Date.now() - started > 25_000) break
+  for (const endpoint of ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter', 'https://overpass.private.coffee/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter']) {
+    const left = 32_000 - (Date.now() - started)
+    if (left < 4_000) break
     try {
       res = await fetch(endpoint, {
         method: 'POST', body: `data=${encodeURIComponent(ql)}`,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'User-Agent': 'JasonMarinhoBot/1.0 (+https://jasonmarinho.com)' },
-        cache: 'no-store', signal: AbortSignal.timeout(20_000),
+        cache: 'no-store', signal: AbortSignal.timeout(Math.min(14_000, left)),
       })
       if (res.ok) break
     } catch { res = null }

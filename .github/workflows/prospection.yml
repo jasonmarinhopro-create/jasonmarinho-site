@@ -78,13 +78,19 @@ jobs:
               IFS=',' read -ra AUDS <<< "$AUDIENCES"
               IFS=',' read -ra CITIES <<< "$VILLES"
               for a in "${AUDS[@]}"; do
-                a=$(echo "$a" | xargs)
+                a=$(echo "$a" | sed 's/^ *//;s/ *$//')
                 for v in "${CITIES[@]}"; do
-                  v=$(echo "$v" | xargs)
+                  v=$(echo "$v" | sed 's/^ *//;s/ *$//')
                   # Plusieurs passages par ville tant qu'il reste des sites à visiter (40 s par appel)
                   for pass in 1 2 3 4; do
                     body=$(jq -nc --arg a "$a" --arg v "$v" '{op:"import_osm",audience:$a,ville:$v}')
-                    res=$(call "$body")
+                    # OpenStreetMap (Overpass) est souvent saturé : 2 nouveaux essais espacés
+                    for try in 1 2 3; do
+                      res=$(call "$body")
+                      echo "$res" | grep -q 'OpenStreetMap indisponible' || break
+                      echo "$a | $v : OpenStreetMap saturé, nouvel essai dans $((try * 20)) s"
+                      sleep $((try * 20))
+                    done
                     echo "$a | $v ($pass) : $(echo "$res" | jq -c '{resultats, avec_site, sites_visites, reste_a_visiter, emails_trouves, ajoutes, error}' 2>/dev/null || echo "$res" | head -c 200)"
                     n=$(echo "$res" | jq -r '.ajoutes // 0' 2>/dev/null || echo 0)
                     total=$((total + n))
@@ -101,10 +107,10 @@ jobs:
               IFS=',' read -ra AUDS <<< "$AUDIENCES"
               IFS=',' read -ra CITIES <<< "$VILLES"
               for a in "${AUDS[@]}"; do
-                a=$(echo "$a" | xargs)
+                a=$(echo "$a" | sed 's/^ *//;s/ *$//')
                 if [ "$a" = "menage" ]; then QUERIES=("ménage location saisonnière" "ménage airbnb"); else QUERIES=("photographe immobilier" "photographe location saisonnière"); fi
                 for v in "${CITIES[@]}"; do
-                  v=$(echo "$v" | xargs)
+                  v=$(echo "$v" | sed 's/^ *//;s/ *$//')
                   for q in "${QUERIES[@]}"; do
                     body=$(jq -nc --arg a "$a" --arg q "$q $v" '{op:"import",audience:$a,query:$q}')
                     res=$(call "$body")
