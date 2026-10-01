@@ -44,7 +44,7 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/contrats': 'Contrats & paiements',
   '/dashboard/communaute': 'Groupes Facebook',
   '/dashboard/securite': 'Sécurité',
-  '/dashboard/gabarits': 'Modèles de messages',
+  '/dashboard/gabarits': 'Mes messages',
   '/dashboard/aide': "Centre d'aide",
   '/dashboard/espaces': 'Mes espaces',
   '/dashboard/revenus': 'Revenus',

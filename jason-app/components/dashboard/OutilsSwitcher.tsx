@@ -1,27 +1,25 @@
 'use client'
 
 import Link from 'next/link'
-import { Calculator, ChartLineUp, Printer, ChatText } from '@phosphor-icons/react/dist/ssr'
+import { Calculator, ChartLineUp, Printer } from '@phosphor-icons/react/dist/ssr'
 
 /**
- * Barre de navigation entre les 4 outils du hub /dashboard/outils :
+ * Barre de navigation entre les 3 outils du hub /dashboard/outils :
  *  - Simulateurs fiscaux
  *  - Prix & marché
- *  - Modèles de messages (ajouté sept. 2026 : carte du hub mais absent de
- *    la barre, on ne pouvait pas y revenir depuis un autre outil)
  *  - QR & Affiches
+ * (« Mes messages » a sa propre entrée dans le menu depuis le 01/10/2026.)
  * (L'audit Google est parti dans « Trouver des voyageurs ».)
  *
  * Remplace la version 2-liens (fiscal/marché) + la flèche "retour aux outils"
- * qui vivait dans OutilsBackBar. Les 4 boutons donnent une nav directe entre
+ * qui vivait dans OutilsBackBar. Les boutons donnent une nav directe entre
  * outils sans passer par le hub — plus utile pour l'exploration.
  */
-type Current = 'fiscal' | 'marche' | 'messages' | 'impression'
+type Current = 'fiscal' | 'marche' | 'impression'
 
 const ITEMS: Array<{ key: Current; href: string; label: string; Icon: any }> = [
   { key: 'fiscal',     href: '/dashboard/simulateurs',       label: 'Simulateurs fiscaux', Icon: Calculator },
   { key: 'marche',     href: '/dashboard/calculateurs',      label: 'Prix & marché',       Icon: ChartLineUp },
-  { key: 'messages',   href: '/dashboard/gabarits',          label: 'Modèles de messages', Icon: ChatText },
   { key: 'impression', href: '/dashboard/outils-impression', label: 'QR & Affiches',       Icon: Printer },
 ]
 

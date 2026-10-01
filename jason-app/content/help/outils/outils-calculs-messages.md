@@ -1,14 +1,14 @@
 ---
-title: "Modèles de messages, QR codes et affiches"
+title: "Mes messages, QR codes et affiches"
 excerpt: "Les messages prêts à copier et les supports à imprimer pour ton logement."
 order: 3
 relatedPages: [/dashboard/gabarits, /dashboard/outils-impression, /dashboard/outils]
 updatedAt: "2026-10-01"
 ---
 
-## Modèles de messages
+## Mes messages
 
-**Outils & calculs → Modèles de messages** : ta séquence de messages voyageurs, rangée par moment du séjour :
+**Mes messages** (dans le menu, sous Mes voyageurs) : ta séquence de messages voyageurs, rangée par moment du séjour :
 
 - **Avant l'arrivée** : confirmation, instructions d'arrivée, accès
 - **Pendant le séjour** : bienvenue, petit souci, extras

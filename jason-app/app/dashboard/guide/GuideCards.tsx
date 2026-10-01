@@ -166,7 +166,7 @@ const GUIDE_CARDS: GuideCard[] = [
       { type: 'ok',   text: <>Objectif : <strong>4,8/5 ou plus</strong> sur Airbnb (9/10 sur Booking). En dessous, l&apos;annonce recule dans les résultats et convertit moins</> },
       { type: 'info', text: <>Airbnb note <strong>6 critères</strong> : propreté, exactitude, arrivée, communication, emplacement, qualité-prix. Les 4 premiers dépendent entièrement de toi</> },
       { type: 'warn', text: <>Mauvais avis : répondre <strong>publiquement, calmement, factuellement</strong> dans les 48h, un mauvais avis bien géré peut renforcer la confiance</> },
-      { type: 'ok',   text: <>Demande un avis <strong>au moment du départ</strong> avec un message court (modèle dans Outils &amp; calculs → Modèles de messages), y compris aux voyageurs en direct</> },
+      { type: 'ok',   text: <>Demande un avis <strong>au moment du départ</strong> avec un message court (modèle dans Mes messages), y compris aux voyageurs en direct</> },
     ],
     articles: [
       { label: 'Obtenir des avis 5 étoiles', slug: 'obtenir-avis-5-etoiles-airbnb' },
@@ -819,7 +819,7 @@ const APP_LINKS: Record<string, AppLink[]> = {
   'commun-fiche-police':     [O('/dashboard/voyageurs/declarations', 'Mes déclarations voyageurs')],
   'commun-pricing':          [O('/dashboard/calculateurs', 'Prix & marché'), F('mettre-le-bon-prix-lcd', 'Mettre le bon prix'), F('tarification-dynamique', 'Tarification dynamique')],
   'commun-channel-managers': [O('/dashboard/entre-hotes/ecosysteme', 'Comparer les outils'), F('gerer-lcd-automatisation', 'Automatiser sa gestion')],
-  'commun-avis':             [O('/dashboard/gabarits', 'Modèles de messages'), F('ecrire-avis-repondre-voyageurs', 'Avis voyageurs')],
+  'commun-avis':             [O('/dashboard/gabarits', 'Mes messages'), F('ecrire-avis-repondre-voyageurs', 'Avis voyageurs')],
   'commun-litiges':          [O('/dashboard/contrats', 'Contrat + caution'), O('/dashboard/securite', 'Sécurité voyageur'), F('gerer-incidents-litiges-lcd', 'Gérer incidents et litiges')],
   'gites-statut':            [O('/dashboard/simulateurs', 'Simulateur EI ou SASU'), F('fiscalite-reglementation-lcd-france-2026', 'Fiscalité LCD 2026')],
   'gites-fiscalite':         [O('/dashboard/simulateurs', 'Simulateur micro-BIC'), F('declarer-lmnp-seul-decla-fr', 'Déclarer son LMNP seul')],

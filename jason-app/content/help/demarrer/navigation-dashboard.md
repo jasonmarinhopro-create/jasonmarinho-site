@@ -13,6 +13,7 @@ updatedAt: "2026-09-27"
 - **Calendrier** : tes réservations (Airbnb, Booking, directes) et l'onglet **Ménage**
 - **Mes réservations** : la liste de tous tes séjours, synchronisés ou saisis à la main
 - **Mes voyageurs** : ton carnet de voyageurs et l'accès aux **Déclarations**
+- **Mes messages** : ta séquence de messages voyageurs par logement (instructions d'arrivée, séjour, départ et avis), prête à copier dans Airbnb, Booking ou WhatsApp
 - **Contrats & paiements** : ce qui reste à faire signer, à encaisser ou à libérer, puis tous tes contrats
 - **Mes finances** : revenus, performances et encaissements
 - **Sécurité voyageur** : vérifier un voyageur avant d'accepter et signaler un problème
@@ -21,7 +22,7 @@ updatedAt: "2026-09-27"
 
 - **Trouver des voyageurs** : groupes Facebook où publier et audit de ta fiche Google
 - **Apprendre** : formations et guide LCD
-- **Outils & calculs** : simulateurs, prix & marché, modèles de messages, QR codes et affiches
+- **Outils & calculs** : simulateurs, prix & marché, QR codes et affiches
 - **Entre Hôtes** : Questions & réponses et partenaires
 
 ## Tes logements

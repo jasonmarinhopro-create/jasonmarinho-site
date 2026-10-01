@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import {
-  Calculator, ChartLineUp, Printer, ArrowRight, ChatText, Wrench, CaretRight,
+  Calculator, ChartLineUp, Printer, ArrowRight, Wrench, CaretRight,
 } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import AskQuestionCard from '@/components/chez-nous/AskQuestionCard'
@@ -56,18 +56,6 @@ const GROUPS: Group[] = [
     ],
   },
   {
-    href: '/dashboard/gabarits',
-    label: 'Modèles de messages',
-    Icon: ChatText,
-    question: 'Que dire à mes voyageurs, et quand ?',
-    desc: 'Messages prêts à copier pour chaque étape du séjour, personnalisés avec ton logement.',
-    tools: [
-      { label: 'Avant l’arrivée', href: '/dashboard/gabarits?cat=checkin' },
-      { label: 'Pendant le séjour', href: '/dashboard/gabarits?cat=probleme' },
-      { label: 'Départ et avis', href: '/dashboard/gabarits?cat=avis' },
-    ],
-  },
-  {
     href: '/dashboard/outils-impression',
     label: 'QR codes & affiches',
     Icon: Printer,
@@ -95,7 +83,7 @@ export default function OutilsHubPage() {
         eyebrowIcon={<Wrench size={13} weight="fill" />}
         eyebrow="Outils & calculs"
         title={<>Les bons chiffres, <HeroEm>sans tableur</HeroEm></>}
-        desc="Impôts, prix, taxe de séjour, messages, affiches : les outils pour décider vite, déjà remplis avec les données de tes logements."
+        desc="Impôts, prix, taxe de séjour, affiches : les outils pour décider vite, déjà remplis avec les données de tes logements."
         aside={
           <div style={heroCard}>
             <span style={s.quickTitle}>Réponse en un clic</span>
@@ -141,6 +129,7 @@ export default function OutilsHubPage() {
       <style>{`
         .ot-grid { grid-template-columns: minmax(0, 1fr); }
         @media (min-width: 900px) { .ot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (min-width: 1300px) { .ot-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
       `}</style>
     </div>
   )

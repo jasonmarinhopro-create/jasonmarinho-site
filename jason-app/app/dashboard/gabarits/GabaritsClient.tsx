@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import OutilsSwitcher from '@/components/dashboard/OutilsSwitcher'
 import {
   Copy, Check, MagnifyingGlass, PencilSimple, X,
   CalendarCheck, House, SunHorizon, ArrowRight,
@@ -857,11 +856,9 @@ export default function GabaritsClient({
 
       <div style={s.page}>
 
-        <OutilsSwitcher current="messages" />
-
         <HubHero
           eyebrowIcon={<ChatCircleText size={14} weight="bold" />}
-          eyebrow="Modèles de messages"
+          eyebrow="Mes messages"
           title={<>Tes messages voyageurs, <HeroEm>prêts à copier</HeroEm></>}
           desc={<>Une séquence par logement : ce que tu envoies avant l&apos;arrivée, pendant le séjour et après le départ. L&apos;adresse, le Wi-Fi et le code d&apos;accès se remplissent tout seuls depuis ta fiche logement.</>}
           steps={[['Choisis', 'ton logement'], ['Range', 'tes messages par moment'], ['Copie', 'et colle dans Airbnb, Booking ou WhatsApp']]}

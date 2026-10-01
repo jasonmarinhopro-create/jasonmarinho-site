@@ -14,7 +14,7 @@ import {
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
   ChartLineUp, HouseLine, Briefcase, ShareNetwork, PaperPlaneTilt, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
-  Broom, Check, Plus,
+  Broom, Check, Plus, ChatText,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
@@ -56,8 +56,11 @@ type NavItemDef = {
 //   la veut visible en haut (essai de la déplacer plus bas annulé).
 // - Pas d'entrée « Mes logements » : on y accède par le sélecteur de
 //   logement en bas de la sidebar (« Gérer mes logements »).
-// - « Messages » → « Modèles de messages » : ce sont des modèles à copier,
-//   pas une boîte de réception.
+// - « Mes messages » (01/10/2026, Jason : « rangé avec les outils c'est
+//   bizarre ») : la séquence de messages du logement (instructions d'arrivée,
+//   départ, avis) revient dans le menu, après Mes voyageurs. Rangée avant
+//   dans Outils & calculs. Ce sont des messages à copier, pas une boîte de
+//   réception : la page le dit dans son bandeau.
 // - Le premier bloc a un titre, comme le second.
 const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
   {
@@ -73,9 +76,10 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
       // (qui redevient purement vue chronologique Mois).
       { href: '/dashboard/reservations', label: 'Mes réservations', icon: ListChecks },
       { href: '/dashboard/voyageurs',   label: 'Mes voyageurs',     icon: Users },
+      { href: '/dashboard/gabarits',    label: 'Mes messages',      icon: ChatText },
       // Contrats + loyer + caution des réservations directes : la valeur n°1
       // de l'app face aux PMS (sept. 2026), auparavant un onglet caché dans
-      // Mes voyageurs. « Modèles de messages » a rejoint Outils & calculs.
+      // Mes voyageurs.
       { href: '/dashboard/contrats',    label: 'Contrats & paiements', icon: Signature },
       // Mes finances : Étape 4 — fusion à onglets Revenus / Encaissements
       // / Performances. Le lien pointe vers la racine /dashboard/finances
@@ -99,11 +103,11 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
       },
       // Apprendre : Formations + Guide LCD.
       { href: '/dashboard/apprendre/formations', label: 'Apprendre',   icon: GraduationCap, activeMatch: ['/dashboard/apprendre', '/dashboard/formations', '/dashboard/guide'] },
-      // Outils & calculs : hub (modèles de messages, simulateurs, prix, QR).
+      // Outils & calculs : hub (simulateurs, prix, QR).
       // Les outils vivent en URL top-level (cf. outils/page.tsx).
       {
         href: '/dashboard/outils', label: 'Outils & calculs', icon: Calculator,
-        activeMatch: ['/dashboard/outils', '/dashboard/gabarits', '/dashboard/simulateurs', '/dashboard/calculateurs', '/dashboard/outils-impression'],
+        activeMatch: ['/dashboard/outils', '/dashboard/simulateurs', '/dashboard/calculateurs', '/dashboard/outils-impression'],
       },
       // Entre Hôtes : Questions & réponses + Partenaires & outils.
       { href: '/dashboard/entre-hotes/forum', label: 'Entre Hôtes',   icon: ChatsCircle, activeMatch: ['/dashboard/entre-hotes', '/dashboard/chez-nous', '/dashboard/ecosysteme'] },
