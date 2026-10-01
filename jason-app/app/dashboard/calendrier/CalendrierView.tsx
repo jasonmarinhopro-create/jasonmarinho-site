@@ -1687,15 +1687,17 @@ export default function CalendrierView({
                 {(() => {
                   const tpl = CHECKLIST_TO_GABARIT[alert.checklistKey]
                   if (!tpl) return null
+                  // Ouvre la séquence de messages DU logement concerné
+                  const lid = logementOptions.find(l => l.nom === alert.logement)?.id
                   return (
                     <Link
-                      href={`/dashboard/gabarits?cat=${tpl.cat}`}
+                      href={`/dashboard/gabarits?cat=${tpl.cat}${lid ? `&logement=${lid}` : ''}`}
                       onClick={e => e.stopPropagation()}
                       style={s.alertGabaritBtn}
-                      title={`Ouvrir gabarit : ${tpl.label}`}
+                      title={`Ouvrir mes messages : ${tpl.label}`}
                     >
                       <ChatText size={12} weight="bold" />
-                      Gabarit
+                      Mes messages
                     </Link>
                   )
                 })()}

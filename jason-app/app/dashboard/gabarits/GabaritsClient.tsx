@@ -359,15 +359,28 @@ export default function GabaritsClient({
   const [copied, setCopied]             = useState<string | null>(null)
   const [toast, setToast]               = useState<string | null>(null)
 
-  // ── Auto-filtre depuis ?cat= (lien depuis le calendrier) ─────────────
+  // ── ?cat= (rappels du calendrier, Outils & calculs) : ouvre TA séquence
+  // sur la phase concernée (avant l'arrivée, pendant, après), pas la liste
+  // de tous les exemples. Avant (01/10/2026, remarqué par Jason) : le rappel
+  // « Instructions non envoyées » menait aux gabarits de bienvenue au lieu
+  // des messages préparés pour le logement.
   const searchParams = useSearchParams()
+  const [focusBucket, setFocusBucket] = useState<TimingBucket | null>(null)
   useEffect(() => {
     const cat = searchParams?.get('cat')
     if (!cat) return
     const bucket = CATEGORY_TO_TIMING[cat]
-    if (bucket) setActiveFilter(bucket)
-    else setActiveFilter('all')
+    setActiveFilter('mes-messages')
+    setFocusBucket(bucket ?? null)
   }, [searchParams])
+  useEffect(() => {
+    if (!focusBucket) return
+    const t1 = window.setTimeout(() => {
+      document.getElementById(`phase-${focusBucket}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 120)
+    const t2 = window.setTimeout(() => setFocusBucket(null), 2600)
+    return () => { window.clearTimeout(t1); window.clearTimeout(t2) }
+  }, [focusBucket])
 
   // ── Pré-sélection du logement depuis ?logement=<id> (raccourci fiche logement)
   useEffect(() => {
@@ -915,7 +928,16 @@ export default function GabaritsClient({
               )
 
               return (
-                <div key={bucket}>
+                <div
+                  key={bucket}
+                  id={`phase-${bucket}`}
+                  style={{
+                    scrollMarginTop: 80,
+                    borderRadius: 16,
+                    transition: 'box-shadow .4s, background .4s',
+                    ...(focusBucket === bucket ? { boxShadow: `0 0 0 3px ${cfg.border}`, background: cfg.bg, padding: 12, margin: -12 } : {}),
+                  }}
+                >
                   {/* Header phase compact */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                     <div style={{
