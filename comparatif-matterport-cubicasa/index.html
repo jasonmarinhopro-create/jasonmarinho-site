@@ -38,7 +38,7 @@
   "author": { "@type": "Person", "name": "Jason Marinho", "url": "https://jasonmarinho.com/qui-suis-je" },
   "publisher": { "@type": "Person", "name": "Jason Marinho" },
   "datePublished": "2026-05-05",
-  "dateModified": "2026-05-05",
+  "dateModified": "2026-10-01",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://jasonmarinho.com/comparatif-matterport-cubicasa" }
 }
 </script>
@@ -106,19 +106,20 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #0f1117;
-  --surface: #1a1d27;
-  --surface2: #22263a;
-  --border: #2e3347;
-  --text: #e8eaf0;
-  --muted: #8b92a8;
-  --accent-text: #a78bfa;
-  --green: #63D683;
-  --yellow: #FFD56B;
-  --blue: #93C5FD;
-  --pink: #F472B6;
-  --red: #f87171;
+  --bg: #F9FAFB;
+  --surface: #FFFFFF;
+  --surface2: #F0FDF4;
+  --border: #E5E7EB;
+  --text: #111827;
+  --muted: #4B5563;
+  --accent-text: #004c3f;
+  --green: #047857;
+  --yellow: #B7791F;
+  --blue: #8B6D5E;
+  --pink: #BE185D;
+  --red: #DC2626;
   --radius: 12px;
+  --shadow: 0 4px 20px rgba(0,76,63,0.06);
 }
 body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
 a { color: var(--accent-text); text-decoration: none; }
@@ -127,7 +128,7 @@ a:hover { text-decoration: underline; }
 .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
 
 .hero { padding: 60px 0 40px; text-align: center; }
-.hero-badge { display: inline-block; background: rgba(167,139,250,0.15); border: 1px solid rgba(167,139,250,0.3); color: var(--accent-text); padding: 6px 16px; border-radius: 100px; font-size: 13px; font-weight: 500; margin-bottom: 20px; }
+.hero-badge { display: inline-block; background: rgba(0,76,63,0.08); border: 1px solid rgba(0,76,63,0.2); color: var(--accent-text); padding: 6px 16px; border-radius: 100px; font-size: 13px; font-weight: 500; margin-bottom: 20px; }
 .hero h1 { font-family: 'Fraunces', serif; font-size: clamp(28px, 5vw, 46px); font-weight: 600; line-height: 1.15; margin-bottom: 18px; }
 .hero h1 span { color: var(--accent-text); font-style: italic; }
 .hero-sub { font-size: 17px; color: var(--muted); max-width: 640px; margin: 0 auto 32px; }
@@ -156,12 +157,12 @@ a:hover { text-decoration: underline; }
 .comp-table td { padding: 13px 16px; border: 1px solid var(--border); text-align: center; vertical-align: top; }
 .comp-table td:first-child { text-align: left; color: var(--muted); font-size: 13px; }
 .comp-table tr:nth-child(odd) td { background: var(--surface); }
-.comp-table tr:nth-child(even) td { background: rgba(26,29,39,0.5); }
+.comp-table tr:nth-child(even) td { background: #F9FAFB; }
 .yes { color: var(--green); font-weight: 600; }
 .no { color: var(--red); font-weight: 600; }
 .partial { color: var(--yellow); font-weight: 600; }
 
-.th-matter { color: #60a5fa; }
+.th-matter { color: #004c3f; }
 .th-cubi { color: var(--green); }
 
 .scenario-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
@@ -181,7 +182,7 @@ a:hover { text-decoration: underline; }
 .usecase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
 .usecase-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; }
 .usecase-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
-.usecase-card.matter h4 { color: #60a5fa; }
+.usecase-card.matter h4 { color: #004c3f; }
 .usecase-card.cubi h4 { color: var(--green); }
 .usecase-card ul { font-size: 13px; padding-left: 16px; }
 .usecase-card ul li { margin-bottom: 5px; }
@@ -191,8 +192,8 @@ a:hover { text-decoration: underline; }
 .verdict-card .tool-name { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
 .verdict-card .tool-for { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
 .verdict-card .tag { display: inline-block; padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 600; }
-.tag-best { background: rgba(99,214,131,0.15); color: var(--green); border: 1px solid rgba(99,214,131,0.3); }
-.tag-premium { background: rgba(147,197,253,0.15); color: var(--blue); border: 1px solid rgba(147,197,253,0.3); }
+.tag-best { background: rgba(4,120,87,0.1); color: var(--green); border: 1px solid rgba(4,120,87,0.25); }
+.tag-premium { background: rgba(139,109,94,0.12); color: var(--blue); border: 1px solid rgba(139,109,94,0.3); }
 
 .faq-list { margin: 20px 0; }
 .faq-item { border-bottom: 1px solid var(--border); padding: 18px 0; }
@@ -217,9 +218,26 @@ a:hover { text-decoration: underline; }
   .comp-table tr { margin-bottom: 16px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .comp-table td { text-align: left !important; border: none; border-bottom: 1px solid var(--border); }
   .comp-table td:first-child { background: var(--surface2) !important; font-weight: 600; color: var(--text); }
-  .comp-table td:nth-child(2)::before { content: "Matterport : "; color: #60a5fa; font-weight: 600; }
+  .comp-table td:nth-child(2)::before { content: "Matterport : "; color: #004c3f; font-weight: 600; }
   .comp-table td:nth-child(3)::before { content: "CubiCasa : "; color: var(--green); font-weight: 600; }
 }
+
+/* DA du site (01/10/2026) : bandeau vert sous le menu fixe, corps clair */
+.hero-band { background: linear-gradient(135deg, #001a11 0%, #004c3f 100%); padding: calc(64px + clamp(36px, 6vw, 64px)) 0 clamp(36px, 5vw, 56px); }
+.hero-band .hero { padding: 0; }
+.hero-band .hero-badge { background: rgba(255,213,107,0.12); border-color: rgba(255,213,107,0.28); color: #FFD56B; }
+.hero-band .hero h1 { color: #fff; font-weight: 400; }
+.hero-band .hero h1 span { color: #FFD56B; font-weight: 300; }
+.hero-band .hero-sub { color: rgba(255,255,255,0.68); }
+.hero-band .hero-meta { color: rgba(255,255,255,0.55); }
+.hero-band + main { padding-top: 8px; }
+.metric-card, .scenario-card, .verdict-card, .rgpd-card, .usecase-card, .voir-aussi { box-shadow: var(--shadow); }
+.comp-table th, .cost-table th { color: var(--text); }
+.warn-card { background: #FFFBEB; border-left-color: #FFD56B; color: #78350F; }
+.info-card { background: #F0FDF4; border-left-color: #63D683; }
+.warn-card strong, .info-card strong { display: inline; margin: 0; }
+.warn-card > strong:first-child, .info-card > strong:first-child { display: block; margin-bottom: 6px; }
+@media (max-width: 640px) { .cost-table { display: block; overflow-x: auto; } }
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Organization","@id":"https://jasonmarinho.com/#organization","name":"Jason Marinho","url":"https://jasonmarinho.com","logo":{"@type":"ImageObject","url":"https://jasonmarinho.com/logo.webp","width":1600,"height":1600},"sameAs":["https://instagram.com/jason_marinho","https://www.linkedin.com/in/jason-driing-location-sanscommission"]}
@@ -230,9 +248,7 @@ a:hover { text-decoration: underline; }
 <div id="nav-placeholder"></div>
 <script src="/nav.js" defer></script>
 
-<main>
-<div class="container">
-
+<section class="hero-band"><div class="container">
   <div class="hero">
     <div class="hero-badge">Comparatif 2026 · Visite virtuelle &amp; plan 3D LCD</div>
     <h1>Matterport vs CubiCasa :<br><span>quelle visite virtuelle pour votre annonce ?</span></h1>
@@ -243,6 +259,10 @@ a:hover { text-decoration: underline; }
       <span><i class="ph-bold ph-check-circle"></i> Test terrain</span>
     </div>
   </div>
+</div></section>
+
+<main>
+<div class="container">
 
   <div class="metrics-row">
     <div class="metric-card">
@@ -260,7 +280,7 @@ a:hover { text-decoration: underline; }
   </div>
 
   <div class="info-card">
-    <strong>📌 Pourquoi un plan ou une visite 3D pour la LCD en 2026 ?</strong>
+    <strong><i class="ph ph-info"></i> Pourquoi un plan ou une visite 3D pour la LCD en 2026 ?</strong>
     Trois raisons concrètes : (1) un plan d'étage sur Airbnb augmente le taux de conversion de 15–20 % en aidant le voyageur à se projeter ; (2) une visite virtuelle 3D différencie un bien premium des autres annonces concurrentes du quartier ; (3) un scan complet sert d'<strong>état des lieux digital</strong> opposable en cas de litige sur la caution. Le ROI dépasse largement le coût pour la majorité des hôtes.
   </div>
 
@@ -433,11 +453,11 @@ a:hover { text-decoration: underline; }
       </tbody>
     </table>
     <div class="info-card">
-      <strong>💡 ROI : pourquoi le plan d'étage rentabilise vite</strong>
+      <strong><i class="ph ph-info"></i> ROI : pourquoi le plan d'étage rentabilise vite</strong>
       Pour un logement à 1 500 €/mois, +15 % de taux de conversion = +225 €/mois supplémentaires. Le scan CubiCasa Plus 3D à 60 € est rentabilisé en moins d'une semaine. Matterport sur 5 logements (~744 €/an) est rentabilisé dès la 4e ou 5e nuit additionnelle générée par la visite 3D.
     </div>
     <div class="warn-card">
-      <strong>⚠️ Le piège de la caméra Matterport pour 1 seul logement</strong>
+      <strong><i class="ph ph-warning"></i> Le piège de la caméra Matterport pour 1 seul logement</strong>
       Acheter une Pro2 à 3 000 € pour scanner 1 ou 2 logements n'est rentable que si vous facturez le service à des tiers (photographe immobilier, conciergerie multi-clients). Pour un hôte mono-logement, passez par un photographe Matterport indépendant (300–500 € le scan unique) ou utilisez votre iPhone Pro LiDAR avec le plan Starter à 10 €/mois.
     </div>
   </div>
@@ -472,7 +492,7 @@ a:hover { text-decoration: underline; }
     <h2>Notre verdict 2026</h2>
     <div class="verdict-grid">
       <div class="verdict-card">
-        <div class="tool-name" style="color:#60a5fa;">Matterport</div>
+        <div class="tool-name" style="color:#004c3f;">Matterport</div>
         <div class="tool-for">Biens premium &amp; conciergeries multi-clients</div>
         <div class="tag tag-premium">Référence luxe</div>
         <p style="font-size:13px; color:var(--muted); margin-top:12px;">Le standard incontesté de la visite virtuelle 3D. Justifié pour les villas, lofts, gîtes haut de gamme et les photographes professionnels qui captent en volume. Le coût (matériel + abonnement) le rend disproportionné pour un hôte mono-logement standard.</p>

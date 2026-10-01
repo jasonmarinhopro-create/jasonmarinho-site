@@ -38,7 +38,7 @@
   "author": { "@type": "Person", "name": "Jason Marinho", "url": "https://jasonmarinho.com/qui-suis-je" },
   "publisher": { "@type": "Person", "name": "Jason Marinho" },
   "datePublished": "2026-05-05",
-  "dateModified": "2026-05-05",
+  "dateModified": "2026-10-01",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://jasonmarinho.com/comparatif-igloohome-ttlock" }
 }
 </script>
@@ -106,19 +106,20 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #0f1117;
-  --surface: #1a1d27;
-  --surface2: #22263a;
-  --border: #2e3347;
-  --text: #e8eaf0;
-  --muted: #8b92a8;
-  --accent-text: #a78bfa;
-  --green: #63D683;
-  --yellow: #FFD56B;
-  --blue: #93C5FD;
-  --pink: #F472B6;
-  --red: #f87171;
+  --bg: #F9FAFB;
+  --surface: #FFFFFF;
+  --surface2: #F0FDF4;
+  --border: #E5E7EB;
+  --text: #111827;
+  --muted: #4B5563;
+  --accent-text: #004c3f;
+  --green: #047857;
+  --yellow: #B7791F;
+  --blue: #8B6D5E;
+  --pink: #BE185D;
+  --red: #DC2626;
   --radius: 12px;
+  --shadow: 0 4px 20px rgba(0,76,63,0.06);
 }
 body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
 a { color: var(--accent-text); text-decoration: none; }
@@ -127,7 +128,7 @@ a:hover { text-decoration: underline; }
 .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
 
 .hero { padding: 60px 0 40px; text-align: center; }
-.hero-badge { display: inline-block; background: rgba(167,139,250,0.15); border: 1px solid rgba(167,139,250,0.3); color: var(--accent-text); padding: 6px 16px; border-radius: 100px; font-size: 13px; font-weight: 500; margin-bottom: 20px; }
+.hero-badge { display: inline-block; background: rgba(0,76,63,0.08); border: 1px solid rgba(0,76,63,0.2); color: var(--accent-text); padding: 6px 16px; border-radius: 100px; font-size: 13px; font-weight: 500; margin-bottom: 20px; }
 .hero h1 { font-family: 'Fraunces', serif; font-size: clamp(28px, 5vw, 46px); font-weight: 600; line-height: 1.15; margin-bottom: 18px; }
 .hero h1 span { color: var(--accent-text); font-style: italic; }
 .hero-sub { font-size: 17px; color: var(--muted); max-width: 640px; margin: 0 auto 32px; }
@@ -156,13 +157,13 @@ a:hover { text-decoration: underline; }
 .comp-table td { padding: 13px 16px; border: 1px solid var(--border); text-align: center; vertical-align: top; }
 .comp-table td:first-child { text-align: left; color: var(--muted); font-size: 13px; }
 .comp-table tr:nth-child(odd) td { background: var(--surface); }
-.comp-table tr:nth-child(even) td { background: rgba(26,29,39,0.5); }
+.comp-table tr:nth-child(even) td { background: #F9FAFB; }
 .yes { color: var(--green); font-weight: 600; }
 .no { color: var(--red); font-weight: 600; }
 .partial { color: var(--yellow); font-weight: 600; }
 
 .th-igloo { color: var(--green); }
-.th-ttlock { color: #60a5fa; }
+.th-ttlock { color: #004c3f; }
 
 .scenario-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
 .scenario-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
@@ -183,8 +184,8 @@ a:hover { text-decoration: underline; }
 .verdict-card .tool-name { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
 .verdict-card .tool-for { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
 .verdict-card .tag { display: inline-block; padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 600; }
-.tag-best { background: rgba(99,214,131,0.15); color: var(--green); border: 1px solid rgba(99,214,131,0.3); }
-.tag-budget { background: rgba(255,213,107,0.15); color: var(--yellow); border: 1px solid rgba(255,213,107,0.3); }
+.tag-best { background: rgba(4,120,87,0.1); color: var(--green); border: 1px solid rgba(4,120,87,0.25); }
+.tag-budget { background: rgba(183,121,31,0.1); color: var(--yellow); border: 1px solid rgba(183,121,31,0.28); }
 
 .faq-list { margin: 20px 0; }
 .faq-item { border-bottom: 1px solid var(--border); padding: 18px 0; }
@@ -209,8 +210,25 @@ a:hover { text-decoration: underline; }
   .comp-table td { text-align: left !important; border: none; border-bottom: 1px solid var(--border); }
   .comp-table td:first-child { background: var(--surface2) !important; font-weight: 600; color: var(--text); }
   .comp-table td:nth-child(2)::before { content: "igloohome : "; color: var(--green); font-weight: 600; }
-  .comp-table td:nth-child(3)::before { content: "TTLock : "; color: #60a5fa; font-weight: 600; }
+  .comp-table td:nth-child(3)::before { content: "TTLock : "; color: #004c3f; font-weight: 600; }
 }
+
+/* DA du site (01/10/2026) : bandeau vert sous le menu fixe, corps clair */
+.hero-band { background: linear-gradient(135deg, #001a11 0%, #004c3f 100%); padding: calc(64px + clamp(36px, 6vw, 64px)) 0 clamp(36px, 5vw, 56px); }
+.hero-band .hero { padding: 0; }
+.hero-band .hero-badge { background: rgba(255,213,107,0.12); border-color: rgba(255,213,107,0.28); color: #FFD56B; }
+.hero-band .hero h1 { color: #fff; font-weight: 400; }
+.hero-band .hero h1 span { color: #FFD56B; font-weight: 300; }
+.hero-band .hero-sub { color: rgba(255,255,255,0.68); }
+.hero-band .hero-meta { color: rgba(255,255,255,0.55); }
+.hero-band + main { padding-top: 8px; }
+.metric-card, .scenario-card, .verdict-card, .rgpd-card, .usecase-card, .voir-aussi { box-shadow: var(--shadow); }
+.comp-table th, .cost-table th { color: var(--text); }
+.warn-card { background: #FFFBEB; border-left-color: #FFD56B; color: #78350F; }
+.info-card { background: #F0FDF4; border-left-color: #63D683; }
+.warn-card strong, .info-card strong { display: inline; margin: 0; }
+.warn-card > strong:first-child, .info-card > strong:first-child { display: block; margin-bottom: 6px; }
+@media (max-width: 640px) { .cost-table { display: block; overflow-x: auto; } }
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Organization","@id":"https://jasonmarinho.com/#organization","name":"Jason Marinho","url":"https://jasonmarinho.com","logo":{"@type":"ImageObject","url":"https://jasonmarinho.com/logo.webp","width":1600,"height":1600},"sameAs":["https://instagram.com/jason_marinho","https://www.linkedin.com/in/jason-driing-location-sanscommission"]}
@@ -221,9 +239,7 @@ a:hover { text-decoration: underline; }
 <div id="nav-placeholder"></div>
 <script src="/nav.js" defer></script>
 
-<main>
-<div class="container">
-
+<section class="hero-band"><div class="container">
   <div class="hero">
     <div class="hero-badge">Comparatif 2026 · Serrures connectées LCD</div>
     <h1>igloohome vs TTLock :<br><span>quelle serrure pour vos check-in autonomes ?</span></h1>
@@ -234,6 +250,10 @@ a:hover { text-decoration: underline; }
       <span><i class="ph-bold ph-check-circle"></i> Test terrain</span>
     </div>
   </div>
+</div></section>
+
+<main>
+<div class="container">
 
   <div class="metrics-row">
     <div class="metric-card">
@@ -251,7 +271,7 @@ a:hover { text-decoration: underline; }
   </div>
 
   <div class="info-card">
-    <strong>📌 Le check-in autonome, pilier de la LCD rentable</strong>
+    <strong><i class="ph ph-info"></i> Le check-in autonome, pilier de la LCD rentable</strong>
     Une serrure connectée bien choisie permet d'éliminer 100 % des remises de clés physiques, de générer des PINs uniques par voyageur, de tracer chaque accès et de récupérer 4 à 6 heures par mois et par logement. Le choix du modèle impacte directement la fiabilité de votre check-in et donc votre note Airbnb.
   </div>
 
@@ -392,11 +412,11 @@ a:hover { text-decoration: underline; }
       </tbody>
     </table>
     <div class="info-card">
-      <strong>💡 Le low-cost devient cher dès qu'on ajoute l'abonnement</strong>
+      <strong><i class="ph ph-info"></i> Le low-cost devient cher dès qu'on ajoute l'abonnement</strong>
       Sur le matériel pur, TTLock est 4× moins cher (255 € vs 600 €). Mais dès qu'on ajoute les $6/mois de RemoteLock × 3 serrures × 24 mois = 432 €, l'écart se referme. Sur 4 ans, igloohome devient même <strong>moins cher</strong> que TTLock + RemoteLock. Et sans tenir compte de la fiabilité supérieure du hardware igloohome.
     </div>
     <div class="warn-card">
-      <strong>⚠️ Alternative : TTLock + Smoobu sans RemoteLock</strong>
+      <strong><i class="ph ph-warning"></i> Alternative : TTLock + Smoobu sans RemoteLock</strong>
       Si vous utilisez déjà Smoobu comme PMS (à partir de 23,20 €/mois), il pilote nativement TTLock. Dans ce cas, vous évitez l'abonnement RemoteLock et TTLock devient effectivement la solution la moins chère. Voir notre <a href="/comparatif-lodgify-smoobu">comparatif Lodgify vs Smoobu</a>.
     </div>
   </div>
@@ -437,7 +457,7 @@ a:hover { text-decoration: underline; }
         <p style="font-size:13px; color:var(--muted); margin-top:12px;">algoPIN qui fonctionne même sans internet, intégration Airbnb native, hardware premium, zéro abonnement, support reconnu. La fiabilité est la valeur principale en LCD : un check-in raté à 22h un samedi soir vaut bien 200 €.</p>
       </div>
       <div class="verdict-card">
-        <div class="tool-name" style="color:#60a5fa;">TTLock</div>
+        <div class="tool-name" style="color:#004c3f;">TTLock</div>
         <div class="tool-for">Hôte avec Smoobu ou budget serré</div>
         <div class="tag tag-budget">Best budget</div>
         <p style="font-size:13px; color:var(--muted); margin-top:12px;">Pertinent uniquement si vous avez déjà Smoobu (intégration native, pas besoin de RemoteLock) ou si vous testez le check-in autonome avant d'investir. Hardware variable selon OEM, support inexistant en français, dépendance forte au gateway WiFi.</p>

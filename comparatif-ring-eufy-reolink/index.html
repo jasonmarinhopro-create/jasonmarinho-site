@@ -38,7 +38,7 @@
   "author": { "@type": "Person", "name": "Jason Marinho", "url": "https://jasonmarinho.com/qui-suis-je" },
   "publisher": { "@type": "Person", "name": "Jason Marinho" },
   "datePublished": "2026-05-05",
-  "dateModified": "2026-05-05",
+  "dateModified": "2026-10-01",
   "mainEntityOfPage": { "@type": "WebPage", "@id": "https://jasonmarinho.com/comparatif-ring-eufy-reolink" }
 }
 </script>
@@ -64,7 +64,7 @@
       "name": "Peut-on installer une caméra dans un Airbnb en 2026 ?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Les caméras extérieures (entrée, jardin, terrasse) sont autorisées à condition d'en informer les voyageurs dans l'annonce, d'afficher un pictogramme visible et de le mentionner dans le règlement intérieur. Les caméras intérieures sont strictement interdites par Airbnb depuis mars 2024 et par la loi française. La CNIL peut infliger des amendes allant jusqu'à 20 millions d'euros en cas de non-conformité."
+        "text": "Les caméras extérieures (entrée, jardin, terrasse) sont autorisées à condition d'en informer les voyageurs dans l'annonce, d'afficher un pictogramme visible et de le mentionner dans le règlement intérieur. Les caméras intérieures sont strictement interdites par Airbnb depuis le 30 avril 2024 et par la loi française. La CNIL peut infliger des amendes allant jusqu'à 20 millions d'euros en cas de non-conformité."
       }
     },
     {
@@ -106,20 +106,20 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #0f1117;
-  --surface: #1a1d27;
-  --surface2: #22263a;
-  --border: #2e3347;
-  --text: #e8eaf0;
-  --muted: #8b92a8;
-  --accent-text: #a78bfa;
-  --green: #63D683;
-  --yellow: #FFD56B;
-  --blue: #93C5FD;
-  --pink: #F472B6;
-  --red: #f87171;
+  --bg: #F9FAFB;
+  --surface: #FFFFFF;
+  --surface2: #F0FDF4;
+  --border: #E5E7EB;
+  --text: #111827;
+  --muted: #4B5563;
+  --accent-text: #004c3f;
+  --green: #047857;
+  --yellow: #B7791F;
+  --blue: #8B6D5E;
+  --pink: #BE185D;
+  --red: #DC2626;
   --radius: 12px;
-  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow: 0 4px 20px rgba(0,76,63,0.06);
 }
 body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
 a { color: var(--accent-text); text-decoration: none; }
@@ -129,7 +129,7 @@ a:hover { text-decoration: underline; }
 
 /* Hero */
 .hero { padding: 60px 0 40px; text-align: center; }
-.hero-badge { display: inline-block; background: rgba(167,139,250,0.15); border: 1px solid rgba(167,139,250,0.3); color: var(--accent-text); padding: 6px 16px; border-radius: 100px; font-size: 13px; font-weight: 500; margin-bottom: 20px; }
+.hero-badge { display: inline-block; background: rgba(0,76,63,0.08); border: 1px solid rgba(0,76,63,0.2); color: var(--accent-text); padding: 6px 16px; border-radius: 100px; font-size: 13px; font-weight: 500; margin-bottom: 20px; }
 .hero h1 { font-family: 'Fraunces', serif; font-size: clamp(28px, 5vw, 46px); font-weight: 600; line-height: 1.15; margin-bottom: 18px; }
 .hero h1 span { color: var(--accent-text); font-style: italic; }
 .hero-sub { font-size: 17px; color: var(--muted); max-width: 640px; margin: 0 auto 32px; }
@@ -162,13 +162,13 @@ a:hover { text-decoration: underline; }
 .comp-table td { padding: 13px 16px; border: 1px solid var(--border); text-align: center; vertical-align: top; }
 .comp-table td:first-child { text-align: left; color: var(--muted); font-size: 13px; }
 .comp-table tr:nth-child(odd) td { background: var(--surface); }
-.comp-table tr:nth-child(even) td { background: rgba(26,29,39,0.5); }
+.comp-table tr:nth-child(even) td { background: #F9FAFB; }
 .yes { color: var(--green); font-weight: 600; }
 .no { color: var(--red); font-weight: 600; }
 .partial { color: var(--yellow); font-weight: 600; }
 
 /* Tool headers */
-.th-ring { color: #60a5fa; }
+.th-ring { color: #004c3f; }
 .th-eufy { color: var(--green); }
 .th-reolink { color: var(--yellow); }
 
@@ -203,9 +203,9 @@ a:hover { text-decoration: underline; }
 .verdict-card .tool-name { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
 .verdict-card .tool-for { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
 .verdict-card .tag { display: inline-block; padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 600; }
-.tag-best { background: rgba(99,214,131,0.15); color: var(--green); border: 1px solid rgba(99,214,131,0.3); }
-.tag-privacy { background: rgba(147,197,253,0.15); color: var(--blue); border: 1px solid rgba(147,197,253,0.3); }
-.tag-budget { background: rgba(255,213,107,0.15); color: var(--yellow); border: 1px solid rgba(255,213,107,0.3); }
+.tag-best { background: rgba(4,120,87,0.1); color: var(--green); border: 1px solid rgba(4,120,87,0.25); }
+.tag-privacy { background: rgba(139,109,94,0.12); color: var(--blue); border: 1px solid rgba(139,109,94,0.3); }
+.tag-budget { background: rgba(183,121,31,0.1); color: var(--yellow); border: 1px solid rgba(183,121,31,0.28); }
 
 /* FAQ */
 .faq-list { margin: 20px 0; }
@@ -236,10 +236,27 @@ a:hover { text-decoration: underline; }
   .comp-table tr { margin-bottom: 16px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .comp-table td { text-align: left !important; border: none; border-bottom: 1px solid var(--border); }
   .comp-table td:first-child { background: var(--surface2) !important; font-weight: 600; color: var(--text); }
-  .comp-table td:nth-child(2)::before { content: "Ring : "; color: #60a5fa; font-weight: 600; }
+  .comp-table td:nth-child(2)::before { content: "Ring : "; color: #004c3f; font-weight: 600; }
   .comp-table td:nth-child(3)::before { content: "Eufy : "; color: var(--green); font-weight: 600; }
   .comp-table td:nth-child(4)::before { content: "Reolink : "; color: var(--yellow); font-weight: 600; }
 }
+
+/* DA du site (01/10/2026) : bandeau vert sous le menu fixe, corps clair */
+.hero-band { background: linear-gradient(135deg, #001a11 0%, #004c3f 100%); padding: calc(64px + clamp(36px, 6vw, 64px)) 0 clamp(36px, 5vw, 56px); }
+.hero-band .hero { padding: 0; }
+.hero-band .hero-badge { background: rgba(255,213,107,0.12); border-color: rgba(255,213,107,0.28); color: #FFD56B; }
+.hero-band .hero h1 { color: #fff; font-weight: 400; }
+.hero-band .hero h1 span { color: #FFD56B; font-weight: 300; }
+.hero-band .hero-sub { color: rgba(255,255,255,0.68); }
+.hero-band .hero-meta { color: rgba(255,255,255,0.55); }
+.hero-band + main { padding-top: 8px; }
+.metric-card, .scenario-card, .verdict-card, .rgpd-card, .usecase-card, .voir-aussi { box-shadow: var(--shadow); }
+.comp-table th, .cost-table th { color: var(--text); }
+.warn-card { background: #FFFBEB; border-left-color: #FFD56B; color: #78350F; }
+.info-card { background: #F0FDF4; border-left-color: #63D683; }
+.warn-card strong, .info-card strong { display: inline; margin: 0; }
+.warn-card > strong:first-child, .info-card > strong:first-child { display: block; margin-bottom: 6px; }
+@media (max-width: 640px) { .cost-table { display: block; overflow-x: auto; } }
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Organization","@id":"https://jasonmarinho.com/#organization","name":"Jason Marinho","url":"https://jasonmarinho.com","logo":{"@type":"ImageObject","url":"https://jasonmarinho.com/logo.webp","width":1600,"height":1600},"sameAs":["https://instagram.com/jason_marinho","https://www.linkedin.com/in/jason-driing-location-sanscommission"]}
@@ -250,9 +267,7 @@ a:hover { text-decoration: underline; }
 <div id="nav-placeholder"></div>
 <script src="/nav.js" defer></script>
 
-<main>
-<div class="container">
-
+<section class="hero-band"><div class="container">
   <div class="hero">
     <div class="hero-badge">Comparatif 2026 · Caméras extérieures LCD</div>
     <h1>Ring vs Eufy vs Reolink :<br><span>quelle caméra pour votre LCD ?</span></h1>
@@ -263,6 +278,10 @@ a:hover { text-decoration: underline; }
       <span><i class="ph-bold ph-check-circle"></i> Terrain + RGPD France</span>
     </div>
   </div>
+</div></section>
+
+<main>
+<div class="container">
 
   <div class="metrics-row">
     <div class="metric-card">
@@ -274,14 +293,14 @@ a:hover { text-decoration: underline; }
       <div class="metric-label">Résolution max<br>Eufy &amp; Reolink</div>
     </div>
     <div class="metric-card">
-      <div class="metric-val">20 M€</div>
-      <div class="metric-label">Amende CNIL max<br>pour non-conformité</div>
+      <div class="metric-val">Avril 2024</div>
+      <div class="metric-label">Caméras intérieures<br>interdites sur Airbnb</div>
     </div>
   </div>
 
   <div class="warn-card">
-    <strong>⚠️ Caméras intérieures : interdites depuis mars 2024</strong>
-    Airbnb a interdit toutes les caméras à l'intérieur des logements depuis mars 2024. Les caméras extérieures (entrée, portail, terrasse non fermée) restent autorisées à condition d'informer explicitement vos voyageurs et d'afficher un pictogramme visible. Ce comparatif porte exclusivement sur les usages extérieurs légaux.
+    <strong><i class="ph ph-warning"></i> Caméras intérieures : interdites depuis le 30 avril 2024</strong>
+    Airbnb a interdit toutes les caméras à l'intérieur des logements depuis le 30 avril 2024. Les caméras extérieures (entrée, portail, terrasse non fermée) restent autorisées à condition d'informer explicitement vos voyageurs et d'afficher un pictogramme visible. Ce comparatif porte exclusivement sur les usages extérieurs légaux.
   </div>
 
   <div class="section">
@@ -431,7 +450,7 @@ a:hover { text-decoration: underline; }
       </tbody>
     </table>
     <div class="info-card">
-      <strong>💡 Économie avec Eufy ou Reolink</strong>
+      <strong><i class="ph ph-info"></i> Économie avec Eufy ou Reolink</strong>
       Sur 2 ans, un hôte avec 2 logements économise 200–260 € par rapport à Ring uniquement grâce à l'absence d'abonnement. Sur 4 ans, la différence dépasse 400 €. Et contrairement à Ring, l'enregistrement fonctionne <strong>même sans internet</strong> (panne de box, coupure opérateur).
     </div>
   </div>
@@ -467,7 +486,7 @@ a:hover { text-decoration: underline; }
 
     <div class="rgpd-grid">
       <div class="rgpd-card allowed">
-        <h4>✅ Ce qui est autorisé</h4>
+        <h4><i class="ph ph-check-circle"></i> Ce qui est autorisé</h4>
         <ul>
           <li>Caméra extérieure filmant l'entrée, le portail, la terrasse non fermée</li>
           <li>Caméra couvrant un parking ou espace commun extérieur</li>
@@ -476,9 +495,9 @@ a:hover { text-decoration: underline; }
         </ul>
       </div>
       <div class="rgpd-card forbidden">
-        <h4>🚫 Ce qui est interdit</h4>
+        <h4><i class="ph ph-prohibit"></i> Ce qui est interdit</h4>
         <ul>
-          <li>Toute caméra à l'intérieur du logement (interdit Airbnb depuis mars 2024)</li>
+          <li>Toute caméra à l'intérieur du logement (interdit Airbnb depuis le 30 avril 2024)</li>
           <li>Caméra dans une douche/sauna extérieur fermé</li>
           <li>Microphone actif sans consentement explicite</li>
           <li>Surveillance à l'insu total des voyageurs (caméra non déclarée)</li>
@@ -487,7 +506,7 @@ a:hover { text-decoration: underline; }
     </div>
 
     <div class="warn-card">
-      <strong>⚠️ Vos 4 obligations légales avant la mise en service</strong>
+      <strong><i class="ph ph-warning"></i> Vos 4 obligations légales avant la mise en service</strong>
       <ul style="padding-left:16px; margin-top:8px; color: inherit;">
         <li>Mentionner la caméra <strong>dans l'annonce</strong> (Airbnb, Booking, Vrbo)</li>
         <li>Afficher un <strong>pictogramme visible</strong> près de chaque caméra</li>
@@ -497,7 +516,7 @@ a:hover { text-decoration: underline; }
     </div>
 
     <div class="info-card">
-      <strong>🔒 Eufy et Reolink : avantage RGPD naturel</strong>
+      <strong><i class="ph ph-info"></i> Eufy et Reolink : avantage RGPD naturel</strong>
       Stocker les vidéos localement (HomeBase Eufy, carte SD Reolink, NAS) évite le transfert de données personnelles vers des serveurs situés aux États-Unis. Ring stocke sur AWS dans des data centers américains, ce qui peut poser des questions de conformité RGPD pour un professionnel de la LCD. La CNIL peut sanctionner jusqu'à 20 M€ ou 4 % du CA annuel.
     </div>
   </div>
@@ -506,7 +525,7 @@ a:hover { text-decoration: underline; }
     <h2>Notre verdict 2026</h2>
     <div class="verdict-grid">
       <div class="verdict-card">
-        <div class="tool-name" style="color:#60a5fa;">Ring</div>
+        <div class="tool-name" style="color:#004c3f;">Ring</div>
         <div class="tool-for">Écosystème Amazon / Alexa déjà en place</div>
         <div class="tag tag-privacy">Abonnement requis</div>
         <p style="font-size:13px; color:var(--muted); margin-top:12px;">Pertinent uniquement si vous êtes déjà dans l'écosystème Amazon et acceptez $8–10/mois par logement. Déconseillé pour les hôtes qui veulent maîtriser leurs coûts sur le long terme.</p>
@@ -531,7 +550,7 @@ a:hover { text-decoration: underline; }
     <div class="faq-list">
       <div class="faq-item">
         <div class="faq-q">Peut-on installer une caméra dans un Airbnb en 2026 ?</div>
-        <div class="faq-a">Les caméras extérieures (entrée, jardin, terrasse) sont autorisées à condition d'en informer les voyageurs dans l'annonce, d'afficher un pictogramme visible et de le mentionner dans le règlement intérieur. Les caméras intérieures sont strictement interdites par Airbnb depuis mars 2024 et par la loi française. La CNIL peut infliger des amendes allant jusqu'à 20 millions d'euros en cas de non-conformité.</div>
+        <div class="faq-a">Les caméras extérieures (entrée, jardin, terrasse) sont autorisées à condition d'en informer les voyageurs dans l'annonce, d'afficher un pictogramme visible et de le mentionner dans le règlement intérieur. Les caméras intérieures sont strictement interdites par Airbnb depuis le 30 avril 2024 et par la loi française. La CNIL peut infliger des amendes allant jusqu'à 20 millions d'euros en cas de non-conformité.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">Quelle caméra extérieure choisir pour une LCD en 2026 : Ring, Eufy ou Reolink ?</div>
