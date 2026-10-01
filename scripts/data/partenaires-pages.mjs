@@ -2,9 +2,10 @@
 // par scripts/build-pages-partenaires.mjs dans partenaires/<slug>/index.html.
 //
 // Règle (décision du 30/09/2026) : une page seulement pour un partenariat réel
-// avec un avantage ou un accompagnement pour l'hôte (Indy, LegalPlace). Pas de
-// page pour un outil simplement référencé, ni pour Lodgify et Hospitable (leurs
-// pages « avis » jouent déjà ce rôle), ni pour Shine (2 parrainages par an).
+// avec un avantage ou un accompagnement pour l'hôte (Indy, LegalPlace, et
+// Lodgify depuis son code JASON15 du 01/10/2026, demande de Jason). Pas de page
+// pour un outil simplement référencé, ni pour Hospitable (sa page « avis » joue
+// déjà ce rôle), ni pour Shine (2 parrainages par an).
 //
 // Faits repris des articles partenaires (sources citées dans chaque page).
 // Prix : relevés de septembre 2026, à revérifier avant toute mise à jour.
@@ -22,7 +23,109 @@ const LP_SOCIETE = `https://creation.legalplace.fr/creation-entreprise-2?${LP}`
 const LP_MICRO = `https://www.legalplace.fr/contrats/creation-micro-entreprise/?${LP}`
 const LP_DOMICILIATION = `https://landing.legalplace.fr/domiciliation?${LP}`
 
+// ── Lodgify (affilié, code JASON15 négocié le 01/10/2026) ──
+const LODGIFY_TRIAL = 'https://app.lodgify.com/signup/fr/?afmc=ui1'
+const LODGIFY_DEMO = 'https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv'
+const LODGIFY_ONBOARDING = 'https://www.lodgify.com/fr/onboarding-gratuit/?afmc=uid'
+
 export const PAGES = [
+  {
+    slug: 'lodgify',
+    nom: 'Lodgify',
+    mono: 'L',
+    couleur: '#2E5BFF',
+    title: 'Lodgify : -15 % avec le code JASON15',
+    description: "Lodgify avec Jason Marinho : ton site de réservation directe relié à Airbnb, Booking.com et Vrbo, et 15 % de réduction avec le code JASON15 jusqu'au 1er octobre 2027.",
+    eyebrow: 'Partenaire · Site de réservation directe',
+    h1: 'Lodgify : ton site de réservation directe, <em>15 % moins cher</em>',
+    lead: "Lodgify te donne ton propre site de réservation, relié à Airbnb, Booking.com et Vrbo, sans rien coder. C'est l'outil que je conseille aux hôtes qui veulent moins dépendre des plateformes, et Lodgify a créé pour toi le code JASON15.",
+    offre: {
+      titre: '-15 % avec JASON15',
+      sous: 'sur Professional et Ultimate, en paiement annuel ou tous les 2 ans',
+      points: [
+        'Code valable jusqu\'au 1er octobre 2027',
+        'Essai gratuit de 7 jours pour tester avant de payer',
+        'Démo gratuite avec un conseiller qui applique le code',
+      ],
+      cta: { label: 'Essai gratuit 7 jours', href: LODGIFY_TRIAL },
+      cta2: { label: 'Réserver une démo gratuite', href: LODGIFY_DEMO },
+      note: 'Lien affilié : Lodgify me verse une commission si tu t\'abonnes, sans aucun surcoût pour toi. <a href="/code-promo-lodgify" style="color:inherit;text-decoration:underline">Conditions du code</a>.',
+    },
+    pourquoi: {
+      titre: 'Pourquoi je recommande <em>Lodgify</em>',
+      items: [
+        { icon: 'globe', t: 'Ton site, sans coder', d: 'Un modèle, tes photos, tes tarifs : tu obtiens un site à ton nom avec moteur de réservation et paiement en ligne. C\'est ce que Lodgify fait mieux que la plupart des outils à ce prix.' },
+        { icon: 'arrows-left-right', t: 'Un vrai channel manager', d: 'Connexion par API à Airbnb, Booking.com, Vrbo et Expedia : une réservation sur un canal bloque les dates partout. Tes logements peuvent aussi apparaître sur Google Vacation Rentals.' },
+        { icon: 'hand-heart', t: 'Un démarrage accompagné', d: 'L\'accompagnement à la mise en place est le point le mieux noté par les utilisateurs, et Lodgify propose un onboarding gratuit.' },
+      ],
+    },
+    fonctions: {
+      titre: 'Ce que Lodgify fait pour <em>ta location</em>',
+      items: [
+        { icon: 'browser', t: 'Site de réservation directe', d: 'Pages logement, à propos, contact, en plusieurs langues.' },
+        { icon: 'credit-card', t: 'Paiement en ligne', d: 'Stripe, PayPal ou le module de paiement Lodgify.' },
+        { icon: 'calendar-check', t: 'Calendrier synchronisé', d: 'Airbnb, Booking.com, Vrbo et Expedia, sans double réservation.' },
+        { icon: 'google-logo', t: 'Google Vacation Rentals', d: 'Tes logements visibles dans Google Search, Maps et Travel.' },
+        { icon: 'chats', t: 'Messagerie et automatisations', d: 'Messages des plateformes regroupés, envois automatiques.' },
+        { icon: 'rocket', t: 'Onboarding gratuit', d: 'Lodgify t\'accompagne pour la mise en place.', href: LODGIFY_ONBOARDING, lien: 'Demander l\'onboarding' },
+      ],
+    },
+    etapes: [
+      { t: 'Teste Lodgify', d: 'avec l\'essai gratuit de 7 jours, ou la démo gratuite si tu veux qu\'un conseiller te montre l\'outil sur ton logement.' },
+      { t: 'Construis ton site et connecte tes plateformes', d: 'puis vérifie calendrier, tarifs et frais de ménage sur chaque plateforme juste après la connexion.' },
+      { t: 'Souscris en annuel ou pour 2 ans avec JASON15', d: 'sur Professional ou Ultimate : 15 % de moins sur tout ton abonnement.' },
+    ],
+    tableau: {
+      titre: 'Lodgify est-il fait <em>pour toi</em> ?',
+      entete: ['Ta situation', 'Mon conseil'],
+      lignes: [
+        ['1 à 5 logements, tu veux ton propre site et moins dépendre d\'Airbnb et Booking', '<span class="yes">Oui, c\'est le cœur de cible</span> : Professional avec JASON15'],
+        ['Gîte, chambre d\'hôtes, petite conciergerie qui veut une vraie présence web', '<span class="yes">Oui</span>'],
+        ['Tu veux seulement synchroniser Airbnb et Booking, sans site', '<span class="partial">Possible</span>, mais Smoobu est plus simple (<a href="/comparatif-lodgify-smoobu">comparatif</a>)'],
+        ['Tu veux surtout automatiser messages et avis', 'Hospitable va plus loin sur ce point (<a href="/hospitable-avis">mon avis</a>)'],
+        ['Petit budget, tu démarres', 'Starter coûte moins cher, mais le code ne s\'y applique pas'],
+      ],
+      note: 'Pour décider entre les formules, voir <a href="/lodgify-prix">le détail des prix Lodgify</a> et son calculateur de rentabilité.',
+    },
+    cout: {
+      titre: 'Ce que ça coûte <em>avec le code</em>',
+      paras: [
+        'Lodgify facture par logement. D\'après les prix relevés en août 2026 en facturation annuelle : environ 13 € par logement et par mois pour Starter, 33 € pour Professional et 49 € pour Ultimate. Avec JASON15, Professional revient à environ 28 € et Ultimate à environ 42 € par logement et par mois.',
+        'Exemple : 2 logements en Professional, payés à l\'année, coûtent environ 792 € par an. Avec le code, tu économises environ 119 € et paies environ 673 €. Le calcul pour ton cas est sur <a href="/code-promo-lodgify">la page du code promo</a>.',
+        'Le paiement mensuel coûte environ 15 à 30 % de plus que l\'annuel et n\'ouvre pas droit au code. La grille Lodgify change souvent : le prix exact est celui affiché au moment de souscrire.',
+      ],
+    },
+    limites: [
+      'Le prix est par logement : raisonnable pour 1 à 3 logements, beaucoup plus lourd au-delà de 10.',
+      'Le support après le démarrage est le reproche qui revient le plus dans les avis : très bien noté pendant l\'onboarding, plus inégal ensuite.',
+      'Des erreurs de correspondance sont signalées après la connexion d\'une nouvelle plateforme : vérifie calendriers et tarifs juste après chaque connexion.',
+      'Un site ne fait pas venir de voyageurs tout seul : sans action de ta part (anciens voyageurs, Google, réseaux sociaux), il restera vide.',
+    ],
+    liens: [
+      { href: '/code-promo-lodgify', t: 'Le code JASON15 en détail', d: 'Conditions, mode d\'emploi et calcul de ton économie.' },
+      { href: '/lodgify-avis', t: 'Mon avis complet sur Lodgify', d: 'Points forts, limites et avis d\'utilisateurs.' },
+      { href: '/lodgify-prix', t: 'Les prix Lodgify', d: 'Formules, frais et calculateur de rentabilité.' },
+      { href: '/tutoriel-lodgify-site-reservation-directe', t: 'Créer ton site avec Lodgify', d: 'Le tutoriel en 9 étapes.' },
+    ],
+    faq: [
+      { q: 'Existe-t-il un code promo Lodgify ?', a: 'Oui : le code JASON15 donne 15 % de réduction sur les formules Professional et Ultimate, en paiement annuel ou tous les 2 ans, jusqu\'au 1er octobre 2027. Il ne s\'applique ni au paiement mensuel ni à la formule Starter.' },
+      { q: 'Où saisir le code JASON15 ?', a: 'Au moment de souscrire ton abonnement annuel ou de 2 ans. Si tu ne trouves pas où le saisir, donne-le au conseiller pendant la démo gratuite : il peut l\'appliquer à ta souscription.' },
+      { q: 'Lodgify est-il gratuit à l\'essai ?', a: 'Oui, Lodgify propose un essai gratuit de 7 jours et une démo gratuite avec un conseiller. Prépare tes photos, descriptions et tarifs avant de lancer l\'essai pour en profiter vraiment.' },
+      { q: 'Lodgify ou Smoobu ?', a: 'Lodgify si tu veux ton propre site de réservation directe et construire ta marque. Smoobu si tu veux surtout synchroniser plusieurs plateformes simplement, pour moins cher.' },
+      { q: 'Lodgify fait-il venir des voyageurs sur mon site ?', a: 'Lodgify diffuse tes logements sur Google Vacation Rentals, mais le site ne se remplit pas tout seul : il faut y amener tes anciens voyageurs, du trafic Google et tes réseaux sociaux. C\'est l\'objet de la formation Réservation directe.' },
+    ],
+    cta: {
+      titre: 'Ton site direct, <em>tes contrats signés</em>',
+      texte: 'Lodgify t\'apporte le site. L\'app Jason Marinho ajoute le contrat signé en ligne, la caution par empreinte de carte, le planning ménage et les déclarations voyageurs.',
+      btn: { label: 'Créer mon compte gratuit', href: 'https://app.jasonmarinho.com/auth/register' },
+    },
+    sources: [
+      ['Grille tarifaire Lodgify', 'https://www.lodgify.com/fr/tarifs/'],
+      ['Avis Lodgify sur Capterra', 'https://www.capterra.com/p/131924/Lodgify/reviews/'],
+      ['Avis Lodgify sur Trustpilot', 'https://fr.trustpilot.com/review/lodgify.com'],
+    ],
+  },
+
   {
     slug: 'indy',
     nom: 'Indy',

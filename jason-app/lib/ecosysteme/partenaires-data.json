@@ -94,13 +94,13 @@
       "desc": "Ton propre site de réservation directe, relié à Airbnb, Booking.com et Vrbo, sans coder.",
       "liens": [
         {
-          "label": "Voir le code",
-          "href": "https://jasonmarinho.com/code-promo-lodgify"
-        },
-        {
           "label": "Démo gratuite",
           "href": "https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv",
           "sponsored": true
+        },
+        {
+          "label": "Voir l'offre",
+          "href": "https://jasonmarinho.com/partenaires/lodgify"
         }
       ]
     },

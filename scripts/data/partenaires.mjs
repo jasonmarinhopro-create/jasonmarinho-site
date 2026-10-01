@@ -52,8 +52,8 @@ export const OUTILS = [
     badge: 'affilie', offre: '-15 % avec JASON15',
     desc: 'Ton propre site de réservation directe, relié à Airbnb, Booking.com et Vrbo, sans coder.',
     liens: [
-      { label: 'Voir le code', href: '/code-promo-lodgify' },
       { label: 'Démo gratuite', href: LODGIFY_DEMO, sponsored: true },
+      { label: "Voir l'offre", href: '/partenaires/lodgify' },
     ],
   },
   {

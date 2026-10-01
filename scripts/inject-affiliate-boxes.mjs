@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Encadrés affiliés/parrainage (Hospitable, Shine, Indy, LegalPlace, Tiime) injectés dans les pages
+// Encadrés affiliés/parrainage (Hospitable, Shine, Indy, LegalPlace, Tiime, Lodgify) injectés dans les pages
 // qui parlent déjà de l'outil. Idempotent : chaque encadré est entouré de
 // marqueurs <!-- AFF:<id>:START/END --> et remplacé à chaque passage. À
 // relancer après régénération d'un article (scripts/generate-article.mjs).
@@ -83,6 +83,15 @@ const tiimeVous = box('tiime-vous',
   btn(TIIME, 'Créer un compte Tiime gratuit'),
   "Lien affilié : si vous vous inscrivez via ce lien, Tiime me verse une commission, sans aucun surcoût pour vous. Pour un LMNP au régime réel, Tiime ne suffit pas : voyez Indy ci-dessus.")
 
+// Lodgify (code JASON15 du 01/10/2026) : articles sur la réservation directe
+// qui n'avaient pas encore d'encadré (ceux qui en ont un : classe .aff-lodgify
+// écrite à la main, ligne du code ajoutée dedans)
+const LODGIFY_TRIAL = 'https://app.lodgify.com/signup/fr/?afmc=ui1'
+const lodgifyTu = box('lodgify-tu',
+  "<strong>Ton site de réservation directe avec Lodgify :</strong> un site à ton nom, relié à Airbnb, Booking.com et Vrbo, avec le paiement en ligne. Essai gratuit de 7 jours, puis <strong>-15 % avec le code JASON15</strong> en paiement annuel ou tous les 2 ans (formules Professional et Ultimate, jusqu'au 1er octobre 2027).",
+  btn(LODGIFY_TRIAL, 'Essai gratuit 7 jours') + ' <a href="/partenaires/lodgify" style="display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:14px;padding:10px 16px;border-radius:9px;text-decoration:none;border:1px solid rgba(0,76,63,.3);color:#004c3f;background:#fff">Voir l\'offre partenaire</a>',
+  "Lien affilié : si tu t'abonnes via ce lien, Lodgify me verse une commission, sans aucun surcoût pour toi (tu gardes la réduction). <a href=\"/code-promo-lodgify\" style=\"color:#004c3f\">Conditions du code JASON15</a>.")
+
 // [fichier, id, texte avant lequel insérer l'encadré, contenu]
 const PLACEMENTS = [
   ['comparatif-smoobu-hospitable/index.html', 'hospitable-vous', '</section>\n\n<section id="verdict">', hospitableVous],
@@ -98,6 +107,10 @@ const PLACEMENTS = [
   ['blog/declarer-lmnp-sans-expert-comptable-decla-fr/index.html', 'indy-tu', '<h2 class="art-h2">5. Les limites : quand ce n\'est pas fait pour toi', indyTu],
   ['blog/regime-reel-vs-micro-bic-decision-2026/index.html', 'indy-tu', '<h2 class="art-h2">4. Comment basculer en régime réel', indyTu],
   ['blog/lmnp-vs-lmp-changement-2026-impact/index.html', 'indy-tu', '<h2 class="art-h2">4. Optimiser sa fiscalité LCD en 2026', indyTu],
+  ['blog/location-directe-pourquoi-saffranchir-plateformes/index.html', 'lodgify-tu', '<h2 class="art-h2">Ce que la location directe ne remplace pas (encore)</h2>', lodgifyTu],
+  ['blog/fixer-prix-reservation-directe-location-courte-duree/index.html', 'lodgify-tu', '<h2 class="art-h2">Et pour les séjours longs en direct ?</h2>', lodgifyTu],
+  ['blog/outils-gerer-location-courte-duree-2025/index.html', 'lodgify-tu', '<h2 class="art-h2">2. Channel Manager, Synchronisation multi-plateformes</h2>', lodgifyTu],
+  ['blog/stripe-paiement-direct-lcd-mise-en-place/index.html', 'lodgify-tu', '<h2 class="art-h2">3. Paramétrage avancé</h2>', lodgifyTu],
   ['blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026/index.html', 'shine-tu', '<ul class="art-ul"><li>Ouverture 100 % en ligne recommandée', shineTu],
 ]
 
