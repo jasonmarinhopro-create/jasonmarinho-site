@@ -1,0 +1,40 @@
+name: "Prospection : envois"
+
+# Envois de prospection répartis sur la journée (01/10/2026). Avant : un seul
+# passage par jour (cron Vercel, Hobby) qui se relançait lui-même ; la chaîne
+# se cassait (relance perdue) et seulement 2 à 6 e-mails partaient par jour
+# au lieu du plafond. Ici, toutes les 30 minutes de 9 h à 17 h (heure de
+# Paris, jours ouvrés), on appelle la route de l'app tant qu'il reste des
+# envois. Le verrou d'envoi (lib/outreach/service.ts) empêche tout doublon,
+# même si un autre passage tourne en même temps. Le plafond quotidien et les
+# jours d'envoi réglés dans l'admin sont respectés (force: false).
+# Journaux publics : la route ne renvoie que des nombres.
+on:
+  schedule:
+    - cron: '5,35 7-15 * * 1-5'
+  workflow_dispatch:
+
+concurrency:
+  group: prospection-envois
+  cancel-in-progress: false
+
+jobs:
+  envoyer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      APP_URL: https://app.jasonmarinho.com
+      SECRET: ${{ secrets.SOCIAL_CRON_SECRET }}
+    steps:
+      - name: Passages jusqu'au bout de la file
+        run: |
+          set -u
+          only=false
+          for i in $(seq 1 10); do
+            body=$(jq -nc --argjson so "$only" '{op:"run",force:false,relaunch:false,send_only:$so}')
+            res=$(curl -sS --max-time 75 -X POST "$APP_URL/api/outreach/ops" \
+              -H "authorization: Bearer $SECRET" -H 'content-type: application/json' -d "$body" || echo '{}')
+            echo "Passage $i : $(echo "$res" | jq -c '{sent, errors, replies, autoEnrolled, skipped, more, error}' 2>/dev/null || echo "$res" | head -c 200)"
+            [ "$(echo "$res" | jq -r '.more // false' 2>/dev/null)" = "true" ] || break
+            only=true
+          done

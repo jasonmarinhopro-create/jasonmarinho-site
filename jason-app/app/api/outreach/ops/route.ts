@@ -31,7 +31,7 @@ const hostOf = (u: string) => { try { return new URL(/^https?:\/\//i.test(u) ? u
 
 export async function POST(req: Request) {
   if (!authorized(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
-  const body = await req.json().catch(() => ({})) as { op?: string; audience?: Audience; query?: string; ville?: string; audiences?: Audience[]; daily_cap?: number }
+  const body = await req.json().catch(() => ({})) as { op?: string; audience?: Audience; query?: string; ville?: string; audiences?: Audience[]; daily_cap?: number; force?: boolean; send_only?: boolean; relaunch?: boolean }
   const db = getServiceClient()
   try {
     switch (body.op) {
@@ -48,8 +48,12 @@ export async function POST(req: Request) {
         return NextResponse.json({ ok: res.ok, envoye_a_la_boite_d_envoi: res.ok, error: res.error ?? null })
       }
       case 'run': {
-        const summary = await runOutreach(db, { budgetMs: 45_000, force: true })
-        const relaunched = summary.more ? await relaunchOutreach(1, true) : false
+        // Le workflow programmé « Prospection : envois » rappelle cette route
+        // tant qu'il reste des envois (relaunch: false, force: false : jours
+        // d'envoi respectés). Bouton manuel du workflow : force par défaut.
+        const force = body.force ?? true
+        const summary = await runOutreach(db, { budgetMs: 45_000, force, sendOnly: body.send_only === true })
+        const relaunched = summary.more && body.relaunch !== false ? await relaunchOutreach(1, force) : false
         return NextResponse.json({ ok: true, relaunched, ...summary })
       }
       default: return NextResponse.json({ error: 'op inconnue (status, import, import_osm, activate, test, run)' }, { status: 400 })
@@ -131,9 +135,11 @@ async function importFromOsm(db: Db, audience: Audience | undefined, ville: stri
   if (city.length < 2) throw new Error('ville manquante')
   const started = Date.now()
   const re = 'ménage|menage|nettoyage|conciergerie|cleaning|propreté|proprete'
+  // 01/10/2026 : élargi à tout lieu qui a un site et un nom parlant (avant :
+  // seulement quelques étiquettes, d'où 7 équipes de ménage pour 20 villes)
   const sel = audience === 'photographe'
-    ? `nwr["craft"="photographer"](area.a);nwr["shop"="photo"](area.a);`
-    : `nwr["craft"="cleaning"](area.a);nwr["office"]["name"~"${re}",i](area.a);nwr["craft"]["name"~"${re}",i](area.a);nwr["shop"]["name"~"conciergerie|ménage|menage",i](area.a);`
+    ? `nwr["craft"="photographer"](area.a);nwr["shop"="photo"](area.a);nwr["name"~"photograph",i]["website"](area.a);nwr["name"~"photograph",i]["contact:website"](area.a);`
+    : `nwr["craft"="cleaning"](area.a);nwr["office"]["name"~"${re}",i](area.a);nwr["craft"]["name"~"${re}",i](area.a);nwr["shop"]["name"~"conciergerie|ménage|menage",i](area.a);nwr["name"~"${re}|airbnb|location saisonnière|gestion locative",i]["website"](area.a);nwr["name"~"${re}|airbnb|gestion locative",i]["contact:website"](area.a);`
   const ql = `[out:json][timeout:20];area["name"="${city}"]["boundary"="administrative"]["admin_level"="8"]->.a;(${sel});out tags 300;`
   // Serveur principal souvent saturé (504, 429) : serveurs miroirs en secours
   let res: Response | null = null

@@ -391,13 +391,8 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
     const footer = complianceFooter({ source: c.source as Source, firstMessage: !alreadyWritten.has(c.id), unsubscribeUrl: urls.page })
     const bodyText = renderTemplate(step.body, vars).trim()
     const text = `${bodyText}\n\n${signature}`
-    // Rythme humain et limite de débit de la boîte : pause avant chaque envoi
-    // sauf le premier, et arrêt propre si la pause dépasse le temps restant.
-    const gap = attempts ? SEND_GAP_MS + Math.floor(Math.random() * SEND_GAP_JITTER_MS) : 0
-    if (Date.now() - started + gap + 5_000 > budget) { summary.more = true; break }
-    if (gap) await new Promise(r => setTimeout(r, gap))
-    attempts++
-    // Verrou : un autre passage (relance, bouton, cron) a pu lire la même file.
+    if (Date.now() - started + 5_000 > budget) { summary.more = true; break }
+    // Verrou : un autre passage (relance, bouton, cron, workflow) a pu lire la même file.
     // 1. un e-mail déjà parti pour cette étape de ce parcours n'est jamais renvoyé ;
     // 2. l'étape est « réservée » (date repoussée) avant l'envoi, seulement si
     //    personne ne l'a prise entre-temps.
@@ -407,6 +402,18 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
     const { data: claimed } = await db.from('outreach_enrollments').update({ next_send_on: CLAIM_DATE, updated_at: new Date().toISOString() })
       .eq('id', e.id).eq('status', 'en_cours').eq('next_step', e.next_step).lte('next_send_on', today).select('id')
     if (!claimed?.length) continue
+    // Rythme humain et limite de débit de la boîte : pause avant chaque envoi
+    // sauf le premier. La pause ne compte que les vrais envois (avant : elle
+    // s'appliquait aussi aux étapes déjà prises par un autre passage, qui
+    // finissait à 0 envoi, 01/10/2026). Plus le temps : l'étape est rendue.
+    const gap = attempts ? SEND_GAP_MS + Math.floor(Math.random() * SEND_GAP_JITTER_MS) : 0
+    if (Date.now() - started + gap + 5_000 > budget) {
+      await db.from('outreach_enrollments').update({ next_send_on: today }).eq('id', e.id).eq('next_send_on', CLAIM_DATE)
+      summary.more = true
+      break
+    }
+    if (gap) await new Promise(r => setTimeout(r, gap))
+    attempts++
     // Identifiant de l'envoi connu avant l'envoi : la photo de la signature
     // passe par /api/outreach/o/<id> (taux d'ouverture anonyme, voir openTrackingUrl)
     const sendId = randomUUID()

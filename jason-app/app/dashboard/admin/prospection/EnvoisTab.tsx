@@ -7,7 +7,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { PaperPlaneTilt, ChatCircleText, WarningCircle, X, Eye, ChartBar } from '@phosphor-icons/react/dist/ssr'
-import type { Audience } from '@/lib/outreach/engine'
+import { AUDIENCES, type Audience } from '@/lib/outreach/engine'
 import { AMBER, PINK, tint } from '../_ui/theme'
 import { sentEmailPreview } from './actions'
 import { ui, displayName, type ContactRow, type SendRow, type SequenceRow } from './shared'
@@ -79,7 +79,8 @@ export default function EnvoisTab({ audience, sends, contacts, sequences, dailyC
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
       <div style={s.stats}>
-        <Stat label="Aujourd'hui" value={`${sentToday}`} sub={`sur ${dailyCap} par jour`} />
+        {/* Chiffres de l'audience choisie ; le plafond, lui, vaut pour toutes les audiences */}
+        <Stat label={`Aujourd'hui · ${AUDIENCES[audience].plural}`} value={`${sentToday}`} sub={`plafond de ${dailyCap} par jour, toutes audiences`} />
         <Stat label="Envoyés (30 jours)" value={`${ok.length}`} sub={`${contacted} contact${contacted > 1 ? 's' : ''}`} />
         <Stat label="Ont répondu" value={`${replied}`} sub={contacted ? `${Math.round((replied / contacted) * 100)} % des contactés` : 'pas encore d’envoi'} accent />
         <Stat label="Erreurs" value={`${errors}`} sub={errors ? 'adresse refusée ou boîte indisponible' : 'aucune'} warn={errors > 0} />
