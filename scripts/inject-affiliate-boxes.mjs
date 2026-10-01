@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Encadrés affiliés/parrainage (Hospitable, Shine, Indy, LegalPlace) injectés dans les pages
+// Encadrés affiliés/parrainage (Hospitable, Shine, Indy, LegalPlace, Tiime) injectés dans les pages
 // qui parlent déjà de l'outil. Idempotent : chaque encadré est entouré de
 // marqueurs <!-- AFF:<id>:START/END --> et remplacé à chaque passage. À
 // relancer après régénération d'un article (scripts/generate-article.mjs).
@@ -25,6 +25,9 @@ const LP = 'utm_source=affilae&utm_medium=partner&utm_campaign=Jason%20Marinho&a
 const LP_SOCIETE = `https://creation.legalplace.fr/creation-entreprise-2?${LP}`
 const LP_MICRO = `https://www.legalplace.fr/contrats/creation-micro-entreprise/?${LP}`
 const LP_DOMICILIATION = `https://landing.legalplace.fr/domiciliation?${LP}`
+// Tiime (partenariat Affilae accepté le 01/10/2026, numéro d'affilié 1127) :
+// lien traqué généré dans Affilae, vers la page facturation électronique
+const TIIME = 'https://lb.affilae.com/r/?p=651c0d1e40e2d575f87b3b27&af=1127&lp=https%3A%2F%2Fwww.tiime.fr%2Ffacturation-electronique-2026%3Futm_source%3Dother%26utm_medium%3Daffiliation%26utm_campaign%3DJason%2520Marinho%26ae%3D1127%26program_id%3D651c0d1e40e2d575f87b3b27%26program_name%3DTiime'
 
 const btn = (href, label) => `<a href="${href}" target="_blank" rel="sponsored noopener" style="display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:14px;padding:10px 16px;border-radius:9px;text-decoration:none;background:#004c3f;color:#fff">${label}</a>`
 const box = (id, intro, button, mention) => `<!-- AFF:${id}:START -->
@@ -71,6 +74,15 @@ const legalplaceMenage = box('legalplace-menage',
   btn(LP_MICRO, 'Créer ma micro-entreprise'),
   LP_MENTION)
 
+const tiimeTu = box('tiime-tu',
+  "<strong>Facturer simplement avec Tiime :</strong> devis et factures illimités, factures électroniques conformes à la réforme (Tiime est plateforme agréée), le tout dans l'offre gratuite, sans carte bancaire. Le compte pro et les notes de frais sont dans les offres payantes.",
+  btn(TIIME, 'Créer mon compte Tiime gratuit'),
+  "Lien affilié : si tu t'inscris via ce lien, Tiime me verse une commission, sans aucun surcoût pour toi. Indy et Henrri sont d'autres options gratuites : <a href=\"/comparatif-indy-tiime-henrri\" style=\"color:#004c3f\">voir le comparatif</a>.")
+const tiimeVous = box('tiime-vous',
+  "<strong>Essayer Tiime :</strong> l'offre gratuite couvre les devis, les factures illimitées et la facture électronique (émission et réception), sans carte bancaire.",
+  btn(TIIME, 'Créer un compte Tiime gratuit'),
+  "Lien affilié : si vous vous inscrivez via ce lien, Tiime me verse une commission, sans aucun surcoût pour vous. Pour un LMNP au régime réel, Tiime ne suffit pas : voyez Indy ci-dessus.")
+
 // [fichier, id, texte avant lequel insérer l'encadré, contenu]
 const PLACEMENTS = [
   ['comparatif-smoobu-hospitable/index.html', 'hospitable-vous', '</section>\n\n<section id="verdict">', hospitableVous],
@@ -80,6 +92,9 @@ const PLACEMENTS = [
   ['blog/creer-conciergerie-airbnb-2025/index.html', 'legalplace-conciergerie', '<h2 class="art-h2">Étape 2 : Trouver ses premiers clients', legalplaceConciergerie],
   ['blog/devenir-prestataire-menage-airbnb-se-lancer/index.html', 'legalplace-menage', '<h2 class="art-h2">Fixer tes tarifs sans te brader', legalplaceMenage],
   ['comparatif-indy-tiime-henrri/index.html', 'indy-vous', '</section>\n\n<section id="tiime">', indyVous],
+  ['comparatif-indy-tiime-henrri/index.html', 'tiime-vous', '</section>\n\n<section id="henrri">', tiimeVous],
+  ['blog/devenir-prestataire-menage-airbnb-se-lancer/index.html', 'tiime-tu', '<h2 class="art-h2">Trouver tes premiers clients hôtes</h2>', tiimeTu],
+  ['blog/creer-conciergerie-airbnb-2025/index.html', 'tiime-tu', '<h2 class="art-h2">Étape 5 : Le contrat de gestion</h2>', tiimeTu],
   ['blog/declarer-lmnp-sans-expert-comptable-decla-fr/index.html', 'indy-tu', '<h2 class="art-h2">5. Les limites : quand ce n\'est pas fait pour toi', indyTu],
   ['blog/regime-reel-vs-micro-bic-decision-2026/index.html', 'indy-tu', '<h2 class="art-h2">4. Comment basculer en régime réel', indyTu],
   ['blog/lmnp-vs-lmp-changement-2026-impact/index.html', 'indy-tu', '<h2 class="art-h2">4. Optimiser sa fiscalité LCD en 2026', indyTu],

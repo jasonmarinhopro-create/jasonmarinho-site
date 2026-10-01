@@ -34,6 +34,8 @@ const INDY = 'https://urlr.me/FEqNfy'
 // paramètres du lien traqué généré par Jason, ajoutés à chaque page du kit
 export const LEGALPLACE_AE = 'utm_source=affilae&utm_medium=partner&utm_campaign=Jason%20Marinho&ae=1773'
 const LEGALPLACE_SOCIETE = `https://creation.legalplace.fr/creation-entreprise-2?${LEGALPLACE_AE}`
+// Tiime (partenariat Affilae accepté le 01/10/2026, numéro d'affilié 1127)
+const TIIME = 'https://lb.affilae.com/r/?p=651c0d1e40e2d575f87b3b27&af=1127&lp=https%3A%2F%2Fwww.tiime.fr%2Ffacturation-electronique-2026%3Futm_source%3Dother%26utm_medium%3Daffiliation%26utm_campaign%3DJason%2520Marinho%26ae%3D1127%26program_id%3D651c0d1e40e2d575f87b3b27%26program_name%3DTiime'
 
 export const OUTILS = [
   // ── Offres (toujours en tête) ──
@@ -45,11 +47,13 @@ export const OUTILS = [
   },
   {
     nom: 'Lodgify', mono: 'L', couleur: '#2E5BFF', cats: ['gestion', 'direct'],
-    badge: 'affilie', offre: 'Essai 7 jours + démo offerte',
+    // Code JASON15 (01/10/2026) : -15 % sur Professional et Ultimate, annuel ou
+    // 2 ans, jusqu'au 1er octobre 2027 (conditions sur /code-promo-lodgify)
+    badge: 'affilie', offre: '-15 % avec JASON15',
     desc: 'Ton propre site de réservation directe, relié à Airbnb, Booking.com et Vrbo, sans coder.',
     liens: [
+      { label: 'Voir le code', href: '/code-promo-lodgify' },
       { label: 'Démo gratuite', href: LODGIFY_DEMO, sponsored: true },
-      { label: 'Mon avis', href: '/lodgify-avis' },
     ],
   },
   {
@@ -89,6 +93,15 @@ export const OUTILS = [
     ],
   },
   {
+    nom: 'Tiime', mono: 'T', couleur: '#0EA5E9', cats: ['compta'],
+    badge: 'affilie', offre: 'Facturation gratuite',
+    desc: 'Devis, factures illimitées et facture électronique (plateforme agréée) gratuits. Compte pro en option.',
+    liens: [
+      { label: 'Essayer Tiime', href: TIIME, sponsored: true },
+      { label: 'Comparatif', href: '/comparatif-indy-tiime-henrri' },
+    ],
+  },
+  {
     nom: 'Krossbooking', mono: 'K', couleur: '#0E7490', cats: ['gestion'],
     badge: 'membre', offre: 'Tarif négocié membres',
     desc: 'Channel manager italien avec PMS et moteur de réservation. Réduction réservée aux membres.',
@@ -114,7 +127,6 @@ export const OUTILS = [
   { nom: 'Ring', mono: 'R', couleur: '#0284C7', cats: ['acces'], desc: 'Sonnettes vidéo et caméras extérieures, historique vidéo sur abonnement.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-ring-eufy-reolink' }] },
   { nom: 'Eufy', mono: 'E', couleur: '#0369A1', cats: ['acces'], desc: 'Caméras et sonnettes avec stockage local, sans abonnement obligatoire.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-ring-eufy-reolink' }] },
   { nom: 'Reolink', mono: 'R', couleur: '#1E40AF', cats: ['acces'], desc: 'Caméras de surveillance wifi ou filaires, avec stockage local.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-ring-eufy-reolink' }] },
-  { nom: 'Tiime', mono: 'T', couleur: '#0EA5E9', cats: ['compta'], desc: 'Comptabilité et facturation en ligne, avec une offre gratuite.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-indy-tiime-henrri' }] },
   { nom: 'Henrri', mono: 'H', couleur: '#DB2777', cats: ['compta'], desc: 'Logiciel de facturation en ligne gratuit.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-indy-tiime-henrri' }] },
   { nom: 'Jedeclaremonmeuble', mono: 'J', couleur: '#B45309', cats: ['compta'], desc: 'Comptabilité et déclaration LMNP en ligne, avec accompagnement.', liens: [{ label: 'Site officiel', href: 'https://www.jedeclaremonmeuble.com', externe: true }] },
   { nom: 'Turno', mono: 'T', couleur: '#059669', cats: ['menage'], desc: 'Planification automatique des ménages et place de marché de prestataires.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-turnoverbnb-properly' }] },

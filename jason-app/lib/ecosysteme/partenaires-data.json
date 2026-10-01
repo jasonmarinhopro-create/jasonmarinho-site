@@ -90,17 +90,17 @@
         "direct"
       ],
       "badge": "affilie",
-      "offre": "Essai 7 jours + démo offerte",
+      "offre": "-15 % avec JASON15",
       "desc": "Ton propre site de réservation directe, relié à Airbnb, Booking.com et Vrbo, sans coder.",
       "liens": [
+        {
+          "label": "Voir le code",
+          "href": "https://jasonmarinho.com/code-promo-lodgify"
+        },
         {
           "label": "Démo gratuite",
           "href": "https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv",
           "sponsored": true
-        },
-        {
-          "label": "Mon avis",
-          "href": "https://jasonmarinho.com/lodgify-avis"
         }
       ]
     },
@@ -190,6 +190,28 @@
         {
           "label": "Voir l'offre",
           "href": "https://jasonmarinho.com/partenaires/legalplace"
+        }
+      ]
+    },
+    {
+      "nom": "Tiime",
+      "mono": "T",
+      "couleur": "#0EA5E9",
+      "cats": [
+        "compta"
+      ],
+      "badge": "affilie",
+      "offre": "Facturation gratuite",
+      "desc": "Devis, factures illimitées et facture électronique (plateforme agréée) gratuits. Compte pro en option.",
+      "liens": [
+        {
+          "label": "Essayer Tiime",
+          "href": "https://lb.affilae.com/r/?p=651c0d1e40e2d575f87b3b27&af=1127&lp=https%3A%2F%2Fwww.tiime.fr%2Ffacturation-electronique-2026%3Futm_source%3Dother%26utm_medium%3Daffiliation%26utm_campaign%3DJason%2520Marinho%26ae%3D1127%26program_id%3D651c0d1e40e2d575f87b3b27%26program_name%3DTiime",
+          "sponsored": true
+        },
+        {
+          "label": "Comparatif",
+          "href": "https://jasonmarinho.com/comparatif-indy-tiime-henrri"
         }
       ]
     },
@@ -456,21 +478,6 @@
         {
           "label": "Voir le comparatif",
           "href": "https://jasonmarinho.com/comparatif-ring-eufy-reolink"
-        }
-      ]
-    },
-    {
-      "nom": "Tiime",
-      "mono": "T",
-      "couleur": "#0EA5E9",
-      "cats": [
-        "compta"
-      ],
-      "desc": "Comptabilité et facturation en ligne, avec une offre gratuite.",
-      "liens": [
-        {
-          "label": "Voir le comparatif",
-          "href": "https://jasonmarinho.com/comparatif-indy-tiime-henrri"
         }
       ]
     },

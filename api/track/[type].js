@@ -33,12 +33,21 @@ const BOT_UA = /bot|crawler|spider|crawling|preview|scan|monitor|lighthouse|head
 // "app.lodgify.com" -> "lodgify", "www.smoobu.com" -> "smoobu"
 // Liens raccourcis fournis par un partenaire : le domaine ne dit pas qui c'est
 const SHORT_LINKS = { 'urlr.me/FEqNfy': 'indy' }
+// Programmes Affilae (identifiant p= des liens lb.affilae.com)
+const AFFILAE_PROGRAMS = { '651c0d1e40e2d575f87b3b27': 'tiime' }
 
 function partnerFromUrl(u) {
   try {
     const url = new URL(u)
     const short = SHORT_LINKS[url.hostname.toLowerCase() + url.pathname]
     if (short) return short
+    // Liens de redirection Affilae (lb.affilae.com/r/?p=<programme>&lp=<page>) :
+    // le partenaire est le programme, pas Affilae
+    if (url.hostname.toLowerCase() === 'lb.affilae.com') {
+      const prog = AFFILAE_PROGRAMS[url.searchParams.get('p') || '']
+      if (prog) return prog
+      try { return partnerFromUrl(url.searchParams.get('lp') || '') || 'affilae' } catch { return 'affilae' }
+    }
     const parts = url.hostname.toLowerCase().split('.')
     return parts.length >= 2 ? parts[parts.length - 2] : parts[0]
   } catch { return '' }
