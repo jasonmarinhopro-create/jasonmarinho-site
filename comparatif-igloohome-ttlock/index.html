@@ -106,7 +106,7 @@
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #F9FAFB;
+  --bg: #FDFCF9;
   --surface: #FFFFFF;
   --surface2: #F0FDF4;
   --border: #E5E7EB;
@@ -229,6 +229,19 @@ a:hover { text-decoration: underline; }
 .warn-card strong, .info-card strong { display: inline; margin: 0; }
 .warn-card > strong:first-child, .info-card > strong:first-child { display: block; margin-bottom: 6px; }
 @media (max-width: 640px) { .cost-table { display: block; overflow-x: auto; } }
+
+/* Même mise en page que comparatif-driing-airbnb-booking (01/10/2026) */
+body { padding-top: 64px; background: #FDFCF9; }
+.container { max-width: 980px; padding: 0 clamp(16px, 5vw, 60px); }
+.hero-band { background: linear-gradient(160deg, #001a11 0%, #003329 55%, #00463a 100%); padding: clamp(56px, 9vw, 96px) 0 clamp(48px, 7vw, 72px); }
+.hero-band .hero { text-align: left; }
+.hero-band .hero-sub { margin: 0 0 24px; max-width: 680px; }
+.hero-band .hero-meta { justify-content: flex-start; }
+.hero-band + main { padding-top: clamp(16px, 3vw, 32px); }
+.hero-band .crumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: rgba(255,255,255,.5); margin-bottom: 20px; }
+.hero-band .crumb a { color: rgba(255,255,255,.5); }
+.hero-band .crumb a:hover { color: rgba(255,255,255,.85); text-decoration: none; }
+.hero-band .crumb i { font-size: 10px; }
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Organization","@id":"https://jasonmarinho.com/#organization","name":"Jason Marinho","url":"https://jasonmarinho.com","logo":{"@type":"ImageObject","url":"https://jasonmarinho.com/logo.webp","width":1600,"height":1600},"sameAs":["https://instagram.com/jason_marinho","https://www.linkedin.com/in/jason-driing-location-sanscommission"]}
@@ -241,6 +254,7 @@ a:hover { text-decoration: underline; }
 
 <section class="hero-band"><div class="container">
   <div class="hero">
+    <nav class="crumb" aria-label="Fil d'ariane"><a href="/">Accueil</a><i class="ph ph-caret-right"></i><a href="/partenaires#comparatifs">Comparatifs</a><i class="ph ph-caret-right"></i><span>igloohome vs TTLock</span></nav>
     <div class="hero-badge">Comparatif 2026 · Serrures connectées LCD</div>
     <h1>igloohome vs TTLock :<br><span>quelle serrure pour vos check-in autonomes ?</span></h1>
     <p class="hero-sub">algoPIN offline vs gateway WiFi obligatoire, intégration Airbnb native vs middleware payant, hardware premium vs low-cost : le comparatif qui tranche pour la LCD.</p>

@@ -114,7 +114,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
 
   .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:clamp(56px,9vw,96px) clamp(16px,5vw,60px) clamp(48px,7vw,72px);position:relative;overflow:hidden}
   .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 70% 50%,rgba(255,213,107,.04) 0%,transparent 70%);pointer-events:none}
-  .hero-in{max-width:980px;margin:0 auto;position:relative}
+  .hero-in{max-width:860px;margin:0 auto;position:relative}
   .breadcrumb{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:24px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
   .breadcrumb a{color:rgba(255,255,255,.55);text-decoration:none}
   .breadcrumb a:hover{color:#fff}
@@ -178,6 +178,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
   .btn-p:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 8px 24px rgba(255,213,107,.25);text-decoration:none}
   .btn-ol{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.78);font-weight:500;font-size:14px;padding:11px 20px;border-radius:9px;text-decoration:none;transition:background .2s cubic-bezier(.4,0,.2,1),color .2s,transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
   .btn-ol:hover{border-color:rgba(255,255,255,.5);color:#fff;text-decoration:none}
+  @media(max-width:640px){main table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}}
 </style>
 <script defer src="/nav.js"></script>
 <script type="application/ld+json">
