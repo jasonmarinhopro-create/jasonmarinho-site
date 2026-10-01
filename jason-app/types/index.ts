@@ -66,6 +66,9 @@ export interface UserTemplateCustomization {
   template_id: string
   title: string
   content: string
+  /** Versions traduites par l'hôte (migration 121, absentes si non appliquée) */
+  content_en?: string | null
+  content_pt?: string | null
   notes?: string | null
   timing_label?: string | null
   created_at: string

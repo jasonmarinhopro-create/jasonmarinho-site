@@ -2,13 +2,16 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import OutilsSwitcher from '@/components/dashboard/OutilsSwitcher'
 import {
   Copy, Check, MagnifyingGlass, PencilSimple, X,
   CalendarCheck, House, SunHorizon, ArrowRight,
-  Star, CaretDown, CaretUp, PushPin, Sparkle, DotsThreeVertical, DotsSixVertical,
+  CaretDown, CaretUp, PushPin, Sparkle, DotsThreeVertical, DotsSixVertical,
+  Translate, CheckCircle, Circle, ArrowBendDownRight, ChatCircleText, Trash, Lightbulb, ListNumbers,
 } from '@phosphor-icons/react/dist/ssr'
+import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import type { Template, UserTemplateCustomization, UserPinnedTemplate } from '@/types'
 import type { LogementOption, NextContractInfo } from './page'
 import { infosPratiquesToFillMap } from '@/lib/logements/infos-pratiques'
@@ -37,7 +40,25 @@ const TIMING_LABELS: Record<TimingBucket, string> = {
   'apres-depart':   'Après le départ',
 }
 
-const TIMING_SHORTCUTS = ["Avant l'arrivée", 'Pendant le séjour', 'Après le départ']
+// Moments précis proposés sous « Quand l'envoyer ? » (texte libre à côté)
+const TIMING_SHORTCUTS = ['À la réservation', 'J-3', 'J-1', "Jour d'arrivée", 'Pendant le séjour', 'Veille du départ', 'J+1 après le départ']
+
+// ── Langues des messages (01/10/2026, demande de Jason) ─────────────────────
+// Français : ma version ou le modèle. Anglais : ma version, sinon la
+// traduction du modèle. Portugais : seulement si l'hôte l'a écrite.
+type Lang = 'fr' | 'en' | 'pt'
+const LANG_LABEL: Record<Lang, string> = { fr: 'FR', en: 'EN', pt: 'PT' }
+const LANG_NAME: Record<Lang, string> = { fr: 'Français', en: 'Anglais', pt: 'Portugais' }
+
+function contentFor(t: Template, c: UserTemplateCustomization | undefined, lang: Lang): string | null {
+  if (lang === 'en') return c?.content_en?.trim() || t.corps_en || null
+  if (lang === 'pt') return c?.content_pt?.trim() || null
+  return c?.content ?? t.content
+}
+
+function langsOf(t: Template, c: UserTemplateCustomization | undefined): Lang[] {
+  return (['fr', 'en', 'pt'] as Lang[]).filter(l => !!contentFor(t, c, l))
+}
 
 const CATEGORY_LABELS: Record<string, string> = {
   confirmation: 'Confirmation',
@@ -57,10 +78,15 @@ const CATEGORY_LABELS: Record<string, string> = {
 }
 
 
-const SECTION_CONFIG: Record<TimingBucket, { label: string; color: string; bg: string; border: string; icon: React.ElementType }> = {
-  'avant-arrivee':  { label: "Avant l'arrivée",   color: 'var(--accent-text)', bg: 'var(--accent-bg)',            border: 'var(--accent-border)',          icon: CalendarCheck },
-  'pendant-sejour': { label: 'Pendant le séjour',  color: '#60BEFF', bg: 'rgba(96,190,255,0.14)', border: 'rgba(96,190,255,0.28)',  icon: House },
-  'apres-depart':   { label: 'Après le départ',    color: '#F97583', bg: 'rgba(249,117,131,0.14)',border: 'rgba(249,117,131,0.28)', icon: SunHorizon },
+// Couleurs de la marque (DA 01/10/2026) : vert, ambre, brun. Plus de bleu
+// ni de rose saumon.
+const tint = (c: string, pct: number) => `color-mix(in srgb, ${c} ${pct}%, transparent)`
+const AMBER = '#B7791F'
+const BROWN = '#8B6D5E'
+const SECTION_CONFIG: Record<TimingBucket, { label: string; hint: string; color: string; bg: string; border: string; icon: React.ElementType }> = {
+  'avant-arrivee':  { label: "Avant l'arrivée",  hint: 'Confirmation, instructions, accès',       color: 'var(--accent-text)', bg: 'var(--accent-bg)', border: 'var(--accent-border)', icon: CalendarCheck },
+  'pendant-sejour': { label: 'Pendant le séjour', hint: 'Bienvenue, petits soucis, extras',        color: AMBER, bg: tint(AMBER, 12), border: tint(AMBER, 32), icon: House },
+  'apres-depart':   { label: 'Après le départ',   hint: 'Merci, avis, objets oubliés',              color: BROWN, bg: tint(BROWN, 12), border: tint(BROWN, 32), icon: SunHorizon },
 }
 
 const TIMING_ORDER: TimingBucket[] = ['avant-arrivee', 'pendant-sejour', 'apres-depart']
@@ -99,15 +125,15 @@ function categorizeVariable(v: string): FillCategory {
   return 'autre'
 }
 
-const CATEGORY_META: Record<FillCategory, { label: string; icon: string; color: string }> = {
-  logement: { label: 'Logement',         icon: '🏠', color: 'var(--accent-text)' },
-  acces:    { label: 'Accès',            icon: '🔑', color: '#A78BFA' },
-  reseaux:  { label: 'WiFi / Réseaux',   icon: '📶', color: '#93C5FD' },
-  voyageur: { label: 'Voyageur',         icon: '👤', color: '#F472B6' },
-  sejour:   { label: 'Dates / Séjour',   icon: '📅', color: '#5DC077' },
-  pratique: { label: 'Infos pratiques',  icon: '♻️', color: '#FB923C' },
-  reco:     { label: 'Recommandations',  icon: '📍', color: '#FCD34D' },
-  autre:    { label: 'Autre',            icon: '✍️', color: 'var(--text-2)' },
+const CATEGORY_META: Record<FillCategory, { label: string; color: string }> = {
+  logement: { label: 'Logement',         color: 'var(--accent-text)' },
+  acces:    { label: 'Accès',            color: AMBER },
+  reseaux:  { label: 'Wi-Fi',            color: 'var(--accent-text)' },
+  voyageur: { label: 'Voyageur',         color: BROWN },
+  sejour:   { label: 'Dates du séjour',  color: AMBER },
+  pratique: { label: 'Infos pratiques',  color: BROWN },
+  reco:     { label: 'Recommandations',  color: 'var(--accent-text)' },
+  autre:    { label: 'Autre',            color: 'var(--text-2)' },
 }
 
 // Auto-fill : matche un nom de variable normalisé contre les données
@@ -394,11 +420,15 @@ export default function GabaritsClient({
   const [modalContent, setModalContent]       = useState('')
   const [modalNotes, setModalNotes]           = useState('')
   const [modalTiming, setModalTiming]         = useState<string>('')
+  const [modalContentEn, setModalContentEn]   = useState('')
+  const [modalContentPt, setModalContentPt]   = useState('')
+  // Contenu à l'ouverture : sert à savoir s'il y a des modifications à perdre
+  const [modalSnapshot, setModalSnapshot]     = useState('')
   const [savingModal, setSavingModal]         = useState(false)
   const [deletingCustom, setDeletingCustom]   = useState(false)
 
   // ── Remplissage variables ─────────────────────────────────────────────────
-  const [fillTemplate, setFillTemplate]       = useState<{ t: Template; lang: 'fr' | 'en'; prefilled?: string; autoFilledCount?: number; autoFilledVars?: string[]; logementId?: string | null; logementNom?: string | null } | null>(null)
+  const [fillTemplate, setFillTemplate]       = useState<{ t: Template; lang: Lang; prefilled?: string; autoFilledCount?: number; autoFilledVars?: string[]; logementId?: string | null; logementNom?: string | null } | null>(null)
   const [fillValues, setFillValues]           = useState<Record<string, string>>({})
 
   // ── Pinned (liste ordonnée de messages par phase, par logement) ──────────
@@ -431,7 +461,7 @@ export default function GabaritsClient({
       logement_id: selectedLogementId, position: next.length - 1,
       updated_at: new Date().toISOString(),
     })
-    showToast(`📌 Ajouté à tes messages (n°${next.length})`)
+    showToast(`Ajouté à ta séquence (message ${next.length})`)
     void markStepIfNotYet('gabarit')
   }
 
@@ -477,6 +507,22 @@ export default function GabaritsClient({
     await persistPinnedOrder(bucket, next)
   }
 
+  // Changer un message de phase (ex. un message d'arrivée rangé par erreur
+  // dans « Pendant le séjour »)
+  async function moveToBucket(templateId: string, from: TimingBucket, to: TimingBucket) {
+    if (from === to) return
+    const fromList = pinned[from].filter(id => id !== templateId)
+    const toList = pinned[to].includes(templateId) ? pinned[to] : [...pinned[to], templateId]
+    const key = selectedLogementId ?? DEFAULT_KEY
+    setAllPinned(prev => ({
+      ...prev,
+      [key]: { ...(prev[key] ?? EMPTY_BUCKETS()), [from]: fromList, [to]: toList },
+    }))
+    await persistPinnedOrder(from, fromList)
+    await persistPinnedOrder(to, toList)
+    showToast(`Déplacé dans « ${SECTION_CONFIG[to].label} »`)
+  }
+
   // Cloner la séquence par défaut vers le logement sélectionné
   async function cloneDefaultToLogement() {
     if (!userId || !selectedLogementId) return
@@ -512,7 +558,7 @@ export default function GabaritsClient({
         'apres-depart':   [...(defaultPinned['apres-depart']   ?? [])],
       },
     }))
-    showToast('✨ Séquence par défaut copiée pour ce logement')
+    showToast('Séquence par défaut copiée pour ce logement')
   }
 
   function toggleExpanded(bucket: TimingBucket) {
@@ -567,15 +613,13 @@ export default function GabaritsClient({
     } else {
       await supabase.from('user_template_favorites').insert({ user_id: userId, template_id: templateId })
     }
-    showToast(isFav ? 'Retiré des favoris' : '⭐ Ajouté aux favoris')
+    showToast(isFav ? 'Retiré des favoris' : 'Ajouté aux favoris')
   }
 
   // ── Copier ────────────────────────────────────────────────────────────────
-  async function copyTemplate(t: Template, e: React.MouseEvent, lang: 'fr' | 'en' = 'fr') {
+  async function copyTemplate(t: Template, e: React.MouseEvent, lang: Lang = 'fr') {
     e.stopPropagation()
-    const raw = lang === 'en'
-      ? (t.corps_en ?? t.content)
-      : (customizations[t.id]?.content ?? t.content)
+    const raw = contentFor(t, customizations[t.id], lang) ?? (customizations[t.id]?.content ?? t.content)
 
     // Auto-fill avec les infos du logement + prochaine résa + profile hôte.
     // Évite à l'hôte de saisir ces vars à chaque copie.
@@ -619,7 +663,7 @@ export default function GabaritsClient({
     }
   }
 
-  async function doCopy(id: string, content: string, lang: 'fr' | 'en') {
+  async function doCopy(id: string, content: string, lang: Lang) {
     await navigator.clipboard.writeText(content)
     setCopied(id + lang)
     setTimeout(() => setCopied(null), 2000)
@@ -627,8 +671,6 @@ export default function GabaritsClient({
     const supabase = createClient()
     try { await supabase.rpc('increment_copy_count', { template_id: id }) } catch {}
 
-    // Onboarding : valide l'étape "Choisis un gabarit Facebook" si le gabarit copié l'est.
-    const t = templates.find(x => x.id === id)
   }
 
   async function copyWithFill() {
@@ -636,9 +678,7 @@ export default function GabaritsClient({
     const { t, lang, prefilled, logementId } = fillTemplate
     // Si prefilled est défini (auto-fill déjà appliqué), on part de là
     // pour éviter d'écraser les substitutions déjà faites.
-    const base = prefilled ?? (lang === 'en'
-      ? (t.corps_en ?? t.content)
-      : (customizations[t.id]?.content ?? t.content))
+    const base = prefilled ?? (contentFor(t, customizations[t.id], lang) ?? t.content)
     let filled = base
     for (const [variable, value] of Object.entries(fillValues)) {
       filled = filled.split(variable).join(value || variable)
@@ -662,7 +702,7 @@ export default function GabaritsClient({
         localStorage.setItem(memoryKey, JSON.stringify(updated))
         if (savedCount > 0) {
           // Toast après le toast "Copié" pour ne pas le masquer
-          setTimeout(() => showToast(`💾 ${savedCount} info${savedCount > 1 ? 's' : ''} mémorisée${savedCount > 1 ? 's' : ''} pour ce logement`), 1500)
+          setTimeout(() => showToast(`${savedCount} info${savedCount > 1 ? 's' : ''} mémorisée${savedCount > 1 ? 's' : ''} pour ce logement`), 1500)
         }
       } catch {}
     }
@@ -677,32 +717,60 @@ export default function GabaritsClient({
     const existing = customizations[t.id]
     const bucket = getTimingBucket(t)
     const defaultTiming = existing?.timing_label ?? (bucket ? TIMING_LABELS[bucket] : '') ?? ''
+    const title = existing?.title ?? t.title
+    const content = existing?.content ?? t.content
+    const en = existing?.content_en ?? t.corps_en ?? ''
+    const pt = existing?.content_pt ?? ''
+    const notes = existing?.notes ?? ''
     setEditingTemplate(t)
-    setModalTitle(existing?.title ?? t.title)
-    setModalContent(existing?.content ?? t.content)
-    setModalNotes(existing?.notes ?? '')
+    setModalTitle(title)
+    setModalContent(content)
+    setModalContentEn(en)
+    setModalContentPt(pt)
+    setModalNotes(notes)
     setModalTiming(defaultTiming)
+    setModalSnapshot(JSON.stringify([title, content, en, pt, notes, defaultTiming]))
+  }
+
+  // Fermer la fenêtre : jamais au clic à côté (Jason perdait sa saisie),
+  // et confirmation si des modifications ne sont pas enregistrées.
+  async function requestCloseModal() {
+    const now = JSON.stringify([modalTitle, modalContent, modalContentEn, modalContentPt, modalNotes, modalTiming])
+    if (now !== modalSnapshot && !(await ask({ message: 'Tes modifications ne sont pas enregistrées. Fermer quand même ?', confirmLabel: 'Fermer sans enregistrer' }))) return
+    setEditingTemplate(null)
   }
 
   async function saveCustomization() {
     if (!editingTemplate || !userId) return
     setSavingModal(true)
     const supabase = createClient()
-    const payload = {
-      user_id: userId, template_id: editingTemplate.id,
+    // Anglais identique à la traduction du modèle : rien à stocker
+    const en = modalContentEn.trim()
+    const pt = modalContentPt.trim()
+    const fields = {
       title: modalTitle.trim() || editingTemplate.title,
       content: modalContent.trim() || editingTemplate.content,
       notes: modalNotes.trim() || null,
       timing_label: modalTiming || null,
     }
+    const langs = {
+      content_en: en && en !== (editingTemplate.corps_en ?? '').trim() ? en : null,
+      content_pt: pt || null,
+    }
     const existing = customizations[editingTemplate.id]
-    let result
-    if (existing) {
-      result = await supabase.from('user_template_customizations')
-        .update({ title: payload.title, content: payload.content, notes: payload.notes, timing_label: payload.timing_label })
-        .eq('id', existing.id).select().single()
-    } else {
-      result = await supabase.from('user_template_customizations').insert(payload).select().single()
+    const write = (withLangs: boolean) => {
+      const values = withLangs ? { ...fields, ...langs } : fields
+      return existing
+        ? supabase.from('user_template_customizations').update(values).eq('id', existing.id).select().single()
+        : supabase.from('user_template_customizations').insert({ user_id: userId, template_id: editingTemplate.id, ...values }).select().single()
+    }
+    let result = await write(true)
+    // Migration 121 pas encore appliquée : on enregistre au moins le français
+    if (result.error?.code === '42703' || result.error?.code === 'PGRST204') {
+      result = await write(false)
+      if (result.data && (langs.content_en || langs.content_pt)) {
+        setTimeout(() => showToast('Versions anglaise et portugaise pas encore disponibles : mise à jour de la base à faire'), 1800)
+      }
     }
     if (result.data) {
       setCustomizations(prev => ({ ...prev, [editingTemplate.id]: result.data as UserTemplateCustomization }))
@@ -710,7 +778,7 @@ export default function GabaritsClient({
         setFavorites(prev => new Set([...prev, editingTemplate.id]))
         await supabase.from('user_template_favorites').insert({ user_id: userId, template_id: editingTemplate.id })
       }
-      showToast('Version personnalisée enregistrée !')
+      showToast('Ta version est enregistrée')
       void markStepIfNotYet('gabarit')
     }
     setSavingModal(false)
@@ -734,6 +802,8 @@ export default function GabaritsClient({
     if (!editingTemplate) return
     setModalTitle(editingTemplate.title)
     setModalContent(editingTemplate.content)
+    setModalContentEn(editingTemplate.corps_en ?? '')
+    setModalContentPt('')
     setModalNotes('')
     const b = getTimingBucket(editingTemplate)
     setModalTiming(b ? TIMING_LABELS[b] : '')
@@ -761,25 +831,26 @@ export default function GabaritsClient({
   }, {} as Record<TimingBucket, Template[]>)
 
 
+  const currentLogement = selectedLogementId ? (logements.find(l => l.id === selectedLogementId) ?? null) : null
+  const nextContract = currentLogement ? (nextContractByLogement[currentLogement.nom] ?? null) : null
+  const fillStatus: Array<[string, boolean]> = currentLogement ? [
+    ['Adresse', !!currentLogement.adresse],
+    ['Wi-Fi (réseau et mot de passe)', !!(currentLogement.wifi_nom && currentLogement.wifi_mdp)],
+    ["Code d'accès", !!currentLogement.code_acces],
+    ["Heures d'arrivée et de départ", !!(currentLogement.heure_arrivee && currentLogement.heure_depart)],
+    ['Prochain voyageur (prénom, dates)', !!nextContract],
+  ] : []
+
   const isMesMessagesView = activeFilter === 'mes-messages'
   const isSingleSection   = !['mes-messages', 'all', 'favorites'].includes(activeFilter)
 
   return (
     <>
       {dialog}
-      <style dangerouslySetInnerHTML={{ __html: `
-        /* Gabarits — labels Épingler/Copier cachés sur très petit écran pour
-           garder le header compact à 1 ligne (icônes seules) */
-        .gab-md-text { display: inline; }
-        @media (max-width: 480px) {
-          .gab-md-text { display: none; }
-        }
-        /* Hover des items du kebab menu */
-        [role="menuitem"]:hover { background: var(--bg-2, rgba(255,255,255,.04)) !important; }
-      ` }} />
+      <style dangerouslySetInnerHTML={{ __html: GAB_CSS }} />
       {toast && (
-        <div style={s.toast}>
-          <Check size={13} color="#34D399" weight="bold" />
+        <div style={s.toast} role="status">
+          <Check size={13} color="#63D683" weight="bold" />
           {toast}
         </div>
       )}
@@ -788,96 +859,102 @@ export default function GabaritsClient({
 
         <OutilsSwitcher current="messages" />
 
-        <div style={s.intro} className="fade-up">
-          <h2 style={s.pageTitle}>
-            Ta <em style={{ color: 'var(--accent-text)', fontStyle: 'italic' }}>séquence</em> de messages
-          </h2>
-          <p style={s.pageDesc}>
-            Construis ta routine pour chaque phase (avant l&apos;arrivée, pendant, après).
-            Ajoute autant de messages que tu veux, mets-les dans l&apos;ordre, copie-les en un clic.
-          </p>
-        </div>
-
-        {/* Sélecteur de logement — chaque logement peut avoir sa propre séquence.
-            Masqué s'il n'y a qu'UN seul logement : pas de choix à faire (déjà
-            auto-sélectionné plus haut), afficher le sélecteur serait juste du
-            bruit visuel pour un hôte mono-logement. */}
-        {logements.length > 1 && (
-          <div style={s.logementSelector} className="fade-up d1">
-            <div style={s.logementSelectorLabel}>
-              <House size={14} weight="duotone" color="var(--accent-text)" />
-              <span>Séquence pour&nbsp;:</span>
+        <HubHero
+          eyebrowIcon={<ChatCircleText size={14} weight="bold" />}
+          eyebrow="Modèles de messages"
+          title={<>Tes messages voyageurs, <HeroEm>prêts à copier</HeroEm></>}
+          desc={<>Une séquence par logement : ce que tu envoies avant l&apos;arrivée, pendant le séjour et après le départ. L&apos;adresse, le Wi-Fi et le code d&apos;accès se remplissent tout seuls depuis ta fiche logement.</>}
+          steps={[['Choisis', 'ton logement'], ['Range', 'tes messages par moment'], ['Copie', 'et colle dans Airbnb, Booking ou WhatsApp']]}
+          aside={
+            <div style={{ ...heroCard, minWidth: 'min(100%, 280px)' }}>
+              <div style={s.asideLabel}>Ta séquence</div>
+              <div style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '19px', color: 'var(--text)', lineHeight: 1.25 }}>
+                {currentLogement?.nom ?? 'Tous tes logements'}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
+                {TIMING_ORDER.map(b => {
+                  const cfg = SECTION_CONFIG[b]
+                  const n = pinned[b].length
+                  return (
+                    <button key={b} type="button" onClick={() => { setActiveFilter('mes-messages'); setFocusBucket(b) }} style={s.asideRow}>
+                      <span style={{ width: 8, height: 8, borderRadius: 4, background: cfg.color, flexShrink: 0 }} />
+                      <span style={{ flex: 1, textAlign: 'left' }}>{cfg.label}</span>
+                      <strong style={{ color: n ? 'var(--text)' : 'var(--text-muted)' }}>{n ? `${n} message${n > 1 ? 's' : ''}` : 'suggestion'}</strong>
+                    </button>
+                  )
+                })}
+              </div>
+              {nextContract && (
+                <div style={s.asideNext}>
+                  Prochaine arrivée : <strong style={{ color: 'var(--text)' }}>{nextContract.locataire_prenom ?? 'ton voyageur'}</strong>, le {fmtDateFr(nextContract.date_arrivee)}
+                </div>
+              )}
             </div>
-            <div style={s.logementChips}>
+          }
+        />
+
+        <div className="gab-layout">
+        <div className="gab-main">
+
+        {/* Barre : logement + vue */}
+        <div style={s.toolbar} className="fade-up d1">
+          {logements.length > 1 && (
+            <div style={s.logementChips} role="group" aria-label="Logement">
               <button
+                type="button"
                 onClick={() => setSelectedLogementId(null)}
-                style={{
-                  ...s.logementChip,
-                  ...(selectedLogementId === null ? s.logementChipActive : {}),
-                }}
+                style={{ ...s.logementChip, ...(selectedLogementId === null ? s.logementChipActive : {}) }}
               >
-                ✨ Par défaut
+                Par défaut
               </button>
               {logements.map(l => (
                 <button
+                  type="button"
                   key={l.id}
                   onClick={() => setSelectedLogementId(l.id)}
-                  style={{
-                    ...s.logementChip,
-                    ...(selectedLogementId === l.id ? s.logementChipActive : {}),
-                  }}
+                  style={{ ...s.logementChip, ...(selectedLogementId === l.id ? s.logementChipActive : {}) }}
                   title={l.nom}
                 >
                   {l.nom}
                 </button>
               ))}
             </div>
+          )}
+          <div style={s.segmented} role="tablist" aria-label="Affichage">
+            {([
+              { key: 'mes-messages', label: 'Ma séquence', Icon: ListNumbers },
+              { key: 'all',          label: 'Exemples',    Icon: Lightbulb },
+            ] as { key: FilterKey; label: string; Icon: React.ElementType }[]).map(f => {
+              const on = activeFilter === f.key || (f.key === 'all' && isSingleSection)
+              return (
+                <button
+                  key={f.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={on}
+                  onClick={() => { setActiveFilter(f.key); setSearch('') }}
+                  style={{ ...s.segBtn, ...(on ? s.segBtnOn : {}) }}
+                >
+                  <f.Icon size={14} weight={on ? 'bold' : 'regular'} /> {f.label}
+                </button>
+              )
+            })}
           </div>
-        )}
-
-        {/* Navigation */}
-        <div style={s.nav} className="fade-up d1">
-          {([
-            { key: 'mes-messages', label: '🌟 Ma séquence', bg: 'var(--accent-bg)', borderColor: 'var(--accent-border)' },
-            { key: 'all',          label: '💡 Inspirations' },
-          ] as { key: FilterKey; label: string; count?: number; color?: string; bg?: string; borderColor?: string }[]).map(f => (
-            <button
-              key={f.key}
-              onClick={() => { setActiveFilter(f.key); setSearch('') }}
-              style={{
-                ...s.navBtn,
-                ...(activeFilter === f.key ? {
-                  background: f.bg ?? (f.color ? `${f.color}14` : 'var(--accent-bg)'),
-                  border: `1px solid ${f.borderColor ?? (f.color ? `${f.color}35` : 'var(--accent-border)')}`,
-                  color: f.color ?? 'var(--accent-text)',
-                } : {}),
-              }}
-            >
-              {f.label}
-              {f.count !== undefined && f.count > 0 && (
-                <span style={{
-                  ...s.navCount,
-                  background: f.bg ?? (f.color ? `${f.color}20` : 'var(--accent-bg-2)'),
-                  color: f.color ?? 'var(--accent-text)',
-                }}>{f.count}</span>
-              )}
-            </button>
-          ))}
         </div>
 
-        {/* Recherche — masquée sur "Mes 3 messages" */}
+        {/* Recherche : seulement dans les exemples */}
         {!isMesMessagesView && (
           <div style={s.searchWrap} className="fade-up d2">
             <MagnifyingGlass size={15} color="var(--text-3)" />
             <input
               type="text"
-              placeholder="Chercher un gabarit…"
+              placeholder="Chercher un exemple (Wi-Fi, avis, départ…)"
               value={search}
               onChange={e => setSearch(e.target.value)}
               style={s.searchInput}
             />
             {search && (
-              <button onClick={() => setSearch('')} style={s.clearSearch}><X size={14} /></button>
+              <button onClick={() => setSearch('')} style={s.clearSearch} aria-label="Effacer"><X size={14} /></button>
             )}
           </div>
         )}
@@ -901,7 +978,7 @@ export default function GabaritsClient({
                 </div>
               </div>
               <button onClick={cloneDefaultToLogement} style={s.cloneBtn}>
-                ✨ Copier la séquence par défaut
+                Copier la séquence par défaut
               </button>
             </div>
           )
@@ -951,10 +1028,10 @@ export default function GabaritsClient({
                       <div style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: '17px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.2, letterSpacing: '-0.01em' }}>
                         {cfg.label}
                       </div>
-                      <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
                         {hasPins
-                          ? `${pinnedList.length} message${pinnedList.length > 1 ? 's' : ''} dans ta séquence · réordonne avec ↑ ↓`
-                          : 'Suggestion par défaut · ajoute tes propres messages quand tu veux'}
+                          ? `${pinnedList.length} message${pinnedList.length > 1 ? 's' : ''} · glisse pour changer l'ordre`
+                          : `${cfg.hint} · une suggestion en attendant tes messages`}
                       </div>
                     </div>
                   </div>
@@ -1013,6 +1090,7 @@ export default function GabaritsClient({
                             onRemove={hasPins ? () => removePin(t.id, bucket) : undefined}
                             onMoveUp={hasPins && idx > 0 ? () => movePin(bucket, t.id, -1) : undefined}
                             onMoveDown={hasPins && idx < pinnedList.length - 1 ? () => movePin(bucket, t.id, 1) : undefined}
+                            onMoveTo={hasPins ? (to) => moveToBucket(t.id, bucket, to) : undefined}
                             isExpanded={expandedHeroCards.has(t.id)}
                             onToggleExpand={() => toggleHeroExpand(t.id)}
                             isDraggable={hasPins}
@@ -1031,7 +1109,7 @@ export default function GabaritsClient({
                           ...s.seeMoreBtn,
                           marginTop: '14px',
                           color: cfg.color,
-                          borderColor: `${cfg.color}30`,
+                          border: `1px solid ${cfg.border}`,
                           background: isExpanded ? cfg.bg : 'transparent',
                         }}
                       >
@@ -1039,7 +1117,7 @@ export default function GabaritsClient({
                         <span>
                           {isExpanded
                             ? 'Masquer les exemples'
-                            : `💡 ${hasPins ? 'Ajouter un autre message' : 'Voir d\'autres exemples'} (${inspirations.length})`}
+                            : `${hasPins ? 'Ajouter un autre message' : 'Voir d\'autres exemples'} (${inspirations.length})`}
                         </span>
                       </button>
 
@@ -1124,12 +1202,52 @@ export default function GabaritsClient({
             )}
           </div>
         )}
+        </div>
+
+        {/* Colonne de droite : ce qui se remplit tout seul + conseils */}
+        <aside className="gab-side">
+          <div style={s.sideCard}>
+            <div style={s.sideTitle}><Sparkle size={15} weight="fill" color="var(--accent-text)" /> Rempli tout seul</div>
+            {currentLogement ? (
+              <>
+                <p style={s.sideText}>Au moment de copier, ces infos de <strong style={{ color: 'var(--text)' }}>{currentLogement.nom}</strong> remplacent les mots entre crochets.</p>
+                <ul style={s.checkList}>
+                  {fillStatus.map(([label, ok]) => (
+                    <li key={label} style={s.checkItem}>
+                      {ok
+                        ? <CheckCircle size={16} weight="fill" color="var(--accent-text)" />
+                        : <Circle size={16} color="var(--text-muted)" />}
+                      <span style={{ color: ok ? 'var(--text)' : 'var(--text-muted)' }}>{label}</span>
+                    </li>
+                  ))}
+                </ul>
+                {fillStatus.some(([, ok]) => !ok) && (
+                  <Link href={`/dashboard/logements/${currentLogement.id}#modifier-accueil`} style={s.sideLink}>
+                    Compléter ma fiche logement <ArrowRight size={13} />
+                  </Link>
+                )}
+              </>
+            ) : (
+              <p style={s.sideText}>Choisis un logement au-dessus : son adresse, son Wi-Fi, son code d&apos;accès et ses horaires se mettront tout seuls dans tes messages.</p>
+            )}
+          </div>
+          <div style={s.sideCard}>
+            <div style={s.sideTitle}><Lightbulb size={15} weight="fill" color={AMBER} /> Bon à savoir</div>
+            <ul style={s.tipList}>
+              <li>Les mots entre crochets, comme [Prénom], sont à compléter : l&apos;app te les demande quand tu copies.</li>
+              <li>Ton message existe en anglais ou en portugais ? Ouvre « Personnaliser » puis les onglets de langue.</li>
+              <li>Un message mal rangé ? Menu « ⋮ » puis « Déplacer vers ».</li>
+              <li>Ce que tu complètes à la main est gardé pour ce logement, sur cet appareil.</li>
+            </ul>
+          </div>
+        </aside>
+        </div>
       </div>
 
       {/* Modal remplissage variables */}
       {fillTemplate && (
-        <div style={s.overlay} onClick={() => setFillTemplate(null)}>
-          <div style={{ ...s.modal, maxWidth: '500px' }} onClick={e => e.stopPropagation()}>
+        <div style={s.overlay} role="dialog" aria-modal="true">
+          <div style={{ ...s.modal, maxWidth: '520px' }}>
             <div style={s.modalHeader}>
               <div>
                 <h3 style={s.modalTitle}>Plus que {Object.keys(fillValues).length} info{Object.keys(fillValues).length > 1 ? 's' : ''} à compléter</h3>
@@ -1198,12 +1316,11 @@ export default function GabaritsClient({
                           textTransform: 'uppercase' as const, color: meta.color,
                           padding: '4px 0',
                         }}>
-                          <span aria-hidden="true">{meta.icon}</span>
                           {meta.label}
                           <span style={{
                             fontSize: '10px', fontWeight: 700,
                             padding: '1px 6px', borderRadius: '999px',
-                            background: meta.color + '20',
+                            background: tint(meta.color, 14),
                           }}>{groups[cat].length}</span>
                         </div>
                         {groups[cat].map(variable => (
@@ -1244,7 +1361,7 @@ export default function GabaritsClient({
                   borderRadius: '10px',
                   fontSize: '11.5px', color: 'var(--text-3)', lineHeight: 1.5,
                 }}>
-                  💾 Tes infos seront <strong style={{ color: 'var(--text-2)' }}>mémorisées pour {fillTemplate.logementNom}</strong> : la prochaine copie pré-remplit automatiquement.
+                  Tes infos seront <strong style={{ color: 'var(--text-2)' }}>mémorisées pour {fillTemplate.logementNom}</strong> : la prochaine copie pré-remplit automatiquement.
                 </div>
               )}
             </div>
@@ -1262,12 +1379,14 @@ export default function GabaritsClient({
       {editingTemplate && (
         <CustomizeModal
           template={editingTemplate} existing={customizations[editingTemplate.id]}
-          title={modalTitle} content={modalContent} notes={modalNotes} timing={modalTiming}
+          title={modalTitle} content={modalContent} contentEn={modalContentEn} contentPt={modalContentPt}
+          notes={modalNotes} timing={modalTiming}
           saving={savingModal} deleting={deletingCustom}
           onTitleChange={setModalTitle} onContentChange={setModalContent}
+          onContentEnChange={setModalContentEn} onContentPtChange={setModalContentPt}
           onNotesChange={setModalNotes} onTimingChange={setModalTiming}
           onSave={saveCustomization} onDelete={deleteCustomization}
-          onReset={resetModal} onClose={() => setEditingTemplate(null)}
+          onReset={resetModal} onClose={requestCloseModal}
         />
       )}
     </>
@@ -1279,10 +1398,10 @@ export default function GabaritsClient({
 function SectionHeader({ Icon, label, color, bg, border, count }: {
   Icon: React.ElementType; label: string; color: string; bg?: string; border?: string; count: number
 }) {
-  const iconBg  = bg     ?? `${color}18`
-  const iconBdr = border ?? `${color}30`
-  const cntBg   = bg     ?? `${color}14`
-  const cntBdr  = border ?? `${color}25`
+  const iconBg  = bg     ?? tint(color, 12)
+  const iconBdr = border ?? tint(color, 30)
+  const cntBg   = bg     ?? tint(color, 10)
+  const cntBdr  = border ?? tint(color, 25)
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
       <div style={{
@@ -1315,12 +1434,13 @@ interface HeroCardProps {
   totalPinned?:  number
   customization: UserTemplateCustomization | undefined
   copied:        string | null
-  onCopy:        (t: Template, e: React.MouseEvent, lang: 'fr' | 'en') => void
+  onCopy:        (t: Template, e: React.MouseEvent, lang: Lang) => void
   onCustomize:   (t: Template) => void
   onAdd?:        () => void
   onRemove?:     () => void
   onMoveUp?:     () => void
   onMoveDown?:   () => void
+  onMoveTo?:     (to: TimingBucket) => void
   isExpanded:    boolean
   onToggleExpand: () => void
   // Affiche la poignée de drag (≡) — pour le drag-and-drop activé sur les épinglés
@@ -1329,26 +1449,25 @@ interface HeroCardProps {
 
 function CompactHeroCard({
   template: t, bucket, isPinned, position, totalPinned, customization, copied,
-  onCopy, onCustomize, onAdd, onRemove, onMoveUp, onMoveDown, isExpanded, onToggleExpand,
+  onCopy, onCustomize, onAdd, onRemove, onMoveUp, onMoveDown, onMoveTo, isExpanded, onToggleExpand,
   isDraggable,
 }: HeroCardProps) {
-  const [lang, setLang] = useState<'fr' | 'en'>('fr')
+  const [lang, setLang] = useState<Lang>('fr')
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  const hasEN = !!t.corps_en
+  const langs = langsOf(t, customization)
   const cfg = SECTION_CONFIG[bucket]
   const copiedKey = t.id + lang
   const isCopied = copied === copiedKey
 
-  const displayContent = lang === 'en'
-    ? (t.corps_en ?? t.content)
-    : (customization?.content ?? t.content)
+  const displayContent = contentFor(t, customization, lang) ?? (customization?.content ?? t.content)
   const displayTitle = customization?.title ?? t.title
   const variables = extractVariables(displayContent)
 
+  // Aperçu : les premières lignes à la suite (avant : seulement « Bonjour, »)
   const previewText = (() => {
-    const line = displayContent.split('\n').find(l => l.trim()) ?? ''
-    return line.length > 130 ? line.slice(0, 130) + '…' : line
+    const flat = displayContent.split('\n').map(l => l.trim()).filter(Boolean).join(' ')
+    return flat.length > 220 ? flat.slice(0, 220) + '…' : flat
   })()
 
   // Fermer le menu si clic à l'extérieur
@@ -1363,7 +1482,7 @@ function CompactHeroCard({
     return () => document.removeEventListener('mousedown', onClickOutside)
   }, [menuOpen])
 
-  const hasMenuActions = !!(onMoveUp || onMoveDown || onRemove)
+  const hasMenuActions = !!(onMoveUp || onMoveDown || onRemove || onMoveTo)
 
   return (
     <div style={{
@@ -1444,12 +1563,12 @@ function CompactHeroCard({
             {displayTitle}
           </span>
           {customization && (
-            <span title="Personnalisé" style={{
-              flexShrink: 0, fontSize: '10px', fontWeight: 700, letterSpacing: '0.3px',
-              padding: '2px 7px', borderRadius: '999px',
-              background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)',
-              color: 'var(--accent-text)',
-            }}>PERSO</span>
+            <span title="Ta version personnalisée" style={s.persoChip}>Ma version</span>
+          )}
+          {langs.length > 1 && (
+            <span title={langs.map(l => LANG_NAME[l]).join(', ')} style={s.langCount}>
+              <Translate size={11} /> {langs.map(l => LANG_LABEL[l]).join(' · ')}
+            </span>
           )}
         </span>
 
@@ -1480,7 +1599,7 @@ function CompactHeroCard({
               fontFamily: 'var(--font-outfit), sans-serif',
               transition: 'all 0.15s',
               ...(isCopied
-                ? { background: 'rgba(52,211,153,0.10)', border: '1px solid rgba(52,211,153,0.30)', color: 'var(--success-1)' }
+                ? { background: 'var(--accent-text)', border: '1px solid var(--accent-text)', color: 'var(--bg)' }
                 : { background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' }
               ),
             }}
@@ -1526,9 +1645,19 @@ function CompactHeroCard({
                   <button role="menuitem" onClick={() => { onCustomize(t); setMenuOpen(false) }} style={s.menuItem}>
                     <PencilSimple size={13} /> {customization ? 'Modifier ma version' : 'Personnaliser'}
                   </button>
+                  {onMoveTo && (
+                    <>
+                      <div style={s.menuSep}>Déplacer vers</div>
+                      {TIMING_ORDER.filter(b => b !== bucket).map(b => (
+                        <button key={b} role="menuitem" onClick={() => { onMoveTo(b); setMenuOpen(false) }} style={s.menuItem}>
+                          <ArrowBendDownRight size={13} /> {SECTION_CONFIG[b].label}
+                        </button>
+                      ))}
+                    </>
+                  )}
                   {onRemove && (
-                    <button role="menuitem" onClick={() => { onRemove(); setMenuOpen(false) }} style={{ ...s.menuItem, color: '#fb7185' }}>
-                      <X size={13} /> Retirer
+                    <button role="menuitem" onClick={() => { onRemove(); setMenuOpen(false) }} style={{ ...s.menuItem, color: 'var(--danger)', borderTop: '1px solid var(--border)', borderRadius: 0, marginTop: 2 }}>
+                      <Trash size={13} /> Retirer de ma séquence
                     </button>
                   )}
                 </div>
@@ -1582,18 +1711,18 @@ function CompactHeroCard({
             </div>
           )}
           <pre style={{ ...s.heroContent, marginBottom: '12px' }}>{displayContent}</pre>
-          {customization?.notes && lang === 'fr' && (
+          {(customization?.notes || customization?.timing_label) && (
             <div style={{ ...s.notePreview, marginBottom: '12px' }}>
-              <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                📎 {customization.notes}
-              </span>
+              {customization?.timing_label && <span style={s.timingTag}>{customization.timing_label}</span>}
+              {customization?.notes && <span style={{ fontSize: '12.5px', color: 'var(--text-2)' }}>{customization.notes}</span>}
             </div>
           )}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' as const }}>
-            {hasEN && (
-              <div style={s.langToggle}>
-                <button onClick={() => setLang('fr')} style={{ ...s.langBtn, ...(lang === 'fr' ? s.langBtnActive : {}) }}>FR</button>
-                <button onClick={() => setLang('en')} style={{ ...s.langBtn, ...(lang === 'en' ? s.langBtnActiveEN : {}) }}>EN</button>
+            {langs.length > 1 && (
+              <div style={s.langToggle} role="group" aria-label="Langue du message">
+                {langs.map(l => (
+                  <button key={l} type="button" onClick={() => setLang(l)} title={LANG_NAME[l]} style={{ ...s.langBtn, ...(lang === l ? s.langBtnActive : {}) }}>{LANG_LABEL[l]}</button>
+                ))}
               </div>
             )}
             <button onClick={() => onCustomize(t)} style={s.heroEditBtn}>
@@ -1608,7 +1737,7 @@ function CompactHeroCard({
             >
               {isCopied
                 ? <><Check size={15} weight="bold" /> Copié !</>
-                : <><Copy size={15} weight="bold" /> {lang === 'en' ? 'Copy in English' : 'Copier mon message'}</>}
+                : <><Copy size={15} weight="bold" /> {lang === 'fr' ? 'Copier mon message' : `Copier en ${LANG_NAME[lang].toLowerCase()}`}</>}
             </button>
           </div>
         </div>
@@ -1625,24 +1754,23 @@ interface TemplateCardProps {
   copied:        string | null
   bucket:        TimingBucket | null
   isPinned?:     boolean
-  onCopy:        (t: Template, e: React.MouseEvent, lang: 'fr' | 'en') => void
+  onCopy:        (t: Template, e: React.MouseEvent, lang: Lang) => void
   onCustomize:   (t: Template) => void
   onPin?:        () => void
 }
 
 function TemplateCard({ template: t, customization, copied, bucket, isPinned, onCopy, onCustomize, onPin }: TemplateCardProps) {
-  const [lang, setLang] = useState<'fr' | 'en'>('fr')
-  const hasEN = !!t.corps_en
+  const [lang, setLang] = useState<Lang>('fr')
+  const langs = langsOf(t, customization)
+  const hasEN = langs.length > 1
   const cfg         = bucket ? SECTION_CONFIG[bucket] : null
   const accentColor = cfg ? cfg.color : 'var(--text-muted)'
-  const accentBg    = cfg ? cfg.bg    : 'rgba(255,255,255,0.05)'
-  const accentBdr   = cfg ? cfg.border : 'rgba(255,255,255,0.1)'
+  const accentBg    = cfg ? cfg.bg    : 'var(--surface-2)'
+  const accentBdr   = cfg ? cfg.border : 'var(--border)'
   const copiedKey = t.id + lang
   const isCopied = copied === copiedKey
 
-  const displayContent = lang === 'en'
-    ? (t.corps_en ?? t.content)
-    : (customization?.content ?? t.content)
+  const displayContent = contentFor(t, customization, lang) ?? (customization?.content ?? t.content)
   const displayTitle = customization?.title ?? t.title
   const categoryLabel = CATEGORY_LABELS[t.category] ?? t.category
 
@@ -1655,7 +1783,7 @@ function TemplateCard({ template: t, customization, copied, bucket, isPinned, on
             {categoryLabel}
           </span>
           {customization && (
-            <span style={s.customChip}>Personnalisé</span>
+            <span style={s.persoChip}>Ma version</span>
           )}
         </div>
         <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
@@ -1688,39 +1816,32 @@ function TemplateCard({ template: t, customization, copied, bucket, isPinned, on
       </div>
 
       {/* Note privée */}
-      {customization?.notes && lang === 'fr' && (
+      {customization?.notes && (
         <div style={s.notePreview}>
-          <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-            📎 {customization.notes}
-          </span>
+          <span style={{ fontSize: '12px', color: 'var(--text-2)' }}>{customization.notes}</span>
         </div>
       )}
 
       {/* Footer : copier */}
       <div style={s.cardFooter}>
         {hasEN && (
-          <div style={s.langToggle}>
-            <button
-              onClick={() => setLang('fr')}
-              style={{ ...s.langBtn, ...(lang === 'fr' ? s.langBtnActive : {}) }}
-            >FR</button>
-            <button
-              onClick={() => setLang('en')}
-              style={{ ...s.langBtn, ...(lang === 'en' ? s.langBtnActiveEN : {}) }}
-            >EN</button>
+          <div style={s.langToggle} role="group" aria-label="Langue du message">
+            {langs.map(l => (
+              <button key={l} type="button" onClick={() => setLang(l)} title={LANG_NAME[l]} style={{ ...s.langBtn, ...(lang === l ? s.langBtnActive : {}) }}>{LANG_LABEL[l]}</button>
+            ))}
           </div>
         )}
         <button
           onClick={e => onCopy(t, e, lang)}
           style={{
             ...s.copyBtn,
-            ...(isCopied ? s.copyBtnDone : { borderColor: `${accentColor}35`, color: accentColor }),
+            ...(isCopied ? s.copyBtnDone : { border: `1px solid ${accentBdr}`, color: accentColor }),
             flex: hasEN ? undefined : 1,
           }}
         >
           {isCopied
             ? <><Check size={14} weight="bold" /> Copié !</>
-            : <><Copy size={14} /> {lang === 'en' ? 'Copy in English' : 'Copier le message'}</>
+            : <><Copy size={14} /> {lang === 'fr' ? 'Copier le message' : `Copier en ${LANG_NAME[lang].toLowerCase()}`}</>
           }
         </button>
       </div>
@@ -1728,93 +1849,147 @@ function TemplateCard({ template: t, customization, copied, bucket, isPinned, on
   )
 }
 
-// ── Modal personnalisation ────────────────────────────────────────────────────
+// ── Modal personnalisation (DA 01/10/2026) ────────────────────────────────────
+// Ne se ferme plus au clic à côté (Jason perdait sa saisie) : croix, Annuler
+// ou Échap, avec confirmation s'il reste des modifications. Onglets FR / EN /
+// PT pour écrire le même message dans plusieurs langues.
 
 interface CustomizeModalProps {
   template: Template; existing?: UserTemplateCustomization
-  title: string; content: string; notes: string; timing: string
+  title: string; content: string; contentEn: string; contentPt: string; notes: string; timing: string
   saving: boolean; deleting: boolean
   onTitleChange: (v: string) => void; onContentChange: (v: string) => void
+  onContentEnChange: (v: string) => void; onContentPtChange: (v: string) => void
   onNotesChange: (v: string) => void; onTimingChange: (v: string) => void
   onSave: () => void; onDelete: () => void; onReset: () => void; onClose: () => void
 }
 
 function CustomizeModal({
-  template, existing, title, content, notes, timing,
+  template, existing, title, content, contentEn, contentPt, notes, timing,
   saving, deleting,
-  onTitleChange, onContentChange, onNotesChange, onTimingChange,
+  onTitleChange, onContentChange, onContentEnChange, onContentPtChange, onNotesChange, onTimingChange,
   onSave, onDelete, onReset, onClose,
 }: CustomizeModalProps) {
-  const variables = extractVariables(content)
+  const [tab, setTab] = useState<Lang>('fr')
+  const bucket = getTimingBucket(template)
+  const cfg = bucket ? SECTION_CONFIG[bucket] : SECTION_CONFIG['avant-arrivee']
   const categoryLabel = CATEGORY_LABELS[template.category] ?? template.category
+  const values: Record<Lang, string> = { fr: content, en: contentEn, pt: contentPt }
+  const setters: Record<Lang, (v: string) => void> = { fr: onContentChange, en: onContentEnChange, pt: onContentPtChange }
+  const current = values[tab]
+  const variables = extractVariables(current)
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      // Différé : sinon la même touche Échap referme aussitôt la confirmation
+      // et rien si la confirmation est déjà ouverte (elle gère Échap elle-même)
+      if (e.key === 'Escape') {
+        if (document.querySelector('[role="presentation"] [role="dialog"]')) return
+        e.preventDefault(); setTimeout(onClose, 0)
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') { e.preventDefault(); onSave() }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [onClose, onSave])
 
   return (
-    <div style={s.overlay} onClick={onClose}>
-      <div style={s.modal} onClick={e => e.stopPropagation()}>
-        <div style={s.modalHeader}>
-          <div>
-            <div style={{ marginBottom: '4px' }}>
-              <span className="badge badge-blue">{categoryLabel}</span>
+    <div style={s.overlay} role="dialog" aria-modal="true" aria-labelledby="gab-modal-title">
+      <div style={{ ...s.modal, maxWidth: '760px' }}>
+        <div style={s.modalHeaderNew}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
+            <span style={{ ...s.modalIcon, background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color }}>
+              <PencilSimple size={18} weight="bold" />
+            </span>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: cfg.color, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                {cfg.label} · {categoryLabel}
+              </div>
+              <h3 id="gab-modal-title" style={s.modalTitle}>{existing ? 'Modifier ma version' : 'Personnaliser ce message'}</h3>
             </div>
-            <h3 style={s.modalTitle}>Personnaliser le gabarit</h3>
           </div>
-          <button onClick={onClose} style={s.closeBtn}><X size={18} /></button>
+          <button onClick={onClose} style={s.closeBtn} aria-label="Fermer"><X size={18} /></button>
         </div>
 
         <div style={s.modalBody}>
-          <div style={s.fieldGroup}>
-            <label style={s.label}>Titre (ton nom)</label>
-            <input value={title} onChange={e => onTitleChange(e.target.value)} placeholder={template.title} style={s.input} />
-          </div>
-
-          <div style={s.fieldGroup}>
-            <label style={s.label}>
-              Quand envoyer ?
-              <span style={{ color: 'var(--text-muted)', fontWeight: 400, textTransform: 'none', marginLeft: '6px' }}>(libre, ex: J-2 avant arrivée)</span>
-            </label>
-            <input value={timing} onChange={e => onTimingChange(e.target.value)} placeholder="Ex: J-2 avant arrivée…" style={s.input} />
-            <div style={s.timingBtns}>
-              {TIMING_SHORTCUTS.map(sc => (
-                <button key={sc} onClick={() => onTimingChange(sc)}
-                  style={{ ...s.timingBtn, ...(timing === sc ? s.timingBtnActive : {}) }}>{sc}</button>
-              ))}
-              {timing && <button onClick={() => onTimingChange('')} style={{ ...s.timingBtn, color: 'var(--text-muted)' }}>Effacer</button>}
+          <div style={s.fieldRow}>
+            <div style={{ ...s.fieldGroup, flex: '1 1 260px' }}>
+              <label style={s.label} htmlFor="gab-title">Nom du message</label>
+              <input id="gab-title" className="gab-input" value={title} onChange={e => onTitleChange(e.target.value)} placeholder={template.title} style={s.input} />
+            </div>
+            <div style={{ ...s.fieldGroup, flex: '1 1 220px' }}>
+              <label style={s.label} htmlFor="gab-when">Quand l&apos;envoyer ?</label>
+              <input id="gab-when" className="gab-input" value={timing} onChange={e => onTimingChange(e.target.value)} placeholder="Ex. J-2 à 18 h" style={s.input} />
             </div>
           </div>
+          <div style={s.timingBtns}>
+            {TIMING_SHORTCUTS.map(sc => (
+              <button key={sc} type="button" onClick={() => onTimingChange(sc)}
+                style={{ ...s.timingBtn, ...(timing === sc ? s.timingBtnActive : {}) }}>{sc}</button>
+            ))}
+          </div>
 
-          {variables.length > 0 && (
-            <div style={s.fieldGroup}>
-              <label style={s.label}>Variables à remplacer</label>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
-                {variables.map(v => <span key={v} style={s.varChip}>{v}</span>)}
+          <div style={s.fieldGroup}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
+              <span style={s.label}>Mon message</span>
+              <div style={s.langTabs} role="tablist" aria-label="Langue">
+                {(['fr', 'en', 'pt'] as Lang[]).map(l => {
+                  const filled = !!values[l].trim()
+                  return (
+                    <button key={l} type="button" role="tab" aria-selected={tab === l} onClick={() => setTab(l)}
+                      style={{ ...s.langTab, ...(tab === l ? s.langTabOn : {}) }}>
+                      {LANG_NAME[l]}
+                      <span style={{ width: 6, height: 6, borderRadius: 3, background: filled ? 'var(--accent-text)' : 'var(--border)' }} aria-hidden="true" />
+                    </button>
+                  )
+                })}
               </div>
             </div>
-          )}
-
-          <div style={s.fieldGroup}>
-            <label style={s.label}>Mon message</label>
-            <textarea value={content} onChange={e => onContentChange(e.target.value)} style={s.textarea} rows={10} />
+            {tab !== 'fr' && !current.trim() && (
+              <div style={s.langEmpty}>
+                <Translate size={16} color="var(--accent-text)" />
+                <span style={{ flex: 1 }}>
+                  Pas encore de version {tab === 'en' ? 'anglaise' : 'portugaise'}. Écris-la ou colle ta traduction ici : elle se copiera quand tu choisis {LANG_LABEL[tab]} sur le message.
+                </span>
+                <button type="button" style={s.ghostBtn} onClick={() => setters[tab](content)}>Partir du français</button>
+              </div>
+            )}
+            <textarea
+              key={tab}
+              className="gab-input"
+              value={current}
+              onChange={e => setters[tab](e.target.value)}
+              style={s.textarea}
+              rows={12}
+              placeholder={tab === 'fr' ? 'Ton message…' : tab === 'en' ? 'Your message in English…' : 'A tua mensagem em português…'}
+            />
+            {variables.length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>À compléter au moment de copier :</span>
+                {variables.map(v => <span key={v} style={s.varChip}>{v}</span>)}
+              </div>
+            )}
           </div>
 
           <div style={s.fieldGroup}>
-            <label style={s.label}>Notes privées <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optionnel)</span></label>
-            <textarea value={notes} onChange={e => onNotesChange(e.target.value)} placeholder="Ex: À envoyer 48h avant via Airbnb" style={{ ...s.textarea, minHeight: '64px' }} rows={3} />
+            <label style={s.label} htmlFor="gab-notes">Note pour moi <span style={{ color: 'var(--text-muted)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(facultatif, jamais envoyée)</span></label>
+            <textarea id="gab-notes" className="gab-input" value={notes} onChange={e => onNotesChange(e.target.value)} placeholder="Ex. À envoyer dans la messagerie Airbnb, pas par SMS" style={{ ...s.textarea, minHeight: '64px' }} rows={2} />
           </div>
         </div>
 
         <div style={s.modalFooter}>
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {existing && (
-              <button onClick={onDelete} style={s.deleteBtnSmall} disabled={deleting}>
-                {deleting ? '...' : 'Supprimer ma version'}
+              <button type="button" onClick={onDelete} style={s.deleteBtnSmall} disabled={deleting}>
+                <Trash size={13} /> {deleting ? 'Suppression…' : 'Supprimer ma version'}
               </button>
             )}
-            <button onClick={onReset} style={s.ghostBtn}>Réinitialiser</button>
+            <button type="button" onClick={onReset} style={s.ghostBtn}>Revenir au modèle</button>
           </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button onClick={onClose} style={s.cancelBtn}>Annuler</button>
-            <button onClick={onSave} style={s.saveBtn} disabled={saving}>
-              {saving ? 'Enregistrement…' : 'Enregistrer ma version'}
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <button type="button" onClick={onClose} style={s.cancelBtn}>Annuler</button>
+            <button type="button" onClick={onSave} style={s.saveBtn} disabled={saving}>
+              <Check size={14} weight="bold" /> {saving ? 'Enregistrement…' : 'Enregistrer'}
             </button>
           </div>
         </div>
@@ -1822,6 +1997,21 @@ function CustomizeModal({
     </div>
   )
 }
+
+// Colonnes au-delà de 1200 px (séquence à gauche, aide à droite), champs
+// avec contour vert au focus. CSS constant, sans apostrophe ni guillemet.
+const GAB_CSS = `
+.gab-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
+.gab-side { display: flex; flex-direction: column; gap: 16px; }
+@media (min-width: 1200px) {
+  .gab-layout { grid-template-columns: minmax(0, 1fr) 320px; gap: 32px; }
+  .gab-side { position: sticky; top: 84px; }
+}
+.gab-md-text { display: inline; }
+@media (max-width: 480px) { .gab-md-text { display: none; } }
+[role=menuitem]:hover { background: var(--surface-2) !important; }
+.gab-input:focus { border-color: var(--accent-text) !important; box-shadow: 0 0 0 3px var(--accent-bg); }
+`
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
@@ -1842,7 +2032,56 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)',
     textTransform: 'uppercase', letterSpacing: '0.7px',
   },
-  logementChips: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
+  logementChips: { display: 'flex', flexWrap: 'wrap', gap: '6px', flex: '1 1 auto' },
+  toolbar: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', marginBottom: '22px' },
+  segmented: { display: 'inline-flex', padding: '4px', gap: '4px', borderRadius: '12px', background: 'var(--surface)', border: '1px solid var(--border)', flexShrink: 0 },
+  segBtn: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 14px', borderRadius: '9px', cursor: 'pointer',
+    background: 'transparent', border: '1px solid transparent', color: 'var(--text-2)', fontSize: '13.5px', fontWeight: 600,
+  },
+  segBtnOn: { background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' },
+  asideLabel: { fontSize: '11.5px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' },
+  asideRow: {
+    display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '7px 10px', borderRadius: '9px', cursor: 'pointer',
+    background: 'var(--surface-2)', border: '1px solid var(--border)', fontSize: '13px', color: 'var(--text-2)',
+  },
+  asideNext: { fontSize: '12.5px', color: 'var(--text-2)', marginTop: '4px', paddingTop: '10px', borderTop: '1px solid var(--border)' },
+  sideCard: { padding: '18px', borderRadius: '16px', background: 'var(--surface)', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '10px' },
+  sideTitle: { display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'var(--font-fraunces), serif', fontSize: '17px', color: 'var(--text)' },
+  sideText: { fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.55, margin: 0 },
+  checkList: { listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '7px' },
+  checkItem: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' },
+  sideLink: { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '13px', fontWeight: 600, color: 'var(--accent-text)', textDecoration: 'none', marginTop: '2px' },
+  tipList: { margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.5 },
+  persoChip: {
+    flexShrink: 0, fontSize: '10.5px', fontWeight: 700, padding: '2px 8px', borderRadius: '999px',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)', whiteSpace: 'nowrap',
+  },
+  langCount: {
+    flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10.5px', fontWeight: 700,
+    padding: '2px 8px', borderRadius: '999px', background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-2)', whiteSpace: 'nowrap',
+  },
+  menuSep: { fontSize: '10.5px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', padding: '8px 12px 2px' },
+  timingTag: {
+    display: 'inline-block', marginRight: '8px', fontSize: '11.5px', fontWeight: 700, padding: '2px 8px', borderRadius: '999px',
+    background: tint(AMBER, 12), border: `1px solid ${tint(AMBER, 30)}`, color: AMBER,
+  },
+  modalHeaderNew: {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px',
+    padding: '20px 24px', borderBottom: '1px solid var(--border)', flexShrink: 0,
+  },
+  modalIcon: { width: '40px', height: '40px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  fieldRow: { display: 'flex', flexWrap: 'wrap', gap: '14px' },
+  langTabs: { display: 'inline-flex', padding: '3px', gap: '3px', borderRadius: '10px', background: 'var(--surface-2)', border: '1px solid var(--border)' },
+  langTab: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer',
+    background: 'transparent', border: '1px solid transparent', color: 'var(--text-2)', fontSize: '12.5px', fontWeight: 600,
+  },
+  langTabOn: { background: 'var(--surface)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' },
+  langEmpty: {
+    display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', padding: '10px 12px', borderRadius: '10px',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', fontSize: '12.5px', color: 'var(--text-2)', lineHeight: 1.5,
+  },
   logementChip: {
     fontSize: '12px', fontWeight: 500, padding: '6px 12px',
     borderRadius: '100px', cursor: 'pointer',
@@ -1886,7 +2125,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', alignItems: 'center', gap: '10px',
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '12px', padding: '11px 16px',
-    maxWidth: '480px', width: '100%', marginBottom: '32px',
+    maxWidth: '520px', width: '100%', marginBottom: '24px',
   },
   searchInput: {
     background: 'none', border: 'none', outline: 'none',
@@ -1918,7 +2157,7 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer', color: 'var(--text-3)', transition: 'all 0.15s', flexShrink: 0,
   },
   iconBtnFavActive:    { background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' },
-  iconBtnCustomActive: { background: 'rgba(96,190,255,0.08)', border: '1px solid rgba(96,190,255,0.25)', color: '#60BEFF' },
+  iconBtnCustomActive: { background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' },
   iconBtnPinActive:    { background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' },
 
   contentWrap: { position: 'relative' },
@@ -1933,8 +2172,9 @@ const s: Record<string, React.CSSProperties> = {
   },
   contentFade: { display: 'none' },
   notePreview: {
+    display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '4px',
     padding: '8px 12px', borderRadius: '8px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
+    background: 'var(--surface-2)', border: '1px solid var(--border)',
   },
 
   cardFooter: { display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px' },
@@ -1949,7 +2189,6 @@ const s: Record<string, React.CSSProperties> = {
     letterSpacing: '0.4px', transition: 'all 0.15s',
   },
   langBtnActive:   { background: 'var(--accent-bg-2)', color: 'var(--accent-text)' },
-  langBtnActiveEN: { background: 'rgba(129,140,248,0.15)', color: '#818cf8' },
 
   copyBtn: {
     flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '7px',
@@ -1959,7 +2198,7 @@ const s: Record<string, React.CSSProperties> = {
     transition: 'all 0.18s',
   },
   copyBtnDone: {
-    background: 'rgba(52,211,153,0.1)', borderColor: 'var(--success-border)', color: 'var(--success-1)',
+    background: 'var(--accent-text)', border: '1px solid var(--accent-text)', color: 'var(--bg)',
   },
 
   seeMoreBtn: {
@@ -1978,7 +2217,7 @@ const s: Record<string, React.CSSProperties> = {
     position: 'fixed' as const, bottom: 'var(--s-6)', left: '50%', transform: 'translateX(-50%)',
     // Background opaque sombre indépendant du thème + halo success vert
     background: 'rgba(0,30,20,0.96)',
-    border: '1px solid var(--success-1)',
+    border: '1px solid rgba(99,214,131,0.6)',
     borderRadius: 'var(--r-md)',
     padding: '12px 20px',
     display: 'flex', alignItems: 'center', gap: 'var(--s-2)',
@@ -1995,42 +2234,46 @@ const s: Record<string, React.CSSProperties> = {
 
   overlay: {
     position: 'fixed' as const, inset: 0, zIndex: 900,
-    background: 'rgba(0, 8, 5, 0.96)',
+    background: 'rgba(0, 30, 22, 0.55)',
+    backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
     display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px',
   },
   modal: {
     background: 'var(--surface)', border: '1px solid var(--border)',
     borderRadius: '20px', width: '100%', maxWidth: '640px',
-    maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden',
+    maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflow: 'hidden',
+    boxShadow: '0 24px 60px rgba(0, 30, 22, 0.28)',
   },
   modalHeader: {
     display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
     padding: '22px 24px 16px', borderBottom: '1px solid var(--border)', flexShrink: 0,
   },
-  modalTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '20px', fontWeight: 400, color: 'var(--text)' },
+  modalTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '21px', fontWeight: 400, color: 'var(--text)', margin: '2px 0 0', lineHeight: 1.2 },
   closeBtn: {
     width: '32px', height: '32px', borderRadius: '8px',
-    background: 'var(--border)', border: 'none', cursor: 'pointer',
+    background: 'var(--surface-2)', border: '1px solid var(--border)', cursor: 'pointer',
     display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-2)', flexShrink: 0,
   },
   modalBody:   { padding: '20px 24px', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' },
   modalFooter: {
-    padding: '16px 24px', borderTop: '1px solid var(--border)',
+    padding: '14px 24px', borderTop: '1px solid var(--border)', background: 'var(--surface-2)',
     display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0, flexWrap: 'wrap', gap: '8px',
   },
 
   fieldGroup: { display: 'flex', flexDirection: 'column', gap: '6px' },
-  label: { fontSize: '12px', fontWeight: 600, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.04em' },
+  label: { fontSize: '12px', fontWeight: 700, color: 'var(--text-2)', textTransform: 'uppercase', letterSpacing: '0.04em' },
   input: {
-    background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)',
-    borderRadius: '10px', padding: '10px 14px',
-    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '13.5px', color: 'var(--text)', outline: 'none', width: '100%',
+    background: 'var(--surface-2)', border: '1px solid var(--border)',
+    borderRadius: '10px', padding: '11px 14px',
+    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', color: 'var(--text)', outline: 'none', width: '100%',
+    transition: 'border-color .15s, box-shadow .15s',
   },
   textarea: {
-    background: 'rgba(0,0,0,0.2)', border: '1px solid var(--border)',
-    borderRadius: '10px', padding: '12px 14px',
-    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '12.5px', color: 'var(--text-2)',
-    outline: 'none', width: '100%', resize: 'vertical', minHeight: '200px', lineHeight: 1.7,
+    background: 'var(--surface-2)', border: '1px solid var(--border)',
+    borderRadius: '12px', padding: '14px 16px',
+    fontFamily: 'var(--font-outfit), sans-serif', fontSize: '14px', color: 'var(--text)',
+    outline: 'none', width: '100%', resize: 'vertical', minHeight: '260px', lineHeight: 1.7,
+    transition: 'border-color .15s, box-shadow .15s',
   },
 
   timingBtns: { display: 'flex', flexWrap: 'wrap', gap: '6px' },
@@ -2042,14 +2285,15 @@ const s: Record<string, React.CSSProperties> = {
   timingBtnActive: { background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' },
 
   varChip: {
-    fontSize: '11px', fontWeight: 500, padding: '3px 9px', borderRadius: '6px',
-    background: 'rgba(96,190,255,0.1)', border: '1px solid rgba(96,190,255,0.2)', color: '#60BEFF', fontFamily: 'monospace',
+    fontSize: '11.5px', fontWeight: 600, padding: '3px 9px', borderRadius: '6px',
+    background: tint(AMBER, 10), border: `1px solid ${tint(AMBER, 28)}`, color: AMBER,
   },
 
   saveBtn: {
-    fontSize: '13px', fontWeight: 600, padding: '9px 20px', borderRadius: '10px', cursor: 'pointer',
-    background: 'var(--accent-bg-2)', border: '1px solid var(--accent-border)',
-    color: 'var(--accent-text)', fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    fontSize: '13.5px', fontWeight: 700, padding: '10px 20px', borderRadius: '10px', cursor: 'pointer',
+    background: 'var(--accent-text)', border: '1px solid var(--accent-text)',
+    color: 'var(--bg)', fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
   },
   cancelBtn: {
     fontSize: '13px', fontWeight: 500, padding: '9px 16px', borderRadius: '10px', cursor: 'pointer',
@@ -2060,9 +2304,10 @@ const s: Record<string, React.CSSProperties> = {
     background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-3)', fontFamily: 'var(--font-outfit), sans-serif',
   },
   deleteBtnSmall: {
-    fontSize: '12px', fontWeight: 500, padding: '7px 13px', borderRadius: '8px', cursor: 'pointer',
-    background: 'rgba(249,117,131,0.08)', border: '1px solid rgba(249,117,131,0.25)',
-    color: '#F97583', fontFamily: 'var(--font-outfit), sans-serif',
+    display: 'inline-flex', alignItems: 'center', gap: '6px',
+    fontSize: '12.5px', fontWeight: 600, padding: '8px 13px', borderRadius: '8px', cursor: 'pointer',
+    background: 'transparent', border: '1px solid color-mix(in srgb, var(--danger) 35%, transparent)',
+    color: 'var(--danger)', fontFamily: 'var(--font-outfit), sans-serif',
   },
 
   // ── Hero card (message principal) ───────────────────────────────────────
@@ -2080,7 +2325,7 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--text)', lineHeight: 1.75,
     whiteSpace: 'pre-wrap', wordBreak: 'break-word',
     margin: '0 0 16px', padding: '14px 16px',
-    background: 'rgba(0,0,0,0.18)', border: '1px solid var(--border)', borderRadius: '12px',
+    background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '12px',
     maxHeight: '300px', overflowY: 'auto',
   },
   heroFooter: {

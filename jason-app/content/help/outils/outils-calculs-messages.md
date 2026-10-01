@@ -3,18 +3,26 @@ title: "Modèles de messages, QR codes et affiches"
 excerpt: "Les messages prêts à copier et les supports à imprimer pour ton logement."
 order: 3
 relatedPages: [/dashboard/gabarits, /dashboard/outils-impression, /dashboard/outils]
-updatedAt: "2026-09-27"
+updatedAt: "2026-10-01"
 ---
 
 ## Modèles de messages
 
-**Outils & calculs → Modèles de messages** : des messages prêts à copier, en français et en anglais, classés par moment du séjour :
+**Outils & calculs → Modèles de messages** : ta séquence de messages voyageurs, rangée par moment du séjour :
 
-- **Avant l'arrivée** : confirmation, instructions d'arrivée
-- **Pendant le séjour** : réponse à un problème
-- **Départ et avis** : consignes de départ, demande d'avis
+- **Avant l'arrivée** : confirmation, instructions d'arrivée, accès
+- **Pendant le séjour** : bienvenue, petit souci, extras
+- **Après le départ** : remerciement, demande d'avis
 
-Copie le message, adapte-le à ton logement et envoie-le depuis Airbnb, Booking ou WhatsApp. L'app n'envoie pas de message à ta place.
+**Une séquence par logement** : choisis le logement en haut de la page. L'adresse, le Wi-Fi, le code d'accès, les horaires et le prénom du prochain voyageur remplacent tout seuls les mots entre crochets quand tu copies. La colonne « Rempli tout seul » montre ce qui manque sur ta fiche logement.
+
+**Ta version** : « Personnaliser » ouvre ton message. Tu peux l'écrire en **français, anglais et portugais** (onglets de langue) ; déplie le message (flèche) et choisis FR, EN ou PT avant de copier. La fenêtre ne se ferme pas si tu cliques à côté, et l'app te prévient si tu fermes sans enregistrer.
+
+**Ranger** : glisse un message pour changer l'ordre, ou menu « ⋮ » puis « Déplacer vers » pour le changer de moment. L'onglet **Exemples** propose d'autres messages à ajouter.
+
+Les rappels du calendrier (par exemple « Instructions non envoyées ») ont un bouton **Mes messages** qui ouvre directement la séquence du logement concerné.
+
+Copie le message et envoie-le depuis Airbnb, Booking ou WhatsApp. L'app n'envoie pas de message à ta place.
 
 ## QR codes et affiches
 

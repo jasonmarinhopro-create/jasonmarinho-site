@@ -27,6 +27,16 @@ export interface NextContractInfo {
   date_depart: string | null
 }
 
+// Versions FR / EN / PT de « ma version » (migration 121). Tant que la
+// migration n'est pas appliquée, on relit sans les colonnes de langue.
+async function loadCustomizations(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
+  const base = 'id, user_id, template_id, title, content, notes, timing_label, created_at, updated_at'
+  const res = await supabase.from('user_template_customizations').select(`${base}, content_en, content_pt`).eq('user_id', userId)
+  if (!res.error) return { data: (res.data ?? []) as UserTemplateCustomization[] }
+  const fallback = await supabase.from('user_template_customizations').select(base).eq('user_id', userId)
+  return { data: (fallback.data ?? []) as UserTemplateCustomization[] }
+}
+
 export default async function GabaritsPage() {
   const [profile, supabase] = await Promise.all([getProfile(), createClient()])
   const userId = profile?.userId ?? null
@@ -38,7 +48,7 @@ export default async function GabaritsPage() {
       ? supabase.from('user_template_favorites').select('template_id').eq('user_id', userId)
       : Promise.resolve({ data: [] as { template_id: string }[] }),
     userId
-      ? supabase.from('user_template_customizations').select('id, user_id, template_id, title, content, notes, timing_label, created_at, updated_at').eq('user_id', userId)
+      ? loadCustomizations(supabase, userId)
       : Promise.resolve({ data: [] as UserTemplateCustomization[] }),
     userId
       ? supabase.from('user_pinned_templates').select('id, user_id, timing_bucket, template_id, logement_id, position, created_at, updated_at').eq('user_id', userId).order('position', { ascending: true })
