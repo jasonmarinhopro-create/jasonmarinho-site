@@ -441,8 +441,8 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 
     <!-- Filtres catégories -->
     <div class="blog-cats" role="navigation" aria-label="Catégories d'articles">
-      <a href="/blog" class="blog-cat active" data-filter="all" onclick="return filterCat(event,this,'all')"><i class="ph-bold ph-squares-four"></i> Tous <span class="blog-cat-count">204</span></a>
-      <a href="/blog/categorie/revenus" class="blog-cat" data-filter="revenus" onclick="return filterCat(event,this,'revenus')"><i class="ph-bold ph-trend-up"></i> Revenus <span class="blog-cat-count">37</span></a>
+      <a href="/blog" class="blog-cat active" data-filter="all" onclick="return filterCat(event,this,'all')"><i class="ph-bold ph-squares-four"></i> Tous <span class="blog-cat-count">205</span></a>
+      <a href="/blog/categorie/revenus" class="blog-cat" data-filter="revenus" onclick="return filterCat(event,this,'revenus')"><i class="ph-bold ph-trend-up"></i> Revenus <span class="blog-cat-count">38</span></a>
       <a href="/blog/categorie/visibilite" class="blog-cat" data-filter="visibilite" onclick="return filterCat(event,this,'visibilite')"><i class="ph-bold ph-eye"></i> Visibilité <span class="blog-cat-count">34</span></a>
       <a href="/blog/categorie/experience" class="blog-cat" data-filter="experience" onclick="return filterCat(event,this,'experience')"><i class="ph-bold ph-star"></i> Expérience <span class="blog-cat-count">58</span></a>
       <a href="/blog/categorie/ressources" class="blog-cat" data-filter="ressources" onclick="return filterCat(event,this,'ressources')"><i class="ph-bold ph-books"></i> Ressources <span class="blog-cat-count">17</span></a>
@@ -484,13 +484,26 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
     <!-- Titre grille -->
     <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:28px">
       <h2 id="articles-heading" style="font-family:'Fraunces',serif;font-size:clamp(20px,2.2vw,26px);font-weight:400;color:var(--td);letter-spacing:-.2px">Tous les articles</h2>
-      <span id="articles-count" style="color:var(--tl);font-size:14px;font-weight:300">204 ressources gratuites</span>
+      <span id="articles-count" style="color:var(--tl);font-size:14px;font-weight:300">205 ressources gratuites</span>
     </div>
 
     <!-- Grille articles -->
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px" class="blog-grid" id="articles-grid">
 
 <!-- BLOG:CARDS:START -->
+      <article data-cat="revenus" class="blog-card rv">
+        <div class="bc-bar" style="background:#E8A020"></div>
+        <div class="bc-body">
+          <div class="bc-cat" style="color:#B06010"><span style="background:#E8A020"></span>Revenus</div>
+          <h2 class="bc-title">Noël et Nouvel An en LCD : 7 actions à mener dès octobre pour transformer la fin d'année en pic de revenus</h2>
+          <p class="bc-desc">Tarifs, durée de séjour, décoration, livret d'accueil, canaux directs, ménage : 7 actions concrètes à mener dès octobre pour transformer Noël et le Nouvel An en pic de revenus en LCD.</p>
+          <div class="bc-foot">
+            <span class="bc-time">8 min de lecture</span>
+            <a href="/blog/noel-nouvel-an-lcd-7-actions-pic-revenus-fin-annee" class="bc-lk">Lire <i class="ph-bold ph-arrow-right"></i></a>
+          </div>
+        </div>
+      </article>
+
       <article data-cat="conciergerie" class="blog-card rv">
         <div class="bc-bar" style="background:var(--gd)"></div>
         <div class="bc-body">

@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 30 Sep 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 02 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Noël et Nouvel An en LCD : 7 actions à mener dès octobre pour transformer la fin d&apos;année en pic de revenus</title>
+      <link>https://jasonmarinho.com/blog/noel-nouvel-an-lcd-7-actions-pic-revenus-fin-annee</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/noel-nouvel-an-lcd-7-actions-pic-revenus-fin-annee</guid>
+      <pubDate>Fri, 02 Oct 2026 08:00:00 GMT</pubDate>
+      <description>Tarifs, durée de séjour, décoration, livret d&apos;accueil, canaux directs, ménage : 7 actions concrètes à mener dès octobre pour transformer Noël et le Nouvel An en pic de revenus en LCD.</description>
+      <category>Revenus</category>
+    </item>
     <item>
       <title>Créer la structure de ta conciergerie en ligne : micro-entreprise, SASU ou EURL, et comment faire avec LegalPlace (2026)</title>
       <link>https://jasonmarinho.com/blog/creer-societe-conciergerie-en-ligne-legalplace-2026</link>
@@ -397,14 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/stationnement-voyageurs-lcd-6-solutions-eviter-conflits-voisins</guid>
       <pubDate>Mon, 22 Jun 2026 08:00:00 GMT</pubDate>
       <description>PLU, place privative, parking loué, carte résident, livret d&apos;accueil, annonce : 6 solutions concrètes pour gérer le stationnement des voyageurs en location courte durée sans conflits voisins.</description>
-      <category>Expérience</category>
-    </item>
-    <item>
-      <title>Barbecue et plancha en LCD : 7 règles pour autoriser sans risque incendie ni litige voisins</title>
-      <link>https://jasonmarinho.com/blog/barbecue-plancha-lcd-7-regles-autoriser-securite-voisins</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/barbecue-plancha-lcd-7-regles-autoriser-securite-voisins</guid>
-      <pubDate>Fri, 19 Jun 2026 08:00:00 GMT</pubDate>
-      <description>Type d&apos;équipement, règlement de copropriété, arrêtés préfectoraux, assurance, règles voyageurs : 7 règles concrètes pour autoriser le barbecue en location courte durée sans incident.</description>
       <category>Expérience</category>
     </item>
   </channel>
