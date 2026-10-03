@@ -30,3 +30,5 @@ sauf pour retirer une ligne masquée dans le dashboard.
 - 2026-09-28 · reglementation · Voyageur qui refuse de partir : la loi Ripost permet l'expulsion en 72h (https://www.meuble-tourisme-76.fr/news/loi-ripost-et-meuble-de-tourisme)
 - 2026-09-30 · plateformes · Booking.com : tes virements sont mensuels depuis juillet (https://partner.booking.com/fr/aide/conditions-paiements/produits-paiements/d%C3%A9couvrez-les-paiements-par-bookingcom)
 - 2026-10-02 · plateformes · Airbnb automne 2026 : IA pour trouver, nouveaux outils pour gérer (https://news.airbnb.com/airbnb-2026-fall-update)
+- 2026-10-03 · juridique · Changement d'usage en LCD : la Cour de cassation tranche (https://kohenavocats.fr/2026/09/30/locations-courte-duree-copropriete-meubles-tourisme-interdiction-recours/)
+- 2026-10-03 · marche · Ski 2026-2027 : les premières réservations progressent de 20 % (https://www.tendancehotellerie.fr/articles-breves/communique-de-presse/25429-article/les-vacances-ski-des-francais-changent-de-visage-gens-de-confiance-en-livre-les-nouvelles-regles)
