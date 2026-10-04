@@ -14,7 +14,7 @@ import {
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
   ChartLineUp, HouseLine, Briefcase, ShareNetwork, PaperPlaneTilt, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
-  Broom, Check, Plus, ChatText,
+  Broom, Check, Plus, ChatText, ArrowLeft, LockSimple,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
@@ -490,6 +490,32 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                 <NavItem href="/dashboard/investir/comparateur" label="Comparer les villes" Icon={ChartBar} />
                 <NavItem href="/dashboard/investir/simulateurs" label="Rentabilité & fiscalité" Icon={Calculator} />
               </div>
+            </div>
+          ) : proRole && isAdmin && searchParams?.get('id') ? (
+            /* Aperçu admin de la fiche d'un pro (?id=). Avant (04/10/2026) : le
+               menu pro affichait « Demandes reçues » / « Mes clients » qui
+               menaient à la fiche de l'admin lui-même. Les demandes et le
+               carnet clients d'un pro restent privés : pas d'accès admin. */
+            <div>
+              {!collapsed && <div style={styles.sectionLabel}>Aperçu admin</div>}
+              <div style={styles.navSection}>
+                <NavItem
+                  href={`${proRole === 'photographer' ? '/dashboard/ma-fiche-photographe' : '/dashboard/ma-fiche-menage'}?id=${encodeURIComponent(searchParams.get('id') ?? '')}`}
+                  label="Fiche du pro"
+                  Icon={proRole === 'photographer' ? Camera : Sparkle}
+                />
+                <NavItem
+                  href={proRole === 'photographer' ? '/dashboard/admin/photographes' : '/dashboard/admin/menage'}
+                  label={proRole === 'photographer' ? 'Tous les photographes' : 'Toutes les équipes'}
+                  Icon={ArrowLeft}
+                />
+              </div>
+              {!collapsed && (
+                <div style={{ ...styles.adminHelper, display: 'flex', gap: 8, alignItems: 'flex-start', padding: '10px 12px 0' }}>
+                  <LockSimple size={14} style={{ flexShrink: 0, marginTop: 2 }} />
+                  <span>Ses demandes reçues et son carnet clients restent privés : seul le pro y a accès.</span>
+                </div>
+              )}
             </div>
           ) : proRole ? (
             /* Sidebar minimale pour les pros annuaire (photographe / ménage) */

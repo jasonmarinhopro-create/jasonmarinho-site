@@ -139,7 +139,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
       {isAdminPreview && (
         <div style={s.adminBanner}>
           <Star size={14} weight="fill" />
-          <span><strong>Mode admin :</strong> tu modifies la fiche de <strong>{displayName}</strong>. « Enregistrer » et le portail Stripe agissent au nom du photographe.</span>
+          <span><strong>Mode admin :</strong> tu modifies la fiche de <strong>{displayName}</strong>. « Enregistrer » et le portail Stripe agissent au nom du photographe. Ses demandes reçues et ses clients restent privés.</span>
           <a href="/dashboard/admin/photographes" style={{ color: AMBER_DARK, textDecoration: 'underline', marginLeft: 'auto' }}>Retour à l’admin</a>
         </div>
       )}
