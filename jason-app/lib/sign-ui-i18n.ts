@@ -74,6 +74,8 @@ export type SignUiStrings = {
   paymentDoneTitle: (isPartial: boolean) => string
   paymentDoneHint: (amount: string, isPartial: boolean) => string
   paymentCancelledTitle: string
+  paymentProcessingTitle: string
+  paymentProcessingHint: string
   paymentCancelledHint: (isPartial: boolean) => string
   payTitle: (isPartial: boolean) => string
   payHint1: (amount: string, isPartial: boolean) => string
@@ -172,6 +174,8 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     paymentDoneTitle: isPartial => isPartial ? 'Acompte réglé' : 'Réservation réglée',
     paymentDoneHint: (amount, isPartial) => `${amount} reçus par le propriétaire. Votre réservation est confirmée${isPartial ? ', le solde reste à régler à votre arrivée' : ''}.`,
     paymentCancelledTitle: 'Paiement annulé',
+    paymentProcessingTitle: 'Paiement en cours de confirmation',
+    paymentProcessingHint: 'Votre paiement a bien été transmis. La confirmation peut prendre quelques minutes : inutile de payer à nouveau. Rechargez cette page un peu plus tard.',
     paymentCancelledHint: isPartial => `Vous pouvez régler ${isPartial ? 'votre acompte' : 'votre réservation'} ci-dessous pour la finaliser.`,
     payTitle: isPartial => isPartial ? 'Réglez votre acompte' : 'Réglez votre réservation',
     payHint1: (amount, isPartial) => `Pour confirmer votre séjour, réglez en ligne ${amount} directement par carte bancaire.${isPartial ? ' Le solde restant est à régler directement au propriétaire à votre arrivée.' : ''}`,
@@ -265,6 +269,8 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     paymentDoneTitle: isPartial => isPartial ? 'Sinal pago' : 'Reserva paga',
     paymentDoneHint: (amount, isPartial) => `${amount} recebidos pelo proprietário. A sua reserva está confirmada${isPartial ? ', o saldo fica a pagar na sua chegada' : ''}.`,
     paymentCancelledTitle: 'Pagamento cancelado',
+    paymentProcessingTitle: 'Pagamento em confirmação',
+    paymentProcessingHint: 'O seu pagamento foi transmitido. A confirmação pode demorar alguns minutos: não é preciso pagar novamente. Recarregue esta página um pouco mais tarde.',
     paymentCancelledHint: isPartial => `Pode pagar ${isPartial ? 'o seu sinal' : 'a sua reserva'} abaixo para a finalizar.`,
     payTitle: isPartial => isPartial ? 'Pague o seu sinal' : 'Pague a sua reserva',
     payHint1: (amount, isPartial) => `Para confirmar a sua estadia, pague online ${amount} diretamente por cartão bancário.${isPartial ? ' O saldo restante é pago diretamente ao proprietário na sua chegada.' : ''}`,
@@ -358,6 +364,8 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     paymentDoneTitle: isPartial => isPartial ? 'Deposit paid' : 'Booking paid',
     paymentDoneHint: (amount, isPartial) => `${amount} received by the owner. Your booking is confirmed${isPartial ? ', the balance remains to be paid on arrival' : ''}.`,
     paymentCancelledTitle: 'Payment cancelled',
+    paymentProcessingTitle: 'Payment being confirmed',
+    paymentProcessingHint: 'Your payment has been sent. Confirmation can take a few minutes: there is no need to pay again. Reload this page a little later.',
     paymentCancelledHint: isPartial => `You can pay ${isPartial ? 'your deposit' : 'your booking'} below to finalise it.`,
     payTitle: isPartial => isPartial ? 'Pay your deposit' : 'Pay your booking',
     payHint1: (amount, isPartial) => `To confirm your stay, pay ${amount} online directly by card.${isPartial ? ' The remaining balance is to be paid directly to the owner on arrival.' : ''}`,

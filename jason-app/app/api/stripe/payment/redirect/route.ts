@@ -1,24 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-import { stripe } from '@/lib/stripe/client'
+import { getServiceClient } from '@/lib/supabase/service'
+import { createLoyerCheckout, syncLoyerPayment } from '@/lib/stripe/loyer-payment'
 import { logger } from '@/lib/logger'
 const log = logger('api/stripe/payment/redirect')
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
+// Jamais en cache : statut de paiement lu à chaque clic
+export const dynamic = 'force-dynamic'
 
-function createServiceClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    {
-      auth: { persistSession: false },
-      global: {
-        fetch: (url: RequestInfo | URL, init?: RequestInit) =>
-          fetch(url, { ...init, cache: 'no-store' }),
-      },
-    }
-  )
-}
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
 // GET /api/stripe/payment/redirect?token=xxx
 // Crée une Stripe Checkout Session et redirige directement vers Stripe
@@ -32,7 +21,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const supabase = createServiceClient()
+    const supabase = getServiceClient()
 
     const { data: contract, error: cErr } = await supabase
       .from('contracts')
@@ -70,40 +59,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${APP_URL}/sign/${token}?payment=error`)
     }
 
-    const amountCents = Math.round(Number(contract.montant_loyer) * 100)
-    const n = Math.round(
-      (new Date(contract.date_depart).getTime() - new Date(contract.date_arrivee).getTime()) / 86400000
-    )
+    // Déjà payé chez Stripe (webhook en retard) : retour au contrat
+    const sync = await syncLoyerPayment(supabase, { ...contract, token }, profile.stripe_account_id)
+    if (sync.paid) return NextResponse.redirect(`${APP_URL}/sign/${token}?payment=success`)
 
-    const session = await stripe.checkout.sessions.create(
-      {
-        mode: 'payment',
-        line_items: [
-          {
-            price_data: {
-              currency: 'eur',
-              unit_amount: amountCents,
-              product_data: {
-                name: `Réservation, ${contract.logement_adresse}`,
-                description: `${n} nuit${n > 1 ? 's' : ''}, du ${new Date(contract.date_arrivee).toLocaleDateString('fr-FR')} au ${new Date(contract.date_depart).toLocaleDateString('fr-FR')}`,
-              },
-            },
-            quantity: 1,
-          },
-        ],
-        payment_intent_data: {
-          capture_method: 'automatic',
-          description: `Loyer contrat ${contract.id.slice(0, 8).toUpperCase()}`,
-          metadata: { contract_id: contract.id, type: 'loyer' },
-        },
-        customer_email: contract.locataire_email ?? undefined,
-        success_url: `${APP_URL}/sign/${token}?payment=success`,
-        cancel_url:  `${APP_URL}/sign/${token}?payment=cancel`,
-        locale: 'fr',
-        metadata: { contract_id: contract.id, token, type: 'loyer' },
-      },
-      { stripeAccount: profile.stripe_account_id }
-    )
+    // Même session que le bouton de la page : la part d'acompte seulement.
+    // Avant le 04/10/2026, ce lien (e-mail de signature) encaissait 100 %
+    // du loyer même quand le contrat prévoyait un acompte de 50 %.
+    const session = await createLoyerCheckout({ ...contract, token }, profile.stripe_account_id)
 
     await supabase
       .from('contracts')

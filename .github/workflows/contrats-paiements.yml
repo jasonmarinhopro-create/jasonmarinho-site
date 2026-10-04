@@ -1,0 +1,29 @@
+# Diagnostic des paiements de contrats (loyer, caution, webhooks Stripe).
+# Journaux publics : identifiants courts, statuts et pourcentages seulement.
+name: Paiements des contrats
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/paiements-trigger']
+
+jobs:
+  lire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Lire
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/contrats-paiements.mjs
+      - name: Vérifier chez Stripe (contrat du 17 au 21 octobre)
+        env:
+          SECRET: ${{ secrets.SOCIAL_CRON_SECRET }}
+        run: |
+          out=$(curl -s -X POST https://app.jasonmarinho.com/api/ops/contrat-paiement -H "Authorization: Bearer $SECRET" -H 'Content-Type: application/json' -d '{"arrivee":"2026-10-17","depart":"2026-10-21"}')
+          echo "::notice title=Stripe::$out"

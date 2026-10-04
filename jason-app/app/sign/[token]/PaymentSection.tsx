@@ -58,6 +58,20 @@ export default function PaymentSection({ token, amount, isPartial, paymentParam,
     )
   }
 
+  // Retour de Stripe après paiement, confirmation pas encore reçue : jamais
+  // de bouton « payer » ici (incident du 04/10/2026 : le voyageur, revenu
+  // sur la page, s'est vu proposer un 2e paiement)
+  if (paymentParam === 'success') {
+    return (
+      <div style={box('warning')}>
+        <strong style={{ color: '#FFD56B', display: 'block', marginBottom: '8px' }}>
+          {t.paymentProcessingTitle}
+        </strong>
+        <p style={hint}>{t.paymentProcessingHint}</p>
+      </div>
+    )
+  }
+
   // Retour annulation Stripe
   if (paymentParam === 'cancel') {
     return (

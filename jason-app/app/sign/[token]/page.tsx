@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import ContractView from './ContractView'
 import { toUiLang } from '@/lib/sign-ui-i18n'
 import { depositWindow, depositOpensOn } from '@/lib/stripe/deposit-window'
+import { syncLoyerPayment } from '@/lib/stripe/loyer-payment'
 
 // Toujours servir depuis le serveur (pas de cache), la signature doit être fraîche
 export const dynamic = 'force-dynamic'
@@ -122,7 +123,16 @@ export default async function SignPage({
   // est encaissée en ligne pour bloquer la réservation (cf. migration 097),
   // le solde étant à régler par le locataire selon les modalités convenues.
   const paymentEnabled = !!(contract.stripe_payment_enabled)
-  const paymentAlreadyDone = contract.stripe_payment_status === 'paid'
+  // Paiement commencé mais pas encore confirmé par le webhook : on demande
+  // directement à Stripe (5 s max) avant d'afficher un bouton « payer »
+  let paymentAlreadyDone = contract.stripe_payment_status === 'paid'
+  if (paymentEnabled && !paymentAlreadyDone && contract.stripe_payment_checkout_id && bailProfile?.stripe_account_id) {
+    const sync = await Promise.race([
+      syncLoyerPayment(supabase, contract, bailProfile.stripe_account_id),
+      new Promise<null>(r => setTimeout(() => r(null), 5000)),
+    ])
+    if (sync?.paid) paymentAlreadyDone = true
+  }
   const acomptePercent = Number(contract.acompte_percent ?? 100)
   const montantAcompte = Number(contract.montant_loyer) * acomptePercent / 100
   const montantSolde = Number(contract.montant_loyer) - montantAcompte
