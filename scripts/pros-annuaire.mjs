@@ -77,6 +77,30 @@ async function run(kind) {
   return done
 }
 
+// Comptes : compare les comptes de connexion, les profils et les fiches pros
+// (chiffres seulement, aucun nom ni e-mail)
+async function comptes() {
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/admin/users?per_page=1000`, { headers: H })
+  const authIds = res.ok ? ((await res.json()).users ?? []).map(u => u.id) : null
+  const profiles = await get('profiles?select=id,role,plan&limit=5000')
+  const profIds = new Set(profiles.map(p => p.id))
+  const byRole = {}, byPlan = {}
+  for (const p of profiles) { byRole[p.role] = (byRole[p.role] || 0) + 1; byPlan[p.plan] = (byPlan[p.plan] || 0) + 1 }
+  const ph = await get('photographers?select=user_id,tier,status,stripe_subscription_status&limit=1000')
+  const cl = await get('cleaners?select=user_id,tier,status,stripe_subscription_status&limit=1000')
+  const pro = (rows, label) => {
+    const paid = rows.filter(r => PAID.has(r.stripe_subscription_status))
+    return `${label} : ${rows.length} fiche(s), ${rows.filter(r => !r.user_id).length} sans compte, ${rows.filter(r => r.user_id && !profIds.has(r.user_id)).length} compte sans profil, payées ${paid.length} (fondateur ${paid.filter(r => r.tier === 'fondateur').length})`
+  }
+  notice('Comptes', [
+    `comptes de connexion : ${authIds ? authIds.length : 'lecture impossible ' + res.status}`,
+    authIds ? `comptes sans profil : ${authIds.filter(id => !profIds.has(id)).length}` : '',
+    `profils : ${profiles.length} · par rôle ${JSON.stringify(byRole)} · par formule ${JSON.stringify(byPlan)}`,
+    pro(ph, 'photographes'), pro(cl, 'ménage'),
+  ].filter(Boolean).join('\n'))
+}
+await comptes()
+
 const p = await run('photographe')
 const m = await run('menage')
 notice('Site en ligne', `sitemap-photographes.xml : ${await liveCount('sitemap-photographes.xml')} URL · sitemap-menages.xml : ${await liveCount('sitemap-menages.xml')} URL`)

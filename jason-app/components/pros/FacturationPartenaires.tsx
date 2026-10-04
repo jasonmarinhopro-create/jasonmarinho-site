@@ -33,7 +33,7 @@ export default function FacturationPartenaires({ kind }: { kind: 'photographer' 
         eyebrowIcon={<Receipt size={14} weight="bold" />}
         eyebrow="Facturation"
         title={<>Tes devis et factures, <HeroEm>déjà prêts pour 2027</HeroEm></>}
-        desc={<>Dès septembre 2027, une micro-entreprise devra passer par une plateforme agréée par l&apos;État pour facturer, même sans TVA. Plutôt que de changer d&apos;outil dans un an, autant prendre le bon dès maintenant : voici les deux que je recommande, avec une offre gratuite.</>}
+        desc={<>Dès septembre 2027, toutes les petites entreprises devront passer par une plateforme agréée par l&apos;État pour facturer : micro-entreprise ou société, avec ou sans TVA. Plutôt que de changer d&apos;outil dans un an, autant prendre le bon dès maintenant : voici les deux que je recommande, avec une offre gratuite.</>}
         steps={[
           ['Choisis', 'Tiime ou Indy'],
           ['Crée', 'ton compte gratuit'],
@@ -59,7 +59,7 @@ export default function FacturationPartenaires({ kind }: { kind: 'photographer' 
               points={[
                 'Devis et factures illimités dans l\'offre gratuite, sans carte bancaire',
                 'Facture électronique : envoi et réception (plateforme agréée)',
-                'Pensé pour les micro-entrepreneurs qui veulent juste facturer',
+                'Simple à prendre en main, en micro-entreprise comme en société',
               ]}
               cta="Créer mon compte gratuit"
               href={TIIME_URL}
@@ -88,11 +88,15 @@ export default function FacturationPartenaires({ kind }: { kind: 'photographer' 
             <div style={s.choice}>
               <div style={s.choiceRow}>
                 <strong style={s.choiceWho}>Tu veux juste faire tes devis et tes factures</strong>
-                <span>Tiime, offre gratuite. Le plus simple pour un {metier} en micro-entreprise.</span>
+                <span>Tiime, offre gratuite. Le plus simple pour un {metier} qui démarre.</span>
               </div>
               <div style={s.choiceRow}>
                 <strong style={s.choiceWho}>Tu veux aussi suivre tes recettes et avoir un compte pro</strong>
                 <span>Indy, qui regroupe facturation, suivi et compte pro au même endroit.</span>
+              </div>
+              <div style={s.choiceRow}>
+                <strong style={s.choiceWho}>Tu es en société (SASU, EURL, SARL…)</strong>
+                <span>Les deux facturent aussi pour une société, TVA comprise. Si tu as un expert-comptable, demande-lui d&apos;abord quelle plateforme il utilise : prends la même, ta compta suivra toute seule.</span>
               </div>
               <div style={s.choiceRow}>
                 <strong style={s.choiceWho}>Tu as déjà un outil de facturation</strong>
@@ -117,12 +121,13 @@ export default function FacturationPartenaires({ kind }: { kind: 'photographer' 
             <h2 style={s.h2}><ListChecks size={18} weight="duotone" color="var(--accent-text)" /> Sur chaque facture</h2>
             <ul style={s.list}>
               {[
-                'Ton nom suivi de « EI » (entrepreneur individuel) et ton SIRET',
+                'Entreprise individuelle : ton nom suivi de « EI » et ton SIRET. Société : forme, capital, SIREN et ville du RCS',
                 'Un numéro unique, sans trou ni doublon',
                 'La date, le détail de la prestation et le prix',
                 'Sans TVA : « TVA non applicable, art. 293 B du CGI » (art. L. 233-3 du CIBS à partir de 2027)',
+                'Avec TVA : ton numéro de TVA, le taux et le montant de TVA par ligne',
                 'Client pro : délai de paiement, pénalités de retard et indemnité de 40 €',
-                'En 2027 : SIREN du client pro et nature de l\'opération (prestation de services)',
+                'En 2027 : SIREN du client pro, nature de l\'opération (prestation de services) et, si tu factures la TVA, l\'option pour la TVA sur les débits',
               ].map(t => (
                 <li key={t} style={s.li}><CheckCircle size={16} weight="fill" color="var(--accent-text)" style={{ flexShrink: 0, marginTop: 2 }} />{t}</li>
               ))}
@@ -132,8 +137,9 @@ export default function FacturationPartenaires({ kind }: { kind: 'photographer' 
 
           <section style={s.card}>
             <h2 style={s.h2}><Star size={18} weight="duotone" color="var(--accent-text)" /> Bon à savoir</h2>
-            <p style={s.p}>En micro-entreprise, tu ne factures pas de TVA tant que ton chiffre d&apos;affaires reste sous <strong>{eur(seuilTva)}</strong> par an pour des prestations de services.</p>
+            <p style={s.p}>Micro-entreprise ou société, tu peux rester sans TVA (franchise en base) tant que ton chiffre d&apos;affaires reste sous <strong>{eur(seuilTva)}</strong> par an pour des prestations de services. Au-delà, ou si tu as choisi de la facturer, tu factures la TVA.</p>
             <p style={s.p}>Le plafond de la micro-entreprise pour les services est de <strong>{eur(plafondMicro)}</strong> par an.</p>
+            <p style={{ ...s.p, margin: 0 }}>Le calendrier est le même pour tous les photographes et équipes de ménage : seules les grandes entreprises et les ETI émettent déjà en électronique depuis septembre 2026.</p>
           </section>
 
           <p style={s.sources}>
