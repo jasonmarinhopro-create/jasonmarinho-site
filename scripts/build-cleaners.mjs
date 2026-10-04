@@ -301,6 +301,7 @@ ${JSON.stringify({
         <textarea name="message" placeholder="Décris ton ou tes logements (ville, capacité, fréquence des turnovers, prestations souhaitées)." required></textarea>
         <div class="hp"><label>Site</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
         <button type="submit" class="btn-p" id="contact-btn"><i class="ph-bold ph-paper-plane-tilt"></i>Envoyer ma demande</button>
+        <p style="margin-top:10px;font-size:11.5px;color:var(--tl);line-height:1.6">Ton nom, ton e-mail et ton message sont transmis à ${escHtml((c.full_name || displayName).split(' ')[0])} seulement, pour te répondre, et supprimés au bout de 3 ans. <a href="/politique-de-confidentialite#annuaire" style="color:var(--g)">Confidentialité</a></p>
       </form>
       ${c.site_url ? `<a href="${escHtml(c.site_url)}" target="_blank" rel="noopener noreferrer" class="btn-ol" onclick="jmTrack('site')"><i class="ph-bold ph-globe"></i>Voir le site</a>` : ''}
       ${c.instagram_handle ? `<a href="https://instagram.com/${escHtml(c.instagram_handle)}" target="_blank" rel="noopener" class="btn-ol" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i>@${escHtml(c.instagram_handle)}</a>` : ''}
