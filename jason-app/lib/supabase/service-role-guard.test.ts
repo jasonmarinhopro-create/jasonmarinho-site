@@ -20,7 +20,6 @@ const LEGACY_DIRECT_KEY_FILES = new Set([
   'app/api/register/route.ts',
   'app/api/send-reset-email/route.ts',
   'app/api/stripe/deposit/redirect/route.ts',
-  'app/api/stripe/payment/redirect/route.ts',
   'app/api/stripe/subscribe/portal/route.ts',
   'app/api/stripe/subscribe/reactivate/route.ts',
   'app/api/stripe/subscribe/switch-interval/route.ts',

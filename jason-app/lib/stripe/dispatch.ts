@@ -15,7 +15,7 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com
 
 // Helper : envoie un email 'paiement reçu' au hôte. Best-effort, async,
 // ne bloque pas le webhook.
-async function notifyHostPayment(
+export async function notifyHostPayment(
   db: SupabaseClient,
   contractId: string,
   type: 'loyer' | 'caution',

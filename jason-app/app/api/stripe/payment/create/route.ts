@@ -1,6 +1,6 @@
 import { getServiceClient as createServiceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe/client'
+import { createLoyerCheckout, syncLoyerPayment } from '@/lib/stripe/loyer-payment'
 import { logger } from '@/lib/logger'
 const log = logger('api/stripe/payment/create')
 
@@ -53,52 +53,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Le bailleur n\'a pas encore connecté son compte Stripe.' }, { status: 400 })
     }
 
+    // Déjà payé chez Stripe (webhook en retard) : pas de nouvelle session,
+    // sinon le voyageur paie deux fois (incident du 04/10/2026)
+    const sync = await syncLoyerPayment(supabase, { ...contract, token }, profile.stripe_account_id)
+    if (sync.paid) {
+      return NextResponse.json({ error: 'La réservation a déjà été réglée.' }, { status: 409 })
+    }
+
     // acompte_percent < 100 : seule une part du loyer est encaissée en ligne
-    // pour bloquer la réservation, le solde restant étant à régler par le
-    // locataire selon les modalités convenues (pas de 2e paiement Stripe
-    // automatisé, cf. migration 097 / colonne acompte_percent).
-    const acomptePercent = Number(contract.acompte_percent ?? 100)
-    const isPartial = acomptePercent < 100
-    const amountCents = Math.round(Number(contract.montant_loyer) * acomptePercent / 100 * 100)
-
-    const n = Math.round(
-      (new Date(contract.date_depart).getTime() - new Date(contract.date_arrivee).getTime()) / 86400000
-    )
-
-    // Checkout Session en mode paiement immédiat (capture automatique)
-    const session = await stripe.checkout.sessions.create(
-      {
-        mode: 'payment',
-        line_items: [
-          {
-            price_data: {
-              currency: 'eur',
-              unit_amount: amountCents,
-              product_data: {
-                name: isPartial
-                  ? `Acompte (${acomptePercent}%), ${contract.logement_adresse}`
-                  : `Réservation, ${contract.logement_adresse}`,
-                description: isPartial
-                  ? `${n} nuit${n > 1 ? 's' : ''}, du ${new Date(contract.date_arrivee).toLocaleDateString('fr-FR')} au ${new Date(contract.date_depart).toLocaleDateString('fr-FR')}. Solde de ${(Number(contract.montant_loyer) * (100 - acomptePercent) / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} € à régler à l'arrivée.`
-                  : `${n} nuit${n > 1 ? 's' : ''}, du ${new Date(contract.date_arrivee).toLocaleDateString('fr-FR')} au ${new Date(contract.date_depart).toLocaleDateString('fr-FR')}`,
-              },
-            },
-            quantity: 1,
-          },
-        ],
-        payment_intent_data: {
-          capture_method: 'automatic',
-          description: `Loyer contrat ${contract.id.slice(0, 8).toUpperCase()}`,
-          metadata: { contract_id: contract.id, type: 'loyer' },
-        },
-        customer_email: contract.locataire_email ?? undefined,
-        success_url: `${APP_URL}/sign/${token}?payment=success`,
-        cancel_url:  `${APP_URL}/sign/${token}?payment=cancel`,
-        locale: 'fr',
-        metadata: { contract_id: contract.id, token, type: 'loyer' },
-      },
-      { stripeAccount: profile.stripe_account_id }
-    )
+    // (lib/stripe/loyer-payment.ts, partagé avec le lien de l'e-mail)
+    const session = await createLoyerCheckout({ ...contract, token }, profile.stripe_account_id)
 
     await supabase
       .from('contracts')
