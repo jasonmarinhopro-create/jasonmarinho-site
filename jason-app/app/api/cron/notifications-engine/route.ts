@@ -10,6 +10,7 @@ import { runNotificationRules, purgeExpiredNotifications } from '@/lib/notificat
 import { syncStaleFeeds } from '@/lib/ical/background'
 import { sendDepositOpenEmails } from '@/lib/contracts/deposit-reminders'
 import { purgeOldMenagePhotos } from '@/lib/menage/photo-retention'
+import { purgeOldProContacts } from '@/lib/pros/contacts-retention'
 import { unansweredQuestions, unansweredDigestEmail, REMIND_MAX_DAYS, type QuestionRow } from '@/lib/chez-nous/unanswered'
 import { sendAdminEmail } from '@/lib/email/admin'
 
@@ -58,6 +59,13 @@ export async function GET(req: Request) {
     menagePhotosPurged = await purgeOldMenagePhotos(supabase)
   } catch (e) { console.warn('[cron] menage photos purge failed', e) }
 
+  // Demandes reçues par les pros de l'annuaire : supprimées 3 ans après
+  // (politique de confidentialité, lib/pros/contacts-retention.ts).
+  let proContactsPurged = 0
+  try {
+    proContactsPurged = await purgeOldProContacts(supabase)
+  } catch (e) { console.warn('[cron] pro contacts purge failed', e) }
+
   // Synchro iCal de fond AVANT les règles : les alertes (arrivée demain,
   // synchro échouée) portent sur des données fraîches. Budget 25 s sur les 60.
   const icalSync = await syncStaleFeeds(supabase, { staleMinutes: 360, budgetMs: 25_000, concurrency: 6 })
@@ -100,6 +108,7 @@ export async function GET(req: Request) {
     unansweredQuestions: unanswered,
     depositEmails,
     menagePhotosPurged,
+    proContactsPurged,
     durationMs: Date.now() - t0,
   })
 }
