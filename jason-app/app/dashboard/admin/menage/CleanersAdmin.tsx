@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { Sparkle, CheckCircle, X, Clock, ArrowSquareOut, Warning, Star, ShieldCheck, EyeSlash, Eye, Trash, ChatCircle } from '@phosphor-icons/react/dist/ssr'
@@ -160,9 +161,9 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
                 <br/><span style={s.cellSub}>actif depuis {fmtAge(c.created_at)}</span>
               </div>
               <div style={s.actions}>
-                <a href={`/dashboard/ma-fiche-menage?id=${c.id}`} style={s.linkBtn} title="Voir le dashboard exact de l'équipe">
+                <Link href={`/dashboard/ma-fiche-menage?id=${c.id}`} style={s.linkBtn} title="Voir le dashboard exact de l'équipe">
                   <Sparkle size={11} weight="bold" /> Dashboard
-                </a>
+                </Link>
                 {c.slug && (
                   <a href={`https://jasonmarinho.com/annuaires/menage/${c.slug}`} target="_blank" rel="noopener noreferrer" style={s.linkBtn}>
                     <ArrowSquareOut size={11} weight="bold" /> Fiche pub

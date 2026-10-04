@@ -1,6 +1,8 @@
 import { getServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
 import { getAuthUser } from '@/lib/supabase/auth-user'
+import { getProfile } from '@/lib/queries/profile'
+import { perfTimer } from '@/lib/perf/server-timing'
 import MaFichePhotographe from './MaFichePhotographe'
 import { getViewsTrend } from '@/lib/pros/views'
 
@@ -15,30 +17,28 @@ export default async function Page({ searchParams }: PageProps) {
   const sp = await searchParams
   const previewId = sp?.id
 
+  const timer = perfTimer('page /dashboard/ma-fiche-photographe')
   const user = await getAuthUser()
   if (!user) redirect('/auth/login?as=photographe')
 
   const admin = getServiceClient()
   // Multi-espaces : pas de strict role gating. L'accès se vérifie via la
-  // présence d'une row dans photographers.user_id (sinon empty state).
-  // Seul le mode preview admin est gardé pour le support.
-  const { data: profile } = await admin
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle()
-  const isAdmin = profile?.role === 'admin'
+  // présence d'une fiche rattachée au compte (sinon état vide). Seul l'aperçu
+  // admin (?id=) est gardé. Rôle lu par getProfile (déjà chargé par le
+  // layout) : avant, une requête profiles de plus avant la fiche.
+  const isAdmin = previewId ? (await getProfile())?.role === 'admin' : false
+  const isAdminPreview = !!previewId && isAdmin
 
   let photographer: any = null
-  let isAdminPreview = false
-  if (previewId && isAdmin) {
-    const { data } = await admin
-      .from('photographers')
-      .select('*')
-      .eq('id', previewId)
-      .maybeSingle()
+  let viewsTrend: Awaited<ReturnType<typeof getViewsTrend>> | undefined
+  if (isAdminPreview) {
+    // Aperçu admin : fiche et vues du mois en même temps (l'id est connu)
+    const [{ data }, trend] = await Promise.all([
+      admin.from('photographers').select('*').eq('id', previewId).maybeSingle(),
+      getViewsTrend(admin, 'photographer', previewId!),
+    ])
     photographer = data
-    isAdminPreview = true
+    viewsTrend = trend
   } else {
     const { data } = await admin
       .from('photographers')
@@ -47,6 +47,7 @@ export default async function Page({ searchParams }: PageProps) {
       .maybeSingle()
     photographer = data
   }
+  timer.mark('fiche')
 
   if (!photographer) {
     return (
@@ -71,7 +72,9 @@ export default async function Page({ searchParams }: PageProps) {
     )
   }
 
-  const viewsTrend = await getViewsTrend(admin, 'photographer', photographer.id)
+  if (!viewsTrend) viewsTrend = await getViewsTrend(admin, 'photographer', photographer.id)
+  timer.mark('vues du mois')
+  timer.done()
   const createdAt = new Date(photographer.created_at)
   const daysActive = Math.max(1, Math.floor((Date.now() - createdAt.getTime()) / 86400000))
 

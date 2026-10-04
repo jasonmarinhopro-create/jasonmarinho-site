@@ -34,7 +34,6 @@ const LEGACY_DIRECT_KEY_FILES = new Set([
   'app/dashboard/admin/gabarits/actions.ts',
   'app/dashboard/admin/indexation/page.tsx',
   'app/dashboard/admin/investisseurs/page.tsx',
-  'app/dashboard/admin/membres/page.tsx',
   'app/dashboard/admin/menage/actions.ts',
   'app/dashboard/admin/photographes/actions.ts',
   'app/dashboard/admin/signalements/moderation-actions.ts',

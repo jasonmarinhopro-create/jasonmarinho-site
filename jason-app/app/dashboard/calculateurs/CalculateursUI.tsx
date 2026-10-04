@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { MapPin, Storefront, TrendUp, CurrencyEur } from '@phosphor-icons/react/dist/ssr'
 import { EstimateurRevenus, CalculateurPrix, CompareurMesVilles } from '../simulateurs/SimulateursUI'
@@ -99,7 +100,7 @@ export default function CalculateursUI({ logementsPrefill = [], accountStats }: 
             <MapPin size={28} weight="duotone" style={{ color: 'var(--accent-text)', opacity: 0.85, marginBottom: '8px' }} />
             <div style={s.emptyTitle}>Préfilage indisponible</div>
             <div style={s.emptyDesc}>Ajoute au moins un logement pour comparer ton activité réelle au marché européen. Tu peux quand même tester les outils sans préfilage.</div>
-            <a href="/dashboard/logements" style={s.emptyCta}>Ajouter mon premier logement →</a>
+            <Link href="/dashboard/logements" style={s.emptyCta}>Ajouter mon premier logement →</Link>
           </div>
         )}
 

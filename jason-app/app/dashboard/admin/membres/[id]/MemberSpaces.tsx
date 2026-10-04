@@ -5,7 +5,7 @@
 import Link from 'next/link'
 import { House, Camera, Broom, Briefcase, ArrowSquareOut, Eye } from '@phosphor-icons/react/dist/ssr'
 import { PRICES, isPaidPro, proAnnualPrice } from '@/lib/admin/revenue'
-import type { MemberProSpace } from '../../actions'
+import type { MemberProSpace } from '@/lib/admin/member-profile'
 
 const AMBER = '#B7791F'
 const PINK = '#B83A7C'

@@ -589,9 +589,9 @@ export default function ActualitesView({
                   + {totalCount - articles.length} article{totalCount - articles.length > 1 ? 's' : ''} disponibles en Standard
                 </p>
                 <p style={s.gateDesc}>Accède à toutes les actualités LCD en passant en Standard Membre Fondateur.</p>
-                <a href="/dashboard/abonnement" style={s.gateCta}>
+                <Link href="/dashboard/abonnement" style={s.gateCta}>
                   Passer en Standard, 19,98 €/an
-                </a>
+                </Link>
               </div>
             </div>
           )}

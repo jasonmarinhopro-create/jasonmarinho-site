@@ -5,6 +5,7 @@
 // Chaque carte montre les projets d'acquisition sauvegardés depuis
 // l'estimateur, avec lien vers la fiche membre complète.
 
+import Link from 'next/link'
 import { useState } from 'react'
 import AdminHero from '../_ui/AdminHero'
 import {
@@ -121,9 +122,9 @@ export default function InvestisseursAdmin({ investors, totalProjects }: { inves
                   <div style={s.email}>{inv.email}</div>
                   <div style={s.meta}>Inscrit le {formatDate(inv.created_at)}</div>
                 </div>
-                <a href={`/dashboard/admin/membres/${inv.id}`} style={s.ficheBtn} title="Fiche membre complète">
+                <Link href={`/dashboard/admin/membres/${inv.id}`} style={s.ficheBtn} title="Fiche membre complète">
                   <ArrowSquareOut size={13} />
-                </a>
+                </Link>
               </div>
 
               {/* Projets */}

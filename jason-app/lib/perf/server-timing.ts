@@ -23,6 +23,18 @@ export function perfTimer(label: string, extra: Array<[string, number]> = []) {
   const t0 = Date.now()
   let last = t0
   const steps: Array<[string, number]> = [...extra]
+  // Blocage du serveur (04/10/2026) : quand toutes les requêtes d'une page
+  // durent le même temps, est-ce Supabase qui répond tard ou le serveur
+  // occupé à calculer, qui ne lit plus les réponses ? Un minuteur de 100 ms
+  // mesure son plus grand retard : un retard de plusieurs secondes = calcul.
+  let lagMax = 0
+  let tick = Date.now()
+  const lagTimer = setInterval(() => {
+    const now = Date.now()
+    lagMax = Math.max(lagMax, now - tick - 100)
+    tick = now
+  }, 100)
+  ;(lagTimer as { unref?: () => void }).unref?.()
   return {
     mark(name: string) {
       const now = Date.now()
@@ -30,8 +42,10 @@ export function perfTimer(label: string, extra: Array<[string, number]> = []) {
       last = now
     },
     done() {
+      clearInterval(lagTimer)
       const total = Date.now() - t0 + extra.reduce((n, [, ms]) => n + ms, 0)
       if (total < SLOW_MS) return
+      steps.push(['serveur bloqué au plus', Math.max(0, lagMax)])
       try {
         const db = getServiceClient()
         const calls = queryLog() ?? []

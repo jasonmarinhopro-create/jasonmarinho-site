@@ -1,6 +1,8 @@
 import { getServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
 import { getAuthUser } from '@/lib/supabase/auth-user'
+import { getProfile } from '@/lib/queries/profile'
+import { perfTimer } from '@/lib/perf/server-timing'
 import MaFicheMenage from './MaFicheMenage'
 import { getViewsTrend } from '@/lib/pros/views'
 
@@ -15,28 +17,28 @@ export default async function Page({ searchParams }: PageProps) {
   const sp = await searchParams
   const previewId = sp?.id
 
+  const timer = perfTimer('page /dashboard/ma-fiche-menage')
   const user = await getAuthUser()
   if (!user) redirect('/auth/login?as=menage')
 
   const admin = getServiceClient()
-  // Multi-espaces : pas de strict role gating. Accès via cleaners.user_id.
-  const { data: profile } = await admin
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle()
-  const isAdmin = profile?.role === 'admin'
+  // Multi-espaces : pas de strict role gating. L'accès se vérifie via la
+  // présence d'une fiche rattachée au compte (sinon état vide). Seul l'aperçu
+  // admin (?id=) est gardé. Rôle lu par getProfile (déjà chargé par le
+  // layout) : avant, une requête profiles de plus avant la fiche.
+  const isAdmin = previewId ? (await getProfile())?.role === 'admin' : false
+  const isAdminPreview = !!previewId && isAdmin
 
   let cleaner: any = null
-  let isAdminPreview = false
-  if (previewId && isAdmin) {
-    const { data } = await admin
-      .from('cleaners')
-      .select('*')
-      .eq('id', previewId)
-      .maybeSingle()
+  let viewsTrend: Awaited<ReturnType<typeof getViewsTrend>> | undefined
+  if (isAdminPreview) {
+    // Aperçu admin : fiche et vues du mois en même temps (l'id est connu)
+    const [{ data }, trend] = await Promise.all([
+      admin.from('cleaners').select('*').eq('id', previewId).maybeSingle(),
+      getViewsTrend(admin, 'cleaner', previewId!),
+    ])
     cleaner = data
-    isAdminPreview = true
+    viewsTrend = trend
   } else {
     const { data } = await admin
       .from('cleaners')
@@ -45,6 +47,7 @@ export default async function Page({ searchParams }: PageProps) {
       .maybeSingle()
     cleaner = data
   }
+  timer.mark('fiche')
 
   if (!cleaner) {
     return (
@@ -69,7 +72,9 @@ export default async function Page({ searchParams }: PageProps) {
     )
   }
 
-  const viewsTrend = await getViewsTrend(admin, 'cleaner', cleaner.id)
+  if (!viewsTrend) viewsTrend = await getViewsTrend(admin, 'cleaner', cleaner.id)
+  timer.mark('vues du mois')
+  timer.done()
   const createdAt = new Date(cleaner.created_at)
   const daysActive = Math.max(1, Math.floor((Date.now() - createdAt.getTime()) / 86400000))
 
