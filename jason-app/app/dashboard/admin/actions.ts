@@ -488,6 +488,10 @@ export async function getFullMemberProfile(memberId: string) {
     { data: communityMemberships },
     { data: audits },
     { data: investorProjects },
+    { data: photographerRows },
+    { data: cleanerRows },
+    { count: logementsCount },
+    { count: contratsCount },
   ] = await Promise.all([
     adminClient
       .from('profiles')
@@ -527,6 +531,18 @@ export async function getFullMemberProfile(memberId: string) {
       .select('id, nom, ville, pays, type_logement, prix_achat, mensualite, created_at')
       .eq('user_id', memberId)
       .order('created_at', { ascending: false }),
+    // Espaces pros du compte (04/10/2026) : sans ça, un photographe
+    // apparaissait seulement « Découverte » (sa formule hôte)
+    adminClient
+      .from('photographers')
+      .select('id, full_name, ville, status, tier, slug, is_public, stripe_subscription_status, views_count, contacts_count, created_at')
+      .eq('user_id', memberId),
+    adminClient
+      .from('cleaners')
+      .select('id, full_name, pseudo, ville, status, tier, slug, is_public, stripe_subscription_status, views_count, contacts_count, created_at')
+      .eq('user_id', memberId),
+    adminClient.from('logements').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
+    adminClient.from('contracts').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
   ])
 
   if (!memberProfile) return { error: 'Membre introuvable' }
@@ -572,7 +588,28 @@ export async function getFullMemberProfile(memberId: string) {
     community: { joinedGroups },
     audits: auditsData,
     investorProjects: investorProjects ?? [],
+    pros: [
+      ...(photographerRows ?? []).map(r => ({ ...r, kind: 'photographe' as const, pseudo: null })),
+      ...(cleanerRows ?? []).map(r => ({ ...r, kind: 'menage' as const })),
+    ] as MemberProSpace[],
+    host: { logements: logementsCount ?? 0, contrats: contratsCount ?? 0 },
   }
+}
+
+export interface MemberProSpace {
+  kind: 'photographe' | 'menage'
+  id: string
+  full_name: string | null
+  pseudo: string | null
+  ville: string | null
+  status: string | null
+  tier: string | null
+  slug: string | null
+  is_public: boolean | null
+  stripe_subscription_status: string | null
+  views_count: number | null
+  contacts_count: number | null
+  created_at: string
 }
 
 export async function updateMemberName(memberId: string, fullName: string) {

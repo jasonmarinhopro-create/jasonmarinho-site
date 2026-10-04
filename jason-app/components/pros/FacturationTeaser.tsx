@@ -9,7 +9,7 @@ export default function FacturationTeaser({ href }: { href: string }) {
         <Receipt size={16} weight="duotone" color="var(--accent-text)" /> Devis et factures
       </div>
       <p style={{ margin: 0, fontSize: 13, color: 'var(--text-2)', lineHeight: 1.55 }}>
-        En septembre 2027, la facture électronique devient obligatoire pour les micro-entreprises. Les deux outils gratuits que je recommande pour être prêt.
+        En septembre 2027, la facture électronique devient obligatoire pour les petites entreprises, micro-entreprises et sociétés. Les deux outils gratuits que je recommande pour être prêt.
       </p>
       <Link href={href} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13.5, fontWeight: 700, color: 'var(--accent-text)', textDecoration: 'none' }}>
         Voir mes conseils <ArrowRight size={14} weight="bold" />
