@@ -8,6 +8,7 @@ import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from
 import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
+import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
 
 const log = logger('admin/menage/actions')
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
@@ -247,8 +248,7 @@ export async function hideCleaner(cleanerId: string): Promise<{ success?: boolea
     is_public: false,
     updated_at: new Date().toISOString(),
   }).eq('id', cleanerId)
-  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+  await triggerSiteRebuild('admin ménage')
   revalidatePath('/dashboard/admin/menage')
   return { success: true }
 }
@@ -262,8 +262,7 @@ export async function unhideCleaner(cleanerId: string): Promise<{ success?: bool
     is_public: true,
     updated_at: new Date().toISOString(),
   }).eq('id', cleanerId)
-  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+  await triggerSiteRebuild('admin ménage')
   revalidatePath('/dashboard/admin/menage')
   return { success: true }
 }
