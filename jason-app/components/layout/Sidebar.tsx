@@ -335,11 +335,11 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     '/dashboard/ma-fiche-photographe',
     '/dashboard/ma-fiche-photographe/demandes',
     '/dashboard/ma-fiche-photographe/clients',
-    '/dashboard/ma-fiche-photographe/devis-factures',
+    '/dashboard/ma-fiche-photographe/facturation',
     '/dashboard/ma-fiche-menage',
     '/dashboard/ma-fiche-menage/demandes',
     '/dashboard/ma-fiche-menage/clients',
-    '/dashboard/ma-fiche-menage/devis-factures',
+    '/dashboard/ma-fiche-menage/facturation',
     '/dashboard/ma-fiche-menage/planning',
     // Espace investisseur : idem, sinon "Accueil" reste actif sur /estimateur.
     '/dashboard/investir',
@@ -543,8 +543,8 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                   Icon={AddressBook}
                 />
                 <NavItem
-                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/devis-factures' : '/dashboard/ma-fiche-menage/devis-factures'}
-                  label="Devis & factures"
+                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/facturation' : '/dashboard/ma-fiche-menage/facturation'}
+                  label="Facturation"
                   Icon={Receipt}
                 />
               </div>

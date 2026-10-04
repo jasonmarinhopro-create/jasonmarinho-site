@@ -38,7 +38,6 @@ export default async function Page() {
         onDelete={deleteContact}
         onAddToClients={addClientFromContact}
         metier="photographe"
-        quoteBase="/dashboard/ma-fiche-photographe/devis-factures"
         standalone
       />
     </div>

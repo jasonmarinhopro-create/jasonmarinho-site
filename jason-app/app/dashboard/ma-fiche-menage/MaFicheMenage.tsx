@@ -1,6 +1,7 @@
 'use client'
 
 import ViewsTrend from '@/components/pros/ViewsTrend'
+import FacturationTeaser from '@/components/pros/FacturationTeaser'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { useState, useTransition } from 'react'
 import { Sparkle, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, ShieldCheck, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
@@ -369,6 +370,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
           <ShareFicheBlock url={publicUrl} displayName={displayName} />
         )}
         {viewsTrend && <ViewsTrend trend={viewsTrend} metier="ménage" style={{ margin: 0 }} />}
+        {!isAdminPreview && <FacturationTeaser href="/dashboard/ma-fiche-menage/facturation" />}
         <div style={s.subscriptionCard}>
           <div>
             <h3 style={{ ...s.sectionTitle, marginTop: 0 }}><CreditCard size={15} weight="duotone" color="var(--accent-text)" /> Mon abonnement</h3>

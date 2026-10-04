@@ -38,7 +38,6 @@ export default async function Page() {
         onUpdate={updateProClient}
         onDelete={deleteProClient}
         metier="équipe"
-        quoteBase="/dashboard/ma-fiche-menage/devis-factures"
       />
     </div>
   )
