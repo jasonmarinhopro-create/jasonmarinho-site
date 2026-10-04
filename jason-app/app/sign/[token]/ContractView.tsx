@@ -78,6 +78,8 @@ interface Props {
   stripeReady: boolean
   paymentEnabled: boolean
   paymentAlreadyDone: boolean
+  /** Montant réellement payé en ligne, s'il diffère de l'acompte prévu */
+  paidTotal?: number | null
   hasDeposit: boolean
   depositAlreadyHeld: boolean
   depositState: DepositWindowState
@@ -101,7 +103,7 @@ const LANG_NAME: Record<UiLang, string> = { fr: 'Français', pt: 'Português', e
 
 export default function ContractView({
   token, contract, contractPays, initialLang, isViewerBailleur, expired, cancelled, alreadySigned, n,
-  hostIban, hostBic, stripeReady, paymentEnabled, paymentAlreadyDone, hasDeposit, depositAlreadyHeld, depositState, depositOpens,
+  hostIban, hostBic, stripeReady, paymentEnabled, paymentAlreadyDone, paidTotal, hasDeposit, depositAlreadyHeld, depositState, depositOpens,
   acomptePercent, montantAcompte, montantSolde, paymentParam, depositParam, preview,
 }: Props) {
   const [lang, setLang] = useState<UiLang>(initialLang)
@@ -534,8 +536,8 @@ export default function ContractView({
                   <div id="paiement-reservation">
                     <PaymentSection
                       token={token}
-                      amount={montantAcompte}
-                      isPartial={acomptePercent < 100}
+                      amount={paymentAlreadyDone && paidTotal ? paidTotal : montantAcompte}
+                      isPartial={paymentAlreadyDone && paidTotal ? paidTotal < Number(contract.montant_loyer) - 0.01 : acomptePercent < 100}
                       paymentParam={paymentParam}
                       alreadyPaid={paymentAlreadyDone}
                       lang={lang}

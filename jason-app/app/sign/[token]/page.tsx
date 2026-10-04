@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import ContractView from './ContractView'
 import { toUiLang } from '@/lib/sign-ui-i18n'
 import { depositWindow, depositOpensOn } from '@/lib/stripe/deposit-window'
-import { syncLoyerPayment } from '@/lib/stripe/loyer-payment'
+import { syncLoyerPayment, findPaidLoyerSessions } from '@/lib/stripe/loyer-payment'
 
 // Toujours servir depuis le serveur (pas de cache), la signature doit être fraîche
 export const dynamic = 'force-dynamic'
@@ -133,6 +133,17 @@ export default async function SignPage({
     ])
     if (sync?.paid) paymentAlreadyDone = true
   }
+  // Acompte prévu mais montant réellement payé différent (04/10/2026 : lien
+  // de l'e-mail qui encaissait 100 %) : on affiche ce qui a vraiment été payé,
+  // pas « acompte réglé, solde à l'arrivée »
+  let paidTotal: number | null = null
+  if (paymentAlreadyDone && Number(contract.acompte_percent ?? 100) < 100 && bailProfile?.stripe_account_id) {
+    const sessions = await Promise.race([
+      findPaidLoyerSessions(contract, bailProfile.stripe_account_id).catch(() => null),
+      new Promise<null>(r => setTimeout(() => r(null), 4000)),
+    ])
+    if (sessions?.length) paidTotal = Math.round(sessions.reduce((n, x) => n + x.amount, 0) * 100) / 100
+  }
   const acomptePercent = Number(contract.acompte_percent ?? 100)
   const montantAcompte = Number(contract.montant_loyer) * acomptePercent / 100
   const montantSolde = Number(contract.montant_loyer) - montantAcompte
@@ -153,6 +164,7 @@ export default async function SignPage({
       stripeReady={stripeReady}
       paymentEnabled={paymentEnabled}
       paymentAlreadyDone={paymentAlreadyDone}
+      paidTotal={paidTotal}
       hasDeposit={hasDeposit}
       depositAlreadyHeld={depositAlreadyHeld}
       depositState={depositState}
