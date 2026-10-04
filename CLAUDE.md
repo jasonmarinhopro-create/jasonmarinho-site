@@ -576,7 +576,8 @@ NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY        ← server-side seulement, jamais NEXT_PUBLIC_
 STRIPE_SECRET_KEY
-STRIPE_WEBHOOK_SECRET
+STRIPE_WEBHOOK_SECRET            ← destination Stripe « Ton compte » (abonnements, fiches pros)
+STRIPE_CONNECT_WEBHOOK_SECRET    ← destination Stripe « Comptes connectés » (loyers, cautions des hôtes), même URL /api/stripe/webhooks ; sans elle, les loyers ne sont confirmés que par la vérification directe chez Stripe (lib/stripe/loyer-payment.ts)
 RESEND_API_KEY
 NEXT_PUBLIC_APP_URL
 UPSTASH_REDIS_REST_URL           ← rate limiting (optionnel, fallback in-memory)
