@@ -30,7 +30,7 @@ export const GROUP_META: Record<NotifGroup, { label: string; color: string }> = 
 
 const TYPE_GROUP: Array<[RegExp, NotifGroup]> = [
   [/^(arrivee|depart|ical_|nouvelle_resa|resa_)/, 'reservations'],
-  [/^(contrat_|loyer_|caution_|deposit_|paiement_)/, 'paiements'],
+  [/^(contrat_|loyer_|caution_|deposit_|paiement_|devis_|facture_)/, 'paiements'],
   [/^(checkin_|declaration_|voyageur_)/, 'voyageurs'],
   [/^menage_/, 'menage'],
   [/^(plafond_|stripe_|sync_|fiscal_)/, 'compte'],

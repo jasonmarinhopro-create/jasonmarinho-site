@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import {
   AddressBook, Plus, X, Phone, Envelope, MapPin, House,
-  CaretDown, CaretUp, Trash, Check, NotePencil,
+  CaretDown, CaretUp, Trash, Check, NotePencil, Receipt,
 } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
@@ -49,9 +49,11 @@ interface Props {
   onDelete: (clientId: string) => Promise<{ error?: string }>
   /** "photographe" | "équipe" — pour les libellés */
   metier: string
+  /** Base des devis et factures du pro (bouton « Faire un devis ») */
+  quoteBase?: string
 }
 
-export default function ClientsCrm({ clients: initial, onCreate, onUpdate, onDelete, metier }: Props) {
+export default function ClientsCrm({ clients: initial, onCreate, onUpdate, onDelete, metier, quoteBase }: Props) {
   const [clients, setClients] = useState(initial)
   const [openId, setOpenId] = useState<string | null>(null)
   const [showAdd, setShowAdd] = useState(false)
@@ -295,6 +297,11 @@ export default function ClientsCrm({ clients: initial, onCreate, onUpdate, onDel
                       <textarea className="input-field" style={{ ...s.input, resize: 'vertical' as const }} rows={2} value={editForm.notes} onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))} />
                     </div>
                     <div style={s.rowActions}>
+                      {quoteBase && (
+                        <a href={`${quoteBase}/nouveau?type=devis&client=${c.id}`} style={s.quoteBtn}>
+                          <Receipt size={13} weight="bold" /> Faire un devis
+                        </a>
+                      )}
                       <button onClick={() => remove(c.id)} style={s.deleteBtn}>
                         <Trash size={13} weight="bold" />
                         Supprimer
@@ -407,6 +414,7 @@ const s: Record<string, React.CSSProperties> = {
     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
     gap: 10, flexWrap: 'wrap' as const,
   },
+  quoteBtn: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 12px', borderRadius: 9, border: '1px solid var(--accent-border)', color: 'var(--accent-text)', fontSize: 13, fontWeight: 600, textDecoration: 'none', marginRight: 'auto' },
   deleteBtn: {
     display: 'inline-flex', alignItems: 'center', gap: 6,
     padding: '8px 13px', borderRadius: 8,

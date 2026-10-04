@@ -14,7 +14,7 @@ import {
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
   ChartLineUp, HouseLine, Briefcase, ShareNetwork, PaperPlaneTilt, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
-  Broom, Check, Plus, ChatText, ArrowLeft, LockSimple,
+  Broom, Check, Plus, ChatText, ArrowLeft, LockSimple, Receipt,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
@@ -335,9 +335,11 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     '/dashboard/ma-fiche-photographe',
     '/dashboard/ma-fiche-photographe/demandes',
     '/dashboard/ma-fiche-photographe/clients',
+    '/dashboard/ma-fiche-photographe/devis-factures',
     '/dashboard/ma-fiche-menage',
     '/dashboard/ma-fiche-menage/demandes',
     '/dashboard/ma-fiche-menage/clients',
+    '/dashboard/ma-fiche-menage/devis-factures',
     '/dashboard/ma-fiche-menage/planning',
     // Espace investisseur : idem, sinon "Accueil" reste actif sur /estimateur.
     '/dashboard/investir',
@@ -539,6 +541,11 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                   href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/clients' : '/dashboard/ma-fiche-menage/clients'}
                   label="Mes clients"
                   Icon={AddressBook}
+                />
+                <NavItem
+                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/devis-factures' : '/dashboard/ma-fiche-menage/devis-factures'}
+                  label="Devis & factures"
+                  Icon={Receipt}
                 />
               </div>
             </div>
