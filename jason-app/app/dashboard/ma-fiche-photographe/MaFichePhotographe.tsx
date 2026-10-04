@@ -1,6 +1,7 @@
 'use client'
 
 import ViewsTrend from '@/components/pros/ViewsTrend'
+import FacturationTeaser from '@/components/pros/FacturationTeaser'
 import PortfolioManager from '@/components/pros/PortfolioManager'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { useState, useTransition } from 'react'
@@ -294,6 +295,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
           <ShareFicheBlock url={publicUrl} displayName={displayName} />
         )}
         {viewsTrend && <ViewsTrend trend={viewsTrend} metier="photographe" style={{ margin: 0 }} />}
+        {!isAdminPreview && <FacturationTeaser href="/dashboard/ma-fiche-photographe/facturation" />}
         <div style={s.subscriptionCard}>
           <div>
             <h3 style={{ ...s.sectionTitle, marginTop: 0 }}><CreditCard size={15} weight="duotone" color="var(--accent-text)" /> Mon abonnement</h3>
