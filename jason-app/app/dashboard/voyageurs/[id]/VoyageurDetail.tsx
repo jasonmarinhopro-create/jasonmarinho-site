@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useTransition, useRef, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import {
@@ -1007,7 +1008,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           <div>
             <strong>Ce voyageur est signalé par d&apos;autres hôtes.</strong>{' '}
             Lis les faits avant d&apos;accepter une réservation :{' '}
-            <a href={`/dashboard/securite?q=${encodeURIComponent(voyageur.email || voyageur.telephone || `${voyageur.prenom} ${voyageur.nom}`)}`} style={{ color: 'var(--danger)', fontWeight: 600 }}>voir dans Sécurité voyageur</a>.
+            <Link href={`/dashboard/securite?q=${encodeURIComponent(voyageur.email || voyageur.telephone || `${voyageur.prenom} ${voyageur.nom}`)}`} style={{ color: 'var(--danger)', fontWeight: 600 }}>voir dans Sécurité voyageur</Link>.
           </div>
         </div>
       )}
@@ -1573,7 +1574,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                 <span style={{ fontSize: 13.5, fontWeight: 600, color: c.tone === 'danger' ? 'var(--danger)' : c.ok ? 'var(--text)' : 'var(--text-2)' }}>{c.label}</span>
                 {c.hint && <span style={{ display: 'block', fontSize: 12, color: 'var(--text-3)' }}>
                   {c.tone === 'danger'
-                    ? <a href={`/dashboard/securite?q=${encodeURIComponent(voyageur.email || voyageur.telephone || `${voyageur.prenom} ${voyageur.nom}`)}`} style={{ color: 'var(--danger)', fontWeight: 600 }}>{c.hint}</a>
+                    ? <Link href={`/dashboard/securite?q=${encodeURIComponent(voyageur.email || voyageur.telephone || `${voyageur.prenom} ${voyageur.nom}`)}`} style={{ color: 'var(--danger)', fontWeight: 600 }}>{c.hint}</Link>
                     : c.hint}
                 </span>}
               </span>
@@ -2002,9 +2003,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                       <Lock size={11} /> Géré par {PLATFORM_LABELS[sj.contrat_plateforme as PlatformKey]?.label ?? 'plateforme'}
                     </span>
                   ) : isDecouverte ? (
-                    <a href="/dashboard/abonnement" style={{ ...s.contractBtn, opacity: 0.6, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }} title="Contrats disponibles en Standard">
+                    <Link href="/dashboard/abonnement" style={{ ...s.contractBtn, opacity: 0.6, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }} title="Contrats disponibles en Standard">
                       <Lock size={13} /> Standard
-                    </a>
+                    </Link>
                   ) : (
                     <button
                       onClick={() => handleContractClick(sj)}
@@ -2511,7 +2512,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                     }}>
                       <Lock size={12} style={{ verticalAlign: '-2px', marginRight: '5px' }} weight="fill" />
                       Sur l&apos;offre Découverte, les contrats Jason ne sont pas disponibles. Tu peux uniquement
-                      indiquer la plateforme qui a géré le contrat (Booking, Airbnb, …). <a href="/dashboard/abonnement" style={{ color: 'var(--accent-text)', textDecoration: 'underline' }}>Passer en Standard</a>
+                      indiquer la plateforme qui a géré le contrat (Booking, Airbnb, …). <Link href="/dashboard/abonnement" style={{ color: 'var(--accent-text)', textDecoration: 'underline' }}>Passer en Standard</Link>
                     </div>
                   )}
                   {((isDecouverte ? true : (sejourForm.contrat_plateforme !== undefined && sejourForm.contrat_plateforme !== null))) ? (

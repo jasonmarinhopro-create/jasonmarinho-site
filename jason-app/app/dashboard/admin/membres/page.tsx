@@ -1,29 +1,19 @@
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import { createClient as createAdminClient } from '@supabase/supabase-js'
+import { getProfile } from '@/lib/queries/profile'
+import { getServiceClient } from '@/lib/supabase/service'
 import MembresUI from './MembresUI'
+import { perfTimer } from '@/lib/perf/server-timing'
 
 export const metadata = { title: 'Membres, Jason Marinho' }
 
 export default async function MembresPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
+  // getProfile : session et profil déjà lus par le layout (dédupliqués)
+  const timer = perfTimer('page /dashboard/admin/membres')
+  const profile = await getProfile()
+  if (!profile) redirect('/auth/login')
+  if (profile.role !== 'admin') redirect('/dashboard')
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role, full_name')
-    .eq('id', user.id)
-    .single()
-
-  if (profile?.role !== 'admin') redirect('/dashboard')
-
-  // Use service role to bypass RLS and see all members' formations
-  const adminClient = createAdminClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } },
-  )
+  const adminClient = getServiceClient()
 
   const [{ data: members }, { data: photographers }, { data: cleaners }] = await Promise.all([
     adminClient
@@ -43,6 +33,8 @@ export default async function MembresPage() {
     adminClient.from('cleaners').select('user_id'),
   ])
 
+  timer.mark('membres')
+  timer.done()
   const photographerIds = new Set((photographers ?? []).map(p => p.user_id))
   const cleanerIds = new Set((cleaners ?? []).map(c => c.user_id))
 

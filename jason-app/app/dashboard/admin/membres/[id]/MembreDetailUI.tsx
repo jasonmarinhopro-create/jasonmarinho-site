@@ -9,7 +9,8 @@ import {
   ArrowClockwise, FacebookLogo, MagnifyingGlass, Trophy, Briefcase,
   MapPin, FolderOpen,
 } from '@phosphor-icons/react/dist/ssr'
-import { updateAdminNotes, changeUserPlan, type MemberProSpace } from '../../actions'
+import { updateAdminNotes, changeUserPlan } from '../../actions'
+import type { MemberProSpace } from '@/lib/admin/member-profile'
 import MemberSpaces from './MemberSpaces'
 
 // ── Types ──────────────────────────────────────────────────────────────────

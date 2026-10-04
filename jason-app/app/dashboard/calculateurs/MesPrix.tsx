@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useEffect, useTransition, useMemo } from 'react'
 import { CurrencyEur, House, Sun, Snowflake, TrendUp, CheckCircle, Warning, FloppyDisk, ArrowsClockwise, ChartBar } from '@phosphor-icons/react/dist/ssr'
 import type { LogementPrefill } from '@/lib/lcd/dashboard-prefill'
@@ -58,7 +59,7 @@ export default function MesPrix({ logements }: Props) {
           Ajoute ton premier logement pour définir une stratégie tarifaire
           (prix par plateforme + saisonnalité + comparaison marché local).
         </p>
-        <a href="/dashboard/logements" style={s.emptyCta}>Ajouter mon premier logement →</a>
+        <Link href="/dashboard/logements" style={s.emptyCta}>Ajouter mon premier logement →</Link>
       </div>
     )
   }

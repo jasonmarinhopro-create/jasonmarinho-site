@@ -1,24 +1,23 @@
 import { redirect, notFound } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import { getFullMemberProfile } from '../../actions'
+import { getProfile } from '@/lib/queries/profile'
+import { loadMemberProfile } from '@/lib/admin/member-profile'
 import MembreDetailUI from './MembreDetailUI'
+import { perfTimer } from '@/lib/perf/server-timing'
 
 export const metadata = { title: 'Fiche membre, Jason Marinho' }
 
 export default async function MembreDetailPage({ params }: { params: { id: string } }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
+  // getProfile : session et profil déjà lus par le layout (dédupliqués)
+  const timer = perfTimer('page /dashboard/admin/membres/[id]')
+  const me = await getProfile()
+  if (!me) redirect('/auth/login')
+  if (me.role !== 'admin') redirect('/dashboard')
+  if (!/^[0-9a-f-]{36}$/i.test(params.id)) notFound()
 
-  const { data: adminProfile } = await supabase
-    .from('profiles')
-    .select('role, full_name')
-    .eq('id', user.id)
-    .single()
-
-  if (adminProfile?.role !== 'admin') redirect('/dashboard')
-
-  const result = await getFullMemberProfile(params.id)
+  timer.mark('session')
+  const result = await loadMemberProfile(params.id)
+  timer.mark('fiche membre')
+  timer.done()
 
   if ('error' in result) notFound()
 

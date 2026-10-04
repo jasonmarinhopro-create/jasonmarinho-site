@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import ViewsTrend from '@/components/pros/ViewsTrend'
 import FacturationTeaser from '@/components/pros/FacturationTeaser'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
@@ -179,7 +180,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         <div style={s.adminBanner}>
           <Star size={14} weight="fill" />
           <span><strong>Mode admin :</strong> tu modifies la fiche de <strong>{displayName}</strong>. « Enregistrer » et le portail Stripe agissent au nom de l’équipe. Ses demandes reçues et ses clients restent privés.</span>
-          <a href="/dashboard/admin/menage" style={{ color: AMBER_DARK, textDecoration: 'underline', marginLeft: 'auto' }}>Retour à l’admin</a>
+          <Link href="/dashboard/admin/menage" style={{ color: AMBER_DARK, textDecoration: 'underline', marginLeft: 'auto' }}>Retour à l’admin</Link>
         </div>
       )}
       <HubHero

@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useTransition, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import {
@@ -533,6 +534,10 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
   return (
     <div
       className="jm-membre-card"
+      // Préchargement au survol / toucher : l'écran de chargement de la fiche
+      // s'affiche tout de suite au clic (04/10/2026)
+      onMouseEnter={() => router.prefetch(`/dashboard/admin/membres/${m.id}`)}
+      onTouchStart={() => router.prefetch(`/dashboard/admin/membres/${m.id}`)}
       style={{ ...s.card, cursor: 'pointer', ...(suspect ? { border: '1px solid var(--danger-border)' } : {}) }}
       onClick={() => router.push(`/dashboard/admin/membres/${m.id}`)}
       title="Ouvrir la fiche complète"
@@ -729,6 +734,10 @@ function MemberListRow({ member: m, isPending, onOpenPanel, onDelete }: MemberLi
   return (
     <div
       className="jm-membre-row"
+      // Préchargement au survol / toucher : l'écran de chargement de la fiche
+      // s'affiche tout de suite au clic (04/10/2026)
+      onMouseEnter={() => router.prefetch(`/dashboard/admin/membres/${m.id}`)}
+      onTouchStart={() => router.prefetch(`/dashboard/admin/membres/${m.id}`)}
       style={{ ...s.listRow, ...(suspect ? { background: 'var(--danger-bg)' } : {}) }}
       onClick={() => router.push(`/dashboard/admin/membres/${m.id}`)}
       title="Ouvrir la fiche complète"
@@ -851,9 +860,9 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
             <button onClick={onClose} style={ps.closeBtn}><X size={18} weight="bold" /></button>
           </div>
           {member && (
-            <a href={`/dashboard/admin/membres/${member.id}`} style={ps.viewFullBtn}>
+            <Link href={`/dashboard/admin/membres/${member.id}`} style={ps.viewFullBtn}>
               <ArrowSquareOut size={13} /> Voir la fiche complète
-            </a>
+            </Link>
           )}
         </div>
 

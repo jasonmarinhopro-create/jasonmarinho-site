@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { Camera, CheckCircle, X, Clock, ArrowSquareOut, Warning, Star, EyeSlash, Eye, Trash, ChatCircle } from '@phosphor-icons/react/dist/ssr'
@@ -145,9 +146,9 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
                 <br/><span style={s.cellSub}>actif depuis {fmtAge(p.created_at)}</span>
               </div>
               <div style={s.actions}>
-                <a href={`/dashboard/ma-fiche-photographe?id=${p.id}`} style={s.linkBtn} title="Voir le dashboard exact du photographe">
+                <Link href={`/dashboard/ma-fiche-photographe?id=${p.id}`} style={s.linkBtn} title="Voir le dashboard exact du photographe">
                   <Camera size={11} weight="bold" /> Dashboard
-                </a>
+                </Link>
                 {p.slug && (
                   <a href={`https://jasonmarinho.com/annuaires/photographes/${p.slug}`} target="_blank" rel="noopener noreferrer" style={s.linkBtn}>
                     <ArrowSquareOut size={11} weight="bold" /> Fiche pub

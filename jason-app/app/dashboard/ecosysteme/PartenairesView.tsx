@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useTransition, useEffect } from 'react'
 import { ArrowUpRight, Star, Buildings, Handshake, Sparkle, Heart, TrendUp } from '@phosphor-icons/react/dist/ssr'
 import { DRIING_SERVICES } from '@/lib/constants/partners'
@@ -211,9 +212,9 @@ export default function PartenairesView({
                   <span style={styles.promoCode}>{p.promo_code}</span>
                 )}
                 {p.promo_code && isDecouverte && (
-                  <a href="/dashboard/abonnement" style={styles.promoLocked}>
+                  <Link href="/dashboard/abonnement" style={styles.promoLocked}>
                     🔒 Code promo, Standard
-                  </a>
+                  </Link>
                 )}
               </div>
               <div style={styles.serviceLink}>
