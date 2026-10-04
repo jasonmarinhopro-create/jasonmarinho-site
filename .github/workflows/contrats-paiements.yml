@@ -1,0 +1,23 @@
+# Diagnostic des paiements de contrats (loyer, caution, webhooks Stripe).
+# Journaux publics : identifiants courts, statuts et pourcentages seulement.
+name: Paiements des contrats
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/paiements-trigger']
+
+jobs:
+  lire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Lire
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/contrats-paiements.mjs
