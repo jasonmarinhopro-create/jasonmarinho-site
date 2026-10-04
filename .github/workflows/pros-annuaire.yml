@@ -1,0 +1,32 @@
+# Annuaire des pros : état des fiches photographes et ménage, et publication
+# des fiches payées restées hors ligne (webhook Stripe manqué ou statut figé).
+# Journaux publics : identifiants courts, statuts et dates seulement.
+name: Annuaire des pros
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'etat (lecture seule) ou publier'
+        default: etat
+  push:
+    branches: ['claude/**']
+    paths: ['.github/pros-trigger']
+
+jobs:
+  pros:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Lire ou publier
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ACTION: ${{ github.event.inputs.action }}
+        run: |
+          mode="${ACTION:-}"
+          if [ -z "$mode" ] && [ -f .github/pros-trigger ]; then mode=$(head -1 .github/pros-trigger | tr -d '[:space:]'); fi
+          node scripts/pros-annuaire.mjs "${mode:-etat}"
