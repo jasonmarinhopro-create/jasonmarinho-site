@@ -1300,7 +1300,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
               {(calendrierTargetDate || logementsFrequentes.length > 0) && (
                 <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' as const, justifyContent: 'flex-start', marginTop: '4px' }}>
                   {calendrierTargetDate && (
-                    <a
+                    <Link
                       href={`/dashboard/calendrier`}
                       style={{
                         display: 'inline-flex', alignItems: 'center', gap: '5px',
@@ -1312,10 +1312,10 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                     >
                       <CalendarBlank size={13} weight="fill" />
                       Calendrier
-                    </a>
+                    </Link>
                   )}
                   {logementsFrequentes.length === 1 && logementsFrequentes[0].logementId && (
-                    <a
+                    <Link
                       href={`/dashboard/logements/${logementsFrequentes[0].logementId}`}
                       style={{
                         display: 'inline-flex', alignItems: 'center', gap: '5px',
@@ -1327,7 +1327,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                     >
                       <House size={13} weight="fill" />
                       {logementsFrequentes[0].nom}
-                    </a>
+                    </Link>
                   )}
                   {logementsFrequentes.length > 1 && (
                     <span style={{
