@@ -1,7 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useTransition } from 'react'
-import { Envelope, Tray, CaretDown, CaretUp, NotePencil, Check, Copy, Trash, AddressBook } from '@phosphor-icons/react/dist/ssr'
+import { Envelope, Tray, CaretDown, CaretUp, NotePencil, Check, Copy, Trash, AddressBook, Receipt } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 
@@ -36,11 +37,13 @@ interface Props {
   onAddToClients: (contactId: string) => Promise<{ id?: string; already?: boolean; error?: string }>
   /** "photographe" | "équipe" — pour les libellés */
   metier: string
+  /** Base des devis du pro (bouton « Faire un devis ») */
+  quoteBase?: string
   /** true = page dédiée (titre plein format, pas de marge haute) */
   standalone?: boolean
 }
 
-export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUpdateNotes, onDelete, onAddToClients, metier, standalone = false }: Props) {
+export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUpdateNotes, onDelete, onAddToClients, metier, standalone = false, quoteBase }: Props) {
   const [contacts, setContacts] = useState(initial)
   const [openId, setOpenId] = useState<string | null>(null)
   const [notesDraft, setNotesDraft] = useState<Record<string, string>>({})
@@ -187,6 +190,11 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
                       >
                         {copiedId === c.id ? <><Check size={14} weight="bold" /> Adresse copiée !</> : <><Copy size={14} weight="bold" /> Copier l&apos;adresse</>}
                       </button>
+                      {quoteBase && (
+                        <Link href={`${quoteBase}/nouveau?contact=${c.id}`} style={s.copyBtn}>
+                          <Receipt size={14} weight="bold" /> Faire un devis
+                        </Link>
+                      )}
                       <button onClick={() => addToClients(c.id)} style={s.copyBtn} disabled={!!addedIds[c.id]}>
                         {addedIds[c.id]
                           ? <><Check size={14} weight="bold" /> {addedIds[c.id] === 'deja' ? 'Déjà dans le carnet' : 'Ajouté au carnet !'}</>

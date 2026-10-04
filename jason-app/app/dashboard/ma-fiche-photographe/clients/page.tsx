@@ -38,6 +38,7 @@ export default async function Page() {
         onUpdate={updateProClient}
         onDelete={deleteProClient}
         metier="photographe"
+        quoteBase="/dashboard/ma-fiche-photographe/devis"
       />
     </div>
   )

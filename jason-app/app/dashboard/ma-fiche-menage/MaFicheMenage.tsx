@@ -371,7 +371,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
           <ShareFicheBlock url={publicUrl} displayName={displayName} />
         )}
         {viewsTrend && <ViewsTrend trend={viewsTrend} metier="ménage" style={{ margin: 0 }} />}
-        {!isAdminPreview && <FacturationTeaser href="/dashboard/ma-fiche-menage/facturation" />}
+        {!isAdminPreview && <FacturationTeaser href="/dashboard/ma-fiche-menage/devis" />}
         <div style={s.subscriptionCard}>
           <div>
             <h3 style={{ ...s.sectionTitle, marginTop: 0 }}><CreditCard size={15} weight="duotone" color="var(--accent-text)" /> Mon abonnement</h3>
