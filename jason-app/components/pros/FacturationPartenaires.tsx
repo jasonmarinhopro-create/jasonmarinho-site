@@ -1,25 +1,25 @@
-// Page « Facturation » des espaces photographe et ménage (04/10/2026).
-// Décision de Jason : pas d'outil de devis et factures dans l'app (la
-// facture électronique arrive en septembre 2027 pour les micro-entreprises,
-// un PDF fait ici ne suffirait plus). On oriente vers deux plateformes
-// agréées partenaires, Tiime et Indy. Liens affiliés : toujours
-// rel="sponsored noopener" + mention visible.
+// Page « Facturation » des espaces photographe et ménage (04/10/2026), guide
+// de la facture électronique 2027. Décision de Jason : l'app fait les devis
+// (page Devis), les factures se font dans une plateforme agréée : nos
+// partenaires Tiime et Indy, repliés si le pro a déjà son outil
+// (has_invoicing_tool). Liens affiliés : rel="sponsored noopener" + mention.
 
 import {
   Receipt, ArrowSquareOut, CalendarBlank, CheckCircle, Lightbulb, User, Buildings,
   FileText, Star, ListChecks,
 } from '@phosphor-icons/react/dist/ssr'
-import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
+import Link from 'next/link'
+import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import { FISCAL_PARAMS_2026 } from '@/lib/lcd/fiscal-params'
+import { TIIME_URL, INDY_URL } from '@/lib/pros/invoicing-partners'
 
-export const TIIME_URL = 'https://lb.affilae.com/r/?p=651c0d1e40e2d575f87b3b27&af=1127&lp=https%3A%2F%2Fwww.tiime.fr%2Ffacturation-electronique-2026%3Futm_source%3Dother%26utm_medium%3Daffiliation%26utm_campaign%3DJason%2520Marinho%26ae%3D1127%26program_id%3D651c0d1e40e2d575f87b3b27%26program_name%3DTiime'
-export const INDY_URL = 'https://www.indy.fr/facturation-electronique/?utm_source=1994&utm_medium=affiliate&utm_campaign=affilae&utm_content=facturation&promocode=PREMIERMOIS&ae=1994'
 const COMPARATIF_URL = 'https://jasonmarinho.com/comparatif-indy-tiime-henrri'
 const INDY_PAGE_URL = 'https://jasonmarinho.com/partenaires/indy'
 
 const eur = (n: number) => `${n.toLocaleString('fr-FR')} €`
 
-export default function FacturationPartenaires({ kind }: { kind: 'photographer' | 'cleaner' }) {
+export default function FacturationPartenaires({ kind, hasTool = false, tool = null }: { kind: 'photographer' | 'cleaner'; hasTool?: boolean; tool?: string | null }) {
+  const devisHref = kind === 'photographer' ? '/dashboard/ma-fiche-photographe/devis' : '/dashboard/ma-fiche-menage/devis'
   const metier = kind === 'photographer' ? 'photographe' : 'équipe de ménage'
   const pro = kind === 'photographer'
     ? 'une agence immobilière, une conciergerie ou une société'
@@ -32,12 +32,12 @@ export default function FacturationPartenaires({ kind }: { kind: 'photographer' 
       <HubHero
         eyebrowIcon={<Receipt size={14} weight="bold" />}
         eyebrow="Facturation"
-        title={<>Tes devis et factures, <HeroEm>déjà prêts pour 2027</HeroEm></>}
-        desc={<>Dès septembre 2027, toutes les petites entreprises devront passer par une plateforme agréée par l&apos;État pour facturer : micro-entreprise ou société, avec ou sans TVA. Plutôt que de changer d&apos;outil dans un an, autant prendre le bon dès maintenant : voici les deux que je recommande, avec une offre gratuite.</>}
+        title={<>Tes factures, <HeroEm>déjà prêtes pour 2027</HeroEm></>}
+        desc={<>Dès septembre 2027, toutes les petites entreprises devront passer par une plateforme agréée par l&apos;État pour facturer : micro-entreprise ou société, avec ou sans TVA. Tes devis, tu les fais ici en 2 minutes. Pour les factures, autant prendre le bon outil dès maintenant.</>}
         steps={[
-          ['Choisis', 'Tiime ou Indy'],
-          ['Crée', 'ton compte gratuit'],
-          ['Facture', 'tes clients au même endroit'],
+          ['Fais', 'ton devis ici'],
+          ['Fais accepter', 'en ligne par ton client'],
+          ['Facture', 'avec ton outil agréé'],
         ]}
         aside={
           <div style={{ ...heroCard, minWidth: 260 }}>
@@ -47,41 +47,88 @@ export default function FacturationPartenaires({ kind }: { kind: 'photographer' 
             <Step date="Les devis" text="Pas concernés par la réforme." done />
           </div>
         }
-      />
+      >
+        <Link href={devisHref} style={heroCta}><Receipt size={16} weight="bold" /> Faire un devis</Link>
+      </HubHero>
 
       <div style={s.cols}>
         <div style={s.colMain}>
-          <div style={s.partners}>
-            <Partner
-              name="Tiime"
-              badge="Mon conseil pour démarrer"
-              tagline="Devis et factures, gratuitement"
-              points={[
-                'Devis et factures illimités dans l\'offre gratuite, sans carte bancaire',
-                'Facture électronique : envoi et réception (plateforme agréée)',
-                'Simple à prendre en main, en micro-entreprise comme en société',
-              ]}
-              cta="Créer mon compte gratuit"
-              href={TIIME_URL}
-              more={{ label: 'Comparer Tiime, Indy et Henrri', href: COMPARATIF_URL }}
-              legal="Lien affilié : Tiime verse une commission à Jason Marinho si tu t'inscris par ce lien, sans aucun surcoût pour toi."
-              featured
-            />
-            <Partner
-              name="Indy"
-              badge="1er mois offert"
-              tagline="Facturation, suivi de tes recettes et compte pro"
-              points={[
-                'Offre gratuite : facturation, facture électronique (plateforme agréée), suivi des recettes',
-                'Un compte pro si tu veux séparer tes dépenses perso et pro',
-                'Code PREMIERMOIS : 1er mois offert sur les offres payantes, sans engagement',
-              ]}
-              cta="Essayer Indy"
-              href={INDY_URL}
-              more={{ label: 'Mon avis sur Indy', href: INDY_PAGE_URL }}
-              legal="Lien affilié : Indy verse une commission à Jason Marinho si tu t'inscris par ce lien, sans aucun surcoût pour toi."
-            />
-          </div>
+          {hasTool ? (
+            <section style={s.card}>
+              <h2 style={s.h2}><CheckCircle size={18} weight="duotone" color="var(--accent-text)" /> Tu factures déjà avec {tool || 'ton outil'}</h2>
+              <p style={{ ...s.p, margin: 0 }}>Vérifie seulement qu&apos;il est (ou sera) plateforme agréée avant septembre 2027. Ce réglage se change dans la page Devis.</p>
+              <details style={{ marginTop: 12 }}>
+                <summary style={{ cursor: 'pointer', fontSize: 13.5, fontWeight: 600, color: 'var(--accent-text)' }}>Voir les outils que je recommande</summary>
+                <div style={{ marginTop: 14 }}>
+                <div style={s.partners}>
+                  <Partner
+                    name="Tiime"
+                    badge="Mon conseil pour démarrer"
+                    tagline="Devis et factures, gratuitement"
+                    points={[
+                      'Devis et factures illimités dans l\'offre gratuite, sans carte bancaire',
+                      'Facture électronique : envoi et réception (plateforme agréée)',
+                      'Simple à prendre en main, en micro-entreprise comme en société',
+                    ]}
+                    cta="Créer mon compte gratuit"
+                    href={TIIME_URL}
+                    more={{ label: 'Comparer Tiime, Indy et Henrri', href: COMPARATIF_URL }}
+                    legal="Lien affilié : Tiime verse une commission à Jason Marinho si tu t'inscris par ce lien, sans aucun surcoût pour toi."
+                    featured
+                  />
+                  <Partner
+                    name="Indy"
+                    badge="1er mois offert"
+                    tagline="Facturation, suivi de tes recettes et compte pro"
+                    points={[
+                      'Offre gratuite : facturation, facture électronique (plateforme agréée), suivi des recettes',
+                      'Un compte pro si tu veux séparer tes dépenses perso et pro',
+                      'Code PREMIERMOIS : 1er mois offert sur les offres payantes, sans engagement',
+                    ]}
+                    cta="Essayer Indy"
+                    href={INDY_URL}
+                    more={{ label: 'Mon avis sur Indy', href: INDY_PAGE_URL }}
+                    legal="Lien affilié : Indy verse une commission à Jason Marinho si tu t'inscris par ce lien, sans aucun surcoût pour toi."
+                  />
+                </div>
+                </div>
+              </details>
+            </section>
+          ) : (
+            <>
+            <div style={s.partners}>
+              <Partner
+                name="Tiime"
+                badge="Mon conseil pour démarrer"
+                tagline="Devis et factures, gratuitement"
+                points={[
+                  'Devis et factures illimités dans l\'offre gratuite, sans carte bancaire',
+                  'Facture électronique : envoi et réception (plateforme agréée)',
+                  'Simple à prendre en main, en micro-entreprise comme en société',
+                ]}
+                cta="Créer mon compte gratuit"
+                href={TIIME_URL}
+                more={{ label: 'Comparer Tiime, Indy et Henrri', href: COMPARATIF_URL }}
+                legal="Lien affilié : Tiime verse une commission à Jason Marinho si tu t'inscris par ce lien, sans aucun surcoût pour toi."
+                featured
+              />
+              <Partner
+                name="Indy"
+                badge="1er mois offert"
+                tagline="Facturation, suivi de tes recettes et compte pro"
+                points={[
+                  'Offre gratuite : facturation, facture électronique (plateforme agréée), suivi des recettes',
+                  'Un compte pro si tu veux séparer tes dépenses perso et pro',
+                  'Code PREMIERMOIS : 1er mois offert sur les offres payantes, sans engagement',
+                ]}
+                cta="Essayer Indy"
+                href={INDY_URL}
+                more={{ label: 'Mon avis sur Indy', href: INDY_PAGE_URL }}
+                legal="Lien affilié : Indy verse une commission à Jason Marinho si tu t'inscris par ce lien, sans aucun surcoût pour toi."
+              />
+            </div>
+            </>
+          )}
 
           <section style={s.card}>
             <h2 style={s.h2}><Lightbulb size={18} weight="duotone" color="var(--accent-text)" /> Lequel choisir ?</h2>
@@ -111,7 +158,7 @@ export default function FacturationPartenaires({ kind }: { kind: 'photographer' 
             <div style={s.cases}>
               <Case icon={<User size={18} weight="duotone" />} title="Un hôte particulier" text="Ta facture peut rester un PDF envoyé par e-mail. À partir de septembre 2027, ta plateforme déclare la vente aux impôts pour toi (e-reporting)." />
               <Case icon={<Buildings size={18} weight="duotone" />} title="Un pro" text={`Si ton client est ${pro}, ta facture devra être électronique dès septembre 2027 : elle part par ta plateforme, plus par e-mail.`} />
-              <Case icon={<Receipt size={18} weight="duotone" />} title="Tes devis" text="La réforme ne les concerne pas. Les deux outils les font aussi, et transforment un devis accepté en facture en un clic." />
+              <Case icon={<Receipt size={18} weight="duotone" />} title="Tes devis" text="La réforme ne les concerne pas : fais-les directement dans l'app, ton client les accepte en ligne. Tu reprends ensuite les lignes dans ta facture." />
             </div>
           </section>
         </div>

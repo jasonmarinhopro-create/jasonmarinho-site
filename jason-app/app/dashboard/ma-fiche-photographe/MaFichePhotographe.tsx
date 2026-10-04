@@ -296,7 +296,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
           <ShareFicheBlock url={publicUrl} displayName={displayName} />
         )}
         {viewsTrend && <ViewsTrend trend={viewsTrend} metier="photographe" style={{ margin: 0 }} />}
-        {!isAdminPreview && <FacturationTeaser href="/dashboard/ma-fiche-photographe/facturation" />}
+        {!isAdminPreview && <FacturationTeaser href="/dashboard/ma-fiche-photographe/devis" />}
         <div style={s.subscriptionCard}>
           <div>
             <h3 style={{ ...s.sectionTitle, marginTop: 0 }}><CreditCard size={15} weight="duotone" color="var(--accent-text)" /> Mon abonnement</h3>
