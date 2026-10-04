@@ -8,7 +8,7 @@ import {
   BookOpen, Newspaper, ShieldStar, ShieldCheck, TrendUp, Lightning,
   Sparkle, CurrencyEur, ChartLineUp, Percent, CheckCircle,
   UserPlus, Globe, Broadcast, Handshake, Bug, ShareNetwork, MagnifyingGlass,
-  Crown, Lifebuoy,
+  Crown, Lifebuoy, Camera, Broom,
 } from '@phosphor-icons/react/dist/ssr'
 import { resolveAppErrorGroup } from './actions'
 import type { AffilaeOverview } from '@/lib/affiliation/affilae'
@@ -16,6 +16,8 @@ import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashb
 
 interface RecentSignup {
   id: string; email: string; full_name: string | null; plan: string; created_at: string
+  /** Fiches pros du compte (photographe, ménage) */
+  pros?: Array<{ kind: 'photographe' | 'menage'; tier: string | null; paid: boolean; status: string | null }>
 }
 interface MonthlySignup {
   month: string; total: number; paid: number
@@ -42,6 +44,12 @@ interface Stats {
   totalVoyageurs: number; totalSejours: number
   topFormation: { title: string; count: number } | null
   mrr: number
+  revenue: {
+    annual: number; monthly: number; hostAnnual: number; photoAnnual: number; cleanAnnual: number
+    paidPhotographers: number; paidCleaners: number; subscriptions: number
+  }
+  photographersCount: number
+  cleanersCount: number
   completedFormations: number
 }
 
@@ -72,7 +80,7 @@ function relativeDate(iso: string) {
 function Ago({ iso }: { iso: string }) {
   return <time dateTime={iso} suppressHydrationWarning>{relativeDate(iso)}</time>
 }
-const plural = (n: number, word: string) => `${n} ${word}${n > 1 ? 's' : ''}`
+const plural = (n: number, word: string, many?: string) => `${n} ${n > 1 ? (many ?? `${word}s`) : word}`
 
 export default function AdminUI({
   todayLabel,
@@ -93,11 +101,19 @@ export default function AdminUI({
   affilaeSlot?: React.ReactNode
 }) {
   const decouverte = Math.max(0, stats.totalUsers - stats.standardMembers - stats.driingMembers)
-  // Seul Standard est payant ; Driing = gratuit pour les clients Driing existants
-  const payingUsers = stats.standardMembers
+  // Payants : Standard des hôtes + fiches photographes et ménage payées
+  // (Driing = offert aux clients Driing)
+  const rv = stats.revenue
+  const paidPros = rv.paidPhotographers + rv.paidCleaners
+  const payingUsers = rv.subscriptions
   const conversionRate = stats.totalUsers > 0 ? (payingUsers / stats.totalUsers) * 100 : 0
   const arpu = payingUsers > 0 ? stats.mrr / payingUsers : 0
-  const arr = stats.mrr * 12
+  const arr = rv.annual
+  const revenueSub = [
+    `${plural(stats.standardMembers, 'Standard', 'Standard')}`,
+    rv.paidPhotographers > 0 ? plural(rv.paidPhotographers, 'photographe') : '',
+    rv.paidCleaners > 0 ? plural(rv.paidCleaners, 'équipe ménage', 'équipes ménage') : '',
+  ].filter(Boolean).join(' + ')
   const pct = (n: number) => stats.totalUsers > 0 ? Math.round((n / stats.totalUsers) * 100) : 0
 
   const todo = [
@@ -109,9 +125,9 @@ export default function AdminUI({
   const todoCount = todo.reduce((n, t) => n + t.n, 0)
 
   const kpis = [
-    { label: 'Revenu mensuel', value: formatEuro(stats.mrr), sub: `${payingUsers} Standard × 19,98 €/an ÷ 12`, icon: CurrencyEur, color: 'var(--accent-text)' },
-    { label: 'Revenu annuel', value: formatEuro(arr, 0), sub: 'abonnements en cours', icon: ChartLineUp, color: AMBER },
-    { label: 'Conversion', value: `${conversionRate.toFixed(1).replace('.', ',')} %`, sub: `${payingUsers} sur ${stats.totalUsers} en Standard`, icon: Percent, color: 'var(--accent-text)' },
+    { label: 'Revenu mensuel', value: formatEuro(stats.mrr), sub: `${revenueSub}, annuel ÷ 12`, icon: CurrencyEur, color: 'var(--accent-text)' },
+    { label: 'Revenu annuel', value: formatEuro(arr, 2), sub: `hôtes ${formatEuro(rv.hostAnnual, 2)} · pros ${formatEuro(rv.photoAnnual + rv.cleanAnnual, 2)}`, icon: ChartLineUp, color: AMBER },
+    { label: 'Conversion', value: `${conversionRate.toFixed(1).replace('.', ',')} %`, sub: `${payingUsers} abonnement${payingUsers > 1 ? 's' : ''} payant${payingUsers > 1 ? 's' : ''} sur ${stats.totalUsers} comptes`, icon: Percent, color: 'var(--accent-text)' },
     { label: 'Par abonné', value: formatEuro(arpu), sub: 'par mois', icon: UserPlus, color: BROWN },
   ]
 
@@ -119,6 +135,8 @@ export default function AdminUI({
     { name: 'Découverte', note: 'gratuit', count: decouverte, color: 'var(--text-muted)' },
     { name: 'Standard', note: '19,98 €/an', count: stats.standardMembers, color: 'var(--accent-text)' },
     { name: 'Driing', note: 'offert', count: stats.driingMembers, color: AMBER },
+    { name: 'Photographes', note: `${rv.paidPhotographers} payée${rv.paidPhotographers > 1 ? 's' : ''}`, count: stats.photographersCount, color: PINK },
+    { name: 'Équipes ménage', note: `${rv.paidCleaners} payée${rv.paidCleaners > 1 ? 's' : ''}`, count: stats.cleanersCount, color: BROWN },
   ]
 
   const content = [
@@ -140,7 +158,7 @@ export default function AdminUI({
         eyebrowIcon={<ShieldStar size={14} weight="fill" />}
         eyebrow={`Administration · ${todayLabel}`}
         title={<>Ta plateforme, <HeroEm>en un coup d&apos;œil</HeroEm></>}
-        desc={<>{stats.totalUsers} membres, dont {stats.standardMembers} en Standard et {stats.driingMembers} Driing{stats.newThisMonth > 0 ? `, +${stats.newThisMonth} ce mois-ci` : ''}. {liveVisitors > 0 ? `${plural(liveVisitors, 'visiteur')} sur le site en ce moment.` : 'Personne sur le site en ce moment.'}</>}
+        desc={<>{stats.totalUsers} comptes (le tien compris) : {stats.standardMembers} en Standard, {stats.driingMembers} Driing{paidPros > 0 ? `, ${plural(paidPros, 'fiche pro payée', 'fiches pros payées')}` : ''}{stats.newThisMonth > 0 ? `, +${stats.newThisMonth} ce mois-ci` : ''}. {liveVisitors > 0 ? `${plural(liveVisitors, 'visiteur')} sur le site en ce moment.` : 'Personne sur le site en ce moment.'}</>}
         aside={
           <div style={{ ...heroCard, flex: '1 1 100%', minWidth: 0 }}>
             <div style={s.asideTitle}>À traiter</div>
@@ -189,7 +207,7 @@ export default function AdminUI({
           <SignupsSparkline data={monthlySignupsChart} />
 
           <section className="fade-up">
-            <div style={s.sectionLabel}><TrendUp size={14} /> Membres par formule</div>
+            <div style={s.sectionLabel}><TrendUp size={14} /> Comptes par formule et par espace</div>
             <div style={s.plansGrid}>
               {plans.map(p => (
                 <div key={p.name} style={s.planCard}>
@@ -201,7 +219,7 @@ export default function AdminUI({
                   <div style={s.planBar}>
                     <div style={{ ...s.planFill, width: `${pct(p.count)}%`, background: p.color }} />
                   </div>
-                  <div style={{ fontSize: '11.5px', color: 'var(--text-3)' }}>{pct(p.count)} % des membres</div>
+                  <div style={{ fontSize: '11.5px', color: 'var(--text-3)' }}>{pct(p.count)} % des comptes</div>
                 </div>
               ))}
             </div>
@@ -267,10 +285,14 @@ export default function AdminUI({
               </div>
               <div style={s.recentList}>
                 {recentSignups.map(u => {
+                  // Un compte pro garde la formule hôte « Découverte » : on
+                  // affiche alors sa fiche pro, pas « Découverte »
+                  const pros = u.pros ?? []
                   const planCfg = u.plan === 'driing'
                     ? { label: 'Driing', color: AMBER }
                     : u.plan === 'standard'
                     ? { label: 'Standard', color: 'var(--accent-text)' }
+                    : pros.length > 0 ? null
                     : { label: 'Découverte', color: 'var(--text-3)' }
                   const initial = (u.full_name || u.email).slice(0, 1).toUpperCase()
                   return (
@@ -281,7 +303,18 @@ export default function AdminUI({
                         <div style={s.recentEmail}>{u.email}</div>
                       </div>
                       <div style={s.recentRight}>
-                        <span style={{ ...s.recentPlan, color: planCfg.color, background: tint(planCfg.color) }}>{planCfg.label}</span>
+                        <span style={{ display: 'inline-flex', gap: 4, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                          {pros.map(p => {
+                            const c = p.kind === 'photographe' ? PINK : BROWN
+                            const Icon = p.kind === 'photographe' ? Camera : Broom
+                            return (
+                              <span key={p.kind} style={{ ...s.recentPlan, color: c, background: tint(c), display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                                <Icon size={11} weight="bold" />{p.kind === 'photographe' ? 'Photographe' : 'Ménage'}{p.paid ? (p.tier === 'fondateur' ? ' · fondateur' : ' · payé') : ' · à payer'}
+                              </span>
+                            )
+                          })}
+                          {planCfg && <span style={{ ...s.recentPlan, color: planCfg.color, background: tint(planCfg.color) }}>{planCfg.label}</span>}
+                        </span>
                         <span style={s.recentDate}><Ago iso={u.created_at} /></span>
                       </div>
                     </Link>

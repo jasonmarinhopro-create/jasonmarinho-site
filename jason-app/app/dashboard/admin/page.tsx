@@ -6,6 +6,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { Suspense } from 'react'
 import AdminUI, { AffilaeCard } from './AdminUI'
 import { getAffilaeOverview } from '@/lib/affiliation/affilae'
+import { computeRevenue, proSpacesByUser, type ProRow } from '@/lib/admin/revenue'
 import { getLiveVisitorsCount, getChannelBreakdown, getTopPages, getAffiliateClicks, getAppErrors, CHANNEL_LABELS } from '@/lib/queries/site-traffic'
 
 // Service client : la RLS limite chaque utilisateur à SES données (profile,
@@ -13,11 +14,16 @@ import { getLiveVisitorsCount, getChannelBreakdown, getTopPages, getAffiliateCli
 
 export const metadata = { title: 'Administration, Jason Marinho' }
 
-// Chiffres de la Vue d'ensemble : ~20 requêtes, gardées 60 s en cache.
-// Avant, chaque passage en mode admin les relançait toutes (écran de
-// chargement de plusieurs secondes). Le trafic « en direct » reste calculé
-// à chaque fois (et rafraîchi toutes les 25 s par LiveTraffic).
-const getAdminOverview = unstable_cache(async () => {
+// Chiffres de la Vue d'ensemble : ~20 requêtes, gardées en cache le temps
+// de la minute en cours. Avant, chaque passage en mode admin les relançait
+// toutes (écran de chargement de plusieurs secondes). La minute fait partie
+// de la clé : unstable_cache sert sinon l'ancienne valeur à la première
+// visite après expiration (04/10/2026 : nouveau membre absent des chiffres).
+// Le trafic « en direct » reste calculé à chaque fois (rafraîchi toutes les
+// 25 s par LiveTraffic).
+const getAdminOverview = () => unstable_cache(computeAdminOverview, ['admin-overview-v2', String(Math.floor(Date.now() / 60_000))], { revalidate: 120, tags: ['admin-overview'] })()
+
+async function computeAdminOverview() {
   // Début du mois courant
   const startOfMonth = new Date()
   startOfMonth.setDate(1)
@@ -53,6 +59,8 @@ const getAdminOverview = unstable_cache(async () => {
     topPages,
     affiliateClicks,
     appErrors,
+    { data: photographers },
+    { data: cleaners },
   ] = await Promise.all([
     admin.from('profiles').select('*', { count: 'exact', head: true }),
     admin.from('profiles').select('*', { count: 'exact', head: true }).eq('plan', 'driing'),
@@ -73,6 +81,8 @@ const getAdminOverview = unstable_cache(async () => {
     getTopPages(admin),
     getAffiliateClicks(admin),
     getAppErrors(admin),
+    admin.from('photographers').select('user_id, tier, status, stripe_subscription_status'),
+    admin.from('cleaners').select('user_id, tier, status, stripe_subscription_status'),
   ])
 
   // Formation la plus commencée, tri par count desc puis titre alphabétique
@@ -110,12 +120,16 @@ const getAdminOverview = unstable_cache(async () => {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([month, counts]) => ({ month, ...counts }))
 
-  // MRR estimé (annuel / 12) : plan Standard vendu en annuel 19,98 €/an TTC
-  // Seul le plan Standard contribue (Driing = gratuit pour les clients Driing)
-  const mrr = (standardMembers ?? 0) * (19.98 / 12)
+  // Revenu : Standard des hôtes (19,98 €/an) + fiches photographes et ménage
+  // payées (39,98 € fondateur ou 79,98 €/an). Driing = offert.
+  const phRows = (photographers ?? []) as ProRow[]
+  const clRows = (cleaners ?? []) as ProRow[]
+  const revenue = computeRevenue({ standardMembers: standardMembers ?? 0, photographers: phRows, cleaners: clRows })
+  const spaces = proSpacesByUser(phRows, clRows)
 
   return {
-    recentSignups: (recentSignups ?? []) as Array<{ id: string; email: string; full_name: string | null; plan: string; created_at: string }>,
+    recentSignups: ((recentSignups ?? []) as Array<{ id: string; email: string; full_name: string | null; plan: string; created_at: string }>)
+      .map(u => ({ ...u, pros: spaces.get(u.id) ?? [] })),
     monthlySignupsChart,
     topPages,
     affiliateClicks,
@@ -134,11 +148,14 @@ const getAdminOverview = unstable_cache(async () => {
       totalVoyageurs: totalVoyageurs ?? 0,
       totalSejours: totalSejours ?? 0,
       topFormation: topFormation,
-      mrr,
+      mrr: revenue.monthly,
+      revenue,
+      photographersCount: phRows.filter(r => r.user_id).length,
+      cleanersCount: clRows.filter(r => r.user_id).length,
       completedFormations: completedFormations ?? 0,
     },
   }
-}, ['admin-overview-v1'], { revalidate: 60, tags: ['admin-overview'] })
+}
 
 export default async function AdminPage() {
   const timer = perfTimer('page /dashboard/admin')

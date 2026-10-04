@@ -9,7 +9,8 @@ import {
   ArrowClockwise, FacebookLogo, MagnifyingGlass, Trophy, Briefcase,
   MapPin, FolderOpen,
 } from '@phosphor-icons/react/dist/ssr'
-import { updateAdminNotes, changeUserPlan } from '../../actions'
+import { updateAdminNotes, changeUserPlan, type MemberProSpace } from '../../actions'
+import MemberSpaces from './MemberSpaces'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface MemberProfile {
@@ -84,6 +85,8 @@ interface Props {
   community?: { joinedGroups: CommunityGroup[] }
   audits?: AuditSession[]
   investorProjects?: InvestorProject[]
+  pros?: MemberProSpace[]
+  host?: { logements: number; contrats: number }
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -117,7 +120,7 @@ function fmtEur(n: number): string {
 }
 
 // ── Main component ──────────────────────────────────────────────────────────
-export default function MembreDetailUI({ profile, formations, stats, community, audits, investorProjects }: Props) {
+export default function MembreDetailUI({ profile, formations, stats, community, audits, investorProjects, pros = [], host = { logements: 0, contrats: 0 } }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -185,8 +188,8 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
   const statTiles = [
     { icon: <UsersFour size={16} />, value: stats.voyageurs,      label: 'Voyageurs',       color: '#6E5446' },
     { icon: <CalendarBlank size={16} />, value: stats.sejours,    label: 'Séjours',          color: 'var(--accent-text)' },
-    { icon: <BookmarkSimple size={16} />, value: stats.favorites,  label: 'Gabarits favoris', color: '#B7791F' },
-    { icon: <PencilSimple size={16} />, value: stats.customizations, label: 'Gabarits perso.', color: '#B7791F' },
+    { icon: <BookmarkSimple size={16} />, value: stats.favorites,  label: 'Modèles favoris', color: '#B7791F' },
+    { icon: <PencilSimple size={16} />, value: stats.customizations, label: 'Modèles perso.', color: '#B7791F' },
     { icon: <Flag size={16} />, value: stats.signalements,        label: 'Signalements',     color: 'var(--danger-text)' },
     { icon: <Lightbulb size={16} />, value: stats.suggestions,    label: 'Suggestions',      color: '#B7791F' },
     { icon: <FacebookLogo size={16} />, value: stats.communityGroupsCount, label: 'Groupes FB rejoints', color: '#6E5446' },
@@ -225,8 +228,13 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
           <div style={s.profileMeta}>
             <span style={{ ...s.pill, background: planCfg.bg, color: planCfg.color }}>
               <Lightning size={11} weight="fill" />
-              {planCfg.label}
+              Hôte · {planCfg.label}
             </span>
+            {pros.map(r => (
+              <span key={r.id} style={{ ...s.pill, background: `color-mix(in srgb, ${r.kind === 'photographe' ? '#B83A7C' : '#6E5446'} 12%, transparent)`, color: r.kind === 'photographe' ? '#B83A7C' : '#6E5446' }}>
+                {r.kind === 'photographe' ? 'Photographe' : 'Équipe de ménage'}{r.tier === 'fondateur' ? ' · fondateur' : ''}
+              </span>
+            ))}
             {planCfg.mrr > 0 && (
               <span style={{ ...s.pill, background: 'color-mix(in srgb, var(--accent-text) 10%, transparent)', color: 'var(--accent-text)' }}>
                 + {planCfg.mrr.toFixed(2).replace('.', ',')} € / mois
@@ -240,10 +248,11 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
             )}
             <span style={s.memberSince}>Membre depuis le {formatDate(profile.created_at)}</span>
           </div>
-        </div>
 
-        {/* Plan selector */}
+        {/* Formule de l'espace hôte (sous l'identité : sur téléphone, à côté
+            du nom, elle écrasait le nom sur 2 lignes) */}
         <div style={s.planSelector}>
+          <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-2)' }}>Formule hôte</span>
           {planFeedback ? (
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: '5px',
@@ -274,7 +283,18 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
             </select>
           )}
         </div>
+        </div>
       </div>
+
+      <MemberSpaces
+        plan={profile.plan || 'decouverte'}
+        host={host}
+        sejours={stats.sejours}
+        voyageurs={stats.voyageurs}
+        pros={pros}
+        isInvestor={!!profile.is_investor}
+        projects={(investorProjects ?? []).length}
+      />
 
       {/* ── 2-column desktop layout ── */}
       <div style={isDesktop ? s.twoColGrid : s.singleCol}>
@@ -391,7 +411,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
         <div style={s.sectionHeader}>
           <div style={s.sectionTitle}>
             <UsersFour size={16} color="var(--text-3)" />
-            Activité sur la plateforme
+            Activité dans l&apos;espace hôte
           </div>
         </div>
         <div style={s.statsGrid}>
@@ -654,7 +674,7 @@ const s: Record<string, React.CSSProperties> = {
   },
   profileMeta: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' },
   memberSince: { fontSize: '12px', color: 'var(--text-muted)', fontStyle: 'italic' },
-  planSelector: { display: 'flex', alignItems: 'flex-start', flexShrink: 0 },
+  planSelector: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginTop: '14px' },
 
   pill: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
