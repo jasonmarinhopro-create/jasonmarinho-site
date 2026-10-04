@@ -12,15 +12,26 @@ export async function POST(request: NextRequest) {
   const body = await request.text()
   const sig = request.headers.get('stripe-signature')
 
-  if (!sig || !process.env.STRIPE_WEBHOOK_SECRET) {
+  // Deux destinations Stripe peuvent viser cette route, chacune avec son
+  // secret : « Ton compte » (abonnements, STRIPE_WEBHOOK_SECRET) et « Comptes
+  // connectés » (loyers et cautions payés sur le compte des hôtes,
+  // STRIPE_CONNECT_WEBHOOK_SECRET). Avant le 04/10/2026, seule la première
+  // existait : un loyer payé n'était jamais confirmé par webhook.
+  const secrets = [process.env.STRIPE_WEBHOOK_SECRET, process.env.STRIPE_CONNECT_WEBHOOK_SECRET].filter((s): s is string => !!s)
+  if (!sig || !secrets.length) {
     return NextResponse.json({ error: 'Signature manquante.' }, { status: 400 })
   }
 
-  let event: Stripe.Event
-  try {
-    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET)
-  } catch (err) {
-    log.error('invalidSignature', { err: String(err) })
+  let event: Stripe.Event | null = null
+  let lastErr: unknown = null
+  for (const secret of secrets) {
+    try {
+      event = stripe.webhooks.constructEvent(body, sig, secret)
+      break
+    } catch (err) { lastErr = err }
+  }
+  if (!event) {
+    log.error('invalidSignature', { err: String(lastErr) })
     return NextResponse.json({ error: 'Signature invalide.' }, { status: 400 })
   }
 
