@@ -119,3 +119,22 @@ export async function syncLoyerPayment(db: SupabaseClient, contract: LoyerContra
     return { paid: contract.stripe_payment_status === 'paid', sessions: [] }
   }
 }
+
+/** Contrats au loyer « en attente » avec une session Stripe : vérifiés chez Stripe (cron quotidien) */
+export async function syncPendingLoyers(db: SupabaseClient, limit = 20): Promise<number> {
+  const { data: rows } = await db
+    .from('contracts')
+    .select('*')
+    .eq('stripe_payment_status', 'pending')
+    .not('stripe_payment_checkout_id', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(limit)
+  let synced = 0
+  for (const c of rows ?? []) {
+    const { data: host } = await db.from('profiles').select('stripe_account_id').eq('id', c.user_id).maybeSingle()
+    if (!host?.stripe_account_id) continue
+    const r = await syncLoyerPayment(db, c as LoyerContract, host.stripe_account_id)
+    if (r.paid) synced++
+  }
+  return synced
+}

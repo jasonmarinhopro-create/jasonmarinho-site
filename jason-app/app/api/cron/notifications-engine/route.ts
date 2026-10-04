@@ -11,6 +11,7 @@ import { syncStaleFeeds } from '@/lib/ical/background'
 import { sendDepositOpenEmails } from '@/lib/contracts/deposit-reminders'
 import { purgeOldMenagePhotos } from '@/lib/menage/photo-retention'
 import { purgeOldProContacts } from '@/lib/pros/contacts-retention'
+import { syncPendingLoyers } from '@/lib/stripe/loyer-payment'
 import { unansweredQuestions, unansweredDigestEmail, REMIND_MAX_DAYS, type QuestionRow } from '@/lib/chez-nous/unanswered'
 import { sendAdminEmail } from '@/lib/email/admin'
 
@@ -61,6 +62,13 @@ export async function GET(req: Request) {
 
   // Demandes reçues par les pros de l'annuaire : supprimées 3 ans après
   // (politique de confidentialité, lib/pros/contacts-retention.ts).
+  // Loyers commencés mais jamais confirmés par le webhook (04/10/2026) :
+  // vérifiés directement chez Stripe une fois par jour
+  let loyersSynced = 0
+  try {
+    loyersSynced = await syncPendingLoyers(supabase)
+  } catch { /* best-effort */ }
+
   let proContactsPurged = 0
   try {
     proContactsPurged = await purgeOldProContacts(supabase)
@@ -109,6 +117,7 @@ export async function GET(req: Request) {
     depositEmails,
     menagePhotosPurged,
     proContactsPurged,
+    loyersSynced,
     durationMs: Date.now() - t0,
   })
 }
