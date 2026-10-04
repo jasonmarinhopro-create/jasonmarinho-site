@@ -18,7 +18,11 @@ function walk(dir: string): string[] {
 describe('liens internes du dashboard', () => {
   it('aucun <a href="/dashboard…"> (utiliser <Link>)', () => {
     const offenders = [...walk(path.join(ROOT, 'app/dashboard')), ...walk(path.join(ROOT, 'components'))]
-      .filter(f => /<a\s+href=(\{`|"|\{')\/dashboard/.test(fs.readFileSync(f, 'utf8')))
+      .filter(f => {
+        // Ouverture dans un nouvel onglet (target="_blank") : <a> voulu
+        const tags = fs.readFileSync(f, 'utf8').match(/<a\s+href=(\{`|"|\{')\/dashboard[^]*?>/g) ?? []
+        return tags.some(tag => !tag.includes('target="_blank"'))
+      })
       .map(f => path.relative(ROOT, f))
     expect(offenders).toEqual([])
   })

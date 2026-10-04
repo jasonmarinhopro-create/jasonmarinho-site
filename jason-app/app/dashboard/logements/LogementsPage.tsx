@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState, useTransition, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 import { Plus, X, House, Trash, Warning, Check, Copy, WifiHigh, Key, Clock, Star, Leaf, MapPin, CurrencyEur, ArrowSquareOut, MagnifyingGlass, SquaresFour, Rows, ArrowRight, Car, SwimmingPool, Snowflake, Fire, WashingMachine, ForkKnife, Television, Tree, Chair, Plant, Wheelchair, Elevator, Campfire, Bathtub, PawPrint, Cigarette, CalendarCheck, IdentificationCard, Camera } from '@phosphor-icons/react/dist/ssr'
@@ -599,12 +600,12 @@ export default function LogementsPage({ logements: initial }: Props) {
                 <Plus size={15} weight="bold" />
                 Créer un logement
               </button>
-              <a
+              <Link
                 href="/dashboard/aide/logements-voyageurs/ajouter-logement"
                 style={{ fontSize: '12.5px', color: 'var(--text-2)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
               >
                 Comment ça marche ?
-              </a>
+              </Link>
             </div>
           </div>
         )}
@@ -667,14 +668,14 @@ export default function LogementsPage({ logements: initial }: Props) {
                     </td>
                     <td style={tableTd}>
                       <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>
-                        <a
+                        <Link
                           href={`/dashboard/calculateurs?logement=${l.id}#mes-prix`}
                           onClick={(e) => e.stopPropagation()}
                           style={{ ...iconBtn, textDecoration: 'none', color: 'var(--accent-text)' }}
                           title="Stratégie prix par plateforme & saison"
                         >
                           <CurrencyEur size={13} weight="bold" />
-                        </a>
+                        </Link>
                         <button
                           onClick={(e) => { e.stopPropagation(); setDeleteConfirm(l.id) }}
                           style={iconBtn} title="Supprimer"
