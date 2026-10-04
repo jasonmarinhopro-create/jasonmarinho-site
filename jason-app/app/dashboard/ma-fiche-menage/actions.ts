@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
+import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
 
 const log = logger('ma-fiche-menage/actions')
 
@@ -129,8 +130,7 @@ export async function updateCleanerFiche(payload: {
     return { error: 'Erreur lors de la sauvegarde.' }
   }
 
-  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+  await triggerSiteRebuild('fiche ménage')
 
   revalidatePath('/dashboard/ma-fiche-menage')
   if (target.isAdminEdit) revalidatePath('/dashboard/admin/menage')
@@ -174,8 +174,7 @@ export async function uploadCleanerLogo(formData: FormData): Promise<{ success?:
     return { error: 'Erreur lors de la sauvegarde.' }
   }
 
-  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+  await triggerSiteRebuild('fiche ménage')
 
   revalidatePath('/dashboard/ma-fiche-menage')
   return { success: true, url }
@@ -186,8 +185,7 @@ export async function deleteCleanerLogo(targetId?: string): Promise<{ success?: 
   if ('error' in target) return { error: target.error }
   const admin = getServiceClient()
   await admin.from('cleaners').update({ logo_url: null, updated_at: new Date().toISOString() }).eq('id', target.cleanerId)
-  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+  await triggerSiteRebuild('fiche ménage')
   revalidatePath('/dashboard/ma-fiche-menage')
   return { success: true }
 }

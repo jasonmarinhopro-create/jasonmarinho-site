@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
+import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
 
 const log = logger('ma-fiche-photographe/actions')
 
@@ -105,8 +106,7 @@ export async function updatePhotographerFiche(payload: {
     return { error: 'Erreur lors de la sauvegarde.' }
   }
 
-  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+  await triggerSiteRebuild('fiche photographe')
 
   revalidatePath('/dashboard/ma-fiche-photographe')
   if (target.isAdminEdit) revalidatePath('/dashboard/admin/photographes')
@@ -153,8 +153,7 @@ export async function uploadPhotographerLogo(formData: FormData): Promise<{ succ
     return { error: 'Erreur lors de la sauvegarde.' }
   }
 
-  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+  await triggerSiteRebuild('fiche photographe')
 
   revalidatePath('/dashboard/ma-fiche-photographe')
   return { success: true, url }
@@ -169,8 +168,7 @@ export async function deletePhotographerLogo(targetId?: string): Promise<{ succe
   if ('error' in target) return { error: target.error }
   const admin = getServiceClient()
   await admin.from('photographers').update({ logo_url: null, updated_at: new Date().toISOString() }).eq('id', target.photographerId)
-  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+  await triggerSiteRebuild('fiche photographe')
   revalidatePath('/dashboard/ma-fiche-photographe')
   return { success: true }
 }

@@ -8,6 +8,7 @@ import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from
 import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
+import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
 
 const log = logger('admin/photographes/actions')
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
@@ -285,8 +286,7 @@ export async function hidePhotographer(photographerId: string): Promise<{ succes
     })
     .eq('id', photographerId)
 
-  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+  await triggerSiteRebuild('admin photographes')
 
   revalidatePath('/dashboard/admin/photographes')
   return { success: true }
@@ -310,8 +310,7 @@ export async function unhidePhotographer(photographerId: string): Promise<{ succ
     })
     .eq('id', photographerId)
 
-  const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-  if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+  await triggerSiteRebuild('admin photographes')
 
   revalidatePath('/dashboard/admin/photographes')
   return { success: true }

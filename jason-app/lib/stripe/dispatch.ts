@@ -7,6 +7,7 @@ import { sendProWelcomeEmail } from '@/lib/email/pro-welcome'
 import { logger } from '@/lib/logger'
 import { createNotification, sejourHref } from '@/lib/notifications/create'
 import { parisToday } from '@/lib/stripe/deposit-window'
+import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
 
 const log = logger('lib/stripe/dispatch')
 
@@ -244,12 +245,9 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
             updated_at: new Date().toISOString(),
           }).eq('id', photographerId)
           // Trigger rebuild du site statique pour générer la fiche publique
-          const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-          if (hookUrl) {
-            fetch(hookUrl, { method: 'POST' }).catch(() => {})
-          }
+          await triggerSiteRebuild('stripe')
           // Email de bienvenue (best-effort, ne bloque pas le webhook)
-          sendProWelcomeEmail({
+          await sendProWelcomeEmail({
             pro: 'photographer',
             email: ph.email,
             fullName: ph.full_name,
@@ -289,12 +287,9 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
             stripe_subscription_status: sub.status,
             updated_at: new Date().toISOString(),
           }).eq('id', cleanerId)
-          const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-          if (hookUrl) {
-            fetch(hookUrl, { method: 'POST' }).catch(() => {})
-          }
+          await triggerSiteRebuild('stripe')
           // Email de bienvenue (best-effort)
-          sendProWelcomeEmail({
+          await sendProWelcomeEmail({
             pro: 'cleaner',
             email: cl.email,
             fullName: cl.full_name,
@@ -339,8 +334,7 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
           is_public: sub.status === 'active',
           updated_at: new Date().toISOString(),
         }).eq('id', photographerId)
-        const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-        if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+        await triggerSiteRebuild('stripe')
         break
       }
       // Branche ménage : sync status
@@ -351,8 +345,7 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
           is_public: sub.status === 'active',
           updated_at: new Date().toISOString(),
         }).eq('id', cleanerId)
-        const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-        if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+        await triggerSiteRebuild('stripe')
         break
       }
       const userId = sub.metadata?.user_id
@@ -387,8 +380,7 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
           stripe_subscription_status: 'canceled',
           updated_at: new Date().toISOString(),
         }).eq('id', photographerId)
-        const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-        if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+        await triggerSiteRebuild('stripe')
         break
       }
       // Branche ménage : retire de l'annuaire
@@ -400,8 +392,7 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
           stripe_subscription_status: 'canceled',
           updated_at: new Date().toISOString(),
         }).eq('id', cleanerId)
-        const hookUrl = process.env.VERCEL_DEPLOY_HOOK_URL
-        if (hookUrl) fetch(hookUrl, { method: 'POST' }).catch(() => {})
+        await triggerSiteRebuild('stripe')
         break
       }
       const userId = sub.metadata?.user_id
