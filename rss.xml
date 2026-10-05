@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Fri, 02 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 05 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Ventes additionnelles en LCD : 7 upsells rentables pour augmenter ton revenu par séjour sans toucher au prix de la nuit</title>
+      <link>https://jasonmarinho.com/blog/ventes-additionnelles-lcd-7-upsells-augmenter-revenu-par-sejour</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/ventes-additionnelles-lcd-7-upsells-augmenter-revenu-par-sejour</guid>
+      <pubDate>Mon, 05 Oct 2026 08:00:00 GMT</pubDate>
+      <description>Early check-in, panier d&apos;accueil, ménage intermédiaire, location d&apos;équipement, transfert, petit-déjeuner, activités en commission : 7 ventes additionnelles concrètes pour augmenter ton revenu par séjour en location courte durée.</description>
+      <category>Revenus</category>
+    </item>
     <item>
       <title>Noël et Nouvel An en LCD : 7 actions à mener dès octobre pour transformer la fin d&apos;année en pic de revenus</title>
       <link>https://jasonmarinho.com/blog/noel-nouvel-an-lcd-7-actions-pic-revenus-fin-annee</link>
@@ -397,14 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/voyageurs-seniors-lcd-6-actions-capter-fideliser-60-plus</guid>
       <pubDate>Wed, 24 Jun 2026 08:00:00 GMT</pubDate>
       <description>Accessibilité, literie, communication, séjours longs : 6 actions concrètes pour accueillir les voyageurs seniors en location courte durée et remplir ton calendrier en basse saison.</description>
-      <category>Expérience</category>
-    </item>
-    <item>
-      <title>Stationnement voyageurs en LCD : 6 solutions selon ta zone pour éviter conflits et mauvais avis</title>
-      <link>https://jasonmarinho.com/blog/stationnement-voyageurs-lcd-6-solutions-eviter-conflits-voisins</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/stationnement-voyageurs-lcd-6-solutions-eviter-conflits-voisins</guid>
-      <pubDate>Mon, 22 Jun 2026 08:00:00 GMT</pubDate>
-      <description>PLU, place privative, parking loué, carte résident, livret d&apos;accueil, annonce : 6 solutions concrètes pour gérer le stationnement des voyageurs en location courte durée sans conflits voisins.</description>
       <category>Expérience</category>
     </item>
   </channel>
