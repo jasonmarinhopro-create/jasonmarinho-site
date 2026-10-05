@@ -7,7 +7,6 @@ import {
   Calendar, EnvelopeSimple, Info, ArrowSquareOut, Receipt, Clock, PaperPlaneTilt, PenNib,
 } from '@phosphor-icons/react/dist/ssr'
 import type { EncaissementsSummary, ContractImpaye } from '@/lib/stripe/connect-queries'
-import TourTrigger from '@/components/dashboard/TourTrigger'
 
 interface Props {
   summary: EncaissementsSummary
@@ -15,6 +14,8 @@ interface Props {
   planLabel: string
   /** Précision quand un logement est sélectionné (le solde Stripe est celui du compte) */
   scopeNote?: string
+  /** Rendu dans un onglet de Contrats & paiements : pas de marges de page */
+  embedded?: boolean
 }
 
 const PAYOUT_STATUS_LABEL: Record<string, { label: string; color: string }> = {
@@ -111,7 +112,7 @@ function ResendPaymentButton({ contractId, name }: { contractId: string; name: s
   )
 }
 
-export default function EncaissementsView({ summary, impayes, scopeNote }: Props) {
+export default function EncaissementsView({ summary, impayes, scopeNote, embedded }: Props) {
   const isOnboarded = summary.hasOnboarded
 
   // Total impayé attendu (pour la stat en haut)
@@ -132,10 +133,9 @@ export default function EncaissementsView({ summary, impayes, scopeNote }: Props
     impayes.length === 0
 
   return (
-    <div style={s.page}>
+    <div style={embedded ? { ...s.page, padding: 0 } : s.page}>
       <p style={{ margin: 0, fontSize: '13.5px', color: 'var(--text-3)', lineHeight: 1.55, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' as const }}>
-        <span>Les loyers et acomptes payés par carte sur tes contrats directs (Stripe).{scopeNote ? ` ${scopeNote}` : ''} Les versements Airbnb et Booking n&apos;apparaissent pas ici : ils sont dans Revenus et Journal.</span>
-        <TourTrigger />
+        <span>Les loyers et acomptes payés par carte sur tes contrats directs (Stripe).{scopeNote ? ` ${scopeNote}` : ''} Les versements Airbnb et Booking n&apos;apparaissent pas ici : ils sont dans Mes finances.</span>
       </p>
 
       {!summary.hasAccount && (
@@ -184,9 +184,9 @@ export default function EncaissementsView({ summary, impayes, scopeNote }: Props
             il apparaîtra ici avec le détail du virement, la date d'arrivée et le statut.
           </p>
           <div style={s.emptyReadyHint}>
-            En attendant, le paiement en ligne s'active à la création d'un contrat, depuis{' '}
+            En attendant, le paiement en ligne s'active à la création d'un contrat, dans l'onglet{' '}
             <Link href="/dashboard/contrats" style={{ color: 'var(--accent-text)', textDecoration: 'none', fontWeight: 600 }}>
-              Contrats & paiements
+              Contrats
             </Link>.
           </div>
         </div>

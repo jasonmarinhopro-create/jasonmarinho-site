@@ -12,13 +12,14 @@ En haut de **Mes finances**, choisis un logement : tous les onglets affichent al
 
 Dans le bandeau vert, la carte de droite résume l'année en cours du logement choisi : revenus, bénéfice, déjà réservé d'ici décembre et avancement de l'objectif. Elle reste visible sur tous les onglets.
 
-## Les 5 onglets
+## Les 4 onglets
 
 - **Revenus** : ton bénéfice, mois par mois, par canal, et ton objectif
 - **Journal** : chaque revenu et chaque charge, avec la saisie, l'import et l'export
 - **Performances** : occupation, prix moyen par nuit, comparaison avec le marché
 - **Fiscalité** : micro-BIC ou régime réel, plafonds et échéances
-- **Paiements en ligne** : les loyers payés par carte sur tes contrats directs (Stripe)
+
+Les loyers payés par carte sur tes contrats directs (solde Stripe, virements, paiements à relancer) sont dans **Contrats & paiements**, onglet **Paiements**.
 
 Revenus, Journal et Fiscalité sont inclus dans toutes les formules. Dans Performances, la comparaison avec le marché, les canaux et le rythme de réservation sont en Standard.
 

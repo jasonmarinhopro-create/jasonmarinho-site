@@ -2,19 +2,26 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import ContratsView from './ContratsView'
 import { parisToday } from '@/lib/stripe/deposit-window'
-import type { ContractRow, ContractCandidate } from './types'
+import type { ContractRow, ContractCandidate, ContratsTab } from './types'
+import { getEncaissementsSummary } from '@/lib/stripe/connect-queries'
+import { deriveImpayes } from '@/lib/stripe/impayes'
+import EncaissementsView from '@/app/dashboard/encaissements/EncaissementsView'
 
 // Page « Contrats & paiements » (sept. 2026) : auparavant un onglet caché
 // dans Mes voyageurs. Les contrats + caution sont la valeur n°1 de l'app
 // pour les réservations directes : ils ont leur entrée dans le menu, avec en
 // tête ce qui attend une action (signature, paiement, caution à libérer).
-export default async function ContratsPage() {
-  const [profile, supabase] = await Promise.all([getProfile(), createClient()])
+// Onglets (05/10/2026, demande de Jason : « avoir une visibilité sur le tout »)
+// : Contrats, Paiements (ex-« Paiements en ligne » de Mes finances) et
+// Cautions (libérer ou retenir sans passer par chaque fiche voyageur).
+export default async function ContratsPage({ searchParams }: { searchParams: Promise<{ onglet?: string }> }) {
+  const [profile, supabase, sp] = await Promise.all([getProfile(), createClient(), searchParams])
   if (!profile) return null
+  const tab: ContratsTab = sp.onglet === 'paiements' || sp.onglet === 'cautions' ? sp.onglet : 'contrats'
 
   const { data } = await supabase
     .from('contracts')
-    .select('id, statut, signature_date, created_at, locataire_prenom, locataire_nom, locataire_email, logement_nom, logement_adresse, date_arrivee, date_depart, montant_loyer, montant_caution, stripe_payment_enabled, stripe_payment_status, stripe_deposit_status, sejour_id, token')
+    .select('id, statut, signature_date, created_at, locataire_prenom, locataire_nom, locataire_email, logement_nom, logement_adresse, date_arrivee, date_depart, montant_loyer, montant_caution, stripe_payment_enabled, stripe_payment_status, stripe_deposit_status, sejour_id, token, modalites_paiement, acompte_percent, logement_id')
     .eq('user_id', profile.userId)
     .order('created_at', { ascending: false })
     .limit(500)
@@ -76,5 +83,17 @@ export default async function ContratsPage() {
     voyageur_id: c.sejour_id ? voyageurBySejour.get(c.sejour_id) ?? null : null,
   }))
 
-  return <ContratsView contracts={contracts} candidates={candidates} voyageurs={voyageurOptions ?? []} logements={(logementOptions ?? []).filter(l => l.nom) as Array<{ id: string; nom: string }>} appUrl={process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'} today={today} stripeReady={!!(payProfile?.stripe_account_id && payProfile?.stripe_onboarding_complete)} hasIban={!!payProfile?.iban} />
+  // Onglet Paiements : solde et virements lus chez Stripe, seulement quand
+  // l'onglet est ouvert (appel externe)
+  let paiements: React.ReactNode = null
+  if (tab === 'paiements') {
+    const { data: acct } = await supabase.from('profiles').select('stripe_account_id').eq('id', profile.userId).maybeSingle()
+    const summary = await getEncaissementsSummary(acct?.stripe_account_id ?? null)
+    const actifs = rows.filter(c => c.statut !== 'annule').map(c => ({
+      ...c, acompte_percent: (c as { acompte_percent?: number | null }).acompte_percent ?? 100,
+    }))
+    paiements = <EncaissementsView summary={summary} impayes={deriveImpayes(actifs as Parameters<typeof deriveImpayes>[0])} planLabel={profile.plan} embedded />
+  }
+
+  return <ContratsView tab={tab} paiements={paiements} contracts={contracts} candidates={candidates} voyageurs={voyageurOptions ?? []} logements={(logementOptions ?? []).filter(l => l.nom) as Array<{ id: string; nom: string }>} appUrl={process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'} today={today} stripeReady={!!(payProfile?.stripe_account_id && payProfile?.stripe_onboarding_complete)} hasIban={!!payProfile?.iban} />
 }

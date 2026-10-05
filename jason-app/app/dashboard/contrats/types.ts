@@ -18,6 +18,9 @@ export type ContractRow = {
   stripe_deposit_status: string | null
   sejour_id: string | null
   token: string | null
+  modalites_paiement?: string | null
+  acompte_percent?: number | null
+  logement_id?: string | null
   /** Fiche voyageur du séjour lié (déduit de sejour_id), pour les liens. */
   voyageur_id: string | null
 }
@@ -31,3 +34,6 @@ export type ContractCandidate = {
   dateArrivee: string | null
   dateDepart: string | null
 }
+
+/** Onglets de la page Contrats & paiements (?onglet=) */
+export type ContratsTab = 'contrats' | 'paiements' | 'cautions'

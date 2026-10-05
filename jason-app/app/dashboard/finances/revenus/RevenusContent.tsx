@@ -92,7 +92,7 @@ export default function RevenusContent({ data, searchParams }: { data: FinanceDa
                 <span style={s.chip}><CalendarCheck size={14} weight="duotone" /> + {eur(t.aVenir)} déjà réservés sur la période</span>
               )}
               {t.aEncaisser > 0 && (
-                <Link href="/dashboard/finances/encaissements" style={{ ...s.chip, color: COLORS.commissions, textDecoration: 'none' }}>
+                <Link href="/dashboard/contrats?onglet=paiements" style={{ ...s.chip, color: COLORS.commissions, textDecoration: 'none' }}>
                   {eur(t.aEncaisser)} de paiement en ligne pas encore reçu <ArrowRight size={12} />
                 </Link>
               )}
