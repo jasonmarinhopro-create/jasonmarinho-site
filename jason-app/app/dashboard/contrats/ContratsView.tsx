@@ -6,12 +6,13 @@
 // non vides) et la liste de tous les contrats.
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
-import { PenNib, CurrencyEur, LockKey, CheckCircle, Copy, Plus, CaretDown, CaretRight, House, FileText, Warning, Eye } from '@phosphor-icons/react/dist/ssr'
+import { PenNib, CurrencyEur, LockKey, CheckCircle, Copy, Plus, CaretDown, CaretRight, House, FileText, Warning, Eye, CreditCard } from '@phosphor-icons/react/dist/ssr'
 import { contractTodos, contractTodoCount } from '@/lib/contracts/todo'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import { Card, CardHead, Notice, ui } from '../finances/_ui/ui'
 import ContractsTab from './ContractsTab'
-import type { ContractRow, ContractCandidate } from './types'
+import type { ContractRow, ContractCandidate, ContratsTab } from './types'
+import CautionsTab, { cautionGroup } from './CautionsTab'
 import dynamic from 'next/dynamic'
 import type { VoyageurOption } from '../logements/[id]/QuickSejourModal'
 
@@ -34,7 +35,10 @@ function ficheHref(c: ContractRow): string {
   return c.voyageur_id ? `/dashboard/voyageurs/${c.voyageur_id}` : '/dashboard/voyageurs'
 }
 
-export default function ContratsView({ contracts, candidates, voyageurs, logements, appUrl, today, stripeReady, hasIban }: {
+export default function ContratsView({ tab = 'contrats', paiements, contracts, candidates, voyageurs, logements, appUrl, today, stripeReady, hasIban }: {
+  tab?: ContratsTab
+  /** Contenu de l'onglet Paiements (rendu côté serveur : solde Stripe) */
+  paiements?: React.ReactNode
   contracts: ContractRow[]
   candidates: ContractCandidate[]
   voyageurs: VoyageurOption[]
@@ -62,6 +66,15 @@ export default function ContratsView({ contracts, candidates, voyageurs, logemen
     }).catch(() => {})
   }
   const goTodo = () => todoRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const cautionsADecider = useMemo(
+    () => contracts.filter(c => c.statut === 'signe' && Number(c.montant_caution ?? 0) > 0 && cautionGroup(c, stripeReady) === 'decider').length,
+    [contracts, stripeReady],
+  )
+  const tabs: Array<{ key: ContratsTab; label: string; icon: React.ReactNode; badge?: number }> = [
+    { key: 'contrats', label: 'Contrats', icon: <FileText size={15} weight={tab === 'contrats' ? 'fill' : 'regular'} />, badge: todos.aSigner.length || undefined },
+    { key: 'paiements', label: 'Paiements', icon: <CreditCard size={15} weight={tab === 'paiements' ? 'fill' : 'regular'} />, badge: todos.loyerEnAttente.length || undefined },
+    { key: 'cautions', label: 'Cautions', icon: <LockKey size={15} weight={tab === 'cautions' ? 'fill' : 'regular'} />, badge: cautionsADecider || undefined },
+  ]
 
   const asideRows = [
     { n: todos.aSigner.length, label: todos.aSigner.length > 1 ? 'contrats à faire signer' : 'contrat à faire signer', icon: <PenNib size={15} color={AMBER} /> },
@@ -120,7 +133,29 @@ export default function ContratsView({ contracts, candidates, voyageurs, logemen
         </div>
       </HubHero>
 
-      {contracts.length > 0 && count > 0 && (
+      <nav style={s.tabs} aria-label="Onglets Contrats & paiements">
+        {tabs.map(t => {
+          const on = t.key === tab
+          return (
+            <Link key={t.key} href={t.key === 'contrats' ? '/dashboard/contrats' : `/dashboard/contrats?onglet=${t.key}`} scroll={false}
+              style={{ ...s.tab, ...(on ? s.tabOn : {}) }} aria-current={on ? 'page' : undefined}>
+              {t.icon}
+              <span>{t.label}</span>
+              {t.badge ? <span style={s.tabBadge}>{t.badge}</span> : null}
+            </Link>
+          )
+        })}
+      </nav>
+
+      {tab === 'paiements' && (
+        <>{paiements}</>
+      )}
+
+      {tab === 'cautions' && (
+        <CautionsTab contracts={contracts} stripeReady={stripeReady} appUrl={appUrl} today={today} />
+      )}
+
+      {tab === 'contrats' && contracts.length > 0 && count > 0 && (
         <div ref={todoRef} style={{ scrollMarginTop: 16 }}>
           <Card>
             <CardHead title="À traiter" sub="Ce qui attend une action de ta part, par ordre d'arrivée." />
@@ -156,7 +191,7 @@ export default function ContratsView({ contracts, candidates, voyageurs, logemen
                       <span style={s.itemSub}>
                         {c.stripe_payment_status === 'failed' ? <span style={{ color: 'var(--danger)', fontWeight: 600 }}>paiement échoué</span> : fmtEur(c.montant_loyer)}
                       </span>
-                      <Link href={ficheHref(c)} style={s.itemBtn}>Relancer</Link>
+                      <Link href="/dashboard/contrats?onglet=paiements" scroll={false} style={s.itemBtn}>Relancer</Link>
                     </>
                   )}
                 />
@@ -165,7 +200,7 @@ export default function ContratsView({ contracts, candidates, voyageurs, logemen
                 <TodoCard
                   icon={<LockKey size={16} weight="fill" />}
                   title="Caution à traiter"
-                  hint="Libère la caution, ou encaisse-la en cas de dégâts, avant que Stripe ne débloque la carte (environ 7 jours)."
+                  hint="Libère la caution, ou retiens le montant des dégâts, avant que la banque ne débloque la carte (7 jours au plus)."
                   items={cautionItems}
                   render={c => (
                     <>
@@ -175,7 +210,7 @@ export default function ContratsView({ contracts, candidates, voyageurs, logemen
                           ? <span style={{ color: AMBER, fontWeight: 600 }}>expirée : renvoie le lien</span>
                           : <>{fmtEur(c.montant_caution)} · {c.date_depart && c.date_depart <= today ? 'départ' : 'sur place, départ'} {fmtShort(c.date_depart)}</>}
                       </span>
-                      <Link href={ficheHref(c)} style={s.itemBtn}>{c.stripe_deposit_status === 'expired' ? 'Renvoyer' : 'Gérer'}</Link>
+                      <Link href="/dashboard/contrats?onglet=cautions" scroll={false} style={s.itemBtn}>{c.stripe_deposit_status === 'expired' ? 'Renvoyer' : 'Gérer'}</Link>
                     </>
                   )}
                 />
@@ -184,11 +219,11 @@ export default function ContratsView({ contracts, candidates, voyageurs, logemen
           </Card>
         </div>
       )}
-      {contracts.length > 0 && count === 0 && (
+      {tab === 'contrats' && contracts.length > 0 && count === 0 && (
         <Notice tone="ok"><strong>Rien en attente.</strong> Tous tes contrats sont signés, les loyers encaissés et les cautions traitées.</Notice>
       )}
 
-      <ContractsTab contracts={contracts} today={today} />
+      {tab === 'contrats' && <ContractsTab contracts={contracts} today={today} />}
 
       {quickOpen && (
         <QuickSejourModal voyageurs={voyageurs} logements={logements} contractOnly onClose={() => setQuickOpen(false)} />
@@ -372,4 +407,18 @@ const s: Record<string, React.CSSProperties> = {
     textDecoration: 'none', cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
   },
   more: { fontSize: '12px', color: 'var(--text-3)', margin: '6px 0 0' },
+  tabs: {
+    display: 'flex', gap: 4, borderBottom: '1px solid var(--border)', overflowX: 'auto',
+    WebkitOverflowScrolling: 'touch', margin: '0 0 var(--s-2)',
+  },
+  tab: {
+    display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 14px', whiteSpace: 'nowrap',
+    fontSize: 14, fontWeight: 600, color: 'var(--text-3)', textDecoration: 'none',
+    borderBottom: '2px solid transparent', marginBottom: -1,
+  },
+  tabOn: { color: 'var(--accent-text)', borderBottom: '2px solid var(--accent-text)' },
+  tabBadge: {
+    minWidth: 20, height: 20, padding: '0 6px', borderRadius: 999, background: 'rgba(255,213,107,0.3)', color: '#8A5A12',
+    fontSize: 11.5, fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+  },
 }

@@ -16,7 +16,7 @@ Si tu as choisi un **acompte de 50 %**, seul l'acompte est payé en ligne. Le so
 
 La caution par carte est une **empreinte bancaire** : la banque du voyageur met le montant de côté, mais **rien ne quitte son compte**. Selon sa banque, il peut voir la somme « en attente » dans son application. La page du contrat et l'e-mail le lui expliquent en 3 temps (blocage, ta décision après le départ, fin automatique au plus tard 7 jours après).
 
-Après le séjour, toi seul décides, depuis la fenêtre **Paiements** :
+Après le séjour, toi seul décides, depuis **Contrats & paiements → Cautions** (toutes tes cautions au même endroit) ou depuis le bouton **Loyer et caution** du séjour sur la fiche voyageur :
 
 - **Tout va bien : libérer la caution** : le blocage est levé tout de suite, rien n'est prélevé. L'app te demande de confirmer, puis le voyageur reçoit un e-mail « Votre caution est libérée »
 - **Dommages constatés : retenir une somme** : tu indiques le **montant** (jusqu'au total de la caution) et le **motif**. Seule cette somme est prélevée, le reste est libéré tout de suite. Le voyageur reçoit un e-mail avec le montant et le motif. C'est définitif
@@ -39,8 +39,9 @@ Conséquences :
 
 ## Où gérer tout ça
 
-- **Contrats & paiements** : le bloc **À traiter** liste les loyers pas encore encaissés et les cautions à libérer
-- **Fiche du voyageur** → bouton **Paiements** du séjour : état du loyer et de la caution, liens à copier, **Renvoyer l'email au voyageur**, boutons Libérer et Retenir une somme
+- **Contrats & paiements → Paiements** : solde Stripe, virements, loyers à relancer
+- **Contrats & paiements → Cautions** : cautions à décider (Libérer, Retenir une somme), en attente du voyageur (Copier le lien), terminées
+- **Fiche du voyageur** → bouton **Loyer et caution** du séjour : état du loyer et de la caution, liens à copier, **Renvoyer l'email au voyageur**
 
 ## Les statuts
 

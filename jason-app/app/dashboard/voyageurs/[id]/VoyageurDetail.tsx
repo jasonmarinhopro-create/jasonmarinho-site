@@ -10,6 +10,7 @@ import {
   ListChecks, CheckSquare, Square, Bandaids, DownloadSimple,
   Prohibit, ArrowCounterClockwise, UsersThree,
   Tag, MapPin, ShieldCheck, ClockCounterClockwise, PaperPlaneTilt, SignIn, SignOut, UserPlus, PenNib, CheckCircle, Circle,
+  DotsThreeVertical, Trash, CreditCard, Receipt,
 } from '@phosphor-icons/react/dist/ssr'
 import { updateVoyageur, addSejour, updateSejour, deleteSejour, cancelSejour, restoreSejour, generateCheckinLink, setCheckinExpectedCount, type VoyageurData, type SejourData } from '../actions'
 import { updateContractChecklist } from '../../calendrier/actions'
@@ -24,6 +25,7 @@ import dynamic from 'next/dynamic'
 
 const ContractModal = dynamic(() => import('./ContractModal'), { ssr: false })
 const DepositModal  = dynamic(() => import('./DepositModal'),  { ssr: false })
+const InvoiceModal  = dynamic(() => import('./InvoiceModal'),  { ssr: false })
 
 // Mêmes motifs que la page Sécurité voyageur (lib/securite/identifiers.ts)
 const INCIDENT_TYPES = ALL_INCIDENT_TYPES
@@ -479,18 +481,41 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   }
 
   const [invoiceLoading, setInvoiceLoading] = useState<string | null>(null)
+  // Fenêtre « Facture » (05/10/2026) : explique la facture de l'app et les
+  // règles de la facture électronique avant d'attribuer un numéro
+  const [invoiceSejour, setInvoiceSejour] = useState<Sejour | null>(null)
+  // Menu « ⋮ » d'un séjour (modifier, annuler, supprimer)
+  const [menuSejourId, setMenuSejourId] = useState<string | null>(null)
+  useEffect(() => {
+    if (!menuSejourId) return
+    const onDown = (e: MouseEvent) => {
+      if (!(e.target as Element | null)?.closest?.('[data-sejour-menu]')) setMenuSejourId(null)
+    }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMenuSejourId(null) }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey) }
+  }, [menuSejourId])
 
-  async function handleInvoiceClick(sj: Sejour) {
+  async function handleInvoiceClick(sj: Sejour): Promise<string | null> {
     setInvoiceLoading(sj.id)
+    // Onglet ouvert tout de suite (au clic) : ouvert après les appels serveur,
+    // il était bloqué par Safari et certains navigateurs
+    const win = window.open('', '_blank')
     try {
       const { getContractsBySejour, issueInvoice } = await import('../contract-actions')
       const res = await getContractsBySejour(sj.id)
-      const latest = res.contracts?.[0]
-      if (!latest?.id || !latest?.token) return
+      const latest = res.contracts?.find(c => c.statut === 'signe') ?? res.contracts?.[0]
+      if (!latest?.id || !latest?.token) { win?.close(); return 'Contrat introuvable pour ce séjour.' }
       const inv = await issueInvoice(latest.id, voyageur.id)
-      if (inv.error) return
-      const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
-      window.open(`${APP_URL}/invoice/${latest.token}`, '_blank', 'noopener,noreferrer')
+      if (inv.error) { win?.close(); return inv.error }
+      const url = `/invoice/${latest.token}`
+      if (win) win.location.href = url
+      else window.location.href = url
+      return null
+    } catch {
+      win?.close()
+      return 'La facture n\'a pas pu être ouverte. Réessaie.'
     } finally {
       setInvoiceLoading(null)
     }
@@ -1948,154 +1973,152 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
 
             return (
               <div key={sj.id}>
-              <div style={s.sejourRow} className="sejour-row-mobile jm-sejour-row">
-                <div style={{ ...s.sejourLeft, ...(isCancelled ? { opacity: 0.55 } : {}) }}>
-                  <div style={{ ...s.sejourDates, ...(isCancelled ? { textDecoration: 'line-through' } : {}) }}>
-                    {formatDate(sj.date_arrivee)} → {formatDate(sj.date_depart)}
-                    <span style={s.nightsBadge}>{n} nuit{n > 1 ? 's' : ''}</span>
-                    {isCancelled && (
-                      <span style={{ ...s.nightsBadge, color: 'var(--danger)', background: 'color-mix(in srgb, var(--danger) 10%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 30%, transparent)', textDecoration: 'none' }}>
-                        <Prohibit size={11} style={{ verticalAlign: '-1px' }} /> Annulé le {formatDate(sj.annule_at!.slice(0, 10))}
-                      </span>
-                    )}
-                  </div>
-                  <div style={s.sejourMeta}>
-                    {sj.logement && (
-                      <span style={s.metaChip}>
-                        <House size={12} />
-                        {sj.logement}
-                      </span>
-                    )}
-                    {sj.montant != null && (
-                      <span style={s.metaChip}>
-                        <CurrencyEur size={12} />
-                        {sj.montant.toLocaleString('fr-FR')} €
-                      </span>
-                    )}
-                    <span style={{ ...s.metaChip, color: ct.color, background: ct.bg }}>
-                      <Seal size={12} />
-                      {ct.label}
-                      {sj.contrat_plateforme && PLATFORM_LABELS[sj.contrat_plateforme as PlatformKey] && (
-                        <> · {PLATFORM_LABELS[sj.contrat_plateforme as PlatformKey].label}</>
+              <div style={{ ...s.sejourCard, ...(isCancelled ? { opacity: 0.75 } : {}) }} className="jm-sejour-row">
+                {/* Ligne 1 : dates, nuits, état, menu */}
+                <div style={s.sejourTop}>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ ...s.sejourDates, ...(isCancelled ? { textDecoration: 'line-through' } : {}) }}>
+                      {formatDate(sj.date_arrivee)} <span style={{ color: 'var(--text-3)', fontWeight: 400 }}>au</span> {formatDate(sj.date_depart)}
+                    </div>
+                    <div style={s.sejourMeta}>
+                      <span style={s.nightsBadge}>{n} nuit{n > 1 ? 's' : ''}</span>
+                      {sj.logement && <span style={s.metaChip}><House size={12} weight="fill" /> {sj.logement}</span>}
+                      {sj.montant != null && <span style={s.metaChip}><CurrencyEur size={12} /> {sj.montant.toLocaleString('fr-FR')} €</span>}
+                      {isCancelled ? (
+                        <span style={{ ...s.metaChip, color: 'var(--danger)', background: 'color-mix(in srgb, var(--danger) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--danger) 25%, transparent)' }}>
+                          <Prohibit size={12} /> Annulé le {formatDate(sj.annule_at!.slice(0, 10))}
+                        </span>
+                      ) : (
+                        <span style={{ ...s.metaChip, color: ct.color, background: ct.bg }}>
+                          <Seal size={12} weight="fill" />
+                          {sj.contrat_plateforme && PLATFORM_LABELS[sj.contrat_plateforme as PlatformKey]
+                            ? `Contrat ${PLATFORM_LABELS[sj.contrat_plateforme as PlatformKey].label}`
+                            : `Contrat : ${ct.label.toLowerCase()}`}
+                        </span>
                       )}
-                    </span>
+                    </div>
+                  </div>
+                  <div style={{ position: 'relative', flexShrink: 0 }} data-sejour-menu>
+                    <button
+                      type="button"
+                      onClick={() => setMenuSejourId(menuSejourId === sj.id ? null : sj.id)}
+                      style={s.kebab}
+                      aria-label="Autres actions du séjour"
+                      aria-expanded={menuSejourId === sj.id}
+                    >
+                      <DotsThreeVertical size={18} weight="bold" />
+                    </button>
+                    {menuSejourId === sj.id && (
+                      <div style={s.kebabMenu} role="menu">
+                        {isCancelled ? (
+                          <button type="button" role="menuitem" style={s.kebabItem} onClick={() => { setMenuSejourId(null); handleRestoreSejour(sj.id) }}>
+                            <ArrowCounterClockwise size={15} /> Rétablir le séjour
+                          </button>
+                        ) : (
+                          <>
+                            <button type="button" role="menuitem" style={s.kebabItem} onClick={() => { setMenuSejourId(null); openEditSejour(sj) }}>
+                              <Pencil size={15} /> Modifier le séjour
+                            </button>
+                            <button type="button" role="menuitem" style={{ ...s.kebabItem, color: '#8A5A12' }} onClick={() => { setMenuSejourId(null); handleCancelSejour(sj.id) }}>
+                              <Prohibit size={15} /> Annuler le séjour (garde l&apos;historique)
+                            </button>
+                          </>
+                        )}
+                        <button type="button" role="menuitem" style={{ ...s.kebabItem, color: 'var(--danger)' }} onClick={() => { setMenuSejourId(null); handleDeleteSejour(sj.id) }}>
+                          <Trash size={15} /> Supprimer définitivement
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
-                <div className="sejour-actions">
-                  {isCancelled ? (
-                    <>
+
+                {/* Ligne 2 : actions, regroupées par usage */}
+                {isCancelled ? (
+                  <div style={s.sejourActions}>
+                    <button onClick={() => handleRestoreSejour(sj.id)} style={s.actPrimary} title="Rétablir ce séjour (il réintègre le calendrier, le CA et les déclarations)">
+                      <ArrowCounterClockwise size={14} weight="bold" /> Rétablir
+                    </button>
+                  </div>
+                ) : (
+                  <div style={s.sejourActions}>
+                    <div style={s.actGroup}>
+                      {sj.contrat_plateforme ? (
+                        <span style={s.platformNote}>
+                          <Lock size={13} /> Contrat et paiement gérés par {PLATFORM_LABELS[sj.contrat_plateforme as PlatformKey]?.label ?? 'la plateforme'}
+                        </span>
+                      ) : isDecouverte ? (
+                        <Link href="/dashboard/abonnement" style={{ ...s.actSecondary, textDecoration: 'none' }} title="Contrats disponibles en Standard">
+                          <Lock size={14} /> Contrat en Standard
+                        </Link>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => handleContractClick(sj)}
+                            style={s.actPrimary}
+                            disabled={contractLoading === sj.id}
+                          >
+                            <FileText size={14} weight="fill" />
+                            {contractLoading === sj.id ? '…' : sj.contrat_statut === 'nouveau' ? 'Créer le contrat' : 'Voir le contrat'}
+                          </button>
+                          {sj.contrat_statut === 'signe' && (
+                            <>
+                              <button onClick={() => openDepositModal(sj.id)} disabled={depositLoading === sj.id} style={s.actSecondary}>
+                                <CreditCard size={14} /> {depositLoading === sj.id ? '…' : 'Loyer et caution'}
+                              </button>
+                              <button onClick={() => setInvoiceSejour(sj)} style={s.actSecondary}>
+                                <Receipt size={14} /> Facture
+                              </button>
+                              {sj.contrat_lien && (
+                                <button
+                                  onClick={() => {
+                                    // Le PrintButton sur /sign/[token] détecte ?print=1
+                                    const sep = sj.contrat_lien!.includes('?') ? '&' : '?'
+                                    window.open(sj.contrat_lien + sep + 'print=1', '_blank', 'noopener,noreferrer')
+                                  }}
+                                  style={s.actSecondary}
+                                  title="Télécharger le contrat signé en PDF"
+                                >
+                                  <DownloadSimple size={14} /> PDF
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </>
+                      )}
+                    </div>
+                    <div style={s.actGroup}>
                       <button
-                        onClick={() => handleRestoreSejour(sj.id)}
-                        style={s.contractBtn}
-                        title="Rétablir ce séjour (il réintègre le calendrier, le CA et les déclarations)"
+                        onClick={() => toggleChecklist(sj.id)}
+                        disabled={checklistLoading === sj.id}
+                        style={{ ...s.actGhost, ...(isExpanded ? s.actGhostOn : {}) }}
+                        aria-expanded={isExpanded}
                       >
-                        <ArrowCounterClockwise size={13} weight="bold" /> Rétablir
+                        <ListChecks size={14} />
+                        {checklistLoading === sj.id ? '…' : cl ? `Checklist ${doneCount}/${clTotal}` : 'Checklist'}
                       </button>
-                      <button onClick={() => handleDeleteSejour(sj.id)} style={{ ...s.sejourActionBtn, color: 'var(--danger)' }} className="jm-sejour-action" title="Supprimer définitivement">
-                        <X size={14} />
-                      </button>
-                    </>
-                  ) : (
-                  <>
-                  {/* Contrat géré par une plateforme externe : pas de bouton contrat/paiement */}
-                  {sj.contrat_plateforme ? (
-                    <span style={{ ...s.metaChip, color: 'var(--text-muted)', background: 'var(--surface-2)', fontSize: '11px' }} title="Géré par la plateforme">
-                      <Lock size={11} /> Géré par {PLATFORM_LABELS[sj.contrat_plateforme as PlatformKey]?.label ?? 'plateforme'}
-                    </span>
-                  ) : isDecouverte ? (
-                    <Link href="/dashboard/abonnement" style={{ ...s.contractBtn, opacity: 0.6, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }} title="Contrats disponibles en Standard">
-                      <Lock size={13} /> Standard
-                    </Link>
-                  ) : (
-                    <button
-                      onClick={() => handleContractClick(sj)}
-                      style={s.contractBtn}
-                      disabled={contractLoading === sj.id}
-                      title={sj.contrat_statut === 'nouveau' ? 'Créer un contrat' : 'Voir le contrat'}
-                    >
-                      <FileText size={13} weight="fill" />
-                      {contractLoading === sj.id ? '…' : sj.contrat_statut === 'nouveau' ? 'Créer contrat' : 'Voir contrat'}
-                    </button>
-                  )}
-                  {sj.contrat_statut === 'signe' && sj.contrat_lien && !sj.contrat_plateforme && !isDecouverte && (
-                    <button
-                      onClick={() => {
-                        // Le PrintButton sur /sign/[token] détecte ?print=1
-                        // et déclenche window.print() automatiquement.
-                        const sep = sj.contrat_lien!.includes('?') ? '&' : '?'
-                        window.open(sj.contrat_lien + sep + 'print=1', '_blank', 'noopener,noreferrer')
-                      }}
-                      style={s.sejourActionBtn}
-                      className="jm-sejour-action"
-                      title="Télécharger le contrat en PDF"
-                    >
-                      <DownloadSimple size={14} />
-                    </button>
-                  )}
-                  {sj.contrat_statut === 'signe' && !sj.contrat_plateforme && !isDecouverte && (
-                    <button
-                      onClick={() => openDepositModal(sj.id)}
-                      disabled={depositLoading === sj.id}
-                      style={s.depositBtn}
-                      title="Gérer les paiements"
-                    >
-                      {depositLoading === sj.id ? '…' : 'Paiements'}
-                    </button>
-                  )}
-                  {sj.contrat_statut === 'signe' && !sj.contrat_plateforme && !isDecouverte && (
-                    <button
-                      onClick={() => handleInvoiceClick(sj)}
-                      disabled={invoiceLoading === sj.id}
-                      style={s.sejourActionBtn}
-                      className="jm-sejour-action"
-                      title="Émettre / voir la facture"
-                    >
-                      {invoiceLoading === sj.id ? '…' : <FileText size={14} weight="light" />}
-                    </button>
-                  )}
-                  <button onClick={() => openEditSejour(sj)} style={s.sejourActionBtn} className="jm-sejour-action" title="Modifier">
-                    <Pencil size={14} />
-                  </button>
-                  <button onClick={() => handleCancelSejour(sj.id)} style={{ ...s.sejourActionBtn, color: '#B7791F' }} className="jm-sejour-action" title="Annuler ce séjour (conserve l'historique)">
-                    <Prohibit size={14} />
-                  </button>
-                  <button onClick={() => handleDeleteSejour(sj.id)} style={{ ...s.sejourActionBtn, color: 'var(--danger)' }} className="jm-sejour-action" title="Supprimer">
-                    <X size={14} />
-                  </button>
-                  <button
-                    onClick={() => toggleChecklist(sj.id)}
-                    disabled={checklistLoading === sj.id}
-                    style={{ ...s.checklistBtn, ...(isExpanded ? s.checklistBtnActive : {}) }}
-                    title="Checklist du séjour"
-                  >
-                    <ListChecks size={13} />
-                    {checklistLoading === sj.id ? '…' : (
-                      cl ? `${doneCount}/${clTotal}` : 'Checklist'
-                    )}
-                  </button>
-                  {(() => {
-                    const incExpanded = expandedIncidentsSejourId === sj.id
-                    const counts = incidentCounts[sj.id]
-                    const hasOpen = (counts?.open ?? 0) > 0
-                    const total = counts?.total ?? 0
-                    return (
-                      <button
-                        onClick={() => setExpandedIncidentsSejourId(incExpanded ? null : sj.id)}
-                        style={{
-                          ...s.checklistBtn,
-                          ...(incExpanded ? s.checklistBtnActive : {}),
-                          ...(hasOpen ? { color: 'var(--danger)', border: '1px solid color-mix(in srgb, var(--danger) 40%, transparent)' } : {}),
-                        }}
-                        title="Incidents du séjour"
-                      >
-                        <Bandaids size={13} />
-                        {total > 0 ? `Incidents · ${total}` : 'Incidents'}
-                      </button>
-                    )
-                  })()}
-                  </>
-                  )}
-                </div>
+                      {(() => {
+                        const incExpanded = expandedIncidentsSejourId === sj.id
+                        const counts = incidentCounts[sj.id]
+                        const hasOpen = (counts?.open ?? 0) > 0
+                        const total = counts?.total ?? 0
+                        return (
+                          <button
+                            onClick={() => setExpandedIncidentsSejourId(incExpanded ? null : sj.id)}
+                            style={{
+                              ...s.actGhost,
+                              ...(incExpanded ? s.actGhostOn : {}),
+                              ...(hasOpen ? { color: 'var(--danger)', border: '1px solid color-mix(in srgb, var(--danger) 40%, transparent)' } : {}),
+                            }}
+                            aria-expanded={incExpanded}
+                          >
+                            <Bandaids size={14} />
+                            {total > 0 ? `Incidents · ${total}` : 'Incidents'}
+                          </button>
+                        )
+                      })()}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Alerte légale voyageur étranger (SIBA PT, fiche police FR, etc.)
@@ -2341,6 +2364,21 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           hostIban={bailleur.iban}
           hostBic={bailleur.bic}
           onClose={() => setDepositContract(null)}
+        />
+      )}
+
+      {/* Facture d'un séjour */}
+      {invoiceSejour && (
+        <InvoiceModal
+          guest={`${voyageur.prenom} ${voyageur.nom}`}
+          logement={invoiceSejour.logement}
+          dateArrivee={invoiceSejour.date_arrivee}
+          dateDepart={invoiceSejour.date_depart}
+          montant={invoiceSejour.montant}
+          pays={(invoiceSejour.logement ? logements.find(l => l.nom === invoiceSejour.logement)?.pays : null) ?? 'FR'}
+          loading={invoiceLoading === invoiceSejour.id}
+          onOpen={() => handleInvoiceClick(invoiceSejour)}
+          onClose={() => setInvoiceSejour(null)}
         />
       )}
 
@@ -2787,17 +2825,52 @@ const s: Record<string, React.CSSProperties> = {
   },
 
   sejourList: { display: 'flex', flexDirection: 'column', gap: 'var(--s-3)' },
-  sejourRow: {
-    display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 'var(--s-3)',
+  sejourCard: {
+    display: 'flex', flexDirection: 'column', gap: '12px',
     background: 'var(--bg)', border: '1px solid var(--border)',
-    borderRadius: 'var(--r-lg)', padding: 'var(--s-4) var(--s-4)',
-    transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth)',
+    borderRadius: '16px', padding: '14px 16px',
+  },
+  sejourTop: { display: 'flex', alignItems: 'flex-start', gap: '12px' },
+  sejourActions: {
+    display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '8px',
+    paddingTop: '12px', borderTop: '1px solid var(--border)',
+  },
+  actGroup: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' },
+  actPrimary: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 13px', borderRadius: '10px',
+    background: 'var(--accent-text)', color: 'var(--bg)', border: '1px solid var(--accent-text)',
+    fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
+  },
+  actSecondary: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 12px', borderRadius: '10px',
+    background: 'var(--surface)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)',
+    fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
+  },
+  actGhost: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '8px 11px', borderRadius: '10px',
+    background: 'transparent', color: 'var(--text-2)', border: '1px solid var(--border)',
+    fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
+  },
+  actGhostOn: { background: 'var(--accent-bg)', color: 'var(--accent-text)', border: '1px solid var(--accent-border)' },
+  platformNote: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12.5px', color: 'var(--text-3)' },
+  kebab: {
+    width: '34px', height: '34px', borderRadius: '10px', border: '1px solid var(--border)', background: 'var(--surface)',
+    color: 'var(--text-2)', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+  },
+  kebabMenu: {
+    position: 'absolute', right: 0, top: 'calc(100% + 6px)', zIndex: 30, minWidth: '250px',
+    background: 'var(--bg-2)', border: '1px solid var(--border-2)', borderRadius: '12px',
+    boxShadow: '0 12px 32px rgba(0,0,0,0.16)', padding: '6px', display: 'flex', flexDirection: 'column',
+  },
+  kebabItem: {
+    display: 'flex', alignItems: 'center', gap: '9px', padding: '10px 10px', borderRadius: '8px', border: 'none',
+    background: 'transparent', color: 'var(--text)', fontSize: '13.5px', fontWeight: 500, cursor: 'pointer',
+    fontFamily: 'inherit', textAlign: 'left',
   },
   sejourLeft: { flex: '1 1 260px', minWidth: 0 },
   sejourDates: {
-    display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--s-2)',
-    fontSize: 'var(--t-base)', fontWeight: 600, color: 'var(--text)', marginBottom: 'var(--s-2)',
-    letterSpacing: 'var(--ls-snug)',
+    fontFamily: 'var(--font-fraunces), serif', fontSize: '17px', fontWeight: 500, color: 'var(--text)',
+    marginBottom: '8px', letterSpacing: '-0.2px',
   },
   nightsBadge: {
     background: 'var(--accent-bg)', border: '1px solid var(--accent-border)',
@@ -2847,7 +2920,7 @@ const s: Record<string, React.CSSProperties> = {
     flexShrink: 0,
   },
   checklistBtnActive: {
-    background: 'var(--accent-bg)', borderColor: 'var(--accent-text)', color: 'var(--accent-text)',
+    background: 'var(--accent-bg)', border: '1px solid var(--accent-text)', color: 'var(--accent-text)',
   },
   clPanel: {
     margin: '0 0 8px 0', padding: '18px 20px',

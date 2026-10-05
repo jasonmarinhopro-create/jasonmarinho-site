@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
-import { ChartBar, ListBullets, ChartLineUp, Scales, CreditCard } from '@phosphor-icons/react/dist/ssr'
+import { ChartBar, ListBullets, ChartLineUp, Scales } from '@phosphor-icons/react/dist/ssr'
 
 /**
  * Onglets de /dashboard/finances/*. La période (?periode=) suit l'utilisateur
@@ -13,7 +13,6 @@ const TABS = [
   { href: '/dashboard/finances/journal',       label: 'Journal',            Icon: ListBullets, periode: true },
   { href: '/dashboard/finances/performances',  label: 'Performances',       Icon: ChartLineUp, periode: true },
   { href: '/dashboard/finances/fiscalite',     label: 'Fiscalité',          Icon: Scales,      periode: false },
-  { href: '/dashboard/finances/encaissements', label: 'Paiements en ligne', Icon: CreditCard,  periode: false },
 ]
 
 export default function FinancesTabBar() {

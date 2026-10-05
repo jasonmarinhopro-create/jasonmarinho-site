@@ -17,7 +17,7 @@ Dans **Mon compte** → carte **Factures**, renseigne :
 
 ## Émettre la facture
 
-Une fois le contrat signé : fiche du voyageur → icône **facture** du séjour (« Émettre / voir la facture »). La facture s'ouvre sur une page que tu peux imprimer ou enregistrer en PDF, et envoyer au voyageur.
+Une fois le contrat signé : fiche du voyageur → bouton **Facture** du séjour. Une fenêtre résume ce que contient la facture et les règles de la facture électronique, puis **Ouvrir la facture** l'affiche sur une page que tu peux imprimer ou enregistrer en PDF, et envoyer au voyageur.
 
 - Les numéros se suivent sans trou (FA2026-0001, FA2026-0002…), comme la loi l'exige
 - Recliquer sur le bouton rouvre la même facture : pas de doublon
