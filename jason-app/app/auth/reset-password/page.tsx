@@ -51,6 +51,7 @@ function ResetPasswordForm() {
     })
 
     return () => subscription.unsubscribe()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- abonnement unique au montage
   }, [])
 
   async function handleReset(e: React.FormEvent) {

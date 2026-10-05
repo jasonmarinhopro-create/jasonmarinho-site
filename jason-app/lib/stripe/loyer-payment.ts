@@ -19,6 +19,13 @@ import { logger } from '@/lib/logger'
 const log = logger('lib/stripe/loyer-payment')
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
+/**
+ * Colonnes d'un contrat utiles au paiement du loyer. Jamais `select('*')` :
+ * la ligne contient l'image de la signature (base64, lourde) qui ne sert pas ici.
+ */
+export const LOYER_CONTRACT_COLUMNS =
+  'id, token, user_id, statut, created_at, montant_loyer, acompte_percent, date_arrivee, date_depart, logement_adresse, locataire_email, stripe_payment_enabled, stripe_payment_status, stripe_payment_checkout_id, checklist_status'
+
 export interface LoyerContract {
   id: string
   token: string
@@ -124,7 +131,7 @@ export async function syncLoyerPayment(db: SupabaseClient, contract: LoyerContra
 export async function syncPendingLoyers(db: SupabaseClient, limit = 20): Promise<number> {
   const { data: rows } = await db
     .from('contracts')
-    .select('*')
+    .select(LOYER_CONTRACT_COLUMNS)
     .eq('stripe_payment_status', 'pending')
     .not('stripe_payment_checkout_id', 'is', null)
     .order('created_at', { ascending: false })

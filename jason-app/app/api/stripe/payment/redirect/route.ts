@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServiceClient } from '@/lib/supabase/service'
-import { createLoyerCheckout, syncLoyerPayment } from '@/lib/stripe/loyer-payment'
+import { createLoyerCheckout, syncLoyerPayment, LOYER_CONTRACT_COLUMNS } from '@/lib/stripe/loyer-payment'
 import { logger } from '@/lib/logger'
 const log = logger('api/stripe/payment/redirect')
 
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
 
     const { data: contract, error: cErr } = await supabase
       .from('contracts')
-      .select('*')
+      .select(LOYER_CONTRACT_COLUMNS)
       .eq('token', token)
       .single()
 

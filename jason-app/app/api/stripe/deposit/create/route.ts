@@ -1,6 +1,6 @@
 import { getServiceClient as createServiceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
-import { getOrCreateDepositCheckout } from '@/lib/stripe/deposit-payment'
+import { getOrCreateDepositCheckout, DEPOSIT_CONTRACT_COLUMNS } from '@/lib/stripe/deposit-payment'
 import { logger } from '@/lib/logger'
 import { depositWindow, depositOpensOn, parisToday } from '@/lib/stripe/deposit-window'
 const log = logger('api/stripe/deposit/create')
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     // Récupérer le contrat
     const { data: contract, error: cErr } = await supabase
       .from('contracts')
-      .select('*')
+      .select(DEPOSIT_CONTRACT_COLUMNS)
       .eq('token', token)
       .single()
 

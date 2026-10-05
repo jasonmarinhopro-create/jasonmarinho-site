@@ -118,6 +118,7 @@ function LoginInner() {
       // router.replace utilise le prefetch (client-side nav), pas de reload
       router.replace(target)
     })
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- client Supabase et routeur stables, effet lié au seul paramètre ?as
   }, [asParam])
 
 
@@ -153,6 +154,7 @@ function LoginInner() {
     })
 
     return () => subscription.unsubscribe()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- abonnement unique au montage
   }, [])
 
   const [email, setEmail] = useState('')

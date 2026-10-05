@@ -167,14 +167,14 @@ export default function IndexationUI({ pages: serverPages, fetchError, lastCheck
     [notIndexed, submittedOverrides],
   )
 
-  const byTab: Record<Tab, PageStatus[]> = {
+  const byTab: Record<Tab, PageStatus[]> = useMemo(() => ({
     a_soumettre: aSoumettre,
     jamais: neverChecked,
     pas_indexees: notIndexed,
     indexees: indexed,
     erreurs: errored,
     toutes: pages,
-  }
+  }), [aSoumettre, neverChecked, notIndexed, indexed, errored, pages])
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()

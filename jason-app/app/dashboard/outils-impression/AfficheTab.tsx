@@ -1705,6 +1705,7 @@ export default function AfficheTab({ plan, logements }: Props) {
           </div>
           <div style={s.previewWrap}>
             {previewUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element -- aperçu généré dans le navigateur (data URL)
               <img src={previewUrl} alt="Aperçu affiche" style={s.previewImg} />
             ) : (
               <div style={s.previewEmpty}>
