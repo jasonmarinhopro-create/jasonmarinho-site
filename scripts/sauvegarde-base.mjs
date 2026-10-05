@@ -155,9 +155,10 @@ await writeFile(join(OUT, 'LISEZMOI.txt'), [
 ].join('\n'))
 
 const secs = Math.round((Date.now() - started) / 1000)
-console.log(`Tables sauvegardées : ${Object.keys(manifest.tables).length} (ignorées : ${manifest.skipped.length})`)
-console.log(`Lignes : ${totalRows} · taille brute : ${(totalBytes / 1048576).toFixed(1)} Mo · durée : ${secs} s`)
-console.log(`Comptes : ${manifest.auth_users ?? 'erreur'} · fichiers stockés listés : ${manifest.storage?.files ?? 'erreur'}`)
+// Résumé en annotation (lisible sans se connecter) : des nombres seulement.
+const biggest = Object.entries(manifest.tables).sort((a, b) => b[1].bytes - a[1].bytes).slice(0, 5)
+  .map(([n, t]) => `${n} ${(t.bytes / 1048576).toFixed(1)} Mo`).join(', ')
+console.log(`::notice::Sauvegarde : ${Object.keys(manifest.tables).length} tables (ignorées : ${manifest.skipped.join(', ') || 'aucune'}), ${totalRows} lignes, ${(totalBytes / 1048576).toFixed(1)} Mo bruts en ${secs} s. Comptes : ${manifest.auth_users ?? 'erreur'}. Fichiers stockés listés : ${manifest.storage?.files ?? 'erreur'}. Plus grosses tables : ${biggest}`)
 if (manifest.errors.length) {
   console.log(`::error::${manifest.errors.length} élément(s) en échec : ${manifest.errors.map(e => `${e.table} (${e.error})`).join(', ')}`)
   process.exit(1)
