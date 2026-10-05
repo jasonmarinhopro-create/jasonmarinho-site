@@ -325,12 +325,16 @@ function configCheck(): HealthCheck {
     level: 'ok',
   })
   const level: HealthLevel = worst(items.map(i => i.level ?? 'ok'))
+  const okCount = items.filter(i => i.level === 'ok').length
   return {
     key: 'config',
     title: 'Configuration',
     level,
-    summary: level === 'ok' ? 'Toutes les clés nécessaires sont en place' : 'Une clé manque dans Vercel',
-    items,
+    summary: level === 'ok'
+      ? `Toutes les clés nécessaires sont en place (${okCount} réglages vérifiés)`
+      : `Une clé manque dans Vercel · ${okCount} réglages en place`,
+    // Seulement ce qui manque, plus l'état de l'autorisation étendue (en attente de Stripe)
+    items: items.filter(i => i.level !== 'ok' || i.label.startsWith('Autorisation étendue')),
     advice: level !== 'ok' ? 'Les clés se règlent dans Vercel → projet jasonmarinho-dashboard → Settings → Environment Variables, puis redéployer.' : undefined,
   }
 }

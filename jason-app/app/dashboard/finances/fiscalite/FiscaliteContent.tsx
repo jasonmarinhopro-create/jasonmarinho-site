@@ -8,9 +8,15 @@ import {
 } from '@/lib/finances/fiscal'
 import { Card, CardHead, Definition, Notice, ProgressBar, eur, pct, ui, COLORS } from '../_ui/ui'
 import TaxCompare from './TaxCompare'
+import FactureElectronique from './FactureElectronique'
+import type { TvaStatus } from '@/lib/finances/einvoicing'
 
 
-export default function FiscaliteContent({ data, searchParams }: { data: FinanceData; searchParams: { annee?: string } }) {
+export default function FiscaliteContent({ data, searchParams, einvoicing }: {
+  data: FinanceData
+  searchParams: { annee?: string }
+  einvoicing: { guessedTva: TvaStatus; hasMention: boolean }
+}) {
   const current = Number(data.today.slice(0, 4))
   const year = searchParams.annee === String(current - 1) ? current - 1 : current
   const input = { lines: data.allLines, charges: data.allCharges, logements: data.logements, year, today: data.today }
@@ -23,6 +29,17 @@ export default function FiscaliteContent({ data, searchParams }: { data: Finance
     ? data.allLines.filter(l => !l.horsRevenus && l.aDeclarer && l.date.startsWith(String(year)) && inScope(l, data.scope)).reduce((s, l) => s + l.brut, 0)
     : null
   const totalFoyer = (fr?.recettesAnnee ?? 0) + (pt?.recettesAnnee ?? 0)
+
+  // Facture électronique (05/10/2026) : réforme française, pas pour un hôte
+  // qui n'a que des logements au Portugal. Placée avant l'encart Indy.
+  const einvoicingCard = (fr || data.logements.some(l => l.pays !== 'PT')) ? (
+    <FactureElectronique
+      today={data.today}
+      guessedTva={einvoicing.guessedTva}
+      hasMention={einvoicing.hasMention}
+      hasChambresHotes={data.logements.some(l => l.typeLogement === 'chambres-hotes')}
+    />
+  ) : null
 
   return (
     <div style={ui.page}>
@@ -53,7 +70,9 @@ export default function FiscaliteContent({ data, searchParams }: { data: Finance
         </Card>
       )}
 
-      {fr && <France fr={fr} year={year} current={current} />}
+      {fr && <France fr={fr} year={year} current={current} slot={einvoicingCard} />}
+      {!fr && einvoicingCard}
+
       {pt && <Portugal pt={pt} />}
 
       <p style={{ margin: 0, fontSize: 12.5, color: 'var(--text-muted)', lineHeight: 1.6 }}>
@@ -63,7 +82,7 @@ export default function FiscaliteContent({ data, searchParams }: { data: Finance
   )
 }
 
-function France({ fr, year, current }: { fr: FiscalFR; year: number; current: number }) {
+function France({ fr, year, current, slot }: { fr: FiscalFR; year: number; current: number; slot?: React.ReactNode }) {
   const verdict = VERDICTS[fr.verdict]
   const aVenir = fr.recettesAnnee - fr.recettesAjour
   const nonClasse = fr.parCat.nonClasse
@@ -153,13 +172,15 @@ function France({ fr, year, current }: { fr: FiscalFR; year: number; current: nu
         </div>
       </Card>
 
+      {slot}
+
       {/* Partenaire Indy (30/09/2026) : lien affilié, toujours rel="sponsored" + mention visible */}
       <Card>
         <CardHead
           title={<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><Calculator size={18} weight="duotone" color="var(--accent-text)" />Ta compta et ta déclaration, simplifiées</span>}
           sub={fr.verdict === 'reel_conseille' || fr.verdict === 'reel_obligatoire' || fr.verdict === 'reel_ou_classement'
             ? 'Au réel, il faut une comptabilité, les amortissements et la liasse 2031 : pour un dossier simple, tu peux les faire toi-même.'
-            : 'Au micro-BIC, pas de liasse à produire, mais la facture électronique est devenue obligatoire.'}
+            : 'Au micro-BIC, pas de liasse à produire, mais tu dois pouvoir recevoir les factures électroniques depuis septembre 2026.'}
         />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.6 }}>
           <div>
