@@ -30,6 +30,8 @@ jobs:
           check /sign/jeton-inexistant 404
           check /invoice/jeton-inexistant 404
           check /apercu-contrat/inexistant 307 /auth/login
+          check /dashboard/admin/sante 307 /auth/login
+          check /dashboard/finances/fiscalite 307 /auth/login
           exit $fail
       - name: Site
         if: always()
@@ -67,5 +69,12 @@ jobs:
           sys.exit(0 if ok else 1)
           PY
           [ $? -eq 0 ] || fail=1
+          # Scripts communs compressés au build (scripts/minify-assets.mjs) : petits, sur une seule ligne, encore valides
+          for f in nav.js footer.js cookie-banner.js; do
+            curl -s "https://jasonmarinho.com/$f" -o "$f"
+            size=$(wc -c < "$f"); lines=$(wc -l < "$f")
+            if node --check "$f" 2>/dev/null && [ "$lines" -le 5 ]; then echo "OK   $f compressé ($size octets, $lines ligne(s))"; else echo "::error title=Site $f::pas compressé ou invalide ($size octets, $lines lignes)"; fail=1; fi
+          done
+          has /tarifs "nav.js"
           code=$(curl -s -o /dev/null -w '%{http_code}' https://jasonmarinho.com/sitemap.xml); [ "$code" = 200 ] && echo "OK   sitemap 200" || { echo "::error title=Site::sitemap $code"; fail=1; }
           exit $fail
