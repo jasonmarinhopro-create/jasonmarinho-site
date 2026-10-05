@@ -7,8 +7,11 @@ import { parisToday } from '@/lib/stripe/deposit-window'
 import { computeRevenue, isPaidPro, PRICES, type ProRow } from './revenue'
 import {
   SALES_GOALS, memberGroup, missingFor, netAnnual, pipelineCounts, sortForOutreach, weeklyCounts,
-  type MemberActivity, type MemberGroup,
+  memberMailTarget, wakeUpMessage, memberMailFooter, MEMBER_MAIL_FLAG,
+  type MemberActivity, type MemberGroup, type MemberMailExclusion,
 } from './sales'
+import { outreachConfig } from '@/lib/outreach/mailer'
+import { memberMailSecret } from './member-mail-secret'
 
 const FOUNDER_QUOTA = 20
 
@@ -47,40 +50,65 @@ async function lastSignIns() {
   return map
 }
 
-export async function loadSales() {
+/** Comptes avec leur activité, drapeaux et fiches pros (partagé avec l'envoi aux membres). */
+export async function loadMembers() {
   const db = getServiceClient()
-  const today = parisToday()
-
-  const [profilesRes, logements, sejours, contracts, phRes, clRes, outreachRes, signIns] = await Promise.all([
-    db.from('profiles').select('id, email, full_name, plan, role, driing_status, created_at').limit(5000),
+  const [profilesRes, logements, sejours, contracts, phRes, clRes, signIns, supRes] = await Promise.all([
+    db.from('profiles').select('id, email, full_name, plan, role, driing_status, created_at, onboarding_completed_steps').limit(5000),
     allUserIds('logements'),
     allUserIds('sejours'),
     allUserIds('contracts', q => q.neq('statut', 'annule')),
     db.from('photographers').select('user_id, tier, status, stripe_subscription_status, created_at'),
     db.from('cleaners').select('user_id, tier, status, stripe_subscription_status, created_at'),
-    db.from('outreach_contacts').select('stage, audience').limit(10000),
     lastSignIns().catch(() => new Map<string, string | null>()),
+    db.from('outreach_suppressions').select('email_norm').limit(10000),
   ])
+  if (profilesRes.error) throw new Error(`Lecture des comptes impossible : ${profilesRes.error.message}`)
 
   const photographers = (phRes.data ?? []) as ProFull[]
   const cleaners = (clRes.data ?? []) as ProFull[]
   const proUsers = new Set([...photographers, ...cleaners].map(r => r.user_id).filter(Boolean) as string[])
   const logCount = countBy(logements), sejCount = countBy(sejours), conCount = countBy(contracts)
+  const suppressed = new Set((supRes.data ?? []).map(r => r.email_norm as string))
+  const steps = new Map<string, string[]>()
 
-  const members: MemberActivity[] = (profilesRes.data ?? []).map(p => ({
-    id: p.id,
-    fullName: p.full_name,
-    email: p.email,
-    plan: p.plan,
-    role: p.role,
-    driingStatus: p.driing_status,
-    createdAt: p.created_at,
-    lastSignInAt: signIns.get(p.id) ?? null,
-    logements: logCount.get(p.id) ?? 0,
-    sejours: sejCount.get(p.id) ?? 0,
-    contracts: conCount.get(p.id) ?? 0,
-    isPro: proUsers.has(p.id),
+  const members: MemberActivity[] = (profilesRes.data ?? []).map(p => {
+    steps.set(p.id, (p.onboarding_completed_steps as string[] | null) ?? [])
+    return {
+      id: p.id,
+      fullName: p.full_name,
+      email: p.email,
+      plan: p.plan,
+      role: p.role,
+      driingStatus: p.driing_status,
+      createdAt: p.created_at,
+      lastSignInAt: signIns.get(p.id) ?? null,
+      logements: logCount.get(p.id) ?? 0,
+      sejours: sejCount.get(p.id) ?? 0,
+      contracts: conCount.get(p.id) ?? 0,
+      isPro: proUsers.has(p.id),
+    }
+  })
+
+  const mailTargets = members.map(m => ({
+    member: m,
+    target: memberMailTarget(m, {
+      alreadySent: (steps.get(m.id) ?? []).includes(MEMBER_MAIL_FLAG),
+      suppressed: !!m.email && suppressed.has(m.email.trim().toLowerCase()),
+    }),
   }))
+
+  return { members, photographers, cleaners, mailTargets }
+}
+
+export async function loadSales() {
+  const db = getServiceClient()
+  const today = parisToday()
+
+  const [{ members, photographers, cleaners, mailTargets }, outreachRes] = await Promise.all([
+    loadMembers(),
+    db.from('outreach_contacts').select('stage, audience').limit(10000),
+  ])
 
   const groups = new Map<MemberGroup, MemberActivity[]>()
   for (const m of members) {
@@ -109,6 +137,25 @@ export async function loadSales() {
     avecContrat: hosts.filter(m => m.contracts > 0).length,
     payants: standardMembers,
     driing: n('driing'),
+    driingAttente: n('driing_attente'),
+  }
+
+  // E-mail unique aux membres gratuits : qui le recevra, qui est exclu et pourquoi
+  const excluded: Partial<Record<MemberMailExclusion, number>> = {}
+  let actif = 0, inactif = 0
+  for (const { target } of mailTargets) {
+    if ('kind' in target) target.kind === 'actif' ? actif++ : inactif++
+    else excluded[target.excluded] = (excluded[target.excluded] ?? 0) + 1
+  }
+  const memberMail = {
+    ready: !!outreachConfig() && !!memberMailSecret(),
+    toSend: { actif, inactif },
+    excluded,
+    preview: {
+      actif: wakeUpMessage({ fullName: 'Marie' }, 'actif'),
+      inactif: wakeUpMessage({ fullName: 'Marie' }, 'inactif'),
+      footer: memberMailFooter('https://app.jasonmarinho.com/desinscription/membre/…'),
+    },
   }
 
   const outreach = outreachRes.error ? [] : (outreachRes.data ?? [])
@@ -131,6 +178,7 @@ export async function loadSales() {
     },
     outreachAvailable: !outreachRes.error,
     weekly: weeklyCounts(members.filter(m => m.role !== 'admin').map(m => m.createdAt), today),
+    memberMail,
     toWake: {
       actif: sortForOutreach(groups.get('actif') ?? []),
       inactif: sortForOutreach(groups.get('inactif') ?? []),

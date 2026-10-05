@@ -2,7 +2,9 @@ import { describe, it, expect } from 'vitest'
 import {
   netOfSubscription, netAnnual, missingFor, memberGroup, firstName, wakeUpMailto,
   weekStart, weeklyCounts, pipelineCounts, sortForOutreach, type MemberActivity,
+  memberMailTarget, memberMailFooter, wakeUpMessage,
 } from './sales'
+import { memberUnsubToken, verifyMemberUnsubToken } from './member-unsub'
 
 const base: MemberActivity = {
   id: 'u1', fullName: 'marie dupont', email: 'marie@example.com', plan: 'decouverte', role: 'user', driingStatus: null,
@@ -41,6 +43,7 @@ describe('memberGroup', () => {
     expect(memberGroup({ ...base, driingStatus: 'confirmed' })).toBe('driing')
     expect(memberGroup({ ...base, role: 'admin' })).toBe('admin')
     expect(memberGroup({ ...base, isPro: true })).toBe('pro')
+    expect(memberGroup({ ...base, driingStatus: 'pending', logements: 1 })).toBe('driing_attente')
   })
 })
 
@@ -89,5 +92,46 @@ describe('pipelineCounts', () => {
     ], 'photographe')
     expect(c.find(x => x.key === 'contacte')!.count).toBe(2)
     expect(c.find(x => x.key === 'interesse')!.count).toBe(0)
+  })
+})
+
+describe('e-mail aux membres gratuits', () => {
+  const opts = { alreadySent: false, suppressed: false }
+  it('jamais aux comptes Driing, confirmés ou en attente', () => {
+    expect(memberMailTarget({ ...base, driingStatus: 'pending' }, opts)).toEqual({ excluded: 'driing_attente' })
+    expect(memberMailTarget({ ...base, driingStatus: 'pending', logements: 2 }, opts)).toEqual({ excluded: 'driing_attente' })
+    expect(memberMailTarget({ ...base, driingStatus: 'confirmed' }, opts)).toEqual({ excluded: 'driing' })
+    expect(memberMailTarget({ ...base, plan: 'driing' }, opts)).toEqual({ excluded: 'driing' })
+  })
+  it('ni aux payants, à l\'admin, aux pros, aux désinscrits ni deux fois', () => {
+    expect(memberMailTarget({ ...base, plan: 'standard' }, opts)).toEqual({ excluded: 'payant' })
+    expect(memberMailTarget({ ...base, role: 'admin' }, opts)).toEqual({ excluded: 'admin' })
+    expect(memberMailTarget({ ...base, isPro: true }, opts)).toEqual({ excluded: 'pro' })
+    expect(memberMailTarget(base, { alreadySent: false, suppressed: true })).toEqual({ excluded: 'desinscrit' })
+    expect(memberMailTarget(base, { alreadySent: true, suppressed: false })).toEqual({ excluded: 'deja_envoye' })
+    expect(memberMailTarget({ ...base, email: null }, opts)).toEqual({ excluded: 'sans_email' })
+  })
+  it('le bon message selon l\'activité', () => {
+    expect(memberMailTarget(base, opts)).toEqual({ kind: 'inactif' })
+    expect(memberMailTarget({ ...base, logements: 1 }, opts)).toEqual({ kind: 'actif' })
+    expect(wakeUpMessage(base, 'inactif').body).not.toMatch(/inscrit\b/)
+  })
+  it('pied avec la raison et la désinscription', () => {
+    const f = memberMailFooter('https://app.jasonmarinho.com/desinscription/membre/x')
+    expect(f).toContain('tu as un compte')
+    expect(f).toContain('/desinscription/membre/x')
+    expect(f).not.toContain('—')
+  })
+})
+
+describe('jeton de désinscription', () => {
+  const id = '3f2b7c1e-9a4d-4c2b-8e1f-0a1b2c3d4e5f'
+  it('aller-retour, et refus si modifié ou mauvais secret', () => {
+    const t = memberUnsubToken(id, 's3cret')
+    expect(verifyMemberUnsubToken(t, 's3cret')).toBe(id)
+    expect(verifyMemberUnsubToken(t, 'autre')).toBeNull()
+    expect(verifyMemberUnsubToken(t.slice(0, -1) + (t.endsWith('A') ? 'B' : 'A'), 's3cret')).toBeNull()
+    expect(verifyMemberUnsubToken('pas-un-id.abc', 's3cret')).toBeNull()
+    expect(verifyMemberUnsubToken(t, '')).toBeNull()
   })
 })

@@ -60,12 +60,14 @@ export interface MemberActivity {
   isPro: boolean
 }
 
-export type MemberGroup = 'admin' | 'payant' | 'driing' | 'actif' | 'inactif' | 'pro'
+export type MemberGroup = 'admin' | 'payant' | 'driing' | 'driing_attente' | 'actif' | 'inactif' | 'pro'
 
 export function memberGroup(m: MemberActivity): MemberGroup {
   if (m.role === 'admin') return 'admin'
   if (m.plan === 'standard') return 'payant'
   if (m.plan === 'driing' || m.driingStatus === 'confirmed') return 'driing'
+  // Inscrit par Driing, pas encore confirmé : l'accès lui a été promis, ne rien lui vendre
+  if (m.driingStatus === 'pending') return 'driing_attente'
   if (m.logements > 0 || m.sejours > 0 || m.contracts > 0) return 'actif'
   if (m.isPro) return 'pro'
   return 'inactif'
@@ -76,15 +78,65 @@ export function firstName(fullName: string | null | undefined): string {
   return f ? f.charAt(0).toUpperCase() + f.slice(1) : ''
 }
 
-/** Lien mailto prêt à envoyer, depuis la boîte de Jason. */
-export function wakeUpMailto(m: Pick<MemberActivity, 'email' | 'fullName'>, kind: 'actif' | 'inactif'): string | null {
-  if (!m.email) return null
+/** Texte de relance d'un membre (même texte pour le lien mailto et l'e-mail envoyé par l'app). */
+export function wakeUpMessage(m: Pick<MemberActivity, 'fullName'>, kind: 'actif' | 'inactif'): { subject: string; body: string } {
   const hello = firstName(m.fullName) ? `Bonjour ${firstName(m.fullName)},` : 'Bonjour,'
   const subject = kind === 'inactif' ? 'Ton espace Jason Marinho' : 'Tes réservations en direct'
   const body = kind === 'inactif'
-    ? `${hello}\n\nJe suis Jason, le créateur de l'app. Tu t'es inscrit il y a quelque temps et je voulais savoir si je peux t'aider à démarrer.\n\nEn 10 minutes, on ajoute ton logement et on connecte ton calendrier Airbnb ou Booking : ensuite ton planning ménage et tes déclarations voyageurs se préparent tout seuls.\n\nDis-moi ce qui t'a manqué, je lis toutes les réponses.\n\nJason`
-    : `${hello}\n\nJe vois que tu utilises l'app pour ton logement, merci ! Est-ce qu'elle te sert au quotidien ?\n\nSi tu fais des réservations en direct, le Standard te permet d'envoyer un contrat signé en ligne, d'encaisser le loyer par carte sans commission et de bloquer une caution par empreinte bancaire. C'est 19,98 € par an pour les membres Fondateurs.\n\nUne question ? Réponds simplement à ce message.\n\nJason`
+    ? `${hello}\n\nJe suis Jason, le créateur de l'app. Tu as créé ton compte il y a quelque temps et je voulais savoir si je peux t'aider à démarrer.\n\nEn 10 minutes, on ajoute ton logement et on connecte ton calendrier Airbnb ou Booking : ensuite ton planning ménage et tes déclarations voyageurs se préparent tout seuls.\n\nDis-moi ce qui t'a manqué, je lis toutes les réponses.\n\nJason`
+    : `${hello}\n\nJe vois que tu utilises l'app pour ton logement, merci ! Est-ce qu'elle te sert au quotidien ?\n\nSi tu fais des réservations en direct, le Standard te permet d'envoyer un contrat signé en ligne, d'encaisser le loyer par carte sans commission et de bloquer une caution par empreinte bancaire. C'est 19,98 € par an au tarif Fondateur, tant qu'il reste des places.\n\nUne question ? Réponds simplement à ce message.\n\nJason`
+  return { subject, body }
+}
+
+/** Lien mailto prêt à envoyer, depuis la boîte de Jason. */
+export function wakeUpMailto(m: Pick<MemberActivity, 'email' | 'fullName'>, kind: 'actif' | 'inactif'): string | null {
+  if (!m.email) return null
+  const { subject, body } = wakeUpMessage(m, kind)
   return `mailto:${encodeURIComponent(m.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+}
+
+// ── E-mail unique aux membres gratuits (05/10/2026) ──────────────────────
+
+/**
+ * Drapeau posé dans profiles.onboarding_completed_steps quand l'e-mail est
+ * parti (même endroit que les « tour:… » : pas de migration à appliquer).
+ * Changer la valeur pour une future campagne.
+ */
+export const MEMBER_MAIL_FLAG = 'mail:membres-2026-10'
+
+export type MemberMailExclusion =
+  | 'admin' | 'payant' | 'driing' | 'driing_attente' | 'pro' | 'sans_email' | 'deja_envoye' | 'desinscrit'
+
+export const EXCLUSION_LABEL: Record<MemberMailExclusion, string> = {
+  admin: 'compte admin (le tien)',
+  payant: 'déjà en Standard',
+  driing: 'membres Driing (accès offert)',
+  driing_attente: 'Driing en attente de confirmation',
+  pro: 'comptes pros seulement',
+  sans_email: 'sans e-mail',
+  deja_envoye: 'déjà reçu',
+  desinscrit: 'désinscrits',
+}
+
+/**
+ * Qui reçoit l'e-mail. Les comptes Driing, confirmés ou en attente, ne le
+ * reçoivent jamais : l'accès leur a été offert, on ne leur vend pas le Standard.
+ */
+export function memberMailTarget(
+  m: MemberActivity,
+  opts: { alreadySent: boolean; suppressed: boolean },
+): { kind: 'actif' | 'inactif' } | { excluded: MemberMailExclusion } {
+  const g = memberGroup(m)
+  if (g !== 'actif' && g !== 'inactif') return { excluded: g }
+  if (!m.email) return { excluded: 'sans_email' }
+  if (opts.suppressed) return { excluded: 'desinscrit' }
+  if (opts.alreadySent) return { excluded: 'deja_envoye' }
+  return { kind: g }
+}
+
+/** Pied de l'e-mail : pourquoi la personne le reçoit, et comment ne plus en recevoir. */
+export function memberMailFooter(unsubscribeUrl: string): string {
+  return `Tu reçois ce message parce que tu as un compte sur l'app Jason Marinho (app.jasonmarinho.com). Les e-mails liés à ton activité (contrats, paiements) ne changent pas.\nPour ne plus recevoir ce type de message : ${unsubscribeUrl}`
 }
 
 /** Tri des membres à réveiller : les plus récents d'abord (souvenir encore frais). */

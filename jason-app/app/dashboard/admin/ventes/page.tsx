@@ -6,6 +6,8 @@ import VentesView from './VentesView'
 
 export const metadata = { title: 'Ventes, Admin' }
 export const dynamic = 'force-dynamic'
+// Envoi des e-mails aux membres : jusqu'à ~45 s par appel (rythme de la boîte d'envoi)
+export const maxDuration = 60
 
 export default async function VentesPage() {
   const profile = await getProfile()
