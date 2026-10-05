@@ -1,0 +1,71 @@
+# Contrôle en ligne de l'app et du site après un déploiement (05/10/2026) :
+# codes de réponse, redirections, textes attendus, données structurées.
+# Journaux publics : aucune donnée personnelle, pages publiques seulement.
+name: Vérifs en ligne
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/verifs-trigger']
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: App
+        run: |
+          fail=0
+          check() { # url code_attendu redirection_contient
+            out=$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "https://app.jasonmarinho.com$1")
+            code=${out%% *}; loc=${out#* }
+            if [ "$code" = "$2" ] && { [ -z "$3" ] || echo "$loc" | grep -q "$3"; }; then echo "OK   $1 -> $code ${loc#https://app.jasonmarinho.com}"; else echo "::error title=App $1::attendu $2 ${3:-}, reçu $code ${loc#https://app.jasonmarinho.com}"; fail=1; fi
+          }
+          check /installer 200
+          check /ouverture 200
+          check /auth/login 200
+          check /dashboard/contrats 307 /auth/login
+          check "/dashboard/contrats?onglet=cautions" 307 /auth/login
+          check /dashboard/finances/encaissements 307 /auth/login
+          check /sign/jeton-inexistant 404
+          check /invoice/jeton-inexistant 404
+          check /apercu-contrat/inexistant 307 /auth/login
+          exit $fail
+      - name: Site
+        if: always()
+        run: |
+          fail=0
+          has() { # page texte
+            body=$(curl -s "https://jasonmarinho.com$1")
+            if echo "$body" | grep -qF -- "$2"; then echo "OK   $1 contient « $2 »"; else echo "::error title=Site $1::texte absent : $2"; fail=1; fi
+          }
+          lacks() {
+            body=$(curl -s "https://jasonmarinho.com$1")
+            if echo "$body" | grep -qF -- "$2"; then echo "::error title=Site $1::texte encore présent : $2"; fail=1; else echo "OK   $1 sans « $2 »"; fi
+          }
+          has /services/contrats "2 % + 0,30 €"
+          has /services/contrats "Y a-t-il une commission ou des frais sur les paiements ?"
+          lacks /services/contrats "seuls les frais de Stripe s'appliquent"
+          has /tarifs "frais de paiement 2 % + 0,30 €"
+          # Données structurées de /services/contrats : JSON valide et FAQ à jour
+          curl -s https://jasonmarinho.com/services/contrats > p.html
+          python3 - <<'PY'
+          import json, re, sys
+          html = open('p.html', encoding='utf-8').read()
+          blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
+          ok = True
+          for b in blocks:
+              try:
+                  d = json.loads(b)
+              except Exception as e:
+                  print(f'::error title=JSON-LD::bloc invalide : {e}'); ok = False; continue
+              if isinstance(d, dict) and d.get('@type') == 'FAQPage':
+                  qs = [q['name'] for q in d['mainEntity']]
+                  if 'Y a-t-il une commission ou des frais sur les paiements ?' not in qs:
+                      print('::error title=JSON-LD::question frais absente'); ok = False
+          print(f'OK   {len(blocks)} blocs JSON-LD lus' if ok else 'JSON-LD en erreur')
+          sys.exit(0 if ok else 1)
+          PY
+          [ $? -eq 0 ] || fail=1
+          code=$(curl -s -o /dev/null -w '%{http_code}' https://jasonmarinho.com/sitemap.xml); [ "$code" = 200 ] && echo "OK   sitemap 200" || { echo "::error title=Site::sitemap $code"; fail=1; }
+          exit $fail
