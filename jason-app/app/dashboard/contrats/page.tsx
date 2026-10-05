@@ -1,4 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
+import { hasStandardAccess } from '@/lib/plans/access'
 import { createClient } from '@/lib/supabase/server'
 import ContratsView from './ContratsView'
 import { parisToday } from '@/lib/stripe/deposit-window'
@@ -95,5 +96,5 @@ export default async function ContratsPage({ searchParams }: { searchParams: Pro
     paiements = <EncaissementsView summary={summary} impayes={deriveImpayes(actifs as Parameters<typeof deriveImpayes>[0])} planLabel={profile.plan} embedded />
   }
 
-  return <ContratsView tab={tab} paiements={paiements} contracts={contracts} candidates={candidates} voyageurs={voyageurOptions ?? []} logements={(logementOptions ?? []).filter(l => l.nom) as Array<{ id: string; nom: string }>} appUrl={process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'} today={today} stripeReady={!!(payProfile?.stripe_account_id && payProfile?.stripe_onboarding_complete)} hasIban={!!payProfile?.iban} />
+  return <ContratsView tab={tab} paiements={paiements} contracts={contracts} candidates={candidates} voyageurs={voyageurOptions ?? []} logements={(logementOptions ?? []).filter(l => l.nom) as Array<{ id: string; nom: string }>} appUrl={process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'} today={today} isFree={!hasStandardAccess(profile.plan, profile.role)} stripeReady={!!(payProfile?.stripe_account_id && payProfile?.stripe_onboarding_complete)} hasIban={!!payProfile?.iban} />
 }

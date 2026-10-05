@@ -6,7 +6,8 @@
 // non vides) et la liste de tous les contrats.
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
-import { PenNib, CurrencyEur, LockKey, CheckCircle, Copy, Plus, CaretDown, CaretRight, House, FileText, Warning, Eye, CreditCard } from '@phosphor-icons/react/dist/ssr'
+import UpgradeCard from '@/components/ui/UpgradeCard'
+import { PenNib, CurrencyEur, LockKey, CheckCircle, Copy, Plus, CaretDown, CaretRight, House, FileText, Warning, Eye, CreditCard, Sparkle } from '@phosphor-icons/react/dist/ssr'
 import { contractTodos, contractTodoCount } from '@/lib/contracts/todo'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import { Card, CardHead, Notice, ui } from '../finances/_ui/ui'
@@ -37,7 +38,7 @@ function ficheHref(c: ContractRow): string {
   return c.voyageur_id ? `/dashboard/voyageurs/${c.voyageur_id}` : '/dashboard/voyageurs'
 }
 
-export default function ContratsView({ tab = 'contrats', paiements, contracts, candidates, voyageurs, logements, appUrl, today, stripeReady, hasIban }: {
+export default function ContratsView({ tab = 'contrats', paiements, contracts, candidates, voyageurs, logements, appUrl, today, stripeReady, hasIban, isFree = false }: {
   tab?: ContratsTab
   /** Contenu de l'onglet Paiements (rendu côté serveur : solde Stripe) */
   paiements?: React.ReactNode
@@ -50,6 +51,8 @@ export default function ContratsView({ tab = 'contrats', paiements, contracts, c
   today: string
   stripeReady: boolean
   hasIban: boolean
+  /** Formule Découverte : contrats réservés au Standard, invitation à la place du bouton */
+  isFree?: boolean
 }) {
   const todos = useMemo(() => contractTodos(contracts, today), [contracts, today])
   const cautionItems = useMemo(() => [...todos.cautionALiberer, ...todos.cautionExpiree], [todos])
@@ -130,7 +133,13 @@ export default function ContratsView({ tab = 'contrats', paiements, contracts, c
         }
       >
         <div style={s.ctaRow}>
-          <NewContractMenu candidates={candidates} onNewReservation={() => setQuickOpen(true)} />
+          {isFree ? (
+            <Link href="/dashboard/abonnement#offre-standard" style={s.freeCta}>
+              <Sparkle size={15} weight="fill" /> Créer des contrats avec le Standard
+            </Link>
+          ) : (
+            <NewContractMenu candidates={candidates} onNewReservation={() => setQuickOpen(true)} />
+          )}
           <PreviewContractMenu logements={logements} />
         </div>
       </HubHero>
@@ -148,6 +157,14 @@ export default function ContratsView({ tab = 'contrats', paiements, contracts, c
           )
         })}
       </nav>
+
+      {isFree && tab === 'contrats' && (
+        <UpgradeCard
+          title="Tes réservations directes, signées et payées en ligne"
+          desc="Avec le Standard, tu envoies un contrat à signer en ligne (français, portugais ou anglais), ton voyageur paie le loyer par carte directement sur ton compte et valide sa caution par empreinte bancaire. Regarde d’abord à quoi ressemble ton contrat avec « Voir mon contrat »."
+          points={['Contrat signé en ligne', 'Loyer payé par carte, sans commission', 'Caution par empreinte bancaire', 'Facture du séjour']}
+        />
+      )}
 
       {tab === 'paiements' && (
         <>{paiements}</>
@@ -380,6 +397,7 @@ const s: Record<string, React.CSSProperties> = {
     color: 'var(--accent-text)', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
   },
   ctaRow: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px' },
+  freeCta: { display: 'inline-flex', alignItems: 'center', gap: 8, padding: '11px 18px', borderRadius: 11, background: 'var(--accent-text)', color: 'var(--bg)', fontSize: 14, fontWeight: 700, textDecoration: 'none' },
   ctaGhost: {
     display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '11px 18px', borderRadius: '12px',
     background: 'var(--surface)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)',

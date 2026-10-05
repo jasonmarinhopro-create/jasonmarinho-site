@@ -418,6 +418,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
   useEffect(() => {
     const sejourId = searchParams.get('contract')
     if (!sejourId) return
+    // Formule Découverte : l'assistant ne s'ouvre pas (contrats en Standard,
+    // le bouton « Contrat en Standard » du séjour mène à Mon abonnement)
+    if (isDecouverte) return
     const target = sejours.find(sj => sj.id === sejourId)
     if (target) {
       setContractSejour(target)
@@ -425,7 +428,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
       url.searchParams.delete('contract')
       window.history.replaceState({}, '', url.toString())
     }
-  }, [searchParams, sejours])
+  }, [searchParams, sejours, isDecouverte])
 
   // Deposit modal
   const [depositContract, setDepositContract] = useState<DepositContract | null>(null)
@@ -2047,7 +2050,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                           <Lock size={13} /> Contrat et paiement gérés par {PLATFORM_LABELS[sj.contrat_plateforme as PlatformKey]?.label ?? 'la plateforme'}
                         </span>
                       ) : isDecouverte ? (
-                        <Link href="/dashboard/abonnement" style={{ ...s.actSecondary, textDecoration: 'none' }} title="Contrats disponibles en Standard">
+                        <Link href="/dashboard/abonnement#offre-standard" style={{ ...s.actSecondary, textDecoration: 'none' }} title="Contrats disponibles en Standard">
                           <Lock size={14} /> Contrat en Standard
                         </Link>
                       ) : (

@@ -10,6 +10,8 @@ export const metadata = { title: 'Mes ménages, Équipe ménage' }
 export const dynamic = 'force-dynamic'
 
 const DAYS_AHEAD = 13
+// Places Fondateur de l'annuaire ménage (même quota que creer-fiche-menage/actions.ts)
+const FOUNDER_QUOTA = 20
 
 export default async function Page() {
   const user = await getAuthUser()
@@ -92,9 +94,21 @@ export default async function Page() {
 
   const slots = perHost.flat().sort((a, b) => (a.date + a.startTime).localeCompare(b.date + b.startTime))
 
+  // Fiche dans l'annuaire (05/10/2026) : une équipe qui utilise le planning
+  // sans être dans l'annuaire se voit proposer sa fiche. Service role : places
+  // Fondateur comptées sur toutes les fiches (compteur global).
+  const [{ data: ownCleaner }, { count: founderCount }] = await Promise.all([
+    db.from('cleaners').select('status').eq('user_id', user.id).maybeSingle(),
+    db.from('cleaners').select('id', { count: 'exact', head: true }).eq('tier', 'fondateur'),
+  ])
+  const cleanerStatus = (ownCleaner?.status as string | undefined) ?? null
+  const annuaire = cleanerStatus === 'active' || cleanerStatus === 'hidden'
+    ? null
+    : { hasFiche: !!cleanerStatus, founderLeft: Math.max(0, FOUNDER_QUOTA - (founderCount ?? 0)) }
+
   return (
     <div style={{ padding: 'clamp(20px, 3vw, 44px)', width: '100%' }}>
-      <PlanningMenage clients={clients} slots={slots} today={today} />
+      <PlanningMenage clients={clients} slots={slots} today={today} annuaire={annuaire} />
     </div>
   )
 }
