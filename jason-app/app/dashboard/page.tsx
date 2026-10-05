@@ -110,9 +110,11 @@ export default async function DashboardPage() {
       .eq('user_id', userId)
       .neq('statut', 'annule')
       .order('date_arrivee'),
+    // Logements : une seule lecture pour le nombre, la stratégie tarifaire
+    // et les URL iCal (avant : 3 requêtes sur la même table, 05/10/2026)
     supabase
       .from('logements')
-      .select('*', { count: 'exact', head: true })
+      .select('nom, ical_airbnb, ical_booking, ical_vrbo, ical_autre, prix_airbnb_nuit, prix_booking_nuit, prix_direct_nuit')
       .eq('user_id', userId),
     // Catalogue public caché 5 min, on slice côté JS pour ne garder que 3
     getCachedPublishedActualites(),
@@ -164,19 +166,19 @@ export default async function DashboardPage() {
     // Séjours (carnet voyageurs) avec un montant : compte dans le CA YTD,
     // sinon le dashboard ignore les revenus saisis depuis /voyageurs et
     // l'objectif reste à 0 alors que /revenus affiche le bon total.
+    // Une seule lecture des séjours (05/10/2026, avant : 2 requêtes) : le CA
+    // et les prochaines arrivées sont filtrés ensuite en JS.
     supabase
       .from('sejours')
-      .select('id, montant, date_arrivee, date_depart, logement, contrat_plateforme, commission_montant')
+      .select('id, montant, date_arrivee, date_depart, logement, contrat_plateforme, commission_montant, voyageur_id, voyageurs(prenom, nom)')
       .eq('user_id', userId)
       .is('annule_at', null)
-      .not('montant', 'is', null)
-      .gt('montant', 0)
-      // Depuis le mois précédent, séjours à venir compris (prévisionnel)
-      .gte('date_arrivee', `${prevMPfx < `${yearPfx}-01` ? prevMPfx : yearPfx + '-01'}-01`),
+      .not('date_arrivee', 'is', null)
+      .order('date_arrivee'),
     // Liens plateformes du profil (inbox Airbnb/Booking/Driing/GMB + custom)
     supabase
       .from('profiles')
-      .select('inbox_airbnb_url, inbox_booking_url, inbox_vrbo_url, inbox_abritel_url, inbox_driing_url, inbox_gmb_url, custom_platform_links')
+      .select('inbox_airbnb_url, inbox_booking_url, inbox_vrbo_url, inbox_abritel_url, inbox_driing_url, inbox_gmb_url, custom_platform_links, ical_token')
       .eq('id', userId)
       .maybeSingle(),
     // iCal events (Airbnb/Booking/Vrbo) — sans ça, la home ignore les résas
@@ -188,23 +190,6 @@ export default async function DashboardPage() {
       .eq('user_id', userId)
       .gte('start_date', `${yearPfx}-01-01`)
       .order('start_date'),
-    // Séjours avec dates ET voyageur pour l'affichage prochaines arrivées
-    // (le sejours[11] précédent n'a que montant+date_arrivee pour le CA).
-    supabase
-      .from('sejours')
-      .select('id, voyageur_id, logement, date_arrivee, date_depart, voyageurs(prenom, nom)')
-      .eq('user_id', userId)
-      .is('annule_at', null)
-      .not('date_arrivee', 'is', null)
-      .not('date_depart', 'is', null)
-      .order('date_arrivee'),
-    // Stratégie tarifaire : au moins 1 logement avec un prix configuré ?
-    // Utilisé pour la step setupSteps 'prix' (nudge config).
-    supabase
-      .from('logements')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', userId)
-      .or('prix_airbnb_nuit.not.is.null,prix_booking_nuit.not.is.null,prix_direct_nuit.not.is.null'),
     // Déclarations voyageurs obligatoires (SIBA, fiche police…) en attente,
     // créées automatiquement à la signature des contrats.
     supabase
@@ -214,21 +199,9 @@ export default async function DashboardPage() {
       .eq('statut', 'a_faire')
       .order('deadline_at')
       .limit(20),
-    // 17. Checklist de démarrage : calendrier Airbnb/Booking connecté ?
-    supabase
-      .from('ical_feeds')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', userId),
-    // 18. Checklist : lien du planning ménage déjà généré (ical_token) ?
-    supabase
-      .from('profiles')
-      .select('ical_token')
-      .eq('id', userId)
-      .maybeSingle(),
-    // 19-20. Flux iCal + URL iCal des logements : nommer les réservations
-    // importées (logement, plateforme) au lieu du titre brut « Reserved ».
+    // Flux iCal : nommer les réservations importées (logement, plateforme)
+    // et, par leur nombre, l'étape « calendrier connecté » de la checklist.
     supabase.from('ical_feeds').select('id, url, name').eq('user_id', userId),
-    supabase.from('logements').select('nom, ical_airbnb, ical_booking, ical_vrbo, ical_autre').eq('user_id', userId),
   ])
 
   // Helper : récupère une valeur en cas de fulfilled, sinon une valeur de fallback.
@@ -243,7 +216,10 @@ export default async function DashboardPage() {
   }
 
   const { data: contracts }       = pick<{ data: any[] | null }>(0, { data: [] })
-  const { count: logCount }       = pick<{ count: number | null }>(1, { count: 0 })
+  const { data: logementsAll }    = pick<{ data: Array<{
+    nom: string | null; ical_airbnb: string | null; ical_booking: string | null; ical_vrbo: string | null; ical_autre: string | null
+    prix_airbnb_nuit: number | null; prix_booking_nuit: number | null; prix_direct_nuit: number | null
+  }> | null }>(1, { data: [] })
   const allCachedNews             = pick<any[]>(2, [])
   const { data: entriesYearAll }  = pick<{ data: any[] | null }>(3, { data: [] })
   const { data: objectifData }    = pick<{ data: any | null }>(4, { data: null })
@@ -253,8 +229,12 @@ export default async function DashboardPage() {
   const { data: completionLogLearn }  = pick<{ data: { completed_at: string }[] | null }>(8, { data: [] })
   const { data: cnPosts }         = pick<{ data: any[] | null }>(9, { data: [] })
   const { count: cnTotal }        = pick<{ count: number | null }>(10, { count: 0 })
-  const { data: sejoursYearRaw }  = pick<{ data: { id: string; montant: number | null; date_arrivee: string }[] | null }>(11, { data: [] })
-  const { data: platformLinksRaw } = pick<{ data: {
+  const { data: sejoursAll }      = pick<{ data: Array<{
+    id: string; montant: number | null; date_arrivee: string; date_depart: string | null; logement: string | null
+    contrat_plateforme: string | null; commission_montant: number | null; voyageur_id: string | null
+    voyageurs: { prenom: string | null; nom: string | null } | Array<{ prenom: string | null; nom: string | null }> | null
+  }> | null }>(11, { data: [] })
+  const { data: profileExtraRaw } = pick<{ data: {
     inbox_airbnb_url: string | null
     inbox_booking_url: string | null
     inbox_vrbo_url: string | null
@@ -262,10 +242,9 @@ export default async function DashboardPage() {
     inbox_driing_url: string | null
     inbox_gmb_url: string | null
     custom_platform_links: Array<{ label: string; url: string; color?: string }> | null
+    ical_token: string | null
   } | null }>(12, { data: null })
   const { data: icalEventsRaw } = pick<{ data: Array<{ id: string; feed_id: string; title: string; start_date: string; end_date: string | null; description: string | null }> | null }>(13, { data: [] })
-  const { data: sejoursForArrivals } = pick<{ data: Array<{ id: string; voyageur_id: string | null; logement: string | null; date_arrivee: string; date_depart: string; voyageurs: { prenom: string | null; nom: string | null } | Array<{ prenom: string | null; nom: string | null }> | null }> | null }>(14, { data: [] })
-  const { count: pricingCount }  = pick<{ count: number | null }>(15, { count: 0 })
   const { data: pendingDeclarations } = pick<{ data: Array<{
     id: string
     voyageur_id: string | null
@@ -275,12 +254,19 @@ export default async function DashboardPage() {
     logement_pays: string
     date_arrivee: string
     deadline_at: string
-  }> | null }>(16, { data: [] })
+  }> | null }>(14, { data: [] })
+  const { data: icalFeedsRaw }   = pick<{ data: Array<{ id: string; url: string | null; name: string | null }> | null }>(15, { data: [] })
 
-  const { count: icalFeedCount } = pick<{ count: number | null }>(17, { count: 0 })
-  const { data: icalTokenRow }   = pick<{ data: { ical_token: string | null } | null }>(18, { data: null })
-  const { data: icalFeedsRaw }   = pick<{ data: Array<{ id: string; url: string | null; name: string | null }> | null }>(19, { data: [] })
-  const { data: logementsIcal }  = pick<{ data: Array<{ nom: string | null; ical_airbnb: string | null; ical_booking: string | null; ical_vrbo: string | null; ical_autre: string | null }> | null }>(20, { data: [] })
+  // Valeurs déduites des lectures fusionnées (mêmes règles qu'avant)
+  const logCount = (logementsAll ?? []).length
+  const pricingCount = (logementsAll ?? []).filter(l => l.prix_airbnb_nuit != null || l.prix_booking_nuit != null || l.prix_direct_nuit != null).length
+  const logementsIcal = logementsAll
+  const icalFeedCount = (icalFeedsRaw ?? []).length
+  const platformLinksRaw = profileExtraRaw
+  const icalTokenRow = profileExtraRaw ? { ical_token: profileExtraRaw.ical_token } : null
+  const caStart = `${prevMPfx < `${yearPfx}-01` ? prevMPfx : yearPfx + '-01'}-01`
+  const sejoursYearRaw = (sejoursAll ?? []).filter(s => Number(s.montant) > 0 && s.date_arrivee >= caStart)
+  const sejoursForArrivals = (sejoursAll ?? []).filter((s): s is typeof s & { date_depart: string } => !!s.date_depart)
 
 
   const latestNews = allCachedNews.slice(0, 3)

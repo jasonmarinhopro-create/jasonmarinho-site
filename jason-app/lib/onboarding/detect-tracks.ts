@@ -108,3 +108,29 @@ export async function detectTracksProgress(input: DetectInput): Promise<Onboardi
 
   return { tracks, totalDone, totalSteps }
 }
+
+// ── Mémoire courte (05/10/2026) ─────────────────────────────────────────
+// La base (offre gratuite de Supabase, 0,5 Go) sature sa mémoire : chaque
+// requête évitée à l'ouverture compte. Ces 8 tests d'existence étaient
+// refaits à chaque chargement du menu. unstable_cache a déjà planté ici en
+// prod (voir plus haut) : simple mémoire du serveur, par compte, 60 s. Les
+// réponses ne contiennent que des cases cochées du compte lui-même (clé =
+// identifiant + drapeaux du profil : cocher une étape à la main change la
+// clé, donc pas d'attente). Effet visible : une étape détectée en base
+// (premier logement, premier contrat…) peut mettre jusqu'à 1 min à se cocher.
+const MEMO_TTL_MS = 60_000
+const MEMO_MAX = 500
+const memo = new Map<string, { at: number; value: OnboardingTracksState }>()
+
+export async function detectTracksProgressCached(input: DetectInput): Promise<OnboardingTracksState> {
+  const key = JSON.stringify([input.userId, [...(input.completedSteps ?? [])].sort(), input.chezNousOnboardedAt, input.onboardingStep, input.stripeOnboardingComplete])
+  const hit = memo.get(key)
+  if (hit && Date.now() - hit.at < MEMO_TTL_MS) return hit.value
+  const value = await detectTracksProgress(input)
+  if (memo.size >= MEMO_MAX) {
+    const oldest = memo.keys().next().value
+    if (oldest !== undefined) memo.delete(oldest)
+  }
+  memo.set(key, { at: Date.now(), value })
+  return value
+}

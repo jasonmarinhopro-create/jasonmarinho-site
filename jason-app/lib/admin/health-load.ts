@@ -164,9 +164,7 @@ async function stripeCheck(): Promise<HealthCheck> {
     level: worst(items.map(i => i.level ?? 'ok')),
     summary: `${plural(snap.accounts.length, 'compte')} relié${snap.accounts.length > 1 ? 's' : ''}${bad.length ? ` · ${plural(bad.length, 'point')} à régler` : ', tous prêts'}${snap.fees30 != null ? ` · ${plural(snap.fees30, 'commission')} sur 30 jours` : ''}`,
     items,
-    advice: bad.some(i => i.detail?.includes('code d\'activité'))
-      ? 'Code d\'activité : se change dans Stripe (Connect → Comptes → le compte → Profil d\'entreprise) ou en écrivant au support Stripe. 7011 = hébergement, utile pour l\'autorisation étendue des cautions.'
-      : undefined,
+    advice: undefined,
     action: { href: 'https://dashboard.stripe.com/connect/accounts/overview', label: 'Ouvrir Stripe Connect', external: true },
   }
 }

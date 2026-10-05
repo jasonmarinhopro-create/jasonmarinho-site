@@ -10,7 +10,7 @@ import { getActiveProperty } from '@/lib/queries/active-property'
 import { getUnreadCount, getChezNousUnreadCount } from '@/lib/notifications/queries'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { OnboardingTracks } from '@/components/onboarding/OnboardingTracks'
-import { detectTracksProgress } from '@/lib/onboarding/detect-tracks'
+import { detectTracksProgressCached } from '@/lib/onboarding/detect-tracks'
 import { persistOnboardingCompleted } from '@/lib/onboarding/persist-complete'
 import InstallAppWidget from '@/components/InstallAppWidget'
 import DashboardLoading from './loading'
@@ -99,7 +99,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
     activePropertyPromise,
     onboardingOff
       ? Promise.resolve(emptyOnboarding)
-      : detectTracksProgress({
+      : detectTracksProgressCached({
           userId: profile.userId,
           completedSteps: profile.onboarding_completed_steps,
           chezNousOnboardedAt: profile.chez_nous_onboarded_at,
