@@ -164,6 +164,13 @@ export async function getOrCreateDepositCheckout(db: SupabaseClient, contract: D
         },
         quantity: 1,
       }],
+      // Autorisation étendue (jusqu'à ~30 jours pour l'hébergement, MCC 7011) :
+      // demandée seulement quand Stripe l'a activée pour la plateforme
+      // (demande faite par Jason au support le 05/10/2026, en attente).
+      // Sans activation, Stripe pourrait refuser la session : d'où l'interrupteur.
+      ...(process.env.STRIPE_EXTENDED_AUTH === '1'
+        ? { payment_method_options: { card: { request_extended_authorization: 'if_available' as const } } }
+        : {}),
       payment_intent_data: {
         capture_method: 'manual', // blocage, pas de débit
         description: `Caution contrat ${contract.id.slice(0, 8).toUpperCase()}`,

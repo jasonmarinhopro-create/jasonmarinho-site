@@ -27,7 +27,7 @@ Sans action de ta part, le blocage tombe tout seul : le voyageur ne paie rien. G
 
 Pour un paiement en ligne, une carte reste bloquée **7 jours** au plus (Visa, Mastercard, American Express, Discover ; un peu moins pour Visa, environ 4 jours et 18 heures, quand le paiement est déclenché sans le voyageur). Passé ce délai, la banque lève le blocage toute seule. C'est pourquoi le lien de caution ne s'ouvre que **2 jours avant l'arrivée** : ce jour-là, l'app l'envoie automatiquement par email au voyageur. Avant, la page du contrat lui indique la date.
 
-Une « autorisation étendue » jusqu'à 30 jours existe chez Stripe pour l'hébergement, mais elle est réservée aux comptes en tarification IC+ : elle n'est pas disponible dans l'app.
+Une « autorisation étendue » jusqu'à 30 jours existe chez Stripe pour l'hébergement. Stripe la réserve en principe à la tarification IC+, mais peut l'ouvrir sur demande : la demande est en cours d'examen chez Stripe (octobre 2026). Tant qu'elle n'est pas activée, compte sur 7 jours.
 
 > Source : documentation Stripe, « Place a hold on a payment method » et « Place an extended hold on an online card payment » (docs.stripe.com), vérifiée en octobre 2026
 
