@@ -207,11 +207,12 @@ async function emailsCheck(): Promise<HealthCheck[]> {
   const db = getServiceClient()
   const week = new Date(Date.now() - 7 * 86400_000).toISOString()
   const day = new Date(Date.now() - 86400_000).toISOString()
-  const [mailErrors, outreachErr, bounces, errors24] = await Promise.all([
+  const [mailErrors, outreachErr, bounces, errors24, slow24] = await Promise.all([
     db.from('app_errors').select('route, message, created_at').gte('created_at', week).or('route.ilike.email*,message.ilike.*resend*').order('created_at', { ascending: false }).limit(200),
     db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'erreur').gte('sent_at', week),
     db.from('outreach_suppressions').select('email_norm', { count: 'exact', head: true }).eq('reason', 'rebond').gte('created_at', week),
-    db.from('app_errors').select('id', { count: 'exact', head: true }).gte('created_at', day),
+    db.from('app_errors').select('id', { count: 'exact', head: true }).gte('created_at', day).neq('route', 'perf'),
+    db.from('app_errors').select('id', { count: 'exact', head: true }).gte('created_at', day).eq('route', 'perf'),
   ])
   const out: HealthCheck[] = []
 
@@ -240,12 +241,18 @@ async function emailsCheck(): Promise<HealthCheck[]> {
   }
 
   const n24 = errors24.count ?? 0
+  const slow = slow24.count ?? 0
+  // Les mesures de lenteur (route « perf ») ne sont pas des erreurs : comptées à part.
   out.push({
     key: 'erreurs',
     title: 'Erreurs de l\'app',
     level: errors24.error ? 'unknown' : n24 > 30 ? 'warn' : 'ok',
     summary: errors24.error ? 'Lecture impossible' : n24 ? `${plural(n24, 'erreur')} remontée${n24 > 1 ? 's' : ''} sur 24 h` : 'Aucune erreur remontée sur 24 h',
-    items: [],
+    items: slow24.error ? [] : [{
+      label: 'Pages lentes',
+      detail: slow ? `${plural(slow, 'mesure')} de plus de 3 s (téléphone) ou 1,5 s (serveur) sur 24 h` : 'aucune page lente sur 24 h',
+      level: slow > 40 ? 'warn' : 'ok',
+    }],
     action: { href: '/dashboard/admin#erreurs', label: 'Voir les erreurs' },
   })
   return out
@@ -255,11 +262,12 @@ async function emailsCheck(): Promise<HealthCheck[]> {
 
 async function workflowsCheck(): Promise<HealthCheck> {
   try {
-    // Une requête par tâche (5 derniers passages sur main), gardée 15 min en
-    // cache : l'API GitHub sans jeton accepte 60 appels par heure.
+    // Une requête par tâche (10 derniers passages, toutes branches : un passage
+    // lancé à la main ou depuis une branche de travail agit aussi sur la vraie
+    // base), gardée 15 min en cache : l'API GitHub sans jeton accepte 60 appels par heure.
     const lists = await Promise.all(WATCHED_WORKFLOWS.map(async w => {
       const file = w.path.split('/').pop()
-      const r = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/${file}/runs?per_page=5&branch=main`, {
+      const r = await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/${file}/runs?per_page=10`, {
         headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'jasonmarinho-admin' },
         next: { revalidate: 900 },
         signal: AbortSignal.timeout(6000),

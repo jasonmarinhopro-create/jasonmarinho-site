@@ -17,5 +17,10 @@ export default async function SantePage() {
   t.done()
 
   const checkedAt = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' })
-  return <SanteView checks={checks} checkedAt={checkedAt} />
+  // Même marge que les autres pages admin (Vue d'ensemble, Membres)
+  return (
+    <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
+      <SanteView checks={checks} checkedAt={checkedAt} />
+    </div>
+  )
 }
