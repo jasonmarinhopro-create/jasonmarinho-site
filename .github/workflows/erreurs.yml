@@ -1,0 +1,49 @@
+# Lit les erreurs de l'app (app_errors, hors mesures de lenteur « perf ») des
+# dernières 48 h, regroupées par route et message. Le dépôt est public : les
+# e-mails, identifiants, jetons et nombres sont masqués avant affichage.
+# Résultats en annotations (lisibles sans connexion).
+name: Erreurs de l'app
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/erreurs-trigger']
+
+jobs:
+  lire:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lire les erreurs
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          since=$(date -u -d '48 hours ago' +%Y-%m-%dT%H:%M:%SZ)
+          curl -sf "$SUPABASE_URL/rest/v1/app_errors?route=neq.perf&created_at=gte.$since&select=created_at,source,route,path,message&order=created_at.desc&limit=1000" \
+            -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" > rows.json
+          perf=$(curl -s -o /dev/null -D - "$SUPABASE_URL/rest/v1/app_errors?route=eq.perf&created_at=gte.$since&select=id" \
+            -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" -H "Prefer: count=exact" | tr -d '\r' | grep -i '^content-range' | sed 's/.*\///')
+          total=$(jq 'length' rows.json)
+          echo "::notice title=Total 48 h::$total erreur(s) hors lenteurs, $perf mesure(s) de lenteur"
+          jq -r '
+            def mask: gsub("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"; "<email>")
+                    | gsub("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"; "<id>")
+                    | gsub("(sk|pk|rk|acct|cus|pi|cs|seti|sub|price|whsec)_[A-Za-z0-9_]+"; "<stripe>")
+                    | gsub("[A-Za-z0-9_-]{24,}"; "<jeton>")
+                    | gsub("[0-9]+"; "#");
+            group_by([.source, .route, (.message | mask | .[0:160])])
+            | map({n: length, last: (map(.created_at) | max), src: .[0].source, route: (.[0].route // "-"), path: ((.[0].path // "-") | mask), msg: (.[0].message | mask | .[0:160])})
+            | sort_by(-.n) | .[0:25][]
+            | "\(.n)x · \(.src) · \(.route) · \(.path) · dernière \(.last[5:16]) UTC · \(.msg)"
+          ' rows.json > groupes.txt
+          cat groupes.txt
+          [ -s groupes.txt ] || exit 0
+          split -l 6 groupes.txt part_
+          n=0
+          for f in part_*; do
+            n=$((n+1))
+            body=$(sed ':a;N;$!ba;s/\n/%0A/g' "$f")
+            echo "::notice title=Erreurs $n::$body"
+          done
