@@ -3,26 +3,31 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
+import { sendDepositOutcomeToGuest } from '@/lib/email/deposit-guest'
 const log = logger('api/stripe/deposit/capture')
 
 // POST /api/stripe/deposit/capture
-// Body: { contract_id }
-// Le bailleur encaisse la caution (en cas de dommages)
+// Body: { contract_id, amount?, motif }
+// Le bailleur retient tout ou partie de la caution (dommages constatés).
+// Depuis le 05/10/2026 : montant au choix (le reste du blocage est levé par
+// Stripe), motif obligatoire, e-mail au voyageur avec le montant et le motif.
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Non authentifié.' }, { status: 401 })
 
-    const { contract_id } = await request.json()
+    const { contract_id, amount, motif } = await request.json()
     if (!contract_id) return NextResponse.json({ error: 'contract_id manquant.' }, { status: 400 })
+    const reason = String(motif ?? '').trim().slice(0, 300)
+    if (reason.length < 3) return NextResponse.json({ error: 'Indique le motif de la retenue : il est envoyé au voyageur.' }, { status: 400 })
 
     const db = serviceClient()
 
     // Récupérer le contrat (vérifie ownership via user_id)
     const { data: contract } = await db
       .from('contracts')
-      .select('stripe_deposit_status, stripe_deposit_payment_intent_id, user_id')
+      .select('stripe_deposit_status, stripe_deposit_payment_intent_id, user_id, id, token, langue, locataire_email, locataire_prenom, bailleur_prenom, bailleur_nom, bailleur_email, logement_nom, logement_adresse, montant_caution')
       .eq('id', contract_id)
       .eq('user_id', user.id)
       .single()
@@ -34,6 +39,14 @@ export async function POST(request: NextRequest) {
     if (!contract.stripe_deposit_payment_intent_id) {
       return NextResponse.json({ error: 'Aucun PaymentIntent trouvé.' }, { status: 400 })
     }
+
+    const caution = Number(contract.montant_caution ?? 0)
+    const wanted = amount == null || amount === '' ? caution : Math.round(Number(amount) * 100) / 100
+    if (!Number.isFinite(wanted) || wanted <= 0 || wanted > caution + 0.001) {
+      return NextResponse.json({ error: `Montant à retenir entre 0,01 € et ${caution.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €.` }, { status: 400 })
+    }
+    const wantedCents = Math.round(wanted * 100)
+    const partial = wantedCents < Math.round(caution * 100)
 
     // Récupérer le compte Stripe du bailleur
     const { data: profile } = await db
@@ -69,10 +82,13 @@ export async function POST(request: NextRequest) {
     try {
       capturedPi = await stripe.paymentIntents.capture(
         contract.stripe_deposit_payment_intent_id,
-        {},
+        {
+          ...(partial ? { amount_to_capture: wantedCents } : {}),
+          metadata: { motif_retenue: reason },
+        },
         {
           stripeAccount: profile.stripe_account_id,
-          idempotencyKey: `capture:${contract_id}:${contract.stripe_deposit_payment_intent_id}`,
+          idempotencyKey: `capture:${contract_id}:${contract.stripe_deposit_payment_intent_id}:${wantedCents}`,
         }
       )
     } catch (stripeErr) {
@@ -105,7 +121,16 @@ export async function POST(request: NextRequest) {
       .eq('id', contract_id)
       .eq('stripe_deposit_status', 'capturing')
 
-    return NextResponse.json({ success: true })
+    await sendDepositOutcomeToGuest({
+      to: contract.locataire_email, langue: contract.langue, token: contract.token,
+      guestFirstName: contract.locataire_prenom,
+      hostName: `${contract.bailleur_prenom ?? ''} ${contract.bailleur_nom ?? ''}`.trim(),
+      hostEmail: contract.bailleur_email,
+      property: contract.logement_nom ?? contract.logement_adresse ?? '',
+      deposit: caution, outcome: 'captured', kept: wanted, reason,
+    })
+
+    return NextResponse.json({ success: true, kept: wanted })
   } catch (err) {
     log.error('unexpected', err)
     return NextResponse.json({ error: 'Erreur lors de l\'encaissement.' }, { status: 500 })

@@ -82,6 +82,9 @@ interface Props {
   paidTotal?: number | null
   hasDeposit: boolean
   depositAlreadyHeld: boolean
+  depositStatus?: string | null
+  depositHoldUntil?: string | null
+  depositCaptured?: { amount: number; reason: string | null } | null
   depositState: DepositWindowState
   depositOpens: string
   acomptePercent: number
@@ -103,7 +106,7 @@ const LANG_NAME: Record<UiLang, string> = { fr: 'Français', pt: 'Português', e
 
 export default function ContractView({
   token, contract, contractPays, initialLang, isViewerBailleur, expired, cancelled, alreadySigned, n,
-  hostIban, hostBic, stripeReady, paymentEnabled, paymentAlreadyDone, paidTotal, hasDeposit, depositAlreadyHeld, depositState, depositOpens,
+  hostIban, hostBic, stripeReady, paymentEnabled, paymentAlreadyDone, paidTotal, hasDeposit, depositAlreadyHeld, depositStatus, depositHoldUntil, depositCaptured, depositState, depositOpens,
   acomptePercent, montantAcompte, montantSolde, paymentParam, depositParam, preview,
 }: Props) {
   const [lang, setLang] = useState<UiLang>(initialLang)
@@ -552,6 +555,9 @@ export default function ContractView({
                       amount={Number(contract.montant_caution)}
                       depositParam={depositParam}
                       depositAlreadyHeld={depositAlreadyHeld}
+                      status={depositStatus ?? null}
+                      holdUntil={depositHoldUntil ?? null}
+                      captured={depositCaptured ?? null}
                       windowState={depositState}
                       opensOn={depositOpens}
                       lang={lang}

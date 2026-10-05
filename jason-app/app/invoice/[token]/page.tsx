@@ -2,6 +2,8 @@ import { createClient } from '@supabase/supabase-js'
 import { unstable_noStore as noStore } from 'next/cache'
 import { notFound } from 'next/navigation'
 import InvoicePrintButton from './InvoicePrintButton'
+import HostInvoicingNotice from '@/components/finances/HostInvoicingNotice'
+import { createClient as createUserClient } from '@/lib/supabase/server'
 
 // Page publique (token-based, comme /sign/[token]) mais utile seulement au
 // bailleur/locataire qui a le lien — jamais indexée, jamais devinable.
@@ -141,12 +143,24 @@ export default async function InvoicePage({ params }: { params: Promise<{ token:
     || (!contract.stripe_payment_enabled && contract.statut === 'signe')
   const isPro = contract.locataire_type === 'professionnel' && !!contract.locataire_structure
   const isPortugueseAL = contract.pays === 'PT'
+  // Encart facture électronique pour l'hôte connecté seulement (jamais pour
+  // le voyageur qui a le lien, jamais à l'impression)
+  let isOwner = false
+  try {
+    const { data: { user } } = await (await createUserClient()).auth.getUser()
+    isOwner = !!user && user.id === contract.user_id
+  } catch { /* visiteur sans session */ }
 
   return (
     <div style={page} className="print-page">
       <div style={container} className="print-container">
         {isPortugueseAL && (
           <p style={certifWarning}>{t.notCertifiedWarning}</p>
+        )}
+        {isOwner && !isPortugueseAL && (
+          <div className="no-print" style={{ marginBottom: '20px' }}>
+            <HostInvoicingNotice tone="dark" proClient={isPro} />
+          </div>
         )}
         <div style={header}>
           <div>

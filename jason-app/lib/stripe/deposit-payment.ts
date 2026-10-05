@@ -13,6 +13,8 @@ import type Stripe from 'stripe'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
 import { notifyHostPayment } from '@/lib/stripe/dispatch'
+import { createNotification, sejourHref } from '@/lib/notifications/create'
+import { parisToday } from '@/lib/stripe/deposit-window'
 import { logger } from '@/lib/logger'
 
 const log = logger('lib/stripe/deposit-payment')
@@ -46,6 +48,10 @@ export interface DepositState {
   captureBefore: string | null
   /** Nombre de blocages actifs trouvés (plus d'un = anomalie) */
   activeHolds: number
+  /** Somme réellement retenue (encaissement partiel possible), en euros */
+  capturedAmount: number | null
+  /** Motif saisi par l'hôte à l'encaissement (métadonnée Stripe) */
+  captureReason: string | null
 }
 
 /** Ce que Stripe sait de la caution de ce contrat */
@@ -79,6 +85,8 @@ export async function readDepositFromStripe(contract: DepositContract, stripeAcc
     paymentIntentId: pick?.id ?? null,
     captureBefore,
     activeHolds: holds.length,
+    capturedAmount: captured ? captured.amount_received / 100 : null,
+    captureReason: captured?.metadata?.motif_retenue || null,
   }
 }
 
@@ -101,6 +109,26 @@ export async function syncDeposit(db: SupabaseClient, contract: DepositContract,
       await notifyHostPayment(db, contract.id, 'caution')
     } else if (st.status === 'captured' && (cur === 'held' || cur === 'capturing')) {
       await db.from('contracts').update({ stripe_deposit_status: 'captured' }).eq('id', contract.id)
+    } else if (st.status === 'released' && cur === 'held') {
+      // Encore « bloquée » chez nous, mais la banque a levé le blocage
+      // (délai dépassé) sans que le webhook nous prévienne : on le dit à l'hôte
+      const { data: rows } = await db.from('contracts').update({ stripe_deposit_status: 'expired' })
+        .eq('id', contract.id).eq('stripe_deposit_status', 'held')
+        .select('id, user_id, locataire_prenom, locataire_nom, date_depart, sejour_id')
+      const c = rows?.[0]
+      if (c?.user_id) {
+        const guest = `${c.locataire_prenom ?? ''} ${c.locataire_nom ?? ''}`.trim() || 'ton voyageur'
+        const stillOn = c.date_depart && String(c.date_depart).slice(0, 10) >= parisToday()
+        await createNotification({
+          recipientId: c.user_id, category: 'sejour', type: 'deposit_expired',
+          title: `Caution de ${guest} expirée`,
+          body: stillOn
+            ? 'La carte n\'est plus bloquée : le délai de la banque (7 jours au plus) est passé. Rien n\'a été prélevé. Le séjour n\'est pas terminé : tu peux renvoyer le lien de caution au voyageur.'
+            : 'La carte n\'est plus bloquée : le délai de la banque (7 jours au plus) est passé avant que tu libères ou encaisses la caution. Rien n\'a été prélevé.',
+          ctaLabel: 'Voir le séjour', ctaHref: await sejourHref(db, c.sejour_id), severity: 'warning',
+          dedupKey: `deposit_expired:${c.id}:${st.paymentIntentId ?? ''}`,
+        }).catch(() => {})
+      }
     }
     return st
   } catch (e) {
@@ -153,12 +181,16 @@ export async function getOrCreateDepositCheckout(db: SupabaseClient, contract: D
   return { url: session.url, alreadyHeld: false }
 }
 
-/** Cautions « en attente » avec une session : vérifiées chez Stripe (cron quotidien) */
-export async function syncPendingDeposits(db: SupabaseClient, limit = 20): Promise<number> {
+/**
+ * Cautions « en attente » ou « bloquées » : vérifiées chez Stripe (cron
+ * quotidien). Attrape une caution validée dont le webhook s'est perdu, et une
+ * caution tombée d'elle-même (délai de la banque) restée « bloquée » chez nous.
+ */
+export async function syncPendingDeposits(db: SupabaseClient, limit = 30): Promise<number> {
   const { data: rows } = await db
     .from('contracts')
     .select('*')
-    .eq('stripe_deposit_status', 'pending')
+    .in('stripe_deposit_status', ['pending', 'held'])
     .not('stripe_deposit_checkout_id', 'is', null)
     .order('date_arrivee', { ascending: true })
     .limit(limit)

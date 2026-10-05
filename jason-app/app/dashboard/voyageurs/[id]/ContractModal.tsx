@@ -754,7 +754,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                     onChange={e => set('montant_caution', parseFloat(e.target.value) || 0)}
                   />
                   <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '4px 0 0' }}>
-                    À ne pas confondre avec l&apos;acompte ci-dessous : la caution est remboursée après le séjour, elle ne fait pas partie du loyer.
+                    À ne pas confondre avec l&apos;acompte ci-dessous : la caution ne fait pas partie du loyer. Par carte, elle est seulement bloquée, jamais débitée sans ton clic sur « Retenir une somme » après le séjour.
                   </p>
                   {form.montant_caution > 0 && form.date_arrivee && form.date_depart && (
                     <p style={{ fontSize: '11px', color: 'var(--text-2)', margin: '6px 0 0', lineHeight: 1.5 }}>

@@ -114,17 +114,25 @@ export default async function SignPage({
 
   // Caution
   const hasDeposit = Number(contract.montant_caution) > 0
-  let depositAlreadyHeld = contract.stripe_deposit_status === 'held'
-    || contract.stripe_deposit_status === 'captured'
-  // Caution commencée mais pas confirmée par le webhook : on demande à
-  // Stripe (5 s max) avant de proposer de bloquer la carte une 2e fois
-  if (hasDeposit && !depositAlreadyHeld && contract.stripe_deposit_status === 'pending' && contract.stripe_deposit_checkout_id && bailProfile?.stripe_account_id) {
+  let depositStatus: string | null = contract.stripe_deposit_status ?? null
+  let depositHoldUntil: string | null = null
+  let depositCaptured: { amount: number; reason: string | null } | null = null
+  // On demande à Stripe (5 s max) : caution commencée mais pas confirmée par
+  // le webhook (sinon on proposerait de bloquer la carte une 2e fois), date
+  // exacte de fin du blocage, somme réellement retenue
+  if (hasDeposit && contract.stripe_deposit_checkout_id && bailProfile?.stripe_account_id
+    && ['pending', 'held', 'captured'].includes(String(depositStatus))) {
     const st = await Promise.race([
       syncDeposit(supabase, contract, bailProfile.stripe_account_id),
       new Promise<null>(r => setTimeout(() => r(null), 5000)),
     ])
-    if (st?.status === 'held' || st?.status === 'captured') depositAlreadyHeld = true
+    if (st?.status === 'held') { depositStatus = 'held'; depositHoldUntil = st.captureBefore }
+    else if (st?.status === 'captured') {
+      depositStatus = 'captured'
+      if (st.capturedAmount != null) depositCaptured = { amount: st.capturedAmount, reason: st.captureReason }
+    } else if (st?.status === 'released' && depositStatus === 'held') depositStatus = 'expired'
   }
+  const depositAlreadyHeld = depositStatus === 'held' || depositStatus === 'captured'
   // Lien de caution ouvert seulement de J-2 au départ (lib/stripe/deposit-window.ts)
   const depositState = depositWindow(contract.date_arrivee, contract.date_depart)
   const depositOpens = depositOpensOn(contract.date_arrivee)
@@ -177,6 +185,9 @@ export default async function SignPage({
       paidTotal={paidTotal}
       hasDeposit={hasDeposit}
       depositAlreadyHeld={depositAlreadyHeld}
+      depositStatus={depositStatus}
+      depositHoldUntil={depositHoldUntil}
+      depositCaptured={depositCaptured}
       depositState={depositState}
       depositOpens={depositOpens}
       acomptePercent={acomptePercent}
