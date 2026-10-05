@@ -204,7 +204,7 @@ export default function DepositModal({ contract, hostIban, hostBic, onClose }: P
   }
 
   return (
-    <div style={overlay} onClick={onClose}>
+    <div style={overlay}>
       <div style={modal} onClick={e => e.stopPropagation()}>
         {/* Header */}
         <div style={header}>
