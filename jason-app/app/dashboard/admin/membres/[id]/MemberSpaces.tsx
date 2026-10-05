@@ -27,7 +27,7 @@ const PLAN: Record<string, { label: string; price: number }> = {
 const eur = (n: number) => `${n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`
 const date = (iso: string) => new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Paris' })
 
-export default function MemberSpaces({ plan, host, sejours, voyageurs, pros, isInvestor, projects }: {
+export default function MemberSpaces({ plan, host, sejours, voyageurs, pros, isInvestor, projects, proStats }: {
   plan: string
   host: { logements: number; contrats: number }
   sejours: number
@@ -35,6 +35,8 @@ export default function MemberSpaces({ plan, host, sejours, voyageurs, pros, isI
   pros: MemberProSpace[]
   isInvestor: boolean
   projects: number
+  /** Audience et Google de chaque fiche pro (par id), en streaming */
+  proStats?: Record<string, React.ReactNode>
 }) {
   const p = PLAN[plan] ?? PLAN.decouverte
   const hostUsed = host.logements + sejours + voyageurs + host.contrats > 0
@@ -88,6 +90,11 @@ export default function MemberSpaces({ plan, host, sejours, voyageurs, pros, isI
           </Card>
         )}
       </div>
+      {proStats && pros.some(r => proStats[r.id]) && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 14 }}>
+          {pros.map(r => proStats[r.id] ? <div key={r.id}>{proStats[r.id]}</div> : null)}
+        </div>
+      )}
     </section>
   )
 }

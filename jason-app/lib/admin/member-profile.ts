@@ -1,5 +1,9 @@
 import 'server-only'
 import { getServiceClient } from '@/lib/supabase/service'
+import { parisToday } from '@/lib/stripe/deposit-window'
+import { loadProFicheById, loadProStats } from '@/lib/visibility/pro-load'
+import { GSC_LAG_DAYS, periodRange } from '@/lib/visibility/rules'
+import type { ProStatsData } from '@/lib/visibility/pro-stats'
 
 // Chargement de la fiche membre de l'admin (04/10/2026). Sorti de la server
 // action getFullMemberProfile : la page vérifie déjà le rôle avec
@@ -22,6 +26,31 @@ export interface MemberProSpace {
   views_count: number | null
   contacts_count: number | null
   created_at: string
+}
+
+/**
+ * Statistiques d'une fiche pro pour la fiche membre (05/10/2026) : audience
+ * des 30 derniers jours, Google sur 28 jours. Chargées à part (Suspense) par
+ * la page : une panne ou une lenteur de Google ne bloque pas la fiche membre.
+ * Admin vérifié par la page avant l'appel.
+ */
+export async function loadMemberProStats(pro: Pick<MemberProSpace, 'kind' | 'id'>): Promise<ProStatsData | null> {
+  const fiche = await loadProFicheById(pro.kind, pro.id)
+  if (!fiche) return null
+  const today = parisToday()
+  const g = periodRange('28j', today, GSC_LAG_DAYS)
+  return loadProStats({
+    metier: pro.kind,
+    fiche,
+    db: getServiceClient(),
+    periodKey: '28j',
+    today,
+    isAdminPreview: true,
+    isAdmin: true,
+    googlePeriod: { ...g, key: '28j', label: '28 derniers jours', granularity: 'day' },
+    googleTimeoutMs: 10_000,
+    skipReport: true,
+  })
 }
 
 export async function loadMemberProfile(memberId: string) {

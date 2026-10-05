@@ -45,6 +45,8 @@ interface Props {
   kpis: { views: number; contacts: number; clics: number; daysActive: number }
   isAdminPreview?: boolean
   viewsTrend?: ViewsTrendData
+  /** Carte « Tes statistiques » (chargée à part par la page) */
+  statsSlot?: React.ReactNode
 }
 
 const PRESTATIONS: Array<[string, string]> = [
@@ -62,7 +64,7 @@ const LANGUES: Array<[string, string]> = [
   ['de', 'Deutsch'], ['pt', 'Português'], ['ar', 'العربية'],
 ]
 
-export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, viewsTrend }: Props) {
+export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, viewsTrend, statsSlot }: Props) {
   const [form, setForm] = useState({
     full_name: cleaner.full_name,
     pseudo: cleaner.pseudo ?? '',
@@ -370,6 +372,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         {isActive && publicUrl && (
           <ShareFicheBlock url={publicUrl} displayName={displayName} />
         )}
+        {statsSlot}
         {viewsTrend && <ViewsTrend trend={viewsTrend} metier="ménage" style={{ margin: 0 }} />}
         {!isAdminPreview && <FacturationTeaser href="/dashboard/ma-fiche-menage/devis" />}
         <div style={s.subscriptionCard}>

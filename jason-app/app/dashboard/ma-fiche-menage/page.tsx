@@ -5,6 +5,8 @@ import { getProfile } from '@/lib/queries/profile'
 import { perfTimer } from '@/lib/perf/server-timing'
 import MaFicheMenage from './MaFicheMenage'
 import { getViewsTrend } from '@/lib/pros/views'
+import { Suspense } from 'react'
+import { ProStatsTeaser, StatsTeaserSkeleton } from '@/components/pros/stats/StatsTeaser'
 
 export const metadata = { title: 'Ma fiche équipe ménage' }
 export const dynamic = 'force-dynamic'
@@ -89,6 +91,11 @@ export default async function Page({ searchParams }: PageProps) {
       }}
       isAdminPreview={isAdminPreview}
       viewsTrend={viewsTrend}
+      statsSlot={
+        <Suspense fallback={<StatsTeaserSkeleton />}>
+          <ProStatsTeaser metier="menage" fiche={cleaner} db={admin} isAdminPreview={isAdminPreview} />
+        </Suspense>
+      }
     />
   )
 }

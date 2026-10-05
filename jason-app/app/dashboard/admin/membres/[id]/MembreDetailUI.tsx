@@ -87,6 +87,8 @@ interface Props {
   audits?: AuditSession[]
   investorProjects?: InvestorProject[]
   pros?: MemberProSpace[]
+  /** Statistiques de chaque fiche pro (par id), chargées à part par la page */
+  proStats?: Record<string, React.ReactNode>
   host?: { logements: number; contrats: number }
 }
 
@@ -121,7 +123,7 @@ function fmtEur(n: number): string {
 }
 
 // ── Main component ──────────────────────────────────────────────────────────
-export default function MembreDetailUI({ profile, formations, stats, community, audits, investorProjects, pros = [], host = { logements: 0, contrats: 0 } }: Props) {
+export default function MembreDetailUI({ profile, formations, stats, community, audits, investorProjects, pros = [], host = { logements: 0, contrats: 0 }, proStats }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -293,6 +295,7 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
         sejours={stats.sejours}
         voyageurs={stats.voyageurs}
         pros={pros}
+        proStats={proStats}
         isInvestor={!!profile.is_investor}
         projects={(investorProjects ?? []).length}
       />

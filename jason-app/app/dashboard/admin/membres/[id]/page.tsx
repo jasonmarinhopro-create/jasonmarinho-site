@@ -3,6 +3,8 @@ import { getProfile } from '@/lib/queries/profile'
 import { loadMemberProfile } from '@/lib/admin/member-profile'
 import MembreDetailUI from './MembreDetailUI'
 import { perfTimer } from '@/lib/perf/server-timing'
+import { Suspense } from 'react'
+import MemberProStats, { MemberProStatsSkeleton } from './MemberProStats'
 
 export const metadata = { title: 'Fiche membre, Jason Marinho' }
 
@@ -28,6 +30,13 @@ export default async function MembreDetailPage({ params }: { params: { id: strin
     formation: Array.isArray(f.formation) ? (f.formation[0] ?? null) : f.formation,
   }))
 
+  // Statistiques des fiches pros diffusées à part : Google (jusqu'à 10 s) ne retarde pas la fiche
+  const proStats = Object.fromEntries(result.pros.map(r => [r.id, (
+    <Suspense key={r.id} fallback={<MemberProStatsSkeleton />}>
+      <MemberProStats pro={r} />
+    </Suspense>
+  )]))
+
   return (
     <>
       <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%' }}>
@@ -40,6 +49,7 @@ export default async function MembreDetailPage({ params }: { params: { id: strin
           investorProjects={result.investorProjects}
           pros={result.pros}
           host={result.host}
+          proStats={proStats}
         />
       </div>
     </>
