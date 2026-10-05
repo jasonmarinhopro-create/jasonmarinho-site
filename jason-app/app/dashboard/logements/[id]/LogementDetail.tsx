@@ -1,7 +1,7 @@
 'use client'
 
 // Fiche d'un logement (refonte 29/09/2026, demande de Jason : « plus visuel
-// en UI et en UX »). Bandeau vert avec les photos (envoi direct, PhotosCard),
+// en UI et en UX »). Bandeau vert (photos retirées le 05/10/2026),
 // les chiffres clés et ce qui manque à la fiche ; puis 2 colonnes : à gauche
 // la vie du logement (réservations à venir, y compris Airbnb / Booking,
 // calendriers, caractéristiques, tarifs, textes du contrat), à droite ce
@@ -21,7 +21,6 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import { EditableCard } from './EditableCard'
 import IcalSyncSection, { SOURCE_FG } from './IcalSyncSection'
-import PhotosCard from './PhotosCard'
 import type { VoyageurOption } from './QuickSejourModal'
 import { contratOptions, type RegimeAvance } from '@/lib/contracts/details'
 import { updateLogement, type LogementIcalFeedStatus } from '../actions'
@@ -543,7 +542,6 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
   // ─── Ce qui manque à la fiche ───
   const numeroOk = isPT ? !!l.numero_al : !!l.numero_enregistrement
   const checklist: Array<{ key: string; label: string; done: boolean; href: string }> = [
-    { key: 'photos', label: 'Photos', done: !!l.photo_couverture_url, href: '#photos' },
     { key: 'calendriers', label: 'Calendrier Airbnb / Booking', done: icalStatus.length > 0, href: '#modifier-calendriers' },
     { key: 'numero', label: isPT ? 'Numéro AL' : "Numéro d'enregistrement", done: numeroOk, href: isPT ? '#modifier-infos' : '#modifier-caracteristiques' },
     { key: 'accueil', label: 'Arrivée des voyageurs', done: !!(l.heure_arrivee && (l.wifi_nom || l.code_acces)), href: '#modifier-accueil' },
@@ -681,15 +679,6 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
               <CurrencyEur size={15} weight="bold" /> Finances
             </Link>
           </div>
-        </div>
-
-        <div id="photos" style={s.heroPhotos}>
-          <PhotosCard
-            logementId={l.id}
-            nom={l.nom}
-            cover={l.photo_couverture_url}
-            photos={[l.photo_couverture_url, ...(l.photos_urls ?? [])].filter((u, i, arr): u is string => !!u && arr.indexOf(u) === i)}
-          />
         </div>
       </div>
 
@@ -1519,7 +1508,6 @@ const s: Record<string, React.CSSProperties> = {
     border: '1px solid var(--accent-border)',
   },
   heroMain: { flex: '1 1 460px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: '12px' },
-  heroPhotos: { flex: '1 1 340px', maxWidth: '520px', minWidth: 0, scrollMarginTop: '90px' },
   eyebrow: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, color: 'var(--accent-text)', textTransform: 'uppercase', letterSpacing: '0.6px' },
   heroTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(28px,3.4vw,42px)', fontWeight: 400, color: 'var(--text)', margin: 0, lineHeight: 1.1, letterSpacing: '-0.5px', overflowWrap: 'anywhere' },
   heroAddress: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '14px', color: 'var(--text-2)', textDecoration: 'none', width: 'fit-content', maxWidth: '100%' },

@@ -1,0 +1,41 @@
+# Stockage Supabase : taille de chaque dossier, ou vidage d'un dossier dont
+# la fonction a été retirée (photos des logements, galerie des photographes).
+# Résultats en annotations (nombres seulement). Lancement : à la main, ou push
+# de .github/stockage-trigger sur une branche claude/** (contenu du fichier :
+# « liste » ou « vider <dossier> »).
+name: Stockage
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'liste, ou vider <dossier> (logement-photos, pro-portfolio)'
+        required: true
+        default: liste
+  push:
+    branches: ['claude/**']
+    paths: ['.github/stockage-trigger']
+
+jobs:
+  stockage:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            scripts
+            .github
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Opération
+        env:
+          OP_INPUT: ${{ inputs.operation }}
+        run: |
+          OP="${OP_INPUT:-$(head -n1 .github/stockage-trigger)}"
+          echo "Opération : $OP"
+          node scripts/stockage.mjs $OP
+          case "$OP" in vider*) node scripts/stockage.mjs liste ;; esac

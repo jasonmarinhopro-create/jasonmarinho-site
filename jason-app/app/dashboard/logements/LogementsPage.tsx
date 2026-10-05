@@ -2,8 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useTransition, useEffect, useMemo } from 'react'
-import Image from 'next/image'
-import { Plus, X, House, Trash, Warning, Check, Copy, WifiHigh, Key, Clock, Star, Leaf, MapPin, CurrencyEur, ArrowSquareOut, MagnifyingGlass, SquaresFour, Rows, ArrowRight, Car, SwimmingPool, Snowflake, Fire, WashingMachine, ForkKnife, Television, Tree, Chair, Plant, Wheelchair, Elevator, Campfire, Bathtub, PawPrint, Cigarette, CalendarCheck, IdentificationCard, Camera } from '@phosphor-icons/react/dist/ssr'
+import { Plus, X, House, Trash, Warning, Check, Copy, WifiHigh, Key, Clock, Star, Leaf, MapPin, CurrencyEur, ArrowSquareOut, MagnifyingGlass, SquaresFour, Rows, ArrowRight, Car, SwimmingPool, Snowflake, Fire, WashingMachine, ForkKnife, Television, Tree, Chair, Plant, Wheelchair, Elevator, Campfire, Bathtub, PawPrint, Cigarette, CalendarCheck, IdentificationCard } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createLogement, updateLogement, deleteLogement, type LogementData } from './actions'
@@ -49,19 +48,17 @@ const EQUIPEMENTS: { slug: string; label: string; Icon: React.ElementType }[] = 
 ]
 
 // Ce qui manque à une fiche pour que l'app travaille à ta place
-type Manque = 'calendrier' | 'numero' | 'photo'
+type Manque = 'calendrier' | 'numero'
 function manques(l: { ical_airbnb?: string | null; ical_booking?: string | null; ical_vrbo?: string | null; ical_autre?: string | null; pays?: string | null; numero_enregistrement?: string | null; numero_al?: string | null; photo_couverture_url?: string | null; actif?: boolean | null }): Manque[] {
   if (l.actif === false) return []
   const out: Manque[] = []
   if (!l.ical_airbnb && !l.ical_booking && !l.ical_vrbo && !l.ical_autre) out.push('calendrier')
   if ((l.pays ?? 'FR') === 'PT' ? !l.numero_al : !l.numero_enregistrement) out.push('numero')
-  if (!l.photo_couverture_url) out.push('photo')
   return out
 }
 const MANQUE_LABELS: Record<Manque, [string, string]> = {
   calendrier: ['sans calendrier Airbnb ou Booking connecté', 'sans calendrier connecté'],
   numero: ['sans numéro d’enregistrement', 'sans numéro d’enregistrement'],
-  photo: ['sans photo de couverture', 'sans photo de couverture'],
 }
 
 type Logement = {
@@ -457,13 +454,13 @@ export default function LogementsPage({ logements: initial }: Props) {
                 {logements.some(l => l.actif === false) && <span style={{ fontSize: 14, color: 'var(--text-3)', fontFamily: 'var(--font-outfit), sans-serif' }}>{` · ${logements.filter(l => l.actif === false).length} en pause`}</span>}
               </div>
               {logements.length > 0 && (() => {
-                const counts = (['calendrier', 'numero', 'photo'] as Manque[]).map(m => [m, logements.filter(l => manques(l).includes(m)).length] as const).filter(([, n]) => n > 0)
+                const counts = (['calendrier', 'numero'] as Manque[]).map(m => [m, logements.filter(l => manques(l).includes(m)).length] as const).filter(([, n]) => n > 0)
                 if (counts.length === 0) return <div style={asideOk}><Check size={15} weight="bold" /> Toutes tes fiches sont complètes.</div>
                 return (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                     <div style={{ fontSize: 12.5, color: 'var(--text-2)', fontWeight: 600 }}>À compléter</div>
                     {counts.map(([m, n]) => {
-                      const Icon = m === 'calendrier' ? CalendarCheck : m === 'numero' ? IdentificationCard : Camera
+                      const Icon = m === 'calendrier' ? CalendarCheck : IdentificationCard
                       const on = filter === `manque:${m}`
                       return (
                         <button key={m} type="button" onClick={() => { setFilter(on ? 'all' : `manque:${m}`) }}
@@ -647,8 +644,8 @@ export default function LogementsPage({ logements: initial }: Props) {
                   >
                     <td style={tableTd}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div style={{ ...tableThumb, background: l.photo_couverture_url ? `center/cover no-repeat url(${l.photo_couverture_url})` : 'var(--accent-bg)' }}>
-                          {!l.photo_couverture_url && <House size={14} weight="fill" color="var(--accent-text)" />}
+                        <div style={{ ...tableThumb, background: 'var(--accent-bg)' }}>
+                          <House size={14} weight="fill" color="var(--accent-text)" />
                         </div>
                         <span style={{ fontWeight: 600, color: 'var(--text)' }}>{l.nom}</span>
                       </div>
@@ -704,43 +701,16 @@ export default function LogementsPage({ logements: initial }: Props) {
                 className="jm-logement-card"
                 style={{ ...card, opacity: l.actif === false ? 0.65 : 1, cursor: 'pointer' }}
               >
-                {/* Photo couverture */}
-                {l.photo_couverture_url ? (
-                  <div style={cardCover}>
-                    <Image
-                      src={l.photo_couverture_url}
-                      alt={l.nom}
-                      fill
-                      sizes="(max-width: 640px) 100vw, 400px"
-                      style={{ objectFit: 'cover' }}
-                    />
-                    {l.actif === false && (
-                      <span style={cardCoverBadge}>En pause</span>
-                    )}
-                    {/* Actions overlay sur la photo */}
-                    <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '6px' }}>
-                      <button
-                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDeleteConfirm(l.id) }}
-                        style={{ ...iconBtn, background: 'rgba(0,0,0,0.55)', borderColor: 'rgba(255,255,255,0.15)', color: '#fff' }} title="Supprimer"
-                      >
-                        <Trash size={13} />
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  /* Placeholder coloré quand pas de photo */
-                  <div style={{ ...cardCover, height: '110px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--accent-bg)', color: 'var(--accent-text)', fontSize: '12.5px', fontWeight: 600 }}>
-                    <Camera size={20} weight="duotone" /> Ajoute une photo de couverture
-                    <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '6px' }}>
-                      <button
-                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDeleteConfirm(l.id) }}
-                        style={iconBtn} title="Supprimer"
-                      >
-                        <Trash size={13} />
-                      </button>
-                    </div>
-                  </div>
-                )}
+                {/* Photos retirées le 05/10/2026 : barre fine avec l'état et la corbeille */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px', padding: '10px 10px 0' }}>
+                  {l.actif === false && <span style={{ ...cardCoverBadge, position: 'static', marginRight: 'auto' }}>En pause</span>}
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); setDeleteConfirm(l.id) }}
+                    style={iconBtn} title="Supprimer"
+                  >
+                    <Trash size={13} />
+                  </button>
+                </div>
 
                 <div style={cardBody}>
                   {/* Type + statut */}
@@ -1174,12 +1144,6 @@ export default function LogementsPage({ logements: initial }: Props) {
               </div>
               <div style={fieldRow}>
                 <Field label="🔗 iCal autre plateforme" value={form.ical_autre ?? ''} onChange={v => set('ical_autre', v || null)} placeholder="https://…" />
-              </div>
-
-              {/* ── Photo ── */}
-              <h4 style={sectionTitle}>Photo de couverture</h4>
-              <div style={fieldRow}>
-                <Field label="URL de la photo" value={form.photo_couverture_url ?? ''} onChange={v => set('photo_couverture_url', v || null)} placeholder="https://…/photo.jpg" />
               </div>
 
               {/* ── Contacts utiles ── */}
@@ -1937,14 +1901,6 @@ const proprietaireText: React.CSSProperties = {
 
 // ─── Phase 1, nouveaux styles ─────────────────────────────────────────────────
 
-const cardCover: React.CSSProperties = {
-  position: 'relative' as const,
-  height: '210px',
-  overflow: 'hidden' as const,
-  background: 'var(--bg-2)',
-  flexShrink: 0,
-  borderBottom: '1px solid var(--border)',
-}
 
 const cardCoverImg: React.CSSProperties = {
   width: '100%', height: '100%',

@@ -31,8 +31,7 @@ Ouvre le **sélecteur de logement** en bas du menu, puis **Gérer mes logements*
 
 Clique sur un logement pour ouvrir sa fiche. Tout se modifie sur place, carte par carte, avec le bouton **Modifier** (ou **Compléter** quand la carte est vide).
 
-- **Photos** : ajoute jusqu'à 12 photos en cliquant ou en les glissant dans le cadre. Elles sont compressées automatiquement. Clique sur une photo pour l'agrandir, la mettre en couverture ou la supprimer
-- **Ta fiche est presque prête** : la liste de ce qui manque (photos, calendrier, numéro d'enregistrement, arrivée des voyageurs, tarifs, textes du contrat). Un clic ouvre directement la bonne carte
+- **Ta fiche est presque prête** : la liste de ce qui manque (calendrier, numéro d'enregistrement, arrivée des voyageurs, tarifs, textes du contrat). Un clic ouvre directement la bonne carte
 - **Chiffres de l'année** : montant des séjours saisis, taux d'occupation (réservations Airbnb et Booking comprises), nombre de réservations et prochaine arrivée
 - **Réservations à venir** : tes séjours et tes réservations Airbnb, Booking ou Vrbo synchronisées. Sur une réservation synchronisée, **Compléter** ajoute le voyageur (nom, nationalité, montant) pour que la déclaration parte
 - **Calendriers connectés** : colle ici les liens d'export Airbnb, Booking ou Vrbo, et vérifie la dernière synchronisation

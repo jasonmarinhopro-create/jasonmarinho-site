@@ -39,8 +39,8 @@ export const CHANGELOG: ChangelogEntry[] = [
     id: 'fiche-logement-sep-2026',
     date: '2026-09-29',
     tag: 'amélioration',
-    title: 'Fiche logement plus visuelle, avec tes photos',
-    description: 'Jusqu\'à 12 photos, réservations Airbnb et Booking visibles sur la fiche, chiffres de l\'année, et tout ce qui manque pour que la fiche soit complète.',
+    title: 'Fiche logement plus visuelle',
+    description: 'Réservations Airbnb et Booking visibles sur la fiche, chiffres de l\'année, et tout ce qui manque pour que la fiche soit complète.',
   },
   {
     id: 'finances-logement-sep-2026',
