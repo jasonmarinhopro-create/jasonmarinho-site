@@ -71,3 +71,32 @@ describe('partenaires', () => {
     expect(d.series.reduce((n, s) => n + s.clicks, 0)).toBe(3)
   })
 })
+
+import { buildPartnerSeo } from './partners'
+
+describe('pages des partenaires dans Google', () => {
+  const stat = (query: string, clicks: number, impressions: number, position: number) => ({ query, clicks, impressions, position, prevPosition: null, delta: null, isNew: true })
+  it('regroupe les pages par partenaire, avec les recherches visées et les meilleures recherches', () => {
+    const groups = buildPartnerSeo({
+      pageStats: [
+        { path: '/lodgify-avis', clicks: 12, impressions: 400, position: 6.2, delta: 1, queries: [stat('lodgify avis', 10, 300, 5.6), stat('avis lodgify', 2, 100, 8)] },
+        { path: '/blog/lodgify-ou-smoobu-2026', clicks: 1, impressions: 50, position: 14, delta: null, queries: [stat('lodgify ou smoobu', 1, 50, 14)] },
+        { path: '/code-promo-lodgify', clicks: 4, impressions: 40, position: 2.4, delta: null, queries: [stat('code promo lodgify', 4, 40, 2.4)] },
+      ],
+      totals: new Map([['/lodgify-avis', { clicks: 14, impressions: 420, position: 6.1, prevPosition: 8 }]]),
+      queries: [stat('lodgify avis', 10, 300, 5.6), stat('code promo lodgify', 4, 40, 2.4)],
+    })
+    const lodgify = groups.find(g => g.key === 'lodgify')!
+    // Page trouvée par son nom, en plus de la liste fixe
+    expect(lodgify.pages.map(p => p.path)).toContain('/blog/lodgify-ou-smoobu-2026')
+    const avis = lodgify.pages[0]
+    expect(avis).toMatchObject({ path: '/lodgify-avis', clicks: 14, place: 6, delta: 2 })
+    expect(avis.ctrPct).toBeCloseTo(3.3, 1)
+    // Page de la liste sans aucun affichage : affichée sans place
+    expect(lodgify.pages.find(p => p.path === '/lodgify-prix')).toMatchObject({ place: null, impressions: 0 })
+    expect(lodgify.targets.find(t => t.query === 'code promo lodgify')).toMatchObject({ place: 2, pageLabel: 'Partenaire · Code promo lodgify' })
+    expect(lodgify.targets.find(t => t.query === 'lodgify prix')).toMatchObject({ place: null, impressions: 0 })
+    expect(lodgify.best[0].query).toBe('lodgify avis')
+    expect(groups.find(g => g.key === 'indy')!.pages.every(p => p.place === null)).toBe(true)
+  })
+})

@@ -357,7 +357,10 @@ function LiveTraffic({ initialLive, initialChannels, topPages }: { initialLive: 
         // silencieux : on garde l'affichage précédent
       }
     }
-    const interval = setInterval(poll, 25_000)
+    // Toutes les 60 s, seulement onglet visible : chaque relecture coûte de la
+    // lecture disque à la base (budget Disk IO de l'offre gratuite, 05/10/2026)
+    const tick = () => { if (document.visibilityState === 'visible') poll() }
+    const interval = setInterval(tick, 60_000)
     return () => clearInterval(interval)
   }, [])
 
