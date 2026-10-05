@@ -238,9 +238,6 @@ ${JSON.stringify({
     ${p.bio ? `<div class="card" style="margin-bottom:20px"><h2>Présentation</h2><div class="bio">${escHtml(p.bio)}</div></div>` : ''}
     <div class="card">
       <h2>Portfolio</h2>
-      <!-- Galerie hébergée : remplie en direct par /api/photographer/portfolio
-           (photos ajoutées depuis l'espace pro, sans attendre un redéploiement). -->
-      <div id="jm-gallery" style="display:none;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:16px"></div>
       <p style="font-size:14px;color:var(--tm);line-height:1.7;margin-bottom:14px">Consulte le portfolio complet de ${escHtml(displayName)} pour découvrir son style, ses réalisations LCD et choisir si son approche correspond à ton logement.</p>
       <a href="${escHtml(p.portfolio_url)}" target="_blank" rel="noopener noreferrer" class="btn-p" onclick="jmTrack('portfolio')"><i class="ph-bold ph-image-square"></i>Voir le portfolio</a>
       ${p.instagram_handle ? `<a href="https://instagram.com/${escHtml(p.instagram_handle)}" target="_blank" rel="noopener" class="btn-ol" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i>@${escHtml(p.instagram_handle)}</a>` : ''}
@@ -302,22 +299,6 @@ try {
   var __vk = 'jm_v_' + __slug;
   if (!sessionStorage.getItem(__vk)) { sessionStorage.setItem(__vk, '1'); jmTrack('view'); }
 } catch (e) { jmTrack('view'); }
-// Galerie du portfolio hébergé (bucket public pro-portfolio).
-fetch('/api/photographer/portfolio?slug=' + encodeURIComponent(__slug))
-  .then(function (r) { return r.ok ? r.json() : { photos: [] } })
-  .then(function (d) {
-    var g = document.getElementById('jm-gallery')
-    if (!g || !d || !d.photos || !d.photos.length) return
-    d.photos.forEach(function (u) {
-      var a = document.createElement('a'); a.href = u; a.target = '_blank'; a.rel = 'noopener'
-      var img = document.createElement('img'); img.src = u; img.loading = 'lazy'
-      img.alt = 'Photo de logement par ' + ${JSON.stringify(String(displayName)).replace(/</g, '\\u003c')}
-      img.style.cssText = 'width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;border:1px solid rgba(0,76,63,.12);display:block'
-      a.appendChild(img); g.appendChild(a)
-    })
-    g.style.display = 'grid'
-  })
-  .catch(function () {})
 async function contactSubmit(e) {
   e.preventDefault();
   const errBox = document.getElementById('contact-err');

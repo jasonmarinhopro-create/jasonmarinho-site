@@ -508,7 +508,7 @@
           + '<a href="/tarifs#photographes" class="n-tar-card n-tar-photo">'
             + '<span class="n-tar-vis">'
               + '<span class="n-tar-grid"><i></i><i></i><i></i><i></i><i></i><i></i></span>'
-              + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-camera"></i>Portfolio<b>12 photos</b></span>'
+              + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-camera"></i>Portfolio<b>Lien direct</b></span>'
             + '</span>'
             + '<span class="n-tar-foot"><span class="n-tar-t">Photographes LCD</span><span class="n-tar-s">Ta fiche dans l\'annuaire</span></span>'
           + '</a>'
