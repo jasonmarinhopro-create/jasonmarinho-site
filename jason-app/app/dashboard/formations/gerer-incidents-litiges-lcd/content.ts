@@ -172,7 +172,7 @@ La caution te protège **financièrement**.
 ### Inconvénients
 
 - Limite Stripe : **7 jours max** (donc tu dois capturer rapidement).
-- Frais Stripe : **1,5 %** en cas de capture.
+- Frais de paiement : **2 % + 0,30 €** sur la somme retenue (rien si tu libères la caution).
 - Voyageur sans CB ou avec carte virtuelle : pas adapté.
 
 ### Quand l'utiliser

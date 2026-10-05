@@ -1,20 +1,26 @@
 ---
 title: "Connecter Stripe pour encaisser par carte"
-excerpt: "Recevoir le loyer et bloquer la caution directement sur ton compte, sans commission de l'app."
+excerpt: "Recevoir le loyer et bloquer la caution directement sur ton compte : aucune commission sur tes réservations, seulement des frais de paiement."
 order: 2
 relatedPages: [/dashboard/profil]
-updatedAt: "2026-09-27"
+updatedAt: "2026-10-05"
 ---
 
 ## Comment ça marche
 
-Le voyageur paie par carte sur une page Stripe sécurisée. L'argent arrive **sur ton compte Stripe**, puis sur ton compte bancaire. L'app ne prend **aucune commission** : seuls les frais de Stripe s'appliquent.
+Le voyageur paie par carte sur une page Stripe sécurisée. L'argent arrive **sur ton compte Stripe**, puis sur ton compte bancaire. L'app ne prend **aucune commission sur tes réservations** : seuls des frais de paiement en ligne s'appliquent.
 
-## Les frais de Stripe
+## Les frais de paiement en ligne
 
-Pour une carte européenne standard : **1,5 % + 0,25 €** par paiement. C'est plus pour une carte premium ou émise hors d'Europe. La grille officielle est sur [stripe.com/fr/pricing](https://stripe.com/fr/pricing).
+**2 % + 0,30 €** par paiement encaissé avec une carte européenne, déduits automatiquement. Ils couvrent les frais de Stripe et les virements vers ta banque.
 
-> Exemple : un loyer de 500 € payé avec une carte française standard te coûte 7,75 € de frais.
+- Carte britannique : **+1 %**
+- Carte émise hors d'Europe : **+1,75 %**
+- Paiement dans une autre devise que l'euro : **+2 %**
+
+> Exemple : un loyer de 500 € payé avec une carte française : 10,30 € de frais, tu reçois 489,70 €.
+
+Une **caution** bloquée puis libérée ne coûte rien. Si tu retiens une somme, les frais s'appliquent seulement à cette somme. Le détail de chaque paiement et de ses frais est dans ton espace Stripe.
 
 ## Connecter ton compte
 
