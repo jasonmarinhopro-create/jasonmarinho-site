@@ -7,6 +7,7 @@ import { AMBER, BROWN, PINK, tint } from '../_ui/theme'
 import { PRICES } from '@/lib/admin/revenue'
 import { COTISATIONS_ESTIMATE, wakeUpMailto, type MemberActivity } from '@/lib/admin/sales'
 import type { SalesData } from '@/lib/admin/sales-load'
+import MemberMailCard from './MemberMailCard'
 
 // Page « Ventes » (05/10/2026) : où en sont les abonnements par rapport à ce
 // que coûtent Supabase Pro et Vercel Pro, entonnoirs hôtes et pros, et la
@@ -92,6 +93,7 @@ export default function VentesView({ data }: { data: SalesData }) {
           ]} />
           <p style={s.sub}>
             {hostFunnel.driing > 0 && <>{plural(hostFunnel.driing, 'membre Driing', 'membres Driing')} en plus (accès offert). </>}
+            {hostFunnel.driingAttente > 0 && <>{plural(hostFunnel.driingAttente, 'compte Driing', 'comptes Driing')} en attente de confirmation : <Link href="/dashboard/admin/qg" style={{ color: 'var(--accent-text)', fontWeight: 600 }}>à confirmer dans le QG</Link> pour leur ouvrir l&apos;accès promis. </>}
             Le plus gros écart est souvent entre l&apos;inscription et le premier logement : c&apos;est la liste « Inscrits sans logement » plus bas.
           </p>
         </section>
@@ -137,6 +139,9 @@ export default function VentesView({ data }: { data: SalesData }) {
         </header>
         <Weekly weeks={weekly} />
       </section>
+
+      {/* E-mail unique aux membres gratuits (Driing exclus) */}
+      <MemberMailCard mail={data.memberMail} />
 
       {/* Membres à réveiller */}
       <div style={s.grid2}>
