@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { saveProfileName, saveIban, saveAdresse, saveFacturation, deleteAccount } from './actions'
+import HostInvoicingNotice from '@/components/finances/HostInvoicingNotice'
 import {
   Check, User, PencilSimple, Warning, CreditCard, Bank, MapPin, IdentificationCard, Wallet, Trash, X, Receipt,
 } from '@phosphor-icons/react/dist/ssr'
@@ -473,7 +474,7 @@ export default function ProfilForm({
                 placeholder="Mention TVA affichée sur la facture"
               />
               <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '6px 0 0' }}>
-                Indique la mention TVA correcte pour ton pays (ex : IVA à 6% obligatoire au Portugal, jamais "non applicable").
+                Indique la mention exacte de ta situation, l&apos;app ne peut pas la deviner. Ex. en France, location meublée sans services : « TVA non applicable, article 261 D 4° du CGI ». Au Portugal, la vraie fatura se fait sur le Portail des Finances.
               </p>
               {facturationError && <div style={f.errorBox}><Warning size={13} />{facturationError}</div>}
               <div style={f.saveRow}>
@@ -502,6 +503,9 @@ export default function ProfilForm({
             </div>
           )}
         </FieldRow>
+        <div style={{ marginTop: '14px' }}>
+          <HostInvoicingNotice />
+        </div>
       </SectionCard>
 
     </>

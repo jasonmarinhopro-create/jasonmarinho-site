@@ -68,6 +68,24 @@ export type SignUiStrings = {
   depositClosed: string
   depositClosedHint: string
   payDeposit: (amount: string) => string
+  // Caution expliquée pas à pas (05/10/2026 : « on a peur que ça prélève »)
+  depositHowTitle: string
+  depositStep1Title: string
+  depositStep1: (amount: string) => string
+  depositStep2Title: string
+  depositStep2: (amount: string) => string
+  depositStep3Title: string
+  depositStep3: string
+  depositSecure: string
+  depositHeldUntil: (date: string) => string
+  depositProcessingTitle: string
+  depositProcessingHint: string
+  depositReleasedTitle: string
+  depositReleasedHint: string
+  depositExpiredTitle: string
+  depositExpiredHint: string
+  depositCapturedTitle: string
+  depositCapturedHint: (amount: string, motif: string | null) => string
   redirecting: string
   networkError: string
   paymentError: string
@@ -157,17 +175,34 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     soldeRemainingNote: amount => `Solde restant de ${amount} à régler directement au propriétaire à votre arrivée.`,
     transferNotice: 'Une fois le virement effectué, prévenez le propriétaire par email ou téléphone. Les virements peuvent prendre 1 à 3 jours ouvrés selon votre banque.',
     depositRegistered: 'Caution enregistrée',
-    depositRegisteredHint: amount => `${amount} bloqués sur votre carte. Cette somme sera libérée par le propriétaire après votre séjour si aucun dommage n'est constaté.`,
+    depositRegisteredHint: amount => `${amount} bloqués sur votre carte, rien n'a été débité. Après votre séjour, le propriétaire lève le blocage s'il n'y a pas de dommage.`,
     depositCancelled: 'Paiement de la caution annulé',
     depositCancelledHint: 'Vous pouvez régler la caution ci-dessous pour finaliser votre dossier.',
     depositRequired: 'Dépôt de garantie requis',
     depositRequiredHint: amount => `Pour finaliser votre séjour, un dépôt de garantie de ${amount} est demandé par le propriétaire.`,
     depositCardNote: "Votre carte sera bloquée mais pas débitée, la somme n'est encaissée qu'en cas de dommages constatés à la fin du séjour.",
-    depositNotYet: "Caution à régler 2 jours avant l'arrivée",
-    depositNotYetHint: (amount, date) => `Le dépôt de garantie de ${amount} se règle à partir du ${date}. Vous recevrez le lien par e-mail ce jour-là : une carte ne reste bloquée que quelques jours, elle doit donc l'être pendant votre séjour.`,
+    depositNotYet: "Caution à valider 2 jours avant l'arrivée",
+    depositNotYetHint: (amount, date) => `Le dépôt de garantie de ${amount} se valide à partir du ${date}. Vous recevrez le lien par e-mail ce jour-là : une carte ne reste bloquée que quelques jours, elle doit donc l'être pendant votre séjour.`,
     depositClosed: 'Séjour terminé',
     depositClosedHint: 'Le séjour est terminé : le dépôt de garantie ne peut plus être réglé en ligne.',
-    payDeposit: amount => `Régler la caution, ${amount} →`,
+    payDeposit: amount => `Valider la caution, ${amount} (bloqués, pas débités)`,
+    depositHowTitle: 'Comment marche la caution',
+    depositStep1Title: 'À la validation : un blocage, pas un paiement',
+    depositStep1: amount => `Votre banque met ${amount} de côté sur votre carte (empreinte bancaire). Rien ne quitte votre compte. Selon votre banque, la somme peut apparaître « en attente » dans votre application.`,
+    depositStep2Title: 'Après votre départ',
+    depositStep2: amount => `Si tout va bien, le propriétaire lève le blocage. En cas de dommages constatés, il ne peut retenir que la somme justifiée (photos, factures), jamais plus de ${amount}, et vous êtes prévenu par e-mail.`,
+    depositStep3Title: 'Au plus tard 7 jours après',
+    depositStep3: "Sans action du propriétaire, le blocage s'annule tout seul au plus tard 7 jours après votre validation. Votre banque rend alors la somme disponible, tout de suite ou sous quelques jours selon les banques.",
+    depositSecure: 'Paiement sécurisé par Stripe : le propriétaire ne voit jamais le numéro de votre carte.',
+    depositHeldUntil: date => `Le blocage s'annule tout seul au plus tard le ${date} si le propriétaire ne l'a pas levé avant.`,
+    depositProcessingTitle: 'Caution en cours de confirmation',
+    depositProcessingHint: "Votre carte a bien été transmise. La confirmation de la banque peut prendre quelques minutes : inutile de recommencer. Rechargez cette page dans un instant.",
+    depositReleasedTitle: 'Caution libérée',
+    depositReleasedHint: "Le propriétaire a levé le blocage : rien n'a été prélevé. Selon votre banque, la somme redevient disponible tout de suite ou sous quelques jours.",
+    depositExpiredTitle: 'Blocage terminé',
+    depositExpiredHint: "Le blocage de votre carte a pris fin : rien n'a été prélevé.",
+    depositCapturedTitle: 'Une partie de la caution a été retenue',
+    depositCapturedHint: (amount, motif) => `Le propriétaire a retenu ${amount}${motif ? ` (motif : ${motif})` : ''}. Le reste du blocage a été levé. Pour toute question, contactez-le directement.`,
     redirecting: 'Redirection vers Stripe…',
     networkError: 'Erreur réseau. Réessayez.',
     paymentError: 'Erreur lors du paiement.',
@@ -252,17 +287,34 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     soldeRemainingNote: amount => `Saldo remanescente de ${amount} a pagar diretamente ao proprietário na sua chegada.`,
     transferNotice: 'Depois de efetuar a transferência, avise o proprietário por e-mail ou telefone. As transferências podem demorar de 1 a 3 dias úteis, consoante o seu banco.',
     depositRegistered: 'Caução registada',
-    depositRegisteredHint: amount => `${amount} bloqueados no seu cartão. Este valor será libertado pelo proprietário após a sua estadia, caso não seja constatado qualquer dano.`,
+    depositRegisteredHint: amount => `${amount} bloqueados no seu cartão, nada foi debitado. Depois da estadia, o proprietário levanta o bloqueio se não houver danos.`,
     depositCancelled: 'Pagamento da caução cancelado',
     depositCancelledHint: 'Pode pagar a caução abaixo para finalizar o seu processo.',
     depositRequired: 'Caução necessária',
     depositRequiredHint: amount => `Para finalizar a sua estadia, é pedida pelo proprietário uma caução de ${amount}.`,
     depositCardNote: 'O seu cartão será bloqueado mas não debitado; o valor só é cobrado em caso de danos constatados no final da estadia.',
-    depositNotYet: 'Caução a pagar 2 dias antes da chegada',
-    depositNotYetHint: (amount, date) => `A caução de ${amount} pode ser paga a partir de ${date}. Receberá a ligação por e-mail nesse dia: um cartão só fica bloqueado durante alguns dias, por isso deve sê-lo durante a sua estadia.`,
+    depositNotYet: 'Caução a validar 2 dias antes da chegada',
+    depositNotYetHint: (amount, date) => `A caução de ${amount} pode ser validada a partir de ${date}. Receberá a ligação por e-mail nesse dia: um cartão só fica bloqueado durante alguns dias, por isso deve sê-lo durante a sua estadia.`,
     depositClosed: 'Estadia terminada',
     depositClosedHint: 'A estadia terminou: a caução já não pode ser paga online.',
-    payDeposit: amount => `Pagar a caução, ${amount} →`,
+    payDeposit: amount => `Validar a caução, ${amount} (bloqueados, não debitados)`,
+    depositHowTitle: 'Como funciona a caução',
+    depositStep1Title: 'Na validação: um bloqueio, não um pagamento',
+    depositStep1: amount => `O seu banco reserva ${amount} no seu cartão (pré-autorização). Nada sai da sua conta. Consoante o banco, o valor pode aparecer como « pendente » na sua aplicação.`,
+    depositStep2Title: 'Depois da sua saída',
+    depositStep2: amount => `Se tudo correr bem, o proprietário levanta o bloqueio. Em caso de danos verificados, só pode reter o valor justificado (fotografias, faturas), nunca mais de ${amount}, e é avisado por e-mail.`,
+    depositStep3Title: 'No máximo 7 dias depois',
+    depositStep3: 'Sem ação do proprietário, o bloqueio é anulado automaticamente no máximo 7 dias após a sua validação. O banco volta a disponibilizar o valor, de imediato ou em poucos dias consoante o banco.',
+    depositSecure: 'Pagamento seguro pela Stripe: o proprietário nunca vê o número do seu cartão.',
+    depositHeldUntil: date => `O bloqueio é anulado automaticamente o mais tardar a ${date}, se o proprietário não o levantar antes.`,
+    depositProcessingTitle: 'Caução em confirmação',
+    depositProcessingHint: 'O seu cartão foi bem transmitido. A confirmação do banco pode demorar alguns minutos: não é preciso repetir. Recarregue esta página daqui a pouco.',
+    depositReleasedTitle: 'Caução libertada',
+    depositReleasedHint: 'O proprietário levantou o bloqueio: nada foi cobrado. Consoante o banco, o valor volta a estar disponível de imediato ou em poucos dias.',
+    depositExpiredTitle: 'Bloqueio terminado',
+    depositExpiredHint: 'O bloqueio do seu cartão terminou: nada foi cobrado.',
+    depositCapturedTitle: 'Parte da caução foi retida',
+    depositCapturedHint: (amount, motif) => `O proprietário reteve ${amount}${motif ? ` (motivo: ${motif})` : ''}. O resto do bloqueio foi levantado. Para qualquer questão, contacte-o diretamente.`,
     redirecting: 'A redirecionar para o Stripe…',
     networkError: 'Erro de rede. Tente novamente.',
     paymentError: 'Erro no pagamento.',
@@ -347,17 +399,34 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     soldeRemainingNote: amount => `Remaining balance of ${amount} to be paid directly to the owner on arrival.`,
     transferNotice: 'Once the transfer is done, let the owner know by email or phone. Transfers can take 1 to 3 business days depending on your bank.',
     depositRegistered: 'Security deposit registered',
-    depositRegisteredHint: amount => `${amount} held on your card. This amount will be released by the owner after your stay if no damage is found.`,
+    depositRegisteredHint: amount => `${amount} held on your card, nothing was charged. After your stay, the owner releases the hold if there is no damage.`,
     depositCancelled: 'Security deposit payment cancelled',
     depositCancelledHint: 'You can pay the security deposit below to finalise your file.',
     depositRequired: 'Security deposit required',
     depositRequiredHint: amount => `To finalise your stay, the owner requires a security deposit of ${amount}.`,
     depositCardNote: 'Your card will be authorised but not charged; the amount is only collected if damage is found at the end of the stay.',
-    depositNotYet: 'Deposit due 2 days before arrival',
-    depositNotYetHint: (amount, date) => `The ${amount} security deposit can be paid from ${date}. You will receive the link by email that day: a card can only be held for a few days, so the hold needs to cover your stay.`,
+    depositNotYet: 'Deposit to confirm 2 days before arrival',
+    depositNotYetHint: (amount, date) => `The ${amount} security deposit can be confirmed from ${date}. You will receive the link by email that day: a card can only be held for a few days, so the hold needs to cover your stay.`,
     depositClosed: 'Stay completed',
     depositClosedHint: 'The stay is over: the deposit can no longer be paid online.',
-    payDeposit: amount => `Pay the security deposit, ${amount} →`,
+    payDeposit: amount => `Confirm the deposit, ${amount} (held, not charged)`,
+    depositHowTitle: 'How the security deposit works',
+    depositStep1Title: 'When you confirm: a hold, not a payment',
+    depositStep1: amount => `Your bank sets ${amount} aside on your card (pre-authorisation). Nothing leaves your account. Depending on your bank, the amount may show as "pending" in your banking app.`,
+    depositStep2Title: 'After you leave',
+    depositStep2: amount => `If all is well, the owner releases the hold. If damage is found, they can only keep the justified amount (photos, invoices), never more than ${amount}, and you are told by email.`,
+    depositStep3Title: 'At most 7 days later',
+    depositStep3: 'If the owner does nothing, the hold is cancelled automatically at most 7 days after you confirmed it. Your bank then makes the amount available again, straight away or within a few days depending on the bank.',
+    depositSecure: 'Secure payment by Stripe: the owner never sees your card number.',
+    depositHeldUntil: date => `The hold is cancelled automatically on ${date} at the latest, if the owner has not released it before.`,
+    depositProcessingTitle: 'Security deposit being confirmed',
+    depositProcessingHint: 'Your card was sent successfully. The bank confirmation can take a few minutes: no need to try again. Reload this page in a moment.',
+    depositReleasedTitle: 'Security deposit released',
+    depositReleasedHint: 'The owner released the hold: nothing was charged. Depending on your bank, the amount is available again straight away or within a few days.',
+    depositExpiredTitle: 'Hold ended',
+    depositExpiredHint: 'The hold on your card has ended: nothing was charged.',
+    depositCapturedTitle: 'Part of the security deposit was kept',
+    depositCapturedHint: (amount, motif) => `The owner kept ${amount}${motif ? ` (reason: ${motif})` : ''}. The rest of the hold was released. For any question, contact them directly.`,
     redirecting: 'Redirecting to Stripe…',
     networkError: 'Network error. Please try again.',
     paymentError: 'Payment error.',

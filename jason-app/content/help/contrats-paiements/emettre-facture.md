@@ -1,9 +1,9 @@
 ---
 title: "Émettre une facture pour un séjour"
-excerpt: "Numérotation automatique, mentions fiscales, et le cas des logements au Portugal."
+excerpt: "Numérotation automatique, mentions fiscales, facture électronique 2027 et le cas des logements au Portugal."
 order: 6
 relatedPages: [/dashboard/voyageurs, /dashboard/profil]
-updatedAt: "2026-09-27"
+updatedAt: "2026-10-05"
 ---
 
 ## Avant la première facture
@@ -23,9 +23,18 @@ Une fois le contrat signé : fiche du voyageur → icône **facture** du séjour
 - Recliquer sur le bouton rouvre la même facture : pas de doublon
 - La **caution** n'y figure jamais : ce n'est pas un revenu
 
-## Qui peut l'utiliser
+## Qui peut l'utiliser, et ce qui change avec la facture électronique
 
-Ce document convient à un hôte **qui ne facture pas de TVA** en France. Si tu es assujetti à la TVA, utilise un logiciel de facturation dédié.
+La facture de l'app convient à un hôte **qui ne facture pas de TVA**, pour une location meublée **sans services** louée à un **particulier** : dans ce cas, rien ne change en 2027.
+
+Ce qui change pour tous les loueurs en meublé :
+
+- **Depuis le 1er septembre 2026** : tu dois pouvoir **recevoir** les factures électroniques de tes prestataires (ménage, conciergerie, artisans). Une plateforme agréée gratuite suffit, par exemple **Tiime** ou **Indy**
+- **À partir du 1er septembre 2027**, si tu factures la **TVA** ou si ta location relève de la **para-hôtellerie** (au moins 3 services sur 4 : petit-déjeuner, ménage pendant le séjour, linge, accueil), même en franchise de TVA : tes factures aux **entreprises** passent par une plateforme agréée et tes ventes aux **particuliers** sont déclarées à l'administration (e-reporting). La facture de l'app ne suffit plus : fais tes factures dans un outil agréé
+
+Sur la page de la facture (et dans **Mon compte** → **Factures**), un encart te rappelle ces règles avec les deux outils. Ce sont des liens affiliés : je touche une commission si tu t'abonnes, sans surcoût pour toi.
+
+> Sources : jedeclaremonmeuble.com, « Facturation électronique en LMNP : obligations et échéances 2026-2027 » ; dougs.fr, « Facturation électronique LMNP » ; lynco.net, « Facturation électronique LMNP et LMP » (consultées en octobre 2026)
 
 ## Logement au Portugal
 

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
+import { sendDepositOutcomeToGuest } from '@/lib/email/deposit-guest'
 const log = logger('api/stripe/deposit/release')
 
 // POST /api/stripe/deposit/release
@@ -22,7 +23,7 @@ export async function POST(request: NextRequest) {
     // Récupérer le contrat (vérifie ownership)
     const { data: contract } = await db
       .from('contracts')
-      .select('stripe_deposit_status, stripe_deposit_payment_intent_id')
+      .select('stripe_deposit_status, stripe_deposit_payment_intent_id, id, token, langue, locataire_email, locataire_prenom, bailleur_prenom, bailleur_nom, bailleur_email, logement_nom, logement_adresse, montant_caution')
       .eq('id', contract_id)
       .eq('user_id', user.id)
       .single()
@@ -97,6 +98,16 @@ export async function POST(request: NextRequest) {
       .update({ stripe_deposit_status: 'released' })
       .eq('id', contract_id)
       .eq('stripe_deposit_status', 'releasing')
+
+    // Le voyageur est prévenu (05/10/2026) : avant, il devait surveiller son compte
+    await sendDepositOutcomeToGuest({
+      to: contract.locataire_email, langue: contract.langue, token: contract.token,
+      guestFirstName: contract.locataire_prenom,
+      hostName: `${contract.bailleur_prenom ?? ''} ${contract.bailleur_nom ?? ''}`.trim(),
+      hostEmail: contract.bailleur_email,
+      property: contract.logement_nom ?? contract.logement_adresse ?? '',
+      deposit: Number(contract.montant_caution ?? 0), outcome: 'released',
+    })
 
     return NextResponse.json({ success: true })
   } catch (err) {
