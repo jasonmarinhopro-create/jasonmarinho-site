@@ -10,7 +10,7 @@ import {
 
 // ── Types partagés serveur / navigateur ──────────────────────────────────
 
-export type VisTab = 'ensemble' | 'fiches' | 'recherches' | 'villes' | 'pages' | 'visiteurs'
+export type VisTab = 'ensemble' | 'fiches' | 'recherches' | 'villes' | 'pages' | 'visiteurs' | 'partenaires'
 
 export const VIS_TABS: Array<{ key: VisTab; label: string }> = [
   { key: 'ensemble', label: 'Vue d\'ensemble' },
@@ -19,6 +19,7 @@ export const VIS_TABS: Array<{ key: VisTab; label: string }> = [
   { key: 'villes', label: 'Villes' },
   { key: 'pages', label: 'Pages & blog' },
   { key: 'visiteurs', label: 'Visiteurs' },
+  { key: 'partenaires', label: 'Partenaires' },
 ]
 
 export function parseTab(v: string | null | undefined): VisTab {

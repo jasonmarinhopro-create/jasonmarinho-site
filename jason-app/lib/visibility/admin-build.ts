@@ -4,6 +4,8 @@
 // source en panne n'empêche pas d'afficher les autres. Seules les données de
 // l'onglet ouvert sont préparées pour le navigateur.
 import type { GscResult } from '@/lib/google/search-analytics'
+import type { AffilaeOverview } from '@/lib/affiliation/affilae'
+import { buildPartners, type ClickRow, type PartnersData } from './partners'
 import { isPaidPro } from '@/lib/admin/revenue'
 import {
   pctChange, aggregateQueries, aggregatePages, bucketCounts, topRanked, nearlyFirstPage,
@@ -88,6 +90,8 @@ export interface VisibilityData {
   villes?: VillesData
   pages?: PagesData
   visiteurs?: VisiteursData
+  partenaires?: PartnersData
+  affClicks: SourceState
 }
 
 const QUERIES_SENT = 1000
@@ -125,10 +129,14 @@ export interface VisibilityInput {
   prevVisitsRes: { ok: true; rows: VisitRow[] } | { ok: false; rows: VisitRow[] }
   prosRes: { ok: true; photographers: ProRow[]; cleaners: ProRow[] } | { ok: false; error: string }
   demandes: Map<string, number>
+  /** Clics vers les liens affiliés du site (affiliate_clicks), période et période d'avant */
+  affClicksRes: { ok: true; cur: ClickRow[]; prev: ClickRow[] } | { ok: false; error: string }
+  /** Ventes Affilae (chargées seulement pour l'onglet Partenaires) */
+  affilae: AffilaeOverview | null
 }
 
 export function buildVisibility(input: VisibilityInput): VisibilityData {
-  const { periodKey, tab, gscPeriod, visitPeriod, qp, daily, truth, visitsRes, prevVisitsRes, prosRes, demandes } = input
+  const { periodKey, tab, gscPeriod, visitPeriod, qp, daily, truth, visitsRes, prevVisitsRes, prosRes, demandes, affClicksRes, affilae } = input
 
   // ── État des sources ──
   const gscFail = [qp, daily, truth].find(r => !r.ok)
@@ -245,9 +253,11 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
     ...(prosRes.ok ? { fiches: proItems.length } : {}),
     ...(qp.ok ? { recherches: queryStats.length, villes: cities.length, pages: otherPages.length } : {}),
     ...(visitsRes.ok ? { visiteurs: summary.visitors } : {}),
+    ...(affClicksRes.ok ? { partenaires: affClicksRes.cur.length } : {}),
   }
 
-  const data: VisibilityData = { periodKey, gscPeriod, visitPeriod, gsc, visits, pros, hero, counts }
+  const affClicks: SourceState = affClicksRes.ok ? { ok: true } : { ok: false, error: affClicksRes.error }
+  const data: VisibilityData = { periodKey, gscPeriod, visitPeriod, gsc, visits, pros, hero, counts, affClicks }
 
   if (tab === 'ensemble') {
     const nonBrand = queryStats.filter(s => !isBrandQuery(s.query))
@@ -319,6 +329,17 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
       topPages: topVisitedPages(curRows, 12),
       mobilePct: summary.devices.length ? mobile?.pct ?? 0 : null,
     }
+  }
+
+  if (tab === 'partenaires') {
+    data.partenaires = buildPartners({
+      clicks: affClicksRes.ok ? affClicksRes.cur : [],
+      prevClicks: affClicksRes.ok ? affClicksRes.prev : [],
+      visits: curRows,
+      period: visitPeriod,
+      pages: new Map([...pages.entries()].map(([path, p]) => [path, { impressions: p.impressions, position: p.position }])),
+      affilae,
+    })
   }
 
   return data

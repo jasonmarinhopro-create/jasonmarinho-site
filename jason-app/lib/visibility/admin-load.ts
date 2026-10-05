@@ -9,6 +9,8 @@ import { loadVisits, loadGscQueryPages, loadGscDaily, loadGscPages } from './loa
 import { periodRange, GSC_LAG_DAYS, type PeriodKey, type VisitRow } from './rules'
 import type { VisTab } from './admin-rules'
 import { buildVisibility, type ProRow, type VisibilityData } from './admin-build'
+import { getAffilaeOverview } from '@/lib/affiliation/affilae'
+import type { ClickRow } from './partners'
 
 const PRO_COLUMNS = 'id, slug, full_name, pseudo, ville, status, is_public, tier, stripe_subscription_status'
 
@@ -39,9 +41,32 @@ async function loadDemandes(start: string, end: string): Promise<Map<string, num
   return out
 }
 
+/** Clics vers les liens affiliés entre deux jours (inclus) */
+async function loadAffiliateClicks(start: string, end: string): Promise<ClickRow[]> {
+  const db = getServiceClient()
+  const out: ClickRow[] = []
+  for (let from = 0; from < 20_000; from += 1000) {
+    const { data, error } = await db.from('affiliate_clicks').select('session_id, path, partner, created_at')
+      .gte('created_at', `${start}T00:00:00+02:00`).lte('created_at', `${end}T23:59:59+02:00`)
+      .order('created_at', { ascending: true }).range(from, from + 999)
+    if (error) throw new Error(error.message)
+    out.push(...((data ?? []) as ClickRow[]))
+    if (!data || data.length < 1000) break
+  }
+  return out
+}
+
 export async function loadVisibility(periodKey: PeriodKey, tab: VisTab, today: string): Promise<VisibilityData> {
   const gscPeriod = periodRange(periodKey, today, GSC_LAG_DAYS)
   const visitPeriod = periodRange(periodKey, today, 0)
+
+  // Clics affiliés et ventes Affilae lancés en même temps que le reste
+  const affPromise = Promise.all([
+    Promise.all([loadAffiliateClicks(visitPeriod.start, visitPeriod.end), loadAffiliateClicks(visitPeriod.prevStart, visitPeriod.prevEnd)])
+      .then(([cur, prev]) => ({ ok: true as const, cur, prev }), e => ({ ok: false as const, error: errMsg(e) })),
+    // Affilae (appel externe, parfois lent) : seulement pour l'onglet Partenaires
+    tab === 'partenaires' ? getAffilaeOverview().catch(() => null) : Promise.resolve(null),
+  ])
 
   const [qp, daily, truth, visitsRes, prevVisitsRes, prosRes, demandes] = await Promise.all([
     safeGsc(() => loadGscQueryPages(gscPeriod)),
@@ -52,6 +77,7 @@ export async function loadVisibility(periodKey: PeriodKey, tab: VisTab, today: s
     loadPros().then(d => ({ ok: true as const, ...d }), e => ({ ok: false as const, error: errMsg(e) })),
     loadDemandes(visitPeriod.start, visitPeriod.end).catch(() => new Map<string, number>()),
   ])
+  const [affClicksRes, affilae] = await affPromise
 
-  return buildVisibility({ periodKey, tab, gscPeriod, visitPeriod, qp, daily, truth, visitsRes, prevVisitsRes, prosRes, demandes })
+  return buildVisibility({ periodKey, tab, gscPeriod, visitPeriod, qp, daily, truth, visitsRes, prevVisitsRes, prosRes, demandes, affClicksRes, affilae })
 }
