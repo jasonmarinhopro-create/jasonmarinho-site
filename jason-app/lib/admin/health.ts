@@ -88,6 +88,7 @@ export interface MigrationProbe {
 
 /** Migrations récentes à vérifier : une table ou une colonne qu'elles créent. */
 export const MIGRATION_PROBES: MigrationProbe[] = [
+  { file: '20261005_123_visibilite.sql', what: 'statistiques des fiches (pays, écran, temps passé, clics par jour)', table: 'pro_fiche_clicks_daily', column: 'clicks' },
   { file: '20261004_122_pro_devis.sql', what: 'devis des photographes et équipes de ménage', table: 'pro_documents', column: 'id' },
   { file: '20261001_121', what: 'modèles de messages en anglais et portugais', table: 'user_template_customizations', column: 'content_en' },
   { file: '20260930_119', what: 'notifications sur le téléphone', table: 'push_subscriptions', column: 'id' },
