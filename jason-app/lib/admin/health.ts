@@ -68,7 +68,10 @@ export function stripeAccountIssues(a: StripeAccountInfo): { level: HealthLevel;
   if (a.pastDue > 0) { issues.push(`${a.pastDue} information${a.pastDue > 1 ? 's' : ''} en retard demandée${a.pastDue > 1 ? 's' : ''} par Stripe`); bump('alert') }
   else if (a.currentlyDue > 0) { issues.push(`${a.currentlyDue} information${a.currentlyDue > 1 ? 's' : ''} demandée${a.currentlyDue > 1 ? 's' : ''} par Stripe`); bump('warn') }
   if (a.disabledReason) { issues.push(`motif Stripe : ${a.disabledReason}`); bump('alert') }
-  if (a.mcc && a.mcc !== EXPECTED_MCC) { issues.push(`code d'activité ${a.mcc} au lieu de ${EXPECTED_MCC} (hébergement)`); bump('warn') }
+  // Code d'activité : simple information (05/10/2026). 7011 (hébergement) ne
+  // compte que si Stripe accorde l'autorisation étendue des cautions ; un
+  // compte d'activité de services garde son code sans souci.
+  if (a.mcc && a.mcc !== EXPECTED_MCC) issues.push(`code d'activité ${a.mcc} (7011 utile seulement pour bloquer une caution plus de 7 jours)`)
   if (a.feesPayer && a.feesPayer !== 'application') { issues.push(`frais payés par « ${a.feesPayer} »`); bump('warn') }
   return { level, issues }
 }

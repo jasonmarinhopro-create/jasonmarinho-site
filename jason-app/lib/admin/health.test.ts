@@ -27,9 +27,9 @@ describe('stripeAccountIssues', () => {
   it('compte prêt : rien à signaler', () => {
     expect(stripeAccountIssues(okAccount)).toEqual({ level: 'ok', issues: [] })
   })
-  it('code d\'activité 7392 au lieu de 7011 : à surveiller', () => {
+  it('code d\'activité 7392 : simple information, pas une alerte', () => {
     const r = stripeAccountIssues({ ...okAccount, mcc: '7392' })
-    expect(r.level).toBe('warn')
+    expect(r.level).toBe('ok')
     expect(r.issues[0]).toContain('7392')
   })
   it('paiements bloqués et informations en retard : à régler', () => {
