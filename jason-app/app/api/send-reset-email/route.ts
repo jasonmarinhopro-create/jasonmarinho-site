@@ -50,7 +50,11 @@ export async function POST(req: NextRequest) {
     })
 
     if (error || !data?.properties?.action_link) {
-      log.error('generateLink', { msg: error?.message, data })
+      // E-mail sans compte (faute de frappe, autre adresse) : cas normal, pas
+      // une erreur de l'app. Même réponse que si le compte existait, pour ne
+      // jamais révéler quelles adresses ont un compte.
+      const unknownUser = /not found/i.test(error?.message ?? '') || (!error && !data?.user)
+      if (!unknownUser) log.error('generateLink', { msg: error?.message })
       return NextResponse.json({ success: true })
     }
 
