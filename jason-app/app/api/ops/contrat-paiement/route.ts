@@ -6,6 +6,7 @@
 import { NextResponse } from 'next/server'
 import { getServiceClient } from '@/lib/supabase/service'
 import { syncLoyerPayment } from '@/lib/stripe/loyer-payment'
+import { stripe } from '@/lib/stripe/client'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
@@ -17,7 +18,9 @@ function authorized(req: Request) {
 
 export async function POST(req: Request) {
   if (!authorized(req)) return NextResponse.json({ error: 'non autorisé' }, { status: 401 })
-  const { arrivee, depart } = await req.json().catch(() => ({})) as { arrivee?: string; depart?: string }
+  const body = await req.json().catch(() => ({})) as { arrivee?: string; depart?: string; op?: string }
+  if (body.op === 'comptes') return NextResponse.json(await comptes())
+  const { arrivee, depart } = body
   if (!/^\d{4}-\d{2}-\d{2}$/.test(arrivee ?? '') || !/^\d{4}-\d{2}-\d{2}$/.test(depart ?? '')) {
     return NextResponse.json({ error: 'dates attendues : AAAA-MM-JJ' }, { status: 400 })
   }
@@ -42,4 +45,47 @@ export async function POST(req: Request) {
     })
   }
   return NextResponse.json({ contrats: out })
+}
+
+/**
+ * Réglages réels des comptes Stripe des hôtes et commissions prélevées
+ * (05/10/2026, après l'activation de la tarification Connect) : ni nom ni
+ * montant, seulement des réglages, des compteurs et des pourcentages.
+ */
+async function comptes() {
+  const db = getServiceClient()
+  const { data: hosts } = await db.from('profiles').select('stripe_account_id').not('stripe_account_id', 'is', null)
+  const accounts = []
+  for (const h of hosts ?? []) {
+    try {
+      const a = await stripe.accounts.retrieve(h.stripe_account_id as string)
+      accounts.push({
+        compte: `…${a.id.slice(-4)}`,
+        mcc: a.business_profile?.mcc ?? null,
+        frais_payes_par: a.controller?.fees?.payer ?? null,
+        pertes_a_la_charge_de: a.controller?.losses?.payments ?? null,
+        tableau_de_bord: a.controller?.stripe_dashboard?.type ?? null,
+        paiements_actifs: a.charges_enabled,
+        virements_actifs: a.payouts_enabled,
+        rythme_virements: a.settings?.payouts?.schedule?.interval ?? null,
+      })
+    } catch (e) {
+      accounts.push({ compte: `…${String(h.stripe_account_id).slice(-4)}`, erreur: (e as Error).message.slice(0, 120) })
+    }
+  }
+  // Commissions de la plateforme sur 30 jours : taux par paiement (pas de montant)
+  const since = Math.floor(Date.now() / 1000) - 30 * 86400
+  const taux: string[] = []
+  let n = 0
+  try {
+    for await (const f of stripe.applicationFees.list({ created: { gte: since }, limit: 100, expand: ['data.charge'] })) {
+      n++
+      const ch = f.charge && typeof f.charge !== 'string' ? f.charge : null
+      if (ch?.amount) taux.push(`${(f.amount / ch.amount * 100).toFixed(2)} %`)
+      if (n >= 50) break
+    }
+  } catch (e) {
+    return { comptes: accounts, commissions_30_jours: `lecture impossible : ${(e as Error).message.slice(0, 120)}` }
+  }
+  return { comptes: accounts, commissions_30_jours: { nombre: n, taux_par_paiement: taux } }
 }
