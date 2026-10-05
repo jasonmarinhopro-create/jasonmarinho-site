@@ -139,5 +139,9 @@ jobs:
         run: |
           n=$(curl -s -o /dev/null -D - "$SUPABASE_URL/rest/v1/outreach_steps?select=id&body=ilike.*12%20photos*" \
             -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" -H "Prefer: count=exact" | tr -d '\r' | grep -i '^content-range' | sed 's/.*\///')
-          echo "::notice title=Contrôle::${n:-?} e-mail(s) de prospection citent encore « 12 photos »"
+          j=$(curl -s -o /dev/null -D - "$SUPABASE_URL/rest/v1/outreach_steps?select=id&body=ilike.*jusqu*12%20photos*" \
+            -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" -H "Prefer: count=exact" | tr -d '\r' | grep -i '^content-range' | sed 's/.*\///')
+          c=$(curl -s -o /dev/null -D - "$SUPABASE_URL/rest/v1/outreach_steps?select=id&body=ilike.*mets%20en%20avant%20sur%20ton%20portfolio*" \
+            -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" -H "Prefer: count=exact" | tr -d '\r' | grep -i '^content-range' | sed 's/.*\///')
+          echo "::notice title=Contrôle::${n:-?} e-mail(s) citent « 12 photos », dont ${j:-?} promettent « jusqu'à 12 photos » ; ${c:-?} contiennent le conseil corrigé (photos sur ton portfolio)"
 
