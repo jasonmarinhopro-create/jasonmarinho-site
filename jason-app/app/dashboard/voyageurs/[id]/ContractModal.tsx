@@ -2,11 +2,13 @@
 
 import { holdMayExpireBeforeCheckout } from '@/lib/stripe/deposit-window'
 import { useState, useTransition, useRef, useEffect } from 'react'
-import { X, FileText, Check, Copy, Envelope, CalendarBlank, Clock, Warning, House, Lock, Eye } from '@phosphor-icons/react/dist/ssr'
+import { X, FileText, Check, Copy, Envelope, CalendarBlank, Clock, Warning, House, Lock, Eye, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 import { createContract, type ContractData } from '../contract-actions'
 import { DEFAULT_ANNULATION as DEFAULT_ANNULATION_I18N, DEFAULT_REGLEMENT as DEFAULT_REGLEMENT_I18N } from '@/lib/contract-default-clauses'
 import { buildEtatDescriptif, contratOptions, type RegimeAvance } from '@/lib/contracts/details'
 import { showsIban, WIZARD_PREVIEW_KEY } from '@/lib/contracts/preview'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
+import InlineStyle from '@/components/ui/InlineStyle'
 
 // Valeur française utilisée comme pré-remplissage par défaut (langue de
 // référence) — les traductions PT/EN correspondantes se retrouvent
@@ -123,12 +125,17 @@ type Step = 'bailleur' | 'locataire' | 'bien' | 'financier' | 'clauses' | 'done'
 const STEPS: Step[] = ['bailleur', 'locataire', 'bien', 'financier', 'clauses']
 
 const STEP_LABELS: Record<Step, string> = {
-  bailleur:  '1. Toi, le bailleur',
-  locataire: '2. Locataire',
-  bien:      '3. Logement',
-  financier: '4. Financier',
-  clauses:   '5. Clauses',
+  bailleur:  'Toi, le bailleur',
+  locataire: 'Le locataire',
+  bien:      'Le logement',
+  financier: 'Prix et paiement',
+  clauses:   'Clauses',
   done:      'Terminé',
+}
+
+/** Libellés courts du fil d'étapes (lisibles à 390 px) */
+const STEP_SHORT: Record<Step, string> = {
+  bailleur: 'Toi', locataire: 'Locataire', bien: 'Logement', financier: 'Prix', clauses: 'Clauses', done: 'Fin',
 }
 
 export default function ContractModal({ sejour, voyageur, bailleur, logements = [], onClose, onSuccess }: Props) {
@@ -473,44 +480,72 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
 
   const currentStepIndex = STEPS.indexOf(step as Step)
   const isLastStep = step === 'clauses'
+
+  // Fermer l'assistant avant la création = tout perdre : on demande (05/10/2026)
+  const { confirm, dialog } = useConfirm()
+  async function requestClose() {
+    if (step === 'done' || isPending) { if (!isPending) onClose(); return }
+    const ok = await confirm({
+      title: 'Quitter l\'assistant ?',
+      message: 'Le contrat n\'est pas encore créé : ce que tu as rempli sera perdu. Le séjour, lui, reste enregistré.',
+      confirmLabel: 'Quitter sans créer',
+      danger: true,
+    })
+    if (ok) onClose()
+  }
   const signUrl = contractToken ? `${APP_URL}/sign/${contractToken}` : ''
 
   return (
     <div style={overlay}>
+      {dialog}
       {/* Pas de fermeture au clic sur l'overlay : un clic accidentel en dehors
           du formulaire (long à remplir, 5 étapes) faisait tout perdre. Seule
           la croix ferme volontairement le modal. */}
       <div style={modal}>
-        {/* Header */}
+        {/* En-tête (DA 05/10/2026, même famille que « Nouvelle réservation ») */}
         <div style={modalHeader}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-              <FileText size={18} color="var(--accent-text)" weight="fill" />
-              <span style={modalTag}>Nouveau contrat</span>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px' }}>
+            <div style={{ minWidth: 0 }}>
+              <p style={modalTag}>
+                <FileText size={13} weight="fill" style={{ verticalAlign: '-2px', marginRight: '5px' }} />
+                Nouveau contrat · {voyageur.prenom} {voyageur.nom}{sejour.logement ? ` · ${sejour.logement}` : ''}
+              </p>
+              <h3 style={modalTitle}>
+                {step === 'done' ? 'Contrat créé, prêt à envoyer' : STEP_LABELS[step]}
+              </h3>
             </div>
-            <h3 style={modalTitle}>
-              {step === 'done' ? 'Contrat créé avec succès !' : STEP_LABELS[step]}
-            </h3>
+            <button type="button" onClick={requestClose} style={closeBtn} aria-label="Fermer"><X size={18} /></button>
           </div>
-          <button onClick={onClose} style={closeBtn}><X size={18} /></button>
-        </div>
 
-        {/* Progress bar (steps 1-5) */}
-        {step !== 'done' && (
-          <div style={progressBar}>
-            {STEPS.map((s, i) => (
-              <div
-                key={s}
-                style={{
-                  ...progressDot,
-                  background: i <= currentStepIndex ? 'var(--accent-text)' : 'var(--border)',
-                  border: i === currentStepIndex ? '2px solid var(--accent-text)' : '2px solid transparent',
-                  transform: i === currentStepIndex ? 'scale(1.2)' : 'scale(1)',
-                }}
-              />
-            ))}
-          </div>
-        )}
+          {/* Fil des étapes : une étape déjà faite se rouvre d'un clic */}
+          {step !== 'done' && (
+            <ol style={stepper} aria-label="Étapes du contrat">
+              {/* Au téléphone, numéros seulement : le titre dit déjà l'étape en cours */}
+              <InlineStyle css="@media (max-width: 560px) { .cm-step-name { display: none; } }" />
+              {STEPS.map((st, i) => {
+                const done = i < currentStepIndex
+                const cur = i === currentStepIndex
+                return (
+                  <li key={st} style={{ minWidth: 0 }}>
+                    <button
+                      type="button"
+                      onClick={() => done && setStep(st)}
+                      disabled={!done}
+                      aria-current={cur ? 'step' : undefined}
+                      style={{ ...stepBtn, cursor: done ? 'pointer' : 'default' }}
+                    >
+                      <span style={{ ...stepBar, background: done || cur ? 'var(--accent-text)' : 'var(--border-2)', opacity: cur ? 1 : done ? 0.75 : 1 }} />
+                      <span style={{ ...stepLabel, color: cur ? 'var(--accent-text)' : done ? 'var(--text-2)' : 'var(--text-3)', fontWeight: cur ? 700 : 600 }}>
+                        {done ? <Check size={11} weight="bold" style={{ verticalAlign: '-1px', marginRight: '3px' }} /> : `${i + 1}`}
+                        <span className="cm-step-name">{done ? '' : '. '}{STEP_SHORT[st]}</span>
+                      </span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ol>
+          )}
+        </div>
 
         <div style={formBody}>
           {/* ── Step: Bailleur ─────────────────────────────────────────────── */}
@@ -1027,10 +1062,10 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
           <div style={footer}>
             <button
               type="button"
-              onClick={currentStepIndex === 0 ? onClose : prevStep}
+              onClick={currentStepIndex === 0 ? requestClose : prevStep}
               style={ghostBtn}
             >
-              {currentStepIndex === 0 ? 'Annuler' : '← Retour'}
+              {currentStepIndex === 0 ? 'Annuler' : 'Retour'}
             </button>
             {isLastStep && (
               <button type="button" onClick={openPreview} style={{ ...ghostBtn, marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
@@ -1046,7 +1081,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
               {isPending ? 'Création…' : isLastStep ? (
                 <><FileText size={14} /> Créer le contrat</>
               ) : (
-                'Suivant →'
+                <>Suivant : {STEP_SHORT[STEPS[currentStepIndex + 1]]} <ArrowRight size={14} weight="bold" /></>
               )}
             </button>
           </div>
@@ -1334,63 +1369,70 @@ function TimePickerInput({ value, onChange }: { value: string; onChange: (v: str
 
 const overlay: React.CSSProperties = {
   position: 'fixed', inset: 0, zIndex: 400,
-  background: 'rgba(0,0,0,0.55)',
-  backdropFilter: 'blur(8px)',
-  WebkitBackdropFilter: 'blur(8px)',
-  display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--s-4)',
+  background: 'rgba(0,20,14,0.5)',
+  backdropFilter: 'blur(6px)',
+  WebkitBackdropFilter: 'blur(6px)',
+  display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(8px, 3vw, 28px)',
   animation: 'fadeIn var(--d-base) var(--ease-smooth)',
 }
 
 const modal: React.CSSProperties = {
-  background: 'var(--bg-2)',
+  background: 'var(--bg)',
   border: '1px solid var(--border-2)',
-  borderRadius: 'var(--r-xl)',
-  width: '100%', maxWidth: '580px',
+  borderRadius: '20px',
+  width: '100%', maxWidth: '720px',
   boxShadow: 'var(--shadow-xl)',
-  maxHeight: '90vh', overflowY: 'auto',
+  maxHeight: 'calc(100dvh - 16px)', overflow: 'hidden',
+  display: 'flex', flexDirection: 'column',
   animation: 'scaleIn var(--d-base) var(--ease-out)',
 }
 
 const modalHeader: React.CSSProperties = {
-  display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
-  padding: '22px 24px 16px',
-  borderBottom: '1px solid var(--border)',
+  padding: 'clamp(16px, 3vw, 22px) clamp(16px, 3vw, 26px) 14px',
+  background: 'linear-gradient(135deg, var(--accent-bg) 0%, rgba(99,214,131,0.10) 55%, rgba(255,213,107,0.14) 100%)',
+  borderBottom: '1px solid var(--accent-border)',
+  flexShrink: 0,
+}
+
+const stepper: React.CSSProperties = {
+  listStyle: 'none', margin: '16px 0 0', padding: 0,
+  display: 'grid', gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', gap: '6px',
+}
+
+const stepBtn: React.CSSProperties = {
+  display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', padding: 0,
+  background: 'none', border: 'none', textAlign: 'left', fontFamily: 'inherit',
+}
+
+const stepBar: React.CSSProperties = { display: 'block', height: '4px', borderRadius: '99px', width: '100%' }
+
+const stepLabel: React.CSSProperties = {
+  fontSize: '11.5px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
 }
 
 const modalTag: React.CSSProperties = {
-  fontSize: 'var(--t-xs)', fontWeight: 700, letterSpacing: '1.2px',
+  fontSize: '11.5px', fontWeight: 700, letterSpacing: '0.6px', margin: '0 0 6px',
   textTransform: 'uppercase' as const, color: 'var(--accent-text)',
+  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
 }
 
 const modalTitle: React.CSSProperties = {
   fontFamily: 'var(--font-fraunces), Georgia, serif',
-  fontSize: 'var(--t-xl)', fontWeight: 400,
-  color: 'var(--text)', margin: 0,
-  letterSpacing: 'var(--ls-snug)',
+  fontSize: 'clamp(22px, 3vw, 27px)', fontWeight: 400, lineHeight: 1.15,
+  color: 'var(--text)', margin: 0, letterSpacing: '-0.3px',
 }
 
 const closeBtn: React.CSSProperties = {
+  width: '36px', height: '36px', flexShrink: 0,
   background: 'var(--surface)', border: '1px solid var(--border)', cursor: 'pointer',
-  color: 'var(--text-2)', padding: '6px',
-  borderRadius: 'var(--r-sm)',
+  color: 'var(--text-2)', borderRadius: '10px',
   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-  transition: 'background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth)',
-}
-
-const progressBar: React.CSSProperties = {
-  display: 'flex', alignItems: 'center', justifyContent: 'center',
-  gap: 'var(--s-2)', padding: 'var(--s-4) var(--s-6) 0',
-}
-
-const progressDot: React.CSSProperties = {
-  width: '10px', height: '10px',
-  borderRadius: '50%',
-  transition: 'background var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
 }
 
 const formBody: React.CSSProperties = {
-  padding: 'var(--s-5) var(--s-6)',
+  padding: 'clamp(14px, 2.5vw, 22px) clamp(16px, 3vw, 26px)',
   display: 'flex', flexDirection: 'column' as const, gap: 'var(--s-4)',
+  overflowY: 'auto', flex: 1, minHeight: 0,
 }
 
 const row: React.CSSProperties = {
@@ -1432,22 +1474,22 @@ const errorStyle: React.CSSProperties = {
 }
 
 const footer: React.CSSProperties = {
-  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-  padding: '16px 24px 20px',
-  borderTop: '1px solid var(--border)',
+  display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', flexWrap: 'wrap',
+  padding: '12px clamp(16px, 3vw, 26px)',
+  borderTop: '1px solid var(--border)', background: 'var(--surface)', flexShrink: 0,
 }
 
 const ghostBtn: React.CSSProperties = {
-  background: 'none', border: 'none', cursor: 'pointer',
-  fontSize: '14px', color: 'var(--text-muted)',
-  padding: '8px 0',
+  background: 'transparent', border: '1px solid var(--border)', cursor: 'pointer',
+  fontSize: '14px', fontWeight: 500, color: 'var(--text-2)', fontFamily: 'inherit',
+  padding: '11px 16px', borderRadius: '11px',
 }
 
 const primaryBtn: React.CSSProperties = {
-  display: 'inline-flex', alignItems: 'center', gap: '6px',
+  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
   background: 'var(--accent-text)', color: 'var(--bg)',
-  border: 'none', borderRadius: '12px',
-  padding: '10px 20px', fontSize: '14px', fontWeight: 600,
+  border: '1px solid var(--accent-text)', borderRadius: '11px',
+  padding: '11px 18px', fontSize: '14px', fontWeight: 700, fontFamily: 'inherit',
   cursor: 'pointer',
 }
 
