@@ -127,6 +127,8 @@ const adminGroups: Array<{ key: string; label: string; items: AdminItem[]; colla
       { href: '/dashboard/admin/qg',          label: 'QG demandes',     Icon: ShieldCheck },
       // État de santé : paiements, cautions, Stripe, iCal, e-mails, tâches, migrations
       { href: '/dashboard/admin/sante',       label: 'État de santé',   Icon: Heartbeat },
+      // Ventes : objectifs (Supabase / Vercel Pro), entonnoirs, membres à réveiller
+      { href: '/dashboard/admin/ventes',      label: 'Ventes',          Icon: ChartLineUp },
     ],
   },
   {

@@ -7,8 +7,9 @@
 import { useMemo, useState, useTransition } from 'react'
 import {
   Broom, CheckCircle, Camera, MapPin, Clock, Warning, Trash, Plus, LinkSimple,
-  ArrowCounterClockwise, X, CalendarCheck, Lightning,
+  ArrowCounterClockwise, X, CalendarCheck, Lightning, Storefront, ArrowRight,
 } from '@phosphor-icons/react/dist/ssr'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { compressImage } from '@/lib/images/compress'
 import { addPlanningLink, removePlanningLink, preparePhotoUploads, markMenageTermine, annulerMenageTermine } from './actions'
@@ -46,8 +47,10 @@ function dayLabel(date: string, today: string): string {
 
 // Les actions (markMenageTermine, addPlanningLink…) appellent revalidatePath sur
 // cette page : leur réponse contient déjà le planning à jour, pas de router.refresh().
-export default function PlanningMenage({ clients, slots, today, unavailable = false }: {
+export default function PlanningMenage({ clients, slots, today, unavailable = false, annuaire = null }: {
   clients: PlanningClient[]; slots: PlanningSlot[]; today: string; unavailable?: boolean
+  /** Équipe pas encore dans l'annuaire : proposer la fiche (null si déjà publiée) */
+  annuaire?: { hasFiche: boolean; founderLeft: number } | null
 }) {
   const [pending, startTransition] = useTransition()
   const [openId, setOpenId] = useState<string | null>(null)
@@ -285,6 +288,7 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
         </div>
 
         <aside className="pm-aside">
+          {annuaire && <AnnuaireCard {...annuaire} />}
           {/* ── Plannings des clients ─────────────────────────────────────── */}
           <section style={s.card}>
             <div style={s.logement}>Plannings de mes clients</div>
@@ -330,6 +334,30 @@ export default function PlanningMenage({ clients, slots, today, unavailable = fa
         </aside>
       </div>
     </div>
+  )
+}
+
+// Proposition de fiche dans l'annuaire (05/10/2026) : l'équipe utilise déjà
+// l'app avec ses clients ; d'autres hôtes de sa ville la cherchent.
+function AnnuaireCard({ hasFiche, founderLeft }: { hasFiche: boolean; founderLeft: number }) {
+  const price = founderLeft > 0
+    ? <>39,98 € par an, à vie, pour les <strong>{founderLeft} dernière{founderLeft > 1 ? 's' : ''} place{founderLeft > 1 ? 's' : ''} Fondateur</strong></>
+    : <>79,98 € par an</>
+  return (
+    <section style={{ ...s.card, gap: 8, border: '1px solid var(--accent-border)', background: 'color-mix(in srgb, var(--accent-text) 6%, var(--surface))' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <Storefront size={18} weight="duotone" color="var(--accent-text)" />
+        <div style={s.logement}>Trouve d’autres clients</div>
+      </div>
+      <p style={{ ...s.sub, margin: 0 }}>
+        L’annuaire de Jason Marinho et ses guides ménage de 60 villes sont lus par des hôtes qui cherchent une équipe près de chez eux.
+        Avec ta fiche, ils te trouvent et t’écrivent directement : sans commission, les demandes arrivent dans ton espace et par e-mail.
+      </p>
+      <p style={{ ...s.sub, margin: 0 }}>{price}, TVA non applicable.</p>
+      <Link href={hasFiche ? '/dashboard/ma-fiche-menage' : '/dashboard/creer-fiche-menage'} style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 14px', borderRadius: 10, background: 'var(--accent-text)', color: 'var(--bg)', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>
+        {hasFiche ? 'Terminer ma fiche' : 'Créer ma fiche'} <ArrowRight size={13} weight="bold" />
+      </Link>
+    </section>
   )
 }
 

@@ -1,5 +1,6 @@
 'use server'
 
+import { hasStandardAccess, CONTRACTS_STANDARD_ONLY_MESSAGE } from '@/lib/plans/access'
 import { revalidatePath } from 'next/cache'
 import { buildEtatDescriptif, type ContractDetails, type LogementForContract } from '@/lib/contracts/details'
 import { createClient } from '@/lib/supabase/server'
@@ -98,6 +99,13 @@ export async function createContract(data: ContractData): Promise<{
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Non authentifié.' }
+
+  // Contrats réservés au Standard (05/10/2026) : vérifié ici aussi, pas
+  // seulement à l'écran (avant, « Nouveau contrat » laissait passer un compte gratuit).
+  const { data: planRow } = await supabase.from('profiles').select('plan, role, driing_status').eq('id', user.id).maybeSingle()
+  if (!hasStandardAccess(planRow?.plan as string | null, planRow?.role as string | null, planRow?.driing_status as string | null)) {
+    return { error: CONTRACTS_STANDARD_ONLY_MESSAGE }
+  }
 
   // Si on a un email locataire, l'email part automatiquement ; on coche
   // alors "contrat_envoyé" sur la checklist. Sinon on laisse au manuel.
