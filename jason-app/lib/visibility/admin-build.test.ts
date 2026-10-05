@@ -30,11 +30,21 @@ function input(over: Partial<VisibilityInput> = {}): VisibilityInput {
     prevVisitsRes: { ok: true, rows: [] },
     prosRes: { ok: true, photographers: [pro({})], cleaners: [pro({ id: 'c1', slug: 'clean', full_name: 'Clean', tier: 'standard' }), pro({ id: 'c2', slug: null, full_name: 'Hors ligne', status: 'pending_validation', is_public: false })] },
     demandes: new Map([['p1', 2]]),
+    affClicksRes: { ok: true, cur: [{ session_id: 'a', path: '/blog/taxe', partner: 'indy', created_at: '2026-10-02T10:01:00Z' }], prev: [] },
+    affilae: null,
     ...over,
   }
 }
 
 describe('buildVisibility', () => {
+  it('onglet partenaires : clics affiliés croisés avec la place Google de la page', () => {
+    const d = buildVisibility(input({ tab: 'partenaires' }))
+    expect(d.counts.partenaires).toBe(1)
+    expect(d.partenaires!.pages[0]).toMatchObject({ path: '/blog/taxe', clicks: 1, place: 8 })
+    expect(d.partenaires!.partners[0]).toMatchObject({ slug: 'indy', clicks: 1 })
+    expect(buildVisibility(input({ tab: 'partenaires', affClicksRes: { ok: false, error: 'x' } })).affClicks.ok).toBe(false)
+  })
+
   it('vue d\'ensemble', () => {
     const d = buildVisibility(input())
     expect(d.hero).toMatchObject({ clicks: 27, clicksPct: 35, visitors: 2 })
