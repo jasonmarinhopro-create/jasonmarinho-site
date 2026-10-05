@@ -1,0 +1,173 @@
+// Caution par empreinte bancaire (05/10/2026). Même principe que le loyer
+// (lib/stripe/loyer-payment.ts) :
+// - une seule fonction crée la session Stripe (page du contrat ET lien de
+//   l'e-mail ; avant, le lien de l'e-mail en créait une nouvelle à chaque
+//   clic, sans réutiliser la session ouverte) ;
+// - avant d'en créer une, on demande à Stripe si une caution est déjà
+//   bloquée pour ce contrat : sans ça, un webhook en retard ou perdu
+//   permettait de bloquer deux fois la carte du voyageur ;
+// - le statut (bloquée, encaissée, tombée) se lit aussi directement chez
+//   Stripe, pas seulement par webhook.
+import 'server-only'
+import type Stripe from 'stripe'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { stripe } from '@/lib/stripe/client'
+import { notifyHostPayment } from '@/lib/stripe/dispatch'
+import { logger } from '@/lib/logger'
+
+const log = logger('lib/stripe/deposit-payment')
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
+
+export interface DepositContract {
+  id: string
+  token: string
+  created_at?: string | null
+  montant_caution: number | string | null
+  date_arrivee: string
+  date_depart: string
+  logement_adresse?: string | null
+  locataire_email?: string | null
+  stripe_deposit_status?: string | null
+  stripe_deposit_checkout_id?: string | null
+  checklist_status?: Record<string, boolean> | null
+}
+
+const frDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { timeZone: 'Europe/Paris' })
+
+/** Session de caution des sessions Stripe : métadonnée « caution », ou ancienne session sans type */
+const isDepositSession = (s: Stripe.Checkout.Session, contractId: string) =>
+  s.metadata?.contract_id === contractId && s.metadata?.type !== 'loyer'
+
+export interface DepositState {
+  /** held = carte bloquée, captured = encaissée, released = libérée ou tombée */
+  status: 'held' | 'captured' | 'released' | null
+  paymentIntentId: string | null
+  /** Date limite d'encaissement donnée par la banque (capture_before), si connue */
+  captureBefore: string | null
+  /** Nombre de blocages actifs trouvés (plus d'un = anomalie) */
+  activeHolds: number
+}
+
+/** Ce que Stripe sait de la caution de ce contrat */
+export async function readDepositFromStripe(contract: DepositContract, stripeAccount: string): Promise<DepositState> {
+  const since = contract.created_at ? Math.floor(new Date(contract.created_at).getTime() / 1000) - 86400 : undefined
+  const intents: Stripe.PaymentIntent[] = []
+  const list = stripe.checkout.sessions.list(
+    { limit: 100, ...(since ? { created: { gte: since } } : {}), expand: ['data.payment_intent'] },
+    { stripeAccount },
+  )
+  for await (const s of list) {
+    if (!isDepositSession(s, contract.id) || s.status !== 'complete') continue
+    const pi = s.payment_intent
+    if (pi && typeof pi !== 'string') intents.push(pi)
+    if (intents.length >= 10) break
+  }
+  const holds = intents.filter(pi => pi.status === 'requires_capture')
+  const captured = intents.find(pi => pi.status === 'succeeded')
+  const pick = holds[0] ?? captured ?? intents[0] ?? null
+  let captureBefore: string | null = null
+  if (pick && pick.status === 'requires_capture') {
+    try {
+      const full = await stripe.paymentIntents.retrieve(pick.id, { expand: ['latest_charge'] }, { stripeAccount })
+      const charge = full.latest_charge && typeof full.latest_charge !== 'string' ? full.latest_charge : null
+      const cb = charge?.payment_method_details?.card?.capture_before
+      if (cb) captureBefore = new Date(cb * 1000).toISOString()
+    } catch { /* date limite inconnue : on garde la règle des 7 jours */ }
+  }
+  return {
+    status: holds.length ? 'held' : captured ? 'captured' : intents.length ? 'released' : null,
+    paymentIntentId: pick?.id ?? null,
+    captureBefore,
+    activeHolds: holds.length,
+  }
+}
+
+/**
+ * Aligne la base sur Stripe (webhook en retard ou perdu). Ne lance jamais
+ * d'erreur. Ne touche pas aux états en cours de traitement par l'hôte
+ * (« capturing », « releasing »).
+ */
+export async function syncDeposit(db: SupabaseClient, contract: DepositContract, stripeAccount: string): Promise<DepositState | null> {
+  try {
+    const st = await readDepositFromStripe(contract, stripeAccount)
+    if (st.activeHolds > 1) log.error('Caution bloquée plusieurs fois', { contrat: contract.id.slice(0, 8), blocages: st.activeHolds })
+    const cur = contract.stripe_deposit_status ?? null
+    if (st.status === 'held' && (cur === 'pending' || cur === null || cur === 'expired')) {
+      await db.from('contracts').update({
+        stripe_deposit_payment_intent_id: st.paymentIntentId,
+        stripe_deposit_status: 'held',
+        checklist_status: { ...(contract.checklist_status ?? {}), caution_recue: true },
+      }).eq('id', contract.id)
+      await notifyHostPayment(db, contract.id, 'caution')
+    } else if (st.status === 'captured' && (cur === 'held' || cur === 'capturing')) {
+      await db.from('contracts').update({ stripe_deposit_status: 'captured' }).eq('id', contract.id)
+    }
+    return st
+  } catch (e) {
+    log.warn('synchro de la caution impossible', { contrat: contract.id.slice(0, 8), err: (e as Error).message })
+    return null
+  }
+}
+
+/** Session ouverte à réutiliser, ou nouvelle session de caution (blocage sans débit) */
+export async function getOrCreateDepositCheckout(db: SupabaseClient, contract: DepositContract, stripeAccount: string): Promise<{ url: string | null; alreadyHeld: boolean }> {
+  const st = await syncDeposit(db, contract, stripeAccount)
+  if (st?.status === 'held' || st?.status === 'captured') return { url: null, alreadyHeld: true }
+
+  if (contract.stripe_deposit_checkout_id) {
+    try {
+      const existing = await stripe.checkout.sessions.retrieve(contract.stripe_deposit_checkout_id, undefined, { stripeAccount })
+      if (existing.status === 'open' && existing.url) return { url: existing.url, alreadyHeld: false }
+    } catch { /* session perdue ou expirée : on en crée une */ }
+  }
+
+  const amountCents = Math.round(Number(contract.montant_caution) * 100)
+  const session = await stripe.checkout.sessions.create(
+    {
+      mode: 'payment',
+      line_items: [{
+        price_data: {
+          currency: 'eur',
+          unit_amount: amountCents,
+          product_data: {
+            name: `Dépôt de garantie, ${contract.logement_adresse ?? 'séjour'}`,
+            description: `Caution pour le séjour du ${frDate(contract.date_arrivee)} au ${frDate(contract.date_depart)}. Cette somme est bloquée sur votre carte mais ne sera prélevée qu'en cas de dommages constatés.`,
+          },
+        },
+        quantity: 1,
+      }],
+      payment_intent_data: {
+        capture_method: 'manual', // blocage, pas de débit
+        description: `Caution contrat ${contract.id.slice(0, 8).toUpperCase()}`,
+        metadata: { contract_id: contract.id, type: 'caution' },
+      },
+      customer_email: contract.locataire_email ?? undefined,
+      success_url: `${APP_URL}/sign/${contract.token}?deposit=success`,
+      cancel_url: `${APP_URL}/sign/${contract.token}?deposit=cancel`,
+      locale: 'fr',
+      metadata: { contract_id: contract.id, token: contract.token, type: 'caution' },
+    },
+    { stripeAccount },
+  )
+  await db.from('contracts').update({ stripe_deposit_checkout_id: session.id, stripe_deposit_status: 'pending' }).eq('id', contract.id)
+  return { url: session.url, alreadyHeld: false }
+}
+
+/** Cautions « en attente » avec une session : vérifiées chez Stripe (cron quotidien) */
+export async function syncPendingDeposits(db: SupabaseClient, limit = 20): Promise<number> {
+  const { data: rows } = await db
+    .from('contracts')
+    .select('*')
+    .eq('stripe_deposit_status', 'pending')
+    .not('stripe_deposit_checkout_id', 'is', null)
+    .order('date_arrivee', { ascending: true })
+    .limit(limit)
+  let synced = 0
+  for (const c of rows ?? []) {
+    const { data: host } = await db.from('profiles').select('stripe_account_id').eq('id', c.user_id).maybeSingle()
+    if (!host?.stripe_account_id) continue
+    const st = await syncDeposit(db, c as DepositContract, host.stripe_account_id)
+    if (st?.status === 'held') synced++
+  }
+  return synced
+}

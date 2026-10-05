@@ -3,9 +3,9 @@
 import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
 import Select from '@/components/ui/Select'
-import { FileText, MagnifyingGlass, House, ArrowSquareOut, ArrowCounterClockwise, Eye, X } from '@phosphor-icons/react/dist/ssr'
+import { FileText, MagnifyingGlass, House, ArrowSquareOut, ArrowCounterClockwise, Eye, X, Prohibit } from '@phosphor-icons/react/dist/ssr'
 import { Card, CardHead, Stat, ui } from '../finances/_ui/ui'
-import { restoreContract } from '../voyageurs/contract-actions'
+import { restoreContract, cancelContractFromList } from '../voyageurs/contract-actions'
 import type { ContractRow } from './types'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 
@@ -225,6 +225,23 @@ function ContractRow({ contract: c }: { contract: ContractRow }) {
     })
   }
 
+  // Annulation (contrat en double, réservation tombée…). Un contrat signé et
+  // déjà payé : l'argent n'est pas rendu automatiquement, on le dit.
+  const [cancelling, startCancel] = useTransition()
+  async function cancel() {
+    const paid = c.stripe_payment_status === 'paid'
+    const held = c.stripe_deposit_status === 'held'
+    const message = c.statut === 'signe'
+      ? `Annuler ce contrat signé ?${paid ? ' Le loyer déjà payé n\'est pas remboursé automatiquement : fais-le depuis ton espace Stripe.' : ''}${held ? ' La caution bloquée reste à libérer depuis la fiche voyageur.' : ''} Tu pourras le réactiver.`
+      : 'Annuler ce contrat ? Le lien de signature ne fonctionnera plus (ni signature ni paiement). Tu pourras le réactiver.'
+    if (!(await ask({ message, confirmLabel: 'Annuler le contrat', cancelLabel: 'Garder', danger: true }))) return
+    setRestoreError('')
+    startCancel(async () => {
+      const res = await cancelContractFromList(c.id)
+      if (res.error) setRestoreError(res.error)
+    })
+  }
+
   return (
     <>
     {dialog}
@@ -269,6 +286,18 @@ function ContractRow({ contract: c }: { contract: ContractRow }) {
           >
             <Eye size={13} weight="bold" />
           </a>
+        )}
+        {c.statut !== 'annule' && (
+          <button
+            type="button"
+            onClick={cancel}
+            disabled={cancelling}
+            style={{ ...s.actionBtn, cursor: 'pointer', opacity: cancelling ? 0.6 : 1 }}
+            title={restoreError || 'Annuler ce contrat (contrat en double, réservation annulée…)'}
+            aria-label="Annuler le contrat"
+          >
+            <Prohibit size={13} weight="bold" />
+          </button>
         )}
         {c.voyageur_id && (
           <Link

@@ -3,7 +3,7 @@ title: "Suivre tes contrats et paiements"
 excerpt: "La page Contrats & paiements : ce qui reste à faire, et tous tes contrats."
 order: 4
 relatedPages: [/dashboard/contrats]
-updatedAt: "2026-09-28"
+updatedAt: "2026-10-05"
 ---
 
 ## En haut de la page
@@ -30,11 +30,18 @@ Sous ce bloc, la liste complète avec quelques chiffres (contrats, signés, à s
 |---|---|
 | À signer | Envoyé, pas encore signé |
 | Signé | Signé par le voyageur |
-| Annulé | Annulé, par exemple quand le séjour lié a été supprimé |
+| Annulé | Annulé par toi, ou automatiquement (séjour supprimé, autre contrat signé pour le même séjour) |
+
+## Annuler un contrat
+
+Sur la ligne du contrat, le bouton **Annuler** (cercle barré) le passe en « Annulé ». Le lien de signature affiche alors « contrat annulé » : plus de signature ni de paiement possible. Rien n'est supprimé.
+
+- Contrat **déjà signé et payé** : l'annulation ne rembourse rien automatiquement. Rembourse depuis ton espace Stripe, et libère la caution bloquée depuis la fiche voyageur.
+- **Contrats en double** : dès que le voyageur signe un contrat, les autres contrats non signés du même séjour (même logement, mêmes dates) sont annulés automatiquement.
 
 ## Un contrat annulé par erreur
 
-Un contrat passe en « Annulé » si tu supprimes son séjour ou sa ligne dans le journal des revenus. Sur la ligne du contrat, le bouton **Réactiver** le remet en « Signé » (s'il avait été signé) ou en « À signer ».
+Un contrat passe aussi en « Annulé » si tu supprimes son séjour ou sa ligne dans le journal des revenus. Sur la ligne du contrat, le bouton **Réactiver** le remet en « Signé » (s'il avait été signé) ou en « À signer ».
 
 ## Le PDF du contrat signé
 

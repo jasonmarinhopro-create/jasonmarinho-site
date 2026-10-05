@@ -231,6 +231,26 @@ export async function cancelContract(contractId: string, voyageurId: string): Pr
   return {}
 }
 
+// Annuler depuis Contrats & paiements (05/10/2026 : aucun bouton n'appelait
+// cancelContract, un hôte ne pouvait pas annuler un contrat en double).
+// Rien n'est supprimé : le lien de signature affiche « contrat annulé » et
+// refuse la signature et le paiement ; « Réactiver » le remet en place.
+export async function cancelContractFromList(contractId: string): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié.' }
+  const { error } = await supabase
+    .from('contracts')
+    .update({ statut: 'annule' })
+    .eq('id', contractId)
+    .eq('user_id', user.id)
+    .neq('statut', 'annule')
+  if (error) return { error: error.message }
+  revalidatePath('/dashboard/contrats')
+  revalidatePath('/dashboard/finances/revenus')
+  return {}
+}
+
 // ─── Réactiver un contrat annulé ─────────────────────────────────────────────
 // Un contrat peut être annulé par erreur (corbeille du journal Encaissements,
 // suppression du séjour lié). On le remet dans l'état qu'il avait : signé

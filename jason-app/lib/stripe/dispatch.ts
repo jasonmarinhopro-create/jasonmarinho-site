@@ -111,7 +111,7 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
     case 'payment_intent.amount_capturable_updated': {
       const pi = event.data.object as Stripe.PaymentIntent
       const contractId = pi.metadata?.contract_id
-      if (!contractId) break
+      if (!contractId || pi.metadata?.type === 'loyer') break
       const { data: currentRow } = await db
         .from('contracts')
         .select('checklist_status')
@@ -137,7 +137,8 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
     case 'payment_intent.canceled': {
       const pi = event.data.object as Stripe.PaymentIntent
       const contractId = pi.metadata?.contract_id
-      if (!contractId) break
+      // Un paiement de loyer abandonné n'est pas une caution libérée
+      if (!contractId || pi.metadata?.type === 'loyer') break
       // Libération demandée par l'hôte : la route /release passe d'abord en
       // 'releasing', on finalise en 'released'.
       await db
@@ -187,7 +188,10 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
     case 'payment_intent.succeeded': {
       const pi = event.data.object as Stripe.PaymentIntent
       const contractId = pi.metadata?.contract_id
-      if (!contractId) break
+      // Le paiement du loyer déclenche aussi cet événement : il ne doit jamais
+      // toucher à la caution (05/10/2026 : un loyer payé pendant que la
+      // caution était bloquée l'aurait marquée « encaissée »)
+      if (!contractId || pi.metadata?.type === 'loyer') break
       // Caution effectivement encaissée (capture confirmée par Stripe).
       // Sync DB au cas où la route /capture aurait timeout côté serveur.
       await db
