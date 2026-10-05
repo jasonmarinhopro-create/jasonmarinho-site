@@ -1,0 +1,82 @@
+# Sauvegarde de la base Supabase, chaque nuit (05/10/2026).
+# L'offre gratuite de Supabase ne fait aucune sauvegarde. Ce workflow exporte
+# toutes les tables (scripts/sauvegarde-base.mjs), chiffre l'archive avec le
+# secret BACKUP_PASSPHRASE puis la garde 30 jours dans les « artifacts » du
+# workflow. Le dépôt est public : l'archive n'est JAMAIS envoyée en clair, et
+# les journaux ne montrent que des nombres.
+#
+# Facultatif : secret SUPABASE_DB_URL (chaîne de connexion « Session pooler »
+# de Supabase, avec le mot de passe de la base) pour ajouter un pg_dump complet
+# (structure, fonctions, règles RLS + données), plus simple à restaurer.
+name: Sauvegarde de la base
+
+on:
+  schedule:
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/sauvegarde-trigger']
+
+concurrency:
+  group: sauvegarde
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sauvegarde:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Exporter les tables
+        run: node scripts/sauvegarde-base.mjs "$RUNNER_TEMP/sauvegarde"
+
+      - name: pg_dump complet (si SUPABASE_DB_URL est configuré)
+        if: env.SUPABASE_DB_URL != ''
+        run: |
+          sudo apt-get install -y -qq postgresql-common >/dev/null
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y >/dev/null
+          sudo apt-get install -y -qq postgresql-client-17 >/dev/null
+          PGDUMP=/usr/lib/postgresql/17/bin/pg_dump
+          $PGDUMP "$SUPABASE_DB_URL" --schema-only --no-owner --no-privileges --schema=public -f "$RUNNER_TEMP/sauvegarde/schema.sql"
+          $PGDUMP "$SUPABASE_DB_URL" --data-only --no-owner --schema=public --exclude-table-data=public.site_visits --exclude-table-data=public.app_errors -f "$RUNNER_TEMP/sauvegarde/data.sql"
+          echo "pg_dump : structure $(du -h "$RUNNER_TEMP/sauvegarde/schema.sql" | cut -f1), données $(du -h "$RUNNER_TEMP/sauvegarde/data.sql" | cut -f1)"
+
+      - name: Chiffrer l'archive
+        run: |
+          if [ -z "$BACKUP_PASSPHRASE" ]; then
+            rm -rf "$RUNNER_TEMP/sauvegarde"
+            echo "::error::Secret BACKUP_PASSPHRASE absent : export réussi mais rien n'est gardé (le dépôt est public, pas d'archive en clair). Ajoute-le dans Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          DAY=$(date -u +%Y-%m-%d)
+          mkdir -p "$RUNNER_TEMP/out"
+          tar -czf - -C "$RUNNER_TEMP" sauvegarde \
+            | openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -pass env:BACKUP_PASSPHRASE \
+              -out "$RUNNER_TEMP/out/sauvegarde-$DAY.tar.gz.enc"
+          rm -rf "$RUNNER_TEMP/sauvegarde"
+          echo "Archive chiffrée : $(du -h "$RUNNER_TEMP/out/sauvegarde-$DAY.tar.gz.enc" | cut -f1)"
+          echo "DAY=$DAY" >> "$GITHUB_ENV"
+
+      - name: Garder l'archive 30 jours
+        uses: actions/upload-artifact@v4
+        with:
+          name: sauvegarde-${{ env.DAY }}
+          path: ${{ runner.temp }}/out/*.enc
+          retention-days: 30
+          compression-level: 0
