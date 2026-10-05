@@ -44,7 +44,7 @@ export async function connectedAt(): Promise<string | null> {
 
 let cachedToken: { token: string; expiresAt: number } | null = null
 
-async function getAccessToken(): Promise<string> {
+export async function getAccessToken(): Promise<string> {
   if (cachedToken && cachedToken.expiresAt > Date.now() + 60_000) return cachedToken.token
 
   const db = serviceClient()

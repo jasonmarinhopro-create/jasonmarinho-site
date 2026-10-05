@@ -15,6 +15,7 @@ import { syncPendingLoyers } from '@/lib/stripe/loyer-payment'
 import { syncPendingDeposits } from '@/lib/stripe/deposit-payment'
 import { unansweredQuestions, unansweredDigestEmail, REMIND_MAX_DAYS, type QuestionRow } from '@/lib/chez-nous/unanswered'
 import { sendAdminEmail } from '@/lib/email/admin'
+import { sendProMonthlyReports } from '@/lib/email/pro-monthly'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60  // 60s max (suffisant pour quelques centaines d'utilisateurs)
@@ -54,6 +55,16 @@ export async function GET(req: Request) {
     depositEmails = await sendDepositOpenEmails(supabase, process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com')
   } catch (e) { console.warn('[cron] deposit reminders failed', e) }
 
+  // Bilan mensuel des pros (photographes, ménage) : seulement le 1er du mois
+  // (heure de Paris), sinon ne fait rien. Budget de 12 s, retiré ce jour-là
+  // de celui de la synchro iCal pour rester sous les 60 s.
+  let proMonthly = { sent: 0, skipped: 0, failed: 0 }
+  const tMonthly = Date.now()
+  try {
+    proMonthly = await sendProMonthlyReports(supabase, { budgetMs: 12_000 })
+  } catch (e) { console.warn('[cron] pro monthly reports failed', e) }
+  const monthlyMs = Date.now() - tMonthly
+
   // Photos de ménage de plus de 90 jours supprimées (stockage Supabase gratuit
   // limité à 1 Go, lib/menage/photo-retention.ts). Par lots, best-effort.
   let menagePhotosPurged = 0
@@ -79,7 +90,7 @@ export async function GET(req: Request) {
 
   // Synchro iCal de fond AVANT les règles : les alertes (arrivée demain,
   // synchro échouée) portent sur des données fraîches. Budget 25 s sur les 60.
-  const icalSync = await syncStaleFeeds(supabase, { staleMinutes: 360, budgetMs: 25_000, concurrency: 6 })
+  const icalSync = await syncStaleFeeds(supabase, { staleMinutes: 360, budgetMs: Math.max(10_000, 25_000 - monthlyMs), concurrency: 6 })
 
   const t0 = Date.now()
   let totalCreated = 0
@@ -118,6 +129,7 @@ export async function GET(req: Request) {
     expiredPurged: purged,
     unansweredQuestions: unanswered,
     depositEmails,
+    proMonthly,
     menagePhotosPurged,
     proContactsPurged,
     loyersSynced,

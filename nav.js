@@ -799,7 +799,13 @@
       sessionStorage.setItem(KEY, sid);
     }
     var params = new URLSearchParams(window.location.search);
+    /* Identifiant de cette vue de page : sert à y rattacher le temps passé */
+    var vid = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+      : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+      });
     var payload = JSON.stringify({
+      visit_id: vid,
       session_id: sid,
       path: window.location.pathname,
       referrer: document.referrer || '',
@@ -812,6 +818,24 @@
     } else {
       fetch('/api/track/visit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(function () {});
     }
+
+    /* Temps passé sur la page (onglet visible seulement), envoyé quand on
+       la quitte ou qu'on change d'onglet : le total remplace le précédent. */
+    var shownAt = document.visibilityState === 'visible' ? Date.now() : 0;
+    var spent = 0, lastSent = 0;
+    var sendLeave = function () {
+      if (shownAt) { spent += Date.now() - shownAt; shownAt = 0; }
+      var secs = Math.round(spent / 1000);
+      if (secs < 1 || secs === lastSent) return;
+      lastSent = secs;
+      var b = JSON.stringify({ visit_id: vid, seconds: Math.min(secs, 3600) });
+      if (navigator.sendBeacon) navigator.sendBeacon('/api/track/leave', new Blob([b], { type: 'application/json' }));
+    };
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') sendLeave();
+      else shownAt = Date.now();
+    });
+    window.addEventListener('pagehide', sendLeave);
 
     /* Clics sortants sur les liens affiliés/partenaires (rel="sponsored") :
        une ligne par clic, pour savoir quelles pages envoient des clients. */

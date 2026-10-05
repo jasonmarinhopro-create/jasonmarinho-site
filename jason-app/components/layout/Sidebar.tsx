@@ -14,7 +14,7 @@ import {
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
   ChartLineUp, HouseLine, Briefcase, ShareNetwork, PaperPlaneTilt, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
-  Broom, Check, Plus, ChatText, ArrowLeft, LockSimple, Receipt,
+  Broom, Check, Plus, ChatText, ArrowLeft, LockSimple, Receipt, Binoculars, PresentationChart,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
@@ -141,6 +141,8 @@ const adminGroups: Array<{ key: string; label: string; items: AdminItem[]; colla
   },
   {
     key: 'croissance', label: 'Acquisition', items: [
+      // Visibilité : Google Search Console + visites du site, fiches pros, villes, IA
+      { href: '/dashboard/admin/visibilite',  label: 'Visibilité',      Icon: Binoculars },
       { href: '/dashboard/admin/prospection', label: 'Prospection',     Icon: PaperPlaneTilt },
       { href: '/dashboard/admin/social',      label: 'Réseaux sociaux', Icon: ShareNetwork },
       { href: '/dashboard/admin/indexation',  label: 'Référencement',   Icon: MagnifyingGlass },
@@ -341,12 +343,14 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     '/dashboard/ma-fiche-photographe/clients',
     '/dashboard/ma-fiche-photographe/devis',
     '/dashboard/ma-fiche-photographe/facturation',
+    '/dashboard/ma-fiche-photographe/statistiques',
     '/dashboard/ma-fiche-menage',
     '/dashboard/ma-fiche-menage/demandes',
     '/dashboard/ma-fiche-menage/clients',
     '/dashboard/ma-fiche-menage/devis',
     '/dashboard/ma-fiche-menage/facturation',
     '/dashboard/ma-fiche-menage/planning',
+    '/dashboard/ma-fiche-menage/statistiques',
     // Espace investisseur : idem, sinon "Accueil" reste actif sur /estimateur.
     '/dashboard/investir',
     '/dashboard/investir/estimateur',
@@ -537,6 +541,11 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                   href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe' : '/dashboard/ma-fiche-menage'}
                   label="Ma fiche"
                   Icon={proRole === 'photographer' ? Camera : Sparkle}
+                />
+                <NavItem
+                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/statistiques' : '/dashboard/ma-fiche-menage/statistiques'}
+                  label="Mes statistiques"
+                  Icon={PresentationChart}
                 />
                 <NavItem
                   href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/demandes' : '/dashboard/ma-fiche-menage/demandes'}

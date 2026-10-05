@@ -41,9 +41,11 @@ interface Props {
   kpis: { views: number; contacts: number; clics: number; daysActive: number }
   isAdminPreview?: boolean
   viewsTrend?: ViewsTrendData
+  /** Carte « Tes statistiques » (chargée à part par la page) */
+  statsSlot?: React.ReactNode
 }
 
-export default function MaFichePhotographe({ photographer, kpis, isAdminPreview = false, viewsTrend }: Props) {
+export default function MaFichePhotographe({ photographer, kpis, isAdminPreview = false, viewsTrend, statsSlot }: Props) {
   const [form, setForm] = useState({
     full_name: photographer.full_name,
     ville: photographer.ville,
@@ -278,6 +280,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         {isActive && publicUrl && (
           <ShareFicheBlock url={publicUrl} displayName={displayName} />
         )}
+        {statsSlot}
         {viewsTrend && <ViewsTrend trend={viewsTrend} metier="photographe" style={{ margin: 0 }} />}
         {!isAdminPreview && <FacturationTeaser href="/dashboard/ma-fiche-photographe/devis" />}
         <div style={s.subscriptionCard}>
