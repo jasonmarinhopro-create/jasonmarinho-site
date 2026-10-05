@@ -78,7 +78,8 @@ jobs:
             envoyer)
               call '{"op":"run"}' | jq . ;;
             corriger_textes)
-              call '{"op":"fix_texts"}' | jq . ;;
+              r=$(call '{"op":"fix_texts"}'); echo "$r" | jq .
+              echo "::notice title=Textes corrigés::$(echo "$r" | jq -c .)" ;;
             importer_osm)
               total=0
               IFS=',' read -ra AUDS <<< "$AUDIENCES"
@@ -129,3 +130,14 @@ jobs:
               echo "Total ajouté : $total contacts"
               call '{"op":"status"}' | jq '{contacts, envoyes_total}' ;;
           esac
+
+      - name: Contrôle des textes (nombre d'e-mails qui citent encore « 12 photos »)
+        if: always() && (inputs.operation == 'corriger_textes' || github.event_name == 'push')
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          n=$(curl -s -o /dev/null -D - "$SUPABASE_URL/rest/v1/outreach_steps?select=id&body=ilike.*12%20photos*" \
+            -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY" -H "Prefer: count=exact" | tr -d '\r' | grep -i '^content-range' | sed 's/.*\///')
+          echo "::notice title=Contrôle::${n:-?} e-mail(s) de prospection citent encore « 12 photos »"
+
