@@ -1,0 +1,47 @@
+# Chiffres d'usage (nombres seulement, jamais de nom ni d'e-mail : dépôt
+# public). Sert à décider des invitations au Standard : qui utilise quoi.
+# Lancement : à la main, ou push de .github/chiffres-trigger sur claude/**.
+name: Chiffres d'usage
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/chiffres-trigger']
+
+jobs:
+  chiffres:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compter
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          get() { curl -sf "$SUPABASE_URL/rest/v1/$1" -H "apikey: $SERVICE_KEY" -H "Authorization: Bearer $SERVICE_KEY"; }
+          get "profiles?select=id,plan,role" > profiles.json
+          get "contracts?select=user_id,statut,stripe_payment_enabled,montant_caution,stripe_deposit_status" > contracts.json
+          get "logements?select=user_id" > logements.json
+          get "sejours?select=user_id" > sejours.json
+          python3 - <<'PY'
+          import json
+          P = json.load(open('profiles.json')); C = json.load(open('contracts.json'))
+          L = json.load(open('logements.json')); S = json.load(open('sejours.json'))
+          plan = {p['id']: ('admin' if p.get('role') == 'admin' else (p.get('plan') or 'decouverte')) for p in P}
+          from collections import Counter
+          plans = Counter(plan.values())
+          free = {u for u, pl in plan.items() if pl == 'decouverte'}
+          has_log = {r['user_id'] for r in L}; has_sej = {r['user_id'] for r in S}
+          free_contracts = [c for c in C if c['user_id'] in free]
+          free_users_contracts = {c['user_id'] for c in free_contracts}
+          free_signed = [c for c in free_contracts if c.get('statut') == 'signe']
+          free_stripe = [c for c in free_contracts if c.get('stripe_payment_enabled')]
+          free_caution = [c for c in free_contracts if (c.get('stripe_deposit_status') or '') in ('held', 'captured', 'released', 'expired', 'pending')]
+          lines = [
+            f"Comptes par formule : {dict(plans)}",
+            f"Gratuits avec un logement : {len(free & has_log)} · avec un séjour : {len(free & has_sej)}",
+            f"Gratuits qui ont créé au moins un contrat : {len(free_users_contracts)} ({len(free_contracts)} contrats, {len(free_signed)} signés, {len(free_stripe)} avec paiement en ligne, {len(free_caution)} avec caution Stripe)",
+          ]
+          print('::notice title=Chiffres::' + '%0A'.join(lines))
+          PY
