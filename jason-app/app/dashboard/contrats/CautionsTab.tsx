@@ -12,7 +12,8 @@ import { useRouter } from 'next/navigation'
 import {
   LockKey, LockKeyOpen, ShieldCheck, Hourglass, CheckCircle, Copy, Warning, House, ArrowSquareOut, Info,
 } from '@phosphor-icons/react/dist/ssr'
-import { depositActBefore, depositOpensOn, depositWindow } from '@/lib/stripe/deposit-window'
+import { depositActBefore, depositOpensOn } from '@/lib/stripe/deposit-window'
+import { cautionGroup, type CautionGroup } from '@/lib/contracts/caution-group'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 import { Card, CardHead, ui } from '../finances/_ui/ui'
 import type { ContractRow } from './types'
@@ -27,18 +28,7 @@ const fmtDay = (iso: string | null) => iso
 const fmtEur = (n: number | null) => `${Number(n ?? 0).toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} €`
 const guest = (c: ContractRow) => `${c.locataire_prenom ?? ''} ${c.locataire_nom ?? ''}`.trim() || 'Locataire'
 
-type Group = 'decider' | 'attente' | 'expiree' | 'terminee' | 'horsligne'
-
-/** Où en est la caution de ce contrat */
-export function cautionGroup(c: ContractRow, stripeReady: boolean, now?: Date): Group {
-  const st = c.stripe_deposit_status
-  if (st === 'held' || st === 'capturing' || st === 'releasing') return 'decider'
-  if (st === 'captured' || st === 'released') return 'terminee'
-  if (!stripeReady) return 'horsligne'
-  const win = c.date_arrivee && c.date_depart ? depositWindow(c.date_arrivee, c.date_depart, now) : 'closed'
-  if (st === 'expired') return win === 'closed' ? 'terminee' : 'expiree'
-  return win === 'closed' ? 'terminee' : 'attente'
-}
+type Group = CautionGroup
 
 const STATUS_TEXT: Record<string, string> = {
   captured: 'Somme retenue',

@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
 import { sendDepositOutcomeToGuest } from '@/lib/email/deposit-guest'
+import { parseRetenue } from '@/lib/stripe/deposit-capture-rules'
 const log = logger('api/stripe/deposit/capture')
 
 // POST /api/stripe/deposit/capture
@@ -19,8 +20,7 @@ export async function POST(request: NextRequest) {
 
     const { contract_id, amount, motif } = await request.json()
     if (!contract_id) return NextResponse.json({ error: 'contract_id manquant.' }, { status: 400 })
-    const reason = String(motif ?? '').trim().slice(0, 300)
-    if (reason.length < 3) return NextResponse.json({ error: 'Indique le motif de la retenue : il est envoyé au voyageur.' }, { status: 400 })
+    if (String(motif ?? '').trim().length < 3) return NextResponse.json({ error: 'Indique le motif de la retenue : il est envoyé au voyageur.' }, { status: 400 })
 
     const db = serviceClient()
 
@@ -41,12 +41,9 @@ export async function POST(request: NextRequest) {
     }
 
     const caution = Number(contract.montant_caution ?? 0)
-    const wanted = amount == null || amount === '' ? caution : Math.round(Number(amount) * 100) / 100
-    if (!Number.isFinite(wanted) || wanted <= 0 || wanted > caution + 0.001) {
-      return NextResponse.json({ error: `Montant à retenir entre 0,01 € et ${caution.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €.` }, { status: 400 })
-    }
-    const wantedCents = Math.round(wanted * 100)
-    const partial = wantedCents < Math.round(caution * 100)
+    const rule = parseRetenue({ amount, motif, caution })
+    if (!rule.ok) return NextResponse.json({ error: rule.error }, { status: 400 })
+    const { kept: wanted, keptCents: wantedCents, partial, reason } = rule
 
     // Récupérer le compte Stripe du bailleur
     const { data: profile } = await db
