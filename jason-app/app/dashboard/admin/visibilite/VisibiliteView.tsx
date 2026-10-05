@@ -92,7 +92,7 @@ export default function VisibiliteView({ data, tab }: { data: VisibilityData; ta
       </nav>
 
       {/* Sources en panne */}
-      {!data.gsc.ok && tab !== 'visiteurs' && tab !== 'partenaires' && (
+      {!data.gsc.ok && tab !== 'visiteurs' && (
         <Banner tone="warn" title={data.gsc.auth ? 'La connexion à Google Search Console est à refaire' : 'Google Search Console ne répond pas'}>
           {data.gsc.auth
             ? <>Les chiffres de Google sont indisponibles tant que la connexion n&apos;est pas refaite. <Link href="/dashboard/admin/indexation" style={bannerLink}>Reconnecter</Link></>
@@ -112,7 +112,7 @@ export default function VisibiliteView({ data, tab }: { data: VisibilityData; ta
       {tab === 'villes' && data.villes && <VillesTab d={data.villes} />}
       {tab === 'pages' && data.pages && <PagesTab d={data.pages} />}
       {tab === 'visiteurs' && data.visiteurs && <VisiteursTab d={data.visiteurs} />}
-      {tab === 'partenaires' && data.partenaires && <PartenairesTab d={data.partenaires} clicksOk={data.affClicks.ok} clicksError={data.affClicks.ok ? undefined : data.affClicks.error} />}
+      {tab === 'partenaires' && data.partenaires && <PartenairesTab d={data.partenaires} clicksOk={data.affClicks.ok} clicksError={data.affClicks.ok ? undefined : data.affClicks.error} gscOk={data.gsc.ok} />}
 
       <p style={{ display: 'flex', gap: 6, fontSize: 12.5, color: 'var(--text-3)', margin: 0, lineHeight: 1.55 }}>
         <Info size={13} weight="bold" style={{ flexShrink: 0, marginTop: 3 }} />

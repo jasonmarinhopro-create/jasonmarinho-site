@@ -9,7 +9,7 @@ import type { AffilaeOverview } from '@/lib/affiliation/affilae'
 import type { ConversionStatus } from '@/lib/affiliation/affilae-parse'
 import {
   bucketKeys, bucketOf, granularityFor, pageKind, pageLabel, parisDay, pctChange, placeOf, sourceOf, SOURCE_LABEL,
-  type Granularity, type PageKind, type Period, type SourceKind, type VisitRow,
+  type Granularity, type PageKind, type Period, type SourceKind, type VisitRow, type SearchStat,
 } from './rules'
 
 export interface ClickRow { session_id: string; path: string; partner: string; created_at: string }
@@ -105,6 +105,8 @@ export interface PartnersData {
   opportunities: PartnerOpportunity[]
   sources: Array<{ key: SourceKind; label: string; count: number; pct: number }>
   affilae: AffilaeOverview | null
+  /** Pages des partenaires dans Google (rempli par admin-build) */
+  seo?: PartnerSeoGroup[]
 }
 
 const pct = (a: number, b: number) => (b > 0 ? Math.round((a / b) * 1000) / 10 : null)
@@ -269,4 +271,167 @@ export function buildPartners(input: {
 /** « 12,50 € » à partir de centimes */
 export function euros(cents: number): string {
   return (cents / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'
+}
+
+// ── Pages des partenaires dans Google (demande de Jason, 05/10/2026 :
+// « où se positionnent les pages de mes partenaires, et sur quelles
+// recherches ») ─────────────────────────────────────────────────────────
+
+
+export interface SeoQuery { query: string; clicks: number; impressions: number; place: number; delta: number | null; isNew: boolean }
+
+export interface PartnerSeoPage {
+  path: string
+  label: string
+  clicks: number
+  impressions: number
+  place: number | null
+  delta: number | null
+  /** Taux de clic Google (clics / affichages), en % */
+  ctrPct: number | null
+  queries: SeoQuery[]
+}
+
+export interface PartnerTarget {
+  query: string
+  /** Meilleure place d'une page du site sur cette recherche, null si Google ne nous a pas montrés */
+  place: number | null
+  impressions: number
+  clicks: number
+  pageLabel: string | null
+}
+
+export interface PartnerSeoGroup {
+  key: string
+  name: string
+  clicks: number
+  impressions: number
+  pages: PartnerSeoPage[]
+  /** Recherches visées par ces pages : où l'on sort (ou pas encore) */
+  targets: PartnerTarget[]
+  /** Les recherches qui amènent le plus de clics, toutes pages du groupe confondues */
+  best: SeoQuery[]
+}
+
+/**
+ * Pages de chaque partenaire et recherches visées. Toute autre page dont
+ * l'adresse contient le nom du partenaire est ajoutée automatiquement.
+ */
+export const PARTNER_SEO: Array<{ key: string; name: string; paths: string[]; match?: RegExp; targets: string[] }> = [
+  {
+    key: 'lodgify', name: 'Lodgify',
+    paths: ['/partenaires/lodgify', '/lodgify-avis', '/lodgify-prix', '/code-promo-lodgify', '/tutoriel-lodgify-site-reservation-directe', '/comparatif-lodgify-smoobu'],
+    match: /lodgify/,
+    targets: ['lodgify', 'lodgify avis', 'lodgify prix', 'lodgify tarif', 'code promo lodgify', 'lodgify code promo', 'lodgify site de reservation', 'lodgify vs smoobu'],
+  },
+  {
+    key: 'hospitable', name: 'Hospitable',
+    paths: ['/hospitable-avis', '/comparatif-smoobu-hospitable', '/blog/hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls'],
+    match: /hospitable/,
+    targets: ['hospitable', 'hospitable avis', 'hospitable prix', 'hospitable francais', 'smoobu vs hospitable'],
+  },
+  {
+    key: 'indy', name: 'Indy',
+    paths: ['/partenaires/indy', '/blog/indy-lmnp-location-courte-duree-avis-2026', '/comparatif-indy-tiime-henrri'],
+    match: /(^|[-/])indy([-/]|$)/,
+    targets: ['indy', 'indy avis', 'indy lmnp', 'indy lmnp avis', 'indy location meublee', 'indy code promo'],
+  },
+  {
+    key: 'legalplace', name: 'LegalPlace',
+    paths: ['/partenaires/legalplace', '/blog/creer-societe-conciergerie-en-ligne-legalplace-2026'],
+    match: /legalplace/,
+    targets: ['legalplace', 'legalplace avis', 'creer societe conciergerie', 'creer sa conciergerie', 'statut conciergerie'],
+  },
+  {
+    key: 'tiime', name: 'Tiime',
+    paths: ['/comparatif-indy-tiime-henrri'],
+    match: /tiime/,
+    targets: ['tiime', 'tiime avis', 'tiime facturation', 'indy ou tiime'],
+  },
+  {
+    key: 'shine', name: 'Shine',
+    paths: ['/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026'],
+    match: /(^|[-/])shine([-/]|$)/,
+    targets: ['shine compte pro', 'compte bancaire pro location courte duree'],
+  },
+  {
+    key: 'catalogue', name: 'Page Partenaires',
+    paths: ['/partenaires'],
+    targets: ['partenaires location courte duree', 'outils location courte duree'],
+  },
+]
+
+const plain = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ').trim()
+
+const seoQuery = (s: SearchStat): SeoQuery => ({ query: s.query, clicks: s.clicks, impressions: s.impressions, place: placeOf(s.position), delta: s.delta, isNew: s.isNew })
+
+export function buildPartnerSeo(input: {
+  /** Pages du site avec leurs recherches (aggregatePages) */
+  pageStats: Array<{ path: string; clicks: number; impressions: number; position: number; delta: number | null; queries: SearchStat[] }>
+  /** Vrais totaux Google par chemin (recherches masquées comprises) */
+  totals: Map<string, { clicks: number; impressions: number; position: number; prevPosition: number | null }>
+  /** Recherches de tout le site (aggregateQueries) */
+  queries: SearchStat[]
+}): PartnerSeoGroup[] {
+  const statByPath = new Map(input.pageStats.map(p => [p.path, p]))
+  const allPaths = new Set([...input.totals.keys(), ...statByPath.keys()])
+  const queryByText = new Map(input.queries.map(q => [plain(q.query), q]))
+  // Page principale (la plus vue) de chaque recherche, pour dire quelle page sort
+  const pageOfQuery = new Map<string, { path: string; impressions: number }>()
+  for (const p of input.pageStats) {
+    for (const q of p.queries) {
+      const k = plain(q.query)
+      const cur = pageOfQuery.get(k)
+      if (!cur || q.impressions > cur.impressions) pageOfQuery.set(k, { path: p.path, impressions: q.impressions })
+    }
+  }
+
+  return PARTNER_SEO.map(g => {
+    const paths = new Set(g.paths)
+    if (g.match) for (const p of allPaths) if (g.match.test(p) && !p.startsWith('/annuaires')) paths.add(p)
+    const pages: PartnerSeoPage[] = [...paths].map(path => {
+      const t = input.totals.get(path)
+      const st = statByPath.get(path)
+      const clicks = t?.clicks ?? st?.clicks ?? 0
+      const impressions = t?.impressions ?? st?.impressions ?? 0
+      const position = t?.position ?? st?.position ?? null
+      const prev = t?.prevPosition ?? null
+      const place = impressions > 0 && position !== null ? placeOf(position) : null
+      return {
+        path, label: pageLabel(path), clicks, impressions, place,
+        delta: place !== null && prev !== null ? placeOf(prev) - place : st?.delta ?? null,
+        ctrPct: impressions ? Math.round((clicks / impressions) * 1000) / 10 : null,
+        queries: (st?.queries ?? []).slice(0, 30).map(seoQuery),
+      }
+    }).sort((a, b) => b.clicks - a.clicks || b.impressions - a.impressions || a.label.localeCompare(b.label))
+
+    const targets: PartnerTarget[] = g.targets.map(t => {
+      const q = queryByText.get(plain(t))
+      const page = pageOfQuery.get(plain(t))
+      return {
+        query: t,
+        place: q ? placeOf(q.position) : null,
+        impressions: q?.impressions ?? 0,
+        clicks: q?.clicks ?? 0,
+        pageLabel: page ? pageLabel(page.path) : null,
+      }
+    })
+
+    // Meilleures recherches du groupe (une recherche peut toucher plusieurs pages : on garde la meilleure ligne)
+    const best = new Map<string, SeoQuery>()
+    for (const p of pages) for (const q of p.queries) {
+      const cur = best.get(q.query)
+      if (!cur || q.clicks > cur.clicks || (q.clicks === cur.clicks && q.impressions > cur.impressions)) best.set(q.query, q)
+    }
+
+    return {
+      key: g.key,
+      name: g.name,
+      clicks: pages.reduce((n, p) => n + p.clicks, 0),
+      impressions: pages.reduce((n, p) => n + p.impressions, 0),
+      pages,
+      targets,
+      best: [...best.values()].sort((a, b) => b.clicks - a.clicks || b.impressions - a.impressions).slice(0, 8),
+    }
+  })
 }

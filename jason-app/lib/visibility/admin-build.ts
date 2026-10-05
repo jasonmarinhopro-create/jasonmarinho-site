@@ -5,7 +5,7 @@
 // l'onglet ouvert sont préparées pour le navigateur.
 import type { GscResult } from '@/lib/google/search-analytics'
 import type { AffilaeOverview } from '@/lib/affiliation/affilae'
-import { buildPartners, type ClickRow, type PartnersData } from './partners'
+import { buildPartners, buildPartnerSeo, type ClickRow, type PartnersData } from './partners'
 import { isPaidPro } from '@/lib/admin/revenue'
 import {
   pctChange, aggregateQueries, aggregatePages, bucketCounts, topRanked, nearlyFirstPage,
@@ -339,6 +339,11 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
       period: visitPeriod,
       pages: new Map([...pages.entries()].map(([path, p]) => [path, { impressions: p.impressions, position: p.position }])),
       affilae,
+    })
+    data.partenaires.seo = buildPartnerSeo({
+      pageStats,
+      totals: new Map([...pages.entries()].map(([path, p]) => [path, { clicks: p.clicks, impressions: p.impressions, position: p.position, prevPosition: p.prevPosition }])),
+      queries: queryStats,
     })
   }
 
