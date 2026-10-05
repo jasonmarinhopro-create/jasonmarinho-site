@@ -3,11 +3,10 @@
 import Link from 'next/link'
 import ViewsTrend from '@/components/pros/ViewsTrend'
 import FacturationTeaser from '@/components/pros/FacturationTeaser'
-import PortfolioManager from '@/components/pros/PortfolioManager'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { useState, useTransition } from 'react'
-import { Camera, Images, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
-import { updatePhotographerFiche, createCustomerPortalSession, uploadPhotographerLogo, deletePhotographerLogo, preparePortfolioUploads, addPortfolioPhotos, removePortfolioPhoto, movePortfolioPhoto } from './actions'
+import { Camera, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
+import { updatePhotographerFiche, createCustomerPortalSession, uploadPhotographerLogo, deletePhotographerLogo } from './actions'
 import ShareFicheBlock from '@/components/pro/ShareFicheBlock'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
@@ -28,7 +27,6 @@ type Photographer = {
   zone_couverte: string | null; bio: string | null; specialite: string | null
   tarif_min: number | null; tarif_max: number | null
   portfolio_url: string; instagram_handle: string | null
-  portfolio_photos?: string[] | null
   telephone: string | null
   tier: string; status: string
   slug: string | null
@@ -43,10 +41,9 @@ interface Props {
   kpis: { views: number; contacts: number; clics: number; daysActive: number }
   isAdminPreview?: boolean
   viewsTrend?: ViewsTrendData
-  portfolioPublicBase?: string
 }
 
-export default function MaFichePhotographe({ photographer, kpis, isAdminPreview = false, viewsTrend, portfolioPublicBase }: Props) {
+export default function MaFichePhotographe({ photographer, kpis, isAdminPreview = false, viewsTrend }: Props) {
   const [form, setForm] = useState({
     full_name: photographer.full_name,
     ville: photographer.ville,
@@ -149,7 +146,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         eyebrowIcon={<Camera size={14} weight="fill" />}
         eyebrow={isFondateur ? 'Ma fiche photographe · Membre fondateur' : 'Ma fiche photographe'}
         title={<>Ton travail, <HeroEm>vu par les hôtes</HeroEm>{photographer.ville ? ` de ${photographer.ville}` : ''}</>}
-        desc="Les hôtes choisissent leur photographe dans l’annuaire de Jason Marinho en regardant d’abord les photos. Un portfolio bien rempli et des tarifs clairs t’apportent plus de demandes : elles arrivent dans Demandes reçues et par email."
+        desc="Les hôtes choisissent leur photographe dans l’annuaire de Jason Marinho en regardant d’abord les photos. Un lien vers un beau portfolio et des tarifs clairs t’apportent plus de demandes : elles arrivent dans Demandes reçues et par email."
         aside={
           <div style={{ ...heroCard, flex: '1 1 100%', minWidth: 0 }}>
             <div style={s.asideTitle}>{isActive ? 'Ta fiche est en ligne' : isPending ? 'Ta fiche n’est pas encore publique' : `Ta fiche est ${FICHE_LABELS[photographer.status] ?? photographer.status}`}</div>
@@ -191,20 +188,6 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
 
       <div style={s.cols}>
       <div style={s.colMain}>
-      {portfolioPublicBase && (
-        <section style={s.portfolioCard}>
-          <h3 style={{ ...s.cardTitle }}><Images size={17} weight="duotone" color="var(--accent-text)" /> Mon portfolio</h3>
-          <PortfolioManager
-            initial={photographer.portfolio_photos ?? []}
-            publicBase={portfolioPublicBase}
-            targetId={isAdminPreview ? photographer.id : undefined}
-            onPrepare={preparePortfolioUploads}
-            onAdd={addPortfolioPhotos}
-            onRemove={removePortfolioPhoto}
-            onMove={movePortfolioPhoto}
-          />
-        </section>
-      )}
 
       <form onSubmit={handleSave} style={s.form}>
         <h3 style={s.sectionTitle}>Logo / avatar</h3>
@@ -336,7 +319,6 @@ const s: Record<string, React.CSSProperties> = {
   cols: { display: 'flex', flexWrap: 'wrap' as const, gap: 20, alignItems: 'flex-start' },
   colMain: { flex: '999 1 600px', minWidth: 0, display: 'flex', flexDirection: 'column' as const, gap: 20 },
   colSide: { flex: '1 1 340px', minWidth: 0, display: 'flex', flexDirection: 'column' as const, gap: 16 },
-  portfolioCard: { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16, padding: '18px 20px' },
   cardTitle: { display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-fraunces), serif', fontSize: 18, fontWeight: 400, color: 'var(--text)', margin: '0 0 8px' },
   errBanner: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'var(--danger-bg)', border: '1px solid var(--danger-border)', borderRadius: 10, fontSize: 13, color: 'var(--danger-text)', marginBottom: 14 },
   warnBanner: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'rgba(255,213,107,0.18)', border: `1px solid ${AMBER}55`, borderRadius: 10, fontSize: 13, color: AMBER_DARK, marginBottom: 14 },

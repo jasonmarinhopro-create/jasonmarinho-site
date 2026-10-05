@@ -6,6 +6,7 @@
 // Les réponses ne contiennent que des nombres et des noms de séquences :
 // les journaux du workflow sont publics (dépôt public), jamais d'adresse.
 
+import { PLAYBOOK_TEXT_FIXES } from '@/lib/outreach/playbook'
 import { NextResponse } from 'next/server'
 import { getServiceClient } from '@/lib/supabase/service'
 import { outreachConfig } from '@/lib/outreach/mailer'
@@ -56,7 +57,22 @@ export async function POST(req: Request) {
         const relaunched = summary.more && body.relaunch !== false ? await relaunchOutreach(1, force) : false
         return NextResponse.json({ ok: true, relaunched, ...summary })
       }
-      default: return NextResponse.json({ error: 'op inconnue (status, import, import_osm, activate, test, run)' }, { status: 400 })
+      case 'fix_texts': {
+        // Applique PLAYBOOK_TEXT_FIXES aux e-mails déjà enregistrés (objet et
+        // texte). Réponse : nombre d'e-mails modifiés, jamais de contenu.
+        const { data: steps } = await db.from('outreach_steps').select('id, subject, body')
+        let changed = 0
+        for (const st of steps ?? []) {
+          let subject = String(st.subject ?? ''), text = String(st.body ?? '')
+          for (const [from, to] of PLAYBOOK_TEXT_FIXES) { subject = subject.split(from).join(to); text = text.split(from).join(to) }
+          if (subject !== st.subject || text !== st.body) {
+            const { error } = await db.from('outreach_steps').update({ subject, body: text }).eq('id', st.id)
+            if (!error) changed++
+          }
+        }
+        return NextResponse.json({ ok: true, emails_lus: (steps ?? []).length, emails_corriges: changed })
+      }
+      default: return NextResponse.json({ error: 'op inconnue (status, import, import_osm, activate, test, run, fix_texts)' }, { status: 400 })
     }
   } catch (e) {
     return NextResponse.json({ ok: false, error: e instanceof Error ? e.message.slice(0, 300) : 'erreur' }, { status: 500 })

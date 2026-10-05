@@ -7,7 +7,8 @@
 // réponse arrête la séquence), relances dans le même fil, dernier message
 // qui ferme la porte poliment. Faits vérifiés dans le site le 29/09/2026 :
 // tarif fondateur 39,98 € TTC / an à vie pour les 20 premiers, puis
-// 79,98 € / an ; portfolio jusqu'à 12 photos ; guides « photographe » et
+// 79,98 € / an ; lien vers le portfolio du pro (galerie hébergée retirée le
+// 05/10/2026) ; guides « photographe » et
 // « ménage » de 60 villes qui renvoient vers chaque annuaire ; contact direct
 // sans commission. Pas de tiret cadratin, tutoiement comme le reste de la marque.
 
@@ -65,7 +66,7 @@ Est-ce que tu fais ce type de shooting (intérieurs, logements de vacances) ?`,
 
 Je remonte mon message avec du concret. Une fiche dans l'annuaire, c'est :
 
-- une page à ton nom sur jasonmarinho.com, avec ton portfolio (jusqu'à 12 photos), ta zone et tes tarifs ;
+- une page à ton nom sur jasonmarinho.com, avec le lien vers ton portfolio, ta zone et tes tarifs ;
 - les demandes des hôtes directement chez toi, sans commission ;
 - l'annuaire mis en avant sur nos guides photo de 60 villes, lus par des hôtes qui cherchent un photographe.
 
@@ -137,7 +138,7 @@ Sinon, aucun souci, tu n'auras plus de message de ma part.`,
 
 Comme promis, voici le lien pour créer ta fiche : ${SITE}/annuaires/photographes/inscription?${utm('photo_interesse')}
 
-Un conseil pour bien démarrer : prépare 6 à 12 photos d'intérieur, lumineuses et variées (séjour, chambre, cuisine, salle de bain). C'est ce que les hôtes regardent en premier.
+Un conseil pour bien démarrer : mets en avant sur ton portfolio 6 à 12 photos d'intérieur, lumineuses et variées (séjour, chambre, cuisine, salle de bain). C'est ce que les hôtes regardent en premier.
 
 Une question avant de te lancer ? Réponds simplement à ce message.`,
       },
@@ -168,7 +169,7 @@ Si quelque chose te freine, dis-le-moi, je regarde avec toi.`,
 
 Bienvenue dans l'annuaire ! Trois réglages font la différence pour recevoir des demandes :
 
-- un portfolio complet : jusqu'à 12 photos, la plus belle en premier ;
+- un lien vers ton portfolio, tes plus belles photos de logements en premier ;
 - ta zone couverte, pour apparaître aux hôtes des villes autour de toi ;
 - une fourchette de prix, les hôtes contactent plus facilement quand ils ont un repère.
 
@@ -395,4 +396,15 @@ Belle saison à toi !`,
       },
     ],
   },
+]
+
+/**
+ * Corrections à appliquer aussi aux séquences déjà installées en base
+ * (op `fix_texts` de /api/outreach/ops). 05/10/2026 : la galerie de 12 photos
+ * hébergée a été retirée, les e-mails ne doivent plus la promettre.
+ */
+export const PLAYBOOK_TEXT_FIXES: Array<[string, string]> = [
+  ["avec ton portfolio (jusqu'à 12 photos), ta zone et tes tarifs", "avec le lien vers ton portfolio, ta zone et tes tarifs"],
+  ["Un conseil pour bien démarrer : prépare 6 à 12 photos d'intérieur, lumineuses et variées", "Un conseil pour bien démarrer : mets en avant sur ton portfolio 6 à 12 photos d'intérieur, lumineuses et variées"],
+  ["- un portfolio complet : jusqu'à 12 photos, la plus belle en premier ;", "- un lien vers ton portfolio, tes plus belles photos de logements en premier ;"],
 ]

@@ -89,7 +89,6 @@ export default async function Page({ searchParams }: PageProps) {
       }}
       isAdminPreview={isAdminPreview}
       viewsTrend={viewsTrend}
-      portfolioPublicBase={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/pro-portfolio/`}
     />
   )
 }

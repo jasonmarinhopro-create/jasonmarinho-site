@@ -9,14 +9,18 @@ name: Prospection
 # Les journaux sont publics (dépôt public) : la route ne renvoie que des
 # nombres et des noms de séquences, jamais d'adresse e-mail.
 on:
+  # Push de .github/prospection-textes-trigger (branche claude/**) : corriger_textes
+  push:
+    branches: ['claude/**']
+    paths: ['.github/prospection-textes-trigger']
   workflow_dispatch:
     inputs:
       operation:
-        description: 'etat, essai, importer (Google Maps), importer_osm (OpenStreetMap), activer, envoyer'
+        description: 'etat, essai, importer (Google Maps), importer_osm (OpenStreetMap), activer, envoyer, corriger_textes'
         required: true
         default: etat
         type: choice
-        options: [etat, essai, importer, importer_osm, activer, envoyer]
+        options: [etat, essai, importer, importer_osm, activer, envoyer, corriger_textes]
       audiences:
         description: 'Audiences (menage, photographe, séparées par des virgules)'
         required: false
@@ -44,7 +48,7 @@ jobs:
     steps:
       - name: Appel de l'app
         env:
-          OP: ${{ inputs.operation }}
+          OP: ${{ inputs.operation || 'corriger_textes' }}
           AUDIENCES: ${{ inputs.audiences }}
           VILLES: ${{ inputs.villes }}
           PLAFOND: ${{ inputs.plafond }}
@@ -73,6 +77,8 @@ jobs:
               call "$(jq -nc --argjson a "$AUD_JSON" --arg cap "$PLAFOND" '{op:"activate",audiences:$a,daily_cap:($cap|tonumber)}')" | jq . ;;
             envoyer)
               call '{"op":"run"}' | jq . ;;
+            corriger_textes)
+              call '{"op":"fix_texts"}' | jq . ;;
             importer_osm)
               total=0
               IFS=',' read -ra AUDS <<< "$AUDIENCES"
