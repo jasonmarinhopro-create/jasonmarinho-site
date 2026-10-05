@@ -125,6 +125,7 @@ export default function InstallAppWidget() {
       <div className="jm-iw-root" role="dialog" aria-label="Installer l'app">
         <div style={s.head}>
           <div style={s.icon}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- icône locale 36 px */}
             <img src="/icon-192.png" alt="" width={36} height={36} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>

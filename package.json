@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "@phosphor-icons/web": "^2.1.1",
+    "esbuild": "^0.25.12",
     "subset-font": "^2.9.0"
   }
 }

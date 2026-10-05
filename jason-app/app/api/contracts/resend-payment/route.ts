@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     // Récupérer le contrat (vérification ownership)
     const { data: contract, error: fetchErr } = await db
       .from('contracts')
-      .select('*')
+      .select('id, token, user_id, statut, langue, bailleur_prenom, bailleur_nom, locataire_prenom, locataire_nom, locataire_email, logement_nom, logement_adresse, date_arrivee, date_depart, montant_loyer, montant_caution, modalites_paiement, stripe_payment_enabled, stripe_payment_status, stripe_deposit_status')
       .eq('id', contract_id)
       .eq('user_id', user.id)
       .single()

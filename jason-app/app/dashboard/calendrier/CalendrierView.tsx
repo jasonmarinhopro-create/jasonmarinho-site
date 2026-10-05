@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useTransition, useRef, useEffect } from 'react'
+import { useState, useMemo, useCallback, useTransition, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { CaretLeft, CaretRight, Plus, Trash, PencilSimple, CalendarBlank, Clock, X, MagnifyingGlass, ListBullets, Calendar as CalendarIcon, ChatText } from '@phosphor-icons/react/dist/ssr'
@@ -434,10 +434,10 @@ export default function CalendrierView({
 
   // ── search + filter helpers
   const q = search.trim().toLowerCase()
-  const matchesSearch = (...texts: (string | null | undefined)[]) => {
+  const matchesSearch = useCallback((...texts: (string | null | undefined)[]) => {
     if (!q) return true
     return texts.some(t => (t ?? '').toLowerCase().includes(q))
-  }
+  }, [q])
 
   const filteredEvents = useMemo(() => events.filter(e => {
     const cat = catToDisplay(e.category)
@@ -446,14 +446,14 @@ export default function CalendrierView({
     if (filter === 'rdv-tache' && cat !== 'rdv' && cat !== 'tache' && cat !== 'note') return false
     if (q && !matchesSearch(e.title, e.description)) return false
     return true
-  }), [events, filter, q])
+  }), [events, filter, q, matchesSearch])
 
   const filteredContractEvents = useMemo(() => contractEvents.filter(c => {
     if (filter === 'menages' || filter === 'rdv-tache' || filter === 'synchro') return false
     if (hiddenSources.has('internal')) return false
     if (q && !matchesSearch(c.title, c.logement_nom)) return false
     return true
-  }), [contractEvents, filter, q, hiddenSources])
+  }), [contractEvents, filter, q, matchesSearch, hiddenSources])
 
   const filteredIcalEvents = useMemo(() => icalEvents.filter(e => {
     if (filter === 'menages' || filter === 'rdv-tache') return false
@@ -466,14 +466,14 @@ export default function CalendrierView({
     // continuent à s'afficher normalement.
     if (!isRealReservation(e)) return false
     return true
-  }), [icalEvents, filter, q, hiddenSources])
+  }), [icalEvents, filter, q, matchesSearch, hiddenSources])
 
   const filteredSejourEvents = useMemo(() => sejourEvents.filter(s => {
     if (filter === 'menages' || filter === 'rdv-tache' || filter === 'synchro') return false
     if (hiddenSources.has('internal')) return false
     if (q && !matchesSearch(s.voyageur_label, s.logement_label)) return false
     return true
-  }), [sejourEvents, filter, q, hiddenSources])
+  }), [sejourEvents, filter, q, matchesSearch, hiddenSources])
 
   // ── event index by date, multi-day events are indexed for every day they span
   const byDate = useMemo(() => {

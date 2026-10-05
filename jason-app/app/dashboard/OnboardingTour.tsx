@@ -508,6 +508,7 @@ export default function OnboardingTour({
 
       setPopoverPos({ top, left, arrowSide })
     }, isMobile ? 50 : 380)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- finish ne change pas le placement
   }, [stepIdx, STEPS])
 
   useEffect(() => {

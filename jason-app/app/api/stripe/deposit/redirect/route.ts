@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServiceClient } from '@/lib/supabase/service'
-import { getOrCreateDepositCheckout } from '@/lib/stripe/deposit-payment'
+import { getOrCreateDepositCheckout, DEPOSIT_CONTRACT_COLUMNS } from '@/lib/stripe/deposit-payment'
 import { logger } from '@/lib/logger'
 import { depositWindow } from '@/lib/stripe/deposit-window'
 const log = logger('api/stripe/deposit/redirect')
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
 
     const { data: contract, error: cErr } = await supabase
       .from('contracts')
-      .select('*')
+      .select(DEPOSIT_CONTRACT_COLUMNS)
       .eq('token', token)
       .single()
 

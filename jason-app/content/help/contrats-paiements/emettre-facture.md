@@ -32,6 +32,8 @@ Ce qui change pour tous les loueurs en meublé :
 - **Depuis le 1er septembre 2026** : tu dois pouvoir **recevoir** les factures électroniques de tes prestataires (ménage, conciergerie, artisans). Une plateforme agréée gratuite suffit, par exemple **Tiime** ou **Indy**
 - **À partir du 1er septembre 2027**, si tu factures la **TVA** ou si ta location relève de la **para-hôtellerie** (au moins 3 services sur 4 : petit-déjeuner, ménage pendant le séjour, linge, accueil), même en franchise de TVA : tes factures aux **entreprises** passent par une plateforme agréée et tes ventes aux **particuliers** sont déclarées à l'administration (e-reporting). La facture de l'app ne suffit plus : fais tes factures dans un outil agréé
 
+**Pas sûr d'être concerné ?** Dans **Mes finances** → **Fiscalité**, la carte **Facture électronique : ta situation** te pose 3 questions (TVA, services proposés, clients entreprises) et te dit tout de suite si rien ne change pour toi ou ce qu'il faut faire avant le 1er septembre 2027.
+
 Sur la page de la facture (et dans **Mon compte** → **Factures**), un encart te rappelle ces règles avec les deux outils. Ce sont des liens affiliés : je touche une commission si tu t'abonnes, sans surcoût pour toi.
 
 > Sources : jedeclaremonmeuble.com, « Facturation électronique en LMNP : obligations et échéances 2026-2027 » ; dougs.fr, « Facturation électronique LMNP » ; lynco.net, « Facturation électronique LMNP et LMP » (consultées en octobre 2026)

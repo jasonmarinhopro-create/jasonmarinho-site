@@ -156,6 +156,7 @@ export default function FormationView({
     if (mainRef.current) mainRef.current.scrollTop = 0
     // Mobile : scroll de la fenêtre
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- remonter en haut seulement quand la leçon change
   }, [activeLesson?.lessonId])
 
   // Leçon suivante pour le bouton "Suivante →"

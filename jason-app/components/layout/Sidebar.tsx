@@ -9,7 +9,7 @@ import InstallAppLink from '@/components/pwa/InstallAppLink'
 import { usePathname, useSearchParams } from 'next/navigation'
 import {
   HouseSimple, GraduationCap, FileText,
-  UsersThree, SignOut, X, Gear, ShieldCheck, Users, BookOpen, Newspaper, ListChecks,
+  UsersThree, SignOut, X, Gear, ShieldCheck, Heartbeat, Users, BookOpen, Newspaper, ListChecks,
   FacebookLogo, CaretDown, ChartBar, CalendarBlank, Heart,
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
@@ -125,6 +125,8 @@ const adminGroups: Array<{ key: string; label: string; items: AdminItem[]; colla
       { href: '/dashboard/admin',             label: 'Vue d\'ensemble', Icon: Gear },
       // QG : demandes Driing, signalements et suggestions en une seule page
       { href: '/dashboard/admin/qg',          label: 'QG demandes',     Icon: ShieldCheck },
+      // État de santé : paiements, cautions, Stripe, iCal, e-mails, tâches, migrations
+      { href: '/dashboard/admin/sante',       label: 'État de santé',   Icon: Heartbeat },
     ],
   },
   {

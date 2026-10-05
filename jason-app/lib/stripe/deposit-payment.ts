@@ -20,6 +20,10 @@ import { logger } from '@/lib/logger'
 const log = logger('lib/stripe/deposit-payment')
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
+/** Colonnes d'un contrat utiles à la caution (sans l'image de la signature). */
+export const DEPOSIT_CONTRACT_COLUMNS =
+  'id, token, user_id, statut, created_at, montant_caution, date_arrivee, date_depart, logement_adresse, locataire_email, locataire_prenom, locataire_nom, sejour_id, stripe_deposit_status, stripe_deposit_checkout_id, checklist_status'
+
 export interface DepositContract {
   id: string
   token: string
@@ -196,7 +200,7 @@ export async function getOrCreateDepositCheckout(db: SupabaseClient, contract: D
 export async function syncPendingDeposits(db: SupabaseClient, limit = 30): Promise<number> {
   const { data: rows } = await db
     .from('contracts')
-    .select('*')
+    .select(DEPOSIT_CONTRACT_COLUMNS)
     .in('stripe_deposit_status', ['pending', 'held'])
     .not('stripe_deposit_checkout_id', 'is', null)
     .order('date_arrivee', { ascending: true })

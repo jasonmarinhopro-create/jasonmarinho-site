@@ -9,6 +9,7 @@
 //   particulier : la facture de l'app suffit, rien ne change en 2027.
 // Pas de hook : utilisable dans un composant serveur ou client.
 
+import Link from 'next/link'
 import { Receipt, CheckCircle, WarningCircle, ArrowSquareOut } from '@phosphor-icons/react/dist/ssr'
 import { TIIME_URL, INDY_URL } from '@/lib/pros/invoicing-partners'
 
@@ -67,6 +68,11 @@ export default function HostInvoicingNotice({ tone = 'app', proClient = false }:
       <p style={{ margin: '8px 0 0', fontSize: '11.5px', color: c.text2 }}>
         Liens affiliés : je touche une commission si tu t’abonnes, sans surcoût pour toi.
       </p>
+      {tone === 'app' && (
+        <Link href="/dashboard/finances/fiscalite#facture-electronique" style={{ display: 'inline-block', marginTop: '8px', fontSize: '13px', fontWeight: 700, color: c.accent, textDecoration: 'none' }}>
+          Vérifier ma situation en 3 questions →
+        </Link>
+      )}
     </div>
   )
 }

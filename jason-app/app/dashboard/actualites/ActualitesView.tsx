@@ -111,8 +111,8 @@ export default function ActualitesView({
   const visibleCats = CATEGORIES.filter(c => c.value === 'all' || usedCategories.has(c.value))
 
   // Pinned articles ("À la une")
-  const pinned = articles.filter(a => a.is_pinned)
-  const pinnedIds = new Set(pinned.map(a => a.id))
+  const pinned = useMemo(() => articles.filter(a => a.is_pinned), [articles])
+  const pinnedIds = useMemo(() => new Set(pinned.map(a => a.id)), [pinned])
 
   // Articles avec deadline pertinente
   const upcomingDeadlines = useMemo(() => {
