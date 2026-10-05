@@ -58,7 +58,9 @@ describe('pages', () => {
   it('villes', () => {
     expect(cityOf('/photographe-lcd-aix-en-provence')).toEqual({ slug: 'aix-en-provence', name: 'Aix-en-Provence', theme: 'photographe' })
     expect(cityName('la-rochelle')).toBe('La Rochelle')
-    expect(cityName('saint-malo')).toBe('Saint Malo')
+    expect(cityName('saint-malo')).toBe('Saint-Malo')
+    expect(cityName('le-mans')).toBe('Le Mans')
+    expect(cityName('clermont-ferrand')).toBe('Clermont-Ferrand')
     expect(pageLabel('/menage-lcd-lyon')).toBe('Ménage · Lyon')
     expect(pageLabel('/blog/declarer-son-lmnp')).toBe('Blog · Declarer son lmnp')
   })

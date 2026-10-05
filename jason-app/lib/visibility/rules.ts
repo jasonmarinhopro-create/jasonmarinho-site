@@ -147,16 +147,14 @@ const CITY_PATTERNS: Array<[RegExp, CityTheme]> = [
   [/^\/devenir-hote-airbnb-([a-z0-9-]+)$/, 'hote'],
 ]
 
-/** « la-rochelle » → « La Rochelle », « aix-en-provence » → « Aix-en-Provence » */
+/** « la-rochelle » → « La Rochelle », « saint-malo » → « Saint-Malo », « aix-en-provence » → « Aix-en-Provence » */
 export function cityName(slug: string): string {
   const small = new Set(['en', 'de', 'du', 'des', 'sur', 'les', 'le', 'la', 'et'])
-  const words = slug.split('-')
   const cap = (w: string) => w.charAt(0).toUpperCase() + w.slice(1)
-  // Noms composés reliés par un article (Aix-en-Provence) : tirets gardés
-  if (words.some((w, i) => i > 0 && small.has(w))) {
-    return words.map((w, i) => (i > 0 && small.has(w) ? w : cap(w))).join('-')
-  }
-  return words.map(cap).join(' ')
+  const words = slug.split('-').filter(Boolean)
+  // Article en tête (La Rochelle, Le Mans) : séparé par une espace, le reste garde ses tirets
+  const lead = words.length > 1 && ['le', 'la', 'les'].includes(words[0]) ? `${cap(words.shift()!)} ` : ''
+  return lead + words.map((w, i) => (i > 0 && small.has(w) ? w : cap(w))).join('-')
 }
 
 export function cityOf(path: string): { slug: string; name: string; theme: CityTheme } | null {
