@@ -13,6 +13,7 @@ import { Card, CardHead, Notice, ui } from '../finances/_ui/ui'
 import ContractsTab from './ContractsTab'
 import type { ContractRow, ContractCandidate, ContratsTab } from './types'
 import CautionsTab, { cautionGroup } from './CautionsTab'
+import { PAYMENT_FEES_LABEL } from '@/lib/stripe/payment-fees'
 import dynamic from 'next/dynamic'
 import type { VoyageurOption } from '../logements/[id]/QuickSejourModal'
 
@@ -88,7 +89,7 @@ export default function ContratsView({ tab = 'contrats', paiements, contracts, c
         eyebrowIcon={<FileText size={14} weight="fill" />}
         eyebrow="Contrats & paiements"
         title={<>Tes réservations directes, <HeroEm>signées et payées</HeroEm></>}
-        desc="Contrat signé en ligne, loyer par lien de paiement sur ton compte, caution par empreinte bancaire. Sans commission."
+        desc={`Contrat signé en ligne, loyer par lien de paiement sur ton compte, caution par empreinte bancaire. Aucune commission sur tes réservations, seulement ${PAYMENT_FEES_LABEL} de frais par paiement en ligne.`}
         steps={[
           ['Crée', 'le contrat depuis la réservation'],
           ['Envoie', 'le lien : le voyageur signe et paie'],

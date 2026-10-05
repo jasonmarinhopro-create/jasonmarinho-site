@@ -380,7 +380,7 @@ On commence gratuitement. Tu veux que je t'envoie le lien ?`,
 
 Pour te donner une idée, voici comment se passe un contrat signé en ligne : ${SITE}/services/contrats?${utm('hote_premier_contact')}
 
-Ton voyageur signe depuis son téléphone, paie le loyer sur ton propre compte (sans commission de l'app) et laisse une empreinte de carte pour la caution.
+Ton voyageur signe depuis son téléphone, paie le loyer sur ton propre compte (aucune commission sur la réservation) et laisse une empreinte de carte pour la caution.
 
 Est-ce que tu loues déjà en direct, sans plateforme ?`,
       },

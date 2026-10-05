@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { saveProfileName, saveIban, saveAdresse, saveFacturation, deleteAccount } from './actions'
 import HostInvoicingNotice from '@/components/finances/HostInvoicingNotice'
+import { PAYMENT_FEES, PAYMENT_FEES_LABEL } from '@/lib/stripe/payment-fees'
 import {
   Check, User, PencilSimple, Warning, CreditCard, Bank, MapPin, IdentificationCard, Wallet, Trash, X, Receipt,
 } from '@phosphor-icons/react/dist/ssr'
@@ -380,12 +381,12 @@ export default function ProfilForm({
           ) : (
             <div>
               <p style={{ fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.6, marginBottom: '10px' }}>
-                Connecte Stripe pour collecter loyers et cautions automatiquement. La carte de ton locataire est bloquée à la signature.
+                Connecte Stripe pour encaisser les loyers et bloquer les cautions en ligne. Le lien de caution part au voyageur 2 jours avant l'arrivée.
               </p>
               <div style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '8px', padding: '10px 12px', marginBottom: '12px' }}>
                 <p style={{ fontSize: '12px', color: 'var(--text-3)', lineHeight: 1.6, margin: 0 }}>
-                  {/* Grille Stripe France relevée en sept. 2026 : ne pas afficher de taux hors UE figé, il change */}
-                  <strong style={{ color: 'var(--text-2)' }}>Frais Stripe</strong> : 1,5 % + 0,25 € pour une carte européenne standard, davantage pour les cartes premium ou hors Europe (<a href="https://stripe.com/fr/pricing" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-text)' }}>grille officielle</a>). Aucune commission de notre part, déduits automatiquement.
+                  {/* Règle de l'outil de tarification Connect (lib/stripe/payment-fees.ts) */}
+                  <strong style={{ color: 'var(--text-2)' }}>Frais de paiement en ligne</strong> : {PAYMENT_FEES_LABEL} par paiement encaissé avec une carte européenne (+{PAYMENT_FEES.ukCard} % carte britannique, +{String(PAYMENT_FEES.nonEuropeCard).replace('.', ',')} % carte hors Europe), déduits automatiquement. Ils couvrent les frais de Stripe et les virements vers ta banque. Aucune commission sur tes réservations, et une caution libérée ne coûte rien.
                 </p>
               </div>
               {stripeError && <div style={{ ...f.errorBox, marginBottom: '10px' }}><Warning size={13} />{stripeError}</div>}

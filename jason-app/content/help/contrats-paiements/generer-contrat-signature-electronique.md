@@ -35,7 +35,7 @@ Dans la fiche de ton logement, la carte **Contrat** garde tes règles : arrhes o
 
 ## Sans envoyer ton RIB
 
-Coche **Paiement en ligne (Stripe)** : le voyageur paie par carte sur la page du contrat, l'argent arrive sur ton compte Stripe, sans commission de l'app, et il ne voit jamais ton IBAN. Pour la caution, le voyageur reçoit un lien 2 jours avant l'arrivée : le montant est bloqué sur sa carte, pas encaissé. Stripe se connecte dans **Mon compte → Encaissements**.
+Coche **Paiement en ligne (Stripe)** : le voyageur paie par carte sur la page du contrat, l'argent arrive sur ton compte Stripe (aucune commission sur la réservation, seulement 2 % + 0,30 € de frais de paiement), et il ne voit jamais ton IBAN. Pour la caution, le voyageur reçoit un lien 2 jours avant l'arrivée : le montant est bloqué sur sa carte, pas encaissé. Stripe se connecte dans **Mon compte → Encaissements**.
 
 ## L'envoi
 
