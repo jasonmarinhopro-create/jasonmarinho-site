@@ -6,6 +6,7 @@ import ContractView from './ContractView'
 import { toUiLang } from '@/lib/sign-ui-i18n'
 import { depositWindow, depositOpensOn } from '@/lib/stripe/deposit-window'
 import { syncLoyerPayment, findPaidLoyerSessions } from '@/lib/stripe/loyer-payment'
+import { syncDeposit } from '@/lib/stripe/deposit-payment'
 
 // Toujours servir depuis le serveur (pas de cache), la signature doit être fraîche
 export const dynamic = 'force-dynamic'
@@ -113,8 +114,17 @@ export default async function SignPage({
 
   // Caution
   const hasDeposit = Number(contract.montant_caution) > 0
-  const depositAlreadyHeld = contract.stripe_deposit_status === 'held'
+  let depositAlreadyHeld = contract.stripe_deposit_status === 'held'
     || contract.stripe_deposit_status === 'captured'
+  // Caution commencée mais pas confirmée par le webhook : on demande à
+  // Stripe (5 s max) avant de proposer de bloquer la carte une 2e fois
+  if (hasDeposit && !depositAlreadyHeld && contract.stripe_deposit_status === 'pending' && contract.stripe_deposit_checkout_id && bailProfile?.stripe_account_id) {
+    const st = await Promise.race([
+      syncDeposit(supabase, contract, bailProfile.stripe_account_id),
+      new Promise<null>(r => setTimeout(() => r(null), 5000)),
+    ])
+    if (st?.status === 'held' || st?.status === 'captured') depositAlreadyHeld = true
+  }
   // Lien de caution ouvert seulement de J-2 au départ (lib/stripe/deposit-window.ts)
   const depositState = depositWindow(contract.date_arrivee, contract.date_depart)
   const depositOpens = depositOpensOn(contract.date_arrivee)

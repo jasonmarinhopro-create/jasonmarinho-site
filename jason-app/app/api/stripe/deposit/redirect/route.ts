@@ -1,25 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-import { stripe } from '@/lib/stripe/client'
+import { getServiceClient } from '@/lib/supabase/service'
+import { getOrCreateDepositCheckout } from '@/lib/stripe/deposit-payment'
 import { logger } from '@/lib/logger'
 import { depositWindow } from '@/lib/stripe/deposit-window'
 const log = logger('api/stripe/deposit/redirect')
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
-function createServiceClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    {
-      auth: { persistSession: false },
-      global: {
-        fetch: (url: RequestInfo | URL, init?: RequestInit) =>
-          fetch(url, { ...init, cache: 'no-store' }),
-      },
-    }
-  )
-}
+// Jamais en cache : statut de la caution lu à chaque clic
+export const dynamic = 'force-dynamic'
 
 // GET /api/stripe/deposit/redirect?token=xxx
 // Crée une Stripe Checkout Session pour la caution et redirige directement vers Stripe
@@ -33,7 +22,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const supabase = createServiceClient()
+    const supabase = getServiceClient()
 
     const { data: contract, error: cErr } = await supabase
       .from('contracts')
@@ -73,47 +62,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${APP_URL}/sign/${token}?deposit=error`)
     }
 
-    const amountCents = Math.round(Number(contract.montant_caution) * 100)
-
-    const session = await stripe.checkout.sessions.create(
-      {
-        mode: 'payment',
-        line_items: [
-          {
-            price_data: {
-              currency: 'eur',
-              unit_amount: amountCents,
-              product_data: {
-                name: `Dépôt de garantie, ${contract.logement_adresse}`,
-                description: `Caution pour le séjour du ${new Date(contract.date_arrivee).toLocaleDateString('fr-FR')} au ${new Date(contract.date_depart).toLocaleDateString('fr-FR')}. Cette somme est bloquée sur votre carte mais ne sera prélevée qu'en cas de dommages constatés.`,
-              },
-            },
-            quantity: 1,
-          },
-        ],
-        payment_intent_data: {
-          capture_method: 'manual',
-          description: `Caution contrat ${contract.id.slice(0, 8).toUpperCase()}`,
-          metadata: { contract_id: contract.id, token },
-        },
-        customer_email: contract.locataire_email ?? undefined,
-        success_url: `${APP_URL}/sign/${token}?deposit=success`,
-        cancel_url:  `${APP_URL}/sign/${token}?deposit=cancel`,
-        locale: 'fr',
-        metadata: { contract_id: contract.id, token },
-      },
-      { stripeAccount: profile.stripe_account_id }
-    )
-
-    await supabase
-      .from('contracts')
-      .update({
-        stripe_deposit_checkout_id: session.id,
-        stripe_deposit_status: 'pending',
-      })
-      .eq('id', contract.id)
-
-    return NextResponse.redirect(session.url!)
+    // Même session que le bouton de la page, après vérification chez Stripe
+    // qu'aucune caution n'est déjà bloquée (avant le 05/10/2026 : nouvelle
+    // session à chaque clic, double blocage possible)
+    const { url, alreadyHeld } = await getOrCreateDepositCheckout(supabase, { ...contract, token }, profile.stripe_account_id)
+    if (alreadyHeld || !url) return NextResponse.redirect(`${APP_URL}/sign/${token}?deposit=success`)
+    return NextResponse.redirect(url)
   } catch (err) {
     log.error('unexpected', err)
     return NextResponse.redirect(`${APP_URL}/sign/${token}?deposit=error`)

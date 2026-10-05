@@ -221,6 +221,25 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // ── Étape 3bis : Contrats en double pour le même séjour ─────────────────
+    // (05/10/2026 : une hôte avait 3 contrats pour les mêmes dates, dont 2
+    // jamais signés mais toujours ouverts : signables et payables par
+    // erreur.) Dès qu'un contrat est signé, les autres contrats non signés du
+    // même séjour (même séjour lié, ou même logement et mêmes dates) sont
+    // annulés. Réactivables depuis Contrats & paiements.
+    if (contract.user_id) {
+      try {
+        const base = () => db.from('contracts').update({ statut: 'annule' })
+          .eq('user_id', contract.user_id).eq('statut', 'en_attente').neq('id', contract.id)
+        if (contract.sejour_id) await base().eq('sejour_id', contract.sejour_id)
+        if (contract.logement_nom && contract.date_arrivee && contract.date_depart) {
+          await base().eq('logement_nom', contract.logement_nom).eq('date_arrivee', contract.date_arrivee).eq('date_depart', contract.date_depart)
+        }
+      } catch (e) {
+        log.warn('doublons non annulés', { err: String(e) })
+      }
+    }
+
     // ── Étape 3ter : Notification dans l'app (avant : e-mail seulement) ──────
     if (contract.user_id) {
       const guest = `${contract.locataire_prenom ?? ''} ${contract.locataire_nom ?? ''}`.trim() || 'Ton voyageur'

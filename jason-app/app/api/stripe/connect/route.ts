@@ -35,9 +35,13 @@ export async function POST() {
           transfers: { requested: true },
         },
         business_type: 'individual',
-        // MCC 7011, Hébergement hôtelier (hôtels, motels, résidences)
-        // Requis pour que Visa et Amex accordent l'autorisation étendue (30 jours)
-        // sur les pré-autorisations de caution, sans frais supplémentaires.
+        // MCC 7011, Hébergement hôtelier (hôtels, motels, résidences).
+        // Attention (vérifié le 05/10/2026) : le MCC seul ne prolonge rien.
+        // L'autorisation étendue (jusqu'à 30 jours pour l'hébergement) doit
+        // être demandée sur chaque paiement (request_extended_authorization)
+        // et Stripe la réserve aux comptes en tarification IC+ (sinon,
+        // demande au support). Sans elle, un blocage tient ~7 jours en ligne
+        // (Visa, Mastercard, Amex, Discover) : voir lib/stripe/deposit-window.ts.
         business_profile: {
           mcc: '7011',
         },

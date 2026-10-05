@@ -3,7 +3,7 @@ title: "Encaisser le loyer et gérer la caution"
 excerpt: "Le paiement du loyer, la caution bloquée sur la carte, puis libérée ou encaissée."
 order: 3
 relatedPages: [/dashboard/contrats, /dashboard/voyageurs]
-updatedAt: "2026-09-27"
+updatedAt: "2026-10-05"
 ---
 
 ## Le loyer
@@ -23,9 +23,11 @@ La caution n'est **pas débitée** : le montant est **bloqué** sur la carte du 
 
 ## Le lien part 2 jours avant l'arrivée
 
-Stripe garde en général une carte bloquée **7 jours**, pas plus. C'est pourquoi le lien de caution ne s'ouvre que **2 jours avant l'arrivée** : ce jour-là, l'app l'envoie automatiquement par email au voyageur. Avant, la page du contrat lui indique la date.
+Pour un paiement en ligne, une carte reste bloquée **7 jours** au plus (Visa, Mastercard, American Express, Discover ; un peu moins pour Visa, environ 4 jours et 18 heures, quand le paiement est déclenché sans le voyageur). Passé ce délai, la banque lève le blocage toute seule. C'est pourquoi le lien de caution ne s'ouvre que **2 jours avant l'arrivée** : ce jour-là, l'app l'envoie automatiquement par email au voyageur. Avant, la page du contrat lui indique la date.
 
-> Source : documentation Stripe, « Place a hold on a payment method » (docs.stripe.com)
+Une « autorisation étendue » jusqu'à 30 jours existe chez Stripe pour l'hébergement, mais elle est réservée aux comptes en tarification IC+ : elle n'est pas disponible dans l'app.
+
+> Source : documentation Stripe, « Place a hold on a payment method » et « Place an extended hold on an online card payment » (docs.stripe.com), vérifiée en octobre 2026
 
 Conséquences :
 

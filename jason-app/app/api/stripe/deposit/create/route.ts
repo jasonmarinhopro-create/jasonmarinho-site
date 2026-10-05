@@ -1,6 +1,6 @@
 import { getServiceClient as createServiceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe/client'
+import { getOrCreateDepositCheckout } from '@/lib/stripe/deposit-payment'
 import { logger } from '@/lib/logger'
 import { depositWindow, depositOpensOn, parisToday } from '@/lib/stripe/deposit-window'
 const log = logger('api/stripe/deposit/create')
@@ -62,74 +62,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Le bailleur n\'a pas encore connecté son compte Stripe.' }, { status: 400 })
     }
 
-    const amountCents = Math.round(Number(contract.montant_caution) * 100)
-
-    // Si une session Checkout existe déjà ET est encore active, on retourne
-    // son URL au lieu d'en créer une seconde. Évite le double-paiement si
-    // le voyageur clique 2× sur le bouton ou si le navigateur retry.
-    if (contract.stripe_deposit_checkout_id && contract.stripe_deposit_status === 'pending') {
-      try {
-        const existing = await stripe.checkout.sessions.retrieve(
-          contract.stripe_deposit_checkout_id,
-          undefined,
-          { stripeAccount: profile.stripe_account_id },
-        )
-        if (existing.status === 'open' && existing.url) {
-          return NextResponse.json({ url: existing.url, reused: true })
-        }
-      } catch {
-        // Session perdue / expirée → on en recrée une fraîche ci-dessous
-      }
+    // Vérifie chez Stripe qu'aucune caution n'est déjà bloquée, réutilise la
+    // session ouverte, sinon en crée une (lib/stripe/deposit-payment.ts,
+    // partagé avec le lien de l'e-mail)
+    const { url, alreadyHeld } = await getOrCreateDepositCheckout(supabase, { ...contract, token }, profile.stripe_account_id)
+    if (alreadyHeld || !url) {
+      return NextResponse.json({ error: 'La caution est déjà enregistrée.' }, { status: 409 })
     }
-
-    // Créer la Checkout Session sur le compte Connect du bailleur.
-    // idempotencyKey = contract_id + ':deposit:' + amount → double POST
-    // strictement identique côté Stripe retourne la même session sans
-    // créer de PaymentIntent en doublon.
-    const session = await stripe.checkout.sessions.create(
-      {
-        mode: 'payment',
-        line_items: [
-          {
-            price_data: {
-              currency: 'eur',
-              unit_amount: amountCents,
-              product_data: {
-                name: `Dépôt de garantie, ${contract.logement_adresse}`,
-                description: `Caution pour le séjour du ${new Date(contract.date_arrivee).toLocaleDateString('fr-FR')} au ${new Date(contract.date_depart).toLocaleDateString('fr-FR')}. Cette somme est bloquée sur votre carte mais ne sera prélevée qu'en cas de dommages constatés.`,
-              },
-            },
-            quantity: 1,
-          },
-        ],
-        payment_intent_data: {
-          capture_method: 'manual', // Pré-autorisation, pas de débit immédiat
-          description: `Caution contrat ${contract.id.slice(0, 8).toUpperCase()}`,
-          metadata: { contract_id: contract.id },
-        },
-        customer_email: contract.locataire_email ?? undefined,
-        success_url: `${APP_URL}/sign/${token}?deposit=success`,
-        cancel_url:  `${APP_URL}/sign/${token}?deposit=cancel`,
-        locale: 'fr',
-        metadata: { contract_id: contract.id, token },
-      },
-      {
-        stripeAccount: profile.stripe_account_id,
-        // + jour : après une caution expirée, un nouveau blocage reste possible
-        idempotencyKey: `deposit:${contract.id}:${amountCents}:${parisToday()}`,
-      }
-    )
-
-    // Sauvegarder l'ID de session en base
-    await supabase
-      .from('contracts')
-      .update({
-        stripe_deposit_checkout_id: session.id,
-        stripe_deposit_status: 'pending',
-      })
-      .eq('id', contract.id)
-
-    return NextResponse.json({ url: session.url })
+    return NextResponse.json({ url })
   } catch (err) {
     log.error('unexpected', err)
     return NextResponse.json({ error: 'Erreur lors de la création du paiement.' }, { status: 500 })

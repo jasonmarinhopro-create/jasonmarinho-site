@@ -12,6 +12,7 @@ import { sendDepositOpenEmails } from '@/lib/contracts/deposit-reminders'
 import { purgeOldMenagePhotos } from '@/lib/menage/photo-retention'
 import { purgeOldProContacts } from '@/lib/pros/contacts-retention'
 import { syncPendingLoyers } from '@/lib/stripe/loyer-payment'
+import { syncPendingDeposits } from '@/lib/stripe/deposit-payment'
 import { unansweredQuestions, unansweredDigestEmail, REMIND_MAX_DAYS, type QuestionRow } from '@/lib/chez-nous/unanswered'
 import { sendAdminEmail } from '@/lib/email/admin'
 
@@ -65,8 +66,10 @@ export async function GET(req: Request) {
   // Loyers commencés mais jamais confirmés par le webhook (04/10/2026) :
   // vérifiés directement chez Stripe une fois par jour
   let loyersSynced = 0
+  let depositsSynced = 0
   try {
     loyersSynced = await syncPendingLoyers(supabase)
+    depositsSynced = await syncPendingDeposits(supabase)
   } catch { /* best-effort */ }
 
   let proContactsPurged = 0
@@ -118,6 +121,7 @@ export async function GET(req: Request) {
     menagePhotosPurged,
     proContactsPurged,
     loyersSynced,
+    depositsSynced,
     durationMs: Date.now() - t0,
   })
 }
