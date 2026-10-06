@@ -12,6 +12,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import { resolveAppErrorGroup } from './actions'
 import type { AffilaeOverview } from '@/lib/affiliation/affilae'
+import type { PartnerStackOverview } from '@/lib/affiliation/partnerstack'
 import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashboard/HubHero'
 
 interface RecentSignup {
@@ -469,88 +470,129 @@ function AffiliateClicksCard({ data }: { data: AffiliateClicks }) {
   )
 }
 
-// Compte Affilae (Indy et les autres programmes Affilae) : ventes réelles et
-// commissions, en face des clics mesurés sur le site. Relu toutes les 10 min.
-const AFF_STATUS: Record<string, { label: string; color: string }> = {
-  actif: { label: 'Actif', color: 'var(--accent-text)' },
-  en_attente: { label: 'Candidature en attente', color: '#B7791F' },
-  refuse: { label: 'Refusé', color: 'var(--danger)' },
-  autre: { label: 'Autre', color: 'var(--text-3)' },
-}
+// Affiliation (06/10/2026, Jason : « ne parle que d'Affilae », « une liste
+// aussi longue qu'une liste de courses ») : ventes des deux réseaux suivis
+// (Affilae : Indy, LegalPlace, Tiime ; PartnerStack : Brevo), partenariats
+// actifs seulement, candidatures en attente repliées. Relu toutes les 10 min.
 const euros = (cents: number) => (cents / 100).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
 
-export function AffilaeCard({ data }: { data: AffilaeOverview }) {
+type NetRow = { key: string; name: string; net: 'Affilae' | 'PartnerStack'; detail: string; cents: number }
+
+export function AffiliationCard({ af, ps }: { af: AffilaeOverview; ps: PartnerStackOverview }) {
+  const afOk = af.state === 'ok' ? af : null
+  const psOk = ps.state === 'ok' ? ps : null
+  const issues = [
+    af.state === 'erreur' ? `Affilae : ${af.message}` : af.state === 'absent' ? 'Affilae : clé AFFILAE_API_KEY absente dans Vercel' : null,
+    ps.state === 'erreur' ? `PartnerStack : ${ps.message}` : ps.state === 'absent' ? 'PartnerStack : clé PARTNERSTACK_API_KEY absente dans Vercel' : null,
+    afOk && afOk.missing.length ? `Affilae a été lent (${afOk.missing.join(', ')} manquants), recharge dans quelques minutes` : null,
+    psOk && psOk.missing.length ? `PartnerStack a été lent (${psOk.missing.join(', ')} manquants), recharge dans quelques minutes` : null,
+  ].filter((x): x is string => !!x)
+
+  // Partenariats actifs (ceux qui peuvent rapporter)
+  const active: NetRow[] = [
+    ...(afOk?.summary.programs.filter(p => p.status === 'actif').map(p => ({
+      key: `af-${p.id}`, name: p.name, net: 'Affilae' as const, cents: p.commissionCents,
+      detail: [p.clicks != null ? plural(p.clicks, 'clic') : null, plural(p.conversions, 'vente')].filter(Boolean).join(' · '),
+    })) ?? []),
+    ...(psOk?.summary.programs.map(p => ({
+      key: `ps-${p.name}`, name: p.name, net: 'PartnerStack' as const, cents: p.commissionCents,
+      detail: [plural(p.customers, 'inscription'), plural(p.rewards, 'commission')].join(' · '),
+    })) ?? []),
+  ].sort((a, b) => b.cents - a.cents || a.name.localeCompare(b.name))
+  // Brevo pas encore remonté par PartnerStack (aucune inscription) : visible quand même
+  if (psOk && !active.some(r => r.net === 'PartnerStack')) active.push({ key: 'ps-brevo', name: 'Brevo', net: 'PartnerStack', cents: 0, detail: 'aucune inscription pour l\'instant' })
+  const pending = afOk?.summary.programs.filter(p => p.status === 'en_attente') ?? []
+  const others = afOk?.summary.programs.filter(p => p.status === 'refuse' || p.status === 'autre') ?? []
+
+  const totalCents = (afOk?.summary.totals.commissionCents ?? 0) + (psOk?.summary.totals.commissionCents ?? 0)
+  const pendingCents = (afOk?.summary.totals.byStatus.en_attente ?? 0) + (psOk?.summary.totals.byStatus.en_attente ?? 0)
+  const sales = (afOk?.summary.totals.conversions ?? 0) + (psOk?.summary.totals.rewards ?? 0)
+  const recent = [
+    ...(afOk?.summary.recent.map(r => ({ ...r, net: 'Affilae' })) ?? []),
+    ...(psOk?.summary.recent.map(r => ({ ...r, net: 'PartnerStack' })) ?? []),
+  ].sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')).slice(0, 5)
+  const afClicks = afOk?.summary.totals.clicks ?? null
+  const psSignups = psOk?.summary.totals.customers ?? null
+
   return (
     <section className="fade-up">
-      <div style={s.sectionLabel}><Handshake size={14} /> Affiliation · ventes suivies par Affilae</div>
-      {data.state === 'absent' ? (
-        <div style={s.card}><div style={s.empty}>Ajoute la variable AFFILAE_API_KEY dans Vercel (projet jasonmarinho-dashboard) pour voir tes conversions et commissions ici.</div></div>
-      ) : data.state === 'erreur' ? (
+      <div style={s.sectionLabel}><Handshake size={14} /> Affiliation · ventes suivies (Affilae, PartnerStack)</div>
+      {issues.length > 0 && <div style={{ ...s.empty, marginBottom: 10 }}>{issues.join('. ')}.</div>}
+      <div style={s.trafficGrid}>
         <div style={s.card}>
-          <div style={s.empty}>{data.message}</div>
-          <button type="button" onClick={() => window.location.reload()} style={{ marginTop: 10, fontSize: 12.5, fontWeight: 600, color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', borderRadius: 8, padding: '6px 12px', cursor: 'pointer' }}>Réessayer</button>
+          <div style={s.liveTop}><span style={s.liveLabel}>Commissions (depuis le début)</span></div>
+          <div style={{ ...s.liveValue, color: 'var(--text)' }}>{euros(totalCents)}</div>
+          <div style={s.liveSub}>
+            {plural(sales, 'vente')}{pendingCents > 0 ? ` · ${euros(pendingCents)} en attente` : ''}
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 12 }}>
+            <span style={chip}>{afOk ? `Affilae · ${euros(afOk.summary.totals.commissionCents)}` : 'Affilae indisponible'}</span>
+            <span style={chip}>{psOk ? `PartnerStack · ${euros(psOk.summary.totals.commissionCents)}` : 'PartnerStack indisponible'}</span>
+          </div>
         </div>
-      ) : (
-        <>
-        {data.missing.length > 0 && (
-          <div style={{ ...s.empty, marginBottom: 10 }}>Affilae a été lent : {data.missing.join(' et ')} pas encore chargé{data.missing.length > 1 ? 's' : ''}. Recharge la page dans quelques minutes pour les voir.</div>
-        )}
-        <div style={s.trafficGrid}>
-          <div style={s.card}>
-            <div style={s.liveTop}><span style={s.liveLabel}>Commissions (toutes)</span></div>
-            <div style={{ ...s.liveValue, color: 'var(--text)' }}>{euros(data.summary.totals.commissionCents)}</div>
-            <div style={s.liveSub}>
-              {data.summary.totals.conversions} conversion{data.summary.totals.conversions > 1 ? 's' : ''}
-              {data.summary.totals.byStatus.validee > 0 ? ` · ${euros(data.summary.totals.byStatus.validee)} validées` : ''}
-              {data.summary.totals.byStatus.en_attente > 0 ? ` · ${euros(data.summary.totals.byStatus.en_attente)} en attente` : ''}
-              {data.summary.totals.byStatus.payee > 0 ? ` · ${euros(data.summary.totals.byStatus.payee)} payées` : ''}
+
+        <div style={s.card}>
+          <div style={s.liveTop}><span style={s.liveLabel}>Partenariats actifs</span></div>
+          {active.length === 0 ? (
+            <div style={s.empty}>Aucun partenariat actif pour l&apos;instant.</div>
+          ) : (
+            <div style={s.channelList}>
+              {active.map(p => (
+                <div key={p.key} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <div style={s.channelRow}>
+                    <span style={{ ...s.channelName, fontWeight: 600, color: 'var(--text)' }}>{p.name}</span>
+                    <span style={s.channelPct}>{euros(p.cents)}</span>
+                  </div>
+                  <div style={{ fontSize: 11.5, color: 'var(--text-3)' }}>{p.net} · {p.detail}</div>
+                </div>
+              ))}
             </div>
-          </div>
-          <div style={s.card}>
-            <div style={s.liveTop}><span style={s.liveLabel}>Par programme</span></div>
-            {data.summary.programs.length === 0 ? (
-              <div style={s.empty}>Aucun partenariat pour l&apos;instant.</div>
-            ) : (
-              <div style={s.channelList}>
-                {data.summary.programs.map(p => (
-                  <div key={p.id} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <div style={s.channelRow}>
-                      <span style={{ ...s.channelName, fontWeight: 600, color: 'var(--text)' }}>{p.name}</span>
-                      <span style={s.channelPct}>{euros(p.commissionCents)}</span>
-                    </div>
-                    <div style={{ fontSize: 11.5, color: 'var(--text-3)' }}>
-                      <span style={{ color: AFF_STATUS[p.status].color, fontWeight: 600 }}>{AFF_STATUS[p.status].label}</span>
-                      {p.trackingId != null ? ` · n° d'affilié ${p.trackingId}` : ''}
-                      {p.clicks != null ? ` · ${p.clicks} clic${p.clicks > 1 ? 's' : ''}` : ''}
-                      {` · ${p.conversions} conversion${p.conversions > 1 ? 's' : ''}`}
-                    </div>
-                  </div>
-                ))}
+          )}
+          {(pending.length > 0 || others.length > 0) && (
+            <details style={{ marginTop: 12 }}>
+              <summary style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-2)', cursor: 'pointer' }}>
+                {pending.length > 0 ? `${plural(pending.length, 'candidature')} en attente sur Affilae` : ''}
+                {pending.length > 0 && others.length > 0 ? ' · ' : ''}
+                {others.length > 0 ? `${plural(others.length, 'autre programme')}` : ''}
+              </summary>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+                {[...pending, ...others].map(p => <span key={p.id} style={chip} title={p.status === 'en_attente' ? 'Candidature en attente' : 'Autre statut'}>{p.name.split(' - ')[0]}</span>)}
               </div>
-            )}
-          </div>
-          <div style={s.card}>
-            <div style={s.liveTop}><span style={s.liveLabel}>Dernières conversions</span></div>
-            {data.summary.recent.length === 0 ? (
-              <div style={s.empty}>Pas encore de vente. Les clics comptés par Affilae : {data.summary.totals.clicks ?? 0}.</div>
-            ) : (
-              <div style={s.channelList}>
-                {data.summary.recent.map((r, i) => (
-                  <div key={i} style={s.channelRow}>
-                    <span style={s.channelName}>{r.program}{r.date ? ` · ${new Date(r.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', timeZone: 'Europe/Paris' })}` : ''}</span>
-                    <span style={s.channelPct}>{euros(r.commissionCents)}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-            <a href="https://affilae.com" target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-text)', marginTop: 10, display: 'inline-block' }}>Ouvrir Affilae</a>
+            </details>
+          )}
+        </div>
+
+        <div style={s.card}>
+          <div style={s.liveTop}><span style={s.liveLabel}>Dernières ventes</span></div>
+          {recent.length === 0 ? (
+            <div style={s.empty}>
+              Pas encore de vente.
+              {afClicks != null ? ` Clics comptés par Affilae : ${afClicks}.` : ''}
+              {psSignups != null ? ` Inscriptions Brevo : ${psSignups}.` : ''}
+            </div>
+          ) : (
+            <div style={s.channelList}>
+              {recent.map((r, i) => (
+                <div key={i} style={s.channelRow}>
+                  <span style={s.channelName}>{r.program}{r.date ? ` · ${new Date(r.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', timeZone: 'Europe/Paris' })}` : ''}</span>
+                  <span style={s.channelPct}>{euros(r.commissionCents)}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, marginTop: 10 }}>
+            <a href="https://affilae.com" target="_blank" rel="noopener noreferrer" style={extLink}>Ouvrir Affilae</a>
+            <a href="https://dash.partnerstack.com" target="_blank" rel="noopener noreferrer" style={extLink}>Ouvrir PartnerStack</a>
+            <Link href="/dashboard/admin/visibilite?onglet=partenaires" style={extLink}>Détail par partenaire</Link>
           </div>
         </div>
-        </>
-      )}
+      </div>
     </section>
   )
 }
+
+const chip: React.CSSProperties = { fontSize: 11.5, fontWeight: 600, color: 'var(--text-2)', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 999, padding: '3px 9px' }
+const extLink: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: 'var(--accent-text)' }
 
 // Erreurs de l'app en production (table app_errors, 7 jours) : remplace un
 // outil type Sentry. Une erreur qui revient souvent ou touche plusieurs

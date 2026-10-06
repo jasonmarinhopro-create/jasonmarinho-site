@@ -62,9 +62,9 @@ export default {
         { type: 'p', text: 'Envoyé 30 à 60 jours après le séjour, en ouverture de la prochaine saison ou pour une occasion spéciale. Ce message transforme un voyageur en client récurrent.' },
         { type: 'p', text: '"Bonjour {prénom} ! On pense à toi. Notre logement à {ville} est dispo pour {prochaine_saison}. Si tu veux revenir, on t\'offre -10 % sur la réservation directe : {lien_site_direct}. Belle journée !"' },
         { type: 'ul', items: [
-          'Ne PAS envoyer via Airbnb : Airbnb pénalise les sollicitations hors plateforme',
-          'Envoyer par SMS ou email collecté avec consentement RGPD pendant le séjour',
-          'Stocker les emails voyageurs dans un CRM léger : Notion, Brevo, MailChimp (gratuit jusqu\'à 500 contacts)',
+          'Ne PAS envoyer via Airbnb ni Booking.com : les deux plateformes interdisent de proposer une réservation hors plateforme dans leur messagerie (risque de suspension)',
+          'Seulement pour un voyageur venu en direct (ton site, Driing, contrat signé) : tu as ses coordonnées, et il a pu refuser tes offres à la réservation. Ne demande pas l\'e-mail d\'un voyageur Airbnb ou Booking pour ce message, c\'est interdit aussi',
+          'Garder les e-mails de tes voyageurs directs dans un outil d\'e-mailing conforme au RGPD : Brevo (gratuit jusqu\'à 300 e-mails par jour), MailChimp (offre gratuite plafonnée en contacts)',
           'Taux de retour fidèle : 5-15 % selon qualité du séjour, soit 50-150 € de marge nette par voyageur fidélisé/an',
         ]},
         { type: 'cta', text: 'Tu veux automatiser tous tes messages voyageurs et fidéliser ta clientèle ?', button: 'Voir les formations', href: '/#formations' },

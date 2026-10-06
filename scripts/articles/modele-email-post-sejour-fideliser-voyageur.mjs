@@ -14,6 +14,7 @@ export default {
       h2: '1. Modèle 1 : Couple ou solo (séjour court)',
       content: [
         { type: 'p', text: 'Pour les voyageurs courts séjours (1-3 nuits), souvent business ou loisir solo/couple.' },
+        { type: 'tip', text: 'Ces e-mails s\'adressent à tes voyageurs venus en direct (ton site, Driing, contrat signé), dont tu as l\'adresse. Pour un voyageur Airbnb ou Booking.com, passe par la messagerie de la plateforme et garde seulement le remerciement et la demande d\'avis : le code de réservation directe et l\'invitation à la newsletter y sont interdits (risque de suspension du compte).' },
         { type: 'ul', items: [
           'Sujet : "Merci pour ce séjour {prénom} ! 🙏"',
           'Phrase 1 : "On espère que ton séjour à {ville} a été tout ce que tu cherchais"',

@@ -130,6 +130,12 @@ const PLACEMENTS = [
   ['blog/basse-saison-location-courte-duree-strategies-reservations/index.html', 'brevo-tu', '<h2 class="art-h2">Ce qu\'il faut retenir</h2>', brevoTu],
   ['blog/creer-conciergerie-airbnb-2025/index.html', 'brevo-crm', '<h2 class="art-h2">Étape 5 : Le contrat de gestion</h2>', brevoCrm],
   ['blog/prospection-conciergerie-trouver-premier-mandat/index.html', 'brevo-crm', '<h2 class="art-h2">7. Programme de parrainage clients existants</h2>', brevoCrm],
+  ['blog/scripts-check-out-automatique-lcd/index.html', 'brevo-tu', '<div class="art-cta-box"><p>Tu veux automatiser tous tes messages voyageurs', brevoTu],
+  ['blog/modele-email-post-sejour-fideliser-voyageur/index.html', 'brevo-tu', '<div class="art-cta-box">', brevoTu],
+  ['blog/premieres-reservations-directes-sans-audience-site-web/index.html', 'brevo-tu', '<h2 class="art-h2">Méthode 2 : Dépose ton annonce sur Driing</h2>', brevoTu],
+  ['blog/blog-hote-lcd-strategie-trafic-organique/index.html', 'brevo-tu', '<div class="art-cta-box">', brevoTu],
+  ['blog/mesurer-performance-canal-reservation-directe-kpi/index.html', 'brevo-tu', '<h2 class="art-h2">Indicateur 4 : Le taux de conversion des contacts directs</h2>', brevoTu],
+  ['blog/scaler-conciergerie-5-30-mandats-process/index.html', 'brevo-crm', '<div class="art-cta-box">', brevoCrm],
   ['blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026/index.html', 'shine-tu', '<ul class="art-ul"><li>Ouverture 100 % en ligne recommandée', shineTu],
 ]
 

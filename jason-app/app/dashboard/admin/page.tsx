@@ -4,8 +4,9 @@ import { redirect } from 'next/navigation'
 import { unstable_cache } from 'next/cache'
 import { getProfile } from '@/lib/queries/profile'
 import { Suspense } from 'react'
-import AdminUI, { AffilaeCard } from './AdminUI'
+import AdminUI, { AffiliationCard } from './AdminUI'
 import { getAffilaeOverview } from '@/lib/affiliation/affilae'
+import { getPartnerStackOverview } from '@/lib/affiliation/partnerstack'
 import { computeRevenue, proSpacesByUser, type ProRow } from '@/lib/admin/revenue'
 import { getLiveVisitorsCount, getChannelBreakdown, getTopPages, getAffiliateClicks, getAppErrors, CHANNEL_LABELS } from '@/lib/queries/site-traffic'
 
@@ -194,10 +195,11 @@ export default async function AdminPage() {
 
 }
 
-// Affilae (API externe, jusqu'à ~2 s sans cache) : diffusé à part, la
-// Vue d'ensemble s'affiche sans l'attendre
+// Affilae et PartnerStack (API externes, jusqu'à ~2 s sans cache) : diffusés
+// à part, la Vue d'ensemble s'affiche sans les attendre
 async function AffilaeSection() {
-  return <AffilaeCard data={await getAffilaeOverview()} />
+  const [af, ps] = await Promise.all([getAffilaeOverview(), getPartnerStackOverview()])
+  return <AffiliationCard af={af} ps={ps} />
 }
 
 function AffilaeSkeleton() {
