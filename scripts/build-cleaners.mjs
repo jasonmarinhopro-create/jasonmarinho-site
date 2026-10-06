@@ -12,7 +12,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { injectProsIntoVillePages } from './lib/inject-ville-pros.mjs'
+import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -109,16 +109,6 @@ function fmtForfait(c) {
 }
 
 
-// Lien vers le guide local /{prefix}-{ville-slug} si la page existe
-// (60 villes couvertes). Slugifie la ville saisie librement par le pro.
-function villeGuidePath(ville, prefix) {
-  if (!ville) return null
-  const slug = String(ville).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
-  if (!slug) return null
-  const dir = `${prefix}-${slug}`
-  return fs.existsSync(path.join(ROOT, dir, 'index.html')) ? `/${dir}` : null
-}
 
 // "Membre depuis juin 2026" : signal d'anciennete/confiance sur la fiche
 const MOIS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
@@ -137,7 +127,9 @@ function buildFichePage(c) {
   const desc = `${displayName}, équipe de ménage spécialisée location courte durée à ${c.ville}${c.zone_couverte ? ' et ' + c.zone_couverte : ''}.${forfait ? ' Forfait turnover ' + forfait + '.' : ''}${heure ? ' Tarif horaire ' + heure + '.' : ''}`
   const canonical = `https://jasonmarinho.com/annuaires/menage/${c.slug}`
   const isFondateur = c.tier === 'fondateur'
-  const guide = villeGuidePath(c.ville, 'menage-lcd')
+  // Page de sa ville (ou de sa zone) : même règle que l'injection des pros
+  const g = villeGuide(ROOT, 'menage-lcd', c.ville, c.zone_couverte)
+  const guide = g?.href ?? null
   const depuis = memberSince(c.created_at)
 
   const prestations = (c.prestations || []).map(p => PRESTATIONS_LABELS[p] || p)
@@ -323,14 +315,14 @@ ${JSON.stringify({
     ${guide ? `<div class="card" style="margin-top:16px">
       <h2>Les tarifs ménage à ${escHtml(c.ville)}</h2>
       <p style="font-size:13.5px;color:var(--tm);line-height:1.7;margin-bottom:12px">Fourchettes turnover constatées, checklist complète et questions à poser : consulte le guide local avant de demander un devis.</p>
-      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Guide ménage LCD ${escHtml(c.ville)}</a>
+      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Guide ménage LCD ${escHtml(g?.label ?? c.ville)}</a>
     </div>` : ''}
   </aside>
 </div>
 
 <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;gap:10px;flex-wrap:wrap">
   <a href="/annuaires/menage" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Toutes les équipes ménage LCD</a>
-  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Ménage LCD ${escHtml(c.ville)} : le guide<i class="ph-bold ph-arrow-right"></i></a>` : ''}
+  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Ménage LCD ${escHtml(g?.label ?? c.ville)} : le guide<i class="ph-bold ph-arrow-right"></i></a>` : ''}
 </div>
 
 <div class="disclaimer">
@@ -915,6 +907,7 @@ async function main() {
     metier: 'équipe ménage LCD',
     pros: items.map(c => ({
       ville: c.ville,
+      zone: c.zone_couverte,
       url: `/annuaires/menage/${c.slug}`,
       name: c.pseudo || c.full_name,
       sub: fmtForfait(c) ? `Forfait ${fmtForfait(c)}` : null,

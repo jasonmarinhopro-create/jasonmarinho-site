@@ -67,7 +67,7 @@ export default function PagesProsTab({ d }: { d: PagesProsData }) {
                 </button>
               ))}
             </div>
-            <h2 style={v.title}>Les 60 pages « {word} à &lt;ville&gt; »</h2>
+            <h2 style={v.title}>Les {side.items.length} pages « {word} à &lt;ville&gt; »</h2>
             <p style={v.text}>
               Chaque page présente les {metier === 'photographe' ? 'photographes' : 'équipes de ménage'} inscrits de la ville. {fmtInt(seen)} sont déjà vues dans Google ;{' '}
               <strong style={{ color: 'var(--text)' }}>{fmtInt(side.toRecruit)}</strong> n&apos;ont encore aucun pro en ligne : ce sont les villes où recruter en priorité.

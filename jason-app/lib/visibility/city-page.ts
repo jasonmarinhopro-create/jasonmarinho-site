@@ -12,7 +12,21 @@ export const CITY_PAGE_SLUGS = [
   'le-touquet', 'lille', 'lyon', 'marseille', 'megeve', 'menton', 'metz', 'montpellier', 'nancy', 'nantes',
   'nice', 'nimes', 'paris', 'pau', 'perpignan', 'poitiers', 'quimper', 'reims', 'rennes', 'rouen',
   'saint-malo', 'saint-tropez', 'sarlat', 'sete', 'strasbourg', 'toulouse', 'tours', 'troyes', 'vannes', 'versailles',
+  'les-sables-d-olonne',
 ] as const
+
+/**
+ * Autres façons d'écrire une ville qui a sa page : nom court, anciennes
+ * communes fusionnées, département qui n'a qu'une page (06/10/2026 : un
+ * photographe client avait saisi « Vendée » et « Les Sables-d'Olonne »).
+ * Même liste dans scripts/lib/inject-ville-pros.mjs.
+ */
+export const CITY_ALIASES: Record<string, string> = {
+  'sables-d-olonne': 'les-sables-d-olonne',
+  'olonne-sur-mer': 'les-sables-d-olonne',
+  'chateau-d-olonne': 'les-sables-d-olonne',
+  vendee: 'les-sables-d-olonne',
+}
 
 /** « Saint-Malo », « Lyon 6e », « Clermont Ferrand » → saint-malo, lyon-6e, clermont-ferrand */
 export function slugifyCity(ville: string): string {
@@ -24,19 +38,33 @@ export function slugifyCity(ville: string): string {
     .replace(/^-+|-+$/g, '')
 }
 
-/**
- * Page de ville correspondant à la ville saisie par le pro : nom exact, ou
- * nom suivi d'un arrondissement / d'une précision (« Lyon 6e », « Paris 15 »,
- * « Bordeaux et alentours »). La plus longue correspondance gagne
- * (« La Rochelle » avant « La »). Null si la ville n'a pas de page.
- */
-export function citySlugOf(ville: string | null | undefined): string | null {
-  if (!ville) return null
-  const s = slugifyCity(ville)
+/** Correspondance la plus longue : ville seule ou suivie d'une précision, puis ville citée dans le texte */
+function bestMatch(s: string, names: readonly string[]): string | null {
+  const longest = (xs: string[]) => xs.sort((a, b) => b.length - a.length)[0] ?? null
+  return longest(names.filter(c => s === c || s.startsWith(`${c}-`)))
+    ?? longest(names.filter(c => s.includes(`-${c}-`) || s.endsWith(`-${c}`)))
+}
+
+function slugOfText(text: string | null | undefined): string | null {
+  if (!text) return null
+  const s = slugifyCity(text)
   if (!s) return null
-  const hits = CITY_PAGE_SLUGS.filter(c => s === c || s.startsWith(`${c}-`))
-  if (!hits.length) return null
-  return [...hits].sort((a, b) => b.length - a.length)[0]
+  const direct = bestMatch(s, CITY_PAGE_SLUGS)
+  if (direct) return direct
+  const alias = bestMatch(s, Object.keys(CITY_ALIASES))
+  return alias ? CITY_ALIASES[alias] : null
+}
+
+/**
+ * Page de ville correspondant à la ville saisie par le pro : nom exact, nom
+ * suivi d'une précision (« Lyon 6e », « Paris 15 »), nom cité dans le texte
+ * (« 75015 Paris », « Vendée, Les Sables-d'Olonne ») ou autre nom connu
+ * (CITY_ALIASES). La plus longue correspondance gagne (« La Rochelle »
+ * avant « La »). Sans résultat, la zone couverte de la fiche est essayée.
+ * Null si aucune page ne correspond.
+ */
+export function citySlugOf(ville: string | null | undefined, zone?: string | null): string | null {
+  return slugOfText(ville) ?? slugOfText(zone)
 }
 
 export type CityMetier = 'photographe' | 'menage'
@@ -51,6 +79,7 @@ export function cityLabel(slug: string): string {
     'aix-en-provence': 'Aix-en-Provence', 'clermont-ferrand': 'Clermont-Ferrand', 'la-baule': 'La Baule', 'la-rochelle': 'La Rochelle',
     'le-mans': 'Le Mans', 'le-touquet': 'Le Touquet', 'saint-malo': 'Saint-Malo', 'saint-tropez': 'Saint-Tropez',
     chambery: 'Chambéry', epernay: 'Épernay', etretat: 'Étretat', megeve: 'Megève', nimes: 'Nîmes', sete: 'Sète',
+    'les-sables-d-olonne': "Les Sables-d'Olonne",
   }
   return special[slug] ?? slug.charAt(0).toUpperCase() + slug.slice(1)
 }

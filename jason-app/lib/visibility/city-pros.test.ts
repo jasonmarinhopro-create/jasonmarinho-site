@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { buildCityPros } from './city-pros'
+import { CITY_PAGE_SLUGS } from './city-page'
 
 const q = (query: string, place: number, impressions: number) => ({ query, clicks: 0, impressions, place, prevPlace: null, delta: null, isNew: false })
 
@@ -22,16 +23,18 @@ describe('pages pros par ville', () => {
         photographe: [
           { name: 'Jean', ville: 'Lyon 6e', slug: 'jean', online: true, excluded: false },
           { name: 'Refusé', ville: 'Lyon', slug: null, online: false, excluded: true },
+          { name: 'Vendéen', ville: 'La Roche-sur-Yon', zone: "Vendée, Les Sables-d'Olonne", slug: 'v', online: true, excluded: false },
         ],
         menage: [],
       },
     })
-    expect(d.photographe.items).toHaveLength(60)
+    expect(d.photographe.items).toHaveLength(CITY_PAGE_SLUGS.length)
+    expect(d.photographe.items.find(c => c.slug === 'les-sables-d-olonne')?.pros.map(p => p.name)).toEqual(['Vendéen'])
     const lyon = d.photographe.items.find(c => c.slug === 'lyon')!
     expect(lyon).toMatchObject({ label: 'Lyon', clicks: 1, impressions: 30, pagePlace: 8, delta: 3, visitors: 2, prevVisitors: 1, toFiches: 1 })
     expect(lyon.main?.query).toBe('photographe airbnb lyon')
     expect(lyon.pros).toEqual([{ name: 'Jean', slug: 'jean', online: true }])
-    expect(d.photographe).toMatchObject({ clicks: 1, impressions: 42, visitors: 2, toFiches: 1, firstPage: 1, toRecruit: 1, withPro: 1 })
+    expect(d.photographe).toMatchObject({ clicks: 1, impressions: 42, visitors: 2, toFiches: 1, firstPage: 1, toRecruit: 1, withPro: 2 })
     expect(d.menage).toMatchObject({ clicks: 2, impressions: 40, firstPage: 1, toRecruit: 1, withPro: 0 })
   })
 })

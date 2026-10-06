@@ -48,13 +48,14 @@ jobs:
         run: |
           set -u
           call() { curl -sS --max-time 75 -X POST "$APP_URL/api/outreach/ops" -H "authorization: Bearer $SECRET" -H 'content-type: application/json' -d "$1"; echo; }
-          # Les 60 villes de nos pages photographe-lcd-* / menage-lcd-*
+          # Les 61 villes de nos pages photographe-lcd-* / menage-lcd-*
           CITIES=("Paris" "Lyon" "Marseille" "Bordeaux" "Nice" "Toulouse" "Montpellier" "Nantes" "Lille" "Strasbourg" \
             "Rennes" "Annecy" "La Rochelle" "Biarritz" "Saint-Malo" "Aix-en-Provence" "Cannes" "Arcachon" "Avignon" "Chamonix" \
             "Grenoble" "Dijon" "Reims" "Tours" "Angers" "Rouen" "Caen" "Brest" "Metz" "Nancy" \
             "Clermont-Ferrand" "Le Mans" "Perpignan" "Nîmes" "Pau" "Bayonne" "Poitiers" "Quimper" "Vannes" "Troyes" \
             "Colmar" "Chambéry" "Antibes" "Menton" "Ajaccio" "Bastia" "Sète" "Carcassonne" "Sarlat-la-Canéda" "Beaune" \
-            "Deauville" "Honfleur" "Étretat" "Dinard" "La Baule-Escoublac" "Le Touquet-Paris-Plage" "Épernay" "Megève" "Saint-Tropez" "Versailles")
+            "Deauville" "Honfleur" "Étretat" "Dinard" "La Baule-Escoublac" "Le Touquet-Paris-Plage" "Épernay" "Megève" "Saint-Tropez" "Versailles" \
+            "Les Sables-d'Olonne")
           n="${PAR_PASSAGE:-10}"
           if [ "${{ github.event_name }}" = push ] && grep -qi '^remplir' .github/prospection-trigger 2>/dev/null; then n=20; fi
           week=$((10#$(date -u +%V)))

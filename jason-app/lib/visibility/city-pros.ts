@@ -19,6 +19,8 @@ export interface CityPageTruth {
 export interface CityProRow {
   name: string
   ville: string | null
+  /** Zone couverte, essayée si la ville n'a pas de page */
+  zone?: string | null
   slug: string | null
   online: boolean
   /** Refusée ou annulée : ignorée */
@@ -73,7 +75,7 @@ export function buildCityPros(input: {
     const prosBySlug = new Map<string, CityProRow[]>()
     for (const p of input.pros[metier]) {
       if (p.excluded) continue
-      const slug = citySlugOf(p.ville)
+      const slug = citySlugOf(p.ville, p.zone)
       if (!slug) continue
       prosBySlug.set(slug, [...(prosBySlug.get(slug) ?? []), p])
     }

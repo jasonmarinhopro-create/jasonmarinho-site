@@ -13,7 +13,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { injectProsIntoVillePages } from './lib/inject-ville-pros.mjs'
+import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -87,16 +87,6 @@ function fmtTarif(p) {
 }
 
 
-// Lien vers le guide local /{prefix}-{ville-slug} si la page existe
-// (60 villes couvertes). Slugifie la ville saisie librement par le pro.
-function villeGuidePath(ville, prefix) {
-  if (!ville) return null
-  const slug = String(ville).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
-  if (!slug) return null
-  const dir = `${prefix}-${slug}`
-  return fs.existsSync(path.join(ROOT, dir, 'index.html')) ? `/${dir}` : null
-}
 
 // "Membre depuis juin 2026" : signal d'anciennete/confiance sur la fiche
 const MOIS_FR = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
@@ -114,7 +104,9 @@ function buildFichePage(p) {
   const desc = `${displayName}, photographe spécialisé location courte durée à ${p.ville}${p.zone_couverte ? ' et ' + p.zone_couverte : ''}.${p.specialite ? ' ' + p.specialite + '.' : ''}${tarif ? ' Tarifs ' + tarif + '.' : ''}`
   const canonical = `https://jasonmarinho.com/annuaires/photographes/${p.slug}`
   const isFondateur = p.tier === 'fondateur'
-  const guide = villeGuidePath(p.ville, 'photographe-lcd')
+  // Page de sa ville (ou de sa zone) : même règle que l'injection des pros
+  const g = villeGuide(ROOT, 'photographe-lcd', p.ville, p.zone_couverte)
+  const guide = g?.href ?? null
   const depuis = memberSince(p.created_at)
   // NB breadcrumbs : l'annuaire vit désormais directement sur
   // /annuaires/photographes (plus de sous-niveau /annuaire).
@@ -273,14 +265,14 @@ ${JSON.stringify({
     ${guide ? `<div class="card" style="margin-top:16px">
       <h2>Les tarifs photo à ${escHtml(p.ville)}</h2>
       <p style="font-size:13.5px;color:var(--tm);line-height:1.7;margin-bottom:12px">Fourchettes constatées, checklist des photos indispensables et conseils pour bien briefer : consulte le guide local avant de demander un devis.</p>
-      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Guide photographe LCD ${escHtml(p.ville)}</a>
+      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Guide photographe LCD ${escHtml(g?.label ?? p.ville)}</a>
     </div>` : ''}
   </aside>
 </div>
 
 <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;gap:10px;flex-wrap:wrap">
   <a href="/annuaires/photographes" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Tous les photographes LCD</a>
-  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Photographe LCD ${escHtml(p.ville)} : le guide<i class="ph-bold ph-arrow-right"></i></a>` : ''}
+  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Photographe LCD ${escHtml(g?.label ?? p.ville)} : le guide<i class="ph-bold ph-arrow-right"></i></a>` : ''}
 </div>
 
 <div class="disclaimer">
@@ -800,6 +792,7 @@ async function main() {
     metier: 'photographe LCD',
     pros: items.map(p => ({
       ville: p.ville,
+      zone: p.zone_couverte,
       url: `/annuaires/photographes/${p.slug}`,
       name: p.full_name,
       sub: [p.specialite, fmtTarif(p)].filter(Boolean).join(' · ') || null,

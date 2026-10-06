@@ -37,6 +37,7 @@ function loadCities() {
 
 function prepo(name) {
   if (/^Le\s/i.test(name)) return 'au ' + name.replace(/^Le\s/i, '')
+  if (/^Les\s/i.test(name)) return 'aux ' + name.replace(/^Les\s/i, '')
   return 'à ' + name
 }
 

@@ -20,14 +20,18 @@ const REGLES = {
   url: 'https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mon-impot-sur-le-revenu/location-meublee-de-tourisme-quelles-sont-les-regles-respecter-pour-sa-residence',
 }
 
+// « à Lyon », « au Mans », « aux Sables-d'Olonne » ; « de Lyon », « du Mans », « des Sables-d'Olonne »
+export const aVille = v => /^Les\s/.test(v) ? `aux ${v.slice(4)}` : /^Le\s/.test(v) ? `au ${v.slice(3)}` : `à ${v}`
+export const deVille = v => /^Les\s/.test(v) ? `des ${v.slice(4)}` : /^Le\s/.test(v) ? `du ${v.slice(3)}` : `de ${v}`
+
 // Faits communs à toutes les villes où aucune règle locale plus stricte n'a
 // été confirmée : on n'affirme jamais 90 jours ni un taux précis sans source.
 const REG_NUM = "<strong>Numéro d'enregistrement</strong> à afficher sur chaque annonce, via le téléservice national obligatoire au plus tard le 20 mai 2026."
 const REG_USAGE_GEN = "<strong>Résidence secondaire ou logement dédié :</strong> demandez en mairie si une autorisation de changement d'usage est exigée. Depuis la loi Le Meur, toute commune peut instaurer ce régime."
-const reg120 = v => `<strong>Résidence principale : 120 nuits par an maximum</strong> (plafond national). La loi Le Meur permet à la commune de l'abaisser à 90 nuits : vérifiez la délibération en vigueur à ${v}.`
-const taxeGen = v => `Logement non classé : un taux voté localement, <strong>entre 1 % et 5 % du prix HT de la nuitée par personne</strong>, dans la limite d'un plafond, plus une éventuelle taxe additionnelle départementale. Le tarif exact appliqué à ${v} figure dans la base officielle des tarifs par commune.`
-const faqTaxeGen = v => `Pour un meublé non classé, le taux est voté localement <strong>entre 1 % et 5 % du prix HT de la nuitée par personne</strong>, dans la limite d'un plafond, plus une éventuelle taxe additionnelle départementale. Airbnb la collecte en général pour vous ; en réservation directe, vous la collectez et la reversez à la collectivité de ${v}.`
-const faqPlafondGen = (v, suite) => `Le plafond national est de <strong>120 nuits par an</strong> pour une résidence principale louée en meublé de tourisme, et la loi Le Meur permet à la commune de l'abaisser à 90 nuits par délibération : vérifiez la règle en vigueur à ${v} auprès de la mairie avant de louer. ${suite || "Pour un logement qui n'est pas votre résidence principale, renseignez-vous sur une éventuelle autorisation de changement d'usage."}`
+const reg120 = v => `<strong>Résidence principale : 120 nuits par an maximum</strong> (plafond national). La loi Le Meur permet à la commune de l'abaisser à 90 nuits : vérifiez la délibération en vigueur ${aVille(v)}.`
+const taxeGen = v => `Logement non classé : un taux voté localement, <strong>entre 1 % et 5 % du prix HT de la nuitée par personne</strong>, dans la limite d'un plafond, plus une éventuelle taxe additionnelle départementale. Le tarif exact appliqué ${aVille(v)} figure dans la base officielle des tarifs par commune.`
+const faqTaxeGen = v => `Pour un meublé non classé, le taux est voté localement <strong>entre 1 % et 5 % du prix HT de la nuitée par personne</strong>, dans la limite d'un plafond, plus une éventuelle taxe additionnelle départementale. Airbnb la collecte en général pour vous ; en réservation directe, vous la collectez et la reversez à la collectivité ${deVille(v)}.`
+const faqPlafondGen = (v, suite) => `Le plafond national est de <strong>120 nuits par an</strong> pour une résidence principale louée en meublé de tourisme, et la loi Le Meur permet à la commune de l'abaisser à 90 nuits par délibération : vérifiez la règle en vigueur ${aVille(v)} auprès de la mairie avant de louer. ${suite || "Pour un logement qui n'est pas votre résidence principale, renseignez-vous sur une éventuelle autorisation de changement d'usage."}`
 
 function ville(o) {
   return {
@@ -1352,4 +1356,42 @@ export const VILLES_LOCAL = {
       "<strong>Accès :</strong> temps jusqu'au Futuroscope en légende.",
     ],
   }),
+
+  // Ajoutée le 06/10/2026 (photographe client installé en Vendée). Relevé
+  // d'octobre 2026 : règles de Les Sables d'Olonne Agglomération.
+  'les-sables-d-olonne': {
+    ...ville({
+      ville: "Les Sables-d'Olonne",
+      taxe: "Logement non classé : <strong>5 % du prix HT de la nuitée par personne, plafonné à 4,00 €</strong>, plus la taxe additionnelle départementale de la Vendée (10 %), soit 4,40 € au plus par personne et par nuit. Tarifs votés par l'agglomération des Sables-d'Olonne, inchangés en 2026.",
+      faqPlafond: "Une résidence principale (occupée au moins 8 mois par an) peut être louée en meublé de tourisme <strong>120 nuits par an maximum</strong>, après déclaration auprès de l'agglomération, qui délivre le numéro d'enregistrement à afficher sur chaque annonce. Pour tout autre logement, il faut en plus une <strong>autorisation de changement d'usage</strong>, dans la limite du nombre de meublés de tourisme fixé par l'agglomération.",
+      faqTaxe: "Pour un meublé non classé, la taxe de séjour est de <strong>5 % du prix HT de la nuitée par personne, plafonnée à 4,00 €</strong>, plus 10 % de taxe additionnelle départementale (4,40 € au plus). Airbnb la collecte en général pour vous ; en réservation directe, vous la collectez et la reversez à l'agglomération des Sables-d'Olonne.",
+      pics: [
+        "Juillet et août : la Grande Plage et le remblai, le cœur de la saison",
+        "Vendée Globe : village et départ en novembre, tous les 4 ans (prochaine édition en 2028)",
+        "Ponts de mai et week-ends de printemps",
+      ],
+      menage: [
+        "<strong>Saison courte et intense :</strong> l'essentiel des rotations se joue en juillet et août, souvent le samedi. Calez vos créneaux d'été dès le printemps et prévoyez du renfort pour les samedis.",
+        "<strong>Sable et air marin :</strong> sable rapporté de la plage, sel sur les vitres. Sols, douches et vitres dans chaque prestation d'été.",
+        "<strong>Hors saison :</strong> peu de rotations mais des remises en état avant l'été (vitres, matelas, extérieurs). C'est le moment de signer des contrats avec les conciergeries.",
+      ],
+      photo: [
+        "<strong>Ce qui fait cliquer :</strong> une vue sur la mer ou le port, une terrasse, la Grande Plage à quelques minutes à pied.",
+        "<strong>Distance à la plage :</strong> c'est le premier critère des voyageurs. Indiquez-la dans la légende de la photo de couverture.",
+        "<strong>Timing :</strong> faites les photos au printemps, avant les réservations d'été, avec la lumière atlantique de fin de journée.",
+      ],
+      sources: [
+        { label: "Les Sables d'Olonne Agglomération : déclaration, changement d'usage et taxe de séjour", url: 'https://taxe.3douest.com/lsoagglo.php' },
+        { label: "Les Sables d'Olonne Agglomération : plafond de meublés de tourisme (conseil communautaire, 2022)", url: 'https://www.lsoagglo.fr/media/compte_rendu_conseil_com_mars_22_1.pdf' },
+        { label: "Taxe de séjour 2026 aux Sables-d'Olonne", url: 'https://openlmnp.fr/taxe-de-sejour/les-sables-dolonne-85' },
+      ],
+      evSources: [{ label: 'Vendée Globe', url: 'https://www.vendeeglobe.org/' }],
+    }),
+    verifie: 'octobre 2026',
+    reglementation: [
+      "<strong>Résidence principale : 120 nuits par an maximum</strong>, après déclaration auprès de l'agglomération des Sables-d'Olonne.",
+      "<strong>Autre logement : autorisation de changement d'usage obligatoire</strong> avant toute location touristique, dans toutes les communes de l'agglomération, avec un <strong>plafond de 2 514 meublés de tourisme</strong> autorisés sur l'agglomération depuis 2022.",
+      "<strong>Numéro d'enregistrement</strong> délivré par l'agglomération, à afficher sur chaque annonce.",
+    ],
+  },
 }

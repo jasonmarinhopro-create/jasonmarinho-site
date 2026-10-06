@@ -38,7 +38,7 @@ export const proStatsPath = (metier: ProMetier) => `/dashboard/ma-fiche-${metier
 export const proFichePath = (metier: ProMetier, slug: string) => `/annuaires/${ANNUAIRE[metier]}/${slug}`
 export const proPublicUrl = (metier: ProMetier, slug: string) => `${SITE_ORIGIN}${proFichePath(metier, slug)}`
 
-const FICHE_COLUMNS = 'id, user_id, full_name, pseudo, ville, slug, status, is_public, created_at, validated_at, stripe_subscription_status, tier, views_count, contacts_count, instagram_clicks_count'
+const FICHE_COLUMNS = 'id, user_id, full_name, pseudo, ville, zone_couverte, slug, status, is_public, created_at, validated_at, stripe_subscription_status, tier, views_count, contacts_count, instagram_clicks_count'
 const EXTRA_CLICK_COLUMN: Record<ProMetier, string> = { photographe: 'portfolio_clicks_count', menage: 'site_clicks_count' }
 
 export interface ProFicheRow {
@@ -47,6 +47,7 @@ export interface ProFicheRow {
   full_name: string | null
   pseudo: string | null
   ville: string | null
+  zone_couverte?: string | null
   slug: string | null
   status: string | null
   is_public: boolean | null
@@ -160,7 +161,7 @@ export async function loadProStats(o: LoadOptions): Promise<ProStatsData> {
   const contacts = CONTACTS[metier]
   const service = getServiceClient()
   // Page de la ville du pro (06/10/2026)
-  const citySlug = citySlugOf(f.ville)
+  const citySlug = citySlugOf(f.ville, f.zone_couverte)
   const cityPath = citySlug ? cityPagePath(metier, citySlug) : null
   const cityUrl = cityPath ? `${SITE_ORIGIN}${cityPath}` : null
 

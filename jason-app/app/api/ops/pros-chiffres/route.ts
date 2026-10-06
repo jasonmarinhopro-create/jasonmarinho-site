@@ -87,11 +87,11 @@ export async function GET(req: NextRequest) {
 
   // ── Annuaire (nombres seulement) ──
   const [{ data: pros }, contactsAll, contacts90] = await Promise.all([
-    db.from(table).select('ville, status, is_public, views_count, contacts_count'),
+    db.from(table).select('ville, zone_couverte, status, is_public, views_count, contacts_count'),
     db.from(contacts).select('id', { count: 'exact', head: true }),
     db.from(contacts).select('id', { count: 'exact', head: true }).gte('created_at', `${addDays(today, -89)}T00:00:00Z`),
   ])
-  const rows = (pros ?? []) as Array<{ ville: string | null; status: string | null; is_public: boolean | null; views_count: number | null; contacts_count: number | null }>
+  const rows = (pros ?? []) as Array<{ ville: string | null; zone_couverte: string | null; status: string | null; is_public: boolean | null; views_count: number | null; contacts_count: number | null }>
   const actives = rows.filter(r => r.status === 'active' && r.is_public)
 
   return NextResponse.json({
@@ -100,7 +100,7 @@ export async function GET(req: NextRequest) {
     google,
     annuaire: {
       fiches_actives: actives.length,
-      fiches_actives_dans_la_ville: actives.filter(r => citySlugOf(r.ville) === ville).length,
+      fiches_actives_dans_la_ville: actives.filter(r => citySlugOf(r.ville, r.zone_couverte) === ville).length,
       fiches_au_total: rows.length,
       demandes_depuis_le_debut: contactsAll.count,
       demandes_90j: contacts90.count,

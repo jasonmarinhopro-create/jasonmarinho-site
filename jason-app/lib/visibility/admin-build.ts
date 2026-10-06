@@ -102,7 +102,7 @@ const QUERIES_PER_PAGE = 30
 const PAGES_SENT = 600
 
 export interface ProRow {
-  id: string; slug: string | null; full_name: string | null; pseudo: string | null; ville: string | null
+  id: string; slug: string | null; full_name: string | null; pseudo: string | null; ville: string | null; zone_couverte?: string | null
   status: string | null; is_public: boolean | null; tier: string | null; stripe_subscription_status: string | null
 }
 
@@ -308,7 +308,7 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
       truthMap.set(path, { clicks: p.clicks, impressions: p.impressions, pagePlace: places.pagePlace, prevPagePlace: places.prevPagePlace, queries: pageQueries(p) })
     }
     const rowsOf = (rows: ProRow[]) => rows.map(r => ({
-      name: (r.pseudo || r.full_name || 'Sans nom').trim(), ville: r.ville, slug: r.slug,
+      name: (r.pseudo || r.full_name || 'Sans nom').trim(), ville: r.ville, zone: r.zone_couverte ?? null, slug: r.slug,
       online: r.status === 'active' && !!r.is_public, excluded: r.status === 'rejected' || r.status === 'cancelled',
     }))
     data.pagespros = buildCityPros({

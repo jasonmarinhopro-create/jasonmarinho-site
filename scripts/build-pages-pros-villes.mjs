@@ -47,6 +47,7 @@ function loadCities() {
 // Préposition française devant le nom de ville ("à Lyon", "au Touquet", "au Mans")
 function prepo(name) {
   if (/^Le\s/i.test(name)) return 'au ' + name.replace(/^Le\s/i, '')
+  if (/^Les\s/i.test(name)) return 'aux ' + name.replace(/^Les\s/i, '')
   return 'à ' + name
 }
 
@@ -62,6 +63,7 @@ function toVille(c) {
     ? '/calculateurs/revenu-airbnb-paris'
     : `/calculateurs/revenu-lcd-${c.slug}`
   const revenu = fs.existsSync(path.join(ROOT, revenuPath.slice(1), 'index.html')) ? revenuPath : null
+  const hote = fs.existsSync(path.join(ROOT, `devenir-hote-airbnb-${c.slug}`, 'index.html'))
   return {
     slug: c.slug,
     name: c.name,
@@ -72,10 +74,14 @@ function toVille(c) {
     annonces: annM[1].trim(),
     desc: c.desc,
     revenu,
+    hote,
   }
 }
 
-const VILLES = loadCities().map(toVille)
+// `node scripts/build-pages-pros-villes.mjs <slug> [<slug>…]` : seulement ces villes
+const ONLY = process.argv.slice(2)
+const VILLES = loadCities().map(toVille).filter(v => !ONLY.length || ONLY.includes(v.slug))
+if (ONLY.length && VILLES.length !== ONLY.length) throw new Error(`Ville inconnue dans CITIES : ${ONLY.join(', ')}`)
 
 function escHtml(s) {
   if (s == null) return ''
@@ -247,7 +253,7 @@ function faqHtml(faqs) {
 
 function linksRow(v, metier) {
   const cards = []
-  cards.push(`<a class="link-card" href="/devenir-hote-airbnb-${v.slug}"><span class="lc-t">Guide local</span><span class="lc-h">Devenir hôte ${escHtml(v.pre)}</span><span class="lc-a">Lire le guide <i class="ph-bold ph-arrow-right"></i></span></a>`)
+  if (v.hote) cards.push(`<a class="link-card" href="/devenir-hote-airbnb-${v.slug}"><span class="lc-t">Guide local</span><span class="lc-h">Devenir hôte ${escHtml(v.pre)}</span><span class="lc-a">Lire le guide <i class="ph-bold ph-arrow-right"></i></span></a>`)
   if (v.revenu) cards.push(`<a class="link-card" href="${v.revenu}"><span class="lc-t">Étude de revenus</span><span class="lc-h">Combien rapporte la LCD ${escHtml(v.pre)} ?</span><span class="lc-a">Voir les chiffres <i class="ph-bold ph-arrow-right"></i></span></a>`)
   if (metier === 'photographe') {
     cards.push(`<a class="link-card" href="/menage-lcd-${v.slug}"><span class="lc-t">Autre prestataire</span><span class="lc-h">Équipe de ménage LCD ${escHtml(v.pre)}</span><span class="lc-a">Voir le guide <i class="ph-bold ph-arrow-right"></i></span></a>`)
@@ -262,7 +268,9 @@ function linksRow(v, metier) {
 // ── PAGE PHOTOGRAPHE ────────────────────────────────────────────────────────
 function buildPhotographePage(v) {
   const url = `https://jasonmarinho.com/photographe-lcd-${v.slug}`
-  const title = `Photographe Airbnb ${v.pre} : tarifs & annuaire LCD`
+  const title = `Photographe Airbnb ${v.pre} : tarifs & annuaire LCD`.length <= 60
+    ? `Photographe Airbnb ${v.pre} : tarifs & annuaire LCD`
+    : `Photographe Airbnb ${v.pre} : tarifs et annuaire`
   const desc = `Trouver un photographe spécialisé Airbnb et location courte durée ${v.pre} : tarifs constatés, les photos indispensables, comment briefer, annuaire vérifié. ${v.annonces} annonces sur le marché, des photos pro rentabilisées en quelques nuits.`
   const amortNuits = Math.max(2, Math.ceil(300 / v.adrMin))
   const premium = isPremium(v)

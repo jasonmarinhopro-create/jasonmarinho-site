@@ -64,8 +64,13 @@
     { slug: 'troyes',          name: 'Troyes',          adr: '70-130 €/nuit',  occ: "60 % d'occupation", ann: '~800 annonces', desc: "Centre médiéval en bouchon de champagne, capitale historique, McArthurGlen + Marques Avenue (3 millions de visiteurs shopping/an). Week-ends parisiens à 1h30 en train, demande shopping continue." },
     { slug: 'bastia',          name: 'Bastia',          adr: '80-160 €/nuit',  occ: "60 % d'occupation", ann: '~1 500 annonces', desc: "Capitale de la Haute-Corse, principal port pour les ferries d'Italie (Livourne, Savone, Gênes), porte du Cap Corse. Alternative 25 % moins chère qu'Ajaccio à qualité équivalente." },
     { slug: 'clermont-ferrand', name: 'Clermont-Ferrand', adr: '60-105 €/nuit', occ: "60 % d'occupation", ann: '~1 300 annonces', desc: "Capitale auvergnate, siège mondial Michelin, Volcans UNESCO et Festival International du Court Métrage (200k spectateurs en février). Triple pilier tourisme + business + culturel." },
-    { slug: 'poitiers',        name: 'Poitiers',        adr: '60-105 €/nuit',  occ: "58 % d'occupation", ann: '~1 200 annonces', desc: "'Ville aux cent clochers', 28 000 étudiants, Futuroscope (1,9M visiteurs/an) à 8 km, TGV Paris 1h35. Triple demande tourisme + parc d'attractions + universitaire, prix d'achat très accessibles." }
+    { slug: 'poitiers',        name: 'Poitiers',        adr: '60-105 €/nuit',  occ: "58 % d'occupation", ann: '~1 200 annonces', desc: "'Ville aux cent clochers', 28 000 étudiants, Futuroscope (1,9M visiteurs/an) à 8 km, TGV Paris 1h35. Triple demande tourisme + parc d'attractions + universitaire, prix d'achat très accessibles." },
+    // prosOnly : pages photographe / ménage seulement (pas encore de guide
+    // devenir-hote ni d'étude de revenus), exclue des listes pour les hôtes.
+    { slug: 'les-sables-d-olonne', name: "Les Sables-d'Olonne", prosOnly: true, adr: '80-140 €/nuit', occ: "49 % d'occupation", ann: '~2 100 annonces', desc: "Grande station balnéaire de Vendée, port de départ du Vendée Globe tous les 4 ans. Marché très saisonnier, culminant en juillet et août, et encadré : autorisation de changement d'usage et plafond de meublés de tourisme fixés par l'agglomération." }
   ];
+  // Villes qui ont aussi un guide devenir-hote (cartes /villes, compteurs, onglet hôtes)
+  var HOST_CITIES = CITIES.filter(function (c) { return !c.prosOnly; });
 
   // ── Génère une carte ville pour /villes ──────────────────────────────────
   function cityCardHtml(c) {
@@ -213,7 +218,7 @@
     }).join('');
   }
 
-  var hostPanel = CITIES.map(function (c) {
+  var hostPanel = HOST_CITIES.map(function (c) {
     return '<a href="/devenir-hote-airbnb-' + c.slug + '">' + c.name + '</a>';
   }).join('');
 
@@ -351,19 +356,19 @@
   // Compteur de villes sur toutes les pages (.villes-count)
   var countEls = document.querySelectorAll('.villes-count');
   for (var i = 0; i < countEls.length; i++) {
-    countEls[i].textContent = CITIES.length;
+    countEls[i].textContent = HOST_CITIES.length;
   }
 
   // Grille /villes : remplissage auto depuis CITIES
   var grid = document.getElementById('cities-grid');
   if (grid) {
-    grid.innerHTML = CITIES.map(cityCardHtml).join('');
+    grid.innerHTML = HOST_CITIES.map(cityCardHtml).join('');
   }
 
   // Lead /villes : mise à jour du compteur dans le hero
   var villesLead = document.getElementById('villes-lead-count');
   if (villesLead) {
-    villesLead.textContent = CITIES.length;
+    villesLead.textContent = HOST_CITIES.length;
   }
 
   // ── Onglets footer "Explorer" (visuel seulement, liens déjà en HTML) ─────

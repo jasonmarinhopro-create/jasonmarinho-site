@@ -11,14 +11,15 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { VILLES_LOCAL } from './data/villes-local.mjs'
+import { VILLES_LOCAL, aVille } from './data/villes-local.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const strip = s => s.replace(/<[^>]+>/g, '')
 
 function section(v, kind) {
   const pratique = kind === 'menage' ? v.menage : v.photo
-  const titrePratique = kind === 'menage' ? `Ce que ça change pour le ménage à ${v.ville}` : `Réussir ses photos à ${v.ville}`
+  const a = aVille(v.ville)
+  const titrePratique = kind === 'menage' ? `Ce que ça change pour le ménage ${a}` : `Réussir ses photos ${a}`
   const li = arr => arr.map(x => `<li><i class="ph-bold ph-check-circle"></i><span>${x}</span></li>`).join('')
   const sources = v.sources.map(s => `<a href="${s.url}" target="_blank" rel="nofollow noopener">${s.label}</a>`).join(' · ')
   return `<!-- LOCAL:START -->
@@ -34,8 +35,8 @@ function section(v, kind) {
     .loc-src a{color:var(--tl);text-decoration:underline}
   </style>
   <div class="s-in">
-    <span class="lbl dk">À savoir à ${v.ville}</span>
-    <h2>Les règles et le calendrier <em>à ${v.ville}</em></h2>
+    <span class="lbl dk">À savoir ${a}</span>
+    <h2>Les règles et le calendrier <em>${a}</em></h2>
     <p>Ce qu'un hôte et son prestataire doivent connaître en 2026, vérifié en ${v.verifie}.</p>
     <div class="loc-grid">
       <div class="loc-card"><h3><i class="ph-bold ph-scales"></i> Réglementation</h3><ul>${v.reglementation.map(x => `<li>${x}</li>`).join('')}</ul></div>
@@ -51,9 +52,10 @@ function section(v, kind) {
 }
 
 function faqItems(v) {
+  const a = aVille(v.ville)
   return [
-    [`Combien de nuits peut-on louer sa résidence principale à ${v.ville} ?`, v.faqPlafond],
-    [`Quelle taxe de séjour pour un meublé non classé à ${v.ville} ?`, v.faqTaxe],
+    [`Combien de nuits peut-on louer sa résidence principale ${a} ?`, v.faqPlafond],
+    [`Quelle taxe de séjour pour un meublé non classé ${a} ?`, v.faqTaxe],
   ]
 }
 
@@ -65,11 +67,12 @@ for (const [slug, v] of Object.entries(VILLES_LOCAL)) {
     let html = fs.readFileSync(file, 'utf8')
 
     // 1) Section locale, après la première section de contenu
-    html = html.replace(/<!-- LOCAL:START -->[\s\S]*?<!-- LOCAL:END -->\n?/, '')
+    // (lignes vides autour comprises : avant, chaque passage en ajoutait une)
+    html = html.replace(/\n*<!-- LOCAL:START -->[\s\S]*?<!-- LOCAL:END -->\n*/, '\n\n')
     const first = html.indexOf('<section class="sec">')
     if (first === -1) throw new Error(`Aucune section dans ${file}`)
     const end = html.indexOf('</section>', first) + '</section>'.length
-    html = html.slice(0, end) + '\n\n' + section(v, kind) + html.slice(end)
+    html = html.slice(0, end) + '\n\n' + section(v, kind) + '\n\n' + html.slice(end).replace(/^\n+/, '')
 
     // 2) FAQ HTML
     html = html.replace(/<!-- LOCAL-FAQ:START -->[\s\S]*?<!-- LOCAL-FAQ:END -->\n?/, '')
@@ -86,8 +89,9 @@ for (const [slug, v] of Object.entries(VILLES_LOCAL)) {
     html = html.replace(/(<script type="application\/ld\+json">\s*)(\{"@context":"https:\/\/schema\.org","@type":"FAQPage"[\s\S]*?)(\s*<\/script>)/, (m, a, json, c) => {
       ldDone = true
       const data = JSON.parse(json)
-      const names = new Set(items.map(([q]) => q))
-      data.mainEntity = data.mainEntity.filter(q => !names.has(q.name))
+      // Les 2 questions locales, y compris leur ancienne formulation (« à Le Mans »)
+      const local = q => /^(Combien de nuits peut-on louer sa résidence principale|Quelle taxe de séjour pour un meublé non classé) /.test(q.name)
+      data.mainEntity = data.mainEntity.filter(q => !local(q))
       for (const [q, ans] of items) data.mainEntity.push({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: strip(ans) } })
       return a + JSON.stringify(data) + c
     })

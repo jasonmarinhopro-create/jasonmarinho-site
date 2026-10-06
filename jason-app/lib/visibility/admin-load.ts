@@ -13,7 +13,7 @@ import { getAffilaeOverview } from '@/lib/affiliation/affilae'
 import { getPartnerStackOverview } from '@/lib/affiliation/partnerstack'
 import type { ClickRow } from './partners'
 
-const PRO_COLUMNS = 'id, slug, full_name, pseudo, ville, status, is_public, tier, stripe_subscription_status'
+const PRO_COLUMNS = 'id, slug, full_name, pseudo, ville, zone_couverte, status, is_public, tier, stripe_subscription_status'
 
 const errMsg = (e: unknown) => String((e as Error)?.message ?? e).slice(0, 200)
 
