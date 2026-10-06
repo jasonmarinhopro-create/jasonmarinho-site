@@ -318,3 +318,57 @@ export function bouncedAddresses(text: string): string[] {
 export function isBounceSender(from: string): boolean {
   return /mailer-daemon|postmaster|mail delivery|delivery status/i.test(from)
 }
+
+// ── Reconnaître une réponse (06/10/2026) ──
+// Avant : seule l'adresse d'expédition exacte comptait. Un pro qui répond
+// depuis une autre adresse (Gmail perso au lieu de l'adresse du studio,
+// renvoi d'un collègue) restait dans « Contactés ». Ordre : adresse connue,
+// puis fil de discussion (In-Reply-To / References = un de nos Message-ID),
+// puis même domaine pro (jamais un webmail partagé).
+
+const WEBMAILS = new Set([
+  'gmail.com', 'googlemail.com', 'hotmail.com', 'hotmail.fr', 'outlook.com', 'outlook.fr', 'live.com', 'live.fr', 'msn.com',
+  'yahoo.com', 'yahoo.fr', 'icloud.com', 'me.com', 'mac.com', 'orange.fr', 'wanadoo.fr', 'free.fr', 'sfr.fr', 'neuf.fr',
+  'laposte.net', 'bbox.fr', 'gmx.fr', 'gmx.com', 'aol.com', 'protonmail.com', 'proton.me', 'numericable.fr',
+])
+
+/** Identifiants de message d'un en-tête (« <a@b> <c@d> ») → minuscules sans chevrons */
+export function messageIdsOf(header: string | null | undefined): string[] {
+  if (!header) return []
+  return Array.from(header.matchAll(/<([^<>\s]+)>/g)).map(m => m[1].toLowerCase())
+}
+
+export const normalizeMessageId = (id: string) => id.trim().replace(/^<|>$/g, '').toLowerCase()
+
+/** Domaine d'une adresse, null pour un webmail grand public */
+export function proDomainOf(email: string): string | null {
+  const d = email.toLowerCase().split('@')[1] ?? ''
+  return d && !WEBMAILS.has(d) ? d : null
+}
+
+/**
+ * Contact (son adresse connue) auquel rattacher un message reçu, ou null.
+ * `byThread` : Message-ID envoyé → adresse du contact ; `byDomain` : domaine
+ * pro → adresse du contact (seulement si un seul contact a ce domaine).
+ */
+export function matchReply(msg: { from: string; inReplyTo?: string | null; references?: string | null }, known: Set<string>, byThread: Map<string, string>, byDomain: Map<string, string>): { email: string; how: 'adresse' | 'fil' | 'domaine' } | null {
+  const from = msg.from.toLowerCase()
+  if (known.has(from)) return { email: from, how: 'adresse' }
+  for (const id of [...messageIdsOf(msg.inReplyTo), ...messageIdsOf(msg.references)]) {
+    const email = byThread.get(id)
+    if (email) return { email, how: 'fil' }
+  }
+  const domain = proDomainOf(from)
+  const email = domain ? byDomain.get(domain) : undefined
+  return email ? { email, how: 'domaine' } : null
+}
+
+/** Domaines pro portés par un seul contact (un domaine partagé ne prouve rien) */
+export function uniqueProDomains(emails: Iterable<string>): Map<string, string> {
+  const count = new Map<string, string[]>()
+  for (const e of emails) {
+    const d = proDomainOf(e)
+    if (d) count.set(d, [...(count.get(d) ?? []), e])
+  }
+  return new Map(Array.from(count.entries()).filter(([, l]) => l.length === 1).map(([d, l]) => [d, l[0]]))
+}

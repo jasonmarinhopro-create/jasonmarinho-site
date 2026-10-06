@@ -144,3 +144,22 @@ describe('pipeline : étiquettes et relances', () => {
     expect(SIGNATURE_PHOTO_URL).toMatch(/^https:\/\/jasonmarinho\.com\/.+\.jpg$/)
   })
 })
+
+import { matchReply, messageIdsOf, uniqueProDomains, proDomainOf } from './engine'
+
+describe('reconnaître une réponse', () => {
+  const known = new Set(['contact@studio-lumiere.fr', 'jean@gmail.com', 'a@agence.fr', 'b@agence.fr'])
+  const byThread = new Map([['abc123@jasonmarinho.com', 'contact@studio-lumiere.fr']])
+  const byDomain = uniqueProDomains(known)
+  it('adresse, fil de discussion puis domaine pro', () => {
+    expect(messageIdsOf('<ABC123@jasonmarinho.com> <x@y>')).toEqual(['abc123@jasonmarinho.com', 'x@y'])
+    expect(matchReply({ from: 'Jean@Gmail.com' }, known, byThread, byDomain)).toEqual({ email: 'jean@gmail.com', how: 'adresse' })
+    expect(matchReply({ from: 'perso@gmail.com', inReplyTo: '<abc123@jasonmarinho.com>' }, known, byThread, byDomain)).toEqual({ email: 'contact@studio-lumiere.fr', how: 'fil' })
+    expect(matchReply({ from: 'perso@gmail.com', references: '<z@z> <abc123@jasonmarinho.com>' }, known, byThread, byDomain)?.how).toBe('fil')
+    expect(matchReply({ from: 'marc@studio-lumiere.fr' }, known, byThread, byDomain)).toEqual({ email: 'contact@studio-lumiere.fr', how: 'domaine' })
+    // Domaine partagé par deux contacts, ou webmail : rien
+    expect(matchReply({ from: 'c@agence.fr' }, known, byThread, byDomain)).toBeNull()
+    expect(matchReply({ from: 'autre@gmail.com' }, known, byThread, byDomain)).toBeNull()
+    expect(proDomainOf('x@orange.fr')).toBeNull()
+  })
+})

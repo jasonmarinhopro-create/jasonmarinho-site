@@ -9,7 +9,7 @@ import { parisToday } from '@/lib/stripe/deposit-window'
 import { logger } from '@/lib/logger'
 import {
   afterSend, complianceFooter, guessFirstName, isoWeekday, renderTemplate, replySubject, scheduleStep,
-  textToHtml, DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL, normalizeTag, LEGACY_DEFAULT_SIGNATURE, CLOSED_STAGES, type Audience, type Source, type Stage,
+  textToHtml, DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL, normalizeTag, LEGACY_DEFAULT_SIGNATURE, CLOSED_STAGES, normalizeMessageId, uniqueProDomains, type Audience, type Source, type Stage,
 } from './engine'
 import { isPermanentAddressError, outreachConfig, scanInbox, sendOutreachMail } from './mailer'
 import { PLAYBOOK } from './playbook'
@@ -246,16 +246,34 @@ async function autoEnroll(db: Db, today: string, dailyCap: number): Promise<numb
   return n
 }
 
-async function handleInbox(db: Db, settings: Settings): Promise<{ replies: number; bounces: number }> {
+export interface InboxResult { replies: number; bounces: number; scanned: number; matchedBy: Record<'adresse' | 'fil' | 'domaine', number>; unmatched: number; folders: string[] }
+
+/**
+ * Réponses et rebonds. `sinceDays` relit une fenêtre plus large (workflow
+ * Prospection, op « boite ») ; sinon depuis la dernière lecture moins 36 h.
+ */
+export async function handleInbox(db: Db, settings: Settings, opts: { sinceDays?: number } = {}): Promise<InboxResult> {
+  const empty: InboxResult = { replies: 0, bounces: 0, scanned: 0, matchedBy: { adresse: 0, fil: 0, domaine: 0 }, unmatched: 0, folders: [] }
   const cfg = outreachConfig()
-  if (!cfg) return { replies: 0, bounces: 0 }
+  if (!cfg) return empty
   // Contacts à surveiller : ceux qu'on a déjà contactés
   const { data: contacted } = await db.from('outreach_contacts').select('id, email_norm, stage').not('last_contacted_at', 'is', null).not('email_norm', 'is', null).limit(5000)
   const byEmail = new Map((contacted ?? []).map(c => [c.email_norm as string, c]))
-  const since = settings.last_imap_check
-    ? new Date(Math.max(new Date(settings.last_imap_check).getTime() - 36 * 3600_000, Date.now() - 10 * 86400_000))
-    : new Date(Date.now() - 3 * 86400_000)
-  const scan = await scanInbox(cfg, since, new Set(byEmail.keys()))
+  // Fil de discussion : nos Message-ID des 90 derniers jours → contact
+  const idByContact = new Map((contacted ?? []).map(c => [c.id as string, c.email_norm as string]))
+  const { data: sends } = await db.from('outreach_sends').select('contact_id, message_id')
+    .not('message_id', 'is', null).gte('created_at', new Date(Date.now() - 90 * 86400_000).toISOString()).limit(10000)
+  const byThread = new Map<string, string>()
+  for (const r of (sends ?? []) as Array<{ contact_id: string; message_id: string }>) {
+    const email = idByContact.get(r.contact_id)
+    if (email && r.message_id) byThread.set(normalizeMessageId(r.message_id), email)
+  }
+  const since = opts.sinceDays
+    ? new Date(Date.now() - opts.sinceDays * 86400_000)
+    : settings.last_imap_check
+      ? new Date(Math.max(new Date(settings.last_imap_check).getTime() - 36 * 3600_000, Date.now() - 10 * 86400_000))
+      : new Date(Date.now() - 3 * 86400_000)
+  const scan = await scanInbox(cfg, since, new Set(byEmail.keys()), { byThread, byDomain: uniqueProDomains(byEmail.keys()) })
   let replies = 0
   for (const [email, when] of Array.from(scan.replies.entries())) {
     const c = byEmail.get(email)
@@ -265,7 +283,7 @@ async function handleInbox(db: Db, settings: Settings): Promise<{ replies: numbe
   }
   for (const email of scan.bounces) await suppress(db, email, 'rebond')
   await db.from('outreach_settings').update({ last_imap_check: new Date().toISOString() }).eq('id', 1)
-  return { replies, bounces: scan.bounces.length }
+  return { replies, bounces: scan.bounces.length, scanned: scan.scanned, matchedBy: scan.matchedBy, unmatched: scan.unmatched, folders: scan.folders }
 }
 
 /**

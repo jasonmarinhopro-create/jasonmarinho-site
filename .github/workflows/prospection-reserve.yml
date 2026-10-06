@@ -1,0 +1,90 @@
+# Prospection : réserve de contacts et relecture de la boîte (06/10/2026,
+# Jason : « ajouter des équipes de ménage et des photographes pour en avoir
+# toujours sous la main »).
+#   1. Relit la boîte sur 14 jours (réponses reconnues par adresse, fil de
+#      discussion ou domaine pro) : une réponse manquée passe en « Ont répondu ».
+#   2. Pour chaque audience (photographes, ménage) dont il reste moins de
+#      SEUIL contacts « À contacter », importe depuis OpenStreetMap les pros
+#      de 10 villes de nos pages, en tournant sur les 60 villes (6 semaines).
+# Chaque lundi, à la main, ou par un push de .github/prospection-trigger
+# (ligne 1 : « remplir » pour 20 villes d'un coup). Journaux publics : la
+# route ne renvoie que des nombres.
+name: 'Prospection : réserve'
+
+on:
+  schedule:
+    - cron: '20 5 * * 1'
+  workflow_dispatch:
+    inputs:
+      villes_par_passage:
+        description: 'Nombre de villes à importer par audience'
+        default: '10'
+  push:
+    branches: ['claude/**']
+    paths: ['.github/prospection-trigger']
+
+concurrency:
+  group: prospection
+  cancel-in-progress: false
+
+jobs:
+  reserve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    env:
+      APP_URL: https://app.jasonmarinho.com
+      SECRET: ${{ secrets.SOCIAL_CRON_SECRET }}
+      SEUIL: '40'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Relire la boîte (14 jours)
+        run: |
+          r=$(curl -sS --max-time 75 -X POST "$APP_URL/api/outreach/ops" -H "authorization: Bearer $SECRET" -H 'content-type: application/json' -d '{"op":"boite","jours":14}')
+          echo "$r" | jq . || echo "$r"
+          echo "::notice title=Boîte relue::$(echo "$r" | jq -c . 2>/dev/null || echo "$r" | head -c 300)"
+      - name: Garder une réserve de contacts
+        env:
+          PAR_PASSAGE: ${{ inputs.villes_par_passage }}
+        run: |
+          set -u
+          call() { curl -sS --max-time 75 -X POST "$APP_URL/api/outreach/ops" -H "authorization: Bearer $SECRET" -H 'content-type: application/json' -d "$1"; echo; }
+          # Les 60 villes de nos pages photographe-lcd-* / menage-lcd-*
+          CITIES=("Paris" "Lyon" "Marseille" "Bordeaux" "Nice" "Toulouse" "Montpellier" "Nantes" "Lille" "Strasbourg" \
+            "Rennes" "Annecy" "La Rochelle" "Biarritz" "Saint-Malo" "Aix-en-Provence" "Cannes" "Arcachon" "Avignon" "Chamonix" \
+            "Grenoble" "Dijon" "Reims" "Tours" "Angers" "Rouen" "Caen" "Brest" "Metz" "Nancy" \
+            "Clermont-Ferrand" "Le Mans" "Perpignan" "Nîmes" "Pau" "Bayonne" "Poitiers" "Quimper" "Vannes" "Troyes" \
+            "Colmar" "Chambéry" "Antibes" "Menton" "Ajaccio" "Bastia" "Sète" "Carcassonne" "Sarlat-la-Canéda" "Beaune" \
+            "Deauville" "Honfleur" "Étretat" "Dinard" "La Baule-Escoublac" "Le Touquet-Paris-Plage" "Épernay" "Megève" "Saint-Tropez" "Versailles")
+          n="${PAR_PASSAGE:-10}"
+          if [ "${{ github.event_name }}" = push ] && grep -qi '^remplir' .github/prospection-trigger 2>/dev/null; then n=20; fi
+          week=$((10#$(date -u +%V)))
+          start=$(( (week * n) % ${#CITIES[@]} ))
+          status=$(call '{"op":"status"}')
+          total=0
+          for a in photographe menage; do
+            have=$(echo "$status" | jq -r --arg a "$a" '.contacts[$a].a_contacter // 0')
+            echo "$a : $have contacts « À contacter » (seuil $SEUIL)"
+            if [ "$have" -ge "$SEUIL" ] && [ "${{ github.event_name }}" != push ]; then echo "  réserve suffisante"; continue; fi
+            added_a=0
+            for i in $(seq 0 $((n - 1))); do
+              v="${CITIES[$(( (start + i) % ${#CITIES[@]} ))]}"
+              for pass in 1 2 3 4; do
+                body=$(jq -nc --arg a "$a" --arg v "$v" '{op:"import_osm",audience:$a,ville:$v}')
+                for try in 1 2 3; do
+                  res=$(call "$body")
+                  echo "$res" | grep -q 'OpenStreetMap indisponible' || break
+                  sleep $((try * 20))
+                done
+                k=$(echo "$res" | jq -r '.ajoutes // 0' 2>/dev/null || echo 0)
+                echo "  $v ($pass) : $(echo "$res" | jq -c '{resultats, avec_site, emails_trouves, ajoutes, error}' 2>/dev/null || echo "$res" | head -c 160)"
+                added_a=$((added_a + k))
+                left=$(echo "$res" | jq -r '.reste_a_visiter // 0' 2>/dev/null || echo 0)
+                [ "$left" -gt 0 ] || break
+              done
+              sleep 6
+            done
+            total=$((total + added_a))
+            echo "::notice title=Réserve $a::$have à contacter avant, $added_a ajoutés ($n villes à partir de ${CITIES[$start]})"
+          done
+          after=$(call '{"op":"status"}' | jq -c '{photographe: .contacts.photographe.a_contacter, menage: .contacts.menage.a_contacter}')
+          echo "::notice title=Réserve après import::$total ajoutés · à contacter : $after"

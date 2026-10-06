@@ -10,7 +10,7 @@ import { PLAYBOOK_TEXT_FIXES } from '@/lib/outreach/playbook'
 import { NextResponse } from 'next/server'
 import { getServiceClient } from '@/lib/supabase/service'
 import { outreachConfig } from '@/lib/outreach/mailer'
-import { installPlaybookSequences, loadSettings, runOutreach, sendTest } from '@/lib/outreach/service'
+import { handleInbox, installPlaybookSequences, loadSettings, runOutreach, sendTest } from '@/lib/outreach/service'
 import { relaunchOutreach } from '@/lib/outreach/relaunch'
 import { checkSpf } from '@/lib/outreach/spf'
 import { searchGooglePlaces, findEmailOnSite } from '@/lib/outreach/sources'
@@ -32,7 +32,7 @@ const hostOf = (u: string) => { try { return new URL(/^https?:\/\//i.test(u) ? u
 
 export async function POST(req: Request) {
   if (!authorized(req)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
-  const body = await req.json().catch(() => ({})) as { op?: string; audience?: Audience; query?: string; ville?: string; audiences?: Audience[]; daily_cap?: number; force?: boolean; send_only?: boolean; relaunch?: boolean }
+  const body = await req.json().catch(() => ({})) as { op?: string; audience?: Audience; query?: string; ville?: string; audiences?: Audience[]; daily_cap?: number; force?: boolean; send_only?: boolean; relaunch?: boolean; jours?: number }
   const db = getServiceClient()
   try {
     switch (body.op) {
@@ -47,6 +47,14 @@ export async function POST(req: Request) {
         if (!step) throw new Error('séquence « Photographes : premier contact » introuvable')
         const res = await sendTest(step.subject, step.body, await loadSettings(db))
         return NextResponse.json({ ok: res.ok, envoye_a_la_boite_d_envoi: res.ok, error: res.error ?? null })
+      }
+      case 'boite': {
+        // Relit la boîte sur une fenêtre plus large (14 jours par défaut) avec
+        // la reconnaissance par adresse, fil de discussion et domaine. Réponse :
+        // nombres seulement (journaux publics).
+        const jours = Math.max(1, Math.min(30, Number(body.jours) || 14))
+        const r = await handleInbox(db, await loadSettings(db), { sinceDays: jours })
+        return NextResponse.json({ ok: true, jours, messages_lus: r.scanned, dossiers: r.folders.length, reponses_passees_en_ont_repondu: r.replies, reconnues_par: r.matchedBy, reponses_sans_contact_retrouve: r.unmatched, rebonds: r.bounces })
       }
       case 'run': {
         // Le workflow programmé « Prospection : envois » rappelle cette route

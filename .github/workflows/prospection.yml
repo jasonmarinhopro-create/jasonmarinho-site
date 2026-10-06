@@ -16,11 +16,11 @@ on:
   workflow_dispatch:
     inputs:
       operation:
-        description: 'etat, essai, importer (Google Maps), importer_osm (OpenStreetMap), activer, envoyer, corriger_textes'
+        description: 'etat, essai, importer (Google Maps), importer_osm (OpenStreetMap), activer, envoyer, boite (relire 14 jours de réponses), corriger_textes'
         required: true
         default: etat
         type: choice
-        options: [etat, essai, importer, importer_osm, activer, envoyer, corriger_textes]
+        options: [etat, essai, importer, importer_osm, activer, envoyer, boite, corriger_textes]
       audiences:
         description: 'Audiences (menage, photographe, séparées par des virgules)'
         required: false
@@ -77,6 +77,9 @@ jobs:
               call "$(jq -nc --argjson a "$AUD_JSON" --arg cap "$PLAFOND" '{op:"activate",audiences:$a,daily_cap:($cap|tonumber)}')" | jq . ;;
             envoyer)
               call '{"op":"run"}' | jq . ;;
+            boite)
+              r=$(call '{"op":"boite","jours":14}'); echo "$r" | jq .
+              echo "::notice title=Boîte relue::$(echo "$r" | jq -c .)" ;;
             corriger_textes)
               r=$(call '{"op":"fix_texts"}'); echo "$r" | jq .
               echo "::notice title=Textes corrigés::$(echo "$r" | jq -c .)" ;;
