@@ -10,11 +10,12 @@ import {
 
 // ── Types partagés serveur / navigateur ──────────────────────────────────
 
-export type VisTab = 'ensemble' | 'fiches' | 'recherches' | 'villes' | 'pages' | 'visiteurs' | 'partenaires'
+export type VisTab = 'ensemble' | 'fiches' | 'pagespros' | 'recherches' | 'villes' | 'pages' | 'visiteurs' | 'partenaires'
 
 export const VIS_TABS: Array<{ key: VisTab; label: string }> = [
   { key: 'ensemble', label: 'Vue d\'ensemble' },
   { key: 'fiches', label: 'Fiches pros' },
+  { key: 'pagespros', label: 'Pages pros par ville' },
   { key: 'recherches', label: 'Toutes les recherches' },
   { key: 'villes', label: 'Villes' },
   { key: 'pages', label: 'Pages & blog' },

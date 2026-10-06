@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import {
   GoogleLogo, Users, Trophy, Footprints, Sparkle, Camera, MagnifyingGlass, WarningCircle, ArrowRight, Info,
-  ListMagnifyingGlass, MapPin, Article, ChartLineUp, Binoculars, Handshake,
+  ListMagnifyingGlass, MapPin, Article, ChartLineUp, Binoculars, Handshake, MapTrifold,
 } from '@phosphor-icons/react/dist/ssr'
 import AdminHero, { adminAsideCard } from '../_ui/AdminHero'
 import { AMBER, tint } from '../_ui/theme'
@@ -11,6 +11,7 @@ import type { VisibilityData, EnsembleData } from '@/lib/visibility/admin-build'
 import { v, PlacePill, PctDelta, BucketBar, PLACE_KEYS, ACCENT } from './ui'
 import TrendChart from './TrendChart'
 import FichesTab from './FichesTab'
+import PagesProsTab from './PagesProsTab'
 import RecherchesTab from './RecherchesTab'
 import VillesTab from './VillesTab'
 import PagesTab from './PagesTab'
@@ -28,6 +29,7 @@ const plural = (n: number, one: string, many = `${one}s`) => `${fmtInt(n)} ${n >
 const TAB_ICON: Record<VisTab, React.ReactNode> = {
   ensemble: <ChartLineUp size={15} weight="bold" />,
   fiches: <Camera size={15} weight="bold" />,
+  pagespros: <MapTrifold size={15} weight="bold" />,
   recherches: <ListMagnifyingGlass size={15} weight="bold" />,
   villes: <MapPin size={15} weight="bold" />,
   pages: <Article size={15} weight="bold" />,
@@ -102,12 +104,13 @@ export default function VisibiliteView({ data, tab }: { data: VisibilityData; ta
       {!data.visits.ok && (tab === 'visiteurs' || tab === 'ensemble') && (
         <Banner tone="warn" title="Nos mesures de visites sont indisponibles">{data.visits.error}</Banner>
       )}
-      {!data.pros.ok && tab === 'fiches' && (
+      {!data.pros.ok && (tab === 'fiches' || tab === 'pagespros') && (
         <Banner tone="warn" title="Les fiches pros n'ont pas pu être lues">{data.pros.error}</Banner>
       )}
 
       {tab === 'ensemble' && data.ensemble && <Ensemble d={data.ensemble} days={days} moreHref={href({ onglet: 'recherches' })} gscOk={data.gsc.ok} visitsOk={data.visits.ok} />}
       {tab === 'fiches' && data.fiches && <FichesTab d={data.fiches} />}
+      {tab === 'pagespros' && data.pagespros && <PagesProsTab d={data.pagespros} />}
       {tab === 'recherches' && data.recherches && <RecherchesTab d={data.recherches} />}
       {tab === 'villes' && data.villes && <VillesTab d={data.villes} />}
       {tab === 'pages' && data.pages && <PagesTab d={data.pages} />}

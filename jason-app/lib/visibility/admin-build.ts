@@ -7,6 +7,7 @@ import type { GscResult } from '@/lib/google/search-analytics'
 import type { AffilaeOverview } from '@/lib/affiliation/affilae'
 import type { PartnerStackOverview } from '@/lib/affiliation/partnerstack'
 import { buildPartners, buildPartnerSeo, type ClickRow, type PartnersData } from './partners'
+import { buildCityPros, type CityPageTruth, type PagesProsData } from './city-pros'
 import { isPaidPro } from '@/lib/admin/revenue'
 import {
   pctChange, aggregateQueries, aggregatePages, bucketCounts, topRanked, nearlyFirstPage,
@@ -87,6 +88,7 @@ export interface VisibilityData {
   counts: Partial<Record<VisTab, number>>
   ensemble?: EnsembleData
   fiches?: FichesData
+  pagespros?: PagesProsData
   recherches?: RecherchesData
   villes?: VillesData
   pages?: PagesData
@@ -252,8 +254,10 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
     visitors: visitsRes.ok ? summary.visitors : null,
     visitorsPct: visitsRes.ok && prevVisitsRes.ok ? pctChange(summary.visitors, prevSummary.visitors) : null,
   }
+  const cityProPaths = [...pages.entries()].filter(([path, p]) => /^\/(photographe|menage)-lcd-/.test(path) && p.impressions > 0)
   const counts: Partial<Record<VisTab, number>> = {
     ...(prosRes.ok ? { fiches: proItems.length } : {}),
+    ...(qp.ok ? { pagespros: cityProPaths.length } : {}),
     ...(qp.ok ? { recherches: queryStats.length, villes: cities.length, pages: otherPages.length } : {}),
     ...(visitsRes.ok ? { visiteurs: summary.visitors } : {}),
     ...(affClicksRes.ok ? { partenaires: affClicksRes.cur.length } : {}),
@@ -294,6 +298,25 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
       clicks: onlinePros.reduce((n, p) => n + p.clicks, 0),
       counts: { photographe: proItems.filter(p => p.kind === 'photographe').length, menage: proItems.filter(p => p.kind === 'menage').length },
     }
+  }
+
+  if (tab === 'pagespros') {
+    const truthMap = new Map<string, CityPageTruth>()
+    for (const [path, p] of pages) {
+      if (!/^\/(photographe|menage)-lcd-/.test(path)) continue
+      const places = pagePlaces(p)
+      truthMap.set(path, { clicks: p.clicks, impressions: p.impressions, pagePlace: places.pagePlace, prevPagePlace: places.prevPagePlace, queries: pageQueries(p) })
+    }
+    const rowsOf = (rows: ProRow[]) => rows.map(r => ({
+      name: (r.pseudo || r.full_name || 'Sans nom').trim(), ville: r.ville, slug: r.slug,
+      online: r.status === 'active' && !!r.is_public, excluded: r.status === 'rejected' || r.status === 'cancelled',
+    }))
+    data.pagespros = buildCityPros({
+      pages: truthMap,
+      visits: curRows,
+      prevVisits: prevRows,
+      pros: prosRes.ok ? { photographe: rowsOf(prosRes.photographers), menage: rowsOf(prosRes.cleaners) } : { photographe: [], menage: [] },
+    })
   }
 
   if (tab === 'recherches') {
