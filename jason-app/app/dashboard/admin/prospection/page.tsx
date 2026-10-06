@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getServiceClient } from '@/lib/supabase/service'
 import { outreachConfig } from '@/lib/outreach/mailer'
+import { placesUsage } from '@/lib/google/places-budget'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import ProspectionScreen from './ProspectionScreen'
 import type { ContactRow, SendRow, SequenceRow, SettingsRow, StepRow } from './shared'
@@ -120,6 +121,10 @@ export default async function ProspectionPage() {
     signature: settings?.signature ?? null, signature_photo: settings?.signature_photo ?? true, last_run_at: settings?.last_run_at ?? null, last_run_summary: settings?.last_run_summary ?? null,
   }
 
+  const usage = await placesUsage().catch(() => null)
+  const placesTs = usage && !usage.error ? usage.items.find(i => i.sku === 'text_search_enterprise') : null
+  const placesUsed = placesTs ? { used: placesTs.used, cap: placesTs.cap, free: placesTs.free } : null
+
   return (
     <ProspectionScreen
       today={today}
@@ -127,7 +132,7 @@ export default async function ProspectionPage() {
       sequences={sequences}
       contacts={contactRows}
       settings={settingsRow}
-      config={{ configured: !!cfg, from: cfg?.fromEmail ?? null, host: cfg?.smtpHost ?? null, placesKey: !!process.env.GOOGLE_PLACES_API_KEY }}
+      config={{ configured: !!cfg, from: cfg?.fromEmail ?? null, host: cfg?.smtpHost ?? null, placesKey: !!process.env.GOOGLE_PLACES_API_KEY, placesUsed }}
       stats={{
         sentToday: sentToday.count ?? 0, sent7: sent7.count ?? 0, sent30: sent30.count ?? 0, errors7: errors7.count ?? 0,
         replies30: replies30.count ?? 0, contacted30: contacted30.count ?? 0,

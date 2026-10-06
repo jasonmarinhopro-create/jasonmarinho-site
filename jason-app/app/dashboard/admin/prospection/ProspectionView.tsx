@@ -67,7 +67,7 @@ export default function ProspectionView({ sequences, contacts, settings, config,
       {tab === 'sequences' && <SequencesTab audience={audience} sequences={sequences} contacts={contacts} />}
       {tab === 'contacts' && <ContactsTab audience={audience} contacts={contacts} sequences={sequences} today={today} />}
       {tab === 'envois' && <EnvoisTab audience={audience} sends={sends} contacts={contacts} sequences={sequences} dailyCap={settings.daily_cap} />}
-      {tab === 'sources' && <SourcesTab audience={audience} placesKey={config.placesKey} />}
+      {tab === 'sources' && <SourcesTab audience={audience} placesKey={config.placesKey} placesUsed={config.placesUsed ?? null} />}
       {tab === 'reglages' && <SettingsTab settings={settings} config={config} />}
     </div>
   )

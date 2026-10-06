@@ -5,6 +5,8 @@ import { fetchPlaceFromMapsUrl } from '@/lib/audit-gbp/places-api'
 import { placesResponseToAnswers, type PlacesImportResult } from '@/lib/audit-gbp/places-mapper'
 import { placesAccessAdvice } from '@/lib/audit-gbp/places-errors'
 import { logger } from '@/lib/logger'
+import { PlacesBudgetError } from '@/lib/google/places-budget'
+import { rateLimit } from '@/lib/security/rate-limit'
 import { startAuditSession, saveAuditAnswers } from './actions'
 
 const log = logger('audit-gbp/place-actions')
@@ -33,12 +35,19 @@ export async function previewMapsUrl(rawUrl: string): Promise<ActionResult<Place
   if (!apiKey) {
     return { error: 'Configuration manquante côté serveur (clé API).' }
   }
+  // Part gratuite de Google partagée par tous les comptes : 10 audits express par heure et par compte
+  const rl = await rateLimit('placesAudit', user.id, 10, 60 * 60 * 1000)
+  if (!rl.allowed) return { error: "Tu as lancé beaucoup d'audits express : réessaie dans une heure." }
 
   try {
     const place = await fetchPlaceFromMapsUrl(url, apiKey)
     const result = placesResponseToAnswers(place)
     return { ok: result }
   } catch (err) {
+    if (err instanceof PlacesBudgetError) {
+      log.error('Places API : plafond gratuit', { msg: err.message.slice(0, 200) })
+      return { error: "L'audit express est en pause jusqu'au 1er du mois prochain (limite gratuite de Google atteinte). Tu peux remplir le questionnaire à la main en attendant." }
+    }
     const msg = err instanceof Error ? err.message : 'Erreur inconnue'
     // Réponse brute de Google gardée dans les logs (et « Erreurs de l'app »
     // dans l'admin) : c'est elle qui dit exactement quel réglage bloque.

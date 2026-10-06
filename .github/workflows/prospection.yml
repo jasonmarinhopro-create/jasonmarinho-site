@@ -127,11 +127,14 @@ jobs:
                     echo "$a | $q $v : $(echo "$res" | jq -c '{resultats_maps, sites_visites, emails_trouves, ajoutes, error}' 2>/dev/null || echo "$res" | head -c 200)"
                     n=$(echo "$res" | jq -r '.ajoutes // 0' 2>/dev/null || echo 0)
                     total=$((total + n))
+                    # Plafond gratuit de Google atteint (ou compteur absent) : on arrête tout
+                    if echo "$res" | grep -q 'Plafond gratuit\|Compteur Google'; then echo "::warning title=Google Maps::$(echo "$res" | jq -r '.error')"; break 3; fi
                   done
                 done
               done
               echo "Total ajouté : $total contacts"
-              call '{"op":"status"}' | jq '{contacts, envoyes_total}' ;;
+              echo "::notice title=Import Google Maps::$total contacts ajoutés · appels du mois : $(call '{"op":"status"}' | jq -c '[.google_ce_mois.items[]? | "\(.label) \(.used)/\(.cap)"]')"
+              call '{"op":"status"}' | jq '{contacts, envoyes_total, google_ce_mois}' ;;
           esac
 
       - name: Contrôle des textes (nombre d'e-mails qui citent encore « 12 photos »)

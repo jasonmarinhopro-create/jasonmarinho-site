@@ -15,6 +15,7 @@
 
 import 'server-only'
 import { bestEmail, extractEmails, type Audience } from './engine'
+import { takePlacesCall } from '@/lib/google/places-budget'
 
 export interface FoundContact {
   audience: Audience
@@ -104,6 +105,8 @@ export async function searchGooglePlaces(opts: { audience: Audience; query: stri
   if (!apiKey) throw new Error('Clé Google absente (GOOGLE_PLACES_API_KEY).')
   const query = opts.query.trim()
   if (query.length < 3) throw new Error('Précise la recherche, ex. « photographe immobilier Lyon ».')
+  // Jamais au-delà de la part gratuite de Google (lib/google/places-budget-rules.ts)
+  await takePlacesCall('text_search_enterprise')
   const res = await fetch('https://places.googleapis.com/v1/places:searchText', {
     method: 'POST',
     headers: {

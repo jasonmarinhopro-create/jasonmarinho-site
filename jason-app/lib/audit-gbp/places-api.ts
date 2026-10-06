@@ -4,6 +4,8 @@
 // Sécurité : ce module ne s'exécute QUE côté serveur (server actions / route handlers).
 // La clé API n'est jamais exposée au client.
 
+import { takePlacesCall, PlacesBudgetError } from '@/lib/google/places-budget'
+
 const PLACES_API_BASE = 'https://places.googleapis.com/v1'
 
 export interface PlaceDetails {
@@ -114,6 +116,7 @@ export function extractBusinessNameFromUrl(url: string): string | null {
 
 // ─── Recherche un lieu par texte (fallback si pas de place_id direct) ───
 export async function searchPlaceByText(query: string, apiKey: string): Promise<string | null> {
+  await takePlacesCall('text_search_ids')
   const res = await fetch(`${PLACES_API_BASE}/places:searchText`, {
     method: 'POST',
     headers: {
@@ -137,6 +140,7 @@ export async function searchPlaceByText(query: string, apiKey: string): Promise<
 
 // ─── Récupère les détails d'un lieu par son ID ───
 export async function getPlaceDetails(placeId: string, apiKey: string): Promise<PlaceDetails> {
+  await takePlacesCall('place_details_atmosphere')
   const res = await fetch(`${PLACES_API_BASE}/places/${encodeURIComponent(placeId)}`, {
     method: 'GET',
     headers: {
@@ -181,8 +185,9 @@ export async function fetchPlaceFromMapsUrl(rawUrl: string, apiKey: string): Pro
   try {
     const placeId = await searchPlaceByText(resolved, apiKey)
     if (placeId) return getPlaceDetails(placeId, apiKey)
-  } catch {
-    // ignore, on essaie un dernier fallback ci-dessous
+  } catch (e) {
+    // Plafond gratuit atteint : on s'arrête là (sinon : dernier essai ci-dessous)
+    if (e instanceof PlacesBudgetError) throw e
   }
 
   // 4. Dernier recours : URL brute (cas où la résolution a échoué)
@@ -190,8 +195,8 @@ export async function fetchPlaceFromMapsUrl(rawUrl: string, apiKey: string): Pro
     try {
       const placeId = await searchPlaceByText(rawUrl, apiKey)
       if (placeId) return getPlaceDetails(placeId, apiKey)
-    } catch {
-      // ignore
+    } catch (e) {
+      if (e instanceof PlacesBudgetError) throw e
     }
   }
 

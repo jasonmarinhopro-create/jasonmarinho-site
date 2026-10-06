@@ -14,6 +14,7 @@ import { handleInbox, installPlaybookSequences, loadSettings, runOutreach, sendT
 import { relaunchOutreach } from '@/lib/outreach/relaunch'
 import { checkSpf } from '@/lib/outreach/spf'
 import { searchGooglePlaces, findEmailOnSite } from '@/lib/outreach/sources'
+import { placesUsage } from '@/lib/google/places-budget'
 import type { Audience } from '@/lib/outreach/engine'
 
 export const dynamic = 'force-dynamic'
@@ -127,6 +128,8 @@ async function status(db: Db) {
     serveur_smtp: cfg?.smtpHost ?? null,
     spf_ok: spf?.ok ?? false,
     cle_google_maps: !!process.env.GOOGLE_PLACES_API_KEY,
+    // Appels Google Places du mois et plafonds (sous la part gratuite)
+    google_ce_mois: await placesUsage().catch(e => ({ error: String((e as Error)?.message ?? e).slice(0, 120) })),
     reglages: settings ? { plafond: settings.daily_cap, jours: settings.send_days, pause: settings.paused, dernier_passage: settings.last_run_at, resume: settings.last_run_summary } : null,
     contacts,
     sequences: (seqs ?? []).map(s => ({ nom: s.nom, audience: s.audience, active: s.enabled, declencheur: s.trigger, en_cours: inSeq.get(s.id) ?? 0 })),

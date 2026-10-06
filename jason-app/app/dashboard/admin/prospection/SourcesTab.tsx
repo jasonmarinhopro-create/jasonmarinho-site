@@ -12,7 +12,7 @@ import { parseCsv, mapHeaders, rowsToContacts, type CsvField } from '@/lib/outre
 import type { FoundContact } from '@/lib/outreach/sources'
 import { AMBER, BROWN, tint } from '../_ui/theme'
 import { importContacts, searchSireneAction, searchGoogleAction, findEmails } from './actions'
-import { ui } from './shared'
+import { ui, type MailConfig } from './shared'
 
 const NAF: Record<Audience, Array<{ code: string; label: string }>> = {
   photographe: [{ code: '74.20Z', label: 'Activités photographiques' }],
@@ -37,7 +37,7 @@ const FIELD_LABEL: Record<CsvField, string> = {
 
 type Msg = { ok?: string; err?: string } | null
 
-export default function SourcesTab({ audience, placesKey }: { audience: Audience; placesKey: boolean }) {
+export default function SourcesTab({ audience, placesKey, placesUsed }: { audience: Audience; placesKey: boolean; placesUsed: MailConfig['placesUsed'] }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <div style={ui.notice}>
@@ -49,7 +49,7 @@ export default function SourcesTab({ audience, placesKey }: { audience: Audience
         </span>
       </div>
       <div style={s.grid}>
-        <GoogleCard audience={audience} enabled={placesKey} />
+        <GoogleCard audience={audience} enabled={placesKey} usage={placesUsed ?? null} />
         <SireneCard audience={audience} />
         <CsvCard audience={audience} />
       </div>
@@ -114,7 +114,7 @@ function ResultList({ rows, picked, setPicked, known, keyOf }: {
   )
 }
 
-function GoogleCard({ audience, enabled }: { audience: Audience; enabled: boolean }) {
+function GoogleCard({ audience, enabled, usage }: { audience: Audience; enabled: boolean; usage: MailConfig['placesUsed'] }) {
   const [query, setQuery] = useState('')
   const [rows, setRows] = useState<FoundContact[]>([])
   const [known, setKnown] = useState<Set<string>>(new Set())
@@ -154,8 +154,14 @@ function GoogleCard({ audience, enabled }: { audience: Audience; enabled: boolea
 
   return (
     <div style={{ ...ui.card, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <Head icon={<MapPin size={18} weight="fill" />} color="var(--accent-text)" title="Google Maps" badge="1 000 recherches gratuites / mois"
+      <Head icon={<MapPin size={18} weight="fill" />} color="var(--accent-text)" title="Google Maps"
+        badge={usage ? `${usage.used} / ${usage.cap} recherches ce mois` : 'Compteur à installer'}
         sub="Les pros actifs, avec leur site : l'app y cherche l'e-mail publié (accueil, contact, mentions légales). La meilleure source pour les photographes." />
+      <p style={ui.sub}>
+        {usage
+          ? `Arrêt automatique à ${usage.cap} recherches par mois, sous les ${usage.free.toLocaleString('fr-FR')} gratuites de Google : jamais rien à payer. Chaque page de 20 résultats compte pour une recherche.`
+          : "Recherches bloquées tant que le compteur n'est pas installé : colle la migration 20261006_124_google_places_usage.sql dans Supabase."}
+      </p>
       {!enabled ? (
         <p style={ui.sub}>Clé Google absente : ajoute GOOGLE_PLACES_API_KEY sur Vercel (la même que pour l&apos;audit de fiche Google).</p>
       ) : (
