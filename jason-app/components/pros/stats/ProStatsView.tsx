@@ -8,7 +8,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import {
   Users, Eye, Timer, CursorClick, ChatCircle, MagnifyingGlass, ArrowSquareOut, FilePdf,
-  Compass, MapPin, DeviceMobile, CheckCircle, Lightbulb, Star, Camera, Broom, InstagramLogo, Globe, Images, CaretDown, CalendarBlank,
+  Compass, MapPin, DeviceMobile, CheckCircle, Lightbulb, Star, Camera, Broom, InstagramLogo, Globe, Images, CaretDown, CalendarBlank, Buildings,
 } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import InlineStyle from '@/components/ui/InlineStyle'
@@ -182,6 +182,7 @@ export default function ProStatsView({ data, basePath, previewId }: { data: ProS
         <div style={s.col}>
           <SourcesCard d={d} />
           <GoogleCard d={d} />
+          {d.cityPage && <CityPageCard d={d} />}
         </div>
         <div style={s.col}>
           <PlacesCard d={d} />
@@ -364,6 +365,57 @@ function GoogleCard({ d }: { d: ProStatsData }) {
           </MeasureNote>
         </>
       )}
+    </StatCard>
+  )
+}
+
+// Page de la ville du pro (06/10/2026, Jason : « les stats liées à la page
+// photographe de la ville du client sur son profil »)
+export function CityPageCard({ d }: { d: ProStatsData }) {
+  const c = d.cityPage!
+  const metierWord = d.metier === 'photographe' ? 'photographes' : 'équipes de ménage'
+  return (
+    <StatCard icon={<Buildings size={18} weight="duotone" />} title={`La page « ${d.metier === 'photographe' ? 'Photographe' : 'Ménage'} à ${c.label} »`}
+      subtitle={c.listed ? `Ta fiche y est présentée aux hôtes qui cherchent des ${metierWord} à ${c.label}` : `Ta fiche y sera présentée dès qu'elle sera en ligne`}
+      right={<a href={`https://jasonmarinho.com${c.path}`} target="_blank" rel="noopener noreferrer" style={s.heroLink} className="stats-noprint">Voir la page <ArrowSquareOut size={12} weight="bold" style={{ verticalAlign: '-1px' }} /></a>}>
+      <div style={s.gTiles}>
+        <div style={s.gTile}>
+          <span style={s.gLabel}>Visiteurs de la page</span>
+          <span style={s.gValue}>{nf(c.visitors)}</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', fontSize: 12, color: 'var(--text-3)' }}>
+            <PctPill pct={c.pct} size="sm" /> {nf(c.pageViews)} page{c.pageViews > 1 ? 's' : ''} vue{c.pageViews > 1 ? 's' : ''}
+          </span>
+        </div>
+        <div style={s.gTile}>
+          <span style={s.gLabel}>Venus sur ta fiche depuis la page</span>
+          <span style={s.gValue}>{nf(c.toFiche)}</span>
+          <span style={{ fontSize: 12, color: 'var(--text-3)' }}>visiteur{c.toFiche > 1 ? 's' : ''} sur la période</span>
+        </div>
+        <div style={s.gTile}>
+          <span style={s.gLabel}>Sur Google</span>
+          <span style={s.gValue}>{c.google.status === 'ok' ? nf(c.google.impressions) : '–'}</span>
+          <span style={{ fontSize: 12, color: 'var(--text-3)' }}>
+            {c.google.status === 'ok'
+              ? `affichage${c.google.impressions > 1 ? 's' : ''} · ${nf(c.google.clicks)} clic${c.google.clicks > 1 ? 's' : ''}${c.google.position !== null ? ` · place ${String(c.google.position).replace('.', ',')}` : ''}`
+              : c.google.status === 'error' ? 'Google indisponible pour le moment' : 'pas encore d’affichage sur la période'}
+          </span>
+        </div>
+      </div>
+      {c.google.status === 'ok' && c.google.queries.length > 0 && (
+        <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+          <li style={s.gHead}><span>Place</span><span style={{ flex: 1 }}>Ce que les hôtes tapent sur Google</span><span>Affichages</span></li>
+          {c.google.queries.map(q => (
+            <li key={q.query} style={s.gRow}>
+              <PlacePill position={q.position} />
+              <span style={s.gQuery} title={q.query}>{q.query}</span>
+              <span style={s.gImp}>{nf(q.impressions)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      <MeasureNote>
+        Visiteurs mesurés sur le site, Google avec 2 jours de retard. Plus la page de ta ville monte dans Google, plus ta fiche est vue : partage-la aussi à tes clients hôtes.
+      </MeasureNote>
     </StatCard>
   )
 }

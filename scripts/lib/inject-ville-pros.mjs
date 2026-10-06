@@ -24,6 +24,28 @@ function slugifyVille(v) {
     .replace(/^-+|-+$/g, '')
 }
 
+// Noms affichés des villes dont le slug ne suffit pas (même liste que
+// cityLabel de jason-app/lib/visibility/city-page.ts)
+const VILLE_LABELS = {
+  'aix-en-provence': 'Aix-en-Provence', 'clermont-ferrand': 'Clermont-Ferrand', 'la-baule': 'La Baule', 'la-rochelle': 'La Rochelle',
+  'le-mans': 'Le Mans', 'le-touquet': 'Le Touquet', 'saint-malo': 'Saint-Malo', 'saint-tropez': 'Saint-Tropez',
+  chambery: 'Chambéry', epernay: 'Épernay', etretat: 'Étretat', megeve: 'Megève', nimes: 'Nîmes', sete: 'Sète',
+}
+const villeLabel = slug => VILLE_LABELS[slug] ?? slug.charAt(0).toUpperCase() + slug.slice(1)
+
+/**
+ * Page de ville d'un pro : nom exact, ou nom suivi d'une précision
+ * (« Lyon 6e », « Paris 15 », « Bordeaux et alentours »), la plus longue
+ * correspondance gagne (06/10/2026 : avant, seul le nom exact comptait).
+ * Même règle que citySlugOf (jason-app/lib/visibility/city-page.ts).
+ */
+export function villePageSlug(ville, villeSlugs) {
+  const s = slugifyVille(String(ville || '').replace(/\bst\b\.?/gi, 'saint'))
+  if (!s) return null
+  const hits = villeSlugs.filter(c => s === c || s.startsWith(`${c}-`))
+  return hits.sort((a, b) => b.length - a.length)[0] ?? null
+}
+
 /**
  * @param {object} opts
  * @param {string} opts.root       Racine du site statique
@@ -33,9 +55,10 @@ function slugifyVille(v) {
  * @returns {number} nombre de pages ville enrichies
  */
 export function injectProsIntoVillePages({ root, prefix, metier, pros }) {
+  const villeSlugs = fs.readdirSync(root).filter(d => d.startsWith(`${prefix}-`)).map(d => d.slice(prefix.length + 1))
   const byVille = new Map()
   for (const p of pros) {
-    const slug = slugifyVille(p.ville)
+    const slug = villePageSlug(p.ville, villeSlugs)
     if (!slug) continue
     if (!byVille.has(slug)) byVille.set(slug, [])
     byVille.get(slug).push(p)
@@ -46,7 +69,7 @@ export function injectProsIntoVillePages({ root, prefix, metier, pros }) {
     const file = path.join(root, `${prefix}-${villeSlug}`, 'index.html')
     if (!fs.existsSync(file)) continue
 
-    const villeName = list[0].ville
+    const villeName = villeLabel(villeSlug)
     const cards = list.map(p => `
       <a href="${escHtml(p.url)}" style="display:flex;flex-direction:column;gap:4px;padding:16px 18px;background:#fff;border:1px solid rgba(0,76,63,.12);border-radius:12px;text-decoration:none;min-width:220px;flex:1">
         <span style="font-family:'Fraunces',serif;font-size:16px;color:#0F1A0D">${escHtml(p.name)}</span>

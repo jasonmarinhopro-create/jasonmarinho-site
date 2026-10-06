@@ -14,6 +14,7 @@ import { getAuthUser } from '@/lib/supabase/auth-user'
 import { getProfile } from '@/lib/queries/profile'
 import { gscQuery, safeGsc } from '@/lib/google/search-analytics'
 import { loadGscQueryPages, loadVisits, SITE_ORIGIN } from './load'
+import { cityLabel, cityPagePath, citySlugOf, internalReferrerPath } from './city-page'
 import {
   aggregateQueries, GSC_LAG_DAYS, isFirstPage, proTakeaways, summarizeVisits,
   type VisitRow,
@@ -22,7 +23,7 @@ import {
   avgSecondsPerVisitor, bestNearly, clickEventsOf, countByParisDay, dailySeries, daysBetween, DETAILS_SINCE,
   fairPct, lastBucketIncomplete, MONTHLY_OFF_FLAG, proPeriodRange, startedDuring, sumBetween, timeSeries,
   visitorSeries, visitsBetween, VIEWS_DAILY_SINCE, VISITS_SINCE,
-  type MetricKey, type ProFicheInfo, type ProMetier, type ProMetric, type ProPeriod, type ProPeriodKey, type ProStatsData,
+  type MetricKey, type ProCityPage, type ProFicheInfo, type ProMetier, type ProMetric, type ProPeriod, type ProPeriodKey, type ProStatsData,
 } from './pro-stats'
 
 export const PRO_TABLE: Record<ProMetier, 'photographers' | 'cleaners'> = { photographe: 'photographers', menage: 'cleaners' }
@@ -117,6 +118,8 @@ export function withTimeout<T>(p: Promise<T>, ms: number, label: string): Promis
   ])
 }
 
+const sortByImpressionsDesc = <T extends { impressions: number }>(l: T[]) => [...l].sort((a, b) => b.impressions - a.impressions)
+
 /** Totaux de Google jour par jour sur la période et celle d'avant (mêmes requêtes que loadGscDaily, donc même cache) */
 async function gscDailyBoth(period: ProPeriod, url: string) {
   const page = { op: 'equals' as const, value: url }
@@ -156,8 +159,12 @@ export async function loadProStats(o: LoadOptions): Promise<ProStatsData> {
   const url = f.slug ? proPublicUrl(metier, f.slug) : null
   const contacts = CONTACTS[metier]
   const service = getServiceClient()
+  // Page de la ville du pro (06/10/2026)
+  const citySlug = citySlugOf(f.ville)
+  const cityPath = citySlug ? cityPagePath(metier, citySlug) : null
+  const cityUrl = cityPath ? `${SITE_ORIGIN}${cityPath}` : null
 
-  const [visitsRes, viewsRes, clicksRes, contactsRes, googleRes, reportRes] = await Promise.all([
+  const [visitsRes, viewsRes, clicksRes, contactsRes, googleRes, reportRes, cityVisitsRes, cityGoogleRes] = await Promise.all([
     path
       ? loadVisits({ start: period.prevStart, end: period.end, path }).then(rows => ({ rows, error: null as string | null }), e => ({ rows: [] as VisitRow[], error: String((e as Error)?.message ?? e).slice(0, 200) }))
       : Promise.resolve({ rows: [] as VisitRow[], error: null as string | null }),
@@ -170,6 +177,10 @@ export async function loadProStats(o: LoadOptions): Promise<ProStatsData> {
     o.skipReport || !f.user_id
       ? Promise.resolve({ data: null })
       : service.from('profiles').select('onboarding_completed_steps').eq('id', f.user_id).maybeSingle(),
+    cityPath ? loadVisits({ start: period.prevStart, end: period.end, path: cityPath }).catch(() => null) : Promise.resolve(null),
+    cityUrl
+      ? safeGsc(() => withTimeout(Promise.all([loadGscQueryPages(gp, { op: 'equals', value: cityUrl }), gscDailyBoth(gp, cityUrl)]), o.googleTimeoutMs ?? 12_000, 'Google'))
+      : Promise.resolve(null),
   ])
 
   // ── Visites ──
@@ -284,6 +295,47 @@ export async function loadProStats(o: LoadOptions): Promise<ProStatsData> {
     key === 'instagram' ? (f.instagram_clicks_count ?? 0) : key === 'portfolio' ? (f.portfolio_clicks_count ?? 0) : (f.site_clicks_count ?? 0)
   const steps = ((reportRes.data as { onboarding_completed_steps?: string[] | null } | null)?.onboarding_completed_steps) ?? []
 
+  // ── Page de la ville ──
+  let cityPage: ProCityPage | null = null
+  if (citySlug && cityPath && cityUrl) {
+    const rows = cityVisitsRes ?? []
+    const cur = visitsBetween(rows, period.start, period.end)
+    const prevRows = visitsBetween(rows, period.prevStart, period.prevEnd)
+    const cityVisitors = new Set(cur.map(v => v.session_id)).size
+    const cityPrev = new Set(prevRows.map(v => v.session_id)).size
+    let cg: ProCityPage['google'] = { status: 'empty', clicks: 0, impressions: 0, position: null, queries: [] }
+    if (cityGoogleRes && cityGoogleRes.ok) {
+      const [qp, daily] = cityGoogleRes.data
+      const inPeriod = daily.filter(d => d.day >= gp.start && d.day <= gp.end)
+      const impressions = inPeriod.reduce((n, d) => n + d.impressions, 0)
+      const queries = sortByImpressionsDesc(aggregateQueries(qp.cur, qp.prev))
+      const weighted = queries.reduce((n, q) => n + q.position * q.impressions, 0)
+      const qImp = queries.reduce((n, q) => n + q.impressions, 0)
+      cg = {
+        status: impressions > 0 || queries.length > 0 ? 'ok' : 'empty',
+        clicks: inPeriod.reduce((n, d) => n + d.clicks, 0),
+        impressions,
+        position: qImp ? Math.round((weighted / qImp) * 10) / 10 : null,
+        queries: queries.slice(0, 8),
+      }
+    } else if (cityGoogleRes && !cityGoogleRes.ok) {
+      cg = { ...cg, status: 'error' }
+    }
+    cityPage = {
+      slug: citySlug,
+      label: cityLabel(citySlug),
+      path: cityPath,
+      url: cityUrl,
+      listed: info.isActive,
+      visitors: cityVisitors,
+      prevVisitors: visitsPrevOk ? cityPrev : null,
+      pct: fairPct(cityVisitors, cityPrev, VISITS_SINCE, period.prevStart),
+      pageViews: cur.length,
+      toFiche: new Set(curVisits.filter(v => internalReferrerPath(v.referrer) === cityPath).map(v => v.session_id)).size,
+      google: cg,
+    }
+  }
+
   return {
     metier,
     fiche: info,
@@ -318,5 +370,6 @@ export async function loadProStats(o: LoadOptions): Promise<ProStatsData> {
     },
     takeaways,
     monthlyReport: { on: !steps.includes(MONTHLY_OFF_FLAG), canEdit: !o.isAdminPreview },
+    cityPage,
   }
 }

@@ -3,7 +3,7 @@ title: "Photographes et ménage : les statistiques de ta fiche"
 excerpt: "Qui voit ta fiche dans l'annuaire, d'où viennent tes visiteurs, ce que Google en montre, et le bilan reçu chaque mois par e-mail."
 order: 5
 relatedPages: [/dashboard/ma-fiche-photographe/statistiques, /dashboard/ma-fiche-menage/statistiques]
-updatedAt: "2026-10-05"
+updatedAt: "2026-10-06"
 ---
 
 ## Où les trouver
@@ -50,6 +50,18 @@ Les chiffres viennent de Google Search Console, l'outil de Google pour les propr
 - **La liste des recherches** : la place moyenne de ta fiche (pastille vert foncé de la 1re à la 10e place, vert pâle au-delà), le texte tapé dans Google et le nombre d'affichages. Les onglets trient par place : en première page, juste après (11e à 20e place), plus loin.
 
 Google ne détaille pas les recherches trop rares (« recherches masquées ») : la liste peut compter moins d'affichages que le total. Une nouvelle fiche met souvent 2 à 4 semaines à apparaître dans Google.
+
+## La page de ta ville
+
+Si ta ville a sa page sur le site (par exemple **Photographe à Lyon** ou **Ménage à Saint-Malo**, 60 villes), ta fiche y est présentée dès qu'elle est en ligne. La ville est lue dans ta fiche : « Lyon 6e » ou « Paris 15 » mènent à la page de la ville.
+
+La carte **La page de ta ville** montre :
+
+- **Visiteurs de la page** sur la période, et l'écart avec la période d'avant
+- **Venus sur ta fiche depuis la page** : les visiteurs qui ont ouvert ta fiche en cliquant depuis la page de ta ville
+- **Sur Google** : combien de fois la page a été affichée, les clics, sa place moyenne et les recherches tapées par les hôtes (par exemple « photographe airbnb lyon »)
+
+Si ta ville n'a pas encore de page, la carte n'apparaît pas.
 
 ## Ce qu'il faut retenir
 

@@ -337,6 +337,24 @@ export interface ProStatsData {
   }
   takeaways: Array<{ title: string; text: string; tone: 'ok' | 'tip' }>
   monthlyReport: { on: boolean; canEdit: boolean }
+  /** Page de la ville du pro (/photographe-lcd-<ville>, /menage-lcd-<ville>), null si sa ville n'en a pas (06/10/2026) */
+  cityPage: ProCityPage | null
+}
+
+export interface ProCityPage {
+  slug: string
+  label: string
+  path: string
+  url: string
+  /** Fiche active : présentée sur la page de la ville */
+  listed: boolean
+  visitors: number
+  prevVisitors: number | null
+  pct: number | null
+  pageViews: number
+  /** Visiteurs arrivés sur la fiche depuis la page de la ville */
+  toFiche: number
+  google: { status: 'ok' | 'empty' | 'error'; clicks: number; impressions: number; position: number | null; queries: SearchStat[] }
 }
 
 /** Drapeaux du bilan mensuel (profiles.onboarding_completed_steps) */
