@@ -9,7 +9,7 @@
 
 const KEY = process.env.PARTNERSTACK_API_KEY
 if (!KEY) {
-  console.log('PARTNERSTACK_API_KEY absent : ajoute-le dans Settings > Secrets and variables > Actions.')
+  console.log('::notice title=PartnerStack::PARTNERSTACK_API_KEY absent : ajoute-le dans Settings > Secrets and variables > Actions.')
   process.exit(0)
 }
 
@@ -41,9 +41,13 @@ for (const route of ROUTES) {
     let json = null
     try { json = JSON.parse(text) } catch { /* pas du JSON */ }
     console.log(`\n--- ${route} -> HTTP ${r.status} (${text.length} octets)`)
-    if (json) for (const line of shape(json)) console.log('   ' + line)
+    const lines = json ? shape(json) : []
+    for (const line of lines) console.log('   ' + line)
+    // Annotations : lisibles par l'API GitHub sans télécharger les journaux
+    const esc = t => t.replace(/%/g, '%25').replace(/\r/g, '').replace(/\n/g, '%0A')
+    console.log(`::notice title=${route} HTTP ${r.status}::${esc(lines.join('\n').slice(0, 3800) || '(vide)')}`)
   } catch (e) {
-    console.log(`\n--- ${route} -> erreur ${String(e?.message ?? e).slice(0, 80)}`)
+    console.log(`::notice title=${route} erreur::${String(e?.message ?? e).slice(0, 80)}`)
   }
   await new Promise(res => setTimeout(res, 800))
 }
