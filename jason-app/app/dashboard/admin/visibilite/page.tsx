@@ -27,7 +27,8 @@ async function cachedVisibility(period: Period, tab: Tab, today: string): Promis
   const load = unstable_cache(
     async (p: Period, t: Tab, d: string) => {
       const res = await loadVisibility(p, t, d)
-      if (!res.gsc.ok || !res.visits.ok || !res.pros.ok || !res.affClicks.ok) {
+      const nets = [res.partenaires?.affilae, res.partenaires?.partnerstack]
+      if (!res.gsc.ok || !res.visits.ok || !res.pros.ok || !res.affClicks.ok || nets.some(n => n?.state === 'erreur' || (n?.state === 'ok' && n.missing.length > 0))) {
         partial = res
         throw new Error('visibilite-partielle')
       }

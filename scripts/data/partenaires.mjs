@@ -23,7 +23,7 @@ export const CATEGORIES = [
 ]
 
 // Catégories mises en avant dans la rangée d'icônes (desktop)
-export const RACCOURCIS = ['gestion', 'messagerie', 'direct', 'banque', 'acces', 'compta', 'juridique']
+export const RACCOURCIS = ['gestion', 'messagerie', 'direct', 'banque', 'acces', 'compta', 'juridique', 'marketing']
 
 const LODGIFY_DEMO = 'https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv'
 const HOSPITABLE = 'https://hospitable.com/partners/refer?utm_source=affiliates&utm_medium=blog&utm_campaign=BASWTYN7'
@@ -35,6 +35,8 @@ const INDY = 'https://urlr.me/FEqNfy'
 export const LEGALPLACE_AE = 'utm_source=affilae&utm_medium=partner&utm_campaign=Jason%20Marinho&ae=1773'
 const LEGALPLACE_SOCIETE = `https://creation.legalplace.fr/creation-entreprise-2?${LEGALPLACE_AE}`
 // Tiime (partenariat Affilae accepté le 01/10/2026, numéro d'affilié 1127)
+// Brevo (partenariat PartnerStack du 06/10/2026) : lien « plateforme » fourni par Brevo
+const BREVO = 'https://get.brevo.com/3mftm80uaemx-m7y3c'
 const TIIME = 'https://lb.affilae.com/r/?p=651c0d1e40e2d575f87b3b27&af=1127&lp=https%3A%2F%2Fwww.tiime.fr%2Ffacturation-electronique-2026%3Futm_source%3Dother%26utm_medium%3Daffiliation%26utm_campaign%3DJason%2520Marinho%26ae%3D1127%26program_id%3D651c0d1e40e2d575f87b3b27%26program_name%3DTiime'
 
 export const OUTILS = [
@@ -102,6 +104,16 @@ export const OUTILS = [
     ],
   },
   {
+    nom: 'Brevo', mono: 'B', couleur: '#0B996E', cats: ['marketing'],
+    // Partenariat PartnerStack du 06/10/2026 (lien « plateforme »)
+    badge: 'affilie', offre: '300 e-mails/jour gratuits',
+    desc: 'Newsletter à tes voyageurs directs et CRM gratuit. Solution française, données en Europe.',
+    liens: [
+      { label: 'Créer un compte', href: BREVO, sponsored: true },
+      { label: "Voir l'offre", href: '/partenaires/brevo' },
+    ],
+  },
+  {
     nom: 'Krossbooking', mono: 'K', couleur: '#0E7490', cats: ['gestion'],
     badge: 'membre', offre: 'Tarif négocié membres',
     desc: 'Channel manager italien avec PMS et moteur de réservation. Réduction réservée aux membres.',
@@ -135,6 +147,5 @@ export const OUTILS = [
   { nom: 'CubiCasa', mono: 'C', couleur: '#0D9488', cats: ['photo'], desc: 'Plan du logement généré en le scannant avec un smartphone.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-matterport-cubicasa' }] },
   { nom: 'AirDNA', mono: 'A', couleur: '#E11D48', cats: ['marche'], desc: 'Données du marché LCD : taux d’occupation, prix moyens, saisonnalité par ville.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-airdna-mashvisor' }] },
   { nom: 'Mashvisor', mono: 'M', couleur: '#6D28D9', cats: ['marche'], desc: 'Analyse de rentabilité immobilière, surtout sur le marché américain.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-airdna-mashvisor' }] },
-  { nom: 'Brevo', mono: 'B', couleur: '#0B996E', cats: ['marketing'], desc: 'Emailing et SMS, solution française, pour fidéliser tes anciens voyageurs.', liens: [{ label: 'Site officiel', href: 'https://www.brevo.com/fr/', externe: true }] },
   { nom: 'Mailchimp', mono: 'M', couleur: '#CA8A04', cats: ['marketing'], desc: 'Emailing et automatisations, très répandu.', liens: [{ label: 'Site officiel', href: 'https://mailchimp.com/fr/', externe: true }] },
 ]

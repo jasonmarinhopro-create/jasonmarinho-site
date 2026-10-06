@@ -5,7 +5,8 @@
 // avec un avantage ou un accompagnement pour l'hôte (Indy, LegalPlace, et
 // Lodgify depuis son code JASON15 du 01/10/2026, demande de Jason). Pas de page
 // pour un outil simplement référencé, ni pour Hospitable (sa page « avis » joue
-// déjà ce rôle), ni pour Shine (2 parrainages par an).
+// déjà ce rôle), ni pour Shine (2 parrainages par an). Brevo (PartnerStack,
+// 06/10/2026) : page voulue par Jason, avantage = l'offre gratuite.
 //
 // Faits repris des articles partenaires (sources citées dans chaque page).
 // Prix : relevés de septembre 2026, à revérifier avant toute mise à jour.
@@ -27,6 +28,11 @@ const LP_DOMICILIATION = `https://landing.legalplace.fr/domiciliation?${LP}`
 const LODGIFY_TRIAL = 'https://app.lodgify.com/signup/fr/?afmc=ui1'
 const LODGIFY_DEMO = 'https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv'
 const LODGIFY_ONBOARDING = 'https://www.lodgify.com/fr/onboarding-gratuit/?afmc=uid'
+
+// ── Brevo (affilié PartnerStack, 06/10/2026) : 3 liens fournis par Brevo ──
+const BREVO_EMAIL = 'https://get.brevo.com/ui6inugm9ub6'
+const BREVO_PLATFORM = 'https://get.brevo.com/3mftm80uaemx-m7y3c'
+const BREVO_CRM = 'https://get.brevo.com/z0u697ij3brq-5bwioc'
 
 export const PAGES = [
   {
@@ -305,6 +311,104 @@ export const PAGES = [
       ['Cotisations et seuils de la micro-entreprise', 'https://www.economie.gouv.fr/entreprises/gerer-sa-micro-entreprise/micro-entreprises-quel-est-le-montant-de-vos-cotisations-sociales'],
       ['Coût de création d\'une SASU en 2026 (LegalPlace)', 'https://www.legalplace.fr/guides/cout-creation-sasu/'],
       ['Conciergerie et carte professionnelle', 'https://efisio.fr/conciergerie-airbnb-sans-carte-professionnelle-t-g-etes-vous-dans-lillegalite/'],
+    ],
+  },
+  {
+    slug: 'brevo',
+    releve: 'octobre 2026',
+    nom: 'Brevo',
+    mono: 'B',
+    couleur: '#0B996E',
+    title: 'Brevo : newsletter et CRM gratuits pour ta LCD',
+    description: "Brevo avec Jason Marinho : la newsletter à tes voyageurs en direct et le CRM de ta conciergerie, gratuits pour démarrer. Ce qui est permis, ce que ça coûte, les limites.",
+    eyebrow: 'Partenaire · E-mailing & CRM',
+    h1: 'Brevo : écris à tes voyageurs en direct, <em>gratuitement</em>',
+    lead: "Brevo (ex-Sendinblue) est la plateforme française d'e-mailing et de CRM. J'y envoie ma propre newsletter, et c'est l'outil que je conseille pour garder le lien avec tes voyageurs venus en direct ou suivre les propriétaires de ta conciergerie : l'offre gratuite suffit pour démarrer.",
+    offre: {
+      titre: 'Gratuit pour démarrer',
+      sous: '300 e-mails par jour, contacts illimités, sans carte bancaire',
+      points: [
+        'Newsletter, formulaire d\'inscription et statistiques inclus',
+        'CRM gratuit pour suivre tes prospects et tes clients',
+        'Entreprise française, données hébergées en Europe',
+      ],
+      cta: { label: 'Créer mon compte gratuit', href: BREVO_PLATFORM },
+      cta2: { label: 'Essayer le CRM gratuit', href: BREVO_CRM },
+      note: 'Lien affilié : Brevo me verse une commission si tu t\'inscris via ces liens, sans aucun surcoût pour toi.',
+    },
+    pourquoi: {
+      titre: 'Pourquoi je recommande <em>Brevo</em>',
+      items: [
+        { icon: 'envelope-simple', t: 'Je l\'utilise moi-même', d: 'La newsletter de jasonmarinho.com passe par Brevo : inscriptions, envois, désinscriptions gérées toutes seules.' },
+        { icon: 'shield-check', t: 'Français et hébergé en Europe', d: 'Tes listes de voyageurs restent dans l\'Union européenne, avec un contrat de traitement des données conforme au RGPD.' },
+        { icon: 'piggy-bank', t: 'Une vraie offre gratuite', d: '300 e-mails par jour et des contacts illimités : de quoi envoyer une lettre par saison à des centaines de voyageurs sans payer.' },
+      ],
+    },
+    fonctions: {
+      titre: 'Ce que Brevo fait pour <em>ton activité</em>',
+      items: [
+        { icon: 'newspaper', t: 'Newsletter', d: 'Éditeur glisser-déposer, modèles, envoi programmé.', href: BREVO_EMAIL, lien: 'Commencer ma newsletter' },
+        { icon: 'clipboard-text', t: 'Formulaire d\'inscription', d: 'À mettre sur ton site direct ou ton livret d\'accueil, avec double confirmation.' },
+        { icon: 'chart-bar', t: 'Statistiques', d: 'Ouvertures, clics, désinscriptions de chaque envoi.' },
+        { icon: 'kanban', t: 'CRM gratuit', d: 'Pipeline de prospects, tâches et rappels, jusqu\'à 50 opportunités ouvertes.', href: BREVO_CRM, lien: 'Essayer le CRM' },
+        { icon: 'lightning', t: 'Automatisations', d: 'Un e-mail de bienvenue dès qu\'un voyageur s\'inscrit, selon la formule.' },
+        { icon: 'device-mobile', t: 'SMS et WhatsApp', d: 'En option, payés à l\'envoi, pour une offre de dernière minute.' },
+      ],
+    },
+    etapes: [
+      { t: 'Crée ton compte gratuit', d: 'et envoie depuis une adresse à ton nom (idéalement ton propre domaine, que Brevo t\'aide à authentifier pour arriver en boîte de réception).' },
+      { t: 'Construis ta liste avec tes voyageurs directs', d: 'ceux qui ont réservé chez toi (site, Driing, contrat signé en ligne) et ont pu refuser, plus un formulaire d\'inscription sur ton site et dans ton livret.' },
+      { t: 'Envoie une lettre par saison', d: 'dates encore libres, nouveautés du logement, tarif fidélité en direct : simple et régulier, puis regarde ce qui fait cliquer.' },
+    ],
+    tableau: {
+      titre: 'Brevo est-il fait <em>pour toi</em> ?',
+      entete: ['Ta situation', 'Mon conseil'],
+      lignes: [
+        ['Tu as des voyageurs en direct (site, Driing, contrats) et tu veux qu\'ils reviennent', '<span class="yes">Oui</span> : l\'offre gratuite suffit largement'],
+        ['Conciergerie qui prospecte et suit des propriétaires', '<span class="yes">Oui</span> : CRM gratuit et lettre aux propriétaires dans le même outil'],
+        ['Photographe ou équipe de ménage qui veut écrire à ses hôtes clients', '<span class="yes">Oui</span>, avec un lien de désinscription dans chaque e-mail (fait par Brevo)'],
+        ['Tes voyageurs viennent tous d\'Airbnb ou de Booking.com', '<span class="partial">Pas encore</span> : les plateformes interdisent de leur écrire hors messagerie. Commence par la <a href="/blog/location-directe-pourquoi-saffranchir-plateformes">réservation directe</a>'],
+        ['Gros volume, automatisations poussées, plusieurs utilisateurs', 'Formule payante : compare avec la grille officielle'],
+      ],
+      note: 'Rappel : une adresse collectée sur Airbnb ou Booking.com ne doit jamais entrer dans ta liste, même si le voyageur était ravi.',
+    },
+    cout: {
+      titre: 'Ce que ça <em>coûte</em>',
+      paras: [
+        'L\'offre gratuite permet 300 e-mails par jour, avec des contacts illimités et sans carte bancaire. Pour une newsletter mensuelle à quelques centaines de voyageurs, tu n\'as pas besoin de plus : il suffit d\'étaler l\'envoi sur deux jours si ta liste dépasse 300 adresses.',
+        'Les offres payantes se paient selon le nombre d\'e-mails envoyés par mois, pas selon le nombre de contacts. Elles démarrent à moins de 10 € par mois d\'après les relevés d\'octobre 2026 et retirent notamment le logo Brevo des e-mails. Le CRM a son offre gratuite (un utilisateur, un pipeline) et des offres payantes à part.',
+        'La grille change régulièrement : le prix exact est celui affiché par Brevo au moment de souscrire.',
+      ],
+    },
+    limites: [
+      'En gratuit, le logo Brevo apparaît en bas de tes e-mails et l\'envoi est plafonné à 300 par jour.',
+      'Sans domaine authentifié (SPF, DKIM), une partie des e-mails peut finir en indésirables : prends 15 minutes pour le configurer.',
+      'Brevo ne crée pas ta liste : sans réservations directes, tu n\'auras personne à qui écrire légalement.',
+      'L\'outil fait beaucoup de choses (marketing, CRM, conversations, SMS) : l\'interface peut dérouter au début, commence par la newsletter seule.',
+    ],
+    liens: [
+      { href: '/blog/email-marketing-newsletter-hote-lcd', t: 'Ta newsletter en 1 heure', d: 'Ce qui est permis, la structure qui marche, les chiffres à suivre.' },
+      { href: '/blog/base-voyageurs-fideles-location-directe-durable', t: 'Une base de voyageurs fidèles', d: 'Collecter les contacts légalement et faire revenir tes voyageurs.' },
+      { href: '/blog/prospection-conciergerie-trouver-premier-mandat', t: 'Trouver tes premiers mandats', d: 'Les canaux de prospection d\'une conciergerie.' },
+      { href: '/services/contrats', t: 'Tes réservations directes signées', d: 'Contrat en ligne, paiement et caution dans l\'app.' },
+    ],
+    faq: [
+      { q: 'Brevo est-il vraiment gratuit ?', a: 'Oui : l\'offre gratuite permet d\'envoyer 300 e-mails par jour à un nombre illimité de contacts, sans carte bancaire et sans limite de durée. Le logo Brevo apparaît en bas des e-mails. Les offres payantes ajoutent du volume et retirent ce logo.' },
+      { q: 'Puis-je envoyer ma newsletter aux voyageurs Airbnb ou Booking ?', a: 'Non. Airbnb et Booking.com interdisent d\'utiliser les coordonnées de leurs voyageurs pour du marketing (l\'adresse est d\'ailleurs masquée), sous peine de suspension du compte. Ta liste se construit avec tes voyageurs en direct et un formulaire d\'inscription sur ton site ou dans ton livret d\'accueil.' },
+      { q: 'Ai-je besoin du consentement de mes voyageurs directs ?', a: 'Pour un voyageur qui a déjà réservé chez toi en direct, tu peux lui proposer un nouveau séjour si tu lui as donné la possibilité de refuser au moment de la réservation, puis dans chaque e-mail (article L34-5 du Code des postes et des communications électroniques). Pour tous les autres, il faut une inscription volontaire. Ne partage jamais ta liste avec un partenaire.' },
+      { q: 'Brevo, c\'est Sendinblue ?', a: 'Oui, Sendinblue est devenu Brevo en 2023. C\'est une entreprise française, basée à Paris, qui héberge les données de ses clients dans l\'Union européenne.' },
+      { q: 'Brevo ou Mailchimp ?', a: 'Pour un hôte en France, Brevo : interface en français, données en Europe et offre gratuite calculée sur les envois plutôt que sur le nombre de contacts. Mailchimp reste très complet mais son offre gratuite est plafonnée en contacts.' },
+    ],
+    cta: {
+      titre: 'Des voyageurs en direct, <em>une liste qui grandit</em>',
+      texte: 'L\'app Jason Marinho gère tes réservations directes : contrat signé en ligne, paiement, caution par empreinte, carnet de voyageurs. Brevo s\'occupe de les faire revenir.',
+      btn: { label: 'Créer mon compte gratuit', href: 'https://app.jasonmarinho.com/auth/register' },
+    },
+    sources: [
+      ['Grille tarifaire Brevo', 'https://www.brevo.com/fr/pricing/'],
+      ['Le CRM de Brevo', 'https://www.brevo.com/fr/crm-en-ligne/'],
+      ['CNIL : la prospection commerciale par courrier électronique', 'https://www.cnil.fr/fr/la-prospection-commerciale-par-courrier-electronique'],
+      ['Booking.com : adresses e-mail des voyageurs masquées', 'https://partner.booking.com/en-us/help/reservations/communicate-guests/why-does-guests-email-address-end-guestbookingcom'],
     ],
   },
 ]

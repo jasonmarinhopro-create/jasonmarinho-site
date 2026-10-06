@@ -275,7 +275,7 @@ ${p.faq.map(f => `  <details class="faq-i">
   </details>`).join('\n')}
 </section>
 
-<p class="src">Sources consultées en septembre 2026 : ${p.sources.map(([t, h]) => `<a href="${h}" rel="nofollow noopener" target="_blank">${t}</a>`).join(', ')}. Prix relevés en septembre 2026, à vérifier sur la grille officielle de ${p.nom}.</p>
+<p class="src">Sources consultées en ${p.releve ?? 'septembre 2026'} : ${p.sources.map(([t, h]) => `<a href="${h}" rel="nofollow noopener" target="_blank">${t}</a>`).join(', ')}. Prix relevés en ${p.releve ?? 'septembre 2026'}, à vérifier sur la grille officielle de ${p.nom}.</p>
 
 <aside class="cta-banner">
   <h2>${p.cta.titre}</h2>

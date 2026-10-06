@@ -1,0 +1,26 @@
+# Découverte de l'API partenaire de PartnerStack (programme Brevo de Jason)
+# avant d'en lire les ventes dans l'admin. Journaux publics : le script
+# n'affiche que des codes HTTP et des noms de champs (jamais de montant,
+# d'e-mail ni de clé). Relancé en modifiant ce fichier sur une branche
+# claude/** (ou à la main).
+name: PartnerStack (découverte de l'API)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/workflows/partnerstack-explore.yml', 'scripts/partnerstack-explore.mjs']
+
+jobs:
+  explore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Explorer l'API
+        env:
+          PARTNERSTACK_API_KEY: ${{ secrets.PARTNERSTACK_API_KEY }}
+        run: node scripts/partnerstack-explore.mjs

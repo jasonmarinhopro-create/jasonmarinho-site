@@ -100,3 +100,18 @@ describe('pages des partenaires dans Google', () => {
     expect(groups.find(g => g.key === 'indy')!.pages.every(p => p.place === null)).toBe(true)
   })
 })
+
+import { partnerstackSalesFor } from './partners'
+
+describe('ventes PartnerStack (Brevo)', () => {
+  it('retrouve Brevo par son nom, ou le seul programme du compte', () => {
+    const ok = {
+      state: 'ok' as const, fetchedAt: '', missing: [],
+      summary: { currency: 'EUR', programs: [{ name: 'Brevo', rewards: 3, commissionCents: 10500, byStatus: { en_attente: 10000, validee: 500, refusee: 0, payee: 0 }, customers: 2 }], totals: { rewards: 3, commissionCents: 10500, byStatus: { en_attente: 10000, validee: 500, refusee: 0, payee: 0 }, customers: 2 }, recent: [] },
+    }
+    expect(partnerInfo('brevo')).toMatchObject({ name: 'Brevo', partnerstack: true, salesWhere: 'PartnerStack' })
+    expect(partnerstackSalesFor('Brevo', ok)).toMatchObject({ conversions: 3, commissionCents: 10500 })
+    expect(partnerstackSalesFor('Brevo', { ...ok, summary: { ...ok.summary, programs: [{ ...ok.summary.programs[0], name: 'Sendinblue SAS' }] } })?.conversions).toBe(3)
+    expect(partnerstackSalesFor('Brevo', { state: 'absent' })).toBeNull()
+  })
+})

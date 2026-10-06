@@ -216,6 +216,28 @@
       ]
     },
     {
+      "nom": "Brevo",
+      "mono": "B",
+      "couleur": "#0B996E",
+      "cats": [
+        "marketing"
+      ],
+      "badge": "affilie",
+      "offre": "300 e-mails/jour gratuits",
+      "desc": "Newsletter à tes voyageurs directs et CRM gratuit. Solution française, données en Europe.",
+      "liens": [
+        {
+          "label": "Créer un compte",
+          "href": "https://get.brevo.com/3mftm80uaemx-m7y3c",
+          "sponsored": true
+        },
+        {
+          "label": "Voir l'offre",
+          "href": "https://jasonmarinho.com/partenaires/brevo"
+        }
+      ]
+    },
+    {
       "nom": "Krossbooking",
       "mono": "K",
       "couleur": "#0E7490",
@@ -599,22 +621,6 @@
         {
           "label": "Voir le comparatif",
           "href": "https://jasonmarinho.com/comparatif-airdna-mashvisor"
-        }
-      ]
-    },
-    {
-      "nom": "Brevo",
-      "mono": "B",
-      "couleur": "#0B996E",
-      "cats": [
-        "marketing"
-      ],
-      "desc": "Emailing et SMS, solution française, pour fidéliser tes anciens voyageurs.",
-      "liens": [
-        {
-          "label": "Site officiel",
-          "href": "https://www.brevo.com/fr/",
-          "externe": true
         }
       ]
     },

@@ -15,6 +15,7 @@ import TourTrigger from '@/components/dashboard/TourTrigger'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import { Card, CardHead, Notice, ui } from '../finances/_ui/ui'
+import NewsletterCard from './NewsletterCard'
 
 type Sejour = { id: string; date_arrivee: string; date_depart: string; montant: number | null }
 type Voyageur = {
@@ -658,6 +659,9 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
           )}
         </>
       )}
+
+      {/* Newsletter aux voyageurs directs (Brevo) */}
+      {tableReady && voyageurs.length > 0 && <NewsletterCard voyageurs={voyageurs} today={today} />}
 
       {/* Modal Add / Edit */}
       {modal && (

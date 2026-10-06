@@ -11,7 +11,8 @@ import TrendChart from './TrendChart'
 // Onglet « Partenaires » de la page Visibilité (05/10/2026, demande de Jason) :
 // les clics vers les liens affiliés du site, les pages qui les envoient et
 // leur place dans Google, d'où viennent ceux qui cliquent, les pages à
-// améliorer, et les ventes suivies par Affilae. Un clic n'est pas une vente.
+// améliorer, et les ventes suivies par Affilae et PartnerStack (Brevo). Un
+// clic n'est pas une vente.
 
 const MONTHS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
 const STATUS_LABEL: Record<ConversionStatus, string> = { en_attente: 'En attente', validee: 'Validée', refusee: 'Refusée', payee: 'Payée' }
@@ -27,7 +28,21 @@ function bucketLabel(key: string, g: PartnersData['granularity']): string {
 export default function PartenairesTab({ d, clicksOk, clicksError, gscOk }: { d: PartnersData; clicksOk: boolean; clicksError?: string; gscOk: boolean }) {
   const af = d.affilae
   const afTotals = af?.state === 'ok' ? af.summary.totals : null
-  const earned = afTotals ? afTotals.byStatus.validee + afTotals.byStatus.payee : 0
+  const ps = d.partnerstack
+  const psTotals = ps?.state === 'ok' ? ps.summary.totals : null
+  // Ventes des deux réseaux suivis (Affilae : Indy, LegalPlace, Tiime ; PartnerStack : Brevo)
+  const sales = afTotals || psTotals ? {
+    conversions: (afTotals?.conversions ?? 0) + (psTotals?.rewards ?? 0),
+    earned: (afTotals ? afTotals.byStatus.validee + afTotals.byStatus.payee : 0) + (psTotals ? psTotals.byStatus.validee + psTotals.byStatus.payee : 0),
+    pending: (afTotals?.byStatus.en_attente ?? 0) + (psTotals?.byStatus.en_attente ?? 0),
+  } : null
+  const netState = (o: typeof af | typeof ps, label: string, envName: string) =>
+    o?.state === 'erreur' ? `${label} : ${o.message}` : o?.state === 'absent' ? `${label} : clé ${envName} absente` : !o ? `${label} indisponible` : null
+  const netIssues = [netState(af, 'Affilae', 'AFFILAE_API_KEY'), netState(ps, 'PartnerStack', 'PARTNERSTACK_API_KEY')].filter((x): x is string => !!x)
+  const recent = [
+    ...(af?.state === 'ok' ? af.summary.recent.map(c => ({ ...c, net: 'Affilae', label: null as string | null })) : []),
+    ...(ps?.state === 'ok' ? ps.summary.recent.map(c => ({ ...c, net: 'PartnerStack' })) : []),
+  ].sort((a, b) => (b.date ?? '').localeCompare(a.date ?? '')).slice(0, 10)
   const active = d.partners.filter(p => p.clicks > 0 || p.prevClicks > 0 || (p.sales && p.sales.conversions > 0))
   const idle = d.partners.filter(p => !active.includes(p))
 
@@ -69,8 +84,8 @@ export default function PartenairesTab({ d, clicksOk, clicksError, gscOk }: { d:
           sub={d.clickRatePct === null ? 'Visites du site indisponibles' : `soit ${pctText(d.clickRatePct)} des ${fmtInt(d.siteVisitors)} visiteurs du site`} />
         <Stat icon={<Files size={18} weight="bold" />} label="Pages qui envoient des clics" value={fmtInt(d.pages.length)}
           sub={d.pages[0] ? `la première : ${d.pages[0].label}` : 'aucune sur la période'} />
-        <Stat icon={<CurrencyEur size={18} weight="bold" />} label="Ventes suivies par Affilae" value={afTotals ? fmtInt(afTotals.conversions) : '–'}
-          sub={afTotals ? `${euros(earned)} validés ou payés, ${euros(afTotals.byStatus.en_attente)} en attente (depuis le début)` : af?.state === 'erreur' ? af.message : af?.state === 'absent' ? 'Clé AFFILAE_API_KEY absente' : 'Affilae indisponible'} />
+        <Stat icon={<CurrencyEur size={18} weight="bold" />} label="Ventes suivies (Affilae, PartnerStack)" value={sales ? fmtInt(sales.conversions) : '–'}
+          sub={sales ? `${euros(sales.earned)} validés ou payés, ${euros(sales.pending)} en attente (depuis le début)${netIssues.length ? `. ${netIssues.join('. ')}` : ''}` : netIssues.join('. ') || 'Réseaux indisponibles'} />
       </div>
 
       <section style={v.card}>
@@ -191,21 +206,22 @@ export default function PartenairesTab({ d, clicksOk, clicksError, gscOk }: { d:
           <header style={v.head}>
             <span style={{ ...v.icon, background: tint(BROWN, 13), color: BROWN }}><Receipt size={18} weight="bold" /></span>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <h2 style={v.title}>Dernières ventes suivies par Affilae</h2>
-              <p style={v.sub}>Indy, LegalPlace et Tiime. Lodgify, Hospitable et Shine : ventes dans leur propre tableau de bord.</p>
+              <h2 style={v.title}>Dernières ventes suivies</h2>
+              <p style={v.sub}>Affilae (Indy, LegalPlace, Tiime) et PartnerStack (Brevo). Lodgify, Hospitable et Shine : ventes dans leur propre tableau de bord.</p>
             </div>
           </header>
-          {af?.state !== 'ok' ? (
-            <p style={v.empty}>{af?.state === 'erreur' ? af.message : af?.state === 'absent' ? 'Clé Affilae absente (AFFILAE_API_KEY dans Vercel).' : 'Affilae indisponible pour le moment.'}</p>
-          ) : af.summary.recent.length === 0 ? (
-            <p style={v.empty}>Aucune vente pour l&apos;instant. Les clics d&apos;Affilae : {afTotals?.clicks === null || afTotals?.clicks === undefined ? '–' : fmtInt(afTotals.clicks)}.</p>
+          {netIssues.length > 0 && <p style={v.sub}>{netIssues.join('. ')}.</p>}
+          {recent.length === 0 ? (
+            (af?.state === 'ok' || ps?.state === 'ok') && (
+              <p style={v.empty}>Aucune vente pour l&apos;instant.{afTotals ? <> Les clics d&apos;Affilae : {afTotals.clicks === null ? '–' : fmtInt(afTotals.clicks)}.</> : null}{psTotals ? <> Inscriptions Brevo suivies par PartnerStack : {fmtInt(psTotals.customers)}.</> : null}</p>
+            )
           ) : (
             <ol style={list}>
-              {af.summary.recent.map((c, i) => (
+              {recent.map((c, i) => (
                 <li key={i} style={row}>
                   <span style={{ flex: '1 1 160px', minWidth: 0 }}>
                     <span style={rowTitle}>{c.program}</span>
-                    <span style={rowSub}>{c.date ? new Date(c.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Paris' }) : 'Date inconnue'}</span>
+                    <span style={rowSub}>{c.date ? new Date(c.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Paris' }) : 'Date inconnue'} · {c.net}{c.label ? ` · ${c.label}` : ''}</span>
                   </span>
                   <span style={badge(c.status === 'refusee' ? AMBER : c.status === 'en_attente' ? BROWN : ACCENT)}>{STATUS_LABEL[c.status]}</span>
                   <strong style={{ fontVariantNumeric: 'tabular-nums', fontSize: 14, color: 'var(--text)' }}>{euros(c.commissionCents)}</strong>
@@ -214,6 +230,7 @@ export default function PartenairesTab({ d, clicksOk, clicksError, gscOk }: { d:
             </ol>
           )}
           {af?.state === 'ok' && af.missing.length > 0 && <p style={v.sub}>Réponse partielle d&apos;Affilae ({af.missing.join(', ')} manquants) : réessaie dans quelques minutes.</p>}
+          {ps?.state === 'ok' && ps.missing.length > 0 && <p style={v.sub}>Réponse partielle de PartnerStack ({ps.missing.join(', ')} manquants) : réessaie dans quelques minutes.</p>}
         </section>
       </div>
 
@@ -308,7 +325,7 @@ function PartnerCard({ p }: { p: PartnerItem }) {
     <article style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '16px 18px', borderRadius: 14, background: 'var(--surface-2)', border: '1px solid var(--border)', minWidth: 0 }}>
       <header style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
         <strong style={{ fontFamily: 'var(--font-fraunces), serif', fontWeight: 500, fontSize: 18, color: 'var(--text)', flex: 1, minWidth: 0 }}>{p.name}</strong>
-        <span style={badge(p.affilae ? BROWN : ACCENT)}>{p.affilae ? 'Affilae' : 'Lien direct'}</span>
+        <span style={badge(p.affilae || p.partnerstack ? BROWN : ACCENT)}>{p.affilae ? 'Affilae' : p.partnerstack ? 'PartnerStack' : 'Lien direct'}</span>
       </header>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
         <strong style={{ fontFamily: 'var(--font-fraunces), serif', fontWeight: 400, fontSize: 30, color: 'var(--text)', lineHeight: 1.1, fontVariantNumeric: 'tabular-nums' }}>{fmtInt(p.clicks)}</strong>

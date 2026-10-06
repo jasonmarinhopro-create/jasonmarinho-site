@@ -2,10 +2,12 @@
 // liens affiliés du site (affiliate_clicks, écrits par nav.js sur tout lien
 // rel="sponsored"), croisés avec nos visites (d'où viennent les visiteurs qui
 // cliquent, quelles pages envoient des clics) et avec Google (place des
-// pages), plus les ventes suivies par Affilae (Indy, LegalPlace, Tiime).
+// pages), plus les ventes suivies par Affilae (Indy, LegalPlace, Tiime) et
+// PartnerStack (Brevo, 06/10/2026).
 // Pur et testé (partners.test.ts). Un clic n'est pas une vente : les ventes
 // Lodgify, Hospitable et Shine restent dans le tableau de bord du partenaire.
 import type { AffilaeOverview } from '@/lib/affiliation/affilae'
+import type { PartnerStackOverview } from '@/lib/affiliation/partnerstack'
 import type { ConversionStatus } from '@/lib/affiliation/affilae-parse'
 import {
   bucketKeys, bucketOf, granularityFor, pageKind, pageLabel, parisDay, pctChange, placeOf, sourceOf, SOURCE_LABEL,
@@ -21,6 +23,8 @@ export interface PartnerInfo {
   /** Où voir les ventes */
   salesWhere: string
   affilae: boolean
+  /** Ventes lues dans PartnerStack (Brevo) */
+  partnerstack?: boolean
 }
 
 export const PARTNERS: Record<string, PartnerInfo> = {
@@ -30,13 +34,14 @@ export const PARTNERS: Record<string, PartnerInfo> = {
   indy: { name: 'Indy', reward: 'De 10 € HT (inscription) à 250 € HT (société), selon le compte ouvert', salesWhere: 'Affilae', affilae: true },
   legalplace: { name: 'LegalPlace', reward: 'Jusqu\'à 150 € par vente', salesWhere: 'Affilae', affilae: true },
   tiime: { name: 'Tiime', reward: 'Commission Affilae', salesWhere: 'Affilae', affilae: true },
+  brevo: { name: 'Brevo', reward: '5 € par inscription gratuite, 100 € par abonnement payant (conditions relevées en octobre 2026, à vérifier dans PartnerStack)', salesWhere: 'PartnerStack', affilae: false, partnerstack: true },
 }
 
 export function partnerInfo(slug: string): PartnerInfo {
   const known = PARTNERS[slug.toLowerCase()]
   if (known) return known
   const name = slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : 'Autre'
-  return { name, reward: '', salesWhere: 'Tableau de bord du partenaire', affilae: slug === 'affilae' }
+  return { name, reward: '', salesWhere: 'Tableau de bord du partenaire', affilae: slug === 'affilae', partnerstack: false }
 }
 
 const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '')
@@ -55,6 +60,7 @@ export interface PartnerItem {
   reward: string
   salesWhere: string
   affilae: boolean
+  partnerstack?: boolean
   clicks: number
   prevClicks: number
   clicksPct: number | null
@@ -105,6 +111,7 @@ export interface PartnersData {
   opportunities: PartnerOpportunity[]
   sources: Array<{ key: SourceKind; label: string; count: number; pct: number }>
   affilae: AffilaeOverview | null
+  partnerstack: PartnerStackOverview | null
   /** Pages des partenaires dans Google (rempli par admin-build) */
   seo?: PartnerSeoGroup[]
 }
@@ -143,6 +150,16 @@ export function affilaeSalesFor(name: string, overview: AffilaeOverview | null):
   }
 }
 
+/** Ventes PartnerStack d'un partenaire (Brevo), retrouvées par le nom du programme */
+export function partnerstackSalesFor(name: string, overview: PartnerStackOverview | null): PartnerSales | null {
+  if (!overview || overview.state !== 'ok') return null
+  const n = norm(name)
+  const progs = overview.summary.programs
+  const prog = progs.find(p => norm(p.name).includes(n) || (n.length > 3 && n.includes(norm(p.name)))) ?? (progs.length === 1 ? progs[0] : undefined)
+  if (!prog) return null
+  return { conversions: prog.rewards, commissionCents: prog.commissionCents, byStatus: prog.byStatus, status: null, affilaeClicks: null }
+}
+
 /** Pages où un lien partenaire a du sens (avis, prix, comparatifs, pages partenaires) */
 const PARTNER_PAGE_KINDS: PageKind[] = ['partenaire', 'comparatif']
 
@@ -154,8 +171,10 @@ export function buildPartners(input: {
   /** Place et affichages Google par chemin */
   pages: Map<string, { impressions: number; position: number }>
   affilae: AffilaeOverview | null
+  partnerstack?: PartnerStackOverview | null
 }): PartnersData {
   const { clicks, prevClicks, visits, period, pages, affilae } = input
+  const partnerstack = input.partnerstack ?? null
   const first = firstVisitBySession(visits)
   const visitorsByPath = sessionsPerPath(visits)
   const siteVisitors = first.size
@@ -188,7 +207,7 @@ export function buildPartners(input: {
       clickers: sessions.size,
       pages: [...pageCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([path, n]) => ({ path, label: pageLabel(path), clicks: n })),
       sources: [...srcCount.entries()].sort((a, b) => b[1] - a[1]).map(([key, count]) => ({ key, label: SOURCE_LABEL[key], count })),
-      sales: info.affilae ? affilaeSalesFor(info.name, affilae) : null,
+      sales: info.affilae ? affilaeSalesFor(info.name, affilae) : info.partnerstack ? partnerstackSalesFor(info.name, partnerstack) : null,
     }
   }).sort((a, b) => b.clicks - a.clicks || b.prevClicks - a.prevClicks || a.name.localeCompare(b.name))
 
@@ -265,6 +284,7 @@ export function buildPartners(input: {
     opportunities,
     sources: [...src.entries()].sort((a, b) => b[1] - a[1]).map(([key, n]) => ({ key, label: SOURCE_LABEL[key], count: n, pct: known ? Math.round((n / known) * 100) : 0 })),
     affilae,
+    partnerstack,
   }
 }
 
@@ -347,6 +367,12 @@ export const PARTNER_SEO: Array<{ key: string; name: string; paths: string[]; ma
     paths: ['/comparatif-indy-tiime-henrri'],
     match: /tiime/,
     targets: ['tiime', 'tiime avis', 'tiime facturation', 'indy ou tiime'],
+  },
+  {
+    key: 'brevo', name: 'Brevo',
+    paths: ['/partenaires/brevo', '/blog/email-marketing-newsletter-hote-lcd', '/blog/base-voyageurs-fideles-location-directe-durable'],
+    match: /brevo/,
+    targets: ['brevo', 'brevo avis', 'brevo gratuit', 'newsletter location saisonniere', 'newsletter airbnb', 'email marketing location courte duree', 'crm conciergerie'],
   },
   {
     key: 'shine', name: 'Shine',

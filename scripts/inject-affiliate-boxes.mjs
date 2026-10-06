@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Encadrés affiliés/parrainage (Hospitable, Shine, Indy, LegalPlace, Tiime, Lodgify) injectés dans les pages
+// Encadrés affiliés/parrainage (Hospitable, Shine, Indy, LegalPlace, Tiime, Lodgify, Brevo) injectés dans les pages
 // qui parlent déjà de l'outil. Idempotent : chaque encadré est entouré de
 // marqueurs <!-- AFF:<id>:START/END --> et remplacé à chaque passage. À
 // relancer après régénération d'un article (scripts/generate-article.mjs).
@@ -92,6 +92,20 @@ const lodgifyTu = box('lodgify-tu',
   btn(LODGIFY_TRIAL, 'Essai gratuit 7 jours') + ' <a href="/partenaires/lodgify" style="display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:14px;padding:10px 16px;border-radius:9px;text-decoration:none;border:1px solid rgba(0,76,63,.3);color:#004c3f;background:#fff">Voir l\'offre partenaire</a>',
   "Lien affilié : si tu t'abonnes via ce lien, Lodgify me verse une commission, sans aucun surcoût pour toi (tu gardes la réduction). <a href=\"/code-promo-lodgify\" style=\"color:#004c3f\">Conditions du code JASON15</a>.")
 
+// Brevo (partenariat PartnerStack du 06/10/2026) : 3 liens fournis par Brevo
+// (e-mail marketing, plateforme, CRM). Commission sur chaque inscription.
+const BREVO_EMAIL = 'https://get.brevo.com/ui6inugm9ub6'
+const BREVO_CRM = 'https://get.brevo.com/z0u697ij3brq-5bwioc'
+const brevoOffre = '<a href="/partenaires/brevo" style="display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:14px;padding:10px 16px;border-radius:9px;text-decoration:none;border:1px solid rgba(0,76,63,.3);color:#004c3f;background:#fff">Voir l\'offre partenaire</a>'
+const brevoTu = box('brevo-tu',
+  "<strong>Ta newsletter avec Brevo :</strong> offre gratuite à 300 e-mails par jour, contacts illimités, sans carte bancaire. Entreprise française, données hébergées en Europe, désabonnement géré tout seul. C'est l'outil de ma propre newsletter.",
+  btn(BREVO_EMAIL, 'Créer mon compte Brevo gratuit') + ' ' + brevoOffre,
+  "Lien affilié : si tu t'inscris via ce lien, Brevo me verse une commission, sans aucun surcoût pour toi. Rappel : seuls tes voyageurs venus en direct peuvent recevoir ta newsletter, jamais ceux d'Airbnb ou de Booking.com.")
+const brevoCrm = box('brevo-crm',
+  "<strong>Suivre tes propriétaires avec un CRM gratuit :</strong> Brevo propose un CRM gratuit (pipeline de prospects, tâches et rappels, contacts illimités, jusqu'à 50 opportunités ouvertes) et l'e-mailing dans le même outil, pour ta lettre aux propriétaires.",
+  btn(BREVO_CRM, 'Essayer le CRM Brevo gratuit') + ' ' + brevoOffre,
+  "Lien affilié : si tu t'inscris via ce lien, Brevo me verse une commission, sans aucun surcoût pour toi.")
+
 // [fichier, id, texte avant lequel insérer l'encadré, contenu]
 const PLACEMENTS = [
   ['comparatif-smoobu-hospitable/index.html', 'hospitable-vous', '</section>\n\n<section id="verdict">', hospitableVous],
@@ -111,6 +125,11 @@ const PLACEMENTS = [
   ['blog/fixer-prix-reservation-directe-location-courte-duree/index.html', 'lodgify-tu', '<h2 class="art-h2">Et pour les séjours longs en direct ?</h2>', lodgifyTu],
   ['blog/outils-gerer-location-courte-duree-2025/index.html', 'lodgify-tu', '<h2 class="art-h2">2. Channel Manager, Synchronisation multi-plateformes</h2>', lodgifyTu],
   ['blog/stripe-paiement-direct-lcd-mise-en-place/index.html', 'lodgify-tu', '<h2 class="art-h2">3. Paramétrage avancé</h2>', lodgifyTu],
+  ['blog/email-marketing-newsletter-hote-lcd/index.html', 'brevo-tu', '<h2 class="art-h2">4. Mesurer et améliorer</h2>', brevoTu],
+  ['blog/base-voyageurs-fideles-location-directe-durable/index.html', 'brevo-tu', '<h2 class="art-h2">Étape 5 : Activer le bouche-à-oreille</h2>', brevoTu],
+  ['blog/basse-saison-location-courte-duree-strategies-reservations/index.html', 'brevo-tu', '<h2 class="art-h2">Ce qu\'il faut retenir</h2>', brevoTu],
+  ['blog/creer-conciergerie-airbnb-2025/index.html', 'brevo-crm', '<h2 class="art-h2">Étape 5 : Le contrat de gestion</h2>', brevoCrm],
+  ['blog/prospection-conciergerie-trouver-premier-mandat/index.html', 'brevo-crm', '<h2 class="art-h2">7. Programme de parrainage clients existants</h2>', brevoCrm],
   ['blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026/index.html', 'shine-tu', '<ul class="art-ul"><li>Ouverture 100 % en ligne recommandée', shineTu],
 ]
 

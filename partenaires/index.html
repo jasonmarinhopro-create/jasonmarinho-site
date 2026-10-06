@@ -252,7 +252,7 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
     .mk-head{text-align:center;max-width:760px;margin:0 auto 44px}
     .mk-head .h2{font-size:clamp(1.9rem,3.6vw,2.9rem);margin-bottom:14px}
     .mk-head p{font-size:clamp(16px,1.6vw,19px);color:var(--tm);line-height:1.6;margin:0;font-family:'Fraunces',serif;font-weight:300}
-    .mk-tiles{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;max-width:1000px;margin:0 auto 64px}
+    .mk-tiles{display:grid;grid-template-columns:repeat(8,1fr);gap:12px;max-width:1000px;margin:0 auto 64px}
     .mk-tile{display:flex;flex-direction:column;align-items:center;gap:14px;background:none;border:0;cursor:pointer;padding:14px 8px;border-radius:14px;font-family:'Outfit',sans-serif;font-size:14.5px;color:var(--td);line-height:1.4;transition:background .15s}
     .mk-tile i{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:14px;background:var(--cr);font-size:24px;color:var(--g);transition:background .15s,color .15s}
     .mk-tile:hover{background:rgba(0,76,63,.03)}
@@ -324,12 +324,13 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
       <button type="button" class="mk-tile" data-f="acces"><i class="ph ph-lock-key"></i>Accès & sécurité</button>
       <button type="button" class="mk-tile" data-f="compta"><i class="ph ph-calculator"></i>Comptabilité & fiscalité</button>
       <button type="button" class="mk-tile" data-f="juridique"><i class="ph ph-scales"></i>Création & juridique</button>
+      <button type="button" class="mk-tile" data-f="marketing"><i class="ph ph-megaphone"></i>Marketing & email</button>
     </div>
 
     <div class="mk-layout">
       <nav class="mk-side" aria-label="Filtrer par catégorie">
         <button type="button" class="mk-f on" data-f="all">Toutes les catégories <span>34</span></button>
-        <button type="button" class="mk-f star" data-f="offres">★ Offres partenaires <span>8</span></button>
+        <button type="button" class="mk-f star" data-f="offres">★ Offres partenaires <span>9</span></button>
         <div class="mk-sep"></div>
         <button type="button" class="mk-f" data-f="gestion">Gestion & channel manager <span>8</span></button>
         <button type="button" class="mk-f" data-f="messagerie">Messagerie & automatisation <span>4</span></button>
@@ -411,6 +412,15 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-offre" title="Facturation gratuite">Facturation gratuite</p>
         <p class="mk-desc" title="Devis, factures illimitées et facture électronique (plateforme agréée) gratuits. Compte pro en option.">Devis, factures illimitées et facture électronique (plateforme agréée) gratuits. Compte pro en option.</p>
         <div class="mk-liens"><a href="https://lb.affilae.com/r/?p=651c0d1e40e2d575f87b3b27&amp;af=1127&amp;lp=https%3A%2F%2Fwww.tiime.fr%2Ffacturation-electronique-2026%3Futm_source%3Dother%26utm_medium%3Daffiliation%26utm_campaign%3DJason%2520Marinho%26ae%3D1127%26program_id%3D651c0d1e40e2d575f87b3b27%26program_name%3DTiime" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Essayer Tiime <i class="ph-bold ph-arrow-up-right"></i></a><a href="/comparatif-indy-tiime-henrri" class="mk-l">Comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
+      </article>
+      <article class="mk-card is-offre" data-cats="marketing" data-offre="1">
+        <div class="mk-head-c">
+          <div class="mk-logo" style="color:#0B996E" aria-hidden="true">B</div>
+          <div class="mk-id"><h3 class="mk-nom">Brevo</h3><span class="mk-badge b-aff">Lien affilié</span></div>
+        </div>
+        <p class="mk-offre" title="300 e-mails/jour gratuits">300 e-mails/jour gratuits</p>
+        <p class="mk-desc" title="Newsletter à tes voyageurs directs et CRM gratuit. Solution française, données en Europe.">Newsletter à tes voyageurs directs et CRM gratuit. Solution française, données en Europe.</p>
+        <div class="mk-liens"><a href="https://get.brevo.com/3mftm80uaemx-m7y3c" target="_blank" rel="sponsored noopener" class="mk-l mk-l1">Créer un compte <i class="ph-bold ph-arrow-up-right"></i></a><a href="/partenaires/brevo" class="mk-l">Voir l'offre <i class="ph-bold ph-arrow-right"></i></a></div>
       </article>
       <article class="mk-card is-offre" data-cats="gestion" data-offre="1">
         <div class="mk-head-c">
@@ -636,15 +646,6 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
         <p class="mk-offre is-cat" title="Étude de marché">Étude de marché</p>
         <p class="mk-desc" title="Analyse de rentabilité immobilière, surtout sur le marché américain.">Analyse de rentabilité immobilière, surtout sur le marché américain.</p>
         <div class="mk-liens"><a href="/comparatif-airdna-mashvisor" class="mk-l mk-l1">Voir le comparatif <i class="ph-bold ph-arrow-right"></i></a></div>
-      </article>
-      <article class="mk-card" data-cats="marketing">
-        <div class="mk-head-c">
-          <div class="mk-logo" style="color:#0B996E" aria-hidden="true">B</div>
-          <div class="mk-id"><h3 class="mk-nom">Brevo</h3><span class="mk-badge b-ref">Référencé</span></div>
-        </div>
-        <p class="mk-offre is-cat" title="Marketing & email">Marketing & email</p>
-        <p class="mk-desc" title="Emailing et SMS, solution française, pour fidéliser tes anciens voyageurs.">Emailing et SMS, solution française, pour fidéliser tes anciens voyageurs.</p>
-        <div class="mk-liens"><a href="https://www.brevo.com/fr/" target="_blank" rel="nofollow noopener" class="mk-l mk-l1">Site officiel <i class="ph-bold ph-arrow-up-right"></i></a></div>
       </article>
       <article class="mk-card" data-cats="marketing">
         <div class="mk-head-c">

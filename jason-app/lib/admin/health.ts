@@ -163,6 +163,7 @@ export const ENV_REQUIREMENTS: EnvRequirement[] = [
   { keys: ['GOOGLE_PLACES_API_KEY'], label: 'Audit express Google (Places API)', critical: false },
   { keys: ['VERCEL_DEPLOY_HOOK_URL'], label: 'Mise en ligne des fiches pros', critical: true },
   { keys: ['AFFILAE_API_KEY'], label: 'Ventes Affilae', critical: false },
+  { keys: ['PARTNERSTACK_API_KEY'], label: 'Ventes Brevo (PartnerStack)', critical: false },
 ]
 
 export function envHealth(env: Record<string, string | undefined>): HealthItem[] {

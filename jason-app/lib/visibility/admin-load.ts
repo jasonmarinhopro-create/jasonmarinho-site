@@ -10,6 +10,7 @@ import { periodRange, GSC_LAG_DAYS, type PeriodKey, type VisitRow } from './rule
 import type { VisTab } from './admin-rules'
 import { buildVisibility, type ProRow, type VisibilityData } from './admin-build'
 import { getAffilaeOverview } from '@/lib/affiliation/affilae'
+import { getPartnerStackOverview } from '@/lib/affiliation/partnerstack'
 import type { ClickRow } from './partners'
 
 const PRO_COLUMNS = 'id, slug, full_name, pseudo, ville, status, is_public, tier, stripe_subscription_status'
@@ -66,6 +67,8 @@ export async function loadVisibility(periodKey: PeriodKey, tab: VisTab, today: s
       .then(([cur, prev]) => ({ ok: true as const, cur, prev }), e => ({ ok: false as const, error: errMsg(e) })),
     // Affilae (appel externe, parfois lent) : seulement pour l'onglet Partenaires
     tab === 'partenaires' ? getAffilaeOverview().catch(() => null) : Promise.resolve(null),
+    // PartnerStack (Brevo) : même règle
+    tab === 'partenaires' ? getPartnerStackOverview().catch(() => null) : Promise.resolve(null),
   ])
 
   const [qp, daily, truth, visitsRes, prevVisitsRes, prosRes, demandes] = await Promise.all([
@@ -77,7 +80,7 @@ export async function loadVisibility(periodKey: PeriodKey, tab: VisTab, today: s
     loadPros().then(d => ({ ok: true as const, ...d }), e => ({ ok: false as const, error: errMsg(e) })),
     loadDemandes(visitPeriod.start, visitPeriod.end).catch(() => new Map<string, number>()),
   ])
-  const [affClicksRes, affilae] = await affPromise
+  const [affClicksRes, affilae, partnerstack] = await affPromise
 
-  return buildVisibility({ periodKey, tab, gscPeriod, visitPeriod, qp, daily, truth, visitsRes, prevVisitsRes, prosRes, demandes, affClicksRes, affilae })
+  return buildVisibility({ periodKey, tab, gscPeriod, visitPeriod, qp, daily, truth, visitsRes, prevVisitsRes, prosRes, demandes, affClicksRes, affilae, partnerstack })
 }

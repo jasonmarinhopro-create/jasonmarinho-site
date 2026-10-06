@@ -15,10 +15,10 @@ export default {
       content: [
         { type: 'p', text: 'Avant tout, tu dois constituer ta base email proprement. Conformité RGPD obligatoire.' },
         { type: 'ul', items: [
-          'Au moment de la réservation Airbnb : pas d\'accès direct à l\'email (Airbnb le masque). Demander en post-séjour si voyageur d\'accord',
-          'Réservation directe (Driing, ton site) : email collecté avec consentement pour newsletter (case à cocher visible)',
-          'Réservation Booking : email accessible, mais consentement explicite obligatoire pour newsletter',
-          'Stocker dans un outil RGPD-compliant (Brevo, MailChimp, etc.). Pas dans ton Google Sheet perso',
+          'Réservations Airbnb et Booking.com : les deux plateformes interdisent d\'utiliser les coordonnées du voyageur pour du marketing (adresse masquée, risque de suspension du compte). Ces voyageurs n\'entrent pas dans ta liste',
+          'Réservation directe (Driing, ton site, contrat signé en ligne) : c\'est là que se construit ta liste. Prévois une case à cocher « recevoir les disponibilités et offres », ou au minimum la possibilité de refuser dès la réservation puis dans chaque e-mail (exception « clients » de l\'article L34-5 du Code des postes et des communications électroniques, pour des séjours analogues seulement)',
+          'Ne partage jamais ta liste avec un partenaire, même pour une « bonne affaire » : la CNIL l\'a déjà lourdement sanctionné chez un hôtelier',
+          'Stocker dans un outil d\'e-mailing conforme au RGPD (Brevo, hébergé en Europe, MailChimp…), avec désabonnement automatique. Pas dans ton Google Sheet perso',
         ]},
       ],
     },
@@ -41,10 +41,10 @@ export default {
       h2: '3. Outils gratuits et fréquence',
       content: [
         { type: 'ul', items: [
-          'Brevo (anciennement Sendinblue) : 9 000 emails/mois gratuits. Interface simple, RGPD français',
-          'MailChimp : 500 contacts gratuits. Interface anglaise mais très complète',
-          'Mailerlite : 1 000 contacts gratuits, interface excellente',
-          'Pour 0-200 voyageurs/an : MailChimp ou Mailerlite gratuit suffit',
+          'Brevo (anciennement Sendinblue, entreprise française, données hébergées en Europe) : offre gratuite à 300 e-mails par jour, contacts illimités, sans carte bancaire. C\'est l\'outil de ma propre newsletter',
+          'MailChimp : offre gratuite plafonnée en contacts, interface en anglais mais très complète',
+          'MailerLite : offre gratuite aussi, interface très claire',
+          'Pour 0 à 200 voyageurs directs par an, une offre gratuite suffit largement : 300 e-mails par jour couvrent une newsletter mensuelle',
           'Fréquence optimale : 1 newsletter/mois. Plus, ça spam. Moins, on t\'oublie',
           'Jour optimal : mardi 10 h ou jeudi 14 h (taux d\'ouverture plus élevés)',
         ]},

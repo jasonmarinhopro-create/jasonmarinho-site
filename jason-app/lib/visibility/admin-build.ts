@@ -5,6 +5,7 @@
 // l'onglet ouvert sont préparées pour le navigateur.
 import type { GscResult } from '@/lib/google/search-analytics'
 import type { AffilaeOverview } from '@/lib/affiliation/affilae'
+import type { PartnerStackOverview } from '@/lib/affiliation/partnerstack'
 import { buildPartners, buildPartnerSeo, type ClickRow, type PartnersData } from './partners'
 import { isPaidPro } from '@/lib/admin/revenue'
 import {
@@ -133,10 +134,12 @@ export interface VisibilityInput {
   affClicksRes: { ok: true; cur: ClickRow[]; prev: ClickRow[] } | { ok: false; error: string }
   /** Ventes Affilae (chargées seulement pour l'onglet Partenaires) */
   affilae: AffilaeOverview | null
+  /** Ventes PartnerStack (Brevo), même règle */
+  partnerstack?: PartnerStackOverview | null
 }
 
 export function buildVisibility(input: VisibilityInput): VisibilityData {
-  const { periodKey, tab, gscPeriod, visitPeriod, qp, daily, truth, visitsRes, prevVisitsRes, prosRes, demandes, affClicksRes, affilae } = input
+  const { periodKey, tab, gscPeriod, visitPeriod, qp, daily, truth, visitsRes, prevVisitsRes, prosRes, demandes, affClicksRes, affilae, partnerstack } = input
 
   // ── État des sources ──
   const gscFail = [qp, daily, truth].find(r => !r.ok)
@@ -339,6 +342,7 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
       period: visitPeriod,
       pages: new Map([...pages.entries()].map(([path, p]) => [path, { impressions: p.impressions, position: p.position }])),
       affilae,
+      partnerstack,
     })
     data.partenaires.seo = buildPartnerSeo({
       pageStats,
