@@ -1,0 +1,61 @@
+name: "Prospection : import Google Maps"
+
+# Import Google Maps par lots (06/10/2026) : push de
+# .github/prospection-import-trigger (une ville par ligne) sur une branche
+# claude/**, ou lancement à la main avec une liste de villes. Pour chaque
+# ville et chaque audience (photographe, menage) : 2 recherches Google Maps
+# (20 résultats chacune), e-mail publié sur le site, ajout en « À contacter ».
+# Jamais au-delà de la part gratuite : l'app refuse au plafond
+# (lib/google/places-budget-rules.ts) et le lot s'arrête. Journaux publics :
+# nombres seulement.
+on:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/prospection-import-trigger']
+  workflow_dispatch:
+    inputs:
+      villes:
+        description: 'Villes, séparées par des virgules'
+        required: true
+
+concurrency:
+  group: prospection-import
+  cancel-in-progress: false
+
+jobs:
+  importer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    env:
+      APP_URL: https://app.jasonmarinho.com
+      SECRET: ${{ secrets.SOCIAL_CRON_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Import
+        env:
+          VILLES_INPUT: ${{ inputs.villes }}
+        run: |
+          set -u
+          call() { curl -sS --max-time 75 -X POST "$APP_URL/api/outreach/ops" -H "authorization: Bearer $SECRET" -H 'content-type: application/json' -d "$1"; echo; }
+          if [ -n "${VILLES_INPUT:-}" ]; then echo "$VILLES_INPUT" | tr ',' '\n' > villes.txt; else grep -v '^#' .github/prospection-import-trigger > villes.txt; fi
+          sed -i 's/^ *//;s/ *$//;/^$/d' villes.txt
+          usage() { call '{"op":"status"}' | jq -c '[.google_ce_mois.items[]? | select(.sku=="text_search_enterprise") | "\(.used)/\(.cap)"] | first // "compteur indisponible"'; }
+          echo "Recherches Google du mois avant : $(usage)"
+          total=0; calls=0; stop=0
+          while IFS= read -r v; do
+            for a in photographe menage; do
+              if [ "$a" = menage ]; then QUERIES=("ménage location saisonnière" "ménage airbnb"); else QUERIES=("photographe immobilier" "photographe location saisonnière"); fi
+              for q in "${QUERIES[@]}"; do
+                body=$(jq -nc --arg a "$a" --arg q "$q $v" '{op:"import",audience:$a,query:$q}')
+                res=$(call "$body")
+                calls=$((calls + 1))
+                echo "$a | $q $v : $(echo "$res" | jq -c '{resultats_maps, sites_visites, emails_trouves, ajoutes, error}' 2>/dev/null || echo "$res" | head -c 200)"
+                n=$(echo "$res" | jq -r '.ajoutes // 0' 2>/dev/null || echo 0)
+                total=$((total + n))
+                if echo "$res" | grep -q 'Plafond gratuit\|Compteur Google'; then echo "::warning title=Google Maps::$(echo "$res" | jq -r '.error')"; stop=1; break 3; fi
+              done
+            done
+          done < villes.txt
+          after=$(usage)
+          echo "::notice title=Import Google Maps::$(wc -l < villes.txt) villes, $calls recherches, $total contacts ajoutés · recherches du mois : $after$([ $stop = 1 ] && echo ' · arrêté au plafond')"
+          call '{"op":"status"}' | jq -c '.contacts | map_values(.a_contacter // 0)' || true
