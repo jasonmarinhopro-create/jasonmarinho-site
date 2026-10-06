@@ -14,6 +14,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { injectProsIntoVillePages } from './lib/inject-ville-pros.mjs'
+import { adminOwnedIds } from './lib/admin-owned.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -757,7 +758,10 @@ ${urls.join('\n')}
 }
 
 async function main() {
-  const items = await fetchActive()
+  // Fiches d'un compte admin (démonstration) : jamais publiées
+  const demo = await adminOwnedIds({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, table: 'photographers' })
+  const items = (await fetchActive()).filter(p => !demo.has(p.id))
+  if (demo.size) console.log(`[build-photographers] ${demo.size} fiche(s) de compte admin écartée(s)`)
   const recoCounts = await fetchRecoCounts()
   for (const p of items) p.reco_count = recoCounts.get(p.id) ?? 0
 

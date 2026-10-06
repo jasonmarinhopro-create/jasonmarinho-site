@@ -4,6 +4,9 @@
 //
 //   node scripts/pros-annuaire.mjs etat      → lecture seule
 //   node scripts/pros-annuaire.mjs publier   → active les fiches payées
+//   node scripts/pros-annuaire.mjs "masquer:<nom>" → retire du site une fiche
+//     de démonstration (statut hidden, non publique, rien supprimé), refusé
+//     pour une fiche payée
 //
 // Les journaux GitHub sont publics : on n'affiche ni nom, ni e-mail, ni slug,
 // seulement un identifiant court, le statut et des dates.
@@ -99,6 +102,27 @@ async function comptes() {
     pro(ph, 'photographes'), pro(cl, 'ménage'),
   ].filter(Boolean).join('\n'))
 }
+// Masquer une fiche de démonstration (06/10/2026 : la fiche d'exemple de
+// Jason était présentée comme une vraie photographe sur la page Lyon)
+async function masquer(fragment) {
+  const want = slugify(fragment)
+  if (!want) { notice('Masquer', 'nom manquant'); return }
+  const admins = new Set((await get('profiles?select=id&role=eq.admin')).map(r => r.id))
+  for (const [kind, table] of [['photographe', 'photographers'], ['menage', 'cleaners']]) {
+    const cols = kind === 'photographe' ? 'full_name' : 'full_name,pseudo'
+    const rows = await get(`${table}?select=id,user_id,status,is_public,slug,stripe_subscription_status,views_count,contacts_count,${cols}&limit=1000`)
+    for (const r of rows) {
+      const names = [r.full_name, r.pseudo, r.slug].map(slugify)
+      if (!names.some(n => n && n.includes(want))) continue
+      const line = `${kind} ${r.id.slice(0, 6)} · ${r.status} · public ${r.is_public ? 'oui' : 'non'} · compte admin ${admins.has(r.user_id) ? 'oui' : 'non'} · ${r.views_count ?? 0} vues · ${r.contacts_count ?? 0} demande(s)`
+      if (PAID.has(r.stripe_subscription_status)) { notice('Masquer : refusé (fiche payée)', line); continue }
+      await patch(table, r.id, { status: 'hidden', is_public: false, updated_at: new Date().toISOString() })
+      notice('Masquée', `${line} → hidden, non publique. Le site se met à jour au prochain déploiement de main.`)
+    }
+  }
+}
+if (MODE.startsWith('masquer:')) await masquer(MODE.slice('masquer:'.length))
+
 await comptes()
 
 const p = await run('photographe')
