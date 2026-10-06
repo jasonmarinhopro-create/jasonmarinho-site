@@ -29,4 +29,17 @@ jobs:
         run: |
           mode="${ACTION:-}"
           if [ -z "$mode" ] && [ -f .github/pros-trigger ]; then mode=$(head -1 .github/pros-trigger | tr -d '[:space:]'); fi
-          node scripts/pros-annuaire.mjs "${mode:-etat}"
+          case "$mode" in chiffres-*) echo "Chiffres demandés, état des fiches sauté";; *) node scripts/pros-annuaire.mjs "${mode:-etat}";; esac
+          echo "MODE=${mode:-etat}" >> "$GITHUB_ENV"
+      # Chiffres d'une page de ville (mode chiffres-<photographe|menage>-<ville>) :
+      # nombres et recherches Google seulement, lus par la route de l'app
+      - name: Chiffres d'une page de ville
+        if: startsWith(env.MODE, 'chiffres-')
+        env:
+          SECRET: ${{ secrets.SOCIAL_CRON_SECRET }}
+        run: |
+          rest="${MODE#chiffres-}"; metier="${rest%%-*}"; ville="${rest#*-}"
+          r=$(curl -sS --max-time 70 "https://app.jasonmarinho.com/api/ops/pros-chiffres?metier=$metier&ville=$ville" -H "authorization: Bearer $SECRET")
+          echo "$r"
+          body=$(printf '%s' "$r" | sed 's/%/%25/g' | head -c 3900)
+          echo "::notice title=Chiffres $metier $ville::$body"
