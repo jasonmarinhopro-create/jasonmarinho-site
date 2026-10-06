@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Camera, CheckCircle, X, Clock, ArrowSquareOut, Warning, Star, EyeSlash, Eye, Trash, ChatCircle } from '@phosphor-icons/react/dist/ssr'
+import { Sparkle, Camera, CheckCircle, X, Clock, ArrowSquareOut, Warning, Star, EyeSlash, Eye, Trash, ChatCircle } from '@phosphor-icons/react/dist/ssr'
 import { hidePhotographer, unhidePhotographer, deleteOrphanPhotographer } from './actions'
 import AdminHero from '../_ui/AdminHero'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
@@ -28,6 +28,8 @@ interface Props {
   hidden: Photographer[]
   cancelled: Photographer[]
   founderActiveCount: number
+  /** Fiches rattachées à un compte admin : exemples, jamais publiées ni comptées */
+  demo?: Photographer[]
   // Legacy (non utilisé, conservé pour compat)
   pending?: Photographer[]
   approvedPendingPayment?: Photographer[]
@@ -50,7 +52,7 @@ function fmtTarif(p: Photographer): string {
   return `${fmtEur(p.tarif_min)} – ${fmtEur(p.tarif_max)}`
 }
 
-export default function PhotographersAdmin({ active, pendingPayment, hidden, cancelled, founderActiveCount }: Props) {
+export default function PhotographersAdmin({ active, pendingPayment, hidden, cancelled, founderActiveCount, demo = [] }: Props) {
   const router = useRouter()
   const [busy, startBusy] = useTransition()
   const { confirm, dialog } = useConfirm()
@@ -197,6 +199,31 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
       )}
 
       {/* MASQUÉS */}
+      {demo.length > 0 && (
+        <details style={s.collapseSection}>
+          <summary style={s.collapseSummary}>
+            <Sparkle size={12} weight="fill" style={{ marginRight: 4 }} />
+            Fiches d&apos;exemple · {demo.length}
+          </summary>
+          <p style={s.helpText}>Rattachées à ton compte admin : jamais publiées sur le site ni comptées (chiffres, places Fondateur, Visibilité). Elles servent à tester l&apos;espace pro.</p>
+          <div style={s.table}>
+            {demo.map(p => (
+              <div key={p.id} style={s.row} className="adm-row">
+                <div style={s.cellName}>{p.full_name}</div>
+                <div style={s.cellMid}>{p.ville}</div>
+                <div style={s.cellMid}>Exemple</div>
+                <div style={s.cellMid}>créée il y a {fmtAge(p.created_at)}</div>
+                <div style={s.actions}>
+                  <Link href={`/dashboard/ma-fiche-photographe?id=${p.id}`} style={s.linkBtn} title="Ouvrir l'espace pro de cet exemple">
+                    <Sparkle size={11} weight="bold" /> Dashboard
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
+
       {hidden.length > 0 && (
         <details style={s.collapseSection}>
           <summary style={s.collapseSummary}>

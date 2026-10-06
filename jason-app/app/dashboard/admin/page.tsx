@@ -9,6 +9,7 @@ import { getAffilaeOverview } from '@/lib/affiliation/affilae'
 import { getPartnerStackOverview } from '@/lib/affiliation/partnerstack'
 import { computeRevenue, proSpacesByUser, type ProRow } from '@/lib/admin/revenue'
 import { getLiveVisitorsCount, getChannelBreakdown, getTopPages, getAffiliateClicks, getAppErrors, CHANNEL_LABELS } from '@/lib/queries/site-traffic'
+import { adminUserIds, splitDemo } from '@/lib/pros/demo'
 
 // Service client : la RLS limite chaque utilisateur à SES données (profile,
 // reports, etc.). Pour la vue admin on bypasse une fois l'auth admin vérifiée.
@@ -123,8 +124,10 @@ async function computeAdminOverview() {
 
   // Revenu : Standard des hôtes (19,98 €/an) + fiches photographes et ménage
   // payées (39,98 € fondateur ou 79,98 €/an). Driing = offert.
-  const phRows = (photographers ?? []) as ProRow[]
-  const clRows = (cleaners ?? []) as ProRow[]
+  // Fiches d'exemple des comptes admin écartées (lib/pros/demo.ts)
+  const admins = await adminUserIds(admin)
+  const phRows = splitDemo((photographers ?? []) as ProRow[], admins).real
+  const clRows = splitDemo((cleaners ?? []) as ProRow[], admins).real
   const revenue = computeRevenue({ standardMembers: standardMembers ?? 0, photographers: phRows, cleaners: clRows })
   const spaces = proSpacesByUser(phRows, clRows)
 

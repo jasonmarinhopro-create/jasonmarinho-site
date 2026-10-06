@@ -32,6 +32,8 @@ interface Props {
   hidden: Cleaner[]
   cancelled: Cleaner[]
   founderActiveCount: number
+  /** Fiches rattachées à un compte admin : exemples, jamais publiées ni comptées */
+  demo?: Cleaner[]
   pending?: Cleaner[]
   approvedPendingPayment?: Cleaner[]
   rejected?: Cleaner[]
@@ -60,7 +62,7 @@ function fmtTarif(c: Cleaner): string {
   return '-'
 }
 
-export default function CleanersAdmin({ active, pendingPayment, hidden, cancelled, founderActiveCount }: Props) {
+export default function CleanersAdmin({ active, pendingPayment, hidden, cancelled, founderActiveCount, demo = [] }: Props) {
   const router = useRouter()
   const [busy, startBusy] = useTransition()
   const { confirm, dialog } = useConfirm()
@@ -203,6 +205,31 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
                   <button onClick={() => handleDeleteOrphan(c)} disabled={busy} style={s.btnDanger}>
                     <Trash size={11} weight="bold" /> Supprimer
                   </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
+
+      {demo.length > 0 && (
+        <details style={s.collapseSection}>
+          <summary style={s.collapseSummary}>
+            <Sparkle size={12} weight="fill" style={{ marginRight: 4 }} />
+            Fiches d&apos;exemple · {demo.length}
+          </summary>
+          <p style={s.helpText}>Rattachées à ton compte admin : jamais publiées sur le site ni comptées (chiffres, places Fondateur, Visibilité). Elles servent à tester l&apos;espace pro.</p>
+          <div style={s.table}>
+            {demo.map(c => (
+              <div key={c.id} style={s.row} className="adm-row">
+                <div style={s.cellName}>{name(c)}</div>
+                <div style={s.cellMid}>{c.ville}</div>
+                <div style={s.cellMid}>Exemple</div>
+                <div style={s.cellMid}>créée il y a {fmtAge(c.created_at)}</div>
+                <div style={s.actions}>
+                  <Link href={`/dashboard/ma-fiche-menage?id=${c.id}`} style={s.linkBtn} title="Ouvrir l'espace pro de cet exemple">
+                    <Sparkle size={11} weight="bold" /> Dashboard
+                  </Link>
                 </div>
               </div>
             ))}

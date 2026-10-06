@@ -2,6 +2,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getServiceClient } from '@/lib/supabase/service'
+import { adminUserIds, splitDemo } from '@/lib/pros/demo'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
@@ -234,6 +235,7 @@ export async function getPhotographersQueue(): Promise<{
   hidden: any[]
   cancelled: any[]
   founderActiveCount: number
+  demo?: any[]
   // Legacy pour la rétro-compat du composant existant.
   pending: any[]
   approvedPendingPayment: any[]
@@ -249,20 +251,24 @@ export async function getPhotographersQueue(): Promise<{
   }
 
   const admin = getServiceClient()
-  const [activeRes, pendingPaymentRes, hiddenRes, cancelledRes, founderCountRes] = await Promise.all([
+  const [activeRes, pendingPaymentRes, hiddenRes, cancelledRes, admins] = await Promise.all([
     admin.from('photographers').select('*').eq('status', 'active').order('created_at', { ascending: false }).limit(200),
     admin.from('photographers').select('*').eq('status', 'pending_payment').order('created_at', { ascending: false }).limit(50),
     admin.from('photographers').select('*').eq('status', 'hidden').order('updated_at', { ascending: false }).limit(50),
     admin.from('photographers').select('*').eq('status', 'cancelled').order('updated_at', { ascending: false }).limit(50),
-    admin.from('photographers').select('id', { count: 'exact', head: true }).eq('status', 'active').eq('tier', 'fondateur'),
+    adminUserIds(admin),
   ])
+  // Fiches d'exemple (comptes admin) : à part, hors chiffres et places Fondateur
+  const lists = [activeRes.data ?? [], pendingPaymentRes.data ?? [], hiddenRes.data ?? [], cancelledRes.data ?? []].map(rows => splitDemo(rows, admins))
+  const [active, pendingPayment, hidden, cancelled] = lists.map(l => l.real)
 
   return {
-    active: activeRes.data ?? [],
-    pendingPayment: pendingPaymentRes.data ?? [],
-    hidden: hiddenRes.data ?? [],
-    cancelled: cancelledRes.data ?? [],
-    founderActiveCount: founderCountRes.count ?? 0,
+    active,
+    pendingPayment,
+    hidden,
+    cancelled,
+    demo: lists.flatMap(l => l.demo),
+    founderActiveCount: active.filter(r => r.tier === 'fondateur').length,
     pending: [], approvedPendingPayment: [], rejected: [],
   }
 }

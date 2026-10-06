@@ -12,6 +12,7 @@ import {
 } from './sales'
 import { outreachConfig } from '@/lib/outreach/mailer'
 import { memberMailSecret } from './member-mail-secret'
+import { splitDemo } from '@/lib/pros/demo'
 
 const FOUNDER_QUOTA = 20
 
@@ -65,8 +66,10 @@ export async function loadMembers() {
   ])
   if (profilesRes.error) throw new Error(`Lecture des comptes impossible : ${profilesRes.error.message}`)
 
-  const photographers = (phRes.data ?? []) as ProFull[]
-  const cleaners = (clRes.data ?? []) as ProFull[]
+  // Fiches d'exemple des comptes admin écartées (lib/pros/demo.ts)
+  const admins = new Set(((profilesRes.data ?? []) as Array<{ id: string; role: string | null }>).filter(p => p.role === 'admin').map(p => p.id))
+  const photographers = splitDemo((phRes.data ?? []) as ProFull[], admins).real
+  const cleaners = splitDemo((clRes.data ?? []) as ProFull[], admins).real
   const proUsers = new Set([...photographers, ...cleaners].map(r => r.user_id).filter(Boolean) as string[])
   const logCount = countBy(logements), sejCount = countBy(sejours), conCount = countBy(contracts)
   const suppressed = new Set((supRes.data ?? []).map(r => r.email_norm as string))

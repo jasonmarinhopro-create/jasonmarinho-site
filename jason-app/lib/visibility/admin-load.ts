@@ -12,20 +12,26 @@ import { buildVisibility, type ProRow, type VisibilityData } from './admin-build
 import { getAffilaeOverview } from '@/lib/affiliation/affilae'
 import { getPartnerStackOverview } from '@/lib/affiliation/partnerstack'
 import type { ClickRow } from './partners'
+import { adminUserIds, splitDemo } from '@/lib/pros/demo'
 
-const PRO_COLUMNS = 'id, slug, full_name, pseudo, ville, zone_couverte, status, is_public, tier, stripe_subscription_status'
+const PRO_COLUMNS = 'id, user_id, slug, full_name, pseudo, ville, zone_couverte, status, is_public, tier, stripe_subscription_status'
 
 const errMsg = (e: unknown) => String((e as Error)?.message ?? e).slice(0, 200)
 
 async function loadPros() {
   const db = getServiceClient()
-  const [ph, cl] = await Promise.all([
+  const [ph, cl, admins] = await Promise.all([
     db.from('photographers').select(PRO_COLUMNS),
     db.from('cleaners').select(PRO_COLUMNS),
+    adminUserIds(db),
   ])
   if (ph.error) throw new Error(ph.error.message)
   if (cl.error) throw new Error(cl.error.message)
-  return { photographers: (ph.data ?? []) as ProRow[], cleaners: (cl.data ?? []) as ProRow[] }
+  // Fiches d'exemple des comptes admin écartées (Jason, 06/10/2026 : « est-ce nécessaire ? »)
+  return {
+    photographers: splitDemo((ph.data ?? []) as Array<ProRow & { user_id?: string | null }>, admins).real,
+    cleaners: splitDemo((cl.data ?? []) as Array<ProRow & { user_id?: string | null }>, admins).real,
+  }
 }
 
 /** Demandes reçues par fiche entre deux jours (inclus) */

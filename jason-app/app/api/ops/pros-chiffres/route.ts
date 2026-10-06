@@ -9,6 +9,7 @@ import { gscQuery } from '@/lib/google/search-analytics'
 import { loadVisits, SITE_ORIGIN } from '@/lib/visibility/load'
 import { CITY_PAGE_SLUGS, cityPagePath, citySlugOf, internalReferrerPath, type CityMetier } from '@/lib/visibility/city-page'
 import { parisToday } from '@/lib/stripe/deposit-window'
+import { adminUserIds, splitDemo } from '@/lib/pros/demo'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -86,12 +87,14 @@ export async function GET(req: NextRequest) {
   }
 
   // ── Annuaire (nombres seulement) ──
-  const [{ data: pros }, contactsAll, contacts90] = await Promise.all([
-    db.from(table).select('ville, zone_couverte, status, is_public, views_count, contacts_count'),
+  const [{ data: pros }, contactsAll, contacts90, admins] = await Promise.all([
+    db.from(table).select('user_id, ville, zone_couverte, status, is_public, views_count, contacts_count'),
     db.from(contacts).select('id', { count: 'exact', head: true }),
     db.from(contacts).select('id', { count: 'exact', head: true }).gte('created_at', `${addDays(today, -89)}T00:00:00Z`),
+    adminUserIds(db),
   ])
-  const rows = (pros ?? []) as Array<{ ville: string | null; zone_couverte: string | null; status: string | null; is_public: boolean | null; views_count: number | null; contacts_count: number | null }>
+  // Fiches d'exemple des comptes admin écartées
+  const rows = splitDemo((pros ?? []) as Array<{ user_id: string | null; ville: string | null; zone_couverte: string | null; status: string | null; is_public: boolean | null; views_count: number | null; contacts_count: number | null }>, admins).real
   const actives = rows.filter(r => r.status === 'active' && r.is_public)
 
   return NextResponse.json({
