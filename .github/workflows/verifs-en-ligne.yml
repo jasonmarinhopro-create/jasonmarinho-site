@@ -76,5 +76,12 @@ jobs:
             if node --check "$f" 2>/dev/null && [ "$lines" -le 5 ]; then echo "OK   $f compressé ($size octets, $lines ligne(s))"; else echo "::error title=Site $f::pas compressé ou invalide ($size octets, $lines lignes)"; fail=1; fi
           done
           has /tarifs "nav.js"
+          # Pages Les Sables-d'Olonne (06/10/2026) et prépositions des villes
+          has /photographe-lcd-les-sables-d-olonne "Les règles et le calendrier <em>aux Sables-d'Olonne</em>"
+          has /menage-lcd-les-sables-d-olonne "plafond de 2 514 meublés de tourisme"
+          lacks /menage-lcd-le-mans "à Le Mans"
+          for m in photographe menage; do
+            if curl -s "https://jasonmarinho.com/$m-lcd-les-sables-d-olonne" | grep -q 'annuaire-live:start'; then echo "::notice title=Sables $m::un pro présenté sur la page"; else echo "::notice title=Sables $m::aucun pro présenté"; fi
+          done
           code=$(curl -s -o /dev/null -w '%{http_code}' https://jasonmarinho.com/sitemap.xml); [ "$code" = 200 ] && echo "OK   sitemap 200" || { echo "::error title=Site::sitemap $code"; fail=1; }
           exit $fail
