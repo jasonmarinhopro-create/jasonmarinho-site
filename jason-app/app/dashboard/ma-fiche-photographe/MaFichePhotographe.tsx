@@ -10,6 +10,7 @@ import { updatePhotographerFiche, createCustomerPortalSession, uploadPhotographe
 import ShareFicheBlock from '@/components/pro/ShareFicheBlock'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
+import ReseauxFields, { emptyReseauxForm, type ReseauxForm } from '@/components/pros/ReseauxFields'
 
 const AMBER = '#B7791F'
 const AMBER_DARK = '#8A5A12'
@@ -34,6 +35,7 @@ type Photographer = {
   views_count: number; contacts_count: number
   created_at: string
   logo_url: string | null
+  reseaux?: unknown
 }
 
 interface Props {
@@ -58,6 +60,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
     instagram_handle: photographer.instagram_handle ?? '',
     telephone: photographer.telephone ?? '',
   })
+  const [reseaux, setReseaux] = useState<ReseauxForm>(() => emptyReseauxForm(photographer.reseaux))
   const [busy, startBusy] = useTransition()
   const [err, setErr] = useState<string | null>(null)
   const [ok, setOk] = useState<string | null>(null)
@@ -105,8 +108,10 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         portfolio_url: form.portfolio_url,
         instagram_handle: form.instagram_handle || null,
         telephone: form.telephone || null,
+        reseaux,
       })
       if (res.error) setErr(res.error)
+      else if (res.warning) setOk(res.warning)
       else setOk(res.adminEdit
         ? `Fiche de ${photographer.full_name} modifiée par l’admin. La version publique se met à jour sous 2 à 3 minutes.`
         : 'Fiche enregistrée. La version publique se met à jour sous 2 à 3 minutes.')
@@ -238,6 +243,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
             <input style={s.input} value={form.instagram_handle} onChange={e => setForm({ ...form, instagram_handle: e.target.value })} maxLength={50} />
           </Field>
         </div>
+        <ReseauxFields value={reseaux} onChange={setReseaux} inputStyle={s.input} />
 
         <h3 style={s.sectionTitle}>Activité professionnelle</h3>
         <Field label="Lien portfolio (site ou Instagram)" req>

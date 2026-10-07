@@ -10,6 +10,7 @@ import { updateCleanerFiche, createCustomerPortalSession, uploadCleanerLogo, del
 import ShareFicheBlock from '@/components/pro/ShareFicheBlock'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
+import ReseauxFields, { emptyReseauxForm, type ReseauxForm } from '@/components/pros/ReseauxFields'
 
 const AMBER = '#B7791F'
 const AMBER_DARK = '#8A5A12'
@@ -38,6 +39,7 @@ type Cleaner = {
   views_count: number; contacts_count: number
   created_at: string
   logo_url: string | null
+  reseaux?: unknown
 }
 
 interface Props {
@@ -85,6 +87,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
     instagram_handle: cleaner.instagram_handle ?? '',
     telephone: cleaner.telephone ?? '',
   })
+  const [reseaux, setReseaux] = useState<ReseauxForm>(() => emptyReseauxForm(cleaner.reseaux))
   const [busy, startBusy] = useTransition()
   const [err, setErr] = useState<string | null>(null)
   const [ok, setOk] = useState<string | null>(null)
@@ -146,8 +149,10 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         site_url: form.site_url || null,
         instagram_handle: form.instagram_handle || null,
         telephone: form.telephone || null,
+        reseaux,
       })
       if (res.error) setErr(res.error)
+      else if (res.warning) setOk(res.warning)
       else setOk(res.adminEdit
         ? `Fiche de ${cleaner.pseudo || cleaner.full_name} modifiée par l’admin. La version publique se met à jour sous 2 à 3 minutes.`
         : 'Fiche enregistrée. La version publique se met à jour sous 2 à 3 minutes.')
@@ -286,6 +291,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
             <input style={s.input} value={form.instagram_handle} onChange={e => setForm({ ...form, instagram_handle: e.target.value })} maxLength={50} />
           </Field>
         </div>
+        <ReseauxFields value={reseaux} onChange={setReseaux} inputStyle={s.input} />
 
         <h3 style={s.sectionTitle}>Prestations</h3>
         <div style={s.chipGrid}>

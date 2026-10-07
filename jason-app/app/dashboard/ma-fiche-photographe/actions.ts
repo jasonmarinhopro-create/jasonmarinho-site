@@ -6,6 +6,7 @@ import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
+import { cleanReseaux } from '@/lib/pros/reseaux'
 
 const log = logger('ma-fiche-photographe/actions')
 
@@ -69,9 +70,13 @@ export async function updatePhotographerFiche(payload: {
   portfolio_url?: string
   instagram_handle?: string | null
   telephone?: string | null
-}): Promise<{ success?: boolean; error?: string; adminEdit?: boolean }> {
+  reseaux?: Record<string, string>
+}): Promise<{ success?: boolean; error?: string; warning?: string; adminEdit?: boolean }> {
   const target = await resolveTargetFiche(payload.targetId)
   if ('error' in target) return { error: target.error }
+  // Réseaux et fiche Google : liens vérifiés (lib/pros/reseaux.ts)
+  const reseaux = cleanReseaux(payload.reseaux)
+  if (reseaux.errors.length) return { error: reseaux.errors[0] }
 
   const fullName = String(payload.full_name || '').trim().slice(0, 100)
   const ville = String(payload.ville || '').trim().slice(0, 80)
@@ -84,22 +89,29 @@ export async function updatePhotographerFiche(payload: {
   }
 
   const admin = getServiceClient()
-  const { error: updateErr } = await admin
+  const fields = {
+    full_name: fullName,
+    ville,
+    zone_couverte: (payload.zone_couverte ?? '').toString().trim().slice(0, 200) || null,
+    bio: (payload.bio ?? '').toString().trim().slice(0, 600) || null,
+    specialite: (payload.specialite ?? '').toString().trim().slice(0, 100) || null,
+    tarif_min: payload.tarif_min ?? null,
+    tarif_max: payload.tarif_max ?? null,
+    portfolio_url: portfolioUrl,
+    instagram_handle: (payload.instagram_handle ?? '').toString().trim().slice(0, 50).replace(/^@/, '') || null,
+    telephone: (payload.telephone ?? '').toString().trim().slice(0, 30) || null,
+    updated_at: new Date().toISOString(),
+  }
+  let { error: updateErr } = await admin
     .from('photographers')
-    .update({
-      full_name: fullName,
-      ville,
-      zone_couverte: (payload.zone_couverte ?? '').toString().trim().slice(0, 200) || null,
-      bio: (payload.bio ?? '').toString().trim().slice(0, 600) || null,
-      specialite: (payload.specialite ?? '').toString().trim().slice(0, 100) || null,
-      tarif_min: payload.tarif_min ?? null,
-      tarif_max: payload.tarif_max ?? null,
-      portfolio_url: portfolioUrl,
-      instagram_handle: (payload.instagram_handle ?? '').toString().trim().slice(0, 50).replace(/^@/, '') || null,
-      telephone: (payload.telephone ?? '').toString().trim().slice(0, 30) || null,
-      updated_at: new Date().toISOString(),
-    })
+    .update({ ...fields, reseaux: reseaux.value })
     .eq('id', target.photographerId)
+  // Migration 125 pas encore appliquée : on enregistre le reste
+  let warning: string | undefined
+  if (updateErr && /reseaux/.test(`${updateErr.message} ${updateErr.details ?? ''}`)) {
+    ({ error: updateErr } = await admin.from('photographers').update(fields).eq('id', target.photographerId))
+    if (!updateErr) warning = 'Fiche enregistrée, sauf tes réseaux : ils arrivent dans quelques heures, réessaie plus tard.'
+  }
 
   if (updateErr) {
     log.error('update failed', updateErr)
@@ -110,7 +122,7 @@ export async function updatePhotographerFiche(payload: {
 
   revalidatePath('/dashboard/ma-fiche-photographe')
   if (target.isAdminEdit) revalidatePath('/dashboard/admin/photographes')
-  return { success: true, adminEdit: target.isAdminEdit }
+  return { success: true, warning, adminEdit: target.isAdminEdit }
 }
 
 /**

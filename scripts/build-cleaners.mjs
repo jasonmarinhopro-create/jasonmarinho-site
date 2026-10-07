@@ -13,6 +13,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
+import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -129,6 +130,8 @@ function buildFichePage(c) {
   const isFondateur = c.tier === 'fondateur'
   // Page de sa ville (ou de sa zone) : même règle que l'injection des pros
   const g = villeGuide(ROOT, 'menage-lcd', c.ville, c.zone_couverte)
+  // Réseaux et fiche Google (Instagram a déjà son bouton plus haut)
+  const reseaux = proReseauxLinks(c.reseaux, null)
   const guide = g?.href ?? null
   const depuis = memberSince(c.created_at)
 
@@ -221,7 +224,7 @@ ${JSON.stringify({
   knowsAbout: ['Ménage Airbnb', 'Turnover LCD', 'Gestion du linge', ...prestations].slice(0, 12),
   telephone: c.telephone || undefined,
   email: undefined,
-  sameAs: [c.site_url, c.instagram_handle ? `https://instagram.com/${c.instagram_handle}` : null].filter(Boolean),
+  sameAs: [c.site_url, c.instagram_handle ? `https://instagram.com/${c.instagram_handle}` : null, ...reseaux.map(l => l.url)].filter(Boolean),
   ...(c.tarif_forfait_min ? {
     priceRange: c.tarif_forfait_max ? `${c.tarif_forfait_min}€-${c.tarif_forfait_max}€` : `dès ${c.tarif_forfait_min}€`,
   } : {}),
@@ -310,6 +313,7 @@ ${JSON.stringify({
       ${c.assurance_rc_pro ? '<div class="aside-row"><span class="aside-k">Assurance</span><span class="aside-v green">✓ RC pro</span></div>' : ''}
       ${isFondateur ? '<div class="aside-row"><span class="aside-k">Statut</span><span class="aside-v" style="color:#b8860b">🌟 Équipe fondatrice</span></div>' : ''}
       ${depuis ? `<div class="aside-row"><span class="aside-k">Membre de l'annuaire depuis</span><span class="aside-v">${depuis}</span></div>` : ''}
+      ${proReseauxHtml(reseaux)}
     </div>
 
     ${guide ? `<div class="card" style="margin-top:16px">

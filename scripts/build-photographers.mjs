@@ -14,6 +14,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
+import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -106,6 +107,8 @@ function buildFichePage(p) {
   const isFondateur = p.tier === 'fondateur'
   // Page de sa ville (ou de sa zone) : même règle que l'injection des pros
   const g = villeGuide(ROOT, 'photographe-lcd', p.ville, p.zone_couverte)
+  // Réseaux et fiche Google (Instagram a déjà son bouton plus haut)
+  const reseaux = proReseauxLinks(p.reseaux, null)
   const guide = g?.href ?? null
   const depuis = memberSince(p.created_at)
   // NB breadcrumbs : l'annuaire vit désormais directement sur
@@ -186,7 +189,7 @@ ${JSON.stringify({
   address: { '@type': 'PostalAddress', addressLocality: p.ville, addressCountry: 'FR' },
   jobTitle: 'Photographe spécialisé location courte durée',
   knowsAbout: ['Photographie immobilière', 'Location courte durée', 'Airbnb', 'Booking', p.specialite].filter(Boolean),
-  sameAs: [p.portfolio_url, p.instagram_handle ? `https://instagram.com/${p.instagram_handle}` : null].filter(Boolean),
+  sameAs: [p.portfolio_url, p.instagram_handle ? `https://instagram.com/${p.instagram_handle}` : null, ...reseaux.map(l => l.url)].filter(Boolean),
 })}
 </script>
 <script type="application/ld+json">
@@ -260,6 +263,7 @@ ${JSON.stringify({
       ${p.specialite ? `<div class="aside-row"><span class="aside-k">Spécialité</span><span class="aside-v">${escHtml(p.specialite)}</span></div>` : ''}
       ${isFondateur ? '<div class="aside-row"><span class="aside-k">Statut</span><span class="aside-v" style="color:#b8860b">🌟 Photographe fondateur</span></div>' : ''}
       ${depuis ? `<div class="aside-row"><span class="aside-k">Membre de l'annuaire depuis</span><span class="aside-v">${depuis}</span></div>` : ''}
+      ${proReseauxHtml(reseaux)}
     </div>
 
     ${guide ? `<div class="card" style="margin-top:16px">
