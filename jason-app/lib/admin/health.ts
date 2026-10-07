@@ -90,6 +90,7 @@ export interface MigrationProbe {
 export const MIGRATION_PROBES: MigrationProbe[] = [
   { file: '20261005_123_visibilite.sql', what: 'statistiques des fiches (pays, écran, temps passé, clics par jour)', table: 'pro_fiche_clicks_daily', column: 'clicks' },
   { file: '20261006_124_google_places_usage.sql', what: "compteur Google Places (aucun appel Google sans lui, pour rester dans la part gratuite)", table: 'google_places_usage', column: 'count' },
+  { file: '20261007_125_pro_reseaux.sql', what: 'réseaux sociaux et fiche Google des pros', table: 'photographers', column: 'reseaux' },
   { file: '20261004_122_pro_devis.sql', what: 'devis des photographes et équipes de ménage', table: 'pro_documents', column: 'id' },
   { file: '20261001_121', what: 'modèles de messages en anglais et portugais', table: 'user_template_customizations', column: 'content_en' },
   { file: '20260930_119', what: 'notifications sur le téléphone', table: 'push_subscriptions', column: 'id' },
