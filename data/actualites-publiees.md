@@ -32,3 +32,4 @@ sauf pour retirer une ligne masquée dans le dashboard.
 - 2026-10-02 · plateformes · Airbnb automne 2026 : IA pour trouver, nouveaux outils pour gérer (https://news.airbnb.com/airbnb-2026-fall-update)
 - 2026-10-05 · reglementation · Depuis le 1er octobre, le bail standard bloque mieux la sous-location (https://edito.seloger.com/conseils-d-experts/louer/contrat-de-bail-voici-change-partir-1er-octobre-article-23703.html)
 - 2026-10-06 · plateformes · Abritel passe à 12 % de commission pour tous les hôtes le 29 octobre (https://blog.elloha.com/2026/10/04/pourquoi-les-geants-de-la-location-de-courte-duree-revoient-de-fond-en-comble-leur-modele-de-commission/)
+- 2026-10-07 · fiscalite · PLF 2027 : amortissement LMNP plafonné à 1,5 % pour les meublés de tourisme (https://www.meilleurtaux.com/credit-immobilier/actualites/2026-octobre/lmnp-plafonds-damortissement-envisages-des-2027.html)
