@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 05 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 07 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Toussaint 2026 en LCD : 6 actions à mener cette semaine pour remplir ton calendrier des vacances d&apos;automne</title>
+      <link>https://jasonmarinho.com/blog/toussaint-2026-lcd-6-actions-remplir-calendrier-vacances-automne</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/toussaint-2026-lcd-6-actions-remplir-calendrier-vacances-automne</guid>
+      <pubDate>Wed, 07 Oct 2026 08:00:00 GMT</pubDate>
+      <description>Tarifs, séjours courts, activités automne, chauffage, canaux directs, ménage : 6 actions concrètes à mener cette semaine pour remplir ton calendrier LCD sur les vacances de Toussaint 2026.</description>
+      <category>Revenus</category>
+    </item>
     <item>
       <title>Ventes additionnelles en LCD : 7 upsells rentables pour augmenter ton revenu par séjour sans toucher au prix de la nuit</title>
       <link>https://jasonmarinho.com/blog/ventes-additionnelles-lcd-7-upsells-augmenter-revenu-par-sejour</link>
@@ -398,14 +406,6 @@
       <pubDate>Mon, 29 Jun 2026 08:00:00 GMT</pubDate>
       <description>Phishing, piratage de compte hôte, vols de réservations : les 6 réflexes concrets à adopter pour sécuriser ton compte Airbnb et protéger ton activité LCD en 2026.</description>
       <category>Ressources</category>
-    </item>
-    <item>
-      <title>Voyageurs seniors en LCD : 6 actions pour capter et fidéliser la clientèle 60+ hors saison</title>
-      <link>https://jasonmarinho.com/blog/voyageurs-seniors-lcd-6-actions-capter-fideliser-60-plus</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/voyageurs-seniors-lcd-6-actions-capter-fideliser-60-plus</guid>
-      <pubDate>Wed, 24 Jun 2026 08:00:00 GMT</pubDate>
-      <description>Accessibilité, literie, communication, séjours longs : 6 actions concrètes pour accueillir les voyageurs seniors en location courte durée et remplir ton calendrier en basse saison.</description>
-      <category>Expérience</category>
     </item>
   </channel>
 </rss>
