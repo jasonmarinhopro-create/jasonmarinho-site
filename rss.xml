@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 07 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 09 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Clôture comptable LCD 2026 : 7 actions à faire avant le 31 décembre pour sécuriser ta déclaration</title>
+      <link>https://jasonmarinho.com/blog/cloture-comptable-lcd-2026-7-actions-avant-31-decembre</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/cloture-comptable-lcd-2026-7-actions-avant-31-decembre</guid>
+      <pubDate>Fri, 09 Oct 2026 08:00:00 GMT</pubDate>
+      <description>Relevés de recettes, justificatifs, amortissements, TVA, taxe de séjour, facture électronique, choix du régime : 7 actions concrètes à mener d&apos;ici au 31 décembre pour fermer proprement ton exercice 2026 en LCD.</description>
+      <category>Fiscalité</category>
+    </item>
     <item>
       <title>Toussaint 2026 en LCD : 6 actions à mener cette semaine pour remplir ton calendrier des vacances d&apos;automne</title>
       <link>https://jasonmarinho.com/blog/toussaint-2026-lcd-6-actions-remplir-calendrier-vacances-automne</link>
@@ -398,14 +406,6 @@
       <pubDate>Wed, 01 Jul 2026 08:00:00 GMT</pubDate>
       <description>Note 4,9, cinq avis minimum, moins de 1 % d&apos;annulations, zéro litige, communication soignée : les 5 critères précis à valider pour rejoindre le programme Guest Favorites d&apos;Airbnb en 2026.</description>
       <category>Visibilité</category>
-    </item>
-    <item>
-      <title>Sécuriser ton compte Airbnb : 6 réflexes pour éviter le phishing et le piratage en 2026</title>
-      <link>https://jasonmarinho.com/blog/securiser-compte-airbnb-phishing-piratage-2026</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/securiser-compte-airbnb-phishing-piratage-2026</guid>
-      <pubDate>Mon, 29 Jun 2026 08:00:00 GMT</pubDate>
-      <description>Phishing, piratage de compte hôte, vols de réservations : les 6 réflexes concrets à adopter pour sécuriser ton compte Airbnb et protéger ton activité LCD en 2026.</description>
-      <category>Ressources</category>
     </item>
   </channel>
 </rss>
