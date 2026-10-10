@@ -5,6 +5,7 @@ import { buildEmail, emailBtn, emailP, emailNote, emailInfoBlock, emailAnnuaires
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { isEmail, isPassword, normalizeEmail } from '@/lib/security/validate'
 import { logger } from '@/lib/logger'
+import { cleanAcquisition, describeAcquisition } from '@/lib/acquisition/rules'
 
 export const dynamic = 'force-dynamic'
 
@@ -89,6 +90,8 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     const { email, password, fullName, isDriingMember, newsletterConsent, website, ts, isInvestor } = body
+    // Provenance de la visite (liens suivis, groupes Facebook, Google…), nettoyée
+    const acquisition = cleanAcquisition(body.acquisition)
 
     // ─── Anti-bot : honeypot + time-trap + domaines jetables ───────────────
     // Fail-silent en 200 OK pour ne pas indiquer la détection aux bots.
@@ -215,15 +218,20 @@ export async function POST(req: NextRequest) {
 
     // Create profile (in case the DB trigger isn't set up)
     if (userData.user) {
-      const { error: profileError } = await supabaseAdmin
+      const base = {
+        id: userData.user.id,
+        email: normalized,
+        full_name: fullName || null,
+        driing_status: isDriingMember ? 'pending' : 'none',
+        is_investor: !!isInvestor,
+      }
+      let { error: profileError } = await supabaseAdmin
         .from('profiles')
-        .upsert({
-          id: userData.user.id,
-          email: normalized,
-          full_name: fullName || null,
-          driing_status: isDriingMember ? 'pending' : 'none',
-          is_investor: !!isInvestor,
-        }, { onConflict: 'id', ignoreDuplicates: false })
+        .upsert(acquisition ? { ...base, acquisition } : base, { onConflict: 'id', ignoreDuplicates: false })
+      // Sans la migration 126 (colonne acquisition), on enregistre le reste
+      if (profileError && acquisition) {
+        ({ error: profileError } = await supabaseAdmin.from('profiles').upsert(base, { onConflict: 'id', ignoreDuplicates: false }))
+      }
       if (profileError) {
         log.warn('profileUpsert', { msg: profileError.message })
       }
@@ -250,6 +258,7 @@ export async function POST(req: NextRequest) {
               { label: 'Prénom / Nom', value: escHtml(fullName || '-') },
               { label: 'Email', value: escHtml(normalized) },
               { label: 'Membre Driing', value: isDriingMember ? 'Oui ✓' : 'Non' },
+              { label: 'Provenance', value: escHtml((() => { const v = describeAcquisition(acquisition); return [v.label, v.detail, v.landing ? `arrivé sur ${v.landing}` : null].filter(Boolean).join(' · ') })()) },
               { label: 'Inscription le', value: escHtml(dateStr) },
             ])}
             ${emailBtn(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard/admin/membres`, 'Voir les membres', 'secondary')}

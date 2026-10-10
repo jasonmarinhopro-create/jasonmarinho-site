@@ -804,15 +804,52 @@
       : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
       });
+    /* Facebook ajoute fbclid à ses liens sortants mais son navigateur intégré
+       ne transmet souvent pas d'origine : sans ça, ces visites passaient en « direct ». */
+    var fbclid = params.get('fbclid');
+    var utmSource = params.get('utm_source') || (fbclid ? 'facebook' : '');
+    var utmMedium = params.get('utm_medium') || (fbclid ? 'social' : '');
+    var utmCampaign = params.get('utm_campaign') || '';
     var payload = JSON.stringify({
       visit_id: vid,
       session_id: sid,
       path: window.location.pathname,
       referrer: document.referrer || '',
-      utm_source: params.get('utm_source') || '',
-      utm_medium: params.get('utm_medium') || '',
-      utm_campaign: params.get('utm_campaign') || '',
+      utm_source: utmSource,
+      utm_medium: utmMedium,
+      utm_campaign: utmCampaign,
     });
+
+    /* Provenance des inscriptions (10/10/2026) : point d'entrée de la visite
+       (source, campagne, site d'origine, première page), gardé le temps de
+       l'onglet. Ajouté aux liens vers l'inscription de l'app et envoyé par les
+       formulaires d'inscription des pros. Jamais le parcours sur le site. */
+    var acq = null;
+    try { acq = JSON.parse(sessionStorage.getItem('jm_acq') || 'null'); } catch (err) { acq = null; }
+    var refHost = '';
+    try { refHost = document.referrer ? new URL(document.referrer).hostname.toLowerCase() : ''; } catch (err) { refHost = ''; }
+    if (/(^|\.)jasonmarinho\.com$/.test(refHost)) refHost = '';
+    /* Arrivée depuis l'app (choix du profil sur la page d'inscription) : la provenance suit */
+    if (params.get('acq_t')) {
+      acq = { source: params.get('acq_s') || '', medium: params.get('acq_m') || '', campaign: params.get('acq_c') || '', ref: params.get('acq_r') || '', landing: params.get('acq_l') || '', at: params.get('acq_t') };
+      try { sessionStorage.setItem('jm_acq', JSON.stringify(acq)); } catch (err) { /* stockage refusé */ }
+    } else if (!acq || (utmSource && !acq.source)) {
+      acq = { source: utmSource, medium: utmMedium, campaign: utmCampaign, ref: refHost, landing: window.location.pathname, at: new Date().toISOString() };
+      try { sessionStorage.setItem('jm_acq', JSON.stringify(acq)); } catch (err) { /* stockage refusé */ }
+    }
+    window.__jmAcq = acq;
+    document.addEventListener('click', function (e) {
+      try {
+        var a = e.target && e.target.closest ? e.target.closest('a[href*="app.jasonmarinho.com/auth/register"]') : null;
+        if (!a || !acq) return;
+        var u = new URL(a.href);
+        if (u.searchParams.has('acq_t')) return;
+        [['acq_s', 'source'], ['acq_m', 'medium'], ['acq_c', 'campaign'], ['acq_r', 'ref'], ['acq_l', 'landing'], ['acq_t', 'at']].forEach(function (p) {
+          if (acq[p[1]]) u.searchParams.set(p[0], acq[p[1]]);
+        });
+        a.href = u.toString();
+      } catch (err) { /* fail-silent */ }
+    }, true);
     if (navigator.sendBeacon) {
       navigator.sendBeacon('/api/track/visit', new Blob([payload], { type: 'application/json' }));
     } else {

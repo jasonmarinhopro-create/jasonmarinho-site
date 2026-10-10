@@ -13,7 +13,7 @@ import {
   FacebookLogo, CaretDown, ChartBar, CalendarBlank, Heart,
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
-  ChartLineUp, HouseLine, Briefcase, ShareNetwork, PaperPlaneTilt, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
+  ChartLineUp, HouseLine, Briefcase, ShareNetwork, PaperPlaneTilt, LinkSimple, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
   Broom, Check, Plus, ChatText, ArrowLeft, LockSimple, Receipt, Binoculars, PresentationChart,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
@@ -143,6 +143,8 @@ const adminGroups: Array<{ key: string; label: string; items: AdminItem[]; colla
     key: 'croissance', label: 'Acquisition', items: [
       // Visibilité : Google Search Console + visites du site, fiches pros, villes, IA
       { href: '/dashboard/admin/visibilite',  label: 'Visibilité',      Icon: Binoculars },
+      // Liens suivis (groupes Facebook) et provenance des inscriptions
+      { href: '/dashboard/admin/provenance',  label: 'Liens & inscriptions', Icon: LinkSimple },
       { href: '/dashboard/admin/prospection', label: 'Prospection',     Icon: PaperPlaneTilt },
       { href: '/dashboard/admin/social',      label: 'Réseaux sociaux', Icon: ShareNetwork },
       { href: '/dashboard/admin/indexation',  label: 'Référencement',   Icon: MagnifyingGlass },

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Suspense, useRef } from 'react'
+import { useState, Suspense, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import {
@@ -9,6 +9,7 @@ import {
   HouseLine, Camera, Sparkle, ChartLineUp,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
+import { captureAcquisition, storedAcquisition, acquisitionParams } from '@/lib/acquisition/client'
 
 const PERKS = [
   { icon: GraduationCap, label: 'Formations et guides LCD' },
@@ -62,6 +63,8 @@ function RegisterEntry() {
   const role = searchParams?.get('role') ?? null
   // Compatibilite : les liens ?ref=USER (invitation) forcent role=host
   const isInvited = !!searchParams?.get('ref')
+  // Provenance de l'inscription (liens suivis, groupes Facebook, Google…)
+  useEffect(() => { captureAcquisition(searchParams) }, [searchParams])
   if (role === 'investor') return <RegisterForm investor />
   if (role === 'host' || isInvited) return <RegisterForm />
   return <RoleChooser />
@@ -174,6 +177,8 @@ function RoleChooser() {
                   style={rc.card}
                   className="role-card"
                   rel="external noopener"
+                  // Provenance transmise à l'inscription des pros (site public, autre origine)
+                  onClick={e => { const q = acquisitionParams(); if (q) e.currentTarget.href = `${r.href}?${q}` }}
                 >
                   {inner}
                 </a>
@@ -240,6 +245,7 @@ function RegisterForm({ investor = false }: { investor?: boolean }) {
         body: JSON.stringify({
           email, password, fullName, isDriingMember, newsletterConsent,
           website, ts: formLoadedAtRef.current, isInvestor: investor,
+          acquisition: storedAcquisition(),
         }),
       })
       const data = await res.json()
