@@ -5,8 +5,11 @@
 // avec un avantage ou un accompagnement pour l'hôte (Indy, LegalPlace, et
 // Lodgify depuis son code JASON15 du 01/10/2026, demande de Jason). Pas de page
 // pour un outil simplement référencé, ni pour Hospitable (sa page « avis » joue
-// déjà ce rôle), ni pour Shine (2 parrainages par an). Brevo (PartnerStack,
-// 06/10/2026) : page voulue par Jason, avantage = l'offre gratuite.
+// déjà ce rôle). Brevo (PartnerStack, 06/10/2026) : page voulue par Jason,
+// avantage = l'offre gratuite. AirDNA (affilié, 10/10/2026, 15 % récurrent, pas
+// de code promo : avantage = données gratuites pour démarrer) et Shine (Affilae,
+// 10/10/2026 : compte pro + Shine Facture, qui remplace l'ancien lien de
+// parrainage limité à 2 par an) : pages demandées par Jason.
 //
 // Faits repris des articles partenaires (sources citées dans chaque page).
 // Prix : relevés de septembre 2026, à revérifier avant toute mise à jour.
@@ -33,6 +36,13 @@ const LODGIFY_ONBOARDING = 'https://www.lodgify.com/fr/onboarding-gratuit/?afmc=
 const BREVO_EMAIL = 'https://get.brevo.com/ui6inugm9ub6'
 const BREVO_PLATFORM = 'https://get.brevo.com/3mftm80uaemx-m7y3c'
 const BREVO_CRM = 'https://get.brevo.com/z0u697ij3brq-5bwioc'
+
+// ── AirDNA (affilié, 10/10/2026) : lien d'invitation fourni par AirDNA ──
+const AIRDNA = 'https://eur-invite.airdna.co/Jason-Marinho'
+
+// ── Shine (Affilae, 10/10/2026) : compte pro (2249) et Shine Facture (2226) ──
+const SHINE_PRO = 'https://www.shine.fr/?utm_source=affiliation&utm_medium=affilae&utm_campaign=jason-marinho&ae=2249'
+const SHINE_FACTURE = 'https://www.shine.fr/lp/outil-facturation-gratuit/?utm_source=affilae&utm_medium=affiliation&utm_campaign=jason-marinho&utm_content=2226&ae=2226'
 
 export const PAGES = [
   {
@@ -409,6 +419,199 @@ export const PAGES = [
       ['Le CRM de Brevo', 'https://www.brevo.com/fr/crm-en-ligne/'],
       ['CNIL : la prospection commerciale par courrier électronique', 'https://www.cnil.fr/fr/la-prospection-commerciale-par-courrier-electronique'],
       ['Booking.com : adresses e-mail des voyageurs masquées', 'https://partner.booking.com/en-us/help/reservations/communicate-guests/why-does-guests-email-address-end-guestbookingcom'],
+    ],
+  },
+  {
+    slug: 'airdna',
+    releve: 'octobre 2026',
+    nom: 'AirDNA',
+    mono: 'A',
+    couleur: '#E11D48',
+    title: 'AirDNA : les vrais chiffres de ton marché LCD',
+    description: "AirDNA avec Jason Marinho : occupation, prix moyen et revenus des locations de courte durée de ta ville avant d'acheter ou de fixer tes prix. Ce que ça coûte, les limites.",
+    eyebrow: 'Partenaire · Étude de marché',
+    h1: 'AirDNA : regarde <em>les vrais chiffres</em> avant de te lancer',
+    lead: "AirDNA suit les annonces Airbnb et Vrbo dans le monde entier et en tire l'occupation, le prix moyen par nuit et les revenus de chaque marché. C'est l'outil que je conseille avant d'acheter un bien, de signer un mandat de conciergerie ou de fixer tes prix : tu peux commencer gratuitement.",
+    offre: {
+      titre: 'Gratuit pour démarrer',
+      sous: 'Explore les chiffres de ta ville sans carte bancaire',
+      points: [
+        'Occupation, prix moyen et revenus par ville et par quartier',
+        'Estimation des revenus d\'une adresse précise (Rentalizer)',
+        'Formules payantes seulement si tu veux aller plus loin',
+      ],
+      cta: { label: 'Créer mon compte AirDNA', href: AIRDNA },
+      note: 'Lien affilié : AirDNA me verse une commission si tu prends une formule payante via ce lien, sans aucun surcoût pour toi.',
+    },
+    pourquoi: {
+      titre: 'Pourquoi je recommande <em>AirDNA</em>',
+      items: [
+        { icon: 'globe-hemisphere-west', t: 'La référence du marché', d: 'AirDNA annonce suivre plus de 10 millions d\'annonces dans 120 000 marchés : la France y est bien couverte, petites villes comprises.' },
+        { icon: 'magnifying-glass', t: 'Des chiffres avant la décision', d: 'Acheter un bien, reprendre une location ou signer un mandat : tu vérifies le potentiel réel du quartier au lieu de croire une annonce d\'agence.' },
+        { icon: 'piggy-bank', t: 'Une offre gratuite utile', d: 'Pour un premier logement, l\'offre gratuite suffit souvent à situer ton prix et ta saison haute.' },
+      ],
+    },
+    fonctions: {
+      titre: 'Ce qu\'AirDNA fait pour <em>ton activité</em>',
+      items: [
+        { icon: 'chart-line-up', t: 'Données de marché', d: 'Occupation, prix moyen par nuit (ADR), revenu par logement (RevPAR), mois par mois.', href: AIRDNA, lien: 'Voir ma ville' },
+        { icon: 'calculator', t: 'Rentalizer', d: 'Tape une adresse et un type de logement : revenu annuel, occupation et prix estimés, avec les annonces comparables autour.' },
+        { icon: 'calendar-dots', t: 'Saisonnalité', d: 'Les mois forts et les creux de ton marché pour placer tes prix et tes séjours minimum.' },
+        { icon: 'users-three', t: 'Concurrence', d: 'Les annonces comparables à la tienne : prix, occupation, équipements, notes.' },
+        { icon: 'buildings', t: 'Comparer des villes', d: 'Pour un investisseur qui hésite entre plusieurs villes ou quartiers.' },
+        { icon: 'file-text', t: 'Rapports à partager', d: 'Un rapport chiffré à montrer à ta banque ou à un propriétaire que tu veux convaincre.' },
+      ],
+    },
+    etapes: [
+      { t: 'Crée ton compte gratuit', d: 'puis cherche ta ville ou ton quartier : tu vois tout de suite l\'occupation et le prix moyen du marché.' },
+      { t: 'Teste ton adresse dans le Rentalizer', d: 'avec le bon nombre de chambres et de voyageurs. Compare l\'estimation à tes propres chiffres ou au loyer d\'une location classique.' },
+      { t: 'Recoupe avec nos outils gratuits', d: 'le <a href="/calculateurs/revenus-lcd">simulateur de revenus</a> et la <a href="/services/actualites">réglementation de ta ville</a> (90 jours, changement d\'usage) avant toute décision.' },
+    ],
+    tableau: {
+      titre: 'AirDNA est-il fait <em>pour toi</em> ?',
+      entete: ['Ta situation', 'Mon conseil'],
+      lignes: [
+        ['Tu veux acheter un bien pour le louer en courte durée', '<span class="yes">Oui</span> : c\'est là qu\'AirDNA rapporte le plus, une erreur d\'achat coûte des années'],
+        ['Conciergerie qui démarche des propriétaires', '<span class="yes">Oui</span> : un rapport chiffré crédibilise ton estimation de revenus'],
+        ['Hôte avec un logement qui veut situer son prix', '<span class="partial">L\'offre gratuite suffit</span> : regarde le prix moyen et la saisonnalité de ton quartier'],
+        ['Tu loues surtout sur Booking.com', '<span class="partial">À nuancer</span> : AirDNA s\'appuie sur Airbnb et Vrbo, ton marché réel peut différer'],
+        ['Tu veux une tarification automatique au quotidien', 'Un outil de prix dynamique (PriceLabs, Beyond) est plus adapté'],
+      ],
+      note: 'Les chiffres d\'AirDNA sont des estimations : ils donnent un ordre de grandeur fiable, pas une promesse de revenus.',
+    },
+    cout: {
+      titre: 'Ce que ça <em>coûte</em>',
+      paras: [
+        'L\'offre gratuite permet d\'explorer les chiffres des marchés et de tester des adresses, avec des limites (historique et nombre d\'estimations). Pour un premier logement ou une vérification ponctuelle, c\'est souvent assez.',
+        'Les formules payantes sont facturées en dollars, beaucoup moins chères à l\'année qu\'au mois : d\'après les relevés d\'octobre 2026, environ 34 $ par mois à l\'année (400 $) ou 125 $ au mois pour l\'étude de marché, environ 50 $ par mois à l\'année (600 $) ou 150 $ au mois pour la formule hôte. Les sources divergent : le prix exact est celui affiché par AirDNA au moment de souscrire.',
+        'Mon conseil : pour un achat, un mois payant au bon moment suffit souvent. Pense à résilier ensuite si tu n\'en as plus besoin.',
+      ],
+    },
+    limites: [
+      'Les chiffres sont estimés à partir des annonces publiques : comptez une marge d\'erreur, surtout dans les petits marchés avec peu d\'annonces.',
+      'Booking.com n\'est pas dans les données : un marché très Booking peut être mal représenté.',
+      'AirDNA ne connaît pas la réglementation de ta ville : un bon chiffre ne vaut rien si la location y est plafonnée ou soumise à compensation.',
+      'Interface et prix en anglais et en dollars pour une bonne partie du site.',
+    ],
+    liens: [
+      { href: '/blog/airdna-mode-emploi-hote-lcd-debutant', t: 'AirDNA, mode d\'emploi', d: 'Fixer ton prix de départ avec les données du marché.' },
+      { href: '/comparatif-airdna-mashvisor', t: 'AirDNA ou Mashvisor ?', d: 'Le comparatif complet des deux outils d\'étude de marché.' },
+      { href: '/blog/acheter-appartement-lcd-7-criteres-rentabilite-avant-signer', t: 'Acheter pour la courte durée', d: 'Les 7 critères à vérifier avant de signer.' },
+      { href: '/calculateurs/revenus-lcd', t: 'Simulateur de revenus', d: 'Une première estimation gratuite, ville par ville.' },
+    ],
+    faq: [
+      { q: 'AirDNA est-il gratuit ?', a: 'Oui pour démarrer : l\'offre gratuite permet d\'explorer les chiffres des marchés et de tester des adresses, avec des limites. Les formules payantes ajoutent l\'historique complet, plus d\'estimations et les analyses détaillées.' },
+      { q: 'Les chiffres d\'AirDNA sont-ils fiables ?', a: 'Ce sont des estimations calculées à partir des annonces publiques Airbnb et Vrbo. Elles donnent un bon ordre de grandeur, surtout dans les marchés où il y a beaucoup d\'annonces, mais pas un chiffre garanti. Recoupe toujours avec les annonces voisines et ta propre expérience.' },
+      { q: 'AirDNA marche-t-il en France ?', a: 'Oui. La France est bien couverte, des grandes villes aux zones touristiques. Certaines fonctions (biens à vendre, par exemple) ne concernent que les États-Unis.' },
+      { q: 'Y a-t-il un code promo AirDNA ?', a: 'Non, je n\'ai pas de code promo. Mon lien ne te coûte rien de plus et me permet d\'être rémunéré si tu prends une formule payante.' },
+      { q: 'AirDNA ou PriceLabs ?', a: 'Ils ne font pas la même chose. AirDNA sert à étudier un marché (avant d\'acheter, de signer un mandat ou de fixer un prix de départ). PriceLabs ajuste tes prix tous les jours, logement par logement. Beaucoup d\'hôtes utilisent les deux.' },
+    ],
+    cta: {
+      titre: 'Des chiffres du marché <em>à ta gestion au quotidien</em>',
+      texte: 'Une fois ton logement lancé, l\'app Jason Marinho suit tes revenus réels, ton occupation et ta fiscalité, logement par logement, et l\'espace investisseur compare tes projets.',
+      btn: { label: 'Créer mon compte gratuit', href: 'https://app.jasonmarinho.com/auth/register' },
+    },
+    sources: [
+      ['Grille tarifaire AirDNA', 'https://www.airdna.co/pricing'],
+      ['AirDNA Rentalizer', 'https://www.airdna.co/vacation-rental-income-estimator'],
+      ['Méthodologie des données AirDNA', 'https://www.airdna.co/airdna-data-methodology'],
+    ],
+  },
+  {
+    slug: 'shine',
+    releve: 'octobre 2026',
+    nom: 'Shine',
+    mono: 'S',
+    couleur: '#1F2937',
+    title: 'Shine : compte pro et factures gratuites pour ta LCD',
+    description: "Shine avec Jason Marinho : un compte pro pour séparer tes revenus de location, et Shine Facture, l'outil gratuit de devis et factures. Offres, prix, limites.",
+    eyebrow: 'Partenaire · Banque & facturation',
+    h1: 'Shine : un compte pro et <em>des factures gratuites</em>',
+    lead: "Shine est une néobanque pro française, filiale de la Société Générale, utilisée par plus de 120 000 entreprises. Je la conseille pour séparer tes revenus de location de ton compte perso, et Shine Facture pour les conciergeries, équipes de ménage et photographes qui font des devis et des factures.",
+    offre: {
+      titre: 'Compte pro dès 0 €',
+      sous: 'Ouverture en ligne en quelques minutes, sans engagement',
+      points: [
+        'Carte Mastercard Business et IBAN français',
+        'Shine Facture : devis et factures gratuits',
+        'Service client 7 jours sur 7',
+      ],
+      cta: { label: 'Ouvrir mon compte Shine', href: SHINE_PRO },
+      cta2: { label: 'Essayer Shine Facture', href: SHINE_FACTURE },
+      note: 'Lien affilié : Shine me verse une commission si tu ouvres un compte ou utilises Shine Facture via ces liens, sans aucun surcoût pour toi.',
+    },
+    pourquoi: {
+      titre: 'Pourquoi je recommande <em>Shine</em>',
+      items: [
+        { icon: 'split-horizontal', t: 'Tes revenus enfin séparés', d: 'Virements Airbnb, Booking.com et paiements directs arrivent sur un seul compte : ta déclaration et ton suivi par logement deviennent simples.' },
+        { icon: 'bank', t: 'Une banque solide', d: 'Filiale de la Société Générale, IBAN français, fonds protégés selon les règles des établissements de paiement.' },
+        { icon: 'receipt', t: 'La facturation incluse', d: 'Devis, factures et relances depuis Shine Facture, gratuitement : utile dès que tu factures des clients (conciergerie, ménage, photo).' },
+      ],
+    },
+    fonctions: {
+      titre: 'Ce que Shine fait pour <em>ton activité</em>',
+      items: [
+        { icon: 'credit-card', t: 'Compte et carte pro', d: 'IBAN français, carte Mastercard Business, paiements et retraits.', href: SHINE_PRO, lien: 'Voir les offres' },
+        { icon: 'file-text', t: 'Shine Facture', d: 'Devis et factures, envoi par e-mail, relances automatiques, suivi des paiements.', href: SHINE_FACTURE, lien: 'Essayer gratuitement' },
+        { icon: 'arrows-left-right', t: 'Virements', d: 'Virements SEPA, groupés selon l\'offre, pour payer ton équipe de ménage ou tes prestataires.' },
+        { icon: 'money', t: 'Chèques et espèces', d: 'Encaissement de chèques et dépôt d\'espèces, utiles pour une caution ou une taxe de séjour réglée sur place.' },
+        { icon: 'calculator', t: 'Compta simplifiée', d: 'Justificatifs photographiés, catégories, accès pour ton comptable.' },
+        { icon: 'storefront', t: 'Création d\'entreprise', d: 'Accompagnement à la création (micro, SASU, SARL) et dépôt du capital en ligne.' },
+      ],
+    },
+    etapes: [
+      { t: 'Ouvre ton compte en ligne', d: 'avec ta pièce d\'identité et ton numéro SIREN (micro-entreprise, LMNP immatriculé ou société).' },
+      { t: 'Change ton IBAN sur tes plateformes', d: 'Airbnb, Booking.com, Stripe pour tes contrats directs : tous tes encaissements arrivent au même endroit.' },
+      { t: 'Facture depuis Shine Facture si tu as des clients', d: 'propriétaires de ta conciergerie, hôtes de ton équipe de ménage ou de photo : devis, facture, relance.' },
+    ],
+    tableau: {
+      titre: 'Shine est-il fait <em>pour toi</em> ?',
+      entete: ['Ta situation', 'Mon conseil'],
+      lignes: [
+        ['Hôte en LMNP qui mélange revenus de location et dépenses perso', '<span class="yes">Oui</span> : un compte dédié simplifie ta déclaration, même s\'il n\'est pas obligatoire en nom propre'],
+        ['Micro-entrepreneur (conciergerie, ménage, photo)', '<span class="yes">Oui</span> : un compte dédié à ton activité devient obligatoire au-delà de 10 000 € de chiffre d\'affaires deux années civiles de suite'],
+        ['Tu crées une société (SASU, SARL, SCI)', '<span class="yes">Oui</span> : dépôt du capital et compte de la société au même endroit'],
+        ['Tu as besoin d\'un crédit immobilier ou d\'un découvert', '<span class="partial">Pas ici</span> : une néobanque ne fait pas de prêt, garde ta banque pour ton financement'],
+        ['Tu factures avec TVA ou tu dois émettre des factures électroniques en 2027', 'Vérifie que l\'outil choisi est plateforme agréée, ou compare avec <a href="/partenaires/indy">Indy</a>'],
+      ],
+      note: 'Les règles du compte dédié pour les micro-entrepreneurs : article L613-10 du Code de la sécurité sociale.',
+    },
+    cout: {
+      titre: 'Ce que ça <em>coûte</em>',
+      paras: [
+        'Shine propose une offre Free à 0 €, puis des offres payantes (Start, Plus, Business) facturées au mois ou à l\'année, avec plus de virements, de cartes et de services. D\'après les relevés d\'octobre 2026, elles vont d\'environ 9 € à 80 € HT par mois selon l\'offre et la durée d\'engagement, et un essai gratuit est proposé.',
+        'Shine Facture est gratuit pour les devis et les factures ; des formules payantes ajoutent des options à partir d\'environ 9 € par mois.',
+        'Les grilles ont changé plusieurs fois en 2026 : le prix exact est celui affiché par Shine au moment de souscrire.',
+      ],
+    },
+    limites: [
+      'Pas de prêt immobilier ni de découvert : garde une banque traditionnelle si tu finances un achat.',
+      'Les offres d\'entrée limitent le nombre de virements et de dépôts gratuits : regarde ton volume réel avant de choisir.',
+      'Néobanque = pas d\'agence : tout se fait dans l\'application (le service client répond 7 jours sur 7).',
+      'Shine n\'est pas la seule option : Qonto, Blank ou Indy (compte pro) répondent au même besoin, compare selon tes usages.',
+    ],
+    liens: [
+      { href: '/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026', t: 'Pourquoi un compte pro ?', d: 'Les 6 raisons de séparer tes revenus de location.' },
+      { href: '/comparatif-indy-tiime-henrri', t: 'Logiciels de facturation', d: 'Indy, Tiime ou Henrri : le comparatif.' },
+      { href: '/blog/creer-societe-conciergerie-en-ligne-legalplace-2026', t: 'Créer ta conciergerie', d: 'Micro-entreprise ou société : le bon statut.' },
+      { href: '/services/contrats', t: 'Tes réservations directes payées', d: 'Contrat en ligne, loyer et caution versés sur ton compte.' },
+    ],
+    faq: [
+      { q: 'Un compte pro est-il obligatoire pour louer en LMNP ?', a: 'Non, pas en nom propre : la loi n\'oblige pas un loueur en meublé non professionnel à ouvrir un compte pro. C\'est fortement conseillé pour séparer tes revenus et tes dépenses de location. En revanche, un micro-entrepreneur doit avoir un compte dédié à son activité au-delà de 10 000 € de chiffre d\'affaires deux années de suite.' },
+      { q: 'Shine est-elle une vraie banque ?', a: 'Shine est un établissement de paiement, filiale de la Société Générale. Ton compte a un IBAN français et ton argent est cantonné, c\'est-à-dire tenu à part des fonds propres de Shine, comme l\'exige la règle des établissements de paiement. Shine ne fait pas de crédit.' },
+      { q: 'Shine Facture est-il vraiment gratuit ?', a: 'Oui pour l\'essentiel : devis et factures, envoi par e-mail, relances et suivi des paiements. Des formules payantes ajoutent des options. Vérifie les limites de l\'offre gratuite au moment de t\'inscrire.' },
+      { q: 'Puis-je recevoir mes virements Airbnb et Booking sur Shine ?', a: 'Oui : il suffit de renseigner l\'IBAN Shine comme moyen de versement dans Airbnb, Booking.com et Stripe. Les virements arrivent comme sur n\'importe quel compte.' },
+      { q: 'Shine ou Qonto ?', a: 'Les deux répondent au même besoin. Shine a une offre gratuite et un outil de facturation gratuit, Qonto vise davantage les sociétés avec plusieurs utilisateurs. Compare selon ton volume de virements et tes besoins de cartes.' },
+    ],
+    cta: {
+      titre: 'Un compte pro, <em>des chiffres clairs</em>',
+      texte: 'L\'app Jason Marinho suit tes revenus logement par logement, prépare tes contrats directs avec paiement en ligne et t\'aide à déclarer tes revenus.',
+      btn: { label: 'Créer mon compte gratuit', href: 'https://app.jasonmarinho.com/auth/register' },
+    },
+    sources: [
+      ['Tarifs Shine', 'https://www.shine.fr/tarifs/'],
+      ['Shine Facture', 'https://www.shine.fr/lp/outil-facturation-gratuit/'],
+      ['Service-Public.fr : compte bancaire du micro-entrepreneur (article L613-10 du Code de la sécurité sociale)', 'https://entreprendre.service-public.gouv.fr/vosdroits/F35991'],
     ],
   },
 ]

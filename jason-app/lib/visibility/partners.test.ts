@@ -28,6 +28,13 @@ describe('partenaires', () => {
     expect(affilaeSalesFor('Indy', { state: 'absent' })).toBeNull()
     expect(euros(2500)).toBe('25,00 €')
   })
+  it('« Shine » ne prend pas les ventes de « Shine Facture »', () => {
+    const prog = (id: string, name: string, conversions: number) => ({ ...affilae.summary.programs[0], id, name, conversions })
+    const two: AffilaeOverview = { ...affilae, summary: { ...affilae.summary, programs: [prog('a', 'Shine Facture', 5), prog('b', 'Shine', 1)] } }
+    expect(affilaeSalesFor('Shine', two)?.conversions).toBe(1)
+    expect(affilaeSalesFor('Shine Facture', two)?.conversions).toBe(5)
+    expect(partnerInfo('shine-facture')).toMatchObject({ name: 'Shine Facture', affilae: true })
+  })
 
   it('clics par partenaire et par page, taux, provenance de ceux qui cliquent', () => {
     const d = buildPartners({

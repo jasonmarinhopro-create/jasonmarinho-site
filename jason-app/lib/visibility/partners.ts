@@ -2,10 +2,10 @@
 // liens affiliés du site (affiliate_clicks, écrits par nav.js sur tout lien
 // rel="sponsored"), croisés avec nos visites (d'où viennent les visiteurs qui
 // cliquent, quelles pages envoient des clics) et avec Google (place des
-// pages), plus les ventes suivies par Affilae (Indy, LegalPlace, Tiime) et
+// pages), plus les ventes suivies par Affilae (Indy, LegalPlace, Tiime, Shine) et
 // PartnerStack (Brevo, 06/10/2026).
 // Pur et testé (partners.test.ts). Un clic n'est pas une vente : les ventes
-// Lodgify, Hospitable et Shine restent dans le tableau de bord du partenaire.
+// Lodgify, Hospitable et AirDNA restent dans le tableau de bord du partenaire.
 import type { AffilaeOverview } from '@/lib/affiliation/affilae'
 import type { PartnerStackOverview } from '@/lib/affiliation/partnerstack'
 import type { ConversionStatus } from '@/lib/affiliation/affilae-parse'
@@ -30,7 +30,9 @@ export interface PartnerInfo {
 export const PARTNERS: Record<string, PartnerInfo> = {
   lodgify: { name: 'Lodgify', reward: '20 % des abonnements des clients amenés (25 % au-delà de 3 000 $ de ventes, 30 % au-delà de 10 000 $)', salesWhere: 'Tableau de bord affilié Lodgify', affilae: false },
   hospitable: { name: 'Hospitable', reward: '200 $ par client parrainé, sans plafond', salesWhere: 'Espace partenaire Hospitable', affilae: false },
-  shine: { name: 'Shine', reward: 'Parrainage (2 par an selon les conditions de Shine)', salesWhere: 'Application Shine, rubrique parrainage', affilae: false },
+  shine: { name: 'Shine', reward: 'Commission par compte ouvert (programme Affilae, 100 à 130 € selon le compte, conditions relevées en octobre 2026)', salesWhere: 'Affilae', affilae: true },
+  'shine-facture': { name: 'Shine Facture', reward: 'Commission Affilae par inscription', salesWhere: 'Affilae', affilae: true },
+  airdna: { name: 'AirDNA', reward: '15 % des abonnements des clients amenés (conditions relevées en octobre 2026)', salesWhere: 'Tableau de bord affilié AirDNA', affilae: false },
   indy: { name: 'Indy', reward: 'De 10 € HT (inscription) à 250 € HT (société), selon le compte ouvert', salesWhere: 'Affilae', affilae: true },
   legalplace: { name: 'LegalPlace', reward: 'Jusqu\'à 150 € par vente', salesWhere: 'Affilae', affilae: true },
   tiime: { name: 'Tiime', reward: 'Commission Affilae', salesWhere: 'Affilae', affilae: true },
@@ -139,7 +141,9 @@ function sessionsPerPath(visits: VisitRow[]): Map<string, number> {
 export function affilaeSalesFor(name: string, overview: AffilaeOverview | null): PartnerSales | null {
   if (!overview || overview.state !== 'ok') return null
   const n = norm(name)
-  const prog = overview.summary.programs.find(p => norm(p.name).includes(n) || (n.length > 3 && n.includes(norm(p.name))))
+  const progs = overview.summary.programs
+  // Nom exact d'abord : « Shine » ne doit pas prendre les ventes de « Shine Facture »
+  const prog = progs.find(p => norm(p.name) === n) ?? progs.find(p => norm(p.name).includes(n) || (n.length > 3 && n.includes(norm(p.name))))
   if (!prog) return null
   return {
     conversions: prog.conversions,
@@ -376,9 +380,15 @@ export const PARTNER_SEO: Array<{ key: string; name: string; paths: string[]; ma
   },
   {
     key: 'shine', name: 'Shine',
-    paths: ['/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026'],
+    paths: ['/partenaires/shine', '/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026'],
     match: /(^|[-/])shine([-/]|$)/,
-    targets: ['shine compte pro', 'compte bancaire pro location courte duree'],
+    targets: ['shine', 'shine avis', 'shine compte pro', 'shine facture', 'compte bancaire pro location courte duree', 'compte pro lmnp'],
+  },
+  {
+    key: 'airdna', name: 'AirDNA',
+    paths: ['/partenaires/airdna', '/blog/airdna-mode-emploi-hote-lcd-debutant', '/comparatif-airdna-mashvisor'],
+    match: /airdna/,
+    targets: ['airdna', 'airdna avis', 'airdna prix', 'airdna gratuit', 'airdna france', 'airdna rentalizer', 'airdna vs mashvisor'],
   },
   {
     key: 'catalogue', name: 'Page Partenaires',

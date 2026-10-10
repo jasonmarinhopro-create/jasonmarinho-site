@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Encadrés affiliés/parrainage (Hospitable, Shine, Indy, LegalPlace, Tiime, Lodgify, Brevo) injectés dans les pages
+// Encadrés affiliés/parrainage (Hospitable, Shine, Indy, LegalPlace, Tiime, Lodgify, Brevo, AirDNA) injectés dans les pages
 // qui parlent déjà de l'outil. Idempotent : chaque encadré est entouré de
 // marqueurs <!-- AFF:<id>:START/END --> et remplacé à chaque passage. À
 // relancer après régénération d'un article (scripts/generate-article.mjs).
@@ -17,7 +17,10 @@ import { fileURLToPath } from 'node:url'
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
 const HOSPITABLE_BLOG = 'https://hospitable.com/partners/refer?utm_source=affiliates&utm_medium=blog&utm_campaign=BASWTYN7'
-const SHINE = 'https://app.shine.fr/register?referral=WYDP4644'
+// Shine (Affilae, 10/10/2026) : compte pro, numéro d'affilié 2249
+const SHINE = 'https://www.shine.fr/?utm_source=affiliation&utm_medium=affilae&utm_campaign=jason-marinho&ae=2249'
+// AirDNA (affilié, 10/10/2026) : lien d'invitation fourni par AirDNA
+const AIRDNA = 'https://eur-invite.airdna.co/Jason-Marinho'
 // Indy (partenariat du 30/09/2026) : lien « spécial immobilier » fourni par Indy
 const INDY = 'https://urlr.me/FEqNfy'
 // LegalPlace (partenariat du 30/09/2026, numéro d'affilié 1773)
@@ -50,9 +53,19 @@ const hospitableVous = box('hospitable-vous',
   "Lien affilié : si vous vous abonnez via ce lien, je perçois une commission, sans aucun surcoût pour vous (vous profitez au contraire de la réduction). Mon avis reste indépendant. <a href=\"/hospitable-avis\" style=\"color:#004c3f\">Lire mon avis complet sur Hospitable</a>.")
 
 const shineTu = box('shine-tu',
-  "<strong>Ouvrir un compte Shine :</strong> néobanque pro française, ouverture en ligne. Avec mon lien de parrainage, tu as un mois d'abonnement offert en plus de l'essai (selon les conditions de parrainage en vigueur chez Shine).",
+  "<strong>Ouvrir un compte Shine :</strong> néobanque pro française, filiale de la Société Générale, ouverture en ligne. Offre Free à 0 €, et <strong>Shine Facture</strong> pour faire tes devis et factures gratuitement si tu as des clients.",
   btn(SHINE, 'Ouvrir mon compte Shine'),
-  "Lien de parrainage : si tu ouvres un compte via ce lien, je touche une prime de parrainage, sans aucun surcoût pour toi. Je ne recommande Shine que comme une option parmi d'autres (Qonto, Blank, Finom) : compare selon tes besoins.")
+  "Lien affilié : si tu ouvres un compte via ce lien, Shine me verse une commission, sans aucun surcoût pour toi. Shine reste une option parmi d'autres (Qonto, Blank, Indy) : compare selon tes besoins. <a href=\"/partenaires/shine\" style=\"color:#004c3f\">Voir l'offre Shine en détail</a>.")
+
+const airdnaTu = box('airdna-tu',
+  "<strong>Essayer AirDNA :</strong> crée un compte gratuit pour voir l'occupation, le prix moyen et la saisonnalité de ta ville, et tester ton adresse dans le Rentalizer. Les formules payantes ne servent que si tu veux aller plus loin.",
+  btn(AIRDNA, 'Essayer AirDNA gratuitement'),
+  "Lien affilié : si tu prends une formule payante via ce lien, AirDNA me verse une commission, sans aucun surcoût pour toi. <a href=\"/partenaires/airdna\" style=\"color:#004c3f\">Ce que ça coûte et les limites</a>.")
+
+const airdnaVous = box('airdna-vous',
+  "<strong>Essayer AirDNA :</strong> créez un compte gratuit pour voir l'occupation, le prix moyen et la saisonnalité de votre ville, et tester une adresse dans le Rentalizer. Les formules payantes ne servent que pour aller plus loin.",
+  btn(AIRDNA, 'Essayer AirDNA gratuitement'),
+  "Lien affilié : si vous prenez une formule payante via ce lien, AirDNA me verse une commission, sans aucun surcoût pour vous. <a href=\"/partenaires/airdna\" style=\"color:#004c3f\">Ce que ça coûte et les limites</a>.")
 
 const indyTu = box('indy-tu',
   "<strong>Ta compta LMNP avec Indy :</strong> offre gratuite (suivi, facture électronique en plateforme agréée), puis offre LMNP avec amortissements et liasse 2031 télétransmise. <strong>Premier mois offert</strong>, sans engagement, avec ce lien.",
@@ -136,6 +149,8 @@ const PLACEMENTS = [
   ['blog/blog-hote-lcd-strategie-trafic-organique/index.html', 'brevo-tu', '<div class="art-cta-box">', brevoTu],
   ['blog/mesurer-performance-canal-reservation-directe-kpi/index.html', 'brevo-tu', '<h2 class="art-h2">Indicateur 4 : Le taux de conversion des contacts directs</h2>', brevoTu],
   ['blog/scaler-conciergerie-5-30-mandats-process/index.html', 'brevo-crm', '<div class="art-cta-box">', brevoCrm],
+  ['blog/airdna-mode-emploi-hote-lcd-debutant/index.html', 'airdna-tu', '<h2 class="art-h2">3. Identifier la concurrence directe</h2>', airdnaTu],
+  ['comparatif-airdna-mashvisor/index.html', 'airdna-vous', '</section>\n\n<section id="verdict">', airdnaVous],
   ['blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026/index.html', 'shine-tu', '<ul class="art-ul"><li>Ouverture 100 % en ligne recommandée', shineTu],
 ]
 
