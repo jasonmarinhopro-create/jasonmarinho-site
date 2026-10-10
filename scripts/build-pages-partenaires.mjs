@@ -209,7 +209,7 @@ ${jsonLd(p)}
 ${o.points.map(t => `        <li><i class="ph-bold ph-check-circle"></i><span>${t}</span></li>`).join('\n')}
       </ul>
       ${sponsored(o.cta.href, 'b1', `${o.cta.label} <i class="ph-bold ph-arrow-up-right"></i>`)}
-      ${sponsored(o.cta2.href, 'b2', o.cta2.label)}
+      ${o.cta2 ? sponsored(o.cta2.href, 'b2', o.cta2.label) : ''}
       <small>${o.note}</small>
     </aside>
   </div>

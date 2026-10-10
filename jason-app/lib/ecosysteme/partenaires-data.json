@@ -132,20 +132,43 @@
       "mono": "S",
       "couleur": "#1F2937",
       "cats": [
-        "banque"
+        "banque",
+        "compta"
       ],
-      "badge": "parrainage",
-      "offre": "1 mois offert",
-      "desc": "Néobanque pro : un compte séparé pour tes revenus LCD. Mois offert selon les conditions de parrainage Shine.",
+      "badge": "affilie",
+      "offre": "Compte pro dès 0 €",
+      "desc": "Néobanque pro et Shine Facture (devis et factures gratuits) pour séparer et facturer ton activité.",
       "liens": [
         {
           "label": "Ouvrir un compte",
-          "href": "https://app.shine.fr/register?referral=WYDP4644",
+          "href": "https://www.shine.fr/?utm_source=affiliation&utm_medium=affilae&utm_campaign=jason-marinho&ae=2249",
           "sponsored": true
         },
         {
-          "label": "Pourquoi ?",
-          "href": "https://jasonmarinho.com/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026"
+          "label": "Voir l'offre",
+          "href": "https://jasonmarinho.com/partenaires/shine"
+        }
+      ]
+    },
+    {
+      "nom": "AirDNA",
+      "mono": "A",
+      "couleur": "#E11D48",
+      "cats": [
+        "marche"
+      ],
+      "badge": "affilie",
+      "offre": "Données gratuites",
+      "desc": "Occupation, prix moyen et revenus de ta ville avant d’acheter ou de fixer tes prix.",
+      "liens": [
+        {
+          "label": "Essayer AirDNA",
+          "href": "https://eur-invite.airdna.co/Jason-Marinho",
+          "sponsored": true
+        },
+        {
+          "label": "Voir l'offre",
+          "href": "https://jasonmarinho.com/partenaires/airdna"
         }
       ]
     },
@@ -591,21 +614,6 @@
         {
           "label": "Voir le comparatif",
           "href": "https://jasonmarinho.com/comparatif-matterport-cubicasa"
-        }
-      ]
-    },
-    {
-      "nom": "AirDNA",
-      "mono": "A",
-      "couleur": "#E11D48",
-      "cats": [
-        "marche"
-      ],
-      "desc": "Données du marché LCD : taux d’occupation, prix moyens, saisonnalité par ville.",
-      "liens": [
-        {
-          "label": "Voir le comparatif",
-          "href": "https://jasonmarinho.com/comparatif-airdna-mashvisor"
         }
       ]
     },

@@ -35,7 +35,7 @@ export default {
           'Étape 4 : après 3 mois et 5+ avis, monte au médian',
           'Étape 5 : après 12 mois et 25+ avis, vise le percentile 75 si ton logement et tes avis le justifient',
         ]},
-        { type: 'tip', text: 'AirDNA propose un essai gratuit limité avant abonnement. Pour un audit ponctuel (lancement d\'un nouveau logement), l\'essai gratuit suffit. L\'abonnement est utile si tu fais 3+ logements ou si tu fais de la conciergerie.' },
+        { type: 'tip', text: 'AirDNA propose une offre gratuite limitée avant abonnement. Pour un audit ponctuel (lancement d\'un nouveau logement), l\'offre gratuite suffit souvent. L\'abonnement est utile si tu fais 3+ logements ou si tu fais de la conciergerie.' },
       ],
     },
     {
@@ -58,7 +58,7 @@ export default {
         { type: 'ul', items: [
           'Données estimées via scraping : ~10-15 % de marge d\'erreur sur certains chiffres',
           'Pas de Booking.com inclus (uniquement Airbnb + VRBO)',
-          'Coût : 39-79 €/mois selon la zone et le plan. Cher pour 1-2 logements',
+          'Coût : formules payantes en dollars, environ 34 à 50 $ par mois à l\'année ou 125 à 150 $ au mois (relevés d\'octobre 2026). Cher pour 1-2 logements',
           'Alternative gratuite : recherche Airbnb manuelle + Excel. Long mais gratuit',
           'Alternative payante : Mashvisor (US-centré), PriceLabs (intègre données AirDNA dans son pricing tool)',
         ]},

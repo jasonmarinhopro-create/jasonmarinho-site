@@ -27,7 +27,11 @@ export const RACCOURCIS = ['gestion', 'messagerie', 'direct', 'banque', 'acces',
 
 const LODGIFY_DEMO = 'https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv'
 const HOSPITABLE = 'https://hospitable.com/partners/refer?utm_source=affiliates&utm_medium=blog&utm_campaign=BASWTYN7'
-const SHINE = 'https://app.shine.fr/register?referral=WYDP4644'
+// Shine (Affilae, 10/10/2026) : compte pro (ae=2249 ; Shine Facture ae=2226 sur /partenaires/shine),
+// remplacent l'ancien lien de parrainage limité à 2 par an
+const SHINE = 'https://www.shine.fr/?utm_source=affiliation&utm_medium=affilae&utm_campaign=jason-marinho&ae=2249'
+// AirDNA (affilié, 10/10/2026) : lien d'invitation fourni par AirDNA
+const AIRDNA = 'https://eur-invite.airdna.co/Jason-Marinho'
 // Indy (partenariat validé le 30/09/2026) : lien « spécial immobilier » fourni par Indy
 const INDY = 'https://urlr.me/FEqNfy'
 // LegalPlace (partenariat Affilae du 30/09/2026, numéro d'affilié 1773) : les
@@ -68,12 +72,21 @@ export const OUTILS = [
     ],
   },
   {
-    nom: 'Shine', mono: 'S', couleur: '#1F2937', cats: ['banque'],
-    badge: 'parrainage', offre: '1 mois offert',
-    desc: "Néobanque pro : un compte séparé pour tes revenus LCD. Mois offert selon les conditions de parrainage Shine.",
+    nom: 'Shine', mono: 'S', couleur: '#1F2937', cats: ['banque', 'compta'],
+    badge: 'affilie', offre: 'Compte pro dès 0 €',
+    desc: 'Néobanque pro et Shine Facture (devis et factures gratuits) pour séparer et facturer ton activité.',
     liens: [
       { label: 'Ouvrir un compte', href: SHINE, sponsored: true },
-      { label: 'Pourquoi ?', href: '/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026' },
+      { label: "Voir l'offre", href: '/partenaires/shine' },
+    ],
+  },
+  {
+    nom: 'AirDNA', mono: 'A', couleur: '#E11D48', cats: ['marche'],
+    badge: 'affilie', offre: 'Données gratuites',
+    desc: 'Occupation, prix moyen et revenus de ta ville avant d’acheter ou de fixer tes prix.',
+    liens: [
+      { label: 'Essayer AirDNA', href: AIRDNA, sponsored: true },
+      { label: "Voir l'offre", href: '/partenaires/airdna' },
     ],
   },
   {
@@ -145,7 +158,6 @@ export const OUTILS = [
   { nom: 'Properly', mono: 'P', couleur: '#7C2D12', cats: ['menage'], desc: 'Checklists de ménage et contrôle qualité en photos.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-turnoverbnb-properly' }] },
   { nom: 'Matterport', mono: 'M', couleur: '#111827', cats: ['photo'], desc: 'Visite virtuelle 3D du logement, intégrable à ton annonce ou ton site.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-matterport-cubicasa' }] },
   { nom: 'CubiCasa', mono: 'C', couleur: '#0D9488', cats: ['photo'], desc: 'Plan du logement généré en le scannant avec un smartphone.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-matterport-cubicasa' }] },
-  { nom: 'AirDNA', mono: 'A', couleur: '#E11D48', cats: ['marche'], desc: 'Données du marché LCD : taux d’occupation, prix moyens, saisonnalité par ville.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-airdna-mashvisor' }] },
   { nom: 'Mashvisor', mono: 'M', couleur: '#6D28D9', cats: ['marche'], desc: 'Analyse de rentabilité immobilière, surtout sur le marché américain.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-airdna-mashvisor' }] },
   { nom: 'Mailchimp', mono: 'M', couleur: '#CA8A04', cats: ['marketing'], desc: 'Emailing et automatisations, très répandu.', liens: [{ label: 'Site officiel', href: 'https://mailchimp.com/fr/', externe: true }] },
 ]

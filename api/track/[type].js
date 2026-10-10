@@ -41,12 +41,17 @@ const BOT_UA = /bot|crawler|spider|crawling|preview|scan|monitor|lighthouse|head
 const SHORT_LINKS = { 'urlr.me/FEqNfy': 'indy' }
 // Programmes Affilae (identifiant p= des liens lb.affilae.com)
 const AFFILAE_PROGRAMS = { '651c0d1e40e2d575f87b3b27': 'tiime' }
+// Numéros d'affilié (paramètre ae=) qui distinguent deux programmes d'un même
+// domaine : Shine Facture (2226) à part du compte pro Shine (2249)
+const AE_PARTNERS = { '2226': 'shine-facture' }
 
 function partnerFromUrl(u) {
   try {
     const url = new URL(u)
     const short = SHORT_LINKS[url.hostname.toLowerCase() + url.pathname]
     if (short) return short
+    const byAe = AE_PARTNERS[url.searchParams.get('ae') || '']
+    if (byAe) return byAe
     // Liens de redirection Affilae (lb.affilae.com/r/?p=<programme>&lp=<page>) :
     // le partenaire est le programme, pas Affilae
     if (url.hostname.toLowerCase() === 'lb.affilae.com') {
