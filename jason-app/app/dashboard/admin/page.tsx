@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation'
 import { unstable_cache } from 'next/cache'
 import { getProfile } from '@/lib/queries/profile'
 import { Suspense } from 'react'
+import AcquisitionCard from './AcquisitionCard'
+import { loadAcquisitionSnapshot } from '@/lib/acquisition/load'
 import AdminUI, { AffiliationCard } from './AdminUI'
 import { getAffilaeOverview } from '@/lib/affiliation/affilae'
 import { getPartnerStackOverview } from '@/lib/affiliation/partnerstack'
@@ -191,6 +193,7 @@ export default async function AdminPage() {
         affiliateClicks={overview.affiliateClicks}
         appErrors={overview.appErrors}
         affilaeSlot={<Suspense fallback={<AffilaeSkeleton />}><AffilaeSection /></Suspense>}
+        acquisitionSlot={<Suspense fallback={<AffilaeSkeleton />}><AcquisitionSection /></Suspense>}
         stats={overview.stats}
       />
     </div>
@@ -203,6 +206,16 @@ export default async function AdminPage() {
 async function AffilaeSection() {
   const [af, ps] = await Promise.all([getAffilaeOverview(), getPartnerStackOverview()])
   return <AffiliationCard af={af} ps={ps} />
+}
+
+// Provenance des visiteurs (visites, inscriptions, liens suivis, Google
+// Search Console gardé 6 h) : diffusée à part comme Affilae
+async function AcquisitionSection() {
+  try {
+    return <AcquisitionCard snap={await loadAcquisitionSnapshot()} />
+  } catch {
+    return null
+  }
 }
 
 function AffilaeSkeleton() {

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { Check, Copy, LinkSimple, Archive, ArrowCounterClockwise } from '@phosphor-icons/react/dist/ssr'
 import { LINK_CHANNELS, LINK_DESTINATIONS } from '@/lib/acquisition/rules'
 import { createTrackedLink, setTrackedLinkArchived } from './actions'
@@ -114,3 +115,13 @@ const createdBox: React.CSSProperties = {
   background: 'color-mix(in srgb, var(--accent-text) 8%, transparent)', border: '1px solid color-mix(in srgb, var(--accent-text) 25%, transparent)',
 }
 const code: React.CSSProperties = { fontSize: 13.5, fontWeight: 600, color: 'var(--accent-text)', overflowWrap: 'anywhere' }
+
+/** Relit la page toutes les 5 minutes tant que l'onglet est visible (comme le CRM Driing) */
+export function AutoRefresh({ minutes = 5 }: { minutes?: number }) {
+  const router = useRouter()
+  useEffect(() => {
+    const id = setInterval(() => { if (document.visibilityState === 'visible') router.refresh() }, minutes * 60_000)
+    return () => clearInterval(id)
+  }, [router, minutes])
+  return null
+}

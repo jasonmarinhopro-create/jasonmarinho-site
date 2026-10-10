@@ -87,7 +87,7 @@ export default function AdminUI({
   todayLabel,
   stats,
   recentSignups, monthlySignupsChart,
-  liveVisitors, channelBreakdown, topPages, affiliateClicks, appErrors, affilaeSlot,
+  liveVisitors, channelBreakdown, topPages, affiliateClicks, appErrors, affilaeSlot, acquisitionSlot,
 }: {
   todayLabel: string
   stats: Stats
@@ -100,6 +100,8 @@ export default function AdminUI({
   appErrors: AppErrors
   /** Carte Affilae, chargée à part (appel externe) pour ne pas retarder la page */
   affilaeSlot?: React.ReactNode
+  /** Provenance des visiteurs, aujourd'hui / 7 jours (diffusée à part : Google Search Console) */
+  acquisitionSlot?: React.ReactNode
 }) {
   const decouverte = Math.max(0, stats.totalUsers - stats.standardMembers - stats.driingMembers)
   // Payants : Standard des hôtes + fiches photographes et ménage payées
@@ -204,6 +206,8 @@ export default function AdminUI({
       <div style={s.cols}>
         <div style={s.colMain}>
           <LiveTraffic initialLive={liveVisitors} initialChannels={channelBreakdown} topPages={topPages} />
+
+          {acquisitionSlot}
 
           <SignupsSparkline data={monthlySignupsChart} />
 

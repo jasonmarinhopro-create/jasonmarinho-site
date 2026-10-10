@@ -144,7 +144,7 @@ const adminGroups: Array<{ key: string; label: string; items: AdminItem[]; colla
       // Visibilité : Google Search Console + visites du site, fiches pros, villes, IA
       { href: '/dashboard/admin/visibilite',  label: 'Visibilité',      Icon: Binoculars },
       // Liens suivis (groupes Facebook) et provenance des inscriptions
-      { href: '/dashboard/admin/provenance',  label: 'Liens & inscriptions', Icon: LinkSimple },
+      { href: '/dashboard/admin/provenance',  label: 'Provenance',      Icon: LinkSimple },
       { href: '/dashboard/admin/prospection', label: 'Prospection',     Icon: PaperPlaneTilt },
       { href: '/dashboard/admin/social',      label: 'Réseaux sociaux', Icon: ShareNetwork },
       { href: '/dashboard/admin/indexation',  label: 'Référencement',   Icon: MagnifyingGlass },
