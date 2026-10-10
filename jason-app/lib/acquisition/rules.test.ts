@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest'
+import { PLAYBOOK } from '@/lib/outreach/playbook'
 import {
   cleanAcquisition, acquisitionFromParams, normalizeDestination, makeLinkCode, trackedTarget,
-  describeAcquisition, isPreviewBot, shortLinkUrl,
+  describeAcquisition, isPreviewBot, shortLinkUrl, shortenProspectionLinks, BUILTIN_LINKS, LINK_CHANNELS,
 } from './rules'
 
 describe('provenance', () => {
@@ -53,5 +54,25 @@ describe('provenance', () => {
     expect(describeAcquisition({ source: 'prospection', medium: 'email', campaign: 'x' })).toMatchObject({ kind: 'e-mail', detail: 'E-mail de prospection' })
     expect(describeAcquisition({ landing: '/' })).toMatchObject({ kind: 'direct' })
     expect(describeAcquisition({ ref: 'driing.co' })).toMatchObject({ kind: 'autre-site', detail: 'driing.co' })
+  })
+  it('liens courts dans les e-mails de prospection', () => {
+    const u = 'utm_source=prospection&utm_medium=email&utm_campaign=photo_premier_contact'
+    expect(shortenProspectionLinks(`L'inscription : https://jasonmarinho.com/annuaires/photographes/inscription?${u}\nÀ bientôt`))
+      .toBe("L'inscription : https://jasonmarinho.com/l/photo-inscription\nÀ bientôt")
+    expect(shortenProspectionLinks(`Voir https://jasonmarinho.com/annuaires/menage/?${u}.`)).toBe('Voir https://jasonmarinho.com/l/menage-annuaire.')
+    expect(shortenProspectionLinks(`Essaie : https://app.jasonmarinho.com/auth/register?${u}`)).toBe('Essaie : https://jasonmarinho.com/l/hote-inscription')
+    // Page inconnue ou lien sans prospection : inchangé
+    expect(shortenProspectionLinks(`https://jasonmarinho.com/tarifs?${u}`)).toBe(`https://jasonmarinho.com/tarifs?${u}`)
+    expect(shortenProspectionLinks('https://jasonmarinho.com/annuaires/menage')).toBe('https://jasonmarinho.com/annuaires/menage')
+    // Liens d'office : codes valides et canaux connus
+    for (const l of BUILTIN_LINKS) {
+      expect(l.code).toMatch(/^[a-z0-9-]+$/)
+      expect(LINK_CHANNELS.some(c => c.key === l.channel)).toBe(true)
+    }
+  })
+  it('tous les liens des séquences proposées deviennent des liens courts', () => {
+    for (const seq of PLAYBOOK) for (const step of seq.steps) {
+      expect(shortenProspectionLinks(step.body)).not.toContain('utm_source=prospection')
+    }
   })
 })

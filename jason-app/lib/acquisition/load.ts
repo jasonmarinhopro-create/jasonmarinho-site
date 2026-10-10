@@ -8,7 +8,7 @@ import { isMissingRelation } from '@/lib/admin/health'
 import { isPaidPro } from '@/lib/admin/revenue'
 import { gscQuery, safeGsc } from '@/lib/google/search-analytics'
 import { addDays, parisDay } from '@/lib/visibility/rules'
-import { cleanAcquisition } from './rules'
+import { BUILTIN_LINKS, cleanAcquisition } from './rules'
 import { buildProvenance, type LinkClickRow, type LinkRow, type MemberRow, type ProvenanceReport, type SpaceKey } from './report'
 import { buildChannelCards, buildToday, buildSnapshot, type ChannelCard, type GscDay, type TodayData, type TrafficVisit } from './traffic'
 
@@ -68,6 +68,18 @@ async function loadBase(opts: { visitDays: number; gscDays: number }): Promise<B
     gscP,
   ])
   if (linksRes.error && isMissingRelation(linksRes.error.code)) missingMigration = true
+  // Liens d'office (fiche Google, Instagram, prospection…) : ajoutés s'ils manquent
+  let linkRows = (linksRes.data ?? []) as LinkRow[]
+  if (!linksRes.error) {
+    const have = new Set(linkRows.map(l => l.code))
+    const missing = BUILTIN_LINKS.filter(l => !have.has(l.code))
+    if (missing.length) {
+      const { data: added } = await db.from('tracked_links')
+        .upsert(missing.map(({ code, label, channel, destination }) => ({ code, label, channel, destination })), { onConflict: 'code', ignoreDuplicates: true })
+        .select('id, code, label, channel, destination, archived, created_at')
+      linkRows = [...linkRows, ...((added ?? []) as LinkRow[])]
+    }
+  }
 
   const photo = new Map<string, boolean>()
   const menage = new Map<string, boolean>()
@@ -89,7 +101,7 @@ async function loadBase(opts: { visitDays: number; gscDays: number }): Promise<B
   const gsc = gscRes.ok ? gscRes.data.map(r => ({ date: r.keys[0], clicks: r.clicks, impressions: r.impressions, position: r.position })) : null
   return {
     members,
-    links: (linksRes.data ?? []) as LinkRow[],
+    links: linkRows,
     clicks: clicksRes.rows,
     visits: visitsRes.rows,
     gsc,

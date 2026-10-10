@@ -68,14 +68,23 @@ export function acquisitionFromParams(p: { get(name: string): string | null }): 
 
 // ── Liens suivis ──
 
-export type LinkChannel = 'facebook_groupe' | 'facebook_page' | 'instagram' | 'whatsapp' | 'email' | 'autre'
+export type LinkChannel =
+  | 'facebook_groupe' | 'facebook_page' | 'google_fiche' | 'instagram' | 'linkedin' | 'tiktok' | 'youtube'
+  | 'whatsapp' | 'email' | 'signature' | 'prospection' | 'qr' | 'autre'
 
 export const LINK_CHANNELS: Array<{ key: LinkChannel; label: string; source: string; medium: string }> = [
   { key: 'facebook_groupe', label: 'Groupe Facebook', source: 'facebook', medium: 'groupe' },
   { key: 'facebook_page', label: 'Page ou profil Facebook', source: 'facebook', medium: 'page' },
+  { key: 'google_fiche', label: 'Fiche Google', source: 'google', medium: 'fiche' },
   { key: 'instagram', label: 'Instagram', source: 'instagram', medium: 'social' },
+  { key: 'linkedin', label: 'LinkedIn', source: 'linkedin', medium: 'social' },
+  { key: 'tiktok', label: 'TikTok', source: 'tiktok', medium: 'social' },
+  { key: 'youtube', label: 'YouTube', source: 'youtube', medium: 'social' },
   { key: 'whatsapp', label: 'WhatsApp', source: 'whatsapp', medium: 'message' },
   { key: 'email', label: 'E-mail ou newsletter', source: 'newsletter', medium: 'email' },
+  { key: 'signature', label: 'Signature e-mail', source: 'signature', medium: 'email' },
+  { key: 'prospection', label: 'E-mails de prospection', source: 'prospection', medium: 'email' },
+  { key: 'qr', label: 'QR code ou affiche', source: 'qr', medium: 'print' },
   { key: 'autre', label: 'Autre', source: 'lien', medium: 'autre' },
 ]
 
@@ -93,6 +102,52 @@ export const LINK_DESTINATIONS: Array<{ url: string; label: string }> = [
   { url: 'https://jasonmarinho.com/services/contrats', label: 'Contrats en ligne' },
   { url: 'https://jasonmarinho.com/services/simulateurs', label: 'Simulateurs' },
 ]
+
+const HOME = 'https://jasonmarinho.com/'
+const SITE = 'https://jasonmarinho.com'
+
+/**
+ * Liens créés d'office (10/10/2026, demande de Jason : « je vais créer des liens
+ * un peu partout, si tu peux les faire »). Ajoutés à la base à l'ouverture de
+ * la page Provenance s'ils manquent ; la redirection /l/<code> les connaît
+ * aussi sans la base (un e-mail de prospection ne doit jamais mener nulle part).
+ */
+export const BUILTIN_LINKS: Array<{ code: string; label: string; channel: LinkChannel; destination: string; where?: string }> = [
+  { code: 'fiche-google', label: 'Fiche Google (site web de la fiche)', channel: 'google_fiche', destination: HOME, where: 'À coller dans le champ « Site web » de ta fiche Google (Google Business Profile).' },
+  { code: 'facebook-page', label: 'Page Facebook', channel: 'facebook_page', destination: HOME, where: 'Dans la section « Site web » de ta page Facebook et dans tes publications.' },
+  { code: 'instagram', label: 'Bio Instagram', channel: 'instagram', destination: HOME, where: 'Dans le lien de ta bio Instagram.' },
+  { code: 'linkedin', label: 'Profil LinkedIn', channel: 'linkedin', destination: HOME, where: 'Dans la section « Coordonnées » ou « Site web » de ton profil LinkedIn.' },
+  { code: 'tiktok', label: 'Bio TikTok', channel: 'tiktok', destination: HOME, where: 'Dans le lien de ta bio TikTok.' },
+  { code: 'youtube', label: 'Chaîne YouTube', channel: 'youtube', destination: HOME, where: 'Dans les liens de ta chaîne et la description de tes vidéos.' },
+  { code: 'signature', label: 'Signature de tes e-mails', channel: 'signature', destination: HOME, where: 'Dans la signature de tes e-mails (Gmail, Outlook).' },
+  { code: 'qr-code', label: 'QR code (affiches, cartes de visite)', channel: 'qr', destination: HOME, where: 'Pour un QR code sur tes affiches, flyers et cartes de visite.' },
+  { code: 'photo-exemple', label: 'Prospection photographes : exemple de fiche', channel: 'prospection', destination: `${SITE}/annuaires/photographes/exemple-fiche` },
+  { code: 'photo-inscription', label: 'Prospection photographes : inscription', channel: 'prospection', destination: `${SITE}/annuaires/photographes/inscription` },
+  { code: 'photo-annuaire', label: 'Prospection photographes : annuaire', channel: 'prospection', destination: `${SITE}/annuaires/photographes` },
+  { code: 'menage-exemple', label: 'Prospection ménage : exemple de fiche', channel: 'prospection', destination: `${SITE}/annuaires/menage/exemple-fiche` },
+  { code: 'menage-inscription', label: 'Prospection ménage : inscription', channel: 'prospection', destination: `${SITE}/annuaires/menage/inscription` },
+  { code: 'menage-annuaire', label: 'Prospection ménage : annuaire', channel: 'prospection', destination: `${SITE}/annuaires/menage` },
+  { code: 'hote-contrats', label: 'Prospection hôtes : contrats en ligne', channel: 'prospection', destination: `${SITE}/services/contrats` },
+  { code: 'hote-inscription', label: 'Prospection hôtes : inscription', channel: 'prospection', destination: 'https://app.jasonmarinho.com/auth/register?role=host' },
+]
+
+/**
+ * E-mails de prospection : chaque lien vers nos pages (avec utm_source=prospection)
+ * devient le lien court suivi de sa page, plus court à lire et compté
+ * (« jasonmarinho.com/l/photo-inscription »). Les autres liens ne changent pas.
+ */
+export function shortenProspectionLinks(text: string): string {
+  return text.replace(/https:\/\/(?:app\.)?jasonmarinho\.com\/[^\s<>"')]*utm_source=prospection[^\s<>"')]*/g, found => {
+    // Ponctuation de fin de phrase collée au lien : on la garde hors du lien
+    const tail = found.match(/[.,;:!?]+$/)?.[0] ?? ''
+    const raw = tail ? found.slice(0, -tail.length) : found
+    let url: URL
+    try { url = new URL(raw) } catch { return found }
+    const bare = `${url.origin}${url.pathname.replace(/\/$/, '')}`
+    const hit = BUILTIN_LINKS.find(l => l.channel === 'prospection' && l.destination.split('?')[0].replace(/\/$/, '') === bare)
+    return hit ? `${shortLinkUrl(hit.code)}${tail}` : found
+  })
+}
 
 /** Destination acceptée : une page de jasonmarinho.com ou de l'app (« /blog/… » compris) */
 export function normalizeDestination(input: string): string | null {
