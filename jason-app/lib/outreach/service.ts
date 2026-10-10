@@ -14,6 +14,10 @@ import {
 import { isPermanentAddressError, outreachConfig, scanInbox, sendOutreachMail } from './mailer'
 import { PLAYBOOK } from './playbook'
 import { checkSpf } from './spf'
+import { shortenProspectionLinks } from '@/lib/acquisition/rules'
+
+/** Liens courts suivis dans les e-mails envoyés à partir de ce moment (aperçu fidèle des anciens) */
+const SHORT_LINKS_SINCE = '2026-10-11T00:00:00Z'
 
 const log = logger('outreach')
 type Db = SupabaseClient<any, 'public', any>
@@ -407,7 +411,7 @@ async function sendDue(db: Db, settings: Settings, today: string, started: numbe
     const subject = inThread ? replySubject(e.thread_subject || baseSubject) : baseSubject
     const urls = unsubscribeUrls(c.unsubscribe_token)
     const footer = complianceFooter({ source: c.source as Source, firstMessage: !alreadyWritten.has(c.id), unsubscribeUrl: urls.page })
-    const bodyText = renderTemplate(step.body, vars).trim()
+    const bodyText = shortenProspectionLinks(renderTemplate(step.body, vars).trim())
     const text = `${bodyText}\n\n${signature}`
     if (Date.now() - started + 5_000 > budget) { summary.more = true; break }
     // Verrou : un autre passage (relance, bouton, cron, workflow) a pu lire la même file.
@@ -483,7 +487,7 @@ export async function sendTest(stepSubject: string, stepBody: string, settings: 
   const urls = unsubscribeUrls('00000000-0000-0000-0000-000000000000')
   const footer = complianceFooter({ source: 'google', firstMessage: true, unsubscribeUrl: urls.page })
   const signature = settings.signature?.trim() || DEFAULT_SIGNATURE
-  const bodyText = renderTemplate(stepBody, vars).trim()
+  const bodyText = shortenProspectionLinks(renderTemplate(stepBody, vars).trim())
   const text = `${bodyText}\n\n${signature}`
   try {
     await sendOutreachMail(cfg, {
@@ -515,7 +519,8 @@ export async function renderSentEmail(db: Db, sendId: string): Promise<{ to: str
   const urls = unsubscribeUrls(c?.unsubscribe_token ?? '00000000-0000-0000-0000-000000000000')
   const footer = complianceFooter({ source: (c?.source ?? 'manuel') as Source, firstMessage: !before, unsubscribeUrl: urls.page })
   const signature = settings.signature?.trim() || DEFAULT_SIGNATURE
-  const bodyText = renderTemplate(step.body, vars).trim()
+  const rendered = renderTemplate(step.body, vars).trim()
+  const bodyText = send.sent_at >= SHORT_LINKS_SINCE ? shortenProspectionLinks(rendered) : rendered
   return {
     to: send.email, subject: send.subject, sent_at: send.sent_at,
     html: textToHtml(bodyText, footer, signature, settings.signature_photo ? SIGNATURE_PHOTO_URL : null),

@@ -25,7 +25,7 @@ export const CHANNEL_META: Record<ChannelKey, { label: string; hint: string }> =
   facebook: { label: 'Facebook', hint: 'groupes, page, liens suivis postés sur Facebook' },
   google: { label: 'Google', hint: 'recherche naturelle' },
   ia: { label: 'IA', hint: 'ChatGPT, Perplexity, Gemini…' },
-  liens: { label: 'Liens suivis', hint: 'Instagram, WhatsApp, e-mails, QR codes' },
+  liens: { label: 'Liens suivis', hint: 'fiche Google, Instagram, LinkedIn, signature, QR codes' },
   email: { label: 'E-mails', hint: 'prospection, newsletter' },
   autres: { label: 'Autres sites et réseaux', hint: 'Instagram, LinkedIn, sites qui parlent de toi' },
   direct: { label: 'Accès direct', hint: 'favoris, lien copié, applis qui masquent l\'origine' },
@@ -40,7 +40,13 @@ const KIND_TO_CHANNEL: Record<SourceKind, ChannelKey> = {
 }
 
 type LinkMap = Map<string, TrafficLink>
-const linkChannelKey = (l: TrafficLink): ChannelKey => (channelOf(l.channel).source === 'facebook' ? 'facebook' : 'liens')
+/** Facebook à part ; e-mails (prospection, newsletter) avec les e-mails ; le reste (fiche Google, Instagram, QR code…) en « Liens suivis » */
+const linkChannelKey = (l: TrafficLink): ChannelKey => {
+  const src = channelOf(l.channel).source
+  if (src === 'facebook') return 'facebook'
+  if (src === 'prospection' || src === 'newsletter') return 'email'
+  return 'liens'
+}
 
 /** Canal d'une visite (première page de la session) */
 export function visitChannel(v: Pick<TrafficVisit, 'referrer' | 'utm_source' | 'utm_medium' | 'utm_campaign'>, links: LinkMap): ChannelKey {
@@ -156,7 +162,7 @@ export function buildChannelCards(input: {
       clients: clients.get(key) ?? 0,
       clicks: null, clicksLabel: null, top: topCounts(top.get(key) ?? new Map(), 3), note: null,
     }
-    if (key === 'facebook' || key === 'liens') {
+    if (key === 'facebook' || key === 'liens' || key === 'email') {
       card.clicks = linkClicks.get(key) ?? 0
       card.clicksLabel = 'clics sur tes liens'
       card.top = topCounts(byLink.get(key) ?? new Map(), 3)
@@ -314,7 +320,7 @@ export function buildSnapshot(input: {
       prevVisitors: sum(prev, c => c.visitors ?? 0),
       signups: sum(cards, c => c.signups),
       prevSignups: sum(prev, c => c.signups),
-      linkClicks: sum(cards, c => (c.key === 'facebook' || c.key === 'liens' ? c.clicks ?? 0 : 0)),
+      linkClicks: sum(cards, c => (c.key === 'facebook' || c.key === 'liens' || c.key === 'email' ? c.clicks ?? 0 : 0)),
       google: g ? { clicks: g.clicks, impressions: g.impressions, label: googleDays === 1 ? `le ${dateFr(g.to)}` : `du ${dateFr(g.from)} au ${dateFr(g.to)}` } : null,
       topChannels: cards.filter(c => (c.visitors ?? 0) > 0).sort((a, b) => (b.visitors ?? 0) - (a.visitors ?? 0)).slice(0, 4).map(c => ({ label: c.label, visitors: c.visitors ?? 0 })),
     }

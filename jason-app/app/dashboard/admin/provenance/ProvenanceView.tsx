@@ -4,7 +4,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import AdminHero, { adminAsideCard } from '../_ui/AdminHero'
 import { AMBER, BROWN, PINK, tint } from '../_ui/theme'
-import { LINK_DESTINATIONS, channelOf, type AcqKind } from '@/lib/acquisition/rules'
+import { BUILTIN_LINKS, LINK_DESTINATIONS, channelOf, type AcqKind } from '@/lib/acquisition/rules'
 import { SPACE_LABEL } from '@/lib/acquisition/report'
 import type { ChannelKey } from '@/lib/acquisition/traffic'
 import type { ProvenanceData } from '@/lib/acquisition/load'
@@ -217,7 +217,8 @@ function Resultats({ data, periodLabel }: { data: ProvenanceData; periodLabel: s
 // ── Liens suivis ──
 
 function Liens({ data, periodLabel }: { data: ProvenanceData; periodLabel: string }) {
-  const active = data.report.links.filter(l => !l.archived)
+  const active = data.report.links.filter(l => !l.archived && l.channel !== 'prospection')
+  const prospection = data.report.links.filter(l => !l.archived && l.channel === 'prospection')
   const archived = data.report.links.filter(l => l.archived)
   return (
     <>
@@ -244,6 +245,12 @@ function Liens({ data, periodLabel }: { data: ProvenanceData; periodLabel: strin
           <p style={s.text}>Pas encore de lien. Crée le premier ci-dessus, puis colle-le dans ton prochain post de groupe Facebook.</p>
         ) : (
           <ul style={s.list}>{active.map(l => <LinkRowView key={l.id} l={l} />)}</ul>
+        )}
+        {prospection.length > 0 && (
+          <details>
+            <summary style={s.more}>Liens des e-mails de prospection ({prospection.length}, mis tout seuls dans chaque e-mail)</summary>
+            <ul style={s.list}>{prospection.map(l => <LinkRowView key={l.id} l={l} />)}</ul>
+          </details>
         )}
         {archived.length > 0 && (
           <details>
@@ -335,6 +342,7 @@ function LinkRowView({ l }: { l: ProvenanceData['report']['links'][number] }) {
       <div style={{ flex: '2 1 280px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
         <span style={s.rowName}>{l.label}</span>
         <span style={s.rowDetail}>{l.channelLabel} · vers {destLabel(l.destination)} · créé le {dateFr(l.created_at)}</span>
+        {BUILTIN_LINKS.find(b => b.code === l.code)?.where && <span style={{ ...s.rowDetail, color: 'var(--text-2)' }}>{BUILTIN_LINKS.find(b => b.code === l.code)?.where}</span>}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <code style={{ fontSize: 13, color: 'var(--accent-text)', fontWeight: 600, overflowWrap: 'anywhere' }}>{l.url}</code>
           <CopyButton text={l.url} />

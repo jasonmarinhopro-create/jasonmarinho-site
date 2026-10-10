@@ -4,7 +4,7 @@
 // (Facebook, WhatsApp…) ne sont pas comptés. Aucune IP ni navigateur gardés.
 import { NextRequest, NextResponse } from 'next/server'
 import { getServiceClient } from '@/lib/supabase/service'
-import { isPreviewBot, trackedTarget } from '@/lib/acquisition/rules'
+import { BUILTIN_LINKS, isPreviewBot, trackedTarget } from '@/lib/acquisition/rules'
 
 export const dynamic = 'force-dynamic'
 
@@ -19,9 +19,12 @@ function deviceOf(ua: string): string {
 export async function GET(req: NextRequest, { params }: { params: { code: string } }) {
   const code = String(params.code || '').toLowerCase().slice(0, 60)
   if (!/^[a-z0-9-]+$/.test(code)) return NextResponse.redirect(HOME, 302)
+  // Liens d'office (prospection, fiche Google…) : connus même si la base ne répond pas
+  const builtin = BUILTIN_LINKS.find(l => l.code === code) ?? null
   try {
     const db = getServiceClient()
-    const { data } = await db.from('tracked_links').select('code, channel, destination').eq('code', code).maybeSingle()
+    const { data: row } = await db.from('tracked_links').select('code, channel, destination').eq('code', code).maybeSingle()
+    const data = row ?? builtin
     if (!data) return NextResponse.redirect(HOME, 302)
     const ua = req.headers.get('user-agent') ?? ''
     if (!isPreviewBot(ua)) {
@@ -32,6 +35,6 @@ export async function GET(req: NextRequest, { params }: { params: { code: string
     res.headers.set('X-Robots-Tag', 'noindex')
     return res
   } catch {
-    return NextResponse.redirect(HOME, 302)
+    return NextResponse.redirect(builtin ? trackedTarget(builtin.destination, builtin.code, builtin.channel) : HOME, 302)
   }
 }
