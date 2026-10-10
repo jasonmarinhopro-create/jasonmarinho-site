@@ -87,6 +87,7 @@ import { House } from '@phosphor-icons/react'
 - Nommage obligatoire : `YYYYMMDD_NNN_description.sql`
 - Ex: `20260502_023_add_nouvelle_feature.sql`
 - Jamais de fichier sans préfixe date (non-déterministe sous supabase db push)
+- **Application automatique (10/10/2026)** : workflow « Migrations Supabase » (`.github/workflows/migrations.yml`) à chaque push sur main qui touche `jason-app/supabase/migrations/` : exécute les migrations pas encore passées, une par une en transaction, et les note dans `public._jm_migrations` (RLS, serveur seulement). Celles jusqu'à `BASELINE_UNTIL` (`20261010_126_provenance.sql`, collées à la main) sont notées sans être rejouées. Secret **`SUPABASE_DB_URL`** (Session pooler) à créer par Jason ; sans lui, simple notice et migrations à coller à la main. Lancement manuel : mode `etat` (liste) ou `appliquer`. Une migration doit donc être rejouable sans casse (`if not exists`, `create or replace`) et sans `create index concurrently`. L'intégration GitHub native de Supabase n'est pas utilisée : historique vide (tout serait rejoué) et versions en double (Supabase prend la date seule comme version).
 
 ### Styles
 - Inline styles `style={{...}}` partout (pas de Tailwind, pas de CSS modules)

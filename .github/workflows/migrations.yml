@@ -1,0 +1,97 @@
+# Migrations Supabase appliquées toutes seules (10/10/2026, demande de Jason :
+# « ne plus copier-coller les migrations »). À chaque push sur main qui ajoute
+# un fichier dans jason-app/supabase/migrations, les migrations pas encore
+# passées sont exécutées une par une, chacune en une transaction (tout ou
+# rien), puis notées dans public._jm_migrations.
+#
+# Point de départ : les migrations jusqu'à BASELINE_UNTIL (incluse) ont été
+# collées à la main dans l'éditeur SQL : elles sont notées « déjà faites »
+# sans être rejouées. Seules les suivantes sont exécutées.
+#
+# Secret requis : SUPABASE_DB_URL (Supabase → Connect → Session pooler, avec
+# le mot de passe de la base). Sans lui, le workflow s'arrête sans erreur.
+# Le dépôt est public : journaux avec les noms de fichiers seulement.
+name: Migrations Supabase
+
+on:
+  push:
+    branches: [main]
+    paths: ['jason-app/supabase/migrations/**', '.github/workflows/migrations.yml']
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "etat = lister seulement, appliquer = exécuter les migrations en attente"
+        required: true
+        default: etat
+        type: choice
+        options: [etat, appliquer]
+
+concurrency:
+  group: migrations
+  cancel-in-progress: false
+
+jobs:
+  migrations:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      BASELINE_UNTIL: 20261010_126_provenance.sql
+      MODE: ${{ github.event.inputs.mode || 'appliquer' }}
+    steps:
+      - name: Secret présent ?
+        id: secret
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::notice::Secret SUPABASE_DB_URL absent : migrations à coller à la main dans Supabase. Ajoute-le dans Settings → Secrets and variables → Actions pour les appliquer automatiquement."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.secret.outputs.ok == 'true'
+        with:
+          sparse-checkout: jason-app/supabase/migrations
+
+      - name: Client PostgreSQL
+        if: steps.secret.outputs.ok == 'true'
+        run: |
+          sudo apt-get install -y -qq postgresql-common >/dev/null
+          sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y >/dev/null
+          sudo apt-get install -y -qq postgresql-client-17 >/dev/null
+
+      - name: Appliquer les migrations en attente
+        if: steps.secret.outputs.ok == 'true'
+        run: |
+          set -euo pipefail
+          PSQL="/usr/lib/postgresql/17/bin/psql $SUPABASE_DB_URL -X -q -v ON_ERROR_STOP=1 -t -A"
+          # Table de suivi (serveur seulement, comme les autres tables internes)
+          $PSQL -c "create table if not exists public._jm_migrations (file text primary key, applied_at timestamptz not null default now(), baseline boolean not null default false);
+                    alter table public._jm_migrations enable row level security;
+                    revoke all on public._jm_migrations from anon, authenticated;" >/dev/null
+
+          cd jason-app/supabase/migrations
+          DONE=$($PSQL -c "select file from public._jm_migrations")
+          applied=0; baselined=0; pending=0
+          for f in $(ls *.sql | sort); do
+            if printf '%s\n' "$DONE" | grep -qxF "$f"; then continue; fi
+            if [[ "$f" < "$BASELINE_UNTIL" || "$f" == "$BASELINE_UNTIL" ]]; then
+              if [ "$MODE" = "appliquer" ]; then
+                $PSQL -c "insert into public._jm_migrations (file, baseline) values ('$f', true) on conflict do nothing" >/dev/null
+              fi
+              baselined=$((baselined+1)); continue
+            fi
+            pending=$((pending+1))
+            if [ "$MODE" != "appliquer" ]; then echo "En attente : $f"; continue; fi
+            echo "Application : $f"
+            if ! $PSQL --single-transaction -f "$f" >/dev/null; then
+              echo "::error::La migration $f a échoué : rien n'a été appliqué pour elle (transaction annulée). Corrige-la puis relance."
+              exit 1
+            fi
+            $PSQL -c "insert into public._jm_migrations (file) values ('$f')" >/dev/null
+            applied=$((applied+1))
+          done
+          # PostgREST relit le schéma (nouvelles colonnes visibles tout de suite)
+          if [ "$applied" -gt 0 ]; then $PSQL -c "select pg_notify('pgrst', 'reload schema')" >/dev/null; fi
+          echo "::notice::Migrations : $applied appliquée(s), $pending en attente au départ, $baselined notée(s) comme déjà faites (mode $MODE)."
