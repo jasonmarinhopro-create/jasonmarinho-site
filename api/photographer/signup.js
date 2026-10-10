@@ -53,6 +53,41 @@ async function createAuthUser({ supabaseUrl, serviceKey, email, password, fullNa
   return { userId: data?.id || data?.user?.id }
 }
 
+// Provenance de l'inscription (10/10/2026) : point d'entrée de la visite envoyé
+// par le formulaire (nav.js, sessionStorage jm_acq). Même nettoyage que
+// jason-app/lib/acquisition/rules.ts. Écrite seulement si le compte n'en a pas
+// déjà une ; sans la migration 126, la requête échoue sans rien bloquer.
+function cleanAcq(input) {
+  if (!input || typeof input !== 'object') return null
+  const s = (v, n) => (typeof v === 'string' ? v.trim().slice(0, n) : '')
+  const out = {}
+  const source = s(input.source, 80).toLowerCase()
+  const medium = s(input.medium, 80).toLowerCase()
+  const campaign = s(input.campaign, 100)
+  let ref = s(input.ref, 200).toLowerCase()
+  if (!/^[a-z0-9.-]+\.[a-z]{2,}$/.test(ref) || /(^|\.)jasonmarinho\.com$/.test(ref)) ref = ''
+  let landing = s(input.landing, 300).split(/[?#]/)[0]
+  if (!landing.startsWith('/')) landing = ''
+  const at = s(input.at, 40)
+  if (source) out.source = source
+  if (medium) out.medium = medium
+  if (campaign) out.campaign = campaign
+  if (ref) out.ref = ref
+  if (landing) out.landing = landing
+  if (at && !Number.isNaN(Date.parse(at))) out.at = new Date(at).toISOString()
+  return Object.keys(out).some(k => k !== 'at') ? out : null
+}
+
+async function saveAcquisition({ supabaseUrl, serviceKey, userId, acq }) {
+  const clean = cleanAcq(acq)
+  if (!clean || !userId) return
+  await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${userId}&acquisition=is.null`, {
+    method: 'PATCH',
+    headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    body: JSON.stringify({ acquisition: clean }),
+  }).catch(() => { /* jamais bloquant */ })
+}
+
 // Met à jour profiles.role en 'photographer' (le trigger handle_new_user
 // insère par défaut role='user').
 async function setProfileRole({ supabaseUrl, serviceKey, userId, role, fullName }) {
@@ -218,6 +253,7 @@ module.exports = async function handler(req, res) {
   //    reste 'user' par défaut, l'accès au dashboard photographe est
   //    déterminé par la présence d'une row dans photographers.user_id).
   await setProfileRole({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, userId, role: 'user', fullName })
+  await saveAcquisition({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, userId, acq: body.acq })
 
   // 3. Détermine le tier
   const tierUrl = `${SUPABASE_URL}/rest/v1/photographers?tier=eq.fondateur&status=in.(active,pending_payment,approved_pending_payment)&select=id`

@@ -291,6 +291,8 @@
     const f = e.target;
     const ids = ['fullName','pseudo','email','password','telephone','ville','zoneCouverte','siteUrl','instagramHandle','equipeType','logementsGeres','delaiReservation','tarifForfaitMin','tarifForfaitMax','tarifHeure','siret','bio'];
     const data = { t: __t0, website: f.website ? f.website.value : '' };
+    // Provenance de la visite (nav.js) : d'où vient ce pro (groupe Facebook, Google…)
+    try { data.acq = window.__jmAcq || JSON.parse(sessionStorage.getItem('jm_acq') || 'null'); } catch (err) { data.acq = null; }
     ids.forEach(k => { data[k] = (document.getElementById(k) || {}).value || ''; });
 
     data.prestations = Array.from(f.querySelectorAll('input[name="prestations"]:checked')).map(i => i.value);

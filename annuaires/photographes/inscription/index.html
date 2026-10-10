@@ -184,6 +184,8 @@
 
     const ids = ['fullName','email','password','ville','zoneCouverte','portfolioUrl','instagramHandle','telephone','specialite','tarifMin','tarifMax','bio'];
     const data = { t: __t0, website: e.target.website ? e.target.website.value : '' };
+    // Provenance de la visite (nav.js) : d'où vient ce pro (groupe Facebook, Google…)
+    try { data.acq = window.__jmAcq || JSON.parse(sessionStorage.getItem('jm_acq') || 'null'); } catch (err) { data.acq = null; }
     ids.forEach(k => { data[k] = (document.getElementById(k) || {}).value || ''; });
 
     function showError(msg) {

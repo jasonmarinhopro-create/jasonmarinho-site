@@ -74,6 +74,11 @@
   ],
   "redirects": [
     {
+      "source": "/l/:code",
+      "destination": "https://app.jasonmarinho.com/l/:code",
+      "permanent": false
+    },
+    {
       "source": "/blog/channel-manager-lcd-comparatif",
       "destination": "/blog/pms-logiciel-gestion-location-courte-duree-debutant",
       "permanent": true

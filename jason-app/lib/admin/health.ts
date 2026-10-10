@@ -88,6 +88,7 @@ export interface MigrationProbe {
 
 /** Migrations récentes à vérifier : une table ou une colonne qu'elles créent. */
 export const MIGRATION_PROBES: MigrationProbe[] = [
+  { file: '20261010_126_provenance.sql', what: "provenance des inscriptions et liens suivis (groupes Facebook)", table: 'tracked_links', column: 'code' },
   { file: '20261005_123_visibilite.sql', what: 'statistiques des fiches (pays, écran, temps passé, clics par jour)', table: 'pro_fiche_clicks_daily', column: 'clicks' },
   { file: '20261006_124_google_places_usage.sql', what: "compteur Google Places (aucun appel Google sans lui, pour rester dans la part gratuite)", table: 'google_places_usage', column: 'count' },
   { file: '20261007_125_pro_reseaux.sql', what: 'réseaux sociaux et fiche Google des pros', table: 'photographers', column: 'reseaux' },
