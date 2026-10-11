@@ -3,6 +3,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { getServiceClient } from '@/lib/supabase/service'
 import MembresUI from './MembresUI'
 import { perfTimer } from '@/lib/perf/server-timing'
+import { loadMemberActivity } from '@/lib/admin/activity-load'
 
 export const metadata = { title: 'Membres, Jason Marinho' }
 
@@ -15,7 +16,7 @@ export default async function MembresPage() {
 
   const adminClient = getServiceClient()
 
-  const [{ data: members }, { data: photographers }, { data: cleaners }] = await Promise.all([
+  const [{ data: members }, { data: photographers }, { data: cleaners }, activity] = await Promise.all([
     adminClient
       .from('profiles')
       .select(`
@@ -31,6 +32,8 @@ export default async function MembresPage() {
     // profil pro se détecte par la présence d'une fiche photographers/cleaners.
     adminClient.from('photographers').select('user_id'),
     adminClient.from('cleaners').select('user_id'),
+    // Dernière visite et dernière action de chaque membre (une source en panne n'empêche rien)
+    loadMemberActivity().catch(() => new Map()),
   ])
 
   timer.mark('membres')
@@ -44,6 +47,8 @@ export default async function MembresPage() {
     ...m,
     is_photographer: photographerIds.has(m.id),
     is_cleaner: cleanerIds.has(m.id),
+    last_seen_at: activity.get(m.id)?.lastSeenAt ?? null,
+    last_action: activity.get(m.id)?.lastAction ?? null,
     user_formations: (m.user_formations ?? []).map((uf: any) => ({
       ...uf,
       formation: Array.isArray(uf.formation) ? (uf.formation[0] ?? null) : uf.formation,

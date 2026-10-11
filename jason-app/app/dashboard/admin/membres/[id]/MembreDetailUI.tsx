@@ -2,6 +2,7 @@
 
 import { useState, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { sinceLabel } from '@/lib/admin/activity'
 import {
   ArrowLeft, GraduationCap, UsersFour, CalendarBlank,
   BookmarkSimple, PencilSimple, Flag, Lightbulb, Lightning,
@@ -90,6 +91,8 @@ interface Props {
   /** Statistiques de chaque fiche pro (par id), chargées à part par la page */
   proStats?: Record<string, React.ReactNode>
   host?: { logements: number; contrats: number }
+  /** Dernière visite et dernière action (lib/admin/activity-load.ts) */
+  activity?: { lastSeenAt: string | null; lastAction: { at: string; label: string } | null }
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -123,7 +126,7 @@ function fmtEur(n: number): string {
 }
 
 // ── Main component ──────────────────────────────────────────────────────────
-export default function MembreDetailUI({ profile, formations, stats, community, audits, investorProjects, pros = [], host = { logements: 0, contrats: 0 }, proStats }: Props) {
+export default function MembreDetailUI({ profile, formations, stats, community, audits, investorProjects, pros = [], host = { logements: 0, contrats: 0 }, proStats, activity }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -251,6 +254,18 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
             )}
             <span style={s.memberSince}>Membre depuis le {formatDate(profile.created_at)}</span>
           </div>
+          {activity && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 16px', marginTop: 8, fontSize: 13, color: 'var(--text-2)' }}>
+              <span suppressHydrationWarning>
+                <strong style={{ color: 'var(--text)' }}>Dernière visite :</strong>{' '}
+                {activity.lastSeenAt ? `${sinceLabel(activity.lastSeenAt, new Date()).toLowerCase()} (${formatDate(activity.lastSeenAt)})` : 'jamais revenu'}
+              </span>
+              <span suppressHydrationWarning>
+                <strong style={{ color: 'var(--text)' }}>Dernière action :</strong>{' '}
+                {activity.lastAction ? `${activity.lastAction.label.toLowerCase()}, ${formatDate(activity.lastAction.at)}` : 'aucune dans l’app'}
+              </span>
+            </div>
+          )}
 
         {/* Formule de l'espace hôte (sous l'identité : sur téléphone, à côté
             du nom, elle écrasait le nom sur 2 lignes) */}

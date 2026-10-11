@@ -16,6 +16,7 @@ import {
   getMemberDetails, toggleContributor, toggleInvestor, updateMemberName,
 } from '../actions'
 import AdminHero from '../_ui/AdminHero'
+import { sinceLabel, activityLevel } from '@/lib/admin/activity'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -32,6 +33,9 @@ interface Member {
   is_photographer?: boolean; is_cleaner?: boolean
   created_at: string
   user_formations: UserFormation[]
+  /** Dernière visite (visite notée par l'app, connexion ou action) */
+  last_seen_at?: string | null
+  last_action?: { at: string; label: string } | null
 }
 
 interface MemberDetails {
@@ -45,6 +49,27 @@ interface MemberDetails {
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+const LEVEL_COLOR = { actif: 'var(--accent-text)', tiede: '#B7791F', endormi: 'var(--text-muted)' } as const
+
+/** « Vu hier · A créé un contrat (5 oct.) » : dernière visite et dernière action */
+function ActivityLine({ m, compact }: { m: Member; compact?: boolean }) {
+  const now = new Date()
+  const level = activityLevel(m.last_seen_at ?? null, now)
+  return (
+    <span style={{ display: 'flex', flexDirection: compact ? 'row' : 'column', gap: compact ? 6 : 2, marginTop: compact ? 0 : 6, fontSize: '11.5px', color: 'var(--text-2)', minWidth: 0 }}>
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }} suppressHydrationWarning>
+        <span style={{ width: 7, height: 7, borderRadius: '50%', background: LEVEL_COLOR[level], flexShrink: 0 }} />
+        {m.last_seen_at ? `Vu : ${sinceLabel(m.last_seen_at, now).toLowerCase()}` : 'Jamais revenu'}
+      </span>
+      {!compact && (
+        <span style={{ color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} suppressHydrationWarning>
+          {m.last_action ? `${m.last_action.label} · ${formatDate(m.last_action.at)}` : 'Aucune action dans l’app'}
+        </span>
+      )}
+    </span>
+  )
 }
 
 function initials(name: string | null, email: string) {
@@ -89,6 +114,8 @@ export default function MembresUI({ members }: { members: Member[] }) {
   const router = useRouter()
   const [search, setSearch]       = useState('')
   const [filterPlan, setFilterPlan] = useState<string>('all')
+  // Tri : inscription la plus récente (par défaut) ou dernière visite
+  const [sortBy, setSortBy] = useState<'inscription' | 'visite'>('inscription')
   // Vue grille vs liste : la grille reste lisible pour une cinquantaine de
   // membres, mais ne scale pas (une carte = ~150px de haut) une fois qu'on
   // passe à plusieurs centaines. Persisté par appareil, pas de valeur par
@@ -151,7 +178,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
     const planLabel = (p: string) =>
       p === 'driing' ? 'Driing' : p === 'standard' ? 'Standard' : 'Découverte'
     const escape = (v: string) => `"${(v ?? '').replace(/"/g, '""')}"`
-    const header = ['Nom', 'Email', 'Plan', 'Investisseur', 'Contributeur', 'Formations', 'Inscrit le']
+    const header = ['Nom', 'Email', 'Plan', 'Investisseur', 'Contributeur', 'Formations', 'Inscrit le', 'Dernière visite', 'Dernière action']
     const rows = filtered.map(m => [
       m.full_name || '',
       m.email,
@@ -160,6 +187,8 @@ export default function MembresUI({ members }: { members: Member[] }) {
       m.is_contributor ? 'Oui' : 'Non',
       String(m.user_formations?.length ?? 0),
       new Date(m.created_at).toISOString().slice(0, 10),
+      m.last_seen_at ? m.last_seen_at.slice(0, 10) : '',
+      m.last_action ? `${m.last_action.label} (${m.last_action.at.slice(0, 10)})` : '',
     ].map(escape).join(','))
     const csv = '﻿' + [header.join(','), ...rows].join('\n')
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
@@ -214,6 +243,10 @@ export default function MembresUI({ members }: { members: Member[] }) {
       (filterPlan === 'cleaner'      && !!m.is_cleaner)
     return matchSearch && matchPlan
   })
+  if (sortBy === 'visite') {
+    const t = (m: Member) => (m.last_seen_at ? Date.parse(m.last_seen_at) : 0)
+    filtered.sort((a, b) => t(b) - t(a))
+  }
 
   const totalBots      = members.filter(m => isBotLike(m.full_name, m.email)).length
   const totalDriing    = members.filter(m => m.plan === 'driing').length
@@ -379,6 +412,16 @@ export default function MembresUI({ members }: { members: Member[] }) {
             </button>
           ))}
         </div>
+
+        <select
+          value={sortBy}
+          onChange={e => setSortBy(e.target.value as 'inscription' | 'visite')}
+          style={{ ...s.planSelect, width: 'auto', flexShrink: 0 }}
+          aria-label="Trier les membres"
+        >
+          <option value="inscription">Inscription la plus récente</option>
+          <option value="visite">Dernière visite</option>
+        </select>
       </div>
 
       {/* ── Cards grid / liste ── */}
@@ -583,6 +626,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
           )}
           <span style={s.email}>{m.email}</span>
           <span style={s.joinDate}>Inscrit le {formatDate(m.created_at)}</span>
+          <ActivityLine m={m} />
         </div>
 
         {/* Plan badge, top right */}
@@ -768,6 +812,7 @@ function MemberListRow({ member: m, isPending, onOpenPanel, onDelete }: MemberLi
         )}
       </div>
 
+      <span className="jm-list-date" style={{ ...s.listDate, width: '120px' }}><ActivityLine m={m} compact /></span>
       <span className="jm-list-date" style={s.listDate}>{formatDate(m.created_at)}</span>
 
       <div style={s.listActions} onClick={e => e.stopPropagation()}>
@@ -894,6 +939,7 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                     )}
                   </div>
                   <div style={ps.memberSince}>Membre depuis le {formatDate(member.created_at)}</div>
+                  <ActivityLine m={member} />
                 </div>
               </div>
 

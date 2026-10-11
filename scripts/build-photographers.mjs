@@ -104,7 +104,6 @@ function buildFichePage(p) {
   const tarif = fmtTarif(p)
   const desc = `${displayName}, photographe spécialisé location courte durée à ${p.ville}${p.zone_couverte ? ' et ' + p.zone_couverte : ''}.${p.specialite ? ' ' + p.specialite + '.' : ''}${tarif ? ' Tarifs ' + tarif + '.' : ''}`
   const canonical = `https://jasonmarinho.com/annuaires/photographes/${p.slug}`
-  const isFondateur = p.tier === 'fondateur'
   // Page de sa ville (ou de sa zone) : même règle que l'injection des pros
   const g = villeGuide(ROOT, 'photographe-lcd', p.ville, p.zone_couverte)
   // Réseaux et fiche Google (Instagram a déjà son bouton plus haut)
@@ -210,7 +209,6 @@ ${JSON.stringify({
   <div class="s-in">
     <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/photographes">Annuaire photographes LCD</a> · <span>${escHtml(displayName)}</span></div>
     <div class="tag-row">
-      ${isFondateur ? '<span class="tag gold"><i class="ph-bold ph-star" style="font-size:10px"></i>Fondateur</span>' : ''}
       ${p.reco_count > 0 ? `<span class="tag" style="background:rgba(99,214,131,.15);color:#7be29a;border:1px solid rgba(99,214,131,.35)"><i class="ph-bold ph-heart" style="font-size:10px"></i>Recommandé par ${p.reco_count} hôte${p.reco_count > 1 ? 's' : ''}</span>` : ''}
       ${p.specialite ? `<span class="tag">${escHtml(p.specialite)}</span>` : ''}
       <span class="tag"><i class="ph-bold ph-map-pin" style="font-size:10px"></i>${escHtml(p.ville)}</span>
@@ -261,7 +259,6 @@ ${JSON.stringify({
       ${p.zone_couverte ? `<div class="aside-row"><span class="aside-k">Zone couverte</span><span class="aside-v">${escHtml(p.zone_couverte)}</span></div>` : ''}
       ${tarif ? `<div class="aside-row"><span class="aside-k">Tarifs indicatifs</span><span class="aside-v">${escHtml(tarif)}</span></div>` : ''}
       ${p.specialite ? `<div class="aside-row"><span class="aside-k">Spécialité</span><span class="aside-v">${escHtml(p.specialite)}</span></div>` : ''}
-      ${isFondateur ? '<div class="aside-row"><span class="aside-k">Statut</span><span class="aside-v" style="color:#b8860b">🌟 Photographe fondateur</span></div>' : ''}
       ${depuis ? `<div class="aside-row"><span class="aside-k">Membre de l'annuaire depuis</span><span class="aside-v">${depuis}</span></div>` : ''}
       ${proReseauxHtml(reseaux)}
     </div>
@@ -355,7 +352,6 @@ function buildAnnuaireListPage(items) {
       <h3 class="card-name">${escHtml(displayName)}</h3>
       <div class="card-ville"><i class="ph ph-map-pin"></i>${escHtml(p.ville)}</div>
     </div>
-    ${p.tier === 'fondateur' ? '<span class="card-tag gold"><i class="ph-bold ph-star"></i>Fondateur</span>' : ''}
   </div>
   ${p.zone_couverte ? `<div class="card-zone"><strong>Zone couverte :</strong> ${escHtml(p.zone_couverte)}</div>` : ''}
   ${p.specialite || p.reco_count > 0 ? `<div class="card-chips">${p.specialite ? `<span class="card-spe">${escHtml(p.specialite)}</span>` : ''}${p.reco_count > 0 ? `<span class="card-rc"><i class="ph-bold ph-heart"></i>Recommandé par ${p.reco_count} hôte${p.reco_count > 1 ? 's' : ''}</span>` : ''}</div>` : ''}
@@ -543,16 +539,6 @@ ${items.length > 0 ? `<div class="tools-row">
     </div>
     <div class="filters-body">
       <div class="filters-section">
-        <h3>Statut</h3>
-        <div class="filters-toggle-row">
-          <div>
-            <div class="filters-toggle-label">Photographes fondateurs uniquement</div>
-            <div class="filters-toggle-sub">Premiers membres vérifiés de l'annuaire</div>
-          </div>
-          <button type="button" class="filters-toggle" id="f-fondateur" aria-pressed="false"></button>
-        </div>
-      </div>
-      <div class="filters-section">
         <h3>Fourchette de tarif</h3>
         <div class="filters-price">
           <div class="filters-price-field">
@@ -581,6 +567,14 @@ ${items.length > 0 ? `<div class="search-empty" id="search-empty">
   <p>L'annuaire grandit chaque semaine. En attendant, jette un œil aux <a href="#villes">guides ville par ville</a> ci-dessous, ou repasse bientôt.</p>
   <button type="button" id="search-reset"><i class="ph-bold ph-arrow-counter-clockwise"></i>Voir tous les photographes</button>
 </div>` : ''}
+<section style="margin:40px auto 0;max-width:1100px;padding:26px clamp(18px,4vw,30px);border-radius:18px;background:#F2F8F4;border:1px solid rgba(0,76,63,.14);display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between">
+  <div style="flex:1 1 320px;min-width:0">
+    <div style="font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#004C3F;margin-bottom:8px"><i class="ph-bold ph-house-line"></i> Tu es hôte ?</div>
+    <h2 style="font-family:'Fraunces',serif;font-weight:500;font-size:clamp(20px,2.6vw,26px);line-height:1.25;color:#0F1A0D;margin:0 0 8px">Tes réservations directes, signées et payées</h2>
+    <p style="margin:0;font-size:14.5px;line-height:1.65;color:#3D5038">Une fois tes photos faites, l'app t'aide à louer en direct : contrat signé en ligne, loyer payé par carte, caution bloquée, fiche de police préparée. Gratuit pour commencer.</p>
+  </div>
+  <a href="https://app.jasonmarinho.com/auth/register" style="flex:0 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:10px;background:#004C3F;color:#fff;font-weight:600;font-size:15px;text-decoration:none">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+</section>
 </main>
 
 ${items.length > 0 ? `<script>
@@ -617,7 +611,7 @@ ${items.length > 0 ? `<script>
   closeBtn.addEventListener('click', closeModal)
   backdrop.addEventListener('click', function(e){ if (e.target === backdrop) closeModal() })
 
-  fondBtn.addEventListener('click', function(){
+  if (fondBtn) fondBtn.addEventListener('click', function(){
     state.fondateur = !state.fondateur
     fondBtn.classList.toggle('active', state.fondateur)
     fondBtn.setAttribute('aria-pressed', String(state.fondateur))
@@ -650,7 +644,7 @@ ${items.length > 0 ? `<script>
 
   function clearFilters(){
     state = { fondateur: false, min: null, max: null }
-    fondBtn.classList.remove('active'); fondBtn.setAttribute('aria-pressed', 'false')
+    if (fondBtn) { fondBtn.classList.remove('active'); fondBtn.setAttribute('aria-pressed', 'false') }
     minInput.value = ''; maxInput.value = ''
     previewCount()
   }

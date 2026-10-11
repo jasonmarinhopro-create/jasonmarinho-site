@@ -192,7 +192,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
       )}
       <HubHero
         eyebrowIcon={<Sparkle size={14} weight="fill" />}
-        eyebrow={isFondateur ? 'Ma fiche équipe ménage · Équipe fondatrice' : 'Ma fiche équipe ménage'}
+        eyebrow="Ma fiche équipe ménage"
         title={<>Ta fiche, <HeroEm>vue par les hôtes</HeroEm>{cleaner.ville ? ` de ${cleaner.ville}` : ''}</>}
         desc="Les hôtes te trouvent dans l’annuaire ménage de Jason Marinho. Une fiche complète (prestations, tarifs, zone, photo) reçoit plus de demandes : elles arrivent dans Demandes reçues et par email."
         aside={
@@ -215,9 +215,6 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
             <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={heroCta}>
               Voir ma fiche publique <ArrowSquareOut size={15} weight="bold" />
             </a>
-          )}
-          {isFondateur && (
-            <span style={s.founderBadge}><Star size={12} weight="fill" /> Équipe fondatrice, tarif à vie</span>
           )}
         </div>
       </HubHero>

@@ -415,6 +415,10 @@
         '</div>' +
         (insights.length > 0 ? '<div class="insights-box"><h4>💡 Pour aller plus loin</h4><ul>' + insights.map(function (i) { return '<li>' + i + '</li>' }).join('') + '</ul></div>' : '') +
         '<div class="source-line">Source : ' + res.source + '. Calcul indicatif (±20 %). Pas une garantie de revenus.</div>' +
+        '<div style="margin-top:14px;padding:14px 16px;border-radius:12px;background:#F2F8F4;border:1px solid rgba(0,76,63,.15);font-size:13.5px;line-height:1.6;color:#0F1A0D">' +
+          '<strong>Garde ton estimation.</strong> Avec un compte gratuit, tu enregistres tes projets, tu compares tes villes et tu prépares un prévisionnel PDF pour ta banque. ' +
+          '<a href="https://app.jasonmarinho.com/auth/register" style="color:#004C3F;font-weight:700">Créer mon compte gratuit →</a>' +
+        '</div>' +
       '</div>'
 
     result.innerHTML = html
@@ -425,6 +429,16 @@
     refreshCities()
     paysEl.addEventListener('change', refreshCities)
     btn.addEventListener('click', render)
+    // ?ville=Lyon (liens des guides de ville) : ville choisie et estimation affichée
+    try {
+      var wanted = new URLSearchParams(location.search).get('ville')
+      if (wanted) {
+        var norm = function (v) { return (v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z]/g, '') }
+        var match = Array.prototype.find.call(villeEl.options, function (o) { return norm(o.value) === norm(wanted) })
+        villeEl.value = match ? match.value : '__other__'
+        render()
+      }
+    } catch (e) { /* navigateur ancien : choix manuel */ }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init)
   else init()

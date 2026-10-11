@@ -17,6 +17,7 @@ import DashboardLoading from './loading'
 import PageFadeWrapper from '@/components/dashboard/PageFadeWrapper'
 import ShellFallback from '@/components/layout/ShellFallback'
 import PerfReporter from '@/components/perf/PerfReporter'
+import LastSeenPing from '@/components/layout/LastSeenPing'
 import { perfTimer } from '@/lib/perf/server-timing'
 
 function planToLabel(plan: 'decouverte' | 'standard' | 'driing', role: string): string {
@@ -186,6 +187,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
         )}
         <InstallAppWidget />
         <PerfReporter />
+        <LastSeenPing />
         {launch && <ShellFallback variant="out" message="Ouverture de ton espace…" />}
       </div>
     </ThemeProvider>
