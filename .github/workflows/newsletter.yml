@@ -1,0 +1,39 @@
+# Lettre des hôtes (newsletter Brevo automatique, 11/10/2026). Le cron
+# quotidien de l'app la prépare seul le premier lundi du mois. Ce workflow sert
+# à vérifier ou forcer : etat (listes Brevo, expéditeur), apercu (lettre
+# envoyée à contact@ sans rien programmer), programmer (la lettre du mois,
+# maintenant). Journaux publics : nombres seulement.
+name: Newsletter
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'etat, apercu ou programmer'
+        required: true
+        default: etat
+        type: choice
+        options: [etat, apercu, programmer]
+  push:
+    branches: ['claude/**']
+    paths: ['.github/newsletter-trigger']
+
+jobs:
+  newsletter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SECRET: ${{ secrets.SOCIAL_CRON_SECRET }}
+      OP: ${{ github.event.inputs.operation || 'etat' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github
+      - name: Lettre des hôtes
+        run: |
+          OP_FILE=$(head -1 .github/newsletter-trigger 2>/dev/null | tr -d '[:space:]')
+          [ "${{ github.event_name }}" = "push" ] && [ -n "$OP_FILE" ] && OP="$OP_FILE"
+          out=$(curl -sS --max-time 70 -X POST https://app.jasonmarinho.com/api/ops/newsletter \
+            -H "authorization: Bearer $SECRET" -H 'content-type: application/json' -d "{\"op\":\"$OP\"}")
+          echo "$out" | jq . || echo "$out"
+          echo "::notice title=Newsletter ($OP)::$(echo "$out" | jq -c . 2>/dev/null || echo "$out" | head -c 300)"

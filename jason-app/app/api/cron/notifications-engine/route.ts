@@ -16,6 +16,9 @@ import { syncPendingDeposits } from '@/lib/stripe/deposit-payment'
 import { unansweredQuestions, unansweredDigestEmail, REMIND_MAX_DAYS, type QuestionRow } from '@/lib/chez-nous/unanswered'
 import { sendAdminEmail } from '@/lib/email/admin'
 import { sendProMonthlyReports } from '@/lib/email/pro-monthly'
+import { prepareMonthlyNewsletter } from '@/lib/newsletter/run'
+import { parisToday } from '@/lib/stripe/deposit-window'
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60  // 60s max (suffisant pour quelques centaines d'utilisateurs)
@@ -64,6 +67,16 @@ export async function GET(req: Request) {
     proMonthly = await sendProMonthlyReports(supabase, { budgetMs: 12_000 })
   } catch (e) { console.warn('[cron] pro monthly reports failed', e) }
   const monthlyMs = Date.now() - tMonthly
+
+  // Lettre des hôtes : le premier lundi du mois, composée et programmée dans
+  // Brevo pour le lendemain 9 h 30, aperçu envoyé à Jason (lib/newsletter)
+  let newsletter = 'pas-le-jour'
+  try {
+    newsletter = (await prepareMonthlyNewsletter(supabase, parisToday())).state
+  } catch (e) {
+    newsletter = 'erreur'
+    logger('cron/newsletter').error('prepare', { msg: String((e as Error).message).slice(0, 300) })
+  }
 
   // Photos de ménage de plus de 90 jours supprimées (stockage Supabase gratuit
   // limité à 1 Go, lib/menage/photo-retention.ts). Par lots, best-effort.
@@ -123,6 +136,7 @@ export async function GET(req: Request) {
 
   return NextResponse.json({
     ok: true,
+    newsletter,
     icalSync,
     usersProcessed,
     notificationsCreated: totalCreated,
