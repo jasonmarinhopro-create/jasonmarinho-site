@@ -127,3 +127,22 @@ jobs:
               lines.append(f'founder-seats : erreur {type(e).__name__}')
           print('::notice title=Activité::' + '%0A'.join(lines))
           PY
+
+      - name: Google (Search Console, 28 jours)
+        env:
+          SECRET: ${{ secrets.SOCIAL_CRON_SECRET }}
+        run: |
+          r=$(curl -sS --max-time 70 "https://app.jasonmarinho.com/api/ops/seo-chiffres" -H "authorization: Bearer $SECRET" || true)
+          printf '%s' "$r" | python3 -c '
+          import json, sys
+          try: d = json.load(sys.stdin)
+          except Exception: print("::notice title=Google::réponse illisible"); sys.exit(0)
+          if "error" in d: print("::notice title=Google::" + d["error"]); sys.exit(0)
+          out = lambda t, lines: print(f"::notice title={t}::" + "%0A".join(l.replace("%", "%25") for l in lines)[:3900])
+          sortes = sorted(d["par_sorte"].items(), key=lambda x: -x[1]["affichages"])
+          out("Google par sorte de page", [d["periode"]] + ["{} : {pages} pages, {affichages} aff., {clics} clics (avant {clics_avant})".format(k, **v) for k, v in sortes])
+          b = d["blog"]
+          out("Google blog", ["articles vus : {articles_vus_dans_google}, avec au moins un clic : {avec_au_moins_un_clic}".format(**b)] + b["top"])
+          out("A un pas de la 1re page", d["proches_premiere_page"])
+          out("Recherches qui cliquent", d["qui_cliquent"])
+          '
