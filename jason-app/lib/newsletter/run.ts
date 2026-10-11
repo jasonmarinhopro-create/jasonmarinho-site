@@ -24,7 +24,7 @@ const LOOKBACK_DAYS = 35
 
 type Db = SupabaseClient
 
-async function brevo<T>(path: string, init?: { method?: string; body?: unknown }): Promise<T> {
+export async function brevo<T>(path: string, init?: { method?: string; body?: unknown }): Promise<T> {
   const key = process.env.BREVO_API_KEY
   if (!key) throw new Error('BREVO_API_KEY absente')
   const res = await fetch(`${BREVO}${path}`, {
@@ -135,13 +135,13 @@ async function listContacts(listId: number): Promise<Array<{ email: string; blac
 async function recipients(db: Db): Promise<Record<Edition, string[]>> {
   const [subs, profiles, photographers, cleaners, suppressions] = await Promise.all([
     listContacts(NEWSLETTER_LISTS[0]),
-    db.from('profiles').select('id, email, role, is_investor').limit(20_000),
+    selectProfiles(db),
     db.from('photographers').select('user_id, email, stripe_subscription_status').limit(5_000),
     db.from('cleaners').select('user_id, email, stripe_subscription_status').limit(5_000),
     db.from('outreach_suppressions').select('email_norm').limit(20_000),
   ])
   type Pro = { user_id: string | null; email: string | null; stripe_subscription_status: string | null }
-  const prof = (profiles.data ?? []) as Array<{ id: string; email: string | null; role: string | null; is_investor: boolean | null }>
+  const prof = profiles
   const admins = new Set(prof.filter(p => p.role === 'admin').map(p => p.id))
   const photo = (photographers.data ?? []) as Pro[]
   const clean = (cleaners.data ?? []) as Pro[]
@@ -156,11 +156,36 @@ async function recipients(db: Db): Promise<Record<Edition, string[]>> {
     ...photo.filter(r => isPaidPro(r) && !(r.user_id && admins.has(r.user_id))).map(r => ({ email: (r.email || emailOf.get(r.user_id ?? '') || '') as string, metier: 'photographe' as const })),
     ...clean.filter(r => isPaidPro(r) && !(r.user_id && admins.has(r.user_id))).map(r => ({ email: (r.email || emailOf.get(r.user_id ?? '') || '') as string, metier: 'menage' as const })),
   ].filter(p => p.email)
+  // Inscrits = liste Brevo + comptes qui ont coché la case à l'inscription
+  // (désinscrits chez Brevo toujours exclus)
+  const blacklisted = new Set(subs.filter(c => c.blacklisted).map(c => c.email))
+  const optIn = prof.filter(p => p.newsletter_opt_in && p.email).map(p => p.email!.toLowerCase()).filter(e => !blacklisted.has(e))
   return assignEditions({
-    subscribers: subs.filter(c => !c.blacklisted).map(c => c.email),
+    subscribers: [...new Set([...subs.filter(c => !c.blacklisted).map(c => c.email), ...optIn])],
     accounts, proClients,
     suppressed: new Set(((suppressions.data ?? []) as Array<{ email_norm: string }>).map(r => r.email_norm)),
   })
+}
+
+type ProfileRow = { id: string; email: string | null; role: string | null; is_investor: boolean | null; newsletter_opt_in?: boolean | null }
+
+/** Comptes de l'app (sans la migration 128 : sans le choix de la newsletter) */
+async function selectProfiles(db: Db): Promise<ProfileRow[]> {
+  const full = await db.from('profiles').select('id, email, role, is_investor, newsletter_opt_in').limit(20_000)
+  if (!full.error) return (full.data ?? []) as ProfileRow[]
+  const legacy = await db.from('profiles').select('id, email, role, is_investor').limit(20_000)
+  return (legacy.data ?? []) as ProfileRow[]
+}
+
+/** Comptes qui ont coché la case mais manquent dans la liste Brevo : rajoutés (inscription perdue, liste n° 2…) */
+async function syncOptIns(db: Db) {
+  const [subs, prof] = await Promise.all([listContacts(NEWSLETTER_LISTS[0]), selectProfiles(db)])
+  const inList = new Set(subs.map(c => c.email))
+  for (const p of prof) {
+    const e = p.email?.toLowerCase()
+    if (!p.newsletter_opt_in || !e || inList.has(e)) continue
+    await brevo('/contacts', { method: 'POST', body: { email: e, listIds: NEWSLETTER_LISTS, updateEnabled: true } }).catch(() => undefined)
+  }
 }
 
 /** Met chaque liste d'édition à jour (ajouts, retraits) */
@@ -211,6 +236,7 @@ export async function prepareMonthlyNewsletter(db: Db, parisDate: string, opts: 
   const results: Array<{ edition: Edition; destinataires: number; campagne: number | null }> = []
   try {
     const lists = await ensureEditionLists()
+    await syncOptIns(db)
     const who = await recipients(db)
     for (const e of ['investisseur', 'photographe', 'menage'] as const) await syncList(lists[e], who[e])
 
@@ -228,8 +254,14 @@ export async function prepareMonthlyNewsletter(db: Db, parisDate: string, opts: 
         method: 'POST',
         body: { name, subject: n.subject, previewText: n.preheader, sender: SENDER, replyTo: SENDER.email, htmlContent: n.html, recipients: recipientsSpec, scheduledAt, inlineImageActivation: false },
       })
-      if (edition !== 'hote') await db.from('newsletter_issues').insert({ month: issueKey(month, edition), status: 'programmee', campaign_id: created.id, subject: n.subject, scheduled_at: scheduledAt })
-      else await db.from('newsletter_issues').update({ status: 'programmee', campaign_id: created.id, subject: n.subject, scheduled_at: scheduledAt }).eq('month', month)
+      // Contenu et destinataires gardés pour l'onglet Newsletter de Provenance (migration 128, tolérée si absente)
+      const row = { status: 'programmee', campaign_id: created.id, subject: n.subject, scheduled_at: scheduledAt }
+      const extra = { edition, preheader: n.preheader, recipients: count, html: n.html }
+      const save = (r: Record<string, unknown>) => edition !== 'hote'
+        ? db.from('newsletter_issues').insert({ month: issueKey(month, edition), ...r })
+        : db.from('newsletter_issues').update(r).eq('month', month)
+      const { error: saveError } = await save({ ...row, ...extra })
+      if (saveError) await save(row)
       results.push({ edition, destinataires: count, campagne: created.id })
       await sendPreview(n, `<strong>Aperçu de l'édition ${label} (${count} destinataire${count > 1 ? 's' : ''}).</strong> Programmée dans Brevo pour ${when}. Rien à faire si elle te convient. Pour l'arrêter ou la modifier : Brevo → Campagnes → « ${name} » → Suspendre.`, label)
     }
