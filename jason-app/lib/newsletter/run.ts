@@ -9,12 +9,11 @@ import { Resend } from 'resend'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { dedupeActualites } from '@/lib/actualites/dedup'
 import { CHANGELOG } from '@/lib/constants/changelog'
+import { NEWSLETTER_LISTS } from './lists'
 import { buildNewsletter, isPreparationDay, monthKey, monthLabel, parseRss, sendAt, type Newsletter, type NlActu } from './build'
 
 const BREVO = 'https://api.brevo.com/v3'
 const SENDER = { name: 'Jason Marinho', email: 'contact@jasonmarinho.com' }
-/** Listes Brevo : 2 = inscrits de l'app (case cochée), 3 = inscrits du site */
-export const NEWSLETTER_LISTS = (process.env.BREVO_NEWSLETTER_LISTS ?? '2,3').split(',').map(n => Number(n.trim())).filter(n => n > 0)
 const LOOKBACK_DAYS = 35
 
 type Db = SupabaseClient
@@ -141,6 +140,8 @@ export async function previewNewsletter(db: Db, parisDate: string) {
   await sendPreview(n, '<strong>Aperçu seulement</strong> : rien n\'est programmé. Voici la lettre telle qu\'elle partirait aujourd\'hui.')
   return { state: 'apercu' as const, counts: n.counts, subjectLength: n.subject.length }
 }
+
+export { NEWSLETTER_LISTS }
 
 /** État de Brevo pour les journaux publics : nombres et oui / non seulement */
 export async function brevoStatus() {
