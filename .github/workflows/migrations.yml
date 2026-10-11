@@ -94,4 +94,5 @@ jobs:
           done
           # PostgREST relit le schéma (nouvelles colonnes visibles tout de suite)
           if [ "$applied" -gt 0 ]; then $PSQL -c "select pg_notify('pgrst', 'reload schema')" >/dev/null; fi
-          echo "::notice::Migrations : $applied appliquée(s), $pending en attente au départ, $baselined notée(s) comme déjà faites (mode $MODE)."
+          if [ "$MODE" = "appliquer" ]; then NOTE="notée(s) comme déjà faites"; else NOTE="déjà faites (seront notées au prochain passage en mode appliquer)"; fi
+          echo "::notice::Migrations : $applied appliquée(s), $pending en attente au départ, $baselined $NOTE (mode $MODE)."
