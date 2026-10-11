@@ -37,13 +37,13 @@ async function brevo<T>(path: string, init?: { method?: string; body?: unknown }
 export async function gatherContent(db: Db, parisDate: string) {
   const since = new Date(Date.parse(`${parisDate}T00:00:00Z`) - LOOKBACK_DAYS * 86_400_000)
   const { data } = await db.from('actualites')
-    .select('id, title, summary, category, source_url, published_at, created_at, is_pinned')
+    .select('id, title, summary, category, source_url, published_at, created_at, is_pinned, deadline_date')
     .eq('is_published', true)
     .gte('published_at', since.toISOString())
     .order('is_pinned', { ascending: false, nullsFirst: false })
     .order('published_at', { ascending: false })
     .limit(60)
-  type Row = { id: string; title: string; summary: string; category: string; source_url: string | null; published_at: string | null; created_at: string | null }
+  type Row = { id: string; title: string; summary: string; category: string; source_url: string | null; published_at: string | null; created_at: string | null; deadline_date: string | null }
   const rows = ((data ?? []) as Array<Omit<Row, 'summary'> & { summary: string | null }>).map(r => ({ ...r, summary: r.summary ?? '' }))
   const actus: NlActu[] = dedupeActualites<Row>(rows)
 
@@ -61,7 +61,9 @@ export async function gatherContent(db: Db, parisDate: string) {
 
 export async function composeNewsletter(db: Db, parisDate: string): Promise<Newsletter | null> {
   const c = await gatherContent(db, parisDate)
-  return buildNewsletter({ parisDate, ...c })
+  // Numéro de la lettre : lettres déjà programmées + 1 (la n° 1 est la première automatique)
+  const { count } = await db.from('newsletter_issues').select('month', { count: 'exact', head: true }).eq('status', 'programmee').neq('month', monthKey(parisDate))
+  return buildNewsletter({ parisDate, ...c, issueNumber: (count ?? 0) + 1 })
 }
 
 async function sendPreview(n: Newsletter, note: string) {
