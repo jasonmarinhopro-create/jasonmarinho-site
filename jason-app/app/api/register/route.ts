@@ -226,11 +226,16 @@ export async function POST(req: NextRequest) {
         driing_status: isDriingMember ? 'pending' : 'none',
         is_investor: !!isInvestor,
       }
+      // Provenance (migration 126) et choix de la newsletter (migration 128), gardés sur le compte
+      const extra = {
+        ...(acquisition ? { acquisition } : {}),
+        ...(newsletterConsent ? { newsletter_opt_in: true, newsletter_opt_in_at: new Date().toISOString() } : {}),
+      }
       let { error: profileError } = await supabaseAdmin
         .from('profiles')
-        .upsert(acquisition ? { ...base, acquisition } : base, { onConflict: 'id', ignoreDuplicates: false })
-      // Sans la migration 126 (colonne acquisition), on enregistre le reste
-      if (profileError && acquisition) {
+        .upsert({ ...base, ...extra }, { onConflict: 'id', ignoreDuplicates: false })
+      // Sans ces colonnes, on enregistre le reste
+      if (profileError && Object.keys(extra).length) {
         ({ error: profileError } = await supabaseAdmin.from('profiles').upsert(base, { onConflict: 'id', ignoreDuplicates: false }))
       }
       if (profileError) {

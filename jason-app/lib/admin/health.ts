@@ -88,6 +88,7 @@ export interface MigrationProbe {
 
 /** Migrations récentes à vérifier : une table ou une colonne qu'elles créent. */
 export const MIGRATION_PROBES: MigrationProbe[] = [
+  { file: '20261011_128_newsletter_suivi.sql', what: 'choix newsletter gardé sur le compte et contenu des lettres envoyées', table: 'profiles', column: 'newsletter_opt_in' },
   { file: '20261011_127_newsletter_issues.sql', what: 'newsletter mensuelle automatique (une lettre par mois au plus)', table: 'newsletter_issues', column: 'month' },
   { file: '20261010_126_provenance.sql', what: "provenance des inscriptions et liens suivis (groupes Facebook)", table: 'tracked_links', column: 'code' },
   { file: '20261005_123_visibilite.sql', what: 'statistiques des fiches (pays, écran, temps passé, clics par jour)', table: 'pro_fiche_clicks_daily', column: 'clicks' },
