@@ -465,7 +465,23 @@ if (existsSync(outDir)) {
 }
 
 mkdirSync(outDir, { recursive: true })
-const html = generateArticleHTML(art)
+// Anciennes pages services (11/10/2026) : la routine de rédaction a gardé une
+// liste de mai 2026 dont 5 pages sur 6 n'existent plus (redirections 301).
+// On remet la bonne adresse, et on signale toute autre page interne absente.
+const LEGACY_SERVICES = {
+  '/services/reservation-directe': '/services/annonce-directe',
+  '/services/fiscalite-lcd': '/services/simulateurs',
+  '/services/reglementation-lcd': '/services/actualites',
+  '/services/conciergerie': '/services/formations',
+}
+let html = generateArticleHTML(art)
+for (const [from, to] of Object.entries(LEGACY_SERVICES)) {
+  html = html.replaceAll(`href="${from}"`, `href="${to}"`).replaceAll(`href="${from}#`, `href="${to}#`)
+}
+for (const m of html.matchAll(/href="(\/(?:services|blog|calculateurs|partenaires)\/[^"#?]+)/g)) {
+  const p = m[1].replace(/^\//, '')
+  if (!existsSync(resolve(ROOT, p, 'index.html')) && p.replace('blog/', '') !== art.slug) console.warn(`⚠️  Lien interne vers une page absente : ${m[1]}`)
+}
 writeFileSync(resolve(outDir, 'index.html'), html, 'utf8')
 console.log(`✓ blog/${art.slug}/index.html créé (${html.length} octets)`)
 
