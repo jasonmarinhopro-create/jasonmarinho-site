@@ -119,5 +119,11 @@ jobs:
             f"Canaux (1re page) : {dict(Counter(chan(v) for v in first.values()).most_common(8))}",
             f"Pages d'entrée : {dict(Counter(kind(v['path']) for v in first.values()).most_common(12))}",
           ]
+          SP = rest_all('profiles', 'stripe_subscription_status,stripe_price_id,stripe_subscription_id', '&plan=eq.standard')
+          lines.append(f"Standard : statut Stripe {dict(Counter(str(r.get('stripe_subscription_status')) for r in SP))} · avec prix {sum(1 for r in SP if r.get('stripe_price_id'))} · avec abonnement {sum(1 for r in SP if r.get('stripe_subscription_id'))}")
+          try:
+              with urllib.request.urlopen('https://app.jasonmarinho.com/api/founder-seats', timeout=20) as r: lines.append('founder-seats : ' + r.read().decode()[:200])
+          except Exception as e:
+              lines.append(f'founder-seats : erreur {type(e).__name__}')
           print('::notice title=Activité::' + '%0A'.join(lines))
           PY

@@ -1,6 +1,7 @@
 import { redirect, notFound } from 'next/navigation'
 import { getProfile } from '@/lib/queries/profile'
 import { loadMemberProfile } from '@/lib/admin/member-profile'
+import { loadMemberActivity } from '@/lib/admin/activity-load'
 import MembreDetailUI from './MembreDetailUI'
 import { perfTimer } from '@/lib/perf/server-timing'
 import { Suspense } from 'react'
@@ -17,7 +18,10 @@ export default async function MembreDetailPage({ params }: { params: { id: strin
   if (!/^[0-9a-f-]{36}$/i.test(params.id)) notFound()
 
   timer.mark('session')
-  const result = await loadMemberProfile(params.id)
+  const [result, activityMap] = await Promise.all([
+    loadMemberProfile(params.id),
+    loadMemberActivity([params.id]).catch(() => null),
+  ])
   timer.mark('fiche membre')
   timer.done()
 
@@ -50,6 +54,7 @@ export default async function MembreDetailPage({ params }: { params: { id: strin
           pros={result.pros}
           host={result.host}
           proStats={proStats}
+          activity={activityMap?.get(params.id) ?? { lastSeenAt: null, lastAction: null }}
         />
       </div>
     </>

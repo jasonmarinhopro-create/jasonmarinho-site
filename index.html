@@ -337,6 +337,11 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   .trust-inner{gap:16px}
   .trust-item{font-size:12px}
 }
+.h-note{margin-top:14px;font-size:13px;color:rgba(255,255,255,.55)}
+.cta-band{margin-top:40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:26px 30px;border-radius:18px;background:var(--gd);color:#fff}
+.cta-band-t{font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin-bottom:6px}
+.cta-band-d{margin:0;font-size:14px;line-height:1.6;color:rgba(255,255,255,.7);max-width:560px}
+@media(max-width:640px){.cta-band{padding:22px 20px}.cta-band .btn-p{width:100%;justify-content:center}}
 </style>
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
 <script defer src="/nav.js"></script>
@@ -349,13 +354,14 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   <div class="h-g1"></div><div class="h-g2"></div><div class="h-grid"></div>
   <div class="h-inner">
     <div>
-      <div class="h-badge"><div class="h-dot"></div> Formations · Outils · Annuaires · Investissement</div>
+      <div class="h-badge"><div class="h-dot"></div> Contrats · Ménage · Formalités · Formations</div>
       <h1 class="h-h1">Développe ton activité<br>de <em>location<br>courte durée</em></h1>
-      <p class="h-sub"><a href="/services/formations" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.3);text-underline-offset:3px">Formations pratiques</a>, <a href="/services/gabarits-messages" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.3);text-underline-offset:3px">ressources prêtes à l'emploi</a>, <a href="/annuaires/photographes" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.3);text-underline-offset:3px">annuaires de pros vérifiés</a> et <a href="/investir-lcd" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.3);text-underline-offset:3px">outils pour investir</a> : tout pour progresser dans ta gestion locative et développer ton activité LCD.</p>
+      <p class="h-sub">Contrats signés en ligne avec caution, planning ménage calculé depuis Airbnb et Booking, fiche de police et SIBA préparées. Et pour progresser : <a href="/services/formations" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.3);text-underline-offset:3px">Formations pratiques</a>, <a href="/services/gabarits-messages" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.3);text-underline-offset:3px">ressources prêtes à l'emploi</a>, <a href="/annuaires/photographes" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.3);text-underline-offset:3px">annuaires de pros vérifiés</a> et <a href="/investir-lcd" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.3);text-underline-offset:3px">outils pour investir</a>.</p>
       <div class="h-acts">
-        <a href="#formations" class="btn-p">Voir les formations <i class="ph-bold ph-arrow-right"></i></a>
-        <a href="#about" class="btn-g">Découvrir Jason</a>
+        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="#services" class="btn-g">Voir ce que fait l'app</a>
       </div>
+      <p class="h-note">Gratuit pour commencer, sans carte bancaire.</p>
     </div>
 
     <div class="h-card">
@@ -408,7 +414,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 </div>
 
 <!-- SERVICES -->
-<section class="sec wh">
+<section class="sec wh" id="services">
   <div class="s-in">
     <div class="lbl rv">Ce que je propose</div>
     <h2 class="h2 rv">Tout pour développer<br><em>ton activité LCD</em></h2>
@@ -486,6 +492,13 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
         <div class="sv-t">Investir en LCD</div>
         <p class="sv-d">Estime les revenus d'un bien AVANT de l'acheter : simulation par ville et type de logement, hypothèses de financement et prévisionnel PDF à présenter à ton banquier.</p>
       </a>
+    </div>
+    <div class="cta-band rv">
+      <div>
+        <div class="cta-band-t">Essaie l'app avec ton logement</div>
+        <p class="cta-band-d">Ajoute ton logement, connecte ton calendrier Airbnb ou Booking : ton planning ménage se remplit tout seul. Gratuit, sans carte bancaire.</p>
+      </div>
+      <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
     </div>
   </div>
 </section>
@@ -762,7 +775,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   <div class="cta-in">
     <div class="lbl lt ct rv" style="justify-content:center">Newsletter</div>
     <h2 class="h2 lt ct rv">Prêt à te lancer<br><em>sans prise de vague ?</em></h2>
-    <p class="sub lt ct rv" style="margin-bottom:0;max-width:380px">Conseils LCD, ressources et outils pratiques dans ta boîte mail chaque semaine.</p>
+    <p class="sub lt ct rv" style="margin-bottom:0;max-width:380px">Une lettre par mois : ce qui change pour ta location, un outil, un bon plan. Rien d'autre.</p>
     <div class="cta-fm rv" id="brevo-form">
       <input type="email" id="brevo-email" class="cta-i" placeholder="ton@email.com" aria-label="Email" autocomplete="email">
       <button class="btn-p" id="brevo-submit" onclick="subscriberBrevo(event)">S'inscrire <i class="ph-bold ph-arrow-right"></i></button>

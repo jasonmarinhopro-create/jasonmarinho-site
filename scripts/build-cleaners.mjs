@@ -127,7 +127,6 @@ function buildFichePage(c) {
   const heure = c.tarif_heure ? `${c.tarif_heure} €/h` : null
   const desc = `${displayName}, équipe de ménage spécialisée location courte durée à ${c.ville}${c.zone_couverte ? ' et ' + c.zone_couverte : ''}.${forfait ? ' Forfait turnover ' + forfait + '.' : ''}${heure ? ' Tarif horaire ' + heure + '.' : ''}`
   const canonical = `https://jasonmarinho.com/annuaires/menage/${c.slug}`
-  const isFondateur = c.tier === 'fondateur'
   // Page de sa ville (ou de sa zone) : même règle que l'injection des pros
   const g = villeGuide(ROOT, 'menage-lcd', c.ville, c.zone_couverte)
   // Réseaux et fiche Google (Instagram a déjà son bouton plus haut)
@@ -248,7 +247,6 @@ ${JSON.stringify({
   <div class="s-in">
     <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/menage">Annuaire ménage LCD</a> · <span>${escHtml(displayName)}</span></div>
     <div class="tag-row">
-      ${isFondateur ? '<span class="tag gold"><i class="ph-bold ph-star" style="font-size:10px"></i>Fondateur</span>' : ''}
       ${c.reco_count > 0 ? `<span class="tag" style="background:rgba(99,214,131,.15);color:#7be29a;border:1px solid rgba(99,214,131,.35)"><i class="ph-bold ph-heart" style="font-size:10px"></i>Recommandé par ${c.reco_count} hôte${c.reco_count > 1 ? 's' : ''}</span>` : ''}
       ${c.assurance_rc_pro ? '<span class="tag green"><i class="ph-bold ph-shield-check" style="font-size:10px"></i>RC Pro</span>' : ''}
       ${equipeLabel ? `<span class="tag">${escHtml(equipeLabel)}</span>` : ''}
@@ -311,7 +309,6 @@ ${JSON.stringify({
       ${forfait ? `<div class="aside-row"><span class="aside-k">Forfait turnover</span><span class="aside-v">${escHtml(forfait)}</span></div>` : ''}
       ${heure ? `<div class="aside-row"><span class="aside-k">Tarif horaire</span><span class="aside-v">${escHtml(heure)}</span></div>` : ''}
       ${c.assurance_rc_pro ? '<div class="aside-row"><span class="aside-k">Assurance</span><span class="aside-v green">✓ RC pro</span></div>' : ''}
-      ${isFondateur ? '<div class="aside-row"><span class="aside-k">Statut</span><span class="aside-v" style="color:#b8860b">🌟 Équipe fondatrice</span></div>' : ''}
       ${depuis ? `<div class="aside-row"><span class="aside-k">Membre de l'annuaire depuis</span><span class="aside-v">${depuis}</span></div>` : ''}
       ${proReseauxHtml(reseaux)}
     </div>
@@ -407,7 +404,6 @@ function buildAnnuaireListPage(items) {
       <h3 class="card-name">${escHtml(displayName)}</h3>
       <div class="card-ville"><i class="ph ph-map-pin"></i>${escHtml(c.ville)}</div>
     </div>
-    ${c.tier === 'fondateur' ? '<span class="card-tag gold"><i class="ph-bold ph-star"></i>Fondateur</span>' : ''}
   </div>
   ${c.zone_couverte ? `<div class="card-zone"><strong>Zone couverte :</strong> ${escHtml(c.zone_couverte)}</div>` : ''}
   ${equipeLabel || c.assurance_rc_pro || c.reco_count > 0 ? `<div class="card-chips">${equipeLabel ? `<span class="card-spe">${escHtml(equipeLabel)}</span>` : ''}${c.assurance_rc_pro ? '<span class="card-rc"><i class="ph-bold ph-shield-check"></i>RC pro</span>' : ''}${c.reco_count > 0 ? `<span class="card-rc"><i class="ph-bold ph-heart"></i>Recommandé par ${c.reco_count} hôte${c.reco_count > 1 ? 's' : ''}</span>` : ''}</div>` : ''}
@@ -655,6 +651,14 @@ ${items.length > 0 ? `<div class="search-empty" id="search-empty">
   <p>L'annuaire grandit chaque semaine. En attendant, jette un œil aux <a href="#villes">guides ville par ville</a> ci-dessous, ou repasse bientôt.</p>
   <button type="button" id="search-reset"><i class="ph-bold ph-arrow-counter-clockwise"></i>Voir toutes les équipes</button>
 </div>` : ''}
+<section style="margin:40px auto 0;max-width:1100px;padding:26px clamp(18px,4vw,30px);border-radius:18px;background:#F2F8F4;border:1px solid rgba(0,76,63,.14);display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between">
+  <div style="flex:1 1 320px;min-width:0">
+    <div style="font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#004C3F;margin-bottom:8px"><i class="ph-bold ph-house-line"></i> Tu es hôte ?</div>
+    <h2 style="font-family:'Fraunces',serif;font-weight:500;font-size:clamp(20px,2.6vw,26px);line-height:1.25;color:#0F1A0D;margin:0 0 8px">Ton planning ménage, rempli tout seul</h2>
+    <p style="margin:0;font-size:14.5px;line-height:1.65;color:#3D5038">Connecte ton calendrier Airbnb ou Booking : les ménages se calculent tout seuls et ton équipe reçoit son planning, puis t'envoie ses photos. Gratuit, sans carte bancaire.</p>
+  </div>
+  <a href="https://app.jasonmarinho.com/auth/register" style="flex:0 1 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:10px;background:#004C3F;color:#fff;font-weight:600;font-size:15px;text-decoration:none">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+</section>
 </main>
 
 ${items.length > 0 ? `<script>

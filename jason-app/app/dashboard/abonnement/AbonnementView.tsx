@@ -39,8 +39,7 @@ const STANDARD_FEATURES = [
 const DRIING_FEATURES = [
   'Tout le plan Standard inclus',
   'Badge Membre Driing dans l\'app',
-  'Support prioritaire + Q&A en direct',
-  'Accès anticipé aux nouveautés',
+  'Support prioritaire',
 ]
 
 export type AbonnementViewProps = {
@@ -103,7 +102,6 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
               {subDetails.amount != null && !subDetails.cancelAtPeriodEnd && (
                 <div style={{ fontSize: 13, color: 'var(--text-2)' }}>
                   {(subDetails.amount / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} € / {subDetails.interval === 'month' ? 'mois' : 'an'} TTC
-                  {subDetails.isFounding && <> · tarif Fondateur</>}
                 </div>
               )}
             </div>
@@ -189,7 +187,6 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const }}>
                   <div style={styles.planName}>Standard</div>
-                  {subDetails?.isFounding && <div style={styles.fmPill}><span style={styles.fmDot} />Membre Fondateur</div>}
                 </div>
                 {subDetails?.amount != null && (
                   <div style={styles.priceRow}>
@@ -243,9 +240,6 @@ export default function AbonnementView({ isAdmin, isDriing, isStandard, isDecouv
                 <div id="offre-standard" style={styles.upgradeCard} className="fade-up d1">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const }}>
                     <div style={styles.upgradeName}>Standard</div>
-                    {!founderExhausted && (
-                      <div style={styles.fmPill}><span style={styles.fmDot} />Membre Fondateur</div>
-                    )}
                   </div>
 
                   {/* Compteur places fondateur (SSR, source: DB Supabase) */}

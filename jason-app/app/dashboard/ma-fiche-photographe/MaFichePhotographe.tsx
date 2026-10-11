@@ -151,7 +151,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
       )}
       <HubHero
         eyebrowIcon={<Camera size={14} weight="fill" />}
-        eyebrow={isFondateur ? 'Ma fiche photographe · Membre fondateur' : 'Ma fiche photographe'}
+        eyebrow="Ma fiche photographe"
         title={<>Ton travail, <HeroEm>vu par les hôtes</HeroEm>{photographer.ville ? ` de ${photographer.ville}` : ''}</>}
         desc="Les hôtes choisissent leur photographe dans l’annuaire de Jason Marinho en regardant d’abord les photos. Un lien vers un beau portfolio et des tarifs clairs t’apportent plus de demandes : elles arrivent dans Demandes reçues et par email."
         aside={
@@ -174,9 +174,6 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
             <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={heroCta}>
               Voir ma fiche publique <ArrowSquareOut size={15} weight="bold" />
             </a>
-          )}
-          {isFondateur && (
-            <span style={s.founderBadge}><Star size={12} weight="fill" /> Membre fondateur, tarif à vie</span>
           )}
         </div>
       </HubHero>
