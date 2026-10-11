@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { isPreparationDay, sendAt, parseRss, buildNewsletter, monthLabel, withUtm } from './build'
+import { isPreparationDay, sendAt, parseRss, buildNewsletter, monthLabel, withUtm, pickFigure } from './build'
 
 const actu = (i: number, o: Record<string, unknown> = {}) => ({ id: `a${i}`, title: `Titre ${i}`, summary: `Résumé ${i}. Deuxième phrase avec 10 000 €.`, category: 'fiscalite', source_url: null, published_at: '2026-10-05T08:00:00Z', ...o })
 
@@ -40,5 +40,33 @@ describe('newsletter', () => {
   it('utm seulement sur nos domaines', () => {
     expect(withUtm('https://legifrance.gouv.fr/a', 'c')).toBe('https://legifrance.gouv.fr/a')
     expect(withUtm('https://app.jasonmarinho.com/dashboard', 'c')).toContain('utm_campaign=c')
+  })
+  it('chiffre du mois : une phrase avec un nombre et son unité, pas une année', () => {
+    const a = (title: string, summary: string) => ({ id: title, title, summary, category: null, source_url: null, published_at: null })
+    expect(pickFigure([a('Une', 'Rien ici en 2026.'), a('Deux', 'Intro. L\'amende peut atteindre 10 000 euros. Fin.')]))
+      .toEqual({ value: '10\u00a0000\u00a0€', caption: 'L\'amende peut atteindre 10\u00a0000 euros.' })
+    expect(pickFigure([a('Airbnb passe à 15,5 %', 'Sans chiffre.')])).toEqual({ value: '15,5\u00a0%', caption: 'Airbnb passe à 15,5\u00a0%' })
+    expect(pickFigure([a('Bilan 2026', 'Le 1er janvier 2027.')])).toBeNull()
+  })
+
+  it('rubriques fixes et liens vers nos pages', () => {
+    const n = buildNewsletter({
+      parisDate: '2026-11-02', issueNumber: 4,
+      actus: [
+        { id: 'a', title: 'Une', summary: 'Résumé.', category: 'reglementation', source_url: 'https://jasonmarinho.com/blog/x', published_at: null, deadline_date: '2026-12-01' },
+        { id: 'b', title: 'Deux', summary: 'Résumé deux.', category: 'fiscalite', source_url: 'https://www.impots.gouv.fr/y', published_at: null },
+      ],
+      articles: [{ title: 'Guide', link: 'https://jasonmarinho.com/blog/guide', description: 'Desc', pubDate: '', category: 'Revenus' }],
+      changes: [],
+    })!
+    expect(n.html).toContain('N°&nbsp;4')
+    expect(n.html).toContain('Lire la suite')
+    expect(n.html).toContain('Source : impots.gouv.fr')
+    expect(n.html).toContain('1 déc.')
+    expect(n.html).toContain('L\'outil du mois')
+    expect(n.html).toContain('Le bon plan partenaire')
+    expect(n.html).toContain('La question du mois')
+    expect(n.html).toContain('je touche une commission')
+    expect(Buffer.byteLength(n.html)).toBeLessThan(100_000)
   })
 })
