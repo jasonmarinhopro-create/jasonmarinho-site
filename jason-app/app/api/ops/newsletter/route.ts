@@ -1,12 +1,13 @@
 // Newsletter mensuelle (11/10/2026) : pilotage par le workflow « Newsletter »
 // (journaux publics : nombres et oui / non seulement). Protégé par CRON_SECRET
-// ou SOCIAL_CRON_SECRET. op : etat (listes Brevo, expéditeur), apercu (lettre
+// ou SOCIAL_CRON_SECRET. op : etat (listes Brevo, expéditeur, destinataires par
+// édition), apercu (une lettre par édition
 // envoyée à Jason sans rien programmer), programmer (crée et programme la
 // lettre du mois maintenant, sauf si elle existe déjà).
 import { NextResponse, type NextRequest } from 'next/server'
 import { getServiceClient } from '@/lib/supabase/service'
 import { parisToday } from '@/lib/stripe/deposit-window'
-import { brevoStatus, prepareMonthlyNewsletter, previewNewsletter } from '@/lib/newsletter/run'
+import { brevoStatus, editionCounts, prepareMonthlyNewsletter, previewNewsletter } from '@/lib/newsletter/run'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -23,7 +24,8 @@ export async function POST(req: NextRequest) {
   try {
     if (body.op === 'apercu') return NextResponse.json(await previewNewsletter(db, parisToday()))
     if (body.op === 'programmer') return NextResponse.json(await prepareMonthlyNewsletter(db, parisToday(), { force: true }))
-    return NextResponse.json(await brevoStatus())
+    const [status, editions] = await Promise.all([brevoStatus(), editionCounts(db).catch(e => ({ erreur: String((e as Error).message).slice(0, 120) }))])
+    return NextResponse.json({ ...status, destinataires_par_edition: editions })
   } catch (e) {
     return NextResponse.json({ error: String((e as Error).message).slice(0, 200) }, { status: 500 })
   }
