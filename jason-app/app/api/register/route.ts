@@ -6,6 +6,7 @@ import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { isEmail, isPassword, normalizeEmail } from '@/lib/security/validate'
 import { logger } from '@/lib/logger'
 import { cleanAcquisition, describeAcquisition } from '@/lib/acquisition/rules'
+import { NEWSLETTER_LISTS } from '@/lib/newsletter/lists'
 
 export const dynamic = 'force-dynamic'
 
@@ -270,7 +271,9 @@ export async function POST(req: NextRequest) {
     // Add to Brevo newsletter list if consent given
     if (newsletterConsent && userData.user && process.env.BREVO_API_KEY) {
       try {
-        await fetch('https://api.brevo.com/v3/contacts', {
+        // Liste n° 3 : celle de la newsletter (la n° 2 n'existait pas, les
+        // inscriptions de l'app se perdaient sans erreur jusqu'au 11/10/2026)
+        const brevoRes = await fetch('https://api.brevo.com/v3/contacts', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -278,10 +281,11 @@ export async function POST(req: NextRequest) {
           },
           body: JSON.stringify({
             email: normalized,
-            listIds: [2],
+            listIds: NEWSLETTER_LISTS,
             updateEnabled: true,
           }),
         })
+        if (!brevoRes.ok) log.error('brevo newsletter', { status: brevoRes.status, body: (await brevoRes.text()).slice(0, 200) })
       } catch (e) {
         log.warn('brevo', { err: String(e) })
       }
