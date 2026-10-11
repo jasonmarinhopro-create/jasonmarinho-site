@@ -6,6 +6,7 @@ import AccountCard from './AccountCard'
 import ChezNousIdentity from './ChezNousIdentity'
 import FiscalContextCard from './FiscalContextCard'
 import AbonnementCard from './AbonnementCard'
+import NewsletterCard from './NewsletterCard'
 import type { getSubscriptionDetails } from '@/lib/stripe/subscription-info'
 
 // Page « Mon compte » (refonte sept. 2026, affichage séparé du chargement
@@ -131,6 +132,7 @@ export default function ProfilView({ userId, email, createdAt, fullName, planLab
         <div className="profil-col">
           <AccountCard email={email} />
           <AbonnementCard planLabel={planLabel} subscription={subscription} />
+          <NewsletterCard />
           <ChezNousIdentity
             initialPseudo={pd?.pseudo ?? ''}
             initialBio={pd?.bio ?? ''}
