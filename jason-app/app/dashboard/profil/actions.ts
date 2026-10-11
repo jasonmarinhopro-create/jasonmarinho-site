@@ -251,3 +251,33 @@ export async function savePlatformLinks(input: PlatformLinksInput): Promise<{ er
   revalidatePath('/dashboard/profil')
   return {}
 }
+
+// ── Lettre « Le Check-in » (interrupteur de Mon compte, 11/10/2026) ──
+
+export async function getNewsletterStatus(): Promise<{ status?: import('@/lib/newsletter/account').NewsletterStatus; error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user?.email) return { error: 'Non authentifié.' }
+  const { loadNewsletterStatus } = await import('@/lib/newsletter/account')
+  try {
+    return { status: await loadNewsletterStatus(supabase, user.id, user.email.toLowerCase()) }
+  } catch (e) {
+    log.error('newsletterStatusFailed', { err: String(e) })
+    return { error: 'Impossible de lire ton abonnement pour le moment.' }
+  }
+}
+
+export async function setNewsletterSubscription(on: boolean): Promise<{ status?: import('@/lib/newsletter/account').NewsletterStatus; error?: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user?.email) return { error: 'Non authentifié.' }
+  const { saveNewsletterChoice, loadNewsletterStatus } = await import('@/lib/newsletter/account')
+  const email = user.email.toLowerCase()
+  try {
+    await saveNewsletterChoice(supabase, user.id, email, on)
+    return { status: await loadNewsletterStatus(supabase, user.id, email) }
+  } catch (e) {
+    log.error('newsletterChoiceFailed', { err: String(e) })
+    return { error: 'Ton choix n’a pas pu être enregistré. Réessaie dans un instant.' }
+  }
+}

@@ -131,14 +131,26 @@ async function listContacts(listId: number): Promise<Array<{ email: string; blac
   return out
 }
 
+/** Toutes les adresses bloquées dans Brevo (lien de désinscription d'une lettre, interrupteur de Mon compte coupé) */
+async function blacklistedContacts(): Promise<Set<string>> {
+  const out = new Set<string>()
+  for (let offset = 0; offset < 50_000; offset += 1000) {
+    const { contacts = [] } = await brevo<{ contacts?: Array<{ email: string; emailBlacklisted?: boolean }> }>(`/contacts?limit=1000&offset=${offset}`)
+    for (const c of contacts) if (c.emailBlacklisted && c.email) out.add(c.email.toLowerCase())
+    if (contacts.length < 1000) break
+  }
+  return out
+}
+
 /** Qui reçoit quelle édition (inscrits de la lettre + pros clients) */
 async function recipients(db: Db): Promise<Record<Edition, string[]>> {
-  const [subs, profiles, photographers, cleaners, suppressions] = await Promise.all([
+  const [subs, profiles, photographers, cleaners, suppressions, blocked] = await Promise.all([
     listContacts(NEWSLETTER_LISTS[0]),
     selectProfiles(db),
     db.from('photographers').select('user_id, email, stripe_subscription_status').limit(5_000),
     db.from('cleaners').select('user_id, email, stripe_subscription_status').limit(5_000),
     db.from('outreach_suppressions').select('email_norm').limit(20_000),
+    blacklistedContacts().catch(() => new Set<string>()),
   ])
   type Pro = { user_id: string | null; email: string | null; stripe_subscription_status: string | null }
   const prof = profiles
@@ -158,12 +170,13 @@ async function recipients(db: Db): Promise<Record<Edition, string[]>> {
   ].filter(p => p.email)
   // Inscrits = liste Brevo + comptes qui ont coché la case à l'inscription
   // (désinscrits chez Brevo toujours exclus)
-  const blacklisted = new Set(subs.filter(c => c.blacklisted).map(c => c.email))
+  const blacklisted = new Set([...subs.filter(c => c.blacklisted).map(c => c.email), ...blocked])
   const optIn = prof.filter(p => p.newsletter_opt_in && p.email).map(p => p.email!.toLowerCase()).filter(e => !blacklisted.has(e))
   return assignEditions({
     subscribers: [...new Set([...subs.filter(c => !c.blacklisted).map(c => c.email), ...optIn])],
     accounts, proClients,
-    suppressed: new Set(((suppressions.data ?? []) as Array<{ email_norm: string }>).map(r => r.email_norm)),
+    // Désinscrits de la prospection et adresses bloquées chez Brevo : aucune édition, celle des pros comprise
+    suppressed: new Set([...((suppressions.data ?? []) as Array<{ email_norm: string }>).map(r => r.email_norm), ...blacklisted]),
   })
 }
 
