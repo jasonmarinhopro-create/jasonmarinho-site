@@ -10,14 +10,23 @@
 // mois, agenda, outil du mois, bon plan partenaire, question du mois),
 // boutons « bulletproof » (cellule colorée, lisibles sous Outlook), mode sombre
 // (color-scheme + styles dédiés, pas de blanc ni de noir purs), une seule
-// colonne lisible au téléphone, texte en 16 px, aucune image (rien à bloquer,
-// rien à inverser), bien sous les 102 Ko où Gmail coupe un e-mail.
+// colonne lisible au téléphone, texte en 16 px, une seule image (la photo de Jason, 56 px, à
+// côté de la signature : plus chaleureux, sans peser sur la délivrabilité), bien sous les 102 Ko où Gmail coupe un e-mail.
 
 export const NEWSLETTER_NAME = 'Le Check-in'
+/** Photo de Jason à côté de la signature : petite vignette JPEG sur notre domaine (même image que la signature de prospection) */
+export const PHOTO_URL = 'https://jasonmarinho.com/signature-jason.jpg'
 
 export interface IssueStory { category: string; title: string; summary: string; url: string; source: string | null }
 export interface IssueData {
   campaign: string
+  /** Sous-titre de l'en-tête (« La lettre des hôtes, par Jason Marinho ») */
+  tagline: string
+  /** Pourquoi le lecteur la reçoit (pied de page) */
+  reason: string
+  appUrl: string
+  appCta: string
+  ps: { text: string; label: string; url: string }
   issueNumber: number | null
   mois: string
   subject: string
@@ -146,7 +155,7 @@ export function renderIssue(d: IssueData): string {
         <td style="font-family:${SERIF};font-size:22px;color:#FBFCFA;">${wordmark()}</td>
         <td align="right" style="font-family:${SANS};font-size:12px;letter-spacing:1px;text-transform:uppercase;color:${C.bandSoft};">${n}${esc(d.mois)}</td>
       </tr></table>
-      <p style="margin:6px 0 26px;font-family:${SANS};font-size:13px;color:${C.bandSoft};">La lettre des hôtes, par Jason Marinho</p>
+      <p style="margin:6px 0 26px;font-family:${SANS};font-size:13px;color:${C.bandSoft};">${esc(d.tagline)}</p>
       <p style="margin:0 0 12px;font-family:${SANS};font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${C.yellow};">À la une · ${esc(d.lead.category)}</p>
       <h1 class="h1" style="margin:0 0 14px;font-family:${SERIF};font-weight:normal;font-size:34px;line-height:1.15;color:#FBFCFA;">${esc(d.lead.title)}</h1>
       <p style="margin:0 0 22px;font-family:${SANS};font-size:16px;line-height:1.6;color:${C.bandSoft};">${esc(d.lead.summary)}</p>
@@ -229,15 +238,18 @@ export function renderIssue(d: IssueData): string {
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
       ${d.changes.map(c => `<tr><td valign="top" style="width:30px;padding:2px 0 14px;"><span class="check" style="display:inline-block;width:20px;height:20px;border-radius:999px;background:${C.mint};color:${C.green};font-family:${SANS};font-size:13px;font-weight:700;line-height:20px;text-align:center;">&#10003;</span></td><td style="padding:0 0 14px;font-family:${SANS};font-size:15px;line-height:1.55;"><strong class="t-main" style="color:${C.text};">${esc(c.title)}</strong><br><span class="t-soft" style="color:${C.soft};">${esc(c.desc)}</span></td></tr>`).join('')}
     </table>
-    ${button(withUtm('https://app.jasonmarinho.com/dashboard', d.campaign), 'Ouvrir l\'app')}`) : ''
+    ${button(withUtm(d.appUrl, d.campaign), d.appCta)}`) : ''
 
   // Question du mois + signature
   const question = block(`
     ${eyebrow('La question du mois')}
     <p class="t-main" style="margin:0 0 14px;font-family:${SERIF};font-size:22px;line-height:1.35;color:${C.text};">${esc(d.question)}</p>
     ${p('Réponds simplement à cet e-mail, en une ligne si tu veux. Je lis toutes les réponses, et les meilleures idées deviennent les sujets du mois suivant.', 'margin-bottom:22px;')}
-    <p class="t-main" style="margin:0;font-family:${SANS};font-size:16px;line-height:1.5;color:${C.text};">À très vite,<br><span class="sig" style="font-family:${SERIF};font-size:20px;font-style:italic;color:${C.band};">Jason</span></p>
-    <p class="t-muted" style="margin:16px 0 0;font-family:${SANS};font-size:14px;line-height:1.55;color:${C.muted};">P.S. Un hôte autour de toi gagnerait à lire ça ? Transfère-lui cette lettre : il peut s'inscrire en bas de <a href="${esc(withUtm('https://jasonmarinho.com/blog', d.campaign))}" class="lnk" style="color:${C.green};">la page du blog</a>.</p>`)
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+      <td valign="middle" style="padding:0 14px 0 0;"><img src="${PHOTO_URL}" width="56" height="56" alt="Jason Marinho" style="display:block;width:56px;height:56px;border-radius:50%;border:0;"></td>
+      <td valign="middle" class="t-main" style="font-family:${SANS};font-size:16px;line-height:1.45;color:${C.text};">À très vite,<br><span class="sig" style="font-family:${SERIF};font-size:20px;font-style:italic;color:${C.band};">Jason</span><br><span class="t-muted" style="font-size:13px;color:${C.muted};">Fondateur de jasonmarinho.com</span></td>
+    </tr></table>
+    <p class="t-muted" style="margin:16px 0 0;font-family:${SANS};font-size:14px;line-height:1.55;color:${C.muted};">P.S. ${esc(d.ps.text)} <a href="${esc(withUtm(d.ps.url, d.campaign))}" class="lnk" style="color:${C.green};">${esc(d.ps.label)}</a>.</p>`)
 
   const site = (path: string) => esc(withUtm(`https://jasonmarinho.com${path}`, d.campaign))
   const footer = `
@@ -246,9 +258,9 @@ export function renderIssue(d: IssueData): string {
     <a href="${site('/blog')}" class="t-muted" style="color:${C.muted};text-decoration:none;font-weight:700;">Blog</a> &nbsp;·&nbsp;
     <a href="${site('/services/simulateurs')}" class="t-muted" style="color:${C.muted};text-decoration:none;font-weight:700;">Simulateurs</a> &nbsp;·&nbsp;
     <a href="${site('/annuaires/photographes')}" class="t-muted" style="color:${C.muted};text-decoration:none;font-weight:700;">Annuaire des pros</a> &nbsp;·&nbsp;
-    <a href="${esc(withUtm('https://app.jasonmarinho.com/dashboard', d.campaign))}" class="t-muted" style="color:${C.muted};text-decoration:none;font-weight:700;">L'app</a>
+    <a href="${esc(withUtm(d.appUrl, d.campaign))}" class="t-muted" style="color:${C.muted};text-decoration:none;font-weight:700;">L'app</a>
   </p>
-  <p class="t-muted" style="margin:0 0 8px;font-size:12px;line-height:1.6;color:${C.muted};">Tu reçois ${esc(NEWSLETTER_NAME)} parce que tu t'es inscrit à la lettre des hôtes sur jasonmarinho.com ou dans l'app.<br>Jason Marinho · 75015 Paris · <a href="mailto:contact@jasonmarinho.com" class="t-muted" style="color:${C.muted};">contact@jasonmarinho.com</a></p>
+  <p class="t-muted" style="margin:0 0 8px;font-size:12px;line-height:1.6;color:${C.muted};">Tu reçois ${esc(NEWSLETTER_NAME)} ${esc(d.reason)}.<br>Jason Marinho · 75015 Paris · <a href="mailto:contact@jasonmarinho.com" class="t-muted" style="color:${C.muted};">contact@jasonmarinho.com</a></p>
   <p style="margin:0;font-size:12px;line-height:1.6;"><a href="{{ mirror }}" class="t-muted" style="color:${C.muted};">Lire dans le navigateur</a> &nbsp;·&nbsp; <a href="{{ unsubscribe }}" class="t-muted" style="color:${C.muted};">Se désinscrire en un clic</a></p>
 </td></tr>`
 

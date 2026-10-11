@@ -6,7 +6,8 @@
 // (veille quotidienne dédoublonnée), articles du blog (rss.xml), nouveautés de
 // l'app (CHANGELOG), plus les rubriques fixes en rotation (outil du mois, bon
 // plan partenaire, question du mois). Maquette : template.ts.
-import { renderIssue, withUtm, TOOLS, PARTNER_OFFERS, QUESTIONS, monthIndex, NEWSLETTER_NAME, type IssueStory } from './template'
+import { renderIssue, withUtm, monthIndex, NEWSLETTER_NAME, type IssueStory } from './template'
+import { EDITION_CONFIG, type Edition } from './editions'
 
 export interface NlActu { id: string; title: string; summary: string | null; category: string | null; source_url: string | null; published_at: string | null; deadline_date?: string | null }
 export interface NlArticle { title: string; link: string; description: string; pubDate: string; category?: string }
@@ -117,14 +118,25 @@ const DAY_FR = (iso: string) => new Date(`${iso.slice(0, 10)}T12:00:00Z`).toLoca
  * mois écoulé ; la une + 3 actualités, 3 articles, 3 nouveautés au plus.
  * `issueNumber` : numéro de la lettre (null : non affiché).
  */
-export function buildNewsletter(input: { parisDate: string; actus: NlActu[]; articles: NlArticle[]; changes: NlChange[]; issueNumber?: number | null }): Newsletter | null {
-  const actus = input.actus.filter(a => a.title && a.summary).slice(0, 4)
-  const articles = input.articles.slice(0, 3)
-  const changes = input.changes.slice(0, 3)
+export function buildNewsletter(input: { parisDate: string; actus: NlActu[]; articles: NlArticle[]; changes: NlChange[]; issueNumber?: number | null; edition?: Edition }): Newsletter | null {
+  const edition = input.edition ?? 'hote'
+  const cfg = EDITION_CONFIG[edition]
+  // Actualités : celles qui parlent le plus à ce public d'abord (tri stable)
+  const rank = (a: NlActu) => (cfg.leadCategories.includes(a.category ?? '') ? 0 : 1)
+  const actus = input.actus.filter(a => a.title && a.summary).map((a, i) => ({ a, i }))
+    .sort((x, y) => rank(x.a) - rank(y.a) || x.i - y.i).map(x => x.a).slice(0, 4)
+  // Articles et nouveautés propres à ce public, complétés par les plus récents
+  const pick = <T,>(list: T[], match: RegExp | null, text: (t: T) => string, max: number, fill: number) => {
+    if (!match) return list.slice(0, max)
+    const own = list.filter(t => match.test(text(t)))
+    return [...own, ...list.filter(t => !own.includes(t))].slice(0, Math.max(Math.min(own.length, max), Math.min(fill, list.length)))
+  }
+  const articles = pick(input.articles, cfg.articleMatch, a => `${a.title} ${a.description} ${a.category ?? ''}`, 3, 2)
+  const changes = cfg.changeMatch ? input.changes.filter(c => cfg.changeMatch!.test(`${c.title} ${c.description}`)).slice(0, 3) : input.changes.slice(0, 3)
   // Pas assez de matière : on n'envoie rien plutôt qu'une lettre creuse
   if (actus.length + articles.length < 3) return null
 
-  const campaign = `lettre-${monthKey(input.parisDate)}`
+  const campaign = `lettre-${monthKey(input.parisDate)}${edition === 'hote' ? '' : `-${edition}`}`
   const mois = monthLabel(input.parisDate)
   const moisCap = mois.charAt(0).toUpperCase() + mois.slice(1)
   const m = monthIndex(input.parisDate)
@@ -155,9 +167,9 @@ export function buildNewsletter(input: { parisDate: string; actus: NlActu[]; art
     ...(restArticles[0] ? [`À lire : ${nb(restArticles[0].title)}`] : changes[0] ? [`Nouveau dans l'app : ${nb(changes[0].title)}`] : []),
   ].slice(0, 3)
 
-  const tool = { ...TOOLS[m % TOOLS.length] }
+  const tool = { ...cfg.tools[m % cfg.tools.length] }
   tool.url = withUtm(tool.url, campaign)
-  const partner = { ...PARTNER_OFFERS[(m + 3) % PARTNER_OFFERS.length] }
+  const partner = { ...cfg.partners[(m + 3) % cfg.partners.length] }
   partner.url = withUtm(partner.url, campaign)
 
   const words = [lead.summary, ...more.map(s => s.summary), ...restArticles.map(a => a.description), ...changes.map(c => c.description)].join(' ').split(/\s+/).length
@@ -166,11 +178,12 @@ export function buildNewsletter(input: { parisDate: string; actus: NlActu[]; art
 
   const html = renderIssue({
     campaign, issueNumber: input.issueNumber ?? null, mois: moisCap, subject, preheader,
+    tagline: cfg.tagline, reason: cfg.reason, appUrl: cfg.appUrl, appCta: cfg.appCta, ps: cfg.ps,
     readMinutes: Math.max(3, Math.round(words / 200) + 1),
     lead, tldr, figure: pickFigure(actus), more, agenda, tool, partner,
     articles: restArticles.map(a => ({ category: a.category ?? 'Guide', title: nb(a.title), desc: nb(cut(a.description, 190)), url: withUtm(a.link, campaign) })),
     changes: changes.map(c => ({ title: nb(c.title), desc: nb(firstSentences(c.description, 170)) })),
-    question: QUESTIONS[m % QUESTIONS.length],
+    question: cfg.questions[m % cfg.questions.length],
   })
 
   return { subject, preheader, html, counts: { actus: actus.length, articles: articles.length, changes: changes.length } }
