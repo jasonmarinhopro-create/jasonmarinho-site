@@ -13,6 +13,21 @@ jobs:
   verifier:
     runs-on: ubuntu-latest
     steps:
+      - name: DNS e-mail (délivrabilité, newsletter Brevo et prospection)
+        run: |
+          d=jasonmarinho.com
+          spf=$(dig +short TXT $d | tr -d '"' | grep -i 'v=spf1' || echo ABSENT)
+          dmarc=$(dig +short TXT _dmarc.$d | tr -d '"' | grep -i 'v=dmarc1' || echo ABSENT)
+          code=$(dig +short TXT $d | tr -d '"' | grep -ci 'brevo-code' || true)
+          dk=""
+          for sel in brevo1 brevo2 mail hostingermail-a hostingermail-b hostingermail-c resend; do
+            v=$(dig +short TXT "$sel._domainkey.$d"; dig +short CNAME "$sel._domainkey.$d")
+            [ -n "$v" ] && dk="$dk $sel"
+          done
+          echo "::notice title=SPF::$spf"
+          echo "::notice title=DMARC::$dmarc"
+          echo "::notice title=DKIM::sélecteurs présents :${dk:- aucun}"
+          echo "::notice title=Brevo::code de vérification du domaine : $([ "$code" -gt 0 ] && echo présent || echo absent)"
       - name: App
         run: |
           fail=0
