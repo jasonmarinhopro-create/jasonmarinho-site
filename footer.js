@@ -204,6 +204,7 @@
     { href: '/partenaires/brevo', name: 'Brevo : newsletter et CRM' },
     { href: '/partenaires/airdna', name: 'AirDNA : étude de marché' },
     { href: '/partenaires/shine', name: 'Shine : compte pro et factures' },
+    { href: '/partenaires/qonto', name: 'Qonto : compte pro en ligne' },
     { href: '/comparatif-matterport-cubicasa', name: 'Matterport vs CubiCasa' },
     { href: '/comparatif-pricelabs-beyond-wheelhouse', name: 'PriceLabs vs Beyond vs Wheelhouse' },
     { href: '/comparatif-ring-eufy-reolink', name: 'Ring vs Eufy vs Reolink' },

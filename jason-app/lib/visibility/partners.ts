@@ -387,7 +387,7 @@ export const PARTNER_SEO: Array<{ key: string; name: string; paths: string[]; ma
   },
   {
     key: 'qonto', name: 'Qonto',
-    paths: ['/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026'],
+    paths: ['/partenaires/qonto', '/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026'],
     match: /qonto/,
     targets: ['qonto', 'qonto avis', 'qonto lmnp', 'qonto ou shine', 'compte pro location courte duree'],
   },
