@@ -4,13 +4,14 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import AdminHero, { adminAsideCard } from '../_ui/AdminHero'
 import { AMBER, BROWN, PINK, tint } from '../_ui/theme'
-import { BUILTIN_LINKS, LINK_DESTINATIONS, channelOf, type AcqKind } from '@/lib/acquisition/rules'
+import { BUILTIN_LINKS, LINK_DESTINATIONS, channelOf, isPrivateChannel, type AcqKind } from '@/lib/acquisition/rules'
 import { SPACE_LABEL } from '@/lib/acquisition/report'
 import type { ChannelKey } from '@/lib/acquisition/traffic'
 import type { ProvenanceData } from '@/lib/acquisition/load'
 import { CreateLinkForm, CopyButton, ArchiveButton, AutoRefresh } from './LinkTools'
 import NewsletterTab from './NewsletterTab'
 import GroupesTab from './GroupesTab'
+import MessagesPrivesTab from './MessagesPrivesTab'
 import type { GroupStats } from '@/lib/acquisition/groupes-load'
 import type { NewsletterTabData } from '@/lib/newsletter/stats'
 import type { Edition } from '@/lib/newsletter/editions'
@@ -20,7 +21,7 @@ import type { Edition } from '@/lib/newsletter/editions'
 // sur mon CRM Driing »). Onglets Résultats / Liens suivis / Inscriptions.
 // Règles dans lib/acquisition.
 
-export type ProvTab = 'resultats' | 'groupes' | 'liens' | 'inscriptions' | 'newsletter'
+export type ProvTab = 'resultats' | 'groupes' | 'messages' | 'liens' | 'inscriptions' | 'newsletter'
 
 const KIND_COLOR: Partial<Record<AcqKind, string>> = {
   lien: 'var(--accent-text)', google: 'var(--accent-text)', facebook: AMBER, instagram: PINK, ia: PINK, 'e-mail': BROWN,
@@ -31,7 +32,7 @@ const CHANNEL_COLOR: Record<ChannelKey, string> = {
   email: BROWN, autres: 'color-mix(in srgb, var(--accent-text) 45%, transparent)', direct: 'var(--text-3)', sans: 'color-mix(in srgb, var(--text-3) 50%, transparent)',
 }
 const PERIODS = [['7j', '7 jours'], ['30j', '30 jours'], ['90j', '90 jours'], ['tout', 'Depuis le début']] as const
-const TABS: Array<[ProvTab, string]> = [['resultats', 'Résultats'], ['groupes', 'Groupes'], ['liens', 'Liens suivis'], ['inscriptions', 'Inscriptions'], ['newsletter', 'Newsletter']]
+const TABS: Array<[ProvTab, string]> = [['resultats', 'Résultats'], ['groupes', 'Groupes'], ['messages', 'Messages privés'], ['liens', 'Liens suivis'], ['inscriptions', 'Inscriptions'], ['newsletter', 'Newsletter']]
 
 const nf = (n: number) => n.toLocaleString('fr-FR')
 const dateFr = (iso: string) => new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Paris' })
@@ -87,6 +88,15 @@ export default function ProvenanceView({ data, periode, onglet, newsletter, edit
 
       {onglet === 'resultats' && <Resultats data={data} periodLabel={periodLabel} />}
       {onglet === 'groupes' && groupes && <GroupesTab stats={groupes} live={{ now: data.today.liveNow, last30: data.today.last30, visitorsToday: data.today.visitorsToday }} />}
+      {onglet === 'messages' && (
+        <MessagesPrivesTab
+          periodLabel={periodLabel}
+          stats={report.links.filter(l => isPrivateChannel(l.channel)).map(l => ({
+            code: l.code, clicks: l.clicks, clicksTotal: l.clicksTotal, visitors: l.visitors,
+            signups: l.signups.map(sg => ({ id: sg.id, name: sg.name })),
+          }))}
+        />
+      )}
       {onglet === 'liens' && <Liens data={data} periodLabel={periodLabel} />}
       {onglet === 'inscriptions' && <Inscriptions data={data} periodLabel={periodLabel} />}
       {onglet === 'newsletter' && newsletter && <NewsletterTab data={newsletter} edition={edition ?? 'hote'} periode={periode} />}
@@ -224,8 +234,9 @@ function Resultats({ data, periodLabel }: { data: ProvenanceData; periodLabel: s
 // ── Liens suivis ──
 
 function Liens({ data, periodLabel }: { data: ProvenanceData; periodLabel: string }) {
-  const active = data.report.links.filter(l => !l.archived && l.channel !== 'prospection')
+  const active = data.report.links.filter(l => !l.archived && l.channel !== 'prospection' && !isPrivateChannel(l.channel))
   const prospection = data.report.links.filter(l => !l.archived && l.channel === 'prospection')
+  const prives = data.report.links.filter(l => !l.archived && isPrivateChannel(l.channel))
   const archived = data.report.links.filter(l => l.archived)
   return (
     <>
@@ -257,6 +268,12 @@ function Liens({ data, periodLabel }: { data: ProvenanceData; periodLabel: strin
           <details>
             <summary style={s.more}>Liens des e-mails de prospection ({prospection.length}, mis tout seuls dans chaque e-mail)</summary>
             <ul style={s.list}>{prospection.map(l => <LinkRowView key={l.id} l={l} />)}</ul>
+          </details>
+        )}
+        {prives.length > 0 && (
+          <details>
+            <summary style={s.more}>Liens des messages privés ({prives.length}, mis tout seuls dans l&apos;onglet Messages privés)</summary>
+            <ul style={s.list}>{prives.map(l => <LinkRowView key={l.id} l={l} />)}</ul>
           </details>
         )}
         {archived.length > 0 && (

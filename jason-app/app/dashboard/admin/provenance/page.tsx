@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 const PERIODS: Record<string, number> = { '7j': 7, '30j': 30, '90j': 90, tout: 0 }
-const TABS: ProvTab[] = ['resultats', 'groupes', 'liens', 'inscriptions', 'newsletter']
+const TABS: ProvTab[] = ['resultats', 'groupes', 'messages', 'liens', 'inscriptions', 'newsletter']
 
 export default async function ProvenancePage({ searchParams }: { searchParams: { periode?: string; onglet?: string; edition?: string; voir?: string } }) {
   const profile = await getProfile()

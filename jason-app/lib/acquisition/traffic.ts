@@ -25,7 +25,7 @@ export const CHANNEL_META: Record<ChannelKey, { label: string; hint: string }> =
   facebook: { label: 'Facebook', hint: 'groupes, page, liens suivis postés sur Facebook' },
   google: { label: 'Google', hint: 'recherche naturelle' },
   ia: { label: 'IA', hint: 'ChatGPT, Perplexity, Gemini…' },
-  liens: { label: 'Liens suivis', hint: 'fiche Google, Instagram, LinkedIn, signature, QR codes' },
+  liens: { label: 'Liens suivis', hint: 'fiche Google, Instagram, LinkedIn, messages privés, signature, QR codes' },
   email: { label: 'E-mails', hint: 'prospection, newsletter' },
   autres: { label: 'Autres sites et réseaux', hint: 'Instagram, LinkedIn, sites qui parlent de toi' },
   direct: { label: 'Accès direct', hint: 'favoris, lien copié, applis qui masquent l\'origine' },
