@@ -14,6 +14,7 @@ import {
   choisirPros, messagePourPro, anonymizedNeed, prochaineAction, CONSERVATION_MOIS,
   type DemandeInput, type DemandeMetier, type ProCandidat, type DemandeEtat,
 } from './rules'
+import type { ProChoix } from './admin'
 
 const log = logger('demandes')
 const FROM = 'Jason Marinho <notifications@jasonmarinho.com>'
@@ -52,7 +53,7 @@ async function loadPros(metier: DemandeMetier): Promise<Pro[]> {
 const firstName = (p: Pro) => (p.pseudo || p.full_name || '').split(' ')[0]
 const displayName = (p: Pro) => p.pseudo || p.full_name
 
-async function emailPro(d: DemandeInput, pro: Pro, metier: DemandeMetier) {
+async function emailPro(d: DemandeInput, pro: Pro, metier: DemandeMetier, manuel = false) {
   const r = resend(); if (!r) return
   const t = T[metier]
   const rows = [
@@ -68,7 +69,9 @@ async function emailPro(d: DemandeInput, pro: Pro, metier: DemandeMetier) {
     preview: `Demande à ${d.ville} : réponds directement à l’hôte`,
     body: [
       emailP(`Bonjour ${escHtml(firstName(pro))},`),
-      emailP(`Un hôte vient de décrire son besoin sur jasonmarinho.com et <strong>tu fais partie des 3 pros les plus proches</strong> de son logement. Réponds-lui directement : réponds à cet e-mail, il arrive dans sa boîte.`),
+      emailP(manuel
+        ? `Un hôte a décrit son besoin sur jasonmarinho.com et <strong>Jason Marinho te transmet sa demande</strong>. Réponds-lui directement : réponds à cet e-mail, il arrive dans sa boîte.`
+        : `Un hôte vient de décrire son besoin sur jasonmarinho.com et <strong>tu fais partie des 3 pros les plus proches</strong> de son logement. Réponds-lui directement : réponds à cet e-mail, il arrive dans sa boîte.`),
       emailInfoBlock(rows),
       d.message ? emailP(`<em>« ${escHtml(d.message).replace(/\n/g, '<br>')} »</em>`) : '',
       emailBtn(`mailto:${encodeURIComponent(d.email)}?subject=${encodeURIComponent(`Ta demande ${metier === 'photographe' ? 'de photographe' : 'de ménage'} à ${d.ville}`)}`, 'Répondre à l’hôte'),
@@ -105,18 +108,18 @@ async function emailHote(d: DemandeInput, metier: DemandeMetier, pros: Pro[], va
 }
 
 /** Envoie une vague : ligne dans Demandes reçues + e-mail, pour chaque pro */
-async function envoyerVague(d: DemandeInput, metier: DemandeMetier, pros: Pro[], round: number, demandeId: string) {
+async function envoyerVague(d: DemandeInput, metier: DemandeMetier, pros: Pro[], round: number, demandeId: string, manuel = false) {
   const db = getServiceClient()
   const t = T[metier]
-  const sent: Array<{ id: string; contact_id: string | null; round: number; at: string }> = []
+  const sent: Array<{ id: string; contact_id: string | null; round: number; at: string; manual?: true }> = []
   for (const pro of pros) {
     const { data, error } = await db.from(t.contactTable)
       .insert({ [t.fk]: pro.id, contact_email: d.email, contact_name: d.nom, message: messagePourPro(d), source_url: `${SITE}/trouver-un-pro#demande-${demandeId}` })
       .select('id').maybeSingle()
     if (error) log.error('ligne Demandes reçues', { err: error.message })
     await db.rpc(t.rpc, { p_id: pro.id })
-    await emailPro(d, pro, metier)
-    sent.push({ id: pro.id, contact_id: (data as { id: string } | null)?.id ?? null, round, at: new Date().toISOString() })
+    await emailPro(d, pro, metier, manuel)
+    sent.push({ id: pro.id, contact_id: (data as { id: string } | null)?.id ?? null, round, at: new Date().toISOString(), ...(manuel ? { manual: true } : {}) })
   }
   return sent
 }
@@ -144,7 +147,7 @@ export async function creerDemande(d: DemandeInput, acquisition: unknown): Promi
   await emailHote(d, d.metier, pros, 1)
   await sendAdminEmail({
     subject: sent.length ? `Demande d’hôte : ${T[d.metier].label} à ${d.ville} (${sent.length} pro${sent.length > 1 ? 's' : ''})` : `Demande d’hôte SANS PRO : ${T[d.metier].label} à ${d.ville}`,
-    text: `${anonymizedNeed(d)}\n\n${sent.length ? `Envoyée à : ${pros.map(displayName).join(', ')}.` : 'Aucun pro de l’annuaire dans la zone : besoin à présenter aux pros de la ville (sans les coordonnées de l’hôte).'}\n\nToutes les demandes : ${APP}/dashboard/admin/demandes`,
+    text: `${anonymizedNeed(d)}\n\n${sent.length ? `Envoyée à : ${pros.map(displayName).join(', ')}.` : 'Aucun pro de l’annuaire dans la zone : besoin à présenter aux pros de la ville (sans les coordonnées de l’hôte).'}\n\nLa fiche de la demande : ${APP}/dashboard/admin/qg?onglet=hotes&demande=${id}`,
   })
   return { ok: true, envoyes: sent.length }
 }
@@ -178,7 +181,7 @@ export async function traiterDemandes(now = new Date()): Promise<{ elargies: num
       if (action === 'elargir') {
         await db.from('demandes_hotes').update({ status: 'sans_pro', admin_notified_at: now.toISOString() }).eq('id', r.id)
         out.sansPro++
-        await sendAdminEmail({ subject: `Demande d’hôte sans réponse : ${T[r.metier].label} à ${r.ville}`, text: `${anonymizedNeed(r)}\n\nAucun des pros sollicités n’a répondu sous 48 h et il n’y en a pas d’autres dans la zone.\n\n${APP}/dashboard/admin/demandes` })
+        await sendAdminEmail({ subject: `Demande d’hôte sans réponse : ${T[r.metier].label} à ${r.ville}`, text: `${anonymizedNeed(r)}\n\nAucun des pros sollicités n’a répondu sous 48 h et il n’y en a pas d’autres dans la zone.\n\n${APP}/dashboard/admin/qg?onglet=hotes&demande=${r.id}` })
       }
       continue
     }
@@ -193,4 +196,50 @@ export async function traiterDemandes(now = new Date()): Promise<{ elargies: num
   const { count } = await db.from('demandes_hotes').delete({ count: 'exact' }).lt('created_at', limite.toISOString())
   out.purgees = count ?? 0
   return out
+}
+
+/** Pros proposés dans le QG pour un envoi à la main (sans leur e-mail) */
+export async function listProsChoix(metier: DemandeMetier): Promise<ProChoix[]> {
+  return (await loadPros(metier)).map(p => ({
+    id: p.id, nom: displayName(p), slug: p.slug, ville: p.ville, zone_couverte: p.zone_couverte,
+    villes_couvertes: p.villes_couvertes ?? null, contacts_count: p.contacts_count ?? null,
+  }))
+}
+
+async function emailHoteManuel(d: DemandeInput, metier: DemandeMetier, pro: Pro) {
+  const r = resend(); if (!r) return
+  const t = T[metier]
+  const html = buildEmail({
+    title: 'Un pro de plus a reçu ta demande',
+    body: [
+      emailP(`Bonjour ${escHtml(d.nom.split(' ')[0])},`),
+      emailP(`Ta demande à ${escHtml(d.ville)} vient aussi d’être transmise à <a href="${SITE}/annuaires/${t.dir}/${escHtml(pro.slug)}" style="color:#004C3F;font-weight:600">${escHtml(displayName(pro))}</a> (${escHtml(pro.ville ?? '')}). Il te répond directement par e-mail.`),
+      emailNote('Aucune commission : le devis et le paiement se règlent directement entre toi et le pro.'),
+    ].join(''),
+  })
+  await r.emails.send({ from: FROM, to: d.email, subject: `Ta demande à ${d.ville} : un pro de plus l’a reçue`, html })
+    .catch(e => log.error('e-mail à l’hôte (envoi manuel)', { err: e instanceof Error ? e.message : String(e) }))
+}
+
+/** QG : l'admin transmet la demande à un pro de l'annuaire qu'il a choisi */
+export async function envoyerAUnPro(demandeId: string, proId: string): Promise<{ ok: true; nom: string } | { error: string }> {
+  const db = getServiceClient()
+  const { data, error } = await db.from('demandes_hotes')
+    .select('id, metier, ville, logement, quand, frequence, budget, message, nom, email, telephone, source, status, created_at, last_round_at, sent_to')
+    .eq('id', demandeId).maybeSingle()
+  if (error || !data) return { error: 'Demande introuvable.' }
+  const d = data as unknown as DemandeRow
+  if (d.sent_to.some(s => s.id === proId)) return { error: 'Ce pro a déjà reçu la demande.' }
+  const pro = (await loadPros(d.metier)).find(p => p.id === proId)
+  if (!pro) return { error: 'Ce pro n’est pas (ou plus) en ligne dans l’annuaire.' }
+  const round = Math.max(1, ...d.sent_to.map(s => s.round))
+  const sent = await envoyerVague(d, d.metier, [pro], round, d.id, true)
+  const { error: upErr } = await db.from('demandes_hotes').update({
+    sent_to: [...d.sent_to, ...sent],
+    status: d.status === 'sans_pro' ? 'elargie' : d.status,
+    last_round_at: new Date().toISOString(),
+  }).eq('id', d.id)
+  if (upErr) log.error('envoi manuel : mise à jour', { err: upErr.message })
+  await emailHoteManuel(d, d.metier, pro)
+  return { ok: true, nom: displayName(pro) }
 }

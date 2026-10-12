@@ -1,20 +1,23 @@
 'use client'
 
-// QG Admin : un seul endroit pour traiter les 3 types de demandes en
-// attente — Membres Driing à valider/refuser, Signalements à modérer,
-// Suggestions utilisateurs. Évite de jongler entre 3 pages séparées.
-//
-// 3 tabs avec badges count. La tab par défaut est celle qui a le plus
-// d'actions en attente (priorité automatique).
+// QG Admin : un seul endroit pour tout ce qui attend une réponse. Refait le
+// 12/10/2026 (Jason : « revoir entièrement niveau UI et UX ») : boîte de
+// réception à gauche (Demandes d'hôtes, Membres Driing, Signalements,
+// Suggestions, avec ce qui reste à traiter), contenu à droite. Les demandes
+// d'hôtes ont leur fiche (DemandesHotes.tsx). Onglet ouvert : ?onglet=, sinon
+// celui qui a le plus à traiter (les demandes d'hôtes d'abord).
 
 import { useMemo, useState, useTransition } from 'react'
 import {
   Check, X, EnvelopeSimple, Trash, MagnifyingGlass,
   Crown, CheckCircle, Lightbulb, GraduationCap, Handshake,
-  ShieldStar, Heart, ArrowRight,
+  ShieldStar, Heart, ArrowRight, House,
 } from '@phosphor-icons/react/dist/ssr'
+import InlineStyle from '@/components/ui/InlineStyle'
+import DemandesHotes from './DemandesHotes'
+import type { DemandesQGData } from './demandes-load'
 import AdminHero, { adminAsideCard } from '../_ui/AdminHero'
-import { AMBER, BROWN, tint } from '../_ui/theme'
+import { AMBER, BROWN, PINK, tint } from '../_ui/theme'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 import {
   confirmDriingMember, rejectDriingMember,
@@ -45,7 +48,8 @@ interface Suggestion {
   created_at: string
 }
 
-type Tab = 'driing' | 'reports' | 'suggestions'
+export type QGTab = 'hotes' | 'driing' | 'reports' | 'suggestions'
+type Tab = QGTab
 
 // Type retourné par getModerationQueue (signalements publics anonymisés).
 // On accepte un type lâche ici pour ne pas dupliquer les définitions
@@ -63,7 +67,17 @@ interface Props {
   initialReports: Report[]
   initialSuggestions: Suggestion[]
   moderation: ModerationData
+  demandes: DemandesQGData
+  initialTab: QGTab | null
+  initialDemandeId: string | null
 }
+
+const QG_CSS = `
+.qg-shell{display:grid;gap:18px;align-items:start}
+@media(min-width:1000px){.qg-shell{grid-template-columns:232px minmax(0,1fr)}.qg-nav{position:sticky;top:84px;flex-direction:column}}
+@media(max-width:999px){.qg-nav{overflow-x:auto;scrollbar-width:none;margin:0 -4px;padding:0 4px 2px}.qg-nav::-webkit-scrollbar{display:none}.qg-nav-hint{display:none}.qg-nav-item{width:auto!important}}
+.qg-nav-item:hover{border-color:var(--accent-border)!important}
+`
 
 // ─── Helpers ──────────────────────────────────────────────────────────
 function fmtDate(iso: string) {
@@ -74,7 +88,7 @@ function daysSince(iso: string): number {
 }
 
 // ─── Component ────────────────────────────────────────────────────────
-export default function AdminQG({ initialDriing, initialReports, initialSuggestions, moderation }: Props) {
+export default function AdminQG({ initialDriing, initialReports, initialSuggestions, moderation, demandes, initialTab, initialDemandeId }: Props) {
   const [driing, setDriing] = useState(initialDriing)
   const [reports, setReports] = useState(initialReports)
   const [suggestions, setSuggestions] = useState(initialSuggestions)
@@ -87,22 +101,46 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
   // Le badge "Signalements" agrège : reports privés non validés +
   // signalements publics en attente de modération + demandes de retrait
   // (toutes ces actions tombent visuellement dans la même tab).
+  const [hotesCount, setHotesCount] = useState(() => demandes.demandes.filter(d => d.aTraiter).length)
   const counts = useMemo(() => ({
+    hotes: hotesCount,
     driing: driing.filter(m => m.driing_status === 'pending').length,
     reports: reports.filter(r => !r.is_validated).length
       + moderation.pending.length
       + moderation.removalRequests.length,
     suggestions: suggestions.length,
-  }), [driing, reports, suggestions, moderation])
+  }), [driing, reports, suggestions, moderation, hotesCount])
 
-  const totalPending = counts.driing + counts.reports + counts.suggestions
+  const totalPending = counts.hotes + counts.driing + counts.reports + counts.suggestions
 
   // Tab par défaut : celle qui a le plus d'actions en attente
-  const [tab, setTab] = useState<Tab>(() => {
+  const [tab, setTabState] = useState<Tab>(() => {
+    if (initialTab) return initialTab
+    if (counts.hotes > 0 || (counts.driing + counts.reports + counts.suggestions === 0)) return 'hotes'
     if (counts.driing >= counts.reports && counts.driing >= counts.suggestions) return 'driing'
     if (counts.reports >= counts.suggestions) return 'reports'
     return 'suggestions'
   })
+
+  function setTab(t: Tab) {
+    setTabState(t)
+    setSearch('')
+    try { const u = new URL(window.location.href); u.searchParams.set('onglet', t); u.searchParams.delete('demande'); window.history.replaceState(null, '', u.toString()) } catch { /* rien */ }
+  }
+
+  const NAV: Array<{ key: Tab; label: string; hint: string; count: number; total?: number; color: string; icon: React.ReactNode }> = [
+    { key: 'hotes', label: 'Demandes d’hôtes', hint: 'Besoins envoyés aux pros', count: counts.hotes, total: demandes.demandes.length, color: PINK, icon: <House size={16} weight="duotone" /> },
+    { key: 'driing', label: 'Membres Driing', hint: 'Accès à confirmer', count: counts.driing, color: AMBER, icon: <Heart size={16} weight="duotone" /> },
+    { key: 'reports', label: 'Signalements', hint: 'À modérer', count: counts.reports, color: 'var(--danger-text)', icon: <ShieldStar size={16} weight="duotone" /> },
+    { key: 'suggestions', label: 'Suggestions', hint: 'Idées des membres', count: counts.suggestions, color: BROWN, icon: <Lightbulb size={16} weight="duotone" /> },
+  ]
+  const current = NAV.find(n => n.key === tab)!
+  const SECTION_DESC: Record<Tab, string> = {
+    hotes: 'Chaque besoin décrit sur jasonmarinho.com/trouver-un-pro : à qui il est parti, si les pros l’ont ouvert, et ce que tu peux en faire.',
+    driing: 'Les membres qui se sont inscrits par Driing : confirme leur accès (gratuit, promis) ou refuse.',
+    reports: 'Signalements publics à modérer, demandes de retrait, puis la console des signalements privés.',
+    suggestions: 'Formations et partenaires proposés par les membres.',
+  }
 
   function notify(id: string, type: 'ok' | 'err', msg: string) {
     setFeedback({ id, type, msg })
@@ -168,22 +206,19 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
   return (
     <div style={s.root}>
       {dialog}
+      <InlineStyle css={QG_CSS} />
       <AdminHero
         section="QG demandes"
         title="Tout ce qui attend"
         em="ta réponse"
-        desc="Demandes Driing, signalements de voyageurs et suggestions des membres : valide, refuse ou range, au même endroit."
+        desc="Demandes d’hôtes, accès Driing, signalements et suggestions : une boîte de réception, une fiche par demande."
         aside={
           <div style={adminAsideCard}>
-            <div style={s.asideTitle}>{totalPending > 0 ? `${totalPending} en attente` : 'Rien en attente'}</div>
-            {([
-              ['driing', 'Demandes Driing', counts.driing],
-              ['reports', 'Signalements', counts.reports],
-              ['suggestions', 'Suggestions', counts.suggestions],
-            ] as const).map(([key, label, n]) => (
-              <button key={key} type="button" onClick={() => setTab(key)} style={{ ...s.asideRow, ...(tab === key ? s.asideRowOn : {}) }}>
-                <span style={{ flex: 1, textAlign: 'left' }}>{label}</span>
-                <strong style={{ color: n > 0 ? 'var(--text)' : 'var(--text-3)' }}>{n}</strong>
+            <div style={s.asideTitle}>{totalPending > 0 ? `${totalPending} à traiter` : 'Tout est à jour'}</div>
+            {NAV.map(n => (
+              <button key={n.key} type="button" onClick={() => setTab(n.key)} style={{ ...s.asideRow, ...(tab === n.key ? s.asideRowOn : {}) }}>
+                <span style={{ flex: 1, textAlign: 'left' }}>{n.label}</span>
+                <strong style={{ color: n.count > 0 ? 'var(--text)' : 'var(--text-3)' }}>{n.count}</strong>
                 <ArrowRight size={13} style={{ color: 'var(--text-muted)' }} />
               </button>
             ))}
@@ -191,48 +226,60 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
         }
       />
 
-      {/* Tabs */}
-      <div style={s.tabs} role="tablist" aria-label="Catégories d'actions">
-        <TabBtn
-          active={tab === 'driing'}
-          onClick={() => setTab('driing')}
-          icon={<Heart size={14} weight="fill" />}
-          label="Membres Driing"
-          count={counts.driing}
-          color={AMBER}
-        />
-        <TabBtn
-          active={tab === 'reports'}
-          onClick={() => setTab('reports')}
-          icon={<ShieldStar size={14} weight="fill" />}
-          label="Signalements"
-          count={counts.reports}
-          color="var(--danger-text)"
-        />
-        <TabBtn
-          active={tab === 'suggestions'}
-          onClick={() => setTab('suggestions')}
-          icon={<Lightbulb size={14} weight="fill" />}
-          label="Suggestions"
-          count={counts.suggestions}
-          color={BROWN}
-        />
-      </div>
+      <div className="qg-shell">
+        <nav className="qg-nav" aria-label="Boîtes du QG" style={s.nav}>
+          {NAV.map(n => {
+            const on = tab === n.key
+            return (
+              <button
+                key={n.key}
+                type="button"
+                className="qg-nav-item"
+                aria-current={on ? 'page' : undefined}
+                onClick={() => setTab(n.key)}
+                style={{ ...s.navItem, ...(on ? { border: `1px solid ${tint(n.color, 45)}`, background: tint(n.color, 8) } : {}) }}
+              >
+                <span style={{ ...s.navIcon, color: n.color, background: tint(n.color, 12) }}>{n.icon}</span>
+                <span style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                  <span style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--text)', whiteSpace: 'nowrap' }}>{n.label}</span>
+                  <span className="qg-nav-hint" style={{ fontSize: 11.5, color: 'var(--text-3)', whiteSpace: 'nowrap' }}>{n.hint}</span>
+                </span>
+                {n.count > 0
+                  ? <span style={{ ...s.tabCount, background: n.color, color: '#fff' }}>{n.count}</span>
+                  : <span style={{ ...s.tabCount, color: 'var(--text-3)' }}>0</span>}
+              </button>
+            )
+          })}
+        </nav>
 
-      {/* Search — masquée sur le tab "reports" (la console embedded
-          SignalementsAdmin a sa propre recherche + filtres en interne) */}
-      {tab !== 'reports' && (
-        <div style={s.searchWrap}>
-          <MagnifyingGlass size={14} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-          <input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder={
-              tab === 'driing' ? 'Email ou nom…' : 'Message, email…'
-            }
-            style={s.searchInput}
-          />
-        </div>
+        <main style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <header style={s.sectionHead}>
+            <div style={{ flex: '1 1 320px', minWidth: 0 }}>
+              <h2 style={s.sectionTitle}>{current.label}</h2>
+              <p style={s.sectionDesc}>{SECTION_DESC[tab]}</p>
+            </div>
+            {(tab === 'driing' || tab === 'suggestions') && (
+              <div style={s.searchWrap}>
+                <MagnifyingGlass size={14} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                <input
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  placeholder={tab === 'driing' ? 'E-mail ou nom…' : 'Message, e-mail…'}
+                  style={s.searchInput}
+                />
+              </div>
+            )}
+          </header>
+
+      {tab === 'hotes' && (
+        <DemandesHotes
+          initial={demandes.demandes}
+          pros={demandes.pros}
+          initialId={initialDemandeId}
+          suiviOk={demandes.suiviOk}
+          error={demandes.error}
+          onCount={setHotesCount}
+        />
       )}
 
       {/* ── DRIING ── */}
@@ -355,37 +402,13 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
           })}
         </div>
       )}
+        </main>
+      </div>
     </div>
   )
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────
-function TabBtn({ active, onClick, icon, label, count, color }: {
-  active: boolean; onClick: () => void; icon: React.ReactNode; label: string; count: number; color: string
-}) {
-  return (
-    <button
-      onClick={onClick}
-      role="tab"
-      aria-selected={active}
-      style={{
-        ...s.tabBtn,
-        ...(active ? { border: `1px solid ${color}`, color, background: tint(color, 10) } : {}),
-      }}
-    >
-      <span aria-hidden="true" style={{ color }}>{icon}</span>
-      <span>{label}</span>
-      {count > 0 && (
-        <span style={{
-          ...s.tabCount,
-          background: active ? color : 'var(--bg-2)',
-          color: active ? 'var(--bg)' : 'var(--text-2)',
-        }}>{count}</span>
-      )}
-    </button>
-  )
-}
-
 function Empty({ label }: { label: string }) {
   return (
     <div style={s.empty}>
@@ -421,21 +444,23 @@ const s: Record<string, React.CSSProperties> = {
   },
   asideRowOn: { border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--text)' },
 
-  tabs: { display: 'flex', gap: '8px', flexWrap: 'wrap' as const },
-  tabBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '7px',
-    padding: '9px 16px', borderRadius: '10px',
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    color: 'var(--text-2)', cursor: 'pointer', fontSize: '13px', fontWeight: 600,
-    fontFamily: 'inherit', transition: 'all .15s',
-  },
   tabCount: {
     fontSize: '11px', fontWeight: 700,
     padding: '1px 7px', borderRadius: '999px',
     minWidth: '20px', textAlign: 'center' as const,
   },
 
-  searchWrap: { position: 'relative', maxWidth: '500px' },
+  nav: { display: 'flex', gap: '8px' },
+  navItem: {
+    display: 'flex', alignItems: 'center', gap: '10px', width: '100%', textAlign: 'left' as const,
+    padding: '10px 12px', borderRadius: '12px', background: 'var(--surface)', border: '1px solid var(--border)',
+    cursor: 'pointer', fontFamily: 'inherit', transition: 'border-color .15s', flexShrink: 0,
+  },
+  navIcon: { width: '32px', height: '32px', borderRadius: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  sectionHead: { display: 'flex', flexWrap: 'wrap' as const, gap: '12px', alignItems: 'flex-end', justifyContent: 'space-between' },
+  sectionTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: '24px', fontWeight: 400, margin: '0 0 4px', color: 'var(--text)', letterSpacing: '-.2px' },
+  sectionDesc: { fontSize: '13.5px', color: 'var(--text-2)', margin: 0, lineHeight: 1.55, maxWidth: '640px' },
+  searchWrap: { position: 'relative', width: '100%', maxWidth: '320px' },
   searchInput: { width: '100%', padding: '9px 12px 9px 36px', borderRadius: '10px', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text)', fontSize: '13px', fontFamily: 'inherit', outline: 'none' },
 
   list: { display: 'flex', flexDirection: 'column' as const, gap: '10px' },

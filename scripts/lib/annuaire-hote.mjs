@@ -49,6 +49,12 @@ export const ANNUAIRES = {
       ['Il n’y a pas encore de photographe dans ma ville, que faire ?', 'Regarde le guide de ta ville ci-dessous (tarifs locaux, photos indispensables, comment briefer), et repasse : l’annuaire grandit chaque semaine.'],
     ],
     join: ['/devenir-photographe-lcd', 'Tu es photographe ? Rejoins l’annuaire'],
+    joinBox: {
+      eyebrow: 'Pour les photographes',
+      title: 'Tes photos, vues par les hôtes <em>de ta ville</em>',
+      text: 'Une fiche qui sert de site vitrine sur Google, un lien vers ton portfolio, tes statistiques et les demandes des hôtes en direct. Sans commission.',
+      exemple: '/annuaires/photographes/exemple-fiche',
+    },
   },
   menage: {
     key: 'menage',
@@ -86,6 +92,12 @@ export const ANNUAIRES = {
       ['Il n’y a pas encore d’équipe dans ma ville, que faire ?', 'Regarde le guide de ta ville ci-dessous (tarifs locaux, checklist, questions à poser), et repasse : l’annuaire grandit chaque semaine.'],
     ],
     join: ['/devenir-prestataire-menage-lcd', 'Tu fais du ménage de location courte durée ? Rejoins l’annuaire'],
+    joinBox: {
+      eyebrow: 'Pour les équipes de ménage',
+      title: 'Trouve des hôtes <em>près de chez toi</em>',
+      text: 'Une fiche qui sert de site vitrine sur Google, le planning de tes clients calculé depuis leurs réservations et les demandes des hôtes en direct. Sans commission.',
+      exemple: '/annuaires/menage/exemple-fiche',
+    },
   },
 }
 
@@ -252,7 +264,20 @@ export function villesGuidesHtml(cfg, cities, counts) {
 }
 
 export function joinLineHtml(cfg) {
-  return `<p class="join-line"><a href="${cfg.join[0]}">${esc(cfg.join[1])} <i class="ph-bold ph-arrow-right"></i></a></p>`
+  const b = cfg.joinBox
+  return `<aside class="join-box" aria-label="${esc(b.eyebrow)}">
+  <div class="join-in">
+    <div class="join-txt">
+      <span class="join-eye">${esc(b.eyebrow)}</span>
+      <h2 class="join-h">${b.title}</h2>
+      <p class="join-p">${esc(b.text)}</p>
+    </div>
+    <div class="join-act">
+      <a href="${cfg.join[0]}" class="join-btn">Créer ma fiche <i class="ph-bold ph-arrow-right"></i></a>
+      <a href="${b.exemple}" class="join-lnk">Voir un exemple de fiche</a>
+    </div>
+  </div>
+</aside>`
 }
 
 export const ANNUAIRE_CSS = `
@@ -335,9 +360,18 @@ export const ANNUAIRE_CSS = `
 .faq-it p{font-size:14px;color:var(--tm);line-height:1.7;margin-top:10px}
 .villes-chips a.has{background:rgba(0,76,63,.09);color:var(--g);font-weight:600;border-color:rgba(0,76,63,.2)}
 .villes-chips a span{font-size:11px;font-weight:600;opacity:.8}
-.join-line{max-width:1100px;margin:18px auto 0;padding:0 clamp(16px,5vw,40px);text-align:center}
-.join-line a{font-size:13.5px;color:var(--g);font-weight:600;text-decoration:none}
-.join-line a:hover{text-decoration:underline}
+.join-box{max-width:1100px;margin:8px auto 64px;padding:0 clamp(16px,5vw,40px)}
+.join-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px 32px;padding:26px clamp(20px,3vw,32px);background:#fff;border:1px solid rgba(0,76,63,.10);border-radius:16px}
+.join-txt{flex:1 1 420px;min-width:0}
+.join-eye{display:block;font-size:10.5px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:var(--tl);margin-bottom:8px}
+.join-h{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(20px,2.2vw,24px);line-height:1.25;letter-spacing:-.2px;margin:0 0 8px;color:var(--td)}
+.join-h em{font-style:italic;font-weight:300;color:var(--g)}
+.join-p{margin:0;font-size:14px;line-height:1.65;color:var(--tm);max-width:560px}
+.join-act{display:flex;flex-direction:column;align-items:flex-start;gap:10px;flex-shrink:0}
+.join-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;border:1px solid var(--g);color:var(--g);font-weight:600;font-size:14px;text-decoration:none;transition:background .2s,color .2s}
+.join-btn:hover{background:var(--g);color:#fff}
+.join-lnk{font-size:13px;color:var(--tl);text-decoration:underline;text-underline-offset:3px}
+.join-lnk:hover{color:var(--g)}
 `
 
 /** Raccourcis de ville : remplissent la recherche */

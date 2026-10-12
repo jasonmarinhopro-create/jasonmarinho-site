@@ -1,13 +1,16 @@
 import { getServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import AdminQG from './AdminQG'
+import AdminQG, { type QGTab } from './AdminQG'
+import { loadDemandesQG } from './demandes-load'
 import { getModerationQueue } from '../signalements/moderation-actions'
 
 export const metadata = { title: 'QG Admin, Jason Marinho' }
 export const dynamic = 'force-dynamic'
 
-export default async function AdminQGPage() {
+const TABS: QGTab[] = ['hotes', 'driing', 'reports', 'suggestions']
+
+export default async function AdminQGPage({ searchParams }: { searchParams: { onglet?: string; demande?: string } }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
@@ -27,6 +30,7 @@ export default async function AdminQGPage() {
     { data: reports },
     { data: suggestions },
     moderation,
+    demandes,
   ] = await Promise.all([
     admin
       .from('profiles')
@@ -45,7 +49,10 @@ export default async function AdminQGPage() {
       .order('created_at', { ascending: false })
       .limit(500),
     getModerationQueue(),
+    loadDemandesQG(),
   ])
+  const onglet = TABS.includes(searchParams.onglet as QGTab) ? searchParams.onglet as QGTab : (searchParams.demande ? 'hotes' : null)
+  const demandeId = typeof searchParams.demande === 'string' && /^[0-9a-f-]{36}$/i.test(searchParams.demande) ? searchParams.demande : null
 
   return (
     <AdminQG
@@ -53,6 +60,9 @@ export default async function AdminQGPage() {
       initialReports={reports ?? []}
       initialSuggestions={suggestions ?? []}
       moderation={moderation}
+      demandes={demandes}
+      initialTab={onglet}
+      initialDemandeId={demandeId}
     />
   )
 }

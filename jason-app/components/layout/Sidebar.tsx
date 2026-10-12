@@ -123,7 +123,7 @@ const adminGroups: Array<{ key: string; label: string; items: AdminItem[]; colla
   {
     key: 'pilotage', label: 'Pilotage', items: [
       { href: '/dashboard/admin',             label: 'Vue d\'ensemble', Icon: Gear },
-      // QG : demandes Driing, signalements et suggestions en une seule page
+      // QG : demandes d'hôtes, Driing, signalements et suggestions en une seule page
       { href: '/dashboard/admin/qg',          label: 'QG demandes',     Icon: ShieldCheck },
       // État de santé : paiements, cautions, Stripe, iCal, e-mails, tâches, migrations
       { href: '/dashboard/admin/sante',       label: 'État de santé',   Icon: Heartbeat },
@@ -136,7 +136,6 @@ const adminGroups: Array<{ key: string; label: string; items: AdminItem[]; colla
       { href: '/dashboard/admin/membres',       label: 'Membres',           Icon: UsersThree },
       { href: '/dashboard/admin/photographes',  label: 'Photographes',      Icon: Camera },
       { href: '/dashboard/admin/menage',        label: 'Équipes de ménage', Icon: Sparkle },
-      { href: '/dashboard/admin/demandes',      label: 'Demandes d’hôtes',  Icon: ChatsCircle },
       { href: '/dashboard/admin/investisseurs', label: 'Investisseurs',     Icon: Briefcase },
     ],
   },
