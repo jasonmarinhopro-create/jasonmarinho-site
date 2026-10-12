@@ -116,11 +116,14 @@ const SITE = 'https://jasonmarinho.com'
 // lien tracé ») : un lien par métier et par messagerie, vers la fiche d'exemple
 // (qui mène à l'inscription). Jamais un lien par personne : on mesure ce que
 // rapporte chaque messagerie, pas qui a cliqué.
-export type PrivateAudience = 'photographe' | 'menage'
+export type PrivateAudience = 'photographe' | 'menage' | 'hote'
 export type PrivatePlatform = 'instagram' | 'facebook' | 'linkedin' | 'whatsapp'
-export const PRIVATE_AUDIENCES: Array<{ key: PrivateAudience; label: string; short: string; destination: string }> = [
-  { key: 'photographe', label: 'Photographes', short: 'photo', destination: `${SITE}/annuaires/photographes/exemple-fiche` },
-  { key: 'menage', label: 'Équipes de ménage', short: 'menage', destination: `${SITE}/annuaires/menage/exemple-fiche` },
+export const PRIVATE_AUDIENCES: Array<{ key: PrivateAudience; label: string; short: string; destination: string; landing: string }> = [
+  { key: 'photographe', label: 'Photographes', short: 'photo', destination: `${SITE}/annuaires/photographes/exemple-fiche`, landing: 'la fiche d\'exemple, qui renvoie vers l\'inscription' },
+  { key: 'menage', label: 'Équipes de ménage', short: 'menage', destination: `${SITE}/annuaires/menage/exemple-fiche`, landing: 'la fiche d\'exemple, qui renvoie vers l\'inscription' },
+  // Hôtes (12/10/2026, Jason : « ajoute aussi un message pour les hôtes en privé ») : l'accueil
+  // présente l'app et mène à « Créer mon compte gratuit » (provenance gardée par nav.js)
+  { key: 'hote', label: 'Hôtes', short: 'hote', destination: HOME, landing: 'la page d\'accueil, qui présente l\'app avec « Créer mon compte gratuit »' },
 ]
 export const PRIVATE_PLATFORMS: Array<{ key: PrivatePlatform; label: string; channel: LinkChannel }> = [
   { key: 'instagram', label: 'Instagram', channel: 'prive_instagram' },

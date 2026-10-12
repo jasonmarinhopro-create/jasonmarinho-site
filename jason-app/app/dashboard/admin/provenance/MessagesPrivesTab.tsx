@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { Camera, Broom, Check, Copy, ChatCircleText, CursorClick, Eye, UserPlus, Info, LinkSimple } from '@phosphor-icons/react/dist/ssr'
+import { Camera, Broom, House, Check, Copy, ChatCircleText, CursorClick, Eye, UserPlus, Info, LinkSimple } from '@phosphor-icons/react/dist/ssr'
 import { PRIVATE_AUDIENCES, PRIVATE_PLATFORMS, privateLinkCode, type PrivateAudience, type PrivatePlatform } from '@/lib/acquisition/rules'
 import { buildPrivateMessage, privateMessageUrl, PRIVATE_KINDS, type PrivateKind } from '@/lib/acquisition/messages'
 import { AMBER, PINK, tint } from '../_ui/theme'
@@ -25,6 +25,7 @@ const COUNTER_KEY = 'jm-messages-prives-copies'
 const AUDIENCE_ICON: Record<PrivateAudience, React.ReactNode> = {
   photographe: <Camera size={15} weight="bold" />,
   menage: <Broom size={15} weight="bold" />,
+  hote: <House size={15} weight="bold" />,
 }
 
 const parisDay = () => new Date().toLocaleDateString('fr-CA', { timeZone: 'Europe/Paris' })
@@ -132,7 +133,7 @@ export default function MessagesPrivesTab({ stats, periodLabel }: { stats: Priva
           )}
         </div>
         <p style={s.note}><Info size={14} style={{ flexShrink: 0, marginTop: 2 }} />
-          Le lien {url.replace('https://', '')} mène à la fiche d&apos;exemple, qui renvoie vers l&apos;inscription. Le prénom se vide après chaque copie, pour le message suivant.
+          Le lien {url.replace('https://', '')} mène à {PRIVATE_AUDIENCES.find(a => a.key === audience)?.landing}. Le prénom se vide après chaque copie, pour le message suivant.
         </p>
       </section>
 
@@ -187,7 +188,8 @@ export default function MessagesPrivesTab({ stats, periodLabel }: { stats: Priva
             <li>Mets le prénom et la ville : un message personnalisé reçoit plus de réponses qu&apos;un message copié en série.</li>
             <li>Une seule relance, 3 ou 4 jours plus tard. Si on te répond non, on ne relance plus.</li>
             <li>Espace tes envois sur la journée : les messageries limitent les comptes qui écrivent à beaucoup d&apos;inconnus d&apos;un coup.</li>
-            <li>Quand quelqu&apos;un répond, passe en conversation normale : le lien d&apos;inscription est sur la fiche d&apos;exemple.</li>
+            <li>Quand quelqu&apos;un répond, passe en conversation normale : le lien envoyé mène déjà à l&apos;inscription.</li>
+            <li>Hôtes : écris-leur seulement là où ils sont joignables en direct (groupes, Instagram, LinkedIn). Jamais par la messagerie Airbnb ou Booking, qui l&apos;interdit.</li>
           </ul>
         </section>
       </div>

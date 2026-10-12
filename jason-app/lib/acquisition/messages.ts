@@ -5,14 +5,16 @@
 // Faits repris des séquences de prospection (lib/outreach/playbook.ts),
 // vérifiés dans le site : contact direct sans commission, tarif fondateur
 // 39,98 € par an à vie pour les 20 premiers, guides de plus de 60 villes,
-// planning partagé des ménages. Plus court qu'un e-mail : une messagerie se lit
+// planning partagé des ménages. Hôtes : app gratuite pour commencer, sans
+// carte bancaire (planning ménage, fiches de police) ; contrats en ligne
+// seulement en Standard, dès 19,98 € par an (jamais présentés comme gratuits). Plus court qu'un e-mail : une messagerie se lit
 // sur un téléphone. Pas de tiret cadratin.
 import { privateLinkCode, shortLinkUrl, type PrivateAudience, type PrivatePlatform } from './rules'
 
 export type PrivateKind = 'premier' | 'relance'
 
 export const PRIVATE_KINDS: Array<{ key: PrivateKind; label: string; hint: string }> = [
-  { key: 'premier', label: 'Premier message', hint: 'Présente l\'annuaire et pose une seule question.' },
+  { key: 'premier', label: 'Premier message', hint: 'Te présente en deux phrases et pose une seule question.' },
   { key: 'relance', label: 'Relance', hint: 'Une seule fois, 3 ou 4 jours plus tard, sans réponse.' },
 ]
 
@@ -54,6 +56,25 @@ export function buildPrivateMessage(input: PrivateMessageInput): string {
   const ville = aVille(input.ville)
   const url = privateMessageUrl(audience, input.platform)
   const me = 'Je suis Jason Marinho : j\'accompagne des hôtes Airbnb et Booking et je leur ai construit une app pour gérer leur location.'
+
+  if (audience === 'hote') {
+    if (kind === 'premier') {
+      return [
+        hello,
+        'Je suis Jason Marinho : je loue moi aussi en courte durée et j\'accompagne des hôtes Airbnb et Booking.',
+        `J'ai construit une app pour tout ce que les plateformes ne font pas : ${t('tes', 'vos')} ménages calculés tout seuls à partir de ${t('tes', 'vos')} calendriers Airbnb et Booking, avec un planning à partager à ${t('ton', 'votre')} équipe, les fiches de police des voyageurs et, pour les réservations en direct, des contrats signés en ligne (formule Standard). L'essentiel est gratuit.`,
+        `${t('Tu peux', 'Vous pouvez')} jeter un œil ici : ${url}`,
+        `${t('Tu loues', 'Vous louez')}${ville} depuis longtemps ?`,
+      ].join('\n\n')
+    }
+    return [
+      hello,
+      `Je ${t('me permets de revenir vers toi', 'me permets de revenir vers vous')} pour l'app dont je ${t('te', 'vous')} parlais.`,
+      `En bref : gratuite pour commencer, sans carte bancaire. ${t('Tu connectes tes', 'Vous connectez vos')} calendriers Airbnb et Booking, et les ménages, arrivées et départs se rangent tout seuls ; ${t('ton', 'votre')} équipe de ménage reçoit son planning par un simple lien. Pour les réservations en direct, la formule Standard ajoute les contrats signés en ligne, dès 19,98 € par an.`,
+      `Le lien : ${url}`,
+      `Si ce n'est pas pour ${t('toi', 'vous')}, ${t('dis-le-moi', 'dites-le-moi')} simplement, je ne ${t('te', 'vous')} relancerai pas.`,
+    ].join('\n\n')
+  }
 
   if (audience === 'photographe') {
     if (kind === 'premier') {
