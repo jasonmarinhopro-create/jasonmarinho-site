@@ -40,7 +40,8 @@ Jason Marinho est un expert en location courte durée (LCD) basé en France. Il 
 ## Annuaires pros LCD
 
 - [Annuaire des photographes LCD](https://jasonmarinho.com/annuaires/photographes): Photographes spécialisés location courte durée, vérifiés manuellement, contact direct sans commission
-- [Annuaire des équipes de ménage LCD](https://jasonmarinho.com/annuaires/menage): Équipes de ménage turnover spécialisées LCD, RC pro vérifiée, contact direct sans commission
+- [Annuaire des équipes de ménage LCD](https://jasonmarinho.com/annuaires/menage): Équipes de ménage turnover spécialisées LCD, prestations et tarifs affichés, contact direct sans commission
+- [Trouver un pro sans chercher](https://jasonmarinho.com/trouver-un-pro): L'hôte décrit son besoin (photographe ou ménage) une fois, la demande part aux 3 pros les plus proches de l'annuaire, gratuit et sans commission
 - [Devenir photographe LCD](https://jasonmarinho.com/devenir-photographe-lcd): Rejoindre l'annuaire en tant que photographe spécialisé location courte durée
 - [Devenir prestataire ménage LCD](https://jasonmarinho.com/devenir-prestataire-menage-lcd): Rejoindre l'annuaire en tant qu'équipe de ménage spécialisée location courte durée
 - Guides locaux par ville (tarifs, checklists, FAQ) : photographe LCD sur https://jasonmarinho.com/photographe-lcd-{ville} et ménage LCD sur https://jasonmarinho.com/menage-lcd-{ville} — 61 villes françaises couvertes (Paris, Lyon, Bordeaux, Marseille, Nice, Toulouse, Strasbourg, Annecy, Biarritz, Cannes, Chamonix, Saint-Malo, Colmar, Ajaccio… toutes les villes des guides "devenir hôte", plus Les Sables-d'Olonne)

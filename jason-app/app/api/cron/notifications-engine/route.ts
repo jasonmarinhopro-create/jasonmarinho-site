@@ -11,6 +11,7 @@ import { syncStaleFeeds } from '@/lib/ical/background'
 import { sendDepositOpenEmails } from '@/lib/contracts/deposit-reminders'
 import { purgeOldMenagePhotos } from '@/lib/menage/photo-retention'
 import { purgeOldProContacts } from '@/lib/pros/contacts-retention'
+import { traiterDemandes } from '@/lib/demandes/send'
 import { syncPendingLoyers } from '@/lib/stripe/loyer-payment'
 import { syncPendingDeposits } from '@/lib/stripe/deposit-payment'
 import { unansweredQuestions, unansweredDigestEmail, REMIND_MAX_DAYS, type QuestionRow } from '@/lib/chez-nous/unanswered'
@@ -101,6 +102,14 @@ export async function GET(req: Request) {
     proContactsPurged = await purgeOldProContacts(supabase)
   } catch (e) { console.warn('[cron] pro contacts purge failed', e) }
 
+  // Demandes d'hôtes (demande inversée) : 48 h sans réponse des pros sollicités
+  // → 3 autres pros ; sans pro dans la zone → pros inscrits depuis (30 jours) ;
+  // purge au bout de 12 mois (lib/demandes/send.ts). Best-effort.
+  let demandes = { elargies: 0, transmises: 0, sansPro: 0, purgees: 0 }
+  try {
+    demandes = await traiterDemandes()
+  } catch (e) { console.warn('[cron] demandes failed', e) }
+
   // Synchro iCal de fond AVANT les règles : les alertes (arrivée demain,
   // synchro échouée) portent sur des données fraîches. Budget 25 s sur les 60.
   const icalSync = await syncStaleFeeds(supabase, { staleMinutes: 360, budgetMs: Math.max(10_000, 25_000 - monthlyMs), concurrency: 6 })
@@ -146,6 +155,7 @@ export async function GET(req: Request) {
     proMonthly,
     menagePhotosPurged,
     proContactsPurged,
+    demandes,
     loyersSynced,
     depositsSynced,
     durationMs: Date.now() - t0,

@@ -16,7 +16,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
 import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
-import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, cityPicksHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
+import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, cityPicksHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, villesHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -577,6 +577,7 @@ ${items.length > 0 ? `<div class="tools-row">
   </button>
 </div>
 ${cityPicksHtml(cfg, counts)}
+${demandeBandHtml(cfg)}
 
 <div class="filters-backdrop" id="filters-backdrop">
   <div class="filters-modal" role="dialog" aria-modal="true" aria-label="Filtres">
@@ -611,7 +612,8 @@ ${itemsHtml}
 ${items.length > 0 ? `<div class="search-empty" id="search-empty">
   <div class="search-empty-ico"><i class="ph-bold ph-map-trifold"></i></div>
   <h3>Pas encore de photographe à «<span id="search-empty-q"></span>»</h3>
-  <p>L’annuaire grandit chaque semaine. En attendant, le <a href="#villes">guide de ta ville</a> te donne les tarifs constatés et les questions à poser.</p>
+  <p>L’annuaire grandit chaque semaine. Décris ton besoin : ta demande partira aux pros de ta zone. Le <a href="#villes">guide de ta ville</a> te donne aussi les tarifs constatés.</p>
+  <p><a href="/trouver-un-pro?metier=photographe" id="search-demande" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;border-radius:10px;background:var(--g);color:#fff;font-weight:600;text-decoration:none"><i class="ph-bold ph-paper-plane-tilt"></i>Décrire mon besoin</a></p>
   <button type="button" id="search-reset"><i class="ph-bold ph-arrow-counter-clockwise"></i>Voir tous les photographes</button>
 </div>` : ''}
 <section style="margin:40px auto 0;max-width:1100px;padding:26px clamp(18px,4vw,30px);border-radius:18px;background:#F2F8F4;border:1px solid rgba(0,76,63,.14);display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between">

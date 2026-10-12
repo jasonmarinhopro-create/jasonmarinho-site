@@ -93,6 +93,7 @@ export interface MigrationProbe {
 
 /** Migrations récentes à vérifier : une table ou une colonne qu'elles créent. */
 export const MIGRATION_PROBES: MigrationProbe[] = [
+  { file: '20261012_132_demandes_hotes.sql', what: 'demande inversée : besoins des hôtes envoyés aux pros', table: 'demandes_hotes', column: 'ville' },
   { file: '20261012_131_fiches_pros_vitrine.sql', what: 'photos, formules, villes et étapes des fiches pros (et mesure du stockage)', table: 'cleaners', column: 'formules' },
   { file: '20261012_130_group_replies.sql', what: 'onglet Groupes de Provenance (messages préparés)', table: 'group_replies', column: 'code' },
   { file: '20261011_128_newsletter_suivi.sql', what: 'choix newsletter gardé sur le compte et contenu des lettres envoyées', table: 'profiles', column: 'newsletter_opt_in' },

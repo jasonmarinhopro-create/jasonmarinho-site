@@ -8,5 +8,6 @@ node scripts/build-signalements.mjs
 node scripts/build-photographers.mjs
 node scripts/build-cleaners.mjs
 node scripts/build-exemples-fiches.mjs
+node scripts/build-trouver-un-pro.mjs
 node scripts/build-phosphor-subset.mjs
 node scripts/minify-assets.mjs

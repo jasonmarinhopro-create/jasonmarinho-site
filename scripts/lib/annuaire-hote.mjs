@@ -14,6 +14,7 @@ const esc = s => s == null ? '' : String(s).replace(/&/g, '&amp;').replace(/</g,
 
 export const ANNUAIRES = {
   photographe: {
+    key: 'photographe',
     prefix: 'photographe-lcd',
     one: 'photographe', many: 'photographes', unOne: 'un photographe',
     title: 'Photographe Airbnb : trouve un pro près de chez toi',
@@ -50,6 +51,7 @@ export const ANNUAIRES = {
     join: ['/devenir-photographe-lcd', 'Tu es photographe ? Rejoins l’annuaire'],
   },
   menage: {
+    key: 'menage',
     prefix: 'menage-lcd',
     one: 'équipe', many: 'équipes', unOne: 'une équipe de ménage',
     title: 'Ménage Airbnb : trouve une équipe près de chez toi',
@@ -143,7 +145,15 @@ export function cityPicksHtml(cfg, counts) {
 
 /** État vide (aucun pro) côté hôte */
 export function emptyHtml(cfg) {
-  return `<div class="empty"><div class="empty-ico"><i class="ph-bold ${cfg.icon}" style="font-size:32px;color:var(--g)"></i></div><h2>Les premiers ${esc(cfg.many)} arrivent</h2><p>L’annuaire vient d’ouvrir. En attendant, le guide de ta ville (plus bas) te donne les tarifs constatés et les questions à poser avant de choisir.</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a href="#villes" class="btn-p">Voir le guide de ma ville</a><a href="${cfg.articles[0][0]}" class="btn-p" style="background:transparent;border:1px solid rgba(0,76,63,.25);color:var(--g)">${esc(cfg.articles[0][1])}</a></div></div>`
+  return `<div class="empty"><div class="empty-ico"><i class="ph-bold ${cfg.icon}" style="font-size:32px;color:var(--g)"></i></div><h2>Les premiers ${esc(cfg.many)} arrivent</h2><p>L’annuaire vient d’ouvrir. Décris ton besoin : ta demande part aux pros de ta zone dès qu’ils sont là. Le guide de ta ville (plus bas) te donne les tarifs constatés.</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a href="/trouver-un-pro?metier=${cfg.key}" class="btn-p">Décrire mon besoin</a><a href="#villes" class="btn-p" style="background:transparent;border:1px solid rgba(0,76,63,.25);color:var(--g)">Le guide de ma ville</a></div></div>`
+}
+
+/** « Pas le temps de chercher ? » : vers le formulaire de demande inversée */
+export function demandeBandHtml(cfg) {
+  return `<div class="dem-band">
+  <div><strong>Pas le temps de chercher ?</strong> Décris ton besoin : ta demande part aux 3 ${esc(cfg.many)} les plus proches de ton logement.</div>
+  <a href="/trouver-un-pro?metier=${cfg.key}" class="dem-btn" id="dem-link"><i class="ph-bold ph-paper-plane-tilt"></i>Décrire mon besoin</a>
+</div>`
 }
 
 /** Guide pour choisir + préparer, et articles */
@@ -224,6 +234,12 @@ export const ANNUAIRE_CSS = `
 .card-body{display:flex;flex-direction:column;gap:12px;padding:20px 22px 22px;flex:1}
 .card-villes{font-size:12.5px;color:var(--tm);line-height:1.55;display:flex;gap:6px;align-items:flex-start}
 .card-villes i{color:var(--g);margin-top:2px}
+.dem-band{max-width:820px;margin:16px auto 0;padding:14px 16px 14px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:#fff;border:1px solid rgba(0,76,63,.14);border-radius:14px;font-size:14px;color:var(--tm);line-height:1.5}
+.dem-band>div{flex:1 1 300px}
+.dem-band strong{color:var(--td)}
+.dem-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 16px;border-radius:10px;background:var(--g);color:#fff;font-weight:600;font-size:14px;text-decoration:none;white-space:nowrap}
+.dem-btn:hover{background:#00382e}
+@media(max-width:860px){.dem-band{margin-left:16px;margin-right:16px}}
 .guide-section{max-width:1100px;margin:40px auto 0;padding:0 clamp(16px,5vw,40px)}
 .guide-grid{display:grid;gap:18px}
 @media(min-width:900px){.guide-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}}
@@ -273,5 +289,8 @@ export const CITY_PICKS_JS = `<script>
     input.dispatchEvent(new Event('input'));
   });
   input.addEventListener('input',function(){[].forEach.call(document.querySelectorAll('.city-pick'),function(x){if(x.getAttribute('data-city')!==input.value)x.classList.remove('on')})});
+  var links=[].slice.call(document.querySelectorAll('#dem-link,#search-demande'));
+  links.forEach(function(l){l.setAttribute('data-base',l.getAttribute('href'))});
+  input.addEventListener('input',function(){var v=input.value.trim();links.forEach(function(l){l.setAttribute('href',l.getAttribute('data-base')+(v?'&ville='+encodeURIComponent(v):''))})});
 })();
 </script>`

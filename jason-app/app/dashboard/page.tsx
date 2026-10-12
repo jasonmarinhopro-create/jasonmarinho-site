@@ -8,7 +8,7 @@ import {
   CalendarBlank,
   ArrowRight, Newspaper,
   GraduationCap, Trophy, Flame,
-  Camera, Sparkle, SignIn, SignOut, UsersThree,
+  Camera, Sparkle, SignIn, SignOut, UsersThree, PaperPlaneTilt,
 } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 // ChezNousWidget retiré Étape 7 (déplacé vers /dashboard/entre-hotes)
@@ -925,6 +925,14 @@ export default async function DashboardPage() {
                   <span style={{ flex: 1, minWidth: 0 }}>
                     <span style={s.linkTitle}>Équipe ménage LCD</span>
                     <span style={s.linkDesc}>Un ménage fiable : de meilleurs avis voyageurs</span>
+                  </span>
+                  <ArrowRight size={13} weight="bold" color="var(--text-3)" style={{ flexShrink: 0 }} />
+                </a>
+                <a href="https://jasonmarinho.com/trouver-un-pro?utm_source=app&utm_medium=accueil" target="_blank" rel="noopener noreferrer" style={s.proRow}>
+                  <span style={s.linkIcon}><PaperPlaneTilt size={17} weight="fill" color="var(--accent-text)" /></span>
+                  <span style={{ flex: 1, minWidth: 0 }}>
+                    <span style={s.linkTitle}>Décrire mon besoin</span>
+                    <span style={s.linkDesc}>Ta demande part aux 3 pros les plus proches, qui te répondent</span>
                   </span>
                   <ArrowRight size={13} weight="bold" color="var(--text-3)" style={{ flexShrink: 0 }} />
                 </a>
