@@ -88,7 +88,7 @@ export const OUTILS = [
     desc: 'Compte pro très répandu chez les indépendants et les sociétés, facturation et lien avec le comptable.',
     liens: [
       { label: 'Ouvrir un compte', href: QONTO, sponsored: true },
-      { label: 'Comparer avec Shine', href: '/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026' },
+      { label: 'Comparer', href: '/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026' },
     ],
   },
   {
