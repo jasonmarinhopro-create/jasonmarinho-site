@@ -16,7 +16,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
 import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
-import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, cityPicksHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
+import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, cityPicksHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, villesHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -382,30 +382,19 @@ export function buildAnnuaireListPage(items) {
         const displayName = p.pseudo || p.full_name
         const des = prixDes(p.formules, p.tarif_min)
         const tarif = des ?? fmtTarif(p)
-        const initials = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
         const searchBlob = normalizeSearch([searchWords(p, byPro.get(p.id)), p.specialite].filter(Boolean).join(' '))
-        const cover = vitrinePhotos(p.portfolio_photos, SUPABASE_URL, 1)[0]
+        const photos = vitrinePhotos(p.portfolio_photos, SUPABASE_URL, Math.min(PHOTO_LIMIT, CARD_PHOTOS_MAX))
         const villes = (Array.isArray(p.villes_couvertes) ? p.villes_couvertes : []).filter(v => v && v !== p.ville)
-        return `<a href="/annuaires/photographes/${escHtml(p.slug)}" class="card" data-search="${escHtml(searchBlob)}" data-tier="${escHtml(p.tier || '')}" data-tarif-min="${p.tarif_min ?? ''}" data-tarif-max="${p.tarif_max ?? ''}">
-  ${cover ? `<div class="card-photo"><img src="${escHtml(cover.thumb)}" alt="Logement photographié par ${escHtml(displayName)}" width="640" height="400" loading="lazy"></div>` : `<div class="card-photo card-cover" aria-hidden="true">${p.logo_url ? `<span class="card-cover-logo" style="background-image:url('${escHtml(p.logo_url)}')"></span>` : `<span class="card-cover-ini">${escHtml(initials)}</span>`}<span class="card-cover-lbl">Photographe · ${escHtml(p.ville)}</span></div>`}
-  <div class="card-body">
-  <div class="card-head">
-    ${!cover ? '' : p.logo_url
-      ? `<div class="card-logo" style="background:url('${escHtml(p.logo_url)}') center/cover"></div>`
-      : `<div class="card-logo placeholder">${escHtml(initials)}</div>`}
-    <div class="card-head-txt">
-      <h3 class="card-name">${escHtml(displayName)}</h3>
-      <div class="card-ville"><i class="ph ph-map-pin"></i>${escHtml(p.ville)}</div>
-    </div>
-  </div>
-  ${villes.length ? `<div class="card-villes"><i class="ph-bold ph-path"></i><span>Se déplace aussi à ${escHtml(villes.slice(0, 3).join(', '))}${villes.length > 3 ? ` et ${villes.length - 3} autre${villes.length > 4 ? 's' : ''}` : ''}</span></div>` : p.zone_couverte ? `<div class="card-zone"><strong>Zone couverte :</strong> ${escHtml(p.zone_couverte)}</div>` : ''}
-  ${p.specialite || p.reco_count > 0 ? `<div class="card-chips">${p.specialite ? `<span class="card-spe">${escHtml(p.specialite)}</span>` : ''}${p.reco_count > 0 ? `<span class="card-rc"><i class="ph-bold ph-heart"></i>Recommandé par ${p.reco_count} hôte${p.reco_count > 1 ? 's' : ''}</span>` : ''}</div>` : ''}
-  <div class="card-foot">
-    ${tarif ? `<div class="card-tarif">${escHtml(tarif)}${des ? '' : ' <span>la séance</span>'}</div>` : '<div></div>'}
-    <span class="card-cta">${cover ? 'Voir les photos et tarifs' : 'Voir la fiche'} <i class="ph-bold ph-arrow-right"></i></span>
-  </div>
-  </div>
-</a>`
+        const extra = [p.specialite, p.reco_count > 0 ? `recommandé par ${p.reco_count} hôte${p.reco_count > 1 ? 's' : ''}` : null].filter(Boolean).join(' · ')
+        return proCardHtml({
+          href: `/annuaires/photographes/${p.slug}`,
+          attrs: `data-search="${escHtml(searchBlob)}" data-tier="${escHtml(p.tier || '')}" data-tarif-min="${p.tarif_min ?? ''}" data-tarif-max="${p.tarif_max ?? ''}"`,
+          name: displayName, metier: 'Photographe', ville: p.ville,
+          lieu: cardLieu(villes, p.zone_couverte, 'aussi à'),
+          extra: extra ? extra.charAt(0).toUpperCase() + extra.slice(1) : '',
+          tarif, tarifSuffix: des ? '' : 'la séance',
+          photos, logoUrl: p.logo_url, alt: `Logement photographié par ${displayName}`,
+        })
       }).join('')}</div>`
 
   return `<!DOCTYPE html>

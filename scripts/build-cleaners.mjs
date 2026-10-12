@@ -15,7 +15,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
 import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
-import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, cityPicksHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
+import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, cityPicksHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, villesHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -433,31 +433,20 @@ export function buildAnnuaireListPage(items) {
         const des = prixDes(c.formules, c.tarif_forfait_min)
         const tarifLine = des ?? [forfait, heure].filter(Boolean).join(' · ')
         const equipeLabel = c.equipe_type ? EQUIPE_LABELS[c.equipe_type] : null
-        const initials = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
         const searchBlob = normalizeSearch([searchWords(c, byPro.get(c.id)), equipeLabel].filter(Boolean).join(' '))
-        const cover = vitrinePhotos(c.portfolio_photos, SUPABASE_URL, 1)[0]
+        const photos = vitrinePhotos(c.portfolio_photos, SUPABASE_URL, Math.min(PHOTO_LIMIT, CARD_PHOTOS_MAX))
         const villes = (Array.isArray(c.villes_couvertes) ? c.villes_couvertes : []).filter(v => v && v !== c.ville)
         const prestationsBlob = (c.prestations || []).join(' ')
-        return `<a href="/annuaires/menage/${escHtml(c.slug)}" class="card" data-search="${escHtml(searchBlob)}" data-equipe="${escHtml(c.equipe_type || '')}" data-delai="${escHtml(c.delai_reservation || '')}" data-assurance="${c.assurance_rc_pro ? '1' : '0'}" data-prestations="${escHtml(prestationsBlob)}" data-tarif-min="${c.tarif_forfait_min ?? ''}" data-tarif-max="${c.tarif_forfait_max ?? ''}">
-  ${cover ? `<div class="card-photo"><img src="${escHtml(cover.thumb)}" alt="Photo de ${escHtml(displayName)}" width="640" height="400" loading="lazy"></div>` : `<div class="card-photo card-cover" aria-hidden="true">${c.logo_url ? `<span class="card-cover-logo" style="background-image:url('${escHtml(c.logo_url)}')"></span>` : `<span class="card-cover-ini">${escHtml(initials)}</span>`}<span class="card-cover-lbl">Ménage · ${escHtml(c.ville)}</span></div>`}
-  <div class="card-body">
-  <div class="card-head">
-    ${!cover ? '' : c.logo_url
-      ? `<div class="card-logo" style="background:url('${escHtml(c.logo_url)}') center/cover"></div>`
-      : `<div class="card-logo placeholder">${escHtml(initials)}</div>`}
-    <div class="card-head-txt">
-      <h3 class="card-name">${escHtml(displayName)}</h3>
-      <div class="card-ville"><i class="ph ph-map-pin"></i>${escHtml(c.ville)}</div>
-    </div>
-  </div>
-  ${villes.length ? `<div class="card-villes"><i class="ph-bold ph-path"></i><span>Intervient aussi à ${escHtml(villes.slice(0, 3).join(', '))}${villes.length > 3 ? ` et ${villes.length - 3} autre${villes.length > 4 ? 's' : ''}` : ''}</span></div>` : c.zone_couverte ? `<div class="card-zone"><strong>Zone couverte :</strong> ${escHtml(c.zone_couverte)}</div>` : ''}
-  ${equipeLabel || c.assurance_rc_pro || c.reco_count > 0 ? `<div class="card-chips">${equipeLabel ? `<span class="card-spe">${escHtml(equipeLabel)}</span>` : ''}${c.assurance_rc_pro ? '<span class="card-rc"><i class="ph-bold ph-shield-check"></i>RC pro</span>' : ''}${c.reco_count > 0 ? `<span class="card-rc"><i class="ph-bold ph-heart"></i>Recommandé par ${c.reco_count} hôte${c.reco_count > 1 ? 's' : ''}</span>` : ''}</div>` : ''}
-  <div class="card-foot">
-    ${tarifLine ? `<div class="card-tarif">${escHtml(tarifLine)}</div>` : '<div></div>'}
-    <span class="card-cta">Voir la fiche <i class="ph-bold ph-arrow-right"></i></span>
-  </div>
-  </div>
-</a>`
+        const extra = [equipeLabel, c.assurance_rc_pro ? 'assurance RC pro' : null, c.reco_count > 0 ? `recommandée par ${c.reco_count} hôte${c.reco_count > 1 ? 's' : ''}` : null].filter(Boolean).join(' · ')
+        return proCardHtml({
+          href: `/annuaires/menage/${c.slug}`,
+          attrs: `data-search="${escHtml(searchBlob)}" data-equipe="${escHtml(c.equipe_type || '')}" data-delai="${escHtml(c.delai_reservation || '')}" data-assurance="${c.assurance_rc_pro ? '1' : '0'}" data-prestations="${escHtml(prestationsBlob)}" data-tarif-min="${c.tarif_forfait_min ?? ''}" data-tarif-max="${c.tarif_forfait_max ?? ''}"`,
+          name: displayName, metier: 'Équipe de ménage', ville: c.ville,
+          lieu: cardLieu(villes, c.zone_couverte, 'aussi à'),
+          extra: extra ? extra.charAt(0).toUpperCase() + extra.slice(1) : '',
+          tarif: tarifLine,
+          photos, logoUrl: c.logo_url, alt: `Photo de ${displayName}`,
+        })
       }).join('')}</div>`
 
   return `<!DOCTYPE html>

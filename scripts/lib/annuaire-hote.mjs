@@ -128,6 +128,46 @@ export function prixDes(formules, fallback) {
   return Number.isFinite(n) && n > 0 ? `dès ${String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} €` : null
 }
 
+/** Photos de la carte de l'annuaire : 4 au plus (carrousel), la sortie Supabase gratuite est comptée */
+export const CARD_PHOTOS_MAX = 4
+
+const initialsOf = name => String(name || '').split(/\s+/).filter(w => /^\p{L}/u.test(w)).map(w => w[0]).slice(0, 2).join('').toUpperCase()
+const boldPrices = s => esc(s).replace(/(\d[\d  ]*(?:,\d+)?\s?€(?:\/h)?)/g, '<strong>$1</strong>')
+
+/**
+ * Carte d'un pro dans l'annuaire, design « Monogramme » validé par Jason
+ * (12/10/2026, « plus épuré, plus élégant ») : photo en 3:2, carrousel quand
+ * il y en a plusieurs ; sans photo, aplat crème avec les initiales (ou le
+ * logo) au même format, pour que la grille reste alignée.
+ * `attrs` : attributs data-* déjà échappés (recherche et filtres).
+ */
+export function proCardHtml({ href, attrs = '', name, metier, ville, lieu, extra, tarif, tarifSuffix, photos = [], logoUrl, alt }) {
+  const n = photos.length
+  const media = n
+    ? `<div class="pc-slides">${photos.map((ph, i) => `<img src="${esc(ph.thumb)}" alt="${i === 0 ? esc(alt) : ''}" width="640" height="427" loading="lazy" decoding="async">`).join('')}</div>${n > 1
+      ? `<span class="pc-nav pc-prev" aria-hidden="true"><i class="ph-bold ph-caret-left"></i></span><span class="pc-nav pc-next" aria-hidden="true"><i class="ph-bold ph-caret-right"></i></span><span class="pc-dots" aria-hidden="true">${photos.map((_, i) => `<span class="pc-dot${i === 0 ? ' on' : ''}"></span>`).join('')}</span>`
+      : ''}`
+    : `<div class="pc-mono" aria-hidden="true">${logoUrl ? `<img class="pc-logo" src="${esc(logoUrl)}" alt="" loading="lazy">` : `<span class="pc-ini">${esc(initialsOf(name))}</span>`}<small>${esc(metier)}</small></div>`
+  const meta = [ville, lieu].filter(Boolean).join(' · ')
+  return `<a href="${esc(href)}" class="card pc"${attrs ? ` ${attrs}` : ''}>
+  <div class="pc-media">${media}</div>
+  <div class="pc-body">
+    <h3 class="pc-name">${esc(name)}</h3>
+    ${meta ? `<p class="pc-meta">${esc(meta)}</p>` : ''}
+    ${extra ? `<p class="pc-extra">${esc(extra)}</p>` : ''}
+    <div class="pc-foot"><span>${tarif ? `${boldPrices(tarif)}${tarifSuffix ? ` <small>${esc(tarifSuffix)}</small>` : ''}` : ''}</span><span class="pc-go">Voir la fiche <i class="ph-bold ph-arrow-right"></i></span></div>
+  </div>
+</a>`
+}
+
+/** « Lyon 6e, Villeurbanne… » ou la zone couverte, en court */
+export function cardLieu(villes, zone, verbe) {
+  const v = (Array.isArray(villes) ? villes : []).filter(Boolean)
+  if (v.length) return `${verbe} ${v.slice(0, 2).join(', ')}${v.length > 2 ? ` +${v.length - 2}` : ''}`
+  const z = String(zone || '').trim()
+  return z.length > 48 ? `${z.slice(0, 46).replace(/[\s,;·-]+\S*$/, '')}…` : z
+}
+
 export function heroInnerHtml(cfg, breadcrumb) {
   return `<div class="brd">${breadcrumb}</div>
     <span class="lbl">Annuaire · contact direct, sans commission</span>
@@ -232,6 +272,32 @@ export const ANNUAIRE_CSS = `
 .card-cover-logo{width:96px;height:96px;border-radius:20px;background:#fff center/cover no-repeat;box-shadow:0 10px 28px rgba(0,0,0,.3)}
 .card-cover-lbl{position:absolute;left:16px;bottom:12px;font-size:10.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:rgba(255,255,255,.6)}
 .card-body{display:flex;flex-direction:column;gap:12px;padding:20px 22px 22px;flex:1}
+.card.pc{display:flex;flex-direction:column;padding:0;gap:0;background:#fff;border:1px solid rgba(0,76,63,.10);border-radius:14px;overflow:hidden;transform:none;box-shadow:none;transition:border-color .2s,box-shadow .2s}
+.card.pc:hover{transform:none;border-color:rgba(0,76,63,.22);box-shadow:0 10px 30px rgba(15,26,13,.06)}
+.pc-media{position:relative;aspect-ratio:3/2;background:#EEEAE1;overflow:hidden;flex-shrink:0}
+.pc-slides{display:flex;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+.pc-slides::-webkit-scrollbar{display:none}
+.pc-slides img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:start;display:block}
+.pc-dots{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:center;gap:5px;pointer-events:none}
+.pc-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.55);box-shadow:0 0 3px rgba(0,0,0,.25);transition:background .2s}
+.pc-dot.on{background:#fff}
+.pc-nav{position:absolute;top:50%;margin-top:-16px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.94);color:#0F1A0D;display:flex;align-items:center;justify-content:center;font-size:13px;opacity:0;transition:opacity .2s;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+.pc-prev{left:10px}.pc-next{right:10px}
+@media(hover:hover){.card.pc:hover .pc-nav{opacity:1}}
+.card.pc .pc-nav.off{opacity:0;pointer-events:none}
+.pc-mono{height:100%;display:flex;align-items:center;justify-content:center;position:relative}
+.pc-ini{font-family:'Fraunces',serif;font-weight:300;font-size:60px;color:var(--g);letter-spacing:2px;line-height:1}
+.pc-logo{width:84px;height:84px;border-radius:14px;object-fit:cover;background:#fff}
+.pc-mono small{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:rgba(0,76,63,.55);font-weight:500}
+.pc-body{display:flex;flex-direction:column;gap:4px;padding:18px 20px;flex:1}
+.pc-name{font-family:'Fraunces',serif;font-size:20px;font-weight:400;letter-spacing:-.2px;line-height:1.25;margin:0;color:var(--td)}
+.pc-meta{font-size:13px;color:var(--tm);line-height:1.5;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pc-extra{font-size:12.5px;color:var(--tl);line-height:1.5;margin:0}
+.pc-foot{margin-top:auto;padding-top:14px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13.5px;color:var(--tm)}
+.pc-foot strong{font-weight:600;color:var(--td)}
+.pc-foot small{font-size:11.5px;color:var(--tl)}
+.pc-go{color:var(--g);font-weight:500;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.pc-go i{font-size:12px}
 .card-villes{font-size:12.5px;color:var(--tm);line-height:1.55;display:flex;gap:6px;align-items:flex-start}
 .card-villes i{color:var(--g);margin-top:2px}
 .dem-band{max-width:820px;margin:16px auto 0;padding:14px 16px 14px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;background:#fff;border:1px solid rgba(0,76,63,.14);border-radius:14px;font-size:14px;color:var(--tm);line-height:1.5}
@@ -292,5 +358,18 @@ export const CITY_PICKS_JS = `<script>
   var links=[].slice.call(document.querySelectorAll('#dem-link,#search-demande'));
   links.forEach(function(l){l.setAttribute('data-base',l.getAttribute('href'))});
   input.addEventListener('input',function(){var v=input.value.trim();links.forEach(function(l){l.setAttribute('href',l.getAttribute('data-base')+(v?'&ville='+encodeURIComponent(v):''))})});
+})();
+(function(){
+  [].forEach.call(document.querySelectorAll('.pc-slides'),function(sl){
+    var card=sl.parentNode;var dots=card.querySelectorAll('.pc-dot');if(dots.length<2)return;
+    var prev=card.querySelector('.pc-prev'),next=card.querySelector('.pc-next'),raf=0;
+    function idx(){return Math.round(sl.scrollLeft/(sl.clientWidth||1))}
+    function upd(){raf=0;var i=idx();[].forEach.call(dots,function(d,k){d.classList.toggle('on',k===i)});prev.classList.toggle('off',i<=0);next.classList.toggle('off',i>=dots.length-1)}
+    function go(d,e){e.preventDefault();e.stopPropagation();sl.scrollTo({left:(idx()+d)*sl.clientWidth,behavior:'smooth'})}
+    prev.addEventListener('click',function(e){go(-1,e)});
+    next.addEventListener('click',function(e){go(1,e)});
+    sl.addEventListener('scroll',function(){if(!raf)raf=requestAnimationFrame(upd)},{passive:true});
+    upd();
+  });
 })();
 </script>`
