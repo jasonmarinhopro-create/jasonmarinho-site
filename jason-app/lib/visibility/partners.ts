@@ -31,6 +31,7 @@ export const PARTNERS: Record<string, PartnerInfo> = {
   lodgify: { name: 'Lodgify', reward: '20 % des abonnements des clients amenés (25 % au-delà de 3 000 $ de ventes, 30 % au-delà de 10 000 $)', salesWhere: 'Tableau de bord affilié Lodgify', affilae: false },
   hospitable: { name: 'Hospitable', reward: '200 $ par client parrainé, sans plafond', salesWhere: 'Espace partenaire Hospitable', affilae: false },
   shine: { name: 'Shine', reward: 'Commission par compte ouvert (programme Affilae, 100 à 130 € selon le compte, conditions relevées en octobre 2026)', salesWhere: 'Affilae', affilae: true },
+  qonto: { name: 'Qonto', reward: 'Commission Affilae par inscription terminée, plus une prime par compte activé (montant selon les performances, cookie 30 jours, conditions relevées en octobre 2026)', salesWhere: 'Affilae', affilae: true },
   'shine-facture': { name: 'Shine Facture', reward: 'Commission Affilae par inscription', salesWhere: 'Affilae', affilae: true },
   airdna: { name: 'AirDNA', reward: '15 % des abonnements des clients amenés (conditions relevées en octobre 2026)', salesWhere: 'Tableau de bord affilié AirDNA', affilae: false },
   indy: { name: 'Indy', reward: 'De 10 € HT (inscription) à 250 € HT (société), selon le compte ouvert', salesWhere: 'Affilae', affilae: true },
@@ -383,6 +384,12 @@ export const PARTNER_SEO: Array<{ key: string; name: string; paths: string[]; ma
     paths: ['/partenaires/shine', '/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026'],
     match: /(^|[-/])shine([-/]|$)/,
     targets: ['shine', 'shine avis', 'shine compte pro', 'shine facture', 'compte bancaire pro location courte duree', 'compte pro lmnp'],
+  },
+  {
+    key: 'qonto', name: 'Qonto',
+    paths: ['/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026'],
+    match: /qonto/,
+    targets: ['qonto', 'qonto avis', 'qonto lmnp', 'qonto ou shine', 'compte pro location courte duree'],
   },
   {
     key: 'airdna', name: 'AirDNA',

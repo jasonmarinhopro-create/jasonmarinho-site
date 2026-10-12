@@ -31,6 +31,8 @@ const HOSPITABLE = 'https://hospitable.com/partners/refer?utm_source=affiliates&
 // remplacent l'ancien lien de parrainage limité à 2 par an
 const SHINE = 'https://www.shine.fr/?utm_source=affiliation&utm_medium=affilae&utm_campaign=jason-marinho&ae=2249'
 // AirDNA (affilié, 10/10/2026) : lien d'invitation fourni par AirDNA
+// Qonto (affilié via Affilae, profil validé le 12/10/2026, numéro d'affilié 3386)
+export const QONTO = 'https://lb.affilae.com/r/?p=5ce4f2a2b6302009e29d84f3&af=3386&lp=https%3A%2F%2Fqonto.com%2Ffr%3Futm_medium%3Daffilaefr%26utm_source%3Daffiliate%26utm_campaign%3Djason-marinho'
 const AIRDNA = 'https://eur-invite.airdna.co/Jason-Marinho'
 // Indy (partenariat validé le 30/09/2026) : lien « spécial immobilier » fourni par Indy
 const INDY = 'https://urlr.me/FEqNfy'
@@ -78,6 +80,15 @@ export const OUTILS = [
     liens: [
       { label: 'Ouvrir un compte', href: SHINE, sponsored: true },
       { label: "Voir l'offre", href: '/partenaires/shine' },
+    ],
+  },
+  {
+    nom: 'Qonto', mono: 'Q', couleur: '#111827', cats: ['banque', 'compta'],
+    badge: 'affilie', offre: 'Compte pro + facturation',
+    desc: 'Compte pro très répandu chez les indépendants et les sociétés, facturation et lien avec le comptable.',
+    liens: [
+      { label: 'Ouvrir un compte', href: QONTO, sponsored: true },
+      { label: 'Comparer avec Shine', href: '/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026' },
     ],
   },
   {
@@ -142,7 +153,6 @@ export const OUTILS = [
   { nom: 'Hostfully', mono: 'H', couleur: '#EA580C', cats: ['gestion', 'messagerie'], desc: 'PMS pour conciergeries multi-biens, avec livret d’accueil digital.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-hostfully-guesty' }] },
   { nom: 'Guesty', mono: 'G', couleur: '#1D4ED8', cats: ['gestion'], desc: 'PMS pensé pour les grandes conciergeries qui gèrent des dizaines de logements.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-hostfully-guesty' }] },
   { nom: 'Stripe', mono: 'S', couleur: '#635BFF', cats: ['banque', 'direct'], desc: 'Paiement en ligne par carte sur ton site de réservation directe.', liens: [{ label: 'Site officiel', href: 'https://stripe.com/fr', externe: true }] },
-  { nom: 'Qonto', mono: 'Q', couleur: '#111827', cats: ['banque'], desc: 'Néobanque pro très répandue chez les indépendants et les petites sociétés.', liens: [{ label: 'Site officiel', href: 'https://qonto.com/fr', externe: true }] },
   { nom: 'PriceLabs', mono: 'P', couleur: '#2563EB', cats: ['prix'], desc: 'Tarification dynamique très paramétrable, basée sur la demande du marché local.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-pricelabs-beyond-wheelhouse' }] },
   { nom: 'Beyond', mono: 'B', couleur: '#0891B2', cats: ['prix'], desc: 'Tarification dynamique automatisée, pensée pour être simple à laisser tourner.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-pricelabs-beyond-wheelhouse' }] },
   { nom: 'Wheelhouse', mono: 'W', couleur: '#4F46E5', cats: ['prix'], desc: 'Tarification dynamique avec des recommandations détaillées et transparentes.', liens: [{ label: 'Voir le comparatif', href: '/comparatif-pricelabs-beyond-wheelhouse' }] },

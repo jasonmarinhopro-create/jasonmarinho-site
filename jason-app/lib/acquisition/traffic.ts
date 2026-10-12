@@ -84,6 +84,25 @@ export function firstVisits(visits: TrafficVisit[]): TrafficVisit[] {
   return [...first.values()]
 }
 
+// Réponses préparées dans l'onglet Groupes (12/10/2026) : leurs liens portent
+// utm_medium=groupe et un code par message, sans passer par un lien court.
+// Chaque visiteur arrivé par l'une d'elles compte comme un clic d'un lien
+// Facebook unique « Réponses dans les groupes » (avant : 0 clic affiché sur la
+// carte Facebook alors que l'onglet Groupes en comptait).
+export const GROUP_REPLIES_CODE = 'groupes-reponses'
+const GROUP_REPLIES_LINK: TrafficLink = { code: GROUP_REPLIES_CODE, label: 'Réponses dans les groupes', channel: 'facebook_groupe' }
+export const isGroupReplyVisit = (v: Pick<TrafficVisit, 'utm_medium'>) => (v.utm_medium ?? '').toLowerCase() === 'groupe'
+
+function withGroupReplies<T extends { visits: TrafficVisit[]; links: TrafficLink[]; clicks: TrafficClick[] }>(input: T): T {
+  const replies = firstVisits(input.visits).filter(v => isGroupReplyVisit(v) && !(v.utm_campaign && input.links.some(l => l.code === v.utm_campaign)))
+  if (!replies.length) return input
+  return {
+    ...input,
+    links: input.links.some(l => l.code === GROUP_REPLIES_CODE) ? input.links : [...input.links, GROUP_REPLIES_LINK],
+    clicks: [...input.clicks, ...replies.map(v => ({ code: GROUP_REPLIES_CODE, created_at: v.created_at }))],
+  }
+}
+
 const inDays = (iso: string, start: string, end: string) => { const d = parisDay(iso); return d >= start && d <= end }
 const topCounts = (m: Map<string, number>, n: number) => [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, n).map(([name, count]) => ({ name, count }))
 const bump = (m: Map<string, number>, k: string, by = 1) => m.set(k, (m.get(k) ?? 0) + by)
@@ -119,6 +138,7 @@ export function buildChannelCards(input: {
   visits: TrafficVisit[]; members: TrafficMember[]; links: TrafficLink[]; clicks: TrafficClick[]; gsc: GscDay[] | null
   start: string; end: string; gscLagDays?: number
 }): ChannelCard[] {
+  input = withGroupReplies(input)
   const links: LinkMap = new Map(input.links.map(l => [l.code, l]))
   const visitors = new Map<ChannelKey, number>()
   const top = new Map<ChannelKey, Map<string, number>>()
@@ -203,6 +223,7 @@ export interface TodayData {
 export function buildToday(input: {
   visits: TrafficVisit[]; members: TrafficMember[]; links: TrafficLink[]; clicks: TrafficClick[]; gsc: GscDay[] | null; now: Date
 }): TodayData {
+  input = withGroupReplies(input)
   const nowMs = input.now.getTime()
   const today = parisDay(input.now.toISOString())
   const yesterday = addDays(today, -1)
@@ -255,7 +276,7 @@ export function buildToday(input: {
 
   const linkPages = new Map<string, { count: number; links: Set<string> }>()
   for (const v of todayVisits) {
-    const l = v.utm_campaign ? links.get(v.utm_campaign) : undefined
+    const l = (v.utm_campaign ? links.get(v.utm_campaign) : undefined) ?? (isGroupReplyVisit(v) ? GROUP_REPLIES_LINK : undefined)
     if (!l) continue
     const name = pageLabel(v.path)
     const cur = linkPages.get(name) ?? { count: 0, links: new Set<string>() }

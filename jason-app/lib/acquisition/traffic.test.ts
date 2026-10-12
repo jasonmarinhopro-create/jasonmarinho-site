@@ -48,6 +48,26 @@ describe('canaux', () => {
     expect(c.sans).toMatchObject({ visitors: null, signups: 1 })
   })
 
+  it('réponses de l\'onglet Groupes : comptées en clics Facebook, sans doubler un lien suivi', () => {
+    const cards = buildChannelCards({
+      start: '2026-10-04', end: '2026-10-12', links, gsc: null, members: [],
+      visits: [
+        v({ session_id: 'g1', utm_source: 'facebook', utm_medium: 'groupe', utm_campaign: 'gab2cd3', created_at: '2026-10-12T08:00:00Z' }),
+        v({ session_id: 'g1', path: '/tarifs', created_at: '2026-10-12T08:01:00Z' }),
+        v({ session_id: 'g2', utm_source: 'facebook', utm_medium: 'groupe', utm_campaign: 'gxyz789', created_at: '2026-10-11T08:00:00Z' }),
+        // Lien court suivi (déjà compté par son clic) : pas de clic en plus
+        v({ session_id: 'g3', utm_source: 'facebook', utm_medium: 'groupe', utm_campaign: 'groupe-k3f9', created_at: '2026-10-11T09:00:00Z' }),
+      ],
+      clicks: [{ code: 'groupe-k3f9', created_at: '2026-10-11T08:59:00Z' }],
+    })
+    const fb = cards.find(c => c.key === 'facebook')!
+    expect(fb).toMatchObject({ visitors: 3, clicks: 3 })
+    expect(fb.top).toContainEqual({ name: 'Réponses dans les groupes', count: 2 })
+    const t = buildToday({ now: new Date('2026-10-12T10:00:00Z'), links, gsc: null, members: [], visits: [v({ session_id: 'g1', utm_source: 'facebook', utm_medium: 'groupe', utm_campaign: 'gab2cd3', created_at: '2026-10-12T08:00:00Z' })], clicks: [] })
+    expect(t.clicksToday).toBe(1)
+    expect(t.linkPagesToday[0].links).toEqual(['Réponses dans les groupes'])
+  })
+
   it('aujourd\'hui : en ce moment, sources (hier si rien), liens, Google', () => {
     const now = new Date('2026-10-10T10:00:00Z')
     const t = buildToday({

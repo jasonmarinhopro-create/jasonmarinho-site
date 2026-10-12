@@ -40,7 +40,7 @@ const BOT_UA = /bot|crawler|spider|crawling|preview|scan|monitor|lighthouse|head
 // Liens raccourcis fournis par un partenaire : le domaine ne dit pas qui c'est
 const SHORT_LINKS = { 'urlr.me/FEqNfy': 'indy' }
 // Programmes Affilae (identifiant p= des liens lb.affilae.com)
-const AFFILAE_PROGRAMS = { '651c0d1e40e2d575f87b3b27': 'tiime' }
+const AFFILAE_PROGRAMS = { '651c0d1e40e2d575f87b3b27': 'tiime', '5ce4f2a2b6302009e29d84f3': 'qonto' }
 // Numéros d'affilié (paramètre ae=) qui distinguent deux programmes d'un même
 // domaine : Shine Facture (2226) à part du compte pro Shine (2249)
 const AE_PARTNERS = { '2226': 'shine-facture' }

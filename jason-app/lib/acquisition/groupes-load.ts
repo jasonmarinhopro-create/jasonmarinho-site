@@ -12,6 +12,8 @@ import { addDays, parisDay } from '@/lib/visibility/rules'
 import { cleanAcquisition } from './rules'
 import { parseArticlesData, SITE, type CatalogArticle, type CatalogPro } from './groupes'
 
+const GROUP_CODE = /^g[a-z2-9]{6}$/
+
 type ProRow = { user_id: string | null; slug: string | null; full_name: string | null; pseudo: string | null; ville: string | null; zone_couverte: string | null; status: string | null; is_public: boolean | null }
 
 export interface GroupCatalog { articles: CatalogArticle[]; pros: CatalogPro[]; articlesError: string | null }
@@ -79,7 +81,7 @@ export async function loadGroupStats(): Promise<GroupStats> {
   const weekStart = addDays(today, -6)
   const [replies, visits, profiles, catalog] = await Promise.all([
     db.from('group_replies').select('created_at').gte('created_at', `${addDays(today, -400)}T00:00:00Z`).limit(20_000),
-    db.from('site_visits').select('session_id, created_at').eq('utm_medium', 'groupe').gte('created_at', `${addDays(weekStart, -1)}T00:00:00Z`).limit(20_000),
+    db.from('site_visits').select('session_id, created_at, utm_campaign').eq('utm_medium', 'groupe').gte('created_at', `${addDays(weekStart, -1)}T00:00:00Z`).limit(20_000),
     db.from('profiles').select('created_at, acquisition').gte('created_at', `${addDays(weekStart, -1)}T00:00:00Z`).limit(5_000),
     loadGroupCatalog(),
   ])
@@ -96,13 +98,15 @@ export async function loadGroupStats(): Promise<GroupStats> {
 
   const todaySessions = new Set<string>()
   const weekSessions = new Set<string>()
-  for (const v of (visits.data ?? []) as Array<{ session_id: string; created_at: string }>) {
+  // Réponses de l'onglet seulement (code « g » + 6 caractères), pas les liens courts des groupes
+  for (const v of (visits.data ?? []) as Array<{ session_id: string; created_at: string; utm_campaign: string | null }>) {
+    if (!GROUP_CODE.test(v.utm_campaign ?? '')) continue
     const d = parisDay(v.created_at)
     if (d >= weekStart) weekSessions.add(v.session_id)
     if (d === today) todaySessions.add(v.session_id)
   }
   const signupsWeek = ((profiles.data ?? []) as Array<{ created_at: string; acquisition: unknown }>)
-    .filter(p => parisDay(p.created_at) >= weekStart && cleanAcquisition(p.acquisition)?.medium === 'groupe').length
+    .filter(p => parisDay(p.created_at) >= weekStart && GROUP_CODE.test(cleanAcquisition(p.acquisition)?.campaign ?? '')).length
 
   return {
     preparedToday: perDay.get(today) ?? 0,
