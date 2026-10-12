@@ -33,3 +33,5 @@ sauf pour retirer une ligne masquée dans le dashboard.
 - 2026-10-05 · reglementation · Depuis le 1er octobre, le bail standard bloque mieux la sous-location (https://edito.seloger.com/conseils-d-experts/louer/contrat-de-bail-voici-change-partir-1er-octobre-article-23703.html)
 - 2026-10-06 · plateformes · Abritel passe à 12 % de commission pour tous les hôtes le 29 octobre (https://blog.elloha.com/2026/10/04/pourquoi-les-geants-de-la-location-de-courte-duree-revoient-de-fond-en-comble-leur-modele-de-commission/)
 - 2026-10-10 · communes · Paris : louer sans changement d'usage expose à une amende jusqu'à 100 000 euros (https://kohenavocats.fr/2026/10/07/meuble-touristique-paris-octobre-2026-changement-usage-amende-copropriete-louer-regle/)
+- 2026-10-12 · plateformes · Mise à jour : les 15,5 % Airbnb entrent en vigueur demain (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
+- 2026-10-12 · fiscalite · Taxe de séjour 2027 : ta commune délibère en ce moment (https://www.service-public.fr/particuliers/vosdroits/F2048)
