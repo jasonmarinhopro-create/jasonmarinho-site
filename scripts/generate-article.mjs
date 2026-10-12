@@ -10,6 +10,7 @@
 //   3. Délègue à scripts/rebuild-blog.mjs pour régénérer cartes/compteurs/sitemap
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync } from 'fs'
+import { injectAppCta } from './lib/app-cta.mjs'
 import { resolve, dirname } from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 import { spawnSync } from 'child_process'
@@ -475,6 +476,8 @@ const LEGACY_SERVICES = {
   '/services/conciergerie': '/services/formations',
 }
 let html = generateArticleHTML(art)
+// Encadré « Dans l'app Jason Marinho » choisi selon le sujet (scripts/lib/app-cta.mjs)
+html = injectAppCta(html, art.slug, art.title) ?? html
 for (const [from, to] of Object.entries(LEGACY_SERVICES)) {
   html = html.replaceAll(`href="${from}"`, `href="${to}"`).replaceAll(`href="${from}#`, `href="${to}#`)
 }

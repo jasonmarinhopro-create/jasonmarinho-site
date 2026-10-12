@@ -53,22 +53,47 @@ function formatDate(iso: string) {
 
 const LEVEL_COLOR = { actif: 'var(--accent-text)', tiede: '#B7791F', endormi: 'var(--text-muted)' } as const
 
-/** « Vu hier · A créé un contrat (5 oct.) » : dernière visite et dernière action */
-function ActivityLine({ m, compact }: { m: Member; compact?: boolean }) {
+/** « Vu hier » : dernière visite, pour la vue liste (une ligne) */
+function ActivityLine({ m }: { m: Member }) {
   const now = new Date()
   const level = activityLevel(m.last_seen_at ?? null, now)
   return (
-    <span style={{ display: 'flex', flexDirection: compact ? 'row' : 'column', gap: compact ? 6 : 2, marginTop: compact ? 0 : 6, fontSize: '11.5px', color: 'var(--text-2)', minWidth: 0 }}>
-      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }} suppressHydrationWarning>
-        <span style={{ width: 7, height: 7, borderRadius: '50%', background: LEVEL_COLOR[level], flexShrink: 0 }} />
-        {m.last_seen_at ? `Vu : ${sinceLabel(m.last_seen_at, now).toLowerCase()}` : 'Jamais revenu'}
-      </span>
-      {!compact && (
-        <span style={{ color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} suppressHydrationWarning>
-          {m.last_action ? `${m.last_action.label} · ${formatDate(m.last_action.at)}` : 'Aucune action dans l’app'}
-        </span>
-      )}
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '11.5px', color: 'var(--text-2)', minWidth: 0 }} suppressHydrationWarning>
+      <span style={{ width: 7, height: 7, borderRadius: '50%', background: LEVEL_COLOR[level], flexShrink: 0 }} />
+      {m.last_seen_at ? sinceLabel(m.last_seen_at, now) : 'Jamais revenu'}
     </span>
+  )
+}
+
+/** Encadré des cartes et du panneau : inscription, dernière visite, dernière action */
+function ActivityStrip({ m, style }: { m: Member; style?: React.CSSProperties }) {
+  const now = new Date()
+  const level = activityLevel(m.last_seen_at ?? null, now)
+  const color = LEVEL_COLOR[level]
+  return (
+    <div style={{ ...s.strip, ...style }}>
+      <div style={{ minWidth: 0 }}>
+        <div style={s.stripLabel}>Inscrit</div>
+        <div style={s.stripValue}>{formatDate(m.created_at)}</div>
+      </div>
+      <div style={{ minWidth: 0 }}>
+        <div style={s.stripLabel}>Dernière visite</div>
+        <span suppressHydrationWarning style={{ ...s.visitPill, color, background: `color-mix(in srgb, ${color} 12%, transparent)` }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: color, flexShrink: 0 }} />
+          {m.last_seen_at ? sinceLabel(m.last_seen_at, now) : 'Jamais revenu'}
+        </span>
+      </div>
+      <div style={{ gridColumn: '1 / -1', minWidth: 0 }}>
+        <div style={s.stripLabel}>Dernière action</div>
+        {m.last_action ? (
+          <div style={{ ...s.stripValue, fontWeight: 500, color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={m.last_action.label} suppressHydrationWarning>
+            {m.last_action.label} <span style={{ color: 'var(--text-muted)' }}>· {formatDate(m.last_action.at)}</span>
+          </div>
+        ) : (
+          <div style={{ ...s.stripValue, fontWeight: 500, color: 'var(--text-muted)' }}>Rien dans l’app pour l’instant</div>
+        )}
+      </div>
+    </div>
   )
 }
 
@@ -625,8 +650,6 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
             </div>
           )}
           <span style={s.email}>{m.email}</span>
-          <span style={s.joinDate}>Inscrit le {formatDate(m.created_at)}</span>
-          <ActivityLine m={m} />
         </div>
 
         {/* Plan badge, top right */}
@@ -635,6 +658,8 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
           {planLabel}
         </div>
       </div>
+
+      <ActivityStrip m={m} />
 
       {/* ── Chips row ── */}
       <div style={s.chipsRow} onClick={e => e.stopPropagation()}>
@@ -812,7 +837,7 @@ function MemberListRow({ member: m, isPending, onOpenPanel, onDelete }: MemberLi
         )}
       </div>
 
-      <span className="jm-list-date" style={{ ...s.listDate, width: '120px' }}><ActivityLine m={m} compact /></span>
+      <span className="jm-list-date" style={{ ...s.listDate, width: '120px' }}><ActivityLine m={m} /></span>
       <span className="jm-list-date" style={s.listDate}>{formatDate(m.created_at)}</span>
 
       <div style={s.listActions} onClick={e => e.stopPropagation()}>
@@ -938,10 +963,9 @@ function MemberDetailPanel({ member, details, loading, onClose }: PanelProps) {
                       <span style={{ ...ps.planPill, background: 'color-mix(in srgb, #B83A7C 10%, transparent)', color: '#B83A7C' }}>Contributeur</span>
                     )}
                   </div>
-                  <div style={ps.memberSince}>Membre depuis le {formatDate(member.created_at)}</div>
-                  <ActivityLine m={member} />
                 </div>
               </div>
+              <ActivityStrip m={member} style={{ margin: '0 22px 18px' }} />
 
               <div style={ps.divider} />
 
@@ -1271,7 +1295,20 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '12px', color: 'var(--text-3)',
     overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
   },
-  joinDate: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '3px' },
+  strip: {
+    display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '9px 12px',
+    margin: '-2px 18px 14px', padding: '10px 12px',
+    background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: '12px',
+  },
+  stripLabel: {
+    fontSize: '9.5px', fontWeight: 700, letterSpacing: '0.6px', textTransform: 'uppercase' as const,
+    color: 'var(--text-muted)', marginBottom: '3px',
+  },
+  stripValue: { fontSize: '12.5px', fontWeight: 600, color: 'var(--text)' },
+  visitPill: {
+    display: 'inline-flex', alignItems: 'center', gap: '6px', whiteSpace: 'nowrap' as const,
+    fontSize: '11.5px', fontWeight: 600, padding: '2px 9px', borderRadius: '100px',
+  },
   planBadge: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',
     fontSize: '10px', fontWeight: 700, letterSpacing: '0.3px',
