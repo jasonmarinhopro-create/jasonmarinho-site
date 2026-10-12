@@ -2,6 +2,11 @@
 // par Jason : « tout au même endroit au lieu de lancer des workflows »).
 // Pures et testées : le chargement est dans health-load.ts.
 
+import {
+  FREE_STORAGE_BYTES, STORAGE_STOP_TOTAL_BYTES, PORTFOLIO_STOP_BYTES, PORTFOLIO_BUCKET, PHOTOS_MAX,
+  PHOTO_EGRESS_BUDGET_BYTES, photoEgressEstimate, type StorageUsageRow,
+} from '@/lib/pros/fiche-vitrine'
+
 export type HealthLevel = 'ok' | 'warn' | 'alert' | 'unknown'
 
 export interface HealthItem {
@@ -88,6 +93,7 @@ export interface MigrationProbe {
 
 /** Migrations récentes à vérifier : une table ou une colonne qu'elles créent. */
 export const MIGRATION_PROBES: MigrationProbe[] = [
+  { file: '20261012_131_fiches_pros_vitrine.sql', what: 'photos, formules, villes et étapes des fiches pros (et mesure du stockage)', table: 'cleaners', column: 'formules' },
   { file: '20261012_130_group_replies.sql', what: 'onglet Groupes de Provenance (messages préparés)', table: 'group_replies', column: 'code' },
   { file: '20261011_128_newsletter_suivi.sql', what: 'choix newsletter gardé sur le compte et contenu des lettres envoyées', table: 'profiles', column: 'newsletter_opt_in' },
   { file: '20261011_129_last_seen.sql', what: 'dernière visite des membres (Membres de l’admin)', table: 'profiles', column: 'last_seen_at' },
@@ -184,4 +190,53 @@ export function envHealth(env: Record<string, string | undefined>): HealthItem[]
       level: r.critical ? 'alert' as const : 'warn' as const,
     }
   })
+}
+
+// ── Offres gratuites (Supabase) ──────────────────────────────────────────
+// Demande de Jason (12/10/2026) : « ne pas dépasser les versions gratuites ».
+// Stockage : place prise par bucket (storage_usage, migration 131) face au
+// 1 Go gratuit. Sortie : estimation des photos des fiches (vues du mois ×
+// vignettes), la seule grosse source de sortie que l'on maîtrise.
+
+const MB = 1024 ** 2
+
+export function freeQuotaCheck(rows: StorageUsageRow[] | null, monthViews: number | null): HealthCheck {
+  const items: HealthItem[] = []
+  let level: HealthLevel = 'ok'
+  let summary = ''
+  if (!rows) {
+    level = 'unknown'
+    summary = 'Mesure du stockage indisponible (migration 131 absente) : les envois de photos des fiches sont bloqués par sécurité.'
+  } else {
+    const total = rows.reduce((n, r) => n + r.bytes, 0)
+    const pct = Math.round((total / FREE_STORAGE_BYTES) * 100)
+    level = total > STORAGE_STOP_TOTAL_BYTES ? 'alert' : total > STORAGE_STOP_TOTAL_BYTES * 0.8 ? 'warn' : 'ok'
+    summary = `Stockage : ${Math.round(total / MB)} Mo sur 1 024 Mo gratuits (${pct} %)`
+    for (const r of [...rows].sort((a, b) => b.bytes - a.bytes)) {
+      items.push({ label: r.bucket_id, detail: `${Math.round(r.bytes / MB * 10) / 10} Mo${r.objects ? ` · ${r.objects} fichiers` : ''}` })
+    }
+    const portfolio = rows.find(r => r.bucket_id === PORTFOLIO_BUCKET)?.bytes ?? 0
+    if (portfolio > PORTFOLIO_STOP_BYTES * 0.8) level = worst([level, portfolio > PORTFOLIO_STOP_BYTES ? 'alert' : 'warn'])
+  }
+  if (monthViews !== null) {
+    const est = photoEgressEstimate(monthViews, PHOTOS_MAX)
+    const egLevel: HealthLevel = est > PHOTO_EGRESS_BUDGET_BYTES ? 'warn' : 'ok'
+    items.unshift({
+      label: 'Sortie des photos des fiches (estimation du mois)',
+      detail: `${Math.round(est / MB)} Mo sur ${Math.round(PHOTO_EGRESS_BUDGET_BYTES / MB)} Mo prévus (${monthViews} vues de fiches)${egLevel === 'warn' ? ' : les fiches n’affichent plus que la photo principale' : ''}`,
+      level: egLevel,
+    })
+    level = worst([level, egLevel])
+  }
+  return {
+    key: 'quotas',
+    title: 'Offres gratuites (Supabase)',
+    level,
+    summary,
+    items,
+    advice: level === 'alert' || level === 'warn'
+      ? 'Les nouvelles photos de fiches sont refusées au-delà de 750 Mo en tout (350 Mo pour les fiches). Pour faire de la place : purger d’anciennes photos (workflow Stockage) ou passer en Supabase Pro.'
+      : undefined,
+    action: { href: 'https://supabase.com/dashboard/project/_/settings/billing/usage', label: 'Voir l’usage dans Supabase', external: true },
+  }
 }

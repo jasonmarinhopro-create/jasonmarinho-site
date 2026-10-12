@@ -5,11 +5,12 @@
 import 'server-only'
 import { unstable_cache } from 'next/cache'
 import { getServiceClient } from '@/lib/supabase/service'
+import { storageUsage } from '@/lib/pros/fiche-vitrine-server'
 import { stripe } from '@/lib/stripe/client'
 import { depositActBefore, parisToday } from '@/lib/stripe/deposit-window'
 import {
   type HealthCheck, type HealthItem, type HealthLevel, type StripeAccountInfo, type WorkflowRun,
-  MIGRATION_PROBES, WATCHED_WORKFLOWS, envHealth, isMissingRelation, stripeAccountIssues, workflowHealth, worst,
+  MIGRATION_PROBES, WATCHED_WORKFLOWS, freeQuotaCheck, envHealth, isMissingRelation, stripeAccountIssues, workflowHealth, worst,
 } from './health'
 
 const REPO = 'jasonmarinhopro-create/jasonmarinho-site'
@@ -345,16 +346,31 @@ function configCheck(): HealthCheck {
   }
 }
 
+// ── Offres gratuites ─────────────────────────────────────────────────────
+
+async function quotasCheck(): Promise<HealthCheck> {
+  const db = getServiceClient()
+  const d = new Date()
+  const first = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-01`
+  const [rows, views] = await Promise.all([
+    storageUsage(),
+    db.from('pro_fiche_views_daily').select('views').gte('day', first).limit(20000),
+  ])
+  const monthViews = views.error ? null : (views.data ?? []).reduce((n, r) => n + ((r as { views: number }).views || 0), 0)
+  return freeQuotaCheck(rows, monthViews)
+}
+
 export async function loadHealth(): Promise<HealthCheck[]> {
   const guard = <T,>(key: string, title: string, p: Promise<T>) => p.catch(e => unavailable(key, title, e) as unknown as T)
-  const [payments, stripeC, ical, emails, workflows, migrations] = await Promise.all([
+  const [payments, stripeC, ical, emails, workflows, migrations, quotas] = await Promise.all([
     guard('paiements', 'Paiements', paymentsCheck()),
     guard('stripe', 'Comptes Stripe des hôtes', stripeCheck()),
     guard('ical', 'Calendriers Airbnb / Booking', icalCheck()),
     guard('emails', 'E-mails', emailsCheck()),
     guard('taches', 'Tâches automatiques', workflowsCheck()),
     guard('migrations', 'Migrations de la base', migrationsCheck()),
+    guard('quotas', 'Offres gratuites (Supabase)', quotasCheck()),
   ])
   const flat = (x: HealthCheck | HealthCheck[]) => (Array.isArray(x) ? x : [x])
-  return [...flat(payments), stripeC, ...flat(ical), ...flat(emails), workflows, migrations, configCheck()]
+  return [...flat(payments), stripeC, ...flat(ical), ...flat(emails), workflows, quotas, migrations, configCheck()]
 }

@@ -1,5 +1,6 @@
 // Injecte l'exemple de « Mes statistiques » (scripts/lib/stats-demo.mjs) dans
-// les pages de recrutement des pros et les fiches d'exemple. Idempotent :
+// les pages de recrutement des pros (les fiches d'exemple l'ont par
+// build-exemples-fiches.mjs). Idempotent :
 // marqueurs <!-- STATSDEMO:START --> / <!-- STATSDEMO:END -->.
 // Usage : node scripts/inject-stats-demo.mjs
 import { readFileSync, writeFileSync } from 'node:fs'
@@ -11,8 +12,7 @@ const END = '<!-- STATSDEMO:END -->'
 const TARGETS = [
   { file: 'devenir-photographe-lcd/index.html', metier: 'photographe', before: '<!-- FONDATEUR PRICING -->', cta: { href: '/annuaires/photographes/inscription', label: 'Créer ma fiche photographe' } },
   { file: 'devenir-prestataire-menage-lcd/index.html', metier: 'menage', before: '<!-- FONDATEUR PRICING -->', cta: { href: '/annuaires/menage/inscription', label: 'Créer ma fiche équipe ménage' } },
-  { file: 'annuaires/photographes/exemple-fiche/index.html', metier: 'photographe', before: '<div class="cta-bottom">' },
-  { file: 'annuaires/menage/exemple-fiche/index.html', metier: 'menage', before: '<div class="cta-bottom">' },
+  // Fiches d'exemple : générées avec l'exemple par build-exemples-fiches.mjs
 ]
 
 for (const t of TARGETS) {

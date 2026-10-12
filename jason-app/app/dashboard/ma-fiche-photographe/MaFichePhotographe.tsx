@@ -5,8 +5,10 @@ import ViewsTrend from '@/components/pros/ViewsTrend'
 import FacturationTeaser from '@/components/pros/FacturationTeaser'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { useState, useTransition } from 'react'
-import { Camera, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
-import { updatePhotographerFiche, createCustomerPortalSession, uploadPhotographerLogo, deletePhotographerLogo } from './actions'
+import { Camera, Images, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
+import { updatePhotographerFiche, createCustomerPortalSession, uploadPhotographerLogo, deletePhotographerLogo, prepareFichePhotos, addFichePhotos, removeFichePhoto, moveFichePhoto, publishFichePhotos } from './actions'
+import PortfolioManager from '@/components/pros/PortfolioManager'
+import FicheVitrineFields, { initialVitrineForm, vitrinePayload, type VitrineForm } from '@/components/pros/FicheVitrineFields'
 import ShareFicheBlock from '@/components/pro/ShareFicheBlock'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
@@ -36,6 +38,10 @@ type Photographer = {
   created_at: string
   logo_url: string | null
   reseaux?: unknown
+  portfolio_photos?: string[] | null
+  formules?: unknown
+  villes_couvertes?: unknown
+  deroule?: unknown
 }
 
 interface Props {
@@ -61,6 +67,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
     telephone: photographer.telephone ?? '',
   })
   const [reseaux, setReseaux] = useState<ReseauxForm>(() => emptyReseauxForm(photographer.reseaux))
+  const [vitrine, setVitrine] = useState<VitrineForm>(() => initialVitrineForm(photographer, 'photographe'))
   const [busy, startBusy] = useTransition()
   const [err, setErr] = useState<string | null>(null)
   const [ok, setOk] = useState<string | null>(null)
@@ -109,6 +116,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         instagram_handle: form.instagram_handle || null,
         telephone: form.telephone || null,
         reseaux,
+        ...vitrinePayload(vitrine),
       })
       if (res.error) setErr(res.error)
       else if (res.warning) setOk(res.warning)
@@ -153,7 +161,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         eyebrowIcon={<Camera size={14} weight="fill" />}
         eyebrow="Ma fiche photographe"
         title={<>Ton travail, <HeroEm>vu par les hôtes</HeroEm>{photographer.ville ? ` de ${photographer.ville}` : ''}</>}
-        desc="Les hôtes choisissent leur photographe dans l’annuaire de Jason Marinho en regardant d’abord les photos. Un lien vers un beau portfolio et des tarifs clairs t’apportent plus de demandes : elles arrivent dans Demandes reçues et par email."
+        desc="Les hôtes choisissent leur photographe en regardant d’abord les photos. Ajoute tes plus belles réalisations, des formules claires et les villes où tu interviens : ta fiche fait office de site vitrine, et les demandes arrivent dans Demandes reçues et par email."
         aside={
           <div style={{ ...heroCard, flex: '1 1 100%', minWidth: 0 }}>
             <div style={s.asideTitle}>{isActive ? 'Ta fiche est en ligne' : isPending ? 'Ta fiche n’est pas encore publique' : `Ta fiche est ${FICHE_LABELS[photographer.status] ?? photographer.status}`}</div>
@@ -192,6 +200,20 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
 
       <div style={s.cols}>
       <div style={s.colMain}>
+
+      <section style={s.photosCard}>
+        <h3 style={s.cardTitle}><Images size={17} weight="duotone" color="var(--accent-text)" /> Mes photos</h3>
+        <PortfolioManager
+          initial={photographer.portfolio_photos ?? []}
+          targetId={isAdminPreview ? photographer.id : undefined}
+          ficheUrl={isActive ? publicUrl : null}
+          onPrepare={prepareFichePhotos}
+          onAdd={addFichePhotos}
+          onRemove={removeFichePhoto}
+          onMove={moveFichePhoto}
+          onPublish={publishFichePhotos}
+        />
+      </section>
 
       <form onSubmit={handleSave} style={s.form}>
         <h3 style={s.sectionTitle}>Logo / avatar</h3>
@@ -266,6 +288,8 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
           </Field>
         </div>
 
+        <FicheVitrineFields value={vitrine} onChange={setVitrine} metier="photographe" inputStyle={s.input} titleStyle={s.sectionTitle} />
+
         <h3 style={s.sectionTitle}>Présentation</h3>
         <Field label={`Bio (${form.bio.length}/600)`}>
           <textarea style={{ ...s.input, minHeight: 110, resize: 'vertical' as const }} value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} maxLength={600} />
@@ -325,6 +349,7 @@ const s: Record<string, React.CSSProperties> = {
   cols: { display: 'flex', flexWrap: 'wrap' as const, gap: 20, alignItems: 'flex-start' },
   colMain: { flex: '999 1 600px', minWidth: 0, display: 'flex', flexDirection: 'column' as const, gap: 20 },
   colSide: { flex: '1 1 340px', minWidth: 0, display: 'flex', flexDirection: 'column' as const, gap: 16 },
+  photosCard: { padding: '18px 20px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16 },
   cardTitle: { display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-fraunces), serif', fontSize: 18, fontWeight: 400, color: 'var(--text)', margin: '0 0 8px' },
   errBanner: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'var(--danger-bg)', border: '1px solid var(--danger-border)', borderRadius: 10, fontSize: 13, color: 'var(--danger-text)', marginBottom: 14 },
   warnBanner: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'rgba(255,213,107,0.18)', border: `1px solid ${AMBER}55`, borderRadius: 10, fontSize: 13, color: AMBER_DARK, marginBottom: 14 },

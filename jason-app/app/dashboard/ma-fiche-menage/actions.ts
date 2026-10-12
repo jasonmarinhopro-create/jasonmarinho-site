@@ -7,6 +7,8 @@ import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
 import { cleanReseaux } from '@/lib/pros/reseaux'
+import { cleanFormules, cleanVilles, cleanDeroule } from '@/lib/pros/fiche-vitrine'
+import * as vitrine from '@/lib/pros/fiche-vitrine-server'
 
 const log = logger('ma-fiche-menage/actions')
 
@@ -76,6 +78,9 @@ export async function updateCleanerFiche(payload: {
   instagram_handle?: string | null
   telephone?: string | null
   reseaux?: Record<string, string>
+  formules?: unknown
+  villes_couvertes?: unknown
+  deroule?: unknown
 }): Promise<{ success?: boolean; error?: string; warning?: string; adminEdit?: boolean }> {
   const target = await resolveTargetFiche(payload.targetId)
   if ('error' in target) return { error: target.error }
@@ -126,15 +131,21 @@ export async function updateCleanerFiche(payload: {
     telephone: (payload.telephone ?? '').toString().trim().slice(0, 30) || null,
     updated_at: new Date().toISOString(),
   }
+  // Formules, villes couvertes, déroulé (migration 131)
+  const vitrineFields = {
+    formules: cleanFormules(payload.formules),
+    villes_couvertes: cleanVilles(payload.villes_couvertes),
+    deroule: cleanDeroule(payload.deroule, 'menage'),
+  }
   let { error: updateErr } = await admin
     .from('cleaners')
-    .update({ ...fields, reseaux: reseaux.value })
+    .update({ ...fields, reseaux: reseaux.value, ...vitrineFields })
     .eq('id', target.cleanerId)
   // Migration 125 pas encore appliquée : on enregistre le reste
   let warning: string | undefined
-  if (updateErr && /reseaux/.test(`${updateErr.message} ${updateErr.details ?? ''}`)) {
+  if (updateErr && /reseaux|formules|villes_couvertes|deroule/.test(`${updateErr.message} ${updateErr.details ?? ''}`)) {
     ({ error: updateErr } = await admin.from('cleaners').update(fields).eq('id', target.cleanerId))
-    if (!updateErr) warning = 'Fiche enregistrée, sauf tes réseaux : ils arrivent dans quelques heures, réessaie plus tard.'
+    if (!updateErr) warning = 'Fiche enregistrée, sauf tes réseaux, formules, villes et étapes : ils arrivent dans quelques heures, réessaie plus tard.'
   }
 
   if (updateErr) {
@@ -451,4 +462,37 @@ export async function addClientFromContact(
   }
   revalidatePath('/dashboard/ma-fiche-menage/clients')
   return { id: row.id }
+}
+
+// ─── Photos de la fiche (migration 131, lib/pros/fiche-vitrine-server.ts) ───
+
+export async function prepareFichePhotos(count: number, targetId?: string) {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+  return vitrine.preparePhotoUploads('cleaners', target.cleanerId, count)
+}
+
+export async function addFichePhotos(paths: string[], targetId?: string) {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+  return vitrine.addPhotos('cleaners', target.cleanerId, paths)
+}
+
+export async function removeFichePhoto(path: string, targetId?: string) {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+  return vitrine.removePhoto('cleaners', target.cleanerId, path)
+}
+
+export async function moveFichePhoto(path: string, dir: -1 | 1, targetId?: string) {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+  return vitrine.movePhoto('cleaners', target.cleanerId, path, dir)
+}
+
+/** Met les photos en ligne : une seule reconstruction du site */
+export async function publishFichePhotos(targetId?: string) {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+  return vitrine.publishPhotos('cleaners')
 }

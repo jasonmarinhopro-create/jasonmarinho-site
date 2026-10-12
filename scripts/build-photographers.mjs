@@ -12,10 +12,11 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
 import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
+import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, villesHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -29,6 +30,9 @@ const RESERVED_DIRS = new Set(['inscription', 'exemple-fiche'])
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 const HAS_SUPABASE = !!(SUPABASE_URL && SERVICE_KEY)
+// Photos affichées par fiche : réduit à la photo principale si la sortie
+// Supabase du mois risque de dépasser l'offre gratuite (photoLimitFromViews)
+let PHOTO_LIMIT = 6
 
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
 console.log('[build-photographers] START')
@@ -81,6 +85,23 @@ async function fetchRecoCounts() {
   }
 }
 
+// Vues des fiches pros du mois (toutes) : sert à protéger la sortie gratuite
+// de Supabase (photos des fiches servies depuis le stockage).
+async function fetchMonthViews() {
+  if (!HAS_SUPABASE) return 0
+  try {
+    const d = new Date()
+    const first = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-01`
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/pro_fiche_views_daily?day=gte.${first}&select=views&limit=20000`, {
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, Accept: 'application/json' },
+    })
+    if (!res.ok) return 0
+    return (await res.json()).reduce((n, r) => n + (r.views || 0), 0)
+  } catch {
+    return 0
+  }
+}
+
 function fmtTarif(p) {
   if (!p.tarif_min && !p.tarif_max) return null
   if (p.tarif_min && p.tarif_max) return `${p.tarif_min} – ${p.tarif_max} €`
@@ -98,7 +119,8 @@ function memberSince(createdAt) {
   return `${MOIS_FR[d.getMonth()]} ${d.getFullYear()}`
 }
 
-function buildFichePage(p) {
+// Exportée pour les fiches d'exemple (scripts/build-exemples-fiches.mjs)
+export function buildFichePage(p) {
   const displayName = p.pseudo || p.full_name
   const title = `${displayName} · Photographe LCD ${p.ville} | Jason Marinho`
   const tarif = fmtTarif(p)
@@ -110,6 +132,9 @@ function buildFichePage(p) {
   const reseaux = proReseauxLinks(p.reseaux, null)
   const guide = g?.href ?? null
   const depuis = memberSince(p.created_at)
+  const firstName = displayName.split(' ')[0]
+  const photos = p.__photos ?? vitrinePhotos(p.portfolio_photos, SUPABASE_URL, PHOTO_LIMIT)
+  const external = p.portfolio_url ? { href: p.portfolio_url, label: 'Voir le portfolio', short: 'Portfolio', icon: 'ph-image-square', track: 'portfolio' } : null
   // NB breadcrumbs : l'annuaire vit désormais directement sur
   // /annuaires/photographes (plus de sous-niveau /annuaire).
 
@@ -177,6 +202,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .disclaimer strong{color:var(--td)}
 .ok-msg{padding:14px;background:rgba(0,200,100,.08);border:1px solid rgba(0,200,100,.25);border-radius:8px;color:#1e9d54;font-size:13.5px;text-align:center}
 .err-msg{padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:8px;color:#dc2626;font-size:13px;margin-bottom:10px}
+${VITRINE_CSS}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify({
@@ -188,6 +214,7 @@ ${JSON.stringify({
   address: { '@type': 'PostalAddress', addressLocality: p.ville, addressCountry: 'FR' },
   jobTitle: 'Photographe spécialisé location courte durée',
   knowsAbout: ['Photographie immobilière', 'Location courte durée', 'Airbnb', 'Booking', p.specialite].filter(Boolean),
+  ...(photos.length ? { image: photos.map(ph => ph.full) } : {}),
   sameAs: [p.portfolio_url, p.instagram_handle ? `https://instagram.com/${p.instagram_handle}` : null, ...reseaux.map(l => l.url)].filter(Boolean),
 })}
 </script>
@@ -206,7 +233,8 @@ ${JSON.stringify({
 </head>
 <body>
 <header class="hero">
-  <div class="s-in">
+  <div class="s-in hero-grid${photos.length ? ' has-cover' : ''}">
+  <div>
     <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/photographes">Annuaire photographes LCD</a> · <span>${escHtml(displayName)}</span></div>
     <div class="tag-row">
       ${p.reco_count > 0 ? `<span class="tag" style="background:rgba(99,214,131,.15);color:#7be29a;border:1px solid rgba(99,214,131,.35)"><i class="ph-bold ph-heart" style="font-size:10px"></i>Recommandé par ${p.reco_count} hôte${p.reco_count > 1 ? 's' : ''}</span>` : ''}
@@ -224,22 +252,29 @@ ${JSON.stringify({
       ${tarif ? `<span><i class="ph-bold ph-currency-eur"></i>${escHtml(tarif)} la session</span>` : ''}
       <span><i class="ph-bold ph-handshake"></i>Contact direct, sans commission</span>
     </div>
+    ${heroActionsHtml({ firstName, hasPhotos: photos.length > 0, external })}
+  </div>
+  ${heroCoverHtml(photos, displayName)}
   </div>
 </header>
 
 <div class="body">
   <div>
+    ${galleryHtml(photos, { name: displayName })}
     ${p.bio ? `<div class="card" style="margin-bottom:20px"><h2>Présentation</h2><div class="bio">${escHtml(p.bio)}</div></div>` : ''}
-    <div class="card">
-      <h2>Portfolio</h2>
-      <p style="font-size:14px;color:var(--tm);line-height:1.7;margin-bottom:14px">Consulte le portfolio complet de ${escHtml(displayName)} pour découvrir son style, ses réalisations LCD et choisir si son approche correspond à ton logement.</p>
+    ${formulesHtml(p.formules)}
+    ${derouleHtml(p.deroule, 'photographe')}
+    <div class="card vt-sec">
+      <h2>Portfolio complet</h2>
+      <p style="font-size:14px;color:var(--tm);line-height:1.7;margin-bottom:14px">Toutes les réalisations de ${escHtml(displayName)}, pour juger de son style et voir si son approche correspond à ton logement.</p>
       <a href="${escHtml(p.portfolio_url)}" target="_blank" rel="noopener noreferrer" class="btn-p" onclick="jmTrack('portfolio')"><i class="ph-bold ph-image-square"></i>Voir le portfolio</a>
       ${p.instagram_handle ? `<a href="https://instagram.com/${escHtml(p.instagram_handle)}" target="_blank" rel="noopener" class="btn-ol" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i>@${escHtml(p.instagram_handle)}</a>` : ''}
     </div>
+    ${villesHtml(p.villes_couvertes, { root: ROOT, prefix: 'photographe-lcd', ville: p.ville, metierLabel: 'Photographe' })}
   </div>
 
   <aside>
-    <div class="card">
+    <div class="card" id="contact">
       <h2>Contacter ${escHtml(displayName.split(' ')[0])}</h2>
       <form class="contact-form" id="contact-form" onsubmit="return contactSubmit(event)">
         <div id="contact-err" class="err-msg" style="display:none"></div>
@@ -277,7 +312,7 @@ ${JSON.stringify({
 </div>
 
 <div class="disclaimer">
-  <strong>Important.</strong> Jason Marinho recommande ${escHtml(displayName)} après vérification de son portfolio et de son expérience LCD. Cette mise en relation est gratuite pour toi. Le contrat et le paiement de la prestation se font directement entre toi et le photographe, sans commission ni intermédiation de notre part.
+  <strong>Bon à savoir.</strong> Cette mise en relation est gratuite pour toi. Le devis, le contrat et le paiement de la prestation se font directement entre toi et ${escHtml(displayName)}, sans commission ni intermédiaire de notre part.
 </div>
 
 <script>
@@ -328,6 +363,8 @@ async function contactSubmit(e) {
   return false;
 }
 </script>
+${stickyBarHtml({ firstName, hasPhotos: photos.length > 0, external })}
+${VITRINE_JS}
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
 </body>
@@ -754,6 +791,8 @@ async function main() {
   if (demo.size) console.log(`[build-photographers] ${demo.size} fiche(s) de compte admin écartée(s)`)
   const recoCounts = await fetchRecoCounts()
   for (const p of items) p.reco_count = recoCounts.get(p.id) ?? 0
+  PHOTO_LIMIT = photoLimitFromViews(await fetchMonthViews())
+  if (PHOTO_LIMIT < 6) console.log('[build-photographers] Vues du mois élevées : photo principale seulement (offre gratuite Supabase)')
 
   // Clean photographes dir (regen all)
   if (fs.existsSync(FICHES_DIR)) {
@@ -802,7 +841,8 @@ async function main() {
 }
 
 
-main().catch(err => {
+// Lancé directement (build) : génère tout. Importé (fiches d'exemple) : rien.
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) main().catch(err => {
   console.error('[build-photographers] Erreur:', err)
   process.exit(0)
 })

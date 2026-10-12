@@ -11,10 +11,11 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
 import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
+import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, villesHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -28,6 +29,9 @@ const RESERVED_DIRS = new Set(['inscription', 'exemple-fiche'])
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 const HAS_SUPABASE = !!(SUPABASE_URL && SERVICE_KEY)
+// Photos affichées par fiche : réduit à la photo principale si la sortie
+// Supabase du mois risque de dépasser l'offre gratuite (photoLimitFromViews)
+let PHOTO_LIMIT = 6
 
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
 console.log('[build-cleaners] START')
@@ -103,6 +107,23 @@ async function fetchRecoCounts() {
   }
 }
 
+// Vues des fiches pros du mois (toutes) : sert à protéger la sortie gratuite
+// de Supabase (photos des fiches servies depuis le stockage).
+async function fetchMonthViews() {
+  if (!HAS_SUPABASE) return 0
+  try {
+    const d = new Date()
+    const first = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-01`
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/pro_fiche_views_daily?day=gte.${first}&select=views&limit=20000`, {
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, Accept: 'application/json' },
+    })
+    if (!res.ok) return 0
+    return (await res.json()).reduce((n, r) => n + (r.views || 0), 0)
+  } catch {
+    return 0
+  }
+}
+
 function fmtForfait(c) {
   if (!c.tarif_forfait_min && !c.tarif_forfait_max) return null
   if (c.tarif_forfait_min && c.tarif_forfait_max) return `${c.tarif_forfait_min} – ${c.tarif_forfait_max} €`
@@ -120,7 +141,8 @@ function memberSince(createdAt) {
   return `${MOIS_FR[d.getMonth()]} ${d.getFullYear()}`
 }
 
-function buildFichePage(c) {
+// Exportée pour les fiches d'exemple (scripts/build-exemples-fiches.mjs)
+export function buildFichePage(c) {
   const displayName = c.pseudo || c.full_name
   const title = `${displayName} · Équipe ménage LCD ${c.ville} | Jason Marinho`
   const forfait = fmtForfait(c)
@@ -133,6 +155,9 @@ function buildFichePage(c) {
   const reseaux = proReseauxLinks(c.reseaux, null)
   const guide = g?.href ?? null
   const depuis = memberSince(c.created_at)
+  const firstName = (c.full_name || displayName).split(' ')[0]
+  const photos = c.__photos ?? vitrinePhotos(c.portfolio_photos, SUPABASE_URL, PHOTO_LIMIT)
+  const external = c.site_url ? { href: c.site_url, label: 'Voir le site', short: 'Site', icon: 'ph-globe', track: 'site' } : null
 
   const prestations = (c.prestations || []).map(p => PRESTATIONS_LABELS[p] || p)
   const equipeLabel = c.equipe_type ? EQUIPE_LABELS[c.equipe_type] : null
@@ -208,6 +233,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .ok-msg{padding:14px;background:rgba(0,200,100,.08);border:1px solid rgba(0,200,100,.25);border-radius:8px;color:#1e9d54;font-size:13.5px;text-align:center}
 .err-msg{padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:8px;color:#dc2626;font-size:13px;margin-bottom:10px}
 .trust-row{display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(99,214,131,.08);border:1px solid rgba(99,214,131,.2);border-radius:8px;margin-top:12px;font-size:13px;color:#1e9d54;font-weight:500}
+${VITRINE_CSS}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify({
@@ -220,6 +246,7 @@ ${JSON.stringify({
   address: { '@type': 'PostalAddress', addressLocality: c.ville, addressCountry: 'FR' },
   areaServed: c.zone_couverte || c.ville,
   serviceType: 'Service de ménage pour location courte durée',
+  ...(photos.length ? { image: photos.map(ph => ph.full) } : {}),
   knowsAbout: ['Ménage Airbnb', 'Turnover LCD', 'Gestion du linge', ...prestations].slice(0, 12),
   telephone: c.telephone || undefined,
   email: undefined,
@@ -244,7 +271,8 @@ ${JSON.stringify({
 </head>
 <body>
 <header class="hero">
-  <div class="s-in">
+  <div class="s-in hero-grid${photos.length ? ' has-cover' : ''}">
+  <div>
     <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/menage">Annuaire ménage LCD</a> · <span>${escHtml(displayName)}</span></div>
     <div class="tag-row">
       ${c.reco_count > 0 ? `<span class="tag" style="background:rgba(99,214,131,.15);color:#7be29a;border:1px solid rgba(99,214,131,.35)"><i class="ph-bold ph-heart" style="font-size:10px"></i>Recommandé par ${c.reco_count} hôte${c.reco_count > 1 ? 's' : ''}</span>` : ''}
@@ -265,12 +293,17 @@ ${JSON.stringify({
       ${delaiLabel ? `<span><i class="ph-bold ph-lightning"></i>${escHtml(delaiLabel)}</span>` : ''}
       <span><i class="ph-bold ph-handshake"></i>Contact direct, sans commission</span>
     </div>
+    ${heroActionsHtml({ firstName, hasPhotos: photos.length > 0, external })}
+  </div>
+  ${heroCoverHtml(photos, displayName)}
   </div>
 </header>
 
 <div class="body">
   <div>
+    ${galleryHtml(photos, { name: displayName, title: 'En images' })}
     ${c.bio ? `<div class="card" style="margin-bottom:20px"><h2>Présentation</h2><div class="bio">${escHtml(c.bio)}</div></div>` : ''}
+    ${formulesHtml(c.formules)}
     ${prestations.length > 0 ? `<div class="card" style="margin-bottom:20px"><h2>Prestations</h2><div class="prestations-grid">${prestations.map(p => `<span class="prestation-chip"><i class="ph-bold ph-check"></i>${escHtml(p)}</span>`).join('')}</div></div>` : ''}
     <div class="card">
       <h2>Capacité & disponibilité</h2>
@@ -283,10 +316,12 @@ ${JSON.stringify({
       ${c.assurance_rc_pro ? `<div class="trust-row"><i class="ph-bold ph-shield-check" style="font-size:15px"></i>Couvert par une assurance Responsabilité Civile Professionnelle</div>` : ''}
       ${c.siret ? `<div style="margin-top:10px;font-size:12px;color:var(--tl)">SIRET déclaré : <strong style="color:var(--td);font-variant-numeric:tabular-nums">${escHtml(c.siret)}</strong></div>` : ''}
     </div>
+    ${derouleHtml(c.deroule, 'menage')}
+    ${villesHtml(c.villes_couvertes, { root: ROOT, prefix: 'menage-lcd', ville: c.ville, metierLabel: 'Ménage' })}
   </div>
 
   <aside>
-    <div class="card">
+    <div class="card" id="contact">
       <h2>Contacter ${escHtml((c.full_name || displayName).split(' ')[0])}</h2>
       <form class="contact-form" id="contact-form" onsubmit="return contactSubmit(event)">
         <div id="contact-err" class="err-msg" style="display:none"></div>
@@ -327,7 +362,7 @@ ${JSON.stringify({
 </div>
 
 <div class="disclaimer">
-  <strong>Important.</strong> Jason Marinho recommande ${escHtml(displayName)} après vérification du dossier (références LCD, capacité, sérieux). Cette mise en relation est gratuite pour toi. Le devis, le contrat et le paiement de la prestation se font directement entre toi et l'équipe de ménage, sans commission ni intermédiation de notre part.
+  <strong>Bon à savoir.</strong> Cette mise en relation est gratuite pour toi. Le devis, le contrat et le paiement de la prestation se font directement entre toi et ${escHtml(displayName)}, sans commission ni intermédiaire de notre part.
 </div>
 
 <script>
@@ -376,6 +411,8 @@ async function contactSubmit(e) {
   return false;
 }
 </script>
+${stickyBarHtml({ firstName, hasPhotos: photos.length > 0, external })}
+${VITRINE_JS}
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
 </body>
@@ -882,6 +919,8 @@ async function main() {
   if (demo.size) console.log(`[build-cleaners] ${demo.size} fiche(s) de compte admin écartée(s)`)
   const recoCounts = await fetchRecoCounts()
   for (const c of items) c.reco_count = recoCounts.get(c.id) ?? 0
+  PHOTO_LIMIT = photoLimitFromViews(await fetchMonthViews())
+  if (PHOTO_LIMIT < 6) console.log('[build-cleaners] Vues du mois élevées : photo principale seulement (offre gratuite Supabase)')
 
   // Clean menage dir : on supprime UNIQUEMENT les sous-dossiers de fiches
   // (slugs). Hub + annuaire + inscription + exemple-fiche (RESERVED_DIRS)
@@ -928,7 +967,8 @@ async function main() {
 }
 
 
-main().catch(err => {
+// Lancé directement (build) : génère tout. Importé (fiches d'exemple) : rien.
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) main().catch(err => {
   console.error('[build-cleaners] Erreur:', err)
   process.exit(0)
 })

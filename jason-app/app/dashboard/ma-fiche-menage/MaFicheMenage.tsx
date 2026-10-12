@@ -5,8 +5,10 @@ import ViewsTrend from '@/components/pros/ViewsTrend'
 import FacturationTeaser from '@/components/pros/FacturationTeaser'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { useState, useTransition } from 'react'
-import { Sparkle, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, ShieldCheck, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
-import { updateCleanerFiche, createCustomerPortalSession, uploadCleanerLogo, deleteCleanerLogo } from './actions'
+import { Sparkle, Images, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, ShieldCheck, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
+import { updateCleanerFiche, createCustomerPortalSession, uploadCleanerLogo, deleteCleanerLogo, prepareFichePhotos, addFichePhotos, removeFichePhoto, moveFichePhoto, publishFichePhotos } from './actions'
+import PortfolioManager from '@/components/pros/PortfolioManager'
+import FicheVitrineFields, { initialVitrineForm, vitrinePayload, type VitrineForm } from '@/components/pros/FicheVitrineFields'
 import ShareFicheBlock from '@/components/pro/ShareFicheBlock'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
@@ -40,6 +42,10 @@ type Cleaner = {
   created_at: string
   logo_url: string | null
   reseaux?: unknown
+  portfolio_photos?: string[] | null
+  formules?: unknown
+  villes_couvertes?: unknown
+  deroule?: unknown
 }
 
 interface Props {
@@ -88,6 +94,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
     telephone: cleaner.telephone ?? '',
   })
   const [reseaux, setReseaux] = useState<ReseauxForm>(() => emptyReseauxForm(cleaner.reseaux))
+  const [vitrine, setVitrine] = useState<VitrineForm>(() => initialVitrineForm(cleaner, 'menage'))
   const [busy, startBusy] = useTransition()
   const [err, setErr] = useState<string | null>(null)
   const [ok, setOk] = useState<string | null>(null)
@@ -150,6 +157,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         instagram_handle: form.instagram_handle || null,
         telephone: form.telephone || null,
         reseaux,
+        ...vitrinePayload(vitrine),
       })
       if (res.error) setErr(res.error)
       else if (res.warning) setOk(res.warning)
@@ -194,7 +202,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         eyebrowIcon={<Sparkle size={14} weight="fill" />}
         eyebrow="Ma fiche équipe ménage"
         title={<>Ta fiche, <HeroEm>vue par les hôtes</HeroEm>{cleaner.ville ? ` de ${cleaner.ville}` : ''}</>}
-        desc="Les hôtes te trouvent dans l’annuaire ménage de Jason Marinho. Une fiche complète (prestations, tarifs, zone, photo) reçoit plus de demandes : elles arrivent dans Demandes reçues et par email."
+        desc="Les hôtes te trouvent dans l’annuaire ménage de Jason Marinho. Une fiche complète (photos, formules, prestations, villes) fait office de site vitrine et reçoit plus de demandes : elles arrivent dans Demandes reçues et par email."
         aside={
           <div style={{ ...heroCard, flex: '1 1 100%', minWidth: 0 }}>
             <div style={s.asideTitle}>{isActive ? 'Ta fiche est en ligne' : isPending ? 'Ta fiche n’est pas encore publique' : `Ta fiche est ${FICHE_LABELS[cleaner.status] ?? cleaner.status}`}</div>
@@ -233,6 +241,19 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
 
       <div style={s.cols}>
       <div style={s.colMain}>
+      <section style={s.photosCard}>
+        <h3 style={s.photosTitle}><Images size={17} weight="duotone" color="var(--accent-text)" /> Mes photos</h3>
+        <PortfolioManager
+          initial={cleaner.portfolio_photos ?? []}
+          targetId={isAdminPreview ? cleaner.id : undefined}
+          ficheUrl={isActive ? publicUrl : null}
+          onPrepare={prepareFichePhotos}
+          onAdd={addFichePhotos}
+          onRemove={removeFichePhoto}
+          onMove={moveFichePhoto}
+          onPublish={publishFichePhotos}
+        />
+      </section>
       <form onSubmit={handleSave} style={s.form}>
         <h3 style={s.sectionTitle}>Logo de l'équipe</h3>
         <div style={s.logoRow}>
@@ -358,6 +379,8 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
           <input style={s.input} value={form.siret} onChange={e => setForm({ ...form, siret: e.target.value })} maxLength={14} placeholder="14 chiffres sans espaces" />
         </Field>
 
+        <FicheVitrineFields value={vitrine} onChange={setVitrine} metier="menage" inputStyle={s.input} titleStyle={s.sectionTitle} />
+
         <h3 style={s.sectionTitle}>Présentation</h3>
         <Field label={`Bio (${form.bio.length}/600)`}>
           <textarea style={{ ...s.input, minHeight: 110, resize: 'vertical' as const }} value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} maxLength={600} />
@@ -415,7 +438,7 @@ const s: Record<string, React.CSSProperties> = {
   statL: { fontSize: 11.5, color: 'var(--text-3)', lineHeight: 1.3 },
   // 2 colonnes au-delà de ~1200 px : formulaire à gauche, partage / vues / abonnement à droite
   cols: { display: 'flex', flexWrap: 'wrap' as const, gap: 20, alignItems: 'flex-start' },
-  colMain: { flex: '999 1 600px', minWidth: 0 },
+  colMain: { flex: '999 1 600px', minWidth: 0, display: 'flex', flexDirection: 'column' as const, gap: 20 },
   colSide: { flex: '1 1 340px', minWidth: 0, display: 'flex', flexDirection: 'column' as const, gap: 16 },
   errBanner: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'var(--danger-bg)', border: '1px solid var(--danger-border)', borderRadius: 10, fontSize: 13, color: 'var(--danger-text)', marginBottom: 14 },
   warnBanner: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'rgba(255,213,107,0.18)', border: `1px solid ${AMBER}55`, borderRadius: 10, fontSize: 13, color: AMBER_DARK, marginBottom: 14 },
@@ -433,6 +456,8 @@ const s: Record<string, React.CSSProperties> = {
   actions: { display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 10 },
   btnPrimary: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 18px', background: 'var(--accent-text)', color: 'var(--bg)', border: 'none', borderRadius: 8, fontSize: 13.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' },
   btnSecondary: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '10px 16px', background: 'transparent', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' },
+  photosCard: { padding: '18px 20px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16 },
+  photosTitle: { display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-fraunces), serif', fontSize: 18, fontWeight: 400, color: 'var(--text)', margin: '0 0 8px' },
   subscriptionCard: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' as const, gap: 14, padding: '18px 20px', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 16 },
   subscriptionMeta: { fontSize: 13, color: 'var(--text-muted)', margin: '4px 0 0' },
   logoRow: { display: 'flex', gap: 18, padding: 14, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 10, flexWrap: 'wrap' as const, alignItems: 'center' },

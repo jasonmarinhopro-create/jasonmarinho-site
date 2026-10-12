@@ -3,14 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Exemple de fiche photographe LCD · Aperçu de ton mini-site</title>
-<meta name="description" content="Aperçu du mini-site que tu obtiens en t'inscrivant à l'annuaire des photographes LCD de Jason Marinho. Portfolio, zone, tarifs, contact direct.">
+<title>Exemple de fiche photographe LCD · Aperçu de ta fiche</title>
+<meta name="description" content="Aperçu de la fiche que tu obtiens dans l’annuaire des photographes LCD de Jason Marinho : photos, formules, déroulé, villes couvertes, contact direct.">
 <link rel="canonical" href="https://jasonmarinho.com/annuaires/photographes/exemple-fiche">
-<meta property="og:title" content="Exemple de fiche photographe LCD">
-<meta property="og:description" content="Aperçu du mini-site que tu obtiens dans l'annuaire des photographes LCD de Jason Marinho.">
+<meta property="og:title" content="Exemple de fiche photographe LCD · Aperçu de ta fiche">
+<meta property="og:description" content="Aperçu de la fiche que tu obtiens dans l’annuaire des photographes LCD de Jason Marinho : photos, formules, déroulé, villes couvertes, contact direct.">
 <meta property="og:url" content="https://jasonmarinho.com/annuaires/photographes/exemple-fiche">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+<meta property="og:site_name" content="Jason Marinho">
 <meta name="robots" content="noindex, follow">
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
@@ -25,12 +26,6 @@
 body{font-family:'Outfit',sans-serif;background:var(--cr);color:var(--td);padding-top:64px}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
 a{color:inherit}
-
-/* Demo banner */
-.demo-banner{background:linear-gradient(135deg,#FFD56B 0%,#FFB84D 100%);color:#0F1A0D;padding:14px clamp(20px,5vw,48px);text-align:center;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
-.demo-banner a{color:#003329;text-decoration:underline;font-weight:700}
-.demo-banner i{font-size:16px}
-
 .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);padding:48px 0 56px;color:#fff}
 .s-in{max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px)}
 .brd{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:22px}
@@ -38,7 +33,10 @@ a{color:inherit}
 .tag-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.7)}
 .tag.gold{background:rgba(255,213,107,.15);color:#FFD56B;border:1px solid rgba(255,213,107,.35)}
-h1{font-family:'Fraunces',serif;font-size:clamp(28px,4vw,46px);font-weight:400;line-height:1.1;letter-spacing:-.5px;margin:0 0 14px}
+h1{font-family:'Fraunces',serif;font-size:clamp(28px,4vw,46px);font-weight:400;line-height:1.1;letter-spacing:-.5px;margin:0 0 14px;flex:1;min-width:0}
+.hero-id{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.hero-logo{width:96px;height:96px;border-radius:18px;flex-shrink:0;border:1px solid rgba(255,255,255,.15);overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.hero-logo.placeholder{background:rgba(255,213,107,.10);color:var(--y);font-family:'Fraunces',serif;font-size:36px;font-weight:400}
 h1 em{color:var(--y);font-style:italic;font-weight:300}
 .subtitle{font-size:16px;color:rgba(255,255,255,.65);line-height:1.7;max-width:640px;margin:0}
 .meta-row{display:flex;flex-wrap:wrap;gap:18px;margin-top:24px;font-size:13.5px;color:rgba(255,255,255,.7)}
@@ -48,7 +46,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .card{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:24px}
 .card h2{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);margin:0 0 12px}
 .bio{font-size:15px;line-height:1.75;color:var(--tm);white-space:pre-wrap}
-.btn-p{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:14.5px;padding:13px 22px;border-radius:10px;text-decoration:none;width:100%;border:none;cursor:pointer;font-family:'Outfit',sans-serif}
+.btn-p{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:14.5px;padding:13px 22px;border-radius:10px;text-decoration:none;width:100%;transition:all .2s;border:none;cursor:pointer;font-family:'Outfit',sans-serif}
 .btn-p:hover{background:#ffe08f}
 .btn-ol{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--g);border:1px solid rgba(0,76,63,.2);font-weight:500;font-size:14px;padding:12px 20px;border-radius:10px;text-decoration:none;width:100%;margin-top:10px}
 .btn-ol:hover{background:var(--g);color:#fff;border-color:var(--g)}
@@ -56,103 +54,218 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .aside-row:first-of-type{border-top:none;padding-top:0}
 .aside-k{font-size:11px;color:var(--tl);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
 .aside-v{font-size:14px;color:var(--td);font-weight:500}
-.contact-form input,.contact-form textarea{width:100%;padding:11px 13px;border:1px solid rgba(0,76,63,.18);border-radius:8px;background:#fff;font-family:'Outfit',sans-serif;font-size:14px;color:var(--td);margin-bottom:10px;pointer-events:none;opacity:.65}
+.contact-form input,.contact-form textarea{width:100%;padding:11px 13px;border:1px solid rgba(0,76,63,.18);border-radius:8px;background:#fff;font-family:'Outfit',sans-serif;font-size:14px;color:var(--td);margin-bottom:10px}
+.contact-form input:focus,.contact-form textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,76,63,.1)}
 .contact-form textarea{min-height:90px;resize:vertical}
-.disclaimer{max-width:1100px;margin:0 auto;padding:20px clamp(20px,5vw,48px) 30px;font-size:12.5px;color:var(--tl);line-height:1.7}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.disclaimer{max-width:1100px;margin:0 auto;padding:20px clamp(20px,5vw,48px) 50px;font-size:12.5px;color:var(--tl);line-height:1.7}
 .disclaimer strong{color:var(--td)}
+.ok-msg{padding:14px;background:rgba(0,200,100,.08);border:1px solid rgba(0,200,100,.25);border-radius:8px;color:#1e9d54;font-size:13.5px;text-align:center}
+.err-msg{padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:8px;color:#dc2626;font-size:13px;margin-bottom:10px}
 
-/* CTA bottom */
+.hero-grid{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
+@media(min-width:900px){.hero-grid.has-cover{grid-template-columns:minmax(0,1fr) 400px}}
+.vt-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.vt-btn-y,.vt-btn-o{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Outfit',sans-serif;font-weight:600;font-size:15px;padding:13px 22px;border-radius:10px;text-decoration:none;transition:background .15s,border-color .15s}
+.vt-btn-y{background:#FFD56B;color:#003329}
+@media(max-width:640px){.vt-actions a{flex:1 1 100%}}
+.vt-btn-y:hover{background:#ffe08f}
+.vt-btn-o{border:1px solid rgba(255,255,255,.3);color:#fff;background:rgba(255,255,255,.06)}
+.vt-btn-o:hover{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.12)}
+.vt-cover{display:none;padding:0;border:0;background:none;cursor:zoom-in;border-radius:18px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.35);aspect-ratio:4/3;width:100%}
+.vt-cover img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.vt-cover:hover img{transform:scale(1.03)}
+@media(min-width:900px){.vt-cover{display:block}}
+.vt-sec{margin-bottom:20px;scroll-margin-top:84px}
+.vt-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.vt-count{font-size:12.5px;color:var(--tl)}
+.vt-gal{display:grid;gap:8px;margin-top:4px}
+.vt-ph{position:relative;padding:0;border:0;background:#EEF3EF;border-radius:12px;overflow:hidden;cursor:zoom-in;min-height:0}
+.vt-ph[hidden]{display:none}
+.vt-ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+.vt-ph:hover img{transform:scale(1.04)}
+.vt-gal.n1{grid-template-columns:1fr}.vt-gal.n1 .vt-ph{aspect-ratio:16/9}
+.vt-gal.n2{grid-template-columns:1fr 1fr}.vt-gal.n2 .vt-ph{aspect-ratio:4/3}
+.vt-gal.n3,.vt-gal.n4,.vt-gal.n5{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,minmax(0,150px))}
+.vt-gal.n3 .vt-ph:first-child,.vt-gal.n4 .vt-ph:first-child,.vt-gal.n5 .vt-ph:first-child{grid-column:span 2;grid-row:span 2}
+.vt-gal.n3 .vt-ph:not(:first-child){grid-column:span 2}
+.vt-gal.n4 .vt-ph:nth-child(2){grid-column:span 2}
+.vt-more{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,26,17,.55);color:#fff;font-family:'Fraunces',serif;font-size:26px}
+@media(max-width:640px){
+  .vt-gal.n2,.vt-gal.n3,.vt-gal.n4,.vt-gal.n5{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;grid-template-rows:none;margin:4px -24px 0;padding:0 24px 4px;scrollbar-width:none}
+  .vt-gal::-webkit-scrollbar{display:none}
+  .vt-gal.n2 .vt-ph,.vt-gal.n3 .vt-ph,.vt-gal.n4 .vt-ph,.vt-gal.n5 .vt-ph{flex:0 0 84%;aspect-ratio:4/3;scroll-snap-align:center}
+  .vt-gal .vt-ph[hidden]{display:block}
+  .vt-more{display:none}
+}
+.vt-lb{border:0;padding:0;background:transparent;max-width:100vw;max-height:100vh;width:100vw;height:100vh;margin:0}
+.vt-lb::backdrop{background:rgba(0,12,8,.92)}
+.vt-lb[open]{display:flex;align-items:center;justify-content:center}
+.vt-lb img{max-width:min(92vw,1600px);max-height:84vh;object-fit:contain;border-radius:8px;display:block}
+.vt-lb button{position:absolute;width:46px;height:46px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.vt-lb button:hover{background:rgba(255,255,255,.24)}
+.vt-lb-x{top:16px;right:16px}
+.vt-lb-nav.prev{left:16px;top:50%;transform:translateY(-50%)}
+.vt-lb-nav.next{right:16px;top:50%;transform:translateY(-50%)}
+.vt-lb-n{position:absolute;bottom:18px;left:0;right:0;text-align:center;color:rgba(255,255,255,.75);font-size:13px}
+.vt-forms{display:grid;gap:12px;margin-top:4px}
+@media(min-width:640px){.vt-forms.n2{grid-template-columns:1fr 1fr}.vt-forms.n3{grid-template-columns:repeat(3,1fr)}}
+.vt-form{border:1px solid var(--bd);border-radius:12px;padding:16px;background:#FCFBF8}
+.vt-form.first{border:1px solid rgba(0,76,63,.28);background:rgba(0,76,63,.035)}
+.vt-form-n{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--g)}
+.vt-form-p{font-family:'Fraunces',serif;font-size:26px;color:var(--td);margin:4px 0 6px;line-height:1.1}
+.vt-form p{font-size:13.5px;color:var(--tm);line-height:1.6;margin:0}
+.vt-note{font-size:12px;color:var(--tl);margin-top:12px}
+.vt-steps{list-style:none;display:grid;gap:14px;margin-top:6px}
+@media(min-width:700px){.vt-steps{grid-template-columns:repeat(3,1fr)}}
+.vt-steps li{display:flex;gap:12px;align-items:flex-start}
+.vt-step-n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--g);color:#FFD56B;font-family:'Fraunces',serif;font-size:15px;display:flex;align-items:center;justify-content:center}
+.vt-steps strong{display:block;font-size:14.5px;color:var(--td);margin-top:4px}
+.vt-steps p{font-size:13.5px;color:var(--tm);line-height:1.6;margin-top:4px}
+.vt-villes{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.vt-ville{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:999px;background:rgba(0,76,63,.05);border:1px solid rgba(0,76,63,.12);font-size:13.5px;color:var(--g);font-weight:500;text-decoration:none}
+a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
+#contact{scroll-margin-top:84px}
+.vt-bar{display:none}
+@media(max-width:840px){
+  body{padding-bottom:84px}
+  .vt-bar{display:flex;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:90;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(253,252,249,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid rgba(0,76,63,.12);box-shadow:0 -8px 24px rgba(0,26,17,.08);transform:translateY(110%);transition:transform .25s ease}
+  .vt-bar.on{transform:none}
+  .vt-bar a{display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:10px;font-weight:600;font-size:15px;text-decoration:none;padding:13px 14px;font-family:'Outfit',sans-serif}
+  .vt-bar-p{flex:1;background:#FFD56B;color:#003329}
+  .vt-bar-s{border:1px solid rgba(0,76,63,.22);color:var(--g);background:#fff}
+}
+
+.card{position:relative}
+.annot-tag{position:absolute;top:-9px;right:14px;background:#FFD56B;color:#003329;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:3px 9px;border-radius:6px;box-shadow:0 4px 10px rgba(255,213,107,.4);display:inline-flex;align-items:center;gap:4px;z-index:2}
+.demo-banner{background:linear-gradient(135deg,#FFD56B 0%,#FFB84D 100%);color:#0F1A0D;padding:14px clamp(20px,5vw,48px);text-align:center;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.demo-banner a{color:#003329;text-decoration:underline;font-weight:700}
 .cta-bottom{background:linear-gradient(135deg,#001a11,var(--gd));border-radius:20px;padding:48px clamp(20px,4vw,40px);text-align:center;color:#fff;max-width:920px;margin:30px auto 70px}
 .cta-bottom .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.7);margin-bottom:14px}
 .cta-bottom h2{font-family:'Fraunces',serif;font-size:clamp(1.5rem,2.8vw,2rem);margin:0 0 12px;font-weight:400;line-height:1.2;color:#fff}
 .cta-bottom h2 em{color:var(--y);font-style:italic;font-weight:300}
-.cta-bottom p{font-size:15px;color:rgba(255,255,255,.65);margin:0 auto 24px;line-height:1.65;max-width:560px}
+.cta-bottom p{font-size:15px;color:rgba(255,255,255,.7);margin:0 auto 24px;line-height:1.65;max-width:560px}
 .cta-bottom .btn-main{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 28px;border-radius:10px;text-decoration:none}
 .cta-bottom .btn-main:hover{background:#ffe08f}
-
-/* Annotations */
-.annot-card{position:relative}
-.annot-tag{position:absolute;top:-9px;right:14px;background:#FFD56B;color:#003329;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:3px 9px;border-radius:6px;box-shadow:0 4px 10px rgba(255,213,107,.4);display:inline-flex;align-items:center;gap:4px;z-index:2}
+.disclaimer{color:var(--tm)}
 </style>
 <script defer src="/nav.js"></script>
 </head>
 <body>
-
-<div class="demo-banner">
-  <i class="ph-bold ph-eye"></i>
-  <span>Ceci est un <strong>exemple</strong> de fiche photographe (Camille n'existe pas). <a href="/annuaires/photographes/inscription">Crée la tienne maintenant →</a></span>
-</div>
-
+<div class="demo-banner"><i class="ph-bold ph-eye"></i><span>Ceci est un <strong>exemple</strong> de fiche photographe (Camille n’existe pas). <a href="/annuaires/photographes/inscription">Crée la tienne maintenant →</a></span></div>
 <header class="hero">
-  <div class="s-in">
+  <div class="s-in hero-grid has-cover">
+  <div>
     <div class="brd"><a href="/">Accueil</a> · <a href="/devenir-photographe-lcd">Photographes LCD</a> · <span>Exemple de fiche</span></div>
     <div class="tag-row">
+      
       <span class="tag">Intérieurs + drone extérieur</span>
       <span class="tag"><i class="ph-bold ph-map-pin" style="font-size:10px"></i>Lyon</span>
     </div>
-    <h1>Camille Sénéchal<br><em>photographe LCD</em></h1>
-    <p class="subtitle">Zone d'intervention : Lyon + 60 km · Rhône, Beaujolais, vallée du Rhône.</p>
+    <div class="hero-id">
+      <div class="hero-logo placeholder">CS</div>
+      <h1>Camille Sénéchal<br><em>photographe LCD</em></h1>
+    </div>
+    <p class="subtitle">Zone d'intervention : Lyon + 60 km · Rhône, Beaujolais, vallée du Rhône</p>
     <div class="meta-row">
       <span><i class="ph-bold ph-currency-eur"></i>350 – 700 € la session</span>
       <span><i class="ph-bold ph-handshake"></i>Contact direct, sans commission</span>
     </div>
+    <div class="vt-actions"><a href="#contact" class="vt-btn-y" data-vt-contact><i class="ph-bold ph-paper-plane-tilt"></i>Contacter Camille</a><a href="#photos" class="vt-btn-o"><i class="ph-bold ph-images"></i>Voir les photos</a></div>
+  </div>
+  <button type="button" class="vt-cover" data-vt-open="0" aria-label="Agrandir la photo principale"><img src="/img/exemple-fiches/photo-interieur-1-t.jpg" alt="Logement photographié par Camille Sénéchal" width="640" height="480" fetchpriority="high"></button>
   </div>
 </header>
 
 <div class="body">
   <div>
-    <div class="annot-card" style="margin-bottom:20px">
-      <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Bio que tu rédiges</span>
-      <div class="card">
-        <h2>Présentation</h2>
-        <div class="bio">Photographe spécialisée location courte durée depuis 4 ans à Lyon, je shoot exclusivement pour des hôtes Airbnb et des conciergeries du Rhône. Mon truc : les intérieurs lumineux qui font envie dès la première photo, avec parfois un complément drone pour valoriser un jardin ou une vue. Je travaille rapide (la séance type dure 2h) et je livre sous 5 jours, retouches comprises. Chaque shoot est livré en 2 formats : pleine résolution pour ton site / dossier presse, et carré 1:1 optimisé pour le thumbnail Airbnb.</div>
-      </div>
+    <section class="card vt-sec" id="photos" style="position:relative">
+  <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Jusqu’à 6 photos</span><div class="vt-h"><h2>Photos</h2><span class="vt-count">6 photos</span></div>
+  <div class="vt-gal n5"><button type="button" class="vt-ph" data-vt-open="0" data-vt-full="/img/exemple-fiches/photo-interieur-1.jpg" aria-label="Agrandir la photo 1 sur 6"><img src="/img/exemple-fiches/photo-interieur-1-t.jpg" alt="Photo 1 sur 6, par Camille Sénéchal" width="640" height="480"></button><button type="button" class="vt-ph" data-vt-open="1" data-vt-full="/img/exemple-fiches/photo-salon-5.jpg" aria-label="Agrandir la photo 2 sur 6"><img src="/img/exemple-fiches/photo-salon-5-t.jpg" alt="Photo 2 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"></button><button type="button" class="vt-ph" data-vt-open="2" data-vt-full="/img/exemple-fiches/photo-chambre-4.jpg" aria-label="Agrandir la photo 3 sur 6"><img src="/img/exemple-fiches/photo-chambre-4-t.jpg" alt="Photo 3 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"></button><button type="button" class="vt-ph" data-vt-open="3" data-vt-full="/img/exemple-fiches/photo-cuisine-2.jpg" aria-label="Agrandir la photo 4 sur 6"><img src="/img/exemple-fiches/photo-cuisine-2-t.jpg" alt="Photo 4 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"></button><button type="button" class="vt-ph" data-vt-open="4" data-vt-full="/img/exemple-fiches/photo-sdb-2.jpg" aria-label="Agrandir la photo 5 sur 6"><img src="/img/exemple-fiches/photo-sdb-2-t.jpg" alt="Photo 5 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"><span class="vt-more">+1</span></button><button type="button" class="vt-ph" data-vt-open="5" data-vt-full="/img/exemple-fiches/photo-maison-2.jpg" hidden aria-label="Agrandir la photo 6 sur 6"><img src="/img/exemple-fiches/photo-maison-2-t.jpg" alt="Photo 6 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"></button></div>
+</section>
+<dialog class="vt-lb" id="vt-lb" aria-label="Photos en grand">
+  <button type="button" class="vt-lb-x" data-vt-close aria-label="Fermer"><i class="ph-bold ph-x"></i></button>
+  <button type="button" class="vt-lb-nav prev" data-vt-prev aria-label="Photo précédente"><i class="ph-bold ph-caret-left"></i></button>
+  <img alt="">
+  <button type="button" class="vt-lb-nav next" data-vt-next aria-label="Photo suivante"><i class="ph-bold ph-caret-right"></i></button>
+  <div class="vt-lb-n"></div>
+</dialog>
+    <div class="card" style="margin-bottom:20px"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Bio que tu rédiges</span><h2>Présentation</h2><div class="bio">Photographe spécialisée location courte durée depuis 4 ans à Lyon, je shoot exclusivement pour des hôtes Airbnb et des conciergeries du Rhône. Mon truc : les intérieurs lumineux qui font envie dès la première photo, avec parfois un complément drone pour valoriser un jardin ou une vue. Je travaille rapide (la séance type dure 2h) et je livre sous 5 jours, retouches comprises. Chaque shoot est livré en 2 formats : pleine résolution pour ton site / dossier presse, et carré 1:1 optimisé pour le thumbnail Airbnb.</div></div>
+    <section class="card vt-sec" id="formules" style="position:relative">
+  <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes formules</span><h2>Formules</h2>
+  <div class="vt-forms n3"><div class="vt-form first">
+    <div class="vt-form-n">Essentielle</div>
+    <div class="vt-form-p">350 €</div>
+    <p>Studio ou T2 : 20 photos retouchées, livrées sous 5 jours.</p>
+  </div><div class="vt-form">
+    <div class="vt-form-n">Complète</div>
+    <div class="vt-form-p">520 €</div>
+    <p>Jusqu’au T4 : 35 photos, carré 1:1 pour Airbnb, visite en vidéo courte.</p>
+  </div><div class="vt-form">
+    <div class="vt-form-n">Prestige</div>
+    <div class="vt-form-p">700 €</div>
+    <p>Maison avec extérieur : 45 photos + vues drone du jardin et du quartier.</p>
+  </div></div>
+  <p class="vt-note">Prix indicatifs : le devis final dépend de ton logement.</p>
+</section>
+    <section class="card vt-sec" style="position:relative">
+  <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Ton déroulé</span><h2>Comment ça se passe</h2>
+  <ol class="vt-steps"><li><span class="vt-step-n">1</span><div><strong>Tu m’envoies ta demande</strong><p>Ton logement, la ville et tes dates : je te réponds avec un devis.</p></div></li><li><span class="vt-step-n">2</span><div><strong>Le shooting</strong><p>Je photographie le logement préparé, à la meilleure lumière.</p></div></li><li><span class="vt-step-n">3</span><div><strong>La livraison</strong><p>Tu reçois tes photos retouchées, prêtes pour Airbnb et Booking.</p></div></li></ol>
+</section>
+    <div class="card vt-sec">
+      <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Lien vers ton portfolio</span><h2>Portfolio complet</h2>
+      <p style="font-size:14px;color:var(--tm);line-height:1.7;margin-bottom:14px">Toutes les réalisations de Camille Sénéchal, pour juger de son style et voir si son approche correspond à ton logement.</p>
+      <a href="#photos" class="btn-p" onclick="jmTrack('portfolio')"><i class="ph-bold ph-image-square"></i>Voir le portfolio</a>
+      <a href="#photos" class="btn-ol" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i>@camille.studio.lyon</a>
     </div>
-    <div class="annot-card">
-      <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Lien vers ton portfolio</span>
-      <div class="card">
-        <h2>Portfolio</h2>
-        <p style="font-size:14px;color:var(--tm);line-height:1.7;margin-bottom:14px">Consulte le portfolio complet de Camille pour découvrir son style, ses réalisations LCD et choisir si son approche correspond à ton logement.</p>
-        <a href="#" onclick="alert('Dans une vraie fiche, ce bouton renvoie vers le portfolio fourni au moment de l\\'inscription.'); return false;" class="btn-p"><i class="ph-bold ph-image-square"></i>Voir le portfolio</a>
-        <a href="#" onclick="alert('Dans une vraie fiche, ce bouton renvoie vers le compte Instagram pro.'); return false;" class="btn-ol"><i class="ph-bold ph-instagram-logo"></i>@camille.studio.lyon</a>
-      </div>
-    </div>
+    <section class="card vt-sec" style="position:relative">
+  <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes villes</span><h2>Où j’interviens</h2>
+  <div class="vt-villes"><a class="vt-ville" href="/photographe-lcd-lyon" title="Photographe à Lyon : le guide"><i class="ph-bold ph-map-pin"></i>Lyon</a><span class="vt-ville"><i class="ph-bold ph-map-pin"></i>Villeurbanne</span><a class="vt-ville" href="/photographe-lcd-annecy" title="Photographe à Annecy : le guide"><i class="ph-bold ph-map-pin"></i>Annecy</a><span class="vt-ville"><i class="ph-bold ph-map-pin"></i>Vienne</span><span class="vt-ville"><i class="ph-bold ph-map-pin"></i>Villefranche-sur-Saône</span><span class="vt-ville"><i class="ph-bold ph-map-pin"></i>Bourgoin-Jallieu</span></div>
+</section>
   </div>
 
   <aside>
-    <div class="annot-card">
-      <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Formulaire de contact</span>
-      <div class="card">
-        <h2>Contacter Camille</h2>
-        <form class="contact-form">
-          <input type="text" placeholder="Ton prénom + nom" disabled>
-          <input type="email" placeholder="Ton email" disabled>
-          <textarea placeholder="Présente brièvement ton logement, la ville, les dates qui t'intéressent." disabled></textarea>
-          <button type="button" class="btn-p" disabled style="opacity:.65;cursor:not-allowed"><i class="ph-bold ph-paper-plane-tilt"></i>Envoyer ma demande</button>
-        </form>
-        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tl);line-height:1.6">Les messages arrivent directement dans ta boîte mail. Pas de commission, pas d'intermédiaire.</div>
-      </div>
+    <div class="card" id="contact">
+      <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Formulaire de contact</span><h2>Contacter Camille</h2>
+      <form class="contact-form" id="contact-form" onsubmit="return contactSubmit(event)">
+        <div id="contact-err" class="err-msg" style="display:none"></div>
+        <input type="text" name="contactName" placeholder="Ton prénom + nom" required>
+        <input type="email" name="contactEmail" placeholder="Ton email" required>
+        <textarea name="message" placeholder="Présente brièvement ton logement, la ville, les dates qui t'intéressent." required></textarea>
+        <div class="hp"><label>Site</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+        <button type="submit" class="btn-p" id="contact-btn"><i class="ph-bold ph-paper-plane-tilt"></i>Envoyer ma demande</button>
+        <p style="margin-top:10px;font-size:11.5px;color:var(--tl);line-height:1.6">Ton nom, ton e-mail et ton message sont transmis à Camille seulement, pour te répondre, et supprimés au bout de 3 ans. <a href="/politique-de-confidentialite#annuaire" style="color:var(--g)">Confidentialité</a></p>
+      </form>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tl);line-height:1.6">Pas de commission. Pas d'intermédiaire. Tu négocies et contractualises directement avec Camille.</div>
+          </div>
+
+    <div class="card" style="margin-top:16px">
+      <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes infos pratiques</span><div class="aside-row"><span class="aside-k">Ville principale</span><span class="aside-v">Lyon</span></div>
+      <div class="aside-row"><span class="aside-k">Zone couverte</span><span class="aside-v">Lyon + 60 km · Rhône, Beaujolais, vallée du Rhône</span></div>
+      <div class="aside-row"><span class="aside-k">Tarifs indicatifs</span><span class="aside-v">350 – 700 €</span></div>
+      <div class="aside-row"><span class="aside-k">Spécialité</span><span class="aside-v">Intérieurs + drone extérieur</span></div>
+      
+      <div class="pro-reseaux" style="margin-top:14px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:#7A8C77;margin-bottom:8px">Retrouve-moi aussi sur</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px"><a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer me" title="Fiche Google" aria-label="Fiche Google" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-google-logo" aria-hidden="true"></i></a><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer me" title="Facebook" aria-label="Facebook" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-facebook-logo" aria-hidden="true"></i></a><a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer me" title="LinkedIn" aria-label="LinkedIn" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-linkedin-logo" aria-hidden="true"></i></a></div>
+    </div>
     </div>
 
-    <div class="annot-card" style="margin-top:16px">
-      <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes infos pratiques</span>
-      <div class="card">
-        <div class="aside-row"><span class="aside-k">Ville principale</span><span class="aside-v">Lyon</span></div>
-        <div class="aside-row"><span class="aside-k">Zone couverte</span><span class="aside-v">Lyon + 60 km</span></div>
-        <div class="aside-row"><span class="aside-k">Tarifs indicatifs</span><span class="aside-v">350 – 700 €</span></div>
-        <div class="aside-row"><span class="aside-k">Spécialité</span><span class="aside-v">Intérieurs + drone</span></div>
-        <!-- Réseaux et fiche Google (exemple) -->
-        <div class="pro-reseaux" style="margin-top:14px">
-      <div style="font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:#7A8C77;margin-bottom:8px">Retrouve-moi aussi sur</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px"><a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer me" title="Fiche Google" aria-label="Fiche Google" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-google-logo" aria-hidden="true"></i></a><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer me" title="Facebook" aria-label="Facebook" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-facebook-logo" aria-hidden="true"></i></a><a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer me" title="LinkedIn" aria-label="LinkedIn" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-linkedin-logo" aria-hidden="true"></i></a><a href="https://www.tiktok.com/" target="_blank" rel="noopener noreferrer me" title="TikTok" aria-label="TikTok" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-tiktok-logo" aria-hidden="true"></i></a></div>
-    </div>
-      </div>
+    <div class="card" style="margin-top:16px">
+      <h2>Les tarifs photo à Lyon</h2>
+      <p style="font-size:13.5px;color:var(--tm);line-height:1.7;margin-bottom:12px">Fourchettes constatées, checklist des photos indispensables et conseils pour bien briefer : consulte le guide local avant de demander un devis.</p>
+      <a href="/photographe-lcd-lyon" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Guide photographe LCD Lyon</a>
     </div>
   </aside>
 </div>
 
+<div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;gap:10px;flex-wrap:wrap">
+  <a href="/annuaires/photographes" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Tous les photographes LCD</a>
+  <a href="/photographe-lcd-lyon" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Photographe LCD Lyon : le guide<i class="ph-bold ph-arrow-right"></i></a>
+</div>
+
 <div class="disclaimer">
-  <strong>À propos de cette page.</strong> Ceci est un aperçu fidèle du mini-site que tu obtiens dans l'annuaire des photographes LCD. Le contenu (nom, bio, tarifs, ville) est fictif et sert uniquement à montrer la mise en page. Lors de ton inscription, tu remplis tes vraies infos qui apparaissent à la place : référencement Google sur jasonmarinho.com inclus.
+  <strong>À propos de cette page.</strong> Ceci est un aperçu fidèle de la fiche que tu obtiens dans l’annuaire. Le contenu (nom, textes, tarifs, ville) est fictif et sert à montrer la mise en page. Photos d’illustration : Unsplash. Lors de ton inscription, tu remplis tes vraies infos et tu ajoutes tes propres photos depuis ton espace pro.
 </div>
 
 <!-- STATSDEMO:START -->
@@ -258,10 +371,94 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 <div class="cta-bottom">
   <div class="lbl">Tu veux la même fiche pour toi ?</div>
   <h2>Crée ta fiche photographe <em>en 2 minutes</em></h2>
-  <p>Remplis le formulaire, paye en direct via Stripe, et ta fiche est en ligne sous quelques minutes. À partir de 39,98 € TTC/an pour les 20 premiers fondateurs.</p>
-  <a href="/annuaires/photographes/inscription" class="btn-main"><i class="ph-bold ph-lock-key"></i> Créer ma fiche maintenant</a>
+  <p>Remplis le formulaire, paye en direct via Stripe, et ta fiche est en ligne sous quelques minutes. À partir de 39,98 € TTC par an pour les 20 premiers.</p>
+  <a href="/annuaires/photographes/inscription" class="btn-main"><i class="ph-bold ph-arrow-right"></i> Créer ma fiche maintenant</a>
 </div>
 
+<script>
+const __slug = "exemple-fiche";
+const __t0 = Date.now();
+// Tracking vues + clics sortants → /api/photographer/track (sendBeacon :
+// non bloquant, part meme si l'utilisateur quitte la page).
+// Vue dedupliquee par session pour ne pas compter les reloads.
+function jmTrack(ev) { return;
+  try { navigator.sendBeacon('/api/photographer/track', JSON.stringify({ slug: __slug, event: ev })) } catch (e) {}
+}
+try {
+  var __vk = 'jm_v_' + __slug;
+  if (!sessionStorage.getItem(__vk)) { sessionStorage.setItem(__vk, '1'); jmTrack('view'); }
+} catch (e) { jmTrack('view'); }
+async function contactSubmit(e) {
+  e.preventDefault();
+  document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Exemple</strong><br>Sur une vraie fiche, ta demande part directement dans la boîte mail du pro.</div>';
+  return false;
+  const errBox = document.getElementById('contact-err');
+  const btn = document.getElementById('contact-btn');
+  errBox.style.display = 'none';
+  btn.disabled = true; btn.innerHTML = '<i class="ph-bold ph-spinner"></i> Envoi…';
+  const f = e.target;
+  const data = {
+    slug: __slug,
+    contactName: f.contactName.value.trim(),
+    contactEmail: f.contactEmail.value.trim(),
+    message: f.message.value.trim(),
+    website: f.website ? f.website.value : '',
+    t: __t0,
+  };
+  try {
+    const res = await fetch('/api/photographer/contact', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      errBox.textContent = body.error || 'Erreur lors de l\'envoi. Réessaye.';
+      errBox.style.display = 'block';
+      btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer ma demande';
+      return false;
+    }
+    document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Message envoyé ✓</strong><br>Camille te recontacte généralement sous 48h.</div>';
+  } catch (err) {
+    errBox.textContent = 'Réseau indisponible.';
+    errBox.style.display = 'block';
+    btn.disabled = false;
+  }
+  return false;
+}
+</script>
+<div class="vt-bar" id="vt-bar" aria-hidden="true"><a href="#contact" class="vt-bar-p" data-vt-contact tabindex="-1"><i class="ph-bold ph-paper-plane-tilt"></i>Contacter Camille</a><a tabindex="-1" href="#photos" class="vt-bar-s"><i class="ph-bold ph-images"></i>Photos</a></div>
+<script>
+(function(){
+  var d=document.getElementById('vt-lb');
+  var items=[].slice.call(document.querySelectorAll('[data-vt-full]'));
+  var i=0;
+  function show(k){if(!d||!items.length)return;i=(k+items.length)%items.length;var im=d.querySelector('img');im.src=items[i].getAttribute('data-vt-full');var t=items[i].querySelector('img');im.alt=t?t.alt:'';d.querySelector('.vt-lb-n').textContent=(i+1)+' / '+items.length}
+  document.addEventListener('click',function(e){
+    var o=e.target.closest&&e.target.closest('[data-vt-open]');
+    if(o&&d&&items.length){e.preventDefault();show(+o.getAttribute('data-vt-open'));if(d.showModal)d.showModal();else d.setAttribute('open','');return}
+    if(!d)return;
+    if(e.target.closest('[data-vt-close]')||e.target===d)d.close();
+    else if(e.target.closest('[data-vt-prev]'))show(i-1);
+    else if(e.target.closest('[data-vt-next]'))show(i+1);
+  });
+  document.addEventListener('keydown',function(e){if(!d||!d.open)return;if(e.key==='ArrowLeft')show(i-1);if(e.key==='ArrowRight')show(i+1)});
+  document.addEventListener('click',function(e){
+    var c=e.target.closest&&e.target.closest('[data-vt-contact]');
+    var t=document.getElementById('contact');
+    if(!c||!t)return;
+    e.preventDefault();
+    t.scrollIntoView({behavior:'smooth',block:'start'});
+    var f=t.querySelector('input:not([type=hidden]):not([tabindex="-1"]),textarea');
+    if(f)setTimeout(function(){try{f.focus({preventScroll:true})}catch(x){}},450);
+  });
+  var bar=document.getElementById('vt-bar'),hero=document.querySelector('.hero'),ct=document.getElementById('contact');
+  if(bar&&hero&&'IntersectionObserver' in window){
+    var pastHero=false,seeContact=false;
+    function upd(){var on=pastHero&&!seeContact;bar.classList.toggle('on',on);bar.setAttribute('aria-hidden',on?'false':'true');[].forEach.call(bar.querySelectorAll('a'),function(a){a.tabIndex=on?0:-1})}
+    new IntersectionObserver(function(es){pastHero=!es[0].isIntersecting;upd()}).observe(hero);
+    if(ct)new IntersectionObserver(function(es){seeContact=es[0].isIntersecting;upd()},{threshold:.15}).observe(ct);
+  }
+})();
+</script>
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
 </body>

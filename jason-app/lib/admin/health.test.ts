@@ -101,3 +101,17 @@ describe('envHealth', () => {
     expect(JSON.stringify(items)).not.toContain('secret-value-123')
   })
 })
+
+describe('offres gratuites', () => {
+  const MB = 1024 ** 2
+  it('stockage et sortie des photos', async () => {
+    const { freeQuotaCheck } = await import('./health')
+    const ok = freeQuotaCheck([{ bucket_id: 'menage-photos', bytes: 120 * MB, objects: 40 }, { bucket_id: 'pro-portfolio', bytes: 8 * MB }], 300)
+    expect(ok.level).toBe('ok')
+    expect(ok.summary).toContain('128 Mo sur 1 024 Mo')
+    expect(freeQuotaCheck([{ bucket_id: 'menage-photos', bytes: 700 * MB }], 0).level).toBe('warn')
+    expect(freeQuotaCheck([{ bucket_id: 'menage-photos', bytes: 800 * MB }], 0).level).toBe('alert')
+    expect(freeQuotaCheck([], 10_000).level).toBe('warn')
+    expect(freeQuotaCheck(null, null).level).toBe('unknown')
+  })
+})
