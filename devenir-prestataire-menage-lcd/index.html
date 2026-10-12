@@ -255,6 +255,107 @@
   </div>
 </section>
 
+<!-- STATSDEMO:START -->
+<section id="exemple-stats" style="background:#fff;padding:clamp(48px,7vw,80px) 0;scroll-margin-top:72px">
+<style>.sd{max-width:1080px;margin:0 auto;padding:0 16px;font-family:'Outfit',system-ui,sans-serif;color:#0F1A0D}
+.sd-head{text-align:center;max-width:700px;margin:0 auto 28px}
+.sd-lbl{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:999px;background:rgba(255,213,107,.2);color:#8a6408;border:1px solid rgba(255,213,107,.5);margin-bottom:12px}
+.sd-h2{font-family:'Fraunces',serif;font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:400;line-height:1.2;margin:0 0 12px;color:#0F1A0D}
+.sd-h2 em{font-style:italic;color:#004C3F}
+.sd-sub{font-size:15.5px;color:#3D5038;line-height:1.7;margin:0}
+.sd-app{background:#F4F8F5;border:1px solid rgba(0,76,63,.12);border-radius:22px;padding:clamp(14px,2.4vw,26px);box-shadow:0 18px 50px rgba(0,51,41,.08)}
+.sd-hero{background:linear-gradient(135deg,#001a11,#003329 55%,#00463a);border-radius:16px;padding:18px clamp(16px,2.4vw,24px);color:#fff;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sd-hero-t{font-family:'Fraunces',serif;font-size:clamp(1.15rem,2.2vw,1.45rem);font-weight:400;margin:2px 0 0}
+.sd-hero-t em{color:#FFD56B;font-style:italic}
+.sd-eyebrow{font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,213,107,.8);font-weight:600}
+.sd-pills{display:flex;gap:6px;flex-wrap:wrap}
+.sd-pill{font-size:12.5px;padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8)}
+.sd-pill.on{background:#FFD56B;border-color:#FFD56B;color:#003329;font-weight:600}
+.sd-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.sd-tile{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:14px;padding:12px 14px}
+.sd-tile.on{border:1px solid #1e9d54;box-shadow:0 0 0 3px rgba(30,157,84,.12)}
+.sd-tile-l{display:flex;align-items:center;gap:6px;font-size:12.5px;color:#3D5038}
+.sd-tile-l i{color:#1e9d54;font-size:15px}
+.sd-tile-h{font-size:11px;color:#7A8C77;margin-top:1px;min-height:14px}
+.sd-tile-v{font-family:'Fraunces',serif;font-size:26px;line-height:1.1;margin-top:4px;color:#0F1A0D}
+.sd-tile-d{display:inline-block;font-size:11.5px;font-weight:600;color:#17803f;background:rgba(30,157,84,.1);border-radius:999px;padding:2px 8px;margin-top:6px}
+.sd-card{background:#fff;border:1px solid rgba(0,76,63,.1);border-radius:16px;padding:16px 18px;min-width:0}
+.sd-card-h{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sd-ic{width:34px;height:34px;border-radius:10px;background:rgba(30,157,84,.1);color:#004C3F;display:inline-flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.sd-card-t{font-family:'Fraunces',serif;font-size:17px;font-weight:400;margin:0;color:#0F1A0D;line-height:1.25}
+.sd-card-s{font-size:12px;color:#7A8C77;margin-top:1px}
+.sd-chart{margin-bottom:14px}
+.sd-chart-top{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+.sd-legend{display:flex;gap:14px;font-size:12px;color:#3D5038;flex-wrap:wrap}
+.sd-legend span{display:inline-flex;align-items:center;gap:6px}
+.sd-legend b{display:inline-block;width:18px;height:3px;border-radius:2px;background:#004C3F}
+.sd-legend b.prev{background:none;border-top:2px dashed #7A8C77;height:0}
+.sd-svg{display:block;width:100%;height:150px}
+.sd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px}
+.sd-bar{display:grid;grid-template-columns:minmax(0,1.3fr) 1fr 42px;gap:10px;align-items:center;margin:7px 0;font-size:13px}
+.sd-bar-l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#0F1A0D}
+.sd-bar-t{height:8px;border-radius:99px;background:rgba(0,76,63,.08);overflow:hidden}
+.sd-bar-t span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#004C3F,#1e9d54)}
+.sd-bar-p{text-align:right;color:#3D5038;font-variant-numeric:tabular-nums}
+.sd-q{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:8px 0;border-top:1px solid rgba(0,76,63,.07);font-size:13px}
+.sd-q:first-of-type{border-top:0}
+.sd-q-n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sd-q-p{font-weight:600;color:#004C3F;font-size:12px;background:rgba(30,157,84,.1);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.sd-q-m{grid-column:1/-1;font-size:11.5px;color:#7A8C77}
+.sd-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sd-num{background:#F4F8F5;border-radius:12px;padding:10px;min-width:0}
+.sd-num-v{font-family:'Fraunces',serif;font-size:22px;color:#0F1A0D;line-height:1.1}
+.sd-num-l{font-size:11.5px;color:#3D5038;margin-top:3px;line-height:1.35}
+.sd-list{list-style:none;margin:0;padding:0}
+.sd-list li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.55;color:#0F1A0D;padding:6px 0}
+.sd-list li i{color:#1e9d54;font-size:16px;margin-top:2px;flex-shrink:0}
+.sd-wide{grid-column:1/-1}
+.sd-foot{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:center;margin-top:20px;font-size:13.5px;color:#3D5038;text-align:center}
+.sd-foot span{display:inline-flex;align-items:center;gap:6px}
+.sd-foot i{color:#1e9d54}
+@media (max-width:520px){.sd-nums{grid-template-columns:1fr}.sd-tile-v{font-size:22px}.sd-bar{grid-template-columns:minmax(0,1.2fr) .8fr 38px}}</style>
+<div class="sd">
+  <div class="sd-head">
+    <span class="sd-lbl"><i class="ph-bold ph-eye"></i>Exemple · chiffres fictifs</span>
+    <h2 class="sd-h2">Tes statistiques, <em>comme dans ton espace</em></h2>
+    <p class="sd-sub">Voici « Mes statistiques », l'écran que tu retrouves dans ton espace pro : qui voit ta fiche, d'où viennent ces visiteurs, sur quelles recherches Google tu apparais et ce que ça te rapporte en demandes. Exemple d'une fiche de équipe de ménage à Bordeaux sur 30 jours.</p>
+  </div>
+  <div class="sd-app">
+    <div class="sd-hero">
+      <div><div class="sd-eyebrow">Mes statistiques</div><p class="sd-hero-t">Qui voit ta fiche, <em>et d'où</em></p></div>
+      <div class="sd-pills"><span class="sd-pill on">30 jours</span><span class="sd-pill">3 mois</span><span class="sd-pill">12 mois</span></div>
+    </div>
+    <div class="sd-tiles"><div class="sd-tile on"><div class="sd-tile-l"><i class="ph ph-users"></i>Visiteurs</div><div class="sd-tile-h"></div><div class="sd-tile-v">71</div><span class="sd-tile-d">+29 %</span></div><div class="sd-tile"><div class="sd-tile-l"><i class="ph ph-eye"></i>Vues de la fiche</div><div class="sd-tile-h"></div><div class="sd-tile-v">90</div><span class="sd-tile-d">+33 %</span></div><div class="sd-tile"><div class="sd-tile-l"><i class="ph ph-timer"></i>Temps de lecture</div><div class="sd-tile-h">moyen par visiteur</div><div class="sd-tile-v">54 s</div><span class="sd-tile-d">+6 %</span></div><div class="sd-tile"><div class="sd-tile-l"><i class="ph ph-cursor-click"></i>Clics</div><div class="sd-tile-h">site, Instagram</div><div class="sd-tile-v">14</div><span class="sd-tile-d">+40 %</span></div><div class="sd-tile"><div class="sd-tile-l"><i class="ph ph-chat-circle"></i>Demandes reçues</div><div class="sd-tile-h"></div><div class="sd-tile-v">4</div><span class="sd-tile-d">+3</span></div><div class="sd-tile"><div class="sd-tile-l"><i class="ph ph-magnifying-glass"></i>Vu sur Google</div><div class="sd-tile-h">affichages</div><div class="sd-tile-v">380</div><span class="sd-tile-d">+58 %</span></div></div>
+    <div class="sd-card sd-chart">
+      <div class="sd-chart-top"><h3 class="sd-card-t">Visiteurs <span style="font-family:'Outfit',sans-serif;font-size:13px;color:#7A8C77">· par jour</span></h3>
+      <div class="sd-legend"><span><b></b>30 derniers jours</span><span><b class="prev"></b>30 jours d'avant</span></div></div>
+      <svg viewBox="0 0 600 150" preserveAspectRatio="none" class="sd-svg" role="img" aria-label="Courbe des visiteurs sur 30 jours (exemple)">
+        <defs><linearGradient id="sd-fill-menage" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e9d54" stop-opacity=".22"/><stop offset="1" stop-color="#1e9d54" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0.0,100.7 L20.7,94.7 L41.4,117.0 L62.1,107.8 L82.8,94.7 L103.4,89.1 L124.1,110.4 L144.8,64.4 L165.5,78.1 L186.2,85.8 L206.9,90.6 L227.6,61.2 L248.3,65.8 L269.0,95.6 L289.7,70.3 L310.3,82.6 L331.0,56.5 L351.7,82.6 L372.4,58.3 L393.1,60.2 L413.8,75.1 L434.5,79.9 L455.2,29.0 L475.9,25.2 L496.6,69.6 L517.2,49.8 L537.9,19.6 L558.6,59.5 L579.3,44.7 L600.0,35.4 L600,150 L0,150 Z" fill="url(#sd-fill-menage)"/>
+        <path d="M0.0,100.2 L20.7,87.7 L41.4,115.7 L62.1,124.3 L82.8,117.9 L103.4,92.4 L124.1,118.4 L144.8,111.6 L165.5,88.8 L186.2,110.0 L206.9,96.3 L227.6,85.3 L248.3,79.6 L269.0,99.4 L289.7,109.3 L310.3,101.4 L331.0,101.3 L351.7,94.2 L372.4,109.1 L393.1,82.4 L413.8,114.6 L434.5,82.8 L455.2,117.2 L475.9,103.6 L496.6,97.2 L517.2,92.0 L537.9,88.9 L558.6,85.6 L579.3,81.2 L600.0,97.8" fill="none" stroke="#7A8C77" stroke-width="1.6" stroke-dasharray="5 5" vector-effect="non-scaling-stroke"/>
+        <path d="M0.0,100.7 L20.7,94.7 L41.4,117.0 L62.1,107.8 L82.8,94.7 L103.4,89.1 L124.1,110.4 L144.8,64.4 L165.5,78.1 L186.2,85.8 L206.9,90.6 L227.6,61.2 L248.3,65.8 L269.0,95.6 L289.7,70.3 L310.3,82.6 L331.0,56.5 L351.7,82.6 L372.4,58.3 L393.1,60.2 L413.8,75.1 L434.5,79.9 L455.2,29.0 L475.9,25.2 L496.6,69.6 L517.2,49.8 L537.9,19.6 L558.6,59.5 L579.3,44.7 L600.0,35.4" fill="none" stroke="#004C3F" stroke-width="2.4" vector-effect="non-scaling-stroke"/>
+      </svg>
+    </div>
+    <div class="sd-grid">
+      <div class="sd-card"><div class="sd-card-h"><span class="sd-ic"><i class="ph ph-compass"></i></span><div><h3 class="sd-card-t">Comment ils te trouvent</h3><div class="sd-card-s">Provenance des visiteurs</div></div></div><div class="sd-bar"><span class="sd-bar-l">Google</span><span class="sd-bar-t"><span style="width:41%"></span></span><span class="sd-bar-p">41 %</span></div><div class="sd-bar"><span class="sd-bar-l">Page « Ménage à Bordeaux »</span><span class="sd-bar-t"><span style="width:31%"></span></span><span class="sd-bar-p">31 %</span></div><div class="sd-bar"><span class="sd-bar-l">Accès direct</span><span class="sd-bar-t"><span style="width:12%"></span></span><span class="sd-bar-p">12 %</span></div><div class="sd-bar"><span class="sd-bar-l">Instagram</span><span class="sd-bar-t"><span style="width:10%"></span></span><span class="sd-bar-p">10 %</span></div><div class="sd-bar"><span class="sd-bar-l">IA (ChatGPT, Perplexity…)</span><span class="sd-bar-t"><span style="width:6%"></span></span><span class="sd-bar-p">6 %</span></div></div>
+      <div class="sd-card"><div class="sd-card-h"><span class="sd-ic"><i class="ph ph-magnifying-glass"></i></span><div><h3 class="sd-card-t">Sur Google</h3><div class="sd-card-s">Tes recherches et ta place</div></div></div><div class="sd-q"><span class="sd-q-n">ménage airbnb bordeaux</span><span class="sd-q-p">7e place</span><span class="sd-q-m">112 affichages · 4 clics</span></div><div class="sd-q"><span class="sd-q-n">femme de ménage location saisonnière bordeaux</span><span class="sd-q-p">9e place</span><span class="sd-q-m">84 affichages · 2 clics</span></div><div class="sd-q"><span class="sd-q-n">conciergerie ménage bordeaux</span><span class="sd-q-p">12e place</span><span class="sd-q-m">61 affichages · 1 clic</span></div><div class="sd-q"><span class="sd-q-n">éclat ménage bordeaux</span><span class="sd-q-p">1re place</span><span class="sd-q-m">15 affichages · 5 clics</span></div></div>
+      <div class="sd-card"><div class="sd-card-h"><span class="sd-ic"><i class="ph ph-buildings"></i></span><div><h3 class="sd-card-t">Page « Ménage à Bordeaux »</h3><div class="sd-card-s">Ta fiche y est présentée aux hôtes de Bordeaux</div></div></div><div class="sd-nums"><div class="sd-num"><div class="sd-num-v">268</div><div class="sd-num-l">visiteurs de la page</div></div><div class="sd-num"><div class="sd-num-v">22</div><div class="sd-num-l">venus sur ta fiche depuis la page</div></div><div class="sd-num"><div class="sd-num-v">7,9</div><div class="sd-num-l">place moyenne Google</div></div></div></div>
+      <div class="sd-card"><div class="sd-card-h"><span class="sd-ic"><i class="ph ph-map-pin"></i></span><div><h3 class="sd-card-t">D'où ils viennent</h3><div class="sd-card-s">Lieu de connexion des visiteurs</div></div></div><div class="sd-bar"><span class="sd-bar-l">Bordeaux</span><span class="sd-bar-t"><span style="width:47%"></span></span><span class="sd-bar-p">47 %</span></div><div class="sd-bar"><span class="sd-bar-l">Mérignac</span><span class="sd-bar-t"><span style="width:13%"></span></span><span class="sd-bar-p">13 %</span></div><div class="sd-bar"><span class="sd-bar-l">Arcachon</span><span class="sd-bar-t"><span style="width:10%"></span></span><span class="sd-bar-p">10 %</span></div><div class="sd-bar"><span class="sd-bar-l">Pessac</span><span class="sd-bar-t"><span style="width:7%"></span></span><span class="sd-bar-p">7 %</span></div><div class="sd-bar"><span class="sd-bar-l">Paris</span><span class="sd-bar-t"><span style="width:5%"></span></span><span class="sd-bar-p">5 %</span></div></div>
+      <div class="sd-card"><div class="sd-card-h"><span class="sd-ic"><i class="ph ph-device-mobile"></i></span><div><h3 class="sd-card-t">Sur quel écran</h3><div class="sd-card-s">Téléphone, ordinateur ou tablette</div></div></div><div class="sd-bar"><span class="sd-bar-l">Téléphone</span><span class="sd-bar-t"><span style="width:66%"></span></span><span class="sd-bar-p">66 %</span></div><div class="sd-bar"><span class="sd-bar-l">Ordinateur</span><span class="sd-bar-t"><span style="width:31%"></span></span><span class="sd-bar-p">31 %</span></div><div class="sd-bar"><span class="sd-bar-l">Tablette</span><span class="sd-bar-t"><span style="width:3%"></span></span><span class="sd-bar-p">3 %</span></div></div>
+      <div class="sd-card"><div class="sd-card-h"><span class="sd-ic"><i class="ph ph-cursor-click"></i></span><div><h3 class="sd-card-t">Clics sur ta fiche</h3><div class="sd-card-s">Ce que les visiteurs ont ouvert</div></div></div><div class="sd-bar"><span class="sd-bar-l">Site</span><span class="sd-bar-t"><span style="width:100%"></span></span><span class="sd-bar-p">9</span></div><div class="sd-bar"><span class="sd-bar-l">Instagram</span><span class="sd-bar-t"><span style="width:56%"></span></span><span class="sd-bar-p">5</span></div></div>
+      <div class="sd-card sd-wide"><div class="sd-card-h"><span class="sd-ic"><i class="ph ph-lightbulb"></i></span><div><h3 class="sd-card-t">Ce qu'il faut retenir</h3><div class="sd-card-s">Sur les 30 derniers jours</div></div></div><ul class="sd-list"><li><i class="ph-bold ph-check-circle"></i><span>La page « Ménage à Bordeaux » t'a amené 22 visiteurs : les hôtes de ta ville tombent sur ta fiche sans te connaître.</span></li><li><i class="ph-bold ph-check-circle"></i><span>Tu es 7e sur « ménage airbnb bordeaux » : ajoute Arcachon et Mérignac à ta zone, des hôtes de là-bas te lisent déjà.</span></li><li><i class="ph-bold ph-check-circle"></i><span>4 demandes ce mois-ci, 3 de plus que le mois d'avant : réponds dans la journée, c'est souvent le premier qui répond qui décroche le client.</span></li></ul></div>
+    </div>
+  </div>
+  <div class="sd-foot">
+    <span><i class="ph-bold ph-envelope-simple"></i>Un bilan par e-mail le 1er de chaque mois</span>
+    <span><i class="ph-bold ph-file-pdf"></i>Enregistrable en PDF</span>
+    <span><i class="ph-bold ph-arrows-left-right"></i>Comparé à la période d'avant</span>
+  </div>
+  <div style="text-align:center;margin-top:22px"><a href="/annuaires/menage/inscription" style="display:inline-flex;align-items:center;gap:8px;background:#004C3F;color:#fff;font-weight:600;font-size:15px;padding:13px 24px;border-radius:10px;text-decoration:none"><i class="ph-bold ph-arrow-right"></i>Créer ma fiche équipe ménage</a></div>
+</div>
+</section>
+<!-- STATSDEMO:END -->
+
 <!-- FONDATEUR PRICING -->
 <section class="sec cr" id="fondateur">
   <div class="s-in">
