@@ -151,6 +151,29 @@
       ]
     },
     {
+      "nom": "Qonto",
+      "mono": "Q",
+      "couleur": "#111827",
+      "cats": [
+        "banque",
+        "compta"
+      ],
+      "badge": "affilie",
+      "offre": "Compte pro + facturation",
+      "desc": "Compte pro très répandu chez les indépendants et les sociétés, facturation et lien avec le comptable.",
+      "liens": [
+        {
+          "label": "Ouvrir un compte",
+          "href": "https://lb.affilae.com/r/?p=5ce4f2a2b6302009e29d84f3&af=3386&lp=https%3A%2F%2Fqonto.com%2Ffr%3Futm_medium%3Daffilaefr%26utm_source%3Daffiliate%26utm_campaign%3Djason-marinho",
+          "sponsored": true
+        },
+        {
+          "label": "Comparer avec Shine",
+          "href": "https://jasonmarinho.com/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026"
+        }
+      ]
+    },
+    {
       "nom": "AirDNA",
       "mono": "A",
       "couleur": "#E11D48",
@@ -370,22 +393,6 @@
         {
           "label": "Site officiel",
           "href": "https://stripe.com/fr",
-          "externe": true
-        }
-      ]
-    },
-    {
-      "nom": "Qonto",
-      "mono": "Q",
-      "couleur": "#111827",
-      "cats": [
-        "banque"
-      ],
-      "desc": "Néobanque pro très répandue chez les indépendants et les petites sociétés.",
-      "liens": [
-        {
-          "label": "Site officiel",
-          "href": "https://qonto.com/fr",
           "externe": true
         }
       ]

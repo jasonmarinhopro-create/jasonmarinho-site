@@ -19,6 +19,8 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const HOSPITABLE_BLOG = 'https://hospitable.com/partners/refer?utm_source=affiliates&utm_medium=blog&utm_campaign=BASWTYN7'
 // Shine (Affilae, 10/10/2026) : compte pro, numéro d'affilié 2249
 const SHINE = 'https://www.shine.fr/?utm_source=affiliation&utm_medium=affilae&utm_campaign=jason-marinho&ae=2249'
+// Qonto (Affilae, affilié 3386, 12/10/2026)
+const QONTO = 'https://lb.affilae.com/r/?p=5ce4f2a2b6302009e29d84f3&af=3386&lp=https%3A%2F%2Fqonto.com%2Ffr%3Futm_medium%3Daffilaefr%26utm_source%3Daffiliate%26utm_campaign%3Djason-marinho'
 // AirDNA (affilié, 10/10/2026) : lien d'invitation fourni par AirDNA
 const AIRDNA = 'https://eur-invite.airdna.co/Jason-Marinho'
 // Indy (partenariat du 30/09/2026) : lien « spécial immobilier » fourni par Indy
@@ -56,6 +58,11 @@ const shineTu = box('shine-tu',
   "<strong>Ouvrir un compte Shine :</strong> néobanque pro française, filiale de la Société Générale, ouverture en ligne. Offre Free à 0 €, et <strong>Shine Facture</strong> pour faire tes devis et factures gratuitement si tu as des clients.",
   btn(SHINE, 'Ouvrir mon compte Shine'),
   "Lien affilié : si tu ouvres un compte via ce lien, Shine me verse une commission, sans aucun surcoût pour toi. Shine reste une option parmi d'autres (Qonto, Blank, Indy) : compare selon tes besoins. <a href=\"/partenaires/shine\" style=\"color:#004c3f\">Voir l'offre Shine en détail</a>.")
+
+const qontoTu = box('qonto-tu',
+  "<strong>Ou ouvrir un compte Qonto :</strong> compte pro en ligne très répandu chez les indépendants et les sociétés, avec cartes, facturation et accès pour ton comptable. Formules payantes, à partir d'environ 9 € HT par mois à l'année d'après les relevés d'octobre 2026 (grille officielle à vérifier). Qonto est un établissement de paiement agréé, pas encore une banque.",
+  btn(QONTO, 'Ouvrir mon compte Qonto'),
+  "Lien affilié : si tu ouvres un compte via ce lien, Qonto me verse une commission, sans aucun surcoût pour toi. Pour une offre à 0 €, regarde Shine juste au-dessus.")
 
 const airdnaTu = box('airdna-tu',
   "<strong>Essayer AirDNA :</strong> crée un compte gratuit pour voir l'occupation, le prix moyen et la saisonnalité de ta ville, et tester ton adresse dans le Rentalizer. Les formules payantes ne servent que si tu veux aller plus loin.",
@@ -152,6 +159,8 @@ const PLACEMENTS = [
   ['blog/airdna-mode-emploi-hote-lcd-debutant/index.html', 'airdna-tu', '<h2 class="art-h2">3. Identifier la concurrence directe</h2>', airdnaTu],
   ['comparatif-airdna-mashvisor/index.html', 'airdna-vous', '</section>\n\n<section id="verdict">', airdnaVous],
   ['blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026/index.html', 'shine-tu', '<ul class="art-ul"><li>Ouverture 100 % en ligne recommandée', shineTu],
+  // Après l'encadré Shine (même ancre, placé ensuite : ordre stable à chaque relance)
+  ['blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026/index.html', 'qonto-tu', '<ul class="art-ul"><li>Ouverture 100 % en ligne recommandée', qontoTu],
 ]
 
 let n = 0
