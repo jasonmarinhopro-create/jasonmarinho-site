@@ -19,6 +19,13 @@ export default {
       ],
     },
     {
+      h2: 'Et le badge Airbnb Plus ? Il n\'existe plus depuis 2023',
+      content: [
+        { type: 'p', text: 'Si tu cherches à obtenir le badge Airbnb Plus, inutile d\'y passer du temps : Airbnb a mis fin au programme Plus le 6 novembre 2023, comme l\'indique son <a href="https://www.airbnb.fr/help/article/3493" style="color:var(--g);font-weight:500" rel="noopener">centre d\'aide</a>. Plus était réservé aux logements invités par Airbnb, puis contrôlés lors d\'une visite sur place.' },
+        { type: 'p', text: 'Le badge Coup de cœur (Guest Favorites) a pris le relais le même mois, avec une logique inverse : ni visite ni candidature, il est attribué automatiquement à partir des notes, des avis et de la fiabilité de l\'annonce. C\'est donc lui qu\'il faut viser aujourd\'hui, avec les 5 critères ci-dessous.' },
+      ],
+    },
+    {
       h2: '1. Cinq avis minimum, dont au moins un récent',
       content: [
         { type: 'p', text: 'Le premier verrou est purement quantitatif. Ton annonce doit avoir cumulé au minimum 5 avis voyageurs sur les 4 dernières années, dont au moins 1 avis publié dans les 2 dernières années. Cette double contrainte vise à écarter les annonces trop récentes pour être jugées de manière fiable, et à éviter que des annonces anciennes mais dormantes conservent un badge acquis à l\'époque sur trois séjours.' },
