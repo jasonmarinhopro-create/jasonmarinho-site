@@ -15,6 +15,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
 import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
+import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, cityPicksHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, villesHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -420,19 +421,26 @@ ${VITRINE_JS}
 `
 }
 
-function buildAnnuaireListPage(items) {
+export function buildAnnuaireListPage(items) {
+  const cfg = ANNUAIRES.menage
+  const { byPro, counts } = cityCoverage(ROOT, cfg.prefix, items)
   const itemsHtml = items.length === 0
-    ? `<div class="empty"><div class="empty-ico"><i class="ph-bold ph-sparkle" style="font-size:32px;color:var(--g)"></i></div><h2>L'annuaire se construit</h2><p>Aucune équipe active pour le moment. Reviens dans quelques semaines, ou postule si tu gères une équipe de ménage LCD.</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a href="/annuaires/menage/inscription" class="btn-p">Postuler comme équipe de ménage →</a><a href="/devenir-prestataire-menage-lcd" class="btn-p" style="background:transparent;border:1px solid rgba(0,76,63,.25);color:var(--g)">Pourquoi rejoindre l'annuaire ?</a></div></div>`
+    ? emptyHtml(cfg)
     : `<div class="grid">${items.map(c => {
         const displayName = c.pseudo || c.full_name
         const forfait = fmtForfait(c)
         const heure = c.tarif_heure ? `${c.tarif_heure} €/h` : null
-        const tarifLine = [forfait, heure].filter(Boolean).join(' · ')
+        const des = prixDes(c.formules, c.tarif_forfait_min)
+        const tarifLine = des ?? [forfait, heure].filter(Boolean).join(' · ')
         const equipeLabel = c.equipe_type ? EQUIPE_LABELS[c.equipe_type] : null
         const initials = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
-        const searchBlob = normalizeSearch([c.ville, c.zone_couverte, equipeLabel].filter(Boolean).join(' '))
+        const searchBlob = normalizeSearch([searchWords(c, byPro.get(c.id)), equipeLabel].filter(Boolean).join(' '))
+        const cover = vitrinePhotos(c.portfolio_photos, SUPABASE_URL, 1)[0]
+        const villes = (Array.isArray(c.villes_couvertes) ? c.villes_couvertes : []).filter(v => v && v !== c.ville)
         const prestationsBlob = (c.prestations || []).join(' ')
         return `<a href="/annuaires/menage/${escHtml(c.slug)}" class="card" data-search="${escHtml(searchBlob)}" data-equipe="${escHtml(c.equipe_type || '')}" data-delai="${escHtml(c.delai_reservation || '')}" data-assurance="${c.assurance_rc_pro ? '1' : '0'}" data-prestations="${escHtml(prestationsBlob)}" data-tarif-min="${c.tarif_forfait_min ?? ''}" data-tarif-max="${c.tarif_forfait_max ?? ''}">
+  ${cover ? `<div class="card-photo"><img src="${escHtml(cover.thumb)}" alt="Photo de ${escHtml(displayName)}" width="640" height="400" loading="lazy"></div>` : `<div class="card-photo empty"><i class="ph-bold ph-sparkle"></i></div>`}
+  <div class="card-body">
   <div class="card-head">
     ${c.logo_url
       ? `<div class="card-logo" style="background:url('${escHtml(c.logo_url)}') center/cover"></div>`
@@ -442,11 +450,12 @@ function buildAnnuaireListPage(items) {
       <div class="card-ville"><i class="ph ph-map-pin"></i>${escHtml(c.ville)}</div>
     </div>
   </div>
-  ${c.zone_couverte ? `<div class="card-zone"><strong>Zone couverte :</strong> ${escHtml(c.zone_couverte)}</div>` : ''}
+  ${villes.length ? `<div class="card-villes"><i class="ph-bold ph-path"></i><span>Intervient aussi à ${escHtml(villes.slice(0, 3).join(', '))}${villes.length > 3 ? ` et ${villes.length - 3} autre${villes.length > 4 ? 's' : ''}` : ''}</span></div>` : c.zone_couverte ? `<div class="card-zone"><strong>Zone couverte :</strong> ${escHtml(c.zone_couverte)}</div>` : ''}
   ${equipeLabel || c.assurance_rc_pro || c.reco_count > 0 ? `<div class="card-chips">${equipeLabel ? `<span class="card-spe">${escHtml(equipeLabel)}</span>` : ''}${c.assurance_rc_pro ? '<span class="card-rc"><i class="ph-bold ph-shield-check"></i>RC pro</span>' : ''}${c.reco_count > 0 ? `<span class="card-rc"><i class="ph-bold ph-heart"></i>Recommandé par ${c.reco_count} hôte${c.reco_count > 1 ? 's' : ''}</span>` : ''}</div>` : ''}
   <div class="card-foot">
     ${tarifLine ? `<div class="card-tarif">${escHtml(tarifLine)}</div>` : '<div></div>'}
-    <span class="card-cta">Voir le profil <i class="ph-bold ph-arrow-right"></i></span>
+    <span class="card-cta">Voir la fiche <i class="ph-bold ph-arrow-right"></i></span>
+  </div>
   </div>
 </a>`
       }).join('')}</div>`
@@ -456,11 +465,11 @@ function buildAnnuaireListPage(items) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Annuaire des équipes de ménage LCD · ${items.length} pros spécialisés | Jason Marinho</title>
-<meta name="description" content="${items.length} équipes de ménage spécialisées en location courte durée, réunies par Jason Marinho. Recherche par ville, prestations, capacité.">
+<title>${escHtml(cfg.title)}</title>
+<meta name="description" content="${escHtml(cfg.desc)}">
 <link rel="canonical" href="https://jasonmarinho.com/annuaires/menage">
-<meta property="og:title" content="Annuaire des équipes de ménage LCD · ${items.length} pros spécialisés">
-<meta property="og:description" content="${items.length} équipes de ménage spécialisées location courte durée, contact direct sans commission.">
+<meta property="og:title" content="${escHtml(cfg.title)}">
+<meta property="og:description" content="${escHtml(cfg.desc)}">
 <meta property="og:url" content="https://jasonmarinho.com/annuaires/menage">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
@@ -588,33 +597,33 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .preview-cta:hover{background:#005a4a}
 .preview-thumb{flex-shrink:0;width:170px;height:170px;border-radius:14px;background:linear-gradient(160deg,#001a11,var(--gd) 60%,#00463a);display:flex;align-items:center;justify-content:center;color:var(--y);font-size:54px}
 @media(max-width:640px){.preview-thumb{width:100%;height:140px}}
+${ANNUAIRE_CSS}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
-  name: `Annuaire des équipes de ménage LCD (${items.length} pros)`,
-  description: 'Annuaire des équipes de ménage spécialisées location courte durée.',
+  name: 'Annuaire des équipes de ménage Airbnb et location courte durée',
+  description: cfg.desc,
   url: 'https://jasonmarinho.com/annuaires/menage',
 })}
+</script>
+<script type="application/ld+json">
+${faqJsonLd(cfg)}
 </script>
 <script defer src="/nav.js"></script>
 </head>
 <body>
 <header class="hero">
   <div class="s-in">
-    <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/menage">Ménage LCD</a> · <span>Annuaire</span></div>
-    <span class="lbl">Annuaire · contact direct</span>
-    <h1>${items.length} équipe${items.length > 1 ? 's' : ''} de ménage <em>LCD sélectionnée${items.length > 1 ? 's' : ''}</em></h1>
-    <p class="lead">Des équipes spécialisées dans le ménage entre deux voyageurs Airbnb et Booking : prestations, zone et tarifs sur chaque fiche. Pas d'intermédiation : tu les contactes directement, sans commission.</p>
-    ${items.length > 0 ? `<span class="count-pill"><i class="ph-bold ph-sparkle"></i>${items.length} équipes actives</span>` : ''}
+    ${heroInnerHtml(cfg, '<a href="/">Accueil</a> · <span>Ménage Airbnb</span>')}
   </div>
 </header>
 
 ${items.length > 0 ? `<div class="tools-row">
   <div class="search-bar">
     <i class="ph-bold ph-map-pin search-ico" aria-hidden="true"></i>
-    <input type="text" id="pro-search" placeholder="Cherche par ville : Lyon, Bordeaux, Annecy…" autocomplete="off" aria-label="Rechercher une équipe de ménage par ville">
+    <input type="text" id="pro-search" placeholder="Où est ton logement ? Lyon, Annecy, Biarritz…" autocomplete="off" aria-label="Rechercher une équipe de ménage par ville">
     <span class="search-count" id="search-count"></span>
     <button type="button" class="search-clear" id="search-clear" aria-label="Effacer la recherche"><i class="ph-bold ph-x"></i></button>
   </div>
@@ -623,6 +632,7 @@ ${items.length > 0 ? `<div class="tools-row">
     <span class="filters-badge" id="filters-badge" style="display:none">0</span>
   </button>
 </div>
+${cityPicksHtml(cfg, counts)}
 
 <div class="filters-backdrop" id="filters-backdrop">
   <div class="filters-modal" role="dialog" aria-modal="true" aria-label="Filtres">
@@ -685,7 +695,7 @@ ${itemsHtml}
 ${items.length > 0 ? `<div class="search-empty" id="search-empty">
   <div class="search-empty-ico"><i class="ph-bold ph-map-trifold"></i></div>
   <h3>Pas encore d'équipe à «<span id="search-empty-q"></span>»</h3>
-  <p>L'annuaire grandit chaque semaine. En attendant, jette un œil aux <a href="#villes">guides ville par ville</a> ci-dessous, ou repasse bientôt.</p>
+  <p>L’annuaire grandit chaque semaine. En attendant, le <a href="#villes">guide de ta ville</a> te donne les tarifs constatés et les questions à poser.</p>
   <button type="button" id="search-reset"><i class="ph-bold ph-arrow-counter-clockwise"></i>Voir toutes les équipes</button>
 </div>` : ''}
 <section style="margin:40px auto 0;max-width:1100px;padding:26px clamp(18px,4vw,30px);border-radius:18px;background:#F2F8F4;border:1px solid rgba(0,76,63,.14);display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between">
@@ -843,23 +853,17 @@ ${items.length > 0 ? `<script>
 })()
 </script>` : ''}
 
-<section class="preview-section">
-  <div class="preview-card">
-    <div class="preview-thumb"><i class="ph-bold ph-sparkle"></i></div>
-    <div class="preview-card-text">
-      <span class="preview-lbl">Voir un exemple</span>
-      <h3 class="preview-h">À quoi ressemble une fiche <em>équipe ménage</em> ?</h3>
-      <p class="preview-p">Découvre le mini-site qu'une équipe obtient en s'inscrivant : présentation, prestations, capacité, garanties RC pro, tarifs et formulaire de contact direct. Aperçu fidèle hébergé sur jasonmarinho.com.</p>
-      <a href="/annuaires/menage/exemple-fiche" class="preview-cta"><i class="ph-bold ph-eye"></i> Voir l'exemple de fiche</a>
-    </div>
-  </div>
-</section>
+${guideHtml(cfg)}
 
-${villesSectionHtml('menage-lcd', 'ménage LCD')}
+${faqHtml(cfg)}
+
+${villesGuidesHtml(cfg, loadCities(), counts)}
 
 <div class="disclaimer">
-  <strong>Comment ça marche.</strong> Tu cliques sur une équipe, tu consultes ses prestations et tu lui envoies une demande via le formulaire de sa fiche. Aucune commission, aucune intermédiation Jason Marinho. La transaction (devis, contrat, paiement) se fait directement entre toi et l'équipe.
+  <strong>Comment ça marche.</strong> Tu cliques sur une équipe, tu regardes ses formules et ses prestations, et tu lui envoies une demande depuis sa fiche. Aucune commission, aucun intermédiaire : le devis, les passages et le paiement se règlent directement entre vous.
 </div>
+${joinLineHtml(cfg)}
+${items.length > 0 ? CITY_PICKS_JS : ''}
 
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>

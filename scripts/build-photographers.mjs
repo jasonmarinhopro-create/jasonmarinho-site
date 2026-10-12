@@ -16,6 +16,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
 import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
+import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, cityPicksHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, villesHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -372,15 +373,22 @@ ${VITRINE_JS}
 `
 }
 
-function buildAnnuaireListPage(items) {
+export function buildAnnuaireListPage(items) {
+  const cfg = ANNUAIRES.photographe
+  const { byPro, counts } = cityCoverage(ROOT, cfg.prefix, items)
   const itemsHtml = items.length === 0
-    ? `<div class="empty"><div class="empty-ico"><i class="ph-bold ph-camera" style="font-size:32px;color:var(--g)"></i></div><h2>L'annuaire se construit</h2><p>Aucun photographe actif pour le moment. Reviens dans quelques semaines, ou postule si tu es photographe LCD.</p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a href="/annuaires/photographes/inscription" class="btn-p">Postuler comme photographe →</a><a href="/devenir-photographe-lcd" class="btn-p" style="background:transparent;border:1px solid rgba(0,76,63,.25);color:var(--g)">Pourquoi rejoindre l'annuaire ?</a></div></div>`
+    ? emptyHtml(cfg)
     : `<div class="grid">${items.map(p => {
         const displayName = p.pseudo || p.full_name
-        const tarif = fmtTarif(p)
+        const des = prixDes(p.formules, p.tarif_min)
+        const tarif = des ?? fmtTarif(p)
         const initials = displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
-        const searchBlob = normalizeSearch([p.ville, p.zone_couverte, p.specialite].filter(Boolean).join(' '))
+        const searchBlob = normalizeSearch([searchWords(p, byPro.get(p.id)), p.specialite].filter(Boolean).join(' '))
+        const cover = vitrinePhotos(p.portfolio_photos, SUPABASE_URL, 1)[0]
+        const villes = (Array.isArray(p.villes_couvertes) ? p.villes_couvertes : []).filter(v => v && v !== p.ville)
         return `<a href="/annuaires/photographes/${escHtml(p.slug)}" class="card" data-search="${escHtml(searchBlob)}" data-tier="${escHtml(p.tier || '')}" data-tarif-min="${p.tarif_min ?? ''}" data-tarif-max="${p.tarif_max ?? ''}">
+  ${cover ? `<div class="card-photo"><img src="${escHtml(cover.thumb)}" alt="Logement photographié par ${escHtml(displayName)}" width="640" height="400" loading="lazy"></div>` : `<div class="card-photo empty"><i class="ph-bold ph-camera"></i></div>`}
+  <div class="card-body">
   <div class="card-head">
     ${p.logo_url
       ? `<div class="card-logo" style="background:url('${escHtml(p.logo_url)}') center/cover"></div>`
@@ -390,11 +398,12 @@ function buildAnnuaireListPage(items) {
       <div class="card-ville"><i class="ph ph-map-pin"></i>${escHtml(p.ville)}</div>
     </div>
   </div>
-  ${p.zone_couverte ? `<div class="card-zone"><strong>Zone couverte :</strong> ${escHtml(p.zone_couverte)}</div>` : ''}
+  ${villes.length ? `<div class="card-villes"><i class="ph-bold ph-path"></i><span>Se déplace aussi à ${escHtml(villes.slice(0, 3).join(', '))}${villes.length > 3 ? ` et ${villes.length - 3} autre${villes.length > 4 ? 's' : ''}` : ''}</span></div>` : p.zone_couverte ? `<div class="card-zone"><strong>Zone couverte :</strong> ${escHtml(p.zone_couverte)}</div>` : ''}
   ${p.specialite || p.reco_count > 0 ? `<div class="card-chips">${p.specialite ? `<span class="card-spe">${escHtml(p.specialite)}</span>` : ''}${p.reco_count > 0 ? `<span class="card-rc"><i class="ph-bold ph-heart"></i>Recommandé par ${p.reco_count} hôte${p.reco_count > 1 ? 's' : ''}</span>` : ''}</div>` : ''}
   <div class="card-foot">
-    ${tarif ? `<div class="card-tarif">${escHtml(tarif)} <span>la session</span></div>` : '<div></div>'}
-    <span class="card-cta">Voir le profil <i class="ph-bold ph-arrow-right"></i></span>
+    ${tarif ? `<div class="card-tarif">${escHtml(tarif)}${des ? '' : ' <span>la séance</span>'}</div>` : '<div></div>'}
+    <span class="card-cta">Voir les photos et tarifs <i class="ph-bold ph-arrow-right"></i></span>
+  </div>
   </div>
 </a>`
       }).join('')}</div>`
@@ -404,11 +413,11 @@ function buildAnnuaireListPage(items) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Annuaire des photographes LCD · ${items.length} pros spécialisés | Jason Marinho</title>
-<meta name="description" content="${items.length} photographes professionnels spécialisés en location courte durée, réunis par Jason Marinho. Recherche par ville, tarif, spécialité.">
+<title>${escHtml(cfg.title)}</title>
+<meta name="description" content="${escHtml(cfg.desc)}">
 <link rel="canonical" href="https://jasonmarinho.com/annuaires/photographes">
-<meta property="og:title" content="Annuaire des photographes LCD · ${items.length} pros spécialisés">
-<meta property="og:description" content="${items.length} photographes spécialisés location courte durée, contact direct sans commission.">
+<meta property="og:title" content="${escHtml(cfg.title)}">
+<meta property="og:description" content="${escHtml(cfg.desc)}">
 <meta property="og:url" content="https://jasonmarinho.com/annuaires/photographes">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
@@ -532,33 +541,33 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .preview-cta:hover{background:#005a4a}
 .preview-thumb{flex-shrink:0;width:170px;height:170px;border-radius:14px;background:linear-gradient(160deg,#001a11,var(--gd) 60%,#00463a);display:flex;align-items:center;justify-content:center;color:var(--y);font-size:54px}
 @media(max-width:640px){.preview-thumb{width:100%;height:140px}}
+${ANNUAIRE_CSS}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
-  name: `Annuaire des photographes LCD (${items.length} pros)`,
-  description: 'Annuaire des photographes spécialisés location courte durée.',
+  name: 'Annuaire des photographes Airbnb et location courte durée',
+  description: cfg.desc,
   url: 'https://jasonmarinho.com/annuaires/photographes',
 })}
+</script>
+<script type="application/ld+json">
+${faqJsonLd(cfg)}
 </script>
 <script defer src="/nav.js"></script>
 </head>
 <body>
 <header class="hero">
   <div class="s-in">
-    <div class="brd"><a href="/">Accueil</a> · <a href="/devenir-photographe-lcd">Photographes LCD</a> · <span>Annuaire</span></div>
-    <span class="lbl">Annuaire · contact direct</span>
-    <h1>${items.length} photographe${items.length > 1 ? 's' : ''} <em>LCD sélectionné${items.length > 1 ? 's' : ''}</em></h1>
-    <p class="lead">Des photographes spécialisés en location courte durée : portfolio, zone et tarifs sur chaque fiche. Pas d'intermédiation : tu les contactes directement, sans commission.</p>
-    ${items.length > 0 ? `<span class="count-pill"><i class="ph-bold ph-camera"></i>${items.length} pros actifs</span>` : ''}
+    ${heroInnerHtml(cfg, '<a href="/">Accueil</a> · <span>Photographes Airbnb</span>')}
   </div>
 </header>
 
 ${items.length > 0 ? `<div class="tools-row">
   <div class="search-bar">
     <i class="ph-bold ph-map-pin search-ico" aria-hidden="true"></i>
-    <input type="text" id="pro-search" placeholder="Cherche par ville : Lyon, Bordeaux, Annecy…" autocomplete="off" aria-label="Rechercher un photographe par ville">
+    <input type="text" id="pro-search" placeholder="Où est ton logement ? Lyon, Annecy, Biarritz…" autocomplete="off" aria-label="Rechercher un photographe par ville">
     <span class="search-count" id="search-count"></span>
     <button type="button" class="search-clear" id="search-clear" aria-label="Effacer la recherche"><i class="ph-bold ph-x"></i></button>
   </div>
@@ -567,6 +576,7 @@ ${items.length > 0 ? `<div class="tools-row">
     <span class="filters-badge" id="filters-badge" style="display:none">0</span>
   </button>
 </div>
+${cityPicksHtml(cfg, counts)}
 
 <div class="filters-backdrop" id="filters-backdrop">
   <div class="filters-modal" role="dialog" aria-modal="true" aria-label="Filtres">
@@ -601,7 +611,7 @@ ${itemsHtml}
 ${items.length > 0 ? `<div class="search-empty" id="search-empty">
   <div class="search-empty-ico"><i class="ph-bold ph-map-trifold"></i></div>
   <h3>Pas encore de photographe à «<span id="search-empty-q"></span>»</h3>
-  <p>L'annuaire grandit chaque semaine. En attendant, jette un œil aux <a href="#villes">guides ville par ville</a> ci-dessous, ou repasse bientôt.</p>
+  <p>L’annuaire grandit chaque semaine. En attendant, le <a href="#villes">guide de ta ville</a> te donne les tarifs constatés et les questions à poser.</p>
   <button type="button" id="search-reset"><i class="ph-bold ph-arrow-counter-clockwise"></i>Voir tous les photographes</button>
 </div>` : ''}
 <section style="margin:40px auto 0;max-width:1100px;padding:26px clamp(18px,4vw,30px);border-radius:18px;background:#F2F8F4;border:1px solid rgba(0,76,63,.14);display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between">
@@ -715,23 +725,17 @@ ${items.length > 0 ? `<script>
 })()
 </script>` : ''}
 
-<section class="preview-section">
-  <div class="preview-card">
-    <div class="preview-thumb"><i class="ph-bold ph-camera"></i></div>
-    <div class="preview-card-text">
-      <span class="preview-lbl">Voir un exemple</span>
-      <h3 class="preview-h">À quoi ressemble une fiche <em>photographe LCD</em> ?</h3>
-      <p class="preview-p">Découvre le mini-site qu'un photographe obtient en s'inscrivant : présentation, portfolio, spécialité, tarifs, zone d'intervention et formulaire de contact direct. Aperçu fidèle hébergé sur jasonmarinho.com.</p>
-      <a href="/annuaires/photographes/exemple-fiche" class="preview-cta"><i class="ph-bold ph-eye"></i> Voir l'exemple de fiche</a>
-    </div>
-  </div>
-</section>
+${guideHtml(cfg)}
 
-${villesSectionHtml('photographe-lcd', 'photographe LCD')}
+${faqHtml(cfg)}
+
+${villesGuidesHtml(cfg, loadCities(), counts)}
 
 <div class="disclaimer">
-  <strong>Comment ça marche.</strong> Tu cliques sur un photographe, tu consultes son portfolio et tu lui envoies une demande via le formulaire de sa fiche. Aucune commission, aucune intermédiation Jason Marinho. La transaction (devis, contrat, paiement) se fait directement entre toi et le photographe.
+  <strong>Comment ça marche.</strong> Tu cliques sur un photographe, tu regardes ses photos et ses formules, et tu lui envoies une demande depuis sa fiche. Aucune commission, aucun intermédiaire : le devis, la séance et le paiement se règlent directement entre vous.
 </div>
+${joinLineHtml(cfg)}
+${items.length > 0 ? CITY_PICKS_JS : ''}
 
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
