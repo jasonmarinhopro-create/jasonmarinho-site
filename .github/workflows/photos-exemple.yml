@@ -1,0 +1,51 @@
+# Photos des fiches d'exemple (12/10/2026) : l'environnement de Claude ne
+# joint pas les banques d'images. Ce workflow télécharge des photos libres de
+# droits (licence Unsplash : usage commercial permis, sans attribution
+# obligatoire) en 1600 px et 640 px, et les dépose dans img/exemple-fiches/
+# sur la branche. Servies par le site statique (Vercel) : aucune place prise
+# chez Supabase. Une ligne de .github/photos-exemple-trigger = un identifiant
+# Unsplash (« photo-… ») suivi d'un nom de fichier.
+name: Photos des fiches d'exemple
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/photos-exemple-trigger']
+
+permissions:
+  contents: write
+
+jobs:
+  photos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Télécharger et redimensionner
+        run: |
+          mkdir -p img/exemple-fiches
+          ok=0; ko=0
+          while read -r id name; do
+            [ -z "$id" ] && continue
+            case "$id" in \#*) continue;; esac
+            base="https://images.unsplash.com/$id?auto=format&fm=jpg&fit=crop&crop=entropy"
+            if curl -sfL "$base&w=1600&h=1200&q=78" -o "img/exemple-fiches/$name.jpg" \
+              && curl -sfL "$base&w=640&h=480&q=70" -o "img/exemple-fiches/$name-t.jpg" \
+              && file "img/exemple-fiches/$name.jpg" | grep -q JPEG; then
+              echo "::notice title=$name::$(stat -c %s img/exemple-fiches/$name.jpg) o / $(stat -c %s img/exemple-fiches/$name-t.jpg) o ($id)"
+              ok=$((ok+1))
+            else
+              rm -f "img/exemple-fiches/$name.jpg" "img/exemple-fiches/$name-t.jpg"
+              echo "::warning title=$name::introuvable ($id)"
+              ko=$((ko+1))
+            fi
+          done < .github/photos-exemple-trigger
+          echo "::notice title=Bilan::$ok photos, $ko introuvables"
+      - name: Déposer sur la branche
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add img/exemple-fiches
+          git diff --cached --quiet && exit 0
+          git commit -m "Photos des fiches d'exemple (Unsplash)"
+          git push
