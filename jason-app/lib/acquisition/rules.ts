@@ -71,6 +71,7 @@ export function acquisitionFromParams(p: { get(name: string): string | null }): 
 export type LinkChannel =
   | 'facebook_groupe' | 'facebook_page' | 'google_fiche' | 'instagram' | 'linkedin' | 'tiktok' | 'youtube'
   | 'whatsapp' | 'email' | 'signature' | 'prospection' | 'qr' | 'autre'
+  | 'prive_instagram' | 'prive_facebook' | 'prive_linkedin' | 'prive_whatsapp'
 
 export const LINK_CHANNELS: Array<{ key: LinkChannel; label: string; source: string; medium: string }> = [
   { key: 'facebook_groupe', label: 'Groupe Facebook', source: 'facebook', medium: 'groupe' },
@@ -85,6 +86,10 @@ export const LINK_CHANNELS: Array<{ key: LinkChannel; label: string; source: str
   { key: 'signature', label: 'Signature e-mail', source: 'signature', medium: 'email' },
   { key: 'prospection', label: 'E-mails de prospection', source: 'prospection', medium: 'email' },
   { key: 'qr', label: 'QR code ou affiche', source: 'qr', medium: 'print' },
+  { key: 'prive_instagram', label: 'Message privé Instagram', source: 'instagram', medium: 'prive' },
+  { key: 'prive_facebook', label: 'Message privé Facebook', source: 'facebook', medium: 'prive' },
+  { key: 'prive_linkedin', label: 'Message privé LinkedIn', source: 'linkedin', medium: 'prive' },
+  { key: 'prive_whatsapp', label: 'Message WhatsApp ou SMS', source: 'whatsapp', medium: 'prive' },
   { key: 'autre', label: 'Autre', source: 'lien', medium: 'autre' },
 ]
 
@@ -105,6 +110,34 @@ export const LINK_DESTINATIONS: Array<{ url: string; label: string }> = [
 
 const HOME = 'https://jasonmarinho.com/'
 const SITE = 'https://jasonmarinho.com'
+
+// ── Messages privés aux pros (12/10/2026, demande de Jason : « un message que je
+// peux envoyer à des photographes ou des équipes de ménage en privé avec un
+// lien tracé ») : un lien par métier et par messagerie, vers la fiche d'exemple
+// (qui mène à l'inscription). Jamais un lien par personne : on mesure ce que
+// rapporte chaque messagerie, pas qui a cliqué.
+export type PrivateAudience = 'photographe' | 'menage'
+export type PrivatePlatform = 'instagram' | 'facebook' | 'linkedin' | 'whatsapp'
+export const PRIVATE_AUDIENCES: Array<{ key: PrivateAudience; label: string; short: string; destination: string }> = [
+  { key: 'photographe', label: 'Photographes', short: 'photo', destination: `${SITE}/annuaires/photographes/exemple-fiche` },
+  { key: 'menage', label: 'Équipes de ménage', short: 'menage', destination: `${SITE}/annuaires/menage/exemple-fiche` },
+]
+export const PRIVATE_PLATFORMS: Array<{ key: PrivatePlatform; label: string; channel: LinkChannel }> = [
+  { key: 'instagram', label: 'Instagram', channel: 'prive_instagram' },
+  { key: 'facebook', label: 'Facebook', channel: 'prive_facebook' },
+  { key: 'linkedin', label: 'LinkedIn', channel: 'prive_linkedin' },
+  { key: 'whatsapp', label: 'WhatsApp ou SMS', channel: 'prive_whatsapp' },
+]
+export const privateLinkCode = (a: PrivateAudience, p: PrivatePlatform) =>
+  `mp-${PRIVATE_AUDIENCES.find(x => x.key === a)!.short}-${p}`
+export const isPrivateChannel = (channel: string) => channel.startsWith('prive_')
+const PRIVATE_LINKS = PRIVATE_AUDIENCES.flatMap(a => PRIVATE_PLATFORMS.map(p => ({
+  code: privateLinkCode(a.key, p.key),
+  label: `Message privé ${p.label} : ${a.label.toLowerCase()}`,
+  channel: p.channel,
+  destination: a.destination,
+  where: 'Mis tout seul dans le message de l\'onglet « Messages privés ».',
+})))
 
 /**
  * Liens créés d'office (10/10/2026, demande de Jason : « je vais créer des liens
@@ -129,6 +162,7 @@ export const BUILTIN_LINKS: Array<{ code: string; label: string; channel: LinkCh
   { code: 'menage-annuaire', label: 'Prospection ménage : annuaire', channel: 'prospection', destination: `${SITE}/annuaires/menage` },
   { code: 'hote-contrats', label: 'Prospection hôtes : contrats en ligne', channel: 'prospection', destination: `${SITE}/services/contrats` },
   { code: 'hote-inscription', label: 'Prospection hôtes : inscription', channel: 'prospection', destination: 'https://app.jasonmarinho.com/auth/register?role=host' },
+  ...PRIVATE_LINKS,
 ]
 
 /**
