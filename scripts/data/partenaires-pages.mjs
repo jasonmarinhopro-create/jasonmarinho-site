@@ -33,6 +33,8 @@ const LODGIFY_DEMO = 'https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv'
 const LODGIFY_ONBOARDING = 'https://www.lodgify.com/fr/onboarding-gratuit/?afmc=uid'
 
 // ── Brevo (affilié PartnerStack, 06/10/2026) : 3 liens fournis par Brevo ──
+// Qonto (Affilae, affilié 3386, 12/10/2026)
+const QONTO = 'https://lb.affilae.com/r/?p=5ce4f2a2b6302009e29d84f3&af=3386&lp=https%3A%2F%2Fqonto.com%2Ffr%3Futm_medium%3Daffilaefr%26utm_source%3Daffiliate%26utm_campaign%3Djason-marinho'
 const BREVO_EMAIL = 'https://get.brevo.com/ui6inugm9ub6'
 const BREVO_PLATFORM = 'https://get.brevo.com/3mftm80uaemx-m7y3c'
 const BREVO_CRM = 'https://get.brevo.com/z0u697ij3brq-5bwioc'
@@ -592,7 +594,7 @@ export const PAGES = [
     ],
     liens: [
       { href: '/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026', t: 'Pourquoi un compte pro ?', d: 'Les 6 raisons de séparer tes revenus de location.' },
-      { href: '/comparatif-indy-tiime-henrri', t: 'Logiciels de facturation', d: 'Indy, Tiime ou Henrri : le comparatif.' },
+      { href: '/partenaires/qonto', t: 'Qonto, l\'autre compte pro', d: 'Pour une société ou plusieurs utilisateurs.' },
       { href: '/blog/creer-societe-conciergerie-en-ligne-legalplace-2026', t: 'Créer ta conciergerie', d: 'Micro-entreprise ou société : le bon statut.' },
       { href: '/services/contrats', t: 'Tes réservations directes payées', d: 'Contrat en ligne, loyer et caution versés sur ton compte.' },
     ],
@@ -611,6 +613,104 @@ export const PAGES = [
     sources: [
       ['Tarifs Shine', 'https://www.shine.fr/tarifs/'],
       ['Shine Facture', 'https://www.shine.fr/lp/outil-facturation-gratuit/'],
+      ['Service-Public.fr : compte bancaire du micro-entrepreneur (article L613-10 du Code de la sécurité sociale)', 'https://entreprendre.service-public.gouv.fr/vosdroits/F35991'],
+    ],
+  },
+  {
+    slug: 'qonto',
+    releve: 'octobre 2026',
+    nom: 'Qonto',
+    mono: 'Q',
+    couleur: '#111827',
+    title: 'Qonto : compte pro et facturation pour ta LCD',
+    description: "Qonto avec Jason Marinho : compte pro en ligne, cartes, facturation électronique et lien avec ton comptable pour ta location courte durée. Prix, avantages, limites.",
+    eyebrow: 'Partenaire · Banque & facturation',
+    h1: 'Qonto : ton compte pro <em>et ta gestion financière</em> au même endroit',
+    lead: "Qonto est un compte pro en ligne lancé en France en 2017 et utilisé, d'après les relevés de 2026, par environ 600 000 entreprises en Europe. Je le conseille aux conciergeries, aux hôtes en société et à ceux qui veulent tout réunir dans une seule application : compte, cartes, factures, justificatifs et accès pour le comptable.",
+    offre: {
+      titre: 'Compte pro dès 9 € HT/mois',
+      sous: "Formule Basic à l'année, ouverture en ligne (relevé d'octobre 2026)",
+      points: [
+        'IBAN français et carte Mastercard physique et virtuelle',
+        'Facturation intégrée, plateforme agréée pour la facture électronique',
+        'Service client 7 jours sur 7, selon Qonto',
+      ],
+      cta: { label: 'Ouvrir mon compte Qonto', href: QONTO },
+      note: "Lien affilié : Qonto me verse une commission si tu ouvres un compte via ce lien, sans aucun surcoût pour toi.",
+    },
+    pourquoi: {
+      titre: 'Pourquoi je recommande <em>Qonto</em>',
+      items: [
+        { icon: 'split-horizontal', t: 'Tes revenus enfin séparés', d: 'Virements Airbnb, Booking.com, Stripe et paiements directs arrivent sur un compte dédié : ton suivi par logement et ta déclaration deviennent simples.' },
+        { icon: 'receipt', t: 'Prêt pour la facture électronique', d: "Qonto figure parmi les plateformes agréées par l'administration : utile si tu factures (conciergerie, ménage, photo) ou si tu dois recevoir des factures électroniques." },
+        { icon: 'users-three', t: 'Pensé pour les équipes', d: "Cartes par personne, plafonds, notes de frais et accès pour ton comptable : pratique dès que tu gères plusieurs logements ou une équipe." },
+      ],
+    },
+    fonctions: {
+      titre: 'Ce que Qonto fait pour <em>ton activité</em>',
+      items: [
+        { icon: 'credit-card', t: 'Compte et cartes pro', d: 'IBAN français, carte Mastercard physique, cartes virtuelles pour tes abonnements en ligne.', href: QONTO, lien: 'Voir les offres' },
+        { icon: 'file-text', t: 'Facturation', d: 'Devis et factures depuis le compte, suivi des paiements, factures électroniques reçues et émises.' },
+        { icon: 'arrows-left-right', t: 'Virements', d: 'Virements SEPA, dont instantanés, pour payer ton équipe de ménage ou tes prestataires.' },
+        { icon: 'calculator', t: 'Compta simplifiée', d: 'Justificatifs photographiés et rattachés à chaque dépense, catégories, accès pour ton comptable.' },
+        { icon: 'users', t: 'Dépenses d\'équipe', d: 'Cartes par personne avec plafonds, selon la formule : utile pour une conciergerie ou une équipe de ménage.' },
+        { icon: 'storefront', t: 'Création d\'entreprise', d: 'Dépôt du capital en ligne pour créer ta société (SASU, SARL, SCI).' },
+      ],
+    },
+    etapes: [
+      { t: 'Ouvre ton compte en ligne', d: "avec ta pièce d'identité et les documents de ton entreprise (micro-entreprise, LMNP immatriculé ou société) ; Qonto annonce une ouverture en une dizaine de minutes." },
+      { t: 'Change ton IBAN sur tes plateformes', d: 'Airbnb, Booking.com, Stripe pour tes contrats directs : tous tes encaissements arrivent au même endroit.' },
+      { t: 'Invite ton comptable et ton équipe', d: 'accès comptable, cartes pour ton équipe de ménage, justificatifs au fil de l\'eau : ta clôture de fin d\'année devient plus rapide.' },
+    ],
+    tableau: {
+      titre: 'Qonto est-il fait <em>pour toi</em> ?',
+      entete: ['Ta situation', 'Mon conseil'],
+      lignes: [
+        ['Conciergerie ou hôte en société (SASU, SARL, SCI)', '<span class="yes">Oui</span> : compte, cartes d\'équipe, factures et accès comptable au même endroit'],
+        ['Micro-entrepreneur (conciergerie, ménage, photo)', '<span class="yes">Oui</span> : un compte dédié devient obligatoire au-delà de 10 000 € de chiffre d\'affaires deux années civiles de suite'],
+        ['Hôte en LMNP avec un ou deux logements', '<span class="partial">Possible</span> : un compte dédié simplifie tout, mais une offre à 0 € comme <a href="/partenaires/shine">Shine</a> peut suffire'],
+        ['Tu dois émettre ou recevoir des factures électroniques', '<span class="yes">Oui</span> : Qonto est plateforme agréée, vérifie la formule qui inclut ce dont tu as besoin'],
+        ['Tu as besoin d\'un crédit immobilier', '<span class="partial">Pas ici</span> : Qonto ne finance pas un achat immobilier, garde ta banque pour ton prêt'],
+      ],
+      note: 'Les règles du compte dédié pour les micro-entrepreneurs : article L613-10 du Code de la sécurité sociale.',
+    },
+    cout: {
+      titre: 'Ce que ça <em>coûte</em>',
+      paras: [
+        "D'après les relevés d'octobre 2026, les formules pour indépendants vont de Basic (environ 9 € HT par mois à l'année, 11 € HT sans engagement, 30 virements SEPA par mois, un seul utilisateur) à Smart (environ 19 € HT) et Premium (environ 39 € HT). Les formules pour équipes commencent autour de 49 € HT par mois.",
+        "Il n'y a pas d'offre gratuite à vie : si tu veux un compte à 0 €, regarde Shine. Une période d'essai gratuite a été proposée aux nouveaux clients : vérifie les conditions au moment de t'inscrire.",
+        'Le prix exact, les quotas de virements et de retraits sont ceux affichés par Qonto au moment de souscrire.',
+      ],
+    },
+    limites: [
+      'Pas d\'offre gratuite : la première formule est payante, compare avec ton volume réel de virements.',
+      "Qonto est un établissement de paiement agréé, pas encore une banque : pas de prêt immobilier ni d'épargne (une demande de licence bancaire a été déposée en 2025).",
+      'La formule Basic limite le nombre de virements, de cartes virtuelles et de retraits : regarde ton usage avant de choisir.',
+      'Pas d\'agence : tout se fait dans l\'application et avec le service client en ligne.',
+    ],
+    liens: [
+      { href: '/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026', t: 'Pourquoi un compte pro ?', d: 'Les 6 raisons de séparer tes revenus de location.' },
+      { href: '/partenaires/shine', t: 'Shine', d: 'Le compte pro dès 0 € et Shine Facture.' },
+      { href: '/blog/creer-societe-conciergerie-en-ligne-legalplace-2026', t: 'Créer ta conciergerie', d: 'Micro-entreprise ou société : le bon statut.' },
+      { href: '/services/contrats', t: 'Tes réservations directes payées', d: 'Contrat en ligne, loyer et caution versés sur ton compte.' },
+    ],
+    faq: [
+      { q: 'Qonto est-elle une vraie banque ?', a: "Qonto est un établissement de paiement agréé par l'ACPR. Ton compte a un IBAN français et ton argent est cantonné, c'est-à-dire tenu à part des fonds propres de Qonto, comme l'exige la règle des établissements de paiement. Qonto a déposé une demande de licence bancaire en 2025 ; en attendant, elle ne fait pas de prêt immobilier." },
+      { q: 'Combien coûte Qonto pour une location courte durée ?', a: "D'après les relevés d'octobre 2026, la formule Basic coûte environ 9 € HT par mois avec un engagement annuel, ou 11 € HT par mois sans engagement, avec 30 virements SEPA par mois. Les formules Smart et Premium coûtent environ 19 € et 39 € HT par mois. Vérifie la grille officielle avant de souscrire." },
+      { q: 'Qonto gère-t-elle la facture électronique ?', a: "Oui : Qonto figure parmi les plateformes agréées par l'administration pour la facture électronique. La réception devient obligatoire pour toutes les entreprises au 1er septembre 2026, l'émission au 1er septembre 2027 pour les petites entreprises concernées." },
+      { q: 'Puis-je recevoir mes virements Airbnb et Booking sur Qonto ?', a: "Oui : il suffit de renseigner l'IBAN Qonto comme moyen de versement dans Airbnb, Booking.com et Stripe. Les virements arrivent comme sur n'importe quel compte." },
+      { q: 'Qonto ou Shine ?', a: "Les deux répondent au même besoin. Shine a une offre gratuite et un outil de facturation gratuit, Qonto n'a pas d'offre gratuite mais va plus loin pour les sociétés et les équipes (cartes par personne, notes de frais, accès comptable). Pour un ou deux logements en LMNP, Shine peut suffire ; pour une conciergerie ou une société, Qonto est souvent plus confortable." },
+    ],
+    cta: {
+      titre: 'Un compte pro, <em>des chiffres clairs</em>',
+      texte: "L'app Jason Marinho suit tes revenus logement par logement, prépare tes contrats directs avec paiement en ligne et t'aide à déclarer tes revenus.",
+      btn: { label: 'Créer mon compte gratuit', href: 'https://app.jasonmarinho.com/auth/register' },
+    },
+    sources: [
+      ['Programme d\'affiliation et présentation de Qonto', 'https://qonto.com/fr/affiliate'],
+      ['Tarifs Qonto (grille officielle)', 'https://qonto.com/fr/pricing'],
+      ['MoneyVox : Qonto agréée plateforme de facturation électronique', 'https://www.moneyvox.fr/banque-pro/actualites/107100/compte-pro-qonto-officiellement-agreee-comme-plateforme-de-facturation-electronique'],
+      ['Journal du Net : Qonto dépose une demande de licence bancaire', 'https://www.journaldunet.com/fintech/1542843-qonto-depose-une-demande-de-licence-bancaire/'],
       ['Service-Public.fr : compte bancaire du micro-entrepreneur (article L613-10 du Code de la sécurité sociale)', 'https://entreprendre.service-public.gouv.fr/vosdroits/F35991'],
     ],
   },

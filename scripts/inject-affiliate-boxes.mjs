@@ -62,7 +62,7 @@ const shineTu = box('shine-tu',
 const qontoTu = box('qonto-tu',
   "<strong>Ou ouvrir un compte Qonto :</strong> compte pro en ligne très répandu chez les indépendants et les sociétés, avec cartes, facturation et accès pour ton comptable. Formules payantes, à partir d'environ 9 € HT par mois à l'année d'après les relevés d'octobre 2026 (grille officielle à vérifier). Qonto est un établissement de paiement agréé, pas encore une banque.",
   btn(QONTO, 'Ouvrir mon compte Qonto'),
-  "Lien affilié : si tu ouvres un compte via ce lien, Qonto me verse une commission, sans aucun surcoût pour toi. Pour une offre à 0 €, regarde Shine juste au-dessus.")
+  "Lien affilié : si tu ouvres un compte via ce lien, Qonto me verse une commission, sans aucun surcoût pour toi. Pour une offre à 0 €, regarde Shine juste au-dessus. <a href=\"/partenaires/qonto\" style=\"color:#004c3f\">Voir l'offre Qonto en détail</a>.")
 
 const airdnaTu = box('airdna-tu',
   "<strong>Essayer AirDNA :</strong> crée un compte gratuit pour voir l'occupation, le prix moyen et la saisonnalité de ta ville, et tester ton adresse dans le Rentalizer. Les formules payantes ne servent que si tu veux aller plus loin.",
