@@ -10,6 +10,8 @@ import type { ChannelKey } from '@/lib/acquisition/traffic'
 import type { ProvenanceData } from '@/lib/acquisition/load'
 import { CreateLinkForm, CopyButton, ArchiveButton, AutoRefresh } from './LinkTools'
 import NewsletterTab from './NewsletterTab'
+import GroupesTab from './GroupesTab'
+import type { GroupStats } from '@/lib/acquisition/groupes-load'
 import type { NewsletterTabData } from '@/lib/newsletter/stats'
 import type { Edition } from '@/lib/newsletter/editions'
 
@@ -18,7 +20,7 @@ import type { Edition } from '@/lib/newsletter/editions'
 // sur mon CRM Driing »). Onglets Résultats / Liens suivis / Inscriptions.
 // Règles dans lib/acquisition.
 
-export type ProvTab = 'resultats' | 'liens' | 'inscriptions' | 'newsletter'
+export type ProvTab = 'resultats' | 'groupes' | 'liens' | 'inscriptions' | 'newsletter'
 
 const KIND_COLOR: Partial<Record<AcqKind, string>> = {
   lien: 'var(--accent-text)', google: 'var(--accent-text)', facebook: AMBER, instagram: PINK, ia: PINK, 'e-mail': BROWN,
@@ -29,7 +31,7 @@ const CHANNEL_COLOR: Record<ChannelKey, string> = {
   email: BROWN, autres: 'color-mix(in srgb, var(--accent-text) 45%, transparent)', direct: 'var(--text-3)', sans: 'color-mix(in srgb, var(--text-3) 50%, transparent)',
 }
 const PERIODS = [['7j', '7 jours'], ['30j', '30 jours'], ['90j', '90 jours'], ['tout', 'Depuis le début']] as const
-const TABS: Array<[ProvTab, string]> = [['resultats', 'Résultats'], ['liens', 'Liens suivis'], ['inscriptions', 'Inscriptions'], ['newsletter', 'Newsletter']]
+const TABS: Array<[ProvTab, string]> = [['resultats', 'Résultats'], ['groupes', 'Groupes'], ['liens', 'Liens suivis'], ['inscriptions', 'Inscriptions'], ['newsletter', 'Newsletter']]
 
 const nf = (n: number) => n.toLocaleString('fr-FR')
 const dateFr = (iso: string) => new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Europe/Paris' })
@@ -39,7 +41,7 @@ const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n > 1 ? man
 const pct = (cur: number, prev: number) => (prev ? Math.round(((cur - prev) / prev) * 100) : null)
 const destLabel = (url: string) => LINK_DESTINATIONS.find(d => d.url === url)?.label ?? url.replace(/^https:\/\//, '').replace(/\/$/, '')
 
-export default function ProvenanceView({ data, periode, onglet, newsletter, edition }: { data: ProvenanceData; periode: string; onglet: ProvTab; newsletter?: NewsletterTabData | null; edition?: Edition }) {
+export default function ProvenanceView({ data, periode, onglet, newsletter, edition, groupes }: { data: ProvenanceData; periode: string; onglet: ProvTab; newsletter?: NewsletterTabData | null; edition?: Edition; groupes?: GroupStats | null }) {
   const { report, missingMigration } = data
   const periodLabel = PERIODS.find(p => p[0] === periode)?.[1] ?? '7 jours'
   const href = (o: ProvTab, p = periode) => `/dashboard/admin/provenance?onglet=${o}&periode=${p}`
@@ -84,6 +86,7 @@ export default function ProvenanceView({ data, periode, onglet, newsletter, edit
       </nav>
 
       {onglet === 'resultats' && <Resultats data={data} periodLabel={periodLabel} />}
+      {onglet === 'groupes' && groupes && <GroupesTab stats={groupes} live={{ now: data.today.liveNow, last30: data.today.last30, visitorsToday: data.today.visitorsToday }} />}
       {onglet === 'liens' && <Liens data={data} periodLabel={periodLabel} />}
       {onglet === 'inscriptions' && <Inscriptions data={data} periodLabel={periodLabel} />}
       {onglet === 'newsletter' && newsletter && <NewsletterTab data={newsletter} edition={edition ?? 'hote'} periode={periode} />}

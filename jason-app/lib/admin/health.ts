@@ -88,6 +88,7 @@ export interface MigrationProbe {
 
 /** Migrations récentes à vérifier : une table ou une colonne qu'elles créent. */
 export const MIGRATION_PROBES: MigrationProbe[] = [
+  { file: '20261012_130_group_replies.sql', what: 'onglet Groupes de Provenance (messages préparés)', table: 'group_replies', column: 'code' },
   { file: '20261011_128_newsletter_suivi.sql', what: 'choix newsletter gardé sur le compte et contenu des lettres envoyées', table: 'profiles', column: 'newsletter_opt_in' },
   { file: '20261011_129_last_seen.sql', what: 'dernière visite des membres (Membres de l’admin)', table: 'profiles', column: 'last_seen_at' },
   { file: '20261011_127_newsletter_issues.sql', what: 'newsletter mensuelle automatique (une lettre par mois au plus)', table: 'newsletter_issues', column: 'month' },
