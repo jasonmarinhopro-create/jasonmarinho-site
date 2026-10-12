@@ -216,7 +216,11 @@ export const ANNUAIRE_CSS = `
 .card-photo{aspect-ratio:16/10;background:#EEF3EF;overflow:hidden}
 .card-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
 .card:hover .card-photo img{transform:scale(1.04)}
-.card-photo.empty{display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#EAF3EE,#F4F8F5);color:rgba(0,76,63,.35);font-size:38px}
+.card-photo{width:100%;align-self:stretch;flex-shrink:0;border:0;border-radius:0;margin:0}
+.card-cover{position:relative;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 18% 22%,rgba(255,213,107,.22),transparent 42%),radial-gradient(circle at 85% 90%,rgba(99,214,131,.16),transparent 45%),linear-gradient(150deg,#001a11,#003329 55%,#00463a)}
+.card-cover-ini{width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,213,107,.12);border:1px solid rgba(255,213,107,.35);color:#FFD56B;font-family:'Fraunces',serif;font-size:32px;font-style:italic;letter-spacing:.5px}
+.card-cover-logo{width:96px;height:96px;border-radius:20px;background:#fff center/cover no-repeat;box-shadow:0 10px 28px rgba(0,0,0,.3)}
+.card-cover-lbl{position:absolute;left:16px;bottom:12px;font-size:10.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:rgba(255,255,255,.6)}
 .card-body{display:flex;flex-direction:column;gap:12px;padding:20px 22px 22px;flex:1}
 .card-villes{font-size:12.5px;color:var(--tm);line-height:1.55;display:flex;gap:6px;align-items:flex-start}
 .card-villes i{color:var(--g);margin-top:2px}

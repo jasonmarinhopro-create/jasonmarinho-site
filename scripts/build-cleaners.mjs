@@ -439,10 +439,10 @@ export function buildAnnuaireListPage(items) {
         const villes = (Array.isArray(c.villes_couvertes) ? c.villes_couvertes : []).filter(v => v && v !== c.ville)
         const prestationsBlob = (c.prestations || []).join(' ')
         return `<a href="/annuaires/menage/${escHtml(c.slug)}" class="card" data-search="${escHtml(searchBlob)}" data-equipe="${escHtml(c.equipe_type || '')}" data-delai="${escHtml(c.delai_reservation || '')}" data-assurance="${c.assurance_rc_pro ? '1' : '0'}" data-prestations="${escHtml(prestationsBlob)}" data-tarif-min="${c.tarif_forfait_min ?? ''}" data-tarif-max="${c.tarif_forfait_max ?? ''}">
-  ${cover ? `<div class="card-photo"><img src="${escHtml(cover.thumb)}" alt="Photo de ${escHtml(displayName)}" width="640" height="400" loading="lazy"></div>` : `<div class="card-photo empty"><i class="ph-bold ph-sparkle"></i></div>`}
+  ${cover ? `<div class="card-photo"><img src="${escHtml(cover.thumb)}" alt="Photo de ${escHtml(displayName)}" width="640" height="400" loading="lazy"></div>` : `<div class="card-photo card-cover" aria-hidden="true">${c.logo_url ? `<span class="card-cover-logo" style="background-image:url('${escHtml(c.logo_url)}')"></span>` : `<span class="card-cover-ini">${escHtml(initials)}</span>`}<span class="card-cover-lbl">Ménage · ${escHtml(c.ville)}</span></div>`}
   <div class="card-body">
   <div class="card-head">
-    ${c.logo_url
+    ${!cover ? '' : c.logo_url
       ? `<div class="card-logo" style="background:url('${escHtml(c.logo_url)}') center/cover"></div>`
       : `<div class="card-logo placeholder">${escHtml(initials)}</div>`}
     <div class="card-head-txt">

@@ -387,10 +387,10 @@ export function buildAnnuaireListPage(items) {
         const cover = vitrinePhotos(p.portfolio_photos, SUPABASE_URL, 1)[0]
         const villes = (Array.isArray(p.villes_couvertes) ? p.villes_couvertes : []).filter(v => v && v !== p.ville)
         return `<a href="/annuaires/photographes/${escHtml(p.slug)}" class="card" data-search="${escHtml(searchBlob)}" data-tier="${escHtml(p.tier || '')}" data-tarif-min="${p.tarif_min ?? ''}" data-tarif-max="${p.tarif_max ?? ''}">
-  ${cover ? `<div class="card-photo"><img src="${escHtml(cover.thumb)}" alt="Logement photographié par ${escHtml(displayName)}" width="640" height="400" loading="lazy"></div>` : `<div class="card-photo empty"><i class="ph-bold ph-camera"></i></div>`}
+  ${cover ? `<div class="card-photo"><img src="${escHtml(cover.thumb)}" alt="Logement photographié par ${escHtml(displayName)}" width="640" height="400" loading="lazy"></div>` : `<div class="card-photo card-cover" aria-hidden="true">${p.logo_url ? `<span class="card-cover-logo" style="background-image:url('${escHtml(p.logo_url)}')"></span>` : `<span class="card-cover-ini">${escHtml(initials)}</span>`}<span class="card-cover-lbl">Photographe · ${escHtml(p.ville)}</span></div>`}
   <div class="card-body">
   <div class="card-head">
-    ${p.logo_url
+    ${!cover ? '' : p.logo_url
       ? `<div class="card-logo" style="background:url('${escHtml(p.logo_url)}') center/cover"></div>`
       : `<div class="card-logo placeholder">${escHtml(initials)}</div>`}
     <div class="card-head-txt">
@@ -402,7 +402,7 @@ export function buildAnnuaireListPage(items) {
   ${p.specialite || p.reco_count > 0 ? `<div class="card-chips">${p.specialite ? `<span class="card-spe">${escHtml(p.specialite)}</span>` : ''}${p.reco_count > 0 ? `<span class="card-rc"><i class="ph-bold ph-heart"></i>Recommandé par ${p.reco_count} hôte${p.reco_count > 1 ? 's' : ''}</span>` : ''}</div>` : ''}
   <div class="card-foot">
     ${tarif ? `<div class="card-tarif">${escHtml(tarif)}${des ? '' : ' <span>la séance</span>'}</div>` : '<div></div>'}
-    <span class="card-cta">Voir les photos et tarifs <i class="ph-bold ph-arrow-right"></i></span>
+    <span class="card-cta">${cover ? 'Voir les photos et tarifs' : 'Voir la fiche'} <i class="ph-bold ph-arrow-right"></i></span>
   </div>
   </div>
 </a>`
