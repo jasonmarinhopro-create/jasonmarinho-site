@@ -842,7 +842,10 @@ async function main() {
 
 
 // Lancé directement (build) : génère tout. Importé (fiches d'exemple) : rien.
-if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) main().catch(err => {
+function isEntryPoint() {
+  try { return fs.realpathSync(process.argv[1] ?? '') === fs.realpathSync(fileURLToPath(import.meta.url)) } catch { return import.meta.url === pathToFileURL(process.argv[1] ?? '').href }
+}
+if (isEntryPoint()) main().catch(err => {
   console.error('[build-photographers] Erreur:', err)
   process.exit(0)
 })
