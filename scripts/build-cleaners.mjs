@@ -263,7 +263,7 @@ ${JSON.stringify({
       ${forfait ? `<span><i class="ph-bold ph-currency-eur"></i>Forfait turnover ${escHtml(forfait)}</span>` : ''}
       ${heure ? `<span><i class="ph-bold ph-clock"></i>${escHtml(heure)}</span>` : ''}
       ${delaiLabel ? `<span><i class="ph-bold ph-lightning"></i>${escHtml(delaiLabel)}</span>` : ''}
-      <span><i class="ph-bold ph-shield-check"></i>Vérifié par Jason Marinho</span>
+      <span><i class="ph-bold ph-handshake"></i>Contact direct, sans commission</span>
     </div>
   </div>
 </header>
@@ -419,11 +419,11 @@ function buildAnnuaireListPage(items) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Annuaire des équipes de ménage LCD · ${items.length} pros sélectionnés | Jason Marinho</title>
-<meta name="description" content="${items.length} équipes de ménage spécialisées en location courte durée, sélectionnées par Jason Marinho. Recherche par ville, prestations, capacité.">
+<title>Annuaire des équipes de ménage LCD · ${items.length} pros spécialisés | Jason Marinho</title>
+<meta name="description" content="${items.length} équipes de ménage spécialisées en location courte durée, réunies par Jason Marinho. Recherche par ville, prestations, capacité.">
 <link rel="canonical" href="https://jasonmarinho.com/annuaires/menage">
-<meta property="og:title" content="Annuaire des équipes de ménage LCD · ${items.length} pros sélectionnés">
-<meta property="og:description" content="${items.length} équipes de ménage spécialisées location courte durée, sélectionnées et vérifiées.">
+<meta property="og:title" content="Annuaire des équipes de ménage LCD · ${items.length} pros spécialisés">
+<meta property="og:description" content="${items.length} équipes de ménage spécialisées location courte durée, contact direct sans commission.">
 <meta property="og:url" content="https://jasonmarinho.com/annuaires/menage">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
@@ -557,7 +557,7 @@ ${JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   name: `Annuaire des équipes de ménage LCD (${items.length} pros)`,
-  description: 'Annuaire curé des équipes de ménage spécialisées location courte durée.',
+  description: 'Annuaire des équipes de ménage spécialisées location courte durée.',
   url: 'https://jasonmarinho.com/annuaires/menage',
 })}
 </script>
@@ -567,9 +567,9 @@ ${JSON.stringify({
 <header class="hero">
   <div class="s-in">
     <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/menage">Ménage LCD</a> · <span>Annuaire</span></div>
-    <span class="lbl">Annuaire vérifié · curé manuellement</span>
+    <span class="lbl">Annuaire · contact direct</span>
     <h1>${items.length} équipe${items.length > 1 ? 's' : ''} de ménage <em>LCD sélectionnée${items.length > 1 ? 's' : ''}</em></h1>
-    <p class="lead">Toutes les équipes ci-dessous ont été vérifiées manuellement par Jason Marinho : références LCD réelles (turnover Airbnb/Booking), capacité confirmée, prestations cohérentes. Pas d'intermédiation : tu contactes directement.</p>
+    <p class="lead">Des équipes spécialisées dans le ménage entre deux voyageurs Airbnb et Booking : prestations, zone et tarifs sur chaque fiche. Pas d'intermédiation : tu les contactes directement, sans commission.</p>
     ${items.length > 0 ? `<span class="count-pill"><i class="ph-bold ph-sparkle"></i>${items.length} équipes actives</span>` : ''}
   </div>
 </header>

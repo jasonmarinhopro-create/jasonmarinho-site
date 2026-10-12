@@ -222,7 +222,7 @@ ${JSON.stringify({
     ${p.zone_couverte ? `<p class="subtitle">Zone d'intervention : ${escHtml(p.zone_couverte)}</p>` : ''}
     <div class="meta-row">
       ${tarif ? `<span><i class="ph-bold ph-currency-eur"></i>${escHtml(tarif)} la session</span>` : ''}
-      <span><i class="ph-bold ph-shield-check"></i>Vérifié par Jason Marinho</span>
+      <span><i class="ph-bold ph-handshake"></i>Contact direct, sans commission</span>
     </div>
   </div>
 </header>
@@ -367,11 +367,11 @@ function buildAnnuaireListPage(items) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Annuaire des photographes LCD · ${items.length} pros sélectionnés | Jason Marinho</title>
-<meta name="description" content="${items.length} photographes professionnels spécialisés en location courte durée, sélectionnés par Jason Marinho. Recherche par ville, tarif, spécialité.">
+<title>Annuaire des photographes LCD · ${items.length} pros spécialisés | Jason Marinho</title>
+<meta name="description" content="${items.length} photographes professionnels spécialisés en location courte durée, réunis par Jason Marinho. Recherche par ville, tarif, spécialité.">
 <link rel="canonical" href="https://jasonmarinho.com/annuaires/photographes">
-<meta property="og:title" content="Annuaire des photographes LCD · ${items.length} pros sélectionnés">
-<meta property="og:description" content="${items.length} photographes spécialisés location courte durée, sélectionnés et vérifiés.">
+<meta property="og:title" content="Annuaire des photographes LCD · ${items.length} pros spécialisés">
+<meta property="og:description" content="${items.length} photographes spécialisés location courte durée, contact direct sans commission.">
 <meta property="og:url" content="https://jasonmarinho.com/annuaires/photographes">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
@@ -501,7 +501,7 @@ ${JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   name: `Annuaire des photographes LCD (${items.length} pros)`,
-  description: 'Annuaire curé des photographes spécialisés location courte durée.',
+  description: 'Annuaire des photographes spécialisés location courte durée.',
   url: 'https://jasonmarinho.com/annuaires/photographes',
 })}
 </script>
@@ -511,9 +511,9 @@ ${JSON.stringify({
 <header class="hero">
   <div class="s-in">
     <div class="brd"><a href="/">Accueil</a> · <a href="/devenir-photographe-lcd">Photographes LCD</a> · <span>Annuaire</span></div>
-    <span class="lbl">Annuaire vérifié · curé manuellement</span>
+    <span class="lbl">Annuaire · contact direct</span>
     <h1>${items.length} photographe${items.length > 1 ? 's' : ''} <em>LCD sélectionné${items.length > 1 ? 's' : ''}</em></h1>
-    <p class="lead">Tous les photographes ci-dessous ont été vérifiés manuellement par Jason Marinho : portfolio réel en LCD, expérience confirmée, tarifs cohérents marché. Pas d'intermédiation : tu contactes directement.</p>
+    <p class="lead">Des photographes spécialisés en location courte durée : portfolio, zone et tarifs sur chaque fiche. Pas d'intermédiation : tu les contactes directement, sans commission.</p>
     ${items.length > 0 ? `<span class="count-pill"><i class="ph-bold ph-camera"></i>${items.length} pros actifs</span>` : ''}
   </div>
 </header>

@@ -257,10 +257,10 @@ function linksRow(v, metier) {
   if (v.revenu) cards.push(`<a class="link-card" href="${v.revenu}"><span class="lc-t">Étude de revenus</span><span class="lc-h">Combien rapporte la LCD ${escHtml(v.pre)} ?</span><span class="lc-a">Voir les chiffres <i class="ph-bold ph-arrow-right"></i></span></a>`)
   if (metier === 'photographe') {
     cards.push(`<a class="link-card" href="/menage-lcd-${v.slug}"><span class="lc-t">Autre prestataire</span><span class="lc-h">Équipe de ménage LCD ${escHtml(v.pre)}</span><span class="lc-a">Voir le guide <i class="ph-bold ph-arrow-right"></i></span></a>`)
-    cards.push(`<a class="link-card" href="/annuaires/photographes"><span class="lc-t">Annuaire vérifié</span><span class="lc-h">Tous les photographes LCD</span><span class="lc-a">Voir l'annuaire <i class="ph-bold ph-arrow-right"></i></span></a>`)
+    cards.push(`<a class="link-card" href="/annuaires/photographes"><span class="lc-t">Annuaire LCD</span><span class="lc-h">Tous les photographes LCD</span><span class="lc-a">Voir l'annuaire <i class="ph-bold ph-arrow-right"></i></span></a>`)
   } else {
     cards.push(`<a class="link-card" href="/photographe-lcd-${v.slug}"><span class="lc-t">Autre prestataire</span><span class="lc-h">Photographe LCD ${escHtml(v.pre)}</span><span class="lc-a">Voir le guide <i class="ph-bold ph-arrow-right"></i></span></a>`)
-    cards.push(`<a class="link-card" href="/annuaires/menage"><span class="lc-t">Annuaire vérifié</span><span class="lc-h">Toutes les équipes ménage LCD</span><span class="lc-a">Voir l'annuaire <i class="ph-bold ph-arrow-right"></i></span></a>`)
+    cards.push(`<a class="link-card" href="/annuaires/menage"><span class="lc-t">Annuaire LCD</span><span class="lc-h">Toutes les équipes ménage LCD</span><span class="lc-a">Voir l'annuaire <i class="ph-bold ph-arrow-right"></i></span></a>`)
   }
   return `<div class="links-row">${cards.join('')}</div>`
 }
@@ -271,7 +271,7 @@ function buildPhotographePage(v) {
   const title = `Photographe Airbnb ${v.pre} : tarifs & annuaire LCD`.length <= 60
     ? `Photographe Airbnb ${v.pre} : tarifs & annuaire LCD`
     : `Photographe Airbnb ${v.pre} : tarifs et annuaire`
-  const desc = `Trouver un photographe spécialisé Airbnb et location courte durée ${v.pre} : tarifs constatés, les photos indispensables, comment briefer, annuaire vérifié. ${v.annonces} annonces sur le marché, des photos pro rentabilisées en quelques nuits.`
+  const desc = `Trouver un photographe spécialisé Airbnb et location courte durée ${v.pre} : tarifs constatés, les photos indispensables, comment briefer, annuaire des photographes. ${v.annonces} annonces sur le marché, des photos pro rentabilisées en quelques nuits.`
   const amortNuits = Math.max(2, Math.ceil(300 / v.adrMin))
   const premium = isPremium(v)
   const t1 = premium ? '200 – 300 €' : '150 – 250 €'
@@ -305,9 +305,9 @@ function buildPhotographePage(v) {
     <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/photographes">Photographes LCD</a> · <span>${escHtml(v.name)}</span></div>
     <span class="lbl">Photographe · Airbnb, Booking &amp; réservation directe</span>
     <h1>Photographe LCD <em>${escHtml(v.pre)}</em></h1>
-    <p class="lead">Sur les <strong>${v.annonces} annonces</strong> que compte ${escHtml(v.name)}, celles qui sortent du lot ont un point commun : des photos professionnelles. Tarifs locaux constatés, checklist des photos indispensables, questions à poser : et l'annuaire vérifié pour trouver le bon photographe.</p>
+    <p class="lead">Sur les <strong>${v.annonces} annonces</strong> que compte ${escHtml(v.name)}, celles qui sortent du lot ont un point commun : des photos professionnelles. Tarifs locaux constatés, checklist des photos indispensables, questions à poser : et l'annuaire pour trouver le bon photographe.</p>
     <div class="hero-ctas">
-      <a href="/annuaires/photographes" class="btn-p"><i class="ph-bold ph-magnifying-glass"></i> Trouver un photographe vérifié</a>
+      <a href="/annuaires/photographes" class="btn-p"><i class="ph-bold ph-magnifying-glass"></i> Trouver un photographe LCD</a>
       <a href="/devenir-photographe-lcd" class="btn-ol"><i class="ph-bold ph-camera"></i> Je suis photographe ${escHtml(v.pre)}</a>
     </div>
     <div class="stats">
@@ -374,7 +374,7 @@ function buildPhotographePage(v) {
       <div class="pro-band-txt">
         <span class="lbl">Vous êtes photographe ${escHtml(v.pre)} ?</span>
         <h2>Rejoignez l'annuaire <em>des photographes LCD</em></h2>
-        <p>Une fiche pro hébergée sur jasonmarinho.com, des demandes d'hôtes qualifiés ${escHtml(v.pre)} et dans votre zone, contact direct, zéro commission sur vos prestations. Sélection curée : portfolio LCD réel exigé.</p>
+        <p>Une fiche pro hébergée sur jasonmarinho.com, des demandes d'hôtes qualifiés ${escHtml(v.pre)} et dans votre zone, contact direct, zéro commission sur vos prestations. Votre fiche se voit sur Google comme un site vitrine, avec un lien dofollow vers votre site ou portfolio et vos statistiques chaque mois.</p>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px">
         <a href="/devenir-photographe-lcd" class="btn-p"><i class="ph-bold ph-camera"></i> Découvrir le programme</a>
@@ -401,7 +401,7 @@ function buildMenagePage(v) {
   const title = `Ménage Airbnb ${v.pre} : tarifs turnover & annuaire LCD`.length <= 60
     ? `Ménage Airbnb ${v.pre} : tarifs turnover & annuaire LCD`
     : `Ménage Airbnb ${v.pre} : tarifs et annuaire`
-  const desc = `Trouver une équipe de ménage spécialisée Airbnb et location courte durée ${v.pre} : tarifs turnover constatés, checklist complète, gestion du linge, questions à poser, annuaire vérifié.`
+  const desc = `Trouver une équipe de ménage spécialisée Airbnb et location courte durée ${v.pre} : tarifs turnover constatés, checklist complète, gestion du linge, questions à poser, annuaire des équipes.`
   const premium = isPremium(v)
   const m1 = premium ? '50 – 70 €' : '40 – 60 €'
   const m2 = premium ? '70 – 110 €' : '60 – 90 €'
@@ -417,7 +417,7 @@ function buildMenagePage(v) {
     { q: `Que doit inclure un vrai ménage de turnover ?`,
       a: `Bien plus qu'un ménage classique : nettoyage complet, <strong>lits faits qualité hôtelière</strong>, réassort des consommables (papier, savon, café), contrôle des équipements, signalement des dégâts photos à l'appui, parfois check du lave-vaisselle/lave-linge laissés par les voyageurs. Avec ${v.occ} % d'occupation ${v.pre}, un logement tourne environ <strong>${rotations} fois par mois</strong> : la régularité et la fiabilité comptent autant que la qualité.` },
     { q: `Comment trouver une équipe de ménage fiable ${v.pre} ?`,
-      a: `Quatre critères non négociables : une <strong>RC pro</strong> à jour, une vraie expérience du turnover LCD (pas seulement du ménage de bureaux), la disponibilité week-ends et jours fériés (c'est là que tout se joue), et un plan B en cas d'absence. L'annuaire vérifié de Jason Marinho ne référence que des équipes contrôlées sur ces points, avec contact direct et zéro commission.` },
+      a: `Quatre critères non négociables : une <strong>RC pro</strong> à jour, une vraie expérience du turnover LCD (pas seulement du ménage de bureaux), la disponibilité week-ends et jours fériés (c'est là que tout se joue), et un plan B en cas d'absence. Dans l'annuaire de Jason Marinho, chaque équipe affiche ses prestations, sa zone et ses tarifs : posez-lui ces questions avant de confier vos clés. Contact direct, zéro commission.` },
   ]
 
   const jsonLd = [
@@ -436,9 +436,9 @@ function buildMenagePage(v) {
     <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/menage">Ménage LCD</a> · <span>${escHtml(v.name)}</span></div>
     <span class="lbl">Ménage turnover · Airbnb, Booking &amp; réservation directe</span>
     <h1>Équipe de ménage LCD <em>${escHtml(v.pre)}</em></h1>
-    <p class="lead">Avec <strong>${v.occ} % d'occupation moyenne</strong>, un logement ${escHtml(v.pre)} tourne environ ${rotations} fois par mois. Le ménage est le maillon qui fait ou défait vos avis 5 étoiles. Tarifs locaux, checklist turnover, questions à poser : et l'annuaire vérifié pour trouver la bonne équipe.</p>
+    <p class="lead">Avec <strong>${v.occ} % d'occupation moyenne</strong>, un logement ${escHtml(v.pre)} tourne environ ${rotations} fois par mois. Le ménage est le maillon qui fait ou défait vos avis 5 étoiles. Tarifs locaux, checklist turnover, questions à poser : et l'annuaire pour trouver la bonne équipe.</p>
     <div class="hero-ctas">
-      <a href="/annuaires/menage" class="btn-p"><i class="ph-bold ph-magnifying-glass"></i> Trouver une équipe vérifiée</a>
+      <a href="/annuaires/menage" class="btn-p"><i class="ph-bold ph-magnifying-glass"></i> Trouver une équipe LCD</a>
       <a href="/devenir-prestataire-menage-lcd" class="btn-ol"><i class="ph-bold ph-sparkle"></i> Je fais du ménage LCD ${escHtml(v.pre)}</a>
     </div>
     <div class="stats">
@@ -506,7 +506,7 @@ function buildMenagePage(v) {
       <div class="pro-band-txt">
         <span class="lbl">Vous faites du ménage ${escHtml(v.pre)} ?</span>
         <h2>Rejoignez l'annuaire <em>des équipes ménage LCD</em></h2>
-        <p>Une fiche pro hébergée sur jasonmarinho.com, des demandes d'hôtes qualifiés ${escHtml(v.pre)} et dans votre zone, contact direct, zéro commission sur vos prestations. Sélection curée : expérience turnover et RC pro exigées.</p>
+        <p>Une fiche pro hébergée sur jasonmarinho.com, des demandes d'hôtes qualifiés ${escHtml(v.pre)} et dans votre zone, contact direct, zéro commission sur vos prestations. Votre fiche se voit sur Google comme un site vitrine, avec un lien dofollow vers votre site et vos statistiques chaque mois.</p>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px">
         <a href="/devenir-prestataire-menage-lcd" class="btn-p"><i class="ph-bold ph-sparkle"></i> Découvrir le programme</a>

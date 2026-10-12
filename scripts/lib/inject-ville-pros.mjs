@@ -112,7 +112,7 @@ export function injectProsIntoVillePages({ root, prefix, metier, pros }) {
     const block = `${START}
 <section style="background:rgba(99,214,131,.08);border-top:1px solid rgba(0,76,63,.08);border-bottom:1px solid rgba(0,76,63,.08);padding:34px 0">
   <div style="max-width:1100px;margin:0 auto;padding:0 clamp(16px,5vw,40px)">
-    <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#1e9d54;margin-bottom:10px">✓ Vérifié annuaire</span>
+    <span style="display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#1e9d54;margin-bottom:10px">Dans l'annuaire</span>
     <h2 style="font-family:'Fraunces',serif;font-size:clamp(20px,2.6vw,26px);font-weight:400;color:#0F1A0D;margin:0 0 14px">${list.length > 1 ? `${list.length} ${escHtml(metier)}s disponibles` : `Un ${escHtml(metier)} disponible`} ${escHtml(aVille(villeName))}</h2>
     <div style="display:flex;flex-wrap:wrap;gap:12px">${cards}</div>
   </div>

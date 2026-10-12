@@ -63,8 +63,8 @@ function blockHtml(c) {
     <h2 style="font-family:'Fraunces',serif;font-size:clamp(19px,2.2vw,24px);font-weight:400;color:#0F1A0D;margin:0 0 6px;letter-spacing:-.3px">Ton équipe LCD <em style="color:#004C3F;font-style:italic;font-weight:300">${pre}</em></h2>
     <p style="font-size:13.5px;color:#3D5038;margin:0 0 18px;line-height:1.65">Photos pro et ménage turnover : les deux prestataires qui font la différence sur tes avis et ton taux de clic. Tarifs locaux constatés ${pre} et annuaires vérifiés, sans commission.</p>
     <div style="display:flex;gap:14px;flex-wrap:wrap">
-${card(`/photographe-lcd-${c.slug}`, 'ph-camera', 'Photographe', `Photographe LCD ${pre}`, `Tarifs constatés ${pre}, les photos indispensables, comment briefer : et l'annuaire vérifié.`)}
-${card(`/menage-lcd-${c.slug}`, 'ph-sparkle', 'Ménage turnover', `Équipe de ménage LCD ${pre}`, `Tarifs turnover ${pre}, checklist complète, questions à poser : et l'annuaire vérifié.`)}
+${card(`/photographe-lcd-${c.slug}`, 'ph-camera', 'Photographe', `Photographe LCD ${pre}`, `Tarifs constatés ${pre}, les photos indispensables, comment briefer : et l'annuaire des pros.`)}
+${card(`/menage-lcd-${c.slug}`, 'ph-sparkle', 'Ménage turnover', `Équipe de ménage LCD ${pre}`, `Tarifs turnover ${pre}, checklist complète, questions à poser : et l'annuaire des pros.`)}
     </div>
   </div>
 </section>
