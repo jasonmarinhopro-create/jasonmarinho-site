@@ -8,13 +8,15 @@ import { useMemo, useRef, useState, useTransition } from 'react'
 import {
   Lightbulb, ArrowFatUp, ChatCircle, Plus, Trash, Star, ShareNetwork, CheckCircle,
   Rocket, Clock, Sparkle, PaperPlaneTilt, ChatCircleText, ArrowRight,
+  House, Camera, Broom, ChartLineUp, UsersThree,
 } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import RelativeTime from '@/components/ui/RelativeTime'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 import {
-  COMMENT_MAX, DESC_MAX, ESPACE_LABEL, REPONSE_MAX, STATUS_META, STATUS_ORDER, TITLE_MAX,
+  COMMENT_MAX, DESC_MAX, ESPACES, ESPACE_LABEL, ESPACE_POUR, REPONSE_MAX, STATUS_META, STATUS_ORDER, TITLE_MAX,
+  pourQui,
   concerns, countByStatus, lastDelivered, sortIdeas,
   type IdeeEspace, type IdeeStatus, type IdeeTri,
 } from '@/lib/idees/rules'
@@ -34,6 +36,18 @@ const INTRO: Record<IdeeEspace, { quoi: string; exemple: string }> = {
   investisseur: { quoi: 'tes analyses avant d\'acheter', exemple: 'Ex. : comparer deux biens côte à côte' },
 }
 
+const ESPACE_ICON: Record<IdeeEspace, React.ElementType> = {
+  hote: House, photographe: Camera, menage: Broom, investisseur: ChartLineUp,
+}
+
+/** « Pour toi » selon l'espace d'où la page est ouverte */
+const POUR_TOI: Record<IdeeEspace, string> = {
+  hote: 'Pour toi, hôte',
+  photographe: 'Pour toi, photographe',
+  menage: 'Pour ton équipe de ménage',
+  investisseur: 'Pour toi, investisseur',
+}
+
 const tint = (c: string, pct = 12) => `color-mix(in srgb, ${c} ${pct}%, transparent)`
 
 export default function IdeesView({ data, espace }: { data: IdeesData; espace: IdeeEspace }) {
@@ -42,7 +56,9 @@ export default function IdeesView({ data, espace }: { data: IdeesData; espace: I
   const [votes, setVotes] = useState<Record<string, number>>(data.votes)
   const [myVotes, setMyVotes] = useState<Set<string>>(new Set(data.myVotes))
   const [status, setStatus] = useState<IdeeStatus | 'toutes'>('toutes')
-  const [scope, setScope] = useState<IdeeEspace | 'tous'>(espace)
+  // Par défaut : les idées de son espace + les idées communes. L'admin voit tout pour classer.
+  const [scope, setScope] = useState<IdeeEspace | 'tous'>(data.isAdmin ? 'tous' : espace)
+  const [pourTous, setPourTous] = useState(false)
   const [tri, setTri] = useState<IdeeTri>('populaires')
   const [open, setOpen] = useState<Set<string>>(new Set())
   const [drafts, setDrafts] = useState<Record<string, string>>({})
@@ -79,12 +95,12 @@ export default function IdeesView({ data, espace }: { data: IdeesData; espace: I
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     setBusy(true); setFormError(null)
-    const res = await proposeIdea(title, desc, espace)
+    const res = await proposeIdea(title, desc, espace, pourTous)
     setBusy(false)
     if ('error' in res) { setFormError(res.error); return }
     setItems(prev => [res.data, ...prev])
     setVotes(prev => ({ ...prev, [res.data.id]: 0 }))
-    setTitle(''); setDesc(''); setSent(true); setFormOpen(false)
+    setTitle(''); setDesc(''); setPourTous(false); setSent(true); setFormOpen(false)
     setStatus('toutes'); setTri('recentes')
   }
 
@@ -139,6 +155,13 @@ export default function IdeesView({ data, espace }: { data: IdeesData; espace: I
     const before = items
     setItems(prev => prev.map(i => i.id === item.id ? { ...i, status: st, status_changed_at: new Date().toISOString() } : i))
     const r = await updateIdea(item.id, { status: st })
+    if (!r.ok) setItems(before)
+  }
+
+  async function adminEspace(item: IdeeItem, value: IdeeEspace | 'tous') {
+    const before = items
+    setItems(prev => prev.map(i => i.id === item.id ? { ...i, espace: value === 'tous' ? null : value } : i))
+    const r = await updateIdea(item.id, { espace: value })
     if (!r.ok) setItems(before)
   }
 
@@ -208,6 +231,19 @@ export default function IdeesView({ data, espace }: { data: IdeesData; espace: I
                     placeholder="Pourquoi ça t'aiderait ? Dans quelle situation ? (facultatif)" style={{ ...s.input, resize: 'vertical', minHeight: 80 }}
                     aria-label="Détails"
                   />
+                  <div style={s.forWho} role="radiogroup" aria-label="Pour qui ?">
+                    <span style={s.forWhoLabel}>Pour qui ?</span>
+                    {[false, true].map(all => {
+                      const on = pourTous === all
+                      return (
+                        <button key={String(all)} type="button" role="radio" aria-checked={on} onClick={() => setPourTous(all)}
+                          style={{ ...s.chip, ...(on ? s.chipOn : {}) }}>
+                          {all ? <UsersThree size={14} weight="bold" /> : (() => { const I = ESPACE_ICON[espace]; return <I size={14} weight="bold" /> })()}
+                          {all ? 'Tout le monde' : ESPACE_LABEL[espace]}
+                        </button>
+                      )
+                    })}
+                  </div>
                   <div style={s.formFoot}>
                     <span style={s.hint}>Visible par les membres, avec ton prénom et l&apos;initiale de ton nom.</span>
                     <div style={{ display: 'flex', gap: 8 }}>
@@ -222,6 +258,29 @@ export default function IdeesView({ data, espace }: { data: IdeesData; espace: I
               )}
             </div>
           )}
+
+          <div style={s.roleBar}>
+            <div style={s.roleChips} role="tablist" aria-label="Pour qui">
+              {(data.isAdmin ? [...ESPACES, 'tous' as const] : [espace, 'tous' as const]).map(sc => {
+                const on = scope === sc
+                const Icon = sc === 'tous' ? UsersThree : ESPACE_ICON[sc]
+                const label = sc === 'tous' ? 'Toutes les idées' : data.isAdmin ? ESPACE_LABEL[sc] : POUR_TOI[sc]
+                const n = items.filter(i => concerns(i, sc)).length
+                return (
+                  <button key={sc} type="button" role="tab" aria-selected={on} onClick={() => setScope(sc)}
+                    style={{ ...s.roleChip, ...(on ? s.roleChipOn : {}) }}>
+                    <Icon size={16} weight={on ? 'fill' : 'regular'} /> {label}
+                    <span style={{ ...s.tabCount, ...(on ? s.tabCountOn : {}) }}>{n}</span>
+                  </button>
+                )
+              })}
+            </div>
+            <p style={s.roleHint}>
+              {scope === 'tous'
+                ? 'Toutes les idées, de tous les espaces.'
+                : `Les idées proposées ${scope === 'hote' ? 'par les hôtes' : scope === 'photographe' ? 'par les photographes' : scope === 'menage' ? 'par les équipes de ménage' : 'par les investisseurs'}, et celles qui concernent tout le monde.`}
+            </p>
+          </div>
 
           <div ref={listRef} style={s.toolbar}>
             <div style={s.tabs} role="tablist" aria-label="Statut">
@@ -238,10 +297,6 @@ export default function IdeesView({ data, espace }: { data: IdeesData; espace: I
               })}
             </div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              <select value={scope} onChange={e => setScope(e.target.value as IdeeEspace | 'tous')} style={s.select} aria-label="Espace">
-                <option value={espace}>Mon espace ({ESPACE_LABEL[espace].toLowerCase()})</option>
-                <option value="tous">Tous les espaces</option>
-              </select>
               <select value={tri} onChange={e => setTri(e.target.value as IdeeTri)} style={s.select} aria-label="Tri">
                 <option value="populaires">Les plus votées</option>
                 <option value="recentes">Les plus récentes</option>
@@ -285,8 +340,8 @@ export default function IdeesView({ data, espace }: { data: IdeesData; espace: I
                           <span style={{ ...s.pill, color: meta.color, background: tint(meta.color), border: `1px solid ${tint(meta.color, 28)}` }}>
                             <Icon size={11} weight="fill" /> {meta.label}
                           </span>
-                          {item.espace && (scope === 'tous' || item.espace !== espace) && (
-                            <span style={s.pillSoft}>{ESPACE_LABEL[item.espace]}</span>
+                          {(scope === 'tous' || item.espace !== scope) && (
+                            <span style={s.pillSoft}>{pourQui(item.espace)}</span>
                           )}
                           {item.mine && <span style={s.pillSoft}>Ton idée</span>}
                         </div>
@@ -304,6 +359,10 @@ export default function IdeesView({ data, espace }: { data: IdeesData; espace: I
                           <div style={s.adminBox}>
                             <select value={item.status} onChange={e => adminStatus(item, e.target.value as IdeeStatus)} style={s.select} aria-label="Statut">
                               {STATUS_ORDER.map(st => <option key={st} value={st}>{STATUS_META[st].label}</option>)}
+                            </select>
+                            <select value={item.espace ?? 'tous'} onChange={e => adminEspace(item, e.target.value as IdeeEspace | 'tous')} style={s.select} aria-label="Pour qui">
+                              {ESPACES.map(es => <option key={es} value={es}>{ESPACE_POUR[es]}</option>)}
+                              <option value="tous">Pour tout le monde</option>
                             </select>
                             <input
                               defaultValue={item.reponse ?? ''} maxLength={REPONSE_MAX}
@@ -476,6 +535,23 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: 13.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap',
   },
 
+  roleBar: { display: 'flex', flexDirection: 'column', gap: 6 },
+  roleChips: { display: 'flex', gap: 8, flexWrap: 'wrap' },
+  roleChip: {
+    display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 16px', borderRadius: 12,
+    border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)',
+    fontSize: 14, fontWeight: 650, cursor: 'pointer', fontFamily: 'inherit',
+  },
+  roleChipOn: { border: '1px solid var(--accent-text)', background: 'var(--accent-bg)', color: 'var(--accent-text)' },
+  roleHint: { margin: 0, fontSize: 13, color: 'var(--text-3)' },
+  forWho: { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
+  forWhoLabel: { fontSize: 13, fontWeight: 600, color: 'var(--text-2)', marginRight: 2 },
+  chip: {
+    display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 999,
+    border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)',
+    fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+  },
+  chipOn: { border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--accent-text)' },
   toolbar: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', scrollMarginTop: 80 },
   tabs: { display: 'flex', gap: 6, flexWrap: 'wrap' },
   tab: {

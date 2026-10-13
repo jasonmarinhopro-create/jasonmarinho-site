@@ -100,3 +100,11 @@ describe('espaces', () => {
     expect(isEspace('admin')).toBe(false)
   })
 })
+
+describe('pourQui', () => {
+  it('libellé de l\'espace, ou tout le monde', async () => {
+    const { pourQui } = await import('./rules')
+    expect(pourQui('photographe')).toBe('Pour les photographes')
+    expect(pourQui(null)).toBe('Pour tout le monde')
+  })
+})

@@ -16,6 +16,18 @@ export const ESPACE_LABEL: Record<IdeeEspace, string> = {
   investisseur: 'Investisseurs',
 }
 
+/** Libellé « pour qui » d'une idée (vide = tous les espaces) */
+export const ESPACE_POUR: Record<IdeeEspace, string> = {
+  hote: 'Pour les hôtes',
+  photographe: 'Pour les photographes',
+  menage: 'Pour les équipes de ménage',
+  investisseur: 'Pour les investisseurs',
+}
+
+export function pourQui(espace: IdeeEspace | null): string {
+  return espace ? ESPACE_POUR[espace] : 'Pour tout le monde'
+}
+
 /** Adresse de la page Idées dans chaque espace (le menu de l'espace reste affiché) */
 export const IDEES_HREF: Record<IdeeEspace, string> = {
   hote: '/dashboard/idees',

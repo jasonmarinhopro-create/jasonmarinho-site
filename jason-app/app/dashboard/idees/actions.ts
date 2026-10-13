@@ -22,12 +22,14 @@ import type { IdeeComment, IdeeItem } from '@/lib/idees/load'
 
 type Result<T> = { data: T } | { error: string }
 
-export async function proposeIdea(title: string, description: string, espace: IdeeEspace): Promise<Result<IdeeItem>> {
+/** `pourTous` : l'idée concerne tous les espaces (espace vide), sinon celui d'où elle est proposée */
+export async function proposeIdea(title: string, description: string, espace: IdeeEspace, pourTous = false): Promise<Result<IdeeItem>> {
   const profile = await getProfile()
   if (!profile) return { error: 'Connecte-toi pour proposer une idée.' }
   const clean = cleanIdea(title, description)
   if (!clean.ok) return { error: clean.error }
   const esp: IdeeEspace = isEspace(espace) ? espace : 'hote'
+  const cible: IdeeEspace | null = pourTous ? null : esp
 
   const limit = await rateLimit('idees:propose', profile.userId, 8, 60 * 60_000)
   if (!limit.allowed) return { error: 'Tu as proposé beaucoup d\'idées d\'un coup : réessaie dans une heure.' }
@@ -41,7 +43,7 @@ export async function proposeIdea(title: string, description: string, espace: Id
     author_name: profile.full_name ?? null,
   }
   // espace : migration 20261013_134 (repli sans la colonne)
-  let res = await supabase.from('roadmap_items').insert({ ...row, espace: esp })
+  let res = await supabase.from('roadmap_items').insert({ ...row, espace: cible })
     .select('id, created_at').single()
   if (res.error?.code === '42703' || res.error?.code === 'PGRST204') {
     res = await supabase.from('roadmap_items').insert(row).select('id, created_at').single()
@@ -51,9 +53,9 @@ export async function proposeIdea(title: string, description: string, espace: Id
   revalidateTag(CACHE_TAGS.ROADMAP_ITEMS)
   if (profile.role !== 'admin') {
     await sendAdminEmail({
-      subject: `Nouvelle idée (${ESPACE_LABEL[esp]}) : ${clean.title.slice(0, 80)}`,
+      subject: `Nouvelle idée (${cible ? ESPACE_LABEL[cible] : 'tous les espaces'}) : ${clean.title.slice(0, 80)}`,
       text: [
-        `${shortName(profile.full_name)} propose une idée depuis l'espace ${ESPACE_LABEL[esp]}.`,
+        `${shortName(profile.full_name)} propose une idée depuis l'espace ${ESPACE_LABEL[esp]}${cible ? '' : ', pour tout le monde'}.`,
         '',
         clean.title,
         clean.description ?? '',
@@ -69,7 +71,7 @@ export async function proposeIdea(title: string, description: string, espace: Id
       title: clean.title,
       description: clean.description,
       status: 'suggestion',
-      espace: esp,
+      espace: cible,
       reponse: null,
       created_at: res.data.created_at,
       status_changed_at: null,
@@ -144,8 +146,8 @@ export async function deleteComment(commentId: string): Promise<{ ok: boolean }>
   return { ok: !error }
 }
 
-/** Admin : statut et réponse courte affichée sous l'idée. L'auteur est prévenu d'un changement de statut. */
-export async function updateIdea(itemId: string, patch: { status?: string; reponse?: string }): Promise<{ ok: boolean; error?: string }> {
+/** Admin : statut, réponse courte affichée sous l'idée, et espace concerné (« tous » = idée commune). L'auteur est prévenu d'un changement de statut. */
+export async function updateIdea(itemId: string, patch: { status?: string; reponse?: string; espace?: string }): Promise<{ ok: boolean; error?: string }> {
   const profile = await getProfile()
   if (profile?.role !== 'admin') return { ok: false, error: 'Réservé à l\'admin.' }
   const db = getServiceClient()
@@ -162,12 +164,15 @@ export async function updateIdea(itemId: string, patch: { status?: string; repon
   if (patch.reponse !== undefined) {
     update.reponse = patch.reponse.replace(/\s+/g, ' ').trim().slice(0, REPONSE_MAX) || null
   }
+  if (patch.espace !== undefined && (patch.espace === 'tous' || isEspace(patch.espace))) {
+    update.espace = patch.espace === 'tous' ? null : patch.espace
+  }
   if (!Object.keys(update).length) return { ok: true }
 
   let { error } = await db.from('roadmap_items').update(update).eq('id', itemId)
   if (error?.code === '42703' || error?.code === 'PGRST204') {
     // Migration 134 absente : seul le statut peut être enregistré
-    if (!statusChanged) return { ok: false, error: 'La réponse demande la migration 20261013_134 (à coller dans Supabase).' }
+    if (!statusChanged) return { ok: false, error: 'La réponse et l\'espace demandent la migration 20261013_134 (à coller dans Supabase).' }
     ;({ error } = await db.from('roadmap_items').update({ status: patch.status }).eq('id', itemId))
   }
   if (error) return { ok: false, error: 'Modification impossible.' }
