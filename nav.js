@@ -178,34 +178,25 @@
       '.n-drop-wide::after{display:none}',
       '.n-drop-wide>.n-mega{top:100%}',
       '.n-drop-wide>.n-mega::before{display:none}',
-      /* Services (façon Shine) : domaines à gauche, fonctionnalités au centre, « Plus » à droite */
-      '.n-mega-sol{display:grid;grid-template-columns:250px minmax(0,1fr) 230px;gap:28px;width:min(1080px,94vw);padding:24px 26px}',
-      '.n-sol-tabs{display:flex;flex-direction:column;gap:8px}',
-      '.n-sol-tab{display:flex;align-items:flex-start;gap:11px;width:100%;text-align:left;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);border-radius:11px;padding:13px 14px;cursor:pointer;font-family:\'Outfit\',sans-serif;color:#fff;transition:background .15s,border-color .15s}',
-      '.n-sol-tab i{font-size:18px;color:rgba(255,213,107,.55);margin-top:1px;flex-shrink:0}',
-      '.n-sol-tab:hover{background:rgba(255,255,255,.06)}',
-      '.n-sol-tab.on{background:rgba(255,213,107,.11);border-color:rgba(255,213,107,.38)}',
-      '.n-sol-tab.on i{color:var(--y)}',
-      '.n-sol-t{display:block;font-size:14.5px;font-weight:600;line-height:1.3}',
-      '.n-sol-s{display:block;font-size:12px;color:rgba(255,255,255,.48);margin-top:2px;line-height:1.35}',
-      '.n-sol-mid{display:flex;flex-direction:column;min-width:0}',
-      '.n-sol-panel{display:none;grid-template-columns:1fr 1fr;column-gap:18px;row-gap:1px;align-content:start}',
-      '.n-sol-panel.on{display:grid}',
-      '.n-mega .n-sol-panel a{white-space:normal;line-height:1.3}',
-      '.n-mega .n-sol-panel a.n-sol-all{grid-column:1 / -1;color:rgba(255,213,107,.75);font-size:12.5px;margin-top:6px}',
-      '.n-mega .n-sol-panel a.n-sol-all i{font-size:11px;color:inherit;width:auto}',
-      '.n-mega a.n-sol-cta{margin-top:auto;padding:16px 0 2px;border-radius:0;color:var(--y);font-weight:600;font-size:13.5px;text-decoration:underline;text-underline-offset:5px;text-decoration-color:rgba(255,213,107,.45);white-space:normal}',
-      '.n-mega a.n-sol-cta:hover{background:transparent;text-decoration-color:var(--y)}',
-      '.n-mega a.n-sol-cta i{color:var(--y);font-size:12px;width:auto}',
-      '.n-sol-side{display:flex;flex-direction:column;gap:1px;min-width:0}',
-      '.n-mega a.n-sol-card{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:12px;padding:16px;border-radius:12px;white-space:normal;background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%);border:1px solid rgba(255,213,107,.22)}',
-      '.n-mega a.n-sol-card:hover{border-color:rgba(255,213,107,.45);background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%)}',
-      '.n-sol-card-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--y);background:rgba(255,213,107,.1);padding:3px 9px;border-radius:999px}',
-      '.n-sol-card .n-feat-dot{width:5px;height:5px;border-radius:50%;background:var(--y)}',
-      '.n-sol-card-h{font-family:\'Fraunces\',serif;font-size:17px;line-height:1.25;color:#fff}',
-      '.n-sol-card-h em{color:var(--y);font-style:italic;font-weight:300}',
-      '.n-sol-card-p{font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.6)}',
-      '@media(max-width:1180px){.n-mega-sol{grid-template-columns:230px minmax(0,1fr)}.n-sol-side{display:none}}',
+      /* Services (proposition A validée par Jason le 13/10/2026, « trop chargé ») :
+         3 colonnes de 4 ou 5 liens essentiels, barre d'inscription en bas */
+      '.n-mega-svc3{display:flex;flex-direction:column;gap:0;width:min(820px,94vw);padding:22px 24px 0}',
+      '.n-svc3-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}',
+      '.n-svc3-col{display:flex;flex-direction:column;gap:1px;min-width:0}',
+      '.n-svc3-h{display:flex;align-items:center;gap:9px;font-family:\'Fraunces\',serif;font-size:16px;font-weight:500;color:#fff;margin:0 0 3px}',
+      '.n-svc3-h i{color:var(--y);font-size:17px}',
+      '.n-svc3-cap{font-size:12px;color:rgba(255,255,255,.45);margin:0 0 8px}',
+      '.n-mega .n-svc3-col a{padding:7px 8px;margin:0 -8px;white-space:normal;line-height:1.3}',
+      '.n-mega .n-svc3-col a.n-svc3-all{color:rgba(255,213,107,.8);font-size:12.5px;margin-top:4px}',
+      '.n-mega .n-svc3-col a.n-svc3-all:hover{color:var(--y)}',
+      '.n-mega .n-svc3-col a.n-svc3-all i{font-size:11px;color:inherit;width:auto}',
+      '.n-svc3-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:18px -24px 0;padding:14px 24px;border-top:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);border-radius:0 0 14px 14px}',
+      '.n-svc3-bar p{margin:0;font-size:12.5px;color:rgba(255,255,255,.55)}',
+      '.n-svc3-act{display:flex;align-items:center;gap:14px}',
+      '.n-mega .n-svc3-act a.n-svc3-tar{color:rgba(255,255,255,.72);padding:6px 8px}',
+      '.n-mega a.n-svc3-cta,.n-mega a.n-svc3-cta:hover{background:var(--y);color:var(--gd);font-weight:600;font-size:13px;padding:10px 15px;border-radius:9px}',
+      '.n-mega a.n-svc3-cta:hover{background:#ffe08f}',
+      '.n-mega a.n-svc3-cta i{color:var(--gd);font-size:12px;width:auto}',
 
       /* Tarifs (façon Shine) : une carte visuelle par offre + offres spéciales */
       '.n-mega-tar{gap:16px;padding:22px;align-items:stretch}',
@@ -367,68 +358,46 @@
     + '</a>'
     + '<ul class="n-links">'
 
-      /* ── Services (structure inspirée de Shine : domaines à gauche,
-         fonctionnalités au centre, liens transverses à droite) ── */
+      /* ── Services : 3 colonnes de liens essentiels (proposition A, 13/10/2026) ── */
       + '<li class="n-drop n-drop-wide">'
         + '<button class="n-btn" aria-haspopup="true" aria-expanded="false">Services ' + CARET + '</button>'
-        + '<div class="n-mega n-mega-sol">'
-          + '<div class="n-sol-tabs" role="tablist" aria-label="Domaines">'
-            + '<button type="button" class="n-sol-tab on" role="tab" aria-selected="true" data-sol="gerer"><i class="ph ph-calendar-check"></i><span><span class="n-sol-t">Gérer ton activité</span><span class="n-sol-s">Contrats, ménage, revenus</span></span></button>'
-            + '<button type="button" class="n-sol-tab" role="tab" aria-selected="false" data-sol="chiffrer"><i class="ph ph-calculator"></i><span><span class="n-sol-t">Chiffrer & investir</span><span class="n-sol-s">Simulateurs et calculateurs</span></span></button>'
-            + '<button type="button" class="n-sol-tab" role="tab" aria-selected="false" data-sol="apprendre"><i class="ph ph-graduation-cap"></i><span><span class="n-sol-t">Te former & échanger</span><span class="n-sol-s">Formations, questions, entraide</span></span></button>'
-          + '</div>'
-          + '<div class="n-sol-mid">'
-            + '<div class="n-col-title">Fonctionnalités</div>'
-            + '<div class="n-sol-panel on" data-sol-panel="gerer" role="tabpanel">'
-              + '<a href="/services/calendrier"><i class="ph ph-calendar-check"></i>Calendrier & check-list</a>'
+        + '<div class="n-mega n-mega-svc3">'
+          + '<div class="n-svc3-cols">'
+            + '<div class="n-svc3-col">'
+              + '<div class="n-svc3-h"><i class="ph ph-calendar-check"></i>Gérer ta location</div>'
+              + '<div class="n-svc3-cap">Dans l\'app, au quotidien</div>'
               + '<a href="/services/contrats"><i class="ph ph-signature"></i>Contrats & paiements</a>'
               + '<a href="/services/planning-menage"><i class="ph ph-broom"></i>Planning ménage</a>'
               + '<a href="/services/declarations-voyageurs"><i class="ph ph-identification-card"></i>Déclarations voyageurs</a>'
-              + '<a href="/services/performances"><i class="ph ph-chart-bar"></i>Performances LCD</a>'
-              + '<a href="/services/revenus"><i class="ph ph-chart-line-up"></i>Suivi des revenus</a>'
-              + '<a href="/services/carnet-voyageurs"><i class="ph ph-address-book"></i>Carnet voyageurs (CRM)</a>'
-              + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a>'
-              + '<a href="/securite/signalements"><i class="ph ph-megaphone"></i>Signalements publics</a>'
-              + '<a href="/services/gabarits-messages"><i class="ph ph-chat-text"></i>Gabarits de messages</a>'
-              + '<a href="/services/qr-affiches"><i class="ph ph-squares-four"></i>QR & Affiches WiFi</a>'
-              + '<a href="/services/audit-gbp"><i class="ph ph-magnifying-glass"></i>Fiche Google (audit)</a>'
-              + '<a href="/services/annonce-directe"><i class="ph ph-globe"></i>Annonce directe</a>'
-              + '<a href="/services" class="n-sol-all">Voir tous les services <i class="ph-bold ph-arrow-right"></i></a>'
+              + '<a href="/services/calendrier"><i class="ph ph-calendar-check"></i>Calendrier & check-list</a>'
+              + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérifier un voyageur</a>'
+              + '<a href="/services" class="n-svc3-all">Tous les services <i class="ph-bold ph-arrow-right"></i></a>'
             + '</div>'
-            + '<div class="n-sol-panel" data-sol-panel="chiffrer" role="tabpanel">'
-              + '<a href="/services/simulateurs/fiscalite-micro-bic"><i class="ph ph-currency-eur"></i>Fiscalité micro-BIC</a>'
-              + '<a href="/services/simulateurs/choisir-statut-ei-sasu"><i class="ph ph-scales"></i>EI vs SASU</a>'
-              + '<a href="/services/simulateurs/rentabilite-location-courte-duree"><i class="ph ph-chart-line-up"></i>Rentabilité LCD</a>'
-              + '<a href="/services/simulateurs/taxe-de-sejour"><i class="ph ph-map-pin"></i>Taxe de séjour</a>'
-              + '<a href="/services/simulateurs/franchise-tva-lcd"><i class="ph ph-percent"></i>Franchise TVA</a>'
-              + '<a href="/investir-lcd"><i class="ph ph-buildings"></i>Investir en LCD</a>'
+            + '<div class="n-svc3-col">'
+              + '<div class="n-svc3-h"><i class="ph ph-calculator"></i>Chiffrer & investir</div>'
+              + '<div class="n-svc3-cap">Simulateurs gratuits</div>'
               + '<a href="/calculateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur de revenus</a>'
-              + '<a href="/calculateurs/prix-lcd"><i class="ph ph-tag"></i>Calculateur de prix</a>'
-              + '<a href="/calculateurs/comparer-villes"><i class="ph ph-scales"></i>Comparateur de villes</a>'
-              + '<a href="/services/simulateurs" class="n-sol-all">Voir tous les simulateurs <i class="ph-bold ph-arrow-right"></i></a>'
+              + '<a href="/services/simulateurs/rentabilite-location-courte-duree"><i class="ph ph-chart-line-up"></i>Rentabilité LCD</a>'
+              + '<a href="/services/simulateurs/fiscalite-micro-bic"><i class="ph ph-currency-eur"></i>Fiscalité micro-BIC</a>'
+              + '<a href="/services/simulateurs/taxe-de-sejour"><i class="ph ph-map-pin"></i>Taxe de séjour</a>'
+              + '<a href="/services/simulateurs" class="n-svc3-all">Tous les simulateurs <i class="ph-bold ph-arrow-right"></i></a>'
             + '</div>'
-            + '<div class="n-sol-panel" data-sol-panel="apprendre" role="tabpanel">'
+            + '<div class="n-svc3-col">'
+              + '<div class="n-svc3-h"><i class="ph ph-graduation-cap"></i>Apprendre</div>'
+              + '<div class="n-svc3-cap">Formations et entraide</div>'
               + '<a href="/services/formations"><i class="ph ph-graduation-cap"></i>Formations LCD</a>'
               + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
-              + '<a href="/sos-hote"><i class="ph ph-lifebuoy"></i>SOS Hôte (urgences)</a>'
               + '<a href="/services/entre-hotes"><i class="ph ph-chats-circle"></i>Questions & réponses</a>'
-              + '<a href="/services/communaute"><i class="ph ph-users-four"></i>Groupes Facebook</a>'
-              + '<a href="/services/actualites"><i class="ph ph-newspaper"></i>Actualités LCD</a>'
-              + '<a href="/services/formations" class="n-sol-all">Voir les formations <i class="ph-bold ph-arrow-right"></i></a>'
+              + '<a href="/sos-hote"><i class="ph ph-lifebuoy"></i>SOS Hôte (urgences)</a>'
+              + '<a href="/services/formations" class="n-svc3-all">Toutes les formations <i class="ph-bold ph-arrow-right"></i></a>'
             + '</div>'
-            + '<a href="https://app.jasonmarinho.com/auth/register" class="n-sol-cta">Commence gratuitement : 0 €, sans carte bancaire <i class="ph-bold ph-arrow-right"></i></a>'
           + '</div>'
-          + '<div class="n-sol-side">'
-          + '<div class="n-col-title">Plus</div>'
-          + '<a href="/tarifs"><i class="ph ph-tag"></i>Choisir ton offre</a>'
-          + '<a href="/partenaires"><i class="ph ph-handshake"></i>Offres partenaires</a>'
-          + '<a href="/partenaires#comparatifs"><i class="ph ph-scales"></i>Comparatifs outils</a>'
-          + '<a href="/pour-qui/membres-driing"><i class="ph ph-lightning"></i>Membres Driing</a>'
-          + '<a href="/services/securite" class="n-sol-card">'
-          + '<span class="n-sol-card-tag"><span class="n-feat-dot"></span>Gratuit</span>'
-          + '<span class="n-sol-card-h">Vérifie un voyageur <em>avant</em> d\'accepter</span>'
-          + '<span class="n-sol-card-p">La base de signalements de la communauté des hôtes.</span>'
-          + '</a>'
+          + '<div class="n-svc3-bar">'
+            + '<p>Gratuit pour commencer, sans carte bancaire.</p>'
+            + '<span class="n-svc3-act">'
+              + '<a href="/tarifs" class="n-svc3-tar"><i class="ph ph-tag"></i>Voir les tarifs</a>'
+              + '<a href="https://app.jasonmarinho.com/auth/register" class="n-svc3-cta">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>'
+            + '</span>'
           + '</div>'
         + '</div>'
       + '</li>'
@@ -567,22 +536,26 @@
     + '<div class="mob-acc" id="acc-sv">'
       + accBtn('ph-squares-four', 'Services', 'Contrats, ménage, simulateurs, formations')
       + '<div class="mob-acc-body">'
-        /* Version courte (04/10/2026, Jason : « beaucoup trop » de liens) : l'essentiel par domaine, le reste sur les pages « Voir tous » */
-        + '<span class="mob-stitle">Gérer ton activité</span>'
+        /* Mêmes 3 groupes et mêmes liens que le menu ordinateur (proposition A, 13/10/2026) */
+        + '<span class="mob-stitle">Gérer ta location</span>'
         + '<a href="/services/contrats"><i class="ph ph-signature"></i>Contrats & paiements</a>'
-        + '<a href="/services/calendrier"><i class="ph ph-calendar-check"></i>Calendrier & check-list</a>'
         + '<a href="/services/planning-menage"><i class="ph ph-broom"></i>Planning ménage</a>'
-        + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérification voyageurs</a>'
+        + '<a href="/services/declarations-voyageurs"><i class="ph ph-identification-card"></i>Déclarations voyageurs</a>'
+        + '<a href="/services/calendrier"><i class="ph ph-calendar-check"></i>Calendrier & check-list</a>'
+        + '<a href="/services/securite"><i class="ph ph-shield-check"></i>Vérifier un voyageur</a>'
         + '<a href="/services" class="mob-sublink">Tous les services <i class="ph-bold ph-arrow-right"></i></a>'
         + '<span class="mob-stitle">Chiffrer & investir</span>'
-        + '<a href="/services/simulateurs/fiscalite-micro-bic"><i class="ph ph-currency-eur"></i>Fiscalité micro-BIC</a>'
-        + '<a href="/services/simulateurs/rentabilite-location-courte-duree"><i class="ph ph-chart-line-up"></i>Rentabilité LCD</a>'
         + '<a href="/calculateurs/revenus-lcd"><i class="ph ph-trend-up"></i>Estimateur de revenus</a>'
+        + '<a href="/services/simulateurs/rentabilite-location-courte-duree"><i class="ph ph-chart-line-up"></i>Rentabilité LCD</a>'
+        + '<a href="/services/simulateurs/fiscalite-micro-bic"><i class="ph ph-currency-eur"></i>Fiscalité micro-BIC</a>'
+        + '<a href="/services/simulateurs/taxe-de-sejour"><i class="ph ph-map-pin"></i>Taxe de séjour</a>'
         + '<a href="/services/simulateurs" class="mob-sublink">Tous les simulateurs <i class="ph-bold ph-arrow-right"></i></a>'
-        + '<span class="mob-stitle">Te former & échanger</span>'
+        + '<span class="mob-stitle">Apprendre</span>'
         + '<a href="/services/formations"><i class="ph ph-graduation-cap"></i>Formations LCD</a>'
+        + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
         + '<a href="/services/entre-hotes"><i class="ph ph-chats-circle"></i>Questions & réponses</a>'
         + '<a href="/sos-hote"><i class="ph ph-lifebuoy"></i>SOS Hôte (urgences)</a>'
+        + '<a href="/services/formations" class="mob-sublink">Toutes les formations <i class="ph-bold ph-arrow-right"></i></a>'
       + '</div>'
     + '</div>'
 
@@ -793,26 +766,6 @@
     });
     document.addEventListener('click', function () {
       document.querySelectorAll('.n-drop.open').forEach(function (d) { d.classList.remove('open'); });
-    });
-
-    /* Services : les domaines de gauche pilotent la colonne centrale
-       (survol, focus clavier ou clic tactile). */
-    document.querySelectorAll('.n-sol-tab').forEach(function (tab) {
-      function show(e) {
-        if (e && e.type === 'click') e.stopPropagation();
-        var mega = tab.closest('.n-mega-sol');
-        mega.querySelectorAll('.n-sol-tab').forEach(function (t2) {
-          var on = t2 === tab;
-          t2.classList.toggle('on', on);
-          t2.setAttribute('aria-selected', on ? 'true' : 'false');
-        });
-        mega.querySelectorAll('.n-sol-panel').forEach(function (p) {
-          p.classList.toggle('on', p.getAttribute('data-sol-panel') === tab.getAttribute('data-sol'));
-        });
-      }
-      tab.addEventListener('mouseenter', show);
-      tab.addEventListener('focus', show);
-      tab.addEventListener('click', show);
     });
 
     /* Échap */
