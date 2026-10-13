@@ -1,239 +1,396 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Postuler comme photographe LCD · Annuaire fondateur</title>
-  <meta name="description" content="Postule pour rejoindre l'annuaire des photographes LCD de Jason Marinho. 20 places fondateurs à 39,98 €/an à vie. Fiche en ligne en quelques minutes.">
-  <link rel="canonical" href="https://jasonmarinho.com/annuaires/photographes/inscription">
-  <meta name="robots" content="index, follow">
-  <link rel="shortcut icon" href="/favicon.ico">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inscription photographe Airbnb : crée ta fiche</title>
+<meta name="description" content="Crée ta fiche de photographe location courte durée : site vitrine sur Google, demandes d’hôtes en direct, statistiques. En ligne en quelques minutes, sans commission.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://jasonmarinho.com/annuaires/photographes/inscription">
+<meta property="og:title" content="Inscription photographe Airbnb : crée ta fiche">
+<meta property="og:description" content="Crée ta fiche de photographe location courte durée : site vitrine sur Google, demandes d’hôtes en direct, statistiques. En ligne en quelques minutes, sans commission.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jasonmarinho.com/annuaires/photographes/inscription">
+<meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+<link rel="shortcut icon" href="/favicon.ico">
 <link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
-  <link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png?v=2026-06">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
-  <link rel="manifest" href="/manifest.json?v=2026-06">
-  <meta name="theme-color" content="#004C3F">
-  <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
-  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">
-  <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=a9d374e172">
-  <style>
-    :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);padding-top:64px}
-    body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
-    .wrap{max-width:760px;margin:0 auto;padding:48px clamp(20px,5vw,48px)}
-    .brd{font-size:13px;color:var(--tl);margin-bottom:18px}
-    .brd a{color:var(--tm);text-decoration:none}
-    .lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--g);background:rgba(0,76,63,.06);border:1px solid rgba(0,76,63,.15);border-radius:100px;padding:4px 12px;margin-bottom:14px}
-    h1{font-family:'Fraunces',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);line-height:1.15;color:var(--td);margin:0 0 14px;font-weight:400;letter-spacing:-.02em}
-    h1 em{color:var(--g);font-style:italic;font-weight:300}
-    .lead{font-size:15px;line-height:1.75;color:var(--tm);margin:0 0 28px}
-    .form{background:var(--cr);border:1px solid var(--bd);border-radius:14px;padding:clamp(20px,3vw,30px)}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-    @media(max-width:560px){.row{grid-template-columns:1fr}}
-    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
-    .field label{font-size:13px;font-weight:600;color:var(--td)}
-    .field label .req{color:#dc2626}
-    .field input,.field textarea,.field select{padding:11px 13px;border:1px solid rgba(0,76,63,.18);border-radius:8px;background:#fff;font-family:'Outfit',sans-serif;font-size:14px;color:var(--td);width:100%}
-    .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,76,63,.1)}
-    .field textarea{resize:vertical;min-height:100px}
-    .field-hint{font-size:11.5px;color:var(--tl);line-height:1.5}
-    .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-    .btn{display:inline-flex;align-items:center;gap:8px;background:var(--g);color:#fff;font-weight:600;font-size:14.5px;padding:13px 26px;border:none;border-radius:10px;cursor:pointer;font-family:'Outfit',sans-serif;width:100%;justify-content:center;transition:background .15s;margin-top:8px}
-    .btn:hover:not(:disabled){background:#005a4a}
-    .btn:disabled{opacity:.5;cursor:not-allowed}
-    .legal{margin-top:20px;padding:14px 16px;background:rgba(0,76,63,.04);border-radius:10px;font-size:12.5px;line-height:1.65;color:var(--tm)}
-    .legal a{color:var(--g);font-weight:500}
-    .ok{padding:22px;background:rgba(0,200,100,.08);border:1px solid rgba(0,200,100,.25);border-radius:10px;color:#1e9d54;font-size:14.5px;line-height:1.7;text-align:center}
-    .err{padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:8px;color:#dc2626;font-size:13px;margin-bottom:14px}
-    .pricing-row{display:flex;flex-direction:column;gap:12px;background:#fff;padding:16px 18px;border-radius:12px;border:1px solid var(--bd);margin-bottom:24px;font-size:13px;color:var(--tm)}
-    .pricing-row strong{color:var(--td)}
-    .pricing-main{display:flex;gap:10px;align-items:flex-start}
-    .founder-pill{display:inline-flex;align-items:center;gap:7px;align-self:flex-start;padding:6px 14px;border-radius:100px;background:rgba(255,213,107,.14);border:1px solid rgba(255,213,107,.35);font-size:12.5px;font-weight:700;color:#8a6508}
-    .founder-pill i{font-size:12px}
-  </style>
-  <script defer src="/nav.js"></script>
+<link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png?v=2026-06">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
+<link rel="manifest" href="/manifest.json?v=2026-06">
+<meta name="theme-color" content="#004C3F">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=a9d374e172">
+<style>
+:root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.10)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:var(--cr);color:var(--td);padding-top:64px}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
+.s-in{max-width:1140px;margin:0 auto;padding:0 clamp(16px,5vw,40px)}
+.hero{background:radial-gradient(ellipse 60% 70% at 85% 10%,rgba(255,213,107,.10),transparent 70%),linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);color:#fff;padding:clamp(40px,6vw,64px) 0 clamp(100px,12vw,128px)}
+.hero-grid{display:grid;gap:28px;align-items:end}
+@media(min-width:960px){.hero-grid{grid-template-columns:minmax(0,1fr) 340px}}
+.brd{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px}.brd a{color:rgba(255,255,255,.65);text-decoration:none}
+.eye{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,213,107,.85);margin-bottom:12px}
+h1{font-family:'Fraunces',serif;font-size:clamp(30px,4.6vw,50px);font-weight:400;line-height:1.08;letter-spacing:-.6px;max-width:680px}
+h1 em{color:var(--y);font-style:italic;font-weight:300}
+.lead{font-size:16px;color:rgba(255,255,255,.75);line-height:1.7;max-width:620px;margin-top:16px}
+.ticks{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:20px;font-size:14px;color:rgba(255,255,255,.85)}
+.ticks span{display:inline-flex;align-items:center;gap:7px}.ticks i{color:var(--y)}
+.price{background:rgba(255,255,255,.06);border:1px solid rgba(255,213,107,.25);border-radius:18px;padding:22px}
+.price-eye{font-size:10.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.price-n{font-family:'Fraunces',serif;font-size:44px;font-weight:300;line-height:1;margin:10px 0 4px;color:#fff}
+.price-n small{font-family:'Outfit',sans-serif;font-size:14px;color:rgba(255,255,255,.6);font-weight:400;margin-left:4px}
+.price-sub{font-size:13.5px;color:rgba(255,255,255,.7);line-height:1.55}
+.places{display:none;align-items:center;gap:7px;margin-top:14px;padding:7px 12px;border-radius:999px;background:rgba(255,213,107,.14);color:var(--y);font-size:12.5px;font-weight:600}
+.price-foot{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);font-size:12px;color:rgba(255,255,255,.5);line-height:1.5}
+.wrap{max-width:1140px;margin:-76px auto 0;padding:0 clamp(16px,5vw,40px) 40px;display:grid;gap:22px;position:relative}
+@media(min-width:980px){.wrap{grid-template-columns:minmax(0,1fr) 340px;align-items:start}}
+form{display:flex;flex-direction:column;gap:14px}
+.step-card{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:clamp(20px,3vw,28px)}
+.step-card:first-child{box-shadow:0 18px 50px rgba(0,30,20,.10)}
+.step-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px}
+.step-n{flex-shrink:0;width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,76,63,.25);color:var(--g);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:16px}
+.step-head h2{font-family:'Fraunces',serif;font-size:21px;font-weight:400;line-height:1.25}
+.step-head p{font-size:13.5px;color:var(--tl);margin-top:3px;line-height:1.5}
+.grid{display:grid;gap:4px 16px}
+@media(min-width:640px){.grid{grid-template-columns:1fr 1fr}.f.full{grid-column:1/-1}}
+.f{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;min-width:0}
+.f label{font-size:13px;font-weight:600;color:var(--tm)}
+.f label small{font-weight:400;color:var(--tl);margin-left:2px}
+.req{color:#b45309}
+.f input[type=text],.f input[type=email],.f input[type=url],.f input[type=tel],.f input[type=number],.f input[type=password],.f select,.f textarea{width:100%;padding:12px 13px;border:1px solid rgba(0,76,63,.18);border-radius:10px;background:#fff;font-family:'Outfit',sans-serif;font-size:15px;color:var(--td);transition:border-color .15s,box-shadow .15s}
+.f textarea{min-height:120px;resize:vertical;line-height:1.6}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,76,63,.1)}
+.hint{font-size:12px;color:var(--tl);line-height:1.5}
+.pw{position:relative}.pw input{padding-right:46px!important}
+.pw-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;background:transparent;color:var(--tl);cursor:pointer;border-radius:8px;font-size:17px}
+.pw-eye:hover{color:var(--g);background:rgba(0,76,63,.05)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative;cursor:pointer}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip span{display:inline-flex;align-items:center;padding:8px 14px;border-radius:999px;border:1px solid rgba(0,76,63,.18);background:#fff;font-size:13.5px;color:var(--tm);transition:all .15s}
+.chip input:checked+span{background:var(--g);border-color:var(--g);color:#fff}
+.chip input:focus-visible+span{outline:3px solid rgba(255,213,107,.8);outline-offset:2px}
+.toggle{display:flex!important;gap:10px;align-items:flex-start;font-weight:500!important;color:var(--td)!important;font-size:14px!important;padding:12px 14px;border:1px solid rgba(0,76,63,.14);border-radius:10px;cursor:pointer;line-height:1.5}
+.toggle input{width:18px;height:18px;accent-color:var(--g);margin-top:2px;flex-shrink:0}
+.count{align-self:flex-end}
+.submit{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:clamp(20px,3vw,26px)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:16px 22px;border:none;border-radius:12px;background:var(--g);color:#fff;font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;cursor:pointer;transition:background .15s}
+.btn:hover:not(:disabled){background:#00382e}.btn:disabled{opacity:.6;cursor:wait}
+.btn i{color:var(--y)}
+.secure{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;margin-top:12px;font-size:12.5px;color:var(--tl)}
+.secure span{display:inline-flex;align-items:center;gap:5px}
+.legal{margin-top:12px;font-size:12px;color:var(--tl);line-height:1.6;text-align:center}
+.legal a{color:var(--g)}
+.err{display:none;padding:12px 14px;background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.2);border-radius:10px;color:#b91c1c;font-size:13.5px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.side{display:flex;flex-direction:column;gap:16px}
+@media(min-width:980px){.side{position:sticky;top:84px}}
+.box{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:20px}
+.box h3{font-family:'Fraunces',serif;font-size:17px;font-weight:400;margin-bottom:12px}
+.box-eye{font-size:10.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-bottom:10px}
+.pc{border:1px solid var(--bd);border-radius:14px;overflow:hidden;background:#fff}
+.pc-media{aspect-ratio:3/2;background:#EEEAE1;display:flex;align-items:center;justify-content:center;position:relative}
+.pc-ini{font-family:'Fraunces',serif;font-weight:300;font-size:56px;color:var(--g);letter-spacing:2px;line-height:1}
+.pc-media small{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:rgba(0,76,63,.55);font-weight:500}
+.pc-body{padding:14px 16px;display:flex;flex-direction:column;gap:3px}
+.pc-name{font-family:'Fraunces',serif;font-size:18px;color:var(--td);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc-meta{font-size:12.5px;color:var(--tm);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pc-extra{font-size:12px;color:var(--tl);min-height:18px}
+.pc-foot{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;font-size:13px;color:var(--tm)}
+.pc-foot strong{color:var(--td)}
+.pc-foot em{font-style:normal;color:var(--g);font-weight:500}
+.pc-note{font-size:12px;color:var(--tl);line-height:1.5;margin-top:10px}
+.ben{list-style:none;display:flex;flex-direction:column;gap:14px}
+.ben li{display:flex;gap:12px;align-items:flex-start}
+.ben i{flex-shrink:0;width:34px;height:34px;border-radius:10px;background:rgba(0,76,63,.06);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:17px}
+.ben b{display:block;font-size:14px;font-weight:600;color:var(--td);margin-bottom:2px}
+.ben span{font-size:13px;color:var(--tm);line-height:1.5}
+.links{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.links a{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 14px;border:1px solid var(--bd);border-radius:12px;color:var(--g);font-size:13.5px;font-weight:600;text-decoration:none}
+.links a:hover{border-color:rgba(0,76,63,.3)}
+.faq{max-width:1140px;margin:0 auto 64px;padding:0 clamp(16px,5vw,40px)}
+.faq h2{font-family:'Fraunces',serif;font-size:24px;font-weight:400;margin-bottom:14px}
+.faq-grid{display:grid;gap:12px}
+@media(min-width:760px){.faq-grid{grid-template-columns:1fr 1fr}}
+.faq-item{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px 20px}
+.faq-item h3{font-size:15px;font-weight:600;color:var(--td);margin-bottom:6px}
+.faq-item p{font-size:14px;color:var(--tm);line-height:1.6}
+</style>
+<script defer src="/nav.js"></script>
 </head>
 <body>
-<div class="wrap">
-  <div class="brd"><a href="/">Accueil</a> · <a href="/devenir-photographe-lcd">Photographes LCD</a> · <span>Postuler</span></div>
-  <span class="lbl">Crée ta présence en 2 minutes</span>
-  <h1>Crée ta fiche <em>photographe LCD</em></h1>
-  <p class="lead">Remplis ce formulaire, paye en direct via Stripe, ta fiche est en ligne sous quelques minutes. Pas d'attente, pas de validation manuelle. <a href="/annuaires/photographes/exemple-fiche" style="color:var(--g);font-weight:500">Voir un exemple de fiche →</a></p>
-
-  <div class="pricing-row">
-    <div class="pricing-main">
-      <i class="ph-bold ph-star" style="color:#FFD56B;font-size:18px"></i>
-      <span><strong>39,98 € TTC / an à vie</strong> pour les 20 premiers fondateurs (tarif appliqué automatiquement), ensuite 79,98 €/an. Résiliation libre à tout moment depuis ton espace Stripe.</span>
+<header class="hero">
+  <div class="s-in hero-grid">
+    <div>
+      <div class="brd"><a href="/">Accueil</a> · <a href="/devenir-photographe-lcd">Photographes LCD</a> · <span>Créer ma fiche</span></div>
+      <span class="eye">Annuaire · photographes location courte durée</span>
+      <h1>Tes photos, vues par <em>les hôtes de ta ville</em></h1>
+      <p class="lead">Ta fiche sert de site vitrine sur Google : tes photos, tes formules, ta zone. Les hôtes te contactent directement et les demandes de ta zone arrivent chez toi. En ligne quelques minutes après le paiement, sans validation à attendre.</p>
+      <div class="ticks">
+        <span><i class="ph-bold ph-check"></i>En ligne en quelques minutes</span>
+        <span><i class="ph-bold ph-check"></i>Aucune commission</span>
+        <span><i class="ph-bold ph-check"></i>Résiliable à tout moment</span>
+      </div>
     </div>
-    <div id="founder-live" class="founder-pill" style="display:none"></div>
+    <aside class="price" aria-label="Prix de la fiche">
+      <div class="price-eye">Tarif Fondateur</div>
+      <div class="price-n">39,98 €<small>TTC / an</small></div>
+      <div class="price-sub">À vie pour les 20 premiers inscrits, appliqué tout seul. Ensuite 79,98 € TTC / an.</div>
+      <div class="places" id="places"><i class="ph-bold ph-hourglass-medium"></i><span></span></div>
+      <div class="price-foot">Soit moins de 3,50 € par mois. TVA non applicable, art. 293 B du CGI.</div>
+    </aside>
   </div>
-  <script>
-  // Compteur de places fondateur en direct (fail-silent si l'API répond pas)
-  fetch('/api/annuaire-places').then(function(r){ return r.ok ? r.json() : null }).then(function(d){
-    if (!d || d.photographers == null) return
-    var el = document.getElementById('founder-live')
-    if (d.photographers > 0) {
-      el.innerHTML = '<i class="ph-bold ph-clock-countdown"></i> Plus que <strong style="margin:0 2px">' + d.photographers + ' place' + (d.photographers > 1 ? 's' : '') + '</strong> fondateur à 39,98 €/an à vie'
-      el.style.display = 'inline-flex'
-    }
-  }).catch(function(){})
-  </script>
+</header>
 
-  <form class="form" id="signup-form" onsubmit="return submitForm(event)">
-    <div id="err-box" class="err" style="display:none"></div>
+<main class="wrap">
+  <form id="signup-form" novalidate>
+    <div id="err-box" class="err" role="alert"></div>
 
-    <div class="row">
-      <div class="field">
-        <label for="fullName">Nom complet <span class="req">*</span></label>
-        <input type="text" id="fullName" name="fullName" required autocomplete="name" placeholder="Marie Dupont">
+    <section class="step-card" aria-labelledby="st1">
+      <header class="step-head"><span class="step-n">1</span><div><h2 id="st1">Ton compte</h2><p>Pour gérer ta fiche et recevoir les demandes.</p></div></header>
+      <div class="grid">
+        <div class="f">
+          <label for="fullName">Ton prénom et ton nom <span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="fullName" name="fullName" required placeholder="Marie Dupont" autocomplete="name" maxlength="100">
+          <span class="hint">Affiché sur ta fiche.</span>
+        </div>
+        <div class="f">
+          <label for="telephone">Téléphone <small>facultatif</small></label>
+          <input type="tel" id="telephone" name="telephone" placeholder="06 12 34 56 78" autocomplete="tel">
+          
+        </div>
+
+        <div class="f">
+          <label for="email">E-mail pro <span class="req" aria-hidden="true">*</span></label>
+          <input type="email" id="email" name="email" required placeholder="marie@studio-photo.fr" autocomplete="email">
+          <span class="hint">Les demandes des hôtes arrivent ici. C’est aussi ton identifiant.</span>
+        </div>
+        <div class="f">
+          <label for="password">Mot de passe <span class="req" aria-hidden="true">*</span></label>
+          <div class="pw"><input type="password" id="password" name="password" required minlength="8" autocomplete="new-password" placeholder="8 caractères minimum"><button type="button" class="pw-eye" aria-label="Afficher le mot de passe" data-show><i class="ph-bold ph-eye"></i></button></div>
+          <span class="hint">Pour modifier ta fiche quand tu veux sur app.jasonmarinho.com.</span>
+        </div>
+
       </div>
-      <div class="field">
-        <label for="email">Email pro <span class="req">*</span></label>
-        <input type="email" id="email" name="email" required autocomplete="email" placeholder="marie@studio-mariephotographie.fr">
-        <span class="field-hint">Servira d'identifiant pour ton compte (modification de la fiche, abonnement).</span>
+    </section>
+
+    <section class="step-card" aria-labelledby="st2">
+      <header class="step-head"><span class="step-n">2</span><div><h2 id="st2">Où tu travailles</h2><p>Les hôtes cherchent d’abord par ville.</p></div></header>
+      <div class="grid">
+
+        <div class="f">
+          <label for="ville">Ta ville principale <span class="req" aria-hidden="true">*</span></label>
+          <input type="text" id="ville" name="ville" required placeholder="Lyon" list="villes" autocomplete="address-level2" maxlength="80">
+          <span class="hint">Ta fiche apparaît sur la page de ta ville quand elle existe.</span>
+        </div>
+
+        <div class="f">
+          <label for="zoneCouverte">Ta zone <small>facultatif</small></label>
+          <input type="text" id="zoneCouverte" name="zoneCouverte" placeholder="Lyon + 60 km" maxlength="200">
+          <span class="hint">Tu pourras ajouter jusqu’à 10 villes depuis ton espace.</span>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="field">
-      <label for="password">Mot de passe <span class="req">*</span></label>
-      <input type="password" id="password" name="password" required autocomplete="new-password" minlength="8" placeholder="Au moins 8 caractères">
-      <span class="field-hint">Te servira à te connecter sur app.jasonmarinho.com pour éditer ta fiche à tout moment.</span>
-    </div>
+    <section class="step-card" aria-labelledby="st3">
+      <header class="step-head"><span class="step-n">3</span><div><h2 id="st3">Ton travail</h2><p>Tout se modifie ensuite depuis ton espace.</p></div></header>
+      <div class="grid">
 
-    <div class="row">
-      <div class="field">
-        <label for="ville">Ville principale <span class="req">*</span></label>
-        <input type="text" id="ville" name="ville" required placeholder="Lyon">
+        <div class="f full">
+          <label for="portfolioUrl">Ton site ou ton portfolio <span class="req" aria-hidden="true">*</span></label>
+          <input type="url" id="portfolioUrl" name="portfolioUrl" required placeholder="https://…" maxlength="300">
+          <span class="hint">Le bouton « Voir le portfolio » de ta fiche y mène. Un compte Instagram pro marche aussi.</span>
+        </div>
+
+        <div class="f">
+          <label for="instagramHandle">Instagram <small>facultatif</small></label>
+          <input type="text" id="instagramHandle" name="instagramHandle" placeholder="marie.photo" maxlength="50">
+          <span class="hint">Sans le @.</span>
+        </div>
+
+        <div class="f">
+          <label for="specialite">Ta spécialité <small>facultatif</small></label>
+          <select id="specialite" name="specialite"><option value="">Choisir</option><option value="Intérieurs LCD">Intérieurs de location courte durée</option><option value="Intérieurs + drone extérieur">Intérieurs + drone extérieur</option><option value="Intérieurs + vidéo / Reels">Intérieurs + vidéo / Reels</option><option value="Visite virtuelle Matterport 3D">Visite virtuelle 3D</option><option value="Hôtels et gîtes de charme">Hôtels et gîtes de charme</option><option value="Architecture + mise en scène">Architecture + mise en scène</option></select>
+          
+        </div>
+
+        <div class="f">
+          <label for="tarifMin">Prix de départ d’une séance (€) <small>facultatif</small></label>
+          <input type="number" id="tarifMin" name="tarifMin" placeholder="250" min="0" max="5000" inputmode="numeric">
+          <span class="hint">Affiché « dès 250 € » sur ta carte.</span>
+        </div>
+
+        <div class="f">
+          <label for="tarifMax">Prix d’une grosse séance (€) <small>facultatif</small></label>
+          <input type="number" id="tarifMax" name="tarifMax" placeholder="600" min="0" max="5000" inputmode="numeric">
+          
+        </div>
       </div>
-      <div class="field">
-        <label for="zoneCouverte">Zone couverte</label>
-        <input type="text" id="zoneCouverte" name="zoneCouverte" placeholder="Lyon + 60 km / Région Rhône">
+    </section>
+
+    <section class="step-card" aria-labelledby="st4">
+      <header class="step-head"><span class="step-n">4</span><div><h2 id="st4">Toi en quelques mots</h2><p>C’est ce que les hôtes lisent en premier sur ta fiche.</p></div></header>
+      <div class="grid">
+        <div class="f full">
+          <label for="bio">Présentation <small>facultatif</small></label>
+          <textarea id="bio" name="bio" maxlength="600" placeholder="Depuis quand tu photographies des locations, ce que les hôtes aiment dans ton travail, comment se passe une séance. Quelques lignes suffisent."></textarea>
+          <span class="hint count" id="bio-count">0 / 600</span>
+        </div>
       </div>
+    </section>
+    <div class="hp" aria-hidden="true"><label>Site web (laisser vide)</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+    <div class="submit">
+      <button type="submit" class="btn" id="submit-btn"><i class="ph-bold ph-lock-key"></i><span>Continuer vers le paiement sécurisé</span></button>
+      <div class="secure"><span><i class="ph-bold ph-shield-check"></i>Paiement par Stripe</span><span><i class="ph-bold ph-clock"></i>Fiche en ligne en quelques minutes</span><span><i class="ph-bold ph-x-circle"></i>Résiliable à tout moment</span></div>
+      <p class="legal">En continuant, tu acceptes les <a href="/cgvu">CGV / CGU</a> et la <a href="/politique-de-confidentialite#annuaire">politique de confidentialité</a>.</p>
     </div>
-
-    <div class="field">
-      <label for="portfolioUrl">Lien portfolio <span class="req">*</span></label>
-      <input type="url" id="portfolioUrl" name="portfolioUrl" required placeholder="https://...">
-      <span class="field-hint">Ton site web pro OU ton Instagram pro. URL complète avec https://</span>
-    </div>
-
-    <div class="row">
-      <div class="field">
-        <label for="instagramHandle">Compte Instagram</label>
-        <input type="text" id="instagramHandle" name="instagramHandle" placeholder="marie.photo (sans @)">
-      </div>
-      <div class="field">
-        <label for="telephone">Téléphone (optionnel)</label>
-        <input type="tel" id="telephone" name="telephone" placeholder="06 12 34 56 78" autocomplete="tel">
-      </div>
-    </div>
-
-    <div class="field">
-      <label for="specialite">Spécialité</label>
-      <select id="specialite" name="specialite">
-        <option value="">Choisir…</option>
-        <option value="Intérieurs LCD">Intérieurs LCD (le plus courant)</option>
-        <option value="Intérieurs + drone extérieur">Intérieurs + drone extérieur</option>
-        <option value="Intérieurs + vidéo / Reels">Intérieurs + vidéo / Reels</option>
-        <option value="Visite virtuelle Matterport 3D">Visite virtuelle Matterport 3D</option>
-        <option value="Hôtels et gîtes de charme">Hôtels et gîtes de charme</option>
-        <option value="Architecture + mise en scène">Architecture + mise en scène</option>
-      </select>
-    </div>
-
-    <div class="row">
-      <div class="field">
-        <label for="tarifMin">Tarif min session (€)</label>
-        <input type="number" id="tarifMin" name="tarifMin" min="0" max="5000" placeholder="350">
-      </div>
-      <div class="field">
-        <label for="tarifMax">Tarif max session (€)</label>
-        <input type="number" id="tarifMax" name="tarifMax" min="0" max="5000" placeholder="800">
-      </div>
-    </div>
-
-    <div class="field">
-      <label for="bio">Présentation (max 600 chars)</label>
-      <textarea id="bio" name="bio" maxlength="600" placeholder="Quelques lignes sur toi, ton expérience LCD, ce qui te différencie. Pas la peine de rédiger un roman : Jason vise l'authentique."></textarea>
-      <span class="field-hint" id="bio-count">0/600</span>
-    </div>
-
-    <div class="hp"><label>Site web (laisser vide)</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
-
-    <button type="submit" class="btn" id="submit-btn"><i class="ph-bold ph-lock-key"></i> Continuer vers le paiement sécurisé</button>
   </form>
 
-  <div class="legal">
-    En soumettant ce formulaire, tu acceptes nos <a href="/cgvu">CGV/CGU</a> et notre <a href="/politique-de-confidentialite">politique de confidentialité</a>. Paiement sécurisé via Stripe. Tu seras redirigé vers la page Stripe après validation du formulaire.
+  <aside class="side">
+    <div class="box">
+      <div class="box-eye">Ta carte dans l’annuaire</div>
+      <div class="pc" aria-live="polite">
+        <div class="pc-media"><span class="pc-ini" id="pv-ini">MD</span><small>Photographe</small></div>
+        <div class="pc-body">
+          <div class="pc-name" id="pv-name">Ton nom</div>
+          <div class="pc-meta" id="pv-meta">Ta ville</div>
+          <div class="pc-extra" id="pv-extra"></div>
+          <div class="pc-foot"><span id="pv-price">Tarifs sur la fiche</span><em>Voir la fiche →</em></div>
+        </div>
+      </div>
+      <p class="pc-note">Elle se remplit pendant que tu tapes. Tes photos, ajoutées ensuite depuis ton espace, remplacent les initiales.</p>
+    </div>
+    <div class="box">
+      <h3>Ce que ta fiche t’apporte</h3>
+      <ul class="ben">
+        <li><i class="ph-bold ph-globe"></i><div><b>Un site vitrine sur Google</b><span>Ta fiche est indexée, avec un lien direct (dofollow) vers ton site ou ton portfolio.</span></div></li>
+        <li><i class="ph-bold ph-map-pin"></i><div><b>Sur la page de ta ville</b><span>Les hôtes qui cherchent « photographe Airbnb » + ta ville tombent sur toi.</span></div></li>
+        <li><i class="ph-bold ph-paper-plane-tilt"></i><div><b>Les demandes viennent à toi</b><span>Quand un hôte de ta zone décrit son besoin, il arrive chez les 3 photographes les plus proches.</span></div></li>
+        <li><i class="ph-bold ph-images"></i><div><b>Photos et formules</b><span>Ajoute ensuite 6 photos, tes formules et ta façon de travailler depuis ton espace.</span></div></li>
+        <li><i class="ph-bold ph-chart-line-up"></i><div><b>Tes statistiques</b><span>Visiteurs, clics, demandes et recherches Google, avec un bilan chaque mois.</span></div></li>
+        <li><i class="ph-bold ph-file-text"></i><div><b>Devis en ligne</b><span>Envoie un devis propre en 2 minutes, accepté en ligne par l’hôte.</span></div></li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Voir avant de t’inscrire</h3>
+      <div class="links">
+        <a href="/annuaires/photographes/exemple-fiche">Un exemple de fiche <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="/devenir-photographe-lcd#exemple-stats">Un exemple de statistiques <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="/devenir-photographe-lcd">Tout sur l’annuaire <i class="ph-bold ph-arrow-right"></i></a>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<section class="faq" aria-labelledby="faq-t">
+  <h2 id="faq-t">Questions fréquentes</h2>
+  <div class="faq-grid">
+    <div class="faq-item"><h3>Y a-t-il une validation de mon profil ?</h3><p>Non. Ta fiche est en ligne quelques minutes après le paiement. Tu la complètes ensuite quand tu veux depuis ton espace.</p></div>
+    <div class="faq-item"><h3>Je n’ai pas encore mes photos sous la main</h3><p>Pas de souci : tu ajoutes tes photos, tes formules et tes villes après l’inscription, depuis ton espace. En attendant, ta carte affiche tes initiales.</p></div>
+    <div class="faq-item"><h3>Prenez-vous une commission sur mes séances ?</h3><p>Non, jamais. Les hôtes te contactent directement et le devis, la séance et le paiement se règlent entre vous.</p></div>
+    <div class="faq-item"><h3>Comment arrêter ?</h3><p>Ton abonnement est annuel et se résilie à tout moment depuis ton espace, sans frais.</p></div>
   </div>
-</div>
+</section>
+
+<datalist id="villes"><option value="Aix-en-Provence"><option value="Ajaccio"><option value="Angers"><option value="Annecy"><option value="Antibes"><option value="Arcachon"><option value="Avignon"><option value="Bastia"><option value="Bayonne"><option value="Beaune"><option value="Biarritz"><option value="Bordeaux"><option value="Brest"><option value="Caen"><option value="Cannes"><option value="Carcassonne"><option value="Chambéry"><option value="Chamonix"><option value="Clermont-Ferrand"><option value="Colmar"><option value="Deauville"><option value="Dijon"><option value="Dinard"><option value="Épernay"><option value="Étretat"><option value="Grenoble"><option value="Honfleur"><option value="La Baule"><option value="La Rochelle"><option value="Le Mans"><option value="Le Touquet"><option value="Les Sables-d'Olonne"><option value="Lille"><option value="Lyon"><option value="Marseille"><option value="Megève"><option value="Menton"><option value="Metz"><option value="Montpellier"><option value="Nancy"><option value="Nantes"><option value="Nice"><option value="Nîmes"><option value="Paris"><option value="Pau"><option value="Perpignan"><option value="Poitiers"><option value="Quimper"><option value="Reims"><option value="Rennes"><option value="Rouen"><option value="Saint-Malo"><option value="Saint-Tropez"><option value="Sarlat"><option value="Sète"><option value="Strasbourg"><option value="Toulouse"><option value="Tours"><option value="Troyes"><option value="Vannes"><option value="Versailles"></datalist>
 
 <script>
-  const __t0 = Date.now();
-  const bio = document.getElementById('bio');
-  const count = document.getElementById('bio-count');
-  bio.addEventListener('input', () => { count.textContent = bio.value.length + '/600'; });
+(function () {
+  var t0 = Date.now()
+  var form = document.getElementById('signup-form')
+  var errBox = document.getElementById('err-box')
+  var btn = document.getElementById('submit-btn')
+  var BTN = btn.innerHTML
+  var $ = function (id) { return document.getElementById(id) }
 
-  async function submitForm(e) {
-    e.preventDefault();
-    const errBox = document.getElementById('err-box');
-    const btn = document.getElementById('submit-btn');
-    errBox.style.display = 'none';
-    btn.disabled = true; btn.innerHTML = '<i class="ph-bold ph-spinner"></i> Redirection vers Stripe…';
-
-    const ids = ['fullName','email','password','ville','zoneCouverte','portfolioUrl','instagramHandle','telephone','specialite','tarifMin','tarifMax','bio'];
-    const data = { t: __t0, website: e.target.website ? e.target.website.value : '' };
-    // Provenance de la visite (nav.js) : d'où vient ce pro (groupe Facebook, Google…)
-    try { data.acq = window.__jmAcq || JSON.parse(sessionStorage.getItem('jm_acq') || 'null'); } catch (err) { data.acq = null; }
-    ids.forEach(k => { data[k] = (document.getElementById(k) || {}).value || ''; });
-
-    function showError(msg) {
-      errBox.textContent = msg;
-      errBox.style.display = 'block';
-      btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-lock-key"></i> Continuer vers le paiement sécurisé';
-      errBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  // Places Fondateur restantes (rien d'affiché si l'API ne répond pas)
+  fetch('/api/annuaire-places').then(function (r) { return r.ok ? r.json() : null }).then(function (d) {
+    var n = d && d.photographers
+    if (typeof n !== 'number') return
+    if (n <= 0) {
+      // Places Fondateur épuisées : prix normal
+      document.querySelector('.price-eye').textContent = 'Tarif annuel'
+      document.querySelector('.price-n').innerHTML = '79,98 €<small>TTC / an</small>'
+      document.querySelector('.price-sub').textContent = 'Les 20 places Fondateur sont prises. Tout est compris, sans commission.'
+      document.querySelector('.price-foot').textContent = 'Soit moins de 6,70 € par mois. TVA non applicable, art. 293 B du CGI.'
+      return
     }
+    var el = $('places')
+    el.querySelector('span').textContent = 'Plus que ' + n + ' place' + (n > 1 ? 's' : '') + ' à ce prix'
+    el.style.display = 'inline-flex'
+  }).catch(function () {})
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
+  // Afficher le mot de passe
+  document.querySelectorAll('[data-show]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var i = b.parentNode.querySelector('input')
+      var show = i.type === 'password'
+      i.type = show ? 'text' : 'password'
+      b.innerHTML = show ? '<i class="ph-bold ph-eye-slash"></i>' : '<i class="ph-bold ph-eye"></i>'
+      b.setAttribute('aria-label', show ? 'Masquer le mot de passe' : 'Afficher le mot de passe')
+    })
+  })
 
-    try {
-      console.log('[signup] POST /api/photographer/signup', data);
-      const res = await fetch('/api/photographer/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
-      console.log('[signup] status:', res.status);
-      const text = await res.text();
-      console.log('[signup] raw body:', text);
-      let body = {};
-      try { body = JSON.parse(text); } catch { body = {}; }
-      console.log('[signup] parsed:', body);
-      if (!res.ok) {
-        showError(`${body.error || 'Erreur serveur'} (code ${res.status})`);
-        return false;
-      }
-      if (!body.checkoutUrl) {
-        showError('Réponse invalide du serveur (pas de checkoutUrl). Contacte contact@jasonmarinho.com.');
-        return false;
-      }
-      console.log('[signup] redirecting to:', body.checkoutUrl);
-      window.location.assign(body.checkoutUrl);
-    } catch (err) {
-      clearTimeout(timeoutId);
-      console.error('[signup] fetch error', err);
-      if (err.name === 'AbortError') {
-        showError('Le serveur met trop de temps à répondre (>30s). Réessaye ou contacte contact@jasonmarinho.com.');
-      } else {
-        showError('Impossible de joindre le serveur : ' + (err.message || err));
-      }
-    }
-    return false;
+  var bio = $('bio')
+  bio.addEventListener('input', function () { $('bio-count').textContent = bio.value.length + ' / 600' })
+
+  // Aperçu de la carte
+  function initials(s) { return s.split(/\s+/).filter(function (w) { return /^[A-Za-zÀ-ÿ]/.test(w) }).map(function (w) { return w[0] }).slice(0, 2).join('').toUpperCase() }
+  function val(id) { var el = $(id); return el ? el.value.trim() : '' }
+  function selText(id) { var el = $(id); return el && el.value ? el.options[el.selectedIndex].text : '' }
+  function preview() {
+    var name = val('fullName')
+    $('pv-name').textContent = name || 'Ton nom'
+    $('pv-ini').textContent = initials(name) || 'MD'
+    var zone = val('zoneCouverte')
+    $('pv-meta').textContent = [val('ville') || 'Ta ville', zone].filter(Boolean).join(' · ')
+    $('pv-extra').textContent = selText('specialite')
+    var p = parseInt(val('tarifMin'), 10)
+    $('pv-price').innerHTML = p > 0 ? 'dès <strong>' + p + ' €</strong>' : 'Tarifs sur la fiche'
   }
+  form.addEventListener('input', preview)
+  form.addEventListener('change', preview)
+
+  function showError(msg, focusEl) {
+    errBox.textContent = msg
+    errBox.style.display = 'block'
+    btn.disabled = false; btn.innerHTML = BTN
+    if (focusEl) focusEl.focus()
+    errBox.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault()
+    errBox.style.display = 'none'
+    var missing = Array.prototype.find.call(form.querySelectorAll('[required]'), function (el) { return !el.value.trim() || !el.checkValidity() })
+    if (missing) {
+      var label = form.querySelector('label[for="' + missing.id + '"]')
+      var name = label ? label.childNodes[0].textContent.trim() : 'Un champ'
+      return showError(missing.id === 'password' ? 'Le mot de passe doit faire au moins 8 caractères.' : (missing.validity && missing.validity.typeMismatch ? name + ' : l’adresse semble incorrecte.' : name + ' : à remplir.'), missing)
+    }
+    btn.disabled = true
+    btn.innerHTML = '<i class="ph-bold ph-spinner"></i><span>Préparation du paiement…</span>'
+    var data = { t: t0, website: form.website ? form.website.value : '' }
+    try { data.acq = window.__jmAcq || JSON.parse(sessionStorage.getItem('jm_acq') || 'null') } catch (err) { data.acq = null }
+    ["fullName","email","password","ville","zoneCouverte","portfolioUrl","instagramHandle","telephone","specialite","tarifMin","tarifMax","bio"].forEach(function (k) { data[k] = val(k) })
+    var ctrl = new AbortController()
+    var timer = setTimeout(function () { ctrl.abort() }, 30000)
+    try {
+      var res = await fetch('/api/photographer/signup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), signal: ctrl.signal })
+      clearTimeout(timer)
+      var body = {}
+      try { body = await res.json() } catch (err) { body = {} }
+      if (!res.ok) return showError(body.error || 'Le serveur n’a pas pu enregistrer ta fiche. Réessaie dans un instant.')
+      if (!body.checkoutUrl) return showError('Le paiement n’a pas pu être préparé. Écris-nous à contact@jasonmarinho.com, on règle ça vite.')
+      window.location.assign(body.checkoutUrl)
+    } catch (err) {
+      clearTimeout(timer)
+      showError(err && err.name === 'AbortError' ? 'Le serveur met trop de temps à répondre. Réessaie, ou écris à contact@jasonmarinho.com.' : 'Connexion impossible. Vérifie ta connexion internet et réessaie.')
+    }
+  })
+})()
 </script>
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
