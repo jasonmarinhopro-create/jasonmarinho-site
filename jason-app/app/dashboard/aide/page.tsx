@@ -132,12 +132,12 @@ export default async function AidePage() {
           {/* Tu aimes l'app ? (sortis du menu du compte, sept. 2026) */}
           <section style={{ ...s.sideCard, background: 'var(--accent-bg)', borderColor: 'var(--accent-border)' }}>
             <div style={s.sideTitleRow}><Heart size={16} weight="fill" style={{ color: 'var(--accent-text)' }} /> Tu aimes l&apos;app ?</div>
-            <p style={s.sideDesc}>Un avis Google aide d&apos;autres hôtes à la trouver. Pour aller plus loin, tu peux soutenir le projet en devenant contributeur.</p>
+            <p style={s.sideDesc}>Un avis Google sincère aide d&apos;autres hôtes à la trouver. Une idée pour l&apos;améliorer ? Propose-la, les membres votent.</p>
             <div style={s.btnRow}>
               <a href="https://g.page/r/CcLzE7IbhS5_EAE/review" target="_blank" rel="noopener noreferrer" style={s.btnPrimary}>
                 <Star size={15} weight="fill" /> Laisser un avis
               </a>
-              <Link href="/dashboard/contributeurs" style={s.btnGhost}>Devenir contributeur</Link>
+              <Link href="/dashboard/idees" style={s.btnGhost}>Proposer une idée</Link>
             </div>
           </section>
 

@@ -72,7 +72,10 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/formations/favoris': 'Mes favoris',
   '/dashboard/formations/parcours': "Parcours d'apprentissage",
   '/dashboard/ecosysteme': 'Partenaires & outils',
-  '/dashboard/contributeurs': 'Contributeurs',
+  '/dashboard/idees': 'Idées & feuille de route',
+  '/dashboard/ma-fiche-photographe/idees': 'Idées & feuille de route',
+  '/dashboard/ma-fiche-menage/idees': 'Idées & feuille de route',
+  '/dashboard/investir/idees': 'Idées & feuille de route',
   '/dashboard/guide': 'Guide LCD',
   '/dashboard/admin': 'Administration',
   '/dashboard/admin/membres': 'Membres',
@@ -566,9 +569,9 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
                     <CreditCard size={15} />
                     Mon abonnement
                   </Link>
-                  <Link href="/dashboard/contributeurs" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
+                  <Link href="/dashboard/idees" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
                     <Heart size={15} />
-                    Contributeurs
+                    Idées
                   </Link>
                   <Link href="/dashboard/aide" style={styles.dropItem} onClick={() => setDropdownOpen(false)}>
                     <Question size={15} />

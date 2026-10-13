@@ -13,6 +13,14 @@ export interface ChangelogEntry {
 // outils opérationnels) et on retire les détails techniques / refontes
 // internes / micro-ajustements UX qui n'apportent rien au quotidien d'un hôte.
 export const CHANGELOG: ChangelogEntry[] = [
+  // ─── Octobre 2026 ──────────────────────────────────────────────
+  {
+    id: 'idees-oct-2026',
+    date: '2026-10-13',
+    tag: 'nouveau',
+    title: 'Idées & feuille de route, ouvertes à tous',
+    description: 'Une idée pour améliorer l\'app ? Propose-la dans « Idées » (menu de chaque espace : hôte, photographe, équipe de ménage, investisseur). Les membres votent, et tu vois ce qui est prévu, en cours ou livré. Tu es prévenu quand ton idée avance.',
+  },
   // ─── Septembre 2026 ────────────────────────────────────────────
   {
     id: 'app-telephone-sep-2026',

@@ -34,6 +34,7 @@ const TYPE_GROUP: Array<[RegExp, NotifGroup]> = [
   [/^(checkin_|declaration_|voyageur_)/, 'voyageurs'],
   [/^menage_/, 'menage'],
   [/^(plafond_|stripe_|sync_|fiscal_)/, 'compte'],
+  [/^idee_/, 'nouveautes'],
 ]
 
 /** Groupe d'une alerte de l'app, d'après son type (puis sa catégorie) */

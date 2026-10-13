@@ -15,6 +15,7 @@ import {
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
   ChartLineUp, HouseLine, Briefcase, ShareNetwork, PaperPlaneTilt, LinkSimple, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
   Broom, Check, Plus, ChatText, ArrowLeft, LockSimple, Receipt, Binoculars, PresentationChart,
+  Lightbulb,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
@@ -111,6 +112,9 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
       },
       // Entre Hôtes : Questions & réponses + Partenaires & outils.
       { href: '/dashboard/entre-hotes/forum', label: 'Entre Hôtes',   icon: ChatsCircle, activeMatch: ['/dashboard/entre-hotes', '/dashboard/chez-nous', '/dashboard/ecosysteme'] },
+      // Idées & feuille de route (13/10/2026) : ouvert à tous les membres,
+      // remplace l'espace payant « Contributeurs » (même page dans chaque espace)
+      { href: '/dashboard/idees', label: 'Idées', icon: Lightbulb },
     ],
   },
 ]
@@ -503,6 +507,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                 <NavItem href="/dashboard/investir/estimateur" label="Estimer un bien + PDF" Icon={ChartLineUp} />
                 <NavItem href="/dashboard/investir/comparateur" label="Comparer les villes" Icon={ChartBar} />
                 <NavItem href="/dashboard/investir/simulateurs" label="Rentabilité & fiscalité" Icon={Calculator} />
+                <NavItem href="/dashboard/investir/idees" label="Idées" Icon={Lightbulb} />
               </div>
             </div>
           ) : proRole && isAdmin && searchParams?.get('id') ? (
@@ -563,6 +568,11 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                   href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/devis' : '/dashboard/ma-fiche-menage/devis'}
                   label="Devis"
                   Icon={Receipt}
+                />
+                <NavItem
+                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/idees' : '/dashboard/ma-fiche-menage/idees'}
+                  label="Idées"
+                  Icon={Lightbulb}
                 />
               </div>
             </div>

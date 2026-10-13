@@ -53,6 +53,10 @@ const nextConfig = {
       // que les bookmarks/liens pointent vers la nouvelle destination.
       // NB : Next.js redirects() ne matche pas la querystring dans le
       // path — utilise has+value.
+      // Contributions retirées le 13/10/2026 (décision de Jason) : la page
+      // /soutenir et l'espace Contributeurs deviennent « Idées », ouvert à tous.
+      { source: '/soutenir', destination: '/dashboard/idees', permanent: true },
+      { source: '/dashboard/contributeurs', destination: '/dashboard/idees', permanent: true },
       { source: '/dashboard/calendrier', has: [{ type: 'query', key: 'view', value: 'list' }], destination: '/dashboard/reservations', permanent: false },
     ]
   },

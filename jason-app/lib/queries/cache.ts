@@ -53,14 +53,21 @@ export const getCachedCommunityGroups = unstable_cache(
 export const getCachedRoadmapItems = unstable_cache(
   async () => {
     const db = getServiceClient()
+    // espace, reponse, status_changed_at : migration 20261013_134 (repli sans elles)
+    const full = await db
+      .from('roadmap_items')
+      .select('id, title, description, status, author_id, author_name, created_at, espace, reponse, status_changed_at')
+      .order('created_at', { ascending: false })
+      .limit(300)
+    if (!full.error) return full.data ?? []
     const { data } = await db
       .from('roadmap_items')
       .select('id, title, description, status, author_id, author_name, created_at')
       .order('created_at', { ascending: false })
-      .limit(200)
-    return data ?? []
+      .limit(300)
+    return (data ?? []).map(r => ({ ...r, espace: null, reponse: null, status_changed_at: null }))
   },
-  ['roadmap-items-v1'],
+  ['roadmap-items-v2'],
   { tags: [CACHE_TAGS.ROADMAP_ITEMS], revalidate: 300 },
 )
 
@@ -192,18 +199,3 @@ export const getCachedTemplatesCatalog = unstable_cache(
   { tags: [CACHE_TAGS.TEMPLATES_CATALOG], revalidate: 300 },
 )
 
-// ─── Contributeurs (mur public) ────────────────────────────────────────────
-
-export const getCachedContributors = unstable_cache(
-  async () => {
-    const db = getServiceClient()
-    const { data } = await db
-      .from('profiles')
-      .select('id, full_name, created_at')
-      .eq('is_contributor', true)
-      .order('created_at', { ascending: true })
-    return data ?? []
-  },
-  ['contributors-v1'],
-  { tags: [CACHE_TAGS.CONTRIBUTORS], revalidate: 600 },
-)
