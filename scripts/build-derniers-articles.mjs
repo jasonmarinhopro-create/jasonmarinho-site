@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Les 3 derniers articles du blog pour le menu Ressources de nav.js
+// Les 4 derniers articles du blog pour le menu Ressources de nav.js
 // (13/10/2026, proposition D validée par Jason). Lus dans rss.xml (tenu à
 // jour par rebuild-blog.mjs à chaque article) et écrits dans
 // derniers-articles.json, que nav.js ne charge qu'à l'ouverture du menu.
@@ -41,7 +41,7 @@ for (const it of items) {
   })
 }
 articles.sort((a, b) => b.ts - a.ts)
-const out = articles.slice(0, 3).map(({ t, u, d }) => ({ t, u, d }))
+const out = articles.slice(0, 4).map(({ t, u, d }) => ({ t, u, d }))
 if (!out.length) {
   console.warn('build-derniers-articles : aucun article trouvé dans rss.xml, fichier inchangé')
   process.exit(0)

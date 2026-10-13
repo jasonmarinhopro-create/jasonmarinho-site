@@ -512,7 +512,7 @@
                 + '<a href="/blog" class="n-res-h"><i class="ph-bold ph-newspaper"></i>Derniers articles</a>'
                 + '<a href="/blog" class="n-res-all">Tout le blog <i class="ph-bold ph-arrow-right"></i></a>'
               + '</div>'
-              + '<div class="n-res-arts" data-derniers><span class="n-res-skel"></span><span class="n-res-skel"></span><span class="n-res-skel"></span></div>'
+              + '<div class="n-res-arts" data-derniers><span class="n-res-skel"></span><span class="n-res-skel"></span><span class="n-res-skel"></span><span class="n-res-skel"></span></div>'
             + '</div>'
             + '<a href="/partenaires" class="n-res-card n-res-part">'
               + '<span class="n-res-ico"><i class="ph-bold ph-handshake"></i></span>'
@@ -837,7 +837,7 @@
       document.querySelectorAll('.n-drop.open').forEach(function (d) { d.classList.remove('open'); });
     });
 
-    /* Ressources : les 3 derniers articles, chargés à la première ouverture
+    /* Ressources : les 4 derniers articles, chargés à la première ouverture
        du menu (derniers-articles.json, écrit au build par
        scripts/build-derniers-articles.mjs). */
     var derniersBox = document.querySelector('[data-derniers]');
@@ -851,7 +851,7 @@
       }).then(function (list) {
         if (!Array.isArray(list) || !list.length) throw new Error('vide');
         derniersBox.textContent = '';
-        list.slice(0, 3).forEach(function (art) {
+        list.slice(0, 4).forEach(function (art) {
           if (!art || typeof art.u !== 'string' || art.u.indexOf('/blog/') !== 0) return;
           var a = document.createElement('a');
           a.href = art.u;
