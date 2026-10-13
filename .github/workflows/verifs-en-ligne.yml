@@ -100,3 +100,26 @@ jobs:
           done
           code=$(curl -s -o /dev/null -w '%{http_code}' https://jasonmarinho.com/sitemap.xml); [ "$code" = 200 ] && echo "OK   sitemap 200" || { echo "::error title=Site::sitemap $code"; fail=1; }
           exit $fail
+      - name: Chiffres publics (/chiffres)
+        if: always()
+        run: |
+          curl -s -H 'Origin: https://jasonmarinho.com' https://app.jasonmarinho.com/api/public/chiffres -o c.json -w '%{http_code}\n'
+          python3 - <<'PY'
+          import json
+          d = json.load(open('c.json'))
+          if 'error' in d:
+              print(f"::error title=Chiffres::{d['error']}"); raise SystemExit(1)
+          g = d.get('google') or {}
+          print(f"::notice title=Google 28 j::{g.get('impressions')} affichages, {g.get('clicks')} clics (avant : {g.get('prevImpressions')} / {g.get('prevClicks')}), {g.get('pagesSeen')} pages vues, {g.get('firstPageCount')} recherches en 1re page, du {g.get('start')} au {g.get('end')}")
+          print(f"::notice title=Mois::" + ' | '.join(f"{m['month']} {m['impressions']} aff. {m['clicks']} clics" for m in g.get('months', [])))
+          v = d.get('visitors') or {}
+          print(f"::notice title=Visiteurs 30 j::{v.get('last30')} (30 j d'avant : {v.get('prev30')})")
+          q = d.get('queries') or {}
+          for k in ('photographe', 'menage', 'hote'):
+              items = q.get(k) or []
+              print(f"::notice title=Recherches {k} ({len(items)})::" + ' | '.join(f"{x['q']} place {x['place']} ({x['impressions']} aff.)" for x in items[:12]))
+          c = d.get('cities') or {}
+          avec = [p for p, s in c.items() if s.get('totals')]
+          print(f"::notice title=Pages de ville::{len(c)} avec des chiffres, {len(avec)} au-delà du seuil : {', '.join(avec[:10])}")
+          PY
+          code=$(curl -s -o /dev/null -w '%{http_code}' https://jasonmarinho.com/chiffres); [ "$code" = 200 ] && echo "OK   /chiffres 200" || echo "::error title=Site::/chiffres $code"
