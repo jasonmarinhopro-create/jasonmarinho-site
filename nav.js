@@ -145,29 +145,53 @@
       '.n-ann-need b{display:block;font-weight:600;font-size:13.5px}',
       '.n-ann-need small{display:block;font-size:11.5px;color:rgba(255,255,255,.55);margin-top:1px}',
 
-      /* Ressources mega menu : 2 cartes visuelles + colonne "Plus" (modèle Shine) */
-      '.n-mega-res{min-width:720px;padding:22px;gap:14px;align-items:stretch}',
+      /* Ressources (13/10/2026, proposition D + colonne de la A, choisies par Jason) :
+         3 derniers articles (derniers-articles.json, écrit au build), carte Partenaires,
+         colonne « Pour apprendre » / « Me connaître », ligne Le Check-in */
+      '.n-mega-res{flex-direction:column;gap:14px;width:min(860px,94vw);padding:20px}',
+      '.n-res-top{display:flex;gap:14px;align-items:stretch}',
+      '.n-res-news-list{flex:1.5;min-width:0;display:flex;flex-direction:column;padding:15px 18px 10px;border-radius:12px;background:linear-gradient(160deg,#FFD56B 0%,#ffe39a 100%);border:1px solid rgba(255,213,107,.6);color:var(--gd)}',
+      '.n-res-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}',
+      '.n-mega .n-res-hd a{padding:0;color:var(--gd);background:transparent;white-space:nowrap}',
+      '.n-mega .n-res-hd a:hover,.n-mega .n-res-hd a.active{background:transparent;color:var(--gd)}',
+      '.n-mega .n-res-hd a.n-res-h{font-family:\'Fraunces\',serif;font-size:19px;font-weight:500;gap:8px}',
+      '.n-mega .n-res-hd a.n-res-all{font-size:12.5px;font-weight:600;gap:5px}',
+      '.n-mega .n-res-hd a i{color:var(--gd);width:auto;font-size:16px}',
+      '.n-mega .n-res-hd a.n-res-all i{font-size:11px}',
+      '.n-res-arts{display:flex;flex-direction:column;min-height:150px}',
+      '.n-mega .n-res-arts a{align-items:flex-start;gap:10px;padding:8px 0;border-radius:0;border-top:1px solid rgba(0,51,41,.14);color:var(--gd);font-size:13px;line-height:1.35;white-space:normal}',
+      '.n-mega .n-res-arts a:hover{background:transparent;color:var(--gd);text-decoration:underline;text-underline-offset:3px}',
+      '.n-res-arts small{flex-shrink:0;width:46px;font-size:11px;font-weight:600;opacity:.62;padding-top:1px}',
+      '.n-res-arts span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}',
+      '.n-res-skel{height:34px;border-top:1px solid rgba(0,51,41,.14);display:flex;align-items:center}',
+      '.n-res-skel::after{content:"";height:9px;width:80%;border-radius:9px;background:rgba(0,51,41,.1)}',
+      '.n-res-arts p{margin:6px 0 0;font-size:13px;line-height:1.5;color:rgba(0,51,41,.75)}',
+      '.n-mega-res a.n-res-card{flex:0 0 180px;min-height:0}',
+      '.n-mega-res .n-res-more{display:flex;flex-direction:column;gap:1px;min-width:190px;padding:2px 2px 0 8px}',
+      '.n-mega-res .n-res-more .n-col-title{margin-bottom:4px}',
+      '.n-mega-res .n-res-more .n-res-t2{margin-top:10px}',
+      '.n-mega-res .n-res-more a{padding:6px 9px}',
+      '.n-mega a.n-res-checkin{align-items:center;gap:12px;padding:12px 14px;border-radius:11px;background:rgba(255,213,107,.07);border:1px solid rgba(255,213,107,.2);white-space:normal}',
+      '.n-mega a.n-res-checkin:hover{background:rgba(255,213,107,.12)}',
+      '.n-mega a.n-res-checkin i{color:var(--y);font-size:18px;width:auto}',
+      '.n-res-checkin b{display:block;color:var(--y);font-weight:600;font-size:14px}',
+      '.n-res-checkin small{display:block;font-size:12px;color:rgba(255,255,255,.55)}',
+      '.n-res-go{margin-left:auto;display:flex;align-items:center;gap:5px;color:var(--y);font-size:13px;white-space:nowrap}',
+      '.n-mega a.n-res-checkin .n-res-go i{font-size:12px}',
+      '@media(max-width:1080px){.n-mega-res a.n-res-card{flex-basis:150px}.n-mega-res .n-res-more{min-width:170px}}',
       '.n-mega-res a.n-res-card{flex:0 0 200px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;gap:6px;min-height:210px;border-radius:12px;padding:18px;position:relative;overflow:hidden;white-space:normal;text-decoration:none;transition:transform .2s,border-color .2s}',
       '.n-mega-res a.n-res-card:hover{transform:translateY(-2px)}',
-      '.n-mega-res a.n-res-blog,.n-mega-res a.n-res-blog:hover{background:linear-gradient(160deg,#FFD56B 0%,#ffe39a 100%);border:1px solid rgba(255,213,107,.6)}',
       '.n-mega-res a.n-res-part,.n-mega-res a.n-res-part:hover{background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%);border:1px solid rgba(255,213,107,.22)}',
       '.n-mega-res .n-res-part:hover{border-color:rgba(255,213,107,.45)}',
       '.n-mega-res .n-res-ico{position:absolute;top:16px;left:18px;width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:22px}',
       '.n-mega-res a.n-res-card .n-res-ico i{font-size:22px;width:auto;color:inherit}',
-      '.n-mega-res .n-res-blog .n-res-ico{background:rgba(0,51,41,.10);color:var(--gd)}',
       '.n-mega-res .n-res-part .n-res-ico{background:rgba(255,213,107,.10);color:var(--y)}',
       '.n-mega-res .n-res-card i.n-res-deco{position:absolute;right:-14px;top:40px;font-size:120px;opacity:.10;width:auto}',
-      '.n-mega-res .n-res-blog i.n-res-deco{color:var(--gd)}',
       '.n-mega-res .n-res-part i.n-res-deco{color:var(--y)}',
       '.n-mega-res .n-res-t{font-family:\'Fraunces\',serif;font-size:19px;font-weight:500;letter-spacing:-.01em;position:relative}',
-      '.n-mega-res .n-res-blog .n-res-t{color:var(--gd)}',
       '.n-mega-res .n-res-part .n-res-t{color:#fff}',
       '.n-mega-res .n-res-d{font-size:12.5px;line-height:1.45;position:relative}',
-      '.n-mega-res .n-res-blog .n-res-d{color:rgba(0,51,41,.7)}',
       '.n-mega-res .n-res-part .n-res-d{color:rgba(255,255,255,.6)}',
-      '.n-mega-res .n-res-more{display:flex;flex-direction:column;gap:1px;min-width:190px;padding:4px 4px 0 10px}',
-      '.n-mega-res .n-res-more .n-col-title{margin-bottom:6px}',
-      '@media(max-width:1080px){.n-mega-res{min-width:auto;width:min(96vw,640px);flex-wrap:wrap}.n-mega-res a.n-res-card{flex:1 1 180px;min-height:170px}.n-mega-res .n-res-more{flex:1 1 100%;padding:8px 0 0}}',
 
       /* Menus larges (Services, Tarifs) : centrés sur la page et collés sous la
          barre, sinon ils débordent de l'écran. Le <li> occupe toute la hauteur
@@ -451,31 +475,36 @@
         + '</div>'
       + '</li>'
 
-      /* ── Ressources (Blog, Partenaires + liens secondaires) ── */
-      + '<li class="n-drop">'
+      /* ── Ressources : derniers articles, Partenaires, liens rangés, Le Check-in (13/10/2026) ── */
+      + '<li class="n-drop n-drop-res">'
         + '<button class="n-btn" aria-haspopup="true" aria-expanded="false">Ressources ' + CARET + '</button>'
         + '<div class="n-mega n-mega-res">'
-          + '<a href="/blog" class="n-res-card n-res-blog">'
-            + '<span class="n-res-ico"><i class="ph-bold ph-newspaper"></i></span>'
-            + '<i class="ph ph-newspaper n-res-deco"></i>'
-            + '<span class="n-res-t">Blog</span>'
-            + '<span class="n-res-d">Conseils, stratégies et actus pour les hôtes LCD.</span>'
-          + '</a>'
-          + '<a href="/partenaires" class="n-res-card n-res-part">'
-            + '<span class="n-res-ico"><i class="ph-bold ph-handshake"></i></span>'
-            + '<i class="ph ph-handshake n-res-deco"></i>'
-            + '<span class="n-res-t">Partenaires</span>'
-            + '<span class="n-res-d">Outils recommandés et offres négociées pour les membres.</span>'
-          + '</a>'
-          + '<div class="n-res-more">'
-            + '<div class="n-col-title">Plus</div>'
-            + '<a href="/qui-suis-je"><i class="ph ph-user-circle"></i>Qui suis-je</a>'
-            + '<a href="/contact"><i class="ph ph-envelope"></i>Contact</a>'
-            + '<a href="/partenaires#comparatifs"><i class="ph ph-scales"></i>Comparatifs outils</a>'
-            + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
-            + '<a href="/services/actualites"><i class="ph ph-megaphone"></i>Actualités LCD</a>'
-            + '<a href="/lexique-lcd"><i class="ph ph-book-open"></i>Lexique LCD</a>'
+          + '<div class="n-res-top">'
+            + '<div class="n-res-news-list">'
+              + '<div class="n-res-hd">'
+                + '<a href="/blog" class="n-res-h"><i class="ph-bold ph-newspaper"></i>Derniers articles</a>'
+                + '<a href="/blog" class="n-res-all">Tout le blog <i class="ph-bold ph-arrow-right"></i></a>'
+              + '</div>'
+              + '<div class="n-res-arts" data-derniers><span class="n-res-skel"></span><span class="n-res-skel"></span><span class="n-res-skel"></span></div>'
+            + '</div>'
+            + '<a href="/partenaires" class="n-res-card n-res-part">'
+              + '<span class="n-res-ico"><i class="ph-bold ph-handshake"></i></span>'
+              + '<i class="ph ph-handshake n-res-deco"></i>'
+              + '<span class="n-res-t">Partenaires</span>'
+              + '<span class="n-res-d">Outils recommandés et offres pour les membres.</span>'
+            + '</a>'
+            + '<div class="n-res-more">'
+              + '<div class="n-col-title">Pour apprendre</div>'
+              + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
+              + '<a href="/services/actualites"><i class="ph ph-megaphone"></i>Actualités LCD</a>'
+              + '<a href="/partenaires#comparatifs"><i class="ph ph-scales"></i>Comparatifs outils</a>'
+              + '<a href="/lexique-lcd"><i class="ph ph-book-open"></i>Lexique LCD</a>'
+              + '<div class="n-col-title n-res-t2">Me connaître</div>'
+              + '<a href="/qui-suis-je"><i class="ph ph-user-circle"></i>Qui suis-je</a>'
+              + '<a href="/contact"><i class="ph ph-envelope"></i>Contact</a>'
+            + '</div>'
           + '</div>'
+          + '<a href="/#contact" class="n-res-checkin"><i class="ph ph-envelope-simple"></i><span><b>Le Check-in</b><small>Une lettre par mois : ce qui change, un outil, un bon plan</small></span><span class="n-res-go">M\'inscrire <i class="ph-bold ph-arrow-right"></i></span></a>'
         + '</div>'
       + '</li>'
 
@@ -624,13 +653,21 @@
             + '<span class="mob-vs">Outils et offres <i class="ph-bold ph-arrow-right"></i></span>'
           + '</a>'
         + '</div>'
-        + '<span class="mob-stitle">Plus</span>'
+        + '<span class="mob-stitle">Pour apprendre</span>'
         + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
         + '<a href="/services/actualites"><i class="ph ph-megaphone"></i>Actualités LCD</a>'
         + '<a href="/partenaires#comparatifs"><i class="ph ph-scales"></i>Comparatifs outils</a>'
         + '<a href="/lexique-lcd"><i class="ph ph-book-open"></i>Lexique LCD</a>'
+        + '<span class="mob-stitle">Me connaître</span>'
         + '<a href="/qui-suis-je"><i class="ph ph-user-circle"></i>Qui suis-je</a>'
         + '<a href="/contact"><i class="ph ph-envelope"></i>Contact</a>'
+        + '<a href="/#contact" class="mob-driing">'
+          + '<i class="ph ph-envelope-simple"></i>'
+          + '<div class="mob-driing-body">'
+            + '<span class="mob-driing-name">Le Check-in</span>'
+            + '<span class="mob-driing-sub">Une lettre par mois : ce qui change, un outil, un bon plan</span>'
+          + '</div>'
+        + '</a>'
       + '</div>'
     + '</div>'
 
@@ -764,6 +801,42 @@
     document.addEventListener('click', function () {
       document.querySelectorAll('.n-drop.open').forEach(function (d) { d.classList.remove('open'); });
     });
+
+    /* Ressources : les 3 derniers articles, chargés à la première ouverture
+       du menu (derniers-articles.json, écrit au build par
+       scripts/build-derniers-articles.mjs). */
+    var derniersBox = document.querySelector('[data-derniers]');
+    var derniersAsked = false;
+    function loadDerniers() {
+      if (derniersAsked || !derniersBox) return;
+      derniersAsked = true;
+      fetch('/derniers-articles.json').then(function (r) {
+        if (!r.ok) throw new Error('http');
+        return r.json();
+      }).then(function (list) {
+        if (!Array.isArray(list) || !list.length) throw new Error('vide');
+        derniersBox.textContent = '';
+        list.slice(0, 3).forEach(function (art) {
+          if (!art || typeof art.u !== 'string' || art.u.indexOf('/blog/') !== 0) return;
+          var a = document.createElement('a');
+          a.href = art.u;
+          var d = document.createElement('small');
+          d.textContent = art.d || '';
+          var t = document.createElement('span');
+          t.textContent = art.t || '';
+          a.appendChild(d); a.appendChild(t);
+          derniersBox.appendChild(a);
+        });
+      }).catch(function () {
+        derniersBox.innerHTML = '<p>Conseils, stratégies et actus pour les hôtes, un article tous les 2 jours.</p>';
+      });
+    }
+    var resDrop = document.querySelector('.n-drop-res');
+    if (resDrop) {
+      ['mouseenter', 'focusin', 'touchstart', 'click'].forEach(function (ev) {
+        resDrop.addEventListener(ev, loadDerniers, { passive: true });
+      });
+    }
 
     /* Échap */
     document.addEventListener('keydown', function (e) {
