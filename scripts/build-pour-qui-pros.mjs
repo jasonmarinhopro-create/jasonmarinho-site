@@ -403,6 +403,7 @@ ${ld.map(o => `<script type="application/ld+json">${JSON.stringify(o)}</script>`
         <h2>Sur la page <em>de ta ville</em></h2>
         <p>${VILLES} villes ont leur page « ${isM ? 'Équipe de ménage LCD à…' : 'Photographe LCD à…'} » : réglementation locale, taxe de séjour, ${isM ? 'rythme des ménages' : 'tarifs constatés, checklist des photos'}, questions à poser. Elles sont faites pour Google, et les ${cfg.metierPl} de la ville y sont présentés.</p>
         <a class="more" href="${cfg.villeEx}">Voir un exemple de page de ville <i class="ph-bold ph-arrow-right"></i></a>
+        <a class="more" href="/chiffres#villes" style="margin-left:18px">Les pages de ville dans Google, en chiffres réels <i class="ph-bold ph-arrow-right"></i></a>
       </div>
       <div>${shot(ville.src, cfg.alts.ville, ville.w, ville.h)}</div>
     </div>
@@ -429,7 +430,7 @@ ${ld.map(o => `<script type="application/ld+json">${JSON.stringify(o)}</script>`
       <h2>Tu vois ce que ta fiche <em>te rapporte</em></h2>
       <p>Pas de promesse dans le vide : ton espace te montre jour par jour qui voit ta fiche, d’où viennent ces visiteurs, sur quelles recherches Google tu apparais et ce que t’envoie la page de ta ville. Un bilan arrive par e-mail le 1er de chaque mois.</p>
     </div>
-    <div class="wide">${shot(stats.src, cfg.alts.stats, stats.w, stats.h)}<p class="cap" style="text-align:center">L’écran « Mes statistiques » de ton espace, avec des chiffres fictifs.</p></div>
+    <div class="wide">${shot(stats.src, cfg.alts.stats, stats.w, stats.h)}<p class="cap" style="text-align:center">L’écran « Mes statistiques » de ton espace, avec des chiffres fictifs. Les vrais chiffres du site : <a href="/chiffres" style="color:var(--g);font-weight:600">la visibilité en chiffres</a>.</p></div>
   </div>
 </section>
 

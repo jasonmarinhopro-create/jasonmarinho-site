@@ -370,6 +370,7 @@ ${step(4, cfg.key === 'menage' ? 'Ton équipe en quelques mots' : 'Toi en quelqu
       <div class="links">
         <a href="${cfg.exemple}">Un exemple de fiche <i class="ph-bold ph-arrow-right"></i></a>
         <a href="${cfg.stats}">Un exemple de statistiques <i class="ph-bold ph-arrow-right"></i></a>
+        <a href="/chiffres">La visibilité réelle du site <i class="ph-bold ph-arrow-right"></i></a>
         <a href="${cfg.devenir}">Tout sur l’annuaire <i class="ph-bold ph-arrow-right"></i></a>
       </div>
     </div>

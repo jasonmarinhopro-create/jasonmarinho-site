@@ -476,6 +476,7 @@
             + '<a href="/devenir-photographe-lcd"><i class="ph ph-camera"></i>Devenir photographe</a>'
             + '<a href="/devenir-prestataire-menage-lcd"><i class="ph ph-sparkle"></i>Devenir équipe de ménage</a>'
             + '<a href="/tarifs#photographes"><i class="ph ph-tag"></i>Tarifs des fiches</a>'
+            + '<a href="/chiffres"><i class="ph ph-chart-line-up"></i>La visibilité en chiffres</a>'
           + '</div>'
         + '</div>'
       + '</li>'
@@ -645,6 +646,7 @@
         + '<a href="/devenir-photographe-lcd"><i class="ph ph-camera"></i>Devenir photographe</a>'
         + '<a href="/devenir-prestataire-menage-lcd"><i class="ph ph-sparkle"></i>Devenir équipe de ménage</a>'
         + '<a href="/tarifs#photographes"><i class="ph ph-tag"></i>Tarifs des fiches</a>'
+        + '<a href="/chiffres"><i class="ph ph-chart-line-up"></i>La visibilité en chiffres</a>'
       + '</div>'
     + '</div>'
 

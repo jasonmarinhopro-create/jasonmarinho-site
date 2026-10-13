@@ -149,7 +149,7 @@ export function statsDemoHtml(metier, { cta = null } = {}) {
   <div class="sd-head">
     <span class="sd-lbl"><i class="ph-bold ph-eye"></i>Exemple · chiffres fictifs</span>
     <h2 class="sd-h2">Tes statistiques, <em>comme dans ton espace</em></h2>
-    <p class="sd-sub">Voici « Mes statistiques », l'écran que tu retrouves dans ton espace pro : qui voit ta fiche, d'où viennent ces visiteurs, sur quelles recherches Google tu apparais et ce que ça te rapporte en demandes. Exemple d'une fiche de ${tu} à ${d.ville} sur 30 jours.</p>
+    <p class="sd-sub">Voici « Mes statistiques », l'écran que tu retrouves dans ton espace pro : qui voit ta fiche, d'où viennent ces visiteurs, sur quelles recherches Google tu apparais et ce que ça te rapporte en demandes. Exemple d'une fiche de ${tu} à ${d.ville} sur 30 jours (chiffres fictifs). Les vrais chiffres du site sont publics : <a href="/chiffres" style="color:#004C3F;font-weight:600">la visibilité en chiffres</a>.</p>
   </div>
   <div class="sd-app">
     <div class="sd-hero">

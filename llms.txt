@@ -41,6 +41,7 @@ Jason Marinho est un expert en location courte durée (LCD) basé en France. Il 
 
 - [Annuaire des photographes LCD](https://jasonmarinho.com/annuaires/photographes): Photographes spécialisés location courte durée, vérifiés manuellement, contact direct sans commission
 - [Annuaire des équipes de ménage LCD](https://jasonmarinho.com/annuaires/menage): Équipes de ménage turnover spécialisées LCD, prestations et tarifs affichés, contact direct sans commission
+- [La visibilité du site en chiffres](https://jasonmarinho.com/chiffres): affichages et clics Google (Search Console, 28 jours), visiteurs sur 30 jours et recherches où le site sort en première page, mis à jour chaque jour
 - [Trouver un pro sans chercher](https://jasonmarinho.com/trouver-un-pro): L'hôte décrit son besoin (photographe ou ménage) une fois, la demande part aux 3 pros les plus proches de l'annuaire, gratuit et sans commission
 - [Devenir photographe LCD](https://jasonmarinho.com/devenir-photographe-lcd): Rejoindre l'annuaire en tant que photographe spécialisé location courte durée
 - [Devenir prestataire ménage LCD](https://jasonmarinho.com/devenir-prestataire-menage-lcd): Rejoindre l'annuaire en tant qu'équipe de ménage spécialisée location courte durée
