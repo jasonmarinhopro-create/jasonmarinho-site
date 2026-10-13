@@ -223,7 +223,8 @@
       '.n-mega a.n-svc3-cta i{color:var(--gd);font-size:12px;width:auto}',
 
       /* Tarifs (façon Shine) : une carte visuelle par offre + offres spéciales */
-      '.n-mega-tar{gap:16px;padding:22px;align-items:stretch}',
+      '.n-mega-tar{flex-direction:column;gap:14px;padding:22px}',
+      '.n-tar-top{display:flex;gap:16px;align-items:stretch}',
       '.n-mega a.n-tar-card{flex:0 0 190px;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;gap:14px;min-height:236px;padding:16px;border-radius:12px;white-space:normal;position:relative;overflow:hidden;transition:transform .2s}',
       '.n-mega a.n-tar-card:hover{transform:translateY(-2px)}',
       '.n-mega a.n-tar-hote,.n-mega a.n-tar-hote:hover{background:linear-gradient(160deg,#FFE9A8 0%,var(--y) 100%);color:var(--gd)}',
@@ -233,16 +234,28 @@
       '.n-tar-row{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:500;padding:7px 9px;border-radius:8px;background:rgba(255,255,255,.75);color:var(--gd)}',
       '.n-tar-row-dk{background:rgba(255,255,255,.1);color:#fff}',
       '.n-mega a.n-tar-card .n-tar-row i{font-size:13px;width:auto;color:inherit;opacity:.8}',
-      '.n-tar-row b{margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;background:rgba(0,51,41,.1)}',
+      '.n-tar-row b{margin-left:auto;font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;background:rgba(0,51,41,.1);white-space:nowrap}',
+      '.n-tar-row{white-space:nowrap}',
       '.n-tar-row-dk b{background:rgba(255,213,107,.18);color:var(--y)}',
       '.n-tar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}',
       '.n-mega a.n-tar-card .n-tar-grid i{display:block;width:auto;aspect-ratio:1;border-radius:5px;background:linear-gradient(135deg,rgba(255,213,107,.35),rgba(255,255,255,.08))}',
-      '.n-mega a.n-tar-card .n-tar-grid i:nth-child(2n){background:linear-gradient(135deg,rgba(147,197,253,.3),rgba(255,255,255,.06))}',
+      '.n-mega a.n-tar-card .n-tar-grid i{background:linear-gradient(135deg,#4d7a5a,#2d6466)}',
+      '.n-mega a.n-tar-card .n-tar-grid i:nth-child(2n){background:linear-gradient(135deg,#2d6466,#55785a)}',
       '.n-tar-foot{display:block}',
       '.n-tar-t{font-family:\'Fraunces\',serif;font-size:18px;font-weight:500;line-height:1.2;display:block}',
       '.n-tar-s{font-size:12px;line-height:1.4;opacity:.72;display:block;margin-top:3px}',
       '.n-tar-side{display:flex;flex-direction:column;gap:1px;min-width:220px;padding-left:6px}',
-      '@media(max-width:1180px){.n-mega a.n-tar-card{flex-basis:160px}.n-tar-side{min-width:190px}}',
+      '.n-tar-side .n-col-title{margin-bottom:4px;padding-bottom:6px}',
+      '.n-tar-side .n-tar-t2{margin-top:10px}',
+      '.n-mega .n-tar-side a{padding:6px 9px}',
+      '.n-mega a.n-tar-band{align-items:center;gap:12px;padding:12px 14px;border-radius:11px;background:rgba(255,213,107,.07);border:1px solid rgba(255,213,107,.2);white-space:normal}',
+      '.n-mega a.n-tar-band:hover{background:rgba(255,213,107,.12)}',
+      '.n-mega a.n-tar-band i{color:var(--y);font-size:18px;width:auto}',
+      '.n-tar-band b{display:block;color:var(--y);font-weight:600;font-size:14px}',
+      '.n-tar-band small{display:block;font-size:12px;color:rgba(255,255,255,.55)}',
+      '.n-tar-go{margin-left:auto;display:flex;align-items:center;gap:5px;color:var(--y);font-size:13px;white-space:nowrap}',
+      '.n-mega a.n-tar-band .n-tar-go i{font-size:12px}',
+      '@media(max-width:1180px){.n-mega a.n-tar-card{flex-basis:168px}.n-tar-side{min-width:186px}.n-tar-row{font-size:11px;padding:6px 7px;gap:5px}.n-tar-row b{padding:2px 5px}}',
 
       '.n-tag-free{display:inline-flex;align-items:center;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:rgba(99,214,131,.18);color:#7AE89A;border:1px solid rgba(99,214,131,.30);margin-left:auto;flex-shrink:0}',
       '.n-mega a.n-sub-link{color:rgba(255,213,107,.7);font-size:12.5px;margin-top:4px;border-top:1px dashed rgba(255,255,255,.06);padding-top:10px}',
@@ -343,6 +356,20 @@
       '.mob-vt{font-family:\'Fraunces\',serif;font-size:16.5px;font-weight:500;line-height:1.2}',
       '.mob-vs{display:flex;align-items:center;gap:5px;font-size:12px;opacity:.72}',
       '.mob-menu a.mob-vc .mob-vs i{font-size:11px;width:auto;color:inherit}',
+
+      /* Offres du menu Tarifs (mobile) */
+      '.mob-menu a.mob-offer{gap:12px;padding:12px;border-radius:12px;margin-top:8px;border-bottom:none}',
+      '.mob-menu a.mob-offer-hote{background:linear-gradient(160deg,#FFE9A8,#FFD56B);color:var(--gd)}',
+      '.mob-menu a.mob-offer-photo{background:linear-gradient(160deg,#002a1f,#00463a);border:1px solid rgba(255,213,107,.18);color:#fff}',
+      '.mob-menu a.mob-offer-menage{background:linear-gradient(160deg,#3d4a22,#56622c);color:#fff}',
+      '.mob-offer-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,213,107,.12);color:var(--y)}',
+      '.mob-offer-hote .mob-offer-ic{background:rgba(0,51,41,.1);color:var(--gd)}',
+      '.mob-menu a.mob-offer .mob-offer-ic i{font-size:17px;width:auto;color:inherit}',
+      '.mob-offer-t{flex:1;min-width:0}',
+      '.mob-offer-t b{display:block;font-size:15px;font-weight:600}',
+      '.mob-offer-t small{display:block;font-size:12px;opacity:.78}',
+      '.mob-menu a.mob-offer i.mob-offer-go{margin-left:auto;font-size:15px;width:auto;color:inherit;opacity:.8}',
+      '@media(min-width:560px) and (max-width:960px){.mob-acc-body .mob-offer{grid-column:1 / -1}}',
 
       /* Boutons du bas, toujours visibles */
       '.mob-ctas{display:flex;gap:8px;margin-top:auto;position:sticky;bottom:0;background:var(--gd);padding:14px 0 calc(14px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.07);z-index:2}',
@@ -508,41 +535,45 @@
         + '</div>'
       + '</li>'
 
-      /* ── Tarifs : une carte par offre (3 publics différents), offres spéciales à droite ── */
-      + '<li class="n-drop n-drop-wide">'
+      /* ── Tarifs : une carte par offre, colonne Offres / Aide, places Fondateur en direct (13/10/2026) ── */
+      + '<li class="n-drop n-drop-wide n-drop-tar">'
         + '<button class="n-btn" aria-haspopup="true" aria-expanded="false">Tarifs ' + CARET + '</button>'
         + '<div class="n-mega n-mega-tar">'
+          + '<div class="n-tar-top">'
           + '<a href="/tarifs#hote" class="n-tar-card n-tar-hote">'
             + '<span class="n-tar-vis">'
               + '<span class="n-tar-row"><i class="ph-bold ph-file-text"></i>Contrat<b>Signé</b></span>'
               + '<span class="n-tar-row"><i class="ph-bold ph-sparkle"></i>Ménage<b>Planifié</b></span>'
-              + '<span class="n-tar-row"><i class="ph-bold ph-lock-key"></i>Caution<b>Bloquée</b></span>'
+              + '<span class="n-tar-row"><i class="ph-bold ph-identification-card"></i>Fiche police<b>Prête</b></span>'
             + '</span>'
-            + '<span class="n-tar-foot"><span class="n-tar-t">Plateforme hôte</span><span class="n-tar-s">Gratuit, puis Standard à l\'année</span></span>'
+            + '<span class="n-tar-foot"><span class="n-tar-t">Plateforme hôte</span><span class="n-tar-s">Gratuit pour commencer, Standard à l\'année</span></span>'
           + '</a>'
           + '<a href="/tarifs#photographes" class="n-tar-card n-tar-photo">'
             + '<span class="n-tar-vis">'
               + '<span class="n-tar-grid"><i></i><i></i><i></i><i></i><i></i><i></i></span>'
-              + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-camera"></i>Portfolio<b>Lien direct</b></span>'
+              + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-link"></i>Ton site<b>Dofollow</b></span>'
             + '</span>'
-            + '<span class="n-tar-foot"><span class="n-tar-t">Photographes LCD</span><span class="n-tar-s">Ta fiche dans l\'annuaire</span></span>'
+            + '<span class="n-tar-foot"><span class="n-tar-t">Photographes</span><span class="n-tar-s">Ta fiche à l\'année, sans commission</span></span>'
           + '</a>'
           + '<a href="/tarifs#menage" class="n-tar-card n-tar-menage">'
             + '<span class="n-tar-vis">'
               + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-check-circle"></i>Chambres<b>Fait</b></span>'
               + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-check-circle"></i>Linge<b>Fait</b></span>'
-              + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-camera"></i>Photos<b>Envoyées</b></span>'
+              + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-calendar-check"></i>Planning<b>À jour</b></span>'
             + '</span>'
-            + '<span class="n-tar-foot"><span class="n-tar-t">Équipes ménage</span><span class="n-tar-s">Ta fiche dans l\'annuaire</span></span>'
+            + '<span class="n-tar-foot"><span class="n-tar-t">Équipes de ménage</span><span class="n-tar-s">Ta fiche à l\'année, sans commission</span></span>'
           + '</a>'
           + '<div class="n-tar-side">'
-          + '<div class="n-col-title">Offres & aide</div>'
-          + '<a href="/tarifs#hote"><i class="ph ph-seal-check"></i>Membre Fondateur, prix à vie</a>'
-          + '<a href="/pour-qui/membres-driing"><i class="ph ph-lightning"></i>Membres Driing : tout inclus</a>'
-          + '<a href="/tarifs#compare"><i class="ph ph-table"></i>Comparer les plans</a>'
-          + '<a href="/tarifs#garantie"><i class="ph ph-arrow-counter-clockwise"></i>Remboursé 30 jours</a>'
-          + '<a href="/tarifs#faq"><i class="ph ph-question"></i>Questions fréquentes</a>'
+            + '<div class="n-col-title">Offres</div>'
+            + '<a href="/tarifs#hote"><i class="ph ph-seal-check"></i>Membre Fondateur, prix à vie</a>'
+            + '<a href="/pour-qui/membres-driing"><i class="ph ph-lightning"></i>Membres Driing : tout inclus</a>'
+            + '<div class="n-col-title n-tar-t2">Aide</div>'
+            + '<a href="/tarifs#compare"><i class="ph ph-table"></i>Comparer les plans</a>'
+            + '<a href="/tarifs#garantie"><i class="ph ph-arrow-counter-clockwise"></i>Remboursé 30 jours</a>'
+            + '<a href="/tarifs#faq"><i class="ph ph-question"></i>Questions fréquentes</a>'
           + '</div>'
+          + '</div>'
+          + '<a href="/tarifs" class="n-tar-band"><i class="ph ph-seal-check"></i><span><b>Places Fondateur : prix bloqué à vie</b><small data-tar-places>Pour les premiers inscrits de chaque offre</small></span><span class="n-tar-go">Voir les offres <i class="ph-bold ph-arrow-right"></i></span></a>'
         + '</div>'
       + '</li>'
 
@@ -673,15 +704,19 @@
 
     + '<div class="mob-acc" id="acc-tar">'
       + accBtn('ph-tag', 'Tarifs', 'Gratuit pour commencer, sans carte')
-      + '<div class="mob-acc-body">'
-        + '<a href="/tarifs#hote"><i class="ph ph-house-line"></i>Plateforme hôte</a>'
-        + '<a href="/tarifs#photographes"><i class="ph ph-camera"></i>Photographes LCD</a>'
-        + '<a href="/tarifs#menage"><i class="ph ph-sparkle"></i>Équipes ménage</a>'
+      + '<div class="mob-acc-body mob-wide">'
+        + '<a href="/tarifs#hote" class="mob-offer mob-offer-hote"><span class="mob-offer-ic"><i class="ph-bold ph-house-line"></i></span><span class="mob-offer-t"><b>Plateforme hôte</b><small>Gratuit, puis Standard à l\'année</small></span><i class="ph-bold ph-arrow-right mob-offer-go"></i></a>'
+        + '<a href="/tarifs#photographes" class="mob-offer mob-offer-photo"><span class="mob-offer-ic"><i class="ph-bold ph-camera"></i></span><span class="mob-offer-t"><b>Photographes</b><small>Ta fiche à l\'année, sans commission</small></span><i class="ph-bold ph-arrow-right mob-offer-go"></i></a>'
+        + '<a href="/tarifs#menage" class="mob-offer mob-offer-menage"><span class="mob-offer-ic"><i class="ph-bold ph-sparkle"></i></span><span class="mob-offer-t"><b>Équipes de ménage</b><small>Ta fiche et le planning de tes clients</small></span><i class="ph-bold ph-arrow-right mob-offer-go"></i></a>'
+        + '<span class="mob-stitle">Offres & aide</span>'
+        + '<a href="/tarifs#hote"><i class="ph ph-seal-check"></i>Membre Fondateur, prix à vie</a>'
         + '<a href="/pour-qui/membres-driing"><i class="ph ph-lightning"></i>Membres Driing : tout inclus</a>'
         + '<a href="/tarifs#compare"><i class="ph ph-table"></i>Comparer les plans</a>'
+        + '<a href="/tarifs#garantie"><i class="ph ph-arrow-counter-clockwise"></i>Remboursé 30 jours</a>'
         + '<a href="/tarifs#faq"><i class="ph ph-question"></i>Questions fréquentes</a>'
       + '</div>'
     + '</div>'
+
 
     + '<div class="mob-ctas">'
       + '<a href="https://app.jasonmarinho.com/ouverture" class="mc-o"><i class="ph ph-user"></i> Mon espace</a>'
@@ -835,6 +870,33 @@
     if (resDrop) {
       ['mouseenter', 'focusin', 'touchstart', 'click'].forEach(function (ev) {
         resDrop.addEventListener(ev, loadDerniers, { passive: true });
+      });
+    }
+
+    /* Tarifs : places Fondateur restantes, lues à la première ouverture du menu
+       (/api/founder-seats de l'app pour les hôtes, /api/annuaire-places pour
+       les pros, en cache 5 min côté serveur). */
+    var tarPlaces = document.querySelector('[data-tar-places]');
+    var tarAsked = false;
+    function loadTarPlaces() {
+      if (tarAsked || !tarPlaces) return;
+      tarAsked = true;
+      var get = function (u) { return fetch(u, { headers: { Accept: 'application/json' } }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); };
+      Promise.all([get('https://app.jasonmarinho.com/api/founder-seats'), get('/api/annuaire-places')]).then(function (res) {
+        var h = res[0] && typeof res[0].remaining === 'number' ? res[0].remaining : null;
+        var p = res[1] && typeof res[1].photographers === 'number' ? res[1].photographers : null;
+        var c = res[1] && typeof res[1].cleaners === 'number' ? res[1].cleaners : null;
+        var parts = [];
+        if (h) parts.push(h + ' place' + (h > 1 ? 's' : '') + ' hôtes');
+        if (p) parts.push(p + ' photographe' + (p > 1 ? 's' : ''));
+        if (c) parts.push(c + ' équipe' + (c > 1 ? 's' : '') + ' de ménage');
+        if (parts.length) tarPlaces.textContent = 'Encore ' + parts.join(' · ');
+      });
+    }
+    var tarDrop = document.querySelector('.n-drop-tar');
+    if (tarDrop) {
+      ['mouseenter', 'focusin', 'touchstart', 'click'].forEach(function (ev) {
+        tarDrop.addEventListener(ev, loadTarPlaces, { passive: true });
       });
     }
 
