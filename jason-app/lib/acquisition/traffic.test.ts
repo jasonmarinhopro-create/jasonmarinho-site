@@ -11,7 +11,8 @@ const map = new Map(links.map(l => [l.code, l]))
 describe('canaux', () => {
   it('classe visites et inscriptions', () => {
     expect(visitChannel(v({ utm_campaign: 'groupe-k3f9', utm_source: 'facebook' }), map)).toBe('facebook')
-    expect(visitChannel(v({ utm_campaign: 'insta-ab12', utm_source: 'instagram' }), map)).toBe('liens')
+    expect(visitChannel(v({ utm_campaign: 'insta-ab12', utm_source: 'instagram' }), map)).toBe('instagram')
+    expect(visitChannel(v({ referrer: 'https://l.instagram.com/' }), map)).toBe('instagram')
     expect(visitChannel(v({ referrer: 'https://www.google.fr/' }), map)).toBe('google')
     expect(visitChannel(v({ referrer: 'https://chatgpt.com/' }), map)).toBe('ia')
     expect(visitChannel(v({ utm_source: 'prospection', utm_medium: 'email' }), map)).toBe('email')

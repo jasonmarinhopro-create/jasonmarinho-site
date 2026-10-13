@@ -19,31 +19,35 @@ export interface TrafficLink { code: string; label: string; channel: string }
 export interface TrafficClick { code: string; created_at: string }
 export interface GscDay { date: string; clicks: number; impressions: number; position: number }
 
-export type ChannelKey = 'facebook' | 'google' | 'ia' | 'liens' | 'email' | 'autres' | 'direct' | 'sans'
+export type ChannelKey = 'facebook' | 'instagram' | 'google' | 'ia' | 'liens' | 'email' | 'autres' | 'direct' | 'sans'
 
 export const CHANNEL_META: Record<ChannelKey, { label: string; hint: string }> = {
   facebook: { label: 'Facebook', hint: 'groupes, page, liens suivis postés sur Facebook' },
+  instagram: { label: 'Instagram', hint: 'bio, publications, messages privés, liens suivis postés sur Instagram' },
   google: { label: 'Google', hint: 'recherche naturelle' },
   ia: { label: 'IA', hint: 'ChatGPT, Perplexity, Gemini…' },
-  liens: { label: 'Liens suivis', hint: 'fiche Google, Instagram, LinkedIn, messages privés, signature, QR codes' },
+  liens: { label: 'Liens suivis', hint: 'fiche Google, LinkedIn, WhatsApp, signature, QR codes' },
   email: { label: 'E-mails', hint: 'prospection, newsletter' },
-  autres: { label: 'Autres sites et réseaux', hint: 'Instagram, LinkedIn, sites qui parlent de toi' },
+  autres: { label: 'Autres sites et réseaux', hint: 'LinkedIn, TikTok, sites qui parlent de toi' },
   direct: { label: 'Accès direct', hint: 'favoris, lien copié, applis qui masquent l\'origine' },
   sans: { label: 'Sans origine', hint: 'comptes créés avant le suivi' },
 }
-export const CHANNEL_ORDER: ChannelKey[] = ['facebook', 'google', 'ia', 'liens', 'email', 'autres', 'direct', 'sans']
+export const CHANNEL_ORDER: ChannelKey[] = ['facebook', 'instagram', 'google', 'ia', 'liens', 'email', 'autres', 'direct', 'sans']
 
 const KIND_TO_CHANNEL: Record<SourceKind, ChannelKey> = {
   facebook: 'facebook', google: 'google', ia: 'ia', 'e-mail': 'email',
-  instagram: 'autres', 'autre-reseau': 'autres', 'autre-site': 'autres', 'autre-moteur': 'autres',
+  instagram: 'instagram', 'autre-reseau': 'autres', 'autre-site': 'autres', 'autre-moteur': 'autres',
   direct: 'direct', interne: 'direct',
 }
 
 type LinkMap = Map<string, TrafficLink>
-/** Facebook à part ; e-mails (prospection, newsletter) avec les e-mails ; le reste (fiche Google, Instagram, QR code…) en « Liens suivis » */
+/** Canaux qui comptent les clics de nos liens suivis */
+const LINK_CHANNELS = new Set<ChannelKey>(['facebook', 'instagram', 'liens', 'email'])
+/** Facebook et Instagram à part ; e-mails (prospection, newsletter) avec les e-mails ; le reste (fiche Google, LinkedIn, QR code…) en « Liens suivis » */
 const linkChannelKey = (l: TrafficLink): ChannelKey => {
   const src = channelOf(l.channel).source
   if (src === 'facebook') return 'facebook'
+  if (src === 'instagram') return 'instagram'
   if (src === 'prospection' || src === 'newsletter') return 'email'
   return 'liens'
 }
@@ -147,7 +151,7 @@ export function buildChannelCards(input: {
     const c = visitChannel(v, links)
     bump(visitors as Map<string, number>, c)
     if (!top.has(c)) top.set(c, new Map())
-    if (c !== 'direct' && c !== 'google' && c !== 'facebook') bump(top.get(c)!, sourceName(v, links))
+    if (c !== 'direct' && c !== 'google' && c !== 'facebook' && c !== 'instagram') bump(top.get(c)!, sourceName(v, links))
   }
   const signups = new Map<ChannelKey, number>()
   const clients = new Map<ChannelKey, number>()
@@ -182,7 +186,7 @@ export function buildChannelCards(input: {
       clients: clients.get(key) ?? 0,
       clicks: null, clicksLabel: null, top: topCounts(top.get(key) ?? new Map(), 3), note: null,
     }
-    if (key === 'facebook' || key === 'liens' || key === 'email') {
+    if (LINK_CHANNELS.has(key)) {
       card.clicks = linkClicks.get(key) ?? 0
       card.clicksLabel = 'clics sur tes liens'
       card.top = topCounts(byLink.get(key) ?? new Map(), 3)
@@ -341,7 +345,7 @@ export function buildSnapshot(input: {
       prevVisitors: sum(prev, c => c.visitors ?? 0),
       signups: sum(cards, c => c.signups),
       prevSignups: sum(prev, c => c.signups),
-      linkClicks: sum(cards, c => (c.key === 'facebook' || c.key === 'liens' || c.key === 'email' ? c.clicks ?? 0 : 0)),
+      linkClicks: sum(cards, c => (LINK_CHANNELS.has(c.key) ? c.clicks ?? 0 : 0)),
       google: g ? { clicks: g.clicks, impressions: g.impressions, label: googleDays === 1 ? `le ${dateFr(g.to)}` : `du ${dateFr(g.from)} au ${dateFr(g.to)}` } : null,
       topChannels: cards.filter(c => (c.visitors ?? 0) > 0).sort((a, b) => (b.visitors ?? 0) - (a.visitors ?? 0)).slice(0, 4).map(c => ({ label: c.label, visitors: c.visitors ?? 0 })),
     }

@@ -28,7 +28,7 @@ const KIND_COLOR: Partial<Record<AcqKind, string>> = {
 }
 const colorOf = (k: AcqKind) => KIND_COLOR[k] ?? 'var(--text-3)'
 const CHANNEL_COLOR: Record<ChannelKey, string> = {
-  facebook: AMBER, google: 'var(--accent-text)', ia: PINK, liens: 'color-mix(in srgb, var(--accent-text) 55%, #FFD56B)',
+  facebook: AMBER, instagram: 'color-mix(in srgb, #F472B6 70%, #FFD56B)', google: 'var(--accent-text)', ia: PINK, liens: 'color-mix(in srgb, var(--accent-text) 55%, #FFD56B)',
   email: BROWN, autres: 'color-mix(in srgb, var(--accent-text) 45%, transparent)', direct: 'var(--text-3)', sans: 'color-mix(in srgb, var(--text-3) 50%, transparent)',
 }
 const PERIODS = [['7j', '7 jours'], ['30j', '30 jours'], ['90j', '90 jours'], ['tout', 'Depuis le début']] as const
@@ -458,7 +458,8 @@ const s: Record<string, React.CSSProperties> = {
   cols3: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' },
   col: { display: 'flex', flexDirection: 'column', gap: 10, padding: '16px 20px', borderRight: '1px solid var(--border)', borderTop: '1px solid var(--border)', marginTop: -1, minWidth: 0 },
   colTitle: { fontSize: 11.5, fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', color: 'var(--text-3)' },
-  channelGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: 12 },
+  // 9 canaux : 3 par ligne sur grand écran (minimum 420 px), pas de carte seule en bas
+  channelGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 420px), 1fr))', gap: 12 },
   channel: { display: 'flex', flexDirection: 'column', gap: 10, padding: '14px 16px', borderRadius: 14, border: '1px solid var(--border)', background: 'var(--surface)', minWidth: 0 },
   metrics: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 8 },
   channelFoot: { fontSize: 12.5, color: 'var(--text-3)', lineHeight: 1.5, overflowWrap: 'anywhere' },
