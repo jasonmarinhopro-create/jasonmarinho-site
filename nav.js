@@ -115,31 +115,35 @@
       '.n-mega-svc .n-feat-cta{margin-top:auto;display:inline-flex;align-items:center;gap:6px;padding:9px 14px;background:rgba(255,213,107,.15);color:var(--y);font-weight:600;font-size:12.5px;border-radius:8px;text-decoration:none;align-self:flex-start;transition:background .2s,color .2s}',
       '@media(max-width:1180px){.n-mega-svc{min-width:auto;width:min(96vw,900px);flex-wrap:wrap}.n-mega-svc .n-feat{flex:1 1 100%;max-width:none;flex-direction:row;align-items:center;gap:14px}}',
 
-      /* Annuaire mega menu : 2 grandes cards côte à côte */
-      '.n-mega-ann{min-width:680px;padding:24px;gap:16px;display:flex}',
-      '.n-mega-ann .n-ann-card{flex:1;display:flex;flex-direction:column;gap:10px;background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%);color:#fff;border:1px solid rgba(255,213,107,.22);border-radius:14px;padding:22px 22px 20px;position:relative;overflow:hidden;white-space:normal!important;min-width:280px}',
-      '.n-mega-ann .n-ann-card::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 20%,rgba(255,213,107,.10),transparent 70%);pointer-events:none}',
-      '.n-mega-ann .n-ann-card>*{position:relative;z-index:1}',
-      '.n-mega-ann .n-ann-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--y);padding:3px 10px;border-radius:999px;background:rgba(255,213,107,.10);align-self:flex-start}',
-      '.n-mega-ann .n-ann-dot{width:5px;height:5px;border-radius:50%;background:var(--y);box-shadow:0 0 7px rgba(255,213,107,.7)}',
-      '.n-mega-ann .n-ann-icon{width:40px;height:40px;border-radius:10px;background:rgba(255,213,107,.10);color:var(--y);display:flex;align-items:center;justify-content:center;font-size:20px;margin:4px 0 2px}',
-      '.n-mega-ann .n-ann-h{font-family:\'Fraunces\',serif;font-size:19px;line-height:1.25;font-weight:400;letter-spacing:-.01em;margin:0;color:#fff;white-space:normal}',
-      '.n-mega-ann .n-ann-h em{color:var(--y);font-style:italic;font-weight:300}',
-      '.n-mega-ann .n-ann-p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.55;margin:0;white-space:normal}',
-      '.n-mega-ann .n-ann-actions{display:flex;flex-direction:column;gap:6px;margin-top:8px}',
-      '.n-mega-ann .n-ann-cta{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:9px;text-decoration:none!important;font-weight:600;font-size:13px;transition:all .2s;white-space:nowrap;justify-content:center}',
-      '.n-mega-ann .n-ann-cta i{font-size:13px;flex-shrink:0}',
-      '.n-mega-ann .n-ann-cta-primary,.n-mega-ann .n-ann-cta-primary.active,.n-mega-ann .n-ann-cta-primary:hover{background:var(--y);color:var(--gd)}',
-      '.n-mega-ann .n-ann-cta-primary i,.n-mega-ann .n-ann-cta-primary.active i,.n-mega-ann .n-ann-cta-primary:hover i{color:var(--gd)}',
-      '.n-mega-ann .n-ann-cta-primary:hover{background:#ffe08f;transform:translateY(-1px)}',
-      '.n-mega-ann .n-ann-cta-secondary,.n-mega-ann .n-ann-cta-secondary.active{background:transparent;color:rgba(255,213,107,.75);border:1px solid rgba(255,213,107,.20)}',
-      '.n-mega-ann .n-ann-cta-secondary:hover{color:var(--y);border-color:rgba(255,213,107,.4);background:rgba(255,213,107,.05)}',
-      '.n-mega-ann .n-ann-cta-secondary i,.n-mega-ann .n-ann-cta-secondary:hover i{color:inherit}',
-      '.n-mega-ann{flex-wrap:wrap}',
-      '.n-mega a.n-ann-foot{flex:1 1 100%;justify-content:center;color:rgba(255,213,107,.75);font-size:12.5px;padding:4px 0 0;white-space:normal}',
-      '.n-mega a.n-ann-foot:hover{background:transparent;color:var(--y)}',
-      '.n-mega a.n-ann-foot i{font-size:11px;color:inherit;width:auto}',
-      '@media(max-width:780px){.n-mega-ann{min-width:auto;width:min(94vw,520px);flex-direction:column}.n-mega-ann .n-ann-card{min-width:auto}}',
+      /* Annuaire (proposition C validée par Jason le 13/10/2026) : 2 cartes visuelles
+         comme Tarifs / Ressources + colonne « Pour les hôtes / Pour les pros » */
+      '.n-mega-ann{gap:14px;padding:20px;align-items:stretch}',
+      '.n-mega a.n-ann-vc{flex:0 0 196px;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:4px;min-height:190px;padding:15px;border-radius:12px;white-space:normal;position:relative;overflow:hidden;color:#fff;transition:transform .2s,border-color .2s}',
+      '.n-mega a.n-ann-vc:hover{transform:translateY(-2px);color:#fff}',
+      '.n-mega a.n-ann-photo,.n-mega a.n-ann-photo:hover{background:linear-gradient(160deg,#002a1f 0%,#00463a 100%);border:1px solid rgba(255,213,107,.18)}',
+      '.n-mega a.n-ann-menage,.n-mega a.n-ann-menage:hover{background:linear-gradient(160deg,#3d4a22 0%,#56622c 100%);border:1px solid rgba(255,213,107,.18)}',
+      '.n-mega a.n-ann-vc:hover{border-color:rgba(255,213,107,.45)}',
+      '.n-ann-mos{position:absolute;top:14px;left:14px;right:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px}',
+      '.n-mega a.n-ann-vc .n-ann-mos i{display:block;width:auto;height:36px;border-radius:5px;background:linear-gradient(135deg,#4d7a5a,#2d6466)}',
+      '.n-mega a.n-ann-vc .n-ann-mos i:nth-child(2n){background:linear-gradient(135deg,#2d6466,#55785a)}',
+      '.n-ann-chk{position:absolute;top:14px;left:14px;right:14px;display:flex;flex-direction:column;gap:5px}',
+      '.n-ann-chk>span{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:500;padding:6px 8px;border-radius:7px;background:rgba(255,255,255,.09)}',
+      '.n-mega a.n-ann-vc .n-ann-chk i{font-size:13px;width:auto;color:inherit;opacity:.85}',
+      '.n-ann-chk b{margin-left:auto;font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:rgba(255,213,107,.8);color:#3d3a10}',
+      '.n-ann-vt{font-family:\'Fraunces\',serif;font-size:18px;font-weight:500;line-height:1.2;display:block}',
+      '.n-ann-vs{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,.68)}',
+      '.n-mega a.n-ann-vc .n-ann-vs i{font-size:11px;width:auto;color:inherit;transition:transform .18s}',
+      '.n-mega a.n-ann-vc:hover .n-ann-vs{color:var(--y)}',
+      '.n-mega a.n-ann-vc:hover .n-ann-vs i{transform:translateX(2px)}',
+      '.n-ann-side{display:flex;flex-direction:column;gap:1px;min-width:220px;padding-left:6px}',
+      '.n-ann-side .n-ann-t2{margin-top:10px}',
+      '.n-ann-side .n-col-title{margin-bottom:4px;padding-bottom:6px}',
+      '.n-mega .n-ann-side a{padding:6px 9px}',
+      '.n-mega a.n-ann-need{align-items:flex-start;color:var(--y);white-space:normal;background:rgba(255,213,107,.07);border:1px solid rgba(255,213,107,.18);padding:8px 10px!important;margin:2px 0}',
+      '.n-mega a.n-ann-need:hover{background:rgba(255,213,107,.12);color:var(--y)}',
+      '.n-mega a.n-ann-need i{color:var(--y);margin-top:2px}',
+      '.n-ann-need b{display:block;font-weight:600;font-size:13.5px}',
+      '.n-ann-need small{display:block;font-size:11.5px;color:rgba(255,255,255,.55);margin-top:1px}',
 
       /* Ressources mega menu : 2 cartes visuelles + colonne "Plus" (modèle Shine) */
       '.n-mega-res{min-width:720px;padding:22px;gap:14px;align-items:stretch}',
@@ -262,71 +266,82 @@
       '.hbg.open span:nth-child(2){opacity:0;transform:scaleX(0)}',
       '.hbg.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}',
 
-      /* Mobile menu, compact, animé, zéro scroll */
-      '.mob-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--gd);border-top:1px solid rgba(255,213,107,.08);padding:4px clamp(16px,5vw,32px) 28px;z-index:199;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;opacity:0;transform:translateY(-8px);transition:opacity .2s,transform .2s}',
+      /* Mobile menu (refonte 13/10/2026, Jason : en-têtes en petites capitales
+         peu lisibles, Annuaire trop gros) : rubriques avec icône + sous-titre,
+         un seul accordéon ouvert, Annuaire et Ressources en cartes compactes,
+         boutons du bas toujours visibles, page derrière bloquée. */
+      '.mob-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--gd);border-top:1px solid rgba(255,213,107,.08);padding:6px clamp(16px,5vw,32px) 0;z-index:199;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;opacity:0;transform:translateY(-8px);transition:opacity .2s,transform .2s}',
       '.mob-menu.open{opacity:1;transform:translateY(0)}',
-      '.mob-stitle{font-family:\'Fraunces\',serif;font-size:14px;font-weight:500;letter-spacing:-.01em;color:#fff;padding:22px 0 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,213,107,.10);margin-bottom:4px}',
-      '.mob-stitle::before{content:"";width:18px;height:1px;background:var(--y);flex-shrink:0;opacity:.55}',
-      '.mob-menu a{font-size:15px;color:rgba(255,255,255,.7);text-decoration:none;padding:11px 0;display:flex;align-items:center;gap:12px;transition:color .15s;border-bottom:1px solid rgba(255,255,255,.035)}',
+      '.mob-stitle{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,213,107,.6);padding:18px 0 6px;display:block}',
+      '.mob-menu a{font-size:15px;color:rgba(255,255,255,.78);text-decoration:none;padding:11px 0;display:flex;align-items:center;gap:12px;transition:color .15s;border-bottom:1px solid rgba(255,255,255,.04)}',
       '.mob-menu a:hover,.mob-menu a:active{color:#fff}',
-      '.mob-menu a i{font-size:16px;color:rgba(255,213,107,.5);flex-shrink:0;width:18px;text-align:center}',
-      '.mob-sep{height:1px;background:rgba(255,255,255,.05);margin:6px 0}',
-      '.mob-acc{}',
-      '.mob-acc-btn{width:100%;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.035);cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:16px 0 14px;color:rgba(255,213,107,.45);font:600 10px/1 \'Outfit\',sans-serif;letter-spacing:1.5px;text-transform:uppercase;transition:color .2s}',
-      '.mob-acc-btn:hover{color:rgba(255,213,107,.7)}',
-      '.mob-acc-arrow{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s;flex-shrink:0}',
-      '.mob-acc.open .mob-acc-arrow{transform:rotate(180deg)}',
-      '.mob-acc-body{max-height:0;overflow:hidden;transition:max-height .4s ease}',
-      '.mob-acc.open .mob-acc-body{max-height:2200px}',
+      '.mob-menu a i{font-size:17px;color:rgba(255,213,107,.6);flex-shrink:0;width:20px;text-align:center}',
+      '.mob-acc{border-bottom:1px solid rgba(255,255,255,.06)}',
+      '.mob-acc-btn{width:100%;background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:13px;padding:13px 0;color:#fff;font-family:\'Outfit\',sans-serif;text-align:left;-webkit-tap-highlight-color:transparent}',
+      '.mob-acc-ico{width:38px;height:38px;border-radius:10px;background:rgba(255,213,107,.09);color:var(--y);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:background .2s,color .2s}',
+      '.mob-acc-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}',
+      '.mob-acc-txt b{font-size:16px;font-weight:500;line-height:1.2;transition:color .2s}',
+      '.mob-acc-txt small{font-size:12.5px;color:rgba(255,255,255,.5);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
+      '.mob-acc.open .mob-acc-ico{background:var(--y);color:var(--gd)}',
+      '.mob-acc.open .mob-acc-txt b{color:var(--y)}',
+      '.mob-acc-arrow{width:12px;height:12px;fill:none;stroke:rgba(255,255,255,.45);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s;flex-shrink:0}',
+      '.mob-acc.open .mob-acc-arrow{transform:rotate(180deg);stroke:var(--y)}',
+      '.mob-acc-body{max-height:0;overflow:hidden;transition:max-height .35s ease;padding-left:51px}',
+      '.mob-acc.open .mob-acc-body{max-height:1600px;padding-bottom:14px}',
+      '.mob-acc-body.mob-wide{padding-left:0}',
+      '.mob-acc-body>a:last-child{border-bottom:none}',
 
       /* Tablette : grille 2 colonnes dans les accordéons pour densifier */
       '@media(min-width:560px) and (max-width:960px){',
-        '.mob-acc-body{display:grid;grid-template-columns:1fr 1fr;column-gap:28px;row-gap:0}',
-        '.mob-acc-body .mob-stitle{grid-column:1 / -1}',
-        '.mob-acc-body .mob-driing-card{grid-column:1 / -1}',
-        '.mob-acc-body .mob-driing{grid-column:1 / -1}',
-        '.mob-acc-body .mob-sublink{grid-column:1 / -1}',
-        '#acc-ann .mob-driing-card{grid-column:auto}',
+        '.mob-acc-body{display:grid;grid-template-columns:1fr 1fr;column-gap:28px;row-gap:0;align-content:start}',
+        '.mob-acc-body .mob-stitle,.mob-acc-body .mob-vgrid,.mob-acc-body .mob-driing,.mob-acc-body .mob-sublink{grid-column:1 / -1}',
       '}',
 
       /* Lien "Voir tout" discret */
-      '.mob-sublink{font-size:13px!important;color:rgba(255,213,107,.65)!important;padding:11px 0 14px!important;border-bottom:none!important;display:inline-flex!important;align-items:center;gap:6px;margin-bottom:4px}',
+      '.mob-sublink{font-size:13px!important;color:rgba(255,213,107,.75)!important;padding:10px 0 6px!important;border-bottom:none!important;display:inline-flex!important;align-items:center;gap:6px}',
       '.mob-sublink:hover{color:var(--y)!important}',
-      '.mob-sublink i{color:rgba(255,213,107,.5)!important;font-size:12px!important}',
+      '.mob-sublink i{color:rgba(255,213,107,.6)!important;font-size:12px!important;width:auto!important}',
 
-      /* Driing mobile, carte highlight (Pour qui) */
-      '.mob-driing{background:rgba(255,213,107,.06)!important;border:1px solid rgba(255,213,107,.18)!important;border-radius:10px!important;padding:13px 14px!important;margin-top:4px;border-bottom:none!important}',
-      '.mob-driing i{color:var(--y)!important;opacity:.85}',
-      '.mob-driing-body{display:flex;flex-direction:column;gap:1px}',
-      '.mob-driing-name{font-size:15px;font-weight:500;color:var(--y);line-height:1.3}',
-      '.mob-driing-sub{font-size:12px;color:rgba(255,213,107,.45)}',
+      /* Ligne mise en avant (Driing, Décrire mon besoin) */
+      '.mob-driing{background:rgba(255,213,107,.07)!important;border:1px solid rgba(255,213,107,.2)!important;border-radius:11px!important;padding:12px 14px!important;margin-top:8px;border-bottom:1px solid rgba(255,213,107,.2)!important}',
+      '.mob-driing i{color:var(--y)!important}',
+      '.mob-driing-body{display:flex;flex-direction:column;gap:1px;flex:1}',
+      '.mob-driing-name{font-size:15px;font-weight:600;color:var(--y);line-height:1.3}',
+      '.mob-driing-sub{font-size:12px;color:rgba(255,255,255,.55)}',
 
-      /* Driing card riche pour Services accordion (mobile + tablette) */
-      '.mob-driing-card{display:flex!important;flex-direction:column;gap:10px;background:linear-gradient(160deg,#001a11 0%,var(--gd) 60%,#00463a 100%)!important;border:1px solid rgba(255,213,107,.22)!important;border-radius:12px!important;padding:18px!important;margin:18px 0 4px!important;text-decoration:none!important;position:relative;overflow:hidden;border-bottom:none!important;align-items:flex-start!important}',
-      '.mob-driing-card::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 30%,rgba(255,213,107,.10),transparent 70%);pointer-events:none}',
-      '.mob-driing-card>*{position:relative;z-index:1}',
-      '.mob-driing-card .mdc-tag{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--y);background:rgba(255,213,107,.10);padding:3px 9px;border-radius:999px;width:fit-content}',
-      '.mob-driing-card .mdc-tag .mdc-dot{width:5px;height:5px;border-radius:50%;background:var(--y);box-shadow:0 0 7px rgba(255,213,107,.7)}',
-      '.mob-driing-card .mdc-h{font-family:\'Fraunces\',serif;font-size:18px;line-height:1.25;font-weight:400;color:#fff;letter-spacing:-.01em}',
-      '.mob-driing-card .mdc-h em{color:var(--y);font-style:italic;font-weight:300}',
-      '.mob-driing-card .mdc-p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.5}',
-      '.mob-driing-card .mdc-actions{display:flex;flex-direction:column;gap:6px;margin-top:6px;align-self:stretch}',
-      '#acc-ann .mob-driing-card{margin:12px 0 4px!important}',
-      '.mob-driing-card .mdc-cta{display:inline-flex;align-items:center;gap:7px;padding:10px 14px;border-radius:9px;text-decoration:none!important;font-weight:600;font-size:13px;justify-content:center;transition:all .2s;white-space:nowrap}',
-      '.mob-driing-card .mdc-cta i{font-size:13px;flex-shrink:0}',
-      '.mob-driing-card .mdc-cta-primary,.mob-driing-card .mdc-cta-primary.active,.mob-driing-card .mdc-cta-primary:hover{background:var(--y);color:var(--gd)}',
-      '.mob-driing-card .mdc-cta-primary i,.mob-driing-card .mdc-cta-primary.active i,.mob-driing-card .mdc-cta-primary:hover i{color:var(--gd)}',
-      '.mob-driing-card .mdc-cta-secondary,.mob-driing-card .mdc-cta-secondary.active{background:transparent;color:rgba(255,213,107,.75);border:1px solid rgba(255,213,107,.20)}',
-      '.mob-driing-card .mdc-cta-secondary i,.mob-driing-card .mdc-cta-secondary:hover i{color:inherit}',
+      /* Cartes visuelles compactes (Annuaire, Ressources) */
+      '.mob-vgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-top:4px}',
+      '.mob-menu a.mob-vc{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:2px;min-height:134px;padding:12px;border-radius:12px;border:1px solid rgba(255,213,107,.18);color:#fff}',
+      '.mob-menu a.mob-vc-photo{background:linear-gradient(160deg,#002a1f 0%,#00463a 100%)}',
+      '.mob-menu a.mob-vc-menage{background:linear-gradient(160deg,#3d4a22 0%,#56622c 100%)}',
+      '.mob-menu a.mob-vc-blog{background:linear-gradient(160deg,#FFD56B 0%,#ffe39a 100%);color:var(--gd);border-color:rgba(255,213,107,.6)}',
+      '.mob-menu a.mob-vc-part{background:linear-gradient(160deg,#001a11 0%,#00463a 100%)}',
+      '.mob-vc .n-ann-mos{top:12px;left:12px;right:12px;gap:4px}',
+      '.mob-menu a.mob-vc .n-ann-mos i{display:block;width:auto;height:26px;border-radius:5px;background:linear-gradient(135deg,#4d7a5a,#2d6466)}',
+      '.mob-menu a.mob-vc .n-ann-mos i:nth-child(2n){background:linear-gradient(135deg,#2d6466,#55785a)}',
+      '.mob-vc .n-ann-chk{top:12px;left:12px;right:12px;gap:4px}',
+      '.mob-vc .n-ann-chk>span{font-size:11px;padding:4px 7px;gap:5px}',
+      '.mob-menu a.mob-vc .n-ann-chk i{font-size:12px;width:auto;color:inherit}',
+      '.mob-vc .n-ann-chk b{font-size:9.5px;padding:1px 6px}',
+      '.mob-vc-ico{position:absolute;top:12px;left:12px;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center}',
+      '.mob-menu a.mob-vc .mob-vc-ico i{font-size:19px;width:auto;color:inherit}',
+      '.mob-vc-blog .mob-vc-ico{background:rgba(0,51,41,.1);color:var(--gd)}',
+      '.mob-vc-part .mob-vc-ico{background:rgba(255,213,107,.1);color:var(--y)}',
+      '.mob-vt{font-family:\'Fraunces\',serif;font-size:16.5px;font-weight:500;line-height:1.2}',
+      '.mob-vs{display:flex;align-items:center;gap:5px;font-size:12px;opacity:.72}',
+      '.mob-menu a.mob-vc .mob-vs i{font-size:11px;width:auto;color:inherit}',
 
-      /* CTAs mobile */
-      '.mob-ctas{display:flex;gap:8px;margin-top:auto;padding-top:20px;border-top:1px solid rgba(255,255,255,.06)}',
-      '.mob-ctas a{flex:1;justify-content:center;font-size:14px;font-weight:500;text-decoration:none;padding:13px 0;border-radius:9px;display:flex;align-items:center;gap:6px;transition:all .2s}',
-      '.mc-o{color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.18)}',
+      /* Boutons du bas, toujours visibles */
+      '.mob-ctas{display:flex;gap:8px;margin-top:auto;position:sticky;bottom:0;background:var(--gd);padding:14px 0 calc(14px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.07);z-index:2}',
+      '.mob-ctas a{flex:1;justify-content:center;font-size:14px;font-weight:500;text-decoration:none;padding:13px 0;border-radius:9px;display:flex;align-items:center;gap:6px;transition:all .2s;border-bottom:none}',
+      '.mc-o{color:rgba(255,255,255,.75)!important;border:1px solid rgba(255,255,255,.2)!important}',
       '.mc-o:hover{border-color:rgba(255,255,255,.35);color:#fff}',
       '.mc-c{color:var(--gd)!important;background:var(--y);font-weight:600!important}',
       '.mc-c:hover{background:#ffe08f}',
+      '.mob-ctas a i{width:auto!important}',
       '.mc-c i{color:var(--gd)!important}',
+      '.mc-o i{color:inherit!important}',
+      'html.mob-lock,html.mob-lock body{overflow:hidden}',
 
       /* Responsive */
       '@media(max-width:960px){.n-links,.n-right .nb-c,.n-right .nb-o{display:none}.hbg{display:flex}}'
@@ -337,6 +352,12 @@
   /* ── SVG CARET ── */
   var CARET = '<svg class="n-caret" viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>';
   var MOB_ARROW = '<svg class="mob-acc-arrow" viewBox="0 0 12 12" aria-hidden="true"><polyline points="2,4 6,8 10,4"/></svg>';
+  function accBtn(icon, title, sub) {
+    return '<button class="mob-acc-btn" aria-expanded="false">'
+      + '<span class="mob-acc-ico"><i class="ph ' + icon + '"></i></span>'
+      + '<span class="mob-acc-txt"><b>' + title + '</b><small>' + sub + '</small></span>'
+      + MOB_ARROW + '</button>';
+  }
 
   /* ── NAV HTML ── */
   var h = '<nav id="nav">'
@@ -416,28 +437,28 @@
       + '<li class="n-drop">'
         + '<button class="n-btn" aria-haspopup="true" aria-expanded="false">Annuaire ' + CARET + '</button>'
         + '<div class="n-mega n-mega-ann">'
-          + '<div class="n-ann-card">'
-            + '<span class="n-ann-tag"><span class="n-ann-dot"></span>Annuaire pro</span>'
-            + '<span class="n-ann-icon"><i class="ph-bold ph-camera"></i></span>'
-            + '<span class="n-ann-h">Photographes <em>LCD</em></span>'
-            + '<span class="n-ann-p">Pros qui maîtrisent l\'angle Airbnb, portfolio visible sur leur fiche.</span>'
-            + '<span class="n-ann-actions">'
-              + '<a href="/annuaires/photographes" class="n-ann-cta n-ann-cta-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
-              + '<a href="/devenir-photographe-lcd" class="n-ann-cta n-ann-cta-secondary"><i class="ph-bold ph-user-plus"></i>Devenir photographe LCD</a>'
+          + '<a href="/annuaires/photographes" class="n-ann-vc n-ann-photo">'
+            + '<span class="n-ann-mos" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>'
+            + '<span class="n-ann-vt">Photographes</span>'
+            + '<span class="n-ann-vs">Voir l\'annuaire <i class="ph-bold ph-arrow-right"></i></span>'
+          + '</a>'
+          + '<a href="/annuaires/menage" class="n-ann-vc n-ann-menage">'
+            + '<span class="n-ann-chk" aria-hidden="true">'
+              + '<span><i class="ph-bold ph-check-circle"></i>Chambres<b>Fait</b></span>'
+              + '<span><i class="ph-bold ph-check-circle"></i>Linge<b>Fait</b></span>'
+              + '<span><i class="ph-bold ph-camera"></i>Photos<b>Envoyées</b></span>'
             + '</span>'
+            + '<span class="n-ann-vt">Équipes de ménage</span>'
+            + '<span class="n-ann-vs">Voir l\'annuaire <i class="ph-bold ph-arrow-right"></i></span>'
+          + '</a>'
+          + '<div class="n-ann-side">'
+            + '<div class="n-col-title">Pour les hôtes</div>'
+            + '<a href="/trouver-un-pro" class="n-ann-need"><i class="ph-bold ph-paper-plane-tilt"></i><span><b>Décrire mon besoin</b><small>Les pros viennent à toi</small></span></a>'
+            + '<div class="n-col-title n-ann-t2">Pour les pros</div>'
+            + '<a href="/devenir-photographe-lcd"><i class="ph ph-camera"></i>Devenir photographe</a>'
+            + '<a href="/devenir-prestataire-menage-lcd"><i class="ph ph-sparkle"></i>Devenir équipe de ménage</a>'
+            + '<a href="/tarifs#photographes"><i class="ph ph-tag"></i>Tarifs des fiches</a>'
           + '</div>'
-          + '<div class="n-ann-card">'
-            + '<span class="n-ann-tag"><span class="n-ann-dot"></span>Annuaire pro</span>'
-            + '<span class="n-ann-icon"><i class="ph-bold ph-sparkle"></i></span>'
-            + '<span class="n-ann-h">Ménage <em>LCD</em></span>'
-            + '<span class="n-ann-p">Turnover entre deux voyageurs, linge, planning partagé.</span>'
-            + '<span class="n-ann-actions">'
-              + '<a href="/annuaires/menage" class="n-ann-cta n-ann-cta-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
-              + '<a href="/devenir-prestataire-menage-lcd" class="n-ann-cta n-ann-cta-secondary"><i class="ph-bold ph-user-plus"></i>Devenir prestataire ménage</a>'
-            + '</span>'
-          + '</div>'
-          + '<a href="/trouver-un-pro" class="n-ann-foot"><i class="ph-bold ph-paper-plane-tilt"></i> Pas le temps de chercher ? Décris ton besoin, les pros viennent à toi <i class="ph-bold ph-arrow-right"></i></a>'
-          + '<a href="/tarifs#photographes" class="n-ann-foot">Tu es photographe ou équipe ménage ? Tarifs des fiches pros <i class="ph-bold ph-arrow-right"></i></a>'
         + '</div>'
       + '</li>'
 
@@ -537,14 +558,14 @@
       + '<a href="https://app.jasonmarinho.com/ouverture" class="nb-o"><i class="ph ph-user"></i> Mon espace</a>'
       + '<a href="https://app.jasonmarinho.com/auth/register" class="nb-c">Commencer <i class="ph-bold ph-arrow-right"></i></a>'
     + '</div>'
-    + '<button class="hbg" id="hbg" aria-label="Menu"><span></span><span></span><span></span></button>'
+    + '<button class="hbg" id="hbg" aria-label="Menu" aria-expanded="false" aria-controls="mob"><span></span><span></span><span></span></button>'
   + '</nav>'
 
   /* ── MOBILE MENU, ordre identique au desktop ── */
   + '<div class="mob-menu" id="mob">'
 
     + '<div class="mob-acc" id="acc-sv">'
-      + '<button class="mob-acc-btn" aria-expanded="false">Services ' + MOB_ARROW + '</button>'
+      + accBtn('ph-squares-four', 'Services', 'Contrats, ménage, simulateurs, formations')
       + '<div class="mob-acc-body">'
         /* Version courte (04/10/2026, Jason : « beaucoup trop » de liens) : l'essentiel par domaine, le reste sur les pages « Voir tous » */
         + '<span class="mob-stitle">Gérer ton activité</span>'
@@ -565,34 +586,42 @@
       + '</div>'
     + '</div>'
 
+    /* Annuaire : même contenu que le menu ordinateur (proposition C) */
     + '<div class="mob-acc" id="acc-ann">'
-      + '<button class="mob-acc-btn" aria-expanded="false">Annuaire ' + MOB_ARROW + '</button>'
-      + '<div class="mob-acc-body">'
-        + '<div class="mob-driing-card">'
-        + '<span class="mdc-tag"><span class="mdc-dot"></span>Annuaire pro</span>'
-        + '<div class="mdc-h">Photographes <em>LCD</em></div>'
-        + '<div class="mdc-p">Pros qui maîtrisent l\'angle Airbnb, portfolio visible sur leur fiche.</div>'
-        + '<div class="mdc-actions">'
-        + '<a href="/annuaires/photographes" class="mdc-cta mdc-cta-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
-        + '<a href="/devenir-photographe-lcd" class="mdc-cta mdc-cta-secondary"><i class="ph-bold ph-user-plus"></i>Devenir photographe LCD</a>'
+      + accBtn('ph-address-book', 'Annuaire', 'Photographes et équipes de ménage')
+      + '<div class="mob-acc-body mob-wide">'
+        + '<div class="mob-vgrid">'
+          + '<a href="/annuaires/photographes" class="mob-vc mob-vc-photo">'
+            + '<span class="n-ann-mos" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>'
+            + '<span class="mob-vt">Photographes</span>'
+            + '<span class="mob-vs">Voir l\'annuaire <i class="ph-bold ph-arrow-right"></i></span>'
+          + '</a>'
+          + '<a href="/annuaires/menage" class="mob-vc mob-vc-menage">'
+            + '<span class="n-ann-chk" aria-hidden="true">'
+              + '<span><i class="ph-bold ph-check-circle"></i>Chambres<b>Fait</b></span>'
+              + '<span><i class="ph-bold ph-check-circle"></i>Linge<b>Fait</b></span>'
+            + '</span>'
+            + '<span class="mob-vt">Équipes de ménage</span>'
+            + '<span class="mob-vs">Voir l\'annuaire <i class="ph-bold ph-arrow-right"></i></span>'
+          + '</a>'
         + '</div>'
-        + '</div>'
-        + '<div class="mob-driing-card">'
-        + '<span class="mdc-tag"><span class="mdc-dot"></span>Annuaire pro</span>'
-        + '<div class="mdc-h">Ménage <em>LCD</em></div>'
-        + '<div class="mdc-p">Turnover entre deux voyageurs, linge, planning partagé.</div>'
-        + '<div class="mdc-actions">'
-        + '<a href="/annuaires/menage" class="mdc-cta mdc-cta-primary"><i class="ph-bold ph-magnifying-glass"></i>Voir l\'annuaire</a>'
-        + '<a href="/devenir-prestataire-menage-lcd" class="mdc-cta mdc-cta-secondary"><i class="ph-bold ph-user-plus"></i>Devenir prestataire ménage</a>'
-        + '</div>'
-        + '</div>'
-        + '<a href="/trouver-un-pro" class="mob-sublink">Décrire mon besoin, les pros viennent à moi <i class="ph-bold ph-arrow-right"></i></a>'
-        + '<a href="/tarifs#photographes" class="mob-sublink">Tarifs des fiches pros <i class="ph-bold ph-arrow-right"></i></a>'
+        + '<span class="mob-stitle">Pour les hôtes</span>'
+        + '<a href="/trouver-un-pro" class="mob-driing">'
+          + '<i class="ph-bold ph-paper-plane-tilt"></i>'
+          + '<div class="mob-driing-body">'
+            + '<span class="mob-driing-name">Décrire mon besoin</span>'
+            + '<span class="mob-driing-sub">Les pros près de chez toi viennent à toi</span>'
+          + '</div>'
+        + '</a>'
+        + '<span class="mob-stitle">Pour les pros</span>'
+        + '<a href="/devenir-photographe-lcd"><i class="ph ph-camera"></i>Devenir photographe</a>'
+        + '<a href="/devenir-prestataire-menage-lcd"><i class="ph ph-sparkle"></i>Devenir équipe de ménage</a>'
+        + '<a href="/tarifs#photographes"><i class="ph ph-tag"></i>Tarifs des fiches</a>'
       + '</div>'
     + '</div>'
 
     + '<div class="mob-acc" id="acc-pq">'
-      + '<button class="mob-acc-btn" aria-expanded="false">Pour qui ' + MOB_ARROW + '</button>'
+      + accBtn('ph-users-three', 'Pour qui', 'Gîtes, chambres d\'hôtes, conciergeries…')
       + '<div class="mob-acc-body">'
         + '<a href="/pour-qui/chambres-dhotes"><i class="ph ph-house-line"></i>Chambres d\'hôtes</a>'
         + '<a href="/pour-qui/gites"><i class="ph ph-tree-evergreen"></i>Gîtes</a>'
@@ -611,27 +640,32 @@
     + '</div>'
 
     + '<div class="mob-acc" id="acc-res">'
-      + '<button class="mob-acc-btn" aria-expanded="false">Ressources ' + MOB_ARROW + '</button>'
-      + '<div class="mob-acc-body">'
-        + '<a href="/blog"><i class="ph ph-newspaper"></i>Blog LCD</a>'
-        + '<a href="/partenaires" class="mob-driing">'
-          + '<i class="ph ph-handshake"></i>'
-          + '<div class="mob-driing-body">'
-            + '<span class="mob-driing-name">Partenaires</span>'
-            + '<span class="mob-driing-sub">Outils recommandés et offres membres</span>'
-          + '</div>'
-        + '</a>'
-        + '<a href="/qui-suis-je"><i class="ph ph-user-circle"></i>Qui suis-je</a>'
-        + '<a href="/contact"><i class="ph ph-envelope"></i>Contact</a>'
-        + '<a href="/partenaires#comparatifs"><i class="ph ph-scales"></i>Comparatifs outils</a>'
+      + accBtn('ph-books', 'Ressources', 'Blog, partenaires, guides, lexique')
+      + '<div class="mob-acc-body mob-wide">'
+        + '<div class="mob-vgrid">'
+          + '<a href="/blog" class="mob-vc mob-vc-blog">'
+            + '<span class="mob-vc-ico"><i class="ph-bold ph-newspaper"></i></span>'
+            + '<span class="mob-vt">Blog</span>'
+            + '<span class="mob-vs">Conseils et actus <i class="ph-bold ph-arrow-right"></i></span>'
+          + '</a>'
+          + '<a href="/partenaires" class="mob-vc mob-vc-part">'
+            + '<span class="mob-vc-ico"><i class="ph-bold ph-handshake"></i></span>'
+            + '<span class="mob-vt">Partenaires</span>'
+            + '<span class="mob-vs">Outils et offres <i class="ph-bold ph-arrow-right"></i></span>'
+          + '</a>'
+        + '</div>'
+        + '<span class="mob-stitle">Plus</span>'
         + '<a href="/services/guides-lcd"><i class="ph ph-books"></i>Guides LCD</a>'
         + '<a href="/services/actualites"><i class="ph ph-megaphone"></i>Actualités LCD</a>'
+        + '<a href="/partenaires#comparatifs"><i class="ph ph-scales"></i>Comparatifs outils</a>'
         + '<a href="/lexique-lcd"><i class="ph ph-book-open"></i>Lexique LCD</a>'
+        + '<a href="/qui-suis-je"><i class="ph ph-user-circle"></i>Qui suis-je</a>'
+        + '<a href="/contact"><i class="ph ph-envelope"></i>Contact</a>'
       + '</div>'
     + '</div>'
 
     + '<div class="mob-acc" id="acc-tar">'
-      + '<button class="mob-acc-btn" aria-expanded="false">Tarifs ' + MOB_ARROW + '</button>'
+      + accBtn('ph-tag', 'Tarifs', 'Gratuit pour commencer, sans carte')
       + '<div class="mob-acc-body">'
         + '<a href="/tarifs#hote"><i class="ph ph-house-line"></i>Plateforme hôte</a>'
         + '<a href="/tarifs#photographes"><i class="ph ph-camera"></i>Photographes LCD</a>'
@@ -641,7 +675,6 @@
         + '<a href="/tarifs#faq"><i class="ph ph-question"></i>Questions fréquentes</a>'
       + '</div>'
     + '</div>'
-
 
     + '<div class="mob-ctas">'
       + '<a href="https://app.jasonmarinho.com/ouverture" class="mc-o"><i class="ph ph-user"></i> Mon espace</a>'
@@ -684,53 +717,68 @@
       });
     }
 
-    /* Hamburger, animation fluide (opacity + translateY) */
+    /* Ouverture / fermeture du menu mobile. La page derrière est bloquée
+       pendant l'ouverture ; à la fermeture le menu est vraiment masqué
+       (avant : un lien d'ancre sur la même page laissait un menu invisible
+       qui captait les clics). */
+    function openMob() {
+      mob.style.display = 'flex';
+      mob.offsetHeight; /* force reflow pour déclencher la transition */
+      mob.classList.add('open');
+      hbg.classList.add('open');
+      hbg.setAttribute('aria-expanded', 'true');
+      document.documentElement.classList.add('mob-lock');
+    }
+    function closeMob() {
+      if (!mob.classList.contains('open')) return;
+      mob.classList.remove('open');
+      hbg.classList.remove('open');
+      hbg.setAttribute('aria-expanded', 'false');
+      document.documentElement.classList.remove('mob-lock');
+      setTimeout(function () {
+        if (!mob.classList.contains('open')) { mob.style.display = ''; closeAccordions(); mob.scrollTop = 0; }
+      }, 220);
+    }
+
     hbg.addEventListener('click', function (e) {
       e.stopPropagation();
-      var isOpen = mob.classList.contains('open');
-      if (!isOpen) {
-        mob.style.display = 'flex';
-        mob.offsetHeight; /* force reflow pour déclencher la transition */
-        mob.classList.add('open');
-        hbg.classList.add('open');
-      } else {
-        mob.classList.remove('open');
-        hbg.classList.remove('open');
-        mob.addEventListener('transitionend', function hide() {
-          if (!mob.classList.contains('open')) { mob.style.display = ''; closeAccordions(); }
-          mob.removeEventListener('transitionend', hide);
-        });
-      }
+      if (mob.classList.contains('open')) closeMob(); else openMob();
     });
 
     /* Fermer au clic extérieur */
     document.addEventListener('click', function (e) {
-      if (mob.classList.contains('open') && !mob.contains(e.target) && !hbg.contains(e.target)) {
-        mob.classList.remove('open');
-        hbg.classList.remove('open');
-        mob.addEventListener('transitionend', function hide() {
-          if (!mob.classList.contains('open')) mob.style.display = '';
-          mob.removeEventListener('transitionend', hide);
-        });
-      }
+      if (mob.classList.contains('open') && !mob.contains(e.target) && !hbg.contains(e.target)) closeMob();
     });
 
     /* Fermer mobile au clic d'un lien */
     mob.querySelectorAll('a').forEach(function (a) {
-      a.addEventListener('click', function () {
-        mob.classList.remove('open');
-        hbg.classList.remove('open');
-      });
+      a.addEventListener('click', closeMob);
     });
 
-    /* Accordéons mobile */
+    /* Accordéons mobile : un seul ouvert à la fois, la rubrique ouverte
+       remonte en haut du menu. */
     document.querySelectorAll('.mob-acc-btn').forEach(function (btn) {
       btn.addEventListener('click', function (e) {
         e.stopPropagation();
         var acc = btn.parentElement;
         var wasOpen = acc.classList.contains('open');
-        acc.classList.toggle('open');
+        document.querySelectorAll('.mob-acc.open').forEach(function (other) {
+          if (other === acc) return;
+          var body = other.querySelector('.mob-acc-body');
+          body.style.transition = 'none';
+          other.classList.remove('open');
+          other.querySelector('.mob-acc-btn').setAttribute('aria-expanded', 'false');
+          body.offsetHeight;
+          body.style.transition = '';
+        });
+        acc.classList.toggle('open', !wasOpen);
         btn.setAttribute('aria-expanded', String(!wasOpen));
+        if (!wasOpen) {
+          var top = acc.offsetTop - 6;
+          if (Math.abs(mob.scrollTop - top) > 4) {
+            try { mob.scrollTo({ top: top, behavior: 'smooth' }); } catch (_) { mob.scrollTop = top; }
+          }
+        }
       });
     });
 
@@ -771,8 +819,7 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
         document.querySelectorAll('.n-drop.open').forEach(function (d) { d.classList.remove('open'); });
-        mob.classList.remove('open');
-        hbg.classList.remove('open');
+        closeMob();
       }
     });
 
