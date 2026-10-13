@@ -5,6 +5,7 @@
 import { NextResponse } from 'next/server'
 import { loadPublicStats } from '@/lib/public-stats/load'
 import { isProCityPage } from '@/lib/public-stats/rules'
+import { citySlugOf } from '@/lib/visibility/city-page'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -35,7 +36,9 @@ export async function OPTIONS(req: Request) {
 
 export async function GET(req: Request) {
   const origin = req.headers.get('origin')
-  const page = new URL(req.url).searchParams.get('page')
+  const params = new URL(req.url).searchParams
+  const page = params.get('page')
+  const ville = params.get('ville')
   try {
     const s = await loadPublicStats()
     if (page !== null) {
@@ -49,7 +52,21 @@ export async function GET(req: Request) {
         threshold: s.threshold,
       }, { headers: headers(origin) })
     }
-    return NextResponse.json(s, { headers: headers(origin) })
+    if (ville !== null) {
+      // Recherche par ville : tout est montré, même les petits chiffres
+      const slug = citySlugOf(ville.slice(0, 80))
+      const city = slug ? s.cityFull?.[slug] ?? null : null
+      return NextResponse.json({
+        found: !!slug,
+        query: ville.slice(0, 80),
+        updatedAt: s.updatedAt,
+        period: s.google ? { start: s.google.start, end: s.google.end } : null,
+        city,
+      }, { headers: headers(origin) })
+    }
+    const { cityFull: _full, ...rest } = s
+    void _full
+    return NextResponse.json(rest, { headers: headers(origin) })
   } catch {
     return NextResponse.json({ error: 'Chiffres indisponibles pour le moment' }, { status: 503, headers: { ...headers(origin), 'Cache-Control': 'no-store' } })
   }

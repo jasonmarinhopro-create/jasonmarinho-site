@@ -115,6 +115,67 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .btn-o{border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85)}.btn-o:hover{border-color:rgba(255,255,255,.5);color:#fff}
 .err{display:none;margin-top:16px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.08);font-size:14px;color:rgba(255,255,255,.8)}
 @media(max-width:640px){.qtable .hide-s{display:none}.qtable td,.qtable th{padding-left:6px;padding-right:6px}}
+#ta-ville{scroll-margin-top:64px}
+.vs{max-width:720px;margin:0 auto;display:flex;gap:10px;flex-wrap:wrap}
+.vs-in{flex:1 1 280px;display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid rgba(0,76,63,.22);border-radius:14px;padding:0 16px}
+.vs-in:focus-within{border-color:var(--g);box-shadow:0 0 0 4px rgba(0,76,63,.08)}
+.vs-in i{color:var(--g);font-size:19px}
+.vs-in input{flex:1;border:none;outline:none;background:transparent;font:500 16px 'Outfit',sans-serif;color:var(--td);padding:15px 0;min-width:0}
+.vs button,.vf button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 22px;min-height:52px;border:none;border-radius:14px;background:var(--g);color:#fff;font:600 15px 'Outfit',sans-serif;cursor:pointer;flex:0 0 auto}
+.vs button:hover,.vf button:hover{background:var(--gd)}
+@media(max-width:520px){.vs button{flex:1 1 100%}}
+.vs-hint{max-width:720px;margin:12px auto 0;text-align:center;font-size:13.5px;color:var(--tm);line-height:1.6}
+.vs-picks{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.vs-picks button{border:1px solid var(--bd);background:#fff;color:var(--tm);font:500 13px 'Outfit',sans-serif;padding:6px 12px;border-radius:999px;cursor:pointer}
+.vs-picks button:hover{border-color:var(--g);color:var(--g)}
+.vr{margin-top:30px}
+.vr-h{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
+.vr-h h3{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(26px,3vw,34px);line-height:1.1}
+.vr-h p{font-size:13.5px;color:var(--tm);margin-top:6px;line-height:1.55}
+.vr-share{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--bd);background:#fff;color:var(--g);font:600 13.5px 'Outfit',sans-serif;padding:9px 14px;border-radius:11px;cursor:pointer}
+.vr-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))}
+.vp{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.vp-h{display:flex;align-items:center;gap:10px}
+.vp-h > i{width:38px;height:38px;border-radius:11px;background:rgba(0,76,63,.07);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.vp-h b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:19px;line-height:1.2}
+.vp-h a{font-size:12.5px;color:var(--g);font-weight:600;text-decoration:none}
+.vp-h a:hover{text-decoration:underline}
+.vp-n{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.vp-n div{background:var(--cr);border-radius:12px;padding:10px 12px}
+.vp-n b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:24px;color:var(--g);line-height:1.1}
+.vp-n span{display:block;font-size:12px;color:var(--tm);margin-top:2px;line-height:1.35}
+.vp-n small{display:block;font-size:11.5px;color:var(--tl);margin-top:3px}
+.vp-pros{font-size:13.5px;color:var(--tm);display:flex;gap:8px;align-items:center}
+.vp-pros i{color:var(--g)}
+.vp-q{list-style:none;display:flex;flex-direction:column;gap:7px;border-top:1px solid var(--bd);padding-top:12px}
+.vp-q p{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--tl)}
+.vp-q li{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--td)}
+.vp-q li .place{min-width:46px;padding:3px 8px;font-size:12px}
+.vp-q li .place.far{background:var(--cr);color:var(--tl)}
+.vp-q li em{font-style:normal;margin-left:auto;font-size:12px;color:var(--tl);white-space:nowrap}
+.vp-empty{font-size:13.5px;color:var(--tm);line-height:1.6;background:var(--cr);border-radius:12px;padding:12px 14px}
+.vr-note{display:flex;gap:10px;margin-top:16px;padding:14px 16px;border-radius:14px;background:rgba(255,213,107,.18);font-size:13.5px;color:var(--tm);line-height:1.6}
+.vr-note i{color:var(--g);font-size:18px;flex-shrink:0;margin-top:1px}
+.vf{max-width:720px;margin:0 auto;background:#fff;border:1px solid var(--bd);border-radius:20px;padding:clamp(20px,3.5vw,32px)}
+.vf h3{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(22px,2.6vw,28px);line-height:1.2}
+.vf > p{font-size:14.5px;color:var(--tm);line-height:1.65;margin-top:8px}
+.vf-sug{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:12px;font-size:13.5px;color:var(--tm)}
+.vf-sug button{border:1px solid var(--g);background:rgba(0,76,63,.05);color:var(--g);font:600 13px 'Outfit',sans-serif;padding:5px 12px;border-radius:999px;cursor:pointer}
+.vf form{display:grid;gap:14px;margin-top:18px}
+.vf label{display:block;font-size:13px;font-weight:600;color:var(--td);margin-bottom:6px}
+.vf label small{font-weight:400;color:var(--tl)}
+.vf input[type=text],.vf input[type=email]{width:100%;border:1.5px solid rgba(0,76,63,.18);border-radius:12px;padding:12px 14px;font:500 15px 'Outfit',sans-serif;color:var(--td);background:#fff;outline:none}
+.vf input[type=text]:focus,.vf input[type=email]:focus{border-color:var(--g)}
+.vf-roles{display:flex;flex-wrap:wrap;gap:8px}
+.vf-roles label{display:inline-flex;align-items:center;gap:8px;margin:0;padding:10px 14px;border:1.5px solid rgba(0,76,63,.18);border-radius:12px;font-weight:500;font-size:14px;color:var(--tm);cursor:pointer}
+.vf-roles input{accent-color:#004C3F}
+.vf-roles label:has(input:checked){border-color:var(--g);background:rgba(0,76,63,.06);color:var(--g)}
+.vf-trap{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.vf-legal{font-size:12.5px;color:var(--tl);line-height:1.55}
+.vf-legal a{color:var(--g)}
+.vf-msg{font-size:14px;line-height:1.6;padding:12px 14px;border-radius:12px;display:none}
+.vf-msg.ok{display:block;background:rgba(47,125,82,.10);color:#1f5a3a}
+.vf-msg.ko{display:block;background:rgba(200,60,40,.08);color:#8a2a1a}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"La visibilité du site en chiffres","description":"Affichages Google, clics, visiteurs et recherches où jasonmarinho.com sort en première page, mis à jour chaque jour.","url":"https://jasonmarinho.com/chiffres","inLanguage":"fr-FR","isPartOf":{"@type":"WebSite","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Les chiffres","item":"https://jasonmarinho.com/chiffres"}]}</script>
@@ -153,6 +214,24 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
     <div class="fact"><b data-f="pages"><span class="sk dk"></span></b><span>pages du site vues dans Google sur 28 jours</span></div>
     <div class="fact"><b data-f="cities">122</b><span>pages de ville pour les photographes et les équipes de ménage</span></div>
     <div class="fact"><b data-f="ctr"><span class="sk dk"></span></b><span>des affichages se transforment en clic (taux de clic)</span></div>
+  </div>
+</section>
+
+<section class="sec cr" id="ta-ville">
+  <div class="s-in">
+    <div class="sec-head">
+      <div class="lbl">Ta ville</div>
+      <h2>Les chiffres <em>de ta ville</em></h2>
+      <p>Tape le nom de ta ville : tu vois tout ce que Google montre pour ses pages (photographes, ménage, guide des hôtes), même quand les chiffres sont petits. Rien n’est caché ni arrondi.</p>
+    </div>
+    <form class="vs" data-vs role="search" autocomplete="off">
+      <div class="vs-in"><i class="ph-bold ph-magnifying-glass"></i><input type="text" name="ville" list="villes-list" maxlength="60" placeholder="Ex. Lyon, Annecy, Biarritz…" aria-label="Nom de ta ville" required></div>
+      <button type="submit"><i class="ph-bold ph-chart-line-up"></i>Voir les chiffres</button>
+    </form>
+    <datalist id="villes-list"></datalist>
+    <p class="vs-hint"><span data-vcount>61</span> villes ont déjà leurs pages. La tienne n’y est pas ? Tu pourras me demander de la créer.</p>
+    <div class="vs-picks" data-picks></div>
+    <div class="vr" data-vres aria-live="polite"></div>
   </div>
 </section>
 
@@ -331,7 +410,142 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
     }).join('');
   }
 
+  // ── Recherche par ville : tout est montré, même les petits chiffres ──
+  var VILLES = [], vres = $('[data-vres]'), vform = $('[data-vs]');
+  var PICKS = ['Paris', 'Lyon', 'Bordeaux', 'Nice', 'Annecy', 'Biarritz', 'Saint-Malo'];
+  var normT = function(s){ return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); };
+  function fillVilles(list){
+    VILLES = list || [];
+    var dl = $('#villes-list'); if (dl) dl.innerHTML = VILLES.map(function(v){ return '<option value="' + esc(v.label) + '">'; }).join('');
+    var c = $('[data-vcount]'); if (c && VILLES.length) c.textContent = VILLES.length;
+  }
+  var picks = $('[data-picks]');
+  if (picks) {
+    picks.innerHTML = PICKS.map(function(p){ return '<button type="button" data-pick="' + esc(p) + '">' + esc(p) + '</button>'; }).join('');
+    picks.addEventListener('click', function(e){ var b = e.target.closest('[data-pick]'); if (b) searchCity(b.getAttribute('data-pick'), true); });
+  }
+  function numBox(val, label, sub){ return '<div><b>' + val + '</b><span>' + label + '</span>' + (sub ? '<small>' + sub + '</small>' : '') + '</div>'; }
+  function pageCard(kind, city, p, pros){
+    var META = {
+      photographe: { icon: 'ph-camera', title: 'Photographe à ', pro: ['photographe présenté', 'photographes présentés'] },
+      menage: { icon: 'ph-broom', title: 'Ménage à ', pro: ['équipe de ménage présentée', 'équipes de ménage présentées'] },
+      hote: { icon: 'ph-house-line', title: 'Guide hôte · ', pro: null }
+    }[kind];
+    var h = '<div class="vp"><div class="vp-h"><i class="ph-bold ' + META.icon + '"></i><div><b>' + esc(META.title + city) + '</b><a href="' + esc(p.path) + '">Voir la page <i class="ph-bold ph-arrow-right"></i></a></div></div>';
+    if (META.pro && pros) {
+      var k = pros[kind] || 0;
+      h += '<div class="vp-pros"><i class="ph-bold ph-users-three"></i>' + (k ? n(k) + ' ' + META.pro[k > 1 ? 1 : 0] + ' sur la page' : 'Aucun pro présenté pour le moment : la place est libre') + '</div>';
+    }
+    if (!p.impressions && !p.visitors) {
+      return h + '<p class="vp-empty">Cette page n’est pas encore apparue dans Google sur ces 28 jours, et aucun visiteur mesuré sur 30 jours. Une page récente met souvent plusieurs mois à se faire une place.</p></div>';
+    }
+    var prev = p.prevImpressions ? n(p.prevImpressions) + ' les 28 j d’avant' : (p.impressions ? 'aucun les 28 j d’avant' : '');
+    h += '<div class="vp-n">' +
+      numBox(n(p.impressions), 'affichages dans Google', prev) +
+      numBox(n(p.clicks), 'clics depuis Google', p.impressions ? pf.format(p.clicks / p.impressions * 100) + ' % des affichages' : '') +
+      numBox(p.place === null ? '–' : pf.format(p.place), 'place moyenne', p.place === null ? '' : (p.place <= 10 ? 'en première page' : 'page ' + Math.ceil(p.place / 10) + ' de Google')) +
+      numBox(n(p.visitors), 'visiteurs sur 30 jours', 'notre mesure, toutes sources') +
+      '</div>';
+    if (p.queries && p.queries.length) {
+      h += '<ul class="vp-q"><p>Recherches qui l’affichent</p>' + p.queries.map(function(q){
+        return '<li><span class="place' + (q.place <= 3 ? ' top' : q.place > 10 ? ' far' : '') + '">' + pf.format(q.place) + '</span><span>« ' + esc(q.q) + ' »</span><em>' + n(q.impressions) + ' aff.</em></li>';
+      }).join('') + '</ul>';
+    } else if (p.impressions) {
+      h += '<p class="vp-empty">Google montre la page, mais masque les recherches trop rares pour être détaillées.</p>';
+    }
+    return h + '</div>';
+  }
+  function setUrl(slug){
+    try {
+      var u = new URL(location.href);
+      if (slug) u.searchParams.set('ville', slug); else u.searchParams.delete('ville');
+      u.hash = 'ta-ville';
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+    } catch (e) {}
+  }
+  function renderCity(d){
+    var c = d.city, label = c.label;
+    var period = d.period ? 'Google du ' + dateFr(d.period.start) + ' au ' + dateFr(d.period.end) + ' · visiteurs sur 30 jours' : 'Chiffres de Google indisponibles pour le moment';
+    var html = '<div class="vr-h"><div><h3>' + esc(label) + '</h3><p>' + period + '</p></div><button type="button" class="vr-share" data-share><i class="ph-bold ph-link"></i>Copier le lien</button></div><div class="vr-grid">' +
+      pageCard('photographe', label, c.pages.photographe, c.pros) +
+      pageCard('menage', label, c.pages.menage, c.pros) +
+      (c.pages.hote ? pageCard('hote', label, c.pages.hote, null) : '') +
+      '</div><div class="vr-note"><i class="ph-bold ph-info"></i><span>Ce sont les chiffres bruts de Google Search Console, sans tri : la place est une moyenne sur 28 jours (elle varie selon la personne et l’appareil), un affichage n’est pas un client. Les petites villes et les pages récentes partent de peu, et ça se voit ici.</span></div>';
+    vres.innerHTML = html;
+    var inp = vform && vform.querySelector('input[name=ville]'); if (inp) inp.value = label;
+    setUrl(c.slug);
+  }
+  function suggestions(q){
+    var t = normT(q); if (t.length < 2) return [];
+    var head = t.slice(0, 3);
+    return VILLES.filter(function(v){ var l = normT(v.label); return l.indexOf(head) === 0 || l.indexOf(t) >= 0; }).slice(0, 4);
+  }
+  function renderRequest(q){
+    var sug = suggestions(q);
+    vres.innerHTML = '<div class="vf"><h3>Pas encore de page pour « ' + esc(q) + ' »</h3>' +
+      '<p>Les pages existent pour ' + (VILLES.length || 61) + ' villes. Je peux créer celle de ta ville : photographes, ménage et guide pour les hôtes. Dis-moi juste qui tu es.</p>' +
+      (sug.length ? '<div class="vf-sug">Tu cherchais peut-être : ' + sug.map(function(v){ return '<button type="button" data-pick="' + esc(v.label) + '">' + esc(v.label) + '</button>'; }).join('') + '</div>' : '') +
+      '<form data-vf novalidate>' +
+        '<div><label for="vf-ville">Ta ville</label><input type="text" id="vf-ville" name="ville" maxlength="60" value="' + esc(q) + '" required></div>' +
+        '<div><label>Tu es</label><div class="vf-roles">' +
+          '<label><input type="radio" name="metier" value="photographe"> Photographe</label>' +
+          '<label><input type="radio" name="metier" value="menage"> Équipe de ménage</label>' +
+          '<label><input type="radio" name="metier" value="hote" checked> Hôte</label>' +
+        '</div></div>' +
+        '<div><label for="vf-email">Ton e-mail <small>(facultatif, seulement pour te prévenir quand la page est en ligne)</small></label><input type="email" id="vf-email" name="email" maxlength="120" placeholder="toi@exemple.fr"></div>' +
+        '<div class="vf-trap" aria-hidden="true"><label>Ne pas remplir<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>' +
+        '<div class="vf-msg" data-vf-msg role="status"></div>' +
+        '<div><button type="submit"><i class="ph-bold ph-paper-plane-tilt"></i>Demander la page de ma ville</button></div>' +
+        '<p class="vf-legal">Ta demande m’arrive par e-mail, rien n’est enregistré sur le site. <a href="/politique-de-confidentialite#demande-ville">Confidentialité</a></p>' +
+      '</form></div>';
+    setUrl(null);
+  }
+  function searchCity(q, scroll){
+    q = String(q || '').trim().slice(0, 60);
+    if (!q || !vres) return;
+    var inp = vform && vform.querySelector('input[name=ville]'); if (inp) inp.value = q;
+    vres.innerHTML = '<p class="empty">Recherche des chiffres de ' + esc(q) + '…</p>';
+    if (scroll) { var sec = $('#ta-ville'); if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    fetch(API + '?ville=' + encodeURIComponent(q)).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){
+      if (d.found && d.city) renderCity(d);
+      else if (d.found) vres.innerHTML = '<p class="empty">Les chiffres de cette ville ne sont pas disponibles pour le moment. Réessaie dans quelques minutes.</p>';
+      else renderRequest(q);
+    }).catch(function(){ vres.innerHTML = '<p class="empty">Chiffres indisponibles pour le moment. Réessaie dans quelques minutes.</p>'; });
+  }
+  if (vform) vform.addEventListener('submit', function(e){ e.preventDefault(); var i = vform.querySelector('input[name=ville]'); searchCity(i && i.value, false); });
+  if (vres) {
+    vres.addEventListener('click', function(e){
+      var b = e.target.closest('[data-pick]'); if (b) { searchCity(b.getAttribute('data-pick'), false); return; }
+      var s = e.target.closest('[data-share]');
+      if (s) {
+        var done = function(){ s.innerHTML = '<i class="ph-bold ph-check-circle"></i>Lien copié'; };
+        if (navigator.clipboard) navigator.clipboard.writeText(location.href).then(done, function(){ prompt('Copie ce lien :', location.href); });
+        else prompt('Copie ce lien :', location.href);
+      }
+    });
+    vres.addEventListener('submit', function(e){
+      var f = e.target.closest('[data-vf]'); if (!f) return;
+      e.preventDefault();
+      var msg = f.querySelector('[data-vf-msg]'), btn = f.querySelector('button[type=submit]');
+      var fd = new FormData(f);
+      var body = { ville: String(fd.get('ville') || ''), metier: String(fd.get('metier') || 'hote'), email: String(fd.get('email') || ''), website: String(fd.get('website') || '') };
+      if (body.ville.trim().length < 2) { msg.className = 'vf-msg ko'; msg.textContent = 'Indique le nom de ta ville.'; return; }
+      btn.disabled = true;
+      fetch('https://app.jasonmarinho.com/api/public/demande-ville', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+        .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return { ok: r.ok, j: j }; }); })
+        .then(function(x){
+          if (!x.ok) { btn.disabled = false; msg.className = 'vf-msg ko'; msg.textContent = x.j.error || 'La demande n’est pas partie. Réessaie dans un instant.'; return; }
+          msg.className = 'vf-msg ok';
+          msg.textContent = 'Merci, ta demande est bien partie. ' + (body.email ? 'Je te préviens par e-mail dès que la page de ' + body.ville.trim() + ' est en ligne.' : 'La page apparaîtra dans la recherche dès qu’elle sera en ligne.');
+          f.querySelectorAll('input').forEach(function(el){ el.disabled = true; }); btn.style.display = 'none';
+        })
+        .catch(function(){ btn.disabled = false; msg.className = 'vf-msg ko'; msg.textContent = 'La demande n’est pas partie. Vérifie ta connexion et réessaie.'; });
+    });
+  }
+  try { var startQ = new URL(location.href).searchParams.get('ville'); if (startQ) searchCity(startQ.replace(/-/g, ' '), true); } catch (e) {}
+
   fetch(API).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){
+    fillVilles(d.villes);
     var g = d.google;
     if (g) {
       setNum('[data-k="imp"]', n(g.impressions)); delta('[data-d="imp"]', g.impressions, g.prevImpressions);

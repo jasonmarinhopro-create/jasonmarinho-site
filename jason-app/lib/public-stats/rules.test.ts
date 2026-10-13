@@ -92,3 +92,41 @@ describe('audienceOf, conciergerie', () => {
     expect(audienceOf('ouvrir une conciergerie en ligne')).toBe('hote')
   })
 })
+
+describe('recherche par ville', () => {
+  it('pageFull : tout est montré, recherches les plus vues d\'abord', async () => {
+    const { pageFull } = await import('./rules')
+    const p = pageFull('/photographe-lcd-lyon', { impressions: 70, clicks: 1, position: 12.34 }, { impressions: 40 }, [
+      row('photographe lyon', '/photographe-lcd-lyon', 40, 25), row('photographe airbnb lyon', '/photographe-lcd-lyon', 30, 8),
+    ], 2)
+    expect(p).toMatchObject({ impressions: 70, clicks: 1, place: 12.3, prevImpressions: 40, visitors: 2 })
+    expect(p.queries.map(q => q.q)).toEqual(['photographe lyon', 'photographe airbnb lyon'])
+    expect(pageFull('/menage-lcd-pau', undefined, undefined, [], 0).place).toBeNull()
+  })
+  it('prosByCity : fiches en ligne seulement', async () => {
+    const { prosByCity } = await import('./rules')
+    const m = prosByCity([
+      { ville: 'Lyon', zone_couverte: null, status: 'active', is_public: true },
+      { ville: 'Lyon', zone_couverte: null, status: 'hidden', is_public: false },
+      { ville: 'Nulle part', zone_couverte: null, status: 'active', is_public: true },
+    ], (v) => v === 'Lyon' ? 'lyon' : null)
+    expect(m.get('lyon')).toBe(1)
+    expect(m.size).toBe(1)
+  })
+  it('cleanCityRequest', async () => {
+    const { cleanCityRequest } = await import('./rules')
+    expect(cleanCityRequest({ ville: '  Saint-Jean-de-Luz ', metier: 'photographe' })).toEqual({ ok: true, ville: 'Saint-Jean-de-Luz', metier: 'photographe', email: null })
+    expect(cleanCityRequest({ ville: 'x' }).ok).toBe(false)
+    expect(cleanCityRequest({ ville: 'Dax', email: 'pas-un-mail' }).ok).toBe(false)
+    expect(cleanCityRequest({ ville: 'Dax', email: 'A@B.fr', metier: 'autre' })).toEqual({ ok: true, ville: 'Dax', metier: 'hote', email: 'a@b.fr' })
+  })
+  it('seule la ville sans guide hôte est listée', async () => {
+    const fs = await import('node:fs')
+    const path = await import('node:path')
+    const { NO_HOST_GUIDE } = await import('./rules')
+    const { CITY_PAGE_SLUGS } = await import('@/lib/visibility/city-page')
+    const site = path.resolve(__dirname, '../../..')
+    const missing = CITY_PAGE_SLUGS.filter(s => !fs.existsSync(path.join(site, `devenir-hote-airbnb-${s}`)))
+    expect(missing.sort()).toEqual([...NO_HOST_GUIDE].sort())
+  })
+})

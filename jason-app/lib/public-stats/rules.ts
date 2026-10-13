@@ -163,3 +163,71 @@ export function countVisitors(visits: Array<{ session_id: string; path: string }
   }
   return { total: all.size, byPath: new Map([...byPath].map(([p, s]) => [p, s.size])) }
 }
+
+// ── Recherche par ville (13/10/2026, Jason : « 100 % transparent : une barre
+//    de recherche pour que les gens voient les stats de leur ville ») ──────
+// Quand quelqu'un cherche SA ville, tout est montré, même les petits chiffres :
+// c'est une démarche volontaire, et la page explique qu'une page récente met
+// du temps à monter dans Google.
+
+export const NO_HOST_GUIDE = new Set(['les-sables-d-olonne'])
+
+export interface PageFull {
+  path: string
+  impressions: number
+  clicks: number
+  /** Place moyenne pondérée (null si aucun affichage) */
+  place: number | null
+  prevImpressions: number
+  visitors: number
+  /** Recherches de la page, les plus vues d'abord (toutes places) */
+  queries: PublicQuery[]
+}
+
+export function pageFull(
+  path: string,
+  cur: { impressions: number; clicks: number; position: number } | undefined,
+  prev: { impressions: number } | undefined,
+  pairs: PairRow[],
+  visitors: number,
+): PageFull {
+  const queries = groupByQuery(pairs)
+    .filter(q => !isBrand(q.q))
+    .sort((a, b) => b.impressions - a.impressions || a.place - b.place)
+    .slice(0, 10)
+  return {
+    path,
+    impressions: cur?.impressions ?? 0,
+    clicks: cur?.clicks ?? 0,
+    place: cur && cur.impressions > 0 ? r1(cur.position) : null,
+    prevImpressions: prev?.impressions ?? 0,
+    visitors,
+    queries,
+  }
+}
+
+/** Nombre de fiches en ligne par page de ville, avec la règle de rattachement des pros */
+export function prosByCity(
+  rows: Array<{ ville: string | null; zone_couverte: string | null; status: string | null; is_public: boolean | null }>,
+  slugOf: (ville: string | null, zone: string | null) => string | null,
+): Map<string, number> {
+  const out = new Map<string, number>()
+  for (const r of rows) {
+    if (r.status !== 'active' || r.is_public === false) continue
+    const slug = slugOf(r.ville, r.zone_couverte)
+    if (slug) out.set(slug, (out.get(slug) ?? 0) + 1)
+  }
+  return out
+}
+
+/** Demande de création d'une page de ville : nettoyage et contrôle */
+export function cleanCityRequest(body: unknown):
+  { ok: true; ville: string; metier: 'photographe' | 'menage' | 'hote'; email: string | null } | { ok: false; error: string } {
+  const b = (body ?? {}) as Record<string, unknown>
+  const ville = typeof b.ville === 'string' ? b.ville.replace(/\s+/g, ' ').trim() : ''
+  if (ville.length < 2 || ville.length > 60 || !/\p{L}/u.test(ville)) return { ok: false, error: 'Indique le nom de ta ville.' }
+  const metier = b.metier === 'photographe' || b.metier === 'menage' || b.metier === 'hote' ? b.metier : 'hote'
+  const raw = typeof b.email === 'string' ? b.email.trim().toLowerCase() : ''
+  if (raw && (raw.length > 120 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(raw))) return { ok: false, error: 'Cette adresse e-mail ne semble pas valide.' }
+  return { ok: true, ville, metier, email: raw || null }
+}
