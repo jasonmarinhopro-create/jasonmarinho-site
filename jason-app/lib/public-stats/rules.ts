@@ -41,7 +41,7 @@ export function isBrand(q: string): boolean {
 export function audienceOf(q: string): Audience {
   const s = norm(q)
   if (/photo/.test(s)) return 'photographe'
-  if (/menage|nettoyage|femme de m|blanchisserie|linge|conciergerie/.test(s)) return 'menage'
+  if (/menage|nettoyage|femme de m|blanchisserie|linge/.test(s)) return 'menage'
   return 'hote'
 }
 

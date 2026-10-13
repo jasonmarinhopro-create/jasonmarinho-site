@@ -86,3 +86,9 @@ describe('countVisitors et pages de ville', () => {
     expect(isProCityPage('/devenir-hote-airbnb-lyon')).toBe(false)
   })
 })
+
+describe('audienceOf, conciergerie', () => {
+  it('une recherche de conciergerie concerne les hôtes, pas les équipes de ménage', () => {
+    expect(audienceOf('ouvrir une conciergerie en ligne')).toBe('hote')
+  })
+})
