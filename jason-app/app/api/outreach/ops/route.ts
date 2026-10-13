@@ -16,6 +16,7 @@ import { checkSpf } from '@/lib/outreach/spf'
 import { searchGooglePlaces, findEmailOnSite } from '@/lib/outreach/sources'
 import { placesUsage } from '@/lib/google/places-budget'
 import type { Audience } from '@/lib/outreach/engine'
+import { allRows } from '@/lib/supabase/all-rows'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -96,19 +97,19 @@ async function status(db: Db) {
   const m116 = await db.from('outreach_contacts').select('next_action').limit(1)
   const { data: settings } = await db.from('outreach_settings').select('*').eq('id', 1).maybeSingle()
   const { data: seqs } = await db.from('outreach_sequences').select('id, nom, audience, enabled, trigger')
-  const { data: enr } = await db.from('outreach_enrollments').select('sequence_id').eq('status', 'en_cours').limit(20000)
+  const { rows: enr } = await allRows<{ sequence_id: string }>((from, to) => db.from('outreach_enrollments').select('sequence_id').eq('status', 'en_cours').order('id').range(from, to))
   const inSeq = new Map<string, number>()
   for (const e of enr ?? []) inSeq.set(e.sequence_id, (inSeq.get(e.sequence_id) ?? 0) + 1)
   const contacts: Record<string, Record<string, number>> = {}
   for (const a of AUDIENCES) {
-    const { data } = await db.from('outreach_contacts').select('stage').eq('audience', a).limit(20000)
+    const { rows: data } = await allRows<{ stage: string }>((from, to) => db.from('outreach_contacts').select('stage').eq('audience', a).order('id').range(from, to))
     const by: Record<string, number> = {}
     for (const c of data ?? []) by[c.stage] = (by[c.stage] ?? 0) + 1
     contacts[a] = by
   }
   const { count: sentTotal } = await db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye')
   // Envois des dernières 24 h : doublons éventuels (même contact, même étape)
-  const { data: recent } = await db.from('outreach_sends').select('contact_id, sequence_id, step_position, status').gte('sent_at', new Date(Date.now() - 24 * 3600_000).toISOString()).limit(2000)
+  const { rows: recent } = await allRows<{ contact_id: string; sequence_id: string; step_position: number; status: string }>((from, to) => db.from('outreach_sends').select('contact_id, sequence_id, step_position, status').gte('sent_at', new Date(Date.now() - 24 * 3600_000).toISOString()).order('id').range(from, to))
   const okRecent = (recent ?? []).filter(r => r.status === 'envoye')
   const perKey = new Map<string, number>()
   for (const r of okRecent) { const k = `${r.contact_id}|${r.sequence_id}|${r.step_position}`; perKey.set(k, (perKey.get(k) ?? 0) + 1) }
@@ -202,7 +203,7 @@ async function importCandidates(db: Db, audience: Audience, results: Candidate[]
   const withSite = results.filter(r => r.site_web && hostOf(r.site_web))
 
   // Sites déjà connus (contact existant, toutes audiences) : pas de nouvelle visite
-  const { data: known } = await db.from('outreach_contacts').select('site_web').not('site_web', 'is', null).limit(20000)
+  const { rows: known } = await allRows<{ site_web: string | null }>((from, to) => db.from('outreach_contacts').select('site_web').not('site_web', 'is', null).order('id').range(from, to))
   const knownHosts = new Set((known ?? []).map(k => hostOf(k.site_web as string)).filter(Boolean))
   const seen = new Set<string>()
   const todo = withSite.filter(r => {

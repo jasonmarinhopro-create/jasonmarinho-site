@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getServiceClient } from '@/lib/supabase/service'
+import { allRows } from '@/lib/supabase/all-rows'
 import { outreachConfig } from '@/lib/outreach/mailer'
 import { placesUsage } from '@/lib/google/places-budget'
 import { parisToday } from '@/lib/stripe/deposit-window'
@@ -10,6 +11,7 @@ import type { ContactRow, SendRow, SequenceRow, SettingsRow, StepRow } from './s
 const SEQ_COLS = 'id, nom, audience, description, trigger, trigger_stage, enabled, stop_on_reply, repeat_after_days, max_repeats, then_sequence_id, end_stage, position'
 const CONTACT_COLS = 'id, audience, email, prenom, nom, entreprise, ville, departement, site_web, telephone, instagram, source, source_detail, stage, notes, tags, last_contacted_at, replied_at, created_at'
 
+type SendDbRow = { id: string; contact_id: string | null; sequence_id: string | null; step_position: number; email: string; subject: string; status: string; error: string | null; sent_at: string }
 type Q = PromiseLike<{ data: unknown; error: { message: string; code?: string } | null }>
 /** Requête avec les colonnes récentes, puis sans elles si la base ne les connaît pas encore (code 42703). */
 async function withFallback(full: () => Q, fallback: () => Q) {
@@ -31,6 +33,10 @@ export default async function ProspectionPage() {
   if (profile?.role !== 'admin') redirect('/dashboard')
 
   const db = getServiceClient()
+  // Tous les contacts, page par page : Supabase plafonne chaque requête à 1 000 lignes
+  const contactsPaged = (cols: string) => allRows<Record<string, unknown> & { id: string }>((from, to) =>
+    db.from('outreach_contacts').select(cols).order('created_at', { ascending: false }).order('id').range(from, to) as never, 20_000)
+    .then(r => ({ data: r.rows, error: r.error }))
   const since7 = new Date(Date.now() - 7 * 86400_000).toISOString()
   const since30 = new Date(Date.now() - 30 * 86400_000).toISOString()
   const today = parisToday()
@@ -49,13 +55,13 @@ export default async function ProspectionPage() {
       () => db.from('outreach_sequences').select(SEQ_COLS).order('position'),
     ),
     db.from('outreach_steps').select('id, sequence_id, position, delay_days, subject, body, same_thread').order('position'),
-    db.from('outreach_enrollments').select('sequence_id, contact_id, status, next_step').limit(20000),
+    allRows<{ sequence_id: string; contact_id: string; status: string; next_step: number }>((from, to) => db.from('outreach_enrollments').select('sequence_id, contact_id, status, next_step').order('id').range(from, to)).then(r => ({ data: r.rows })),
     withFallback(
-      () => db.from('outreach_contacts').select(`${CONTACT_COLS}, next_action, next_action_on`).order('created_at', { ascending: false }).limit(5000),
-      () => db.from('outreach_contacts').select(CONTACT_COLS).order('created_at', { ascending: false }).limit(5000),
+      () => contactsPaged(`${CONTACT_COLS}, next_action, next_action_on`),
+      () => contactsPaged(CONTACT_COLS),
     ),
     db.from('outreach_settings').select('*').eq('id', 1).maybeSingle(),
-    db.from('outreach_sends').select('id, contact_id, sequence_id, step_position, email, subject, status, error, sent_at').gte('sent_at', since30).order('sent_at', { ascending: false }).limit(3000),
+    allRows<SendDbRow>((from, to) => db.from('outreach_sends').select('id, contact_id, sequence_id, step_position, email, subject, status, error, sent_at').gte('sent_at', since30).order('sent_at', { ascending: false }).order('id').range(from, to), 10_000).then(r => ({ data: r.rows })),
     db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye').gte('sent_at', dayStart),
     db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye').gte('sent_at', since7),
     db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye').gte('sent_at', since30),
@@ -63,7 +69,7 @@ export default async function ProspectionPage() {
     db.from('outreach_contacts').select('id', { count: 'exact', head: true }).gte('replied_at', since30),
     db.from('outreach_contacts').select('id', { count: 'exact', head: true }).gte('last_contacted_at', since30),
     // Par e-mail de séquence, depuis le début : envois et personnes distinctes
-    db.from('outreach_sends').select('contact_id, sequence_id, step_position').eq('status', 'envoye').limit(20000),
+    allRows<{ contact_id: string | null; sequence_id: string; step_position: number }>((from, to) => db.from('outreach_sends').select('contact_id, sequence_id, step_position').eq('status', 'envoye').order('id').range(from, to)).then(r => ({ data: r.rows })),
     // Ouvertures anonymes (migration 117, absente = pas de chiffre)
     db.from('outreach_open_stats').select('sequence_id, step_position, opens'),
   ])

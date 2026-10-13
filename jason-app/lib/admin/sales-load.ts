@@ -3,6 +3,7 @@
 // Règles et calculs : sales.ts (testé) et revenue.ts.
 import 'server-only'
 import { getServiceClient } from '@/lib/supabase/service'
+import { allRows } from '@/lib/supabase/all-rows'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import { computeRevenue, isPaidPro, PRICES, type ProRow } from './revenue'
 import {
@@ -110,7 +111,7 @@ export async function loadSales() {
 
   const [{ members, photographers, cleaners, mailTargets }, outreachRes] = await Promise.all([
     loadMembers(),
-    db.from('outreach_contacts').select('stage, audience').limit(10000),
+    allRows<{ stage: string; audience: string }>((from, to) => db.from('outreach_contacts').select('stage, audience').order('id').range(from, to)).then(r => ({ data: r.rows, error: r.error })),
   ])
 
   const groups = new Map<MemberGroup, MemberActivity[]>()

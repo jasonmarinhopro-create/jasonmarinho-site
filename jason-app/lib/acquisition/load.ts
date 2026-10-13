@@ -12,20 +12,10 @@ import { BUILTIN_LINKS, cleanAcquisition } from './rules'
 import { buildProvenance, type LinkClickRow, type LinkRow, type MemberRow, type ProvenanceReport, type SpaceKey } from './report'
 import { buildChannelCards, buildToday, buildSnapshot, type ChannelCard, type GscDay, type TodayData, type TrafficVisit } from './traffic'
 
-type DbError = { code?: string; message: string }
+import { allRows } from '@/lib/supabase/all-rows'
 type ProfileRow = { id: string; full_name: string | null; email: string | null; created_at: string; role: string | null; is_investor: boolean | null; plan: string | null; acquisition?: unknown }
 type ProRow = { user_id: string | null; stripe_subscription_status: string | null }
 
-async function allRows<T>(fetchPage: (from: number) => PromiseLike<{ data: T[] | null; error: DbError | null }>, max = 50_000): Promise<{ rows: T[]; error: DbError | null }> {
-  const rows: T[] = []
-  for (let from = 0; from < max; from += 1000) {
-    const { data, error } = await fetchPage(from)
-    if (error) return { rows, error }
-    rows.push(...(data ?? []))
-    if (!data || data.length < 1000) break
-  }
-  return { rows, error: null }
-}
 
 interface Base {
   members: Array<MemberRow & { paid: boolean }>

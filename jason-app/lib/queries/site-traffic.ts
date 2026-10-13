@@ -2,6 +2,7 @@
 // lu depuis la table site_visits (une ligne par page vue, écrite par
 // api/track/visit.js côté site statique). Réservé à l'admin.
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { allRows } from '@/lib/supabase/all-rows'
 
 export type Channel = 'direct' | 'recherche' | 'social' | 'referral'
 
@@ -43,11 +44,11 @@ export interface ChannelBreakdown {
 /** Sessions distinctes ayant eu au moins une page vue dans les N dernières minutes. */
 export async function getLiveVisitorsCount(admin: SupabaseClient, minutes = 5): Promise<number> {
   const since = new Date(Date.now() - minutes * 60 * 1000).toISOString()
-  const { data } = await admin
+  const { rows: data } = await allRows<{ session_id: string }>((from, to) => admin
     .from('site_visits')
     .select('session_id')
     .gte('created_at', since)
-    .limit(5000)
+    .order('id').range(from, to), 20_000)
   if (!data) return 0
   return new Set(data.map((r: { session_id: string }) => r.session_id)).size
 }
@@ -55,11 +56,12 @@ export async function getLiveVisitorsCount(admin: SupabaseClient, minutes = 5): 
 /** Répartition des sessions (pas des pages vues) par canal sur les N dernières heures. */
 export async function getChannelBreakdown(admin: SupabaseClient, hours = 24): Promise<ChannelBreakdown[]> {
   const since = new Date(Date.now() - hours * 3600 * 1000).toISOString()
-  const { data } = await admin
+  // Ordre chronologique : le premier passage de chaque session donne son canal
+  const { rows: data } = await allRows<{ session_id: string; referrer: string | null; utm_source: string | null; utm_medium: string | null }>((from, to) => admin
     .from('site_visits')
     .select('session_id, referrer, utm_source, utm_medium')
     .gte('created_at', since)
-    .limit(20000)
+    .order('created_at').order('id').range(from, to))
   if (!data || data.length === 0) return []
 
   // Une session peut avoir plusieurs pages vues avec des referrers différents
@@ -86,11 +88,11 @@ export interface TopPage { path: string; views: number }
 /** Pages les plus vues (toutes visites confondues, pas de dédup par session) sur les N dernières heures. */
 export async function getTopPages(admin: SupabaseClient, hours = 24 * 7, limit = 8): Promise<TopPage[]> {
   const since = new Date(Date.now() - hours * 3600 * 1000).toISOString()
-  const { data } = await admin
+  const { rows: data } = await allRows<{ path: string }>((from, to) => admin
     .from('site_visits')
     .select('path')
     .gte('created_at', since)
-    .limit(20000)
+    .order('id').range(from, to))
   if (!data || data.length === 0) return []
 
   const counts: Record<string, number> = {}
@@ -112,11 +114,11 @@ export interface AffiliateClicksSummary {
 /** Clics sortants sur les liens affiliés (rel="sponsored") sur les N derniers jours. */
 export async function getAffiliateClicks(admin: SupabaseClient, days = 30): Promise<AffiliateClicksSummary> {
   const since = new Date(Date.now() - days * 24 * 3600 * 1000).toISOString()
-  const { data } = await admin
+  const { rows: data } = await allRows<{ partner: string; path: string }>((from, to) => admin
     .from('affiliate_clicks')
     .select('partner, path')
     .gte('created_at', since)
-    .limit(20000)
+    .order('id').range(from, to))
   const rows = (data ?? []) as Array<{ partner: string; path: string }>
   const partners: Record<string, number> = {}
   const pages: Record<string, number> = {}

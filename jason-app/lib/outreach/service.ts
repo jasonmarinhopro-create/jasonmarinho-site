@@ -7,6 +7,7 @@ import { randomUUID } from 'node:crypto'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import { logger } from '@/lib/logger'
+import { allRows } from '@/lib/supabase/all-rows'
 import {
   afterSend, complianceFooter, guessFirstName, isoWeekday, renderTemplate, replySubject, scheduleStep,
   textToHtml, DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL, normalizeTag, LEGACY_DEFAULT_SIGNATURE, CLOSED_STAGES, normalizeMessageId, uniqueProDomains, type Audience, type Source, type Stage,
@@ -186,7 +187,7 @@ async function syncSignups(db: Db): Promise<number> {
     { audience: 'menage', table: 'cleaners' },
   ]
   for (const t of tables) {
-    const { data: contacts } = await db.from('outreach_contacts').select('id, email_norm, stage').eq('audience', t.audience).in('stage', [...OPEN_FOR_SIGNUP, 'inscrit']).not('email_norm', 'is', null).limit(2000)
+    const { rows: contacts } = await allRows<{ id: string; email_norm: string | null; stage: string }>((from, to) => db.from('outreach_contacts').select('id, email_norm, stage').eq('audience', t.audience).in('stage', [...OPEN_FOR_SIGNUP, 'inscrit']).not('email_norm', 'is', null).order('id').range(from, to), 20_000)
     if (!contacts?.length) continue
     const emails = contacts.map(c => c.email_norm as string)
     const found = new Map<string, string>()
@@ -201,7 +202,7 @@ async function syncSignups(db: Db): Promise<number> {
     changed += toClient.length + toInscrit.length
   }
   // Hôtes : compte créé (profiles.email), abonnement Standard = client
-  const { data: hosts } = await db.from('outreach_contacts').select('id, email_norm, stage').eq('audience', 'hote').in('stage', [...OPEN_FOR_SIGNUP, 'inscrit']).not('email_norm', 'is', null).limit(2000)
+  const { rows: hosts } = await allRows<{ id: string; email_norm: string | null; stage: string }>((from, to) => db.from('outreach_contacts').select('id, email_norm, stage').eq('audience', 'hote').in('stage', [...OPEN_FOR_SIGNUP, 'inscrit']).not('email_norm', 'is', null).order('id').range(from, to), 20_000)
   if (hosts?.length) {
     const emails = hosts.map(c => c.email_norm as string)
     const plans = new Map<string, string>()
@@ -261,12 +262,13 @@ export async function handleInbox(db: Db, settings: Settings, opts: { sinceDays?
   const cfg = outreachConfig()
   if (!cfg) return empty
   // Contacts à surveiller : ceux qu'on a déjà contactés
-  const { data: contacted } = await db.from('outreach_contacts').select('id, email_norm, stage').not('last_contacted_at', 'is', null).not('email_norm', 'is', null).limit(5000)
+  const { rows: contacted } = await allRows<{ id: string; email_norm: string | null; stage: string }>((from, to) => db.from('outreach_contacts').select('id, email_norm, stage').not('last_contacted_at', 'is', null).not('email_norm', 'is', null).order('id').range(from, to), 20_000)
   const byEmail = new Map((contacted ?? []).map(c => [c.email_norm as string, c]))
   // Fil de discussion : nos Message-ID des 90 derniers jours → contact
   const idByContact = new Map((contacted ?? []).map(c => [c.id as string, c.email_norm as string]))
-  const { data: sends } = await db.from('outreach_sends').select('contact_id, message_id')
-    .not('message_id', 'is', null).gte('created_at', new Date(Date.now() - 90 * 86400_000).toISOString()).limit(10000)
+  const since90 = new Date(Date.now() - 90 * 86400_000).toISOString()
+  const { rows: sends } = await allRows<{ contact_id: string; message_id: string }>((from, to) => db.from('outreach_sends').select('contact_id, message_id')
+    .not('message_id', 'is', null).gte('created_at', since90).order('id').range(from, to), 30_000)
   const byThread = new Map<string, string>()
   for (const r of (sends ?? []) as Array<{ contact_id: string; message_id: string }>) {
     const email = idByContact.get(r.contact_id)
