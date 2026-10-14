@@ -4,29 +4,32 @@
 // pause), signature, passage manuel et bonnes pratiques de délivrabilité.
 
 import { useState } from 'react'
-import { EnvelopeSimple, Gauge, Play, CheckCircle, WarningCircle, ShieldCheck } from '@phosphor-icons/react/dist/ssr'
+import { EnvelopeSimple, Gauge, Play, CheckCircle, WarningCircle, ShieldCheck, TrendUp } from '@phosphor-icons/react/dist/ssr'
 import { AMBER, tint } from '../_ui/theme'
 import { saveSettings, runNow } from './actions'
 import { DEFAULT_SIGNATURE, LEGACY_DEFAULT_SIGNATURE, SIGNATURE_PHOTO_URL, signatureToHtml } from '@/lib/outreach/engine'
 import { ui, type MailConfig, type SettingsRow } from './shared'
+import WarmupCard from './WarmupCard'
 
 const DAYS = [
   { n: 1, l: 'Lun' }, { n: 2, l: 'Mar' }, { n: 3, l: 'Mer' }, { n: 4, l: 'Jeu' }, { n: 5, l: 'Ven' }, { n: 6, l: 'Sam' }, { n: 7, l: 'Dim' },
 ]
 
-export default function SettingsTab({ settings, config }: { settings: SettingsRow; config: MailConfig }) {
+export default function SettingsTab({ settings, config, today }: { settings: SettingsRow; config: MailConfig; today: string }) {
   const [cap, setCap] = useState(settings.daily_cap)
   const [days, setDays] = useState<number[]>(settings.send_days)
   const [paused, setPaused] = useState(settings.paused)
   const [photo, setPhoto] = useState(settings.signature_photo)
   const [signature, setSignature] = useState(settings.signature && settings.signature.trim() !== LEGACY_DEFAULT_SIGNATURE ? settings.signature : DEFAULT_SIGNATURE)
+  const [warmupOn, setWarmupOn] = useState(settings.warmup.enabled)
+  const [ceiling, setCeiling] = useState(settings.warmup.ceiling)
   const [busy, setBusy] = useState<string | null>(null)
   const [msg, setMsg] = useState<{ ok?: string; err?: string } | null>(null)
   const hostinger = /hostinger/i.test(config.host ?? '')
 
   async function save() {
     setBusy('save')
-    const res = await saveSettings({ daily_cap: cap, send_days: days, paused, signature, signature_photo: photo })
+    const res = await saveSettings({ daily_cap: cap, send_days: days, paused, signature, signature_photo: photo, ...(settings.warmup.supported ? { warmup_enabled: warmupOn, warmup_ceiling: ceiling } : {}) })
     setBusy(null)
     setMsg(res.ok ? { ok: 'Réglages enregistrés' } : { err: res.error })
   }
@@ -66,7 +69,7 @@ export default function SettingsTab({ settings, config }: { settings: SettingsRo
         <section style={{ ...ui.card, display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <Head icon={<ShieldCheck size={18} weight="fill" />} title="Pour arriver en boîte de réception" sub="Les bonnes pratiques qui évitent les courriers indésirables." />
           <ul style={s.list}>
-            <li>Commence à 15 à 25 e-mails par jour la première semaine, puis augmente doucement.</li>
+            <li>Commence à 15 à 25 e-mails par jour la première semaine, puis augmente doucement : la montée en charge automatique s&apos;en occupe.</li>
             <li>Vérifie que ton domaine a SPF, DKIM et DMARC. Chez Hostinger : bouton « Résoudre » de l&apos;alerte « enregistrements manquants ». Un seul enregistrement SPF par domaine : s&apos;il en existe déjà un, fusionne-les.</li>
             <li>Des e-mails courts, en texte simple, sans image ni pièce jointe : c&apos;est déjà le cas des séquences.</li>
             <li>Réponds vite aux réponses : c&apos;est là que se font les inscriptions.</li>
@@ -76,10 +79,16 @@ export default function SettingsTab({ settings, config }: { settings: SettingsRo
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
+        <section style={{ ...ui.card, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <Head icon={<TrendUp size={18} weight="bold" />} title="Montée en charge automatique" sub="Chaque jour d'envoi, avant les envois, l'app relit les 7 derniers jours : si tout se passe bien, elle monte le plafond doucement ; aux premiers mauvais signaux, elle le garde ou le baisse." />
+          <WarmupCard warmup={settings.warmup} cap={settings.daily_cap} enabled={warmupOn} setEnabled={setWarmupOn} ceiling={ceiling} setCeiling={setCeiling} today={today} />
+          <button type="button" onClick={save} disabled={busy === 'save'} style={{ ...ui.btn, alignSelf: 'flex-start' }}>{busy === 'save' ? 'Enregistrement…' : 'Enregistrer'}</button>
+        </section>
+
         <section style={{ ...ui.card, display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <Head icon={<Gauge size={18} weight="fill" />} title="Rythme d'envoi" sub="Chaque jour d'envoi, vers 9 h (8 h en hiver), l'app lit ta boîte puis envoie les e-mails prévus." />
           <label style={ui.label}>
-            Plafond par jour
+            {settings.warmup.supported && warmupOn ? 'Plafond du jour (ajusté chaque matin par la montée en charge)' : 'Plafond par jour'}
             <input type="number" min={1} max={200} value={cap} onChange={e => setCap(parseInt(e.target.value) || 1)} style={{ ...ui.input, maxWidth: '140px' }} />
           </label>
           {hostinger && cap > 80 && (

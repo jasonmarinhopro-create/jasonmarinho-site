@@ -94,6 +94,7 @@ export interface MigrationProbe {
 /** Migrations récentes à vérifier : une table ou une colonne qu'elles créent. */
 export const MIGRATION_PROBES: MigrationProbe[] = [
   { file: '20261013_134_idees_pour_tous.sql', what: 'Idées & feuille de route ouvertes à tous (espace, réponse de Jason)', table: 'roadmap_items', column: 'espace' },
+  { file: '20261014_135_prospection_montee_en_charge.sql', what: 'Prospection : montée en charge automatique du plafond d\'envoi', table: 'outreach_settings', column: 'warmup_enabled' },
   { file: '20261012_133_demandes_suivi_admin.sql', what: 'suivi des demandes d’hôtes dans le QG (vue, note, traitée)', table: 'demandes_hotes', column: 'admin_note' },
   { file: '20261012_132_demandes_hotes.sql', what: 'demande inversée : besoins des hôtes envoyés aux pros', table: 'demandes_hotes', column: 'ville' },
   { file: '20261012_131_fiches_pros_vitrine.sql', what: 'photos, formules, villes et étapes des fiches pros (et mesure du stockage)', table: 'cleaners', column: 'formules' },

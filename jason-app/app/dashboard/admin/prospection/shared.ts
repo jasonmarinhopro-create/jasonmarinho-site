@@ -1,6 +1,7 @@
 // Types et styles partagés de la page Admin → Prospection.
 
 import type { Audience, Source, Stage } from '@/lib/outreach/engine'
+import type { WarmupDecision, WarmupLogEntry, WarmupStats } from '@/lib/outreach/warmup'
 import { AMBER, BROWN, PINK, tint } from '../_ui/theme'
 
 export interface StepRow { id: string; position: number; delay_days: number; subject: string; body: string; same_thread: boolean }
@@ -53,7 +54,19 @@ export interface ContactRow {
 }
 export interface SendRow { id: string; contact_id: string | null; sequence_id: string | null; step_position: number | null; email: string; subject: string; status: 'envoye' | 'erreur'; error: string | null; sent_at: string }
 export interface Stats { sentToday: number; sent7: number; sent30: number; errors7: number; replies30: number; contacted30: number }
-export interface SettingsRow { daily_cap: number; send_days: number[]; paused: boolean; signature: string | null; signature_photo: boolean; last_run_at: string | null; last_run_summary: string | null }
+export interface WarmupView {
+  /** false : migration 135 pas encore appliquée */
+  supported: boolean
+  enabled: boolean
+  ceiling: number
+  checkedOn: string | null
+  log: WarmupLogEntry[]
+  /** Signaux des 7 derniers jours, lus à l'ouverture de la page */
+  live: WarmupStats | null
+  /** Ce que déciderait la montée en charge maintenant */
+  preview: WarmupDecision | null
+}
+export interface SettingsRow { daily_cap: number; send_days: number[]; paused: boolean; signature: string | null; signature_photo: boolean; last_run_at: string | null; last_run_summary: string | null; warmup: WarmupView }
 export interface MailConfig { configured: boolean; from: string | null; host: string | null; placesKey: boolean
   /** Recherches Google Maps du mois et plafond (sous la part gratuite), null si le compteur manque */
   placesUsed?: { used: number; cap: number; free: number } | null }

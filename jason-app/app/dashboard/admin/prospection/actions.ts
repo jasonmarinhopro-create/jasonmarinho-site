@@ -11,6 +11,8 @@ import { relaunchOutreach } from '@/lib/outreach/relaunch'
 import { searchGooglePlaces, searchSirene, findEmailOnSite, type FoundContact } from '@/lib/outreach/sources'
 import { cleanTag, mergeTags, normalizeTag, type Audience, type Stage } from '@/lib/outreach/engine'
 import type { CsvContact } from '@/lib/outreach/csv'
+import { clampCeiling } from '@/lib/outreach/warmup'
+import { parisToday } from '@/lib/stripe/deposit-window'
 
 const PATH = '/dashboard/admin/prospection'
 
@@ -358,15 +360,27 @@ export async function findEmails(contactIds: string[]): Promise<Res<{ found: num
 
 // ─── Réglages et envois ─────────────────────────────────────────────────────
 
-export async function saveSettings(input: { daily_cap: number; send_days: number[]; paused: boolean; signature: string; signature_photo: boolean }): Promise<Res> {
+export async function saveSettings(input: { daily_cap: number; send_days: number[]; paused: boolean; signature: string; signature_photo: boolean; warmup_enabled?: boolean; warmup_ceiling?: number }): Promise<Res> {
   return wrap(async () => {
     const db = await requireAdmin()
     const days = input.send_days.filter(d => d >= 1 && d <= 7)
     if (!days.length) throw new Error('Choisis au moins un jour d\'envoi.')
+    const before = await loadSettings(db)
+    const cap = Math.min(200, Math.max(1, Math.round(input.daily_cap)))
     await db.from('outreach_settings').update({
-      daily_cap: Math.min(200, Math.max(1, Math.round(input.daily_cap))), send_days: days, paused: input.paused,
+      daily_cap: cap, send_days: days, paused: input.paused,
       signature: input.signature.trim().slice(0, 500) || null, updated_at: new Date().toISOString(),
     }).eq('id', 1)
+    // Montée en charge (migration 135) : écrite à part, tolérée si absente.
+    // Un plafond changé à la main compte comme un changement : pas de hausse
+    // automatique avant 2 jours.
+    if (before.warmup_supported && input.warmup_enabled !== undefined) {
+      await db.from('outreach_settings').update({
+        warmup_enabled: input.warmup_enabled,
+        warmup_ceiling: clampCeiling(input.warmup_ceiling),
+        ...(cap !== before.daily_cap ? { warmup_last_change: parisToday() } : {}),
+      }).eq('id', 1)
+    }
     // Colonne de la migration 116 : écrite à part pour que le reste s'enregistre même sans elle
     const { error } = await db.from('outreach_settings').update({ signature_photo: input.signature_photo }).eq('id', 1)
     if (error && !input.signature_photo) throw new Error(migrationHint(error.message))

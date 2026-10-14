@@ -10,13 +10,14 @@ import { PLAYBOOK_TEXT_FIXES } from '@/lib/outreach/playbook'
 import { NextResponse } from 'next/server'
 import { getServiceClient } from '@/lib/supabase/service'
 import { outreachConfig } from '@/lib/outreach/mailer'
-import { handleInbox, installPlaybookSequences, loadSettings, runOutreach, sendTest } from '@/lib/outreach/service'
+import { handleInbox, installPlaybookSequences, loadSettings, runOutreach, sendTest, warmupStats } from '@/lib/outreach/service'
 import { relaunchOutreach } from '@/lib/outreach/relaunch'
 import { checkSpf } from '@/lib/outreach/spf'
 import { searchGooglePlaces, findEmailOnSite } from '@/lib/outreach/sources'
 import { placesUsage } from '@/lib/google/places-budget'
 import type { Audience } from '@/lib/outreach/engine'
 import { allRows } from '@/lib/supabase/all-rows'
+import { parisToday } from '@/lib/stripe/deposit-window'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -125,6 +126,14 @@ async function status(db: Db) {
     ok: true,
     migration115: true,
     migration116: !m116.error,
+    // Montée en charge (migration 135) : réglage, signaux 7 jours et dernière décision, nombres seulement
+    montee_en_charge: settings && 'warmup_enabled' in settings ? {
+      active: settings.warmup_enabled, plafond: settings.daily_cap, maximum: settings.warmup_ceiling,
+      signaux_7j: await warmupStats(db, parisToday()).catch(() => null),
+      derniere_decision: Array.isArray(settings.warmup_log) && settings.warmup_log[0]
+        ? { date: settings.warmup_log[0].date, action: settings.warmup_log[0].action, de: settings.warmup_log[0].from, a: settings.warmup_log[0].to, niveau: settings.warmup_log[0].level }
+        : null,
+    } : 'migration 135 absente',
     boite_configuree: !!cfg,
     serveur_smtp: cfg?.smtpHost ?? null,
     spf_ok: spf?.ok ?? false,

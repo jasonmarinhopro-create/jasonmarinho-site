@@ -5,8 +5,10 @@ import { allRows } from '@/lib/supabase/all-rows'
 import { outreachConfig } from '@/lib/outreach/mailer'
 import { placesUsage } from '@/lib/google/places-budget'
 import { parisToday } from '@/lib/stripe/deposit-window'
+import { loadSettings, warmupStats } from '@/lib/outreach/service'
+import { decideWarmup } from '@/lib/outreach/warmup'
 import ProspectionScreen from './ProspectionScreen'
-import type { ContactRow, SendRow, SequenceRow, SettingsRow, StepRow } from './shared'
+import type { ContactRow, SendRow, SequenceRow, SettingsRow, StepRow, WarmupView } from './shared'
 
 const SEQ_COLS = 'id, nom, audience, description, trigger, trigger_stage, enabled, stop_on_reply, repeat_after_days, max_repeats, then_sequence_id, end_stage, position'
 const CONTACT_COLS = 'id, audience, email, prenom, nom, entreprise, ville, departement, site_web, telephone, instagram, source, source_detail, stage, notes, tags, last_contacted_at, replied_at, created_at'
@@ -125,6 +127,7 @@ export default async function ProspectionPage() {
   const settingsRow: SettingsRow = {
     daily_cap: settings?.daily_cap ?? 25, send_days: settings?.send_days ?? [1, 2, 3, 4, 5], paused: settings?.paused ?? false,
     signature: settings?.signature ?? null, signature_photo: settings?.signature_photo ?? true, last_run_at: settings?.last_run_at ?? null, last_run_summary: settings?.last_run_summary ?? null,
+    warmup: await warmupView(db, today),
   }
 
   const usage = await placesUsage().catch(() => null)
@@ -145,4 +148,14 @@ export default async function ProspectionPage() {
       }}
     />
   )
+}
+
+/** Montée en charge : réglages, journal et signaux des 7 derniers jours. */
+async function warmupView(db: ReturnType<typeof getServiceClient>, today: string): Promise<WarmupView> {
+  const st = await loadSettings(db)
+  const live = st.warmup_supported ? await warmupStats(db, today).catch(() => null) : null
+  return {
+    supported: st.warmup_supported, enabled: st.warmup_enabled, ceiling: st.warmup_ceiling, checkedOn: st.warmup_checked_on, log: st.warmup_log, live,
+    preview: live ? decideWarmup({ cap: st.daily_cap, ceiling: st.warmup_ceiling, stats: live, today, lastChange: st.warmup_last_change, lastCut: st.warmup_last_cut }) : null,
+  }
 }

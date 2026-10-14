@@ -15,6 +15,7 @@ import {
 import { isPermanentAddressError, outreachConfig, scanInbox, sendOutreachMail } from './mailer'
 import { PLAYBOOK } from './playbook'
 import { checkSpf } from './spf'
+import { classifyError, clampCeiling, decideWarmup, pushLog, WARMUP, type WarmupDecision, type WarmupLogEntry, type WarmupStats } from './warmup'
 import { shortenProspectionLinks } from '@/lib/acquisition/rules'
 
 /** Liens courts suivis dans les e-mails envoyés à partir de ce moment (aperçu fidèle des anciens) */
@@ -35,6 +36,14 @@ export interface Settings {
   last_imap_check: string | null
   last_run_at: string | null
   last_run_summary: string | null
+  /** Montée en charge (migration 135) : false si les colonnes manquent */
+  warmup_supported: boolean
+  warmup_enabled: boolean
+  warmup_ceiling: number
+  warmup_checked_on: string | null
+  warmup_last_change: string | null
+  warmup_last_cut: string | null
+  warmup_log: WarmupLogEntry[]
 }
 
 export async function loadSettings(db: Db): Promise<Settings> {
@@ -49,7 +58,78 @@ export async function loadSettings(db: Db): Promise<Settings> {
     last_imap_check: data?.last_imap_check ?? null,
     last_run_at: data?.last_run_at ?? null,
     last_run_summary: data?.last_run_summary ?? null,
+    warmup_supported: !!data && 'warmup_enabled' in data,
+    warmup_enabled: data?.warmup_enabled ?? false,
+    warmup_ceiling: clampCeiling(data?.warmup_ceiling),
+    warmup_checked_on: data?.warmup_checked_on ?? null,
+    warmup_last_change: data?.warmup_last_change ?? null,
+    warmup_last_cut: data?.warmup_last_cut ?? null,
+    warmup_log: Array.isArray(data?.warmup_log) ? data.warmup_log : [],
   }
+}
+
+// ─── Montée en charge ──────────────────────────────────────────────────────
+
+/** Signaux des 7 derniers jours (nombres seulement, rien de personnel). */
+export async function warmupStats(db: Db, today: string): Promise<WarmupStats> {
+  const since = new Date(Date.now() - WARMUP.windowDays * 86400_000).toISOString()
+  const since3 = new Date(Date.now() - 4 * 86400_000).toISOString()
+  const [{ count: sent }, errs, supp, { count: replies }, recent] = await Promise.all([
+    db.from('outreach_sends').select('id', { count: 'exact', head: true }).eq('status', 'envoye').gte('sent_at', since),
+    db.from('outreach_sends').select('error').eq('status', 'erreur').gte('sent_at', since).limit(1000),
+    db.from('outreach_suppressions').select('reason').gte('created_at', since).limit(1000),
+    db.from('outreach_contacts').select('id', { count: 'exact', head: true }).gte('replied_at', since),
+    db.from('outreach_sends').select('sent_at').eq('status', 'envoye').gte('sent_at', since3).limit(1000),
+  ])
+  let blocks = 0, otherErrors = 0
+  for (const r of errs.data ?? []) {
+    const k = classifyError(r.error as string | null)
+    // Adresse inconnue : déjà comptée en rebond (suppression « rebond »)
+    if (k === 'blocage') blocks++
+    else if (k === 'autre') otherErrors++
+  }
+  const reasons = (supp.data ?? []).map(r => r.reason as string)
+  const perDay = new Map<string, number>()
+  for (const r of recent.data ?? []) {
+    const d = parisToday(new Date(r.sent_at as string))
+    if (d !== today) perDay.set(d, (perDay.get(d) ?? 0) + 1)
+  }
+  return {
+    sent: sent ?? 0,
+    bounces: reasons.filter(r => r === 'rebond').length,
+    unsubscribes: reasons.filter(r => r === 'desinscrit').length,
+    complaints: reasons.filter(r => r === 'plainte').length,
+    blocks, otherErrors,
+    replies: replies ?? 0,
+    busiestDay: Math.max(0, ...Array.from(perDay.values())),
+  }
+}
+
+/**
+ * Une décision par jour d'envoi, avant les envois : monte, garde ou baisse le
+ * plafond (règles de warmup.ts). Rien si la migration 135 manque ou si la
+ * montée en charge est coupée dans les Réglages.
+ */
+export async function applyWarmup(db: Db, settings: Settings, today: string): Promise<WarmupDecision | null> {
+  if (!settings.warmup_supported || !settings.warmup_enabled || settings.warmup_checked_on === today) return null
+  const stats = await warmupStats(db, today)
+  const d = decideWarmup({
+    cap: settings.daily_cap, ceiling: settings.warmup_ceiling, stats, today,
+    lastChange: settings.warmup_last_change, lastCut: settings.warmup_last_cut,
+  })
+  const entry: WarmupLogEntry = { date: today, level: d.level, action: d.action, from: settings.daily_cap, to: d.cap, reasons: d.reasons, stats }
+  const { error } = await db.from('outreach_settings').update({
+    daily_cap: d.cap,
+    warmup_checked_on: today,
+    ...(d.action !== 'garder' ? { warmup_last_change: today } : {}),
+    ...(d.action === 'baisser' ? { warmup_last_cut: today } : {}),
+    warmup_log: pushLog(settings.warmup_log, entry),
+    updated_at: new Date().toISOString(),
+  }).eq('id', 1)
+  if (error) { log.error('montée en charge', error); return null }
+  settings.daily_cap = d.cap
+  settings.warmup_checked_on = today
+  return d
 }
 
 
@@ -164,6 +244,8 @@ export interface RunSummary {
   skipped?: string
   /** Envois encore dus quand le temps du passage est écoulé : relancer un passage */
   more?: boolean
+  /** Décision de la montée en charge du jour (premier passage seulement) */
+  warmup?: string
 }
 
 /**
@@ -317,6 +399,13 @@ export async function runOutreach(db: Db, opts: { budgetMs?: number; force?: boo
       summary.bounces = inbox.bounces
     } catch (e) { log.error('lecture de la boîte', e) }
     try { summary.signups = await syncSignups(db) } catch (e) { log.error('inscriptions', e) }
+    // Montée en charge : une fois par jour d'envoi, après la lecture des rebonds
+    if (settings.send_days.includes(isoWeekday(today))) {
+      try {
+        const w = await applyWarmup(db, settings, today)
+        if (w) summary.warmup = `${w.action === 'monter' ? 'Plafond monté' : w.action === 'baisser' ? 'Plafond baissé' : 'Plafond gardé'} : ${w.cap}`
+      } catch (e) { log.error('montée en charge', e) }
+    }
     try { summary.autoEnrolled = await autoEnroll(db, today, settings.daily_cap) } catch (e) { log.error('inscription auto', e) }
   }
 
@@ -336,6 +425,7 @@ export async function runOutreach(db: Db, opts: { budgetMs?: number; force?: boo
     summary.replies ? `${summary.replies} réponse${summary.replies > 1 ? 's' : ''}` : '',
     summary.bounces ? `${summary.bounces} rebond${summary.bounces > 1 ? 's' : ''}` : '',
     summary.signups ? `${summary.signups} inscription${summary.signups > 1 ? 's' : ''}` : '',
+    summary.warmup ?? '',
     summary.skipped ?? '',
   ].filter(Boolean).join(' · ')
   const label = `${opts.sendOnly ? 'Suite du passage : ' : ''}${text}${summary.more ? ' · la suite part dans la foulée' : ''}`
