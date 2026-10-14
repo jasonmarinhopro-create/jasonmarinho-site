@@ -139,6 +139,21 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
     else if (res.info) setOk(res.info)
   }
 
+  // Aperçu admin : la page Stripe que le pro verrait, sans rien changer à sa fiche
+  async function handlePreviewPay() {
+    const okGo = await confirm({
+      message: `Tu vas voir la page de paiement Stripe que verrait ${displayName}. Ne paie pas : le paiement serait pris sur ta carte et activerait sa fiche.`,
+      confirmLabel: 'Ouvrir la page',
+    })
+    if (!okGo) return
+    setErr(null); setOk(null); setPayBusy(true)
+    const res = await resumeFichePayment(photographer.id)
+    if (res.checkoutUrl) { window.location.href = res.checkoutUrl; return }
+    setPayBusy(false)
+    if (res.error) setErr(res.error)
+    else if (res.info) setOk(res.info)
+  }
+
   async function handlePortal() {
     setPortalBusy(true)
     const res = await createCustomerPortalSession(isAdminPreview ? photographer.id : undefined)
@@ -193,6 +208,11 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         }
       >
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 16px' }}>
+          {isAdminPreview && isPending && !subRunning && (
+            <button type="button" onClick={handlePreviewPay} disabled={payBusy} style={{ ...heroCta, border: 'none', cursor: payBusy ? 'wait' : 'pointer' }}>
+              <CreditCard size={15} weight="bold" /> {payBusy ? 'Ouverture…' : 'Voir sa page de paiement'}
+            </button>
+          )}
           {canPay && (
             <button type="button" onClick={handlePay} disabled={payBusy} style={{ ...heroCta, border: 'none', cursor: payBusy ? 'wait' : 'pointer' }}>
               <CreditCard size={15} weight="bold" /> {payBusy ? 'Ouverture du paiement…' : 'Finaliser mon paiement'}

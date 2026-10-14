@@ -89,7 +89,7 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
     })
   }
   async function handleDeleteOrphan(c: Cleaner) {
-    if (!(await confirm({ message: `Supprimer définitivement ${name(c)} (orphelin sans paiement Stripe) ? Le compte Supabase Auth est aussi supprimé.`, confirmLabel: 'Supprimer', danger: true }))) return
+    if (!(await confirm({ message: `Supprimer définitivement ${name(c)} (orphelin sans paiement Stripe) ? Son compte est aussi supprimé s’il ne sert à rien d’autre (pas de logement ni d’autre fiche).`, confirmLabel: 'Supprimer', danger: true }))) return
     setErr(null); setOk(null)
     startBusy(async () => {
       const res = await deleteOrphanCleaner(c.id)
@@ -186,7 +186,7 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
             <Clock size={12} weight="fill" style={{ marginRight: 4 }} />
             Paiement en cours ou orphelins · {pendingPayment.length}
           </summary>
-          <p style={s.helpText}>Inscriptions qui ont créé un compte mais sans paiement Stripe finalisé. Auto-nettoyés au prochain signup avec le même email (rollback intégré).</p>
+          <p style={s.helpText}>Fiche enregistrée, paiement Stripe pas encore finalisé. En se connectant, la personne trouve « Finaliser mon paiement » dans Ma fiche (sa fiche et son compte sont gardés). Place Fondateur gardée 7 jours. « Voir sa fiche » ouvre son espace, avec sa page de paiement.</p>
           <div style={s.table}>
             <div style={s.theadGrid} className="adm-thead">
               <span>Équipe</span>
@@ -202,6 +202,9 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
                 <div style={s.cellMid}>{c.email}</div>
                 <div style={s.cellMid}>il y a {fmtAge(c.created_at)}</div>
                 <div style={s.actions}>
+                  <Link href={`/dashboard/ma-fiche-menage?id=${c.id}`} style={s.linkBtn} title="Ouvrir son espace et sa page de paiement">
+                    <Eye size={11} weight="bold" /> Voir sa fiche
+                  </Link>
                   <button onClick={() => handleDeleteOrphan(c)} disabled={busy} style={s.btnDanger}>
                     <Trash size={11} weight="bold" /> Supprimer
                   </button>

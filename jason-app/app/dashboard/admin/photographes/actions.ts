@@ -342,7 +342,15 @@ export async function deleteOrphanPhotographer(photographerId: string): Promise<
   }
 
   await admin.from('photographers').delete().eq('id', photographerId)
-  if (ph.user_id) {
+  // Compte supprimé seulement s'il ne sert qu'à cette inscription : jamais un
+  // compte hôte (logements) ni un compte qui a une autre fiche pro.
+  const [{ count: logs }, { count: others }] = ph.user_id
+    ? await Promise.all([
+        admin.from('logements').select('id', { count: 'exact', head: true }).eq('user_id', ph.user_id),
+        admin.from('cleaners').select('id', { count: 'exact', head: true }).eq('user_id', ph.user_id),
+      ])
+    : [{ count: 0 }, { count: 0 }]
+  if (ph.user_id && !logs && !others) {
     await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/admin/users/${ph.user_id}`, {
       method: 'DELETE',
       headers: {

@@ -33,7 +33,12 @@ const CONF = {
 
 export type ProKind = keyof typeof CONF
 
-export async function resumeProCheckout(kind: ProKind): Promise<{ checkoutUrl?: string; error?: string; info?: string }> {
+/**
+ * `adminTargetId` : aperçu admin (« Voir la page de paiement ») : ouvre la même
+ * page Stripe que le pro verrait, sans rien changer à sa fiche (palier, date).
+ * Si l'admin payait, c'est la fiche du pro qui serait activée : bouton prévenu.
+ */
+export async function resumeProCheckout(kind: ProKind, adminTargetId?: string): Promise<{ checkoutUrl?: string; error?: string; info?: string }> {
   const c = CONF[kind]
   const user = await getAuthUser()
   if (!user) return { error: 'Connecte-toi pour finaliser ton paiement.' }
@@ -43,12 +48,16 @@ export async function resumeProCheckout(kind: ProKind): Promise<{ checkoutUrl?: 
   }
 
   const admin = getServiceClient()
-  // Seulement la fiche du compte connecté : jamais en aperçu admin
-  const { data: fiche } = await admin
-    .from(c.table)
-    .select('id, email, tier, status, stripe_subscription_status')
-    .eq('user_id', user.id)
-    .maybeSingle()
+  let preview = false
+  if (adminTargetId) {
+    const { data: prof } = await admin.from('profiles').select('role').eq('id', user.id).maybeSingle()
+    if (prof?.role !== 'admin') return { error: 'Réservé à l’admin.' }
+    preview = true
+  }
+  const base = admin.from(c.table).select('id, email, tier, status, stripe_subscription_status, user_id')
+  const { data: fiche } = preview
+    ? await base.eq('id', adminTargetId!).maybeSingle()
+    : await base.eq('user_id', user.id).maybeSingle()
   if (!fiche) return { error: 'Aucune fiche rattachée à ce compte.' }
   if (!canResumePayment(fiche)) {
     return { info: 'Ton abonnement est déjà en place : ta fiche s’active dans quelques minutes.' }
@@ -76,20 +85,22 @@ export async function resumeProCheckout(kind: ProKind): Promise<{ checkoutUrl?: 
     .eq('tier', 'fondateur')
     .neq('id', fiche.id)
     .or(founderSeatFilter())
-  const tier = tierFor(count ?? 0)
+  // Aperçu admin : palier enregistré, rien n'est modifié
+  const tier = preview ? (fiche.tier === 'standard' ? 'standard' : 'fondateur') : tierFor(count ?? 0)
   const priceId = tier === 'fondateur' ? c.founderPrice : c.standardPrice
 
-  // La fiche repart de maintenant : elle regarde sa place 7 jours de plus
-  await admin.from(c.table).update({ tier, created_at: new Date().toISOString() }).eq('id', fiche.id)
+  // La fiche repart de maintenant : elle garde sa place 7 jours de plus
+  if (!preview) await admin.from(c.table).update({ tier, created_at: new Date().toISOString() }).eq('id', fiche.id)
 
-  const metadata = { [c.metaKey]: fiche.id, tier, user_id: user.id }
+  const back = preview ? `${APP_URL}${c.page}?id=${fiche.id}` : `${APP_URL}${c.page}?`
+  const metadata = { [c.metaKey]: fiche.id, tier, user_id: fiche.user_id ?? user.id }
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer_email: fiche.email || user.email || undefined,
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${APP_URL}${c.page}?paid=1`,
-      cancel_url: `${APP_URL}${c.page}?canceled=1`,
+      success_url: `${back}${preview ? '&' : ''}paid=1`,
+      cancel_url: `${back}${preview ? '&' : ''}canceled=1`,
       locale: 'fr',
       allow_promotion_codes: true,
       metadata,

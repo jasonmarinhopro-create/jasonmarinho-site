@@ -77,7 +77,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
     })
   }
   async function handleDeleteOrphan(p: Photographer) {
-    if (!(await confirm({ message: `Supprimer définitivement ${p.full_name} (orphelin sans paiement Stripe) ? Le compte Supabase Auth est aussi supprimé.`, confirmLabel: 'Supprimer', danger: true }))) return
+    if (!(await confirm({ message: `Supprimer définitivement ${p.full_name} (orphelin sans paiement Stripe) ? Son compte est aussi supprimé s’il ne sert à rien d’autre (pas de logement ni d’autre fiche).`, confirmLabel: 'Supprimer', danger: true }))) return
     setErr(null); setOk(null)
     startBusy(async () => {
       const res = await deleteOrphanPhotographer(p.id)
@@ -172,7 +172,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
             <Clock size={12} weight="fill" style={{ marginRight: 4 }} />
             Paiement en cours ou orphelins · {pendingPayment.length}
           </summary>
-          <p style={s.helpText}>Inscriptions qui ont créé un compte mais sans paiement Stripe finalisé. Auto-nettoyés au prochain signup avec le même email (rollback intégré). Tu peux aussi forcer la suppression ici.</p>
+          <p style={s.helpText}>Fiche enregistrée, paiement Stripe pas encore finalisé. En se connectant, la personne trouve « Finaliser mon paiement » dans Ma fiche (sa fiche et son compte sont gardés). Place Fondateur gardée 7 jours. « Voir sa fiche » ouvre son espace, avec sa page de paiement.</p>
           <div style={s.table}>
             <div style={s.theadGrid} className="adm-thead">
               <span>Photographe</span>
@@ -188,6 +188,9 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
                 <div style={s.cellMid}>{p.email}</div>
                 <div style={s.cellMid}>il y a {fmtAge(p.created_at)}</div>
                 <div style={s.actions}>
+                  <Link href={`/dashboard/ma-fiche-photographe?id=${p.id}`} style={s.linkBtn} title="Ouvrir son espace et sa page de paiement">
+                    <Eye size={11} weight="bold" /> Voir sa fiche
+                  </Link>
                   <button onClick={() => handleDeleteOrphan(p)} disabled={busy} style={s.btnDanger}>
                     <Trash size={11} weight="bold" /> Supprimer
                   </button>

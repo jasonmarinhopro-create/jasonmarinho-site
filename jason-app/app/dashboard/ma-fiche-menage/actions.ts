@@ -501,7 +501,7 @@ export async function publishFichePhotos(targetId?: string) {
  * Paiement abandonné : rouvre Stripe Checkout pour la fiche déjà enregistrée
  * (bouton « Finaliser mon paiement », lib/pros/resume-checkout.ts).
  */
-export async function resumeFichePayment(): Promise<{ checkoutUrl?: string; error?: string; info?: string }> {
+export async function resumeFichePayment(targetId?: string): Promise<{ checkoutUrl?: string; error?: string; info?: string }> {
   const { resumeProCheckout } = await import('@/lib/pros/resume-checkout')
-  return resumeProCheckout('cleaner')
+  return resumeProCheckout('cleaner', targetId)
 }

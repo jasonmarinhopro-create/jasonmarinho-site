@@ -287,7 +287,15 @@ export async function deleteOrphanCleaner(cleanerId: string): Promise<{ success?
     return { error: 'Cet enregistrement n\'est pas un orphelin.' }
   }
   await admin.from('cleaners').delete().eq('id', cleanerId)
-  if (cl.user_id) {
+  // Compte supprimé seulement s'il ne sert qu'à cette inscription : jamais un
+  // compte hôte (logements) ni un compte qui a une autre fiche pro.
+  const [{ count: logs }, { count: others }] = cl.user_id
+    ? await Promise.all([
+        admin.from('logements').select('id', { count: 'exact', head: true }).eq('user_id', cl.user_id),
+        admin.from('photographers').select('id', { count: 'exact', head: true }).eq('user_id', cl.user_id),
+      ])
+    : [{ count: 0 }, { count: 0 }]
+  if (cl.user_id && !logs && !others) {
     await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/admin/users/${cl.user_id}`, {
       method: 'DELETE',
       headers: {
