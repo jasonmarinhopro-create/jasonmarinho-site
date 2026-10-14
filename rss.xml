@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 12 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 14 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Vacances scolaires 2026-2027 en LCD : 6 règles pour tirer le maximum du calendrier</title>
+      <link>https://jasonmarinho.com/blog/vacances-scolaires-2026-2027-lcd-6-regles-tirer-maximum</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/vacances-scolaires-2026-2027-lcd-6-regles-tirer-maximum</guid>
+      <pubDate>Wed, 14 Oct 2026 08:00:00 GMT</pubDate>
+      <description>Toussaint, Noël, hiver, printemps, grandes vacances : les dates officielles 2026-2027 par zone A, B, C et 6 règles concrètes pour caler tes tarifs, tes durées minimales et ton calendrier d&apos;ouverture en LCD.</description>
+      <category>Revenus</category>
+    </item>
     <item>
       <title>Chèque cadeau LCD : 6 règles pour vendre des bons séjour avant Noël et débloquer ta trésorerie de basse saison</title>
       <link>https://jasonmarinho.com/blog/cheque-cadeau-lcd-6-regles-vendre-bons-sejour-noel-tresorerie-basse-saison</link>
@@ -397,14 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/trouver-equipe-menage-airbnb-fiable</guid>
       <pubDate>Sun, 05 Jul 2026 08:00:00 GMT</pubDate>
       <description>Où chercher, les 6 questions à poser avant d&apos;engager, les tarifs normaux et les red flags : la méthode complète pour trouver une équipe de ménage turnover fiable en LCD.</description>
-      <category>Expérience</category>
-    </item>
-    <item>
-      <title>Voyageurs PMR en LCD : 6 aménagements pour ouvrir ton logement à la clientèle à mobilité réduite</title>
-      <link>https://jasonmarinho.com/blog/voyageurs-mobilite-reduite-lcd-6-amenagements-accessibilite-pmr</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/voyageurs-mobilite-reduite-lcd-6-amenagements-accessibilite-pmr</guid>
-      <pubDate>Fri, 03 Jul 2026 08:00:00 GMT</pubDate>
-      <description>Rampe amovible, portes élargies, douche à l&apos;italienne, signalétique, filtres Airbnb : 6 aménagements concrets pour rendre ton logement de location courte durée accessible aux voyageurs à mobilité réduite en 2026.</description>
       <category>Expérience</category>
     </item>
   </channel>
