@@ -5,6 +5,7 @@ import { getServiceClient } from '@/lib/supabase/service'
 import { loadHostMenageSlots, menageKey } from '@/lib/menage/host-slots'
 import PlanningMenage, { type PlanningClient, type PlanningSlot } from './PlanningMenage'
 import { parisToday, addDaysIso } from '@/lib/stripe/deposit-window'
+import { founderSeatFilter } from '@/lib/pros/founder-seats'
 
 export const metadata = { title: 'Mes ménages, Équipe ménage' }
 export const dynamic = 'force-dynamic'
@@ -99,7 +100,7 @@ export default async function Page() {
   // Fondateur comptées sur toutes les fiches (compteur global).
   const [{ data: ownCleaner }, { count: founderCount }] = await Promise.all([
     db.from('cleaners').select('status').eq('user_id', user.id).maybeSingle(),
-    db.from('cleaners').select('id', { count: 'exact', head: true }).eq('tier', 'fondateur'),
+    db.from('cleaners').select('id', { count: 'exact', head: true }).eq('tier', 'fondateur').or(founderSeatFilter()),
   ])
   const cleanerStatus = (ownCleaner?.status as string | undefined) ?? null
   const annuaire = cleanerStatus === 'active' || cleanerStatus === 'hidden'

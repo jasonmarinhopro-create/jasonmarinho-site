@@ -1,5 +1,6 @@
 import { getServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
+import { founderSeatFilter } from '@/lib/pros/founder-seats'
 import { getAuthUser } from '@/lib/supabase/auth-user'
 import CreerFicheMenage from './CreerFicheMenage'
 
@@ -18,11 +19,9 @@ export default async function Page() {
     .select('id, status, stripe_subscription_id')
     .eq('user_id', user.id)
     .maybeSingle()
-  if (existing) {
-    const isOrphan = existing.status === 'pending_payment' && !existing.stripe_subscription_id
-    if (!isOrphan) redirect('/dashboard/ma-fiche-menage')
-    await admin.from('cleaners').delete().eq('id', existing.id)
-  }
+  // Fiche déjà enregistrée, même sans paiement : on ne la supprime plus, Ma fiche
+  // propose « Finaliser mon paiement » (avant : formulaire à refaire en entier).
+  if (existing) redirect('/dashboard/ma-fiche-menage')
 
   const { data: profile } = await admin
     .from('profiles')
@@ -34,7 +33,7 @@ export default async function Page() {
     .from('cleaners')
     .select('id', { count: 'exact', head: true })
     .eq('tier', 'fondateur')
-    .in('status', ['active', 'pending_payment', 'approved_pending_payment'])
+    .or(founderSeatFilter())
   const tier: 'fondateur' | 'standard' = (founderCount ?? 0) < FOUNDER_QUOTA ? 'fondateur' : 'standard'
 
   return (

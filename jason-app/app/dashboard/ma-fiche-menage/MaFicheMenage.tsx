@@ -6,7 +6,7 @@ import FacturationTeaser from '@/components/pros/FacturationTeaser'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { useState, useTransition } from 'react'
 import { Sparkle, Images, FloppyDisk, ArrowSquareOut, CreditCard, Eye, ChatCircle, Calendar, Warning, CheckCircle, Star, ShieldCheck, UploadSimple, Trash, CursorClick } from '@phosphor-icons/react/dist/ssr'
-import { updateCleanerFiche, createCustomerPortalSession, uploadCleanerLogo, deleteCleanerLogo, prepareFichePhotos, addFichePhotos, removeFichePhoto, moveFichePhoto, publishFichePhotos } from './actions'
+import { updateCleanerFiche, createCustomerPortalSession, resumeFichePayment, uploadCleanerLogo, deleteCleanerLogo, prepareFichePhotos, addFichePhotos, removeFichePhoto, moveFichePhoto, publishFichePhotos } from './actions'
 import PortfolioManager from '@/components/pros/PortfolioManager'
 import FicheVitrineFields, { initialVitrineForm, vitrinePayload, type VitrineForm } from '@/components/pros/FicheVitrineFields'
 import ShareFicheBlock from '@/components/pro/ShareFicheBlock'
@@ -55,6 +55,8 @@ interface Props {
   viewsTrend?: ViewsTrendData
   /** Carte « Tes statistiques » (chargée à part par la page) */
   statsSlot?: React.ReactNode
+  /** Retour de Stripe Checkout (?paid=1 / ?canceled=1) */
+  paymentNotice?: 'paid' | 'canceled' | null
 }
 
 const PRESTATIONS: Array<[string, string]> = [
@@ -72,7 +74,7 @@ const LANGUES: Array<[string, string]> = [
   ['de', 'Deutsch'], ['pt', 'Português'], ['ar', 'العربية'],
 ]
 
-export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, viewsTrend, statsSlot }: Props) {
+export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, viewsTrend, statsSlot, paymentNotice = null }: Props) {
   const [form, setForm] = useState({
     full_name: cleaner.full_name,
     pseudo: cleaner.pseudo ?? '',
@@ -99,6 +101,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
   const [err, setErr] = useState<string | null>(null)
   const [ok, setOk] = useState<string | null>(null)
   const [portalBusy, setPortalBusy] = useState(false)
+  const [payBusy, setPayBusy] = useState(false)
   const [logoUrl, setLogoUrl] = useState<string | null>(cleaner.logo_url)
   const [logoBusy, setLogoBusy] = useState(false)
   const { confirm, dialog } = useConfirm()
@@ -167,6 +170,16 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
     })
   }
 
+  // Paiement abandonné : rouvre Stripe Checkout sans refaire le formulaire
+  async function handlePay() {
+    setErr(null); setOk(null); setPayBusy(true)
+    const res = await resumeFichePayment()
+    if (res.checkoutUrl) { window.location.href = res.checkoutUrl; return }
+    setPayBusy(false)
+    if (res.error) setErr(res.error)
+    else if (res.info) setOk(res.info)
+  }
+
   async function handlePortal() {
     setPortalBusy(true)
     const res = await createCustomerPortalSession(isAdminPreview ? cleaner.id : undefined)
@@ -177,6 +190,8 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
 
   const isActive = cleaner.status === 'active'
   const isPending = cleaner.status === 'pending_payment' || cleaner.status === 'approved_pending_payment'
+  const subRunning = ['active', 'trialing', 'past_due'].includes(cleaner.stripe_subscription_status ?? '')
+  const canPay = isPending && !isAdminPreview && !subRunning && paymentNotice !== 'paid'
   const isFondateur = cleaner.tier === 'fondateur'
   const publicUrl = cleaner.slug ? `https://jasonmarinho.com/annuaires/menage/${cleaner.slug}` : null
 
@@ -219,6 +234,11 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         }
       >
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 16px' }}>
+          {canPay && (
+            <button type="button" onClick={handlePay} disabled={payBusy} style={{ ...heroCta, border: 'none', cursor: payBusy ? 'wait' : 'pointer' }}>
+              <CreditCard size={15} weight="bold" /> {payBusy ? 'Ouverture du paiement…' : 'Finaliser mon paiement'}
+            </button>
+          )}
           {isActive && publicUrl && (
             <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={heroCta}>
               Voir ma fiche publique <ArrowSquareOut size={15} weight="bold" />
@@ -227,11 +247,21 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         </div>
       </HubHero>
 
-      {!isActive && (
+      {isPending && paymentNotice === 'paid' && (
+        <div style={s.okBanner}>
+          <CheckCircle size={14} weight="fill" />
+          Paiement reçu, merci. Ta fiche passe en ligne dans quelques minutes, le temps que Stripe nous le confirme.
+        </div>
+      )}
+      {!isActive && !(isPending && paymentNotice === 'paid') && (
         <div style={isPending ? s.warnBanner : s.errBanner}>
           <Warning size={14} weight="fill" />
           {isPending
-            ? `Ta fiche n’est pas encore publique (abonnement : ${stripeLabel(cleaner.stripe_subscription_status)}). Elle apparaît dans l’annuaire dès que l’abonnement est actif.`
+            ? (canPay
+              ? (paymentNotice === 'canceled'
+                ? 'Paiement annulé, rien n’a été débité. Ta fiche est gardée : clique sur « Finaliser mon paiement » quand tu veux, sans refaire le formulaire.'
+                : 'Ta fiche est enregistrée mais pas encore en ligne : le paiement n’a pas été finalisé. Clique sur « Finaliser mon paiement », tu retrouves Stripe sans refaire le formulaire. Elle apparaît dans l’annuaire dès le paiement.')
+              : `Ta fiche n’est pas encore publique (abonnement : ${stripeLabel(cleaner.stripe_subscription_status)}). Elle apparaît dans l’annuaire dès que l’abonnement est actif.`)
             : `Ta fiche est ${FICHE_LABELS[cleaner.status] ?? cleaner.status}. Écris à contact@jasonmarinho.com pour la réactiver.`}
         </div>
       )}
@@ -408,9 +438,15 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
               {isFondateur ? '39,98 €' : '79,98 €'} TTC par an · {stripeLabel(cleaner.stripe_subscription_status)}
             </p>
           </div>
-          <button onClick={handlePortal} disabled={portalBusy} style={s.btnSecondary}>
-            {portalBusy ? 'Chargement…' : 'Gérer mon abonnement'}
-          </button>
+          {canPay ? (
+            <button onClick={handlePay} disabled={payBusy} style={s.btnSecondary}>
+              {payBusy ? 'Ouverture…' : 'Finaliser mon paiement'}
+            </button>
+          ) : (
+            <button onClick={handlePortal} disabled={portalBusy} style={s.btnSecondary}>
+              {portalBusy ? 'Chargement…' : 'Gérer mon abonnement'}
+            </button>
+          )}
         </div>
       </aside>
       </div>

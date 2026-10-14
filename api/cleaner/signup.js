@@ -161,6 +161,31 @@ async function rollback({ supabaseUrl, serviceKey, userId, cleanerId }) {
   }
 }
 
+// Places Fondateur : une inscription non payée ne garde sa place que 7 jours
+// (même règle que jason-app/lib/pros/founder-seats.ts, garder identiques).
+function founderSeatOr() {
+  const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().replace(/\.\d{3}Z$/, 'Z')
+  return `or=(status.in.(active,approved_pending_payment),and(status.eq.pending_payment,created_at.gte.${cutoff}))`
+}
+
+// Inscription reprise avec le même e-mail : le mot de passe saisi est-il celui
+// du compte déjà créé ? (avant : le compte était supprimé puis recréé, ce qui
+// aurait effacé un compte hôte qui avait commencé sa fiche depuis l'app).
+async function passwordUserId({ supabaseUrl, serviceKey, email, password }) {
+  try {
+    const r = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { apikey: serviceKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    })
+    if (!r.ok) return null
+    const j = await r.json()
+    return j && j.user && j.user.id ? j.user.id : null
+  } catch {
+    return null
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
@@ -239,27 +264,31 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Service indisponible (config Stripe).' })
   }
 
-  // Check unicité email : avec auto-recovery des orphelins
-  // (status='pending_payment' sans stripe_subscription_id : ce sont des
-  // inscriptions ratées au moment du Stripe Checkout. On les supprime
-  // silencieusement pour permettre le retry avec le même email.)
+  // Unicité de l'e-mail. Fiche restée au paiement (pending_payment sans
+  // abonnement) : nouvel essai possible avec le même mot de passe (voir plus bas).
   const checkUrl = `${SUPABASE_URL}/rest/v1/cleaners?email=eq.${encodeURIComponent(email)}&select=id,status,stripe_subscription_id,user_id&limit=1`
   const checkRes = await fetch(checkUrl, {
     headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
   })
+  let reuseUserId = null
   if (checkRes.ok) {
     const existing = await checkRes.json()
     if (Array.isArray(existing) && existing.length > 0) {
       const row = existing[0]
       const isOrphan = row.status === 'pending_payment' && !row.stripe_subscription_id
       if (isOrphan) {
-        console.warn('[cleaner/signup] orphan detected, cleaning up before retry', row.id)
-        await rollback({
-          supabaseUrl: SUPABASE_URL,
-          serviceKey: SERVICE_KEY,
-          userId: row.user_id,
-          cleanerId: row.id,
-        })
+        // Paiement abandonné puis nouvel essai : même compte si le mot de passe
+        // est le bon (seule la fiche est refaite), sinon renvoi vers l'espace
+        // où « Finaliser mon paiement » l'attend. Jamais de compte supprimé.
+        const sameUser = await passwordUserId({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, email, password })
+        if (!sameUser || sameUser !== row.user_id) {
+          return res.status(409).json({ error: 'Tu as déjà commencé ton inscription avec cet e-mail. Connecte-toi sur app.jasonmarinho.com (« Mot de passe oublié » si besoin) : ta fiche est gardée et le bouton « Finaliser mon paiement » t’attend.' })
+        }
+        await fetch(`${SUPABASE_URL}/rest/v1/cleaners?id=eq.${row.id}`, {
+          method: 'DELETE',
+          headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
+        }).catch(() => {})
+        reuseUserId = sameUser
       } else {
         return res.status(409).json({ error: 'Une fiche avec cet email existe déjà. Connecte-toi sur app.jasonmarinho.com pour la gérer.' })
       }
@@ -267,12 +296,12 @@ module.exports = async function handler(req, res) {
   }
 
   // 1. Crée le compte Supabase Auth
-  const auth = await createAuthUser({
-    supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, email, password, fullName,
-  })
+  const auth = reuseUserId
+    ? { userId: reuseUserId }
+    : await createAuthUser({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, email, password, fullName })
   if (auth.error) {
     if (auth.status === 422 || /already.*registered|exists/i.test(auth.error)) {
-      return res.status(409).json({ error: 'Cet email a déjà un compte Jason Marinho. Connecte-toi sur app.jasonmarinho.com.' })
+      return res.status(409).json({ error: 'Cet e-mail a déjà un compte Jason Marinho. Connecte-toi sur app.jasonmarinho.com puis crée ta fiche depuis ton espace (menu du compte, « Ajouter un espace ») : tu n’auras pas à recréer de compte.' })
     }
     return res.status(500).json({ error: 'Création du compte impossible : ' + auth.error })
   }
@@ -284,7 +313,7 @@ module.exports = async function handler(req, res) {
   await saveAcquisition({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, userId, acq: body.acq })
 
   // 3. Détermine tier
-  const tierUrl = `${SUPABASE_URL}/rest/v1/cleaners?tier=eq.fondateur&status=in.(active,pending_payment,approved_pending_payment)&select=id`
+  const tierUrl = `${SUPABASE_URL}/rest/v1/cleaners?tier=eq.fondateur&${founderSeatOr()}&select=id`
   const tierRes = await fetch(tierUrl, {
     headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` },
   })
@@ -348,7 +377,7 @@ module.exports = async function handler(req, res) {
     metadata: { cleaner_id: cleanerId, tier, user_id: userId },
   })
   if (!stripeResult.url) {
-    await rollback({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, userId, cleanerId })
+    await rollback({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, userId: reuseUserId ? null : userId, cleanerId })
     return res.status(500).json({
       error: stripeResult.error || 'Erreur Stripe. Réessaye ou contacte contact@jasonmarinho.com.',
     })

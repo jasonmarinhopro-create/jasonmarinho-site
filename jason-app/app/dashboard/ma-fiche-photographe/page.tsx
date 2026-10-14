@@ -12,7 +12,7 @@ export const metadata = { title: 'Ma fiche photographe' }
 export const dynamic = 'force-dynamic'
 
 interface PageProps {
-  searchParams?: Promise<{ id?: string }>
+  searchParams?: Promise<{ id?: string; paid?: string; canceled?: string }>
 }
 
 export default async function Page({ searchParams }: PageProps) {
@@ -90,6 +90,7 @@ export default async function Page({ searchParams }: PageProps) {
         daysActive,
       }}
       isAdminPreview={isAdminPreview}
+      paymentNotice={isAdminPreview ? null : sp?.paid ? 'paid' : sp?.canceled ? 'canceled' : null}
       viewsTrend={viewsTrend}
       statsSlot={
         <Suspense fallback={<StatsTeaserSkeleton />}>

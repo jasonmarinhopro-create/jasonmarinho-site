@@ -4,10 +4,15 @@
 // logique de tier des signups (FOUNDER_QUOTA = 20 par annuaire).
 
 const FOUNDER_QUOTA = 20
-const STATUSES = 'in.(active,pending_payment,approved_pending_payment)'
+// Une inscription non payée ne garde sa place que 7 jours (même règle que
+// jason-app/lib/pros/founder-seats.ts et les deux signup.js).
+function seatFilter() {
+  const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().replace(/\.\d{3}Z$/, 'Z')
+  return `or=(status.in.(active,approved_pending_payment),and(status.eq.pending_payment,created_at.gte.${cutoff}))`
+}
 
 async function countFounders({ supabaseUrl, serviceKey, table }) {
-  const url = `${supabaseUrl}/rest/v1/${table}?tier=eq.fondateur&status=${STATUSES}&select=id`
+  const url = `${supabaseUrl}/rest/v1/${table}?tier=eq.fondateur&${seatFilter()}&select=id`
   const res = await fetch(url, {
     headers: {
       apikey: serviceKey,

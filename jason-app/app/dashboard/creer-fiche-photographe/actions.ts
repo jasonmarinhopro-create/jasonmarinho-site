@@ -4,6 +4,7 @@ import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
+import { founderSeatFilter } from '@/lib/pros/founder-seats'
 
 const log = logger('creer-fiche-photographe/actions')
 const FOUNDER_QUOTA = 20
@@ -55,16 +56,17 @@ export async function submitPhotographerSignup(
 
   const admin = getServiceClient()
 
-  // Si une fiche existe déjà (active ou pending légitime), on bloque
-  // l'inscription en double. Les orphelins (status=pending_payment sans
-  // stripe_subscription_id) ont déjà été nettoyés par la page.
+  // Une fiche existe déjà (payée ou en attente de paiement) : pas de doublon,
+  // le paiement se reprend depuis Ma fiche (« Finaliser mon paiement »).
   const { data: existing } = await admin
     .from('photographers')
     .select('id, status, stripe_subscription_id')
     .eq('user_id', user.id)
     .maybeSingle()
-  if (existing && !(existing.status === 'pending_payment' && !existing.stripe_subscription_id)) {
-    return { error: 'Une fiche est déjà rattachée à ce compte.' }
+  if (existing) {
+    return { error: existing.status === 'pending_payment' || existing.status === 'approved_pending_payment'
+      ? 'Ta fiche est déjà enregistrée : finalise le paiement depuis Ma fiche.'
+      : 'Une fiche est déjà rattachée à ce compte.' }
   }
 
   // Détermine le tier (place fondateur restante ou non)
@@ -72,7 +74,7 @@ export async function submitPhotographerSignup(
     .from('photographers')
     .select('id', { count: 'exact', head: true })
     .eq('tier', 'fondateur')
-    .in('status', ['active', 'pending_payment', 'approved_pending_payment'])
+    .or(founderSeatFilter())
   const tier: 'fondateur' | 'standard' = (founderCount ?? 0) < FOUNDER_QUOTA ? 'fondateur' : 'standard'
   const priceId = tier === 'fondateur' ? FOUNDER_PRICE_ID : STANDARD_PRICE_ID
 
@@ -110,7 +112,7 @@ export async function submitPhotographerSignup(
       customer_email: user.email,
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${APP_URL}/dashboard/ma-fiche-photographe?paid=1`,
-      cancel_url: `${APP_URL}/dashboard/creer-fiche-photographe?canceled=1`,
+      cancel_url: `${APP_URL}/dashboard/ma-fiche-photographe?canceled=1`,
       locale: 'fr',
       allow_promotion_codes: true,
       metadata: { photographer_id: photographerId, tier, user_id: user.id },

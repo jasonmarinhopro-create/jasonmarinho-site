@@ -1,5 +1,6 @@
 import { getServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
+import { founderSeatFilter } from '@/lib/pros/founder-seats'
 import { getAuthUser } from '@/lib/supabase/auth-user'
 import CreerFichePhotographe from './CreerFichePhotographe'
 
@@ -20,12 +21,9 @@ export default async function Page() {
     .select('id, status, stripe_subscription_id')
     .eq('user_id', user.id)
     .maybeSingle()
-  if (existing) {
-    const isOrphan = existing.status === 'pending_payment' && !existing.stripe_subscription_id
-    if (!isOrphan) redirect('/dashboard/ma-fiche-photographe')
-    // orphelin (paiement Stripe interrompu) : on nettoie pour permettre un retry
-    await admin.from('photographers').delete().eq('id', existing.id)
-  }
+  // Fiche déjà enregistrée, même sans paiement : on ne la supprime plus, Ma fiche
+  // propose « Finaliser mon paiement » (avant : formulaire à refaire en entier).
+  if (existing) redirect('/dashboard/ma-fiche-photographe')
 
   // Pré-remplit le nom complet depuis le profile
   const { data: profile } = await admin
@@ -39,7 +37,7 @@ export default async function Page() {
     .from('photographers')
     .select('id', { count: 'exact', head: true })
     .eq('tier', 'fondateur')
-    .in('status', ['active', 'pending_payment', 'approved_pending_payment'])
+    .or(founderSeatFilter())
   const tier: 'fondateur' | 'standard' = (founderCount ?? 0) < FOUNDER_QUOTA ? 'fondateur' : 'standard'
 
   return (

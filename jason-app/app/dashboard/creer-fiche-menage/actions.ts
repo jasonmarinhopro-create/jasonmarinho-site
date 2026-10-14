@@ -4,6 +4,7 @@ import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
+import { founderSeatFilter } from '@/lib/pros/founder-seats'
 
 const log = logger('creer-fiche-menage/actions')
 const FOUNDER_QUOTA = 20
@@ -83,15 +84,17 @@ export async function submitCleanerSignup(
     .select('id, status, stripe_subscription_id')
     .eq('user_id', user.id)
     .maybeSingle()
-  if (existing && !(existing.status === 'pending_payment' && !existing.stripe_subscription_id)) {
-    return { error: 'Une fiche est déjà rattachée à ce compte.' }
+  if (existing) {
+    return { error: existing.status === 'pending_payment' || existing.status === 'approved_pending_payment'
+      ? 'Ta fiche est déjà enregistrée : finalise le paiement depuis Ma fiche.'
+      : 'Une fiche est déjà rattachée à ce compte.' }
   }
 
   const { count: founderCount } = await admin
     .from('cleaners')
     .select('id', { count: 'exact', head: true })
     .eq('tier', 'fondateur')
-    .in('status', ['active', 'pending_payment', 'approved_pending_payment'])
+    .or(founderSeatFilter())
   const tier: 'fondateur' | 'standard' = (founderCount ?? 0) < FOUNDER_QUOTA ? 'fondateur' : 'standard'
   const priceId = tier === 'fondateur' ? FOUNDER_PRICE_ID : STANDARD_PRICE_ID
 
@@ -135,7 +138,7 @@ export async function submitCleanerSignup(
       customer_email: user.email,
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${APP_URL}/dashboard/ma-fiche-menage?paid=1`,
-      cancel_url: `${APP_URL}/dashboard/creer-fiche-menage?canceled=1`,
+      cancel_url: `${APP_URL}/dashboard/ma-fiche-menage?canceled=1`,
       locale: 'fr',
       allow_promotion_codes: true,
       metadata: { cleaner_id: cleanerId, tier, user_id: user.id },
