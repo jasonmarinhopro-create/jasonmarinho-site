@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
 import { founderSeatFilter } from '@/lib/pros/founder-seats'
+import { normSiteUrl, siteUrlOk, SITE_URL_ERROR } from '@/lib/pros/site-url'
 
 const log = logger('creer-fiche-photographe/actions')
 const FOUNDER_QUOTA = 20
@@ -46,12 +47,12 @@ export async function submitPhotographerSignup(
 
   const fullName = String(payload.fullName || '').trim().slice(0, 100)
   const ville = String(payload.ville || '').trim().slice(0, 80)
-  const portfolioUrl = String(payload.portfolioUrl || '').trim().slice(0, 300)
+  const portfolioUrl = normSiteUrl(payload.portfolioUrl)
   if (!fullName || !ville || !portfolioUrl) {
     return { error: 'Nom, ville et portfolio sont obligatoires.' }
   }
-  if (!/^https?:\/\//i.test(portfolioUrl)) {
-    return { error: 'Le portfolio doit commencer par https://' }
+  if (!siteUrlOk(portfolioUrl)) {
+    return { error: `Ton site ou ton portfolio : ${SITE_URL_ERROR}.` }
   }
 
   const admin = getServiceClient()

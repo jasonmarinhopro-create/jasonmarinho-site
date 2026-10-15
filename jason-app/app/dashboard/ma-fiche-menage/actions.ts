@@ -9,6 +9,7 @@ import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
 import { cleanReseaux } from '@/lib/pros/reseaux'
 import { cleanFormules, cleanVilles, cleanDeroule } from '@/lib/pros/fiche-vitrine'
 import * as vitrine from '@/lib/pros/fiche-vitrine-server'
+import { normSiteUrl, siteUrlOk, SITE_URL_ERROR } from '@/lib/pros/site-url'
 
 const log = logger('ma-fiche-menage/actions')
 
@@ -92,8 +93,8 @@ export async function updateCleanerFiche(payload: {
   const ville = String(payload.ville || '').trim().slice(0, 80)
   if (!fullName || !ville) return { error: 'Nom et ville sont obligatoires.' }
 
-  const siteUrl = String(payload.site_url || '').trim().slice(0, 300)
-  if (siteUrl && !/^https?:\/\//i.test(siteUrl)) return { error: 'Le site web doit commencer par https://' }
+  const siteUrl = normSiteUrl(payload.site_url)
+  if (siteUrl && !siteUrlOk(siteUrl)) return { error: `Ton site : ${SITE_URL_ERROR}.` }
 
   const equipeType = payload.equipe_type ?? ''
   if (equipeType && !ALLOWED_EQUIPE.has(equipeType)) return { error: 'Type d\'équipe invalide.' }

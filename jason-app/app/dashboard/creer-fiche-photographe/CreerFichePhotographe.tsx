@@ -84,7 +84,7 @@ export default function CreerFichePhotographe({ email, defaultFullName, tier }: 
         </Row>
 
         <Field label="Lien portfolio" required hint="Site web pro OU Instagram pro. URL complète avec https://">
-          <input type="url" value={form.portfolioUrl} onChange={e => set('portfolioUrl', e.target.value)} required maxLength={300} placeholder="https://..." style={s.input} />
+          <input type="text" inputMode="url" autoCapitalize="off" spellCheck={false} value={form.portfolioUrl} onChange={e => set('portfolioUrl', e.target.value)} required maxLength={300} placeholder="monsite.fr" style={s.input} />
         </Field>
 
         <Row>

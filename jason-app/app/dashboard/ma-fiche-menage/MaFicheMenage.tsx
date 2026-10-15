@@ -353,7 +353,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         </div>
         <div style={s.grid2}>
           <Field label="Site web">
-            <input style={s.input} type="url" value={form.site_url} onChange={e => setForm({ ...form, site_url: e.target.value })} maxLength={300} placeholder="https://..." />
+            <input style={s.input} type="text" inputMode="url" autoCapitalize="off" spellCheck={false} value={form.site_url} onChange={e => setForm({ ...form, site_url: e.target.value })} maxLength={300} placeholder="monsite.fr" />
           </Field>
           <Field label="Instagram (sans @)">
             <input style={s.input} value={form.instagram_handle} onChange={e => setForm({ ...form, instagram_handle: e.target.value })} maxLength={50} />

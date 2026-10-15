@@ -316,7 +316,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
 
         <h3 style={s.sectionTitle}>Activité professionnelle</h3>
         <Field label="Lien portfolio (site ou Instagram)" req>
-          <input style={s.input} type="url" value={form.portfolio_url} onChange={e => setForm({ ...form, portfolio_url: e.target.value })} required maxLength={300} />
+          <input style={s.input} type="text" inputMode="url" autoCapitalize="off" spellCheck={false} placeholder="monsite.fr ou instagram.com/moncompte" value={form.portfolio_url} onChange={e => setForm({ ...form, portfolio_url: e.target.value })} required maxLength={300} />
         </Field>
         <Field label="Spécialité">
           <select style={s.input} value={form.specialite} onChange={e => setForm({ ...form, specialite: e.target.value })}>

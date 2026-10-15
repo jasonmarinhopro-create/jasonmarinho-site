@@ -31,7 +31,7 @@ const cities = loadCities().map(c => c.name).filter(Boolean).sort((a, b) => a.lo
 const field = ({ id, label, req, hint, type = 'text', ph, attrs = '', full }) => `
         <div class="f${full ? ' full' : ''}">
           <label for="${id}">${label}${req ? ' <span class="req" aria-hidden="true">*</span>' : ' <small>facultatif</small>'}</label>
-          <input type="${type}" id="${id}" name="${id}"${req ? ' required' : ''}${ph ? ` placeholder="${esc(ph)}"` : ''} ${attrs}>
+          <input type="${type === 'url' ? 'text' : type}" id="${id}" name="${id}"${type === 'url' ? ' data-url inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false"' : ''}${req ? ' required' : ''}${ph ? ` placeholder="${esc(ph)}"` : ''} ${attrs}>
           ${hint ? `<span class="hint">${hint}</span>` : ''}
         </div>`
 
@@ -93,7 +93,7 @@ const PHOTO = {
     ['ph-file-text', 'Devis en ligne', 'Envoie un devis propre en 2 minutes, accepté en ligne par l’hôte.'],
   ],
   offerFields: `
-${field({ id: 'portfolioUrl', label: 'Ton site ou ton portfolio', req: true, type: 'url', ph: 'https://…', attrs: 'maxlength="300"', hint: 'Le bouton « Voir le portfolio » de ta fiche y mène. Un compte Instagram pro marche aussi.', full: true })}
+${field({ id: 'portfolioUrl', label: 'Ton site ou ton portfolio', req: true, type: 'url', ph: 'monsite.fr ou instagram.com/moncompte', attrs: 'maxlength="300"', hint: 'Le bouton « Voir le portfolio » de ta fiche y mène. Un compte Instagram pro marche aussi (@moncompte).', full: true })}
 ${field({ id: 'instagramHandle', label: 'Instagram', ph: 'marie.photo', attrs: 'maxlength="50"', hint: 'Sans le @.' })}
 ${select({ id: 'specialite', label: 'Ta spécialité', options: [['Intérieurs LCD', 'Intérieurs de location courte durée'], ['Intérieurs + drone extérieur', 'Intérieurs + drone extérieur'], ['Intérieurs + vidéo / Reels', 'Intérieurs + vidéo / Reels'], ['Visite virtuelle Matterport 3D', 'Visite virtuelle 3D'], ['Hôtels et gîtes de charme', 'Hôtels et gîtes de charme'], ['Architecture + mise en scène', 'Architecture + mise en scène']] })}
 ${field({ id: 'tarifMin', label: 'Prix de départ d’une séance (€)', type: 'number', ph: '250', attrs: 'min="0" max="5000" inputmode="numeric"', hint: 'Affiché « dès 250 € » sur ta carte.' })}
@@ -154,7 +154,7 @@ ${field({ id: 'logementsGeres', label: 'Logements entretenus aujourd’hui', typ
             ${[['fr', 'Français', true], ['en', 'English'], ['es', 'Español'], ['it', 'Italiano'], ['de', 'Deutsch'], ['pt', 'Português'], ['ar', 'العربية']].map(([v, t, on]) => `<label class="chip"><input type="checkbox" name="langues" value="${v}"${on ? ' checked' : ''}><span>${t}</span></label>`).join('')}
           </div>
         </div>
-${field({ id: 'siteUrl', label: 'Ton site', type: 'url', ph: 'https://…', attrs: 'maxlength="300"' })}
+${field({ id: 'siteUrl', label: 'Ton site', type: 'url', ph: 'monsite.fr', attrs: 'maxlength="300"' })}
 ${field({ id: 'instagramHandle', label: 'Instagram', ph: 'beeclean.lcd', attrs: 'maxlength="50"', hint: 'Sans le @.' })}
 ${field({ id: 'siret', label: 'SIRET', ph: '14 chiffres', attrs: 'maxlength="14" inputmode="numeric"', hint: 'Affiché sur ta fiche : il rassure les hôtes.' })}
         <div class="f full">
@@ -451,15 +451,39 @@ ${step(4, cfg.key === 'menage' ? 'Ton équipe en quelques mots' : 'Toi en quelqu
     errBox.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
+  // Adresse de site tolérante (15/10/2026, inscription bloquée sur « l'adresse
+  // semble incorrecte ») : « monsite.fr » ou « www… » reçoivent https://,
+  // « @compte » devient le lien Instagram. Même règle côté serveur (signup.js).
+  function normUrl(v) {
+    v = (v || '').trim().replace(/\\s+/g, '')
+    if (!v) return ''
+    if (/^@[\\w.]{1,30}$/.test(v)) return 'https://www.instagram.com/' + v.slice(1)
+    if (!/^https?:\\/\\//i.test(v)) v = 'https://' + v.replace(/^\\/+/, '')
+    return v
+  }
+  function urlOk(v) { return /^https?:\\/\\/[^\\s\\/.]+(\\.[^\\s\\/.]+)+/i.test(v) }
+  Array.prototype.forEach.call(form.querySelectorAll('[data-url]'), function (el) {
+    el.addEventListener('blur', function () { el.value = normUrl(el.value) })
+  })
+  function labelOf(el) {
+    var label = form.querySelector('label[for="' + el.id + '"]')
+    return label ? label.childNodes[0].textContent.trim() : 'Un champ'
+  }
+
   form.addEventListener('submit', async function (e) {
     e.preventDefault()
     errBox.style.display = 'none'
+    Array.prototype.forEach.call(form.querySelectorAll('[data-url]'), function (el) { el.value = normUrl(el.value) })
     var missing = Array.prototype.find.call(form.querySelectorAll('[required]'), function (el) { return !el.value.trim() || !el.checkValidity() })
     if (missing) {
-      var label = form.querySelector('label[for="' + missing.id + '"]')
-      var name = label ? label.childNodes[0].textContent.trim() : 'Un champ'
-      return showError(missing.id === 'password' ? 'Le mot de passe doit faire au moins 8 caractères.' : (missing.validity && missing.validity.typeMismatch ? name + ' : l’adresse semble incorrecte.' : name + ' : à remplir.'), missing)
+      var name = labelOf(missing)
+      var msg = missing.id === 'password' ? 'Le mot de passe doit faire au moins 8 caractères.'
+        : missing.id === 'email' && missing.validity && missing.validity.typeMismatch ? 'E-mail pro : cette adresse e-mail semble incomplète (exemple : prenom@domaine.fr).'
+        : name + ' : à remplir.'
+      return showError(msg, missing)
     }
+    var badUrl = Array.prototype.find.call(form.querySelectorAll('[data-url]'), function (el) { return el.value && !urlOk(el.value) })
+    if (badUrl) return showError(labelOf(badUrl) + ' : ce lien ne ressemble pas à une adresse de site (exemple : monsite.fr ou instagram.com/moncompte).', badUrl)
     btn.disabled = true
     btn.innerHTML = '<i class="ph-bold ph-spinner"></i><span>Préparation du paiement…</span>'
     var data = { t: t0, website: form.website ? form.website.value : '' }

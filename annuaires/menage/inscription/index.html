@@ -253,7 +253,7 @@ form{display:flex;flex-direction:column;gap:14px}
 
         <div class="f">
           <label for="siteUrl">Ton site <small>facultatif</small></label>
-          <input type="url" id="siteUrl" name="siteUrl" placeholder="https://…" maxlength="300">
+          <input type="text" id="siteUrl" name="siteUrl" data-url inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="monsite.fr" maxlength="300">
           
         </div>
 
@@ -406,15 +406,39 @@ form{display:flex;flex-direction:column;gap:14px}
     errBox.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
+  // Adresse de site tolérante (15/10/2026, inscription bloquée sur « l'adresse
+  // semble incorrecte ») : « monsite.fr » ou « www… » reçoivent https://,
+  // « @compte » devient le lien Instagram. Même règle côté serveur (signup.js).
+  function normUrl(v) {
+    v = (v || '').trim().replace(/\s+/g, '')
+    if (!v) return ''
+    if (/^@[\w.]{1,30}$/.test(v)) return 'https://www.instagram.com/' + v.slice(1)
+    if (!/^https?:\/\//i.test(v)) v = 'https://' + v.replace(/^\/+/, '')
+    return v
+  }
+  function urlOk(v) { return /^https?:\/\/[^\s\/.]+(\.[^\s\/.]+)+/i.test(v) }
+  Array.prototype.forEach.call(form.querySelectorAll('[data-url]'), function (el) {
+    el.addEventListener('blur', function () { el.value = normUrl(el.value) })
+  })
+  function labelOf(el) {
+    var label = form.querySelector('label[for="' + el.id + '"]')
+    return label ? label.childNodes[0].textContent.trim() : 'Un champ'
+  }
+
   form.addEventListener('submit', async function (e) {
     e.preventDefault()
     errBox.style.display = 'none'
+    Array.prototype.forEach.call(form.querySelectorAll('[data-url]'), function (el) { el.value = normUrl(el.value) })
     var missing = Array.prototype.find.call(form.querySelectorAll('[required]'), function (el) { return !el.value.trim() || !el.checkValidity() })
     if (missing) {
-      var label = form.querySelector('label[for="' + missing.id + '"]')
-      var name = label ? label.childNodes[0].textContent.trim() : 'Un champ'
-      return showError(missing.id === 'password' ? 'Le mot de passe doit faire au moins 8 caractères.' : (missing.validity && missing.validity.typeMismatch ? name + ' : l’adresse semble incorrecte.' : name + ' : à remplir.'), missing)
+      var name = labelOf(missing)
+      var msg = missing.id === 'password' ? 'Le mot de passe doit faire au moins 8 caractères.'
+        : missing.id === 'email' && missing.validity && missing.validity.typeMismatch ? 'E-mail pro : cette adresse e-mail semble incomplète (exemple : prenom@domaine.fr).'
+        : name + ' : à remplir.'
+      return showError(msg, missing)
     }
+    var badUrl = Array.prototype.find.call(form.querySelectorAll('[data-url]'), function (el) { return el.value && !urlOk(el.value) })
+    if (badUrl) return showError(labelOf(badUrl) + ' : ce lien ne ressemble pas à une adresse de site (exemple : monsite.fr ou instagram.com/moncompte).', badUrl)
     btn.disabled = true
     btn.innerHTML = '<i class="ph-bold ph-spinner"></i><span>Préparation du paiement…</span>'
     var data = { t: t0, website: form.website ? form.website.value : '' }

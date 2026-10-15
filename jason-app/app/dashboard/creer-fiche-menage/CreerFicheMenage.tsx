@@ -130,7 +130,7 @@ export default function CreerFicheMenage({ email, defaultFullName, tier }: Props
 
         <Row>
           <Field label="Site web (optionnel)">
-            <input type="url" value={form.siteUrl} onChange={e => set('siteUrl', e.target.value)} maxLength={300} placeholder="https://..." style={s.input} />
+            <input type="text" inputMode="url" autoCapitalize="off" spellCheck={false} value={form.siteUrl} onChange={e => set('siteUrl', e.target.value)} maxLength={300} placeholder="monsite.fr" style={s.input} />
           </Field>
           <Field label="Instagram">
             <input value={form.instagramHandle} onChange={e => set('instagramHandle', e.target.value)} maxLength={50} placeholder="eclat.menage (sans @)" style={s.input} />

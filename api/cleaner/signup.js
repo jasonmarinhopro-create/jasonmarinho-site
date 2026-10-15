@@ -186,6 +186,17 @@ async function passwordUserId({ supabaseUrl, serviceKey, email, password }) {
   }
 }
 
+// Adresse de site tolérante (15/10/2026) : « monsite.fr » reçoit https://,
+// « @compte » devient le lien Instagram. Même règle que le formulaire.
+function normUrl(v) {
+  v = String(v || '').trim().replace(/\s+/g, '')
+  if (!v) return ''
+  if (/^@[\w.]{1,30}$/.test(v)) return 'https://www.instagram.com/' + v.slice(1)
+  if (!/^https?:\/\//i.test(v)) v = 'https://' + v.replace(/^\/+/, '')
+  return v.slice(0, 300)
+}
+const urlOk = (v) => /^https?:\/\/[^\s\/.]+(\.[^\s\/.]+)+/i.test(v)
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
@@ -210,7 +221,7 @@ module.exports = async function handler(req, res) {
   const password = String(body.password || '')
   const ville = String(body.ville || '').trim().slice(0, 80)
   const zoneCouverte = String(body.zoneCouverte || '').trim().slice(0, 200)
-  const siteUrl = String(body.siteUrl || '').trim().slice(0, 300)
+  const siteUrl = normUrl(body.siteUrl)
   const instagramHandle = String(body.instagramHandle || '').trim().slice(0, 50).replace(/^@/, '')
   const telephone = String(body.telephone || '').trim().slice(0, 30)
   const tarifForfaitMin = parseInt(body.tarifForfaitMin || '0', 10) || null
@@ -239,8 +250,8 @@ module.exports = async function handler(req, res) {
   if (password.length < 8) {
     return res.status(400).json({ error: 'Le mot de passe doit faire au moins 8 caractères.' })
   }
-  if (siteUrl && !/^https?:\/\//i.test(siteUrl)) {
-    return res.status(400).json({ error: 'Le site web doit commencer par https://' })
+  if (siteUrl && !urlOk(siteUrl)) {
+    return res.status(400).json({ error: 'Ton site : ce lien ne ressemble pas à une adresse de site (exemple : monsite.fr).' })
   }
   if (equipeType && !ALLOWED_EQUIPE.has(equipeType)) {
     return res.status(400).json({ error: 'Type d\'équipe invalide.' })

@@ -9,6 +9,7 @@ import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
 import { cleanReseaux } from '@/lib/pros/reseaux'
 import { cleanFormules, cleanVilles, cleanDeroule } from '@/lib/pros/fiche-vitrine'
 import * as vitrine from '@/lib/pros/fiche-vitrine-server'
+import { normSiteUrl, siteUrlOk, SITE_URL_ERROR } from '@/lib/pros/site-url'
 
 const log = logger('ma-fiche-photographe/actions')
 
@@ -85,12 +86,12 @@ export async function updatePhotographerFiche(payload: {
 
   const fullName = String(payload.full_name || '').trim().slice(0, 100)
   const ville = String(payload.ville || '').trim().slice(0, 80)
-  const portfolioUrl = String(payload.portfolio_url || '').trim().slice(0, 300)
+  const portfolioUrl = normSiteUrl(payload.portfolio_url)
   if (!fullName || !ville || !portfolioUrl) {
     return { error: 'Nom, ville et portfolio sont obligatoires.' }
   }
-  if (!/^https?:\/\//i.test(portfolioUrl)) {
-    return { error: 'Le portfolio doit commencer par https://' }
+  if (!siteUrlOk(portfolioUrl)) {
+    return { error: `Ton site ou ton portfolio : ${SITE_URL_ERROR}.` }
   }
 
   const admin = getServiceClient()

@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
 import { founderSeatFilter } from '@/lib/pros/founder-seats'
+import { normSiteUrl, siteUrlOk, SITE_URL_ERROR } from '@/lib/pros/site-url'
 
 const log = logger('creer-fiche-menage/actions')
 const FOUNDER_QUOTA = 20
@@ -56,12 +57,12 @@ export async function submitCleanerSignup(
   const fullName = String(payload.fullName || '').trim().slice(0, 100)
   const pseudo = String(payload.pseudo || '').trim().slice(0, 100)
   const ville = String(payload.ville || '').trim().slice(0, 80)
-  const siteUrl = String(payload.siteUrl || '').trim().slice(0, 300)
+  const siteUrl = normSiteUrl(payload.siteUrl)
   if (!fullName || !ville) {
     return { error: 'Nom et ville sont obligatoires.' }
   }
-  if (siteUrl && !/^https?:\/\//i.test(siteUrl)) {
-    return { error: 'Le site web doit commencer par https://' }
+  if (siteUrl && !siteUrlOk(siteUrl)) {
+    return { error: `Ton site : ${SITE_URL_ERROR}.` }
   }
   if (payload.equipeType && !ALLOWED_EQUIPE.has(payload.equipeType)) {
     return { error: 'Type d\'équipe invalide.' }
