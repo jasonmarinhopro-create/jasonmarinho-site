@@ -37,3 +37,5 @@ sauf pour retirer une ligne masquée dans le dashboard.
 - 2026-10-12 · fiscalite · Taxe de séjour 2027 : ta commune délibère en ce moment (https://www.service-public.fr/particuliers/vosdroits/F2048)
 - 2026-10-14 · reglementation · DPE obligatoire pour les meublés de tourisme en zone tendue dès 2028 (https://www.hellio.com/actualites/reglementation/logement-touristique-dpe)
 - 2026-10-14 · marche · Automne 2026 : les réservations de locations saisonnières repartent à la hausse (https://hospitality-on.com/fr/tendances/lautomne-sera-t-il-le-nouvel-ete-pour-les-reservations-dans-les-destinations-touristiques)
+- 2026-10-15 · plateformes · Booking.com s'engage sur la liberté tarifaire des hébergeurs dans l'UE (https://hospitality-on.com/fr/hotellerie/bruxelles-obtient-de-bookingcom-de-nouvelles-garanties-sur-la-liberte-tarifaire-des)
+- 2026-10-15 · conciergerie · La France compte plus de 82 000 conciergeries de location courte durée (https://www.majordia.fr/ressources/observatoire-conciergeries-lcd)
