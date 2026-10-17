@@ -372,6 +372,8 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     '/dashboard/ma-fiche-photographe/devis',
     '/dashboard/ma-fiche-photographe/facturation',
     '/dashboard/ma-fiche-photographe/statistiques',
+    '/dashboard/ma-fiche-photographe/actualites',
+    '/dashboard/ma-fiche-photographe/idees',
     '/dashboard/ma-fiche-menage',
     '/dashboard/ma-fiche-menage/demandes',
     '/dashboard/ma-fiche-menage/clients',
@@ -379,11 +381,14 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     '/dashboard/ma-fiche-menage/facturation',
     '/dashboard/ma-fiche-menage/planning',
     '/dashboard/ma-fiche-menage/statistiques',
+    '/dashboard/ma-fiche-menage/actualites',
+    '/dashboard/ma-fiche-menage/idees',
     // Espace investisseur : idem, sinon "Accueil" reste actif sur /estimateur.
     '/dashboard/investir',
     '/dashboard/investir/estimateur',
     '/dashboard/investir/comparateur',
     '/dashboard/investir/simulateurs',
+    '/dashboard/investir/idees',
   ], [])
 
   function NavItem({ href, label, Icon, adminColor, notifDot, activeMatch, count }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean; notifDot?: boolean; activeMatch?: string[]; count?: number }) {
@@ -774,7 +779,17 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                             <Link
                               key={s.key}
                               href={s.href}
-                              onClick={() => setUserMenuOpen(false)}
+                              onClick={() => {
+                                setUserMenuOpen(false)
+                                // Choisir un espace quitte le mode admin (17/10/2026, remarqué
+                                // par Jason : l'interrupteur restait allumé, il fallait le
+                                // couper puis le rallumer pour revenir à l'admin)
+                                if (adminMode) {
+                                  setAdminMode(false)
+                                  try { localStorage.setItem('admin-mode', 'false') } catch {}
+                                  writeAdminModeCookie(false)
+                                }
+                              }}
                               aria-current={isCurrent ? 'page' : undefined}
                               style={{
                                 ...styles.userMenuItem,
