@@ -1,4 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
+import { forAudience } from '@/lib/actualites/audience'
 import { getUserSpaces } from '@/lib/queries/spaces'
 import { redirect } from 'next/navigation'
 import { perfTimer } from '@/lib/perf/server-timing'
@@ -220,7 +221,7 @@ export default async function DashboardPage() {
     nom: string | null; ical_airbnb: string | null; ical_booking: string | null; ical_vrbo: string | null; ical_autre: string | null
     prix_airbnb_nuit: number | null; prix_booking_nuit: number | null; prix_direct_nuit: number | null
   }> | null }>(1, { data: [] })
-  const allCachedNews             = pick<any[]>(2, [])
+  const allCachedNews             = forAudience(pick<any[]>(2, []), 'hote')
   const { data: entriesYearAll }  = pick<{ data: any[] | null }>(3, { data: [] })
   const { data: objectifData }    = pick<{ data: any | null }>(4, { data: null })
   const communityGroups           = pick<any[]>(5, [])

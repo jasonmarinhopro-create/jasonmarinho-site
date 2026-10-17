@@ -114,23 +114,29 @@ export interface CachedActualite {
   is_pinned?: boolean | null
   regions?: string[] | null
   read_time_minutes?: number | null
+  /** Public : hôtes, photographes, ménage (absent = hôtes) */
+  audience?: string[] | null
 }
 
 export const getCachedPublishedActualites = unstable_cache(
   async (): Promise<CachedActualite[]> => {
     const db = getServiceClient()
-    const { data } = await db
+    const cols = 'id, title, summary, source_url, category, published_at, created_at, deadline_date, is_pinned, regions, read_time_minutes'
+    const query = (select: string) => db
       .from('actualites')
-      .select('id, title, summary, source_url, category, published_at, created_at, deadline_date, is_pinned, regions, read_time_minutes')
+      .select(select)
       .eq('is_published', true)
       .order('is_pinned', { ascending: false, nullsFirst: false })
       .order('published_at', { ascending: false, nullsFirst: false })
+    // Colonne audience (migration 20261017_137) : sans elle, tout est pour les hôtes
+    let { data, error } = await query(`${cols}, audience`)
+    if (error) ({ data } = await query(cols))
     // Une seule actu par sujet à l'affichage (épinglées puis plus récentes
     // gardées) : filet de sécurité contre les reformulations de la veille
     // quotidienne, même si le nettoyage en base n'a pas été appliqué.
-    return dedupeActualites((data ?? []) as CachedActualite[])
+    return dedupeActualites((data ?? []) as unknown as CachedActualite[])
   },
-  ['actualites-published-v2'],
+  ['actualites-published-v3'],
   { tags: [CACHE_TAGS.ACTUALITES_PUBLISHED], revalidate: 300 },
 )
 

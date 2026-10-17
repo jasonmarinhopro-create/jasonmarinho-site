@@ -42,15 +42,19 @@ export async function brevo<T>(path: string, init?: { method?: string; body?: un
 /** Contenu publié pendant le mois écoulé */
 export async function gatherContent(db: Db, parisDate: string) {
   const since = new Date(Date.parse(`${parisDate}T00:00:00Z`) - LOOKBACK_DAYS * 86_400_000)
-  const { data } = await db.from('actualites')
-    .select('id, title, summary, category, source_url, published_at, created_at, is_pinned, deadline_date')
+  const cols = 'id, title, summary, category, source_url, published_at, created_at, is_pinned, deadline_date'
+  const query = (select: string) => db.from('actualites')
+    .select(select)
     .eq('is_published', true)
     .gte('published_at', since.toISOString())
     .order('is_pinned', { ascending: false, nullsFirst: false })
     .order('published_at', { ascending: false })
     .limit(60)
-  type Row = { id: string; title: string; summary: string; category: string; source_url: string | null; published_at: string | null; created_at: string | null; deadline_date: string | null }
-  const rows = ((data ?? []) as Array<Omit<Row, 'summary'> & { summary: string | null }>).map(r => ({ ...r, summary: r.summary ?? '' }))
+  // Public de l'actu (migration 20261017_137) ; sans la colonne, tout est pour les hôtes
+  let { data, error } = await query(`${cols}, audience`)
+  if (error) ({ data } = await query(cols))
+  type Row = { id: string; title: string; summary: string; category: string; source_url: string | null; published_at: string | null; created_at: string | null; deadline_date: string | null; audience?: string[] | null }
+  const rows = ((data ?? []) as unknown as Array<Omit<Row, 'summary'> & { summary: string | null }>).map(r => ({ ...r, summary: r.summary ?? '' }))
   const actus: NlActu[] = dedupeActualites<Row>(rows)
 
   let articles: ReturnType<typeof parseRss> = []

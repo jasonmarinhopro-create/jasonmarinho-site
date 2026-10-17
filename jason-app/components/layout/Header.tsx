@@ -59,6 +59,8 @@ const PATH_TITLES: Record<string, string> = {
   '/dashboard/profil': 'Mon compte',
   '/dashboard/abonnement': 'Abonnement',
   '/dashboard/actualites': 'Actualités',
+  '/dashboard/ma-fiche-photographe/actualites': 'Actualités',
+  '/dashboard/ma-fiche-menage/actualites': 'Actualités',
   '/dashboard/actualites/favoris': 'Mes favoris',
   '/dashboard/nouveautes': 'Nouveautés',
   '/dashboard/chez-nous': 'Entre Hôtes',

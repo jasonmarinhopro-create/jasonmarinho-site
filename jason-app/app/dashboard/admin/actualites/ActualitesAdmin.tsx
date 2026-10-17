@@ -19,6 +19,7 @@ interface Actualite {
   published_at: string | null
   created_at: string
   read_time_minutes: number | null
+  audience?: string[] | null
 }
 
 // Même palette que la page Actualités côté hôte (ActualitesView.tsx)
@@ -35,6 +36,9 @@ const CATEGORIES = [
   { value: 'reservation-directe', label: 'Réserv. directe',     color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
   { value: 'communes',            label: 'Communes & Villes',   color: '#6E5446', bg: 'rgba(139,109,94,0.14)' },
   { value: 'driing',              label: 'Driing',              color: '#8A5A12', bg: 'rgba(255,213,107,0.20)' },
+  { value: 'photo-video',         label: 'Photo & vidéo',       color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  { value: 'menage',              label: 'Ménage',              color: '#B83A7C', bg: 'rgba(244,114,182,0.14)' },
+  { value: 'entreprise',          label: 'Ton entreprise',      color: '#8A5A12', bg: 'rgba(255,213,107,0.20)' },
   { value: 'general',             label: 'Général',             color: '#6E5446', bg: 'rgba(139,109,94,0.14)' },
 ]
 
@@ -97,6 +101,19 @@ function ActualiteForm({
             <option key={c.value} value={c.value}>{c.label}</option>
           ))}
         </select>
+      </div>
+
+      {/* Pour qui (17/10/2026) : espace hôte, photographes / vidéastes, équipes de ménage */}
+      <div style={s.group}>
+        <label style={s.label}>Pour qui *</label>
+        <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', fontSize: 13.5 }}>
+          {([['hote', 'Hôtes'], ['photographe', 'Photographes & vidéastes'], ['menage', 'Équipes de ménage']] as const).map(([v, l]) => (
+            <label key={v} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+              <input type="checkbox" name="audience" value={v} defaultChecked={(defaultValues?.audience?.length ? defaultValues.audience : ['hote']).includes(v)} />
+              {l}
+            </label>
+          ))}
+        </div>
       </div>
 
       {/* Résumé */}
@@ -319,6 +336,11 @@ export default function ActualitesAdmin({ articles }: { articles: Actualite[] })
                         <span style={{ ...s.catBadge, color: cat.color, background: cat.bg, borderColor: `color-mix(in srgb, ${cat.color} 15%, transparent)` }}>
                           {cat.label}
                         </span>
+                        {(article.audience ?? []).some(a => a !== 'hote') && (
+                          <span style={{ fontSize: 11.5, fontWeight: 600, color: 'var(--text-3)' }}>
+                            Pour : {(article.audience ?? []).map(a => ({ hote: 'hôtes', photographe: 'photographes', menage: 'ménage' } as Record<string, string>)[a] ?? a).join(', ')}
+                          </span>
+                        )}
                         <span style={{ ...s.statusBadge, ...(article.is_published ? s.statusPublished : s.statusDraft) }}>
                           {article.is_published ? 'Publié' : 'Brouillon'}
                         </span>

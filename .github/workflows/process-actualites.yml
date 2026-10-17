@@ -45,7 +45,9 @@ jobs:
               jq -r --slurpfile p "$FILE" --arg d "$(date -u +%F)" '
                 .results[] | select(.status=="inserted") | .title as $t
                 | ($p[0] | if type=="array" then . else [.] end | map(select(.title==$t)) | .[0]) as $it
-                | "- \($d) · \($it.category) · \($t)" + (if $it.source_url then " (\($it.source_url))" else "" end)
+                | "- \($d) · \($it.category) · \($t)"
+                  + (($it.audience // ["hote"]) | (if type=="array" then . else [.] end) | if (. - ["hote"]) | length > 0 then " · pour " + join(", ") else "" end)
+                  + (if $it.source_url then " (\($it.source_url))" else "" end)
               ' /tmp/api_response.json >> data/actualites-publiees.md || true
               rm "$FILE"
             else

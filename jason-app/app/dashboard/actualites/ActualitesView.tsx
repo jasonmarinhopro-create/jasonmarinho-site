@@ -29,8 +29,34 @@ const CATEGORIES = [
   { value: 'reservation-directe', label: 'Réserv. directe',    color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
   { value: 'communes',            label: 'Communes & Villes',   color: '#6E5446', bg: 'rgba(139,109,94,0.14)' },
   { value: 'driing',              label: 'Driing',              color: '#8A5A12', bg: 'rgba(255,213,107,0.20)' },
+  // Actualités des pros (17/10/2026)
+  { value: 'photo-video',         label: 'Photo & vidéo',       color: 'var(--accent-text)', bg: 'var(--accent-bg)' },
+  { value: 'menage',              label: 'Ménage',              color: '#B83A7C', bg: 'rgba(244,114,182,0.14)' },
+  { value: 'entreprise',          label: 'Ton entreprise',      color: '#8A5A12', bg: 'rgba(255,213,107,0.20)' },
   { value: 'general',             label: 'Général',             color: '#6E5446', bg: 'rgba(139,109,94,0.14)' },
 ]
+
+// Bandeau selon l'espace (hôte, photographe / vidéaste, équipe de ménage)
+const HERO = {
+  hote: {
+    eyebrow: 'Actualités LCD',
+    title: <>Ce qui change <HeroEm>pour ta location</HeroEm></>,
+    desc: 'Réglementation, fiscalité, plateformes, marché : les nouvelles qui comptent pour un hôte, vérifiées et résumées en quelques lignes, avec ce que tu dois faire.',
+    empty: "Le fil d'actualités arrive prochainement. Réglementation, fiscalité, marché, gîtes, chambres d'hôtes, conciergeries, réservation directe, tout le secteur LCD centralisé et trié par profil.",
+  },
+  photographe: {
+    eyebrow: 'Actualités photo & vidéo',
+    title: <>Ce qui change <HeroEm>pour ton métier</HeroEm></>,
+    desc: "Règles des plateformes sur les photos et vidéos d'annonce, drone, droit à l'image, statut et obligations de ton entreprise : les nouvelles qui comptent quand tu travailles pour des hôtes.",
+    empty: "Pas encore d'actualité pour les photographes et vidéastes. La veille les ajoute ici dès qu'une nouvelle concerne ton métier : plateformes, drone, statut, facture électronique.",
+  },
+  menage: {
+    eyebrow: 'Actualités ménage',
+    title: <>Ce qui change <HeroEm>pour ton équipe</HeroEm></>,
+    desc: "Exigences de propreté des plateformes, saisons et volumes de la location courte durée, statut, cotisations et obligations de ton entreprise : les nouvelles qui comptent quand tu travailles pour des hôtes.",
+    empty: "Pas encore d'actualité pour les équipes de ménage. La veille les ajoute ici dès qu'une nouvelle concerne ton métier : plateformes, saisons, statut, facture électronique.",
+  },
+} as const
 
 function getCat(value: string) {
   return CATEGORIES.find(c => c.value === value) ?? CATEGORIES[CATEGORIES.length - 1]
@@ -77,7 +103,10 @@ export default function ActualitesView({
   favoriteIds = [],
   detectedRegions = [],
   isAuthenticated = false,
+  audience = 'hote',
 }: {
+  /** Public de la page (17/10/2026) : espace hôte, photographe ou ménage */
+  audience?: 'hote' | 'photographe' | 'menage'
   articles: Actualite[]
   isDecouverte?: boolean
   totalCount?: number
@@ -357,9 +386,9 @@ export default function ActualitesView({
           pages ; à droite, ce qu'il te reste à lire et tes favoris. */}
       <HubHero
         eyebrowIcon={<Newspaper size={14} weight="fill" />}
-        eyebrow="Actualités LCD"
-        title={<>Ce qui change <HeroEm>pour ta location</HeroEm></>}
-        desc="Réglementation, fiscalité, plateformes, marché : les nouvelles qui comptent pour un hôte, vérifiées et résumées en quelques lignes, avec ce que tu dois faire."
+        eyebrow={HERO[audience].eyebrow}
+        title={HERO[audience].title}
+        desc={HERO[audience].desc}
         aside={isAuthenticated && articles.length > 0 ? (
           <div style={{ ...heroCard, width: '100%' }}>
             <div style={s.asideTitle}>Ton fil</div>
@@ -381,10 +410,12 @@ export default function ActualitesView({
               ) : (
                 <span style={s.upToDate}><CheckCircle size={13} weight="fill" /> Tu es à jour</span>
               )}
-              <Link href="/dashboard/actualites/favoris" style={s.statChipLink}>
-                <BookmarkSimple size={12} weight="fill" /> Favoris
-                {favorites.size > 0 && <strong style={{ marginLeft: '4px' }}>{favorites.size}</strong>}
-              </Link>
+              {audience === 'hote' && (
+                <Link href="/dashboard/actualites/favoris" style={s.statChipLink}>
+                  <BookmarkSimple size={12} weight="fill" /> Favoris
+                  {favorites.size > 0 && <strong style={{ marginLeft: '4px' }}>{favorites.size}</strong>}
+                </Link>
+              )}
             </div>
           </div>
         ) : undefined}
@@ -400,11 +431,7 @@ export default function ActualitesView({
             <Clock size={13} color="var(--text-muted)" />
             Bientôt disponible
           </div>
-          <p style={s.emptyDesc}>
-            Le fil d&apos;actualités arrive prochainement. Réglementation, fiscalité, marché,
-            gîtes, chambres d&apos;hôtes, conciergeries, réservation directe, tout le secteur LCD
-            centralisé et trié par profil.
-          </p>
+          <p style={s.emptyDesc}>{HERO[audience].empty}</p>
         </div>
       ) : (
         <>
@@ -636,13 +663,15 @@ export default function ActualitesView({
         }
       `}</style>
 
-      <div style={{ marginTop: '28px' }}>
-        <AskQuestionCard
-          category="reglementation"
-          title="Une actu te concerne et tu ne sais pas quoi faire ?"
-          text="Nouvelle règle, taxe, plateforme : pose ta question, Jason ou un hôte te répond sous 48 h."
-        />
-      </div>
+      {audience === 'hote' && (
+        <div style={{ marginTop: '28px' }}>
+          <AskQuestionCard
+            category="reglementation"
+            title="Une actu te concerne et tu ne sais pas quoi faire ?"
+            text="Nouvelle règle, taxe, plateforme : pose ta question, Jason ou un hôte te répond sous 48 h."
+          />
+        </div>
+      )}
     </div>
   )
 }

@@ -8,8 +8,9 @@
 // plan partenaire, question du mois). Maquette : template.ts.
 import { renderIssue, withUtm, monthIndex, NEWSLETTER_NAME, type IssueStory } from './template'
 import { EDITION_CONFIG, type Edition } from './editions'
+import { actusForEdition, concernsAudience } from '@/lib/actualites/audience'
 
-export interface NlActu { id: string; title: string; summary: string | null; category: string | null; source_url: string | null; published_at: string | null; deadline_date?: string | null }
+export interface NlActu { id: string; title: string; summary: string | null; category: string | null; source_url: string | null; published_at: string | null; deadline_date?: string | null; audience?: string[] | null }
 export interface NlArticle { title: string; link: string; description: string; pubDate: string; category?: string }
 export interface NlChange { title: string; description: string; date: string }
 
@@ -77,6 +78,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   reglementation: 'Réglementation', fiscalite: 'Fiscalité', juridique: 'Juridique', plateformes: 'Plateformes',
   marche: 'Marché', outils: 'Outils', gites: 'Gîtes et meublés', 'chambres-hotes': "Chambres d'hôtes",
   conciergerie: 'Conciergeries', 'reservation-directe': 'Réservation directe', communes: 'Communes', driing: 'Driing', general: 'Actualité',
+  'photo-video': 'Photo et vidéo', menage: 'Ménage', entreprise: 'Ton entreprise',
 }
 const categoryLabel = (c: string | null) => (c ? CATEGORY_LABEL[c] ?? c.charAt(0).toUpperCase() + c.slice(1) : 'Actualité')
 
@@ -122,8 +124,11 @@ export function buildNewsletter(input: { parisDate: string; actus: NlActu[]; art
   const edition = input.edition ?? 'hote'
   const cfg = EDITION_CONFIG[edition]
   // Actualités : celles qui parlent le plus à ce public d'abord (tri stable)
-  const rank = (a: NlActu) => (cfg.leadCategories.includes(a.category ?? '') ? 0 : 1)
-  const actus = input.actus.filter(a => a.title && a.summary).map((a, i) => ({ a, i }))
+  // Public de l'actu (17/10/2026) : la lettre des hôtes n'a pas les actus des
+  // pros ; celle des pros met les actus de leur métier en tête.
+  const own = (a: NlActu) => (edition === 'photographe' || edition === 'menage') && concernsAudience(a, edition)
+  const rank = (a: NlActu) => (own(a) ? 0 : 2) + (cfg.leadCategories.includes(a.category ?? '') ? 0 : 1)
+  const actus = actusForEdition(input.actus, edition).filter(a => a.title && a.summary).map((a, i) => ({ a, i }))
     .sort((x, y) => rank(x.a) - rank(y.a) || x.i - y.i).map(x => x.a).slice(0, 4)
   // Articles et nouveautés propres à ce public, complétés par les plus récents
   const pick = <T,>(list: T[], match: RegExp | null, text: (t: T) => string, max: number, fill: number) => {

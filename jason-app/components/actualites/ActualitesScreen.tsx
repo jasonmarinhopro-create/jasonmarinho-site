@@ -1,0 +1,103 @@
+// Page Actualités, commune aux espaces (17/10/2026) : hôte (/dashboard/actualites),
+// photographe / vidéaste et équipe de ménage (…/ma-fiche-*/actualites). Chaque
+// espace ne voit que les actualités de son public (lib/actualites/audience.ts).
+import { getProfile } from '@/lib/queries/profile'
+import { createClient } from '@/lib/supabase/server'
+import { getCachedPublishedActualites } from '@/lib/queries/cache'
+import { forAudience, type ActuAudience } from '@/lib/actualites/audience'
+import ActualitesView from '@/app/dashboard/actualites/ActualitesView'
+import type { Actualite } from '@/app/dashboard/actualites/page'
+
+const FREE_ARTICLES_LIMIT = 3
+
+// Mapping mots-clés → région tag (même logique que /communaute)
+const REGION_KEYWORDS: Record<string, string[]> = {
+  'Île-de-France':   ['paris', 'île-de-france', 'ile-de-france', 'idf', ' 75', ' 77', ' 78', ' 91', ' 92', ' 93', ' 94', ' 95'],
+  'PACA':            ['paca', 'provence', 'marseille', 'nice', 'aix-en-provence', 'cannes', 'avignon', 'toulon', 'antibes', ' 13', ' 83', ' 84', ' 04', ' 05', ' 06'],
+  'Bretagne':        ['bretagne', 'rennes', 'brest', 'quimper', 'lorient', 'vannes', 'saint-malo', 'dinard', ' 22', ' 29', ' 35', ' 56'],
+  'Normandie':       ['normandie', 'rouen', 'caen', 'le havre', 'cherbourg', 'évreux', 'deauville', 'honfleur', ' 14', ' 27', ' 50', ' 61', ' 76'],
+  'Occitanie':       ['occitanie', 'toulouse', 'montpellier', 'nîmes', 'nimes', 'perpignan', 'narbonne', 'sète', ' 31', ' 34', ' 11', ' 66', ' 30'],
+  'Hauts-de-France': ['hauts-de-france', 'lille', 'amiens', 'roubaix', 'tourcoing', 'arras', 'calais', ' 59', ' 62', ' 60', ' 02', ' 80'],
+  'Auvergne':        ['auvergne', 'clermont-ferrand', 'clermont', 'vichy', ' 63', ' 15', ' 43', ' 03'],
+  'Bourgogne':       ['bourgogne', 'dijon', 'beaune', 'nevers', 'mâcon', 'macon', 'auxerre', ' 21', ' 58', ' 71', ' 89'],
+  'Corse':           ['corse', 'ajaccio', 'bastia', 'porto-vecchio', 'calvi', 'bonifacio', ' 20', ' 2a', ' 2b'],
+  'Réunion':         ['réunion', 'reunion', 'saint-denis', 'saint-pierre', 'saint-paul', ' 974'],
+  'Alpes':           ['alpes', 'chamonix', 'megève', 'megeve', 'grenoble', 'annecy', 'savoie', ' 73', ' 74', ' 38'],
+  'Pyrénées':        ['pyrénées', 'pyrenees', 'pau', 'tarbes', 'lourdes', 'biarritz', ' 64', ' 65'],
+}
+
+function detectRegions(adresses: string[]): Set<string> {
+  const detected = new Set<string>()
+  for (const addr of adresses) {
+    const text = ' ' + addr.toLowerCase() + ' '
+    for (const [region, keywords] of Object.entries(REGION_KEYWORDS)) {
+      for (const kw of keywords) {
+        if (text.includes(kw.toLowerCase())) {
+          detected.add(region)
+          break
+        }
+      }
+    }
+  }
+  return detected
+}
+
+export default async function ActualitesScreen({ audience = 'hote' }: { audience?: ActuAudience }) {
+  const [profile, supabase] = await Promise.all([
+    getProfile(),
+    createClient(),
+  ])
+
+  const plan = profile?.plan ?? 'decouverte'
+  // La limite de la formule gratuite ne vaut que pour les hôtes (les pros paient leur fiche)
+  const isDecouverte = audience === 'hote' && plan === 'decouverte'
+  const userId = profile?.userId ?? null
+
+  const [
+    articles,
+    { data: reads },
+    { data: favorites },
+    { data: userLogements },
+  ] = await Promise.all([
+    // Catalogue public partagé : caché 5 min via unstable_cache,
+    // évite 1 query DB par visite quand le contenu n'a pas changé.
+    getCachedPublishedActualites(),
+    userId
+      ? supabase.from('user_actualite_reads').select('actualite_id').eq('user_id', userId)
+      : Promise.resolve({ data: [] as { actualite_id: string }[] }),
+    userId
+      ? supabase.from('user_actualite_favorites').select('actualite_id').eq('user_id', userId)
+      : Promise.resolve({ data: [] as { actualite_id: string }[] }),
+    userId && audience === 'hote'
+      ? supabase.from('logements').select('adresse').eq('user_id', userId)
+      : Promise.resolve({ data: [] as { adresse: string | null }[] }),
+  ])
+
+  const allArticles = forAudience(articles, audience) as Actualite[]
+  const visibleArticles = isDecouverte
+    ? allArticles.slice(0, FREE_ARTICLES_LIMIT)
+    : allArticles
+  const totalCount = allArticles.length
+
+  const readSlugs = new Set((reads ?? []).map(r => r.actualite_id))
+  const favoriteSlugs = new Set((favorites ?? []).map(f => f.actualite_id))
+
+  // Détection régions depuis logements
+  const userAdresses = (userLogements ?? []).map(l => (l.adresse ?? '').toLowerCase()).filter(Boolean)
+  const detectedRegions = Array.from(detectRegions(userAdresses))
+
+  return (
+    <>
+      <ActualitesView
+        articles={visibleArticles}
+        isDecouverte={isDecouverte}
+        totalCount={totalCount}
+        readIds={Array.from(readSlugs)}
+        favoriteIds={Array.from(favoriteSlugs)}
+        detectedRegions={detectedRegions}
+        isAuthenticated={!!userId}
+        audience={audience}
+      />
+    </>
+  )
+}

@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/queries/cache'
+import { readAudience } from '@/lib/actualites/audience'
 
 function getServiceClient() {
   return createSupabaseAdmin(
@@ -44,7 +45,7 @@ export async function addActualite(formData: FormData) {
 
   if (!title || !summary || !category) return { success: false, error: 'Champs manquants' }
 
-  const { error: dbError } = await adminClient.from('actualites').insert({
+  const row = {
     title,
     summary,
     source_url,
@@ -52,7 +53,11 @@ export async function addActualite(formData: FormData) {
     is_published: published,
     published_at: published ? new Date().toISOString() : null,
     read_time_minutes,
-  })
+  }
+  const audience = readAudience(formData.getAll('audience'))
+  let { error: dbError } = await adminClient.from('actualites').insert({ ...row, audience })
+  // Migration 20261017_137 absente : enregistrée pour les hôtes
+  if (dbError && /audience/.test(dbError.message)) ({ error: dbError } = await adminClient.from('actualites').insert(row))
 
   if (dbError) return { success: false, error: dbError.message }
 
@@ -74,7 +79,8 @@ export async function updateActualite(id: string, formData: FormData) {
 
   if (!title || !summary || !category) return { success: false, error: 'Champs manquants' }
 
-  const { error: dbError } = await adminClient
+  const audience = readAudience(formData.getAll('audience'))
+  const update = (withAudience: boolean) => adminClient
     .from('actualites')
     .update({
       title,
@@ -84,8 +90,11 @@ export async function updateActualite(id: string, formData: FormData) {
       is_published: published,
       published_at: published ? new Date().toISOString() : null,
       read_time_minutes,
+      ...(withAudience ? { audience } : {}),
     })
     .eq('id', id)
+  let { error: dbError } = await update(true)
+  if (dbError && /audience/.test(dbError.message)) ({ error: dbError } = await update(false))
 
   if (dbError) return { success: false, error: dbError.message }
 

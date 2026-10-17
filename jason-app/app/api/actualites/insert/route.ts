@@ -1,10 +1,13 @@
 import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
 import { findSimilarActualite } from '@/lib/actualites/dedup'
+import { readAudience } from '@/lib/actualites/audience'
 
 const VALID_CATEGORIES = new Set([
   'reglementation', 'fiscalite', 'plateformes', 'marche', 'outils', 'juridique', 'driing',
   'gites', 'chambres-hotes', 'conciergerie', 'reservation-directe', 'communes', 'general',
+  // Actualités des pros (17/10/2026) : métier photo / vidéo, métier du ménage, statut et obligations d'entreprise
+  'photo-video', 'menage', 'entreprise',
 ])
 
 export async function POST(req: NextRequest) {
@@ -44,7 +47,7 @@ export async function POST(req: NextRequest) {
       continue
     }
 
-    const { title, summary, source_url, category, published_at, is_published = true, read_time_minutes, is_update } =
+    const { title, summary, source_url, category, published_at, is_published = true, read_time_minutes, is_update, audience } =
       item as Record<string, unknown>
 
     if (!VALID_CATEGORIES.has(String(category))) {
@@ -75,7 +78,9 @@ export async function POST(req: NextRequest) {
       continue
     }
 
-    const { error } = await supabase.from('actualites').insert({
+    // Public (hôtes par défaut) : colonne de la migration 20261017_137
+    const who = readAudience(audience)
+    const row = {
       title,
       summary,
       source_url:        source_url || null,
@@ -83,7 +88,13 @@ export async function POST(req: NextRequest) {
       is_published,
       published_at:      published_at || (is_published ? new Date().toISOString() : null),
       read_time_minutes: read_time_minutes ? parseInt(String(read_time_minutes), 10) : null,
-    })
+    }
+    let { error } = await supabase.from('actualites').insert({ ...row, audience: who })
+    // Migration pas encore passée : une actu des hôtes s'enregistre quand même,
+    // une actu des pros attend la colonne (sinon elle s'afficherait aux hôtes).
+    if (error && /audience/.test(error.message) && who.length === 1 && who[0] === 'hote') {
+      ({ error } = await supabase.from('actualites').insert(row))
+    }
 
     if (error) {
       results.push({ title: String(title), status: 'error', error: error.message })

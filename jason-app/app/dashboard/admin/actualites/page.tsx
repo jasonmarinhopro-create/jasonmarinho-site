@@ -17,10 +17,13 @@ export default async function AdminActualitesPage() {
 
   if (profile?.role !== 'admin') redirect('/dashboard')
 
-  const { data: articles } = await supabase
-    .from('actualites')
-    .select('id, title, summary, source_url, category, is_published, published_at, created_at, read_time_minutes')
-    .order('created_at', { ascending: false })
+  const cols = 'id, title, summary, source_url, category, is_published, published_at, created_at, read_time_minutes'
+  // Public (migration 20261017_137), relu sans la colonne si elle manque
+  type Row = { id: string; title: string; summary: string; source_url: string | null; category: string; is_published: boolean; published_at: string | null; created_at: string; read_time_minutes: number | null; audience?: string[] | null }
+  const first = await supabase.from('actualites').select(`${cols}, audience`).order('created_at', { ascending: false })
+  const articles = (first.error
+    ? (await supabase.from('actualites').select(cols).order('created_at', { ascending: false })).data
+    : first.data) as Row[] | null
 
   return (
     <>

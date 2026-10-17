@@ -549,6 +549,12 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                   label="Ma fiche"
                   Icon={proRole === 'photographer' ? Camera : Sparkle}
                 />
+                {/* Actualités de son métier (17/10/2026) */}
+                <NavItem
+                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/actualites' : '/dashboard/ma-fiche-menage/actualites'}
+                  label="Actualités"
+                  Icon={Newspaper}
+                />
                 <NavItem
                   href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/statistiques' : '/dashboard/ma-fiche-menage/statistiques'}
                   label="Mes statistiques"

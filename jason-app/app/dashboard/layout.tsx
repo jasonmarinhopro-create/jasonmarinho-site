@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { forAudience } from '@/lib/actualites/audience'
 import { headers, cookies } from 'next/headers'
 import { Suspense } from 'react'
 import Sidebar from '@/components/layout/Sidebar'
@@ -128,7 +129,8 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
   const doneByTrack: Record<string, string[]> = {}
   onboardingState.tracks.forEach(t => { doneByTrack[t.key] = Array.from(t.doneSteps) })
 
-  const latestPublishedAt = cachedActualites[0]?.published_at ?? null
+  // Point « du neuf » du menu hôte : actualités des hôtes seulement
+  const latestPublishedAt = forAudience(cachedActualites, 'hote')[0]?.published_at ?? null
   const hasNewActualites = !!(
     latestPublishedAt &&
     latestPublishedAt > (profile.last_seen_actualites_at ?? '1970-01-01T00:00:00Z')
