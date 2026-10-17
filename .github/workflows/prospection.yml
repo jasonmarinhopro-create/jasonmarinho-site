@@ -118,7 +118,7 @@ jobs:
               IFS=',' read -ra CITIES <<< "$VILLES"
               for a in "${AUDS[@]}"; do
                 a=$(echo "$a" | sed 's/^ *//;s/ *$//')
-                if [ "$a" = "menage" ]; then QUERIES=("ménage location saisonnière" "ménage airbnb"); else QUERIES=("photographe immobilier" "photographe location saisonnière"); fi
+                if [ "$a" = "menage" ]; then QUERIES=("ménage location saisonnière" "ménage airbnb"); else QUERIES=("photographe immobilier" "photographe location saisonnière" "vidéaste immobilier"); fi
                 for v in "${CITIES[@]}"; do
                   v=$(echo "$v" | sed 's/^ *//;s/ *$//')
                   for q in "${QUERIES[@]}"; do

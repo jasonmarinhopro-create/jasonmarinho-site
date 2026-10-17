@@ -265,7 +265,7 @@ ${JSON.stringify({
     </div>
     ${heroActionsHtml({ firstName, hasPhotos: photos.length > 0, external, video: video && !video.embed ? video : null })}
   </div>
-  ${video?.embed ? heroVideoHtml(p.video_url, { name: displayName, poster: photos[0]?.thumb }) : heroCoverHtml(photos, displayName)}
+  ${video?.embed ? heroVideoHtml(p.video_url, { name: displayName, poster: p.__videoPoster || photos[0]?.thumb, credit: p.__videoCredit }) : heroCoverHtml(photos, displayName)}
   </div>
 </header>
 
@@ -387,18 +387,61 @@ ${VITRINE_JS}
 }
 
 /**
- * Filtres visibles sous la recherche (17/10/2026, Jason) : Photographe /
- * Vidéaste / Photographe et vidéaste, puis les options (vues aériennes…).
- * Une option n'apparaît que si au moins un pro la propose.
+ * Fenêtre « Filtres » de l'annuaire (17/10/2026, Jason : « tout dans le bouton
+ * Filtres, avec plus de choix pour les hôtes ») : métier, options, ce que la
+ * fiche montre, prix, tri. Le nombre de pros s'affiche à côté de chaque choix.
  */
-function visuelFiltersHtml(items) {
-  const offered = new Set(items.flatMap(p => readOptions(p.options)))
-  const opts = OPTIONS_VISUELLES.filter(o => offered.has(o.key))
-  const metiers = [['photo', 'Photographe', 'camera'], ['video', 'Vidéaste', 'video-camera'], ['photo_video', 'Photographe et vidéaste', 'film-strip']]
-  return `<div class="vf" aria-label="Filtrer par prestation">
-  <div class="vf-row">${metiers.map(([k, l, ic]) => `<button type="button" class="vf-b" data-vf-metier="${k}" aria-pressed="false"><i class="ph-bold ph-${ic}"></i>${l}</button>`).join('')}</div>
-  ${opts.length ? `<div class="vf-row vf-opts">${opts.map(o => `<button type="button" class="vf-c" data-vf-option="${o.key}" aria-pressed="false"><i class="ph-bold ph-${o.icon}"></i>${escHtml(o.label)}</button>`).join('')}</div>` : ''}
-</div>`
+const FILTRES_FICHE = [
+  ['photos', 'Avec des photos sur la fiche', 'ph-images', p => (Array.isArray(p.portfolio_photos) ? p.portfolio_photos.length : 0) > 0],
+  ['video', 'Avec une vidéo à regarder', 'ph-play-circle', p => !!p.video_url],
+  ['prix', 'Prix ou formules affichés', 'ph-tag', p => prixNum(p) != null],
+  ['reco', 'Recommandé par des hôtes', 'ph-heart', p => (p.reco_count ?? 0) > 0],
+]
+function prixNum(p) {
+  const prices = (Array.isArray(p.formules) ? p.formules : []).map(f => Number(f?.prix)).filter(n => Number.isFinite(n) && n > 0)
+  const n = prices.length ? Math.min(...prices) : Number(p.tarif_min)
+  return Number.isFinite(n) && n > 0 ? Math.round(n) : null
+}
+/** « Les plus complets » : photos, vidéo, prix, recommandations, bio */
+function completude(p) {
+  return FILTRES_FICHE.filter(([, , , f]) => f(p)).length * 2 + (p.bio ? 1 : 0) + Math.min(3, p.reco_count ?? 0)
+}
+function filtersSectionsHtml(items) {
+  const n = f => items.filter(f).length
+  const cnt = k => `<span class="fc-n">${k}</span>`
+  const metiers = [['', 'Tous', 'squares-four', () => true], ['photo', 'Photographe', 'camera', p => readMetier(p.metier) !== 'video'], ['video', 'Vidéaste', 'video-camera', p => readMetier(p.metier) !== 'photo'], ['photo_video', 'Photographe et vidéaste', 'film-strip', p => readMetier(p.metier) === 'photo_video']]
+  return `
+      <div class="filters-section">
+        <h3>Ce que tu cherches</h3>
+        <div class="fc-grid" role="radiogroup" aria-label="Ce que tu cherches">${metiers.map(([k, l, ic, f]) => `<button type="button" class="fc-m" data-f-metier="${k}" role="radio" aria-checked="${k ? 'false' : 'true'}"><i class="ph-bold ph-${ic}"></i><span>${l}</span>${cnt(n(f))}</button>`).join('')}</div>
+        <p class="fc-hint">« Photographe » montre aussi ceux qui font les deux.</p>
+      </div>
+      <div class="filters-section">
+        <h3>Options</h3>
+        <div class="fc-list">${OPTIONS_VISUELLES.map(o => { const c = n(p => readOptions(p.options).includes(o.key)); return `<button type="button" class="fc-c" data-f-option="${o.key}" aria-pressed="false"${c ? '' : ' disabled'}><i class="ph-bold ph-${o.icon}"></i><span>${escHtml(o.label)}</span>${cnt(c)}</button>` }).join('')}</div>
+      </div>
+      <div class="filters-section">
+        <h3>Sur la fiche</h3>
+        <div class="fc-list">${FILTRES_FICHE.map(([k, l, ic, f]) => { const c = n(f); return `<button type="button" class="fc-c" data-f-fiche="${k}" aria-pressed="false"${c ? '' : ' disabled'}><i class="ph-bold ${ic}"></i><span>${l}</span>${cnt(c)}</button>` }).join('')}</div>
+      </div>
+      <div class="filters-section">
+        <h3>Prix de départ</h3>
+        <div class="filters-price">
+          <div class="filters-price-field">
+            <label for="f-min">Minimum</label>
+            <div class="fx"><span>€</span><input type="number" id="f-min" inputmode="numeric" placeholder="0" min="0"></div>
+          </div>
+          <div class="filters-price-field">
+            <label for="f-max">Maximum</label>
+            <div class="fx"><span>€</span><input type="number" id="f-max" inputmode="numeric" placeholder="2000+" min="0"></div>
+          </div>
+        </div>
+        <p class="fc-hint">Les pros sans prix affiché restent visibles.</p>
+      </div>
+      <div class="filters-section">
+        <h3>Trier par</h3>
+        <div class="fc-grid fc-sort" role="radiogroup" aria-label="Trier par">${[['', 'Les plus complets'], ['prix-asc', 'Prix le plus bas'], ['prix-desc', 'Prix le plus haut'], ['recent', 'Les plus récents']].map(([k, l]) => `<button type="button" class="fc-m" data-f-sort="${k}" role="radio" aria-checked="${k ? 'false' : 'true'}"><span>${l}</span></button>`).join('')}</div>
+      </div>`
 }
 
 export function buildAnnuaireListPage(items) {
@@ -406,7 +449,7 @@ export function buildAnnuaireListPage(items) {
   const { byPro, counts } = cityCoverage(ROOT, cfg.prefix, items)
   const itemsHtml = items.length === 0
     ? emptyHtml(cfg)
-    : `<div class="grid">${items.map(p => {
+    : `<div class="grid">${[...items].sort((a, b) => completude(b) - completude(a)).map(p => {
         const displayName = p.pseudo || p.full_name
         const des = prixDes(p.formules, p.tarif_min)
         const tarif = des ?? fmtTarif(p)
@@ -418,7 +461,7 @@ export function buildAnnuaireListPage(items) {
         const extra = [metierLabel(metier), opts.includes('drone') ? 'drone' : null, p.specialite, p.reco_count > 0 ? `recommandé par ${p.reco_count} hôte${p.reco_count > 1 ? 's' : ''}` : null].filter(Boolean).join(' · ')
         return proCardHtml({
           href: `/annuaires/photographes/${p.slug}`,
-          attrs: `data-search="${escHtml(searchBlob)}" data-metier="${metier}" data-options="${opts.join(' ')}" data-tier="${escHtml(p.tier || '')}" data-tarif-min="${p.tarif_min ?? ''}" data-tarif-max="${p.tarif_max ?? ''}"`,
+          attrs: `data-search="${escHtml(searchBlob)}" data-metier="${metier}" data-options="${opts.join(' ')}" data-fiche="${FILTRES_FICHE.filter(([, , , f]) => f(p)).map(([k]) => k).join(' ')}" data-prix="${prixNum(p) ?? ''}" data-created="${escHtml(p.created_at || '')}" data-tier="${escHtml(p.tier || '')}" data-tarif-min="${prixNum(p) ?? p.tarif_min ?? ''}" data-tarif-max="${p.tarif_max ?? prixNum(p) ?? ''}"`,
           name: displayName, metier: metierLabel(metier), ville: p.ville,
           lieu: cardLieu(villes, p.zone_couverte, 'aussi à'),
           extra: extra ? extra.charAt(0).toUpperCase() + extra.slice(1) : '',
@@ -561,14 +604,27 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .preview-thumb{flex-shrink:0;width:170px;height:170px;border-radius:14px;background:linear-gradient(160deg,#001a11,var(--gd) 60%,#00463a);display:flex;align-items:center;justify-content:center;color:var(--y);font-size:54px}
 @media(max-width:640px){.preview-thumb{width:100%;height:140px}}
 ${ANNUAIRE_CSS}
-.vf{max-width:820px;margin:16px auto 0;padding:0 clamp(16px,5vw,40px);display:flex;flex-direction:column;gap:8px}
-.vf-row{display:flex;flex-wrap:wrap;gap:8px}
-.vf-b,.vf-c{display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(0,76,63,.16);background:#fff;color:var(--g);font-family:'Outfit',sans-serif;font-weight:600;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
-.vf-b{padding:9px 15px;border-radius:12px;font-size:14px}
-.vf-c{padding:6px 12px;border-radius:999px;font-size:12.5px;color:var(--tm)}
-.vf-b:hover,.vf-c:hover{border-color:rgba(0,76,63,.35)}
-.vf-b.on,.vf-c.on{background:var(--g);border-color:var(--g);color:#fff}
-@media(max-width:560px){.vf-row{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}.vf-row::-webkit-scrollbar{display:none}.vf-b,.vf-c{flex-shrink:0}}
+.filters-modal{max-width:520px}
+.fc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fc-list{display:flex;flex-direction:column;gap:6px}
+.fc-m,.fc-c{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid var(--bd);background:#fff;border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:var(--td);cursor:pointer;transition:border-color .15s,background .15s}
+.fc-m{padding:12px 13px}
+.fc-c{padding:10px 13px;font-weight:500}
+.fc-m i,.fc-c i{font-size:17px;color:var(--g);flex-shrink:0}
+.fc-m span:first-of-type,.fc-c span:first-of-type{flex:1;min-width:0}
+.fc-n{font-size:11.5px;font-weight:600;color:var(--tl);background:rgba(0,76,63,.06);border-radius:999px;padding:1px 8px;flex-shrink:0}
+.fc-m:hover,.fc-c:hover{border-color:rgba(0,76,63,.35)}
+.fc-m[aria-checked="true"],.fc-c[aria-pressed="true"]{border-color:var(--g);background:rgba(0,76,63,.06);box-shadow:inset 0 0 0 1px var(--g)}
+.fc-c[aria-pressed="true"]::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--g);flex-shrink:0}
+.fc-c:disabled{opacity:.45;cursor:default}
+.fc-sort .fc-m{justify-content:center;font-weight:500}
+.fc-hint{font-size:11.5px;color:var(--tl);margin:10px 0 0;line-height:1.5}
+@media(max-width:420px){.fc-grid{grid-template-columns:1fr}}
+.f-active{max-width:820px;margin:14px auto 0;padding:0 clamp(16px,5vw,40px);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.f-active[hidden]{display:none}
+.f-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px 6px 12px;border-radius:999px;background:var(--g);color:#fff;border:none;font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer}
+.f-chip i{font-size:11px;opacity:.8}
+.f-clear{background:none;border:none;font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:600;color:var(--tm);text-decoration:underline;cursor:pointer;padding:6px 4px}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify({
@@ -603,7 +659,7 @@ ${items.length > 0 ? `<div class="tools-row">
     <span class="filters-badge" id="filters-badge" style="display:none">0</span>
   </button>
 </div>
-${visuelFiltersHtml(items)}
+<div class="f-active" id="f-active" hidden></div>
 ${demandeBandHtml(cfg)}
 
 <div class="filters-backdrop" id="filters-backdrop">
@@ -612,20 +668,7 @@ ${demandeBandHtml(cfg)}
       <span class="filters-title">Filtres</span>
       <button type="button" class="filters-close" id="filters-close" aria-label="Fermer"><i class="ph-bold ph-x"></i></button>
     </div>
-    <div class="filters-body">
-      <div class="filters-section">
-        <h3>Fourchette de tarif</h3>
-        <div class="filters-price">
-          <div class="filters-price-field">
-            <label for="f-min">Minimum</label>
-            <div class="fx"><span>€</span><input type="number" id="f-min" inputmode="numeric" placeholder="0" min="0"></div>
-          </div>
-          <div class="filters-price-field">
-            <label for="f-max">Maximum</label>
-            <div class="fx"><span>€</span><input type="number" id="f-max" inputmode="numeric" placeholder="2000+" min="0"></div>
-          </div>
-        </div>
-      </div>
+    <div class="filters-body">${filtersSectionsHtml(items)}
     </div>
     <div class="filters-foot">
       <button type="button" class="filters-clear" id="filters-clear">Tout effacer</button>
@@ -656,146 +699,154 @@ ${items.length > 0 ? `<div class="search-empty" id="search-empty">
 ${items.length > 0 ? `<script>
 (function(){
   function norm(s){ return (s || '').toString().toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').trim() }
-  var input      = document.getElementById('pro-search')
-  var clear      = document.getElementById('search-clear')
-  var reset      = document.getElementById('search-reset')
-  var countEl    = document.getElementById('search-count')
-  var emptyEl    = document.getElementById('search-empty')
-  var emptyQ     = document.getElementById('search-empty-q')
-  var grid       = document.querySelector('.grid')
-  var cards      = grid ? Array.prototype.slice.call(grid.querySelectorAll('.card')) : []
+  function $(id){ return document.getElementById(id) }
+  function all(sel){ return Array.prototype.slice.call(document.querySelectorAll(sel)) }
+  var input = $('pro-search'), clear = $('search-clear'), reset = $('search-reset'), countEl = $('search-count')
+  var emptyEl = $('search-empty'), emptyQ = $('search-empty-q'), grid = document.querySelector('.grid')
+  var cards = grid ? Array.prototype.slice.call(grid.querySelectorAll('.card')) : []
   if (!input || !cards.length) return
+  cards.forEach(function(c, i){ c.setAttribute('data-i', i) })
 
-  // ── Modal Filtres ──────────────────────────────────────────────────
-  var backdrop     = document.getElementById('filters-backdrop')
-  var openBtn      = document.getElementById('filters-open')
-  var closeBtn     = document.getElementById('filters-close')
-  var applyBtn     = document.getElementById('filters-apply')
-  var clearBtn     = document.getElementById('filters-clear')
-  var badge        = document.getElementById('filters-badge')
-  var countPreview = document.getElementById('filters-count')
-  var countWord    = document.getElementById('filters-count-word')
-  var fondBtn      = document.getElementById('f-fondateur')
-  var minInput     = document.getElementById('f-min')
-  var maxInput     = document.getElementById('f-max')
+  // ── État des filtres (appliqué) et brouillon (fenêtre ouverte) ──────
+  // metier : '' | photo | video | photo_video ; options et fiche : listes ; tri : '' | prix-asc | prix-desc | recent
+  function blank(){ return { metier: '', options: [], fiche: [], min: null, max: null, sort: '' } }
+  function copy(o){ return { metier: o.metier, options: o.options.slice(), fiche: o.fiche.slice(), min: o.min, max: o.max, sort: o.sort } }
+  var state = blank(), draft = blank()
+  var LABELS = {}
+  all('[data-f-metier],[data-f-option],[data-f-fiche],[data-f-sort]').forEach(function(b){
+    var t = b.querySelector('span'); var k = ['metier', 'option', 'fiche', 'sort'].filter(function(x){ return b.hasAttribute('data-f-' + x) })[0]
+    LABELS[k + ':' + b.getAttribute('data-f-' + k)] = t ? t.textContent : ''
+  })
 
-  var state = { fondateur: false, min: null, max: null }
-  // Photographe / vidéaste / les deux + options (drone…), visibles sous la recherche.
-  // « Photographe » = fait de la photo (photo ou photo + vidéo), « Vidéaste » =
-  // fait de la vidéo, « Photographe et vidéaste » = les deux.
-  var vis = { metier: '', options: [] }
-  var visBtns = Array.prototype.slice.call(document.querySelectorAll('[data-vf-metier],[data-vf-option]'))
-  function visOk(c){
+  function match(c, st){
     var m = c.getAttribute('data-metier') || 'photo'
-    if (vis.metier === 'photo' && m === 'video') return false
-    if (vis.metier === 'video' && m === 'photo') return false
-    if (vis.metier === 'photo_video' && m !== 'photo_video') return false
-    var o = ' ' + (c.getAttribute('data-options') || '') + ' '
-    for (var i = 0; i < vis.options.length; i++) if (o.indexOf(' ' + vis.options[i] + ' ') === -1) return false
+    if (st.metier === 'photo' && m === 'video') return false
+    if (st.metier === 'video' && m === 'photo') return false
+    if (st.metier === 'photo_video' && m !== 'photo_video') return false
+    var o = ' ' + (c.getAttribute('data-options') || '') + ' ', f = ' ' + (c.getAttribute('data-fiche') || '') + ' '
+    for (var i = 0; i < st.options.length; i++) if (o.indexOf(' ' + st.options[i] + ' ') === -1) return false
+    for (var k = 0; k < st.fiche.length; k++) if (f.indexOf(' ' + st.fiche[k] + ' ') === -1) return false
+    var prix = c.getAttribute('data-prix'); prix = prix ? Number(prix) : null
+    if (st.min != null && prix != null && prix < st.min) return false
+    if (st.max != null && prix != null && prix > st.max) return false
     return true
   }
-  function visSync(){
-    visBtns.forEach(function(b){
-      var k = b.getAttribute('data-vf-metier')
-      var on = k != null ? vis.metier === k : vis.options.indexOf(b.getAttribute('data-vf-option')) !== -1
-      b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on))
-    })
+  function searchOk(c){ var q = norm(input.value); return !q || (c.getAttribute('data-search') || '').indexOf(q) !== -1 }
+  function activeCount(st){ return (st.metier ? 1 : 0) + st.options.length + st.fiche.length + (st.min != null || st.max != null ? 1 : 0) + (st.sort ? 1 : 0) }
+
+  // ── Fenêtre ──────────────────────────────────────────────────────────
+  var backdrop = $('filters-backdrop'), applyBtn = $('filters-apply'), clearBtn = $('filters-clear')
+  var minInput = $('f-min'), maxInput = $('f-max')
+  function paint(){
+    all('[data-f-metier]').forEach(function(b){ b.setAttribute('aria-checked', String(b.getAttribute('data-f-metier') === draft.metier)) })
+    all('[data-f-sort]').forEach(function(b){ b.setAttribute('aria-checked', String(b.getAttribute('data-f-sort') === draft.sort)) })
+    all('[data-f-option]').forEach(function(b){ b.setAttribute('aria-pressed', String(draft.options.indexOf(b.getAttribute('data-f-option')) !== -1)) })
+    all('[data-f-fiche]').forEach(function(b){ b.setAttribute('aria-pressed', String(draft.fiche.indexOf(b.getAttribute('data-f-fiche')) !== -1)) })
+    minInput.value = draft.min != null ? draft.min : ''; maxInput.value = draft.max != null ? draft.max : ''
+    preview()
+  }
+  function preview(){
+    var n = cards.filter(function(c){ return searchOk(c) && match(c, draft) }).length
+    $('filters-count').textContent = n
+    $('filters-count-word').textContent = n > 1 ? 'résultats' : 'résultat'
+    applyBtn.disabled = n === 0
+    clearBtn.style.color = activeCount(draft) ? 'var(--td)' : 'var(--tl)'
+  }
+  function toggle(list, v){ var i = list.indexOf(v); if (i === -1) list.push(v); else list.splice(i, 1) }
+  backdrop.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('button')
+    if (e.target === backdrop || (b && b.id === 'filters-close')) { backdrop.classList.remove('open'); return }
+    if (!b || b.disabled) return
+    if (b.hasAttribute('data-f-metier')) draft.metier = b.getAttribute('data-f-metier')
+    else if (b.hasAttribute('data-f-sort')) draft.sort = b.getAttribute('data-f-sort')
+    else if (b.hasAttribute('data-f-option')) toggle(draft.options, b.getAttribute('data-f-option'))
+    else if (b.hasAttribute('data-f-fiche')) toggle(draft.fiche, b.getAttribute('data-f-fiche'))
+    else return
+    paint()
+  })
+  minInput.addEventListener('input', function(){ draft.min = minInput.value ? Number(minInput.value) : null; preview() })
+  maxInput.addEventListener('input', function(){ draft.max = maxInput.value ? Number(maxInput.value) : null; preview() })
+  $('filters-open').addEventListener('click', function(){ draft = copy(state); paint(); backdrop.classList.add('open') })
+  clearBtn.addEventListener('click', function(){ draft = blank(); paint() })
+  applyBtn.addEventListener('click', function(){ state = copy(draft); backdrop.classList.remove('open'); apply(true) })
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') backdrop.classList.remove('open') })
+
+  // ── Puces des filtres actifs, sous la recherche ─────────────────────
+  var chips = $('f-active'), badge = $('filters-badge')
+  function chipsHtml(){
+    var out = []
+    if (state.metier) out.push(['metier', '', LABELS['metier:' + state.metier]])
+    state.options.forEach(function(o){ out.push(['option', o, LABELS['option:' + o]]) })
+    state.fiche.forEach(function(o){ out.push(['fiche', o, LABELS['fiche:' + o]]) })
+    if (state.min != null || state.max != null) out.push(['prix', '', state.min != null && state.max != null ? state.min + ' à ' + state.max + ' €' : state.min != null ? 'dès ' + state.min + ' €' : 'jusqu’à ' + state.max + ' €'])
+    if (state.sort) out.push(['sort', '', LABELS['sort:' + state.sort]])
+    chips.innerHTML = out.map(function(x){ return '<button type="button" class="f-chip" data-k="' + x[0] + '" data-v="' + x[1] + '">' + x[2] + ' <i class="ph-bold ph-x"></i></button>' }).join('') + (out.length > 1 ? '<button type="button" class="f-clear" data-k="all">Tout effacer</button>' : '')
+    chips.hidden = !out.length
+    var n = activeCount(state)
+    badge.style.display = n ? 'inline-flex' : 'none'; badge.textContent = n
+  }
+  chips.addEventListener('click', function(e){
+    var b = e.target.closest && e.target.closest('button'); if (!b) return
+    var k = b.getAttribute('data-k'), v = b.getAttribute('data-v')
+    if (k === 'all') state = blank()
+    else if (k === 'metier') state.metier = ''
+    else if (k === 'sort') state.sort = ''
+    else if (k === 'prix') { state.min = null; state.max = null }
+    else if (k === 'option') toggle(state.options, v)
+    else if (k === 'fiche') toggle(state.fiche, v)
+    apply(true)
+  })
+
+  // ── Adresse partageable : ?metier=video&options=drone&fiche=video&tri=prix-asc
+  function toUrl(){
     try {
-      var u = new URL(location.href)
-      if (vis.metier) u.searchParams.set('metier', vis.metier); else u.searchParams.delete('metier')
-      if (vis.options.length) u.searchParams.set('options', vis.options.join(',')); else u.searchParams.delete('options')
+      var u = new URL(location.href), set = function(k, v){ if (v) u.searchParams.set(k, v); else u.searchParams.delete(k) }
+      set('metier', state.metier); set('options', state.options.join(',')); set('fiche', state.fiche.join(','))
+      set('min', state.min != null ? state.min : ''); set('max', state.max != null ? state.max : ''); set('tri', state.sort)
       history.replaceState(null, '', u.pathname + u.search + u.hash)
     } catch (e) {}
   }
-  visBtns.forEach(function(b){
-    b.addEventListener('click', function(){
-      var k = b.getAttribute('data-vf-metier')
-      if (k != null) vis.metier = vis.metier === k ? '' : k
-      else {
-        var o = b.getAttribute('data-vf-option'), i = vis.options.indexOf(o)
-        if (i === -1) vis.options.push(o); else vis.options.splice(i, 1)
-      }
-      visSync(); apply()
-    })
-  })
   try {
-    var qs = new URLSearchParams(location.search)
-    if (['photo', 'video', 'photo_video'].indexOf(qs.get('metier')) !== -1) vis.metier = qs.get('metier')
-    vis.options = (qs.get('options') || '').split(',').filter(function(o){ return o && document.querySelector('[data-vf-option="' + o + '"]') })
-    visSync()
+    var qs = new URLSearchParams(location.search), ok = function(attr, v){ return v && document.querySelector('[' + attr + '="' + v + '"]') }
+    if (ok('data-f-metier', qs.get('metier'))) state.metier = qs.get('metier')
+    if (ok('data-f-sort', qs.get('tri'))) state.sort = qs.get('tri')
+    state.options = (qs.get('options') || '').split(',').filter(function(v){ return ok('data-f-option', v) })
+    state.fiche = (qs.get('fiche') || '').split(',').filter(function(v){ return ok('data-f-fiche', v) })
+    if (qs.get('min')) state.min = Number(qs.get('min')) || null
+    if (qs.get('max')) state.max = Number(qs.get('max')) || null
   } catch (e) {}
 
-  function openModal(){ backdrop.classList.add('open'); previewCount() }
-  function closeModal(){ backdrop.classList.remove('open') }
-  openBtn.addEventListener('click', openModal)
-  closeBtn.addEventListener('click', closeModal)
-  backdrop.addEventListener('click', function(e){ if (e.target === backdrop) closeModal() })
-
-  if (fondBtn) fondBtn.addEventListener('click', function(){
-    state.fondateur = !state.fondateur
-    fondBtn.classList.toggle('active', state.fondateur)
-    fondBtn.setAttribute('aria-pressed', String(state.fondateur))
-    previewCount()
-  })
-  minInput.addEventListener('input', function(){ state.min = minInput.value ? Number(minInput.value) : null; previewCount() })
-  maxInput.addEventListener('input', function(){ state.max = maxInput.value ? Number(maxInput.value) : null; previewCount() })
-
-  function matchesFilters(c){
-    if (!visOk(c)) return false
-    if (state.fondateur && c.getAttribute('data-tier') !== 'fondateur') return false
-    var tMin = c.getAttribute('data-tarif-min'), tMax = c.getAttribute('data-tarif-max')
-    tMin = tMin ? Number(tMin) : null
-    tMax = tMax ? Number(tMax) : null
-    // Chevauchement de fourchette. Pas de tarif renseigné = jamais exclu.
-    if (state.min != null && tMax != null && tMax < state.min) return false
-    if (state.max != null && tMin != null && tMin > state.max) return false
-    return true
-  }
-
-  function previewCount(){
-    var n = 0
-    cards.forEach(function(c){ if (matchesFilters(c)) n++ })
-    countPreview.textContent = n
-    countWord.textContent = n > 1 ? 'résultats' : 'résultat'
-    applyBtn.disabled = n === 0
-    var activeCount = (state.fondateur ? 1 : 0) + (state.min != null || state.max != null ? 1 : 0)
-    if (activeCount > 0) { badge.style.display = 'inline-flex'; badge.textContent = activeCount } else { badge.style.display = 'none' }
-    clearBtn.style.color = activeCount > 0 ? 'var(--td)' : 'var(--tl)'
-  }
-
-  function clearFilters(){
-    state = { fondateur: false, min: null, max: null }
-    if (fondBtn) { fondBtn.classList.remove('active'); fondBtn.setAttribute('aria-pressed', 'false') }
-    minInput.value = ''; maxInput.value = ''
-    previewCount()
-  }
-  clearBtn.addEventListener('click', clearFilters)
-  applyBtn.addEventListener('click', function(){ closeModal(); apply() })
-
-  // ── Recherche + filtres combinés ────────────────────────────────────
-  function apply(){
-    var q = norm(input.value)
-    var shown = 0
-    cards.forEach(function(c){
-      var searchOk = !q || (c.getAttribute('data-search') || '').indexOf(q) !== -1
-      if (searchOk && matchesFilters(c)) shown++
+  // ── Recherche + filtres + tri ───────────────────────────────────────
+  function sortCards(){
+    var key = state.sort, val = function(c, k){ return c.getAttribute(k) || '' }
+    var list = cards.slice().sort(function(a, b){
+      if (key === 'prix-asc' || key === 'prix-desc') {
+        var pa = val(a, 'data-prix'), pb = val(b, 'data-prix')
+        if (!pa !== !pb) return pa ? -1 : 1
+        if (pa && pb && pa !== pb) return key === 'prix-asc' ? pa - pb : pb - pa
+      }
+      if (key === 'recent' && val(a, 'data-created') !== val(b, 'data-created')) return val(a, 'data-created') < val(b, 'data-created') ? 1 : -1
+      return a.getAttribute('data-i') - b.getAttribute('data-i')
     })
-    var noResults = shown === 0
-    cards.forEach(function(c){
-      var searchOk = !q || (c.getAttribute('data-search') || '').indexOf(q) !== -1
-      var match = searchOk && matchesFilters(c)
-      c.style.display = match ? '' : 'none'
-    })
-    countEl.textContent = q ? (noResults ? '' : shown + ' résultat' + (shown > 1 ? 's' : '')) : ''
+    list.forEach(function(c){ grid.appendChild(c) })
+  }
+  function apply(save){
+    var q = norm(input.value), shown = 0
+    cards.forEach(function(c){ var m = searchOk(c) && match(c, state); c.style.display = m ? '' : 'none'; if (m) shown++ })
+    sortCards()
+    var none = shown === 0
+    countEl.textContent = (q || activeCount(state)) && !none ? shown + ' résultat' + (shown > 1 ? 's' : '') : ''
     clear.style.display = q ? 'inline-flex' : 'none'
-    if (emptyEl) emptyEl.style.display = noResults ? 'block' : 'none'
+    if (emptyEl) emptyEl.style.display = none ? 'block' : 'none'
     if (emptyQ) emptyQ.textContent = input.value.trim() || 'ces critères'
-    if (grid) grid.style.display = noResults ? 'none' : ''
+    if (grid) grid.style.display = none ? 'none' : ''
+    chipsHtml()
+    if (save) toUrl()
   }
-  input.addEventListener('input', apply)
-  clear.addEventListener('click', function(){ input.value = ''; apply(); input.focus() })
-  if (reset) reset.addEventListener('click', function(){ input.value = ''; vis = { metier: '', options: [] }; visSync(); clearFilters(); apply(); input.focus() })
-  apply()
+  input.addEventListener('input', function(){ apply(false) })
+  clear.addEventListener('click', function(){ input.value = ''; apply(false); input.focus() })
+  if (reset) reset.addEventListener('click', function(){ input.value = ''; state = blank(); apply(true); input.focus() })
+  apply(false)
 })()
 </script>` : ''}
 

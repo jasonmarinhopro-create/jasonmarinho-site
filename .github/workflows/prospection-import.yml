@@ -44,7 +44,7 @@ jobs:
           total=0; calls=0; stop=0
           while IFS= read -r v; do
             for a in photographe menage; do
-              if [ "$a" = menage ]; then QUERIES=("ménage location saisonnière" "ménage airbnb"); else QUERIES=("photographe immobilier" "photographe location saisonnière"); fi
+              if [ "$a" = menage ]; then QUERIES=("ménage location saisonnière" "ménage airbnb"); else QUERIES=("photographe immobilier" "photographe location saisonnière" "vidéaste immobilier"); fi
               for q in "${QUERIES[@]}"; do
                 body=$(jq -nc --arg a "$a" --arg q "$q $v" '{op:"import",audience:$a,query:$q}')
                 res=$(call "$body")

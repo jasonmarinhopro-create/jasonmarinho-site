@@ -65,6 +65,8 @@ export function videoEmbed(url) {
     const m = u.pathname.match(/(?:^|\/)(\d{6,12})(?:\/|$)/)
     if (m) return { kind: 'vimeo', id: m[1], src: `https://player.vimeo.com/video/${m[1]}?autoplay=1&dnt=1`, thumb: null }
   }
+  // Fichier vidéo hébergé sur notre site (fiche d'exemple)
+  if (host === 'jasonmarinho.com' && /\.mp4$/i.test(u.pathname)) return { kind: 'file', id: u.pathname, src: u.toString(), thumb: null }
   return null
 }
 

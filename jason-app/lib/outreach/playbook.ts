@@ -53,11 +53,11 @@ Je m'appelle Jason Marinho. J'accompagne des hôtes Airbnb et Booking (gîtes, a
 
 Une question revient sans arrêt : « Tu connais un bon photographe près de chez moi ? » Des photos pro, c'est souvent ce qui fait décoller une annonce.
 
-J'ouvre donc un annuaire de photographes spécialisés en location courte durée. Les hôtes te contactent directement depuis ta fiche : pas de commission, pas d'intermédiaire, le devis et le paiement se font entre vous.
+J'ouvre donc un annuaire de photographes et vidéastes spécialisés en location courte durée. Les hôtes te contactent directement depuis ta fiche : pas de commission, pas d'intermédiaire, le devis et le paiement se font entre vous.
 
 Voici à quoi ressemble une fiche : ${SITE}/annuaires/photographes/exemple-fiche?${utm('photo_premier_contact')}
 
-Est-ce que tu fais ce type de shooting (intérieurs, logements de vacances) ?`,
+Est-ce que tu fais ce type de shooting, en photo ou en vidéo (intérieurs, logements de vacances) ?`,
       },
       {
         delay_days: 3,
@@ -66,7 +66,7 @@ Est-ce que tu fais ce type de shooting (intérieurs, logements de vacances) ?`,
 
 Je remonte mon message avec du concret. Une fiche dans l'annuaire, c'est :
 
-- une page à ton nom sur jasonmarinho.com, avec le lien vers ton portfolio, ta zone et tes tarifs ;
+- une page à ton nom sur jasonmarinho.com, avec le lien vers ton portfolio, ta vidéo en tête de fiche, ta zone et tes tarifs ;
 - les demandes des hôtes directement chez toi, sans commission ;
 - l'annuaire mis en avant sur nos guides photo de 60 villes, lus par des hôtes qui cherchent un photographe.
 
@@ -407,4 +407,8 @@ export const PLAYBOOK_TEXT_FIXES: Array<[string, string]> = [
   ["avec ton portfolio (jusqu'à 12 photos), ta zone et tes tarifs", "avec le lien vers ton portfolio, ta zone et tes tarifs"],
   ["Un conseil pour bien démarrer : prépare 6 à 12 photos d'intérieur, lumineuses et variées", "Un conseil pour bien démarrer : mets en avant sur ton portfolio 6 à 12 photos d'intérieur, lumineuses et variées"],
   ["- un portfolio complet : jusqu'à 12 photos, la plus belle en premier ;", "- un lien vers ton portfolio, tes plus belles photos de logements en premier ;"],
+  // 17/10/2026 : photographes ET vidéastes
+  ["J'ouvre donc un annuaire de photographes spécialisés en location courte durée.", "J'ouvre donc un annuaire de photographes et vidéastes spécialisés en location courte durée."],
+  ["Est-ce que tu fais ce type de shooting (intérieurs, logements de vacances) ?", "Est-ce que tu fais ce type de shooting, en photo ou en vidéo (intérieurs, logements de vacances) ?"],
+  ["- une page à ton nom sur jasonmarinho.com, avec le lien vers ton portfolio, ta zone et tes tarifs ;", "- une page à ton nom sur jasonmarinho.com, avec le lien vers ton portfolio, ta vidéo en tête de fiche, ta zone et tes tarifs ;"],
 ]

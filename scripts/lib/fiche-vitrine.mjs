@@ -89,10 +89,11 @@ export function heroCoverHtml(photos, name) {
  * l'ouverture de la fiche). Affiche : la photo principale si elle existe.
  * Autre lien (chaîne, Instagram, TikTok) : pas de lecteur, un bouton.
  */
-export function heroVideoHtml(videoUrl, { name, poster } = {}) {
+export function heroVideoHtml(videoUrl, { name, poster, credit } = {}) {
   const e = videoEmbed(videoUrl)
   if (!e) return ''
-  return `<div class="vt-video"><button type="button" class="vt-video-btn" data-vt-video="${esc(e.src)}" aria-label="Lire la vidéo de ${esc(name)}"${poster ? ` style="background-image:url('${esc(poster)}')"` : ''}><span class="vt-play"><i class="ph-bold ph-play"></i></span><span class="vt-video-l">Voir la vidéo</span></button><p class="vt-video-n">Lecture sur ${e.kind === 'youtube' ? 'YouTube' : 'Vimeo'} au clic</p></div>`
+  const note = credit || (e.kind === 'file' ? '' : `Lecture sur ${e.kind === 'youtube' ? 'YouTube' : 'Vimeo'} au clic`)
+  return `<div class="vt-video"><button type="button" class="vt-video-btn" data-vt-video="${esc(e.src)}"${e.kind === 'file' ? ' data-vt-file' : ''} aria-label="Lire la vidéo de ${esc(name)}"${poster ? ` style="background-image:url('${esc(poster)}')"` : ''}><span class="vt-play"><i class="ph-bold ph-play"></i></span><span class="vt-video-l">Voir la vidéo</span></button>${note ? `<p class="vt-video-n">${note}</p>` : ''}</div>`
 }
 
 /** Bouton « Voir mes vidéos » (lien qui ne se lit pas sur place) */
@@ -187,12 +188,14 @@ export const VITRINE_CSS = `
 .hero-grid{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
 @media(min-width:900px){.hero-grid.has-cover{grid-template-columns:minmax(0,1fr) 400px}}
 .vt-video{width:100%}
-.vt-video-btn,.vt-video iframe{position:relative;display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:16/9;border:0;border-radius:18px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.35);background:#00261e center/cover no-repeat;cursor:pointer;padding:0}
+.vt-video-btn,.vt-video iframe,.vt-video video{position:relative;display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:16/9;border:0;border-radius:18px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.35);background:#00261e center/cover no-repeat;cursor:pointer;padding:0}
 .vt-video-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,20,14,.15),rgba(0,20,14,.55))}
 .vt-play{position:relative;width:68px;height:68px;border-radius:50%;background:#FFD56B;color:#003329;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 8px 24px rgba(0,0,0,.35);transition:transform .2s}
 .vt-video-btn:hover .vt-play{transform:scale(1.07)}
 .vt-video-l{position:absolute;left:16px;bottom:14px;color:#fff;font-family:'Outfit',sans-serif;font-weight:600;font-size:14px;letter-spacing:.2px}
 .vt-video-n{margin:8px 2px 0;font-size:11.5px;color:rgba(255,255,255,.5)}
+.vt-video-n a{color:inherit}
+.vt-video video{object-fit:cover;cursor:auto}
 .vt-opts{display:flex;flex-wrap:wrap;gap:8px}
 .vt-opt{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:999px;background:#F2F6F3;border:1px solid rgba(0,76,63,.12);color:var(--g);font-size:13px;font-weight:600}
 .vt-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
@@ -284,9 +287,10 @@ export const VITRINE_JS = `<script>
   document.addEventListener('click',function(e){
     var v=e.target.closest&&e.target.closest('[data-vt-video]');
     if(!v)return;
-    var f=document.createElement('iframe');
-    f.src=v.getAttribute('data-vt-video');f.title=v.getAttribute('aria-label')||'Vidéo';
-    f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;
+    var f;
+    if(v.hasAttribute('data-vt-file')){f=document.createElement('video');f.src=v.getAttribute('data-vt-video');f.controls=true;f.autoplay=true;f.muted=true;f.loop=true;f.playsInline=true}
+    else{f=document.createElement('iframe');f.src=v.getAttribute('data-vt-video');f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true}
+    f.title=v.getAttribute('aria-label')||'Vidéo';
     v.replaceWith(f);
   });
   document.addEventListener('keydown',function(e){if(!d||!d.open)return;if(e.key==='ArrowLeft')show(i-1);if(e.key==='ArrowRight')show(i+1)});

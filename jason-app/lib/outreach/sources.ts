@@ -34,7 +34,7 @@ export interface FoundContact {
 
 /** Codes d'activité proposés par audience */
 export const NAF_BY_AUDIENCE: Record<Audience, Array<{ code: string; label: string }>> = {
-  photographe: [{ code: '74.20Z', label: 'Activités photographiques' }],
+  photographe: [{ code: '74.20Z', label: 'Activités photographiques' }, { code: '59.11B', label: 'Films institutionnels et publicitaires (vidéastes)' }],
   menage: [
     { code: '81.21Z', label: 'Nettoyage courant des bâtiments' },
     { code: '81.22Z', label: 'Autres nettoyages des bâtiments' },

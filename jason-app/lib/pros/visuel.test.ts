@@ -33,6 +33,7 @@ describe('lien vidéo', () => {
       ['https://vimeo.com/123456789', { kind: 'vimeo', id: '123456789' }],
       ['https://www.youtube.com/@marie', null],
       ['https://www.instagram.com/reel/xyz', null],
+      ['https://jasonmarinho.com/img/exemple-fiches/video-camille.mp4', { kind: 'file', id: '/img/exemple-fiches/video-camille.mp4' }],
     ] as const
     for (const [url, want] of cases) {
       expect(videoEmbed(url)).toEqual(want)

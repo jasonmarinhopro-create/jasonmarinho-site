@@ -175,7 +175,8 @@ async function importFromOsm(db: Db, audience: Audience | undefined, ville: stri
   // 01/10/2026 : élargi à tout lieu qui a un site et un nom parlant (avant :
   // seulement quelques étiquettes, d'où 7 équipes de ménage pour 20 villes)
   const sel = audience === 'photographe'
-    ? `nwr["craft"="photographer"](area.a);nwr["shop"="photo"](area.a);nwr["name"~"photograph",i]["website"](area.a);nwr["name"~"photograph",i]["contact:website"](area.a);`
+    // 17/10/2026 : vidéastes aussi (nom parlant + site, sans les cinémas)
+    ? `nwr["craft"="photographer"](area.a);nwr["shop"="photo"](area.a);nwr["name"~"photograph",i]["website"](area.a);nwr["name"~"photograph",i]["contact:website"](area.a);nwr["name"~"vid[eé]aste|vid[eé]o|drone",i]["website"][!"amenity"](area.a);nwr["name"~"vid[eé]aste|vid[eé]o|drone",i]["contact:website"][!"amenity"](area.a);`
     : `nwr["craft"="cleaning"](area.a);nwr["office"]["name"~"${re}",i](area.a);nwr["craft"]["name"~"${re}",i](area.a);nwr["shop"]["name"~"conciergerie|ménage|menage",i](area.a);nwr["name"~"${re}|airbnb|location saisonnière|gestion locative",i]["website"](area.a);nwr["name"~"${re}|airbnb|gestion locative",i]["contact:website"](area.a);`
   const ql = `[out:json][timeout:14];area["name"="${city}"]["boundary"="administrative"]["admin_level"="8"]->.a;(${sel});out tags 300;`
   // Serveur principal souvent saturé (504, 429, 01/10/2026 : une ville sur deux

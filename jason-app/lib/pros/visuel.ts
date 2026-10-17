@@ -54,7 +54,7 @@ export function normalizeVideoUrl(raw: unknown): { url: string | null; error?: s
 }
 
 /** Vidéo YouTube ou Vimeo lisible directement sur la fiche, sinon null */
-export function videoEmbed(url: string | null | undefined): { kind: 'youtube' | 'vimeo'; id: string } | null {
+export function videoEmbed(url: string | null | undefined): { kind: 'youtube' | 'vimeo' | 'file'; id: string } | null {
   let u: URL
   try { u = new URL(String(url || '')) } catch { return null }
   const host = u.hostname.toLowerCase().replace(/^(www\.|m\.)/, '')
@@ -69,5 +69,7 @@ export function videoEmbed(url: string | null | undefined): { kind: 'youtube' | 
     const m = u.pathname.match(/(?:^|\/)(\d{6,12})(?:\/|$)/)
     if (m) return { kind: 'vimeo', id: m[1] }
   }
+  // Fichier vidéo hébergé sur notre site (fiche d'exemple)
+  if (host === 'jasonmarinho.com' && /\.mp4$/i.test(u.pathname)) return { kind: 'file', id: u.pathname }
   return null
 }
