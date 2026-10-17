@@ -23,20 +23,22 @@ const KEEP = ['libelle_commune', 'departement', 'commune', 'date_effet', 'heberg
   'taxe_add_article_l_2531_17_du_code_general_des_collectivites_territoriales',
   'taxe_add_article_l_4332_4_du_code_general_des_collectivites_territoriales',
   'taxe_add_article_l_4332_5_du_code_general_des_collectivites_territoriales',
-  'taxe_add_article_l_4332_6_du_code_general_des_collectivites_territoriales', 'tarif_total', 'periode_1', 'periode_2']
+  'taxe_add_article_l_4332_6_du_code_general_des_collectivites_territoriales', 'tarif_total', 'periode_1', 'periode_2', 'date_fin']
 
 const meta = await get(`${API}/${ID}`)
 const out = { releve: new Date().toISOString().slice(0, 10), jeu: ID, modifie: meta.json?.metas?.default?.modified ?? null, erreurs: [], communes: {} }
 for (const c of communes) {
   const [nom, dep] = c.split('|')
   const rows = []
-  const where = encodeURIComponent(`libelle_commune like "${norm(nom)}%"${dep ? ` and departement="${dep}"` : ''}`)
+  const where = encodeURIComponent(`libelle_commune like "${norm(nom)}%"${dep ? ` and (departement="${dep}" or departement="${dep.replace(/^0/, '')}")` : ''}`)
   for (let offset = 0; offset < 3000; offset += 100) {
     const r = await get(`${API}/${ID}/records?where=${where}&limit=100&offset=${offset}`)
     if (!r.json || r.status !== 200) { out.erreurs.push(`${c} : ${r.status} ${r.text ?? JSON.stringify(r.json).slice(0, 200)}`); break }
     const res = r.json.results ?? []
     for (const x of res) {
-      if (Number(String(x.date_effet).slice(0, 4)) < 2026) continue
+      // Une délibération reste valable tant qu'elle n'est pas remplacée : on
+      // garde toutes les années sans date de fin passée, le plus récent gagne
+      if (x.date_fin && Number(String(x.date_fin).slice(0, 4)) < 2026) continue
       if (!/meubl|chambres|sans classement/i.test(x.hebergement ?? '')) continue
       rows.push(Object.fromEntries(KEEP.map(k => [k, x[k] ?? null])))
     }
