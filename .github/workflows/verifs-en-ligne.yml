@@ -121,5 +121,10 @@ jobs:
           c = d.get('cities') or {}
           avec = [p for p, s in c.items() if s.get('totals')]
           print(f"::notice title=Pages de ville::{len(c)} avec des chiffres, {len(avec)} au-delà du seuil : {', '.join(avec[:10])}")
+          dm = d.get('demandes')
+          if dm is None:
+              print("::warning title=Demandes::indisponibles")
+          else:
+              print(f"::notice title=Demandes d'hôtes::{dm['total']} depuis {dm['since']} · métier {dm['byMetier']} · source {dm['bySource']} · état {dm['byEtat']} · villes " + ' | '.join(f"{x['label']} {x['total']}" for x in dm['cities']))
           PY
           code=$(curl -s -o /dev/null -w '%{http_code}' https://jasonmarinho.com/chiffres); [ "$code" = 200 ] && echo "OK   /chiffres 200" || echo "::error title=Site::/chiffres $code"
