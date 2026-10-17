@@ -1,0 +1,31 @@
+# Tarifs officiels de la taxe de séjour (DGFiP, open data) pour nos pages de
+# ville (17/10/2026). Push de .github/taxe-trigger sur claude/** : 1re ligne
+# = « explorer » ou la liste des communes séparées par des virgules. Le
+# résultat (données publiques) est enregistré dans la branche.
+name: Taxe de séjour officielle
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/taxe-trigger']
+
+permissions:
+  contents: write
+
+jobs:
+  taxe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Relever les tarifs
+        run: node scripts/taxe-officielle.mjs "$(head -1 .github/taxe-trigger)"
+      - name: Enregistrer
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/data/taxe-sejour-officielle.json
+          git commit -m "data: tarifs officiels de la taxe de séjour" || exit 0
+          git push origin HEAD:${GITHUB_REF_NAME}
