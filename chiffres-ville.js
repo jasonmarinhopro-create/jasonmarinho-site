@@ -2,7 +2,8 @@
    Lit https://app.jasonmarinho.com/api/public/chiffres?page=<chemin> :
    recherches où la page sort en première page (place moyenne de Google
    Search Console sur 28 jours) et, au-delà du seuil, ses affichages, clics et
-   visiteurs. Rien à montrer pour la page : les chiffres de tout le site. */
+   visiteurs. Rien à montrer pour la page : les chiffres de tout le site.
+   Demandes d'hôtes de la ville du métier (17/10/2026), zéro compris. */
 (function () {
   var box = document.querySelector('[data-chiffres-ville]');
   if (!box || box.getAttribute('data-done')) return;
@@ -28,6 +29,12 @@
       }
       if (!html && d.site) {
         html = '<p class="cv-lead">Sur tout le site, ces 28 derniers jours :</p><div class="cv-t"><span><b>' + n(d.site.impressions) + '</b> affichages Google</span><span><b>' + n(d.site.clicks) + '</b> clics</span>' + (d.site.visitors ? '<span><b>' + n(d.site.visitors) + '</b> visiteurs</span>' : '') + '</div>';
+      }
+      // Demandes d'hôtes de la ville (17/10/2026), zéro compris
+      if (html && d.demandes) {
+        var k = /^\/menage-/.test(path) ? 'menage' : 'photographe', dm = d.demandes[k];
+        var slug = path.replace(/^\/(photographe|menage)-lcd-/, '');
+        html += '<p class="cv-note"><b>' + n(dm) + '</b> demande' + (dm > 1 ? 's' : '') + ' d’hôte' + (dm > 1 ? 's' : '') + ' pour ' + (k === 'menage' ? 'une équipe de ménage' : 'un photographe ou vidéaste') + ' dans cette ville. <a href="/chiffres?ville=' + esc(slug) + '#ta-ville">Tous les chiffres de la ville</a></p>';
       }
       if (!html) return;
       out.innerHTML = html;

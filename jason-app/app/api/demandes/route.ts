@@ -3,6 +3,7 @@
 // (lib/demandes/send.ts). Appelée depuis le site statique : CORS limité à nos
 // domaines, anti-robot (champ caché + délai), 3 demandes par heure et par IP.
 import { NextResponse } from 'next/server'
+import { revalidateTag } from 'next/cache'
 import { cleanDemande } from '@/lib/demandes/rules'
 import { creerDemande } from '@/lib/demandes/send'
 import { cleanAcquisition } from '@/lib/acquisition/rules'
@@ -38,5 +39,7 @@ export async function POST(req: Request) {
   if ('error' in r) return NextResponse.json({ error: r.error }, { status: 400, headers })
   const res = await creerDemande(r.value, cleanAcquisition(body.acq))
   if ('error' in res) return NextResponse.json({ error: res.error }, { status: 500, headers })
+  // Compteur public de /chiffres à jour tout de suite
+  revalidateTag('public-demandes')
   return NextResponse.json(res, { headers })
 }

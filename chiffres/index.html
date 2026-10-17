@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Visibilité du site en chiffres | Jason Marinho</title>
-<meta name="description" content="Ce que jasonmarinho.com reçoit vraiment de Google : affichages, clics, visiteurs et recherches où le site sort en première page. Chiffres réels, mis à jour chaque jour.">
+<meta name="description" content="Ce que jasonmarinho.com reçoit vraiment : affichages Google, clics, visiteurs, recherches en première page et demandes d’hôtes par ville. Chiffres réels.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://jasonmarinho.com/chiffres">
 <meta property="og:title" content="La visibilité du site en chiffres réels">
@@ -180,6 +180,89 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .vf-msg{font-size:14px;line-height:1.6;padding:12px 14px;border-radius:12px;display:none}
 .vf-msg.ok{display:block;background:rgba(47,125,82,.10);color:#1f5a3a}
 .vf-msg.ko{display:block;background:rgba(200,60,40,.08);color:#8a2a1a}
+/* Demandes d'hôtes (17/10/2026) */
+#demandes{scroll-margin-top:64px}
+.dm{background:radial-gradient(ellipse 55% 80% at 90% 0%,rgba(255,213,107,.12),transparent 70%),linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);color:#fff;border-radius:24px;padding:clamp(24px,4.5vw,52px);display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:center}
+@media(min-width:900px){.dm{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}}
+.dm .eye{margin-bottom:12px}
+.dm h2{color:#fff}.dm h2 em{color:var(--y)}
+.dm-lead{font-size:16px;color:rgba(255,255,255,.78);line-height:1.7;margin-top:14px;max-width:560px}
+.dm-priv{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:13.5px;color:rgba(255,255,255,.72)}
+.dm-priv span{display:inline-flex;align-items:center;gap:7px}.dm-priv i{color:var(--y)}
+.dm-total{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:24px}
+.dm-total > span{display:block;font-size:14px;color:rgba(255,255,255,.75)}
+.dm-total > b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:clamp(72px,9vw,104px);line-height:1;color:var(--y);margin:6px 0 16px}
+.dm-split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media(max-width:480px){.dm-split{grid-template-columns:minmax(0,1fr)}}
+.dm-split div{background:rgba(255,255,255,.07);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.dm-split i{font-size:18px;color:var(--y)}
+.dm-split b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:26px;line-height:1}
+.dm-split small{display:block;font-size:12.5px;color:rgba(255,255,255,.72);margin-top:2px}
+.dm-cards{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:18px}
+@media(min-width:860px){.dm-cards{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.dm-c{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+.dm-c h3{font-size:11.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--tl)}
+.dm-row{display:flex;justify-content:space-between;gap:10px;font-size:14.5px;color:var(--td)}
+.dm-row b{font-weight:700}
+.dm-bar{height:8px;border-radius:4px;background:var(--cr);overflow:hidden}
+.dm-bar i{display:block;height:100%;border-radius:4px;background:var(--g)}
+.dm-bar i.y{background:#C9A227}
+.dm-et{display:flex;align-items:center;gap:10px;font-size:14.5px}
+.dm-et .d{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dm-et b{margin-left:auto}
+.dm-months{display:flex;align-items:flex-end;gap:8px;height:96px;border-bottom:1px solid var(--bd);padding-top:6px}
+.dm-months div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;height:100%;font-size:12px;font-weight:600;color:var(--td)}
+.dm-months div i{display:block;width:70%;max-width:34px;min-height:3px;border-radius:5px 5px 0 0;background:var(--g)}
+.dm-months div.z{color:var(--tl);font-weight:500}.dm-months div.z i{background:rgba(0,76,63,.12)}
+.dm-months div.cur i{background:repeating-linear-gradient(135deg,var(--g) 0 5px,#2a7a69 5px 10px)}
+.dm-mlab{display:flex;gap:8px;font-size:11.5px;color:var(--tl)}.dm-mlab span{flex:1;text-align:center}
+.dm-cols{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-top:18px}
+@media(min-width:960px){.dm-cols{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.dm-cols h3.t{font-family:'Fraunces',serif;font-weight:400;font-size:22px;margin-bottom:12px}
+.dm-cities{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr))}
+.dm-city{background:#fff;border:1px solid rgba(0,76,63,.35);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;text-decoration:none;color:inherit}
+a.dm-city:hover{border-color:var(--g)}
+.dm-city-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.dm-city-h b{font-family:'Fraunces',serif;font-weight:400;font-size:20px}
+.dm-city-h strong{font-family:'Fraunces',serif;font-weight:400;font-size:30px;color:var(--g);line-height:1}
+.dm-tags{display:flex;flex-wrap:wrap;gap:6px}
+.dm-tag{font-size:12.5px;border-radius:999px;padding:3px 10px;background:rgba(0,76,63,.08);color:var(--g)}
+.dm-tag.m{background:rgba(244,114,182,.14);color:#8a1f55}
+.dm-free{font-size:12.5px;color:#6b4e00;background:rgba(255,213,107,.28);border-radius:10px;padding:6px 10px}
+.dm-pros{font-size:13px;color:var(--tm)}
+.dm-fil{list-style:none;border-left:2px solid rgba(0,76,63,.14);padding-left:20px;display:flex;flex-direction:column;gap:12px}
+.dm-fil li{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;position:relative}
+.dm-fil li::before{content:'';position:absolute;left:-27px;top:50%;width:12px;height:12px;margin-top:-6px;border-radius:50%;background:var(--w);border:2px solid var(--g)}
+.dm-fil .ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:rgba(0,76,63,.08);color:var(--g)}
+.dm-fil .ic.m{background:rgba(244,114,182,.14);color:#8a1f55}
+.dm-fil .tx{flex:1;min-width:0}
+.dm-fil .tx b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:17px;line-height:1.25}
+.dm-fil .tx small{display:block;font-size:12.5px;color:var(--tl);margin-top:2px}
+.dm-st{font-size:12px;font-weight:600;border-radius:999px;padding:4px 10px;white-space:nowrap}
+.dm-st.ouverte{background:rgba(0,76,63,.10);color:var(--g)}
+.dm-st.transmise{background:rgba(255,213,107,.32);color:#6b4e00}
+.dm-st.sans_pro{background:var(--cr);color:var(--tm)}
+.dm-fil li.dm-next{border-style:dashed;background:transparent}
+.dm-wait{border:1.5px dashed rgba(0,76,63,.2);border-radius:16px;padding:16px 18px;font-size:14px;color:var(--tm);line-height:1.6}
+.dm-note{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:center;margin-top:18px;background:rgba(255,213,107,.22);border-radius:18px;padding:18px 22px}
+.dm-note p{flex:1 1 360px;font-size:15px;line-height:1.65;color:#4a3a0a}
+.dm-note p b{font-family:'Fraunces',serif;font-weight:400;font-style:italic}
+.dm-note .btn{background:var(--g);color:#fff}.dm-note .btn:hover{background:var(--gd)}
+@media(max-width:560px){.dm-fil{padding-left:16px}.dm-fil li{flex-wrap:wrap}.dm-fil li::before{left:-23px}}
+/* Demandes de la ville (recherche) */
+.vd{margin-bottom:14px;background:linear-gradient(160deg,#001a11,var(--gd) 55%,#00463a);color:#fff;border-radius:20px;padding:clamp(20px,3.5vw,30px);display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-items:center}
+@media(min-width:860px){.vd{grid-template-columns:minmax(0,1fr) minmax(0,.9fr)}}
+.vd .eye{margin-bottom:8px}
+.vd-n{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.vd-n b{font-family:'Fraunces',serif;font-weight:400;font-size:64px;line-height:1;color:var(--y)}
+.vd-n span{font-size:16px;color:rgba(255,255,255,.85)}
+.vd p{font-size:14.5px;color:rgba(255,255,255,.75);line-height:1.6;margin-top:8px}
+.vd-rows{display:flex;flex-direction:column;gap:8px}
+.vd-rows div{display:flex;justify-content:space-between;gap:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:11px 14px;font-size:14px}
+.vd-cta{margin:0;display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.vd-cta a{flex:1 1 160px;text-align:center;text-decoration:none;font-weight:600;font-size:14px;padding:11px 12px;border-radius:11px}
+.vd-cta .a1{background:var(--y);color:var(--gd)}
+.vd-cta .a2{border:1px solid rgba(255,255,255,.35);color:#fff}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"La visibilité du site en chiffres","description":"Affichages Google, clics, visiteurs et recherches où jasonmarinho.com sort en première page, mis à jour chaque jour.","url":"https://jasonmarinho.com/chiffres","inLanguage":"fr-FR","isPartOf":{"@type":"WebSite","name":"Jason Marinho","url":"https://jasonmarinho.com"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Les chiffres","item":"https://jasonmarinho.com/chiffres"}]}</script>
@@ -218,6 +301,67 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
     <div class="fact"><b data-f="pages"><span class="sk dk"></span></b><span>pages du site vues dans Google sur 28 jours</span></div>
     <div class="fact"><b data-f="cities">122</b><span>pages de ville pour les photographes et les équipes de ménage</span></div>
     <div class="fact"><b data-f="ctr"><span class="sk dk"></span></b><span>des affichages se transforment en clic (taux de clic)</span></div>
+  </div>
+</section>
+
+<section class="sec" id="demandes">
+  <div class="s-in">
+    <div class="dm">
+      <div>
+        <div class="eye"><i class="ph-bold ph-paper-plane-tilt"></i>Demandes d’hôtes · en toute transparence</div>
+        <h2>Chaque demande compte, <em>même la première</em></h2>
+        <p class="dm-lead">Combien d’hôtes ont vraiment demandé un photographe, un vidéaste ou une équipe de ménage ? Le service est jeune : je préfère te montrer les vrais chiffres, petits ou grands. Ils se mettent à jour tout seuls à chaque demande.</p>
+        <div class="dm-priv">
+          <span><i class="ph-bold ph-arrows-clockwise"></i>Mis à jour toutes les 10 minutes</span>
+          <span><i class="ph-bold ph-shield-check"></i>Métier, ville et mois seulement</span>
+        </div>
+      </div>
+      <div class="dm-total" aria-live="polite">
+        <span data-dm-since>Demandes reçues</span>
+        <b data-dm-total><span class="sk"></span></b>
+        <div class="dm-split">
+          <div><i class="ph-bold ph-camera"></i><div><b data-dm-photo>·</b><small>photographe ou vidéaste</small></div></div>
+          <div><i class="ph-bold ph-broom"></i><div><b data-dm-menage>·</b><small>équipe de ménage</small></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dm-cards">
+      <div class="dm-c">
+        <h3>D’où elles viennent</h3>
+        <div class="dm-row"><span>Formulaire « Trouver un pro »</span><b data-dm-src="formulaire">·</b></div>
+        <div class="dm-bar"><i data-dm-bar="formulaire" style="width:0"></i></div>
+        <div class="dm-row"><span>Bouton « Contacter » d’une fiche</span><b data-dm-src="fiche">·</b></div>
+        <div class="dm-bar"><i class="y" data-dm-bar="fiche" style="width:0"></i></div>
+      </div>
+      <div class="dm-c">
+        <h3>Ce qu’elles sont devenues</h3>
+        <div class="dm-et"><span class="d" style="background:#004C3F"></span>Ouvertes par un pro<b data-dm-et="ouverte">·</b></div>
+        <div class="dm-et"><span class="d" style="background:#C9A227"></span>Transmises, pas encore ouvertes<b data-dm-et="transmise">·</b></div>
+        <div class="dm-et"><span class="d" style="background:#B9C4BC"></span>En attente d’un pro dans la zone<b data-dm-et="sans_pro">·</b></div>
+      </div>
+      <div class="dm-c">
+        <h3>Mois par mois</h3>
+        <div class="dm-months" data-dm-months></div>
+        <div class="dm-mlab" data-dm-mlab></div>
+      </div>
+    </div>
+
+    <div class="dm-cols">
+      <div>
+        <h3 class="t">Par ville</h3>
+        <div class="dm-cities" data-dm-cities><p class="empty">Chargement…</p></div>
+      </div>
+      <div>
+        <h3 class="t">Le fil des demandes</h3>
+        <ol class="dm-fil" data-dm-fil><li><span class="tx"><small>Chargement…</small></span></li></ol>
+      </div>
+    </div>
+
+    <div class="dm-note">
+      <p><b>« On démarre, et ça se voit ici.</b> Je ne compte ni mes tests ni les fiches d’exemple, et une demande envoyée à plusieurs pros reste une seule demande. Jamais le nom, le message ni les coordonnées de l’hôte. » Jason</p>
+      <a class="btn" href="/trouver-un-pro"><i class="ph-bold ph-paper-plane-tilt"></i>Décrire mon besoin</a>
+    </div>
   </div>
 </section>
 
@@ -402,6 +546,76 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
     });
   });
 
+  // ── Demandes d'hôtes (17/10/2026) : tout est montré, zéro compris ──
+  var monthFr = function(m){ var p = m.split('-'); return MOIS[+p[1]-1] + ' ' + p[0]; };
+  var ETAT = { ouverte: 'Ouverte par un pro', transmise: 'Transmise', sans_pro: 'En attente d’un pro' };
+  function renderDemandes(D){
+    var tot = $('[data-dm-total]');
+    if (!D) {
+      if (tot) tot.textContent = '–';
+      ['[data-dm-photo]','[data-dm-menage]'].forEach(function(x){ setNum(x, '–'); });
+      var c0 = $('[data-dm-cities]'); if (c0) c0.innerHTML = '<p class="empty">Chiffres indisponibles pour le moment.</p>';
+      var f0 = $('[data-dm-fil]'); if (f0) f0.innerHTML = '';
+      return;
+    }
+    if (tot) tot.textContent = n(D.total);
+    var since = $('[data-dm-since]');
+    if (since) since.textContent = D.total ? (D.total > 1 ? 'Demandes reçues' : 'Demande reçue') + ' depuis ' + monthFr(D.since) : 'Demande reçue pour le moment';
+    setNum('[data-dm-photo]', n(D.byMetier.photographe)); setNum('[data-dm-menage]', n(D.byMetier.menage));
+    ['formulaire','fiche'].forEach(function(k){
+      setNum('[data-dm-src="' + k + '"]', n(D.bySource[k]));
+      var b = $('[data-dm-bar="' + k + '"]'); if (b) b.style.width = (D.total ? Math.round(D.bySource[k] / D.total * 100) : 0) + '%';
+    });
+    ['ouverte','transmise','sans_pro'].forEach(function(k){ setNum('[data-dm-et="' + k + '"]', n(D.byEtat[k])); });
+    var mb = $('[data-dm-months]'), ml = $('[data-dm-mlab]');
+    if (mb && ml) {
+      var max = Math.max.apply(null, D.months.map(function(m){ return m.count; })) || 1;
+      mb.innerHTML = D.months.map(function(m){
+        var h = m.count ? Math.max(10, Math.round(m.count / max * 70)) : 3;
+        return '<div class="' + (m.count ? '' : 'z ') + (m.current ? 'cur' : '') + '" title="' + esc(monthFr(m.month)) + (m.current ? ' (en cours)' : '') + ' : ' + m.count + '">' + m.count + '<i style="height:' + h + 'px"></i></div>';
+      }).join('');
+      ml.innerHTML = D.months.map(function(m){ return '<span>' + MOIS[+m.month.split('-')[1]-1] + '</span>'; }).join('');
+    }
+    var cb = $('[data-dm-cities]');
+    if (cb) {
+      if (!D.cities.length) cb.innerHTML = '<div class="dm-wait">Pas encore de demande. Chaque ville apparaîtra ici dès sa première demande, avec le nombre de pros déjà présents.</div>';
+      else cb.innerHTML = D.cities.map(function(c){
+        var tags = (c.photographe ? '<span class="dm-tag">' + n(c.photographe) + ' photo &amp; vidéo</span>' : '') + (c.menage ? '<span class="dm-tag m">' + n(c.menage) + ' ménage</span>' : '');
+        var free = '';
+        if (c.pros) {
+          var missing = [];
+          if (c.photographe && !c.pros.photographe) missing.push('photographe ou vidéaste');
+          if (c.menage && !c.pros.menage) missing.push('équipe de ménage');
+          free = missing.length ? '<div class="dm-free">Aucun ' + missing.join(' ni ') + ' inscrit : la place est libre</div>'
+            : '<div class="dm-pros">' + n(c.pros.photographe) + ' photographe' + (c.pros.photographe > 1 ? 's' : '') + ' · ' + n(c.pros.menage) + ' équipe' + (c.pros.menage > 1 ? 's' : '') + ' de ménage en ligne</div>';
+        }
+        var inner = '<div class="dm-city-h"><b>' + esc(c.label) + '</b><strong>' + n(c.total) + '</strong></div><div class="dm-tags">' + tags + '</div>' + free;
+        return c.slug ? '<a class="dm-city" href="/chiffres?ville=' + esc(c.slug) + '#ta-ville">' + inner + '</a>' : '<div class="dm-city">' + inner + '</div>';
+      }).join('');
+    }
+    var fb = $('[data-dm-fil]');
+    if (fb) {
+      var items = D.fil.map(function(f){
+        var photo = f.metier === 'photographe';
+        var title = (photo ? 'Photographe ou vidéaste' : 'Équipe de ménage') + (f.slug ? ' à ' + f.label : ' · ' + f.label);
+        var src = f.source === 'formulaire' ? 'Formulaire « Trouver un pro »' : 'Bouton « Contacter » d’une fiche';
+        return '<li><span class="ic' + (photo ? '' : ' m') + '"><i class="ph-bold ' + (photo ? 'ph-camera' : 'ph-broom') + '"></i></span><span class="tx"><b>' + esc(title) + '</b><small>' + esc(monthFr(f.month)) + ' · ' + src + '</small></span><span class="dm-st ' + f.etat + '">' + ETAT[f.etat] + '</span></li>';
+      }).join('');
+      fb.innerHTML = items + '<li class="dm-next"><span class="tx"><small>' + (D.total ? 'La prochaine demande s’affichera ici.' : 'La première demande s’affichera ici, dès qu’un hôte décrit son besoin ou contacte un pro.') + '</small></span></li>';
+    }
+  }
+  function cityDemandes(label, slug, dm, pros){
+    if (!dm) return '';
+    var row = function(lbl, k){ var p = pros ? pros[k] || 0 : null; return '<div><span>' + lbl + '</span><strong>' + n(dm[k]) + ' demande' + (dm[k] > 1 ? 's' : '') + (p === null ? '' : ' · ' + n(p) + ' pro' + (p > 1 ? 's' : '')) + '</strong></div>'; };
+    var txt = dm.total
+      ? (dm.total > 1 ? 'Envoyées' : 'Envoyée') + ' aux pros les plus proches. Je publie le métier, la ville et le mois, jamais rien sur l’hôte.'
+      : 'Pas encore de demande ici. Elle apparaîtra dès qu’un hôte de ' + esc(label) + ' décrira son besoin ou contactera un pro.';
+    return '<div class="vd"><div><div class="eye"><i class="ph-bold ph-paper-plane-tilt"></i>Demandes d’hôtes à ' + esc(label) + '</div>' +
+      '<div class="vd-n"><b>' + n(dm.total) + '</b><span>demande' + (dm.total > 1 ? 's' : '') + ' reçue' + (dm.total > 1 ? 's' : '') + '</span></div><p>' + txt + '</p></div>' +
+      '<div class="vd-rows">' + row('Photographe &amp; vidéaste', 'photographe') + row('Équipe de ménage', 'menage') +
+      '<p class="vd-cta"><a class="a1" href="/pour-qui/photographes">Je suis pro à ' + esc(label) + '</a><a class="a2" href="/trouver-un-pro?ville=' + encodeURIComponent(label) + '">Je cherche un pro</a></p></div></div>';
+  }
+
   function renderCities(cities){
     var box = $('[data-cities]'); if (!box) return;
     var list = Object.keys(cities || {}).map(function(p){ return { path: p, s: cities[p] }; });
@@ -479,7 +693,8 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
   function renderCity(d){
     var c = d.city, label = c.label;
     var period = d.period ? 'Google du ' + dateFr(d.period.start) + ' au ' + dateFr(d.period.end) + ' · visiteurs sur 30 jours' : 'Chiffres de Google indisponibles pour le moment';
-    var html = '<div class="vr-h"><div><h3>' + esc(label) + '</h3><p>' + period + '</p></div><button type="button" class="vr-share" data-share><i class="ph-bold ph-link"></i>Copier le lien</button></div><div class="vr-grid">' +
+    var html = '<div class="vr-h"><div><h3>' + esc(label) + '</h3><p>' + period + '</p></div><button type="button" class="vr-share" data-share><i class="ph-bold ph-link"></i>Copier le lien</button></div>' +
+      cityDemandes(label, c.slug, d.demandes, c.pros) + '<div class="vr-grid">' +
       pageCard('photographe', label, c.pages.photographe, c.pros) +
       pageCard('menage', label, c.pages.menage, c.pros) +
       (c.pages.hote ? pageCard('hote', label, c.pages.hote, null) : '') +
@@ -580,7 +795,9 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
     ['photographe','menage','hote'].forEach(function(k){ var c = $('[data-c="' + k + '"]'); if (c) c.textContent = (Q[k] || []).length; });
     renderQueries();
     renderCities(d.cities);
+    renderDemandes(d.demandes || null);
   }).catch(function(){
+    renderDemandes(null);
     var e = $('[data-err]'); if (e) e.style.display = 'block';
     var u = $('[data-upd]'); if (u) u.textContent = '';
     ['[data-k="imp"]','[data-k="clk"]','[data-k="vis"]','[data-f="first"]','[data-f="pages"]','[data-f="ctr"]'].forEach(function(s){ setNum(s, '–'); });

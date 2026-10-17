@@ -1,6 +1,6 @@
 // Chargement des chiffres publics (server only). Google Search Console (28
 // jours, 2 jours de retard), visites mesurées par nav.js (30 jours) et nombre
-// de demandes d'hôtes transmises. Résultat gardé 6 h (Google ne change qu'une
+// (les demandes d'hôtes : demandes-load.ts, gardées 10 min). Résultat gardé 6 h (Google ne change qu'une
 // fois par jour) ; une source en panne donne `null` sans casser les autres,
 // et un résultat incomplet n'est gardé qu'1 h.
 import 'server-only'
@@ -44,8 +44,6 @@ export interface PublicStats {
   video: ReturnType<typeof videoSummary> | null
   cities: Record<string, CityStats> | null
   cityPages: number
-  /** Demandes d'hôtes transmises aux pros (null tant qu'il y en a moins de 5) */
-  demandes: number | null
   threshold: number
   /** Villes qui ont leurs pages (pour la recherche) */
   villes: Array<{ slug: string; label: string }>
@@ -83,12 +81,6 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
     return { cur, prev }
   })().catch(() => { complete = false; return null })
 
-  const demandesP = (async () => {
-    const { count, error } = await getServiceClient().from('demandes_hotes').select('id', { count: 'exact', head: true })
-    if (error) throw error
-    return count ?? 0
-  })().catch(() => null)
-
   const prosP = (async () => {
     const db = getServiceClient()
     const cols = 'ville, zone_couverte, status, is_public, user_id'
@@ -104,7 +96,7 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
     }
   })().catch(() => null)
 
-  const [g, v, demandes, pros] = await Promise.all([googleP, visitsP, demandesP, prosP])
+  const [g, v, pros] = await Promise.all([googleP, visitsP, prosP])
 
   const visitorsCur = v ? countVisitors(v.cur) : null
   const visitorsPrev = v ? countVisitors(v.prev) : null
@@ -186,7 +178,6 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
       video,
       cities,
       cityPages: CITY_PAGE_SLUGS.length * 2,
-      demandes: demandes !== null && demandes >= 5 ? demandes : null,
       threshold: CITY_TOTALS_MIN_IMPRESSIONS,
       villes: CITY_PAGE_SLUGS.map(slug => ({ slug, label: cityLabel(slug) })).sort((a, b) => a.label.localeCompare(b.label, 'fr')),
       cityFull,
