@@ -1,4 +1,4 @@
-// Messages privés aux photographes et aux équipes de ménage (12/10/2026) :
+// Messages privés aux photographes / vidéastes et aux équipes de ménage (12/10/2026) :
 // texte prêt à coller dans Instagram, Facebook, LinkedIn ou WhatsApp, avec le
 // lien court suivi de la messagerie choisie. Pur et testé (messages.test.ts).
 //
@@ -81,15 +81,15 @@ export function buildPrivateMessage(input: PrivateMessageInput): string {
       return [
         hello,
         me,
-        `Ils me demandent souvent un bon photographe${ville}. J'ai donc ouvert un annuaire de photographes spécialisés en location courte durée : les hôtes ${t('te', 'vous')} contactent directement, sans commission.`,
+        `Ils me demandent souvent un bon photographe ou vidéaste${ville}. J'ai donc ouvert un annuaire de photographes et vidéastes spécialisés en location courte durée : les hôtes ${t('te', 'vous')} contactent directement, sans commission.`,
         `Voici à quoi ressemble une fiche : ${url}`,
-        `${t('Tu fais', 'Vous faites')} ce type de shooting (intérieurs, logements de vacances) ?`,
+        `${t('Tu fais', 'Vous faites')} ce type de shooting photo ou vidéo (intérieurs, logements de vacances) ?`,
       ].join('\n\n')
     }
     return [
       hello,
-      `Je ${t('me permets de revenir vers toi', 'me permets de revenir vers vous')} pour l'annuaire des photographes de locations de vacances.`,
-      `En bref : une page à ${t('ton', 'votre')} nom avec ${t('ton', 'votre')} portfolio, ${t('ta', 'votre')} zone et ${t('tes', 'vos')} tarifs, les demandes des hôtes directement chez ${t('toi', 'vous')}, et l'annuaire mis en avant sur nos guides de plus de 60 villes. Les 20 premiers gardent le tarif fondateur : 39,98 € par an, à vie.`,
+      `Je ${t('me permets de revenir vers toi', 'me permets de revenir vers vous')} pour l'annuaire des photographes et vidéastes de locations de vacances.`,
+      `En bref : une page à ${t('ton', 'votre')} nom avec ${t('tes', 'vos')} photos, ${t('ta', 'votre')} vidéo en tête de fiche, ${t('ta', 'votre')} zone et ${t('tes', 'vos')} tarifs, les demandes des hôtes directement chez ${t('toi', 'vous')}, et l'annuaire mis en avant sur nos guides de plus de 60 villes. Les 20 premiers gardent le tarif fondateur : 39,98 € par an, à vie.`,
       `La fiche d'exemple : ${url}`,
       `Si ce n'est pas pour ${t('toi', 'vous')}, ${t('dis-le-moi', 'dites-le-moi')} simplement, je ne ${t('te', 'vous')} relancerai pas.`,
     ].join('\n\n')

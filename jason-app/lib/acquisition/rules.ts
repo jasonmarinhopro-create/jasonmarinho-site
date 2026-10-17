@@ -119,7 +119,7 @@ const SITE = 'https://jasonmarinho.com'
 export type PrivateAudience = 'photographe' | 'menage' | 'hote'
 export type PrivatePlatform = 'instagram' | 'facebook' | 'linkedin' | 'whatsapp'
 export const PRIVATE_AUDIENCES: Array<{ key: PrivateAudience; label: string; short: string; destination: string; landing: string }> = [
-  { key: 'photographe', label: 'Photographes', short: 'photo', destination: `${SITE}/annuaires/photographes/exemple-fiche`, landing: 'la fiche d\'exemple, qui renvoie vers l\'inscription' },
+  { key: 'photographe', label: 'Photographes & vidéastes', short: 'photo', destination: `${SITE}/annuaires/photographes/exemple-fiche`, landing: 'la fiche d\'exemple, qui renvoie vers l\'inscription' },
   { key: 'menage', label: 'Équipes de ménage', short: 'menage', destination: `${SITE}/annuaires/menage/exemple-fiche`, landing: 'la fiche d\'exemple, qui renvoie vers l\'inscription' },
   // Hôtes (12/10/2026, Jason : « ajoute aussi un message pour les hôtes en privé ») : l'accueil
   // présente l'app et mène à « Créer mon compte gratuit » (provenance gardée par nav.js)

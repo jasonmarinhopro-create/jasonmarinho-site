@@ -27,7 +27,7 @@ describe('messages privés aux pros', () => {
   it('premier message photographe : prénom, ville, lien de la messagerie', () => {
     const m = buildPrivateMessage({ audience: 'photographe', platform: 'linkedin', kind: 'premier', prenom: 'julie', ville: 'Lyon' })
     expect(m.startsWith('Bonjour Julie,')).toBe(true)
-    expect(m).toContain('un bon photographe à Lyon.')
+    expect(m).toContain('un bon photographe ou vidéaste à Lyon.')
     expect(m).toContain('https://jasonmarinho.com/l/mp-photo-linkedin')
     expect(m).toContain('Tu fais ce type de shooting')
   })
