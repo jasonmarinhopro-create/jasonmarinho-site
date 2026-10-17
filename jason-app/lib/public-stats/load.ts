@@ -13,7 +13,7 @@ import { GSC_LAG_DAYS, addDays } from '@/lib/visibility/rules'
 import { CITY_PAGE_SLUGS, cityLabel, citySlugOf } from '@/lib/visibility/city-page'
 import { adminUserIds, splitDemo } from '@/lib/pros/demo'
 import {
-  CITY_TOTALS_MIN_IMPRESSIONS, NO_HOST_GUIDE, cityStats, countVisitors, firstPageQueries, isProCityPage, monthlySeries,
+  CITY_TOTALS_MIN_IMPRESSIONS, NO_HOST_GUIDE, videoSummary, cityStats, countVisitors, firstPageQueries, isProCityPage, monthlySeries,
   pageFull, pathOf, prosByCity, type Audience, type CityStats, type PageFull, type PairRow, type PublicQuery, type MonthPoint,
 } from './rules'
 
@@ -40,6 +40,8 @@ export interface PublicStats {
   } | null
   visitors: { last30: number; prev30: number | null } | null
   queries: Record<Audience, PublicQuery[]> | null
+  /** Recherches vidéo (vidéastes, drone) sur 28 jours */
+  video: ReturnType<typeof videoSummary> | null
   cities: Record<string, CityStats> | null
   cityPages: number
   /** Demandes d'hôtes transmises aux pros (null tant qu'il y en a moins de 5) */
@@ -109,6 +111,7 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
 
   let google: PublicStats['google'] = null
   let queries: PublicStats['queries'] = null
+  let video: PublicStats['video'] = null
   let cities: PublicStats['cities'] = null
   let cityFull: PublicStatsFull['cityFull'] = null
   if (g) {
@@ -120,6 +123,7 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
     const prevTotals = sum(g.prevPages)
     const pairs: PairRow[] = g.pairs.map(r => ({ query: r.keys[0], page: r.keys[1], clicks: r.clicks, impressions: r.impressions, position: r.position }))
     queries = firstPageQueries(pairs)
+    video = videoSummary(pairs)
     const firstPage = new Set(pairs.filter(p => p.position <= 10).map(p => p.query))
 
     google = {
@@ -179,6 +183,7 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
       google,
       visitors: visitorsCur ? { last30: visitorsCur.total, prev30: visitorsPrev && visitorsPrev.total > 0 ? visitorsPrev.total : null } : null,
       queries,
+      video,
       cities,
       cityPages: CITY_PAGE_SLUGS.length * 2,
       demandes: demandes !== null && demandes >= 5 ? demandes : null,
@@ -193,7 +198,7 @@ const cachedFull = unstable_cache(async () => {
   const r = await compute()
   if (!r.complete) throw new Error('incomplet')
   return r.stats
-}, ['public-stats-v2'], { revalidate: 6 * 3600, tags: ['public-stats'] })
+}, ['public-stats-v3'], { revalidate: 6 * 3600, tags: ['public-stats'] })
 
 const cachedPartial = unstable_cache(async () => (await compute()).stats, ['public-stats-partial-v2'], { revalidate: 3600, tags: ['public-stats'] })
 

@@ -5,6 +5,7 @@
 // Met aussi le contrat à « payé » si Stripe a un paiement (webhook manqué).
 import { NextResponse } from 'next/server'
 import { getServiceClient } from '@/lib/supabase/service'
+import { syncProSubscriptions } from '@/lib/pros/subscription-sync'
 import { syncLoyerPayment } from '@/lib/stripe/loyer-payment'
 import { stripe } from '@/lib/stripe/client'
 
@@ -20,6 +21,8 @@ export async function POST(req: Request) {
   if (!authorized(req)) return NextResponse.json({ error: 'non autorisé' }, { status: 401 })
   const body = await req.json().catch(() => ({})) as { arrivee?: string; depart?: string; op?: string }
   if (body.op === 'comptes') return NextResponse.json(await comptes())
+  // Abonnements des fiches pros relus chez Stripe (nombres seulement)
+  if (body.op === 'pros') return NextResponse.json(await syncProSubscriptions(getServiceClient(), 20000))
   const { arrivee, depart } = body
   if (!/^\d{4}-\d{2}-\d{2}$/.test(arrivee ?? '') || !/^\d{4}-\d{2}-\d{2}$/.test(depart ?? '')) {
     return NextResponse.json({ error: 'dates attendues : AAAA-MM-JJ' }, { status: 400 })

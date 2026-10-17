@@ -8,6 +8,7 @@ import { logger } from '@/lib/logger'
 import { createNotification, sejourHref } from '@/lib/notifications/create'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
+import { stripe } from '@/lib/stripe/client'
 
 const log = logger('lib/stripe/dispatch')
 
@@ -218,6 +219,11 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
 
     case 'customer.subscription.created': {
       const sub = event.data.object as Stripe.Subscription
+      // Statut relu chez Stripe : « created » (incomplete) arrive parfois après
+      // « updated » (active) ; écrire le statut du message écrasait le bon.
+      const liveStatus = (sub.metadata?.photographer_id || sub.metadata?.cleaner_id)
+        ? await stripe.subscriptions.retrieve(sub.id).then(s => s.status).catch(() => sub.status)
+        : sub.status
       // ── Branche photographe : subscription metadata.photographer_id ──
       // L'admin a déclenché un Checkout via approvePhotographer().
       // À la création de la subscription, on active le profil photographe
@@ -245,7 +251,7 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
             slug,
             stripe_customer_id: typeof sub.customer === 'string' ? sub.customer : sub.customer?.id ?? null,
             stripe_subscription_id: sub.id,
-            stripe_subscription_status: sub.status,
+            stripe_subscription_status: liveStatus,
             updated_at: new Date().toISOString(),
           }).eq('id', photographerId)
           // Trigger rebuild du site statique pour générer la fiche publique
@@ -288,7 +294,7 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
             slug,
             stripe_customer_id: typeof sub.customer === 'string' ? sub.customer : sub.customer?.id ?? null,
             stripe_subscription_id: sub.id,
-            stripe_subscription_status: sub.status,
+            stripe_subscription_status: liveStatus,
             updated_at: new Date().toISOString(),
           }).eq('id', cleanerId)
           await triggerSiteRebuild('stripe')

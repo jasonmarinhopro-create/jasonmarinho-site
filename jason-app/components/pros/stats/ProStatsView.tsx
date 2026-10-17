@@ -15,7 +15,7 @@ import InlineStyle from '@/components/ui/InlineStyle'
 import StatsChart from './StatsChart'
 import MonthlyReportToggle from './MonthlyReportToggle'
 import { AMBER, AMBER_DARK, BarList, EmptyNote, MeasureNote, PctPill, PlacePill, Pills, StatCard, nf } from './ui'
-import { formatDuration, placeOf } from '@/lib/visibility/rules'
+import { formatDuration, placeOf, isVideoQuery } from '@/lib/visibility/rules'
 import {
   filterGoogle, frenchDate, GOOGLE_TABS, PRO_PERIODS, screenAdvice, sortByImpressions,
   type GoogleTab, type MetricKey, type ProStatsData,
@@ -342,6 +342,7 @@ function GoogleCard({ d }: { d: ProStatsData }) {
                   <PlacePill position={q.position} />
                   <span style={s.gQuery} title={q.query}>
                     {q.query}
+                    {isVideoQuery(q.query) && <span style={s.vTag}>vidéo</span>}
                     {q.delta !== null && q.delta !== 0 && (
                       <span style={{ marginLeft: 8, fontSize: 11.5, fontWeight: 700, color: q.delta > 0 ? 'var(--accent-text)' : AMBER_DARK }}>
                         {q.delta > 0 ? `+${q.delta}` : q.delta} place{Math.abs(q.delta) > 1 ? 's' : ''}
@@ -407,7 +408,7 @@ export function CityPageCard({ d }: { d: ProStatsData }) {
           {c.google.queries.map(q => (
             <li key={q.query} style={s.gRow}>
               <PlacePill position={q.position} />
-              <span style={s.gQuery} title={q.query}>{q.query}</span>
+              <span style={s.gQuery} title={q.query}>{q.query}{isVideoQuery(q.query) && <span style={s.vTag}>vidéo</span>}</span>
               <span style={s.gImp}>{nf(q.impressions)}</span>
             </li>
           ))}
@@ -423,6 +424,7 @@ export function CityPageCard({ d }: { d: ProStatsData }) {
 // ── Styles ────────────────────────────────────────────────────────────────
 
 const s: Record<string, React.CSSProperties> = {
+  vTag: { marginLeft: 8, fontSize: 10.5, fontWeight: 700, letterSpacing: '.3px', textTransform: 'uppercase', color: 'var(--accent-text)', background: 'var(--accent-bg)', borderRadius: 999, padding: '1px 7px' },
   wrap: { padding: 'clamp(16px, 3vw, 44px)', width: '100%', minWidth: 0 },
   adminBanner: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, padding: '10px 16px', background: 'rgba(255,213,107,0.14)', border: `1px solid ${AMBER}55`, borderRadius: 12, fontSize: 13, color: AMBER_DARK, marginBottom: 18 },
   asideLabel: { display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: 0.4 },

@@ -6,6 +6,7 @@
 // Google, nos visites, les pros présentés et les fiches ouvertes depuis la
 // page. Données : lib/visibility/city-pros.ts.
 
+import { isVideoQuery } from '@/lib/visibility/rules'
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Camera, Broom, ArrowSquareOut, PaperPlaneTilt, CheckCircle } from '@phosphor-icons/react/dist/ssr'
@@ -49,7 +50,13 @@ export default function PagesProsTab({ d }: { d: PagesProsData }) {
   }, [side.items, q, sort, filter])
 
   const seen = side.items.filter(c => c.impressions > 0).length
-  const word = metier === 'photographe' ? 'Photographe' : 'Ménage'
+  const word = metier === 'photographe' ? 'Photographe & vidéaste' : 'Ménage'
+  // Recherches vidéo (vidéaste, drone…) qui montrent ces pages, 17/10/2026
+  const video = useMemo(() => {
+    const seenQ = new Map<string, number>()
+    for (const c of side.items) for (const x of c.queries) if (isVideoQuery(x.query)) seenQ.set(x.query, (seenQ.get(x.query) ?? 0) + x.impressions)
+    return { count: seenQ.size, impressions: [...seenQ.values()].reduce((n, v) => n + v, 0) }
+  }, [side.items])
 
   return (
     <>
@@ -63,13 +70,13 @@ export default function PagesProsTab({ d }: { d: PagesProsData }) {
                   style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 14px', borderRadius: 999, fontSize: 13.5, fontWeight: 700, cursor: 'pointer',
                     border: `1px solid ${metier === m ? ACCENT : 'var(--border)'}`, background: metier === m ? 'var(--accent-bg)' : 'var(--surface)', color: metier === m ? ACCENT : 'var(--text-2)' }}>
                   {m === 'photographe' ? <Camera size={15} weight="bold" /> : <Broom size={15} weight="bold" />}
-                  {m === 'photographe' ? 'Photographe + ville' : 'Équipe de ménage + ville'}
+                  {m === 'photographe' ? 'Photographe & vidéaste + ville' : 'Équipe de ménage + ville'}
                 </button>
               ))}
             </div>
             <h2 style={v.title}>Les {side.items.length} pages « {word} à &lt;ville&gt; »</h2>
             <p style={v.text}>
-              Chaque page présente les {metier === 'photographe' ? 'photographes' : 'équipes de ménage'} inscrits de la ville. {fmtInt(seen)} sont déjà vues dans Google ;{' '}
+              Chaque page présente les {metier === 'photographe' ? 'photographes et vidéastes' : 'équipes de ménage'} inscrits de la ville. {fmtInt(seen)} sont déjà vues dans Google ;{' '}
               <strong style={{ color: 'var(--text)' }}>{fmtInt(side.toRecruit)}</strong> n&apos;ont encore aucun pro en ligne : ce sont les villes où recruter en priorité.
             </p>
             <Link href="/dashboard/admin/prospection" style={{ ...v.btnPrimary, alignSelf: 'flex-start' }}>
@@ -82,6 +89,7 @@ export default function PagesProsTab({ d }: { d: PagesProsData }) {
             <Figure label="Visiteurs" value={fmtInt(side.visitors)} sub="sur nos mesures" />
             <Figure label="En 1re page" value={fmtInt(side.firstPage)} sub="recherche principale" />
             <Figure label="Fiches ouvertes" value={fmtInt(side.toFiches)} sub="depuis ces pages" />
+            {metier === 'photographe' && <Figure label="Recherches vidéo" value={fmtInt(video.count)} sub={`${fmtInt(video.impressions)} affichages`} />}
           </div>
         </div>
       </section>

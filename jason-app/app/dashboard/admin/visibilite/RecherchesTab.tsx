@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { filterQueries, fmtInt, ctrLabel, type QueryFilter, type QuerySort } from '@/lib/visibility/admin-rules'
+import { isVideoQuery } from '@/lib/visibility/rules'
 import type { RecherchesData } from '@/lib/visibility/admin-build'
 import { v, BucketBar, Figure, PlacePill, PlaceDelta, PLACE_KEYS, badge, ACCENT } from './ui'
 import { ListStyles, Num, SearchBox, ChipGroup, SortSelect, MoreButton } from './ListParts'
@@ -21,6 +22,7 @@ export default function RecherchesTab({ d }: { d: RecherchesData }) {
     progres: d.items.filter(x => (x.delta ?? 0) > 0 && (!hideBrand || !x.brand)).length,
     recul: d.items.filter(x => (x.delta ?? 0) < 0 && (!hideBrand || !x.brand)).length,
     nouvelles: d.items.filter(x => x.isNew && (!hideBrand || !x.brand)).length,
+    video: d.items.filter(x => isVideoQuery(x.query)).length,
   }), [d.items, hideBrand])
   const reset = () => setLimit(PAGE)
 
@@ -56,6 +58,7 @@ export default function RecherchesTab({ d }: { d: RecherchesData }) {
             { key: 'progres', label: 'En progrès', count: counts.progres },
             { key: 'recul', label: 'En recul', count: counts.recul },
             { key: 'nouvelles', label: 'Nouvelles', count: counts.nouvelles },
+            { key: 'video', label: 'Vidéo et drone', count: counts.video },
           ]} />
           <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 13.5, color: 'var(--text-2)', cursor: 'pointer' }}>
             <input type="checkbox" checked={hideBrand} onChange={e => { setHideBrand(e.target.checked); reset() }} style={{ width: 16, height: 16, accentColor: 'var(--accent-text)' }} />

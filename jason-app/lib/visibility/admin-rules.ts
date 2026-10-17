@@ -4,7 +4,7 @@
 // côté serveur (lib/visibility/admin-load.ts), le navigateur ne fait que
 // filtrer et trier.
 import {
-  placeOf, placeBucket, pathOf, pageLabel, cityOf, isBrandQuery, CITY_THEME_LABEL,
+  placeOf, placeBucket, pathOf, pageLabel, cityOf, isBrandQuery, CITY_THEME_LABEL, isVideoQuery,
   type CityTheme, type PageKind, type PlaceBucket, type QueryPageRow, type SearchStat, type VisitRow,
 } from './rules'
 
@@ -305,7 +305,7 @@ export function filterPros(items: ProItem[], o: { kind: 'all' | 'photographe' | 
   return out.sort((a, b) => cmp[o.sort](a, b) || a.name.localeCompare(b.name, 'fr'))
 }
 
-export type QueryFilter = 'toutes' | 'progres' | 'recul' | 'nouvelles'
+export type QueryFilter = 'toutes' | 'progres' | 'recul' | 'nouvelles' | 'video'
 export type QuerySort = 'place' | 'clics' | 'affichages' | 'progression'
 
 export function filterQueries(items: QueryItem[], o: { filter: QueryFilter; hideBrand: boolean; q: string; sort: QuerySort }): QueryItem[] {
@@ -314,7 +314,8 @@ export function filterQueries(items: QueryItem[], o: { filter: QueryFilter; hide
     && (o.filter === 'toutes'
       || (o.filter === 'progres' && (x.delta ?? 0) > 0)
       || (o.filter === 'recul' && (x.delta ?? 0) < 0)
-      || (o.filter === 'nouvelles' && x.isNew))
+      || (o.filter === 'nouvelles' && x.isNew)
+      || (o.filter === 'video' && isVideoQuery(x.query)))
     && matchesText(o.q, x.query, x.mainLabel))
   const cmp: Record<QuerySort, (a: QueryItem, b: QueryItem) => number> = {
     place: (a, b) => a.place - b.place || b.impressions - a.impressions,

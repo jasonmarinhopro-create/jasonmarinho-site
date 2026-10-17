@@ -1,6 +1,7 @@
 'use server'
 
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { syncProSubscriptions } from '@/lib/pros/subscription-sync'
 import { getServiceClient } from '@/lib/supabase/service'
 import { adminUserIds, splitDemo } from '@/lib/pros/demo'
 import { createClient } from '@/lib/supabase/server'
@@ -251,6 +252,8 @@ export async function getPhotographersQueue(): Promise<{
   }
 
   const admin = getServiceClient()
+  // Statut des abonnements relu chez Stripe avant d'afficher (3 s au plus)
+  await syncProSubscriptions(admin, 3000)
   const [activeRes, pendingPaymentRes, hiddenRes, cancelledRes, admins] = await Promise.all([
     admin.from('photographers').select('*').eq('status', 'active').order('created_at', { ascending: false }).limit(200),
     admin.from('photographers').select('*').eq('status', 'pending_payment').order('created_at', { ascending: false }).limit(50),

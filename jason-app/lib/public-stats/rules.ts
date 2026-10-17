@@ -11,6 +11,8 @@
 //    (en dessous, seulement les recherches où elle sort en première page) ;
 //  - rien de personnel : des totaux, des recherches Google et des adresses de pages.
 
+import { isVideoQuery } from '@/lib/visibility/rules'
+
 export const CITY_TOTALS_MIN_IMPRESSIONS = 100
 export const QUERY_MIN_IMPRESSIONS = 3
 export const FIRST_PAGE_MAX = 10
@@ -40,9 +42,21 @@ export function isBrand(q: string): boolean {
 /** Public visé par une recherche : photographe, ménage, sinon hôte */
 export function audienceOf(q: string): Audience {
   const s = norm(q)
-  if (/photo/.test(s)) return 'photographe'
+  if (/photo/.test(s) || isVideoQuery(s)) return 'photographe'
   if (/menage|nettoyage|femme de m|blanchisserie|linge/.test(s)) return 'menage'
   return 'hote'
+}
+
+/** Recherches vidéo (vidéo, vidéaste, drone…) où Google montre le site, toutes places : nombre, affichages, clics, les 5 plus vues */
+export function videoSummary(rows: PairRow[]): { count: number; impressions: number; clicks: number; firstPage: number; top: PublicQuery[] } {
+  const list = groupByQuery(rows).filter(q => !isBrand(q.q) && isVideoQuery(q.q))
+  return {
+    count: list.length,
+    impressions: list.reduce((n, q) => n + q.impressions, 0),
+    clicks: list.reduce((n, q) => n + q.clicks, 0),
+    firstPage: list.filter(q => q.place <= FIRST_PAGE_MAX).length,
+    top: [...list].sort((a, b) => b.impressions - a.impressions || a.place - b.place).slice(0, 5),
+  }
 }
 
 export const r1 = (n: number) => Math.round(n * 10) / 10

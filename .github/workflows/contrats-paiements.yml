@@ -33,3 +33,9 @@ jobs:
         run: |
           out=$(curl -s -X POST https://app.jasonmarinho.com/api/ops/contrat-paiement -H "Authorization: Bearer $SECRET" -H 'Content-Type: application/json' -d '{"op":"comptes"}')
           echo "::notice title=Comptes Stripe::$out"
+      - name: Abonnements des fiches pros relus chez Stripe
+        env:
+          SECRET: ${{ secrets.SOCIAL_CRON_SECRET }}
+        run: |
+          out=$(curl -s -X POST https://app.jasonmarinho.com/api/ops/contrat-paiement -H "Authorization: Bearer $SECRET" -H 'Content-Type: application/json' -d '{"op":"pros"}')
+          echo "::notice title=Fiches pros::$out"

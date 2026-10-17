@@ -130,3 +130,24 @@ describe('recherche par ville', () => {
     expect(missing.sort()).toEqual([...NO_HOST_GUIDE].sort())
   })
 })
+
+describe('recherches vidéo', () => {
+  it('reconnaît vidéo, vidéaste, drone, sans confondre', async () => {
+    const { isVideoQuery } = await import('@/lib/visibility/rules')
+    expect(isVideoQuery('vidéaste airbnb lyon')).toBe(true)
+    expect(isVideoQuery('Video logement location')).toBe(true)
+    expect(isVideoQuery('photo drone maison')).toBe(true)
+    expect(isVideoQuery('photographe airbnb lyon')).toBe(false)
+    expect(isVideoQuery('videotheque')).toBe(false)
+  })
+  it('les range chez les photographes et les résume', async () => {
+    const { audienceOf, videoSummary } = await import('./rules')
+    expect(audienceOf('vidéaste immobilier nice')).toBe('photographe')
+    const rows = [
+      { query: 'vidéaste airbnb', page: 'https://jasonmarinho.com/photographe-lcd-nice', clicks: 1, impressions: 30, position: 6 },
+      { query: 'drone maison', page: 'https://jasonmarinho.com/photographe-lcd-nice', clicks: 0, impressions: 10, position: 14 },
+      { query: 'photographe airbnb', page: 'https://jasonmarinho.com/photographe-lcd-nice', clicks: 2, impressions: 50, position: 4 },
+    ]
+    expect(videoSummary(rows)).toMatchObject({ count: 2, impressions: 40, clicks: 1, firstPage: 1 })
+  })
+})

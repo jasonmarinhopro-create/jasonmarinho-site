@@ -623,3 +623,13 @@ export function proTakeaways(i: ProTakeawayInput): Takeaway[] {
   }
   return out.slice(0, 4)
 }
+
+/**
+ * Recherche « vidéo » (17/10/2026 : vidéastes dans l'annuaire, Jason : « une
+ * donnée intéressante à mettre en avant quand je serai positionné ») : vidéo,
+ * vidéaste, film, drone, visite virtuelle. Accents et casse ignorés.
+ */
+export function isVideoQuery(q: string): boolean {
+  const s = q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  return /\b(video|videos|videaste|videastes|videographe|film|films|filmer|drone|drones|visite virtuelle|reel|reels)\b/.test(s)
+}

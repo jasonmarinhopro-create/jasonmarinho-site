@@ -14,6 +14,7 @@ import { purgeOldProContacts } from '@/lib/pros/contacts-retention'
 import { traiterDemandes } from '@/lib/demandes/send'
 import { syncPendingLoyers } from '@/lib/stripe/loyer-payment'
 import { syncPendingDeposits } from '@/lib/stripe/deposit-payment'
+import { syncProSubscriptions } from '@/lib/pros/subscription-sync'
 import { unansweredQuestions, unansweredDigestEmail, REMIND_MAX_DAYS, type QuestionRow } from '@/lib/chez-nous/unanswered'
 import { sendAdminEmail } from '@/lib/email/admin'
 import { sendProMonthlyReports } from '@/lib/email/pro-monthly'
@@ -95,6 +96,8 @@ export async function GET(req: Request) {
   try {
     loyersSynced = await syncPendingLoyers(supabase)
     depositsSynced = await syncPendingDeposits(supabase)
+    // Abonnements des fiches pros (lib/pros/subscription-sync.ts)
+    await syncProSubscriptions(supabase)
   } catch { /* best-effort */ }
 
   let proContactsPurged = 0
