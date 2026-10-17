@@ -26,7 +26,7 @@ const LOGEMENTS = ['Studio ou T1', 'T2 ou T3', 'T4 et plus', 'Maison', 'Plusieur
 const QUAND = ['Au plus vite', 'Dans le mois', 'Dans 1 à 3 mois', 'Je me renseigne']
 const FREQUENCES = ['Des ménages réguliers entre deux voyageurs', 'Un ménage ponctuel (remise en état, fin de saison)']
 // Même liste que PRESTATIONS_PHOTO (jason-app/lib/demandes/rules.ts)
-const PRESTATIONS_PHOTO = ['Des photos', 'Une vidéo', 'Des photos et une vidéo', 'Des photos avec vues au drone']
+const PRESTATIONS_PHOTO = ['Des photos', 'Une vidéo', 'Des photos et une vidéo', 'Des photos avec vues au drone', 'Une vidéo avec vues au drone']
 
 const cities = loadCities().map(c => c.name).filter(Boolean).sort((a, b) => a.localeCompare(b, 'fr'))
 const title = 'Trouver un photographe, vidéaste ou ménage Airbnb'

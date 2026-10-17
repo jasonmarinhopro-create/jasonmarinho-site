@@ -16,6 +16,7 @@ import InlineStyle from '@/components/ui/InlineStyle'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 import { AMBER, BROWN, PINK, tint } from '../_ui/theme'
 import { ETAT_LABELS, texteAPartager, prosAProposer, proximiteLabel, type EtatAdmin, type ProChoix } from '@/lib/demandes/admin'
+import { besoinPhoto, adequationLabel } from '@/lib/demandes/rules'
 import type { DemandeMetier } from '@/lib/demandes/rules'
 import type { DemandeQG } from './demandes-load'
 import { markDemandeSeen, saveDemandeNote, setDemandeDone, sendDemandeToPro } from './demandes-actions'
@@ -150,7 +151,7 @@ function EtatPill({ etat }: { etat: EtatAdmin }) {
 
 function ListItem({ d, on, onClick }: { d: DemandeQG; on: boolean; onClick: () => void }) {
   const M = METIER[d.metier]
-  const detail = [d.logement, d.frequence ? 'ménages réguliers' : null, d.quand].filter(Boolean).join(' · ')
+  const detail = [d.logement, d.frequence ? (d.metier === 'menage' ? (d.frequence.startsWith('Des ménages réguliers') ? 'ménages réguliers' : 'ménage ponctuel') : d.frequence.toLowerCase()) : null, d.quand].filter(Boolean).join(' · ')
   return (
     <button type="button" className="dh-item" onClick={onClick} style={{ ...st.item, ...(on ? st.itemOn : {}) }}>
       <span style={st.itemIcon}><M.Icon size={16} weight="duotone" /></span>
@@ -334,7 +335,7 @@ function Fiche({ d, pros, suiviOk, onBack, patch }: {
                   <li key={p.id} style={st.li}>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontWeight: 600, fontSize: 13.5, color: 'var(--text)' }}>{p.nom}</div>
-                      <div style={st.small}>{p.ville}{p.score > 0 ? ` · ${proximiteLabel(p.score)}` : ' · autre ville'}</div>
+                      <div style={st.small}>{p.ville}{p.score > 0 ? ` · ${proximiteLabel(p.score)}` : ' · autre ville'}{d.metier === 'photographe' && besoinPhoto(d.frequence) ? ` · ${adequationLabel(p.adequation)}` : ''}</div>
                     </div>
                     <button type="button" onClick={() => envoyer(p)} disabled={pending} style={st.btnSmall}>Envoyer</button>
                   </li>

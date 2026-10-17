@@ -3,7 +3,7 @@
 // partager sans les coordonnées de l'hôte (décision de Jason), pros à qui la
 // transmettre à la main.
 
-import { anonymizedNeed, proximite, RELANCE_APRES_H, type DemandeMetier, type ProCandidat } from './rules'
+import { anonymizedNeed, proximite, convientAuBesoin, RELANCE_APRES_H, type Adequation, type DemandeMetier, type ProCandidat } from './rules'
 
 export interface SentTo { id: string; contact_id?: string | null; round: number; at?: string; manual?: boolean }
 
@@ -83,13 +83,16 @@ export function proximiteLabel(score: number): string {
   return (PROXIMITE_LABELS.find(([min]) => score >= min) ?? [0, 'Autre ville'])[1]
 }
 
-/** Pros à proposer pour un envoi à la main : pas encore sollicités, les plus proches d'abord, puis par nom */
-export function prosAProposer<T extends ProChoix>(pros: T[], d: Pick<DemandeAdminRow, 'ville' | 'sent_to'>, recherche = ''): Array<T & { score: number }> {
+/**
+ * Pros à proposer pour un envoi à la main : pas encore sollicités ; ceux qui font ce que l'hôte demande
+ * (vidéo, drone) d'abord parmi ceux de la zone, puis les plus proches, puis par nom. Ceux qui ne le font pas restent proposés.
+ */
+export function prosAProposer<T extends ProChoix>(pros: T[], d: Pick<DemandeAdminRow, 'ville' | 'sent_to'> & { frequence?: string | null }, recherche = ''): Array<T & { score: number; adequation: Adequation }> {
   const deja = new Set(d.sent_to.map(s => s.id))
   const q = recherche.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
   return pros
     .filter(p => !deja.has(p.id))
-    .map(p => ({ ...p, score: proximite(p, d.ville) }))
+    .map(p => ({ ...p, score: proximite(p, d.ville), adequation: convientAuBesoin(p, d.frequence) }))
     .filter(p => !q || `${p.nom} ${p.ville ?? ''} ${p.zone_couverte ?? ''}`.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').includes(q))
-    .sort((a, b) => b.score - a.score || a.nom.localeCompare(b.nom, 'fr'))
+    .sort((a, b) => Number(b.score > 0) - Number(a.score > 0) || b.adequation - a.adequation || b.score - a.score || a.nom.localeCompare(b.nom, 'fr'))
 }

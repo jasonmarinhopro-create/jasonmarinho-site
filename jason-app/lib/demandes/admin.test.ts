@@ -50,4 +50,14 @@ describe('pros à proposer', () => {
     expect(proximiteLabel(80)).toBe('Couvre la ville')
     expect(proximiteLabel(0)).toBe('Autre ville')
   })
+  it('dans la zone, ceux qui font ce que l’hôte demande d’abord', () => {
+    const lyon = [
+      { id: 'photo', nom: 'Anna', slug: 'a', ville: 'Lyon', zone_couverte: null, metier: 'photo' },
+      { id: 'video', nom: 'Bruno', slug: 'b', ville: 'Villeurbanne', zone_couverte: null, villes_couvertes: ['Lyon'], metier: 'video' },
+      { id: 'loin', nom: 'Chloé', slug: 'c', ville: 'Brest', zone_couverte: null, metier: 'video' },
+    ]
+    const r = prosAProposer(lyon, { ville: 'Lyon', sent_to: [], frequence: 'Une vidéo' })
+    expect(r.map(p => p.id)).toEqual(['video', 'photo', 'loin'])
+    expect(r.map(p => p.adequation)).toEqual([2, 0, 2])
+  })
 })

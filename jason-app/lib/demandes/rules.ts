@@ -20,7 +20,7 @@ export const LOGEMENTS = ['Studio ou T1', 'T2 ou T3', 'T4 et plus', 'Maison', 'P
 export const QUAND = ['Au plus vite', 'Dans le mois', 'Dans 1 à 3 mois', 'Je me renseigne'] as const
 export const FREQUENCES = ['Des ménages réguliers entre deux voyageurs', 'Un ménage ponctuel (remise en état, fin de saison)'] as const
 /** Besoin d'un hôte qui cherche un photographe (17/10/2026 : vidéastes dans l'annuaire), rangé dans `frequence` */
-export const PRESTATIONS_PHOTO = ['Des photos', 'Une vidéo', 'Des photos et une vidéo', 'Des photos avec vues au drone'] as const
+export const PRESTATIONS_PHOTO = ['Des photos', 'Une vidéo', 'Des photos et une vidéo', 'Des photos avec vues au drone', 'Une vidéo avec vues au drone'] as const
 
 export interface DemandeInput {
   metier: DemandeMetier
@@ -83,18 +83,70 @@ export interface ProCandidat {
   options?: string[] | null
 }
 
-/**
- * Le pro correspond-il au besoin (vidéo, drone) ? 1 = oui ou rien de précis
- * demandé, 0 = non. Un pro qui ne correspond pas reste possible, après les autres.
- */
-export function convientAuBesoin(pro: ProCandidat, besoin: string | null | undefined): 0 | 1 {
-  const video = besoin === 'Une vidéo' || besoin === 'Des photos et une vidéo'
-  const photo = besoin !== 'Une vidéo'
+/** Ce que demande l'hôte (photo, vidéo, drone), lu dans `frequence` ; null = rien de précis */
+export function besoinPhoto(besoin: string | null | undefined): { photo: boolean; video: boolean; drone: boolean } | null {
+  switch (besoin) {
+    case 'Des photos': return { photo: true, video: false, drone: false }
+    case 'Une vidéo': return { photo: false, video: true, drone: false }
+    case 'Des photos et une vidéo': return { photo: true, video: true, drone: false }
+    case 'Des photos avec vues au drone': return { photo: true, video: false, drone: true }
+    case 'Une vidéo avec vues au drone': return { photo: false, video: true, drone: true }
+    default: return null
+  }
+}
+
+function faitPar(pro: ProCandidat) {
   const m = pro.metier ?? 'photo'
-  if (video && m === 'photo') return 0
-  if (besoin && photo && m === 'video') return 0
-  if (besoin === 'Des photos avec vues au drone' && !(pro.options ?? []).includes('drone')) return 0
-  return 1
+  return { photo: m !== 'video', video: m !== 'photo', drone: (pro.options ?? []).includes('drone') }
+}
+
+/** 2 = fait tout ce que l'hôte demande, 1 = en partie, 0 = ne fait pas ce qui est demandé */
+export type Adequation = 0 | 1 | 2
+
+/**
+ * Le pro fait-il ce que l'hôte demande, d'après le métier et les options de sa fiche ?
+ * - 0 : aucun des supports demandés (photographe seul pour « Une vidéo », vidéaste seul pour « Des photos ») :
+ *   jamais envoyé automatiquement, Jason peut le transmettre à la main depuis le QG
+ * - 1 : en partie (photos et vidéo demandées, il n'en fait qu'une ; drone demandé, pas indiqué sur sa fiche)
+ * - 2 : tout ce qui est demandé ; sans besoin précis, 2 pour qui fait de la photo, 1 pour un vidéaste seul
+ */
+export function convientAuBesoin(pro: ProCandidat, besoin: string | null | undefined): Adequation {
+  const b = besoinPhoto(besoin)
+  const f = faitPar(pro)
+  if (!b) return f.photo ? 2 : 1
+  const voulus = [b.photo && 'photo', b.video && 'video'].filter(Boolean) as Array<'photo' | 'video'>
+  const faits = voulus.filter(k => f[k])
+  if (!faits.length) return 0
+  if (faits.length < voulus.length) return 1
+  if (b.drone && !f.drone) return 1
+  return 2
+}
+
+const QUOI = { photo: 'la photo', video: 'la vidéo', drone: 'les vues au drone' } as const
+const liste = (xs: string[]) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} et ${xs[xs.length - 1]}`)
+
+/** Ce que l'hôte demande et que le pro ne propose pas d'après sa fiche (vide si tout correspond) */
+export function manquesDuPro(pro: ProCandidat, besoin: string | null | undefined): string[] {
+  const b = besoinPhoto(besoin)
+  if (!b) return []
+  const f = faitPar(pro)
+  return (['photo', 'video', 'drone'] as const).filter(k => b[k] && !f[k]).map(k => QUOI[k])
+}
+
+/** Phrase pour l'e-mail du pro : pourquoi il reçoit la demande, ou ce qui manque à sa fiche */
+export function pourquoiCePro(pro: ProCandidat, besoin: string | null | undefined): string | null {
+  const b = besoinPhoto(besoin)
+  if (!b) return null
+  const demande = liste((['photo', 'video', 'drone'] as const).filter(k => b[k]).map(k => QUOI[k]))
+  const manque = manquesDuPro(pro, besoin)
+  return manque.length
+    ? `L’hôte demande ${demande}. Ta fiche n’indique pas ${liste(manque)} : dis-lui ce que tu peux faire.`
+    : `L’hôte demande ${demande}, et ta fiche indique que tu le proposes.`
+}
+
+/** Libellé court pour le QG */
+export function adequationLabel(a: Adequation): string {
+  return a === 2 ? 'Fait ce qui est demandé' : a === 1 ? 'En partie' : 'Ne fait pas ce qui est demandé'
 }
 
 export const normCity = (s: string | null | undefined) =>
@@ -116,12 +168,15 @@ export function proximite(pro: ProCandidat, ville: string): number {
   return 0
 }
 
-/** Les pros les plus proches, hors ceux déjà sollicités ; à proximité égale, les moins sollicités d'abord */
+/**
+ * Les pros à qui envoyer la demande : d'abord ceux qui font tout ce que l'hôte demande, puis ceux qui le font
+ * en partie, jamais ceux qui ne le font pas (0) ; à adéquation égale les plus proches, puis les moins sollicités.
+ */
 export function choisirPros<T extends ProCandidat>(pros: T[], ville: string, exclude: Set<string>, n = PROS_PAR_VAGUE, besoin?: string | null): T[] {
   return pros
     .filter(p => !exclude.has(p.id))
     .map(p => ({ p, s: proximite(p, ville), f: convientAuBesoin(p, besoin) }))
-    .filter(x => x.s > 0)
+    .filter(x => x.s > 0 && x.f > 0)
     .sort((a, b) => b.f - a.f || b.s - a.s || (a.p.contacts_count ?? 0) - (b.p.contacts_count ?? 0) || String(a.p.created_at ?? '').localeCompare(String(b.p.created_at ?? '')))
     .slice(0, n)
     .map(x => x.p)

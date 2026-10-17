@@ -88,8 +88,40 @@ describe('photographes et vidéastes', () => {
       { id: 'video', ville: 'Villeurbanne', zone_couverte: 'Lyon', metier: 'video', options: [] },
       { id: 'drone', ville: 'Lyon', zone_couverte: null, metier: 'photo_video', options: ['drone'] },
     ]
-    expect(choisirPros(pros, 'Lyon', new Set(), 3, 'Une vidéo').map(p => p.id)).toEqual(['drone', 'video', 'photo'])
+    // Le photographe sans vidéo ne reçoit pas une demande de vidéo
+    expect(choisirPros(pros, 'Lyon', new Set(), 3, 'Une vidéo').map(p => p.id)).toEqual(['drone', 'video'])
+    expect(choisirPros(pros, 'Lyon', new Set(), 3, 'Des photos').map(p => p.id).sort()).toEqual(['drone', 'photo'])
+    // Vidéo au drone : celui qui a le drone d'abord, le vidéaste sans drone ensuite
+    expect(choisirPros(pros, 'Lyon', new Set(), 3, 'Une vidéo avec vues au drone').map(p => p.id)).toEqual(['drone', 'video'])
+    // Photos et vidéo : celui qui fait les deux d'abord, puis ceux qui en font une
+    expect(choisirPros(pros, 'Lyon', new Set(), 3, 'Des photos et une vidéo').map(p => p.id)).toEqual(['drone', 'photo', 'video'])
     expect(choisirPros(pros, 'Lyon', new Set(), 1, 'Des photos avec vues au drone').map(p => p.id)).toEqual(['drone'])
     expect(choisirPros(pros, 'Lyon', new Set(), 3, null).map(p => p.id).slice(0, 2).sort()).toEqual(['drone', 'photo'])
+  })
+  it('note l\'adéquation et explique au pro ce qui manque', async () => {
+    const { convientAuBesoin, pourquoiCePro, manquesDuPro, cleanDemande } = await import('./rules')
+    const photo = { id: 'p', ville: 'Lyon', zone_couverte: null, metier: 'photo', options: [] }
+    const drone = { id: 'd', ville: 'Lyon', zone_couverte: null, metier: 'photo', options: ['drone'] }
+    expect(convientAuBesoin(photo, 'Une vidéo')).toBe(0)
+    expect(convientAuBesoin(photo, 'Des photos avec vues au drone')).toBe(1)
+    expect(convientAuBesoin(drone, 'Des photos avec vues au drone')).toBe(2)
+    expect(convientAuBesoin(drone, 'Une vidéo avec vues au drone')).toBe(0)
+    expect(convientAuBesoin({ ...photo, metier: null }, 'Des photos')).toBe(2)
+    expect(manquesDuPro(photo, 'Des photos et une vidéo')).toEqual(['la vidéo'])
+    expect(pourquoiCePro(drone, 'Des photos avec vues au drone')).toBe('L’hôte demande la photo et les vues au drone, et ta fiche indique que tu le proposes.')
+    expect(pourquoiCePro(photo, 'Des photos avec vues au drone')).toContain('Ta fiche n’indique pas les vues au drone')
+    expect(pourquoiCePro(photo, null)).toBeNull()
+    const r = cleanDemande({ metier: 'photographe', ville: 'Lyon', nom: 'Paul Dupont', email: 'paul@exemple.fr', consent: true, frequence: 'Une vidéo avec vues au drone' })
+    expect('value' in r && r.value.frequence).toBe('Une vidéo avec vues au drone')
+  })
+})
+
+describe('formulaire du site', () => {
+  it('propose les mêmes besoins photo / vidéo que l’app', async () => {
+    const { readFileSync } = await import('node:fs')
+    const { PRESTATIONS_PHOTO } = await import('./rules')
+    const src = readFileSync(new URL('../../../scripts/build-trouver-un-pro.mjs', import.meta.url), 'utf8')
+    const m = src.match(/const PRESTATIONS_PHOTO = (\[[^\]]*\])/)
+    expect(m && JSON.parse(m[1].replace(/'/g, '"'))).toEqual([...PRESTATIONS_PHOTO])
   })
 })
