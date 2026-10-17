@@ -46,12 +46,12 @@ export const PLAYBOOK: PlaybookSequence[] = [
     steps: [
       {
         delay_days: 0,
-        subject: 'Photographe pour des locations{ à ville} ?',
+        subject: 'Photographe ou vidéaste pour des locations{ à ville} ?',
         body: `Bonjour {prenom},
 
 Je m'appelle Jason Marinho. J'accompagne des hôtes Airbnb et Booking (gîtes, appartements, chambres d'hôtes) et je leur ai construit une app pour gérer leur location.
 
-Une question revient sans arrêt : « Tu connais un bon photographe près de chez moi ? » Des photos pro, c'est souvent ce qui fait décoller une annonce.
+Une question revient sans arrêt : « Tu connais un bon photographe près de chez moi ? » Des photos pro, et de plus en plus une vidéo, c'est souvent ce qui fait décoller une annonce.
 
 J'ouvre donc un annuaire de photographes et vidéastes spécialisés en location courte durée. Les hôtes te contactent directement depuis ta fiche : pas de commission, pas d'intermédiaire, le devis et le paiement se font entre vous.
 
@@ -61,22 +61,22 @@ Est-ce que tu fais ce type de shooting, en photo ou en vidéo (intérieurs, loge
       },
       {
         delay_days: 3,
-        subject: 'Photographe pour des locations{ à ville} ?',
+        subject: 'Photographe ou vidéaste pour des locations{ à ville} ?',
         body: `Bonjour {prenom},
 
 Je remonte mon message avec du concret. Une fiche dans l'annuaire, c'est :
 
 - une page à ton nom sur jasonmarinho.com, avec le lien vers ton portfolio, ta vidéo en tête de fiche, ta zone et tes tarifs ;
 - les demandes des hôtes directement chez toi, sans commission ;
-- l'annuaire mis en avant sur nos guides photo de 60 villes, lus par des hôtes qui cherchent un photographe.
+- l'annuaire mis en avant sur nos guides photo de 60 villes, lus par des hôtes qui cherchent un photographe ou un vidéaste.
 
-Les 20 premiers photographes gardent le tarif fondateur : 39,98 € par an, à vie.
+Les 20 premiers photographes et vidéastes gardent le tarif fondateur : 39,98 € par an, à vie.
 
 Tu veux que je t'en dise plus ?`,
       },
       {
         delay_days: 4,
-        subject: 'Photographe pour des locations{ à ville} ?',
+        subject: 'Photographe ou vidéaste pour des locations{ à ville} ?',
         body: `{prenom}, une dernière question : je te garde une des places fondatrices ?
 
 L'inscription prend deux minutes : ${SITE}/annuaires/photographes/inscription?${utm('photo_premier_contact')}
@@ -85,7 +85,7 @@ Si ce n'est pas pour toi, un simple « non merci » me suffit, je ne te relancer
       },
       {
         delay_days: 7,
-        subject: 'Photographe pour des locations{ à ville} ?',
+        subject: 'Photographe ou vidéaste pour des locations{ à ville} ?',
         body: `Bonjour {prenom},
 
 Je ne veux pas encombrer ta boîte, c'est mon dernier message.
@@ -106,13 +106,13 @@ Bonne continuation !`,
     steps: [
       {
         delay_days: 90,
-        subject: 'Des hôtes{ à ville} cherchent un photographe',
+        subject: 'Photographe ou vidéaste{ à ville} : des hôtes te cherchent',
         same_thread: false,
         body: `Bonjour {prenom},
 
-Je t'avais écrit il y a quelques mois au sujet de l'annuaire des photographes pour locations de vacances.
+Je t'avais écrit il y a quelques mois au sujet de l'annuaire des photographes et vidéastes pour locations de vacances.
 
-Je reviens vers toi une seule fois : les hôtes continuent de me demander des photographes{ à ville}, et c'est la période où beaucoup refont leurs photos.
+Je reviens vers toi une seule fois : les hôtes continuent de me demander des photographes et des vidéastes{ à ville}, et c'est la période où beaucoup refont leurs photos et leur vidéo.
 
 La fiche se crée en deux minutes, contact direct et sans commission : ${SITE}/annuaires/photographes/inscription?${utm('photo_relance_saison')}
 
@@ -132,19 +132,19 @@ Sinon, aucun souci, tu n'auras plus de message de ma part.`,
     steps: [
       {
         delay_days: 2,
-        subject: 'Ta fiche photographe, en deux minutes',
+        subject: 'Ta fiche photographe ou vidéaste, en deux minutes',
         same_thread: false,
         body: `Bonjour {prenom},
 
 Comme promis, voici le lien pour créer ta fiche : ${SITE}/annuaires/photographes/inscription?${utm('photo_interesse')}
 
-Un conseil pour bien démarrer : mets en avant sur ton portfolio 6 à 12 photos d'intérieur, lumineuses et variées (séjour, chambre, cuisine, salle de bain). C'est ce que les hôtes regardent en premier.
+Un conseil pour bien démarrer : mets en avant sur ton portfolio 6 à 12 photos d'intérieur, lumineuses et variées (séjour, chambre, cuisine, salle de bain). C'est ce que les hôtes regardent en premier. Tu fais aussi de la vidéo ? Ajoute son lien (YouTube ou Vimeo) : elle s'affiche en tête de ta fiche.
 
 Une question avant de te lancer ? Réponds simplement à ce message.`,
       },
       {
         delay_days: 6,
-        subject: 'Ta fiche photographe, en deux minutes',
+        subject: 'Ta fiche photographe ou vidéaste, en deux minutes',
         body: `{prenom}, ta place au tarif fondateur (39,98 € par an, à vie) t'attend toujours.
 
 Le lien : ${SITE}/annuaires/photographes/inscription?${utm('photo_interesse')}
@@ -169,7 +169,7 @@ Si quelque chose te freine, dis-le-moi, je regarde avec toi.`,
 
 Bienvenue dans l'annuaire ! Trois réglages font la différence pour recevoir des demandes :
 
-- un lien vers ton portfolio, tes plus belles photos de logements en premier ;
+- un lien vers ton portfolio, tes plus belles photos de logements en premier, et ta vidéo si tu en fais (elle s'affiche en tête de fiche) ;
 - ta zone couverte, pour apparaître aux hôtes des villes autour de toi ;
 - une fourchette de prix, les hôtes contactent plus facilement quand ils ont un repère.
 
@@ -411,4 +411,15 @@ export const PLAYBOOK_TEXT_FIXES: Array<[string, string]> = [
   ["J'ouvre donc un annuaire de photographes spécialisés en location courte durée.", "J'ouvre donc un annuaire de photographes et vidéastes spécialisés en location courte durée."],
   ["Est-ce que tu fais ce type de shooting (intérieurs, logements de vacances) ?", "Est-ce que tu fais ce type de shooting, en photo ou en vidéo (intérieurs, logements de vacances) ?"],
   ["- une page à ton nom sur jasonmarinho.com, avec le lien vers ton portfolio, ta zone et tes tarifs ;", "- une page à ton nom sur jasonmarinho.com, avec le lien vers ton portfolio, ta vidéo en tête de fiche, ta zone et tes tarifs ;"],
+  // 17/10/2026 (suite) : vidéastes dans tous les e-mails des photographes
+  ["Photographe pour des locations{ à ville} ?", "Photographe ou vidéaste pour des locations{ à ville} ?"],
+  ["« Tu connais un bon photographe près de chez moi ? » Des photos pro, c'est souvent ce qui fait décoller une annonce.", "« Tu connais un bon photographe près de chez moi ? » Des photos pro, et de plus en plus une vidéo, c'est souvent ce qui fait décoller une annonce."],
+  ["lus par des hôtes qui cherchent un photographe.", "lus par des hôtes qui cherchent un photographe ou un vidéaste."],
+  ["Les 20 premiers photographes gardent le tarif fondateur", "Les 20 premiers photographes et vidéastes gardent le tarif fondateur"],
+  ["Des hôtes{ à ville} cherchent un photographe", "Photographe ou vidéaste{ à ville} : des hôtes te cherchent"],
+  ["au sujet de l'annuaire des photographes pour locations de vacances.", "au sujet de l'annuaire des photographes et vidéastes pour locations de vacances."],
+  ["les hôtes continuent de me demander des photographes{ à ville}, et c'est la période où beaucoup refont leurs photos.", "les hôtes continuent de me demander des photographes et des vidéastes{ à ville}, et c'est la période où beaucoup refont leurs photos et leur vidéo."],
+  ["Ta fiche photographe, en deux minutes", "Ta fiche photographe ou vidéaste, en deux minutes"],
+  ["C'est ce que les hôtes regardent en premier.\n\nUne question avant de te lancer", "C'est ce que les hôtes regardent en premier. Tu fais aussi de la vidéo ? Ajoute son lien (YouTube ou Vimeo) : elle s'affiche en tête de ta fiche.\n\nUne question avant de te lancer"],
+  ["- un lien vers ton portfolio, tes plus belles photos de logements en premier ;", "- un lien vers ton portfolio, tes plus belles photos de logements en premier, et ta vidéo si tu en fais (elle s'affiche en tête de fiche) ;"],
 ]

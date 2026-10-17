@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { PLAYBOOK } from './playbook'
+import { PLAYBOOK, PLAYBOOK_TEXT_FIXES } from './playbook'
 import { renderTemplate, STAGES } from './engine'
 
 describe('séquences proposées', () => {
@@ -33,6 +33,19 @@ describe('séquences proposées', () => {
     for (const p of PLAYBOOK) {
       const words = p.steps[0].body.split(/\s+/).length
       expect(words).toBeLessThan(170)
+    }
+  })
+  it('corrections en base : sans effet sur les textes à jour et rejouables', () => {
+    const fix = (t: string) => PLAYBOOK_TEXT_FIXES.reduce((acc, [a, b]) => acc.split(a).join(b), t)
+    for (const p of PLAYBOOK) for (const st of p.steps) {
+      expect(fix(st.subject)).toBe(st.subject)
+      expect(fix(st.body)).toBe(st.body)
+    }
+    for (const [a] of PLAYBOOK_TEXT_FIXES) expect(fix(fix(a))).toBe(fix(a))
+  })
+  it('photographes : les vidéastes sont cités dans chaque séquence de prospection', () => {
+    for (const p of PLAYBOOK.filter(x => x.audience === 'photographe' && x.key !== 'photo_premiers_pas')) {
+      expect(p.steps.some(st => /vidéo/.test(st.subject + st.body))).toBe(true)
     }
   })
 })
