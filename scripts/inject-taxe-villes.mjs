@@ -13,6 +13,7 @@
 import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { VILLES_LOCAL } from './data/villes-local.mjs'
+import { officialGrid, fmtTarif, fmtTotal, TAXE_SOURCE_URL } from './lib/taxe-officielle.mjs'
 
 const ROOT = new URL('..', import.meta.url).pathname
 const TARIFS_URL = 'https://entreprendre.service-public.gouv.fr/vosdroits/R46583'
@@ -24,6 +25,9 @@ const strip = s => s.replace(/<[^>]+>/g, '')
 const nb = s => s.replace(/ (€|%)/g, '\u00a0$1')
 const PLAFONDS = "jusqu'à <strong>1,00 €</strong> en 1 et 2 étoiles et en chambres d'hôtes, <strong>1,70 €</strong> en 3 étoiles, <strong>2,60 €</strong> en 4 étoiles et <strong>3,60 €</strong> en 5 étoiles, par personne et par nuit"
 const NON_CLASSE = "Pour un meublé <strong>non classé</strong>, c'est un pourcentage voté localement, <strong>entre 1 % et 5 % du prix HT de la nuitée par personne</strong>, plafonné au tarif le plus élevé de la commune"
+
+// Guides vus surtout sur « taxe de séjour <ville> » (Search Console, 17/10/2026)
+const TAX_INTENT = ['strasbourg', 'arcachon', 'menton', 'chamonix', 'troyes', 'la-rochelle', 'biarritz']
 
 // Faits locaux confirmés par une source officielle (en plus de villes-local.mjs)
 const EXTRA = {
@@ -37,7 +41,43 @@ function localTaxe(slug) {
   return t
 }
 
+// Tarifs officiels de la DGFiP (17/10/2026) : ce que cherchent les gens qui
+// tapent « taxe de séjour <ville> », d'où la place 5 à 10 sans clic.
+const MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
+const releveLabel = iso => `${MOIS[Number(iso.slice(5, 7)) - 1]} ${iso.slice(0, 4)}`
+function addsText(g) {
+  if (!g.additions) return 'taxes additionnelles comprises'
+  if (!g.additions.length) return 'sans taxe additionnelle'
+  return `taxes additionnelles comprises : ${g.additions.join(', ')}`
+}
+function officialParagraphs(slug, a, g) {
+  const nc = g.lignes[0]
+  const th = 'style="text-align:left;padding:8px 10px;border-bottom:2px solid rgba(0,76,63,.25);font-size:.9em"'
+  const td = 'style="padding:8px 10px;border-bottom:1px solid rgba(0,76,63,.1);vertical-align:top"'
+  const rows = g.lignes.slice(1).map(l => `<tr><td ${td}>${l.label}</td><td ${td}>${fmtTarif(l)}</td><td ${td}><strong>${fmtTotal(l)}</strong></td></tr>`).join('')
+  return nb(`<!-- TAXE:START -->
+<p>Tarifs de la taxe de séjour ${a} en 2026, par personne et par nuit, d'après la base officielle de la DGFiP. La colonne « À collecter » est le montant à faire payer, ${addsText(g)}. Les mineurs ne la paient pas.</p>
+  <div style="overflow-x:auto;margin:14px 0"><table style="width:100%;border-collapse:collapse;font-size:.95em">
+    <thead><tr><th ${th}>Hébergement</th><th ${th}>Part communale</th><th ${th}>À collecter</th></tr></thead>
+    <tbody><tr><td ${td}>${nc.label}</td><td ${td}>${fmtTarif(nc)} du prix HT par personne</td><td ${td}><strong>${fmtTotal(nc)}</strong> du prix HT par personne</td></tr>${rows}</tbody>
+  </table></div>
+  <p>Pour un meublé <strong>non classé</strong>, le pourcentage s'applique au prix HT de la nuitée divisé par le nombre d'occupants (mineurs compris dans la division), dans la limite du tarif le plus élevé voté ${a}. Exemple : une nuit à 120 € pour 2 adultes fait 60 € par personne, soit ${fmtTotalOn(nc, 60)} par personne et par nuit. Faire classer son meublé change souvent la note : notre <a href="${SIMULATEUR}">simulateur de taxe de séjour</a> compare les deux.</p>
+  <p>Airbnb la collecte et la reverse pour vous dans la plupart des cas ; sur une autre plateforme ou en réservation directe, vérifiez qui la collecte (en direct, c'est à vous de la déclarer). <span style="font-size:.85em;opacity:.75">Source : <a href="${TAXE_SOURCE_URL}" rel="noopener" target="_blank">tarifs de la taxe de séjour, DGFiP (données DELTA)</a>, relevé en ${releveLabel(g.releve)}.</span></p>
+<!-- TAXE:END -->`)
+}
+// Montant pour un prix par personne (non classé, avant plafond)
+function fmtTotalOn(l, prix) {
+  return (Math.round(prix * l.total) / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'
+}
+function officialFaq(a, g) {
+  const by = k => g.lignes.find(l => l.label.includes(k))
+  const nc = g.lignes[0]
+  return nb(`D'après la base officielle de la DGFiP, la taxe de séjour ${a} en 2026 est de ${fmtTotal(by('1 étoile'))} en meublé 1 étoile, ${fmtTotal(by('3 étoiles'))} en 3 étoiles, ${fmtTotal(by('4 étoiles'))} en 4 étoiles et ${fmtTotal(by('5 étoiles'))} en 5 étoiles, par personne et par nuit (${addsText(g).replace(' : ', ', ')}). Chambres d'hôtes : ${fmtTotal(by("Chambres"))}. Meublé non classé : ${fmtTotal(nc)} du prix HT de la nuitée par personne, plafonné au tarif le plus élevé de la commune. Les mineurs sont exonérés.`)
+}
+
 function paragraphs(slug, a, de) {
+  const g = officialGrid(slug)
+  if (g) return officialParagraphs(slug, a, g)
   const local = localTaxe(slug)
   const first = local
     ? `<p>${local} Pour un meublé classé, le tarif voté ${a} reste dans les plafonds nationaux 2026 : ${PLAFONDS}. Les mineurs ne la paient pas.</p>`
@@ -50,6 +90,8 @@ ${first}
 }
 
 function faqAnswer(slug, a, de) {
+  const g = officialGrid(slug)
+  if (g) return officialFaq(a, g)
   const local = localTaxe(slug)
   const base = local
     ? `${strip(local)} Pour un meublé classé, le tarif reste dans les plafonds nationaux 2026 : jusqu'à 1,00 € (1 et 2 étoiles, chambres d'hôtes), 1,70 € (3 étoiles), 2,60 € (4 étoiles) et 3,60 € (5 étoiles) par personne et par nuit.`
@@ -75,11 +117,15 @@ for (const dir of readdirSync(ROOT).filter(d => d.startsWith('devenir-hote-airbn
     html = html.replace(/<!-- TAXE:START -->[\s\S]*?<!-- TAXE:END -->/, paragraphs(slug, a, de))
   } else {
     const h = html.search(/<h3[^>]*>(?:(?!<\/h3>)[\s\S])*Taxe de séjour(?:(?!<\/h3>)[\s\S])*<\/h3>/i)
-    if (h < 0) { skipped.push(`${slug} (section)`); continue }
+    const faqAt = html.indexOf('<section id="faq">')
+    if (h < 0 && officialGrid(slug) && faqAt >= 0) {
+      html = html.slice(0, faqAt) + `<section id="taxe-de-sejour">\n  <h2><em>Taxe de séjour</em> ${a} en 2026</h2>\n  ` + paragraphs(slug, a, de) + `\n</section>\n\n` + html.slice(faqAt)
+    } else if (h < 0) { skipped.push(`${slug} (section)`); continue } else {
     const pStart = html.indexOf('<p>', h)
     const pEnd = html.indexOf('</p>', pStart)
     if (pStart < 0 || pEnd < 0 || pStart - h > 400) { skipped.push(`${slug} (paragraphe)`); continue }
     html = html.slice(0, pStart) + paragraphs(slug, a, de) + html.slice(pEnd + 4)
+    }
   }
 
   // 2. Question de FAQ (HTML)
@@ -122,6 +168,17 @@ for (const dir of readdirSync(ROOT).filter(d => d.startsWith('devenir-hote-airbn
   // 4. Description : « taxe de séjour » si absente
   html = html.replace(/(<meta name="description" content=")([^"]*)(")/, (all, s, d, e) =>
     /taxe de séjour/i.test(d) ? all : s + d.replace(/fiscalité/, 'taxe de séjour, fiscalité') + e)
+
+  // 5. Description des guides que Google montre surtout sur « taxe de séjour
+  // <ville> » (relevé Search Console du 17/10/2026, place 5 à 10, presque
+  // aucun clic) : le montant en tête. Les autres gardent leur description.
+  const g = officialGrid(slug)
+  if (g && TAX_INTENT.includes(slug)) {
+    const l4 = g.lignes.find(l => l.label.includes('4 étoiles'))
+    const desc = nb(`Taxe de séjour ${a} en 2026 : ${fmtTotal(l4)} par nuit en meublé 4 étoiles, ${fmtTotal(g.lignes[0])} du prix en non classé. Règles, marché et fiscalité : le guide LCD.`)
+    html = html.replace(/(<meta name="description" content=")[^"]*(")/, `$1${desc.replace(/"/g, '&quot;')}$2`)
+    html = html.replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${desc.replace(/"/g, '&quot;')}$2`)
+  }
 
   writeFileSync(file, html)
   done++
