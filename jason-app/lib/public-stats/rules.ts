@@ -246,3 +246,17 @@ export function cleanCityRequest(body: unknown):
   if (raw && (raw.length > 120 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(raw))) return { ok: false, error: 'Cette adresse e-mail ne semble pas valide.' }
   return { ok: true, ville, metier, email: raw || null }
 }
+
+/** Clé d'une ville demandée : sans accents, casse, tirets ni « Ville de » (Québec = quebec = Ville de Québec) */
+export function cityRequestKey(ville: string): string {
+  return ville.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+    .replace(/^(ville|city) (de |du |d')?/, '').replace(/[^a-z0-9]+/g, ' ').trim()
+}
+
+/** Résumé des demandes déjà reçues pour une ville (celle-ci comprise) */
+export function cityRequestTally(rows: Array<{ metier: string; created_at: string }>): { total: number; parMetier: Record<'photographe' | 'menage' | 'hote', number>; premiere: string | null } {
+  const parMetier = { photographe: 0, menage: 0, hote: 0 }
+  for (const r of rows) if (r.metier in parMetier) parMetier[r.metier as keyof typeof parMetier]++
+  const dates = rows.map(r => r.created_at).sort()
+  return { total: rows.length, parMetier, premiere: dates[0] ?? null }
+}

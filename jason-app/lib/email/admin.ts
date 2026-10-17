@@ -15,13 +15,15 @@ function getResend(): Resend {
 /**
  * Envoie un email à l'admin (best-effort, ne throw pas).
  */
-export async function sendAdminEmail({ subject, text }: { subject: string; text: string }): Promise<void> {
+export async function sendAdminEmail({ subject, text, html, replyTo }: { subject: string; text: string; html?: string; replyTo?: string }): Promise<void> {
   try {
     await getResend().emails.send({
       from: 'Jason Marinho <noreply@jasonmarinho.com>',
       to: ADMIN_EMAIL,
       subject,
       text,
+      ...(html ? { html } : {}),
+      ...(replyTo ? { replyTo } : {}),
     })
   } catch (e) {
     console.error('[admin email] failed', e)
