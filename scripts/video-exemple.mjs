@@ -23,16 +23,16 @@ async function info(params) {
 const [mode, ...rest] = process.argv.slice(2)
 if (mode === 'chercher') {
   const pages = await info({ generator: 'search', gsrsearch: `filetype:video ${rest.join(' ')}`, gsrnamespace: '6', gsrlimit: '40' })
-  let n = 0
+  // Une seule annotation par recherche (GitHub n'en garde que 10 par étape)
+  const lines = []
   for (const p of pages) {
     const ii = p.imageinfo?.[0]; if (!ii) continue
     const m = ii.extmetadata ?? {}
     const lic = strip(m.LicenseShortName?.value)
-    if (!LIBRE.test(lic)) continue
-    n++
-    console.log(`::notice title=${p.title.replace(/[,:]/g, ' ')}::${lic} | ${Math.round(ii.duration ?? 0)} s | ${ii.width}x${ii.height} | ${Math.round(ii.size / 1e6)} Mo | ${strip(m.Artist?.value).slice(0, 60)} | ${strip(m.ImageDescription?.value).slice(0, 140)}`)
+    if (!LIBRE.test(lic) || (ii.width ?? 0) < 1280) continue
+    lines.push(`${p.title} (${lic}, ${Math.round(ii.duration ?? 0)} s, ${ii.width}x${ii.height}, ${Math.round(ii.size / 1e6)} Mo)`)
   }
-  console.log(`::notice title=Bilan::${n} vidéos libres pour « ${rest.join(' ')} »`)
+  console.log(`::notice title=${rest.join(' ')}::${lines.slice(0, 12).join(' %0A ') || 'aucune'}`)
 } else if (mode === 'prendre') {
   const title = rest.join(' ')
   const [p] = await info({ titles: title })
