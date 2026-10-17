@@ -211,8 +211,20 @@ export default function ProStatsView({ data, basePath, previewId }: { data: ProS
         <MonthlyReportToggle initialOn={d.monthlyReport.on} canEdit={d.monthlyReport.canEdit} />
         <p style={s.privacy}>
           Aucune donnée personnelle de tes visiteurs n&apos;est gardée : ni nom, ni adresse IP, seulement le pays, la ville et le type d&apos;écran.
-          {' '}<Link href="/dashboard/aide/communaute-compte/statistiques-fiche" style={{ color: 'var(--accent-text)' }}>D&apos;où viennent ces chiffres ?</Link>
         </p>
+        {/* Explication sur place (17/10/2026) : le lien vers le Centre d'aide
+            sortait le pro de son espace (menu hôte affiché). */}
+        <details style={s.sources}>
+          <summary style={s.sourcesSummary}>D&apos;où viennent ces chiffres ?</summary>
+          <ul style={s.sourcesList}>
+            <li><strong>Visiteurs, vues, temps de lecture, provenance, écran</strong> : mesurés par le site jasonmarinho.com sur ta fiche et la page de ta ville. Un visiteur = une visite (plusieurs pages vues à la suite comptent pour une personne). Sans cookie, sans nom ni adresse IP.</li>
+            <li><strong>Clics</strong> : comptés quand un hôte clique sur ton portfolio, ton site ou ton Instagram depuis ta fiche.</li>
+            <li><strong>Demandes</strong> : messages envoyés par le formulaire de ta fiche ou par « Trouver un pro », les mêmes que dans Demandes reçues.</li>
+            <li><strong>Google</strong> : chiffres de Google Search Console (affichages, clics, place moyenne). Google les donne avec 2 jours de retard et masque les recherches trop rares. Une nouvelle fiche met en général 2 à 4 semaines à apparaître.</li>
+            <li><strong>Depuis quand</strong> : visiteurs et provenance depuis le 19 septembre 2026, vues par jour depuis le 27 septembre, pays, écran, temps de lecture et clics par jour depuis le 5 octobre. Avant, la courbe affiche « pas encore mesuré ».</li>
+          </ul>
+          <a href="/dashboard/aide/communaute-compte/statistiques-fiche" target="_blank" rel="noopener" style={{ color: 'var(--accent-text)', fontSize: 12.5 }}>Lire l&apos;article complet (nouvel onglet)</a>
+        </details>
       </div>
     </section>
   )
@@ -479,6 +491,9 @@ const s: Record<string, React.CSSProperties> = {
 
   footer: { display: 'flex', flexDirection: 'column', gap: 12, marginTop: 20 },
   privacy: { fontSize: 12.5, color: 'var(--text-3)', margin: 0, lineHeight: 1.6 },
+  sources: { border: '1px solid var(--border)', borderRadius: 12, background: 'var(--surface)', padding: '10px 14px' },
+  sourcesSummary: { cursor: 'pointer', fontSize: 13.5, fontWeight: 600, color: 'var(--accent-text)' },
+  sourcesList: { margin: '10px 0 10px', paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 6, fontSize: 13, color: 'var(--text-2)', lineHeight: 1.55 },
   adminErr: { display: 'block', marginTop: 8, fontSize: 12, color: AMBER_DARK },
 }
 
