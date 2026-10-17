@@ -218,6 +218,28 @@
       ]
     },
     {
+      "nom": "JD2M",
+      "mono": "J",
+      "couleur": "#1F4E8C",
+      "cats": [
+        "compta"
+      ],
+      "badge": "affilie",
+      "offre": "Compta LMNP accompagnée",
+      "desc": "Liasse LMNP au réel avec des spécialistes, ou entièrement faite par un expert-comptable.",
+      "liens": [
+        {
+          "label": "Voir les offres",
+          "href": "https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&utm_campaign=partenariat&utm_content=244&ae=244",
+          "sponsored": true
+        },
+        {
+          "label": "Voir l'offre",
+          "href": "https://jasonmarinho.com/partenaires/jd2m"
+        }
+      ]
+    },
+    {
       "nom": "LegalPlace",
       "mono": "L",
       "couleur": "#1D3557",

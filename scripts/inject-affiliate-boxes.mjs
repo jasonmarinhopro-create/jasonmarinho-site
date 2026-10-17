@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Encadrés affiliés/parrainage (Hospitable, Shine, Indy, LegalPlace, Tiime, Lodgify, Brevo, AirDNA) injectés dans les pages
+// Encadrés affiliés/parrainage (Hospitable, Shine, Indy, JD2M, LegalPlace, Tiime, Lodgify, Brevo, AirDNA) injectés dans les pages
 // qui parlent déjà de l'outil. Idempotent : chaque encadré est entouré de
 // marqueurs <!-- AFF:<id>:START/END --> et remplacé à chaque passage. À
 // relancer après régénération d'un article (scripts/generate-article.mjs).
@@ -25,6 +25,8 @@ const QONTO = 'https://lb.affilae.com/r/?p=5ce4f2a2b6302009e29d84f3&af=3386&lp=h
 const AIRDNA = 'https://eur-invite.airdna.co/Jason-Marinho'
 // Indy (partenariat du 30/09/2026) : lien « spécial immobilier » fourni par Indy
 const INDY = 'https://urlr.me/FEqNfy'
+// JD2M / Jedeclaremonmeuble.com (Affilae, numéro d'affilié 244, 17/10/2026)
+const JD2M = 'https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&utm_campaign=partenariat&utm_content=244&ae=244'
 // LegalPlace (partenariat du 30/09/2026, numéro d'affilié 1773)
 const LP = 'utm_source=affilae&utm_medium=partner&utm_campaign=Jason%20Marinho&ae=1773'
 const LP_SOCIETE = `https://creation.legalplace.fr/creation-entreprise-2?${LP}`
@@ -78,6 +80,11 @@ const indyTu = box('indy-tu',
   "<strong>Ta compta LMNP avec Indy :</strong> offre gratuite (suivi, facture électronique en plateforme agréée), puis offre LMNP avec amortissements et liasse 2031 télétransmise. <strong>Premier mois offert</strong>, sans engagement, avec ce lien.",
   btn(INDY, 'Essayer Indy gratuitement'),
   "Lien affilié : si tu t'inscris via ce lien, Indy me verse une commission, sans aucun surcoût pour toi (tu as au contraire ton premier mois offert). <a href=\"/blog/indy-lmnp-location-courte-duree-avis-2026\" style=\"color:#004c3f\">Lire mon avis complet sur Indy, limites comprises</a>.")
+
+const jd2mTu = box('jd2m-tu',
+  "<strong>Tu préfères être accompagné ?</strong> JD2M (Jedeclaremonmeuble.com) ne fait que de la comptabilité LMNP : logiciel guidé avec des conseillers spécialisés, ou offre où un expert-comptable établit et télédéclare ta liasse. À partir de 299 € TTC par an d'après les relevés d'octobre 2026 (grille officielle à vérifier), frais déductibles au réel.",
+  btn(JD2M, 'Voir les offres JD2M'),
+  "Lien affilié : si tu souscris via ce lien, JD2M me verse une commission, sans aucun surcoût pour toi. <a href=\"/partenaires/jd2m\" style=\"color:#004c3f\">Voir l'offre JD2M en détail, limites comprises</a>.")
 
 const indyVous = box('indy-vous',
   "<strong>Essayer Indy :</strong> offre gratuite à vie, puis offre LMNP avec amortissements et liasse 2031 télétransmise. <strong>Premier mois offert</strong>, sans engagement, avec ce lien.",
@@ -140,6 +147,9 @@ const PLACEMENTS = [
   ['blog/creer-conciergerie-airbnb-2025/index.html', 'tiime-tu', '<h2 class="art-h2">Étape 5 : Le contrat de gestion</h2>', tiimeTu],
   ['blog/declarer-lmnp-sans-expert-comptable-decla-fr/index.html', 'indy-tu', '<h2 class="art-h2">5. Les limites : quand ce n\'est pas fait pour toi', indyTu],
   ['blog/regime-reel-vs-micro-bic-decision-2026/index.html', 'indy-tu', '<h2 class="art-h2">4. Comment basculer en régime réel', indyTu],
+  // Après l'encadré Indy (même ancre, placé ensuite)
+  ['blog/regime-reel-vs-micro-bic-decision-2026/index.html', 'jd2m-tu', '<h2 class="art-h2">4. Comment basculer en régime réel', jd2mTu],
+  ['blog/declarer-lmnp-sans-expert-comptable-decla-fr/index.html', 'jd2m-tu', '<h2 class="art-h2">5. Les limites : quand ce n\'est pas fait pour toi', jd2mTu],
   ['blog/lmnp-vs-lmp-changement-2026-impact/index.html', 'indy-tu', '<h2 class="art-h2">4. Optimiser sa fiscalité LCD en 2026', indyTu],
   ['blog/location-directe-pourquoi-saffranchir-plateformes/index.html', 'lodgify-tu', '<h2 class="art-h2">Ce que la location directe ne remplace pas (encore)</h2>', lodgifyTu],
   ['blog/fixer-prix-reservation-directe-location-courte-duree/index.html', 'lodgify-tu', '<h2 class="art-h2">Et pour les séjours longs en direct ?</h2>', lodgifyTu],

@@ -35,6 +35,7 @@ export const PARTNERS: Record<string, PartnerInfo> = {
   'shine-facture': { name: 'Shine Facture', reward: 'Commission Affilae par inscription', salesWhere: 'Affilae', affilae: true },
   airdna: { name: 'AirDNA', reward: '15 % des abonnements des clients amenés (conditions relevées en octobre 2026)', salesWhere: 'Tableau de bord affilié AirDNA', affilae: false },
   indy: { name: 'Indy', reward: 'De 10 € HT (inscription) à 250 € HT (société), selon le compte ouvert', salesWhere: 'Affilae', affilae: true },
+  jd2m: { name: 'JD2M', reward: 'Jusqu\'à 10 % des ventes, premier clic, cookie 30 jours, paiement dès 100 € (conditions relevées en octobre 2026)', salesWhere: 'Affilae', affilae: true },
   legalplace: { name: 'LegalPlace', reward: 'Jusqu\'à 150 € par vente', salesWhere: 'Affilae', affilae: true },
   tiime: { name: 'Tiime', reward: 'Commission Affilae', salesWhere: 'Affilae', affilae: true },
   brevo: { name: 'Brevo', reward: '5 € par inscription gratuite, 100 € par abonnement payant (conditions relevées en octobre 2026, à vérifier dans PartnerStack)', salesWhere: 'PartnerStack', affilae: false, partnerstack: true },
@@ -384,6 +385,12 @@ export const PARTNER_SEO: Array<{ key: string; name: string; paths: string[]; ma
     paths: ['/partenaires/shine', '/blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026'],
     match: /(^|[-/])shine([-/]|$)/,
     targets: ['shine', 'shine avis', 'shine compte pro', 'shine facture', 'compte bancaire pro location courte duree', 'compte pro lmnp'],
+  },
+  {
+    key: 'jd2m', name: 'JD2M',
+    paths: ['/partenaires/jd2m', '/blog/regime-reel-vs-micro-bic-decision-2026', '/blog/declarer-lmnp-sans-expert-comptable-decla-fr'],
+    match: /jd2m/,
+    targets: ['jd2m', 'jd2m avis', 'je declare mon meuble', 'jedeclaremonmeuble avis', 'comptable lmnp', 'expert comptable lmnp location courte duree'],
   },
   {
     key: 'qonto', name: 'Qonto',

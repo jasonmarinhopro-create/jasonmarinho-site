@@ -36,6 +36,8 @@ export const QONTO = 'https://lb.affilae.com/r/?p=5ce4f2a2b6302009e29d84f3&af=33
 const AIRDNA = 'https://eur-invite.airdna.co/Jason-Marinho'
 // Indy (partenariat validé le 30/09/2026) : lien « spécial immobilier » fourni par Indy
 const INDY = 'https://urlr.me/FEqNfy'
+// JD2M / Jedeclaremonmeuble.com (Affilae, numéro d'affilié 244, 17/10/2026)
+const JD2M = 'https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&utm_campaign=partenariat&utm_content=244&ae=244'
 // LegalPlace (partenariat Affilae du 30/09/2026, numéro d'affilié 1773) : les
 // paramètres du lien traqué généré par Jason, ajoutés à chaque page du kit
 export const LEGALPLACE_AE = 'utm_source=affilae&utm_medium=partner&utm_campaign=Jason%20Marinho&ae=1773'
@@ -107,6 +109,15 @@ export const OUTILS = [
     liens: [
       { label: 'Essayer Indy', href: INDY, sponsored: true },
       { label: "Voir l'offre", href: '/partenaires/indy' },
+    ],
+  },
+  {
+    nom: 'JD2M', mono: 'J', couleur: '#1F4E8C', cats: ['compta'],
+    badge: 'affilie', offre: 'Compta LMNP accompagnée',
+    desc: 'Liasse LMNP au réel avec des spécialistes, ou entièrement faite par un expert-comptable.',
+    liens: [
+      { label: 'Voir les offres', href: JD2M, sponsored: true },
+      { label: "Voir l'offre", href: '/partenaires/jd2m' },
     ],
   },
   {

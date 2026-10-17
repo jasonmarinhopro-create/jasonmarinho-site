@@ -46,6 +46,9 @@ const AIRDNA = 'https://eur-invite.airdna.co/Jason-Marinho'
 const SHINE_PRO = 'https://www.shine.fr/?utm_source=affiliation&utm_medium=affilae&utm_campaign=jason-marinho&ae=2249'
 const SHINE_FACTURE = 'https://www.shine.fr/lp/outil-facturation-gratuit/?utm_source=affilae&utm_medium=affiliation&utm_campaign=jason-marinho&utm_content=2226&ae=2226'
 
+// ── JD2M (Affilae, numéro d'affilié 244, 17/10/2026) ──
+const JD2M = 'https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&utm_campaign=partenariat&utm_content=244&ae=244'
+
 export const PAGES = [
   {
     slug: 'lodgify',
@@ -712,6 +715,107 @@ export const PAGES = [
       ['MoneyVox : Qonto agréée plateforme de facturation électronique', 'https://www.moneyvox.fr/banque-pro/actualites/107100/compte-pro-qonto-officiellement-agreee-comme-plateforme-de-facturation-electronique'],
       ['Journal du Net : Qonto dépose une demande de licence bancaire', 'https://www.journaldunet.com/fintech/1542843-qonto-depose-une-demande-de-licence-bancaire/'],
       ['Service-Public.fr : compte bancaire du micro-entrepreneur (article L613-10 du Code de la sécurité sociale)', 'https://entreprendre.service-public.gouv.fr/vosdroits/F35991'],
+    ],
+  },
+  {
+    // JD2M (Jedeclaremonmeuble.com, Affilae, numéro d'affilié 244, 17/10/2026).
+    // Les prix « après réduction d'impôt » du kit reposaient sur la réduction
+    // pour frais de comptabilité (2/3, 915 € max), supprimée par la loi de
+    // finances pour 2025 : jamais repris ici.
+    slug: 'jd2m',
+    releve: 'octobre 2026',
+    nom: 'JD2M',
+    mono: 'J',
+    couleur: '#1F4E8C',
+    title: 'JD2M (Je déclare mon meublé) : compta LMNP au réel',
+    description: "JD2M (Jedeclaremonmeuble.com) avec Jason Marinho : ta liasse LMNP au régime réel faite avec un spécialiste, ou entièrement par un expert-comptable. Prix, offres, limites.",
+    eyebrow: 'Partenaire · Comptabilité LMNP',
+    h1: 'JD2M : ta déclaration LMNP au réel, <em>avec un spécialiste à côté de toi</em>',
+    lead: "JD2M (Jedeclaremonmeuble.com) accompagne les loueurs en meublé depuis 2012 et ne fait que ça : la comptabilité LMNP au régime réel. Je le conseille aux hôtes qui veulent passer au réel sans tout faire seuls, ou qui préfèrent confier leur dossier à un expert-comptable du début à la fin.",
+    offre: {
+      titre: 'Offre Essentielle dès 299 € TTC/an',
+      sous: "Une liasse fiscale par an, relevé d'octobre 2026",
+      points: [
+        'Logiciel guidé et conseillers spécialisés LMNP',
+        'Offre Intégrale : un expert-comptable fait tout pour toi',
+        'Frais de comptabilité déductibles de tes recettes au réel',
+      ],
+      cta: { label: 'Voir les offres JD2M', href: JD2M },
+      note: "Lien affilié : JD2M me verse une commission si tu souscris via ce lien, sans aucun surcoût pour toi.",
+    },
+    pourquoi: {
+      titre: 'Pourquoi je recommande <em>JD2M</em>',
+      items: [
+        { icon: 'certificate', t: 'Spécialiste du LMNP', d: "Pas un cabinet généraliste : amortissements, liasse 2031, résidence de tourisme, revente du bien, JD2M ne traite que la location meublée." },
+        { icon: 'users', t: 'Tu n\'es pas seul', d: "L'offre Essentielle te guide avec des conseillers ; l'offre Intégrale confie ton dossier à un expert-comptable, qui établit et télédéclare ta liasse." },
+        { icon: 'calculator', t: 'Le réel rentable', d: "Au régime réel, amortir le bien et le mobilier efface souvent l'impôt sur tes loyers pendant des années : c'est là que l'accompagnement se rembourse." },
+      ],
+    },
+    fonctions: {
+      titre: 'Ce que JD2M fait pour <em>ta location</em>',
+      items: [
+        { icon: 'chart-line-up', t: 'Amortissements', d: 'Bien découpé par composants, mobilier et travaux amortis sur les bonnes durées.' },
+        { icon: 'file-text', t: 'Liasse 2031 et annexes', d: 'Préparées puis télédéclarées aux impôts, au régime réel.' },
+        { icon: 'identification-card', t: 'Début d\'activité', d: "Aide pour déclarer ton activité de loueur en meublé et choisir le réel." },
+        { icon: 'receipt', t: 'Facture électronique', d: 'JD2M informe ses clients sur la réception obligatoire depuis le 1er septembre 2026.' },
+        { icon: 'book-open', t: 'Plus de 200 articles', d: 'Guides gratuits sur la fiscalité du meublé, utiles même sans abonnement.' },
+        { icon: 'chat-circle', t: 'Support réactif', d: 'Questions posées à des spécialistes du LMNP, pas à un service client généraliste.' },
+      ],
+    },
+    etapes: [
+      { t: 'Choisis ton offre', d: "Essentielle si tu veux faire avec un logiciel guidé et de l'aide, Intégrale si tu veux tout déléguer à un expert-comptable." },
+      { t: 'Transmets tes chiffres', d: "recettes brutes (avant commission Airbnb ou Booking), dépenses, prix d'achat du bien et du mobilier, emprunt." },
+      { t: 'Ta liasse est télédéclarée', d: "dans les délais de la déclaration de revenus, puis reporte le résultat sur ta déclaration 2042 C PRO." },
+    ],
+    tableau: {
+      titre: 'JD2M, Indy ou micro-BIC : <em>selon ta situation</em>',
+      entete: ['Ta situation', 'Mon conseil'],
+      lignes: [
+        ['Tu restes au micro-BIC', '<span class="partial">Pas besoin</span> : pas de liasse à faire, l\'abattement s\'applique tout seul'],
+        ['Premier passage au réel, tu veux être accompagné', '<span class="yes">JD2M Essentielle</span> : logiciel guidé et conseillers spécialisés'],
+        ['Tu ne veux rien faire toi-même', '<span class="yes">JD2M Intégrale</span> : un expert-comptable établit et télédéclare ta liasse'],
+        ['Tu es à l\'aise et veux le moins cher', '<span class="partial">Indy</span> : outil autonome, voir <a href="/partenaires/indy">l\'offre Indy</a>'],
+        ['Société à l\'IS, LMP ou dossier complexe', '<span class="partial">Demande un devis</span> : vérifie que l\'offre couvre ta situation avant de souscrire'],
+      ],
+      note: 'Le choix entre micro-BIC et réel : voir le simulateur micro-BIC et mon article sur la décision en 2026.',
+    },
+    cout: {
+      titre: 'Ce que ça <em>coûte</em>',
+      paras: [
+        "D'après les relevés d'octobre 2026, l'offre Essentielle commence à 299 € TTC par an et par liasse fiscale, et l'offre Intégrale (expert-comptable) à 629 € TTC par an, avec un supplément selon le nombre de logements. Vérifie la grille officielle au moment de souscrire.",
+        "JD2M affiche aussi des prix « après déduction fiscale », plus bas : ils supposent une tranche d'impôt à 30 % et les prélèvements sociaux. Au réel, les frais de comptabilité sont une charge déductible de tes recettes, ce n'est pas une réduction du prix payé.",
+        "Attention aux anciens calculs : la réduction d'impôt de deux tiers des frais de comptabilité (915 € au plus), liée aux centres de gestion agréés, a été supprimée par la loi de finances pour 2025. Elle ne s'applique plus aux revenus 2025, déclarés en 2026.",
+      ],
+    },
+    limites: [
+      "Plus cher qu'un outil autonome comme Indy : tu paies l'accompagnement.",
+      "Inutile au micro-BIC : le service sert au régime réel.",
+      "Ce n'est pas un logiciel de gestion locative : pas de calendrier, pas de lien avec Airbnb ou Booking. Tes recettes à déclarer sont les montants bruts, avant commission.",
+      "Au-delà de 23 000 € de recettes en courte durée, des cotisations sociales sont dues même en LMNP : pose la question à ton conseiller avant de choisir.",
+    ],
+    liens: [
+      { href: '/blog/regime-reel-vs-micro-bic-decision-2026', t: 'Micro-BIC ou réel ?', d: 'Comment décider en 2026, chiffres à l\'appui.' },
+      { href: '/services/simulateurs/fiscalite-micro-bic', t: 'Simulateur micro-BIC', d: 'Ton impôt estimé selon ton type de meublé.' },
+      { href: '/partenaires/indy', t: 'Indy', d: 'La compta LMNP en autonomie, premier mois offert.' },
+      { href: '/blog/declarer-lmnp-sans-expert-comptable-decla-fr', t: 'Déclarer sans expert-comptable', d: 'Ce que tu peux faire seul, et ses limites.' },
+    ],
+    faq: [
+      { q: 'Combien coûte JD2M pour un LMNP ?', a: "D'après les relevés d'octobre 2026, l'offre Essentielle commence à 299 € TTC par an et l'offre Intégrale, où un expert-comptable fait tout, à 629 € TTC par an, avec un supplément selon le nombre de logements. Ces frais sont déductibles de tes recettes au régime réel. Vérifie la grille officielle avant de souscrire." },
+      { q: 'La réduction d\'impôt pour frais de comptabilité existe-t-elle encore ?', a: "Non. La réduction de deux tiers des frais de comptabilité, plafonnée à 915 €, réservée aux adhérents d'un centre de gestion agréé, a été supprimée par la loi de finances pour 2025 (loi du 14 février 2025). Les frais de comptabilité restent une charge déductible au régime réel." },
+      { q: 'JD2M ou Indy ?', a: "Indy est un outil autonome, moins cher : tu fais ta comptabilité toi-même, guidé pas à pas. JD2M est un service spécialisé LMNP avec des conseillers, et une offre où un expert-comptable fait tout. Si tu passes au réel pour la première fois ou si ton dossier est chargé, l'accompagnement de JD2M rassure ; si tu es à l'aise, Indy suffit." },
+      { q: 'Ai-je besoin de JD2M au micro-BIC ?', a: "Non. Au micro-BIC, tu reportes tes recettes sur ta déclaration et l'abattement s'applique tout seul. JD2M sert au régime réel, où il faut une comptabilité, des amortissements et une liasse fiscale 2031." },
+      { q: 'Quelles recettes déclarer pour mes réservations Airbnb ?', a: "Les montants bruts payés par les voyageurs, pas les virements nets que tu reçois. La commission de la plateforme est une charge. Mes finances, dans l'app Jason Marinho, sépare le brut et la commission de chaque séjour, logement par logement." },
+    ],
+    cta: {
+      titre: 'Ta liasse confiée, <em>tes séjours suivis</em>',
+      texte: "JD2M s'occupe de ta déclaration. L'app Jason Marinho suit tes séjours, tes contrats et tes revenus bruts par logement, pour lui transmettre des chiffres justes.",
+      btn: { label: 'Créer mon compte gratuit', href: 'https://app.jasonmarinho.com/auth/register' },
+    },
+    sources: [
+      ['Offres de comptabilité LMNP de JD2M', 'https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/'],
+      ['JD2M : suppression de l\'avantage fiscal des OGA', 'https://www.jedeclaremonmeuble.com/suppression-avantage-fiscal-oga/'],
+      ['Meilleurtaux : fin de la réduction pour frais de comptabilité', 'https://placement.meilleurtaux.com/placement-financier/actualites/2026-mai/impots-2025-fin-de-la-reduction-comptabilite-oga.html'],
+      ['Régimes d\'imposition', 'https://www.impots.gouv.fr/particulier/les-regimes-dimposition'],
     ],
   },
 ]
