@@ -145,4 +145,6 @@ jobs:
           out("Google blog", ["articles vus : {articles_vus_dans_google}, avec au moins un clic : {avec_au_moins_un_clic}".format(**b)] + b["top"])
           out("A un pas de la 1re page", d["proches_premiere_page"])
           out("Recherches qui cliquent", d["qui_cliquent"])
+          for k, lines in (d.get("villes_proches") or {}).items():
+            for i in range(0, len(lines), 8): out(f"Villes proches {k} {i // 8 + 1}", lines[i:i + 8])
           '

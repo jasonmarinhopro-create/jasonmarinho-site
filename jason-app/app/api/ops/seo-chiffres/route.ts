@@ -74,7 +74,24 @@ export async function GET(req: NextRequest) {
       .slice(0, 15)
       .map(r => `${r.keys[0]} → ${pathOf(r.keys[1])} : ${r.clicks} clics, place ${r1(r.position)}`)
 
+    // Pages de ville (photographe, ménage, guide hôte) à un pas de la première
+    // page (17/10/2026) : place moyenne de la page 4 à 20, avec ses recherches
+    const CITY = /^\/(photographe-lcd|menage-lcd|devenir-hote-airbnb)-/
+    const villes: Record<string, string[]> = { photographe: [], menage: [], hote: [] }
+    const cityPages = pages
+      .filter(r => CITY.test(pathOf(r.keys[0])) && r.position >= 4 && r.position <= 20 && r.impressions >= 5)
+      .sort((a, b) => b.impressions - a.impressions)
+    for (const r of cityPages) {
+      const path = pathOf(r.keys[0])
+      const k = path.startsWith('/photographe') ? 'photographe' : path.startsWith('/menage') ? 'menage' : 'hote'
+      if (villes[k].length >= 25) continue
+      const qs = pairs.filter(q => q.keys[1] === r.keys[0]).sort((a, b) => b.impressions - a.impressions).slice(0, 3)
+        .map(q => `${q.keys[0]} (${q.impressions}, ${r1(q.position)})`).join(' ; ')
+      villes[k].push(`${path} : ${r.impressions} aff., ${r.clicks} clics, place ${r1(r.position)} | ${qs}`)
+    }
+
     return NextResponse.json({
+      villes_proches: villes,
       periode: `${start} au ${end}`,
       par_sorte: kinds,
       blog: { articles_vus_dans_google: blog.length, avec_au_moins_un_clic: blogWithClick, top: blogTop },
