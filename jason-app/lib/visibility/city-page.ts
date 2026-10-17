@@ -78,6 +78,26 @@ export function cityPagePath(metier: CityMetier, slug: string): string {
   return `/${metier === 'photographe' ? 'photographe' : 'menage'}-lcd-${slug}`
 }
 
+/**
+ * Villes hors de France (17/10/2026) : page photographe seulement, contenu
+ * propre au pays (même liste que scripts/data/villes-international.mjs).
+ * Hors de CITY_PAGE_SLUGS, qui suppose les 2 pages pros et le droit français.
+ */
+export const INTL_CITY_PAGES: Record<string, { label: string; pays: string }> = {
+  quebec: { label: 'Québec', pays: 'Canada' },
+}
+
+/** « Québec », « Ville de Québec », « Québec, QC » → quebec ; sinon null */
+export function intlCitySlugOf(ville: string | null | undefined): string | null {
+  const s = slugifyCity(ville ?? '').replace(/^(ville|city)-(de-|of-)?/, '')
+  return Object.keys(INTL_CITY_PAGES).find(k => s === k || s.startsWith(`${k}-`)) ?? null
+}
+
+/** Ville française d'abord, sinon ville hors de France */
+export function anyCitySlugOf(ville: string | null | undefined, zone?: string | null): string | null {
+  return citySlugOf(ville, zone) ?? intlCitySlugOf(ville)
+}
+
 /** Nom d'affichage : saint-malo → Saint-Malo, la-rochelle → La Rochelle, aix-en-provence → Aix-en-Provence */
 export function cityLabel(slug: string): string {
   const special: Record<string, string> = {
@@ -86,7 +106,7 @@ export function cityLabel(slug: string): string {
     chambery: 'Chambéry', epernay: 'Épernay', etretat: 'Étretat', megeve: 'Megève', nimes: 'Nîmes', sete: 'Sète',
     'les-sables-d-olonne': "Les Sables-d'Olonne",
   }
-  return special[slug] ?? slug.charAt(0).toUpperCase() + slug.slice(1)
+  return special[slug] ?? INTL_CITY_PAGES[slug]?.label ?? slug.charAt(0).toUpperCase() + slug.slice(1)
 }
 
 /** Chemin d'une adresse de référent interne (https://jasonmarinho.com/x?y → /x), sinon null */

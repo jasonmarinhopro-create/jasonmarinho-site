@@ -7,7 +7,7 @@ import { unstable_cache } from 'next/cache'
 import { getServiceClient } from '@/lib/supabase/service'
 import { allRows } from '@/lib/supabase/all-rows'
 import { parisToday } from '@/lib/stripe/deposit-window'
-import { cityLabel, citySlugOf } from '@/lib/visibility/city-page'
+import { anyCitySlugOf, cityLabel } from '@/lib/visibility/city-page'
 import { adminUserIds, isDemoFiche } from '@/lib/pros/demo'
 import { prosByCity } from './rules'
 import {
@@ -42,7 +42,7 @@ async function compute(): Promise<PublicDemandes> {
     const fiches = await db.from(t.table).select('id, ville, zone_couverte, status, is_public, user_id')
     if (fiches.error) throw new Error(`fiches ${metier}`)
     const byId = new Map(((fiches.data ?? []) as Fiche[]).map(f => [f.id, f]))
-    prosMaps[metier] = prosByCity([...byId.values()].filter(f => !isDemoFiche(f, admins)), citySlugOf)
+    prosMaps[metier] = prosByCity([...byId.values()].filter(f => !isDemoFiche(f, admins)), anyCitySlugOf)
 
     const { rows, error } = await allRows<Record<string, unknown>>((from, to) =>
       db.from(t.contacts).select(`id, created_at, ${t.fk}, source_url, status, contact_email`).order('created_at').order('id').range(from, to))
@@ -58,7 +58,7 @@ async function compute(): Promise<PublicDemandes> {
       // Fiches d'exemple et messages de test jamais comptés
       if (!fiche || isDemoFiche(fiche, admins)) { excluded.exemple++; continue }
       if (isTestEmail(c.contact_email, adminEmails)) { excluded.test++; continue }
-      items.push({ at: c.created_at, metier, slug: citySlugOf(fiche.ville, fiche.zone_couverte), source: 'fiche', etat: etatOfContact(c.status) })
+      items.push({ at: c.created_at, metier, slug: anyCitySlugOf(fiche.ville, fiche.zone_couverte), source: 'fiche', etat: etatOfContact(c.status) })
     }
   }
 
@@ -68,14 +68,14 @@ async function compute(): Promise<PublicDemandes> {
   for (const d of demandes) {
     if (isTestEmail(d.email, adminEmails)) { excluded.test++; continue }
     const statuses = (d.sent_to ?? []).map(s => s.contact_id).filter((x): x is string => !!x).map(id => contactStatus.get(id))
-    items.push({ at: d.created_at, metier: d.metier, slug: citySlugOf(d.ville), source: 'formulaire', etat: etatOfDemande(d.status, statuses) })
+    items.push({ at: d.created_at, metier: d.metier, slug: anyCitySlugOf(d.ville), source: 'formulaire', etat: etatOfDemande(d.status, statuses) })
   }
 
   items.push(...directItems())
   return buildPublicDemandes(items, { today: parisToday(), labelOf: cityLabel, pros: prosMaps, excluded })
 }
 
-const cached = unstable_cache(compute, ['public-demandes-v3'], { revalidate: 600, tags: ['public-demandes'] })
+const cached = unstable_cache(compute, ['public-demandes-v4'], { revalidate: 600, tags: ['public-demandes'] })
 
 export async function loadPublicDemandes(): Promise<PublicDemandes | null> {
   try {

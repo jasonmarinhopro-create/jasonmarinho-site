@@ -8,7 +8,7 @@ import { loadPublicStats } from '@/lib/public-stats/load'
 import { loadPublicDemandes } from '@/lib/public-stats/demandes-load'
 import { demandesOfCity } from '@/lib/public-stats/demandes'
 import { isProCityPage } from '@/lib/public-stats/rules'
-import { citySlugOf } from '@/lib/visibility/city-page'
+import { anyCitySlugOf } from '@/lib/visibility/city-page'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -63,7 +63,7 @@ export async function GET(req: Request) {
     }
     if (ville !== null) {
       // Recherche par ville : tout est montré, même les petits chiffres
-      const slug = citySlugOf(ville.slice(0, 80))
+      const slug = anyCitySlugOf(ville.slice(0, 80))
       const city = slug ? s.cityFull?.[slug] ?? null : null
       return NextResponse.json({
         found: !!slug,

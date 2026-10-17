@@ -132,6 +132,7 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .vs-picks{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
 .vs-picks button{border:1px solid var(--bd);background:#fff;color:var(--tm);font:500 13px 'Outfit',sans-serif;padding:6px 12px;border-radius:999px;cursor:pointer}
 .vs-picks button:hover{border-color:var(--g);color:var(--g)}
+.vs-intl{border:0;background:none;padding:0;font:inherit;color:var(--g);font-weight:600;text-decoration:underline;cursor:pointer}
 .vr{margin-top:30px}
 .vr-h{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
 .vr-h h3{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(26px,3vw,34px);line-height:1.1}
@@ -317,7 +318,7 @@ a.dm-city:hover{border-color:var(--g)}
       <button type="submit"><i class="ph-bold ph-chart-line-up"></i>Voir les chiffres</button>
     </form>
     <datalist id="villes-list"></datalist>
-    <p class="vs-hint"><span data-vcount>61</span> villes ont déjà leurs pages. La tienne n’y est pas ? Tu pourras me demander de la créer.</p>
+    <p class="vs-hint"><span data-vcount>62</span> villes ont déjà leurs pages<span data-vintl></span>. La tienne n’y est pas ? Tu pourras me demander de la créer.</p>
     <div class="vs-picks" data-picks></div>
     <div class="vr" data-vres aria-live="polite"></div>
   </div>
@@ -609,7 +610,7 @@ a.dm-city:hover{border-color:var(--g)}
       fb.innerHTML = items + '<li class="dm-next"><span class="tx"><small>' + (D.total ? 'La prochaine demande s’affichera ici.' : 'La première demande s’affichera ici, dès qu’un hôte décrit son besoin ou contacte un pro.') + '</small></span></li>';
     }
   }
-  function cityDemandes(label, slug, dm, pros){
+  function cityDemandes(label, slug, dm, pros, photoOnly){
     if (!dm) return '';
     var row = function(lbl, k){ var p = pros ? pros[k] || 0 : null; return '<div><span>' + lbl + '</span><strong>' + n(dm[k]) + ' demande' + (dm[k] > 1 ? 's' : '') + (p === null ? '' : ' · ' + n(p) + ' pro' + (p > 1 ? 's' : '')) + '</strong></div>'; };
     var txt = dm.total
@@ -617,8 +618,8 @@ a.dm-city:hover{border-color:var(--g)}
       : 'Pas encore de demande ici. Elle apparaîtra dès qu’un hôte de ' + esc(label) + ' décrira son besoin ou contactera un pro.';
     return '<div class="vd"><div><div class="eye"><i class="ph-bold ph-paper-plane-tilt"></i>Demandes d’hôtes à ' + esc(label) + '</div>' +
       '<div class="vd-n"><b>' + n(dm.total) + '</b><span>demande' + (dm.total > 1 ? 's' : '') + ' reçue' + (dm.total > 1 ? 's' : '') + '</span></div><p>' + txt + '</p></div>' +
-      '<div class="vd-rows">' + row('Photographe &amp; vidéaste', 'photographe') + row('Équipe de ménage', 'menage') +
-      '<p class="vd-cta"><a class="a1" href="/pour-qui/photographes">Je suis pro à ' + esc(label) + '</a><a class="a2" href="/trouver-un-pro?ville=' + encodeURIComponent(label) + '">Je cherche un pro</a></p></div></div>';
+      '<div class="vd-rows">' + row('Photographe &amp; vidéaste', 'photographe') + (photoOnly ? '' : row('Équipe de ménage', 'menage')) +
+      '<p class="vd-cta"><a class="a1" href="' + (photoOnly ? '/annuaires/photographes/inscription' : '/pour-qui/photographes') + '">Je suis pro à ' + esc(label) + '</a><a class="a2" href="/trouver-un-pro?' + (photoOnly ? 'metier=photographe&amp;' : '') + 'ville=' + encodeURIComponent(label) + '">Je cherche un pro</a></p></div></div>';
   }
 
   function renderCities(cities){
@@ -648,8 +649,12 @@ a.dm-city:hover{border-color:var(--g)}
   var normT = function(s){ return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); };
   function fillVilles(list){
     VILLES = list || [];
-    var dl = $('#villes-list'); if (dl) dl.innerHTML = VILLES.map(function(v){ return '<option value="' + esc(v.label) + '">'; }).join('');
-    var c = $('[data-vcount]'); if (c && VILLES.length) c.textContent = VILLES.length;
+    var dl = $('#villes-list'); if (dl) dl.innerHTML = VILLES.map(function(v){ return '<option value="' + esc(v.label) + '"' + (v.pays ? ' label="' + esc(v.label + ' (' + v.pays + ')') + '"' : '') + '>'; }).join('');
+    var fr = VILLES.filter(function(v){ return !v.pays; }).length;
+    var c = $('[data-vcount]'); if (c && fr) c.textContent = fr;
+    var hint = $('[data-vintl]'), intl = VILLES.filter(function(v){ return v.pays; });
+    if (hint && intl.length && !hint.dataset.on) { hint.dataset.on = '1'; hint.addEventListener('click', function(e){ var b = e.target.closest('[data-pick]'); if (b) searchCity(b.getAttribute('data-pick'), true); }); }
+    if (hint && intl.length) { hint.innerHTML = ', plus ' + intl.map(function(v){ return '<button type="button" data-pick="' + esc(v.label) + '" class="vs-intl">' + esc(v.label) + ' (' + esc(v.pays) + ')</button>'; }).join(', ') + ' pour les photographes et vidéastes'; }
   }
   var picks = $('[data-picks]');
   if (picks) {
@@ -699,10 +704,11 @@ a.dm-city:hover{border-color:var(--g)}
     var c = d.city, label = c.label;
     var period = d.period ? 'Google du ' + dateFr(d.period.start) + ' au ' + dateFr(d.period.end) + ' · visiteurs sur 30 jours' : 'Chiffres de Google indisponibles pour le moment';
     var html = '<div class="vr-h"><div><h3>' + esc(label) + '</h3><p>' + period + '</p></div><button type="button" class="vr-share" data-share><i class="ph-bold ph-link"></i>Copier le lien</button></div>' +
-      cityDemandes(label, c.slug, d.demandes, c.pros) + '<div class="vr-grid">' +
+      cityDemandes(label, c.slug, d.demandes, c.pros, !!c.pays) + '<div class="vr-grid">' +
       pageCard('photographe', label, c.pages.photographe, c.pros) +
-      pageCard('menage', label, c.pages.menage, c.pros) +
+      (c.pages.menage ? pageCard('menage', label, c.pages.menage, c.pros) : '') +
       (c.pages.hote ? pageCard('hote', label, c.pages.hote, null) : '') +
+      (c.pays ? '<div class="vp"><div class="vp-h"><i class="ph-bold ph-globe-hemisphere-west"></i><div><b>' + esc(label + ' (' + c.pays + ')') + '</b></div></div><p class="vp-empty">Première ville hors de France : seule la page des photographes et vidéastes est ouverte, avec les règles du ' + (c.pays === 'Canada' ? 'Québec' : 'pays') + ', pas celles de la France. Les pages ménage et hôtes ouvriront si elles sont demandées.</p><button type="button" class="vr-share" data-intl-ask="' + esc(label) + '"><i class="ph-bold ph-paper-plane-tilt"></i>Demander une autre page</button></div>' : '') +
       '</div><div class="vr-note"><i class="ph-bold ph-info"></i><span>Ce sont les chiffres bruts de Google Search Console, sans tri : la place est une moyenne sur 28 jours (elle varie selon la personne et l’appareil), un affichage n’est pas un client. Les petites villes et les pages récentes partent de peu, et ça se voit ici.</span></div>';
     vres.innerHTML = html;
     var inp = vform && vform.querySelector('input[name=ville]'); if (inp) inp.value = label;
@@ -715,13 +721,13 @@ a.dm-city:hover{border-color:var(--g)}
   }
   // Villes hors de France avec une seule page (17/10/2026 : Québec, photographes et vidéastes)
   var INTL = [{ key: 'quebec', label: 'Québec', href: '/photographe-lcd-quebec', what: 'photographes et vidéastes' }];
-  function renderRequest(q){
-    var sug = suggestions(q);
+  function renderRequest(q, fromCity){
+    var sug = fromCity ? [] : suggestions(q);
     var tq = normT(q).replace(/^ville de /, '');
-    var intl = INTL.filter(function(v){ return tq === v.key || tq.indexOf(v.key + ' ') === 0; })[0];
+    var intl = fromCity ? null : INTL.filter(function(v){ return tq === v.key || tq.indexOf(v.key + ' ') === 0; })[0];
     vres.innerHTML = (intl ? '<div class="vf" style="margin-bottom:14px"><h3>' + esc(intl.label) + ' a sa page ' + esc(intl.what) + '</h3><p>Ouverte en octobre 2026 : ses chiffres Google apparaîtront ici quand elle aura quelques semaines. Les pages ménage et hôtes ne sont pas encore ouvertes : tu peux les demander ci-dessous.</p><p><a href="' + intl.href + '" style="color:#004C3F;font-weight:600">Voir la page ' + esc(intl.what) + ' à ' + esc(intl.label) + ' →</a></p></div>' : '') +
-      '<div class="vf"><h3>Pas encore de page pour « ' + esc(q) + ' »</h3>' +
-      '<p>Les pages existent pour ' + (VILLES.length || 61) + ' villes. Je peux créer celle de ta ville : photographes, ménage et guide pour les hôtes. Dis-moi juste qui tu es.</p>' +
+      '<div class="vf"><h3>' + (fromCity ? 'Une autre page pour ' + esc(q) + ' ?' : 'Pas encore de page pour « ' + esc(q) + ' »') + '</h3>' +
+      '<p>Les pages existent pour ' + (VILLES.filter(function(v){ return !v.pays; }).length || 62) + ' villes. Je peux créer celle de ta ville : photographes, ménage et guide pour les hôtes. Dis-moi juste qui tu es.</p>' +
       (sug.length ? '<div class="vf-sug">Tu cherchais peut-être : ' + sug.map(function(v){ return '<button type="button" data-pick="' + esc(v.label) + '">' + esc(v.label) + '</button>'; }).join('') + '</div>' : '') +
       '<form data-vf novalidate>' +
         '<div><label for="vf-ville">Ta ville</label><input type="text" id="vf-ville" name="ville" maxlength="60" value="' + esc(q) + '" required></div>' +
@@ -754,6 +760,7 @@ a.dm-city:hover{border-color:var(--g)}
   if (vres) {
     vres.addEventListener('click', function(e){
       var b = e.target.closest('[data-pick]'); if (b) { searchCity(b.getAttribute('data-pick'), false); return; }
+      var ask = e.target.closest('[data-intl-ask]'); if (ask) { renderRequest(ask.getAttribute('data-intl-ask'), true); return; }
       var s = e.target.closest('[data-share]');
       if (s) {
         var done = function(){ s.innerHTML = '<i class="ph-bold ph-check-circle"></i>Lien copié'; };

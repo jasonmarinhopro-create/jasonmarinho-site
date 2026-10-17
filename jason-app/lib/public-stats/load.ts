@@ -10,7 +10,7 @@ import { loadVisits } from '@/lib/visibility/load'
 import { getServiceClient } from '@/lib/supabase/service'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import { GSC_LAG_DAYS, addDays } from '@/lib/visibility/rules'
-import { CITY_PAGE_SLUGS, cityLabel, citySlugOf } from '@/lib/visibility/city-page'
+import { CITY_PAGE_SLUGS, INTL_CITY_PAGES, anyCitySlugOf, cityLabel } from '@/lib/visibility/city-page'
 import { adminUserIds, splitDemo } from '@/lib/pros/demo'
 import {
   CITY_TOTALS_MIN_IMPRESSIONS, NO_HOST_GUIDE, videoSummary, cityStats, countVisitors, firstPageQueries, isProCityPage, monthlySeries,
@@ -22,7 +22,9 @@ export interface CityFull {
   label: string
   /** Fiches en ligne présentées sur la page (null si la lecture a échoué) */
   pros: { photographe: number; menage: number } | null
-  pages: { photographe: PageFull; menage: PageFull; hote: PageFull | null }
+  pages: { photographe: PageFull; menage: PageFull | null; hote: PageFull | null }
+  /** Pays d'une ville hors de France (page photographe seulement) */
+  pays?: string
 }
 
 export interface PublicStats {
@@ -46,7 +48,7 @@ export interface PublicStats {
   cityPages: number
   threshold: number
   /** Villes qui ont leurs pages (pour la recherche) */
-  villes: Array<{ slug: string; label: string }>
+  villes: Array<{ slug: string; label: string; pays?: string }>
 }
 
 export interface PublicStatsFull extends PublicStats {
@@ -91,8 +93,8 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
     type R = { ville: string | null; zone_couverte: string | null; status: string | null; is_public: boolean | null; user_id: string | null }
     // Fiches d'exemple des comptes admin jamais comptées
     return {
-      photographe: prosByCity(splitDemo((ph.data ?? []) as R[], admins).real, citySlugOf),
-      menage: prosByCity(splitDemo((cl.data ?? []) as R[], admins).real, citySlugOf),
+      photographe: prosByCity(splitDemo((ph.data ?? []) as R[], admins).real, anyCitySlugOf),
+      menage: prosByCity(splitDemo((cl.data ?? []) as R[], admins).real, anyCitySlugOf),
     }
   })().catch(() => null)
 
@@ -166,6 +168,15 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
         },
       }
     }
+    for (const [slug, v] of Object.entries(INTL_CITY_PAGES)) {
+      cityFull[slug] = {
+        slug,
+        label: v.label,
+        pays: v.pays,
+        pros: pros ? { photographe: pros.photographe.get(slug) ?? 0, menage: 0 } : null,
+        pages: { photographe: full(`/photographe-lcd-${slug}`), menage: null, hote: null },
+      }
+    }
   }
 
   return {
@@ -179,7 +190,10 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
       cities,
       cityPages: CITY_PAGE_SLUGS.length * 2,
       threshold: CITY_TOTALS_MIN_IMPRESSIONS,
-      villes: CITY_PAGE_SLUGS.map(slug => ({ slug, label: cityLabel(slug) })).sort((a, b) => a.label.localeCompare(b.label, 'fr')),
+      villes: [
+        ...CITY_PAGE_SLUGS.map(slug => ({ slug, label: cityLabel(slug) as string, pays: undefined as string | undefined })),
+        ...Object.entries(INTL_CITY_PAGES).map(([slug, v]) => ({ slug, label: v.label, pays: v.pays })),
+      ].sort((a, b) => a.label.localeCompare(b.label, 'fr')),
       cityFull,
     },
   }
@@ -189,9 +203,9 @@ const cachedFull = unstable_cache(async () => {
   const r = await compute()
   if (!r.complete) throw new Error('incomplet')
   return r.stats
-}, ['public-stats-v4'], { revalidate: 6 * 3600, tags: ['public-stats'] })
+}, ['public-stats-v5'], { revalidate: 6 * 3600, tags: ['public-stats'] })
 
-const cachedPartial = unstable_cache(async () => (await compute()).stats, ['public-stats-partial-v2'], { revalidate: 3600, tags: ['public-stats'] })
+const cachedPartial = unstable_cache(async () => (await compute()).stats, ['public-stats-partial-v3'], { revalidate: 3600, tags: ['public-stats'] })
 
 export async function loadPublicStats(): Promise<PublicStatsFull> {
   try {
