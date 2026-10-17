@@ -1,0 +1,50 @@
+# Vidéo de la fiche d'exemple (17/10/2026). L'environnement de Claude ne joint
+# pas les banques de vidéos : ce workflow cherche des vidéos sous licence libre
+# sur Wikimedia Commons, ou en prend une, la recoupe (15 s, 1280 px, sans son,
+# ~2 Mo) et la dépose dans img/exemple-fiches/ avec son affiche et son crédit.
+# .github/video-exemple-trigger : chaque ligne « chercher <mots> », ou une
+# ligne « prendre <File:…> | <début en s> ».
+name: Vidéo de la fiche d'exemple
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/video-exemple-trigger']
+
+permissions:
+  contents: write
+
+jobs:
+  video:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Chercher ou prendre
+        run: |
+          set -e
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            case "$line" in
+              chercher*) node scripts/video-exemple.mjs chercher ${line#chercher } || echo "::warning::recherche en échec : $line";;
+              prendre*)
+                spec="${line#prendre }"; title="${spec%%|*}"; start="$(echo "${spec#*|}" | tr -d ' ')"
+                [ "$spec" = "$title" ] && start=0
+                title="$(echo "$title" | sed 's/ *$//')"
+                node scripts/video-exemple.mjs prendre "$title"
+                sudo apt-get -qq update >/dev/null && sudo apt-get -qq install -y ffmpeg >/dev/null
+                ffmpeg -loglevel error -y -ss "$start" -i /tmp/source -t 15 -an -vf "scale=1280:-2,fps=30" -c:v libx264 -preset slow -crf 28 -pix_fmt yuv420p -movflags +faststart img/exemple-fiches/video-camille.mp4
+                ffmpeg -loglevel error -y -ss 1 -i img/exemple-fiches/video-camille.mp4 -frames:v 1 -vf "scale=1280:-2" -q:v 4 img/exemple-fiches/video-camille.jpg
+                echo "::notice title=Vidéo::$(stat -c %s img/exemple-fiches/video-camille.mp4) o, affiche $(stat -c %s img/exemple-fiches/video-camille.jpg) o";;
+            esac
+          done < .github/video-exemple-trigger
+      - name: Déposer sur la branche
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add img/exemple-fiches
+          git diff --cached --quiet && exit 0
+          git commit -m "Vidéo de la fiche d'exemple (Wikimedia Commons)"
+          git push
