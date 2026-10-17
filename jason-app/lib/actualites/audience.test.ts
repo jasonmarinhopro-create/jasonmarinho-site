@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { readAudience, forAudience, actusForEdition } from './audience'
+import { readAudience, forAudience, actusForEdition, hasNewFor } from './audience'
 
 describe('public des actualités', () => {
   it('hôtes par défaut, valeurs connues seulement', () => {
@@ -24,5 +24,15 @@ describe('public des actualités', () => {
     expect(actusForEdition(list, 'photographe').map(x => x.id)).toEqual(['p1', 'h1'])
     expect(actusForEdition(list, 'hote').map(x => x.id)).toEqual(['h1'])
     expect(actusForEdition(list, 'investisseur').map(x => x.id)).toEqual(['h1'])
+  })
+  it('point du neuf par espace', () => {
+    const list = [
+      { audience: ['menage'], published_at: '2026-10-17T08:00:00Z' },
+      { published_at: '2026-10-10T08:00:00Z' },
+    ]
+    expect(hasNewFor(list, 'menage', '2026-10-16T00:00:00Z')).toBe(true)
+    expect(hasNewFor(list, 'menage', '2026-10-17T09:00:00Z')).toBe(false)
+    expect(hasNewFor(list, 'photographe', null)).toBe(false)
+    expect(hasNewFor(list, 'hote', '2026-10-16T00:00:00Z')).toBe(false)
   })
 })

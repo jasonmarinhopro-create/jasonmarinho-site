@@ -165,6 +165,12 @@ const adminGroups: Array<{ key: string; label: string; items: AdminItem[]; colla
   },
 ]
 
+/** Menu des pros : demandes pas encore ouvertes et actualités du métier non vues */
+export interface ProNav {
+  demandes: { photographer: number; cleaner: number }
+  newActus: { photographer: boolean; cleaner: boolean }
+}
+
 interface SidebarProps {
   mobileOpen?: boolean
   onClose?: () => void
@@ -190,9 +196,11 @@ interface SidebarProps {
   /** Espaces multi-rôles (Hôte + Photographe + Ménage) — permet de switcher
    *  entre ses fiches pro depuis le menu user en bas-gauche. */
   spaces?: Array<{ key: 'host' | 'photographer' | 'cleaner' | 'investor'; label: string; href: string; subtitle?: string | null; active: boolean }>
+  /** Menu des pros (17/10/2026) : compteur « Demandes reçues », point « du neuf » sur « Actualités » */
+  proNav?: ProNav
 }
 
-export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false, allProperties, activePropertyId, userName, userPlanLabel, userId, spaces = [] }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false, allProperties, activePropertyId, userName, userPlanLabel, userId, spaces = [], proNav }: SidebarProps) {
   const pathname = usePathname()
   // Le rôle pro est dérivé du pathname côté client : le layout (server) est
   // mémorisé par le router cache entre routes sœurs, donc une prop calculée
@@ -209,6 +217,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   const router = useRouter()
   const supabase = createClient()
   const [hasNewActualites, setHasNewActualites] = useState(initialHasNewActualites)
+  const [proNewActus, setProNewActus] = useState(proNav?.newActus ?? { photographer: false, cleaner: false })
 
   // ── Collapse sidebar (mode icônes seulement) ──
   // Persisté en localStorage. Update la CSS var --sidebar-w globale pour
@@ -314,9 +323,12 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   }, [userMenuOpen])
 
   useEffect(() => {
-    if (pathname !== '/dashboard/actualites') return
+    const proPage = pathname === '/dashboard/ma-fiche-photographe/actualites' ? 'photographer'
+      : pathname === '/dashboard/ma-fiche-menage/actualites' ? 'cleaner' : null
+    if (pathname !== '/dashboard/actualites' && !proPage) return
     // L'utilisateur visite la page : on efface le badge immédiatement côté client.
-    setHasNewActualites(false)
+    if (proPage) setProNewActus(prev => ({ ...prev, [proPage]: false }))
+    else setHasNewActualites(false)
     fetch('/api/me/mark-seen', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -364,7 +376,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     '/dashboard/investir/simulateurs',
   ], [])
 
-  function NavItem({ href, label, Icon, adminColor, notifDot, activeMatch }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean; notifDot?: boolean; activeMatch?: string[] }) {
+  function NavItem({ href, label, Icon, adminColor, notifDot, activeMatch, count }: { href: string; label: string; Icon: React.ElementType; adminColor?: boolean; notifDot?: boolean; activeMatch?: string[]; count?: number }) {
     // Active state :
     // - /dashboard exact (sinon toutes les pages seraient "active")
     // - Si href contient une querystring (ex Mes reservations = /calendrier?view=list),
@@ -419,10 +431,14 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
       >
         <div style={{ position: 'relative', flexShrink: 0, display: 'flex' }}>
           <Icon size={18} weight={active ? 'fill' : 'regular'} />
-          {notifDot && !active && <span style={styles.notifDot} />}
+          {(notifDot || (collapsed && !!count && count > 0)) && !active && <span style={styles.notifDot} />}
         </div>
         {!collapsed && <span>{label}</span>}
-        {active && !collapsed && <div style={styles.activeDot} />}
+        {/* Compteur (demandes pas encore ouvertes) : à la place du point actif */}
+        {!!count && count > 0 && !collapsed && (
+          <span style={styles.navCount} aria-label={`${count} nouvelle${count > 1 ? 's' : ''}`}>{count > 99 ? '99+' : count}</span>
+        )}
+        {active && !collapsed && !(count && count > 0) && <div style={styles.activeDot} />}
       </Link>
     )
   }
@@ -537,51 +553,40 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
               )}
             </div>
           ) : proRole ? (
-            /* Sidebar minimale pour les pros annuaire (photographe / ménage) */
-            <div>
-              {!collapsed && <div style={styles.sectionLabel}>Mon annuaire</div>}
-              <div style={styles.navSection}>
-                {proRole === 'cleaner' && (
-                  <NavItem href="/dashboard/ma-fiche-menage/planning" label="Mes ménages" Icon={CalendarCheck} />
-                )}
-                <NavItem
-                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe' : '/dashboard/ma-fiche-menage'}
-                  label="Ma fiche"
-                  Icon={proRole === 'photographer' ? Camera : Sparkle}
-                />
-                {/* Actualités de son métier (17/10/2026) */}
-                <NavItem
-                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/actualites' : '/dashboard/ma-fiche-menage/actualites'}
-                  label="Actualités"
-                  Icon={Newspaper}
-                />
-                <NavItem
-                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/statistiques' : '/dashboard/ma-fiche-menage/statistiques'}
-                  label="Mes statistiques"
-                  Icon={PresentationChart}
-                />
-                <NavItem
-                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/demandes' : '/dashboard/ma-fiche-menage/demandes'}
-                  label="Demandes reçues"
-                  Icon={Tray}
-                />
-                <NavItem
-                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/clients' : '/dashboard/ma-fiche-menage/clients'}
-                  label="Mes clients"
-                  Icon={AddressBook}
-                />
-                <NavItem
-                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/devis' : '/dashboard/ma-fiche-menage/devis'}
-                  label="Devis"
-                  Icon={Receipt}
-                />
-                <NavItem
-                  href={proRole === 'photographer' ? '/dashboard/ma-fiche-photographe/idees' : '/dashboard/ma-fiche-menage/idees'}
-                  label="Idées"
-                  Icon={Lightbulb}
-                />
-              </div>
-            </div>
+            /* Menu des pros (17/10/2026, proposition validée par Jason) : blocs
+               titrés comme l'espace hôte. Ménage : « Au quotidien » (planning)
+               en tête ; puis Ma vitrine, Mes clients (avec le compteur des
+               demandes pas encore ouvertes), Rester informé (point « du neuf »
+               sur les actualités du métier). */
+            (() => {
+              const base = proRole === 'photographer' ? '/dashboard/ma-fiche-photographe' : '/dashboard/ma-fiche-menage'
+              const groups: Array<{ label: string; items: React.ReactNode }> = [
+                ...(proRole === 'cleaner' ? [{ label: 'Au quotidien', items: <NavItem href={`${base}/planning`} label="Mes ménages" Icon={CalendarCheck} /> }] : []),
+                { label: 'Ma vitrine', items: <>
+                  <NavItem href={base} label="Ma fiche" Icon={proRole === 'photographer' ? Camera : Sparkle} />
+                  <NavItem href={`${base}/statistiques`} label="Mes statistiques" Icon={PresentationChart} />
+                </> },
+                { label: 'Mes clients', items: <>
+                  <NavItem href={`${base}/demandes`} label="Demandes reçues" Icon={Tray} count={proNav?.demandes[proRole] ?? 0} />
+                  <NavItem href={`${base}/clients`} label="Mes clients" Icon={AddressBook} />
+                  <NavItem href={`${base}/devis`} label="Devis" Icon={Receipt} />
+                </> },
+                { label: 'Rester informé', items: <>
+                  <NavItem href={`${base}/actualites`} label="Actualités" Icon={Newspaper} notifDot={proNewActus[proRole]} />
+                  <NavItem href={`${base}/idees`} label="Idées" Icon={Lightbulb} />
+                </> },
+              ]
+              return (
+                <div>
+                  {groups.map(g => (
+                    <div key={g.label}>
+                      {!collapsed && <div style={styles.sectionLabel}>{g.label}</div>}
+                      <div style={styles.navSection}>{g.items}</div>
+                    </div>
+                  ))}
+                </div>
+              )
+            })()
           ) : adminMode && isAdmin ? (
             /* Mode admin dedicated : sidebar remplacée par Admin uniquement.
                Header "Mode admin" + bouton retour hote dans la DA (jaune accent). */
@@ -935,6 +940,11 @@ const styles: Record<string, React.CSSProperties> = {
     borderLeft: '1px solid var(--nav-border)',
     display: 'flex', flexDirection: 'column', gap: '2px',
     marginBottom: '4px',
+  },
+  navCount: {
+    marginLeft: 'auto', minWidth: 20, height: 20, padding: '0 6px', borderRadius: 999,
+    background: 'var(--accent-text)', color: 'var(--bg)', fontSize: 11, fontWeight: 700,
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1,
   },
   notifDot: {
     position: 'absolute',

@@ -35,3 +35,9 @@ export function actusForEdition<T extends { audience?: unknown }>(list: T[], edi
   const own = forAudience(list, edition)
   return [...own, ...list.filter(a => !own.includes(a) && concernsAudience(a, 'hote'))]
 }
+
+/** Point « du neuf » d'un espace : une actu de ce public publiée après la dernière visite */
+export function hasNewFor(list: Array<{ audience?: unknown; published_at?: string | null }>, who: ActuAudience, lastSeen: string | null | undefined): boolean {
+  const latest = forAudience(list, who)[0]?.published_at
+  return !!latest && latest > (lastSeen ?? '1970-01-01T00:00:00Z')
+}

@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
-import { forAudience } from '@/lib/actualites/audience'
+import { forAudience, hasNewFor } from '@/lib/actualites/audience'
+import { loadProNewDemandes } from '@/lib/pros/nav-counts'
 import { headers, cookies } from 'next/headers'
 import { Suspense } from 'react'
 import Sidebar from '@/components/layout/Sidebar'
@@ -136,6 +137,19 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
     latestPublishedAt > (profile.last_seen_actualites_at ?? '1970-01-01T00:00:00Z')
   )
 
+  // Menu des pros (17/10/2026) : point « du neuf » sur les actualités de leur
+  // métier et compteur des demandes pas encore ouvertes
+  const hasSpace = (k: 'photographer' | 'cleaner') => spacesResult.spaces.some(sp => sp.key === k && sp.active)
+  const proNav = hasSpace('photographer') || hasSpace('cleaner')
+    ? {
+        demandes: await loadProNewDemandes(profile.userId, { photographer: hasSpace('photographer'), cleaner: hasSpace('cleaner') }),
+        newActus: {
+          photographer: hasNewFor(cachedActualites, 'photographe', profile.last_seen_actualites_at),
+          cleaner: hasNewFor(cachedActualites, 'menage', profile.last_seen_actualites_at),
+        },
+      }
+    : undefined
+
   return (
     <ThemeProvider>
       <div style={styles.layout}>
@@ -144,6 +158,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
           isContributor={profile.is_contributor ?? false}
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
+          proNav={proNav}
           hasStripeAccount={profile.stripe_onboarding_complete}
           allProperties={activeProperty.allProperties}
           activePropertyId={activeProperty.propertyId}
@@ -160,6 +175,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
           lastSeenNouveautesAt={profile.last_seen_nouveautes_at}
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
+          proNav={proNav}
           initialAppNotifUnread={appNotifUnread}
           initialChezNousUnread={chezNousUnread}
           showOnboardingBtn={showOnboarding}
