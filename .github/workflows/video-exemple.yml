@@ -37,6 +37,8 @@ jobs:
                 sudo apt-get -qq update >/dev/null && sudo apt-get -qq install -y ffmpeg >/dev/null
                 ffmpeg -loglevel error -y -ss "$start" -i /tmp/source -t 15 -an -vf "scale=1280:-2,fps=30" -c:v libx264 -preset slow -crf 28 -pix_fmt yuv420p -movflags +faststart img/exemple-fiches/video-camille.mp4
                 ffmpeg -loglevel error -y -ss 1 -i img/exemple-fiches/video-camille.mp4 -frames:v 1 -vf "scale=1280:-2" -q:v 4 img/exemple-fiches/video-camille.jpg
+                for t in 4 8 12; do ffmpeg -loglevel error -y -ss $t -i img/exemple-fiches/video-camille.mp4 -frames:v 1 -vf "scale=640:-2" -q:v 6 /tmp/f$t.jpg; done
+                mkdir -p /tmp/verif && cp /tmp/f*.jpg /tmp/verif/
                 echo "::notice title=Vidéo::$(stat -c %s img/exemple-fiches/video-camille.mp4) o, affiche $(stat -c %s img/exemple-fiches/video-camille.jpg) o";;
             esac
           done < .github/video-exemple-trigger
@@ -45,6 +47,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add img/exemple-fiches
+          # Images de contrôle (vérifier qu'aucun texte n'est incrusté), retirées au commit suivant
+          mkdir -p .github/verif-video && cp /tmp/verif/*.jpg .github/verif-video/ 2>/dev/null && git add .github/verif-video || true
           git diff --cached --quiet && exit 0
           git commit -m "Vidéo de la fiche d'exemple (Wikimedia Commons)"
           git push
