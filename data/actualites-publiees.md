@@ -39,3 +39,4 @@ sauf pour retirer une ligne masquée dans le dashboard.
 - 2026-10-14 · marche · Automne 2026 : les réservations de locations saisonnières repartent à la hausse (https://hospitality-on.com/fr/tendances/lautomne-sera-t-il-le-nouvel-ete-pour-les-reservations-dans-les-destinations-touristiques)
 - 2026-10-15 · plateformes · Booking.com s'engage sur la liberté tarifaire des hébergeurs dans l'UE (https://hospitality-on.com/fr/hotellerie/bruxelles-obtient-de-bookingcom-de-nouvelles-garanties-sur-la-liberte-tarifaire-des)
 - 2026-10-15 · conciergerie · La France compte plus de 82 000 conciergeries de location courte durée (https://www.majordia.fr/ressources/observatoire-conciergeries-lcd)
+- 2026-10-17 · plateformes · Airbnb lance la « Garantie intempéries » en France (https://mistertravel.news/2026/10/11/airbnb-rembourse-la-pluie-la-garantie-intemperies-debarque-en-france/)
