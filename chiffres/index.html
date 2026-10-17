@@ -359,7 +359,7 @@ a.dm-city:hover{border-color:var(--g)}
     </div>
 
     <div class="dm-note">
-      <p><b>« On démarre, et ça se voit ici.</b> Je ne compte ni mes tests ni les fiches d’exemple, et une demande envoyée à plusieurs pros reste une seule demande. Jamais le nom, le message ni les coordonnées de l’hôte. » Jason</p>
+      <p><b>« On démarre, et ça se voit ici.</b> Je ne compte ni mes tests ni les fiches d’exemple<span data-dm-excl></span>, et une demande envoyée à plusieurs pros reste une seule demande. Jamais le nom, le message ni les coordonnées de l’hôte. » Jason</p>
       <a class="btn" href="/trouver-un-pro"><i class="ph-bold ph-paper-plane-tilt"></i>Décrire mon besoin</a>
     </div>
   </div>
@@ -561,6 +561,8 @@ a.dm-city:hover{border-color:var(--g)}
     if (tot) tot.textContent = n(D.total);
     var since = $('[data-dm-since]');
     if (since) since.textContent = D.total ? (D.total > 1 ? 'Demandes reçues' : 'Demande reçue') + ' depuis ' + monthFr(D.since) : 'Demande reçue pour le moment';
+    var ex = $('[data-dm-excl]'), X = D.excluded || { test: 0, exemple: 0 };
+    if (ex && (X.test || X.exemple)) ex.textContent = ' (' + [X.test ? n(X.test) + ' test' + (X.test > 1 ? 's' : '') : '', X.exemple ? n(X.exemple) + ' vers une fiche d’exemple' : ''].filter(Boolean).join(', ') + ' écarté' + (X.test + X.exemple > 1 ? 's' : '') + ')';
     setNum('[data-dm-photo]', n(D.byMetier.photographe)); setNum('[data-dm-menage]', n(D.byMetier.menage));
     ['formulaire','fiche'].forEach(function(k){
       setNum('[data-dm-src="' + k + '"]', n(D.bySource[k]));

@@ -34,6 +34,7 @@ async function compute(): Promise<PublicDemandes> {
 
   const items: DemandeItem[] = []
   const contactStatus = new Map<string, string | null>()
+  const excluded = { test: 0, exemple: 0 }
   const prosMaps = { photographe: new Map<string, number>(), menage: new Map<string, number>() }
 
   for (const metier of ['photographe', 'menage'] as DemandeMetier[]) {
@@ -55,7 +56,8 @@ async function compute(): Promise<PublicDemandes> {
       if (fromTrouverUnPro(c.source_url)) continue
       const fiche = byId.get(c.fiche_id)
       // Fiches d'exemple et messages de test jamais comptés
-      if (!fiche || isDemoFiche(fiche, admins) || isTestEmail(c.contact_email, adminEmails)) continue
+      if (!fiche || isDemoFiche(fiche, admins)) { excluded.exemple++; continue }
+      if (isTestEmail(c.contact_email, adminEmails)) { excluded.test++; continue }
       items.push({ at: c.created_at, metier, slug: citySlugOf(fiche.ville, fiche.zone_couverte), source: 'fiche', etat: etatOfContact(c.status) })
     }
   }
@@ -64,15 +66,15 @@ async function compute(): Promise<PublicDemandes> {
     db.from('demandes_hotes').select('id, created_at, metier, ville, status, sent_to, email').order('created_at').order('id').range(from, to))
   if (error) throw new Error('demandes_hotes')
   for (const d of demandes) {
-    if (isTestEmail(d.email, adminEmails)) continue
+    if (isTestEmail(d.email, adminEmails)) { excluded.test++; continue }
     const statuses = (d.sent_to ?? []).map(s => s.contact_id).filter((x): x is string => !!x).map(id => contactStatus.get(id))
     items.push({ at: d.created_at, metier: d.metier, slug: citySlugOf(d.ville), source: 'formulaire', etat: etatOfDemande(d.status, statuses) })
   }
 
-  return buildPublicDemandes(items, { today: parisToday(), labelOf: cityLabel, pros: prosMaps })
+  return buildPublicDemandes(items, { today: parisToday(), labelOf: cityLabel, pros: prosMaps, excluded })
 }
 
-const cached = unstable_cache(compute, ['public-demandes-v1'], { revalidate: 600, tags: ['public-demandes'] })
+const cached = unstable_cache(compute, ['public-demandes-v2'], { revalidate: 600, tags: ['public-demandes'] })
 
 export async function loadPublicDemandes(): Promise<PublicDemandes | null> {
   try {

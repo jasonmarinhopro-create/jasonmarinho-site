@@ -125,6 +125,6 @@ jobs:
           if dm is None:
               print("::warning title=Demandes::indisponibles")
           else:
-              print(f"::notice title=Demandes d'hôtes::{dm['total']} depuis {dm['since']} · métier {dm['byMetier']} · source {dm['bySource']} · état {dm['byEtat']} · villes " + ' | '.join(f"{x['label']} {x['total']}" for x in dm['cities']))
+              print(f"::notice title=Demandes d'hôtes::{dm['total']} depuis {dm['since']} · métier {dm['byMetier']} · source {dm['bySource']} · état {dm['byEtat']} · écartées {dm.get('excluded')} · villes " + ' | '.join(f"{x['label']} {x['total']}" for x in dm['cities']))
           PY
           code=$(curl -s -o /dev/null -w '%{http_code}' https://jasonmarinho.com/chiffres); [ "$code" = 200 ] && echo "OK   /chiffres 200" || echo "::error title=Site::/chiffres $code"

@@ -43,6 +43,8 @@ export interface PublicDemandes {
   cities: DemandeCity[]
   months: Array<{ month: string; count: number; current: boolean }>
   fil: Array<{ month: string; metier: DemandeMetier; slug: string | null; label: string; source: DemandeSource; etat: DemandeEtat }>
+  /** Écartées, et pourquoi : messages de test, fiches d'exemple (affiché pour la transparence) */
+  excluded: { test: number; exemple: number }
 }
 
 export const FIL_MAX = 12
@@ -94,6 +96,7 @@ export function buildPublicDemandes(
     today: string
     labelOf: (slug: string) => string
     pros?: { photographe: Map<string, number>; menage: Map<string, number> } | null
+    excluded?: { test: number; exemple: number }
   },
 ): PublicDemandes {
   const sorted = [...items].sort((a, b) => b.at.localeCompare(a.at))
@@ -135,6 +138,7 @@ export function buildPublicDemandes(
     total: sorted.length,
     since: sorted.length ? parisMonth(sorted[sorted.length - 1].at) : null,
     byMetier, bySource, byEtat, cities, months,
+    excluded: opts.excluded ?? { test: 0, exemple: 0 },
     fil: sorted.slice(0, FIL_MAX).map(it => ({
       month: parisMonth(it.at),
       metier: it.metier,
