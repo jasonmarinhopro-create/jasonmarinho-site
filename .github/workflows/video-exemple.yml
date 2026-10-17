@@ -3,7 +3,7 @@
 # sur Wikimedia Commons, ou en prend une, la recoupe (15 s, 1280 px, sans son,
 # ~2 Mo) et la dépose dans img/exemple-fiches/ avec son affiche et son crédit.
 # .github/video-exemple-trigger : chaque ligne « chercher <mots> », ou une
-# ligne « prendre <File:…> | <début en s> ».
+# ligne « prendre <File:…> | <début en s> | <affiche en s> | crop ».
 name: Vidéo de la fiche d'exemple
 
 on:
@@ -30,13 +30,16 @@ jobs:
             case "$line" in
               chercher*) node scripts/video-exemple.mjs chercher ${line#chercher } || echo "::warning::recherche en échec : $line";;
               prendre*)
-                spec="${line#prendre }"; title="${spec%%|*}"; start="$(echo "${spec#*|}" | tr -d ' ')"
-                [ "$spec" = "$title" ] && start=0
+                # prendre <File:…> | <début en s> | <image d'affiche en s> | crop (garde les 5/6 en haut à gauche : retire un texte incrusté en bas à droite)
+                spec="${line#prendre }"; title="${spec%%|*}"
+                IFS='|' read -r _ start poster crop <<< "$spec"
+                start="$(echo "${start:-0}" | tr -d ' ')"; poster="$(echo "${poster:-1}" | tr -d ' ')"; crop="$(echo "$crop" | tr -d ' ')"
+                vf="scale=1280:-2,fps=30"; [ "$crop" = crop ] && vf="crop=iw*5/6:ih*5/6:0:0,$vf"
                 title="$(echo "$title" | sed 's/ *$//')"
                 node scripts/video-exemple.mjs prendre "$title"
                 sudo apt-get -qq update >/dev/null && sudo apt-get -qq install -y ffmpeg >/dev/null
-                ffmpeg -loglevel error -y -ss "$start" -i /tmp/source -t 15 -an -vf "scale=1280:-2,fps=30" -c:v libx264 -preset slow -crf 28 -pix_fmt yuv420p -movflags +faststart img/exemple-fiches/video-camille.mp4
-                ffmpeg -loglevel error -y -ss 1 -i img/exemple-fiches/video-camille.mp4 -frames:v 1 -vf "scale=1280:-2" -q:v 4 img/exemple-fiches/video-camille.jpg
+                ffmpeg -loglevel error -y -ss "$start" -i /tmp/source -t 15 -an -vf "$vf" -c:v libx264 -preset slow -crf 28 -pix_fmt yuv420p -movflags +faststart img/exemple-fiches/video-camille.mp4
+                ffmpeg -loglevel error -y -ss "$poster" -i img/exemple-fiches/video-camille.mp4 -frames:v 1 -vf "scale=1280:-2" -q:v 4 img/exemple-fiches/video-camille.jpg
                 for t in 4 8 12; do ffmpeg -loglevel error -y -ss $t -i img/exemple-fiches/video-camille.mp4 -frames:v 1 -vf "scale=640:-2" -q:v 6 /tmp/f$t.jpg; done
                 mkdir -p /tmp/verif && cp /tmp/f*.jpg /tmp/verif/
                 echo "::notice title=Vidéo::$(stat -c %s img/exemple-fiches/video-camille.mp4) o, affiche $(stat -c %s img/exemple-fiches/video-camille.jpg) o";;
