@@ -17,12 +17,12 @@ const VILLES = fs.readdirSync(ROOT).filter(d => d.startsWith('photographe-lcd-')
 
 const PHOTO = {
   key: 'photographe', dir: 'photographes', k: 'photo',
-  title: 'Photographe Airbnb : rejoins l’annuaire des hôtes',
-  desc: 'Photographe location courte durée ? Une fiche vue par les hôtes de ta ville : site vitrine sur Google, demandes d’hôtes en direct, statistiques, devis en ligne. Sans commission.',
-  crumb: 'Photographes',
-  eye: 'Pour les photographes immobiliers et d’hébergement',
-  h1: 'Les hôtes de ta ville cherchent un photographe. <em>Sois celui qu’ils trouvent.</em>',
-  lead: 'Une fiche qui travaille pour toi toute l’année : tes photos, tes formules, ta zone, présentés aux hôtes Airbnb et Booking qui cherchent un pro près de chez eux. Ils t’écrivent directement, tu gardes 100 % de tes séances.',
+  title: 'Photographe ou vidéaste Airbnb : rejoins l’annuaire',
+  desc: 'Photographe ou vidéaste location courte durée ? Une fiche vue par les hôtes de ta ville : site vitrine sur Google, ta vidéo, les demandes en direct, tes statistiques. Sans commission.',
+  crumb: 'Photographes et vidéastes',
+  eye: 'Pour les photographes et vidéastes immobiliers et d’hébergement',
+  h1: 'Les hôtes de ta ville cherchent un photographe ou un vidéaste. <em>Sois celui qu’ils trouvent.</em>',
+  lead: 'Une fiche qui travaille pour toi toute l’année : tes photos, ta vidéo, tes formules, ta zone, présentés aux hôtes Airbnb et Booking qui cherchent un pro près de chez eux. Ils t’écrivent directement, tu gardes 100 % de tes séances.',
   inscription: '/annuaires/photographes/inscription',
   exemple: '/annuaires/photographes/exemple-fiche',
   annuaire: '/annuaires/photographes',
@@ -34,14 +34,14 @@ const PHOTO = {
     galerie: 'Galerie de 6 photos sur la fiche d’exemple',
     formules: 'Formules et déroulé d’une séance sur la fiche d’exemple',
     cartes: 'Cartes de photographes dans l’annuaire (fiches fictives)',
-    ville: 'Page « Photographe LCD à Lyon » du site',
+    ville: 'Page « Photographe & vidéaste LCD à Lyon » du site',
     demande: 'Formulaire « Décris ton besoin » rempli par un hôte',
     stats: 'Exemple de l’écran « Mes statistiques » d’un photographe (chiffres fictifs)',
   },
   vitrine: [
     ['ph-images', '6 photos en mosaïque', 'Une galerie qui s’agrandit au clic, en carrousel sur téléphone. Ta meilleure photo sert aussi de couverture.'],
     ['ph-link', 'Un vrai lien vers ton site', 'Le bouton « Voir le portfolio » mène à ton site ou à ton Instagram, en lien dofollow : il aide aussi ton propre site sur Google.'],
-    ['ph-share-network', 'Tes réseaux, discrètement', 'Fiche Google, Instagram, Facebook, LinkedIn, TikTok, YouTube, Pinterest : en petites pastilles en bas de ta fiche.'],
+    ['ph-play-circle', 'Ta vidéo en haut de ta fiche', 'Un lien YouTube ou Vimeo se lit à côté de ton nom, une chaîne devient un bouton « Voir les vidéos ». Tes réseaux restent en pastilles en bas.'],
     ['ph-device-mobile', 'Pensée pour le téléphone', 'Une barre « Contacter » reste en bas de l’écran pendant que l’hôte regarde tes photos.'],
   ],
   formulesTxt: 'Jusqu’à 3 formules avec leur prix (ou « sur devis »), puis ta façon de travailler en 3 étapes et les villes où tu te déplaces. L’hôte sait à quoi s’attendre avant même de t’écrire : ses demandes sont plus précises, tes devis plus rapides.',
@@ -53,7 +53,7 @@ const PHOTO = {
     mock: 'devis',
   },
   steps: [
-    ['Crée ta fiche', 'Nom, ville, zone, site ou portfolio, spécialité et prix de départ : 2 minutes.'],
+    ['Crée ta fiche', 'Nom, ville, zone, photo ou vidéo, site ou portfolio et prix de départ : 2 minutes.'],
     ['Paie en ligne', '39,98 € TTC par an au tarif Fondateur, par carte via Stripe. Ta fiche est en ligne dans la foulée, sans validation à attendre.'],
     ['Complète-la', 'Ajoute tes 6 photos, tes formules et tes villes depuis ton espace, puis partage le lien de ta fiche.'],
   ],
@@ -61,7 +61,8 @@ const PHOTO = {
     ['Combien coûte la fiche ?', 'Les 20 premiers photographes paient 39,98 € TTC par an, un tarif bloqué à vie. Ensuite, ce sera 79,98 € TTC par an. Sans engagement : tu résilies quand tu veux depuis ton espace.'],
     ['Est-ce que vous prenez une commission sur mes séances ?', 'Non, jamais. L’hôte te contacte directement et le devis, la séance et le paiement se règlent entre vous. La fiche est un abonnement fixe.'],
     ['Y a-t-il une validation de mon profil ?', 'Non. Ta fiche est en ligne quelques minutes après le paiement. Tu la complètes ensuite quand tu veux depuis ton espace.'],
-    ['Comment les hôtes me trouvent-ils ?', `Par l’annuaire des photographes (recherche par ville, y compris les villes que tu couvres), par la page « Photographe à » ta ville (${VILLES} villes ont la leur), par Google, où ta fiche est indexée, et par les demandes « Décris ton besoin », envoyées aux 3 photographes les plus proches.`],
+    ['Je suis vidéaste, est-ce pour moi ?', 'Oui. À l’inscription, tu choisis photographe, vidéaste ou les deux, et tes options (drone, visite 3D, vidéos courtes…). Les hôtes filtrent l’annuaire selon ce qu’ils cherchent, et ta vidéo se lit en haut de ta fiche.'],
+    ['Comment les hôtes me trouvent-ils ?', `Par l’annuaire des photographes et vidéastes (recherche par ville, y compris les villes que tu couvres, et filtres photo, vidéo ou drone), par la page « Photographe à » ta ville (${VILLES} villes ont la leur), par Google, où ta fiche est indexée, et par les demandes « Décris ton besoin », envoyées aux 3 photographes les plus proches.`],
     ['Et si je n’ai pas encore mes photos sous la main ?', 'Pas de souci : ta fiche est en ligne dès le paiement avec tes initiales, et tu ajoutes tes photos, tes formules et tes villes ensuite depuis ton espace.'],
     ['Comment savoir si ma fiche m’apporte des clients ?', 'L’espace « Mes statistiques » montre les visiteurs de ta fiche, les clics vers ton site et ton Instagram, les demandes reçues, les recherches Google qui t’amènent et ta place moyenne. Un bilan arrive par e-mail le 1er de chaque mois.'],
     ['Le lien vers mon site compte-t-il pour Google ?', 'Oui : le lien de ta fiche vers ton site ou ton portfolio est un lien classique (dofollow), et ta fiche est déclarée à Google dans notre plan du site.'],
@@ -312,8 +313,8 @@ function page(cfg) {
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
 <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=a9d374e172">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
 <style>${CSS}</style>
 ${ld.map(o => `<script type="application/ld+json">${JSON.stringify(o)}</script>`).join('\n')}
 <script defer src="/nav.js"></script>
@@ -346,7 +347,7 @@ ${ld.map(o => `<script type="application/ld+json">${JSON.stringify(o)}</script>`
 <section class="facts" aria-label="L’annuaire en bref">
   <div class="s-in facts-grid">
     <div class="fact"><b>0 %</b><span>de commission sur tes ${isM ? 'ménages' : 'séances'}</span></div>
-    <div class="fact"><b>${VILLES}</b><span>villes avec leur page « ${isM ? 'Équipe de ménage' : 'Photographe'} à… »</span></div>
+    <div class="fact"><b>${VILLES}</b><span>villes avec leur page « ${isM ? 'Équipe de ménage' : 'Photographe & vidéaste'} à… »</span></div>
     <div class="fact"><b>3</b><span>${cfg.metierPl} les plus proches reçoivent chaque demande d’hôte</span></div>
     <div class="fact"><b>1</b><span>bilan de tes statistiques chaque mois</span></div>
   </div>
@@ -401,7 +402,7 @@ ${ld.map(o => `<script type="application/ld+json">${JSON.stringify(o)}</script>`
       <div class="row-txt">
         <span class="num">4</span>
         <h2>Sur la page <em>de ta ville</em></h2>
-        <p>${VILLES} villes ont leur page « ${isM ? 'Équipe de ménage LCD à…' : 'Photographe LCD à…'} » : réglementation locale, taxe de séjour, ${isM ? 'rythme des ménages' : 'tarifs constatés, checklist des photos'}, questions à poser. Elles sont faites pour Google, et les ${cfg.metierPl} de la ville y sont présentés.</p>
+        <p>${VILLES} villes ont leur page « ${isM ? 'Équipe de ménage LCD à…' : 'Photographe & vidéaste LCD à…'} » : réglementation locale, taxe de séjour, ${isM ? 'rythme des ménages' : 'tarifs constatés, checklist des photos'}, questions à poser. Elles sont faites pour Google, et les ${cfg.metierPl} de la ville y sont présentés.</p>
         <a class="more" href="${cfg.villeEx}">Voir un exemple de page de ville <i class="ph-bold ph-arrow-right"></i></a>
         <a class="more" href="/chiffres#villes" style="margin-left:18px">Les pages de ville dans Google, en chiffres réels <i class="ph-bold ph-arrow-right"></i></a>
       </div>
@@ -512,7 +513,7 @@ ${ld.map(o => `<script type="application/ld+json">${JSON.stringify(o)}</script>`
         <a class="btn btn-o" href="${cfg.devenir}">Tout sur l’annuaire</a>
       </div>
     </div>
-    <p class="other">${isM ? 'Tu es photographe ? <a href="/pour-qui/photographes">La page des photographes</a>' : 'Tu diriges une équipe de ménage ? <a href="/pour-qui/menage">La page des équipes de ménage</a>'} · <a href="/pour-qui">Tous les profils</a></p>
+    <p class="other">${isM ? 'Tu es photographe ou vidéaste ? <a href="/pour-qui/photographes">La page des photographes et vidéastes</a>' : 'Tu diriges une équipe de ménage ? <a href="/pour-qui/menage">La page des équipes de ménage</a>'} · <a href="/pour-qui">Tous les profils</a></p>
   </div>
 </section>
 

@@ -43,7 +43,9 @@ async function loadPros(metier: DemandeMetier): Promise<Pro[]> {
   const t = T[metier]
   const cols = 'id, slug, full_name, pseudo, email, ville, zone_couverte, villes_couvertes, contacts_count, created_at, user_id'
   const q = (c: string) => db.from(t.table).select(c).eq('status', 'active').eq('is_public', true).not('slug', 'is', null).limit(1000)
-  let res: { data: unknown; error: { message: string } | null } = await q(cols)
+  // Photographes : métier et options pour servir d'abord ceux qui font de la vidéo ou du drone (migration 136)
+  let res: { data: unknown; error: { message: string } | null } = await q(metier === 'photographe' ? `${cols}, metier, options` : cols)
+  if (res.error && /metier|options/.test(res.error.message)) res = await q(cols)
   if (res.error && /villes_couvertes/.test(res.error.message)) res = await q(cols.replace(' villes_couvertes,', ''))
   if (res.error) { log.error('lecture des pros', { metier, err: res.error.message }); return [] }
   const admins = await adminUserIds(db)
@@ -138,7 +140,7 @@ export async function creerDemande(d: DemandeInput, acquisition: unknown): Promi
     return { error: 'Envoi impossible pour le moment. Réessaie dans quelques minutes.' }
   }
   const id = (row as { id: string }).id
-  const pros = choisirPros(await loadPros(d.metier), d.ville, new Set())
+  const pros = choisirPros(await loadPros(d.metier), d.ville, new Set(), undefined, d.frequence)
   const sent = pros.length ? await envoyerVague(d, d.metier, pros, 1, id) : []
   await db.from('demandes_hotes').update({
     sent_to: sent, status: sent.length ? 'envoyee' : 'sans_pro', last_round_at: new Date().toISOString(),
@@ -176,7 +178,7 @@ export async function traiterDemandes(now = new Date()): Promise<{ elargies: num
     const action = prochaineAction(r, statuts, now)
     if (action === 'rien') continue
     if (!prosCache.has(r.metier)) prosCache.set(r.metier, await loadPros(r.metier))
-    const pros = choisirPros(prosCache.get(r.metier)!, r.ville, new Set(r.sent_to.map(s => s.id)))
+    const pros = choisirPros(prosCache.get(r.metier)!, r.ville, new Set(r.sent_to.map(s => s.id)), undefined, r.frequence)
     if (!pros.length) {
       if (action === 'elargir') {
         await db.from('demandes_hotes').update({ status: 'sans_pro', admin_notified_at: now.toISOString() }).eq('id', r.id)

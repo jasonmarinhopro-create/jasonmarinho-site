@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trouver un photographe ou une équipe de ménage Airbnb</title>
-<meta name="description" content="Décris ton besoin en 1 minute : ta demande part aux 3 photographes ou équipes de ménage les plus proches de ton logement. Gratuit, sans commission.">
+<title>Trouver un photographe, vidéaste ou ménage Airbnb</title>
+<meta name="description" content="Décris ton besoin en 1 minute : ta demande part aux 3 photographes, vidéastes ou équipes de ménage les plus proches de ton logement. Gratuit, sans commission.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://jasonmarinho.com/trouver-un-pro">
-<meta property="og:title" content="Trouver un photographe ou une équipe de ménage Airbnb">
-<meta property="og:description" content="Décris ton besoin en 1 minute : ta demande part aux 3 photographes ou équipes de ménage les plus proches de ton logement. Gratuit, sans commission.">
+<meta property="og:title" content="Trouver un photographe, vidéaste ou ménage Airbnb">
+<meta property="og:description" content="Décris ton besoin en 1 minute : ta demande part aux 3 photographes, vidéastes ou équipes de ménage les plus proches de ton logement. Gratuit, sans commission.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jasonmarinho.com/trouver-un-pro">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
@@ -18,7 +18,7 @@
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
 <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
 <style>
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -74,6 +74,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .side a{color:var(--g);font-weight:600}
 .only-menage{display:none}
 form[data-metier="menage"] .only-menage{display:flex}
+form[data-metier="menage"] .only-photo{display:none}
 </style>
 <script defer src="/nav.js"></script>
 </head>
@@ -83,7 +84,7 @@ form[data-metier="menage"] .only-menage{display:flex}
     <div class="brd"><a href="/">Accueil</a> · <span>Trouver un pro</span></div>
     <span class="lbl">Gratuit · sans commission</span>
     <h1>Décris ton besoin, <em>les pros viennent à toi</em></h1>
-    <p class="lead">Un photographe pour ton annonce ou une équipe de ménage entre deux voyageurs : en une minute, ta demande part aux pros les plus proches de ton logement. Plus besoin de chercher ni d’écrire à chacun.</p>
+    <p class="lead">Un photographe ou un vidéaste pour ton annonce, ou une équipe de ménage entre deux voyageurs : en une minute, ta demande part aux pros les plus proches de ton logement. Plus besoin de chercher ni d’écrire à chacun.</p>
     <div class="steps">
       <div class="step"><b>1</b><span>Tu décris ton logement et ce qu’il te faut.</span></div>
       <div class="step"><b>2</b><span>Les 3 pros les plus proches reçoivent ta demande.</span></div>
@@ -97,7 +98,7 @@ form[data-metier="menage"] .only-menage{display:flex}
     <form id="demande" data-metier="photographe" novalidate>
       <h2>Ta demande</h2>
       <div class="seg" role="radiogroup" aria-label="Ce que tu cherches">
-        <label><input type="radio" name="metier" value="photographe" checked><span><i class="ph-bold ph-camera"></i>Un photographe</span></label>
+        <label><input type="radio" name="metier" value="photographe" checked><span><i class="ph-bold ph-camera"></i>Un photographe ou vidéaste</span></label>
         <label><input type="radio" name="metier" value="menage"><span><i class="ph-bold ph-sparkle"></i>Une équipe de ménage</span></label>
       </div>
       <div class="grid2">
@@ -106,6 +107,7 @@ form[data-metier="menage"] .only-menage{display:flex}
       </div>
       <datalist id="villes"><option value="Aix-en-Provence"><option value="Ajaccio"><option value="Angers"><option value="Annecy"><option value="Antibes"><option value="Arcachon"><option value="Avignon"><option value="Bastia"><option value="Bayonne"><option value="Beaune"><option value="Biarritz"><option value="Bordeaux"><option value="Brest"><option value="Caen"><option value="Cannes"><option value="Carcassonne"><option value="Chambéry"><option value="Chamonix"><option value="Clermont-Ferrand"><option value="Colmar"><option value="Deauville"><option value="Dijon"><option value="Dinard"><option value="Épernay"><option value="Étretat"><option value="Grenoble"><option value="Honfleur"><option value="La Baule"><option value="La Rochelle"><option value="Le Mans"><option value="Le Touquet"><option value="Les Sables-d'Olonne"><option value="Lille"><option value="Lyon"><option value="Marseille"><option value="Megève"><option value="Menton"><option value="Metz"><option value="Montpellier"><option value="Nancy"><option value="Nantes"><option value="Nice"><option value="Nîmes"><option value="Paris"><option value="Pau"><option value="Perpignan"><option value="Poitiers"><option value="Quimper"><option value="Reims"><option value="Rennes"><option value="Rouen"><option value="Saint-Malo"><option value="Saint-Tropez"><option value="Sarlat"><option value="Sète"><option value="Strasbourg"><option value="Toulouse"><option value="Tours"><option value="Troyes"><option value="Vannes"><option value="Versailles"></datalist>
       <div class="f only-menage"><label for="frequence">Ton besoin</label><select id="frequence" name="frequence"><option value="">Choisir</option><option>Des ménages réguliers entre deux voyageurs</option><option>Un ménage ponctuel (remise en état, fin de saison)</option></select></div>
+      <div class="f only-photo"><label for="prestation">Ce qu’il te faut</label><select id="prestation" name="prestation"><option value="">Choisir</option><option>Des photos</option><option>Une vidéo</option><option>Des photos et une vidéo</option><option>Des photos avec vues au drone</option></select></div>
       <div class="grid2">
         <div class="f"><label for="quand">Quand ?</label><select id="quand" name="quand"><option value="">Choisir</option><option>Au plus vite</option><option>Dans le mois</option><option>Dans 1 à 3 mois</option><option>Je me renseigne</option></select></div>
         <div class="f"><label for="budget">Budget <small>(facultatif)</small></label><input id="budget" name="budget" maxlength="60" placeholder="Ex. 300 € ou 80 € le ménage"></div>
@@ -166,12 +168,12 @@ form[data-metier="menage"] .only-menage{display:flex}
     if (!document.getElementById('consent').checked) { err.textContent = 'Coche la case pour que ta demande puisse être transmise aux pros.'; err.style.display = 'block'; return; }
     btn.disabled = true; btn.innerHTML = 'Envoi en cours…';
     var metier = f.querySelector('input[name=metier]:checked').value;
-    var data = { metier: metier, ville: f.ville.value, logement: f.logement.value, quand: f.quand.value, frequence: metier === 'menage' ? f.frequence.value : '', budget: f.budget.value, message: f.message.value, nom: f.nom.value, email: f.email.value, telephone: f.telephone.value, consent: true, website: f.website.value, t: t0, source: document.referrer ? document.referrer.slice(0, 200) : location.href, acq: acq() };
+    var data = { metier: metier, ville: f.ville.value, logement: f.logement.value, quand: f.quand.value, frequence: metier === 'menage' ? f.frequence.value : f.prestation.value, budget: f.budget.value, message: f.message.value, nom: f.nom.value, email: f.email.value, telephone: f.telephone.value, consent: true, website: f.website.value, t: t0, source: document.referrer ? document.referrer.slice(0, 200) : location.href, acq: acq() };
     try {
       var res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
       var body = await res.json().catch(function(){ return {} });
       if (!res.ok) throw new Error(body.error || 'Envoi impossible pour le moment. Réessaie dans quelques minutes.');
-      var who = metier === 'menage' ? 'équipe' : 'photographe';
+      var who = metier === 'menage' ? 'équipe' : 'pro';
       document.getElementById('ok-p').textContent = body.envoyes > 0
         ? 'Elle a été envoyée ' + (body.envoyes > 1 ? 'aux ' + body.envoyes + ' ' + who + 's les plus proches' : 'au ' + who + ' le plus proche') + ' de ton logement. Ils te répondent directement par e-mail.'
         : 'Il n’y a pas encore de pro inscrit près de ' + f.ville.value.trim() + ' : on garde ta demande et on te prévient dès qu’un pro de ta zone rejoint l’annuaire.';

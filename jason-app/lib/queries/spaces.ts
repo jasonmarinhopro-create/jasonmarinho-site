@@ -83,7 +83,7 @@ export const getUserSpaces = cache(async (): Promise<SpacesResult> => {
   if (hasPhoto) {
     spaces.push({
       key: 'photographer',
-      label: 'Photographe',
+      label: 'Photo & vidéo',
       href: '/dashboard/ma-fiche-photographe',
       subtitle: ph!.pseudo || ph!.full_name,
       active: true,

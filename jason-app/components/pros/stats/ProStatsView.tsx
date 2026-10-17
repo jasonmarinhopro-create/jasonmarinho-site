@@ -375,7 +375,7 @@ export function CityPageCard({ d }: { d: ProStatsData }) {
   const c = d.cityPage!
   const metierWord = d.metier === 'photographe' ? 'photographes' : 'équipes de ménage'
   return (
-    <StatCard icon={<Buildings size={18} weight="duotone" />} title={`La page « ${d.metier === 'photographe' ? 'Photographe' : 'Ménage'} à ${c.label} »`}
+    <StatCard icon={<Buildings size={18} weight="duotone" />} title={`La page « ${d.metier === 'photographe' ? 'Photographe & vidéaste' : 'Ménage'} à ${c.label} »`}
       subtitle={c.listed ? `Ta fiche y est présentée aux hôtes qui cherchent des ${metierWord} à ${c.label}` : `Ta fiche y sera présentée dès qu'elle sera en ligne`}
       right={<a href={`https://jasonmarinho.com${c.path}`} target="_blank" rel="noopener noreferrer" style={s.heroLink} className="stats-noprint">Voir la page <ArrowSquareOut size={12} weight="bold" style={{ verticalAlign: '-1px' }} /></a>}>
       <div style={s.gTiles}>

@@ -118,7 +118,7 @@ function pageShell({ title, desc, canonical, jsonLd, body }) {
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
 <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
 <style>
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -259,7 +259,7 @@ function linksRow(v, metier) {
     cards.push(`<a class="link-card" href="/menage-lcd-${v.slug}"><span class="lc-t">Autre prestataire</span><span class="lc-h">Équipe de ménage LCD ${escHtml(v.pre)}</span><span class="lc-a">Voir le guide <i class="ph-bold ph-arrow-right"></i></span></a>`)
     cards.push(`<a class="link-card" href="/annuaires/photographes"><span class="lc-t">Annuaire LCD</span><span class="lc-h">Tous les photographes LCD</span><span class="lc-a">Voir l'annuaire <i class="ph-bold ph-arrow-right"></i></span></a>`)
   } else {
-    cards.push(`<a class="link-card" href="/photographe-lcd-${v.slug}"><span class="lc-t">Autre prestataire</span><span class="lc-h">Photographe LCD ${escHtml(v.pre)}</span><span class="lc-a">Voir le guide <i class="ph-bold ph-arrow-right"></i></span></a>`)
+    cards.push(`<a class="link-card" href="/photographe-lcd-${v.slug}"><span class="lc-t">Autre prestataire</span><span class="lc-h">Photographe &amp; vidéaste ${escHtml(v.pre)}</span><span class="lc-a">Voir le guide <i class="ph-bold ph-arrow-right"></i></span></a>`)
     cards.push(`<a class="link-card" href="/annuaires/menage"><span class="lc-t">Annuaire LCD</span><span class="lc-h">Toutes les équipes ménage LCD</span><span class="lc-a">Voir l'annuaire <i class="ph-bold ph-arrow-right"></i></span></a>`)
   }
   return `<div class="links-row">${cards.join('')}</div>`
@@ -268,10 +268,10 @@ function linksRow(v, metier) {
 // ── PAGE PHOTOGRAPHE ────────────────────────────────────────────────────────
 function buildPhotographePage(v) {
   const url = `https://jasonmarinho.com/photographe-lcd-${v.slug}`
-  const title = `Photographe Airbnb ${v.pre} : tarifs & annuaire LCD`.length <= 60
-    ? `Photographe Airbnb ${v.pre} : tarifs & annuaire LCD`
-    : `Photographe Airbnb ${v.pre} : tarifs et annuaire`
-  const desc = `Trouver un photographe spécialisé Airbnb et location courte durée ${v.pre} : tarifs constatés, les photos indispensables, comment briefer, annuaire des photographes. ${v.annonces} annonces sur le marché, des photos pro rentabilisées en quelques nuits.`
+  // Photographes ET vidéastes depuis le 17/10/2026 (titre ≤ 60 caractères)
+  const title = [`Photographe & vidéaste Airbnb ${v.pre} : tarifs`, `Photographe & vidéaste Airbnb ${v.pre}`, `Photographe Airbnb ${v.pre} : tarifs`]
+    .find(t => t.length <= 60) ?? `Photographe Airbnb ${v.pre}`
+  const desc = `Trouver un photographe ou un vidéaste spécialisé Airbnb et location courte durée ${v.pre} : tarifs constatés, les photos indispensables, comment briefer, annuaire des photographes et vidéastes. ${v.annonces} annonces sur le marché, des photos pro rentabilisées en quelques nuits.`
   const amortNuits = Math.max(2, Math.ceil(300 / v.adrMin))
   const premium = isPremium(v)
   const t1 = premium ? '200 – 300 €' : '150 – 250 €'
@@ -286,25 +286,27 @@ function buildPhotographePage(v) {
     { q: `Combien de photos faut-il pour une annonce ${v.pre} ?`,
       a: `Visez <strong>25 à 35 photos</strong> : la photo de couverture (la plus travaillée, elle fait le taux de clic), chaque pièce sous 2-3 angles, les détails qui différencient (vue, baignoire, terrasse) et 2-3 photos du quartier. Sur un marché à ${v.annonces} annonces comme ${v.name}, la couverture fait la différence dans les résultats de recherche Airbnb et Booking.` },
     { q: `Faut-il un photographe spécialisé LCD plutôt qu'un photographe immobilier classique ?`,
-      a: `Oui, et la nuance compte : le photographe immobilier vend des mètres carrés, le photographe LCD vend <strong>une expérience de séjour</strong>. Angles pensés pour les vignettes Airbnb/Booking, lumière chaleureuse, mise en scène voyageur (table dressée, plaid, guide ouvert)… C'est exactement ce que vérifie Jason avant d'accepter un photographe dans l'annuaire.` },
+      a: `Oui, et la nuance compte : le photographe immobilier vend des mètres carrés, le photographe LCD vend <strong>une expérience de séjour</strong>. Angles pensés pour les vignettes Airbnb/Booking, lumière chaleureuse, mise en scène voyageur (table dressée, plaid, guide ouvert)… Demandez à voir des annonces déjà photographiées par le pro avant de choisir.` },
+    { q: `Une vidéo ou des vues au drone, ça vaut le coup ${v.pre} ?`,
+      a: `Les photos restent la base de votre annonce sur Airbnb et Booking. Une <strong>vidéo</strong> sert surtout ailleurs : site de réservation directe, réseaux sociaux, fiche Google. Les <strong>vues aériennes au drone</strong> valent le coup pour un logement avec extérieur, vue ou terrain : demandez au pro s'il est en règle avec l'aviation civile (DGAC) et si le vol est permis à l'adresse, les règles sont plus strictes en ville. Dans l'annuaire, filtrez par photographe, vidéaste ou drone.` },
   ]
 
   const jsonLd = [
-    serviceJsonLd({ name: `Photographe location courte durée ${v.pre}`, url, desc: desc.slice(0, 200), ville: v.name }),
+    serviceJsonLd({ name: `Photographe et vidéaste location courte durée ${v.pre}`, url, desc: desc.slice(0, 200), ville: v.name }),
     faqJsonLd(faqs),
     breadcrumbJsonLd([
       { name: 'Accueil', item: 'https://jasonmarinho.com/' },
-      { name: 'Annuaire des photographes LCD', item: 'https://jasonmarinho.com/annuaires/photographes' },
-      { name: `Photographe LCD ${v.pre}`, item: url },
+      { name: 'Annuaire des photographes et vidéastes LCD', item: 'https://jasonmarinho.com/annuaires/photographes' },
+      { name: `Photographe & vidéaste LCD ${v.pre}`, item: url },
     ]),
   ].join('\n')
 
   const body = `
 <header class="hero">
   <div class="s-in">
-    <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/photographes">Photographes LCD</a> · <span>${escHtml(v.name)}</span></div>
-    <span class="lbl">Photographe · Airbnb, Booking &amp; réservation directe</span>
-    <h1>Photographe LCD <em>${escHtml(v.pre)}</em></h1>
+    <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/photographes">Photographes et vidéastes LCD</a> · <span>${escHtml(v.name)}</span></div>
+    <span class="lbl">Photographe &amp; vidéaste · Airbnb, Booking &amp; réservation directe</span>
+    <h1>Photographe &amp; vidéaste LCD <em>${escHtml(v.pre)}</em></h1>
     <p class="lead">Sur les <strong>${v.annonces} annonces</strong> que compte ${escHtml(v.name)}, celles qui sortent du lot ont un point commun : des photos professionnelles. Tarifs locaux constatés, checklist des photos indispensables, questions à poser : et l'annuaire pour trouver le bon photographe.</p>
     <div class="hero-ctas">
       <a href="/annuaires/photographes" class="btn-p"><i class="ph-bold ph-magnifying-glass"></i> Trouver un photographe LCD</a>
@@ -372,8 +374,8 @@ function buildPhotographePage(v) {
   <div class="s-in">
     <div class="pro-band">
       <div class="pro-band-txt">
-        <span class="lbl">Vous êtes photographe ${escHtml(v.pre)} ?</span>
-        <h2>Rejoignez l'annuaire <em>des photographes LCD</em></h2>
+        <span class="lbl">Vous êtes photographe ou vidéaste ${escHtml(v.pre)} ?</span>
+        <h2>Rejoignez l'annuaire <em>des photographes et vidéastes LCD</em></h2>
         <p>Une fiche pro hébergée sur jasonmarinho.com, des demandes d'hôtes qualifiés ${escHtml(v.pre)} et dans votre zone, contact direct, zéro commission sur vos prestations. Votre fiche se voit sur Google comme un site vitrine, avec un lien dofollow vers votre site ou portfolio et vos statistiques chaque mois.</p>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px">

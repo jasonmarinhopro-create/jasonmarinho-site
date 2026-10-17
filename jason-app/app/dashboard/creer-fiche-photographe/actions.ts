@@ -6,6 +6,7 @@ import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
 import { founderSeatFilter } from '@/lib/pros/founder-seats'
 import { normSiteUrl, siteUrlOk, SITE_URL_ERROR } from '@/lib/pros/site-url'
+import { readMetier, readOptions, normalizeVideoUrl } from '@/lib/pros/visuel'
 
 const log = logger('creer-fiche-photographe/actions')
 const FOUNDER_QUOTA = 20
@@ -24,6 +25,9 @@ export interface PhotographerSignupPayload {
   tarifMin: number | null
   tarifMax: number | null
   bio: string
+  metier?: string
+  options?: string[]
+  videoUrl?: string
 }
 
 /**
@@ -55,6 +59,10 @@ export async function submitPhotographerSignup(
     return { error: `Ton site ou ton portfolio : ${SITE_URL_ERROR}.` }
   }
 
+  const video = normalizeVideoUrl(payload.videoUrl)
+  if (video.error) return { error: video.error }
+  const visuel = { metier: readMetier(payload.metier), options: readOptions(payload.options), video_url: video.url }
+
   const admin = getServiceClient()
 
   // Une fiche existe déjà (payée ou en attente de paiement) : pas de doublon,
@@ -80,26 +88,27 @@ export async function submitPhotographerSignup(
   const priceId = tier === 'fondateur' ? FOUNDER_PRICE_ID : STANDARD_PRICE_ID
 
   // Insert pending_payment
-  const { data: inserted, error: insertErr } = await admin
-    .from('photographers')
-    .insert({
-      user_id: user.id,
-      email: user.email,
-      full_name: fullName,
-      ville,
-      zone_couverte: String(payload.zoneCouverte || '').trim().slice(0, 200) || null,
-      portfolio_url: portfolioUrl,
-      instagram_handle: String(payload.instagramHandle || '').trim().slice(0, 50).replace(/^@/, '') || null,
-      telephone: String(payload.telephone || '').trim().slice(0, 30) || null,
-      specialite: String(payload.specialite || '').trim().slice(0, 100) || null,
-      tarif_min: payload.tarifMin ?? null,
-      tarif_max: payload.tarifMax ?? null,
-      bio: String(payload.bio || '').trim().slice(0, 600) || null,
-      tier,
-      status: 'pending_payment',
-    })
-    .select('id')
-    .single()
+  const row = {
+    user_id: user.id,
+    email: user.email,
+    full_name: fullName,
+    ville,
+    zone_couverte: String(payload.zoneCouverte || '').trim().slice(0, 200) || null,
+    portfolio_url: portfolioUrl,
+    instagram_handle: String(payload.instagramHandle || '').trim().slice(0, 50).replace(/^@/, '') || null,
+    telephone: String(payload.telephone || '').trim().slice(0, 30) || null,
+    specialite: String(payload.specialite || '').trim().slice(0, 100) || null,
+    tarif_min: payload.tarifMin ?? null,
+    tarif_max: payload.tarifMax ?? null,
+    bio: String(payload.bio || '').trim().slice(0, 600) || null,
+    tier,
+    status: 'pending_payment',
+  }
+  let { data: inserted, error: insertErr } = await admin.from('photographers').insert({ ...row, ...visuel }).select('id').single()
+  // Migration 136 pas encore passée : la fiche s'enregistre sans ces champs
+  if (insertErr && /metier|options|video_url/.test(`${insertErr.message} ${insertErr.details ?? ''}`)) {
+    ({ data: inserted, error: insertErr } = await admin.from('photographers').insert(row).select('id').single())
+  }
   if (insertErr || !inserted) {
     log.error('insert failed', insertErr)
     return { error: 'Erreur lors de l\'enregistrement.' }

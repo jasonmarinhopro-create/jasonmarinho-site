@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
 import { cleanReseaux } from '@/lib/pros/reseaux'
+import { readMetier, readOptions, normalizeVideoUrl } from '@/lib/pros/visuel'
 import { cleanFormules, cleanVilles, cleanDeroule } from '@/lib/pros/fiche-vitrine'
 import * as vitrine from '@/lib/pros/fiche-vitrine-server'
 import { normSiteUrl, siteUrlOk, SITE_URL_ERROR } from '@/lib/pros/site-url'
@@ -77,6 +78,9 @@ export async function updatePhotographerFiche(payload: {
   formules?: unknown
   villes_couvertes?: unknown
   deroule?: unknown
+  metier?: string
+  options?: string[]
+  video_url?: string | null
 }): Promise<{ success?: boolean; error?: string; warning?: string; adminEdit?: boolean }> {
   const target = await resolveTargetFiche(payload.targetId)
   if ('error' in target) return { error: target.error }
@@ -93,6 +97,9 @@ export async function updatePhotographerFiche(payload: {
   if (!siteUrlOk(portfolioUrl)) {
     return { error: `Ton site ou ton portfolio : ${SITE_URL_ERROR}.` }
   }
+
+  const video = normalizeVideoUrl(payload.video_url)
+  if (video.error) return { error: video.error }
 
   const admin = getServiceClient()
   const fields = {
@@ -113,6 +120,10 @@ export async function updatePhotographerFiche(payload: {
     formules: cleanFormules(payload.formules),
     villes_couvertes: cleanVilles(payload.villes_couvertes),
     deroule: cleanDeroule(payload.deroule, 'photographe'),
+    // Photographe / vidéaste, options, lien vidéo (migration 136)
+    metier: readMetier(payload.metier),
+    options: readOptions(payload.options),
+    video_url: video.url,
   }
   let { error: updateErr } = await admin
     .from('photographers')
@@ -120,9 +131,9 @@ export async function updatePhotographerFiche(payload: {
     .eq('id', target.photographerId)
   // Migration 125 pas encore appliquée : on enregistre le reste
   let warning: string | undefined
-  if (updateErr && /reseaux|formules|villes_couvertes|deroule/.test(`${updateErr.message} ${updateErr.details ?? ''}`)) {
+  if (updateErr && /reseaux|formules|villes_couvertes|deroule|metier|options|video_url/.test(`${updateErr.message} ${updateErr.details ?? ''}`)) {
     ({ error: updateErr } = await admin.from('photographers').update(fields).eq('id', target.photographerId))
-    if (!updateErr) warning = 'Fiche enregistrée, sauf tes réseaux, formules, villes et étapes : ils arrivent dans quelques heures, réessaie plus tard.'
+    if (!updateErr) warning = 'Fiche enregistrée, sauf tes réseaux, formules, villes, étapes et vidéos : ils arrivent dans quelques heures, réessaie plus tard.'
   }
 
   if (updateErr) {

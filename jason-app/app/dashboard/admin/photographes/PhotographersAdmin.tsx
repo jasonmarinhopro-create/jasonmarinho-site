@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { Sparkle, Camera, CheckCircle, X, Clock, ArrowSquareOut, Warning, Star, EyeSlash, Eye, Trash, ChatCircle } from '@phosphor-icons/react/dist/ssr'
 import { hidePhotographer, unhidePhotographer, deleteOrphanPhotographer } from './actions'
 import AdminHero from '../_ui/AdminHero'
+import { metierLabel } from '@/lib/pros/visuel'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 import InlineStyle from '@/components/ui/InlineStyle'
 
@@ -20,6 +21,7 @@ type Photographer = {
   stripe_subscription_id: string | null
   created_at: string; updated_at: string | null
   views_count: number; contacts_count: number
+  metier?: string | null
 }
 
 interface Props {
@@ -100,8 +102,8 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
       `} />
       {dialog}
       <AdminHero
-        section="Annuaire photographes"
-        title="Les photographes"
+        section="Annuaire photographes et vidéastes"
+        title="Les photographes et vidéastes"
         em="de l'annuaire"
         desc="Inscription en libre-service, sans validation : tu interviens seulement pour masquer ou réactiver une fiche, ou supprimer un compte resté sans paiement."
       />
@@ -142,7 +144,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
                 <div style={s.cellSub}>{p.email}</div>
               </div>
               <div style={s.cellMid}>{p.ville}{p.zone_couverte ? <span style={s.cellSub}> · {p.zone_couverte}</span> : null}</div>
-              <div style={s.cellMid}>{p.specialite ?? '-'}<br/><span style={s.cellSub}>{fmtTarif(p)}</span></div>
+              <div style={s.cellMid}>{metierLabel(p.metier)}{p.specialite ? ` · ${p.specialite}` : ''}<br/><span style={s.cellSub}>{fmtTarif(p)}</span></div>
               <div style={s.cellMid}>
                 <Eye size={11} weight="bold" /> {p.views_count} · <ChatCircle size={11} weight="bold" /> {p.contacts_count}
                 <br/><span style={s.cellSub}>actif depuis {fmtAge(p.created_at)}</span>

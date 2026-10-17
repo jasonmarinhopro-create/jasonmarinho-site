@@ -10,8 +10,8 @@
    * pour éviter les icônes cassées (cas du footer qui mélange ph et ph-bold). */
   // URL écrites en entier : scripts/build-phosphor-subset.mjs y réécrit le
   // ?v= (hash du contenu) à chaque build.
-  [['phosphor-bold-subset','/fonts/phosphor-bold-subset.css?v=f8a9c210db'],
-   ['phosphor-regular-subset','/fonts/phosphor-regular-subset.css?v=a9d374e172']].forEach(function(s){
+  [['phosphor-bold-subset','/fonts/phosphor-bold-subset.css?v=29999e9550'],
+   ['phosphor-regular-subset','/fonts/phosphor-regular-subset.css?v=868073a0d4']].forEach(function(s){
     if (!document.querySelector('link[href*="'+s[0]+'"]')) {
       var l = document.createElement('link');
       l.rel = 'stylesheet'; l.type = 'text/css';
@@ -457,7 +457,7 @@
         + '<div class="n-mega n-mega-ann">'
           + '<a href="/annuaires/photographes" class="n-ann-vc n-ann-photo">'
             + '<span class="n-ann-mos" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>'
-            + '<span class="n-ann-vt">Photographes</span>'
+            + '<span class="n-ann-vt">Photographes & vidéastes</span>'
             + '<span class="n-ann-vs">Voir l\'annuaire <i class="ph-bold ph-arrow-right"></i></span>'
           + '</a>'
           + '<a href="/annuaires/menage" class="n-ann-vc n-ann-menage">'
@@ -473,7 +473,7 @@
             + '<div class="n-col-title">Pour les hôtes</div>'
             + '<a href="/trouver-un-pro" class="n-ann-need"><i class="ph-bold ph-paper-plane-tilt"></i><span><b>Décrire mon besoin</b><small>Les pros viennent à toi</small></span></a>'
             + '<div class="n-col-title n-ann-t2">Pour les pros</div>'
-            + '<a href="/devenir-photographe-lcd"><i class="ph ph-camera"></i>Devenir photographe</a>'
+            + '<a href="/devenir-photographe-lcd"><i class="ph ph-camera"></i>Devenir photographe ou vidéaste</a>'
             + '<a href="/devenir-prestataire-menage-lcd"><i class="ph ph-sparkle"></i>Devenir équipe de ménage</a>'
             + '<a href="/tarifs#photographes"><i class="ph ph-tag"></i>Tarifs des fiches</a>'
             + '<a href="/chiffres"><i class="ph ph-chart-line-up"></i>La visibilité en chiffres</a>'
@@ -495,7 +495,7 @@
             + '</div>'
             + '<div class="n-pq-col">'
               + '<div class="n-col-title">Tu travailles pour les hôtes</div>'
-              + '<a href="/pour-qui/photographes"><i class="ph ph-camera"></i><span><b>Photographes</b><small>Une fiche vue par les hôtes de ta ville</small></span></a>'
+              + '<a href="/pour-qui/photographes"><i class="ph ph-camera"></i><span><b>Photographes & vidéastes</b><small>Une fiche vue par les hôtes de ta ville</small></span></a>'
               + '<a href="/pour-qui/menage"><i class="ph ph-sparkle"></i><span><b>Équipes de ménage</b><small>Des clients et leur planning, sans commission</small></span></a>'
             + '</div>'
           + '</div>'
@@ -554,7 +554,7 @@
               + '<span class="n-tar-grid"><i></i><i></i><i></i><i></i><i></i><i></i></span>'
               + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-link"></i>Ton site<b>Dofollow</b></span>'
             + '</span>'
-            + '<span class="n-tar-foot"><span class="n-tar-t">Photographes</span><span class="n-tar-s">Ta fiche à l\'année, sans commission</span></span>'
+            + '<span class="n-tar-foot"><span class="n-tar-t">Photographes & vidéastes</span><span class="n-tar-s">Ta fiche à l\'année, sans commission</span></span>'
           + '</a>'
           + '<a href="/tarifs#menage" class="n-tar-card n-tar-menage">'
             + '<span class="n-tar-vis">'
@@ -617,12 +617,12 @@
 
     /* Annuaire : même contenu que le menu ordinateur (proposition C) */
     + '<div class="mob-acc" id="acc-ann">'
-      + accBtn('ph-address-book', 'Annuaire', 'Photographes et équipes de ménage')
+      + accBtn('ph-address-book', 'Annuaire', 'Photographes, vidéastes et équipes de ménage')
       + '<div class="mob-acc-body mob-wide">'
         + '<div class="mob-vgrid">'
           + '<a href="/annuaires/photographes" class="mob-vc mob-vc-photo">'
             + '<span class="n-ann-mos" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>'
-            + '<span class="mob-vt">Photographes</span>'
+            + '<span class="mob-vt">Photographes & vidéastes</span>'
             + '<span class="mob-vs">Voir l\'annuaire <i class="ph-bold ph-arrow-right"></i></span>'
           + '</a>'
           + '<a href="/annuaires/menage" class="mob-vc mob-vc-menage">'
@@ -643,7 +643,7 @@
           + '</div>'
         + '</a>'
         + '<span class="mob-stitle">Pour les pros</span>'
-        + '<a href="/devenir-photographe-lcd"><i class="ph ph-camera"></i>Devenir photographe</a>'
+        + '<a href="/devenir-photographe-lcd"><i class="ph ph-camera"></i>Devenir photographe ou vidéaste</a>'
         + '<a href="/devenir-prestataire-menage-lcd"><i class="ph ph-sparkle"></i>Devenir équipe de ménage</a>'
         + '<a href="/tarifs#photographes"><i class="ph ph-tag"></i>Tarifs des fiches</a>'
         + '<a href="/chiffres"><i class="ph ph-chart-line-up"></i>La visibilité en chiffres</a>'
@@ -659,7 +659,7 @@
         + '<a href="/pour-qui/conciergeries"><i class="ph ph-buildings"></i>Conciergeries</a>'
         + '<a href="/pour-qui/investisseurs"><i class="ph ph-chart-line-up"></i>Investisseurs</a>'
         + '<span class="mob-stitle">Tu travailles pour les hôtes</span>'
-        + '<a href="/pour-qui/photographes"><i class="ph ph-camera"></i>Photographes</a>'
+        + '<a href="/pour-qui/photographes"><i class="ph ph-camera"></i>Photographes & vidéastes</a>'
         + '<a href="/pour-qui/menage"><i class="ph ph-sparkle"></i>Équipes de ménage</a>'
         + '<a href="/pour-qui/membres-driing" class="mob-driing">'
           + '<i class="ph ph-lightning"></i>'
@@ -708,7 +708,7 @@
       + accBtn('ph-tag', 'Tarifs', 'Gratuit pour commencer, sans carte')
       + '<div class="mob-acc-body mob-wide">'
         + '<a href="/tarifs#hote" class="mob-offer mob-offer-hote"><span class="mob-offer-ic"><i class="ph-bold ph-house-line"></i></span><span class="mob-offer-t"><b>Plateforme hôte</b><small>Gratuit, puis Standard à l\'année</small></span><i class="ph-bold ph-arrow-right mob-offer-go"></i></a>'
-        + '<a href="/tarifs#photographes" class="mob-offer mob-offer-photo"><span class="mob-offer-ic"><i class="ph-bold ph-camera"></i></span><span class="mob-offer-t"><b>Photographes</b><small>Ta fiche à l\'année, sans commission</small></span><i class="ph-bold ph-arrow-right mob-offer-go"></i></a>'
+        + '<a href="/tarifs#photographes" class="mob-offer mob-offer-photo"><span class="mob-offer-ic"><i class="ph-bold ph-camera"></i></span><span class="mob-offer-t"><b>Photographes & vidéastes</b><small>Ta fiche à l\'année, sans commission</small></span><i class="ph-bold ph-arrow-right mob-offer-go"></i></a>'
         + '<a href="/tarifs#menage" class="mob-offer mob-offer-menage"><span class="mob-offer-ic"><i class="ph-bold ph-sparkle"></i></span><span class="mob-offer-t"><b>Équipes de ménage</b><small>Ta fiche et le planning de tes clients</small></span><i class="ph-bold ph-arrow-right mob-offer-go"></i></a>'
         + '<span class="mob-stitle">Offres & aide</span>'
         + '<a href="/tarifs#hote"><i class="ph ph-seal-check"></i>Membre Fondateur, prix à vie</a>'

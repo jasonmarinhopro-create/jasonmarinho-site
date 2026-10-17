@@ -13,6 +13,8 @@ import ShareFicheBlock from '@/components/pro/ShareFicheBlock'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 import ReseauxFields, { emptyReseauxForm, type ReseauxForm } from '@/components/pros/ReseauxFields'
+import VisuelFields, { type VisuelForm } from '@/components/pros/VisuelFields'
+import { readMetier, readOptions, metierLabel } from '@/lib/pros/visuel'
 
 const AMBER = '#B7791F'
 const AMBER_DARK = '#8A5A12'
@@ -42,6 +44,9 @@ type Photographer = {
   formules?: unknown
   villes_couvertes?: unknown
   deroule?: unknown
+  metier?: string | null
+  options?: string[] | null
+  video_url?: string | null
 }
 
 interface Props {
@@ -69,6 +74,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
     telephone: photographer.telephone ?? '',
   })
   const [reseaux, setReseaux] = useState<ReseauxForm>(() => emptyReseauxForm(photographer.reseaux))
+  const [visuel, setVisuel] = useState<VisuelForm>(() => ({ metier: readMetier(photographer.metier), options: readOptions(photographer.options), video_url: photographer.video_url ?? '' }))
   const [vitrine, setVitrine] = useState<VitrineForm>(() => initialVitrineForm(photographer, 'photographe'))
   const [busy, startBusy] = useTransition()
   const [err, setErr] = useState<string | null>(null)
@@ -119,6 +125,9 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         instagram_handle: form.instagram_handle || null,
         telephone: form.telephone || null,
         reseaux,
+        metier: visuel.metier,
+        options: visuel.options,
+        video_url: visuel.video_url || null,
         ...vitrinePayload(vitrine),
       })
       if (res.error) setErr(res.error)
@@ -189,9 +198,9 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
       )}
       <HubHero
         eyebrowIcon={<Camera size={14} weight="fill" />}
-        eyebrow="Ma fiche photographe"
+        eyebrow={`Ma fiche ${metierLabel(visuel.metier).toLowerCase()}`}
         title={<>Ton travail, <HeroEm>vu par les hôtes</HeroEm>{photographer.ville ? ` de ${photographer.ville}` : ''}</>}
-        desc="Les hôtes choisissent leur photographe en regardant d’abord les photos. Ajoute tes plus belles réalisations, des formules claires et les villes où tu interviens : ta fiche fait office de site vitrine, et les demandes arrivent dans Demandes reçues et par email."
+        desc="Les hôtes choisissent leur photographe ou leur vidéaste en regardant d’abord ses images. Ajoute tes plus belles réalisations, le lien vers tes vidéos, des formules claires et les villes où tu interviens : ta fiche fait office de site vitrine, et les demandes arrivent dans Demandes reçues et par email."
         aside={
           <div style={{ ...heroCard, flex: '1 1 100%', minWidth: 0 }}>
             <div style={s.asideTitle}>{isActive ? 'Ta fiche est en ligne' : isPending ? 'Ta fiche n’est pas encore publique' : `Ta fiche est ${FICHE_LABELS[photographer.status] ?? photographer.status}`}</div>
@@ -315,6 +324,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         <ReseauxFields value={reseaux} onChange={setReseaux} inputStyle={s.input} />
 
         <h3 style={s.sectionTitle}>Activité professionnelle</h3>
+        <VisuelFields value={visuel} onChange={setVisuel} inputStyle={s.input} />
         <Field label="Lien portfolio (site ou Instagram)" req>
           <input style={s.input} type="text" inputMode="url" autoCapitalize="off" spellCheck={false} placeholder="monsite.fr ou instagram.com/moncompte" value={form.portfolio_url} onChange={e => setForm({ ...form, portfolio_url: e.target.value })} required maxLength={300} />
         </Field>
@@ -324,6 +334,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
             <option>Intérieurs LCD</option>
             <option>Intérieurs + drone extérieur</option>
             <option>Intérieurs + vidéo / Reels</option>
+            <option>Vidéo de visite du logement</option>
             <option>Visite virtuelle Matterport 3D</option>
             <option>Hôtels et gîtes de charme</option>
             <option>Architecture + mise en scène</option>

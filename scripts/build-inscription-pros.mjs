@@ -11,6 +11,7 @@
 // api/cleaner/signup.js : ne pas les renommer.
 // Usage : node scripts/build-inscription-pros.mjs  (pages statiques, pas lancé au build)
 
+import { METIERS_VISUELS, OPTIONS_VISUELLES } from './lib/pro-visuel.mjs'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -69,11 +70,12 @@ ${field({ id: 'zoneCouverte', label: 'Ta zone', ph: cfg.zonePh, attrs: 'maxlengt
 const PHOTO = {
   key: 'photographe',
   dir: 'photographes',
-  title: 'Inscription photographe Airbnb : crée ta fiche',
-  desc: 'Crée ta fiche de photographe location courte durée : site vitrine sur Google, demandes d’hôtes en direct, statistiques. En ligne en quelques minutes, sans commission.',
+  title: 'Inscription photographe ou vidéaste Airbnb : ta fiche',
+  desc: 'Crée ta fiche de photographe ou de vidéaste location courte durée : site vitrine sur Google, demandes d’hôtes en direct, statistiques. Sans commission.',
   metier: 'Photographe',
-  h1: 'Tes photos, vues par <em>les hôtes de ta ville</em>',
-  lead: 'Ta fiche sert de site vitrine sur Google : tes photos, tes formules, ta zone. Les hôtes te contactent directement et les demandes de ta zone arrivent chez toi. En ligne quelques minutes après le paiement, sans validation à attendre.',
+  eye: 'Annuaire · photographes et vidéastes location courte durée',
+  h1: 'Tes photos et tes vidéos, vues par <em>les hôtes de ta ville</em>',
+  lead: 'Ta fiche sert de site vitrine sur Google : tes photos, ta vidéo, tes formules, ta zone. Les hôtes te contactent directement et les demandes de ta zone arrivent chez toi. En ligne quelques minutes après le paiement, sans validation à attendre.',
   brd: ['/devenir-photographe-lcd', 'Photographes LCD'],
   apiPath: '/api/photographer/signup',
   placesKey: 'photographers',
@@ -87,22 +89,37 @@ const PHOTO = {
   benefits: [
     ['ph-globe', 'Un site vitrine sur Google', 'Ta fiche est indexée, avec un lien direct (dofollow) vers ton site ou ton portfolio.'],
     ['ph-map-pin', 'Sur la page de ta ville', 'Les hôtes qui cherchent « photographe Airbnb » + ta ville tombent sur toi.'],
-    ['ph-paper-plane-tilt', 'Les demandes viennent à toi', 'Quand un hôte de ta zone décrit son besoin, il arrive chez les 3 photographes les plus proches.'],
+    ['ph-paper-plane-tilt', 'Les demandes viennent à toi', 'Quand un hôte de ta zone décrit son besoin, il arrive chez les 3 pros les plus proches.'],
+    ['ph-play-circle', 'Ta vidéo en haut de ta fiche', 'Un lien YouTube ou Vimeo se lit sur ta fiche. Les hôtes filtrent par photographe, vidéaste ou drone.'],
     ['ph-images', 'Photos et formules', 'Ajoute ensuite 6 photos, tes formules et ta façon de travailler depuis ton espace.'],
     ['ph-chart-line-up', 'Tes statistiques', 'Visiteurs, clics, demandes et recherches Google, avec un bilan chaque mois.'],
     ['ph-file-text', 'Devis en ligne', 'Envoie un devis propre en 2 minutes, accepté en ligne par l’hôte.'],
   ],
   offerFields: `
+        <div class="f full">
+          <label>Tu proposes <span class="req" aria-hidden="true">*</span></label>
+          <div class="chips" role="radiogroup" aria-label="Tu proposes">${METIERS_VISUELS.map((m, i) => `<label class="chip"><input type="radio" name="metier" value="${m.key}"${i === 0 ? ' checked' : ''}><span><i class="ph-bold ph-${m.icon}" style="margin-right:6px"></i>${esc(m.label)}</span></label>`).join('')}</div>
+          <span class="hint">Les hôtes filtrent l’annuaire par photographe, vidéaste ou les deux.</span>
+        </div>
+        <div class="f full">
+          <label>Options proposées <small>facultatif</small></label>
+          <div class="chips">${OPTIONS_VISUELLES.map(o => `<label class="chip"><input type="checkbox" name="options" value="${o.key}"><span><i class="ph-bold ph-${o.icon}" style="margin-right:6px"></i>${esc(o.label)}</span></label>`).join('')}</div>
+        </div>
 ${field({ id: 'portfolioUrl', label: 'Ton site ou ton portfolio', req: true, type: 'url', ph: 'monsite.fr ou instagram.com/moncompte', attrs: 'maxlength="300"', hint: 'Le bouton « Voir le portfolio » de ta fiche y mène. Un compte Instagram pro marche aussi (@moncompte).', full: true })}
+${field({ id: 'videoUrl', label: 'Lien vers tes vidéos', type: 'url', ph: 'youtube.com/watch?v=… ou ta chaîne, Vimeo, Instagram', attrs: 'maxlength="300"', hint: 'Une vidéo YouTube ou Vimeo se lit directement en haut de ta fiche. Une chaîne ou un compte : un bouton « Voir les vidéos ».', full: true })}
 ${field({ id: 'instagramHandle', label: 'Instagram', ph: 'marie.photo', attrs: 'maxlength="50"', hint: 'Sans le @.' })}
-${select({ id: 'specialite', label: 'Ta spécialité', options: [['Intérieurs LCD', 'Intérieurs de location courte durée'], ['Intérieurs + drone extérieur', 'Intérieurs + drone extérieur'], ['Intérieurs + vidéo / Reels', 'Intérieurs + vidéo / Reels'], ['Visite virtuelle Matterport 3D', 'Visite virtuelle 3D'], ['Hôtels et gîtes de charme', 'Hôtels et gîtes de charme'], ['Architecture + mise en scène', 'Architecture + mise en scène']] })}
+${select({ id: 'specialite', label: 'Ta spécialité', options: [['Intérieurs LCD', 'Intérieurs de location courte durée'], ['Intérieurs + drone extérieur', 'Intérieurs + drone extérieur'], ['Intérieurs + vidéo / Reels', 'Intérieurs + vidéo / Reels'], ['Vidéo de visite du logement', 'Vidéo de visite du logement'], ['Visite virtuelle Matterport 3D', 'Visite virtuelle 3D'], ['Hôtels et gîtes de charme', 'Hôtels et gîtes de charme'], ['Architecture + mise en scène', 'Architecture + mise en scène']] })}
 ${field({ id: 'tarifMin', label: 'Prix de départ d’une séance (€)', type: 'number', ph: '250', attrs: 'min="0" max="5000" inputmode="numeric"', hint: 'Affiché « dès 250 € » sur ta carte.' })}
 ${field({ id: 'tarifMax', label: 'Prix d’une grosse séance (€)', type: 'number', ph: '600', attrs: 'min="0" max="5000" inputmode="numeric"' })}`,
-  bioPh: 'Depuis quand tu photographies des locations, ce que les hôtes aiment dans ton travail, comment se passe une séance. Quelques lignes suffisent.',
-  ids: ['fullName', 'email', 'password', 'ville', 'zoneCouverte', 'portfolioUrl', 'instagramHandle', 'telephone', 'specialite', 'tarifMin', 'tarifMax', 'bio'],
-  extraCollect: '',
+  bioPh: 'Depuis quand tu photographies ou filmes des locations, ce que les hôtes aiment dans ton travail, comment se passe une séance. Quelques lignes suffisent.',
+  ids: ['fullName', 'email', 'password', 'ville', 'zoneCouverte', 'portfolioUrl', 'videoUrl', 'instagramHandle', 'telephone', 'specialite', 'tarifMin', 'tarifMax', 'bio'],
+  extraCollect: `
+    var mt = form.querySelector('input[name="metier"]:checked')
+    data.metier = mt ? mt.value : 'photo'
+    data.options = Array.from(form.querySelectorAll('input[name="options"]:checked')).map(function (i) { return i.value })`,
   faq: [
     ['Y a-t-il une validation de mon profil ?', 'Non. Ta fiche est en ligne quelques minutes après le paiement. Tu la complètes ensuite quand tu veux depuis ton espace.'],
+    ['Je suis vidéaste, pas photographe : c’est pour moi ?', 'Oui. Choisis « Vidéaste » ou « Photographe et vidéaste » : les hôtes filtrent l’annuaire selon ce qu’ils cherchent, et ta vidéo se lit en haut de ta fiche.'],
     ['Je n’ai pas encore mes photos sous la main', 'Pas de souci : tu ajoutes tes photos, tes formules et tes villes après l’inscription, depuis ton espace. En attendant, ta carte affiche tes initiales.'],
     ['Prenez-vous une commission sur mes séances ?', 'Non, jamais. Les hôtes te contactent directement et le devis, la séance et le paiement se règlent entre vous.'],
     ['Comment arrêter ?', 'Ton abonnement est annuel et se résilie à tout moment depuis ton espace, sans frais.'],
@@ -296,8 +313,8 @@ function page(cfg) {
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
 <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=a9d374e172">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
 <style>${CSS}</style>
 <script defer src="/nav.js"></script>
 </head>
@@ -306,7 +323,7 @@ function page(cfg) {
   <div class="s-in hero-grid">
     <div>
       <div class="brd"><a href="/">Accueil</a> · <a href="${cfg.brd[0]}">${cfg.brd[1]}</a> · <span>Créer ma fiche</span></div>
-      <span class="eye">Annuaire · ${esc(cfg.metier.toLowerCase())}s location courte durée</span>
+      <span class="eye">${esc(cfg.eye || `Annuaire · ${cfg.metier.toLowerCase()}s location courte durée`)}</span>
       <h1>${cfg.h1}</h1>
       <p class="lead">${esc(cfg.lead)}</p>
       <div class="ticks">
@@ -436,7 +453,9 @@ ${step(4, cfg.key === 'menage' ? 'Ton équipe en quelques mots' : 'Toi en quelqu
     $('pv-ini').textContent = initials(name) || '${cfg.key === 'menage' ? 'BC' : 'MD'}'
     var zone = val('zoneCouverte')
     $('pv-meta').textContent = [val('ville') || 'Ta ville', zone].filter(Boolean).join(' · ')
-    $('pv-extra').textContent = selText('${cfg.specialiteId}')
+    ${cfg.key === 'menage' ? `$('pv-extra').textContent = selText('${cfg.specialiteId}')` : `var mt = form.querySelector('input[name="metier"]:checked'); var ml = mt ? mt.parentNode.textContent.trim() : 'Photographe'
+    $('pv-extra').textContent = [ml, selText('${cfg.specialiteId}')].filter(Boolean).join(' · ')
+    var pm = document.querySelector('.pc-media small'); if (pm) pm.textContent = ml`}
     var p = parseInt(val('${cfg.key === 'menage' ? 'tarifForfaitMin' : 'tarifMin'}'), 10)
     $('pv-price').innerHTML = p > 0 ? 'dès <strong>' + p + ' €</strong>' : 'Tarifs sur la fiche'
   }

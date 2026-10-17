@@ -26,6 +26,8 @@ const CAMILLE = {
   ville: 'Lyon',
   zone_couverte: 'Lyon + 60 km · Rhône, Beaujolais, vallée du Rhône',
   specialite: 'Intérieurs + drone extérieur',
+  metier: 'photo_video',
+  options: ['drone', 'reels', 'crepuscule'],
   tarif_min: 350,
   tarif_max: 700,
   portfolio_url: 'https://portfolio.example',
@@ -146,11 +148,11 @@ const pages = [
     file: 'annuaires/photographes/exemple-fiche/index.html',
     html: buildPhotographe(CAMILLE),
     meta: {
-      title: 'Exemple de fiche photographe LCD · Aperçu de ta fiche',
-      desc: 'Aperçu de la fiche que tu obtiens dans l’annuaire des photographes LCD de Jason Marinho : photos, formules, déroulé, villes couvertes, contact direct.',
+      title: 'Exemple de fiche photographe et vidéaste · Aperçu',
+      desc: 'Aperçu de la fiche que tu obtiens dans l’annuaire des photographes et vidéastes LCD de Jason Marinho : photos, vidéo, formules, déroulé, villes couvertes, contact direct.',
       metier: 'photographe', who: 'Camille', statsMetier: 'photographe',
       inscription: '/annuaires/photographes/inscription', devenir: '/devenir-photographe-lcd', devenirLabel: 'Photographes LCD',
-      ctaLbl: 'Tu veux la même fiche pour toi ?', ctaH2: 'Crée ta fiche photographe <em>en 2 minutes</em>',
+      ctaLbl: 'Tu veux la même fiche pour toi ?', ctaH2: 'Crée ta fiche photographe ou vidéaste <em>en 2 minutes</em>',
       annots: [
         ['<div class="vt-h"><h2>Photos</h2>', 'Jusqu’à 6 photos'],
         ['<h2>Présentation</h2>', 'Bio que tu rédiges'],

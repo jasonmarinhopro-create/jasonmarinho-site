@@ -1,6 +1,10 @@
 @font-face {
   font-family: "Phosphor";
-  src: url("/fonts/Phosphor-subset.woff2?v=815063bb3e") format("woff2");
+  src:
+    url("/fonts/Phosphor.woff2") format("woff2"),
+    url("/fonts/Phosphor.woff") format("woff"),
+    url("/fonts/Phosphor.ttf") format("truetype"),
+    url("/fonts/Phosphor.svg#Phosphor") format("svg");
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -41,23 +45,29 @@
 .ph.ph-arrow-square-out:before { content: "\e5de"; }
 .ph.ph-arrow-up-right:before { content: "\e092"; }
 .ph.ph-arrows-clockwise:before { content: "\e094"; }
+.ph.ph-arrows-left-right:before { content: "\e0a0"; }
+.ph.ph-article:before { content: "\e0a8"; }
 .ph.ph-bank:before { content: "\e0b4"; }
 .ph.ph-bed:before { content: "\e0cc"; }
+.ph.ph-bell:before { content: "\e0ce"; }
 .ph.ph-bell-ringing:before { content: "\e5e8"; }
 .ph.ph-book-open:before { content: "\e0e6"; }
 .ph.ph-bookmark-simple:before { content: "\e0ea"; }
 .ph.ph-books:before { content: "\e758"; }
 .ph.ph-briefcase:before { content: "\e0ee"; }
 .ph.ph-broom:before { content: "\ec54"; }
+.ph.ph-browser:before { content: "\e0f4"; }
 .ph.ph-buildings:before { content: "\e102"; }
 .ph.ph-calculator:before { content: "\e538"; }
 .ph.ph-calendar:before { content: "\e108"; }
 .ph.ph-calendar-blank:before { content: "\e10a"; }
 .ph.ph-calendar-check:before { content: "\e712"; }
+.ph.ph-calendar-dots:before { content: "\e7b4"; }
 .ph.ph-calendar-plus:before { content: "\e714"; }
 .ph.ph-calendar-x:before { content: "\e10c"; }
 .ph.ph-camera:before { content: "\e10e"; }
 .ph.ph-caret-down:before { content: "\e136"; }
+.ph.ph-caret-left:before { content: "\e138"; }
 .ph.ph-caret-right:before { content: "\e13a"; }
 .ph.ph-certificate:before { content: "\e766"; }
 .ph.ph-chart-bar:before { content: "\e150"; }
@@ -80,23 +90,29 @@
 .ph.ph-coffee:before { content: "\e1c2"; }
 .ph.ph-compass:before { content: "\e1c8"; }
 .ph.ph-confetti:before { content: "\e81a"; }
+.ph.ph-copy:before { content: "\e1ca"; }
 .ph.ph-couch:before { content: "\e7f6"; }
 .ph.ph-credit-card:before { content: "\e1d2"; }
+.ph.ph-cube:before { content: "\e1da"; }
 .ph.ph-currency-circle-dollar:before { content: "\e54c"; }
 .ph.ph-currency-eur:before { content: "\e554"; }
+.ph.ph-cursor-click:before { content: "\e7c8"; }
 .ph.ph-database:before { content: "\e1de"; }
 .ph.ph-device-mobile:before { content: "\e1e0"; }
 .ph.ph-device-mobile-camera:before { content: "\e1e2"; }
 .ph.ph-door:before { content: "\e61c"; }
 .ph.ph-door-open:before { content: "\e7e6"; }
 .ph.ph-download-simple:before { content: "\e20c"; }
+.ph.ph-drone:before { content: "\ed74"; }
 .ph.ph-envelope:before { content: "\e214"; }
 .ph.ph-envelope-simple:before { content: "\e218"; }
 .ph.ph-eye:before { content: "\e220"; }
+.ph.ph-eye-slash:before { content: "\e224"; }
 .ph.ph-facebook-logo:before { content: "\e226"; }
 .ph.ph-file-pdf:before { content: "\e702"; }
 .ph.ph-file-text:before { content: "\e23a"; }
 .ph.ph-files:before { content: "\e710"; }
+.ph.ph-film-strip:before { content: "\e792"; }
 .ph.ph-fingerprint:before { content: "\e23e"; }
 .ph.ph-flag:before { content: "\e244"; }
 .ph.ph-folders:before { content: "\e260"; }
@@ -105,21 +121,26 @@
 .ph.ph-gear:before { content: "\e270"; }
 .ph.ph-gift:before { content: "\e276"; }
 .ph.ph-globe:before { content: "\e288"; }
+.ph.ph-globe-hemisphere-west:before { content: "\e28c"; }
+.ph.ph-google-logo:before { content: "\e292"; }
 .ph.ph-graduation-cap:before { content: "\e62c"; }
 .ph.ph-hand-coins:before { content: "\ea8c"; }
 .ph.ph-hand-heart:before { content: "\e810"; }
 .ph.ph-handshake:before { content: "\e582"; }
 .ph.ph-headset:before { content: "\e584"; }
 .ph.ph-heart:before { content: "\e2a8"; }
+.ph.ph-hourglass-medium:before { content: "\e2b8"; }
 .ph.ph-house:before { content: "\e2c2"; }
 .ph.ph-house-line:before { content: "\e2c4"; }
 .ph.ph-house-simple:before { content: "\e2c6"; }
 .ph.ph-identification-badge:before { content: "\e6f6"; }
 .ph.ph-identification-card:before { content: "\e2c8"; }
 .ph.ph-image-square:before { content: "\e2cc"; }
+.ph.ph-images:before { content: "\e836"; }
 .ph.ph-infinity:before { content: "\e634"; }
 .ph.ph-info:before { content: "\e2ce"; }
 .ph.ph-instagram-logo:before { content: "\e2d0"; }
+.ph.ph-kanban:before { content: "\eb54"; }
 .ph.ph-key:before { content: "\e2d6"; }
 .ph.ph-layout:before { content: "\e6d6"; }
 .ph.ph-lifebuoy:before { content: "\e63a"; }
@@ -140,7 +161,9 @@
 .ph.ph-map-pin-simple-line:before { content: "\ee38"; }
 .ph.ph-map-trifold:before { content: "\e31a"; }
 .ph.ph-megaphone:before { content: "\e324"; }
+.ph.ph-money:before { content: "\e588"; }
 .ph.ph-moon:before { content: "\e330"; }
+.ph.ph-moon-stars:before { content: "\e58e"; }
 .ph.ph-music-note-simple:before { content: "\e33e"; }
 .ph.ph-newspaper:before { content: "\e344"; }
 .ph.ph-note-pencil:before { content: "\e34c"; }
@@ -150,18 +173,22 @@
 .ph.ph-path:before { content: "\e39c"; }
 .ph.ph-pencil-simple:before { content: "\e3b4"; }
 .ph.ph-percent:before { content: "\e3b6"; }
+.ph.ph-piggy-bank:before { content: "\ea04"; }
+.ph.ph-play:before { content: "\e3d0"; }
 .ph.ph-play-circle:before { content: "\e3d2"; }
 .ph.ph-plugs-connected:before { content: "\eb5a"; }
 .ph.ph-plus:before { content: "\e3d4"; }
 .ph.ph-plus-circle:before { content: "\e3d6"; }
 .ph.ph-prohibit:before { content: "\e3de"; }
 .ph.ph-question:before { content: "\e3e8"; }
+.ph.ph-ranking:before { content: "\ed62"; }
 .ph.ph-receipt:before { content: "\e3ec"; }
 .ph.ph-robot:before { content: "\e762"; }
 .ph.ph-rocket:before { content: "\e3fc"; }
 .ph.ph-rows:before { content: "\e5a2"; }
 .ph.ph-scales:before { content: "\e750"; }
 .ph.ph-seal-check:before { content: "\e606"; }
+.ph.ph-share-network:before { content: "\e408"; }
 .ph.ph-shield-check:before { content: "\e40c"; }
 .ph.ph-shield-warning:before { content: "\e412"; }
 .ph.ph-shovel:before { content: "\e9e6"; }
@@ -173,6 +200,7 @@
 .ph.ph-snowflake:before { content: "\e5aa"; }
 .ph.ph-sparkle:before { content: "\e6a2"; }
 .ph.ph-spinner:before { content: "\e66a"; }
+.ph.ph-split-horizontal:before { content: "\e872"; }
 .ph.ph-squares-four:before { content: "\e464"; }
 .ph.ph-stack:before { content: "\e466"; }
 .ph.ph-star:before { content: "\e46a"; }

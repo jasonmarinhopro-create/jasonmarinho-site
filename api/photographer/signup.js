@@ -220,6 +220,12 @@ module.exports = async function handler(req, res) {
   const tarifMin = parseInt(body.tarifMin || '0', 10) || null
   const tarifMax = parseInt(body.tarifMax || '0', 10) || null
   const bio = String(body.bio || '').trim().slice(0, 600)
+  // Photographe, vidéaste ou les deux, options et lien vidéo (migration 136,
+  // liste : scripts/lib/pro-visuel.mjs)
+  const metier = ['photo', 'video', 'photo_video'].includes(body.metier) ? body.metier : 'photo'
+  const OPTIONS = ['drone', 'visite_3d', 'reels', 'crepuscule', 'mise_en_scene']
+  const options = OPTIONS.filter(k => Array.isArray(body.options) && body.options.includes(k))
+  const videoUrl = normUrl(body.videoUrl)
 
   if (!fullName || !email || !ville || !portfolioUrl || !password) {
     return res.status(400).json({ error: 'Champs obligatoires manquants : nom, email, mot de passe, ville, portfolio.' })
@@ -229,6 +235,9 @@ module.exports = async function handler(req, res) {
   }
   if (password.length < 8) {
     return res.status(400).json({ error: 'Le mot de passe doit faire au moins 8 caractères.' })
+  }
+  if (videoUrl && !urlOk(videoUrl)) {
+    return res.status(400).json({ error: 'Le lien vers tes vidéos ne ressemble pas à une adresse de site (exemple : youtube.com/@toncompte).' })
   }
   if (!urlOk(portfolioUrl)) {
     return res.status(400).json({ error: 'Ton site ou ton portfolio : ce lien ne ressemble pas à une adresse de site (exemple : monsite.fr ou instagram.com/moncompte).' })
@@ -309,7 +318,8 @@ module.exports = async function handler(req, res) {
   const priceId = tier === 'fondateur' ? FOUNDER_PRICE_ID : STANDARD_PRICE_ID
 
   // 4. Insert pending_payment lié au user_id
-  const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/photographers`, {
+  const visuel = { metier, options, video_url: videoUrl || null }
+  const insertFiche = extra => fetch(`${SUPABASE_URL}/rest/v1/photographers`, {
     method: 'POST',
     headers: {
       apikey: SERVICE_KEY,
@@ -318,6 +328,7 @@ module.exports = async function handler(req, res) {
       Prefer: 'return=representation',
     },
     body: JSON.stringify({
+      ...extra,
       user_id: userId,
       email, full_name: fullName, ville,
       zone_couverte: zoneCouverte || null,
@@ -331,6 +342,9 @@ module.exports = async function handler(req, res) {
       status: 'pending_payment',
     }),
   })
+  let insertRes = await insertFiche(visuel)
+  // Migration 136 pas encore passée : la fiche s'enregistre sans ces champs
+  if (insertRes.status === 400) insertRes = await insertFiche({})
   if (!insertRes.ok) {
     const txt = await insertRes.text()
     console.error('[photographer/signup] INSERT failed', insertRes.status, txt)

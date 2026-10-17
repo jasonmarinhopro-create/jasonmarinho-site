@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Exemple de fiche photographe LCD · Aperçu de ta fiche</title>
-<meta name="description" content="Aperçu de la fiche que tu obtiens dans l’annuaire des photographes LCD de Jason Marinho : photos, formules, déroulé, villes couvertes, contact direct.">
+<title>Exemple de fiche photographe et vidéaste · Aperçu</title>
+<meta name="description" content="Aperçu de la fiche que tu obtiens dans l’annuaire des photographes et vidéastes LCD de Jason Marinho : photos, vidéo, formules, déroulé, villes couvertes, contact direct.">
 <link rel="canonical" href="https://jasonmarinho.com/annuaires/photographes/exemple-fiche">
-<meta property="og:title" content="Exemple de fiche photographe LCD · Aperçu de ta fiche">
-<meta property="og:description" content="Aperçu de la fiche que tu obtiens dans l’annuaire des photographes LCD de Jason Marinho : photos, formules, déroulé, villes couvertes, contact direct.">
+<meta property="og:title" content="Exemple de fiche photographe et vidéaste · Aperçu">
+<meta property="og:description" content="Aperçu de la fiche que tu obtiens dans l’annuaire des photographes et vidéastes LCD de Jason Marinho : photos, vidéo, formules, déroulé, villes couvertes, contact direct.">
 <meta property="og:url" content="https://jasonmarinho.com/annuaires/photographes/exemple-fiche">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
@@ -19,7 +19,7 @@
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
 <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
 <style>
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -65,6 +65,15 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 
 .hero-grid{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
 @media(min-width:900px){.hero-grid.has-cover{grid-template-columns:minmax(0,1fr) 400px}}
+.vt-video{width:100%}
+.vt-video-btn,.vt-video iframe{position:relative;display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:16/9;border:0;border-radius:18px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.35);background:#00261e center/cover no-repeat;cursor:pointer;padding:0}
+.vt-video-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,20,14,.15),rgba(0,20,14,.55))}
+.vt-play{position:relative;width:68px;height:68px;border-radius:50%;background:#FFD56B;color:#003329;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 8px 24px rgba(0,0,0,.35);transition:transform .2s}
+.vt-video-btn:hover .vt-play{transform:scale(1.07)}
+.vt-video-l{position:absolute;left:16px;bottom:14px;color:#fff;font-family:'Outfit',sans-serif;font-weight:600;font-size:14px;letter-spacing:.2px}
+.vt-video-n{margin:8px 2px 0;font-size:11.5px;color:rgba(255,255,255,.5)}
+.vt-opts{display:flex;flex-wrap:wrap;gap:8px}
+.vt-opt{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:999px;background:#F2F6F3;border:1px solid rgba(0,76,63,.12);color:var(--g);font-size:13px;font-weight:600}
 .vt-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
 .vt-btn-y,.vt-btn-o{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Outfit',sans-serif;font-weight:600;font-size:15px;padding:13px 22px;border-radius:10px;text-decoration:none;transition:background .15s,border-color .15s}
 .vt-btn-y{background:#FFD56B;color:#003329}
@@ -159,12 +168,14 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
     <div class="brd"><a href="/">Accueil</a> · <a href="/devenir-photographe-lcd">Photographes LCD</a> · <span>Exemple de fiche</span></div>
     <div class="tag-row">
       
+      <span class="tag"><i class="ph-bold ph-film-strip" style="font-size:10px"></i>Photographe et vidéaste</span>
       <span class="tag">Intérieurs + drone extérieur</span>
+      <span class="tag"><i class="ph-bold ph-drone" style="font-size:10px"></i>Drone</span>
       <span class="tag"><i class="ph-bold ph-map-pin" style="font-size:10px"></i>Lyon</span>
     </div>
     <div class="hero-id">
       <div class="hero-logo placeholder">CS</div>
-      <h1>Camille Sénéchal<br><em>photographe LCD</em></h1>
+      <h1>Camille Sénéchal<br><em>photographe et vidéaste LCD</em></h1>
     </div>
     <p class="subtitle">Zone d'intervention : Lyon + 60 km · Rhône, Beaujolais, vallée du Rhône</p>
     <div class="meta-row">
@@ -191,6 +202,7 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
   <div class="vt-lb-n"></div>
 </dialog>
     <div class="card" style="margin-bottom:20px"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Bio que tu rédiges</span><h2>Présentation</h2><div class="bio">Photographe spécialisée location courte durée depuis 4 ans à Lyon, je shoot exclusivement pour des hôtes Airbnb et des conciergeries du Rhône. Mon truc : les intérieurs lumineux qui font envie dès la première photo, avec parfois un complément drone pour valoriser un jardin ou une vue. Je travaille rapide (la séance type dure 2h) et je livre sous 5 jours, retouches comprises. Chaque shoot est livré en 2 formats : pleine résolution pour ton site / dossier presse, et carré 1:1 optimisé pour le thumbnail Airbnb.</div></div>
+    <div class="card vt-sec"><h2>Ce que Camille propose</h2><div class="vt-opts"><span class="vt-opt"><i class="ph-bold ph-camera"></i>Photos et vidéo du logement</span><span class="vt-opt"><i class="ph-bold ph-drone"></i>Vues aériennes (drone)</span><span class="vt-opt"><i class="ph-bold ph-film-strip"></i>Vidéos courtes pour les réseaux</span><span class="vt-opt"><i class="ph-bold ph-moon-stars"></i>Photos au crépuscule</span></div></div>
     <section class="card vt-sec" id="formules" style="position:relative">
   <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes formules</span><h2>Formules</h2>
   <div class="vt-forms n3"><div class="vt-form first">
@@ -216,6 +228,7 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
       <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Lien vers ton portfolio</span><h2>Portfolio complet</h2>
       <p style="font-size:14px;color:var(--tm);line-height:1.7;margin-bottom:14px">Toutes les réalisations de Camille Sénéchal, pour juger de son style et voir si son approche correspond à ton logement.</p>
       <a href="#photos" class="btn-p" onclick="jmTrack('portfolio')"><i class="ph-bold ph-image-square"></i>Voir le portfolio</a>
+      
       <a href="#photos" class="btn-ol" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i>@camille.studio.lyon</a>
     </div>
     <section class="card vt-sec" style="position:relative">
@@ -243,6 +256,7 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
       <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes infos pratiques</span><div class="aside-row"><span class="aside-k">Ville principale</span><span class="aside-v">Lyon</span></div>
       <div class="aside-row"><span class="aside-k">Zone couverte</span><span class="aside-v">Lyon + 60 km · Rhône, Beaujolais, vallée du Rhône</span></div>
       <div class="aside-row"><span class="aside-k">Tarifs indicatifs</span><span class="aside-v">350 – 700 €</span></div>
+      <div class="aside-row"><span class="aside-k">Métier</span><span class="aside-v">Photographe et vidéaste</span></div>
       <div class="aside-row"><span class="aside-k">Spécialité</span><span class="aside-v">Intérieurs + drone extérieur</span></div>
       
       <div class="pro-reseaux" style="margin-top:14px">
@@ -260,7 +274,7 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 </div>
 
 <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;gap:10px;flex-wrap:wrap">
-  <a href="/annuaires/photographes" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Tous les photographes LCD</a>
+  <a href="/annuaires/photographes" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Tous les photographes et vidéastes</a>
   <a href="/photographe-lcd-lyon" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Photographe LCD Lyon : le guide<i class="ph-bold ph-arrow-right"></i></a>
 </div>
 
@@ -331,7 +345,7 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
   <div class="sd-head">
     <span class="sd-lbl"><i class="ph-bold ph-eye"></i>Exemple · chiffres fictifs</span>
     <h2 class="sd-h2">Tes statistiques, <em>comme dans ton espace</em></h2>
-    <p class="sd-sub">Voici « Mes statistiques », l'écran que tu retrouves dans ton espace pro : qui voit ta fiche, d'où viennent ces visiteurs, sur quelles recherches Google tu apparais et ce que ça te rapporte en demandes. Exemple d'une fiche de photographe à Lyon sur 30 jours.</p>
+    <p class="sd-sub">Voici « Mes statistiques », l'écran que tu retrouves dans ton espace pro : qui voit ta fiche, d'où viennent ces visiteurs, sur quelles recherches Google tu apparais et ce que ça te rapporte en demandes. Exemple d'une fiche de photographe à Lyon sur 30 jours (chiffres fictifs). Les vrais chiffres du site sont publics : <a href="/chiffres" style="color:#004C3F;font-weight:600">la visibilité en chiffres</a>.</p>
   </div>
   <div class="sd-app">
     <div class="sd-hero">
@@ -370,7 +384,7 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 
 <div class="cta-bottom">
   <div class="lbl">Tu veux la même fiche pour toi ?</div>
-  <h2>Crée ta fiche photographe <em>en 2 minutes</em></h2>
+  <h2>Crée ta fiche photographe ou vidéaste <em>en 2 minutes</em></h2>
   <p>Remplis le formulaire, paye en direct via Stripe, et ta fiche est en ligne sous quelques minutes. À partir de 39,98 € TTC par an pour les 20 premiers.</p>
   <a href="/annuaires/photographes/inscription" class="btn-main"><i class="ph-bold ph-arrow-right"></i> Créer ma fiche maintenant</a>
 </div>
@@ -439,6 +453,14 @@ async function contactSubmit(e) {
     if(e.target.closest('[data-vt-close]')||e.target===d)d.close();
     else if(e.target.closest('[data-vt-prev]'))show(i-1);
     else if(e.target.closest('[data-vt-next]'))show(i+1);
+  });
+  document.addEventListener('click',function(e){
+    var v=e.target.closest&&e.target.closest('[data-vt-video]');
+    if(!v)return;
+    var f=document.createElement('iframe');
+    f.src=v.getAttribute('data-vt-video');f.title=v.getAttribute('aria-label')||'Vidéo';
+    f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;
+    v.replaceWith(f);
   });
   document.addEventListener('keydown',function(e){if(!d||!d.open)return;if(e.key==='ArrowLeft')show(i-1);if(e.key==='ArrowRight')show(i+1)});
   document.addEventListener('click',function(e){

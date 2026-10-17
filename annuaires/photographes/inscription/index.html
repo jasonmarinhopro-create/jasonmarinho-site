@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Inscription photographe Airbnb : crée ta fiche</title>
-<meta name="description" content="Crée ta fiche de photographe location courte durée : site vitrine sur Google, demandes d’hôtes en direct, statistiques. En ligne en quelques minutes, sans commission.">
+<title>Inscription photographe ou vidéaste Airbnb : ta fiche</title>
+<meta name="description" content="Crée ta fiche de photographe ou de vidéaste location courte durée : site vitrine sur Google, demandes d’hôtes en direct, statistiques. Sans commission.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://jasonmarinho.com/annuaires/photographes/inscription">
-<meta property="og:title" content="Inscription photographe Airbnb : crée ta fiche">
-<meta property="og:description" content="Crée ta fiche de photographe location courte durée : site vitrine sur Google, demandes d’hôtes en direct, statistiques. En ligne en quelques minutes, sans commission.">
+<meta property="og:title" content="Inscription photographe ou vidéaste Airbnb : ta fiche">
+<meta property="og:description" content="Crée ta fiche de photographe ou de vidéaste location courte durée : site vitrine sur Google, demandes d’hôtes en direct, statistiques. Sans commission.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jasonmarinho.com/annuaires/photographes/inscription">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
@@ -19,8 +19,8 @@
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
 <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=a9d374e172">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
 <style>
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.10)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -125,9 +125,9 @@ form{display:flex;flex-direction:column;gap:14px}
   <div class="s-in hero-grid">
     <div>
       <div class="brd"><a href="/">Accueil</a> · <a href="/devenir-photographe-lcd">Photographes LCD</a> · <span>Créer ma fiche</span></div>
-      <span class="eye">Annuaire · photographes location courte durée</span>
-      <h1>Tes photos, vues par <em>les hôtes de ta ville</em></h1>
-      <p class="lead">Ta fiche sert de site vitrine sur Google : tes photos, tes formules, ta zone. Les hôtes te contactent directement et les demandes de ta zone arrivent chez toi. En ligne quelques minutes après le paiement, sans validation à attendre.</p>
+      <span class="eye">Annuaire · photographes et vidéastes location courte durée</span>
+      <h1>Tes photos et tes vidéos, vues par <em>les hôtes de ta ville</em></h1>
+      <p class="lead">Ta fiche sert de site vitrine sur Google : tes photos, ta vidéo, tes formules, ta zone. Les hôtes te contactent directement et les demandes de ta zone arrivent chez toi. En ligne quelques minutes après le paiement, sans validation à attendre.</p>
       <div class="ticks">
         <span><i class="ph-bold ph-check"></i>En ligne en quelques minutes</span>
         <span><i class="ph-bold ph-check"></i>Aucune commission</span>
@@ -197,11 +197,26 @@ form{display:flex;flex-direction:column;gap:14px}
     <section class="step-card" aria-labelledby="st3">
       <header class="step-head"><span class="step-n">3</span><div><h2 id="st3">Ton travail</h2><p>Tout se modifie ensuite depuis ton espace.</p></div></header>
       <div class="grid">
+        <div class="f full">
+          <label>Tu proposes <span class="req" aria-hidden="true">*</span></label>
+          <div class="chips" role="radiogroup" aria-label="Tu proposes"><label class="chip"><input type="radio" name="metier" value="photo" checked><span><i class="ph-bold ph-camera" style="margin-right:6px"></i>Photographe</span></label><label class="chip"><input type="radio" name="metier" value="video"><span><i class="ph-bold ph-video-camera" style="margin-right:6px"></i>Vidéaste</span></label><label class="chip"><input type="radio" name="metier" value="photo_video"><span><i class="ph-bold ph-film-strip" style="margin-right:6px"></i>Photographe et vidéaste</span></label></div>
+          <span class="hint">Les hôtes filtrent l’annuaire par photographe, vidéaste ou les deux.</span>
+        </div>
+        <div class="f full">
+          <label>Options proposées <small>facultatif</small></label>
+          <div class="chips"><label class="chip"><input type="checkbox" name="options" value="drone"><span><i class="ph-bold ph-drone" style="margin-right:6px"></i>Vues aériennes (drone)</span></label><label class="chip"><input type="checkbox" name="options" value="visite_3d"><span><i class="ph-bold ph-cube" style="margin-right:6px"></i>Visite virtuelle 3D</span></label><label class="chip"><input type="checkbox" name="options" value="reels"><span><i class="ph-bold ph-film-strip" style="margin-right:6px"></i>Vidéos courtes pour les réseaux</span></label><label class="chip"><input type="checkbox" name="options" value="crepuscule"><span><i class="ph-bold ph-moon-stars" style="margin-right:6px"></i>Photos au crépuscule</span></label><label class="chip"><input type="checkbox" name="options" value="mise_en_scene"><span><i class="ph-bold ph-armchair" style="margin-right:6px"></i>Mise en scène du logement</span></label></div>
+        </div>
 
         <div class="f full">
           <label for="portfolioUrl">Ton site ou ton portfolio <span class="req" aria-hidden="true">*</span></label>
           <input type="text" id="portfolioUrl" name="portfolioUrl" data-url inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="monsite.fr ou instagram.com/moncompte" maxlength="300">
           <span class="hint">Le bouton « Voir le portfolio » de ta fiche y mène. Un compte Instagram pro marche aussi (@moncompte).</span>
+        </div>
+
+        <div class="f full">
+          <label for="videoUrl">Lien vers tes vidéos <small>facultatif</small></label>
+          <input type="text" id="videoUrl" name="videoUrl" data-url inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="youtube.com/watch?v=… ou ta chaîne, Vimeo, Instagram" maxlength="300">
+          <span class="hint">Une vidéo YouTube ou Vimeo se lit directement en haut de ta fiche. Une chaîne ou un compte : un bouton « Voir les vidéos ».</span>
         </div>
 
         <div class="f">
@@ -212,7 +227,7 @@ form{display:flex;flex-direction:column;gap:14px}
 
         <div class="f">
           <label for="specialite">Ta spécialité <small>facultatif</small></label>
-          <select id="specialite" name="specialite"><option value="">Choisir</option><option value="Intérieurs LCD">Intérieurs de location courte durée</option><option value="Intérieurs + drone extérieur">Intérieurs + drone extérieur</option><option value="Intérieurs + vidéo / Reels">Intérieurs + vidéo / Reels</option><option value="Visite virtuelle Matterport 3D">Visite virtuelle 3D</option><option value="Hôtels et gîtes de charme">Hôtels et gîtes de charme</option><option value="Architecture + mise en scène">Architecture + mise en scène</option></select>
+          <select id="specialite" name="specialite"><option value="">Choisir</option><option value="Intérieurs LCD">Intérieurs de location courte durée</option><option value="Intérieurs + drone extérieur">Intérieurs + drone extérieur</option><option value="Intérieurs + vidéo / Reels">Intérieurs + vidéo / Reels</option><option value="Vidéo de visite du logement">Vidéo de visite du logement</option><option value="Visite virtuelle Matterport 3D">Visite virtuelle 3D</option><option value="Hôtels et gîtes de charme">Hôtels et gîtes de charme</option><option value="Architecture + mise en scène">Architecture + mise en scène</option></select>
           
         </div>
 
@@ -235,7 +250,7 @@ form{display:flex;flex-direction:column;gap:14px}
       <div class="grid">
         <div class="f full">
           <label for="bio">Présentation <small>facultatif</small></label>
-          <textarea id="bio" name="bio" maxlength="600" placeholder="Depuis quand tu photographies des locations, ce que les hôtes aiment dans ton travail, comment se passe une séance. Quelques lignes suffisent."></textarea>
+          <textarea id="bio" name="bio" maxlength="600" placeholder="Depuis quand tu photographies ou filmes des locations, ce que les hôtes aiment dans ton travail, comment se passe une séance. Quelques lignes suffisent."></textarea>
           <span class="hint count" id="bio-count">0 / 600</span>
         </div>
       </div>
@@ -267,7 +282,8 @@ form{display:flex;flex-direction:column;gap:14px}
       <ul class="ben">
         <li><i class="ph-bold ph-globe"></i><div><b>Un site vitrine sur Google</b><span>Ta fiche est indexée, avec un lien direct (dofollow) vers ton site ou ton portfolio.</span></div></li>
         <li><i class="ph-bold ph-map-pin"></i><div><b>Sur la page de ta ville</b><span>Les hôtes qui cherchent « photographe Airbnb » + ta ville tombent sur toi.</span></div></li>
-        <li><i class="ph-bold ph-paper-plane-tilt"></i><div><b>Les demandes viennent à toi</b><span>Quand un hôte de ta zone décrit son besoin, il arrive chez les 3 photographes les plus proches.</span></div></li>
+        <li><i class="ph-bold ph-paper-plane-tilt"></i><div><b>Les demandes viennent à toi</b><span>Quand un hôte de ta zone décrit son besoin, il arrive chez les 3 pros les plus proches.</span></div></li>
+        <li><i class="ph-bold ph-play-circle"></i><div><b>Ta vidéo en haut de ta fiche</b><span>Un lien YouTube ou Vimeo se lit sur ta fiche. Les hôtes filtrent par photographe, vidéaste ou drone.</span></div></li>
         <li><i class="ph-bold ph-images"></i><div><b>Photos et formules</b><span>Ajoute ensuite 6 photos, tes formules et ta façon de travailler depuis ton espace.</span></div></li>
         <li><i class="ph-bold ph-chart-line-up"></i><div><b>Tes statistiques</b><span>Visiteurs, clics, demandes et recherches Google, avec un bilan chaque mois.</span></div></li>
         <li><i class="ph-bold ph-file-text"></i><div><b>Devis en ligne</b><span>Envoie un devis propre en 2 minutes, accepté en ligne par l’hôte.</span></div></li>
@@ -289,6 +305,7 @@ form{display:flex;flex-direction:column;gap:14px}
   <h2 id="faq-t">Questions fréquentes</h2>
   <div class="faq-grid">
     <div class="faq-item"><h3>Y a-t-il une validation de mon profil ?</h3><p>Non. Ta fiche est en ligne quelques minutes après le paiement. Tu la complètes ensuite quand tu veux depuis ton espace.</p></div>
+    <div class="faq-item"><h3>Je suis vidéaste, pas photographe : c’est pour moi ?</h3><p>Oui. Choisis « Vidéaste » ou « Photographe et vidéaste » : les hôtes filtrent l’annuaire selon ce qu’ils cherchent, et ta vidéo se lit en haut de ta fiche.</p></div>
     <div class="faq-item"><h3>Je n’ai pas encore mes photos sous la main</h3><p>Pas de souci : tu ajoutes tes photos, tes formules et tes villes après l’inscription, depuis ton espace. En attendant, ta carte affiche tes initiales.</p></div>
     <div class="faq-item"><h3>Prenez-vous une commission sur mes séances ?</h3><p>Non, jamais. Les hôtes te contactent directement et le devis, la séance et le paiement se règlent entre vous.</p></div>
     <div class="faq-item"><h3>Comment arrêter ?</h3><p>Ton abonnement est annuel et se résilie à tout moment depuis ton espace, sans frais.</p></div>
@@ -347,7 +364,9 @@ form{display:flex;flex-direction:column;gap:14px}
     $('pv-ini').textContent = initials(name) || 'MD'
     var zone = val('zoneCouverte')
     $('pv-meta').textContent = [val('ville') || 'Ta ville', zone].filter(Boolean).join(' · ')
-    $('pv-extra').textContent = selText('specialite')
+    var mt = form.querySelector('input[name="metier"]:checked'); var ml = mt ? mt.parentNode.textContent.trim() : 'Photographe'
+    $('pv-extra').textContent = [ml, selText('specialite')].filter(Boolean).join(' · ')
+    var pm = document.querySelector('.pc-media small'); if (pm) pm.textContent = ml
     var p = parseInt(val('tarifMin'), 10)
     $('pv-price').innerHTML = p > 0 ? 'dès <strong>' + p + ' €</strong>' : 'Tarifs sur la fiche'
   }
@@ -399,7 +418,10 @@ form{display:flex;flex-direction:column;gap:14px}
     btn.innerHTML = '<i class="ph-bold ph-spinner"></i><span>Préparation du paiement…</span>'
     var data = { t: t0, website: form.website ? form.website.value : '' }
     try { data.acq = window.__jmAcq || JSON.parse(sessionStorage.getItem('jm_acq') || 'null') } catch (err) { data.acq = null }
-    ["fullName","email","password","ville","zoneCouverte","portfolioUrl","instagramHandle","telephone","specialite","tarifMin","tarifMax","bio"].forEach(function (k) { data[k] = val(k) })
+    ["fullName","email","password","ville","zoneCouverte","portfolioUrl","videoUrl","instagramHandle","telephone","specialite","tarifMin","tarifMax","bio"].forEach(function (k) { data[k] = val(k) })
+    var mt = form.querySelector('input[name="metier"]:checked')
+    data.metier = mt ? mt.value : 'photo'
+    data.options = Array.from(form.querySelectorAll('input[name="options"]:checked')).map(function (i) { return i.value })
     var ctrl = new AbortController()
     var timer = setTimeout(function () { ctrl.abort() }, 30000)
     try {

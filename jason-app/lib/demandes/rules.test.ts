@@ -74,3 +74,22 @@ describe('relances', () => {
     expect(prochaineAction({ ...d, status: 'sans_pro', created_at: '2026-09-01T00:00:00Z', sent_to: [] }, new Map(), now)).toBe('rien')
   })
 })
+
+describe('photographes et vidéastes', () => {
+  it('garde le besoin photo / vidéo dans la demande', async () => {
+    const { cleanDemande } = await import('./rules')
+    const r = cleanDemande({ metier: 'photographe', ville: 'Lyon', nom: 'Paul Dupont', email: 'paul@exemple.fr', consent: true, frequence: 'Une vidéo' })
+    expect('value' in r && r.value.frequence).toBe('Une vidéo')
+  })
+  it('sert d\'abord les pros qui font ce que l\'hôte demande', async () => {
+    const { choisirPros } = await import('./rules')
+    const pros = [
+      { id: 'photo', ville: 'Lyon', zone_couverte: null, metier: 'photo', options: [] },
+      { id: 'video', ville: 'Villeurbanne', zone_couverte: 'Lyon', metier: 'video', options: [] },
+      { id: 'drone', ville: 'Lyon', zone_couverte: null, metier: 'photo_video', options: ['drone'] },
+    ]
+    expect(choisirPros(pros, 'Lyon', new Set(), 3, 'Une vidéo').map(p => p.id)).toEqual(['drone', 'video', 'photo'])
+    expect(choisirPros(pros, 'Lyon', new Set(), 1, 'Des photos avec vues au drone').map(p => p.id)).toEqual(['drone'])
+    expect(choisirPros(pros, 'Lyon', new Set(), 3, null).map(p => p.id).slice(0, 2).sort()).toEqual(['drone', 'photo'])
+  })
+})

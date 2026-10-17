@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { Camera, LockKey, Star } from '@phosphor-icons/react/dist/ssr'
 import { submitPhotographerSignup } from './actions'
+import VisuelFields, { type VisuelForm } from '@/components/pros/VisuelFields'
 
 interface Props {
   email: string
@@ -23,6 +24,7 @@ export default function CreerFichePhotographe({ email, defaultFullName, tier }: 
     tarifMax: '',
     bio: '',
   })
+  const [visuel, setVisuel] = useState<VisuelForm>({ metier: 'photo', options: [], video_url: '' })
   const [err, setErr] = useState<string | null>(null)
   const [busy, startBusy] = useTransition()
 
@@ -45,6 +47,9 @@ export default function CreerFichePhotographe({ email, defaultFullName, tier }: 
         tarifMin: form.tarifMin ? parseInt(form.tarifMin, 10) : null,
         tarifMax: form.tarifMax ? parseInt(form.tarifMax, 10) : null,
         bio: form.bio,
+        metier: visuel.metier,
+        options: visuel.options,
+        videoUrl: visuel.video_url,
       })
       if (res.error) { setErr(res.error); return }
       if (res.checkoutUrl) window.location.assign(res.checkoutUrl)
@@ -58,7 +63,7 @@ export default function CreerFichePhotographe({ email, defaultFullName, tier }: 
   return (
     <div style={s.wrap}>
       <div style={s.head}>
-        <h1 style={s.title}><Camera weight="duotone" size={26} style={{ verticalAlign: 'middle', marginRight: 8 }} />Créer ma fiche <em style={s.titleEm}>photographe LCD</em></h1>
+        <h1 style={s.title}><Camera weight="duotone" size={26} style={{ verticalAlign: 'middle', marginRight: 8 }} />Créer ma fiche <em style={s.titleEm}>photographe ou vidéaste</em></h1>
         <p style={s.sub}>Connecté en tant que <strong style={{ color: 'var(--text)' }}>{email}</strong>. Pas besoin de remettre tes identifiants : on rattache la fiche à ton compte existant.</p>
       </div>
 
@@ -96,12 +101,15 @@ export default function CreerFichePhotographe({ email, defaultFullName, tier }: 
           </Field>
         </Row>
 
+        <VisuelFields value={visuel} onChange={setVisuel} inputStyle={s.input} />
+
         <Field label="Spécialité">
           <select value={form.specialite} onChange={e => set('specialite', e.target.value)} style={s.input}>
             <option value="">— Choisir —</option>
             <option value="Intérieurs LCD">Intérieurs LCD (le plus courant)</option>
             <option value="Intérieurs + drone extérieur">Intérieurs + drone extérieur</option>
             <option value="Intérieurs + vidéo / Reels">Intérieurs + vidéo / Reels</option>
+            <option value="Vidéo de visite du logement">Vidéo de visite du logement</option>
             <option value="Visite virtuelle Matterport 3D">Visite virtuelle Matterport 3D</option>
             <option value="Hôtels et gîtes de charme">Hôtels et gîtes de charme</option>
             <option value="Architecture + mise en scène">Architecture + mise en scène</option>

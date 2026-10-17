@@ -7,6 +7,7 @@
 // par un test).
 
 import { villeGuide } from './inject-ville-pros.mjs'
+import { videoEmbed, videoHostLabel } from './pro-visuel.mjs'
 
 export const PHOTOS_MAX = 6
 
@@ -65,19 +66,40 @@ export function siteDeroule(raw, metier) {
 // ── Morceaux de page ────────────────────────────────────────────────
 
 /** Boutons du bandeau : contacter + photos (ou lien externe) */
-export function heroActionsHtml({ firstName, hasPhotos, external }) {
+export function heroActionsHtml({ firstName, hasPhotos, external, video }) {
+  const third = video ? `<a href="${esc(video.href)}" target="_blank" rel="noopener noreferrer" class="vt-btn-o"><i class="ph-bold ${video.icon}"></i>${esc(video.label)}</a>` : ''
   const second = hasPhotos
     ? '<a href="#photos" class="vt-btn-o"><i class="ph-bold ph-images"></i>Voir les photos</a>'
     : external
       ? `<a href="${esc(external.href)}" target="_blank" rel="noopener noreferrer" class="vt-btn-o"${external.track ? ` onclick="jmTrack('${external.track}')"` : ''}><i class="ph-bold ${external.icon || 'ph-arrow-square-out'}"></i>${esc(external.label)}</a>`
       : ''
-  return `<div class="vt-actions"><a href="#contact" class="vt-btn-y" data-vt-contact><i class="ph-bold ph-paper-plane-tilt"></i>Contacter ${esc(firstName)}</a>${second}</div>`
+  return `<div class="vt-actions"><a href="#contact" class="vt-btn-y" data-vt-contact><i class="ph-bold ph-paper-plane-tilt"></i>Contacter ${esc(firstName)}</a>${second}${third}</div>`
 }
 
 /** Photo principale à droite du bandeau (ordinateur seulement) */
 export function heroCoverHtml(photos, name) {
   if (!photos.length) return ''
   return `<button type="button" class="vt-cover" data-vt-open="0" aria-label="Agrandir la photo principale"><img src="${esc(photos[0].thumb)}" alt="Logement photographié par ${esc(name)}" width="640" height="480" fetchpriority="high"></button>`
+}
+
+/**
+ * Vidéo du pro en haut à droite du bandeau (17/10/2026, demande de Jason) :
+ * YouTube ou Vimeo se lit sur place, mais seulement après le clic (rien
+ * n'est chargé chez YouTube avant : pas de cookie ni de requête tierce à
+ * l'ouverture de la fiche). Affiche : la photo principale si elle existe.
+ * Autre lien (chaîne, Instagram, TikTok) : pas de lecteur, un bouton.
+ */
+export function heroVideoHtml(videoUrl, { name, poster } = {}) {
+  const e = videoEmbed(videoUrl)
+  if (!e) return ''
+  return `<div class="vt-video"><button type="button" class="vt-video-btn" data-vt-video="${esc(e.src)}" aria-label="Lire la vidéo de ${esc(name)}"${poster ? ` style="background-image:url('${esc(poster)}')"` : ''}><span class="vt-play"><i class="ph-bold ph-play"></i></span><span class="vt-video-l">Voir la vidéo</span></button><p class="vt-video-n">Lecture sur ${e.kind === 'youtube' ? 'YouTube' : 'Vimeo'} au clic</p></div>`
+}
+
+/** Bouton « Voir mes vidéos » (lien qui ne se lit pas sur place) */
+export function videoLink(videoUrl) {
+  if (!videoUrl) return null
+  const host = videoHostLabel(videoUrl)
+  return { href: videoUrl, label: host ? `Voir les vidéos sur ${host}` : 'Voir les vidéos', short: 'Vidéos', icon: 'ph-play-circle', embed: !!videoEmbed(videoUrl) }
 }
 
 /** Galerie en mosaïque + visionneuse */
@@ -164,6 +186,15 @@ export function stickyBarHtml({ firstName, hasPhotos, external }) {
 export const VITRINE_CSS = `
 .hero-grid{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
 @media(min-width:900px){.hero-grid.has-cover{grid-template-columns:minmax(0,1fr) 400px}}
+.vt-video{width:100%}
+.vt-video-btn,.vt-video iframe{position:relative;display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:16/9;border:0;border-radius:18px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.35);background:#00261e center/cover no-repeat;cursor:pointer;padding:0}
+.vt-video-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,20,14,.15),rgba(0,20,14,.55))}
+.vt-play{position:relative;width:68px;height:68px;border-radius:50%;background:#FFD56B;color:#003329;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 8px 24px rgba(0,0,0,.35);transition:transform .2s}
+.vt-video-btn:hover .vt-play{transform:scale(1.07)}
+.vt-video-l{position:absolute;left:16px;bottom:14px;color:#fff;font-family:'Outfit',sans-serif;font-weight:600;font-size:14px;letter-spacing:.2px}
+.vt-video-n{margin:8px 2px 0;font-size:11.5px;color:rgba(255,255,255,.5)}
+.vt-opts{display:flex;flex-wrap:wrap;gap:8px}
+.vt-opt{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:999px;background:#F2F6F3;border:1px solid rgba(0,76,63,.12);color:var(--g);font-size:13px;font-weight:600}
 .vt-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
 .vt-btn-y,.vt-btn-o{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Outfit',sans-serif;font-weight:600;font-size:15px;padding:13px 22px;border-radius:10px;text-decoration:none;transition:background .15s,border-color .15s}
 .vt-btn-y{background:#FFD56B;color:#003329}
@@ -249,6 +280,14 @@ export const VITRINE_JS = `<script>
     if(e.target.closest('[data-vt-close]')||e.target===d)d.close();
     else if(e.target.closest('[data-vt-prev]'))show(i-1);
     else if(e.target.closest('[data-vt-next]'))show(i+1);
+  });
+  document.addEventListener('click',function(e){
+    var v=e.target.closest&&e.target.closest('[data-vt-video]');
+    if(!v)return;
+    var f=document.createElement('iframe');
+    f.src=v.getAttribute('data-vt-video');f.title=v.getAttribute('aria-label')||'Vidéo';
+    f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;
+    v.replaceWith(f);
   });
   document.addEventListener('keydown',function(e){if(!d||!d.open)return;if(e.key==='ArrowLeft')show(i-1);if(e.key==='ArrowRight')show(i+1)});
   document.addEventListener('click',function(e){

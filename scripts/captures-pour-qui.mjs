@@ -37,7 +37,7 @@ function scenePage(metier) {
   const label = metier === 'menage' ? 'Équipe de ménage' : 'Photographe'
   const cards = SCENES[metier].map(c => proCardHtml({ href: '#', metier: label, alt: c.name, ...c })).join('\n')
   return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
-<link rel="stylesheet" href="/fonts/site-fonts.css"><link rel="stylesheet" href="/fonts/phosphor-regular.css"><link rel="stylesheet" href="/fonts/phosphor-bold.css">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e"><link rel="stylesheet" href="/fonts/phosphor-regular.css"><link rel="stylesheet" href="/fonts/phosphor-bold.css">
 <style>*{box-sizing:border-box;margin:0}body{background:#F7F5F0;font-family:'Outfit',sans-serif;padding:28px}
 ${ANNUAIRE_CSS}
 .grid-x{display:inline-grid;grid-template-columns:repeat(3,300px);gap:18px}a{color:inherit;text-decoration:none}</style></head>

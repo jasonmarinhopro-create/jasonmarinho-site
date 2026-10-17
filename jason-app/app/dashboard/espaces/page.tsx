@@ -11,7 +11,7 @@ export const metadata = { title: 'Mes espaces' }
 
 const SPACES: Array<{ key: UserSpace['key']; Icon: React.ElementType; title: string; desc: string; create: string; createLabel: string }> = [
   { key: 'host', Icon: HouseSimple, title: 'Hôte LCD', desc: 'Contrats, ménage, voyageurs, revenus : la gestion de tes locations au quotidien.', create: '/dashboard/logements', createLabel: 'Ajouter un logement' },
-  { key: 'photographer', Icon: Camera, title: 'Photographe', desc: "Ta fiche dans l'annuaire des photographes LCD, ton portfolio et les demandes des hôtes.", create: '/dashboard/creer-fiche-photographe', createLabel: 'Créer ma fiche photographe' },
+  { key: 'photographer', Icon: Camera, title: 'Photographe ou vidéaste', desc: "Ta fiche dans l'annuaire des photographes et vidéastes LCD, tes photos, tes vidéos et les demandes des hôtes.", create: '/dashboard/creer-fiche-photographe', createLabel: 'Créer ma fiche photographe' },
   { key: 'cleaner', Icon: Broom, title: 'Équipe ménage', desc: "Ta fiche dans l'annuaire, et le planning des hôtes avec qui tu travailles, photos de fin de ménage comprises.", create: '/dashboard/creer-fiche-menage', createLabel: 'Créer ma fiche équipe ménage' },
   { key: 'investor', Icon: ChartLineUp, title: 'Investisseur', desc: "Estime ce qu'un bien peut rapporter avant de l'acheter, avec la réglementation de la ville et un prévisionnel pour ta banque.", create: '/dashboard/investir', createLabel: 'Analyser un investissement' },
 ]

@@ -15,7 +15,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
 import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
-import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, cityPicksHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
+import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, villesHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -186,7 +186,7 @@ export function buildFichePage(c) {
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
 <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
 <style>
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -467,7 +467,7 @@ export function buildAnnuaireListPage(items) {
 <link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
-<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=f8a9c210db">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
 <style>
 :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -621,7 +621,6 @@ ${items.length > 0 ? `<div class="tools-row">
     <span class="filters-badge" id="filters-badge" style="display:none">0</span>
   </button>
 </div>
-${cityPicksHtml(cfg, counts)}
 ${demandeBandHtml(cfg)}
 
 <div class="filters-backdrop" id="filters-backdrop">

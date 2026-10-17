@@ -19,6 +19,8 @@ export const CONSERVATION_MOIS = 12
 export const LOGEMENTS = ['Studio ou T1', 'T2 ou T3', 'T4 et plus', 'Maison', 'Plusieurs logements'] as const
 export const QUAND = ['Au plus vite', 'Dans le mois', 'Dans 1 à 3 mois', 'Je me renseigne'] as const
 export const FREQUENCES = ['Des ménages réguliers entre deux voyageurs', 'Un ménage ponctuel (remise en état, fin de saison)'] as const
+/** Besoin d'un hôte qui cherche un photographe (17/10/2026 : vidéastes dans l'annuaire), rangé dans `frequence` */
+export const PRESTATIONS_PHOTO = ['Des photos', 'Une vidéo', 'Des photos et une vidéo', 'Des photos avec vues au drone'] as const
 
 export interface DemandeInput {
   metier: DemandeMetier
@@ -56,7 +58,7 @@ export function cleanDemande(body: Record<string, unknown>): { value: DemandeInp
       ville,
       logement: oneOf(body.logement, LOGEMENTS),
       quand: oneOf(body.quand, QUAND),
-      frequence: metier === 'menage' ? oneOf(body.frequence, FREQUENCES) : null,
+      frequence: oneOf(body.frequence, metier === 'menage' ? FREQUENCES : PRESTATIONS_PHOTO),
       budget: txt(body.budget, 60) || null,
       message,
       nom,
@@ -76,6 +78,23 @@ export interface ProCandidat {
   villes_couvertes?: string[] | null
   contacts_count?: number | null
   created_at?: string | null
+  /** Photographes : photo, video ou photo_video, et options (drone…) */
+  metier?: string | null
+  options?: string[] | null
+}
+
+/**
+ * Le pro correspond-il au besoin (vidéo, drone) ? 1 = oui ou rien de précis
+ * demandé, 0 = non. Un pro qui ne correspond pas reste possible, après les autres.
+ */
+export function convientAuBesoin(pro: ProCandidat, besoin: string | null | undefined): 0 | 1 {
+  const video = besoin === 'Une vidéo' || besoin === 'Des photos et une vidéo'
+  const photo = besoin !== 'Une vidéo'
+  const m = pro.metier ?? 'photo'
+  if (video && m === 'photo') return 0
+  if (besoin && photo && m === 'video') return 0
+  if (besoin === 'Des photos avec vues au drone' && !(pro.options ?? []).includes('drone')) return 0
+  return 1
 }
 
 export const normCity = (s: string | null | undefined) =>
@@ -98,12 +117,12 @@ export function proximite(pro: ProCandidat, ville: string): number {
 }
 
 /** Les pros les plus proches, hors ceux déjà sollicités ; à proximité égale, les moins sollicités d'abord */
-export function choisirPros<T extends ProCandidat>(pros: T[], ville: string, exclude: Set<string>, n = PROS_PAR_VAGUE): T[] {
+export function choisirPros<T extends ProCandidat>(pros: T[], ville: string, exclude: Set<string>, n = PROS_PAR_VAGUE, besoin?: string | null): T[] {
   return pros
     .filter(p => !exclude.has(p.id))
-    .map(p => ({ p, s: proximite(p, ville) }))
+    .map(p => ({ p, s: proximite(p, ville), f: convientAuBesoin(p, besoin) }))
     .filter(x => x.s > 0)
-    .sort((a, b) => b.s - a.s || (a.p.contacts_count ?? 0) - (b.p.contacts_count ?? 0) || String(a.p.created_at ?? '').localeCompare(String(b.p.created_at ?? '')))
+    .sort((a, b) => b.f - a.f || b.s - a.s || (a.p.contacts_count ?? 0) - (b.p.contacts_count ?? 0) || String(a.p.created_at ?? '').localeCompare(String(b.p.created_at ?? '')))
     .slice(0, n)
     .map(x => x.p)
 }
