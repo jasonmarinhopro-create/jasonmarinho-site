@@ -125,6 +125,29 @@ if (MODE.startsWith('masquer:')) await masquer(MODE.slice('masquer:'.length))
 
 await comptes()
 
+// Demandes (17/10/2026) : compteur des fiches comparé aux lignes réellement
+// enregistrées (nombres seulement). Un écart = des demandes dont la ligne
+// n'a pas été écrite (le compteur est incrémenté à part).
+async function demandes() {
+  const admins = new Set((await get('profiles?select=id&role=eq.admin')).map(r => r.id))
+  const out = []
+  for (const [kind, table, contacts, fk] of [['photographe', 'photographers', 'photographer_contacts', 'photographer_id'], ['menage', 'cleaners', 'cleaner_contacts', 'cleaner_id']]) {
+    const fiches = await get(`${table}?select=id,user_id,contacts_count&limit=1000`)
+    const demo = new Set(fiches.filter(f => admins.has(f.user_id)).map(f => f.id))
+    const sum = l => l.reduce((n, f) => n + (f.contacts_count ?? 0), 0)
+    const rows = await get(`${contacts}?select=id,${fk},source_url,created_at&limit=1000`).catch(e => { out.push(`${kind} : lecture des demandes impossible (${String(e.message || e).slice(0, 120)})`); return null })
+    if (!rows) continue
+    const viaForm = rows.filter(r => /\/trouver-un-pro/.test(r.source_url || '')).length
+    const months = {}
+    for (const r of rows) months[String(r.created_at).slice(0, 7)] = (months[String(r.created_at).slice(0, 7)] || 0) + 1
+    out.push(`${kind} : compteur des fiches ${sum(fiches.filter(f => !demo.has(f.id)))} (fiches d'exemple ${sum(fiches.filter(f => demo.has(f.id)))}) · lignes ${rows.length} dont ${rows.filter(r => demo.has(r[fk])).length} vers une fiche d'exemple, ${viaForm} via Trouver un pro · par mois ${JSON.stringify(months)}`)
+  }
+  const dh = await get('demandes_hotes?select=id,metier,status,created_at&limit=1000').catch(e => { out.push(`demandes_hotes : lecture impossible (${String(e.message || e).slice(0, 120)})`); return null })
+  if (dh) out.push(`demandes_hotes : ${dh.length} · ${JSON.stringify(dh.map(d => `${d.metier} ${d.status} ${String(d.created_at).slice(0, 7)}`))}`)
+  notice('Demandes', out.join('\n'))
+}
+await demandes()
+
 const p = await run('photographe')
 const m = await run('menage')
 notice('Site en ligne', `sitemap-photographes.xml : ${await liveCount('sitemap-photographes.xml')} URL · sitemap-menages.xml : ${await liveCount('sitemap-menages.xml')} URL`)
