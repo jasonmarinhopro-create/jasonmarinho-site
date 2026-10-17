@@ -139,6 +139,11 @@ describe('recherches vidéo', () => {
     expect(isVideoQuery('photo drone maison')).toBe(true)
     expect(isVideoQuery('photographe airbnb lyon')).toBe(false)
     expect(isVideoQuery('videotheque')).toBe(false)
+    // « réel » sans accent ne doit pas passer pour des reels (vu le 17/10/2026)
+    expect(isVideoQuery('comparaison micro bic et bic réel')).toBe(false)
+    expect(isVideoQuery('passage réel lcd 2026')).toBe(false)
+    expect(isVideoQuery('synchronisation tarifaire en temps réel')).toBe(false)
+    expect(isVideoQuery('reels instagram airbnb')).toBe(true)
   })
   it('les range chez les photographes et les résume', async () => {
     const { audienceOf, videoSummary } = await import('./rules')

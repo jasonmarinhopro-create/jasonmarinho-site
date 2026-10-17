@@ -627,9 +627,12 @@ export function proTakeaways(i: ProTakeawayInput): Takeaway[] {
 /**
  * Recherche « vidéo » (17/10/2026 : vidéastes dans l'annuaire, Jason : « une
  * donnée intéressante à mettre en avant quand je serai positionné ») : vidéo,
- * vidéaste, film, drone, visite virtuelle. Accents et casse ignorés.
+ * vidéaste, filmer, drone, visite virtuelle, reels Instagram / TikTok.
+ * Accents et casse ignorés.
  */
 export function isVideoQuery(q: string): boolean {
   const s = q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-  return /\b(video|videos|videaste|videastes|videographe|film|films|filmer|drone|drones|visite virtuelle|reel|reels)\b/.test(s)
+  // Pas de « reel » seul : sans accents, « réel » (régime réel, temps réel) s'écrirait pareil
+  return /\b(video|videos|videaste|videastes|videographe|filmer|drone|drones|visite virtuelle)\b/.test(s)
+    || /\breels?\b.*\b(instagram|tiktok|facebook)\b|\b(instagram|tiktok|facebook)\b.*\breels?\b/.test(s)
 }

@@ -86,14 +86,12 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .qtable .pg{font-size:12.5px;color:var(--tl);display:block;margin-top:2px;text-decoration:none}
 .qtable .pg:hover{color:var(--g);text-decoration:underline}
 .qtable .n{text-align:right;white-space:nowrap;color:var(--tm)}
+.qpager{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);font-size:13.5px;color:var(--tm)}
+.qpager button{display:inline-flex;align-items:center;gap:6px;font:inherit;font-weight:600;font-size:13.5px;color:var(--g);background:#fff;border:1px solid var(--bd);border-radius:999px;padding:7px 14px;cursor:pointer}
+.qpager button:hover:not([disabled]){border-color:var(--g)}
+.qpager button[disabled]{opacity:.4;cursor:default}
 .place{display:inline-flex;align-items:center;justify-content:center;min-width:52px;padding:4px 10px;border-radius:999px;font-weight:700;font-size:13px;background:rgba(0,76,63,.08);color:var(--g)}
 .place.top{background:var(--g);color:#fff}
-.vbox{margin-top:16px;padding:16px 18px;border-radius:14px;background:#F2F8F4;border:1px solid rgba(0,76,63,.14);font-size:14.5px;line-height:1.6;color:var(--tm)}
-.vbox strong{color:var(--td)}
-.vbox h3{font-family:'Fraunces',serif;font-weight:500;font-size:17px;color:var(--td);margin:0 0 6px;display:flex;align-items:center;gap:8px}
-.vbox h3 i{color:var(--g)}
-.vbox ul{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
-.vbox li{background:#fff;border:1px solid rgba(0,76,63,.12);border-radius:999px;padding:4px 11px;font-size:13px}
 .empty{text-align:center;color:var(--tm);font-size:15px;line-height:1.6;padding:24px 10px}
 .cities{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
 .city{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;text-decoration:none}
@@ -372,31 +370,33 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
     var lg = $('[data-chart-clicks]'); if (lg) lg.textContent = n(clk) + ' clics depuis Google sur la période';
   }
 
-  var Q = null, V = null, current = 'photographe';
+  var Q = null, current = 'photographe';
   var EMPTY = {
     photographe: 'Pas encore de recherche de photographe en première page sur les 28 derniers jours.',
     menage: 'Pas encore de recherche de ménage en première page sur les 28 derniers jours.',
     hote: 'Pas encore de recherche d’hôte en première page sur les 28 derniers jours.'
   };
-  // Recherches vidéo (vidéaste, drone…), sous l'onglet des photographes (17/10/2026)
-  function videoHtml(){
-    if (current !== 'photographe') return '';
-    if (!V || !V.count) return '<div class="vbox"><h3><i class="ph-bold ph-video-camera"></i>Et la vidéo ?</h3>Les vidéastes ont rejoint l’annuaire le 17 octobre 2026 et les pages de ville parlent désormais de vidéo et de drone. Les recherches vidéo où Google montre le site apparaîtront ici.</div>';
-    return '<div class="vbox"><h3><i class="ph-bold ph-video-camera"></i>Recherches vidéo et drone</h3><strong>' + n(V.count) + ' recherche' + (V.count > 1 ? 's' : '') + '</strong> sur la vidéo ou le drone montrent le site (<strong>' + n(V.impressions) + ' affichage' + (V.impressions > 1 ? 's' : '') + '</strong>, ' + n(V.firstPage) + ' en première page) sur 28 jours.' +
-      (V.top && V.top.length ? '<ul>' + V.top.map(function(q){ return '<li>« ' + esc(q.q) + ' » · ' + (Math.round(q.place * 10) / 10).toString().replace('.', ',') + 'e</li>'; }).join('') + '</ul>' : '') + '</div>';
-  }
+  // 8 recherches par page (17/10/2026, Jason : la liste des hôtes était trop longue)
+  var PER_PAGE = 8, qpage = 0;
   function renderQueries(){
     var box = $('[data-queries]'); if (!box || !Q) return;
     var list = Q[current] || [];
-    if (!list.length) { box.innerHTML = '<p class="empty">' + EMPTY[current] + '</p>' + videoHtml(); return; }
+    if (!list.length) { box.innerHTML = '<p class="empty">' + EMPTY[current] + '</p>'; return; }
+    var pages = Math.ceil(list.length / PER_PAGE);
+    if (qpage >= pages) qpage = pages - 1;
+    var from = qpage * PER_PAGE, part = list.slice(from, from + PER_PAGE);
+    var nav = pages > 1 ? '<div class="qpager"><button type="button" data-qp="-1"' + (qpage === 0 ? ' disabled' : '') + ' aria-label="Recherches précédentes"><i class="ph-bold ph-caret-left"></i>Précédentes</button><span>' + (from + 1) + ' à ' + (from + part.length) + ' sur ' + list.length + '</span><button type="button" data-qp="1"' + (qpage >= pages - 1 ? ' disabled' : '') + ' aria-label="Recherches suivantes">Suivantes<i class="ph-bold ph-caret-right"></i></button></div>' : '';
     box.innerHTML = '<table class="qtable"><thead><tr><th>Recherche dans Google</th><th>Place moyenne</th><th class="n">Affichages</th><th class="n hide-s">Clics</th></tr></thead><tbody>' +
-      list.map(function(q){
+      part.map(function(q){
         return '<tr><td><span class="q">« ' + esc(q.q) + ' »</span><a class="pg" href="' + esc(q.page) + '">' + esc(pageLabel(q.page)) + '</a></td><td>' + placeHtml(q.place) + '</td><td class="n">' + n(q.impressions) + '</td><td class="n hide-s">' + n(q.clicks) + '</td></tr>';
-      }).join('') + '</tbody></table>' + videoHtml();
+      }).join('') + '</tbody></table>' + nav;
+    box.querySelectorAll('[data-qp]').forEach(function(btn){
+      btn.addEventListener('click', function(){ qpage += Number(btn.getAttribute('data-qp')); renderQueries(); });
+    });
   }
   document.querySelectorAll('[data-tab]').forEach(function(b){
     b.addEventListener('click', function(){
-      current = b.getAttribute('data-tab');
+      current = b.getAttribute('data-tab'); qpage = 0;
       document.querySelectorAll('[data-tab]').forEach(function(x){ x.setAttribute('aria-selected', String(x === b)); });
       renderQueries();
     });
@@ -577,7 +577,6 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
     if (d.cityPages) setNum('[data-f="cities"]', n(d.cityPages));
     if (d.threshold) { var th = $('[data-thr]'); if (th) th.textContent = n(d.threshold); }
     Q = d.queries || { photographe: [], menage: [], hote: [] };
-    V = d.video || null;
     ['photographe','menage','hote'].forEach(function(k){ var c = $('[data-c="' + k + '"]'); if (c) c.textContent = (Q[k] || []).length; });
     renderQueries();
     renderCities(d.cities);

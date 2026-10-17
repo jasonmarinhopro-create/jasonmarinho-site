@@ -198,7 +198,7 @@ const cachedFull = unstable_cache(async () => {
   const r = await compute()
   if (!r.complete) throw new Error('incomplet')
   return r.stats
-}, ['public-stats-v3'], { revalidate: 6 * 3600, tags: ['public-stats'] })
+}, ['public-stats-v4'], { revalidate: 6 * 3600, tags: ['public-stats'] })
 
 const cachedPartial = unstable_cache(async () => (await compute()).stats, ['public-stats-partial-v2'], { revalidate: 3600, tags: ['public-stats'] })
 
