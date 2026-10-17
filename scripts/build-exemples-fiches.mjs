@@ -17,6 +17,20 @@ import { buildFichePage as buildMenage } from './build-cleaners.mjs'
 import { statsDemoHtml } from './lib/stats-demo.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+// Vidéo libre de droits (Wikimedia Commons, déposée par le workflow « Vidéo de
+// la fiche d'exemple ») : lue sur place, avec son crédit (licence CC).
+function videoExemple() {
+  const dir = path.join(ROOT, 'img', 'exemple-fiches')
+  if (!fs.existsSync(path.join(dir, 'video-camille.mp4'))) return {}
+  let c = {}
+  try { c = JSON.parse(fs.readFileSync(path.join(dir, 'video-camille.json'), 'utf8')) } catch {}
+  const e = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')
+  return {
+    video_url: 'https://jasonmarinho.com/img/exemple-fiches/video-camille.mp4',
+    __videoPoster: '/img/exemple-fiches/video-camille.jpg',
+    __videoCredit: c.lien ? `Vidéo d’illustration : ${e(c.auteur || c.titre)}, <a href="${e(c.lien)}" target="_blank" rel="noopener">${e(c.licence)}, Wikimedia Commons</a>` : '',
+  }
+}
 const photos = names => names.map(n => ({ full: `/img/exemple-fiches/${n}.jpg`, thumb: `/img/exemple-fiches/${n}-t.jpg` }))
 
 const CAMILLE = {
@@ -42,6 +56,7 @@ const CAMILLE = {
   villes_couvertes: ['Villeurbanne', 'Annecy', 'Vienne', 'Villefranche-sur-Saône', 'Bourgoin-Jallieu'],
   deroule: [],
   __photos: photos(['photo-interieur-1', 'photo-salon-5', 'photo-chambre-4', 'photo-cuisine-2', 'photo-sdb-2', 'photo-maison-2']),
+  ...videoExemple(),
 }
 
 const ECLAT = {
@@ -151,7 +166,7 @@ const pages = [
       title: 'Exemple de fiche photographe et vidéaste · Aperçu',
       desc: 'Aperçu de la fiche que tu obtiens dans l’annuaire des photographes et vidéastes LCD de Jason Marinho : photos, vidéo, formules, déroulé, villes couvertes, contact direct.',
       metier: 'photographe', who: 'Camille', statsMetier: 'photographe',
-      inscription: '/annuaires/photographes/inscription', devenir: '/devenir-photographe-lcd', devenirLabel: 'Photographes LCD',
+      inscription: '/annuaires/photographes/inscription', devenir: '/devenir-photographe-lcd', devenirLabel: 'Photographes et vidéastes LCD',
       ctaLbl: 'Tu veux la même fiche pour toi ?', ctaH2: 'Crée ta fiche photographe ou vidéaste <em>en 2 minutes</em>',
       annots: [
         ['<div class="vt-h"><h2>Photos</h2>', 'Jusqu’à 6 photos'],

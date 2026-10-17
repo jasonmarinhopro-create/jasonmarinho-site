@@ -100,7 +100,8 @@ export function heroVideoHtml(videoUrl, { name, poster, credit } = {}) {
 export function videoLink(videoUrl) {
   if (!videoUrl) return null
   const host = videoHostLabel(videoUrl)
-  return { href: videoUrl, label: host ? `Voir les vidéos sur ${host}` : 'Voir les vidéos', short: 'Vidéos', icon: 'ph-play-circle', embed: !!videoEmbed(videoUrl) }
+  const e = videoEmbed(videoUrl)
+  return { href: videoUrl, label: host ? `Voir les vidéos sur ${host}` : 'Voir les vidéos', short: 'Vidéos', icon: 'ph-play-circle', embed: !!e, file: e?.kind === 'file' }
 }
 
 /** Galerie en mosaïque + visionneuse */

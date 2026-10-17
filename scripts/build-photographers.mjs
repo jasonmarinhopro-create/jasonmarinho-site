@@ -280,7 +280,7 @@ ${JSON.stringify({
       <h2>Portfolio complet</h2>
       <p style="font-size:14px;color:var(--tm);line-height:1.7;margin-bottom:14px">Toutes les réalisations de ${escHtml(displayName)}, pour juger de son style et voir si son approche correspond à ton logement.</p>
       <a href="${escHtml(p.portfolio_url)}" target="_blank" rel="noopener noreferrer" class="btn-p" onclick="jmTrack('portfolio')"><i class="ph-bold ph-image-square"></i>Voir le portfolio</a>
-      ${video ? `<a href="${escHtml(video.href)}" target="_blank" rel="noopener noreferrer" class="btn-ol"><i class="ph-bold ph-play-circle"></i>${escHtml(video.label)}</a>` : ''}
+      ${video && !video.file ? `<a href="${escHtml(video.href)}" target="_blank" rel="noopener noreferrer" class="btn-ol"><i class="ph-bold ph-play-circle"></i>${escHtml(video.label)}</a>` : ''}
       ${p.instagram_handle ? `<a href="https://instagram.com/${escHtml(p.instagram_handle)}" target="_blank" rel="noopener" class="btn-ol" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i>@${escHtml(p.instagram_handle)}</a>` : ''}
     </div>
     ${villesHtml(p.villes_couvertes, { root: ROOT, prefix: 'photographe-lcd', ville: p.ville, metierLabel: 'Photographe' })}
