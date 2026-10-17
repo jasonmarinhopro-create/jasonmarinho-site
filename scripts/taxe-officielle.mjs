@@ -34,7 +34,7 @@ const id = IDS.find(i => out.datasets[i].status === 200) ?? IDS[0]
 for (const c of communes) {
   const rows = []
   for (let offset = 0; offset < 600; offset += 100) {
-    const q = encodeURIComponent(`"${c}"`)
+    const q = encodeURIComponent(`"${c}" and (date_effet="2026" or date_effet="2027")`)
     const r = await get(`${API}/${id}/records?where=${q}&limit=100&offset=${offset}`)
     const res = r.json?.results ?? []
     rows.push(...res)
