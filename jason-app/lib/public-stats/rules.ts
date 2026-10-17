@@ -184,7 +184,8 @@ export function countVisitors(visits: Array<{ session_id: string; path: string }
 // c'est une démarche volontaire, et la page explique qu'une page récente met
 // du temps à monter dans Google.
 
-export const NO_HOST_GUIDE = new Set(['les-sables-d-olonne'])
+// Depuis le 17/10/2026, chaque ville a ses 3 pages (scripts/creer-ville.mjs) : liste vide, gardée pour le test
+export const NO_HOST_GUIDE = new Set<string>()
 
 export interface PageFull {
   path: string

@@ -65,9 +65,10 @@
     { slug: 'bastia',          name: 'Bastia',          adr: '80-160 €/nuit',  occ: "60 % d'occupation", ann: '~1 500 annonces', desc: "Capitale de la Haute-Corse, principal port pour les ferries d'Italie (Livourne, Savone, Gênes), porte du Cap Corse. Alternative 25 % moins chère qu'Ajaccio à qualité équivalente." },
     { slug: 'clermont-ferrand', name: 'Clermont-Ferrand', adr: '60-105 €/nuit', occ: "60 % d'occupation", ann: '~1 300 annonces', desc: "Capitale auvergnate, siège mondial Michelin, Volcans UNESCO et Festival International du Court Métrage (200k spectateurs en février). Triple pilier tourisme + business + culturel." },
     { slug: 'poitiers',        name: 'Poitiers',        adr: '60-105 €/nuit',  occ: "58 % d'occupation", ann: '~1 200 annonces', desc: "'Ville aux cent clochers', 28 000 étudiants, Futuroscope (1,9M visiteurs/an) à 8 km, TGV Paris 1h35. Triple demande tourisme + parc d'attractions + universitaire, prix d'achat très accessibles." },
-    // prosOnly : pages photographe / ménage seulement (pas encore de guide
-    // devenir-hote ni d'étude de revenus), exclue des listes pour les hôtes.
-    { slug: 'les-sables-d-olonne', name: "Les Sables-d'Olonne", prosOnly: true, adr: '80-140 €/nuit', occ: "49 % d'occupation", ann: '~2 100 annonces', desc: "Grande station balnéaire de Vendée, port de départ du Vendée Globe tous les 4 ans. Marché très saisonnier, culminant en juillet et août, et encadré : autorisation de changement d'usage et plafond de meublés de tourisme fixés par l'agglomération." }
+    // Depuis le 17/10/2026, une ville = 3 pages (photographe, ménage, devenir
+    // hôte) : node scripts/creer-ville.mjs <slug> "<commune>" (voir le script).
+    { slug: 'les-sables-d-olonne', name: "Les Sables-d'Olonne", adr: '80-140 €/nuit', occ: "49 % d'occupation", ann: '~2 100 annonces', desc: "Grande station balnéaire de Vendée, port de départ du Vendée Globe tous les 4 ans. Marché très saisonnier, culminant en juillet et août, et encadré : autorisation de changement d'usage et plafond de meublés de tourisme fixés par l'agglomération." },
+    { slug: 'roanne',          name: 'Roanne',          adr: '55-70 €/nuit',   occ: "50 % d'occupation", ann: '~400 annonces', desc: "Sous-préfecture de la Loire, au bord du fleuve, entre les vignobles de la Côte Roannaise et les monts de la Madeleine. Un marché modeste mais régulier toute l'année : déplacements professionnels, familles, tourisme vert et gastronomie." }
   ];
   // Villes qui ont aussi un guide devenir-hote (cartes /villes, compteurs, onglet hôtes)
   var HOST_CITIES = CITIES.filter(function (c) { return !c.prosOnly; });

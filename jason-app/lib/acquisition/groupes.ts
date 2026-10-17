@@ -223,7 +223,7 @@ const has = (n: string, w: string) => n.includes(` ${w.trim()}`)
 // Noms de villes qui sont aussi des mots courants : il faut une majuscule
 const AMBIGUOUS = new Set(['tours', 'nice', 'vannes', 'cannes', 'nancy', 'pau', 'paris', 'menton', 'rennes', 'sete', 'bayonne', 'dijon'])
 
-/** Ville d'une de nos 61 pages citée dans le texte (la plus longue l'emporte) */
+/** Ville d'une de nos 62 pages citée dans le texte (la plus longue l'emporte) */
 export function findCity(text: string): string | null {
   const plain = strip(text)
   const lower = plain.toLowerCase()
@@ -335,7 +335,7 @@ export function pickResources(input: {
   const add = (res: GroupResource) => { if (!out.some(o => o.url === res.url)) out.push(res) }
   const city = r.city
   const label = city ? cityLabel(city) : null
-  const hasGuide = !!city && city !== 'les-sables-d-olonne'
+  const hasGuide = !!city
 
   if (r.profile === 'voyageur') return []
 

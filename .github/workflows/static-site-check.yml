@@ -9,7 +9,7 @@ name: Site statique
 on:
   push:
     branches: [main, 'claude/**']
-    paths: ['api/**', '.github/workflows/static-site-check.yml']
+    paths: ['api/**', '.github/workflows/static-site-check.yml', 'footer.js', 'sitemap.xml', 'scripts/data/villes-local.mjs', 'jason-app/lib/visibility/city-page.ts', '.github/workflows/prospection-reserve.yml', 'photographe-lcd-*/**', 'menage-lcd-*/**', 'devenir-hote-airbnb-*/**']
   pull_request:
     paths: ['api/**']
 
@@ -27,3 +27,16 @@ jobs:
             echo "::error::$COUNT fonctions dans api/ : Vercel Hobby en accepte 12, le déploiement du site échouera. Fusionner des fonctions (ex. route dynamique api/xxx/[type].js) ou en supprimer une."
             exit 1
           fi
+
+  villes:
+    # Une ville = 3 pages (photographe, ménage, devenir hôte), décision de
+    # Jason du 17/10/2026 : échoue s'il manque une page, une adresse du
+    # sitemap, le contenu vérifié ou la place dans l'app. Créer une ville :
+    # node scripts/creer-ville.mjs <slug> "<commune>".
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Chaque ville a ses 3 pages
+        run: node scripts/verifier-villes.mjs

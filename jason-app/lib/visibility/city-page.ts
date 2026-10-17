@@ -13,6 +13,7 @@ export const CITY_PAGE_SLUGS = [
   'nice', 'nimes', 'paris', 'pau', 'perpignan', 'poitiers', 'quimper', 'reims', 'rennes', 'rouen',
   'saint-malo', 'saint-tropez', 'sarlat', 'sete', 'strasbourg', 'toulouse', 'tours', 'troyes', 'vannes', 'versailles',
   'les-sables-d-olonne',
+  'roanne',
 ] as const
 
 /**
@@ -26,6 +27,10 @@ export const CITY_ALIASES: Record<string, string> = {
   'olonne-sur-mer': 'les-sables-d-olonne',
   'chateau-d-olonne': 'les-sables-d-olonne',
   vendee: 'les-sables-d-olonne',
+  riorges: 'roanne',
+  mably: 'roanne',
+  'le-coteau': 'roanne',
+  roannais: 'roanne',
 }
 
 /** « Saint-Malo », « Lyon 6e », « Clermont Ferrand » → saint-malo, lyon-6e, clermont-ferrand */

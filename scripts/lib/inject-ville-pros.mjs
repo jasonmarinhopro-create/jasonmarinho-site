@@ -43,6 +43,10 @@ const VILLE_ALIASES = {
   'olonne-sur-mer': 'les-sables-d-olonne',
   'chateau-d-olonne': 'les-sables-d-olonne',
   vendee: 'les-sables-d-olonne',
+  riorges: 'roanne',
+  mably: 'roanne',
+  'le-coteau': 'roanne',
+  roannais: 'roanne',
 }
 
 function bestMatch(s, names) {

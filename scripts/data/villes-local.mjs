@@ -26,7 +26,7 @@ export const deVille = v => /^Les\s/.test(v) ? `des ${v.slice(4)}` : /^Le\s/.tes
 
 // Faits communs à toutes les villes où aucune règle locale plus stricte n'a
 // été confirmée : on n'affirme jamais 90 jours ni un taux précis sans source.
-const REG_NUM = "<strong>Numéro d'enregistrement</strong> à afficher sur chaque annonce, via le téléservice national obligatoire au plus tard le 20 mai 2026."
+const REG_NUM = "<strong>Numéro d'enregistrement</strong> à afficher sur chaque annonce : la loi Le Meur l'a généralisé au 20 mai 2026. Un téléservice national est annoncé ; en attendant, la mairie ou l'intercommunalité le délivre."
 const REG_USAGE_GEN = "<strong>Résidence secondaire ou logement dédié :</strong> demandez en mairie si une autorisation de changement d'usage est exigée. Depuis la loi Le Meur, toute commune peut instaurer ce régime."
 const reg120 = v => `<strong>Résidence principale : 120 nuits par an maximum</strong> (plafond national). La loi Le Meur permet à la commune de l'abaisser à 90 nuits : vérifiez la délibération en vigueur ${aVille(v)}.`
 const taxeGen = v => `Logement non classé : un taux voté localement, <strong>entre 1 % et 5 % du prix HT de la nuitée par personne</strong>, dans la limite d'un plafond, plus une éventuelle taxe additionnelle départementale. Le tarif exact appliqué ${aVille(v)} figure dans la base officielle des tarifs par commune.`
@@ -1388,10 +1388,48 @@ export const VILLES_LOCAL = {
       evSources: [{ label: 'Vendée Globe', url: 'https://www.vendeeglobe.org/' }],
     }),
     verifie: 'octobre 2026',
+    marche: {
+      releve: 'octobre 2026',
+      sources: [
+        { label: "AirROI : marché Airbnb des Sables-d'Olonne (annonces, prix, occupation)", url: "https://airroi.com/airbnb-data/france/pays-de-la-loire/les-sables-d'olonne" },
+        { label: "AirDNA : taux d'occupation aux Sables-d'Olonne", url: 'https://www.airdna.co/vacation-rental-data/app/fr/default/les-sables-d-olonne/seasonality' },
+      ],
+    },
     reglementation: [
       "<strong>Résidence principale : 120 nuits par an maximum</strong>, après déclaration auprès de l'agglomération des Sables-d'Olonne.",
       "<strong>Autre logement : autorisation de changement d'usage obligatoire</strong> avant toute location touristique, dans toutes les communes de l'agglomération, avec un <strong>plafond de 2 514 meublés de tourisme</strong> autorisés sur l'agglomération depuis 2022.",
       "<strong>Numéro d'enregistrement</strong> délivré par l'agglomération, à afficher sur chaque annonce.",
     ],
+  },
+
+  roanne: {
+    ...ville({
+      ville: 'Roanne',
+      pics: [
+        "Été : Roanne Plage au bord de la Loire, de début juillet à fin août",
+        "Juillet et août : festival des Monts de la Madeleine, autour de Roanne",
+        "Toute l'année : déplacements professionnels et congrès, une demande régulière en semaine",
+        "Octobre : Roanne Open Table, la gastronomie roannaise dans les restaurants",
+      ],
+      menage: [
+        "<strong>Clientèle pro en semaine :</strong> séjours courts du lundi au vendredi. Des rotations régulières, à caler tôt le matin ou le soir.",
+        "<strong>Familles l'été :</strong> séjours plus longs, plus de linge. Prévoyez un double jeu de draps et de serviettes.",
+        "<strong>Maisons de la Côte Roannaise :</strong> jardins, terrasses et extérieurs à inclure dans l'offre.",
+      ],
+      photo: [
+        "<strong>Ce qui fait cliquer :</strong> la Loire et le port, les quais, la vue sur les vignes de la Côte Roannaise pour les logements en dehors de la ville.",
+        "<strong>Clientèle pro :</strong> un bureau ou une table de travail bien éclairée, le Wi-Fi et le parking dans les légendes.",
+        "<strong>Accès :</strong> distance à la gare et au centre en légende de la photo de couverture.",
+      ],
+      evSources: [{ label: 'Roannais Tourisme : grands événements', url: 'https://www.roannais-tourisme.com/en/agenda/grands-evenements/' }],
+    }),
+    verifie: 'octobre 2026',
+    marche: {
+      releve: 'octobre 2026',
+      sources: [
+        { label: 'AirDNA : marché de la location courte durée à Roanne (annonces, occupation, prix)', url: 'https://www.airdna.co/vacation-rental-data/app/fr/auvergne-rhone-alpes/roanne/overview' },
+        { label: 'GuestFavorites : taux d’occupation Airbnb à Roanne', url: 'https://www.guestfavorites.com/airbnb-occupancy-rates-in-roanne-france' },
+      ],
+    },
   },
 }
