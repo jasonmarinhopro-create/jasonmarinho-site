@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 14 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 17 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Prolongation de séjour voyageur : 7 règles pour accepter ou refuser au bon prix</title>
+      <link>https://jasonmarinho.com/blog/prolongation-sejour-voyageur-7-regles-accepter-refuser-prix</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/prolongation-sejour-voyageur-7-regles-accepter-refuser-prix</guid>
+      <pubDate>Sat, 17 Oct 2026 08:00:00 GMT</pubDate>
+      <description>Un voyageur te demande de rester une nuit de plus ? Les 7 règles concrètes pour accepter ou refuser une prolongation, fixer le bon tarif et sécuriser le contrat sans y perdre.</description>
+      <category>Revenus</category>
+    </item>
     <item>
       <title>Vacances scolaires 2026-2027 en LCD : 6 règles pour tirer le maximum du calendrier</title>
       <link>https://jasonmarinho.com/blog/vacances-scolaires-2026-2027-lcd-6-regles-tirer-maximum</link>
@@ -398,14 +406,6 @@
       <pubDate>Sun, 05 Jul 2026 08:00:00 GMT</pubDate>
       <description>Tarifs constatés (150 à 500 €), retour sur investissement réel, critères pour choisir un photographe spécialisé LCD et erreurs à éviter. Guide complet par Jason Marinho.</description>
       <category>Visibilité</category>
-    </item>
-    <item>
-      <title>Comment trouver une équipe de ménage fiable pour ta location courte durée</title>
-      <link>https://jasonmarinho.com/blog/trouver-equipe-menage-airbnb-fiable</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/trouver-equipe-menage-airbnb-fiable</guid>
-      <pubDate>Sun, 05 Jul 2026 08:00:00 GMT</pubDate>
-      <description>Où chercher, les 6 questions à poser avant d&apos;engager, les tarifs normaux et les red flags : la méthode complète pour trouver une équipe de ménage turnover fiable en LCD.</description>
-      <category>Expérience</category>
     </item>
   </channel>
 </rss>
