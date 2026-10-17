@@ -46,6 +46,8 @@ type NavItemDef = {
   icon: React.ElementType
   // Affiche un point pulsant rouge (utilisé pour Actualités quand il y a du neuf)
   pulseIf?: 'hasNewActualites'
+  /** Compteur affiché à droite (17/10/2026) */
+  countKey?: 'contratsTodo'
   // Préfixes de pathname qui doivent aussi allumer cet item, en plus de `href`.
   // Nécessaire pour les hubs à onglets/cartes dont le href pointe sur UNE
   // sous-page (ex: Mes finances → /finances/revenus) : sans ça, l'item
@@ -64,56 +66,62 @@ type NavItemDef = {
 //   réception : la page le dit dans son bandeau.
 // - Le premier bloc a un titre, comme le second.
 const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
+  // Menu hôte en 4 blocs (17/10/2026, proposition validée par Jason) : avant,
+  // « Au quotidien » mélangeait 9 entrées (planning, voyageurs, argent,
+  // sécurité). Actualités reste en 2e position (décision de Jason : la veille
+  // LCD est un axe fort de la marque).
   {
     label: 'Au quotidien',
     items: [
       { href: '/dashboard',             label: 'Accueil',           icon: HouseSimple },
-      // Actualités en 2e position : la veille LCD est un axe fort de la
-      // marque — visible dès l'ouverture, avec le point rouge « du neuf ».
       { href: '/dashboard/actualites',  label: 'Actualités',        icon: Newspaper, pulseIf: 'hasNewActualites' },
       { href: '/dashboard/calendrier',  label: 'Calendrier',        icon: CalendarBlank },
-      // Mes reservations : page dediee avec KPIs, filtres, cartes/tableau,
-      // drawer detail voyageur + alertes contextuelles. Detachee du Calendrier
-      // (qui redevient purement vue chronologique Mois).
+      // Mes réservations : page dédiée (KPIs, filtres, détail voyageur).
       { href: '/dashboard/reservations', label: 'Mes réservations', icon: ListChecks },
-      { href: '/dashboard/voyageurs',   label: 'Mes voyageurs',     icon: Users },
+      // Mes messages (01/10/2026, Jason : « rangé avec les outils c'est
+      // bizarre ») : messages à copier, pas une boîte de réception.
       { href: '/dashboard/gabarits',    label: 'Mes messages',      icon: ChatText },
-      // Contrats + loyer + caution des réservations directes : la valeur n°1
-      // de l'app face aux PMS (sept. 2026), auparavant un onglet caché dans
-      // Mes voyageurs.
-      { href: '/dashboard/contrats',    label: 'Contrats & paiements', icon: Signature },
-      // Mes finances : Étape 4 — fusion à onglets Revenus / Encaissements
-      // / Performances. Le lien pointe vers la racine /dashboard/finances
-      // qui redirige sur l'onglet Revenus par défaut.
-      // PERF : pointe directement sur l'onglet par defaut (revenus) au lieu
-      // de /dashboard/finances qui redirige serveur → 2 loads visible. Meme
-      // trick pour Apprendre + Entre Hotes ci-dessous.
-      { href: '/dashboard/finances/revenus', label: 'Mes finances',      icon: ChartBar, activeMatch: ['/dashboard/finances'] },
+    ],
+  },
+  {
+    // Le chemin d'une réservation directe : le carnet, le contrat et le
+    // paiement, la vérification avant de dire oui.
+    label: 'Mes voyageurs',
+    items: [
+      { href: '/dashboard/voyageurs',   label: 'Mes voyageurs',     icon: Users },
+      // Compteur : éléments « À traiter » de la page (lib/contracts/nav-count.ts)
+      { href: '/dashboard/contrats',    label: 'Contrats & paiements', icon: Signature, countKey: 'contratsTodo' },
       { href: '/dashboard/securite',    label: 'Sécurité voyageur', icon: ShieldCheck },
+    ],
+  },
+  {
+    // Ce qui sert à décider : les chiffres de l'activité et les simulateurs.
+    label: 'Mes chiffres',
+    items: [
+      // PERF : pointe directement sur l'onglet par défaut (revenus) au lieu
+      // de /dashboard/finances qui redirige côté serveur.
+      { href: '/dashboard/finances/revenus', label: 'Mes finances',      icon: ChartBar, activeMatch: ['/dashboard/finances'] },
+      // Outils & calculs : hub (simulateurs, prix, QR) ; les outils vivent en
+      // URL de premier niveau (cf. outils/page.tsx).
+      {
+        href: '/dashboard/outils', label: 'Outils & calculs', icon: Calculator,
+        activeMatch: ['/dashboard/outils', '/dashboard/simulateurs', '/dashboard/calculateurs', '/dashboard/outils-impression'],
+      },
     ],
   },
   {
     label: 'Faire grandir mon activité',
     items: [
-      // Trouver des voyageurs (sept. 2026) : groupes Facebook (posts prêts à
-      // publier) + fiche Google, les leviers de réservation directe. En tête
-      // du bloc : c'est ce qui fait grandir l'activité en premier.
+      // Trouver des voyageurs : groupes Facebook + fiche Google.
       {
         href: '/dashboard/visibilite/facebook', label: 'Trouver des voyageurs', icon: Megaphone,
         activeMatch: ['/dashboard/visibilite', '/dashboard/communaute', '/dashboard/audit-gbp'],
       },
       // Apprendre : Formations + Guide LCD.
       { href: '/dashboard/apprendre/formations', label: 'Apprendre',   icon: GraduationCap, activeMatch: ['/dashboard/apprendre', '/dashboard/formations', '/dashboard/guide'] },
-      // Outils & calculs : hub (simulateurs, prix, QR).
-      // Les outils vivent en URL top-level (cf. outils/page.tsx).
-      {
-        href: '/dashboard/outils', label: 'Outils & calculs', icon: Calculator,
-        activeMatch: ['/dashboard/outils', '/dashboard/simulateurs', '/dashboard/calculateurs', '/dashboard/outils-impression'],
-      },
       // Entre Hôtes : Questions & réponses + Partenaires & outils.
       { href: '/dashboard/entre-hotes/forum', label: 'Entre Hôtes',   icon: ChatsCircle, activeMatch: ['/dashboard/entre-hotes', '/dashboard/chez-nous', '/dashboard/ecosysteme'] },
-      // Idées & feuille de route (13/10/2026) : ouvert à tous les membres,
-      // remplace l'espace payant « Contributeurs » (même page dans chaque espace)
+      // Idées & feuille de route (13/10/2026) : ouvert à tous les membres
       { href: '/dashboard/idees', label: 'Idées', icon: Lightbulb },
     ],
   },
@@ -198,9 +206,11 @@ interface SidebarProps {
   spaces?: Array<{ key: 'host' | 'photographer' | 'cleaner' | 'investor'; label: string; href: string; subtitle?: string | null; active: boolean }>
   /** Menu des pros (17/10/2026) : compteur « Demandes reçues », point « du neuf » sur « Actualités » */
   proNav?: ProNav
+  /** Menu hôte : éléments « À traiter » de Contrats & paiements */
+  contratsTodo?: number
 }
 
-export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false, allProperties, activePropertyId, userName, userPlanLabel, userId, spaces = [], proNav }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false, allProperties, activePropertyId, userName, userPlanLabel, userId, spaces = [], proNav, contratsTodo = 0 }: SidebarProps) {
   const pathname = usePathname()
   // Le rôle pro est dérivé du pathname côté client : le layout (server) est
   // mémorisé par le router cache entre routes sœurs, donc une prop calculée
@@ -626,7 +636,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                     <div style={styles.sectionLabel}>{group.label}</div>
                   )}
                   <div style={{ ...styles.navSection, ...(i === 0 ? { marginBottom: '4px' } : {}) }}>
-                    {group.items.map(({ href, label, icon: Icon, pulseIf, activeMatch }) => (
+                    {group.items.map(({ href, label, icon: Icon, pulseIf, activeMatch, countKey }) => (
                       <NavItem
                         key={href}
                         href={href}
@@ -634,6 +644,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                         Icon={Icon}
                         notifDot={pulseIf === 'hasNewActualites' && hasNewActualites}
                         activeMatch={activeMatch}
+                        count={countKey === 'contratsTodo' ? contratsTodo : undefined}
                       />
                     ))}
                   </div>

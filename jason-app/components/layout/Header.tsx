@@ -146,6 +146,8 @@ interface HeaderProps {
   hasNewActualites?: boolean
   /** Menu des pros (compteur des demandes, actualités du métier), transmis au Sidebar mobile. */
   proNav?: ProNav
+  /** Compteur hôte de Contrats & paiements, transmis au Sidebar mobile. */
+  contratsTodo?: number
   /** Affiche le bouton Parcours (onboarding non terminé). */
   showOnboardingBtn?: boolean
   /** Forwarded à la sidebar mobile : masque "Encaissements" si pas de Stripe. */
@@ -164,7 +166,7 @@ interface HeaderProps {
   activePropertyId?: string
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false, proNav, showOnboardingBtn = false, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId, initialAppNotifUnread = 0, initialChezNousUnread = 0 }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false, proNav, contratsTodo = 0, showOnboardingBtn = false, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId, initialAppNotifUnread = 0, initialChezNousUnread = 0 }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -338,6 +340,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
           lastSeenActualitesAt={lastSeenActualitesAt}
           hasNewActualites={hasNewActualites}
           proNav={proNav}
+          contratsTodo={contratsTodo}
           hasStripeAccount={hasStripeAccount}
           userName={initialUserName}
           userPlanLabel={resolvedPlan}

@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { forAudience, hasNewFor } from '@/lib/actualites/audience'
 import { loadProNewDemandes } from '@/lib/pros/nav-counts'
+import { loadContractTodoCount } from '@/lib/contracts/nav-count'
 import { headers, cookies } from 'next/headers'
 import { Suspense } from 'react'
 import Sidebar from '@/components/layout/Sidebar'
@@ -73,6 +74,8 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
   const profile = await getProfile()
   if (!profile) redirect('/auth/login')
   timer.mark('profil')
+  // Compteur de Contrats & paiements : lancé tout de suite, en parallèle du reste
+  const contratsTodoPromise = loadContractTodoCount(profile.userId)
 
   // L'espace courant pour l'onboarding (purement server) — la sidebar et le
   // header le recalculent client-side via usePathname() pour survivre au
@@ -149,6 +152,8 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
         },
       }
     : undefined
+  // Compteur hôte sur « Contrats & paiements » : seulement si l'espace hôte est actif
+  const contratsTodo = spacesResult.spaces.some(sp => sp.key === 'host' && sp.active) ? await contratsTodoPromise : 0
 
   return (
     <ThemeProvider>
@@ -159,6 +164,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
           proNav={proNav}
+          contratsTodo={contratsTodo}
           hasStripeAccount={profile.stripe_onboarding_complete}
           allProperties={activeProperty.allProperties}
           activePropertyId={activeProperty.propertyId}
@@ -176,6 +182,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
           proNav={proNav}
+          contratsTodo={contratsTodo}
           initialAppNotifUnread={appNotifUnread}
           initialChezNousUnread={chezNousUnread}
           showOnboardingBtn={showOnboarding}
