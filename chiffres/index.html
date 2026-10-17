@@ -713,9 +713,14 @@ a.dm-city:hover{border-color:var(--g)}
     var head = t.slice(0, 3);
     return VILLES.filter(function(v){ var l = normT(v.label); return l.indexOf(head) === 0 || l.indexOf(t) >= 0; }).slice(0, 4);
   }
+  // Villes hors de France avec une seule page (17/10/2026 : Québec, photographes et vidéastes)
+  var INTL = [{ key: 'quebec', label: 'Québec', href: '/photographe-lcd-quebec', what: 'photographes et vidéastes' }];
   function renderRequest(q){
     var sug = suggestions(q);
-    vres.innerHTML = '<div class="vf"><h3>Pas encore de page pour « ' + esc(q) + ' »</h3>' +
+    var tq = normT(q).replace(/^ville de /, '');
+    var intl = INTL.filter(function(v){ return tq === v.key || tq.indexOf(v.key + ' ') === 0; })[0];
+    vres.innerHTML = (intl ? '<div class="vf" style="margin-bottom:14px"><h3>' + esc(intl.label) + ' a sa page ' + esc(intl.what) + '</h3><p>Ouverte en octobre 2026 : ses chiffres Google apparaîtront ici quand elle aura quelques semaines. Les pages ménage et hôtes ne sont pas encore ouvertes : tu peux les demander ci-dessous.</p><p><a href="' + intl.href + '" style="color:#004C3F;font-weight:600">Voir la page ' + esc(intl.what) + ' à ' + esc(intl.label) + ' →</a></p></div>' : '') +
+      '<div class="vf"><h3>Pas encore de page pour « ' + esc(q) + ' »</h3>' +
       '<p>Les pages existent pour ' + (VILLES.length || 61) + ' villes. Je peux créer celle de ta ville : photographes, ménage et guide pour les hôtes. Dis-moi juste qui tu es.</p>' +
       (sug.length ? '<div class="vf-sug">Tu cherchais peut-être : ' + sug.map(function(v){ return '<button type="button" data-pick="' + esc(v.label) + '">' + esc(v.label) + '</button>'; }).join('') + '</div>' : '') +
       '<form data-vf novalidate>' +
@@ -729,7 +734,7 @@ a.dm-city:hover{border-color:var(--g)}
         '<div class="vf-trap" aria-hidden="true"><label>Ne pas remplir<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>' +
         '<div class="vf-msg" data-vf-msg role="status"></div>' +
         '<div><button type="submit"><i class="ph-bold ph-paper-plane-tilt"></i>Demander la page de ma ville</button></div>' +
-        '<p class="vf-legal">Ta demande m’arrive par e-mail, rien n’est enregistré sur le site. <a href="/politique-de-confidentialite#demande-ville">Confidentialité</a></p>' +
+        '<p class="vf-legal">Ta demande m’arrive par e-mail. Seuls la ville et ton profil sont gardés, pour compter les demandes ; ton e-mail n’est pas enregistré. <a href="/politique-de-confidentialite#demande-ville">Confidentialité</a></p>' +
       '</form></div>';
     setUrl(null);
   }

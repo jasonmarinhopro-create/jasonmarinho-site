@@ -9,7 +9,9 @@ describe('page de ville des pros', () => {
   it('la liste correspond aux pages du site statique', () => {
     for (const prefix of ['photographe-lcd-', 'menage-lcd-']) {
       const dirs = fs.readdirSync(SITE).filter(d => d.startsWith(prefix)).map(d => d.slice(prefix.length)).sort()
-      expect(dirs).toEqual([...CITY_PAGE_SLUGS].sort())
+      // Québec (Canada) : page photographe seule, hors de la liste française
+      const intl = prefix === 'photographe-lcd-' ? ['quebec'] : []
+      expect(dirs.filter(d => !intl.includes(d))).toEqual([...CITY_PAGE_SLUGS].sort())
     }
   })
 

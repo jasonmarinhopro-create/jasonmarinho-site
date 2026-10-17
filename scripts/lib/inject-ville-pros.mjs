@@ -31,6 +31,7 @@ const VILLE_LABELS = {
   'le-mans': 'Le Mans', 'le-touquet': 'Le Touquet', 'saint-malo': 'Saint-Malo', 'saint-tropez': 'Saint-Tropez',
   chambery: 'Chambéry', epernay: 'Épernay', etretat: 'Étretat', megeve: 'Megève', nimes: 'Nîmes', sete: 'Sète',
   'les-sables-d-olonne': "Les Sables-d'Olonne",
+  quebec: 'Québec',
 }
 // « à Lyon », « au Mans », « aux Sables-d'Olonne »
 const aVille = v => /^Les\s/.test(v) ? `aux ${v.slice(4)}` : /^Le\s/.test(v) ? `au ${v.slice(3)}` : `à ${v}`

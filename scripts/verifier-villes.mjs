@@ -13,6 +13,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { VILLES_LOCAL } from './data/villes-local.mjs'
+import { VILLES_INTERNATIONAL } from './data/villes-international.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8')
@@ -49,7 +50,15 @@ export function checkVilles() {
   for (const p of PAGE_PREFIXES) {
     for (const d of fs.readdirSync(ROOT).filter(x => x.startsWith(`${p}-`))) {
       const slug = d.slice(p.length + 1)
+      if (VILLES_INTERNATIONAL[slug]?.pages.includes(p)) continue
       if (!cities.some(c => c.slug === slug)) problems.push(`${d} : ville absente de CITIES (footer.js)`)
+    }
+  }
+  // Villes hors de France : leurs pages et leurs adresses du sitemap
+  for (const [slug, v] of Object.entries(VILLES_INTERNATIONAL)) {
+    for (const p of v.pages) {
+      if (!fs.existsSync(path.join(ROOT, `${p}-${slug}`, 'index.html'))) problems.push(`${slug} (${v.pays}) : page ${p}-${slug}`)
+      if (!sitemap.includes(`<loc>https://jasonmarinho.com/${p}-${slug}</loc>`)) problems.push(`${slug} (${v.pays}) : sitemap ${p}-${slug}`)
     }
   }
   return { count: cities.length, problems }
