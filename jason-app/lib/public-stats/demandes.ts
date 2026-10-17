@@ -2,6 +2,8 @@
 // transparent sur la page des chiffres, même si c'est zéro, que tout soit
 // branché, même pour les futures villes »). Deux portes d'entrée :
 // - le formulaire « Trouver un pro » (table demandes_hotes) ;
+// - les demandes reçues directement par Jason (appel, message), notées à la
+//   main dans DEMANDES_DIRECTES : métier, ville, mois, rien d'autre ;
 // - le bouton « Contacter » d'une fiche (photographer_contacts /
 //   cleaner_contacts), sans les lignes créées par une demande du formulaire
 //   (source_url …/trouver-un-pro#demande-…), déjà comptées une fois.
@@ -11,7 +13,7 @@
 // Tests et fiches d'exemple écartés. Pur et testé (demandes.test.ts).
 
 export type DemandeMetier = 'photographe' | 'menage'
-export type DemandeSource = 'formulaire' | 'fiche'
+export type DemandeSource = 'formulaire' | 'fiche' | 'direct'
 /** ouverte : un pro l'a ouverte ou y a répondu ; transmise : envoyée, pas encore ouverte ; sans_pro : attend un pro dans la zone */
 export type DemandeEtat = 'ouverte' | 'transmise' | 'sans_pro'
 
@@ -50,6 +52,21 @@ export interface PublicDemandes {
 export const FIL_MAX = 12
 export const MONTHS_SHOWN = 6
 export const OTHER_CITY = 'Autre ville'
+
+/**
+ * Demandes reçues hors du site (appel ou message à Jason), ajoutées à la main.
+ * Une ligne par demande réelle, jamais de donnée sur l'hôte. Le jour est
+ * fixé au 1er du mois : seul le mois est publié.
+ */
+export const DEMANDES_DIRECTES: Array<{ month: string; metier: DemandeMetier; slug: string; etat: DemandeEtat }> = [
+  // Octobre 2026 : un hôte a appelé Jason pour un photographe à Lyon (il
+  // avait vu la fiche d'exemple ; aucun vrai photographe à Lyon alors)
+  { month: '2026-10', metier: 'photographe', slug: 'lyon', etat: 'sans_pro' },
+]
+
+export function directItems(): DemandeItem[] {
+  return DEMANDES_DIRECTES.map(d => ({ at: `${d.month}-01T12:00:00Z`, metier: d.metier, slug: d.slug, source: 'direct' as const, etat: d.etat }))
+}
 
 /** Ligne de Demandes reçues créée par le formulaire « Trouver un pro » (comptée avec la demande) */
 export function fromTrouverUnPro(sourceUrl: string | null | undefined): boolean {
@@ -101,7 +118,7 @@ export function buildPublicDemandes(
 ): PublicDemandes {
   const sorted = [...items].sort((a, b) => b.at.localeCompare(a.at))
   const byMetier = { photographe: 0, menage: 0 }
-  const bySource = { formulaire: 0, fiche: 0 }
+  const bySource = { formulaire: 0, fiche: 0, direct: 0 }
   const byEtat = { ouverte: 0, transmise: 0, sans_pro: 0 }
   const cityMap = new Map<string, DemandeCity>()
   const perMonth = new Map<string, number>()

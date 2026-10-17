@@ -207,6 +207,7 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .dm-bar{height:8px;border-radius:4px;background:var(--cr);overflow:hidden}
 .dm-bar i{display:block;height:100%;border-radius:4px;background:var(--g)}
 .dm-bar i.y{background:#C9A227}
+.dm-bar i.b{background:#8B6A4E}
 .dm-et{display:flex;align-items:center;gap:10px;font-size:14.5px}
 .dm-et .d{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .dm-et b{margin-left:auto}
@@ -304,67 +305,6 @@ a.dm-city:hover{border-color:var(--g)}
   </div>
 </section>
 
-<section class="sec" id="demandes">
-  <div class="s-in">
-    <div class="dm">
-      <div>
-        <div class="eye"><i class="ph-bold ph-paper-plane-tilt"></i>Demandes d’hôtes · en toute transparence</div>
-        <h2>Chaque demande compte, <em>même la première</em></h2>
-        <p class="dm-lead">Combien d’hôtes ont vraiment demandé un photographe, un vidéaste ou une équipe de ménage ? Le service est jeune : je préfère te montrer les vrais chiffres, petits ou grands. Ils se mettent à jour tout seuls à chaque demande.</p>
-        <div class="dm-priv">
-          <span><i class="ph-bold ph-arrows-clockwise"></i>Mis à jour toutes les 10 minutes</span>
-          <span><i class="ph-bold ph-shield-check"></i>Métier, ville et mois seulement</span>
-        </div>
-      </div>
-      <div class="dm-total" aria-live="polite">
-        <span data-dm-since>Demandes reçues</span>
-        <b data-dm-total><span class="sk"></span></b>
-        <div class="dm-split">
-          <div><i class="ph-bold ph-camera"></i><div><b data-dm-photo>·</b><small>photographe ou vidéaste</small></div></div>
-          <div><i class="ph-bold ph-broom"></i><div><b data-dm-menage>·</b><small>équipe de ménage</small></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="dm-cards">
-      <div class="dm-c">
-        <h3>D’où elles viennent</h3>
-        <div class="dm-row"><span>Formulaire « Trouver un pro »</span><b data-dm-src="formulaire">·</b></div>
-        <div class="dm-bar"><i data-dm-bar="formulaire" style="width:0"></i></div>
-        <div class="dm-row"><span>Bouton « Contacter » d’une fiche</span><b data-dm-src="fiche">·</b></div>
-        <div class="dm-bar"><i class="y" data-dm-bar="fiche" style="width:0"></i></div>
-      </div>
-      <div class="dm-c">
-        <h3>Ce qu’elles sont devenues</h3>
-        <div class="dm-et"><span class="d" style="background:#004C3F"></span>Ouvertes par un pro<b data-dm-et="ouverte">·</b></div>
-        <div class="dm-et"><span class="d" style="background:#C9A227"></span>Transmises, pas encore ouvertes<b data-dm-et="transmise">·</b></div>
-        <div class="dm-et"><span class="d" style="background:#B9C4BC"></span>En attente d’un pro dans la zone<b data-dm-et="sans_pro">·</b></div>
-      </div>
-      <div class="dm-c">
-        <h3>Mois par mois</h3>
-        <div class="dm-months" data-dm-months></div>
-        <div class="dm-mlab" data-dm-mlab></div>
-      </div>
-    </div>
-
-    <div class="dm-cols">
-      <div>
-        <h3 class="t">Par ville</h3>
-        <div class="dm-cities" data-dm-cities><p class="empty">Chargement…</p></div>
-      </div>
-      <div>
-        <h3 class="t">Le fil des demandes</h3>
-        <ol class="dm-fil" data-dm-fil><li><span class="tx"><small>Chargement…</small></span></li></ol>
-      </div>
-    </div>
-
-    <div class="dm-note">
-      <p><b>« On démarre, et ça se voit ici.</b> Je ne compte ni mes tests ni les fiches d’exemple<span data-dm-excl></span>, et une demande envoyée à plusieurs pros reste une seule demande. Jamais le nom, le message ni les coordonnées de l’hôte. » Jason</p>
-      <a class="btn" href="/trouver-un-pro"><i class="ph-bold ph-paper-plane-tilt"></i>Décrire mon besoin</a>
-    </div>
-  </div>
-</section>
-
 <section class="sec cr" id="ta-ville">
   <div class="s-in">
     <div class="sec-head">
@@ -424,7 +364,70 @@ a.dm-city:hover{border-color:var(--g)}
   </div>
 </section>
 
-<section class="sec cr">
+<section class="sec cr" id="demandes">
+  <div class="s-in">
+    <div class="dm">
+      <div>
+        <div class="eye"><i class="ph-bold ph-paper-plane-tilt"></i>Demandes d’hôtes · en toute transparence</div>
+        <h2>Chaque demande compte, <em>même la première</em></h2>
+        <p class="dm-lead">Combien d’hôtes ont vraiment demandé un photographe, un vidéaste ou une équipe de ménage ? Le service est jeune : je préfère te montrer les vrais chiffres, petits ou grands. Ils se mettent à jour tout seuls à chaque demande.</p>
+        <div class="dm-priv">
+          <span><i class="ph-bold ph-arrows-clockwise"></i>Mis à jour toutes les 10 minutes</span>
+          <span><i class="ph-bold ph-shield-check"></i>Métier, ville et mois seulement</span>
+        </div>
+      </div>
+      <div class="dm-total" aria-live="polite">
+        <span data-dm-since>Demandes reçues</span>
+        <b data-dm-total><span class="sk"></span></b>
+        <div class="dm-split">
+          <div><i class="ph-bold ph-camera"></i><div><b data-dm-photo>·</b><small>photographe ou vidéaste</small></div></div>
+          <div><i class="ph-bold ph-broom"></i><div><b data-dm-menage>·</b><small>équipe de ménage</small></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dm-cards">
+      <div class="dm-c">
+        <h3>D’où elles viennent</h3>
+        <div class="dm-row"><span>Formulaire « Trouver un pro »</span><b data-dm-src="formulaire">·</b></div>
+        <div class="dm-bar"><i data-dm-bar="formulaire" style="width:0"></i></div>
+        <div class="dm-row"><span>Bouton « Contacter » d’une fiche</span><b data-dm-src="fiche">·</b></div>
+        <div class="dm-bar"><i class="y" data-dm-bar="fiche" style="width:0"></i></div>
+        <div class="dm-row"><span>Appel ou message à Jason</span><b data-dm-src="direct">·</b></div>
+        <div class="dm-bar"><i class="b" data-dm-bar="direct" style="width:0"></i></div>
+      </div>
+      <div class="dm-c">
+        <h3>Ce qu’elles sont devenues</h3>
+        <div class="dm-et"><span class="d" style="background:#004C3F"></span>Ouvertes par un pro<b data-dm-et="ouverte">·</b></div>
+        <div class="dm-et"><span class="d" style="background:#C9A227"></span>Transmises, pas encore ouvertes<b data-dm-et="transmise">·</b></div>
+        <div class="dm-et"><span class="d" style="background:#B9C4BC"></span>En attente d’un pro dans la zone<b data-dm-et="sans_pro">·</b></div>
+      </div>
+      <div class="dm-c">
+        <h3>Mois par mois</h3>
+        <div class="dm-months" data-dm-months></div>
+        <div class="dm-mlab" data-dm-mlab></div>
+      </div>
+    </div>
+
+    <div class="dm-cols">
+      <div>
+        <h3 class="t">Par ville</h3>
+        <div class="dm-cities" data-dm-cities><p class="empty">Chargement…</p></div>
+      </div>
+      <div>
+        <h3 class="t">Le fil des demandes</h3>
+        <ol class="dm-fil" data-dm-fil><li><span class="tx"><small>Chargement…</small></span></li></ol>
+      </div>
+    </div>
+
+    <div class="dm-note">
+      <p><b>« On démarre, et ça se voit ici.</b> Je ne compte ni mes tests ni les fiches d’exemple<span data-dm-excl></span>, et une demande envoyée à plusieurs pros reste une seule demande. Jamais le nom, le message ni les coordonnées de l’hôte. » Jason</p>
+      <a class="btn" href="/trouver-un-pro"><i class="ph-bold ph-paper-plane-tilt"></i>Décrire mon besoin</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
   <div class="s-in">
     <div class="sec-head">
       <div class="lbl">Bien lire ces chiffres</div>
@@ -564,9 +567,9 @@ a.dm-city:hover{border-color:var(--g)}
     var ex = $('[data-dm-excl]'), X = D.excluded || { test: 0, exemple: 0 };
     if (ex && (X.test || X.exemple)) ex.textContent = ' (' + [X.test ? n(X.test) + ' test' + (X.test > 1 ? 's' : '') : '', X.exemple ? n(X.exemple) + ' vers une fiche d’exemple' : ''].filter(Boolean).join(', ') + ' écarté' + (X.test + X.exemple > 1 ? 's' : '') + ')';
     setNum('[data-dm-photo]', n(D.byMetier.photographe)); setNum('[data-dm-menage]', n(D.byMetier.menage));
-    ['formulaire','fiche'].forEach(function(k){
-      setNum('[data-dm-src="' + k + '"]', n(D.bySource[k]));
-      var b = $('[data-dm-bar="' + k + '"]'); if (b) b.style.width = (D.total ? Math.round(D.bySource[k] / D.total * 100) : 0) + '%';
+    ['formulaire','fiche','direct'].forEach(function(k){
+      setNum('[data-dm-src="' + k + '"]', n(D.bySource[k] || 0));
+      var b = $('[data-dm-bar="' + k + '"]'); if (b) b.style.width = (D.total ? Math.round((D.bySource[k] || 0) / D.total * 100) : 0) + '%';
     });
     ['ouverte','transmise','sans_pro'].forEach(function(k){ setNum('[data-dm-et="' + k + '"]', n(D.byEtat[k])); });
     var mb = $('[data-dm-months]'), ml = $('[data-dm-mlab]');
@@ -600,7 +603,7 @@ a.dm-city:hover{border-color:var(--g)}
       var items = D.fil.map(function(f){
         var photo = f.metier === 'photographe';
         var title = (photo ? 'Photographe ou vidéaste' : 'Équipe de ménage') + (f.slug ? ' à ' + f.label : ' · ' + f.label);
-        var src = f.source === 'formulaire' ? 'Formulaire « Trouver un pro »' : 'Bouton « Contacter » d’une fiche';
+        var src = f.source === 'formulaire' ? 'Formulaire « Trouver un pro »' : f.source === 'direct' ? 'Appel ou message à Jason' : 'Bouton « Contacter » d’une fiche';
         return '<li><span class="ic' + (photo ? '' : ' m') + '"><i class="ph-bold ' + (photo ? 'ph-camera' : 'ph-broom') + '"></i></span><span class="tx"><b>' + esc(title) + '</b><small>' + esc(monthFr(f.month)) + ' · ' + src + '</small></span><span class="dm-st ' + f.etat + '">' + ETAT[f.etat] + '</span></li>';
       }).join('');
       fb.innerHTML = items + '<li class="dm-next"><span class="tx"><small>' + (D.total ? 'La prochaine demande s’affichera ici.' : 'La première demande s’affichera ici, dès qu’un hôte décrit son besoin ou contacte un pro.') + '</small></span></li>';

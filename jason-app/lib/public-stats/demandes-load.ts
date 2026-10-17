@@ -11,7 +11,7 @@ import { cityLabel, citySlugOf } from '@/lib/visibility/city-page'
 import { adminUserIds, isDemoFiche } from '@/lib/pros/demo'
 import { prosByCity } from './rules'
 import {
-  buildPublicDemandes, etatOfContact, etatOfDemande, fromTrouverUnPro, isTestEmail,
+  buildPublicDemandes, directItems, etatOfContact, etatOfDemande, fromTrouverUnPro, isTestEmail,
   type DemandeItem, type DemandeMetier, type PublicDemandes,
 } from './demandes'
 
@@ -71,10 +71,11 @@ async function compute(): Promise<PublicDemandes> {
     items.push({ at: d.created_at, metier: d.metier, slug: citySlugOf(d.ville), source: 'formulaire', etat: etatOfDemande(d.status, statuses) })
   }
 
+  items.push(...directItems())
   return buildPublicDemandes(items, { today: parisToday(), labelOf: cityLabel, pros: prosMaps, excluded })
 }
 
-const cached = unstable_cache(compute, ['public-demandes-v2'], { revalidate: 600, tags: ['public-demandes'] })
+const cached = unstable_cache(compute, ['public-demandes-v3'], { revalidate: 600, tags: ['public-demandes'] })
 
 export async function loadPublicDemandes(): Promise<PublicDemandes | null> {
   try {
