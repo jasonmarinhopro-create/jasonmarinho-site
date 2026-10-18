@@ -178,18 +178,29 @@ function Sheet({ title, placeholder, initial, options, city, strict, onClose, on
   const ref = useRef<HTMLInputElement>(null)
   const openedAt = useRef(Date.now())
   const res = useMemo(() => suggestList(options, q, { city, strict, max: 30 }), [options, q, city, strict])
+  // iPhone : le clavier fait glisser la partie visible sans réduire l'écran « fixe ».
+  // La feuille suit la partie réellement visible et la page derrière est figée à sa place.
+  const [vp, setVp] = useState<{ top: number; h: number } | null>(null)
   useEffect(() => {
-    const html = document.documentElement
-    const prev = html.style.overflow
+    const html = document.documentElement, bs = document.body.style
+    const prevHtml = html.style.overflow, prevBody = bs.cssText, y = window.scrollY
     html.style.overflow = 'hidden'
+    bs.position = 'fixed'; bs.top = `${-y}px`; bs.left = '0'; bs.right = '0'; bs.width = '100%'
+    const vv = window.visualViewport
+    const fit = () => { if (vv) setVp({ top: vv.offsetTop, h: vv.height }) }
+    fit()
+    vv?.addEventListener('resize', fit); vv?.addEventListener('scroll', fit)
     const t = setTimeout(() => ref.current?.focus(), 30)
-    return () => { html.style.overflow = prev; clearTimeout(t) }
+    return () => {
+      vv?.removeEventListener('resize', fit); vv?.removeEventListener('scroll', fit)
+      html.style.overflow = prevHtml; bs.cssText = prevBody; window.scrollTo(0, y); clearTimeout(t)
+    }
   }, [])
   return (
     <>
       {/* Le « clic » du toucher qui a ouvert la feuille arrive après : pas de fermeture tout de suite */}
-      <div onClick={() => { if (Date.now() - openedAt.current > 450) onClose() }} style={ui.veil} />
-      <div role="dialog" aria-modal="true" aria-label={title} style={ui.sheet}>
+      <div onClick={() => { if (Date.now() - openedAt.current > 450) onClose() }} style={vp ? { ...ui.veil, top: vp.top, height: vp.h, bottom: 'auto' } : ui.veil} />
+      <div role="dialog" aria-modal="true" aria-label={title} style={vp ? { ...ui.sheet, top: vp.top + 28, height: vp.h - 28, bottom: 'auto' } : ui.sheet}>
         <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 10 }}><span style={ui.grab} /></div>
         <div style={ui.top}>
           <label style={ui.box}>

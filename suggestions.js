@@ -219,11 +219,28 @@
       '<button type="button" class="jms-cancel">Annuler</button></div><div class="jms-list" role="listbox" id="' + id + '"></div>';
     document.body.appendChild(veil);
     document.body.appendChild(sheet);
+    // iPhone : le clavier ne réduit pas l'écran « fixe », il fait glisser la partie visible.
+    // La feuille suit donc la partie réellement visible (visualViewport), et la page derrière
+    // est figée à sa place (sinon Safari la fait défiler et on voit le formulaire sous la feuille).
+    var y = window.scrollY, bs = document.body.style, prevBody = bs.cssText, vv = window.visualViewport;
+    bs.position = 'fixed'; bs.top = -y + 'px'; bs.left = '0'; bs.right = '0'; bs.width = '100%';
     document.documentElement.classList.add('jms-lock');
+    function fit() {
+      if (!vv) return;
+      var top = vv.offsetTop, h = vv.height;
+      veil.style.cssText = 'top:' + top + 'px;height:' + h + 'px;bottom:auto';
+      sheet.style.cssText = 'top:' + (top + 28) + 'px;height:' + (h - 28) + 'px;bottom:auto';
+    }
+    fit();
+    if (vv) { vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit); }
     var field = sheet.querySelector('input'), list = sheet.querySelector('.jms-list'), r = null;
     field.value = input.value;
     function render() { r = search(input, field.value); list.innerHTML = listHtml(r, -1, id); }
-    function shut() { veil.remove(); sheet.remove(); document.documentElement.classList.remove('jms-lock'); }
+    function shut() {
+      if (vv) { vv.removeEventListener('resize', fit); vv.removeEventListener('scroll', fit); }
+      veil.remove(); sheet.remove(); document.documentElement.classList.remove('jms-lock');
+      bs.cssText = prevBody; window.scrollTo(0, y);
+    }
     function pick(v) { shut(); if (v != null) choose(input, v); }
     field.addEventListener('input', render);
     field.addEventListener('keydown', function (e) {
