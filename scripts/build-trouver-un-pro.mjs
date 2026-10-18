@@ -137,7 +137,7 @@ form[data-metier="menage"] .only-photo{display:none}
         <label><input type="radio" name="metier" value="menage"><span><i class="ph-bold ph-sparkle"></i>Une équipe de ménage</span></label>
       </div>
       <div class="grid2">
-        <div class="f"><label for="ville">Ville du logement</label><input id="ville" name="ville" list="villes" autocomplete="address-level2" placeholder="Ex. Lyon" required></div>
+        <div class="f"><label for="ville">Ville du logement</label><input id="ville" name="ville" list="villes" data-suggest="ville" autocomplete="off" placeholder="Ex. Lyon" required></div>
         <div class="f"><label for="logement">Ton logement</label><select id="logement" name="logement"><option value="">Choisir</option>${opt(LOGEMENTS)}</select></div>
       </div>
       <datalist id="villes">${cities.map(c => `<option value="${esc(c)}">`).join('')}</datalist>
@@ -224,6 +224,7 @@ form[data-metier="menage"] .only-photo{display:none}
 </script>
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
+<script src="/suggestions.js" defer></script>
 </body>
 </html>
 `

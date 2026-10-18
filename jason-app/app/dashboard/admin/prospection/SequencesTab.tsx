@@ -5,6 +5,7 @@
 // de la séquence choisie (déclencheur, arrêt sur réponse, e-mails J+n dans le
 // même fil, boucle et enchaînement en fin de séquence).
 
+import SuggestInput from '@/components/ui/SuggestInput'
 import { useEffect, useMemo, useState } from 'react'
 import {
   Lightning, Users, EnvelopeSimple, Plus, Trash, ArrowUp, ArrowDown, PaperPlaneTilt, Eye, PencilSimple,
@@ -276,8 +277,7 @@ export default function SequencesTab({ audience, sequences, contacts }: { audien
                     )}
                     {draft.trigger === 'etiquette' && (
                       <>
-                        <input list="prosp-tags" value={draft.trigger_tag ?? ''} onChange={e => upd({ trigger_tag: e.target.value })} placeholder="Ex. Salon Lyon, Recommandé, Chaud…" style={ui.input} aria-label="Étiquette qui déclenche la séquence" />
-                        <datalist id="prosp-tags">{knownTags.map(t => <option key={t} value={t} />)}</datalist>
+                        <SuggestInput value={draft.trigger_tag ?? ''} onChange={v => upd({ trigger_tag: v })} options={knownTags} placeholder="Ex. Salon Lyon, Recommandé, Chaud…" style={ui.input} ariaLabel="Étiquette qui déclenche la séquence" />
                       </>
                     )}
                     <span style={ui.sub}>

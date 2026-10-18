@@ -2,6 +2,7 @@
 
 // Journal : chaque revenu et chaque charge, mois par mois, avec la saisie,
 // l'import CSV (Airbnb, Booking) et l'export pour le comptable.
+import SuggestInput from '@/components/ui/SuggestInput'
 import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
 import {
@@ -362,7 +363,7 @@ function RevenuModal({ logementNoms, defaultLogement, onClose }: { logementNoms:
     <Modal title="Saisir un revenu" onClose={onClose}>
       <div style={s.form}>
         <Field label="Logement">
-          <input list="fin-logements" value={logement} onChange={e => setLogement(e.target.value)} style={s.input} />
+          <SuggestInput value={logement} onChange={setLogement} options={logementNoms} ariaLabel="Logement" style={s.input} />
         </Field>
         <div style={s.formRow}>
           <Field label="Montant reçu (€)"><input inputMode="decimal" value={montant} onChange={e => setMontant(e.target.value)} style={s.input} /></Field>
@@ -390,7 +391,6 @@ function RevenuModal({ logementNoms, defaultLogement, onClose }: { logementNoms:
         {error && <p style={{ margin: 0, fontSize: 12.5, color: COLORS.charges }}>{error}</p>}
         <button type="button" onClick={save} disabled={pending} style={{ ...ui.btn, justifyContent: 'center' }}>{pending ? 'Enregistrement…' : 'Enregistrer le revenu'}</button>
       </div>
-      <datalist id="fin-logements">{logementNoms.map(n => <option key={n} value={n} />)}</datalist>
     </Modal>
   )
 }
@@ -431,7 +431,7 @@ function ChargeModal({ logementNoms, logements, defaultLogement, row, onClose }:
     <Modal title={row ? 'Modifier la charge' : 'Saisir une charge'} onClose={onClose}>
       <div style={s.form}>
         <Field label="Logement">
-          <input list="fin-logements-c" value={logement} onChange={e => setLogement(e.target.value)} style={s.input} />
+          <SuggestInput value={logement} onChange={setLogement} options={logementNoms} ariaLabel="Logement" style={s.input} />
         </Field>
         <div style={s.formRow}>
           <Field label="Montant (€)"><input inputMode="decimal" value={montant} onChange={e => setMontant(e.target.value)} style={s.input} /></Field>
@@ -454,7 +454,6 @@ function ChargeModal({ logementNoms, logements, defaultLogement, row, onClose }:
         {error && <p style={{ margin: 0, fontSize: 12.5, color: COLORS.charges }}>{error}</p>}
         <button type="button" onClick={save} disabled={pending} style={{ ...ui.btn, justifyContent: 'center' }}>{pending ? 'Enregistrement…' : row ? 'Enregistrer' : 'Enregistrer la charge'}</button>
       </div>
-      <datalist id="fin-logements-c">{logementNoms.map(n => <option key={n} value={n} />)}</datalist>
     </Modal>
   )
 }

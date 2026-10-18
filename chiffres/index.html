@@ -343,7 +343,7 @@ a.dm-city:hover{border-color:var(--g)}
       <p>Tape le nom de ta ville : tu vois tout ce que Google montre pour ses pages (photographes, ménage, guide des hôtes), même quand les chiffres sont petits. Rien n’est caché ni arrondi.</p>
     </div>
     <form class="vs" data-vs role="search" autocomplete="off">
-      <div class="vs-in"><i class="ph-bold ph-magnifying-glass"></i><input type="text" name="ville" list="villes-list" maxlength="60" placeholder="Ex. Lyon, Annecy, Biarritz…" aria-label="Nom de ta ville" required></div>
+      <div class="vs-in"><i class="ph-bold ph-magnifying-glass"></i><input type="text" name="ville" list="villes-list" data-suggest="ville" data-suggest-anchor=".vs-in" data-suggest-submit maxlength="60" placeholder="Ex. Lyon, Annecy, Biarritz…" aria-label="Nom de ta ville" required></div>
       <button type="submit"><i class="ph-bold ph-chart-line-up"></i>Voir les chiffres</button>
     </form>
     <datalist id="villes-list"></datalist>
@@ -915,5 +915,6 @@ a.dm-city:hover{border-color:var(--g)}
 </script>
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
+<script src="/suggestions.js" defer></script>
 </body>
 </html>

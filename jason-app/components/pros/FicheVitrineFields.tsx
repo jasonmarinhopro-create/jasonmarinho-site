@@ -7,6 +7,8 @@ import { useState } from 'react'
 import { Plus, X, ArrowCounterClockwise } from '@phosphor-icons/react/dist/ssr'
 import { DEFAULT_DEROULE, FORMULES_MAX, VILLES_MAX, FORMULE_DETAIL_MAX, ETAPE_TITRE_MAX, ETAPE_TEXTE_MAX, type Etape, type ProMetier } from '@/lib/pros/fiche-vitrine'
 import GrowText from './GrowText'
+import SuggestInput from '@/components/ui/SuggestInput'
+import { CITY_OPTIONS } from '@/lib/ui/suggest'
 
 export interface VitrineForm {
   formules: Array<{ nom: string; prix: string; detail: string }>
@@ -100,9 +102,10 @@ export default function FicheVitrineFields({ value, onChange, metier, inputStyle
       </div>
       {value.villes.length < VILLES_MAX && (
         <div style={{ display: 'flex', gap: 8 }}>
-          <input style={inputStyle} value={ville} onChange={e => setVille(e.target.value)} maxLength={120}
+          <SuggestInput kind="ville" style={inputStyle} value={ville} onChange={setVille} options={CITY_OPTIONS} maxLength={120}
+            onPick={v => addVilles(v)}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addVilles(ville) } }}
-            onBlur={() => addVilles(ville)} autoComplete="off" enterKeyHint="done" placeholder="Ex. Villeurbanne, Annecy" aria-label="Ajouter une ville" />
+            onBlur={() => addVilles(ville)} placeholder="Ex. Villeurbanne, Annecy" ariaLabel="Ajouter une ville" />
           <button type="button" onClick={() => addVilles(ville)} style={addBtn}><Plus size={13} weight="bold" /> Ajouter</button>
         </div>
       )}

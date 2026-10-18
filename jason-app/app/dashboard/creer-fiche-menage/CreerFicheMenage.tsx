@@ -1,5 +1,7 @@
 'use client'
 
+import SuggestInput from '@/components/ui/SuggestInput'
+import { CITY_OPTIONS } from '@/lib/ui/suggest'
 import { useState, useTransition } from 'react'
 import { Sparkle, LockKey, Star } from '@phosphor-icons/react/dist/ssr'
 import { submitCleanerSignup } from './actions'
@@ -121,7 +123,7 @@ export default function CreerFicheMenage({ email, defaultFullName, tier }: Props
 
         <Row>
           <Field label="Ville principale" required>
-            <input value={form.ville} onChange={e => set('ville', e.target.value)} required maxLength={80} placeholder="Bordeaux" style={s.input} />
+            <SuggestInput kind="ville" value={form.ville} onChange={v => set('ville', v)} options={CITY_OPTIONS} required maxLength={80} placeholder="Bordeaux" ariaLabel="Ville" style={s.input} />
           </Field>
           <Field label="Zone couverte">
             <input value={form.zoneCouverte} onChange={e => set('zoneCouverte', e.target.value)} maxLength={200} placeholder="Bordeaux + 30 km" style={s.input} />

@@ -1,5 +1,6 @@
 'use client'
 
+import SuggestInput from '@/components/ui/SuggestInput'
 import { useState, useTransition } from 'react'
 import {
   Plus, Trash, X, FacebookLogo, WhatsappLogo,
@@ -65,17 +66,7 @@ function GroupForm({ initial, existingCategories, onSubmit, onCancel, submitLabe
               (libre, ex: Groupes régionaux, Ski…)
             </span>
           </label>
-          <input
-            name="category"
-            list="category-suggestions"
-            defaultValue={initial?.category ?? ''}
-            required
-            style={s.input}
-            placeholder="Ex: Groupes régionaux"
-          />
-          <datalist id="category-suggestions">
-            {existingCategories.map(c => <option key={c} value={c} />)}
-          </datalist>
+          <CategoryField initial={initial?.category ?? ''} options={existingCategories} style={s.input} />
         </div>
         <div style={s.formGroup}>
           <label style={s.label}>
@@ -438,4 +429,15 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer', color: 'var(--text-2)', flexShrink: 0,
     transition: 'background var(--d-base) var(--ease-smooth), color var(--d-base) var(--ease-smooth), border-color var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-spring)',
   },
+}
+
+/** Catégorie libre avec suggestions (le formulaire lit le champ caché « category ») */
+function CategoryField({ initial, options, style }: { initial: string; options: string[]; style: React.CSSProperties }) {
+  const [v, setV] = useState(initial)
+  return (
+    <>
+      <SuggestInput value={v} onChange={setV} options={options} required style={style} placeholder="Ex: Groupes régionaux" ariaLabel="Catégorie" />
+      <input type="hidden" name="category" value={v} />
+    </>
+  )
 }

@@ -64,7 +64,7 @@ ${field({ id: 'email', label: 'E-mail pro', req: true, type: 'email', ph: cfg.em
 ${cfg.key === 'menage' ? field({ id: 'telephone', label: 'Téléphone', type: 'tel', ph: '06 12 34 56 78', attrs: 'autocomplete="tel"' }) : ''}`
 
 const whereFields = cfg => `
-${field({ id: 'ville', label: 'Ta ville principale', req: true, ph: cfg.villePh, attrs: 'list="villes" autocomplete="address-level2" maxlength="80"', hint: 'Ta fiche apparaît sur la page de ta ville quand elle existe.' })}
+${field({ id: 'ville', label: 'Ta ville principale', req: true, ph: cfg.villePh, attrs: 'list="villes" data-suggest="ville" autocomplete="off" maxlength="80"', hint: 'Ta fiche apparaît sur la page de ta ville quand elle existe.' })}
 ${field({ id: 'zoneCouverte', label: 'Ta zone', ph: cfg.zonePh, attrs: 'maxlength="200"', hint: 'Tu pourras ajouter jusqu’à 10 villes depuis ton espace.' })}`
 
 const PHOTO = {
@@ -527,6 +527,7 @@ ${step(4, cfg.key === 'menage' ? 'Ton équipe en quelques mots' : 'Toi en quelqu
 </script>
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
+<script src="/suggestions.js" defer></script>
 </body>
 </html>
 `

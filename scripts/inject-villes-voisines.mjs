@@ -85,3 +85,22 @@ const sansRegion = Object.keys(NAMES).filter(s => !all.includes(s))
 console.log(`Villes voisines : ${done} pages`)
 if (skipped.length) console.log('Ignorées :', skipped.join(', '))
 if (sansRegion.length) { console.log('Villes sans région :', sansRegion.join(', ')); process.exitCode = 1 }
+
+// Régions des villes pour la liste de suggestions (18/10/2026) : site
+// (suggestions.js) et app (jason-app/lib/ui/suggest-regions.ts), même liste.
+// Villes hors de France : leur pays.
+const INTL_REGIONS = { quebec: 'Canada' }
+const regionMap = Object.fromEntries(Object.entries({
+  ...Object.fromEntries(Object.entries(REGIONS).flatMap(([r, slugs]) => slugs.map(s => [s, r]))),
+  ...INTL_REGIONS,
+}).sort(([a], [b]) => a.localeCompare(b)))
+const json = JSON.stringify(regionMap)
+for (const [file, re] of [
+  [`${ROOT}suggestions.js`, /\/\*REGIONS:START\*\/[\s\S]*?\/\*REGIONS:END\*\//],
+  [`${ROOT}jason-app/lib/ui/suggest-regions.ts`, /\/\*REGIONS:START\*\/[\s\S]*?\/\*REGIONS:END\*\//],
+]) {
+  if (!existsSync(file)) continue
+  const src = readFileSync(file, 'utf8')
+  const next = src.replace(re, `/*REGIONS:START*/${json}/*REGIONS:END*/`)
+  if (next !== src) writeFileSync(file, next)
+}

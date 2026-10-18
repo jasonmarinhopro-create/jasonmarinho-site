@@ -4,6 +4,7 @@
 // (lancer une séquence, changer d'étape, chercher les e-mails, supprimer) et
 // fiche d'un contact (modification, historique des envois).
 
+import SuggestInput from '@/components/ui/SuggestInput'
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import {
@@ -170,8 +171,7 @@ export default function ContactsTab({ audience, contacts, sequences, today }: { 
           </select>
           <span style={s.tagBox}>
             <Tag size={13} color="var(--text-3)" />
-            <input list="contacts-tags" value={bulkTag} onChange={e => setBulkTag(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') bulkTagAction('ajouter') }} placeholder="Étiquette" style={s.tagInput} aria-label="Étiquette à ajouter ou retirer" />
-            <datalist id="contacts-tags">{knownTags.map(t => <option key={t.tag} value={t.tag} />)}</datalist>
+            <SuggestInput value={bulkTag} onChange={setBulkTag} options={knownTags.map(t => t.tag)} onKeyDown={e => { if (e.key === 'Enter') bulkTagAction('ajouter') }} placeholder="Étiquette" style={s.tagInput} ariaLabel="Étiquette à ajouter ou retirer" />
             <button type="button" onClick={() => bulkTagAction('ajouter')} disabled={busy === 'tag'} style={s.tagBtn}>Ajouter</button>
             <button type="button" onClick={() => bulkTagAction('retirer')} disabled={busy === 'tag'} style={{ ...s.tagBtn, color: 'var(--text-3)' }}>Retirer</button>
           </span>
@@ -340,8 +340,7 @@ function ContactPanel({ contact, newStage, audience, sequences, knownTags, onClo
                 <button type="button" onClick={() => setTags(p => p.filter(x => x !== t))} style={s.tagX} aria-label={`Retirer ${t}`}><X size={10} weight="bold" /></button>
               </span>
             ))}
-            <input list="panel-tags" value={tagDraft} onChange={e => setTagDraft(e.target.value)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTag(tagDraft) } }} onBlur={() => tagDraft.trim() && addTag(tagDraft)} placeholder={tags.length ? 'Ajouter…' : 'Ex. Salon Lyon, Chaud, Recommandé…'} style={s.tagField} aria-label="Nouvelle étiquette" />
-            <datalist id="panel-tags">{knownTags.filter(t => !tags.includes(t)).map(t => <option key={t} value={t} />)}</datalist>
+            <SuggestInput value={tagDraft} onChange={setTagDraft} options={knownTags.filter(t => !tags.includes(t))} onPick={v => addTag(v)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addTag(tagDraft) } }} onBlur={() => tagDraft.trim() && addTag(tagDraft)} placeholder={tags.length ? 'Ajouter…' : 'Ex. Salon Lyon, Chaud, Recommandé…'} style={s.tagField} ariaLabel="Nouvelle étiquette" />
           </div>
           <span style={ui.sub}>Une séquence peut démarrer quand tu ajoutes une étiquette (onglet Séquences, « Quand »).</span>
           <span style={{ ...s.metaTitle, marginTop: '6px' }}><Bell size={14} weight="fill" /> Rappel</span>

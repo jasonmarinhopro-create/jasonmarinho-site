@@ -1,5 +1,7 @@
 'use client'
 
+import SuggestInput from '@/components/ui/SuggestInput'
+import { CITY_OPTIONS } from '@/lib/ui/suggest'
 import GrowText from '@/components/pros/GrowText'
 import Link from 'next/link'
 import ViewsTrend from '@/components/pros/ViewsTrend'
@@ -308,7 +310,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         </div>
         <div style={s.grid2}>
           <Field label="Ville principale" req>
-            <input style={s.input} value={form.ville} onChange={e => setForm({ ...form, ville: e.target.value })} required maxLength={80} />
+            <SuggestInput kind="ville" style={s.input} value={form.ville} onChange={v => setForm({ ...form, ville: v })} options={CITY_OPTIONS} required maxLength={80} ariaLabel="Ville" />
           </Field>
           <Field label="Zone couverte">
             <GrowText style={s.input} value={form.zone_couverte} onChange={v => setForm({ ...form, zone_couverte: v })} max={200} counter={false} placeholder="Lyon + 60 km" />
