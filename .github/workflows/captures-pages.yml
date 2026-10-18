@@ -1,0 +1,64 @@
+# Captures de pages publiques du site (18/10/2026) : l'environnement de Claude
+# ne joint pas jasonmarinho.com. Push de .github/captures-trigger sur claude/**
+# (une adresse par ligne) : HTML + captures pleine page à 390 et 1280 px,
+# enregistrés dans tmp-captures/ de la branche (pages publiques seulement).
+# Ne jamais fusionner tmp-captures/ dans main : le supprimer après lecture.
+name: Captures de pages
+
+on:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/captures-trigger']
+
+permissions:
+  contents: write
+
+concurrency: { group: captures-${{ github.ref }}, cancel-in-progress: true }
+
+jobs:
+  captures:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Playwright
+        run: |
+          mkdir -p /tmp/pw && cd /tmp/pw && npm init -y >/dev/null && npm i playwright@1.47.2 >/dev/null && npx playwright install --with-deps chromium >/dev/null
+      - name: Captures
+        run: |
+          mkdir -p tmp-captures
+          cat > /tmp/pw/cap.cjs <<'JS'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          const urls = fs.readFileSync(process.argv[2], 'utf8').split('\n').map(s => s.trim()).filter(u => /^https:\/\/jasonmarinho\.com\//.test(u));
+          (async () => {
+            const b = await chromium.launch();
+            for (const u of urls) {
+              const name = u.replace(/^https:\/\/jasonmarinho\.com\//, '').replace(/[^a-z0-9]+/gi, '_').slice(0, 80) || 'accueil';
+              for (const [w, h, tag] of [[1280, 900, 'desk'], [390, 844, 'mob']]) {
+                const ctx = await b.newContext({ viewport: { width: w, height: h }, isMobile: w < 500, hasTouch: w < 500 });
+                await ctx.addInitScript(() => { try { localStorage.setItem('cookie-consent', 'refused'); } catch (e) {} });
+                const p = await ctx.newPage();
+                await p.goto(u, { waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
+                await p.waitForTimeout(1500);
+                const ref = p.locator('text=Tout refuser'); if (await ref.count()) await ref.first().click().catch(() => {});
+                await p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 600) { window.scrollTo(0, y); await new Promise(r => setTimeout(r, 120)); } window.scrollTo(0, 0); });
+                await p.waitForTimeout(800);
+                await p.screenshot({ path: `tmp-captures/${name}-${tag}.jpg`, fullPage: true, type: 'jpeg', quality: 55 });
+                if (tag === 'desk') fs.writeFileSync(`tmp-captures/${name}.html`, await p.content());
+                await ctx.close();
+              }
+            }
+            await b.close();
+          })();
+          JS
+          NODE_PATH=/tmp/pw/node_modules node /tmp/pw/cap.cjs .github/captures-trigger
+          ls -la tmp-captures
+      - name: Enregistrer
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tmp-captures
+          git commit -m "captures de pages publiques (temporaire)" || exit 0
+          git push origin HEAD:${GITHUB_REF_NAME}
