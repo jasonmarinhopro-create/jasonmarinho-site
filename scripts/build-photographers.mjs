@@ -19,7 +19,7 @@ import { adminOwnedIds } from './lib/admin-owned.mjs'
 import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { readMetier, metierLabel, readOptions, OPTIONS_VISUELLES, faitVideo } from './lib/pro-visuel.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, heroVideoHtml, videoLink, galleryHtml, formulesHtml, derouleHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
-import { nomAffiche, initiales, aVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
+import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
 
 // Options en version courte pour « En bref »
 const OPTION_COURTE = { drone: 'drone', visite_3d: 'visite 3D', reels: 'vidéos courtes', crepuscule: 'crépuscule', mise_en_scene: 'mise en scène' }
@@ -272,7 +272,7 @@ ${JSON.stringify({
       ${p.logo_url
         ? `<div class="hero-logo" style="background:url('${escHtml(p.logo_url)}') center/cover"></div>`
         : `<div class="hero-logo placeholder">${escHtml(initiales(displayName))}</div>`}
-      <h1>${escHtml(displayName)}<br><em>${escHtml(mLabel.toLowerCase())} Airbnb ${escHtml(aVille(p.ville))}</em></h1>
+      <h1>${escHtml(displayName)}<br><em>${escHtml(mLabel.toLowerCase())} pour locations courte durée ${escHtml(aVille(p.ville))}</em></h1>
     </div>
     <div class="meta-row">
       <span><i class="ph-bold ph-handshake"></i>Contact direct, sans commission</span>
@@ -313,14 +313,14 @@ ${JSON.stringify({
     ${guide ? `<div class="card" style="margin-top:16px">
       <h2>Les tarifs photo ${escHtml(aVille(g?.label ?? p.ville))}</h2>
       <p style="font-size:13.5px;color:var(--tm);line-height:1.7;margin-bottom:12px">Fourchettes constatées, checklist des photos indispensables et conseils pour bien briefer : consulte le guide local avant de demander un devis.</p>
-      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Photographe Airbnb ${escHtml(aVille(g?.label ?? p.ville))} : le guide</a>
+      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Le guide photo ${escHtml(deVille(g?.label ?? p.ville))}</a>
     </div>` : ''}
   </aside>
 </div>
 
 <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;gap:10px;flex-wrap:wrap">
   <a href="/annuaires/photographes" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Tous les photographes et vidéastes</a>
-  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Photographe Airbnb ${escHtml(aVille(g?.label ?? p.ville))} : le guide<i class="ph-bold ph-arrow-right"></i></a>` : ''}
+  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Le guide photo ${escHtml(deVille(g?.label ?? p.ville))}<i class="ph-bold ph-arrow-right"></i></a>` : ''}
 </div>
 
 <div class="disclaimer">

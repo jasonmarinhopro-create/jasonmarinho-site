@@ -17,7 +17,7 @@ import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
 import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
-import { nomAffiche, initiales, aVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
+import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
 
 // Taille de l'équipe en version courte pour « En bref »
 const EQUIPE_COURTE = { solo: ['Solo', 'une seule personne'], duo: ['Duo', 'deux personnes'], equipe_3_5: ['3 à 5', 'personnes dans l’équipe'], equipe_6_plus: ['6 et plus', 'personnes dans l’équipe'] }
@@ -297,7 +297,7 @@ ${JSON.stringify({
       ${c.logo_url
         ? `<div class="hero-logo" style="background:url('${escHtml(c.logo_url)}') center/cover"></div>`
         : `<div class="hero-logo placeholder">${escHtml(initiales(displayName))}</div>`}
-      <h1>${escHtml(displayName)}<br><em>équipe de ménage Airbnb ${escHtml(aVille(c.ville))}</em></h1>
+      <h1>${escHtml(displayName)}<br><em>équipe de ménage pour locations courte durée ${escHtml(aVille(c.ville))}</em></h1>
     </div>
     <div class="meta-row">
       <span><i class="ph-bold ph-handshake"></i>Contact direct, sans commission</span>
@@ -329,7 +329,7 @@ ${JSON.stringify({
       ${c.siret ? `<div style="margin-top:10px;font-size:12px;color:var(--tl)">SIRET déclaré : <strong style="color:var(--td);font-variant-numeric:tabular-nums">${escHtml(c.siret)}</strong></div>` : ''}
     </div>` : ''}
     ${derouleHtml(c.deroule, 'menage')}
-    ${zoneCardHtml({ ville: c.ville, zone: c.zone_couverte, villes: c.villes_couvertes, root: ROOT, prefix: 'menage-lcd', metierLabel: 'Ménage Airbnb' })}
+    ${zoneCardHtml({ ville: c.ville, zone: c.zone_couverte, villes: c.villes_couvertes, root: ROOT, prefix: 'menage-lcd', metierLabel: 'Ménage' })}
   </div>
 
   <aside>
@@ -350,14 +350,14 @@ ${JSON.stringify({
     ${guide ? `<div class="card" style="margin-top:16px">
       <h2>Les tarifs ménage ${escHtml(aVille(g?.label ?? c.ville))}</h2>
       <p style="font-size:13.5px;color:var(--tm);line-height:1.7;margin-bottom:12px">Fourchettes turnover constatées, checklist complète et questions à poser : consulte le guide local avant de demander un devis.</p>
-      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Ménage Airbnb ${escHtml(aVille(g?.label ?? c.ville))} : le guide</a>
+      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Le guide ménage ${escHtml(deVille(g?.label ?? c.ville))}</a>
     </div>` : ''}
   </aside>
 </div>
 
 <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;gap:10px;flex-wrap:wrap">
   <a href="/annuaires/menage" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Toutes les équipes ménage LCD</a>
-  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Ménage Airbnb ${escHtml(aVille(g?.label ?? c.ville))} : le guide<i class="ph-bold ph-arrow-right"></i></a>` : ''}
+  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Le guide ménage ${escHtml(deVille(g?.label ?? c.ville))}<i class="ph-bold ph-arrow-right"></i></a>` : ''}
 </div>
 
 <div class="disclaimer">
