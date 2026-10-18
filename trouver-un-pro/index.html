@@ -338,7 +338,8 @@ details.more a{color:var(--g)}
   }
 
   // ── Brouillon ──
-  function save(){ try { localStorage.setItem(KEY, JSON.stringify({ st: Object.assign({}, st, { consent:false }), step: step, at: Date.now() })); } catch (e) {} }
+  // Rien à garder tant qu'aucun métier n'est choisi : sinon l'écran d'accueil écrasait le brouillon (bouton « Reprendre » sans effet)
+  function save(){ if (!st.metier || done) return; try { localStorage.setItem(KEY, JSON.stringify({ st: Object.assign({}, st, { consent:false }), step: step, at: Date.now() })); } catch (e) {} }
   function readDraft(){ try { var d = JSON.parse(localStorage.getItem(KEY) || 'null'); return d && d.st && d.st.metier && Date.now() - d.at < 7 * 864e5 && d.step > 0 ? d : null; } catch (e) { return null; } }
   function clearDraft(){ try { localStorage.removeItem(KEY); } catch (e) {} }
 
@@ -352,7 +353,7 @@ details.more a{color:var(--g)}
     bar.style.width = Math.round((step + 1) / STEPS.length * 100) + '%';
     if (s.k === 'metier') {
       var draft = readDraft();
-      h = (draft ? '<div class="resume"><span>Tu avais commencé une demande' + (draft.st.ville ? ' à ' + esc(draft.st.ville) : '') + '.</span><span class="r-b"><button type="button" id="resume">Reprendre</button><button type="button" id="fresh" style="color:var(--tl);font-weight:500">Recommencer</button></span></div>' : '') +
+      h = (draft ? '<div class="resume"><span>Tu avais commencé une demande : <b>' + (draft.st.metier === 'menage' ? 'équipe de ménage' : 'photographe ou vidéaste') + (draft.st.ville ? ' à ' + esc(draft.st.ville) : '') + '</b>. On reprend là où tu t’étais arrêté ?</span><span class="r-b"><button type="button" id="resume">Reprendre</button><button type="button" id="fresh" style="color:var(--tl);font-weight:500">Recommencer</button></span></div>' : '') +
         '<h2 class="q">Tu cherches qui pour ton logement ?</h2>' +
         '<div class="big">' +
         '<button type="button" class="bigc' + (st.metier === 'photographe' ? ' on' : '') + '" data-m="photographe"><span class="im" style="background-image:url(/img/exemple-fiches/photo-salon-2-t.jpg)"><span><i class="ph-bold ph-camera"></i>Photo · vidéo · drone</span></span><span class="bd"><span class="t">Un photographe ou vidéaste</span><ul><li><i class="ph-bold ph-check"></i>Des photos qui donnent envie de réserver</li><li><i class="ph-bold ph-check"></i>Vidéo et vues au drone si tu veux</li></ul></span></button>' +
