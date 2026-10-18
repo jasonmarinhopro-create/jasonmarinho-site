@@ -124,4 +124,13 @@ describe('formulaire du site', () => {
     const m = src.match(/const PRESTATIONS_PHOTO = (\[[^\]]*\])/)
     expect(m && JSON.parse(m[1].replace(/'/g, '"'))).toEqual([...PRESTATIONS_PHOTO])
   })
+  it('propose les mêmes logements, délais et besoins de ménage que l’app (sinon refusés à l’envoi)', async () => {
+    const { readFileSync } = await import('node:fs')
+    const rules = await import('./rules')
+    const src = readFileSync(new URL('../../../scripts/build-trouver-un-pro.mjs', import.meta.url), 'utf8')
+    for (const name of ['LOGEMENTS', 'QUAND', 'FREQUENCES'] as const) {
+      const m = src.match(new RegExp(`const ${name} = (\\[[^\\]]*\\])`))
+      expect(m && JSON.parse(m[1].replace(/'/g, '"'))).toEqual([...rules[name]])
+    }
+  })
 })

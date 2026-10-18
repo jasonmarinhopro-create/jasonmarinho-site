@@ -5,6 +5,8 @@
 
 import 'server-only'
 import { Resend } from 'resend'
+import { randomBytes } from 'node:crypto'
+import { unstable_cache } from 'next/cache'
 import { getServiceClient } from '@/lib/supabase/service'
 import { logger } from '@/lib/logger'
 import { adminUserIds, isDemoFiche } from '@/lib/pros/demo'
@@ -16,13 +18,15 @@ import {
   type DemandeInput, type DemandeMetier, type ProCandidat, type DemandeEtat,
 } from './rules'
 import type { ProChoix } from './admin'
+import { cartePro, suiviVue, apercuPhrase, isSuiviToken, type CartePro, type ProPublic, type SuiviRow, type SuiviVue } from './public'
 
 const log = logger('demandes')
 const FROM = 'Jason Marinho <notifications@jasonmarinho.com>'
 const SITE = 'https://jasonmarinho.com'
 const APP = 'https://app.jasonmarinho.com'
 
-type Pro = ProCandidat & { slug: string; full_name: string; pseudo: string | null; email: string; user_id: string | null }
+type Pro = ProCandidat & { slug: string; full_name: string; pseudo: string | null; email: string; user_id: string | null; portfolio_photos?: unknown; logo_url?: string | null }
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
 
 const T = {
   photographe: { table: 'photographers', contacts: 'contacts' as const, contactTable: 'photographer_contacts', fk: 'photographer_id', rpc: 'increment_photographer_contacts', dir: 'photographes', dash: 'ma-fiche-photographe', label: 'photographe', labels: 'photographes', un: 'un photographe' },
@@ -32,6 +36,7 @@ const T = {
 interface DemandeRow extends DemandeEtat {
   id: string; metier: DemandeMetier; ville: string; logement: string | null; quand: string | null; frequence: string | null
   budget: string | null; message: string | null; nom: string; email: string; telephone: string | null; source: string | null
+  suivi_token?: string | null; host_closed_at?: string | null
 }
 
 function resend(): Resend | null {
@@ -45,7 +50,10 @@ async function loadPros(metier: DemandeMetier): Promise<Pro[]> {
   const cols = 'id, slug, full_name, pseudo, email, ville, zone_couverte, villes_couvertes, contacts_count, created_at, user_id'
   const q = (c: string) => db.from(t.table).select(c).eq('status', 'active').eq('is_public', true).not('slug', 'is', null).limit(1000)
   // Photographes : métier et options pour servir d'abord ceux qui font de la vidéo ou du drone (migration 136)
-  let res: { data: unknown; error: { message: string } | null } = await q(metier === 'photographe' ? `${cols}, metier, options` : cols)
+  // Photo et logo : cartes montrées à l'hôte avant l'envoi et dans son suivi (migration 131 pour les photos des équipes)
+  const visuel = ', portfolio_photos, logo_url'
+  let res: { data: unknown; error: { message: string } | null } = await q(metier === 'photographe' ? `${cols}, metier, options${visuel}` : `${cols}${visuel}`)
+  if (res.error && /portfolio_photos|logo_url/.test(res.error.message)) res = await q(metier === 'photographe' ? `${cols}, metier, options` : cols)
   if (res.error && /metier|options/.test(res.error.message)) res = await q(cols)
   if (res.error && /villes_couvertes/.test(res.error.message)) res = await q(cols.replace(' villes_couvertes,', ''))
   if (res.error) { log.error('lecture des pros', { metier, err: res.error.message }); return [] }
@@ -93,9 +101,12 @@ function partiel(d: DemandeInput, metier: DemandeMetier, pros: Pro[]): string {
   return emailNote(`Aucun pro près de chez toi n’indique encore ${manque.join(' ni ')} sur sa fiche : ta demande est partie chez ceux qui s’en approchent le plus. Demande-leur s’ils peuvent s’en charger.`)
 }
 
-async function emailHote(d: DemandeInput, metier: DemandeMetier, pros: Pro[], vague: number) {
+const suiviUrl = (token: string) => `${SITE}/ma-demande?t=${token}`
+
+async function emailHote(d: DemandeInput, metier: DemandeMetier, pros: Pro[], vague: number, token?: string | null) {
   const r = resend(); if (!r) return
   const t = T[metier]
+  const suivi = token ? emailBtn(suiviUrl(token), 'Suivre ma demande') : ''
   const list = pros.map(p => `<li style="margin:4px 0"><a href="${SITE}/annuaires/${t.dir}/${escHtml(p.slug)}" style="color:#004C3F;font-weight:600">${escHtml(displayName(p))}</a> (${escHtml(p.ville ?? '')})</li>`).join('')
   const body = pros.length
     ? [
@@ -105,13 +116,14 @@ async function emailHote(d: DemandeInput, metier: DemandeMetier, pros: Pro[], va
           : `Les premiers pros n’ont pas encore répondu : ta demande vient de partir chez ${pros.length > 1 ? `${pros.length} autres ${t.labels}` : `un autre pro`} :`),
         `<ul style="margin:6px 0 14px;padding-left:18px;font-size:14px;color:#3D5038">${list}</ul>`,
         emailP('Ils te répondent directement par e-mail. Tu peux aussi regarder leur fiche (photos, formules) en attendant.'),
+        suivi,
         partiel(d, metier, pros),
         emailNote('Sans réponse d’aucun d’eux sous 48 h, on transmet ta demande à d’autres pros de ta zone. Aucune commission : le devis et le paiement se règlent directement entre toi et le pro.'),
       ].join('')
     : [
         emailP(`Bonjour ${escHtml(d.nom.split(' ')[0])},`),
         emailP(`Ta demande est bien enregistrée. Il n’y a pas encore ${metier === 'menage' ? 'd’équipe de ménage inscrite' : besoinPhoto(d.frequence)?.video ? 'de vidéaste inscrit' : 'de photographe inscrit'} près de ${escHtml(d.ville)} : on la transmet dès qu’un pro de ta zone rejoint l’annuaire (dans les 30 jours).`),
-        emailBtn(`${SITE}/annuaires/${t.dir}#villes`, `Voir le guide de ta ville`),
+        suivi || emailBtn(`${SITE}/annuaires/${t.dir}#villes`, `Voir le guide de ta ville`),
         emailNote('Tes coordonnées ne sont transmises qu’aux pros de l’annuaire qui reçoivent ta demande.'),
       ].join('')
   const html = buildEmail({ title: pros.length ? 'Ta demande est partie' : 'Ta demande est enregistrée', body })
@@ -137,14 +149,21 @@ async function envoyerVague(d: DemandeInput, metier: DemandeMetier, pros: Pro[],
 }
 
 /** Nouvelle demande : enregistrement, première vague, e-mails. */
-export async function creerDemande(d: DemandeInput, acquisition: unknown): Promise<{ ok: true; envoyes: number } | { error: string }> {
+export async function creerDemande(d: DemandeInput, acquisition: unknown): Promise<{ ok: true; envoyes: number; suivi: string | null; pros: CartePro[] } | { error: string }> {
   const db = getServiceClient()
-  const { data: row, error } = await db.from('demandes_hotes').insert({
+  const base = {
     metier: d.metier, ville: d.ville, logement: d.logement, quand: d.quand, frequence: d.frequence, budget: d.budget,
     message: d.message, nom: d.nom, email: d.email, telephone: d.telephone, source: d.source,
     acquisition: acquisition && typeof acquisition === 'object' ? acquisition : null,
     consent_at: new Date().toISOString(),
-  }).select('id').maybeSingle()
+  }
+  // Lien de suivi secret (migration 139 ; sans elle, la demande part sans lien de suivi)
+  let token: string | null = randomBytes(16).toString('hex')
+  let { data: row, error } = await db.from('demandes_hotes').insert({ ...base, suivi_token: token }).select('id').maybeSingle()
+  if (error && /suivi_token/.test(error.message)) {
+    token = null
+    ;({ data: row, error } = await db.from('demandes_hotes').insert(base).select('id').maybeSingle())
+  }
   if (error || !row) {
     log.error('enregistrement de la demande', { err: error?.message })
     return { error: 'Envoi impossible pour le moment. Réessaie dans quelques minutes.' }
@@ -156,12 +175,12 @@ export async function creerDemande(d: DemandeInput, acquisition: unknown): Promi
     sent_to: sent, status: sent.length ? 'envoyee' : 'sans_pro', last_round_at: new Date().toISOString(),
     admin_notified_at: sent.length ? null : new Date().toISOString(),
   }).eq('id', id)
-  await emailHote(d, d.metier, pros, 1)
+  await emailHote(d, d.metier, pros, 1, token)
   await sendAdminEmail({
     subject: sent.length ? `Demande d’hôte : ${T[d.metier].label} à ${d.ville} (${sent.length} pro${sent.length > 1 ? 's' : ''})` : `Demande d’hôte SANS PRO : ${T[d.metier].label} à ${d.ville}`,
     text: `${anonymizedNeed(d)}\n\n${sent.length ? `Envoyée à : ${pros.map(p => d.metier === 'photographe' && besoinPhoto(d.frequence) ? `${displayName(p)} (${adequationLabel(convientAuBesoin(p, d.frequence)).toLowerCase()})` : displayName(p)).join(', ')}.` : 'Aucun pro de l’annuaire dans la zone qui propose ce besoin : à transmettre à la main depuis le QG, ou à présenter aux pros de la ville (sans les coordonnées de l’hôte).'}\n\nLa fiche de la demande : ${APP}/dashboard/admin/qg?onglet=hotes&demande=${id}`,
   })
-  return { ok: true, envoyes: sent.length }
+  return { ok: true, envoyes: sent.length, suivi: token, pros: pros.map(p => cartePro(p, d.metier, d.frequence, SUPABASE_URL)) }
 }
 
 /** Cron quotidien : relances (48 h sans réponse), nouveaux pros, purge 12 mois. */
@@ -169,7 +188,7 @@ export async function traiterDemandes(now = new Date()): Promise<{ elargies: num
   const db = getServiceClient()
   const out = { elargies: 0, transmises: 0, sansPro: 0, purgees: 0 }
   const { data, error } = await db.from('demandes_hotes')
-    .select('id, metier, ville, logement, quand, frequence, budget, message, nom, email, telephone, source, status, created_at, last_round_at, sent_to')
+    .select('*')
     .in('status', ['envoyee', 'elargie', 'sans_pro']).gte('created_at', new Date(now.getTime() - 35 * 86_400_000).toISOString()).limit(200)
   if (error) { if (!/demandes_hotes/.test(error.message)) log.error('relances des demandes', { err: error.message }); return out }
   const rows = (data ?? []) as unknown as DemandeRow[]
@@ -200,7 +219,7 @@ export async function traiterDemandes(now = new Date()): Promise<{ elargies: num
     const round = Math.max(0, ...r.sent_to.map(s => s.round)) + 1
     const sent = await envoyerVague(r, r.metier, pros, round, r.id)
     await db.from('demandes_hotes').update({ sent_to: [...r.sent_to, ...sent], status: 'elargie', last_round_at: now.toISOString() }).eq('id', r.id)
-    await emailHote(r, r.metier, pros, round)
+    await emailHote(r, r.metier, pros, round, r.suivi_token)
     if (action === 'elargir') out.elargies++; else out.transmises++
   }
 
@@ -255,4 +274,61 @@ export async function envoyerAUnPro(demandeId: string, proId: string): Promise<{
   if (upErr) log.error('envoi manuel : mise à jour', { err: upErr.message })
   await emailHoteManuel(d, d.metier, pro)
   return { ok: true, nom: displayName(pro) }
+}
+
+// ── Ce que voit l'hôte : aperçu avant l'envoi, suivi après ──────────
+
+/** Fiches en ligne d'un métier, sans e-mail, gardées 5 min (la page d'envoi interroge à chaque ville tapée) */
+const prosPublics = (metier: DemandeMetier) => unstable_cache(
+  async (): Promise<ProPublic[]> => (await loadPros(metier)).map(p => ({
+    id: p.id, slug: p.slug, full_name: p.full_name, pseudo: p.pseudo, ville: p.ville, zone_couverte: p.zone_couverte,
+    villes_couvertes: p.villes_couvertes ?? null, contacts_count: p.contacts_count ?? null, created_at: p.created_at ?? null,
+    metier: p.metier ?? null, options: p.options ?? null, portfolio_photos: p.portfolio_photos ?? null, logo_url: p.logo_url ?? null,
+  })),
+  ['demandes-pros-publics', metier],
+  { revalidate: 300, tags: ['demandes-pros'] },
+)()
+
+/** Les pros qui recevraient la demande maintenant (même règle que l'envoi) */
+export async function apercuDemande(metier: DemandeMetier, ville: string, besoin: string | null): Promise<{ pros: CartePro[]; phrase: string }> {
+  const pros = choisirPros(await prosPublics(metier), ville, new Set(), undefined, besoin)
+  return { pros: pros.map(p => cartePro(p, metier, besoin, SUPABASE_URL)), phrase: apercuPhrase(metier, pros.length, ville, besoin) }
+}
+
+async function demandeParJeton(token: string): Promise<(DemandeRow & { id: string }) | null> {
+  if (!isSuiviToken(token)) return null
+  const { data, error } = await getServiceClient().from('demandes_hotes').select('*').eq('suivi_token', token).maybeSingle()
+  if (error) { if (!/suivi_token/.test(error.message)) log.error('suivi : lecture', { err: error.message }); return null }
+  return (data as unknown as DemandeRow & { id: string }) ?? null
+}
+
+/** Suivi de l'hôte : à qui la demande est partie, qui l'a prise en main, prochain relais */
+export async function suiviDemande(token: string): Promise<SuiviVue | null> {
+  const r = await demandeParJeton(token)
+  if (!r) return null
+  const db = getServiceClient()
+  const t = T[r.metier]
+  const ids = r.sent_to.map(s => s.contact_id).filter(Boolean) as string[]
+  const statuts = new Map<string, string>()
+  if (ids.length) {
+    const { data } = await db.from(t.contactTable).select('id, status').in('id', ids)
+    for (const x of (data ?? []) as Array<{ id: string; status: string }>) statuts.set(x.id, x.status)
+  }
+  const fiches = new Map((await prosPublics(r.metier)).filter(p => r.sent_to.some(s => s.id === p.id)).map(p => {
+    const { adequation: _a, ...c } = cartePro(p, r.metier, r.frequence, SUPABASE_URL)
+    void _a
+    return [p.id, c] as const
+  }))
+  return suiviVue(r as SuiviRow, statuts, fiches, new Date())
+}
+
+/** « J'ai trouvé mon pro » : la demande est fermée, plus aucun relais */
+export async function fermerDemande(token: string): Promise<boolean> {
+  const r = await demandeParJeton(token)
+  if (!r) return false
+  if (r.status === 'close') return true
+  const { error } = await getServiceClient().from('demandes_hotes').update({ status: 'close', host_closed_at: new Date().toISOString() }).eq('id', r.id)
+  if (error) { log.error('suivi : fermeture', { err: error.message }); return false }
+  await sendAdminEmail({ subject: `Demande d’hôte fermée par l’hôte : ${T[r.metier].label} à ${r.ville}`, text: `L’hôte indique avoir trouvé son pro.\n\n${APP}/dashboard/admin/qg?onglet=hotes&demande=${r.id}` })
+  return true
 }

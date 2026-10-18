@@ -97,6 +97,7 @@ export const MIGRATION_PROBES: MigrationProbe[] = [
   { file: '20261014_135_prospection_montee_en_charge.sql', what: 'Prospection : montée en charge automatique du plafond d\'envoi', table: 'outreach_settings', column: 'warmup_enabled' },
   { file: '20261017_137_actualites_public.sql', what: 'Actualités : public (hôtes, photographes, ménage)', table: 'actualites', column: 'audience' },
   { file: '20261017_138_demandes_villes.sql', what: 'Demandes de page de ville (compteur)', table: 'city_requests', column: 'ville_key' },
+  { file: '20261018_139_demandes_suivi_hote.sql', what: 'Suivi des demandes par l’hôte (lien secret)', table: 'demandes_hotes', column: 'suivi_token' },
   { file: '20261017_136_photographes_videastes.sql', what: 'Annuaire : photographes et vidéastes (métier, options, lien vidéo)', table: 'photographers', column: 'video_url' },
   { file: '20261012_133_demandes_suivi_admin.sql', what: 'suivi des demandes d’hôtes dans le QG (vue, note, traitée)', table: 'demandes_hotes', column: 'admin_note' },
   { file: '20261012_132_demandes_hotes.sql', what: 'demande inversée : besoins des hôtes envoyés aux pros', table: 'demandes_hotes', column: 'ville' },

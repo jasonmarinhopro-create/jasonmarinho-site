@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Suivre ma demande</title>
+<meta name="description" content="Où en est ta demande de photographe, vidéaste ou équipe de ménage.">
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
+<link rel="manifest" href="/manifest.json?v=2026-06">
+<meta name="theme-color" content="#004C3F">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
+<link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
+<style>
+:root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#6E7F6B;--bd:rgba(0,76,63,.11);--gs:#EEF4F1;--amb:#FBF1DE;--ambt:#6B4300}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Outfit',sans-serif;background:var(--cr);color:var(--td);padding-top:64px}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
+button{font-family:inherit}
+.hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);color:#fff;padding:clamp(28px,5vw,56px) 0 clamp(84px,10vw,110px)}
+.s-in{max-width:1160px;margin:0 auto;padding:0 clamp(16px,5vw,40px)}
+.brd{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px}.brd a{color:rgba(255,255,255,.6);text-decoration:none}
+.lbl{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.85);margin-bottom:10px}
+h1{font-family:'Fraunces',serif;font-size:clamp(28px,4.2vw,46px);font-weight:400;line-height:1.1;letter-spacing:-.5px;max-width:780px;text-wrap:balance}
+h1 em{color:var(--y);font-style:italic;font-weight:300}
+.lead{font-size:16px;color:rgba(255,255,255,.75);line-height:1.65;max-width:620px;margin-top:12px}
+.promises{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.promises span{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:rgba(255,255,255,.88);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:999px;padding:7px 13px}
+.promises i{color:var(--y)}
+.pc{display:flex;gap:11px;align-items:center;background:#fff;border:1px solid var(--bd);border-radius:14px;padding:9px 11px;text-decoration:none;color:inherit;min-width:0}
+.pc:hover{border-color:rgba(0,76,63,.35)}
+.pc .av{width:46px;height:46px;border-radius:12px;flex-shrink:0;background:#EEEAE1 center/cover no-repeat;display:grid;place-items:center;font-family:'Fraunces',serif;font-size:17px;color:var(--g)}
+.pc .tx{min-width:0;flex:1}
+.pc b{display:block;font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc small{display:block;font-size:12.5px;color:var(--tl);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc .fit{flex-shrink:0;font-size:11px;font-weight:700;border-radius:999px;padding:3px 8px;background:var(--gs);color:var(--g)}
+.pc .fit.part{background:var(--amb);color:var(--ambt)}
+.pc .go{flex-shrink:0;color:var(--g);font-size:15px}
+.note{border-radius:14px;padding:13px 15px;font-size:14px;line-height:1.55}
+.note.ok{background:var(--gs);color:var(--gd)}
+.note.wait{background:var(--amb);color:var(--ambt)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 22px;border:none;border-radius:13px;background:var(--y);color:var(--gd);font-weight:700;font-size:16px;cursor:pointer;text-decoration:none}
+.btn:hover{background:#ffe08f}.btn:disabled{opacity:.55;cursor:default}
+.btn:focus-visible,.opt:focus-visible,.chip:focus-visible,.ghost:focus-visible{outline:3px solid rgba(255,213,107,.9);outline-offset:2px}
+.ghost{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:50px;padding:0 16px;border:1.5px solid var(--bd);border-radius:13px;background:#fff;color:var(--g);font-weight:600;font-size:15px;cursor:pointer;text-decoration:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.wrap{max-width:860px;margin:-70px auto 60px;padding:0 clamp(16px,5vw,40px);display:grid;gap:16px;position:relative}
+.card{background:#fff;border:1px solid var(--bd);border-radius:20px;padding:clamp(18px,3vw,28px);display:grid;gap:14px}
+.card.main{box-shadow:0 18px 50px rgba(0,30,20,.10)}
+.st{display:flex;gap:14px;align-items:flex-start}
+.st .ic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:26px;flex-shrink:0;background:var(--gs);color:var(--g)}
+.st .ic.wait{background:var(--amb);color:var(--ambt)}
+.st h2{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(23px,3vw,28px);line-height:1.15}
+.st p{font-size:15px;color:var(--tm);line-height:1.6;margin-top:4px}
+.relais{display:flex;gap:10px;align-items:center;font-size:14px;background:#FBFAF6;border:1px dashed rgba(0,76,63,.18);border-radius:13px;padding:11px 13px;color:var(--tm)}
+.relais i{color:#B98900;font-size:18px}
+h3{font-family:'Fraunces',serif;font-weight:400;font-size:19px}
+.plist{display:grid;gap:8px}
+@media(min-width:640px){.plist{grid-template-columns:1fr 1fr}}
+.pc .state{flex-shrink:0;font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 9px;background:#F2EFE8;color:var(--tm)}
+.pc .state.on{background:var(--gs);color:#1e7a45}
+.rows{display:grid;gap:8px;font-size:14.5px}
+.rows div{display:flex;justify-content:space-between;gap:14px;border-bottom:1px dashed #EFEBE2;padding-bottom:7px}
+.rows div:last-child{border-bottom:0}
+.rows span:first-child{color:var(--tl)}
+.rows span:last-child{font-weight:600;text-align:right}
+.acts{display:flex;flex-wrap:wrap;gap:10px}
+.confirm{display:grid;gap:10px;background:var(--amb);border-radius:14px;padding:14px}
+.confirm p{font-size:14.5px;color:var(--ambt)}
+.sk{height:120px;border-radius:20px;background:linear-gradient(90deg,#F2EFE8,#F8F6F1,#F2EFE8);background-size:200% 100%;animation:sk 1.2s infinite}
+@keyframes sk{to{background-position:-200% 0}}
+.small{font-size:13.5px;color:var(--tl);line-height:1.6}
+.small a{color:var(--g);font-weight:600}
+</style>
+<script defer src="/nav.js"></script>
+</head>
+<body>
+<header class="hero">
+  <div class="s-in">
+    <div class="brd"><a href="/">Accueil</a> · <a href="/trouver-un-pro">Trouver un pro</a> · <span>Ma demande</span></div>
+    <span class="lbl">Suivi de ta demande</span>
+    <h1 id="h1">Où en est <em>ta demande</em></h1>
+  </div>
+</header>
+<main class="wrap" id="app"><div class="sk"></div><div class="sk" style="height:200px"></div></main>
+<script>
+(function(){
+  var APP = 'https://app.jasonmarinho.com';
+  var app = document.getElementById('app');
+  var t = ''; try { t = new URLSearchParams(location.search).get('t') || ''; } catch (e) {}
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
+  function day(iso){ try { return new Date(iso).toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', hour:'2-digit', minute:'2-digit', timeZone:'Europe/Paris' }); } catch (e) { return ''; } }
+  function short(iso){ try { return new Date(iso).toLocaleDateString('fr-FR', { day:'numeric', month:'long', timeZone:'Europe/Paris' }); } catch (e) { return ''; } }
+  function fail(msg){
+    app.innerHTML = '<div class="card main"><div class="st"><span class="ic wait"><i class="ph-bold ph-link"></i></span><div><h2>Lien introuvable</h2><p>' + esc(msg) + '</p></div></div><div class="acts"><a class="btn" href="/trouver-un-pro">Faire une demande</a><a class="ghost" href="/contact">Écrire à Jason</a></div></div>';
+  }
+  if (!/^[a-f0-9]{32}$/.test(t)) return fail('Ce lien de suivi est incomplet. Ouvre-le depuis l’e-mail de confirmation de ta demande.');
+  function render(v){
+    var men = v.metier === 'menage';
+    document.getElementById('h1').innerHTML = esc(v.prenom) + ', voici où en est <em>ta demande</em>';
+    var ic = { envoyee:'ph-paper-plane-tilt', prise_en_main:'ph-handshake', sans_pro:'ph-hourglass-medium', fermee:'ph-check-circle', terminee:'ph-hourglass-medium' }[v.etat] || 'ph-paper-plane-tilt';
+    var wait = v.etat === 'sans_pro' || v.etat === 'terminee';
+    var h = '<div class="card main"><div class="st"><span class="ic' + (wait ? ' wait' : '') + '"><i class="ph-bold ' + ic + '"></i></span><div><h2>' + esc(v.titre) + '</h2><p>' + esc(v.texte) + '</p></div></div>' +
+      (v.relais ? '<div class="relais"><i class="ph-bold ph-clock"></i><span>Relais prévu à partir du ' + esc(day(v.relais)) + ', si personne ne l’a prise en main.</span></div>' : '') + '</div>';
+    if (v.pros.length) {
+      h += '<div class="card"><h3>' + (v.pros.length > 1 ? 'Les ' + v.pros.length + ' ' + (men ? 'équipes' : 'pros') + ' qui l’ont reçue' : (men ? 'L’équipe qui l’a reçue' : 'Le pro qui l’a reçue')) + '</h3><div class="plist">' +
+        v.pros.map(function(p){
+          var photo = p.photo && /^https:\/\//.test(p.photo) ? ' style="background-image:url(\'' + esc(p.photo) + '\')"' : '';
+          return '<a class="pc" href="' + esc(p.href) + '" target="_blank" rel="noopener"><span class="av"' + photo + '>' + (photo ? '' : esc(p.initiales)) + '</span><span class="tx"><b>' + esc(p.nom) + '</b><small>' + esc(p.metier) + (p.recue ? ' · reçue le ' + esc(short(p.recue)) : '') + '</small></span><span class="state' + (p.priseEnMain ? ' on' : '') + '">' + (p.priseEnMain ? 'Prise en main' : 'Reçue') + '</span></a>';
+        }).join('') + '</div><p class="small">« Prise en main » : le pro a ouvert ta demande dans son espace. Sa réponse arrive directement dans ta boîte e-mail.</p></div>';
+    }
+    h += '<div class="card"><h3>Ta demande</h3><div class="rows">' + v.besoin.map(function(r){ return '<div><span>' + esc(r[0]) + '</span><span>' + esc(r[1]) + '</span></div>'; }).join('') + '<div><span>Envoyée le</span><span>' + esc(short(v.creee)) + '</span></div></div></div>';
+    if (v.etat !== 'fermee') {
+      h += '<div class="card" id="close"><h3>Tu as trouvé ton ' + (men ? 'équipe' : 'pro') + ' ?</h3><p class="small">Dis-le ici : ta demande ne partira plus chez d’autres pros.</p><div class="acts"><button type="button" class="btn" id="found"><i class="ph-bold ph-check-circle"></i>J’ai trouvé mon ' + (men ? 'équipe' : 'pro') + '</button><a class="ghost" href="/annuaires/' + (men ? 'menage' : 'photographes') + '">Voir l’annuaire</a></div></div>';
+    }
+    h += '<p class="small">Garde ce lien, il est aussi dans ton e-mail de confirmation. Une question ? <a href="/contact">Écris à Jason</a>.</p>';
+    app.innerHTML = h;
+    var f = document.getElementById('found');
+    if (f) f.onclick = function(){
+      var box = document.getElementById('close');
+      box.innerHTML = '<div class="confirm"><p>Ta demande sera fermée : plus aucun autre pro ne la recevra. Ceux qui l’ont déjà peuvent encore te répondre.</p><div class="acts"><button type="button" class="btn" id="yes">Oui, fermer ma demande</button><button type="button" class="ghost" id="no">Annuler</button></div><p class="small" id="cerr" style="color:#a01818"></p></div>';
+      document.getElementById('no').onclick = function(){ render(v); };
+      document.getElementById('yes').onclick = function(){
+        this.disabled = true;
+        fetch(APP + '/api/demandes/suivi', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ t: t, action: 'trouve' }) })
+          .then(function(r){ return r.json().then(function(b){ if (!r.ok) throw new Error(b.error || 'Impossible pour le moment.'); return b; }); })
+          .then(function(nv){ if (nv && nv.etat) render(nv); })
+          .catch(function(x){ document.getElementById('cerr').textContent = x.message; });
+      };
+    };
+  }
+  fetch(APP + '/api/demandes/suivi?t=' + t)
+    .then(function(r){ return r.json().then(function(b){ if (!r.ok) throw new Error(b.error || 'Suivi indisponible pour le moment.'); return b; }); })
+    .then(render)
+    .catch(function(x){ fail(x.message); });
+})();
+</script>
+<script defer src="/footer.js"></script>
+<script src="/cookie-banner.js" defer></script>
+</body>
+</html>

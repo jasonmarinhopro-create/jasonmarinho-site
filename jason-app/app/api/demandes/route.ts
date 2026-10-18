@@ -8,21 +8,12 @@ import { cleanDemande } from '@/lib/demandes/rules'
 import { creerDemande } from '@/lib/demandes/send'
 import { cleanAcquisition } from '@/lib/acquisition/rules'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
+import { cors } from './cors'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
 
-const ALLOWED = new Set(['https://jasonmarinho.com', 'https://www.jasonmarinho.com', 'https://app.jasonmarinho.com', 'http://localhost:3000', 'http://localhost:5500'])
-
-function cors(origin: string | null) {
-  return {
-    'Access-Control-Allow-Origin': origin && ALLOWED.has(origin) ? origin : 'https://jasonmarinho.com',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    Vary: 'Origin',
-  }
-}
 
 export async function OPTIONS(req: Request) {
   return new Response(null, { status: 204, headers: { ...cors(req.headers.get('origin')), 'Access-Control-Max-Age': '86400' } })
