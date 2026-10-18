@@ -4,6 +4,7 @@
 // son identité avant l'arrivée. Mobile-first, FR/EN, aucune auth requise —
 // le token du lien fait office de clé.
 
+import { CalendarInput } from '@/components/ui/CalendarInput'
 import { useState, useEffect, useRef } from 'react'
 import {
   IdentificationCard, CheckCircle, CalendarBlank, House,
@@ -733,7 +734,7 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
               <Field label={t.lastName} required value={selfC.nom} onChange={v => setSelf('nom', v)} invalid={cMissing(selfC.nom, true)} msg={t.required} />
             </div>
             <div style={s.row2} className="ck-row">
-              <Field label={t.birthDate} required type="date" value={selfC.date_naissance} onChange={v => setSelf('date_naissance', v)} invalid={cMissing(selfC.date_naissance, true)} msg={t.required} />
+              <Field label={t.birthDate} required type="date" locale={lang} value={selfC.date_naissance} onChange={v => setSelf('date_naissance', v)} invalid={cMissing(selfC.date_naissance, true)} msg={t.required} />
               <Field label={t.birthPlace} required={!isChild} value={selfC.lieu_naissance} onChange={v => setSelf('lieu_naissance', v)} invalid={cMissing(selfC.lieu_naissance, !isChild)} msg={t.required} />
             </div>
             <div style={s.fieldWrap}>
@@ -932,7 +933,7 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
             <Field label={t.lastName} required value={form.nom} onChange={v => set('nom', v)} invalid={missing(form.nom)} msg={t.required} />
           </div>
           <div style={s.row2} className="ck-row">
-            <Field label={t.birthDate} required type="date" value={form.date_naissance} onChange={v => set('date_naissance', v)} invalid={missing(form.date_naissance)} msg={t.required} />
+            <Field label={t.birthDate} required type="date" locale={lang} value={form.date_naissance} onChange={v => set('date_naissance', v)} invalid={missing(form.date_naissance)} msg={t.required} />
             {/* Lieu de naissance : exigé par la fiche individuelle de police (FR) */}
             <Field label={t.birthPlace} required value={form.lieu_naissance} onChange={v => set('lieu_naissance', v)} invalid={missing(form.lieu_naissance)} msg={t.required} />
           </div>
@@ -1044,7 +1045,7 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
                   <Field label={t.lastName} required value={c.nom} onChange={v => setCompanion(i, 'nom', v)} invalid={cMissing(c.nom, true)} msg={t.required} />
                 </div>
                 <div style={s.row2} className="ck-row">
-                  <Field label={t.birthDate} required type="date" value={c.date_naissance} onChange={v => setCompanion(i, 'date_naissance', v)} invalid={cMissing(c.date_naissance, true)} msg={t.required} />
+                  <Field label={t.birthDate} required type="date" locale={lang} value={c.date_naissance} onChange={v => setCompanion(i, 'date_naissance', v)} invalid={cMissing(c.date_naissance, true)} msg={t.required} />
                   <Field label={t.birthPlace} required={!isChild} value={c.lieu_naissance} onChange={v => setCompanion(i, 'lieu_naissance', v)} invalid={cMissing(c.lieu_naissance, !isChild)} msg={t.required} />
                 </div>
                 <div style={s.fieldWrap}>
@@ -1150,7 +1151,8 @@ export default function CheckinForm({ token, hostName, sejour, alreadyCompletedA
   )
 }
 
-function Field({ label, value, onChange, type = 'text', required = false, invalid = false, msg }: {
+function Field({ label, value, onChange, type = 'text', required = false, invalid = false, msg, locale }: {
+  locale?: string
   label: string
   value: string
   onChange: (v: string) => void
@@ -1162,12 +1164,15 @@ function Field({ label, value, onChange, type = 'text', required = false, invali
   return (
     <div style={s.fieldWrap}>
       <label style={s.fieldLabel}>{label}{required ? ' *' : ''}</label>
-      <input
+      {type === 'date' ? (
+        <CalendarInput value={value} onChange={onChange} birth locale={locale} invalid={invalid} ariaLabel={label} placeholder={label}
+          style={{ ...s.input, display: 'flex' }} />
+      ) : <input
         type={type}
         value={value}
         onChange={e => onChange(e.target.value)}
         style={{ ...s.input, ...(invalid ? s.inputInvalid : {}) }}
-      />
+      />}
       {invalid && msg && <span style={s.errMsg}>{msg}</span>}
     </div>
   )

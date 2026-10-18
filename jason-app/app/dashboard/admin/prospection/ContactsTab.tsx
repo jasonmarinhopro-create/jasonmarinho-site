@@ -4,6 +4,7 @@
 // (lancer une séquence, changer d'étape, chercher les e-mails, supprimer) et
 // fiche d'un contact (modification, historique des envois).
 
+import { CalendarInput } from '@/components/ui/CalendarInput'
 import SuggestInput from '@/components/ui/SuggestInput'
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -346,7 +347,7 @@ function ContactPanel({ contact, newStage, audience, sequences, knownTags, onClo
           <span style={{ ...s.metaTitle, marginTop: '6px' }}><Bell size={14} weight="fill" /> Rappel</span>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             <input value={nextAction} onChange={e => setNextAction(e.target.value)} placeholder="Ex. L'appeler, envoyer un exemple de fiche…" style={{ ...ui.input, flex: '1 1 220px' }} aria-label="Prochaine action" />
-            <input type="date" value={nextOn} onChange={e => setNextOn(e.target.value)} style={{ ...ui.input, width: 'auto', flex: '0 0 auto' }} aria-label="Date du rappel" />
+            <div style={{ flex: '0 0 200px' }}><CalendarInput value={nextOn} onChange={setNextOn} placeholder="Date du rappel" ariaLabel="Date du rappel" /></div>
           </div>
         </div>
 

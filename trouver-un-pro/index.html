@@ -382,7 +382,7 @@ details.more a{color:var(--g)}
     }
     else if (s.k === 'quand') {
       h = '<h2 class="q">Pour quand ?</h2><div class="opts two">' + QUAND.map(function(v){ return optHtml(v, st.quand === v, QUAND_IC[v], QUAND_D[v]); }).join('') + '</div>' +
-        '<div class="sec"><label for="date">Une date précise en tête ? <small>(facultatif)</small></label><input class="in" type="date" id="date" value="' + esc(st.date) + '" style="max-width:240px"></div>' +
+        '<div class="sec"><label for="date">Une date précise en tête ? <small>(facultatif)</small></label><input type="hidden" data-date id="date" min="' + new Date().toISOString().slice(0, 10) + '" placeholder="Choisir une date" aria-label="Date souhaitée" value="' + esc(st.date) + '" style="max-width:300px"></div>' +
         tip('ph-calendar-check', menage() ? 'Si tu as déjà des réservations, indique la date du premier départ : l’équipe saura si elle peut la prendre.' : 'Avant la haute saison, les bons pros se réservent vite : un peu d’avance aide.');
     }
     else if (s.k === 'budget') {
@@ -419,6 +419,7 @@ details.more a{color:var(--g)}
     bind();
     paintSide();
     if (s.k === 'ville') { if (window.jmSuggest) window.jmSuggest.scan(fb); loadApercu(); }
+    if (s.k === 'quand' && window.jmCalendar) window.jmCalendar.scan(fb);
     if (s.k === 'recap' || s.k === 'besoin') loadApercu();
     if (focus !== false) {
       var first = fb.querySelector('.q'); if (first) { first.setAttribute('tabindex', '-1'); first.focus({ preventScroll: true }); }
@@ -562,5 +563,6 @@ details.more a{color:var(--g)}
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
 <script src="/suggestions.js" defer></script>
+<script src="/calendrier.js" defer></script>
 </body>
 </html>

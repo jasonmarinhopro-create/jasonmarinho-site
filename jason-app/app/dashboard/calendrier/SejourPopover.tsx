@@ -1,5 +1,6 @@
 'use client'
 
+import { CalendarInput } from '@/components/ui/CalendarInput'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import {
@@ -135,24 +136,14 @@ function SejourEditPanel({
   return (
     <div style={editStyles.wrap}>
       <div style={editStyles.row}>
-        <label style={editStyles.field}>
+        <div style={editStyles.field}>
           <span style={editStyles.label}>Arrivée</span>
-          <input
-            type="date"
-            value={form.date_arrivee}
-            onChange={e => setForm(f => ({ ...f, date_arrivee: e.target.value }))}
-            style={editStyles.input}
-          />
-        </label>
-        <label style={editStyles.field}>
+          <CalendarInput value={form.date_arrivee} onChange={v => setForm(f => ({ ...f, date_arrivee: v }))} ariaLabel="Arrivée" />
+        </div>
+        <div style={editStyles.field}>
           <span style={editStyles.label}>Départ</span>
-          <input
-            type="date"
-            value={form.date_depart}
-            onChange={e => setForm(f => ({ ...f, date_depart: e.target.value }))}
-            style={editStyles.input}
-          />
-        </label>
+          <CalendarInput value={form.date_depart} onChange={v => setForm(f => ({ ...f, date_depart: v }))} min={form.date_arrivee || undefined} ariaLabel="Départ" />
+        </div>
       </div>
       <label style={editStyles.field}>
         <span style={editStyles.label}>Logement</span>

@@ -7,6 +7,7 @@
 //  2. Formulaire voyageur : prérempli depuis la fiche, complète l'identité
 //     documentaire manquante (date de naissance, n° passeport…), puis envoie.
 
+import { CalendarInput } from '@/components/ui/CalendarInput'
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X, PaperPlaneTilt, Gear, Info, CircleNotch } from '@phosphor-icons/react/dist/ssr'
@@ -177,7 +178,7 @@ export default function SibaSendModal({ declarationId, onClose, onSent }: Props)
             </div>
             <div style={s.grid2}>
               <SelectField label="Nationalité *" value={guest.nationalite} onChange={v => setGuest(g => ({ ...g, nationalite: v }))} options={NATIONALITES} />
-              <Field label="Date de naissance *" type="date" value={guest.dateNaissance} onChange={v => setGuest(g => ({ ...g, dateNaissance: v }))} />
+              <Field label="Date de naissance *" type="date" birth value={guest.dateNaissance} onChange={v => setGuest(g => ({ ...g, dateNaissance: v }))} />
             </div>
             <div style={s.grid2}>
               <div>
@@ -249,9 +250,15 @@ export default function SibaSendModal({ declarationId, onClose, onSent }: Props)
   return createPortal(body, document.body)
 }
 
-function Field({ label, value, onChange, placeholder, type = 'text' }: {
-  label: string; value: string; onChange: (v: string) => void; placeholder?: string; type?: string
+function Field({ label, value, onChange, placeholder, type = 'text', birth }: {
+  label: string; value: string; onChange: (v: string) => void; placeholder?: string; type?: string; birth?: boolean
 }) {
+  if (type === 'date') return (
+    <div>
+      <label style={s.label}>{label}</label>
+      <CalendarInput value={value} onChange={onChange} birth={birth} ariaLabel={label} />
+    </div>
+  )
   return (
     <div>
       <label style={s.label}>{label}</label>

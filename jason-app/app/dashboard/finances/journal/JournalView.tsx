@@ -2,6 +2,7 @@
 
 // Journal : chaque revenu et chaque charge, mois par mois, avec la saisie,
 // l'import CSV (Airbnb, Booking) et l'export pour le comptable.
+import { CalendarInput } from '@/components/ui/CalendarInput'
 import SuggestInput from '@/components/ui/SuggestInput'
 import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
@@ -367,7 +368,7 @@ function RevenuModal({ logementNoms, defaultLogement, onClose }: { logementNoms:
         </Field>
         <div style={s.formRow}>
           <Field label="Montant reçu (€)"><input inputMode="decimal" value={montant} onChange={e => setMontant(e.target.value)} style={s.input} /></Field>
-          <Field label="Date du paiement"><input type="date" value={date} onChange={e => setDate(e.target.value)} style={s.input} /></Field>
+          <Field label="Date du paiement"><CalendarInput value={date} onChange={setDate} ariaLabel="Date du paiement" /></Field>
         </div>
         <div style={s.formRow}>
           <Field label="Type">
@@ -435,7 +436,7 @@ function ChargeModal({ logementNoms, logements, defaultLogement, row, onClose }:
         </Field>
         <div style={s.formRow}>
           <Field label="Montant (€)"><input inputMode="decimal" value={montant} onChange={e => setMontant(e.target.value)} style={s.input} /></Field>
-          <Field label="Date"><input type="date" value={date} onChange={e => setDate(e.target.value)} style={s.input} /></Field>
+          <Field label="Date"><CalendarInput value={date} onChange={setDate} ariaLabel="Date" /></Field>
         </div>
         <Field label="Catégorie">
           <select value={categorie} onChange={e => setCategorie(e.target.value)} style={s.input}>

@@ -6,6 +6,7 @@
 // modifie plus : place au suivi (envoi, acceptation, relance), puis la
 // facture se fait dans l'outil de facturation du pro (InvoicingCard).
 
+import { CalendarInput } from '@/components/ui/CalendarInput'
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -317,10 +318,10 @@ export default function DocumentEditor({
                 </Field>
                 <div style={s.grid2}>
                   <Field label="Date de la prestation">
-                    <input className="input-field" style={s.input} type="date" value={f.service_date} onChange={e => update({ service_date: e.target.value })} />
+                    <CalendarInput value={f.service_date} onChange={v => update({ service_date: v })} ariaLabel="Date de la prestation" />
                   </Field>
                   <Field label="Valable jusqu'au">
-                    <input className="input-field" style={s.input} type="date" value={f.valid_until} onChange={e => update({ valid_until: e.target.value })} />
+                    <CalendarInput value={f.valid_until} onChange={v => update({ valid_until: v })} ariaLabel="Valable jusqu'au" />
                     <Chips items={[[15, '15 j'], [30, '30 j'], [60, '60 j']]} onPick={d => update({ valid_until: addDays(today, d) })} />
                   </Field>
                 </div>

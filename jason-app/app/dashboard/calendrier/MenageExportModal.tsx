@@ -840,24 +840,14 @@ export default function MenageExportModal({ slots: allSlots, doneIds, logementNa
             mais qu'on veut planifier août. */}
         {period === 'custom' && (
           <div style={s.customRow}>
-            <label style={s.customLabel}>
+            <div style={s.customLabel}>
               <span>Du</span>
-              <input
-                type="date"
-                value={customFrom}
-                onChange={e => setCustomFrom(e.target.value)}
-                style={s.dateInput}
-              />
-            </label>
-            <label style={s.customLabel}>
+              <div style={{ flex: 1, minWidth: 0 }}><CalendarInput value={customFrom} onChange={setCustomFrom} ariaLabel="Du" /></div>
+            </div>
+            <div style={s.customLabel}>
               <span>Au</span>
-              <input
-                type="date"
-                value={customTo}
-                onChange={e => setCustomTo(e.target.value)}
-                style={s.dateInput}
-              />
-            </label>
+              <div style={{ flex: 1, minWidth: 0 }}><CalendarInput value={customTo} onChange={setCustomTo} ariaLabel="Au" /></div>
+            </div>
           </div>
         )}
 
