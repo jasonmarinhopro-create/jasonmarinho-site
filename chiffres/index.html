@@ -93,6 +93,7 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .rk-t b{display:block;font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rk-t small{display:block;font-size:12px;color:var(--tl);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rk-more{margin-top:8px;background:none;border:none;color:var(--g);font:600 13.5px 'Outfit',sans-serif;cursor:pointer;padding:4px 0}
+.cities-more{grid-column:1/-1;justify-self:start}
 .rk-note{font-size:12.5px;color:var(--tl);line-height:1.55;margin:12px 0 0}
 .qtable{width:100%;border-collapse:collapse;font-size:14.5px}
 .qtable th{text-align:left;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tl);padding:0 10px 10px;border-bottom:1px solid var(--bd)}
@@ -377,7 +378,7 @@ a.dm-city:hover{border-color:var(--g)}
     <div class="sec-head">
       <div class="lbl">Les pages de ville</div>
       <h2>Ta ville <em>dans Google</em></h2>
-      <p>Pages « Photographe à … » et « Ménage à … » qui sortent en première page. Les affichages, clics et visiteurs d’une page ne sont indiqués qu’au-delà de <span data-thr>100</span> affichages sur 28 jours : en dessous, ce serait trop peu pour en tirer quoi que ce soit.</p>
+      <p>Pages « Photographe à … », « Ménage à … » et guides hôtes de ville qui sortent en première page. Les affichages, clics et visiteurs d’une page ne sont indiqués qu’au-delà de <span data-thr>100</span> affichages sur 28 jours : en dessous, ce serait trop peu pour en tirer quoi que ce soit.</p>
     </div>
     <div class="cities" data-cities><p class="empty">Chargement des villes…</p></div>
   </div>
@@ -547,7 +548,12 @@ a.dm-city:hover{border-color:var(--g)}
   function renderQueries(){
     var box = $('[data-queries]'); if (!box || !Q) return;
     var list = Q[current] || [];
-    if (!list.length) { box.innerHTML = '<p class="empty">' + EMPTY[current] + '</p>'; return; }
+    box.hidden = false;
+    if (!list.length) {
+      // Pages de ville déjà montrées au-dessus : pas de carte vide en plus
+      if (R && R[current] && R[current].length) { box.hidden = true; return; }
+      box.innerHTML = '<p class="empty">' + EMPTY[current] + '</p>'; return;
+    }
     var pages = Math.ceil(list.length / PER_PAGE);
     if (qpage >= pages) qpage = pages - 1;
     var from = qpage * PER_PAGE, part = list.slice(from, from + PER_PAGE);
@@ -563,14 +569,15 @@ a.dm-city:hover{border-color:var(--g)}
   // Pages de ville en première page (18/10/2026) : place de la page elle-même,
   // recherches masquées par Google comprises
   var R = null, rkAll = false;
-  function rankCity(path){ return cityName(path.replace(/^\/(photographe|menage)-lcd-/, '')); }
+  function rankCity(path){ return cityName(path.replace(/^\/((photographe|menage)-lcd|devenir-hote-airbnb)-/, '')); }
   function renderRanks(){
     var box = $('[data-ranks]'), note = $('[data-rk-note]'); if (!box) return;
     var list = (R && R[current]) || [];
-    if (current === 'hote' || !list.length) { box.hidden = true; if (note) note.hidden = true; return; }
+    if (!list.length) { box.hidden = true; if (note) note.hidden = true; return; }
     var shown = rkAll ? list : list.slice(0, 12);
-    var what = current === 'menage' ? '« ménage Airbnb » + ville' : '« photographe ou vidéaste Airbnb » + ville';
-    box.innerHTML = '<div class="rk-h"><b>' + list.length + ' page' + (list.length > 1 ? 's' : '') + ' de ville en première page</b><span>' + what + ' · place moyenne de la page sur 28 jours</span></div><div class="rk-grid">' +
+    var what = current === 'menage' ? '« ménage Airbnb » + ville' : current === 'hote' ? 'guides « Louer sur Airbnb à … » (règles, taxe de séjour)' : '« photographe ou vidéaste Airbnb » + ville';
+    var kindLbl = current === 'hote' ? ' guide' + (list.length > 1 ? 's' : '') + ' de ville' : ' page' + (list.length > 1 ? 's' : '') + ' de ville';
+    box.innerHTML = '<div class="rk-h"><b>' + list.length + kindLbl + ' en première page</b><span>' + what + ' · place moyenne de la page sur 28 jours</span></div><div class="rk-grid">' +
       shown.map(function(r){
         return '<a class="rk" href="' + esc(r.path) + '"><span class="rk-p' + (r.place <= 3 ? ' top' : '') + '">' + pf.format(r.place) + '<small>place</small></span><span class="rk-t"><b>' + esc(rankCity(r.path)) + '</b><small>' + n(r.impressions) + ' affichages' + (r.clicks ? ' · ' + n(r.clicks) + ' clic' + (r.clicks > 1 ? 's' : '') : '') + '</small></span></a>';
       }).join('') + '</div>' + (list.length > 12 && !rkAll ? '<button type="button" class="rk-more" data-rk-more>Voir les ' + list.length + ' villes</button>' : '');
@@ -658,10 +665,11 @@ a.dm-city:hover{border-color:var(--g)}
       '<p class="vd-cta"><a class="a1" href="' + (photoOnly ? '/annuaires/photographes/inscription' : '/pour-qui/photographes') + '">Je suis pro à ' + esc(label) + '</a><a class="a2" href="/trouver-un-pro?' + (photoOnly ? 'metier=photographe&amp;' : '') + 'ville=' + encodeURIComponent(label) + '">Je cherche un pro</a></p></div></div>';
   }
 
+  var citiesAll = false;
   function renderCities(cities, ranks){
     var box = $('[data-cities]'); if (!box) return;
     var rk = {};
-    ((ranks && ranks.photographe) || []).concat((ranks && ranks.menage) || []).forEach(function(r){ rk[r.path] = r; });
+    ((ranks && ranks.photographe) || []).concat((ranks && ranks.menage) || [], (ranks && ranks.hote) || []).forEach(function(r){ rk[r.path] = r; });
     var list = Object.keys(cities || {}).map(function(p){ return { path: p, s: cities[p], r: rk[p] }; });
     Object.keys(rk).forEach(function(p){ if (!(cities || {})[p]) list.push({ path: p, s: { totals: null, queries: [] }, r: rk[p] }); });
     list.sort(function(a, b){
@@ -670,17 +678,20 @@ a.dm-city:hover{border-color:var(--g)}
       var ap = a.r ? a.r.place : a.s.queries[0] ? a.s.queries[0].place : 99, bp = b.r ? b.r.place : b.s.queries[0] ? b.s.queries[0].place : 99;
       return ap - bp;
     });
-    list = list.slice(0, 24);
+    var total = list.length;
+    if (!citiesAll) list = list.slice(0, 24);
     if (!list.length) { box.innerHTML = '<p class="empty">Pas encore de page de ville en première page sur les 28 derniers jours.</p>'; return; }
     box.innerHTML = list.map(function(c){
-      var photo = c.path.indexOf('/photographe-') === 0;
+      var photo = c.path.indexOf('/photographe-') === 0, guide = c.path.indexOf('/devenir-hote-airbnb-') === 0;
       var t = c.s.totals;
       var q = c.s.queries.slice(0, 2).map(function(x){ return '<div class="city-q">' + placeHtml(x.place) + '« ' + esc(x.q) + ' »</div>'; }).join('');
       if (!q && c.r) q = '<div class="city-q">' + placeHtml(c.r.place) + 'Place moyenne de la page</div>';
-      return '<a class="city" href="' + esc(c.path) + '"><div class="city-h"><i class="ph-bold ' + (photo ? 'ph-camera' : 'ph-broom') + '"></i><div><b>' + esc(pageLabel(c.path)) + '</b><small>' + (photo ? 'Page des photographes' : 'Page des équipes de ménage') + '</small></div></div>' +
+      return '<a class="city" href="' + esc(c.path) + '"><div class="city-h"><i class="ph-bold ' + (photo ? 'ph-camera' : guide ? 'ph-house-line' : 'ph-broom') + '"></i><div><b>' + esc(pageLabel(c.path)) + '</b><small>' + (photo ? 'Page des photographes' : guide ? 'Guide pour les hôtes' : 'Page des équipes de ménage') + '</small></div></div>' +
         (t ? '<div class="city-t"><span><strong>' + n(t.impressions) + '</strong> affichages</span><span><strong>' + n(t.clicks) + '</strong> clics</span><span><strong>' + n(t.visitors) + '</strong> visiteurs</span></div>' : '') +
         q + '</a>';
-    }).join('');
+    }).join('') + (total > list.length ? '<button type="button" class="rk-more cities-more" data-cities-more>Voir les ' + total + ' pages</button>' : '');
+    var more = box.querySelector('[data-cities-more]');
+    if (more) more.addEventListener('click', function(){ citiesAll = true; renderCities(cities, ranks); });
   }
 
   // ── Recherche par ville : tout est montré, même les petits chiffres ──

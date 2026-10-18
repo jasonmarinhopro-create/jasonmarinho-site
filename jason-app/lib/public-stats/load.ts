@@ -46,7 +46,7 @@ export interface PublicStats {
   video: ReturnType<typeof videoSummary> | null
   cities: Record<string, CityStats> | null
   /** Pages de ville en première page (place de la page, recherches masquées comprises) */
-  cityRanks: Record<'photographe' | 'menage', CityRank[]> | null
+  cityRanks: Record<Audience, CityRank[]> | null
   cityPages: number
   threshold: number
   /** Villes qui ont leurs pages (pour la recherche) */
@@ -208,9 +208,9 @@ const cachedFull = unstable_cache(async () => {
   const r = await compute()
   if (!r.complete) throw new Error('incomplet')
   return r.stats
-}, ['public-stats-v6'], { revalidate: 6 * 3600, tags: ['public-stats'] })
+}, ['public-stats-v7'], { revalidate: 6 * 3600, tags: ['public-stats'] })
 
-const cachedPartial = unstable_cache(async () => (await compute()).stats, ['public-stats-partial-v4'], { revalidate: 3600, tags: ['public-stats'] })
+const cachedPartial = unstable_cache(async () => (await compute()).stats, ['public-stats-partial-v5'], { revalidate: 3600, tags: ['public-stats'] })
 
 export async function loadPublicStats(): Promise<PublicStatsFull> {
   try {

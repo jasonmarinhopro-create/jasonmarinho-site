@@ -166,6 +166,8 @@ describe('cityPageRanks', () => {
       { path: '/menage-lcd-cannes', impressions: 72, clicks: 1, position: 8 },
       { path: '/photographe-lcd-pau', impressions: 2, clicks: 0, position: 3 },
       { path: '/blog/x', impressions: 500, clicks: 9, position: 2 },
+      { path: '/devenir-hote-airbnb-strasbourg', impressions: 151, clicks: 2, position: 6 },
+      { path: '/devenir-hote-airbnb', impressions: 90, clicks: 2, position: 4 },
     ]
     const pairs = [{ query: 'photographe airbnb lyon', page: 'https://jasonmarinho.com/photographe-lcd-lyon', clicks: 3, impressions: 38, position: 7.5 }]
     const r = cityPageRanks(pages, pairs)
@@ -173,5 +175,6 @@ describe('cityPageRanks', () => {
     expect(r.photographe[0]).toMatchObject({ place: 6.9, query: null })
     expect(r.photographe[1].query).toBe('photographe airbnb lyon')
     expect(r.menage.map(x => x.path)).toEqual(['/menage-lcd-cannes'])
+    expect(r.hote.map(x => x.path)).toEqual(['/devenir-hote-airbnb-strasbourg'])
   })
 })

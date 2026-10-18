@@ -128,28 +128,35 @@ export interface CityRank {
  * (vie privée) : Nice, Avignon, Nantes… sortaient en place 5 à 7 sans aucune
  * recherche nommée, donc absentes des listes. La place de la PAGE, elle, compte
  * toutes les recherches. Au moins QUERY_MIN_IMPRESSIONS affichages sur 28 jours.
+ * Guides hôtes ajoutés le même jour (Jason : « fais la même chose pour les guides hôtes »).
  */
 export function cityPageRanks(
   pages: Array<{ path: string; impressions: number; clicks: number; position: number }>,
   pairs: PairRow[],
-): Record<'photographe' | 'menage', CityRank[]> {
-  const out: Record<'photographe' | 'menage', CityRank[]> = { photographe: [], menage: [] }
+): Record<Audience, CityRank[]> {
+  const out: Record<Audience, CityRank[]> = { photographe: [], menage: [], hote: [] }
   const topQuery = new Map<string, { q: string; imp: number }>()
   for (const r of pairs) {
     const path = pathOf(r.page)
-    if (!isProCityPage(path) || isBrand(r.query)) continue
+    if (!isCityPage(path) || isBrand(r.query)) continue
     const cur = topQuery.get(path)
     if (!cur || r.impressions > cur.imp) topQuery.set(path, { q: r.query, imp: r.impressions })
   }
   for (const p of pages) {
-    if (!isProCityPage(p.path) || p.position > FIRST_PAGE_MAX || p.impressions < QUERY_MIN_IMPRESSIONS) continue
-    const kind = p.path.startsWith('/photographe-') ? 'photographe' : 'menage'
+    if (!isCityPage(p.path) || p.position > FIRST_PAGE_MAX || p.impressions < QUERY_MIN_IMPRESSIONS) continue
+    const kind: Audience = p.path.startsWith('/photographe-') ? 'photographe' : p.path.startsWith('/menage-') ? 'menage' : 'hote'
     out[kind].push({ path: p.path, place: r1(p.position), impressions: p.impressions, clicks: p.clicks, query: topQuery.get(p.path)?.q ?? null })
   }
   const sort = (a: CityRank, b: CityRank) => a.place - b.place || b.impressions - a.impressions
   out.photographe.sort(sort)
   out.menage.sort(sort)
+  out.hote.sort(sort)
   return out
+}
+
+/** Pages de ville : pros (photographe, ménage) et guides hôtes (« /devenir-hote-airbnb-lyon ») */
+export function isCityPage(path: string): boolean {
+  return isProCityPage(path) || /^\/devenir-hote-airbnb-[a-z0-9-]+$/.test(path)
 }
 
 /** Pages de ville des pros (« /photographe-lcd-lyon », « /menage-lcd-bordeaux ») */

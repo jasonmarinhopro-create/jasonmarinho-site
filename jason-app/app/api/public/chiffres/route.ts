@@ -56,7 +56,7 @@ export async function GET(req: Request) {
         updatedAt: s.updatedAt,
         period: s.google ? { start: s.google.start, end: s.google.end } : null,
         city: s.cities?.[path] ?? null,
-        rank: [...(s.cityRanks?.photographe ?? []), ...(s.cityRanks?.menage ?? [])].find(r => r.path === path) ?? null,
+        rank: [...(s.cityRanks?.photographe ?? []), ...(s.cityRanks?.menage ?? []), ...(s.cityRanks?.hote ?? [])].find(r => r.path === path) ?? null,
         demandes: demandes && cityOfPath(path) ? demandesOfCity(demandes, cityOfPath(path)!) : null,
         site: s.google ? { impressions: s.google.impressions, clicks: s.google.clicks, visitors: s.visitors?.last30 ?? null } : null,
         threshold: s.threshold,
