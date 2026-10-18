@@ -127,7 +127,7 @@ function toDemo(html, m) {
   h = h.replace(/<div class="brd">[\s\S]*?<\/div>/, `<div class="brd"><a href="/">Accueil</a> · <a href="${m.devenir}">${m.devenirLabel}</a> · <span>Exemple de fiche</span></div>`)
   // Étiquettes jaunes : ce que le pro remplit
   for (const [h2, label] of m.annots) h = replaceOnce(h, h2, annot(label) + h2)
-  h = replaceOnce(h, '<div class="aside-row"><span class="aside-k">Ville principale', annot('Tes infos pratiques') + '<div class="aside-row"><span class="aside-k">Ville principale')
+  h = h.replace(/<div class="vt-strip n(\d)" style="position:relative">/, m0 => m0 + annot('Calculé depuis ta fiche'))
   // Pas de mesure ni d'envoi réel
   h = replaceOnce(h, 'function jmTrack(ev) {', 'function jmTrack(ev) { return;')
   h = replaceOnce(h, 'e.preventDefault();\n', `e.preventDefault();\n  document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Exemple</strong><br>Sur une vraie fiche, ta demande part directement dans la boîte mail du pro.</div>';\n  return false;\n`)
@@ -173,7 +173,7 @@ const pages = [
         ['<h2>Présentation</h2>', 'Bio que tu rédiges'],
         ['<h2>Formules</h2>', 'Tes formules'],
         ['<h2>Comment ça se passe</h2>', 'Ton déroulé'],
-        ['<h2>Portfolio complet</h2>', 'Lien vers ton portfolio'],
+        ['<h2>Son travail en ligne</h2>', 'Tes liens'],
         ['<h2>Où j’interviens</h2>', 'Tes villes'],
         ['<h2>Contacter ', 'Formulaire de contact'],
       ],
@@ -194,6 +194,7 @@ const pages = [
         ['<h2>Formules</h2>', 'Tes formules'],
         ['<h2>Prestations</h2>', 'Prestations cochées'],
         ['<h2>Capacité', 'Capacité affichée'],
+        ['<h2>L’équipe en ligne</h2>', 'Tes liens'],
         ['<h2>Comment ça se passe</h2>', 'Ton déroulé'],
         ['<h2>Où j’interviens</h2>', 'Tes villes'],
         ['<h2>Contacter ', 'Formulaire de contact'],

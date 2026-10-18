@@ -5,6 +5,7 @@ import { CITY_OPTIONS } from '@/lib/ui/suggest'
 import GrowText from '@/components/pros/GrowText'
 import Link from 'next/link'
 import ViewsTrend from '@/components/pros/ViewsTrend'
+import FicheCompletude from '@/components/pros/FicheCompletude'
 import FacturationTeaser from '@/components/pros/FacturationTeaser'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { useState, useTransition } from 'react'
@@ -294,7 +295,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
 
       <div style={s.cols}>
       <div style={s.colMain}>
-      <section style={s.photosCard}>
+      <section id="mes-photos" style={{ ...s.photosCard, scrollMarginTop: 90 }}>
         <h3 style={s.photosTitle}><Images size={17} weight="duotone" color="var(--accent-text)" /> Mes photos</h3>
         <PortfolioManager
           initial={cleaner.portfolio_photos ?? []}
@@ -308,7 +309,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         />
       </section>
       <form onSubmit={handleSave} style={s.form}>
-        <h3 style={s.sectionTitle}>Logo de l'équipe</h3>
+        <h3 id="logo" style={{ ...s.sectionTitle, scrollMarginTop: 90 }}>Logo de l'équipe</h3>
         <div style={s.logoRow}>
           <div style={{ ...s.logoPreview, background: logoUrl ? `url('${logoUrl}') center/cover` : 'var(--accent-bg)' }}>
             {!logoUrl && <span style={s.logoInitials}>{(cleaner.pseudo || cleaner.full_name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}</span>}
@@ -364,7 +365,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         </div>
         <ReseauxFields value={reseaux} onChange={setReseaux} inputStyle={s.input} />
 
-        <h3 style={s.sectionTitle}>Prestations</h3>
+        <h3 id="prestations" style={{ ...s.sectionTitle, scrollMarginTop: 90 }}>Prestations</h3>
         <div style={s.chipGrid}>
           {PRESTATIONS.map(([k, label]) => (
             <label key={k} style={{ ...s.chip, ...(form.prestations.has(k) ? s.chipOn : {}) }}>
@@ -374,7 +375,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
           ))}
         </div>
 
-        <h3 style={s.sectionTitle}>Capacité & disponibilité</h3>
+        <h3 id="capacite" style={{ ...s.sectionTitle, scrollMarginTop: 90 }}>Capacité & disponibilité</h3>
         <div style={s.grid2}>
           <Field label="Taille de l'équipe">
             <select style={s.input} value={form.equipe_type} onChange={e => setForm({ ...form, equipe_type: e.target.value })}>
@@ -409,7 +410,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
           </div>
         </Field>
 
-        <h3 style={s.sectionTitle}>Tarifs</h3>
+        <h3 id="tarifs" style={{ ...s.sectionTitle, scrollMarginTop: 90 }}>Tarifs</h3>
         <div style={s.grid2}>
           <Field label="Forfait turnover min (€)">
             <input style={s.input} type="number" min={0} max={999} value={form.tarif_forfait_min ?? ''} onChange={e => setForm({ ...form, tarif_forfait_min: e.target.value ? parseInt(e.target.value, 10) : null })} />
@@ -434,7 +435,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
 
         <FicheVitrineFields value={vitrine} onChange={setVitrine} metier="menage" inputStyle={s.input} titleStyle={s.sectionTitle} />
 
-        <h3 style={s.sectionTitle}>Présentation</h3>
+        <h3 id="presentation" style={{ ...s.sectionTitle, scrollMarginTop: 90 }}>Présentation</h3>
         <Field label="Bio">
           <GrowText style={{ ...s.input, minHeight: 110 }} value={form.bio} onChange={v => setForm({ ...form, bio: v })} max={600} oneLine={false} minRows={4} />
         </Field>
@@ -448,6 +449,11 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
 
       </div>
       <aside style={s.colSide}>
+        <FicheCompletude metier="menage" input={{
+          photos: cleaner.portfolio_photos ?? [], bio: form.bio, formules: vitrine.formules, prixMin: form.tarif_forfait_min,
+          deroule: vitrine.deroule, villes: vitrine.villes, zone: form.zone_couverte, logo: !!logoUrl,
+          prestations: form.prestations.size, capacite: !!(form.equipe_type || form.delai_reservation),
+        }} />
         {isActive && publicUrl && (
           <ShareFicheBlock url={publicUrl} displayName={displayName} />
         )}

@@ -5,6 +5,7 @@ import { CITY_OPTIONS } from '@/lib/ui/suggest'
 import GrowText from '@/components/pros/GrowText'
 import Link from 'next/link'
 import ViewsTrend from '@/components/pros/ViewsTrend'
+import FicheCompletude from '@/components/pros/FicheCompletude'
 import FacturationTeaser from '@/components/pros/FacturationTeaser'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { useState, useTransition } from 'react'
@@ -263,7 +264,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
       <div style={s.cols}>
       <div style={s.colMain}>
 
-      <section style={s.photosCard}>
+      <section id="mes-photos" style={{ ...s.photosCard, scrollMarginTop: 90 }}>
         <h3 style={s.cardTitle}><Images size={17} weight="duotone" color="var(--accent-text)" /> Mes photos</h3>
         <PortfolioManager
           initial={photographer.portfolio_photos ?? []}
@@ -278,7 +279,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
       </section>
 
       <form onSubmit={handleSave} style={s.form}>
-        <h3 style={s.sectionTitle}>Logo / avatar</h3>
+        <h3 id="logo" style={{ ...s.sectionTitle, scrollMarginTop: 90 }}>Logo / avatar</h3>
         <div style={s.logoRow}>
           <div style={{ ...s.logoPreview, background: logoUrl ? `url('${logoUrl}') center/cover` : 'var(--accent-bg)' }}>
             {!logoUrl && <span style={s.logoInitials}>{(photographer.full_name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}</span>}
@@ -326,7 +327,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         </div>
         <ReseauxFields value={reseaux} onChange={setReseaux} inputStyle={s.input} />
 
-        <h3 style={s.sectionTitle}>Activité professionnelle</h3>
+        <h3 id="activite" style={{ ...s.sectionTitle, scrollMarginTop: 90 }}>Activité professionnelle</h3>
         <VisuelFields value={visuel} onChange={setVisuel} inputStyle={s.input} />
         <Field label="Lien portfolio (site ou Instagram)" req>
           <input style={s.input} type="text" inputMode="url" autoCapitalize="off" spellCheck={false} placeholder="monsite.fr ou instagram.com/moncompte" value={form.portfolio_url} onChange={e => setForm({ ...form, portfolio_url: e.target.value })} required maxLength={300} />
@@ -343,7 +344,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
             <option>Architecture + mise en scène</option>
           </select>
         </Field>
-        <div style={s.grid2}>
+        <div id="tarifs" style={{ ...s.grid2, scrollMarginTop: 90 }}>
           <Field label="Tarif min session (€)">
             <input style={s.input} type="number" min={0} max={5000} value={form.tarif_min ?? ''} onChange={e => setForm({ ...form, tarif_min: e.target.value ? parseInt(e.target.value, 10) : null })} />
           </Field>
@@ -354,7 +355,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
 
         <FicheVitrineFields value={vitrine} onChange={setVitrine} metier="photographe" inputStyle={s.input} titleStyle={s.sectionTitle} />
 
-        <h3 style={s.sectionTitle}>Présentation</h3>
+        <h3 id="presentation" style={{ ...s.sectionTitle, scrollMarginTop: 90 }}>Présentation</h3>
         <Field label="Bio">
           <GrowText style={{ ...s.input, minHeight: 110 }} value={form.bio} onChange={v => setForm({ ...form, bio: v })} max={600} oneLine={false} minRows={4} />
         </Field>
@@ -368,6 +369,11 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
 
       </div>
       <aside style={s.colSide}>
+        <FicheCompletude metier="photographe" input={{
+          photos: photographer.portfolio_photos ?? [], bio: form.bio, formules: vitrine.formules, prixMin: form.tarif_min,
+          deroule: vitrine.deroule, villes: vitrine.villes, zone: form.zone_couverte, logo: !!logoUrl,
+          options: visuel.options.length, metierVideo: visuel.metier !== 'photo',
+        }} />
         {isActive && publicUrl && (
           <ShareFicheBlock url={publicUrl} displayName={displayName} />
         )}

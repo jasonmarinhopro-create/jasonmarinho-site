@@ -147,6 +147,50 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
   .vt-bar-s{border:1px solid rgba(0,76,63,.22);color:var(--g);background:#fff}
 }
 
+.vt-brief{width:100%;border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:18px;background:rgba(255,255,255,.04);box-shadow:0 18px 50px rgba(0,0,0,.25)}
+.vt-brief-h{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:12px}
+.vt-facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.12);border-radius:12px;overflow:hidden}
+.vt-facts.n3 .vt-f:last-child{grid-column:span 2}
+.vt-facts .vt-f{background:#062b22;padding:14px 16px;min-width:0}
+.vt-facts .vt-f-v{font-family:'Fraunces',serif;font-size:24px;line-height:1.15;color:#fff;overflow-wrap:anywhere}
+.vt-facts .vt-f-l{font-size:12px;color:rgba(255,255,255,.6);margin-top:3px}
+.vt-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px;background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px 20px}
+.vt-strip.n3{grid-template-columns:repeat(3,minmax(0,1fr))}.vt-strip.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.vt-strip .vt-f{border-left:2px solid var(--g);padding-left:12px;min-width:0}
+.vt-strip .vt-f-v{font-family:'Fraunces',serif;font-size:21px;line-height:1.15;color:var(--td);overflow-wrap:anywhere}
+.vt-strip .vt-f-l{font-size:12px;color:var(--tl);margin-top:2px}
+@media(max-width:640px){.vt-strip,.vt-strip.n3{grid-template-columns:1fr 1fr}.vt-strip.n3 .vt-f:last-child{grid-column:span 2}}
+.vt-zone{display:grid;grid-template-columns:190px minmax(0,1fr);gap:22px;align-items:center}
+.vt-zone.nomap{grid-template-columns:1fr}
+@media(max-width:560px){.vt-zone{grid-template-columns:1fr}.vt-zone-map{max-width:220px}}
+.vt-map{display:block;width:100%;height:auto}
+.vt-map-land{fill:rgba(0,76,63,.05);stroke:rgba(0,76,63,.35);stroke-width:1.2;stroke-linejoin:round}
+.vt-map-ring{fill:rgba(0,76,63,.12);stroke:rgba(0,76,63,.3);stroke-width:1}
+.vt-map-dot{fill:var(--g);stroke:#fff;stroke-width:2}
+.vt-map-t{font:600 13px 'Outfit',sans-serif;fill:var(--g);paint-order:stroke;stroke:#fff;stroke-width:3px}
+.vt-zone-v{font-family:'Fraunces',serif;font-size:24px;color:var(--td);line-height:1.15}
+.vt-zone-t>p{font-size:14px;color:var(--tm);line-height:1.6;margin-top:4px}
+.vt-zone-t .vt-villes{margin-top:12px}
+.vt-zone-t .vt-zone-n{font-size:12.5px;color:var(--tl);margin-top:12px}
+.vt-work{margin-top:16px}
+.vt-link{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid rgba(0,76,63,.15);border-radius:10px;text-decoration:none;color:var(--g);font-weight:600;font-size:14px;margin-top:8px;transition:background .15s,border-color .15s}
+.vt-link:first-of-type{margin-top:0}
+.vt-link span{flex:1;min-width:0;overflow-wrap:anywhere}
+.vt-link-a{font-size:13px;opacity:.6}
+.vt-link:hover{background:rgba(0,76,63,.05);border-color:rgba(0,76,63,.3)}
+.vt-cf fieldset{border:0;margin:0 0 14px;padding:0;min-width:0}
+.vt-cf legend{font-size:12px;font-weight:600;color:var(--td);margin-bottom:8px;padding:0}
+.vt-cf legend span{font-weight:400;color:var(--tl)}
+.vt-pills{display:flex;flex-wrap:wrap;gap:6px}
+.vt-pill{position:relative;cursor:pointer}
+.vt-pill input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.vt-pill span{display:inline-flex;align-items:center;padding:7px 12px;border-radius:999px;border:1px solid rgba(0,76,63,.18);background:#fff;font-size:13px;color:var(--td);transition:background .15s,color .15s,border-color .15s}
+.vt-pill input:checked+span{background:var(--g);border-color:var(--g);color:#fff}
+.vt-pill input:focus-visible+span{outline:2px solid var(--y);outline-offset:2px}
+.vt-cf textarea{min-height:70px}
+.vt-cf .jmc-t{min-height:44px;padding:9px 13px;font-size:14px;border-radius:8px}
+
+
 .card{position:relative}
 .annot-tag{position:absolute;top:-9px;right:14px;background:#FFD56B;color:#003329;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:3px 9px;border-radius:6px;box-shadow:0 4px 10px rgba(255,213,107,.4);display:inline-flex;align-items:center;gap:4px;z-index:2}
 .demo-banner{background:linear-gradient(135deg,#FFD56B 0%,#FFB84D 100%);color:#0F1A0D;padding:14px clamp(20px,5vw,48px);text-align:center;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
@@ -173,15 +217,12 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
       <span class="tag"><i class="ph-bold ph-film-strip" style="font-size:10px"></i>Photographe et vidéaste</span>
       <span class="tag">Intérieurs + drone extérieur</span>
       <span class="tag"><i class="ph-bold ph-drone" style="font-size:10px"></i>Drone</span>
-      <span class="tag"><i class="ph-bold ph-map-pin" style="font-size:10px"></i>Lyon</span>
     </div>
     <div class="hero-id">
       <div class="hero-logo placeholder">CS</div>
-      <h1>Camille Sénéchal<br><em>photographe et vidéaste LCD</em></h1>
+      <h1>Camille Sénéchal<br><em>photographe et vidéaste Airbnb à Lyon</em></h1>
     </div>
-    <p class="subtitle">Zone d'intervention : Lyon + 60 km · Rhône, Beaujolais, vallée du Rhône</p>
     <div class="meta-row">
-      <span><i class="ph-bold ph-currency-eur"></i>350 – 700 € la session</span>
       <span><i class="ph-bold ph-handshake"></i>Contact direct, sans commission</span>
     </div>
     <div class="vt-actions"><a href="#contact" class="vt-btn-y" data-vt-contact><i class="ph-bold ph-paper-plane-tilt"></i>Contacter Camille</a><a href="#photos" class="vt-btn-o"><i class="ph-bold ph-images"></i>Voir les photos</a></div>
@@ -192,6 +233,7 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 
 <div class="body">
   <div>
+    <div class="vt-strip n3" style="position:relative"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Calculé depuis ta fiche</span><div class="vt-f"><div class="vt-f-v">350 €</div><div class="vt-f-l">dès, la séance</div></div><div class="vt-f"><div class="vt-f-v">60 km</div><div class="vt-f-l">autour de Lyon</div></div><div class="vt-f"><div class="vt-f-v">Photo &amp; vidéo</div><div class="vt-f-l">drone, vidéos courtes, crépuscule</div></div></div>
     <section class="card vt-sec" id="photos" style="position:relative">
   <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Jusqu’à 6 photos</span><div class="vt-h"><h2>Photos</h2><span class="vt-count">6 photos</span></div>
   <div class="vt-gal n5"><button type="button" class="vt-ph" data-vt-open="0" data-vt-full="/img/exemple-fiches/photo-interieur-1.jpg" aria-label="Agrandir la photo 1 sur 6"><img src="/img/exemple-fiches/photo-interieur-1-t.jpg" alt="Photo 1 sur 6, par Camille Sénéchal" width="640" height="480"></button><button type="button" class="vt-ph" data-vt-open="1" data-vt-full="/img/exemple-fiches/photo-salon-5.jpg" aria-label="Agrandir la photo 2 sur 6"><img src="/img/exemple-fiches/photo-salon-5-t.jpg" alt="Photo 2 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"></button><button type="button" class="vt-ph" data-vt-open="2" data-vt-full="/img/exemple-fiches/photo-chambre-4.jpg" aria-label="Agrandir la photo 3 sur 6"><img src="/img/exemple-fiches/photo-chambre-4-t.jpg" alt="Photo 3 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"></button><button type="button" class="vt-ph" data-vt-open="3" data-vt-full="/img/exemple-fiches/photo-cuisine-2.jpg" aria-label="Agrandir la photo 4 sur 6"><img src="/img/exemple-fiches/photo-cuisine-2-t.jpg" alt="Photo 4 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"></button><button type="button" class="vt-ph" data-vt-open="4" data-vt-full="/img/exemple-fiches/photo-sdb-2.jpg" aria-label="Agrandir la photo 5 sur 6"><img src="/img/exemple-fiches/photo-sdb-2-t.jpg" alt="Photo 5 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"><span class="vt-more">+1</span></button><button type="button" class="vt-ph" data-vt-open="5" data-vt-full="/img/exemple-fiches/photo-maison-2.jpg" hidden aria-label="Agrandir la photo 6 sur 6"><img src="/img/exemple-fiches/photo-maison-2-t.jpg" alt="Photo 6 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"></button></div>
@@ -226,58 +268,55 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
   <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Ton déroulé</span><h2>Comment ça se passe</h2>
   <ol class="vt-steps"><li><span class="vt-step-n">1</span><div><strong>Tu m’envoies ta demande</strong><p>Ton logement, la ville et tes dates : je te réponds avec un devis.</p></div></li><li><span class="vt-step-n">2</span><div><strong>Le shooting</strong><p>Je photographie le logement préparé, à la meilleure lumière.</p></div></li><li><span class="vt-step-n">3</span><div><strong>La livraison</strong><p>Tu reçois tes photos retouchées, prêtes pour Airbnb et Booking.</p></div></li></ol>
 </section>
-    <div class="card vt-sec">
-      <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Lien vers ton portfolio</span><h2>Portfolio complet</h2>
-      <p style="font-size:14px;color:var(--tm);line-height:1.7;margin-bottom:14px">Toutes les réalisations de Camille Sénéchal, pour juger de son style et voir si son approche correspond à ton logement.</p>
-      <a href="#photos" class="btn-p" onclick="jmTrack('portfolio')"><i class="ph-bold ph-image-square"></i>Voir le portfolio</a>
-      
-      <a href="#photos" class="btn-ol" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i>@camille.studio.lyon</a>
-    </div>
-    <section class="card vt-sec" style="position:relative">
+    <section class="card vt-sec" id="zone" style="position:relative">
   <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes villes</span><h2>Où j’interviens</h2>
-  <div class="vt-villes"><a class="vt-ville" href="/photographe-lcd-lyon" title="Photographe à Lyon : le guide"><i class="ph-bold ph-map-pin"></i>Lyon</a><span class="vt-ville"><i class="ph-bold ph-map-pin"></i>Villeurbanne</span><a class="vt-ville" href="/photographe-lcd-annecy" title="Photographe à Annecy : le guide"><i class="ph-bold ph-map-pin"></i>Annecy</a><span class="vt-ville"><i class="ph-bold ph-map-pin"></i>Vienne</span><span class="vt-ville"><i class="ph-bold ph-map-pin"></i>Villefranche-sur-Saône</span><span class="vt-ville"><i class="ph-bold ph-map-pin"></i>Bourgoin-Jallieu</span></div>
+  <div class="vt-zone"><div class="vt-zone-map"><svg class="vt-map" viewBox="0 0 292 290" role="img" aria-label="Lyon sur la carte de France">
+<path d="M148.2 9.8 L152.6 9 L164.2 18.2 L183.5 36.4 L196.1 35 L199 44.8 L214.5 51.8 L226 54 L237.6 63 L260.8 67.8 L253.1 84 L248.8 106.7 L237.6 110.6 L234.7 121 L220.2 137.2 L221.2 145.6 L233.8 140 L238.6 153.4 L232.8 175 L239.6 183.4 L235.7 196 L250.2 203 L247.9 213.4 L242.9 215.6 L229.9 231 L217 232.4 L205.8 226.8 L191.3 224 L177.7 221.2 L162.3 233.8 L161.3 247.8 L152.6 253.4 L135.2 249.2 L115.9 242.2 L96.6 240.8 L75.3 233.8 L68 224.8 L72.3 221.8 L78.2 196 L78.2 189 L80.2 162.4 L79.2 147 L67.6 137.2 L60.9 126 L54.1 114.8 L38.6 105 L18.4 100.8 L10.6 85.4 L13.5 78.4 L34.8 71.4 L63.8 77 L71.5 77 L71.5 61.6 L64.7 47.6 L78.2 47.6 L81.1 56 L106.3 56 L104.3 47.6 L121.7 40.6 L133.3 28 L133.3 14 L138.1 12.6 Z M284 235.2 L286.9 246.4 L284 266 L280.1 280.8 L272.4 274.4 L268.5 260.4 L269.5 247.8 L278.2 242.2 Z" class="vt-map-land"/>
+<circle cx="195.9" cy="157.9" r="15.1" class="vt-map-ring"/><circle cx="195.9" cy="157.9" r="4.5" class="vt-map-dot"/>
+<text x="186.9" y="150.9" text-anchor="end" class="vt-map-t">Lyon</text>
+</svg></div><div class="vt-zone-t">
+    <div class="vt-zone-v">Lyon</div>
+    <p>Lyon + 60 km · Rhône, Beaujolais, vallée du Rhône</p>
+    <div class="vt-villes"><a class="vt-ville" href="/photographe-lcd-lyon" title="Photographe à Lyon : le guide"><i class="ph-bold ph-map-pin"></i>Lyon</a><span class="vt-ville"><i class="ph-bold ph-map-pin"></i>Villeurbanne</span><a class="vt-ville" href="/photographe-lcd-annecy" title="Photographe à Annecy : le guide"><i class="ph-bold ph-map-pin"></i>Annecy</a><span class="vt-ville"><i class="ph-bold ph-map-pin"></i>Vienne</span><span class="vt-ville"><i class="ph-bold ph-map-pin"></i>Villefranche-sur-Saône</span><span class="vt-ville"><i class="ph-bold ph-map-pin"></i>Bourgoin-Jallieu</span></div>
+    <p class="vt-zone-n">Ton logement est un peu plus loin ? Demande quand même : beaucoup de pros se déplacent.</p>
+  </div></div>
 </section>
   </div>
 
   <aside>
     <div class="card" id="contact">
       <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Formulaire de contact</span><h2>Contacter Camille</h2>
-      <form class="contact-form" id="contact-form" onsubmit="return contactSubmit(event)">
+      <form class="contact-form vt-cf" id="contact-form" onsubmit="return contactSubmit(event)">
         <div id="contact-err" class="err-msg" style="display:none"></div>
-        <input type="text" name="contactName" placeholder="Ton prénom + nom" required>
-        <input type="email" name="contactEmail" placeholder="Ton email" required>
-        <textarea name="message" placeholder="Présente brièvement ton logement, la ville, les dates qui t'intéressent." required></textarea>
+        <fieldset><legend>Ce qu’il te faut</legend><div class="vt-pills"><label class="vt-pill"><input type="checkbox" name="besoin" value="Des photos"><span>Des photos</span></label><label class="vt-pill"><input type="checkbox" name="besoin" value="Une vidéo"><span>Une vidéo</span></label><label class="vt-pill"><input type="checkbox" name="besoin" value="Des vues au drone"><span>Des vues au drone</span></label><label class="vt-pill"><input type="checkbox" name="besoin" value="Des vidéos courtes"><span>Des vidéos courtes</span></label><label class="vt-pill"><input type="checkbox" name="besoin" value="Des photos au crépuscule"><span>Des photos au crépuscule</span></label></div></fieldset>
+        <fieldset><legend>Ton logement</legend><div class="vt-pills"><label class="vt-pill"><input type="radio" name="logement" value="Studio ou T1"><span>Studio ou T1</span></label><label class="vt-pill"><input type="radio" name="logement" value="T2 ou T3"><span>T2 ou T3</span></label><label class="vt-pill"><input type="radio" name="logement" value="T4 et plus"><span>T4 et plus</span></label><label class="vt-pill"><input type="radio" name="logement" value="Maison"><span>Maison</span></label><label class="vt-pill"><input type="radio" name="logement" value="Plusieurs logements"><span>Plusieurs logements</span></label></div></fieldset>
+        <fieldset><legend>Quand ? <span>facultatif</span></legend><input type="hidden" name="date" data-date data-today placeholder="Choisir une date"></fieldset>
+        <input type="text" name="contactName" placeholder="Ton prénom et ton nom" autocomplete="name" required>
+        <input type="email" name="contactEmail" placeholder="Ton e-mail" autocomplete="email" required>
+        <textarea name="message" placeholder="Un détail à ajouter ? Ville, dates, style recherché (facultatif)"></textarea>
         <div class="hp"><label>Site</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
-        <button type="submit" class="btn-p" id="contact-btn"><i class="ph-bold ph-paper-plane-tilt"></i>Envoyer ma demande</button>
+        <button type="submit" class="btn-p" id="contact-btn"><i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à Camille</button>
         <p style="margin-top:10px;font-size:11.5px;color:var(--tl);line-height:1.6">Ton nom, ton e-mail et ton message sont transmis à Camille seulement, pour te répondre, et supprimés au bout de 3 ans. <a href="/politique-de-confidentialite#annuaire" style="color:var(--g)">Confidentialité</a></p>
       </form>
       <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tl);line-height:1.6">Pas de commission. Pas d'intermédiaire. Tu négocies et contractualises directement avec Camille.</div>
           </div>
 
-    <div class="card" style="margin-top:16px">
-      <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes infos pratiques</span><div class="aside-row"><span class="aside-k">Ville principale</span><span class="aside-v">Lyon</span></div>
-      <div class="aside-row"><span class="aside-k">Zone couverte</span><span class="aside-v">Lyon + 60 km · Rhône, Beaujolais, vallée du Rhône</span></div>
-      <div class="aside-row"><span class="aside-k">Tarifs indicatifs</span><span class="aside-v">350 – 700 €</span></div>
-      <div class="aside-row"><span class="aside-k">Métier</span><span class="aside-v">Photographe et vidéaste</span></div>
-      <div class="aside-row"><span class="aside-k">Spécialité</span><span class="aside-v">Intérieurs + drone extérieur</span></div>
-      
-      <div class="pro-reseaux" style="margin-top:14px">
+    <div class="card vt-work" style="position:relative"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes liens</span><h2>Son travail en ligne</h2><a href="#photos" class="vt-link" onclick="jmTrack('portfolio')"><i class="ph-bold ph-image-square"></i><span>Le portfolio</span><i class="ph-bold ph-arrow-up-right vt-link-a"></i></a><a href="#photos" class="vt-link" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i><span>@camille.studio.lyon</span><i class="ph-bold ph-arrow-up-right vt-link-a"></i></a><div class="pro-reseaux" style="margin-top:14px">
       <div style="font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:#7A8C77;margin-bottom:8px">Retrouve-moi aussi sur</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px"><a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer me" title="Fiche Google" aria-label="Fiche Google" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-google-logo" aria-hidden="true"></i></a><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer me" title="Facebook" aria-label="Facebook" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-facebook-logo" aria-hidden="true"></i></a><a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer me" title="LinkedIn" aria-label="LinkedIn" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-linkedin-logo" aria-hidden="true"></i></a></div>
-    </div>
-    </div>
+    </div></div>
 
     <div class="card" style="margin-top:16px">
       <h2>Les tarifs photo à Lyon</h2>
       <p style="font-size:13.5px;color:var(--tm);line-height:1.7;margin-bottom:12px">Fourchettes constatées, checklist des photos indispensables et conseils pour bien briefer : consulte le guide local avant de demander un devis.</p>
-      <a href="/photographe-lcd-lyon" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Guide photographe LCD Lyon</a>
+      <a href="/photographe-lcd-lyon" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Photographe Airbnb à Lyon : le guide</a>
     </div>
   </aside>
 </div>
 
 <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;gap:10px;flex-wrap:wrap">
   <a href="/annuaires/photographes" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Tous les photographes et vidéastes</a>
-  <a href="/photographe-lcd-lyon" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Photographe LCD Lyon : le guide<i class="ph-bold ph-arrow-right"></i></a>
+  <a href="/photographe-lcd-lyon" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Photographe Airbnb à Lyon : le guide<i class="ph-bold ph-arrow-right"></i></a>
 </div>
 
 <div class="disclaimer">
@@ -417,10 +456,16 @@ async function contactSubmit(e) {
     slug: __slug,
     contactName: f.contactName.value.trim(),
     contactEmail: f.contactEmail.value.trim(),
-    message: f.message.value.trim(),
+    message: window.jmContactMessage ? jmContactMessage(f) : f.message.value.trim(),
     website: f.website ? f.website.value : '',
     t: __t0,
   };
+  if (data.message.length < 20) {
+    errBox.textContent = 'Dis-moi ce qu\'il te faut et ton logement, ou écris quelques mots.';
+    errBox.style.display = 'block';
+    btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à Camille';
+    return false;
+  }
   try {
     const res = await fetch('/api/photographer/contact', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
@@ -429,7 +474,7 @@ async function contactSubmit(e) {
       const body = await res.json().catch(() => ({}));
       errBox.textContent = body.error || 'Erreur lors de l\'envoi. Réessaye.';
       errBox.style.display = 'block';
-      btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer ma demande';
+      btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à Camille';
       return false;
     }
     document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Message envoyé ✓</strong><br>Camille te recontacte généralement sous 48h.</div>';
@@ -484,6 +529,22 @@ async function contactSubmit(e) {
   }
 })();
 </script>
+<script>
+(function(){
+  var t=new Date(),iso=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+  [].forEach.call(document.querySelectorAll('[data-today]'),function(i){i.setAttribute('min',iso)});
+  window.jmContactMessage=function(f){
+    var parts=[],b=[].slice.call(f.querySelectorAll('input[name=besoin]:checked')).map(function(i){return i.value});
+    if(b.length)parts.push('Ce qu’il me faut : '+b.join(', '));
+    var l=f.querySelector('input[name=logement]:checked');if(l)parts.push('Logement : '+l.value);
+    var d=f.date&&f.date.value;
+    if(d){try{parts.push('Date souhaitée : '+new Date(d+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}))}catch(e){parts.push('Date souhaitée : '+d)}}
+    var m=f.message.value.trim();
+    return (parts.join('\n')+(m?(parts.length?'\n\n':'')+m:'')).trim();
+  };
+})();
+</script>
+<script defer src="/calendrier.js"></script>
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
 </body>

@@ -66,7 +66,7 @@ export default function FicheVitrineFields({ value, onChange, metier, inputStyle
 
   return (
     <>
-      <h3 style={titleStyle}>Formules (facultatif)</h3>
+      <h3 id="formules" style={{ ...titleStyle, scrollMarginTop: 90 }}>Formules (facultatif)</h3>
       <p style={hint}>Jusqu’à {FORMULES_MAX} formules avec un prix « à partir de » : plus clair qu’une fourchette, les hôtes savent tout de suite ce qu’ils auront. Laisse le prix vide pour « Sur devis ». Quelques mots suffisent : ce qui est inclus, le délai.</p>
       {value.formules.map((f, i) => (
         <div key={i} style={row}>
@@ -90,7 +90,7 @@ export default function FicheVitrineFields({ value, onChange, metier, inputStyle
         </button>
       )}
 
-      <h3 style={titleStyle}>Villes où tu interviens</h3>
+      <h3 id="villes" style={{ ...titleStyle, scrollMarginTop: 90 }}>Villes où tu interviens</h3>
       <p style={hint}>Ta ville principale est déjà affichée. Ajoute les autres villes (jusqu’à {VILLES_MAX}) : celles qui ont un guide sur le site deviennent un lien vers lui.</p>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
         {value.villes.map(v => (
@@ -110,7 +110,7 @@ export default function FicheVitrineFields({ value, onChange, metier, inputStyle
         </div>
       )}
 
-      <h3 style={titleStyle}>Comment ça se passe (3 étapes)</h3>
+      <h3 id="deroule" style={{ ...titleStyle, scrollMarginTop: 90 }}>Comment ça se passe (3 étapes)</h3>
       <p style={hint}>Affiché sur ta fiche pour rassurer les hôtes. Adapte les étapes à ta façon de travailler (délais, rendez-vous, livraison).</p>
       {value.deroule.map((e, i) => (
         <div key={i} style={{ ...row, gridTemplateColumns: '28px minmax(0, 1fr)', display: 'grid', alignItems: 'start' }}>

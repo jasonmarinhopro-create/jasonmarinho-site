@@ -16,7 +16,11 @@ import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mj
 import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
 import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
-import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, villesHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
+import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
+import { nomAffiche, initiales, aVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
+
+// Taille de l'équipe en version courte pour « En bref »
+const EQUIPE_COURTE = { solo: ['Solo', 'une seule personne'], duo: ['Duo', 'deux personnes'], equipe_3_5: ['3 à 5', 'personnes dans l’équipe'], equipe_6_plus: ['6 et plus', 'personnes dans l’équipe'] }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -144,7 +148,7 @@ function memberSince(createdAt) {
 
 // Exportée pour les fiches d'exemple (scripts/build-exemples-fiches.mjs)
 export function buildFichePage(c) {
-  const displayName = c.pseudo || c.full_name
+  const displayName = nomAffiche(c.pseudo || c.full_name)
   const title = `${displayName} · Équipe ménage LCD ${c.ville} | Jason Marinho`
   const forfait = fmtForfait(c)
   const heure = c.tarif_heure ? `${c.tarif_heure} €/h` : null
@@ -156,7 +160,7 @@ export function buildFichePage(c) {
   const reseaux = proReseauxLinks(c.reseaux, null)
   const guide = g?.href ?? null
   const depuis = memberSince(c.created_at)
-  const firstName = (c.full_name || displayName).split(' ')[0]
+  const firstName = nomAffiche(c.full_name || displayName).split(' ')[0]
   const photos = c.__photos ?? vitrinePhotos(c.portfolio_photos, SUPABASE_URL, PHOTO_LIMIT)
   const external = c.site_url ? { href: c.site_url, label: 'Voir le site', short: 'Site', icon: 'ph-globe', track: 'site' } : null
 
@@ -164,6 +168,14 @@ export function buildFichePage(c) {
   const equipeLabel = c.equipe_type ? EQUIPE_LABELS[c.equipe_type] : null
   const delaiLabel = c.delai_reservation ? DELAI_LABELS[c.delai_reservation] : null
   const langues = (c.langues || []).map(l => l.toUpperCase()).join(', ')
+  const eq = EQUIPE_COURTE[c.equipe_type]
+  const facts = [
+    (pr => pr ? { v: pr, l: 'dès, le ménage' } : null)(prixDepuis(c.formules, c.tarif_forfait_min)),
+    zoneFact(c.ville, c.zone_couverte),
+    eq ? { v: eq[0], l: eq[1] } : (c.prestations || []).includes('gestion_linge') ? { v: 'Linge', l: 'géré par l’équipe' } : null,
+    c.reco_count > 0 ? trustFact(c.reco_count, null, { feminin: true }) : c.assurance_rc_pro ? { v: 'RC pro', l: 'assurance professionnelle' } : trustFact(0, c.created_at),
+  ]
+  const besoins = ['Des ménages entre deux voyageurs', 'Un grand ménage', ...((c.prestations || []).includes('gestion_linge') ? ['Le linge'] : [])]
 
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -235,6 +247,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .err-msg{padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:8px;color:#dc2626;font-size:13px;margin-bottom:10px}
 .trust-row{display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(99,214,131,.08);border:1px solid rgba(99,214,131,.2);border-radius:8px;margin-top:12px;font-size:13px;color:#1e9d54;font-weight:500}
 ${VITRINE_CSS}
+${SIGNATURE_CSS}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify({
@@ -272,41 +285,39 @@ ${JSON.stringify({
 </head>
 <body>
 <header class="hero">
-  <div class="s-in hero-grid${photos.length ? ' has-cover' : ''}">
+  <div class="s-in hero-grid has-cover">
   <div>
     <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/menage">Annuaire ménage LCD</a> · <span>${escHtml(displayName)}</span></div>
     <div class="tag-row">
       ${c.reco_count > 0 ? `<span class="tag" style="background:rgba(99,214,131,.15);color:#7be29a;border:1px solid rgba(99,214,131,.35)"><i class="ph-bold ph-heart" style="font-size:10px"></i>Recommandé par ${c.reco_count} hôte${c.reco_count > 1 ? 's' : ''}</span>` : ''}
       ${c.assurance_rc_pro ? '<span class="tag green"><i class="ph-bold ph-shield-check" style="font-size:10px"></i>RC Pro</span>' : ''}
       ${equipeLabel ? `<span class="tag">${escHtml(equipeLabel)}</span>` : ''}
-      <span class="tag"><i class="ph-bold ph-map-pin" style="font-size:10px"></i>${escHtml(c.ville)}</span>
     </div>
     <div class="hero-id">
       ${c.logo_url
         ? `<div class="hero-logo" style="background:url('${escHtml(c.logo_url)}') center/cover"></div>`
-        : `<div class="hero-logo placeholder">${escHtml(displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase())}</div>`}
-      <h1>${escHtml(displayName)}<br><em>équipe ménage LCD</em></h1>
+        : `<div class="hero-logo placeholder">${escHtml(initiales(displayName))}</div>`}
+      <h1>${escHtml(displayName)}<br><em>équipe de ménage Airbnb ${escHtml(aVille(c.ville))}</em></h1>
     </div>
-    ${c.zone_couverte ? `<p class="subtitle">Zone d'intervention : ${escHtml(c.zone_couverte)}</p>` : ''}
     <div class="meta-row">
-      ${forfait ? `<span><i class="ph-bold ph-currency-eur"></i>Forfait turnover ${escHtml(forfait)}</span>` : ''}
-      ${heure ? `<span><i class="ph-bold ph-clock"></i>${escHtml(heure)}</span>` : ''}
-      ${delaiLabel ? `<span><i class="ph-bold ph-lightning"></i>${escHtml(delaiLabel)}</span>` : ''}
       <span><i class="ph-bold ph-handshake"></i>Contact direct, sans commission</span>
+      ${delaiLabel ? `<span><i class="ph-bold ph-lightning"></i>${escHtml(delaiLabel)}</span>` : ''}
+      ${heure ? `<span><i class="ph-bold ph-clock"></i>${escHtml(heure)}</span>` : ''}
     </div>
     ${heroActionsHtml({ firstName, hasPhotos: photos.length > 0, external })}
   </div>
-  ${heroCoverHtml(photos, displayName)}
+  ${photos.length ? heroCoverHtml(photos, displayName) : briefHtml(facts)}
   </div>
 </header>
 
 <div class="body">
   <div>
+    ${photos.length ? briefHtml(facts, { variant: 'strip' }) : ''}
     ${galleryHtml(photos, { name: displayName, title: 'En images' })}
     ${c.bio ? `<div class="card" style="margin-bottom:20px"><h2>Présentation</h2><div class="bio">${escHtml(c.bio)}</div></div>` : ''}
     ${formulesHtml(c.formules)}
     ${prestations.length > 0 ? `<div class="card" style="margin-bottom:20px"><h2>Prestations</h2><div class="prestations-grid">${prestations.map(p => `<span class="prestation-chip"><i class="ph-bold ph-check"></i>${escHtml(p)}</span>`).join('')}</div></div>` : ''}
-    <div class="card">
+    ${equipeLabel || c.logements_geres || delaiLabel || langues || c.assurance_rc_pro || c.siret ? `<div class="card vt-sec">
       <h2>Capacité & disponibilité</h2>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:6px">
         ${equipeLabel ? `<div><div style="font-size:11px;color:var(--tl);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px">Taille équipe</div><div style="font-size:14px;color:var(--td);font-weight:500">${escHtml(equipeLabel)}</div></div>` : ''}
@@ -316,50 +327,37 @@ ${JSON.stringify({
       </div>
       ${c.assurance_rc_pro ? `<div class="trust-row"><i class="ph-bold ph-shield-check" style="font-size:15px"></i>Couvert par une assurance Responsabilité Civile Professionnelle</div>` : ''}
       ${c.siret ? `<div style="margin-top:10px;font-size:12px;color:var(--tl)">SIRET déclaré : <strong style="color:var(--td);font-variant-numeric:tabular-nums">${escHtml(c.siret)}</strong></div>` : ''}
-    </div>
+    </div>` : ''}
     ${derouleHtml(c.deroule, 'menage')}
-    ${villesHtml(c.villes_couvertes, { root: ROOT, prefix: 'menage-lcd', ville: c.ville, metierLabel: 'Ménage' })}
+    ${zoneCardHtml({ ville: c.ville, zone: c.zone_couverte, villes: c.villes_couvertes, root: ROOT, prefix: 'menage-lcd', metierLabel: 'Ménage Airbnb' })}
   </div>
 
   <aside>
     <div class="card" id="contact">
-      <h2>Contacter ${escHtml((c.full_name || displayName).split(' ')[0])}</h2>
-      <form class="contact-form" id="contact-form" onsubmit="return contactSubmit(event)">
-        <div id="contact-err" class="err-msg" style="display:none"></div>
-        <input type="text" name="contactName" placeholder="Ton prénom + nom" required>
-        <input type="email" name="contactEmail" placeholder="Ton email" required>
-        <textarea name="message" placeholder="Décris ton ou tes logements (ville, capacité, fréquence des turnovers, prestations souhaitées)." required></textarea>
-        <div class="hp"><label>Site</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
-        <button type="submit" class="btn-p" id="contact-btn"><i class="ph-bold ph-paper-plane-tilt"></i>Envoyer ma demande</button>
-        <p style="margin-top:10px;font-size:11.5px;color:var(--tl);line-height:1.6">Ton nom, ton e-mail et ton message sont transmis à ${escHtml((c.full_name || displayName).split(' ')[0])} seulement, pour te répondre, et supprimés au bout de 3 ans. <a href="/politique-de-confidentialite#annuaire" style="color:var(--g)">Confidentialité</a></p>
+      <h2>Contacter ${escHtml(firstName)}</h2>
+      ${contactFormHtml({ firstName, besoins, placeholder: 'Un détail à ajouter ? Nombre de logements, rythme des réservations (facultatif)' })}
+        <p style="margin-top:10px;font-size:11.5px;color:var(--tl);line-height:1.6">Ton nom, ton e-mail et ton message sont transmis à ${escHtml(firstName)} seulement, pour te répondre, et supprimés au bout de 3 ans. <a href="/politique-de-confidentialite#annuaire" style="color:var(--g)">Confidentialité</a></p>
       </form>
-      ${c.site_url ? `<a href="${escHtml(c.site_url)}" target="_blank" rel="noopener noreferrer" class="btn-ol" onclick="jmTrack('site')"><i class="ph-bold ph-globe"></i>Voir le site</a>` : ''}
-      ${c.instagram_handle ? `<a href="https://instagram.com/${escHtml(c.instagram_handle)}" target="_blank" rel="noopener" class="btn-ol" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i>@${escHtml(c.instagram_handle)}</a>` : ''}
       <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tl);line-height:1.6">Pas de commission. Pas d'intermédiaire. Tu négocies et contractualises directement avec l'équipe.</div>
       <div style="margin-top:12px;font-size:12px;color:var(--tm);line-height:1.6">Tu as déjà bossé avec cette équipe ? <a href="https://app.jasonmarinho.com/dashboard/recommander?type=cleaner&id=${escHtml(c.id)}" style="color:var(--g);font-weight:600">Recommande-la aux autres hôtes →</a></div>
     </div>
 
-    <div class="card" style="margin-top:16px">
-      <div class="aside-row"><span class="aside-k">Ville principale</span><span class="aside-v">${escHtml(c.ville)}</span></div>
-      ${c.zone_couverte ? `<div class="aside-row"><span class="aside-k">Zone couverte</span><span class="aside-v">${escHtml(c.zone_couverte)}</span></div>` : ''}
-      ${forfait ? `<div class="aside-row"><span class="aside-k">Forfait turnover</span><span class="aside-v">${escHtml(forfait)}</span></div>` : ''}
-      ${heure ? `<div class="aside-row"><span class="aside-k">Tarif horaire</span><span class="aside-v">${escHtml(heure)}</span></div>` : ''}
-      ${c.assurance_rc_pro ? '<div class="aside-row"><span class="aside-k">Assurance</span><span class="aside-v green">✓ RC pro</span></div>' : ''}
-      ${depuis ? `<div class="aside-row"><span class="aside-k">Membre de l'annuaire depuis</span><span class="aside-v">${depuis}</span></div>` : ''}
-      ${proReseauxHtml(reseaux)}
-    </div>
+    ${workLinksHtml([
+      c.site_url ? { href: c.site_url, label: 'Le site', icon: 'ph-globe', track: 'site' } : null,
+      c.instagram_handle ? { href: `https://instagram.com/${c.instagram_handle}`, label: `@${c.instagram_handle}`, icon: 'ph-instagram-logo', track: 'instagram', rel: 'noopener' } : null,
+    ], proReseauxHtml(reseaux), { title: 'L’équipe en ligne' })}
 
     ${guide ? `<div class="card" style="margin-top:16px">
-      <h2>Les tarifs ménage à ${escHtml(c.ville)}</h2>
+      <h2>Les tarifs ménage ${escHtml(aVille(g?.label ?? c.ville))}</h2>
       <p style="font-size:13.5px;color:var(--tm);line-height:1.7;margin-bottom:12px">Fourchettes turnover constatées, checklist complète et questions à poser : consulte le guide local avant de demander un devis.</p>
-      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Guide ménage LCD ${escHtml(g?.label ?? c.ville)}</a>
+      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Ménage Airbnb ${escHtml(aVille(g?.label ?? c.ville))} : le guide</a>
     </div>` : ''}
   </aside>
 </div>
 
 <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;gap:10px;flex-wrap:wrap">
   <a href="/annuaires/menage" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Toutes les équipes ménage LCD</a>
-  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Ménage LCD ${escHtml(g?.label ?? c.ville)} : le guide<i class="ph-bold ph-arrow-right"></i></a>` : ''}
+  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Ménage Airbnb ${escHtml(aVille(g?.label ?? c.ville))} : le guide<i class="ph-bold ph-arrow-right"></i></a>` : ''}
 </div>
 
 <div class="disclaimer">
@@ -388,10 +386,16 @@ async function contactSubmit(e) {
     slug: __slug,
     contactName: f.contactName.value.trim(),
     contactEmail: f.contactEmail.value.trim(),
-    message: f.message.value.trim(),
+    message: window.jmContactMessage ? jmContactMessage(f) : f.message.value.trim(),
     website: f.website ? f.website.value : '',
     t: __t0,
   };
+  if (data.message.length < 20) {
+    errBox.textContent = 'Dis-moi ce qu\\'il te faut et ton logement, ou écris quelques mots.';
+    errBox.style.display = 'block';
+    btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à ${escHtml(firstName)}';
+    return false;
+  }
   try {
     const res = await fetch('/api/cleaner/contact', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
@@ -400,10 +404,10 @@ async function contactSubmit(e) {
       const body = await res.json().catch(() => ({}));
       errBox.textContent = body.error || 'Erreur lors de l\\'envoi. Réessaye.';
       errBox.style.display = 'block';
-      btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer ma demande';
+      btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à ${escHtml(firstName)}';
       return false;
     }
-    document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Message envoyé ✓</strong><br>${escHtml((c.full_name || displayName).split(' ')[0])} te recontacte généralement sous 48h.</div>';
+    document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Message envoyé ✓</strong><br>${escHtml(firstName)} te recontacte généralement sous 48h.</div>';
   } catch (err) {
     errBox.textContent = 'Réseau indisponible.';
     errBox.style.display = 'block';
@@ -414,6 +418,8 @@ async function contactSubmit(e) {
 </script>
 ${stickyBarHtml({ firstName, hasPhotos: photos.length > 0, external })}
 ${VITRINE_JS}
+${CONTACT_JS}
+<script defer src="/calendrier.js"></script>
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
 </body>
@@ -427,7 +433,7 @@ export function buildAnnuaireListPage(items) {
   const itemsHtml = items.length === 0
     ? emptyHtml(cfg)
     : `<div class="grid">${items.map(c => {
-        const displayName = c.pseudo || c.full_name
+        const displayName = nomAffiche(c.pseudo || c.full_name)
         const forfait = fmtForfait(c)
         const heure = c.tarif_heure ? `${c.tarif_heure} €/h` : null
         const des = prixDes(c.formules, c.tarif_forfait_min)
@@ -950,7 +956,7 @@ async function main() {
       ville: c.ville,
       zone: c.zone_couverte,
       url: `/annuaires/menage/${c.slug}`,
-      name: c.pseudo || c.full_name,
+      name: nomAffiche(c.pseudo || c.full_name),
       sub: fmtForfait(c) ? `Forfait ${fmtForfait(c)}` : null,
     })),
   })

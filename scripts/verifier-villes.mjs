@@ -14,6 +14,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { VILLES_LOCAL } from './data/villes-local.mjs'
 import { VILLES_INTERNATIONAL } from './data/villes-international.mjs'
+import { VILLE_COORDS } from './lib/fiche-signature.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8')
@@ -43,6 +44,7 @@ export function checkVilles() {
     }
     if (!VILLES_LOCAL[c.slug]) miss.push('contenu vérifié (villes-local.mjs)')
     if (!appSlugs.includes(c.slug)) miss.push('CITY_PAGE_SLUGS (app)')
+    if (!VILLE_COORDS[c.slug]) miss.push('position sur la carte des fiches (VILLE_COORDS, scripts/lib/fiche-signature.mjs)')
     if (!reserveSlugs.some(r => r === c.slug || r.startsWith(`${c.slug}-`) || c.slug.startsWith(r))) miss.push('réserve de prospection')
     if (miss.length) problems.push(`${c.slug} : ${miss.join(', ')}`)
   }

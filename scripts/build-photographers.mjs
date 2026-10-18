@@ -18,7 +18,11 @@ import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
 import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { readMetier, metierLabel, readOptions, OPTIONS_VISUELLES, faitVideo } from './lib/pro-visuel.mjs'
-import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, heroVideoHtml, videoLink, galleryHtml, formulesHtml, derouleHtml, villesHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
+import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, heroVideoHtml, videoLink, galleryHtml, formulesHtml, derouleHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
+import { nomAffiche, initiales, aVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
+
+// Options en version courte pour « En bref »
+const OPTION_COURTE = { drone: 'drone', visite_3d: 'visite 3D', reels: 'vidéos courtes', crepuscule: 'crépuscule', mise_en_scene: 'mise en scène' }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -123,7 +127,7 @@ function memberSince(createdAt) {
 
 // Exportée pour les fiches d'exemple (scripts/build-exemples-fiches.mjs)
 export function buildFichePage(p) {
-  const displayName = p.pseudo || p.full_name
+  const displayName = nomAffiche(p.pseudo || p.full_name)
   // Photographe, vidéaste ou les deux (migration 136, scripts/lib/pro-visuel.mjs)
   const metier = readMetier(p.metier)
   const mLabel = metierLabel(metier)
@@ -144,6 +148,18 @@ export function buildFichePage(p) {
   const firstName = displayName.split(' ')[0]
   const photos = p.__photos ?? vitrinePhotos(p.portfolio_photos, SUPABASE_URL, PHOTO_LIMIT)
   const external = p.portfolio_url ? { href: p.portfolio_url, label: 'Voir le portfolio', short: 'Portfolio', icon: 'ph-image-square', track: 'portfolio' } : null
+  const facts = [
+    (pr => pr ? { v: pr, l: 'dès, la séance' } : null)(prixDepuis(p.formules, p.tarif_min)),
+    zoneFact(p.ville, p.zone_couverte),
+    { v: metier === 'video' ? 'Vidéo' : metier === 'photo_video' ? 'Photo & vidéo' : 'Photo', l: opts.length ? opts.map(o => OPTION_COURTE[o.key]).slice(0, 3).join(', ') : 'pour locations courtes' },
+    trustFact(p.reco_count ?? 0, p.created_at),
+  ]
+  // Ce que l'hôte peut demander : ce que la fiche indique faire
+  const besoins = [
+    metier !== 'video' ? 'Des photos' : null,
+    metier !== 'photo' ? 'Une vidéo' : null,
+    ...opts.map(o => ({ drone: 'Des vues au drone', visite_3d: 'Une visite 3D', reels: 'Des vidéos courtes', crepuscule: 'Des photos au crépuscule', mise_en_scene: 'Une mise en scène' })[o.key]),
+  ].filter(Boolean)
   // NB breadcrumbs : l'annuaire vit désormais directement sur
   // /annuaires/photographes (plus de sous-niveau /annuaire).
 
@@ -212,6 +228,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .ok-msg{padding:14px;background:rgba(0,200,100,.08);border:1px solid rgba(0,200,100,.25);border-radius:8px;color:#1e9d54;font-size:13.5px;text-align:center}
 .err-msg{padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:8px;color:#dc2626;font-size:13px;margin-bottom:10px}
 ${VITRINE_CSS}
+${SIGNATURE_CSS}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify({
@@ -242,7 +259,7 @@ ${JSON.stringify({
 </head>
 <body>
 <header class="hero">
-  <div class="s-in hero-grid${photos.length || video?.embed ? ' has-cover' : ''}">
+  <div class="s-in hero-grid has-cover">
   <div>
     <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/photographes">Photographes et vidéastes LCD</a> · <span>${escHtml(displayName)}</span></div>
     <div class="tag-row">
@@ -250,79 +267,60 @@ ${JSON.stringify({
       <span class="tag"><i class="ph-bold ph-${metier === 'video' ? 'video-camera' : metier === 'photo_video' ? 'film-strip' : 'camera'}" style="font-size:10px"></i>${escHtml(mLabel)}</span>
       ${p.specialite ? `<span class="tag">${escHtml(p.specialite)}</span>` : ''}
       ${opts.some(o => o.key === 'drone') ? '<span class="tag"><i class="ph-bold ph-drone" style="font-size:10px"></i>Drone</span>' : ''}
-      <span class="tag"><i class="ph-bold ph-map-pin" style="font-size:10px"></i>${escHtml(p.ville)}</span>
     </div>
     <div class="hero-id">
       ${p.logo_url
         ? `<div class="hero-logo" style="background:url('${escHtml(p.logo_url)}') center/cover"></div>`
-        : `<div class="hero-logo placeholder">${escHtml(displayName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase())}</div>`}
-      <h1>${escHtml(displayName)}<br><em>${escHtml(mLabel.toLowerCase())} LCD</em></h1>
+        : `<div class="hero-logo placeholder">${escHtml(initiales(displayName))}</div>`}
+      <h1>${escHtml(displayName)}<br><em>${escHtml(mLabel.toLowerCase())} Airbnb ${escHtml(aVille(p.ville))}</em></h1>
     </div>
-    ${p.zone_couverte ? `<p class="subtitle">Zone d'intervention : ${escHtml(p.zone_couverte)}</p>` : ''}
     <div class="meta-row">
-      ${tarif ? `<span><i class="ph-bold ph-currency-eur"></i>${escHtml(tarif)} la session</span>` : ''}
       <span><i class="ph-bold ph-handshake"></i>Contact direct, sans commission</span>
     </div>
     ${heroActionsHtml({ firstName, hasPhotos: photos.length > 0, external, video: video && !video.embed ? video : null })}
   </div>
-  ${video?.embed ? heroVideoHtml(p.video_url, { name: displayName, poster: p.__videoPoster || photos[0]?.thumb, credit: p.__videoCredit }) : heroCoverHtml(photos, displayName)}
+  ${video?.embed ? heroVideoHtml(p.video_url, { name: displayName, poster: p.__videoPoster || photos[0]?.thumb, credit: p.__videoCredit }) : photos.length ? heroCoverHtml(photos, displayName) : briefHtml(facts)}
   </div>
 </header>
 
 <div class="body">
   <div>
+    ${video?.embed || photos.length ? briefHtml(facts, { variant: 'strip' }) : ''}
     ${galleryHtml(photos, { name: displayName })}
     ${p.bio ? `<div class="card" style="margin-bottom:20px"><h2>Présentation</h2><div class="bio">${escHtml(p.bio)}</div></div>` : ''}
     ${opts.length ? `<div class="card vt-sec"><h2>Ce que ${escHtml(firstName)} propose</h2><div class="vt-opts"><span class="vt-opt"><i class="ph-bold ph-${metier === 'video' ? 'video-camera' : 'camera'}"></i>${metier === 'video' ? 'Vidéo du logement' : metier === 'photo_video' ? 'Photos et vidéo du logement' : 'Photos du logement'}</span>${opts.map(o => `<span class="vt-opt"><i class="ph-bold ph-${o.icon}"></i>${escHtml(o.label)}</span>`).join('')}</div></div>` : ''}
     ${formulesHtml(p.formules)}
     ${derouleHtml(p.deroule, 'photographe')}
-    <div class="card vt-sec">
-      <h2>Portfolio complet</h2>
-      <p style="font-size:14px;color:var(--tm);line-height:1.7;margin-bottom:14px">Toutes les réalisations de ${escHtml(displayName)}, pour juger de son style et voir si son approche correspond à ton logement.</p>
-      <a href="${escHtml(p.portfolio_url)}" target="_blank" rel="noopener noreferrer" class="btn-p" onclick="jmTrack('portfolio')"><i class="ph-bold ph-image-square"></i>Voir le portfolio</a>
-      ${video && !video.file ? `<a href="${escHtml(video.href)}" target="_blank" rel="noopener noreferrer" class="btn-ol"><i class="ph-bold ph-play-circle"></i>${escHtml(video.label)}</a>` : ''}
-      ${p.instagram_handle ? `<a href="https://instagram.com/${escHtml(p.instagram_handle)}" target="_blank" rel="noopener" class="btn-ol" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i>@${escHtml(p.instagram_handle)}</a>` : ''}
-    </div>
-    ${villesHtml(p.villes_couvertes, { root: ROOT, prefix: 'photographe-lcd', ville: p.ville, metierLabel: 'Photographe' })}
+    ${zoneCardHtml({ ville: p.ville, zone: p.zone_couverte, villes: p.villes_couvertes, root: ROOT, prefix: 'photographe-lcd', metierLabel: 'Photographe' })}
   </div>
 
   <aside>
     <div class="card" id="contact">
-      <h2>Contacter ${escHtml(displayName.split(' ')[0])}</h2>
-      <form class="contact-form" id="contact-form" onsubmit="return contactSubmit(event)">
-        <div id="contact-err" class="err-msg" style="display:none"></div>
-        <input type="text" name="contactName" placeholder="Ton prénom + nom" required>
-        <input type="email" name="contactEmail" placeholder="Ton email" required>
-        <textarea name="message" placeholder="Présente brièvement ton logement, la ville, les dates qui t'intéressent." required></textarea>
-        <div class="hp"><label>Site</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
-        <button type="submit" class="btn-p" id="contact-btn"><i class="ph-bold ph-paper-plane-tilt"></i>Envoyer ma demande</button>
-        <p style="margin-top:10px;font-size:11.5px;color:var(--tl);line-height:1.6">Ton nom, ton e-mail et ton message sont transmis à ${escHtml(displayName.split(' ')[0])} seulement, pour te répondre, et supprimés au bout de 3 ans. <a href="/politique-de-confidentialite#annuaire" style="color:var(--g)">Confidentialité</a></p>
+      <h2>Contacter ${escHtml(firstName)}</h2>
+      ${contactFormHtml({ firstName, besoins, placeholder: 'Un détail à ajouter ? Ville, dates, style recherché (facultatif)' })}
+        <p style="margin-top:10px;font-size:11.5px;color:var(--tl);line-height:1.6">Ton nom, ton e-mail et ton message sont transmis à ${escHtml(firstName)} seulement, pour te répondre, et supprimés au bout de 3 ans. <a href="/politique-de-confidentialite#annuaire" style="color:var(--g)">Confidentialité</a></p>
       </form>
-      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tl);line-height:1.6">Pas de commission. Pas d'intermédiaire. Tu négocies et contractualises directement avec ${escHtml(displayName.split(' ')[0])}.</div>
-      <div style="margin-top:12px;font-size:12px;color:var(--tm);line-height:1.6">Tu as déjà bossé avec ${escHtml(displayName.split(' ')[0])} ? <a href="https://app.jasonmarinho.com/dashboard/recommander?type=photographer&id=${escHtml(p.id)}" style="color:var(--g);font-weight:600">Recommande-le aux autres hôtes →</a></div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tl);line-height:1.6">Pas de commission. Pas d'intermédiaire. Tu négocies et contractualises directement avec ${escHtml(firstName)}.</div>
+      <div style="margin-top:12px;font-size:12px;color:var(--tm);line-height:1.6">Tu as déjà bossé avec ${escHtml(firstName)} ? <a href="https://app.jasonmarinho.com/dashboard/recommander?type=photographer&id=${escHtml(p.id)}" style="color:var(--g);font-weight:600">Recommande-le aux autres hôtes →</a></div>
     </div>
 
-    <div class="card" style="margin-top:16px">
-      <div class="aside-row"><span class="aside-k">Ville principale</span><span class="aside-v">${escHtml(p.ville)}</span></div>
-      ${p.zone_couverte ? `<div class="aside-row"><span class="aside-k">Zone couverte</span><span class="aside-v">${escHtml(p.zone_couverte)}</span></div>` : ''}
-      ${tarif ? `<div class="aside-row"><span class="aside-k">Tarifs indicatifs</span><span class="aside-v">${escHtml(tarif)}</span></div>` : ''}
-      <div class="aside-row"><span class="aside-k">Métier</span><span class="aside-v">${escHtml(mLabel)}</span></div>
-      ${p.specialite ? `<div class="aside-row"><span class="aside-k">Spécialité</span><span class="aside-v">${escHtml(p.specialite)}</span></div>` : ''}
-      ${depuis ? `<div class="aside-row"><span class="aside-k">Membre de l'annuaire depuis</span><span class="aside-v">${depuis}</span></div>` : ''}
-      ${proReseauxHtml(reseaux)}
-    </div>
+    ${workLinksHtml([
+      p.portfolio_url ? { href: p.portfolio_url, label: 'Le portfolio', icon: 'ph-image-square', track: 'portfolio' } : null,
+      video && !video.file ? { href: video.href, label: video.label, icon: 'ph-play-circle' } : null,
+      p.instagram_handle ? { href: `https://instagram.com/${p.instagram_handle}`, label: `@${p.instagram_handle}`, icon: 'ph-instagram-logo', track: 'instagram', rel: 'noopener' } : null,
+    ], proReseauxHtml(reseaux))}
 
     ${guide ? `<div class="card" style="margin-top:16px">
-      <h2>Les tarifs photo à ${escHtml(p.ville)}</h2>
+      <h2>Les tarifs photo ${escHtml(aVille(g?.label ?? p.ville))}</h2>
       <p style="font-size:13.5px;color:var(--tm);line-height:1.7;margin-bottom:12px">Fourchettes constatées, checklist des photos indispensables et conseils pour bien briefer : consulte le guide local avant de demander un devis.</p>
-      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Guide photographe LCD ${escHtml(g?.label ?? p.ville)}</a>
+      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Photographe Airbnb ${escHtml(aVille(g?.label ?? p.ville))} : le guide</a>
     </div>` : ''}
   </aside>
 </div>
 
 <div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;gap:10px;flex-wrap:wrap">
   <a href="/annuaires/photographes" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Tous les photographes et vidéastes</a>
-  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Photographe LCD ${escHtml(g?.label ?? p.ville)} : le guide<i class="ph-bold ph-arrow-right"></i></a>` : ''}
+  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Photographe Airbnb ${escHtml(aVille(g?.label ?? p.ville))} : le guide<i class="ph-bold ph-arrow-right"></i></a>` : ''}
 </div>
 
 <div class="disclaimer">
@@ -353,10 +351,16 @@ async function contactSubmit(e) {
     slug: __slug,
     contactName: f.contactName.value.trim(),
     contactEmail: f.contactEmail.value.trim(),
-    message: f.message.value.trim(),
+    message: window.jmContactMessage ? jmContactMessage(f) : f.message.value.trim(),
     website: f.website ? f.website.value : '',
     t: __t0,
   };
+  if (data.message.length < 20) {
+    errBox.textContent = 'Dis-moi ce qu\\'il te faut et ton logement, ou écris quelques mots.';
+    errBox.style.display = 'block';
+    btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à ${escHtml(firstName)}';
+    return false;
+  }
   try {
     const res = await fetch('/api/photographer/contact', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
@@ -365,10 +369,10 @@ async function contactSubmit(e) {
       const body = await res.json().catch(() => ({}));
       errBox.textContent = body.error || 'Erreur lors de l\\'envoi. Réessaye.';
       errBox.style.display = 'block';
-      btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer ma demande';
+      btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à ${escHtml(firstName)}';
       return false;
     }
-    document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Message envoyé ✓</strong><br>${escHtml(displayName.split(' ')[0])} te recontacte généralement sous 48h.</div>';
+    document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Message envoyé ✓</strong><br>${escHtml(firstName)} te recontacte généralement sous 48h.</div>';
   } catch (err) {
     errBox.textContent = 'Réseau indisponible.';
     errBox.style.display = 'block';
@@ -379,6 +383,8 @@ async function contactSubmit(e) {
 </script>
 ${stickyBarHtml({ firstName, hasPhotos: photos.length > 0, external })}
 ${VITRINE_JS}
+${CONTACT_JS}
+<script defer src="/calendrier.js"></script>
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>
 </body>
@@ -450,7 +456,7 @@ export function buildAnnuaireListPage(items) {
   const itemsHtml = items.length === 0
     ? emptyHtml(cfg)
     : `<div class="grid">${[...items].sort((a, b) => completude(b) - completude(a)).map(p => {
-        const displayName = p.pseudo || p.full_name
+        const displayName = nomAffiche(p.pseudo || p.full_name)
         const des = prixDes(p.formules, p.tarif_min)
         const tarif = des ?? fmtTarif(p)
         const metier = readMetier(p.metier)
@@ -960,7 +966,7 @@ async function main() {
       ville: p.ville,
       zone: p.zone_couverte,
       url: `/annuaires/photographes/${p.slug}`,
-      name: p.full_name,
+      name: nomAffiche(p.full_name),
       sub: [p.specialite, fmtTarif(p)].filter(Boolean).join(' · ') || null,
     })),
   })
