@@ -75,6 +75,10 @@ export interface Etape { titre: string; texte: string }
 
 export const FORMULES_MAX = 3
 export const VILLES_MAX = 10
+/** Longueurs proposées dans Ma fiche (courtes pour éviter les pavés, surtout au téléphone) ; le serveur tolère un peu plus pour les textes déjà saisis */
+export const FORMULE_DETAIL_MAX = 120
+export const ETAPE_TITRE_MAX = 40
+export const ETAPE_TEXTE_MAX = 110
 
 const txt = (v: unknown, max: number) => (typeof v === 'string' ? v : '').replace(/\s+/g, ' ').trim().slice(0, max)
 

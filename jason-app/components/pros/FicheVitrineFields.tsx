@@ -5,7 +5,8 @@
 // lib/pros/fiche-vitrine.ts ; affichées sur la fiche par scripts/lib/fiche-vitrine.mjs.
 import { useState } from 'react'
 import { Plus, X, ArrowCounterClockwise } from '@phosphor-icons/react/dist/ssr'
-import { DEFAULT_DEROULE, FORMULES_MAX, VILLES_MAX, type Etape, type ProMetier } from '@/lib/pros/fiche-vitrine'
+import { DEFAULT_DEROULE, FORMULES_MAX, VILLES_MAX, FORMULE_DETAIL_MAX, ETAPE_TITRE_MAX, ETAPE_TEXTE_MAX, type Etape, type ProMetier } from '@/lib/pros/fiche-vitrine'
+import GrowText from './GrowText'
 
 export interface VitrineForm {
   formules: Array<{ nom: string; prix: string; detail: string }>
@@ -64,17 +65,21 @@ export default function FicheVitrineFields({ value, onChange, metier, inputStyle
   return (
     <>
       <h3 style={titleStyle}>Formules (facultatif)</h3>
-      <p style={hint}>Jusqu’à {FORMULES_MAX} formules avec un prix « à partir de » : plus clair qu’une fourchette, les hôtes savent tout de suite ce qu’ils auront. Laisse le prix vide pour « Sur devis ».</p>
+      <p style={hint}>Jusqu’à {FORMULES_MAX} formules avec un prix « à partir de » : plus clair qu’une fourchette, les hôtes savent tout de suite ce qu’ils auront. Laisse le prix vide pour « Sur devis ». Quelques mots suffisent : ce qui est inclus, le délai.</p>
       {value.formules.map((f, i) => (
         <div key={i} style={row}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(90px, 1fr)', gap: 8 }}>
-            <input style={inputStyle} value={f.nom} onChange={e => setF(i, 'nom', e.target.value)} maxLength={40} placeholder={`Nom (ex. ${ex.nom})`} aria-label="Nom de la formule" />
-            <input style={inputStyle} value={f.prix} onChange={e => setF(i, 'prix', e.target.value.replace(/[^\d,.]/g, ''))} inputMode="decimal" placeholder={`Prix € (ex. ${ex.prix})`} aria-label="Prix en euros" />
-          </div>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-            <input style={inputStyle} value={f.detail} onChange={e => setF(i, 'detail', e.target.value)} maxLength={160} placeholder={`Ce qui est inclus (ex. ${ex.detail})`} aria-label="Ce qui est inclus" />
+          <div style={rowHead}>
+            <span style={rowLabel}>Formule {i + 1}</span>
             <button type="button" onClick={() => onChange({ ...value, formules: value.formules.filter((_, j) => j !== i) })} style={iconBtn} aria-label="Retirer la formule"><X size={13} /></button>
           </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(96px, 120px)', gap: 8 }}>
+            <input style={inputStyle} value={f.nom} onChange={e => setF(i, 'nom', e.target.value)} maxLength={40} autoComplete="off" placeholder={`Nom (ex. ${ex.nom})`} aria-label="Nom de la formule" />
+            <div style={{ position: 'relative' }}>
+              <input style={{ ...inputStyle, paddingRight: 28 }} value={f.prix} onChange={e => setF(i, 'prix', e.target.value.replace(/[^\d,.]/g, ''))} inputMode="decimal" autoComplete="off" placeholder={ex.prix} aria-label="Prix à partir de, en euros" />
+              <span style={euro} aria-hidden="true">€</span>
+            </div>
+          </div>
+          <GrowText style={inputStyle} value={f.detail} onChange={v => setF(i, 'detail', v)} max={FORMULE_DETAIL_MAX} placeholder={`Ce qui est inclus (ex. ${ex.detail})`} aria-label="Ce qui est inclus" />
         </div>
       ))}
       {value.formules.length < FORMULES_MAX && (
@@ -97,7 +102,7 @@ export default function FicheVitrineFields({ value, onChange, metier, inputStyle
         <div style={{ display: 'flex', gap: 8 }}>
           <input style={inputStyle} value={ville} onChange={e => setVille(e.target.value)} maxLength={120}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addVilles(ville) } }}
-            onBlur={() => addVilles(ville)} placeholder="Ex. Villeurbanne, Annecy" aria-label="Ajouter une ville" />
+            onBlur={() => addVilles(ville)} autoComplete="off" enterKeyHint="done" placeholder="Ex. Villeurbanne, Annecy" aria-label="Ajouter une ville" />
           <button type="button" onClick={() => addVilles(ville)} style={addBtn}><Plus size={13} weight="bold" /> Ajouter</button>
         </div>
       )}
@@ -108,8 +113,8 @@ export default function FicheVitrineFields({ value, onChange, metier, inputStyle
         <div key={i} style={{ ...row, gridTemplateColumns: '28px minmax(0, 1fr)', display: 'grid', alignItems: 'start' }}>
           <span style={stepN}>{i + 1}</span>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <input style={inputStyle} value={e.titre} onChange={ev => setE(i, 'titre', ev.target.value)} maxLength={40} aria-label={`Titre de l’étape ${i + 1}`} />
-            <input style={inputStyle} value={e.texte} onChange={ev => setE(i, 'texte', ev.target.value)} maxLength={140} aria-label={`Texte de l’étape ${i + 1}`} />
+            <input style={{ ...inputStyle, fontWeight: 600 }} value={e.titre} onChange={ev => setE(i, 'titre', ev.target.value)} maxLength={ETAPE_TITRE_MAX} autoComplete="off" aria-label={`Titre de l’étape ${i + 1}`} />
+            <GrowText style={inputStyle} value={e.texte} onChange={v => setE(i, 'texte', v)} max={ETAPE_TEXTE_MAX} aria-label={`Texte de l’étape ${i + 1}`} />
           </div>
         </div>
       ))}
@@ -122,8 +127,11 @@ export default function FicheVitrineFields({ value, onChange, metier, inputStyle
 
 const hint: React.CSSProperties = { fontSize: 12.5, color: 'var(--text-3)', margin: '-4px 0 0', lineHeight: 1.55 }
 const row: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 8, padding: 12, borderRadius: 10, background: 'var(--bg)', border: '1px solid var(--border)' }
+const rowHead: React.CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }
+const rowLabel: React.CSSProperties = { fontSize: 12, fontWeight: 700, letterSpacing: '.04em', textTransform: 'uppercase', color: 'var(--text-3)' }
+const euro: React.CSSProperties = { position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-3)', fontSize: 14, pointerEvents: 'none' }
 const addBtn: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 14px', borderRadius: 8, border: '1px dashed var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--accent-text)', fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', alignSelf: 'flex-start', whiteSpace: 'nowrap' }
-const iconBtn: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 38, height: 38, flexShrink: 0, borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', cursor: 'pointer' }
+const iconBtn: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32, flexShrink: 0, borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', cursor: 'pointer' }
 const chip: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 6px 5px 12px', borderRadius: 999, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)', fontSize: 13, fontWeight: 600 }
 const chipX: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 20, height: 20, borderRadius: '50%', border: 'none', background: 'transparent', color: 'inherit', cursor: 'pointer' }
 const stepN: React.CSSProperties = { width: 26, height: 26, borderRadius: '50%', background: 'var(--accent-text)', color: 'var(--bg)', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 8 }

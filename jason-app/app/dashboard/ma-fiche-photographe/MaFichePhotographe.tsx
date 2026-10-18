@@ -1,5 +1,6 @@
 'use client'
 
+import GrowText from '@/components/pros/GrowText'
 import Link from 'next/link'
 import ViewsTrend from '@/components/pros/ViewsTrend'
 import FacturationTeaser from '@/components/pros/FacturationTeaser'
@@ -310,7 +311,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
             <input style={s.input} value={form.ville} onChange={e => setForm({ ...form, ville: e.target.value })} required maxLength={80} />
           </Field>
           <Field label="Zone couverte">
-            <input style={s.input} value={form.zone_couverte} onChange={e => setForm({ ...form, zone_couverte: e.target.value })} maxLength={200} placeholder="Lyon + 60 km" />
+            <GrowText style={s.input} value={form.zone_couverte} onChange={v => setForm({ ...form, zone_couverte: v })} max={200} counter={false} placeholder="Lyon + 60 km" />
           </Field>
         </div>
         <div style={s.grid2}>
@@ -352,8 +353,8 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         <FicheVitrineFields value={vitrine} onChange={setVitrine} metier="photographe" inputStyle={s.input} titleStyle={s.sectionTitle} />
 
         <h3 style={s.sectionTitle}>Présentation</h3>
-        <Field label={`Bio (${form.bio.length}/600)`}>
-          <textarea style={{ ...s.input, minHeight: 110, resize: 'vertical' as const }} value={form.bio} onChange={e => setForm({ ...form, bio: e.target.value })} maxLength={600} />
+        <Field label="Bio">
+          <GrowText style={{ ...s.input, minHeight: 110 }} value={form.bio} onChange={v => setForm({ ...form, bio: v })} max={600} oneLine={false} minRows={4} />
         </Field>
 
         <div style={s.actions}>
