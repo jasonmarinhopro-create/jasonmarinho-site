@@ -93,7 +93,19 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .rk-t b{display:block;font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rk-t small{display:block;font-size:12px;color:var(--tl);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rk-more{margin-top:8px;background:none;border:none;color:var(--g);font:600 13.5px 'Outfit',sans-serif;cursor:pointer;padding:4px 0}
-.cities-more{grid-column:1/-1;justify-self:start}
+
+.cp-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.cp-f{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--bd);background:#fff;font:600 13.5px 'Outfit',sans-serif;color:var(--tm);cursor:pointer}
+.cp-f em{font-style:normal;font-size:11.5px;font-weight:700;padding:1px 7px;border-radius:999px;background:var(--cr);color:var(--tl)}
+.cp-f.on{border-color:var(--g);background:rgba(0,76,63,.06);color:var(--g)}
+.cp-f.on em{background:var(--g);color:#fff}
+.cp{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;margin-top:22px}
+.cp button{min-width:40px;height:40px;padding:0 6px;border-radius:12px;border:1px solid var(--bd);background:#fff;font:600 14px 'Outfit',sans-serif;color:var(--tm);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.cp button:hover:not([disabled]){border-color:var(--g);color:var(--g)}
+.cp button.on{background:var(--g);border-color:var(--g);color:#fff}
+.cp button[disabled]{opacity:.35;cursor:default}
+.cp-gap{min-width:20px;text-align:center;color:var(--tl)}
+.cp-info{width:100%;text-align:center;font-size:12.5px;color:var(--tl);margin-top:4px}
 .rk-note{font-size:12.5px;color:var(--tl);line-height:1.55;margin:12px 0 0}
 .qtable{width:100%;border-collapse:collapse;font-size:14.5px}
 .qtable th{text-align:left;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tl);padding:0 10px 10px;border-bottom:1px solid var(--bd)}
@@ -110,7 +122,7 @@ h2 em{color:var(--g);font-style:italic;font-weight:300}
 .place{display:inline-flex;align-items:center;justify-content:center;min-width:52px;padding:4px 10px;border-radius:999px;font-weight:700;font-size:13px;background:rgba(0,76,63,.08);color:var(--g)}
 .place.top{background:var(--g);color:#fff}
 .empty{text-align:center;color:var(--tm);font-size:15px;line-height:1.6;padding:24px 10px}
-.cities{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.cities-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
 .city{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;text-decoration:none}
 .city:hover{border-color:rgba(0,76,63,.35)}
 .city-h{display:flex;align-items:center;gap:10px}
@@ -380,7 +392,7 @@ a.dm-city:hover{border-color:var(--g)}
       <h2>Ta ville <em>dans Google</em></h2>
       <p>Pages « Photographe à … », « Ménage à … » et guides hôtes de ville qui sortent en première page. Les affichages, clics et visiteurs d’une page ne sont indiqués qu’au-delà de <span data-thr>100</span> affichages sur 28 jours : en dessous, ce serait trop peu pour en tirer quoi que ce soit.</p>
     </div>
-    <div class="cities" data-cities><p class="empty">Chargement des villes…</p></div>
+    <div data-cities><p class="empty">Chargement des villes…</p></div>
   </div>
 </section>
 
@@ -665,23 +677,43 @@ a.dm-city:hover{border-color:var(--g)}
       '<p class="vd-cta"><a class="a1" href="' + (photoOnly ? '/annuaires/photographes/inscription' : '/pour-qui/photographes') + '">Je suis pro à ' + esc(label) + '</a><a class="a2" href="/trouver-un-pro?' + (photoOnly ? 'metier=photographe&amp;' : '') + 'ville=' + encodeURIComponent(label) + '">Je cherche un pro</a></p></div></div>';
   }
 
-  var citiesAll = false;
+  // « Ta ville dans Google » : pages de 12 cartes + filtre par sorte de page
+  // (18/10/2026, Jason : « voir les 98 autres, ça fait un long chemin »)
+  var CITY_PER_PAGE = 12, cityPage = 0, cityKind = 'tout', cityData = null;
+  var KINDS = [['tout', 'Toutes'], ['photo', 'Photographes'], ['menage', 'Ménage'], ['guide', 'Guides hôtes']];
+  function kindOf(path){ return path.indexOf('/photographe-') === 0 ? 'photo' : path.indexOf('/devenir-hote-airbnb-') === 0 ? 'guide' : 'menage'; }
+  function pageButtons(cur, total){
+    var out = [], add = function(i){ out.push(i); };
+    for (var i = 0; i < total; i++) { if (i === 0 || i === total - 1 || Math.abs(i - cur) <= 1) add(i); else if (out[out.length - 1] !== '…') add('…'); }
+    return out.map(function(i){
+      return i === '…' ? '<span class="cp-gap">…</span>' : '<button type="button" class="cp-n' + (i === cur ? ' on' : '') + '" data-cp="' + i + '"' + (i === cur ? ' aria-current="page"' : '') + ' aria-label="Page ' + (i + 1) + '">' + (i + 1) + '</button>';
+    }).join('');
+  }
   function renderCities(cities, ranks){
+    if (cities !== undefined) cityData = { cities: cities, ranks: ranks };
+    cities = cityData.cities; ranks = cityData.ranks;
     var box = $('[data-cities]'); if (!box) return;
     var rk = {};
     ((ranks && ranks.photographe) || []).concat((ranks && ranks.menage) || [], (ranks && ranks.hote) || []).forEach(function(r){ rk[r.path] = r; });
-    var list = Object.keys(cities || {}).map(function(p){ return { path: p, s: cities[p], r: rk[p] }; });
-    Object.keys(rk).forEach(function(p){ if (!(cities || {})[p]) list.push({ path: p, s: { totals: null, queries: [] }, r: rk[p] }); });
-    list.sort(function(a, b){
+    var all = Object.keys(cities || {}).map(function(p){ return { path: p, s: cities[p], r: rk[p] }; });
+    Object.keys(rk).forEach(function(p){ if (!(cities || {})[p]) all.push({ path: p, s: { totals: null, queries: [] }, r: rk[p] }); });
+    all.sort(function(a, b){
       var ai = a.s.totals ? a.s.totals.impressions : 0, bi = b.s.totals ? b.s.totals.impressions : 0;
       if (bi !== ai) return bi - ai;
       var ap = a.r ? a.r.place : a.s.queries[0] ? a.s.queries[0].place : 99, bp = b.r ? b.r.place : b.s.queries[0] ? b.s.queries[0].place : 99;
       return ap - bp;
     });
-    var total = list.length;
-    if (!citiesAll) list = list.slice(0, 24);
-    if (!list.length) { box.innerHTML = '<p class="empty">Pas encore de page de ville en première page sur les 28 derniers jours.</p>'; return; }
-    box.innerHTML = list.map(function(c){
+    if (!all.length) { box.innerHTML = '<p class="empty">Pas encore de page de ville en première page sur les 28 derniers jours.</p>'; return; }
+    var counts = { tout: all.length, photo: 0, menage: 0, guide: 0 };
+    all.forEach(function(c){ counts[kindOf(c.path)]++; });
+    var list = cityKind === 'tout' ? all : all.filter(function(c){ return kindOf(c.path) === cityKind; });
+    var pages = Math.max(1, Math.ceil(list.length / CITY_PER_PAGE));
+    if (cityPage >= pages) cityPage = pages - 1;
+    var from = cityPage * CITY_PER_PAGE, part = list.slice(from, from + CITY_PER_PAGE);
+    var filters = '<div class="cp-filters" role="tablist" aria-label="Sorte de page">' + KINDS.filter(function(k){ return k[0] === 'tout' || counts[k[0]]; }).map(function(k){
+      return '<button type="button" role="tab" class="cp-f' + (cityKind === k[0] ? ' on' : '') + '" aria-selected="' + (cityKind === k[0]) + '" data-ck="' + k[0] + '">' + k[1] + ' <em>' + counts[k[0]] + '</em></button>';
+    }).join('') + '</div>';
+    var cards = part.map(function(c){
       var photo = c.path.indexOf('/photographe-') === 0, guide = c.path.indexOf('/devenir-hote-airbnb-') === 0;
       var t = c.s.totals;
       var q = c.s.queries.slice(0, 2).map(function(x){ return '<div class="city-q">' + placeHtml(x.place) + '« ' + esc(x.q) + ' »</div>'; }).join('');
@@ -689,9 +721,14 @@ a.dm-city:hover{border-color:var(--g)}
       return '<a class="city" href="' + esc(c.path) + '"><div class="city-h"><i class="ph-bold ' + (photo ? 'ph-camera' : guide ? 'ph-house-line' : 'ph-broom') + '"></i><div><b>' + esc(pageLabel(c.path)) + '</b><small>' + (photo ? 'Page des photographes' : guide ? 'Guide pour les hôtes' : 'Page des équipes de ménage') + '</small></div></div>' +
         (t ? '<div class="city-t"><span><strong>' + n(t.impressions) + '</strong> affichages</span><span><strong>' + n(t.clicks) + '</strong> clics</span><span><strong>' + n(t.visitors) + '</strong> visiteurs</span></div>' : '') +
         q + '</a>';
-    }).join('') + (total > list.length ? '<button type="button" class="rk-more cities-more" data-cities-more>Voir les ' + total + ' pages</button>' : '');
-    var more = box.querySelector('[data-cities-more]');
-    if (more) more.addEventListener('click', function(){ citiesAll = true; renderCities(cities, ranks); });
+    }).join('');
+    var pager = pages > 1 ? '<nav class="cp" aria-label="Pages de la liste"><button type="button" class="cp-a" data-cp="' + (cityPage - 1) + '"' + (cityPage === 0 ? ' disabled' : '') + ' aria-label="Page précédente"><i class="ph-bold ph-caret-left"></i></button>' + pageButtons(cityPage, pages) + '<button type="button" class="cp-a" data-cp="' + (cityPage + 1) + '"' + (cityPage >= pages - 1 ? ' disabled' : '') + ' aria-label="Page suivante"><i class="ph-bold ph-caret-right"></i></button><span class="cp-info">' + (from + 1) + ' à ' + (from + part.length) + ' sur ' + list.length + '</span></nav>' : '';
+    box.innerHTML = filters + '<div class="cities-grid">' + cards + '</div>' + pager;
+    box.querySelectorAll('[data-ck]').forEach(function(b){ b.addEventListener('click', function(){ cityKind = b.getAttribute('data-ck'); cityPage = 0; renderCities(); }); });
+    box.querySelectorAll('[data-cp]').forEach(function(b){ b.addEventListener('click', function(){
+      cityPage = Number(b.getAttribute('data-cp')); renderCities();
+      var top = $('#villes'); if (top && top.getBoundingClientRect().top < 0) top.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }); });
   }
 
   // ── Recherche par ville : tout est montré, même les petits chiffres ──
