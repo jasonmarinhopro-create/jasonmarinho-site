@@ -337,7 +337,7 @@
 
       /* Cartes visuelles compactes (Annuaire, Ressources) */
       '.mob-vgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-top:4px}',
-      '.mob-menu a.mob-vc{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:2px;min-height:134px;padding:12px;border-radius:12px;border:1px solid rgba(255,213,107,.18);color:#fff}',
+      '.mob-menu a.mob-vc{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:2px;min-height:142px;padding:12px;border-radius:12px;border:1px solid rgba(255,213,107,.18);color:#fff}',
       '.mob-menu a.mob-vc-photo{background:linear-gradient(160deg,#002a1f 0%,#00463a 100%)}',
       '.mob-menu a.mob-vc-menage{background:linear-gradient(160deg,#3d4a22 0%,#56622c 100%)}',
       '.mob-menu a.mob-vc-blog{background:linear-gradient(160deg,#FFD56B 0%,#ffe39a 100%);color:var(--gd);border-color:rgba(255,213,107,.6)}',
@@ -345,6 +345,8 @@
       '.mob-vc .n-ann-mos{top:12px;left:12px;right:12px;gap:4px}',
       '.mob-menu a.mob-vc .n-ann-mos i{display:block;width:auto;height:26px;border-radius:5px;background:linear-gradient(135deg,#4d7a5a,#2d6466)}',
       '.mob-menu a.mob-vc .n-ann-mos i:nth-child(2n){background:linear-gradient(135deg,#2d6466,#55785a)}',
+      /* Une seule rangée de vignettes : le titre « Photographes & vidéastes » tient sur 2 lignes au téléphone */
+      '.mob-menu a.mob-vc .n-ann-mos i:nth-child(n+4){display:none}',
       '.mob-vc .n-ann-chk{top:12px;left:12px;right:12px;gap:4px}',
       '.mob-vc .n-ann-chk>span{font-size:11px;padding:4px 7px;gap:5px}',
       '.mob-menu a.mob-vc .n-ann-chk i{font-size:12px;width:auto;color:inherit}',
