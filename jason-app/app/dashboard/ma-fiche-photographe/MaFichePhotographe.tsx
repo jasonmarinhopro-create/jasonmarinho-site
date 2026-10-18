@@ -314,7 +314,8 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
             <SuggestInput kind="ville" style={s.input} value={form.ville} onChange={v => setForm({ ...form, ville: v })} options={CITY_OPTIONS} required maxLength={80} ariaLabel="Ville" />
           </Field>
           <Field label="Zone couverte">
-            <GrowText style={s.input} value={form.zone_couverte} onChange={v => setForm({ ...form, zone_couverte: v })} max={200} counter={false} placeholder="Lyon + 60 km" />
+            <GrowText style={s.input} value={form.zone_couverte} onChange={v => setForm({ ...form, zone_couverte: v })} max={200} counter={false} placeholder="Lyon + 30 km, Villeurbanne, Rhône" />
+            <span style={{ fontSize: 11.5, color: 'var(--text-3)', lineHeight: 1.45 }}>Un rayon (+ 30 km), des communes ou un département : ta fiche les montre sur une carte.</span>
           </Field>
         </div>
         <div style={s.grid2}>

@@ -17,6 +17,7 @@ import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
 import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
+import { secteurHtml, SECTEUR_CSS, SECTEUR_JS } from './lib/secteur.mjs'
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
 
 // Taille de l'équipe en version courte pour « En bref »
@@ -248,6 +249,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .trust-row{display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(99,214,131,.08);border:1px solid rgba(99,214,131,.2);border-radius:8px;margin-top:12px;font-size:13px;color:#1e9d54;font-weight:500}
 ${VITRINE_CSS}
 ${SIGNATURE_CSS}
+${SECTEUR_CSS}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify({
@@ -329,7 +331,7 @@ ${JSON.stringify({
       ${c.siret ? `<div style="margin-top:10px;font-size:12px;color:var(--tl)">SIRET déclaré : <strong style="color:var(--td);font-variant-numeric:tabular-nums">${escHtml(c.siret)}</strong></div>` : ''}
     </div>` : ''}
     ${derouleHtml(c.deroule, 'menage')}
-    ${zoneCardHtml({ ville: c.ville, zone: c.zone_couverte, villes: c.villes_couvertes, root: ROOT, prefix: 'menage-lcd', metierLabel: 'Ménage' })}
+    ${secteurHtml({ ville: c.ville, zone: c.zone_couverte, villes: c.villes_couvertes, prenom: firstName, metier: 'menage' }) ?? zoneCardHtml({ ville: c.ville, zone: c.zone_couverte, villes: c.villes_couvertes, root: ROOT, prefix: 'menage-lcd', metierLabel: 'Ménage' })}
   </div>
 
   <aside>
@@ -419,6 +421,7 @@ async function contactSubmit(e) {
 ${stickyBarHtml({ firstName, hasPhotos: photos.length > 0, external })}
 ${VITRINE_JS}
 ${CONTACT_JS}
+${SECTEUR_JS}
 <script defer src="/calendrier.js"></script>
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>

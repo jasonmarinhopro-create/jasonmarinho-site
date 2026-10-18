@@ -19,6 +19,7 @@ import { adminOwnedIds } from './lib/admin-owned.mjs'
 import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { readMetier, metierLabel, readOptions, OPTIONS_VISUELLES, faitVideo } from './lib/pro-visuel.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, heroVideoHtml, videoLink, galleryHtml, formulesHtml, derouleHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS } from './lib/fiche-vitrine.mjs'
+import { secteurHtml, SECTEUR_CSS, SECTEUR_JS } from './lib/secteur.mjs'
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
 
 // Options en version courte pour « En bref »
@@ -229,6 +230,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .err-msg{padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:8px;color:#dc2626;font-size:13px;margin-bottom:10px}
 ${VITRINE_CSS}
 ${SIGNATURE_CSS}
+${SECTEUR_CSS}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify({
@@ -291,7 +293,7 @@ ${JSON.stringify({
     ${opts.length ? `<div class="card vt-sec"><h2>Ce que ${escHtml(firstName)} propose</h2><div class="vt-opts"><span class="vt-opt"><i class="ph-bold ph-${metier === 'video' ? 'video-camera' : 'camera'}"></i>${metier === 'video' ? 'Vidéo du logement' : metier === 'photo_video' ? 'Photos et vidéo du logement' : 'Photos du logement'}</span>${opts.map(o => `<span class="vt-opt"><i class="ph-bold ph-${o.icon}"></i>${escHtml(o.label)}</span>`).join('')}</div></div>` : ''}
     ${formulesHtml(p.formules)}
     ${derouleHtml(p.deroule, 'photographe')}
-    ${zoneCardHtml({ ville: p.ville, zone: p.zone_couverte, villes: p.villes_couvertes, root: ROOT, prefix: 'photographe-lcd', metierLabel: 'Photographe' })}
+    ${secteurHtml({ ville: p.ville, zone: p.zone_couverte, villes: p.villes_couvertes, prenom: firstName, metier: 'photographe' }) ?? zoneCardHtml({ ville: p.ville, zone: p.zone_couverte, villes: p.villes_couvertes, root: ROOT, prefix: 'photographe-lcd', metierLabel: 'Photographe' })}
   </div>
 
   <aside>
@@ -384,6 +386,7 @@ async function contactSubmit(e) {
 ${stickyBarHtml({ firstName, hasPhotos: photos.length > 0, external })}
 ${VITRINE_JS}
 ${CONTACT_JS}
+${SECTEUR_JS}
 <script defer src="/calendrier.js"></script>
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>

@@ -85,7 +85,7 @@ export default function CreerFichePhotographe({ email, defaultFullName, tier }: 
           <Field label="Ville principale" required>
             <SuggestInput kind="ville" value={form.ville} onChange={v => set('ville', v)} options={CITY_OPTIONS} required maxLength={80} placeholder="Lyon" ariaLabel="Ville" style={s.input} />
           </Field>
-          <Field label="Zone couverte">
+          <Field label="Zone couverte" hint="Un rayon (+ 30 km), des communes ou un département : ta fiche les montre sur une carte.">
             <input value={form.zoneCouverte} onChange={e => set('zoneCouverte', e.target.value)} maxLength={200} placeholder="Lyon + 60 km" style={s.input} />
           </Field>
         </Row>
