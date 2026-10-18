@@ -13,8 +13,8 @@ import { GSC_LAG_DAYS, addDays } from '@/lib/visibility/rules'
 import { CITY_PAGE_SLUGS, INTL_CITY_PAGES, anyCitySlugOf, cityLabel } from '@/lib/visibility/city-page'
 import { adminUserIds, splitDemo } from '@/lib/pros/demo'
 import {
-  CITY_TOTALS_MIN_IMPRESSIONS, NO_HOST_GUIDE, videoSummary, cityStats, countVisitors, firstPageQueries, isProCityPage, monthlySeries,
-  pageFull, pathOf, prosByCity, type Audience, type CityStats, type PageFull, type PairRow, type PublicQuery, type MonthPoint,
+  CITY_TOTALS_MIN_IMPRESSIONS, NO_HOST_GUIDE, videoSummary, cityStats, cityPageRanks, countVisitors, firstPageQueries, isProCityPage, monthlySeries,
+  pageFull, pathOf, prosByCity, type Audience, type CityRank, type CityStats, type PageFull, type PairRow, type PublicQuery, type MonthPoint,
 } from './rules'
 
 export interface CityFull {
@@ -45,6 +45,8 @@ export interface PublicStats {
   /** Recherches vidéo (vidéastes, drone) sur 28 jours */
   video: ReturnType<typeof videoSummary> | null
   cities: Record<string, CityStats> | null
+  /** Pages de ville en première page (place de la page, recherches masquées comprises) */
+  cityRanks: Record<'photographe' | 'menage', CityRank[]> | null
   cityPages: number
   threshold: number
   /** Villes qui ont leurs pages (pour la recherche) */
@@ -107,6 +109,7 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
   let queries: PublicStats['queries'] = null
   let video: PublicStats['video'] = null
   let cities: PublicStats['cities'] = null
+  let cityRanks: PublicStats['cityRanks'] = null
   let cityFull: PublicStatsFull['cityFull'] = null
   if (g) {
     const sum = (rows: Array<{ impressions: number; clicks: number }>) => ({
@@ -117,6 +120,7 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
     const prevTotals = sum(g.prevPages)
     const pairs: PairRow[] = g.pairs.map(r => ({ query: r.keys[0], page: r.keys[1], clicks: r.clicks, impressions: r.impressions, position: r.position }))
     queries = firstPageQueries(pairs)
+    cityRanks = cityPageRanks(g.pages.map(p => ({ path: pathOf(p.keys[0]), impressions: p.impressions, clicks: p.clicks, position: p.position })), pairs)
     video = videoSummary(pairs)
     const firstPage = new Set(pairs.filter(p => p.position <= 10).map(p => p.query))
 
@@ -188,6 +192,7 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
       queries,
       video,
       cities,
+      cityRanks,
       cityPages: CITY_PAGE_SLUGS.length * 2,
       threshold: CITY_TOTALS_MIN_IMPRESSIONS,
       villes: [
@@ -203,9 +208,9 @@ const cachedFull = unstable_cache(async () => {
   const r = await compute()
   if (!r.complete) throw new Error('incomplet')
   return r.stats
-}, ['public-stats-v5'], { revalidate: 6 * 3600, tags: ['public-stats'] })
+}, ['public-stats-v6'], { revalidate: 6 * 3600, tags: ['public-stats'] })
 
-const cachedPartial = unstable_cache(async () => (await compute()).stats, ['public-stats-partial-v3'], { revalidate: 3600, tags: ['public-stats'] })
+const cachedPartial = unstable_cache(async () => (await compute()).stats, ['public-stats-partial-v4'], { revalidate: 3600, tags: ['public-stats'] })
 
 export async function loadPublicStats(): Promise<PublicStatsFull> {
   try {

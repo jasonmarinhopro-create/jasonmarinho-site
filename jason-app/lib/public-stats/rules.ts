@@ -111,6 +111,47 @@ export function firstPageQueries(rows: PairRow[]): Record<Audience, PublicQuery[
   }
 }
 
+export interface CityRank {
+  path: string
+  /** Place moyenne de la page sur toutes les recherches (masquées par Google comprises) */
+  place: number
+  impressions: number
+  clicks: number
+  /** Recherche la plus vue que Google nomme, s'il y en a une */
+  query: string | null
+}
+
+/**
+ * Pages de ville des pros en première page de Google (18/10/2026, Jason : « je
+ * ressors en première page sur photographe airbnb Nice, Cannes… pourquoi ce
+ * n'est pas mis en avant ? »). Google ne nomme pas les recherches trop rares
+ * (vie privée) : Nice, Avignon, Nantes… sortaient en place 5 à 7 sans aucune
+ * recherche nommée, donc absentes des listes. La place de la PAGE, elle, compte
+ * toutes les recherches. Au moins QUERY_MIN_IMPRESSIONS affichages sur 28 jours.
+ */
+export function cityPageRanks(
+  pages: Array<{ path: string; impressions: number; clicks: number; position: number }>,
+  pairs: PairRow[],
+): Record<'photographe' | 'menage', CityRank[]> {
+  const out: Record<'photographe' | 'menage', CityRank[]> = { photographe: [], menage: [] }
+  const topQuery = new Map<string, { q: string; imp: number }>()
+  for (const r of pairs) {
+    const path = pathOf(r.page)
+    if (!isProCityPage(path) || isBrand(r.query)) continue
+    const cur = topQuery.get(path)
+    if (!cur || r.impressions > cur.imp) topQuery.set(path, { q: r.query, imp: r.impressions })
+  }
+  for (const p of pages) {
+    if (!isProCityPage(p.path) || p.position > FIRST_PAGE_MAX || p.impressions < QUERY_MIN_IMPRESSIONS) continue
+    const kind = p.path.startsWith('/photographe-') ? 'photographe' : 'menage'
+    out[kind].push({ path: p.path, place: r1(p.position), impressions: p.impressions, clicks: p.clicks, query: topQuery.get(p.path)?.q ?? null })
+  }
+  const sort = (a: CityRank, b: CityRank) => a.place - b.place || b.impressions - a.impressions
+  out.photographe.sort(sort)
+  out.menage.sort(sort)
+  return out
+}
+
 /** Pages de ville des pros (« /photographe-lcd-lyon », « /menage-lcd-bordeaux ») */
 export function isProCityPage(path: string): boolean {
   return /^\/(photographe|menage)-lcd-[a-z0-9-]+$/.test(path)

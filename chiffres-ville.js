@@ -17,7 +17,11 @@
   fetch('https://app.jasonmarinho.com/api/public/chiffres?page=' + encodeURIComponent(path))
     .then(function (r) { if (!r.ok) throw 0; return r.json(); })
     .then(function (d) {
-      var c = d.city, html = '';
+      var c = d.city, html = '', rk = d.rank;
+      // Place de la page elle-même (18/10/2026) : Google ne nomme pas les recherches rares
+      if (rk && !(c && c.queries && c.queries.length)) {
+        html += '<p class="cv-lead">Sur Google, cette page sort en première page :</p><ul class="cv-q"><li><span class="cv-place' + (rk.place <= 3 ? ' top' : '') + '">' + pf.format(rk.place) + '</span><span>Place moyenne de la page' + (rk.query ? ', par exemple sur « ' + esc(rk.query) + ' »' : '') + '<small>' + n(rk.impressions) + ' affichages sur 28 jours</small></span></li></ul>';
+      }
       if (c && c.queries && c.queries.length) {
         html += '<p class="cv-lead">Sur Google, cette page sort en première page pour :</p><ul class="cv-q">' +
           c.queries.slice(0, 4).map(function (q) {

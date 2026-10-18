@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
-  audienceOf, cityStats, countVisitors, firstPageQueries, groupByQuery, isProCityPage, monthlySeries,
+  audienceOf, cityPageRanks, cityStats, countVisitors, firstPageQueries, groupByQuery, isProCityPage, monthlySeries,
   CITY_TOTALS_MIN_IMPRESSIONS, type PairRow,
 } from './rules'
 
@@ -154,5 +154,24 @@ describe('recherches vidéo', () => {
       { query: 'photographe airbnb', page: 'https://jasonmarinho.com/photographe-lcd-nice', clicks: 2, impressions: 50, position: 4 },
     ]
     expect(videoSummary(rows)).toMatchObject({ count: 2, impressions: 40, clicks: 1, firstPage: 1 })
+  })
+})
+
+describe('cityPageRanks', () => {
+  it('garde les pages de ville en première page même sans recherche nommée par Google', () => {
+    const pages = [
+      { path: '/photographe-lcd-nice', impressions: 14, clicks: 0, position: 6.94 },
+      { path: '/photographe-lcd-lyon', impressions: 48, clicks: 4, position: 7.4 },
+      { path: '/photographe-lcd-paris', impressions: 22, clicks: 3, position: 13.8 },
+      { path: '/menage-lcd-cannes', impressions: 72, clicks: 1, position: 8 },
+      { path: '/photographe-lcd-pau', impressions: 2, clicks: 0, position: 3 },
+      { path: '/blog/x', impressions: 500, clicks: 9, position: 2 },
+    ]
+    const pairs = [{ query: 'photographe airbnb lyon', page: 'https://jasonmarinho.com/photographe-lcd-lyon', clicks: 3, impressions: 38, position: 7.5 }]
+    const r = cityPageRanks(pages, pairs)
+    expect(r.photographe.map(x => x.path)).toEqual(['/photographe-lcd-nice', '/photographe-lcd-lyon'])
+    expect(r.photographe[0]).toMatchObject({ place: 6.9, query: null })
+    expect(r.photographe[1].query).toBe('photographe airbnb lyon')
+    expect(r.menage.map(x => x.path)).toEqual(['/menage-lcd-cannes'])
   })
 })
