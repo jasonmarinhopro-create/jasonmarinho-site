@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Sat, 17 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 19 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Prestataire ménage LCD en basse saison : 6 règles pour garder tes hôtes clients et un revenu stable d&apos;octobre à mars</title>
+      <link>https://jasonmarinho.com/blog/prestataire-menage-lcd-basse-saison-garder-hotes-revenu-stable</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/prestataire-menage-lcd-basse-saison-garder-hotes-revenu-stable</guid>
+      <pubDate>Mon, 19 Oct 2026 08:00:00 GMT</pubDate>
+      <description>Fin de saison, trous dans ton planning, hôtes qui gèrent le ménage eux-mêmes : 6 règles concrètes pour un prestataire ménage LCD en basse saison 2026.</description>
+      <category>Ressources</category>
+    </item>
     <item>
       <title>Prolongation de séjour voyageur : 7 règles pour accepter ou refuser au bon prix</title>
       <link>https://jasonmarinho.com/blog/prolongation-sejour-voyageur-7-regles-accepter-refuser-prix</link>
@@ -398,14 +406,6 @@
       <pubDate>Sun, 05 Jul 2026 08:00:00 GMT</pubDate>
       <description>Le ménage de turnover LCD est un vrai business : marché en croissance, tarifs 40-180 € par passage, clients récurrents. Statut, matériel, tarification et premiers clients : le guide pour se lancer.</description>
       <category>Conciergerie</category>
-    </item>
-    <item>
-      <title>Photographe Airbnb : combien ça coûte et comment bien le choisir en 2026</title>
-      <link>https://jasonmarinho.com/blog/photographe-airbnb-tarifs-comment-choisir</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/photographe-airbnb-tarifs-comment-choisir</guid>
-      <pubDate>Sun, 05 Jul 2026 08:00:00 GMT</pubDate>
-      <description>Tarifs constatés (150 à 500 €), retour sur investissement réel, critères pour choisir un photographe spécialisé LCD et erreurs à éviter. Guide complet par Jason Marinho.</description>
-      <category>Visibilité</category>
     </item>
   </channel>
 </rss>
