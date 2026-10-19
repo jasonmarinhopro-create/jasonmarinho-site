@@ -122,7 +122,7 @@ export const OUTILS = [
   },
   {
     nom: 'LegalPlace', mono: 'L', couleur: '#1D3557', cats: ['juridique'],
-    badge: 'affilie', offre: 'Statuts en ligne',
+    badge: 'affilie', offre: 'Réduction avec JASON15',
     desc: 'Création de SCI, SASU ou micro-entreprise, modification de statuts et domiciliation, en ligne.',
     liens: [
       { label: 'Créer ma société', href: LEGALPLACE_SOCIETE, sponsored: true },
