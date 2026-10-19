@@ -15,6 +15,7 @@ import { compressImage } from '@/lib/images/compress'
 import { addPlanningLink, removePlanningLink, preparePhotoUploads, markMenageTermine, annulerMenageTermine } from './actions'
 import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
+import { VILLES_TOTAL } from '@/lib/constants/auto-counts'
 
 export interface PlanningClient { linkId: string; hostId: string; label: string; expired: boolean }
 export interface PlanningSlot {
@@ -350,7 +351,7 @@ function AnnuaireCard({ hasFiche, founderLeft }: { hasFiche: boolean; founderLef
         <div style={s.logement}>Trouve d’autres clients</div>
       </div>
       <p style={{ ...s.sub, margin: 0 }}>
-        L’annuaire de Jason Marinho et ses guides ménage de 60 villes sont lus par des hôtes qui cherchent une équipe près de chez eux.
+        L’annuaire de Jason Marinho et ses guides ménage de {VILLES_TOTAL} villes sont lus par des hôtes qui cherchent une équipe près de chez eux.
         Avec ta fiche, ils te trouvent et t’écrivent directement : sans commission, les demandes arrivent dans ton espace et par e-mail.
       </p>
       <p style={{ ...s.sub, margin: 0 }}>{price}, TVA non applicable.</p>

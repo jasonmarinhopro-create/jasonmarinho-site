@@ -1,7 +1,7 @@
 'use client'
 
 // Onglet « Pages pros par ville » (06/10/2026, Jason : « une partie sur les
-// pages photographe + ville et équipe de ménage + ville ») : les 60 pages
+// pages photographe + ville et équipe de ménage + ville ») : toutes les pages
 // /photographe-lcd-<ville> et /menage-lcd-<ville>, avec leur place dans
 // Google, nos visites, les pros présentés et les fiches ouvertes depuis la
 // page. Données : lib/visibility/city-pros.ts.

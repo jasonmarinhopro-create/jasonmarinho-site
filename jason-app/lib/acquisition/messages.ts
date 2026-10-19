@@ -4,12 +4,13 @@
 //
 // Faits repris des séquences de prospection (lib/outreach/playbook.ts),
 // vérifiés dans le site : contact direct sans commission, tarif fondateur
-// 39,98 € par an à vie pour les 20 premiers, guides de plus de 60 villes,
+// 39,98 € par an à vie pour les 20 premiers, guides de toutes nos villes (VILLES_TOTAL),
 // planning partagé des ménages. Hôtes : app gratuite pour commencer, sans
 // carte bancaire (planning ménage, fiches de police) ; contrats en ligne
 // seulement en Standard, dès 19,98 € par an (jamais présentés comme gratuits). Plus court qu'un e-mail : une messagerie se lit
 // sur un téléphone. Pas de tiret cadratin.
 import { privateLinkCode, shortLinkUrl, type PrivateAudience, type PrivatePlatform } from './rules'
+import { VILLES_TOTAL } from '@/lib/constants/auto-counts'
 
 export type PrivateKind = 'premier' | 'relance'
 
@@ -89,7 +90,7 @@ export function buildPrivateMessage(input: PrivateMessageInput): string {
     return [
       hello,
       `Je ${t('me permets de revenir vers toi', 'me permets de revenir vers vous')} pour l'annuaire des photographes et vidéastes de locations de vacances.`,
-      `En bref : une page à ${t('ton', 'votre')} nom avec ${t('tes', 'vos')} photos, ${t('ta', 'votre')} vidéo en tête de fiche, ${t('ta', 'votre')} zone et ${t('tes', 'vos')} tarifs, les demandes des hôtes directement chez ${t('toi', 'vous')}, et l'annuaire mis en avant sur nos guides de plus de 60 villes. Les 20 premiers gardent le tarif fondateur : 39,98 € par an, à vie.`,
+      `En bref : une page à ${t('ton', 'votre')} nom avec ${t('tes', 'vos')} photos, ${t('ta', 'votre')} vidéo en tête de fiche, ${t('ta', 'votre')} zone et ${t('tes', 'vos')} tarifs, les demandes des hôtes directement chez ${t('toi', 'vous')}, et l'annuaire mis en avant sur nos guides de ${VILLES_TOTAL} villes. Les 20 premiers gardent le tarif fondateur : 39,98 € par an, à vie.`,
       `La fiche d'exemple : ${url}`,
       `Si ce n'est pas pour ${t('toi', 'vous')}, ${t('dis-le-moi', 'dites-le-moi')} simplement, je ne ${t('te', 'vous')} relancerai pas.`,
     ].join('\n\n')
@@ -107,7 +108,7 @@ export function buildPrivateMessage(input: PrivateMessageInput): string {
   return [
     hello,
     `Je ${t('me permets de revenir vers toi', 'me permets de revenir vers vous')} pour l'annuaire des équipes de ménage de locations de vacances.`,
-    `En bref : une page à ${t('ton', 'votre')} nom (prestations, zone, tarifs, langues), les demandes des hôtes directement chez ${t('toi', 'vous')}, et l'annuaire mis en avant sur nos guides de plus de 60 villes. Les 20 premières équipes gardent le tarif fondateur : 39,98 € par an, à vie.`,
+    `En bref : une page à ${t('ton', 'votre')} nom (prestations, zone, tarifs, langues), les demandes des hôtes directement chez ${t('toi', 'vous')}, et l'annuaire mis en avant sur nos guides de ${VILLES_TOTAL} villes. Les 20 premières équipes gardent le tarif fondateur : 39,98 € par an, à vie.`,
     `La fiche d'exemple : ${url}`,
     `Si ce n'est pas pour ${t('toi', 'vous')}, ${t('dis-le-moi', 'dites-le-moi')} simplement, je ne ${t('te', 'vous')} relancerai pas.`,
   ].join('\n\n')

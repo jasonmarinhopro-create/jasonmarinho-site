@@ -5,7 +5,7 @@
 #      discussion ou domaine pro) : une réponse manquée passe en « Ont répondu ».
 #   2. Pour chaque audience (photographes, ménage) dont il reste moins de
 #      SEUIL contacts « À contacter », importe depuis OpenStreetMap les pros
-#      de 10 villes de nos pages, en tournant sur les 60 villes (6 semaines).
+#      de 10 villes de nos pages, en tournant sur toutes les villes de la liste.
 # Chaque lundi, à la main, ou par un push de .github/prospection-trigger
 # (ligne 1 : « remplir » pour 20 villes d'un coup). Journaux publics : la
 # route ne renvoie que des nombres.

@@ -68,7 +68,7 @@ export default {
       h2: 'Où trouver un photographe spécialisé LCD',
       content: [
         { type: 'p', text: "Le bouche-à-oreille entre hôtes reste une bonne piste, mais il est lent et aléatoire selon ta ville. C'est exactement pour ça que j'ai lancé l'annuaire des photographes LCD : des pros sélectionnés manuellement : portfolio LCD réel exigé, tarifs cohérents marché, zone d'intervention claire : que tu contactes en direct, sans commission ni intermédiaire." },
-        { type: 'p', text: "Chaque fiche affiche le portfolio, la spécialité (intérieurs, drone, twilight…), la zone couverte et les tarifs indicatifs. Tu compares, tu contactes, tu négocies en direct. Et si tu veux d'abord te faire une idée des tarifs dans ta ville, on a publié des guides locaux pour 60 villes de France : de <a href='/photographe-lcd-paris'>Paris</a> à <a href='/photographe-lcd-lyon'>Lyon</a> en passant par <a href='/photographe-lcd-biarritz'>Biarritz</a>." },
+        { type: 'p', text: "Chaque fiche affiche le portfolio, la spécialité (intérieurs, drone, twilight…), la zone couverte et les tarifs indicatifs. Tu compares, tu contactes, tu négocies en direct. Et si tu veux d'abord te faire une idée des tarifs dans ta ville, on a publié des guides locaux pour 62 villes de France : de <a href='/photographe-lcd-paris'>Paris</a> à <a href='/photographe-lcd-lyon'>Lyon</a> en passant par <a href='/photographe-lcd-biarritz'>Biarritz</a>." },
         { type: 'cta', text: "Des photographes spécialisés location courte durée, à contacter en direct et sans commission.", href: '/annuaires/photographes', button: "Voir l'annuaire des photographes LCD" },
       ],
     },

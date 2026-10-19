@@ -66,7 +66,7 @@ const INVESTOR_TOOLS: IssueData['tool'][] = [
 
 const PRO_PARTNERS: IssueData['partner'][] = [
   { name: 'Shine', offer: 'Compte pro dès 0 €', desc: 'Un compte pour ton activité, et Shine Facture pour tes devis et factures gratuits.', url: `${SITE}/partenaires/shine` },
-  { name: 'LegalPlace', offer: 'Ta micro-entreprise en ligne', desc: 'Statut, immatriculation et domiciliation, sans te déplacer.', url: `${SITE}/partenaires/legalplace` },
+  { name: 'LegalPlace', offer: 'Réduction avec JASON15', desc: 'Statut, immatriculation et domiciliation, sans te déplacer.', url: `${SITE}/partenaires/legalplace` },
   { name: 'Indy', offer: 'Premier mois offert', desc: 'Facturation, suivi et facture électronique, prête pour 2027.', url: `${SITE}/partenaires/indy` },
   { name: 'Brevo', offer: '300 e-mails par jour gratuits', desc: 'Une lettre à tes clients hôtes pour remplir ton planning en basse saison.', url: `${SITE}/partenaires/brevo` },
 ]

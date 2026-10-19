@@ -1,6 +1,6 @@
 // Onglet « Pages pros par ville » de Visibilité (06/10/2026, Jason : « une
 // partie sur les pages photographe + ville et équipe de ménage + ville ») :
-// les 60 pages /photographe-lcd-<ville> et les 60 /menage-lcd-<ville>, avec
+// toutes les pages /photographe-lcd-<ville> et /menage-lcd-<ville>, avec
 // Google, nos visites, les pros de la ville (présentés sur la page) et les
 // fiches ouvertes depuis la page. Pur et testé : city-pros.test.ts.
 import { CITY_PAGE_SLUGS, cityLabel, cityPagePath, citySlugOf, internalReferrerPath, type CityMetier } from './city-page'

@@ -50,7 +50,7 @@ export default {
       content: [
         { type: 'p', text: "Le bouche-à-oreille entre hôtes de ta ville reste la piste historique : les groupes d'hôtes locaux regorgent de recommandations. Mais c'est lent, et les meilleures équipes recommandées sont souvent déjà saturées." },
         { type: 'p', text: "C'est pour ça que j'ai lancé l'annuaire des équipes de ménage LCD : des équipes spécialisées dans le turnover, avec leurs prestations et leurs tarifs affichés, que tu contactes en direct, sans commission. Pas le temps de chercher ? Décris ton besoin sur la page Trouver un pro (jasonmarinho.com/trouver-un-pro) : il part aux 3 équipes les plus proches. Chaque fiche précise la zone couverte, le type d'équipe (solo, duo, 3-5 personnes…), le délai de réservation et les prestations incluses (linge, repassage, réassort, état des lieux photo…)." },
-        { type: 'p', text: "Et si tu veux d'abord connaître les tarifs pratiqués dans ta ville, on a publié des guides locaux pour 60 villes de France : de <a href='/menage-lcd-paris'>Paris</a> à <a href='/menage-lcd-bordeaux'>Bordeaux</a> en passant par <a href='/menage-lcd-annecy'>Annecy</a>." },
+        { type: 'p', text: "Et si tu veux d'abord connaître les tarifs pratiqués dans ta ville, on a publié des guides locaux pour 62 villes de France : de <a href='/menage-lcd-paris'>Paris</a> à <a href='/menage-lcd-bordeaux'>Bordeaux</a> en passant par <a href='/menage-lcd-annecy'>Annecy</a>." },
         { type: 'cta', text: "Des équipes de ménage turnover vérifiées (RC pro, expérience LCD), à contacter en direct et sans commission.", href: '/annuaires/menage', button: "Voir l'annuaire des équipes ménage" },
       ],
     },

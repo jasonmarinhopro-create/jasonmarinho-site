@@ -1,6 +1,6 @@
 // Page de ville d'un pro (06/10/2026, Jason : « mettre aussi les stats liées
 // à la page photographe de la ville concernée du client sur son profil »).
-// Les 60 pages /photographe-lcd-<ville> et /menage-lcd-<ville> du site
+// Les pages /photographe-lcd-<ville> et /menage-lcd-<ville> du site
 // statique (scripts/build-pages-pros-villes.mjs) : la fiche d'un pro de la
 // ville y est présentée (scripts/build-photographers.mjs, build-cleaners.mjs).
 // Pur et testé : city-page.test.ts (vérifie aussi la liste contre le site).
