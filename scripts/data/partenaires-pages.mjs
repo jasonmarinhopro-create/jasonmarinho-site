@@ -245,16 +245,17 @@ export const PAGES = [
     h1: 'LegalPlace : crée ta conciergerie ou ton activité <em>en ligne</em>',
     lead: "Conciergerie, équipe de ménage, photographe ou hôte qui se structure : LegalPlace crée ta micro-entreprise ou ta société en ligne et peut domicilier ton entreprise. Je te dis quel statut choisir, ce que ça coûte vraiment, et quand faire toi-même.",
     offre: {
-      titre: 'Création en ligne accompagnée',
-      sous: 'micro-entreprise, SASU, EURL, SAS ou SARL',
+      titre: 'Réduction avec JASON15',
+      sous: 'sur ta création en ligne : micro-entreprise, SASU, EURL, SAS ou SARL',
       points: [
+        'Code JASON15 à saisir au moment du paiement',
         'Statuts générés à partir d\'un questionnaire',
         'Dossier déposé sur le guichet unique jusqu\'au Kbis',
         'Domiciliation possible pour protéger ton adresse',
       ],
       cta: { label: 'Créer ma société', href: LP_SOCIETE },
       cta2: { label: 'Créer ma micro-entreprise', href: LP_MICRO },
-      note: 'Lien affilié : LegalPlace me verse une commission si tu passes par ce lien, sans aucun surcoût pour toi.',
+      note: 'Lien affilié : LegalPlace me verse une commission si tu passes par ce lien, sans aucun surcoût pour toi. Le montant de la réduction s\'affiche au paiement.',
     },
     pourquoi: {
       titre: 'Pourquoi je recommande <em>LegalPlace</em>',
@@ -277,7 +278,7 @@ export const PAGES = [
     },
     etapes: [
       { t: 'Choisis ta forme', d: 'micro-entreprise pour démarrer, SASU ou EURL pour grandir (le tableau ci-dessous t\'aide).' },
-      { t: 'Remplis le questionnaire', d: 'nom, activité, capital, siège : LegalPlace génère tes statuts et prépare le dossier.' },
+      { t: 'Remplis le questionnaire', d: 'nom, activité, capital, siège : LegalPlace génère tes statuts et prépare le dossier. Saisis le code JASON15 au paiement.' },
       { t: 'Dépose ton capital et reçois ton Kbis', d: 'l\'annonce légale et l\'immatriculation sont faites, ta conciergerie peut facturer.' },
     ],
     tableau: {
@@ -311,6 +312,7 @@ export const PAGES = [
       { href: '/blog/devenir-prestataire-menage-airbnb-se-lancer', t: 'Devenir prestataire ménage', d: 'Statut, tarifs et premiers clients.' },
     ],
     faq: [
+      { q: 'Existe-t-il un code promo LegalPlace ?', a: 'Oui : le code JASON15, créé par LegalPlace pour les lecteurs du site, donne une réduction sur ta création en ligne. Saisis-le au moment du paiement : le montant de la réduction s\'affiche avant que tu valides.' },
       { q: 'Quel statut choisir pour une conciergerie Airbnb ?', a: 'Pour tester, la micro-entreprise : 21,2 % de cotisations sur ton chiffre d\'affaires en 2026, jusqu\'à 83 600 € par an, sans TVA tant que tu restes sous 37 500 € (seuil majoré de 41 250 €). Quand l\'activité se confirme (plus de 8 à 10 mandats, des salariés), une SASU ou une EURL permet de déduire tes charges réelles et de limiter ta responsabilité.' },
       { q: 'Combien coûte la création d\'une SASU en 2026 ?', a: 'Environ 195 € de frais obligatoires d\'après LegalPlace (annonce légale, immatriculation, déclaration des bénéficiaires effectifs), plus l\'accompagnement si tu en prends un : à partir d\'environ 99 € HT pour les statuts, souvent 350 à 400 € tout compris pour une création complète (relevés de septembre 2026).' },
       { q: 'Une conciergerie a-t-elle besoin d\'une carte professionnelle ?', a: 'Ça dépend de ton organisation, pas du statut. Si tu encaisses les loyers pour les propriétaires, il te faut une carte G (gestion immobilière). Si les voyageurs paient directement le propriétaire et que tu factures tes prestations (ménage, accueil, calendrier), tu fais de la prestation de services, sans carte.' },
