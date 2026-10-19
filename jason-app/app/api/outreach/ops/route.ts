@@ -6,7 +6,7 @@
 // Les réponses ne contiennent que des nombres et des noms de séquences :
 // les journaux du workflow sont publics (dépôt public), jamais d'adresse.
 
-import { PLAYBOOK_TEXT_FIXES } from '@/lib/outreach/playbook'
+import { fixInstalledTexts } from '@/lib/outreach/playbook'
 import { NextResponse } from 'next/server'
 import { getServiceClient } from '@/lib/supabase/service'
 import { outreachConfig } from '@/lib/outreach/mailer'
@@ -69,19 +69,10 @@ export async function POST(req: Request) {
         return NextResponse.json({ ok: true, relaunched, ...summary })
       }
       case 'fix_texts': {
-        // Applique PLAYBOOK_TEXT_FIXES aux e-mails déjà enregistrés (objet et
-        // texte). Réponse : nombre d'e-mails modifiés, jamais de contenu.
-        const { data: steps } = await db.from('outreach_steps').select('id, subject, body')
-        let changed = 0
-        for (const st of steps ?? []) {
-          let subject = String(st.subject ?? ''), text = String(st.body ?? '')
-          for (const [from, to] of PLAYBOOK_TEXT_FIXES) { subject = subject.split(from).join(to); text = text.split(from).join(to) }
-          if (subject !== st.subject || text !== st.body) {
-            const { error } = await db.from('outreach_steps').update({ subject, body: text }).eq('id', st.id)
-            if (!error) changed++
-          }
-        }
-        return NextResponse.json({ ok: true, emails_lus: (steps ?? []).length, emails_corriges: changed })
+        // Corrections des e-mails déjà enregistrés (objet et texte, nombre de
+        // villes compris). Réponse : nombres seulement, jamais de contenu.
+        const { lus, corriges } = await fixInstalledTexts(db)
+        return NextResponse.json({ ok: true, emails_lus: lus, emails_corriges: corriges })
       }
       default: return NextResponse.json({ error: 'op inconnue (status, import, import_osm, activate, test, run, fix_texts)' }, { status: 400 })
     }

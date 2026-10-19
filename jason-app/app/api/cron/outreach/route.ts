@@ -8,6 +8,7 @@ import { NextResponse } from 'next/server'
 import { getServiceClient } from '@/lib/supabase/service'
 import { runOutreach } from '@/lib/outreach/service'
 import { relaunchOutreach } from '@/lib/outreach/relaunch'
+import { fixInstalledTexts } from '@/lib/outreach/playbook'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -21,6 +22,9 @@ export async function GET(req: Request) {
   const hop = Math.max(0, parseInt(params.get('hop') ?? '0', 10) || 0)
   const force = params.get('force') === '1'
   try {
+    // Premier passage du jour : textes des séquences en base remis à jour
+    // (corrections, nombre de villes) avant tout envoi
+    if (hop === 0) await fixInstalledTexts(getServiceClient()).catch(() => null)
     const summary = await runOutreach(getServiceClient(), { budgetMs: 45_000, sendOnly: hop > 0, force })
     const relaunched = summary.more ? await relaunchOutreach(hop + 1, force) : false
     return NextResponse.json({ ok: true, hop, relaunched, ...summary })

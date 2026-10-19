@@ -424,3 +424,36 @@ export const PLAYBOOK_TEXT_FIXES: Array<[string, string]> = [
   ["C'est ce que les hôtes regardent en premier.\n\nUne question avant de te lancer", "C'est ce que les hôtes regardent en premier. Tu fais aussi de la vidéo ? Ajoute son lien (YouTube ou Vimeo) : elle s'affiche en tête de ta fiche.\n\nUne question avant de te lancer"],
   ["- un lien vers ton portfolio, tes plus belles photos de logements en premier ;", "- un lien vers ton portfolio, tes plus belles photos de logements en premier, et ta vidéo si tu en fais (elle s'affiche en tête de fiche) ;"],
 ]
+
+/**
+ * Nombre de villes écrit dans les e-mails (19/10/2026, Jason : « mets aussi à
+ * jour les séquences déjà installées ») : remplacé par VILLES_TOTAL, compté
+ * au build. Motifs précis, rejouables, quel que soit l'ancien nombre.
+ */
+const CITY_COUNT_PATTERNS = [
+  /(guides (?:photo |ménage )?de )(?:plus de )?\d{2,3}( villes)/g,
+  /(guides (?:locaux )?pour )\d{2,3}( villes)/g,
+]
+
+/** Toutes les corrections d'un objet ou d'un texte d'e-mail déjà enregistré. */
+export function applyPlaybookFixes(text: string, villes = VILLES_TOTAL): string {
+  let t = PLAYBOOK_TEXT_FIXES.reduce((acc, [a, b]) => acc.split(a).join(b), text)
+  if (villes > 0) for (const re of CITY_COUNT_PATTERNS) t = t.replace(re, (_m, a, b) => `${a}${villes}${b}`)
+  return t
+}
+
+/** Applique les corrections aux séquences en base ; nombre d'e-mails modifiés. */
+export async function fixInstalledTexts(db: {
+  from: (t: string) => any // eslint-disable-line @typescript-eslint/no-explicit-any
+}): Promise<{ lus: number; corriges: number }> {
+  const { data: steps } = await db.from('outreach_steps').select('id, subject, body')
+  let corriges = 0
+  for (const st of (steps ?? []) as Array<{ id: string; subject: string | null; body: string | null }>) {
+    const subject = applyPlaybookFixes(String(st.subject ?? '')), body = applyPlaybookFixes(String(st.body ?? ''))
+    if (subject !== (st.subject ?? '') || body !== (st.body ?? '')) {
+      const { error } = await db.from('outreach_steps').update({ subject, body }).eq('id', st.id)
+      if (!error) corriges++
+    }
+  }
+  return { lus: (steps ?? []).length, corriges }
+}

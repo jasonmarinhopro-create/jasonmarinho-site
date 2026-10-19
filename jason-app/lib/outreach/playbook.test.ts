@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { PLAYBOOK, PLAYBOOK_TEXT_FIXES } from './playbook'
+import { PLAYBOOK, PLAYBOOK_TEXT_FIXES, applyPlaybookFixes } from './playbook'
 import { renderTemplate, STAGES } from './engine'
 
 describe('séquences proposées', () => {
@@ -47,5 +47,13 @@ describe('séquences proposées', () => {
     for (const p of PLAYBOOK.filter(x => x.audience === 'photographe' && x.key !== 'photo_premiers_pas')) {
       expect(p.steps.some(st => /vidéo/.test(st.subject + st.body))).toBe(true)
     }
+  })
+  it('nombre de villes des séquences en base remis à jour, rejouable', () => {
+    expect(applyPlaybookFixes("l'annuaire mis en avant sur nos guides photo de 60 villes, lus par", 62)).toBe("l'annuaire mis en avant sur nos guides photo de 62 villes, lus par")
+    expect(applyPlaybookFixes('nos guides ménage de 61 villes.', 63)).toBe('nos guides ménage de 63 villes.')
+    expect(applyPlaybookFixes('nos guides de plus de 60 villes.', 62)).toBe('nos guides de 62 villes.')
+    const t = applyPlaybookFixes('guides photo de 60 villes', 62)
+    expect(applyPlaybookFixes(t, 62)).toBe(t)
+    expect(applyPlaybookFixes('120 nuits dans 60 villes', 62)).toBe('120 nuits dans 60 villes')
   })
 })

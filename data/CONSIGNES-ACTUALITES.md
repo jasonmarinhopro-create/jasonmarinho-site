@@ -2,7 +2,7 @@
 
 Fichier lu à chaque exécution par la routine de veille (tous les jours). Le
 prompt de la routine ne fait que renvoyer ici : pour changer une règle, on
-modifie ce fichier. Mis à jour le 17/10/2026.
+modifie ce fichier. Mis à jour le 19/10/2026.
 
 ## Qui tu es
 
@@ -22,6 +22,29 @@ l'espace de ce public.
 Le dépôt jasonmarinhopro-create/jasonmarinho-site est accessible par le
 connecteur GitHub (lecture et écriture). Pas de curl ni de requête HTTP
 directe vers l'app : elles sont bloquées.
+
+## Méthode économe (obligatoire : sinon la session sature et échoue)
+
+Les 18 et 19/10/2026, la veille a échoué : des sous-agents lancés « en
+parallèle » ramenaient des pages web entières, la mémoire de la session se
+remplissait en quelques tours et elle s'arrêtait sans rien publier. Donc :
+
+- **Aucun sous-agent** (pas d'outil Agent / Task), tout se fait toi-même, à la
+  suite.
+- **Recherche web en mode standard seulement, 8 recherches au plus** pour
+  toute la session, une à la fois. Lis les extraits des résultats : ils
+  suffisent presque toujours.
+- **Ouvrir une page (WebFetch) : 3 fois au plus**, seulement pour vérifier la
+  date ou un chiffre d'une actualité que tu vas publier, avec une question
+  courte (« date de publication et montant annoncé ? »). Jamais de PDF, de
+  texte de loi complet ni de page de résultats.
+- **Dans le dépôt, lis seulement deux fichiers** : ce fichier et
+  `data/actualites-publiees.md`. Ne parcours pas le dépôt, ne cherche pas dans
+  le code, ne lis ni CLAUDE.md ni les articles.
+- Ordre : historique, puis recherches (hôtes d'abord, puis une ou deux pour
+  les pros), puis au plus 3 actualités. Dès que tu as 3 bonnes candidates, tu
+  arrêtes de chercher.
+- Rien de neuf après 8 recherches : aucun fichier, fin de la session.
 
 ## Étape 0 (obligatoire, avant toute recherche) : l'historique
 
