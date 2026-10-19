@@ -93,11 +93,11 @@ const indyVous = box('indy-vous',
 
 const LP_MENTION = "Lien affilié : si tu passes par ce lien, LegalPlace me verse une commission, sans aucun surcoût pour toi. Si tu es à l'aise avec les formalités, tu peux aussi tout faire toi-même sur le guichet unique de l'INPI (gratuit pour une micro-entreprise)."
 const legalplaceConciergerie = box('legalplace-conciergerie',
-  "<strong>Créer ta structure en ligne :</strong> LegalPlace rédige et dépose les statuts de ta SASU ou SARL, ou crée ta micro-entreprise, et propose aussi la domiciliation si tu ne veux pas mettre ton adresse perso.",
+  "<strong>Créer ta structure en ligne :</strong> LegalPlace rédige et dépose les statuts de ta SASU ou SARL, ou crée ta micro-entreprise, et propose aussi la domiciliation si tu ne veux pas mettre ton adresse perso. Avec le <strong>code JASON15</strong>, tu as une réduction : saisis-le au moment du paiement.",
   btn(LP_SOCIETE, 'Créer ma société') + ' ' + btn(LP_MICRO, 'Créer ma micro-entreprise') + ' ' + btn(LP_DOMICILIATION, 'Domicilier mon entreprise'),
   LP_MENTION)
 const legalplaceMenage = box('legalplace-menage',
-  "<strong>Démarrer en micro-entreprise :</strong> LegalPlace s'occupe de la déclaration en ligne si tu préfères être guidé.",
+  "<strong>Démarrer en micro-entreprise :</strong> LegalPlace s'occupe de la déclaration en ligne si tu préfères être guidé. Avec le <strong>code JASON15</strong>, tu as une réduction : saisis-le au moment du paiement.",
   btn(LP_MICRO, 'Créer ma micro-entreprise'),
   LP_MENTION)
 

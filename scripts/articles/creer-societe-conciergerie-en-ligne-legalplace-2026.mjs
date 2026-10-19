@@ -43,7 +43,7 @@ export default {
           'ACRE : cotisations réduites la première année (depuis le 1er juillet 2026, tu paies 75 % du taux normal au lieu de 50 %)',
           'Limite : ta responsabilité n\'est pas séparée de ton patrimoine, et tes charges réelles (voiture, salariés, logiciels) ne sont pas déductibles',
         ] },
-        { type: 'html', html: box('<strong>Créer ta micro-entreprise accompagné :</strong> LegalPlace s\'occupe de la déclaration en ligne et peut aussi domicilier ton entreprise, pour ne pas afficher ton adresse personnelle sur les factures et les annuaires.', btn(LP_MICRO, 'Créer ma micro-entreprise') + ' ' + btn(LP_DOMICILIATION, 'Domicilier mon entreprise')) },
+        { type: 'html', html: box('<strong>Créer ta micro-entreprise accompagné :</strong> LegalPlace s\'occupe de la déclaration en ligne et peut aussi domicilier ton entreprise, pour ne pas afficher ton adresse personnelle sur les factures et les annuaires. Avec le <strong>code JASON15</strong>, tu as une réduction : saisis-le au moment du paiement.', btn(LP_MICRO, 'Créer ma micro-entreprise') + ' ' + btn(LP_DOMICILIATION, 'Domicilier mon entreprise')) },
       ],
     },
     {
@@ -75,7 +75,7 @@ export default {
           'L\'annonce légale et le dossier d\'immatriculation déposés sur le guichet unique',
           'Le Kbis reçu à la fin : ta conciergerie peut facturer',
         ] },
-        { type: 'html', html: box('<strong>Créer la société de ta conciergerie :</strong> SASU, SAS, EURL ou SARL, en ligne avec LegalPlace. La domiciliation est proposée aussi, pratique si tu travailles depuis chez toi.', btn(LP_SOCIETE, 'Créer ma société') + ' ' + btn(LP_DOMICILIATION, 'Domicilier ma société')) },
+        { type: 'html', html: box('<strong>Créer la société de ta conciergerie :</strong> SASU, SAS, EURL ou SARL, en ligne avec LegalPlace. La domiciliation est proposée aussi, pratique si tu travailles depuis chez toi. Avec le <strong>code JASON15</strong>, tu as une réduction : saisis-le au moment du paiement.', btn(LP_SOCIETE, 'Créer ma société') + ' ' + btn(LP_DOMICILIATION, 'Domicilier ma société')) },
         { type: 'tip', text: 'Faire toi-même reste possible et moins cher : les statuts types et le guichet unique de l\'INPI suffisent pour une SASU simple. L\'accompagnement se justifie surtout si tu manques de temps ou si tu veux éviter une erreur dans l\'objet social ou la répartition du capital.' },
       ],
     },

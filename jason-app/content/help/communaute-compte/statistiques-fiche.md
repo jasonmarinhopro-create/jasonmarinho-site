@@ -53,7 +53,7 @@ Google ne détaille pas les recherches trop rares (« recherches masquées ») :
 
 ## La page de ta ville
 
-Si ta ville a sa page sur le site (par exemple **Photographe à Lyon** ou **Ménage à Saint-Malo**, 60 villes), ta fiche y est présentée dès qu'elle est en ligne. La ville est lue dans ta fiche : « Lyon 6e » ou « Paris 15 » mènent à la page de la ville.
+Si ta ville a sa page sur le site (par exemple **Photographe à Lyon** ou **Ménage à Saint-Malo**, 62 villes de France), ta fiche y est présentée dès qu'elle est en ligne. La ville est lue dans ta fiche : « Lyon 6e » ou « Paris 15 » mènent à la page de la ville.
 
 La carte **La page de ta ville** montre :
 

@@ -70,7 +70,7 @@ export const PARTNER_OFFERS: IssueData['partner'][] = [
   { name: 'Shine', offer: 'Compte pro dès 0 €', desc: 'Sépare tes revenus de location, et Shine Facture pour tes devis et factures.', url: 'https://jasonmarinho.com/partenaires/shine' },
   { name: 'Brevo', offer: '300 e-mails par jour gratuits', desc: 'La newsletter pour faire revenir tes voyageurs venus en direct.', url: 'https://jasonmarinho.com/partenaires/brevo' },
   { name: 'Hospitable', offer: '-25 % pendant 3 mois', desc: 'Messages automatiques et codes de serrure à chaque réservation, 14 jours d\'essai.', url: 'https://jasonmarinho.com/hospitable-avis' },
-  { name: 'LegalPlace', offer: 'Ta conciergerie créée en ligne', desc: 'Micro-entreprise ou société, statuts et domiciliation, sans te déplacer.', url: 'https://jasonmarinho.com/partenaires/legalplace' },
+  { name: 'LegalPlace', offer: 'Réduction avec JASON15', desc: 'Micro-entreprise ou société, statuts et domiciliation, sans te déplacer.', url: 'https://jasonmarinho.com/partenaires/legalplace' },
 ]
 
 /** Question du mois : réponse par simple retour d'e-mail (les réponses aident la délivrabilité) */

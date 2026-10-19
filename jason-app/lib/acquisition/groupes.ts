@@ -223,7 +223,7 @@ const has = (n: string, w: string) => n.includes(` ${w.trim()}`)
 // Noms de villes qui sont aussi des mots courants : il faut une majuscule
 const AMBIGUOUS = new Set(['tours', 'nice', 'vannes', 'cannes', 'nancy', 'pau', 'paris', 'menton', 'rennes', 'sete', 'bayonne', 'dijon'])
 
-/** Ville d'une de nos 62 pages citée dans le texte (la plus longue l'emporte) */
+/** Ville d'une de nos pages de ville citée dans le texte (la plus longue l'emporte) */
 export function findCity(text: string): string | null {
   const plain = strip(text)
   const lower = plain.toLowerCase()

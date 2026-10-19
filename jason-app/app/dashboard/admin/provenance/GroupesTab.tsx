@@ -10,6 +10,7 @@ import { cityLabel } from '@/lib/visibility/city-page'
 import type { GroupStats } from '@/lib/acquisition/groupes-load'
 import { prepareGroupReply, type GroupReplyResult } from './actions'
 import { AMBER, tint } from '../_ui/theme'
+import { VILLES_TOTAL } from '@/lib/constants/auto-counts'
 
 // Onglet « Groupes » de Provenance (12/10/2026, sur le modèle du CRM Driing
 // de Jason) : coller un message de groupe Facebook, vérifier ce que l'outil a
@@ -147,7 +148,7 @@ export default function GroupesTab({ stats, live, initial = null }: { stats: Gro
         <div style={g.stat}>
           <span style={g.statLabel}>Pages proposables</span>
           <strong style={g.statBig}>{nf(stats.articles + 60 + stats.pros)}</strong>
-          <span style={g.statSub}>{stats.articles} articles · 60 guides de ville · {stats.pros} fiche{stats.pros > 1 ? 's' : ''} de l&apos;annuaire</span>
+          <span style={g.statSub}>{stats.articles} articles · {VILLES_TOTAL} guides de ville · {stats.pros} fiche{stats.pros > 1 ? 's' : ''} de l&apos;annuaire</span>
         </div>
       </div>
 

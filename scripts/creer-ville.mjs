@@ -49,7 +49,6 @@ const L = VILLES_LOCAL[slug]
 if (!L) throw new Error(`${slug} : ajoute d'abord son bloc vérifié dans scripts/data/villes-local.mjs`)
 if (!L.marche?.sources?.length) throw new Error(`${slug} : indique dans villes-local.mjs la source des chiffres du marché (marche.sources, marche.releve)`)
 const commune = communeArg || city.name
-const before = fs.readdirSync(ROOT).filter(d => d.startsWith('photographe-lcd-')).length
 
 // 1. Pages
 step('Pages photographe et ménage')
@@ -106,16 +105,10 @@ if (block && !block[1].includes(`"${commune}"`)) {
   console.log(`+ ${commune}`)
 }
 
-// 6. Compteurs « N villes » écrits en dur
+// 6. Compteurs « N villes » : comptés depuis CITIES par sync-counts (aussi
+// lancé à chaque build du site et de l'app), plus rien à changer à la main
 step('Compteurs')
-const after = fs.readdirSync(ROOT).filter(d => d.startsWith('photographe-lcd-')).length
-if (after !== before) {
-  for (const f of ['devenir-photographe-lcd/index.html', 'devenir-prestataire-menage-lcd/index.html', 'llms.txt', 'jason-app/lib/acquisition/groupes.ts', '.github/workflows/prospection-reserve.yml']) {
-    const s = read(f)
-    const t = s.replace(new RegExp(`\\b${before} (villes|pages ville|pages de ville)`, 'g'), `${after} $1`).replace(new RegExp(`nos ${before} pages`, 'g'), `nos ${after} pages`)
-    if (t !== s) { write(f, t); console.log(`~ ${f}`) }
-  }
-}
+run('scripts/sync-counts.mjs')
 run('scripts/build-pour-qui-pros.mjs')
 
 // 7. Vérification

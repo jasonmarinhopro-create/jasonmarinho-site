@@ -9,10 +9,11 @@
 // tarif fondateur 39,98 € TTC / an à vie pour les 20 premiers, puis
 // 79,98 € / an ; lien vers le portfolio du pro (galerie hébergée retirée le
 // 05/10/2026) ; guides « photographe » et
-// « ménage » de 60 villes qui renvoient vers chaque annuaire ; contact direct
+// « ménage » de toutes nos villes (VILLES_TOTAL, compté au build) qui renvoient vers chaque annuaire ; contact direct
 // sans commission. Pas de tiret cadratin, tutoiement comme le reste de la marque.
 
 import type { Audience, Stage } from './engine'
+import { VILLES_TOTAL } from '@/lib/constants/auto-counts'
 
 export interface PlaybookStep { delay_days: number; subject: string; body: string; same_thread?: boolean }
 export interface PlaybookSequence {
@@ -68,7 +69,7 @@ Je remonte mon message avec du concret. Une fiche dans l'annuaire, c'est :
 
 - une page à ton nom sur jasonmarinho.com, avec le lien vers ton portfolio, ta vidéo en tête de fiche, ta zone et tes tarifs ;
 - les demandes des hôtes directement chez toi, sans commission ;
-- l'annuaire mis en avant sur nos guides photo de 60 villes, lus par des hôtes qui cherchent un photographe ou un vidéaste.
+- l'annuaire mis en avant sur nos guides photo de ${VILLES_TOTAL} villes, lus par des hôtes qui cherchent un photographe ou un vidéaste.
 
 Les 20 premiers photographes et vidéastes gardent le tarif fondateur : 39,98 € par an, à vie.
 
@@ -226,7 +227,7 @@ Je remonte mon message avec du concret. Une fiche dans l'annuaire, c'est :
 
 - une page à ton nom sur jasonmarinho.com : prestations, zone, tarifs, langues parlées ;
 - les demandes des hôtes directement chez toi, sans commission ;
-- l'annuaire mis en avant sur nos guides ménage de 60 villes.
+- l'annuaire mis en avant sur nos guides ménage de ${VILLES_TOTAL} villes.
 
 Exemple de fiche : ${SITE}/annuaires/menage/exemple-fiche?${utm('menage_premier_contact')}
 
