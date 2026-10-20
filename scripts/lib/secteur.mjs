@@ -293,7 +293,7 @@ export function secteurMap(sec) {
     if (cls) cand.push([c, cls])
   }
   // Fond : un seul tracé pour la terre et les limites des départements ; départements de la zone par-dessus
-  const depTol = sec.france ? 3 : 2
+  const depTol = sec.france ? 3 : sec.multi ? 4 : 2
   let land = '', depZone = '', depLbl = ''
   const lblBoxes = []
   for (const d of depsInView) {
@@ -310,7 +310,7 @@ export function secteurMap(sec) {
     if (comm.length <= budget) break
     if (tol === 9) { texture = false; comm = cand.filter(([, cls]) => cls === 'mc' || cls === 'cv').map(([c, cls]) => draw(c, cls, 2)).join('') }
   }
-  if (!sec.france) for (const d of depsInView) {
+  if (!sec.france && !sec.multi) for (const d of depsInView) {
     const [lx, ly] = P(d.c)
     if (lx < 50 || lx > W - 50 || ly < 18 || ly > v.H - 14) continue
     if (rPx && Math.hypot(lx - C[0], ly - C[1]) < rPx + 10) continue
@@ -321,7 +321,13 @@ export function secteurMap(sec) {
   // Étiquettes des villes sans chevauchement
   const boxes = [[C[0] - 8, C[1] - 24, C[0] + 12 + sec.nom.length * 8, C[1] + 8], ...lblBoxes]
   const hit = b => b[0] < 2 || b[2] > W - 2 || b[1] < 2 || b[3] > v.H - 2 || boxes.some(o => !(b[2] < o[0] || b[0] > o[2] || b[3] < o[1] || b[1] > o[3]))
-  const labels = sec.communes.map(c => {
+  // Plusieurs secteurs (France entière ou presque) : points seulement, les noms des secteurs
+  // sont posés en pastilles HTML par-dessus la carte (lisibles au téléphone, voir polePills)
+  const labels = sec.multi ? sec.communes.map(c => {
+    const [x, y] = P(c.c)
+    const pole = sec.poles.some(p => p.a.code === c.code)
+    return `<g class="lb${pole ? ' pole' : ''}"><circle cx="${x}" cy="${y}" r="${pole ? 7 : 3}"/></g>`
+  }).join('') : sec.communes.map(c => {
     const [x, y] = P(c.c), w = c.nom.length * 6.8
     const t = [[x + 6, y + 4, 'start', [x + 4, y - 8, x + 8 + w, y + 6]], [x - 6, y + 4, 'end', [x - 8 - w, y - 8, x - 4, y + 6]], [x, y - 8, 'middle', [x - w / 2, y - 20, x + w / 2, y - 6]], [x, y + 17, 'middle', [x - w / 2, y + 5, x + w / 2, y + 19]]].find(t => !hit(t[3]))
     if (t) boxes.push(t[3])
@@ -329,8 +335,29 @@ export function secteurMap(sec) {
     return `<g class="lb${pole ? ' pole' : ''}"><circle cx="${x}" cy="${y}" r="${pole ? 6 : 3.2}"/>${t ? `<text x="${Math.round(t[0])}" y="${Math.round(t[1])}" text-anchor="${t[2]}">${esc(c.nom)}</text>` : ''}</g>`
   }).join('')
   const right = C[0] > W - 160
-  const svg = `<svg class="sct-svg" viewBox="0 0 ${W} ${v.H}" role="img" aria-label="Carte du secteur : ${esc(sec.nom)}" data-p="${v.x0.toFixed(1)},${v.y1.toFixed(1)},${(v.kx * v.s).toFixed(5)},${v.s.toFixed(5)}"><path class="land${sec.france ? ' fr' : ''}" d="${land}"/>${depZone}${comm}${rPx ? `<circle class="rad${texture ? '' : ' fill'}" cx="${C[0]}" cy="${C[1]}" r="${Math.round(rPx)}"/>` : ''}${depLbl}${labels}<g class="ctr"><circle cx="${C[0]}" cy="${C[1]}" r="6"/><text x="${right ? C[0] - 10 : C[0] + 10}" y="${C[1] - 9}" text-anchor="${right ? 'end' : 'start'}">${esc(sec.nom)}</text></g>${rPx && rPx > 40 ? `<text class="radl" x="${Math.round(C[0] + rPx * 0.71 + 4)}" y="${Math.round(C[1] + rPx * 0.71 + 12)}">${sec.km} km</text>` : ''}</svg>`
-  return { svg, view: v, nbRayon, texture }
+  const svg = `<svg class="sct-svg" viewBox="0 0 ${W} ${v.H}" role="img" aria-label="Carte du secteur : ${esc(sec.nom)}" data-p="${v.x0.toFixed(1)},${v.y1.toFixed(1)},${(v.kx * v.s).toFixed(5)},${v.s.toFixed(5)}"><path class="land${sec.france ? ' fr' : ''}${sec.multi ? ' mt' : ''}" d="${land}"/>${depZone}${comm}${rPx ? `<circle class="rad${texture ? '' : ' fill'}" cx="${C[0]}" cy="${C[1]}" r="${Math.round(rPx)}"/>` : ''}${depLbl}${labels}<g class="ctr"><circle cx="${C[0]}" cy="${C[1]}" r="${sec.multi ? 7 : 6}"/>${sec.multi ? '' : `<text x="${right ? C[0] - 10 : C[0] + 10}" y="${C[1] - 9}" text-anchor="${right ? 'end' : 'start'}">${esc(sec.nom)}</text>`}</g>${rPx && rPx > 40 ? `<text class="radl" x="${Math.round(C[0] + rPx * 0.71 + 4)}" y="${Math.round(C[1] + rPx * 0.71 + 12)}">${sec.km} km</text>` : ''}</svg>`
+  return { svg, view: v, nbRayon, texture, pills: sec.multi ? polePills(sec, P, v) : '' }
+}
+
+/**
+ * Noms des secteurs en pastilles au-dessus de la carte (en %, donc à la même taille sur tous
+ * les écrans). À droite du point, à gauche près du bord droit ; décalées si elles se chevauchent.
+ */
+function polePills(sec, P, v) {
+  // Les points des secteurs sont des obstacles : une pastille ne cache jamais un point
+  const placed = sec.poles.map(p => { const [x, y] = P(p.a.c); return [x - 9, y - 9, 18, 18] })
+  return sec.poles.map((p, i) => {
+    const [x, y] = P(p.a.c)
+    const name = i === 0 ? sec.nom : p.a.nom
+    const w = name.length * 7.6 + 22, h = 24
+    const raw = [[x + 12, y - h / 2], [x - 12 - w, y - h / 2], [x - w / 2, y - 14 - h], [x - w / 2, y + 14]]
+    const inside = ([bx, by]) => bx >= 4 && by >= 4 && bx + w <= W - 4 && by + h <= v.H - 4
+    const clamp = ([bx, by]) => [Math.min(Math.max(bx, 4), W - w - 4), Math.min(Math.max(by, 4), v.H - h - 4)]
+    const free = b => !placed.some(o => b[0] < o[0] + o[2] && o[0] < b[0] + w && b[1] < o[1] + o[3] && o[1] < b[1] + h)
+    const pick = raw.find(c => inside(c) && free(c)) ?? raw.map(clamp).find(c => free(c)) ?? clamp(raw[0])
+    placed.push([pick[0], pick[1], w, h])
+    return `<button type="button" class="sct-pill" data-n="${esc(p.a.nom)}" style="left:${(pick[0] / W * 100).toFixed(2)}%;top:${(pick[1] / v.H * 100).toFixed(2)}%">${esc(name)}</button>`
+  }).join('')
 }
 
 let _inset = null
@@ -373,7 +400,7 @@ const de = v => /^les\s/i.test(v) ? `des ${v.slice(4)}` : /^le\s/i.test(v) ? `du
 export function secteurHtml({ ville, zone, villes, prenom, metier, annot = '' }) {
   const sec = resolveSecteur({ ville, zone, villes })
   if (!sec) return null
-  const { svg, view: v, nbRayon } = secteurMap(sec)
+  const { svg, view: v, nbRayon, pills } = secteurMap(sec)
   const dist = sec.communes.map(c => ({ c, km: Math.round(distKm(sec.centre.c, c.c)) })).sort((a, b) => a.km - b.km)
   const far = dist[dist.length - 1]
   const depNames = sec.deps.map(code => departements().find(d => d.code === code)?.nom).filter(Boolean)
@@ -392,8 +419,8 @@ export function secteurHtml({ ville, zone, villes, prenom, metier, annot = '' })
     else if (far) stats.push([`${dist.length} ville${dist.length > 1 ? 's' : ''}`, 'citées par ' + prenom])
   }
   const chips = sec.multi ? [
-    ...sec.poles.map(p => `<button type="button" class="sct-chip pole" data-n="${esc(p.a.nom)}">${esc(p.label)}</button>`),
-    ...sec.poles.flatMap(p => p.villes).map(c => `<button type="button" class="sct-chip" data-n="${esc(c.nom)}">${esc(c.nom)}</button>`),
+    // Une pastille par secteur, ses villes proches écrites dedans (« Lille + Roubaix, Tourcoing »)
+    ...sec.poles.map(p => `<button type="button" class="sct-chip pole" data-n="${esc(p.a.nom)}">${esc(p.label)}${p.villes.length ? ` <small>+ ${esc(p.villes.slice(0, 4).map(c => c.nom).join(', '))}${p.villes.length > 4 ? '…' : ''}</small>` : ''}</button>`),
     ...sec.unknown.slice(0, 6).map(u => `<span class="sct-chip txt">${esc(u)}</span>`),
   ].join('') : [
     ...dist.map(({ c, km }) => `<button type="button" class="sct-chip" data-n="${esc(c.nom)}">${esc(c.nom)} <small>${km} km</small></button>`),
@@ -408,7 +435,7 @@ export function secteurHtml({ ville, zone, villes, prenom, metier, annot = '' })
   return `<section class="card vt-sec sct" id="zone" style="position:relative">${annot}
   <h2>Où j’interviens</h2>
   ${stats.length ? `<div class="sct-stats">${stats.slice(0, 3).map(([a, b]) => `<div><div class="sct-v">${esc(a)}</div><div class="sct-l">${esc(b)}</div></div>`).join('')}</div>` : ''}
-  <div class="sct-map">${svg}${sec.france || sec.multi ? '' : insetHtml(v)}<div class="sct-tip" hidden></div></div>
+  <div class="sct-map">${svg}${pills}${sec.france || sec.multi ? '' : insetHtml(v)}<div class="sct-tip" hidden></div></div>
   ${chips ? `<div class="sct-chips">${chips}</div>` : ''}
   <div class="sct-find">
     <label for="sct-q">Ton logement est à…</label>
@@ -451,6 +478,10 @@ export const SECTEUR_CSS = `
 .sct-svg .lb.pole circle{fill:#FFD56B;stroke:var(--g);stroke-width:2.2}
 .sct-svg .lb.pole text{font-size:14px}
 .sct-chip.pole{font-weight:600}
+.sct-svg .land.mt{stroke:#DCE3DE;stroke-width:.7}
+.sct-pill{position:absolute;z-index:1;font:600 13px/1 'Outfit',sans-serif;color:var(--td);background:#fff;border:1.5px solid var(--g);border-radius:999px;padding:5px 10px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,40,30,.12);cursor:pointer}
+.sct-pill.on,.sct-pill:hover{background:var(--g);color:#fff}
+.sct-chip.pole small{font-weight:400;color:var(--tl);margin-left:2px}
 .sct-svg .ctr text{font-size:14px}
 .sct-svg .radl{font-size:11.5px;font-weight:600;fill:var(--g);paint-order:stroke;stroke:#E8EEEA;stroke-width:3px}
 .sct-svg .pin{pointer-events:none}
@@ -486,7 +517,7 @@ export const SECTEUR_CSS = `
 .sct-r .far{color:#B4466B;font-weight:600}
 .sct-r a{color:var(--g);font-weight:600}
 .sct-cap{font-size:11.5px;color:var(--tl);line-height:1.55;margin-top:12px}
-@media(max-width:560px){.sct-inset{width:46px;height:46px}.sct-v{font-size:19px}.sct-svg .lb text{display:none}.sct-svg .lb circle{r:5}.sct-svg .ctr text{font-size:25px;stroke-width:6px}.sct-svg .ctr circle{r:9}.sct-svg .dl{font-size:17px}.sct-svg .radl{font-size:19px;stroke-width:5px}.sct-svg .pin text{font-size:22px;stroke-width:6px}.sct-svg .pin circle{r:9}}
+@media(max-width:560px){.sct-pill{font-size:11.5px;padding:4px 8px}.sct-svg .lb.pole circle{r:10}.sct-inset{width:46px;height:46px}.sct-v{font-size:19px}.sct-svg .lb text{display:none}.sct-svg .lb circle{r:5}.sct-svg .ctr text{font-size:25px;stroke-width:6px}.sct-svg .ctr circle{r:9}.sct-svg .dl{font-size:17px}.sct-svg .radl{font-size:19px;stroke-width:5px}.sct-svg .pin text{font-size:22px;stroke-width:6px}.sct-svg .pin circle{r:9}}
 `
 
 /** Survol, toucher, liste des villes et recherche de la commune de l'hôte */
@@ -508,12 +539,12 @@ export const SECTEUR_JS = `<script>
     if(ev&&ev.clientX!=null){var r=map.getBoundingClientRect();tip.style.left=Math.min(Math.max(ev.clientX-r.left,90),r.width-90)+'px';tip.style.top=Math.max(ev.clientY-r.top,44)+'px'}
     else{var b=p.getBBox();place(b.x+b.width/2,b.y)}
   }
-  function clear(){[].forEach.call(box.querySelectorAll('.hl,.sct-chip.on'),function(x){x.classList.remove('hl');x.classList.remove('on')});var pin=svg.querySelector('.pin');if(pin)pin.remove()}
+  function clear(){[].forEach.call(box.querySelectorAll('.hl,.sct-chip.on,.sct-pill.on'),function(x){x.classList.remove('hl');x.classList.remove('on')});var pin=svg.querySelector('.pin');if(pin)pin.remove()}
   svg.addEventListener('pointermove',function(ev){var p=ev.target.closest('path[data-n]');if(p&&ev.pointerType==='mouse')show(p,ev);else if(ev.pointerType==='mouse'&&!svg.querySelector('.hl'))tip.hidden=true});
   svg.addEventListener('pointerleave',function(){if(!svg.querySelector('.hl'))tip.hidden=true});
   svg.addEventListener('click',function(ev){var p=ev.target.closest('path[data-n]');clear();if(!p){tip.hidden=true;return}p.classList.add('hl');var c=box.querySelector('.sct-chip[data-n="'+p.getAttribute('data-n').replace(/"/g,'\\\\"')+'"]');if(c)c.classList.add('on');show(p,ev)});
   box.addEventListener('click',function(ev){
-    var c=ev.target.closest('button.sct-chip');if(!c)return;
+    var c=ev.target.closest('button.sct-chip,button.sct-pill');if(!c)return;
     var name=c.getAttribute('data-n'),p=svg.querySelector('path[data-n="'+name.replace(/"/g,'\\\\"')+'"]');
     var was=c.classList.contains('on');clear();if(was){tip.hidden=true;return}
     c.classList.add('on');if(p){p.classList.add('hl');show(p)}else tip.hidden=true;
