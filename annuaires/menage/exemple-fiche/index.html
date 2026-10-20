@@ -222,6 +222,9 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 .sct-svg .lb text,.sct-svg .ctr text,.sct-svg .pin text{font-size:12.5px;font-weight:600;fill:var(--td);paint-order:stroke;stroke:#fff;stroke-width:3.5px;stroke-linejoin:round}
 .sct-svg .ctr{pointer-events:none}
 .sct-svg .ctr circle{fill:#FFD56B;stroke:var(--g);stroke-width:2.2}
+.sct-svg .lb.pole circle{fill:#FFD56B;stroke:var(--g);stroke-width:2.2}
+.sct-svg .lb.pole text{font-size:14px}
+.sct-chip.pole{font-weight:600}
 .sct-svg .ctr text{font-size:14px}
 .sct-svg .radl{font-size:11.5px;font-weight:600;fill:var(--g);paint-order:stroke;stroke:#E8EEEA;stroke-width:3px}
 .sct-svg .pin{pointer-events:none}
@@ -257,7 +260,7 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 .sct-r .far{color:#B4466B;font-weight:600}
 .sct-r a{color:var(--g);font-weight:600}
 .sct-cap{font-size:11.5px;color:var(--tl);line-height:1.55;margin-top:12px}
-@media(max-width:560px){.sct-inset{width:46px;height:46px}.sct-v{font-size:19px}}
+@media(max-width:560px){.sct-inset{width:46px;height:46px}.sct-v{font-size:19px}.sct-svg .lb text{display:none}.sct-svg .lb circle{r:5}.sct-svg .ctr text{font-size:25px;stroke-width:6px}.sct-svg .ctr circle{r:9}.sct-svg .dl{font-size:17px}.sct-svg .radl{font-size:19px;stroke-width:5px}.sct-svg .pin text{font-size:22px;stroke-width:6px}.sct-svg .pin circle{r:9}}
 
 
 .card{position:relative}
@@ -661,8 +664,13 @@ async function contactSubmit(e) {
     return loading;
   }
   q.addEventListener('focus',load);
+  // Plusieurs secteurs : distance au secteur le plus proche (20/10/2026)
+  function nearest(pt){
+    if(!D.po)return{d:km(D.c,pt),v:D.v};
+    var b=null;D.po.forEach(function(p){var d=km(p.c,pt);if(!b||d<b.d)b={d:d,v:p.n}});return b;
+  }
   function verdict(c){
-    var d=Math.round(km(D.c,[c.lon,c.lat])),loin=de(D.v),cv=D.cv.some(function(x){return n(x)===c.n});
+    var nr=nearest([c.lon,c.lat]),d=Math.round(nr.d),loin=de(nr.v),cv=D.cv.some(function(x){return n(x)===c.n});
     var dep=D.d.indexOf(c.dep)>=0,depNom=D.dn[D.d.indexOf(c.dep)];
     var where='<b>'+e(c.nom)+'</b> est à '+d+' km '+e(loin)+'.';
     if(D.fr)return '<span class="ok">Oui.</span> '+e(D.p)+' se déplace dans toute la France. '+where;
@@ -670,6 +678,7 @@ async function contactSubmit(e) {
     if(cv)return '<span class="ok">Oui.</span> '+e(c.nom)+' fait partie des villes indiquées par '+e(D.p)+' ('+d+' km '+e(loin)+').';
     if(dep)return '<span class="ok">Oui.</span> '+e(c.nom)+' est dans le département indiqué ('+e(depNom)+'), à '+d+' km '+e(loin)+'.';
     if(D.km&&d<=D.km)return '<span class="ok">Oui.</span> '+where+' C’est dans le rayon de '+D.km+' km.';
+    if(D.po&&d<=15)return '<span class="ok">Oui.</span> '+where+' C’est un de ses secteurs.';
     var near=D.km?d<=D.km*1.25+8:d<=25;
     if(near)return '<span class="near">Juste à côté.</span> '+where+' Écris à '+e(D.p)+' : un déplacement est souvent possible.';
     return '<span class="far">Un peu loin.</span> '+where+' Tu peux écrire à '+e(D.p)+' quand même, ou <a href="/trouver-un-pro?metier='+(D.m==='menage'?'menage':'photographe')+'&ville='+encodeURIComponent(c.nom)+'">décrire ton besoin aux pros proches de chez toi</a>.';
@@ -687,7 +696,7 @@ async function contactSubmit(e) {
     g.appendChild(ci);g.appendChild(t);svg.appendChild(g);tip.hidden=true;
   }
   function render(){
-    sug.innerHTML=items.map(function(c,i){return '<button type="button" role="option" data-i="'+i+'"'+(i===act?' class="on"':'')+'>'+e(c.nom)+' <small>'+Math.round(km(D.c,[c.lon,c.lat]))+' km</small></button>'}).join('');
+    sug.innerHTML=items.map(function(c,i){return '<button type="button" role="option" data-i="'+i+'"'+(i===act?' class="on"':'')+'>'+e(c.nom)+' <small>'+Math.round(nearest([c.lon,c.lat]).d)+' km'+(D.po?' '+e(de(nearest([c.lon,c.lat]).v)):'')+'</small></button>'}).join('');
     sug.hidden=!items.length;
   }
   var timer;
@@ -696,9 +705,9 @@ async function contactSubmit(e) {
     if(v.length<2){items=[];render();return}
     timer=setTimeout(function(){load().then(function(all){
       var a=[],b=[];all.forEach(function(c){if(c.n.indexOf(v)===0)a.push(c);else if(c.n.indexOf(' '+v)>=0)b.push(c)});
-      var by=function(x,y){return km(D.c,[x.lon,x.lat])-km(D.c,[y.lon,y.lat])};
+      var by=function(x,y){return nearest([x.lon,x.lat]).d-nearest([y.lon,y.lat]).d};
       items=a.sort(by).concat(b.sort(by)).slice(0,6);act=-1;render();
-      if(!items.length)res.innerHTML='Aucune commune trouvée près '+e(de(D.v))+'. Écris directement à '+e(D.p)+' pour lui demander.';
+      if(!items.length)res.innerHTML='Aucune commune trouvée près '+(D.po?'de ses secteurs':e(de(D.v)))+'. Écris directement à '+e(D.p)+' pour lui demander.';
     })},120);
   });
   q.addEventListener('keydown',function(ev){

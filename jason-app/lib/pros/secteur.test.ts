@@ -54,4 +54,21 @@ describe('secteur des fiches pros', () => {
       expect(svg.length, `${ville} : ${zone}`).toBeLessThan(60000)
     }
   })
+  it('plusieurs villes éloignées : un secteur par ville, région comprise, rien au-delà de 250 km oublié', async () => {
+    const { resolveSecteur, secteurHtml } = await load()
+    const s = resolveSecteur({ ville: 'Paris', zone: 'Le Mans, Lille, Paris Ile de France, Nantes' })
+    expect(s.multi).toBe(true)
+    expect(s.poles.map((p: { label: string }) => p.label)).toEqual(['Paris et Île-de-France', 'Le Mans', 'Lille', 'Nantes'])
+    expect(s.regions).toEqual(['Île-de-France'])
+    expect(s.unknown).toEqual([])
+    const h = secteurHtml({ ville: 'Paris', zone: 'Le Mans, Lille, Paris Ile de France, Nantes', prenom: 'Eric', metier: 'menage' })
+    expect(h).toContain('4 secteurs')
+    expect(h).not.toContain('jusqu’à')
+  })
+  it('villes proches : toujours une seule ville et son rayon', async () => {
+    const { resolveSecteur } = await load()
+    const s = resolveSecteur({ ville: 'Lyon', zone: 'Lyon + 40 km, Villeurbanne, Vienne' })
+    expect(s.multi).toBe(false)
+    expect(s.poles).toHaveLength(1)
+  })
 })

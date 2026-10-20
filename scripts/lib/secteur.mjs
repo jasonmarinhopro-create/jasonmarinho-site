@@ -140,17 +140,86 @@ export function resolveSecteur({ ville, zone, villes }) {
     if (FRANCE.test(n)) { out.france = true; continue }
     for (let i = 0; i < 3 && PREFIX.test(n); i++) n = n.replace(PREFIX, '')
     if (!n || IGNORE.test(n)) continue
-    const c = communeFrom(t, centre.c, 250)
-    if (c) { if (!seen.has(c.code)) { seen.add(c.code); out.communes.push(c) } continue }
-    const d = findDep(n)
-    if (d) { if (!out.deps.includes(d.code)) out.deps.push(d.code); continue }
-    const area = AREAS[n]
-    if (area) { for (const code of area) if (!out.deps.includes(code)) out.deps.push(code); continue }
-    const r = findRegion(n)
-    if (r) { if (!out.regions.includes(r.nom)) out.regions.push(r.nom); for (const code of r.deps) if (!out.deps.includes(code)) out.deps.push(code); continue }
+    // Commune citée : la plus proche des homonymes, en France métropolitaine (avant le 20/10/2026 :
+    // rien au-delà de 250 km, Nantes oubliée pour un pro de Paris qui travaille aussi à Nantes)
+    // Ville proche d'abord, puis département ou région (« Toute la Bretagne » n'est pas la commune
+    // de Bretagne, dans le Territoire de Belfort), puis une ville éloignée
+    if (addCommune(out, seen, withNom(communeFrom(t, centre.c, 250), t))) continue
+    if (addArea(out, n)) continue
+    if (addCommune(out, seen, withNom(communeFrom(t, centre.c, 1100), t))) continue
+    // « Paris Ile de France », « Lille Nord » : une commune suivie d'une région ou d'un département
+    const w = n.split(' ')
+    let split = false
+    for (let i = w.length - 1; i >= 1 && !split; i--) {
+      const head = w.slice(0, i).join(' '), tail = w.slice(i).join(' ')
+      if (!findDep(tail) && !AREAS[tail] && !findRegion(tail)) continue
+      const c = communeFrom(head, centre.c, 1100)
+      if (!c && !findDep(head) && !findRegion(head)) continue
+      if (c) addCommune(out, seen, withNom(c, w.slice(0, i).join(' '))); else addArea(out, head)
+      addArea(out, tail)
+      split = true
+    }
+    if (split) continue
     if (!out.unknown.includes(t.trim())) out.unknown.push(t.trim())
   }
+  out.poles = poles(out)
+  out.multi = out.poles.length > 1
   return out
+}
+
+/** Les données IGN n'ont pas l'article (« Mans ») : nom écrit par le pro quand il le porte (« Le Mans ») */
+function withNom(c, typed) {
+  if (!c) return c
+  let n = normNom(typed)
+  for (let i = 0; i < 3 && PREFIX.test(n); i++) n = n.replace(PREFIX, '')
+  const m = n.match(/^(les|le|la|l) (.+)$/)
+  if (!m || m[2] !== c.n) return c
+  const art = { les: 'Les ', le: 'Le ', la: 'La ', l: 'L’' }[m[1]]
+  return { ...c, nom: art + c.nom }
+}
+
+function addCommune(out, seen, c) {
+  if (!c) return false
+  if (c.code !== out.centre.code && !seen.has(c.code)) { seen.add(c.code); out.communes.push(c) }
+  return true
+}
+function addArea(out, n) {
+  const d = findDep(n)
+  if (d) { if (!out.deps.includes(d.code)) out.deps.push(d.code); return true }
+  const area = AREAS[n]
+  if (area) { for (const code of area) if (!out.deps.includes(code)) out.deps.push(code); return true }
+  const r = findRegion(n)
+  if (r) { if (!out.regions.includes(r.nom)) out.regions.push(r.nom); for (const code of r.deps) if (!out.deps.includes(code)) out.deps.push(code); return true }
+  return false
+}
+
+/** Au-delà de cette distance de la ville principale, une ville citée ouvre un autre secteur */
+export const MULTI_KM = 100
+const POLE_KM = 60
+const regionOf = dep => regions().find(r => r.deps.includes(dep))?.nom ?? null
+
+/**
+ * Secteurs d'un pro qui travaille dans des villes éloignées (20/10/2026, Paris, Lille, Le Mans,
+ * Nantes) : la ville principale et chaque ville citée à plus de MULTI_KM, les villes proches
+ * rangées dans le secteur le plus près. Un seul secteur = la carte habituelle (ville + rayon).
+ */
+export function poles(sec) {
+  const out = [{ a: sec.centre, villes: [] }]
+  const far = sec.communes.filter(c => distKm(sec.centre.c, c.c) > MULTI_KM).sort((x, y) => distKm(sec.centre.c, x.c) - distKm(sec.centre.c, y.c))
+  for (const c of far) if (!out.some(p => distKm(p.a.c, c.c) <= POLE_KM)) out.push({ a: c, villes: [] })
+  for (const c of sec.communes) {
+    if (out.some(p => p.a.code === c.code)) continue
+    let best = out[0], bd = Infinity
+    for (const p of out) { const d = distKm(p.a.c, c.c); if (d < bd) { bd = d; best = p } }
+    best.villes.push(c)
+  }
+  return out.map((p, i) => {
+    const reg = regionOf(p.a.dep)
+    // « Paris et Île-de-France » quand la région du secteur est citée en entier
+    const nom = i === 0 ? sec.nom : p.a.nom
+    const label = reg && sec.regions.includes(reg) ? `${nom} et ${reg}` : i === 0 && sec.km ? `${nom} et ${sec.km} km autour` : nom
+    return { a: p.a, nom, label, region: reg, villes: p.villes }
+  })
 }
 
 // ── Dessin ─────────────────────────────────────────────────────────
@@ -235,7 +304,7 @@ export function secteurMap(sec) {
   }
   const budget = Math.max(6000, BUDGET - land.length - depZone.length)
   let comm = '', texture = true
-  const draw = (c, cls, tol) => { const d = tracer(v, c.r, tol); return d ? `<path class="${cls}" data-n="${esc(c.nom)}" data-d="${Math.round(distKm(sec.centre.c, c.c))}" d="${d}"/>` : '' }
+  const draw = (c, cls, tol) => { const d = tracer(v, c.r, tol); return d ? `<path class="${cls}" data-n="${esc(c.nom)}"${sec.multi ? '' : ` data-d="${Math.round(distKm(sec.centre.c, c.c))}"`} d="${d}"/>` : '' }
   for (const tol of [2, 3, 4, 6, 9]) {
     comm = cand.map(([c, cls]) => draw(c, cls, cls === 'ic' || cls === 'id' || cls === 'nb' ? tol : 2)).join('')
     if (comm.length <= budget) break
@@ -256,7 +325,8 @@ export function secteurMap(sec) {
     const [x, y] = P(c.c), w = c.nom.length * 6.8
     const t = [[x + 6, y + 4, 'start', [x + 4, y - 8, x + 8 + w, y + 6]], [x - 6, y + 4, 'end', [x - 8 - w, y - 8, x - 4, y + 6]], [x, y - 8, 'middle', [x - w / 2, y - 20, x + w / 2, y - 6]], [x, y + 17, 'middle', [x - w / 2, y + 5, x + w / 2, y + 19]]].find(t => !hit(t[3]))
     if (t) boxes.push(t[3])
-    return `<g class="lb"><circle cx="${x}" cy="${y}" r="3.2"/>${t ? `<text x="${Math.round(t[0])}" y="${Math.round(t[1])}" text-anchor="${t[2]}">${esc(c.nom)}</text>` : ''}</g>`
+    const pole = sec.multi && sec.poles.some(p => p.a.code === c.code)
+    return `<g class="lb${pole ? ' pole' : ''}"><circle cx="${x}" cy="${y}" r="${pole ? 6 : 3.2}"/>${t ? `<text x="${Math.round(t[0])}" y="${Math.round(t[1])}" text-anchor="${t[2]}">${esc(c.nom)}</text>` : ''}</g>`
   }).join('')
   const right = C[0] > W - 160
   const svg = `<svg class="sct-svg" viewBox="0 0 ${W} ${v.H}" role="img" aria-label="Carte du secteur : ${esc(sec.nom)}" data-p="${v.x0.toFixed(1)},${v.y1.toFixed(1)},${(v.kx * v.s).toFixed(5)},${v.s.toFixed(5)}"><path class="land${sec.france ? ' fr' : ''}" d="${land}"/>${depZone}${comm}${rPx ? `<circle class="rad${texture ? '' : ' fill'}" cx="${C[0]}" cy="${C[1]}" r="${Math.round(rPx)}"/>` : ''}${depLbl}${labels}<g class="ctr"><circle cx="${C[0]}" cy="${C[1]}" r="6"/><text x="${right ? C[0] - 10 : C[0] + 10}" y="${C[1] - 9}" text-anchor="${right ? 'end' : 'start'}">${esc(sec.nom)}</text></g>${rPx && rPx > 40 ? `<text class="radl" x="${Math.round(C[0] + rPx * 0.71 + 4)}" y="${Math.round(C[1] + rPx * 0.71 + 12)}">${sec.km} km</text>` : ''}</svg>`
@@ -279,6 +349,14 @@ function insetHtml(v) {
 /** Départements où chercher la commune de l'hôte (fichiers /geo/communes/<dep>.json) */
 function searchDeps(sec, v) {
   if (sec.france) return []
+  if (sec.multi) {
+    // Autour de chaque secteur : ses départements les plus proches (fichiers chargés au premier clic)
+    const list = []
+    const per = Math.max(2, Math.floor(16 / sec.poles.length))
+    for (const p of sec.poles) for (const d of [...departements()].sort((a, b) => distKm(p.a.c, a.c) - distKm(p.a.c, b.c)).slice(0, per)) if (!list.includes(d.code)) list.push(d.code)
+    for (const code of sec.deps) if (list.length < 20 && !list.includes(code)) list.push(code)
+    return list.slice(0, 20)
+  }
   const pad = Math.max((v.x1 - v.x0), (v.y1 - v.y0)) * 0.3
   const list = departements().filter(d => !(d.bb[2] < v.x0 - pad || d.bb[0] > v.x1 + pad || d.bb[3] < v.y0 - pad || d.bb[1] > v.y1 + pad))
     .sort((a, b) => distKm(sec.centre.c, a.c) - distKm(sec.centre.c, b.c)).map(d => d.code)
@@ -300,13 +378,24 @@ export function secteurHtml({ ville, zone, villes, prenom, metier, annot = '' })
   const far = dist[dist.length - 1]
   const depNames = sec.deps.map(code => departements().find(d => d.code === code)?.nom).filter(Boolean)
   const stats = []
-  if (sec.france) stats.push(['Toute la France', 'se déplace partout'])
-  if (sec.km) stats.push([String(nbRayon), `communes à moins de ${sec.km} km ${de(sec.nom)}`])
-  if (sec.regions.length) stats.push([sec.regions.join(', '), sec.regions.length > 1 ? 'régions entières' : 'région entière'])
-  else if (depNames.length) stats.push([depNames.length > 2 ? `${depNames.length} départements` : depNames.join(', '), depNames.length > 1 ? 'départements entiers' : 'département entier'])
-  if (far && (!sec.km || far.km > sec.km)) stats.push([`${far.km} km`, `jusqu’à ${far.c.nom}`])
-  else if (far) stats.push([`${dist.length} ville${dist.length > 1 ? 's' : ''}`, 'citées par ' + prenom])
-  const chips = [
+  if (sec.multi) {
+    // Plusieurs secteurs : leur nombre et leurs régions, jamais « X km jusqu'à … » (20/10/2026)
+    const regs = [...new Set(sec.poles.map(p => p.region).filter(Boolean))]
+    stats.push([`${sec.poles.length} secteurs`, regs.join(' · ') || 'villes éloignées'])
+    if (sec.km) stats.push([String(nbRayon), `communes à moins de ${sec.km} km ${de(sec.nom)}`])
+  } else {
+    if (sec.france) stats.push(['Toute la France', 'se déplace partout'])
+    if (sec.km) stats.push([String(nbRayon), `communes à moins de ${sec.km} km ${de(sec.nom)}`])
+    if (sec.regions.length) stats.push([sec.regions.join(', '), sec.regions.length > 1 ? 'régions entières' : 'région entière'])
+    else if (depNames.length) stats.push([depNames.length > 2 ? `${depNames.length} départements` : depNames.join(', '), depNames.length > 1 ? 'départements entiers' : 'département entier'])
+    if (far && (!sec.km || far.km > sec.km)) stats.push([`${far.km} km`, `jusqu’à ${far.c.nom}`])
+    else if (far) stats.push([`${dist.length} ville${dist.length > 1 ? 's' : ''}`, 'citées par ' + prenom])
+  }
+  const chips = sec.multi ? [
+    ...sec.poles.map(p => `<button type="button" class="sct-chip pole" data-n="${esc(p.a.nom)}">${esc(p.label)}</button>`),
+    ...sec.poles.flatMap(p => p.villes).map(c => `<button type="button" class="sct-chip" data-n="${esc(c.nom)}">${esc(c.nom)}</button>`),
+    ...sec.unknown.slice(0, 6).map(u => `<span class="sct-chip txt">${esc(u)}</span>`),
+  ].join('') : [
     ...dist.map(({ c, km }) => `<button type="button" class="sct-chip" data-n="${esc(c.nom)}">${esc(c.nom)} <small>${km} km</small></button>`),
     ...depNames.slice(0, 6).map(n => `<button type="button" class="sct-chip dep" data-n="${esc(n)}">${esc(n)}</button>`),
     ...sec.unknown.slice(0, 6).map(u => `<span class="sct-chip txt">${esc(u)}</span>`),
@@ -314,11 +403,12 @@ export function secteurHtml({ ville, zone, villes, prenom, metier, annot = '' })
   const data = {
     v: sec.nom, c: [sec.centre.c[0] / Q, sec.centre.c[1] / Q], km: sec.km, fr: sec.france, p: prenom,
     d: sec.deps, dn: depNames, cv: sec.communes.map(c => c.nom), s: searchDeps(sec, v), m: metier,
+    ...(sec.multi ? { po: sec.poles.map(p => ({ n: p.a.code === sec.centre.code ? sec.nom : p.a.nom, c: [p.a.c[0] / Q, p.a.c[1] / Q] })) } : {}),
   }
   return `<section class="card vt-sec sct" id="zone" style="position:relative">${annot}
   <h2>Où j’interviens</h2>
   ${stats.length ? `<div class="sct-stats">${stats.slice(0, 3).map(([a, b]) => `<div><div class="sct-v">${esc(a)}</div><div class="sct-l">${esc(b)}</div></div>`).join('')}</div>` : ''}
-  <div class="sct-map">${svg}${sec.france ? '' : insetHtml(v)}<div class="sct-tip" hidden></div></div>
+  <div class="sct-map">${svg}${sec.france || sec.multi ? '' : insetHtml(v)}<div class="sct-tip" hidden></div></div>
   ${chips ? `<div class="sct-chips">${chips}</div>` : ''}
   <div class="sct-find">
     <label for="sct-q">Ton logement est à…</label>
@@ -358,6 +448,9 @@ export const SECTEUR_CSS = `
 .sct-svg .lb text,.sct-svg .ctr text,.sct-svg .pin text{font-size:12.5px;font-weight:600;fill:var(--td);paint-order:stroke;stroke:#fff;stroke-width:3.5px;stroke-linejoin:round}
 .sct-svg .ctr{pointer-events:none}
 .sct-svg .ctr circle{fill:#FFD56B;stroke:var(--g);stroke-width:2.2}
+.sct-svg .lb.pole circle{fill:#FFD56B;stroke:var(--g);stroke-width:2.2}
+.sct-svg .lb.pole text{font-size:14px}
+.sct-chip.pole{font-weight:600}
 .sct-svg .ctr text{font-size:14px}
 .sct-svg .radl{font-size:11.5px;font-weight:600;fill:var(--g);paint-order:stroke;stroke:#E8EEEA;stroke-width:3px}
 .sct-svg .pin{pointer-events:none}
@@ -434,8 +527,13 @@ export const SECTEUR_JS = `<script>
     return loading;
   }
   q.addEventListener('focus',load);
+  // Plusieurs secteurs : distance au secteur le plus proche (20/10/2026)
+  function nearest(pt){
+    if(!D.po)return{d:km(D.c,pt),v:D.v};
+    var b=null;D.po.forEach(function(p){var d=km(p.c,pt);if(!b||d<b.d)b={d:d,v:p.n}});return b;
+  }
   function verdict(c){
-    var d=Math.round(km(D.c,[c.lon,c.lat])),loin=de(D.v),cv=D.cv.some(function(x){return n(x)===c.n});
+    var nr=nearest([c.lon,c.lat]),d=Math.round(nr.d),loin=de(nr.v),cv=D.cv.some(function(x){return n(x)===c.n});
     var dep=D.d.indexOf(c.dep)>=0,depNom=D.dn[D.d.indexOf(c.dep)];
     var where='<b>'+e(c.nom)+'</b> est à '+d+' km '+e(loin)+'.';
     if(D.fr)return '<span class="ok">Oui.</span> '+e(D.p)+' se déplace dans toute la France. '+where;
@@ -443,6 +541,7 @@ export const SECTEUR_JS = `<script>
     if(cv)return '<span class="ok">Oui.</span> '+e(c.nom)+' fait partie des villes indiquées par '+e(D.p)+' ('+d+' km '+e(loin)+').';
     if(dep)return '<span class="ok">Oui.</span> '+e(c.nom)+' est dans le département indiqué ('+e(depNom)+'), à '+d+' km '+e(loin)+'.';
     if(D.km&&d<=D.km)return '<span class="ok">Oui.</span> '+where+' C’est dans le rayon de '+D.km+' km.';
+    if(D.po&&d<=15)return '<span class="ok">Oui.</span> '+where+' C’est un de ses secteurs.';
     var near=D.km?d<=D.km*1.25+8:d<=25;
     if(near)return '<span class="near">Juste à côté.</span> '+where+' Écris à '+e(D.p)+' : un déplacement est souvent possible.';
     return '<span class="far">Un peu loin.</span> '+where+' Tu peux écrire à '+e(D.p)+' quand même, ou <a href="/trouver-un-pro?metier='+(D.m==='menage'?'menage':'photographe')+'&ville='+encodeURIComponent(c.nom)+'">décrire ton besoin aux pros proches de chez toi</a>.';
@@ -460,7 +559,7 @@ export const SECTEUR_JS = `<script>
     g.appendChild(ci);g.appendChild(t);svg.appendChild(g);tip.hidden=true;
   }
   function render(){
-    sug.innerHTML=items.map(function(c,i){return '<button type="button" role="option" data-i="'+i+'"'+(i===act?' class="on"':'')+'>'+e(c.nom)+' <small>'+Math.round(km(D.c,[c.lon,c.lat]))+' km</small></button>'}).join('');
+    sug.innerHTML=items.map(function(c,i){return '<button type="button" role="option" data-i="'+i+'"'+(i===act?' class="on"':'')+'>'+e(c.nom)+' <small>'+Math.round(nearest([c.lon,c.lat]).d)+' km'+(D.po?' '+e(de(nearest([c.lon,c.lat]).v)):'')+'</small></button>'}).join('');
     sug.hidden=!items.length;
   }
   var timer;
@@ -469,9 +568,9 @@ export const SECTEUR_JS = `<script>
     if(v.length<2){items=[];render();return}
     timer=setTimeout(function(){load().then(function(all){
       var a=[],b=[];all.forEach(function(c){if(c.n.indexOf(v)===0)a.push(c);else if(c.n.indexOf(' '+v)>=0)b.push(c)});
-      var by=function(x,y){return km(D.c,[x.lon,x.lat])-km(D.c,[y.lon,y.lat])};
+      var by=function(x,y){return nearest([x.lon,x.lat]).d-nearest([y.lon,y.lat]).d};
       items=a.sort(by).concat(b.sort(by)).slice(0,6);act=-1;render();
-      if(!items.length)res.innerHTML='Aucune commune trouvée près '+e(de(D.v))+'. Écris directement à '+e(D.p)+' pour lui demander.';
+      if(!items.length)res.innerHTML='Aucune commune trouvée près '+(D.po?'de ses secteurs':e(de(D.v)))+'. Écris directement à '+e(D.p)+' pour lui demander.';
     })},120);
   });
   q.addEventListener('keydown',function(ev){
