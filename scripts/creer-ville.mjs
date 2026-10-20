@@ -71,7 +71,9 @@ const today = new Date().toISOString().slice(0, 10)
 for (const p of PAGE_PREFIXES) {
   const loc = `https://jasonmarinho.com/${p}-${slug}`
   if (sitemap.includes(`<loc>${loc}</loc>`)) continue
-  sitemap = sitemap.replace('</urlset>', `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n</urlset>`)
+  // Avant la section Blog : rebuild-blog.mjs réécrit tout ce qui la suit
+  const anchor = sitemap.includes('  <!-- ── Blog ── -->') ? '  <!-- ── Blog ── -->' : '</urlset>'
+  sitemap = sitemap.replace(anchor, `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n${anchor}`)
   console.log(`+ ${loc}`)
 }
 write('sitemap.xml', sitemap)
