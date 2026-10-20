@@ -6,6 +6,7 @@ import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
 import { founderSeatFilter } from '@/lib/pros/founder-seats'
 import { normSiteUrl, siteUrlOk, SITE_URL_ERROR } from '@/lib/pros/site-url'
+import { checkoutCustomer } from '@/lib/stripe/customer'
 
 const log = logger('creer-fiche-menage/actions')
 const FOUNDER_QUOTA = 20
@@ -136,7 +137,7 @@ export async function submitCleanerSignup(
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
-      customer_email: user.email,
+      ...(await checkoutCustomer({ email: user.email, userId: user.id })),
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${APP_URL}/dashboard/ma-fiche-menage?paid=1`,
       cancel_url: `${APP_URL}/dashboard/ma-fiche-menage?canceled=1`,

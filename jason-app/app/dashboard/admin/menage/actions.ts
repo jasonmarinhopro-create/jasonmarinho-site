@@ -12,6 +12,7 @@ import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
+import { checkoutCustomer } from '@/lib/stripe/customer'
 
 const log = logger('admin/menage/actions')
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
@@ -86,7 +87,7 @@ export async function approveCleaner(cleanerId: string): Promise<{ success?: boo
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
-      customer_email: cl.email,
+      ...(await checkoutCustomer({ email: cl.email })),
       line_items: [{ price: priceId, quantity: 1 }],
       metadata: {
         cleaner_id: cl.id,

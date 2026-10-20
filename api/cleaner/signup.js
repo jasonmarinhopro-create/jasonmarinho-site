@@ -6,6 +6,7 @@
 // Après paiement, l'équipe se connecte sur app.jasonmarinho.com et gère
 // sa fiche depuis /dashboard/ma-fiche-menage.
 
+const { findOrCreateCustomer } = require('../../scripts/lib/stripe-customer.cjs')
 const FOUNDER_QUOTA = 20
 const FOUNDER_PRICE_ID = process.env.STRIPE_CLEANER_FOUNDER_PRICE_ID || ''
 const STANDARD_PRICE_ID = process.env.STRIPE_CLEANER_STANDARD_PRICE_ID || ''
@@ -107,10 +108,13 @@ async function setProfileRole({ supabaseUrl, serviceKey, userId, role, fullName 
   }).catch(err => console.warn('[cleaner/signup] profile role patch failed', err))
 }
 
-async function createCheckoutSession({ stripeKey, priceId, email, metadata }) {
+async function createCheckoutSession({ stripeKey, priceId, email, metadata, name }) {
   const params = new URLSearchParams()
   params.append('mode', 'subscription')
-  params.append('customer_email', email)
+  // Un seul client Stripe par adresse : celui de sa fiche précédente s'il existe
+  const customerId = await findOrCreateCustomer(stripeKey, email, name)
+  if (customerId) params.append('customer', customerId)
+  else params.append('customer_email', email)
   params.append('line_items[0][price]', priceId)
   params.append('line_items[0][quantity]', '1')
   params.append('success_url', `${SITE_URL}/annuaires/menage/inscription/confirmation?status=paid`)
@@ -385,6 +389,7 @@ module.exports = async function handler(req, res) {
     stripeKey: STRIPE_KEY,
     priceId,
     email,
+    name: fullName,
     metadata: { cleaner_id: cleanerId, tier, user_id: userId },
   })
   if (!stripeResult.url) {

@@ -4,6 +4,7 @@ import { getAuthUser } from '@/lib/supabase/auth-user'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
 import { canResumePayment, founderSeatFilter, tierFor } from './founder-seats'
+import { checkoutCustomer } from '@/lib/stripe/customer'
 
 // Reprendre un paiement abandonné (14/10/2026, Jason : « une personne qui a
 // tout rempli, arrive au paiement et quitte : s'il revient, a-t-il un endroit
@@ -97,7 +98,7 @@ export async function resumeProCheckout(kind: ProKind, adminTargetId?: string): 
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
-      customer_email: fiche.email || user.email || undefined,
+      ...(await checkoutCustomer({ email: fiche.email || user.email, userId: fiche.user_id ?? user.id })),
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${back}${preview ? '&' : ''}paid=1`,
       cancel_url: `${back}${preview ? '&' : ''}canceled=1`,

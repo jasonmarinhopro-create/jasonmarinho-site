@@ -12,6 +12,7 @@ import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
+import { checkoutCustomer } from '@/lib/stripe/customer'
 
 const log = logger('admin/photographes/actions')
 const FROM_EMAIL = 'notifications@jasonmarinho.com'
@@ -106,7 +107,7 @@ export async function approvePhotographer(photographerId: string): Promise<{ suc
   try {
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
-      customer_email: ph.email,
+      ...(await checkoutCustomer({ email: ph.email })),
       line_items: [{ price: priceId, quantity: 1 }],
       metadata: {
         photographer_id: ph.id,

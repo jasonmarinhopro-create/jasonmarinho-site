@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
 import { STRIPE_PLANS, ALL_VALID_PRICE_IDS } from '@/lib/constants/stripe-plans'
 import { invalidateProfileCache } from '@/lib/queries/profile'
+import { findOrCreateCustomer } from '@/lib/stripe/customer'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
@@ -39,14 +40,16 @@ export async function POST(request: NextRequest) {
   }
 
   // Crée ou récupère le customer Stripe
+  // Même client Stripe que ses éventuelles fiches pros (une personne = un client)
   let customerId = profile?.stripe_customer_id ?? null
   if (!customerId) {
-    const customer = await stripe.customers.create({
-      email: user.email,
-      name: profile?.full_name ?? undefined,
-      metadata: { user_id: user.id },
-    })
-    customerId = customer.id
+    customerId = user.email
+      ? await findOrCreateCustomer({ email: user.email, name: profile?.full_name, userId: user.id }) ?? null
+      : null
+    if (!customerId) {
+      const customer = await stripe.customers.create({ email: user.email, name: profile?.full_name ?? undefined, metadata: { user_id: user.id } })
+      customerId = customer.id
+    }
     await db.from('profiles').update({ stripe_customer_id: customerId }).eq('id', user.id)
     invalidateProfileCache(user.id)
   }
