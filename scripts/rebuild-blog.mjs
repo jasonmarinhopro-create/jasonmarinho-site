@@ -133,6 +133,17 @@ function rebuildSitemap() {
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>`
+  // Une page hors blog ajoutée en fin de fichier (ex. creer-ville.mjs avant le 20/10/2026)
+  // tombe dans cette section : la remonter avant le blog au lieu de l'effacer
+  // (Roanne, Québec et le guide des Sables-d'Olonne avaient ainsi disparu le 19/10/2026).
+  const section = xml.match(blogSectionRegex)[0]
+  const strays = [...section.matchAll(/  <url>\n[\s\S]*?<\/url>/g)].map(m => m[0])
+    .filter(u => !/<loc>https:\/\/jasonmarinho\.com\/blog(?:[\/<])/.test(u))
+  if (strays.length) {
+    xml = xml.replace(section, section.replace(/  <url>\n[\s\S]*?<\/url>\n?/g, u => strays.includes(u.trimEnd()) ? '' : u))
+    xml = xml.replace('  <!-- ── Blog ── -->\n', `${strays.join('\n')}\n  <!-- ── Blog ── -->\n`)
+    console.log(`✓ sitemap.xml : ${strays.length} page(s) hors blog remontée(s) avant la section Blog`)
+  }
   xml = xml.replace(blogSectionRegex, `$1${blogIndex}\n${catEntries}\n${blogEntries}\n</urlset>\n`)
 
   writeFileSync(sitePath, xml, 'utf8')
