@@ -126,6 +126,15 @@ function proLigne(pro: ProMail, last: boolean): string {
 </tr></table></td></tr>`
 }
 
+/** Carte « Place libre » : aucun pro dans la zone pour l'instant */
+function attente(ville: string): string {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FBF6E8;border:1px solid #F1E3BC;border-radius:14px;margin:0 0 18px;"><tr>
+<td width="46" valign="middle" style="padding:16px 0 16px 16px;"><div style="width:42px;height:42px;border-radius:12px;background:#FFE8A8;font-family:${SANS};font-size:20px;line-height:42px;text-align:center;color:#8A5A12;">&#8987;</div></td>
+<td valign="middle" style="padding:16px 16px 16px 12px;"><div style="font-family:${SANS};font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:#8A5A12;">En file d’attente</div>
+<div style="margin-top:3px;font-family:${SERIF};font-size:19px;line-height:1.25;color:${INK};">Place libre à ${escHtml(ville)}</div></td>
+</tr></table>`
+}
+
 function etapes(items: string[]): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:4px 0 22px;">${items.map((t, i) => `<tr>
 <td width="30" valign="top" style="padding:6px 0;"><div style="width:22px;height:22px;border-radius:22px;border:1px solid ${LINE};font-family:${SANS};font-size:12px;font-weight:600;line-height:22px;text-align:center;color:${GREEN};">${i + 1}</div></td>
@@ -170,16 +179,24 @@ export function proEmail(d: DemandeMail, o: { proPrenom: string; manuel: boolean
 }
 
 /** À l'hôte : sa demande est partie (ou enregistrée sans pro), qui l'a reçue, la suite */
-export function hoteEmail(d: DemandeMail, o: { pros: ProMail[]; vague: number; suiviUrl: string | null; sansProQui: string; guideUrl: string; partielNote: string | null }): { subject: string; html: string } {
+export function hoteEmail(d: DemandeMail, o: { pros: ProMail[]; vague: number; suiviUrl: string | null; sansProQui: string; guideUrl: string; partielNote: string | null; inscriptionUrl: string }): { subject: string; html: string } {
   const m = METIER[d.metier]
   const n = o.pros.length
   const bonjour = p(`Bonjour ${escHtml(prenom(d.nom))},`, 10)
   if (!n) {
     const body = [
       bonjour,
-      p(`Ta demande est bien enregistrée. Il n’y a pas encore ${escHtml(o.sansProQui)} près de ${escHtml(d.ville)} : on la transmet dès qu’un pro de ta zone rejoint l’annuaire, dans les 30 jours.`),
+      p(`Ta demande est bien enregistrée. Il n’y a pas encore ${escHtml(o.sansProQui)} près de ${escHtml(d.ville)}, alors on ne la laisse pas dormir :`),
+      attente(d.ville),
+      etapes([
+        `${d.metier === 'menage' ? 'La première équipe' : 'Le premier pro'} qui s’inscrit près de chez toi la reçoit automatiquement, pendant 30 jours.`,
+        'Jason la regarde lui-même et cherche quelqu’un de son côté.',
+        'Tu reçois un e-mail dès qu’un pro l’a entre les mains, et il te répond directement.',
+      ]),
       fiche(besoinRows(d, true)),
-      button(o.suiviUrl ?? o.guideUrl, o.suiviUrl ? 'Suivre ma demande' : 'Voir le guide de ta ville'),
+      button(o.suiviUrl ?? o.guideUrl, o.suiviUrl ? 'Suivre ma demande' : 'Voir l’annuaire'),
+      `<div style="height:16px;line-height:16px;font-size:0;">&nbsp;</div>`,
+      small(`Tu connais ${d.metier === 'menage' ? 'une équipe' : 'un pro'} dans ton coin ? ${link(o.inscriptionUrl, 'Envoie-lui ce lien')} : dès que sa fiche est en ligne, elle reçoit ta demande.`),
     ].join('')
     return { subject: `Ta demande à ${d.ville} est enregistrée`, html: layout({ preview: 'On la transmet dès qu’un pro de ta zone rejoint l’annuaire', etiquette: `Ta demande · ${m.etiquette}`, title: 'Ta demande est enregistrée', body, footer: FOOTER_HOTE }) }
   }
@@ -205,15 +222,15 @@ export function hoteEmail(d: DemandeMail, o: { pros: ProMail[]; vague: number; s
 }
 
 /** À l'hôte : Jason a transmis sa demande à un pro de plus */
-export function hoteManuelEmail(d: DemandeMail, pro: ProMail, suiviUrl: string | null): { subject: string; html: string } {
+export function hoteManuelEmail(d: DemandeMail, pro: ProMail, suiviUrl: string | null, premier = false): { subject: string; html: string } {
   const m = METIER[d.metier]
   const body = [
     p(`Bonjour ${escHtml(prenom(d.nom))},`, 10),
-    p(`Ta demande à ${escHtml(d.ville)} vient aussi d’être transmise à ce pro. Il te répond directement par e-mail.`),
+    p(premier ? `Bonne nouvelle : Jason a trouvé un pro pour ta demande à ${escHtml(d.ville)} et vient de la lui transmettre. Il te répond directement par e-mail.` : `Ta demande à ${escHtml(d.ville)} vient aussi d’être transmise à ce pro. Il te répond directement par e-mail.`),
     `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid ${LINE};border-bottom:1px solid ${LINE};margin:0 0 22px;">${proLigne(pro, true)}</table>`,
     suiviUrl ? button(suiviUrl, 'Suivre ma demande') : '',
   ].join('')
-  return { subject: `Ta demande à ${d.ville} : un pro de plus l’a reçue`, html: layout({ preview: `${pro.nom} a reçu ta demande`, etiquette: `Ta demande · ${m.etiquette}`, title: 'Un pro de plus a reçu ta demande', body, footer: FOOTER_HOTE }) }
+  return { subject: premier ? `Ta demande à ${d.ville} : un pro l’a reçue` : `Ta demande à ${d.ville} : un pro de plus l’a reçue`, html: layout({ preview: `${pro.nom} a reçu ta demande`, etiquette: `Ta demande · ${m.etiquette}`, title: premier ? 'Un pro a reçu ta demande' : 'Un pro de plus a reçu ta demande', body, footer: FOOTER_HOTE }) }
 }
 
 /** À Jason : le besoin sans les coordonnées, la suite, le lien vers la fiche du QG */

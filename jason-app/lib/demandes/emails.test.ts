@@ -8,8 +8,8 @@ const d = {
 const pros = [{ nom: 'Éclat Pro', ville: 'Nantes', url: 'https://jasonmarinho.com/annuaires/menage/eclat' }]
 const all = () => [
   proEmail(d, { proPrenom: 'Léa', manuel: false, adequation: null, filtre: false, demandesUrl: 'https://app.jasonmarinho.com/x' }).html,
-  hoteEmail(d, { pros, vague: 1, suiviUrl: 'https://jasonmarinho.com/ma-demande?t=a', sansProQui: 'd’équipe', guideUrl: 'g', partielNote: null }).html,
-  hoteEmail(d, { pros: [], vague: 1, suiviUrl: null, sansProQui: 'd’équipe de ménage inscrite', guideUrl: 'https://g', partielNote: null }).html,
+  hoteEmail(d, { pros, vague: 1, suiviUrl: 'https://jasonmarinho.com/ma-demande?t=a', sansProQui: 'd’équipe', guideUrl: 'g', partielNote: null, inscriptionUrl: 'https://i' }).html,
+  hoteEmail(d, { pros: [], vague: 1, suiviUrl: null, sansProQui: 'd’équipe de ménage inscrite', guideUrl: 'https://g', partielNote: null, inscriptionUrl: 'https://i' }).html,
   hoteManuelEmail(d, pros[0], null).html,
   adminEmail(d, { etiquette: 'Nouvelle demande', title: 'Un hôte cherche', texte: 'Partie', pros: [], qgUrl: 'https://q' }),
 ]
@@ -38,6 +38,6 @@ describe('e-mails de la demande', () => {
   })
   it('hôte : sans pro, guide si pas de suivi ; sujet au pluriel', () => {
     expect(all()[2]).toContain('https://g')
-    expect(hoteEmail(d, { pros: [...pros, ...pros], vague: 1, suiviUrl: null, sansProQui: '', guideUrl: '', partielNote: null }).subject).toBe('Ta demande à Nantes est partie chez 2 pros')
+    expect(hoteEmail(d, { pros: [...pros, ...pros], vague: 1, suiviUrl: null, sansProQui: '', guideUrl: '', partielNote: null, inscriptionUrl: 'https://i' }).subject).toBe('Ta demande à Nantes est partie chez 2 pros')
   })
 })

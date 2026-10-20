@@ -96,8 +96,9 @@ async function emailHote(d: DemandeInput, metier: DemandeMetier, pros: Pro[], va
     vague,
     suiviUrl: token ? suiviUrl(token) : null,
     sansProQui: metier === 'menage' ? 'd’équipe de ménage inscrite' : besoinPhoto(d.frequence)?.video ? 'de vidéaste inscrit' : 'de photographe inscrit',
-    guideUrl: `${SITE}/annuaires/${T[metier].dir}#villes`,
+    guideUrl: `${SITE}/annuaires/${T[metier].dir}`,
     partielNote: partiel(d, metier, pros),
+    inscriptionUrl: `${SITE}/annuaires/${T[metier].dir}/inscription`,
   })
   await r.emails.send({ from: FROM, to: d.email, subject, html })
     .catch(e => log.error('e-mail à l’hôte', { err: e instanceof Error ? e.message : String(e) }))
@@ -224,9 +225,9 @@ export async function listProsChoix(metier: DemandeMetier): Promise<ProChoix[]> 
   }))
 }
 
-async function emailHoteManuel(d: DemandeInput & { suivi_token?: string | null }, metier: DemandeMetier, pro: Pro) {
+async function emailHoteManuel(d: DemandeInput & { suivi_token?: string | null }, metier: DemandeMetier, pro: Pro, premier: boolean) {
   const r = resend(); if (!r) return
-  const { subject, html } = hoteManuelEmail(d, proMail(pro, metier), d.suivi_token ? suiviUrl(d.suivi_token) : null)
+  const { subject, html } = hoteManuelEmail(d, proMail(pro, metier), d.suivi_token ? suiviUrl(d.suivi_token) : null, premier)
   await r.emails.send({ from: FROM, to: d.email, subject, html })
     .catch(e => log.error('e-mail à l’hôte (envoi manuel)', { err: e instanceof Error ? e.message : String(e) }))
 }
@@ -250,7 +251,7 @@ export async function envoyerAUnPro(demandeId: string, proId: string): Promise<{
     last_round_at: new Date().toISOString(),
   }).eq('id', d.id)
   if (upErr) log.error('envoi manuel : mise à jour', { err: upErr.message })
-  await emailHoteManuel(d, d.metier, pro)
+  await emailHoteManuel(d, d.metier, pro, d.sent_to.length === 0)
   return { ok: true, nom: displayName(pro) }
 }
 

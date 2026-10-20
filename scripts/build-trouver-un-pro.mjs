@@ -200,6 +200,16 @@ details.more a{color:var(--g)}
 .done{display:grid;gap:18px;padding:26px clamp(18px,3vw,30px) 30px;animation:in .3s ease}
 .done .mark{width:62px;height:62px;border-radius:50%;background:var(--g);color:var(--y);display:grid;place-items:center;font-size:30px;animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
 @keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.nopro{border:1px solid var(--bd);border-radius:18px;background:linear-gradient(180deg,#FBF7EC,#fff 70%);padding:18px;display:grid;gap:14px}
+.np-top{display:flex;gap:13px;align-items:center}
+.np-ic{width:46px;height:46px;border-radius:14px;background:#FFF1C9;color:#8A5A12;display:grid;place-items:center;font-size:22px;flex-shrink:0}
+.np-k{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8A5A12}
+.np-t{font-family:'Fraunces',serif;font-size:21px;line-height:1.2;color:var(--td)}
+.np-rows{display:grid;gap:10px}
+.np-rows div{display:flex;gap:10px;font-size:14px;color:var(--tm);line-height:1.5}
+.np-rows i{color:var(--g);font-size:17px;flex-shrink:0;margin-top:2px}
+.np-share{font-size:13.5px;color:var(--tm);border-top:1px solid var(--bd);padding-top:12px;line-height:1.5}
+.np-share a{color:var(--g);font-weight:600}
 .tl{display:grid;gap:0}
 .tl div{display:grid;grid-template-columns:28px 1fr;gap:12px;position:relative;padding-bottom:16px}
 .tl div:not(:last-child)::before{content:'';position:absolute;left:13px;top:28px;bottom:0;width:2px;background:#E7E2D6}
@@ -578,12 +588,17 @@ details.more a{color:var(--g)}
     fb.className = 'done';
     fb.innerHTML = '<div class="mark"><i class="ph-bold ph-check"></i></div>' +
       '<h2 class="q">' + (n ? 'C’est parti, ' + esc(first) + ' !' : 'Ta demande est enregistrée, ' + esc(first)) + '</h2>' +
-      '<p class="sub" style="margin-top:-6px">' + (n ? 'Ta demande vient de partir chez ' + (n > 1 ? 'ces ' + n + ' ' + who(n) : 'ce ' + who(1)) + '. Un e-mail de confirmation t’attend (pense aux indésirables).' : 'Il n’y a pas encore de pro inscrit près de ' + esc(st.ville.trim()) + ' : elle part toute seule au premier qui s’inscrit dans les 30 jours, et Jason la regarde lui-même. Un e-mail de confirmation t’attend.') + '</p>' +
-      (pros.length ? '<div class="pros wide">' + pros.map(proCard).join('') + '</div>' : '') +
+      '<p class="sub" style="margin-top:-6px">' + (n ? 'Ta demande vient de partir chez ' + (n > 1 ? 'ces ' + n + ' ' + who(n) : 'ce ' + who(1)) + '. Un e-mail de confirmation t’attend (pense aux indésirables).' : 'Pas encore de pro inscrit près de ' + esc(st.ville.trim()) + ', mais on ne la laisse pas dormir. Un e-mail de confirmation t’attend (pense aux indésirables).') + '</p>' +
+      (pros.length ? '<div class="pros wide">' + pros.map(proCard).join('') + '</div>' :
+        '<div class="nopro"><div class="np-top"><span class="np-ic"><i class="ph-bold ph-hourglass-medium"></i></span><div><div class="np-k">En file d’attente</div><div class="np-t">Place libre à ' + esc(st.ville.trim()) + '</div></div></div>' +
+        '<div class="np-rows"><div><i class="ph-bold ph-user-plus"></i><span>' + (menage() ? 'La première équipe de ménage' : 'Le premier pro') + ' qui s’inscrit près de chez toi la reçoit automatiquement.</span></div>' +
+        '<div><i class="ph-bold ph-hand-heart"></i><span>Jason la regarde lui-même et cherche quelqu’un de son côté.</span></div>' +
+        '<div><i class="ph-bold ph-envelope-simple"></i><span>Tu reçois un e-mail dès qu’un pro l’a entre les mains.</span></div></div>' +
+        '<div class="np-share">Tu connais ' + (menage() ? 'une équipe' : 'un pro') + ' dans ton coin ? <a href="/annuaires/' + (menage() ? 'menage' : 'photographes') + '/inscription" target="_blank" rel="noopener">Envoie-lui ce lien</a> : sa fiche la recevra.</div></div>') +
       '<div><div class="h2" style="margin-bottom:12px">Et maintenant ?</div><div class="tl">' +
       '<div><span class="dot on"><i class="ph-bold ph-check"></i></span><span><b>Maintenant</b>' + (n ? 'Les ' + who(2) + ' reçoivent ta demande par e-mail, avec tes coordonnées.' : 'Ta demande est gardée et Jason est prévenu.') + '</span></div>' +
-      '<div><span class="dot"><i class="ph-bold ph-chat-circle-dots"></i></span><span><b>Sous 48 h</b>' + (n ? 'Ils te répondent directement, par e-mail ou par téléphone.' : 'Dès qu’un pro de ta zone s’inscrit, il la reçoit.') + '</span></div>' +
-      '<div><span class="dot"><i class="ph-bold ph-arrows-clockwise"></i></span><span><b>Sinon</b>' + (n ? 'D’autres pros de ta zone prennent le relais, sans rien à refaire.' : 'Au bout de 30 jours sans pro, tu en es prévenu.') + '</span></div>' +
+      '<div><span class="dot"><i class="ph-bold ph-chat-circle-dots"></i></span><span><b>' + (n ? 'Sous 48 h' : 'Dans les 30 jours') + '</b>' + (n ? 'Ils te répondent directement, par e-mail ou par téléphone.' : 'Un pro de ta zone la reçoit (inscription ou transmission par Jason) et te répond directement.') + '</span></div>' +
+      '<div><span class="dot"><i class="ph-bold ph-arrows-clockwise"></i></span><span><b>Sinon</b>' + (n ? 'D’autres pros de ta zone prennent le relais, sans rien à refaire.' : 'Au bout de 30 jours sans pro, ton lien de suivi te l’indique et tu peux refaire une demande.') + '</span></div>' +
       '</div></div>' +
       '<div class="acts">' + (b.suivi ? '<a class="btn" href="/ma-demande?t=' + encodeURIComponent(b.suivi) + '"><i class="ph-bold ph-eye"></i>Suivre ma demande</a>' : '') + '<a class="ghost" href="/annuaires/' + (menage() ? 'menage' : 'photographes') + '">Voir l’annuaire</a></div>' +
       (b.suivi ? '<p class="sub" style="margin-top:-6px;font-size:13.5px">Le lien de suivi est aussi dans ton e-mail. Tu y vois qui a pris ta demande en main.</p>' : '') +

@@ -1,6 +1,8 @@
 // Vercel serverless function : formulaire de contact d'une fiche ménage.
 // POST { slug, contactName, contactEmail, message, website, t }
 
+const { contactEmails } = require('../../scripts/lib/pro-contact-email.cjs')
+
 const rateLimitMap = new Map()
 function isRateLimited(key, max, windowMs) {
   const now = Date.now()
@@ -82,7 +84,8 @@ module.exports = async function handler(req, res) {
     return res.status(200).json({ ok: true })
   }
 
-  fetch(`${SUPABASE_URL}/rest/v1/cleaner_contacts`, {
+  // Awaité : sur Vercel, la fonction est gelée dès que la réponse part
+  const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/cleaner_contacts`, {
     method: 'POST',
     headers: {
       apikey: SERVICE_KEY,
@@ -100,7 +103,7 @@ module.exports = async function handler(req, res) {
   }).catch(err => { console.warn('[cleaner/contact] insert failed', err); return null })
   if (insertRes && !insertRes.ok) console.warn('[cleaner/contact] insert status', insertRes.status, await insertRes.text().catch(() => ''))
 
-  fetch(`${SUPABASE_URL}/rest/v1/rpc/increment_cleaner_contacts`, {
+  await fetch(`${SUPABASE_URL}/rest/v1/rpc/increment_cleaner_contacts`, {
     method: 'POST',
     headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ p_id: cleaner.id }),
@@ -108,37 +111,22 @@ module.exports = async function handler(req, res) {
 
   const RESEND_KEY = process.env.RESEND_API_KEY
   if (RESEND_KEY) {
-    await sendEmail({
-        from: 'notifications@jasonmarinho.com',
-        to: cleaner.email,
-        reply_to: contactEmail,
-        subject: `🧹 Nouvelle demande de ${escHtml(contactName)} via l'annuaire ménage`,
-        html: `<div style="font-family:-apple-system,Segoe UI,Helvetica,sans-serif;max-width:560px;padding:24px;background:#f7f5f0;border-radius:12px">
-<h2 style="font-family:Georgia,serif;color:#0F1A0D;margin:0 0 14px">Un hôte LCD souhaite te contacter</h2>
-<p style="color:#3D5038;font-size:14px;line-height:1.7;margin:0 0 14px">Bonjour ${escHtml(firstName)},</p>
-<p style="color:#3D5038;font-size:14px;line-height:1.7;margin:0 0 14px">Tu reçois cette demande via ta fiche sur l'annuaire des équipes de ménage LCD de Jason Marinho.</p>
-<div style="background:#fff;padding:16px;border-radius:8px;font-size:13.5px;line-height:1.7;color:#3D5038;border-left:3px solid #63D683">
-<strong>${escHtml(contactName)}</strong><br>
-<a href="mailto:${escHtml(contactEmail)}" style="color:#004C3F">${escHtml(contactEmail)}</a>
-</div>
-<div style="background:#fff;padding:16px;border-radius:8px;font-size:14px;line-height:1.75;color:#3D5038;margin-top:12px;white-space:pre-wrap">${escHtml(message)}</div>
-<p style="margin:18px 0 0"><a href="mailto:${escHtml(contactEmail)}" style="display:inline-block;background:#FFD56B;color:#003329;padding:11px 22px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">Répondre par email →</a></p>
-<p style="font-size:12px;color:#7A8C77;margin:22px 0 0;line-height:1.6">Tu peux répondre directement à cet email : ta réponse arrivera dans la boîte de ${escHtml(contactName)}. Aucune commission, aucun intermédiaire.</p>
-</div>`,
-      }, 'pro')
+    const sendEmail = (payload, label) =>
+      fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }).then(async r => {
+        if (!r.ok) console.error(`[cleaner/contact] resend ${label} failed`, r.status, await r.text().catch(() => ''))
+      }).catch(err => console.error(`[cleaner/contact] resend ${label} error`, err))
 
-    await sendEmail({
-        from: 'notifications@jasonmarinho.com',
-        to: contactEmail,
-        subject: `Ta demande à ${escHtml(displayName)} est partie 🧹`,
-        html: `<div style="font-family:-apple-system,Segoe UI,Helvetica,sans-serif;max-width:560px;padding:24px;background:#f7f5f0;border-radius:12px">
-<h2 style="font-family:Georgia,serif;color:#0F1A0D;margin:0 0 14px">Ta demande a bien été transmise</h2>
-<p style="color:#3D5038;font-size:14px;line-height:1.7;margin:0 0 14px">Bonjour ${escHtml(contactName)},</p>
-<p style="color:#3D5038;font-size:14px;line-height:1.7;margin:0 0 14px">Ta demande a été transmise à <strong>${escHtml(displayName)}</strong> (${escHtml(cleaner.ville)}). Réponse généralement sous 48h directement par email.</p>
-<div style="background:#fff;padding:14px 16px;border-radius:8px;font-size:13.5px;line-height:1.75;color:#3D5038;margin:14px 0;white-space:pre-wrap;border-left:3px solid #63D683">${escHtml(message)}</div>
-<p style="font-size:13px;color:#7A8C77;margin:18px 0 0;line-height:1.7">Rappel : Jason Marinho ne prend aucune commission. Le devis, le contrat et le paiement se font directement entre toi et l'équipe.</p>
-</div>`,
-      }, 'accuse-reception')
+    const mails = contactEmails({
+      metier: 'menage', proPrenom: firstName, proNom: displayName, proVille: cleaner.ville || null, proSlug: slug,
+      contactName, contactEmail, message,
+    })
+    // Awaités : sans await, la fonction est gelée après la réponse et Resend n'est jamais appelé
+    await sendEmail({ from: 'Jason Marinho <notifications@jasonmarinho.com>', to: cleaner.email, reply_to: contactEmail, ...mails.pro }, 'pro')
+    await sendEmail({ from: 'Jason Marinho <notifications@jasonmarinho.com>', to: contactEmail, ...mails.hote }, 'accuse-reception')
   }
 
   return res.status(200).json({ ok: true })
