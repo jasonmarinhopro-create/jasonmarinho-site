@@ -46,7 +46,7 @@ async function computeAdminOverview() {
   const [
     { count: totalUsers },
     { count: driingMembers },
-    { count: standardMembers },
+    { count: standardMembers, data: standardRows },
     { count: newThisMonth },
     { count: templatesCount },
     { count: formationsCount },
@@ -68,7 +68,7 @@ async function computeAdminOverview() {
   ] = await Promise.all([
     admin.from('profiles').select('*', { count: 'exact', head: true }),
     admin.from('profiles').select('*', { count: 'exact', head: true }).eq('plan', 'driing'),
-    admin.from('profiles').select('*', { count: 'exact', head: true }).eq('plan', 'standard'),
+    admin.from('profiles').select('stripe_price_id', { count: 'exact' }).eq('plan', 'standard').limit(1000),
     admin.from('profiles').select('*', { count: 'exact', head: true }).gte('created_at', startOfMonth.toISOString()),
     admin.from('templates').select('*', { count: 'exact', head: true }),
     admin.from('formations').select('*', { count: 'exact', head: true }).eq('is_published', true),
@@ -130,7 +130,7 @@ async function computeAdminOverview() {
   const admins = await adminUserIds(admin)
   const phRows = splitDemo((photographers ?? []) as ProRow[], admins).real
   const clRows = splitDemo((cleaners ?? []) as ProRow[], admins).real
-  const revenue = computeRevenue({ standardMembers: standardMembers ?? 0, photographers: phRows, cleaners: clRows })
+  const revenue = computeRevenue({ standardMembers: standardMembers ?? 0, standardPriceIds: standardRows ? (standardRows as Array<{ stripe_price_id: string | null }>).map(r => r.stripe_price_id) : undefined, photographers: phRows, cleaners: clRows })
   const spaces = proSpacesByUser(phRows, clRows)
 
   return {

@@ -3,8 +3,11 @@
 // ménage payées n'apparaissaient nulle part, et un photographe sans
 // abonnement hôte était affiché « Découverte ».
 
+import { STRIPE_PLANS } from '@/lib/constants/stripe-plans'
+
 export const PRICES = {
-  standard: 19.98,         // € TTC / an, abonnement hôte
+  standard: 19.98,         // € TTC / an, abonnement hôte au tarif Fondateur
+  standardPublic: 38.98,   // € TTC / an, abonnement hôte après l'offre Fondateur
   proFondateur: 39.98,     // € TTC / an à vie, 20 premiers de chaque annuaire
   proStandard: 79.98,      // € TTC / an
 } as const
@@ -22,14 +25,31 @@ export const isPaidPro = (r: Pick<ProRow, 'stripe_subscription_status'>) => PAID
 
 export const proAnnualPrice = (tier: string | null) => tier === 'fondateur' ? PRICES.proFondateur : PRICES.proStandard
 
-export function computeRevenue({ standardMembers, photographers, cleaners }: {
+/**
+ * Prix annuel de l'abonnement Standard d'un hôte d'après son prix Stripe (20/10/2026 : tout
+ * était compté à 19,98 €, même les abonnés au tarif public). Anciens prix mensuels : 1,98 € et
+ * 3,98 € par mois. Prix inconnu : tarif Fondateur.
+ */
+export function hostAnnualPrice(priceId: string | null | undefined): number {
+  switch (priceId) {
+    case STRIPE_PLANS.STANDARD_PUBLIC_YEARLY: return PRICES.standardPublic
+    case STRIPE_PLANS.STANDARD_PUBLIC_MONTHLY: return 3.98 * 12
+    case STRIPE_PLANS.STANDARD_FOUNDING_MONTHLY: return 1.98 * 12
+    default: return PRICES.standard
+  }
+}
+
+export function computeRevenue({ standardMembers, standardPriceIds, photographers, cleaners }: {
   standardMembers: number
+  /** Prix Stripe de chaque abonné Standard, quand on les a : remplace standardMembers × 19,98 € */
+  standardPriceIds?: Array<string | null>
   photographers: ProRow[]
   cleaners: ProRow[]
 }) {
+  if (standardPriceIds) standardMembers = standardPriceIds.length
   const paidPh = photographers.filter(isPaidPro)
   const paidCl = cleaners.filter(isPaidPro)
-  const hostAnnual = standardMembers * PRICES.standard
+  const hostAnnual = standardPriceIds ? standardPriceIds.reduce((n, id) => n + hostAnnualPrice(id), 0) : standardMembers * PRICES.standard
   const photoAnnual = paidPh.reduce((n, r) => n + proAnnualPrice(r.tier), 0)
   const cleanAnnual = paidCl.reduce((n, r) => n + proAnnualPrice(r.tier), 0)
   const annual = hostAnnual + photoAnnual + cleanAnnual

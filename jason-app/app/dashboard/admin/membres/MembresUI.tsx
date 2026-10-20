@@ -135,7 +135,7 @@ const PLANS = [
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export default function MembresUI({ members }: { members: Member[] }) {
+export default function MembresUI({ members, monthlyRevenue }: { members: Member[]; monthlyRevenue: number }) {
   const router = useRouter()
   const [search, setSearch]       = useState('')
   const [filterPlan, setFilterPlan] = useState<string>('all')
@@ -332,7 +332,7 @@ export default function MembresUI({ members }: { members: Member[] }) {
           { filter: 'investor',     icon: <Briefcase size={16} weight="fill" />,   value: totalInvestors,     label: 'investisseurs', color: '#6E5446' },
           { filter: 'photographer', icon: <Camera size={16} weight="fill" />,      value: totalPhotographers, label: 'photographes',  color: '#B7791F' },
           { filter: 'cleaner',      icon: <Sparkle size={16} weight="fill" />,     value: totalCleaners,      label: 'ménage',        color: 'var(--accent-text)' },
-          { filter: null,           icon: <CurrencyEur size={16} />,               value: `${(totalStandard * 19.98 / 12).toFixed(2).replace('.', ',')} €`, label: 'par mois', color: 'var(--accent-text)' },
+          { filter: null,           icon: <CurrencyEur size={16} />,               value: `${monthlyRevenue.toFixed(2).replace('.', ',')} €`, label: 'par mois', color: 'var(--accent-text)' },
         ].map(({ filter: f, icon, value, label, color }) => {
           const active = f !== null && filterPlan === f && f !== 'all'
           return (

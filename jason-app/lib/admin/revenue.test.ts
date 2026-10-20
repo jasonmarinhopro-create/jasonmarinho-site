@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { computeRevenue, proSpacesByUser } from './revenue'
+import { computeRevenue, proSpacesByUser, hostAnnualPrice } from './revenue'
+import { STRIPE_PLANS } from '@/lib/constants/stripe-plans'
 
 describe('computeRevenue', () => {
   it('additionne Standard et fiches pros payées', () => {
@@ -16,6 +17,14 @@ describe('computeRevenue', () => {
     expect(r.subscriptions).toBe(5)
     expect(r.annual).toBeCloseTo(3 * 19.98 + 39.98 + 79.98, 5)
     expect(r.monthly).toBeCloseTo(r.annual / 12, 5)
+  })
+  it('prix réel de chaque abonnement Standard', () => {
+    expect(hostAnnualPrice(STRIPE_PLANS.STANDARD_PUBLIC_YEARLY)).toBe(38.98)
+    expect(hostAnnualPrice(STRIPE_PLANS.STANDARD_FOUNDING_YEARLY)).toBe(19.98)
+    expect(hostAnnualPrice(null)).toBe(19.98)
+    const r = computeRevenue({ standardMembers: 0, standardPriceIds: [STRIPE_PLANS.STANDARD_FOUNDING_YEARLY, STRIPE_PLANS.STANDARD_PUBLIC_YEARLY], photographers: [], cleaners: [] })
+    expect(r.subscriptions).toBe(2)
+    expect(r.annual).toBeCloseTo(19.98 + 38.98, 5)
   })
   it('ignore les abonnements annulés', () => {
     const r = computeRevenue({ standardMembers: 0, photographers: [{ user_id: 'a', tier: 'fondateur', status: 'cancelled', stripe_subscription_status: 'canceled' }], cleaners: [] })
