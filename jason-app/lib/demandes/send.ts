@@ -11,7 +11,7 @@ import { getServiceClient } from '@/lib/supabase/service'
 import { logger } from '@/lib/logger'
 import { adminUserIds, isDemoFiche } from '@/lib/pros/demo'
 import { sendAdminEmail } from '@/lib/email/admin'
-import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
+import { proEmail, hoteEmail, hoteManuelEmail, adminEmail, type ProMail } from './emails'
 import {
   choisirPros, messagePourPro, anonymizedNeed, prochaineAction, CONSERVATION_MOIS,
   besoinPhoto, convientAuBesoin, pourquoiCePro, manquesDuPro, adequationLabel,
@@ -64,70 +64,42 @@ async function loadPros(metier: DemandeMetier): Promise<Pro[]> {
 const firstName = (p: Pro) => (p.pseudo || p.full_name || '').split(' ')[0]
 const displayName = (p: Pro) => p.pseudo || p.full_name
 
+const proMail = (p: Pro, metier: DemandeMetier): ProMail => ({ nom: displayName(p), ville: p.ville ?? null, url: `${SITE}/annuaires/${T[metier].dir}/${p.slug}` })
+const qgUrl = (id: string) => `${APP}/dashboard/admin/qg?onglet=hotes&demande=${id}`
+
 async function emailPro(d: DemandeInput, pro: Pro, metier: DemandeMetier, manuel = false) {
   const r = resend(); if (!r) return
-  const t = T[metier]
-  const rows = [
-    { label: 'Ville', value: escHtml(d.ville) },
-    d.logement ? { label: 'Logement', value: escHtml(d.logement) } : null,
-    d.frequence ? { label: 'Besoin', value: escHtml(d.frequence) } : null,
-    d.quand ? { label: 'Quand', value: escHtml(d.quand) } : null,
-    d.budget ? { label: 'Budget indiqué', value: escHtml(d.budget) } : null,
-    { label: 'Contact', value: `${escHtml(d.nom)}<br><a href="mailto:${escHtml(d.email)}" style="color:#004C3F">${escHtml(d.email)}</a>${d.telephone ? `<br>${escHtml(d.telephone)}` : ''}` },
-  ].filter(Boolean) as Array<{ label: string; value: string }>
-  const html = buildEmail({
-    title: `Un hôte cherche ${t.un} à ${escHtml(d.ville)}`,
-    preview: `Demande à ${d.ville} : réponds directement à l’hôte`,
-    body: [
-      emailP(`Bonjour ${escHtml(firstName(pro))},`),
-      emailP(manuel
-        ? `Un hôte a décrit son besoin sur jasonmarinho.com et <strong>Jason Marinho te transmet sa demande</strong>. Réponds-lui directement : réponds à cet e-mail, il arrive dans sa boîte.`
-        : `Un hôte vient de décrire son besoin sur jasonmarinho.com et <strong>tu fais partie des 3 pros les plus proches</strong> de son logement${metier === 'photographe' && besoinPhoto(d.frequence) ? ' parmi ceux qui proposent ce qu’il demande' : ''}. Réponds-lui directement : réponds à cet e-mail, il arrive dans sa boîte.`),
-      emailInfoBlock(rows),
-      metier === 'photographe' && pourquoiCePro(pro, d.frequence) ? emailP(escHtml(pourquoiCePro(pro, d.frequence)!)) : '',
-      d.message ? emailP(`<em>« ${escHtml(d.message).replace(/\n/g, '<br>')} »</em>`) : '',
-      emailBtn(`mailto:${encodeURIComponent(d.email)}?subject=${encodeURIComponent(`Ta demande ${metier === 'photographe' ? 'de photographe' : 'de ménage'} à ${d.ville}`)}`, 'Répondre à l’hôte'),
-      emailNote(`La demande est aussi rangée dans <a href="${APP}/dashboard/${t.dash}/demandes" style="color:#004C3F">Demandes reçues</a>. Change son statut quand tu as répondu : sans réponse d’aucun des pros sous 48 h, la demande part à d’autres pros. Aucune commission : le devis et le paiement se règlent entre toi et l’hôte.`),
-    ].join(''),
+  const { subject, html } = proEmail(d, {
+    proPrenom: firstName(pro),
+    manuel,
+    adequation: metier === 'photographe' ? pourquoiCePro(pro, d.frequence) : null,
+    filtre: metier === 'photographe' && !!besoinPhoto(d.frequence),
+    demandesUrl: `${APP}/dashboard/${T[metier].dash}/demandes`,
   })
-  await r.emails.send({ from: FROM, to: pro.email, replyTo: d.email, subject: `Un hôte cherche ${t.un} à ${d.ville}`, html })
+  await r.emails.send({ from: FROM, to: pro.email, replyTo: d.email, subject, html })
     .catch(e => log.error('e-mail au pro', { err: e instanceof Error ? e.message : String(e) }))
 }
 
 /** Hôte prévenu quand aucun des pros choisis ne fait tout ce qu'il demande (ex. drone pas indiqué sur leur fiche) */
-function partiel(d: DemandeInput, metier: DemandeMetier, pros: Pro[]): string {
-  if (metier !== 'photographe' || !pros.length || pros.some(p => convientAuBesoin(p, d.frequence) === 2)) return ''
+function partiel(d: DemandeInput, metier: DemandeMetier, pros: Pro[]): string | null {
+  if (metier !== 'photographe' || !pros.length || pros.some(p => convientAuBesoin(p, d.frequence) === 2)) return null
   const manque = [...new Set(pros.flatMap(p => manquesDuPro(p, d.frequence)))]
-  return emailNote(`Aucun pro près de chez toi n’indique encore ${manque.join(' ni ')} sur sa fiche : ta demande est partie chez ceux qui s’en approchent le plus. Demande-leur s’ils peuvent s’en charger.`)
+  return `Aucun pro près de chez toi n’indique encore ${manque.join(' ni ')} sur sa fiche : ta demande est partie chez ceux qui s’en approchent le plus. Demande-leur s’ils peuvent s’en charger.`
 }
 
 const suiviUrl = (token: string) => `${SITE}/ma-demande?t=${token}`
 
 async function emailHote(d: DemandeInput, metier: DemandeMetier, pros: Pro[], vague: number, token?: string | null) {
   const r = resend(); if (!r) return
-  const t = T[metier]
-  const suivi = token ? emailBtn(suiviUrl(token), 'Suivre ma demande') : ''
-  const list = pros.map(p => `<li style="margin:4px 0"><a href="${SITE}/annuaires/${t.dir}/${escHtml(p.slug)}" style="color:#004C3F;font-weight:600">${escHtml(displayName(p))}</a> (${escHtml(p.ville ?? '')})</li>`).join('')
-  const body = pros.length
-    ? [
-        emailP(`Bonjour ${escHtml(d.nom.split(' ')[0])},`),
-        emailP(vague === 1
-          ? `Ta demande est partie chez ${pros.length > 1 ? `les ${pros.length} ${t.labels} les plus proches` : `${t.un} proche`} de ton logement à ${escHtml(d.ville)} :`
-          : `Les premiers pros n’ont pas encore répondu : ta demande vient de partir chez ${pros.length > 1 ? `${pros.length} autres ${t.labels}` : `un autre pro`} :`),
-        `<ul style="margin:6px 0 14px;padding-left:18px;font-size:14px;color:#3D5038">${list}</ul>`,
-        emailP('Ils te répondent directement par e-mail. Tu peux aussi regarder leur fiche (photos, formules) en attendant.'),
-        suivi,
-        partiel(d, metier, pros),
-        emailNote('Sans réponse d’aucun d’eux sous 48 h, on transmet ta demande à d’autres pros de ta zone. Aucune commission : le devis et le paiement se règlent directement entre toi et le pro.'),
-      ].join('')
-    : [
-        emailP(`Bonjour ${escHtml(d.nom.split(' ')[0])},`),
-        emailP(`Ta demande est bien enregistrée. Il n’y a pas encore ${metier === 'menage' ? 'd’équipe de ménage inscrite' : besoinPhoto(d.frequence)?.video ? 'de vidéaste inscrit' : 'de photographe inscrit'} près de ${escHtml(d.ville)} : on la transmet dès qu’un pro de ta zone rejoint l’annuaire (dans les 30 jours).`),
-        suivi || emailBtn(`${SITE}/annuaires/${t.dir}#villes`, `Voir le guide de ta ville`),
-        emailNote('Tes coordonnées ne sont transmises qu’aux pros de l’annuaire qui reçoivent ta demande.'),
-      ].join('')
-  const html = buildEmail({ title: pros.length ? 'Ta demande est partie' : 'Ta demande est enregistrée', body })
-  await r.emails.send({ from: FROM, to: d.email, subject: pros.length ? `Ta demande à ${d.ville} est partie chez ${pros.length} pro${pros.length > 1 ? 's' : ''}` : `Ta demande à ${d.ville} est enregistrée`, html })
+  const { subject, html } = hoteEmail(d, {
+    pros: pros.map(p => proMail(p, metier)),
+    vague,
+    suiviUrl: token ? suiviUrl(token) : null,
+    sansProQui: metier === 'menage' ? 'd’équipe de ménage inscrite' : besoinPhoto(d.frequence)?.video ? 'de vidéaste inscrit' : 'de photographe inscrit',
+    guideUrl: `${SITE}/annuaires/${T[metier].dir}#villes`,
+    partielNote: partiel(d, metier, pros),
+  })
+  await r.emails.send({ from: FROM, to: d.email, subject, html })
     .catch(e => log.error('e-mail à l’hôte', { err: e instanceof Error ? e.message : String(e) }))
 }
 
@@ -176,9 +148,18 @@ export async function creerDemande(d: DemandeInput, acquisition: unknown): Promi
     admin_notified_at: sent.length ? null : new Date().toISOString(),
   }).eq('id', id)
   await emailHote(d, d.metier, pros, 1, token)
+  const prosNoms = pros.map(p => d.metier === 'photographe' && besoinPhoto(d.frequence) ? `${displayName(p)} (${adequationLabel(convientAuBesoin(p, d.frequence)).toLowerCase()})` : displayName(p))
+  const suite = sent.length ? `Envoyée à : ${prosNoms.join(', ')}.` : 'Aucun pro de l’annuaire dans la zone qui propose ce besoin : à transmettre à la main depuis le QG, ou à présenter aux pros de la ville (sans les coordonnées de l’hôte).'
   await sendAdminEmail({
     subject: sent.length ? `Demande d’hôte : ${T[d.metier].label} à ${d.ville} (${sent.length} pro${sent.length > 1 ? 's' : ''})` : `Demande d’hôte SANS PRO : ${T[d.metier].label} à ${d.ville}`,
-    text: `${anonymizedNeed(d)}\n\n${sent.length ? `Envoyée à : ${pros.map(p => d.metier === 'photographe' && besoinPhoto(d.frequence) ? `${displayName(p)} (${adequationLabel(convientAuBesoin(p, d.frequence)).toLowerCase()})` : displayName(p)).join(', ')}.` : 'Aucun pro de l’annuaire dans la zone qui propose ce besoin : à transmettre à la main depuis le QG, ou à présenter aux pros de la ville (sans les coordonnées de l’hôte).'}\n\nLa fiche de la demande : ${APP}/dashboard/admin/qg?onglet=hotes&demande=${id}`,
+    text: `${anonymizedNeed(d)}\n\n${suite}\n\nLa fiche de la demande : ${qgUrl(id)}`,
+    html: adminEmail(d, {
+      etiquette: sent.length ? 'Nouvelle demande' : 'Nouvelle demande · sans pro',
+      title: `Un hôte cherche ${T[d.metier].un} à ${d.ville}`,
+      texte: sent.length ? `Partie chez ${sent.length} pro${sent.length > 1 ? 's' : ''} de l’annuaire.` : 'Aucun pro de l’annuaire dans la zone qui propose ce besoin : à transmettre à la main depuis le QG, ou à présenter aux pros de la ville (sans les coordonnées de l’hôte).',
+      pros: sent.length ? prosNoms : [],
+      qgUrl: qgUrl(id),
+    }),
   })
   return { ok: true, envoyes: sent.length, suivi: token, pros: pros.map(p => cartePro(p, d.metier, d.frequence, SUPABASE_URL)) }
 }
@@ -212,7 +193,12 @@ export async function traiterDemandes(now = new Date()): Promise<{ elargies: num
       if (action === 'elargir') {
         await db.from('demandes_hotes').update({ status: 'sans_pro', admin_notified_at: now.toISOString() }).eq('id', r.id)
         out.sansPro++
-        await sendAdminEmail({ subject: `Demande d’hôte sans réponse : ${T[r.metier].label} à ${r.ville}`, text: `${anonymizedNeed(r)}\n\nAucun des pros sollicités n’a répondu sous 48 h et il n’y en a pas d’autres dans la zone.\n\n${APP}/dashboard/admin/qg?onglet=hotes&demande=${r.id}` })
+        const texte = 'Aucun des pros sollicités n’a répondu sous 48 h et il n’y en a pas d’autres dans la zone.'
+        await sendAdminEmail({
+          subject: `Demande d’hôte sans réponse : ${T[r.metier].label} à ${r.ville}`,
+          text: `${anonymizedNeed(r)}\n\n${texte}\n\n${qgUrl(r.id)}`,
+          html: adminEmail(r, { etiquette: 'Sans réponse sous 48 h', title: `Un hôte cherche ${T[r.metier].un} à ${r.ville}`, texte, pros: [], qgUrl: qgUrl(r.id) }),
+        })
       }
       continue
     }
@@ -238,18 +224,10 @@ export async function listProsChoix(metier: DemandeMetier): Promise<ProChoix[]> 
   }))
 }
 
-async function emailHoteManuel(d: DemandeInput, metier: DemandeMetier, pro: Pro) {
+async function emailHoteManuel(d: DemandeInput & { suivi_token?: string | null }, metier: DemandeMetier, pro: Pro) {
   const r = resend(); if (!r) return
-  const t = T[metier]
-  const html = buildEmail({
-    title: 'Un pro de plus a reçu ta demande',
-    body: [
-      emailP(`Bonjour ${escHtml(d.nom.split(' ')[0])},`),
-      emailP(`Ta demande à ${escHtml(d.ville)} vient aussi d’être transmise à <a href="${SITE}/annuaires/${t.dir}/${escHtml(pro.slug)}" style="color:#004C3F;font-weight:600">${escHtml(displayName(pro))}</a> (${escHtml(pro.ville ?? '')}). Il te répond directement par e-mail.`),
-      emailNote('Aucune commission : le devis et le paiement se règlent directement entre toi et le pro.'),
-    ].join(''),
-  })
-  await r.emails.send({ from: FROM, to: d.email, subject: `Ta demande à ${d.ville} : un pro de plus l’a reçue`, html })
+  const { subject, html } = hoteManuelEmail(d, proMail(pro, metier), d.suivi_token ? suiviUrl(d.suivi_token) : null)
+  await r.emails.send({ from: FROM, to: d.email, subject, html })
     .catch(e => log.error('e-mail à l’hôte (envoi manuel)', { err: e instanceof Error ? e.message : String(e) }))
 }
 
@@ -257,7 +235,7 @@ async function emailHoteManuel(d: DemandeInput, metier: DemandeMetier, pro: Pro)
 export async function envoyerAUnPro(demandeId: string, proId: string): Promise<{ ok: true; nom: string } | { error: string }> {
   const db = getServiceClient()
   const { data, error } = await db.from('demandes_hotes')
-    .select('id, metier, ville, logement, quand, frequence, budget, message, nom, email, telephone, source, status, created_at, last_round_at, sent_to')
+    .select('*')
     .eq('id', demandeId).maybeSingle()
   if (error || !data) return { error: 'Demande introuvable.' }
   const d = data as unknown as DemandeRow
