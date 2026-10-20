@@ -3,11 +3,11 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { planFromPriceId } from '@/lib/constants/stripe-plans'
 import { invalidateProfileCache } from '@/lib/queries/profile'
 import { sendPaiementReceivedEmail } from '@/lib/email/host'
-import { sendProWelcomeEmail } from '@/lib/email/pro-welcome'
 import { logger } from '@/lib/logger'
 import { createNotification, sejourHref } from '@/lib/notifications/create'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
+import { applyProSubscription } from '@/lib/pros/activate'
 import { stripe } from '@/lib/stripe/client'
 
 const log = logger('lib/stripe/dispatch')
@@ -224,91 +224,14 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
       const liveStatus = (sub.metadata?.photographer_id || sub.metadata?.cleaner_id)
         ? await stripe.subscriptions.retrieve(sub.id).then(s => s.status).catch(() => sub.status)
         : sub.status
-      // ── Branche photographe : subscription metadata.photographer_id ──
-      // L'admin a déclenché un Checkout via approvePhotographer().
-      // À la création de la subscription, on active le profil photographe
-      // dans l'annuaire (status='active', is_public=true, slug généré).
-      const photographerId = sub.metadata?.photographer_id
-      if (photographerId) {
-        const { data: ph } = await db
-          .from('photographers')
-          .select('id, full_name, ville, email, slug, tier, status')
-          .eq('id', photographerId)
-          .maybeSingle()
-        if (ph && (ph.status === 'approved_pending_payment' || ph.status === 'pending_payment')) {
-          // Génère le slug si pas déjà fait
-          let slug = ph.slug
-          if (!slug) {
-            const base = `${ph.full_name}-${ph.ville}`.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80)
-            slug = base
-            // Check unicity, append id short si collision
-            const { data: collision } = await db.from('photographers').select('id').eq('slug', slug).neq('id', photographerId).maybeSingle()
-            if (collision) slug = `${base}-${photographerId.slice(0, 6)}`
-          }
-          await db.from('photographers').update({
-            status: 'active',
-            is_public: true,
-            slug,
-            stripe_customer_id: typeof sub.customer === 'string' ? sub.customer : sub.customer?.id ?? null,
-            stripe_subscription_id: sub.id,
-            stripe_subscription_status: liveStatus,
-            updated_at: new Date().toISOString(),
-          }).eq('id', photographerId)
-          // Trigger rebuild du site statique pour générer la fiche publique
-          await triggerSiteRebuild('stripe')
-          // Email de bienvenue (best-effort, ne bloque pas le webhook)
-          await sendProWelcomeEmail({
-            pro: 'photographer',
-            email: ph.email,
-            fullName: ph.full_name,
-            displayName: ph.full_name,
-            ville: ph.ville,
-            slug,
-            tier: ph.tier,
-          }).catch(() => {})
-        }
-        break
-      }
-      // ── Branche ménage : subscription metadata.cleaner_id ──────────
-      // Idem pattern photographe : approuvé par admin → paiement Stripe →
-      // activation publique + slug + trigger rebuild.
-      const cleanerId = sub.metadata?.cleaner_id
-      if (cleanerId) {
-        const { data: cl } = await db
-          .from('cleaners')
-          .select('id, full_name, pseudo, ville, email, slug, tier, status')
-          .eq('id', cleanerId)
-          .maybeSingle()
-        if (cl && (cl.status === 'approved_pending_payment' || cl.status === 'pending_payment')) {
-          let slug = cl.slug
-          if (!slug) {
-            const nameForSlug = cl.pseudo || cl.full_name
-            const base = `${nameForSlug}-${cl.ville}`.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80)
-            slug = base
-            const { data: collision } = await db.from('cleaners').select('id').eq('slug', slug).neq('id', cleanerId).maybeSingle()
-            if (collision) slug = `${base}-${cleanerId.slice(0, 6)}`
-          }
-          await db.from('cleaners').update({
-            status: 'active',
-            is_public: true,
-            slug,
-            stripe_customer_id: typeof sub.customer === 'string' ? sub.customer : sub.customer?.id ?? null,
-            stripe_subscription_id: sub.id,
-            stripe_subscription_status: liveStatus,
-            updated_at: new Date().toISOString(),
-          }).eq('id', cleanerId)
-          await triggerSiteRebuild('stripe')
-          // Email de bienvenue (best-effort)
-          await sendProWelcomeEmail({
-            pro: 'cleaner',
-            email: cl.email,
-            fullName: cl.full_name,
-            displayName: cl.pseudo || cl.full_name,
-            ville: cl.ville,
-            slug,
-            tier: cl.tier,
-          }).catch(() => {})
-        }
+      // ── Fiches pros (photographe, ménage) : activées seulement une fois payées ──
+      // 20/10/2026 : la fiche était activée et publiée dès la création de
+      // l'abonnement, même « incomplete » (paiement pas fait). Voir lib/pros/activate.ts.
+      const proId = sub.metadata?.photographer_id || sub.metadata?.cleaner_id
+      if (proId) {
+        await applyProSubscription(db, sub.metadata?.photographer_id ? 'photographer' : 'cleaner', proId, {
+          id: sub.id, status: liveStatus, customer: typeof sub.customer === 'string' ? sub.customer : sub.customer?.id ?? null,
+        })
         break
       }
       // ── Branche standard : abonnement hôte plateforme ──
@@ -335,27 +258,12 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
 
     case 'customer.subscription.updated': {
       const sub = event.data.object as Stripe.Subscription
-      // Branche photographe : sync status, ne touche pas au tier
-      const photographerId = sub.metadata?.photographer_id
-      if (photographerId) {
-        await db.from('photographers').update({
-          stripe_subscription_status: sub.status,
-          // Si Stripe past_due/canceled → on retire de l'annuaire public
-          is_public: sub.status === 'active',
-          updated_at: new Date().toISOString(),
-        }).eq('id', photographerId)
-        await triggerSiteRebuild('stripe')
-        break
-      }
-      // Branche ménage : sync status
-      const cleanerId = sub.metadata?.cleaner_id
-      if (cleanerId) {
-        await db.from('cleaners').update({
-          stripe_subscription_status: sub.status,
-          is_public: sub.status === 'active',
-          updated_at: new Date().toISOString(),
-        }).eq('id', cleanerId)
-        await triggerSiteRebuild('stripe')
+      // Fiches pros : même règle qu'à la création (activée au paiement, retirée si impayée)
+      const proId = sub.metadata?.photographer_id || sub.metadata?.cleaner_id
+      if (proId) {
+        await applyProSubscription(db, sub.metadata?.photographer_id ? 'photographer' : 'cleaner', proId, {
+          id: sub.id, status: sub.status, customer: typeof sub.customer === 'string' ? sub.customer : sub.customer?.id ?? null,
+        })
         break
       }
       const userId = sub.metadata?.user_id
@@ -381,28 +289,18 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
 
     case 'customer.subscription.deleted': {
       const sub = event.data.object as Stripe.Subscription
-      // Branche photographe : retire de l'annuaire
-      const photographerId = sub.metadata?.photographer_id
-      if (photographerId) {
-        await db.from('photographers').update({
-          status: 'cancelled',
-          is_public: false,
-          stripe_subscription_status: 'canceled',
-          updated_at: new Date().toISOString(),
-        }).eq('id', photographerId)
-        await triggerSiteRebuild('stripe')
-        break
-      }
-      // Branche ménage : retire de l'annuaire
-      const cleanerId = sub.metadata?.cleaner_id
-      if (cleanerId) {
-        await db.from('cleaners').update({
-          status: 'cancelled',
-          is_public: false,
-          stripe_subscription_status: 'canceled',
-          updated_at: new Date().toISOString(),
-        }).eq('id', cleanerId)
-        await triggerSiteRebuild('stripe')
+      // Fiches pros : retirées de l'annuaire. Une inscription jamais payée
+      // (abonnement « incomplete » abandonné par Stripe) reste en attente de
+      // paiement : « Finaliser mon paiement » doit continuer de marcher.
+      const proId = sub.metadata?.photographer_id || sub.metadata?.cleaner_id
+      if (proId) {
+        const table = sub.metadata?.photographer_id ? 'photographers' : 'cleaners'
+        const { data: f } = await db.from(table).select('status').eq('id', proId).maybeSingle()
+        const neverPaid = f?.status === 'pending_payment' || f?.status === 'approved_pending_payment'
+        await db.from(table).update(neverPaid
+          ? { stripe_subscription_status: 'incomplete_expired', is_public: false, updated_at: new Date().toISOString() }
+          : { status: 'cancelled', is_public: false, stripe_subscription_status: 'canceled', updated_at: new Date().toISOString() }).eq('id', proId)
+        if (!neverPaid) await triggerSiteRebuild('stripe')
         break
       }
       const userId = sub.metadata?.user_id

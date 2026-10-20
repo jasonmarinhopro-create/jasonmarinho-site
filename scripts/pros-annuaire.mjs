@@ -123,6 +123,27 @@ async function masquer(fragment) {
 }
 if (MODE.startsWith('masquer:')) await masquer(MODE.slice('masquer:'.length))
 
+// Supprimer une inscription jamais payée dont le compte a déjà été supprimé
+// (20/10/2026 : compte supprimé par l'admin, fiche restée « active » par un bug
+// du webhook). Désignée par le début de son identifiant (journaux publics).
+// Refus si la fiche a été payée ou si elle a encore un compte (passer par l'admin).
+async function supprimerImpayee(prefix) {
+  const p = prefix.replace(/[^0-9a-f]/g, '')
+  if (p.length < 6) { notice('Supprimer', 'identifiant trop court (6 caractères au moins)'); return }
+  for (const table of ['photographers', 'cleaners']) {
+    const rows = (await get(`${table}?select=id,user_id,status,stripe_subscription_status&limit=1000`)).filter(r => r.id.startsWith(p))
+    for (const r of rows) {
+      const line = `${table} ${r.id.slice(0, 6)} · ${r.status} · abonnement ${r.stripe_subscription_status || 'aucun'} · compte ${r.user_id ? 'oui' : 'non'}`
+      const unpaid = ['pending_payment', 'approved_pending_payment'].includes(r.status) || (r.status === 'active' && ['incomplete', 'incomplete_expired'].includes(r.stripe_subscription_status))
+      if (!unpaid || PAID.has(r.stripe_subscription_status)) { notice('Supprimer : refusé (fiche payée)', line); continue }
+      if (r.user_id) { notice('Supprimer : refusé (compte encore là, passer par l’admin)', line); continue }
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${r.id}`, { method: 'DELETE', headers: H })
+      notice(res.ok ? 'Supprimée' : 'Suppression impossible', `${line}${res.ok ? ' → supprimée. Le site se met à jour au prochain déploiement de main.' : ' : ' + res.status}`)
+    }
+  }
+}
+if (MODE.startsWith('supprimer-impayee:')) await supprimerImpayee(MODE.slice('supprimer-impayee:'.length))
+
 await comptes()
 
 // Demandes (17/10/2026) : compteur des fiches comparé aux lignes réellement

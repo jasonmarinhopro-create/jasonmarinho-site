@@ -9,6 +9,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
+import { applyProSubscription } from '@/lib/pros/activate'
 
 const log = logger('lib/pros/subscription-sync')
 const LIVE = new Set(['active', 'trialing'])
@@ -31,11 +32,12 @@ export async function syncProSubscriptions(db: SupabaseClient, budgetMs = 6000):
       out.checked++
       try {
         const sub = await stripe.subscriptions.retrieve(r.stripe_subscription_id as string)
-        const publicNow = r.status === 'active' ? LIVE.has(sub.status) : r.is_public
-        if (sub.status === r.stripe_subscription_status && publicNow === r.is_public) continue
-        await db.from(table).update({ stripe_subscription_status: sub.status, is_public: publicNow, updated_at: new Date().toISOString() }).eq('id', r.id)
+        const done = await applyProSubscription(db, table === 'photographers' ? 'photographer' : 'cleaner', r.id, {
+          id: sub.id, status: sub.status, customer: typeof sub.customer === 'string' ? sub.customer : sub.customer?.id ?? null,
+        }, { rebuild: false })
+        if (done === 'rien') continue
         out.fixed++
-        if (LIVE.has(sub.status) && !LIVE.has(r.stripe_subscription_status ?? '')) out.nowPaid++
+        if (done === 'activee' || (LIVE.has(sub.status) && !LIVE.has(r.stripe_subscription_status ?? ''))) out.nowPaid++
       } catch (e) {
         log.error('lecture Stripe', { table, err: e instanceof Error ? e.message : String(e) })
       }

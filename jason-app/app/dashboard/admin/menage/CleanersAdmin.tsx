@@ -89,7 +89,7 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
     })
   }
   async function handleDeleteOrphan(c: Cleaner) {
-    if (!(await confirm({ message: `Supprimer définitivement ${name(c)} (orphelin sans paiement Stripe) ? Son compte est aussi supprimé s’il ne sert à rien d’autre (pas de logement ni d’autre fiche).`, confirmLabel: 'Supprimer', danger: true }))) return
+    if (!(await confirm({ message: `Supprimer définitivement ${name(c)} (inscription jamais payée) ? Son compte est aussi supprimé s’il ne sert à rien d’autre (pas de logement ni d’autre fiche).`, confirmLabel: 'Supprimer', danger: true }))) return
     setErr(null); setOk(null)
     startBusy(async () => {
       const res = await deleteOrphanCleaner(c.id)

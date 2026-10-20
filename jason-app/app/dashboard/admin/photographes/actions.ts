@@ -4,6 +4,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { syncProSubscriptions } from '@/lib/pros/subscription-sync'
 import { getServiceClient } from '@/lib/supabase/service'
 import { adminUserIds, splitDemo } from '@/lib/pros/demo'
+import { isUnpaidFiche } from '@/lib/pros/paid'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
@@ -263,7 +264,10 @@ export async function getPhotographersQueue(): Promise<{
   ])
   // Fiches d'exemple (comptes admin) : à part, hors chiffres et places Fondateur
   const lists = [activeRes.data ?? [], pendingPaymentRes.data ?? [], hiddenRes.data ?? [], cancelledRes.data ?? []].map(rows => splitDemo(rows, admins))
-  const [active, pendingPayment, hidden, cancelled] = lists.map(l => l.real)
+  const [activeAll, pendingRaw, hidden, cancelled] = lists.map(l => l.real)
+  // Une fiche jamais payée n'est pas « active », même si un ancien bug l'avait marquée ainsi (20/10/2026)
+  const active = activeAll.filter(r => !isUnpaidFiche(r))
+  const pendingPayment = [...activeAll.filter(r => isUnpaidFiche(r)), ...pendingRaw]
 
   return {
     active,
@@ -336,15 +340,21 @@ export async function deleteOrphanPhotographer(photographerId: string): Promise<
   const admin = getServiceClient()
   const { data: ph } = await admin
     .from('photographers')
-    .select('id, status, stripe_subscription_id, user_id')
+    .select('id, status, stripe_subscription_id, stripe_subscription_status, is_public, slug, user_id')
     .eq('id', photographerId)
     .maybeSingle()
   if (!ph) return { error: 'Photographe introuvable' }
-  if (ph.status !== 'pending_payment' || ph.stripe_subscription_id) {
-    return { error: 'Cet enregistrement n\'est pas un orphelin (paiement actif ou autre statut).' }
+  if (!isUnpaidFiche(ph)) {
+    return { error: 'Cette fiche a été payée : masque-la plutôt (son abonnement Stripe se gère à part).' }
+  }
+  // Abonnement jamais payé encore ouvert chez Stripe : on l'annule pour qu'il ne puisse plus être réglé
+  if (ph.stripe_subscription_id && ph.stripe_subscription_status !== 'incomplete_expired') {
+    await stripe.subscriptions.cancel(ph.stripe_subscription_id).catch(() => {})
   }
 
   await admin.from('photographers').delete().eq('id', photographerId)
+  // Elle a pu être publiée par erreur (bug du 20/10/2026) : le site retire sa page
+  if (ph.slug || ph.is_public) await triggerSiteRebuild('admin suppression')
   // Compte supprimé seulement s'il ne sert qu'à cette inscription : jamais un
   // compte hôte (logements) ni un compte qui a une autre fiche pro.
   const [{ count: logs }, { count: others }] = ph.user_id

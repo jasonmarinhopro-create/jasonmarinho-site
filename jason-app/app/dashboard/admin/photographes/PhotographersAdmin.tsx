@@ -79,7 +79,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
     })
   }
   async function handleDeleteOrphan(p: Photographer) {
-    if (!(await confirm({ message: `Supprimer définitivement ${p.full_name} (orphelin sans paiement Stripe) ? Son compte est aussi supprimé s’il ne sert à rien d’autre (pas de logement ni d’autre fiche).`, confirmLabel: 'Supprimer', danger: true }))) return
+    if (!(await confirm({ message: `Supprimer définitivement ${p.full_name} (inscription jamais payée) ? Son compte est aussi supprimé s’il ne sert à rien d’autre (pas de logement ni d’autre fiche).`, confirmLabel: 'Supprimer', danger: true }))) return
     setErr(null); setOk(null)
     startBusy(async () => {
       const res = await deleteOrphanPhotographer(p.id)
