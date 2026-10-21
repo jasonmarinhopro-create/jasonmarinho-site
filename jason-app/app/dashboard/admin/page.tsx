@@ -10,7 +10,7 @@ import AdminUI, { AffiliationCard } from './AdminUI'
 import { getAffilaeOverview } from '@/lib/affiliation/affilae'
 import { getPartnerStackOverview } from '@/lib/affiliation/partnerstack'
 import { computeRevenue, proSpacesByUser, type ProRow } from '@/lib/admin/revenue'
-import { getLiveVisitorsCount, getChannelBreakdown, getTopPages, getAffiliateClicks, getAppErrors, CHANNEL_LABELS } from '@/lib/queries/site-traffic'
+import { getLiveVisitorsCount, getCachedChannelBreakdown, getTopPages, getAffiliateClicks, getAppErrors, CHANNEL_LABELS } from '@/lib/queries/site-traffic'
 import { adminUserIds, splitDemo } from '@/lib/pros/demo'
 
 // Service client : la RLS limite chaque utilisateur à SES données (profile,
@@ -176,7 +176,7 @@ export default async function AdminPage() {
   const [overview, liveVisitors, channelBreakdown] = await Promise.all([
     getAdminOverview(),
     getLiveVisitorsCount(admin),
-    getChannelBreakdown(admin),
+    getCachedChannelBreakdown(),
   ])
   timer.mark('vue d\'ensemble et trafic')
   timer.done()
