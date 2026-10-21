@@ -16,7 +16,7 @@ const SOURCES: Array<{ table: string; user: string; at: string; kind: ActivityKi
   { table: 'chez_nous_posts', user: 'author_id', at: 'created_at', kind: 'question' },
   { table: 'chez_nous_replies', user: 'author_id', at: 'created_at', kind: 'reponse' },
   { table: 'user_formations', user: 'user_id', at: 'enrolled_at', kind: 'formation' },
-  { table: 'audit_gbp_sessions', user: 'user_id', at: 'created_at', kind: 'audit' },
+  { table: 'audit_gbp_sessions', user: 'user_id', at: 'started_at', kind: 'audit' },
 ]
 
 /** userIds : un seul membre (fiche) ou tous (liste) */
