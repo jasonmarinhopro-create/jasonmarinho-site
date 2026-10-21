@@ -25,7 +25,7 @@ export interface AuthIdentity {
 export const getAuthIdentity = cache(async (): Promise<AuthIdentity | null> => {
   const supabase = await createClient()
   const { data, error } = await supabase.auth.getClaims()
-  if (error || typeof data.claims?.sub !== 'string') return null
+  if (error || !data || typeof data.claims?.sub !== 'string') return null
 
   const claims = data.claims as unknown as Record<string, unknown>
   const rawMetadata = claims.user_metadata
