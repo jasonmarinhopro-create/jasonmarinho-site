@@ -14,6 +14,32 @@ import { cache } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
 
+export interface AuthIdentity {
+  id: string
+  email: string | null
+  user_metadata: Record<string, unknown>
+}
+
+// Verify the JWT and return only the identity fields used by read paths.
+// Asymmetric signing keys use cached JWKS; symmetric keys retain server verification.
+export const getAuthIdentity = cache(async (): Promise<AuthIdentity | null> => {
+  const supabase = await createClient()
+  const { data, error } = await supabase.auth.getClaims()
+  if (error || typeof data.claims?.sub !== 'string') return null
+
+  const claims = data.claims as unknown as Record<string, unknown>
+  const rawMetadata = claims.user_metadata
+  const userMetadata = rawMetadata && typeof rawMetadata === 'object' && !Array.isArray(rawMetadata)
+    ? rawMetadata as Record<string, unknown>
+    : {}
+
+  return {
+    id: claims.sub as string,
+    email: typeof claims.email === 'string' ? claims.email : null,
+    user_metadata: userMetadata,
+  }
+})
+
 export const getAuthUser = cache(async (): Promise<User | null> => {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
