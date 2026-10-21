@@ -452,9 +452,9 @@ export async function getMemberDetails(memberId: string) {
   if (groupIds.length > 0) {
     const { data: groups } = await adminClient
       .from('community_groups')
-      .select('member_count')
+      .select('members_count')
       .in('id', groupIds)
-    totalReach = (groups ?? []).reduce((sum, g) => sum + (g.member_count ?? 0), 0)
+    totalReach = (groups ?? []).reduce((sum, g) => sum + (g.members_count ?? 0), 0)
   }
 
   return {
