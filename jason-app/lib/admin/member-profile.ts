@@ -126,7 +126,7 @@ export async function loadMemberProfile(memberId: string) {
     adminClient.from('contracts').select('*', { count: 'exact', head: true }).eq('user_id', memberId),
     // Tous les groupes (une trentaine) dans la même vague : avant, une 2e
     // requête attendait la liste des groupes rejoints
-    adminClient.from('community_groups').select('id, name, member_count'),
+    adminClient.from('community_groups').select('id, name, members_count'),
   ])
 
   if (!memberProfile) return { error: 'Membre introuvable' }
@@ -134,7 +134,7 @@ export async function loadMemberProfile(memberId: string) {
   const groupIds = new Set((communityMemberships ?? []).map(m => m.group_id as string))
   const joinedGroups = (allGroups ?? [])
     .filter(g => groupIds.has(g.id as string))
-    .map(g => ({ id: g.id as string, name: (g.name as string) ?? null, member_count: (g.member_count as number) ?? 0 }))
+    .map(g => ({ id: g.id as string, name: (g.name as string) ?? null, member_count: (g.members_count as number) ?? 0 }))
   const totalReach = joinedGroups.reduce((sum, g) => sum + (g.member_count ?? 0), 0)
 
   // Audits : split complétés vs brouillons
