@@ -602,10 +602,8 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
   return (
     <div
       className="jm-membre-card"
-      // Préchargement au survol / toucher : l'écran de chargement de la fiche
-      // s'affiche tout de suite au clic (04/10/2026)
-      onMouseEnter={() => router.prefetch(`/dashboard/admin/membres/${m.id}`)}
-      onTouchStart={() => router.prefetch(`/dashboard/admin/membres/${m.id}`)}
+      // Charger la fiche uniquement au clic : son rendu lance plusieurs
+      // lectures admin et ne doit pas partir sur un simple survol.
       style={{ ...s.card, cursor: 'pointer', ...(suspect ? { border: '1px solid var(--danger-border)' } : {}) }}
       onClick={() => router.push(`/dashboard/admin/membres/${m.id}`)}
       title="Ouvrir la fiche complète"
@@ -803,10 +801,8 @@ function MemberListRow({ member: m, isPending, onOpenPanel, onDelete }: MemberLi
   return (
     <div
       className="jm-membre-row"
-      // Préchargement au survol / toucher : l'écran de chargement de la fiche
-      // s'affiche tout de suite au clic (04/10/2026)
-      onMouseEnter={() => router.prefetch(`/dashboard/admin/membres/${m.id}`)}
-      onTouchStart={() => router.prefetch(`/dashboard/admin/membres/${m.id}`)}
+      // Charger la fiche uniquement au clic : son rendu lance plusieurs
+      // lectures admin et ne doit pas partir sur un simple survol.
       style={{ ...s.listRow, ...(suspect ? { background: 'var(--danger-bg)' } : {}) }}
       onClick={() => router.push(`/dashboard/admin/membres/${m.id}`)}
       title="Ouvrir la fiche complète"
