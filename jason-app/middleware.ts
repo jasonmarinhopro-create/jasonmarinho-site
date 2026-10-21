@@ -114,7 +114,8 @@ export async function middleware(request: NextRequest) {
       }),
     ])
     if (result) {
-      claims = result.data.claims as unknown as Record<string, unknown> | null
+      const resultClaims = result.data?.claims
+      claims = resultClaims ? resultClaims as unknown as Record<string, unknown> : null
       authError = result.error
     } else {
       authTimedOut = true
