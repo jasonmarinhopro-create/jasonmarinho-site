@@ -1,7 +1,7 @@
 import { getServiceClient } from '@/lib/supabase/service'
 import { cache } from 'react'
 import { unstable_cache, revalidateTag } from 'next/cache'
-import { getAuthUser } from '@/lib/supabase/auth-user'
+import { getAuthIdentity } from '@/lib/supabase/auth-user'
 
 const ADMIN_EMAIL = 'djason.marinho@gmail.com'
 const PROFILE_CACHE_TTL_SECONDS = 300 // 5 min, invalidé via tag à chaque mutation
@@ -48,8 +48,8 @@ function getCachedProfileData(userId: string) {
  *   (fini le re-fetch Supabase à chaque navigation pour des données quasi-statiques)
  */
 export const getProfile = cache(async () => {
-  // getAuthUser : dédupliqué par rendu (partagé avec spaces/activeProperty)
-  const user = await getAuthUser()
+  // getAuthIdentity : dédupliqué par rendu (partagé avec spaces/activeProperty)
+  const user = await getAuthIdentity()
   if (!user) return null
 
   const isAdmin = user.email === ADMIN_EMAIL
