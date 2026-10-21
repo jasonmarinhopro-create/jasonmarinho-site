@@ -1,7 +1,7 @@
 import { getServiceClient } from '@/lib/supabase/service'
 import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
-import { getAuthUser } from '@/lib/supabase/auth-user'
+import { getAuthIdentity } from '@/lib/supabase/auth-user'
 
 const ADMIN_EMAIL = 'djason.marinho@gmail.com'
 
@@ -54,8 +54,8 @@ const fetchSpacesDataForUser = (userId: string) => unstable_cache(
 )()
 
 export const getUserSpaces = cache(async (): Promise<SpacesResult> => {
-  // getAuthUser : dédupliqué par rendu (1 seul RTT auth pour tout le layout)
-  const user = await getAuthUser()
+  // getAuthIdentity : dédupliqué par rendu (1 seul RTT auth pour tout le layout)
+  const user = await getAuthIdentity()
   if (!user) {
     const host: UserSpace = { key: 'host', label: 'Hôte LCD', href: '/dashboard', active: false }
     return { spaces: [host], primary: host }
