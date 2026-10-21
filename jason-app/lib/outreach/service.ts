@@ -350,7 +350,7 @@ export async function handleInbox(db: Db, settings: Settings, opts: { sinceDays?
   const idByContact = new Map((contacted ?? []).map(c => [c.id as string, c.email_norm as string]))
   const since90 = new Date(Date.now() - 90 * 86400_000).toISOString()
   const { rows: sends } = await allRows<{ contact_id: string; message_id: string }>((from, to) => db.from('outreach_sends').select('contact_id, message_id')
-    .not('message_id', 'is', null).gte('created_at', since90).order('id').range(from, to), 30_000)
+    .not('message_id', 'is', null).gte('sent_at', since90).order('id').range(from, to), 30_000)
   const byThread = new Map<string, string>()
   for (const r of (sends ?? []) as Array<{ contact_id: string; message_id: string }>) {
     const email = idByContact.get(r.contact_id)
