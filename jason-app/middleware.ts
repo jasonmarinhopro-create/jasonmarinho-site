@@ -14,6 +14,49 @@ function clearAuthCookies(response: NextResponse) {
   })
 }
 
+const AUTH_FETCH_TIMEOUT_MS = 8_000
+const AUTH_CHECK_TIMEOUT_MS = 10_000
+
+// Propagate cancellation and abort a stalled Auth fetch before Vercel's limit.
+const fetchWithTimeout: typeof fetch = async (input, init) => {
+  const controller = new AbortController()
+  const abortFromCaller = () => controller.abort()
+  const timeout = setTimeout(abortFromCaller, AUTH_FETCH_TIMEOUT_MS)
+  if (init?.signal?.aborted) abortFromCaller()
+  else init?.signal?.addEventListener('abort', abortFromCaller, { once: true })
+
+  try {
+    return await fetch(input, { ...init, signal: controller.signal })
+  } finally {
+    clearTimeout(timeout)
+    init?.signal?.removeEventListener('abort', abortFromCaller)
+  }
+}
+
+function authUnavailableResponse() {
+  return new NextResponse(
+    '<!doctype html><html lang="fr"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Connexion temporairement indisponible</title><body style="font-family:system-ui,sans-serif;max-width:36rem;margin:15vh auto;padding:0 1.5rem;color:#222"><h1>Connexion temporairement indisponible</h1><p>Le service de connexion ne répond pas assez vite. Tes identifiants sont conservés. Réessaie dans quelques instants.</p><button onclick="location.reload()" style="padding:.7rem 1rem;cursor:pointer">Réessayer</button></body></html>',
+    {
+      status: 503,
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-store',
+        'Retry-After': '5',
+      },
+    },
+  )
+}
+
+function isInvalidAuthSession(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false
+  const authError = error as { status?: unknown; name?: unknown; code?: unknown }
+  return authError.status === 401
+    || authError.name === 'AuthSessionMissingError'
+    || authError.code === 'session_not_found'
+    || authError.code === 'bad_jwt'
+    || authError.code === 'refresh_token_not_found'
+}
+
 export async function middleware(request: NextRequest) {
   // Injecte le pathname courant dans un header pour que les layouts
   // server components puissent y accéder (Next.js ne le passe pas par défaut).
@@ -25,6 +68,7 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      global: { fetch: fetchWithTimeout },
       // @supabase/ssr v0.3.x requires get/set/remove (not getAll/setAll)
       cookies: {
         get(name: string) {
@@ -51,22 +95,46 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse
   }
 
-  // Source de vérité unique : getUser() valide la JWT contre le serveur
-  // Supabase. On évite getSession() (décodage local) qui peut diverger du
-  // serveur et causer ERR_TOO_MANY_REDIRECTS quand les cookies sont
-  // partiellement expirés / révoqués / corrompus.
-  const authStart = Date.now()
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
-  const authMs = Date.now() - authStart
-  const isAuthed = !!user
-
-  // Détection de session "fantôme" : un cookie auth présent mais refusé
-  // par le serveur. On le purge pour casser la boucle.
+  // getClaims vérifie le JWT signé et évite l'aller-retour getUser() par route.
+  // Si Auth tarde, on échoue vite et on conserve les cookies de session.
   const hasAuthCookie = request.cookies.getAll().some(
     c => c.name.startsWith('sb-') && c.name.includes('auth-token') && c.value
   )
-  if (!isAuthed && hasAuthCookie && authError) {
-    // Si déjà sur /auth/* on laisse passer (pour permettre login) après purge
+  const authStart = Date.now()
+  let claims: Record<string, unknown> | null = null
+  let authError: unknown = null
+  let authTimedOut = false
+  let authTimer: ReturnType<typeof setTimeout> | undefined
+
+  try {
+    const result = await Promise.race([
+      supabase.auth.getClaims(),
+      new Promise<null>(resolve => {
+        authTimer = setTimeout(() => resolve(null), AUTH_CHECK_TIMEOUT_MS)
+      }),
+    ])
+    if (result) {
+      claims = result.data.claims as unknown as Record<string, unknown> | null
+      authError = result.error
+    } else {
+      authTimedOut = true
+    }
+  } catch (error) {
+    authError = error
+  } finally {
+    if (authTimer) clearTimeout(authTimer)
+  }
+
+  const authMs = Date.now() - authStart
+  const invalidSession = isInvalidAuthSession(authError)
+  const isAuthed = !invalidSession && typeof claims?.sub === 'string'
+
+  if (hasAuthCookie && (authTimedOut || (authError && !invalidSession))) {
+    return authUnavailableResponse()
+  }
+
+  // Ne purge que les sessions explicitement invalides, jamais sur une panne.
+  if (!isAuthed && hasAuthCookie && invalidSession) {
     if (path.startsWith('/auth')) {
       clearAuthCookies(supabaseResponse)
       return supabaseResponse
