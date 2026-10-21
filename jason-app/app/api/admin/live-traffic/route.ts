@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
-import { getLiveVisitorsCount, getChannelBreakdown, CHANNEL_LABELS } from '@/lib/queries/site-traffic'
+import { getLiveVisitorsCount, getCachedChannelBreakdown, CHANNEL_LABELS } from '@/lib/queries/site-traffic'
+import { getAuthIdentity } from '@/lib/supabase/auth-user'
 
-// Polling léger depuis AdminUI (toutes les ~25s) pour rafraîchir le
-// compteur "en direct" sans recharger toute la page admin.
+// Rafraîchit le compteur et les canaux depuis AdminUI (toutes les 60 s).
 export async function GET() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const user = await getAuthIdentity()
   if (!user) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
 
   const { data: profile } = await supabase
@@ -25,7 +25,7 @@ export async function GET() {
 
   const [live, channels] = await Promise.all([
     getLiveVisitorsCount(admin),
-    getChannelBreakdown(admin),
+    getCachedChannelBreakdown(),
   ])
 
   return NextResponse.json({
