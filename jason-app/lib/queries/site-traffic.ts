@@ -3,6 +3,8 @@
 // api/track/visit.js côté site statique). Réservé à l'admin.
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { allRows } from '@/lib/supabase/all-rows'
+import { unstable_cache } from 'next/cache'
+import { getServiceClient } from '@/lib/supabase/service'
 
 export type Channel = 'direct' | 'recherche' | 'social' | 'referral'
 
@@ -82,6 +84,15 @@ export async function getChannelBreakdown(admin: SupabaseClient, hours = 24): Pr
     .map(channel => ({ channel, count: counts[channel], pct: total > 0 ? Math.round((counts[channel] / total) * 100) : 0 }))
     .sort((a, b) => b.count - a.count)
 }
+
+// Acquisition channels change continuously, but the admin chart does not need
+// a database scan on every navigation or every live-traffic poll. Cache this
+// global aggregate for five minutes; authorization is checked by each caller.
+export const getCachedChannelBreakdown = unstable_cache(
+  async () => getChannelBreakdown(getServiceClient(), 24),
+  ['admin-channel-breakdown-v1'],
+  { revalidate: 300 },
+)
 
 export interface TopPage { path: string; views: number }
 
