@@ -9,6 +9,8 @@ Les tables restent dans `public` tant que l’application les appelle via supaba
 
 Pour retrouver les objets, classer les changements par domaine fonctionnel dans le nom des migrations et dans les commentaires SQL (ex. `pro_*` pour l’espace professionnel, `chez_nous_*` pour la communauté). Une migration doit porter une seule évolution cohérente; toute nouvelle table doit avoir un commentaire qui décrit sa responsabilité et ses données principales.
 
+Le [catalogue du schéma public](catalogue-public.md) liste les 99 tables, leurs colonnes et les principaux droits de lecture observés, rangés par domaines documentaires.
+
 ## Règles d’accès Data API
 
 Le 30 octobre 2026, Supabase retire l’exposition automatique des nouvelles tables de `public`. La migration `20261021_141_data_api_opt_in.sql` aligne les nouveaux objets sur ce comportement et conserve les droits des tables existantes.
@@ -46,4 +48,4 @@ N’ajouter `anon` que si l’accès anonyme est réellement requis, et limiter 
 - Ajouter les changements dans `jason-app/supabase/migrations/` avec un numéro/date unique et un nom métier lisible.
 - Garder chaque migration additive/rejouable quand c’est possible; ne pas compter sur `CREATE TABLE IF NOT EXISTS` pour ajouter des colonnes à une table existante.
 - Le workflow GitHub applique les migrations après fusion dans `main` si `SUPABASE_DB_URL` est configuré. Une migration de schéma doit être relue avant fusion.
-- Le contrôle initial d’exposition montre 99 tables en RLS, 95 tables avec des privilèges SELECT/INSERT pour `anon` et `authenticated`, et 4 sans ces privilèges. Le GRANT seul ne prouve pas que les lignes sont lisibles : les politiques RLS déterminent l’accès effectif. Ne pas révoquer ou élargir en masse les privilèges des tables actuelles sans audit de leurs politiques et usages.
+- Le relevé montre 99 tables avec RLS activé. 95 tables ont les privilèges SELECT et INSERT pour les deux rôles `anon` et `authenticated`; 4 n’ont pas l’ensemble de ces quatre droits. Le GRANT seul ne prouve pas que les lignes sont lisibles : les politiques RLS déterminent l’accès effectif. Ne pas révoquer ou élargir en masse les privilèges des tables actuelles sans audit de leurs politiques et usages.
