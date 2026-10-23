@@ -90,3 +90,4 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-10-15 · plateformes · Booking.com s'engage sur la liberté tarifaire des hébergeurs dans l'UE (https://hospitality-on.com/fr/hotellerie/bruxelles-obtient-de-bookingcom-de-nouvelles-garanties-sur-la-liberte-tarifaire-des)
 - 2026-10-15 · conciergerie · La France compte plus de 82 000 conciergeries de location courte durée (https://www.majordia.fr/ressources/observatoire-conciergeries-lcd)
 - 2026-10-17 · plateformes · Airbnb lance la « Garantie intempéries » en France (https://mistertravel.news/2026/10/11/airbnb-rembourse-la-pluie-la-garantie-intemperies-debarque-en-france/)
+- 2026-10-23 · entreprise · Micro-entrepreneur : déclare ton T3 Urssaf avant le 31 octobre · pour photographe, menage (https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut/declarer-et-payer-mes-cotisations.html)
