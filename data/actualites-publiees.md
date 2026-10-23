@@ -1,38 +1,88 @@
 # Actualités déjà publiées (dashboard > Actualités)
 
 Historique lu par la routine de veille quotidienne AVANT de choisir ses
-actualités : un sujet déjà présent ici dans les 60 derniers jours ne doit pas
-être republié, même reformulé. Une vraie évolution (nouvelle date, décision
-publiée, chiffre officiel qui change) peut l'être avec `"is_update": true` et
-un titre qui dit ce qui change.
+actualités : un sujet présent ici ne doit pas être republié, même reformulé ou
+avec une autre source. Une vraie évolution (nouvelle date, décision publiée,
+chiffre officiel qui change) peut l'être avec `"is_update": true` et un titre
+qui dit ce qui change.
 
-Mis à jour automatiquement par `.github/workflows/process-actualites.yml` à
-chaque publication (du plus ancien au plus récent). Ne pas éditer à la main,
-sauf pour retirer une ligne masquée dans le dashboard.
+Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
+(workflow « Process actualités queue », chaque matin et après chaque
+publication) : les 60 derniers jours, actualités ajoutées par la routine ou
+depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
+- 2026-08-25 · plateformes · Airbnb : migration vers 15,5% de commission hôte obligatoire (https://blog.elloha.com/2026/08/16/un-nouvel-ete-offensif-pour-airbnb/)
+- 2026-08-26 · plateformes · Airbnb : bascule aux frais uniques à 15,5% avant le 13 octobre (https://blog.elloha.com/2026/08/16/un-nouvel-ete-offensif-pour-airbnb/)
+- 2026-08-26 · marche · Été 2026 : la Bretagne en tête, les grandes villes en retrait (https://presseagence.fr/paris-locations-saisonnieres-lete-2026-sourit-a-la-bretagne-les-grandes-villes-boudees/)
+- 2026-08-27 · plateformes · Airbnb bascule au frais unique de 15,5 % : deadline au 13 octobre (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
+- 2026-08-28 · conciergerie · Facturation électronique : réception obligatoire dès le 1er septembre · masquée (https://blog.elloha.com/2026/08/07/facturation-electronique-une-rentree-sportive-pour-les-loueurs-saisonniers/)
+- 2026-08-29 · plateformes · Airbnb bascule à 15,5 % de commission hôte dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-08-29 · reglementation · Déclaloc reporté au T4 2026 : continue à déclarer en mairie (https://sejourdirect.fr/blog/enregistrement-obligatoire-meubles-tourisme-mai-2026)
 - 2026-08-30 · fiscalite · Classement meublé 2021 : ton certificat expire cette année (https://lmnp.ai/classement-meuble-tourisme)
+- 2026-08-31 · plateformes · Airbnb passe à un frais hôte unique de 15,5 % : tu as jusqu'au 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
+- 2026-09-01 · plateformes · Airbnb passe à 15,5 % de commission pour les hôtes dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
+- 2026-09-01 · marche · Été 2026 : la Bretagne cartonne, les grandes villes décrochent · masquée (https://presseagence.fr/paris-locations-saisonnieres-lete-2026-sourit-a-la-bretagne-les-grandes-villes-boudees/)
+- 2026-09-02 · plateformes · Airbnb passe à 15,5 % de commission hôte le 13 octobre : agis avant · masquée (https://www.locationcourteduree.fr/2026/07/22/commission-airbnb-2026/)
 - 2026-09-02 · marche · Été 2026 : 70 % des réservations Airbnb des Français restent en France (https://news.airbnb.com/fr/ete-2026-les-francais-voyagent-de-plus-en-en-plus-pres-de-chez-eux/)
+- 2026-09-03 · plateformes · Airbnb bascule aux frais hôte uniques à 15,5 % dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
+- 2026-09-03 · marche · Été 2026 : Bretagne-Manche à 77 % d'occupation, grandes villes à la peine · masquée (https://presseagence.fr/paris-locations-saisonnieres-lete-2026-sourit-a-la-bretagne-les-grandes-villes-boudees/)
+- 2026-09-04 · plateformes · Airbnb : commission unique de 15,5 % pour les hôtes dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
+- 2026-09-04 · marche · Été 2026 : les côtes cartonnent, les grandes villes reculent · masquée (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
+- 2026-09-04 · plateformes · Airbnb se mue en super-app : transport, courses et expériences intégrés · masquée (https://blog.elloha.com/2026/08/16/un-nouvel-ete-offensif-pour-airbnb/)
+- 2026-09-05 · reglementation · Facture électronique : l'obligation est en vigueur depuis le 1er septembre · masquée (https://blog.elloha.com/2026/08/07/facturation-electronique-une-rentree-sportive-pour-les-loueurs-saisonniers/)
 - 2026-09-05 · fiscalite · LMNP : les prélèvements sociaux passent à 18,6 % sur tes revenus 2026 (https://www.nopillo.com/blog/lmnp-prelevements-sociaux)
 - 2026-09-06 · communes · Nice : dépôt des dossiers de quotas rouvert jusqu'au 31 décembre (https://www.nicecotedazur.org/services/logement/autorisations-de-changements-dusage/logements-en-meubles-touristiques/)
+- 2026-09-06 · reglementation · Enregistrement meublé tourisme : le téléservice national arrive au T4 · masquée (https://kohenavocats.fr/2026/09/02/numero-enregistrement-airbnb-2026-teleservice-national-quatrieme-trimestre-recours/)
+- 2026-09-06 · marche · Été 2026 : le littoral à 77% d'occupation, les villes en retrait · masquée (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
+- 2026-09-07 · plateformes · Airbnb bascule à 15,5 % de commission le 13 octobre : réajuste tes prix · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
+- 2026-09-07 · marche · Été 2026 : le littoral explose, les grandes villes perdent 9 points d'occupation · masquée (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
 - 2026-09-07 · reglementation · API Meublés : la plateforme nationale d'enregistrement ouvre au 4e trimestre 2026 (https://www.immomatin.com/franchise/reseaux-franchise/meubles-de-tourisme-deux-decrets-mettent-en-place-la-plateforme-nationale-d-enregistrement.html)
 - 2026-09-08 · reglementation · Facturation électronique LMNP : l'obligation de réception est active (https://www.jedeclaremonmeuble.com/facturation-electronique-lmnp-obligations/)
+- 2026-09-08 · plateformes · Airbnb passe à 15,5% de frais hôte exclusifs dès le 13 octobre · masquée (https://www.meilleurtaux.com/credit-immobilier/actualites/2026-septembre/airbnb-frais-uniques-des-le-13-octobre-2026.html)
+- 2026-09-08 · marche · Été 2026 : le littoral cartonne, les grandes villes en repli · masquée (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
 - 2026-09-09 · communes · Cassel plafonne les Airbnb à 30 : délai jusqu'au 30 septembre (https://france3-regions.franceinfo.fr/hauts-de-france/pas-calais/saint-omer/on-n-est-pas-contre-les-touristes-mais-dans-ce-village-prefere-des-francais-la-limitation-des-locations-airbnb-divise-3398158.html)
+- 2026-09-09 · plateformes · Airbnb intègre hôtels et voitures : ce que ça change pour toi · masquée (https://blog.elloha.com/2026/08/16/un-nouvel-ete-offensif-pour-airbnb/)
 - 2026-09-10 · communes · Nice revient à 120 jours pour les résidences principales (https://pm.joyloc.com/villes/nice)
 - 2026-09-10 · plateformes · Abritel lance les annonces sponsorisées pour les hôtes (https://www.tom.travel/2026/09/01/expedia-dote-abritel-de-nouvelles-fonctionnalites-pour-les-partenaires/)
+- 2026-09-11 · reglementation · Bruxelles propose d'interdire les achats LCD en zones tendues · masquée (https://www.lechotouristique.com/article/contre-la-crise-du-logement-bruxelles-veut-faciliter-les-mesures-anti-airbnb)
 - 2026-09-11 · juridique · Copropriété : ton AG peut voter l'interdiction d'Airbnb cet automne (https://kohenavocats.fr/2026/09/08/copropriete-meubles-tourisme-interdiction-assemblee/)
+- 2026-09-12 · plateformes · Airbnb bascule à 15,5 % de frais hôte le 13 octobre : recalcule tes tarifs · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
+- 2026-09-13 · plateformes · Airbnb bascule à 15,5 % de frais hôte en France dès le 13 octobre (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
+- 2026-09-14 · fiscalite · Facturation électronique : les LMNP doivent agir depuis le 1er septembre · masquée (https://kohenavocats.fr/2026/07/17/facture-electronique-lmnp-septembre-2026-obligations-amendes-recours/)
 - 2026-09-14 · plateformes · Airbnb lance ses nouveaux services en France : ce que tu dois savoir (https://fr.finance.yahoo.com/actualites/airbnb-propose-d%C3%A9sormais-location-voitures-120508074.html)
+- 2026-09-15 · plateformes · Airbnb bascule à une commission unique de 15,5 % le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
+- 2026-09-15 · marche · Été 2026 : la Bretagne cartonne, les grandes villes en recul · masquée (https://presseagence.fr/paris-locations-saisonnieres-lete-2026-sourit-a-la-bretagne-les-grandes-villes-boudees/)
+- 2026-09-16 · plateformes · Airbnb passe à 15,5 % de frais hôte : un mois pour adapter tes prix · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
+- 2026-09-17 · marche · Été 2026 : revenus en hausse sur le littoral, villes en recul · masquée (https://www.lejma.fr/2026/09/13/bilan-touristique-de-lete-2026-en-france-les-premiers-enseignements-dune-saison-bousculee-par-la-chaleur-mais-globalement-solide/)
+- 2026-09-18 · reglementation · Declaloc : le portail d'enregistrement des meublés se déploie sur tout le territoire · masquée (https://sejourdirect.fr/blog/enregistrement-obligatoire-meubles-tourisme-mai-2026)
 - 2026-09-19 · plateformes · Airbnb bascule à 15,5 % de frais hôte le 13 octobre 2026 (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
+- 2026-09-20 · plateformes · Airbnb passe à 15,5 % de frais hôte dès le 13 octobre 2026 · masquée (https://www.meilleurtaux.com/credit-immobilier/actualites/2026-septembre/airbnb-frais-uniques-des-le-13-octobre-2026.html)
+- 2026-09-20 · marche · Été 2026 : le littoral cartonne, les grandes villes reculent · masquée (https://presseagence.fr/paris-tourisme-estival-2026-le-littoral-grand-gagnant-de-la-location-courte-duree/)
+- 2026-09-21 · plateformes · Airbnb passe à 15,5 % de commission hôte le 13 octobre 2026 · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
+- 2026-09-21 · marche · Été 2026 : le littoral à 77 % d'occupation, les villes à 48 % · masquée (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
+- 2026-09-22 · plateformes · Airbnb bascule à 15,5 % de frais hôte le 13 octobre : ajuste tes prix · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-23 · reglementation · L'UE donne aux communes un droit de plafonner les meublés de tourisme (https://www.journaldunet.com/business/action-publique/1554665-l-union-europeenne-presente-un-plan-visant-a-encadrer-la-location-de-meubles-de-tourisme-pour-contrer-l-essor-d-airbnb-et-lutter-contre-la-penurie-de-logements/)
+- 2026-09-23 · marche · Été 2026 : taux d'occupation en hausse, le littoral en tête des performances · masquée (https://blog.elloha.com/2026/08/29/bilan-ete-2026-lincroyable-resistance-du-tourisme-francais-et-les-cles-pour-reussir-la-rentree/)
+- 2026-09-24 · plateformes · Airbnb bascule vers un frais hôte unique à 15,5 % HT dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-24 · fiscalite · Hausser tes prix Airbnb pour compenser : attention au seuil des 23 000 euros (https://www.moneyvox.fr/immobilier/actualites/110230/airbnb-de-nouvelles-consequencesfiscales-pour-la-location-meublee-de-courte-duree)
+- 2026-09-25 · plateformes · Airbnb passe à une commission unique de 15,5 % le 13 octobre 2026 · masquée (https://www.meilleurtaux.com/credit-immobilier/actualites/2026-septembre/airbnb-frais-uniques-des-le-13-octobre-2026.html)
 - 2026-09-25 · marche · Bilan été 2026 : taux d'occupation en hausse, le littoral domine (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
 - 2026-09-26 · fiscalite · Meublé classé : le plafond micro-BIC monte à 83 600 euros pour 2026 (https://www.koliving.fr/meuble-tourisme-plafond-micro-bic-83600-euros-revenus-2026/)
+- 2026-09-27 · plateformes · Airbnb bascule à 15,5 % côté hôte le 13 octobre 2026 (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
+- 2026-09-27 · fiscalite · Micro-BIC 2026 : classé ou non classé, l'abattement change (https://declarer-ma-location-meublee.com/fiscalite-meuble-tourisme-2026/)
 - 2026-09-28 · reglementation · Voyageur qui refuse de partir : la loi Ripost permet l'expulsion en 72h (https://www.meuble-tourisme-76.fr/news/loi-ripost-et-meuble-de-tourisme)
+- 2026-09-29 · fiscalite · Taxe d'habitation 2027 : les meublés classés peuvent être exonérés (https://www.impots.gouv.fr/formulaire/1205-gd-sd/taxe-dhabitation-demande-dexoneration-pour-meubles-de-tourisme-et-chambres-dh)
 - 2026-09-30 · plateformes · Booking.com : tes virements sont mensuels depuis juillet (https://partner.booking.com/fr/aide/conditions-paiements/produits-paiements/d%C3%A9couvrez-les-paiements-par-bookingcom)
+- 2026-10-01 · plateformes · Google Vacation Rentals disparaît des recherches en France (https://www.phocuswire.com/news/distribution/google-removes-vacation-rentals-search-results-eea)
 - 2026-10-02 · plateformes · Airbnb automne 2026 : IA pour trouver, nouveaux outils pour gérer (https://news.airbnb.com/airbnb-2026-fall-update)
+- 2026-10-03 · juridique · Changement d'usage en LCD : la Cour de cassation tranche (https://kohenavocats.fr/2026/09/30/locations-courte-duree-copropriete-meubles-tourisme-interdiction-recours/)
+- 2026-10-03 · marche · Ski 2026-2027 : les premières réservations progressent de 20 % (https://www.tendancehotellerie.fr/articles-breves/communique-de-presse/25429-article/les-vacances-ski-des-francais-changent-de-visage-gens-de-confiance-en-livre-les-nouvelles-regles)
 - 2026-10-05 · reglementation · Depuis le 1er octobre, le bail standard bloque mieux la sous-location (https://edito.seloger.com/conseils-d-experts/louer/contrat-de-bail-voici-change-partir-1er-octobre-article-23703.html)
 - 2026-10-06 · plateformes · Abritel passe à 12 % de commission pour tous les hôtes le 29 octobre (https://blog.elloha.com/2026/10/04/pourquoi-les-geants-de-la-location-de-courte-duree-revoient-de-fond-en-comble-leur-modele-de-commission/)
+- 2026-10-07 · fiscalite · PLF 2027 : amortissement LMNP plafonné à 1,5 % pour les meublés de tourisme (https://www.meilleurtaux.com/credit-immobilier/actualites/2026-octobre/lmnp-plafonds-damortissement-envisages-des-2027.html)
 - 2026-10-10 · communes · Paris : louer sans changement d'usage expose à une amende jusqu'à 100 000 euros (https://kohenavocats.fr/2026/10/07/meuble-touristique-paris-octobre-2026-changement-usage-amende-copropriete-louer-regle/)
+- 2026-10-11 · juridique · Stage à l'étranger ? La Cour de cassation refuse de dépasser 120 nuits (https://consultation.avocat.fr/blog/alexandre-chevallier/article-2982588-meuble-de-tourisme-ni-les-etudes-ni-le-stage-ne-constituent-une-obligation-professionnelle-permettant-de-depasser-120-jours-cass.-3e-civ.-16-avril-2026-n-24-22.809.html)
+- 2026-10-11 · conciergerie · Conciergerie : encaisser des loyers sans carte G expose à des poursuites (https://www.rentalscaleup.com/fr/locations-de-courte-duree-en-france-et-la-loi-hoguet-que-dit-le-rapport-fnaim-davril-2026/)
 - 2026-10-12 · plateformes · Mise à jour : les 15,5 % Airbnb entrent en vigueur demain (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-10-12 · fiscalite · Taxe de séjour 2027 : ta commune délibère en ce moment (https://www.service-public.fr/particuliers/vosdroits/F2048)
 - 2026-10-14 · reglementation · DPE obligatoire pour les meublés de tourisme en zone tendue dès 2028 (https://www.hellio.com/actualites/reglementation/logement-touristique-dpe)
