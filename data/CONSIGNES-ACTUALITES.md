@@ -31,7 +31,7 @@ remplissait en quelques tours et elle s'arrêtait sans rien publier. Donc :
 
 - **Aucun sous-agent** (pas d'outil Agent / Task), tout se fait toi-même, à la
   suite.
-- **Recherche web en mode standard seulement, 8 recherches au plus** pour
+- **Recherche web en mode standard seulement, 12 recherches au plus** pour
   toute la session, une à la fois. Lis les extraits des résultats : ils
   suffisent presque toujours.
 - **Ouvrir une page (WebFetch) : 3 fois au plus**, seulement pour vérifier la
@@ -51,7 +51,24 @@ remplissait en quelques tours et elle s'arrêtait sans rien publier. Donc :
   pendant quatre jours. Avant de garder une candidate, cherche son sujet dans
   l'historique (mots-clés : PLF, LMNP, amortissement, Airbnb, 15,5 %, Le Meur,
   DPE, taxe de séjour…).
-- Rien de neuf après 8 recherches : aucun fichier, fin de la session.
+- Rien de neuf après 12 recherches : aucun fichier, fin de la session.
+- **Recherches qui donnent des résultats** (23/10/2026 : une session de test n'a
+  rien trouvé avec des recherches trop générales). Une recherche = un sujet
+  précis + le mois en cours, par exemple :
+  - « taxe de séjour 2027 délibération conseil municipal » (septembre à
+    novembre : les communes votent les tarifs de l'année suivante) ;
+  - « meublés de tourisme quotas changement d'usage <mois> <année> » et
+    « location courte durée arrêté municipal <mois> <année> » ;
+  - « Airbnb hôtes nouveauté <mois> <année> », « Booking.com partenaires
+    <mois> <année> », « Abritel Vrbo propriétaires <mois> <année> » ;
+  - « LMNP projet de loi de finances amendement adopté » (seulement si un vote
+    nouveau, daté, est intervenu : sinon le sujet est déjà publié) ;
+  - « location saisonnière tribunal décision <mois> <année> » (jurisprudence) ;
+  - « numéro d'enregistrement meublé de tourisme téléservice » ;
+  - pros : « drone DGAC nouvelle réglementation <année> », « micro-entrepreneur
+    <mois> <année> Urssaf changement », « facture électronique
+    micro-entreprise calendrier ».
+  Un résultat de plus de 15 jours n'est pas une actualité.
 
 ## Étape 0 (obligatoire, avant toute recherche) : l'historique
 
