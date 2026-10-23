@@ -76,8 +76,28 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/actualites-queue/ data/actualites-publiees.md
-          if git diff --staged --quiet; then echo "Rien à enregistrer."; exit 0; fi
-          git commit -m "chore: actualités publiées et historique à jour"
-          for i in 1 2 3; do git pull --rebase -q && git push && exit 0; sleep 5; done
+          BRANCH="${GITHUB_REF_NAME}"
+          cp data/actualites-publiees.md /tmp/historique.md
+          git ls-files --deleted data/actualites-queue > /tmp/publiees.txt
+          # File vidée sur la branche de la routine (au mieux : la session a pu supprimer sa branche,
+          # 23/10/2026 : « no such ref was fetched » faisait échouer tout le job)
+          if [ "$BRANCH" != "main" ]; then
+            git add data/actualites-queue/
+            if ! git diff --staged --quiet; then
+              git commit -q -m "chore: queue des actualités vidée"
+              if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null; then git push -q origin "HEAD:refs/heads/$BRANCH" || true
+              else echo "Branche de la routine déjà supprimée : rien à vider."; fi
+            fi
+          fi
+          # Historique (et file vidée si on est sur main) toujours enregistrés sur main
+          for i in 1 2 3; do
+            git fetch -q origin main && git checkout -q -f -B hist origin/main
+            cp /tmp/historique.md data/actualites-publiees.md
+            if [ "$BRANCH" = "main" ]; then xargs -r rm -f < /tmp/publiees.txt; fi
+            git add -A data/actualites-queue/ data/actualites-publiees.md
+            if git diff --staged --quiet; then echo "Rien à enregistrer."; exit 0; fi
+            git commit -q -m "chore: actualités publiées et historique à jour"
+            git push -q origin HEAD:main && exit 0
+            sleep 5
+          done
           exit 1
