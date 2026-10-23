@@ -6,6 +6,10 @@ export const runtime = 'nodejs'
 
 const KIND_TO_COLUMN = {
   actualites: 'last_seen_actualites_at',
+  // Une date par espace pro (23/10/2026) : ouvrir les actualités des hôtes
+  // effaçait aussi le point des espaces photographe et ménage
+  actualites_photographe: 'last_seen_actualites_photo_at',
+  actualites_menage: 'last_seen_actualites_menage_at',
   nouveautes: 'last_seen_nouveautes_at',
 } as const
 

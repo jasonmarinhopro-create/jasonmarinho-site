@@ -228,6 +228,12 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   const supabase = createClient()
   const [hasNewActualites, setHasNewActualites] = useState(initialHasNewActualites)
   const [proNewActus, setProNewActus] = useState(proNav?.newActus ?? { photographer: false, cleaner: false })
+  // Le menu reste monté d'une page à l'autre : on suit les nouvelles valeurs du
+  // serveur (une actualité publiée pendant la visite fait apparaître le point)
+  const newPhoto = proNav?.newActus.photographer ?? false
+  const newMenage = proNav?.newActus.cleaner ?? false
+  useEffect(() => { setProNewActus({ photographer: newPhoto, cleaner: newMenage }) }, [newPhoto, newMenage])
+  useEffect(() => { setHasNewActualites(initialHasNewActualites) }, [initialHasNewActualites])
 
   // ── Collapse sidebar (mode icônes seulement) ──
   // Persisté en localStorage. Update la CSS var --sidebar-w globale pour
@@ -342,7 +348,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     fetch('/api/me/mark-seen', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ kind: 'actualites' }),
+      body: JSON.stringify({ kind: proPage === 'photographer' ? 'actualites_photographe' : proPage === 'cleaner' ? 'actualites_menage' : 'actualites' }),
     }).catch(() => {})
   }, [pathname])
 

@@ -1,5 +1,7 @@
 import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidateTag } from 'next/cache'
+import { CACHE_TAGS } from '@/lib/queries/cache'
 import { findSimilarActualite } from '@/lib/actualites/dedup'
 import { readAudience } from '@/lib/actualites/audience'
 
@@ -132,6 +134,8 @@ export async function POST(req: NextRequest) {
   const inserted  = results.filter(r => r.status === 'inserted').length
   const duplicates = results.filter(r => r.status === 'duplicate').length
   const errors    = results.filter(r => r.status === 'error').length
+  // Fil et point « du neuf » du menu à jour tout de suite (sinon jusqu'à 5 min de cache)
+  if (inserted > 0) revalidateTag(CACHE_TAGS.ACTUALITES_PUBLISHED)
 
   return NextResponse.json({ inserted, duplicates, errors, results }, {
     status: errors > 0 && inserted === 0 ? 400 : 200,

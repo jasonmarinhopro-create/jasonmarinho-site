@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { forAudience, hasNewFor } from '@/lib/actualites/audience'
-import { loadProNewDemandes } from '@/lib/pros/nav-counts'
+import { loadProNewDemandes, loadProActusSeen } from '@/lib/pros/nav-counts'
 import { loadContractTodoCount } from '@/lib/contracts/nav-count'
 import { headers, cookies } from 'next/headers'
 import { Suspense } from 'react'
@@ -143,12 +143,21 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
   // Menu des pros (17/10/2026) : point « du neuf » sur les actualités de leur
   // métier et compteur des demandes pas encore ouvertes
   const hasSpace = (k: 'photographer' | 'cleaner') => spacesResult.spaces.some(sp => sp.key === k && sp.active)
-  const proNav = hasSpace('photographer') || hasSpace('cleaner')
+  // Une date de visite par espace pro (23/10/2026) : ouvrir les actualités des
+  // hôtes effaçait le point des espaces photographe et ménage
+  const isPro = hasSpace('photographer') || hasSpace('cleaner')
+  const [proDemandes, proSeen] = isPro
+    ? await Promise.all([
+        loadProNewDemandes(profile.userId, { photographer: hasSpace('photographer'), cleaner: hasSpace('cleaner') }),
+        loadProActusSeen(profile.userId, profile.last_seen_actualites_at),
+      ])
+    : [null, null]
+  const proNav = proDemandes && proSeen
     ? {
-        demandes: await loadProNewDemandes(profile.userId, { photographer: hasSpace('photographer'), cleaner: hasSpace('cleaner') }),
+        demandes: proDemandes,
         newActus: {
-          photographer: hasNewFor(cachedActualites, 'photographe', profile.last_seen_actualites_at),
-          cleaner: hasNewFor(cachedActualites, 'menage', profile.last_seen_actualites_at),
+          photographer: hasNewFor(cachedActualites, 'photographe', proSeen.photographer),
+          cleaner: hasNewFor(cachedActualites, 'menage', proSeen.cleaner),
         },
       }
     : undefined
