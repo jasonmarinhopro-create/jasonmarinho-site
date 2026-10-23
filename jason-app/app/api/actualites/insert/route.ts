@@ -10,6 +10,31 @@ const VALID_CATEGORIES = new Set([
   'photo-video', 'menage', 'entreprise',
 ])
 
+/**
+ * Historique lu par la routine de veille (23/10/2026) : les actualités des 60 derniers jours,
+ * publiées ou masquées, ajoutées par la routine OU depuis l'admin. Avant, l'historique ne
+ * listait que ce que la routine avait réussi à publier : une actu PLF 2027 déjà en base
+ * n'y figurait pas, et la routine l'a reproposée trois jours de suite (refusée comme doublon).
+ * Même jeton que l'insertion.
+ */
+export async function GET(req: NextRequest) {
+  const token = req.headers.get('x-insert-token')
+  if (!token || token !== process.env.ACTUALITES_INSERT_SECRET) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  const since = new Date(Date.now() - 60 * 86_400_000).toISOString()
+  let res = await serviceClient().from('actualites')
+    .select('title, category, source_url, is_published, published_at, created_at, audience')
+    .gte('created_at', since).order('created_at', { ascending: true }).limit(500)
+  if (res.error && /audience/.test(res.error.message)) {
+    res = await serviceClient().from('actualites')
+      .select('title, category, source_url, is_published, published_at, created_at')
+      .gte('created_at', since).order('created_at', { ascending: true }).limit(500) as typeof res
+  }
+  if (res.error) return NextResponse.json({ error: res.error.message }, { status: 500 })
+  return NextResponse.json({ items: res.data ?? [] }, { headers: { 'Cache-Control': 'no-store' } })
+}
+
 export async function POST(req: NextRequest) {
   // ── Auth ───────────────────────────────────────────────────────
   const token = req.headers.get('x-insert-token')

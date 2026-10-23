@@ -1,13 +1,27 @@
 name: Process actualités queue
 
+# Publie les actualités déposées par la routine de veille, puis réécrit
+# data/actualites-publiees.md depuis la base (scripts/actualites-historique.mjs).
+# Chaque matin à 6 h 40 UTC, avant la routine (7 h), l'historique est aussi
+# réécrit : il contient les actualités ajoutées depuis l'admin et les masquées
+# (23/10/2026 : une actu PLF 2027 déjà en base n'y figurait pas, la routine l'a
+# reproposée trois jours de suite et l'API l'a refusée comme doublon).
+
 on:
   push:
     branches: [main, 'claude/**']
     paths:
       - 'data/actualites-queue/**'
+  schedule:
+    - cron: '40 6 * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: actualites-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   insert:
@@ -20,44 +34,50 @@ jobs:
       - name: Publier les actualités et vider la queue
         run: |
           FILES=$(find data/actualites-queue -name "*.json" 2>/dev/null | sort)
-
           if [ -z "$FILES" ]; then
             echo "Aucun fichier à traiter."
             exit 0
           fi
-
+          TOTAL=0
           for FILE in $FILES; do
             echo "Traitement de $FILE..."
-            PAYLOAD=$(cat "$FILE")
             RESPONSE=$(curl -s -o /tmp/api_response.json -w "%{http_code}" \
               -X POST https://app.jasonmarinho.com/api/actualites/insert \
               -H "Content-Type: application/json" \
               -H "x-insert-token: ${{ secrets.ACTUALITES_INSERT_SECRET }}" \
-              -d "$PAYLOAD")
+              --data-binary @"$FILE")
             echo "Status HTTP : $RESPONSE"
-            cat /tmp/api_response.json
+            cat /tmp/api_response.json; echo
             if [ "$RESPONSE" = "200" ] || [ "$RESPONSE" = "207" ]; then
-              echo "OK : $FILE publié."
-              # Doublons refusés (même sujet reformulé) : visibles dans les logs.
-              jq -r '.results[] | select(.status=="duplicate") | "DOUBLON ignoré : \(.title)" + (if .similar_to then " (déjà publié : \(.similar_to))" else "" end)' /tmp/api_response.json || true
-              # Historique lu par la routine de veille avant d'écrire
-              # (évite qu'elle republie chaque jour le même sujet).
-              jq -r --slurpfile p "$FILE" --arg d "$(date -u +%F)" '
-                .results[] | select(.status=="inserted") | .title as $t
-                | ($p[0] | if type=="array" then . else [.] end | map(select(.title==$t)) | .[0]) as $it
-                | "- \($d) · \($it.category) · \($t)"
-                  + (($it.audience // ["hote"]) | (if type=="array" then . else [.] end) | if (. - ["hote"]) | length > 0 then " · pour " + join(", ") else "" end)
-                  + (if $it.source_url then " (\($it.source_url))" else "" end)
-              ' /tmp/api_response.json >> data/actualites-publiees.md || true
+              N=$(jq -r '.inserted // 0' /tmp/api_response.json)
+              TOTAL=$((TOTAL + N))
+              # Doublons et erreurs en alerte visible (avant : seulement dans le journal)
+              jq -r '.results[] | select(.status=="duplicate") | "::warning title=Actualité refusée (doublon)::\(.title)" + (if .similar_to then " — déjà publié : \(.similar_to)" else " — titre déjà en base" end)' /tmp/api_response.json || true
+              jq -r '.results[] | select(.status=="error") | "::error title=Actualité refusée (erreur)::\(.title) — \(.error)"' /tmp/api_response.json || true
               rm "$FILE"
             else
-              echo "ERREUR : $FILE rejeté (HTTP $RESPONSE)"
+              echo "::error title=Publication impossible::$FILE rejeté (HTTP $RESPONSE)"
               exit 1
             fi
           done
+          echo "::notice title=Actualités publiées::$TOTAL nouvelle(s) actualité(s)"
 
+      - name: Réécrire l'historique depuis la base
+        env:
+          ACTUALITES_INSERT_SECRET: ${{ secrets.ACTUALITES_INSERT_SECRET }}
+        run: |
+          node scripts/actualites-historique.mjs
+          # Alerte si rien n'a été publié depuis 3 jours (dates des 3 derniers jours absentes de l'historique)
+          RECENT=0
+          for d in 0 1 2; do day=$(date -u -d "-$d day" +%F); grep -q "^- $day · " data/actualites-publiees.md && RECENT=1; done
+          if [ "$RECENT" = "0" ]; then echo "::warning title=Veille actualités::Aucune actualité publiée depuis 3 jours"; fi
+
+      - name: Enregistrer
+        run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/actualites-queue/ data/actualites-publiees.md
-          git diff --staged --quiet || git commit -m "chore: actualités publiées et queue vidée"
-          git push
+          if git diff --staged --quiet; then echo "Rien à enregistrer."; exit 0; fi
+          git commit -m "chore: actualités publiées et historique à jour"
+          for i in 1 2 3; do git pull --rebase -q && git push && exit 0; sleep 5; done
+          exit 1

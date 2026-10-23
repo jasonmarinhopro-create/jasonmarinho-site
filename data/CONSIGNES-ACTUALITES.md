@@ -44,12 +44,22 @@ remplissait en quelques tours et elle s'arrêtait sans rien publier. Donc :
 - Ordre : historique, puis recherches (hôtes d'abord, puis une ou deux pour
   les pros), puis au plus 3 actualités. Dès que tu as 3 bonnes candidates, tu
   arrêtes de chercher.
+- **Vise 2 ou 3 actualités de sujets différents, jamais une seule** : l'API
+  refuse tout sujet déjà en base (même reformulé ou avec une autre source).
+  Du 20 au 23/10/2026, la routine a proposé chaque jour le seul sujet « PLF
+  2027 et amortissement LMNP », déjà publié : refusé, donc rien de neuf
+  pendant quatre jours. Avant de garder une candidate, cherche son sujet dans
+  l'historique (mots-clés : PLF, LMNP, amortissement, Airbnb, 15,5 %, Le Meur,
+  DPE, taxe de séjour…).
 - Rien de neuf après 8 recherches : aucun fichier, fin de la session.
 
 ## Étape 0 (obligatoire, avant toute recherche) : l'historique
 
 Lis `data/actualites-publiees.md` sur main : une ligne par actualité publiée
-(date · catégorie · titre · source, et « pour … » quand elle vise les pros).
+(date · catégorie · titre · source, « pour … » quand elle vise les pros,
+« masquée » quand l'admin l'a retirée). Il est réécrit chaque matin depuis la
+base : il contient aussi les actualités ajoutées à la main depuis l'admin. Un
+sujet présent ici, masqué compris, sera refusé par l'API.
 
 **Règle anti-doublon, la plus importante** : un sujet présent dans ce fichier
 au cours des 60 derniers jours ne se republie pas, même reformulé. (Exemple à
