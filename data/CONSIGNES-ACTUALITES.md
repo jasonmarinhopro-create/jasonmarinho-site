@@ -41,9 +41,9 @@ remplissait en quelques tours et elle s'arrêtait sans rien publier. Donc :
 - **Dans le dépôt, lis seulement deux fichiers** : ce fichier et
   `data/actualites-publiees.md`. Ne parcours pas le dépôt, ne cherche pas dans
   le code, ne lis ni CLAUDE.md ni les articles.
-- Ordre : historique, puis recherches (hôtes d'abord, puis une ou deux pour
-  les pros), puis au plus 3 actualités. Dès que tu as 3 bonnes candidates, tu
-  arrêtes de chercher.
+- Ordre : historique, puis recherches (hôtes, puis au moins deux pour les
+  pros), puis au plus 3 actualités : idéalement 2 pour les hôtes et 1 pour
+  les pros. Dès que tu as ces 3 candidates, tu arrêtes de chercher.
 - **Vise 2 ou 3 actualités de sujets différents, jamais une seule** : l'API
   refuse tout sujet déjà en base (même reformulé ou avec une autre source).
   Du 20 au 23/10/2026, la routine a proposé chaque jour le seul sujet « PLF
@@ -161,9 +161,17 @@ statut et obligations de leur entreprise.
 Micro-entreprise (plafonds, taux, ACRE), Urssaf, facture électronique,
 assurance professionnelle, aides aux indépendants.
 
-**Rythme des pros** : 0 ou 1 actualité pour les pros par jour, et seulement
-si elle est vraiment utile à leur métier. Viser une ou deux par semaine pour
-chaque métier ; jamais une actu d'hôte recopiée pour remplir.
+**Rythme des pros : 1 actualité pour les pros chaque jour** (23/10/2026,
+Jason : aucune actualité pour les pros n'avait été publiée en 60 jours, leurs
+espaces Actualités étaient vides). Alterne : un jour les photographes et
+vidéastes, le lendemain les équipes de ménage, de temps en temps les deux
+(`["photographe", "menage"]` pour la micro-entreprise, l'Urssaf, la facture
+électronique, la CFE). Garde au moins 2 de tes 12 recherches pour eux. Pas de
+nouveauté de leur métier : prends une échéance du plan B qui les concerne
+(CFE mi-décembre, déclaration Urssaf, plafonds de la micro-entreprise, règles
+de drone, fin d'année chargée chez les hôtes). Jamais une actu d'hôte
+recopiée pour remplir ; une règle de plateforme qui change ce que les hôtes
+leur demanderont (photos, propreté) compte.
 
 ## Critères de sélection (au moins un)
 
@@ -284,7 +292,7 @@ Exemple :
 
 - Avant de pousser : JSON valide (pas de virgule finale, guillemets échappés).
 - Relis l'historique et retire toute actu dont le sujet y figure (60 jours).
-- Plus de 3 candidates : garde les 3 plus utiles, tous publics confondus.
+- Plus de 3 candidates : garde les 3 plus utiles, dont 1 pour les pros.
 - Chaque `source_url` doit être une vraie page (pas un 404), de préférence la
   source d'origine.
 - Doute sur la pertinence : ne publie pas.
