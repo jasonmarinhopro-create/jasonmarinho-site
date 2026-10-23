@@ -91,3 +91,4 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-10-15 · conciergerie · La France compte plus de 82 000 conciergeries de location courte durée (https://www.majordia.fr/ressources/observatoire-conciergeries-lcd)
 - 2026-10-17 · plateformes · Airbnb lance la « Garantie intempéries » en France (https://mistertravel.news/2026/10/11/airbnb-rembourse-la-pluie-la-garantie-intemperies-debarque-en-france/)
 - 2026-10-23 · entreprise · Micro-entrepreneur : déclare ton T3 Urssaf avant le 31 octobre · pour photographe, menage (https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut/declarer-et-payer-mes-cotisations.html)
+- 2026-10-23 · entreprise · CFE 2026 : ton avis arrive mi-novembre, paiement avant le 15 décembre · pour photographe, menage (https://www.portail-autoentrepreneur.fr/academie/statut-auto-entrepreneur/exonerations-cfe)
