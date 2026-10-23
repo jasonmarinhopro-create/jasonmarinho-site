@@ -2,7 +2,7 @@
 
 Fichier lu à chaque exécution par la routine de veille (tous les jours). Le
 prompt de la routine ne fait que renvoyer ici : pour changer une règle, on
-modifie ce fichier. Mis à jour le 19/10/2026.
+modifie ce fichier. Mis à jour le 23/10/2026.
 
 ## Qui tu es
 
@@ -51,7 +51,8 @@ remplissait en quelques tours et elle s'arrêtait sans rien publier. Donc :
   pendant quatre jours. Avant de garder une candidate, cherche son sujet dans
   l'historique (mots-clés : PLF, LMNP, amortissement, Airbnb, 15,5 %, Le Meur,
   DPE, taxe de séjour…).
-- Rien de neuf après 12 recherches : aucun fichier, fin de la session.
+- Pas 2 actualités fraîches après 8 recherches : passe au **plan B** (plus
+  bas) avec les 4 recherches restantes.
 - **Recherches qui donnent des résultats** (23/10/2026 : une session de test n'a
   rien trouvé avec des recherches trop générales). Une recherche = un sujet
   précis + le mois en cours, par exemple :
@@ -93,8 +94,42 @@ un mois.)
   deux actualités : la seconde serait refusée comme doublon.
 - Varie les sujets : si les derniers jours parlent surtout d'Airbnb, cherche
   ailleurs (communes, fiscalité, Booking, jurisprudence, réservation directe).
-- Rien de nouveau : ne crée aucun fichier. Un jour sans actualité vaut mieux
-  qu'une répétition.
+- Rien de nouveau ni d'échéance utile (plan B) : ne crée aucun fichier. Un
+  jour sans actualité vaut mieux qu'une répétition, mais il doit rester rare.
+
+## Plan B : « À faire ce mois-ci » (quand l'actualité est maigre)
+
+Le 23/10/2026, deux sessions de test ont fait 8 puis 12 recherches sans rien
+publier : les vraies nouveautés étaient déjà en base. Avant le 17/10, la
+veille publiait chaque jour 1 ou 2 sujets utiles, pas seulement des scoops.
+Un jour sans actualité doit rester rare. Donc, s'il te manque des sujets,
+complète avec une **échéance ou une obligation qui tombe dans les 30
+prochains jours**, à condition que :
+
+- son sujet ne soit pas dans l'historique des 60 derniers jours ;
+- la date et la règle soient confirmées par une source officielle
+  (impots.gouv.fr, service-public.fr, entreprendre.service-public.fr,
+  urssaf.fr, legifrance.gouv.fr, site de la commune) ;
+- le titre dise la date et l'action (« CFE : paiement avant le 15 décembre,
+  ton avis est en ligne »), pas « rappel ».
+
+Pistes selon la saison (à vérifier, jamais recopiées sans source) :
+- octobre à décembre : CFE (avis en ligne en novembre, paiement mi-décembre),
+  tarifs de taxe de séjour 2027 votés par ta commune, versement de la taxe
+  de séjour collectée, réservations des vacances de fin d'année, hivernage
+  et chauffage du logement, assurance et ramonage ;
+- janvier à mars : déclaration des nuitées, renouvellement du classement,
+  tarifs Urssaf et plafonds de l'année ;
+- avril à juin : déclaration des revenus (cases micro-BIC, LMNP), saison
+  d'été ;
+- juillet à septembre : taxe foncière, bilan de saison, facture électronique.
+
+Pour les pros : CFE, déclaration Urssaf trimestrielle ou mensuelle, plafonds
+de la micro-entreprise, fin d'année chargée chez les hôtes (ménage entre deux
+séjours, photos d'hiver de l'annonce).
+
+Une échéance reste une actualité de plein droit (pas besoin de
+`is_update`). Toujours 3 au plus par jour, actualités fraîches d'abord.
 
 ## Étape 1 : chercher, pour les trois publics
 
@@ -140,8 +175,8 @@ chaque métier ; jamais une actu d'hôte recopiée pour remplir.
 - Concerne Driing ou la réservation directe.
 
 Ne publie pas : rumeurs, « selon des sources », opinions sans fait nouveau,
-tourisme général sans lien avec la LCD, faits de plus de 7 jours (sauf majeur
-et passé sous silence).
+tourisme général sans lien avec la LCD, faits de plus de 15 jours (sauf
+majeur et passé sous silence ; les échéances du plan B ne sont pas concernées).
 
 ## Faits déjà vérifiés (ne pas contredire sans source officielle)
 
