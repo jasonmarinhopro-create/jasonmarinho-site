@@ -4,7 +4,7 @@
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import { ArrowLeft, CheckCircle, DownloadSimple, Info } from '@phosphor-icons/react/dist/ssr'
-import { getAuthUser } from '@/lib/supabase/auth-user'
+import { getAuthIdentity } from '@/lib/supabase/auth-user'
 import { createClient } from '@/lib/supabase/server'
 import { getServiceClient } from '@/lib/supabase/service'
 import { MENAGE_PHOTOS_RETENTION_DAYS, menagePhotosKeptUntil, menagePhotosExpired } from '@/lib/menage/photo-retention'
@@ -13,7 +13,7 @@ export const metadata = { title: 'Ménage terminé' }
 export const dynamic = 'force-dynamic'
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const user = await getAuthUser()
+  const user = await getAuthIdentity()
   if (!user) redirect('/auth/login')
 
   // Lecture avec le client utilisateur : la RLS garantit l'accès (hôte ou équipe).

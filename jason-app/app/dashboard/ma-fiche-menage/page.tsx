@@ -1,6 +1,6 @@
 import { getServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
-import { getAuthUser } from '@/lib/supabase/auth-user'
+import { getAuthIdentity } from '@/lib/supabase/auth-user'
 import { getProfile } from '@/lib/queries/profile'
 import { perfTimer } from '@/lib/perf/server-timing'
 import MaFicheMenage from './MaFicheMenage'
@@ -20,7 +20,7 @@ export default async function Page({ searchParams }: PageProps) {
   const previewId = sp?.id
 
   const timer = perfTimer('page /dashboard/ma-fiche-menage')
-  const user = await getAuthUser()
+  const user = await getAuthIdentity()
   if (!user) redirect('/auth/login?as=menage')
 
   const admin = getServiceClient()

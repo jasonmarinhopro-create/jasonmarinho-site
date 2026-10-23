@@ -1,5 +1,5 @@
 import { getProfile } from '@/lib/queries/profile'
-import { getAuthUser } from '@/lib/supabase/auth-user'
+import { getAuthIdentity } from '@/lib/supabase/auth-user'
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import TitleSetter from '@/components/layout/TitleSetter'
@@ -29,7 +29,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
       .eq('voyageur_id', id)
       .eq('user_id', profile.userId)
       .order('date_arrivee', { ascending: false }),
-    getAuthUser(),
+    getAuthIdentity(),
     supabase
       .from('profiles')
       .select('iban, bic, adresse, stripe_account_id, stripe_onboarding_complete')

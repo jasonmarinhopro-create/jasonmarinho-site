@@ -1,7 +1,7 @@
 import { getServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
 import { founderSeatFilter } from '@/lib/pros/founder-seats'
-import { getAuthUser } from '@/lib/supabase/auth-user'
+import { getAuthIdentity } from '@/lib/supabase/auth-user'
 import CreerFicheMenage from './CreerFicheMenage'
 
 export const metadata = { title: 'Créer ma fiche équipe ménage' }
@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic'
 const FOUNDER_QUOTA = 20
 
 export default async function Page() {
-  const user = await getAuthUser()
+  const user = await getAuthIdentity()
   if (!user) redirect('/auth/login?as=menage')
 
   const admin = getServiceClient()

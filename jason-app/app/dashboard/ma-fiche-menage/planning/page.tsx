@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { getAuthUser } from '@/lib/supabase/auth-user'
+import { getAuthIdentity } from '@/lib/supabase/auth-user'
 import { createClient } from '@/lib/supabase/server'
 import { getServiceClient } from '@/lib/supabase/service'
 import { loadHostMenageSlots, menageKey } from '@/lib/menage/host-slots'
@@ -15,7 +15,7 @@ const DAYS_AHEAD = 13
 const FOUNDER_QUOTA = 20
 
 export default async function Page() {
-  const user = await getAuthUser()
+  const user = await getAuthIdentity()
   if (!user) redirect('/auth/login?as=menage')
 
   // Date du jour à Paris (avant : UTC, le planning basculait à 1 h ou 2 h du matin)

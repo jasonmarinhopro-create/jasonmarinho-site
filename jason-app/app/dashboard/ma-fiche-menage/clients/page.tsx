@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { getAuthUser } from '@/lib/supabase/auth-user'
+import { getAuthIdentity } from '@/lib/supabase/auth-user'
 import ClientsCrm, { type ProClient } from '@/components/pros/ClientsCrm'
 import { createProClient, updateProClient, deleteProClient } from '../actions'
 
@@ -8,7 +8,7 @@ export const metadata = { title: 'Mes clients, Équipe ménage' }
 export const dynamic = 'force-dynamic'
 
 export default async function Page() {
-  const user = await getAuthUser()
+  const user = await getAuthIdentity()
   if (!user) redirect('/auth/login?as=menage')
 
   // Client utilisateur : la RLS (migrations 062 et 069) limite déjà la lecture

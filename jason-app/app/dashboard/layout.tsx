@@ -13,7 +13,10 @@ import { getActiveProperty } from '@/lib/queries/active-property'
 import { getUnreadCount, getChezNousUnreadCount } from '@/lib/notifications/queries'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { OnboardingTracks } from '@/components/onboarding/OnboardingTracks'
-import { detectTracksProgressCached } from '@/lib/onboarding/detect-tracks'
+import { detectTracksProgressCached, buildTracksState } from '@/lib/onboarding/detect-tracks'
+import { loadMenuState } from '@/lib/layout/menu-state'
+import { contractTodos, contractTodoCount } from '@/lib/contracts/todo'
+import { parisToday } from '@/lib/stripe/deposit-window'
 import { persistOnboardingCompleted } from '@/lib/onboarding/persist-complete'
 import InstallAppWidget from '@/components/InstallAppWidget'
 import DashboardLoading from './loading'
@@ -63,29 +66,23 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
   const actualitesPromise = getCachedPublishedActualites()
   const spacesPromise = getUserSpaces()
   const activePropertyPromise = getActiveProperty()
-  // Cloche : comptés côté serveur (comme hasNewActualites ci-dessous) pour
-  // que le badge affiche le bon nombre dès le premier rendu, plutôt que
-  // d'attendre un aller-retour client après hydratation (cf. Header.tsx).
-  const appNotifUnreadPromise = getUnreadCount()
-  const chezNousUnreadPromise = getChezNousUnreadCount()
+  // Menu en une seule requête (24/10/2026, menu_state) : cloche, forum,
+  // contrats à traiter, étapes du parcours, demandes et actualités des pros.
+  // Avant : 6 à 14 requêtes séparées à chaque ouverture. Lancée avant
+  // l'attente du profil ; null tant que la migration 148 manque (repli plus bas).
+  const onProPath = pathname.startsWith('/dashboard/ma-fiche-photographe') || pathname.startsWith('/dashboard/ma-fiche-menage') || pathname.startsWith('/dashboard/investir')
+  const menuPromise = loadMenuState({ onboarding: !onProPath, pro: true })
 
-  // detectTracksProgress (7 tests d'existence, ~200-500ms, non cachable)
-  // dépend du profil : lancé juste après, en parallèle des 3 autres.
   const profile = await getProfile()
   if (!profile) redirect('/auth/login')
   timer.mark('profil')
-  // Compteur de Contrats & paiements : lancé tout de suite, en parallèle du reste
-  const contratsTodoPromise = loadContractTodoCount(profile.userId)
 
   // L'espace courant pour l'onboarding (purement server) — la sidebar et le
   // header le recalculent client-side via usePathname() pour survivre au
   // router cache des layouts.
-  const isOnProSpace =
-    pathname.startsWith('/dashboard/ma-fiche-photographe') ||
-    pathname.startsWith('/dashboard/ma-fiche-menage') ||
-    // L'espace investisseur (pré-achat) n'a ni logement ni voyageur :
-    // l'onboarding hôte (Parcours) n'y a pas de sens.
-    pathname.startsWith('/dashboard/investir')
+  // L'espace investisseur (pré-achat) n'a ni logement ni voyageur :
+  // l'onboarding hôte (Parcours) n'y a pas de sens.
+  const isOnProSpace = onProPath
 
   // PERF + fix flash : si l'onboarding est TERMINÉ (onboarding_completed_at),
   // on NE lance PAS detectTracksProgress (7 requêtes, ~200-500ms) et on NE
@@ -99,21 +96,26 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
 
   const emptyOnboarding = { totalDone: 1, totalSteps: 1, tracks: [] as Array<{ key: string; doneSteps: Set<string> }> }
 
-  const [cachedActualites, spacesResult, activeProperty, onboardingState, appNotifUnread, chezNousUnread] = await Promise.all([
+  const [cachedActualites, spacesResult, activeProperty, menu] = await Promise.all([
     actualitesPromise,
     spacesPromise,
     activePropertyPromise,
-    onboardingOff
-      ? Promise.resolve(emptyOnboarding)
-      : detectTracksProgressCached({
-          userId: profile.userId,
-          completedSteps: profile.onboarding_completed_steps,
-          chezNousOnboardedAt: profile.chez_nous_onboarded_at,
-          onboardingStep: profile.onboarding_step,
-          stripeOnboardingComplete: profile.stripe_onboarding_complete,
-        }),
-    appNotifUnreadPromise,
-    chezNousUnreadPromise,
+    menuPromise,
+  ])
+  const trackInput = {
+    userId: profile.userId,
+    completedSteps: profile.onboarding_completed_steps,
+    chezNousOnboardedAt: profile.chez_nous_onboarded_at,
+    onboardingStep: profile.onboarding_step,
+    stripeOnboardingComplete: profile.stripe_onboarding_complete,
+  }
+  // Repli requête par requête seulement si la fonction menu_state a échoué
+  const [onboardingState, appNotifUnread, chezNousUnread] = await Promise.all([
+    onboardingOff ? emptyOnboarding
+      : menu?.onboarding ? buildTracksState(menu.onboarding, trackInput)
+      : detectTracksProgressCached(trackInput),
+    menu ? menu.notifUnread : getUnreadCount(),
+    menu ? menu.chezNousUnread : getChezNousUnreadCount(),
   ])
   timer.mark(onboardingOff ? 'menu et cloche' : 'menu, cloche et parcours')
   timer.done()
@@ -148,8 +150,8 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
   const isPro = hasSpace('photographer') || hasSpace('cleaner')
   const [proDemandes, proSeen] = isPro
     ? await Promise.all([
-        loadProNewDemandes(profile.userId, { photographer: hasSpace('photographer'), cleaner: hasSpace('cleaner') }),
-        loadProActusSeen(profile.userId, profile.last_seen_actualites_at),
+        menu?.demandes ?? loadProNewDemandes(profile.userId, { photographer: hasSpace('photographer'), cleaner: hasSpace('cleaner') }),
+        menu?.actusSeen ?? loadProActusSeen(profile.userId, profile.last_seen_actualites_at),
       ])
     : [null, null]
   const proNav = proDemandes && proSeen
@@ -162,7 +164,9 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
       }
     : undefined
   // Compteur hôte sur « Contrats & paiements » : seulement si l'espace hôte est actif
-  const contratsTodo = spacesResult.spaces.some(sp => sp.key === 'host' && sp.active) ? await contratsTodoPromise : 0
+  const contratsTodo = !spacesResult.spaces.some(sp => sp.key === 'host' && sp.active) ? 0
+    : menu ? contractTodoCount(contractTodos(menu.contracts, parisToday()))
+    : await loadContractTodoCount(profile.userId)
 
   return (
     <ThemeProvider>

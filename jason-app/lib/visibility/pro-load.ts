@@ -10,7 +10,7 @@ import 'server-only'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
 import { getServiceClient } from '@/lib/supabase/service'
-import { getAuthUser } from '@/lib/supabase/auth-user'
+import { getAuthIdentity } from '@/lib/supabase/auth-user'
 import { getProfile } from '@/lib/queries/profile'
 import { gscQuery, safeGsc } from '@/lib/google/search-analytics'
 import { loadGscQueryPages, loadVisits, SITE_ORIGIN } from './load'
@@ -73,7 +73,7 @@ export type ResolvedFiche =
  * (refusé à un non-admin, renvoyé vers ses propres statistiques).
  */
 export async function resolveProFiche(metier: ProMetier, previewId?: string | null): Promise<ResolvedFiche> {
-  const user = await getAuthUser()
+  const user = await getAuthIdentity()
   if (!user) return { status: 'login' }
   const columns = `${FICHE_COLUMNS}, ${EXTRA_CLICK_COLUMN[metier]}`
   if (previewId) {

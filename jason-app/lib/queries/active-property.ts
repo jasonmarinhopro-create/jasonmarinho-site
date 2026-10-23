@@ -2,7 +2,7 @@ import { getServiceClient } from '@/lib/supabase/service'
 import { cookies } from 'next/headers'
 import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
-import { getAuthUser } from '@/lib/supabase/auth-user'
+import { getAuthIdentity } from '@/lib/supabase/auth-user'
 
 export const ACTIVE_PROPERTY_COOKIE = 'active-property-id'
 export const ALL_PROPERTIES = 'all' as const
@@ -81,8 +81,8 @@ const fetchLogementsByName = (userId: string, names: string[]) => unstable_cache
 )()
 
 export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {
-  // getAuthUser : dédupliqué par rendu (1 seul RTT auth pour tout le layout)
-  const user = await getAuthUser()
+  // getAuthIdentity : dédupliqué par rendu (1 seul RTT auth pour tout le layout)
+  const user = await getAuthIdentity()
   if (!user) {
     return { propertyId: ALL_PROPERTIES, property: null, allProperties: [] }
   }

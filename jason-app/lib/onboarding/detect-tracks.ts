@@ -6,6 +6,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { ONBOARDING_TRACKS } from './tracks'
+import type { OnboardingAutoFlags } from './flags'
 
 export interface TrackProgress {
   /** Track key */
@@ -40,9 +41,8 @@ interface DetectInput {
 }
 
 export async function detectTracksProgress(input: DetectInput): Promise<OnboardingTracksState> {
-  const { userId, completedSteps, chezNousOnboardedAt, onboardingStep, stripeOnboardingComplete } = input
+  const { userId } = input
   const supabase = await createClient()
-  const manualSet = new Set(completedSteps)
 
   // NOTE PERF : ce helper est appele par le layout dashboard a chaque nav.
   // Les 7 tests d'existence (limit(1)) sont deja peu chers unitairement mais
@@ -67,17 +67,26 @@ export async function detectTracksProgress(input: DetectInput): Promise<Onboardi
     supabase.from('profiles')           .select('ical_token').eq('id', userId).not('ical_token', 'is', null).limit(1),
   ])
 
-  const auto: Record<string, boolean> = {
+  return buildTracksState({
     logement:        exists(logements),
     sejour:          exists(sejours),
     contrat:         exists(contracts),
     gbp_audit:       exists(audits),
-    chez_nous_intro: !!chezNousOnboardedAt,
     chez_nous_post:  exists(chezNousPosts),
     affiche:         exists(affiches),
-    stripe_connect:  stripeOnboardingComplete,
     ical_connected:  exists(icalFeeds),
     menage_shared:   exists(icalToken),
+  }, input)
+}
+
+/** Étapes cochées de chaque parcours, d'après les tests en base et le profil */
+export function buildTracksState(flags: OnboardingAutoFlags, input: Omit<DetectInput, 'userId'>): OnboardingTracksState {
+  const { completedSteps, chezNousOnboardedAt, onboardingStep, stripeOnboardingComplete } = input
+  const manualSet = new Set(completedSteps)
+  const auto: Record<string, boolean> = {
+    ...flags,
+    chez_nous_intro: !!chezNousOnboardedAt,
+    stripe_connect:  stripeOnboardingComplete,
     // welcome est manuel mais on le considère fait dès que onboarding_step >= 2
     // (compat avec l'ancien système).
   }
