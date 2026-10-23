@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 21 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 23 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Mettre son annonce LCD en pause pour l&apos;hiver : 6 règles pour geler ton calendrier sans plomber ton classement Airbnb</title>
+      <link>https://jasonmarinho.com/blog/mettre-annonce-lcd-pause-hiver-6-regles-classement-airbnb</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/mettre-annonce-lcd-pause-hiver-6-regles-classement-airbnb</guid>
+      <pubDate>Fri, 23 Oct 2026 08:00:00 GMT</pubDate>
+      <description>Snooze, blocage de dates, prix plancher, Superhost, Guest Favorites : les 6 règles pour mettre ton annonce LCD en pause l&apos;hiver sans perdre ton classement.</description>
+      <category>Visibilité</category>
+    </item>
     <item>
       <title>Avant la venue du photographe LCD : 7 étapes pour préparer ton logement et réussir ton shooting</title>
       <link>https://jasonmarinho.com/blog/preparer-logement-shooting-photo-lcd-7-etapes</link>
@@ -398,14 +406,6 @@
       <pubDate>Wed, 08 Jul 2026 08:00:00 GMT</pubDate>
       <description>Inscription gratuite, conditions, format papier ou Connect, promotion : 5 étapes concrètes pour accepter les chèques-vacances ANCV dans ta location courte durée en 2026.</description>
       <category>Revenus</category>
-    </item>
-    <item>
-      <title>Passer de 4,7 à 4,9 étoiles sur Airbnb : la méthode en 6 points pour gagner 0,2 étoile</title>
-      <link>https://jasonmarinho.com/blog/passer-4-7-a-4-9-etoiles-airbnb-methode-6-points</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/passer-4-7-a-4-9-etoiles-airbnb-methode-6-points</guid>
-      <pubDate>Mon, 06 Jul 2026 08:00:00 GMT</pubDate>
-      <description>Zéro à zéro deux étoile change ton classement, ta conversion et l&apos;accès à Superhost et Guest Favorites. Voici la méthode concrète en 6 points pour la gagner en une saison.</description>
-      <category>Visibilité</category>
     </item>
   </channel>
 </rss>
