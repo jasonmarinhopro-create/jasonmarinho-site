@@ -3,8 +3,8 @@
 Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier à la main). Les plus récentes en premier.
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
-Commentaires des 30 derniers jours : 1 (nouveaux 1, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-10-24 12:47 UTC.
+Commentaires des 30 derniers jours : 1 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 1).
+Mis à jour le 2026-10-24 12:57 UTC.
 
 - 2026-10-24 · carrousel · photographe-hotel-4-points · FB pending · IG pending · « Un hôtel ne se photographie pas comme un studio Airbnb. »
 - 2026-09-07 · carrousel · (manuel) · FB published 0 j'aime 0 comm. · IG failed · « Ce que j’aurais aimé savoir plus tôt. »
