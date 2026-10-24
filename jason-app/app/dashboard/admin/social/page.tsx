@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import SocialAdmin, { type SocialAccountRow, type SocialPostRow } from './SocialAdmin'
 import type { CommentTriggerRow, CommentReplyRow } from './SocialAutoReply'
+import type { SocialCommentRow } from './SocialAutopilot'
+import { loadCmDocs } from '@/lib/social/cm-docs'
 
 export const metadata = { title: 'Réseaux sociaux, Admin' }
 export const dynamic = 'force-dynamic'
@@ -24,7 +26,7 @@ export default async function SocialAdminPage() {
     { auth: { autoRefreshToken: false, persistSession: false } },
   )
 
-  const [{ data: accounts }, { data: posts }, { data: targets }, { data: cadence }, { data: commentTriggers }, { data: commentReplies }] = await Promise.all([
+  const [{ data: accounts }, { data: posts }, { data: targets }, { data: cadence }, { data: commentTriggers }, { data: commentReplies }, { data: comments }, cmDocs] = await Promise.all([
     admin.from('social_accounts')
       .select('id, platform, external_account_id, display_name, status, token_expires_at, created_at')
       .order('created_at', { ascending: true }),
@@ -42,6 +44,12 @@ export default async function SocialAdminPage() {
       .select('id, trigger_id, platform, comment_id, commenter_name, status, error, created_at')
       .order('created_at', { ascending: false })
       .limit(30),
+    // Commentaires relevés et réponses du community manager (migration 155 ; table absente : liste vide)
+    admin.from('social_comments')
+      .select('id, platform, text, reply_text, reply_status, reply_error, created_at, replied_at')
+      .order('created_at', { ascending: false })
+      .limit(60),
+    loadCmDocs(),
   ])
 
   const targetsByPost = new Map<string, typeof targets>()
@@ -64,6 +72,9 @@ export default async function SocialAdminPage() {
         cadence={cadence ? { weekdays: cadence.weekdays as number[], timeOfDay: cadence.time_of_day as string } : null}
         commentTriggers={(commentTriggers ?? []) as CommentTriggerRow[]}
         commentReplies={(commentReplies ?? []) as CommentReplyRow[]}
+        comments={(comments ?? []) as SocialCommentRow[]}
+        cmReport={cmDocs.report}
+        cmLearnings={cmDocs.learnings}
       />
     </div>
   )

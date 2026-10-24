@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import {
   Plus, ArrowClockwise, X, CheckCircle, XCircle, Clock, UploadSimple, ImageSquare,
-  Heart, ChatCircle, CalendarBlank, PencilSimple, Check, ShareNetwork, PaperPlaneTilt, ChartBar, ChatsCircle,
+  Heart, ChatCircle, CalendarBlank, PencilSimple, Check, ShareNetwork, PaperPlaneTilt, ChartBar, ChatsCircle, Robot,
 } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import { nextDispatchRun } from '@/lib/social/dispatch-time'
@@ -13,6 +13,7 @@ import { createSocialPost, updateSocialPost, retrySocialPost, disconnectSocialAc
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import SocialStats from './SocialStats'
 import SocialAutoReply, { type CommentTriggerRow, type CommentReplyRow } from './SocialAutoReply'
+import SocialAutopilot, { type SocialCommentRow } from './SocialAutopilot'
 import { PLATFORM_META, IMPLEMENTED_PLATFORMS, ALL_PLATFORMS, TARGET_STATUS_LABEL } from './constants'
 
 export interface SocialAccountRow {
@@ -97,12 +98,15 @@ export interface SocialPostRow {
   targets: SocialPostTargetRow[]
 }
 
-export default function SocialAdmin({ accounts, posts, cadence, commentTriggers, commentReplies }: {
+export default function SocialAdmin({ accounts, posts, cadence, commentTriggers, commentReplies, comments, cmReport, cmLearnings }: {
   accounts: SocialAccountRow[]
   posts: SocialPostRow[]
   cadence: CadenceConfig | null
   commentTriggers: CommentTriggerRow[]
   commentReplies: CommentReplyRow[]
+  comments: SocialCommentRow[]
+  cmReport: { date: string; text: string } | null
+  cmLearnings: string | null
 }) {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -124,7 +128,7 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const [editingPostId, setEditingPostId] = useState<string | null>(null)
-  const [view, setView] = useState<'composer' | 'stats' | 'auto_reply'>('composer')
+  const [view, setView] = useState<'autopilot' | 'composer' | 'stats' | 'auto_reply'>('autopilot')
 
   const [showPerNetworkText, setShowPerNetworkText] = useState(true)
   const [bodyOverrides, setBodyOverrides] = useState<Record<string, string>>({})
@@ -423,6 +427,7 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
       {/* Onglets */}
       <div style={s.tabRow}>
         {([
+          ['autopilot', 'Pilote automatique', Robot],
           ['composer', 'Composer', PaperPlaneTilt],
           ['stats', 'Statistiques', ChartBar],
           ['auto_reply', 'Réponses auto', ChatsCircle],
@@ -432,6 +437,10 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
           </button>
         ))}
       </div>
+
+      {view === 'autopilot' && (
+        <SocialAutopilot posts={posts} comments={comments} report={cmReport} learnings={cmLearnings} />
+      )}
 
       {view === 'stats' && (
         <SocialStats posts={posts} onRefreshAll={refreshAll} refreshing={isPending} />
