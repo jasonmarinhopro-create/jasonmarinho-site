@@ -27,6 +27,12 @@ d'interagir.
 
 ## Chaque passage, dans cet ordre
 
+0. **Outils** : vérifie que tu as les outils du connecteur Supabase
+   (`mcp__Supabase__execute_sql`). Sans eux, saute l'étape « Commentaires »,
+   fais le reste et écris en tête de ton compte rendu : « Connecteur Supabase
+   absent : commentaires non traités ». Sans accès en écriture au dépôt (push
+   refusé), dis-le aussi : rien n'a pu être publié.
+
 1. **Commentaires** (toujours).
 2. **Publication** : seulement au passage du matin, et seulement si aucun post
    automatique n'est prévu aujourd'hui ni hier (regarde les dates de
