@@ -142,10 +142,13 @@ tirets, unique ; jamais un slug déjà présent dans l'historique).
 - `lien` : une page du site qui existe (prends-la dans `llms.txt`).
 - `story` (depuis le 24/10/2026, demande de Jason) : chaque post part avec une
   story Facebook et Instagram qui l'annonce (la couverture en carte, « Nouveau
-  carrousel », ton accroche, « À voir sur notre profil »). `texte` : une
-  accroche de 90 caractères au plus, différente du titre de la couverture
-  (curiosité, question, promesse ; `*mot*` en italique jaune). Sans `texte`,
-  une phrase neutre. `"story": false` seulement si le sujet ne s'y prête pas.
+  carrousel », ton accroche, « À voir sur notre profil »). Elle est rendue,
+  programmée et publiée toute seule avec le post : tu n'as rien d'autre à
+  faire. `texte` : **à écrire à chaque post**, une accroche de 90 caractères
+  au plus, différente du titre de la couverture (curiosité, question,
+  promesse ; `*mot*` en italique jaune). Oubliée, la story reprend le
+  sous-titre de la couverture. `"story": false` seulement si le sujet ne s'y
+  prête pas.
   L'API ne permet ni lien ni sticker dans la story.
 
 Ensuite : commit `feat(social): post JJ/MM/AAAA <slug>` et push (sur main si
