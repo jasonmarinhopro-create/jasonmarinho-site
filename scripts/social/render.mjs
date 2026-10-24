@@ -11,18 +11,20 @@ import http from 'node:http'
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { createRequire } from 'node:module'
-import { SIZES, normalizeSlides, slideHtml, sceneDuration } from './templates.mjs'
+import { SIZES, normalizeSlides, slideHtml, sceneDuration, storyHtml } from './templates.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const FPS = 30
 const TYPES = { '.css': 'text/css', '.woff2': 'font/woff2', '.woff': 'font/woff', '.ttf': 'font/ttf', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.png': 'image/png', '.html': 'text/html; charset=utf-8' }
 
 /** Serveur local : /__slide renvoie la page en cours, le reste vient du dépôt. */
-function serve() {
+function serve(cover = null) {
   let current = ''
   const server = http.createServer((req, res) => {
     const url = decodeURIComponent((req.url || '/').split('?')[0])
     if (url === '/__slide') { res.writeHead(200, { 'content-type': TYPES['.html'] }); return res.end(current) }
+    // Couverture du post rendue juste avant (dossier temporaire, hors dépôt)
+    if (url === '/__cover' && cover) { res.writeHead(200, { 'content-type': TYPES[path.extname(cover)] || 'image/png' }); return fs.createReadStream(cover).pipe(res) }
     const file = path.join(ROOT, path.normalize(url).replace(/^(\.\.[/\\])+/, ''))
     if (!file.startsWith(ROOT) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) { res.writeHead(404); return res.end() }
     res.writeHead(200, { 'content-type': TYPES[path.extname(file)] || 'application/octet-stream' })
@@ -114,10 +116,24 @@ export async function renderReel(spec, outDir) {
   return { mp4, cover, seconds: n / FPS }
 }
 
+/** Story qui annonce le post : la couverture (slide-01.png ou cover.jpg du Reel) en carte. */
+export async function renderStory(spec, coverFile, outDir) {
+  const srv = await serve(coverFile)
+  const browser = await launch()
+  const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } })
+  const f = path.join(outDir, 'story.png')
+  try {
+    await load(page, srv, storyHtml(spec, '/__cover'))
+    await page.screenshot({ path: f })
+  } finally { await browser.close(); srv.close() }
+  return f
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const [specPath, outDir] = process.argv.slice(2)
   const spec = JSON.parse(fs.readFileSync(specPath, 'utf8'))
   fs.mkdirSync(outDir, { recursive: true })
   const res = spec.format === 'reel' ? await renderReel(spec, outDir) : await renderFeed(spec, outDir)
-  console.log(JSON.stringify(res))
+  const story = spec.story === false ? null : await renderStory(spec, spec.format === 'reel' ? res.cover : res[0], outDir)
+  console.log(JSON.stringify({ res, story }))
 }

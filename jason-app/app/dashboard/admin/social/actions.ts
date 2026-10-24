@@ -127,7 +127,9 @@ export async function updateSocialPost(postId: string, input: {
     }).eq('id', postId)
     if (updateErr) return { error: updateErr.message }
 
-    await db.from('social_post_targets').delete().eq('post_id', postId)
+    // Les stories (facebook_story, instagram_story) gardent leur visuel : seules
+    // les cibles des réseaux choisis dans le formulaire sont recréées
+    await db.from('social_post_targets').delete().eq('post_id', postId).not('platform', 'like', '%_story')
     await db.from('social_post_targets').insert(
       input.platforms.map(platform => ({
         post_id: postId,

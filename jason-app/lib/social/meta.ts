@@ -309,6 +309,23 @@ export async function publishToInstagram(igUserId: string, pageAccessToken: stri
   return published.id
 }
 
+// Stories (24/10/2026) : une image 1080 x 1920 qui annonce le post du jour.
+// L'API ne pose ni lien ni sticker : le visuel renvoie vers le profil.
+// Facebook : photo envoyée non publiée, puis /photo_stories avec son id.
+export async function publishFacebookStory(pageId: string, token: string, imageUrl: string): Promise<string> {
+  const photo = await graphFetch(`/${pageId}/photos`, { access_token: token, url: imageUrl, published: 'false' }, 'POST')
+  const json = await graphFetch(`/${pageId}/photo_stories`, { access_token: token, photo_id: photo.id }, 'POST')
+  return json.post_id ?? photo.id
+}
+
+// Instagram : même chemin qu'une image seule, avec media_type=STORIES
+export async function publishInstagramStory(igUserId: string, token: string, imageUrl: string): Promise<string> {
+  const container = await graphFetch(`/${igUserId}/media`, { access_token: token, image_url: imageUrl, media_type: 'STORIES' }, 'POST')
+  await waitForMediaReady(container.id, token)
+  const published = await graphFetch(`/${igUserId}/media_publish`, { access_token: token, creation_id: container.id }, 'POST')
+  return published.id
+}
+
 // Abonne un nœud (Page Facebook OU compte Instagram Business — chacun a son
 // propre edge subscribed_apps, l'abonnement de l'un ne couvre pas l'autre)
 // aux webhooks de l'app pour les champs donnés — évite de dépendre du flow

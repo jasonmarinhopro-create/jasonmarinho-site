@@ -42,3 +42,10 @@ Jason : « une automatisation tous les deux jours qui crée des publications Ree
 ## Filet de secours de 17 h (24/10/2026)
 
 Le premier passage programmé GitHub (17 h 05 UTC) ne s'est pas déclenché : aucune exécution « schedule » du workflow ce jour-là, alors que les autres workflows programmés tournaient (avec retard). Le premier carrousel est parti à la main (`workflow_dispatch`, tâche `dispatch`) à 17 h 32. Second cron Vercel `/api/cron/social-dispatch?soir=1` à `5 17 * * *` (Hobby : dans l'heure) dans `jason-app/vercel.json`, testé dans `dispatch-time.test.ts`. Le statut `publishing` posé au début de `dispatchPost` évite qu'un passage GitHub simultané reprenne le même post.
+
+## Stories (24/10/2026)
+
+Demande de Jason : « une story en rapport avec la publication programmée ». Chaque post de la file part avec deux cibles de plus, `facebook_story` et `instagram_story` (`social_post_targets.media_override` = l'image, migration 160), publiées au même passage que le post.
+- Visuel : `storyHtml` (`scripts/social/templates.mjs`), rendu par `renderStory` (`render.mjs`) depuis la couverture (slide-01.png ou cover.jpg du Reel), déposé en `auto/<date>-<slug>/story.png`. Champ `story` du fichier : `{ "texte": accroche ≤ 90 car. }` ou `false` (`checkSpec`, testé).
+- Publication : `publishFacebookStory` (photo non publiée puis `/{page}/photo_stories`) et `publishInstagramStory` (`media_type=STORIES`) dans `meta.ts`, `storyNetwork` dans `dispatch.ts`. Pas de lien ni de sticker par l'API (Meta). Pas de stats ni de commentaires relevés sur les stories.
+- Modifier un post dans l'admin garde ses stories (seules les cibles des réseaux du formulaire sont recréées).

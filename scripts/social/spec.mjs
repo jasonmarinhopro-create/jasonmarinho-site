@@ -27,6 +27,7 @@ export function checkSpec(spec, { exists = (_p) => true } = {}) {
     if (s?.type !== 'fin' && !(s?.titre || s?.valeur || s?.texte)) errs.push(`diapositive ${i + 1} : texte manquant`)
     if ((s?.titre ?? '').replace(/\*/g, '').length > 90) errs.push(`diapositive ${i + 1} : titre trop long (90 caractères)`)
   })
+  if (spec.story !== undefined && spec.story !== false && !(spec.story && typeof spec.story === 'object' && (spec.story.texte === undefined || (typeof spec.story.texte === 'string' && spec.story.texte.replace(/\*/g, '').length <= 90)))) errs.push('story : false, ou { "texte": accroche de 90 caractères au plus }')
   const legende = String(spec.legende ?? '')
   if (legende.length < 40) errs.push('légende trop courte')
   if (legende.length > 1800) errs.push('légende trop longue (1 800 caractères)')

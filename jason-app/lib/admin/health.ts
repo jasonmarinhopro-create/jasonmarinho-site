@@ -93,6 +93,7 @@ export interface MigrationProbe {
 
 /** Migrations récentes à vérifier : une table ou une colonne qu'elles créent. */
 export const MIGRATION_PROBES: MigrationProbe[] = [
+  { file: '20261024_160_social_stories.sql', what: 'Réseaux sociaux : story publiée avec chaque post', table: 'social_post_targets', column: 'media_override' },
   { file: '20261024_155_social_commentaires.sql', what: 'Réseaux sociaux : commentaires relevés et réponses de la routine', table: 'social_comments', column: 'reply_status' },
   { file: '20261024_154_hotels_clienteles.sql', what: 'Hôtels, conciergeries, gîtes : type d’hébergement des demandes et clientèles des pros', table: 'photographers', column: 'clienteles' },
   { file: '20261024_153_telephone_visible.sql', what: 'Téléphone affiché sur la fiche des pros, à leur choix', table: 'photographers', column: 'telephone_public' },

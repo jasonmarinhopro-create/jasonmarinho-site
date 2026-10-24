@@ -124,3 +124,31 @@ export function sceneDuration(slide) {
   const words = [slide.titre, slide.texte, slide.sous_titre, slide.label, ...(slide.items ?? [])].join(' ').split(/\s+/).filter(Boolean).length
   return Math.min(5.5, Math.max(3, 1.4 + words * 0.15))
 }
+
+// Story qui annonce le post (24/10/2026) : 1080 x 1920, la couverture du post
+// en carte inclinée, une accroche et « sur le profil ». L'API Meta ne pose
+// ni lien ni sticker, d'où le renvoi vers le profil.
+// Zones sûres : rien d'important dans les 250 px du haut ni les 300 du bas.
+export function storyHtml(spec, coverSrc) {
+  const size = { w: 1080, h: 1920 }
+  const nature = spec.format === 'reel' ? 'Nouveau Reel' : spec.format === 'carrousel' ? 'Nouveau carrousel' : 'Nouveau post'
+  const n = spec.format === 'carrousel' ? normalizeSlides(spec).length : 0
+  // L'accroche de la routine (« story.texte »), sinon une phrase neutre : le
+  // titre est déjà sur la couverture
+  const texte = spec.story?.texte || 'Tout le détail est *sur le profil*'
+  const css = `${CSS(size)}
+.st{padding:250px 96px 300px;justify-content:space-between}
+.st .pill{align-self:flex-start;display:inline-flex;align-items:center;gap:14px;background:#FFD56B;color:#003329;font-weight:700;font-size:30px;letter-spacing:3px;text-transform:uppercase;padding:16px 28px;border-radius:999px}
+.st .card{position:relative;align-self:center;width:700px;height:875px;border-radius:40px;overflow:hidden;transform:rotate(-2.5deg);box-shadow:0 50px 90px rgba(0,0,0,.45),0 0 0 6px rgba(255,255,255,.9)}
+.st .card img{width:100%;height:100%;object-fit:cover;display:block}
+.st h2{font-size:76px;line-height:1.08}
+.st .go{display:flex;align-items:center;gap:18px;font-size:36px;font-weight:600;color:#FFD56B}
+.st .go i{font-size:40px}
+`
+  const body = `<div class="top"><div class="brand"><img src="/logo-nav.webp" alt="">Jason <em>Marinho</em></div></div>
+<div class="pill">${esc(nature)}${n ? ` · ${n} images` : ''}</div>
+<div class="card"><img src="${esc(coverSrc)}" alt=""></div>
+<h2>${rich(texte)}</h2>
+<div class="go"><i class="ph-bold ph-arrow-circle-up"></i>À voir sur notre profil</div>`
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><style>${css}</style></head><body><div class="s dark st"><div class="deco"></div>${body}</div></body></html>`
+}

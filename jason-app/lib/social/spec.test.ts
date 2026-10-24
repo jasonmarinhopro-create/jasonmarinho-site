@@ -26,6 +26,12 @@ describe('fichier de publication des réseaux', () => {
     expect(checkSpec({ ...ok, slides: ok.slides.slice(1) })).toContain('la première diapositive doit être une couverture')
     expect(checkSpec({ ...ok, photo: 'img/absente.jpg' }, { exists: () => false })).toContain('photo introuvable dans img/')
   })
+  it('story : accroche courte, ou désactivée', () => {
+    expect(checkSpec({ ...ok, story: { texte: 'La 3e, *presque tout le monde* la fait' } })).toEqual([])
+    expect(checkSpec({ ...ok, story: false })).toEqual([])
+    expect(checkSpec({ ...ok, story: { texte: 'x'.repeat(91) } }).some(e => e.startsWith('story'))).toBe(true)
+    expect(checkSpec({ ...ok, story: 'oui' }).some(e => e.startsWith('story'))).toBe(true)
+  })
   it('légendes : lien suivi sur Facebook, lien en bio sur Instagram', () => {
     const c = captions(ok)
     expect(c.facebook).toContain('utm_source=facebook')

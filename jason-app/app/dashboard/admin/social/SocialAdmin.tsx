@@ -893,7 +893,8 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
           </div>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' as const, marginTop: 6, alignItems: 'center' }}>
             {post.targets.map(t => {
-              const meta = PLATFORM_META[t.platform]
+              const story = t.platform.endsWith('_story')
+              const meta = PLATFORM_META[t.platform.replace(/_story$/, '')]
               const StatusIcon = t.status === 'published' ? CheckCircle : t.status === 'failed' ? XCircle : Clock
               const statusColor = t.status === 'published' ? 'var(--accent-text)' : t.status === 'failed' ? 'var(--danger-text)' : 'var(--text-muted)'
               return (
@@ -901,7 +902,7 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
                   <span title={t.error ?? undefined} style={{ ...s.targetPill, color: statusColor }}>
                     {meta && <meta.Icon size={12} weight="fill" style={{ color: meta.color }} />}
                     <StatusIcon size={12} weight="fill" />
-                    {TARGET_STATUS_LABEL[t.status] ?? t.status}
+                    {story ? 'Story · ' : ''}{TARGET_STATUS_LABEL[t.status] ?? t.status}
                   </span>
                   {t.status === 'pending' && (
                     <button
@@ -953,7 +954,7 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
             </span>
           </div>
           {post.targets.filter(t => t.status === 'failed' && t.error).map(t => {
-            const meta = PLATFORM_META[t.platform]
+            const meta = PLATFORM_META[t.platform.replace(/_story$/, '')]
             return (
               <p key={t.id} style={{ margin: '4px 0 0', fontSize: 11.5, color: 'var(--danger-text)', display: 'flex', gap: 5, alignItems: 'flex-start' }}>
                 {meta && <meta.Icon size={11} weight="fill" style={{ color: meta.color, flexShrink: 0, marginTop: 2 }} />}

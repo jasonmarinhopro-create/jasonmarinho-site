@@ -123,7 +123,8 @@ tirets, unique ; jamais un slug déjà présent dans l'historique).
   "legende": "Première ligne qui accroche.\n\nParagraphe utile.\n\nEt toi, tu la reverses comment ?",
   "legende_facebook": "(facultatif, sinon la légende sert aux deux)",
   "hashtags": ["#airbnb", "#locationcourteduree", "#taxedesejour"],
-  "lien": "https://jasonmarinho.com/blog/<slug-de-l-article>"
+  "lien": "https://jasonmarinho.com/blog/<slug-de-l-article>",
+  "story": { "texte": "La 3e, *presque tout le monde* la fait" }
 }
 ```
 
@@ -139,6 +140,13 @@ tirets, unique ; jamais un slug déjà présent dans l'historique).
   `photo-interieur-1.jpg`, `menage-1.jpg` (toutes dans `img/exemple-fiches/`).
   Sans photo : fond vert de la marque.
 - `lien` : une page du site qui existe (prends-la dans `llms.txt`).
+- `story` (depuis le 24/10/2026, demande de Jason) : chaque post part avec une
+  story Facebook et Instagram qui l'annonce (la couverture en carte, « Nouveau
+  carrousel », ton accroche, « À voir sur notre profil »). `texte` : une
+  accroche de 90 caractères au plus, différente du titre de la couverture
+  (curiosité, question, promesse ; `*mot*` en italique jaune). Sans `texte`,
+  une phrase neutre. `"story": false` seulement si le sujet ne s'y prête pas.
+  L'API ne permet ni lien ni sticker dans la story.
 
 Ensuite : commit `feat(social): post JJ/MM/AAAA <slug>` et push (sur main si
 c'est permis, sinon sur la branche de la session : le workflow « Réseaux

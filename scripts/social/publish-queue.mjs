@@ -12,7 +12,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { checkSpec, captions, nextSlot } from './spec.mjs'
-import { renderFeed, renderReel } from './render.mjs'
+import { renderFeed, renderReel, renderStory } from './render.mjs'
 import { appliquer } from './commentaires.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
@@ -58,15 +58,20 @@ async function publishOne(file) {
   const stamp = new Date().toISOString().slice(0, 10)
   const dir = `auto/${stamp}-${spec.slug}`
   let media
+  let coverFile
   if (spec.format === 'reel') {
     const r = await renderReel(spec, out)
     media = [await upload(r.mp4, `${dir}/reel.mp4`), await upload(r.cover, `${dir}/cover.jpg`)]
+    coverFile = r.cover
     console.log(`::notice title=Reel rendu::${r.seconds.toFixed(1)} s, ${fs.statSync(r.mp4).size} o`)
   } else {
     const files = await renderFeed(spec, out)
     media = []
     for (const f of files) media.push(await upload(f, `${dir}/${path.basename(f)}`))
+    coverFile = files[0]
   }
+  // Story qui annonce le post, publiée en même temps (sauf "story": false)
+  const story = spec.story === false ? null : await upload(await renderStory(spec, coverFile, out), `${dir}/story.png`)
 
   const [admin] = await rest('profiles?select=id&role=eq.admin&limit=1')
   const upcoming = await rest(`social_posts?select=scheduled_at&status=eq.scheduled&scheduled_at=gte.${new Date().toISOString()}`)
@@ -79,8 +84,14 @@ async function publishOne(file) {
     { post_id: post.id, platform: 'facebook', status: 'pending', body_override: null },
     { post_id: post.id, platform: 'instagram', status: 'pending', body_override: c.instagram },
   ]) })
+  // Cibles story à part : si la migration 160 manque, le post part quand même
+  if (story) {
+    await rest('social_post_targets', { method: 'POST', body: JSON.stringify(['facebook_story', 'instagram_story'].map(platform => (
+      { post_id: post.id, platform, status: 'pending', body_override: null, media_override: [story] }))) })
+      .catch(err => console.log(`::warning title=Story non programmée::${err.message}`))
+  }
   fs.rmSync(out, { recursive: true, force: true })
-  return { slug: spec.slug, format: spec.format, slot: slot.toISOString(), images: media.length }
+  return { slug: spec.slug, format: spec.format, slot: slot.toISOString(), images: media.length + (story ? 1 : 0) }
 }
 
 /** Historique lu par la routine : anti-doublon des sujets et chiffres du rapport. */
@@ -93,7 +104,8 @@ async function writeHistory() {
   const lines = posts.map(p => {
     const t = p.social_post_targets ?? []
     const st = pf => { const x = t.find(y => y.platform === pf); return x ? `${x.status}${x.status === 'published' ? ` ${x.like_count ?? 0} j'aime ${x.comment_count ?? 0} comm.` : ''}` : '-' }
-    return `- ${String(p.scheduled_at || p.created_at).slice(0, 10)} · ${fmt(p)} · ${slugOf(p)} · FB ${st('facebook')} · IG ${st('instagram')} · « ${firstLine(p.body).replace(/\|/g, '/')} »`
+    const story = t.some(y => y.platform.endsWith('_story')) ? ` · stories FB ${st('facebook_story')} IG ${st('instagram_story')}` : ''
+    return `- ${String(p.scheduled_at || p.created_at).slice(0, 10)} · ${fmt(p)} · ${slugOf(p)} · FB ${st('facebook')} · IG ${st('instagram')}${story} · « ${firstLine(p.body).replace(/\|/g, '/')} »`
   })
   const count = s => comments.filter(c => c.reply_status === s).length
   const md = `# Historique des publications réseaux sociaux

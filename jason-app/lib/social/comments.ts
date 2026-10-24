@@ -48,7 +48,7 @@ export async function syncComments(): Promise<{ posts: number; added: number; er
   const db = serviceClient()
   const since = new Date(Date.now() - 21 * 86_400_000).toISOString()
   const [{ data: targets }, accounts] = await Promise.all([
-    db.from('social_post_targets').select('platform, external_post_id').eq('status', 'published').gte('published_at', since).not('external_post_id', 'is', null),
+    db.from('social_post_targets').select('platform, external_post_id').in('platform', ['facebook', 'instagram']).eq('status', 'published').gte('published_at', since).not('external_post_id', 'is', null),
     activeAccounts(),
   ])
   let added = 0, errors = 0

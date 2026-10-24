@@ -5,7 +5,7 @@
 
 import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { decryptToken } from '@/lib/security/crypto'
-import { publishToFacebook, publishToInstagram, getFacebookPostInsights, getInstagramMediaInsights, InstagramMediaTimeoutError } from '@/lib/social/meta'
+import { publishToFacebook, publishToInstagram, publishFacebookStory, publishInstagramStory, getFacebookPostInsights, getInstagramMediaInsights, InstagramMediaTimeoutError } from '@/lib/social/meta'
 import { logger } from '@/lib/logger'
 
 const log = logger('lib/social/dispatch')
@@ -38,7 +38,9 @@ export async function dispatchPost(postId: string): Promise<void> {
       // republie pas, sinon "Réessayer" créerait un doublon sur ce réseau.
       return true
     }
-    const account = (accounts ?? []).find(a => a.platform === target.platform)
+    // Les stories passent par le compte du réseau (facebook_story → facebook)
+    const network = storyNetwork(target.platform) ?? target.platform
+    const account = (accounts ?? []).find(a => a.platform === network)
     if (!account) {
       const { error: writeErr } = await db.from('social_post_targets')
         .update({ status: 'failed', error: 'Aucun compte connecté pour cette plateforme' })
@@ -57,6 +59,12 @@ export async function dispatchPost(postId: string): Promise<void> {
         externalId = await publishToFacebook(account.external_account_id, accessToken, content)
       } else if (target.platform === 'instagram') {
         externalId = await publishToInstagram(account.external_account_id, accessToken, content, target.pending_media_id ?? null)
+      } else if (storyNetwork(target.platform)) {
+        const image = ((target.media_override ?? []) as string[])[0]
+        if (!image) throw new Error('Story sans visuel')
+        externalId = target.platform === 'facebook_story'
+          ? await publishFacebookStory(account.external_account_id, accessToken, image)
+          : await publishInstagramStory(account.external_account_id, accessToken, image)
       } else {
         throw new Error(`Plateforme non supportée pour le moment : ${target.platform}`)
       }
@@ -100,6 +108,11 @@ export async function dispatchPost(postId: string): Promise<void> {
   const failed = results.length - succeeded
   const finalStatus = stillProcessing > 0 ? 'scheduled' : failed === 0 ? 'done' : succeeded === 0 ? 'failed' : 'partial'
   await db.from('social_posts').update({ status: finalStatus }).eq('id', postId)
+}
+
+/** Réseau d'une cible story (facebook_story → facebook), sinon null */
+export function storyNetwork(platform: string): 'facebook' | 'instagram' | null {
+  return platform === 'facebook_story' ? 'facebook' : platform === 'instagram_story' ? 'instagram' : null
 }
 
 /** Reprise automatique d'un conteneur Instagram : seulement les deux jours qui suivent l'heure prévue. */
