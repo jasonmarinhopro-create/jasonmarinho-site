@@ -474,7 +474,7 @@ export default function SocialAdmin({ accounts, posts, cadence, comments, cmRepo
       {showComposer && (
       <div style={s.mainGrid} className="jm-social-grid">
         {/* Composeur */}
-        <section style={s.card}>
+        <section style={s.card} className="jm-social-card">
           <h2 style={s.cardTitle}>{editingPostId ? 'Modifier la publication programmée' : 'Créer une publication'}</h2>
 
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' as const }}>
@@ -694,7 +694,7 @@ export default function SocialAdmin({ accounts, posts, cadence, comments, cmRepo
 
         {/* Aperçu + historique */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <section style={s.card}>
+          <section style={s.card} className="jm-social-card">
             <h2 style={s.cardTitle}>Aperçu</h2>
             {platforms.length === 0 ? (
               <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Sélectionne un réseau pour voir l'aperçu.</p>
@@ -785,7 +785,7 @@ export default function SocialAdmin({ accounts, posts, cadence, comments, cmRepo
       )}
 
       <div style={s.mainGrid} className="jm-social-grid">
-          <section style={s.card}>
+          <section style={s.card} className="jm-social-card">
             <h2 style={s.cardTitle}>À venir ({upcoming.length})</h2>
             {upcoming.length === 0 ? (
               <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Rien de programmé.</p>
@@ -796,7 +796,7 @@ export default function SocialAdmin({ accounts, posts, cadence, comments, cmRepo
             )}
           </section>
 
-          <section style={s.card}>
+          <section style={s.card} className="jm-social-card">
             <h2 style={s.cardTitle}>Publiées récemment</h2>
             {history.length === 0 ? (
               <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Aucun post pour le moment.</p>
@@ -815,7 +815,8 @@ export default function SocialAdmin({ accounts, posts, cadence, comments, cmRepo
           même côte à côte au lieu de s'empiler, écrasant le composeur. */}
       <style>{`
         @media (max-width: 860px) {
-          .jm-social-grid { grid-template-columns: 1fr !important; }
+          .jm-social-grid { grid-template-columns: minmax(0, 1fr) !important; }
+          .jm-social-card { padding: 14px !important; }
         }
       `}</style>
     </div>
@@ -972,9 +973,11 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
 }
 
 const s: Record<string, any> = {
+  // minWidth 0 : sans lui, une ligne longue (date, badges) élargissait la
+  // carte au-delà de l'écran sur téléphone (24/10/2026)
   card: {
     background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: 14, padding: 20,
+    borderRadius: 14, padding: 20, minWidth: 0,
     display: 'flex', flexDirection: 'column', gap: 14,
   },
   cardTitle: {
@@ -1109,7 +1112,7 @@ const s: Record<string, any> = {
     background: 'var(--surface)', display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   postRow: {
-    padding: 12, borderRadius: 10, background: 'var(--bg-2)', border: '1px solid var(--border)',
+    padding: 12, borderRadius: 10, minWidth: 0, background: 'var(--bg-2)', border: '1px solid var(--border)',
   },
   postThumb: {
     position: 'relative' as const, width: 48, height: 48, borderRadius: 8, overflow: 'hidden',
