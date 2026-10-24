@@ -1,0 +1,135 @@
+name: Réseaux sociaux
+
+# Publications automatiques Facebook / Instagram (24/10/2026).
+# - File : la routine « Community manager » dépose data/social-queue/*.json sur
+#   sa branche ; ce workflow rend les visuels (Chromium + ffmpeg), les dépose
+#   dans Supabase Storage et programme le post (scripts/social/publish-queue.mjs).
+# - Horaires (UTC) :
+#     06:50 et 18:15  relève des commentaires + chiffres, historique réécrit
+#                     (avant les passages de la routine, 07:40 et 18:40)
+#     09:10 et 20:15  publication des réponses écrites par la routine
+#     17:05 et 17:50  publication des posts dus (le second reprend un Reel
+#                     qu'Instagram traitait encore). Jamais pendant le cron
+#                     Vercel de 7 h (/api/cron/social-dispatch), pour ne pas
+#                     publier deux fois le même post.
+# Journaux : nombres et noms de fichiers seulement (dépôt public).
+
+on:
+  push:
+    branches: [main, 'claude/**']
+    paths: ['data/social-queue/**']
+  schedule:
+    - cron: '50 6 * * *'
+    - cron: '10 9 * * *'
+    - cron: '5 17 * * *'
+    - cron: '50 17 * * *'
+    - cron: '15 18 * * *'
+    - cron: '15 20 * * *'
+  workflow_dispatch:
+    inputs:
+      taches:
+        description: 'queue, sync, replies, stats, dispatch, scopes (séparées par des virgules)'
+        default: 'queue'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: reseaux-sociaux
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      SOCIAL_CRON_SECRET: ${{ secrets.SOCIAL_CRON_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+
+      - name: Choisir les tâches
+        id: t
+        run: |
+          case "${{ github.event_name }}:${{ github.event.schedule }}" in
+            push:*) T="queue" ;;
+            workflow_dispatch:*) T="${{ github.event.inputs.taches }}" ;;
+            "schedule:50 6 * * *"|"schedule:15 18 * * *") T="sync,stats,historique" ;;
+            "schedule:10 9 * * *"|"schedule:15 20 * * *") T="replies,historique" ;;
+            "schedule:5 17 * * *") T="dispatch" ;;
+            "schedule:50 17 * * *") T="dispatch,historique" ;;
+            *) T="" ;;
+          esac
+          echo "taches=$T" >> "$GITHUB_OUTPUT"
+          echo "Tâches : $T"
+
+      - name: Outils de rendu (Chromium, ffmpeg)
+        if: contains(steps.t.outputs.taches, 'queue')
+        run: |
+          mkdir -p /tmp/pw && cd /tmp/pw && npm init -y >/dev/null && npm i playwright@1.47.2 >/dev/null && npx playwright install --with-deps chromium >/dev/null
+          sudo apt-get -qq update >/dev/null && sudo apt-get -qq install -y ffmpeg >/dev/null
+
+      - name: Programmer les publications de la file
+        if: contains(steps.t.outputs.taches, 'queue')
+        env:
+          NODE_PATH: /tmp/pw/node_modules
+        run: node scripts/social/publish-queue.mjs
+
+      - name: Tâches de l'app
+        if: steps.t.outputs.taches != 'queue'
+        run: |
+          call() { curl -s -o /tmp/r.json -w "%{http_code}" -H "Authorization: Bearer $SOCIAL_CRON_SECRET" "https://app.jasonmarinho.com$1"; }
+          OPS=""
+          for t in $(echo "${{ steps.t.outputs.taches }}" | tr ',' ' '); do
+            case "$t" in sync|replies|stats|scopes) OPS="$OPS,$t" ;; esac
+          done
+          if [ -n "$OPS" ]; then
+            code=$(call "/api/cron/social-ops?do=${OPS#,}")
+            echo "social-ops HTTP $code"
+            # Nombres seulement (les permissions sont des noms de droits Meta, pas des secrets)
+            jq -c '{sync, replies, stats, scopes}' /tmp/r.json || true
+            [ "$code" = "200" ] || echo "::error title=Tâches réseaux::HTTP $code"
+          fi
+          if echo "${{ steps.t.outputs.taches }}" | grep -q dispatch; then
+            code=$(call "/api/cron/social-dispatch")
+            echo "social-dispatch HTTP $code"; jq -c '{processed, remaining}' /tmp/r.json || true
+          fi
+
+      - name: Historique
+        if: contains(steps.t.outputs.taches, 'historique') || contains(steps.t.outputs.taches, 'queue')
+        run: |
+          if echo "${{ steps.t.outputs.taches }}" | grep -q historique; then node scripts/social/publish-queue.mjs historique; fi
+
+      - name: Enregistrer
+        if: always() && (contains(steps.t.outputs.taches, 'historique') || contains(steps.t.outputs.taches, 'queue'))
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          BRANCH="${GITHUB_REF_NAME}"
+          # Seulement ce que le workflow écrit : historique et refus (jamais les consignes)
+          mkdir -p /tmp/save/social && cp data/social/historique.md /tmp/save/social/ 2>/dev/null || true
+          [ -d data/social/refusees ] && cp -r data/social/refusees /tmp/save/social/ || true
+          git ls-files --deleted data/social-queue > /tmp/traitees.txt
+          # File vidée sur la branche de la routine (si elle existe encore)
+          if [ "${{ github.event_name }}" = "push" ] && [ "$BRANCH" != "main" ]; then
+            git add -A data/social-queue/ data/social/
+            if ! git diff --staged --quiet; then
+              git commit -q -m "chore: file des réseaux sociaux traitée"
+              if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null; then git push -q origin "HEAD:refs/heads/$BRANCH" || true; fi
+            fi
+          fi
+          # Historique, refus et file vidée toujours enregistrés sur main
+          for i in 1 2 3; do
+            git fetch -q origin main && git checkout -q -f -B hist origin/main
+            mkdir -p data/social && cp -r /tmp/save/social/. data/social/
+            xargs -r rm -f < /tmp/traitees.txt
+            git add -A data/social-queue/ data/social/historique.md data/social/refusees 2>/dev/null || git add -A data/social-queue/ data/social/historique.md
+            if git diff --staged --quiet; then echo "Rien à enregistrer."; exit 0; fi
+            git commit -q -m "chore: réseaux sociaux, historique à jour"
+            git push -q origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1

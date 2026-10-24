@@ -231,7 +231,7 @@ export default function SocialStats({ posts, onRefreshAll, refreshing }: {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {stats.topPosts.map(({ post, engagement }) => {
-              const thumb = post.media_urls[0]
+              const thumb = post.media_urls.find(u => !/\.mp4(\?|$)/i.test(u)) ?? post.media_urls[0]
               const likes = post.targets.reduce((s, t) => s + (t.like_count ?? 0), 0)
               const comments = post.targets.reduce((s, t) => s + (t.comment_count ?? 0), 0)
               return (

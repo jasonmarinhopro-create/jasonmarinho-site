@@ -798,7 +798,7 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
   onMarkFailed: (targetId: string) => Promise<{ error?: string }>
   disabled: boolean
 }) {
-  const thumb = post.media_urls[0]
+  const thumb = post.media_urls.find(u => !/\.mp4(\?|$)/i.test(u)) ?? post.media_urls[0]
   const hasPublished = post.targets.some(t => t.status === 'published')
   const totalLikes = post.targets.reduce((sum, t) => sum + (t.like_count ?? 0), 0)
   const totalComments = post.targets.reduce((sum, t) => sum + (t.comment_count ?? 0), 0)

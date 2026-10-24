@@ -84,7 +84,7 @@ Next.js 14 · Supabase (PostgreSQL + RLS) · Stripe Connect (loyer + caution) ·
 | `technique.md` | Performances et lenteurs, ouverture de l'app, notifications et Web Push, synchro iCal, CI et erreurs, quotas, déploiements, sidebar et mode admin, variables d'environnement, rate limiting |
 | `prospection.md` | Prospection par e-mail : séquences, pipeline, envois, montée en charge, imports, règles CNIL |
 | `paiements-stripe.md` | Stripe : loyer, acompte, caution (calendrier, retenue), comptes connectés, frais, webhooks |
-| `reseaux-sociaux.md` | Publication Facebook / Instagram programmée et réponses automatiques |
+| `reseaux-sociaux.md` | Publication Facebook / Instagram programmée, réponses automatiques, routine « Community manager » (Reels, carrousels, réponses aux commentaires, rapport du dimanche) |
 
 Autres documents : `scripts/articles/CONSIGNES.md` (routine Rédaction article), `data/CONSIGNES-ACTUALITES.md` (routine Actualités), `docs/AUDIT-PAGES-A-FUSIONNER.md`, `docs/REFACTOR-DASHBOARD.md`.
 

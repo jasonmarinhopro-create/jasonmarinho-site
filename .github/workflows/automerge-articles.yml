@@ -12,7 +12,8 @@
 #  - pull_request        → merge de la PR (cas où une PR existe déjà)
 # Dans les deux cas, on ne merge QUE si TOUS les fichiers modifiés sont des
 # fichiers de publication (blog/, scripts/articles/, rss.xml, sitemap.xml,
-# queue actualités). Tout le reste est ignoré → revue humaine.
+# queue actualités, file, rapports et apprentissages des réseaux sociaux).
+# Tout le reste est ignoré → revue humaine.
 #
 # NB : le merge est fait avec GITHUB_TOKEN — le déploiement Vercel part
 # quand même (intégration Git Vercel, pas une Action).
@@ -55,7 +56,7 @@ jobs:
           SAFE=true
           while IFS= read -r f; do
             case "$f" in
-              blog/*|scripts/articles/*|rss.xml|sitemap.xml|data/actualites-queue/*) ;;
+              blog/*|scripts/articles/*|rss.xml|sitemap.xml|data/actualites-queue/*|data/social-queue/*|data/social/rapports/*|data/social/APPRENTISSAGES.md) ;;
               *) SAFE=false; echo "→ Hors périmètre article : $f" ;;
             esac
           done <<< "$FILES"
@@ -99,7 +100,7 @@ jobs:
           SAFE=true
           while IFS= read -r f; do
             case "$f" in
-              blog/*|scripts/articles/*|rss.xml|sitemap.xml|data/actualites-queue/*) ;;
+              blog/*|scripts/articles/*|rss.xml|sitemap.xml|data/actualites-queue/*|data/social-queue/*|data/social/rapports/*|data/social/APPRENTISSAGES.md) ;;
               *) SAFE=false; echo "→ Hors périmètre article : $f" ;;
             esac
           done <<< "$FILES"

@@ -6,6 +6,7 @@
 import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { decryptToken } from '@/lib/security/crypto'
 import { sendPrivateReply } from '@/lib/social/meta'
+import { storeComments } from '@/lib/social/comments'
 import { logger } from '@/lib/logger'
 
 const log = logger('lib/social/comment-triggers')
@@ -25,6 +26,9 @@ export interface IncomingComment {
 export async function handleIncomingComment(comment: IncomingComment): Promise<void> {
   if (comment.senderId && comment.senderId === comment.pageId) return
   if (!comment.commentText.trim()) return
+
+  // Gardé pour la routine « Community manager », qui y répond (lib/social/comments.ts)
+  await storeComments([{ platform: comment.platform, commentId: comment.commentId, parentId: null, postExternalId: comment.postId, text: comment.commentText, authorName: comment.commenterName, createdAt: new Date().toISOString() }])
 
   const db = serviceClient()
   const text = comment.commentText.toLowerCase()

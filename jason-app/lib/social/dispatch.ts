@@ -29,6 +29,9 @@ export async function dispatchPost(postId: string): Promise<void> {
   // "pending" pile au milieu (Meta publie réellement, mais la fonction est
   // tuée avant l'écriture du statut en base). En parallèle, le temps total
   // est borné par le plus lent des deux au lieu de leur somme.
+  // Instagram encore en train de traiter une vidéo : le post reste programmé
+  // et repart au passage suivant sur le même conteneur (24/10/2026, Reels)
+  let stillProcessing = 0
   const results = await Promise.all((targets ?? []).map(async (target): Promise<boolean> => {
     if (target.status === 'published') {
       // Déjà publié (ex : Facebook OK, Instagram en échec) — on ne
@@ -80,9 +83,11 @@ export async function dispatchPost(postId: string): Promise<void> {
       // plan : on le conserve pour que le prochain "Réessayer" le réutilise
       // au lieu de repartir de zéro et retomber sur le même délai.
       const pendingMediaId = err instanceof InstagramMediaTimeoutError ? err.creationId : null
-      log.error('publication échouée', { postId, platform: target.platform, err: message })
+      const retry = !!pendingMediaId && isRecent(post.scheduled_at as string | null)
+      if (retry) stillProcessing++
+      else log.error('publication échouée', { postId, platform: target.platform, err: message })
       const { error: writeErr } = await db.from('social_post_targets').update({
-        status: 'failed',
+        status: retry ? 'pending' : 'failed',
         error: message,
         pending_media_id: pendingMediaId,
       }).eq('id', target.id)
@@ -93,8 +98,13 @@ export async function dispatchPost(postId: string): Promise<void> {
 
   const succeeded = results.filter(Boolean).length
   const failed = results.length - succeeded
-  const finalStatus = failed === 0 ? 'done' : succeeded === 0 ? 'failed' : 'partial'
+  const finalStatus = stillProcessing > 0 ? 'scheduled' : failed === 0 ? 'done' : succeeded === 0 ? 'failed' : 'partial'
   await db.from('social_posts').update({ status: finalStatus }).eq('id', postId)
+}
+
+/** Reprise automatique d'un conteneur Instagram : seulement les deux jours qui suivent l'heure prévue. */
+function isRecent(scheduledAt: string | null): boolean {
+  return !!scheduledAt && Date.now() - new Date(scheduledAt).getTime() < 2 * 86_400_000
 }
 
 // Un backlog de plusieurs posts en retard (ex : pipeline cassé depuis des

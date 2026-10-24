@@ -63,6 +63,8 @@ export function buildAuthorizeUrl(redirectUri: string, state: string): string {
       // Réponses automatiques aux commentaires (cf. lib/social/comment-triggers.ts) :
       // s'abonner aux webhooks de Page + envoyer des réponses privées.
       'pages_manage_metadata',
+      // Réponses publiques aux commentaires de la Page (24/10/2026)
+      'pages_manage_engagement',
       'pages_messaging',
       'instagram_manage_comments',
       'instagram_manage_messages',
@@ -142,7 +144,34 @@ export interface PostContent {
   mediaUrls: string[]
 }
 
+/** Vidéo (Reel) : l'URL d'un .mp4, toujours en premier dans media_urls (la couverture suit). */
+export const isVideoUrl = (url: string | undefined) => !!url && /\.mp4(\?|$)/i.test(url)
+
+// Reel Facebook (24/10/2026) : envoi en trois temps, le fichier est lu par
+// Meta depuis son URL publique (Supabase Storage). Repli sur une vidéo
+// classique de la Page si l'API Reels refuse.
+async function publishFacebookReel(pageId: string, token: string, videoUrl: string, description: string): Promise<string> {
+  try {
+    const start = await graphFetch(`/${pageId}/video_reels`, { access_token: token, upload_phase: 'start' }, 'POST')
+    const videoId = start.video_id as string
+    const up = await fetch(`https://rupload.facebook.com/video-upload/${API_VERSION}/${videoId}`, {
+      method: 'POST',
+      headers: { Authorization: `OAuth ${token}`, file_url: videoUrl },
+      cache: 'no-store',
+    })
+    if (!up.ok) throw new Error(`Envoi du Reel refusé (${up.status})`)
+    await graphFetch(`/${pageId}/video_reels`, {
+      access_token: token, upload_phase: 'finish', video_id: videoId, video_state: 'PUBLISHED', description,
+    }, 'POST')
+    return videoId
+  } catch {
+    const json = await graphFetch(`/${pageId}/videos`, { access_token: token, file_url: videoUrl, description }, 'POST')
+    return json.id
+  }
+}
+
 export async function publishToFacebook(pageId: string, pageAccessToken: string, post: PostContent): Promise<string> {
+  if (isVideoUrl(post.mediaUrls[0])) return publishFacebookReel(pageId, pageAccessToken, post.mediaUrls[0], post.body)
   const images = post.mediaUrls
   if (images.length === 1) {
     const json = await graphFetch(`/${pageId}/photos`, {
@@ -235,7 +264,18 @@ export async function publishToInstagram(igUserId: string, pageAccessToken: stri
     }
     if (previous && previous.status_code !== 'EXPIRED' && previous.status_code !== 'ERROR') creationId = resumeCreationId
   }
-  if (!creationId && images.length === 1) {
+  if (!creationId && isVideoUrl(images[0])) {
+    // Reel : la couverture (image qui suit la vidéo) est facultative
+    const container = await graphFetch(`/${igUserId}/media`, {
+      access_token: pageAccessToken,
+      media_type: 'REELS',
+      video_url: images[0],
+      caption: post.body,
+      share_to_feed: 'true',
+      ...(images[1] && !isVideoUrl(images[1]) ? { cover_url: images[1] } : {}),
+    }, 'POST')
+    creationId = container.id
+  } else if (!creationId && images.length === 1) {
     const container = await graphFetch(`/${igUserId}/media`, {
       access_token: pageAccessToken,
       image_url: images[0],
@@ -408,4 +448,47 @@ export async function getInstagramMediaInsights(mediaId: string, pageAccessToken
     likeCount: json.like_count ?? 0,
     commentCount: json.comments_count ?? 0,
   }
+}
+
+// ── Commentaires : lecture et réponse publique (24/10/2026) ───────────
+// Lecture par l'API plutôt que par le seul webhook : tant que l'app Meta est
+// en mode développement, le webhook ne livre que les commentaires des
+// comptes qui ont un rôle sur l'app, pas ceux du public.
+
+export interface FetchedComment {
+  commentId: string
+  parentId: string | null
+  text: string
+  authorName: string | null
+  authorId: string | null
+  createdAt: string | null
+}
+
+export async function listFacebookComments(postId: string, token: string): Promise<FetchedComment[]> {
+  const json = await graphFetch(`/${postId}/comments`, {
+    access_token: token, filter: 'stream', limit: '100', fields: 'id,message,from{id,name},created_time,parent{id}',
+  })
+  return (json.data ?? []).map((c: { id: string; message?: string; from?: { id?: string; name?: string }; created_time?: string; parent?: { id?: string } }) => ({
+    commentId: c.id, parentId: c.parent?.id ?? null, text: c.message ?? '', authorName: c.from?.name ?? null, authorId: c.from?.id ?? null, createdAt: c.created_time ?? null,
+  }))
+}
+
+export async function listInstagramComments(mediaId: string, token: string): Promise<FetchedComment[]> {
+  const json = await graphFetch(`/${mediaId}/comments`, {
+    access_token: token, limit: '100', fields: 'id,text,username,from{id},timestamp,replies{id,text,username,from{id},timestamp}',
+  })
+  const out: FetchedComment[] = []
+  for (const c of (json.data ?? []) as Array<{ id: string; text?: string; username?: string; from?: { id?: string }; timestamp?: string; replies?: { data?: Array<{ id: string; text?: string; username?: string; from?: { id?: string }; timestamp?: string }> } }>) {
+    out.push({ commentId: c.id, parentId: null, text: c.text ?? '', authorName: c.username ?? null, authorId: c.from?.id ?? null, createdAt: c.timestamp ?? null })
+    for (const r of c.replies?.data ?? []) out.push({ commentId: r.id, parentId: c.id, text: r.text ?? '', authorName: r.username ?? null, authorId: r.from?.id ?? null, createdAt: r.timestamp ?? null })
+  }
+  return out
+}
+
+/** Réponse publique sous le commentaire (pas un message privé). */
+export async function replyToComment(platform: 'facebook' | 'instagram', commentId: string, token: string, message: string): Promise<string> {
+  const json = platform === 'facebook'
+    ? await graphFetch(`/${commentId}/comments`, { access_token: token, message }, 'POST')
+    : await graphFetch(`/${commentId}/replies`, { access_token: token, message }, 'POST')
+  return json.id ?? 'ok'
 }
