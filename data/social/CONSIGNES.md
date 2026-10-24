@@ -22,16 +22,13 @@ d'interagir.
   (`scripts/articles/<slug>.mjs` pour un article de blog, sinon le fichier
   `index.html` de la page). Pas de parcours du dépôt, pas de sous-agent, pas de
   recherche web sauf pour vérifier un chiffre daté (3 au plus).
-- Base de données : connecteur Supabase, projet `xwucstjxoehyjnlrzrky`, et
-  uniquement la table `social_comments` (voir « Commentaires »).
+- Les commentaires : `data/social/commentaires.enc`, à déchiffrer (voir
+  « Commentaires »). Aucun accès à la base de données.
 
 ## Chaque passage, dans cet ordre
 
-0. **Outils** : vérifie que tu as les outils du connecteur Supabase
-   (`mcp__Supabase__execute_sql`). Sans eux, saute l'étape « Commentaires »,
-   fais le reste et écris en tête de ton compte rendu : « Connecteur Supabase
-   absent : commentaires non traités ». Sans accès en écriture au dépôt (push
-   refusé), dis-le aussi : rien n'a pu être publié.
+0. **Dépôt** : si le push est refusé (sur main puis sur la branche de la
+   session), écris-le en tête de ton compte rendu : rien n'a pu être publié.
 
 1. **Commentaires** (toujours).
 2. **Publication** : seulement au passage du matin, et seulement si aucun post
@@ -151,35 +148,37 @@ supprimer avant dans Admin, Réseaux sociaux.
 
 ## Commentaires
 
-Requête de lecture (connecteur Supabase) :
+Pas de base de données : le workflow dépose les commentaires à traiter,
+chiffrés, dans `data/social/commentaires.enc` (relevés à 7 h 50 et 19 h 15,
+heure de Paris en hiver). La clé est dans ta consigne de routine (« Clé des
+commentaires »). Lis-les avec :
 
-```sql
-select c.id, c.platform, c.text, c.author_name, c.parent_id, c.created_at,
-       (select left(p.body, 160) from social_post_targets t join social_posts p on p.id = t.post_id
-         where t.external_post_id = c.post_external_id limit 1) as post
-  from social_comments c
- where c.reply_status = 'nouveau'
- order by c.created_at
- limit 30;
 ```
+node scripts/social/commentaires.mjs lire <clé>
+```
+
+Ne recopie jamais la clé ni le texte des commentaires dans un fichier, un
+commit ou ton compte rendu (dépôt public).
 
 Pour chaque commentaire, décide :
 
-- **Répondre** (la plupart) :
-  `update social_comments set reply_text = '…', reply_status = 'a_envoyer' where id = '…' and reply_status = 'nouveau';`
+- **Répondre** (la plupart) : `{ "id": "…", "action": "repondre", "texte": "…" }`
 - **Ignorer** (spam, insulte, emoji seul sans texte, commentaire d'un concurrent,
   réponse entre deux personnes qui ne te concerne pas) :
-  `update social_comments set reply_status = 'ignore' where id = '…' and reply_status = 'nouveau';`
+  `{ "id": "…", "action": "ignorer" }`
 
-Une réponse : 1 à 3 phrases, chaleureuse, utile, tutoiement, signée de rien.
-Prénom seulement s'il est évident (« Merci Sophie »), jamais le nom complet.
-Une question : réponds sur le fond avec ce que dit le site, puis le lien de la
-page qui va plus loin (seuls les liens `https://jasonmarinho.com/…` passent).
-Une critique : calme, factuel, une proposition (« écris-moi en message
-privé »). Rien de fiscal ou juridique au-delà de ce qu'écrit le site, aucune
-promesse de résultat, aucun prix inventé. Pas d'emoji ni de tiret cadratin
-(sinon la réponse est refusée). Les réponses partent dans l'heure qui suit
-(9 h 10 et 20 h 15 UTC). Aucune autre écriture en base, aucune autre table.
+Dépose la liste dans `data/social-queue/reponses-AAAA-MM-JJ-HHMM.json` (un
+tableau JSON), commit `feat(social): réponses JJ/MM/AAAA` et push, comme un
+post. Le workflow les enregistre et les publie aussitôt sous chaque
+commentaire. Liste vide : aucun fichier.
+
+Une réponse : 1 à 3 phrases, chaleureuse, utile, tutoiement, signée de rien,
+sans prénom ni nom. Une question : réponds sur le fond avec ce que dit le
+site, puis le lien de la page qui va plus loin (seuls les liens
+`https://jasonmarinho.com/…` passent). Une critique : calme, factuel, une
+proposition (« écris-moi en message privé »). Rien de fiscal ou juridique
+au-delà de ce qu'écrit le site, aucune promesse de résultat, aucun prix
+inventé. Pas d'emoji ni de tiret cadratin (la réponse serait refusée).
 
 ## Rapport du dimanche soir
 
@@ -202,9 +201,10 @@ est périmé). Commit `docs(social): rapport JJ/MM/AAAA` et push.
 
 ## Garde-fous
 
-- Fichiers que tu peux créer ou modifier : `data/social-queue/*.json`,
+- Fichiers que tu peux créer ou modifier : `data/social-queue/*.json` (posts
+  et réponses),
   `data/social/rapports/*.md`, `data/social/APPRENTISSAGES.md`. Rien d'autre.
 - Un post par passage au plus. Doute sur un fait : pas de post plutôt qu'un
   post faux.
 - JSON valide avant de pousser (pas de virgule finale, guillemets échappés).
-- Ne supprime jamais une publication, ne touche à aucune autre table.
+- Ne supprime jamais une publication.

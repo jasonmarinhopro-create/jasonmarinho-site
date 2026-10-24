@@ -102,6 +102,8 @@ jobs:
         if: contains(steps.t.outputs.taches, 'historique') || contains(steps.t.outputs.taches, 'queue')
         run: |
           if echo "${{ steps.t.outputs.taches }}" | grep -q historique; then node scripts/social/publish-queue.mjs historique; fi
+          # Commentaires à traiter, chiffrés pour la routine (lus à 8 h 37 et 19 h 37)
+          if echo "${{ steps.t.outputs.taches }}" | grep -q sync; then node scripts/social/commentaires.mjs exporter || echo "::warning::export des commentaires en échec"; fi
 
       - name: Enregistrer
         if: always() && (contains(steps.t.outputs.taches, 'historique') || contains(steps.t.outputs.taches, 'queue'))
@@ -111,6 +113,7 @@ jobs:
           BRANCH="${GITHUB_REF_NAME}"
           # Seulement ce que le workflow écrit : historique et refus (jamais les consignes)
           mkdir -p /tmp/save/social && cp data/social/historique.md /tmp/save/social/ 2>/dev/null || true
+          cp data/social/commentaires.enc /tmp/save/social/ 2>/dev/null || true
           [ -d data/social/refusees ] && cp -r data/social/refusees /tmp/save/social/ || true
           git ls-files --deleted data/social-queue > /tmp/traitees.txt
           # File vidée sur la branche de la routine (si elle existe encore)
@@ -126,7 +129,9 @@ jobs:
             git fetch -q origin main && git checkout -q -f -B hist origin/main
             mkdir -p data/social && cp -r /tmp/save/social/. data/social/
             xargs -r rm -f < /tmp/traitees.txt
-            git add -A data/social-queue/ data/social/historique.md data/social/refusees 2>/dev/null || git add -A data/social-queue/ data/social/historique.md
+            git add -A data/social-queue/ data/social/historique.md
+            [ -d data/social/refusees ] && git add -A data/social/refusees
+            [ -f data/social/commentaires.enc ] && git add data/social/commentaires.enc
             if git diff --staged --quiet; then echo "Rien à enregistrer."; exit 0; fi
             git commit -q -m "chore: réseaux sociaux, historique à jour"
             git push -q origin HEAD:main && exit 0

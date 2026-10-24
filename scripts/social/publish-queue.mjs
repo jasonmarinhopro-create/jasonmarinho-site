@@ -13,6 +13,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { checkSpec, captions, nextSlot } from './spec.mjs'
 import { renderFeed, renderReel } from './render.mjs'
+import { appliquer } from './commentaires.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const QUEUE = path.join(ROOT, 'data/social-queue')
@@ -114,8 +115,20 @@ if (!URL_ || !KEY) { console.log('::error::NEXT_PUBLIC_SUPABASE_URL ou SUPABASE_
 let failed = 0
 if (process.argv[2] !== 'historique') {
   const files = fs.existsSync(QUEUE) ? fs.readdirSync(QUEUE).filter(f => f.endsWith('.json')).sort() : []
+  let replies = 0
   for (const f of files) {
     const file = path.join(QUEUE, f)
+    // Réponses aux commentaires écrites par la routine
+    if (f.startsWith('reponses-')) {
+      try {
+        const r = await appliquer(file)
+        replies += r.n
+        console.log(`::notice title=Réponses de la routine (${f})::${r.n} commentaire(s) traité(s)`)
+        for (const e of r.errs) console.log(`::warning title=Réponse refusée (${f})::${e}`)
+      } catch (err) { failed++; console.log(`::error title=Réponses (${f})::${err.message}`) }
+      fs.rmSync(file)
+      continue
+    }
     try {
       const r = await publishOne(file)
       console.log(`::notice title=Publication programmée::${r.slug} (${r.format}, ${r.images} média) le ${r.slot}`)
@@ -129,6 +142,12 @@ if (process.argv[2] !== 'historique') {
       fs.renameSync(file, path.join(ROOT, 'data/social/refusees', f))
     }
   }
+}
+// Réponses publiées tout de suite plutôt qu'au prochain passage (10 h ou 21 h)
+if (replies && process.env.SOCIAL_CRON_SECRET) {
+  const res = await fetch('https://app.jasonmarinho.com/api/cron/social-ops?do=replies', { headers: { Authorization: `Bearer ${process.env.SOCIAL_CRON_SECRET}` }, cache: 'no-store' }).catch(() => null)
+  const json = res ? await res.json().catch(() => null) : null
+  console.log(`::notice title=Réponses publiées::${JSON.stringify(json?.replies ?? { erreur: res?.status ?? 'réseau' })}`)
 }
 await writeHistory()
 if (failed) process.exitCode = 1
