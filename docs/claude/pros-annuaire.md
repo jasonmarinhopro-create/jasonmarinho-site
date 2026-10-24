@@ -100,3 +100,12 @@ Jason : « être présent sur les requêtes photographe hôtel, conciergerie hau
 - Pros : case « Tu travailles pour » à l'inscription (défaut `lcd`) et dans Ma fiche (`ClientelesFields`) ; fiche publique « Travaille pour » ; filtre de l'annuaire photographes (`cl-<clé>` dans `data-options`). Annuaire ménage : section « Travaille pour » dans la fenêtre Filtres (`data-clienteles`, une des clientèles cochées suffit).
 - Page `/photographe-hotel` (`scripts/build-photographe-hotel.mjs`) + article `photographe-hotel-conciergerie-7-points-avant-shooting`. Aucun prix (pas de source française fiable), droits d'utilisation sourcés L131-3 CPI.
 - Prospection : séquence `photo_hotellerie` (manuelle) et lien court `/l/photo-hotel`. Installée et activée le 24/10/2026 avec l'accord de Jason ; 23 photographes inscrits (profil hôtel, luxe, tourisme, architecture ou intérieur, jamais contactés). Premier e-mail formulé pour rester vrai pour tous (« tu photographies des lieux et des intérieurs »).
+
+## Fiches pros v3 : « le portfolio d'abord » (24/10/2026)
+
+Choix de Jason (direction A des maquettes) : même mise en page pour photographes, vidéastes et équipes de ménage, gabarit commun `scripts/lib/fiche-v3.mjs` (`ficheV3Html`, `FICHE_V3_CSS`, `ficheV3Js`), appelé par les deux `buildFichePage`.
+- Photos en grand (carrousel au téléphone, mosaïque à l'ordinateur), nom posé dessus ; sans photo, bandeau vert et initiales.
+- 3 repères, vidéo, formules, présentation coupée (« Lire la suite »), un seul bloc « Ce que … propose » (options, prestations, capacité, clientèles), carte de zone compacte (`secteurHtml({ compact: true })`), liens.
+- Contact : carte fixe à droite (ordinateur), bouton fixe en bas + appel (téléphone), fenêtre `#contact` en 2 étapes (besoin + logement, puis prénom + e-mail ; date et détail facultatifs). Le message part par `jmContactMessage` (API : 20 caractères au moins, toujours atteint avec besoin + logement).
+- « Comment ça se passe » retiré des fiches. Prix facultatifs (décision : ne pas freiner l'inscription) : « Sur devis » sinon (`v3Prix`). Test : `jason-app/lib/pros/fiche-v3.test.ts`.
+- Fiches d'exemple : repères de `build-exemples-fiches.mjs` adaptés (`fx-brd`, `fx-facts`, `fx-car`, `fx-card-id`, `var res=await fetch(`). Les changer ensemble.
