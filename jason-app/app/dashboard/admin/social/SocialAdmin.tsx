@@ -5,14 +5,15 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import {
   Plus, ArrowClockwise, X, CheckCircle, XCircle, Clock, UploadSimple, ImageSquare,
-  Heart, ChatCircle, CalendarBlank, PencilSimple, Check, ShareNetwork, PaperPlaneTilt, ChartBar, ChatsCircle, Robot,
+  Heart, ChatCircle, CalendarBlank, PencilSimple, Check, ShareNetwork, PaperPlaneTilt, ChartBar, ChatsCircle, Robot, Trash, Rows,
 } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import { nextDispatchRun } from '@/lib/social/dispatch-time'
-import { createSocialPost, updateSocialPost, retrySocialPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, refreshAllStats, setSocialCadence, markTargetPublished, markTargetFailed } from './actions'
+import { createSocialPost, updateSocialPost, retrySocialPost, deleteScheduledPost, disconnectSocialAccount, uploadSocialMedia, refreshPostStats, refreshAllStats, setSocialCadence, markTargetPublished, markTargetFailed } from './actions'
 import { CalendarInput, TimePickerInput } from '@/components/ui/CalendarInput'
 import SocialStats from './SocialStats'
-import SocialAutoReply, { type CommentTriggerRow, type CommentReplyRow } from './SocialAutoReply'
+import SocialComments from './SocialComments'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 import SocialAutopilot, { type SocialCommentRow } from './SocialAutopilot'
 import { PLATFORM_META, IMPLEMENTED_PLATFORMS, ALL_PLATFORMS, TARGET_STATUS_LABEL } from './constants'
 
@@ -98,12 +99,10 @@ export interface SocialPostRow {
   targets: SocialPostTargetRow[]
 }
 
-export default function SocialAdmin({ accounts, posts, cadence, commentTriggers, commentReplies, comments, cmReport, cmLearnings }: {
+export default function SocialAdmin({ accounts, posts, cadence, comments, cmReport, cmLearnings }: {
   accounts: SocialAccountRow[]
   posts: SocialPostRow[]
   cadence: CadenceConfig | null
-  commentTriggers: CommentTriggerRow[]
-  commentReplies: CommentReplyRow[]
   comments: SocialCommentRow[]
   cmReport: { date: string; text: string } | null
   cmLearnings: string | null
@@ -128,7 +127,9 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const [editingPostId, setEditingPostId] = useState<string | null>(null)
-  const [view, setView] = useState<'autopilot' | 'composer' | 'stats' | 'auto_reply'>('autopilot')
+  const [view, setView] = useState<'autopilot' | 'publications' | 'comments' | 'stats'>('autopilot')
+  // Écrire un post à la main : replié par défaut, le community manager publie tout seul
+  const [showComposer, setShowComposer] = useState(false)
 
   const [showPerNetworkText, setShowPerNetworkText] = useState(true)
   const [bodyOverrides, setBodyOverrides] = useState<Record<string, string>>({})
@@ -232,6 +233,8 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
   }
 
   function startEdit(post: SocialPostRow) {
+    setView('publications')
+    setShowComposer(true)
     setEditingPostId(post.id)
     setBody(post.body)
     setMediaUrls(post.media_urls)
@@ -252,6 +255,7 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
   }
 
   function cancelEdit() {
+    setShowComposer(false)
     setEditingPostId(null)
     setBody('')
     setMediaUrls([])
@@ -323,6 +327,12 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
     return result
   }
 
+  async function removePost(postId: string) {
+    const result = await deleteScheduledPost(postId)
+    router.refresh()
+    return result
+  }
+
   async function markPublished(targetId: string) {
     const result = await markTargetPublished(targetId)
     router.refresh()
@@ -354,12 +364,12 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
       <HubHero
         eyebrowIcon={<ShareNetwork size={14} weight="bold" />}
         eyebrow="Admin · Réseaux sociaux"
-        title={<>Tes posts Facebook et Instagram, <HeroEm>préparés d&apos;avance</HeroEm></>}
-        desc="Compose une fois avec tes visuels (carrousel jusqu'à 10 images), un texte par réseau si tu veux, puis publie tout de suite ou programme."
+        title={<>Ton community manager, <HeroEm>en pilote automatique</HeroEm></>}
+        desc="Un post tous les deux jours sur Facebook et Instagram (Reel, carrousel ou photo, aux couleurs du site), des réponses aux commentaires, un rapport chaque dimanche. Tu gardes la main : tout post programmé se modifie ou se supprime avant son départ."
         steps={[
-          ['Compose', 'le post et ajoute tes visuels'],
-          ['Programme', 'sur ta cadence ou publie maintenant'],
-          ['Suis', 'likes, commentaires et réponses automatiques'],
+          ['Publie', 'un jour sur deux, vers 18 h'],
+          ['Répond', 'aux commentaires, deux fois par jour'],
+          ['Rend compte', 'chaque dimanche soir'],
         ]}
         aside={
           <div style={{ ...heroCard, gap: 12, flex: '1 1 100%', minWidth: 0 }}>
@@ -428,9 +438,9 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
       <div style={s.tabRow}>
         {([
           ['autopilot', 'Pilote automatique', Robot],
-          ['composer', 'Composer', PaperPlaneTilt],
+          ['publications', 'Publications', Rows],
+          ['comments', 'Commentaires', ChatsCircle],
           ['stats', 'Statistiques', ChartBar],
-          ['auto_reply', 'Réponses auto', ChatsCircle],
         ] as const).map(([key, label, Icon]) => (
           <button key={key} type="button" onClick={() => setView(key)} style={{ ...s.tabBtn, ...(view === key ? s.tabBtnActive : {}) }}>
             <Icon size={15} weight={view === key ? 'fill' : 'regular'} /> {label}
@@ -446,11 +456,22 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
         <SocialStats posts={posts} onRefreshAll={refreshAll} refreshing={isPending} />
       )}
 
-      {view === 'auto_reply' && (
-        <SocialAutoReply triggers={commentTriggers} recentReplies={commentReplies} />
-      )}
+      {view === 'comments' && <SocialComments comments={comments} />}
 
-      {view === 'composer' && (
+      {view === 'publications' && (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' as const }}>
+        <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.55, flex: '1 1 320px' }}>
+          Tout ce qui est programmé et publié, par le community manager ou par toi.
+        </p>
+        {!showComposer && (
+          <button type="button" onClick={() => setShowComposer(true)} style={s.smallBtn}>
+            <PencilSimple size={13} /> Écrire un post à la main
+          </button>
+        )}
+      </div>
+
+      {showComposer && (
       <div style={s.mainGrid} className="jm-social-grid">
         {/* Composeur */}
         <section style={s.card}>
@@ -665,11 +686,9 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
             <button onClick={submit} disabled={isPending || uploading} style={s.primaryBtn}>
               {isPending ? 'Envoi…' : editingPostId ? 'Enregistrer les modifications' : scheduleMode === 'now' ? 'Publier maintenant' : 'Programmer'}
             </button>
-            {editingPostId && (
-              <button type="button" onClick={cancelEdit} disabled={isPending} style={s.smallBtn}>
-                Annuler
-              </button>
-            )}
+            <button type="button" onClick={cancelEdit} disabled={isPending} style={s.smallBtn}>
+              {editingPostId ? 'Annuler' : 'Fermer'}
+            </button>
           </div>
         </section>
 
@@ -761,13 +780,18 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
             )}
           </section>
 
+        </div>
+      </div>
+      )}
+
+      <div style={s.mainGrid} className="jm-social-grid">
           <section style={s.card}>
             <h2 style={s.cardTitle}>À venir ({upcoming.length})</h2>
             {upcoming.length === 0 ? (
               <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Rien de programmé.</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {upcoming.map(post => <PostCard key={post.id} post={post} onRetry={retry} onEdit={startEdit} onRefreshStats={refreshStats} onMarkPublished={markPublished} onMarkFailed={markFailed} disabled={isPending} />)}
+                {upcoming.map(post => <PostCard key={post.id} post={post} onRetry={retry} onEdit={startEdit} onRefreshStats={refreshStats} onMarkPublished={markPublished} onMarkFailed={markFailed} onDelete={removePost} disabled={isPending} />)}
               </div>
             )}
           </section>
@@ -778,11 +802,11 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
               <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0 }}>Aucun post pour le moment.</p>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 480, overflowY: 'auto' as const }}>
-                {history.map(post => <PostCard key={post.id} post={post} onRetry={retry} onEdit={startEdit} onRefreshStats={refreshStats} onMarkPublished={markPublished} onMarkFailed={markFailed} disabled={isPending} />)}
+                {history.map(post => <PostCard key={post.id} post={post} onRetry={retry} onEdit={startEdit} onRefreshStats={refreshStats} onMarkPublished={markPublished} onMarkFailed={markFailed} onDelete={removePost} disabled={isPending} />)}
               </div>
             )}
           </section>
-        </div>
+      </div>
       </div>
       )}
 
@@ -798,9 +822,10 @@ export default function SocialAdmin({ accounts, posts, cadence, commentTriggers,
   )
 }
 
-function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMarkFailed, disabled }: {
+function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMarkFailed, onDelete, disabled }: {
   post: SocialPostRow
   onRetry: (id: string) => Promise<{ error?: string }>
+  onDelete: (id: string) => Promise<{ error?: string }>
   onEdit: (post: SocialPostRow) => void
   onRefreshStats: (id: string) => void
   onMarkPublished: (targetId: string) => Promise<{ error?: string }>
@@ -819,6 +844,7 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
   // rien faire. On garde le retour de l'action ici pour l'afficher.
   const [busy, setBusy] = useState(false)
   const [actionError, setActionError] = useState<string | null>(null)
+  const { confirm, dialog } = useConfirm()
 
   async function run(action: () => Promise<{ error?: string }>) {
     setBusy(true)
@@ -832,6 +858,7 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
 
   return (
     <div style={s.postRow}>
+      {dialog}
       <div style={{ display: 'flex', gap: 10 }}>
         {thumb && (
           <div style={s.postThumb}>
@@ -844,9 +871,17 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
               {post.body || <em style={{ color: 'var(--text-muted)' }}>(image seule)</em>}
             </p>
             {post.status === 'scheduled' && (
-              <button onClick={() => onEdit(post)} disabled={disabled} style={s.smallBtn}>
-                <PencilSimple size={13} /> Modifier
-              </button>
+              <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                <button onClick={() => onEdit(post)} disabled={disabled} style={s.smallBtn}>
+                  <PencilSimple size={13} /> Modifier
+                </button>
+                <button
+                  onClick={async () => { if (await confirm({ title: 'Supprimer ce post ?', message: 'Il ne partira pas. Rien n’a encore été publié.', confirmLabel: 'Supprimer', danger: true })) run(() => onDelete(post.id)) }}
+                  disabled={isDisabled} style={s.smallBtn} title="Supprimer avant son départ"
+                >
+                  <Trash size={13} />
+                </button>
+              </div>
             )}
             {(post.status === 'failed' || post.status === 'partial' || post.status === 'publishing') && (
               <button onClick={() => run(() => onRetry(post.id))} disabled={isDisabled} style={s.smallBtn}>

@@ -1,15 +1,10 @@
-// Détecte un mot-clé dans un commentaire Facebook/Instagram entrant et
-// envoie automatiquement une réponse privée (DM) — appelé par le webhook
-// Meta (app/api/social/webhook/meta/route.ts). Pas d'email possible ici :
-// Meta ne donne jamais l'adresse d'un commentateur, cf. lib/social/meta.ts.
+// Commentaire Facebook/Instagram reçu par le webhook Meta
+// (app/api/social/webhook/meta/route.ts) : enregistré dans social_comments
+// pour le community manager, qui y répond en public (lib/social/comments.ts).
+// Les anciens messages privés déclenchés par mot-clé (« Réponses auto ») ont
+// été retirés le 24/10/2026 : ils ne fonctionnaient pas et faisaient doublon.
 
-import { getServiceClient as serviceClient } from '@/lib/supabase/service'
-import { decryptToken } from '@/lib/security/crypto'
-import { sendPrivateReply } from '@/lib/social/meta'
 import { storeComments } from '@/lib/social/comments'
-import { logger } from '@/lib/logger'
-
-const log = logger('lib/social/comment-triggers')
 
 export interface IncomingComment {
   platform: 'facebook' | 'instagram'
@@ -19,66 +14,12 @@ export interface IncomingComment {
   commenterName: string | null
   senderId: string | null
   // ID de la Page (Facebook) ou du compte Instagram Business qui a reçu
-  // le commentaire — sert à ignorer les commentaires de la Page elle-même.
+  // le commentaire : sert à ignorer les commentaires de la Page elle-même.
   pageId: string
 }
 
 export async function handleIncomingComment(comment: IncomingComment): Promise<void> {
   if (comment.senderId && comment.senderId === comment.pageId) return
   if (!comment.commentText.trim()) return
-
-  // Gardé pour la routine « Community manager », qui y répond (lib/social/comments.ts)
   await storeComments([{ platform: comment.platform, commentId: comment.commentId, parentId: null, postExternalId: comment.postId, text: comment.commentText, authorName: comment.commenterName, createdAt: new Date().toISOString() }])
-
-  const db = serviceClient()
-  const text = comment.commentText.toLowerCase()
-
-  const { data: triggers } = await db
-    .from('social_comment_triggers')
-    .select('*')
-    .eq('active', true)
-    .in('platform', [comment.platform, 'both'])
-
-  const trigger = (triggers ?? []).find(t => text.includes((t.keyword as string).toLowerCase()))
-  if (!trigger) return
-
-  // Verrou d'idempotence : Meta redélivre parfois le même événement webhook.
-  // La contrainte unique (platform, comment_id) rejette silencieusement le
-  // doublon si ce commentaire a déjà été traité.
-  const { error: insertError } = await db.from('social_comment_replies').insert({
-    trigger_id: trigger.id,
-    platform: comment.platform,
-    comment_id: comment.commentId,
-    post_id: comment.postId,
-    commenter_name: comment.commenterName,
-    status: 'pending',
-  })
-  if (insertError) {
-    if (insertError.code !== '23505') log.error('log insert échoué', { msg: insertError.message })
-    return
-  }
-
-  try {
-    const { data: account } = await db
-      .from('social_accounts')
-      .select('access_token')
-      .eq('platform', comment.platform)
-      .eq('status', 'active')
-      .limit(1)
-      .maybeSingle()
-    if (!account) throw new Error('Aucun compte connecté pour cette plateforme')
-
-    const accessToken = decryptToken(account.access_token)
-    await sendPrivateReply(comment.platform, comment.pageId, comment.commentId, accessToken, trigger.reply_message)
-
-    await db.from('social_comment_replies')
-      .update({ status: 'sent' })
-      .eq('platform', comment.platform).eq('comment_id', comment.commentId)
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err)
-    log.error('réponse privée échouée', { platform: comment.platform, commentId: comment.commentId, err: message })
-    await db.from('social_comment_replies')
-      .update({ status: 'failed', error: message })
-      .eq('platform', comment.platform).eq('comment_id', comment.commentId)
-  }
 }

@@ -4,8 +4,6 @@ import { getServiceClient as adminClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { dispatchPost, refreshPostStats as refreshPostStatsInternal, refreshAllStats as refreshAllStatsInternal } from '@/lib/social/dispatch'
-import { getSubscribedApps, debugTokenScopes, getAppSubscriptions, subscribeAppWebhook } from '@/lib/social/meta'
-import { decryptToken } from '@/lib/security/crypto'
 
 async function requireAdmin() {
   const supabase = await createClient()
@@ -265,28 +263,19 @@ export async function refreshAllStats(): Promise<{ success?: boolean; error?: st
   }
 }
 
-// Meta n'a pas d'API pour donner l'email d'un commentateur — la réponse
-// automatique passe par un message privé (DM) sur le commentaire lui-même,
-// cf. lib/social/comment-triggers.ts et le webhook app/api/social/webhook/meta.
-export async function createCommentTrigger(input: {
-  platform: 'facebook' | 'instagram' | 'both'
-  keyword: string
-  replyMessage: string
-}): Promise<{ success?: boolean; error?: string }> {
+// Supprime une publication encore programmée (rien n'est parti chez Meta).
+// Sert surtout à annuler un post du community manager avant son départ.
+export async function deleteScheduledPost(postId: string): Promise<{ success?: boolean; error?: string }> {
   try {
-    const user = await requireAdmin()
-    const keyword = input.keyword.trim()
-    const replyMessage = input.replyMessage.trim()
-    if (!keyword) return { error: 'Mot-clé requis.' }
-    if (!replyMessage) return { error: 'Message de réponse requis.' }
-
+    await requireAdmin()
     const db = adminClient()
-    const { error } = await db.from('social_comment_triggers').insert({
-      created_by: user.id,
-      platform: input.platform,
-      keyword,
-      reply_message: replyMessage,
-    })
+    const { data: post } = await db.from('social_posts').select('id, status').eq('id', postId).maybeSingle()
+    if (!post) return { error: 'Publication introuvable.' }
+    if (post.status !== 'scheduled') return { error: 'Seule une publication encore programmée peut être supprimée.' }
+    const { data: targets } = await db.from('social_post_targets').select('status').eq('post_id', postId)
+    if ((targets ?? []).some(t => t.status === 'published')) return { error: 'Déjà publiée sur un réseau : rien supprimé.' }
+    await db.from('social_post_targets').delete().eq('post_id', postId)
+    const { error } = await db.from('social_posts').delete().eq('id', postId).eq('status', 'scheduled')
     if (error) return { error: error.message }
     revalidatePath('/dashboard/admin/social')
     return { success: true }
@@ -295,126 +284,6 @@ export async function createCommentTrigger(input: {
   }
 }
 
-export async function toggleCommentTrigger(id: string, active: boolean): Promise<{ success?: boolean; error?: string }> {
-  try {
-    await requireAdmin()
-    const db = adminClient()
-    const { error } = await db.from('social_comment_triggers')
-      .update({ active, updated_at: new Date().toISOString() })
-      .eq('id', id)
-    if (error) return { error: error.message }
-    revalidatePath('/dashboard/admin/social')
-    return { success: true }
-  } catch (err) {
-    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
-  }
-}
-
-export async function deleteCommentTrigger(id: string): Promise<{ success?: boolean; error?: string }> {
-  try {
-    await requireAdmin()
-    const db = adminClient()
-    const { error } = await db.from('social_comment_triggers').delete().eq('id', id)
-    if (error) return { error: error.message }
-    revalidatePath('/dashboard/admin/social')
-    return { success: true }
-  } catch (err) {
-    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
-  }
-}
-
-// Enregistre le webhook de l'app via l'API — le dashboard Meta ("Configurez
-// les webhooks") s'est avéré ne pas sauvegarder réellement malgré un état
-// de succès affiché à l'écran (confirmé par getAppSubscriptions renvoyant
-// vide). Remplace cette étape peu fiable, comme pour l'abonnement de la
-// Page (subscribePageWebhooks) et le flow "Générer un token" avant lui.
-export async function registerAppWebhooks(): Promise<{ result?: string; error?: string }> {
-  try {
-    await requireAdmin()
-    const lines: string[] = []
-    for (const [object, fields] of [['page', ['feed']], ['instagram', ['comments']]] as const) {
-      try {
-        await subscribeAppWebhook(object, [...fields])
-        lines.push(`${object} : enregistré (champs [${fields.join(', ')}])`)
-      } catch (err) {
-        lines.push(`${object} : échec — ${err instanceof Error ? err.message : String(err)}`)
-      }
-    }
-    return { result: lines.join('\n') }
-  } catch (err) {
-    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
-  }
-}
-
-// Interroge directement l'API Meta pour voir l'état réel de l'abonnement
-// webhook de chaque compte connecté — pour diagnostiquer sans deviner
-// pourquoi un commentaire ne déclenche rien (ex : abonnement jamais pris,
-// mauvais champ, app pas encore listée dans subscribed_apps).
-export async function checkWebhookSubscriptions(): Promise<{ result?: string; error?: string }> {
-  try {
-    await requireAdmin()
-    const db = adminClient()
-    const { data: accounts } = await db.from('social_accounts').select('*').eq('status', 'active')
-    if (!accounts || accounts.length === 0) return { result: 'Aucun compte connecté.' }
-
-    const appId = process.env.META_APP_ID
-    const lines: string[] = []
-
-    try {
-      const subs = await getAppSubscriptions()
-      if (subs.length === 0) {
-        lines.push(`App : AUCUN webhook enregistré (l'URL/jeton n'a peut-être jamais été sauvegardé côté Meta).`)
-      } else {
-        for (const s of subs) lines.push(`App, objet "${s.object}" : ${s.active ? 'actif' : 'inactif'}, champs = [${s.fields.join(', ')}]`)
-      }
-    } catch (err) {
-      lines.push(`App : impossible de lire la config webhook — ${err instanceof Error ? err.message : String(err)}`)
-    }
-    lines.push('')
-
-    for (const account of accounts) {
-      const label = `${account.platform} (${account.display_name ?? account.external_account_id})`
-      let accessToken: string
-      try {
-        accessToken = decryptToken(account.access_token)
-      } catch (err) {
-        lines.push(`${label} : erreur de déchiffrement du token — ${err instanceof Error ? err.message : String(err)}`)
-        continue
-      }
-
-      try {
-        const scopes = await debugTokenScopes(accessToken)
-        lines.push(`${label} : permissions du token = [${scopes.join(', ')}]`)
-      } catch (err) {
-        lines.push(`${label} : impossible de lire les permissions — ${err instanceof Error ? err.message : String(err)}`)
-      }
-
-      // Contrairement à la Page, {ig-user-id}/subscribed_apps n'existe pas
-      // côté Graph API pour Instagram (confirmé : "Tried accessing
-      // nonexisting field") — les commentaires y sont livrés automatiquement
-      // dès que instagram_manage_comments est accordé (vérifié ci-dessus) +
-      // le champ "comments" actif côté App Dashboard, sans abonnement par
-      // compte à vérifier ici.
-      if (account.platform === 'instagram') continue
-
-      try {
-        const subs = await getSubscribedApps(account.external_account_id, accessToken)
-        const mine = subs.find(s => s.id === appId)
-        lines.push(
-          `${label} : ` +
-          (mine
-            ? `abonnée, champs = [${(mine.subscribed_fields ?? []).join(', ')}]`
-            : `PAS abonnée (${subs.length} app(s) au total : ${subs.map(s => s.name ?? s.id).join(', ') || 'aucune'})`),
-        )
-      } catch (err) {
-        lines.push(`${label} : erreur abonnement — ${err instanceof Error ? err.message : String(err)}`)
-      }
-    }
-    return { result: lines.join('\n') }
-  } catch (err) {
-    return { error: err instanceof Error ? err.message : 'Erreur inattendue.' }
-  }
-}
 
 export async function setSocialCadence(input: { weekdays: number[]; timeOfDay: string }): Promise<{ success?: boolean; error?: string }> {
   try {
