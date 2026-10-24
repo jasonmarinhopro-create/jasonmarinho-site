@@ -14,7 +14,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
-import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
+import { proReseauxLinks, proReseauxHtml, instaHandle } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
 import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { readMetier, metierLabel, readOptions, OPTIONS_VISUELLES, faitVideo } from './lib/pro-visuel.mjs'
@@ -244,7 +244,7 @@ ${JSON.stringify({
   jobTitle: `${mLabel} spécialisé location courte durée`,
   knowsAbout: [metier !== 'video' ? 'Photographie immobilière' : null, faitVideo(metier) ? 'Vidéo immobilière' : null, 'Location courte durée', 'Airbnb', 'Booking', p.specialite, ...opts.map(o => o.label)].filter(Boolean),
   ...(photos.length ? { image: photos.map(ph => ph.full) } : {}),
-  sameAs: [p.portfolio_url, p.video_url, p.instagram_handle ? `https://instagram.com/${p.instagram_handle}` : null, ...reseaux.map(l => l.url)].filter(Boolean),
+  sameAs: [p.portfolio_url, p.video_url, instaHandle(p.instagram_handle) ? `https://instagram.com/${instaHandle(p.instagram_handle)}` : null, ...reseaux.map(l => l.url)].filter(Boolean),
 })}
 </script>
 <script type="application/ld+json">
@@ -312,7 +312,7 @@ ${JSON.stringify({
     ${workLinksHtml([
       p.portfolio_url ? { href: p.portfolio_url, label: 'Le portfolio', icon: 'ph-image-square', track: 'portfolio' } : null,
       video && !video.file ? { href: video.href, label: video.label, icon: 'ph-play-circle' } : null,
-      p.instagram_handle ? { href: `https://instagram.com/${p.instagram_handle}`, label: `@${p.instagram_handle}`, icon: 'ph-instagram-logo', track: 'instagram', rel: 'noopener' } : null,
+      instaHandle(p.instagram_handle) ? { href: `https://instagram.com/${instaHandle(p.instagram_handle)}`, label: `@${instaHandle(p.instagram_handle)}`, icon: 'ph-instagram-logo', track: 'instagram', rel: 'noopener' } : null,
     ], proReseauxHtml(reseaux))}
 
     ${guide ? `<div class="card" style="margin-top:16px">

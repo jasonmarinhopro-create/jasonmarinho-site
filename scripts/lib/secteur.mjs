@@ -105,14 +105,28 @@ function communeFrom(text, ref, maxKm, preferDep) {
   let n = normNom(text)
   for (let i = 0; i < 3 && PREFIX.test(n); i++) n = n.replace(PREFIX, '')
   const tries = [n, n.replace(/^(les|le|la|l) /, ''), `les ${n}`, `le ${n}`, `la ${n}`]
+  let exact = null
   for (const t of tries) {
     let c = idx.get(t)
     if (!c) continue
     if (preferDep) { const same = c.filter(x => x.dep === preferDep); if (same.length) c = same }
-    const p = pickNear(c, ref, maxKm)
-    if (p) return p
+    exact = pickNear(c, ref, maxKm)
+    if (exact) break
   }
-  return null
+  // Nom abrégé (24/10/2026) : « Neuilly » écrit par un pro de Paris désignait la commune
+  // nommée Neuilly à 68 km au lieu de Neuilly-sur-Seine à 8 km ; « LEVALLOIS » restait
+  // introuvable. Une commune proche dont le nom commence par le texte l'emporte quand
+  // elle est nettement plus près (ou quand rien ne porte exactement ce nom).
+  if (ref && n.length >= 4) {
+    let best = null, bd = Infinity
+    for (const [k, list] of idx) {
+      if (!k.startsWith(n + ' ')) continue
+      for (const c of list) { const d = distKm(ref, c.c); if (d < bd) { bd = d; best = c } }
+    }
+    const de = exact ? distKm(ref, exact.c) : Infinity
+    if (best && bd <= Math.min(maxKm, 60) && bd < de - 20) return best
+  }
+  return exact
 }
 
 /**

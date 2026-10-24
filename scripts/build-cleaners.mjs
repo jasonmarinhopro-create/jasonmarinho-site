@@ -13,7 +13,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { injectProsIntoVillePages, villeGuide } from './lib/inject-ville-pros.mjs'
-import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
+import { proReseauxLinks, proReseauxHtml, instaHandle } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
 import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS, telHtml, clientelesHtml } from './lib/fiche-vitrine.mjs'
@@ -267,7 +267,7 @@ ${JSON.stringify({
   knowsAbout: ['Ménage Airbnb', 'Turnover LCD', 'Gestion du linge', ...prestations].slice(0, 12),
   telephone: c.telephone || undefined,
   email: undefined,
-  sameAs: [c.site_url, c.instagram_handle ? `https://instagram.com/${c.instagram_handle}` : null, ...reseaux.map(l => l.url)].filter(Boolean),
+  sameAs: [c.site_url, instaHandle(c.instagram_handle) ? `https://instagram.com/${instaHandle(c.instagram_handle)}` : null, ...reseaux.map(l => l.url)].filter(Boolean),
   ...(c.tarif_forfait_min ? {
     priceRange: c.tarif_forfait_max ? `${c.tarif_forfait_min}€-${c.tarif_forfait_max}€` : `dès ${c.tarif_forfait_min}€`,
   } : {}),
@@ -349,7 +349,7 @@ ${JSON.stringify({
 
     ${workLinksHtml([
       c.site_url ? { href: c.site_url, label: 'Le site', icon: 'ph-globe', track: 'site' } : null,
-      c.instagram_handle ? { href: `https://instagram.com/${c.instagram_handle}`, label: `@${c.instagram_handle}`, icon: 'ph-instagram-logo', track: 'instagram', rel: 'noopener' } : null,
+      instaHandle(c.instagram_handle) ? { href: `https://instagram.com/${instaHandle(c.instagram_handle)}`, label: `@${instaHandle(c.instagram_handle)}`, icon: 'ph-instagram-logo', track: 'instagram', rel: 'noopener' } : null,
     ], proReseauxHtml(reseaux), { title: 'L’équipe en ligne' })}
 
     ${guide ? `<div class="card" style="margin-top:16px">

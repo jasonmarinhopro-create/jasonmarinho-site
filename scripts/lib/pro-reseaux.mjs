@@ -15,9 +15,20 @@ export const PRO_RESEAUX = [
 const escHtml = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
 
 /** Liens affichables d'une fiche, dans l'ordre de PRO_RESEAUX, Instagram en tête s'il existe */
+/**
+ * Nom de compte Instagram, même quand le pro a collé le lien entier
+ * (« https://www.instagram.com/tlucas93/ » affiché « @https://… », 24/10/2026).
+ */
+export function instaHandle(raw) {
+  const s = String(raw ?? '').trim()
+  const m = s.match(/instagram\.com\/([\w.]{1,30})/i)
+  const h = (m ? m[1] : s).replace(/^@/, '').replace(/[/?#].*$/, '')
+  return /^[\w.]{1,30}$/.test(h) ? h : ''
+}
+
 export function proReseauxLinks(reseaux, instagramHandle) {
   const out = []
-  const ig = String(instagramHandle ?? '').trim().replace(/^@/, '')
+  const ig = instaHandle(instagramHandle)
   if (/^[\w.]{1,30}$/.test(ig)) out.push({ key: 'instagram', label: 'Instagram', icon: 'instagram-logo', url: `https://instagram.com/${ig}` })
   const raw = reseaux && typeof reseaux === 'object' ? reseaux : {}
   for (const r of PRO_RESEAUX) {

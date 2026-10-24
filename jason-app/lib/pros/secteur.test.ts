@@ -71,4 +71,17 @@ describe('secteur des fiches pros', () => {
     expect(s.multi).toBe(false)
     expect(s.poles).toHaveLength(1)
   })
+  it('nom abrégé : la commune proche plutôt que l’homonyme lointain (24/10/2026)', async () => {
+    const { resolveSecteur } = await load()
+    const s = resolveSecteur({ ville: 'Paris', zone: 'Paris + 30 kms', villes: ['Paris', 'LEVALLOIS', 'Neuilly', 'Boulogne-Billancourt'] })
+    expect(s.communes.map((c: { nom: string }) => c.nom)).toEqual(['Levallois-Perret', 'Neuilly-sur-Seine', 'Boulogne-Billancourt'])
+    expect(s.unknown).toEqual([])
+  })
+  it('compte Instagram tiré d’un lien collé en entier', async () => {
+    const { instaHandle } = await import(/* @vite-ignore */ '../../../scripts/lib/pro-reseaux.mjs' as string)
+    expect(instaHandle('https://www.instagram.com/tlucas93')).toBe('tlucas93')
+    expect(instaHandle('@camille.studio')).toBe('camille.studio')
+    expect(instaHandle('instagram.com/abc/?hl=fr')).toBe('abc')
+    expect(instaHandle('pas un compte !')).toBe('')
+  })
 })
