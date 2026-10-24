@@ -3,10 +3,10 @@
 Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier à la main). Les plus récentes en premier.
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
-Commentaires des 30 derniers jours : 1 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 1).
-Mis à jour le 2026-10-24 12:57 UTC.
+Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
+Mis à jour le 2026-10-24 19:51 UTC.
 
-- 2026-10-24 · carrousel · photographe-hotel-4-points · FB pending · IG pending · « Un hôtel ne se photographie pas comme un studio Airbnb. »
+- 2026-10-24 · carrousel · photographe-hotel-4-points · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · « Un hôtel ne se photographie pas comme un studio Airbnb. »
 - 2026-09-07 · carrousel · (manuel) · FB published 0 j'aime 0 comm. · IG failed · « Ce que j’aurais aimé savoir plus tôt. »
 - 2026-09-06 · carrousel · (manuel) · FB published 0 j'aime 0 comm. · IG published 4 j'aime 1 comm. · « Direct, sans blabla. »
 - 2026-09-04 · photo · (manuel) · FB published 0 j'aime 0 comm. · IG published 5 j'aime 0 comm. · « Si tu dois retenir qu’une chose, retiens celle là. »
