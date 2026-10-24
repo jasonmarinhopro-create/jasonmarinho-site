@@ -34,7 +34,7 @@ const T = {
 } as const
 
 interface DemandeRow extends DemandeEtat {
-  id: string; metier: DemandeMetier; ville: string; logement: string | null; quand: string | null; frequence: string | null
+  id: string; metier: DemandeMetier; etablissement?: DemandeInput['etablissement']; ville: string; logement: string | null; quand: string | null; frequence: string | null
   budget: string | null; message: string | null; nom: string; email: string; telephone: string | null; source: string | null
   suivi_token?: string | null; host_closed_at?: string | null
 }
@@ -56,6 +56,14 @@ async function loadPros(metier: DemandeMetier): Promise<Pro[]> {
   if (res.error && /portfolio_photos|logo_url/.test(res.error.message)) res = await q(metier === 'photographe' ? `${cols}, metier, options` : cols)
   if (res.error && /metier|options/.test(res.error.message)) res = await q(cols)
   if (res.error && /villes_couvertes/.test(res.error.message)) res = await q(cols.replace(' villes_couvertes,', ''))
+  // Clientèles (hôtels, conciergeries, gîtes ; migration 154) : lues à part, sans bloquer si la colonne manque
+  if (!res.error && Array.isArray(res.data) && res.data.length) {
+    const { data: cl, error: clErr } = await db.from(t.table).select('id, clienteles').in('id', (res.data as Array<{ id: string }>).map(p => p.id))
+    if (!clErr) {
+      const byId = new Map(((cl ?? []) as Array<{ id: string; clienteles: string[] | null }>).map(r => [r.id, r.clienteles ?? []]))
+      for (const p of res.data as Array<{ id: string; clienteles?: string[] }>) p.clienteles = byId.get(p.id) ?? []
+    }
+  }
   if (res.error) { log.error('lecture des pros', { metier, err: res.error.message }); return [] }
   const admins = await adminUserIds(db)
   return ((res.data ?? []) as unknown as Pro[]).filter(p => p.email && !isDemoFiche(p, admins))
@@ -127,12 +135,18 @@ export async function creerDemande(d: DemandeInput, acquisition: unknown): Promi
   const base = {
     metier: d.metier, ville: d.ville, logement: d.logement, quand: d.quand, frequence: d.frequence, budget: d.budget,
     message: d.message, nom: d.nom, email: d.email, telephone: d.telephone, source: d.source,
+    // Type d'hébergement (migration 154) : retiré plus bas si la colonne manque
+    ...(d.etablissement ? { etablissement: d.etablissement } : {}),
     acquisition: acquisition && typeof acquisition === 'object' ? acquisition : null,
     consent_at: new Date().toISOString(),
   }
   // Lien de suivi secret (migration 139 ; sans elle, la demande part sans lien de suivi)
   let token: string | null = randomBytes(16).toString('hex')
   let { data: row, error } = await db.from('demandes_hotes').insert({ ...base, suivi_token: token }).select('id').maybeSingle()
+  if (error && /etablissement/.test(error.message)) {
+    delete (base as { etablissement?: string }).etablissement
+    ;({ data: row, error } = await db.from('demandes_hotes').insert({ ...base, suivi_token: token }).select('id').maybeSingle())
+  }
   if (error && /suivi_token/.test(error.message)) {
     token = null
     ;({ data: row, error } = await db.from('demandes_hotes').insert(base).select('id').maybeSingle())
@@ -142,7 +156,7 @@ export async function creerDemande(d: DemandeInput, acquisition: unknown): Promi
     return { error: 'Envoi impossible pour le moment. Réessaie dans quelques minutes.' }
   }
   const id = (row as { id: string }).id
-  const pros = choisirPros(await loadPros(d.metier), d.ville, new Set(), undefined, d.frequence)
+  const pros = choisirPros(await loadPros(d.metier), d.ville, new Set(), undefined, d.frequence, d.etablissement)
   const sent = pros.length ? await envoyerVague(d, d.metier, pros, 1, id) : []
   await db.from('demandes_hotes').update({
     sent_to: sent, status: sent.length ? 'envoyee' : 'sans_pro', last_round_at: new Date().toISOString(),
@@ -189,7 +203,7 @@ export async function traiterDemandes(now = new Date()): Promise<{ elargies: num
     const action = prochaineAction(r, statuts, now)
     if (action === 'rien') continue
     if (!prosCache.has(r.metier)) prosCache.set(r.metier, await loadPros(r.metier))
-    const pros = choisirPros(prosCache.get(r.metier)!, r.ville, new Set(r.sent_to.map(s => s.id)), undefined, r.frequence)
+    const pros = choisirPros(prosCache.get(r.metier)!, r.ville, new Set(r.sent_to.map(s => s.id)), undefined, r.frequence, r.etablissement)
     if (!pros.length) {
       if (action === 'elargir') {
         await db.from('demandes_hotes').update({ status: 'sans_pro', admin_notified_at: now.toISOString() }).eq('id', r.id)
@@ -262,15 +276,15 @@ const prosPublics = (metier: DemandeMetier) => unstable_cache(
   async (): Promise<ProPublic[]> => (await loadPros(metier)).map(p => ({
     id: p.id, slug: p.slug, full_name: p.full_name, pseudo: p.pseudo, ville: p.ville, zone_couverte: p.zone_couverte,
     villes_couvertes: p.villes_couvertes ?? null, contacts_count: p.contacts_count ?? null, created_at: p.created_at ?? null,
-    metier: p.metier ?? null, options: p.options ?? null, portfolio_photos: p.portfolio_photos ?? null, logo_url: p.logo_url ?? null,
+    metier: p.metier ?? null, options: p.options ?? null, clienteles: p.clienteles ?? null, portfolio_photos: p.portfolio_photos ?? null, logo_url: p.logo_url ?? null,
   })),
-  ['demandes-pros-publics', metier],
+  ['demandes-pros-publics-v2', metier],
   { revalidate: 300, tags: ['demandes-pros'] },
 )()
 
 /** Les pros qui recevraient la demande maintenant (même règle que l'envoi) */
-export async function apercuDemande(metier: DemandeMetier, ville: string, besoin: string | null): Promise<{ pros: CartePro[]; phrase: string }> {
-  const pros = choisirPros(await prosPublics(metier), ville, new Set(), undefined, besoin)
+export async function apercuDemande(metier: DemandeMetier, ville: string, besoin: string | null, etablissement: string | null = null): Promise<{ pros: CartePro[]; phrase: string }> {
+  const pros = choisirPros(await prosPublics(metier), ville, new Set(), undefined, besoin, etablissement)
   return { pros: pros.map(p => cartePro(p, metier, besoin, SUPABASE_URL)), phrase: apercuPhrase(metier, pros.length, ville, besoin) }
 }
 

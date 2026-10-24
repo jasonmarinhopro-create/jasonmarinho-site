@@ -7,6 +7,7 @@
 // (`anonymizedNeed`, décision de Jason).
 
 import { citySlugOf } from '@/lib/visibility/city-page'
+import { readEtablissement, CLIENTELES, type Clientele } from '@/lib/pros/clienteles'
 
 export type DemandeMetier = 'photographe' | 'menage'
 
@@ -17,6 +18,13 @@ export const NOUVEAUX_PROS_JOURS = 30
 export const CONSERVATION_MOIS = 12
 
 export const LOGEMENTS = ['Studio ou T1', 'T2 ou T3', 'T4 et plus', 'Maison', 'Plusieurs logements'] as const
+/** Taille d'un hôtel ou d'une conciergerie (24/10/2026), rangée dans `logement` */
+export const TAILLES_HOTEL = ['Moins de 15 chambres', '15 à 50 chambres', 'Plus de 50 chambres'] as const
+export const TAILLES_CONCIERGERIE = ['2 à 5 logements', '6 à 20 logements', 'Plus de 20 logements'] as const
+/** Tailles proposées selon le type d'hébergement (gîte et logement Airbnb : les tailles d'un logement) */
+export function taillesPour(etablissement: string | null | undefined): readonly string[] {
+  return etablissement === 'hotel' ? TAILLES_HOTEL : etablissement === 'conciergerie' ? TAILLES_CONCIERGERIE : LOGEMENTS
+}
 export const QUAND = ['Au plus vite', 'Dans le mois', 'Dans 1 à 3 mois', 'Je me renseigne'] as const
 export const FREQUENCES = ['Des ménages réguliers entre deux voyageurs', 'Un ménage ponctuel (remise en état, fin de saison)'] as const
 /** Besoin d'un hôte qui cherche un photographe (17/10/2026 : vidéastes dans l'annuaire), rangé dans `frequence` */
@@ -24,6 +32,8 @@ export const PRESTATIONS_PHOTO = ['Des photos', 'Une vidéo', 'Des photos et une
 
 export interface DemandeInput {
   metier: DemandeMetier
+  /** Type d'hébergement (lib/pros/clienteles.ts) ; null = logement d'un hôte (demandes d'avant le 24/10/2026) */
+  etablissement?: Clientele | null
   ville: string
   logement: string | null
   quand: string | null
@@ -52,11 +62,13 @@ export function cleanDemande(body: Record<string, unknown>): { value: DemandeInp
   if (body.consent !== true) return { error: 'Coche la case pour que ta demande puisse être transmise aux pros.' }
   const message = txt(body.message, 1500) || null
   const tel = txt(body.telephone, 30).replace(/[^\d+ .()-]/g, '')
+  const etablissement = readEtablissement(body.etablissement)
   return {
     value: {
       metier,
+      etablissement,
       ville,
-      logement: oneOf(body.logement, LOGEMENTS),
+      logement: oneOf(body.logement, taillesPour(etablissement)),
       quand: oneOf(body.quand, QUAND),
       frequence: oneOf(body.frequence, metier === 'menage' ? FREQUENCES : PRESTATIONS_PHOTO),
       budget: txt(body.budget, 60) || null,
@@ -81,6 +93,13 @@ export interface ProCandidat {
   /** Photographes : photo, video ou photo_video, et options (drone…) */
   metier?: string | null
   options?: string[] | null
+  /** Clientèles cochées sur la fiche (hôtels, conciergeries…) */
+  clienteles?: string[] | null
+}
+
+/** 1 si le pro indique travailler pour ce type d'hébergement (hôtel, conciergerie, gîte) ; le logement Airbnb n'ordonne rien */
+export function clienteleDuPro(pro: ProCandidat, etablissement: string | null | undefined): 0 | 1 {
+  return etablissement && etablissement !== 'lcd' && (pro.clienteles ?? []).includes(etablissement) ? 1 : 0
 }
 
 /** Ce que demande l'hôte (photo, vidéo, drone), lu dans `frequence` ; null = rien de précis */
@@ -172,12 +191,13 @@ export function proximite(pro: ProCandidat, ville: string): number {
  * Les pros à qui envoyer la demande : d'abord ceux qui font tout ce que l'hôte demande, puis ceux qui le font
  * en partie, jamais ceux qui ne le font pas (0) ; à adéquation égale les plus proches, puis les moins sollicités.
  */
-export function choisirPros<T extends ProCandidat>(pros: T[], ville: string, exclude: Set<string>, n = PROS_PAR_VAGUE, besoin?: string | null): T[] {
+export function choisirPros<T extends ProCandidat>(pros: T[], ville: string, exclude: Set<string>, n = PROS_PAR_VAGUE, besoin?: string | null, etablissement?: string | null): T[] {
+  // À adéquation égale, d'abord les pros qui travaillent pour ce type d'hébergement (hôtels, conciergeries, gîtes)
   return pros
     .filter(p => !exclude.has(p.id))
-    .map(p => ({ p, s: proximite(p, ville), f: convientAuBesoin(p, besoin) }))
+    .map(p => ({ p, s: proximite(p, ville), f: convientAuBesoin(p, besoin), c: clienteleDuPro(p, etablissement) }))
     .filter(x => x.s > 0 && x.f > 0)
-    .sort((a, b) => b.f - a.f || b.s - a.s || (a.p.contacts_count ?? 0) - (b.p.contacts_count ?? 0) || String(a.p.created_at ?? '').localeCompare(String(b.p.created_at ?? '')))
+    .sort((a, b) => b.f - a.f || b.c - a.c || b.s - a.s || (a.p.contacts_count ?? 0) - (b.p.contacts_count ?? 0) || String(a.p.created_at ?? '').localeCompare(String(b.p.created_at ?? '')))
     .slice(0, n)
     .map(x => x.p)
 }
@@ -185,12 +205,22 @@ export function choisirPros<T extends ProCandidat>(pros: T[], ville: string, exc
 // ── Textes ──────────────────────────────────────────────────────────
 
 const LIBELLE: Record<DemandeMetier, string> = { photographe: 'un photographe', menage: 'une équipe de ménage' }
+/** Qui fait la demande, selon le type d'hébergement */
+export function demandeur(etablissement: string | null | undefined): string {
+  return etablissement === 'hotel' ? 'un hôtel ou une résidence' : etablissement === 'conciergerie' ? 'une conciergerie' : etablissement === 'gite' ? 'un gîte ou une chambre d’hôtes' : 'un hôte'
+}
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+/** Libellé du type d'hébergement pour les fiches et e-mails (vide pour un logement Airbnb ou une demande d'avant) */
+export function typeHebergement(etablissement: string | null | undefined): string {
+  return CLIENTELES.find(c => c.key === etablissement)?.demande ?? ''
+}
 
 /** Message rangé dans « Demandes reçues » du pro (avec les détails, sans redire le contact) */
 export function messagePourPro(d: DemandeInput): string {
   return [
-    `Demande envoyée depuis jasonmarinho.com : cet hôte cherche ${LIBELLE[d.metier]} à ${d.ville}, et tu fais partie des pros les plus proches.`,
-    d.logement && `Logement : ${d.logement}`,
+    `Demande envoyée depuis jasonmarinho.com : ${d.etablissement && d.etablissement !== 'lcd' ? demandeur(d.etablissement) : 'cet hôte'} cherche ${LIBELLE[d.metier]} à ${d.ville}, et tu fais partie des pros les plus proches.`,
+    d.etablissement && `Type : ${typeHebergement(d.etablissement)}`,
+    d.logement && `${d.etablissement === 'hotel' || d.etablissement === 'conciergerie' ? 'Taille' : 'Logement'} : ${d.logement}`,
     d.frequence && `Besoin : ${d.frequence}`,
     d.quand && `Quand : ${d.quand}`,
     d.budget && `Budget indiqué : ${d.budget}`,
@@ -200,9 +230,9 @@ export function messagePourPro(d: DemandeInput): string {
 }
 
 /** Besoin présentable ailleurs (prospection, réseaux) : jamais le nom, l'e-mail, le téléphone ni le message libre */
-export function anonymizedNeed(d: Pick<DemandeInput, 'metier' | 'ville' | 'logement' | 'quand' | 'frequence' | 'budget'>): string {
+export function anonymizedNeed(d: Pick<DemandeInput, 'metier' | 'ville' | 'logement' | 'quand' | 'frequence' | 'budget' | 'etablissement'>): string {
   const bits = [d.logement, d.frequence ? d.frequence.charAt(0).toLowerCase() + d.frequence.slice(1) : null, d.quand?.toLowerCase(), d.budget ? `budget ${d.budget}` : null].filter(Boolean)
-  return `Un hôte cherche ${LIBELLE[d.metier]} à ${d.ville}${bits.length ? ` : ${bits.join(', ')}` : ''}.`
+  return `${cap(demandeur(d.etablissement))} cherche ${LIBELLE[d.metier]} à ${d.ville}${bits.length ? ` : ${bits.join(', ')}` : ''}.`
 }
 
 // ── Relances ────────────────────────────────────────────────────────

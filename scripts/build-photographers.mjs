@@ -18,7 +18,8 @@ import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
 import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { readMetier, metierLabel, readOptions, OPTIONS_VISUELLES, faitVideo } from './lib/pro-visuel.mjs'
-import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, heroVideoHtml, videoLink, galleryHtml, formulesHtml, derouleHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS, telHtml } from './lib/fiche-vitrine.mjs'
+import { CLIENTELES, readClienteles } from './lib/pro-clienteles.mjs'
+import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, heroVideoHtml, videoLink, galleryHtml, formulesHtml, derouleHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS, telHtml, clientelesHtml } from './lib/fiche-vitrine.mjs'
 import { secteurHtml, SECTEUR_CSS, SECTEUR_JS } from './lib/secteur.mjs'
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
 
@@ -291,6 +292,7 @@ ${JSON.stringify({
     ${galleryHtml(photos, { name: displayName })}
     ${p.bio ? `<div class="card" style="margin-bottom:20px"><h2>Présentation</h2><div class="bio">${escHtml(p.bio)}</div></div>` : ''}
     ${opts.length ? `<div class="card vt-sec"><h2>Ce que ${escHtml(firstName)} propose</h2><div class="vt-opts"><span class="vt-opt"><i class="ph-bold ph-${metier === 'video' ? 'video-camera' : 'camera'}"></i>${metier === 'video' ? 'Vidéo du logement' : metier === 'photo_video' ? 'Photos et vidéo du logement' : 'Photos du logement'}</span>${opts.map(o => `<span class="vt-opt"><i class="ph-bold ph-${o.icon}"></i>${escHtml(o.label)}</span>`).join('')}</div></div>` : ''}
+    ${clientelesHtml(p.clienteles, firstName)}
     ${formulesHtml(p.formules)}
     ${derouleHtml(p.deroule, 'photographe')}
     ${secteurHtml({ ville: p.ville, zone: p.zone_couverte, villes: p.villes_couvertes, prenom: firstName, metier: 'photographe' }) ?? zoneCardHtml({ ville: p.ville, zone: p.zone_couverte, villes: p.villes_couvertes, root: ROOT, prefix: 'photographe-lcd', metierLabel: 'Photographe' })}
@@ -431,6 +433,10 @@ function filtersSectionsHtml(items) {
         <div class="fc-list">${OPTIONS_VISUELLES.map(o => { const c = n(p => readOptions(p.options).includes(o.key)); return `<button type="button" class="fc-c" data-f-option="${o.key}" aria-pressed="false"${c ? '' : ' disabled'}><i class="ph-bold ph-${o.icon}"></i><span>${escHtml(o.label)}</span>${cnt(c)}</button>` }).join('')}</div>
       </div>
       <div class="filters-section">
+        <h3>Travaille pour</h3>
+        <div class="fc-list">${CLIENTELES.filter(c => c.key !== 'lcd').map(c => { const cnum = n(p => readClienteles(p.clienteles).includes(c.key)); return `<button type="button" class="fc-c" data-f-option="cl-${c.key}" aria-pressed="false"${cnum ? '' : ' disabled'}><i class="ph-bold ph-${c.icon}"></i><span>${escHtml(c.pro)}</span>${cnt(cnum)}</button>` }).join('')}</div>
+      </div>
+      <div class="filters-section">
         <h3>Sur la fiche</h3>
         <div class="fc-list">${FILTRES_FICHE.map(([k, l, ic, f]) => { const c = n(f); return `<button type="button" class="fc-c" data-f-fiche="${k}" aria-pressed="false"${c ? '' : ' disabled'}><i class="ph-bold ${ic}"></i><span>${l}</span>${cnt(c)}</button>` }).join('')}</div>
       </div>
@@ -471,7 +477,7 @@ export function buildAnnuaireListPage(items) {
         const extra = [metierLabel(metier), opts.includes('drone') ? 'drone' : null, p.specialite, p.reco_count > 0 ? `recommandé par ${p.reco_count} hôte${p.reco_count > 1 ? 's' : ''}` : null].filter(Boolean).join(' · ')
         return proCardHtml({
           href: `/annuaires/photographes/${p.slug}`,
-          attrs: `data-search="${escHtml(searchBlob)}" data-metier="${metier}" data-options="${opts.join(' ')}" data-fiche="${FILTRES_FICHE.filter(([, , , f]) => f(p)).map(([k]) => k).join(' ')}" data-prix="${prixNum(p) ?? ''}" data-created="${escHtml(p.created_at || '')}" data-tier="${escHtml(p.tier || '')}" data-tarif-min="${prixNum(p) ?? p.tarif_min ?? ''}" data-tarif-max="${p.tarif_max ?? prixNum(p) ?? ''}"`,
+          attrs: `data-search="${escHtml(searchBlob)}" data-metier="${metier}" data-options="${[...opts, ...readClienteles(p.clienteles).map(k => 'cl-' + k)].join(' ')}" data-fiche="${FILTRES_FICHE.filter(([, , , f]) => f(p)).map(([k]) => k).join(' ')}" data-prix="${prixNum(p) ?? ''}" data-created="${escHtml(p.created_at || '')}" data-tier="${escHtml(p.tier || '')}" data-tarif-min="${prixNum(p) ?? p.tarif_min ?? ''}" data-tarif-max="${p.tarif_max ?? prixNum(p) ?? ''}"`,
           name: displayName, metier: metierLabel(metier), ville: p.ville,
           lieu: cardLieu(villes, p.zone_couverte, 'aussi à'),
           extra: extra ? extra.charAt(0).toUpperCase() + extra.slice(1) : '',

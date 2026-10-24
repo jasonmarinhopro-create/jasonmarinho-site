@@ -189,7 +189,7 @@ details.more a{color:var(--g)}
     <div class="brd"><a href="/">Accueil</a> · <span>Trouver un pro</span></div>
     <span class="lbl">Gratuit · sans commission</span>
     <h1>Décris ton besoin, <em>les pros viennent à toi</em></h1>
-    <p class="lead">Un photographe ou un vidéaste pour ton annonce, une équipe de ménage entre deux voyageurs : réponds à quelques questions, tu vois tout de suite qui recevra ta demande.</p>
+    <p class="lead">Pour ton logement Airbnb, ton hôtel, ta conciergerie ou ton gîte : un photographe ou un vidéaste, une équipe de ménage. Réponds à quelques questions, tu vois tout de suite qui recevra ta demande.</p>
     <div class="promises"><span><i class="ph-bold ph-users-three"></i>3 pros au plus</span><span><i class="ph-bold ph-lock-simple"></i>Ton contact n’est jamais vendu</span><span><i class="ph-bold ph-arrows-clockwise"></i>Relais au bout de 48 h</span></div>
   </div>
 </header>
@@ -214,8 +214,10 @@ details.more a{color:var(--g)}
 <script>
 (function(){
   var APP = 'https://app.jasonmarinho.com';
-  var KEY = 'jm-demande-v2';
+  var KEY = 'jm-demande-v3';
   var LOGEMENTS = ["Studio ou T1","T2 ou T3","T4 et plus","Maison","Plusieurs logements"];
+  var TAILLES = { hotel: ["Moins de 15 chambres","15 à 50 chambres","Plus de 50 chambres"], conciergerie: ["2 à 5 logements","6 à 20 logements","Plus de 20 logements"] };
+  var ETABS = [{"k":"lcd","l":"Logement Airbnb, Booking ou Abritel","ic":"ph-house-line"},{"k":"hotel","l":"Hôtel ou résidence","ic":"ph-buildings"},{"k":"conciergerie","l":"Conciergerie (plusieurs logements)","ic":"ph-key"},{"k":"gite","l":"Gîte ou chambre d’hôtes","ic":"ph-tree"}];
   var QUAND = ["Au plus vite","Dans le mois","Dans 1 à 3 mois","Je me renseigne"];
   var FREQUENCES = ["Des ménages réguliers entre deux voyageurs","Un ménage ponctuel (remise en état, fin de saison)"];
   var PRESTATIONS = ["Des photos","Une vidéo","Des photos et une vidéo","Des photos avec vues au drone","Une vidéo avec vues au drone"];
@@ -226,13 +228,17 @@ details.more a{color:var(--g)}
   var tk = document.getElementById('tk'), sd = document.getElementById('sd');
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
-  function blank(){ return { metier:'', ville:'', logement:'', besoin:'', rythme:'', linge:'', quand:'', date:'', budget:'', details:[], message:'', nom:'', email:'', telephone:'', pref:'', consent:false }; }
+  function blank(){ return { metier:'', etablissement:'', ville:'', logement:'', besoin:'', rythme:'', linge:'', quand:'', date:'', budget:'', details:[], message:'', nom:'', email:'', telephone:'', pref:'', consent:false }; }
   var st = blank(), step = 0, apercu = null, apercuFor = '', apercuSeq = 0, sending = false, done = null;
   function menage(){ return st.metier === 'menage'; }
   function who(n){ return menage() ? (n > 1 ? 'équipes' : 'équipe') : (n > 1 ? 'pros' : 'pro'); }
 
   // ── Contenu des étapes ──
   var LOG_IC = { 'Studio ou T1':'ph-door', 'T2 ou T3':'ph-armchair', 'T4 et plus':'ph-bed', 'Maison':'ph-house-line', 'Plusieurs logements':'ph-buildings' };
+  var ETAB_D = { lcd:'Un ou plusieurs logements loués à la nuit', hotel:'Chambres, suites, espaces communs', conciergerie:'Les logements que tu gères pour des propriétaires', gite:'Un hébergement de charme, en ville ou à la campagne' };
+  var TAILLE_IC = { 'Moins de 15 chambres':'ph-door', '15 à 50 chambres':'ph-buildings', 'Plus de 50 chambres':'ph-buildings', '2 à 5 logements':'ph-key', '6 à 20 logements':'ph-key', 'Plus de 20 logements':'ph-buildings' };
+  function tailles(){ return TAILLES[st.etablissement] || LOGEMENTS; }
+  function grand(){ return st.etablissement === 'hotel' || st.etablissement === 'conciergerie'; }
   var LOG_D = { 'Studio ou T1':'Une pièce principale', 'T2 ou T3':'Une ou deux chambres', 'T4 et plus':'Trois chambres ou plus', 'Maison':'Avec ou sans extérieur', 'Plusieurs logements':'Un même pro pour tous' };
   var PRESTA = {
     'Des photos': ['ph-images', 'Les photos de ton annonce, pièce par pièce'],
@@ -261,8 +267,9 @@ details.more a{color:var(--g)}
 
   var STEPS = [
     { k:'metier', l:'Ce que tu cherches' },
+    { k:'etablissement', l:'Ton hébergement' },
     { k:'ville', l:'Ta ville' },
-    { k:'logement', l:'Ton logement', opt:true },
+    { k:'logement', l:'Sa taille', opt:true },
     { k:'besoin', l:'Ce qu’il te faut', opt:true },
     { k:'quand', l:'Pour quand', opt:true },
     { k:'budget', l:'Ton budget', opt:true },
@@ -294,7 +301,7 @@ details.more a{color:var(--g)}
     return '<div class="zone"><h3>Qui recevra ta demande</h3>' + (n ? '<div class="pros' + (wide ? ' wide' : '') + '">' + apercu.pros.map(proCard).join('') + '</div>' : '') +
       '<div class="note ' + (n ? 'ok' : 'wait') + '">' + esc(apercu.phrase) + (n ? ' Touche une fiche pour voir ses photos et ses formules.' : '') + '</div></div>';
   }
-  function apercuKey(){ return st.metier + '|' + st.ville.trim().toLowerCase() + '|' + (menage() ? '' : st.besoin); }
+  function apercuKey(){ return st.metier + '|' + st.etablissement + '|' + st.ville.trim().toLowerCase() + '|' + (menage() ? '' : st.besoin); }
   var apercuTimer = null;
   function loadApercu(){
     clearTimeout(apercuTimer);
@@ -303,7 +310,7 @@ details.more a{color:var(--g)}
     if (apercu && apercuFor === key) return;
     apercuTimer = setTimeout(function(){
       var seq = ++apercuSeq;
-      fetch(APP + '/api/demandes/apercu?metier=' + encodeURIComponent(st.metier) + '&ville=' + encodeURIComponent(st.ville.trim()) + (st.besoin && !menage() ? '&besoin=' + encodeURIComponent(st.besoin) : ''))
+      fetch(APP + '/api/demandes/apercu?metier=' + encodeURIComponent(st.metier) + '&ville=' + encodeURIComponent(st.ville.trim()) + (st.besoin && !menage() ? '&besoin=' + encodeURIComponent(st.besoin) : '') + (st.etablissement ? '&etablissement=' + encodeURIComponent(st.etablissement) : ''))
         .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
         .then(function(d){ if (seq !== apercuSeq) return; apercu = { pros: Array.isArray(d.pros) ? d.pros : [], phrase: d.phrase || '' }; apercuFor = key; paintZone(); })
         .catch(function(){ if (seq !== apercuSeq) return; apercu = { error: true, pros: [] }; apercuFor = key; paintZone(); });
@@ -315,8 +322,9 @@ details.more a{color:var(--g)}
   function rows(){
     var r = [
       ['Pour', st.metier ? (menage() ? 'Une équipe de ménage' : 'Un photographe ou vidéaste') : ''],
+      ['Type', st.etablissement ? (ETABS.filter(function(e){ return e.k === st.etablissement; })[0] || {}).l : ''],
       ['Ville', st.ville.trim()],
-      ['Logement', st.logement],
+      [grand() ? 'Taille' : 'Logement', st.logement],
       [menage() ? 'Besoin' : 'Prestation', st.besoin],
       ['Quand', st.quand + (st.date ? ' (' + fmtDate(st.date) + ')' : '')],
       ['Budget', st.budget]
@@ -327,7 +335,7 @@ details.more a{color:var(--g)}
     return r;
   }
   function fmtDate(iso){ try { return new Date(iso + 'T12:00:00').toLocaleDateString('fr-FR', { day:'numeric', month:'long' }); } catch (e) { return iso; } }
-  function missing(){ var m = []; if (!st.logement) m.push('le logement'); if (!st.besoin) m.push(menage() ? 'le besoin' : 'la prestation'); if (!st.quand) m.push('le délai'); if (!st.budget) m.push('le budget'); return m; }
+  function missing(){ var m = []; if (!st.logement) m.push(grand() ? 'la taille' : 'le logement'); if (!st.besoin) m.push(menage() ? 'le besoin' : 'la prestation'); if (!st.quand) m.push('le délai'); if (!st.budget) m.push('le budget'); return m; }
   function titleLine(){
     if (!st.metier) return '<div class="tt empty">Ta demande se construit ici</div>';
     var w = menage() ? 'Équipe de ménage' : (st.besoin || 'Photographe ou vidéaste');
@@ -359,7 +367,7 @@ details.more a{color:var(--g)}
     fh.hidden = false;
     document.body.setAttribute('data-step', s.k);
     fhL.textContent = 'Étape ' + (step + 1) + ' sur ' + STEPS.length + ' · ' + s.l;
-    fhR.textContent = step < 7 ? 'Environ ' + Math.max(1, Math.round((STEPS.length - step) * 6 / 10) * 10) + ' s' : 'Presque fini';
+    fhR.textContent = step < STEPS.length - 2 ? 'Environ ' + Math.max(1, Math.round((STEPS.length - step) * 6 / 10) * 10) + ' s' : 'Presque fini';
     bar.style.width = Math.round((step + 1) / STEPS.length * 100) + '%';
     if (s.k === 'metier') {
       var draft = readDraft();
@@ -370,6 +378,11 @@ details.more a{color:var(--g)}
         '<button type="button" class="bigc' + (st.metier === 'menage' ? ' on' : '') + '" data-m="menage"><span class="im" style="background-image:url(/img/exemple-fiches/menage-1-t.jpg)"><span><i class="ph-bold ph-sparkle"></i>Entre deux voyageurs</span></span><span class="bd"><span class="t">Une équipe de ménage</span><ul><li><i class="ph-bold ph-check"></i>Ménages réguliers ou remise en état</li><li><i class="ph-bold ph-check"></i>Linge, réassort, arrivée le jour même</li></ul></span></button>' +
         '</div>' + tip('ph-handshake', 'Gratuit pour toi et sans commission : le devis et le paiement se règlent directement avec le pro. Ton contact ne va qu’aux pros qui reçoivent ta demande, il n’est jamais vendu.');
     }
+    else if (s.k === 'etablissement') {
+      h = '<h2 class="q">Pour quel hébergement ?</h2><p class="sub">On envoie ta demande d’abord aux ' + (menage() ? 'équipes' : 'pros') + ' qui travaillent déjà pour ce type d’hébergement.</p>' +
+        '<div class="opts two">' + ETABS.map(function(e){ return optHtml(e.l, st.etablissement === e.k, e.ic, ETAB_D[e.k]).replace('data-v="' + esc(e.l) + '"', 'data-v="' + esc(e.l) + '" data-et="' + e.k + '"'); }).join('') + '</div>' +
+        tip('ph-handshake', 'Hôtels, conciergeries, gîtes ou logements Airbnb : même principe, gratuit et sans commission. Le devis et le paiement se règlent directement avec le pro.');
+    }
     else if (s.k === 'ville') {
       h = '<h2 class="q">Où est ton logement ?</h2><p class="sub">On cherche les ' + (menage() ? 'équipes' : 'pros') + ' qui travaillent dans ta ville ou qui la couvrent.</p>' +
         '<div class="cityin"><i class="ph-bold ph-map-pin"></i><input class="in" id="ville" list="villes" data-suggest="ville" autocomplete="off" enterkeyhint="next" placeholder="Ex. Lyon, Annecy, Biarritz" value="' + esc(st.ville) + '" aria-label="Ville du logement"></div>' +
@@ -378,8 +391,8 @@ details.more a{color:var(--g)}
         tip('ph-map-pin', 'Toute ville est acceptée, même sans page sur le site : les pros qui indiquent couvrir ta zone la reçoivent aussi.');
     }
     else if (s.k === 'logement') {
-      h = '<h2 class="q">Ton logement, c’est plutôt…</h2><p class="sub">La taille aide ' + (menage() ? 'l’équipe à estimer le temps de ménage par départ.' : 'le pro à estimer la durée de la séance.') + '</p>' +
-        '<div class="opts two">' + LOGEMENTS.map(function(v){ return optHtml(v, st.logement === v, LOG_IC[v], LOG_D[v]); }).join('') + '</div>';
+      h = '<h2 class="q">' + (st.etablissement === 'hotel' ? 'Ton établissement compte combien de chambres ?' : st.etablissement === 'conciergerie' ? 'Combien de logements à ' + (menage() ? 'entretenir' : 'photographier') + ' ?' : 'Ton logement, c’est plutôt…') + '</h2><p class="sub">La taille aide ' + (menage() ? 'l’équipe à estimer le temps de travail.' : 'le pro à estimer la durée de la séance.') + '</p>' +
+        '<div class="opts two">' + tailles().map(function(v){ return optHtml(v, st.logement === v, LOG_IC[v] || TAILLE_IC[v], LOG_D[v] || ''); }).join('') + '</div>';
     }
     else if (s.k === 'besoin') {
       if (menage()) {
@@ -418,7 +431,7 @@ details.more a{color:var(--g)}
     else if (s.k === 'recap') {
       h = '<h2 class="q">Tout est bon ?</h2><p class="sub">Voici ta demande telle que ' + (menage() ? 'les équipes la liront' : 'les pros la liront') + '. Touche une étape pour la corriger.</p>' +
         '<div class="ticket"><div class="th"><b>Ce que les pros vont lire</b><span>Nouvelle demande</span></div><div class="tb">' + ticketHtml() + '<div class="rows"><div><span>Contact</span><span>' + esc(st.nom) + '<br><small style="font-weight:400;color:var(--tl)">' + esc(st.email) + (st.telephone ? ' · ' + esc(st.telephone) : '') + '</small></span></div></div></div></div>' +
-        '<div class="chips">' + STEPS.slice(1, 8).map(function(x, i){ return '<button type="button" class="chip" data-goto="' + (i + 1) + '"><i class="ph-bold ph-pencil-simple"></i>' + esc(x.l) + '</button>'; }).join('') + '</div>' +
+        '<div class="chips">' + STEPS.slice(1, STEPS.length - 1).map(function(x, i){ return '<button type="button" class="chip" data-goto="' + (i + 1) + '"><i class="ph-bold ph-pencil-simple"></i>' + esc(x.l) + '</button>'; }).join('') + '</div>' +
         '<div id="zone">' + zoneHtml(true) + '</div>' +
         '<label class="consent"><input type="checkbox" id="consent"' + (st.consent ? ' checked' : '') + '><span>J’accepte que ma demande et mes coordonnées soient transmises aux pros de l’annuaire qui la reçoivent.</span></label>' +
         '<details class="more"><summary>En savoir plus</summary>3 professionnels au plus de ta zone la reçoivent, puis d’autres pros de l’annuaire si aucun ne la prend en main sous 48 h. Ton besoin (sans tes coordonnées) peut être présenté à d’autres pros. Demande gardée 12 mois. <a href="/politique-de-confidentialite#demandes" target="_blank" rel="noopener">Confidentialité</a></details>' +
@@ -456,6 +469,7 @@ details.more a{color:var(--g)}
   function canNext(){
     var k = STEPS[step].k;
     if (k === 'metier') return !!st.metier;
+    if (k === 'etablissement') return !!st.etablissement;
     if (k === 'ville') return st.ville.trim().length >= 2;
     if (k === 'contact') return st.nom.trim().length >= 2 && validEmail(st.email);
     if (k === 'recap') return st.consent && !sending;
@@ -497,6 +511,7 @@ details.more a{color:var(--g)}
       vi.addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.defaultPrevented && canNext()) { e.preventDefault(); next(); } });
     }
     [].forEach.call(fb.querySelectorAll('[data-city]'), function(c){ c.onclick = function(){ vi.value = c.getAttribute('data-city'); vi.dispatchEvent(new Event('input')); }; });
+    if (k === 'etablissement') [].forEach.call(fb.querySelectorAll('.opt[data-et]'), function(b){ b.onclick = function(){ var et = b.getAttribute('data-et'); if (st.etablissement !== et) { st.etablissement = et; if (tailles().indexOf(st.logement) < 0) st.logement = ''; apercu = null; } single('etablissement', b.getAttribute('data-v'), true); st.etablissement = et; save(); }; });
     if (k === 'logement' || k === 'quand' || k === 'budget') [].forEach.call(fb.querySelectorAll('.opt[data-v]'), function(b){ b.onclick = function(){ single(k, b.getAttribute('data-v'), true); }; });
     if (k === 'besoin') [].forEach.call(fb.querySelectorAll('.opt[data-v]'), function(b){ b.onclick = function(){ single('besoin', b.getAttribute('data-v'), !menage()); if (!menage()) { apercu = null; loadApercu(); } }; });
     [['data-ry','rythme'],['data-li','linge'],['data-p','pref']].forEach(function(a){
@@ -526,7 +541,7 @@ details.more a{color:var(--g)}
     var err = document.getElementById('err');
     sending = true; refreshNext();
     var nb = document.getElementById('next'); nb.innerHTML = 'Envoi en cours…';
-    var data = { metier: st.metier, ville: st.ville.trim(), logement: st.logement, quand: st.quand, frequence: st.besoin, budget: st.budget, message: message(), nom: st.nom.trim(), email: st.email.trim(), telephone: st.telephone.trim(), consent: true, website: document.getElementById('website').value, t: t0, source: document.referrer ? document.referrer.slice(0, 200) : location.href, acq: acq() };
+    var data = { metier: st.metier, etablissement: st.etablissement, ville: st.ville.trim(), logement: st.logement, quand: st.quand, frequence: st.besoin, budget: st.budget, message: message(), nom: st.nom.trim(), email: st.email.trim(), telephone: st.telephone.trim(), consent: true, website: document.getElementById('website').value, t: t0, source: document.referrer ? document.referrer.slice(0, 200) : location.href, acq: acq() };
     fetch(APP + '/api/demandes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
       .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(b){ if (!r.ok) throw new Error(b.error || 'Envoi impossible pour le moment. Réessaie dans quelques minutes.'); return b; }); })
       .then(function(b){ done = b; clearDraft(); finish(b); })
@@ -570,7 +585,9 @@ details.more a{color:var(--g)}
     var m = q.get('metier');
     if (m === 'menage' || m === 'photographe') st.metier = m;
     if (q.get('ville')) st.ville = q.get('ville').slice(0, 80);
-    if (st.metier) step = st.ville ? 2 : 1;
+    var ty = q.get('type');
+    if (ty && ETABS.some(function(e){ return e.k === ty; })) st.etablissement = ty;
+    if (st.metier) step = !st.etablissement ? 1 : st.ville ? 3 : 2;
   } catch (e) {}
   try { history.replaceState({ s: step }, '', location.pathname + location.search); } catch (e) {}
   render(false);

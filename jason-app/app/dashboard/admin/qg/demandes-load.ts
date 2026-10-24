@@ -57,6 +57,11 @@ export async function loadDemandesQG(now = new Date()): Promise<DemandesQGData> 
 
   // État des lignes « Demandes reçues » créées pour ces demandes (statut seulement)
   // et noms des pros sollicités, même s'ils ont quitté l'annuaire depuis.
+  // Type d'hébergement (migration 154) : lu à part, sans bloquer si la colonne manque
+  if (rows.length) {
+    const { data: et, error: etErr } = await db.from('demandes_hotes').select('id, etablissement').in('id', rows.map(r => r.id))
+    if (!etErr) { const m = new Map(((et ?? []) as Array<{ id: string; etablissement: string | null }>).map(r => [r.id, r.etablissement])); for (const r of rows) r.etablissement = m.get(r.id) ?? null }
+  }
   const statuts = new Map<string, string>()
   const noms = new Map<string, { nom: string; slug: string | null; ville: string | null }>()
   const [prosPhoto, prosMenage] = await Promise.all([listProsChoix('photographe'), listProsChoix('menage')])

@@ -8,6 +8,9 @@
 
 const { findOrCreateCustomer } = require('../../scripts/lib/stripe-customer.cjs')
 const extras = require('../../scripts/lib/pro-signup-extras.cjs')
+// Mêmes clés que scripts/lib/pro-clienteles.mjs et jason-app/lib/pros/clienteles.ts
+const CLIENTELE_KEYS = ['lcd', 'hotel', 'conciergerie', 'gite']
+const readClienteles = raw => CLIENTELE_KEYS.filter(k => Array.isArray(raw) && raw.includes(k))
 const FOUNDER_QUOTA = 20
 const FOUNDER_PRICE_ID = process.env.STRIPE_PHOTOGRAPHER_FOUNDER_PRICE_ID || ''
 const STANDARD_PRICE_ID = process.env.STRIPE_PHOTOGRAPHER_STANDARD_PRICE_ID || ''
@@ -379,6 +382,16 @@ module.exports = async function handler(req, res) {
   const photographerId = Array.isArray(inserted) ? inserted[0]?.id : inserted?.id
   if (!photographerId) {
     return res.status(500).json({ error: 'Erreur lors de l\'enregistrement.' })
+  }
+
+  // Clientèles (hôtels, conciergeries, gîtes ; migration 154) : à part, sans bloquer si la colonne manque
+  const clienteles = readClienteles(body.clienteles)
+  if (clienteles.length) {
+    await fetch(`${SUPABASE_URL}/rest/v1/photographers?id=eq.${photographerId}`, {
+      method: 'PATCH',
+      headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify({ clienteles }),
+    }).catch(() => {})
   }
 
   // 5. Crée la session Stripe Checkout

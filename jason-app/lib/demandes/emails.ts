@@ -4,6 +4,7 @@
 // Fonctions pures (testées), sans envoi : send.ts les appelle.
 
 import { escHtml } from '@/lib/email/template'
+import { etablissementLabel } from '@/lib/pros/clienteles'
 
 const BG = '#F3F6F4'
 const CARD = '#FFFFFF'
@@ -20,6 +21,8 @@ export type DemandeMailMetier = 'photographe' | 'menage'
 
 export interface DemandeMail {
   metier: DemandeMailMetier
+  /** Type d'hébergement (hôtel, conciergerie, gîte…) ; absent = logement d'un hôte */
+  etablissement?: string | null
   ville: string
   logement: string | null
   quand: string | null
@@ -141,10 +144,18 @@ function etapes(items: string[]): string {
 <td valign="top" style="padding:7px 0 6px 6px;font-family:${SANS};font-size:14px;line-height:1.55;color:#2B3A32;">${t}</td></tr>`).join('')}</table>`
 }
 
+/** Qui fait la demande (hôtels, conciergeries, gîtes : 24/10/2026) */
+function qui(d: Pick<DemandeMail, 'etablissement'>): string {
+  return d.etablissement === 'hotel' ? 'Un hôtel' : d.etablissement === 'conciergerie' ? 'Une conciergerie' : d.etablissement === 'gite' ? 'Un gîte' : 'Un hôte'
+}
+
 function besoinRows(d: DemandeMail, avecVille: boolean): Array<[string, string]> {
+  const type = etablissementLabel(d.etablissement)
+  const grand = d.etablissement === 'hotel' || d.etablissement === 'conciergerie'
   return ([
     avecVille ? ['Ville', d.ville] : null,
-    d.logement ? ['Logement', d.logement] : null,
+    type && d.etablissement !== 'lcd' ? ['Type', type] : null,
+    d.logement ? [grand ? 'Taille' : 'Logement', d.logement] : null,
     d.frequence ? ['Besoin', d.frequence] : null,
     d.quand ? ['Quand', d.quand] : null,
     d.budget ? ['Budget indiqué', d.budget] : null,
@@ -159,7 +170,7 @@ const FOOTER_HOTE = `${link('https://jasonmarinho.com', 'jasonmarinho.com')} · 
 /** Au pro : le besoin, l'hôte, un bouton pour lui répondre */
 export function proEmail(d: DemandeMail, o: { proPrenom: string; manuel: boolean; adequation: string | null; filtre: boolean; demandesUrl: string }): { subject: string; html: string } {
   const m = METIER[d.metier]
-  const title = `Un hôte cherche ${m.un} à ${d.ville}`
+  const title = `${qui(d)} cherche ${m.un} à ${d.ville}`
   const intro = o.manuel
     ? `Un hôte a décrit son besoin sur jasonmarinho.com, et Jason Marinho te transmet sa demande.`
     : `Un hôte vient de décrire son besoin sur jasonmarinho.com. Tu fais partie des 3 pros les plus proches de son logement${o.filtre ? ', parmi ceux qui proposent ce qu’il demande' : ''}.`

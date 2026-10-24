@@ -7,6 +7,7 @@
 // par un test).
 
 import { villeGuide } from './inject-ville-pros.mjs'
+import { CLIENTELES, readClienteles } from './pro-clienteles.mjs'
 import { videoEmbed, videoHostLabel } from './pro-visuel.mjs'
 
 export const PHOTOS_MAX = 6
@@ -195,6 +196,14 @@ export function telHtml(telephone, firstName) {
   const digits = t.replace(/[^\d+]/g, '')
   if (digits.replace(/\D/g, '').length < 8) return ''
   return `<a href="tel:${esc(digits)}" class="vt-tel"><i class="ph-bold ph-phone"></i><span>Appeler ${esc(firstName)}<small>${esc(t)}</small></span></a>`
+}
+
+/** Pour qui le pro travaille (hôtels, conciergeries, gîtes : 24/10/2026), si autre chose que les seules locations courte durée */
+export function clientelesHtml(raw, firstName) {
+  const keys = readClienteles(raw)
+  if (!keys.some(k => k !== 'lcd')) return ''
+  const items = CLIENTELES.filter(c => keys.includes(c.key))
+  return `<div class="card vt-sec"><h2>${esc(firstName)} travaille pour</h2><div class="vt-opts">${items.map(c => `<span class="vt-opt"><i class="ph-bold ph-${c.icon}"></i>${esc(c.pro)}</span>`).join('')}</div></div>`
 }
 
 export const VITRINE_CSS = `

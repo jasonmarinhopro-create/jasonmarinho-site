@@ -4,6 +4,7 @@
 // transmettre à la main.
 
 import { anonymizedNeed, proximite, convientAuBesoin, RELANCE_APRES_H, type Adequation, type DemandeMetier, type ProCandidat } from './rules'
+import { readEtablissement } from '@/lib/pros/clienteles'
 
 export interface SentTo { id: string; contact_id?: string | null; round: number; at?: string; manual?: boolean }
 
@@ -11,6 +12,8 @@ export interface DemandeAdminRow {
   id: string
   created_at: string
   metier: DemandeMetier
+  /** Type d'hébergement (migration 154) ; absent = logement d'un hôte */
+  etablissement?: string | null
   ville: string
   logement: string | null
   quand: string | null
@@ -66,8 +69,8 @@ const JOIN: Record<DemandeMetier, string> = {
  * Texte à envoyer à quelqu'un hors de l'annuaire (pro de la ville, groupe) :
  * le besoin seul, jamais le nom, l'e-mail, le téléphone ni le message de l'hôte.
  */
-export function texteAPartager(d: Pick<DemandeAdminRow, 'metier' | 'ville' | 'logement' | 'quand' | 'frequence' | 'budget'>, tu = true): string {
-  const besoin = anonymizedNeed(d)
+export function texteAPartager(d: Pick<DemandeAdminRow, 'metier' | 'ville' | 'logement' | 'quand' | 'frequence' | 'budget' | 'etablissement'>, tu = true): string {
+  const besoin = anonymizedNeed({ ...d, etablissement: readEtablissement(d.etablissement) })
   const pro = d.metier === 'photographe' ? 'photographes' : 'équipes de ménage'
   return tu
     ? `Bonjour,\n\n${besoin}\n\nSi ça t’intéresse, crée ta fiche sur l’annuaire de Jason Marinho (sans commission) : les demandes des hôtes de ta ville arrivent directement aux ${pro} inscrits.\n${JOIN[d.metier]}`

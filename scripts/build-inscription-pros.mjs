@@ -21,6 +21,7 @@
 // Usage : node scripts/build-inscription-pros.mjs  (pages statiques, pas lancé au build)
 
 import { METIERS_VISUELS, OPTIONS_VISUELLES } from './lib/pro-visuel.mjs'
+import { CLIENTELES } from './lib/pro-clienteles.mjs'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -331,6 +332,7 @@ function page(cfg) {
     specialites: SPECIALITES,
     prestations: PRESTATIONS_MENAGE, equipes: EQUIPES, delais: DELAIS, langues: LANGUES,
     bioPh: cfg.bioPh, limits: PHOTO_LIMITS,
+    clienteles: CLIENTELES.map(c => ({ k: c.key, l: c.pro, ic: 'ph-' + c.icon })),
   }
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -443,7 +445,7 @@ function page(cfg) {
   var price = '39,98 €';
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
-  function blank(){ return { metier:'', options:[], specialite:'', ville:'', rayon:'', villes:[], tarifMin:'', tarifMax:'', formules:[], bio:'', portfolioUrl:'', videoUrl:'', instagramHandle:'',
+  function blank(){ return { metier:'', options:[], clienteles:['lcd'], specialite:'', ville:'', rayon:'', villes:[], tarifMin:'', tarifMax:'', formules:[], bio:'', portfolioUrl:'', videoUrl:'', instagramHandle:'',
     fullName:'', pseudo:'', telephone:'', telephonePublic:true, email:'', password:'',
     equipeType:'', delaiReservation:'', prestations:[], tarifForfaitMin:'', tarifForfaitMax:'', tarifHeure:'', logementsGeres:'', langues:['fr'], siret:'', assuranceRcPro:false, siteUrl:'' }; }
   var st = blank(), step = 0, photos = [], sending = false, finished = false;
@@ -622,10 +624,12 @@ function page(cfg) {
           '<div class="chips">' + C.prestations.map(function(p){ return chip('data-pr', p[0], p[1], st.prestations.indexOf(p[0]) >= 0, p[2]); }).join('') + '</div>' +
           '<div class="row2">' + input('tarifForfaitMin', 'Prix d’un ménage, à partir de (€)', { type:'number', ph:'45', attrs:' inputmode="numeric" min="0" max="999"', icon:'ph-tag', hint:'Affiché « dès 45 € » sur ta carte.' }) + input('tarifForfaitMax', 'Jusqu’à (€)', { type:'number', ph:'120', attrs:' inputmode="numeric" min="0" max="999"' }) + '</div>' +
           '<div class="row2">' + input('tarifHeure', 'Tarif horaire (€/h)', { type:'number', ph:'30', attrs:' inputmode="numeric" min="0" max="200"' }) + input('logementsGeres', 'Logements entretenus aujourd’hui', { type:'number', ph:'12', attrs:' inputmode="numeric" min="0" max="999"' }) + '</div>' +
+'<div class="sec"><span class="lab">Tu travailles pour <small>(hôtels, conciergeries, gîtes : leurs demandes arrivent d’abord chez toi)</small></span><div class="chips">' + C.clienteles.map(function(c){ return chip('data-cl', c.k, c.l, st.clienteles.indexOf(c.k) >= 0, c.ic); }).join('') + '</div></div>' +
           '<div class="sec"><span class="lab">Délai pour réserver <small>(facultatif)</small></span><div class="chips">' + C.delais.map(function(d){ return chip('data-dl', d[0], d[1], st.delaiReservation === d[0], 'ph-clock'); }).join('') + '</div></div>';
       } else {
         h = '<h2 class="q">Tes options et tes prix</h2><p class="sub">Les hôtes filtrent l’annuaire par options : touche tout ce que tu proposes.</p>' +
           '<div class="chips">' + C.options.map(function(o){ return chip('data-op', o.k, o.l, st.options.indexOf(o.k) >= 0, o.ic); }).join('') + '</div>' +
+'<div class="sec"><span class="lab">Tu travailles pour <small>(hôtels, conciergeries, gîtes : leurs demandes arrivent d’abord chez toi)</small></span><div class="chips">' + C.clienteles.map(function(c){ return chip('data-cl', c.k, c.l, st.clienteles.indexOf(c.k) >= 0, c.ic); }).join('') + '</div></div>' +
           '<div class="sec"><span class="lab">Ta spécialité <small>(facultatif)</small></span><div class="chips">' + C.specialites.map(function(v){ return chip('data-sp', v, v, st.specialite === v); }).join('') + '</div></div>' +
           '<div class="row2">' + input('tarifMin', 'Prix de départ d’une séance (€)', { type:'number', ph:'250', attrs:' inputmode="numeric" min="0" max="5000"', icon:'ph-tag', hint:'Affiché « dès 250 € » sur ta carte.' }) + input('tarifMax', 'Prix d’une grosse séance (€)', { type:'number', ph:'600', attrs:' inputmode="numeric" min="0" max="5000"' }) + '</div>' +
           tip('ph-drone', 'Pour les vues au drone, les hôtes te demanderont si tu es en règle avec l’aviation civile (DGAC).');
@@ -808,6 +812,7 @@ function page(cfg) {
       [].forEach.call(l.querySelectorAll('[data-vx]'), function(c){ c.onclick = function(){ st.villes.splice(Number(c.getAttribute('data-vx')), 1); paintVilles(); zone(); paintSide(); save(); }; }); }
     if (vbtn) { vbtn.onclick = addVille; vadd.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); addVille(); } }); vadd.addEventListener('change', function(){ if (vadd.value.trim()) addVille(); }); paintVilles(); }
     // Offre
+    bindChips('data-cl', function(v){ toggleIn(st.clienteles, v); setOn('data-cl', function(x){ return st.clienteles.indexOf(x) >= 0; }); });
     bindChips('data-op', function(v){ toggleIn(st.options, v); setOn('data-op', function(x){ return st.options.indexOf(x) >= 0; }); });
     bindChips('data-sp', function(v){ st.specialite = st.specialite === v ? '' : v; setOn('data-sp', function(x){ return x === st.specialite; }); });
     bindChips('data-pr', function(v){ toggleIn(st.prestations, v); setOn('data-pr', function(x){ return st.prestations.indexOf(x) >= 0; }); });
@@ -846,7 +851,7 @@ function page(cfg) {
       fullName: st.fullName.trim(), email: st.email.trim(), password: st.password, telephone: st.telephone.trim(), telephonePublic: !!(st.telephonePublic && st.telephone.trim()),
       ville: st.ville.trim(), zoneCouverte: zone, villesCouvertes: st.villes, instagramHandle: st.instagramHandle.trim().replace(/^@/, ''), bio: st.bio.trim(),
       formules: st.formules.filter(function(f){ return f.nom.trim(); }).map(function(f){ return { nom: f.nom.trim(), prix: parseInt(f.prix, 10) || null, detail: f.detail.trim() }; }),
-      photoCount: photos.length };
+      clienteles: st.clienteles, photoCount: photos.length };
     if (MENAGE) {
       d.pseudo = st.pseudo.trim(); d.equipeType = st.equipeType; d.delaiReservation = st.delaiReservation; d.prestations = st.prestations; d.langues = st.langues;
       d.tarifForfaitMin = st.tarifForfaitMin; d.tarifForfaitMax = st.tarifForfaitMax; d.tarifHeure = st.tarifHeure; d.logementsGeres = st.logementsGeres;

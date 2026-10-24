@@ -1,6 +1,7 @@
 'use server'
 
 import { getServiceClient } from '@/lib/supabase/service'
+import { readClienteles } from '@/lib/pros/clienteles'
 import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
@@ -75,6 +76,7 @@ export async function updatePhotographerFiche(payload: {
   instagram_handle?: string | null
   telephone?: string | null
   telephone_public?: boolean
+  clienteles?: string[]
   reseaux?: Record<string, string>
   formules?: unknown
   villes_couvertes?: unknown
@@ -143,7 +145,9 @@ export async function updatePhotographerFiche(payload: {
     return { error: 'Erreur lors de la sauvegarde.' }
   }
   // Téléphone affiché sur la fiche (migration 153) : à part, sans bloquer si la colonne manque
+  // Clientèles (migration 154) : même principe
   await admin.from('photographers').update({ telephone_public: !!payload.telephone_public && !!fields.telephone }).eq('id', target.photographerId)
+  if (Array.isArray(payload.clienteles)) await admin.from('photographers').update({ clienteles: readClienteles(payload.clienteles) }).eq('id', target.photographerId)
 
   await triggerSiteRebuild('fiche photographe')
 

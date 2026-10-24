@@ -18,6 +18,8 @@ import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHe
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 import ReseauxFields, { emptyReseauxForm, type ReseauxForm } from '@/components/pros/ReseauxFields'
 import VisuelFields, { type VisuelForm } from '@/components/pros/VisuelFields'
+import ClientelesFields from '@/components/pros/ClientelesFields'
+import { readClienteles, type Clientele } from '@/lib/pros/clienteles'
 import { readMetier, readOptions, metierLabel } from '@/lib/pros/visuel'
 
 const AMBER = '#B7791F'
@@ -38,6 +40,7 @@ type Photographer = {
   portfolio_url: string; instagram_handle: string | null
   telephone: string | null
   telephone_public?: boolean | null
+  clienteles?: string[] | null
   tier: string; status: string
   slug: string | null
   stripe_subscription_status: string | null
@@ -80,6 +83,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
     telephone_public: !!photographer.telephone_public,
   })
   const [reseaux, setReseaux] = useState<ReseauxForm>(() => emptyReseauxForm(photographer.reseaux))
+  const [clienteles, setClienteles] = useState<Clientele[]>(() => readClienteles(photographer.clienteles))
   const [visuel, setVisuel] = useState<VisuelForm>(() => ({ metier: readMetier(photographer.metier), options: readOptions(photographer.options), video_url: photographer.video_url ?? '' }))
   const [vitrine, setVitrine] = useState<VitrineForm>(() => initialVitrineForm(photographer, 'photographe'))
   const [busy, startBusy] = useTransition()
@@ -131,6 +135,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         instagram_handle: form.instagram_handle || null,
         telephone: form.telephone || null,
         telephone_public: form.telephone_public && !!form.telephone.trim(),
+        clienteles,
         reseaux,
         metier: visuel.metier,
         options: visuel.options,
@@ -339,6 +344,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
 
         <h3 id="activite" style={{ ...s.sectionTitle, scrollMarginTop: 90 }}>Activité professionnelle</h3>
         <VisuelFields value={visuel} onChange={setVisuel} inputStyle={s.input} />
+        <div style={{ marginTop: 14 }}><ClientelesFields value={clienteles} onChange={setClienteles} /></div>
         <Field label="Lien portfolio (site ou Instagram)">
           <input style={s.input} type="text" inputMode="url" autoCapitalize="off" spellCheck={false} placeholder="monsite.fr ou instagram.com/moncompte" value={form.portfolio_url} onChange={e => setForm({ ...form, portfolio_url: e.target.value })} maxLength={300} />
         </Field>

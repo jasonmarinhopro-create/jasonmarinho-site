@@ -1,6 +1,8 @@
 'use client'
 
 import SuggestInput from '@/components/ui/SuggestInput'
+import ClientelesFields from '@/components/pros/ClientelesFields'
+import { readClienteles, type Clientele } from '@/lib/pros/clienteles'
 import { CITY_OPTIONS } from '@/lib/ui/suggest'
 import GrowText from '@/components/pros/GrowText'
 import Link from 'next/link'
@@ -40,6 +42,7 @@ type Cleaner = {
   site_url: string | null; instagram_handle: string | null
   telephone: string | null
   telephone_public?: boolean | null
+  clienteles?: string[] | null
   tier: string; status: string
   slug: string | null
   stripe_subscription_status: string | null
@@ -102,6 +105,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
     telephone_public: !!cleaner.telephone_public,
   })
   const [reseaux, setReseaux] = useState<ReseauxForm>(() => emptyReseauxForm(cleaner.reseaux))
+  const [clienteles, setClienteles] = useState<Clientele[]>(() => readClienteles(cleaner.clienteles))
   const [vitrine, setVitrine] = useState<VitrineForm>(() => initialVitrineForm(cleaner, 'menage'))
   const [busy, startBusy] = useTransition()
   const [err, setErr] = useState<string | null>(null)
@@ -166,6 +170,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         instagram_handle: form.instagram_handle || null,
         telephone: form.telephone || null,
         telephone_public: form.telephone_public && !!form.telephone.trim(),
+        clienteles,
         reseaux,
         ...vitrinePayload(vitrine),
       })
@@ -384,6 +389,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
             </label>
           ))}
         </div>
+        <div style={{ marginTop: 14 }}><ClientelesFields value={clienteles} onChange={setClienteles} /></div>
 
         <h3 id="capacite" style={{ ...s.sectionTitle, scrollMarginTop: 90 }}>Capacité & disponibilité</h3>
         <div style={s.grid2}>

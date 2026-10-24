@@ -128,9 +128,56 @@ describe('formulaire du site', () => {
     const { readFileSync } = await import('node:fs')
     const rules = await import('./rules')
     const src = readFileSync(new URL('../../../scripts/build-trouver-un-pro.mjs', import.meta.url), 'utf8')
-    for (const name of ['LOGEMENTS', 'QUAND', 'FREQUENCES'] as const) {
+    for (const name of ['LOGEMENTS', 'QUAND', 'FREQUENCES', 'TAILLES_HOTEL', 'TAILLES_CONCIERGERIE'] as const) {
       const m = src.match(new RegExp(`const ${name} = (\\[[^\\]]*\\])`))
       expect(m && JSON.parse(m[1].replace(/'/g, '"'))).toEqual([...rules[name]])
+    }
+  })
+})
+
+describe('hôtels, conciergeries et gîtes (24/10/2026)', () => {
+  const base = { metier: 'photographe', ville: 'Nice', nom: 'Hôtel Bleu', email: 'contact@hotel.fr', consent: true }
+  it('type d’hébergement lu, taille selon le type', async () => {
+    const { cleanDemande } = await import('./rules')
+    const r = cleanDemande({ ...base, etablissement: 'hotel', logement: '15 à 50 chambres' })
+    expect('value' in r && r.value.etablissement).toBe('hotel')
+    expect('value' in r && r.value.logement).toBe('15 à 50 chambres')
+    const autre = cleanDemande({ ...base, etablissement: 'hotel', logement: 'Studio ou T1' })
+    expect('value' in autre && autre.value.logement).toBeNull()
+    const ancien = cleanDemande({ ...base, logement: 'T2 ou T3' })
+    expect('value' in ancien && ancien.value.etablissement).toBeNull()
+    expect('value' in ancien && ancien.value.logement).toBe('T2 ou T3')
+    const inconnu = cleanDemande({ ...base, etablissement: 'chateau' })
+    expect('value' in inconnu && inconnu.value.etablissement).toBeNull()
+  })
+  it('à adéquation égale, d’abord les pros qui travaillent pour les hôtels', async () => {
+    const { choisirPros } = await import('./rules')
+    const pros = [
+      { id: 'a', ville: 'Nice', zone_couverte: null, clienteles: [] as string[] },
+      { id: 'b', ville: 'Nice', zone_couverte: null, clienteles: ['hotel'] },
+    ]
+    expect(choisirPros(pros, 'Nice', new Set(), 3, null, 'hotel').map(p => p.id)).toEqual(['b', 'a'])
+    expect(choisirPros(pros, 'Nice', new Set(), 3, null, 'lcd').map(p => p.id)).toEqual(['a', 'b'])
+  })
+  it('textes : qui demande', async () => {
+    const { anonymizedNeed, messagePourPro } = await import('./rules')
+    expect(anonymizedNeed({ metier: 'photographe', ville: 'Nice', logement: '15 à 50 chambres', quand: null, frequence: null, budget: null, etablissement: 'hotel' }))
+      .toBe('Un hôtel ou une résidence cherche un photographe à Nice : 15 à 50 chambres.')
+    expect(anonymizedNeed({ metier: 'menage', ville: 'Lyon', logement: null, quand: null, frequence: null, budget: null }))
+      .toBe('Un hôte cherche une équipe de ménage à Lyon.')
+    const m = messagePourPro({ metier: 'photographe', etablissement: 'conciergerie', ville: 'Annecy', logement: '6 à 20 logements', quand: null, frequence: null, budget: null, message: null, nom: 'x', email: 'x@y.fr', telephone: null, source: null })
+    expect(m).toContain('une conciergerie cherche un photographe à Annecy')
+    expect(m).toContain('Taille : 6 à 20 logements')
+  })
+  it('même liste de clientèles sur le site et dans l’app', async () => {
+    const { CLIENTELES, CLIENTELE_KEYS } = await import('@/lib/pros/clienteles')
+    const site = await import('../../../scripts/lib/pro-clienteles.mjs')
+    expect(site.CLIENTELES).toEqual(CLIENTELES)
+    const { readFileSync } = await import('node:fs')
+    for (const api of ['photographer', 'cleaner']) {
+      const src = readFileSync(new URL(`../../../api/${api}/signup.js`, import.meta.url), 'utf8')
+      const m = src.match(/const CLIENTELE_KEYS = (\[[^\]]*\])/)
+      expect(m && JSON.parse(m[1].replace(/'/g, '"'))).toEqual([...CLIENTELE_KEYS])
     }
   })
 })

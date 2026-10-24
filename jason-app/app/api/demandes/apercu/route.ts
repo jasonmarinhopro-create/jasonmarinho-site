@@ -4,6 +4,7 @@
 import { NextResponse } from 'next/server'
 import { apercuDemande } from '@/lib/demandes/send'
 import { PRESTATIONS_PHOTO, FREQUENCES } from '@/lib/demandes/rules'
+import { readEtablissement } from '@/lib/pros/clienteles'
 import { cors } from '../cors'
 
 export const runtime = 'nodejs'
@@ -21,6 +22,6 @@ export async function GET(req: Request) {
   const b = u.searchParams.get('besoin')
   const besoin = b && ([...PRESTATIONS_PHOTO, ...FREQUENCES] as readonly string[]).includes(b) ? b : null
   if (ville.length < 2) return NextResponse.json({ pros: [], phrase: '' }, { headers })
-  const res = await apercuDemande(metier, ville, besoin)
+  const res = await apercuDemande(metier, ville, besoin, readEtablissement(u.searchParams.get('etablissement')))
   return NextResponse.json(res, { headers: { ...headers, 'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600' } })
 }

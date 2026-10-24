@@ -7,6 +7,7 @@
 // l'hôte (décision de Jason), note interne, « traitée ».
 
 import { useEffect, useMemo, useState, useTransition } from 'react'
+import { etablissementLabel } from '@/lib/pros/clienteles'
 import {
   Camera, Sparkle, MagnifyingGlass, ArrowLeft, EnvelopeSimple, Phone, Copy, Check,
   PaperPlaneTilt, WhatsappLogo, CheckCircle, ArrowCounterClockwise, Eye, Clock, ArrowSquareOut, Note,
@@ -151,7 +152,7 @@ function EtatPill({ etat }: { etat: EtatAdmin }) {
 
 function ListItem({ d, on, onClick }: { d: DemandeQG; on: boolean; onClick: () => void }) {
   const M = METIER[d.metier]
-  const detail = [d.logement, d.frequence ? (d.metier === 'menage' ? (d.frequence.startsWith('Des ménages réguliers') ? 'ménages réguliers' : 'ménage ponctuel') : d.frequence.toLowerCase()) : null, d.quand].filter(Boolean).join(' · ')
+  const detail = [d.etablissement && d.etablissement !== 'lcd' ? etablissementLabel(d.etablissement) : null, d.logement, d.frequence ? (d.metier === 'menage' ? (d.frequence.startsWith('Des ménages réguliers') ? 'ménages réguliers' : 'ménage ponctuel') : d.frequence.toLowerCase()) : null, d.quand].filter(Boolean).join(' · ')
   return (
     <button type="button" className="dh-item" onClick={onClick} style={{ ...st.item, ...(on ? st.itemOn : {}) }}>
       <span style={st.itemIcon}><M.Icon size={16} weight="duotone" /></span>
@@ -186,7 +187,7 @@ function Fiche({ d, pros, suiviOk, onBack, patch }: {
   const propositions = useMemo(() => prosAProposer(pros, d, recherche).slice(0, 6), [pros, d, recherche])
   const partage = texteAPartager(d, tu)
   const faits = ([
-    ['Logement', d.logement], ['Besoin', d.frequence], ['Quand', d.quand], ['Budget', d.budget],
+    ['Type', d.etablissement && d.etablissement !== 'lcd' ? etablissementLabel(d.etablissement) : null], [d.etablissement === 'hotel' || d.etablissement === 'conciergerie' ? 'Taille' : 'Logement', d.logement], ['Besoin', d.frequence], ['Quand', d.quand], ['Budget', d.budget],
   ] as const).filter(([, v]) => v)
 
   function flash(ok: boolean, text: string) { setMsg({ ok, text }); setTimeout(() => setMsg(null), 3500) }

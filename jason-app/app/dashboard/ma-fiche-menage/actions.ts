@@ -1,6 +1,7 @@
 'use server'
 
 import { getServiceClient } from '@/lib/supabase/service'
+import { readClienteles } from '@/lib/pros/clienteles'
 import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
@@ -79,6 +80,7 @@ export async function updateCleanerFiche(payload: {
   instagram_handle?: string | null
   telephone?: string | null
   telephone_public?: boolean
+  clienteles?: string[]
   reseaux?: Record<string, string>
   formules?: unknown
   villes_couvertes?: unknown
@@ -157,6 +159,8 @@ export async function updateCleanerFiche(payload: {
 
   // Téléphone affiché sur la fiche (migration 153) : à part, sans bloquer si la colonne manque
   await admin.from('cleaners').update({ telephone_public: !!payload.telephone_public && !!fields.telephone }).eq('id', target.cleanerId)
+  // Clientèles (migration 154) : même principe
+  if (Array.isArray(payload.clienteles)) await admin.from('cleaners').update({ clienteles: readClienteles(payload.clienteles) }).eq('id', target.cleanerId)
 
   await triggerSiteRebuild('fiche ménage')
 
