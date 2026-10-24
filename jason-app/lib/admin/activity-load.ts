@@ -24,7 +24,18 @@ export async function loadMemberActivity(userIds?: string[]): Promise<Map<string
   const db = getServiceClient()
   const one = userIds?.length === 1 ? userIds[0] : null
 
-  const sourceRows = SOURCES.map(async (src): Promise<ActivityRow[]> => {
+  // Une seule requête (fonction admin_members_activity, migration 20261024_150) :
+  // la dernière action de chaque membre par source. Repli source par source si
+  // la fonction manque (avant : jusqu'à 5 000 lignes lues par source).
+  const viaRpc = (async (): Promise<ActivityRow[] | null> => {
+    try {
+      const { data, error } = await db.rpc('admin_members_activity', { p_user_ids: userIds ?? null })
+      if (error || !Array.isArray(data)) return null
+      return (data as Array<{ user_id: string; kind: ActivityKind; at: string }>).map(r => ({ userId: r.user_id, at: r.at, kind: r.kind }))
+    } catch { return null }
+  })()
+
+  const sourceRows = async () => SOURCES.map(async (src): Promise<ActivityRow[]> => {
     try {
       let q = db.from(src.table).select(`${src.user}, ${src.at}`).not(src.at, 'is', null)
       if (userIds) q = q.in(src.user, userIds)
@@ -64,6 +75,7 @@ export async function loadMemberActivity(userIds?: string[]): Promise<Map<string
     return map
   })()
 
-  const [rowsBySource, seen, signIns] = await Promise.all([Promise.all(sourceRows), seenP, signInsP])
-  return buildMemberActivity({ rows: rowsBySource.flat(), seen, signIns })
+  const rowsP = viaRpc.then(async rows => rows ?? (await Promise.all(await sourceRows())).flat())
+  const [rows, seen, signIns] = await Promise.all([rowsP, seenP, signInsP])
+  return buildMemberActivity({ rows, seen, signIns })
 }

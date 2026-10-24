@@ -18,7 +18,8 @@ import { adminUserIds, splitDemo } from '@/lib/pros/demo'
 
 export const metadata = { title: 'Administration, Jason Marinho' }
 
-// Chiffres de la Vue d'ensemble : ~20 requêtes, gardées en cache le temps
+// Chiffres de la Vue d'ensemble : 4 lectures (compteurs en une requête depuis
+// le 24/10/2026, avant ~20), gardées en cache le temps
 // de la minute en cours. Avant, chaque passage en mode admin les relançait
 // toutes (écran de chargement de plusieurs secondes). La minute fait partie
 // de la clé : unstable_cache sert sinon l'ancienne valeur à la première
@@ -43,51 +44,20 @@ async function computeAdminOverview() {
   // suggestions). Les agrégats count/list ne marchaient pas en user-context.
   const admin = getServiceClient()
 
-  const [
-    { count: totalUsers },
-    { count: driingMembers },
-    { count: standardMembers, data: standardRows },
-    { count: newThisMonth },
-    { count: templatesCount },
-    { count: formationsCount },
-    { count: groupsCount },
-    { count: totalVoyageurs },
-    { count: totalSejours },
-    { count: completedFormations },
-    { count: pendingDriingCount },
-    { count: pendingReportsCount },
-    { count: suggestionsCount },
-    { data: formationEnrollments },
-    { data: recentSignups },
-    { data: monthlySignups },
-    topPages,
-    affiliateClicks,
-    appErrors,
-    { data: photographers },
-    { data: cleaners },
-  ] = await Promise.all([
-    admin.from('profiles').select('*', { count: 'exact', head: true }),
-    admin.from('profiles').select('*', { count: 'exact', head: true }).eq('plan', 'driing'),
-    admin.from('profiles').select('stripe_price_id', { count: 'exact' }).eq('plan', 'standard').limit(1000),
-    admin.from('profiles').select('*', { count: 'exact', head: true }).gte('created_at', startOfMonth.toISOString()),
-    admin.from('templates').select('*', { count: 'exact', head: true }),
-    admin.from('formations').select('*', { count: 'exact', head: true }).eq('is_published', true),
-    admin.from('community_groups').select('*', { count: 'exact', head: true }),
-    admin.from('voyageurs').select('*', { count: 'exact', head: true }),
-    admin.from('sejours').select('*', { count: 'exact', head: true }),
-    admin.from('user_formations').select('*', { count: 'exact', head: true }).eq('progress', 100),
-    admin.from('profiles').select('*', { count: 'exact', head: true }).eq('driing_status', 'pending'),
-    admin.from('reported_guests').select('*', { count: 'exact', head: true }).eq('is_validated', false),
-    admin.from('suggestions').select('*', { count: 'exact', head: true }),
-    admin.from('user_formations').select('formation_id, formations(title)'),
-    admin.from('profiles').select('id, email, full_name, plan, created_at').neq('role', 'admin').order('created_at', { ascending: false }).limit(8),
-    admin.from('profiles').select('created_at, plan').gte('created_at', twelveMonthsAgo.toISOString()).neq('role', 'admin'),
+  // Compteurs en une seule requête (fonction admin_overview, migration
+  // 20261024_150) ; repli sur les 18 lectures si elle manque. Les pages vues,
+  // clics affiliés et erreurs gardent leurs lectures (paginées).
+  const [base, topPages, affiliateClicks, appErrors] = await Promise.all([
+    loadOverviewBase(admin, startOfMonth, twelveMonthsAgo),
     getTopPages(admin),
     getAffiliateClicks(admin),
     getAppErrors(admin),
-    admin.from('photographers').select('user_id, tier, status, stripe_subscription_status'),
-    admin.from('cleaners').select('user_id, tier, status, stripe_subscription_status'),
   ])
+  const {
+    totalUsers, driingMembers, standardMembers, standardRows, newThisMonth, templatesCount, formationsCount, groupsCount,
+    totalVoyageurs, totalSejours, completedFormations, pendingDriingCount, pendingReportsCount, suggestionsCount,
+    formationEnrollments, recentSignups, monthlySignups, photographers, cleaners, admins,
+  } = base
 
   // Formation la plus commencée, tri par count desc puis titre alphabétique
   // (tiebreaker déterministe : sans ça, l'ordre des Object.values dépend de l'insertion).
@@ -127,9 +97,8 @@ async function computeAdminOverview() {
   // Revenu : Standard des hôtes (19,98 €/an) + fiches photographes et ménage
   // payées (39,98 € fondateur ou 79,98 €/an). Driing = offert.
   // Fiches d'exemple des comptes admin écartées (lib/pros/demo.ts)
-  const admins = await adminUserIds(admin)
-  const phRows = splitDemo((photographers ?? []) as ProRow[], admins).real
-  const clRows = splitDemo((cleaners ?? []) as ProRow[], admins).real
+  const phRows = splitDemo((photographers ?? []) as unknown as ProRow[], admins).real
+  const clRows = splitDemo((cleaners ?? []) as unknown as ProRow[], admins).real
   const revenue = computeRevenue({ standardMembers: standardMembers ?? 0, standardPriceIds: standardRows ? (standardRows as Array<{ stripe_price_id: string | null }>).map(r => r.stripe_price_id) : undefined, photographers: phRows, cleaners: clRows })
   const spaces = proSpacesByUser(phRows, clRows)
 
@@ -220,4 +189,78 @@ async function AcquisitionSection() {
 
 function AffilaeSkeleton() {
   return <div style={{ height: 150, borderRadius: 14, background: 'var(--surface)', border: '1px solid var(--border)' }} aria-busy="true" />
+}
+
+type Db = ReturnType<typeof getServiceClient>
+type Rows = Array<Record<string, unknown>>
+
+/** Compteurs et listes de la Vue d'ensemble, en une requête si possible */
+async function loadOverviewBase(admin: Db, startOfMonth: Date, twelveMonthsAgo: Date) {
+  try {
+    const { data, error } = await admin.rpc('admin_overview', { p_month_start: startOfMonth.toISOString(), p_twelve_months: twelveMonthsAgo.toISOString() })
+    if (!error && data && typeof data === 'object') {
+      const d = data as Record<string, unknown>
+      const n = (k: string) => Number(d[k]) || 0
+      const list = (k: string) => (Array.isArray(d[k]) ? d[k] : []) as Rows
+      return {
+        totalUsers: n('total_users'), driingMembers: n('driing_members'), standardMembers: n('standard_members'),
+        standardRows: list('standard_price_ids').map(id => ({ stripe_price_id: (id as unknown as string | null) })),
+        newThisMonth: n('new_this_month'), templatesCount: n('templates'), formationsCount: n('formations'), groupsCount: n('groups'),
+        totalVoyageurs: n('voyageurs'), totalSejours: n('sejours'), completedFormations: n('completed_formations'),
+        pendingDriingCount: n('pending_driing'), pendingReportsCount: n('pending_reports'), suggestionsCount: n('suggestions'),
+        formationEnrollments: list('formation_enrollments'), recentSignups: list('recent_signups'), monthlySignups: list('monthly_signups'),
+        photographers: list('photographers'), cleaners: list('cleaners'),
+        admins: new Set((list('admin_ids') as unknown as string[]).map(String)),
+      }
+    }
+  } catch { /* repli */ }
+
+  const [
+    { count: totalUsers },
+    { count: driingMembers },
+    { count: standardMembers, data: standardRows },
+    { count: newThisMonth },
+    { count: templatesCount },
+    { count: formationsCount },
+    { count: groupsCount },
+    { count: totalVoyageurs },
+    { count: totalSejours },
+    { count: completedFormations },
+    { count: pendingDriingCount },
+    { count: pendingReportsCount },
+    { count: suggestionsCount },
+    { data: formationEnrollments },
+    { data: recentSignups },
+    { data: monthlySignups },
+    { data: photographers },
+    { data: cleaners },
+    admins,
+  ] = await Promise.all([
+    admin.from('profiles').select('*', { count: 'exact', head: true }),
+    admin.from('profiles').select('*', { count: 'exact', head: true }).eq('plan', 'driing'),
+    admin.from('profiles').select('stripe_price_id', { count: 'exact' }).eq('plan', 'standard').limit(1000),
+    admin.from('profiles').select('*', { count: 'exact', head: true }).gte('created_at', startOfMonth.toISOString()),
+    admin.from('templates').select('*', { count: 'exact', head: true }),
+    admin.from('formations').select('*', { count: 'exact', head: true }).eq('is_published', true),
+    admin.from('community_groups').select('*', { count: 'exact', head: true }),
+    admin.from('voyageurs').select('*', { count: 'exact', head: true }),
+    admin.from('sejours').select('*', { count: 'exact', head: true }),
+    admin.from('user_formations').select('*', { count: 'exact', head: true }).eq('progress', 100),
+    admin.from('profiles').select('*', { count: 'exact', head: true }).eq('driing_status', 'pending'),
+    admin.from('reported_guests').select('*', { count: 'exact', head: true }).eq('is_validated', false),
+    admin.from('suggestions').select('*', { count: 'exact', head: true }),
+    admin.from('user_formations').select('formation_id, formations(title)'),
+    admin.from('profiles').select('id, email, full_name, plan, created_at').neq('role', 'admin').order('created_at', { ascending: false }).limit(8),
+    admin.from('profiles').select('created_at, plan').gte('created_at', twelveMonthsAgo.toISOString()).neq('role', 'admin'),
+    admin.from('photographers').select('user_id, tier, status, stripe_subscription_status'),
+    admin.from('cleaners').select('user_id, tier, status, stripe_subscription_status'),
+    adminUserIds(admin),
+  ])
+  return {
+    totalUsers, driingMembers, standardMembers, standardRows: standardRows as Array<{ stripe_price_id: string | null }> | null,
+    newThisMonth, templatesCount, formationsCount, groupsCount, totalVoyageurs, totalSejours, completedFormations,
+    pendingDriingCount, pendingReportsCount, suggestionsCount,
+    formationEnrollments: formationEnrollments as Rows | null, recentSignups: recentSignups as Rows | null, monthlySignups: monthlySignups as Rows | null,
+    photographers: photographers as Rows | null, cleaners: cleaners as Rows | null, admins,
+  }
 }

@@ -56,6 +56,16 @@ export async function loadMemberProStats(pro: Pick<MemberProSpace, 'kind' | 'id'
 export async function loadMemberProfile(memberId: string) {
   const adminClient = getServiceClient()
 
+  // Une seule requête (fonction admin_member_detail, migration 20261024_150),
+  // repli sur les 16 lectures ci-dessous si elle manque
+  try {
+    const { data, error } = await adminClient.rpc('admin_member_detail', { p_member: memberId })
+    if (!error) {
+      if (!data) return { error: 'Membre introuvable' }
+      return fromDetail(data as MemberDetailRow)
+    }
+  } catch { /* repli */ }
+
   const [
     { data: memberProfile },
     { data: formations },
@@ -167,5 +177,49 @@ export async function loadMemberProfile(memberId: string) {
       ...(cleanerRows ?? []).map(r => ({ ...r, kind: 'menage' as const })),
     ] as MemberProSpace[],
     host: { logements: logementsCount ?? 0, contrats: contratsCount ?? 0 },
+  }
+}
+
+interface MemberDetailRow {
+  profile: { id: string; email: string; full_name: string | null; role: string; driing_status: string; plan: string; is_investor: boolean | null; created_at: string; admin_notes: string | null }
+  formations: Array<{ id: string; progress: number; enrolled_at: string; completed_at: string | null; formation: { id: string; title: string; slug: string; duration: string | null; level: string | null } | null }>
+  counts: Record<'voyageurs' | 'favorites' | 'customizations' | 'signalements' | 'suggestions' | 'sejours' | 'logements' | 'contrats', number>
+  joined_groups: Array<{ id: string; name: string | null; member_count: number }>
+  audits: Array<{ id: string; business_name: string | null; started_at: string; completed_at: string | null; score_global: number | null }>
+  investor_projects: Array<{ id: string; nom: string; ville: string | null; pays: string; type_logement: string; prix_achat: number | null; mensualite: number | null; created_at: string }>
+  photographers: Array<Omit<MemberProSpace, 'kind' | 'pseudo'>>
+  cleaners: Array<Omit<MemberProSpace, 'kind'>>
+}
+
+/** Même forme que la lecture requête par requête */
+function fromDetail(d: MemberDetailRow) {
+  const joinedGroups = d.joined_groups ?? []
+  const auditsData = d.audits ?? []
+  const completedAudits = auditsData.filter(a => a.completed_at)
+  const c = d.counts
+  return {
+    profile: d.profile,
+    formations: d.formations ?? [],
+    stats: {
+      voyageurs: c.voyageurs ?? 0,
+      favorites: c.favorites ?? 0,
+      customizations: c.customizations ?? 0,
+      signalements: c.signalements ?? 0,
+      suggestions: c.suggestions ?? 0,
+      sejours: c.sejours ?? 0,
+      communityGroupsCount: joinedGroups.length,
+      communityTotalReach: joinedGroups.reduce((sum, g) => sum + (g.member_count ?? 0), 0),
+      auditsCount: auditsData.length,
+      auditsCompleted: completedAudits.length,
+      auditsBestScore: completedAudits.reduce((max, a) => Math.max(max, a.score_global ?? 0), 0),
+    },
+    community: { joinedGroups },
+    audits: auditsData,
+    investorProjects: d.investor_projects ?? [],
+    pros: [
+      ...(d.photographers ?? []).map(r => ({ ...r, kind: 'photographe' as const, pseudo: null })),
+      ...(d.cleaners ?? []).map(r => ({ ...r, kind: 'menage' as const })),
+    ] as MemberProSpace[],
+    host: { logements: c.logements ?? 0, contrats: c.contrats ?? 0 },
   }
 }
