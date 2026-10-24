@@ -290,6 +290,12 @@ Exemple :
 
 ## Garde-fous
 
+- **Vérification finale obligatoire avant de pousser : le fichier contient au
+  moins 1 actualité dont `audience` vise `photographe` ou `menage`.** Sinon,
+  ne pousse pas : fais 1 ou 2 recherches de plus pour les pros (plan B :
+  échéance Urssaf, CFE, micro-entreprise, drone, saison chez les hôtes) et
+  ajoute-la. Le 24/10/2026, la veille n'a publié qu'une actualité pour les
+  hôtes : les espaces des pros sont restés sans nouveauté.
 - Avant de pousser : JSON valide (pas de virgule finale, guillemets échappés).
 - Relis l'historique et retire toute actu dont le sujet y figure (60 jours).
 - Plus de 3 candidates : garde les 3 plus utiles, dont 1 pour les pros.
