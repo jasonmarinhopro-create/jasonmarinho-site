@@ -51,7 +51,7 @@ export const PLAYBOOK: PlaybookSequence[] = [
         subject: 'Photographe d’hôtel{ à ville} ?',
         body: `Bonjour {prenom},
 
-Je m'appelle Jason Marinho. J'ai vu que tu photographies (ou filmes en vidéo) des hôtels et des lieux d'hébergement.
+Je m'appelle Jason Marinho. Je t'écris parce que tu photographies des lieux et des intérieurs (en photo ou en vidéo), et ce qui suit peut t'apporter des clients.
 
 Sur jasonmarinho.com, les hôtels, les résidences et les conciergeries haut de gamme peuvent maintenant décrire leur besoin : la demande part aux photographes et vidéastes de leur zone, d'abord à ceux qui travaillent déjà pour l'hôtellerie.
 
