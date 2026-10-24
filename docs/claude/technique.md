@@ -195,3 +195,7 @@ Routes protégées : `/api/login`, `/api/register`, `/api/send-reset-email`, `/a
 - `jasonmarinho.com` → site statique Vercel
 - `app.jasonmarinho.com` → Next.js dashboard Vercel
 - **Revenu mensuel de l'admin Membres (20/10/2026, Jason : « bloqué à 5 € alors que ça a monté »)** : la tuile calculait Standard × 19,98 € ÷ 12 en dur, sans les fiches pros payées. Elle lit maintenant `computeRevenue` (`lib/admin/revenue.ts`, même calcul que la Vue d'ensemble : fiches photographes et ménage payées, fiches d'exemple écartées). Le Standard est compté au prix réel de chaque abonné (`hostAnnualPrice` d'après `profiles.stripe_price_id` : 19,98 € Fondateur, 38,98 € public, anciens prix mensuels 1,98 / 3,98 €), aussi dans la Vue d'ensemble. Nouveau prix : l'ajouter à `hostAnnualPrice` et à `PRICES`.
+
+## Droits des tables neuves (24/10/2026)
+
+Sur ce projet Supabase, une table créée par une migration ne reçoit plus les droits par défaut : même la clé de service obtient « permission denied for table … » (migrations 155 et 156, corrigées par la 157). Toute migration qui crée une table ajoute donc ses `grant select, insert, update, delete … to service_role` (et `to authenticated` si l'app y accède avec la session de l'utilisateur, la RLS faisant le tri). Vérification : `select relname from pg_class … where not has_table_privilege('service_role', oid, 'SELECT')`.
