@@ -37,4 +37,10 @@ describe('cron social-dispatch', () => {
     expect(minute).toBe('0')
     expect(Number(hour)).toBe(SOCIAL_DISPATCH_HOUR_UTC)
   })
+  it('un second cron Vercel publie les posts du soir (filet de secours du workflow)', async () => {
+    const { readFileSync } = await import('fs')
+    const cfg = JSON.parse(readFileSync(new URL('../../vercel.json', import.meta.url), 'utf8')) as { crons: { path: string; schedule: string }[] }
+    const soir = cfg.crons.find(c => c.path.startsWith('/api/cron/social-dispatch?'))
+    expect(soir?.schedule).toBe('5 17 * * *')
+  })
 })

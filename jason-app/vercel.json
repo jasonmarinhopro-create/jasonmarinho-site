@@ -23,6 +23,10 @@
       "schedule": "0 7 * * *"
     },
     {
+      "path": "/api/cron/social-dispatch?soir=1",
+      "schedule": "5 17 * * *"
+    },
+    {
       "path": "/api/cron/outreach",
       "schedule": "15 7 * * 1-5"
     }
