@@ -17,6 +17,7 @@ import { proReseauxLinks, proReseauxHtml } from './lib/pro-reseaux.mjs'
 import { adminOwnedIds } from './lib/admin-owned.mjs'
 import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, emptyHtml, guideHtml, faqHtml, faqJsonLd, villesGuidesHtml, joinLineHtml, demandeBandHtml, proCardHtml, cardLieu, CARD_PHOTOS_MAX, ANNUAIRE_CSS, CITY_PICKS_JS } from './lib/annuaire-hote.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS, telHtml, clientelesHtml } from './lib/fiche-vitrine.mjs'
+import { CLIENTELES, readClienteles } from './lib/pro-clienteles.mjs'
 import { secteurHtml, SECTEUR_CSS, SECTEUR_JS } from './lib/secteur.mjs'
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
 
@@ -451,7 +452,7 @@ export function buildAnnuaireListPage(items) {
         const extra = [equipeLabel, c.assurance_rc_pro ? 'assurance RC pro' : null, c.reco_count > 0 ? `recommandée par ${c.reco_count} hôte${c.reco_count > 1 ? 's' : ''}` : null].filter(Boolean).join(' · ')
         return proCardHtml({
           href: `/annuaires/menage/${c.slug}`,
-          attrs: `data-search="${escHtml(searchBlob)}" data-equipe="${escHtml(c.equipe_type || '')}" data-delai="${escHtml(c.delai_reservation || '')}" data-assurance="${c.assurance_rc_pro ? '1' : '0'}" data-prestations="${escHtml(prestationsBlob)}" data-tarif-min="${c.tarif_forfait_min ?? ''}" data-tarif-max="${c.tarif_forfait_max ?? ''}"`,
+          attrs: `data-search="${escHtml(searchBlob)}" data-equipe="${escHtml(c.equipe_type || '')}" data-delai="${escHtml(c.delai_reservation || '')}" data-assurance="${c.assurance_rc_pro ? '1' : '0'}" data-prestations="${escHtml(prestationsBlob)}" data-clienteles="${readClienteles(c.clienteles).join(' ')}" data-tarif-min="${c.tarif_forfait_min ?? ''}" data-tarif-max="${c.tarif_forfait_max ?? ''}"`,
           name: displayName, metier: 'Équipe de ménage', ville: c.ville,
           lieu: cardLieu(villes, c.zone_couverte, 'aussi à'),
           extra: extra ? extra.charAt(0).toUpperCase() + extra.slice(1) : '',
@@ -654,6 +655,12 @@ ${demandeBandHtml(cfg)}
         </div>
       </div>
       <div class="filters-section">
+        <h3>Travaille pour</h3>
+        <div class="filters-options" id="f-clienteles">
+          ${CLIENTELES.filter(c => c.key !== 'lcd').map(c => `<button type="button" class="filters-opt" data-value="${c.key}">${escHtml(c.pro)}</button>`).join('')}
+        </div>
+      </div>
+      <div class="filters-section">
         <h3>Garanties</h3>
         <div class="filters-toggle-row">
           <div>
@@ -734,11 +741,12 @@ ${items.length > 0 ? `<script>
   var equipeOpts   = Array.prototype.slice.call(document.querySelectorAll('#f-equipe .filters-opt'))
   var prestaOpts   = Array.prototype.slice.call(document.querySelectorAll('#f-prestations .filters-opt'))
   var delaiOpts    = Array.prototype.slice.call(document.querySelectorAll('#f-delai .filters-opt'))
+  var clOpts       = Array.prototype.slice.call(document.querySelectorAll('#f-clienteles .filters-opt'))
   var assuranceBtn = document.getElementById('f-assurance')
   var minInput     = document.getElementById('f-min')
   var maxInput     = document.getElementById('f-max')
 
-  var state = { equipe: null, delai: null, assurance: false, prestations: [], min: null, max: null }
+  var state = { equipe: null, delai: null, assurance: false, prestations: [], clienteles: [], min: null, max: null }
 
   function openModal(){ backdrop.classList.add('open'); previewCount() }
   function closeModal(){ backdrop.classList.remove('open') }
@@ -762,16 +770,20 @@ ${items.length > 0 ? `<script>
   wireSingleSelect(equipeOpts, function(v){ state.equipe = v })
   wireSingleSelect(delaiOpts, function(v){ state.delai = v })
 
-  // Sélection multiple (prestations)
-  prestaOpts.forEach(function(opt){
-    opt.addEventListener('click', function(){
-      var val = opt.getAttribute('data-value')
-      var idx = state.prestations.indexOf(val)
-      if (idx === -1) { state.prestations.push(val); opt.classList.add('active') }
-      else { state.prestations.splice(idx, 1); opt.classList.remove('active') }
-      previewCount()
+  // Sélection multiple (prestations, clientèles)
+  function wireMulti(opts, key){
+    opts.forEach(function(opt){
+      opt.addEventListener('click', function(){
+        var val = opt.getAttribute('data-value')
+        var idx = state[key].indexOf(val)
+        if (idx === -1) { state[key].push(val); opt.classList.add('active') }
+        else { state[key].splice(idx, 1); opt.classList.remove('active') }
+        previewCount()
+      })
     })
-  })
+  }
+  wireMulti(prestaOpts, 'prestations')
+  wireMulti(clOpts, 'clienteles')
 
   assuranceBtn.addEventListener('click', function(){
     state.assurance = !state.assurance
@@ -792,6 +804,10 @@ ${items.length > 0 ? `<script>
         if (have.indexOf(state.prestations[i]) === -1) return false
       }
     }
+    if (state.clienteles.length) {
+      var cl = (c.getAttribute('data-clienteles') || '').split(' ')
+      if (!state.clienteles.some(function(k){ return cl.indexOf(k) !== -1 })) return false
+    }
     var tMin = c.getAttribute('data-tarif-min'), tMax = c.getAttribute('data-tarif-max')
     tMin = tMin ? Number(tMin) : null
     tMax = tMax ? Number(tMax) : null
@@ -803,7 +819,7 @@ ${items.length > 0 ? `<script>
 
   function activeFilterGroups(){
     return (state.equipe ? 1 : 0) + (state.delai ? 1 : 0) + (state.assurance ? 1 : 0) +
-      (state.prestations.length ? 1 : 0) + (state.min != null || state.max != null ? 1 : 0)
+      (state.prestations.length ? 1 : 0) + (state.clienteles.length ? 1 : 0) + (state.min != null || state.max != null ? 1 : 0)
   }
 
   function previewCount(){
@@ -818,8 +834,8 @@ ${items.length > 0 ? `<script>
   }
 
   function clearFilters(){
-    state = { equipe: null, delai: null, assurance: false, prestations: [], min: null, max: null }
-    equipeOpts.concat(prestaOpts, delaiOpts).forEach(function(o){ o.classList.remove('active') })
+    state = { equipe: null, delai: null, assurance: false, prestations: [], clienteles: [], min: null, max: null }
+    equipeOpts.concat(prestaOpts, delaiOpts, clOpts).forEach(function(o){ o.classList.remove('active') })
     assuranceBtn.classList.remove('active'); assuranceBtn.setAttribute('aria-pressed', 'false')
     minInput.value = ''; maxInput.value = ''
     previewCount()
