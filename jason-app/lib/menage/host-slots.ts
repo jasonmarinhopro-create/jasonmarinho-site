@@ -55,8 +55,33 @@ export async function loadHostMenageSlots(
       .gte('date', fromDate)
       .lte('date', toDate),
   ])
+  return buildHostMenageSlots({ contracts: contractsRaw, sejours, logements, icalFeeds, icalEvents, manualEvents }, fromDate, toDate)
+}
 
-  const contracts = (contractsRaw ?? []).filter(c => c.statut !== 'annule')
+/** Données brutes d'un hôte, mêmes colonnes que les lectures de loadHostMenageSlots */
+export interface HostMenageRaw {
+  contracts: any[] | null
+  sejours: any[] | null
+  logements: any[] | null
+  icalFeeds: any[] | null
+  icalEvents: any[] | null
+  manualEvents: any[] | null
+}
+
+/**
+ * Créneaux à partir de données déjà lues (24/10/2026 : l'Accueil les reçoit de
+ * la fonction home_state au lieu de six requêtes de plus). Filtre lui-même les
+ * séjours sans départ et les réservations iCal hors période.
+ */
+export function buildHostMenageSlots(raw: HostMenageRaw, fromDate: string, toDate: string): MenageSlot[] {
+  const contractsRaw = raw.contracts ?? []
+  const sejours = (raw.sejours ?? []).filter(s => s.date_arrivee && s.date_depart)
+  const logements = raw.logements ?? []
+  const icalFeeds = raw.icalFeeds ?? []
+  const icalEvents = (raw.icalEvents ?? []).filter(e => (e.end_date ?? '') >= fromDate && (e.start_date ?? '') <= toDate)
+  const manualEvents = (raw.manualEvents ?? []).filter(e => e.date >= fromDate && e.date <= toDate)
+
+  const contracts = contractsRaw.filter(c => c.statut !== 'annule')
   const sejourIdsWithContract = new Set(contracts.map(c => c.sejour_id as string | null).filter((v): v is string => !!v))
 
   const occupations: Occupation[] = []

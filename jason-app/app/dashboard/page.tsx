@@ -16,7 +16,8 @@ import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHe
 import SetupChecklist, { type SetupStep } from './SetupChecklist'
 import MesPlateformesWidget from './MesPlateformesWidget'
 import TodayBoard, { type TodayItem, type TodayAction } from './TodayBoard'
-import { loadHostMenageSlots, menageKey } from '@/lib/menage/host-slots'
+import { loadHostMenageSlots, buildHostMenageSlots, menageKey } from '@/lib/menage/host-slots'
+import { loadHomeState } from '@/lib/home/home-state'
 import { contractTodos } from '@/lib/contracts/todo'
 import ReviewPrompt from './ReviewPrompt'
 import { buildRevenueLines, totaux as finTotaux } from '@/lib/finances/engine'
@@ -96,7 +97,25 @@ export default async function DashboardPage() {
   // au lieu de planter complètement.
   // Ménages du jour (bloc « À faire aujourd'hui ») : même source que la page
   // Ménage et le flux de l'équipe, lancé en parallèle des autres requêtes.
-  const menageTodayPromise = userId
+  // Accueil en une seule requête (24/10/2026, home_state) : mêmes lignes que
+  // les lectures ci-dessous, une vingtaine d'allers-retours en moins. Les
+  // listes partagées (actualités, groupes) restent en cache. null tant que la
+  // migration 149 manque : on reprend alors les anciennes requêtes.
+  const actusPromise = getCachedPublishedActualites()
+  const groupsPromise = getCachedCommunityGroups()
+  const caStartDate = `${prevMPfx < `${yearPfx}-01` ? prevMPfx : yearPfx + '-01'}-01`
+  const home = userId
+    ? await loadHomeState(supabase, { today, caStart: caStartDate, yearStart: `${yearPfx}-01-01`, yearEnd: `${parseInt(yearPfx) + 1}-01-01` })
+    : null
+  timer.mark('accueil')
+
+  const menageTodayPromise = home
+    ? Promise.resolve([
+        buildHostMenageSlots({ contracts: home.contracts, sejours: home.sejours, logements: home.logements, icalFeeds: home.ical_feeds, icalEvents: home.ical_events, manualEvents: home.menage_events }, today, today),
+        { data: home.menage_completions },
+        { data: home.menage_events.filter(e => /\[fait\]/i.test(e.description ?? '')).map(e => ({ title: e.title })) },
+      ] as const)
+    : userId
     ? Promise.all([
         loadHostMenageSlots(supabase, userId, today, today),
         supabase.from('menage_completions').select('logement_nom, date').eq('host_user_id', userId).eq('date', today),
@@ -104,7 +123,25 @@ export default async function DashboardPage() {
       ]).catch(err => { console.error('[Dashboard] ménages du jour', err); return null })
     : Promise.resolve(null)
 
-  const results = await Promise.allSettled([
+  const ok = <T,>(value: T) => ({ status: 'fulfilled' as const, value })
+  const results = home ? [
+    ok({ data: home.contracts.filter(c => c.statut != null && c.statut !== 'annule') }),
+    ok({ data: home.logements }),
+    ok(await actusPromise),
+    ok({ data: home.revenus_entries }),
+    ok({ data: home.revenus_objectif }),
+    ok(await groupsPromise),
+    ok({ data: home.memberships }),
+    ok({ data: home.user_formations }),
+    ok({ data: home.completion_log }),
+    ok({ data: home.cn_posts }),
+    ok({ count: home.cn_total }),
+    ok({ data: home.sejours }),
+    ok({ data: home.profile_extra }),
+    ok({ data: home.ical_events.filter(e => e.start_date >= `${yearPfx}-01-01`) }),
+    ok({ data: home.declarations }),
+    ok({ data: home.ical_feeds }),
+  ] as PromiseSettledResult<unknown>[] : await Promise.allSettled([
     supabase
       .from('contracts')
       .select('id, logement_nom, date_arrivee, date_depart, statut, checklist_status, montant_loyer, stripe_payment_status, stripe_payment_enabled, stripe_deposit_status, locataire_prenom, locataire_nom, sejour_id')
@@ -118,7 +155,7 @@ export default async function DashboardPage() {
       .select('nom, ical_airbnb, ical_booking, ical_vrbo, ical_autre, prix_airbnb_nuit, prix_booking_nuit, prix_direct_nuit')
       .eq('user_id', userId),
     // Catalogue public caché 5 min, on slice côté JS pour ne garder que 3
-    getCachedPublishedActualites(),
+    actusPromise,
     // Une seule requête pour TOUTE l'année : on splitera par mois en JS (économise 2 round-trips)
     supabase
       .from('revenus_entries')
@@ -132,7 +169,7 @@ export default async function DashboardPage() {
       .select('objectif_ca_annuel, annee')
       .eq('user_id', userId)
       .maybeSingle(),
-    getCachedCommunityGroups(),
+    groupsPromise,
     userId
       ? supabase
           .from('user_community_memberships')
@@ -336,7 +373,9 @@ export default async function DashboardPage() {
 
   // ── Entre Hôtes : authors fetchés à part (dépendent des author_ids des posts).
   const cnAuthorIds = Array.from(new Set((cnPosts ?? []).map(p => p.author_id)))
-  const cnAuthorsPromise = cnAuthorIds.length
+  const cnAuthorsPromise = home
+    ? Promise.resolve({ data: home.cn_authors })
+    : cnAuthorIds.length
     ? supabase.from('profiles').select('id, full_name, pseudo').in('id', cnAuthorIds)
     : Promise.resolve({ data: [] as { id: string; full_name: string | null; pseudo: string | null }[] })
 
