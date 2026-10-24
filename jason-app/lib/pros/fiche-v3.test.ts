@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { v3Formules, v3Prix, telHref, ficheV3Html } from '../../../scripts/lib/fiche-v3.mjs'
+import { zoneFact } from '../../../scripts/lib/fiche-signature.mjs'
 
 const base = {
   name: 'Sandrine Morel', firstName: 'Sandrine', initials: 'SM', logoUrl: null, role: 'Équipe de ménage à Nantes', sub: 'Ménage · Nantes',
@@ -33,6 +34,9 @@ describe('fiche v3', () => {
     expect(h).not.toContain('Présentation')
     expect(h).not.toContain('fx-bar-tel')
     expect(h).not.toContain('undefined')
+  })
+  it('lit « Paris + 30 kms » comme un rayon', () => {
+    expect(zoneFact('Paris', 'Paris + 30 kms')).toEqual({ v: '30 km', l: 'autour de Paris' })
   })
   it('échappe les textes du pro', () => {
     expect(ficheV3Html({ ...base, name: '<b>X</b>' })).not.toContain('<b>X</b>')

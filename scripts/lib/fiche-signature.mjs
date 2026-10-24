@@ -38,7 +38,7 @@ export function deVille(v) {
 
 /** Rayon en km lu dans la zone (« Roanne et 30km », « Lyon + 60 km ») */
 export function rayonKm(zone) {
-  const m = String(zone ?? '').match(/(\d{1,3})\s?km\b/i)
+  const m = String(zone ?? '').match(/(\d{1,3})\s?kms?\b/i)
   const n = m ? Number(m[1]) : null
   return n && n >= 5 && n <= 300 ? n : null
 }
