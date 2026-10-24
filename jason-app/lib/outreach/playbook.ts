@@ -38,6 +38,50 @@ const utm = (campaign: string) => `utm_source=prospection&utm_medium=email&utm_c
 export const PLAYBOOK: PlaybookSequence[] = [
   // ─── Photographes ─────────────────────────────────────────────────────────
   {
+    // Hôtellerie (24/10/2026, Jason : « être présent sur les requêtes photographe hôtel, conciergerie haut de gamme »).
+    // Déclencheur manuel : rien ne part tant que Jason n'ajoute pas lui-même des contacts à cette séquence.
+    key: 'photo_hotellerie',
+    nom: 'Photographes : hôtellerie et conciergeries',
+    audience: 'photographe',
+    description: 'Pour les photographes qui travaillent déjà pour des hôtels : la page hôtels et la case « Hôtels et résidences ». 3 e-mails, lancés à la main.',
+    trigger: 'manuel',
+    steps: [
+      {
+        delay_days: 0,
+        subject: 'Photographe d’hôtel{ à ville} ?',
+        body: `Bonjour {prenom},
+
+Je m'appelle Jason Marinho. J'ai vu que tu photographies (ou filmes en vidéo) des hôtels et des lieux d'hébergement.
+
+Sur jasonmarinho.com, les hôtels, les résidences et les conciergeries haut de gamme peuvent maintenant décrire leur besoin : la demande part aux photographes et vidéastes de leur zone, d'abord à ceux qui travaillent déjà pour l'hôtellerie.
+
+La page qu'ils voient : ${SITE}/photographe-hotel?${utm('photo_hotellerie')}
+
+Est-ce que tu prends ce type de demandes en ce moment ?`,
+      },
+      {
+        delay_days: 4,
+        subject: 'Photographe d’hôtel{ à ville} ?',
+        body: `Bonjour {prenom},
+
+Pour recevoir ces demandes, il suffit d'une fiche dans l'annuaire : coche « Hôtels et résidences » (et conciergeries ou gîtes si tu veux) dans « Tu travailles pour ». Photos, formules et zone se remplissent en une fois, et la fiche sert aussi de site vitrine sur Google.
+
+Pas de commission : le devis et le paiement se règlent entre toi et l'établissement.
+
+${SITE}/annuaires/photographes/inscription?${utm('photo_hotellerie')}`,
+      },
+      {
+        delay_days: 7,
+        subject: 'Photographe d’hôtel{ à ville} ?',
+        body: `Bonjour {prenom},
+
+C'est mon dernier message. Si un jour tu veux recevoir les demandes des hôtels{ à ville}, la page reste là : ${SITE}/photographe-hotel?${utm('photo_hotellerie')}
+
+Bonne continuation !`,
+      },
+    ],
+  },
+  {
     key: 'photo_premier_contact',
     nom: 'Photographes : premier contact',
     audience: 'photographe',

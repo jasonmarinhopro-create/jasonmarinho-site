@@ -263,6 +263,7 @@
           + '<div class="ft-cat">'
             + '<h4 class="ft-cat-t">Annuaires pros</h4>'
             + '<a href="/annuaires/photographes">Photographes et vidéastes LCD</a>'
+            + '<a href="/photographe-hotel">Photographe hôtel et conciergerie</a>'
             + '<a href="/annuaires/menage">Annuaire équipes de ménage</a>'
             + '<a href="/devenir-photographe-lcd">Devenir photographe ou vidéaste</a>'
             + '<a href="/devenir-prestataire-menage-lcd">Devenir prestataire ménage</a>'

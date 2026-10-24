@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Fri, 23 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 24 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Photographe pour hôtel ou conciergerie : les 7 points à caler avant le shooting</title>
+      <link>https://jasonmarinho.com/blog/photographe-hotel-conciergerie-7-points-avant-shooting</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/photographe-hotel-conciergerie-7-points-avant-shooting</guid>
+      <pubDate>Sat, 24 Oct 2026 08:00:00 GMT</pubDate>
+      <description>Hôtel, résidence, conciergerie haut de gamme ou gîte : chambres, espaces, vidéo, drone, retouche, droits d’utilisation. Ce qu’il faut préciser au photographe avant la séance.</description>
+      <category>Visibilité</category>
+    </item>
     <item>
       <title>Mettre son annonce LCD en pause pour l&apos;hiver : 6 règles pour geler ton calendrier sans plomber ton classement Airbnb</title>
       <link>https://jasonmarinho.com/blog/mettre-annonce-lcd-pause-hiver-6-regles-classement-airbnb</link>
@@ -398,14 +406,6 @@
       <pubDate>Fri, 10 Jul 2026 08:00:00 GMT</pubDate>
       <description>Statut LMNP, seuil TVA, régime réel, suivi de rentabilité : 6 raisons concrètes de ne plus mélanger tes finances perso et LCD, et comment choisir ta banque pro en 2026.</description>
       <category>Fiscalité</category>
-    </item>
-    <item>
-      <title>Chèques-vacances ANCV en LCD : 5 étapes pour les accepter et capter 4,8 millions de voyageurs en 2026</title>
-      <link>https://jasonmarinho.com/blog/cheques-vacances-ancv-lcd-accepter-2026</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/cheques-vacances-ancv-lcd-accepter-2026</guid>
-      <pubDate>Wed, 08 Jul 2026 08:00:00 GMT</pubDate>
-      <description>Inscription gratuite, conditions, format papier ou Connect, promotion : 5 étapes concrètes pour accepter les chèques-vacances ANCV dans ta location courte durée en 2026.</description>
-      <category>Revenus</category>
     </item>
   </channel>
 </rss>

@@ -160,6 +160,7 @@ export const BUILTIN_LINKS: Array<{ code: string; label: string; channel: LinkCh
   { code: 'photo-exemple', label: 'Prospection photographes : exemple de fiche', channel: 'prospection', destination: `${SITE}/annuaires/photographes/exemple-fiche` },
   { code: 'photo-inscription', label: 'Prospection photographes : inscription', channel: 'prospection', destination: `${SITE}/annuaires/photographes/inscription` },
   { code: 'photo-annuaire', label: 'Prospection photographes : annuaire', channel: 'prospection', destination: `${SITE}/annuaires/photographes` },
+  { code: 'photo-hotel', label: 'Prospection photographes : page hôtels et conciergeries', channel: 'prospection', destination: `${SITE}/photographe-hotel` },
   { code: 'menage-exemple', label: 'Prospection ménage : exemple de fiche', channel: 'prospection', destination: `${SITE}/annuaires/menage/exemple-fiche` },
   { code: 'menage-inscription', label: 'Prospection ménage : inscription', channel: 'prospection', destination: `${SITE}/annuaires/menage/inscription` },
   { code: 'menage-annuaire', label: 'Prospection ménage : annuaire', channel: 'prospection', destination: `${SITE}/annuaires/menage` },
