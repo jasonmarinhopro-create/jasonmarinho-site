@@ -19,6 +19,7 @@ import { ANNUAIRES, cityCoverage, searchWords, prixDes, heroInnerHtml, emptyHtml
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, galleryHtml, formulesHtml, derouleHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS, telHtml, clientelesHtml } from './lib/fiche-vitrine.mjs'
 import { CLIENTELES, readClienteles } from './lib/pro-clienteles.mjs'
 import { secteurHtml, SECTEUR_CSS, SECTEUR_JS } from './lib/secteur.mjs'
+import { ficheV3Html, ficheV3Js, FICHE_V3_CSS, telHref } from './lib/fiche-v3.mjs'
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
 
 // Taille de l'équipe en version courte pour « En bref »
@@ -177,6 +178,9 @@ export function buildFichePage(c) {
     eq ? { v: eq[0], l: eq[1] } : (c.prestations || []).includes('gestion_linge') ? { v: 'Linge', l: 'géré par l’équipe' } : null,
     c.reco_count > 0 ? trustFact(c.reco_count, null, { feminin: true }) : c.assurance_rc_pro ? { v: 'RC pro', l: 'assurance professionnelle' } : trustFact(0, c.created_at),
   ]
+  // Les 3 repères de la fiche v3 : prix, zone, puis équipe ou confiance
+  const v3Facts = facts.filter(Boolean).slice(0, 3)
+  const clienteles = (k => k.some(x => x !== 'lcd') ? CLIENTELES.filter(x => k.includes(x.key)) : [])(readClienteles(c.clienteles))
   const besoins = ['Des ménages entre deux voyageurs', 'Un grand ménage', ...((c.prestations || []).includes('gestion_linge') ? ['Le linge'] : [])]
 
   return `<!DOCTYPE html>
@@ -249,8 +253,8 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .err-msg{padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:8px;color:#dc2626;font-size:13px;margin-bottom:10px}
 .trust-row{display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(99,214,131,.08);border:1px solid rgba(99,214,131,.2);border-radius:8px;margin-top:12px;font-size:13px;color:#1e9d54;font-weight:500}
 ${VITRINE_CSS}
-${SIGNATURE_CSS}
 ${SECTEUR_CSS}
+${FICHE_V3_CSS}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify({
@@ -287,87 +291,47 @@ ${JSON.stringify({
 <script defer src="/nav.js"></script>
 </head>
 <body>
-<header class="hero">
-  <div class="s-in hero-grid has-cover">
-  <div>
-    <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/menage">Annuaire ménage LCD</a> · <span>${escHtml(displayName)}</span></div>
-    <div class="tag-row">
-      ${c.reco_count > 0 ? `<span class="tag" style="background:rgba(99,214,131,.15);color:#7be29a;border:1px solid rgba(99,214,131,.35)"><i class="ph-bold ph-heart" style="font-size:10px"></i>Recommandé par ${c.reco_count} hôte${c.reco_count > 1 ? 's' : ''}</span>` : ''}
-      ${c.assurance_rc_pro ? '<span class="tag green"><i class="ph-bold ph-shield-check" style="font-size:10px"></i>RC Pro</span>' : ''}
-      ${equipeLabel ? `<span class="tag">${escHtml(equipeLabel)}</span>` : ''}
-    </div>
-    <div class="hero-id">
-      ${c.logo_url
-        ? `<div class="hero-logo" style="background:url('${escHtml(c.logo_url)}') center/cover"></div>`
-        : `<div class="hero-logo placeholder">${escHtml(initiales(displayName))}</div>`}
-      <h1>${escHtml(displayName)}<br><em>équipe de ménage pour locations courte durée ${escHtml(aVille(c.ville))}</em></h1>
-    </div>
-    <div class="meta-row">
-      <span><i class="ph-bold ph-handshake"></i>Contact direct, sans commission</span>
-      ${delaiLabel ? `<span><i class="ph-bold ph-lightning"></i>${escHtml(delaiLabel)}</span>` : ''}
-      ${heure ? `<span><i class="ph-bold ph-clock"></i>${escHtml(heure)}</span>` : ''}
-    </div>
-    ${heroActionsHtml({ firstName, hasPhotos: photos.length > 0, external })}
-  </div>
-  ${photos.length ? heroCoverHtml(photos, displayName) : briefHtml(facts)}
-  </div>
-</header>
-
-<div class="body">
-  <div>
-    ${photos.length ? briefHtml(facts, { variant: 'strip' }) : ''}
-    ${galleryHtml(photos, { name: displayName, title: 'En images' })}
-    ${c.bio ? `<div class="card" style="margin-bottom:20px"><h2>Présentation</h2><div class="bio">${escHtml(c.bio)}</div></div>` : ''}
-    ${formulesHtml(c.formules)}
-    ${prestations.length > 0 ? `<div class="card" style="margin-bottom:20px"><h2>Prestations</h2><div class="prestations-grid">${prestations.map(p => `<span class="prestation-chip"><i class="ph-bold ph-check"></i>${escHtml(p)}</span>`).join('')}</div></div>` : ''}
-    ${clientelesHtml(c.clienteles, firstName)}
-    ${equipeLabel || c.logements_geres || delaiLabel || langues || c.assurance_rc_pro || c.siret ? `<div class="card vt-sec">
-      <h2>Capacité & disponibilité</h2>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:6px">
-        ${equipeLabel ? `<div><div style="font-size:11px;color:var(--tl);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px">Taille équipe</div><div style="font-size:14px;color:var(--td);font-weight:500">${escHtml(equipeLabel)}</div></div>` : ''}
-        ${c.logements_geres ? `<div><div style="font-size:11px;color:var(--tl);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px">Logements gérés</div><div style="font-size:14px;color:var(--td);font-weight:500">${c.logements_geres} en parc actuel</div></div>` : ''}
-        ${delaiLabel ? `<div><div style="font-size:11px;color:var(--tl);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px">Réactivité</div><div style="font-size:14px;color:var(--td);font-weight:500">${escHtml(delaiLabel)}</div></div>` : ''}
-        ${langues ? `<div><div style="font-size:11px;color:var(--tl);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px">Langues</div><div style="font-size:14px;color:var(--td);font-weight:500">${escHtml(langues)}</div></div>` : ''}
-      </div>
-      ${c.assurance_rc_pro ? `<div class="trust-row"><i class="ph-bold ph-shield-check" style="font-size:15px"></i>Couvert par une assurance Responsabilité Civile Professionnelle</div>` : ''}
-      ${c.siret ? `<div style="margin-top:10px;font-size:12px;color:var(--tl)">SIRET déclaré : <strong style="color:var(--td);font-variant-numeric:tabular-nums">${escHtml(c.siret)}</strong></div>` : ''}
-    </div>` : ''}
-    ${derouleHtml(c.deroule, 'menage')}
-    ${secteurHtml({ ville: c.ville, zone: c.zone_couverte, villes: c.villes_couvertes, prenom: firstName, metier: 'menage' }) ?? zoneCardHtml({ ville: c.ville, zone: c.zone_couverte, villes: c.villes_couvertes, root: ROOT, prefix: 'menage-lcd', metierLabel: 'Ménage' })}
-  </div>
-
-  <aside>
-    <div class="card" id="contact">
-      <h2>Contacter ${escHtml(firstName)}</h2>
-      ${contactFormHtml({ firstName, besoins, placeholder: 'Un détail à ajouter ? Nombre de logements, rythme des réservations (facultatif)' })}
-        <p style="margin-top:10px;font-size:11.5px;color:var(--tl);line-height:1.6">Ton nom, ton e-mail et ton message sont transmis à ${escHtml(firstName)} seulement, pour te répondre, et supprimés au bout de 3 ans. <a href="/politique-de-confidentialite#annuaire" style="color:var(--g)">Confidentialité</a></p>
-      </form>
-      ${telHtml(c.telephone, firstName)}
-      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tl);line-height:1.6">Pas de commission. Pas d'intermédiaire. Tu négocies et contractualises directement avec l'équipe.</div>
-      <div style="margin-top:12px;font-size:12px;color:var(--tm);line-height:1.6">Tu as déjà bossé avec cette équipe ? <a href="https://app.jasonmarinho.com/dashboard/recommander?type=cleaner&id=${escHtml(c.id)}" style="color:var(--g);font-weight:600">Recommande-la aux autres hôtes →</a></div>
-    </div>
-
-    ${workLinksHtml([
-      c.site_url ? { href: c.site_url, label: 'Le site', icon: 'ph-globe', track: 'site' } : null,
-      instaHandle(c.instagram_handle) ? { href: `https://instagram.com/${instaHandle(c.instagram_handle)}`, label: `@${instaHandle(c.instagram_handle)}`, icon: 'ph-instagram-logo', track: 'instagram', rel: 'noopener' } : null,
-    ], proReseauxHtml(reseaux), { title: 'L’équipe en ligne' })}
-
-    ${guide ? `<div class="card" style="margin-top:16px">
-      <h2>Les tarifs ménage ${escHtml(aVille(g?.label ?? c.ville))}</h2>
-      <p style="font-size:13.5px;color:var(--tm);line-height:1.7;margin-bottom:12px">Fourchettes turnover constatées, checklist complète et questions à poser : consulte le guide local avant de demander un devis.</p>
-      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Le guide ménage ${escHtml(deVille(g?.label ?? c.ville))}</a>
-    </div>` : ''}
-  </aside>
-</div>
-
-<div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;gap:10px;flex-wrap:wrap">
-  <a href="/annuaires/menage" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Toutes les équipes ménage LCD</a>
-  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Le guide ménage ${escHtml(deVille(g?.label ?? c.ville))}<i class="ph-bold ph-arrow-right"></i></a>` : ''}
-</div>
-
-<div class="disclaimer">
-  <strong>Bon à savoir.</strong> Cette mise en relation est gratuite pour toi. Le devis, le contrat et le paiement de la prestation se font directement entre toi et ${escHtml(displayName)}, sans commission ni intermédiaire de notre part.
-</div>
+${ficheV3Html({
+  name: displayName, firstName, initials: initiales(displayName), logoUrl: c.logo_url,
+  role: `Équipe de ménage ${aVille(c.ville)}`,
+  sub: `Ménage · ${c.ville}`,
+  crumbs: [{ href: '/', label: 'Accueil' }, { href: '/annuaires/menage', label: 'Équipes de ménage LCD' }, { label: displayName }],
+  badges: [
+    c.reco_count > 0 ? { icon: 'ph-heart', label: `Recommandée par ${c.reco_count} hôte${c.reco_count > 1 ? 's' : ''}`, tone: 'reco' } : null,
+    c.assurance_rc_pro ? { icon: 'ph-shield-check', label: 'Assurance RC pro' } : null,
+    delaiLabel ? { icon: 'ph-lightning', label: delaiLabel } : null,
+    { icon: 'ph-handshake', label: 'Sans commission' },
+  ].filter(Boolean),
+  photos,
+  videoHtml: '',
+  facts: v3Facts,
+  formules: c.formules, tarifMin: c.tarif_forfait_min, tarifMax: c.tarif_forfait_max, unite: 'le ménage',
+  bio: c.bio,
+  offerTitle: `Ce que l’équipe propose`,
+  offers: [
+    ...prestations.map(label => ({ icon: 'ph-check', label })),
+    equipeLabel ? { icon: 'ph-users', label: equipeLabel } : null,
+    c.logements_geres ? { icon: 'ph-house-line', label: `${c.logements_geres} logement${c.logements_geres > 1 ? 's' : ''} suivi${c.logements_geres > 1 ? 's' : ''} aujourd’hui` } : null,
+    heure ? { icon: 'ph-clock', label: `Tarif horaire ${heure}` } : null,
+    langues ? { icon: 'ph-translate', label: `Langues : ${langues}` } : null,
+    c.siret ? { icon: 'ph-identification-card', label: `SIRET ${c.siret}` } : null,
+    ...clienteles.map(k => ({ icon: `ph-${k.icon}`, label: k.pro })),
+  ].filter(Boolean),
+  zoneHtml: secteurHtml({ ville: c.ville, zone: c.zone_couverte, villes: c.villes_couvertes, prenom: firstName, metier: 'menage', compact: true }) ?? zoneCardHtml({ ville: c.ville, zone: c.zone_couverte, villes: c.villes_couvertes, root: ROOT, prefix: 'menage-lcd', metierLabel: 'Ménage' }),
+  linksTitle: 'L’équipe en ligne',
+  links: [
+    c.site_url ? { href: c.site_url, label: 'Le site', icon: 'ph-globe', track: 'site' } : null,
+    instaHandle(c.instagram_handle) ? { href: `https://instagram.com/${instaHandle(c.instagram_handle)}`, label: `@${instaHandle(c.instagram_handle)}`, icon: 'ph-instagram-logo', track: 'instagram', rel: 'noopener' } : null,
+  ],
+  reseauxHtml: proReseauxHtml(reseaux),
+  telHtml: telHtml(c.telephone, firstName), telHref: telHref(c.telephone),
+  besoins,
+  placeholder: 'Nombre de logements, rythme des réservations, accès…',
+  reco: { href: `https://app.jasonmarinho.com/dashboard/recommander?type=cleaner&id=${c.id}`, label: 'Recommande-la aux autres hôtes' },
+  guide: guide ? { href: guide, label: `Le guide ménage ${deVille(g?.label ?? c.ville)}` } : null,
+  annuaire: { href: '/annuaires/menage', label: 'Toutes les équipes de ménage' },
+  disclaimer: `Cette mise en relation est gratuite pour toi. Le devis, le contrat et le paiement de la prestation se font directement entre toi et ${displayName}, sans commission ni intermédiaire de notre part.`,
+})}
 
 <script>
 const __slug = "${escHtml(c.slug)}";
@@ -380,50 +344,10 @@ try {
   var __vk = 'jm_v_' + __slug;
   if (!sessionStorage.getItem(__vk)) { sessionStorage.setItem(__vk, '1'); jmTrack('view'); }
 } catch (e) { jmTrack('view'); }
-async function contactSubmit(e) {
-  e.preventDefault();
-  const errBox = document.getElementById('contact-err');
-  const btn = document.getElementById('contact-btn');
-  errBox.style.display = 'none';
-  btn.disabled = true; btn.innerHTML = '<i class="ph-bold ph-spinner"></i> Envoi…';
-  const f = e.target;
-  const data = {
-    slug: __slug,
-    contactName: f.contactName.value.trim(),
-    contactEmail: f.contactEmail.value.trim(),
-    message: window.jmContactMessage ? jmContactMessage(f) : f.message.value.trim(),
-    website: f.website ? f.website.value : '',
-    t: __t0,
-  };
-  if (data.message.length < 20) {
-    errBox.textContent = 'Dis-moi ce qu\\'il te faut et ton logement, ou écris quelques mots.';
-    errBox.style.display = 'block';
-    btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à ${escHtml(firstName)}';
-    return false;
-  }
-  try {
-    const res = await fetch('/api/cleaner/contact', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-    });
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      errBox.textContent = body.error || 'Erreur lors de l\\'envoi. Réessaye.';
-      errBox.style.display = 'block';
-      btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à ${escHtml(firstName)}';
-      return false;
-    }
-    document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Message envoyé ✓</strong><br>${escHtml(firstName)} te recontacte généralement sous 48h.</div>';
-  } catch (err) {
-    errBox.textContent = 'Réseau indisponible.';
-    errBox.style.display = 'block';
-    btn.disabled = false;
-  }
-  return false;
-}
 </script>
-${stickyBarHtml({ firstName, hasPhotos: photos.length > 0, external })}
 ${VITRINE_JS}
 ${CONTACT_JS}
+${ficheV3Js({ api: '/api/cleaner/contact', firstName })}
 ${SECTEUR_JS}
 <script defer src="/calendrier.js"></script>
 <script defer src="/footer.js"></script>

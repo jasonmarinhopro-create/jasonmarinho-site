@@ -104,6 +104,9 @@ const DEMO_CSS = `
 .cta-bottom .btn-main{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 28px;border-radius:10px;text-decoration:none}
 .cta-bottom .btn-main:hover{background:#ffe08f}
 .disclaimer{color:var(--tm)}
+.fx-sec,.fx-card,.fx-facts,.fx .sct{position:relative}
+.fx-gal .annot-tag{top:14px;left:14px;right:auto}
+@media(max-width:719px){.fx-gal .annot-tag{top:auto;bottom:118px}}
 `
 
 function replaceOnce(html, a, b) {
@@ -124,21 +127,22 @@ function toDemo(html, m) {
   h = h.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>\n/g, '')
   h = replaceOnce(h, '</style>', `${DEMO_CSS}</style>`)
   h = replaceOnce(h, '<body>\n', `<body>\n<div class="demo-banner"><i class="ph-bold ph-eye"></i><span>Ceci est un <strong>exemple</strong> de fiche ${m.metier} (${m.who} n’existe pas). <a href="${m.inscription}">Crée la tienne maintenant →</a></span></div>\n`)
-  h = h.replace(/<div class="brd">[\s\S]*?<\/div>/, `<div class="brd"><a href="/">Accueil</a> · <a href="${m.devenir}">${m.devenirLabel}</a> · <span>Exemple de fiche</span></div>`)
+  h = h.replace(/(<nav class="fx-brd"[^>]*>)[\s\S]*?<\/nav>/, `$1<a href="/">Accueil</a> · <a href="${m.devenir}">${m.devenirLabel}</a> · <span>Exemple de fiche</span></nav>`)
   // Étiquettes jaunes : ce que le pro remplit
   for (const [h2, label] of m.annots) h = replaceOnce(h, h2, annot(label) + h2)
-  h = h.replace(/<div class="vt-strip n(\d)" style="position:relative">/, m0 => m0 + annot('Calculé depuis ta fiche'))
+  h = h.replace(/<div class="fx-facts n(\d)">/, m0 => m0 + annot('Calculé depuis ta fiche'))
   // Pas de mesure ni d'envoi réel
   h = replaceOnce(h, 'function jmTrack(ev) {', 'function jmTrack(ev) { return;')
-  h = replaceOnce(h, 'e.preventDefault();\n', `e.preventDefault();\n  document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Exemple</strong><br>Sur une vraie fiche, ta demande part directement dans la boîte mail du pro.</div>';\n  return false;\n`)
-  h = h.replace(/<div style="margin-top:12px;font-size:12px;color:var\(--tm\);line-height:1\.6">Tu as déjà bossé avec[\s\S]*?<\/div>\n/, '')
+  h = replaceOnce(h, 'var res=await fetch(', 'var res={ok:true};if(0)await fetch(')
+  h = h.replace(/(<div class="fx-done" hidden>[\s\S]*?<p>)[^<]*(<\/p>)/, '$1Exemple : sur une vraie fiche, ta demande part directement dans la boîte mail du pro.$2')
+  h = h.replace(/<p class="fx-reco">[\s\S]*?<\/p>/, '')
   // Liens fictifs : vers les photos de la page
   h = h.replace(/href="https:\/\/(portfolio|site)\.example" target="_blank" rel="noopener noreferrer"/g, 'href="#photos"')
   h = h.replace(/href="https:\/\/instagram\.com\/[\w.]+" target="_blank" rel="noopener"/g, 'href="#photos"')
   // À propos de la page, exemple de statistiques, appel à créer sa fiche
-  h = h.replace(/<div class="disclaimer">[\s\S]*?<\/div>/, `<div class="disclaimer">
+  h = h.replace(/<p class="disclaimer fx-disc">[\s\S]*?<\/p>/, `<p class="disclaimer fx-disc">
   <strong>À propos de cette page.</strong> Ceci est un aperçu fidèle de la fiche que tu obtiens dans l’annuaire. Le contenu (nom, textes, tarifs, ville${m.metier === 'équipe de ménage' ? ', SIRET' : ''}) est fictif et sert à montrer la mise en page. Photos d’illustration : Unsplash. Lors de ton inscription, tu remplis tes vraies infos et tu ajoutes tes propres photos depuis ton espace pro.
-</div>`)
+</p>`)
   h = replaceOnce(h, '\n<script>\nconst __slug', `
 <!-- STATSDEMO:START -->
 <section id="exemple-stats" style="background:#fff;padding:clamp(48px,7vw,80px) 0;scroll-margin-top:72px">
@@ -164,18 +168,18 @@ const pages = [
     html: buildPhotographe(CAMILLE),
     meta: {
       title: 'Exemple de fiche photographe et vidéaste · Aperçu',
-      desc: 'Aperçu de la fiche que tu obtiens dans l’annuaire des photographes et vidéastes LCD de Jason Marinho : photos, vidéo, formules, déroulé, villes couvertes, contact direct.',
+      desc: 'Aperçu de la fiche que tu obtiens dans l’annuaire des photographes et vidéastes LCD de Jason Marinho : photos, vidéo, formules, villes couvertes, contact direct.',
       metier: 'photographe', who: 'Camille', statsMetier: 'photographe',
       inscription: '/annuaires/photographes/inscription', devenir: '/devenir-photographe-lcd', devenirLabel: 'Photographes et vidéastes LCD',
       ctaLbl: 'Tu veux la même fiche pour toi ?', ctaH2: 'Crée ta fiche photographe ou vidéaste <em>en 2 minutes</em>',
       annots: [
-        ['<div class="vt-h"><h2>Photos</h2>', 'Jusqu’à 6 photos'],
+        ['<div class="fx-car"', 'Jusqu’à 6 photos'],
         ['<h2>Présentation</h2>', 'Bio que tu rédiges'],
         ['<h2>Formules</h2>', 'Tes formules'],
-        ['<h2>Comment ça se passe</h2>', 'Ton déroulé'],
+        ['<h2>Ce que Camille propose</h2>', 'Tes options'],
         ['<h2>Son travail en ligne</h2>', 'Tes liens'],
         ['<h2>Où j’interviens</h2>', 'Tes villes'],
-        ['<h2>Contacter ', 'Formulaire de contact'],
+        ['<div class="fx-card-id">', 'Contact en 2 étapes'],
       ],
     },
   },
@@ -189,15 +193,13 @@ const pages = [
       inscription: '/annuaires/menage/inscription', devenir: '/devenir-prestataire-menage-lcd', devenirLabel: 'Équipes ménage LCD',
       ctaLbl: 'Tu veux la même fiche pour ton équipe ?', ctaH2: 'Crée ta fiche équipe ménage <em>en 2 minutes</em>',
       annots: [
-        ['<div class="vt-h"><h2>En images</h2>', 'Jusqu’à 6 photos'],
+        ['<div class="fx-car"', 'Jusqu’à 6 photos'],
         ['<h2>Présentation</h2>', 'Bio que tu rédiges'],
         ['<h2>Formules</h2>', 'Tes formules'],
-        ['<h2>Prestations</h2>', 'Prestations cochées'],
-        ['<h2>Capacité', 'Capacité affichée'],
+        ['<h2>Ce que l’équipe propose</h2>', 'Prestations et capacité'],
         ['<h2>L’équipe en ligne</h2>', 'Tes liens'],
-        ['<h2>Comment ça se passe</h2>', 'Ton déroulé'],
         ['<h2>Où j’interviens</h2>', 'Tes villes'],
-        ['<h2>Contacter ', 'Formulaire de contact'],
+        ['<div class="fx-card-id">', 'Contact en 2 étapes'],
       ],
     },
   },

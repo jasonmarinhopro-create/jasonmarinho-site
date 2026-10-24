@@ -21,6 +21,7 @@ import { readMetier, metierLabel, readOptions, OPTIONS_VISUELLES, faitVideo } fr
 import { CLIENTELES, readClienteles } from './lib/pro-clienteles.mjs'
 import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, heroVideoHtml, videoLink, galleryHtml, formulesHtml, derouleHtml, stickyBarHtml, VITRINE_CSS, VITRINE_JS, telHtml, clientelesHtml } from './lib/fiche-vitrine.mjs'
 import { secteurHtml, SECTEUR_CSS, SECTEUR_JS } from './lib/secteur.mjs'
+import { ficheV3Html, ficheV3Js, FICHE_V3_CSS, telHref } from './lib/fiche-v3.mjs'
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
 
 // Options en version courte pour « En bref »
@@ -156,6 +157,14 @@ export function buildFichePage(p) {
     { v: metier === 'video' ? 'Vidéo' : metier === 'photo_video' ? 'Photo & vidéo' : 'Photo', l: opts.length ? opts.map(o => OPTION_COURTE[o.key]).slice(0, 3).join(', ') : 'pour locations courtes' },
     trustFact(p.reco_count ?? 0, p.created_at),
   ]
+  // Les 3 repères de la fiche v3 : le prix s'il est connu, sinon le métier
+  const v3Facts = [
+    (pr => pr ? { v: pr, l: 'dès, la séance' } : null)(prixDepuis(p.formules, p.tarif_min)),
+    zoneFact(p.ville, p.zone_couverte),
+    facts[2],
+    trustFact(p.reco_count ?? 0, p.created_at),
+  ].filter(Boolean).slice(0, 3)
+  const clienteles = (k => k.some(x => x !== 'lcd') ? CLIENTELES.filter(c => k.includes(c.key)) : [])(readClienteles(p.clienteles))
   // Ce que l'hôte peut demander : ce que la fiche indique faire
   const besoins = [
     metier !== 'video' ? 'Des photos' : null,
@@ -230,8 +239,8 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .ok-msg{padding:14px;background:rgba(0,200,100,.08);border:1px solid rgba(0,200,100,.25);border-radius:8px;color:#1e9d54;font-size:13.5px;text-align:center}
 .err-msg{padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:8px;color:#dc2626;font-size:13px;margin-bottom:10px}
 ${VITRINE_CSS}
-${SIGNATURE_CSS}
 ${SECTEUR_CSS}
+${FICHE_V3_CSS}
 </style>
 <script type="application/ld+json">
 ${JSON.stringify({
@@ -261,76 +270,43 @@ ${JSON.stringify({
 <script defer src="/nav.js"></script>
 </head>
 <body>
-<header class="hero">
-  <div class="s-in hero-grid has-cover">
-  <div>
-    <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/photographes">Photographes et vidéastes LCD</a> · <span>${escHtml(displayName)}</span></div>
-    <div class="tag-row">
-      ${p.reco_count > 0 ? `<span class="tag" style="background:rgba(99,214,131,.15);color:#7be29a;border:1px solid rgba(99,214,131,.35)"><i class="ph-bold ph-heart" style="font-size:10px"></i>Recommandé par ${p.reco_count} hôte${p.reco_count > 1 ? 's' : ''}</span>` : ''}
-      <span class="tag"><i class="ph-bold ph-${metier === 'video' ? 'video-camera' : metier === 'photo_video' ? 'film-strip' : 'camera'}" style="font-size:10px"></i>${escHtml(mLabel)}</span>
-      ${p.specialite ? `<span class="tag">${escHtml(p.specialite)}</span>` : ''}
-      ${opts.some(o => o.key === 'drone') ? '<span class="tag"><i class="ph-bold ph-drone" style="font-size:10px"></i>Drone</span>' : ''}
-    </div>
-    <div class="hero-id">
-      ${p.logo_url
-        ? `<div class="hero-logo" style="background:url('${escHtml(p.logo_url)}') center/cover"></div>`
-        : `<div class="hero-logo placeholder">${escHtml(initiales(displayName))}</div>`}
-      <h1>${escHtml(displayName)}<br><em>${escHtml(mLabel.toLowerCase())} pour locations courte durée ${escHtml(aVille(p.ville))}</em></h1>
-    </div>
-    <div class="meta-row">
-      <span><i class="ph-bold ph-handshake"></i>Contact direct, sans commission</span>
-    </div>
-    ${heroActionsHtml({ firstName, hasPhotos: photos.length > 0, external, video: video && !video.embed ? video : null })}
-  </div>
-  ${video?.embed ? heroVideoHtml(p.video_url, { name: displayName, poster: p.__videoPoster || photos[0]?.thumb, credit: p.__videoCredit }) : photos.length ? heroCoverHtml(photos, displayName) : briefHtml(facts)}
-  </div>
-</header>
-
-<div class="body">
-  <div>
-    ${video?.embed || photos.length ? briefHtml(facts, { variant: 'strip' }) : ''}
-    ${galleryHtml(photos, { name: displayName })}
-    ${p.bio ? `<div class="card" style="margin-bottom:20px"><h2>Présentation</h2><div class="bio">${escHtml(p.bio)}</div></div>` : ''}
-    ${opts.length ? `<div class="card vt-sec"><h2>Ce que ${escHtml(firstName)} propose</h2><div class="vt-opts"><span class="vt-opt"><i class="ph-bold ph-${metier === 'video' ? 'video-camera' : 'camera'}"></i>${metier === 'video' ? 'Vidéo du logement' : metier === 'photo_video' ? 'Photos et vidéo du logement' : 'Photos du logement'}</span>${opts.map(o => `<span class="vt-opt"><i class="ph-bold ph-${o.icon}"></i>${escHtml(o.label)}</span>`).join('')}</div></div>` : ''}
-    ${clientelesHtml(p.clienteles, firstName)}
-    ${formulesHtml(p.formules)}
-    ${derouleHtml(p.deroule, 'photographe')}
-    ${secteurHtml({ ville: p.ville, zone: p.zone_couverte, villes: p.villes_couvertes, prenom: firstName, metier: 'photographe' }) ?? zoneCardHtml({ ville: p.ville, zone: p.zone_couverte, villes: p.villes_couvertes, root: ROOT, prefix: 'photographe-lcd', metierLabel: 'Photographe' })}
-  </div>
-
-  <aside>
-    <div class="card" id="contact">
-      <h2>Contacter ${escHtml(firstName)}</h2>
-      ${contactFormHtml({ firstName, besoins, placeholder: 'Un détail à ajouter ? Ville, dates, style recherché (facultatif)' })}
-        <p style="margin-top:10px;font-size:11.5px;color:var(--tl);line-height:1.6">Ton nom, ton e-mail et ton message sont transmis à ${escHtml(firstName)} seulement, pour te répondre, et supprimés au bout de 3 ans. <a href="/politique-de-confidentialite#annuaire" style="color:var(--g)">Confidentialité</a></p>
-      </form>
-      ${telHtml(p.telephone, firstName)}
-      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tl);line-height:1.6">Pas de commission. Pas d'intermédiaire. Tu négocies et contractualises directement avec ${escHtml(firstName)}.</div>
-      <div style="margin-top:12px;font-size:12px;color:var(--tm);line-height:1.6">Tu as déjà bossé avec ${escHtml(firstName)} ? <a href="https://app.jasonmarinho.com/dashboard/recommander?type=photographer&id=${escHtml(p.id)}" style="color:var(--g);font-weight:600">Recommande-le aux autres hôtes →</a></div>
-    </div>
-
-    ${workLinksHtml([
-      p.portfolio_url ? { href: p.portfolio_url, label: 'Le portfolio', icon: 'ph-image-square', track: 'portfolio' } : null,
-      video && !video.file ? { href: video.href, label: video.label, icon: 'ph-play-circle' } : null,
-      instaHandle(p.instagram_handle) ? { href: `https://instagram.com/${instaHandle(p.instagram_handle)}`, label: `@${instaHandle(p.instagram_handle)}`, icon: 'ph-instagram-logo', track: 'instagram', rel: 'noopener' } : null,
-    ], proReseauxHtml(reseaux))}
-
-    ${guide ? `<div class="card" style="margin-top:16px">
-      <h2>Les tarifs photo ${escHtml(aVille(g?.label ?? p.ville))}</h2>
-      <p style="font-size:13.5px;color:var(--tm);line-height:1.7;margin-bottom:12px">Fourchettes constatées, checklist des photos indispensables et conseils pour bien briefer : consulte le guide local avant de demander un devis.</p>
-      <a href="${guide}" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Le guide photo ${escHtml(deVille(g?.label ?? p.ville))}</a>
-    </div>` : ''}
-  </aside>
-</div>
-
-<div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;gap:10px;flex-wrap:wrap">
-  <a href="/annuaires/photographes" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Tous les photographes et vidéastes</a>
-  ${guide ? `<a href="${guide}" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Le guide photo ${escHtml(deVille(g?.label ?? p.ville))}<i class="ph-bold ph-arrow-right"></i></a>` : ''}
-</div>
-
-<div class="disclaimer">
-  <strong>Bon à savoir.</strong> Cette mise en relation est gratuite pour toi. Le devis, le contrat et le paiement de la prestation se font directement entre toi et ${escHtml(displayName)}, sans commission ni intermédiaire de notre part.
-</div>
+${ficheV3Html({
+  name: displayName, firstName, initials: initiales(displayName), logoUrl: p.logo_url,
+  role: `${mShort} ${aVille(p.ville)}`,
+  sub: `${mShort} · ${p.ville}`,
+  crumbs: [{ href: '/', label: 'Accueil' }, { href: '/annuaires/photographes', label: 'Photographes et vidéastes LCD' }, { label: displayName }],
+  badges: [
+    p.reco_count > 0 ? { icon: 'ph-heart', label: `Recommandé par ${p.reco_count} hôte${p.reco_count > 1 ? 's' : ''}`, tone: 'reco' } : null,
+    p.specialite ? { icon: 'ph-sparkle', label: p.specialite } : null,
+    { icon: 'ph-handshake', label: 'Sans commission' },
+  ].filter(Boolean),
+  photos,
+  videoHtml: video?.embed ? heroVideoHtml(p.video_url, { name: displayName, poster: p.__videoPoster || photos[0]?.thumb, credit: p.__videoCredit }) : '',
+  facts: v3Facts,
+  formules: p.formules, tarifMin: p.tarif_min, tarifMax: p.tarif_max, unite: 'la séance',
+  bio: p.bio,
+  offerTitle: `Ce que ${firstName} propose`,
+  offers: [
+    { icon: metier === 'video' ? 'ph-video-camera' : 'ph-camera', label: metier === 'video' ? 'Vidéo du logement' : metier === 'photo_video' ? 'Photos et vidéo du logement' : 'Photos du logement' },
+    ...opts.map(o => ({ icon: `ph-${o.icon}`, label: o.label })),
+    ...clienteles.map(c => ({ icon: `ph-${c.icon}`, label: c.pro })),
+  ],
+  zoneHtml: secteurHtml({ ville: p.ville, zone: p.zone_couverte, villes: p.villes_couvertes, prenom: firstName, metier: 'photographe', compact: true }) ?? zoneCardHtml({ ville: p.ville, zone: p.zone_couverte, villes: p.villes_couvertes, root: ROOT, prefix: 'photographe-lcd', metierLabel: 'Photographe' }),
+  linksTitle: 'Son travail en ligne',
+  links: [
+    p.portfolio_url ? { href: p.portfolio_url, label: 'Le portfolio', icon: 'ph-image-square', track: 'portfolio' } : null,
+    video && !video.file && !video.embed ? { href: video.href, label: video.label, icon: 'ph-play-circle' } : null,
+    instaHandle(p.instagram_handle) ? { href: `https://instagram.com/${instaHandle(p.instagram_handle)}`, label: `@${instaHandle(p.instagram_handle)}`, icon: 'ph-instagram-logo', track: 'instagram', rel: 'noopener' } : null,
+  ],
+  reseauxHtml: proReseauxHtml(reseaux),
+  telHtml: telHtml(p.telephone, firstName), telHref: telHref(p.telephone),
+  besoins,
+  placeholder: 'Ville, dates, style recherché, nombre de pièces…',
+  reco: { href: `https://app.jasonmarinho.com/dashboard/recommander?type=photographer&id=${p.id}`, label: 'Recommande-le aux autres hôtes' },
+  guide: guide ? { href: guide, label: `Le guide photo ${deVille(g?.label ?? p.ville)}` } : null,
+  annuaire: { href: '/annuaires/photographes', label: 'Tous les photographes et vidéastes' },
+  disclaimer: `Cette mise en relation est gratuite pour toi. Le devis, le contrat et le paiement de la prestation se font directement entre toi et ${displayName}, sans commission ni intermédiaire de notre part.`,
+})}
 
 <script>
 const __slug = "${escHtml(p.slug)}";
@@ -345,50 +321,10 @@ try {
   var __vk = 'jm_v_' + __slug;
   if (!sessionStorage.getItem(__vk)) { sessionStorage.setItem(__vk, '1'); jmTrack('view'); }
 } catch (e) { jmTrack('view'); }
-async function contactSubmit(e) {
-  e.preventDefault();
-  const errBox = document.getElementById('contact-err');
-  const btn = document.getElementById('contact-btn');
-  errBox.style.display = 'none';
-  btn.disabled = true; btn.innerHTML = '<i class="ph-bold ph-spinner"></i> Envoi…';
-  const f = e.target;
-  const data = {
-    slug: __slug,
-    contactName: f.contactName.value.trim(),
-    contactEmail: f.contactEmail.value.trim(),
-    message: window.jmContactMessage ? jmContactMessage(f) : f.message.value.trim(),
-    website: f.website ? f.website.value : '',
-    t: __t0,
-  };
-  if (data.message.length < 20) {
-    errBox.textContent = 'Dis-moi ce qu\\'il te faut et ton logement, ou écris quelques mots.';
-    errBox.style.display = 'block';
-    btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à ${escHtml(firstName)}';
-    return false;
-  }
-  try {
-    const res = await fetch('/api/photographer/contact', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-    });
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      errBox.textContent = body.error || 'Erreur lors de l\\'envoi. Réessaye.';
-      errBox.style.display = 'block';
-      btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à ${escHtml(firstName)}';
-      return false;
-    }
-    document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Message envoyé ✓</strong><br>${escHtml(firstName)} te recontacte généralement sous 48h.</div>';
-  } catch (err) {
-    errBox.textContent = 'Réseau indisponible.';
-    errBox.style.display = 'block';
-    btn.disabled = false;
-  }
-  return false;
-}
 </script>
-${stickyBarHtml({ firstName, hasPhotos: photos.length > 0, external })}
 ${VITRINE_JS}
 ${CONTACT_JS}
+${ficheV3Js({ api: '/api/photographer/contact', firstName })}
 ${SECTEUR_JS}
 <script defer src="/calendrier.js"></script>
 <script defer src="/footer.js"></script>

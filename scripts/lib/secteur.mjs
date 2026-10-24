@@ -411,7 +411,7 @@ const de = v => /^les\s/i.test(v) ? `des ${v.slice(4)}` : /^le\s/i.test(v) ? `du
  * Carte « Où j'interviens » prête à poser sur la fiche, ou null si la ville
  * n'a pas été retrouvée (la fiche garde alors l'ancienne carte).
  */
-export function secteurHtml({ ville, zone, villes, prenom, metier, annot = '' }) {
+export function secteurHtml({ ville, zone, villes, prenom, metier, annot = '', compact = false, title = 'Où j’interviens' }) {
   const sec = resolveSecteur({ ville, zone, villes })
   if (!sec) return null
   const { svg, view: v, nbRayon, pills } = secteurMap(sec)
@@ -446,18 +446,20 @@ export function secteurHtml({ ville, zone, villes, prenom, metier, annot = '' })
     d: sec.deps, dn: depNames, cv: sec.communes.map(c => c.nom), s: searchDeps(sec, v), m: metier,
     ...(sec.multi ? { po: sec.poles.map(p => ({ n: p.a.code === sec.centre.code ? sec.nom : p.a.nom, c: [p.a.c[0] / Q, p.a.c[1] / Q] })) } : {}),
   }
-  return `<section class="card vt-sec sct" id="zone" style="position:relative">${annot}
-  <h2>Où j’interviens</h2>
-  ${stats.length ? `<div class="sct-stats">${stats.slice(0, 3).map(([a, b]) => `<div><div class="sct-v">${esc(a)}</div><div class="sct-l">${esc(b)}</div></div>`).join('')}</div>` : ''}
+  // Version compacte des fiches v3 (24/10/2026, Jason : « la partie demande est un peu
+  // chiante, il y en a trop ») : 2 chiffres, sans le champ « Ton logement est à… »
+  return `<section class="card vt-sec sct${compact ? ' sct-c' : ''}" id="zone" style="position:relative">${annot}
+  <h2>${esc(title)}</h2>
+  ${stats.length ? `<div class="sct-stats">${stats.slice(0, compact ? 2 : 3).map(([a, b]) => `<div><div class="sct-v">${esc(a)}</div><div class="sct-l">${esc(b)}</div></div>`).join('')}</div>` : ''}
   <div class="sct-map">${svg}${pills}${sec.france || sec.multi ? '' : insetHtml(v)}<div class="sct-tip" hidden></div></div>
   ${chips ? `<div class="sct-chips">${chips}</div>` : ''}
-  <div class="sct-find">
+  ${compact ? '' : `<div class="sct-find">
     <label for="sct-q">Ton logement est à…</label>
     <div class="sct-in"><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i><input id="sct-q" type="text" autocomplete="off" spellcheck="false" placeholder="Tape ta commune" aria-describedby="sct-r"></div>
     <div class="sct-sug" role="listbox" hidden></div>
     <p class="sct-r" id="sct-r" aria-live="polite"></p>
-  </div>
-  <p class="sct-cap">Distances à vol d’oiseau. Ton logement est un peu plus loin ? Demande quand même : beaucoup de pros se déplacent. Contours : IGN Admin Express (Licence Ouverte).</p>
+  </div>`}
+  <p class="sct-cap">${compact ? 'Un peu plus loin ? Demande quand même : beaucoup de pros se déplacent. Contours IGN (Licence Ouverte).' : 'Distances à vol d’oiseau. Ton logement est un peu plus loin ? Demande quand même : beaucoup de pros se déplacent. Contours : IGN Admin Express (Licence Ouverte).'}</p>
   <script type="application/json" class="sct-data">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>
 </section>`
 }
@@ -565,6 +567,7 @@ export const SECTEUR_JS = `<script>
   });
   // Recherche de la commune de l'hôte
   var q=box.querySelector('#sct-q'),sug=box.querySelector('.sct-sug'),res=box.querySelector('.sct-r'),list=null,loading=null,items=[],act=-1;
+  if(!q)return;
   function load(){
     if(list||loading)return loading;
     loading=Promise.all(D.s.map(function(dep){return fetch('/geo/communes/'+dep+'.json').then(function(r){return r.ok?r.json():[]}).then(function(a){return a.map(function(x){return{nom:x[0],lat:x[1],lon:x[2],dep:dep,n:n(x[0])}})}).catch(function(){return[]})}))

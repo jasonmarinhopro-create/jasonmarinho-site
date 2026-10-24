@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Exemple de fiche photographe et vidéaste · Aperçu</title>
-<meta name="description" content="Aperçu de la fiche que tu obtiens dans l’annuaire des photographes et vidéastes LCD de Jason Marinho : photos, vidéo, formules, déroulé, villes couvertes, contact direct.">
+<meta name="description" content="Aperçu de la fiche que tu obtiens dans l’annuaire des photographes et vidéastes LCD de Jason Marinho : photos, vidéo, formules, villes couvertes, contact direct.">
 <link rel="canonical" href="https://jasonmarinho.com/annuaires/photographes/exemple-fiche">
 <meta property="og:title" content="Exemple de fiche photographe et vidéaste · Aperçu">
-<meta property="og:description" content="Aperçu de la fiche que tu obtiens dans l’annuaire des photographes et vidéastes LCD de Jason Marinho : photos, vidéo, formules, déroulé, villes couvertes, contact direct.">
+<meta property="og:description" content="Aperçu de la fiche que tu obtiens dans l’annuaire des photographes et vidéastes LCD de Jason Marinho : photos, vidéo, formules, villes couvertes, contact direct.">
 <meta property="og:url" content="https://jasonmarinho.com/annuaires/photographes/exemple-fiche">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
@@ -63,6 +63,10 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .ok-msg{padding:14px;background:rgba(0,200,100,.08);border:1px solid rgba(0,200,100,.25);border-radius:8px;color:#1e9d54;font-size:13.5px;text-align:center}
 .err-msg{padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:8px;color:#dc2626;font-size:13px;margin-bottom:10px}
 
+.vt-tel{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px 14px;border:1.5px solid rgba(0,76,63,.18);border-radius:12px;color:var(--g);text-decoration:none;font-family:'Outfit',sans-serif;font-weight:600;font-size:15px}
+.vt-tel:hover{border-color:var(--g);background:#F2F6F3}
+.vt-tel i{font-size:20px}
+.vt-tel small{display:block;font-weight:400;font-size:13px;color:var(--tm)}
 .hero-grid{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
 @media(min-width:900px){.hero-grid.has-cover{grid-template-columns:minmax(0,1fr) 400px}}
 .vt-video{width:100%}
@@ -147,50 +151,6 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
   .vt-bar-s{border:1px solid rgba(0,76,63,.22);color:var(--g);background:#fff}
 }
 
-.vt-brief{width:100%;border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:18px;background:rgba(255,255,255,.04);box-shadow:0 18px 50px rgba(0,0,0,.25)}
-.vt-brief-h{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:12px}
-.vt-facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.12);border-radius:12px;overflow:hidden}
-.vt-facts.n3 .vt-f:last-child{grid-column:span 2}
-.vt-facts .vt-f{background:#062b22;padding:14px 16px;min-width:0}
-.vt-facts .vt-f-v{font-family:'Fraunces',serif;font-size:24px;line-height:1.15;color:#fff;overflow-wrap:anywhere}
-.vt-facts .vt-f-l{font-size:12px;color:rgba(255,255,255,.6);margin-top:3px}
-.vt-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px;background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px 20px}
-.vt-strip.n3{grid-template-columns:repeat(3,minmax(0,1fr))}.vt-strip.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.vt-strip .vt-f{border-left:2px solid var(--g);padding-left:12px;min-width:0}
-.vt-strip .vt-f-v{font-family:'Fraunces',serif;font-size:21px;line-height:1.15;color:var(--td);overflow-wrap:anywhere}
-.vt-strip .vt-f-l{font-size:12px;color:var(--tl);margin-top:2px}
-@media(max-width:640px){.vt-strip,.vt-strip.n3{grid-template-columns:1fr 1fr}.vt-strip.n3 .vt-f:last-child{grid-column:span 2}}
-.vt-zone{display:grid;grid-template-columns:190px minmax(0,1fr);gap:22px;align-items:center}
-.vt-zone.nomap{grid-template-columns:1fr}
-@media(max-width:560px){.vt-zone{grid-template-columns:1fr}.vt-zone-map{max-width:220px}}
-.vt-map{display:block;width:100%;height:auto}
-.vt-map-land{fill:rgba(0,76,63,.05);stroke:rgba(0,76,63,.35);stroke-width:1.2;stroke-linejoin:round}
-.vt-map-ring{fill:rgba(0,76,63,.12);stroke:rgba(0,76,63,.3);stroke-width:1}
-.vt-map-dot{fill:var(--g);stroke:#fff;stroke-width:2}
-.vt-map-t{font:600 13px 'Outfit',sans-serif;fill:var(--g);paint-order:stroke;stroke:#fff;stroke-width:3px}
-.vt-zone-v{font-family:'Fraunces',serif;font-size:24px;color:var(--td);line-height:1.15}
-.vt-zone-t>p{font-size:14px;color:var(--tm);line-height:1.6;margin-top:4px}
-.vt-zone-t .vt-villes{margin-top:12px}
-.vt-zone-t .vt-zone-n{font-size:12.5px;color:var(--tl);margin-top:12px}
-.vt-work{margin-top:16px}
-.vt-link{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid rgba(0,76,63,.15);border-radius:10px;text-decoration:none;color:var(--g);font-weight:600;font-size:14px;margin-top:8px;transition:background .15s,border-color .15s}
-.vt-link:first-of-type{margin-top:0}
-.vt-link span{flex:1;min-width:0;overflow-wrap:anywhere}
-.vt-link-a{font-size:13px;opacity:.6}
-.vt-link:hover{background:rgba(0,76,63,.05);border-color:rgba(0,76,63,.3)}
-.vt-cf fieldset{border:0;margin:0 0 14px;padding:0;min-width:0}
-.vt-cf legend{font-size:12px;font-weight:600;color:var(--td);margin-bottom:8px;padding:0}
-.vt-cf legend span{font-weight:400;color:var(--tl)}
-.vt-pills{display:flex;flex-wrap:wrap;gap:6px}
-.vt-pill{position:relative;cursor:pointer}
-.vt-pill input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
-.vt-pill span{display:inline-flex;align-items:center;padding:7px 12px;border-radius:999px;border:1px solid rgba(0,76,63,.18);background:#fff;font-size:13px;color:var(--td);transition:background .15s,color .15s,border-color .15s}
-.vt-pill input:checked+span{background:var(--g);border-color:var(--g);color:#fff}
-.vt-pill input:focus-visible+span{outline:2px solid var(--y);outline-offset:2px}
-.vt-cf textarea{min-height:70px}
-.vt-cf .jmc-t{min-height:44px;padding:9px 13px;font-size:14px;border-radius:8px}
-
-
 .sct-stats{display:flex;flex-wrap:wrap;gap:12px 22px;margin:0 0 14px}
 .sct-stats>div{border-left:2px solid var(--g);padding-left:11px;min-width:0}
 .sct-v{font-family:'Fraunces',serif;font-size:21px;line-height:1.15;color:var(--td)}
@@ -262,6 +222,168 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 @media(max-width:560px){.sct-pill{font-size:11.5px;padding:4px 8px}.sct-svg .lb.pole circle{r:10}.sct-inset{width:46px;height:46px}.sct-v{font-size:19px}.sct-svg .lb text{display:none}.sct-svg .lb circle{r:5}.sct-svg .ctr text{font-size:25px;stroke-width:6px}.sct-svg .ctr circle{r:9}.sct-svg .dl{font-size:17px}.sct-svg .radl{font-size:19px;stroke-width:5px}.sct-svg .pin text{font-size:22px;stroke-width:6px}.sct-svg .pin circle{r:9}}
 
 
+body{padding-bottom:86px}
+@media(min-width:960px){body{padding-bottom:0}}
+.fx{--fxw:1120px}
+.fx-wrap{max-width:var(--fxw);margin:0 auto;padding-left:clamp(16px,4vw,40px);padding-right:clamp(16px,4vw,40px)}
+.fx-top{background:var(--cr)}
+.fx-brd{font-size:12.5px;color:var(--tl);padding:18px 0 12px}
+.fx-brd a{color:var(--tm);text-decoration:none}.fx-brd a:hover{color:var(--g)}
+.fx-hero{display:flex;flex-direction:column;gap:18px}
+.fx-gal{position:relative;border-radius:20px;overflow:hidden;background:#dfe6e2}
+.fx-car{display:grid;gap:6px;height:min(460px,52vw);grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr}
+.fx-ph{border:0;padding:0;margin:0;cursor:zoom-in;overflow:hidden;background:#dfe6e2;display:block;min-width:0}
+.fx-ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.fx-ph:hover img{transform:scale(1.035)}
+.fx-ph:first-child{grid-row:span 2}
+.fx-ph:nth-child(n+6){display:none}
+.fx-gal.n1 .fx-car{grid-template-columns:1fr;grid-template-rows:1fr}
+.fx-gal.n2 .fx-car{grid-template-columns:1fr 1fr;grid-template-rows:1fr}.fx-gal.n2 .fx-ph:first-child{grid-row:auto}
+.fx-gal.n3 .fx-car{grid-template-columns:2fr 1fr}
+.fx-gal.n4 .fx-car{grid-template-columns:2fr 1fr 1fr}.fx-gal.n4 .fx-ph:nth-child(2){grid-row:span 2}
+.fx-cnt{display:none}
+.fx-all{position:absolute;right:14px;bottom:14px;display:inline-flex;align-items:center;gap:7px;background:#fff;color:var(--gd);border:0;border-radius:10px;padding:9px 14px;font:600 13px 'Outfit',sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.fx-id{display:flex;align-items:center;gap:16px;min-width:0}
+.fx-av{flex:none;width:72px;height:72px;border-radius:50%;background:#e8efeb center/cover no-repeat;border:3px solid #fff;box-shadow:0 6px 18px rgba(0,51,41,.18)}
+.fx-av.ini{display:grid;place-items:center;background:linear-gradient(135deg,#335e52,#0e3a2f);color:var(--y);font-family:'Fraunces',serif;font-size:28px}
+.fx-av.sm{width:46px;height:46px;border-width:2px;font-size:18px;box-shadow:none}
+.fx-id-t{min-width:0}
+.fx-id h1{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(30px,4vw,46px);line-height:1.04;letter-spacing:-.6px;color:var(--td);margin:0}
+.fx-role{display:block;font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;letter-spacing:0;color:var(--g);margin-top:6px}
+.fx-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.fx-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--tm);background:#fff;border:1px solid var(--bd);border-radius:999px;padding:4px 10px}
+.fx-badge.reco{color:#1d6b3f;background:#e6f4ec;border-color:#bfe2cc}
+.fx-badge i{font-size:12px}
+.fx.no-ph .fx-top{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%)}
+.fx.no-ph .fx-brd,.fx.no-ph .fx-brd a{color:rgba(255,255,255,.6)}
+.fx.no-ph .fx-hero{padding:14px 0 40px}
+.fx.no-ph .fx-id h1{color:#fff}
+.fx.no-ph .fx-role{color:var(--y)}
+.fx.no-ph .fx-id .fx-av{width:96px;height:96px;border-color:rgba(255,255,255,.9)}
+.fx-body{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:36px;align-items:start;padding-top:26px;padding-bottom:40px}
+.fx-main{display:flex;flex-direction:column;gap:18px;min-width:0}
+.fx-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.fx-facts.n2{grid-template-columns:repeat(2,minmax(0,1fr))}.fx-facts.n1{grid-template-columns:1fr}
+.fx-fact{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:13px 15px;min-width:0}
+.fx-fact b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:21px;line-height:1.15;color:var(--td);overflow-wrap:anywhere}
+.fx-fact span{display:block;font-size:12.5px;color:var(--tl);margin-top:3px}
+.fx-sec{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:22px 24px;min-width:0}
+.fx-sec h2,.fx .sct h2{font-family:'Fraunces',serif;font-weight:400;font-size:21px;color:var(--td);margin:0 0 14px}
+.fx-forms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.fx-forms.n2{grid-template-columns:repeat(2,minmax(0,1fr))}.fx-forms.n1{grid-template-columns:1fr}
+.fx-fm{border:1px solid var(--bd);border-radius:14px;padding:14px 15px;background:var(--cr);min-width:0}
+.fx-fm.hl{background:#fff;border:1px solid var(--g);box-shadow:0 0 0 1px var(--g) inset}
+.fx-fm-n{font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--tl)}
+.fx-fm b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:26px;color:var(--g);margin:2px 0 4px}
+.fx-fm p{font-size:13.5px;line-height:1.55;color:var(--tm);margin:0}
+.fx-note{font-size:12px;color:var(--tl);margin:12px 0 0}
+.fx-bio p{font-size:15px;line-height:1.75;color:var(--tm);white-space:pre-wrap;margin:0}
+.fx-bio.cut{max-height:7.1em;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent);mask-image:linear-gradient(180deg,#000 55%,transparent)}
+.fx-more-bio{margin-top:8px;background:none;border:0;padding:0;color:var(--g);font:600 14px 'Outfit',sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.fx-offers{display:flex;flex-wrap:wrap;gap:8px}
+.fx-offer{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--td);background:var(--cr);border:1px solid var(--bd);border-radius:999px;padding:7px 13px}
+.fx-offer i{color:var(--g);font-size:14px}
+.fx .sct{border-radius:18px;padding:22px 24px;margin:0}
+.fx .sct-map{max-width:460px;margin:0 auto}
+.fx-links{display:flex;flex-direction:column;gap:8px}
+.fx-link{display:flex;align-items:center;gap:11px;padding:11px 14px;border:1px solid var(--bd);border-radius:12px;text-decoration:none;color:var(--td);font-size:14.5px;font-weight:500;min-width:0}
+.fx-link span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fx-link i:first-child{color:var(--g);font-size:17px}.fx-link i:last-child{color:var(--tl);font-size:14px}
+.fx-link:hover{border-color:rgba(0,76,63,.35)}
+.fx-end{display:flex;flex-wrap:wrap;gap:10px}
+.fx-end a{display:inline-flex;align-items:center;gap:7px;padding:10px 15px;background:#fff;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none}
+.fx-disc{padding:0;margin:0;font-size:12.5px;color:var(--tl);line-height:1.7}
+.fx-side{position:sticky;top:84px}
+.fx-card{background:#fff;border:1px solid var(--bd);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px;box-shadow:0 18px 40px rgba(0,51,41,.08)}
+.fx-card-id{display:flex;gap:11px;align-items:center;min-width:0}
+.fx-card-id b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:19px;line-height:1.1;color:var(--td)}
+.fx-card-id span{display:block;font-size:12.5px;color:var(--tl);margin-top:2px}
+.fx-price{font-family:'Fraunces',serif;font-size:30px;color:var(--g);line-height:1.1}
+.fx-price small{font-family:'Outfit',sans-serif;font-size:13px;color:var(--tl);margin-left:6px}
+.fx-price.devis{font-size:24px}
+.fx-mini{display:flex;flex-direction:column;gap:6px}
+.fx-mini div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--tm);border-bottom:1px dashed var(--bd);padding-bottom:6px}
+.fx-mini b{color:var(--td);font-variant-numeric:tabular-nums}
+.fx-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:12px;padding:14px 18px;background:var(--y);color:var(--gd);font:700 15px 'Outfit',sans-serif;cursor:pointer;text-decoration:none;transition:background .2s,transform .2s}
+.fx-btn:hover{background:#ffe08f;transform:translateY(-1px)}
+.fx-btn.g{background:var(--g);color:#fff}.fx-btn.g:hover{background:var(--gd)}
+.fx-card .vt-tel{margin-top:0}
+.fx-sec .vt-video-btn{box-shadow:none}
+.fx-sec .vt-video-n{color:var(--tl)}
+.fx-fine{font-size:12px;line-height:1.6;color:var(--tl);margin:0}
+.fx-fine a{color:var(--g)}
+.fx-reco{font-size:12.5px;color:var(--tm);margin:0;padding-top:10px;border-top:1px solid var(--bd)}
+.fx-reco a{color:var(--g);font-weight:600}
+.fx-bar{display:none}
+/* Fenêtre de contact */
+.fx-sheet{border:0;padding:0;margin:auto;width:min(480px,100%);max-height:92vh;border-radius:22px;background:#fff;color:var(--td);box-shadow:0 30px 80px rgba(0,20,14,.35)}
+.fx-sheet::backdrop{background:rgba(0,26,17,.5)}
+.fx-form{display:flex;flex-direction:column;gap:0;padding:16px 20px 22px}
+.fx-sh-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.fx-steps{flex:1;display:flex;gap:5px}.fx-steps i{flex:1;height:4px;border-radius:4px;background:#e2ebe6}.fx-steps i.on{background:var(--g)}
+.fx-x{border:0;background:var(--cr);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:var(--tm)}
+.fx-step{display:flex;flex-direction:column;gap:12px}
+.fx-step[hidden],.fx-done[hidden],.fx-extra[hidden]{display:none}
+.fx-sheet h2{font-family:'Fraunces',serif;font-weight:400;font-size:24px;margin:0}
+.fx-sheet fieldset{border:0;padding:0;margin:0}
+.fx-sheet legend{font-size:13px;font-weight:700;color:var(--tm);margin-bottom:8px}
+.fx-pills{display:flex;flex-wrap:wrap;gap:7px}
+.fx-pill{position:relative;cursor:pointer}
+.fx-pill input{position:absolute;opacity:0;pointer-events:none}
+.fx-pill span{display:inline-flex;align-items:center;border:1px solid rgba(0,76,63,.2);border-radius:999px;padding:9px 14px;font-size:14px;background:#fff;transition:all .15s}
+.fx-pill input:checked+span{background:#E8F2EC;border-color:var(--g);color:var(--g);font-weight:700}
+.fx-pill input:focus-visible+span{outline:2px solid var(--g);outline-offset:2px}
+.fx-sheet input[type=text],.fx-sheet input[type=email],.fx-sheet textarea{width:100%;padding:13px 14px;border:1px solid rgba(0,76,63,.2);border-radius:12px;font:15px 'Outfit',sans-serif;color:var(--td);background:#fff}
+.fx-sheet input:focus,.fx-sheet textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,76,63,.12)}
+.fx-sheet textarea{min-height:90px;resize:vertical;margin-top:8px}
+.fx-more,.fx-back{align-self:flex-start;background:none;border:0;padding:2px 0;color:var(--g);font:600 14px 'Outfit',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.fx-back{align-self:center;color:var(--tl);font-weight:500}
+.fx-err{margin:0;font-size:13.5px;color:#b3261e;background:rgba(179,38,30,.07);border-radius:10px;padding:9px 12px}
+.fx-done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:26px 6px 6px}
+.fx-done p{margin:0 0 6px;color:var(--tm);font-size:15px}
+.fx-ok{width:62px;height:62px;border-radius:50%;background:#E8F2EC;color:var(--g);display:grid;place-items:center;font-size:28px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@media(max-width:959px){
+  .fx-body{grid-template-columns:minmax(0,1fr);padding-top:16px}
+  .fx-side{position:static}
+  .fx-card .fx-btn{display:none}
+  .fx-bar{display:flex;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:90;padding:10px max(14px,env(safe-area-inset-left,0px)) calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(247,245,240,0),var(--cr) 26%)}
+  .fx-bar .fx-btn{box-shadow:0 10px 24px rgba(0,51,41,.18)}
+  .fx-bar-tel{flex:none;width:52px;border-radius:12px;background:#fff;border:1px solid var(--bd);display:grid;place-items:center;color:var(--g);font-size:20px;text-decoration:none}
+  .fx-sheet{margin:auto 0 0;width:100%;max-width:none;border-radius:22px 22px 0 0;max-height:94vh}
+  .fx-form{padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))}
+}
+@media(max-width:719px){
+  .fx-brd{display:none}
+  .fx-top .fx-wrap{padding-left:0;padding-right:0}
+  .fx-hero{gap:0;position:relative}
+  .fx-gal{border-radius:0}
+  .fx-car{display:flex;height:auto;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .fx-car::-webkit-scrollbar{display:none}
+  .fx-ph,.fx-ph:first-child{flex:0 0 100%;aspect-ratio:4/3.4;scroll-snap-align:start;grid-row:auto}
+  .fx-ph:nth-child(n+6){display:block}
+  .fx-ph:hover img{transform:none}
+  .fx-all{display:none}
+  .fx-cnt{display:block;position:absolute;top:14px;right:14px;background:rgba(255,255,255,.92);color:var(--gd);font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;z-index:2}
+  .fx:not(.no-ph) .fx-id{position:absolute;left:0;right:0;bottom:0;padding:60px 16px 16px;background:linear-gradient(180deg,transparent,rgba(0,26,17,.86));pointer-events:none}
+  .fx:not(.no-ph) .fx-id h1{color:#fff;font-size:30px}
+  .fx:not(.no-ph) .fx-role{color:var(--y)}
+  .fx:not(.no-ph) .fx-badges{display:none}
+  .fx-av{width:56px;height:56px}
+  .fx.no-ph .fx-hero{padding:22px 16px 30px}
+  .fx.no-ph .fx-id{flex-direction:column;align-items:flex-start}
+  .fx-facts{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .fx-offer{font-size:13px;padding:6px 11px}
+  .fx-fact{padding:10px 11px}.fx-fact b{font-size:17px}.fx-fact span{font-size:11.5px}
+  .fx-sec,.fx .sct{padding:18px}
+  .fx-forms{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:9px;margin:0 -18px;padding:0 18px 4px;scrollbar-width:none}
+  .fx-forms::-webkit-scrollbar{display:none}
+  .fx-fm{flex:0 0 72%;scroll-snap-align:start}
+  .fx-forms.n1 .fx-fm{flex-basis:100%}
+}
+@media(prefers-reduced-motion:reduce){.fx-ph img,.fx-btn{transition:none}}
+
+
 .card{position:relative}
 .annot-tag{position:absolute;top:-9px;right:14px;background:#FFD56B;color:#003329;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:3px 9px;border-radius:6px;box-shadow:0 4px 10px rgba(255,213,107,.4);display:inline-flex;align-items:center;gap:4px;z-index:2}
 .demo-banner{background:linear-gradient(135deg,#FFD56B 0%,#FFB84D 100%);color:#0F1A0D;padding:14px clamp(20px,5vw,48px);text-align:center;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
@@ -274,41 +396,24 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 .cta-bottom .btn-main{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 28px;border-radius:10px;text-decoration:none}
 .cta-bottom .btn-main:hover{background:#ffe08f}
 .disclaimer{color:var(--tm)}
+.fx-sec,.fx-card,.fx-facts,.fx .sct{position:relative}
+.fx-gal .annot-tag{top:14px;left:14px;right:auto}
+@media(max-width:719px){.fx-gal .annot-tag{top:auto;bottom:118px}}
 </style>
 <script defer src="/nav.js"></script>
 </head>
 <body>
 <div class="demo-banner"><i class="ph-bold ph-eye"></i><span>Ceci est un <strong>exemple</strong> de fiche photographe (Camille n’existe pas). <a href="/annuaires/photographes/inscription">Crée la tienne maintenant →</a></span></div>
-<header class="hero">
-  <div class="s-in hero-grid has-cover">
-  <div>
-    <div class="brd"><a href="/">Accueil</a> · <a href="/devenir-photographe-lcd">Photographes et vidéastes LCD</a> · <span>Exemple de fiche</span></div>
-    <div class="tag-row">
-      
-      <span class="tag"><i class="ph-bold ph-film-strip" style="font-size:10px"></i>Photographe et vidéaste</span>
-      <span class="tag">Intérieurs + drone extérieur</span>
-      <span class="tag"><i class="ph-bold ph-drone" style="font-size:10px"></i>Drone</span>
-    </div>
-    <div class="hero-id">
-      <div class="hero-logo placeholder">CS</div>
-      <h1>Camille Sénéchal<br><em>photographe et vidéaste pour locations courte durée à Lyon</em></h1>
-    </div>
-    <div class="meta-row">
-      <span><i class="ph-bold ph-handshake"></i>Contact direct, sans commission</span>
-    </div>
-    <div class="vt-actions"><a href="#contact" class="vt-btn-y" data-vt-contact><i class="ph-bold ph-paper-plane-tilt"></i>Contacter Camille</a><a href="#photos" class="vt-btn-o"><i class="ph-bold ph-images"></i>Voir les photos</a></div>
+<main class="fx">
+<section class="fx-top">
+  <div class="fx-wrap">
+    <nav class="fx-brd" aria-label="Fil d’Ariane"><a href="/">Accueil</a> · <a href="/devenir-photographe-lcd">Photographes et vidéastes LCD</a> · <span>Exemple de fiche</span></nav>
+    <div class="fx-hero">
+      <div class="fx-gal n5" id="photos">
+    <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Jusqu’à 6 photos</span><div class="fx-car" tabindex="-1"><button type="button" class="fx-ph" data-vt-open="0" data-vt-full="/img/exemple-fiches/photo-interieur-1.jpg" aria-label="Agrandir la photo 1 sur 6"><img src="/img/exemple-fiches/photo-interieur-1-t.jpg" alt="Photo 1 sur 6, par Camille Sénéchal" width="800" height="600" fetchpriority="high"></button><button type="button" class="fx-ph" data-vt-open="1" data-vt-full="/img/exemple-fiches/photo-salon-5.jpg" aria-label="Agrandir la photo 2 sur 6"><img src="/img/exemple-fiches/photo-salon-5-t.jpg" alt="Photo 2 sur 6, par Camille Sénéchal" width="800" height="600" loading="lazy"></button><button type="button" class="fx-ph" data-vt-open="2" data-vt-full="/img/exemple-fiches/photo-chambre-4.jpg" aria-label="Agrandir la photo 3 sur 6"><img src="/img/exemple-fiches/photo-chambre-4-t.jpg" alt="Photo 3 sur 6, par Camille Sénéchal" width="800" height="600" loading="lazy"></button><button type="button" class="fx-ph" data-vt-open="3" data-vt-full="/img/exemple-fiches/photo-cuisine-2.jpg" aria-label="Agrandir la photo 4 sur 6"><img src="/img/exemple-fiches/photo-cuisine-2-t.jpg" alt="Photo 4 sur 6, par Camille Sénéchal" width="800" height="600" loading="lazy"></button><button type="button" class="fx-ph" data-vt-open="4" data-vt-full="/img/exemple-fiches/photo-sdb-2.jpg" aria-label="Agrandir la photo 5 sur 6"><img src="/img/exemple-fiches/photo-sdb-2-t.jpg" alt="Photo 5 sur 6, par Camille Sénéchal" width="800" height="600" loading="lazy"></button><button type="button" class="fx-ph" data-vt-open="5" data-vt-full="/img/exemple-fiches/photo-maison-2.jpg" aria-label="Agrandir la photo 6 sur 6"><img src="/img/exemple-fiches/photo-maison-2-t.jpg" alt="Photo 6 sur 6, par Camille Sénéchal" width="800" height="600" loading="lazy"></button></div>
+    <span class="fx-cnt" aria-hidden="true"><b>1</b> / 6</span>
+    <button type="button" class="fx-all" data-vt-open="0"><i class="ph-bold ph-images"></i>Voir les 6 photos</button>
   </div>
-  <div class="vt-video"><button type="button" class="vt-video-btn" data-vt-video="https://jasonmarinho.com/img/exemple-fiches/video-camille.mp4" data-vt-file aria-label="Lire la vidéo de Camille Sénéchal" style="background-image:url('/img/exemple-fiches/video-camille.jpg')"><span class="vt-play"><i class="ph-bold ph-play"></i></span><span class="vt-video-l">Voir la vidéo</span></button><p class="vt-video-n">Vidéo d’illustration : PortoBay, <a href="https://commons.wikimedia.org/wiki/File:La_Villa_at_The_Cliff_Bay_-_Video_Tour.webm" target="_blank" rel="noopener">CC BY 3.0, Wikimedia Commons</a></p></div>
-  </div>
-</header>
-
-<div class="body">
-  <div>
-    <div class="vt-strip n3" style="position:relative"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Calculé depuis ta fiche</span><div class="vt-f"><div class="vt-f-v">350 €</div><div class="vt-f-l">dès, la séance</div></div><div class="vt-f"><div class="vt-f-v">60 km</div><div class="vt-f-l">autour de Lyon</div></div><div class="vt-f"><div class="vt-f-v">Photo &amp; vidéo</div><div class="vt-f-l">drone, vidéos courtes, crépuscule</div></div></div>
-    <section class="card vt-sec" id="photos" style="position:relative">
-  <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Jusqu’à 6 photos</span><div class="vt-h"><h2>Photos</h2><span class="vt-count">6 photos</span></div>
-  <div class="vt-gal n5"><button type="button" class="vt-ph" data-vt-open="0" data-vt-full="/img/exemple-fiches/photo-interieur-1.jpg" aria-label="Agrandir la photo 1 sur 6"><img src="/img/exemple-fiches/photo-interieur-1-t.jpg" alt="Photo 1 sur 6, par Camille Sénéchal" width="640" height="480"></button><button type="button" class="vt-ph" data-vt-open="1" data-vt-full="/img/exemple-fiches/photo-salon-5.jpg" aria-label="Agrandir la photo 2 sur 6"><img src="/img/exemple-fiches/photo-salon-5-t.jpg" alt="Photo 2 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"></button><button type="button" class="vt-ph" data-vt-open="2" data-vt-full="/img/exemple-fiches/photo-chambre-4.jpg" aria-label="Agrandir la photo 3 sur 6"><img src="/img/exemple-fiches/photo-chambre-4-t.jpg" alt="Photo 3 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"></button><button type="button" class="vt-ph" data-vt-open="3" data-vt-full="/img/exemple-fiches/photo-cuisine-2.jpg" aria-label="Agrandir la photo 4 sur 6"><img src="/img/exemple-fiches/photo-cuisine-2-t.jpg" alt="Photo 4 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"></button><button type="button" class="vt-ph" data-vt-open="4" data-vt-full="/img/exemple-fiches/photo-sdb-2.jpg" aria-label="Agrandir la photo 5 sur 6"><img src="/img/exemple-fiches/photo-sdb-2-t.jpg" alt="Photo 5 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"><span class="vt-more">+1</span></button><button type="button" class="vt-ph" data-vt-open="5" data-vt-full="/img/exemple-fiches/photo-maison-2.jpg" hidden aria-label="Agrandir la photo 6 sur 6"><img src="/img/exemple-fiches/photo-maison-2-t.jpg" alt="Photo 6 sur 6, par Camille Sénéchal" width="640" height="480" loading="lazy"></button></div>
-</section>
 <dialog class="vt-lb" id="vt-lb" aria-label="Photos en grand">
   <button type="button" class="vt-lb-x" data-vt-close aria-label="Fermer"><i class="ph-bold ph-x"></i></button>
   <button type="button" class="vt-lb-nav prev" data-vt-prev aria-label="Photo précédente"><i class="ph-bold ph-caret-left"></i></button>
@@ -316,84 +421,98 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
   <button type="button" class="vt-lb-nav next" data-vt-next aria-label="Photo suivante"><i class="ph-bold ph-caret-right"></i></button>
   <div class="vt-lb-n"></div>
 </dialog>
-    <div class="card" style="margin-bottom:20px"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Bio que tu rédiges</span><h2>Présentation</h2><div class="bio">Photographe spécialisée location courte durée depuis 4 ans à Lyon, je shoot exclusivement pour des hôtes Airbnb et des conciergeries du Rhône. Mon truc : les intérieurs lumineux qui font envie dès la première photo, avec parfois un complément drone pour valoriser un jardin ou une vue. Je travaille rapide (la séance type dure 2h) et je livre sous 5 jours, retouches comprises. Chaque shoot est livré en 2 formats : pleine résolution pour ton site / dossier presse, et carré 1:1 optimisé pour le thumbnail Airbnb.</div></div>
-    <div class="card vt-sec"><h2>Ce que Camille propose</h2><div class="vt-opts"><span class="vt-opt"><i class="ph-bold ph-camera"></i>Photos et vidéo du logement</span><span class="vt-opt"><i class="ph-bold ph-drone"></i>Vues aériennes (drone)</span><span class="vt-opt"><i class="ph-bold ph-film-strip"></i>Vidéos courtes pour les réseaux</span><span class="vt-opt"><i class="ph-bold ph-moon-stars"></i>Photos au crépuscule</span></div></div>
-    <section class="card vt-sec" id="formules" style="position:relative">
-  <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes formules</span><h2>Formules</h2>
-  <div class="vt-forms n3"><div class="vt-form first">
-    <div class="vt-form-n">Essentielle</div>
-    <div class="vt-form-p">350 €</div>
-    <p>Studio ou T2 : 20 photos retouchées, livrées sous 5 jours.</p>
-  </div><div class="vt-form">
-    <div class="vt-form-n">Complète</div>
-    <div class="vt-form-p">520 €</div>
-    <p>Jusqu’au T4 : 35 photos, carré 1:1 pour Airbnb, visite en vidéo courte.</p>
-  </div><div class="vt-form">
-    <div class="vt-form-n">Prestige</div>
-    <div class="vt-form-p">700 €</div>
-    <p>Maison avec extérieur : 45 photos + vues drone du jardin et du quartier.</p>
-  </div></div>
-  <p class="vt-note">Prix indicatifs : le devis final dépend de ton logement.</p>
+      <div class="fx-id">
+        <span class="fx-av  ini" aria-hidden="true">CS</span>
+        <div class="fx-id-t">
+          <h1>Camille Sénéchal<span class="fx-role">Photographe &amp; vidéaste à Lyon</span></h1>
+          <div class="fx-badges"><span class="fx-badge"><i class="ph-bold ph-sparkle"></i>Intérieurs + drone extérieur</span><span class="fx-badge"><i class="ph-bold ph-handshake"></i>Sans commission</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
-    <section class="card vt-sec" style="position:relative">
-  <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Ton déroulé</span><h2>Comment ça se passe</h2>
-  <ol class="vt-steps"><li><span class="vt-step-n">1</span><div><strong>Tu m’envoies ta demande</strong><p>Ton logement, la ville et tes dates : je te réponds avec un devis.</p></div></li><li><span class="vt-step-n">2</span><div><strong>Le shooting</strong><p>Je photographie le logement préparé, à la meilleure lumière.</p></div></li><li><span class="vt-step-n">3</span><div><strong>La livraison</strong><p>Tu reçois tes photos retouchées, prêtes pour Airbnb et Booking.</p></div></li></ol>
-</section>
-    <section class="card vt-sec sct" id="zone" style="position:relative">
+
+<div class="fx-wrap fx-body">
+  <div class="fx-main">
+    <div class="fx-facts n3"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Calculé depuis ta fiche</span><div class="fx-fact"><b>350 €</b><span>dès, la séance</span></div><div class="fx-fact"><b>60 km</b><span>autour de Lyon</span></div><div class="fx-fact"><b>Photo &amp; vidéo</b><span>drone, vidéos courtes, crépuscule</span></div></div>
+    <section class="fx-sec"><h2>La vidéo</h2><div class="vt-video"><button type="button" class="vt-video-btn" data-vt-video="https://jasonmarinho.com/img/exemple-fiches/video-camille.mp4" data-vt-file aria-label="Lire la vidéo de Camille Sénéchal" style="background-image:url('/img/exemple-fiches/video-camille.jpg')"><span class="vt-play"><i class="ph-bold ph-play"></i></span><span class="vt-video-l">Voir la vidéo</span></button><p class="vt-video-n">Vidéo d’illustration : PortoBay, <a href="https://commons.wikimedia.org/wiki/File:La_Villa_at_The_Cliff_Bay_-_Video_Tour.webm" target="_blank" rel="noopener">CC BY 3.0, Wikimedia Commons</a></p></div></section>
+    <section class="fx-sec" id="formules"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes formules</span><h2>Formules</h2>
+      <div class="fx-forms n3"><div class="fx-fm"><span class="fx-fm-n">Essentielle</span><b>350 €</b><p>Studio ou T2 : 20 photos retouchées, livrées sous 5 jours.</p></div><div class="fx-fm hl"><span class="fx-fm-n">Complète</span><b>520 €</b><p>Jusqu’au T4 : 35 photos, carré 1:1 pour Airbnb, visite en vidéo courte.</p></div><div class="fx-fm"><span class="fx-fm-n">Prestige</span><b>700 €</b><p>Maison avec extérieur : 45 photos + vues drone du jardin et du quartier.</p></div></div>
+      <p class="fx-note">Prix indicatifs, la séance : le devis final dépend de ton logement.</p>
+    </section>
+    <section class="fx-sec"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Bio que tu rédiges</span><h2>Présentation</h2><div class="fx-bio" data-fx-bio><p>Photographe spécialisée location courte durée depuis 4 ans à Lyon, je shoot exclusivement pour des hôtes Airbnb et des conciergeries du Rhône. Mon truc : les intérieurs lumineux qui font envie dès la première photo, avec parfois un complément drone pour valoriser un jardin ou une vue. Je travaille rapide (la séance type dure 2h) et je livre sous 5 jours, retouches comprises. Chaque shoot est livré en 2 formats : pleine résolution pour ton site / dossier presse, et carré 1:1 optimisé pour le thumbnail Airbnb.</p></div><button type="button" class="fx-more-bio" data-fx-bio-btn hidden>Lire la suite</button></section>
+    <section class="fx-sec"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes options</span><h2>Ce que Camille propose</h2><div class="fx-offers"><span class="fx-offer"><i class="ph-bold ph-camera"></i>Photos et vidéo du logement</span><span class="fx-offer"><i class="ph-bold ph-drone"></i>Vues aériennes (drone)</span><span class="fx-offer"><i class="ph-bold ph-film-strip"></i>Vidéos courtes pour les réseaux</span><span class="fx-offer"><i class="ph-bold ph-moon-stars"></i>Photos au crépuscule</span></div></section>
+    <section class="card vt-sec sct sct-c" id="zone" style="position:relative">
   <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes villes</span><h2>Où j’interviens</h2>
   <div class="sct-stats"><div><div class="sct-v">2 secteurs</div><div class="sct-l">Auvergne-Rhône-Alpes</div></div><div><div class="sct-v">905</div><div class="sct-l">communes à moins de 60 km de Lyon</div></div></div>
   <div class="sct-map"><svg class="sct-svg" viewBox="0 0 600 455" role="img" aria-label="Carte du secteur : Lyon" data-p="3814.5,46433.6,0.23526,0.33721"><path class="land mt" d="M227 87L231 73L234 66L234 59L238 53L239 46L244 36L244 26L253 10L254 -2L259 -11L259 -19L264 -27L280 -26L285 -20L292 -17L304 -20L311 -25L320 -27L326 -25L329 -12L339 -6L352 -5L354 1L349 7L359 11L367 18L367 28L373 32L379 32L382 40L389 37L391 40L386 54L390 57L401 57L406 55L412 47L419 46L424 35L432 32L440 41L447 42L447 51L449 58L459 56L479 58L485 56L489 49L493 50L495 42L500 42L510 24L521 16L529 6L537 8L554 22L543 40L542 47L538 50L543 62L538 66L535 63L522 66L515 72L509 73L506 80L512 83L504 102L496 102L489 106L487 118L480 117L475 110L470 120L469 131L470 138L469 150L475 156L474 167L474 177L468 195L464 211L462 226L463 233L457 244L445 244L445 253L441 258L441 265L434 268L426 277L421 264L417 259L409 254L414 250L407 243L403 242L400 237L393 229L386 220L378 211L381 203L376 196L361 185L356 192L350 197L347 210L342 217L331 224L324 223L321 216L317 213L303 209L289 210L282 212L270 210L260 211L259 198L256 193L258 189L252 187L251 181L243 176L233 181L233 173L229 172L225 167L217 167L215 163L221 156L219 134L218 131L223 123L220 115L231 99L232 93L227 87ZM-184 -122L-180 -109L-172 -103L-161 -99L-153 -88L-145 -83L-141 -84L-128 -96L-121 -95L-118 -86L-110 -84L-106 -87L-100 -95L-90 -94L-90 -87L-85 -84L-86 -78L-85 -74L-77 -76L-68 -85L-63 -82L-60 -86L-62 -95L-56 -95L-51 -98L-56 -107L-44 -106L-42 -92L-38 -91L-34 -81L-28 -77L-24 -68L-24 -61L-19 -58L-17 -44L-19 -39L-17 -36L-11 -36L-3 -29L5 -33L6 -28L12 -26L11 -20L18 -16L25 -21L34 -19L43 -11L41 0L43 2L38 12L42 21L41 39L32 38L31 44L23 46L20 53L15 53L13 57L-2 60L-3 66L-11 66L-6 75L-6 84L-2 92L-6 94L-3 109L2 117L-2 126L-2 131L3 147L2 151L-9 156L-17 158L-25 155L-28 163L-28 169L-32 160L-41 158L-50 141L-64 141L-66 139L-78 142L-82 138L-85 125L-90 126L-93 121L-102 124L-105 128L-113 128L-126 124L-137 125L-141 121L-149 121L-152 124L-162 122L-168 114L-170 107L-180 113L-188 112L-193 104L-198 105L-205 89L-213 87L-210 82L-212 75L-207 71L-206 64L-217 61L-230 62L-234 68L-233 72L-236 80L-242 79L-255 71L-257 75L-255 80L-258 86L-268 88L-268 94L-273 104L-276 106L-294 98L-295 88L-303 84L-305 66L-311 63L-315 56L-314 51L-323 47L-328 50L-328 42L-335 35L-340 41L-343 36L-351 35L-356 27L-351 22L-360 16L-361 5L-360 -7L-355 -14L-344 -26L-340 -28L-322 -29L-313 -34L-309 -29L-302 -32L-301 -29L-283 -39L-285 -53L-291 -57L-286 -69L-292 -76L-286 -78L-280 -75L-274 -86L-262 -99L-259 -105L-253 -104L-248 -96L-241 -101L-232 -102L-213 -116L-201 -125L-184 -122ZM576 441L585 447L592 444L600 448L602 455L600 460L607 463L617 462L621 466L629 465L627 453L634 447L639 450L645 448L650 442L659 443L662 447L670 459L669 466L672 476L685 476L689 478L691 484L688 486L694 493L691 503L691 515L696 516L704 525L717 534L729 536L734 530L743 535L751 538L754 547L749 555L755 564L755 571L760 579L765 580L768 591L764 591L755 588L746 589L739 595L737 600L729 598L721 608L716 609L715 613L702 617L695 623L688 634L679 639L674 638L671 652L666 656L663 670L643 670L640 668L625 669L623 665L616 661L611 662L608 654L598 644L592 649L596 653L594 661L590 664L583 658L576 664L570 665L576 682L571 691L568 692L555 672L551 672L551 665L541 660L533 660L531 668L520 674L519 679L509 683L503 687L499 700L490 713L497 716L494 730L494 737L486 729L485 723L478 719L473 727L473 732L481 738L486 749L494 752L493 757L474 753L466 749L462 751L457 750L447 754L442 758L438 756L439 742L437 740L438 728L431 729L428 725L429 719L422 716L424 709L405 708L402 703L395 707L389 702L387 697L381 696L383 689L377 677L384 675L391 679L396 673L388 670L387 663L392 655L401 655L411 660L421 663L424 661L427 652L435 651L426 640L419 638L424 624L430 615L430 601L450 605L456 597L465 600L467 593L473 589L473 585L467 582L474 571L478 567L488 568L491 565L496 566L509 557L502 549L509 544L515 544L521 538L528 545L541 536L544 530L554 533L560 531L573 533L577 527L585 526L593 535L598 532L597 524L598 520L598 509L599 503L592 501L592 494L588 490L590 483L585 482L573 484L562 479L566 462L571 460L568 447L576 441ZM157 404L171 404L177 400L185 398L183 391L185 386L190 385L188 379L204 367L208 367L214 361L222 360L226 364L223 368L225 377L232 383L234 386L234 396L233 407L235 415L233 418L235 428L239 430L233 439L238 449L239 460L246 465L241 471L241 482L244 485L246 495L250 499L252 505L246 516L246 527L242 536L237 538L231 553L223 560L223 578L227 590L226 603L218 618L218 622L211 624L206 633L210 642L206 647L206 655L208 658L208 668L201 675L200 686L196 695L197 709L197 719L196 730L194 725L189 727L186 723L175 718L172 712L162 706L151 705L150 708L149 720L146 724L138 723L136 718L138 708L135 704L130 706L123 706L119 711L111 714L112 722L109 728L105 731L100 730L94 723L88 719L86 713L77 715L74 707L61 710L56 714L52 709L56 706L56 693L60 684L55 680L53 670L43 666L41 661L39 647L32 627L26 628L22 616L19 612L19 601L13 592L11 570L18 567L25 559L29 553L31 543L41 546L50 539L48 535L52 527L60 528L68 525L80 526L86 522L88 512L95 506L96 497L103 497L117 493L112 484L114 478L118 473L123 474L133 471L133 465L128 465L125 460L131 448L138 444L131 440L132 435L149 439L149 429L155 423L156 413L159 408L157 404ZM232 383L246 379L251 383L262 375L270 372L276 367L281 368L284 376L292 376L297 388L312 384L307 400L321 400L322 406L318 416L323 426L323 443L317 450L314 458L319 460L322 455L332 457L337 463L350 462L353 466L360 467L370 471L385 459L387 455L393 455L389 465L392 479L395 484L391 495L393 510L391 528L388 542L393 543L388 554L406 560L416 558L416 563L426 567L431 576L446 578L453 581L457 586L467 582L473 585L473 589L467 593L465 600L456 597L450 605L430 601L430 615L424 624L419 638L426 640L435 651L427 652L424 661L421 663L411 660L401 655L392 655L387 663L388 670L396 673L391 679L384 675L377 677L383 689L381 696L387 697L389 702L395 707L402 703L405 708L424 709L422 716L429 719L428 725L431 729L438 728L437 740L439 742L438 756L432 757L431 765L440 766L439 771L428 770L429 764L422 757L414 757L412 763L416 767L409 770L406 776L396 782L386 781L381 769L369 768L369 753L362 749L358 752L348 748L339 743L335 749L320 746L315 743L317 738L314 726L318 722L320 716L304 726L297 725L293 717L280 724L274 725L263 732L250 733L238 744L235 742L235 734L233 726L233 718L223 711L213 710L203 713L197 709L196 695L200 686L201 675L208 668L208 658L206 655L206 647L210 642L206 633L211 624L218 622L218 618L226 603L227 590L223 578L223 560L231 553L237 538L242 536L246 527L246 516L252 505L250 499L246 495L244 485L241 482L241 471L246 465L239 460L238 449L233 442L239 430L235 428L233 418L235 415L233 407L234 396L234 386L232 383ZM426 277L425 280L438 297L437 302L441 305L446 313L448 320L452 324L451 331L453 336L463 335L472 341L480 343L486 346L489 351L493 352L491 342L496 333L497 326L494 323L506 318L512 323L517 324L516 330L526 336L536 334L537 338L545 337L548 344L556 351L560 365L557 376L552 378L545 386L547 395L544 401L552 415L552 420L548 431L552 433L559 428L568 435L573 433L577 436L576 441L568 447L571 460L566 462L562 479L573 484L585 482L590 483L588 490L592 494L592 501L599 503L598 509L598 520L597 524L598 532L593 535L585 526L577 527L573 533L560 531L554 533L544 530L541 536L528 545L521 538L515 544L509 544L502 549L509 554L496 566L491 565L488 568L478 567L474 571L467 582L457 586L453 581L446 578L431 576L426 567L416 563L416 558L406 560L388 554L393 543L388 542L391 528L393 510L391 495L395 484L392 479L389 465L393 455L387 455L385 459L370 471L360 467L353 466L350 462L337 463L332 457L322 455L319 460L314 458L317 450L323 443L323 426L318 416L322 406L321 400L307 400L312 384L297 388L292 376L284 376L281 368L276 367L270 372L262 375L251 383L246 379L232 383L225 377L223 368L226 364L222 360L222 350L219 341L222 338L222 330L226 330L228 324L242 314L248 307L247 302L241 300L234 291L238 285L244 288L247 283L256 279L262 279L272 277L278 280L280 273L288 276L287 269L293 263L293 259L304 251L310 245L316 244L309 235L301 234L301 225L295 225L293 216L300 219L303 209L317 213L321 216L324 223L331 224L342 217L347 210L350 197L356 192L361 185L376 196L381 203L378 211L386 220L393 229L400 237L403 242L407 243L414 250L409 254L417 259L421 264L426 277ZM401 -293L404 -287L413 -281L414 -277L421 -279L430 -277L438 -284L443 -280L448 -272L448 -265L456 -260L458 -256L464 -254L464 -249L470 -248L472 -240L468 -229L460 -221L464 -210L453 -201L455 -197L464 -198L469 -207L471 -196L476 -194L493 -191L497 -185L501 -187L507 -184L509 -179L506 -173L513 -168L510 -160L517 -154L516 -148L520 -145L522 -140L530 -144L536 -138L546 -132L556 -124L563 -112L558 -108L557 -104L547 -98L541 -93L531 -86L539 -73L528 -65L526 -59L545 -41L551 -38L541 -26L537 -16L532 -10L534 -2L529 6L521 16L510 24L500 42L495 42L493 50L489 49L485 56L479 58L459 56L449 58L447 51L447 42L440 41L432 32L424 35L419 46L412 47L406 55L401 57L390 57L386 54L391 40L389 37L382 40L379 32L373 32L367 28L367 18L359 11L349 7L354 1L352 -5L355 -10L367 -9L377 -13L375 -22L369 -28L363 -30L366 -49L374 -50L377 -61L383 -69L377 -75L378 -81L372 -85L375 -88L372 -100L364 -100L365 -107L371 -113L362 -121L357 -122L356 -128L375 -135L385 -132L388 -137L387 -142L377 -144L373 -146L374 -154L371 -155L364 -152L356 -154L351 -166L351 -170L344 -169L340 -173L339 -184L345 -191L350 -192L352 -197L344 -200L346 -207L355 -216L370 -219L376 -229L375 -233L382 -240L387 -253L384 -257L392 -264L390 -269L393 -276L394 -288L398 -287L401 -293ZM20 53L22 59L18 74L23 76L37 78L39 87L51 89L56 85L68 79L75 87L88 87L87 83L93 80L97 86L104 84L104 93L110 93L112 88L118 88L129 80L135 72L143 78L137 82L147 90L140 100L133 96L129 100L119 103L116 112L117 119L111 128L103 128L105 134L117 144L114 149L102 148L114 158L113 162L125 171L125 175L120 179L124 188L128 191L137 193L132 205L132 220L126 223L132 231L137 230L132 243L130 257L136 260L140 270L147 273L149 279L162 286L166 290L178 287L181 290L191 292L194 299L202 291L205 297L197 305L199 319L208 322L214 317L218 319L222 330L222 338L219 341L222 350L222 360L214 361L208 367L204 367L188 379L190 385L185 386L183 391L185 398L177 400L171 404L157 404L142 391L131 396L128 389L130 382L122 376L130 370L125 361L116 358L112 362L108 362L101 354L97 352L89 354L86 351L79 354L80 360L72 359L63 363L58 369L54 363L47 372L44 363L40 358L29 358L24 369L19 363L18 350L20 345L34 334L37 328L36 324L40 317L35 314L31 300L33 296L29 289L21 281L17 280L11 273L2 270L-9 250L-7 245L-13 232L-21 229L-20 222L-29 216L-24 214L-21 205L-19 190L-14 185L-22 173L-28 169L-28 163L-25 155L-17 158L-9 156L2 151L3 147L-2 131L-2 126L2 117L-3 109L-6 94L-2 92L-6 84L-6 75L-11 66L-3 66L-2 60L13 57L15 53L20 53ZM19 363L24 369L29 358L40 358L44 363L47 372L54 363L58 369L63 363L72 359L80 360L79 354L86 351L89 354L97 352L101 354L108 362L112 362L116 358L125 361L130 370L122 376L130 382L128 389L131 396L142 391L157 404L159 408L156 413L155 423L149 429L149 439L132 435L131 440L138 444L131 448L125 460L128 465L133 465L133 471L123 474L118 473L114 478L112 484L117 493L103 497L96 497L95 506L88 512L86 522L80 526L68 525L60 528L52 527L48 535L50 539L41 546L31 543L29 553L25 559L18 567L11 570L5 568L7 562L-3 557L-14 544L-17 538L-22 540L-34 541L-34 536L-38 526L-44 524L-52 526L-51 531L-53 542L-65 541L-73 543L-79 547L-84 537L-88 533L-89 524L-95 511L-94 507L-96 498L-101 499L-107 493L-110 492L-109 482L-112 475L-118 476L-121 473L-121 465L-118 455L-113 446L-121 442L-124 443L-130 426L-128 413L-135 410L-140 401L-138 394L-142 389L-152 389L-154 385L-164 388L-168 377L-165 373L-167 364L-152 365L-140 356L-123 348L-120 342L-115 347L-108 341L-103 348L-82 348L-79 341L-74 339L-69 348L-59 350L-53 357L-53 363L-46 369L-36 361L-32 354L-26 362L-10 366L-6 364L-7 358L-2 351L5 357L6 360L13 363L19 363ZM-294 98L-276 106L-273 104L-268 94L-268 88L-258 86L-255 80L-257 75L-255 71L-242 79L-236 80L-233 72L-234 68L-230 62L-217 61L-206 64L-207 71L-212 75L-210 82L-213 87L-205 89L-198 105L-193 104L-188 112L-180 113L-170 107L-168 114L-162 122L-152 124L-149 121L-141 121L-137 125L-126 124L-113 128L-105 128L-102 124L-93 121L-90 126L-85 125L-82 138L-78 142L-66 139L-64 141L-50 141L-41 158L-32 160L-28 169L-22 173L-14 185L-19 190L-21 205L-24 214L-29 216L-20 222L-21 229L-13 232L-7 245L-9 250L2 270L11 273L17 280L21 281L29 289L33 296L31 300L35 314L40 317L36 324L37 328L34 334L20 345L18 350L19 363L13 363L6 360L5 357L-2 351L-7 358L-6 364L-10 366L-26 362L-32 354L-36 361L-46 369L-53 363L-53 357L-59 350L-69 348L-74 339L-79 341L-82 348L-103 348L-108 341L-115 347L-120 342L-123 348L-140 356L-152 365L-167 364L-172 370L-178 372L-178 380L-186 384L-187 387L-199 380L-203 379L-208 372L-210 360L-218 354L-223 357L-226 351L-238 351L-247 353L-252 351L-259 355L-265 347L-268 335L-271 337L-276 333L-288 332L-299 322L-307 322L-305 307L-305 297L-311 295L-318 283L-314 278L-313 268L-305 268L-303 262L-306 258L-303 252L-304 245L-311 235L-320 227L-325 225L-326 216L-336 205L-333 201L-326 202L-316 189L-311 192L-303 180L-297 166L-293 160L-283 156L-287 150L-285 135L-292 130L-297 118L-297 106L-294 98ZM135 72L136 58L139 46L151 46L158 49L162 56L170 55L175 47L182 56L189 57L189 51L198 44L206 45L210 50L204 59L217 67L213 71L217 75L213 81L216 86L222 88L227 87L232 93L231 99L220 115L223 123L218 131L219 134L221 156L215 163L217 167L225 167L229 172L233 173L233 181L243 176L251 181L252 187L258 189L256 193L259 198L260 211L270 210L282 212L289 210L303 209L300 219L293 216L295 225L301 225L301 234L309 235L316 244L310 245L304 251L293 259L293 263L287 269L288 276L280 273L278 280L272 277L262 279L256 279L247 283L244 288L238 285L234 291L241 300L247 302L248 307L242 314L228 324L226 330L222 330L218 319L214 317L208 322L199 319L197 305L205 297L202 291L194 299L191 292L181 290L178 287L166 290L162 286L149 279L147 273L140 270L136 260L130 257L132 243L137 230L132 231L126 223L132 220L132 205L137 193L128 191L124 188L120 179L125 175L125 171L113 162L114 158L102 148L114 149L117 144L105 134L103 128L111 128L117 119L116 112L119 103L129 100L133 96L140 100L147 90L137 82L143 78L135 72ZM71 -232L80 -230L84 -230L88 -236L86 -242L93 -243L99 -240L104 -230L108 -227L126 -224L125 -215L138 -219L139 -208L144 -204L150 -205L158 -202L163 -195L174 -198L179 -182L182 -176L190 -171L197 -171L203 -167L200 -162L205 -158L212 -160L215 -164L227 -163L229 -168L254 -174L254 -180L262 -180L277 -177L280 -182L290 -185L297 -177L302 -176L308 -179L318 -179L322 -183L331 -187L339 -184L340 -173L344 -169L351 -170L351 -166L356 -154L364 -152L371 -155L374 -154L373 -146L377 -144L387 -142L388 -137L385 -132L375 -135L356 -128L357 -122L362 -121L371 -113L365 -107L364 -100L372 -100L375 -88L372 -85L378 -81L377 -75L383 -69L377 -61L374 -50L366 -49L363 -30L369 -28L375 -22L377 -13L367 -9L355 -10L352 -5L339 -6L329 -12L326 -25L320 -27L311 -25L304 -20L292 -17L285 -20L280 -26L264 -27L259 -19L259 -11L254 -2L253 10L244 26L244 36L239 46L238 53L234 59L234 66L231 73L227 87L222 88L216 86L213 81L217 75L213 71L217 67L204 59L210 50L206 45L198 44L189 51L189 57L182 56L175 47L170 55L162 56L158 49L151 46L139 46L136 58L135 72L129 80L118 88L112 88L110 93L104 93L104 84L97 86L93 80L87 83L88 87L75 87L68 79L56 85L51 89L39 87L37 78L23 76L18 74L22 59L20 53L23 46L31 44L32 38L41 39L42 21L38 12L43 2L41 0L43 -11L34 -19L25 -21L18 -16L11 -20L12 -26L6 -28L5 -33L-3 -29L-11 -36L-17 -36L-19 -39L-17 -44L-19 -58L-24 -61L-24 -68L-28 -77L-34 -81L-38 -91L-42 -92L-44 -106L-41 -104L-33 -103L-18 -107L-7 -102L-4 -90L3 -91L7 -97L17 -99L26 -103L35 -112L51 -119L58 -120L57 -138L67 -143L66 -149L59 -157L55 -157L52 -163L57 -176L53 -186L47 -182L42 -186L51 -190L57 -195L57 -203L60 -212L53 -218L58 -232L66 -231L71 -232ZM703 221L704 239L714 251L728 256L726 260L734 265L742 263L750 268L747 273L744 284L748 289L748 304L751 309L749 313L760 316L760 322L773 325L776 337L785 341L793 346L788 354L788 361L782 365L781 372L776 372L778 384L781 389L782 397L775 403L765 413L761 408L754 411L741 413L739 423L733 426L725 427L722 430L725 437L714 441L705 434L695 429L688 437L681 435L674 436L672 442L662 447L659 443L650 442L645 448L639 450L634 447L627 453L629 465L621 466L617 462L607 463L600 460L602 455L600 448L592 444L585 447L576 441L577 436L573 433L568 435L559 428L552 433L548 431L552 420L552 415L544 401L547 395L545 386L552 378L557 376L560 365L556 351L548 344L545 337L537 338L536 334L526 336L516 330L517 324L512 323L506 318L494 323L497 326L496 333L491 342L493 352L489 351L486 346L480 343L472 341L463 335L453 336L451 331L452 324L448 320L446 313L441 305L437 302L438 297L425 280L426 277L434 268L441 265L441 258L445 253L445 244L457 244L463 233L462 226L464 211L468 195L474 177L474 167L482 169L483 184L486 193L485 199L494 212L505 209L510 215L508 222L517 231L524 234L527 231L534 234L544 230L548 226L556 232L560 237L559 246L569 246L571 252L580 253L586 250L592 250L605 221L614 212L619 198L625 185L630 183L635 179L646 182L649 187L648 192L641 192L644 205L650 208L656 215L670 214L676 223L676 229L679 233L677 238L682 240L688 232L692 225L703 221ZM703 221L692 225L688 232L682 240L677 238L679 233L676 229L676 223L670 214L656 215L650 208L644 205L641 192L648 192L649 187L646 182L635 179L630 183L625 185L619 198L614 212L605 221L592 250L586 250L580 253L571 252L569 246L559 246L560 237L556 232L548 226L544 230L534 234L527 231L524 234L517 231L508 222L510 215L505 209L494 212L485 199L486 193L483 184L482 169L474 167L475 156L469 150L470 138L469 131L470 120L475 110L480 117L487 118L489 106L496 102L504 102L511 98L525 99L526 95L536 95L544 99L555 93L558 86L570 76L579 73L587 64L586 60L577 63L570 53L572 44L579 29L586 23L595 21L598 27L606 32L611 26L624 21L628 14L635 10L642 13L653 11L664 9L684 9L700 14L704 18L696 27L699 34L707 40L709 45L718 51L715 61L712 63L703 77L705 85L701 91L702 99L706 102L725 105L722 114L724 118L720 129L723 132L732 124L738 129L746 144L751 146L755 153L754 160L758 161L760 172L754 175L750 181L751 185L748 191L738 193L735 198L725 199L720 198L707 202L703 208L705 211L703 221Z"/><path class="dz" data-n="Rhône" d="M135 72L136 58L139 46L151 46L158 49L162 56L170 55L175 47L182 56L189 57L189 51L198 44L206 45L210 50L204 59L217 67L213 71L217 75L213 81L216 86L222 88L227 87L232 93L231 99L220 115L223 123L218 131L219 134L221 156L215 163L217 167L225 167L229 172L233 173L233 181L243 176L251 181L252 187L258 189L256 193L259 198L260 211L270 210L282 212L289 210L303 209L300 219L293 216L295 225L301 225L301 234L309 235L316 244L310 245L304 251L293 259L293 263L287 269L288 276L280 273L278 280L272 277L262 279L256 279L247 283L244 288L238 285L234 291L241 300L247 302L248 307L242 314L228 324L226 330L222 330L218 319L214 317L208 322L199 319L197 305L205 297L202 291L194 299L191 292L181 290L178 287L166 290L162 286L149 279L147 273L140 270L136 260L130 257L132 243L137 230L132 231L126 223L132 220L132 205L137 193L128 191L124 188L120 179L125 175L125 171L113 162L114 158L102 148L114 149L117 144L105 134L103 128L111 128L117 119L116 112L119 103L129 100L133 96L140 100L147 90L137 82L143 78L135 72Z"/><path class="cv" data-n="Bourgoin-Jallieu" d="M341 287L335 284L332 279L336 279L339 275L339 272L341 269L346 273L355 279L353 279L349 283L351 288L348 291L345 291L341 287Z"/><path class="cv" data-n="Vienne" d="M241 300L247 300L247 297L253 296L253 300L256 299L256 304L261 309L261 311L255 311L254 319L252 319L250 316L245 317L242 314L246 309L249 305L247 302L241 300Z"/><path class="mc" data-n="Lyon" d="M242 245L237 242L235 231L232 230L226 232L225 230L227 229L230 223L229 217L233 216L236 214L241 211L242 213L236 217L239 220L246 218L246 223L250 229L255 230L252 239L251 240L245 237L244 241L242 245Z"/><path class="cv" data-n="Villefranche-sur-Saône" d="M208 153L210 151L210 147L213 146L220 145L220 148L221 156L220 158L218 157L217 153L208 153Z"/><path class="cv" data-n="Villeurbanne" d="M251 215L252 217L257 219L256 223L260 225L260 231L255 230L250 229L246 223L246 218L251 215Z"/><path class="cv" data-n="Annecy" d="M555 168L557 172L560 173L562 178L561 180L557 178L549 181L551 186L547 186L544 188L543 194L538 201L534 195L531 198L531 203L526 203L528 201L527 198L529 195L528 190L530 190L530 185L533 183L534 179L534 173L537 170L541 173L543 168L536 160L532 158L535 154L539 157L546 160L546 162L544 166L547 168L551 167L555 168Z"/><circle class="rad fill" cx="240" cy="229" r="182"/><g class="lb"><circle cx="253" cy="223" r="3"/></g><g class="lb pole"><circle cx="542" cy="180" r="7"/></g><g class="lb"><circle cx="251" cy="308" r="3"/></g><g class="lb"><circle cx="216" cy="151" r="3"/></g><g class="lb"><circle cx="344" cy="280" r="3"/></g><g class="ctr"><circle cx="240" cy="229" r="7"/></g><text class="radl" x="373" y="370">60 km</text></svg><button type="button" class="sct-pill" data-n="Lyon" style="left:42.00%;top:47.69%">Lyon</button><button type="button" class="sct-pill" data-n="Annecy" style="left:77.07%;top:36.92%">Annecy</button><div class="sct-tip" hidden></div></div>
   <div class="sct-chips"><button type="button" class="sct-chip pole" data-n="Lyon">Lyon et 60 km autour <small>+ Villeurbanne, Vienne, Villefranche-sur-Saône, Bourgoin-Jallieu</small></button><button type="button" class="sct-chip pole" data-n="Annecy">Annecy</button><span class="sct-chip txt">Beaujolais</span><span class="sct-chip txt">vallée du Rhône</span></div>
-  <div class="sct-find">
-    <label for="sct-q">Ton logement est à…</label>
-    <div class="sct-in"><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i><input id="sct-q" type="text" autocomplete="off" spellcheck="false" placeholder="Tape ta commune" aria-describedby="sct-r"></div>
-    <div class="sct-sug" role="listbox" hidden></div>
-    <p class="sct-r" id="sct-r" aria-live="polite"></p>
-  </div>
-  <p class="sct-cap">Distances à vol d’oiseau. Ton logement est un peu plus loin ? Demande quand même : beaucoup de pros se déplacent. Contours : IGN Admin Express (Licence Ouverte).</p>
+  
+  <p class="sct-cap">Un peu plus loin ? Demande quand même : beaucoup de pros se déplacent. Contours IGN (Licence Ouverte).</p>
   <script type="application/json" class="sct-data">{"v":"Lyon","c":[4.836,45.755],"km":60,"fr":false,"p":"Camille","d":["69"],"dn":["Rhône"],"cv":["Villeurbanne","Annecy","Vienne","Villefranche-sur-Saône","Bourgoin-Jallieu"],"s":["69","42","01","38","71","43","07","26","74","73","39","05","25"],"m":"photographe","po":[{"n":"Lyon","c":[4.836,45.755]},{"n":"Annecy","c":[6.118,45.901]}]}</script>
 </section>
-  </div>
-
-  <aside>
-    <div class="card" id="contact">
-      <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Formulaire de contact</span><h2>Contacter Camille</h2>
-      <form class="contact-form vt-cf" id="contact-form" onsubmit="return contactSubmit(event)">
-        <div id="contact-err" class="err-msg" style="display:none"></div>
-        <fieldset><legend>Ce qu’il te faut</legend><div class="vt-pills"><label class="vt-pill"><input type="checkbox" name="besoin" value="Des photos"><span>Des photos</span></label><label class="vt-pill"><input type="checkbox" name="besoin" value="Une vidéo"><span>Une vidéo</span></label><label class="vt-pill"><input type="checkbox" name="besoin" value="Des vues au drone"><span>Des vues au drone</span></label><label class="vt-pill"><input type="checkbox" name="besoin" value="Des vidéos courtes"><span>Des vidéos courtes</span></label><label class="vt-pill"><input type="checkbox" name="besoin" value="Des photos au crépuscule"><span>Des photos au crépuscule</span></label></div></fieldset>
-        <fieldset><legend>Ton logement</legend><div class="vt-pills"><label class="vt-pill"><input type="radio" name="logement" value="Studio ou T1"><span>Studio ou T1</span></label><label class="vt-pill"><input type="radio" name="logement" value="T2 ou T3"><span>T2 ou T3</span></label><label class="vt-pill"><input type="radio" name="logement" value="T4 et plus"><span>T4 et plus</span></label><label class="vt-pill"><input type="radio" name="logement" value="Maison"><span>Maison</span></label><label class="vt-pill"><input type="radio" name="logement" value="Plusieurs logements"><span>Plusieurs logements</span></label></div></fieldset>
-        <fieldset><legend>Quand ? <span>facultatif</span></legend><input type="hidden" name="date" data-date data-today placeholder="Choisir une date"></fieldset>
-        <input type="text" name="contactName" placeholder="Ton prénom et ton nom" autocomplete="name" required>
-        <input type="email" name="contactEmail" placeholder="Ton e-mail" autocomplete="email" required>
-        <textarea name="message" placeholder="Un détail à ajouter ? Ville, dates, style recherché (facultatif)"></textarea>
-        <div class="hp"><label>Site</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
-        <button type="submit" class="btn-p" id="contact-btn"><i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à Camille</button>
-        <p style="margin-top:10px;font-size:11.5px;color:var(--tl);line-height:1.6">Ton nom, ton e-mail et ton message sont transmis à Camille seulement, pour te répondre, et supprimés au bout de 3 ans. <a href="/politique-de-confidentialite#annuaire" style="color:var(--g)">Confidentialité</a></p>
-      </form>
-      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tl);line-height:1.6">Pas de commission. Pas d'intermédiaire. Tu négocies et contractualises directement avec Camille.</div>
-          </div>
-
-    <div class="card vt-work" style="position:relative"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes liens</span><h2>Son travail en ligne</h2><a href="#photos" class="vt-link" onclick="jmTrack('portfolio')"><i class="ph-bold ph-image-square"></i><span>Le portfolio</span><i class="ph-bold ph-arrow-up-right vt-link-a"></i></a><a href="#photos" class="vt-link" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i><span>@camille.studio.lyon</span><i class="ph-bold ph-arrow-up-right vt-link-a"></i></a><div class="pro-reseaux" style="margin-top:14px">
+    <section class="fx-sec"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes liens</span><h2>Son travail en ligne</h2><div class="fx-links"><a href="#photos" class="fx-link" onclick="jmTrack('portfolio')"><i class="ph-bold ph-image-square"></i><span>Le portfolio</span><i class="ph-bold ph-arrow-up-right"></i></a><a href="#photos" class="fx-link" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i><span>@camille.studio.lyon</span><i class="ph-bold ph-arrow-up-right"></i></a></div><div class="pro-reseaux" style="margin-top:14px">
       <div style="font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:#7A8C77;margin-bottom:8px">Retrouve-moi aussi sur</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px"><a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer me" title="Fiche Google" aria-label="Fiche Google" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-google-logo" aria-hidden="true"></i></a><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer me" title="Facebook" aria-label="Facebook" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-facebook-logo" aria-hidden="true"></i></a><a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer me" title="LinkedIn" aria-label="LinkedIn" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-linkedin-logo" aria-hidden="true"></i></a></div>
-    </div></div>
+    </div></section>
+    <div class="fx-end">
+      <a href="/annuaires/photographes"><i class="ph-bold ph-arrow-left"></i>Tous les photographes et vidéastes</a>
+      <a href="/photographe-lcd-lyon"><i class="ph-bold ph-map-pin"></i>Le guide photo de Lyon</a>
+    </div>
+    <p class="disclaimer fx-disc">
+  <strong>À propos de cette page.</strong> Ceci est un aperçu fidèle de la fiche que tu obtiens dans l’annuaire. Le contenu (nom, textes, tarifs, ville) est fictif et sert à montrer la mise en page. Photos d’illustration : Unsplash. Lors de ton inscription, tu remplis tes vraies infos et tu ajoutes tes propres photos depuis ton espace pro.
+</p>
+  </div>
 
-    <div class="card" style="margin-top:16px">
-      <h2>Les tarifs photo à Lyon</h2>
-      <p style="font-size:13.5px;color:var(--tm);line-height:1.7;margin-bottom:12px">Fourchettes constatées, checklist des photos indispensables et conseils pour bien briefer : consulte le guide local avant de demander un devis.</p>
-      <a href="/photographe-lcd-lyon" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Le guide photo de Lyon</a>
+  <aside class="fx-side">
+    <div class="fx-card">
+      <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Contact en 2 étapes</span><div class="fx-card-id"><span class="fx-av sm ini" aria-hidden="true">CS</span><div><b>Camille Sénéchal</b><span>Photographe &amp; vidéaste · Lyon</span></div></div>
+      <div class="fx-price">dès 350 €<small>la séance</small></div>
+      <div class="fx-mini"><div><span>Essentielle</span><b>350 €</b></div><div><span>Complète</span><b>520 €</b></div><div><span>Prestige</span><b>700 €</b></div></div>
+      <button type="button" class="fx-btn" data-fx-open><i class="ph-bold ph-paper-plane-tilt"></i>Demander un devis</button>
+      
+      <p class="fx-fine">Contact direct, sans commission. Camille te répond par e-mail.</p>
+      
     </div>
   </aside>
 </div>
+</main>
 
-<div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;gap:10px;flex-wrap:wrap">
-  <a href="/annuaires/photographes" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Tous les photographes et vidéastes</a>
-  <a href="/photographe-lcd-lyon" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Le guide photo de Lyon<i class="ph-bold ph-arrow-right"></i></a>
-</div>
-
-<div class="disclaimer">
-  <strong>À propos de cette page.</strong> Ceci est un aperçu fidèle de la fiche que tu obtiens dans l’annuaire. Le contenu (nom, textes, tarifs, ville) est fictif et sert à montrer la mise en page. Photos d’illustration : Unsplash. Lors de ton inscription, tu remplis tes vraies infos et tu ajoutes tes propres photos depuis ton espace pro.
-</div>
+<div class="fx-bar" id="fx-bar"><button type="button" class="fx-btn" data-fx-open><i class="ph-bold ph-paper-plane-tilt"></i>Demander un devis</button></div>
+<dialog class="fx-sheet" id="contact" aria-label="Demander un devis à Camille">
+  <form class="fx-form" id="contact-form" novalidate>
+    <div class="fx-sh-top"><div class="fx-steps"><i class="on"></i><i></i></div><button type="button" class="fx-x" data-fx-close aria-label="Fermer"><i class="ph-bold ph-x"></i></button></div>
+    <div class="fx-step" data-step="1">
+      <h2>Ton besoin</h2>
+      <fieldset><legend>Ce qu’il te faut</legend><div class="fx-pills"><label class="fx-pill"><input type="checkbox" name="besoin" value="Des photos"><span>Des photos</span></label><label class="fx-pill"><input type="checkbox" name="besoin" value="Une vidéo"><span>Une vidéo</span></label><label class="fx-pill"><input type="checkbox" name="besoin" value="Des vues au drone"><span>Des vues au drone</span></label><label class="fx-pill"><input type="checkbox" name="besoin" value="Des vidéos courtes"><span>Des vidéos courtes</span></label><label class="fx-pill"><input type="checkbox" name="besoin" value="Des photos au crépuscule"><span>Des photos au crépuscule</span></label></div></fieldset>
+      <fieldset><legend>Ton logement</legend><div class="fx-pills"><label class="fx-pill"><input type="radio" name="logement" value="Studio ou T1"><span>Studio ou T1</span></label><label class="fx-pill"><input type="radio" name="logement" value="T2 ou T3"><span>T2 ou T3</span></label><label class="fx-pill"><input type="radio" name="logement" value="T4 et plus"><span>T4 et plus</span></label><label class="fx-pill"><input type="radio" name="logement" value="Maison"><span>Maison</span></label><label class="fx-pill"><input type="radio" name="logement" value="Plusieurs logements"><span>Plusieurs logements</span></label></div></fieldset>
+      <p class="fx-err" data-err="1" hidden></p>
+      <button type="button" class="fx-btn g" data-fx-next>Continuer <i class="ph-bold ph-arrow-right"></i></button>
+      <p class="fx-fine">Gratuit, sans commission : Camille te répond directement.</p>
+    </div>
+    <div class="fx-step" data-step="2" hidden>
+      <h2>Où Camille te répond</h2>
+      <input type="text" name="contactName" placeholder="Ton prénom" autocomplete="given-name" maxlength="100">
+      <input type="email" name="contactEmail" placeholder="Ton e-mail" autocomplete="email" maxlength="200">
+      <button type="button" class="fx-more" data-fx-more><i class="ph-bold ph-plus"></i>Ajouter une date ou un détail</button>
+      <div class="fx-extra" hidden>
+        <input type="hidden" name="date" data-date data-today placeholder="Une date souhaitée (facultatif)">
+        <textarea name="message" placeholder="Ville, dates, style recherché, nombre de pièces…" maxlength="1500"></textarea>
+      </div>
+      <div class="hp" aria-hidden="true"><label>Site</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+      <p class="fx-err" data-err="2" hidden></p>
+      <button type="submit" class="fx-btn" id="contact-btn"><i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à Camille</button>
+      <button type="button" class="fx-back" data-fx-back><i class="ph-bold ph-arrow-left"></i>Retour</button>
+      <p class="fx-fine">Ton prénom, ton e-mail et ton message vont à Camille seulement, pour te répondre, et sont supprimés au bout de 3 ans. <a href="/politique-de-confidentialite#annuaire">Confidentialité</a></p>
+    </div>
+    <div class="fx-done" hidden>
+      <span class="fx-ok"><i class="ph-bold ph-check"></i></span>
+      <h2>C’est envoyé</h2>
+      <p>Exemple : sur une vraie fiche, ta demande part directement dans la boîte mail du pro.</p>
+      <a class="fx-btn g" href="/annuaires/photographes">Tous les photographes et vidéastes</a>
+    </div>
+  </form>
+</dialog>
 
 <!-- STATSDEMO:START -->
 <section id="exemple-stats" style="background:#fff;padding:clamp(48px,7vw,80px) 0;scroll-margin-top:72px">
@@ -515,50 +634,7 @@ try {
   var __vk = 'jm_v_' + __slug;
   if (!sessionStorage.getItem(__vk)) { sessionStorage.setItem(__vk, '1'); jmTrack('view'); }
 } catch (e) { jmTrack('view'); }
-async function contactSubmit(e) {
-  e.preventDefault();
-  document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Exemple</strong><br>Sur une vraie fiche, ta demande part directement dans la boîte mail du pro.</div>';
-  return false;
-  const errBox = document.getElementById('contact-err');
-  const btn = document.getElementById('contact-btn');
-  errBox.style.display = 'none';
-  btn.disabled = true; btn.innerHTML = '<i class="ph-bold ph-spinner"></i> Envoi…';
-  const f = e.target;
-  const data = {
-    slug: __slug,
-    contactName: f.contactName.value.trim(),
-    contactEmail: f.contactEmail.value.trim(),
-    message: window.jmContactMessage ? jmContactMessage(f) : f.message.value.trim(),
-    website: f.website ? f.website.value : '',
-    t: __t0,
-  };
-  if (data.message.length < 20) {
-    errBox.textContent = 'Dis-moi ce qu\'il te faut et ton logement, ou écris quelques mots.';
-    errBox.style.display = 'block';
-    btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à Camille';
-    return false;
-  }
-  try {
-    const res = await fetch('/api/photographer/contact', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-    });
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      errBox.textContent = body.error || 'Erreur lors de l\'envoi. Réessaye.';
-      errBox.style.display = 'block';
-      btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à Camille';
-      return false;
-    }
-    document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Message envoyé ✓</strong><br>Camille te recontacte généralement sous 48h.</div>';
-  } catch (err) {
-    errBox.textContent = 'Réseau indisponible.';
-    errBox.style.display = 'block';
-    btn.disabled = false;
-  }
-  return false;
-}
 </script>
-<div class="vt-bar" id="vt-bar" aria-hidden="true"><a href="#contact" class="vt-bar-p" data-vt-contact tabindex="-1"><i class="ph-bold ph-paper-plane-tilt"></i>Contacter Camille</a><a tabindex="-1" href="#photos" class="vt-bar-s"><i class="ph-bold ph-images"></i>Photos</a></div>
 <script>
 (function(){
   var d=document.getElementById('vt-lb');
@@ -618,6 +694,49 @@ async function contactSubmit(e) {
 </script>
 <script>
 (function(){
+  var car=document.querySelector('.fx-car'),cnt=document.querySelector('.fx-cnt b');
+  if(car&&cnt)car.addEventListener('scroll',function(){cnt.textContent=Math.round(car.scrollLeft/car.clientWidth)+1},{passive:true});
+  var bio=document.querySelector('[data-fx-bio]'),bb=document.querySelector('[data-fx-bio-btn]');
+  if(bio&&bb&&bio.scrollHeight>parseFloat(getComputedStyle(bio.querySelector('p')).lineHeight||'26')*7){bio.classList.add('cut');bb.hidden=false;bb.addEventListener('click',function(){bio.classList.remove('cut');bb.hidden=true})}
+  var dlg=document.getElementById('contact'),f=document.getElementById('contact-form');
+  if(!dlg||!f)return;
+  var steps=f.querySelectorAll('.fx-step'),bars=f.querySelectorAll('.fx-steps i'),done=f.querySelector('.fx-done');
+  function go(n){[].forEach.call(steps,function(s){s.hidden=s.getAttribute('data-step')!==String(n)});[].forEach.call(bars,function(b,i){b.classList.toggle('on',i<n)});var el=f.querySelector('.fx-step[data-step="'+n+'"] input:not([type=hidden]):not([tabindex="-1"])');if(n===2&&el)setTimeout(function(){try{el.focus()}catch(e){}},60)}
+  function err(n,t){var e=f.querySelector('[data-err="'+n+'"]');if(!e)return;e.textContent=t||'';e.hidden=!t}
+  function open(){go(1);err(1);err(2);if(dlg.showModal&&!dlg.open)dlg.showModal();else dlg.setAttribute('open','');try{jmTrack('contact_open')}catch(e){}}
+  document.addEventListener('click',function(e){
+    if(e.target.closest('[data-fx-open]')){e.preventDefault();open()}
+    else if(e.target.closest('[data-fx-close]')||e.target===dlg)dlg.close();
+    else if(e.target.closest('[data-fx-next]')){
+      var b=f.querySelectorAll('input[name=besoin]:checked').length,l=f.querySelector('input[name=logement]:checked');
+      if(!b&&!l){err(1,'Choisis ce qu’il te faut et ton logement.');return}
+      if(!b){err(1,'Choisis ce qu’il te faut.');return}
+      if(!l){err(1,'Choisis ton logement.');return}
+      err(1);go(2);
+    }
+    else if(e.target.closest('[data-fx-back]'))go(1);
+    else if(e.target.closest('[data-fx-more]')){f.querySelector('.fx-extra').hidden=false;e.target.closest('[data-fx-more]').hidden=true}
+  });
+  if(location.hash==='#contact')setTimeout(open,300);
+  var t0=Date.now();
+  f.addEventListener('submit',async function(e){
+    e.preventDefault();
+    var name=f.contactName.value.trim(),mail=f.contactEmail.value.trim();
+    if(!name){err(2,'Écris ton prénom.');return}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)){err(2,'Vérifie ton e-mail.');return}
+    err(2);
+    var btn=document.getElementById('contact-btn');btn.disabled=true;var lbl=btn.innerHTML;btn.innerHTML='Envoi…';
+    var data={slug:window.__slug||'',contactName:name,contactEmail:mail,message:window.jmContactMessage?jmContactMessage(f):'',website:f.website?f.website.value:'',t:t0};
+    try{
+      var res={ok:true};if(0)await fetch("/api/photographer/contact",{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+      if(!res.ok){var body=await res.json().catch(function(){return{}});err(2,body.error||'L’envoi n’a pas marché. Réessaie dans un instant.');btn.disabled=false;btn.innerHTML=lbl;return}
+      [].forEach.call(steps,function(s){s.hidden=true});f.querySelector('.fx-sh-top .fx-steps').style.visibility='hidden';done.hidden=false;
+    }catch(x){err(2,'Pas de réseau : réessaie dans un instant.');btn.disabled=false;btn.innerHTML=lbl}
+  });
+})();
+</script>
+<script>
+(function(){
   var box=document.querySelector('.sct');if(!box)return;
   var D=JSON.parse(box.querySelector('.sct-data').textContent),svg=box.querySelector('.sct-svg'),tip=box.querySelector('.sct-tip'),map=box.querySelector('.sct-map');
   var P=svg.getAttribute('data-p').split(',').map(Number),NS='http://www.w3.org/2000/svg';
@@ -646,6 +765,7 @@ async function contactSubmit(e) {
   });
   // Recherche de la commune de l'hôte
   var q=box.querySelector('#sct-q'),sug=box.querySelector('.sct-sug'),res=box.querySelector('.sct-r'),list=null,loading=null,items=[],act=-1;
+  if(!q)return;
   function load(){
     if(list||loading)return loading;
     loading=Promise.all(D.s.map(function(dep){return fetch('/geo/communes/'+dep+'.json').then(function(r){return r.ok?r.json():[]}).then(function(a){return a.map(function(x){return{nom:x[0],lat:x[1],lon:x[2],dep:dep,n:n(x[0])}})}).catch(function(){return[]})}))

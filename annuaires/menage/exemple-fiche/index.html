@@ -68,6 +68,10 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .err-msg{padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:8px;color:#dc2626;font-size:13px;margin-bottom:10px}
 .trust-row{display:flex;align-items:center;gap:8px;padding:9px 12px;background:rgba(99,214,131,.08);border:1px solid rgba(99,214,131,.2);border-radius:8px;margin-top:12px;font-size:13px;color:#1e9d54;font-weight:500}
 
+.vt-tel{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px 14px;border:1.5px solid rgba(0,76,63,.18);border-radius:12px;color:var(--g);text-decoration:none;font-family:'Outfit',sans-serif;font-weight:600;font-size:15px}
+.vt-tel:hover{border-color:var(--g);background:#F2F6F3}
+.vt-tel i{font-size:20px}
+.vt-tel small{display:block;font-weight:400;font-size:13px;color:var(--tm)}
 .hero-grid{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
 @media(min-width:900px){.hero-grid.has-cover{grid-template-columns:minmax(0,1fr) 400px}}
 .vt-video{width:100%}
@@ -152,50 +156,6 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
   .vt-bar-s{border:1px solid rgba(0,76,63,.22);color:var(--g);background:#fff}
 }
 
-.vt-brief{width:100%;border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:18px;background:rgba(255,255,255,.04);box-shadow:0 18px 50px rgba(0,0,0,.25)}
-.vt-brief-h{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:12px}
-.vt-facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,.12);border-radius:12px;overflow:hidden}
-.vt-facts.n3 .vt-f:last-child{grid-column:span 2}
-.vt-facts .vt-f{background:#062b22;padding:14px 16px;min-width:0}
-.vt-facts .vt-f-v{font-family:'Fraunces',serif;font-size:24px;line-height:1.15;color:#fff;overflow-wrap:anywhere}
-.vt-facts .vt-f-l{font-size:12px;color:rgba(255,255,255,.6);margin-top:3px}
-.vt-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px;background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px 20px}
-.vt-strip.n3{grid-template-columns:repeat(3,minmax(0,1fr))}.vt-strip.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.vt-strip .vt-f{border-left:2px solid var(--g);padding-left:12px;min-width:0}
-.vt-strip .vt-f-v{font-family:'Fraunces',serif;font-size:21px;line-height:1.15;color:var(--td);overflow-wrap:anywhere}
-.vt-strip .vt-f-l{font-size:12px;color:var(--tl);margin-top:2px}
-@media(max-width:640px){.vt-strip,.vt-strip.n3{grid-template-columns:1fr 1fr}.vt-strip.n3 .vt-f:last-child{grid-column:span 2}}
-.vt-zone{display:grid;grid-template-columns:190px minmax(0,1fr);gap:22px;align-items:center}
-.vt-zone.nomap{grid-template-columns:1fr}
-@media(max-width:560px){.vt-zone{grid-template-columns:1fr}.vt-zone-map{max-width:220px}}
-.vt-map{display:block;width:100%;height:auto}
-.vt-map-land{fill:rgba(0,76,63,.05);stroke:rgba(0,76,63,.35);stroke-width:1.2;stroke-linejoin:round}
-.vt-map-ring{fill:rgba(0,76,63,.12);stroke:rgba(0,76,63,.3);stroke-width:1}
-.vt-map-dot{fill:var(--g);stroke:#fff;stroke-width:2}
-.vt-map-t{font:600 13px 'Outfit',sans-serif;fill:var(--g);paint-order:stroke;stroke:#fff;stroke-width:3px}
-.vt-zone-v{font-family:'Fraunces',serif;font-size:24px;color:var(--td);line-height:1.15}
-.vt-zone-t>p{font-size:14px;color:var(--tm);line-height:1.6;margin-top:4px}
-.vt-zone-t .vt-villes{margin-top:12px}
-.vt-zone-t .vt-zone-n{font-size:12.5px;color:var(--tl);margin-top:12px}
-.vt-work{margin-top:16px}
-.vt-link{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid rgba(0,76,63,.15);border-radius:10px;text-decoration:none;color:var(--g);font-weight:600;font-size:14px;margin-top:8px;transition:background .15s,border-color .15s}
-.vt-link:first-of-type{margin-top:0}
-.vt-link span{flex:1;min-width:0;overflow-wrap:anywhere}
-.vt-link-a{font-size:13px;opacity:.6}
-.vt-link:hover{background:rgba(0,76,63,.05);border-color:rgba(0,76,63,.3)}
-.vt-cf fieldset{border:0;margin:0 0 14px;padding:0;min-width:0}
-.vt-cf legend{font-size:12px;font-weight:600;color:var(--td);margin-bottom:8px;padding:0}
-.vt-cf legend span{font-weight:400;color:var(--tl)}
-.vt-pills{display:flex;flex-wrap:wrap;gap:6px}
-.vt-pill{position:relative;cursor:pointer}
-.vt-pill input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
-.vt-pill span{display:inline-flex;align-items:center;padding:7px 12px;border-radius:999px;border:1px solid rgba(0,76,63,.18);background:#fff;font-size:13px;color:var(--td);transition:background .15s,color .15s,border-color .15s}
-.vt-pill input:checked+span{background:var(--g);border-color:var(--g);color:#fff}
-.vt-pill input:focus-visible+span{outline:2px solid var(--y);outline-offset:2px}
-.vt-cf textarea{min-height:70px}
-.vt-cf .jmc-t{min-height:44px;padding:9px 13px;font-size:14px;border-radius:8px}
-
-
 .sct-stats{display:flex;flex-wrap:wrap;gap:12px 22px;margin:0 0 14px}
 .sct-stats>div{border-left:2px solid var(--g);padding-left:11px;min-width:0}
 .sct-v{font-family:'Fraunces',serif;font-size:21px;line-height:1.15;color:var(--td)}
@@ -267,6 +227,168 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 @media(max-width:560px){.sct-pill{font-size:11.5px;padding:4px 8px}.sct-svg .lb.pole circle{r:10}.sct-inset{width:46px;height:46px}.sct-v{font-size:19px}.sct-svg .lb text{display:none}.sct-svg .lb circle{r:5}.sct-svg .ctr text{font-size:25px;stroke-width:6px}.sct-svg .ctr circle{r:9}.sct-svg .dl{font-size:17px}.sct-svg .radl{font-size:19px;stroke-width:5px}.sct-svg .pin text{font-size:22px;stroke-width:6px}.sct-svg .pin circle{r:9}}
 
 
+body{padding-bottom:86px}
+@media(min-width:960px){body{padding-bottom:0}}
+.fx{--fxw:1120px}
+.fx-wrap{max-width:var(--fxw);margin:0 auto;padding-left:clamp(16px,4vw,40px);padding-right:clamp(16px,4vw,40px)}
+.fx-top{background:var(--cr)}
+.fx-brd{font-size:12.5px;color:var(--tl);padding:18px 0 12px}
+.fx-brd a{color:var(--tm);text-decoration:none}.fx-brd a:hover{color:var(--g)}
+.fx-hero{display:flex;flex-direction:column;gap:18px}
+.fx-gal{position:relative;border-radius:20px;overflow:hidden;background:#dfe6e2}
+.fx-car{display:grid;gap:6px;height:min(460px,52vw);grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr}
+.fx-ph{border:0;padding:0;margin:0;cursor:zoom-in;overflow:hidden;background:#dfe6e2;display:block;min-width:0}
+.fx-ph img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.fx-ph:hover img{transform:scale(1.035)}
+.fx-ph:first-child{grid-row:span 2}
+.fx-ph:nth-child(n+6){display:none}
+.fx-gal.n1 .fx-car{grid-template-columns:1fr;grid-template-rows:1fr}
+.fx-gal.n2 .fx-car{grid-template-columns:1fr 1fr;grid-template-rows:1fr}.fx-gal.n2 .fx-ph:first-child{grid-row:auto}
+.fx-gal.n3 .fx-car{grid-template-columns:2fr 1fr}
+.fx-gal.n4 .fx-car{grid-template-columns:2fr 1fr 1fr}.fx-gal.n4 .fx-ph:nth-child(2){grid-row:span 2}
+.fx-cnt{display:none}
+.fx-all{position:absolute;right:14px;bottom:14px;display:inline-flex;align-items:center;gap:7px;background:#fff;color:var(--gd);border:0;border-radius:10px;padding:9px 14px;font:600 13px 'Outfit',sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.fx-id{display:flex;align-items:center;gap:16px;min-width:0}
+.fx-av{flex:none;width:72px;height:72px;border-radius:50%;background:#e8efeb center/cover no-repeat;border:3px solid #fff;box-shadow:0 6px 18px rgba(0,51,41,.18)}
+.fx-av.ini{display:grid;place-items:center;background:linear-gradient(135deg,#335e52,#0e3a2f);color:var(--y);font-family:'Fraunces',serif;font-size:28px}
+.fx-av.sm{width:46px;height:46px;border-width:2px;font-size:18px;box-shadow:none}
+.fx-id-t{min-width:0}
+.fx-id h1{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(30px,4vw,46px);line-height:1.04;letter-spacing:-.6px;color:var(--td);margin:0}
+.fx-role{display:block;font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;letter-spacing:0;color:var(--g);margin-top:6px}
+.fx-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.fx-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--tm);background:#fff;border:1px solid var(--bd);border-radius:999px;padding:4px 10px}
+.fx-badge.reco{color:#1d6b3f;background:#e6f4ec;border-color:#bfe2cc}
+.fx-badge i{font-size:12px}
+.fx.no-ph .fx-top{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%)}
+.fx.no-ph .fx-brd,.fx.no-ph .fx-brd a{color:rgba(255,255,255,.6)}
+.fx.no-ph .fx-hero{padding:14px 0 40px}
+.fx.no-ph .fx-id h1{color:#fff}
+.fx.no-ph .fx-role{color:var(--y)}
+.fx.no-ph .fx-id .fx-av{width:96px;height:96px;border-color:rgba(255,255,255,.9)}
+.fx-body{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:36px;align-items:start;padding-top:26px;padding-bottom:40px}
+.fx-main{display:flex;flex-direction:column;gap:18px;min-width:0}
+.fx-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.fx-facts.n2{grid-template-columns:repeat(2,minmax(0,1fr))}.fx-facts.n1{grid-template-columns:1fr}
+.fx-fact{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:13px 15px;min-width:0}
+.fx-fact b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:21px;line-height:1.15;color:var(--td);overflow-wrap:anywhere}
+.fx-fact span{display:block;font-size:12.5px;color:var(--tl);margin-top:3px}
+.fx-sec{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:22px 24px;min-width:0}
+.fx-sec h2,.fx .sct h2{font-family:'Fraunces',serif;font-weight:400;font-size:21px;color:var(--td);margin:0 0 14px}
+.fx-forms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.fx-forms.n2{grid-template-columns:repeat(2,minmax(0,1fr))}.fx-forms.n1{grid-template-columns:1fr}
+.fx-fm{border:1px solid var(--bd);border-radius:14px;padding:14px 15px;background:var(--cr);min-width:0}
+.fx-fm.hl{background:#fff;border:1px solid var(--g);box-shadow:0 0 0 1px var(--g) inset}
+.fx-fm-n{font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--tl)}
+.fx-fm b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:26px;color:var(--g);margin:2px 0 4px}
+.fx-fm p{font-size:13.5px;line-height:1.55;color:var(--tm);margin:0}
+.fx-note{font-size:12px;color:var(--tl);margin:12px 0 0}
+.fx-bio p{font-size:15px;line-height:1.75;color:var(--tm);white-space:pre-wrap;margin:0}
+.fx-bio.cut{max-height:7.1em;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent);mask-image:linear-gradient(180deg,#000 55%,transparent)}
+.fx-more-bio{margin-top:8px;background:none;border:0;padding:0;color:var(--g);font:600 14px 'Outfit',sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.fx-offers{display:flex;flex-wrap:wrap;gap:8px}
+.fx-offer{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--td);background:var(--cr);border:1px solid var(--bd);border-radius:999px;padding:7px 13px}
+.fx-offer i{color:var(--g);font-size:14px}
+.fx .sct{border-radius:18px;padding:22px 24px;margin:0}
+.fx .sct-map{max-width:460px;margin:0 auto}
+.fx-links{display:flex;flex-direction:column;gap:8px}
+.fx-link{display:flex;align-items:center;gap:11px;padding:11px 14px;border:1px solid var(--bd);border-radius:12px;text-decoration:none;color:var(--td);font-size:14.5px;font-weight:500;min-width:0}
+.fx-link span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fx-link i:first-child{color:var(--g);font-size:17px}.fx-link i:last-child{color:var(--tl);font-size:14px}
+.fx-link:hover{border-color:rgba(0,76,63,.35)}
+.fx-end{display:flex;flex-wrap:wrap;gap:10px}
+.fx-end a{display:inline-flex;align-items:center;gap:7px;padding:10px 15px;background:#fff;border:1px solid var(--bd);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none}
+.fx-disc{padding:0;margin:0;font-size:12.5px;color:var(--tl);line-height:1.7}
+.fx-side{position:sticky;top:84px}
+.fx-card{background:#fff;border:1px solid var(--bd);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px;box-shadow:0 18px 40px rgba(0,51,41,.08)}
+.fx-card-id{display:flex;gap:11px;align-items:center;min-width:0}
+.fx-card-id b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:19px;line-height:1.1;color:var(--td)}
+.fx-card-id span{display:block;font-size:12.5px;color:var(--tl);margin-top:2px}
+.fx-price{font-family:'Fraunces',serif;font-size:30px;color:var(--g);line-height:1.1}
+.fx-price small{font-family:'Outfit',sans-serif;font-size:13px;color:var(--tl);margin-left:6px}
+.fx-price.devis{font-size:24px}
+.fx-mini{display:flex;flex-direction:column;gap:6px}
+.fx-mini div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--tm);border-bottom:1px dashed var(--bd);padding-bottom:6px}
+.fx-mini b{color:var(--td);font-variant-numeric:tabular-nums}
+.fx-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:12px;padding:14px 18px;background:var(--y);color:var(--gd);font:700 15px 'Outfit',sans-serif;cursor:pointer;text-decoration:none;transition:background .2s,transform .2s}
+.fx-btn:hover{background:#ffe08f;transform:translateY(-1px)}
+.fx-btn.g{background:var(--g);color:#fff}.fx-btn.g:hover{background:var(--gd)}
+.fx-card .vt-tel{margin-top:0}
+.fx-sec .vt-video-btn{box-shadow:none}
+.fx-sec .vt-video-n{color:var(--tl)}
+.fx-fine{font-size:12px;line-height:1.6;color:var(--tl);margin:0}
+.fx-fine a{color:var(--g)}
+.fx-reco{font-size:12.5px;color:var(--tm);margin:0;padding-top:10px;border-top:1px solid var(--bd)}
+.fx-reco a{color:var(--g);font-weight:600}
+.fx-bar{display:none}
+/* Fenêtre de contact */
+.fx-sheet{border:0;padding:0;margin:auto;width:min(480px,100%);max-height:92vh;border-radius:22px;background:#fff;color:var(--td);box-shadow:0 30px 80px rgba(0,20,14,.35)}
+.fx-sheet::backdrop{background:rgba(0,26,17,.5)}
+.fx-form{display:flex;flex-direction:column;gap:0;padding:16px 20px 22px}
+.fx-sh-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.fx-steps{flex:1;display:flex;gap:5px}.fx-steps i{flex:1;height:4px;border-radius:4px;background:#e2ebe6}.fx-steps i.on{background:var(--g)}
+.fx-x{border:0;background:var(--cr);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:var(--tm)}
+.fx-step{display:flex;flex-direction:column;gap:12px}
+.fx-step[hidden],.fx-done[hidden],.fx-extra[hidden]{display:none}
+.fx-sheet h2{font-family:'Fraunces',serif;font-weight:400;font-size:24px;margin:0}
+.fx-sheet fieldset{border:0;padding:0;margin:0}
+.fx-sheet legend{font-size:13px;font-weight:700;color:var(--tm);margin-bottom:8px}
+.fx-pills{display:flex;flex-wrap:wrap;gap:7px}
+.fx-pill{position:relative;cursor:pointer}
+.fx-pill input{position:absolute;opacity:0;pointer-events:none}
+.fx-pill span{display:inline-flex;align-items:center;border:1px solid rgba(0,76,63,.2);border-radius:999px;padding:9px 14px;font-size:14px;background:#fff;transition:all .15s}
+.fx-pill input:checked+span{background:#E8F2EC;border-color:var(--g);color:var(--g);font-weight:700}
+.fx-pill input:focus-visible+span{outline:2px solid var(--g);outline-offset:2px}
+.fx-sheet input[type=text],.fx-sheet input[type=email],.fx-sheet textarea{width:100%;padding:13px 14px;border:1px solid rgba(0,76,63,.2);border-radius:12px;font:15px 'Outfit',sans-serif;color:var(--td);background:#fff}
+.fx-sheet input:focus,.fx-sheet textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,76,63,.12)}
+.fx-sheet textarea{min-height:90px;resize:vertical;margin-top:8px}
+.fx-more,.fx-back{align-self:flex-start;background:none;border:0;padding:2px 0;color:var(--g);font:600 14px 'Outfit',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.fx-back{align-self:center;color:var(--tl);font-weight:500}
+.fx-err{margin:0;font-size:13.5px;color:#b3261e;background:rgba(179,38,30,.07);border-radius:10px;padding:9px 12px}
+.fx-done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:26px 6px 6px}
+.fx-done p{margin:0 0 6px;color:var(--tm);font-size:15px}
+.fx-ok{width:62px;height:62px;border-radius:50%;background:#E8F2EC;color:var(--g);display:grid;place-items:center;font-size:28px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@media(max-width:959px){
+  .fx-body{grid-template-columns:minmax(0,1fr);padding-top:16px}
+  .fx-side{position:static}
+  .fx-card .fx-btn{display:none}
+  .fx-bar{display:flex;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:90;padding:10px max(14px,env(safe-area-inset-left,0px)) calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(247,245,240,0),var(--cr) 26%)}
+  .fx-bar .fx-btn{box-shadow:0 10px 24px rgba(0,51,41,.18)}
+  .fx-bar-tel{flex:none;width:52px;border-radius:12px;background:#fff;border:1px solid var(--bd);display:grid;place-items:center;color:var(--g);font-size:20px;text-decoration:none}
+  .fx-sheet{margin:auto 0 0;width:100%;max-width:none;border-radius:22px 22px 0 0;max-height:94vh}
+  .fx-form{padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))}
+}
+@media(max-width:719px){
+  .fx-brd{display:none}
+  .fx-top .fx-wrap{padding-left:0;padding-right:0}
+  .fx-hero{gap:0;position:relative}
+  .fx-gal{border-radius:0}
+  .fx-car{display:flex;height:auto;gap:0;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .fx-car::-webkit-scrollbar{display:none}
+  .fx-ph,.fx-ph:first-child{flex:0 0 100%;aspect-ratio:4/3.4;scroll-snap-align:start;grid-row:auto}
+  .fx-ph:nth-child(n+6){display:block}
+  .fx-ph:hover img{transform:none}
+  .fx-all{display:none}
+  .fx-cnt{display:block;position:absolute;top:14px;right:14px;background:rgba(255,255,255,.92);color:var(--gd);font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;z-index:2}
+  .fx:not(.no-ph) .fx-id{position:absolute;left:0;right:0;bottom:0;padding:60px 16px 16px;background:linear-gradient(180deg,transparent,rgba(0,26,17,.86));pointer-events:none}
+  .fx:not(.no-ph) .fx-id h1{color:#fff;font-size:30px}
+  .fx:not(.no-ph) .fx-role{color:var(--y)}
+  .fx:not(.no-ph) .fx-badges{display:none}
+  .fx-av{width:56px;height:56px}
+  .fx.no-ph .fx-hero{padding:22px 16px 30px}
+  .fx.no-ph .fx-id{flex-direction:column;align-items:flex-start}
+  .fx-facts{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .fx-offer{font-size:13px;padding:6px 11px}
+  .fx-fact{padding:10px 11px}.fx-fact b{font-size:17px}.fx-fact span{font-size:11.5px}
+  .fx-sec,.fx .sct{padding:18px}
+  .fx-forms{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:9px;margin:0 -18px;padding:0 18px 4px;scrollbar-width:none}
+  .fx-forms::-webkit-scrollbar{display:none}
+  .fx-fm{flex:0 0 72%;scroll-snap-align:start}
+  .fx-forms.n1 .fx-fm{flex-basis:100%}
+}
+@media(prefers-reduced-motion:reduce){.fx-ph img,.fx-btn{transition:none}}
+
+
 .card{position:relative}
 .annot-tag{position:absolute;top:-9px;right:14px;background:#FFD56B;color:#003329;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:3px 9px;border-radius:6px;box-shadow:0 4px 10px rgba(255,213,107,.4);display:inline-flex;align-items:center;gap:4px;z-index:2}
 .demo-banner{background:linear-gradient(135deg,#FFD56B 0%,#FFB84D 100%);color:#0F1A0D;padding:14px clamp(20px,5vw,48px);text-align:center;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
@@ -279,42 +401,24 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 .cta-bottom .btn-main{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:15px;padding:14px 28px;border-radius:10px;text-decoration:none}
 .cta-bottom .btn-main:hover{background:#ffe08f}
 .disclaimer{color:var(--tm)}
+.fx-sec,.fx-card,.fx-facts,.fx .sct{position:relative}
+.fx-gal .annot-tag{top:14px;left:14px;right:auto}
+@media(max-width:719px){.fx-gal .annot-tag{top:auto;bottom:118px}}
 </style>
 <script defer src="/nav.js"></script>
 </head>
 <body>
 <div class="demo-banner"><i class="ph-bold ph-eye"></i><span>Ceci est un <strong>exemple</strong> de fiche équipe de ménage (Éclat Ménage n’existe pas). <a href="/annuaires/menage/inscription">Crée la tienne maintenant →</a></span></div>
-<header class="hero">
-  <div class="s-in hero-grid has-cover">
-  <div>
-    <div class="brd"><a href="/">Accueil</a> · <a href="/devenir-prestataire-menage-lcd">Équipes ménage LCD</a> · <span>Exemple de fiche</span></div>
-    <div class="tag-row">
-      
-      <span class="tag green"><i class="ph-bold ph-shield-check" style="font-size:10px"></i>RC Pro</span>
-      <span class="tag">Équipe de 3 à 5 personnes</span>
-    </div>
-    <div class="hero-id">
-      <div class="hero-logo placeholder">ÉM</div>
-      <h1>Éclat Ménage Bordeaux<br><em>équipe de ménage pour locations courte durée à Bordeaux</em></h1>
-    </div>
-    <div class="meta-row">
-      <span><i class="ph-bold ph-handshake"></i>Contact direct, sans commission</span>
-      <span><i class="ph-bold ph-lightning"></i>Réservation 24h à l&#39;avance</span>
-      <span><i class="ph-bold ph-clock"></i>25 €/h</span>
-    </div>
-    <div class="vt-actions"><a href="#contact" class="vt-btn-y" data-vt-contact><i class="ph-bold ph-paper-plane-tilt"></i>Contacter Éclat</a><a href="#photos" class="vt-btn-o"><i class="ph-bold ph-images"></i>Voir les photos</a></div>
+<main class="fx">
+<section class="fx-top">
+  <div class="fx-wrap">
+    <nav class="fx-brd" aria-label="Fil d’Ariane"><a href="/">Accueil</a> · <a href="/devenir-prestataire-menage-lcd">Équipes ménage LCD</a> · <span>Exemple de fiche</span></nav>
+    <div class="fx-hero">
+      <div class="fx-gal n5" id="photos">
+    <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Jusqu’à 6 photos</span><div class="fx-car" tabindex="-1"><button type="button" class="fx-ph" data-vt-open="0" data-vt-full="/img/exemple-fiches/menage-1.jpg" aria-label="Agrandir la photo 1 sur 6"><img src="/img/exemple-fiches/menage-1-t.jpg" alt="Photo 1 sur 6, par Éclat Ménage Bordeaux" width="800" height="600" fetchpriority="high"></button><button type="button" class="fx-ph" data-vt-open="1" data-vt-full="/img/exemple-fiches/photo-chambre-3.jpg" aria-label="Agrandir la photo 2 sur 6"><img src="/img/exemple-fiches/photo-chambre-3-t.jpg" alt="Photo 2 sur 6, par Éclat Ménage Bordeaux" width="800" height="600" loading="lazy"></button><button type="button" class="fx-ph" data-vt-open="2" data-vt-full="/img/exemple-fiches/photo-sdb-1.jpg" aria-label="Agrandir la photo 3 sur 6"><img src="/img/exemple-fiches/photo-sdb-1-t.jpg" alt="Photo 3 sur 6, par Éclat Ménage Bordeaux" width="800" height="600" loading="lazy"></button><button type="button" class="fx-ph" data-vt-open="3" data-vt-full="/img/exemple-fiches/photo-salon-4.jpg" aria-label="Agrandir la photo 4 sur 6"><img src="/img/exemple-fiches/photo-salon-4-t.jpg" alt="Photo 4 sur 6, par Éclat Ménage Bordeaux" width="800" height="600" loading="lazy"></button><button type="button" class="fx-ph" data-vt-open="4" data-vt-full="/img/exemple-fiches/photo-salon-3.jpg" aria-label="Agrandir la photo 5 sur 6"><img src="/img/exemple-fiches/photo-salon-3-t.jpg" alt="Photo 5 sur 6, par Éclat Ménage Bordeaux" width="800" height="600" loading="lazy"></button><button type="button" class="fx-ph" data-vt-open="5" data-vt-full="/img/exemple-fiches/photo-salon-2.jpg" aria-label="Agrandir la photo 6 sur 6"><img src="/img/exemple-fiches/photo-salon-2-t.jpg" alt="Photo 6 sur 6, par Éclat Ménage Bordeaux" width="800" height="600" loading="lazy"></button></div>
+    <span class="fx-cnt" aria-hidden="true"><b>1</b> / 6</span>
+    <button type="button" class="fx-all" data-vt-open="0"><i class="ph-bold ph-images"></i>Voir les 6 photos</button>
   </div>
-  <button type="button" class="vt-cover" data-vt-open="0" aria-label="Agrandir la photo principale"><img src="/img/exemple-fiches/menage-1-t.jpg" alt="Logement photographié par Éclat Ménage Bordeaux" width="640" height="480" fetchpriority="high"></button>
-  </div>
-</header>
-
-<div class="body">
-  <div>
-    <div class="vt-strip n4" style="position:relative"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Calculé depuis ta fiche</span><div class="vt-f"><div class="vt-f-v">70 €</div><div class="vt-f-l">dès, le ménage</div></div><div class="vt-f"><div class="vt-f-v">Bordeaux</div><div class="vt-f-l">ville principale</div></div><div class="vt-f"><div class="vt-f-v">3 à 5</div><div class="vt-f-l">personnes dans l’équipe</div></div><div class="vt-f"><div class="vt-f-v">RC pro</div><div class="vt-f-l">assurance professionnelle</div></div></div>
-    <section class="card vt-sec" id="photos" style="position:relative">
-  <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Jusqu’à 6 photos</span><div class="vt-h"><h2>En images</h2><span class="vt-count">6 photos</span></div>
-  <div class="vt-gal n5"><button type="button" class="vt-ph" data-vt-open="0" data-vt-full="/img/exemple-fiches/menage-1.jpg" aria-label="Agrandir la photo 1 sur 6"><img src="/img/exemple-fiches/menage-1-t.jpg" alt="Photo 1 sur 6, par Éclat Ménage Bordeaux" width="640" height="480"></button><button type="button" class="vt-ph" data-vt-open="1" data-vt-full="/img/exemple-fiches/photo-chambre-3.jpg" aria-label="Agrandir la photo 2 sur 6"><img src="/img/exemple-fiches/photo-chambre-3-t.jpg" alt="Photo 2 sur 6, par Éclat Ménage Bordeaux" width="640" height="480" loading="lazy"></button><button type="button" class="vt-ph" data-vt-open="2" data-vt-full="/img/exemple-fiches/photo-sdb-1.jpg" aria-label="Agrandir la photo 3 sur 6"><img src="/img/exemple-fiches/photo-sdb-1-t.jpg" alt="Photo 3 sur 6, par Éclat Ménage Bordeaux" width="640" height="480" loading="lazy"></button><button type="button" class="vt-ph" data-vt-open="3" data-vt-full="/img/exemple-fiches/photo-salon-4.jpg" aria-label="Agrandir la photo 4 sur 6"><img src="/img/exemple-fiches/photo-salon-4-t.jpg" alt="Photo 4 sur 6, par Éclat Ménage Bordeaux" width="640" height="480" loading="lazy"></button><button type="button" class="vt-ph" data-vt-open="4" data-vt-full="/img/exemple-fiches/photo-salon-3.jpg" aria-label="Agrandir la photo 5 sur 6"><img src="/img/exemple-fiches/photo-salon-3-t.jpg" alt="Photo 5 sur 6, par Éclat Ménage Bordeaux" width="640" height="480" loading="lazy"><span class="vt-more">+1</span></button><button type="button" class="vt-ph" data-vt-open="5" data-vt-full="/img/exemple-fiches/photo-salon-2.jpg" hidden aria-label="Agrandir la photo 6 sur 6"><img src="/img/exemple-fiches/photo-salon-2-t.jpg" alt="Photo 6 sur 6, par Éclat Ménage Bordeaux" width="640" height="480" loading="lazy"></button></div>
-</section>
 <dialog class="vt-lb" id="vt-lb" aria-label="Photos en grand">
   <button type="button" class="vt-lb-x" data-vt-close aria-label="Fermer"><i class="ph-bold ph-x"></i></button>
   <button type="button" class="vt-lb-nav prev" data-vt-prev aria-label="Photo précédente"><i class="ph-bold ph-caret-left"></i></button>
@@ -322,95 +426,98 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
   <button type="button" class="vt-lb-nav next" data-vt-next aria-label="Photo suivante"><i class="ph-bold ph-caret-right"></i></button>
   <div class="vt-lb-n"></div>
 </dialog>
-    <div class="card" style="margin-bottom:20px"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Bio que tu rédiges</span><h2>Présentation</h2><div class="bio">Équipe de ménage spécialisée location courte durée depuis 6 ans à Bordeaux. On gère actuellement 18 logements pour des hôtes Airbnb et Booking sur Bordeaux et le Médoc. Notre marque de fabrique : un turnover livré en moins de 4h avec photo finale envoyée par WhatsApp, gestion complète du linge (stock tournant inclus dans le forfait), et un réappro consommables ajusté à chaque saison. Trois ménagères formées en interne, une équipe stable depuis 2 ans, déclarée et assurée. Notre objectif : que tu ne touches plus à rien entre 2 voyageurs.</div></div>
-    <section class="card vt-sec" id="formules" style="position:relative">
-  <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes formules</span><h2>Formules</h2>
-  <div class="vt-forms n3"><div class="vt-form first">
-    <div class="vt-form-n">Studio, T1</div>
-    <div class="vt-form-p">70 €</div>
-    <p>Ménage complet, lit refait, salle de bain et cuisine, sous 3 h.</p>
-  </div><div class="vt-form">
-    <div class="vt-form-n">T2, T3</div>
-    <div class="vt-form-p">95 €</div>
-    <p>Linge fourni et lavé, réassort des consommables, photo de fin de ménage.</p>
-  </div><div class="vt-form">
-    <div class="vt-form-n">Maison</div>
-    <div class="vt-form-p">130 €</div>
-    <p>Jusqu’à 4 chambres, terrasse balayée, poubelles sorties.</p>
-  </div></div>
-  <p class="vt-note">Prix indicatifs : le devis final dépend de ton logement.</p>
-</section>
-    <div class="card" style="margin-bottom:20px"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Prestations cochées</span><h2>Prestations</h2><div class="prestations-grid"><span class="prestation-chip"><i class="ph-bold ph-check"></i>Ménage standard</span><span class="prestation-chip"><i class="ph-bold ph-check"></i>Gestion du linge</span><span class="prestation-chip"><i class="ph-bold ph-check"></i>Repassage</span><span class="prestation-chip"><i class="ph-bold ph-check"></i>Réappro consommables</span><span class="prestation-chip"><i class="ph-bold ph-check"></i>État des lieux photo</span><span class="prestation-chip"><i class="ph-bold ph-check"></i>Petite maintenance</span><span class="prestation-chip"><i class="ph-bold ph-check"></i>Gestion des déchets</span></div></div>
-    <div class="card vt-sec">
-      <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Capacité affichée</span><h2>Capacité & disponibilité</h2>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:6px">
-        <div><div style="font-size:11px;color:var(--tl);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px">Taille équipe</div><div style="font-size:14px;color:var(--td);font-weight:500">Équipe de 3 à 5 personnes</div></div>
-        <div><div style="font-size:11px;color:var(--tl);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px">Logements gérés</div><div style="font-size:14px;color:var(--td);font-weight:500">18 en parc actuel</div></div>
-        <div><div style="font-size:11px;color:var(--tl);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px">Réactivité</div><div style="font-size:14px;color:var(--td);font-weight:500">Réservation 24h à l&#39;avance</div></div>
-        <div><div style="font-size:11px;color:var(--tl);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin-bottom:4px">Langues</div><div style="font-size:14px;color:var(--td);font-weight:500">FR, EN, ES</div></div>
+      <div class="fx-id">
+        <span class="fx-av  ini" aria-hidden="true">ÉM</span>
+        <div class="fx-id-t">
+          <h1>Éclat Ménage Bordeaux<span class="fx-role">Équipe de ménage à Bordeaux</span></h1>
+          <div class="fx-badges"><span class="fx-badge"><i class="ph-bold ph-shield-check"></i>Assurance RC pro</span><span class="fx-badge"><i class="ph-bold ph-lightning"></i>Réservation 24h à l&#39;avance</span><span class="fx-badge"><i class="ph-bold ph-handshake"></i>Sans commission</span></div>
+        </div>
       </div>
-      <div class="trust-row"><i class="ph-bold ph-shield-check" style="font-size:15px"></i>Couvert par une assurance Responsabilité Civile Professionnelle</div>
-      <div style="margin-top:10px;font-size:12px;color:var(--tl)">SIRET déclaré : <strong style="color:var(--td);font-variant-numeric:tabular-nums">12345678901234</strong></div>
     </div>
-    <section class="card vt-sec" style="position:relative">
-  <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Ton déroulé</span><h2>Comment ça se passe</h2>
-  <ol class="vt-steps"><li><span class="vt-step-n">1</span><div><strong>Tu m’envoies ta demande</strong><p>Ton logement, sa taille et le rythme des réservations : je te propose un tarif.</p></div></li><li><span class="vt-step-n">2</span><div><strong>Le premier passage</strong><p>On fait le point sur les clés, le linge et tes consignes.</p></div></li><li><span class="vt-step-n">3</span><div><strong>Les ménages entre deux voyageurs</strong><p>Je suis ton planning Airbnb et Booking et je te préviens quand c’est prêt.</p></div></li></ol>
+  </div>
 </section>
-    <section class="card vt-sec sct" id="zone" style="position:relative">
+
+<div class="fx-wrap fx-body">
+  <div class="fx-main">
+    <div class="fx-facts n3"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Calculé depuis ta fiche</span><div class="fx-fact"><b>70 €</b><span>dès, le ménage</span></div><div class="fx-fact"><b>Bordeaux</b><span>ville principale</span></div><div class="fx-fact"><b>3 à 5</b><span>personnes dans l’équipe</span></div></div>
+    
+    <section class="fx-sec" id="formules"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes formules</span><h2>Formules</h2>
+      <div class="fx-forms n3"><div class="fx-fm"><span class="fx-fm-n">Studio, T1</span><b>70 €</b><p>Ménage complet, lit refait, salle de bain et cuisine, sous 3 h.</p></div><div class="fx-fm hl"><span class="fx-fm-n">T2, T3</span><b>95 €</b><p>Linge fourni et lavé, réassort des consommables, photo de fin de ménage.</p></div><div class="fx-fm"><span class="fx-fm-n">Maison</span><b>130 €</b><p>Jusqu’à 4 chambres, terrasse balayée, poubelles sorties.</p></div></div>
+      <p class="fx-note">Prix indicatifs, le ménage : le devis final dépend de ton logement.</p>
+    </section>
+    <section class="fx-sec"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Bio que tu rédiges</span><h2>Présentation</h2><div class="fx-bio" data-fx-bio><p>Équipe de ménage spécialisée location courte durée depuis 6 ans à Bordeaux. On gère actuellement 18 logements pour des hôtes Airbnb et Booking sur Bordeaux et le Médoc. Notre marque de fabrique : un turnover livré en moins de 4h avec photo finale envoyée par WhatsApp, gestion complète du linge (stock tournant inclus dans le forfait), et un réappro consommables ajusté à chaque saison. Trois ménagères formées en interne, une équipe stable depuis 2 ans, déclarée et assurée. Notre objectif : que tu ne touches plus à rien entre 2 voyageurs.</p></div><button type="button" class="fx-more-bio" data-fx-bio-btn hidden>Lire la suite</button></section>
+    <section class="fx-sec"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Prestations et capacité</span><h2>Ce que l’équipe propose</h2><div class="fx-offers"><span class="fx-offer"><i class="ph-bold ph-check"></i>Ménage standard</span><span class="fx-offer"><i class="ph-bold ph-check"></i>Gestion du linge</span><span class="fx-offer"><i class="ph-bold ph-check"></i>Repassage</span><span class="fx-offer"><i class="ph-bold ph-check"></i>Réappro consommables</span><span class="fx-offer"><i class="ph-bold ph-check"></i>État des lieux photo</span><span class="fx-offer"><i class="ph-bold ph-check"></i>Petite maintenance</span><span class="fx-offer"><i class="ph-bold ph-check"></i>Gestion des déchets</span><span class="fx-offer"><i class="ph-bold ph-users"></i>Équipe de 3 à 5 personnes</span><span class="fx-offer"><i class="ph-bold ph-house-line"></i>18 logements suivis aujourd’hui</span><span class="fx-offer"><i class="ph-bold ph-clock"></i>Tarif horaire 25 €/h</span><span class="fx-offer"><i class="ph-bold ph-translate"></i>Langues : FR, EN, ES</span><span class="fx-offer"><i class="ph-bold ph-identification-card"></i>SIRET 12345678901234</span></div></section>
+    <section class="card vt-sec sct sct-c" id="zone" style="position:relative">
   <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes villes</span><h2>Où j’interviens</h2>
   <div class="sct-stats"><div><div class="sct-v">53 km</div><div class="sct-l">jusqu’à Arcachon</div></div></div>
   <div class="sct-map"><svg class="sct-svg" viewBox="0 0 600 464" role="img" aria-label="Carte du secteur : Bordeaux" data-p="-1247.1,45022.6,0.80511,1.13500"><path class="land" d="M425 -345L486 -340L526 -339L546 -351L544 -315L590 -299L613 -308L649 -297L670 -280L676 -256L665 -212L680 -190L684 -167L698 -150L711 -167L732 -164L746 -151L783 -134L805 -98L829 -95L852 -81L881 -75L899 -84L911 -104L933 -112L953 -87L972 -90L1001 -111L1037 -105L1056 -83L1063 -54L1033 13L1036 32L1019 48L1006 86L1031 122L986 195L1019 196L1042 224L1090 215L1159 229L1170 208L1198 188L1196 174L1229 177L1258 202L1233 225L1217 223L1225 272L1243 296L1210 309L1185 296L1166 340L1160 317L1127 332L1111 360L1099 351L1086 367L1093 384L1112 387L1118 405L1134 399L1151 410L1129 463L1073 507L1061 538L1034 532L1019 559L992 587L996 640L1011 653L994 682L1002 701L1019 718L1016 744L994 740L980 751L940 759L935 777L956 796L976 824L977 852L961 859L933 889L907 892L891 904L870 886L860 864L822 860L825 927L785 940L754 930L690 923L685 891L696 836L678 835L658 814L656 794L618 792L587 776L579 746L544 726L498 709L498 658L460 642L455 657L416 654L383 661L377 673L350 684L325 686L270 665L264 658L223 674L193 666L214 612L206 580L177 585L131 557L114 590L-6 629L-4 576L-10 540L16 507L35 454L35 434L44 410L69 408L85 426L134 433L146 426L185 424L179 393L154 357L113 317L105 316L65 281L54 300L59 315L21 356L7 389L1 432L-12 443L-4 353L18 191L35 37L46 -97L69 -313L71 -381L69 -441L77 -476L73 -508L89 -554L118 -590L126 -612L150 -610L167 -583L168 -555L195 -534L220 -500L252 -478L281 -444L329 -403L357 -369L386 -303L399 -256L407 -190L454 -64L478 -31L514 9L528 -22L492 -58L479 -97L466 -118L465 -166L450 -223L437 -297L425 -345Z"/><path class="nb" data-n="Ambarès-et-Lagrave" data-d="11" d="M573 110L582 97L581 80L587 72L588 39L595 39L604 62L621 80L625 95L630 98L629 116L614 121L600 119L573 110Z"/><path class="nb" data-n="Ambès" data-d="17" d="M522 -17L526 -19L528 -17L556 -13L581 6L606 22L595 39L588 39L567 44L556 32L544 18L530 3L520 -15L522 -17Z"/><path class="nb" data-n="Andernos-les-Bains" data-d="42" d="M106 303L118 289L133 281L166 272L160 281L153 311L136 341L113 317L105 316L106 303Z"/><path class="cv" data-n="Arcachon" data-d="53" d="M35 435L44 410L69 408L87 418L35 435Z"/><path class="nb" data-n="Arès" data-d="40" d="M106 303L98 308L77 294L69 281L80 276L88 263L158 227L166 198L193 219L178 256L166 272L133 281L118 289L106 303Z"/><path class="nb" data-n="Arsac" data-d="18" d="M475 12L482 26L473 45L461 53L443 60L420 76L396 63L404 42L419 32L428 9L467 6L475 12Z"/><path class="nb" data-n="Artigues-près-Bordeaux" data-d="7" d="M597 175L604 165L624 178L616 198L605 205L599 198L597 175Z"/><path class="nb" data-n="Audenge" data-d="33" d="M295 298L330 324L329 333L274 366L262 374L238 381L201 401L184 402L152 379L169 373L188 358L193 348L209 331L246 315L295 298Z"/><path class="nb" data-n="Avensan" data-d="22" d="M375 -21L383 -28L414 -44L422 -27L423 -10L432 -11L423 1L428 9L419 32L404 42L396 63L371 88L364 88L358 65L359 44L366 30L365 4L375 -21Z"/><path class="nb" data-n="Ayguemorte-les-Graves" data-d="19" d="M631 346L630 356L618 370L617 379L609 382L594 375L617 347L631 346Z"/><path class="nb" data-n="Barp" data-d="29" d="M416 397L445 431L471 469L444 505L429 518L412 517L382 510L385 479L373 473L348 471L355 450L343 440L341 423L346 406L383 374L416 397Z"/><path class="nb" data-n="Bassens" data-d="7" d="M573 110L600 119L599 132L588 153L573 152L563 120L561 113L573 110Z"/><path class="nb" data-n="Bègles" data-d="7" d="M542 240L556 238L571 227L576 234L580 246L583 263L564 265L548 272L543 246L542 240Z"/><path class="nb" data-n="Biganos" data-d="37" d="M292 401L289 416L278 424L265 425L256 433L242 437L216 455L203 451L195 425L184 402L201 401L238 381L262 374L274 366L291 387L292 401Z"/><path class="nb" data-n="Blanquefort" data-d="8" d="M503 86L522 98L543 101L549 90L562 95L561 113L563 120L536 129L521 129L497 141L487 145L478 129L479 120L468 115L464 105L468 96L503 86Z"/><path class="mc" data-n="Bordeaux" data-d="0" d="M542 240L530 224L519 232L512 228L511 210L499 208L490 183L496 171L507 182L526 192L540 174L536 129L563 120L573 152L568 174L571 183L568 205L563 212L571 227L556 238L542 240Z"/><path class="nb" data-n="Bouliac" data-d="7" d="M576 234L590 229L600 219L622 224L603 247L580 246L576 234Z"/><path class="nb" data-n="Bourg" data-d="20" d="M573 -31L587 -13L596 -10L581 6L556 -13L528 -17L535 -27L547 -32L547 -40L554 -44L562 -42L573 -31Z"/><path class="nb" data-n="Bouscat" data-d="2" d="M503 165L511 172L526 170L540 174L526 192L507 182L496 171L503 165Z"/><path class="nb" data-n="Brach" data-d="36" d="M283 -11L227 7L217 9L201 -11L209 -27L230 -48L244 -49L270 -39L283 -11Z"/><path class="nb" data-n="Bruges" data-d="4" d="M536 129L540 174L526 170L511 172L503 165L497 141L521 129L536 129Z"/><path class="nb" data-n="Cabanac-et-Villagrains" data-d="30" d="M611 508L595 514L564 511L561 525L548 541L519 533L508 500L514 475L551 446L587 447L610 466L628 473L615 491L611 508Z"/><path class="nb" data-n="Cadaujac" data-d="13" d="M600 321L602 324L604 331L580 339L566 324L552 321L552 318L551 306L578 289L593 288L593 292L592 313L600 321Z"/><path class="nb" data-n="Camblanes-et-Meynac" data-d="13" d="M593 292L593 288L593 283L618 276L635 288L651 287L639 311L629 304L615 295L597 297L593 292Z"/><path class="nb" data-n="Canéjan" data-d="13" d="M490 324L460 305L451 283L457 279L485 278L487 295L497 305L494 318L490 324Z"/><path class="nb" data-n="Carbon-Blanc" data-d="8" d="M588 153L599 132L600 119L614 121L598 153L588 153Z"/><path class="nb" data-n="Castelnau-de-Médoc" data-d="25" d="M318 4L333 2L348 -19L375 -21L365 4L366 30L359 44L358 65L345 57L337 54L332 22L318 4Z"/><path class="nb" data-n="Cenon" data-d="4" d="M599 198L568 205L571 183L597 175L599 198Z"/><path class="nb" data-n="Cestas" data-d="19" d="M416 397L383 374L357 354L342 342L330 324L364 316L393 304L400 309L429 284L449 273L457 279L451 283L460 305L490 324L495 332L482 339L477 353L464 365L475 384L420 388L416 397Z"/><path class="nb" data-n="Eysines" data-d="6" d="M467 187L465 145L487 145L497 141L503 165L496 171L490 183L478 181L467 187Z"/><path class="nb" data-n="Floirac" data-d="5" d="M576 234L571 227L563 212L568 205L599 198L605 205L600 219L590 229L576 234Z"/><path class="nb" data-n="Gradignan" data-d="10" d="M517 261L527 267L531 279L529 295L514 301L509 311L494 318L497 305L487 295L485 278L510 261L517 261Z"/><path class="nb" data-n="Gujan-Mestras" data-d="50" d="M131 557L113 590L115 517L108 450L103 434L106 429L134 433L146 426L164 425L147 517L131 557Z"/><path class="nb" data-n="Haillan" data-d="9" d="M467 187L461 186L425 199L427 192L445 177L456 145L465 145L467 187Z"/><path class="nb" data-n="Isle-Saint-Georges" data-d="17" d="M600 321L614 325L635 336L643 341L631 346L617 347L610 330L602 324L600 321Z"/><path class="nb" data-n="Labarde" data-d="18" d="M475 12L491 -7L503 3L482 26L475 12Z"/><path class="nb" data-n="Brède" data-d="20" d="M594 375L609 382L614 385L598 409L585 406L572 416L565 410L552 398L542 393L540 382L526 376L527 375L539 370L564 367L579 375L594 375Z"/><path class="cv" data-n="Lacanau" data-d="44" d="M140 131L110 115L96 116L26 115L35 37L43 -52L111 -27L133 -2L157 0L176 -13L201 -11L217 9L210 21L203 59L214 80L180 88L161 97L140 131Z"/><path class="nb" data-n="Lanton" data-d="33" d="M193 219L230 219L250 210L292 196L275 244L295 298L246 315L209 331L193 348L188 358L169 373L136 341L153 311L160 281L166 272L178 256L193 219Z"/><path class="nb" data-n="Latresne" data-d="9" d="M603 247L626 263L618 276L593 283L583 263L580 246L603 247Z"/><path class="nb" data-n="Lège-Cap-Ferret" data-d="50" d="M11 242L65 238L81 225L131 221L158 227L88 263L80 276L69 281L54 300L59 315L46 324L45 331L32 347L21 356L7 389L7 414L1 432L2 454L-12 443L-10 402L-4 353L11 242Z"/><path class="nb" data-n="Léognan" data-d="16" d="M552 318L552 321L544 336L547 345L529 355L527 375L526 376L494 383L475 384L464 365L477 353L482 339L495 332L490 324L494 318L509 311L514 301L529 295L531 305L552 318Z"/><path class="nb" data-n="Lormont" data-d="5" d="M604 165L597 175L571 183L568 174L573 152L588 153L598 153L606 160L604 165Z"/><path class="nb" data-n="Ludon-Médoc" data-d="14" d="M556 32L567 44L569 55L559 54L523 65L498 67L500 52L489 45L505 35L520 38L532 29L551 36L556 32Z"/><path class="nb" data-n="Macau" data-d="16" d="M544 18L556 32L551 36L532 29L520 38L505 35L489 45L473 45L482 26L503 3L491 -7L489 -19L514 9L533 20L544 18Z"/><path class="nb" data-n="Margaux-Cantenac" data-d="21" d="M489 -19L491 -7L475 12L467 6L428 9L423 1L432 -11L442 -13L450 -31L467 -44L475 -39L489 -19Z"/><path class="nb" data-n="Martignas-sur-Jalle" data-d="17" d="M403 196L396 199L397 215L358 227L331 220L331 207L316 198L346 185L394 177L403 196Z"/><path class="nb" data-n="Martillac" data-d="16" d="M552 321L566 324L580 339L583 351L564 367L539 370L527 375L529 355L547 345L544 336L552 321Z"/><path class="cv" data-n="Mérignac" data-d="9" d="M467 187L478 181L490 183L499 208L511 210L512 228L499 236L457 238L430 253L417 250L420 237L410 220L397 215L396 199L403 196L425 199L461 186L467 187Z"/><path class="nb" data-n="Mios" data-d="37" d="M190 582L211 510L219 502L223 464L216 455L242 437L256 433L265 425L278 424L289 416L292 401L357 354L383 374L346 406L341 423L343 440L355 450L348 471L333 467L308 488L300 485L286 501L275 517L246 535L232 549L190 582Z"/><path class="nb" data-n="Moulis-en-Médoc" data-d="27" d="M403 -78L413 -67L411 -49L417 -46L414 -44L383 -28L375 -21L348 -19L333 2L318 4L313 -4L321 -15L355 -27L371 -45L387 -50L385 -64L403 -71L403 -78Z"/><path class="nb" data-n="Parempuyre" data-d="11" d="M503 86L498 67L523 65L559 54L569 55L569 69L562 95L549 90L543 101L522 98L503 86Z"/><path class="cv" data-n="Pessac" data-d="11" d="M517 261L510 261L485 278L457 279L449 273L429 284L400 309L393 304L413 280L409 272L417 250L430 253L457 238L499 236L512 228L519 232L517 261Z"/><path class="nb" data-n="Pian-Médoc" data-d="13" d="M473 45L489 45L500 52L498 67L503 86L468 96L464 105L443 107L420 76L443 60L461 53L473 45Z"/><path class="nb" data-n="Porge" data-d="45" d="M140 131L168 170L166 198L158 227L131 221L81 225L65 238L11 242L18 191L26 115L96 116L110 115L140 131Z"/><path class="nb" data-n="Prignac-et-Marcamps" data-d="20" d="M623 -5L610 12L609 21L606 22L581 6L596 -10L598 -22L617 -35L612 -19L623 -5Z"/><path class="nb" data-n="Quinsac" data-d="14" d="M600 321L592 313L593 292L597 297L615 295L629 304L614 325L600 321Z"/><path class="nb" data-n="Saint-Aubin-de-Médoc" data-d="16" d="M429 133L408 133L388 121L362 118L364 88L371 88L396 63L420 76L443 107L432 113L429 133Z"/><path class="nb" data-n="Sainte-Eulalie" data-d="9" d="M630 141L616 160L606 160L598 153L614 121L629 116L638 126L630 141Z"/><path class="nb" data-n="Sainte-Hélène" data-d="30" d="M283 -11L313 -4L318 4L332 22L337 54L345 57L312 79L307 86L275 141L253 136L228 109L214 80L203 59L210 21L217 9L227 7L283 -11Z"/><path class="nb" data-n="Saint-Jean-d&#39;Illac" data-d="21" d="M295 298L275 244L292 196L295 187L301 195L316 198L331 207L331 220L358 227L397 215L410 220L420 237L417 250L409 272L413 280L393 304L364 316L330 324L295 298Z"/><path class="nb" data-n="Saint-Louis-de-Montferrand" data-d="11" d="M573 110L561 113L562 95L569 69L569 55L567 44L588 39L587 72L581 80L582 97L573 110Z"/><path class="nb" data-n="Saint-Médard-d&#39;Eyrans" data-d="17" d="M594 375L579 375L564 367L583 351L580 339L604 331L602 324L610 330L617 347L594 375Z"/><path class="nb" data-n="Saint-Médard-en-Jalles" data-d="17" d="M429 133L456 145L445 177L427 192L425 199L403 196L394 177L346 185L316 198L301 195L295 187L292 156L307 157L325 144L334 111L362 118L388 121L408 133L429 133Z"/><path class="nb" data-n="Saint-Morillon" data-d="24" d="M610 449L610 460L610 466L587 447L551 446L552 432L565 410L572 416L585 406L598 409L614 429L610 449Z"/><path class="nb" data-n="Saint-Selve" data-d="24" d="M622 381L618 390L636 401L648 417L635 446L610 449L614 429L598 409L614 385L609 382L617 379L622 381Z"/><path class="nb" data-n="Saint-Vincent-de-Paul" data-d="15" d="M623 48L627 61L638 79L630 98L625 95L621 80L604 62L595 39L606 22L609 21L615 22L622 32L623 48Z"/><path class="nb" data-n="Salaunes" data-d="23" d="M275 141L307 86L312 79L345 57L358 65L364 88L362 118L334 111L325 144L307 157L292 156L285 144L275 141Z"/><path class="nb" data-n="Saucats" data-d="23" d="M416 397L420 388L475 384L494 383L526 376L540 382L542 393L552 398L565 410L552 432L551 446L514 475L507 467L471 469L445 431L416 397Z"/><path class="nb" data-n="Saumos" data-d="34" d="M140 131L161 97L180 88L214 80L228 109L253 136L252 141L224 160L211 160L199 151L184 154L168 170L140 131Z"/><path class="nb" data-n="Taillan-Médoc" data-d="10" d="M429 133L432 113L443 107L464 105L468 115L479 120L478 129L487 145L465 145L456 145L429 133Z"/><path class="cv" data-n="Talence" data-d="6" d="M542 240L543 246L527 267L517 261L519 232L530 224L542 240Z"/><path class="nb" data-n="Teich" data-d="47" d="M131 557L147 517L164 425L195 425L203 451L216 455L223 464L219 502L211 510L190 582L177 585L131 557Z"/><path class="nb" data-n="Temple" data-d="30" d="M193 219L166 198L168 170L184 154L199 151L211 160L224 160L252 141L253 136L275 141L285 144L292 156L295 187L292 196L250 210L230 219L193 219Z"/><path class="nb" data-n="Teste-de-Buch" data-d="58" d="M38 616L-6 629L-4 576L-10 548L-10 540L16 507L28 480L35 454L35 435L87 418L103 426L103 434L108 450L115 517L113 590L38 616Z"/><path class="nb" data-n="Tresses" data-d="8" d="M644 213L639 223L622 224L600 219L605 205L616 198L624 178L635 179L643 197L644 213Z"/><path class="nb" data-n="Villenave-d&#39;Ornon" data-d="9" d="M552 318L531 305L529 295L531 279L527 267L543 246L548 272L564 265L583 263L593 283L593 288L578 289L551 306L552 318Z"/><path class="nb" data-n="Marcheprime" data-d="28" d="M292 401L291 387L274 366L329 333L330 324L342 342L357 354L292 401Z"/><g class="lb"><circle cx="455" cy="216" r="3.2"/><text x="461" y="220" text-anchor="start">Mérignac</text></g><g class="lb"><circle cx="461" cy="262" r="3.2"/><text x="467" y="266" text-anchor="start">Pessac</text></g><g class="lb"><circle cx="528" cy="246" r="3.2"/><text x="534" y="250" text-anchor="start">Talence</text></g><g class="lb"><circle cx="58" cy="419" r="3.2"/><text x="64" y="423" text-anchor="start">Arcachon</text></g><g class="lb"><circle cx="112" cy="45" r="3.2"/><text x="118" y="49" text-anchor="start">Lacanau</text></g><g class="ctr"><circle cx="542" cy="187" r="6"/><text x="532" y="178" text-anchor="end">Bordeaux</text></g></svg><svg class="sct-inset" viewBox="0 0 74 74" aria-hidden="true"><path d="M50 38L50 36L51 35L52 36L53 37L54 36L55 37L56 36L57 37L56 38L55 39L55 41L54 42L53 40L52 41L51 40L50 39ZM46 14L45 15L44 16L45 17L44 18L42 17L41 16L42 15L42 13L42 11L43 10L45 10L47 10L47 12L46 13L47 14ZM41 33L42 34L44 34L45 35L46 36L45 37L45 39L43 38L41 38L40 37L39 38L38 37L38 35L39 34L41 33ZM55 52L56 51L57 50L59 50L60 49L61 50L60 51L60 53L61 54L59 54L60 55L58 55L56 55L54 55L54 53L55 52ZM57 45L58 46L59 45L60 46L61 47L61 49L59 50L57 50L56 51L55 52L54 51L53 50L54 49L55 48L56 47L58 47L57 46ZM61 51L62 52L64 52L65 53L64 54L63 55L62 56L61 57L60 56L59 55L60 54L60 52L61 51ZM49 44L50 43L50 45L51 46L50 47L50 49L49 51L47 51L46 50L46 48L47 47L48 46L49 45ZM47 10L48 11L49 10L50 9L50 11L51 12L53 13L52 14L51 15L50 16L49 15L47 15L46 14L47 13L47 11ZM35 59L36 60L36 62L37 63L35 63L33 63L32 62L31 61L32 59L33 60L32 59L33 58L34 59L35 58ZM43 22L44 21L46 21L47 19L48 20L49 21L50 22L50 24L49 25L47 25L46 24L45 25L46 24L45 23L44 22ZM35 59L35 57L36 58L37 57L39 57L40 58L42 58L42 60L41 61L40 62L38 62L37 63L36 62L36 60L35 59ZM37 49L38 48L39 49L39 47L41 47L41 49L42 50L42 52L43 53L42 54L41 55L39 55L39 53L38 52L36 52L36 50L37 49ZM50 54L51 55L53 55L54 56L55 55L54 56L55 57L55 59L53 59L52 58L51 57L50 58L49 57L47 57L48 56L49 55L50 54ZM21 15L22 14L23 15L25 15L27 15L28 14L28 16L29 17L28 18L26 18L25 19L24 18L23 19L21 19L22 18L22 16L21 15ZM39 43L41 43L42 44L43 45L43 47L41 47L41 49L41 47L39 47L39 49L38 48L37 49L37 47L37 45L38 44L39 43ZM26 39L27 38L28 39L29 38L30 39L30 41L29 42L28 43L27 44L26 45L25 44L25 42L24 41L25 40L26 39ZM19 37L20 38L19 37ZM21 37L22 36L23 37L24 38L25 39L26 40L24 40L24 42L25 43L26 44L25 45L24 44L23 43L22 42L21 41L20 40L21 39L20 38L21 37ZM20 40L19 39L20 40ZM37 27L39 28L41 28L41 30L42 31L41 32L42 33L40 34L39 35L38 36L37 35L37 33L36 31L35 30L37 30L37 28ZM36 41L38 41L39 42L38 43L37 44L37 46L35 46L33 46L32 45L33 44L33 42L35 42L36 41ZM48 25L49 24L50 25L51 26L52 27L54 27L53 28L54 29L53 30L53 32L51 32L49 32L48 31L47 30L47 28L48 27L47 26L48 25ZM8 20L9 19L10 18L11 19L12 20L13 21L14 20L16 20L17 21L16 22L15 23L14 24L12 23L10 23L9 22L8 21L9 20ZM37 36L38 37L39 38L39 40L38 41L36 41L35 40L34 39L33 38L34 37L33 36L35 36L37 36ZM29 41L30 42L32 42L33 43L32 44L33 45L34 46L33 47L32 48L31 49L30 48L29 49L28 48L27 47L26 46L27 45L28 44L28 42L29 41ZM60 28L61 29L60 30L59 31L58 32L58 34L57 35L56 34L57 33L56 32L55 31L55 29L57 29L58 28L60 28ZM50 44L52 44L52 46L53 45L54 46L53 47L54 48L55 49L54 50L53 51L55 51L54 52L52 52L51 51L50 52L49 51L50 50L50 48L51 47L50 46L50 44ZM28 14L30 14L31 15L33 15L34 14L35 15L34 16L34 18L33 19L31 19L30 20L29 18L28 17L28 15ZM30 20L31 19L33 19L34 18L34 20L35 21L36 22L36 24L34 24L33 25L32 24L31 23L30 22L31 21L30 20ZM8 20L9 21L8 22L9 23L8 24L9 25L8 26L7 25L6 26L5 25L6 26L5 25L4 24L5 23L3 23L4 22L5 23L4 22L3 21L4 20L6 20L7 19L8 20ZM69 65L70 66L71 67L72 68L73 69L72 70L73 71L72 72L71 71L70 70L69 69L70 68L69 67L70 66L69 65ZM73 69L72 68L71 67L70 66L69 65L70 64L71 63L72 62L73 63L73 61L73 63L74 64L74 66L73 68ZM43 52L45 52L46 51L47 50L46 51L48 51L50 52L50 54L49 55L48 56L47 57L47 55L46 54L45 53L44 54L43 53ZM31 55L33 55L34 54L35 55L36 56L37 57L36 58L35 57L35 59L34 58L33 59L32 60L31 61L30 62L29 63L29 61L29 59L30 58L31 57L32 56L31 55ZM27 53L29 53L31 53L30 54L31 55L32 56L31 57L30 58L28 58L27 57L26 56L25 55L26 54L27 53ZM23 44L24 45L26 45L27 46L26 47L28 47L27 48L26 49L26 51L25 52L24 51L23 50L21 50L20 49L21 48L20 49L20 47L20 45L21 44L21 42L22 43L23 44L23 46L23 44ZM43 54L45 54L46 55L47 56L46 57L45 58L44 59L43 58L42 59L41 58L40 59L39 58L40 57L39 56L41 56L42 55L43 54ZM17 21L16 20L17 19L18 20L19 21L21 21L21 23L21 25L20 26L18 26L17 27L16 26L15 25L16 24L15 23L16 22L17 21ZM33 30L35 30L36 31L37 32L37 34L37 36L35 36L33 36L32 35L31 34L31 32L32 31L33 32L33 30ZM29 27L31 27L32 28L32 30L33 31L32 32L31 33L30 32L28 32L27 31L27 29L27 27L28 28L29 27ZM54 42L55 43L57 43L57 45L58 46L57 47L56 48L54 48L53 47L54 46L53 45L52 46L52 44L50 44L50 42L51 41L52 40L54 41ZM54 29L55 30L55 32L56 33L57 34L56 35L57 36L56 37L54 36L53 37L53 35L53 33L52 32L53 31L54 30ZM25 56L24 57L23 56L22 57L20 57L19 56L19 54L20 53L20 51L21 50L23 50L24 51L25 52L27 52L27 54L26 53L25 54L25 56ZM31 24L32 25L33 24L34 25L35 26L36 27L37 28L37 30L35 30L33 30L32 29L31 27L29 27L30 26L31 25L30 24ZM46 37L47 38L48 37L47 38L48 39L48 41L49 42L50 43L49 44L48 43L47 44L46 43L45 42L45 40L45 38L46 37ZM46 44L47 43L48 44L49 45L48 46L47 47L46 48L45 47L43 47L43 45L42 44L43 43L44 44L45 43L46 44ZM14 28L16 28L17 27L18 26L20 26L21 27L22 28L21 29L20 30L21 31L19 31L20 32L19 31L19 33L18 32L17 31L15 31L16 30L14 30L14 28ZM41 23L42 24L41 25L40 26L41 27L40 28L38 27L36 27L35 26L34 25L35 24L36 23L37 22L38 23L39 24L40 23ZM34 46L35 47L36 46L37 47L37 49L36 50L35 51L34 52L33 51L32 50L31 49L32 48L33 47L34 46ZM28 48L29 49L30 48L31 49L32 50L31 51L30 52L29 53L27 53L26 52L26 50L27 49L28 48ZM43 46L44 47L45 48L46 49L46 51L45 52L43 52L42 51L42 49L41 48L42 47L43 46ZM20 26L22 26L24 26L25 27L27 27L27 29L27 31L26 30L25 31L24 32L22 32L21 31L20 30L21 29L22 28L21 27L20 26ZM21 15L22 16L22 18L21 19L23 20L22 21L20 21L19 20L18 18L19 17L18 16L17 15L17 13L18 12L19 13L20 12L20 14L21 15ZM46 14L47 15L49 15L50 16L51 15L51 17L51 19L50 20L49 21L48 20L47 19L46 20L45 21L44 20L43 19L44 18L45 17L44 16L45 15L46 14ZM50 21L51 20L52 21L54 21L53 22L54 23L55 24L56 25L55 26L54 27L52 28L51 27L51 25L50 24L50 22L49 21ZM21 21L23 21L25 21L26 22L25 23L25 25L24 26L22 26L20 26L21 25L21 23L21 21ZM54 14L55 13L56 14L56 16L57 18L58 19L60 20L61 21L60 22L59 21L58 22L57 21L56 22L55 21L55 19L55 17L55 15L54 14ZM51 16L52 15L51 14L52 13L53 14L55 14L55 16L55 18L55 20L54 21L52 21L51 20L51 18L51 16ZM10 29L11 30L10 29ZM9 26L10 25L8 25L8 23L10 23L12 23L13 24L14 23L15 24L16 25L16 27L15 28L13 28L12 27L11 28L10 27L11 26L10 27L9 26ZM56 14L58 14L59 15L60 16L62 16L64 16L64 18L63 17L61 17L62 18L61 19L62 18L63 19L62 20L61 21L60 20L59 19L58 18L56 17L56 15ZM41 28L42 27L43 28L45 28L46 29L47 30L46 31L47 32L46 33L45 34L44 33L43 34L41 33L42 32L41 31L41 29ZM37 3L38 2L39 3L40 4L41 5L42 4L43 5L43 7L44 6L45 7L46 8L47 9L46 10L44 10L42 10L42 8L41 7L40 6L39 5L38 4L37 3ZM35 12L37 12L38 13L40 13L41 12L42 13L42 15L41 16L40 17L39 16L37 16L35 16L35 14L35 12ZM22 19L23 18L25 19L26 18L28 18L30 19L31 20L31 22L30 23L29 22L28 21L27 22L26 21L25 20L24 21L22 21L23 20L22 19ZM37 3L38 4L39 5L40 6L41 7L42 8L42 10L40 10L39 9L38 8L37 9L36 8L35 7L34 8L34 6L34 4L35 3L37 3ZM39 38L40 37L41 38L43 38L44 39L45 40L45 42L46 43L45 44L44 43L42 43L41 44L40 43L39 42L38 41L39 40L39 38ZM25 56L26 57L26 59L25 60L25 62L23 62L22 61L21 60L19 60L19 58L18 59L17 58L18 57L20 57L22 57L23 56L24 57L25 56ZM26 56L27 57L28 58L29 59L29 61L29 63L28 62L27 63L26 62L25 61L26 60L26 58L26 56ZM37 63L38 62L40 62L41 61L41 63L42 64L40 64L39 65L37 65L36 64L35 63L37 63ZM64 17L66 17L67 18L66 19L65 20L65 22L64 23L62 22L61 21L62 20L63 19L62 18L61 19L62 18L61 17L63 17L64 18ZM62 22L63 23L64 24L64 26L64 28L63 29L62 28L61 27L60 26L61 25L62 24L61 23L62 22ZM48 37L50 37L50 39L51 40L52 41L51 42L50 43L49 42L48 41L48 39L47 38L48 37ZM56 25L57 24L58 25L60 25L60 27L59 28L57 28L56 29L55 30L54 29L53 28L54 27L55 26L56 25ZM47 31L49 31L50 32L52 32L53 33L53 35L52 36L51 35L50 36L50 38L49 37L48 38L47 37L46 38L46 36L45 35L44 34L45 33L46 34L47 33L46 32L47 31ZM26 22L27 21L28 22L29 23L31 23L30 24L31 25L30 26L29 27L28 28L27 27L25 27L24 26L25 25L25 23L26 22ZM60 40L61 41L61 43L62 44L61 45L59 45L58 46L57 45L57 43L55 43L54 42L55 41L55 39L56 40L57 41L58 40L60 41ZM60 40L58 40L57 41L56 40L55 39L56 38L57 37L58 36L60 36L60 38L61 39L60 40ZM38 18L39 19L38 18ZM33 10L35 11L35 13L34 14L33 15L31 15L30 14L28 14L27 13L28 12L29 11L31 11L32 10ZM39 19L39 17L41 17L42 16L43 18L44 19L43 20L44 21L43 22L41 22L40 24L39 23L38 22L39 21L39 19ZM37 18L37 20L36 21L35 20L34 19L34 17L36 17L37 18ZM22 32L24 32L25 31L26 32L27 34L26 35L26 37L27 36L27 38L26 39L25 38L23 38L23 36L23 34L22 33ZM33 10L34 9L34 7L35 8L37 8L38 9L39 8L38 9L40 9L41 10L42 11L41 12L40 13L38 13L37 12L35 12L34 10ZM36 52L38 52L39 53L39 55L41 55L40 56L39 57L37 57L36 56L35 55L34 54L35 53L36 52ZM32 51L33 52L34 51L36 51L35 52L34 53L33 54L32 55L31 54L30 53L31 52L32 51ZM55 55L56 56L57 55L59 55L60 56L61 57L60 58L59 59L60 58L59 59L58 60L56 60L55 59L55 57L54 56L55 55ZM49 51L50 52L51 51L52 52L54 52L54 54L55 55L54 56L53 55L51 55L50 54L50 52L49 51ZM21 31L22 32L23 33L23 35L24 36L23 37L22 36L21 37L20 36L18 36L17 35L16 34L16 32L17 31L18 32L19 33L19 31L20 32L19 31L21 31ZM26 31L27 30L28 31L29 32L30 33L31 34L32 35L31 36L30 37L29 38L28 39L27 38L27 36L26 37L26 35L27 34L26 33L26 31ZM30 38L31 37L32 36L34 37L33 38L34 39L35 40L36 41L35 42L33 42L32 43L31 42L30 41L30 39ZM54 21L56 21L57 22L58 21L60 22L61 21L62 22L61 23L62 24L61 25L60 26L59 25L57 25L56 24L55 25L54 24L55 23L54 22ZM41 23L42 22L44 22L45 23L46 24L45 25L46 24L47 25L48 26L47 27L47 29L45 29L44 28L42 28L41 27L40 26L41 25L42 24L41 23ZM60 26L61 27L62 28L61 29L60 28L60 26ZM37 19L39 19L39 21L38 22L36 22L36 20L37 19ZM38 18L37 19L38 18ZM39 17L39 19L38 18L39 17ZM38 19L39 18L39 20L38 19ZM39 17L38 18L37 17L35 17L34 16L36 16L38 16L39 17Z"/><rect x="20" y="46" width="4" height="3"/></svg><div class="sct-tip" hidden></div></div>
   <div class="sct-chips"><button type="button" class="sct-chip" data-n="Talence">Talence <small>6 km</small></button><button type="button" class="sct-chip" data-n="Mérignac">Mérignac <small>9 km</small></button><button type="button" class="sct-chip" data-n="Pessac">Pessac <small>11 km</small></button><button type="button" class="sct-chip" data-n="Lacanau">Lacanau <small>44 km</small></button><button type="button" class="sct-chip" data-n="Arcachon">Arcachon <small>53 km</small></button><span class="sct-chip txt">Médoc</span><span class="sct-chip txt">Bassin d’Arcachon</span></div>
-  <div class="sct-find">
-    <label for="sct-q">Ton logement est à…</label>
-    <div class="sct-in"><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i><input id="sct-q" type="text" autocomplete="off" spellcheck="false" placeholder="Tape ta commune" aria-describedby="sct-r"></div>
-    <div class="sct-sug" role="listbox" hidden></div>
-    <p class="sct-r" id="sct-r" aria-live="polite"></p>
-  </div>
-  <p class="sct-cap">Distances à vol d’oiseau. Ton logement est un peu plus loin ? Demande quand même : beaucoup de pros se déplacent. Contours : IGN Admin Express (Licence Ouverte).</p>
+  
+  <p class="sct-cap">Un peu plus loin ? Demande quand même : beaucoup de pros se déplacent. Contours IGN (Licence Ouverte).</p>
   <script type="application/json" class="sct-data">{"v":"Bordeaux","c":[-0.574,44.858],"km":null,"fr":false,"p":"Éclat","d":[],"dn":[],"cv":["Mérignac","Pessac","Talence","Arcachon","Lacanau"],"s":["33","40","17","16"],"m":"menage"}</script>
 </section>
-  </div>
-
-  <aside>
-    <div class="card" id="contact">
-      <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Formulaire de contact</span><h2>Contacter Éclat</h2>
-      <form class="contact-form vt-cf" id="contact-form" onsubmit="return contactSubmit(event)">
-        <div id="contact-err" class="err-msg" style="display:none"></div>
-        <fieldset><legend>Ce qu’il te faut</legend><div class="vt-pills"><label class="vt-pill"><input type="checkbox" name="besoin" value="Des ménages entre deux voyageurs"><span>Des ménages entre deux voyageurs</span></label><label class="vt-pill"><input type="checkbox" name="besoin" value="Un grand ménage"><span>Un grand ménage</span></label><label class="vt-pill"><input type="checkbox" name="besoin" value="Le linge"><span>Le linge</span></label></div></fieldset>
-        <fieldset><legend>Ton logement</legend><div class="vt-pills"><label class="vt-pill"><input type="radio" name="logement" value="Studio ou T1"><span>Studio ou T1</span></label><label class="vt-pill"><input type="radio" name="logement" value="T2 ou T3"><span>T2 ou T3</span></label><label class="vt-pill"><input type="radio" name="logement" value="T4 et plus"><span>T4 et plus</span></label><label class="vt-pill"><input type="radio" name="logement" value="Maison"><span>Maison</span></label><label class="vt-pill"><input type="radio" name="logement" value="Plusieurs logements"><span>Plusieurs logements</span></label></div></fieldset>
-        <fieldset><legend>Quand ? <span>facultatif</span></legend><input type="hidden" name="date" data-date data-today placeholder="Choisir une date"></fieldset>
-        <input type="text" name="contactName" placeholder="Ton prénom et ton nom" autocomplete="name" required>
-        <input type="email" name="contactEmail" placeholder="Ton e-mail" autocomplete="email" required>
-        <textarea name="message" placeholder="Un détail à ajouter ? Nombre de logements, rythme des réservations (facultatif)"></textarea>
-        <div class="hp"><label>Site</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
-        <button type="submit" class="btn-p" id="contact-btn"><i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à Éclat</button>
-        <p style="margin-top:10px;font-size:11.5px;color:var(--tl);line-height:1.6">Ton nom, ton e-mail et ton message sont transmis à Éclat seulement, pour te répondre, et supprimés au bout de 3 ans. <a href="/politique-de-confidentialite#annuaire" style="color:var(--g)">Confidentialité</a></p>
-      </form>
-      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);font-size:11.5px;color:var(--tl);line-height:1.6">Pas de commission. Pas d'intermédiaire. Tu négocies et contractualises directement avec l'équipe.</div>
-          </div>
-
-    <div class="card vt-work" style="position:relative"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes liens</span><h2>L’équipe en ligne</h2><a href="#photos" class="vt-link" onclick="jmTrack('site')"><i class="ph-bold ph-globe"></i><span>Le site</span><i class="ph-bold ph-arrow-up-right vt-link-a"></i></a><a href="#photos" class="vt-link" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i><span>@eclat.menage.bordeaux</span><i class="ph-bold ph-arrow-up-right vt-link-a"></i></a><div class="pro-reseaux" style="margin-top:14px">
+    <section class="fx-sec"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes liens</span><h2>L’équipe en ligne</h2><div class="fx-links"><a href="#photos" class="fx-link" onclick="jmTrack('site')"><i class="ph-bold ph-globe"></i><span>Le site</span><i class="ph-bold ph-arrow-up-right"></i></a><a href="#photos" class="fx-link" onclick="jmTrack('instagram')"><i class="ph-bold ph-instagram-logo"></i><span>@eclat.menage.bordeaux</span><i class="ph-bold ph-arrow-up-right"></i></a></div><div class="pro-reseaux" style="margin-top:14px">
       <div style="font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:#7A8C77;margin-bottom:8px">Retrouve-moi aussi sur</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px"><a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer me" title="Fiche Google" aria-label="Fiche Google" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-google-logo" aria-hidden="true"></i></a><a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer me" title="Facebook" aria-label="Facebook" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-facebook-logo" aria-hidden="true"></i></a></div>
-    </div></div>
+    </div></section>
+    <div class="fx-end">
+      <a href="/annuaires/menage"><i class="ph-bold ph-arrow-left"></i>Toutes les équipes de ménage</a>
+      <a href="/menage-lcd-bordeaux"><i class="ph-bold ph-map-pin"></i>Le guide ménage de Bordeaux</a>
+    </div>
+    <p class="disclaimer fx-disc">
+  <strong>À propos de cette page.</strong> Ceci est un aperçu fidèle de la fiche que tu obtiens dans l’annuaire. Le contenu (nom, textes, tarifs, ville, SIRET) est fictif et sert à montrer la mise en page. Photos d’illustration : Unsplash. Lors de ton inscription, tu remplis tes vraies infos et tu ajoutes tes propres photos depuis ton espace pro.
+</p>
+  </div>
 
-    <div class="card" style="margin-top:16px">
-      <h2>Les tarifs ménage à Bordeaux</h2>
-      <p style="font-size:13.5px;color:var(--tm);line-height:1.7;margin-bottom:12px">Fourchettes turnover constatées, checklist complète et questions à poser : consulte le guide local avant de demander un devis.</p>
-      <a href="/menage-lcd-bordeaux" class="btn-ol" style="margin-top:0"><i class="ph-bold ph-map-pin"></i>Le guide ménage de Bordeaux</a>
+  <aside class="fx-side">
+    <div class="fx-card">
+      <span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Contact en 2 étapes</span><div class="fx-card-id"><span class="fx-av sm ini" aria-hidden="true">ÉM</span><div><b>Éclat Ménage Bordeaux</b><span>Ménage · Bordeaux</span></div></div>
+      <div class="fx-price">dès 70 €<small>le ménage</small></div>
+      <div class="fx-mini"><div><span>Studio, T1</span><b>70 €</b></div><div><span>T2, T3</span><b>95 €</b></div><div><span>Maison</span><b>130 €</b></div></div>
+      <button type="button" class="fx-btn" data-fx-open><i class="ph-bold ph-paper-plane-tilt"></i>Demander un devis</button>
+      
+      <p class="fx-fine">Contact direct, sans commission. Éclat te répond par e-mail.</p>
+      
     </div>
   </aside>
 </div>
+</main>
 
-<div style="max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px);display:flex;gap:10px;flex-wrap:wrap">
-  <a href="/annuaires/menage" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none"><i class="ph-bold ph-arrow-left"></i>Toutes les équipes ménage LCD</a>
-  <a href="/menage-lcd-bordeaux" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:10px;font-size:13px;font-weight:600;color:var(--g);text-decoration:none">Le guide ménage de Bordeaux<i class="ph-bold ph-arrow-right"></i></a>
-</div>
-
-<div class="disclaimer">
-  <strong>À propos de cette page.</strong> Ceci est un aperçu fidèle de la fiche que tu obtiens dans l’annuaire. Le contenu (nom, textes, tarifs, ville, SIRET) est fictif et sert à montrer la mise en page. Photos d’illustration : Unsplash. Lors de ton inscription, tu remplis tes vraies infos et tu ajoutes tes propres photos depuis ton espace pro.
-</div>
+<div class="fx-bar" id="fx-bar"><button type="button" class="fx-btn" data-fx-open><i class="ph-bold ph-paper-plane-tilt"></i>Demander un devis</button></div>
+<dialog class="fx-sheet" id="contact" aria-label="Demander un devis à Éclat">
+  <form class="fx-form" id="contact-form" novalidate>
+    <div class="fx-sh-top"><div class="fx-steps"><i class="on"></i><i></i></div><button type="button" class="fx-x" data-fx-close aria-label="Fermer"><i class="ph-bold ph-x"></i></button></div>
+    <div class="fx-step" data-step="1">
+      <h2>Ton besoin</h2>
+      <fieldset><legend>Ce qu’il te faut</legend><div class="fx-pills"><label class="fx-pill"><input type="checkbox" name="besoin" value="Des ménages entre deux voyageurs"><span>Des ménages entre deux voyageurs</span></label><label class="fx-pill"><input type="checkbox" name="besoin" value="Un grand ménage"><span>Un grand ménage</span></label><label class="fx-pill"><input type="checkbox" name="besoin" value="Le linge"><span>Le linge</span></label></div></fieldset>
+      <fieldset><legend>Ton logement</legend><div class="fx-pills"><label class="fx-pill"><input type="radio" name="logement" value="Studio ou T1"><span>Studio ou T1</span></label><label class="fx-pill"><input type="radio" name="logement" value="T2 ou T3"><span>T2 ou T3</span></label><label class="fx-pill"><input type="radio" name="logement" value="T4 et plus"><span>T4 et plus</span></label><label class="fx-pill"><input type="radio" name="logement" value="Maison"><span>Maison</span></label><label class="fx-pill"><input type="radio" name="logement" value="Plusieurs logements"><span>Plusieurs logements</span></label></div></fieldset>
+      <p class="fx-err" data-err="1" hidden></p>
+      <button type="button" class="fx-btn g" data-fx-next>Continuer <i class="ph-bold ph-arrow-right"></i></button>
+      <p class="fx-fine">Gratuit, sans commission : Éclat te répond directement.</p>
+    </div>
+    <div class="fx-step" data-step="2" hidden>
+      <h2>Où Éclat te répond</h2>
+      <input type="text" name="contactName" placeholder="Ton prénom" autocomplete="given-name" maxlength="100">
+      <input type="email" name="contactEmail" placeholder="Ton e-mail" autocomplete="email" maxlength="200">
+      <button type="button" class="fx-more" data-fx-more><i class="ph-bold ph-plus"></i>Ajouter une date ou un détail</button>
+      <div class="fx-extra" hidden>
+        <input type="hidden" name="date" data-date data-today placeholder="Une date souhaitée (facultatif)">
+        <textarea name="message" placeholder="Nombre de logements, rythme des réservations, accès…" maxlength="1500"></textarea>
+      </div>
+      <div class="hp" aria-hidden="true"><label>Site</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+      <p class="fx-err" data-err="2" hidden></p>
+      <button type="submit" class="fx-btn" id="contact-btn"><i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à Éclat</button>
+      <button type="button" class="fx-back" data-fx-back><i class="ph-bold ph-arrow-left"></i>Retour</button>
+      <p class="fx-fine">Ton prénom, ton e-mail et ton message vont à Éclat seulement, pour te répondre, et sont supprimés au bout de 3 ans. <a href="/politique-de-confidentialite#annuaire">Confidentialité</a></p>
+    </div>
+    <div class="fx-done" hidden>
+      <span class="fx-ok"><i class="ph-bold ph-check"></i></span>
+      <h2>C’est envoyé</h2>
+      <p>Exemple : sur une vraie fiche, ta demande part directement dans la boîte mail du pro.</p>
+      <a class="fx-btn g" href="/annuaires/menage">Toutes les équipes de ménage</a>
+    </div>
+  </form>
+</dialog>
 
 <!-- STATSDEMO:START -->
 <section id="exemple-stats" style="background:#fff;padding:clamp(48px,7vw,80px) 0;scroll-margin-top:72px">
@@ -530,50 +637,7 @@ try {
   var __vk = 'jm_v_' + __slug;
   if (!sessionStorage.getItem(__vk)) { sessionStorage.setItem(__vk, '1'); jmTrack('view'); }
 } catch (e) { jmTrack('view'); }
-async function contactSubmit(e) {
-  e.preventDefault();
-  document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Exemple</strong><br>Sur une vraie fiche, ta demande part directement dans la boîte mail du pro.</div>';
-  return false;
-  const errBox = document.getElementById('contact-err');
-  const btn = document.getElementById('contact-btn');
-  errBox.style.display = 'none';
-  btn.disabled = true; btn.innerHTML = '<i class="ph-bold ph-spinner"></i> Envoi…';
-  const f = e.target;
-  const data = {
-    slug: __slug,
-    contactName: f.contactName.value.trim(),
-    contactEmail: f.contactEmail.value.trim(),
-    message: window.jmContactMessage ? jmContactMessage(f) : f.message.value.trim(),
-    website: f.website ? f.website.value : '',
-    t: __t0,
-  };
-  if (data.message.length < 20) {
-    errBox.textContent = 'Dis-moi ce qu\'il te faut et ton logement, ou écris quelques mots.';
-    errBox.style.display = 'block';
-    btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à Éclat';
-    return false;
-  }
-  try {
-    const res = await fetch('/api/cleaner/contact', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
-    });
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      errBox.textContent = body.error || 'Erreur lors de l\'envoi. Réessaye.';
-      errBox.style.display = 'block';
-      btn.disabled = false; btn.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Envoyer à Éclat';
-      return false;
-    }
-    document.getElementById('contact-form').outerHTML = '<div class="ok-msg"><strong>Message envoyé ✓</strong><br>Éclat te recontacte généralement sous 48h.</div>';
-  } catch (err) {
-    errBox.textContent = 'Réseau indisponible.';
-    errBox.style.display = 'block';
-    btn.disabled = false;
-  }
-  return false;
-}
 </script>
-<div class="vt-bar" id="vt-bar" aria-hidden="true"><a href="#contact" class="vt-bar-p" data-vt-contact tabindex="-1"><i class="ph-bold ph-paper-plane-tilt"></i>Contacter Éclat</a><a tabindex="-1" href="#photos" class="vt-bar-s"><i class="ph-bold ph-images"></i>Photos</a></div>
 <script>
 (function(){
   var d=document.getElementById('vt-lb');
@@ -633,6 +697,49 @@ async function contactSubmit(e) {
 </script>
 <script>
 (function(){
+  var car=document.querySelector('.fx-car'),cnt=document.querySelector('.fx-cnt b');
+  if(car&&cnt)car.addEventListener('scroll',function(){cnt.textContent=Math.round(car.scrollLeft/car.clientWidth)+1},{passive:true});
+  var bio=document.querySelector('[data-fx-bio]'),bb=document.querySelector('[data-fx-bio-btn]');
+  if(bio&&bb&&bio.scrollHeight>parseFloat(getComputedStyle(bio.querySelector('p')).lineHeight||'26')*7){bio.classList.add('cut');bb.hidden=false;bb.addEventListener('click',function(){bio.classList.remove('cut');bb.hidden=true})}
+  var dlg=document.getElementById('contact'),f=document.getElementById('contact-form');
+  if(!dlg||!f)return;
+  var steps=f.querySelectorAll('.fx-step'),bars=f.querySelectorAll('.fx-steps i'),done=f.querySelector('.fx-done');
+  function go(n){[].forEach.call(steps,function(s){s.hidden=s.getAttribute('data-step')!==String(n)});[].forEach.call(bars,function(b,i){b.classList.toggle('on',i<n)});var el=f.querySelector('.fx-step[data-step="'+n+'"] input:not([type=hidden]):not([tabindex="-1"])');if(n===2&&el)setTimeout(function(){try{el.focus()}catch(e){}},60)}
+  function err(n,t){var e=f.querySelector('[data-err="'+n+'"]');if(!e)return;e.textContent=t||'';e.hidden=!t}
+  function open(){go(1);err(1);err(2);if(dlg.showModal&&!dlg.open)dlg.showModal();else dlg.setAttribute('open','');try{jmTrack('contact_open')}catch(e){}}
+  document.addEventListener('click',function(e){
+    if(e.target.closest('[data-fx-open]')){e.preventDefault();open()}
+    else if(e.target.closest('[data-fx-close]')||e.target===dlg)dlg.close();
+    else if(e.target.closest('[data-fx-next]')){
+      var b=f.querySelectorAll('input[name=besoin]:checked').length,l=f.querySelector('input[name=logement]:checked');
+      if(!b&&!l){err(1,'Choisis ce qu’il te faut et ton logement.');return}
+      if(!b){err(1,'Choisis ce qu’il te faut.');return}
+      if(!l){err(1,'Choisis ton logement.');return}
+      err(1);go(2);
+    }
+    else if(e.target.closest('[data-fx-back]'))go(1);
+    else if(e.target.closest('[data-fx-more]')){f.querySelector('.fx-extra').hidden=false;e.target.closest('[data-fx-more]').hidden=true}
+  });
+  if(location.hash==='#contact')setTimeout(open,300);
+  var t0=Date.now();
+  f.addEventListener('submit',async function(e){
+    e.preventDefault();
+    var name=f.contactName.value.trim(),mail=f.contactEmail.value.trim();
+    if(!name){err(2,'Écris ton prénom.');return}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)){err(2,'Vérifie ton e-mail.');return}
+    err(2);
+    var btn=document.getElementById('contact-btn');btn.disabled=true;var lbl=btn.innerHTML;btn.innerHTML='Envoi…';
+    var data={slug:window.__slug||'',contactName:name,contactEmail:mail,message:window.jmContactMessage?jmContactMessage(f):'',website:f.website?f.website.value:'',t:t0};
+    try{
+      var res={ok:true};if(0)await fetch("/api/cleaner/contact",{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+      if(!res.ok){var body=await res.json().catch(function(){return{}});err(2,body.error||'L’envoi n’a pas marché. Réessaie dans un instant.');btn.disabled=false;btn.innerHTML=lbl;return}
+      [].forEach.call(steps,function(s){s.hidden=true});f.querySelector('.fx-sh-top .fx-steps').style.visibility='hidden';done.hidden=false;
+    }catch(x){err(2,'Pas de réseau : réessaie dans un instant.');btn.disabled=false;btn.innerHTML=lbl}
+  });
+})();
+</script>
+<script>
+(function(){
   var box=document.querySelector('.sct');if(!box)return;
   var D=JSON.parse(box.querySelector('.sct-data').textContent),svg=box.querySelector('.sct-svg'),tip=box.querySelector('.sct-tip'),map=box.querySelector('.sct-map');
   var P=svg.getAttribute('data-p').split(',').map(Number),NS='http://www.w3.org/2000/svg';
@@ -661,6 +768,7 @@ async function contactSubmit(e) {
   });
   // Recherche de la commune de l'hôte
   var q=box.querySelector('#sct-q'),sug=box.querySelector('.sct-sug'),res=box.querySelector('.sct-r'),list=null,loading=null,items=[],act=-1;
+  if(!q)return;
   function load(){
     if(list||loading)return loading;
     loading=Promise.all(D.s.map(function(dep){return fetch('/geo/communes/'+dep+'.json').then(function(r){return r.ok?r.json():[]}).then(function(a){return a.map(function(x){return{nom:x[0],lat:x[1],lon:x[2],dep:dep,n:n(x[0])}})}).catch(function(){return[]})}))
