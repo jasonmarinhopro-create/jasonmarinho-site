@@ -22,11 +22,13 @@
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
 <style>
-:root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.10)}
+:root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#6E7F6B;--bd:rgba(0,76,63,.11);--gs:#EEF4F1;--amb:#FBF1DE;--ambt:#6B4300}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
 body{font-family:'Outfit',sans-serif;background:var(--cr);color:var(--td);padding-top:64px}
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;background:var(--gd);z-index:100}
-.s-in{max-width:1140px;margin:0 auto;padding:0 clamp(16px,5vw,40px)}
+button{font-family:inherit}
+.s-in{max-width:1160px;margin:0 auto;padding:0 clamp(16px,5vw,40px)}
 .hero{background:radial-gradient(ellipse 60% 70% at 85% 10%,rgba(255,213,107,.10),transparent 70%),linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);color:#fff;padding:clamp(40px,6vw,64px) 0 clamp(100px,12vw,128px)}
 .hero-grid{display:grid;gap:28px;align-items:end}
 @media(min-width:960px){.hero-grid{grid-template-columns:minmax(0,1fr) 340px}}
@@ -44,64 +46,160 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .price-sub{font-size:13.5px;color:rgba(255,255,255,.7);line-height:1.55}
 .places{display:none;align-items:center;gap:7px;margin-top:14px;padding:7px 12px;border-radius:999px;background:rgba(255,213,107,.14);color:var(--y);font-size:12.5px;font-weight:600}
 .price-foot{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);font-size:12px;color:rgba(255,255,255,.5);line-height:1.5}
-.wrap{max-width:1140px;margin:-76px auto 0;padding:0 clamp(16px,5vw,40px) 40px;display:grid;gap:22px;position:relative}
+.wrap{max-width:1160px;margin:-76px auto 40px;padding:0 clamp(16px,5vw,40px);display:grid;gap:20px;position:relative}
 @media(min-width:980px){.wrap{grid-template-columns:minmax(0,1fr) 340px;align-items:start}}
-form{display:flex;flex-direction:column;gap:14px}
-.step-card{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:clamp(20px,3vw,28px)}
-.step-card:first-child{box-shadow:0 18px 50px rgba(0,30,20,.10)}
-.step-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:18px}
-.step-n{flex-shrink:0;width:32px;height:32px;border-radius:50%;border:1px solid rgba(0,76,63,.25);color:var(--g);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:16px}
-.step-head h2{font-family:'Fraunces',serif;font-size:21px;font-weight:400;line-height:1.25}
-.step-head p{font-size:13.5px;color:var(--tl);margin-top:3px;line-height:1.5}
-.grid{display:grid;gap:4px 16px}
-@media(min-width:640px){.grid{grid-template-columns:1fr 1fr}.f.full{grid-column:1/-1}}
-.f{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;min-width:0}
-.f label{font-size:13px;font-weight:600;color:var(--tm)}
-.f label small{font-weight:400;color:var(--tl);margin-left:2px}
-.req{color:#b45309}
-.f input[type=text],.f input[type=email],.f input[type=url],.f input[type=tel],.f input[type=number],.f input[type=password],.f select,.f textarea{width:100%;padding:12px 13px;border:1px solid rgba(0,76,63,.18);border-radius:10px;background:#fff;font-family:'Outfit',sans-serif;font-size:15px;color:var(--td);transition:border-color .15s,box-shadow .15s}
-.f textarea{min-height:120px;resize:vertical;line-height:1.6}
-.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,76,63,.1)}
-.hint{font-size:12px;color:var(--tl);line-height:1.5}
-.pw{position:relative}.pw input{padding-right:46px!important}
-.pw-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:0;background:transparent;color:var(--tl);cursor:pointer;border-radius:8px;font-size:17px}
-.pw-eye:hover{color:var(--g);background:rgba(0,76,63,.05)}
+/* Parcours (même gabarit que /trouver-un-pro) */
+.flow{background:#fff;border:1px solid var(--bd);border-radius:20px;box-shadow:0 18px 50px rgba(0,30,20,.10);display:flex;flex-direction:column;min-height:560px;overflow:clip}
+.fh{padding:18px clamp(18px,3vw,30px) 0;display:grid;gap:10px}
+.fh[hidden]{display:none}
+.fh-top{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12.5px;color:var(--tl)}
+.fh-top b{color:var(--g);font-weight:600;letter-spacing:.3px}
+.bar{height:5px;border-radius:5px;background:#EFEBE2;overflow:hidden}
+.bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--g),#2F7D52);border-radius:5px;transition:width .3s}
+.fb{flex:1;padding:22px clamp(18px,3vw,30px) 8px;display:flex;flex-direction:column;gap:16px;animation:in .22s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.q{font-family:'Fraunces',serif;font-size:clamp(24px,3vw,30px);font-weight:400;line-height:1.15;text-wrap:balance}
+.q:focus{outline:none}
+.sub{font-size:15px;color:var(--tm);line-height:1.6;margin-top:-8px;max-width:62ch}
+.opts{display:grid;gap:10px}
+@media(min-width:640px){.opts.two{grid-template-columns:1fr 1fr}}
+.opt{display:flex;align-items:center;gap:13px;width:100%;min-height:62px;padding:12px 15px;border:1.5px solid var(--bd);border-radius:15px;background:#fff;text-align:left;cursor:pointer;color:var(--td);transition:border-color .15s,background .15s}
+.opt:hover{border-color:rgba(0,76,63,.4)}
+.opt.on{border-color:var(--g);background:var(--gs);box-shadow:inset 0 0 0 1px var(--g)}
+.opt .ic{width:40px;height:40px;border-radius:12px;background:var(--gs);color:var(--g);display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.opt.on .ic{background:var(--g);color:var(--y)}
+.opt .t{display:block;font-weight:600;font-size:15.5px;line-height:1.3}
+.opt .d{display:block;font-size:13px;color:var(--tl);line-height:1.45;margin-top:2px}
+.opt .ck{margin-left:auto;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--bd);flex-shrink:0;display:grid;place-items:center;font-size:12px;color:transparent}
+.opt.on .ck{background:var(--g);border-color:var(--g);color:#fff}
+.big{display:grid;gap:12px}
+@media(min-width:640px){.big{grid-template-columns:repeat(3,1fr)}}
+.bigc{display:flex;flex-direction:column;border:1.5px solid var(--bd);border-radius:18px;overflow:hidden;background:#fff;cursor:pointer;text-align:left;padding:0;color:var(--td);transition:border-color .15s}
+.bigc:hover{border-color:rgba(0,76,63,.4)}
+.bigc.on{border-color:var(--g);box-shadow:inset 0 0 0 1px var(--g)}
+.bigc .im{aspect-ratio:16/10;background:#EEEAE1 center/cover no-repeat;position:relative}
+.bigc .im span{position:absolute;left:10px;bottom:10px;display:inline-flex;align-items:center;gap:6px;background:rgba(0,51,41,.88);color:#fff;font-size:12px;font-weight:600;border-radius:999px;padding:5px 10px}
+.bigc .im span i{color:var(--y)}
+.bigc .bd{padding:12px 14px 14px;display:grid;gap:4px}
+.bigc .t{font-family:'Fraunces',serif;font-size:19px;line-height:1.2}
+.bigc .d{font-size:13px;color:var(--tm);line-height:1.45}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{position:relative;cursor:pointer}
-.chip input{position:absolute;opacity:0;pointer-events:none}
-.chip span{display:inline-flex;align-items:center;padding:8px 14px;border-radius:999px;border:1px solid rgba(0,76,63,.18);background:#fff;font-size:13.5px;color:var(--tm);transition:all .15s}
-.chip input:checked+span{background:var(--g);border-color:var(--g);color:#fff}
-.chip input:focus-visible+span{outline:3px solid rgba(255,213,107,.8);outline-offset:2px}
-.toggle{display:flex!important;gap:10px;align-items:flex-start;font-weight:500!important;color:var(--td)!important;font-size:14px!important;padding:12px 14px;border:1px solid rgba(0,76,63,.14);border-radius:10px;cursor:pointer;line-height:1.5}
-.toggle input{width:18px;height:18px;accent-color:var(--g);margin-top:2px;flex-shrink:0}
-.count{align-self:flex-end}
-.submit{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:clamp(20px,3vw,26px)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:16px 22px;border:none;border-radius:12px;background:var(--g);color:#fff;font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;cursor:pointer;transition:background .15s}
-.btn:hover:not(:disabled){background:#00382e}.btn:disabled{opacity:.6;cursor:wait}
-.btn i{color:var(--y)}
-.secure{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;margin-top:12px;font-size:12.5px;color:var(--tl)}
-.secure span{display:inline-flex;align-items:center;gap:5px}
-.legal{margin-top:12px;font-size:12px;color:var(--tl);line-height:1.6;text-align:center}
+.chip{border:1.5px solid var(--bd);background:#fff;border-radius:999px;padding:9px 14px;font-size:14px;font-weight:500;color:var(--td);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.chip:hover{border-color:rgba(0,76,63,.4)}
+.chip.on{background:var(--g);border-color:var(--g);color:#fff}
+.chip i{font-size:15px}
+.chip .x{margin-left:2px;opacity:.75}
+.sec{display:grid;gap:8px}
+.sec>label,.sec>.lab{font-size:13.5px;font-weight:600;color:var(--tm)}
+.sec>label small,.sec>.lab small{font-weight:400;color:var(--tl)}
+.hint{font-size:12.5px;color:var(--tl);line-height:1.5}
+.row2{display:grid;gap:14px}
+@media(min-width:640px){.row2{grid-template-columns:1fr 1fr}}
+.in{width:100%;min-height:52px;padding:12px 15px;border:1.5px solid var(--bd);border-radius:13px;background:#fff;font-family:inherit;font-size:16px;color:var(--td)}
+.in:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 4px rgba(255,213,107,.35)}
+textarea.in{min-height:120px;resize:vertical;line-height:1.55}
+.ico{position:relative}
+.ico>i{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--g);font-size:18px;pointer-events:none}
+.ico .in{padding-left:44px}
+.addrow{display:flex;gap:8px}
+.addrow .in{flex:1}
+.addrow button{flex-shrink:0;min-width:52px;border:1.5px solid var(--g);background:var(--gs);color:var(--g);border-radius:13px;font-weight:700;cursor:pointer;font-size:15px;padding:0 14px}
+.zonebox{border-radius:14px;background:var(--gs);color:var(--gd);padding:12px 14px;font-size:14px;line-height:1.55;display:flex;gap:10px}
+.zonebox i{font-size:18px;color:var(--g);flex-shrink:0;margin-top:1px}
+.pw{position:relative}.pw .in{padding-right:50px}
+.pw-eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:transparent;color:var(--tl);cursor:pointer;border-radius:9px;font-size:18px}
+.toggle{display:flex;gap:11px;align-items:flex-start;font-size:14.5px;color:var(--td);cursor:pointer;line-height:1.5;padding:12px 14px;border:1.5px solid var(--bd);border-radius:13px;background:#fff}
+.toggle input{width:19px;height:19px;accent-color:var(--g);margin-top:2px;flex-shrink:0}
+.toggle small{display:block;color:var(--tl);font-size:12.5px}
+.tip{display:flex;gap:11px;align-items:flex-start;background:#FBFAF6;border:1px dashed rgba(0,76,63,.18);border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.55;color:var(--tm);margin-top:auto}
+.tip i{color:#B98900;font-size:19px;flex-shrink:0;margin-top:1px}
+.tip a{color:var(--g);font-weight:600}
+.resume{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--gs);border-radius:14px;padding:12px 14px;font-size:14px}
+.resume .r-b{display:flex;gap:8px}
+.resume button{border:none;background:none;color:var(--g);font-weight:700;cursor:pointer;font-size:14px;padding:6px 4px}
+/* Photos */
+.drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;border:2px dashed rgba(0,76,63,.25);border-radius:16px;padding:22px;background:#FBFAF6;cursor:pointer;color:var(--tm);font-size:14px}
+.drop:hover,.drop.over{border-color:var(--g);background:var(--gs)}
+.drop i{font-size:30px;color:var(--g)}
+.drop b{color:var(--td);font-size:15.5px}
+.ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.pho{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:4/3;background:#EEEAE1 center/cover no-repeat;border:1px solid var(--bd)}
+.pho.main{border:2px solid var(--g)}
+.pho .badge{position:absolute;top:6px;left:6px;background:var(--g);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:3px 8px}
+.pho .tools{position:absolute;bottom:6px;left:6px;right:6px;display:flex;justify-content:space-between}
+.pho .tools span{display:flex;gap:4px}
+.pho button{width:30px;height:30px;border-radius:9px;border:0;background:rgba(255,255,255,.92);color:var(--td);cursor:pointer;display:grid;place-items:center;font-size:14px}
+.pho button:disabled{opacity:.4;cursor:default}
+.pho.busy::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.6)}
+/* Formules */
+.fm{border:1.5px solid var(--bd);border-radius:15px;padding:12px;display:grid;gap:8px;background:#fff}
+.fm-top{display:grid;grid-template-columns:1fr 120px 40px;gap:8px}
+.fm-top .in,.fm .in{min-height:46px;font-size:15px}
+.fm .del{border:0;background:none;color:var(--tl);cursor:pointer;font-size:18px;border-radius:10px}
+.fm .del:hover{color:#a01818;background:rgba(200,38,38,.06)}
+.addbtn{display:inline-flex;align-items:center;gap:8px;border:1.5px dashed rgba(0,76,63,.35);background:#fff;color:var(--g);border-radius:13px;padding:12px 16px;font-weight:600;font-size:14.5px;cursor:pointer;width:max-content}
+/* Barre du bas */
+.ff{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(255,255,255,.85),#fff 30%);padding:12px clamp(18px,3vw,30px) calc(14px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;align-items:center;border-top:1px solid #F1EEE6;z-index:5}
+.ff .btn{flex:1}
+.ff .skip{border:none;background:none;color:var(--tl);font-size:14px;cursor:pointer;padding:10px 6px;text-decoration:underline;text-underline-offset:3px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 22px;border:none;border-radius:13px;background:var(--y);color:var(--gd);font-weight:700;font-size:16px;cursor:pointer;text-decoration:none}
+.btn:hover{background:#ffe08f}.btn:disabled{opacity:.55;cursor:default}
+.btn.pay{background:var(--g);color:#fff}.btn.pay:hover{background:#00382e}.btn.pay i{color:var(--y)}
+.ghost{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:52px;min-width:52px;padding:0 14px;border:1.5px solid var(--bd);border-radius:13px;background:#fff;color:var(--g);font-weight:600;font-size:15px;cursor:pointer}
+.btn:focus-visible,.opt:focus-visible,.chip:focus-visible,.ghost:focus-visible,.bigc:focus-visible,.drop:focus-visible{outline:3px solid rgba(255,213,107,.9);outline-offset:2px}
+.err{display:none;padding:12px 14px;background:rgba(200,38,38,.07);border:1px solid rgba(200,38,38,.2);border-radius:12px;color:#a01818;font-size:14px;line-height:1.5}
+.err.show{display:block}
+.legal{font-size:12.5px;color:var(--tl);line-height:1.6}
 .legal a{color:var(--g)}
-.err{display:none;padding:12px 14px;background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.2);border-radius:10px;color:#b91c1c;font-size:13.5px}
+.secure{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--tl)}
+.secure span{display:inline-flex;align-items:center;gap:5px}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+/* Récapitulatif : la fiche telle que les hôtes la verront */
+.fiche{border:1px solid var(--bd);border-radius:18px;overflow:hidden;background:#fff}
+.fiche .cov{aspect-ratio:21/9;background:#EEEAE1 center/cover no-repeat;display:grid;place-items:center;font-family:'Fraunces',serif;font-size:54px;color:var(--g);font-weight:300;letter-spacing:2px}
+.fiche .fb2{padding:16px 18px 18px;display:grid;gap:10px}
+.fiche .nm{font-family:'Fraunces',serif;font-size:24px;line-height:1.15}
+.fiche .mt{font-size:14px;color:var(--tm)}
+.fiche .tags{display:flex;flex-wrap:wrap;gap:6px}
+.fiche .tags span{font-size:12px;font-weight:600;color:var(--g);background:var(--gs);border-radius:999px;padding:4px 10px}
+.fiche .bio{font-size:14px;color:var(--tm);line-height:1.6}
+.fiche .thumbs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.fiche .thumbs div{aspect-ratio:1;border-radius:8px;background:#EEEAE1 center/cover no-repeat}
+.rows{display:grid;gap:7px;font-size:14px}
+.rows div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed #EFEBE2;padding-bottom:6px}
+.rows div:last-child{border-bottom:0}
+.rows span:first-child{color:var(--tl)}
+.rows span:last-child{font-weight:600;text-align:right}
+.rows .no{color:#C0B9AA;font-weight:400}
+.ready{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ambt);background:var(--amb);border-radius:10px;padding:8px 10px}
+.ready.ok{color:#1e7a45;background:var(--gs)}
+.sending{display:grid;gap:10px;justify-items:center;text-align:center;padding:30px 10px}
+.sending i{font-size:34px;color:var(--g);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sending .q{font-size:24px}
+.pbar{width:min(320px,100%);height:6px;border-radius:6px;background:#EFEBE2;overflow:hidden}
+.pbar span{display:block;height:100%;background:var(--g);width:0;transition:width .3s}
+/* Colonne de droite */
 .side{display:flex;flex-direction:column;gap:16px}
 @media(min-width:980px){.side{position:sticky;top:84px}}
 .box{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:20px}
 .box h3{font-family:'Fraunces',serif;font-size:17px;font-weight:400;margin-bottom:12px}
 .box-eye{font-size:10.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-bottom:10px}
 .pc{border:1px solid var(--bd);border-radius:14px;overflow:hidden;background:#fff}
-.pc-media{aspect-ratio:3/2;background:#EEEAE1;display:flex;align-items:center;justify-content:center;position:relative}
+.pc-media{aspect-ratio:3/2;background:#EEEAE1 center/cover no-repeat;display:flex;align-items:center;justify-content:center;position:relative}
 .pc-ini{font-family:'Fraunces',serif;font-weight:300;font-size:56px;color:var(--g);letter-spacing:2px;line-height:1}
 .pc-media small{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:rgba(0,76,63,.55);font-weight:500}
+.pc-media.has small{color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.4)}
 .pc-body{padding:14px 16px;display:flex;flex-direction:column;gap:3px}
 .pc-name{font-family:'Fraunces',serif;font-size:18px;color:var(--td);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pc-meta{font-size:12.5px;color:var(--tm);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pc-extra{font-size:12px;color:var(--tl);min-height:18px}
+.pc-extra{font-size:12px;color:var(--tl);min-height:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pc-foot{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;font-size:13px;color:var(--tm)}
 .pc-foot strong{color:var(--td)}
 .pc-foot em{font-style:normal;color:var(--g);font-weight:500}
-.pc-note{font-size:12px;color:var(--tl);line-height:1.5;margin-top:10px}
+.meter{margin-top:12px;display:grid;gap:6px;font-size:12.5px;color:var(--tm)}
+.meter .mb{height:6px;border-radius:6px;background:#EFEBE2;overflow:hidden}
+.meter .mb span{display:block;height:100%;background:linear-gradient(90deg,#B98900,var(--g));transition:width .3s}
 .ben{list-style:none;display:flex;flex-direction:column;gap:14px}
 .ben li{display:flex;gap:12px;align-items:flex-start}
 .ben i{flex-shrink:0;width:34px;height:34px;border-radius:10px;background:rgba(0,76,63,.06);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:17px}
@@ -110,13 +208,16 @@ form{display:flex;flex-direction:column;gap:14px}
 .links{display:flex;flex-direction:column;gap:8px;margin-top:4px}
 .links a{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 14px;border:1px solid var(--bd);border-radius:12px;color:var(--g);font-size:13.5px;font-weight:600;text-decoration:none}
 .links a:hover{border-color:rgba(0,76,63,.3)}
-.faq{max-width:1140px;margin:0 auto 64px;padding:0 clamp(16px,5vw,40px)}
+.faq{max-width:1160px;margin:0 auto 64px;padding:0 clamp(16px,5vw,40px)}
 .faq h2{font-family:'Fraunces',serif;font-size:24px;font-weight:400;margin-bottom:14px}
 .faq-grid{display:grid;gap:12px}
 @media(min-width:760px){.faq-grid{grid-template-columns:1fr 1fr}}
 .faq-item{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px 20px}
 .faq-item h3{font-size:15px;font-weight:600;color:var(--td);margin-bottom:6px}
 .faq-item p{font-size:14px;color:var(--tm);line-height:1.6}
+@media(max-width:640px){.hero{padding-top:26px}.hero .lead{display:none}.flow{min-height:auto;border-radius:18px}.fm-top{grid-template-columns:1fr 96px 36px}}
+@media(max-width:979px){.wrap .side{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 <script defer src="/nav.js"></script>
 </head>
@@ -145,129 +246,18 @@ form{display:flex;flex-direction:column;gap:14px}
 </header>
 
 <main class="wrap">
-  <form id="signup-form" novalidate>
-    <div id="err-box" class="err" role="alert"></div>
-
-    <section class="step-card" aria-labelledby="st1">
-      <header class="step-head"><span class="step-n">1</span><div><h2 id="st1">Ton compte</h2><p>Pour gérer ta fiche et recevoir les demandes.</p></div></header>
-      <div class="grid">
-        <div class="f">
-          <label for="fullName">Ton prénom et ton nom <span class="req" aria-hidden="true">*</span></label>
-          <input type="text" id="fullName" name="fullName" required placeholder="Marie Dupont" autocomplete="name" maxlength="100">
-          <span class="hint">Affiché sur ta fiche.</span>
-        </div>
-        <div class="f">
-          <label for="telephone">Téléphone <small>facultatif</small></label>
-          <input type="tel" id="telephone" name="telephone" placeholder="06 12 34 56 78" autocomplete="tel">
-          
-        </div>
-
-        <div class="f">
-          <label for="email">E-mail pro <span class="req" aria-hidden="true">*</span></label>
-          <input type="email" id="email" name="email" required placeholder="marie@studio-photo.fr" autocomplete="email">
-          <span class="hint">Les demandes des hôtes arrivent ici. C’est aussi ton identifiant.</span>
-        </div>
-        <div class="f">
-          <label for="password">Mot de passe <span class="req" aria-hidden="true">*</span></label>
-          <div class="pw"><input type="password" id="password" name="password" required minlength="8" autocomplete="new-password" placeholder="8 caractères minimum"><button type="button" class="pw-eye" aria-label="Afficher le mot de passe" data-show><i class="ph-bold ph-eye"></i></button></div>
-          <span class="hint">Pour modifier ta fiche quand tu veux sur app.jasonmarinho.com.</span>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="step-card" aria-labelledby="st2">
-      <header class="step-head"><span class="step-n">2</span><div><h2 id="st2">Où tu travailles</h2><p>Les hôtes cherchent d’abord par ville.</p></div></header>
-      <div class="grid">
-
-        <div class="f">
-          <label for="ville">Ta ville principale <span class="req" aria-hidden="true">*</span></label>
-          <input type="text" id="ville" name="ville" required placeholder="Lyon" list="villes" data-suggest="ville" autocomplete="off" maxlength="80">
-          <span class="hint">Ta fiche apparaît sur la page de ta ville quand elle existe.</span>
-        </div>
-
-        <div class="f">
-          <label for="zoneCouverte">Ta zone <small>facultatif</small></label>
-          <input type="text" id="zoneCouverte" name="zoneCouverte" placeholder="Lyon + 60 km" maxlength="200">
-          <span class="hint">Tu pourras ajouter jusqu’à 10 villes depuis ton espace.</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="step-card" aria-labelledby="st3">
-      <header class="step-head"><span class="step-n">3</span><div><h2 id="st3">Ton travail</h2><p>Tout se modifie ensuite depuis ton espace.</p></div></header>
-      <div class="grid">
-        <div class="f full">
-          <label>Tu proposes <span class="req" aria-hidden="true">*</span></label>
-          <div class="chips" role="radiogroup" aria-label="Tu proposes"><label class="chip"><input type="radio" name="metier" value="photo" checked><span><i class="ph-bold ph-camera" style="margin-right:6px"></i>Photographe</span></label><label class="chip"><input type="radio" name="metier" value="video"><span><i class="ph-bold ph-video-camera" style="margin-right:6px"></i>Vidéaste</span></label><label class="chip"><input type="radio" name="metier" value="photo_video"><span><i class="ph-bold ph-film-strip" style="margin-right:6px"></i>Photographe et vidéaste</span></label></div>
-          <span class="hint">Les hôtes filtrent l’annuaire par photographe, vidéaste ou les deux.</span>
-        </div>
-        <div class="f full">
-          <label>Options proposées <small>facultatif</small></label>
-          <div class="chips"><label class="chip"><input type="checkbox" name="options" value="drone"><span><i class="ph-bold ph-drone" style="margin-right:6px"></i>Vues aériennes (drone)</span></label><label class="chip"><input type="checkbox" name="options" value="visite_3d"><span><i class="ph-bold ph-cube" style="margin-right:6px"></i>Visite virtuelle 3D</span></label><label class="chip"><input type="checkbox" name="options" value="reels"><span><i class="ph-bold ph-film-strip" style="margin-right:6px"></i>Vidéos courtes pour les réseaux</span></label><label class="chip"><input type="checkbox" name="options" value="crepuscule"><span><i class="ph-bold ph-moon-stars" style="margin-right:6px"></i>Photos au crépuscule</span></label><label class="chip"><input type="checkbox" name="options" value="mise_en_scene"><span><i class="ph-bold ph-armchair" style="margin-right:6px"></i>Mise en scène du logement</span></label></div>
-        </div>
-
-        <div class="f full">
-          <label for="portfolioUrl">Ton site ou ton portfolio <span class="req" aria-hidden="true">*</span></label>
-          <input type="text" id="portfolioUrl" name="portfolioUrl" data-url inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="monsite.fr ou instagram.com/moncompte" maxlength="300">
-          <span class="hint">Le bouton « Voir le portfolio » de ta fiche y mène. Un compte Instagram pro marche aussi (@moncompte).</span>
-        </div>
-
-        <div class="f full">
-          <label for="videoUrl">Lien vers tes vidéos <small>facultatif</small></label>
-          <input type="text" id="videoUrl" name="videoUrl" data-url inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="youtube.com/watch?v=… ou ta chaîne, Vimeo, Instagram" maxlength="300">
-          <span class="hint">Une vidéo YouTube ou Vimeo se lit directement en haut de ta fiche. Une chaîne ou un compte : un bouton « Voir les vidéos ».</span>
-        </div>
-
-        <div class="f">
-          <label for="instagramHandle">Instagram <small>facultatif</small></label>
-          <input type="text" id="instagramHandle" name="instagramHandle" placeholder="marie.photo" maxlength="50">
-          <span class="hint">Sans le @.</span>
-        </div>
-
-        <div class="f">
-          <label for="specialite">Ta spécialité <small>facultatif</small></label>
-          <select id="specialite" name="specialite"><option value="">Choisir</option><option value="Intérieurs LCD">Intérieurs de location courte durée</option><option value="Intérieurs + drone extérieur">Intérieurs + drone extérieur</option><option value="Intérieurs + vidéo / Reels">Intérieurs + vidéo / Reels</option><option value="Vidéo de visite du logement">Vidéo de visite du logement</option><option value="Visite virtuelle Matterport 3D">Visite virtuelle 3D</option><option value="Hôtels et gîtes de charme">Hôtels et gîtes de charme</option><option value="Architecture + mise en scène">Architecture + mise en scène</option></select>
-          
-        </div>
-
-        <div class="f">
-          <label for="tarifMin">Prix de départ d’une séance (€) <small>facultatif</small></label>
-          <input type="number" id="tarifMin" name="tarifMin" placeholder="250" min="0" max="5000" inputmode="numeric">
-          <span class="hint">Affiché « dès 250 € » sur ta carte.</span>
-        </div>
-
-        <div class="f">
-          <label for="tarifMax">Prix d’une grosse séance (€) <small>facultatif</small></label>
-          <input type="number" id="tarifMax" name="tarifMax" placeholder="600" min="0" max="5000" inputmode="numeric">
-          
-        </div>
-      </div>
-    </section>
-
-    <section class="step-card" aria-labelledby="st4">
-      <header class="step-head"><span class="step-n">4</span><div><h2 id="st4">Toi en quelques mots</h2><p>C’est ce que les hôtes lisent en premier sur ta fiche.</p></div></header>
-      <div class="grid">
-        <div class="f full">
-          <label for="bio">Présentation <small>facultatif</small></label>
-          <textarea id="bio" name="bio" maxlength="600" placeholder="Depuis quand tu photographies ou filmes des locations, ce que les hôtes aiment dans ton travail, comment se passe une séance. Quelques lignes suffisent."></textarea>
-          <span class="hint count" id="bio-count">0 / 600</span>
-        </div>
-      </div>
-    </section>
-    <div class="hp" aria-hidden="true"><label>Site web (laisser vide)</label><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
-    <div class="submit">
-      <button type="submit" class="btn" id="submit-btn"><i class="ph-bold ph-lock-key"></i><span>Continuer vers le paiement sécurisé</span></button>
-      <div class="secure"><span><i class="ph-bold ph-shield-check"></i>Paiement par Stripe</span><span><i class="ph-bold ph-clock"></i>Fiche en ligne en quelques minutes</span><span><i class="ph-bold ph-x-circle"></i>Résiliable à tout moment</span></div>
-      <p class="legal">En continuant, tu acceptes les <a href="/cgvu">CGV / CGU</a> et la <a href="/politique-de-confidentialite#annuaire">politique de confidentialité</a>.</p>
-    </div>
-  </form>
+  <div class="flow" id="flow" aria-live="polite">
+    <div class="fh" id="fh"><div class="fh-top"><b id="fh-l">Étape 1</b><span id="fh-r"></span></div><div class="bar"><span id="bar"></span></div></div>
+    <div class="fb" id="fb"></div>
+    <div class="ff" id="ff"></div>
+    <div class="hp" aria-hidden="true"><label>Site web (laisser vide)<input type="text" id="website" tabindex="-1" autocomplete="off"></label></div>
+  </div>
 
   <aside class="side">
-    <div class="box">
+    <div class="box card-box">
       <div class="box-eye">Ta carte dans l’annuaire</div>
-      <div class="pc" aria-live="polite">
-        <div class="pc-media"><span class="pc-ini" id="pv-ini">MD</span><small>Photographe</small></div>
+      <div class="pc">
+        <div class="pc-media" id="pv-media"><span class="pc-ini" id="pv-ini">MD</span><small id="pv-kind">Photographe</small></div>
         <div class="pc-body">
           <div class="pc-name" id="pv-name">Ton nom</div>
           <div class="pc-meta" id="pv-meta">Ta ville</div>
@@ -275,21 +265,20 @@ form{display:flex;flex-direction:column;gap:14px}
           <div class="pc-foot"><span id="pv-price">Tarifs sur la fiche</span><em>Voir la fiche →</em></div>
         </div>
       </div>
-      <p class="pc-note">Elle se remplit pendant que tu tapes. Tes photos, ajoutées ensuite depuis ton espace, remplacent les initiales.</p>
+      <div class="meter"><span id="pv-meter-t">Ta fiche est complète à 0 %</span><div class="mb"><span id="pv-meter" style="width:0"></span></div></div>
     </div>
-    <div class="box">
+    <div class="box ben-box">
       <h3>Ce que ta fiche t’apporte</h3>
       <ul class="ben">
         <li><i class="ph-bold ph-globe"></i><div><b>Un site vitrine sur Google</b><span>Ta fiche est indexée, avec un lien direct (dofollow) vers ton site ou ton portfolio.</span></div></li>
         <li><i class="ph-bold ph-map-pin"></i><div><b>Sur la page de ta ville</b><span>Les hôtes qui cherchent « photographe Airbnb » + ta ville tombent sur toi.</span></div></li>
         <li><i class="ph-bold ph-paper-plane-tilt"></i><div><b>Les demandes viennent à toi</b><span>Quand un hôte de ta zone décrit son besoin, il arrive chez les 3 pros les plus proches.</span></div></li>
         <li><i class="ph-bold ph-play-circle"></i><div><b>Ta vidéo en haut de ta fiche</b><span>Un lien YouTube ou Vimeo se lit sur ta fiche. Les hôtes filtrent par photographe, vidéaste ou drone.</span></div></li>
-        <li><i class="ph-bold ph-images"></i><div><b>Photos et formules</b><span>Ajoute ensuite 6 photos, tes formules et ta façon de travailler depuis ton espace.</span></div></li>
         <li><i class="ph-bold ph-chart-line-up"></i><div><b>Tes statistiques</b><span>Visiteurs, clics, demandes et recherches Google, avec un bilan chaque mois.</span></div></li>
         <li><i class="ph-bold ph-file-text"></i><div><b>Devis en ligne</b><span>Envoie un devis propre en 2 minutes, accepté en ligne par l’hôte.</span></div></li>
       </ul>
     </div>
-    <div class="box">
+    <div class="box links-box">
       <h3>Voir avant de t’inscrire</h3>
       <div class="links">
         <a href="/annuaires/photographes/exemple-fiche">Un exemple de fiche <i class="ph-bold ph-arrow-right"></i></a>
@@ -304,9 +293,9 @@ form{display:flex;flex-direction:column;gap:14px}
 <section class="faq" aria-labelledby="faq-t">
   <h2 id="faq-t">Questions fréquentes</h2>
   <div class="faq-grid">
-    <div class="faq-item"><h3>Y a-t-il une validation de mon profil ?</h3><p>Non. Ta fiche est en ligne quelques minutes après le paiement. Tu la complètes ensuite quand tu veux depuis ton espace.</p></div>
+    <div class="faq-item"><h3>Y a-t-il une validation de mon profil ?</h3><p>Non. Ta fiche est en ligne quelques minutes après le paiement, avec tout ce que tu as rempli. Tu la modifies ensuite quand tu veux depuis ton espace.</p></div>
     <div class="faq-item"><h3>Je suis vidéaste, pas photographe : c’est pour moi ?</h3><p>Oui. Choisis « Vidéaste » ou « Photographe et vidéaste » : les hôtes filtrent l’annuaire selon ce qu’ils cherchent, et ta vidéo se lit en haut de ta fiche.</p></div>
-    <div class="faq-item"><h3>Je n’ai pas encore mes photos sous la main</h3><p>Pas de souci : tu ajoutes tes photos, tes formules et tes villes après l’inscription, depuis ton espace. En attendant, ta carte affiche tes initiales.</p></div>
+    <div class="faq-item"><h3>Je n’ai pas mes photos sous la main</h3><p>Passe l’étape : tu les ajoutes après le paiement depuis ton espace, dans Ma fiche. En attendant, ta carte affiche tes initiales.</p></div>
     <div class="faq-item"><h3>Prenez-vous une commission sur mes séances ?</h3><p>Non, jamais. Les hôtes te contactent directement et le devis, la séance et le paiement se règlent entre vous.</p></div>
     <div class="faq-item"><h3>Comment arrêter ?</h3><p>Ton abonnement est annuel et se résilie à tout moment depuis ton espace, sans frais.</p></div>
   </div>
@@ -315,129 +304,486 @@ form{display:flex;flex-direction:column;gap:14px}
 <datalist id="villes"><option value="Aix-en-Provence"><option value="Ajaccio"><option value="Angers"><option value="Annecy"><option value="Antibes"><option value="Arcachon"><option value="Avignon"><option value="Bastia"><option value="Bayonne"><option value="Beaune"><option value="Biarritz"><option value="Bordeaux"><option value="Brest"><option value="Caen"><option value="Cannes"><option value="Carcassonne"><option value="Chambéry"><option value="Chamonix"><option value="Clermont-Ferrand"><option value="Colmar"><option value="Deauville"><option value="Dijon"><option value="Dinard"><option value="Épernay"><option value="Étretat"><option value="Grenoble"><option value="Honfleur"><option value="La Baule"><option value="La Rochelle"><option value="Le Mans"><option value="Le Touquet"><option value="Les Sables-d'Olonne"><option value="Lille"><option value="Lyon"><option value="Marseille"><option value="Megève"><option value="Menton"><option value="Metz"><option value="Montpellier"><option value="Nancy"><option value="Nantes"><option value="Nice"><option value="Nîmes"><option value="Paris"><option value="Pau"><option value="Perpignan"><option value="Poitiers"><option value="Quimper"><option value="Reims"><option value="Rennes"><option value="Roanne"><option value="Rouen"><option value="Saint-Malo"><option value="Saint-Tropez"><option value="Sarlat"><option value="Sète"><option value="Strasbourg"><option value="Toulouse"><option value="Tours"><option value="Troyes"><option value="Vannes"><option value="Versailles"></datalist>
 
 <script>
-(function () {
-  var t0 = Date.now()
-  var form = document.getElementById('signup-form')
-  var errBox = document.getElementById('err-box')
-  var btn = document.getElementById('submit-btn')
-  var BTN = btn.innerHTML
-  var $ = function (id) { return document.getElementById(id) }
+(function(){
+  var C = {"metier":"photographe","api":"/api/photographer/signup","places":"photographers","dir":"photographes","villePh":"Lyon","metiers":[{"k":"photo","l":"Photographe","ic":"ph-camera","img":"/img/exemple-fiches/photo-salon-2-t.jpg","d":"Les photos de l’annonce, pièce par pièce"},{"k":"video","l":"Vidéaste","ic":"ph-video-camera","img":"/img/exemple-fiches/video-camille.jpg","d":"Visites filmées, vidéos courtes pour les réseaux"},{"k":"photo_video","l":"Photographe et vidéaste","ic":"ph-film-strip","img":"/img/exemple-fiches/photo-maison-2-t.jpg","d":"Les deux, en une seule séance"}],"options":[{"k":"drone","l":"Vues aériennes (drone)","ic":"ph-drone"},{"k":"visite_3d","l":"Visite virtuelle 3D","ic":"ph-cube"},{"k":"reels","l":"Vidéos courtes pour les réseaux","ic":"ph-film-strip"},{"k":"crepuscule","l":"Photos au crépuscule","ic":"ph-moon-stars"},{"k":"mise_en_scene","l":"Mise en scène du logement","ic":"ph-armchair"}],"specialites":["Intérieurs LCD","Intérieurs + drone extérieur","Intérieurs + vidéo / Reels","Vidéo de visite du logement","Visite virtuelle Matterport 3D","Hôtels et gîtes de charme","Architecture + mise en scène"],"prestations":[["menage_standard","Ménage entre deux voyageurs","ph-broom"],["gestion_linge","Gestion du linge","ph-t-shirt"],["repassage","Repassage","ph-t-shirt"],["reapprovisionnement","Réassort des consommables","ph-package"],["etat_des_lieux_photo","État des lieux en photos","ph-camera"],["petite_maintenance","Petite maintenance","ph-wrench"],["nettoyage_exterieur","Extérieurs","ph-tree"],["gestion_dechets","Déchets","ph-recycle"]],"equipes":[["solo","Solo","Tu fais les ménages toi-même","ph-user"],["duo","Duo","Vous êtes deux","ph-users"],["equipe_3_5","3 à 5 personnes","Une petite équipe","ph-users-three"],["equipe_6_plus","6 personnes ou plus","Une entreprise de ménage","ph-users-three"]],"delais":[["jour_meme","Le jour même"],["24h","Sous 24 h"],["48h","Sous 48 h"],["72h","Sous 72 h"]],"langues":[["fr","Français"],["en","English"],["es","Español"],["it","Italiano"],["de","Deutsch"],["pt","Português"],["ar","العربية"]],"bioPh":"Depuis quand tu photographies ou filmes des locations, ce que les hôtes aiment dans ton travail, comment se passe une séance. Quelques lignes suffisent.","limits":{"max":6,"fullSide":1600,"thumbSide":640,"fullBytes":450000,"thumbBytes":120000}};
+  var MENAGE = C.metier === 'menage';
+  var KEY = 'jm-inscription-' + C.metier + '-v2';
+  var L = C.limits;
+  var t0 = Date.now();
+  var fb = document.getElementById('fb'), ff = document.getElementById('ff'), bar = document.getElementById('bar');
+  var fhL = document.getElementById('fh-l'), fhR = document.getElementById('fh-r'), fh = document.getElementById('fh');
+  var price = '39,98 €';
+
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
+  function blank(){ return { metier:'', options:[], specialite:'', ville:'', rayon:'', villes:[], tarifMin:'', tarifMax:'', formules:[], bio:'', portfolioUrl:'', videoUrl:'', instagramHandle:'',
+    fullName:'', pseudo:'', telephone:'', telephonePublic:true, email:'', password:'',
+    equipeType:'', delaiReservation:'', prestations:[], tarifForfaitMin:'', tarifForfaitMax:'', tarifHeure:'', logementsGeres:'', langues:['fr'], siret:'', assuranceRcPro:false, siteUrl:'' }; }
+  var st = blank(), step = 0, photos = [], sending = false, finished = false;
+
+  var STEPS = MENAGE ? [
+    { k:'equipe', l:'Ton équipe' },
+    { k:'zone', l:'Où tu travailles' },
+    { k:'offre', l:'Tes prestations et tes prix' },
+    { k:'photos', l:'Tes photos', opt:true },
+    { k:'formules', l:'Tes formules', opt:true },
+    { k:'presentation', l:'Ton équipe en quelques mots', opt:true },
+    { k:'contact', l:'Ton compte' },
+    { k:'recap', l:'Vérifier et payer' }
+  ] : [
+    { k:'metier', l:'Ce que tu proposes' },
+    { k:'zone', l:'Où tu travailles' },
+    { k:'offre', l:'Tes options et tes prix' },
+    { k:'photos', l:'Tes photos', opt:true },
+    { k:'formules', l:'Tes formules', opt:true },
+    { k:'presentation', l:'Toi en quelques mots' },
+    { k:'contact', l:'Ton compte' },
+    { k:'recap', l:'Vérifier et payer' }
+  ];
+  var RAYONS = [['', 'Seulement ma ville'], ['10', '10 km autour'], ['20', '20 km'], ['30', '30 km'], ['50', '50 km'], ['100', '100 km']];
+
+  // ── Petites aides ──
+  function optHtml(v, sel, ic, t, d){
+    return '<button type="button" class="opt' + (sel ? ' on' : '') + '" data-v="' + esc(v) + '" aria-pressed="' + (sel ? 'true' : 'false') + '">' +
+      (ic ? '<span class="ic"><i class="ph-bold ' + ic + '"></i></span>' : '') +
+      '<span><span class="t">' + esc(t) + '</span>' + (d ? '<span class="d">' + esc(d) + '</span>' : '') + '</span><span class="ck"><i class="ph-bold ph-check"></i></span></button>';
+  }
+  function chip(attr, v, label, on, ic){ return '<button type="button" class="chip' + (on ? ' on' : '') + '" ' + attr + '="' + esc(v) + '" aria-pressed="' + (on ? 'true' : 'false') + '">' + (ic ? '<i class="ph-bold ' + ic + '"></i>' : '') + esc(label) + '</button>'; }
+  function tip(ic, text){ return '<div class="tip"><i class="ph-bold ' + ic + '"></i><span>' + text + '</span></div>'; }
+  function input(id, label, opts){
+    opts = opts || {};
+    var lab = '<label for="' + id + '">' + label + (opts.req ? '' : ' <small>(facultatif)</small>') + '</label>';
+    var attrs = ' id="' + id + '" class="in"' + (opts.type ? ' type="' + opts.type + '"' : ' type="text"') + (opts.ph ? ' placeholder="' + esc(opts.ph) + '"' : '') + (opts.max ? ' maxlength="' + opts.max + '"' : '') + (opts.attrs || '') + ' value="' + esc(st[id]) + '"';
+    var el = opts.icon ? '<div class="ico"><i class="ph-bold ' + opts.icon + '"></i><input' + attrs + '></div>' : '<input' + attrs + '>';
+    return '<div class="sec">' + lab + el + (opts.hint ? '<span class="hint">' + opts.hint + '</span>' : '') + '</div>';
+  }
+  function normUrl(v){
+    v = String(v || '').trim().replace(/\s+/g, '');
+    if (!v) return '';
+    if (/^@[\w.]{1,30}$/.test(v)) return 'https://www.instagram.com/' + v.slice(1);
+    if (!/^https?:\/\//i.test(v)) v = 'https://' + v.replace(/^\/+/, '');
+    return v;
+  }
+  function urlOk(v){ return /^https?:\/\/[^\s\/.]+(\.[^\s\/.]+)+/i.test(v); }
+  function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(e).trim()); }
+  function initials(s){ return String(s || '').split(/\s+/).filter(function(w){ return /^[A-Za-zÀ-ÿ]/.test(w); }).map(function(w){ return w[0]; }).slice(0, 2).join('').toUpperCase(); }
+  function displayName(){ return (MENAGE && st.pseudo.trim()) || st.fullName.trim(); }
+  function metierLabel(){ var m = C.metiers.filter(function(x){ return x.k === st.metier; })[0]; return MENAGE ? 'Équipe de ménage' : (m ? m.l : 'Photographe'); }
+  function zoneText(){
+    var v = st.ville.trim(); if (!v) return '';
+    var t = st.rayon ? v + ' et ' + st.rayon + ' km autour' : v;
+    if (st.villes.length) t += ', ' + st.villes.join(', ');
+    return t;
+  }
+  function minPrice(){
+    var ps = st.formules.map(function(f){ return parseInt(f.prix, 10); }).filter(function(n){ return n > 0; });
+    var base = parseInt(MENAGE ? st.tarifForfaitMin : st.tarifMin, 10);
+    if (base > 0) ps.push(base);
+    return ps.length ? Math.min.apply(null, ps) : 0;
+  }
+  function completeness(){
+    var pts = [
+      !!(MENAGE ? st.equipeType : st.metier), st.ville.trim().length >= 2, photos.length > 0, photos.length >= 3,
+      st.formules.length > 0 || minPrice() > 0, st.bio.trim().length >= 60,
+      MENAGE ? st.prestations.length > 0 : st.options.length > 0 || !!st.specialite,
+      MENAGE ? !!st.siteUrl || !!st.instagramHandle : !!st.portfolioUrl || !!st.videoUrl,
+      st.fullName.trim().length >= 2, !!st.telephone.trim()
+    ];
+    return Math.round(pts.filter(Boolean).length / pts.length * 100);
+  }
+
+  // ── Carte de l'annuaire (colonne de droite) ──
+  function paintSide(){
+    var name = displayName();
+    document.getElementById('pv-name').textContent = name || (MENAGE ? 'Ton entreprise' : 'Ton nom');
+    document.getElementById('pv-ini').textContent = photos.length ? '' : (initials(name) || (MENAGE ? 'BC' : 'MD'));
+    var media = document.getElementById('pv-media');
+    media.style.backgroundImage = photos.length ? 'url(' + photos[0].thumb + ')' : '';
+    media.classList.toggle('has', photos.length > 0);
+    document.getElementById('pv-kind').textContent = metierLabel();
+    document.getElementById('pv-meta').textContent = zoneText() || 'Ta ville';
+    var extra = MENAGE
+      ? st.prestations.map(function(k){ var p = C.prestations.filter(function(x){ return x[0] === k; })[0]; return p ? p[1] : ''; }).filter(Boolean).slice(0, 2).join(' · ')
+      : st.options.map(function(k){ var o = C.options.filter(function(x){ return x.k === k; })[0]; return o ? o.l : ''; }).filter(Boolean).slice(0, 2).join(' · ') || st.specialite;
+    document.getElementById('pv-extra').textContent = extra;
+    var p = minPrice();
+    document.getElementById('pv-price').innerHTML = p > 0 ? 'dès <strong>' + p + ' €</strong>' : 'Tarifs sur la fiche';
+    var c = completeness();
+    document.getElementById('pv-meter').style.width = c + '%';
+    document.getElementById('pv-meter-t').textContent = 'Ta fiche est complète à ' + c + ' %';
+  }
+
+  // ── Brouillon (sans le mot de passe ni les photos) ──
+  function save(){ if (finished) return; try { var s = Object.assign({}, st, { password:'' }); localStorage.setItem(KEY, JSON.stringify({ st: s, step: step, at: Date.now() })); } catch (e) {} }
+  function readDraft(){ try { var d = JSON.parse(localStorage.getItem(KEY) || 'null'); return d && d.st && Date.now() - d.at < 7 * 864e5 && d.step > 0 ? d : null; } catch (e) { return null; } }
+  function clearDraft(){ try { localStorage.removeItem(KEY); } catch (e) {} }
+
+  // ── Photos : compressées ici, aux mêmes tailles que l'app ──
+  function toJpeg(bmp, side, maxBytes){
+    var scale = Math.min(1, side / Math.max(bmp.width, bmp.height));
+    var cv = document.createElement('canvas');
+    cv.width = Math.round(bmp.width * scale); cv.height = Math.round(bmp.height * scale);
+    cv.getContext('2d').drawImage(bmp, 0, 0, cv.width, cv.height);
+    var qs = [0.82, 0.72, 0.62, 0.52];
+    return (function tryQ(i){
+      return new Promise(function(res){ cv.toBlob(res, 'image/jpeg', qs[i]); }).then(function(b){
+        if (b && b.size <= maxBytes) return new Promise(function(res){ var r = new FileReader(); r.onload = function(){ res(r.result); }; r.readAsDataURL(b); });
+        if (i + 1 < qs.length) return tryQ(i + 1);
+        throw new Error('Une photo reste trop lourde même compressée.');
+      });
+    })(0);
+  }
+  function addFiles(files){
+    var list = Array.prototype.slice.call(files || []).filter(function(f){ return /^image\//.test(f.type) || /\.(jpe?g|png|heic|webp)$/i.test(f.name); }).slice(0, L.max - photos.length);
+    if (!list.length) return;
+    var errEl = document.getElementById('perr'); if (errEl) errEl.classList.remove('show');
+    var pending = list.map(function(){ var o = { full:'', thumb:'', busy:true }; photos.push(o); return o; });
+    paintPhotos();
+    Promise.all(list.map(function(f, i){
+      return createImageBitmap(f).catch(function(){ throw new Error('Format de photo non lu : envoie une photo en JPEG ou PNG.'); })
+        .then(function(bmp){ return Promise.all([toJpeg(bmp, L.fullSide, L.fullBytes), toJpeg(bmp, L.thumbSide, L.thumbBytes)]); })
+        .then(function(r){ pending[i].full = r[0]; pending[i].thumb = r[1]; pending[i].busy = false; })
+        .catch(function(e){ photos.splice(photos.indexOf(pending[i]), 1); throw e; });
+    })).catch(function(e){ var el = document.getElementById('perr'); if (el) { el.textContent = e.message; el.classList.add('show'); } })
+      .then(function(){ paintPhotos(); paintSide(); refreshNext(); });
+  }
+  function paintPhotos(){
+    var g = document.getElementById('pgrid'); if (!g) return;
+    g.innerHTML = photos.map(function(p, i){
+      return '<div class="pho' + (i === 0 ? ' main' : '') + (p.busy ? ' busy' : '') + '" style="' + (p.thumb ? 'background-image:url(' + p.thumb + ')' : '') + '">' + (i === 0 && !p.busy ? '<span class="badge">Photo principale</span>' : '') +
+        '<div class="tools"><span><button type="button" data-mv="' + i + '" data-d="-1" aria-label="Avancer"' + (i === 0 ? ' disabled' : '') + '><i class="ph-bold ph-caret-left"></i></button><button type="button" data-mv="' + i + '" data-d="1" aria-label="Reculer"' + (i === photos.length - 1 ? ' disabled' : '') + '><i class="ph-bold ph-caret-right"></i></button></span>' +
+        '<button type="button" data-rm="' + i + '" aria-label="Retirer"><i class="ph-bold ph-trash"></i></button></div></div>';
+    }).join('');
+    var dz = document.getElementById('drop'); if (dz) dz.style.display = photos.length >= L.max ? 'none' : '';
+    var ct = document.getElementById('pcount'); if (ct) ct.textContent = photos.length + ' / ' + L.max + ' photos';
+    [].forEach.call(g.querySelectorAll('[data-rm]'), function(b){ b.onclick = function(){ photos.splice(Number(b.getAttribute('data-rm')), 1); paintPhotos(); paintSide(); refreshNext(); }; });
+    [].forEach.call(g.querySelectorAll('[data-mv]'), function(b){ b.onclick = function(){ var i = Number(b.getAttribute('data-mv')), j = i + Number(b.getAttribute('data-d')); if (j < 0 || j >= photos.length) return; var t = photos[i]; photos[i] = photos[j]; photos[j] = t; paintPhotos(); paintSide(); }; });
+  }
+
+  // ── Rendu d'une étape ──
+  function render(focus){
+    var s = STEPS[step], h = '';
+    fh.hidden = false;
+    fhL.textContent = 'Étape ' + (step + 1) + ' sur ' + STEPS.length + ' · ' + s.l;
+    fhR.textContent = step < STEPS.length - 2 ? 'Environ ' + Math.max(1, STEPS.length - 1 - step) + ' min' : 'Presque fini';
+    bar.style.width = Math.round((step + 1) / STEPS.length * 100) + '%';
+
+    if (s.k === 'metier' || s.k === 'equipe') {
+      var draft = readDraft();
+      h = draft ? '<div class="resume"><span>Tu avais commencé ta fiche' + (draft.st.ville ? ' (' + esc(draft.st.ville) + ')' : '') + '. On reprend là où tu t’étais arrêté ?</span><span class="r-b"><button type="button" id="resume">Reprendre</button><button type="button" id="fresh" style="color:var(--tl);font-weight:500">Recommencer</button></span></div>' : '';
+      if (s.k === 'metier') {
+        h += '<h2 class="q">Tu proposes quoi aux hôtes ?</h2><p class="sub">Les hôtes filtrent l’annuaire par photographe, vidéaste ou les deux.</p><div class="big">' +
+          C.metiers.map(function(m){ return '<button type="button" class="bigc' + (st.metier === m.k ? ' on' : '') + '" data-m="' + m.k + '"><span class="im" style="background-image:url(' + m.img + ')"><span><i class="ph-bold ' + m.ic + '"></i>' + esc(m.l) + '</span></span><span class="bd"><span class="t">' + esc(m.l) + '</span><span class="d">' + esc(m.d) + '</span></span></button>'; }).join('') +
+          '</div>' + tip('ph-sparkle', 'Tout se remplit ici en une fois : ta zone, tes photos, tes formules. Ta fiche est en ligne quelques minutes après le paiement, sans validation à attendre.');
+      } else {
+        h += '<h2 class="q">Ton équipe, c’est…</h2><p class="sub">Les hôtes voient la taille de ton équipe sur ta fiche.</p><div class="opts two">' +
+          C.equipes.map(function(e){ return optHtml(e[0], st.equipeType === e[0], e[3], e[1], e[2]); }).join('') + '</div>' +
+          tip('ph-sparkle', 'Tout se remplit ici en une fois : ta zone, tes photos, tes formules. Ta fiche est en ligne quelques minutes après le paiement, sans validation à attendre.');
+      }
+    }
+    else if (s.k === 'zone') {
+      h = '<h2 class="q">Où tu travailles ?</h2><p class="sub">Une seule question pour toute ta zone : ta ville, un rayon autour, et les autres villes où tu vas souvent.</p>' +
+        '<div class="sec"><label for="ville">Ta ville principale</label><div class="ico"><i class="ph-bold ph-map-pin"></i><input class="in" id="ville" list="villes" data-suggest="ville" autocomplete="off" maxlength="80" placeholder="Ex. ' + esc(C.villePh) + '" value="' + esc(st.ville) + '"></div><span class="hint">Ta fiche apparaît sur la page de cette ville quand elle existe. Toute ville est acceptée.</span></div>' +
+        '<div class="sec"><span class="lab">Jusqu’où tu te déplaces ?</span><div class="chips">' + RAYONS.map(function(r){ return chip('data-r', r[0], r[1], st.rayon === r[0]); }).join('') + '</div></div>' +
+        '<div class="sec"><label for="vadd">D’autres villes que tu couvres <small>(facultatif, 10 au plus)</small></label><div class="addrow"><input class="in" id="vadd" list="villes" data-suggest="ville" autocomplete="off" maxlength="40" placeholder="Ex. une ville voisine"><button type="button" id="vbtn" aria-label="Ajouter la ville"><i class="ph-bold ph-plus"></i></button></div>' +
+        '<div class="chips" id="vlist">' + st.villes.map(function(v, i){ return '<button type="button" class="chip on" data-vx="' + i + '">' + esc(v) + '<i class="ph-bold ph-x x"></i></button>'; }).join('') + '</div></div>' +
+        '<div class="zonebox" id="zbox"' + (zoneText() ? '' : ' hidden') + '><i class="ph-bold ph-map-pin"></i><span>Sur ta fiche : <b id="ztext">' + esc(zoneText()) + '</b>. Une carte montre ton secteur aux hôtes.</span></div>';
+    }
+    else if (s.k === 'offre') {
+      if (MENAGE) {
+        h = '<h2 class="q">Ce que fait ton équipe</h2><p class="sub">Touche tout ce que tu proposes, puis tes prix.</p>' +
+          '<div class="chips">' + C.prestations.map(function(p){ return chip('data-pr', p[0], p[1], st.prestations.indexOf(p[0]) >= 0, p[2]); }).join('') + '</div>' +
+          '<div class="row2">' + input('tarifForfaitMin', 'Prix d’un ménage, à partir de (€)', { type:'number', ph:'45', attrs:' inputmode="numeric" min="0" max="999"', icon:'ph-tag', hint:'Affiché « dès 45 € » sur ta carte.' }) + input('tarifForfaitMax', 'Jusqu’à (€)', { type:'number', ph:'120', attrs:' inputmode="numeric" min="0" max="999"' }) + '</div>' +
+          '<div class="row2">' + input('tarifHeure', 'Tarif horaire (€/h)', { type:'number', ph:'30', attrs:' inputmode="numeric" min="0" max="200"' }) + input('logementsGeres', 'Logements entretenus aujourd’hui', { type:'number', ph:'12', attrs:' inputmode="numeric" min="0" max="999"' }) + '</div>' +
+          '<div class="sec"><span class="lab">Délai pour réserver <small>(facultatif)</small></span><div class="chips">' + C.delais.map(function(d){ return chip('data-dl', d[0], d[1], st.delaiReservation === d[0], 'ph-clock'); }).join('') + '</div></div>';
+      } else {
+        h = '<h2 class="q">Tes options et tes prix</h2><p class="sub">Les hôtes filtrent l’annuaire par options : touche tout ce que tu proposes.</p>' +
+          '<div class="chips">' + C.options.map(function(o){ return chip('data-op', o.k, o.l, st.options.indexOf(o.k) >= 0, o.ic); }).join('') + '</div>' +
+          '<div class="sec"><span class="lab">Ta spécialité <small>(facultatif)</small></span><div class="chips">' + C.specialites.map(function(v){ return chip('data-sp', v, v, st.specialite === v); }).join('') + '</div></div>' +
+          '<div class="row2">' + input('tarifMin', 'Prix de départ d’une séance (€)', { type:'number', ph:'250', attrs:' inputmode="numeric" min="0" max="5000"', icon:'ph-tag', hint:'Affiché « dès 250 € » sur ta carte.' }) + input('tarifMax', 'Prix d’une grosse séance (€)', { type:'number', ph:'600', attrs:' inputmode="numeric" min="0" max="5000"' }) + '</div>' +
+          tip('ph-drone', 'Pour les vues au drone, les hôtes te demanderont si tu es en règle avec l’aviation civile (DGAC).');
+      }
+    }
+    else if (s.k === 'photos') {
+      h = '<h2 class="q">Tes plus belles photos</h2><p class="sub">C’est ce que les hôtes regardent en premier. ' + L.max + ' au plus, la première est la photo principale. <b id="pcount">' + photos.length + ' / ' + L.max + ' photos</b></p>' +
+        '<label class="drop" id="drop" tabindex="0"><i class="ph-bold ph-upload-simple"></i><b>Ajouter des photos</b><span>Touche ici ou glisse tes photos (JPEG ou PNG). Elles sont allégées automatiquement.</span><input type="file" id="pfile" accept="image/*" multiple hidden></label>' +
+        '<div class="err" id="perr" role="alert"></div><div class="ph-grid" id="pgrid"></div>' +
+        tip('ph-lightbulb', MENAGE ? 'Un logement impeccable après ton passage, un lit bien fait, ton équipe au travail : des photos réelles rassurent les hôtes.' : 'Mets en premier ta photo la plus lumineuse : c’est elle qui apparaît sur ta carte dans l’annuaire.');
+    }
+    else if (s.k === 'formules') {
+      h = '<h2 class="q">Tes formules</h2><p class="sub">' + (MENAGE ? 'Par exemple « Studio », « T2 », « Grand ménage ».' : 'Par exemple « Essentiel », « Premium », « Photo + vidéo ».') + ' 3 au plus, avec un prix « à partir de » si tu veux.</p><div id="flist" style="display:grid;gap:10px"></div>' +
+        '<button type="button" class="addbtn" id="fadd"><i class="ph-bold ph-plus"></i>Ajouter une formule</button>' +
+        tip('ph-tag', 'Les hôtes comparent les prix : une formule claire avec ce qu’elle comprend donne envie de te contacter.');
+    }
+    else if (s.k === 'presentation') {
+      h = '<h2 class="q">' + (MENAGE ? 'Ton équipe en quelques mots' : 'Toi en quelques mots') + '</h2><p class="sub">C’est ce que les hôtes lisent en premier sur ta fiche.</p>' +
+        '<div class="sec"><label for="bio">Présentation <small>(facultatif)</small></label><textarea class="in" id="bio" maxlength="600" placeholder="' + esc(C.bioPh) + '">' + esc(st.bio) + '</textarea><span class="hint" id="biocount">' + st.bio.length + ' / 600</span></div>' +
+        (MENAGE
+          ? input('siteUrl', 'Ton site', { ph:'monsite.fr', max:300, attrs:' inputmode="url" autocapitalize="off" spellcheck="false"' }) +
+            input('instagramHandle', 'Instagram', { ph:'beeclean.lcd', max:50, hint:'Sans le @.' }) +
+            '<div class="sec"><span class="lab">Langues parlées <small>(facultatif)</small></span><div class="chips">' + C.langues.map(function(l){ return chip('data-lg', l[0], l[1], st.langues.indexOf(l[0]) >= 0, 'ph-translate'); }).join('') + '</div></div>' +
+            input('siret', 'SIRET', { ph:'14 chiffres', max:14, attrs:' inputmode="numeric"', hint:'Affiché sur ta fiche : il rassure les hôtes.' }) +
+            '<label class="toggle"><input type="checkbox" id="assuranceRcPro"' + (st.assuranceRcPro ? ' checked' : '') + '><span>Mon équipe a une assurance responsabilité civile professionnelle</span></label>'
+          : input('portfolioUrl', 'Ton site ou ton portfolio', { req: !photos.length, ph:'monsite.fr ou instagram.com/moncompte', max:300, attrs:' inputmode="url" autocapitalize="off" spellcheck="false"', hint: photos.length ? 'Facultatif : tes photos sont déjà sur ta fiche.' : 'Obligatoire sans photo : le bouton « Voir le portfolio » de ta fiche y mène.' }) +
+            input('videoUrl', 'Lien vers tes vidéos', { ph:'youtube.com/watch?v=… ou ta chaîne, Vimeo, Instagram', max:300, attrs:' inputmode="url" autocapitalize="off" spellcheck="false"', hint:'Une vidéo YouTube ou Vimeo se lit directement en haut de ta fiche.' }) +
+            input('instagramHandle', 'Instagram', { ph:'marie.photo', max:50, hint:'Sans le @.' })) +
+        '<div class="err" id="err" role="alert"></div>';
+    }
+    else if (s.k === 'contact') {
+      h = '<h2 class="q">Ton compte</h2><p class="sub">Pour gérer ta fiche et recevoir les demandes des hôtes.</p>' +
+        input('fullName', 'Ton prénom et ton nom', { req:true, max:100, attrs:' autocomplete="name"', icon:'ph-user', hint: MENAGE ? '' : 'Affiché sur ta fiche.' }) +
+        (MENAGE ? input('pseudo', 'Nom de ton entreprise', { max:100, ph:'Bee Clean Marseille', hint:'C’est lui que verront les hôtes. Sinon, ton nom.' }) : '') +
+        input('telephone', 'Téléphone', { type:'tel', max:30, ph:'06 12 34 56 78', attrs:' autocomplete="tel"', icon:'ph-phone' }) +
+        '<label class="toggle" id="telvis"' + (st.telephone.trim() ? '' : ' hidden') + '><input type="checkbox" id="telephonePublic"' + (st.telephonePublic ? ' checked' : '') + '><span>Afficher mon numéro sur ma fiche<small>Les hôtes peuvent t’appeler directement (bouton « Appeler »). Tu peux le retirer quand tu veux depuis ton espace.</small></span></label>' +
+        input('email', 'E-mail pro', { req:true, type:'email', max:200, ph: MENAGE ? 'contact@beeclean.fr' : 'marie@studio-photo.fr', attrs:' autocomplete="email" inputmode="email"', icon:'ph-envelope-simple', hint:'Les demandes des hôtes arrivent ici. C’est aussi ton identifiant.' }) +
+        '<div class="sec"><label for="password">Mot de passe</label><div class="pw"><input class="in" type="password" id="password" minlength="8" autocomplete="new-password" placeholder="8 caractères minimum" value="' + esc(st.password) + '"><button type="button" class="pw-eye" id="pweye" aria-label="Afficher le mot de passe"><i class="ph-bold ph-eye"></i></button></div><span class="hint">Pour modifier ta fiche quand tu veux sur app.jasonmarinho.com.</span></div>' +
+        '<div class="err" id="err" role="alert"></div>';
+    }
+    else if (s.k === 'recap') {
+      var p = minPrice();
+      var tags = MENAGE
+        ? st.prestations.map(function(k){ var x = C.prestations.filter(function(y){ return y[0] === k; })[0]; return x ? x[1] : ''; })
+        : st.options.map(function(k){ var o = C.options.filter(function(x){ return x.k === k; })[0]; return o ? o.l : ''; });
+      var miss = [];
+      if (!photos.length) miss.push('des photos');
+      if (!st.formules.length && !p) miss.push('un prix');
+      if (st.bio.trim().length < 60) miss.push('une présentation');
+      h = '<h2 class="q">Ta fiche est prête, ' + esc(st.fullName.trim().split(' ')[0]) + '</h2><p class="sub">La voici telle que les hôtes la verront. Touche une étape pour la corriger.</p>' +
+        '<div class="fiche"><div class="cov" style="' + (photos.length ? 'background-image:url(' + photos[0].full + ')' : '') + '">' + (photos.length ? '' : esc(initials(displayName()))) + '</div><div class="fb2">' +
+        '<div class="nm">' + esc(displayName()) + '</div><div class="mt">' + esc(metierLabel()) + ' · ' + esc(zoneText()) + '</div>' +
+        (tags.filter(Boolean).length ? '<div class="tags">' + tags.filter(Boolean).map(function(t){ return '<span>' + esc(t) + '</span>'; }).join('') + '</div>' : '') +
+        (photos.length > 1 ? '<div class="thumbs">' + photos.slice(1, 6).map(function(x){ return '<div style="background-image:url(' + x.thumb + ')"></div>'; }).join('') + '</div>' : '') +
+        (st.bio.trim() ? '<div class="bio">' + esc(st.bio.trim().slice(0, 260)) + (st.bio.trim().length > 260 ? '…' : '') + '</div>' : '') +
+        '<div class="rows">' +
+          (st.formules.length ? st.formules.map(function(f){ return '<div><span>' + esc(f.nom) + '</span><span>' + (parseInt(f.prix, 10) > 0 ? 'dès ' + parseInt(f.prix, 10) + ' €' : '<span class="no">sur devis</span>') + '</span></div>'; }).join('') : '<div><span>Prix</span><span' + (p ? '' : ' class="no"') + '>' + (p ? 'dès ' + p + ' €' : 'sur devis') + '</span></div>') +
+          '<div><span>Téléphone</span><span' + (st.telephone.trim() && st.telephonePublic ? '' : ' class="no"') + '>' + (st.telephone.trim() ? (st.telephonePublic ? esc(st.telephone.trim()) + ' (bouton Appeler)' : 'non affiché') : 'non renseigné') + '</span></div>' +
+          '<div><span>Contact</span><span>' + esc(st.email.trim()) + '</span></div>' +
+        '</div>' +
+        (miss.length ? '<div class="ready"><i class="ph-bold ph-lightbulb"></i>Pour plus de demandes, ajoute ' + miss.join(', ') + '. Tu peux aussi le faire après, depuis ton espace.</div>' : '<div class="ready ok"><i class="ph-bold ph-check-circle"></i>Fiche complète : les hôtes ont tout pour te contacter.</div>') +
+        '</div></div>' +
+        '<div class="chips">' + STEPS.slice(0, STEPS.length - 1).map(function(x, i){ return '<button type="button" class="chip" data-goto="' + i + '"><i class="ph-bold ph-pencil-simple"></i>' + esc(x.l) + '</button>'; }).join('') + '</div>' +
+        '<div class="secure"><span><i class="ph-bold ph-shield-check"></i>Paiement sécurisé par Stripe</span><span><i class="ph-bold ph-clock"></i>En ligne quelques minutes après</span><span><i class="ph-bold ph-check"></i>Résiliable à tout moment</span></div>' +
+        '<p class="legal">Après le paiement, tu arrives directement dans ton espace, connecté. En continuant, tu acceptes les <a href="/cgvu">CGV / CGU</a> et la <a href="/politique-de-confidentialite#annuaire">politique de confidentialité</a>.</p>' +
+        '<div class="err" id="err" role="alert"></div>';
+    }
+    fb.className = 'fb';
+    fb.innerHTML = h;
+    fb.style.animation = 'none'; void fb.offsetWidth; fb.style.animation = '';
+    footer(); bind(); paintSide();
+    if (s.k === 'zone' && window.jmSuggest) window.jmSuggest.scan(fb);
+    if (s.k === 'photos') paintPhotos();
+    if (s.k === 'formules') paintFormules();
+    if (focus !== false) {
+      var q = fb.querySelector('.q'); if (q) { q.setAttribute('tabindex', '-1'); q.focus({ preventScroll: true }); }
+      var top = document.getElementById('flow').getBoundingClientRect().top + window.scrollY - 76;
+      if (window.scrollY > top) window.scrollTo({ top: top, behavior: 'smooth' });
+    }
+    save();
+  }
+
+  function paintFormules(){
+    var box = document.getElementById('flist'); if (!box) return;
+    box.innerHTML = st.formules.map(function(f, i){
+      return '<div class="fm"><div class="fm-top"><input class="in" data-fn="' + i + '" maxlength="40" placeholder="Nom de la formule" value="' + esc(f.nom) + '" aria-label="Nom de la formule"><input class="in" data-fp="' + i + '" inputmode="numeric" maxlength="6" placeholder="Prix €" value="' + esc(f.prix) + '" aria-label="Prix à partir de"><button type="button" class="del" data-fx="' + i + '" aria-label="Retirer la formule"><i class="ph-bold ph-trash"></i></button></div>' +
+        '<input class="in" data-fd="' + i + '" maxlength="120" placeholder="Ce qu’elle comprend (ex. 20 photos retouchées, livraison 48 h)" value="' + esc(f.detail) + '" aria-label="Ce qu’elle comprend"></div>';
+    }).join('');
+    var add = document.getElementById('fadd'); if (add) add.style.display = st.formules.length >= 3 ? 'none' : '';
+    [['data-fn','nom'],['data-fp','prix'],['data-fd','detail']].forEach(function(a){
+      [].forEach.call(box.querySelectorAll('[' + a[0] + ']'), function(el){ el.oninput = function(){ var i = Number(el.getAttribute(a[0])); st.formules[i][a[1]] = a[1] === 'prix' ? el.value.replace(/[^\d]/g, '') : el.value; if (a[1] === 'prix' && el.value !== st.formules[i].prix) el.value = st.formules[i].prix; paintSide(); save(); }; });
+    });
+    [].forEach.call(box.querySelectorAll('[data-fx]'), function(b){ b.onclick = function(){ st.formules.splice(Number(b.getAttribute('data-fx')), 1); paintFormules(); paintSide(); save(); }; });
+  }
+
+  function footer(){
+    var s = STEPS[step];
+    var last = s.k === 'recap';
+    ff.innerHTML = (step > 0 ? '<button type="button" class="ghost" id="back" aria-label="Étape précédente"><i class="ph-bold ph-arrow-left"></i></button>' : '') +
+      (s.opt && !filled(s.k) ? '<button type="button" class="skip" id="skip">Plus tard</button>' : '') +
+      '<button type="button" class="btn' + (last ? ' pay' : '') + '" id="next">' + (last ? '<i class="ph-bold ph-lock-key"></i>Payer ' + price + ' et mettre ma fiche en ligne' : 'Continuer<i class="ph-bold ph-arrow-right"></i>') + '</button>';
+    var b = document.getElementById('back'); if (b) b.onclick = function(){ go(step - 1); };
+    var sk = document.getElementById('skip'); if (sk) sk.onclick = function(){ go(step + 1); };
+    document.getElementById('next').onclick = next;
+    refreshNext();
+  }
+  function filled(k){
+    if (k === 'photos') return photos.length > 0;
+    if (k === 'formules') return st.formules.some(function(f){ return f.nom.trim(); });
+    if (k === 'presentation') return !!st.bio.trim();
+    return true;
+  }
+  function canNext(){
+    var k = STEPS[step].k;
+    if (k === 'metier') return !!st.metier;
+    if (k === 'equipe') return !!st.equipeType;
+    if (k === 'zone') return st.ville.trim().length >= 2;
+    if (k === 'photos') return !photos.some(function(p){ return p.busy; });
+    if (k === 'recap') return !sending;
+    return true;
+  }
+  function refreshNext(){ var n = document.getElementById('next'); if (n) n.disabled = !canNext(); var sk = document.getElementById('skip'); if (sk && filled(STEPS[step].k)) sk.remove(); }
+  function showErr(msg, focusId){ var e = document.getElementById('err'); if (e) { e.textContent = msg; e.classList.add('show'); } if (focusId) { var el = document.getElementById(focusId); if (el) el.focus(); } return false; }
+  function check(){
+    var k = STEPS[step].k;
+    if (k === 'presentation' && !MENAGE) {
+      st.portfolioUrl = normUrl(st.portfolioUrl); st.videoUrl = normUrl(st.videoUrl);
+      if (!photos.length && !st.portfolioUrl) return showErr('Ajoute des photos à l’étape précédente, ou le lien de ton site ou de ton portfolio.', 'portfolioUrl');
+      if (st.portfolioUrl && !urlOk(st.portfolioUrl)) return showErr('Ton site ou ton portfolio : ce lien ne ressemble pas à une adresse de site (exemple : monsite.fr ou instagram.com/moncompte).', 'portfolioUrl');
+      if (st.videoUrl && !urlOk(st.videoUrl)) return showErr('Le lien vers tes vidéos ne ressemble pas à une adresse de site (exemple : youtube.com/@toncompte).', 'videoUrl');
+    }
+    if (k === 'presentation' && MENAGE) {
+      st.siteUrl = normUrl(st.siteUrl);
+      if (st.siteUrl && !urlOk(st.siteUrl)) return showErr('Ton site : ce lien ne ressemble pas à une adresse de site (exemple : monsite.fr).', 'siteUrl');
+      var si = st.siret.replace(/\s+/g, ''); if (si && !/^\d{14}$/.test(si)) return showErr('Le SIRET fait 14 chiffres (sans espaces).', 'siret');
+    }
+    if (k === 'contact') {
+      if (st.fullName.trim().length < 2) return showErr('Ton prénom et ton nom : à remplir.', 'fullName');
+      if (!validEmail(st.email)) return showErr('E-mail pro : cette adresse e-mail semble incomplète (exemple : prenom@domaine.fr).', 'email');
+      if (st.password.length < 8) return showErr('Le mot de passe doit faire au moins 8 caractères.', 'password');
+    }
+    return true;
+  }
+  function next(){
+    if (!canNext() || !check()) return;
+    if (STEPS[step].k === 'recap') return send();
+    go(step + 1);
+  }
+  function go(i, fromPop){
+    step = Math.max(0, Math.min(i, STEPS.length - 1));
+    // Le récapitulatif exige les étapes obligatoires
+    if (STEPS[step].k === 'recap' && (st.fullName.trim().length < 2 || !validEmail(st.email) || st.password.length < 8)) step = STEPS.map(function(x){ return x.k; }).indexOf('contact');
+    if (!fromPop) try { history.pushState({ s: step }, '', location.pathname + location.search); } catch (e) {}
+    render();
+  }
+  window.addEventListener('popstate', function(e){ if (finished || sending) return; step = e.state && typeof e.state.s === 'number' ? e.state.s : 0; render(); });
+
+  function toggleIn(list, v){ var i = list.indexOf(v); if (i >= 0) list.splice(i, 1); else list.push(v); return i < 0; }
+  function bindChips(attr, fn){ [].forEach.call(fb.querySelectorAll('[' + attr + ']'), function(c){ c.onclick = function(){ fn(c.getAttribute(attr), c); paintSide(); save(); refreshNext(); }; }); }
+  function setOn(attr, isOn){ [].forEach.call(fb.querySelectorAll('[' + attr + ']'), function(x){ var on = isOn(x.getAttribute(attr)); x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); }); }
+
+  function bind(){
+    var k = STEPS[step].k;
+    var rs = document.getElementById('resume'); if (rs) rs.onclick = function(){ var d = readDraft(); if (!d) return; st = Object.assign(blank(), d.st, { password:'' }); go(Math.min(d.step, STEPS.length - 1)); };
+    var fr = document.getElementById('fresh'); if (fr) fr.onclick = function(){ clearDraft(); st = blank(); photos = []; render(); };
+    [].forEach.call(fb.querySelectorAll('.bigc[data-m]'), function(b){ b.onclick = function(){ st.metier = b.getAttribute('data-m'); [].forEach.call(fb.querySelectorAll('.bigc'), function(x){ x.classList.toggle('on', x === b); }); paintSide(); save(); setTimeout(function(){ go(1); }, 220); }; });
+    if (k === 'equipe') [].forEach.call(fb.querySelectorAll('.opt[data-v]'), function(b){ b.onclick = function(){ st.equipeType = b.getAttribute('data-v'); [].forEach.call(fb.querySelectorAll('.opt'), function(x){ var on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); }); paintSide(); save(); setTimeout(function(){ go(1); }, 220); }; });
+    // Zone
+    var vi = document.getElementById('ville');
+    function zone(){ var z = document.getElementById('zbox'), t = document.getElementById('ztext'); if (!z) return; z.hidden = !zoneText(); t.textContent = zoneText(); }
+    if (vi) { var up = function(){ st.ville = vi.value.slice(0, 80); zone(); refreshNext(); paintSide(); save(); }; vi.addEventListener('input', up); vi.addEventListener('change', up); }
+    bindChips('data-r', function(v){ st.rayon = v; setOn('data-r', function(x){ return x === st.rayon; }); zone(); });
+    var vadd = document.getElementById('vadd'), vbtn = document.getElementById('vbtn');
+    function addVille(){ var v = (vadd.value || '').trim().slice(0, 40); if (!v) return; var key = function(s){ return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); };
+      if (key(v) !== key(st.ville.trim()) && !st.villes.some(function(x){ return key(x) === key(v); }) && st.villes.length < 10) st.villes.push(v);
+      vadd.value = ''; paintVilles(); zone(); paintSide(); save();
+      // Sur téléphone, le champ ouvre la liste des villes en plein écran : pas de focus, sinon elle se rouvre aussitôt
+      if (!window.matchMedia('(max-width: 640px)').matches) vadd.focus(); }
+    function paintVilles(){ var l = document.getElementById('vlist'); l.innerHTML = st.villes.map(function(v, i){ return '<button type="button" class="chip on" data-vx="' + i + '">' + esc(v) + '<i class="ph-bold ph-x x"></i></button>'; }).join('');
+      [].forEach.call(l.querySelectorAll('[data-vx]'), function(c){ c.onclick = function(){ st.villes.splice(Number(c.getAttribute('data-vx')), 1); paintVilles(); zone(); paintSide(); save(); }; }); }
+    if (vbtn) { vbtn.onclick = addVille; vadd.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); addVille(); } }); vadd.addEventListener('change', function(){ if (vadd.value.trim()) addVille(); }); paintVilles(); }
+    // Offre
+    bindChips('data-op', function(v){ toggleIn(st.options, v); setOn('data-op', function(x){ return st.options.indexOf(x) >= 0; }); });
+    bindChips('data-sp', function(v){ st.specialite = st.specialite === v ? '' : v; setOn('data-sp', function(x){ return x === st.specialite; }); });
+    bindChips('data-pr', function(v){ toggleIn(st.prestations, v); setOn('data-pr', function(x){ return st.prestations.indexOf(x) >= 0; }); });
+    bindChips('data-dl', function(v){ st.delaiReservation = st.delaiReservation === v ? '' : v; setOn('data-dl', function(x){ return x === st.delaiReservation; }); });
+    bindChips('data-lg', function(v){ toggleIn(st.langues, v); setOn('data-lg', function(x){ return st.langues.indexOf(x) >= 0; }); });
+    // Champs texte
+    ['tarifMin','tarifMax','tarifForfaitMin','tarifForfaitMax','tarifHeure','logementsGeres','portfolioUrl','videoUrl','instagramHandle','siteUrl','siret','fullName','pseudo','telephone','email','password'].forEach(function(id){
+      var el = document.getElementById(id); if (!el) return;
+      el.oninput = function(){ st[id] = el.value; var e = document.getElementById('err'); if (e) e.classList.remove('show'); if (id === 'telephone') { var tv = document.getElementById('telvis'); if (tv) tv.hidden = !el.value.trim(); } paintSide(); refreshNext(); save(); };
+      if (el.getAttribute('inputmode') === 'url') el.onblur = function(){ el.value = normUrl(el.value); st[id] = el.value; save(); };
+      el.onkeydown = function(e){ if (e.key === 'Enter') { e.preventDefault(); next(); } };
+    });
+    var bio = document.getElementById('bio'); if (bio) bio.oninput = function(){ st.bio = bio.value.slice(0, 600); document.getElementById('biocount').textContent = st.bio.length + ' / 600'; paintSide(); refreshNext(); save(); };
+    var tp = document.getElementById('telephonePublic'); if (tp) tp.onchange = function(){ st.telephonePublic = tp.checked; save(); };
+    var rc = document.getElementById('assuranceRcPro'); if (rc) rc.onchange = function(){ st.assuranceRcPro = rc.checked; save(); };
+    var eye = document.getElementById('pweye'); if (eye) eye.onclick = function(){ var i = document.getElementById('password'), show = i.type === 'password'; i.type = show ? 'text' : 'password'; eye.innerHTML = show ? '<i class="ph-bold ph-eye-slash"></i>' : '<i class="ph-bold ph-eye"></i>'; eye.setAttribute('aria-label', show ? 'Masquer le mot de passe' : 'Afficher le mot de passe'); };
+    // Photos
+    var pf = document.getElementById('pfile'), dz = document.getElementById('drop');
+    if (pf) {
+      pf.onchange = function(){ addFiles(pf.files); pf.value = ''; };
+      dz.onkeydown = function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pf.click(); } };
+      dz.ondragover = function(e){ e.preventDefault(); dz.classList.add('over'); };
+      dz.ondragleave = function(){ dz.classList.remove('over'); };
+      dz.ondrop = function(e){ e.preventDefault(); dz.classList.remove('over'); addFiles(e.dataTransfer.files); };
+    }
+    // Formules
+    var fa = document.getElementById('fadd'); if (fa) fa.onclick = function(){ if (st.formules.length >= 3) return; st.formules.push({ nom:'', prix:'', detail:'' }); paintFormules(); refreshNext(); var last = document.querySelector('[data-fn="' + (st.formules.length - 1) + '"]'); if (last) last.focus(); };
+    [].forEach.call(fb.querySelectorAll('[data-goto]'), function(c){ c.onclick = function(){ go(Number(c.getAttribute('data-goto'))); }; });
+  }
+
+  // ── Envoi : la fiche, puis les photos une par une, puis le paiement ──
+  function acq(){ try { return window.__jmAcq || JSON.parse(sessionStorage.getItem('jm_acq') || 'null'); } catch (e) { return null; } }
+  function payload(){
+    var zone = st.rayon ? st.ville.trim() + ' + ' + st.rayon + ' km' : '';
+    var d = { t: t0, website: document.getElementById('website').value, acq: acq(),
+      fullName: st.fullName.trim(), email: st.email.trim(), password: st.password, telephone: st.telephone.trim(), telephonePublic: !!(st.telephonePublic && st.telephone.trim()),
+      ville: st.ville.trim(), zoneCouverte: zone, villesCouvertes: st.villes, instagramHandle: st.instagramHandle.trim().replace(/^@/, ''), bio: st.bio.trim(),
+      formules: st.formules.filter(function(f){ return f.nom.trim(); }).map(function(f){ return { nom: f.nom.trim(), prix: parseInt(f.prix, 10) || null, detail: f.detail.trim() }; }),
+      photoCount: photos.length };
+    if (MENAGE) {
+      d.pseudo = st.pseudo.trim(); d.equipeType = st.equipeType; d.delaiReservation = st.delaiReservation; d.prestations = st.prestations; d.langues = st.langues;
+      d.tarifForfaitMin = st.tarifForfaitMin; d.tarifForfaitMax = st.tarifForfaitMax; d.tarifHeure = st.tarifHeure; d.logementsGeres = st.logementsGeres;
+      d.siteUrl = st.siteUrl; d.siret = st.siret.replace(/\s+/g, ''); d.assuranceRcPro = st.assuranceRcPro;
+    } else {
+      d.metier = st.metier || 'photo'; d.options = st.options; d.specialite = st.specialite; d.tarifMin = st.tarifMin; d.tarifMax = st.tarifMax;
+      d.portfolioUrl = st.portfolioUrl; d.videoUrl = st.videoUrl;
+    }
+    return d;
+  }
+  function sendingScreen(title, sub, pct){
+    fh.hidden = true; ff.innerHTML = '';
+    fb.innerHTML = '<div class="sending"><i class="ph-bold ph-spinner"></i><h2 class="q">' + title + '</h2><p class="sub" style="margin:0">' + sub + '</p>' + (pct != null ? '<div class="pbar"><span style="width:' + pct + '%"></span></div>' : '') + '</div>';
+  }
+  function backToRecap(msg){ sending = false; step = STEPS.length - 1; render(false); showErr(msg); }
+  function send(){
+    sending = true; refreshNext();
+    sendingScreen('Création de ta fiche…', 'Quelques secondes.', null);
+    var ctrl = new AbortController(), timer = setTimeout(function(){ ctrl.abort(); }, 30000);
+    fetch(C.api, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload()), signal: ctrl.signal })
+      .then(function(r){ clearTimeout(timer); return r.json().catch(function(){ return {}; }).then(function(b){ if (!r.ok) throw new Error(b.error || 'Le serveur n’a pas pu enregistrer ta fiche. Réessaie dans un instant.'); return b; }); })
+      .then(function(b){
+        if (!b.checkoutUrl) throw new Error('Le paiement n’a pas pu être préparé. Écris-nous à contact@jasonmarinho.com, on règle ça vite.');
+        finished = true; clearDraft();
+        if (!b.photoSig || !photos.length) return b;
+        // Photos une par une (la dernière prise en compte si une échoue : le reste suit)
+        var done = 0, failed = 0;
+        return photos.reduce(function(chain, p, i){
+          return chain.then(function(){
+            sendingScreen('Envoi de tes photos…', 'Photo ' + (i + 1) + ' sur ' + photos.length + '. Ne ferme pas la page.', Math.round(i / photos.length * 100));
+            return fetch(C.api, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'photo', ficheId: b.ficheId, sig: b.photoSig, full: p.full, thumb: p.thumb }) })
+              .then(function(r){ if (r.ok) done++; else failed++; }).catch(function(){ failed++; });
+          });
+        }, Promise.resolve()).then(function(){ b.photosFailed = failed; return b; });
+      })
+      .then(function(b){
+        sendingScreen('Direction le paiement sécurisé…', b.photosFailed ? b.photosFailed + ' photo' + (b.photosFailed > 1 ? 's n’ont' : ' n’a') + ' pas pu partir : tu pourras l’ajouter depuis ton espace.' : 'Ta fiche est prête, il ne reste que le paiement.', 100);
+        setTimeout(function(){ location.assign(b.checkoutUrl); }, b.photosFailed ? 2200 : 400);
+      })
+      .catch(function(e){ clearTimeout(timer); backToRecap(e && e.name === 'AbortError' ? 'Le serveur met trop de temps à répondre. Réessaie, ou écris à contact@jasonmarinho.com.' : (e.message || 'Connexion impossible. Vérifie ta connexion internet et réessaie.')); });
+  }
 
   // Places Fondateur restantes (rien d'affiché si l'API ne répond pas)
-  fetch('/api/annuaire-places').then(function (r) { return r.ok ? r.json() : null }).then(function (d) {
-    var n = d && d.photographers
-    if (typeof n !== 'number') return
+  fetch('/api/annuaire-places').then(function(r){ return r.ok ? r.json() : null; }).then(function(d){
+    var n = d && d[C.places];
+    if (typeof n !== 'number') return;
     if (n <= 0) {
-      // Places Fondateur épuisées : prix normal
-      document.querySelector('.price-eye').textContent = 'Tarif annuel'
-      document.querySelector('.price-n').innerHTML = '79,98 €<small>TTC / an</small>'
-      document.querySelector('.price-sub').textContent = 'Les 20 places Fondateur sont prises. Tout est compris, sans commission.'
-      document.querySelector('.price-foot').textContent = 'Soit moins de 6,70 € par mois. TVA non applicable, art. 293 B du CGI.'
-      return
+      price = '79,98 €';
+      document.querySelector('.price-eye').textContent = 'Tarif annuel';
+      document.querySelector('.price-n').innerHTML = '79,98 €<small>TTC / an</small>';
+      document.querySelector('.price-sub').textContent = 'Les 20 places Fondateur sont prises. Tout est compris, sans commission.';
+      document.querySelector('.price-foot').textContent = 'Soit moins de 6,70 € par mois. TVA non applicable, art. 293 B du CGI.';
+      if (STEPS[step].k === 'recap') footer();
+      return;
     }
-    var el = $('places')
-    el.querySelector('span').textContent = 'Plus que ' + n + ' place' + (n > 1 ? 's' : '') + ' à ce prix'
-    el.style.display = 'inline-flex'
-  }).catch(function () {})
+    var el = document.getElementById('places');
+    el.querySelector('span').textContent = 'Plus que ' + n + ' place' + (n > 1 ? 's' : '') + ' à ce prix';
+    el.style.display = 'inline-flex';
+  }).catch(function(){});
 
-  // Afficher le mot de passe
-  document.querySelectorAll('[data-show]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var i = b.parentNode.querySelector('input')
-      var show = i.type === 'password'
-      i.type = show ? 'text' : 'password'
-      b.innerHTML = show ? '<i class="ph-bold ph-eye-slash"></i>' : '<i class="ph-bold ph-eye"></i>'
-      b.setAttribute('aria-label', show ? 'Masquer le mot de passe' : 'Afficher le mot de passe')
-    })
-  })
-
-  var bio = $('bio')
-  bio.addEventListener('input', function () { $('bio-count').textContent = bio.value.length + ' / 600' })
-
-  // Aperçu de la carte
-  function initials(s) { return s.split(/\s+/).filter(function (w) { return /^[A-Za-zÀ-ÿ]/.test(w) }).map(function (w) { return w[0] }).slice(0, 2).join('').toUpperCase() }
-  function val(id) { var el = $(id); return el ? el.value.trim() : '' }
-  function selText(id) { var el = $(id); return el && el.value ? el.options[el.selectedIndex].text : '' }
-  function preview() {
-    var name = val('fullName')
-    $('pv-name').textContent = name || 'Ton nom'
-    $('pv-ini').textContent = initials(name) || 'MD'
-    var zone = val('zoneCouverte')
-    $('pv-meta').textContent = [val('ville') || 'Ta ville', zone].filter(Boolean).join(' · ')
-    var mt = form.querySelector('input[name="metier"]:checked'); var ml = mt ? mt.parentNode.textContent.trim() : 'Photographe'
-    $('pv-extra').textContent = [ml, selText('specialite')].filter(Boolean).join(' · ')
-    var pm = document.querySelector('.pc-media small'); if (pm) pm.textContent = ml
-    var p = parseInt(val('tarifMin'), 10)
-    $('pv-price').innerHTML = p > 0 ? 'dès <strong>' + p + ' €</strong>' : 'Tarifs sur la fiche'
-  }
-  form.addEventListener('input', preview)
-  form.addEventListener('change', preview)
-
-  function showError(msg, focusEl) {
-    errBox.textContent = msg
-    errBox.style.display = 'block'
-    btn.disabled = false; btn.innerHTML = BTN
-    if (focusEl) focusEl.focus()
-    errBox.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  }
-
-  // Adresse de site tolérante (15/10/2026, inscription bloquée sur « l'adresse
-  // semble incorrecte ») : « monsite.fr » ou « www… » reçoivent https://,
-  // « @compte » devient le lien Instagram. Même règle côté serveur (signup.js).
-  function normUrl(v) {
-    v = (v || '').trim().replace(/\s+/g, '')
-    if (!v) return ''
-    if (/^@[\w.]{1,30}$/.test(v)) return 'https://www.instagram.com/' + v.slice(1)
-    if (!/^https?:\/\//i.test(v)) v = 'https://' + v.replace(/^\/+/, '')
-    return v
-  }
-  function urlOk(v) { return /^https?:\/\/[^\s\/.]+(\.[^\s\/.]+)+/i.test(v) }
-  Array.prototype.forEach.call(form.querySelectorAll('[data-url]'), function (el) {
-    el.addEventListener('blur', function () { el.value = normUrl(el.value) })
-  })
-  function labelOf(el) {
-    var label = form.querySelector('label[for="' + el.id + '"]')
-    return label ? label.childNodes[0].textContent.trim() : 'Un champ'
-  }
-
-  form.addEventListener('submit', async function (e) {
-    e.preventDefault()
-    errBox.style.display = 'none'
-    Array.prototype.forEach.call(form.querySelectorAll('[data-url]'), function (el) { el.value = normUrl(el.value) })
-    var missing = Array.prototype.find.call(form.querySelectorAll('[required]'), function (el) { return !el.value.trim() || !el.checkValidity() })
-    if (missing) {
-      var name = labelOf(missing)
-      var msg = missing.id === 'password' ? 'Le mot de passe doit faire au moins 8 caractères.'
-        : missing.id === 'email' && missing.validity && missing.validity.typeMismatch ? 'E-mail pro : cette adresse e-mail semble incomplète (exemple : prenom@domaine.fr).'
-        : name + ' : à remplir.'
-      return showError(msg, missing)
-    }
-    var badUrl = Array.prototype.find.call(form.querySelectorAll('[data-url]'), function (el) { return el.value && !urlOk(el.value) })
-    if (badUrl) return showError(labelOf(badUrl) + ' : ce lien ne ressemble pas à une adresse de site (exemple : monsite.fr ou instagram.com/moncompte).', badUrl)
-    btn.disabled = true
-    btn.innerHTML = '<i class="ph-bold ph-spinner"></i><span>Préparation du paiement…</span>'
-    var data = { t: t0, website: form.website ? form.website.value : '' }
-    try { data.acq = window.__jmAcq || JSON.parse(sessionStorage.getItem('jm_acq') || 'null') } catch (err) { data.acq = null }
-    ["fullName","email","password","ville","zoneCouverte","portfolioUrl","videoUrl","instagramHandle","telephone","specialite","tarifMin","tarifMax","bio"].forEach(function (k) { data[k] = val(k) })
-    var mt = form.querySelector('input[name="metier"]:checked')
-    data.metier = mt ? mt.value : 'photo'
-    data.options = Array.from(form.querySelectorAll('input[name="options"]:checked')).map(function (i) { return i.value })
-    var ctrl = new AbortController()
-    var timer = setTimeout(function () { ctrl.abort() }, 30000)
-    try {
-      var res = await fetch('/api/photographer/signup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), signal: ctrl.signal })
-      clearTimeout(timer)
-      var body = {}
-      try { body = await res.json() } catch (err) { body = {} }
-      if (!res.ok) return showError(body.error || 'Le serveur n’a pas pu enregistrer ta fiche. Réessaie dans un instant.')
-      if (!body.checkoutUrl) return showError('Le paiement n’a pas pu être préparé. Écris-nous à contact@jasonmarinho.com, on règle ça vite.')
-      window.location.assign(body.checkoutUrl)
-    } catch (err) {
-      clearTimeout(timer)
-      showError(err && err.name === 'AbortError' ? 'Le serveur met trop de temps à répondre. Réessaie, ou écris à contact@jasonmarinho.com.' : 'Connexion impossible. Vérifie ta connexion internet et réessaie.')
-    }
-  })
-})()
+  // Départ : ?ville= préremplit (liens des e-mails et pages de ville)
+  try { var q = new URLSearchParams(location.search); if (q.get('ville')) st.ville = q.get('ville').slice(0, 80); } catch (e) {}
+  try { history.replaceState({ s: 0 }, '', location.pathname + location.search); } catch (e) {}
+  render(false);
+})();
 </script>
 <script defer src="/footer.js"></script>
 <script src="/cookie-banner.js" defer></script>

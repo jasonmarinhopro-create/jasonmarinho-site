@@ -185,7 +185,23 @@ export function stickyBarHtml({ firstName, hasPhotos, external }) {
   return `<div class="vt-bar" id="vt-bar" aria-hidden="true"><a href="#contact" class="vt-bar-p" data-vt-contact tabindex="-1"><i class="ph-bold ph-paper-plane-tilt"></i>Contacter ${esc(firstName)}</a>${second.replace('<a ', '<a tabindex="-1" ')}</div>`
 }
 
+/**
+ * Bouton « Appeler » (24/10/2026, Jason : « le numéro de téléphone visible »).
+ * Le numéro n'arrive ici que si le pro a coché « Afficher mon numéro sur ma
+ * fiche » (les vues publiques le masquent sinon, migration 20261024_153).
+ */
+export function telHtml(telephone, firstName) {
+  const t = String(telephone || '').trim()
+  const digits = t.replace(/[^\d+]/g, '')
+  if (digits.replace(/\D/g, '').length < 8) return ''
+  return `<a href="tel:${esc(digits)}" class="vt-tel"><i class="ph-bold ph-phone"></i><span>Appeler ${esc(firstName)}<small>${esc(t)}</small></span></a>`
+}
+
 export const VITRINE_CSS = `
+.vt-tel{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px 14px;border:1.5px solid rgba(0,76,63,.18);border-radius:12px;color:var(--g);text-decoration:none;font-family:'Outfit',sans-serif;font-weight:600;font-size:15px}
+.vt-tel:hover{border-color:var(--g);background:#F2F6F3}
+.vt-tel i{font-size:20px}
+.vt-tel small{display:block;font-weight:400;font-size:13px;color:var(--tm)}
 .hero-grid{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
 @media(min-width:900px){.hero-grid.has-cover{grid-template-columns:minmax(0,1fr) 400px}}
 .vt-video{width:100%}

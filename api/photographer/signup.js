@@ -7,6 +7,7 @@
 // sa fiche depuis /dashboard/ma-fiche-photographe.
 
 const { findOrCreateCustomer } = require('../../scripts/lib/stripe-customer.cjs')
+const extras = require('../../scripts/lib/pro-signup-extras.cjs')
 const FOUNDER_QUOTA = 20
 const FOUNDER_PRICE_ID = process.env.STRIPE_PHOTOGRAPHER_FOUNDER_PRICE_ID || ''
 const STANDARD_PRICE_ID = process.env.STRIPE_PHOTOGRAPHER_STANDARD_PRICE_ID || ''
@@ -113,7 +114,8 @@ async function createCheckoutSession({ stripeKey, priceId, email, metadata, name
   else params.append('customer_email', email)
   params.append('line_items[0][price]', priceId)
   params.append('line_items[0][quantity]', '1')
-  params.append('success_url', `${SITE_URL}/annuaires/photographes/inscription/confirmation?status=paid`)
+  // Retour du paiement : connecté directement à Ma fiche (24/10/2026)
+  params.append('success_url', extras.successUrl('photographe'))
   params.append('cancel_url', `${SITE_URL}/annuaires/photographes/inscription/confirmation?status=cancel`)
   params.append('locale', 'fr')
   params.append('allow_promotion_codes', 'true')
@@ -201,13 +203,23 @@ module.exports = async function handler(req, res) {
   }
 
   const ip = getClientIp(req)
-  if (isRateLimited(`ip:${ip}`, 3, 15 * 60 * 1000)) {
-    return res.status(429).json({ error: 'Trop de tentatives. Réessaye dans 15 minutes.' })
-  }
-
   let body = req.body
   if (typeof body === 'string') { try { body = JSON.parse(body) } catch { body = {} } }
   body = body || {}
+
+  // Photos envoyées une par une juste après l'inscription (24/10/2026)
+  if (body.action === 'photo') {
+    if (isRateLimited(`photo:${ip}`, 30, 15 * 60 * 1000)) return res.status(429).json({ error: 'Trop d’envois, réessaie dans quelques minutes.' })
+    const SUPA = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+    if (!SUPA || !KEY) return res.status(500).json({ error: 'Service indisponible' })
+    const out = await extras.handlePhoto({ table: 'photographers', body, supabaseUrl: SUPA, serviceKey: KEY })
+    return res.status(out.status).json(out.body)
+  }
+
+  if (isRateLimited(`ip:${ip}`, 3, 15 * 60 * 1000)) {
+    return res.status(429).json({ error: 'Trop de tentatives. Réessaye dans 15 minutes.' })
+  }
 
   if (body.website) return res.status(200).json({ ok: true })
   if (body.t && typeof body.t === 'number' && Date.now() - body.t < 3000) return res.status(200).json({ ok: true })
@@ -230,9 +242,15 @@ module.exports = async function handler(req, res) {
   const OPTIONS = ['drone', 'visite_3d', 'reels', 'crepuscule', 'mise_en_scene']
   const options = OPTIONS.filter(k => Array.isArray(body.options) && body.options.includes(k))
   const videoUrl = normUrl(body.videoUrl)
+  // Tout en une fois (24/10/2026) : villes couvertes, formules, téléphone affiché, photos à suivre
+  const villesCouvertes = extras.cleanVilles(body.villesCouvertes, ville)
+  const formules = extras.cleanFormules(body.formules)
+  const telephonePublic = body.telephonePublic === true && !!telephone
+  const photoCount = Math.max(0, Math.min(extras.PHOTOS_MAX, parseInt(body.photoCount || '0', 10) || 0))
 
-  if (!fullName || !email || !ville || !portfolioUrl || !password) {
-    return res.status(400).json({ error: 'Champs obligatoires manquants : nom, email, mot de passe, ville, portfolio.' })
+  // Le portfolio n'est obligatoire que sans photo sur la fiche
+  if (!fullName || !email || !ville || !password || (!portfolioUrl && !photoCount)) {
+    return res.status(400).json({ error: 'Champs obligatoires manquants : nom, email, mot de passe, ville, et des photos ou un lien vers ton portfolio.' })
   }
   if (!email.includes('@') || !email.includes('.')) {
     return res.status(400).json({ error: 'Email invalide.' })
@@ -243,7 +261,7 @@ module.exports = async function handler(req, res) {
   if (videoUrl && !urlOk(videoUrl)) {
     return res.status(400).json({ error: 'Le lien vers tes vidéos ne ressemble pas à une adresse de site (exemple : youtube.com/@toncompte).' })
   }
-  if (!urlOk(portfolioUrl)) {
+  if (portfolioUrl && !urlOk(portfolioUrl)) {
     return res.status(400).json({ error: 'Ton site ou ton portfolio : ce lien ne ressemble pas à une adresse de site (exemple : monsite.fr ou instagram.com/moncompte).' })
   }
 
@@ -323,6 +341,7 @@ module.exports = async function handler(req, res) {
 
   // 4. Insert pending_payment lié au user_id
   const visuel = { metier, options, video_url: videoUrl || null }
+  const enUneFois = { villes_couvertes: villesCouvertes, formules, telephone_public: telephonePublic }
   const insertFiche = extra => fetch(`${SUPABASE_URL}/rest/v1/photographers`, {
     method: 'POST',
     headers: {
@@ -336,7 +355,7 @@ module.exports = async function handler(req, res) {
       user_id: userId,
       email, full_name: fullName, ville,
       zone_couverte: zoneCouverte || null,
-      portfolio_url: portfolioUrl,
+      portfolio_url: portfolioUrl || '', // colonne non nulle : vide si seulement des photos
       instagram_handle: instagramHandle || null,
       telephone: telephone || null,
       specialite: specialite || null,
@@ -346,7 +365,9 @@ module.exports = async function handler(req, res) {
       status: 'pending_payment',
     }),
   })
-  let insertRes = await insertFiche(visuel)
+  let insertRes = await insertFiche({ ...visuel, ...enUneFois })
+  // Migration 153 (téléphone affiché) pas encore passée : sans ce champ
+  if (insertRes.status === 400) insertRes = await insertFiche({ ...visuel, villes_couvertes: villesCouvertes, formules })
   // Migration 136 pas encore passée : la fiche s'enregistre sans ces champs
   if (insertRes.status === 400) insertRes = await insertFiche({})
   if (!insertRes.ok) {
@@ -403,5 +424,9 @@ module.exports = async function handler(req, res) {
     }).catch(err => console.warn('[photographer/signup] notify email failed', err))
   }
 
-  return res.status(200).json({ ok: true, checkoutUrl: stripeResult.url, tier })
+  return res.status(200).json({
+    ok: true, checkoutUrl: stripeResult.url, tier,
+    // Photos à envoyer avant de partir au paiement
+    ...(photoCount ? { ficheId: photographerId, photoSig: extras.photoSig(photographerId, userId, SERVICE_KEY) } : {}),
+  })
 }

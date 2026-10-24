@@ -74,6 +74,7 @@ export async function updatePhotographerFiche(payload: {
   portfolio_url?: string
   instagram_handle?: string | null
   telephone?: string | null
+  telephone_public?: boolean
   reseaux?: Record<string, string>
   formules?: unknown
   villes_couvertes?: unknown
@@ -91,10 +92,11 @@ export async function updatePhotographerFiche(payload: {
   const fullName = String(payload.full_name || '').trim().slice(0, 100)
   const ville = String(payload.ville || '').trim().slice(0, 80)
   const portfolioUrl = normSiteUrl(payload.portfolio_url)
-  if (!fullName || !ville || !portfolioUrl) {
-    return { error: 'Nom, ville et portfolio sont obligatoires.' }
+  // Portfolio facultatif depuis l'inscription tout en une fois (24/10/2026) : les photos de la fiche suffisent
+  if (!fullName || !ville) {
+    return { error: 'Nom et ville sont obligatoires.' }
   }
-  if (!siteUrlOk(portfolioUrl)) {
+  if (portfolioUrl && !siteUrlOk(portfolioUrl)) {
     return { error: `Ton site ou ton portfolio : ${SITE_URL_ERROR}.` }
   }
 
@@ -110,7 +112,7 @@ export async function updatePhotographerFiche(payload: {
     specialite: (payload.specialite ?? '').toString().trim().slice(0, 100) || null,
     tarif_min: payload.tarif_min ?? null,
     tarif_max: payload.tarif_max ?? null,
-    portfolio_url: portfolioUrl,
+    portfolio_url: portfolioUrl || '',
     instagram_handle: (payload.instagram_handle ?? '').toString().trim().slice(0, 50).replace(/^@/, '') || null,
     telephone: (payload.telephone ?? '').toString().trim().slice(0, 30) || null,
     updated_at: new Date().toISOString(),
@@ -140,6 +142,8 @@ export async function updatePhotographerFiche(payload: {
     log.error('update failed', updateErr)
     return { error: 'Erreur lors de la sauvegarde.' }
   }
+  // Téléphone affiché sur la fiche (migration 153) : à part, sans bloquer si la colonne manque
+  await admin.from('photographers').update({ telephone_public: !!payload.telephone_public && !!fields.telephone }).eq('id', target.photographerId)
 
   await triggerSiteRebuild('fiche photographe')
 

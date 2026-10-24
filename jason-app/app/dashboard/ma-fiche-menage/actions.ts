@@ -78,6 +78,7 @@ export async function updateCleanerFiche(payload: {
   site_url?: string | null
   instagram_handle?: string | null
   telephone?: string | null
+  telephone_public?: boolean
   reseaux?: Record<string, string>
   formules?: unknown
   villes_couvertes?: unknown
@@ -153,6 +154,9 @@ export async function updateCleanerFiche(payload: {
     log.error('update failed', updateErr)
     return { error: 'Erreur lors de la sauvegarde.' }
   }
+
+  // Téléphone affiché sur la fiche (migration 153) : à part, sans bloquer si la colonne manque
+  await admin.from('cleaners').update({ telephone_public: !!payload.telephone_public && !!fields.telephone }).eq('id', target.cleanerId)
 
   await triggerSiteRebuild('fiche ménage')
 

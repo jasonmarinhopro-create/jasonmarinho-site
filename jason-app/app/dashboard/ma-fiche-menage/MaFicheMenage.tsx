@@ -39,6 +39,7 @@ type Cleaner = {
   assurance_rc_pro: boolean | null; siret: string | null
   site_url: string | null; instagram_handle: string | null
   telephone: string | null
+  telephone_public?: boolean | null
   tier: string; status: string
   slug: string | null
   stripe_subscription_status: string | null
@@ -98,6 +99,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
     site_url: cleaner.site_url ?? '',
     instagram_handle: cleaner.instagram_handle ?? '',
     telephone: cleaner.telephone ?? '',
+    telephone_public: !!cleaner.telephone_public,
   })
   const [reseaux, setReseaux] = useState<ReseauxForm>(() => emptyReseauxForm(cleaner.reseaux))
   const [vitrine, setVitrine] = useState<VitrineForm>(() => initialVitrineForm(cleaner, 'menage'))
@@ -163,6 +165,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         site_url: form.site_url || null,
         instagram_handle: form.instagram_handle || null,
         telephone: form.telephone || null,
+        telephone_public: form.telephone_public && !!form.telephone.trim(),
         reseaux,
         ...vitrinePayload(vitrine),
       })
@@ -345,6 +348,12 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
           </Field>
           <Field label="Téléphone">
             <input style={s.input} value={form.telephone} onChange={e => setForm({ ...form, telephone: e.target.value })} maxLength={30} />
+            {form.telephone.trim() && (
+              <label style={{ display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.45, cursor: 'pointer', marginTop: 4 }}>
+                <input type="checkbox" checked={form.telephone_public} onChange={e => setForm({ ...form, telephone_public: e.target.checked })} style={{ marginTop: 2, accentColor: 'var(--accent-text)' }} />
+                Afficher mon numéro sur ma fiche (bouton « Appeler »)
+              </label>
+            )}
           </Field>
         </div>
         <div style={s.grid2}>

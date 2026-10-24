@@ -37,6 +37,7 @@ type Photographer = {
   tarif_min: number | null; tarif_max: number | null
   portfolio_url: string; instagram_handle: string | null
   telephone: string | null
+  telephone_public?: boolean | null
   tier: string; status: string
   slug: string | null
   stripe_subscription_status: string | null
@@ -76,6 +77,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
     portfolio_url: photographer.portfolio_url,
     instagram_handle: photographer.instagram_handle ?? '',
     telephone: photographer.telephone ?? '',
+    telephone_public: !!photographer.telephone_public,
   })
   const [reseaux, setReseaux] = useState<ReseauxForm>(() => emptyReseauxForm(photographer.reseaux))
   const [visuel, setVisuel] = useState<VisuelForm>(() => ({ metier: readMetier(photographer.metier), options: readOptions(photographer.options), video_url: photographer.video_url ?? '' }))
@@ -128,6 +130,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         portfolio_url: form.portfolio_url,
         instagram_handle: form.instagram_handle || null,
         telephone: form.telephone || null,
+        telephone_public: form.telephone_public && !!form.telephone.trim(),
         reseaux,
         metier: visuel.metier,
         options: visuel.options,
@@ -321,6 +324,12 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         <div style={s.grid2}>
           <Field label="Téléphone (optionnel)">
             <input style={s.input} value={form.telephone} onChange={e => setForm({ ...form, telephone: e.target.value })} maxLength={30} />
+            {form.telephone.trim() && (
+              <label style={{ display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.45, cursor: 'pointer', marginTop: 4 }}>
+                <input type="checkbox" checked={form.telephone_public} onChange={e => setForm({ ...form, telephone_public: e.target.checked })} style={{ marginTop: 2, accentColor: 'var(--accent-text)' }} />
+                Afficher mon numéro sur ma fiche (bouton « Appeler »)
+              </label>
+            )}
           </Field>
           <Field label="Instagram (sans @)">
             <input style={s.input} value={form.instagram_handle} onChange={e => setForm({ ...form, instagram_handle: e.target.value })} maxLength={50} />
@@ -330,8 +339,8 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
 
         <h3 id="activite" style={{ ...s.sectionTitle, scrollMarginTop: 90 }}>Activité professionnelle</h3>
         <VisuelFields value={visuel} onChange={setVisuel} inputStyle={s.input} />
-        <Field label="Lien portfolio (site ou Instagram)" req>
-          <input style={s.input} type="text" inputMode="url" autoCapitalize="off" spellCheck={false} placeholder="monsite.fr ou instagram.com/moncompte" value={form.portfolio_url} onChange={e => setForm({ ...form, portfolio_url: e.target.value })} required maxLength={300} />
+        <Field label="Lien portfolio (site ou Instagram)">
+          <input style={s.input} type="text" inputMode="url" autoCapitalize="off" spellCheck={false} placeholder="monsite.fr ou instagram.com/moncompte" value={form.portfolio_url} onChange={e => setForm({ ...form, portfolio_url: e.target.value })} maxLength={300} />
         </Field>
         <Field label="Spécialité">
           <select style={s.input} value={form.specialite} onChange={e => setForm({ ...form, specialite: e.target.value })}>

@@ -7,6 +7,7 @@
 // sa fiche depuis /dashboard/ma-fiche-menage.
 
 const { findOrCreateCustomer } = require('../../scripts/lib/stripe-customer.cjs')
+const extras = require('../../scripts/lib/pro-signup-extras.cjs')
 const FOUNDER_QUOTA = 20
 const FOUNDER_PRICE_ID = process.env.STRIPE_CLEANER_FOUNDER_PRICE_ID || ''
 const STANDARD_PRICE_ID = process.env.STRIPE_CLEANER_STANDARD_PRICE_ID || ''
@@ -117,7 +118,8 @@ async function createCheckoutSession({ stripeKey, priceId, email, metadata, name
   else params.append('customer_email', email)
   params.append('line_items[0][price]', priceId)
   params.append('line_items[0][quantity]', '1')
-  params.append('success_url', `${SITE_URL}/annuaires/menage/inscription/confirmation?status=paid`)
+  // Retour du paiement : connecté directement à Ma fiche (24/10/2026)
+  params.append('success_url', extras.successUrl('menage'))
   params.append('cancel_url', `${SITE_URL}/annuaires/menage/inscription/confirmation?status=cancel`)
   params.append('locale', 'fr')
   params.append('allow_promotion_codes', 'true')
@@ -208,13 +210,24 @@ module.exports = async function handler(req, res) {
   }
 
   const ip = getClientIp(req)
+  let body = req.body
+  if (typeof body === 'string') { try { body = JSON.parse(body) } catch { body = {} } }
+  body = body || {}
+
+  // Photos envoyées une par une juste après l'inscription (24/10/2026)
+  if (body.action === 'photo') {
+    if (isRateLimited(`photo:${ip}`, 30, 15 * 60 * 1000)) return res.status(429).json({ error: 'Trop d’envois, réessaie dans quelques minutes.' })
+    const SUPA = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
+    if (!SUPA || !KEY) return res.status(500).json({ error: 'Service indisponible' })
+    const out = await extras.handlePhoto({ table: 'cleaners', body, supabaseUrl: SUPA, serviceKey: KEY })
+    return res.status(out.status).json(out.body)
+  }
+
   if (isRateLimited(`ip:${ip}`, 3, 15 * 60 * 1000)) {
     return res.status(429).json({ error: 'Trop de tentatives. Réessaye dans 15 minutes.' })
   }
 
-  let body = req.body
-  if (typeof body === 'string') { try { body = JSON.parse(body) } catch { body = {} } }
-  body = body || {}
 
   if (body.website) return res.status(200).json({ ok: true })
   if (body.t && typeof body.t === 'number' && Date.now() - body.t < 3000) return res.status(200).json({ ok: true })
@@ -241,6 +254,11 @@ module.exports = async function handler(req, res) {
   const prestations = Array.isArray(body.prestations)
     ? body.prestations.filter(p => typeof p === 'string' && ALLOWED_PRESTATIONS.has(p)).slice(0, 12)
     : []
+  // Tout en une fois (24/10/2026) : villes couvertes, formules, téléphone affiché, photos à suivre
+  const villesCouvertes = extras.cleanVilles(body.villesCouvertes, ville)
+  const formules = extras.cleanFormules(body.formules)
+  const telephonePublic = body.telephonePublic === true && !!telephone
+  const photoCount = Math.max(0, Math.min(extras.PHOTOS_MAX, parseInt(body.photoCount || '0', 10) || 0))
   const langues = Array.isArray(body.langues)
     ? body.langues.filter(l => typeof l === 'string' && ALLOWED_LANGUES.has(l)).slice(0, 8)
     : []
@@ -341,7 +359,7 @@ module.exports = async function handler(req, res) {
   const priceId = tier === 'fondateur' ? FOUNDER_PRICE_ID : STANDARD_PRICE_ID
 
   // 4. Insert pending_payment lié au user_id
-  const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/cleaners`, {
+  const insertFiche = extra => fetch(`${SUPABASE_URL}/rest/v1/cleaners`, {
     method: 'POST',
     headers: {
       apikey: SERVICE_KEY,
@@ -350,6 +368,7 @@ module.exports = async function handler(req, res) {
       Prefer: 'return=representation',
     },
     body: JSON.stringify({
+      ...extra,
       user_id: userId,
       email, full_name: fullName,
       pseudo: pseudo || null,
@@ -373,6 +392,9 @@ module.exports = async function handler(req, res) {
       status: 'pending_payment',
     }),
   })
+  let insertRes = await insertFiche({ villes_couvertes: villesCouvertes, formules, telephone_public: telephonePublic })
+  // Migration 153 (téléphone affiché) pas encore passée : sans ce champ
+  if (insertRes.status === 400) insertRes = await insertFiche({ villes_couvertes: villesCouvertes, formules })
   if (!insertRes.ok) {
     const txt = await insertRes.text()
     console.error('[cleaner/signup] INSERT failed', insertRes.status, txt)
@@ -427,5 +449,9 @@ module.exports = async function handler(req, res) {
     }).catch(err => console.warn('[cleaner/signup] notify email failed', err))
   }
 
-  return res.status(200).json({ ok: true, checkoutUrl: stripeResult.url, tier })
+  return res.status(200).json({
+    ok: true, checkoutUrl: stripeResult.url, tier,
+    // Photos à envoyer avant de partir au paiement
+    ...(photoCount ? { ficheId: cleanerId, photoSig: extras.photoSig(cleanerId, userId, SERVICE_KEY) } : {}),
+  })
 }
