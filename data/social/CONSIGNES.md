@@ -31,10 +31,22 @@ d'interagir.
    session), écris-le en tête de ton compte rendu : rien n'a pu être publié.
 
 1. **Commentaires** (toujours).
-2. **Publication** : seulement au passage du matin, et seulement si aucun post
-   automatique n'est prévu aujourd'hui ni hier (regarde les dates de
-   `historique.md`, lignes dont le sujet n'est pas « (manuel) »). Rythme : un
-   post tous les deux jours.
+2. **Publication** (passage du matin seulement). Le calendrier est fixe
+   (bonnes pratiques vérifiées le 24/10/2026 : 3 à 5 posts par semaine sur
+   Instagram, des stories tous les jours, 2 à 4 écrans par série) :
+   - **Posts** : 4 par semaine, **lundi, mercredi, vendredi, dimanche**, à
+     18 h (Paris). Un jour de post, dépose le post s'il n'est pas déjà dans
+     `historique.md`, avec ses stories (`story.texte` + `story.frames`, voir
+     plus bas). Si tu le déposes un autre jour, il part au prochain jour de
+     post.
+   - **Stories** : **tous les jours**. Les jours de post, ce sont celles du
+     post (rien d'autre à faire). Les autres jours (mardi, jeudi, samedi),
+     dépose un fichier `stories` (voir « Stories des jours sans post ») : il
+     part à 12 h (Paris, 13 h en été).
+   - **Avance** : regarde aussi le lendemain. S'il manque quelque chose
+     demain (post ou stories), prépare-le dès aujourd'hui (`"jour"` pour les
+     stories ; un post part toujours au prochain jour de post libre). Ainsi
+     un passage manqué ne laisse jamais une journée vide.
 3. **Rapport** : seulement au passage du dimanche soir.
 4. **Refus** : si `data/social/refusees/` contient un fichier récent (moins de
    3 jours) que tu n'as pas encore corrigé, lis le motif (`.txt`) et dépose
@@ -124,7 +136,12 @@ tirets, unique ; jamais un slug déjà présent dans l'historique).
   "legende_facebook": "(facultatif, sinon la légende sert aux deux)",
   "hashtags": ["#airbnb", "#locationcourteduree", "#taxedesejour"],
   "lien": "https://jasonmarinho.com/blog/<slug-de-l-article>",
-  "story": { "texte": "La 3e, *presque tout le monde* la fait" }
+  "story": {
+    "texte": "La 3e, *presque tout le monde* la fait",
+    "frames": [
+      { "type": "question", "titre": "Tu sais combien tu reverses *par nuit* ?" }
+    ]
+  }
 }
 ```
 
@@ -140,16 +157,56 @@ tirets, unique ; jamais un slug déjà présent dans l'historique).
   `photo-interieur-1.jpg`, `menage-1.jpg` (toutes dans `img/exemple-fiches/`).
   Sans photo : fond vert de la marque.
 - `lien` : une page du site qui existe (prends-la dans `llms.txt`).
-- `story` (depuis le 24/10/2026, demande de Jason) : chaque post part avec une
-  story Facebook et Instagram qui l'annonce (la couverture en carte, « Nouveau
-  carrousel », ton accroche, « À voir sur notre profil »). Elle est rendue,
-  programmée et publiée toute seule avec le post : tu n'as rien d'autre à
-  faire. `texte` : **à écrire à chaque post**, une accroche de 90 caractères
-  au plus, différente du titre de la couverture (curiosité, question,
-  promesse ; `*mot*` en italique jaune). Oubliée, la story reprend le
-  sous-titre de la couverture. `"story": false` seulement si le sujet ne s'y
-  prête pas.
-  L'API ne permet ni lien ni sticker dans la story.
+- `story` (depuis le 24/10/2026, demande de Jason) : chaque post part avec
+  une série de stories Facebook et Instagram, publiée en même temps que lui :
+  tes écrans `frames` (1 à 3), puis l'annonce (la couverture en carte,
+  « Nouveau carrousel », ton accroche, « À voir sur notre profil »). Tout est
+  rendu, programmé et publié tout seul.
+  - `texte` : **à chaque post**, une accroche de 90 caractères au plus,
+    différente du titre de la couverture (curiosité, promesse ; `*mot*` en
+    italique jaune). Oubliée : le sous-titre de la couverture.
+  - `frames` : **1 ou 2 écrans** tirés du post, pour donner envie : le chiffre
+    clé (`chiffre`), une astuce (`astuce`) ou une question (`question`). Même
+    format que les diapositives (voir « Écrans de stories »).
+  - `"story": false` seulement si le sujet ne s'y prête pas.
+  - L'API ne permet ni lien, ni sondage, ni sticker : une question invite à
+    répondre en message privé.
+
+### Stories des jours sans post
+
+`data/social-queue/AAAA-MM-JJ-stories-<slug>.json` :
+
+```json
+{
+  "format": "stories",
+  "slug": "stories-message-d-arrivee",
+  "jour": "2026-10-27",
+  "photo": "img/exemple-fiches/photo-salon-2.jpg",
+  "frames": [
+    { "type": "chiffre", "kicker": "Le chiffre du jour", "valeur": "…", "label": "…", "source": "…" },
+    { "type": "astuce", "kicker": "Astuce", "titre": "…", "texte": "…" },
+    { "type": "question", "titre": "Et toi, tu envoies *le code* quand ?" }
+  ]
+}
+```
+
+- **2 à 4 écrans** qui racontent une petite histoire : le plus souvent un
+  chiffre ou un constat, une astuce, puis une question. Un seul sujet par
+  série, tiré d'une page du site (mêmes règles d'écriture : aucun chiffre
+  inventé, source sur l'écran `chiffre`).
+- `jour` (facultatif) : la date de publication, 12 h (Paris) ; sans `jour`,
+  aujourd'hui si ce n'est pas trop tard, sinon le premier jour libre.
+- `photo` (facultatif) : fond de l'écran `couverture` si tu en mets un.
+- Varie les publics comme pour les posts, et ne reprends pas un sujet de
+  stories des 30 derniers jours (historique : lignes « stories »).
+
+### Écrans de stories
+
+`chiffre` (valeur, label, source), `astuce` (kicker, titre, texte),
+`question` (titre = la question, texte facultatif : sinon « Réponds-nous en
+message »), `point` (titre, texte), `liste` (titre, 2 à 4 items),
+`couverture` (titre, sous-titre). Titres de 90 caractères au plus, textes
+courts : un écran se lit en 3 secondes.
 
 Ensuite : commit `feat(social): post JJ/MM/AAAA <slug>` et push (sur main si
 c'est permis, sinon sur la branche de la session : le workflow « Réseaux
@@ -197,7 +254,9 @@ Fichier `data/social/rapports/AAAA-MM-JJ.md` (date du dimanche), en chiffres,
 **sans aucun nom de personne** (dépôt public) :
 
 1. Publications de la semaine : date, format, sujet, j'aime et commentaires
-   Facebook et Instagram (depuis `historique.md`, mis à jour à 18 h 15 UTC).
+   Facebook et Instagram (depuis `historique.md`, mis à jour à 18 h 15 UTC),
+   et les séries de stories publiées (une par jour attendue : note les jours
+   manqués).
 2. Meilleure et moins bonne publication, et pourquoi selon toi (accroche,
    format, sujet, heure).
 3. Commentaires : reçus, répondus, ignorés, échecs.
@@ -215,7 +274,7 @@ est périmé). Commit `docs(social): rapport JJ/MM/AAAA` et push.
 - Fichiers que tu peux créer ou modifier : `data/social-queue/*.json` (posts
   et réponses),
   `data/social/rapports/*.md`, `data/social/APPRENTISSAGES.md`. Rien d'autre.
-- Un post par passage au plus. Doute sur un fait : pas de post plutôt qu'un
-  post faux.
+- Au plus par passage : un post et deux fichiers de stories (aujourd'hui et
+  demain). Doute sur un fait : pas de post plutôt qu'un post faux.
 - JSON valide avant de pousser (pas de virgule finale, guillemets échappés).
 - Ne supprime jamais une publication.

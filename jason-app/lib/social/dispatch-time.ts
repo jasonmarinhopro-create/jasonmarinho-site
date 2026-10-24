@@ -7,16 +7,20 @@
 // - un second cron Vercel à 17 h 05 UTC (« ?soir=1 »), filet de secours : le
 //   24/10/2026 le passage GitHub de 17 h 05 ne s'est pas déclenché et le
 //   premier carrousel a dû partir à la main (Hobby : dans l'heure, pas à la
-//   minute près).
+//   minute près) ;
+// - un troisième à 11 h 05 UTC (« ?midi=1 ») pour les stories des jours sans
+//   post, prévues à 11 h UTC (scripts/social/spec.mjs, STORY_HOUR_UTC).
 // Un post prévu à 18 h (Paris) part donc vers 18 h 05, un post prévu à 21 h
 // le lendemain matin. Garder ces horaires alignés sur vercel.json et
 // .github/workflows/reseaux-sociaux.yml (test).
 export const SOCIAL_DISPATCH_HOUR_UTC = 7
 export const WORKFLOW_DISPATCH_UTC: Array<[number, number]> = [[17, 5], [17, 50]]
+// Crons Vercel en plus de celui de 7 h (vercel.json, « ?midi=1 » et « ?soir=1 »)
+export const VERCEL_EXTRA_UTC: Array<[number, number]> = [[11, 5], [17, 5]]
 
 /** Premier passage (cron Vercel ou workflow) à partir de l'heure prévue (incluse) */
 export function nextDispatchRun(scheduled: Date, hourUtc = SOCIAL_DISPATCH_HOUR_UTC): Date {
-  const slots: Array<[number, number]> = [[hourUtc, 0], ...WORKFLOW_DISPATCH_UTC]
+  const slots: Array<[number, number]> = [[hourUtc, 0], ...VERCEL_EXTRA_UTC, ...WORKFLOW_DISPATCH_UTC]
   for (let day = 0; day < 2; day++) {
     const runs = slots
       .map(([h, m]) => new Date(Date.UTC(scheduled.getUTCFullYear(), scheduled.getUTCMonth(), scheduled.getUTCDate() + day, h, m, 0)))

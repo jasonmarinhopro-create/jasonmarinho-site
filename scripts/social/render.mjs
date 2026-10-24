@@ -11,7 +11,7 @@ import http from 'node:http'
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { createRequire } from 'node:module'
-import { SIZES, normalizeSlides, slideHtml, sceneDuration, storyHtml } from './templates.mjs'
+import { SIZES, normalizeSlides, slideHtml, sceneDuration, storyHtml, storyFrameHtml } from './templates.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const FPS = 30
@@ -121,7 +121,7 @@ export async function renderStory(spec, coverFile, outDir) {
   const srv = await serve(coverFile)
   const browser = await launch()
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } })
-  const f = path.join(outDir, 'story.png')
+  const f = path.join(outDir, 'story-annonce.png')
   try {
     await load(page, srv, storyHtml(spec, '/__cover'))
     await page.screenshot({ path: f })
@@ -129,11 +129,33 @@ export async function renderStory(spec, coverFile, outDir) {
   return f
 }
 
+/** Écrans d'une série de stories (chiffre, astuce, question…) : story-01.png, story-02.png… */
+export async function renderStoryFrames(spec, frames, outDir) {
+  const srv = await serve()
+  const browser = await launch()
+  const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } })
+  const files = []
+  try {
+    for (let i = 0; i < frames.length; i++) {
+      await load(page, srv, storyFrameHtml(spec, frames, i))
+      const f = path.join(outDir, `story-${String(i + 1).padStart(2, '0')}.png`)
+      await page.screenshot({ path: f })
+      files.push(f)
+    }
+  } finally { await browser.close(); srv.close() }
+  return files
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const [specPath, outDir] = process.argv.slice(2)
   const spec = JSON.parse(fs.readFileSync(specPath, 'utf8'))
   fs.mkdirSync(outDir, { recursive: true })
-  const res = spec.format === 'reel' ? await renderReel(spec, outDir) : await renderFeed(spec, outDir)
-  const story = spec.story === false ? null : await renderStory(spec, spec.format === 'reel' ? res.cover : res[0], outDir)
-  console.log(JSON.stringify({ res, story }))
+  if (spec.format === 'stories') {
+    console.log(JSON.stringify(await renderStoryFrames(spec, spec.frames, outDir)))
+  } else {
+    const res = spec.format === 'reel' ? await renderReel(spec, outDir) : await renderFeed(spec, outDir)
+    const frames = spec.story?.frames?.length ? await renderStoryFrames(spec, spec.story.frames, outDir) : []
+    const story = spec.story === false ? null : await renderStory(spec, spec.format === 'reel' ? res.cover : res[0], outDir)
+    console.log(JSON.stringify({ res, frames, story }))
+  }
 }

@@ -71,6 +71,8 @@ li .ck{flex:none;width:52px;height:52px;border-radius:50%;background:#004C3F;col
 .swipe span{display:inline-block;width:64px;height:3px;background:currentColor;position:relative}
 .swipe span::after{content:'';position:absolute;right:-2px;top:-7px;border:8px solid transparent;border-left:12px solid currentColor;border-right:0}
 .cta{display:inline-flex;align-self:flex-start;align-items:center;gap:16px;background:#FFD56B;color:#003329;font-weight:700;font-size:38px;padding:30px 46px;border-radius:22px}
+.dm{display:inline-flex;align-self:flex-start;align-items:center;gap:16px;border:3px solid rgba(255,213,107,.6);color:#FFD56B;font-weight:600;font-size:34px;padding:24px 34px;border-radius:999px}
+.dm i{font-size:40px}
 .url{font-size:34px;font-weight:600;color:#FFD56B;letter-spacing:.5px}
 .mono{width:150px;height:150px;object-fit:contain;filter:brightness(0) invert(1);opacity:.95}
 .deco{position:absolute;right:-120px;bottom:-120px;width:520px;height:520px;border-radius:50%;border:2px solid rgba(255,213,107,.18)}
@@ -104,6 +106,9 @@ function inner(slide, spec, i, total, size) {
       return { cls: 'dark', html: `${head}<div class="deco"></div><div class="body">${slide.kicker ? `<div class="kick" ${at()}>${esc(slide.kicker)}</div>` : ''}<div class="stat" ${at()}>${esc(slide.valeur)}</div><p class="lab" ${at()}>${rich(slide.label)}</p>${slide.source ? `<p class="src" ${at()}>Source : ${esc(slide.source)}</p>` : ''}</div>${foot}` }
     case 'astuce':
       return { cls: 'cream', html: `${head}<div class="body"><div class="tip" ${at()}><b>${esc(slide.kicker || 'Astuce')}</b>${slide.titre ? `<h2 style="font-size:${reel ? 64 : 58}px">${rich(slide.titre)}</h2>` : ''}<p>${rich(slide.texte)}</p></div></div>${foot}` }
+    case 'question':
+      // Pas de sticker sondage par l'API : la question invite à répondre en message
+      return { cls: 'dark', html: `${head}<div class="deco"></div><div class="body"><div class="kick" ${at()}>${esc(slide.kicker || 'Ta réponse')}</div><h2 ${at()}>${rich(slide.titre)}</h2><p class="sub" ${at()}>${rich(slide.texte || 'Réponds-nous en message : on lit tout et on répond.')}</p><div class="dm" ${at()}><i class="ph-bold ph-chat-circle-dots"></i>Envoie ta réponse en message</div></div>${foot}` }
     case 'fin':
     default:
       return { cls: 'dark', html: `${head}<div class="deco"></div><div class="deco2"></div><div class="body"><img class="mono" src="/logo-nav.webp" alt="" ${at()}><h2 ${at()}>${rich(slide.titre || 'Tout est sur *le site*')}</h2>${slide.texte ? `<p class="sub" ${at()}>${rich(slide.texte)}</p>` : ''}<div class="cta" ${at()}>${esc(slide.bouton || 'Lien en bio')}</div><div class="url" ${at()}>jasonmarinho.com</div></div>${reel ? '' : '<div class="foot"><span></span></div>'}` }
@@ -153,4 +158,13 @@ export function storyHtml(spec, coverSrc) {
 <h2>${rich(texte)}</h2>
 <div class="go"><i class="ph-bold ph-arrow-circle-up"></i>À voir sur notre profil</div>`
   return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><style>${css}</style></head><body><div class="s dark st"><div class="deco"></div>${body}</div></body></html>`
+}
+
+/** Écran d'une série de stories (1080 x 1920, marges des zones sûres des stories). */
+export function storyFrameHtml(spec, frames, i) {
+  const size = { w: 1080, h: 1920 }
+  const s = inner(frames[i], spec, i, frames.length, size)
+  const bg = s.bg ? `<div class="bg" style="background-image:url('/${esc(String(s.bg).replace(/^\/+/, ''))}')"></div>` : ''
+  const deco = s.cls === 'cream' ? '<div class="rule"></div><img class="wm" src="/logo-nav.webp" alt="">' : ''
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><style>${CSS(size)}.s{padding:250px 96px 300px}</style></head><body><div class="s ${s.cls}">${bg}${deco}${s.html}</div></body></html>`
 }

@@ -318,11 +318,18 @@ export async function publishFacebookStory(pageId: string, token: string, imageU
   return json.post_id ?? photo.id
 }
 
-// Instagram : même chemin qu'une image seule, avec media_type=STORIES
-export async function publishInstagramStory(igUserId: string, token: string, imageUrl: string): Promise<string> {
-  const container = await graphFetch(`/${igUserId}/media`, { access_token: token, image_url: imageUrl, media_type: 'STORIES' }, 'POST')
-  await waitForMediaReady(container.id, token)
-  const published = await graphFetch(`/${igUserId}/media_publish`, { access_token: token, creation_id: container.id }, 'POST')
+// Instagram : même chemin qu'une image seule, avec media_type=STORIES. Pour
+// une série, les conteneurs sont créés d'avance (prepareInstagramStories, en
+// parallèle) puis publiés un par un dans l'ordre : le temps d'attente du
+// traitement ne s'additionne pas écran après écran (fonction de 60 s).
+export async function prepareInstagramStories(igUserId: string, token: string, imageUrls: string[]): Promise<string[]> {
+  const containers = await Promise.all(imageUrls.map(image_url => graphFetch(`/${igUserId}/media`, { access_token: token, image_url, media_type: 'STORIES' }, 'POST')))
+  return containers.map(c => c.id as string)
+}
+
+export async function publishInstagramStory(igUserId: string, token: string, containerId: string): Promise<string> {
+  await waitForMediaReady(containerId, token)
+  const published = await graphFetch(`/${igUserId}/media_publish`, { access_token: token, creation_id: containerId }, 'POST')
   return published.id
 }
 

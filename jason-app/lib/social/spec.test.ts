@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { checkSpec, captions, nextSlot } from '../../../scripts/social/spec.mjs'
+import { checkSpec, checkStories, captions, nextSlot, storySlot } from '../../../scripts/social/spec.mjs'
 
 const ok = {
   slug: 'taxe-de-sejour-3-erreurs',
@@ -41,8 +41,25 @@ describe('fichier de publication des réseaux', () => {
     expect(c.instagram.endsWith('#airbnb #locationcourteduree')).toBe(true)
   })
   it('créneau : 17 h UTC, au moins 2 h d’avance, un post par jour', () => {
-    expect(nextSlot(new Date('2026-10-24T08:00:00Z')).toISOString()).toBe('2026-10-24T17:00:00.000Z')
-    expect(nextSlot(new Date('2026-10-24T15:30:00Z')).toISOString()).toBe('2026-10-25T17:00:00.000Z')
-    expect(nextSlot(new Date('2026-10-24T08:00:00Z'), ['2026-10-24', '2026-10-25']).toISOString()).toBe('2026-10-26T17:00:00.000Z')
+    // 4 posts par semaine : lundi, mercredi, vendredi, dimanche (24/10/2026 = samedi)
+    expect(nextSlot(new Date('2026-10-26T08:00:00Z')).toISOString()).toBe('2026-10-26T17:00:00.000Z')
+    expect(nextSlot(new Date('2026-10-24T08:00:00Z')).toISOString()).toBe('2026-10-25T17:00:00.000Z')
+    expect(nextSlot(new Date('2026-10-26T15:30:00Z')).toISOString()).toBe('2026-10-28T17:00:00.000Z')
+    expect(nextSlot(new Date('2026-10-26T08:00:00Z'), ['2026-10-26', '2026-10-28']).toISOString()).toBe('2026-10-30T17:00:00.000Z')
+  })
+  it('stories : 11 h UTC, le jour demandé, une série par jour', () => {
+    expect(storySlot(new Date('2026-10-27T07:40:00Z')).toISOString()).toBe('2026-10-27T11:00:00.000Z')
+    expect(storySlot(new Date('2026-10-27T10:45:00Z')).toISOString()).toBe('2026-10-28T11:00:00.000Z')
+    expect(storySlot(new Date('2026-10-27T07:40:00Z'), ['2026-10-27']).toISOString()).toBe('2026-10-28T11:00:00.000Z')
+    expect(storySlot(new Date('2026-10-27T07:40:00Z'), [], '2026-10-29').toISOString()).toBe('2026-10-29T11:00:00.000Z')
+  })
+  it('stories : écrans vérifiés', () => {
+    const st = { format: 'stories', slug: 'chiffre-du-jour', frames: [{ type: 'chiffre', valeur: '37 %', label: 'des voyageurs…' }, { type: 'question', titre: 'Et toi ?' }] }
+    expect(checkStories(st)).toEqual([])
+    expect(checkStories({ ...st, frames: [] }).length).toBeGreaterThan(0)
+    expect(checkStories({ ...st, frames: [{ type: 'reel', titre: 'x' }] }).length).toBeGreaterThan(0)
+    expect(checkStories({ ...st, jour: '27/10' })).toContain('jour : AAAA-MM-JJ')
+    expect(checkSpec({ ...ok, story: { texte: 'Accroche', frames: [{ type: 'astuce', texte: 'Une astuce' }] } })).toEqual([])
+    expect(checkSpec({ ...ok, story: { frames: [1, 2, 3, 4].map(() => ({ type: 'astuce', texte: 'x' })) } }).some(e => e.startsWith('story'))).toBe(true)
   })
 })

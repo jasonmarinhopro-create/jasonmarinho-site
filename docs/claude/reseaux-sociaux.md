@@ -49,3 +49,11 @@ Demande de Jason : « une story en rapport avec la publication programmée ». C
 - Visuel : `storyHtml` (`scripts/social/templates.mjs`), rendu par `renderStory` (`render.mjs`) depuis la couverture (slide-01.png ou cover.jpg du Reel), déposé en `auto/<date>-<slug>/story.png`. Champ `story` du fichier : `{ "texte": accroche ≤ 90 car. }` ou `false` (`checkSpec`, testé).
 - Publication : `publishFacebookStory` (photo non publiée puis `/{page}/photo_stories`) et `publishInstagramStory` (`media_type=STORIES`) dans `meta.ts`, `storyNetwork` dans `dispatch.ts`. Pas de lien ni de sticker par l'API (Meta). Pas de stats ni de commentaires relevés sur les stories.
 - Modifier un post dans l'admin garde ses stories (seules les cibles des réseaux du formulaire sont recréées).
+
+## Calendrier : 4 posts par semaine, des stories tous les jours (24/10/2026)
+
+Demande de Jason (« au moins une story par jour, 2, 3, 4 ou plus si besoin ; combien de posts par semaine ; tout automatisé »). Bonnes pratiques relevées (blogs Buffer, Hootsuite, Metricool, à tester sur nos chiffres) : 3 à 5 posts par semaine sur Instagram, des stories chaque jour, 2 à 4 écrans par série.
+- **Posts** : lundi, mercredi, vendredi, dimanche à 17 h UTC (`POST_DAYS`, `nextSlot` dans `scripts/social/spec.mjs`, testé). Chaque post emporte ses stories : `story.frames` (1 à 3 écrans de la routine) puis l'annonce, publiées dans l'ordre au même passage.
+- **Stories des autres jours** : fichier `{ "format": "stories", "slug", "jour"?, "frames": [2 à 4 écrans] }` (`checkStories`, `storySlot` : 11 h UTC, une série par jour). Rendu `renderStoryFrames` / `storyFrameHtml` (types `chiffre`, `astuce`, `question` nouveau, `point`, `liste`, `couverture`), `social_posts` avec `platforms = {facebook_story, instagram_story}` (pas de bouton Modifier dans l'admin).
+- **Publication** : cron Vercel `?midi=1` à 11 h 05 UTC (en plus de 7 h et `?soir=1` 17 h 05, `VERCEL_EXTRA_UTC`, testé). Dans `dispatchPost`, une série se publie écran par écran ; les ids déjà publiés restent dans `external_post_id` (séparés par des virgules, `storyDone`) : une reprise repart de l'écran suivant. Instagram : conteneurs créés d'avance en parallèle (`prepareInstagramStories`).
+- **Routine** : `CONSIGNES.md` (calendrier, avance d'un jour pour qu'un passage manqué ne laisse pas de trou, rapport qui compte les jours sans stories).

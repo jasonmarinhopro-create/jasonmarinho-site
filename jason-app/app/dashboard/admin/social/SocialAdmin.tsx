@@ -873,9 +873,12 @@ function PostCard({ post, onRetry, onEdit, onRefreshStats, onMarkPublished, onMa
             </p>
             {post.status === 'scheduled' && (
               <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-                <button onClick={() => onEdit(post)} disabled={disabled} style={s.smallBtn}>
-                  <PencilSimple size={13} /> Modifier
-                </button>
+                {/* Une série de stories se refait par la routine, pas dans le formulaire */}
+                {!post.platforms.every(p => p.endsWith('_story')) && (
+                  <button onClick={() => onEdit(post)} disabled={disabled} style={s.smallBtn}>
+                    <PencilSimple size={13} /> Modifier
+                  </button>
+                )}
                 <button
                   onClick={async () => { if (await confirm({ title: 'Supprimer ce post ?', message: 'Il ne partira pas. Rien n’a encore été publié.', confirmLabel: 'Supprimer', danger: true })) run(() => onDelete(post.id)) }}
                   disabled={isDisabled} style={s.smallBtn} title="Supprimer avant son départ"

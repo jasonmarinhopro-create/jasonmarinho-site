@@ -11,8 +11,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { checkSpec, captions, nextSlot } from './spec.mjs'
-import { renderFeed, renderReel, renderStory } from './render.mjs'
+import { checkSpec, checkStories, captions, nextSlot, storySlot } from './spec.mjs'
+import { renderFeed, renderReel, renderStory, renderStoryFrames } from './render.mjs'
 import { appliquer } from './commentaires.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
@@ -70,11 +70,16 @@ async function publishOne(file) {
     for (const f of files) media.push(await upload(f, `${dir}/${path.basename(f)}`))
     coverFile = files[0]
   }
-  // Story qui annonce le post, publiée en même temps (sauf "story": false)
-  const story = spec.story === false ? null : await upload(await renderStory(spec, coverFile, out), `${dir}/story.png`)
+  // Stories du post, publiées en même temps (sauf "story": false) : les écrans
+  // de la routine (story.frames) puis l'annonce « Nouveau carrousel »
+  const story = []
+  if (spec.story !== false) {
+    for (const f of spec.story?.frames?.length ? await renderStoryFrames(spec, spec.story.frames, out) : []) story.push(await upload(f, `${dir}/${path.basename(f)}`))
+    story.push(await upload(await renderStory(spec, coverFile, out), `${dir}/story-annonce.png`))
+  }
 
   const [admin] = await rest('profiles?select=id&role=eq.admin&limit=1')
-  const upcoming = await rest(`social_posts?select=scheduled_at&status=eq.scheduled&scheduled_at=gte.${new Date().toISOString()}`)
+  const upcoming = await rest(`social_posts?select=scheduled_at&status=eq.scheduled&platforms=cs.{facebook}&scheduled_at=gte.${new Date().toISOString()}`)
   const slot = nextSlot(new Date(), upcoming.map(p => String(p.scheduled_at).slice(0, 10)))
   const c = captions(spec)
   const [post] = await rest('social_posts', { method: 'POST', body: JSON.stringify({
@@ -85,20 +90,46 @@ async function publishOne(file) {
     { post_id: post.id, platform: 'instagram', status: 'pending', body_override: c.instagram },
   ]) })
   // Cibles story à part : si la migration 160 manque, le post part quand même
-  if (story) {
+  if (story.length) {
     await rest('social_post_targets', { method: 'POST', body: JSON.stringify(['facebook_story', 'instagram_story'].map(platform => (
-      { post_id: post.id, platform, status: 'pending', body_override: null, media_override: [story] }))) })
+      { post_id: post.id, platform, status: 'pending', body_override: null, media_override: story }))) })
       .catch(err => console.log(`::warning title=Story non programmée::${err.message}`))
   }
   fs.rmSync(out, { recursive: true, force: true })
-  return { slug: spec.slug, format: spec.format, slot: slot.toISOString(), images: media.length + (story ? 1 : 0) }
+  return { slug: spec.slug, format: spec.format, slot: slot.toISOString(), images: media.length + story.length }
+}
+
+/** Série de stories d'un jour sans post (fichier « format": "stories" ») */
+async function publishStories(file) {
+  const spec = JSON.parse(fs.readFileSync(file, 'utf8'))
+  const errs = checkStories(spec, { exists: p => fs.existsSync(path.join(ROOT, p)) })
+  if (errs.length) throw new Error(errs.join(' ; '))
+  const recent = await rest(`social_posts?select=media_urls&created_at=gte.${new Date(Date.now() - 45 * 86400000).toISOString()}`)
+  if (recent.some(p => (p.media_urls ?? []).some(u => u.includes(`-${spec.slug}/`)))) return { slug: spec.slug, slot: 'déjà programmée', images: 0 }
+
+  const today = new Date().toISOString().slice(0, 10)
+  const taken = await rest(`social_posts?select=scheduled_at&status=neq.failed&platforms=cs.{instagram_story}&platforms=not.cs.{instagram}&scheduled_at=gte.${today}T00:00:00Z`)
+  const slot = storySlot(new Date(), taken.map(p => String(p.scheduled_at).slice(0, 10)), spec.jour ?? null)
+  const out = fs.mkdtempSync(path.join(process.env.RUNNER_TEMP || '/tmp', 'stories-'))
+  const dir = `auto/${slot.toISOString().slice(0, 10)}-${spec.slug}`
+  const frames = []
+  for (const f of await renderStoryFrames(spec, spec.frames, out)) frames.push(await upload(f, `${dir}/${path.basename(f)}`))
+  const [admin] = await rest('profiles?select=id&role=eq.admin&limit=1')
+  const resume = spec.frames.map(f => String(f.titre || f.valeur || f.texte || '').replace(/\*/g, '')).join(' / ')
+  const [post] = await rest('social_posts', { method: 'POST', body: JSON.stringify({
+    created_by: admin.id, body: `Stories : ${resume}`.slice(0, 300), media_urls: frames, platforms: ['facebook_story', 'instagram_story'], scheduled_at: slot.toISOString(), status: 'scheduled',
+  }) })
+  await rest('social_post_targets', { method: 'POST', body: JSON.stringify(['facebook_story', 'instagram_story'].map(platform => (
+    { post_id: post.id, platform, status: 'pending', body_override: null, media_override: frames }))) })
+  fs.rmSync(out, { recursive: true, force: true })
+  return { slug: spec.slug, slot: slot.toISOString(), images: frames.length }
 }
 
 /** Historique lu par la routine : anti-doublon des sujets et chiffres du rapport. */
 async function writeHistory() {
-  const posts = await rest('social_posts?select=id,body,media_urls,scheduled_at,status,created_at,social_post_targets(platform,status,like_count,comment_count,published_at,error)&order=created_at.desc&limit=120')
+  const posts = await rest('social_posts?select=id,body,platforms,media_urls,scheduled_at,status,created_at,social_post_targets(platform,status,like_count,comment_count,published_at,error)&order=created_at.desc&limit=120')
   const comments = await rest('social_comments?select=reply_status,created_at&created_at=gte.' + new Date(Date.now() - 30 * 86400000).toISOString()).catch(() => [])
-  const fmt = p => (p.media_urls ?? []).some(u => /\.mp4/i.test(u)) ? 'reel' : (p.media_urls ?? []).length > 1 ? 'carrousel' : (p.media_urls ?? []).length ? 'photo' : 'texte'
+  const fmt = p => !(p.platforms ?? []).includes('facebook') && (p.platforms ?? []).includes('instagram_story') ? `stories (${(p.media_urls ?? []).length} écrans)` : (p.media_urls ?? []).some(u => /\.mp4/i.test(u)) ? 'reel' : (p.media_urls ?? []).length > 1 ? 'carrousel' : (p.media_urls ?? []).length ? 'photo' : 'texte'
   const firstLine = b => String(b ?? '').split('\n').find(l => l.trim())?.slice(0, 110) ?? ''
   const slugOf = p => ((p.media_urls ?? [])[0]?.match(/\/auto\/\d{4}-\d{2}-\d{2}-([a-z0-9-]+)\//) ?? [])[1] ?? '(manuel)'
   const lines = posts.map(p => {
@@ -142,8 +173,9 @@ if (process.argv[2] !== 'historique') {
       continue
     }
     try {
-      const r = await publishOne(file)
-      console.log(`::notice title=Publication programmée::${r.slug} (${r.format}, ${r.images} média) le ${r.slot}`)
+      const isStories = JSON.parse(fs.readFileSync(file, 'utf8'))?.format === 'stories'
+      const r = isStories ? await publishStories(file) : await publishOne(file)
+      console.log(`::notice title=${isStories ? 'Stories programmées' : 'Publication programmée'}::${r.slug} (${r.format ?? 'stories'}, ${r.images} média) le ${r.slot}`)
       fs.rmSync(file)
     } catch (err) {
       failed++

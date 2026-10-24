@@ -5,7 +5,7 @@
 
 import { getServiceClient as serviceClient } from '@/lib/supabase/service'
 import { decryptToken } from '@/lib/security/crypto'
-import { publishToFacebook, publishToInstagram, publishFacebookStory, publishInstagramStory, getFacebookPostInsights, getInstagramMediaInsights, InstagramMediaTimeoutError } from '@/lib/social/meta'
+import { publishToFacebook, publishToInstagram, publishFacebookStory, prepareInstagramStories, publishInstagramStory, getFacebookPostInsights, getInstagramMediaInsights, InstagramMediaTimeoutError } from '@/lib/social/meta'
 import { logger } from '@/lib/logger'
 
 const log = logger('lib/social/dispatch')
@@ -60,11 +60,25 @@ export async function dispatchPost(postId: string): Promise<void> {
       } else if (target.platform === 'instagram') {
         externalId = await publishToInstagram(account.external_account_id, accessToken, content, target.pending_media_id ?? null)
       } else if (storyNetwork(target.platform)) {
-        const image = ((target.media_override ?? []) as string[])[0]
-        if (!image) throw new Error('Story sans visuel')
-        externalId = target.platform === 'facebook_story'
-          ? await publishFacebookStory(account.external_account_id, accessToken, image)
-          : await publishInstagramStory(account.external_account_id, accessToken, image)
+        // Série de stories, écran par écran dans l'ordre. Les ids déjà publiés
+        // restent dans external_post_id : une reprise après un échec repart de
+        // l'écran suivant, sans doublon.
+        const images = (target.media_override ?? []) as string[]
+        if (!images.length) throw new Error('Story sans visuel')
+        const done = storyDone(target.external_post_id as string | null)
+        const todo = images.slice(done.length)
+        const containers = target.platform === 'instagram_story' ? await prepareInstagramStories(account.external_account_id, accessToken, todo) : []
+        for (const [k, image] of todo.entries()) {
+          try {
+            done.push(target.platform === 'facebook_story'
+              ? await publishFacebookStory(account.external_account_id, accessToken, image)
+              : await publishInstagramStory(account.external_account_id, accessToken, containers[k]))
+          } catch (err) {
+            await db.from('social_post_targets').update({ external_post_id: done.join(',') || null }).eq('id', target.id)
+            throw err
+          }
+        }
+        externalId = done.join(',')
       } else {
         throw new Error(`Plateforme non supportée pour le moment : ${target.platform}`)
       }
@@ -113,6 +127,11 @@ export async function dispatchPost(postId: string): Promise<void> {
 /** Réseau d'une cible story (facebook_story → facebook), sinon null */
 export function storyNetwork(platform: string): 'facebook' | 'instagram' | null {
   return platform === 'facebook_story' ? 'facebook' : platform === 'instagram_story' ? 'instagram' : null
+}
+
+/** Écrans de stories déjà publiés (ids séparés par des virgules) */
+export function storyDone(externalPostId: string | null): string[] {
+  return (externalPostId ?? '').split(',').map(x => x.trim()).filter(Boolean)
 }
 
 /** Reprise automatique d'un conteneur Instagram : seulement les deux jours qui suivent l'heure prévue. */
