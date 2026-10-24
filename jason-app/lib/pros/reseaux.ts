@@ -78,3 +78,15 @@ export function readReseaux(raw: unknown): Reseaux {
   if (!raw || typeof raw !== 'object') return {}
   return cleanReseaux(raw as Record<string, unknown>).value
 }
+
+/**
+ * Nom de compte Instagram, même quand le pro colle le lien entier
+ * (« https://www.instagram.com/tlucas93/ », 24/10/2026). Vide si ce n'est pas un compte.
+ * Même règle côté site : instaHandle de scripts/lib/pro-reseaux.mjs et pro-signup-extras.cjs.
+ */
+export function instaHandle(raw: unknown): string {
+  const s = String(raw ?? '').trim()
+  const m = s.match(/instagram\.com\/([\w.]{1,30})/i)
+  const h = (m ? m[1] : s).replace(/^@/, '').replace(/[/?#].*$/, '')
+  return /^[\w.]{1,30}$/.test(h) ? h : ''
+}

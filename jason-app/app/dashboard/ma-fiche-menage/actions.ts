@@ -7,7 +7,7 @@ import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
-import { cleanReseaux } from '@/lib/pros/reseaux'
+import { cleanReseaux, instaHandle } from '@/lib/pros/reseaux'
 import { cleanFormules, cleanVilles, cleanDeroule } from '@/lib/pros/fiche-vitrine'
 import * as vitrine from '@/lib/pros/fiche-vitrine-server'
 import { normSiteUrl, siteUrlOk, SITE_URL_ERROR } from '@/lib/pros/site-url'
@@ -131,7 +131,7 @@ export async function updateCleanerFiche(payload: {
     assurance_rc_pro: !!payload.assurance_rc_pro,
     siret: siret || null,
     site_url: siteUrl || null,
-    instagram_handle: (payload.instagram_handle ?? '').toString().trim().slice(0, 50).replace(/^@/, '') || null,
+    instagram_handle: instaHandle(payload.instagram_handle) || null,
     telephone: (payload.telephone ?? '').toString().trim().slice(0, 30) || null,
     updated_at: new Date().toISOString(),
   }

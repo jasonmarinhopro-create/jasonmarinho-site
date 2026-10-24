@@ -7,6 +7,7 @@ import { logger } from '@/lib/logger'
 import { founderSeatFilter } from '@/lib/pros/founder-seats'
 import { normSiteUrl, siteUrlOk, SITE_URL_ERROR } from '@/lib/pros/site-url'
 import { checkoutCustomer } from '@/lib/stripe/customer'
+import { instaHandle } from '@/lib/pros/reseaux'
 
 const log = logger('creer-fiche-menage/actions')
 const FOUNDER_QUOTA = 20
@@ -110,7 +111,7 @@ export async function submitCleanerSignup(
       ville,
       zone_couverte: String(payload.zoneCouverte || '').trim().slice(0, 200) || null,
       site_url: siteUrl || null,
-      instagram_handle: String(payload.instagramHandle || '').trim().slice(0, 50).replace(/^@/, '') || null,
+      instagram_handle: instaHandle(payload.instagramHandle) || null,
       telephone: String(payload.telephone || '').trim().slice(0, 30) || null,
       tarif_forfait_min: payload.tarifForfaitMin ?? null,
       tarif_forfait_max: payload.tarifForfaitMax ?? null,

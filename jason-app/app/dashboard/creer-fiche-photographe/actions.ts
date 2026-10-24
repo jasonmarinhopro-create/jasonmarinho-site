@@ -8,6 +8,7 @@ import { founderSeatFilter } from '@/lib/pros/founder-seats'
 import { normSiteUrl, siteUrlOk, SITE_URL_ERROR } from '@/lib/pros/site-url'
 import { readMetier, readOptions, normalizeVideoUrl } from '@/lib/pros/visuel'
 import { checkoutCustomer } from '@/lib/stripe/customer'
+import { instaHandle } from '@/lib/pros/reseaux'
 
 const log = logger('creer-fiche-photographe/actions')
 const FOUNDER_QUOTA = 20
@@ -96,7 +97,7 @@ export async function submitPhotographerSignup(
     ville,
     zone_couverte: String(payload.zoneCouverte || '').trim().slice(0, 200) || null,
     portfolio_url: portfolioUrl,
-    instagram_handle: String(payload.instagramHandle || '').trim().slice(0, 50).replace(/^@/, '') || null,
+    instagram_handle: instaHandle(payload.instagramHandle) || null,
     telephone: String(payload.telephone || '').trim().slice(0, 30) || null,
     specialite: String(payload.specialite || '').trim().slice(0, 100) || null,
     tarif_min: payload.tarifMin ?? null,

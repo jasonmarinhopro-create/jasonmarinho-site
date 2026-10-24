@@ -139,8 +139,16 @@ function successUrl(pro) {
   return `https://app.jasonmarinho.com/apres-paiement?pro=${pro}&session_id={CHECKOUT_SESSION_ID}`
 }
 
+/** Nom de compte Instagram, même quand le pro colle le lien entier (24/10/2026) */
+function instaHandle(raw) {
+  const s = String(raw == null ? '' : raw).trim()
+  const m = s.match(/instagram\.com\/([\w.]{1,30})/i)
+  const h = (m ? m[1] : s).replace(/^@/, '').replace(/[/?#].*$/, '')
+  return /^[\w.]{1,30}$/.test(h) ? h : ''
+}
+
 module.exports = {
   PHOTOS_MAX, PHOTO_FULL_MAX_BYTES, PHOTO_THUMB_MAX_BYTES, STORAGE_STOP_TOTAL_BYTES, PORTFOLIO_STOP_BYTES,
   PORTFOLIO_BUCKET, FORMULES_MAX, VILLES_MAX,
-  cleanFormules, cleanVilles, photoSig, sigOk, storageOk, decodeJpeg, handlePhoto, successUrl,
+  cleanFormules, cleanVilles, photoSig, sigOk, storageOk, decodeJpeg, handlePhoto, successUrl, instaHandle,
 }

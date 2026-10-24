@@ -7,7 +7,7 @@ import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
-import { cleanReseaux } from '@/lib/pros/reseaux'
+import { cleanReseaux, instaHandle } from '@/lib/pros/reseaux'
 import { readMetier, readOptions, normalizeVideoUrl } from '@/lib/pros/visuel'
 import { cleanFormules, cleanVilles, cleanDeroule } from '@/lib/pros/fiche-vitrine'
 import * as vitrine from '@/lib/pros/fiche-vitrine-server'
@@ -115,7 +115,7 @@ export async function updatePhotographerFiche(payload: {
     tarif_min: payload.tarif_min ?? null,
     tarif_max: payload.tarif_max ?? null,
     portfolio_url: portfolioUrl || '',
-    instagram_handle: (payload.instagram_handle ?? '').toString().trim().slice(0, 50).replace(/^@/, '') || null,
+    instagram_handle: instaHandle(payload.instagram_handle) || null,
     telephone: (payload.telephone ?? '').toString().trim().slice(0, 30) || null,
     updated_at: new Date().toISOString(),
   }

@@ -35,3 +35,17 @@ describe('réseaux des pros', () => {
       .toEqual(RESEAUX.map(r => [r.key, r.hosts, r.icon]))
   })
 })
+
+describe('compte Instagram (24/10/2026)', () => {
+  it('même résultat dans l’app, sur le site et à l’inscription', async () => {
+    const { instaHandle } = await import('./reseaux')
+    const site = await import(/* @vite-ignore */ '../../../scripts/lib/pro-reseaux.mjs' as string)
+    const { createRequire } = await import('module')
+    const signup = createRequire(import.meta.url)('../../../scripts/lib/pro-signup-extras.cjs')
+    for (const [raw, out] of [['https://www.instagram.com/tlucas93', 'tlucas93'], ['@camille.studio', 'camille.studio'], ['instagram.com/abc/?hl=fr', 'abc'], ['pas un compte !', ''], ['', '']]) {
+      expect(instaHandle(raw)).toBe(out)
+      expect(site.instaHandle(raw)).toBe(out)
+      expect(signup.instaHandle(raw)).toBe(out)
+    }
+  })
+})
