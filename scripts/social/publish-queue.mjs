@@ -113,9 +113,9 @@ ${lines.join('\n') || '- (aucune publication)'}
 if (!URL_ || !KEY) { console.log('::error::NEXT_PUBLIC_SUPABASE_URL ou SUPABASE_SERVICE_ROLE_KEY manquant'); process.exit(1) }
 
 let failed = 0
+let replies = 0
 if (process.argv[2] !== 'historique') {
   const files = fs.existsSync(QUEUE) ? fs.readdirSync(QUEUE).filter(f => f.endsWith('.json')).sort() : []
-  let replies = 0
   for (const f of files) {
     const file = path.join(QUEUE, f)
     // Réponses aux commentaires écrites par la routine
