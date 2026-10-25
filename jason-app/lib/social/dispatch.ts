@@ -15,7 +15,7 @@ export async function dispatchPost(postId: string): Promise<void> {
   const { data: post } = await db.from('social_posts').select('*').eq('id', postId).maybeSingle()
   if (!post) return
 
-  await db.from('social_posts').update({ status: 'publishing' }).eq('id', postId)
+  await db.from('social_posts').update({ status: 'publishing', updated_at: new Date().toISOString() }).eq('id', postId)
 
   const [{ data: targets }, { data: accounts }] = await Promise.all([
     db.from('social_post_targets').select('*').eq('post_id', postId),
@@ -164,11 +164,14 @@ const DUE_POSTS_BUDGET_MS = 50_000 // le cron et l'action serveur ont maxDuratio
 // Trouve les posts programmés dont l'heure est arrivée et les publie.
 export async function dispatchDuePosts(): Promise<{ processed: number; remaining: number }> {
   const db = serviceClient()
+  const now = new Date()
+  // Posts dus, et posts restés « publishing » plus de 15 min (fonction coupée)
+  const stale = new Date(now.getTime() - 15 * 60_000).toISOString()
   const { data: due } = await db
     .from('social_posts')
-    .select('id')
-    .eq('status', 'scheduled')
-    .lte('scheduled_at', new Date().toISOString())
+    .select('id, status')
+    .or(`status.eq.scheduled,and(status.eq.publishing,updated_at.lt.${stale})`)
+    .lte('scheduled_at', now.toISOString())
     .order('scheduled_at', { ascending: true })
 
   const queue = due ?? []
@@ -177,6 +180,14 @@ export async function dispatchDuePosts(): Promise<{ processed: number; remaining
 
   for (const p of queue) {
     if (Date.now() - started > DUE_POSTS_BUDGET_MS) break
+    // Réservation atomique : deux passages simultanés (pg_cron, cron Vercel,
+    // workflow GitHub) ne publient jamais le même post deux fois. Le 25/10/2026,
+    // deux passages concurrents ont publié le post du dimanche deux fois sur
+    // Facebook.
+    let claim = db.from('social_posts').update({ status: 'publishing', updated_at: new Date().toISOString() }).eq('id', p.id).eq('status', p.status as string)
+    if (p.status === 'publishing') claim = claim.lt('updated_at', stale)
+    const { data: claimed } = await claim.select('id')
+    if (!claimed?.length) continue
     await dispatchPost(p.id)
     processed++
   }
