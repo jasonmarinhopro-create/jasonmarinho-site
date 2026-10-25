@@ -32,7 +32,20 @@ export async function dispatchPost(postId: string): Promise<void> {
   // Instagram encore en train de traiter une vidéo : le post reste programmé
   // et repart au passage suivant sur le même conteneur (24/10/2026, Reels)
   let stillProcessing = 0
+  const feedStatusAtStart = new Map((targets ?? []).map(t => [t.id as string, t.status as string]))
   const results = await Promise.all((targets ?? []).map(async (target): Promise<boolean> => {
+    // Une story qui annonce le post attend que le post soit en ligne sur ce
+    // réseau (« À voir sur notre profil ») : elle part au passage suivant
+    // (pg_cron 17 h 20 et 17 h 40 UTC, migration 161)
+    const net = storyNetwork(target.platform)
+    if (net && target.status !== 'published') {
+      const feed = (targets ?? []).find(t => t.platform === net)
+      if (feed && feedStatusAtStart.get(feed.id) !== 'published') {
+        if (feedStatusAtStart.get(feed.id) !== 'failed') { stillProcessing++; return false }
+        await db.from('social_post_targets').update({ status: 'failed', error: 'Le post n’est pas en ligne sur ce réseau : story retenue' }).eq('id', target.id)
+        return false
+      }
+    }
     if (target.status === 'published') {
       // Déjà publié (ex : Facebook OK, Instagram en échec) — on ne
       // republie pas, sinon "Réessayer" créerait un doublon sur ce réseau.

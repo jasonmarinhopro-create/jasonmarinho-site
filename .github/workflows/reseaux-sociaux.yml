@@ -79,6 +79,17 @@ jobs:
           NODE_PATH: /tmp/pw/node_modules
         run: node scripts/social/publish-queue.mjs
 
+      - name: Secret de publication pour la base (pg_cron, migration 161)
+        # pg_cron appelle la route de publication à l'heure ; il lit ce secret
+        # dans social_settings (clé de service seulement). Rien n'est affiché.
+        run: |
+          [ -n "$SOCIAL_CRON_SECRET" ] || exit 0
+          jq -n --arg v "$SOCIAL_CRON_SECRET" '{key:"cron_secret",value:$v}' > /tmp/s.json
+          curl -s -o /dev/null -w "social_settings HTTP %{http_code}\n" -X POST "$NEXT_PUBLIC_SUPABASE_URL/rest/v1/social_settings?on_conflict=key" \
+            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
+            -H "Content-Type: application/json" -H "Prefer: resolution=merge-duplicates" --data @/tmp/s.json
+          rm -f /tmp/s.json
+
       - name: Tâches de l'app
         if: steps.t.outputs.taches != 'queue'
         run: |
