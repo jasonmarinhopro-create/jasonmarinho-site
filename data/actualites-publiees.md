@@ -11,8 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-08-26 · plateformes · Airbnb : bascule aux frais uniques à 15,5% avant le 13 octobre (https://blog.elloha.com/2026/08/16/un-nouvel-ete-offensif-pour-airbnb/)
-- 2026-08-26 · marche · Été 2026 : la Bretagne en tête, les grandes villes en retrait (https://presseagence.fr/paris-locations-saisonnieres-lete-2026-sourit-a-la-bretagne-les-grandes-villes-boudees/)
 - 2026-08-27 · plateformes · Airbnb bascule au frais unique de 15,5 % : deadline au 13 octobre (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-08-28 · conciergerie · Facturation électronique : réception obligatoire dès le 1er septembre · masquée (https://blog.elloha.com/2026/08/07/facturation-electronique-une-rentree-sportive-pour-les-loueurs-saisonniers/)
 - 2026-08-29 · plateformes · Airbnb bascule à 15,5 % de commission hôte dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
@@ -92,3 +90,4 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-10-23 · entreprise · Micro-entrepreneur : déclare ton T3 Urssaf avant le 31 octobre · pour photographe, menage (https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut/declarer-et-payer-mes-cotisations.html)
 - 2026-10-23 · entreprise · CFE 2026 : ton avis arrive mi-novembre, paiement avant le 15 décembre · pour photographe, menage (https://www.portail-autoentrepreneur.fr/academie/statut-auto-entrepreneur/exonerations-cfe)
 - 2026-10-24 · fiscalite · Mise à jour : PLF 2027 cible uniquement les meublés de tourisme (https://www.boursedescredits.com/actualite-location-meublee-deputes-recentrent-plafonnement-amortissement-lmnp-meubles-tourisme-29992.php)
+- 2026-10-25 · fiscalite · LMNP réel : la réduction d'impôt OGA est supprimée depuis les revenus 2025 (https://declarer-ma-location-meublee.com/fiscalite-meuble-tourisme-2026/)
