@@ -151,23 +151,28 @@ export const isVideoUrl = (url: string | undefined) => !!url && /\.mp4(\?|$)/i.t
 // Meta depuis son URL publique (Supabase Storage). Repli sur une vidéo
 // classique de la Page si l'API Reels refuse.
 async function publishFacebookReel(pageId: string, token: string, videoUrl: string, description: string): Promise<string> {
+  // Repli sur /videos seulement si l'API Reels refuse d'entrée (rien n'a été
+  // envoyé). Une fois la vidéo envoyée, une erreur à la dernière étape n'est
+  // plus rattrapée par un second envoi : le 25/10/2026, ce repli plus deux
+  // passages simultanés ont mis 3 vidéos sur la Page.
+  let videoId: string
   try {
     const start = await graphFetch(`/${pageId}/video_reels`, { access_token: token, upload_phase: 'start' }, 'POST')
-    const videoId = start.video_id as string
-    const up = await fetch(`https://rupload.facebook.com/video-upload/${API_VERSION}/${videoId}`, {
-      method: 'POST',
-      headers: { Authorization: `OAuth ${token}`, file_url: videoUrl },
-      cache: 'no-store',
-    })
-    if (!up.ok) throw new Error(`Envoi du Reel refusé (${up.status})`)
-    await graphFetch(`/${pageId}/video_reels`, {
-      access_token: token, upload_phase: 'finish', video_id: videoId, video_state: 'PUBLISHED', description,
-    }, 'POST')
-    return videoId
+    videoId = start.video_id as string
   } catch {
     const json = await graphFetch(`/${pageId}/videos`, { access_token: token, file_url: videoUrl, description }, 'POST')
     return json.id
   }
+  const up = await fetch(`https://rupload.facebook.com/video-upload/${API_VERSION}/${videoId}`, {
+    method: 'POST',
+    headers: { Authorization: `OAuth ${token}`, file_url: videoUrl },
+    cache: 'no-store',
+  })
+  if (!up.ok) throw new Error(`Envoi du Reel refusé (${up.status}) : rien n'a été publié, vérifie la Page avant de réessayer`)
+  await graphFetch(`/${pageId}/video_reels`, {
+    access_token: token, upload_phase: 'finish', video_id: videoId, video_state: 'PUBLISHED', description,
+  }, 'POST')
+  return videoId
 }
 
 export async function publishToFacebook(pageId: string, pageAccessToken: string, post: PostContent): Promise<string> {

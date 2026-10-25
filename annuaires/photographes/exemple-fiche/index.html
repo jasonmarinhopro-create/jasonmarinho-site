@@ -722,6 +722,10 @@ try {
     else if(e.target.closest('[data-fx-more]')){f.querySelector('.fx-extra').hidden=false;e.target.closest('[data-fx-more]').hidden=true}
   });
   if(location.hash==='#contact')setTimeout(open,300);
+  // Safari (iPhone) teinte sa barre du bas avec le fond de la page : crème sur
+  // le pied de page vert, une bande claire derrière le bouton. Fond vert dès
+  // que le pied de page est à l'écran.
+  if('IntersectionObserver' in window){var ft=0,watch=function(){ft=document.querySelector('footer');if(!ft)return setTimeout(watch,500);new IntersectionObserver(function(es){var on=es[0].isIntersecting;document.documentElement.style.backgroundColor=on?'#003329':'';document.body.style.backgroundColor=on?'#003329':''}).observe(ft)};watch()}
   var t0=Date.now();
   f.addEventListener('submit',async function(e){
     e.preventDefault();
