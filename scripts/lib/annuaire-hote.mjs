@@ -189,6 +189,31 @@ export function heroInnerHtml(cfg, breadcrumb) {
     <p class="lead">${esc(cfg.lead)}</p>`
 }
 
+/**
+ * Liste des villes sous la recherche (25/10/2026, Jason : « sur téléphone le
+ * clavier cache tout, mettre les villes proposées pour qu'on clique
+ * directement ») : villes des pages couvertes et villes principales des pros,
+ * avec le nombre de pros. Filtrée pendant la saisie (CITY_PICKS_JS).
+ */
+export function citySuggestHtml(cfg, counts, items) {
+  const byLabel = new Map()
+  for (const [slug, n] of counts) byLabel.set(villeLabel(slug), n)
+  const norm = v => String(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  const known = new Set([...byLabel.keys()].map(norm))
+  for (const p of items) {
+    const v = String(p.ville ?? '').trim()
+    if (!v || known.has(norm(v))) continue
+    byLabel.set(v, (byLabel.get(v) ?? 0) + 1)
+  }
+  const list = [...byLabel.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'fr'))
+  if (!list.length) return ''
+  return `<div class="city-sug" id="city-sug" role="listbox" aria-label="Villes avec des ${esc(cfg.many)}" hidden>
+    <div class="cs-h">Villes avec des ${esc(cfg.many)}</div>
+    <div class="cs-list">${list.map(([v, n]) => `<button type="button" class="cs-opt" role="option" data-city="${esc(v)}" data-n="${esc(norm(v))}"><i class="ph-bold ph-map-pin"></i><span>${esc(v)}</span><small>${n}</small></button>`).join('')}</div>
+    <p class="cs-none" hidden>Pas encore de ville à ce nom : lance quand même la recherche.</p>
+  </div>`
+}
+
 /** Raccourcis « Villes avec un photographe » sous la recherche */
 export function cityPicksHtml(cfg, counts) {
   const list = [...counts.entries()].sort((a, b) => b[1] - a[1] || villeLabel(a[0]).localeCompare(villeLabel(b[0]), 'fr')).slice(0, 12)
@@ -283,6 +308,19 @@ export function joinLineHtml(cfg) {
 }
 
 export const ANNUAIRE_CSS = `
+.city-sug{position:absolute;left:clamp(16px,5vw,40px);right:clamp(16px,5vw,40px);top:calc(100% + 8px);background:#fff;border:1px solid var(--bd);border-radius:16px;box-shadow:0 18px 44px rgba(0,30,20,.18);padding:10px;z-index:20;max-height:min(320px,42vh);overflow:auto}
+.city-sug[hidden]{display:none}
+.cs-h{font-size:11.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tl);padding:4px 8px 8px}
+.cs-list{display:flex;flex-direction:column}
+.cs-opt{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;padding:11px 10px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:16px;color:var(--td);text-align:left;cursor:pointer}
+.cs-opt i{color:var(--g);font-size:16px}
+.cs-opt span{flex:1;min-width:0}
+.cs-opt small{font-size:12px;font-weight:700;color:var(--g);background:rgba(0,76,63,.08);border-radius:999px;padding:2px 8px}
+.cs-opt:hover,.cs-opt.act{background:#F1F5F2}
+.cs-opt[hidden]{display:none}
+.cs-none{margin:6px 8px;font-size:13.5px;color:var(--tm)}
+/* iOS zoome sur un champ en dessous de 16 px */
+@media(max-width:719px){#pro-search{font-size:16px}}
 .city-picks{max-width:820px;margin:14px auto 0;padding:0 clamp(16px,5vw,40px);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .city-picks-l{font-size:12.5px;color:var(--tl);margin-right:4px}
 .city-pick{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;border:1px solid rgba(0,76,63,.15);background:#fff;color:var(--g);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer}
@@ -391,6 +429,27 @@ export const CITY_PICKS_JS = `<script>
     input.dispatchEvent(new Event('input'));
   });
   input.addEventListener('input',function(){[].forEach.call(document.querySelectorAll('.city-pick'),function(x){if(x.getAttribute('data-city')!==input.value)x.classList.remove('on')})});
+  // Liste des villes sous la recherche : ouverte au clic, filtrée en tapant ;
+  // un choix remplit la recherche, ferme le clavier et montre les résultats
+  var sug=document.getElementById('city-sug');
+  if(sug){
+    var opts=[].slice.call(sug.querySelectorAll('.cs-opt')),none=sug.querySelector('.cs-none'),row=input.closest('.tools-row');
+    var nrm=function(v){return String(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()};
+    var filt=function(){var q=nrm(input.value),n=0;opts.forEach(function(o){var ok=!q||o.getAttribute('data-n').indexOf(q)>=0;o.hidden=!ok;if(ok)n++});none.hidden=n>0};
+    var show=function(){filt();sug.hidden=false;if(window.innerWidth<720&&row){var y=row.getBoundingClientRect().top+window.scrollY-74;window.scrollTo({top:y,behavior:'smooth'})}};
+    input.addEventListener('focus',show);
+    input.addEventListener('input',function(){if(document.activeElement===input){filt();sug.hidden=false}});
+    input.addEventListener('blur',function(){setTimeout(function(){sug.hidden=true},180)});
+    input.addEventListener('keydown',function(e){if(e.key==='Escape'){sug.hidden=true}if(e.key==='Enter'){sug.hidden=true;input.blur()}});
+    sug.addEventListener('mousedown',function(e){e.preventDefault()});
+    sug.addEventListener('click',function(e){
+      var o=e.target.closest('.cs-opt');if(!o)return;
+      input.value=o.getAttribute('data-city');input.dispatchEvent(new Event('input'));
+      sug.hidden=true;input.blur();
+      var res=document.querySelector('.grid')||document.getElementById('search-empty');
+      if(res)setTimeout(function(){window.scrollTo({top:res.getBoundingClientRect().top+window.scrollY-130,behavior:'smooth'})},120);
+    });
+  }
   var links=[].slice.call(document.querySelectorAll('#dem-link,#search-demande'));
   links.forEach(function(l){l.setAttribute('data-base',l.getAttribute('href'))});
   input.addEventListener('input',function(){var v=input.value.trim();links.forEach(function(l){l.setAttribute('href',l.getAttribute('data-base')+(v?'&ville='+encodeURIComponent(v):''))})});
