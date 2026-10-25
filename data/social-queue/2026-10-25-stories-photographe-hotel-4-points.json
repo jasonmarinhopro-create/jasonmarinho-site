@@ -1,0 +1,12 @@
+{
+  "format": "stories",
+  "slug": "stories-photographe-hotel-4-points",
+  "jour": "2026-10-25",
+  "public": "hotels",
+  "photo": "img/exemple-fiches/photo-salon-4.jpg",
+  "frames": [
+    { "type": "couverture", "kicker": "Nouveau carrousel", "titre": "Avant le shooting, cale *ces 4 points*", "sous_titre": "Hôtels et conciergeries : le détail est sur notre profil." },
+    { "type": "astuce", "kicker": "Le point oublié", "titre": "Les droits d’utilisation", "texte": "Site, Booking, réseaux, brochure : fais écrire *où tu pourras utiliser les photos* avant de signer le devis." },
+    { "type": "question", "titre": "Tes photos actuelles, tu sais *où tu as le droit* de les utiliser ?" }
+  ]
+}
