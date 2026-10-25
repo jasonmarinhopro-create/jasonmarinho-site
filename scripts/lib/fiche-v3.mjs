@@ -167,8 +167,8 @@ ${contactSheetHtml(m)}`
 }
 
 export const FICHE_V3_CSS = `
-body{padding-bottom:86px}
-@media(min-width:960px){body{padding-bottom:0}}
+/* Place pour le bouton flottant : sous le pied de page (vert), pas un bandeau crème */
+@media(max-width:959px){body{padding-bottom:0!important}footer{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))!important}}
 .fx{--fxw:1120px}
 .fx-wrap{max-width:var(--fxw);margin:0 auto;padding-left:clamp(16px,4vw,40px);padding-right:clamp(16px,4vw,40px)}
 .fx-top{background:var(--cr)}
@@ -292,9 +292,13 @@ body{padding-bottom:86px}
   .fx-body{grid-template-columns:minmax(0,1fr);padding-top:16px}
   .fx-side{position:static}
   .fx-card .fx-btn{display:none}
-  .fx-bar{display:flex;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:90;padding:10px max(14px,env(safe-area-inset-left,0px)) calc(12px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(247,245,240,0),var(--cr) 26%)}
-  .fx-bar .fx-btn{box-shadow:0 10px 24px rgba(0,51,41,.18)}
-  .fx-bar-tel{flex:none;width:52px;border-radius:12px;background:#fff;border:1px solid var(--bd);display:grid;place-items:center;color:var(--g);font-size:20px;text-decoration:none}
+  /* Bouton flottant sans bandeau de fond (25/10/2026, Jason : « fond gris
+     derrière », et la barre du navigateur qui se replie au défilement
+     laissait voir le bandeau décalé) */
+  .fx-bar{display:flex;gap:8px;position:fixed;left:max(14px,env(safe-area-inset-left,0px));right:max(14px,env(safe-area-inset-right,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:90;background:none;pointer-events:none}
+  .fx-bar>*{pointer-events:auto}
+  .fx-bar .fx-btn{box-shadow:0 10px 28px rgba(0,26,17,.28)}
+  .fx-bar-tel{flex:none;width:52px;border-radius:12px;background:#fff;border:1px solid var(--bd);box-shadow:0 10px 28px rgba(0,26,17,.22);display:grid;place-items:center;color:var(--g);font-size:20px;text-decoration:none}
   .fx-sheet{margin:auto 0 0;width:100%;max-width:none;border-radius:22px 22px 0 0;max-height:94vh}
   .fx-form{padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))}
 }
