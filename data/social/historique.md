@@ -4,7 +4,7 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-10-25 20:00 UTC.
+Mis à jour le 2026-10-25 20:54 UTC.
 
 - 2026-10-25 · reel · basse-saison-4-reglages · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « La basse saison commence. Ton calendrier, lui, n’a pas à se vider. »
 - 2026-10-25 · stories (3 écrans) · stories-photographe-hotel-4-points · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Avant le shooting, cale ces 4 points / Les droits d’utilisation / Tes photos actuelles, tu sais où t »
