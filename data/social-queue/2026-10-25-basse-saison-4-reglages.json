@@ -1,0 +1,22 @@
+{
+  "slug": "basse-saison-4-reglages",
+  "format": "reel",
+  "public": "hotes",
+  "photo": "img/exemple-fiches/photo-chambre-3.jpg",
+  "slides": [
+    { "type": "couverture", "kicker": "Basse saison", "titre": "Novembre arrive : *4 réglages* pour remplir ton calendrier", "sous_titre": "Le premier prend deux minutes." },
+    { "type": "point", "titre": "Séjour minimum à *1 nuit*", "texte": "3 nuits en été, ça a du sens. En basse saison, ça te fait rater les week-ends de 1 ou 2 nuits." },
+    { "type": "point", "titre": "Pense *voyageurs d’affaires*", "texte": "Ils voyagent toute l’année. Montre le bureau en photo et écris le débit réel de ton Wi-Fi." },
+    { "type": "astuce", "kicker": "Séjours longs", "titre": "Propose un *tarif au mois*", "texte": "Souvent 20 à 30 % de remise sur la nuitée, pour les pros en mission et les télétravailleurs." },
+    { "type": "point", "titre": "Relance tes *anciens voyageurs*", "texte": "Un message quelques semaines après le séjour. S’ils reviennent en direct, zéro commission." }
+  ],
+  "legende": "La basse saison commence. Ton calendrier, lui, n’a pas à se vider.\n\nQuatre réglages à faire maintenant : le séjour minimum à 1 nuit, une annonce pensée pour les voyageurs d’affaires, un tarif au mois pour les séjours longs, et un message à tes anciens voyageurs.\n\nLe premier prend deux minutes et peut tout changer.\n\nEt toi, ton séjour minimum, il est à combien de nuits en ce moment ?",
+  "hashtags": ["#airbnb", "#locationcourteduree", "#bassesaison", "#hoteairbnb", "#lcd"],
+  "lien": "https://jasonmarinho.com/blog/basse-saison-location-courte-duree-strategies-reservations",
+  "story": {
+    "texte": "Le réglage qui prend *2 minutes* et remplit tes week-ends",
+    "frames": [
+      { "type": "question", "titre": "Ton séjour minimum, il est à *combien* de nuits ?" }
+    ]
+  }
+}
