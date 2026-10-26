@@ -281,8 +281,11 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
 .fx-sec h2,.fx .sct h2{font-family:'Fraunces',serif;font-weight:400;font-size:21px;color:var(--td);margin:0 0 14px}
 .fx-forms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .fx-forms.n2{grid-template-columns:repeat(2,minmax(0,1fr))}.fx-forms.n1{grid-template-columns:1fr}
-.fx-fm{border:1px solid var(--bd);border-radius:14px;padding:14px 15px;background:var(--cr);min-width:0}
-.fx-fm.hl{background:#fff;border:1px solid var(--g);box-shadow:0 0 0 1px var(--g) inset}
+.fx-fm{border:1px solid var(--bd);border-radius:14px;padding:14px 15px;background:var(--cr);min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:left;font:inherit;color:inherit;cursor:pointer;transition:border-color .15s,background .15s}
+.fx-fm:hover,.fx-fm:focus-visible{background:#fff;border:1px solid var(--g);outline:none}
+.fx-fm-go{margin-top:auto;padding-top:10px;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--g)}
+.fx-pick{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 4px;padding:10px 12px;border-radius:12px;background:#E8F2EC;font-size:14px;color:var(--td)}
+.fx-pick button{margin-left:auto;background:none;border:0;padding:0;color:var(--g);font:600 13px 'Outfit',sans-serif;cursor:pointer}
 .fx-fm-n{font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--tl)}
 .fx-fm b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:26px;color:var(--g);margin:2px 0 4px}
 .fx-fm p{font-size:13.5px;line-height:1.55;color:var(--tm);margin:0}
@@ -451,7 +454,7 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
     <div class="fx-facts n3"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Calculé depuis ta fiche</span><div class="fx-fact"><b>70 €</b><span>dès, le ménage</span></div><div class="fx-fact"><b>Bordeaux</b><span>ville principale</span></div><div class="fx-fact"><b>3 à 5</b><span>personnes dans l’équipe</span></div></div>
     
     <section class="fx-sec" id="formules"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Tes formules</span><h2>Formules</h2>
-      <div class="fx-forms n3"><div class="fx-fm"><span class="fx-fm-n">Studio, T1</span><b>70 €</b><p>Ménage complet, lit refait, salle de bain et cuisine, sous 3 h.</p></div><div class="fx-fm hl"><span class="fx-fm-n">T2, T3</span><b>95 €</b><p>Linge fourni et lavé, réassort des consommables, photo de fin de ménage.</p></div><div class="fx-fm"><span class="fx-fm-n">Maison</span><b>130 €</b><p>Jusqu’à 4 chambres, terrasse balayée, poubelles sorties.</p></div></div>
+      <div class="fx-forms n3"><button type="button" class="fx-fm" data-fx-formule="Studio, T1 (70 €)"><span class="fx-fm-n">Studio, T1</span><b>70 €</b><p>Ménage complet, lit refait, salle de bain et cuisine, sous 3 h.</p><span class="fx-fm-go">Demander cette formule <i class="ph-bold ph-arrow-right"></i></span></button><button type="button" class="fx-fm" data-fx-formule="T2, T3 (95 €)"><span class="fx-fm-n">T2, T3</span><b>95 €</b><p>Linge fourni et lavé, réassort des consommables, photo de fin de ménage.</p><span class="fx-fm-go">Demander cette formule <i class="ph-bold ph-arrow-right"></i></span></button><button type="button" class="fx-fm" data-fx-formule="Maison (130 €)"><span class="fx-fm-n">Maison</span><b>130 €</b><p>Jusqu’à 4 chambres, terrasse balayée, poubelles sorties.</p><span class="fx-fm-go">Demander cette formule <i class="ph-bold ph-arrow-right"></i></span></button></div>
       <p class="fx-note">Prix indicatifs, le ménage : le devis final dépend de ton logement.</p>
     </section>
     <section class="fx-sec"><span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>Bio que tu rédiges</span><h2>Présentation</h2><div class="fx-bio" data-fx-bio><p>Équipe de ménage spécialisée location courte durée depuis 6 ans à Bordeaux. On gère actuellement 18 logements pour des hôtes Airbnb et Booking sur Bordeaux et le Médoc. Notre marque de fabrique : un turnover livré en moins de 4h avec photo finale envoyée par WhatsApp, gestion complète du linge (stock tournant inclus dans le forfait), et un réappro consommables ajusté à chaque saison. Trois ménagères formées en interne, une équipe stable depuis 2 ans, déclarée et assurée. Notre objectif : que tu ne touches plus à rien entre 2 voyageurs.</p></div><button type="button" class="fx-more-bio" data-fx-bio-btn hidden>Lire la suite</button></section>
@@ -498,6 +501,8 @@ a.vt-ville:hover{background:var(--g);color:#fff;border-color:var(--g)}
     <div class="fx-sh-top"><div class="fx-steps"><i class="on"></i><i></i></div><button type="button" class="fx-x" data-fx-close aria-label="Fermer"><i class="ph-bold ph-x"></i></button></div>
     <div class="fx-step" data-step="1">
       <h2>Ton besoin</h2>
+      <p class="fx-pick" data-fx-pick hidden><i class="ph-bold ph-check-circle"></i><span>Formule : <b data-fx-pick-name></b></span><button type="button" data-fx-unpick>Retirer</button></p>
+      <input type="hidden" name="formule" value="">
       <fieldset><legend>Ce qu’il te faut</legend><div class="fx-pills"><label class="fx-pill"><input type="checkbox" name="besoin" value="Des ménages entre deux voyageurs"><span>Des ménages entre deux voyageurs</span></label><label class="fx-pill"><input type="checkbox" name="besoin" value="Un grand ménage"><span>Un grand ménage</span></label><label class="fx-pill"><input type="checkbox" name="besoin" value="Le linge"><span>Le linge</span></label></div></fieldset>
       <fieldset><legend>Ton logement</legend><div class="fx-pills"><label class="fx-pill"><input type="radio" name="logement" value="Studio ou T1"><span>Studio ou T1</span></label><label class="fx-pill"><input type="radio" name="logement" value="T2 ou T3"><span>T2 ou T3</span></label><label class="fx-pill"><input type="radio" name="logement" value="T4 et plus"><span>T4 et plus</span></label><label class="fx-pill"><input type="radio" name="logement" value="Maison"><span>Maison</span></label><label class="fx-pill"><input type="radio" name="logement" value="Plusieurs logements"><span>Plusieurs logements</span></label></div></fieldset>
       <p class="fx-err" data-err="1" hidden></p>
@@ -695,7 +700,8 @@ try {
   var t=new Date(),iso=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
   [].forEach.call(document.querySelectorAll('[data-today]'),function(i){i.setAttribute('min',iso)});
   window.jmContactMessage=function(f){
-    var parts=[],b=[].slice.call(f.querySelectorAll('input[name=besoin]:checked')).map(function(i){return i.value});
+    var parts=[],fo=f.formule&&f.formule.value;if(fo)parts.push('Formule : '+fo);
+    var b=[].slice.call(f.querySelectorAll('input[name=besoin]:checked')).map(function(i){return i.value});
     if(b.length)parts.push('Ce qu’il me faut : '+b.join(', '));
     var l=f.querySelector('input[name=logement]:checked');if(l)parts.push('Logement : '+l.value);
     var d=f.date&&f.date.value;
@@ -716,8 +722,13 @@ try {
   var steps=f.querySelectorAll('.fx-step'),bars=f.querySelectorAll('.fx-steps i'),done=f.querySelector('.fx-done');
   function go(n){[].forEach.call(steps,function(s){s.hidden=s.getAttribute('data-step')!==String(n)});[].forEach.call(bars,function(b,i){b.classList.toggle('on',i<n)});var el=f.querySelector('.fx-step[data-step="'+n+'"] input:not([type=hidden]):not([tabindex="-1"])');if(n===2&&el)setTimeout(function(){try{el.focus()}catch(e){}},60)}
   function err(n,t){var e=f.querySelector('[data-err="'+n+'"]');if(!e)return;e.textContent=t||'';e.hidden=!t}
+  // Formule touchée sur la fiche (26/10/2026) : reprise en tête de la demande
+  function pick(v){f.formule.value=v;var pl=f.querySelector('[data-fx-pick]');if(pl){pl.hidden=!v;pl.querySelector('[data-fx-pick-name]').textContent=v}}
   function open(){go(1);err(1);err(2);if(dlg.showModal&&!dlg.open)dlg.showModal();else dlg.setAttribute('open','');try{jmTrack('contact_open')}catch(e){}}
   document.addEventListener('click',function(e){
+    var fm=e.target.closest('[data-fx-formule]');
+    if(fm){e.preventDefault();pick(fm.getAttribute('data-fx-formule'));open();return}
+    if(e.target.closest('[data-fx-unpick]')){pick('');return}
     if(e.target.closest('[data-fx-open]')){e.preventDefault();open()}
     else if(e.target.closest('[data-fx-close]')||e.target===dlg)dlg.close();
     else if(e.target.closest('[data-fx-next]')){

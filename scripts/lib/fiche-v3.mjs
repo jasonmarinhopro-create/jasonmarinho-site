@@ -66,6 +66,8 @@ function contactSheetHtml(m) {
     <div class="fx-sh-top"><div class="fx-steps"><i class="on"></i><i></i></div><button type="button" class="fx-x" data-fx-close aria-label="Fermer"><i class="ph-bold ph-x"></i></button></div>
     <div class="fx-step" data-step="1">
       <h2>Ton besoin</h2>
+      <p class="fx-pick" data-fx-pick hidden><i class="ph-bold ph-check-circle"></i><span>Formule : <b data-fx-pick-name></b></span><button type="button" data-fx-unpick>Retirer</button></p>
+      <input type="hidden" name="formule" value="">
       <fieldset><legend>Ce qu’il te faut</legend><div class="fx-pills">${m.besoins.map(b => pill('besoin', b, 'checkbox')).join('')}</div></fieldset>
       <fieldset><legend>Ton logement</legend><div class="fx-pills">${LOGEMENTS.map(l => pill('logement', l, 'radio')).join('')}</div></fieldset>
       <p class="fx-err" data-err="1" hidden></p>
@@ -135,7 +137,7 @@ export function ficheV3Html(m) {
     ${facts.length ? `<div class="fx-facts n${facts.length}">${facts.map(f => `<div class="fx-fact"><b>${esc(f.v)}</b><span>${esc(f.l)}</span></div>`).join('')}</div>` : ''}
     ${m.videoHtml ? `<section class="fx-sec"><h2>La vidéo</h2>${m.videoHtml}</section>` : ''}
     ${forms.length ? `<section class="fx-sec" id="formules"><h2>Formules</h2>
-      <div class="fx-forms n${forms.length}">${forms.map((f, i) => `<div class="fx-fm${forms.length === 3 && i === 1 ? ' hl' : ''}"><span class="fx-fm-n">${esc(f.nom)}</span><b>${f.prix ? euros(f.prix) : 'Sur devis'}</b>${f.detail ? `<p>${esc(f.detail)}</p>` : ''}</div>`).join('')}</div>
+      <div class="fx-forms n${forms.length}">${forms.map(f => `<button type="button" class="fx-fm" data-fx-formule="${esc(f.prix ? `${f.nom} (${euros(f.prix)})` : f.nom)}"><span class="fx-fm-n">${esc(f.nom)}</span><b>${f.prix ? euros(f.prix) : 'Sur devis'}</b>${f.detail ? `<p>${esc(f.detail)}</p>` : ''}<span class="fx-fm-go">Demander cette formule <i class="ph-bold ph-arrow-right"></i></span></button>`).join('')}</div>
       <p class="fx-note">Prix indicatifs${m.unite ? `, ${esc(m.unite)}` : ''} : le devis final dépend de ton logement.</p>
     </section>` : ''}
     ${m.bio ? `<section class="fx-sec"><h2>Présentation</h2><div class="fx-bio" data-fx-bio><p>${esc(m.bio)}</p></div><button type="button" class="fx-more-bio" data-fx-bio-btn hidden>Lire la suite</button></section>` : ''}
@@ -217,8 +219,11 @@ export const FICHE_V3_CSS = `
 .fx-sec h2,.fx .sct h2{font-family:'Fraunces',serif;font-weight:400;font-size:21px;color:var(--td);margin:0 0 14px}
 .fx-forms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .fx-forms.n2{grid-template-columns:repeat(2,minmax(0,1fr))}.fx-forms.n1{grid-template-columns:1fr}
-.fx-fm{border:1px solid var(--bd);border-radius:14px;padding:14px 15px;background:var(--cr);min-width:0}
-.fx-fm.hl{background:#fff;border:1px solid var(--g);box-shadow:0 0 0 1px var(--g) inset}
+.fx-fm{border:1px solid var(--bd);border-radius:14px;padding:14px 15px;background:var(--cr);min-width:0;display:flex;flex-direction:column;align-items:flex-start;text-align:left;font:inherit;color:inherit;cursor:pointer;transition:border-color .15s,background .15s}
+.fx-fm:hover,.fx-fm:focus-visible{background:#fff;border:1px solid var(--g);outline:none}
+.fx-fm-go{margin-top:auto;padding-top:10px;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--g)}
+.fx-pick{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 4px;padding:10px 12px;border-radius:12px;background:#E8F2EC;font-size:14px;color:var(--td)}
+.fx-pick button{margin-left:auto;background:none;border:0;padding:0;color:var(--g);font:600 13px 'Outfit',sans-serif;cursor:pointer}
 .fx-fm-n{font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--tl)}
 .fx-fm b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:26px;color:var(--g);margin:2px 0 4px}
 .fx-fm p{font-size:13.5px;line-height:1.55;color:var(--tm);margin:0}
@@ -347,8 +352,13 @@ export function ficheV3Js({ api, firstName }) {
   var steps=f.querySelectorAll('.fx-step'),bars=f.querySelectorAll('.fx-steps i'),done=f.querySelector('.fx-done');
   function go(n){[].forEach.call(steps,function(s){s.hidden=s.getAttribute('data-step')!==String(n)});[].forEach.call(bars,function(b,i){b.classList.toggle('on',i<n)});var el=f.querySelector('.fx-step[data-step="'+n+'"] input:not([type=hidden]):not([tabindex="-1"])');if(n===2&&el)setTimeout(function(){try{el.focus()}catch(e){}},60)}
   function err(n,t){var e=f.querySelector('[data-err="'+n+'"]');if(!e)return;e.textContent=t||'';e.hidden=!t}
+  // Formule touchée sur la fiche (26/10/2026) : reprise en tête de la demande
+  function pick(v){f.formule.value=v;var pl=f.querySelector('[data-fx-pick]');if(pl){pl.hidden=!v;pl.querySelector('[data-fx-pick-name]').textContent=v}}
   function open(){go(1);err(1);err(2);if(dlg.showModal&&!dlg.open)dlg.showModal();else dlg.setAttribute('open','');try{jmTrack('contact_open')}catch(e){}}
   document.addEventListener('click',function(e){
+    var fm=e.target.closest('[data-fx-formule]');
+    if(fm){e.preventDefault();pick(fm.getAttribute('data-fx-formule'));open();return}
+    if(e.target.closest('[data-fx-unpick]')){pick('');return}
     if(e.target.closest('[data-fx-open]')){e.preventDefault();open()}
     else if(e.target.closest('[data-fx-close]')||e.target===dlg)dlg.close();
     else if(e.target.closest('[data-fx-next]')){

@@ -39,3 +39,11 @@ describe('téléphone facultatif de la demande', () => {
     expect(contactEmails({ ...base, contactPhone: '06 12 34 56 78' }).hote.html).not.toContain('tel:')
   })
 })
+
+describe('formule choisie sur la fiche', () => {
+  it('arrive en tête de la demande, comme une ligne du tableau', () => {
+    const { rows, texte } = lireMessage('Formule : Complète (520 €)\nLogement : T2 ou T3\n\nBonjour')
+    expect(rows).toEqual([['Formule', 'Complète (520 €)'], ['Logement', 'T2 ou T3']])
+    expect(texte).toBe('Bonjour')
+  })
+})

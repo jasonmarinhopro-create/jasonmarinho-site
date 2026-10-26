@@ -27,7 +27,7 @@ const prenom = nom => (String(nom || '').trim().split(/\s+/)[0] || '').replace(/
 const initiales = nom => String(nom || '').split(/[^\p{L}\p{N}]+/u).filter(Boolean).slice(0, 2).map(w => w.charAt(0).toUpperCase()).join('') || '?'
 
 /** Les premières lignes composées par le formulaire guidé de la fiche (jmContactMessage) deviennent la fiche du besoin */
-const CHAMPS = [['Ce qu’il me faut', 'Besoin'], ['Logement', 'Logement'], ['Date souhaitée', 'Date souhaitée']]
+const CHAMPS = [['Formule', 'Formule'], ['Ce qu’il me faut', 'Besoin'], ['Logement', 'Logement'], ['Date souhaitée', 'Date souhaitée']]
 function lireMessage(message) {
   const lignes = String(message || '').split('\n')
   const rows = []

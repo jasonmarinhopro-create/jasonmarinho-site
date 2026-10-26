@@ -193,7 +193,8 @@ export const CONTACT_JS = `<script>
   var t=new Date(),iso=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
   [].forEach.call(document.querySelectorAll('[data-today]'),function(i){i.setAttribute('min',iso)});
   window.jmContactMessage=function(f){
-    var parts=[],b=[].slice.call(f.querySelectorAll('input[name=besoin]:checked')).map(function(i){return i.value});
+    var parts=[],fo=f.formule&&f.formule.value;if(fo)parts.push('Formule : '+fo);
+    var b=[].slice.call(f.querySelectorAll('input[name=besoin]:checked')).map(function(i){return i.value});
     if(b.length)parts.push('Ce qu’il me faut : '+b.join(', '));
     var l=f.querySelector('input[name=logement]:checked');if(l)parts.push('Logement : '+l.value);
     var d=f.date&&f.date.value;
