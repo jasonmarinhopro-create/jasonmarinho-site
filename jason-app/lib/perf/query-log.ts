@@ -12,10 +12,15 @@ export function queryLog(): Array<[string, number]> | null {
   try { return store() } catch { return null }
 }
 
+// Jamais de cache Next.js sur les lectures Supabase (26/10/2026) : sans
+// `cache: 'no-store'`, Next gardait la réponse d'une lecture et la resservait
+// aux passages suivants. La publication des réseaux sociaux relisait ainsi
+// l'état de 17 h 40 à chaque passage (ancien conteneur Instagram repris, post
+// Facebook « republié »). Les caches voulus passent par unstable_cache.
 export const timedFetch: typeof fetch = async (input, init) => {
   const t0 = Date.now()
   try {
-    return await fetch(input, init)
+    return await fetch(input, { ...init, cache: init?.cache ?? 'no-store' })
   } finally {
     const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
     try { queryLog()?.push([supabaseCallLabel(url), Date.now() - t0]) } catch { /* ignore */ }
