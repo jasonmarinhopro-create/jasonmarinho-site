@@ -29,5 +29,6 @@ export async function GET(req: Request) {
   // recréerait le même risque de timeout) — un backlog résiduel est repris
   // naturellement au prochain passage du cron (QStash, 5 min).
   const { processed, remaining } = await dispatchDuePosts()
-  return NextResponse.json({ ok: true, processed, remaining })
+  // Version de Node du serveur (alerte Stripe du 26/10/2026 : faille Brotli corrigée en 24.22.1)
+  return NextResponse.json({ ok: true, processed, remaining, node: process.version })
 }
