@@ -2,6 +2,7 @@
 // Utilisés par /dashboard/calendrier/actions.ts ET /dashboard/logements/actions.ts
 // pour relier les URLs iCal stockées sur les logements au système de feeds.
 
+import { untrustedText, UNTRUSTED_ACCEPT_ENCODING } from '@/lib/security/untrusted-fetch'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 const FETCH_TIMEOUT_MS = 12000
@@ -159,12 +160,13 @@ async function doSync(
     // webcal:// is identical to https:// — convert so fetch() can handle it
     const fetchUrl = url.replace(/^webcal:\/\//i, 'https://')
     const res = await fetch(fetchUrl, {
-      headers: { 'User-Agent': 'JasonMarinho-Calendar/1.0' },
+      headers: { 'User-Agent': 'JasonMarinho-Calendar/1.0', 'Accept-Encoding': UNTRUSTED_ACCEPT_ENCODING },
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     })
     if (!res.ok) return { error: `Erreur HTTP ${res.status}` }
 
-    const text = await res.text()
+    // Adresse saisie par l'hôte : jamais de Brotli (faille Node, untrusted-fetch.ts)
+    const text = await untrustedText(res)
     const parsed = parseIcalText(text)
     if (parsed.length === 0) return { error: EMPTY_FEED }
 

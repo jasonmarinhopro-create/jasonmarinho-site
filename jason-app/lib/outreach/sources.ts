@@ -13,6 +13,7 @@
 // DATAtourisme (gîtes, chambres d'hôtes) passe par l'import CSV (csv.ts) :
 // export CSV gratuit depuis l'explorateur (datatourisme.fr/explorer-les-donnees), sans compte.
 
+import { untrustedText, UNTRUSTED_ACCEPT_ENCODING } from '@/lib/security/untrusted-fetch'
 import 'server-only'
 import { bestEmail, extractEmails, type Audience } from './engine'
 import { takePlacesCall } from '@/lib/google/places-budget'
@@ -155,13 +156,14 @@ function safeUrl(raw: string): URL | null {
 async function fetchPage(url: URL): Promise<string> {
   try {
     const res = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; JasonMarinhoBot/1.0; +https://jasonmarinho.com)', Accept: 'text/html' },
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; JasonMarinhoBot/1.0; +https://jasonmarinho.com)', Accept: 'text/html', 'Accept-Encoding': UNTRUSTED_ACCEPT_ENCODING },
       redirect: 'follow',
       cache: 'no-store',
       signal: AbortSignal.timeout(7_000),
     })
     if (!res.ok || !(res.headers.get('content-type') ?? '').includes('html')) return ''
-    const text = await res.text()
+    // Site d'un tiers : jamais de Brotli (faille Node, untrusted-fetch.ts)
+    const text = await untrustedText(res)
     return text.slice(0, 600_000)
   } catch { return '' }
 }
