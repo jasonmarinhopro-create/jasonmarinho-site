@@ -7,7 +7,8 @@ import { Suspense } from 'react'
 import Sidebar from '@/components/layout/Sidebar'
 import Header from '@/components/layout/Header'
 import { getProfile } from '@/lib/queries/profile'
-import { getCachedPublishedActualites } from '@/lib/queries/cache'
+import { getCachedPublishedActualites, getCachedPublishedFormations } from '@/lib/queries/cache'
+import { derniereNouvelleFormationAt } from '@/lib/formations/nouveau'
 import { getUserSpaces } from '@/lib/queries/spaces'
 import { getActiveProperty } from '@/lib/queries/active-property'
 import { getUnreadCount, getChezNousUnreadCount } from '@/lib/notifications/queries'
@@ -64,6 +65,8 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
   // du profil PUIS le reste). getAuthUser étant dédupliqué par rendu, le
   // RTT d'auth est payé UNE fois, partagé par les 4.
   const actualitesPromise = getCachedPublishedActualites()
+  // Catalogue en cache (10 min) : point « du neuf » sur Formations
+  const formationsPromise = getCachedPublishedFormations().catch(() => [])
   const spacesPromise = getUserSpaces()
   const activePropertyPromise = getActiveProperty()
   // Menu en une seule requête (24/10/2026, menu_state) : cloche, forum,
@@ -96,11 +99,12 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
 
   const emptyOnboarding = { totalDone: 1, totalSteps: 1, tracks: [] as Array<{ key: string; doneSteps: Set<string> }> }
 
-  const [cachedActualites, spacesResult, activeProperty, menu] = await Promise.all([
+  const [cachedActualites, spacesResult, activeProperty, menu, cachedFormations] = await Promise.all([
     actualitesPromise,
     spacesPromise,
     activePropertyPromise,
     menuPromise,
+    formationsPromise,
   ])
   const trackInput = {
     userId: profile.userId,
@@ -142,6 +146,10 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
     latestPublishedAt > (profile.last_seen_actualites_at ?? '1970-01-01T00:00:00Z')
   )
 
+  // Point « du neuf » sur Formations, sauf pour les comptes qui ne reçoivent
+  // pas les annonces de formations (migration 163)
+  const newFormationAt = profile.masquer_annonces_formations ? null : derniereNouvelleFormationAt(cachedFormations)
+
   // Menu des pros (17/10/2026) : point « du neuf » sur les actualités de leur
   // métier et compteur des demandes pas encore ouvertes
   const hasSpace = (k: 'photographer' | 'cleaner') => spacesResult.spaces.some(sp => sp.key === k && sp.active)
@@ -176,6 +184,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
           isContributor={profile.is_contributor ?? false}
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
+          newFormationAt={newFormationAt}
           proNav={proNav}
           contratsTodo={contratsTodo}
           hasStripeAccount={profile.stripe_onboarding_complete}
@@ -193,6 +202,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
           userId={profile.userId}
           lastSeenNouveautesAt={profile.last_seen_nouveautes_at}
           hideFormationNews={profile.masquer_annonces_formations}
+          newFormationAt={newFormationAt}
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
           proNav={proNav}

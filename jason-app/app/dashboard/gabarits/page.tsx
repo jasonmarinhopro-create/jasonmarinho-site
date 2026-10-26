@@ -4,6 +4,7 @@ import { getCachedTemplatesCatalog } from '@/lib/queries/cache'
 import GabaritsClient from './GabaritsClient'
 import type { Template, UserTemplateCustomization, UserPinnedTemplate } from '@/types'
 import type { InfosPratiques } from '@/lib/logements/infos-pratiques'
+import GuideLinks from '@/components/guide/GuideLinks'
 
 export interface LogementOption {
   id: string
@@ -97,6 +98,7 @@ export default async function GabaritsPage() {
         hostFullName={profile?.full_name ?? null}
         userId={userId}
       />
+      <GuideLinks page="messages" />
     </>
   )
 }

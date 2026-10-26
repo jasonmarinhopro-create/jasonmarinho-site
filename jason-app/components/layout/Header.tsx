@@ -29,8 +29,8 @@ const PATH_TITLES: Record<string, string> = {
   // Mois/Liste indique le sous-mode). L'entree sidebar "Mes reservations"
   // pointe vers /calendrier?view=list pour aller directement en vue Liste.
   '/dashboard/apprendre': 'Apprendre',
-  '/dashboard/apprendre/formations': 'Apprendre',
-  '/dashboard/apprendre/guide': 'Apprendre',
+  '/dashboard/apprendre/formations': 'Formations',
+  '/dashboard/apprendre/guide': 'Guide LCD',
   '/dashboard/entre-hotes': 'Entre Hôtes',
   '/dashboard/entre-hotes/forum': 'Entre Hôtes',
   '/dashboard/visibilite': 'Trouver des voyageurs',
@@ -142,6 +142,8 @@ interface HeaderProps {
   lastSeenNouveautesAt?: string | null
   /** Compte coché « masquer les annonces de formations » (migration 163) */
   hideFormationNews?: boolean
+  /** Point « du neuf » sur Formations (transmis au menu mobile) */
+  newFormationAt?: string | null
   /** Date de dernière visite Actualités, transmise au Sidebar mobile. */
   lastSeenActualitesAt?: string | null
   /** Badge Actualités pré-calculé côté serveur, transmis au Sidebar mobile. */
@@ -168,7 +170,7 @@ interface HeaderProps {
   activePropertyId?: string
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, hideFormationNews = false, lastSeenActualitesAt = null, hasNewActualites = false, proNav, contratsTodo = 0, showOnboardingBtn = false, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId, initialAppNotifUnread = 0, initialChezNousUnread = 0 }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, hideFormationNews = false, newFormationAt = null, lastSeenActualitesAt = null, hasNewActualites = false, proNav, contratsTodo = 0, showOnboardingBtn = false, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId, initialAppNotifUnread = 0, initialChezNousUnread = 0 }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -341,6 +343,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
           isContributor={isContributor}
           lastSeenActualitesAt={lastSeenActualitesAt}
           hasNewActualites={hasNewActualites}
+          newFormationAt={newFormationAt}
           proNav={proNav}
           contratsTodo={contratsTodo}
           hasStripeAccount={hasStripeAccount}

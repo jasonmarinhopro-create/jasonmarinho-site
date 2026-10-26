@@ -14,7 +14,7 @@ L'app ne remplace pas Airbnb ou Booking, ni un logiciel de gestion comme Smoobu 
 - **Planning ménage automatique** : chaque départ Airbnb, Booking ou direct devient un créneau ménage, partagé avec ton équipe
 - **Déclarations voyageurs** : fiche de police en France, SIBA au Portugal, suivies pour toi
 - **Mes finances** : tes revenus, tes encaissements et tes performances au même endroit
-- **Apprendre** : formations, guide LCD, actualités réglementaires
+- **Formations** et **Guide LCD** : apprendre à ton rythme et retrouver les règles de ta location
 - **Trouver des voyageurs en direct** : groupes Facebook et fiche Google
 
 > L'app lit ton calendrier Airbnb et Booking mais ne leur écrit pas. Elle n'envoie pas non plus de messages automatiques à tes voyageurs.

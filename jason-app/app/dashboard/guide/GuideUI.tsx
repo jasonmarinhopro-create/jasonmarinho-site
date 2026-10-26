@@ -111,6 +111,23 @@ export default function GuideUI({ guideCards, cardCount }: GuideUIProps) {
     }
   }, [])
 
+  // Lien direct vers une fiche (#commun-taxe-sejour, depuis les pages de
+  // l'app) : tout afficher, puis faire défiler jusqu'à la fiche et la surligner
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1))
+    if (!id) return
+    setActiveFilter('all')
+    setSearch('')
+    const t = window.setTimeout(() => {
+      const el = document.getElementById(id)
+      if (!el?.hasAttribute('data-guide-card')) return
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      el.style.boxShadow = '0 0 0 3px rgba(255,213,107,0.6)'
+      window.setTimeout(() => { el.style.boxShadow = '' }, 2600)
+    }, 80)
+    return () => window.clearTimeout(t)
+  }, [])
+
   function handleFilter(id: ProfileFilter) {
     setActiveFilter(id)
     localStorage.setItem('guide-filter', id)

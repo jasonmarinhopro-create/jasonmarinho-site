@@ -5,6 +5,7 @@ import { parisToday } from '@/lib/stripe/deposit-window'
 import OnboardingTour, { VOYAGEURS_STEPS } from '../OnboardingTour'
 import { flaggedVoyageurs } from '@/lib/securite/lookup'
 import { isPositive } from '@/lib/securite/identifiers'
+import GuideLinks from '@/components/guide/GuideLinks'
 
 // Cette page et ses server actions (addVoyageur, checkVoyageurSignale…)
 // n'avaient aucun maxDuration explicite, donc soumis à la limite Vercel par
@@ -68,6 +69,7 @@ export default async function VoyageursPage() {
         initiallyDone={profile.onboarding_completed_steps.includes('tour:voyageurs')}
       />
       <VoyageursView voyageurs={list} tableReady={!error} pendingDeclarations={declRes.count ?? 0} today={parisToday()} />
+      <GuideLinks page="voyageurs" />
     </>
   )
 }

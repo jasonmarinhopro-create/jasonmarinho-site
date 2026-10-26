@@ -5,6 +5,7 @@ import { parisToday } from '@/lib/stripe/deposit-window'
 import { flaggedVoyageurs } from '@/lib/securite/lookup'
 import { POSITIVE_TYPES, isPositive } from '@/lib/securite/identifiers'
 import SecuriteView, { type MyReport, type UpcomingGuest } from './SecuriteView'
+import GuideLinks from '@/components/guide/GuideLinks'
 
 export const metadata = { title: 'Sécurité voyageur' }
 export const dynamic = 'force-dynamic'
@@ -80,6 +81,7 @@ export default async function SecuritePage({ searchParams }: {
   }))
 
   return (
+    <>
     <SecuriteView
       totalNegative={total - positives}
       totalPositive={positives}
@@ -92,5 +94,7 @@ export default async function SecuritePage({ searchParams }: {
         full_name: searchParams.nom ?? '',
       } : null}
     />
+    <GuideLinks page="securite" />
+    </>
   )
 }

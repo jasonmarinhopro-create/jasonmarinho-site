@@ -11,3 +11,10 @@ export function isNouvelleFormation(createdAt: string | null | undefined, now: D
   const age = now.getTime() - t
   return age >= 0 && age < NOUVEAU_JOURS * 86_400_000
 }
+
+/** Date de mise en ligne de la formation nouvelle la plus récente, sinon null
+ *  (point « du neuf » du menu) */
+export function derniereNouvelleFormationAt(formations: Array<{ created_at?: string | null }>, now: Date = new Date()): string | null {
+  const dates = formations.map(f => f.created_at).filter((d): d is string => isNouvelleFormation(d, now))
+  return dates.length ? dates.reduce((a, b) => (Date.parse(a) > Date.parse(b) ? a : b)) : null
+}

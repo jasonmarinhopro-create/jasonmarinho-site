@@ -725,6 +725,7 @@ function GuideCardItem({ card }: { card: GuideCard }) {
   const searchText = [card.title, card.subtitle, card.keywords ?? ''].join(' ').toLowerCase()
   return (
     <div
+      id={card.id}
       style={s.card}
       className="glass-card"
       data-guide-card=""
@@ -864,6 +865,7 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: 'var(--r-xl)',
     display: 'flex', flexDirection: 'column' as const, gap: '0',
     position: 'relative' as const,
+    scrollMarginTop: '90px',
     transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-smooth)',
   },
   profileBadge: {

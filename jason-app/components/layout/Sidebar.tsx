@@ -45,7 +45,7 @@ type NavItemDef = {
   label: string
   icon: React.ElementType
   // Affiche un point pulsant rouge (utilisé pour Actualités quand il y a du neuf)
-  pulseIf?: 'hasNewActualites'
+  pulseIf?: 'hasNewActualites' | 'hasNewFormation'
   /** Compteur affiché à droite (17/10/2026) */
   countKey?: 'contratsTodo'
   // Préfixes de pathname qui doivent aussi allumer cet item, en plus de `href`.
@@ -117,8 +117,12 @@ const navGroups: Array<{ label: string | null; items: NavItemDef[] }> = [
         href: '/dashboard/visibilite/facebook', label: 'Trouver des voyageurs', icon: Megaphone,
         activeMatch: ['/dashboard/visibilite', '/dashboard/communaute', '/dashboard/audit-gbp'],
       },
-      // Apprendre : Formations + Guide LCD.
-      { href: '/dashboard/apprendre/formations', label: 'Apprendre',   icon: GraduationCap, activeMatch: ['/dashboard/apprendre', '/dashboard/formations', '/dashboard/guide'] },
+      // Formations et Guide LCD (26/10/2026, Jason : « le Guide LCD est trop
+      // caché ») : deux entrées au lieu d'« Apprendre » qui ouvrait les
+      // formations, le guide n'étant qu'un onglet. Point « du neuf » sur
+      // Formations tant qu'une formation de moins de 45 jours n'a pas été vue.
+      { href: '/dashboard/apprendre/formations', label: 'Formations', icon: GraduationCap, activeMatch: ['/dashboard/apprendre/formations', '/dashboard/formations'], pulseIf: 'hasNewFormation' },
+      { href: '/dashboard/apprendre/guide', label: 'Guide LCD', icon: BookOpen, activeMatch: ['/dashboard/apprendre/guide', '/dashboard/guide'] },
       // Entre Hôtes : Questions & réponses + Partenaires & outils.
       { href: '/dashboard/entre-hotes/forum', label: 'Entre Hôtes',   icon: ChatsCircle, activeMatch: ['/dashboard/entre-hotes', '/dashboard/chez-nous', '/dashboard/ecosysteme'] },
       // Idées & feuille de route (13/10/2026) : ouvert à tous les membres
@@ -188,6 +192,8 @@ interface SidebarProps {
   lastSeenActualitesAt?: string | null
   /** Pré-calculé côté serveur dans le layout : évite une requête DB à chaque navigation. */
   hasNewActualites?: boolean
+  /** Date de mise en ligne de la formation la plus récente (moins de 45 jours), sinon null */
+  newFormationAt?: string | null
   /** Affiche l'entrée "Encaissements" seulement si l'hôte utilise Stripe Connect.
    *  Évite le clutter pour les hôtes qui n'encaissent que via Airbnb/Booking. */
   hasStripeAccount?: boolean
@@ -210,7 +216,7 @@ interface SidebarProps {
   contratsTodo?: number
 }
 
-export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, hasStripeAccount = false, allProperties, activePropertyId, userName, userPlanLabel, userId, spaces = [], proNav, contratsTodo = 0 }: SidebarProps) {
+export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, lastSeenActualitesAt, hasNewActualites: initialHasNewActualites = false, newFormationAt = null, hasStripeAccount = false, allProperties, activePropertyId, userName, userPlanLabel, userId, spaces = [], proNav, contratsTodo = 0 }: SidebarProps) {
   const pathname = usePathname()
   // Le rôle pro est dérivé du pathname côté client : le layout (server) est
   // mémorisé par le router cache entre routes sœurs, donc une prop calculée
@@ -234,6 +240,18 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   const newMenage = proNav?.newActus.cleaner ?? false
   useEffect(() => { setProNewActus({ photographer: newPhoto, cleaner: newMenage }) }, [newPhoto, newMenage])
   useEffect(() => { setHasNewActualites(initialHasNewActualites) }, [initialHasNewActualites])
+
+  // Point « du neuf » sur Formations : une formation récente pas encore vue
+  // (date de la dernière visite du catalogue gardée dans ce navigateur)
+  const [hasNewFormation, setHasNewFormation] = useState(false)
+  useEffect(() => {
+    if (!newFormationAt) { setHasNewFormation(false); return }
+    const onCatalogue = pathname?.startsWith('/dashboard/apprendre/formations') || pathname?.startsWith('/dashboard/formations')
+    try {
+      if (onCatalogue) { localStorage.setItem('formations-vues-le', new Date().toISOString()); setHasNewFormation(false); return }
+      setHasNewFormation((localStorage.getItem('formations-vues-le') ?? '') < newFormationAt)
+    } catch { setHasNewFormation(false) }
+  }, [newFormationAt, pathname])
 
   // ── Collapse sidebar (mode icônes seulement) ──
   // Persisté en localStorage. Update la CSS var --sidebar-w globale pour
@@ -653,7 +671,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                         href={href}
                         label={label}
                         Icon={Icon}
-                        notifDot={pulseIf === 'hasNewActualites' && hasNewActualites}
+                        notifDot={(pulseIf === 'hasNewActualites' && hasNewActualites) || (pulseIf === 'hasNewFormation' && hasNewFormation)}
                         activeMatch={activeMatch}
                         count={countKey === 'contratsTodo' ? contratsTodo : undefined}
                       />

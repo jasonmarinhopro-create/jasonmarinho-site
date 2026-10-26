@@ -21,7 +21,8 @@ updatedAt: "2026-09-27"
 ## Faire grandir mon activité
 
 - **Trouver des voyageurs** : groupes Facebook où publier et audit de ta fiche Google
-- **Apprendre** : formations et guide LCD
+- **Formations** : les formations, avec un point quand une nouvelle formation sort
+- **Guide LCD** : les règles de ta location (taxe de séjour, fiche de police, contrat, assurance…), fiche par fiche
 - **Outils & calculs** : simulateurs, prix & marché, QR codes et affiches
 - **Entre Hôtes** : Questions & réponses et partenaires
 

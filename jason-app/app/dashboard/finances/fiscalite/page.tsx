@@ -3,6 +3,7 @@ import { loadFinances } from '@/lib/finances/load'
 import { createClient } from '@/lib/supabase/server'
 import { guessTvaFromMention } from '@/lib/finances/einvoicing'
 import FiscaliteContent from './FiscaliteContent'
+import GuideLinks from '@/components/guide/GuideLinks'
 
 export const metadata = { title: 'Fiscalité, Mes finances' }
 export const dynamic = 'force-dynamic'
@@ -15,10 +16,13 @@ export default async function FiscalitePage({ searchParams }: { searchParams: { 
   const { data: prof } = await supabase.from('profiles').select('mention_tva').eq('id', data.userId).maybeSingle()
   const mention = (prof?.mention_tva as string | null) ?? null
   return (
+    <>
     <FiscaliteContent
       data={data}
       searchParams={searchParams}
       einvoicing={{ guessedTva: guessTvaFromMention(mention), hasMention: !!mention?.trim() }}
     />
+    <GuideLinks page="fiscalite" />
+    </>
   )
 }

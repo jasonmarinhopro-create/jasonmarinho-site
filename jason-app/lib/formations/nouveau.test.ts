@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { isNouvelleFormation } from './nouveau'
+import { isNouvelleFormation, derniereNouvelleFormationAt } from './nouveau'
 
 const now = new Date('2026-10-26T12:00:00Z')
 
@@ -13,5 +13,12 @@ describe('isNouvelleFormation', () => {
     expect(isNouvelleFormation(null, now)).toBe(false)
     expect(isNouvelleFormation('pas une date', now)).toBe(false)
     expect(isNouvelleFormation('2026-11-01T00:00:00Z', now)).toBe(false)
+  })
+})
+
+describe('derniereNouvelleFormationAt', () => {
+  it('rend la plus récente des nouvelles, sinon null', () => {
+    expect(derniereNouvelleFormationAt([{ created_at: '2026-10-01T00:00:00Z' }, { created_at: '2026-10-20T00:00:00Z' }, { created_at: '2026-01-01T00:00:00Z' }], now)).toBe('2026-10-20T00:00:00Z')
+    expect(derniereNouvelleFormationAt([{ created_at: '2026-01-01T00:00:00Z' }, { created_at: null }], now)).toBeNull()
   })
 })

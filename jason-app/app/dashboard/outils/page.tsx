@@ -4,6 +4,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import AskQuestionCard from '@/components/chez-nous/AskQuestionCard'
+import GuideLinks from '@/components/guide/GuideLinks'
 
 export const metadata = { title: 'Outils & calculs' }
 
@@ -78,6 +79,7 @@ const QUICK: Tool[] = [
 
 export default function OutilsHubPage() {
   return (
+    <>
     <div style={s.page}>
       <HubHero
         eyebrowIcon={<Wrench size={13} weight="fill" />}
@@ -132,6 +134,8 @@ export default function OutilsHubPage() {
         @media (min-width: 1300px) { .ot-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
       `}</style>
     </div>
+    <GuideLinks page="outils" />
+    </>
   )
 }
 

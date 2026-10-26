@@ -1,4 +1,5 @@
 import VisibiliteTabBar from './VisibiliteTabBar'
+import GuideLinks from '@/components/guide/GuideLinks'
 
 // Titre du hub affiché par l'en-tête du dashboard (Header.tsx) : ici seulement
 // les onglets, chaque page garde sa propre introduction.
@@ -7,6 +8,7 @@ export default function VisibiliteLayout({ children }: { children: React.ReactNo
     <div>
       <VisibiliteTabBar />
       {children}
+      <GuideLinks page="visibilite" />
     </div>
   )
 }
