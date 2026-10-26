@@ -9,7 +9,7 @@ import { logger } from '@/lib/logger'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
 import { cleanReseaux, instaHandle } from '@/lib/pros/reseaux'
 import { readMetier, readOptions, normalizeVideoUrl } from '@/lib/pros/visuel'
-import { cleanFormules, cleanVilles, cleanDeroule } from '@/lib/pros/fiche-vitrine'
+import { cleanFormules, cleanVilles, cleanDeroule, villeCasse } from '@/lib/pros/fiche-vitrine'
 import * as vitrine from '@/lib/pros/fiche-vitrine-server'
 import { normSiteUrl, siteUrlOk, SITE_URL_ERROR } from '@/lib/pros/site-url'
 
@@ -340,7 +340,7 @@ function sanitizeClientInput(data: ProClientInput) {
     nom: String(data.nom ?? '').trim().slice(0, 120),
     email: String(data.email ?? '').trim().slice(0, 200) || null,
     telephone: String(data.telephone ?? '').trim().slice(0, 40) || null,
-    ville: String(data.ville ?? '').trim().slice(0, 100) || null,
+    ville: villeCasse(String(data.ville ?? '').slice(0, 100)) || null,
     logement: String(data.logement ?? '').trim().slice(0, 200) || null,
     statut,
     notes: String(data.notes ?? '').trim().slice(0, 3000) || null,

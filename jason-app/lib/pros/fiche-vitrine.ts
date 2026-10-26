@@ -99,12 +99,31 @@ export function cleanFormules(raw: unknown): Formule[] {
   return out
 }
 
+const PARTICULES = new Set(['de', 'du', 'des', 'la', 'le', 'les', 'sur', 'sous', 'en', 'et', 'aux', 'lès'])
+
+/** Nom de ville tout en majuscules ou tout en minuscules remis en forme
+ *  (« LEVALLOIS » → « Levallois », « neuilly-sur-seine » → « Neuilly-sur-Seine ») ;
+ *  une saisie déjà en casse mixte est gardée telle quelle (26/10/2026, Jason :
+ *  « Levallois écrit en majuscules, c'est moche et pas sérieux »). */
+export function villeCasse(v: string): string {
+  const name = v.trim()
+  if (!name || (/[a-zà-ÿ]/.test(name) && /[A-ZÀ-Þ]/.test(name))) return name
+  let i = 0
+  return name.toLowerCase().replace(/[^\s\-]+/g, w => {
+    const first = i++ === 0
+    if (!first && PARTICULES.has(w)) return w
+    const m = /^([dl])(['’])(.+)$/.exec(w)
+    if (m) return (first ? m[1].toUpperCase() : m[1]) + m[2] + m[3].charAt(0).toUpperCase() + m[3].slice(1)
+    return w.charAt(0).toUpperCase() + w.slice(1)
+  })
+}
+
 export function cleanVilles(raw: unknown): string[] {
   const list = Array.isArray(raw) ? raw : typeof raw === 'string' ? raw.split(/[,;\n]/) : []
   const seen = new Set<string>()
   const out: string[] = []
   for (const v of list) {
-    const name = txt(v, 40)
+    const name = villeCasse(txt(v, 40))
     const key = name.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
     if (!name || seen.has(key)) continue
     seen.add(key)

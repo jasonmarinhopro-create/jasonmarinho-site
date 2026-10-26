@@ -42,13 +42,30 @@ function cleanFormules(raw) {
 }
 
 /** Même règle que cleanVilles (fiche-vitrine.ts), sans la ville principale */
+const PARTICULES = new Set(['de', 'du', 'des', 'la', 'le', 'les', 'sur', 'sous', 'en', 'et', 'aux', 'lès'])
+
+/** Ville tout en majuscules ou tout en minuscules remise en forme (même règle que
+ *  villeCasse de jason-app/lib/pros/fiche-vitrine.ts, test commun) */
+function villeCasse(v) {
+  const name = String(v || '').trim()
+  if (!name || (/[a-zà-ÿ]/.test(name) && /[A-ZÀ-Þ]/.test(name))) return name
+  let i = 0
+  return name.toLowerCase().replace(/[^\s\-]+/g, w => {
+    const first = i++ === 0
+    if (!first && PARTICULES.has(w)) return w
+    const m = /^([dl])(['’])(.+)$/.exec(w)
+    if (m) return (first ? m[1].toUpperCase() : m[1]) + m[2] + m[3].charAt(0).toUpperCase() + m[3].slice(1)
+    return w.charAt(0).toUpperCase() + w.slice(1)
+  })
+}
+
 function cleanVilles(raw, principale) {
   const list = Array.isArray(raw) ? raw : typeof raw === 'string' ? raw.split(/[,;\n]/) : []
   const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
   const seen = new Set(principale ? [norm(txt(principale, 40))] : [])
   const out = []
   for (const v of list) {
-    const name = txt(v, 40)
+    const name = villeCasse(txt(v, 40))
     const key = norm(name)
     if (!name || seen.has(key)) continue
     seen.add(key)
@@ -150,5 +167,5 @@ function instaHandle(raw) {
 module.exports = {
   PHOTOS_MAX, PHOTO_FULL_MAX_BYTES, PHOTO_THUMB_MAX_BYTES, STORAGE_STOP_TOTAL_BYTES, PORTFOLIO_STOP_BYTES,
   PORTFOLIO_BUCKET, FORMULES_MAX, VILLES_MAX,
-  cleanFormules, cleanVilles, photoSig, sigOk, storageOk, decodeJpeg, handlePhoto, successUrl, instaHandle,
+  cleanFormules, cleanVilles, villeCasse, photoSig, sigOk, storageOk, decodeJpeg, handlePhoto, successUrl, instaHandle,
 }

@@ -109,3 +109,8 @@ Choix de Jason (direction A des maquettes) : même mise en page pour photographe
 - Contact : carte fixe à droite (ordinateur), bouton fixe en bas + appel (téléphone), fenêtre `#contact` en 2 étapes (besoin + logement, puis prénom + e-mail ; date et détail facultatifs). Le message part par `jmContactMessage` (API : 20 caractères au moins, toujours atteint avec besoin + logement).
 - « Comment ça se passe » retiré des fiches. Prix facultatifs (décision : ne pas freiner l'inscription) : « Sur devis » sinon (`v3Prix`). Test : `jason-app/lib/pros/fiche-v3.test.ts`.
 - Fiches d'exemple : repères de `build-exemples-fiches.mjs` adaptés (`fx-brd`, `fx-facts`, `fx-car`, `fx-card-id`, `var res=await fetch(`). Les changer ensemble.
+
+## Page /photographe-hotel retirée (26/10/2026)
+
+- Jason : « un photographe d'hôtel, c'est la même chose qu'un photographe de location courte durée, pas besoin de s'embêter ». Page `/photographe-hotel` et son générateur supprimés, redirection 301 vers `/annuaires/photographes` (`vercel.json`), retirée du menu Pour qui, du sitemap et de `llms.txt`, ligne « Un hôtel, une résidence ou une conciergerie ? » retirée de l'annuaire. Restent : le filtre « Hôtels et résidences » de l'annuaire, le type d'hébergement de Trouver un pro, la section Hôtels des pages `photographe-lcd-*` (lien vers l'article des 7 points) et l'article de blog.
+- **Villes en majuscules** (« LEVALLOIS » sur la fiche de Thierry) : `villeCasse` remet en forme une ville saisie tout en majuscules ou en minuscules, à l'inscription (`scripts/lib/pro-signup-extras.cjs`) et dans Ma fiche (`lib/pros/fiche-vitrine.ts`), même règle testée des deux côtés (`ville-casse.test.ts`). Donnée de Thierry corrigée en base (Levallois-Perret).

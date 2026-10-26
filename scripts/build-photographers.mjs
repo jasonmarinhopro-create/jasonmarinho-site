@@ -463,9 +463,6 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .search-bar input::placeholder{color:var(--tl)}
 .search-clear{display:none;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:none;background:rgba(0,76,63,.06);color:var(--tm);cursor:pointer;flex-shrink:0;font-size:13px}
 .search-clear:hover{background:rgba(0,76,63,.12)}
-.hotel-line{max-width:820px;margin:10px auto 0;padding:0 clamp(16px,5vw,40px);font-size:13.5px;color:var(--tm);display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
-.hotel-line i{color:var(--g);position:relative;top:2px}
-.hotel-line a{color:var(--g);font-weight:600}
 .search-count{font-size:12px;font-weight:600;color:var(--tl);white-space:nowrap;padding:0 6px 0 2px;flex-shrink:0}
 .filters-btn{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--bd);border-radius:16px;padding:0 20px;box-shadow:0 14px 36px rgba(0,30,20,.16);font-size:14px;font-weight:600;color:var(--td);cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap}
 .filters-btn:hover{border-color:rgba(0,76,63,.3)}
@@ -617,7 +614,6 @@ ${items.length > 0 ? `<div class="tools-row">
 </div>
 <div class="f-active" id="f-active" hidden></div>
 ${demandeBandHtml(cfg)}
-<p class="hotel-line"><i class="ph-bold ph-bed"></i>Un hôtel, une résidence ou une conciergerie ? <a href="/photographe-hotel">Les photographes qui travaillent pour l’hôtellerie</a></p>
 
 <div class="filters-backdrop" id="filters-backdrop">
   <div class="filters-modal" role="dialog" aria-modal="true" aria-label="Filtres">
