@@ -36,14 +36,12 @@
 <link rel="preconnect" href="https://app.jasonmarinho.com" crossorigin>
 <link rel="dns-prefetch" href="https://app.jasonmarinho.com">
 <link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
-<!-- Polices du premier écran chargées en priorité, et entrée du hero retenue
-     jusqu'à ce que polices et menu soient prêts (26/10/2026, Jason : « double
-     chargement avec un petit zoom bizarre » : titre d'abord dans la police de
-     secours puis redessiné en Fraunces, menu ajouté après coup). 1,2 s au plus. -->
+<!-- Polices du premier écran chargées en priorité (26/10/2026, « petit zoom » à
+     l'ouverture). L'attente des polices et du menu avant l'entrée du hero a été
+     retirée le même jour (« écran vert 1 à 2 s ») : font-display: block suffit. -->
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/outfit-normal-300-latin.woff2" crossorigin>
-<script>(function(){var d=document.documentElement;d.classList.add('hero-wait');var done=false;function go(){if(!done){done=true;d.classList.remove('hero-wait')}}setTimeout(go,1200);var nav=new Promise(function(r){document.addEventListener('nav:ready',r)});var f=document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve();Promise.all([f,nav]).then(go,go)})()</script>
 <link rel="preload" as="font" href="/fonts/Phosphor-Bold.woff2" crossorigin>
 <link rel="preload" as="font" href="/fonts/Phosphor-Light.woff2" crossorigin>
 <link rel="preload" as="font" href="/fonts/Phosphor.woff2" crossorigin>
@@ -123,15 +121,15 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 
 .h-inner{position:relative;z-index:2;flex:1;max-width:1200px;margin:0 auto;width:100%;padding:clamp(48px,8vw,80px) clamp(16px,5vw,60px) clamp(56px,8vw,80px);display:grid;grid-template-columns:1fr 380px;gap:52px;align-items:center}
 
-.h-badge{display:inline-flex;align-items:center;gap:9px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.22);color:var(--y);font-size:11px;font-weight:500;letter-spacing:1.3px;text-transform:uppercase;padding:7px 14px;border-radius:100px;margin-bottom:24px;width:fit-content;animation:fu .7s ease both}
+.h-badge{display:inline-flex;align-items:center;gap:9px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.22);color:var(--y);font-size:11px;font-weight:500;letter-spacing:1.3px;text-transform:uppercase;padding:7px 14px;border-radius:100px;margin-bottom:24px;width:fit-content;animation:fu .45s ease both}
 .h-dot{width:6px;height:6px;background:var(--y);border-radius:50%;animation:blink 2.5s ease-in-out infinite}
 
-.h-h1{font-family:'Fraunces',serif;font-size:clamp(40px,5.5vw,78px);font-weight:300;line-height:1.05;letter-spacing:-2px;color:#fff;margin-bottom:20px;animation:fu .7s .09s ease both}
+.h-h1{font-family:'Fraunces',serif;font-size:clamp(40px,5.5vw,78px);font-weight:300;line-height:1.05;letter-spacing:-2px;color:#fff;margin-bottom:20px;animation:fu .45s .04s ease both}
 .h-h1 em{font-style:italic;color:var(--y)}
 
-.h-sub{font-size:clamp(15px,1.4vw,17px);font-weight:300;color:rgba(255,255,255,.46);line-height:1.75;max-width:480px;margin-bottom:36px;animation:fu .7s .18s ease both}
+.h-sub{font-size:clamp(15px,1.4vw,17px);font-weight:300;color:rgba(255,255,255,.46);line-height:1.75;max-width:480px;margin-bottom:36px;animation:fu .45s .08s ease both}
 
-.h-acts{display:flex;align-items:center;gap:12px;flex-wrap:wrap;animation:fu .7s .27s ease both}
+.h-acts{display:flex;align-items:center;gap:12px;flex-wrap:wrap;animation:fu .45s .12s ease both}
 .btn-p{background:var(--y);color:var(--gd);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px 26px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:background .2s cubic-bezier(.4,0,.2,1),transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s cubic-bezier(.4,0,.2,1)}
 .btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,213,107,.32)}
 .btn-p:active{transform:translateY(0)}
@@ -139,7 +137,7 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .btn-g:hover{border-color:rgba(255,255,255,.32);color:#fff}
 
 /* Hero card */
-.h-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:28px;animation:fu .7s .36s ease both}
+.h-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:28px;animation:fu .45s .14s ease both}
 .h-card-lbl{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:18px;display:flex;align-items:center;gap:8px}
 .h-card-lbl::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07)}
 
@@ -288,7 +286,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 .soc:hover{background:rgba(255,255,255,.09);color:#fff}
 
 /* ── ANIM ── */
-@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
@@ -345,8 +343,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   .trust-inner{gap:16px}
   .trust-item{font-size:12px}
 }
-.h-note{margin-top:14px;font-size:13px;color:rgba(255,255,255,.55);animation:fu .7s .3s ease both}
-.hero-wait .h-badge,.hero-wait .h-h1,.hero-wait .h-sub,.hero-wait .h-acts,.hero-wait .h-card,.hero-wait .h-note{animation-play-state:paused}
+.h-note{margin-top:14px;font-size:13px;color:rgba(255,255,255,.55);animation:fu .45s .14s ease both}
 .cta-band{margin-top:40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:26px 30px;border-radius:18px;background:var(--gd);color:#fff}
 .cta-band-t{font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin-bottom:6px}
 .cta-band-d{margin:0;font-size:14px;line-height:1.6;color:rgba(255,255,255,.7);max-width:560px}
