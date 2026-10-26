@@ -271,14 +271,20 @@ export function pageFull(
 
 /** Nombre de fiches en ligne par page de ville, avec la règle de rattachement des pros */
 export function prosByCity(
-  rows: Array<{ ville: string | null; zone_couverte: string | null; status: string | null; is_public: boolean | null }>,
+  rows: Array<{ ville: string | null; zone_couverte: string | null; status: string | null; is_public: boolean | null; villes_couvertes?: string[] | null }>,
   slugOf: (ville: string | null, zone: string | null) => string | null,
 ): Map<string, number> {
+  // Un pro compte dans sa ville et dans chaque ville où il se déplace
+  // (villes_couvertes, 26/10/2026 : Mamoone, basé à Paris, couvre Nantes et
+  // /chiffres affichait « aucune équipe de ménage » à Nantes), une fois par ville.
   const out = new Map<string, number>()
   for (const r of rows) {
     if (r.status !== 'active' || r.is_public === false) continue
-    const slug = slugOf(r.ville, r.zone_couverte)
-    if (slug) out.set(slug, (out.get(slug) ?? 0) + 1)
+    const slugs = new Set<string>()
+    const main = slugOf(r.ville, r.zone_couverte)
+    if (main) slugs.add(main)
+    for (const v of r.villes_couvertes ?? []) { const s = slugOf(v, null); if (s) slugs.add(s) }
+    for (const slug of slugs) out.set(slug, (out.get(slug) ?? 0) + 1)
   }
   return out
 }

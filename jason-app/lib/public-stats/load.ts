@@ -87,12 +87,14 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
 
   const prosP = (async () => {
     const db = getServiceClient()
-    const cols = 'ville, zone_couverte, status, is_public, user_id'
-    const [ph, cl, admins] = await Promise.all([
-      db.from('photographers').select(cols), db.from('cleaners').select(cols), adminUserIds(db),
-    ])
+    const cols = 'ville, zone_couverte, status, is_public, user_id, villes_couvertes'
+    type Res = { data: unknown[] | null; error: unknown }
+    const lire = (c: string) => Promise.all([db.from('photographers').select(c), db.from('cleaners').select(c)]) as unknown as Promise<[Res, Res]>
+    let [[ph, cl], admins] = await Promise.all([lire(cols), adminUserIds(db)])
+    // Sans la colonne villes_couvertes (migration 131) : ville principale seulement
+    if (ph.error || cl.error) [ph, cl] = await lire('ville, zone_couverte, status, is_public, user_id')
     if (ph.error || cl.error) throw new Error('pros')
-    type R = { ville: string | null; zone_couverte: string | null; status: string | null; is_public: boolean | null; user_id: string | null }
+    type R = { ville: string | null; zone_couverte: string | null; status: string | null; is_public: boolean | null; user_id: string | null; villes_couvertes?: string[] | null }
     // Fiches d'exemple des comptes admin jamais comptées
     return {
       photographe: prosByCity(splitDemo((ph.data ?? []) as R[], admins).real, anyCitySlugOf),

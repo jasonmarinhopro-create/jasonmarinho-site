@@ -113,6 +113,13 @@ describe('recherche par ville', () => {
     expect(m.get('lyon')).toBe(1)
     expect(m.size).toBe(1)
   })
+  it('prosByCity : un pro compte aussi dans les villes où il se déplace, une fois par ville', async () => {
+    const { prosByCity } = await import('./rules')
+    const slug = (v: string | null) => (v ? v.toLowerCase() : null)
+    const m = prosByCity([{ ville: 'Paris', zone_couverte: null, status: 'active', is_public: true, villes_couvertes: ['Paris', 'Nantes'] }], slug)
+    expect(m.get('paris')).toBe(1)
+    expect(m.get('nantes')).toBe(1)
+  })
   it('cleanCityRequest', async () => {
     const { cleanCityRequest } = await import('./rules')
     expect(cleanCityRequest({ ville: '  Saint-Jean-de-Luz ', metier: 'photographe' })).toEqual({ ok: true, ville: 'Saint-Jean-de-Luz', metier: 'photographe', email: null })

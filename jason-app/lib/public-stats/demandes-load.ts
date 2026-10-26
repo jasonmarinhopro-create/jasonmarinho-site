@@ -15,7 +15,7 @@ import {
   type DemandeItem, type DemandeMetier, type PublicDemandes,
 } from './demandes'
 
-type Fiche = { id: string; ville: string | null; zone_couverte: string | null; status: string | null; is_public: boolean | null; user_id: string | null }
+type Fiche = { id: string; ville: string | null; zone_couverte: string | null; status: string | null; is_public: boolean | null; user_id: string | null; villes_couvertes?: string[] | null }
 type Contact = { id: string; created_at: string; fiche_id: string; source_url: string | null; status: string | null; contact_email: string | null }
 
 const PROS = {
@@ -39,7 +39,8 @@ async function compute(): Promise<PublicDemandes> {
 
   for (const metier of ['photographe', 'menage'] as DemandeMetier[]) {
     const t = PROS[metier]
-    const fiches = await db.from(t.table).select('id, ville, zone_couverte, status, is_public, user_id')
+    let fiches = await db.from(t.table).select('id, ville, zone_couverte, status, is_public, user_id, villes_couvertes')
+    if (fiches.error) fiches = await db.from(t.table).select('id, ville, zone_couverte, status, is_public, user_id')
     if (fiches.error) throw new Error(`fiches ${metier}`)
     const byId = new Map(((fiches.data ?? []) as Fiche[]).map(f => [f.id, f]))
     prosMaps[metier] = prosByCity([...byId.values()].filter(f => !isDemoFiche(f, admins)), anyCitySlugOf)

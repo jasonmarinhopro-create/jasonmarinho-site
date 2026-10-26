@@ -649,11 +649,10 @@ a.dm-city:hover{border-color:var(--g)}
         var tags = (c.photographe ? '<span class="dm-tag">' + n(c.photographe) + ' photo &amp; vidéo</span>' : '') + (c.menage ? '<span class="dm-tag m">' + n(c.menage) + ' ménage</span>' : '');
         var free = '';
         if (c.pros) {
-          var missing = [];
-          if (c.photographe && !c.pros.photographe) missing.push('photographe ou vidéaste');
-          if (c.menage && !c.pros.menage) missing.push('équipe de ménage');
-          free = missing.length ? '<div class="dm-free">Aucun ' + missing.join(' ni ') + ' inscrit : la place est libre</div>'
-            : '<div class="dm-pros">' + n(c.pros.photographe) + ' photographe' + (c.pros.photographe > 1 ? 's' : '') + ' · ' + n(c.pros.menage) + ' équipe' + (c.pros.menage > 1 ? 's' : '') + ' de ménage en ligne</div>';
+          var noPhoto = c.photographe && !c.pros.photographe, noMenage = c.menage && !c.pros.menage;
+          var manque = noPhoto && noMenage ? 'Ni photographe ni équipe de ménage inscrits' : noPhoto ? 'Aucun photographe ou vidéaste inscrit' : noMenage ? 'Aucune équipe de ménage inscrite' : '';
+          free = manque ? '<div class="dm-free">' + manque + ' : la place est libre</div>'
+            : '<div class="dm-pros">' + [c.pros.photographe ? n(c.pros.photographe) + ' photographe' + (c.pros.photographe > 1 ? 's' : '') : '', c.pros.menage ? n(c.pros.menage) + ' équipe' + (c.pros.menage > 1 ? 's' : '') + ' de ménage' : ''].filter(Boolean).join(' · ') + ' sur place</div>';
         }
         var inner = '<div class="dm-city-h"><b>' + esc(c.label) + '</b><strong>' + n(c.total) + '</strong></div><div class="dm-tags">' + tags + '</div>' + free;
         return c.slug ? '<a class="dm-city" href="/chiffres?ville=' + esc(c.slug) + '#ta-ville">' + inner + '</a>' : '<div class="dm-city">' + inner + '</div>';
