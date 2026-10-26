@@ -19,7 +19,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     date: '2026-10-26',
     tag: 'nouveau',
     title: 'Nouvelle formation : louer en direct sans plateforme, en toute sécurité',
-    description: 'Née de ta suggestion : vérifier l\'identité d\'un voyageur sans garder de copie de sa pièce (ce que la CNIL refuse), choisir une assurance qui couvre vraiment la location courte durée, faire un contrat solide, encaisser sans arnaque, taxe de séjour et fiche de police, et quand un juriste est utile. 6 modules, 12 leçons sourcées et un plan en 10 étapes, dans Formations.',
+    description: 'Née d\'une suggestion de la communauté : vérifier l\'identité d\'un voyageur sans garder de copie de sa pièce (ce que la CNIL refuse), choisir une assurance qui couvre vraiment la location courte durée, faire un contrat solide, encaisser sans arnaque, taxe de séjour et fiche de police, et quand un juriste est utile. 6 modules, 12 leçons sourcées et un plan en 10 étapes, dans Formations.',
   },
   {
     id: 'idees-oct-2026',
