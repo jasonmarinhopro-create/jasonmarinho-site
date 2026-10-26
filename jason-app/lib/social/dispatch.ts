@@ -36,7 +36,7 @@ export async function dispatchPost(postId: string): Promise<void> {
   const results = await Promise.all((targets ?? []).map(async (target): Promise<boolean> => {
     // Une story qui annonce le post attend que le post soit en ligne sur ce
     // réseau (« À voir sur notre profil ») : elle part au passage suivant
-    // (pg_cron 17 h 20 et 17 h 40 UTC, migration 161)
+    // (pg_cron toutes les 10 minutes, migration 166)
     const net = storyNetwork(target.platform)
     if (net && target.status !== 'published') {
       const feed = (targets ?? []).find(t => t.platform === net)
@@ -118,7 +118,7 @@ export async function dispatchPost(postId: string): Promise<void> {
       // plan : on le conserve pour que le prochain "Réessayer" le réutilise
       // au lieu de repartir de zéro et retomber sur le même délai.
       const pendingMediaId = err instanceof InstagramMediaTimeoutError ? err.creationId : null
-      const retry = !!pendingMediaId && isRecent(post.scheduled_at as string | null)
+      const retry = err instanceof InstagramMediaTimeoutError && isRecent(post.scheduled_at as string | null)
       if (retry) stillProcessing++
       else log.error('publication échouée', { postId, platform: target.platform, err: message })
       const { error: writeErr } = await db.from('social_post_targets').update({

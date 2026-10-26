@@ -13,7 +13,8 @@ class MetaApiError extends Error {
 
 async function graphFetch(path: string, params: Record<string, string>, method: 'GET' | 'POST' = 'GET') {
   const url = new URL(`${GRAPH_URL}${path}`)
-  const init: RequestInit = { method }
+  // Jamais de cache : l'état d'un média Instagram change d'un appel à l'autre
+  const init: RequestInit = { method, cache: 'no-store' }
   if (method === 'GET') {
     for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v)
   } else {
@@ -216,7 +217,8 @@ export async function publishToFacebook(pageId: string, pageAccessToken: string,
 // l'appelant puisse le réutiliser au prochain essai plutôt que d'en créer un
 // nouveau et reperdre le temps déjà investi.
 export class InstagramMediaTimeoutError extends Error {
-  constructor(public readonly creationId: string) {
+  /** creationId null : conteneur repris et toujours bloqué, à recréer au prochain passage */
+  constructor(public readonly creationId: string | null) {
     super('Le média met trop de temps à être traité par Instagram (délai dépassé).')
     this.name = 'InstagramMediaTimeoutError'
   }
@@ -304,7 +306,15 @@ export async function publishToInstagram(igUserId: string, pageAccessToken: stri
   }
   if (!creationId) throw new Error('Conteneur Instagram introuvable')
 
-  await waitForMediaReady(creationId, pageAccessToken)
+  try {
+    await waitForMediaReady(creationId, pageAccessToken)
+  } catch (err) {
+    // Conteneur repris d'un passage précédent et toujours « en traitement » :
+    // on l'abandonne, le passage suivant en crée un neuf (26/10/2026 : un
+    // carrousel est resté bloqué plus de 4 h, repris à chaque passage)
+    if (err instanceof InstagramMediaTimeoutError && creationId === resumeCreationId) throw new InstagramMediaTimeoutError(null)
+    throw err
+  }
 
   const published = await graphFetch(`/${igUserId}/media_publish`, {
     access_token: pageAccessToken,

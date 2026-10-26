@@ -61,3 +61,9 @@ Demande de Jason (« au moins une story par jour, 2, 3, 4 ou plus si besoin ; co
 ## Publication à l'heure : pg_cron (25/10/2026)
 
 Constat : les passages programmés GitHub arrivent avec 2 à 5 h de retard (17 h 05 lancé à 19 h 23, 18 h 15 à 20 h 53…) et les crons Vercel Hobby ne sont garantis qu'à l'heure près ; le carrousel du 24, les stories du 25 à 11 h et le post du 25 ont dû partir à la main. Migration 161 : `pg_cron` + `pg_net`, fonction `social_dispatch_ping()` (lit `social_settings.cron_secret`, recopié à chaque passage du workflow « Réseaux sociaux », étape « Secret de publication ») qui appelle `/api/cron/social-dispatch?pg=1` à 11 h 02, 17 h 02, 17 h 20 et 17 h 40 UTC. Les crons Vercel et les passages GitHub restent en filet. Les stories d'un post attendent que le post soit en ligne sur leur réseau (`dispatchPost`, statut au début du passage) : elles partent au passage suivant ; post en échec définitif, story marquée en échec.
+
+## Carrousel du 26/10/2026 publié sur Facebook seulement (correctif)
+
+- Constat : Facebook publié à 17 h 40 (dernier passage), Instagram « délai dépassé » sur un carrousel resté « en traitement » chez Instagram, repris tel quel à chaque passage ; stories bloquées (elles attendent le post de leur réseau) ; plus aucun passage avant le lendemain 11 h.
+- Correctifs : pg_cron toutes les 10 minutes (`social-dispatch-10min`, migration 166, remplace les 4 passages de la migration 161 ; un passage sans post dû ne fait qu'une lecture) ; `graphFetch` en `cache: 'no-store'` ; un conteneur Instagram repris et toujours bloqué est abandonné (`InstagramMediaTimeoutError(null)`) et recréé au passage suivant, avec nouvel essai pendant 2 jours.
+- Rattrapage manuel : `select social_dispatch_ping()` dans la base lance un passage tout de suite ; pour forcer un carrousel neuf, vider `pending_media_id` de la cible Instagram quand aucun passage ne tourne (sinon le passage en cours le réécrit).
