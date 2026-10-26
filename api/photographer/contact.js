@@ -1,9 +1,9 @@
 // Vercel serverless function : formulaire de contact d'une fiche photographe.
-// POST { slug, contactName, contactEmail, message, website, t }
+// POST { slug, contactName, contactEmail, contactPhone?, message, website, t }
 // Lookup du photographe via slug, log dans `photographer_contacts`,
 // email au photographe + accusé de réception au demandeur.
 
-const { contactEmails } = require('../../scripts/lib/pro-contact-email.cjs')
+const { contactEmails, cleanPhone } = require('../../scripts/lib/pro-contact-email.cjs')
 
 const rateLimitMap = new Map()
 function isRateLimited(key, max, windowMs) {
@@ -48,6 +48,8 @@ module.exports = async function handler(req, res) {
   const slug = String(body.slug || '').trim().slice(0, 100)
   const contactName = String(body.contactName || '').trim().slice(0, 100)
   const contactEmail = String(body.contactEmail || '').trim().toLowerCase().slice(0, 200)
+  // Téléphone facultatif (26/10/2026) : ignoré s'il n'a pas 8 à 15 chiffres
+  const contactPhone = cleanPhone(body.contactPhone)
   const message = String(body.message || '').trim().slice(0, 2000)
 
   if (!slug || !contactName || !contactEmail || !message) {
@@ -103,6 +105,7 @@ module.exports = async function handler(req, res) {
       photographer_id: photographer.id,
       contact_name: contactName,
       contact_email: contactEmail,
+      ...(contactPhone ? { contact_phone: contactPhone } : {}),
       message,
       source_url: req.headers['referer'] || null,
     }),
@@ -132,7 +135,7 @@ module.exports = async function handler(req, res) {
 
     const mails = contactEmails({
       metier: 'photographe', proPrenom: firstName, proNom: displayName, proVille: photographer.ville || null, proSlug: slug,
-      contactName, contactEmail, message,
+      contactName, contactEmail, contactPhone, message,
     })
     // Awaités : sans await, la fonction est gelée après la réponse et Resend n'est jamais appelé
     await sendEmail({ from: 'Jason Marinho <notifications@jasonmarinho.com>', to: photographer.email, reply_to: contactEmail, ...mails.pro }, 'pro')

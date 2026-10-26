@@ -103,8 +103,19 @@ const personne = (nom, sous, fond, texte) => `<table role="presentation" width="
 </tr></table>`
 
 /**
- * @param {{ metier: 'photographe'|'menage', proPrenom: string, proNom: string, proVille: string|null, proSlug: string, contactName: string, contactEmail: string, message: string }} o
+ * @param {{ metier: 'photographe'|'menage', proPrenom: string, proNom: string, proVille: string|null, proSlug: string, contactName: string, contactEmail: string, contactPhone?: string, message: string }} o
  */
+/** Téléphone facultatif de la demande (26/10/2026) : 8 à 15 chiffres, sinon '' ;
+ *  un numéro français à 10 chiffres est écrit par paires (06 12 34 56 78). */
+function cleanPhone(v) {
+  const raw = String(v || '').trim().slice(0, 30)
+  const plus = raw.startsWith('+')
+  const digits = raw.replace(/\D/g, '')
+  if (digits.length < 8 || digits.length > 15) return ''
+  if (!plus && digits.length === 10 && digits.startsWith('0')) return digits.replace(/(\d{2})(?=\d)/g, '$1 ')
+  return (plus ? '+' : '') + digits
+}
+
 function contactEmails(o) {
   const m = METIER[o.metier]
   const { rows, texte } = lireMessage(o.message)
@@ -120,10 +131,10 @@ function contactEmails(o) {
       p(`Un hôte a vu ta fiche dans l’annuaire ${m.annuaire} de jasonmarinho.com et t’écrit directement.`),
       fiche(rows),
       texte ? citation(texte) : '',
-      personne(o.contactName, `<a href="mailto:${esc(o.contactEmail)}" style="color:${GREEN};text-decoration:none;">${esc(o.contactEmail)}</a>`, TINT, '#FFFFFF'),
+      personne(o.contactName, `<a href="mailto:${esc(o.contactEmail)}" style="color:${GREEN};text-decoration:none;">${esc(o.contactEmail)}</a>${o.contactPhone ? ` &nbsp;·&nbsp; <a href="tel:${esc(o.contactPhone.replace(/\s/g, ''))}" style="color:${GREEN};text-decoration:none;">${esc(o.contactPhone)}</a>` : ''}`, TINT, '#FFFFFF'),
       button(`mailto:${o.contactEmail}?subject=${encodeURIComponent('Ta demande via jasonmarinho.com')}`, `Répondre à ${hote}`),
       '<div style="height:16px;line-height:16px;font-size:0;">&nbsp;</div>',
-      small(`Tu peux aussi répondre à cet e-mail : ta réponse arrive chez ${esc(hote)}. La demande est rangée dans ${link(`https://app.jasonmarinho.com/dashboard/${m.dash}/demandes`, 'Demandes reçues')}.`),
+      small(`${o.contactPhone ? `${esc(hote)} a laissé son numéro : tu peux aussi l’appeler. ` : ''}Tu peux aussi répondre à cet e-mail : ta réponse arrive chez ${esc(hote)}. La demande est rangée dans ${link(`https://app.jasonmarinho.com/dashboard/${m.dash}/demandes`, 'Demandes reçues')}.`),
     ].join(''),
     footer: `Demande reçue par ta fiche sur ${link('https://jasonmarinho.com', 'jasonmarinho.com')}.<br>Aucune commission : le devis et le paiement se règlent entre toi et l’hôte.`,
   })
@@ -150,4 +161,4 @@ function contactEmails(o) {
   }
 }
 
-module.exports = { contactEmails, lireMessage }
+module.exports = { contactEmails, lireMessage, cleanPhone }

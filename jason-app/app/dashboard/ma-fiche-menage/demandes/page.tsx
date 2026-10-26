@@ -24,7 +24,7 @@ export default async function Page() {
 
   const { data: contacts } = await admin
     .from('cleaner_contacts')
-    .select('id, contact_name, contact_email, message, status, pro_notes, created_at')
+    .select('id, contact_name, contact_email, contact_phone, message, status, pro_notes, created_at')
     .eq('cleaner_id', cleaner.id)
     .order('created_at', { ascending: false })
     .limit(200)

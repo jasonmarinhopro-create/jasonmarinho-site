@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useTransition } from 'react'
-import { Envelope, Tray, CaretDown, CaretUp, NotePencil, Check, Copy, Trash, AddressBook, Receipt } from '@phosphor-icons/react/dist/ssr'
+import { Envelope, Tray, CaretDown, CaretUp, NotePencil, Check, Copy, Trash, AddressBook, Receipt, Phone } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 
@@ -10,6 +10,8 @@ export interface ProContact {
   id: string
   contact_name: string | null
   contact_email: string
+  /** Facultatif, depuis le 26/10/2026 (migration 164) */
+  contact_phone?: string | null
   message: string | null
   status: 'nouvelle' | 'repondue' | 'devis_envoye' | 'gagnee' | 'perdue' | string
   pro_notes: string | null
@@ -158,7 +160,7 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
                       {c.contact_name || 'Hôte'}
                       <span style={{ ...s.statusPill, color: meta.color, background: meta.bg, borderColor: meta.border }}>{meta.label}</span>
                     </div>
-                    <div style={s.rowMeta}>{c.contact_email} · {date}</div>
+                    <div style={s.rowMeta}>{c.contact_email}{c.contact_phone ? ` · ${c.contact_phone}` : ''} · {date}</div>
                   </div>
                   {open ? <CaretUp size={15} color="var(--text-muted)" /> : <CaretDown size={15} color="var(--text-muted)" />}
                 </button>
@@ -190,6 +192,15 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
                       >
                         {copiedId === c.id ? <><Check size={14} weight="bold" /> Adresse copiée !</> : <><Copy size={14} weight="bold" /> Copier l&apos;adresse</>}
                       </button>
+                      {c.contact_phone && (
+                        <a
+                          href={`tel:${c.contact_phone.replace(/\s/g, '')}`}
+                          style={s.copyBtn}
+                          onClick={() => { if (c.status === 'nouvelle') changeStatus(c.id, 'repondue') }}
+                        >
+                          <Phone size={14} weight="bold" /> Appeler
+                        </a>
+                      )}
                       {quoteBase && (
                         <Link href={`${quoteBase}/nouveau?contact=${c.id}`} style={s.copyBtn}>
                           <Receipt size={14} weight="bold" /> Faire un devis

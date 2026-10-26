@@ -435,7 +435,7 @@ export async function addClientFromContact(
   const admin = getServiceClient()
   const { data: contact } = await admin
     .from('cleaner_contacts')
-    .select('id, contact_name, contact_email, message')
+    .select('id, contact_name, contact_email, contact_phone, message')
     .eq('id', contactId)
     .eq('cleaner_id', target.cleanerId)
     .maybeSingle()
@@ -460,6 +460,7 @@ export async function addClientFromContact(
       owner_id: target.cleanerId,
       nom: contact.contact_name || contact.contact_email || 'Hôte',
       email: contact.contact_email,
+      telephone: contact.contact_phone ?? null,
       notes: contact.message ? `Demande initiale : ${String(contact.message).slice(0, 500)}` : null,
       source_contact_id: contact.id,
     })

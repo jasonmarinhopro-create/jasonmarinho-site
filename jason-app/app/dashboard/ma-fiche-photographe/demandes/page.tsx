@@ -24,7 +24,7 @@ export default async function Page() {
 
   const { data: contacts } = await admin
     .from('photographer_contacts')
-    .select('id, contact_name, contact_email, message, status, pro_notes, created_at')
+    .select('id, contact_name, contact_email, contact_phone, message, status, pro_notes, created_at')
     .eq('photographer_id', photographer.id)
     .order('created_at', { ascending: false })
     .limit(200)
