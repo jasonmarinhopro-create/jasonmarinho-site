@@ -1,0 +1,11 @@
+{
+  "format": "stories",
+  "slug": "stories-taxe-sejour-reservation-directe",
+  "jour": "2026-10-27",
+  "frames": [
+    { "type": "point", "titre": "Sur Airbnb et Booking, *c’est automatique*", "texte": "Dans la plupart des communes, la plateforme facture la taxe de séjour au voyageur et la reverse à la commune." },
+    { "type": "astuce", "kicker": "En direct", "titre": "Là, *c’est toi* qui la collectes", "texte": "Affiche-la à part sur la facture, encaisse-la avec le séjour, puis reverse-la à ta commune." },
+    { "type": "point", "titre": "Le bon *montant*", "texte": "Le simulateur officiel taxesejour.impots.gouv.fr donne le tarif de ta commune." },
+    { "type": "question", "titre": "En direct, tu la factures *à part* ?" }
+  ]
+}
