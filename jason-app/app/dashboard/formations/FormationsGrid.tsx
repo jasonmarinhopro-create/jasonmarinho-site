@@ -68,6 +68,7 @@ const SLUG_CATEGORY: Record<string, string> = {
   'annonce-360': 'visibilite',
   'audit-annonce': 'visibilite',
   'declarer-lmnp-seul-decla-fr': 'reglementation',
+  'louer-en-direct-securise': 'gestion',
 }
 
 const categoryLabel: Record<string, string> = {

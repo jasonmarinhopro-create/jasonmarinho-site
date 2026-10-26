@@ -36,6 +36,7 @@ export function recommendFormations(input: RecommendInput, max = 3): Recommendat
     add('fiscalite-reglementation-lcd-france-2026', 'Ton logement est en France : règles et fiscalité 2026')
     if (input.month >= 3 && input.month <= 6) add('declarer-lmnp-seul-decla-fr', 'Période de déclaration des revenus')
   }
+  if (input.hasContracts) add('louer-en-direct-securise', 'Tu loues déjà en direct : sécurise chaque réservation')
   if (!input.hasContracts) {
     add('annonce-directe', 'Tu n’as pas encore de réservation directe')
     add('google-my-business-lcd', 'Être trouvé sur Google sans commission')

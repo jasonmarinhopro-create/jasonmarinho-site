@@ -23,4 +23,10 @@ describe('recommendFormations', () => {
     const r = recommendFormations({ ...base, hasContracts: false, month: 11, startedSlugs: new Set(['annonce-directe']) })
     expect(r.map(x => x.slug)).toEqual(['google-my-business-lcd', 'lcd-basse-saison', 'mettre-le-bon-prix-lcd'])
   })
+
+  it('propose la location en direct sécurisée à un hôte qui a déjà des contrats', () => {
+    const avail = new Set([...ALL, 'louer-en-direct-securise'])
+    expect(recommendFormations({ ...base, availableSlugs: avail }).map(r => r.slug)).toContain('louer-en-direct-securise')
+    expect(recommendFormations({ ...base, hasContracts: false, availableSlugs: avail }).map(r => r.slug)).not.toContain('louer-en-direct-securise')
+  })
 })

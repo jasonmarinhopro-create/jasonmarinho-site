@@ -19,6 +19,7 @@ import { GERER_INCIDENTS_LITIGES_FORMATION } from '@/app/dashboard/formations/ge
 import { ANNONCE_360_FORMATION } from '@/app/dashboard/formations/annonce-360/content'
 import { AUDIT_ANNONCE_FORMATION } from '@/app/dashboard/formations/audit-annonce/content'
 import { DECLARER_LMNP_FORMATION } from '@/app/dashboard/formations/declarer-lmnp-seul-decla-fr/content'
+import { LOUER_EN_DIRECT_FORMATION } from '@/app/dashboard/formations/louer-en-direct-securise/content'
 
 export interface StaticFormation {
   slug?: string
@@ -62,4 +63,5 @@ export const FORMATION_CONTENT_MAP: Record<string, StaticFormation> = {
   'annonce-360': ANNONCE_360_FORMATION,
   'audit-annonce': AUDIT_ANNONCE_FORMATION,
   'declarer-lmnp-seul-decla-fr': DECLARER_LMNP_FORMATION,
+  'louer-en-direct-securise': LOUER_EN_DIRECT_FORMATION,
 }

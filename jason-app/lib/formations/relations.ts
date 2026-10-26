@@ -44,6 +44,7 @@ const RELATIONS: Record<string, FormationRelations> = {
       { slug: 'google-my-business-lcd', reason: 'Le canal n°1 pour la résa directe locale' },
       { slug: 'reseaux-sociaux-lcd', reason: 'Construis une audience qui te suit' },
       { slug: 'annonce-360', reason: 'La suite avancée, une fois ton canal direct lancé' },
+      { slug: 'louer-en-direct-securise', reason: 'Contrat, caution, assurance : sécurise chaque réservation directe' },
     ],
   },
   'tarification-dynamique': {
@@ -156,6 +157,7 @@ const RELATIONS: Record<string, FormationRelations> = {
     ],
     recommendedNext: [
       { slug: 'fiscalite-reglementation-lcd-france-2026', reason: 'Connais tes obligations légales' },
+      { slug: 'louer-en-direct-securise', reason: 'Tout le cadre pour louer sans plateforme' },
     ],
   },
   'decorer-amenager-logement-lcd': {
@@ -178,6 +180,18 @@ const RELATIONS: Record<string, FormationRelations> = {
     recommendedNext: [
       { slug: 'declarer-lmnp-seul-decla-fr', reason: 'Tu es au régime réel ? La méthode pour déclarer seul' },
       { slug: 'fiscalite-statut-conciergerie-tourisme', reason: 'Si tu vises la conciergerie' },
+    ],
+  },
+  'louer-en-direct-securise': {
+    articles: [
+      { label: 'Sécuriser le paiement résa directe', slug: 'securiser-paiement-reservation-directe-sans-airbnb' },
+      { label: 'Vérifier un voyageur avant d\'accepter', slug: 'verification-voyageurs-avant-accepter-reservation-lcd' },
+      { label: 'Driing, alternative directe à Airbnb', slug: 'driing-plateforme-vacances-sans-commissions' },
+      { label: 'Numéro d\'enregistrement 20 mai 2026', slug: 'numero-enregistrement-lcd-20-mai-2026-demarches' },
+    ],
+    recommendedNext: [
+      { slug: 'annonce-directe', reason: 'Trouver plus de voyageurs en direct' },
+      { slug: 'gerer-incidents-litiges-lcd', reason: 'État des lieux, preuves et litiges en détail' },
     ],
   },
   'declarer-lmnp-seul-decla-fr': {
