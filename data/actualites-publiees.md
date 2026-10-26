@@ -11,7 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-08-27 · plateformes · Airbnb bascule au frais unique de 15,5 % : deadline au 13 octobre (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-08-28 · conciergerie · Facturation électronique : réception obligatoire dès le 1er septembre · masquée (https://blog.elloha.com/2026/08/07/facturation-electronique-une-rentree-sportive-pour-les-loueurs-saisonniers/)
 - 2026-08-29 · plateformes · Airbnb bascule à 15,5 % de commission hôte dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-08-29 · reglementation · Déclaloc reporté au T4 2026 : continue à déclarer en mairie (https://sejourdirect.fr/blog/enregistrement-obligatoire-meubles-tourisme-mai-2026)
