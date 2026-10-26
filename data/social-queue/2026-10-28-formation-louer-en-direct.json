@@ -1,0 +1,25 @@
+{
+  "slug": "formation-louer-en-direct",
+  "format": "carrousel",
+  "public": "hotes",
+  "photo": "img/exemple-fiches/photo-salon-3.jpg",
+  "slides": [
+    { "type": "couverture", "kicker": "Nouvelle formation", "titre": "Louer en direct, *sans te mettre en danger*", "sous_titre": "Ce que la plateforme faisait pour toi, à refaire toi-même." },
+    { "type": "point", "titre": "La pièce d’identité : *la voir, pas la garder*", "texte": "Tu peux demander à voir la pièce du voyageur. La CNIL exclut d’en garder une copie : photocopie, scan ou photo." },
+    { "type": "point", "titre": "Arrhes ou acompte : *écris-le*", "texte": "Si ton contrat ne dit rien, la somme versée à la réservation compte comme des arrhes. En cas d’annulation, ça change tout." },
+    { "type": "point", "titre": "Pas de *rétractation de 14 jours*", "texte": "Une location de vacances à dates précises n’y ouvre pas droit, même réservée en ligne. Tes conditions d’annulation s’appliquent." },
+    { "type": "chiffre", "kicker": "Caution par carte", "valeur": "7 jours", "label": "Durée d’un blocage sur une carte, *environ*. Bloque la caution juste avant l’arrivée.", "source": "Documentation Stripe" },
+    { "type": "liste", "kicker": "Dans la formation", "titre": "6 modules, *12 leçons*", "items": ["Vérifier l’identité dans les règles", "Contrat, arrhes et paiement sans arnaque", "Caution et assurance qui couvre vraiment", "Taxe de séjour et fiche de police", "Quand un juriste est utile"] },
+    { "type": "astuce", "kicker": "Née de la communauté", "titre": "Une question d’un membre, *une formation*", "texte": "Elle est née d’une suggestion envoyée depuis l’app. Les prochaines aussi : dis-nous ce qui te manque." }
+  ],
+  "legende": "Louer en direct, c’est garder la commission. C’est aussi refaire seul ce que la plateforme faisait pour toi : savoir à qui tu loues, encaisser sans arnaque, couvrir les dégâts.\n\nLa nouvelle formation reprend tout, sources à l’appui : vérifier l’identité d’un voyageur sans garder de copie de sa pièce (la CNIL l’exclut), un contrat qui tient, arrhes ou acompte, la caution par carte, l’assurance qui couvre vraiment la location courte durée, la taxe de séjour et la fiche de police. Elle se termine par un plan en 10 étapes.\n\nEt toi, qu’est-ce qui te freine le plus pour louer en direct ?",
+  "hashtags": ["#locationcourteduree", "#reservationdirecte", "#airbnb", "#hoteairbnb", "#lcd"],
+  "lien": "https://jasonmarinho.com/services/formations/louer-en-direct-securise",
+  "story": {
+    "texte": "Louer en direct, *en toute sécurité* : la nouvelle formation",
+    "frames": [
+      { "type": "question", "titre": "Tu gardes une copie de la *pièce d’identité* de tes voyageurs ?" },
+      { "type": "astuce", "kicker": "La réponse", "titre": "La CNIL *l’exclut*", "texte": "Tu peux la demander à voir, pas en garder une photo ni un scan." }
+    ]
+  }
+}

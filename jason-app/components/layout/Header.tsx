@@ -12,7 +12,7 @@ import SOSModal from '@/components/sos/SOSModal'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, usePathname } from 'next/navigation'
 import { useTheme } from '@/components/ThemeProvider'
-import { CHANGELOG } from '@/lib/constants/changelog'
+import { changelogFor } from '@/lib/constants/changelog'
 import { CHANGELOG_IN_FEED } from '@/lib/notifications/present'
 import { subscribeDashboardTitle } from '@/lib/dashboard-title-store'
 
@@ -126,7 +126,7 @@ const PLAN_COLORS: Record<string, { bg: string; color: string; dot: string }> = 
 // (timestamp stocké en DB, donc partagé entre tous ses navigateurs).
 function computeReadIds(lastSeenAt: string | null | undefined): Set<string> {
   if (!lastSeenAt) return new Set()
-  return new Set(CHANGELOG.filter(e => e.date <= lastSeenAt).map(e => e.id))
+  return new Set(changelogFor(false).filter(e => e.date <= lastSeenAt).map(e => e.id))
 }
 
 interface HeaderProps {
@@ -140,6 +140,8 @@ interface HeaderProps {
   userId?: string
   /** Date de dernière ouverture du panneau Nouveautés (DB, suit le compte). */
   lastSeenNouveautesAt?: string | null
+  /** Compte coché « masquer les annonces de formations » (migration 163) */
+  hideFormationNews?: boolean
   /** Date de dernière visite Actualités, transmise au Sidebar mobile. */
   lastSeenActualitesAt?: string | null
   /** Badge Actualités pré-calculé côté serveur, transmis au Sidebar mobile. */
@@ -166,7 +168,7 @@ interface HeaderProps {
   activePropertyId?: string
 }
 
-export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, lastSeenActualitesAt = null, hasNewActualites = false, proNav, contratsTodo = 0, showOnboardingBtn = false, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId, initialAppNotifUnread = 0, initialChezNousUnread = 0 }: HeaderProps) {
+export default function Header({ title: titleOverrideProp, userName: initialUserName, currentPlan = 'Découverte', isAdmin: isAdminProp = false, userId, lastSeenNouveautesAt = null, hideFormationNews = false, lastSeenActualitesAt = null, hasNewActualites = false, proNav, contratsTodo = 0, showOnboardingBtn = false, hasStripeAccount = false, spaces = [], isContributor = false, allProperties, activePropertyId, initialAppNotifUnread = 0, initialChezNousUnread = 0 }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -286,7 +288,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   }, [lastSeenNouveautesAt])
 
   // Seules les dernières nouveautés sont dans le fil : elles seules comptent (avant : les 30, badge « 9+ » pour un nouvel inscrit)
-  const unreadCount = CHANGELOG.slice(0, CHANGELOG_IN_FEED).filter(e => !readIds.has(e.id)).length
+  const unreadCount = changelogFor(hideFormationNews).slice(0, CHANGELOG_IN_FEED).filter(e => !readIds.has(e.id)).length
 
   const handleOpenNotif = useCallback(() => {
     setNotifOpen(o => !o)
@@ -295,7 +297,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
 
   // Nouveautés vues depuis le fil : l'action serveur enregistre déjà la date
   const handleNewsSeen = useCallback(() => {
-    setReadIds(new Set(CHANGELOG.map(e => e.id)))
+    setReadIds(new Set(changelogFor(false).map(e => e.id)))
   }, [])
 
   // Close dropdown on outside click

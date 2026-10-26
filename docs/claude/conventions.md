@@ -148,3 +148,14 @@ Templates dans `lib/email/template.ts` avec helpers :
 
 - Réseaux sociaux (`/dashboard/admin/social`, 12 erreurs #425 en sept. 2026) : « Prochain créneau libre » calculé avec l'heure du serveur (UTC) puis du navigateur (Paris). Calculé maintenant après le montage seulement ; dates affichées avec `timeZone: 'Europe/Paris'`.
 - « il y a 3 min » calculé au rendu serveur puis recalculé dans le navigateur diffère souvent : React lève l'erreur #425 (vue 8 fois dans `app_errors` sur le forum). Toujours afficher une date relative via `components/ui/RelativeTime.tsx` (`<time suppressHydrationWarning>`), jamais `{formatRelative(...)}` directement dans le JSX. Même règle pour tout texte qui dépend de l'heure courante ou du fuseau (`Date.now()`, `toLocaleDateString` sans `timeZone`) rendu dans un composant client.
+
+## Nouvelle formation : check-list (26/10/2026)
+
+Jason : « dès qu'il y a une nouvelle formation, il faut une page, la mettre dans Services et Formations, et que tous les chiffres soient connectés ». Le test `jason-app/lib/formations/catalogue-sync.test.ts` fait échouer la CI s'il manque une étape (pour chaque dossier de `app/dashboard/formations/` qui a un `content.ts`).
+1. `app/dashboard/formations/<slug>/content.ts` + `page.tsx` (`buildFormationPage`), tableaux Markdown avec la ligne `| --- |`.
+2. Inscription dans l'app : `ACTIVE_SLUGS` de `formations/page.tsx`, `SLUG_CATEGORY` de `FormationsGrid.tsx`, `admin/formations/[slug]/contentMap.ts`, `lib/formations/relations.ts`, éventuellement `recommend.ts` (+ test).
+3. Migration `YYYYMMDD_NNN_seed_formation_<slug>.sql` (upsert dans `formations`, `is_published`), puis le workflow « Publier le contenu des formations » (`formations: <slug>`, `apply: true`).
+4. Site : page `services/formations/<slug>/index.html` (FAQ, Course, BreadcrumbList), carte `f-card` dans `services/formations/index.html`, `sitemap.xml`, `llms.txt`.
+5. Compteurs : rien à faire, `scripts/sync-counts.mjs` recompte les dossiers à chaque build (site et app) et réécrit `FORMATIONS_TOTAL` et les « N formations ».
+6. Annonce : entrée `CHANGELOG` (titre « Nouvelle formation : … », cloche et lettre du mois), badge « Nouveau » automatique 45 jours (`lib/formations/nouveau.ts`, d'après `formations.created_at`, nouveautés non commencées en tête du catalogue), post + stories dans `data/social-queue/`, et prévenir le membre qui l'a suggérée (table `suggestions`) avec l'accord de Jason.
+7. Comptes exclus des annonces de formations : `profiles.masquer_annonces_formations` (migration 163, coché en base, jamais d'adresse dans le dépôt) ; `changelogFor()` retire ces entrées de la cloche et du compteur.

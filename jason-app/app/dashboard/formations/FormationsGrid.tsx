@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useTransition } from 'react'
 import Link from 'next/link'
-import { GraduationCap, Clock, BookOpen, ArrowRight, CheckCircle, Lock, Wrench, MagnifyingGlass, Funnel, BookmarkSimple, Trophy, Compass, Heart } from '@phosphor-icons/react/dist/ssr'
+import { GraduationCap, Clock, BookOpen, ArrowRight, CheckCircle, Lock, Wrench, MagnifyingGlass, Funnel, BookmarkSimple, Trophy, Compass, Heart, Sparkle } from '@phosphor-icons/react/dist/ssr'
 import { toggleFormationFavorite } from './actions'
 import Select from '@/components/ui/Select'
 
@@ -35,6 +35,8 @@ interface Props {
   unlockedSlugs: string[] | null // null = tout accessible (Standard+)
   plan: string
   initialFavoriteIds?: string[]
+  /** Formations mises en ligne il y a moins de 45 jours (calculé côté serveur) */
+  newSlugs?: string[]
   /** En-tête (parcours, compteurs, profil/favoris) déjà dans le hero de la page */
   hideHeader?: boolean
 }
@@ -83,7 +85,7 @@ type LevelFilter = 'all' | 'debutant' | 'intermediaire' | 'avance'
 type StatusFilter = 'all' | 'enrolled' | 'not_enrolled' | 'done'
 type CategoryFilter = 'all' | 'visibilite' | 'revenus' | 'gestion' | 'reglementation' | 'conciergerie'
 
-export default function FormationsGrid({ formations, progressMap, comingSoon, unlockedSlugs, plan, initialFavoriteIds = [], hideHeader = false }: Props) {
+export default function FormationsGrid({ formations, progressMap, comingSoon, unlockedSlugs, plan, initialFavoriteIds = [], newSlugs = [], hideHeader = false }: Props) {
   const isDecouverte = plan === 'decouverte'
   const slotsUsed = unlockedSlugs?.length ?? 0
   const slotsMax = 2
@@ -93,6 +95,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all')
   const [favorites, setFavorites] = useState<Set<string>>(new Set(initialFavoriteIds))
   const [, startTransition] = useTransition()
+  const newSet = useMemo(() => new Set(newSlugs), [newSlugs])
 
   function handleToggleFavorite(f: Formation) {
     const isFav = favorites.has(f.id)
@@ -129,13 +132,14 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
 
       return true
     }).sort((a, b) => rank(a) - rank(b))
-    // En cours d'abord, puis non commencées, terminées en dernier
-    // (ordre du catalogue conservé à rang égal : tri stable).
+    // Nouveautés non commencées en tête, puis en cours, non commencées,
+    // terminées en dernier (ordre du catalogue conservé à rang égal : tri stable).
     function rank(f: Formation) {
       const p = progressMap[f.id]
+      if (p === undefined && newSet.has(f.slug)) return -1
       return p === undefined ? 1 : p === 100 ? 2 : 0
     }
-  }, [formations, progressMap, search, levelFilter, statusFilter, categoryFilter])
+  }, [formations, progressMap, search, levelFilter, statusFilter, categoryFilter, newSet])
 
   const enrolledCount = formations.filter(f => progressMap[f.id] !== undefined).length
   const hasFilters = search !== '' || levelFilter !== 'all' || statusFilter !== 'all' || categoryFilter !== 'all'
@@ -226,7 +230,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
           )}
         </div>
         {/* Niveau + statut en menus déroulants (avant : 2 rangées de boutons
-            en plus de la rangée des thèmes, lourd pour 21 formations). */}
+            en plus de la rangée des thèmes, lourd pour plus de 20 formations). */}
         <div style={styles.selectRow}>
           <Select
             value={levelFilter}
@@ -290,8 +294,9 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
           const isLocked = unlockedSlugs !== null && slotsUsed >= slotsMax && !unlockedSlugs.includes(f.slug)
 
           const isFav = favorites.has(f.id)
+          const isNew = newSet.has(f.slug)
           return (
-            <div key={f.id} style={{ ...styles.card, ...(isLocked ? styles.cardLocked : {}) }} className={`glass-card fade-up d${(i % 6) + 1}`}>
+            <div key={f.id} style={{ ...styles.card, ...(isNew && !isLocked ? styles.cardNew : {}), ...(isLocked ? styles.cardLocked : {}) }} className={`glass-card fade-up d${(i % 6) + 1}`}>
               <div style={styles.cardHeader}>
                 <div style={{ ...styles.cardIcon, ...(isLocked ? { opacity: 0.5 } : {}) }}>
                   {isLocked
@@ -300,6 +305,7 @@ export default function FormationsGrid({ formations, progressMap, comingSoon, un
                   }
                 </div>
                 <div style={styles.cardBadges}>
+                  {isNew && <span style={styles.newBadge}><Sparkle size={11} weight="fill" /> Nouveau</span>}
                   {SLUG_CATEGORY[f.slug] && (
                     <span style={styles.categoryBadge}>{categoryLabel[SLUG_CATEGORY[f.slug]]}</span>
                   )}
@@ -563,6 +569,14 @@ const styles: Record<string, React.CSSProperties> = {
     transition: 'border-color var(--d-base) var(--ease-smooth), box-shadow var(--d-base) var(--ease-smooth), transform var(--d-base) var(--ease-smooth)',
   },
   cardLocked: { opacity: 0.65, filter: 'grayscale(0.2)' },
+  // Nouveauté : liseré jaune et léger halo (touche de jaune de la marque)
+  cardNew: { border: '1px solid rgba(255,213,107,0.55)', boxShadow: '0 0 0 3px rgba(255,213,107,0.12)' },
+  newBadge: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px',
+    fontSize: 'var(--t-xs)', fontWeight: 700, letterSpacing: '0.4px',
+    padding: '3px 10px', borderRadius: 'var(--r-pill)',
+    background: '#FFD56B', color: '#1F2B22', border: '1px solid #FFD56B',
+  },
   lockedBadge: {
     fontSize: 'var(--t-xs)', fontWeight: 700, letterSpacing: '0.6px',
     padding: '3px 10px', borderRadius: 'var(--r-pill)',

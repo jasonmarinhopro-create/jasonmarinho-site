@@ -4,7 +4,7 @@
 // nouveautés de l'app, dans un seul ordre chronologique.
 import 'server-only'
 import { createClient } from '@/lib/supabase/server'
-import { CHANGELOG } from '@/lib/constants/changelog'
+import { changelogFor } from '@/lib/constants/changelog'
 import { displayName } from '@/lib/chez-nous/display'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import {
@@ -38,7 +38,7 @@ export async function loadFeed(opts: { limit?: number; unreadOnly?: boolean } = 
     const [appRes, qrRes, profRes] = await Promise.all([
       appQ,
       qrQ,
-      supabase.from('profiles').select('last_seen_nouveautes_at').eq('id', user.id).maybeSingle(),
+      supabase.from('profiles').select('last_seen_nouveautes_at, masquer_annonces_formations').eq('id', user.id).maybeSingle(),
     ])
 
     const now = Date.now()
@@ -58,7 +58,7 @@ export async function loadFeed(opts: { limit?: number; unreadOnly?: boolean } = 
     const qr = qrRows.map(n => fromForumNotification(n, n.post_id ? posts.get(n.post_id) ?? null : null, n.actor_id ? actors.get(n.actor_id) ?? null : null))
 
     const lastSeen = (profRes.data?.last_seen_nouveautes_at as string | null | undefined) ?? null
-    const news = fromChangelog(CHANGELOG, lastSeen, CHANGELOG_IN_FEED).filter(i => !opts.unreadOnly || !i.read)
+    const news = fromChangelog(changelogFor(profRes.data?.masquer_annonces_formations as boolean | undefined), lastSeen, CHANGELOG_IN_FEED).filter(i => !opts.unreadOnly || !i.read)
 
     const items = sortFeed([...app, ...qr, ...news]).slice(0, limit)
     return { items, today, unread: items.filter(i => !i.read).length }

@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { ArrowRight, Compass, GraduationCap } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashboard/HubHero'
 import { recommendFormations } from '@/lib/formations/recommend'
+import { isNouvelleFormation } from '@/lib/formations/nouveau'
 import { getUnlockedFormationSlugs } from '@/lib/queries/formation-access'
 import { getCachedPublishedFormations } from '@/lib/queries/cache'
 import type { Metadata } from 'next'
@@ -79,6 +80,8 @@ export default async function FormationsPage() {
   // cachée, donc moins coûteux que de re-querier la DB par utilisateur.
   const activeSet = new Set(ACTIVE_SLUGS)
   const formations = allCachedFormations.filter(f => activeSet.has(f.slug))
+
+  const newSlugs = formations.filter(f => isNouvelleFormation(f.created_at)).map(f => f.slug)
 
   const progressMap = Object.fromEntries(
     (userFormations ?? []).map(uf => [uf.formation_id, uf.progress])
@@ -176,6 +179,7 @@ export default async function FormationsPage() {
             unlockedSlugs={unlockedSlugs}
             plan={plan}
             initialFavoriteIds={Array.from(favoriteIds) as string[]}
+            newSlugs={newSlugs}
             hideHeader
           />
         </div>

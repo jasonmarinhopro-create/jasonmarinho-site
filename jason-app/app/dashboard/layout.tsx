@@ -192,6 +192,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
           isAdmin={isAdmin}
           userId={profile.userId}
           lastSeenNouveautesAt={profile.last_seen_nouveautes_at}
+          hideFormationNews={profile.masquer_annonces_formations}
           lastSeenActualitesAt={profile.last_seen_actualites_at}
           hasNewActualites={hasNewActualites}
           proNav={proNav}

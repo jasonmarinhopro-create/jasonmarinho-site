@@ -8,6 +8,17 @@ export interface ChangelogEntry {
   description: string
 }
 
+/** Annonce d'une nouvelle formation (titre « Nouvelle formation : … ») */
+export function isFormationAnnouncement(e: ChangelogEntry): boolean {
+  return /^Nouvelle formation\b/.test(e.title)
+}
+
+/** Nouveautés montrées à un compte : sans les annonces de formations pour les
+ *  comptes cochés `profiles.masquer_annonces_formations` (migration 163). */
+export function changelogFor(hideFormations: boolean | null | undefined): ChangelogEntry[] {
+  return hideFormations ? CHANGELOG.filter(e => !isFormationAnnouncement(e)) : CHANGELOG
+}
+
 // Liste curée des nouveautés qui intéressent vraiment un hôte LCD.
 // On garde l'essentiel (nouvelles fonctionnalités utiles, formations, plans,
 // outils opérationnels) et on retire les détails techniques / refontes
