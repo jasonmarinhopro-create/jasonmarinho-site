@@ -37,7 +37,7 @@ function block(slug, aVille) {
       <li><strong>Les droits d’utilisation écrits dans le devis</strong> : site, Booking, réseaux sociaux, brochure.</li>
       <li><strong>Un planning calé à l’avance</strong> : chambres libres et prêtes le jour du shooting.</li>
     </ul>${taxe}
-    <p style="margin-top:14px">Dans l’annuaire, le filtre « Hôtels et résidences » montre les photographes qui y travaillent déjà. <a href="/blog/photographe-hotel-conciergerie-7-points-avant-shooting" style="color:var(--g);font-weight:600">Les 7 points à régler avant le shooting</a></p>
+    <p style="margin-top:14px">Dans l’annuaire, le filtre « Hôtels et résidences » montre les photographes qui y travaillent déjà. <a href="/photographe-hotel" style="color:var(--g);font-weight:600">Photographe pour un hôtel : la méthode</a></p>
   </div>
 </section>
 ${END}`

@@ -50,7 +50,7 @@ export default {
     {
       h2: '7. Un pro qui connaît l’hôtellerie, près de chez toi',
       content: [
-        { type: 'p', text: "Un photographe qui travaille déjà pour des hôtels sait gérer les chambres occupées, les horaires du service et la cohérence d’une série. Le plus simple : décrire ton établissement une fois sur la page <a href=\"/trouver-un-pro\" style=\"color:var(--g);font-weight:500\">Trouver un pro</a> (choisis « Hôtel ou résidence » comme type d’hébergement). Ta demande part aux photographes et vidéastes de ta zone, d’abord à ceux qui indiquent travailler pour ce type d’établissement. Pour comparer les profils et savoir quoi regarder sur un portfolio, l’article <a href=\"/blog/photographe-airbnb-tarifs-comment-choisir\" style=\"color:var(--g);font-weight:500\">comment choisir son photographe</a> reste valable." },
+        { type: 'p', text: "Un photographe qui travaille déjà pour des hôtels sait gérer les chambres occupées, les horaires du service et la cohérence d’une série. Le plus simple : décrire ton établissement une fois sur la page <a href=\"/photographe-hotel\" style=\"color:var(--g);font-weight:500\">photographe hôtel et conciergerie haut de gamme</a>. Ta demande part aux photographes et vidéastes de ta zone, d’abord à ceux qui indiquent travailler pour ce type d’établissement. Pour comparer les profils et savoir quoi regarder sur un portfolio, l’article <a href=\"/blog/photographe-airbnb-tarifs-comment-choisir\" style=\"color:var(--g);font-weight:500\">comment choisir son photographe</a> reste valable." },
       ],
     },
     {
