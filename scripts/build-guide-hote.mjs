@@ -93,7 +93,7 @@ export function buildGuideHote(c, L, today = new Date().toISOString().slice(0, 1
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
 <link rel="manifest" href="/manifest.json?v=2026-06">
 <meta name="theme-color" content="#004C3F">
-<link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
+<link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
 

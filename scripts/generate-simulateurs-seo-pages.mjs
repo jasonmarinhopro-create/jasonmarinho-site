@@ -727,7 +727,7 @@ function buildPage(p) {
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <meta name="theme-color" content="#004C3F">
 
-  <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
+  <link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
   <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/Phosphor-Bold.woff2" crossorigin>
   <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
