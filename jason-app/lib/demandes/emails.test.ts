@@ -25,7 +25,14 @@ describe('e-mails de la demande', () => {
     expect(subject).toBe('Un hôte cherche une équipe de ménage à Nantes')
     expect(html).toContain('Répondre à Claire')
     expect(html).toContain('href="tel:0612345678"')
-    expect(html).toContain('te transmet sa demande')
+    expect(html).toContain('je te transmets sa demande')
+  })
+  it('bouton « Je m’en occupe » et version texte', () => {
+    const r = proEmail(d, { proPrenom: 'Léa', manuel: false, adequation: null, filtre: false, demandesUrl: 'x', priseUrl: 'https://app.example/demande/prise/abc' })
+    expect(r.html).toContain('href="https://app.example/demande/prise/abc"')
+    expect(r.html).toContain('Je m’en occupe')
+    expect(r.text).toContain('Je m’en occupe : https://app.example/demande/prise/abc')
+    expect(r.text).toContain('Claire')
   })
   it('jamais de tiret cadratin', () => {
     for (const h of all()) expect(h).not.toContain('—')

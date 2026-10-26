@@ -32,7 +32,7 @@ export type EtatAdmin = 'traitee' | 'sans_pro' | 'repondue' | 'attente'
 export const ETAT_LABELS: Record<EtatAdmin, string> = {
   traitee: 'Traitée',
   sans_pro: 'Sans pro',
-  repondue: 'Un pro l’a ouverte',
+  repondue: 'Un pro l’a prise en charge',
   attente: 'En attente des pros',
 }
 

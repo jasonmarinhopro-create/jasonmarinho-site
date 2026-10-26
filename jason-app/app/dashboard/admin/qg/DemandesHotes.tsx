@@ -310,13 +310,13 @@ function Fiche({ d, pros, suiviOk, onBack, patch }: {
                       </div>
                     </div>
                     {e.ouvert
-                      ? <span style={{ ...st.etat, color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)' }}><Check size={11} weight="bold" /> Ouverte</span>
-                      : <span style={{ ...st.etat, color: 'var(--text-3)', background: 'var(--bg-2)', border: '1px solid var(--border)' }}><Clock size={11} /> Pas encore</span>}
+                      ? <span style={{ ...st.etat, color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)' }}><Check size={11} weight="bold" /> Pris en charge</span>
+                      : <span style={{ ...st.etat, color: 'var(--text-3)', background: 'var(--bg-2)', border: '1px solid var(--border)' }}><Clock size={11} /> Pas de signe</span>}
                   </li>
                 ))}
               </ul>
             )}
-            <p style={st.small}>« Ouverte » : le pro a changé le statut de la demande dans ses Demandes reçues. Sans réaction sous 48 h, la demande part toute seule à d’autres pros (3 envois au plus).</p>
+            <p style={st.small}>« Pris en charge » : le pro a cliqué « Je m’en occupe » dans l’e-mail, ou changé le statut dans ses Demandes reçues. Une réponse envoyée seulement par e-mail ne se voit pas ici. Sans signe sous 48 h, la demande part toute seule à d’autres pros (3 envois au plus).</p>
           </section>
         </div>
 

@@ -248,7 +248,7 @@ async function loadOverviewBase(admin: Db, startOfMonth: Date, twelveMonthsAgo: 
     admin.from('user_formations').select('*', { count: 'exact', head: true }).eq('progress', 100),
     admin.from('profiles').select('*', { count: 'exact', head: true }).eq('driing_status', 'pending'),
     admin.from('reported_guests').select('*', { count: 'exact', head: true }).eq('is_validated', false),
-    admin.from('suggestions').select('*', { count: 'exact', head: true }),
+    admin.from('suggestions').select('*', { count: 'exact', head: true }).is('treated_at', null),
     admin.from('user_formations').select('formation_id, formations(title)'),
     admin.from('profiles').select('id, email, full_name, plan, created_at').neq('role', 'admin').order('created_at', { ascending: false }).limit(8),
     admin.from('profiles').select('created_at, plan').gte('created_at', twelveMonthsAgo.toISOString()).neq('role', 'admin'),

@@ -22,6 +22,7 @@ import { useConfirm } from '@/components/ui/ConfirmDialog'
 import {
   confirmDriingMember, rejectDriingMember,
   deleteSuggestion,
+  setSuggestionTreated,
 } from '../actions'
 import SignalementsAdmin from '../signalements/SignalementsAdmin'
 import ModerationQueue from '../signalements/ModerationQueue'
@@ -46,6 +47,8 @@ interface Suggestion {
   id: string; type: string; message: string
   user_email: string | null; user_id: string | null
   created_at: string
+  /** Traitée (migration 165) : reste dans l'historique, hors compteur */
+  treated_at?: string | null
 }
 
 export type QGTab = 'hotes' | 'driing' | 'reports' | 'suggestions'
@@ -108,7 +111,7 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
     reports: reports.filter(r => !r.is_validated).length
       + moderation.pending.length
       + moderation.removalRequests.length,
-    suggestions: suggestions.length,
+    suggestions: suggestions.filter(sg => !sg.treated_at).length,
   }), [driing, reports, suggestions, moderation, hotesCount])
 
   const totalPending = counts.hotes + counts.driing + counts.reports + counts.suggestions
@@ -190,6 +193,17 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
     })
   }
 
+  async function suggestionTreated(id: string, treated: boolean) {
+    const snap = suggestions
+    setSuggestions(prev => prev.map(sg => sg.id === id ? { ...sg, treated_at: treated ? new Date().toISOString() : null } : sg))
+    startT(async () => {
+      const res = await setSuggestionTreated(id, treated)
+      if (res?.error) { setSuggestions(snap); notify(id, 'err', `Erreur : ${res.error}`) }
+      else notify(id, 'ok', treated ? 'Marquée traitée' : 'Remise à traiter')
+    })
+  }
+  const [showTreated, setShowTreated] = useState(false)
+
   // ── Filtrage recherche ──
   const q = search.trim().toLowerCase()
   const filteredDriing = useMemo(() => driing.filter(m => {
@@ -197,11 +211,13 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
     return (m.email ?? '').toLowerCase().includes(q) || (m.full_name ?? '').toLowerCase().includes(q)
   }), [driing, q])
   // Reports : filtrage géré dans SignalementsAdmin embedded
+  const treatedCount = suggestions.filter(sg => sg.treated_at).length
   const filteredSuggestions = useMemo(() => suggestions.filter(s => {
+    if (s.treated_at && !showTreated) return false
     if (!q) return true
     return (s.message ?? '').toLowerCase().includes(q) ||
            (s.user_email ?? '').toLowerCase().includes(q)
-  }), [suggestions, q])
+  }), [suggestions, q, showTreated])
 
   return (
     <div style={s.root}>
@@ -364,13 +380,18 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
       {/* ── SUGGESTIONS ── */}
       {tab === 'suggestions' && (
         <div style={s.list}>
+          {treatedCount > 0 && (
+            <button onClick={() => setShowTreated(v => !v)} style={{ ...s.btn, alignSelf: 'flex-start', background: 'transparent', borderColor: 'var(--border)', color: 'var(--text-2)' }}>
+              {showTreated ? 'Masquer les traitées' : `Voir les traitées (${treatedCount})`}
+            </button>
+          )}
           {filteredSuggestions.length === 0 ? (
-            <Empty label="Aucune suggestion." />
+            <Empty label={treatedCount > 0 && !showTreated ? 'Tout est traité.' : 'Aucune suggestion.'} />
           ) : filteredSuggestions.map(sg => {
             const fb = feedback?.id === sg.id ? feedback : null
             const isFormation = sg.type === 'formation'
             return (
-              <div key={sg.id} style={s.row}>
+              <div key={sg.id} style={{ ...s.row, ...(sg.treated_at ? { opacity: 0.6 } : {}) }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' as const, justifyContent: 'space-between' }}>
                   <span style={{
                     display: 'inline-flex', alignItems: 'center', gap: '4px',
@@ -392,9 +413,18 @@ export default function AdminQG({ initialDriing, initialReports, initialSuggesti
                 </p>
                 <div style={s.rowActions}>
                   {fb ? <FbPill fb={fb} /> : (
-                    <button onClick={() => suggestionDelete(sg.id)} disabled={isPending} style={{ ...s.btn, ...s.btnReject }}>
-                      <Trash size={13} weight="bold" /> Supprimer
-                    </button>
+                    <>
+                      {sg.treated_at
+                        ? <button onClick={() => suggestionTreated(sg.id, false)} disabled={isPending} style={{ ...s.btn, background: 'transparent', borderColor: 'var(--border)', color: 'var(--text-2)' }}>
+                            Traitée le {fmtDate(sg.treated_at)} · Remettre à traiter
+                          </button>
+                        : <button onClick={() => suggestionTreated(sg.id, true)} disabled={isPending} style={{ ...s.btn, ...s.btnConfirm }}>
+                            <Check size={13} weight="bold" /> Marquer traitée
+                          </button>}
+                      <button onClick={() => suggestionDelete(sg.id)} disabled={isPending} style={{ ...s.btn, ...s.btnReject }}>
+                        <Trash size={13} weight="bold" /> Supprimer
+                      </button>
+                    </>
                   )}
                 </div>
               </div>

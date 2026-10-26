@@ -3,6 +3,8 @@
 // E-mails par Resend (offre gratuite : 100 par jour) : au plus 3 pros + l'hôte
 // + Jason par demande.
 
+import { priseToken } from './prise'
+import { memberMailSecret } from '@/lib/admin/member-mail-secret'
 import 'server-only'
 import { Resend } from 'resend'
 import { randomBytes } from 'node:crypto'
@@ -75,16 +77,18 @@ const displayName = (p: Pro) => p.pseudo || p.full_name
 const proMail = (p: Pro, metier: DemandeMetier): ProMail => ({ nom: displayName(p), ville: p.ville ?? null, url: `${SITE}/annuaires/${T[metier].dir}/${p.slug}` })
 const qgUrl = (id: string) => `${APP}/dashboard/admin/qg?onglet=hotes&demande=${id}`
 
-async function emailPro(d: DemandeInput, pro: Pro, metier: DemandeMetier, manuel = false) {
+async function emailPro(d: DemandeInput, pro: Pro, metier: DemandeMetier, manuel = false, contactId: string | null = null) {
   const r = resend(); if (!r) return
-  const { subject, html } = proEmail(d, {
+  const secret = memberMailSecret()
+  const { subject, html, text } = proEmail(d, {
     proPrenom: firstName(pro),
     manuel,
     adequation: metier === 'photographe' ? pourquoiCePro(pro, d.frequence) : null,
     filtre: metier === 'photographe' && !!besoinPhoto(d.frequence),
     demandesUrl: `${APP}/dashboard/${T[metier].dash}/demandes`,
+    priseUrl: contactId && secret ? `${APP}/demande/prise/${priseToken(metier, contactId, secret)}` : null,
   })
-  await r.emails.send({ from: FROM, to: pro.email, replyTo: d.email, subject, html })
+  await r.emails.send({ from: FROM, to: pro.email, replyTo: d.email, subject, html, text })
     .catch(e => log.error('e-mail au pro', { err: e instanceof Error ? e.message : String(e) }))
 }
 
@@ -123,7 +127,7 @@ async function envoyerVague(d: DemandeInput, metier: DemandeMetier, pros: Pro[],
       .select('id').maybeSingle()
     if (error) log.error('ligne Demandes reçues', { err: error.message })
     await db.rpc(t.rpc, { p_id: pro.id })
-    await emailPro(d, pro, metier, manuel)
+    await emailPro(d, pro, metier, manuel, (data as { id: string } | null)?.id ?? null)
     sent.push({ id: pro.id, contact_id: (data as { id: string } | null)?.id ?? null, round, at: new Date().toISOString(), ...(manuel ? { manual: true } : {}) })
   }
   return sent

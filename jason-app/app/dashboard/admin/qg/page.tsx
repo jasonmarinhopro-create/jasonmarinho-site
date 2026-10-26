@@ -45,7 +45,7 @@ export default async function AdminQGPage({ searchParams }: { searchParams: { on
       .limit(500),
     admin
       .from('suggestions')
-      .select('id, type, message, user_email, user_id, created_at')
+      .select('id, type, message, user_email, user_id, created_at, treated_at')
       .order('created_at', { ascending: false })
       .limit(500),
     getModerationQueue(),

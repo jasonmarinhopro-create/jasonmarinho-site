@@ -218,6 +218,20 @@ export async function normalizeAllReportIdentifiers() {
   return { updated }
 }
 
+/** « Traitée » : la suggestion reste dans l'historique et sort du compteur (migration 165) */
+export async function setSuggestionTreated(suggestionId: string, treated: boolean) {
+  const { error, supabase } = await getAdminClient()
+  if (error || !supabase) return { error }
+  const { error: updError } = await supabase
+    .from('suggestions')
+    .update({ treated_at: treated ? new Date().toISOString() : null })
+    .eq('id', suggestionId)
+  if (updError) return { error: updError.message }
+  revalidatePath('/dashboard/admin')
+  revalidateTag('admin-overview')
+  return { success: true }
+}
+
 export async function deleteSuggestion(suggestionId: string) {
   const { error, supabase } = await getAdminClient()
   if (error || !supabase) return { error }
