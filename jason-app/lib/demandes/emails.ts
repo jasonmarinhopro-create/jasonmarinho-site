@@ -81,6 +81,13 @@ const p = (html: string, mb = 18) => `<p style="margin:0 0 ${mb}px;font-family:$
 const small = (html: string) => `<p style="margin:0;font-family:${SANS};font-size:13px;line-height:1.65;color:${SOFT};">${html}</p>`
 const link = (href: string, label: string) => `<a href="${escHtml(href)}" style="color:${GREEN};font-weight:600;text-decoration:none;">${label}</a>`
 
+/** Bouton secondaire (contour), sous le bouton principal */
+function buttonOutline(href: string, label: string): string {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:10px 0 0;"><tr><td align="center" style="border:1px solid ${GREEN};border-radius:12px;">
+<a href="${escHtml(href)}" style="display:block;padding:14px 22px;font-family:${SANS};font-size:15px;font-weight:600;color:${GREEN};text-decoration:none;text-align:center;">${escHtml(label)}</a>
+</td></tr></table>`
+}
+
 function button(href: string, label: string): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:6px 0 0;"><tr><td align="center" style="background:${GREEN};border-radius:12px;">
 <a href="${escHtml(href)}" style="display:block;padding:15px 22px;font-family:${SANS};font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;text-align:center;">${escHtml(label)}</a>
@@ -101,7 +108,24 @@ function fiche(rows: Array<[string, string]>): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${LINE};border-radius:14px;border-collapse:separate;margin:0 0 20px;">${lines.join('')}</table>`
 }
 
+function citation(message: string): string {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 20px;"><tr>
+<td width="3" style="background:${YELLOW};border-radius:3px;font-size:0;">&nbsp;</td>
+<td style="padding:2px 0 2px 16px;font-family:${SERIF};font-size:16px;font-style:italic;line-height:1.6;color:${INK};">${escHtml(message).replace(/\n/g, '<br>')}</td>
+</tr></table>`
+}
 
+function contact(d: DemandeMail): string {
+  const lignes = [
+    `<a href="mailto:${escHtml(d.email)}" style="color:${GREEN};text-decoration:none;">${escHtml(d.email)}</a>`,
+    d.telephone ? `<a href="${escHtml(telHref(d.telephone))}" style="color:${GREEN};text-decoration:none;">${escHtml(d.telephone)}</a>` : '',
+  ].filter(Boolean).join('<br>')
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${TINT};border-radius:14px;margin:0 0 22px;"><tr>
+<td width="44" valign="middle" style="padding:14px 0 14px 16px;"><div style="width:40px;height:40px;border-radius:40px;background:${GREEN};color:#FFFFFF;font-family:${SERIF};font-size:16px;line-height:40px;text-align:center;">${escHtml(initiales(d.nom))}</div></td>
+<td valign="middle" style="padding:14px 16px 14px 12px;"><div style="font-family:${SANS};font-size:15px;font-weight:600;color:${INK};">${escHtml(d.nom)}</div>
+<div style="margin-top:2px;font-family:${SANS};font-size:13px;color:${SOFT};">${lignes}</div></td>
+</tr></table>`
+}
 
 function proLigne(pro: ProMail, last: boolean): string {
   return `<tr><td style="padding:12px 0;${last ? '' : `border-bottom:1px solid ${LINE};`}">
@@ -145,54 +169,48 @@ function besoinRows(d: DemandeMail, avecVille: boolean): Array<[string, string]>
   ].filter(Boolean)) as Array<[string, string]>
 }
 
+const FOOTER_PRO = `Demande reçue par l’annuaire de ${link('https://jasonmarinho.com', 'jasonmarinho.com')}.<br>Aucune commission : le devis et le paiement se règlent entre toi et l’hôte.`
 const FOOTER_HOTE = `${link('https://jasonmarinho.com', 'jasonmarinho.com')} · Location courte durée<br>Tes coordonnées ne vont qu’aux pros qui reçoivent ta demande.`
 
 // ── E-mails ──────────────────────────────────────────────────────────
 
-/** Au pro : le besoin, l'hôte, « Je m'en occupe » et répondre.
- *  Version sobre (26/10/2026, Jason : les e-mails de demande arrivaient dans
- *  l'onglet Promotions de Gmail) : fond blanc, texte comme un e-mail écrit à la
- *  main, pas de bandeau ni d'étiquette, deux liens, et une version texte. */
+/** Au pro : le besoin, l'hôte, un bouton pour lui répondre */
 export function proEmail(d: DemandeMail, o: { proPrenom: string; manuel: boolean; adequation: string | null; filtre: boolean; demandesUrl: string; priseUrl?: string | null }): { subject: string; html: string; text: string } {
   const m = METIER[d.metier]
-  const hote = prenom(d.nom) || 'l’hôte'
   const title = `${qui(d)} cherche ${m.un} à ${d.ville}`
+  const hote = prenom(d.nom) || 'l’hôte'
   const intro = o.manuel
-    ? `Un hôte a décrit son besoin sur jasonmarinho.com, et je te transmets sa demande.`
+    ? `Un hôte a décrit son besoin sur jasonmarinho.com, et Jason Marinho te transmet sa demande.`
     : `Un hôte vient de décrire son besoin sur jasonmarinho.com. Tu fais partie des 3 pros les plus proches de son logement${o.filtre ? ', parmi ceux qui proposent ce qu’il demande' : ''}.`
   const objet = `Ta demande ${d.metier === 'photographe' ? 'de photographe' : 'de ménage'} à ${d.ville}`
   const mailto = `mailto:${d.email}?subject=${encodeURIComponent(objet)}`
-  const rows = besoinRows(d, true)
+  // « Je m'en occupe » (26/10/2026) : un clic, sans connexion, et la demande
+  // ne part plus à d'autres pros (lib/demandes/prise.ts, /demande/prise/<jeton>)
   const suite = o.priseUrl
-    ? `Tu t’en occupes ? Clique sur « Je m’en occupe » : la demande est à toi et ne part pas à d’autres pros. Sans signe de ta part sous 48 h, elle part à d’autres pros de la zone.`
-    : `Quand tu as répondu, change son statut dans ${link(o.demandesUrl, 'Demandes reçues')} : sinon elle part à d’autres pros au bout de 48 h.`
-  const P = (h: string, mb = 14) => `<p style="margin:0 0 ${mb}px;font-family:${SANS};font-size:15px;line-height:1.6;color:#1F2B22;">${h}</p>`
-  const lien = (href: string, label: string, plein: boolean) => `<a href="${escHtml(href)}" style="display:inline-block;margin:0 8px 8px 0;padding:11px 18px;border-radius:8px;font-family:${SANS};font-size:15px;font-weight:600;text-decoration:none;${plein ? `background:${GREEN};color:#FFFFFF;` : `border:1px solid ${GREEN};color:${GREEN};`}">${escHtml(label)}</a>`
-  const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>${escHtml(title)}</title></head>
-<body style="margin:0;padding:0;background:#FFFFFF;">
-<div style="max-width:560px;margin:0 auto;padding:24px 18px;">
-${P(`Bonjour ${escHtml(o.proPrenom)},`)}
-${P(escHtml(intro))}
-${P(`<strong>${escHtml(title)}</strong>${rows.length ? `<br>${rows.map(([l, v]) => `${escHtml(l)} : ${escHtml(v)}`).join('<br>')}` : ''}`)}
-${o.adequation ? P(`<span style="color:${SOFT};">${escHtml(o.adequation)}</span>`) : ''}
-${d.message ? P(`<em>« ${escHtml(d.message).replace(/\n/g, '<br>')} »</em>`) : ''}
-${P(`<strong>${escHtml(d.nom)}</strong><br><a href="mailto:${escHtml(d.email)}" style="color:${GREEN};">${escHtml(d.email)}</a>${d.telephone ? `<br><a href="${escHtml(telHref(d.telephone))}" style="color:${GREEN};">${escHtml(d.telephone)}</a>` : ''}`)}
-<div style="margin:4px 0 10px;">${o.priseUrl ? lien(o.priseUrl, 'Je m’en occupe', true) : ''}${lien(mailto, `Répondre à ${hote}`, !o.priseUrl)}</div>
-${P(`<span style="font-size:14px;color:${SOFT};">${suite} Tu peux aussi répondre directement à cet e-mail : ta réponse arrive chez ${escHtml(hote)}.</span>`)}
-${P(`Bonne journée,<br>Jason Marinho`, 18)}
-<p style="margin:0;font-family:${SANS};font-size:12px;line-height:1.6;color:${SOFT};">Demande reçue par l’annuaire de jasonmarinho.com. Aucune commission : le devis et le paiement se règlent entre toi et l’hôte.</p>
-</div></body></html>`
+    ? `« Je m’en occupe » : la demande est à toi et ne part pas à d’autres pros. Sans signe de ta part sous 48 h, elle part à d’autres pros de la zone. Tu peux aussi répondre à cet e-mail : ta réponse arrive chez ${escHtml(hote)}.`
+    : `Tu peux aussi répondre à cet e-mail : ta réponse arrive chez l’hôte. La demande est rangée dans ${link(o.demandesUrl, 'Demandes reçues')} : change son statut quand tu as répondu, sinon elle part à d’autres pros au bout de 48 h.`
+  const body = [
+    p(`Bonjour ${escHtml(o.proPrenom)},`, 10),
+    p(escHtml(intro)),
+    fiche(besoinRows(d, true)),
+    o.adequation ? p(`<span style="color:${SOFT};">${escHtml(o.adequation)}</span>`) : '',
+    d.message ? citation(d.message) : '',
+    contact(d),
+    o.priseUrl ? button(o.priseUrl, 'Je m’en occupe') + buttonOutline(mailto, `Répondre à ${hote}`) : button(mailto, `Répondre à ${hote}`),
+    `<div style="height:16px;line-height:16px;font-size:0;">&nbsp;</div>`,
+    small(suite),
+  ].join('')
+  // Version texte envoyée avec le HTML (aide Gmail à classer l'e-mail), invisible pour le pro
   const text = [
-    `Bonjour ${o.proPrenom},`, '', intro, '', title, ...rows.map(([l, v]) => `${l} : ${v}`),
+    `Bonjour ${o.proPrenom},`, '', intro, '', title, ...besoinRows(d, true).map(([l, v]) => `${l} : ${v}`),
     ...(o.adequation ? ['', o.adequation] : []),
     ...(d.message ? ['', `« ${d.message} »`] : []),
     '', d.nom, d.email, ...(d.telephone ? [d.telephone] : []),
-    '', ...(o.priseUrl ? [`Je m’en occupe : ${o.priseUrl}`] : []),
-    o.priseUrl ? 'La demande est à toi et ne part pas à d’autres pros. Sans signe de ta part sous 48 h, elle part à d’autres pros de la zone.' : `Quand tu as répondu, change son statut dans Demandes reçues (${o.demandesUrl}) : sinon elle part à d’autres pros au bout de 48 h.`,
+    '', ...(o.priseUrl ? [`Je m’en occupe : ${o.priseUrl}`, 'La demande est à toi et ne part pas à d’autres pros. Sans signe de ta part sous 48 h, elle part à d’autres pros de la zone.'] : [`Demandes reçues : ${o.demandesUrl}`]),
     `Tu peux répondre directement à cet e-mail : ta réponse arrive chez ${hote}.`,
-    '', 'Bonne journée,', 'Jason Marinho',
+    '', 'Jason Marinho, jasonmarinho.com',
   ].join('\n')
-  return { subject: title, html, text }
+  return { subject: title, text, html: layout({ preview: `${d.logement ? `${d.logement}, ` : ''}${d.quand ? d.quand.toLowerCase() : 'nouvelle demande'} : réponds directement à l’hôte`, etiquette: `Nouvelle demande · ${m.etiquette}`, title, body, footer: FOOTER_PRO }) }
 }
 
 /** À l'hôte : sa demande est partie (ou enregistrée sans pro), qui l'a reçue, la suite */

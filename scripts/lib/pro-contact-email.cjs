@@ -121,33 +121,32 @@ function contactEmails(o) {
   const { rows, texte } = lireMessage(o.message)
   const hote = prenom(o.contactName) || 'l’hôte'
 
-  // Version sobre (26/10/2026, Jason : les e-mails de demande arrivaient dans
-  // l'onglet Promotions de Gmail) : fond blanc, texte comme un e-mail écrit à
-  // la main, pas de bandeau, et une version texte.
   const proTitle = `${hote} veut travailler avec toi`
-  const mailto = `mailto:${o.contactEmail}?subject=${encodeURIComponent('Ta demande via jasonmarinho.com')}`
   const demandesUrl = `https://app.jasonmarinho.com/dashboard/${m.dash}/demandes`
-  const P = (h, mb = 14) => `<p style="margin:0 0 ${mb}px;font-family:${SANS};font-size:15px;line-height:1.6;color:#1F2B22;">${h}</p>`
-  const proHtml = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>${esc(proTitle)}</title></head>
-<body style="margin:0;padding:0;background:#FFFFFF;">
-<div style="max-width:560px;margin:0 auto;padding:24px 18px;">
-${P(`Bonjour ${esc(o.proPrenom)},`)}
-${P(`Un hôte a vu ta fiche dans l’annuaire ${m.annuaire} de jasonmarinho.com et t’écrit directement.`)}
-${rows.length ? P(rows.map(([l, v]) => `${esc(l)} : ${esc(v)}`).join('<br>')) : ''}
-${texte ? P(`<em>« ${esc(texte).replace(/\n/g, '<br>')} »</em>`) : ''}
-${P(`<strong>${esc(o.contactName)}</strong><br><a href="mailto:${esc(o.contactEmail)}" style="color:${GREEN};">${esc(o.contactEmail)}</a>${o.contactPhone ? `<br><a href="tel:${esc(o.contactPhone.replace(/\s/g, ''))}" style="color:${GREEN};">${esc(o.contactPhone)}</a>` : ''}`)}
-<div style="margin:4px 0 10px;"><a href="${esc(mailto)}" style="display:inline-block;padding:11px 18px;border-radius:8px;background:${GREEN};color:#FFFFFF;font-family:${SANS};font-size:15px;font-weight:600;text-decoration:none;">Répondre à ${esc(hote)}</a></div>
-${P(`<span style="font-size:14px;color:${SOFT};">${o.contactPhone ? `${esc(hote)} a laissé son numéro : tu peux aussi l’appeler. ` : ''}Tu peux aussi répondre directement à cet e-mail : ta réponse arrive chez ${esc(hote)}. La demande est rangée dans <a href="${esc(demandesUrl)}" style="color:${GREEN};">Demandes reçues</a>.</span>`)}
-${P('Bonne journée,<br>Jason Marinho', 18)}
-<p style="margin:0;font-family:${SANS};font-size:12px;line-height:1.6;color:${SOFT};">Demande reçue par ta fiche sur jasonmarinho.com. Aucune commission : le devis et le paiement se règlent entre toi et l’hôte.</p>
-</div></body></html>`
+  const proHtml = layout({
+    preview: `${rows.length ? rows.map(r => r[1]).join(', ') + ' : ' : ''}réponds directement à ${hote}`,
+    etiquette: `Via ta fiche · ${m.etiquette}`,
+    title: proTitle,
+    body: [
+      p(`Bonjour ${esc(o.proPrenom)},`, 10),
+      p(`Un hôte a vu ta fiche dans l’annuaire ${m.annuaire} de jasonmarinho.com et t’écrit directement.`),
+      fiche(rows),
+      texte ? citation(texte) : '',
+      personne(o.contactName, `<a href="mailto:${esc(o.contactEmail)}" style="color:${GREEN};text-decoration:none;">${esc(o.contactEmail)}</a>${o.contactPhone ? ` &nbsp;·&nbsp; <a href="tel:${esc(o.contactPhone.replace(/\s/g, ''))}" style="color:${GREEN};text-decoration:none;">${esc(o.contactPhone)}</a>` : ''}`, TINT, '#FFFFFF'),
+      button(`mailto:${o.contactEmail}?subject=${encodeURIComponent('Ta demande via jasonmarinho.com')}`, `Répondre à ${hote}`),
+      '<div style="height:16px;line-height:16px;font-size:0;">&nbsp;</div>',
+      small(`${o.contactPhone ? `${esc(hote)} a laissé son numéro : tu peux aussi l’appeler. ` : ''}Tu peux aussi répondre à cet e-mail : ta réponse arrive chez ${esc(hote)}. La demande est rangée dans ${link(demandesUrl, 'Demandes reçues')}.`),
+    ].join(''),
+    footer: `Demande reçue par ta fiche sur ${link('https://jasonmarinho.com', 'jasonmarinho.com')}.<br>Aucune commission : le devis et le paiement se règlent entre toi et l’hôte.`,
+  })
+  // Version texte envoyée avec le HTML (aide Gmail à classer l'e-mail), invisible pour le pro
   const proText = [
     `Bonjour ${o.proPrenom},`, '', `Un hôte a vu ta fiche dans l’annuaire ${m.annuaire} de jasonmarinho.com et t’écrit directement.`,
     ...(rows.length ? ['', ...rows.map(([l, v]) => `${l} : ${v}`)] : []),
     ...(texte ? ['', `« ${texte} »`] : []),
     '', o.contactName, o.contactEmail, ...(o.contactPhone ? [o.contactPhone] : []),
     '', `Tu peux répondre directement à cet e-mail : ta réponse arrive chez ${hote}.`, `Demandes reçues : ${demandesUrl}`,
-    '', 'Bonne journée,', 'Jason Marinho',
+    '', 'Jason Marinho, jasonmarinho.com',
   ].join('\n')
 
   const ficheUrl = `https://jasonmarinho.com/annuaires/${m.dir}/${o.proSlug}`
