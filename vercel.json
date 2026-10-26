@@ -252,11 +252,6 @@
       "source": "/mon-compte",
       "destination": "https://app.jasonmarinho.com/auth/login",
       "permanent": false
-    },
-    {
-      "source": "/photographe-hotel",
-      "destination": "/annuaires/photographes",
-      "permanent": true
     }
   ]
 }
