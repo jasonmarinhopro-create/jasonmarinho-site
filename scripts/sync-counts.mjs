@@ -127,6 +127,26 @@ for (const rel of FILES_TO_UPDATE) {
   }
 }
 
+// ── 3 bis. Filtres du catalogue /services/formations ──────────────────────
+// Chiffres des boutons « Tous 22 », « Gestion 5 »… recomptés depuis les
+// cartes (data-cat), pour qu'une carte ajoutée mette tout à jour (26/10/2026,
+// les filtres étaient restés à 21).
+const catalogueFile = path.join(ROOT, 'services/formations/index.html')
+if (fs.existsSync(catalogueFile)) {
+  const before = fs.readFileSync(catalogueFile, 'utf8')
+  const cats = [...before.matchAll(/<div class="f-card" data-cat="([a-z-]+)"/g)].map(m => m[1])
+  const countOf = cat => (cat === 'all' ? cats.length : cats.filter(c => c === cat).length)
+  const after = before.replace(
+    /(data-filter="([a-z-]+)"[^>]*>[\s\S]*?<span class="f-cat-btn-count">)(\d+)(<\/span>)/g,
+    (_m, p1, cat, _n, p4) => `${p1}${countOf(cat)}${p4}`,
+  )
+  if (after !== before) {
+    fs.writeFileSync(catalogueFile, after)
+    totalEdits++
+    console.log(`[sync-counts] ✓ services/formations/index.html (filtres : ${cats.length} cartes)`)
+  }
+}
+
 // ── 4. Synchronise le TOTAL de places fondateur sur /tarifs ───────────────
 // Idempotent : remplace les références au total par FOUNDER_TOTAL. Le RESTANT
 // (data-founder-remaining) n'est PAS touché ici : il est mis à jour côté

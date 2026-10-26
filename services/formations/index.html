@@ -138,6 +138,7 @@ nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
 .bge-s{background:rgba(255,213,107,.18);color:var(--y);border:1px solid rgba(255,213,107,.28)}
 .bge-i{background:rgba(85,107,47,.28);color:#b4d46e;border:1px solid rgba(85,107,47,.42)}
 .bge-a{background:rgba(230,126,34,.22);color:#f0a868;border:1px solid rgba(230,126,34,.4)}
+.bge-new{background:#FFD56B;color:#1F2B22;border:1px solid #FFD56B}
 .f-card.wip{opacity:.6;pointer-events:none}
 .f-card.wip .f-lk{display:none}
 .f-wip-tag{font-size:11px;color:rgba(255,255,255,.3);display:flex;align-items:center;gap:5px;font-weight:500}
@@ -309,10 +310,10 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
     </div>
     <!-- Filtre par thème -->
     <div class="f-cats" id="f-cats" role="navigation" aria-label="Filtrer par thème">
-      <button class="f-cat-btn active" data-filter="all" onclick="filterFormations(this,'all')"><i class="ph-bold ph-squares-four"></i> Tous <span class="f-cat-btn-count">21</span></button>
+      <button class="f-cat-btn active" data-filter="all" onclick="filterFormations(this,'all')"><i class="ph-bold ph-squares-four"></i> Tous <span class="f-cat-btn-count">22</span></button>
       <button class="f-cat-btn" data-filter="visibilite" onclick="filterFormations(this,'visibilite')"><i class="ph-bold ph-eye"></i> Visibilité <span class="f-cat-btn-count">8</span></button>
       <button class="f-cat-btn" data-filter="revenus" onclick="filterFormations(this,'revenus')"><i class="ph-bold ph-trend-up"></i> Revenus <span class="f-cat-btn-count">3</span></button>
-      <button class="f-cat-btn" data-filter="gestion" onclick="filterFormations(this,'gestion')"><i class="ph-bold ph-lightning"></i> Gestion <span class="f-cat-btn-count">4</span></button>
+      <button class="f-cat-btn" data-filter="gestion" onclick="filterFormations(this,'gestion')"><i class="ph-bold ph-lightning"></i> Gestion <span class="f-cat-btn-count">5</span></button>
       <button class="f-cat-btn" data-filter="reputation" onclick="filterFormations(this,'reputation')"><i class="ph-bold ph-star"></i> Réputation <span class="f-cat-btn-count">2</span></button>
       <button class="f-cat-btn" data-filter="conciergerie" onclick="filterFormations(this,'conciergerie')"><i class="ph-bold ph-key"></i> Conciergerie <span class="f-cat-btn-count">1</span></button>
       <button class="f-cat-btn" data-filter="juridique" onclick="filterFormations(this,'juridique')"><i class="ph-bold ph-scales"></i> Juridique <span class="f-cat-btn-count">3</span></button>
@@ -320,11 +321,34 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 
     <div class="f-gr" id="f-gr">
 
-      <!-- Card, Audit Annonce (nouveauté) -->
-      <div class="f-card" data-cat="visibilite">
+      <!-- Card, Louer en direct sans plateforme -->
+      <div class="f-card" data-cat="gestion" data-depuis="2026-10-26">
+        <div class="f-th" style="background:linear-gradient(135deg,#0d160d 0%,#2f5a2f 100%)">
+          <i class="ph ph-shield-check"></i>
+          <div class="f-bge bge-i">Intermédiaire</div>
+        </div>
+        <div class="f-bd">
+          <div class="f-cat">Gestion</div>
+          <div class="f-tt">Louer en direct sans plateforme, en toute sécurité</div>
+          <div class="f-mt">
+            <span class="f-mi"><i class="ph ph-stack"></i> 6 modules</span>
+            <span class="f-mi"><i class="ph ph-clock"></i> 3h</span>
+            <span class="f-mi"><i class="ph ph-play-circle"></i> 12 leçons</span>
+          </div>
+          <div class="f-ft">
+            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
+            <a href="/services/formations/louer-en-direct-securise" class="f-lk">
+              Commencer <i class="ph-bold ph-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card, Audit Annonce -->
+      <div class="f-card" data-cat="visibilite" data-depuis="2026-08-19">
         <div class="f-th" style="background:linear-gradient(135deg,#1a1d24 0%,#4a5568 100%)">
           <i class="ph ph-magnifying-glass"></i>
-          <div class="f-bge" style="background:rgba(255,213,107,.18);color:var(--y);border:1px solid rgba(255,213,107,.3)">Nouveauté</div>
+          <div class="f-bge bge-i">Intermédiaire</div>
         </div>
         <div class="f-bd">
           <div class="f-cat">Visibilité & plateformes</div>
@@ -802,27 +826,6 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
           </div>
         </div>
       </div>
-      <div class="f-card" data-cat="gestion">
-        <div class="f-th" style="background:linear-gradient(135deg,#0d160d 0%,#2f5a2f 100%)">
-          <i class="ph ph-shield-check"></i>
-          <div class="f-bge bge-i">Intermédiaire</div>
-        </div>
-        <div class="f-bd">
-          <div class="f-cat">Gestion</div>
-          <div class="f-tt">Louer en direct sans plateforme, en toute sécurité</div>
-          <div class="f-mt">
-            <span class="f-mi"><i class="ph ph-stack"></i> 6 modules</span>
-            <span class="f-mi"><i class="ph ph-clock"></i> 3h</span>
-            <span class="f-mi"><i class="ph ph-play-circle"></i> 12 leçons</span>
-          </div>
-          <div class="f-ft">
-            <span class="f-ac"><i class="ph-bold ph-infinity"></i> Accès à vie</span>
-            <a href="/services/formations/louer-en-direct-securise" class="f-lk">
-              Commencer <i class="ph-bold ph-arrow-right"></i>
-            </a>
-          </div>
-        </div>
-      </div>
 
     </div>
     <div class="f-no-results" id="f-no-results">Aucune formation dans cette catégorie pour le moment.</div>
@@ -988,6 +991,20 @@ const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.targ
 document.querySelectorAll(".rv").forEach(el=>obs.observe(el));
 
 // Filtre thème formations
+// Badge « Nouveauté » automatique : 45 jours après la mise en ligne
+// (data-depuis sur la carte), mêmes règles que le catalogue de l'app.
+(function () {
+  var now = Date.now();
+  document.querySelectorAll('#f-gr .f-card[data-depuis]').forEach(function (card) {
+    var t = Date.parse(card.getAttribute('data-depuis') + 'T00:00:00Z');
+    if (isNaN(t) || now < t || now - t >= 45 * 86400000) return;
+    var bge = card.querySelector('.f-bge');
+    if (!bge) return;
+    bge.className = 'f-bge bge-new';
+    bge.textContent = 'Nouveauté';
+  });
+})();
+
 function filterFormations(btn, cat) {
   document.querySelectorAll('.f-cat-btn').forEach(function(b){b.classList.remove('active')});
   btn.classList.add('active');

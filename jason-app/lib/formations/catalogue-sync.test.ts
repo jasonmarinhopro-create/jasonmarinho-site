@@ -32,4 +32,15 @@ describe('chaque formation est branchée partout', () => {
     expect(read('jason-app/lib/constants/auto-counts.ts')).toContain(`FORMATIONS_TOTAL = ${slugs.length}`)
     expect(read('services/formations/index.html')).toContain(`${slugs.length} formations`)
   })
+  it('les filtres du catalogue du site suivent les cartes', () => {
+    const html = read('services/formations/index.html')
+    const cards = [...html.matchAll(/<div class="f-card" data-cat="([a-z-]+)"/g)].map(m => m[1])
+    expect(cards.length).toBe(slugs.length)
+    for (const m of html.matchAll(/data-filter="([a-z-]+)"[^>]*>[\s\S]*?<span class="f-cat-btn-count">(\d+)</g)) {
+      const n = m[1] === 'all' ? cards.length : cards.filter(c => c === m[1]).length
+      expect(Number(m[2]), `filtre ${m[1]}`).toBe(n)
+    }
+    // Pas de badge « Nouveauté » écrit en dur : il est posé d'après data-depuis
+    expect(html).not.toMatch(/class="f-bge"[^>]*>Nouveauté</)
+  })
 })
