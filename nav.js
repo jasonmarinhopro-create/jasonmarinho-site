@@ -738,11 +738,15 @@
   while (tmp.firstChild) frag.appendChild(tmp.firstChild);
   // Always prepend to body, regardless of where the script tag lives
   // (works for inline body scripts, deferred head scripts, async, etc.)
+  // nav:ready : l'accueil attend le menu avant l'entrée du hero (index.html)
+  function navReady() { document.dispatchEvent(new Event('nav:ready')) }
   if (document.body) {
     document.body.prepend(frag);
+    navReady();
   } else {
     document.addEventListener('DOMContentLoaded', function () {
       document.body.prepend(frag);
+      navReady();
     });
   }
 

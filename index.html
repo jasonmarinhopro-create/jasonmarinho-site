@@ -36,6 +36,14 @@
 <link rel="preconnect" href="https://app.jasonmarinho.com" crossorigin>
 <link rel="dns-prefetch" href="https://app.jasonmarinho.com">
 <link rel="stylesheet" href="/fonts/site-fonts.css?v=0e07aaf42e">
+<!-- Polices du premier écran chargées en priorité, et entrée du hero retenue
+     jusqu'à ce que polices et menu soient prêts (26/10/2026, Jason : « double
+     chargement avec un petit zoom bizarre » : titre d'abord dans la police de
+     secours puis redessiné en Fraunces, menu ajouté après coup). 1,2 s au plus. -->
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/outfit-normal-300-latin.woff2" crossorigin>
+<script>(function(){var d=document.documentElement;d.classList.add('hero-wait');var done=false;function go(){if(!done){done=true;d.classList.remove('hero-wait')}}setTimeout(go,1200);var nav=new Promise(function(r){document.addEventListener('nav:ready',r)});var f=document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve();Promise.all([f,nav]).then(go,go)})()</script>
 <link rel="preload" as="font" href="/fonts/Phosphor-Bold.woff2" crossorigin>
 <link rel="preload" as="font" href="/fonts/Phosphor-Light.woff2" crossorigin>
 <link rel="preload" as="font" href="/fonts/Phosphor.woff2" crossorigin>
@@ -337,7 +345,8 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
   .trust-inner{gap:16px}
   .trust-item{font-size:12px}
 }
-.h-note{margin-top:14px;font-size:13px;color:rgba(255,255,255,.55)}
+.h-note{margin-top:14px;font-size:13px;color:rgba(255,255,255,.55);animation:fu .7s .3s ease both}
+.hero-wait .h-badge,.hero-wait .h-h1,.hero-wait .h-sub,.hero-wait .h-acts,.hero-wait .h-card,.hero-wait .h-note{animation-play-state:paused}
 .cta-band{margin-top:40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:26px 30px;border-radius:18px;background:var(--gd);color:#fff}
 .cta-band-t{font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin-bottom:6px}
 .cta-band-d{margin:0;font-size:14px;line-height:1.6;color:rgba(255,255,255,.7);max-width:560px}
