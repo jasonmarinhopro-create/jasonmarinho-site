@@ -6,7 +6,6 @@
 // qui part sur la fiche publique sont ceux d'avant (actions.ts).
 import ClientelesFields from '@/components/pros/ClientelesFields'
 import { readClienteles, type Clientele } from '@/lib/pros/clienteles'
-import GrowText from '@/components/pros/GrowText'
 import Link from 'next/link'
 import ViewsTrend from '@/components/pros/ViewsTrend'
 import FicheCompletude from '@/components/pros/FicheCompletude'
@@ -27,6 +26,11 @@ import { useFicheDraft, readLocalDraft } from '@/components/pros/atelier/useFich
 import { atelierInput as inp, Field, Group, Toggle, Segmented, ui } from '@/components/pros/atelier/ui'
 import { zoneSummary, prixDes, tarifsDepuisFormules } from '@/lib/pros/atelier-resumes'
 import ZoneEditor from '@/components/pros/atelier/ZoneEditor'
+import BioEditor from '@/components/pros/atelier/BioEditor'
+import FichePreview from '@/components/pros/atelier/FichePreview'
+import { majusculesCriardes } from '@/lib/pros/bio-aide'
+import { parseZone } from '@/lib/pros/zone'
+import { thumbPath, PORTFOLIO_BUCKET } from '@/lib/pros/fiche-vitrine'
 import { locateCommunes } from '@/app/dashboard/pros-geo-actions'
 
 const AMBER = '#B7791F'
@@ -273,6 +277,8 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
 
   // ── Résumés d'une ligne ────────────────────────────────────────────
   const nPhotos = photos.filter(p => !isLegacyPhoto(p)).length
+  const firstPhoto = photos.find(p => !isLegacyPhoto(p))
+  const coverUrl = firstPhoto ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${PORTFOLIO_BUCKET}/${thumbPath(firstPhoto)}` : null
   const des = prixDes(st.vitrine.formules, f.tarif_forfait_min)
   const nFormules = st.vitrine.formules.filter(x => x.nom.trim()).length
   const derouleDefault = st.vitrine.deroule.every((e, i) => e.titre === DEFAULT_DEROULE.menage[i]?.titre && e.texte === DEFAULT_DEROULE.menage[i]?.texte)
@@ -407,14 +413,14 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
     {
       id: 'presentation', group: 'Ton histoire', label: 'Présentation', icon: <PencilSimpleLine size={17} weight="duotone" />,
       summary: f.bio.trim() ? `${f.bio.trim().length} caractères` : 'Pas encore écrite',
-      attention: f.bio.trim().length < 80 ? 'À écrire : quelques phrases suffisent' : null,
-      done: f.bio.trim().length >= 80,
+      attention: f.bio.trim().length < 80 ? 'À écrire : quelques phrases suffisent' : majusculesCriardes(f.bio) ? 'À retoucher : passage en majuscules' : null,
+      done: f.bio.trim().length >= 80 && !majusculesCriardes(f.bio),
       title: <>Ta <em style={em}>présentation</em></>,
-      desc: 'Qui vous êtes, depuis quand, ce qui rend vos ménages fiables. La première phrase est mise en avant sur ta fiche et dans Google.',
+      desc: 'Qui vous êtes, depuis quand, ce qui rend vos ménages fiables. Les premières lignes s’affichent sur ta fiche, la suite derrière « Lire la suite ».',
       content: (
-        <Field label="Ce que les hôtes lisent sur ta fiche">
-          <GrowText style={{ ...inp, minHeight: 160 }} value={f.bio} onChange={v => setForm({ bio: v })} max={600} oneLine={false} minRows={6} />
-        </Field>
+        <>
+          <BioEditor value={f.bio} onChange={v => setForm({ bio: v })} ville={f.ville} />
+        </>
       ),
     },
     {
@@ -581,6 +587,14 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
         onPublish={handlePublish}
         onRevert={ids => setSt(s => revertSections(SECTIONS, ids, s, baseline))}
         side={<>
+          <FichePreview active={active} data={{
+            name: displayName, firstName: (f.pseudo ? f.pseudo : f.full_name.split(' ')[0]) ?? '',
+            sousTitre: `Équipe de ménage pour locations courte durée${f.ville ? ` à ${f.ville}` : ''}`,
+            cover: coverUrl, logoUrl, des, unite: 'le ménage', km: parseZone(f.zone_couverte, f.ville).km, zone: f.zone_couverte,
+            formules: st.vitrine.formules, bio: f.bio, deroule: st.vitrine.deroule,
+            chips: [equipeLabel, delaiLabel, ...PRESTATIONS.filter(([k]) => f.prestations.includes(k)).map(([, l]) => l), f.assurance_rc_pro ? 'Assurée RC pro' : null].filter(Boolean) as string[],
+            sub: zoneSummary(f.ville, f.zone_couverte, 0),
+          }} />
           <FicheCompletude metier="menage" onGo={a => setActive(ANCHORS[a] ?? 'photos')} input={{
             photos, bio: f.bio, formules: st.vitrine.formules, prixMin: f.tarif_forfait_min,
             deroule: st.vitrine.deroule, villes: st.vitrine.villes, zone: f.zone_couverte, logo: !!logoUrl,

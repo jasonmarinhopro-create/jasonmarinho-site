@@ -13,8 +13,11 @@ const base = {
 describe('fiche v3', () => {
   it('garde 3 formules nommées et ignore les prix vides', () => {
     expect(v3Formules([{ nom: ' A ', prix: 0 }, { nom: '' }, { nom: 'B', prix: 90 }, { nom: 'C' }, { nom: 'D' }])).toEqual([
-      { nom: 'A', prix: null, detail: '' }, { nom: 'B', prix: 90, detail: '' }, { nom: 'C', prix: null, detail: '' },
+      { nom: 'A', prix: null, detail: '', vedette: false }, { nom: 'B', prix: 90, detail: '', vedette: false }, { nom: 'C', prix: null, detail: '', vedette: false },
     ])
+  })
+  it('une seule formule « La plus demandée »', () => {
+    expect(v3Formules([{ nom: 'A', vedette: true }, { nom: 'B', vedette: true }, { nom: 'C', vedette: 'oui' }]).map(f => f.vedette)).toEqual([true, false, false])
   })
   it('affiche le plus petit prix, sinon « Sur devis »', () => {
     expect(v3Prix([{ nom: 'A', prix: 1200 }], 900, null)).toEqual({ v: 'dès 900 €', devis: false })

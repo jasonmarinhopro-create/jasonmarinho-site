@@ -64,6 +64,18 @@ describe('formules, villes, déroulé', () => {
     expect(cleanFormules('x')).toEqual([])
   })
 
+  it('formules : une seule mise en avant (« La plus demandée »)', () => {
+    expect(cleanFormules([
+      { nom: 'A', prix: 1, vedette: 'oui' },
+      { nom: 'B', prix: 2, vedette: true },
+      { nom: 'C', prix: 3, vedette: true },
+    ])).toEqual([
+      { nom: 'A', prix: 1, detail: '' },
+      { nom: 'B', prix: 2, detail: '', vedette: true },
+      { nom: 'C', prix: 3, detail: '' },
+    ])
+  })
+
   it('villes : sans doublon (accents, casse), 10 au plus, saisie séparée par des virgules', () => {
     expect(cleanVilles('Lyon, Villeurbanne ; lyon\nÉcully, ecully')).toEqual(['Lyon', 'Villeurbanne', 'Écully'])
     expect(cleanVilles(Array.from({ length: 14 }, (_, i) => `Ville ${i}`))).toHaveLength(10)

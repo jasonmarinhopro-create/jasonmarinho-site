@@ -23,7 +23,9 @@ export function v3Formules(raw) {
   return (Array.isArray(raw) ? raw : [])
     .filter(f => f && typeof f.nom === 'string' && f.nom.trim())
     .slice(0, 3)
-    .map(f => ({ nom: f.nom.trim(), prix: typeof f.prix === 'number' && f.prix > 0 ? f.prix : null, detail: typeof f.detail === 'string' ? f.detail.trim() : '' }))
+    .map(f => ({ nom: f.nom.trim(), prix: typeof f.prix === 'number' && f.prix > 0 ? f.prix : null, detail: typeof f.detail === 'string' ? f.detail.trim() : '', vedette: f.vedette === true }))
+    // Une seule formule « La plus demandée » (atelier de Ma fiche, 27/10/2026)
+    .map((f, i, all) => ({ ...f, vedette: f.vedette && all.findIndex(x => x.vedette) === i }))
 }
 
 /** Prix affiché dans la carte de contact : « dès 230 € », une fourchette, sinon « Sur devis » */
@@ -137,7 +139,7 @@ export function ficheV3Html(m) {
     ${facts.length ? `<div class="fx-facts n${facts.length}">${facts.map(f => `<div class="fx-fact"><b>${esc(f.v)}</b><span>${esc(f.l)}</span></div>`).join('')}</div>` : ''}
     ${m.videoHtml ? `<section class="fx-sec"><h2>La vidéo</h2>${m.videoHtml}</section>` : ''}
     ${forms.length ? `<section class="fx-sec" id="formules"><h2>Formules</h2>
-      <div class="fx-forms n${forms.length}">${forms.map(f => `<button type="button" class="fx-fm" data-fx-formule="${esc(f.prix ? `${f.nom} (${euros(f.prix)})` : f.nom)}"><span class="fx-fm-n">${esc(f.nom)}</span><b>${f.prix ? euros(f.prix) : 'Sur devis'}</b>${f.detail ? `<p>${esc(f.detail)}</p>` : ''}<span class="fx-fm-go">Demander cette formule <i class="ph-bold ph-arrow-right"></i></span></button>`).join('')}</div>
+      <div class="fx-forms n${forms.length}">${forms.map(f => `<button type="button" class="fx-fm${f.vedette ? ' top' : ''}" data-fx-formule="${esc(f.prix ? `${f.nom} (${euros(f.prix)})` : f.nom)}">${f.vedette ? '<span class="fx-fm-tag">La plus demandée</span>' : ''}<span class="fx-fm-n">${esc(f.nom)}</span><b>${f.prix ? euros(f.prix) : 'Sur devis'}</b>${f.detail ? `<p>${esc(f.detail)}</p>` : ''}<span class="fx-fm-go">Demander cette formule <i class="ph-bold ph-arrow-right"></i></span></button>`).join('')}</div>
       <p class="fx-note">Prix indicatifs${m.unite ? `, ${esc(m.unite)}` : ''} : le devis final dépend de ton logement.</p>
     </section>` : ''}
     ${m.bio ? `<section class="fx-sec"><h2>Présentation</h2><div class="fx-bio" data-fx-bio><p>${esc(m.bio)}</p></div><button type="button" class="fx-more-bio" data-fx-bio-btn hidden>Lire la suite</button></section>` : ''}
@@ -224,6 +226,8 @@ export const FICHE_V3_CSS = `
 .fx-fm-go{margin-top:auto;padding-top:10px;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--g)}
 .fx-pick{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 4px;padding:10px 12px;border-radius:12px;background:#E8F2EC;font-size:14px;color:var(--td)}
 .fx-pick button{margin-left:auto;background:none;border:0;padding:0;color:var(--g);font:600 13px 'Outfit',sans-serif;cursor:pointer}
+.fx-fm.top{border:2px solid var(--g);padding:13px 14px;background:#fff;position:relative}
+.fx-fm-tag{display:inline-block;background:#FFD56B;color:#003329;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;margin-bottom:8px}
 .fx-fm-n{font-size:11px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:var(--tl)}
 .fx-fm b{display:block;font-family:'Fraunces',serif;font-weight:400;font-size:26px;color:var(--g);margin:2px 0 4px}
 .fx-fm p{font-size:13.5px;line-height:1.55;color:var(--tm);margin:0}

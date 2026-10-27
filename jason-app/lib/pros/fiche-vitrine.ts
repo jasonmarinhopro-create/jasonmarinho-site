@@ -70,7 +70,8 @@ export function isLegacyPhoto(path: string): boolean {
 }
 
 // ── Formules, villes, déroulé ───────────────────────────────────────
-export interface Formule { nom: string; prix: number | null; detail: string }
+/** `vedette` : la formule mise en avant (« La plus demandée », une seule, atelier 27/10/2026) */
+export interface Formule { nom: string; prix: number | null; detail: string; vedette?: true }
 export interface Etape { titre: string; texte: string }
 
 export const FORMULES_MAX = 3
@@ -93,7 +94,9 @@ export function cleanFormules(raw: unknown): Formule[] {
     const n = typeof o.prix === 'number' ? o.prix : Number(String(o.prix ?? '').replace(',', '.').replace(/[^\d.]/g, ''))
     const prix = Number.isFinite(n) && n > 0 ? Math.min(Math.round(n), 100_000) : null
     if (!nom) continue
-    out.push({ nom, prix, detail })
+    const f: Formule = { nom, prix, detail }
+    if (o.vedette === true && !out.some(x => x.vedette)) f.vedette = true
+    out.push(f)
     if (out.length >= FORMULES_MAX) break
   }
   return out

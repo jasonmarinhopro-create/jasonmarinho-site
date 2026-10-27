@@ -4,7 +4,6 @@
 // Jason). Coquille et barre de mise en ligne : components/pros/atelier/Atelier.tsx ;
 // brouillon : lib/pros/fiche-draft.ts. Les champs, leurs vérifications et ce
 // qui part sur la fiche publique sont ceux d'avant (actions.ts).
-import GrowText from '@/components/pros/GrowText'
 import Link from 'next/link'
 import ViewsTrend from '@/components/pros/ViewsTrend'
 import FicheCompletude from '@/components/pros/FicheCompletude'
@@ -21,7 +20,7 @@ import ReseauxFields, { emptyReseauxForm, type ReseauxForm } from '@/components/
 import VisuelFields, { type VisuelForm } from '@/components/pros/VisuelFields'
 import ClientelesFields from '@/components/pros/ClientelesFields'
 import { readClienteles, type Clientele } from '@/lib/pros/clienteles'
-import { readMetier, readOptions, metierLabel } from '@/lib/pros/visuel'
+import { readMetier, readOptions, metierLabel, OPTIONS_VISUELLES } from '@/lib/pros/visuel'
 import { DEFAULT_DEROULE, PHOTOS_MAX, isLegacyPhoto } from '@/lib/pros/fiche-vitrine'
 import { changedSections, revertSections, mergeDraftState, readDraft, newerDraft, type DraftSection, type DraftTouched } from '@/lib/pros/fiche-draft'
 import Atelier, { type AtelierSection, type PublishState } from '@/components/pros/atelier/Atelier'
@@ -29,6 +28,11 @@ import { useFicheDraft, readLocalDraft } from '@/components/pros/atelier/useFich
 import { atelierInput as inp, Field, Group, Toggle, ui } from '@/components/pros/atelier/ui'
 import { zoneSummary, prixDes, tarifsDepuisFormules } from '@/lib/pros/atelier-resumes'
 import ZoneEditor from '@/components/pros/atelier/ZoneEditor'
+import BioEditor from '@/components/pros/atelier/BioEditor'
+import FichePreview from '@/components/pros/atelier/FichePreview'
+import { majusculesCriardes } from '@/lib/pros/bio-aide'
+import { parseZone } from '@/lib/pros/zone'
+import { thumbPath, PORTFOLIO_BUCKET } from '@/lib/pros/fiche-vitrine'
 import { locateCommunes } from '@/app/dashboard/pros-geo-actions'
 
 const AMBER = '#B7791F'
@@ -256,6 +260,8 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
 
   // ── Résumés d'une ligne ────────────────────────────────────────────
   const nPhotos = photos.filter(p => !isLegacyPhoto(p)).length
+  const firstPhoto = photos.find(p => !isLegacyPhoto(p))
+  const coverUrl = firstPhoto ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${PORTFOLIO_BUCKET}/${thumbPath(firstPhoto)}` : null
   const des = prixDes(st.vitrine.formules, f.tarif_min)
   const nFormules = st.vitrine.formules.filter(x => x.nom.trim()).length
   const derouleDefault = st.vitrine.deroule.every((e, i) => e.titre === DEFAULT_DEROULE.photographe[i]?.titre && e.texte === DEFAULT_DEROULE.photographe[i]?.texte)
@@ -346,14 +352,14 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
     {
       id: 'presentation', group: 'Ton histoire', label: 'Présentation', icon: <PencilSimpleLine size={17} weight="duotone" />,
       summary: f.bio.trim() ? `${f.bio.trim().length} caractères` : 'Pas encore écrite',
-      attention: f.bio.trim().length < 80 ? 'À écrire : quelques phrases suffisent' : null,
-      done: f.bio.trim().length >= 80,
+      attention: f.bio.trim().length < 80 ? 'À écrire : quelques phrases suffisent' : majusculesCriardes(f.bio) ? 'À retoucher : passage en majuscules' : null,
+      done: f.bio.trim().length >= 80 && !majusculesCriardes(f.bio),
       title: <>Ta <em style={em}>présentation</em></>,
-      desc: 'Quelques phrases sur ta façon de travailler. La première est mise en avant sur ta fiche et dans Google.',
+      desc: 'Quelques phrases sur ta façon de travailler. Les premières lignes s’affichent sur ta fiche, la suite derrière « Lire la suite ».',
       content: (
-        <Field label="Ce que les hôtes lisent sur ta fiche">
-          <GrowText style={{ ...inp, minHeight: 160 }} value={f.bio} onChange={v => setForm({ bio: v })} max={600} oneLine={false} minRows={6} />
-        </Field>
+        <>
+          <BioEditor value={f.bio} onChange={v => setForm({ bio: v })} ville={f.ville} />
+        </>
       ),
     },
     {
@@ -512,6 +518,14 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
         onPublish={handlePublish}
         onRevert={ids => setSt(s => revertSections(SECTIONS, ids, s, baseline))}
         side={<>
+          <FichePreview active={active} data={{
+            name: f.full_name, firstName: f.full_name.split(' ')[0] ?? '',
+            sousTitre: `${metierLabel(st.visuel.metier)} pour locations courte durée${f.ville ? ` à ${f.ville}` : ''}`,
+            cover: coverUrl, logoUrl, des, unite: 'la séance', km: parseZone(f.zone_couverte, f.ville).km, zone: f.zone_couverte,
+            formules: st.vitrine.formules, bio: f.bio, deroule: st.vitrine.deroule,
+            chips: [metierLabel(st.visuel.metier), ...OPTIONS_VISUELLES.filter(o => st.visuel.options.includes(o.key)).map(o => o.label)],
+            sub: [f.specialite, des ? `dès ${des} €` : null].filter(Boolean).join(', '),
+          }} />
           <FicheCompletude metier="photographe" onGo={a => setActive(ANCHORS[a] ?? 'photos')} input={{
             photos, bio: f.bio, formules: st.vitrine.formules, prixMin: f.tarif_min,
             deroule: st.vitrine.deroule, villes: st.vitrine.villes, zone: f.zone_couverte, logo: !!logoUrl,
