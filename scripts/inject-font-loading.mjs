@@ -27,6 +27,15 @@ ${END}`
 
 const LINK = /<link[^>]*href="\/fonts\/site-fonts\.css[^"]*"[^>]*>/
 
+// Entrée du hero (keyframes fu) : départ à opacity .01 au lieu de 0 (27/10/2026,
+// PageSpeed mobile). Chrome ne retient pas comme « plus grand élément » (LCP)
+// un texte peint à opacity 0 : le titre du hero était ignoré et le LCP tombait
+// sur le bandeau cookies, affiché plus tard (3,2 s au lieu de 0,1 s). Même
+// rendu à l'œil. Appliqué à chaque build, accueil compris : une page générée
+// ou recopiée avec l'ancienne règle est corrigée d'office.
+export const FADE_FROM = /@keyframes fu\{from\{opacity:0;/g
+export const FADE_TO = '@keyframes fu{from{opacity:.01;'
+
 function* htmlFiles(dir) {
   for (const name of readdirSync(dir)) {
     if (SKIP_DIRS.has(name) || name.startsWith('.')) continue
@@ -38,14 +47,17 @@ function* htmlFiles(dir) {
 }
 
 let n = 0
+let fades = 0
 for (const file of htmlFiles(ROOT)) {
   const rel = relative(ROOT, file)
+  const raw = readFileSync(file, 'utf8')
+  const html = raw.replace(FADE_FROM, FADE_TO)
+  if (html !== raw) { writeFileSync(file, html); fades++ }
   if (SKIP_FILES.has(rel)) continue
-  const html = readFileSync(file, 'utf8')
   if (!LINK.test(html) || !html.includes('/nav.js')) continue
   let out
   if (html.includes(START)) out = html.replace(new RegExp(`${START}[\\s\\S]*?${END}`), BLOCK)
   else out = html.replace(LINK, m => `${m}\n${BLOCK}`)
   if (out !== html) { writeFileSync(file, out); n++ }
 }
-console.log(`[font-loading] ${n} page(s) mises à jour`)
+console.log(`[font-loading] ${n} page(s) mises à jour, entrée du hero corrigée dans ${fades}`)

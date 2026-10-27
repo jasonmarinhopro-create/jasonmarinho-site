@@ -38,13 +38,12 @@
 <link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
 <!-- Polices du premier écran chargées en priorité (26/10/2026, « petit zoom » à
      l'ouverture). L'attente des polices et du menu avant l'entrée du hero a été
-     retirée le même jour (« écran vert 1 à 2 s ») : font-display: block suffit. -->
+     retirée le même jour (« écran vert 1 à 2 s ») : font-display: block suffit.
+     Polices d'icônes non préchargées (27/10/2026, PageSpeed mobile) : elles
+     prenaient la bande passante des polices du texte, qui retiennent le titre. -->
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/outfit-normal-300-latin.woff2" crossorigin>
-<link rel="preload" as="font" href="/fonts/Phosphor-Bold.woff2" crossorigin>
-<link rel="preload" as="font" href="/fonts/Phosphor-Light.woff2" crossorigin>
-<link rel="preload" as="font" href="/fonts/Phosphor.woff2" crossorigin>
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
   <link rel="stylesheet" type="text/css" href="/fonts/phosphor-light-subset.css?v=eff44b866e">
   <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
@@ -286,7 +285,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 .soc:hover{background:rgba(255,255,255,.09);color:#fff}
 
 /* ── ANIM ── */
-@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fu{from{opacity:.01;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
