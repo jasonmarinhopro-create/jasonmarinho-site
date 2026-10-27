@@ -54,15 +54,6 @@
       ]
     },
     {
-      "source": "/fonts/(.*)\\.css",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
       "source": "/(nav|footer|cookie-banner)\\.js",
       "has": [{ "type": "query", "key": "v" }],
       "headers": [

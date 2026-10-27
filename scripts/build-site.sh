@@ -12,5 +12,4 @@ node scripts/build-trouver-un-pro.mjs
 node scripts/build-derniers-articles.mjs
 node scripts/inject-font-loading.mjs
 node scripts/build-phosphor-subset.mjs
-node scripts/inline-font-css.mjs
 node scripts/minify-assets.mjs

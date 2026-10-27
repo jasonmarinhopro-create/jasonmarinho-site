@@ -12,8 +12,7 @@
   // ?v= (hash du contenu) à chaque build.
   [['phosphor-bold-subset','/fonts/phosphor-bold-subset.css?v=29999e9550'],
    ['phosphor-regular-subset','/fonts/phosphor-regular-subset.css?v=868073a0d4']].forEach(function(s){
-    // Feuille déjà là : en <link> ou intégrée à la page au déploiement (scripts/inline-font-css.mjs)
-    if (!document.querySelector('link[href*="'+s[0]+'"],style[data-font="'+s[0]+'"]')) {
+    if (!document.querySelector('link[href*="'+s[0]+'"]')) {
       var l = document.createElement('link');
       l.rel = 'stylesheet'; l.type = 'text/css';
       l.href = s[1];
@@ -1049,8 +1048,10 @@
   window.__jmAppWarm = true;
   try {
     var APP = 'https://app.jasonmarinho.com';
-    // Plus de « preconnect » au chargement (28/10/2026, PageSpeed : préconnexion
-    // inutilisée) : la connexion s'ouvre au survol, avec le réveil ci-dessous.
+    var head = document.head || document.getElementsByTagName('head')[0];
+    var pc = document.createElement('link');
+    pc.rel = 'preconnect'; pc.href = APP;
+    head.appendChild(pc);
 
     var done = false;
     function warm() {
