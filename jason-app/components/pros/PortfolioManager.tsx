@@ -104,10 +104,17 @@ export default function PortfolioManager({ initial, targetId, ficheUrl, onPrepar
   return (
     <div>
       {dialog}
-      <p style={{ fontSize: 13, color: 'var(--text-3)', lineHeight: 1.6, margin: '0 0 12px' }}>
-        Tes plus belles réalisations, en haut de ta fiche publique : c’est ce que les hôtes regardent en premier. La première photo est la photo principale.{' '}
-        <strong style={{ color: photos.length >= PHOTOS_MAX ? 'var(--text-2)' : 'var(--accent-text)' }}>{photos.length} / {PHOTOS_MAX} photos</strong>
-      </p>
+      {onChanged ? (
+        // Atelier : la partie a déjà son texte d'introduction, seul le compteur reste
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600, color: photos.length >= PHOTOS_MAX ? 'var(--text-2)' : 'var(--accent-text)', background: 'var(--accent-bg)', padding: '5px 11px', borderRadius: 999, marginBottom: 12 }}>
+          {photos.length} / {PHOTOS_MAX} photos
+        </div>
+      ) : (
+        <p style={{ fontSize: 13, color: 'var(--text-3)', lineHeight: 1.6, margin: '0 0 12px' }}>
+          Tes plus belles réalisations, en haut de ta fiche publique : c’est ce que les hôtes regardent en premier. La première photo est la photo principale.{' '}
+          <strong style={{ color: photos.length >= PHOTOS_MAX ? 'var(--text-2)' : 'var(--accent-text)' }}>{photos.length} / {PHOTOS_MAX} photos</strong>
+        </p>
+      )}
       {photos.length > 0 && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 10, marginBottom: 12 }}>
           {photos.map((p, i) => {

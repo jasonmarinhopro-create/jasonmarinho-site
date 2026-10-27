@@ -177,10 +177,13 @@ export default function Atelier(p: AtelierProps) {
       <div style={{ marginTop: 22, display: 'flex', flexDirection: 'column', gap: 20 }}>{current.content}</div>
       {next && (
         <button type="button" onClick={() => open(next.id)} style={a.next}>
-          <span style={a.nextL}>Partie suivante</span>
-          <span style={a.nextT}>{next.label}</span>
-          <span style={a.nextS}>{next.summary}</span>
-          <ArrowRight size={18} weight="bold" color="var(--accent-text)" />
+          <span style={a.nextIcon} aria-hidden="true">{next.icon}</span>
+          <span style={{ flex: 1, minWidth: 0 }}>
+            <span style={a.nextL}>Partie suivante</span>
+            <span style={a.nextT}>{next.label}</span>
+            <span style={a.nextS}>{next.attention || next.summary}</span>
+          </span>
+          <span style={a.nextGo} aria-hidden="true"><ArrowRight size={18} weight="bold" /></span>
         </button>
       )}
     </section>
@@ -403,10 +406,12 @@ const a: Record<string, React.CSSProperties> = {
   eyebrow: { fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-3)' },
   h2: { margin: '6px 0 6px', fontFamily: 'var(--font-fraunces), serif', fontWeight: 400, fontSize: 'clamp(24px, 3vw, 30px)', letterSpacing: '-.4px', color: 'var(--text)' },
   desc: { margin: 0, fontSize: 14.5, lineHeight: 1.6, color: 'var(--text-2)', maxWidth: 620 },
-  next: { marginTop: 26, display: 'flex', alignItems: 'center', gap: 12, width: '100%', padding: '16px 18px', borderRadius: 16, border: '1px solid var(--border)', background: 'var(--bg)', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left', flexWrap: 'wrap' },
-  nextL: { fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--text-3)' },
-  nextT: { fontFamily: 'var(--font-fraunces), serif', fontSize: 18, color: 'var(--text)', flex: 1 },
-  nextS: { fontSize: 12.5, color: 'var(--text-3)' },
+  next: { marginTop: 28, display: 'flex', alignItems: 'center', gap: 14, width: '100%', padding: '14px 14px 14px 16px', borderRadius: 18, border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' },
+  nextIcon: { width: 42, height: 42, borderRadius: 13, background: 'var(--surface)', color: 'var(--accent-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid var(--accent-border)' },
+  nextL: { display: 'block', fontSize: 10.5, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--text-3)' },
+  nextT: { display: 'block', fontFamily: 'var(--font-fraunces), serif', fontSize: 19, lineHeight: 1.25, color: 'var(--text)', marginTop: 2 },
+  nextS: { display: 'block', fontSize: 12.5, color: 'var(--text-3)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+  nextGo: { width: 42, height: 42, borderRadius: '50%', background: 'var(--accent-text)', color: '#FFD56B', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   mTop: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, margin: '-6px -6px 14px', paddingBottom: 10, borderBottom: '1px solid var(--border)' },
   mBack: { display: 'inline-flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap', border: 'none', background: 'transparent', color: 'var(--accent-text)', fontFamily: 'inherit', fontSize: 15, fontWeight: 600, padding: '10px 6px', minHeight: 44, cursor: 'pointer' },
   mDone: { border: 'none', background: 'transparent', color: 'var(--accent-text)', fontFamily: 'inherit', fontSize: 15, fontWeight: 700, padding: '10px 8px', minHeight: 44, cursor: 'pointer' },
