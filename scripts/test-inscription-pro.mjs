@@ -123,13 +123,14 @@ for (const cas of CAS) {
     let vues = ''
     for (const el of parties) {
       const t = ((await el.innerText().catch(() => '')) || '').trim()
-      if (!/^(Présentation|Formules|Zone|Contact|Ton offre|Ton activité|Photos)/i.test(t)) continue
+      if (!/^(Présentation|Formules|Où tu interviens|Contact|Photos)/i.test(t)) continue
       await el.click().catch(() => {}); await page.waitForTimeout(600)
       vues += await valeurs()
     }
     ok('Ma fiche : formules retrouvées', vues.includes('Formule Essentielle') && vues.includes('Formule Complète'))
     ok('Ma fiche : présentation retrouvée', vues.includes(bio))
     ok('Ma fiche : zone retrouvée (rayon 20 km)', /20 km/.test(vues))
+    ok('Ma fiche : résumé « 2 villes en plus »', txt.includes('2 villes en plus'))
     ok('Ma fiche : villes retrouvées', vues.includes('Villeurbanne') && vues.includes('Bron'))
 
     // 5. Brouillon enregistré seul : on modifie la présentation
