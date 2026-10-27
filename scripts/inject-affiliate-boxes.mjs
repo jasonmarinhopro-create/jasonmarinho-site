@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Encadrés affiliés/parrainage (Hospitable, Shine, Indy, JD2M, LegalPlace, Tiime, Lodgify, Brevo, AirDNA) injectés dans les pages
+// Encadrés affiliés/parrainage (Hospitable, Shine, Indy, JD2M, Keobiz, LegalPlace, Tiime, Lodgify, Brevo, AirDNA) injectés dans les pages
 // qui parlent déjà de l'outil. Idempotent : chaque encadré est entouré de
 // marqueurs <!-- AFF:<id>:START/END --> et remplacé à chaque passage. À
 // relancer après régénération d'un article (scripts/generate-article.mjs).
@@ -27,6 +27,8 @@ const AIRDNA = 'https://eur-invite.airdna.co/Jason-Marinho'
 const INDY = 'https://urlr.me/FEqNfy'
 // JD2M / Jedeclaremonmeuble.com (Affilae, numéro d'affilié 244, 17/10/2026)
 const JD2M = 'https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&utm_campaign=partenariat&utm_content=244&ae=244'
+// Keobiz (Affilae, numéro d'affilié 936, 27/10/2026) : cabinet d'expertise comptable
+const KEOBIZ = 'https://www.keobiz.fr/programme-affiliation-keobiz-2/?utm_campaign=affilie936&utm_medium=lp&utm_source=affilie&ae=936'
 // LegalPlace (partenariat du 30/09/2026, numéro d'affilié 1773)
 const LP = 'utm_source=affilae&utm_medium=partner&utm_campaign=Jason%20Marinho&ae=1773'
 const LP_SOCIETE = `https://creation.legalplace.fr/creation-entreprise-2?${LP}`
@@ -86,6 +88,17 @@ const jd2mTu = box('jd2m-tu',
   btn(JD2M, 'Voir les offres JD2M'),
   "Lien affilié : si tu souscris via ce lien, JD2M me verse une commission, sans aucun surcoût pour toi. <a href=\"/partenaires/jd2m\" style=\"color:#004c3f\">Voir l'offre JD2M en détail, limites comprises</a>.")
 
+// Keobiz : jamais de prix (sources contradictoires au 27/10/2026, « sur devis »)
+const keobizNote = "Lien affilié : si tu deviens client via ce lien, Keobiz me verse une commission, sans aucun surcoût pour toi. <a href=\"/partenaires/keobiz\" style=\"color:#004c3f\">Voir l'offre Keobiz en détail, limites comprises</a>."
+const keobizTu = box('keobiz-tu',
+  "<strong>Tu veux tout confier à un expert-comptable ?</strong> Keobiz est un cabinet d'expertise comptable avec une offre dédiée aux loueurs en meublé : amortissements, liasse et déclarations faits pour toi. Utile surtout si ton dossier est chargé : plusieurs logements, LMP, SCI ou société à côté. Sur devis, honoraires déductibles au réel.",
+  btn(KEOBIZ, 'Demander un devis Keobiz'),
+  keobizNote)
+const keobizSociete = box('keobiz-societe',
+  "<strong>Un expert-comptable pour ta société :</strong> Keobiz tient la comptabilité des conciergeries et des sociétés (bilan, TVA si tu y es soumis, déclarations), et peut suivre en même temps ta location meublée ou ta SCI. Un seul interlocuteur quand tes activités se croisent. Sur devis.",
+  btn(KEOBIZ, 'Demander un devis Keobiz'),
+  keobizNote)
+
 const indyVous = box('indy-vous',
   "<strong>Essayer Indy :</strong> offre gratuite à vie, puis offre LMNP avec amortissements et liasse 2031 télétransmise. <strong>Premier mois offert</strong>, sans engagement, avec ce lien.",
   btn(INDY, 'Essayer Indy gratuitement'),
@@ -140,6 +153,8 @@ const PLACEMENTS = [
   ['blog/logiciels-conciergerie-comparatif-2026/index.html', 'hospitable-tu', '<h2 class="art-h2">2. Smoobu : l\'option européenne tout-en-un</h2>', hospitableTu],
   ['blog/hospitable-tarification-dynamique-incluse-pms-fin-outils-seuls/index.html', 'hospitable-tu', '<h2 class="art-h2">4. L\'automatisation au-delà du pricing', hospitableTu],
   ['blog/creer-conciergerie-airbnb-2025/index.html', 'legalplace-conciergerie', '<h2 class="art-h2">Étape 2 : Trouver ses premiers clients', legalplaceConciergerie],
+  // Après LegalPlace (même ancre) : créer la société, puis qui tient la compta
+  ['blog/creer-conciergerie-airbnb-2025/index.html', 'keobiz-societe', '<h2 class="art-h2">Étape 2 : Trouver ses premiers clients', keobizSociete],
   ['blog/devenir-prestataire-menage-airbnb-se-lancer/index.html', 'legalplace-menage', '<h2 class="art-h2">Fixer tes tarifs sans te brader', legalplaceMenage],
   ['comparatif-indy-tiime-henrri/index.html', 'indy-vous', '</section>\n\n<section id="tiime">', indyVous],
   ['comparatif-indy-tiime-henrri/index.html', 'tiime-vous', '</section>\n\n<section id="henrri">', tiimeVous],
@@ -149,8 +164,13 @@ const PLACEMENTS = [
   ['blog/regime-reel-vs-micro-bic-decision-2026/index.html', 'indy-tu', '<h2 class="art-h2">4. Comment basculer en régime réel', indyTu],
   // Après l'encadré Indy (même ancre, placé ensuite)
   ['blog/regime-reel-vs-micro-bic-decision-2026/index.html', 'jd2m-tu', '<h2 class="art-h2">4. Comment basculer en régime réel', jd2mTu],
+  // Keobiz après Indy et JD2M (même ancre, placé ensuite)
+  ['blog/regime-reel-vs-micro-bic-decision-2026/index.html', 'keobiz-tu', '<h2 class="art-h2">4. Comment basculer en régime réel', keobizTu],
   ['blog/declarer-lmnp-sans-expert-comptable-decla-fr/index.html', 'jd2m-tu', '<h2 class="art-h2">5. Les limites : quand ce n\'est pas fait pour toi', jd2mTu],
   ['blog/lmnp-vs-lmp-changement-2026-impact/index.html', 'indy-tu', '<h2 class="art-h2">4. Optimiser sa fiscalité LCD en 2026', indyTu],
+  ['blog/lmnp-vs-lmp-changement-2026-impact/index.html', 'keobiz-tu', '<h2 class="art-h2">4. Optimiser sa fiscalité LCD en 2026', keobizTu],
+  ['blog/cloture-comptable-lcd-2026-7-actions-avant-31-decembre/index.html', 'keobiz-tu', '<h2 class="art-h2">Passer à l\'action en novembre', keobizTu],
+  ['blog/tva-location-courte-duree-2026/index.html', 'keobiz-societe', '<h2 class="art-h2">Sources', keobizSociete],
   ['blog/location-directe-pourquoi-saffranchir-plateformes/index.html', 'lodgify-tu', '<h2 class="art-h2">Ce que la location directe ne remplace pas (encore)</h2>', lodgifyTu],
   ['blog/fixer-prix-reservation-directe-location-courte-duree/index.html', 'lodgify-tu', '<h2 class="art-h2">Et pour les séjours longs en direct ?</h2>', lodgifyTu],
   ['blog/outils-gerer-location-courte-duree-2025/index.html', 'lodgify-tu', '<h2 class="art-h2">2. Channel Manager, Synchronisation multi-plateformes</h2>', lodgifyTu],

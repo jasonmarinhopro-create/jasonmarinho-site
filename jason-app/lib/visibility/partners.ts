@@ -395,7 +395,7 @@ export const PARTNER_SEO: Array<{ key: string; name: string; paths: string[]; ma
   },
   {
     key: 'keobiz', name: 'Keobiz',
-    paths: ['/partenaires/keobiz'],
+    paths: ['/partenaires/keobiz', '/blog/regime-reel-vs-micro-bic-decision-2026', '/blog/lmnp-vs-lmp-changement-2026-impact', '/blog/cloture-comptable-lcd-2026-7-actions-avant-31-decembre', '/blog/tva-location-courte-duree-2026', '/blog/creer-conciergerie-airbnb-2025'],
     match: /keobiz/,
     targets: ['keobiz', 'keobiz avis', 'keobiz lmnp', 'expert comptable conciergerie', 'expert comptable location meublee', 'expert comptable sci lmnp'],
   },
