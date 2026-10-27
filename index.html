@@ -44,6 +44,12 @@
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/outfit-normal-300-latin.woff2" crossorigin>
+<!-- Entrée du hero d'un seul geste (27/10/2026, Jason : « saut d'écran » à la
+     première visite sur ordinateur : cadres vides, texte par morceaux, menu et
+     bandeau cookies ajoutés après coup). Le hero attend les trois polices du
+     texte et le menu, 700 ms au plus (le 26/10, 1,2 s donnait un écran vert),
+     puis prévient cookie-banner.js (événement hero:shown). -->
+<script>(function(){var d=document.documentElement,f=document.fonts;if(!f||!f.load||!window.Promise)return;d.classList.add('fwait');var t,done=function(){clearTimeout(t);if(!d.classList.contains('fwait'))return;d.classList.remove('fwait');document.dispatchEvent(new Event('hero:shown'))};t=setTimeout(done,700);var nav=new Promise(function(r){document.addEventListener('nav:ready',r)});Promise.all([f.load('300 1em Fraunces'),f.load('italic 300 1em Fraunces'),f.load('300 1em Outfit'),nav]).then(done,done)})()</script>
 <link rel="stylesheet" type="text/css" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
   <link rel="stylesheet" type="text/css" href="/fonts/phosphor-light-subset.css?v=eff44b866e">
   <link rel="stylesheet" type="text/css" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
@@ -285,6 +291,7 @@ footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28
 .soc:hover{background:rgba(255,255,255,.09);color:#fff}
 
 /* ── ANIM ── */
+.fwait .h-badge,.fwait .h-h1,.fwait .h-sub,.fwait .h-acts,.fwait .h-card,.fwait .h-note{animation-play-state:paused}
 @keyframes fu{from{opacity:.01;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}

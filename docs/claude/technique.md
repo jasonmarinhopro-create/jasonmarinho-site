@@ -229,3 +229,10 @@ Après le correctif du hero, PageSpeed mobile de l'accueil : 97. Suite des remar
 Mesure locale (Lighthouse 12) après correctifs : accessibilité 100 sur l'accueil, `/blog`, un article, une formation, l'annuaire des photographes, un guide de ville, `/photographe-lcd-lyon`, `/partenaires`, `/chiffres`, `/trouver-un-pro`.
 
 **Annulé le 28/10/2026** (PageSpeed mobile mesuré en ligne à 90 juste après, contre 97 avant ; Jason : « reviens comme avant ») : les trois changements ci-dessus sont retirés (`git revert` du commit d8772647). Ne pas réessayer d'intégrer les feuilles de polices aux pages ni de retirer la préconnexion sans mesure en ligne avant et après.
+
+## Accueil : « saut d'écran » à la première visite sur ordinateur (27/10/2026)
+
+Film image par image, cache vide, 1440 px : à 1,6 Mbit/s, cadres et bouton jaune vides 0,9 à 1,5 s (texte invisible sous `font-display: block`), bandeau cookies vide, menu ajouté à 1,5 s, puis le texte par morceaux (Outfit, Fraunces, italique). Sur une connexion rapide, le hero arrivait vers 450 ms, le bandeau cookies avec lui et le menu 70 à 100 ms plus tard. Correctif (accueil seulement) :
+- script en tête de `index.html` : classe `fwait` sur `<html>`, qui met en pause l'entrée du hero (`animation-play-state: paused`, donc `opacity: .01`) jusqu'aux trois polices du texte (`document.fonts.load`) **et** au menu (`nav:ready`), **700 ms au plus** (la tentative du 26/10 attendait 1,2 s : « écran vert »), puis événement `hero:shown` ;
+- `cookie-banner.js` (toutes les pages) : le bandeau attend la police Outfit et, sur l'accueil, `hero:shown` (1,5 s au plus), et entre en fondu (`jmcIn`, départ à `.01`).
+Mesures locales (Lighthouse mobile, 4 essais chacun) : avant 91-96, après 94 partout, LCP 2,7-3,2 s contre 3,0 s. À 1,6 Mbit/s, le plafond de 700 ms tombe avant les polices : il reste un fondu de cadres vides, comme avant. Attention : Chrome refuse certains ports locaux (5061 par exemple, « interstitial ») ; prendre 5055, 5062 ou 5071.

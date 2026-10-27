@@ -33,7 +33,8 @@
     'width:calc(100% - 40px);max-width:560px;z-index:99999;',
     'background:#fff;border:1px solid rgba(0,76,63,.15);border-radius:16px;',
     'padding:20px 22px;box-shadow:0 12px 40px rgba(0,0,0,.12);',
-    'font-family:Outfit,sans-serif;color:#0F1A0D;}',
+    'font-family:Outfit,sans-serif;color:#0F1A0D;animation:jmcIn .45s ease both;}',
+    '@keyframes jmcIn{from{opacity:.01;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}',
     '#jm-cookie h3{margin:0 0 6px;font-size:15px;font-weight:600;}',
     '#jm-cookie p{margin:0 0 14px;font-size:13px;color:#5A6B57;line-height:1.55;}',
     '#jm-cookie p a{color:#004C3F;text-decoration:underline;}',
@@ -159,11 +160,27 @@
   };
 
   // Affichage initial si aucun consentement valide stocké
+  // Attend la police du texte, et sur l'accueil l'entrée du hero (1,5 s au
+  // plus) : font-display: block montrait un bandeau vide, boutons sans texte,
+  // avant le reste de la page (27/10/2026).
+  function whenFont(cb) {
+    var f = document.fonts, done = false, left = 2;
+    var go = function () { if (!done) { done = true; cb(); } };
+    var one = function () { if (--left <= 0) go(); };
+    if (!f || !f.load) return go();
+    setTimeout(go, 1500);
+    f.load('400 1em Outfit').then(one, one);
+    if (document.documentElement.classList.contains('fwait')) {
+      document.addEventListener('hero:shown', one);
+    } else { one(); }
+  }
   if (!getConsent()) {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', showBanner);
-    } else {
-      showBanner();
-    }
+    whenFont(function () {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', showBanner);
+      } else {
+        showBanner();
+      }
+    });
   }
 })();
