@@ -4,10 +4,8 @@
 // Jason). Coquille et barre de mise en ligne : components/pros/atelier/Atelier.tsx ;
 // brouillon : lib/pros/fiche-draft.ts. Les champs, leurs vérifications et ce
 // qui part sur la fiche publique sont ceux d'avant (actions.ts).
-import SuggestInput from '@/components/ui/SuggestInput'
 import ClientelesFields from '@/components/pros/ClientelesFields'
 import { readClienteles, type Clientele } from '@/lib/pros/clienteles'
-import { CITY_OPTIONS } from '@/lib/ui/suggest'
 import GrowText from '@/components/pros/GrowText'
 import Link from 'next/link'
 import ViewsTrend from '@/components/pros/ViewsTrend'
@@ -15,7 +13,7 @@ import FicheCompletude from '@/components/pros/FicheCompletude'
 import FacturationTeaser from '@/components/pros/FacturationTeaser'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { useEffect, useMemo, useState } from 'react'
-import { Images, Tag, Sparkle, UsersThree, MapPin, PencilSimpleLine, ListNumbers, LinkSimple, UserCircle, CreditCard, Warning, CheckCircle, Star, ShieldCheck, UploadSimple, Trash, Phone, Check } from '@phosphor-icons/react/dist/ssr'
+import { Images, Tag, Sparkle, UsersThree, MapPin, PencilSimpleLine, ListNumbers, LinkSimple, UserCircle, CreditCard, Warning, CheckCircle, Star, ShieldCheck, UploadSimple, Trash, Phone, Check, Info, InstagramLogo } from '@phosphor-icons/react/dist/ssr'
 import { publishFiche, saveFicheDraft, createCustomerPortalSession, resumeFichePayment, uploadCleanerLogo, deleteCleanerLogo, prepareFichePhotos, addFichePhotos, removeFichePhoto, moveFichePhoto, publishFichePhotos } from './actions'
 import PortfolioManager from '@/components/pros/PortfolioManager'
 import FicheVitrineFields, { initialVitrineForm, vitrinePayload, type VitrineForm } from '@/components/pros/FicheVitrineFields'
@@ -27,7 +25,9 @@ import { changedSections, revertSections, mergeDraftState, readDraft, newerDraft
 import Atelier, { type AtelierSection, type PublishState } from '@/components/pros/atelier/Atelier'
 import { useFicheDraft, readLocalDraft } from '@/components/pros/atelier/useFicheDraft'
 import { atelierInput as inp, Field, Group, Toggle, Segmented, ui } from '@/components/pros/atelier/ui'
-import { zoneSummary, prixDes } from '@/lib/pros/atelier-resumes'
+import { zoneSummary, prixDes, tarifsDepuisFormules } from '@/lib/pros/atelier-resumes'
+import ZoneEditor from '@/components/pros/atelier/ZoneEditor'
+import { locateCommunes } from '@/app/dashboard/pros-geo-actions'
 
 const AMBER = '#B7791F'
 const AMBER_DARK = '#8A5A12'
@@ -75,6 +75,8 @@ interface Props {
   statsSlot?: React.ReactNode
   /** Retour de Stripe Checkout (?paid=1 / ?canceled=1) */
   paymentNotice?: 'paid' | 'canceled' | null
+  /** Positions des communes (zone) : action serveur, remplaçable pour les essais */
+  locate?: typeof locateCommunes
 }
 
 const PRESTATIONS: Array<[string, string, string]> = [
@@ -147,7 +149,7 @@ function sectionOfError(msg: string): string | undefined {
   return undefined
 }
 
-export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, viewsTrend, statsSlot, paymentNotice = null }: Props) {
+export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, viewsTrend, statsSlot, paymentNotice = null, locate = locateCommunes }: Props) {
   const serverDraft = readDraft<State>(cleaner.fiche_draft)
   const [baseline, setBaseline] = useState<State>(() => stateFrom(cleaner))
   const [st, setSt] = useState<State>(() => mergeDraftState(stateFrom(cleaner), serverDraft?.state ?? null))
@@ -187,12 +189,15 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
   const toggleIn = (key: 'prestations' | 'langues', v: string) =>
     setForm({ [key]: f[key].includes(v) ? f[key].filter(x => x !== v) : [...f[key], v] } as Partial<State['form']>)
 
+  // Fourchette de l'annuaire tirée des formules chiffrées (étape 2)
+  const tarifs = tarifsDepuisFormules(st.vitrine.formules, f.tarif_forfait_min, f.tarif_forfait_max)
+
   async function handlePublish() {
     setPublish({ kind: 'publishing' }); setErr(null)
     const res = await publishFiche({
       targetId,
       full_name: f.full_name, pseudo: f.pseudo || null, ville: f.ville, zone_couverte: f.zone_couverte || null, bio: f.bio || null,
-      tarif_forfait_min: f.tarif_forfait_min, tarif_forfait_max: f.tarif_forfait_max, tarif_heure: f.tarif_heure,
+      tarif_forfait_min: tarifs.min, tarif_forfait_max: tarifs.max, tarif_heure: f.tarif_heure,
       prestations: f.prestations, equipe_type: f.equipe_type || null, logements_geres: f.logements_geres,
       delai_reservation: f.delai_reservation || null, langues: f.langues,
       assurance_rc_pro: f.assurance_rc_pro, siret: f.siret || null, site_url: f.site_url || null,
@@ -304,14 +309,22 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
       content: (
         <>
           <FicheVitrineFields part="formules" value={st.vitrine} onChange={v => setSt(s => ({ ...s, vitrine: v }))} metier="menage" inputStyle={inp} titleStyle={{}} />
-          <Group title="Fourchette affichée dans l’annuaire">
+          {tarifs.auto && (
+            <div style={infoLine}>
+              <Info size={18} weight="duotone" color="var(--accent-text)" style={{ flexShrink: 0 }} />
+              <span>Ton prix d’appel <strong style={{ color: 'var(--text)' }}>« dès {tarifs.min} € »</strong>{tarifs.max ? <> et ta fourchette jusqu’à {tarifs.max} €</> : null} sont calculés depuis tes formules.</span>
+            </div>
+          )}
+          <Group title={tarifs.auto ? 'Tarif horaire' : 'Sans formule chiffrée : tes prix'}>
             <div style={ui.grid2}>
-              <Field label="Ménage dès (€)">
-                <input style={inp} type="number" min={0} max={999} value={f.tarif_forfait_min ?? ''} onChange={e => setForm({ tarif_forfait_min: e.target.value ? parseInt(e.target.value, 10) : null })} />
-              </Field>
-              <Field label="Jusqu’à (€)">
-                <input style={inp} type="number" min={0} max={999} value={f.tarif_forfait_max ?? ''} onChange={e => setForm({ tarif_forfait_max: e.target.value ? parseInt(e.target.value, 10) : null })} />
-              </Field>
+              {!tarifs.auto && <>
+                <Field label="Ménage dès (€)">
+                  <input style={inp} type="number" min={0} max={999} value={f.tarif_forfait_min ?? ''} onChange={e => setForm({ tarif_forfait_min: e.target.value ? parseInt(e.target.value, 10) : null })} />
+                </Field>
+                <Field label="Jusqu’à (€)">
+                  <input style={inp} type="number" min={0} max={999} value={f.tarif_forfait_max ?? ''} onChange={e => setForm({ tarif_forfait_max: e.target.value ? parseInt(e.target.value, 10) : null })} />
+                </Field>
+              </>}
               <Field label="Tarif horaire (facultatif)">
                 <input style={inp} type="number" min={0} max={200} value={f.tarif_heure ?? ''} onChange={e => setForm({ tarif_heure: e.target.value ? parseInt(e.target.value, 10) : null })} placeholder="€ de l’heure" />
               </Field>
@@ -383,20 +396,11 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
       summary: zoneSummary(f.ville, f.zone_couverte, st.vitrine.villes.length),
       done: !!f.ville && (st.vitrine.villes.length > 0 || /\d\s?km/i.test(f.zone_couverte)),
       title: <>Où tu <em style={em}>interviens</em></>,
-      desc: 'Ta ville, ta zone et quelques villes en plus : ta fiche les montre sur une carte et les hôtes vérifient si leur logement est dans ta zone.',
+      desc: 'Ta ville, un rayon et quelques villes en plus : ta fiche dessine la carte toute seule, et les hôtes vérifient en un clic si leur logement est dans ta zone.',
       content: (
         <>
-          <div style={ui.grid2}>
-            <Field label="Ville principale" req>
-              <SuggestInput kind="ville" style={inp} value={f.ville} onChange={v => setForm({ ville: v })} options={CITY_OPTIONS} required maxLength={80} ariaLabel="Ville principale" />
-            </Field>
-            <Field label="Zone couverte" hint="Un rayon (+ 30 km), des communes ou un département : ta fiche les montre sur une carte.">
-              <GrowText style={inp} value={f.zone_couverte} onChange={v => setForm({ zone_couverte: v })} max={200} counter={false} placeholder="Bordeaux + 20 km" />
-            </Field>
-          </div>
-          <Group title="Villes que tu veux citer en plus">
-            <FicheVitrineFields part="villes" value={st.vitrine} onChange={v => setSt(s => ({ ...s, vitrine: v }))} metier="menage" inputStyle={inp} titleStyle={{}} />
-          </Group>
+          <ZoneEditor ville={f.ville} zone={f.zone_couverte} villes={st.vitrine.villes} locate={locate}
+            onChange={n => setSt(s => ({ ...s, form: { ...s.form, ...(n.ville !== undefined ? { ville: n.ville } : {}), ...(n.zone !== undefined ? { zone_couverte: n.zone } : {}) }, vitrine: n.villes ? { ...s.vitrine, villes: n.villes } : s.vitrine }))} />
         </>
       ),
     },
@@ -436,15 +440,15 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
             <Toggle checked={f.telephone_public} onChange={v => setForm({ telephone_public: v })} icon={<Phone size={18} weight="bold" />}
               label="Afficher mon numéro sur ma fiche" sub="Un bouton « Appeler » apparaît à côté de « Demander un devis »." />
           )}
-          <div style={ui.grid2}>
-            <Field label="Site web">
-              <input style={inp} type="text" inputMode="url" autoCapitalize="off" spellCheck={false} value={f.site_url} onChange={e => setForm({ site_url: e.target.value })} maxLength={300} placeholder="monsite.fr" />
-            </Field>
-            <Field label="Instagram (sans @)">
-              <input style={inp} value={f.instagram_handle} onChange={e => setForm({ instagram_handle: e.target.value })} maxLength={50} autoCapitalize="off" spellCheck={false} />
-            </Field>
-          </div>
-          <ReseauxFields value={st.reseaux} onChange={v => setSt(s => ({ ...s, reseaux: v }))} inputStyle={inp} />
+          <Field label="Site web">
+            <input style={inp} type="text" inputMode="url" autoCapitalize="off" spellCheck={false} value={f.site_url} onChange={e => setForm({ site_url: e.target.value })} maxLength={300} placeholder="monsite.fr" />
+          </Field>
+          <ReseauxFields value={st.reseaux} onChange={v => setSt(s => ({ ...s, reseaux: v }))} inputStyle={inp} before={
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600, color: 'var(--text-2)' }}><InstagramLogo size={15} weight="bold" color="var(--accent-text)" /> Instagram</span>
+              <input style={inp} value={f.instagram_handle} onChange={e => setForm({ instagram_handle: e.target.value.replace(/^@/, '') })} maxLength={50} autoCapitalize="off" spellCheck={false} placeholder="toncompte" />
+            </label>
+          } />
         </>
       ),
     },
@@ -591,6 +595,7 @@ export default function MaFicheMenage({ cleaner, kpis, isAdminPreview = false, v
   )
 }
 
+const infoLine: React.CSSProperties = { display: 'flex', gap: 10, alignItems: 'center', padding: '14px 16px', borderRadius: 14, background: 'var(--accent-bg)', fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.5 }
 const em: React.CSSProperties = { fontStyle: 'italic', color: 'var(--accent-text)', fontWeight: 300 }
 const adminBanner: React.CSSProperties = { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, padding: '10px 16px', background: 'rgba(255,213,107,0.14)', border: `1px solid ${AMBER}55`, borderRadius: 12, fontSize: 13, color: AMBER_DARK, marginBottom: 14 }
 const errBanner: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'var(--danger-bg)', border: '1px solid var(--danger-border)', borderRadius: 12, fontSize: 13, color: 'var(--danger-text)', marginBottom: 14 }

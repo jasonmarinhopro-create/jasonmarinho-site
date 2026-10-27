@@ -18,7 +18,9 @@ export function emptyReseauxForm(saved?: unknown): ReseauxForm {
   return Object.fromEntries(RESEAUX.map(r => [r.key, typeof raw[r.key] === 'string' ? (raw[r.key] as string) : ''])) as ReseauxForm
 }
 
-export default function ReseauxFields({ value, onChange, inputStyle }: {
+export default function ReseauxFields({ value, onChange, inputStyle, before }: {
+  /** Atelier : Instagram (colonne à part) rangé avec les autres réseaux, en premier */
+  before?: React.ReactNode
   value: ReseauxForm
   onChange: (next: ReseauxForm) => void
   inputStyle: React.CSSProperties
@@ -44,6 +46,7 @@ export default function ReseauxFields({ value, onChange, inputStyle }: {
         Affichés en petites icônes dans tes infos, sur ta fiche publique. Ta fiche Google rassure les hôtes : ils y voient tes avis.
       </p>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 10 }}>
+        {before}
         {RESEAUX.map(r => {
           const Icon = ICONS[r.key]
           const err = errors[r.key]

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { zoneSummary, prixDes } from './atelier-resumes'
+import { zoneSummary, prixDes, tarifsDepuisFormules } from './atelier-resumes'
 
 describe('résumés de l’atelier', () => {
   it('zone : ville, rayon lu dans la zone, villes en plus', () => {
@@ -14,5 +14,11 @@ describe('résumés de l’atelier', () => {
     expect(prixDes([{ prix: '12,5' }], null)).toBe(12.5)
     expect(prixDes([], null)).toBeNull()
     expect(prixDes([], 0)).toBeNull()
+  })
+  it('fourchette tirée des formules, sinon celle saisie', () => {
+    expect(tarifsDepuisFormules([{ prix: '230' }, { prix: '920' }, { prix: '460' }], 100, 2000)).toEqual({ min: 230, max: 920, auto: true })
+    expect(tarifsDepuisFormules([{ prix: '45' }], 30, 90)).toEqual({ min: 45, max: null, auto: true })
+    expect(tarifsDepuisFormules([{ prix: '' }], 30, 90)).toEqual({ min: 30, max: 90, auto: false })
+    expect(tarifsDepuisFormules([{ prix: '99,6' }, { prix: 99.6 }], null, null)).toEqual({ min: 100, max: null, auto: true })
   })
 })

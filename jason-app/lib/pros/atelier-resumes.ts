@@ -15,3 +15,15 @@ export function prixDes(formules: Array<{ prix: string | number | null }>, tarif
   if (prices.length) return Math.min(...prices)
   return tarifMin && tarifMin > 0 ? tarifMin : null
 }
+
+/**
+ * Fourchette de l'annuaire tirée des formules (étape 2, 27/10/2026) : plus de
+ * tarif minimum et maximum à retaper. Sans formule chiffrée, on garde ceux saisis.
+ */
+export function tarifsDepuisFormules(formules: Array<{ prix: string | number | null }>, min: number | null, max: number | null): { min: number | null; max: number | null; auto: boolean } {
+  const prices = formules.map(x => Number(String(x.prix ?? '').replace(',', '.'))).filter(n => Number.isFinite(n) && n > 0).map(Math.round)
+  if (!prices.length) return { min, max, auto: false }
+  const lo = Math.min(...prices)
+  const hi = Math.max(...prices)
+  return { min: lo, max: hi > lo ? hi : null, auto: true }
+}

@@ -4,8 +4,6 @@
 // Jason). Coquille et barre de mise en ligne : components/pros/atelier/Atelier.tsx ;
 // brouillon : lib/pros/fiche-draft.ts. Les champs, leurs vérifications et ce
 // qui part sur la fiche publique sont ceux d'avant (actions.ts).
-import SuggestInput from '@/components/ui/SuggestInput'
-import { CITY_OPTIONS } from '@/lib/ui/suggest'
 import GrowText from '@/components/pros/GrowText'
 import Link from 'next/link'
 import ViewsTrend from '@/components/pros/ViewsTrend'
@@ -13,7 +11,7 @@ import FicheCompletude from '@/components/pros/FicheCompletude'
 import FacturationTeaser from '@/components/pros/FacturationTeaser'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
 import { useEffect, useMemo, useState } from 'react'
-import { Images, Tag, Camera, MapPin, PencilSimpleLine, ListNumbers, LinkSimple, UserCircle, CreditCard, Warning, CheckCircle, Star, UploadSimple, Trash, Phone } from '@phosphor-icons/react/dist/ssr'
+import { Images, Tag, Camera, MapPin, PencilSimpleLine, ListNumbers, LinkSimple, UserCircle, CreditCard, Warning, CheckCircle, Star, UploadSimple, Trash, Phone, Info, InstagramLogo } from '@phosphor-icons/react/dist/ssr'
 import { publishFiche, saveFicheDraft, createCustomerPortalSession, resumeFichePayment, uploadPhotographerLogo, deletePhotographerLogo, prepareFichePhotos, addFichePhotos, removeFichePhoto, moveFichePhoto, publishFichePhotos } from './actions'
 import PortfolioManager from '@/components/pros/PortfolioManager'
 import FicheVitrineFields, { initialVitrineForm, vitrinePayload, type VitrineForm } from '@/components/pros/FicheVitrineFields'
@@ -29,7 +27,9 @@ import { changedSections, revertSections, mergeDraftState, readDraft, newerDraft
 import Atelier, { type AtelierSection, type PublishState } from '@/components/pros/atelier/Atelier'
 import { useFicheDraft, readLocalDraft } from '@/components/pros/atelier/useFicheDraft'
 import { atelierInput as inp, Field, Group, Toggle, ui } from '@/components/pros/atelier/ui'
-import { zoneSummary, prixDes } from '@/lib/pros/atelier-resumes'
+import { zoneSummary, prixDes, tarifsDepuisFormules } from '@/lib/pros/atelier-resumes'
+import ZoneEditor from '@/components/pros/atelier/ZoneEditor'
+import { locateCommunes } from '@/app/dashboard/pros-geo-actions'
 
 const AMBER = '#B7791F'
 const AMBER_DARK = '#8A5A12'
@@ -76,6 +76,8 @@ interface Props {
   statsSlot?: React.ReactNode
   /** Retour de Stripe Checkout (?paid=1 / ?canceled=1) */
   paymentNotice?: 'paid' | 'canceled' | null
+  /** Positions des communes (zone) : action serveur, remplaçable pour les essais */
+  locate?: typeof locateCommunes
 }
 
 type State = {
@@ -132,7 +134,7 @@ function sectionOfError(msg: string): string | undefined {
 
 const SPECIALITES = ['Intérieurs LCD', 'Intérieurs + drone extérieur', 'Intérieurs + vidéo / Reels', 'Vidéo de visite du logement', 'Visite virtuelle Matterport 3D', 'Hôtels et gîtes de charme', 'Architecture + mise en scène']
 
-export default function MaFichePhotographe({ photographer, kpis, isAdminPreview = false, viewsTrend, statsSlot, paymentNotice = null }: Props) {
+export default function MaFichePhotographe({ photographer, kpis, isAdminPreview = false, viewsTrend, statsSlot, paymentNotice = null, locate = locateCommunes }: Props) {
   const serverDraft = readDraft<State>(photographer.fiche_draft)
   const [baseline, setBaseline] = useState<State>(() => stateFrom(photographer))
   const [st, setSt] = useState<State>(() => mergeDraftState(stateFrom(photographer), serverDraft?.state ?? null))
@@ -170,12 +172,15 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pending.length, st])
 
+  // Fourchette de l'annuaire tirée des formules chiffrées (étape 2)
+  const tarifs = tarifsDepuisFormules(st.vitrine.formules, f.tarif_min, f.tarif_max)
+
   async function handlePublish() {
     setPublish({ kind: 'publishing' }); setErr(null)
     const res = await publishFiche({
       targetId,
       full_name: f.full_name, ville: f.ville, zone_couverte: f.zone_couverte || null, bio: f.bio || null,
-      specialite: f.specialite || null, tarif_min: f.tarif_min, tarif_max: f.tarif_max,
+      specialite: f.specialite || null, tarif_min: tarifs.min, tarif_max: tarifs.max,
       portfolio_url: f.portfolio_url, instagram_handle: f.instagram_handle || null,
       telephone: f.telephone || null, telephone_public: f.telephone_public && !!f.telephone.trim(),
       clienteles: st.clienteles, reseaux: st.reseaux,
@@ -285,7 +290,13 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
       content: (
         <>
           <FicheVitrineFields part="formules" value={st.vitrine} onChange={v => setSt(s => ({ ...s, vitrine: v }))} metier="photographe" inputStyle={inp} titleStyle={{}} />
-          <Group title="Fourchette affichée dans l’annuaire">
+          {tarifs.auto ? (
+            <div style={infoLine}>
+              <Info size={18} weight="duotone" color="var(--accent-text)" style={{ flexShrink: 0 }} />
+              <span>Ton prix d’appel <strong style={{ color: 'var(--text)' }}>« dès {tarifs.min} € »</strong>{tarifs.max ? <> et ta fourchette jusqu’à {tarifs.max} €</> : null} sont calculés depuis tes formules. Plus rien à remplir à part.</span>
+            </div>
+          ) : (
+          <Group title="Sans formule chiffrée : ta fourchette de prix">
             <div style={ui.grid2}>
               <Field label="À partir de (€)">
                 <input style={inp} type="number" min={0} max={5000} value={f.tarif_min ?? ''} onChange={e => setForm({ tarif_min: e.target.value ? parseInt(e.target.value, 10) : null })} />
@@ -295,6 +306,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
               </Field>
             </div>
           </Group>
+          )}
         </>
       ),
     },
@@ -323,20 +335,11 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
       summary: zoneSummary(f.ville, f.zone_couverte, st.vitrine.villes.length),
       done: !!f.ville && (st.vitrine.villes.length > 0 || /\d\s?km/i.test(f.zone_couverte)),
       title: <>Où tu <em style={em}>interviens</em></>,
-      desc: 'Ta ville, ta zone et quelques villes en plus : ta fiche les montre sur une carte et les hôtes vérifient si leur logement est dans ta zone.',
+      desc: 'Ta ville, un rayon et quelques villes en plus : ta fiche dessine la carte toute seule, et les hôtes vérifient en un clic si leur logement est dans ta zone.',
       content: (
         <>
-          <div style={ui.grid2}>
-            <Field label="Ville principale" req>
-              <SuggestInput kind="ville" style={inp} value={f.ville} onChange={v => setForm({ ville: v })} options={CITY_OPTIONS} required maxLength={80} ariaLabel="Ville principale" />
-            </Field>
-            <Field label="Zone couverte" hint="Un rayon (+ 30 km), des communes ou un département : ta fiche les montre sur une carte.">
-              <GrowText style={inp} value={f.zone_couverte} onChange={v => setForm({ zone_couverte: v })} max={200} counter={false} placeholder="Paris + 30 km" />
-            </Field>
-          </div>
-          <Group title="Villes que tu veux citer en plus">
-            <FicheVitrineFields part="villes" value={st.vitrine} onChange={v => setSt(s => ({ ...s, vitrine: v }))} metier="photographe" inputStyle={inp} titleStyle={{}} />
-          </Group>
+          <ZoneEditor ville={f.ville} zone={f.zone_couverte} villes={st.vitrine.villes} locate={locate}
+            onChange={n => setSt(s => ({ ...s, form: { ...s.form, ...(n.ville !== undefined ? { ville: n.ville } : {}), ...(n.zone !== undefined ? { zone_couverte: n.zone } : {}) }, vitrine: n.villes ? { ...s.vitrine, villes: n.villes } : s.vitrine }))} />
         </>
       ),
     },
@@ -376,15 +379,15 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
             <Toggle checked={f.telephone_public} onChange={v => setForm({ telephone_public: v })} icon={<Phone size={18} weight="bold" />}
               label="Afficher mon numéro sur ma fiche" sub="Un bouton « Appeler » apparaît à côté de « Demander un devis »." />
           )}
-          <div style={ui.grid2}>
-            <Field label="Ton site ou portfolio">
-              <input style={inp} type="text" inputMode="url" autoCapitalize="off" spellCheck={false} placeholder="monsite.fr" value={f.portfolio_url} onChange={e => setForm({ portfolio_url: e.target.value })} maxLength={300} />
-            </Field>
-            <Field label="Instagram (sans @)">
-              <input style={inp} value={f.instagram_handle} onChange={e => setForm({ instagram_handle: e.target.value })} maxLength={50} autoCapitalize="off" spellCheck={false} />
-            </Field>
-          </div>
-          <ReseauxFields value={st.reseaux} onChange={v => setSt(s => ({ ...s, reseaux: v }))} inputStyle={inp} />
+          <Field label="Ton site ou portfolio">
+            <input style={inp} type="text" inputMode="url" autoCapitalize="off" spellCheck={false} placeholder="monsite.fr" value={f.portfolio_url} onChange={e => setForm({ portfolio_url: e.target.value })} maxLength={300} />
+          </Field>
+          <ReseauxFields value={st.reseaux} onChange={v => setSt(s => ({ ...s, reseaux: v }))} inputStyle={inp} before={
+            <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12.5, fontWeight: 600, color: 'var(--text-2)' }}><InstagramLogo size={15} weight="bold" color="var(--accent-text)" /> Instagram</span>
+              <input style={inp} value={f.instagram_handle} onChange={e => setForm({ instagram_handle: e.target.value.replace(/^@/, '') })} maxLength={50} autoCapitalize="off" spellCheck={false} placeholder="toncompte" />
+            </label>
+          } />
         </>
       ),
     },
@@ -523,6 +526,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
   )
 }
 
+const infoLine: React.CSSProperties = { display: 'flex', gap: 10, alignItems: 'center', padding: '14px 16px', borderRadius: 14, background: 'var(--accent-bg)', fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.5 }
 const em: React.CSSProperties = { fontStyle: 'italic', color: 'var(--accent-text)', fontWeight: 300 }
 const adminBanner: React.CSSProperties = { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, padding: '10px 16px', background: 'rgba(255,213,107,0.14)', border: `1px solid ${AMBER}55`, borderRadius: 12, fontSize: 13, color: AMBER_DARK, marginBottom: 14 }
 const errBanner: React.CSSProperties = { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'var(--danger-bg)', border: '1px solid var(--danger-border)', borderRadius: 12, fontSize: 13, color: 'var(--danger-text)', marginBottom: 14 }
