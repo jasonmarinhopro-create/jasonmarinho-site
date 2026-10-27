@@ -11,10 +11,26 @@ const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').re
 const rich = s => esc(s).replace(/\*([^*]+)\*/g, '<em>$1</em>')
 
 /** Diapositives complètes : numéros des points, fin ajoutée si absente. */
-export function normalizeSlides(spec) {
-  const slides = (spec.slides ?? []).map(s => ({ ...s }))
+/** Numéro affiché sur chaque écran « point » (01, 02…), carrousel comme stories */
+export function numberPoints(list) {
+  const out = (list ?? []).map(s => ({ ...s }))
   let n = 0
-  for (const s of slides) if (s.type === 'point') s.num = String(++n).padStart(2, '0')
+  for (const s of out) if (s.type === 'point') s.num = String(++n).padStart(2, '0')
+  return out
+}
+
+// Texte visible d'une page rendue : « undefined », « null » ou « NaN » veut dire
+// qu'un champ manque (27/10/2026 : stories publiées avec « undefined » à la
+// place du numéro). Le rendu refuse l'image plutôt que de la publier.
+export function assertNoBlank(html) {
+  const text = String(html).replace(/<style[\s\S]*?<\/style>/g, ' ').replace(/<[^>]+>/g, ' ')
+  const m = text.match(/\b(undefined|null|NaN)\b/)
+  if (m) throw new Error(`Visuel refusé : « ${m[1]} » apparaît dans le texte (champ manquant dans le fichier)`)
+  return html
+}
+
+export function normalizeSlides(spec) {
+  const slides = numberPoints(spec.slides)
   if (spec.format !== 'photo' && !slides.some(s => s.type === 'fin')) {
     slides.push({ type: 'fin', titre: spec.public === 'pros' ? 'Rejoins *l’annuaire*' : 'Tout est sur *le site*', texte: '', bouton: 'Lien en bio' })
   }
@@ -99,7 +115,7 @@ function inner(slide, spec, i, total, size) {
     case 'couverture':
       return { cls: 'dark', bg: spec.photo, html: `${head}<div class="body" style="justify-content:flex-end;padding-bottom:20px">${slide.kicker ? `<div class="kick" ${at()}>${esc(slide.kicker)}</div>` : ''}<h1 ${at()}>${rich(slide.titre)}</h1>${slide.sous_titre ? `<p class="sub" ${at()}>${rich(slide.sous_titre)}</p>` : ''}</div>${foot}` }
     case 'point':
-      return { cls: 'cream', html: `${head}<div class="body"><div class="num" ${at()}>${slide.num}<small></small></div><h2 ${at()}>${rich(slide.titre)}</h2>${slide.texte ? `<p class="txt" ${at()}>${rich(slide.texte)}</p>` : ''}</div>${foot}` }
+      return { cls: 'cream', html: `${head}<div class="body"><div class="num" ${at()}>${slide.num ?? ''}<small></small></div><h2 ${at()}>${rich(slide.titre)}</h2>${slide.texte ? `<p class="txt" ${at()}>${rich(slide.texte)}</p>` : ''}</div>${foot}` }
     case 'liste':
       return { cls: 'cream', html: `${head}<div class="body">${slide.kicker ? `<div class="kick" ${at()}>${esc(slide.kicker)}</div>` : ''}<h2 ${at()}>${rich(slide.titre)}</h2><ul>${(slide.items ?? []).map(t => `<li ${at()}><span class="ck"><i class="ph-bold ph-check"></i></span><span>${rich(t)}</span></li>`).join('')}</ul></div>${foot}` }
     case 'chiffre':
@@ -163,7 +179,8 @@ export function storyHtml(spec, coverSrc) {
 /** Écran d'une série de stories (1080 x 1920, marges des zones sûres des stories). */
 export function storyFrameHtml(spec, frames, i) {
   const size = { w: 1080, h: 1920 }
-  const s = inner(frames[i], spec, i, frames.length, size)
+  const list = numberPoints(frames)
+  const s = inner(list[i], spec, i, list.length, size)
   const bg = s.bg ? `<div class="bg" style="background-image:url('/${esc(String(s.bg).replace(/^\/+/, ''))}')"></div>` : ''
   const deco = s.cls === 'cream' ? '<div class="rule"></div><img class="wm" src="/logo-nav.webp" alt="">' : ''
   return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><style>${CSS(size)}.s{padding:250px 96px 300px}</style></head><body><div class="s ${s.cls}">${bg}${deco}${s.html}</div></body></html>`

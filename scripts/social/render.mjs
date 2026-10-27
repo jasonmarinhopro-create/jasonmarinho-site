@@ -11,7 +11,7 @@ import http from 'node:http'
 import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { createRequire } from 'node:module'
-import { SIZES, normalizeSlides, slideHtml, sceneDuration, storyHtml, storyFrameHtml } from './templates.mjs'
+import { SIZES, normalizeSlides, slideHtml, sceneDuration, storyHtml, storyFrameHtml, assertNoBlank } from './templates.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const FPS = 30
@@ -43,7 +43,7 @@ async function launch() {
 }
 
 async function load(page, srv, html) {
-  srv.set(html)
+  srv.set(assertNoBlank(html))
   await page.goto(`${srv.base}/__slide`, { waitUntil: 'networkidle' })
   await page.evaluate(() => document.fonts.ready)
 }
