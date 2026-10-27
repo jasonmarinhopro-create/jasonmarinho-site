@@ -32,13 +32,18 @@
         html += '<div class="cv-t"><span><b>' + n(c.totals.impressions) + '</b> affichages Google</span><span><b>' + n(c.totals.clicks) + '</b> clics</span><span><b>' + n(c.totals.visitors) + '</b> visiteurs</span></div><p class="cv-note">Cette page sur les 28 derniers jours (30 pour les visiteurs).</p>';
       }
       if (!html && d.site) {
+        // Pas encore de chiffres pour la page : le titre le dit (27/10/2026,
+        // « Cette page dans Google » au-dessus des chiffres de tout le site).
+        var hb = box.querySelector('.cv-h b'), hp = box.querySelector('.cv-h p');
+        if (hb) hb.textContent = 'Le site dans Google';
+        if (hp && hp.firstChild && hp.firstChild.nodeType === 3) hp.firstChild.nodeValue = 'Chiffres réels de Google Search Console, mis à jour chaque jour. Pas encore assez de données pour cette page seule : voici celles de tout le site. ';
         html = '<p class="cv-lead">Sur tout le site, ces 28 derniers jours :</p><div class="cv-t"><span><b>' + n(d.site.impressions) + '</b> affichages Google</span><span><b>' + n(d.site.clicks) + '</b> clics</span>' + (d.site.visitors ? '<span><b>' + n(d.site.visitors) + '</b> visiteurs</span>' : '') + '</div>';
       }
       // Demandes d'hôtes de la ville (17/10/2026), zéro compris
       if (html && d.demandes) {
         var k = /^\/menage-/.test(path) ? 'menage' : 'photographe', dm = d.demandes[k];
         var slug = path.replace(/^\/(photographe|menage)-lcd-/, '');
-        html += '<p class="cv-note"><b>' + n(dm) + '</b> demande' + (dm > 1 ? 's' : '') + ' d’hôte' + (dm > 1 ? 's' : '') + ' pour ' + (k === 'menage' ? 'une équipe de ménage' : 'un photographe ou vidéaste') + ' dans cette ville. <a href="/chiffres?ville=' + esc(slug) + '#ta-ville">Tous les chiffres de la ville</a></p>';
+        html += '<p class="cv-note"><b>' + n(dm) + '</b> demande' + (dm > 1 ? 's' : '') + ' d’hôte' + (dm > 1 ? 's' : '') + ' pour ' + (k === 'menage' ? 'une équipe de ménage' : 'un photographe ou vidéaste') + ' dans cette ville.</p>';
       }
       if (!html) return;
       out.innerHTML = html;

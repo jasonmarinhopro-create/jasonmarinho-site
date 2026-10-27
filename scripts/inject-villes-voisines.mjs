@@ -37,6 +37,15 @@ const KINDS = [
 
 const chip = (href, text) => `<a href="${href}" style="display:block;padding:8px 11px;border-radius:10px;background:#fff;border:1px solid rgba(0,76,63,.16);color:#004C3F;font-size:13.5px;font-weight:500;line-height:1.35;text-decoration:none">${text}</a>`
 
+// Pages pros : même largeur et mêmes marges que les sections de la page
+// (.s-in), espace égal au-dessus et en dessous (27/10/2026, Jason : bloc
+// décalé, grand vide au-dessus et collé au bandeau crème en dessous).
+// Guides hôte : placé dans leur <main>, qui a déjà ses marges.
+const SECTION_STYLE = {
+  pro: 'max-width:1100px;margin:0 auto;padding:0 clamp(20px,5vw,48px) clamp(44px,6vw,68px)',
+  guide: 'max-width:1100px;margin:0 auto;padding:clamp(24px,4vw,40px) clamp(16px,5vw,60px) 0',
+}
+
 function block(k, region, others) {
   const chips = others.map(s => chip(`/${k.prefix}${s}`, k.label(NAMES[s]))).join('\n      ')
   const inner = `<div style="background:#F7F5F0;border:1px solid rgba(0,76,63,.09);border-radius:18px;padding:clamp(20px,3vw,28px)">
@@ -47,7 +56,7 @@ function block(k, region, others) {
       </div>
     </div>`
   return `<!-- VOISINES:START -->
-<section style="max-width:1100px;margin:0 auto;padding:clamp(24px,4vw,40px) clamp(16px,5vw,60px) 0">
+<section style="${SECTION_STYLE[k.prefix === 'devenir-hote-airbnb-' ? 'guide' : 'pro']}">
     ${inner}
 </section>
 <!-- VOISINES:END -->
