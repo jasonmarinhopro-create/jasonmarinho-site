@@ -11,7 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-08-28 · conciergerie · Facturation électronique : réception obligatoire dès le 1er septembre · masquée (https://blog.elloha.com/2026/08/07/facturation-electronique-une-rentree-sportive-pour-les-loueurs-saisonniers/)
 - 2026-08-29 · plateformes · Airbnb bascule à 15,5 % de commission hôte dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-08-29 · reglementation · Déclaloc reporté au T4 2026 : continue à déclarer en mairie (https://sejourdirect.fr/blog/enregistrement-obligatoire-meubles-tourisme-mai-2026)
 - 2026-08-30 · fiscalite · Classement meublé 2021 : ton certificat expire cette année (https://lmnp.ai/classement-meuble-tourisme)
@@ -90,3 +89,5 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-10-23 · entreprise · CFE 2026 : ton avis arrive mi-novembre, paiement avant le 15 décembre · pour photographe, menage (https://www.portail-autoentrepreneur.fr/academie/statut-auto-entrepreneur/exonerations-cfe)
 - 2026-10-24 · fiscalite · Mise à jour : PLF 2027 cible uniquement les meublés de tourisme (https://www.boursedescredits.com/actualite-location-meublee-deputes-recentrent-plafonnement-amortissement-lmnp-meubles-tourisme-29992.php)
 - 2026-10-25 · fiscalite · LMNP réel : la réduction d'impôt OGA est supprimée depuis les revenus 2025 (https://declarer-ma-location-meublee.com/fiscalite-meuble-tourisme-2026/)
+- 2026-10-27 · reservation-directe · Abritel impose la parité tarifaire avec ton site direct dès le 29 octobre (https://www.rentalscaleup.com/fr/vrbo-impose-a-tous-les-hotes-une-commission-unique-de-12-ce-qui-change-le-29-octobre/)
+- 2026-10-27 · menage · Vacances scolaires du 19 décembre : prépare ton planning ménage pour les hôtes · pour menage (https://www.service-public.gouv.fr/particuliers/vosdroits/F31952?lang=fr)
