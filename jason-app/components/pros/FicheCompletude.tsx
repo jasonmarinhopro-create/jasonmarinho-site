@@ -7,12 +7,12 @@ import { CheckCircle, Circle, ArrowRight, CaretDown } from '@phosphor-icons/reac
 import { completude, type CompletudeInput } from '@/lib/pros/completude'
 import type { ProMetier } from '@/lib/pros/fiche-vitrine'
 
-export default function FicheCompletude({ input, metier }: { input: CompletudeInput; metier: ProMetier }) {
+export default function FicheCompletude({ input, metier, onGo }: { input: CompletudeInput; metier: ProMetier; /** Atelier : ouvre la partie au lieu de défiler */ onGo?: (anchor: string) => void }) {
   const { pct, points, next } = completude(input, metier)
   const [open, setOpen] = useState(false)
   const r = 26
   const c = 2 * Math.PI * r
-  const go = (anchor: string) => document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const go = (anchor: string) => onGo ? onGo(anchor) : document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   return (
     <div style={s.card}>

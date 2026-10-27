@@ -7,6 +7,7 @@ import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
+import * as draftServer from '@/lib/pros/fiche-draft-server'
 import { cleanReseaux, instaHandle } from '@/lib/pros/reseaux'
 import { readMetier, readOptions, normalizeVideoUrl } from '@/lib/pros/visuel'
 import { cleanFormules, cleanVilles, cleanDeroule, villeCasse } from '@/lib/pros/fiche-vitrine'
@@ -63,7 +64,7 @@ async function resolveTargetFiche(targetId?: string): Promise<
  * L'email et le user_id ne sont pas modifiables (clé d'identité auth).
  * Le slug n'est pas regénéré (préserve les liens SEO).
  */
-export async function updatePhotographerFiche(payload: {
+async function applyPhotographerFiche(payload: {
   targetId?: string
   full_name?: string
   ville?: string
@@ -149,11 +150,45 @@ export async function updatePhotographerFiche(payload: {
   await admin.from('photographers').update({ telephone_public: !!payload.telephone_public && !!fields.telephone }).eq('id', target.photographerId)
   if (Array.isArray(payload.clienteles)) await admin.from('photographers').update({ clienteles: readClienteles(payload.clienteles) }).eq('id', target.photographerId)
 
-  await triggerSiteRebuild('fiche photographe')
-
   revalidatePath('/dashboard/ma-fiche-photographe')
   if (target.isAdminEdit) revalidatePath('/dashboard/admin/photographes')
   return { success: true, warning, adminEdit: target.isAdminEdit }
+}
+
+/** Enregistre et met en ligne tout de suite (ancien bouton « Enregistrer ») */
+export async function updatePhotographerFiche(payload: Parameters<typeof applyPhotographerFiche>[0]) {
+  const res = await applyPhotographerFiche(payload)
+  if (res.success) await triggerSiteRebuild('fiche photographe')
+  return res
+}
+
+/**
+ * Atelier de Ma fiche (27/10/2026) : brouillon enregistré à chaque changement,
+ * sans toucher à la fiche publique ni reconstruire le site (lib/pros/fiche-draft-server.ts).
+ */
+export async function saveFicheDraft(draft: unknown, targetId?: string): Promise<{ ok?: boolean; reason?: string; error?: string }> {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+  const res = await draftServer.saveDraft('photographers', target.photographerId, draft)
+  return res.ok ? { ok: true } : { reason: res.reason }
+}
+
+/**
+ * « Mettre en ligne » : les champs passent sur la fiche publique (mêmes
+ * vérifications qu'avant), le brouillon est vidé et le site reconstruit une
+ * seule fois, photos et logo compris. Fiche pas encore active : rien à
+ * reconstruire, elle apparaîtra au paiement.
+ */
+export async function publishFiche(payload: Parameters<typeof applyPhotographerFiche>[0]): Promise<{ success?: boolean; error?: string; warning?: string; adminEdit?: boolean; live?: boolean; rebuildFailed?: boolean }> {
+  const res = await applyPhotographerFiche(payload)
+  if (!res.success) return res
+  const target = await resolveTargetFiche(payload.targetId)
+  if ('error' in target) return { error: target.error }
+  await draftServer.clearDraft('photographers', target.photographerId)
+  const { data } = await getServiceClient().from('photographers').select('status').eq('id', target.photographerId).maybeSingle()
+  const live = data?.status === 'active'
+  const rebuilt = live ? await triggerSiteRebuild('fiche photographe') : true
+  return { ...res, live, rebuildFailed: !rebuilt }
 }
 
 /**
@@ -196,7 +231,7 @@ export async function uploadPhotographerLogo(formData: FormData): Promise<{ succ
     return { error: 'Erreur lors de la sauvegarde.' }
   }
 
-  await triggerSiteRebuild('fiche photographe')
+  // Pas de reconstruction ici : le logo part avec « Mettre en ligne » (atelier, 27/10/2026)
 
   revalidatePath('/dashboard/ma-fiche-photographe')
   return { success: true, url }
@@ -211,7 +246,7 @@ export async function deletePhotographerLogo(targetId?: string): Promise<{ succe
   if ('error' in target) return { error: target.error }
   const admin = getServiceClient()
   await admin.from('photographers').update({ logo_url: null, updated_at: new Date().toISOString() }).eq('id', target.photographerId)
-  await triggerSiteRebuild('fiche photographe')
+  // Pas de reconstruction ici : le logo part avec « Mettre en ligne » (atelier, 27/10/2026)
   revalidatePath('/dashboard/ma-fiche-photographe')
   return { success: true }
 }

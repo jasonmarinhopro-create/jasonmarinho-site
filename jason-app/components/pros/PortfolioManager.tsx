@@ -30,8 +30,10 @@ async function toJpeg(bmp: ImageBitmap, side: number, maxBytes: number): Promise
   throw new Error('Une photo reste trop lourde même compressée.')
 }
 
-export default function PortfolioManager({ initial, targetId, ficheUrl, onPrepare, onAdd, onRemove, onMove, onPublish }: {
+export default function PortfolioManager({ initial, targetId, ficheUrl, onPrepare, onAdd, onRemove, onMove, onPublish, onChanged }: {
   initial: string[]
+  /** Atelier de Ma fiche : pas de bouton « Mettre en ligne » ici, la barre de l'atelier publie tout d'un coup */
+  onChanged?: (photos: string[]) => void
   targetId?: string
   /** Fiche publique (lien « Voir ma fiche » après la mise en ligne) */
   ficheUrl?: string | null
@@ -75,7 +77,7 @@ export default function PortfolioManager({ initial, targetId, ficheUrl, onPrepar
         return u.path
       }))
       const res = await onAdd(paths, targetId)
-      if (res.photos) { setPhotos(res.photos); setDirty(true) }
+      if (res.photos) { setPhotos(res.photos); setDirty(true); onChanged?.(res.photos) }
       if (res.error) throw new Error(res.error)
     } catch (e2) {
       setErr(e2 instanceof Error ? e2.message : 'Erreur inattendue')
@@ -88,7 +90,7 @@ export default function PortfolioManager({ initial, targetId, ficheUrl, onPrepar
     setErr(null); setPublished(false)
     const res = await p
     if (res.error) setErr(res.error)
-    if (res.photos) { setPhotos(res.photos); setDirty(true) }
+    if (res.photos) { setPhotos(res.photos); setDirty(true); onChanged?.(res.photos) }
   }
 
   async function publish() {
@@ -135,13 +137,13 @@ export default function PortfolioManager({ initial, targetId, ficheUrl, onPrepar
             <input type="file" accept="image/*" multiple onChange={upload} disabled={busy} style={{ display: 'none' }} />
           </label>
         )}
-        {dirty && (
+        {dirty && !onChanged && (
           <button type="button" onClick={publish} disabled={busy} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 16px', borderRadius: 10, border: 'none', background: 'var(--accent-text)', color: 'var(--bg)', fontSize: 13.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
             <CheckCircle size={15} weight="bold" /> Mettre en ligne sur ma fiche
           </button>
         )}
       </div>
-      {dirty && !busy && <div style={{ fontSize: 12.5, color: 'var(--text-3)', marginTop: 8 }}>Tes photos sont enregistrées. Clique sur « Mettre en ligne » quand tu as fini : ta fiche publique se met à jour en 2 à 3 minutes.</div>}
+      {dirty && !busy && !onChanged && <div style={{ fontSize: 12.5, color: 'var(--text-3)', marginTop: 8 }}>Tes photos sont enregistrées. Clique sur « Mettre en ligne » quand tu as fini : ta fiche publique se met à jour en 2 à 3 minutes.</div>}
       {published && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: 'var(--accent-text)', marginTop: 8 }}>
           <CheckCircle size={13} weight="fill" /> C’est parti : ta fiche publique affiche tes photos d’ici 2 à 3 minutes.

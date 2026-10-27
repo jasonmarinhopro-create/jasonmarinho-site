@@ -7,6 +7,7 @@ import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
+import * as draftServer from '@/lib/pros/fiche-draft-server'
 import { cleanReseaux, instaHandle } from '@/lib/pros/reseaux'
 import { cleanFormules, cleanVilles, cleanDeroule, villeCasse } from '@/lib/pros/fiche-vitrine'
 import * as vitrine from '@/lib/pros/fiche-vitrine-server'
@@ -59,7 +60,7 @@ async function resolveTargetFiche(targetId?: string): Promise<
   return { cleanerId: cl.id, isAdminEdit: false }
 }
 
-export async function updateCleanerFiche(payload: {
+async function applyCleanerFiche(payload: {
   targetId?: string
   full_name?: string
   pseudo?: string | null
@@ -162,11 +163,45 @@ export async function updateCleanerFiche(payload: {
   // Clientèles (migration 154) : même principe
   if (Array.isArray(payload.clienteles)) await admin.from('cleaners').update({ clienteles: readClienteles(payload.clienteles) }).eq('id', target.cleanerId)
 
-  await triggerSiteRebuild('fiche ménage')
-
   revalidatePath('/dashboard/ma-fiche-menage')
   if (target.isAdminEdit) revalidatePath('/dashboard/admin/menage')
   return { success: true, warning, adminEdit: target.isAdminEdit }
+}
+
+/** Enregistre et met en ligne tout de suite (ancien bouton « Enregistrer ») */
+export async function updateCleanerFiche(payload: Parameters<typeof applyCleanerFiche>[0]) {
+  const res = await applyCleanerFiche(payload)
+  if (res.success) await triggerSiteRebuild('fiche ménage')
+  return res
+}
+
+/**
+ * Atelier de Ma fiche (27/10/2026) : brouillon enregistré à chaque changement,
+ * sans toucher à la fiche publique ni reconstruire le site (lib/pros/fiche-draft-server.ts).
+ */
+export async function saveFicheDraft(draft: unknown, targetId?: string): Promise<{ ok?: boolean; reason?: string; error?: string }> {
+  const target = await resolveTargetFiche(targetId)
+  if ('error' in target) return { error: target.error }
+  const res = await draftServer.saveDraft('cleaners', target.cleanerId, draft)
+  return res.ok ? { ok: true } : { reason: res.reason }
+}
+
+/**
+ * « Mettre en ligne » : les champs passent sur la fiche publique (mêmes
+ * vérifications qu'avant), le brouillon est vidé et le site reconstruit une
+ * seule fois, photos et logo compris. Fiche pas encore active : rien à
+ * reconstruire, elle apparaîtra au paiement.
+ */
+export async function publishFiche(payload: Parameters<typeof applyCleanerFiche>[0]): Promise<{ success?: boolean; error?: string; warning?: string; adminEdit?: boolean; live?: boolean; rebuildFailed?: boolean }> {
+  const res = await applyCleanerFiche(payload)
+  if (!res.success) return res
+  const target = await resolveTargetFiche(payload.targetId)
+  if ('error' in target) return { error: target.error }
+  await draftServer.clearDraft('cleaners', target.cleanerId)
+  const { data } = await getServiceClient().from('cleaners').select('status').eq('id', target.cleanerId).maybeSingle()
+  const live = data?.status === 'active'
+  const rebuilt = live ? await triggerSiteRebuild('fiche ménage') : true
+  return { ...res, live, rebuildFailed: !rebuilt }
 }
 
 /**
@@ -206,7 +241,7 @@ export async function uploadCleanerLogo(formData: FormData): Promise<{ success?:
     return { error: 'Erreur lors de la sauvegarde.' }
   }
 
-  await triggerSiteRebuild('fiche ménage')
+  // Pas de reconstruction ici : le logo part avec « Mettre en ligne » (atelier, 27/10/2026)
 
   revalidatePath('/dashboard/ma-fiche-menage')
   return { success: true, url }
@@ -217,7 +252,7 @@ export async function deleteCleanerLogo(targetId?: string): Promise<{ success?: 
   if ('error' in target) return { error: target.error }
   const admin = getServiceClient()
   await admin.from('cleaners').update({ logo_url: null, updated_at: new Date().toISOString() }).eq('id', target.cleanerId)
-  await triggerSiteRebuild('fiche ménage')
+  // Pas de reconstruction ici : le logo part avec « Mettre en ligne » (atelier, 27/10/2026)
   revalidatePath('/dashboard/ma-fiche-menage')
   return { success: true }
 }

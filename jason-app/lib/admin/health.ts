@@ -93,6 +93,7 @@ export interface MigrationProbe {
 
 /** Migrations récentes à vérifier : une table ou une colonne qu'elles créent. */
 export const MIGRATION_PROBES: MigrationProbe[] = [
+  { file: '20261027_167_fiche_brouillon.sql', what: 'Brouillon de Ma fiche des pros (enregistré seul, mis en ligne d’un geste)', table: 'cleaners', column: 'fiche_draft' },
   { file: '20261026_165_suggestions_traitees.sql', what: 'Suggestions des membres marquées traitées', table: 'suggestions', column: 'treated_at' },
   { file: '20261026_164_contacts_telephone.sql', what: 'Téléphone facultatif dans les demandes de devis des fiches', table: 'photographer_contacts', column: 'contact_phone' },
   { file: '20261026_163_masquer_annonces_formations.sql', what: 'Comptes qui ne reçoivent pas l’annonce des nouvelles formations', table: 'profiles', column: 'masquer_annonces_formations' },
