@@ -843,15 +843,16 @@ export const PAGES = [
     h1: 'Keobiz : un expert-comptable <em>pour ta location et ta société</em>',
     lead: "Keobiz est un cabinet d'expertise comptable pour les entrepreneurs, avec une offre dédiée aux loueurs en meublé. Je le conseille aux hôtes qui veulent tout confier à un expert-comptable, surtout quand la location meublée n'est pas leur seule activité : conciergerie, société, SCI.",
     offre: {
-      titre: 'Un expert-comptable pour ton dossier',
-      sous: 'Devis selon ton activité et ton nombre de logements',
+      titre: '1 mois offert avec mon lien',
+      sous: 'Expert-comptable sur devis, selon ton activité et ton nombre de logements',
       points: [
+        '1 mois offert en passant par ce lien (confirmé par Keobiz, octobre 2026)',
         'Offre dédiée aux loueurs en meublé (LMNP au réel)',
         'Comptabilité des sociétés : conciergerie, SASU, SCI',
         'Honoraires déductibles de tes recettes au régime réel',
       ],
       cta: { label: 'Demander un devis Keobiz', href: KEOBIZ },
-      note: "Lien affilié : Keobiz me verse une commission si tu deviens client via ce lien, sans aucun surcoût pour toi.",
+      note: "Lien affilié : Keobiz me verse une commission si tu deviens client via ce lien, sans aucun surcoût pour toi (tu as au contraire 1 mois offert).",
     },
     pourquoi: {
       titre: 'Pourquoi je recommande <em>Keobiz</em>',
@@ -892,7 +893,7 @@ export const PAGES = [
     cout: {
       titre: 'Ce que ça <em>coûte</em>',
       paras: [
-        "Keobiz travaille sur devis, avec un abonnement mensuel qui dépend de ton activité, de ton régime et de ton nombre de logements. Les prix trouvés en ligne en octobre 2026 se contredisent : je n'en affiche aucun, demande le tien avant de t'engager.",
+        "Keobiz travaille sur devis, avec un abonnement mensuel qui dépend de ton activité, de ton régime et de ton nombre de logements. Les prix trouvés en ligne en octobre 2026 se contredisent : je n'en affiche aucun, demande le tien avant de t'engager. En passant par mon lien, ton premier mois est offert.",
         "Un expert-comptable coûte plus cher qu'un outil où tu fais tout toi-même. Il se justifie quand ton dossier est chargé : plusieurs logements, une société, une SCI, ou peu de temps à y consacrer.",
         "Au régime réel, les honoraires de comptabilité sont une charge déductible de tes recettes. La réduction d'impôt de deux tiers des frais de comptabilité (915 € au plus), liée aux centres de gestion agréés, a été supprimée par la loi de finances pour 2025 : ne la compte plus dans ton calcul.",
       ],
@@ -911,6 +912,7 @@ export const PAGES = [
     ],
     faq: [
       { q: 'Combien coûte Keobiz pour un LMNP ?', a: "Keobiz travaille sur devis, avec un abonnement mensuel selon ton activité et ton nombre de logements. Les prix trouvés en ligne en octobre 2026 se contredisent, je n'en cite donc aucun : demande un devis. Au régime réel, les honoraires sont déductibles de tes recettes." },
+      { q: 'Y a-t-il une offre Keobiz avec Jason Marinho ?', a: "Oui : en passant par mon lien, ton premier mois est offert (confirmé par Keobiz en octobre 2026). Le reste du devis ne change pas." },
       { q: 'Keobiz, JD2M ou Indy ?', a: "Indy est un outil autonome, le moins cher : tu fais ta comptabilité toi-même. JD2M est spécialisé dans le LMNP, avec des conseillers et une offre où un expert-comptable fait tout. Keobiz est un cabinet d'expertise comptable généraliste : il prend tout en charge, location meublée, conciergerie, société ou SCI. Plus ton dossier mélange d'activités, plus Keobiz a du sens." },
       { q: 'Ai-je besoin d\'un expert-comptable au micro-BIC ?', a: "Non. Au micro-BIC, tu reportes tes recettes sur ta déclaration et l'abattement s'applique tout seul. Un expert-comptable sert au régime réel, où il faut une comptabilité, des amortissements et une liasse fiscale, ou dès que tu as une société." },
       { q: 'La réduction d\'impôt pour frais de comptabilité existe-t-elle encore ?', a: "Non. La réduction de deux tiers des frais de comptabilité, plafonnée à 915 €, réservée aux adhérents d'un centre de gestion agréé, a été supprimée par la loi de finances pour 2025. Les honoraires restent une charge déductible au régime réel." },

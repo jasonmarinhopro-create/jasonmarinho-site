@@ -124,8 +124,8 @@ export const OUTILS = [
   },
   {
     nom: 'Keobiz', mono: 'K', couleur: '#0B3B5C', cats: ['compta'],
-    badge: 'affilie', offre: 'Expert-comptable sur devis',
-    desc: 'Cabinet d\'expertise comptable : LMNP au réel, conciergerie, société ou SCI, un seul interlocuteur.',
+    badge: 'affilie', offre: '1 mois offert',
+    desc: 'Expert-comptable sur devis : LMNP au réel, conciergerie, société ou SCI. 1 mois offert avec ce lien.',
     liens: [
       { label: 'Demander un devis', href: KEOBIZ, sponsored: true },
       { label: "Voir l'offre", href: '/partenaires/keobiz' },

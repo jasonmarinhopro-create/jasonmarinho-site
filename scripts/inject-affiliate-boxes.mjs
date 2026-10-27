@@ -89,13 +89,13 @@ const jd2mTu = box('jd2m-tu',
   "Lien affilié : si tu souscris via ce lien, JD2M me verse une commission, sans aucun surcoût pour toi. <a href=\"/partenaires/jd2m\" style=\"color:#004c3f\">Voir l'offre JD2M en détail, limites comprises</a>.")
 
 // Keobiz : jamais de prix (sources contradictoires au 27/10/2026, « sur devis »)
-const keobizNote = "Lien affilié : si tu deviens client via ce lien, Keobiz me verse une commission, sans aucun surcoût pour toi. <a href=\"/partenaires/keobiz\" style=\"color:#004c3f\">Voir l'offre Keobiz en détail, limites comprises</a>."
+const keobizNote = "Lien affilié : si tu deviens client via ce lien, Keobiz me verse une commission, sans aucun surcoût pour toi (tu as au contraire 1 mois offert). <a href=\"/partenaires/keobiz\" style=\"color:#004c3f\">Voir l'offre Keobiz en détail, limites comprises</a>."
 const keobizTu = box('keobiz-tu',
-  "<strong>Tu veux tout confier à un expert-comptable ?</strong> Keobiz est un cabinet d'expertise comptable avec une offre dédiée aux loueurs en meublé : amortissements, liasse et déclarations faits pour toi. Utile surtout si ton dossier est chargé : plusieurs logements, LMP, SCI ou société à côté. Sur devis, honoraires déductibles au réel.",
+  "<strong>Tu veux tout confier à un expert-comptable ?</strong> Keobiz est un cabinet d'expertise comptable avec une offre dédiée aux loueurs en meublé : amortissements, liasse et déclarations faits pour toi. Utile surtout si ton dossier est chargé : plusieurs logements, LMP, SCI ou société à côté. Sur devis, honoraires déductibles au réel, et <strong>1 mois offert</strong> avec ce lien.",
   btn(KEOBIZ, 'Demander un devis Keobiz'),
   keobizNote)
 const keobizSociete = box('keobiz-societe',
-  "<strong>Un expert-comptable pour ta société :</strong> Keobiz tient la comptabilité des conciergeries et des sociétés (bilan, TVA si tu y es soumis, déclarations), et peut suivre en même temps ta location meublée ou ta SCI. Un seul interlocuteur quand tes activités se croisent. Sur devis.",
+  "<strong>Un expert-comptable pour ta société :</strong> Keobiz tient la comptabilité des conciergeries et des sociétés (bilan, TVA si tu y es soumis, déclarations), et peut suivre en même temps ta location meublée ou ta SCI. Un seul interlocuteur quand tes activités se croisent. Sur devis, <strong>1 mois offert</strong> avec ce lien.",
   btn(KEOBIZ, 'Demander un devis Keobiz'),
   keobizNote)
 
