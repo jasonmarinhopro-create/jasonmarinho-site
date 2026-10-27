@@ -62,7 +62,7 @@ function officialParagraphs(slug, a, g) {
     <tbody><tr><td ${td}>${nc.label}</td><td ${td}>${fmtTarif(nc)} du prix HT par personne</td><td ${td}><strong>${fmtTotal(nc)}</strong> du prix HT par personne</td></tr>${rows}</tbody>
   </table></div>
   <p>Pour un meublé <strong>non classé</strong>, le pourcentage s'applique au prix HT de la nuitée divisé par le nombre d'occupants (mineurs compris dans la division), dans la limite du tarif le plus élevé voté ${a}. Exemple : une nuit à 120 € pour 2 adultes fait 60 € par personne, soit ${fmtTotalOn(nc, 60)} par personne et par nuit. Faire classer son meublé change souvent la note : notre <a href="${SIMULATEUR}">simulateur de taxe de séjour</a> compare les deux.</p>
-  <p>Airbnb la collecte et la reverse pour vous dans la plupart des cas ; sur une autre plateforme ou en réservation directe, vérifiez qui la collecte (en direct, c'est à vous de la déclarer). <span style="font-size:.85em;opacity:.75">Source : <a href="${TAXE_SOURCE_URL}" rel="noopener" target="_blank">tarifs de la taxe de séjour, DGFiP (données DELTA)</a>, relevé en ${releveLabel(g.releve)}.</span></p>
+  <p>Airbnb la collecte et la reverse pour vous dans la plupart des cas ; sur une autre plateforme ou en réservation directe, vérifiez qui la collecte (en direct, c'est à vous de la déclarer). <span style="font-size:.85em;opacity:.88">Source : <a href="${TAXE_SOURCE_URL}" rel="noopener" target="_blank">tarifs de la taxe de séjour, DGFiP (données DELTA)</a>, relevé en ${releveLabel(g.releve)}.</span></p>
 <!-- TAXE:END -->`)
 }
 // Montant pour un prix par personne (non classé, avant plafond)
@@ -85,7 +85,7 @@ function paragraphs(slug, a, de) {
   const extra = EXTRA[slug] ? ` ${EXTRA[slug]}` : ''
   return nb(`<!-- TAXE:START -->
 ${first}
-  <p>${extra.trim() ? extra.trim() + ' ' : ''}Airbnb la collecte et la reverse pour vous dans la plupart des cas ; sur une autre plateforme ou en réservation directe, vérifiez qui la collecte (en direct, c'est à vous de la déclarer). Le tarif exact voté ${a} figure dans la <a href="${TARIFS_URL}" rel="noopener" target="_blank">base officielle des tarifs par commune</a>, et notre <a href="${SIMULATEUR}">simulateur de taxe de séjour</a> calcule le montant d'un séjour. <span style="font-size:.85em;opacity:.75">Vérifié en ${VERIFIE}.</span></p>
+  <p>${extra.trim() ? extra.trim() + ' ' : ''}Airbnb la collecte et la reverse pour vous dans la plupart des cas ; sur une autre plateforme ou en réservation directe, vérifiez qui la collecte (en direct, c'est à vous de la déclarer). Le tarif exact voté ${a} figure dans la <a href="${TARIFS_URL}" rel="noopener" target="_blank">base officielle des tarifs par commune</a>, et notre <a href="${SIMULATEUR}">simulateur de taxe de séjour</a> calcule le montant d'un séjour. <span style="font-size:.85em;opacity:.88">Vérifié en ${VERIFIE}.</span></p>
 <!-- TAXE:END -->`)
 }
 

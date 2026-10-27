@@ -53,7 +53,7 @@
     var style = document.createElement('style');
     style.id = 'nav-styles';
     style.textContent = [
-      ':root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--ol:#556B2F;--y:#FFD56B;--yw:#FFF8E1;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#7A8C77;--bd:rgba(0,76,63,.09)}',
+      ':root{--g:#004C3F;--gd:#003329;--gm:#005A4A;--ol:#556B2F;--y:#FFD56B;--yw:#FFF8E1;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#5A6B57;--bd:rgba(0,76,63,.09)}',
       '*,*::before,*::after{box-sizing:border-box}',
 
       /* Nav */
@@ -405,7 +405,7 @@
   /* ── NAV HTML ── */
   var h = '<nav id="nav">'
     + '<a href="/" class="n-logo">'
-      + '<img src="/logo-nav.webp" alt="Jason Marinho" class="nav-logo-img" width="34" height="34" loading="eager">'
+      + '<img src="/logo-nav.webp" alt="" class="nav-logo-img" width="34" height="34" loading="eager">'
       + '<span class="n-brand">Jason <em>Marinho</em></span>'
     + '</a>'
     + '<ul class="n-links">'

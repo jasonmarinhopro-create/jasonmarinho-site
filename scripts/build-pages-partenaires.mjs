@@ -58,6 +58,7 @@ const CSS = `
   body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--td);-webkit-font-smoothing:antialiased}
   a{color:var(--gd);text-decoration:none}
   a:hover{text-decoration:underline}
+  p a:not([class]),.faq-body a:not([class]){text-decoration:underline;text-underline-offset:2px}
   .hero{background:linear-gradient(135deg,#001a11 0%,var(--gd) 100%);padding:clamp(96px,10vw,128px) 16px clamp(48px,6vw,80px)}
   .hero-in{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(28px,5vw,64px);align-items:center}
   .breadcrumb{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:13px;color:rgba(255,255,255,.5);margin-bottom:20px}

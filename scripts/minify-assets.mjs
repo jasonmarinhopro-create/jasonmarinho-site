@@ -7,7 +7,9 @@
 // réécrit les `?v=` de nav.js). Hors Vercel, ne fait rien sauf avec --force
 // (pour ne pas réduire les fichiers de travail par erreur). En cas d'échec,
 // le fichier d'origine est gardé : le déploiement ne casse jamais pour ça.
-import { readFile, writeFile } from 'node:fs/promises'
+import { readFile, writeFile, readdir } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
+import { join } from 'node:path'
 
 const FILES = ['nav.js', 'footer.js', 'cookie-banner.js']
 const force = process.argv.includes('--force')
@@ -43,4 +45,34 @@ for (const file of FILES) {
   } catch (err) {
     console.warn(`minify-assets : ${file} laissé tel quel (${err.message})`)
   }
+}
+
+// Cache d'un an pour ces 3 scripts (27/10/2026, PageSpeed : « durées de mise
+// en cache efficaces », 31 Ko re-téléchargés toutes les heures). Chaque page
+// les appelle avec ?v=<empreinte du contenu> ; vercel.json sert une URL qui
+// porte ?v= en « immutable, 1 an ». Un script modifié change d'empreinte, donc
+// d'URL : personne ne garde l'ancien. Sans ?v= (anciennes pages en cache),
+// la règle d'une heure s'applique toujours.
+if (!dryRun) {
+  const version = {}
+  for (const file of FILES) {
+    try { version[file] = createHash('sha256').update(await readFile(file)).digest('hex').slice(0, 10) } catch {}
+  }
+  const SKIP = new Set(['node_modules', 'jason-app', '.git', '.vercel', 'scripts', 'data', 'docs', 'fonts'])
+  async function* pages(dir) {
+    for (const e of await readdir(dir, { withFileTypes: true })) {
+      if (e.name.startsWith('.') || SKIP.has(e.name)) continue
+      const p = join(dir, e.name)
+      if (e.isDirectory()) yield* pages(p)
+      else if (e.name.endsWith('.html')) yield p
+    }
+  }
+  const REF = /src="\/(nav|footer|cookie-banner)\.js(?:\?v=[A-Za-z0-9]+)?"/g
+  let n = 0
+  for await (const page of pages('.')) {
+    const html = await readFile(page, 'utf8')
+    const out = html.replace(REF, (m, name) => version[`${name}.js`] ? `src="/${name}.js?v=${version[`${name}.js`]}"` : m)
+    if (out !== html) { await writeFile(page, out); n++ }
+  }
+  console.log(`minify-assets : scripts versionnés (${Object.entries(version).map(([f, v]) => `${f}=${v}`).join(', ')}) dans ${n} page(s)`)
 }

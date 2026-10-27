@@ -52,7 +52,7 @@ export function proReseauxHtml(links, { title = 'Retrouve-moi aussi sur' } = {})
   if (!links.length) return ''
   const items = links.map(l => `<a href="${escHtml(l.url)}" target="_blank" rel="noopener noreferrer me" title="${escHtml(l.label)}" aria-label="${escHtml(l.label)}" style="width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(0,76,63,.16);background:#fff;color:#004C3F;text-decoration:none;font-size:16px;transition:border-color .15s,background .15s" onmouseover="this.style.background='rgba(0,76,63,.06)';this.style.borderColor='rgba(0,76,63,.35)'" onmouseout="this.style.background='#fff';this.style.borderColor='rgba(0,76,63,.16)'"><i class="ph-bold ph-${l.icon}" aria-hidden="true"></i></a>`).join('')
   return `<div class="pro-reseaux" style="margin-top:14px">
-      <div style="font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:#7A8C77;margin-bottom:8px">${escHtml(title)}</div>
+      <div style="font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:#5A6B57;margin-bottom:8px">${escHtml(title)}</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px">${items}</div>
     </div>`
 }
