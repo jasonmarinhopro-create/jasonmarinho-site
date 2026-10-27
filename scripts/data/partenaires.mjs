@@ -36,6 +36,8 @@ export const QONTO = 'https://lb.affilae.com/r/?p=5ce4f2a2b6302009e29d84f3&af=33
 const AIRDNA = 'https://eur-invite.airdna.co/Jason-Marinho'
 // Indy (partenariat validé le 30/09/2026) : lien « spécial immobilier » fourni par Indy
 const INDY = 'https://urlr.me/FEqNfy'
+// Keobiz (Affilae, numéro d'affilié 936, 27/10/2026)
+const KEOBIZ = 'https://www.keobiz.fr/programme-affiliation-keobiz-2/?utm_campaign=affilie936&utm_medium=lp&utm_source=affilie&ae=936'
 // JD2M / Jedeclaremonmeuble.com (Affilae, numéro d'affilié 244, 17/10/2026)
 const JD2M = 'https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&utm_campaign=partenariat&utm_content=244&ae=244'
 // LegalPlace (partenariat Affilae du 30/09/2026, numéro d'affilié 1773) : les
@@ -118,6 +120,15 @@ export const OUTILS = [
     liens: [
       { label: 'Voir les offres', href: JD2M, sponsored: true },
       { label: "Voir l'offre", href: '/partenaires/jd2m' },
+    ],
+  },
+  {
+    nom: 'Keobiz', mono: 'K', couleur: '#0B3B5C', cats: ['compta'],
+    badge: 'affilie', offre: 'Expert-comptable sur devis',
+    desc: 'Cabinet d\'expertise comptable : LMNP au réel, conciergerie, société ou SCI, un seul interlocuteur.',
+    liens: [
+      { label: 'Demander un devis', href: KEOBIZ, sponsored: true },
+      { label: "Voir l'offre", href: '/partenaires/keobiz' },
     ],
   },
   {

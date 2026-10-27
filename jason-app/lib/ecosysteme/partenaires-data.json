@@ -240,6 +240,28 @@
       ]
     },
     {
+      "nom": "Keobiz",
+      "mono": "K",
+      "couleur": "#0B3B5C",
+      "cats": [
+        "compta"
+      ],
+      "badge": "affilie",
+      "offre": "Expert-comptable sur devis",
+      "desc": "Cabinet d'expertise comptable : LMNP au réel, conciergerie, société ou SCI, un seul interlocuteur.",
+      "liens": [
+        {
+          "label": "Demander un devis",
+          "href": "https://www.keobiz.fr/programme-affiliation-keobiz-2/?utm_campaign=affilie936&utm_medium=lp&utm_source=affilie&ae=936",
+          "sponsored": true
+        },
+        {
+          "label": "Voir l'offre",
+          "href": "https://jasonmarinho.com/partenaires/keobiz"
+        }
+      ]
+    },
+    {
       "nom": "LegalPlace",
       "mono": "L",
       "couleur": "#1D3557",

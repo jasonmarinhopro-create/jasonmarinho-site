@@ -207,6 +207,7 @@
     { href: '/partenaires/shine', name: 'Shine : compte pro et factures' },
     { href: '/partenaires/qonto', name: 'Qonto : compte pro en ligne' },
     { href: '/partenaires/jd2m', name: 'JD2M : comptable LMNP' },
+    { href: '/partenaires/keobiz', name: 'Keobiz : expert-comptable' },
     { href: '/comparatif-matterport-cubicasa', name: 'Matterport vs CubiCasa' },
     { href: '/comparatif-pricelabs-beyond-wheelhouse', name: 'PriceLabs vs Beyond vs Wheelhouse' },
     { href: '/comparatif-ring-eufy-reolink', name: 'Ring vs Eufy vs Reolink' },

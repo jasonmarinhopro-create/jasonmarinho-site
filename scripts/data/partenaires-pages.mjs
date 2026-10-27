@@ -49,6 +49,13 @@ const SHINE_FACTURE = 'https://www.shine.fr/lp/outil-facturation-gratuit/?utm_so
 // ── JD2M (Affilae, numéro d'affilié 244, 17/10/2026) ──
 const JD2M = 'https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&utm_campaign=partenariat&utm_content=244&ae=244'
 
+// ── Keobiz (Affilae, numéro d'affilié 936, 27/10/2026) ──
+// Commission : 110 € par lead transformé (lettre de mission signée et payée),
+// dernier clic, 30 jours. Aucun prix ni chiffre de taille affiché : les
+// sources relevées le 27/10/2026 se contredisent (packs « dès 49 € HT/mois
+// + 10 € par bien » ou 89 / 109 € HT/mois ; 17 000 ou 18 000 clients).
+const KEOBIZ = 'https://www.keobiz.fr/programme-affiliation-keobiz-2/?utm_campaign=affilie936&utm_medium=lp&utm_source=affilie&ae=936'
+
 export const PAGES = [
   {
     slug: 'lodgify',
@@ -816,6 +823,107 @@ export const PAGES = [
     sources: [
       ['Offres de comptabilité LMNP de JD2M', 'https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/'],
       ['JD2M : suppression de l\'avantage fiscal des OGA', 'https://www.jedeclaremonmeuble.com/suppression-avantage-fiscal-oga/'],
+      ['Meilleurtaux : fin de la réduction pour frais de comptabilité', 'https://placement.meilleurtaux.com/placement-financier/actualites/2026-mai/impots-2025-fin-de-la-reduction-comptabilite-oga.html'],
+      ['Régimes d\'imposition', 'https://www.impots.gouv.fr/particulier/les-regimes-dimposition'],
+    ],
+  },
+  {
+    // Keobiz (cabinet d'expertise comptable, Affilae, numéro d'affilié 936, 27/10/2026).
+    // Place : l'expert-comptable complet, pour les hôtes au réel qui ont aussi
+    // une société (conciergerie, SCI à l'IS, SASU) ; JD2M reste le spécialiste
+    // LMNP, Indy l'outil autonome.
+    slug: 'keobiz',
+    releve: 'octobre 2026',
+    nom: 'Keobiz',
+    mono: 'K',
+    couleur: '#0B3B5C',
+    title: 'Keobiz : expert-comptable LMNP, conciergerie et SCI',
+    description: "Keobiz avec Jason Marinho : un cabinet d'expertise comptable pour ta location meublée au réel, ta conciergerie ou ta société. Pour qui, ce que ça change, limites.",
+    eyebrow: 'Partenaire · Expert-comptable',
+    h1: 'Keobiz : un expert-comptable <em>pour ta location et ta société</em>',
+    lead: "Keobiz est un cabinet d'expertise comptable pour les entrepreneurs, avec une offre dédiée aux loueurs en meublé. Je le conseille aux hôtes qui veulent tout confier à un expert-comptable, surtout quand la location meublée n'est pas leur seule activité : conciergerie, société, SCI.",
+    offre: {
+      titre: 'Un expert-comptable pour ton dossier',
+      sous: 'Devis selon ton activité et ton nombre de logements',
+      points: [
+        'Offre dédiée aux loueurs en meublé (LMNP au réel)',
+        'Comptabilité des sociétés : conciergerie, SASU, SCI',
+        'Honoraires déductibles de tes recettes au régime réel',
+      ],
+      cta: { label: 'Demander un devis Keobiz', href: KEOBIZ },
+      note: "Lien affilié : Keobiz me verse une commission si tu deviens client via ce lien, sans aucun surcoût pour toi.",
+    },
+    pourquoi: {
+      titre: 'Pourquoi je recommande <em>Keobiz</em>',
+      items: [
+        { icon: 'certificate', t: 'Un vrai cabinet', d: "Un expert-comptable s'occupe de ton dossier : ce n'est pas un logiciel où tu fais tout seul." },
+        { icon: 'buildings', t: 'Plusieurs activités', d: "Location meublée, conciergerie, société ou SCI : un seul interlocuteur pour l'ensemble, utile quand tes activités se croisent." },
+        { icon: 'calculator', t: 'Le réel bien fait', d: "Amortissements, liasse fiscale, déficit reporté : au réel, une erreur coûte vite plus cher que les honoraires." },
+      ],
+    },
+    fonctions: {
+      titre: 'Ce que Keobiz fait pour <em>ton activité</em>',
+      items: [
+        { icon: 'chart-line-up', t: 'Amortissements', d: 'Bien, mobilier et travaux amortis sur les bonnes durées, au régime réel.' },
+        { icon: 'file-text', t: 'Déclarations fiscales', d: 'Liasse et déclarations préparées et transmises par le cabinet.' },
+        { icon: 'briefcase', t: 'Comptabilité de société', d: "Pour une conciergerie ou une société d'exploitation : bilan, TVA si tu y es soumis." },
+        { icon: 'house-line', t: 'SCI et patrimoine', d: 'Comptabilité de SCI, à l\'IR ou à l\'IS, à côté de ta location meublée.' },
+        { icon: 'chat-circle', t: 'Un interlocuteur', d: 'Tes questions vont à un expert-comptable, pas à un support généraliste.' },
+        { icon: 'book-open', t: 'Guides gratuits', d: 'Le magazine Keobiz explique la fiscalité du meublé, même sans être client.' },
+      ],
+    },
+    etapes: [
+      { t: 'Demande un devis', d: "via le lien : décris ton activité (location meublée, conciergerie, société), ton régime et ton nombre de logements." },
+      { t: 'Échange avec le cabinet', d: "qui te propose une lettre de mission adaptée : ce qu'il fait, ce que tu fournis, le prix." },
+      { t: 'Transmets tes chiffres', d: "recettes brutes (avant commission Airbnb ou Booking), dépenses, prix d'achat du bien et du mobilier, emprunt." },
+    ],
+    tableau: {
+      titre: 'Keobiz, JD2M ou Indy : <em>selon ta situation</em>',
+      entete: ['Ta situation', 'Mon conseil'],
+      lignes: [
+        ['Tu restes au micro-BIC', '<span class="partial">Pas besoin</span> : pas de liasse à faire, l\'abattement s\'applique tout seul'],
+        ['LMNP au réel, tu es à l\'aise et veux le moins cher', '<span class="partial">Indy</span> : outil autonome, voir <a href="/partenaires/indy">l\'offre Indy</a>'],
+        ['LMNP au réel, accompagné par un spécialiste du meublé', '<span class="partial">JD2M</span> : voir <a href="/partenaires/jd2m">l\'offre JD2M</a>'],
+        ['Location meublée et conciergerie ou société', '<span class="yes">Keobiz</span> : un seul expert-comptable pour tes activités'],
+        ['SCI à l\'IS, LMP ou dossier chargé', '<span class="yes">Keobiz</span> : demande un devis et vérifie que la lettre de mission couvre ta situation'],
+      ],
+      note: 'Le choix entre micro-BIC et réel : voir le simulateur micro-BIC et mon article sur la décision en 2026.',
+    },
+    cout: {
+      titre: 'Ce que ça <em>coûte</em>',
+      paras: [
+        "Keobiz travaille sur devis, avec un abonnement mensuel qui dépend de ton activité, de ton régime et de ton nombre de logements. Les prix trouvés en ligne en octobre 2026 se contredisent : je n'en affiche aucun, demande le tien avant de t'engager.",
+        "Un expert-comptable coûte plus cher qu'un outil où tu fais tout toi-même. Il se justifie quand ton dossier est chargé : plusieurs logements, une société, une SCI, ou peu de temps à y consacrer.",
+        "Au régime réel, les honoraires de comptabilité sont une charge déductible de tes recettes. La réduction d'impôt de deux tiers des frais de comptabilité (915 € au plus), liée aux centres de gestion agréés, a été supprimée par la loi de finances pour 2025 : ne la compte plus dans ton calcul.",
+      ],
+    },
+    limites: [
+      "Plus cher qu'un outil autonome comme Indy : tu paies le travail d'un expert-comptable.",
+      "Inutile si tu restes au micro-BIC avec un seul logement.",
+      "Pas de prix public fiable : compare le devis avec JD2M ou un cabinet près de chez toi.",
+      "Ce n'est pas un logiciel de gestion locative : pas de calendrier ni de lien avec Airbnb ou Booking. Tes recettes à déclarer sont les montants bruts, avant commission.",
+    ],
+    liens: [
+      { href: '/blog/regime-reel-vs-micro-bic-decision-2026', t: 'Micro-BIC ou réel ?', d: 'Comment décider en 2026, chiffres à l\'appui.' },
+      { href: '/services/simulateurs/fiscalite-micro-bic', t: 'Simulateur micro-BIC', d: 'Ton impôt estimé selon ton type de meublé.' },
+      { href: '/partenaires/jd2m', t: 'JD2M', d: 'Le spécialiste de la compta LMNP au réel.' },
+      { href: '/blog/creer-societe-conciergerie-en-ligne-legalplace-2026', t: 'Créer sa société de conciergerie', d: 'Statut, démarches et frais, avec LegalPlace.' },
+    ],
+    faq: [
+      { q: 'Combien coûte Keobiz pour un LMNP ?', a: "Keobiz travaille sur devis, avec un abonnement mensuel selon ton activité et ton nombre de logements. Les prix trouvés en ligne en octobre 2026 se contredisent, je n'en cite donc aucun : demande un devis. Au régime réel, les honoraires sont déductibles de tes recettes." },
+      { q: 'Keobiz, JD2M ou Indy ?', a: "Indy est un outil autonome, le moins cher : tu fais ta comptabilité toi-même. JD2M est spécialisé dans le LMNP, avec des conseillers et une offre où un expert-comptable fait tout. Keobiz est un cabinet d'expertise comptable généraliste : il prend tout en charge, location meublée, conciergerie, société ou SCI. Plus ton dossier mélange d'activités, plus Keobiz a du sens." },
+      { q: 'Ai-je besoin d\'un expert-comptable au micro-BIC ?', a: "Non. Au micro-BIC, tu reportes tes recettes sur ta déclaration et l'abattement s'applique tout seul. Un expert-comptable sert au régime réel, où il faut une comptabilité, des amortissements et une liasse fiscale, ou dès que tu as une société." },
+      { q: 'La réduction d\'impôt pour frais de comptabilité existe-t-elle encore ?', a: "Non. La réduction de deux tiers des frais de comptabilité, plafonnée à 915 €, réservée aux adhérents d'un centre de gestion agréé, a été supprimée par la loi de finances pour 2025. Les honoraires restent une charge déductible au régime réel." },
+      { q: 'Quelles recettes déclarer pour mes réservations Airbnb ?', a: "Les montants bruts payés par les voyageurs, pas les virements nets que tu reçois. La commission de la plateforme est une charge. Mes finances, dans l'app Jason Marinho, sépare le brut et la commission de chaque séjour, logement par logement." },
+    ],
+    cta: {
+      titre: 'Ta compta confiée, <em>tes séjours suivis</em>',
+      texte: "Keobiz s'occupe de ta comptabilité. L'app Jason Marinho suit tes séjours, tes contrats et tes revenus bruts par logement, pour transmettre des chiffres justes à ton expert-comptable.",
+      btn: { label: 'Créer mon compte gratuit', href: 'https://app.jasonmarinho.com/auth/register' },
+    },
+    sources: [
+      ['Keobiz : expert-comptable LMNP', 'https://www.keobiz.fr/metier/immobilier/lmnp/'],
+      ['Keobiz : LMNP et comptabilité en 2026', 'https://www.keobiz.fr/le-mag/lmnp-comptabilite/'],
       ['Meilleurtaux : fin de la réduction pour frais de comptabilité', 'https://placement.meilleurtaux.com/placement-financier/actualites/2026-mai/impots-2025-fin-de-la-reduction-comptabilite-oga.html'],
       ['Régimes d\'imposition', 'https://www.impots.gouv.fr/particulier/les-regimes-dimposition'],
     ],
