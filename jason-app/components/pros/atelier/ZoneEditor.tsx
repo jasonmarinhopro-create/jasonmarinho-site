@@ -168,17 +168,41 @@ export default function ZoneEditor({ ville, zone, villes, onChange, locate }: {
 
 /** Carte simple : la ville au centre, le rayon, les villes citées (vertes dans le rayon, ambre au-delà) */
 function MiniMap({ center, km, placed }: { center: CommunePos | null; km: number | null; placed: Array<{ name: string; p: CommunePos; d: number }> }) {
-  const W = 320, H = 300, cx = W / 2, cy = H / 2
-  // Le rayon occupe les deux tiers de la carte ; une ville plus loin est posée au bord, dans sa direction
-  const far = Math.max((km ?? 10) * 1.5, 15)
-  const scale = (Math.min(W, H) / 2 - 22) / far // px par km
-  const proj = (p: CommunePos) => {
+  const W = 320, H = 280, cx = W / 2, cy = H / 2
+  // Le rayon remplit presque la carte ; une ville plus loin est posée au bord, dans sa direction
+  const far = Math.max((km ?? 10) * 1.18, 12)
+  const scale = (Math.min(W, H) / 2 - 16) / far // px par km
+  const list = [...placed].sort((a, b) => a.d - b.d)
+  // Villes numérotées (les noms se chevauchaient sur la carte quand elles sont proches) ;
+  // pastilles écartées entre elles et du centre pour rester lisibles
+  const pts = list.map(x => {
     if (!center) return { x: cx, y: cy }
-    const dx = (p.lon - center.lon) * 111.32 * Math.cos((center.lat * Math.PI) / 180)
-    const dy = (p.lat - center.lat) * 110.57
+    const dx = (x.p.lon - center.lon) * 111.32 * Math.cos((center.lat * Math.PI) / 180)
+    const dy = (x.p.lat - center.lat) * 110.57
     const d = Math.hypot(dx, dy) || 1
     const k = Math.min(1, far / d)
     return { x: cx + dx * k * scale, y: cy - dy * k * scale }
+  })
+  const GAP = 22
+  for (let pass = 0; pass < 30; pass++) {
+    pts.forEach((a, i) => {
+      const fromC = Math.hypot(a.x - cx, a.y - cy)
+      if (fromC < GAP) {
+        const ang = fromC ? Math.atan2(a.y - cy, a.x - cx) : (i * 2 * Math.PI) / Math.max(1, pts.length)
+        a.x = cx + Math.cos(ang) * GAP; a.y = cy + Math.sin(ang) * GAP
+      }
+      pts.forEach((b, j) => {
+        if (j <= i) return
+        const dist = Math.hypot(b.x - a.x, b.y - a.y)
+        if (dist < GAP) {
+          const ang = dist ? Math.atan2(b.y - a.y, b.x - a.x) : (j * 2.4)
+          const push = (GAP - dist) / 2
+          a.x -= Math.cos(ang) * push; a.y -= Math.sin(ang) * push
+          b.x += Math.cos(ang) * push; b.y += Math.sin(ang) * push
+        }
+      })
+      a.x = Math.min(W - 12, Math.max(12, a.x)); a.y = Math.min(H - 12, Math.max(12, a.y))
+    })
   }
   return (
     <div style={map}>
@@ -189,30 +213,38 @@ function MiniMap({ center, km, placed }: { center: CommunePos | null; km: number
           </pattern>
         </defs>
         <rect width={W} height={H} fill="url(#zone-grid)" />
-        {center && km && <circle cx={cx} cy={cy} r={km * scale} fill="rgba(0,76,63,.08)" stroke="var(--accent-text)" strokeWidth="1.5" strokeDasharray="6 6" />}
-        {placed.map(x => {
-          const q = proj(x.p)
+        {center && km && <circle cx={cx} cy={cy} r={km * scale} fill="rgba(0,76,63,.07)" stroke="var(--accent-text)" strokeWidth="1.5" strokeDasharray="6 6" />}
+        {center && km && <text x={cx} y={cy - km * scale - 6} textAnchor="middle" fontSize="11" fontWeight="600" fill="var(--accent-text)" style={{ fontFamily: 'inherit' }}>{km} km</text>}
+        {center && (
+          <g>
+            <circle cx={cx} cy={cy} r="8" fill="var(--accent-text)" stroke="#fff" strokeWidth="2" />
+            <text x={cx} y={cy + 24} textAnchor="middle" fontSize="12.5" fontWeight="700" fill="var(--text)" stroke="var(--bg)" strokeWidth="3" paintOrder="stroke" style={{ fontFamily: 'inherit' }}>{center.nom}</text>
+          </g>
+        )}
+        {list.map((x, i) => {
+          const q = pts[i]
           const inside = km ? x.d <= km : false
           return (
             <g key={x.name}>
-              <circle cx={q.x} cy={q.y} r="5" fill={inside ? '#1F8A5B' : '#fff'} stroke={inside ? '#1F8A5B' : '#B7791F'} strokeWidth="2" />
-              {x.d <= far && <text x={q.x > W - 100 ? q.x - 8 : q.x + 8} y={q.y + 4} textAnchor={q.x > W - 100 ? 'end' : 'start'} fontSize="11" fill="var(--text-2)" style={{ fontFamily: 'inherit' }}>{x.name}</text>}
+              <circle cx={q.x} cy={q.y} r="9.5" fill={inside ? '#1F8A5B' : '#fff'} stroke={inside ? '#fff' : '#B7791F'} strokeWidth="2" />
+              <text x={q.x} y={q.y + 3.8} textAnchor="middle" fontSize="10.5" fontWeight="700" fill={inside ? '#fff' : '#8A5A12'} style={{ fontFamily: 'inherit' }}>{i + 1}</text>
             </g>
           )
         })}
-        {center && (
-          <g>
-            <circle cx={cx} cy={cy} r="13" fill="none" stroke="var(--accent-text)" strokeOpacity=".3" strokeWidth="2" />
-            <circle cx={cx} cy={cy} r="7" fill="var(--accent-text)" />
-            <text x={cx - 16} y={cy - 12} textAnchor="end" fontSize="13" fontWeight="700" fill="var(--text)" style={{ fontFamily: 'inherit' }}>{center.nom}</text>
-          </g>
-        )}
-        {center && km && <text x={cx} y={cy + km * scale + 16} textAnchor="middle" fontSize="11" fill="var(--accent-text)" style={{ fontFamily: 'inherit' }}>{km} km</text>}
       </svg>
-      {placed.some(x => x.d > far) && (
-        <div style={{ padding: '8px 12px', borderTop: '1px solid var(--border)', fontSize: 12, color: '#8A5A12', lineHeight: 1.45 }}>
-          Plus loin, au bord de la carte : {placed.filter(x => x.d > far).map(x => `${x.name} (${Math.round(x.d)} km)`).join(', ')}
-        </div>
+      {center && list.length > 0 && (
+        <ol style={legend}>
+          {list.map((x, i) => {
+            const inside = km ? x.d <= km : false
+            return (
+              <li key={x.name} style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                <span style={{ ...num, ...(inside ? {} : numOut) }}>{i + 1}</span>
+                <span style={{ flex: 1, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: 'var(--text)' }}>{x.name}</span>
+                <span style={{ color: inside ? 'var(--text-3)' : '#8A5A12', whiteSpace: 'nowrap' }}>{Math.round(x.d)} km</span>
+              </li>
+            )
+          })}
+        </ol>
       )}
       {!center && (
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, color: 'var(--text-3)', fontSize: 13 }}>
@@ -223,6 +255,9 @@ function MiniMap({ center, km, placed }: { center: CommunePos | null; km: number
   )
 }
 
+const legend: React.CSSProperties = { listStyle: 'none', margin: 0, padding: '10px 12px', borderTop: '1px solid var(--border)', display: 'grid', gap: 6, fontSize: 12.5, background: 'var(--surface)' }
+const num: React.CSSProperties = { width: 20, height: 20, borderRadius: '50%', background: '#1F8A5B', color: '#fff', fontSize: 10.5, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }
+const numOut: React.CSSProperties = { background: '#fff', color: '#8A5A12', border: '2px solid #B7791F', width: 16, height: 16 }
 const pill: React.CSSProperties = { border: '1px solid var(--border)', background: 'var(--surface)', borderRadius: 999, padding: '7px 13px', fontFamily: 'inherit', fontSize: 13, fontWeight: 600, color: 'var(--text-2)', cursor: 'pointer' }
 const pillOn: React.CSSProperties = { border: '1px solid var(--accent-text)', background: 'var(--accent-text)', color: '#fff' }
 const chip: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 6px 6px 12px', borderRadius: 999, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)', fontSize: 13, fontWeight: 600 }
