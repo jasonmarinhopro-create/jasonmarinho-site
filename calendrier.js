@@ -94,7 +94,11 @@
       pop.className = 'jmc-p';
       pop.setAttribute('role', 'dialog');
       pop.setAttribute('aria-label', label);
-      document.body.appendChild(pop);
+      /* Dans une fenêtre <dialog> ouverte (devis des fiches pros), le calendrier
+         doit être posé dans la fenêtre : un <dialog> modal passe au-dessus de
+         tout le reste de la page, quel que soit le z-index (27/10/2026, la date
+         s'ouvrait derrière la fenêtre du devis). */
+      (btn.closest('dialog[open]') || document.body).appendChild(pop);
       btn.classList.add('on');
       btn.setAttribute('aria-expanded', 'true');
       var today = iso(new Date());
