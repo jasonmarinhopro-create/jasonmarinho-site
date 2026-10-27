@@ -1,0 +1,36 @@
+# Test de bout en bout de l'inscription des pros (photographe, ménage) :
+# formulaire → fiche → photos → Ma fiche, comptes fictifs supprimés à la fin.
+# Voir scripts/test-inscription-pro.mjs. Journaux : OK / KO seulement.
+name: Test inscription pro
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/test-inscription-trigger']
+
+jobs:
+  tester:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Playwright
+        run: |
+          mkdir -p /tmp/pw && cd /tmp/pw && npm init -y >/dev/null && npm i playwright@1.48.2 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+      - name: Test
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NODE_PATH: /tmp/pw/node_modules
+        run: cp scripts/test-inscription-pro.mjs /tmp/pw/t.mjs && cd /tmp/pw && node t.mjs && mv captures $GITHUB_WORKSPACE/ || { mv captures $GITHUB_WORKSPACE/ 2>/dev/null; exit 1; }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: captures-ma-fiche
+          path: captures/*.png
+          retention-days: 3
