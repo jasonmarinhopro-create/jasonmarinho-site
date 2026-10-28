@@ -27,15 +27,17 @@ if (!URL_BASE || !KEY || !OUT) {
 
 const headers = { apikey: KEY, Authorization: `Bearer ${KEY}` }
 
-async function getJson(url, extra = {}, tries = 3) {
+// 28/10/2026 : Supabase en panne de 9 h à 10 h 50 (HTTP 504 après 11 min) :
+// délai par requête et attentes plus longues entre les essais.
+async function getJson(url, extra = {}, tries = 5) {
   for (let i = 1; ; i++) {
     try {
-      const r = await fetch(url, { headers: { ...headers, ...extra } })
+      const r = await fetch(url, { headers: { ...headers, ...extra }, signal: AbortSignal.timeout(90000) })
       if (!r.ok) throw new Error(`HTTP ${r.status}`)
       return await r.json()
     } catch (err) {
       if (i >= tries) throw err
-      await new Promise(res => setTimeout(res, 1500 * i))
+      await new Promise(res => setTimeout(res, [2000, 15000, 60000, 180000][i - 1] ?? 180000))
     }
   }
 }

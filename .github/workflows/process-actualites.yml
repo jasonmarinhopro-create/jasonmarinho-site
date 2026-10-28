@@ -41,11 +41,17 @@ jobs:
           TOTAL=0
           for FILE in $FILES; do
             echo "Traitement de $FILE..."
-            RESPONSE=$(curl -s -o /tmp/api_response.json -w "%{http_code}" \
-              -X POST https://app.jasonmarinho.com/api/actualites/insert \
-              -H "Content-Type: application/json" \
-              -H "x-insert-token: ${{ secrets.ACTUALITES_INSERT_SECRET }}" \
-              --data-binary @"$FILE")
+            # 3 essais si l'app ou Supabase ne répond pas (28/10/2026 : panne
+            # Supabase, HTTP 504 ; les doublons sont refusés par l'API, un nouvel essai est sans risque)
+            for TRY in 1 2 3; do
+              RESPONSE=$(curl -s --max-time 320 -o /tmp/api_response.json -w "%{http_code}" \
+                -X POST https://app.jasonmarinho.com/api/actualites/insert \
+                -H "Content-Type: application/json" \
+                -H "x-insert-token: ${{ secrets.ACTUALITES_INSERT_SECRET }}" \
+                --data-binary @"$FILE") || RESPONSE=000
+              case "$RESPONSE" in 5*|000) [ "$TRY" -lt 3 ] && { echo "HTTP $RESPONSE, nouvel essai dans 90 s"; sleep 90; continue; } ;; esac
+              break
+            done
             echo "Status HTTP : $RESPONSE"
             cat /tmp/api_response.json; echo
             if [ "$RESPONSE" = "200" ] || [ "$RESPONSE" = "207" ]; then

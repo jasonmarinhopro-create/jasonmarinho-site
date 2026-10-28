@@ -23,15 +23,28 @@ const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY
 const BUCKET = 'social-post-media'
 const MIME = { '.png': 'image/png', '.jpg': 'image/jpeg', '.mp4': 'video/mp4' }
 
+// Panne passagère de Supabase (28/10/2026 : HTTP 522 de 9 h à 10 h 50, stories
+// du lendemain mises aux refusées) : on réessaie, puis la publication reste
+// dans la file au lieu d'être refusée.
+const isTransient = err => /HTTP 5\d\d|fetch failed|ECONNRESET|ETIMEDOUT|aborted|timeout/i.test(String(err?.message ?? err))
 async function rest(pathq, init = {}) {
-  const res = await fetch(`${URL_}/rest/v1/${pathq}`, {
-    ...init,
-    cache: 'no-store',
-    headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json', Prefer: 'return=representation', ...(init.headers || {}) },
-  })
-  const text = await res.text()
-  if (!res.ok) throw new Error(`${pathq.split('?')[0]} : HTTP ${res.status} ${text.slice(0, 200)}`)
-  return text ? JSON.parse(text) : null
+  for (let i = 1; ; i++) {
+    try {
+      const res = await fetch(`${URL_}/rest/v1/${pathq}`, {
+        ...init,
+        cache: 'no-store',
+        signal: AbortSignal.timeout(60000),
+        headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json', Prefer: 'return=representation', ...(init.headers || {}) },
+      })
+      const text = await res.text()
+      if (!res.ok) throw new Error(`${pathq.split('?')[0]} : HTTP ${res.status} ${text.slice(0, 200)}`)
+      return text ? JSON.parse(text) : null
+    } catch (err) {
+      // Écriture (POST, PATCH) : pas de nouvel essai, elle a pu passer
+      if (i >= 4 || !isTransient(err) || (init.method && init.method !== 'GET')) throw err
+      await new Promise(r => setTimeout(r, [15000, 45000, 90000][i - 1]))
+    }
+  }
 }
 
 async function upload(file, dest) {
@@ -179,6 +192,10 @@ if (process.argv[2] !== 'historique') {
       fs.rmSync(file)
     } catch (err) {
       failed++
+      if (isTransient(err)) {
+        console.log(`::error title=Supabase indisponible (${f})::gardée dans la file, nouvel essai au prochain passage : ${err.message.slice(0, 120)}`)
+        continue
+      }
       console.log(`::error title=Publication refusée (${f})::${err.message}`)
       // Gardée de côté pour que la routine voie le refus et corrige
       fs.mkdirSync(path.join(ROOT, 'data/social/refusees'), { recursive: true })
@@ -193,5 +210,5 @@ if (replies && process.env.SOCIAL_CRON_SECRET) {
   const json = res ? await res.json().catch(() => null) : null
   console.log(`::notice title=Réponses publiées::${JSON.stringify(json?.replies ?? { erreur: res?.status ?? 'réseau' })}`)
 }
-await writeHistory()
+await writeHistory().catch(err => { console.log(`::warning title=Historique non mis à jour::${err.message.slice(0, 120)}`) })
 if (failed) process.exitCode = 1
