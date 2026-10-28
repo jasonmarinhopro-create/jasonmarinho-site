@@ -16,6 +16,15 @@ function deviceOf(ua: string): string {
   return 'desktop'
 }
 
+// La base ne doit jamais retenir le visiteur (28/10/2026 : Supabase en panne
+// 2 h, le lien chargeait sans fin, « le lien ne marche pas » sur téléphone) :
+// lecture limitée à 1,5 s, comptage du clic à 0,8 s, et mémoire des liens déjà
+// lus par cette instance pour rediriger quand même.
+type Link = { code: string; channel: string; destination: string }
+const seen = new Map<string, Link>()
+const within = <T,>(p: PromiseLike<T>, ms: number): Promise<T | null> =>
+  Promise.race([Promise.resolve(p).catch(() => null), new Promise<null>(r => setTimeout(() => r(null), ms))])
+
 export async function GET(req: NextRequest, { params }: { params: { code: string } }) {
   const code = String(params.code || '').toLowerCase().slice(0, 60)
   if (!/^[a-z0-9-]+$/.test(code)) return NextResponse.redirect(HOME, 302)
@@ -23,12 +32,14 @@ export async function GET(req: NextRequest, { params }: { params: { code: string
   const builtin = BUILTIN_LINKS.find(l => l.code === code) ?? null
   try {
     const db = getServiceClient()
-    const { data: row } = await db.from('tracked_links').select('code, channel, destination').eq('code', code).maybeSingle()
-    const data = row ?? builtin
+    const lu = await within(db.from('tracked_links').select('code, channel, destination').eq('code', code).maybeSingle(), 1500)
+    const row = (lu?.data as Link | null) ?? null
+    if (row) seen.set(code, row)
+    const data = row ?? seen.get(code) ?? builtin
     if (!data) return NextResponse.redirect(HOME, 302)
     const ua = req.headers.get('user-agent') ?? ''
     if (!isPreviewBot(ua)) {
-      await db.from('tracked_link_clicks').insert({ code, device: deviceOf(ua) }).then(() => undefined, () => undefined)
+      await within(db.from('tracked_link_clicks').insert({ code, device: deviceOf(ua) }), 800)
     }
     const res = NextResponse.redirect(trackedTarget(data.destination, data.code, data.channel), 302)
     res.headers.set('Cache-Control', 'no-store')

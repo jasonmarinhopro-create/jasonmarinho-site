@@ -68,3 +68,7 @@ Partie de la documentation interne (index : CLAUDE.md à la racine). Notes déta
 
 - La carte « Par ville » affichait « Aucun équipe de ménage inscrit » à Nantes alors que Mamoone (basé à Paris) couvre Nantes et y a reçu la demande. `prosByCity` (`lib/public-stats/rules.ts`, testé) compte maintenant chaque pro en ligne dans sa ville et dans ses `villes_couvertes`, une fois par ville (aussi pour `load.ts`). Libellés corrigés : « Aucune équipe de ménage inscrite », « Ni photographe ni équipe de ménage inscrits », et « 1 équipe de ménage sur place » sans « 0 photographe ».
 - Jason a proposé d'ajouter des demandes pour Lyon, Rennes et Nantes « pour donner envie » : écarté, la page affiche « je ne compte ni mes tests ni les fiches d'exemple » ; ne jamais y ajouter de demande ou de pro fictif.
+
+## Liens courts : ne jamais retenir le visiteur (28/10/2026)
+
+« Le lien ne marche pas sur téléphone, ça charge longtemps » (`/l/mp-photo-instagram`) : pendant la panne Supabase du matin, `app/l/[code]/route.ts` attendait la base sans limite. Désormais lecture du lien limitée à 1,5 s, comptage du clic à 0,8 s, liens déjà lus gardés en mémoire de l'instance, sinon liens d'office (`BUILTIN_LINKS`) ou accueil. Diagnostic multi-navigateurs (Safari, Chrome, Firefox, navigateur intégré d'Instagram iPhone et Android) : workflow « Diagnostic lien court » (`scripts/diag/lien-court.mjs`, lien à tester en paramètre). Mesure du 28/10 à 11 h : 12 essais OK, arrivée en 0,5 à 2,9 s.
