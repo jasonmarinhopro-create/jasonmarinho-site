@@ -62,13 +62,23 @@ function normalizeSearch(s) {
 async function fetchActive() {
   if (!HAS_SUPABASE) return []
   const url = `${SUPABASE_URL}/rest/v1/public_photographers_view?select=*&order=created_at.desc&limit=500`
-  const res = await fetch(url, {
-    headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, Accept: 'application/json' },
-  })
-  if (!res.ok) {
-    const txt = await res.text()
-    console.warn(`[build-photographers] Supabase fetch failed (${res.status}): ${txt}`)
-    return []
+  // 28/10/2026 : Supabase en panne pendant un build, annuaire publié vide.
+  // Désormais 4 essais, puis le build échoue : Vercel garde le site précédent.
+  let res = null, err = ''
+  for (let i = 1; i <= 4; i++) {
+    try {
+      res = await fetch(url, {
+        headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, Accept: 'application/json' },
+        signal: AbortSignal.timeout(30000),
+      })
+      if (res.ok) break
+      err = `HTTP ${res.status} ${(await res.text()).slice(0, 120)}`
+    } catch (e) { err = e.message; res = null }
+    if (i < 4) await new Promise(r => setTimeout(r, [5000, 15000, 30000][i - 1]))
+  }
+  if (!res || !res.ok) {
+    console.error(`[build-photographers] Supabase injoignable (${err}) : build arrêté pour ne pas publier un annuaire vide`)
+    process.exit(1)
   }
   const data = await res.json()
   console.log(`[build-photographers] ${data.length} photographe(s) actif(s)`)
