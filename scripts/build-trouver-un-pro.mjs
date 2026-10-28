@@ -158,6 +158,26 @@ textarea.in{min-height:96px;resize:vertical;line-height:1.5}
 @media(min-width:640px){.pros.wide{grid-template-columns:1fr 1fr}}
 .skel{height:66px;border-radius:14px;background:linear-gradient(90deg,#F2EFE8,#F8F6F1,#F2EFE8);background-size:200% 100%;animation:sk 1.2s infinite}
 @keyframes sk{to{background-position:-200% 0}}
+/* Autres villes, même demande (29/10/2026) : lien discret, puis encadré */
+.mv-link{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;background:none;border:0;padding:4px 0;font:inherit;font-size:14px;font-weight:500;color:var(--g);cursor:pointer;text-decoration:underline;text-decoration-color:rgba(0,76,63,.3);text-underline-offset:4px}
+.mv-link:hover{text-decoration-color:var(--g)}
+.mv-box{border:1.5px solid var(--bd);border-radius:16px;padding:14px 16px;background:#FBFAF6;display:flex;flex-direction:column;gap:10px;min-width:0}
+.mv-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px;font-weight:600;color:var(--tm)}
+.mv-h span{font-weight:500;color:var(--tl);font-variant-numeric:tabular-nums}
+.mv-row{display:flex;gap:8px;min-width:0}
+.mv-row .in{flex:1;min-width:0;width:0}
+.mv-add{border:0;border-radius:12px;padding:0 16px;font:inherit;font-weight:600;font-size:14px;background:var(--g);color:#fff;cursor:pointer}
+.mv-add:disabled{opacity:.45;cursor:default}
+.mv-chips{display:flex;flex-wrap:wrap;gap:8px}
+.mv-chip{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1.5px solid var(--g);color:var(--g);border-radius:999px;padding:6px 7px 6px 12px;font-size:14px;font-weight:600}
+.mv-chip button{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,76,63,.08);color:var(--g);cursor:pointer;font-size:12px}
+.mv-note{font-size:12.5px;line-height:1.5;color:var(--tl)}
+.mv-msg{font-size:12.5px;color:#9A3412}
+.mv-res{display:flex;flex-direction:column;gap:8px}
+.mv-res a,.mv-res div{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px;border-radius:12px;background:rgba(0,76,63,.06);color:var(--td);font-size:14.5px;text-decoration:none}
+.mv-res b{font-weight:600}
+.mv-pill{font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap;background:var(--g);color:#fff}
+.mv-pill.wait{background:#FFF4D6;color:#8A5A00}
 .tip{display:flex;gap:11px;align-items:flex-start;background:#FBFAF6;border:1px dashed rgba(0,76,63,.18);border-radius:14px;padding:12px 14px;font-size:13.5px;line-height:1.55;color:var(--tm);margin-top:auto}
 .tip i{color:#B98900;font-size:19px;flex-shrink:0;margin-top:1px}
 .tip a{color:var(--g);font-weight:600}
@@ -276,7 +296,7 @@ details.more a{color:var(--g)}
   var tk = document.getElementById('tk'), sd = document.getElementById('sd');
 
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
-  function blank(){ return { metier:'', etablissement:'', ville:'', logement:'', besoin:'', rythme:'', linge:'', quand:'', date:'', budget:'', details:[], message:'', nom:'', email:'', telephone:'', pref:'', consent:false }; }
+  function blank(){ return { metier:'', etablissement:'', ville:'', logement:'', besoin:'', rythme:'', linge:'', quand:'', date:'', budget:'', details:[], message:'', nom:'', email:'', telephone:'', pref:'', consent:false, villes:[], mvOpen:false }; }
   var st = blank(), step = 0, apercu = null, apercuFor = '', apercuSeq = 0, sending = false, done = null;
   function menage(){ return st.metier === 'menage'; }
   function who(n){ return menage() ? (n > 1 ? 'équipes' : 'équipe') : (n > 1 ? 'pros' : 'pro'); }
@@ -287,6 +307,50 @@ details.more a{color:var(--g)}
   var TAILLE_IC = { 'Moins de 15 chambres':'ph-door', '15 à 50 chambres':'ph-buildings', 'Plus de 50 chambres':'ph-buildings', '2 à 5 logements':'ph-key', '6 à 20 logements':'ph-key', 'Plus de 20 logements':'ph-buildings' };
   function tailles(){ return TAILLES[st.etablissement] || LOGEMENTS; }
   function grand(){ return st.etablissement === 'hotel' || st.etablissement === 'conciergerie'; }
+  // ── Autres villes, même demande (29/10/2026, conciergerie multi-secteurs) : 5 villes en tout ──
+  var VILLES_MAX = 5;
+  function vkey(v){ return String(v || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
+  function autres(){ var k = vkey(st.ville); return (st.villes || []).filter(function(v){ return vkey(v) && vkey(v) !== k; }); }
+  function villesTxt(){ var a = autres(); return st.ville.trim() + (a.length ? ', ' + a.join(', ') : ''); }
+  function mvHtml(){
+    if (st.ville.trim().length < 2) return '';
+    var a = autres();
+    if (!st.mvOpen && !a.length) return '<button type="button" class="mv-link" id="mv-open"><i class="ph-bold ph-plus-circle"></i>' + (grand() ? 'Tu gères des logements dans d’autres villes ? Ajoute-les' : 'Une autre ville ?') + '</button>';
+    var full = a.length + 1 >= VILLES_MAX;
+    return '<div class="mv-box" id="mv-box"><div class="mv-h">Autres villes, même demande <span>' + (a.length + 1) + ' / ' + VILLES_MAX + ' villes</span></div>' +
+      (full ? '<div class="mv-note">Tu as atteint ' + VILLES_MAX + ' villes. Pour plus de villes, écris à contact@jasonmarinho.com.</div>' :
+        '<div class="mv-row"><input class="in" id="mv-in" list="villes" data-suggest="ville" autocomplete="off" enterkeyhint="done" maxlength="80" placeholder="Ajouter une ville" aria-label="Autre ville"><button type="button" class="mv-add" id="mv-add" disabled>Ajouter</button></div><div class="mv-msg" id="mv-msg" hidden></div>') +
+      (a.length ? '<div class="mv-chips">' + a.map(function(v, i){ return '<span class="mv-chip"><i class="ph-bold ph-map-pin"></i>' + esc(v) + '<button type="button" data-mv-rm="' + i + '" aria-label="Retirer ' + esc(v) + '"><i class="ph-bold ph-x"></i></button></span>'; }).join('') + '</div>' : '') +
+      '<div class="mv-note">Une demande par ville : chacune part ' + (menage() ? 'aux équipes de ménage' : 'aux photographes et vidéastes') + ' de sa zone, 3 au plus. Tu suis les réponses ville par ville.</div></div>';
+  }
+  function paintMv(){ var w = document.getElementById('mv'); if (!w) return; w.innerHTML = mvHtml(); bindMv(); if (window.jmSuggest) window.jmSuggest.scan(w); }
+  function addVille(v){
+    v = String(v || '').trim().slice(0, 80);
+    var msg = document.getElementById('mv-msg');
+    var k = vkey(v);
+    if (v.length < 2 || !k) return false;
+    if (k === vkey(st.ville) || autres().some(function(x){ return vkey(x) === k; })) { var ci = document.getElementById('mv-in'); if (ci) ci.value = ''; var ab = document.getElementById('mv-add'); if (ab) ab.disabled = true; if (msg) { msg.textContent = v + ' est déjà dans ta demande.'; msg.hidden = false; } return false; }
+    if (autres().length + 1 >= VILLES_MAX) return false;
+    st.villes = autres().concat([v]); st.mvOpen = true;
+    paintMv(); paintSide(); save();
+    // Au téléphone, le focus rouvrirait la liste plein écran : on laisse l'hôte toucher le champ
+    var ni = document.getElementById('mv-in'); if (ni && !window.matchMedia('(max-width: 640px)').matches) ni.focus();
+    return true;
+  }
+  function bindMv(){
+    var op = document.getElementById('mv-open'); if (op) op.onclick = function(){ st.mvOpen = true; paintMv(); var ni = document.getElementById('mv-in'); if (ni && !window.matchMedia('(max-width: 640px)').matches) ni.focus(); };
+    var inp = document.getElementById('mv-in'), add = document.getElementById('mv-add');
+    if (inp && add) {
+      inp.addEventListener('input', function(){ add.disabled = inp.value.trim().length < 2; var m = document.getElementById('mv-msg'); if (m) m.hidden = true; });
+      // Choix d'une ligne de suggestion (/suggestions.js envoie un change de script, pas celui
+      // de la sortie du champ) : la ville choisie s'ajoute tout de suite
+      inp.addEventListener('change', function(e){ if (!e.isTrusted && inp.value.trim().length >= 2) addVille(inp.value); });
+      // Entrée : si la liste est ouverte, c'est elle qui choisit la ligne
+      inp.addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.defaultPrevented && inp.getAttribute('aria-expanded') !== 'true') { e.preventDefault(); addVille(inp.value); } });
+      add.onclick = function(){ addVille(inp.value); };
+    }
+    [].forEach.call(document.querySelectorAll('[data-mv-rm]'), function(b){ b.onclick = function(){ var a = autres(); a.splice(Number(b.getAttribute('data-mv-rm')), 1); st.villes = a; paintMv(); paintSide(); save(); }; });
+  }
   var LOG_D = { 'Studio ou T1':'Une pièce principale', 'T2 ou T3':'Une ou deux chambres', 'T4 et plus':'Trois chambres ou plus', 'Maison':'Avec ou sans extérieur', 'Plusieurs logements':'Un même pro pour tous' };
   var PRESTA = {
     'Des photos': ['ph-images', 'Les photos de ton annonce, pièce par pièce'],
@@ -371,7 +435,7 @@ details.more a{color:var(--g)}
     var r = [
       ['Pour', st.metier ? (menage() ? 'Une équipe de ménage' : 'Un photographe ou vidéaste') : ''],
       ['Type', st.etablissement ? (ETABS.filter(function(e){ return e.k === st.etablissement; })[0] || {}).l : ''],
-      ['Ville', st.ville.trim()],
+      [autres().length ? 'Villes' : 'Ville', villesTxt()],
       [grand() ? 'Taille' : 'Logement', st.logement],
       [menage() ? 'Besoin' : 'Prestation', st.besoin],
       ['Quand', st.quand + (st.date ? ' (' + fmtDate(st.date) + ')' : '')],
@@ -387,7 +451,8 @@ details.more a{color:var(--g)}
   function titleLine(){
     if (!st.metier) return '<div class="tt empty">Ta demande se construit ici</div>';
     var w = menage() ? 'Équipe de ménage' : (st.besoin || 'Photographe ou vidéaste');
-    return '<div class="tt">' + esc(w) + (st.ville.trim() ? ' à ' + esc(st.ville.trim()) : '') + '</div>';
+    var n = autres().length;
+    return '<div class="tt">' + esc(w) + (st.ville.trim() ? ' à ' + esc(st.ville.trim()) + (n ? ' + ' + n + ' ville' + (n > 1 ? 's' : '') : '') : '') + '</div>';
   }
   function ticketHtml(){
     var m = missing();
@@ -435,6 +500,7 @@ details.more a{color:var(--g)}
       h = '<h2 class="q">Où est ton logement ?</h2><p class="sub">On cherche les ' + (menage() ? 'équipes' : 'pros') + ' qui travaillent dans ta ville ou qui la couvrent.</p>' +
         '<div class="cityin"><i class="ph-bold ph-map-pin"></i><input class="in" id="ville" list="villes" data-suggest="ville" autocomplete="off" enterkeyhint="next" placeholder="Ex. Lyon, Annecy, Biarritz" value="' + esc(st.ville) + '" aria-label="Ville du logement"></div>' +
         (POPULAIRES.length ? '<div class="chips">' + POPULAIRES.map(function(c){ return '<button type="button" class="chip' + (st.ville === c ? ' on' : '') + '" data-city="' + esc(c) + '"><i class="ph-bold ph-map-pin"></i>' + esc(c) + '</button>'; }).join('') + '</div>' : '') +
+        '<div id="mv">' + mvHtml() + '</div>' +
         '<div id="zone" data-wide="1">' + zoneHtml(true) + '</div>' +
         tip('ph-map-pin', 'Toute ville est acceptée, même sans page sur le site : les pros qui indiquent couvrir ta zone la reçoivent aussi.');
     }
@@ -490,7 +556,7 @@ details.more a{color:var(--g)}
     footer();
     bind();
     paintSide();
-    if (s.k === 'ville') { if (window.jmSuggest) window.jmSuggest.scan(fb); loadApercu(); }
+    if (s.k === 'ville') { bindMv(); if (window.jmSuggest) window.jmSuggest.scan(fb); loadApercu(); }
     if (s.k === 'quand' && window.jmCalendar) window.jmCalendar.scan(fb);
     if (s.k === 'recap' || s.k === 'besoin') loadApercu();
     if (focus !== false) {
@@ -554,7 +620,8 @@ details.more a{color:var(--g)}
     var fr = document.getElementById('fresh'); if (fr) fr.onclick = function(){ clearDraft(); st = blank(); render(); };
     var vi = document.getElementById('ville');
     if (vi) {
-      var upd = function(){ st.ville = vi.value.slice(0, 80); [].forEach.call(fb.querySelectorAll('[data-city]'), function(c){ c.classList.toggle('on', c.getAttribute('data-city') === st.ville); }); refreshNext(); paintZone(); loadApercu(); save(); };
+      var hadMv = st.ville.trim().length >= 2;
+      var upd = function(){ st.ville = vi.value.slice(0, 80); [].forEach.call(fb.querySelectorAll('[data-city]'), function(c){ c.classList.toggle('on', c.getAttribute('data-city') === st.ville); }); var hasMv = st.ville.trim().length >= 2; if (hasMv !== hadMv || !hasMv) { hadMv = hasMv; paintMv(); } refreshNext(); paintZone(); loadApercu(); save(); };
       vi.addEventListener('input', upd); vi.addEventListener('change', upd);
       vi.addEventListener('keydown', function(e){ if (e.key === 'Enter' && !e.defaultPrevented && canNext()) { e.preventDefault(); next(); } });
     }
@@ -589,14 +656,23 @@ details.more a{color:var(--g)}
     var err = document.getElementById('err');
     sending = true; refreshNext();
     var nb = document.getElementById('next'); nb.innerHTML = 'Envoi en cours…';
-    var data = { metier: st.metier, etablissement: st.etablissement, ville: st.ville.trim(), logement: st.logement, quand: st.quand, frequence: st.besoin, budget: st.budget, message: message(), nom: st.nom.trim(), email: st.email.trim(), telephone: st.telephone.trim(), consent: true, website: document.getElementById('website').value, t: t0, source: document.referrer ? document.referrer.slice(0, 200) : location.href, acq: acq() };
+    var data = { metier: st.metier, etablissement: st.etablissement, ville: st.ville.trim(), logement: st.logement, quand: st.quand, frequence: st.besoin, budget: st.budget, message: message(), nom: st.nom.trim(), email: st.email.trim(), telephone: st.telephone.trim(), villes: autres(), consent: true, website: document.getElementById('website').value, t: t0, source: document.referrer ? document.referrer.slice(0, 200) : location.href, acq: acq() };
     fetch(APP + '/api/demandes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
       .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(b){ if (!r.ok) throw new Error(b.error || 'Envoi impossible pour le moment. Réessaie dans quelques minutes.'); return b; }); })
       .then(function(b){ done = b; clearDraft(); finish(b); })
       .catch(function(x){ sending = false; err.textContent = x.message; err.classList.add('show'); nb.innerHTML = '<i class="ph-bold ph-paper-plane-tilt"></i>Réessayer'; refreshNext(); });
   }
 
+  // Demande en plusieurs villes : une ligne par ville, chacune avec son lien de suivi
+  function villesRes(b){
+    if (!Array.isArray(b.villes) || b.villes.length < 2) return '';
+    return '<div class="mv-res">' + b.villes.map(function(v){
+      var inner = '<b>' + esc(v.ville) + '</b><span class="mv-pill' + (v.envoyes ? '' : ' wait') + '">' + (v.envoyes ? 'Envoyée à ' + v.envoyes + ' ' + who(v.envoyes) : 'En file d’attente') + '</span>';
+      return v.suivi ? '<a href="/ma-demande?t=' + encodeURIComponent(v.suivi) + '">' + inner + '</a>' : '<div>' + inner + '</div>';
+    }).join('') + '</div>';
+  }
   function finish(b){
+    if (Array.isArray(b.villes) && b.villes.length > 1) return finishMulti(b);
     var pros = Array.isArray(b.pros) ? b.pros : [], n = b.envoyes || pros.length;
     fh.hidden = true; ff.innerHTML = ''; ff.style.display = 'none';
     document.body.setAttribute('data-step', 'done');
@@ -623,6 +699,23 @@ details.more a{color:var(--g)}
       (b.suivi ? '<p class="sub" style="margin-top:-6px;font-size:13.5px">Le lien de suivi est aussi dans ton e-mail. Tu y vois qui a pris ta demande en main.</p>' : '') +
       '<div class="side-card" style="background:#FBFAF6"><div class="h2">En attendant, prépare ' + (menage() ? 'le premier passage' : 'la séance') + '</div><div class="check">' + list.map(function(t, i){ return '<label><input type="checkbox" id="prep' + i + '">' + esc(t) + '</label>'; }).join('') + '</div></div>';
     tk.innerHTML = ticketHtml(); sd.innerHTML = '<h3>Envoyée</h3><p class="muted">Garde le lien de suivi : il montre à qui ta demande est partie et qui l’a prise en main.</p>';
+    var top = document.getElementById('flow').getBoundingClientRect().top + window.scrollY - 76;
+    window.scrollTo({ top: top, behavior: 'smooth' });
+  }
+
+  function finishMulti(b){
+    var n = b.envoyes || 0, nv = b.villes.length;
+    fh.hidden = true; ff.innerHTML = ''; ff.style.display = 'none';
+    document.body.setAttribute('data-step', 'done');
+    var first = st.nom.trim().split(' ')[0];
+    fb.className = 'done';
+    fb.innerHTML = '<div class="mark"><i class="ph-bold ph-check"></i></div>' +
+      '<h2 class="q">C’est parti, ' + esc(first) + ' !</h2>' +
+      '<p class="sub" style="margin-top:-6px">Ta demande part dans ' + nv + ' villes, une demande par ville. ' + (n ? n + ' ' + who(n) + ' l’ont déjà reçue. ' : '') + 'Tu reçois un e-mail de confirmation par ville (pense aux indésirables).</p>' +
+      villesRes(b) +
+      '<p class="sub" style="font-size:13.5px">Touche une ville pour suivre sa demande. Dans une ville sans pro inscrit, le premier qui s’inscrit la reçoit, et Jason la regarde lui-même.</p>' +
+      '<div class="acts"><a class="ghost" href="/annuaires/' + (menage() ? 'menage' : 'photographes') + '">Voir l’annuaire</a></div>';
+    tk.innerHTML = ticketHtml(); sd.innerHTML = '<h3>Envoyée</h3><p class="muted">Chaque ville a son lien de suivi, aussi dans son e-mail de confirmation.</p>';
     var top = document.getElementById('flow').getBoundingClientRect().top + window.scrollY - 76;
     window.scrollTo({ top: top, behavior: 'smooth' });
   }

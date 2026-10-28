@@ -5,14 +5,14 @@
 import { NextResponse } from 'next/server'
 import { revalidateTag } from 'next/cache'
 import { cleanDemande } from '@/lib/demandes/rules'
-import { creerDemande } from '@/lib/demandes/send'
+import { creerDemandeMultiVilles } from '@/lib/demandes/send'
 import { cleanAcquisition } from '@/lib/acquisition/rules'
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { cors } from './cors'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-export const maxDuration = 30
+export const maxDuration = 60
 
 
 export async function OPTIONS(req: Request) {
@@ -28,7 +28,8 @@ export async function POST(req: Request) {
   if (!rl.allowed) return NextResponse.json({ error: 'Tu as déjà envoyé plusieurs demandes : réessaie dans une heure, ou écris à contact@jasonmarinho.com.' }, { status: 429, headers })
   const r = cleanDemande(body)
   if ('error' in r) return NextResponse.json({ error: r.error }, { status: 400, headers })
-  const res = await creerDemande(r.value, cleanAcquisition(body.acq))
+  // Une demande par ville quand l'hôte en a ajouté (29/10/2026)
+  const res = await creerDemandeMultiVilles(r.value, cleanAcquisition(body.acq))
   if ('error' in res) return NextResponse.json({ error: res.error }, { status: 500, headers })
   // Compteur public de /chiffres à jour tout de suite
   revalidateTag('public-demandes')

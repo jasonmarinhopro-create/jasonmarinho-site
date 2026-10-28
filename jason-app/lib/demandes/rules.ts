@@ -12,6 +12,8 @@ import { readEtablissement, CLIENTELES, type Clientele } from '@/lib/pros/client
 export type DemandeMetier = 'photographe' | 'menage'
 
 export const PROS_PAR_VAGUE = 3
+/** Une demande peut viser plusieurs villes (29/10/2026, conciergerie multi-secteurs) : 5 au plus en tout */
+export const VILLES_MAX = 5
 export const VAGUES_MAX = 3
 export const RELANCE_APRES_H = 48
 export const NOUVEAUX_PROS_JOURS = 30
@@ -44,10 +46,29 @@ export interface DemandeInput {
   email: string
   telephone: string | null
   source: string | null
+  /** Villes en plus de `ville`, même demande (une demande par ville à l'envoi) */
+  autresVilles?: string[]
 }
 
 const txt = (v: unknown, max: number) => (typeof v === 'string' ? v : '').replace(/[\u0000-\u0008\u000b-\u001f]/g, '').replace(/[ \t]+/g, ' ').trim().slice(0, max)
 const oneOf = (v: unknown, list: readonly string[]) => (typeof v === 'string' && list.includes(v) ? v : null)
+const villeKey = (v: string) => v.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim()
+
+/** Villes en plus de la ville principale : sans doublon (accents et casse ignorés), 2 à 80 caractères, VILLES_MAX - 1 au plus */
+export function cleanAutresVilles(raw: unknown, ville: string): string[] {
+  if (!Array.isArray(raw)) return []
+  const seen = new Set([villeKey(ville)])
+  const out: string[] = []
+  for (const v of raw) {
+    const c = txt(v, 80)
+    const k = villeKey(c)
+    if (c.length < 2 || !k || seen.has(k)) continue
+    seen.add(k)
+    out.push(c)
+    if (out.length >= VILLES_MAX - 1) break
+  }
+  return out
+}
 
 /** Valide le formulaire. Erreur en clair pour l'hôte, sinon la demande propre. */
 export function cleanDemande(body: Record<string, unknown>): { value: DemandeInput } | { error: string } {
@@ -77,6 +98,7 @@ export function cleanDemande(body: Record<string, unknown>): { value: DemandeInp
       email,
       telephone: tel.replace(/\D/g, '').length >= 9 ? tel : null,
       source: txt(body.source, 200) || null,
+      autresVilles: cleanAutresVilles(body.villes, ville),
     },
   }
 }

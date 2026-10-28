@@ -167,6 +167,7 @@ function ListItem({ d, on, onClick }: { d: DemandeQG; on: boolean; onClick: () =
           <EtatPill etat={d.etat} />
           <span style={st.itemMeta}>{d.envois.length ? `${d.envois.length} pro${d.envois.length > 1 ? 's' : ''} sollicité${d.envois.length > 1 ? 's' : ''}` : 'Aucun pro sollicité'}</span>
         </span>
+        {d.autresVilles.length > 0 && <span style={st.itemSub}>Envoi en {d.autresVilles.length + 1} villes, aussi : {d.autresVilles.join(', ')}</span>}
       </span>
     </button>
   )

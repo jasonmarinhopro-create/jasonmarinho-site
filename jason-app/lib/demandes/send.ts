@@ -7,7 +7,7 @@ import { priseToken } from './prise'
 import { memberMailSecret } from '@/lib/admin/member-mail-secret'
 import 'server-only'
 import { Resend } from 'resend'
-import { randomBytes } from 'node:crypto'
+import { randomBytes, randomUUID } from 'node:crypto'
 import { unstable_cache } from 'next/cache'
 import { getServiceClient } from '@/lib/supabase/service'
 import { logger } from '@/lib/logger'
@@ -134,9 +134,35 @@ async function envoyerVague(d: DemandeInput, metier: DemandeMetier, pros: Pro[],
 }
 
 /** Nouvelle demande : enregistrement, première vague, e-mails. */
-export async function creerDemande(d: DemandeInput, acquisition: unknown): Promise<{ ok: true; envoyes: number; suivi: string | null; pros: CartePro[] } | { error: string }> {
+type DemandeCreee = { ok: true; envoyes: number; suivi: string | null; pros: CartePro[] }
+
+/**
+ * Demande en plusieurs villes (29/10/2026) : une demande par ville, chacune
+ * avec ses pros, son relais et son lien de suivi, liées par `groupe`
+ * (migration 168). Les pros ne voient que la ville qui les concerne.
+ */
+export async function creerDemandeMultiVilles(d: DemandeInput, acquisition: unknown): Promise<(DemandeCreee & { villes: Array<{ ville: string; envoyes: number; suivi: string | null; pros: CartePro[] }> }) | { error: string }> {
+  const villes = [d.ville, ...(d.autresVilles ?? [])]
+  const groupe = villes.length > 1 ? randomUUID() : null
+  const out: Array<{ ville: string; envoyes: number; suivi: string | null; pros: CartePro[] }> = []
+  for (const ville of villes) {
+    const r = await creerDemande({ ...d, ville, autresVilles: [] }, acquisition, groupe)
+    if ('error' in r) {
+      // La première ville est obligatoire ; une ville suivante en échec n'annule pas les autres
+      if (!out.length) return r
+      log.error('demande multi-villes : une ville en échec', { err: r.error })
+      continue
+    }
+    out.push({ ville, envoyes: r.envoyes, suivi: r.suivi, pros: r.pros })
+  }
+  return { ok: true, envoyes: out.reduce((n, v) => n + v.envoyes, 0), suivi: out[0].suivi, pros: out[0].pros, villes: out }
+}
+
+export async function creerDemande(d: DemandeInput, acquisition: unknown, groupe: string | null = null): Promise<DemandeCreee | { error: string }> {
   const db = getServiceClient()
   const base = {
+    // Demandes envoyées ensemble dans plusieurs villes (migration 168) : retiré plus bas si la colonne manque
+    ...(groupe ? { groupe } : {}),
     metier: d.metier, ville: d.ville, logement: d.logement, quand: d.quand, frequence: d.frequence, budget: d.budget,
     message: d.message, nom: d.nom, email: d.email, telephone: d.telephone, source: d.source,
     // Type d'hébergement (migration 154) : retiré plus bas si la colonne manque
@@ -147,6 +173,10 @@ export async function creerDemande(d: DemandeInput, acquisition: unknown): Promi
   // Lien de suivi secret (migration 139 ; sans elle, la demande part sans lien de suivi)
   let token: string | null = randomBytes(16).toString('hex')
   let { data: row, error } = await db.from('demandes_hotes').insert({ ...base, suivi_token: token }).select('id').maybeSingle()
+  if (error && /groupe/.test(error.message)) {
+    delete (base as { groupe?: string }).groupe
+    ;({ data: row, error } = await db.from('demandes_hotes').insert({ ...base, suivi_token: token }).select('id').maybeSingle())
+  }
   if (error && /etablissement/.test(error.message)) {
     delete (base as { etablissement?: string }).etablissement
     ;({ data: row, error } = await db.from('demandes_hotes').insert({ ...base, suivi_token: token }).select('id').maybeSingle())

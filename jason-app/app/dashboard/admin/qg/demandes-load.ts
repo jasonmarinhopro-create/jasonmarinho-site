@@ -27,6 +27,8 @@ export interface DemandeQG extends DemandeAdminRow {
   aTraiter: boolean
   /** À traiter une fois vue et rouverte (retard, sans pro) */
   aTraiterVue: boolean
+  /** Autres villes du même envoi (demande en plusieurs villes, migration 168) */
+  autresVilles: string[]
 }
 
 export interface DemandesQGData {
@@ -62,6 +64,18 @@ export async function loadDemandesQG(now = new Date()): Promise<DemandesQGData> 
     const { data: et, error: etErr } = await db.from('demandes_hotes').select('id, etablissement').in('id', rows.map(r => r.id))
     if (!etErr) { const m = new Map(((et ?? []) as Array<{ id: string; etablissement: string | null }>).map(r => [r.id, r.etablissement])); for (const r of rows) r.etablissement = m.get(r.id) ?? null }
   }
+  // Envois en plusieurs villes (migration 168) : lu à part, sans bloquer si la colonne manque
+  const autres = new Map<string, string[]>()
+  if (rows.length) {
+    const { data: gr, error: grErr } = await db.from('demandes_hotes').select('id, groupe').in('id', rows.map(r => r.id)).not('groupe', 'is', null)
+    if (!grErr) {
+      const groupeDe = new Map(((gr ?? []) as Array<{ id: string; groupe: string }>).map(r => [r.id, r.groupe]))
+      for (const r of rows) {
+        const g = groupeDe.get(r.id)
+        if (g) autres.set(r.id, rows.filter(x => x.id !== r.id && groupeDe.get(x.id) === g).map(x => x.ville))
+      }
+    }
+  }
   const statuts = new Map<string, string>()
   const noms = new Map<string, { nom: string; slug: string | null; ville: string | null }>()
   const [prosPhoto, prosMenage] = await Promise.all([listProsChoix('photographe'), listProsChoix('menage')])
@@ -94,6 +108,7 @@ export async function loadDemandesQG(now = new Date()): Promise<DemandesQGData> 
       etatOuvert: etatAdmin({ ...d, admin_done_at: null, status: d.status === 'close' ? 'envoyee' : d.status }, statuts),
       aTraiter: aTraiter(d, statuts, now),
       aTraiterVue: aTraiter({ ...d, admin_seen_at: d.admin_seen_at ?? now.toISOString(), admin_done_at: null, status: d.status === 'close' ? 'envoyee' : d.status }, statuts, now),
+      autresVilles: autres.get(r.id) ?? [],
     }
   })
   return { demandes, pros: { photographe: prosPhoto, menage: prosMenage }, suiviOk, error: null }

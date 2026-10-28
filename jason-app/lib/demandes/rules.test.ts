@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { cleanDemande, proximite, choisirPros, messagePourPro, anonymizedNeed, prochaineAction, type DemandeInput } from './rules'
+import { cleanDemande, cleanAutresVilles, proximite, choisirPros, messagePourPro, anonymizedNeed, prochaineAction, type DemandeInput } from './rules'
 
 const base = { metier: 'photographe', ville: 'Lyon', nom: 'Paul Martin', email: 'Paul@Exemple.fr', consent: true }
 
@@ -179,5 +179,19 @@ describe('hôtels, conciergeries et gîtes (24/10/2026)', () => {
       const m = src.match(/const CLIENTELE_KEYS = (\[[^\]]*\])/)
       expect(m && JSON.parse(m[1].replace(/'/g, '"'))).toEqual([...CLIENTELE_KEYS])
     }
+  })
+})
+
+describe('cleanAutresVilles (demande en plusieurs villes)', () => {
+  it('retire la ville principale et les doublons, accents et casse ignorés', () => {
+    expect(cleanAutresVilles(['Chambéry', 'chambery', ' Annecy ', 'Aix-les-Bains'], 'Annecy')).toEqual(['Chambéry', 'Aix-les-Bains'])
+  })
+  it('ignore ce qui n’est pas une ville et garde 4 villes en plus au plus', () => {
+    expect(cleanAutresVilles(['a', 42, null, 'Lyon', 'Grenoble', 'Nice', 'Pau', 'Metz', 'Brest'], 'Paris')).toEqual(['Lyon', 'Grenoble', 'Nice', 'Pau'])
+    expect(cleanAutresVilles('Lyon', 'Paris')).toEqual([])
+  })
+  it('passe par cleanDemande', () => {
+    const r = cleanDemande({ metier: 'photographe', ville: 'Annecy', villes: ['Chambéry'], nom: 'Test Nom', email: 'a@b.fr', consent: true })
+    expect('value' in r && r.value.autresVilles).toEqual(['Chambéry'])
   })
 })
