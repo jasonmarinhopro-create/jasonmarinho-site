@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 26 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 28 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Devis ménage LCD : 6 règles pour transformer la demande d&apos;un hôte en client récurrent</title>
+      <link>https://jasonmarinho.com/blog/devis-menage-lcd-6-regles-transformer-demande-hote-client-recurrent</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/devis-menage-lcd-6-regles-transformer-demande-hote-client-recurrent</guid>
+      <pubDate>Wed, 28 Oct 2026 08:00:00 GMT</pubDate>
+      <description>Réponse rapide, demande décodée, prix clair, récurrence, petit plus, relance : 6 règles pour transformer la demande d&apos;un hôte en contrat ménage LCD récurrent.</description>
+      <category>Ressources</category>
+    </item>
     <item>
       <title>Black Friday en LCD : 6 règles pour décider si tu fais une promo en 2026 et la calibrer sans brader</title>
       <link>https://jasonmarinho.com/blog/black-friday-lcd-6-regles-decider-promo-calibrer-sans-brader</link>
@@ -398,14 +406,6 @@
       <pubDate>Wed, 15 Jul 2026 08:00:00 GMT</pubDate>
       <description>Montant, justification, prélèvement, restitution, retenue : les 5 règles juridiques à connaître avant de demander une caution en location courte durée en France en 2026.</description>
       <category>Réglementation</category>
-    </item>
-    <item>
-      <title>Voyageurs surnuméraires en LCD : 6 actions pour repérer, encadrer et facturer les personnes en plus non déclarées</title>
-      <link>https://jasonmarinho.com/blog/voyageurs-surnumeraires-lcd-6-actions-personnes-en-plus-non-declarees</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/voyageurs-surnumeraires-lcd-6-actions-personnes-en-plus-non-declarees</guid>
-      <pubDate>Mon, 13 Jul 2026 08:00:00 GMT</pubDate>
-      <description>Réservation à 2 qui arrive à 6, fêtes non annoncées, matelas gonflables cachés : 6 actions concrètes pour prévenir, détecter et facturer les voyageurs surnuméraires en location courte durée.</description>
-      <category>Expérience</category>
     </item>
   </channel>
 </rss>
