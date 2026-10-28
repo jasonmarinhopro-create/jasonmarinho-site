@@ -4,8 +4,9 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-10-27 23:44 UTC.
+Mis à jour le 2026-10-28 09:46 UTC.
 
+- 2026-10-29 · stories (4 écrans) · stories-trouver-un-pro-menage · FB - · IG - · stories FB pending IG pending · « Stories : Ton équipe de ménage te lâche ? / Décris ton besoin une fois / Ce qui est garanti / Ton ménage, tu l »
 - 2026-10-28 · carrousel · formation-louer-en-direct · FB pending · IG pending · stories FB pending IG pending · « Louer en direct, c’est garder la commission. C’est aussi refaire seul ce que la plateforme faisait pour toi :  »
 - 2026-10-27 · stories (4 écrans) · stories-taxe-sejour-reservation-directe · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Sur Airbnb et Booking, c’est automatique / Là, c’est toi qui la collectes / Le bon montant / En dire »
 - 2026-10-26 · carrousel · photographe-lcd-fiche-vitrine · FB published 0 j'aime 0 comm. · IG published 2 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Un site vitrine, c’est plusieurs centaines d’euros, puis un domaine et un hébergement à payer chaque année. Po »
