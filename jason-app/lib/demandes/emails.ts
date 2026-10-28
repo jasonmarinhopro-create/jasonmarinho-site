@@ -256,6 +256,57 @@ export function hoteEmail(d: DemandeMail, o: { pros: ProMail[]; vague: number; s
   }
 }
 
+/**
+ * À l'hôte, demande en plusieurs villes (29/10/2026) : un seul e-mail, une
+ * partie par ville (ses pros ou « en file d'attente », son lien de suivi).
+ * Les relances et transmissions suivantes restent envoyées ville par ville.
+ */
+export function hoteMultiEmail(d: DemandeMail, villes: Array<{ ville: string; pros: ProMail[]; suiviUrl: string | null }>, o: { inscriptionUrl: string }): { subject: string; html: string } {
+  const m = METIER[d.metier]
+  const nv = villes.length
+  const n = villes.reduce((t, v) => t + v.pros.length, 0)
+  const sansPro = villes.filter(v => !v.pros.length).length
+  const section = (v: { ville: string; pros: ProMail[]; suiviUrl: string | null }) => [
+    `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 8px;"><tr>
+<td valign="middle" style="font-family:${SERIF};font-size:19px;line-height:1.3;color:${INK};">${escHtml(v.ville)}</td>
+<td valign="middle" align="right" style="font-family:${SANS};font-size:12px;font-weight:700;white-space:nowrap;color:${v.pros.length ? GREEN : '#8A5A12'};">${v.pros.length ? `${v.pros.length} pro${v.pros.length > 1 ? 's' : ''}` : 'En file d’attente'}</td>
+</tr></table>`,
+    v.pros.length
+      ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid ${LINE};border-bottom:1px solid ${LINE};margin:0 0 10px;">${v.pros.map((x, i) => proLigne(x, i === v.pros.length - 1)).join('')}</table>`
+      : small(`Pas encore de pro inscrit près de ${escHtml(v.ville)} : le premier qui s’inscrit la reçoit, et Jason cherche de son côté.`),
+    v.suiviUrl ? `<p style="margin:${v.pros.length ? 0 : 8}px 0 0;font-family:${SANS};font-size:14px;">${link(v.suiviUrl, `Suivre la demande à ${escHtml(v.ville)}`)}</p>` : '',
+    `<div style="height:24px;line-height:24px;font-size:0;">&nbsp;</div>`,
+  ].join('')
+  const body = [
+    p(`Bonjour ${escHtml(prenom(d.nom))},`, 10),
+    p(`Ta demande part dans ${nv} villes, une demande par ville : chacune va aux ${escHtml(m.labels)} de sa zone${n ? `, ${n} pro${n > 1 ? 's' : ''} l’${n > 1 ? 'ont' : 'a'} déjà reçue` : ''}.`),
+    villes.map(section).join(''),
+    fiche(besoinRows(d, false)),
+    etapes([
+      'Les pros te répondent directement par e-mail, ville par ville.',
+      'Sans réponse sous 48 h dans une ville, sa demande part à d’autres pros de cette zone.',
+      sansPro ? `Dans ${sansPro > 1 ? 'les villes' : 'la ville'} sans pro, tu reçois un e-mail dès qu’un pro l’a entre les mains.` : 'Chaque lien de suivi montre qui a pris la demande en main.',
+    ]),
+    sansPro ? small(`Tu connais ${d.metier === 'menage' ? 'une équipe' : 'un pro'} dans une de ces villes ? ${link(o.inscriptionUrl, 'Envoie-lui ce lien')} : dès que sa fiche est en ligne, elle reçoit ta demande.`) : '',
+  ].join('')
+  return {
+    subject: `Ta demande dans ${nv} villes : ${villes.map(v => v.ville).join(', ')}`,
+    html: layout({ preview: n ? `${n} pro${n > 1 ? 's' : ''} l’${n > 1 ? 'ont' : 'a'} déjà reçue` : 'On la transmet dès qu’un pro de ces villes rejoint l’annuaire', etiquette: `Ta demande · ${m.etiquette}`, title: `Ta demande part dans ${nv} villes`, body, footer: FOOTER_HOTE }),
+  }
+}
+
+/** À Jason, demande en plusieurs villes : l'état de chaque ville, sans les coordonnées */
+export function adminMultiEmail(d: Omit<DemandeMail, 'nom' | 'email' | 'telephone' | 'message'>, villes: Array<{ ville: string; pros: string[]; qgUrl: string }>): string {
+  const sansPro = villes.filter(v => !v.pros.length).length
+  const body = [
+    fiche(besoinRows({ ...d, nom: '', email: '', telephone: null, message: null }, false)),
+    villes.map(v => p(`<strong>${escHtml(v.ville)}</strong> : ${v.pros.length ? `envoyée à ${v.pros.map(escHtml).join(', ')}` : '<span style="color:#8A5A12;">sans pro, à transmettre</span>'} · ${link(v.qgUrl, 'QG')}`, 10)).join(''),
+    `<div style="height:8px;line-height:8px;font-size:0;">&nbsp;</div>`,
+    button(villes[0].qgUrl, 'Ouvrir dans le QG'),
+  ].join('')
+  return layout({ preview: `${villes.length} villes${sansPro ? `, dont ${sansPro} sans pro` : ''}`, etiquette: sansPro ? 'Nouvelle demande · plusieurs villes' : 'Nouvelle demande', title: `${qui(d as DemandeMail)} cherche ${METIER[d.metier].un} dans ${villes.length} villes`, body, footer: 'Coordonnées de l’hôte dans le QG seulement.' })
+}
+
 /** À l'hôte : Jason a transmis sa demande à un pro de plus */
 export function hoteManuelEmail(d: DemandeMail, pro: ProMail, suiviUrl: string | null, premier = false): { subject: string; html: string } {
   const m = METIER[d.metier]

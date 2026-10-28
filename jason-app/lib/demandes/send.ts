@@ -13,7 +13,7 @@ import { getServiceClient } from '@/lib/supabase/service'
 import { logger } from '@/lib/logger'
 import { adminUserIds, isDemoFiche } from '@/lib/pros/demo'
 import { sendAdminEmail } from '@/lib/email/admin'
-import { proEmail, hoteEmail, hoteManuelEmail, adminEmail, type ProMail } from './emails'
+import { proEmail, hoteEmail, hoteMultiEmail, hoteManuelEmail, adminEmail, adminMultiEmail, type ProMail } from './emails'
 import {
   choisirPros, messagePourPro, anonymizedNeed, prochaineAction, CONSERVATION_MOIS,
   besoinPhoto, convientAuBesoin, pourquoiCePro, manquesDuPro, adequationLabel,
@@ -135,6 +135,8 @@ async function envoyerVague(d: DemandeInput, metier: DemandeMetier, pros: Pro[],
 
 /** Nouvelle demande : enregistrement, première vague, e-mails. */
 type DemandeCreee = { ok: true; envoyes: number; suivi: string | null; pros: CartePro[] }
+/** Ce qu'il faut pour les e-mails regroupés d'une demande en plusieurs villes (jamais renvoyé au navigateur) */
+type Interne = { id: string; token: string | null; pros: Pro[]; prosNoms: string[] }
 
 /**
  * Demande en plusieurs villes (29/10/2026) : une demande par ville, chacune
@@ -145,8 +147,11 @@ export async function creerDemandeMultiVilles(d: DemandeInput, acquisition: unkn
   const villes = [d.ville, ...(d.autresVilles ?? [])]
   const groupe = villes.length > 1 ? randomUUID() : null
   const out: Array<{ ville: string; envoyes: number; suivi: string | null; pros: CartePro[] }> = []
+  const internes: Interne[] = []
   for (const ville of villes) {
-    const r = await creerDemande({ ...d, ville, autresVilles: [] }, acquisition, groupe)
+    // Une seule ville : e-mails habituels. Plusieurs : les pros de chaque ville reçoivent
+    // leur e-mail tout de suite ; l'hôte et Jason reçoivent un seul e-mail regroupé (plus bas).
+    const r = await creerDemande({ ...d, ville, autresVilles: [] }, acquisition, groupe, villes.length === 1)
     if ('error' in r) {
       // La première ville est obligatoire ; une ville suivante en échec n'annule pas les autres
       if (!out.length) return r
@@ -154,11 +159,28 @@ export async function creerDemandeMultiVilles(d: DemandeInput, acquisition: unkn
       continue
     }
     out.push({ ville, envoyes: r.envoyes, suivi: r.suivi, pros: r.pros })
+    if (r.interne) internes.push(r.interne)
   }
+  if (villes.length > 1 && internes.length) await emailsRegroupes(d, out.map((v, i) => ({ ville: v.ville, ...internes[i] })))
   return { ok: true, envoyes: out.reduce((n, v) => n + v.envoyes, 0), suivi: out[0].suivi, pros: out[0].pros, villes: out }
 }
 
-export async function creerDemande(d: DemandeInput, acquisition: unknown, groupe: string | null = null): Promise<DemandeCreee | { error: string }> {
+async function emailsRegroupes(d: DemandeInput, villes: Array<{ ville: string } & Interne>) {
+  const r = resend()
+  if (r) {
+    const { subject, html } = hoteMultiEmail(d, villes.map(v => ({ ville: v.ville, pros: v.pros.map(p => proMail(p, d.metier)), suiviUrl: v.token ? suiviUrl(v.token) : null })), { inscriptionUrl: `${SITE}/annuaires/${T[d.metier].dir}/inscription` })
+    await r.emails.send({ from: FROM, to: d.email, subject, html })
+      .catch(e => log.error('e-mail à l’hôte (plusieurs villes)', { err: e instanceof Error ? e.message : String(e) }))
+  }
+  const sansPro = villes.filter(v => !v.pros.length)
+  await sendAdminEmail({
+    subject: `Demande d’hôte : ${T[d.metier].label} dans ${villes.length} villes${sansPro.length ? ` (${sansPro.length} SANS PRO)` : ''}`,
+    text: `${anonymizedNeed(d)}\n\n${villes.map(v => `${v.ville} : ${v.pros.length ? `envoyée à ${v.prosNoms.join(', ')}` : 'sans pro, à transmettre'} (${qgUrl(v.id)})`).join('\n')}`,
+    html: adminMultiEmail(d, villes.map(v => ({ ville: v.ville, pros: v.pros.length ? v.prosNoms : [], qgUrl: qgUrl(v.id) }))),
+  })
+}
+
+export async function creerDemande(d: DemandeInput, acquisition: unknown, groupe: string | null = null, emailsSeuls = true): Promise<(DemandeCreee & { interne?: Interne }) | { error: string }> {
   const db = getServiceClient()
   const base = {
     // Demandes envoyées ensemble dans plusieurs villes (migration 168) : retiré plus bas si la colonne manque
@@ -196,8 +218,11 @@ export async function creerDemande(d: DemandeInput, acquisition: unknown, groupe
     sent_to: sent, status: sent.length ? 'envoyee' : 'sans_pro', last_round_at: new Date().toISOString(),
     admin_notified_at: sent.length ? null : new Date().toISOString(),
   }).eq('id', id)
-  await emailHote(d, d.metier, pros, 1, token)
   const prosNoms = pros.map(p => d.metier === 'photographe' && besoinPhoto(d.frequence) ? `${displayName(p)} (${adequationLabel(convientAuBesoin(p, d.frequence)).toLowerCase()})` : displayName(p))
+  const publique = { ok: true as const, envoyes: sent.length, suivi: token, pros: pros.map(p => cartePro(p, d.metier, d.frequence, SUPABASE_URL)) }
+  // Demande en plusieurs villes : e-mails à l'hôte et à Jason regroupés par l'appelant
+  if (!emailsSeuls) return { ...publique, interne: { id, token, pros: sent.length ? pros : [], prosNoms } }
+  await emailHote(d, d.metier, pros, 1, token)
   const suite = sent.length ? `Envoyée à : ${prosNoms.join(', ')}.` : 'Aucun pro de l’annuaire dans la zone qui propose ce besoin : à transmettre à la main depuis le QG, ou à présenter aux pros de la ville (sans les coordonnées de l’hôte).'
   await sendAdminEmail({
     subject: sent.length ? `Demande d’hôte : ${T[d.metier].label} à ${d.ville} (${sent.length} pro${sent.length > 1 ? 's' : ''})` : `Demande d’hôte SANS PRO : ${T[d.metier].label} à ${d.ville}`,
@@ -210,7 +235,7 @@ export async function creerDemande(d: DemandeInput, acquisition: unknown, groupe
       qgUrl: qgUrl(id),
     }),
   })
-  return { ok: true, envoyes: sent.length, suivi: token, pros: pros.map(p => cartePro(p, d.metier, d.frequence, SUPABASE_URL)) }
+  return publique
 }
 
 /** Cron quotidien : relances (48 h sans réponse), nouveaux pros, purge 12 mois. */

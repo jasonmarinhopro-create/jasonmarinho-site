@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { proEmail, hoteEmail, hoteManuelEmail, adminEmail } from './emails'
+import { proEmail, hoteEmail, hoteManuelEmail, adminEmail, hoteMultiEmail, adminMultiEmail } from './emails'
 
 const d = {
   metier: 'menage' as const, ville: 'Nantes', logement: 'Appartement T2', quand: 'Dès que possible', frequence: 'Entre deux voyageurs',
@@ -46,5 +46,29 @@ describe('e-mails de la demande', () => {
   it('hôte : sans pro, guide si pas de suivi ; sujet au pluriel', () => {
     expect(all()[2]).toContain('https://g')
     expect(hoteEmail(d, { pros: [...pros, ...pros], vague: 1, suiviUrl: null, sansProQui: '', guideUrl: '', partielNote: null, inscriptionUrl: 'https://i' }).subject).toBe('Ta demande à Nantes est partie chez 2 pros')
+  })
+})
+
+describe('e-mails d’une demande en plusieurs villes', () => {
+  const d = { metier: 'photographe' as const, etablissement: 'conciergerie', ville: 'Annecy', logement: 'T4 et plus', quand: 'Au plus vite', frequence: 'Des photos', budget: null, message: null, nom: 'camille durand', email: 'c@exemple.fr', telephone: null }
+  const villes = [
+    { ville: 'Annecy', pros: [], suiviUrl: 'https://jasonmarinho.com/ma-demande?t=a' },
+    { ville: 'Chambéry', pros: [{ nom: 'Studio Lac', ville: 'Chambéry', url: 'https://jasonmarinho.com/photographes/studio-lac' }], suiviUrl: 'https://jasonmarinho.com/ma-demande?t=b' },
+  ]
+  it('hôte : un seul e-mail, une partie par ville avec son lien de suivi', () => {
+    const { subject, html } = hoteMultiEmail(d, villes, { inscriptionUrl: 'https://jasonmarinho.com/annuaires/photographes/inscription' })
+    expect(subject).toBe('Ta demande dans 2 villes : Annecy, Chambéry')
+    expect(html).toContain('Suivre la demande à Annecy')
+    expect(html).toContain('Suivre la demande à Chambéry')
+    expect(html).toContain('Studio Lac')
+    expect(html).toContain('En file d’attente')
+    expect(html).not.toMatch(/undefined|null|NaN|—/)
+  })
+  it('Jason : l’état de chaque ville, sans les coordonnées de l’hôte', () => {
+    const html = adminMultiEmail(d, [{ ville: 'Annecy', pros: [], qgUrl: 'https://app.jasonmarinho.com/q/1' }, { ville: 'Chambéry', pros: ['Studio Lac'], qgUrl: 'https://app.jasonmarinho.com/q/2' }])
+    expect(html).toContain('sans pro, à transmettre')
+    expect(html).toContain('envoyée à Studio Lac')
+    expect(html).not.toContain('c@exemple.fr')
+    expect(html).not.toMatch(/undefined|NaN/)
   })
 })
