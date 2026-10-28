@@ -89,6 +89,7 @@ Next.js 14 · Supabase (PostgreSQL + RLS) · Stripe Connect (loyer + caution) ·
 | `prospection.md` | Prospection par e-mail : séquences, pipeline, envois, montée en charge, imports, règles CNIL |
 | `paiements-stripe.md` | Stripe : loyer, acompte, caution (calendrier, retenue), comptes connectés, frais, webhooks |
 | `reseaux-sociaux.md` | Publication Facebook / Instagram programmée, réponses automatiques, routine « Community manager » (Reels, carrousels, réponses aux commentaires, rapport du dimanche) |
+| `projet-maintenance.md` | **Projet à lancer** : 3e métier de l'annuaire « Maintenance et dépannage » (décisions de Jason, fondations, liste de tous les endroits à modifier, Stripe, pages de ville, blog, prospection) |
 
 Autres documents : `scripts/articles/CONSIGNES.md` (routine Rédaction article), `data/CONSIGNES-ACTUALITES.md` (routine Actualités), `docs/AUDIT-PAGES-A-FUSIONNER.md`, `docs/REFACTOR-DASHBOARD.md`.
 
