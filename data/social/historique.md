@@ -4,7 +4,7 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-10-28 13:36 UTC.
+Mis à jour le 2026-10-28 15:57 UTC.
 
 - 2026-10-29 · stories (4 écrans) · stories-trouver-un-pro-menage · FB - · IG - · stories FB pending IG pending · « Stories : Ton équipe de ménage te lâche ? / Décris ton besoin une fois / Ce qui est garanti / Ton ménage, tu l »
 - 2026-10-28 · carrousel · formation-louer-en-direct · FB pending · IG pending · stories FB pending IG pending · « Louer en direct, c’est garder la commission. C’est aussi refaire seul ce que la plateforme faisait pour toi :  »
