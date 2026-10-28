@@ -1,0 +1,31 @@
+# Diagnostic d'un lien court (jasonmarinho.com/l/<code>) dans Safari, Chrome,
+# Firefox et le navigateur intégré d'Instagram. Voir scripts/diag/lien-court.mjs.
+name: Diagnostic lien court
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Lien à tester'
+        default: 'https://jasonmarinho.com/l/mp-photo-instagram'
+  push:
+    branches: ['claude/**']
+    paths: ['scripts/diag/lien-court.mjs', '.github/workflows/diag-lien-court.yml']
+
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Redirections (curl, 3 fois)
+        run: |
+          for i in 1 2 3; do
+            curl -s -o /dev/null -w "lien court : %{http_code} en %{time_total}s -> %{redirect_url}\n" "${{ github.event.inputs.url || 'https://jasonmarinho.com/l/mp-photo-instagram' }}"
+            curl -s -o /dev/null -w "app : %{http_code} en %{time_total}s (serveur %{time_starttransfer}s) -> %{redirect_url}\n" "https://app.jasonmarinho.com/l/mp-photo-instagram"
+          done
+      - name: Navigateurs
+        run: |
+          mkdir -p /tmp/pw && cd /tmp/pw && npm init -y >/dev/null && npm i playwright@1.48.2 >/dev/null
+          npx playwright install --with-deps chromium webkit firefox >/dev/null
+          cp $GITHUB_WORKSPACE/scripts/diag/lien-court.mjs t.mjs && node t.mjs "${{ github.event.inputs.url || 'https://jasonmarinho.com/l/mp-photo-instagram' }}"
