@@ -54,6 +54,10 @@ Next.js 14 · Supabase (PostgreSQL + RLS) · Stripe Connect (loyer + caution) ·
 **Base et migrations**
 - Migration `YYYYMMDD_NNN_description.sql`, rejouable (`if not exists`, `create or replace`, pas de `create index concurrently`) : appliquée par le workflow « Migrations Supabase » au push sur main. Code tolérant tant qu'elle manque ; ajouter une sonde dans `MIGRATION_PROBES` (page État de santé).
 
+**Tâches automatiques (workflows, routines)**
+- Toute tâche qui lit Supabase ou l'app : délai par requête, nouveaux essais sur 5xx / réseau, et jamais de publication d'un état vide sur erreur (échouer et garder l'existant). Voir `docs/claude/technique.md`, « Panne Supabase du 28/10/2026 ».
+- Script nouveau : exécuté en local (ou à blanc) avant le premier passage en ligne. Workflows de test ou de diagnostic : lancement à la main (`workflow_dispatch`, `gh api …/dispatches`), jamais sur push : chaque échec envoie un e-mail à Jason.
+
 **Déploiement**
 - Seul `main` déploie (branches `claude/**` désactivées) : 100 déploiements par jour au plus, regrouper les pushes. Vérifier : statuts du commit, contextes « Vercel – jasonmarinho-dashboard » et « Vercel – jasonmarinho-site ».
 - Site statique : 12 fonctions au plus sous `api/` (compter avant d'en ajouter ; code partagé hors de `api/`).

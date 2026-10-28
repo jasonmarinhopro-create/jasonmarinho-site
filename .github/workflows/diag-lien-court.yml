@@ -8,9 +8,6 @@ on:
       url:
         description: 'Lien à tester'
         default: 'https://jasonmarinho.com/l/mp-photo-instagram'
-  push:
-    branches: ['claude/**']
-    paths: ['scripts/diag/lien-court.mjs', '.github/workflows/diag-lien-court.yml']
 
 jobs:
   diag:

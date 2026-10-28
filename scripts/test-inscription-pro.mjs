@@ -107,7 +107,10 @@ for (const cas of CAS) {
     await page.waitForURL(u => !/\/auth\/login/.test(String(u)), { timeout: 30000 }).catch(() => {})
     ok('connexion à l’app', !/\/auth\/login/.test(page.url()))
     await page.goto(APP + cas.fiche, { waitUntil: 'networkidle', timeout: 60000 }).catch(() => {})
-    await page.waitForTimeout(2000)
+    // La page peut mettre du temps (fonction froide) : on attend le contenu, 45 s au plus
+    // (27/10/2026 : un passage à 3 s a tout vu vide alors que la fiche était bonne)
+    await page.waitForFunction(t => document.body.innerText.includes(t), cas.nom === 'menage' ? 'Équipe Test Inscription' : body.fullName, { timeout: 45000 }).catch(() => {})
+    await page.waitForTimeout(1500)
     const txt = await page.evaluate(() => document.body.innerText)
     ok('Ma fiche s’ouvre', page.url().includes(cas.fiche) && !/erreur inattendue|application error/i.test(txt))
     ok('Ma fiche : nom affiché', txt.includes(cas.nom === 'menage' ? 'Équipe Test Inscription' : body.fullName))

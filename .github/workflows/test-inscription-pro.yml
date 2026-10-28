@@ -5,9 +5,6 @@ name: Test inscription pro
 
 on:
   workflow_dispatch:
-  push:
-    branches: ['claude/**']
-    paths: ['.github/test-inscription-trigger']
 
 jobs:
   tester:

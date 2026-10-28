@@ -9,7 +9,7 @@ name: Site statique
 on:
   push:
     branches: [main, 'claude/**']
-    paths: ['api/**', '.github/workflows/static-site-check.yml', 'footer.js', 'sitemap.xml', 'scripts/data/villes-local.mjs', 'jason-app/lib/visibility/city-page.ts', '.github/workflows/prospection-reserve.yml', 'photographe-lcd-*/**', 'menage-lcd-*/**', 'devenir-hote-airbnb-*/**']
+    paths: ['api/**', 'scripts/**', '*.js', '.github/workflows/static-site-check.yml', 'footer.js', 'sitemap.xml', 'scripts/data/villes-local.mjs', 'jason-app/lib/visibility/city-page.ts', '.github/workflows/prospection-reserve.yml', 'photographe-lcd-*/**', 'menage-lcd-*/**', 'devenir-hote-airbnb-*/**']
   pull_request:
     paths: ['api/**']
 
@@ -18,6 +18,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Scripts lisibles par Node (erreur de syntaxe = arrêt avant un passage planifié)
+        run: |
+          fail=0
+          for f in $(git ls-files 'scripts/*.mjs' 'scripts/**/*.mjs' 'scripts/*.cjs' 'scripts/**/*.cjs' 'api/*.js' 'api/**/*.js' '*.js'); do
+            node --check "$f" 2>/tmp/err || { echo "::error file=$f::$(head -3 /tmp/err | tr '\n' ' ')"; fail=1; }
+          done
+          exit $fail
       - name: Au plus 12 fonctions serverless (limite Vercel Hobby)
         run: |
           COUNT=$(find api -type f \( -name '*.js' -o -name '*.mjs' -o -name '*.ts' \) | wc -l)
