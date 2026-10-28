@@ -11,8 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-08-29 · plateformes · Airbnb bascule à 15,5 % de commission hôte dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
-- 2026-08-29 · reglementation · Déclaloc reporté au T4 2026 : continue à déclarer en mairie (https://sejourdirect.fr/blog/enregistrement-obligatoire-meubles-tourisme-mai-2026)
 - 2026-08-30 · fiscalite · Classement meublé 2021 : ton certificat expire cette année (https://lmnp.ai/classement-meuble-tourisme)
 - 2026-08-31 · plateformes · Airbnb passe à un frais hôte unique de 15,5 % : tu as jusqu'au 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-01 · plateformes · Airbnb passe à 15,5 % de commission pour les hôtes dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
@@ -91,3 +89,5 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-10-25 · fiscalite · LMNP réel : la réduction d'impôt OGA est supprimée depuis les revenus 2025 (https://declarer-ma-location-meublee.com/fiscalite-meuble-tourisme-2026/)
 - 2026-10-27 · reservation-directe · Abritel impose la parité tarifaire avec ton site direct dès le 29 octobre (https://www.rentalscaleup.com/fr/vrbo-impose-a-tous-les-hotes-une-commission-unique-de-12-ce-qui-change-le-29-octobre/)
 - 2026-10-27 · menage · Vacances scolaires du 19 décembre : prépare ton planning ménage pour les hôtes · pour menage (https://www.service-public.gouv.fr/particuliers/vosdroits/F31952?lang=fr)
+- 2026-10-28 · reglementation · Poêle ou cheminée dans ton meublé : le ramonage annuel est obligatoire
+- 2026-10-28 · photo-video · Fin d'année chez les hôtes : propose des séances photos d'hiver maintenant · pour photographe
