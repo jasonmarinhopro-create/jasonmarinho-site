@@ -4,7 +4,7 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-10-29 16:02 UTC.
+Mis à jour le 2026-10-29 22:02 UTC.
 
 - 2026-10-30 · photo · photo-couverture-quelle-piece · FB pending · IG pending · stories FB pending IG pending · « Dans les résultats de recherche, le voyageur ne voit qu’une photo : la tienne doit se comprendre tout de suite »
 - 2026-10-28 · stories (4 écrans) · stories-demande-photographe-annecy · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Un photographe recherché à Annecy / Le besoin / Une conciergerie multi-secteurs / Les coordonnées so »
