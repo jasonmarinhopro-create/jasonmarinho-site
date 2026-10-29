@@ -13,6 +13,10 @@ name: Sauvegarde de la base
 on:
   schedule:
     - cron: '17 2 * * *'
+    # Rattrapage (29/10/2026) : GitHub lance souvent le passage de nuit vers 8 h 30 UTC,
+    # pendant les lenteurs de la base du matin ; ce passage ne fait rien si une
+    # sauvegarde a déjà réussi aujourd'hui.
+    - cron: '17 13 * * *'
   workflow_dispatch:
   push:
     branches: ['claude/**']
@@ -24,6 +28,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   sauvegarde:
@@ -39,15 +44,27 @@ jobs:
         with:
           sparse-checkout: scripts
 
+      - name: Déjà faite aujourd'hui ?
+        id: deja
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          n=$(gh api "repos/${{ github.repository }}/actions/workflows/sauvegarde.yml/runs?status=success&created=>=$(date -u +%F)" --jq '.total_count' || echo 0)
+          echo "Sauvegardes réussies aujourd'hui : $n"
+          echo "skip=$([ "${n:-0}" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
       - uses: actions/setup-node@v4
+        if: steps.deja.outputs.skip != 'true'
         with:
           node-version: 22
 
       - name: Exporter les tables
+        if: steps.deja.outputs.skip != 'true'
         run: node scripts/sauvegarde-base.mjs "$RUNNER_TEMP/sauvegarde"
 
       - name: pg_dump complet (si SUPABASE_DB_URL est configuré)
-        if: env.SUPABASE_DB_URL != ''
+        if: env.SUPABASE_DB_URL != '' && steps.deja.outputs.skip != 'true'
         run: |
           sudo apt-get install -y -qq postgresql-common >/dev/null
           sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y >/dev/null
@@ -58,6 +75,7 @@ jobs:
           echo "pg_dump : structure $(du -h "$RUNNER_TEMP/sauvegarde/schema.sql" | cut -f1), données $(du -h "$RUNNER_TEMP/sauvegarde/data.sql" | cut -f1)"
 
       - name: Chiffrer l'archive
+        if: steps.deja.outputs.skip != 'true'
         run: |
           if [ -z "$BACKUP_PASSPHRASE" ]; then
             rm -rf "$RUNNER_TEMP/sauvegarde"
@@ -74,6 +92,7 @@ jobs:
           echo "DAY=$DAY" >> "$GITHUB_ENV"
 
       - name: Garder l'archive 30 jours
+        if: steps.deja.outputs.skip != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: sauvegarde-${{ env.DAY }}

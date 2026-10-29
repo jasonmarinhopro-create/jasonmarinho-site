@@ -19,7 +19,11 @@ import { logger } from '@/lib/logger'
 
 const log = logger('lib/seo/check-indexation')
 const CONCURRENCY = 5
-const BUDGET_MS = 50_000 // le cron et l'action serveur ont maxDuration=60
+// 29/10/2026 : 504 à 11 h 54 (un lot de 5 vérifications lentes a dépassé les
+// 60 s de la fonction : le budget n'était regardé qu'entre deux lots). Chaque
+// vérification a maintenant 9 s au plus ; la passe s'arrête à 40 s.
+const BUDGET_MS = 40_000 // le cron et l'action serveur ont maxDuration=60
+const URL_TIMEOUT_MS = 9_000
 
 type CheckResult =
   | { kind: 'ok'; row: { url: string; http_status: number | null; coverage_state: string | null; verdict: string | null; indexed: boolean; inspection_link: string | null; error: null } }
@@ -28,11 +32,19 @@ type CheckResult =
   | { kind: 'error'; row: { url: string; http_status: number | null; error: string } }
   | { kind: 'auth'; message: string }
 
+/** Une vérification trop lente compte comme une erreur : la page sera revérifiée à la prochaine passe */
+function checkOneBorne(url: string): Promise<CheckResult> {
+  return Promise.race([
+    checkOne(url),
+    new Promise<CheckResult>(r => setTimeout(() => r({ kind: 'error', row: { url, http_status: null, error: 'Délai dépassé (Google ou la page trop lents)' } }), URL_TIMEOUT_MS)),
+  ])
+}
+
 async function checkOne(url: string): Promise<CheckResult> {
   // 1. La page répond-elle ? Pas la peine d'interroger Google sur un 404.
   let httpStatus: number | null = null
   try {
-    const res = await fetch(url, { method: 'HEAD', redirect: 'follow' })
+    const res = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: AbortSignal.timeout(4_000) })
     httpStatus = res.status
   } catch {
     httpStatus = null // réseau indisponible — on tente quand même Google, au pire ça échoue aussi
@@ -97,7 +109,7 @@ export async function checkAllUrls(): Promise<{ checked: number; remaining: numb
       if (Date.now() - t0 > BUDGET_MS) break
 
       const batch = ordered.slice(i, i + CONCURRENCY)
-      const results = await Promise.all(batch.map(e => checkOne(e.url)))
+      const results = await Promise.all(batch.map(e => checkOneBorne(e.url)))
 
       const auth = results.find(r => r.kind === 'auth')
       if (auth && auth.kind === 'auth') {

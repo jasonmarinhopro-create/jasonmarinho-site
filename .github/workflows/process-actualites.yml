@@ -14,6 +14,9 @@ on:
       - 'data/actualites-queue/**'
   schedule:
     - cron: '40 6 * * *'
+    # Rattrapage (29/10/2026) : la base a été très lente deux matins de suite (6 h à 9 h UTC) ;
+    # un fichier resté dans la file part ici au lieu d'attendre le lendemain.
+    - cron: '40 11 * * *'
   workflow_dispatch:
 
 permissions:
