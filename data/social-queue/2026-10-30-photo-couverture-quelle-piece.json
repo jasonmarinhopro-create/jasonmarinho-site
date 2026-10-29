@@ -1,0 +1,18 @@
+{
+  "slug": "photo-couverture-quelle-piece",
+  "format": "photo",
+  "public": "hotes",
+  "photo": "img/exemple-fiches/photo-salon-2.jpg",
+  "slides": [
+    { "type": "couverture", "kicker": "Ton annonce", "titre": "Ta photo de couverture, c’est *quelle pièce* ?", "sous_titre": "C’est elle qui décide du clic dans les résultats." }
+  ],
+  "legende": "Dans les résultats de recherche, le voyageur ne voit qu’une photo : la tienne doit se comprendre tout de suite.\n\nAvant de la changer, vérifie 4 choses :\n1. Elle est en format paysage, prise comme ça dès le départ.\n2. On reconnaît la pièce principale au premier regard, pas un détail.\n3. Personne n’apparaît, même dans un miroir ou une fenêtre.\n4. Elle montre ton vrai point fort : si c’est la vue, mets la vue.\n\nPour la lumière, vise la matinée, sans flash.\n\nEt toi, ta photo de couverture, c’est quelle pièce ?",
+  "hashtags": ["#airbnb", "#locationcourteduree", "#photoairbnb", "#annonceairbnb", "#hoteairbnb"],
+  "lien": "https://jasonmarinho.com/blog/photo-couverture-airbnb-7-criteres-algo-computer-vision",
+  "story": {
+    "texte": "4 vérifications avant de *changer* ta photo de couverture",
+    "frames": [
+      { "type": "astuce", "kicker": "Le test", "titre": "Tu dois *chercher* ce que c’est ?", "texte": "Alors refais la photo : la pièce principale doit se reconnaître tout de suite." }
+    ]
+  }
+}
