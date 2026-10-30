@@ -11,7 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-08-31 · plateformes · Airbnb passe à un frais hôte unique de 15,5 % : tu as jusqu'au 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-01 · plateformes · Airbnb passe à 15,5 % de commission pour les hôtes dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-01 · marche · Été 2026 : la Bretagne cartonne, les grandes villes décrochent · masquée (https://presseagence.fr/paris-locations-saisonnieres-lete-2026-sourit-a-la-bretagne-les-grandes-villes-boudees/)
 - 2026-09-02 · plateformes · Airbnb passe à 15,5 % de commission hôte le 13 octobre : agis avant · masquée (https://www.locationcourteduree.fr/2026/07/22/commission-airbnb-2026/)
@@ -91,3 +90,4 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-10-28 · reglementation · Poêle ou cheminée dans ton meublé : le ramonage annuel est obligatoire
 - 2026-10-28 · photo-video · Fin d'année chez les hôtes : propose des séances photos d'hiver maintenant · pour photographe
 - 2026-10-29 · plateformes · Airbnb interdit les corvées de départ imposées aux voyageurs dès le 20 novembre · pour menage (https://selectra.info/assurance/actualites/marche/airbnb-20-novembre-regles-hote-degats)
+- 2026-10-30 · entreprise · TVA auto-entrepreneur : si tes recettes 2026 dépassent 37 500 euros, tu la dois dès janvier · pour photographe, menage (https://entreprendre.service-public.fr/professionnels/artisans-commercants/fiscalite-d-entreprise/tva/franchise-en-base-de-tva)
