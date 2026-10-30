@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 28 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 30 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Annulation de dernière minute en LCD : 7 actions pour relouer la période sous 48 heures sans brader</title>
+      <link>https://jasonmarinho.com/blog/annulation-derniere-minute-lcd-7-actions-relouer-48h-sans-brader</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/annulation-derniere-minute-lcd-7-actions-relouer-48h-sans-brader</guid>
+      <pubDate>Fri, 30 Oct 2026 08:00:00 GMT</pubDate>
+      <description>Un voyageur t&apos;annule à J-3 en LCD ? 7 actions concrètes pour relouer la période sous 48 heures sans effondrer ton tarif ni ton classement Airbnb en 2026.</description>
+      <category>Revenus</category>
+    </item>
     <item>
       <title>Devis ménage LCD : 6 règles pour transformer la demande d&apos;un hôte en client récurrent</title>
       <link>https://jasonmarinho.com/blog/devis-menage-lcd-6-regles-transformer-demande-hote-client-recurrent</link>
@@ -398,14 +406,6 @@
       <pubDate>Fri, 17 Jul 2026 08:00:00 GMT</pubDate>
       <description>Résidence principale, espaces communs, règles de vie, fiscalité, plafond 120 jours : les 7 règles concrètes pour louer une chambre chez toi en location courte durée sans transformer ton quotidien en cauchemar.</description>
       <category>Expérience</category>
-    </item>
-    <item>
-      <title>Caution en LCD : les 5 règles juridiques à respecter en 2026 pour la prélever sans risque</title>
-      <link>https://jasonmarinho.com/blog/caution-lcd-5-regles-juridiques-2026-prelever-sans-risque</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/caution-lcd-5-regles-juridiques-2026-prelever-sans-risque</guid>
-      <pubDate>Wed, 15 Jul 2026 08:00:00 GMT</pubDate>
-      <description>Montant, justification, prélèvement, restitution, retenue : les 5 règles juridiques à connaître avant de demander une caution en location courte durée en France en 2026.</description>
-      <category>Réglementation</category>
     </item>
   </channel>
 </rss>

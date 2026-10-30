@@ -2034,13 +2034,13 @@
   <!-- ── Blog ── -->
   <url>
     <loc>https://jasonmarinho.com/blog</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/revenus</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -2091,6 +2091,12 @@
     <lastmod>2025-03-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/annulation-derniere-minute-lcd-7-actions-relouer-48h-sans-brader</loc>
+    <lastmod>2026-10-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/devis-menage-lcd-6-regles-transformer-demande-hote-client-recurrent</loc>
