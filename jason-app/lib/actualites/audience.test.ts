@@ -36,3 +36,11 @@ describe('public des actualités', () => {
     expect(hasNewFor(list, 'hote', '2026-10-16T00:00:00Z')).toBe(false)
   })
 })
+
+describe('public dépannage (31/10/2026)', () => {
+  it('lu et rangé dans son édition', () => {
+    expect(readAudience(['depannage'])).toEqual(['depannage'])
+    const list = [{ audience: ['depannage'] }, { audience: ['hote'] }, { audience: ['menage'] }]
+    expect(actusForEdition(list, 'depannage')).toEqual([list[0], list[1]])
+  })
+})

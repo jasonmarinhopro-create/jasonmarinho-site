@@ -8,7 +8,8 @@ export interface MenuState {
   contracts: ContractTodoInput[]
   onboarding: OnboardingAutoFlags | null
   demandes: { photographer: number; cleaner: number; depannage: number } | null
-  actusSeen: { photographer: string | null; cleaner: string | null } | null
+  /** depannage : undefined tant que la migration 175 manque (pas de point plutôt qu'un point qui ne s'efface pas) */
+  actusSeen: { photographer: string | null; cleaner: string | null; depannage?: string | null } | null
 }
 
 const FLAGS = ['logement', 'sejour', 'contrat', 'gbp_audit', 'chez_nous_post', 'affiche', 'ical_connected', 'menage_shared'] as const
@@ -29,6 +30,6 @@ export function parseMenuState(raw: unknown): MenuState | null {
     contracts: Array.isArray(r.contracts) ? r.contracts.filter(c => obj(c)) as ContractTodoInput[] : [],
     onboarding: ob ? Object.fromEntries(FLAGS.map(k => [k, ob[k] === true])) as OnboardingAutoFlags : null,
     demandes: dem ? { photographer: num(dem.photographer), cleaner: num(dem.cleaner), depannage: num(dem.depannage) } : null,
-    actusSeen: seen ? { photographer: str(seen.photographer), cleaner: str(seen.cleaner) } : (r.actus_seen === null && 'actus_seen' in r ? { photographer: null, cleaner: null } : null),
+    actusSeen: seen ? { photographer: str(seen.photographer), cleaner: str(seen.cleaner), ...('depannage' in seen ? { depannage: str(seen.depannage) } : {}) } : (r.actus_seen === null && 'actus_seen' in r ? { photographer: null, cleaner: null } : null),
   }
 }

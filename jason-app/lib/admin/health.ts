@@ -104,6 +104,7 @@ export const MIGRATION_PROBES: MigrationProbe[] = [
   { file: '20261024_154_hotels_clienteles.sql', what: 'Hôtels, conciergeries, gîtes : type d’hébergement des demandes et clientèles des pros', table: 'photographers', column: 'clienteles' },
   { file: '20261024_153_telephone_visible.sql', what: 'Téléphone affiché sur la fiche des pros, à leur choix', table: 'photographers', column: 'telephone_public' },
   { file: '20261023_147_actualites_vues_par_espace.sql', what: 'Actualités : point « du neuf » propre à chaque espace pro', table: 'profiles', column: 'last_seen_actualites_menage_at' },
+  { file: '20261031_175_actualites_vues_depannage.sql', what: 'Actualités : point « du neuf » de l’espace dépannage', table: 'profiles', column: 'last_seen_actualites_depannage_at' },
   { file: '20261013_134_idees_pour_tous.sql', what: 'Idées & feuille de route ouvertes à tous (espace, réponse de Jason)', table: 'roadmap_items', column: 'espace' },
   { file: '20261014_135_prospection_montee_en_charge.sql', what: 'Prospection : montée en charge automatique du plafond d\'envoi', table: 'outreach_settings', column: 'warmup_enabled' },
   { file: '20261017_137_actualites_public.sql', what: 'Actualités : public (hôtes, photographes, ménage)', table: 'actualites', column: 'audience' },

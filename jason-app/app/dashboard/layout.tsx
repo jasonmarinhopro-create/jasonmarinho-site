@@ -168,6 +168,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
         newActus: {
           photographer: hasNewFor(cachedActualites, 'photographe', proSeen.photographer),
           cleaner: hasNewFor(cachedActualites, 'menage', proSeen.cleaner),
+          depannage: proSeen.depannage === undefined ? false : hasNewFor(cachedActualites, 'depannage', proSeen.depannage),
         },
       }
     : undefined

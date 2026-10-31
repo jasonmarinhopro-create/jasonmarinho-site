@@ -16,8 +16,8 @@
 // puis ménage, puis investisseur, puis hôte.
 import { TOOLS, PARTNER_OFFERS, QUESTIONS, type IssueData } from './template'
 
-export type Edition = 'hote' | 'investisseur' | 'photographe' | 'menage'
-export const EDITIONS: Edition[] = ['hote', 'investisseur', 'photographe', 'menage']
+export type Edition = 'hote' | 'investisseur' | 'photographe' | 'menage' | 'depannage'
+export const EDITIONS: Edition[] = ['hote', 'investisseur', 'photographe', 'menage', 'depannage']
 
 const APP = 'https://app.jasonmarinho.com'
 const SITE = 'https://jasonmarinho.com'
@@ -54,6 +54,14 @@ const MENAGE_TOOLS: IssueData['tool'][] = [
   { name: 'Tes statistiques de fiche', desc: 'Visiteurs, clics, demandes et place dans Google, mois par mois, avec la page de ta ville.', url: `${APP}/dashboard/ma-fiche-menage/statistiques`, cta: 'Voir mes statistiques' },
   { name: 'Un devis en 2 minutes', desc: 'Un devis propre au nom de ton activité, envoyé à l\'hôte et accepté en ligne.', url: `${APP}/dashboard/ma-fiche-menage/devis`, cta: 'Faire un devis' },
   { name: 'Tes clients en un coup d\'œil', desc: 'Demandes reçues, devis envoyés, clients gagnés : ton carnet au même endroit.', url: `${APP}/dashboard/ma-fiche-menage/clients`, cta: 'Ouvrir mon carnet' },
+]
+
+// Dépannage et maintenance (31/10/2026) : pas de planning, demandes par spécialité
+const DEPANNAGE_TOOLS: IssueData['tool'][] = [
+  { name: 'Tes demandes reçues', desc: 'Les demandes des hôtes de ta zone, avec la spécialité et l\'urgence, au même endroit.', url: `${APP}/dashboard/ma-fiche-depannage/demandes`, cta: 'Voir mes demandes' },
+  { name: 'Tes statistiques de fiche', desc: 'Visiteurs, clics, demandes et place dans Google, mois par mois, avec la page de ta ville.', url: `${APP}/dashboard/ma-fiche-depannage/statistiques`, cta: 'Voir mes statistiques' },
+  { name: 'Un devis en 2 minutes', desc: 'Un devis propre au nom de ton activité, envoyé à l\'hôte et accepté en ligne.', url: `${APP}/dashboard/ma-fiche-depannage/devis`, cta: 'Faire un devis' },
+  { name: 'Tes clients en un coup d\'œil', desc: 'Demandes reçues, devis envoyés, clients gagnés : ton carnet au même endroit.', url: `${APP}/dashboard/ma-fiche-depannage/clients`, cta: 'Ouvrir mon carnet' },
 ]
 
 const INVESTOR_TOOLS: IssueData['tool'][] = [
@@ -139,23 +147,43 @@ export const EDITION_CONFIG: Record<Edition, EditionConfig> = {
     articleMatch: /m[ée]nage|linge|turnover|conciergerie|prestataire|check-out|propret|annuaire/i,
     changeMatch: /m[ée]nage|annuaire|devis|espace pro|fiche (pro|m[ée]nage)|\bpros?\b/i,
   },
+  depannage: {
+    label: 'Dépannage et maintenance',
+    tagline: 'La lettre des pros du dépannage de la location courte durée',
+    reason: 'parce que tu as une fiche dans l\'annuaire du dépannage de jasonmarinho.com ou que tu t\'es inscrit à la lettre',
+    appUrl: `${APP}/dashboard/ma-fiche-depannage`, appCta: 'Ouvrir mon espace pro',
+    tools: DEPANNAGE_TOOLS, partners: PRO_PARTNERS,
+    ps: { text: 'Tu connais un artisan qui cherche des clients hôtes ? Les places Fondateur de l\'annuaire sont limitées :', label: 'il peut créer sa fiche ici', url: `${SITE}/annuaires/depannage/inscription` },
+    questions: [
+      'Comment tes clients hôtes te trouvent-ils aujourd\'hui ?',
+      'Quelle panne revient le plus souvent entre deux voyageurs ?',
+      'Interviens-tu le jour même quand un hôte t\'appelle en urgence ?',
+      'Factures-tu au forfait ou à l\'heure, déplacement compris ?',
+      'Qu\'est-ce qui fait qu\'un hôte te rappelle la fois suivante ?',
+      'Quelle ville aimerais-tu voir dans l\'annuaire ?',
+    ],
+    leadCategories: ['plateformes', 'marche', 'conciergerie', 'reglementation'],
+    articleMatch: /d[ée]pann|maintenance|panne|plomb|[ée]lectri|serrur|chauffage|travaux|[ée]quipement|prestataire|annuaire/i,
+    changeMatch: /d[ée]pann|maintenance|annuaire|devis|espace pro|fiche (pro|d[ée]pannage)|\bpros?\b/i,
+  },
 }
 
 // ── Qui reçoit quelle édition ──
 
-export interface AccountRow { email: string; isInvestor: boolean; isAdmin: boolean; photographer: boolean; cleaner: boolean }
-export interface ProClientRow { email: string; metier: 'photographe' | 'menage' }
+export interface AccountRow { email: string; isInvestor: boolean; isAdmin: boolean; photographer: boolean; cleaner: boolean; depannage?: boolean }
+export interface ProClientRow { email: string; metier: 'photographe' | 'menage' | 'depannage' }
 
-/** Édition d'un compte de l'app : photographe, puis ménage, puis investisseur, puis hôte */
+/** Édition d'un compte de l'app : photographe, puis ménage, puis dépannage, puis investisseur, puis hôte */
 export function editionOfAccount(a: Omit<AccountRow, 'email' | 'isAdmin'>): Edition {
   if (a.photographer) return 'photographe'
   if (a.cleaner) return 'menage'
+  if (a.depannage) return 'depannage'
   if (a.isInvestor) return 'investisseur'
   return 'hote'
 }
 
 const norm = (e: string) => e.trim().toLowerCase()
-const PRIORITY: Record<Edition, number> = { photographe: 4, menage: 3, investisseur: 2, hote: 1 }
+const PRIORITY: Record<Edition, number> = { photographe: 5, menage: 4, depannage: 3, investisseur: 2, hote: 1 }
 
 /**
  * Destinataires de chaque édition. `subscribers` : inscrits à la lettre
@@ -171,7 +199,7 @@ export function assignEditions(input: { subscribers: string[]; accounts: Account
     const prev = byEmail.get(e)
     if (!prev || PRIORITY[ed] > PRIORITY[prev]) byEmail.set(e, ed)
   }
-  const out: Record<Edition, Set<string>> = { hote: new Set(), investisseur: new Set(), photographe: new Set(), menage: new Set() }
+  const out: Record<Edition, Set<string>> = { hote: new Set(), investisseur: new Set(), photographe: new Set(), menage: new Set(), depannage: new Set() }
   const suppressed = new Set([...input.suppressed].map(norm))
   for (const s of input.subscribers) {
     const e = norm(s)
@@ -182,8 +210,12 @@ export function assignEditions(input: { subscribers: string[]; accounts: Account
     const e = norm(p.email)
     if (!e || suppressed.has(e) || out.photographe.has(e)) continue
     // Un photographe qui a aussi une fiche ménage reçoit l'édition photographe
-    if (p.metier === 'photographe') { out.menage.delete(e); out.hote.delete(e); out.investisseur.delete(e); out.photographe.add(e) }
-    else if (!out.photographe.has(e)) { out.hote.delete(e); out.investisseur.delete(e); out.menage.add(e) }
+    // Priorité : photographe, puis ménage, puis dépannage
+    const target: Edition = p.metier
+    const current = (['photographe', 'menage', 'depannage', 'investisseur', 'hote'] as Edition[]).find(ed => out[ed].has(e))
+    if (current && PRIORITY[current] > PRIORITY[target]) continue
+    for (const ed of EDITIONS) out[ed].delete(e)
+    out[target].add(e)
   }
-  return { hote: [...out.hote], investisseur: [...out.investisseur], photographe: [...out.photographe], menage: [...out.menage] }
+  return { hote: [...out.hote], investisseur: [...out.investisseur], photographe: [...out.photographe], menage: [...out.menage], depannage: [...out.depannage] }
 }

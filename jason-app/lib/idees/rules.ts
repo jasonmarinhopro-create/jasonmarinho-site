@@ -4,15 +4,16 @@
 // à côté d'offres payantes). Maintenant ouverte à tous les membres, dans
 // chacun des 4 espaces. Règles pures, testées.
 
-export type IdeeEspace = 'hote' | 'photographe' | 'menage' | 'investisseur'
+export type IdeeEspace = 'hote' | 'photographe' | 'menage' | 'depannage' | 'investisseur'
 export type IdeeStatus = 'suggestion' | 'planned' | 'in_progress' | 'done'
 
-export const ESPACES: IdeeEspace[] = ['hote', 'photographe', 'menage', 'investisseur']
+export const ESPACES: IdeeEspace[] = ['hote', 'photographe', 'menage', 'depannage', 'investisseur']
 
 export const ESPACE_LABEL: Record<IdeeEspace, string> = {
   hote: 'Hôtes',
   photographe: 'Photographes',
   menage: 'Équipes de ménage',
+  depannage: 'Dépannage',
   investisseur: 'Investisseurs',
 }
 
@@ -21,6 +22,7 @@ export const ESPACE_POUR: Record<IdeeEspace, string> = {
   hote: 'Pour les hôtes',
   photographe: 'Pour les photographes',
   menage: 'Pour les équipes de ménage',
+  depannage: 'Pour les pros du dépannage',
   investisseur: 'Pour les investisseurs',
 }
 
@@ -33,6 +35,7 @@ export const IDEES_HREF: Record<IdeeEspace, string> = {
   hote: '/dashboard/idees',
   photographe: '/dashboard/ma-fiche-photographe/idees',
   menage: '/dashboard/ma-fiche-menage/idees',
+  depannage: '/dashboard/ma-fiche-depannage/idees',
   investisseur: '/dashboard/investir/idees',
 }
 

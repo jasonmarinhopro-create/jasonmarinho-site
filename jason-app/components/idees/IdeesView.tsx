@@ -8,7 +8,7 @@ import { useMemo, useRef, useState, useTransition } from 'react'
 import {
   Lightbulb, ArrowFatUp, ChatCircle, Plus, Trash, Star, ShareNetwork, CheckCircle,
   Rocket, Clock, Sparkle, PaperPlaneTilt, ChatCircleText, ArrowRight,
-  House, Camera, Broom, ChartLineUp, UsersThree,
+  House, Camera, Broom, Wrench, ChartLineUp, UsersThree,
 } from '@phosphor-icons/react/dist/ssr'
 import Link from 'next/link'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
@@ -33,11 +33,12 @@ const INTRO: Record<IdeeEspace, { quoi: string; exemple: string }> = {
   hote: { quoi: 'ton quotidien d\'hôte', exemple: 'Ex. : exporter mes voyageurs en tableur' },
   photographe: { quoi: 'ta fiche et tes demandes de photographe', exemple: 'Ex. : montrer mes prix par nombre de photos' },
   menage: { quoi: 'ton planning et ta fiche d\'équipe de ménage', exemple: 'Ex. : imprimer le planning de la semaine' },
+  depannage: { quoi: 'ta fiche et tes demandes de dépannage', exemple: 'Ex. : recevoir les urgences par SMS' },
   investisseur: { quoi: 'tes analyses avant d\'acheter', exemple: 'Ex. : comparer deux biens côte à côte' },
 }
 
 const ESPACE_ICON: Record<IdeeEspace, React.ElementType> = {
-  hote: House, photographe: Camera, menage: Broom, investisseur: ChartLineUp,
+  hote: House, photographe: Camera, menage: Broom, depannage: Wrench, investisseur: ChartLineUp,
 }
 
 /** « Pour toi » selon l'espace d'où la page est ouverte */
@@ -45,6 +46,7 @@ const POUR_TOI: Record<IdeeEspace, string> = {
   hote: 'Pour toi, hôte',
   photographe: 'Pour toi, photographe',
   menage: 'Pour ton équipe de ménage',
+  depannage: 'Pour toi, pro du dépannage',
   investisseur: 'Pour toi, investisseur',
 }
 

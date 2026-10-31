@@ -15,7 +15,7 @@ const nf = (n: number) => n.toLocaleString('fr-FR')
 const rate = (r: number | null) => (r === null ? '–' : `${r.toLocaleString('fr-FR')} %`)
 const dayFr = (iso: string) => new Date(`${iso.slice(0, 10)}T12:00:00Z`).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' })
 const monthFr = (m: string) => new Date(`${m}-15T12:00:00Z`).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric', timeZone: 'UTC' })
-const EDITION_COLOR: Record<Edition, string> = { hote: 'var(--accent-text)', investisseur: BROWN, photographe: PINK, menage: AMBER }
+const EDITION_COLOR: Record<Edition, string> = { hote: 'var(--accent-text)', investisseur: BROWN, photographe: PINK, menage: AMBER, depannage: '#A4502A' }
 
 export default function NewsletterTab({ data, edition, periode }: { data: NewsletterTabData; edition: Edition; periode: string }) {
   const sent = data.reports.filter(r => r.sent)

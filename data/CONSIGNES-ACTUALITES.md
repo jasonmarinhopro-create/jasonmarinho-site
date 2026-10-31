@@ -13,6 +13,7 @@ quotidienne du secteur pour le fil « Actualités » de l'app :
 - espace hôte : https://app.jasonmarinho.com/dashboard/actualites
 - espace photographe / vidéaste : …/dashboard/ma-fiche-photographe/actualites
 - espace équipe de ménage : …/dashboard/ma-fiche-menage/actualites
+- espace dépannage et maintenance : …/dashboard/ma-fiche-depannage/actualites
 
 Chaque actualité a un public (champ `audience`) : elle n'apparaît que dans
 l'espace de ce public.
@@ -156,7 +157,19 @@ pour les hôtes (ce qu'on va leur demander), saisons et volumes de la location
 courte durée dans les villes, produits et obligations de sécurité au travail,
 statut et obligations de leur entreprise.
 
-### Commun aux deux métiers (`"audience": ["photographe", "menage"]`)
+### Dépannage et maintenance (`"audience": ["depannage"]`, depuis le 31/10/2026)
+
+Plombiers, électriciens, serruriers, chauffagistes, multiservices qui
+interviennent dans les logements loués. Ce qui change leur travail : équipements
+et sécurité obligatoires des logements de tourisme (détecteurs, gaz,
+électricité, diagnostics, accessibilité), normes et règles d'intervention,
+aides à la rénovation qui touchent les loueurs, statut, assurance (décennale,
+responsabilité civile) et obligations de leur entreprise. Sources officielles
+d'abord (service-public.fr, legifrance.gouv.fr, ecologie.gouv.fr, anah.gouv.fr).
+Catégorie : `entreprise` pour le statut et l'assurance, sinon la catégorie des
+hôtes qui colle (`reglementation` pour une obligation d'équipement).
+
+### Commun aux métiers (`"audience": ["photographe", "menage", "depannage"]`)
 
 Micro-entreprise (plafonds, taux, ACRE), Urssaf, facture électronique,
 assurance professionnelle, aides aux indépendants.
@@ -164,8 +177,8 @@ assurance professionnelle, aides aux indépendants.
 **Rythme des pros : 1 actualité pour les pros chaque jour** (23/10/2026,
 Jason : aucune actualité pour les pros n'avait été publiée en 60 jours, leurs
 espaces Actualités étaient vides). Alterne : un jour les photographes et
-vidéastes, le lendemain les équipes de ménage, de temps en temps les deux
-(`["photographe", "menage"]` pour la micro-entreprise, l'Urssaf, la facture
+vidéastes, le lendemain les équipes de ménage, le surlendemain le dépannage,
+de temps en temps les trois (`["photographe", "menage", "depannage"]` pour la micro-entreprise, l'Urssaf, la facture
 électronique, la CFE). Garde au moins 2 de tes 12 recherches pour eux. Pas de
 nouveauté de leur métier : prends une échéance du plan B qui les concerne
 (CFE mi-décembre, déclaration Urssaf, plafonds de la micro-entreprise, règles
@@ -176,7 +189,7 @@ leur demanderont (photos, propreté) compte.
 ## Critères de sélection (au moins un)
 
 - Impact concret sur l'activité d'un hôte, d'une conciergerie, d'un
-  photographe / vidéaste ou d'une équipe de ménage.
+  photographe / vidéaste, d'une équipe de ménage ou d'un pro du dépannage.
 - Change une règle, une obligation ou un avantage fiscal.
 - Nouveauté de plateforme qui change la façon de travailler.
 - Tendance de marché que le public doit connaître.
@@ -246,7 +259,7 @@ Catégories (slugs exacts) :
 - `general` : seulement si rien d'autre ne colle
 
 Publics (`audience`) : `hote`, `photographe` (photographes et vidéastes),
-`menage`.
+`menage`, `depannage` (dépannage et maintenance).
 
 ## Règles d'écriture
 
@@ -291,7 +304,7 @@ Exemple :
 ## Garde-fous
 
 - **Vérification finale obligatoire avant de pousser : le fichier contient au
-  moins 1 actualité dont `audience` vise `photographe` ou `menage`.** Sinon,
+  moins 1 actualité dont `audience` vise `photographe`, `menage` ou `depannage`.** Sinon,
   ne pousse pas : fais 1 ou 2 recherches de plus pour les pros (plan B :
   échéance Urssaf, CFE, micro-entreprise, drone, saison chez les hôtes) et
   ajoute-la. Le 24/10/2026, la veille n'a publié qu'une actualité pour les

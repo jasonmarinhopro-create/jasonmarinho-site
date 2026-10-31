@@ -126,7 +126,7 @@ export function buildNewsletter(input: { parisDate: string; actus: NlActu[]; art
   // Actualités : celles qui parlent le plus à ce public d'abord (tri stable)
   // Public de l'actu (17/10/2026) : la lettre des hôtes n'a pas les actus des
   // pros ; celle des pros met les actus de leur métier en tête.
-  const own = (a: NlActu) => (edition === 'photographe' || edition === 'menage') && concernsAudience(a, edition)
+  const own = (a: NlActu) => (edition === 'photographe' || edition === 'menage' || edition === 'depannage') && concernsAudience(a, edition)
   const rank = (a: NlActu) => (own(a) ? 0 : 2) + (cfg.leadCategories.includes(a.category ?? '') ? 0 : 1)
   const actus = actusForEdition(input.actus, edition).filter(a => a.title && a.summary).map((a, i) => ({ a, i }))
     .sort((x, y) => rank(x.a) - rank(y.a) || x.i - y.i).map(x => x.a).slice(0, 4)

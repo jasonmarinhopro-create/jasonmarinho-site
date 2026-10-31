@@ -30,12 +30,17 @@ export async function loadProNewDemandes(userId: string, has: Partial<Record<Pro
  * Dernière visite des actualités de chaque espace pro (migration 20261023_147).
  * Avant elle, ou en cas d'erreur : la date commune à tous les espaces.
  */
-export async function loadProActusSeen(userId: string, fallback: string | null): Promise<{ photographer: string | null; cleaner: string | null }> {
+export async function loadProActusSeen(userId: string, fallback: string | null): Promise<{ photographer: string | null; cleaner: string | null; depannage?: string | null }> {
   try {
     const db = await createClient()
     const { data, error } = await db.from('profiles').select('last_seen_actualites_photo_at, last_seen_actualites_menage_at').eq('id', userId).maybeSingle()
     if (error || !data) return { photographer: fallback, cleaner: fallback }
-    return { photographer: data.last_seen_actualites_photo_at ?? null, cleaner: data.last_seen_actualites_menage_at ?? null }
+    // Dépannage (migration 175) lu à part : sa colonne peut manquer
+    const dep = await db.from('profiles').select('last_seen_actualites_depannage_at').eq('id', userId).maybeSingle()
+    return {
+      photographer: data.last_seen_actualites_photo_at ?? null, cleaner: data.last_seen_actualites_menage_at ?? null,
+      ...(dep.error || !dep.data ? {} : { depannage: (dep.data as { last_seen_actualites_depannage_at: string | null }).last_seen_actualites_depannage_at ?? null }),
+    }
   } catch {
     return { photographer: fallback, cleaner: fallback }
   }

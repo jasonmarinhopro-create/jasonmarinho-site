@@ -63,3 +63,17 @@ describe('éditions de la lettre', () => {
     }
   })
 })
+
+describe('édition dépannage (31/10/2026)', () => {
+  it('un pro du dépannage payé reçoit son édition, un photographe garde la sienne', () => {
+    const r = assignEditions({
+      subscribers: ['a@x.fr'],
+      accounts: [{ email: 'a@x.fr', isInvestor: false, isAdmin: false, photographer: false, cleaner: false, depannage: true }],
+      proClients: [{ email: 'b@x.fr', metier: 'depannage' }, { email: 'c@x.fr', metier: 'photographe' }, { email: 'c@x.fr', metier: 'depannage' }],
+      suppressed: new Set(),
+    })
+    expect(r.depannage.sort()).toEqual(['a@x.fr', 'b@x.fr'])
+    expect(r.photographe).toEqual(['c@x.fr'])
+    expect(r.hote).toEqual([])
+  })
+})

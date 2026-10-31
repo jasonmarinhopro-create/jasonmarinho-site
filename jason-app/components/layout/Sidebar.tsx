@@ -235,7 +235,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   const router = useRouter()
   const supabase = createClient()
   const [hasNewActualites, setHasNewActualites] = useState(initialHasNewActualites)
-  const [proNewActus, setProNewActus] = useState(proNav?.newActus ?? { photographer: false, cleaner: false })
+  const [proNewActus, setProNewActus] = useState<Record<string, boolean>>(proNav?.newActus ?? { photographer: false, cleaner: false })
   // Le menu reste monté d'une page à l'autre : on suit les nouvelles valeurs du
   // serveur (une actualité publiée pendant la visite fait apparaître le point)
   const newPhoto = proNav?.newActus.photographer ?? false
@@ -360,7 +360,8 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
 
   useEffect(() => {
     const proPage = pathname === '/dashboard/ma-fiche-photographe/actualites' ? 'photographer'
-      : pathname === '/dashboard/ma-fiche-menage/actualites' ? 'cleaner' : null
+      : pathname === '/dashboard/ma-fiche-menage/actualites' ? 'cleaner'
+      : pathname === '/dashboard/ma-fiche-depannage/actualites' ? 'depannage' : null
     if (pathname !== '/dashboard/actualites' && !proPage) return
     // L'utilisateur visite la page : on efface le badge immédiatement côté client.
     if (proPage) setProNewActus(prev => ({ ...prev, [proPage]: false }))
@@ -368,7 +369,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     fetch('/api/me/mark-seen', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ kind: proPage === 'photographer' ? 'actualites_photographe' : proPage === 'cleaner' ? 'actualites_menage' : 'actualites' }),
+      body: JSON.stringify({ kind: proPage === 'photographer' ? 'actualites_photographe' : proPage === 'cleaner' ? 'actualites_menage' : proPage === 'depannage' ? 'actualites_depannage' : 'actualites' }),
     }).catch(() => {})
   }, [pathname])
 
@@ -602,8 +603,8 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                sur les actualités du métier). */
             (() => {
               const base = METIERS[proRole].espace
-              // Actualités et Idées du dépannage : arrivent avec la veille du métier (projet maintenance, étape 4)
-              const veille = proRole !== 'depannage'
+              // Actualités et Idées : les 3 métiers (dépannage depuis le 31/10/2026)
+              const veille = true
               const groups: Array<{ label: string; items: React.ReactNode }> = [
                 ...(proRole === 'cleaner' ? [{ label: 'Au quotidien', items: <NavItem href={`${base}/planning`} label="Mes ménages" Icon={CalendarCheck} /> }] : []),
                 { label: 'Ma vitrine', items: <>

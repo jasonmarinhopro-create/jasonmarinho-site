@@ -28,6 +28,7 @@ const EDITION_TEXT: Record<Edition, string> = {
   investisseur: 'l’édition des investisseurs',
   photographe: 'l’édition des photographes',
   menage: 'l’édition des équipes de ménage',
+  depannage: 'l’édition du dépannage et de la maintenance',
 }
 
 /** Phrase sous l'interrupteur */

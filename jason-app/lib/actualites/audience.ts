@@ -5,8 +5,9 @@
 // plusieurs publics (ex. facture électronique). Sans la colonne ou vide : hôtes.
 // Pur et testé (audience.test.ts).
 
-export type ActuAudience = 'hote' | 'photographe' | 'menage'
-export const ACTU_AUDIENCES: ActuAudience[] = ['hote', 'photographe', 'menage']
+// Dépannage et maintenance ajouté le 31/10/2026 (3e annuaire)
+export type ActuAudience = 'hote' | 'photographe' | 'menage' | 'depannage'
+export const ACTU_AUDIENCES: ActuAudience[] = ['hote', 'photographe', 'menage', 'depannage']
 
 /** Lit le champ envoyé par la veille ou lu en base : chaîne ou tableau, valeurs connues seulement */
 export function readAudience(raw: unknown): ActuAudience[] {
@@ -30,7 +31,7 @@ export function forAudience<T extends { audience?: unknown }>(list: T[], who: Ac
  * les pros, celles des hôtes (plateformes, marché : leurs clients), pour que
  * leur lettre reste remplie les mois calmes. Investisseurs : comme les hôtes.
  */
-export function actusForEdition<T extends { audience?: unknown }>(list: T[], edition: 'hote' | 'investisseur' | 'photographe' | 'menage'): T[] {
+export function actusForEdition<T extends { audience?: unknown }>(list: T[], edition: 'hote' | 'investisseur' | 'photographe' | 'menage' | 'depannage'): T[] {
   if (edition === 'hote' || edition === 'investisseur') return forAudience(list, 'hote')
   const own = forAudience(list, edition)
   return [...own, ...list.filter(a => !own.includes(a) && concernsAudience(a, 'hote'))]

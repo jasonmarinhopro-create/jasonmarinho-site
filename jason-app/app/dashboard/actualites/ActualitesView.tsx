@@ -56,6 +56,12 @@ const HERO = {
     desc: "Exigences de propreté des plateformes, saisons et volumes de la location courte durée, statut, cotisations et obligations de ton entreprise : les nouvelles qui comptent quand tu travailles pour des hôtes.",
     empty: "Pas encore d'actualité pour les équipes de ménage. La veille les ajoute ici dès qu'une nouvelle concerne ton métier : plateformes, saisons, statut, facture électronique.",
   },
+  depannage: {
+    eyebrow: 'Actualités dépannage',
+    title: <>Ce qui change <HeroEm>pour ton activité</HeroEm></>,
+    desc: "Équipements obligatoires des logements loués, sécurité, normes et diagnostics, statut, assurance et obligations de ton entreprise : les nouvelles qui comptent quand tu interviens chez des hôtes.",
+    empty: "Pas encore d'actualité pour les pros du dépannage. La veille les ajoute ici dès qu'une nouvelle concerne ton métier : équipements, sécurité, statut, facture électronique.",
+  },
 } as const
 
 function getCat(value: string) {
@@ -106,7 +112,7 @@ export default function ActualitesView({
   audience = 'hote',
 }: {
   /** Public de la page (17/10/2026) : espace hôte, photographe ou ménage */
-  audience?: 'hote' | 'photographe' | 'menage'
+  audience?: 'hote' | 'photographe' | 'menage' | 'depannage'
   articles: Actualite[]
   isDecouverte?: boolean
   totalCount?: number

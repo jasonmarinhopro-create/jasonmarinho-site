@@ -10,6 +10,7 @@ const KIND_TO_COLUMN = {
   // effaçait aussi le point des espaces photographe et ménage
   actualites_photographe: 'last_seen_actualites_photo_at',
   actualites_menage: 'last_seen_actualites_menage_at',
+  actualites_depannage: 'last_seen_actualites_depannage_at',
   nouveautes: 'last_seen_nouveautes_at',
 } as const
 

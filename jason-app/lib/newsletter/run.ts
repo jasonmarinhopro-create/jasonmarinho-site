@@ -105,6 +105,7 @@ const LIST_NAMES: Record<Exclude<Edition, 'hote'>, string> = {
   investisseur: 'Le Check-in · Investisseurs',
   photographe: 'Le Check-in · Photographes',
   menage: 'Le Check-in · Équipes de ménage',
+  depannage: 'Le Check-in · Dépannage',
 }
 
 /** Listes des éditions investisseurs, photographes et ménage : créées dans Brevo si elles manquent */
@@ -148,11 +149,12 @@ async function blacklistedContacts(): Promise<Set<string>> {
 
 /** Qui reçoit quelle édition (inscrits de la lettre + pros clients) */
 async function recipients(db: Db): Promise<Record<Edition, string[]>> {
-  const [subs, profiles, photographers, cleaners, suppressions, blocked] = await Promise.all([
+  const [subs, profiles, photographers, cleaners, depannage, suppressions, blocked] = await Promise.all([
     listContacts(NEWSLETTER_LISTS[0]),
     selectProfiles(db),
     db.from('photographers').select('user_id, email, stripe_subscription_status').limit(5_000),
     db.from('cleaners').select('user_id, email, stripe_subscription_status').limit(5_000),
+    db.from('depannage_pros').select('user_id, email, stripe_subscription_status').limit(5_000),
     db.from('outreach_suppressions').select('email_norm').limit(20_000),
     blacklistedContacts().catch(() => new Set<string>()),
   ])
@@ -163,14 +165,18 @@ async function recipients(db: Db): Promise<Record<Edition, string[]>> {
   const clean = (cleaners.data ?? []) as Pro[]
   const photoUsers = new Set(photo.map(r => r.user_id).filter(Boolean))
   const cleanUsers = new Set(clean.map(r => r.user_id).filter(Boolean))
+  // Dépannage (31/10/2026) : table illisible = personne dans cette édition, sans bloquer les autres
+  const dep = (depannage.error ? [] : depannage.data ?? []) as Pro[]
+  const depUsers = new Set(dep.map(r => r.user_id).filter(Boolean))
   const accounts = prof.filter(p => p.email).map(p => ({
     email: p.email!, isAdmin: p.role === 'admin', isInvestor: !!p.is_investor,
-    photographer: photoUsers.has(p.id), cleaner: cleanUsers.has(p.id),
+    photographer: photoUsers.has(p.id), cleaner: cleanUsers.has(p.id), depannage: depUsers.has(p.id),
   }))
   const emailOf = new Map(prof.map(p => [p.id, p.email]))
   const proClients = [
     ...photo.filter(r => isPaidPro(r) && !(r.user_id && admins.has(r.user_id))).map(r => ({ email: (r.email || emailOf.get(r.user_id ?? '') || '') as string, metier: 'photographe' as const })),
     ...clean.filter(r => isPaidPro(r) && !(r.user_id && admins.has(r.user_id))).map(r => ({ email: (r.email || emailOf.get(r.user_id ?? '') || '') as string, metier: 'menage' as const })),
+    ...dep.filter(r => isPaidPro(r) && !(r.user_id && admins.has(r.user_id))).map(r => ({ email: (r.email || emailOf.get(r.user_id ?? '') || '') as string, metier: 'depannage' as const })),
   ].filter(p => p.email)
   // Inscrits = liste Brevo + comptes qui ont coché la case à l'inscription
   // (désinscrits chez Brevo toujours exclus)
@@ -255,7 +261,7 @@ export async function prepareMonthlyNewsletter(db: Db, parisDate: string, opts: 
     const lists = await ensureEditionLists()
     await syncOptIns(db)
     const who = await recipients(db)
-    for (const e of ['investisseur', 'photographe', 'menage'] as const) await syncList(lists[e], who[e])
+    for (const e of ['investisseur', 'photographe', 'menage', 'depannage'] as const) await syncList(lists[e], who[e])
 
     for (const edition of EDITIONS) {
       const count = who[edition].length
