@@ -228,11 +228,12 @@
       /* Tarifs (façon Shine) : une carte visuelle par offre + offres spéciales */
       '.n-mega-tar{flex-direction:column;gap:14px;padding:22px}',
       '.n-tar-top{display:flex;gap:16px;align-items:stretch}',
-      '.n-mega a.n-tar-card{flex:0 0 190px;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;gap:14px;min-height:236px;padding:16px;border-radius:12px;white-space:normal;position:relative;overflow:hidden;transition:transform .2s}',
+      '.n-mega a.n-tar-card{flex:0 0 172px;display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;gap:14px;min-height:236px;padding:16px;border-radius:12px;white-space:normal;position:relative;overflow:hidden;transition:transform .2s}',
       '.n-mega a.n-tar-card:hover{transform:translateY(-2px)}',
       '.n-mega a.n-tar-hote,.n-mega a.n-tar-hote:hover{background:linear-gradient(160deg,#FFE9A8 0%,var(--y) 100%);color:var(--gd)}',
       '.n-mega a.n-tar-photo,.n-mega a.n-tar-photo:hover{background:linear-gradient(160deg,#00463a 0%,#003329 100%);border:1px solid rgba(255,213,107,.2);color:#fff}',
       '.n-mega a.n-tar-menage,.n-mega a.n-tar-menage:hover{background:linear-gradient(160deg,#556B2F 0%,#3d5022 100%);color:#fff}',
+      '.n-mega a.n-tar-dep,.n-mega a.n-tar-dep:hover{background:linear-gradient(160deg,#7A4B2A 0%,#55321a 100%);color:#fff}',
       '.n-tar-vis{display:flex;flex-direction:column;gap:6px}',
       '.n-tar-row{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:500;padding:7px 9px;border-radius:8px;background:rgba(255,255,255,.75);color:var(--gd)}',
       '.n-tar-row-dk{background:rgba(255,255,255,.1);color:#fff}',
@@ -258,7 +259,7 @@
       '.n-tar-band small{display:block;font-size:12px;color:rgba(255,255,255,.55)}',
       '.n-tar-go{margin-left:auto;display:flex;align-items:center;gap:5px;color:var(--y);font-size:13px;white-space:nowrap}',
       '.n-mega a.n-tar-band .n-tar-go i{font-size:12px}',
-      '@media(max-width:1180px){.n-mega a.n-tar-card{flex-basis:168px}.n-tar-side{min-width:186px}.n-tar-row{font-size:11px;padding:6px 7px;gap:5px}.n-tar-row b{padding:2px 5px}}',
+      '@media(max-width:1180px){.n-mega a.n-tar-card{flex-basis:150px}.n-tar-t{font-size:16px}.n-tar-side{min-width:186px}.n-tar-row{font-size:11px;padding:6px 7px;gap:5px}.n-tar-row b{padding:2px 5px}}',
 
       '.n-tag-free{display:inline-flex;align-items:center;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:rgba(99,214,131,.18);color:#7AE89A;border:1px solid rgba(99,214,131,.30);margin-left:auto;flex-shrink:0}',
       '.n-mega a.n-sub-link{color:rgba(255,213,107,.7);font-size:12.5px;margin-top:4px;border-top:1px dashed rgba(255,255,255,.06);padding-top:10px}',
@@ -368,6 +369,7 @@
       '.mob-menu a.mob-offer-hote{background:linear-gradient(160deg,#FFE9A8,#FFD56B);color:var(--gd)}',
       '.mob-menu a.mob-offer-photo{background:linear-gradient(160deg,#002a1f,#00463a);border:1px solid rgba(255,213,107,.18);color:#fff}',
       '.mob-menu a.mob-offer-menage{background:linear-gradient(160deg,#3d4a22,#56622c);color:#fff}',
+      '.mob-menu a.mob-offer-dep{background:linear-gradient(160deg,#55321a,#7A4B2A);color:#fff}',
       '.mob-offer-ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,213,107,.12);color:var(--y)}',
       '.mob-offer-hote .mob-offer-ic{background:rgba(0,51,41,.1);color:var(--gd)}',
       '.mob-menu a.mob-offer .mob-offer-ic i{font-size:17px;width:auto;color:inherit}',
@@ -582,6 +584,14 @@
             + '</span>'
             + '<span class="n-tar-foot"><span class="n-tar-t">Équipes de ménage</span><span class="n-tar-s">Ta fiche à l\'année, sans commission</span></span>'
           + '</a>'
+          + '<a href="/tarifs#depannage" class="n-tar-card n-tar-dep">'
+            + '<span class="n-tar-vis">'
+              + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-drop"></i>Fuite<b>Urgent</b></span>'
+              + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-key"></i>Serrure<b>24 h</b></span>'
+              + '<span class="n-tar-row n-tar-row-dk"><i class="ph-bold ph-file-text"></i>Devis<b>Accepté</b></span>'
+            + '</span>'
+            + '<span class="n-tar-foot"><span class="n-tar-t">Dépannage et maintenance</span><span class="n-tar-s">Ta fiche à l\'année, sans commission</span></span>'
+          + '</a>'
           + '<div class="n-tar-side">'
             + '<div class="n-col-title">Offres</div>'
             + '<a href="/tarifs#hote"><i class="ph ph-seal-check"></i>Membre Fondateur, prix à vie</a>'
@@ -735,6 +745,7 @@
         + '<a href="/tarifs#hote" class="mob-offer mob-offer-hote"><span class="mob-offer-ic"><i class="ph-bold ph-house-line"></i></span><span class="mob-offer-t"><b>Plateforme hôte</b><small>Gratuit, puis Standard à l\'année</small></span><i class="ph-bold ph-arrow-right mob-offer-go"></i></a>'
         + '<a href="/tarifs#photographes" class="mob-offer mob-offer-photo"><span class="mob-offer-ic"><i class="ph-bold ph-camera"></i></span><span class="mob-offer-t"><b>Photographes & vidéastes</b><small>Ta fiche à l\'année, sans commission</small></span><i class="ph-bold ph-arrow-right mob-offer-go"></i></a>'
         + '<a href="/tarifs#menage" class="mob-offer mob-offer-menage"><span class="mob-offer-ic"><i class="ph-bold ph-sparkle"></i></span><span class="mob-offer-t"><b>Équipes de ménage</b><small>Ta fiche et le planning de tes clients</small></span><i class="ph-bold ph-arrow-right mob-offer-go"></i></a>'
+        + '<a href="/tarifs#depannage" class="mob-offer mob-offer-dep"><span class="mob-offer-ic"><i class="ph-bold ph-wrench"></i></span><span class="mob-offer-t"><b>Dépannage et maintenance</b><small>Les demandes des hôtes, même urgentes</small></span><i class="ph-bold ph-arrow-right mob-offer-go"></i></a>'
         + '<span class="mob-stitle">Offres & aide</span>'
         + '<a href="/tarifs#hote"><i class="ph ph-seal-check"></i>Membre Fondateur, prix à vie</a>'
         + '<a href="/pour-qui/membres-driing"><i class="ph ph-lightning"></i>Membres Driing : tout inclus</a>'
@@ -917,10 +928,12 @@
         var h = res[0] && typeof res[0].remaining === 'number' ? res[0].remaining : null;
         var p = res[1] && typeof res[1].photographers === 'number' ? res[1].photographers : null;
         var c = res[1] && typeof res[1].cleaners === 'number' ? res[1].cleaners : null;
+        var d = res[1] && typeof res[1].depannage === 'number' ? res[1].depannage : null;
         var parts = [];
         if (h) parts.push(h + ' place' + (h > 1 ? 's' : '') + ' hôtes');
         if (p) parts.push(p + ' photographe' + (p > 1 ? 's' : ''));
         if (c) parts.push(c + ' équipe' + (c > 1 ? 's' : '') + ' de ménage');
+        if (d) parts.push(d + ' pro' + (d > 1 ? 's' : '') + ' du dépannage');
         if (parts.length) tarPlaces.textContent = 'Encore ' + parts.join(' · ');
       });
     }

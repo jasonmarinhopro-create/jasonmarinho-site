@@ -272,6 +272,7 @@
             + '<a href="/annuaires/depannage">Dépannage et maintenance</a>'
             + '<a href="/devenir-photographe-lcd">Devenir photographe ou vidéaste</a>'
             + '<a href="/devenir-prestataire-menage-lcd">Devenir prestataire ménage</a>'
+            + '<a href="/pour-qui/depannage">Rejoindre le dépannage</a>'
             + '<a href="/chiffres">La visibilité en chiffres</a>'
             + '<a href="https://app.jasonmarinho.com/ouverture" class="ft-cat-more">Mon espace pro →</a>'
           + '</div>'
