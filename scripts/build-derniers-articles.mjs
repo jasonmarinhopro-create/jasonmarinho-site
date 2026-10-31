@@ -74,11 +74,25 @@ ${suite.map(a => `<a href="${a.u}" class="bl-c"><span class="c-eyb">${esc(a.cat)
 </div>
 </div>
 <!-- /DERNIERS-ARTICLES -->`
+  // Grandes catégories, 3 articles chacune (registre blog/articles-data.mjs, les plus récents d'abord)
+  const { articles: TOUS, CATEGORIES: CATS } = await import('../blog/articles-data.mjs')
+  const ORDRE = ['revenus', 'visibilite', 'experience', 'reglementation', 'fiscalite', 'conciergerie', 'automatisation']
+  const dejaUne = new Set(trois.map(a => a.u))
+  const groupes = ORDRE.filter(k => CATS[k]).map(k => ({
+    k, label: CATS[k].label,
+    items: TOUS.filter(a => a.categorySlug === k && !dejaUne.has('/blog/' + a.slug)).sort((x, y) => String(y.date).localeCompare(String(x.date))).slice(0, 3),
+  })).filter(g => g.items.length === 3)
+  const cats = groupes.length ? `
+<div class="bc">
+<div class="bc-tabs hs" role="tablist" aria-label="Catégories du blog">${groupes.map((g, i) => `<button type="button" role="tab" aria-selected="${i ? 'false' : 'true'}" data-bt="${g.k}">${esc(g.label)}</button>`).join('')}</div>
+${groupes.map((g, i) => `<div class="bc-g" data-bp="${g.k}"${i ? ' hidden' : ''}>${g.items.map(a => `<a href="/blog/${a.slug}" class="bc-c"><b>${esc(a.title)}</b><span>${a.readTime ? a.readTime + ' min de lecture' : ''}</span></a>`).join('')}<a href="/blog/categorie/${g.k}" class="bc-all">Tous les articles ${esc(g.label.toLowerCase())} →</a></div>`).join('\n')}
+</div>` : ''
   const idx = join(ROOT, 'index.html')
   const html = readFileSync(idx, 'utf8')
   const re = /<!-- DERNIERS-ARTICLES -->[\s\S]*?<!-- \/DERNIERS-ARTICLES -->/
   if (re.test(html)) {
-    writeFileSync(idx, html.replace(re, bloc))
+    const complet = bloc.replace('<!-- /DERNIERS-ARTICLES -->', cats + '\n<!-- /DERNIERS-ARTICLES -->')
+    writeFileSync(idx, html.replace(re, () => complet))
     console.log(`build-derniers-articles : accueil à jour (${une.u})`)
   } else {
     console.warn('build-derniers-articles : repères absents de index.html, accueil inchangé')

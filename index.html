@@ -423,19 +423,37 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .bl-c .bl-m b{color:var(--g);font-weight:600}
 
 /* Partenaires */
-.pa{border-radius:28px;background:var(--yw);padding:40px;display:flex;flex-wrap:wrap;gap:56px;align-items:center}
-.pa-l{flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.pa{border-radius:28px;background:var(--yw);padding:40px;display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start}
+.pa-l{flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:14px}
 .pa-l .eyb{color:#6B5200}
 .pa-l p{font-size:16px;line-height:1.55;color:#4A4022;max-width:420px}
 .pa-l .btn{align-self:flex-start;height:48px}
-.pa-g{flex:1.5 1 460px;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.pa-c{background:#fff;border-radius:18px;padding:16px;display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--td);min-height:44px;box-shadow:0 1px 2px rgba(74,64,34,.06);transition:transform .2s}
-.pa-c:hover{color:var(--td);transform:translateY(-2px)}
+.pa-r{flex:1.6 1 520px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.pa-tabs,.bc-tabs{display:flex;gap:8px;overflow-x:auto}
+.pa-tabs button,.bc-tabs button{flex:none;height:40px;padding:0 15px;border-radius:99px;border:1.5px solid #EADBA6;background:#FFFBEA;color:#4A4022;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap}
+.pa-tabs button[aria-selected="true"],.bc-tabs button[aria-selected="true"]{background:var(--g);border-color:var(--g);color:#fff}
+.pa-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pa-g[hidden]{display:none}
+.pa-c{background:#fff;border-radius:18px;padding:16px;display:flex;align-items:flex-start;gap:14px;color:var(--td);box-shadow:0 1px 2px rgba(74,64,34,.06)}
 .pa-i{width:44px;height:44px;flex:none;border-radius:50%;background:var(--chip);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:20px;color:var(--g)}
-.pa-x{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.pa-x b{font-size:15.5px;font-weight:600}
-.pa-x span{font-size:13px;color:#6B5F3A;line-height:1.4}
-.pa-o{flex:none;padding:4px 9px;border-radius:99px;background:var(--y);color:#3D2E00;font-size:11.5px;font-weight:600}
+.pa-x{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.pa-x b{font-size:16px;font-weight:600}
+.pa-o{align-self:flex-start;padding:3px 9px;border-radius:99px;background:var(--y);color:#3D2E00;font-size:12px;font-weight:600}
+.pa-d{font-size:13.5px;color:#5C5233;line-height:1.45}
+.pa-a{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:4px;font-size:13.5px;font-weight:600}
+.pa-a a{text-decoration:none;color:var(--g)}
+.pa-a a:hover{text-decoration:underline}
+.pa-aff{font-size:12px;color:#6B5F3A}
+/* Blog par catégorie */
+.bc{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+.bc-tabs button{border-color:var(--bd);background:#fff;color:var(--td)}
+.bc-g{display:grid;grid-template-columns:repeat(3,1fr) auto;gap:12px;align-items:stretch}
+.bc-g[hidden]{display:none}
+.bc-c{display:flex;flex-direction:column;justify-content:space-between;gap:10px;padding:18px;border-radius:18px;background:#fff;border:1px solid var(--bd);text-decoration:none;color:var(--td);transition:border-color .2s,transform .2s}
+.bc-c:hover{color:var(--td);border:1px solid var(--bd2);transform:translateY(-2px)}
+.bc-c b{font-family:'Fraunces',serif;font-weight:400;font-size:18px;line-height:1.25}
+.bc-c span{font-size:12.5px;color:var(--tf)}
+.bc-all{align-self:center;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap;padding:0 6px}
 
 /* Fin */
 .fin{padding:24px 0 96px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px}
@@ -535,6 +553,9 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   .bl-une .c-h{font-size:27px}
   .pa{gap:28px}
   .pa-g{grid-template-columns:1fr}
+  .bc-g{grid-template-columns:1fr}
+  .bc-all{align-self:flex-start;padding:4px 0}
+  .pa-tabs,.bc-tabs{margin-right:-16px;padding-right:16px}
   .tabs,.rail{margin-right:-16px;padding-right:16px}
   .fc{width:76%}
   .fo{padding:64px 0}
@@ -763,6 +784,17 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <a href="/blog/annulation-derniere-minute-lcd-7-actions-relouer-48h-sans-brader" class="bl-c"><span class="c-eyb">Revenus</span><span class="c-h">Annulation de dernière minute en LCD : 7 actions pour relouer la période sous 48 heures sans brader</span><span class="bl-m"><span>7 min de lecture</span><b>Lire →</b></span></a>
 </div>
 </div>
+
+<div class="bc">
+<div class="bc-tabs hs" role="tablist" aria-label="Catégories du blog"><button type="button" role="tab" aria-selected="true" data-bt="revenus">Revenus</button><button type="button" role="tab" aria-selected="false" data-bt="visibilite">Visibilité</button><button type="button" role="tab" aria-selected="false" data-bt="experience">Expérience</button><button type="button" role="tab" aria-selected="false" data-bt="reglementation">Réglementation</button><button type="button" role="tab" aria-selected="false" data-bt="fiscalite">Fiscalité</button><button type="button" role="tab" aria-selected="false" data-bt="conciergerie">Conciergerie</button><button type="button" role="tab" aria-selected="false" data-bt="automatisation">Automatisation</button></div>
+<div class="bc-g" data-bp="revenus"><a href="/blog/black-friday-lcd-6-regles-decider-promo-calibrer-sans-brader" class="bc-c"><b>Black Friday en LCD : 6 règles pour décider si tu fais une promo en 2026 et la calibrer sans brader</b><span>7 min de lecture</span></a><a href="/blog/prolongation-sejour-voyageur-7-regles-accepter-refuser-prix" class="bc-c"><b>Prolongation de séjour voyageur : 7 règles pour accepter ou refuser au bon prix</b><span>7 min de lecture</span></a><a href="/blog/vacances-scolaires-2026-2027-lcd-6-regles-tirer-maximum" class="bc-c"><b>Vacances scolaires 2026-2027 en LCD : 6 règles pour tirer le maximum du calendrier</b><span>7 min de lecture</span></a><a href="/blog/categorie/revenus" class="bc-all">Tous les articles revenus →</a></div>
+<div class="bc-g" data-bp="visibilite" hidden><a href="/blog/photographe-hotel-conciergerie-7-points-avant-shooting" class="bc-c"><b>Photographe pour hôtel ou conciergerie : les 7 points à caler avant le shooting</b><span>7 min de lecture</span></a><a href="/blog/mettre-annonce-lcd-pause-hiver-6-regles-classement-airbnb" class="bc-c"><b>Mettre son annonce LCD en pause pour l'hiver : 6 règles pour geler ton calendrier sans plomber ton classement Airbnb</b><span>7 min de lecture</span></a><a href="/blog/preparer-logement-shooting-photo-lcd-7-etapes" class="bc-c"><b>Avant la venue du photographe LCD : 7 étapes pour préparer ton logement et réussir ton shooting</b><span>7 min de lecture</span></a><a href="/blog/categorie/visibilite" class="bc-all">Tous les articles visibilité →</a></div>
+<div class="bc-g" data-bp="experience" hidden><a href="/blog/adaptateurs-prises-usb-lcd-voyageurs-etrangers-2026" class="bc-c"><b>Adaptateurs de prises et chargeurs USB en LCD : 7 essentiels à fournir à tes voyageurs étrangers en 2026</b><span>7 min de lecture</span></a><a href="/blog/reclamation-voyageur-pendant-sejour-methode-5-etapes" class="bc-c"><b>Réclamation voyageur pendant le séjour : la méthode en 5 étapes pour désamorcer et sauver l'avis</b><span>7 min de lecture</span></a><a href="/blog/kit-hivernal-lcd-7-essentiels-avant-novembre-avis-5-etoiles" class="bc-c"><b>Kit hivernal en LCD : 7 essentiels à ajouter avant novembre pour transformer tes séjours d'hiver en avis 5 étoiles</b><span>7 min de lecture</span></a><a href="/blog/categorie/experience" class="bc-all">Tous les articles expérience →</a></div>
+<div class="bc-g" data-bp="reglementation" hidden><a href="/blog/cheminee-poele-bois-lcd-7-regles-autoriser-hiver-sans-risque" class="bc-c"><b>Cheminée et poêle à bois en LCD : 7 règles pour laisser tes voyageurs profiter du feu en sécurité et en règle</b><span>8 min de lecture</span></a><a href="/blog/caution-lcd-5-regles-juridiques-2026-prelever-sans-risque" class="bc-c"><b>Caution en LCD : les 5 règles juridiques à respecter en 2026 pour la prélever sans risque</b><span>7 min de lecture</span></a><a href="/blog/piscine-lcd-7-regles-securite-fiscalite-2026" class="bc-c"><b>Piscine en LCD : 7 règles à connaître pour louer en sécurité et en règle en 2026</b><span>8 min de lecture</span></a><a href="/blog/categorie/reglementation" class="bc-all">Tous les articles réglementation →</a></div>
+<div class="bc-g" data-bp="fiscalite" hidden><a href="/blog/cloture-comptable-lcd-2026-7-actions-avant-31-decembre" class="bc-c"><b>Clôture comptable LCD 2026 : 7 actions à faire avant le 31 décembre pour sécuriser ta déclaration</b><span>8 min de lecture</span></a><a href="/blog/indy-lmnp-location-courte-duree-avis-2026" class="bc-c"><b>Indy pour ta location courte durée : compta LMNP, déclaration et facture électronique (mon avis 2026)</b><span>8 min de lecture</span></a><a href="/blog/declarer-lmnp-sans-expert-comptable-decla-fr" class="bc-c"><b>Décla.fr : déclarer sa LMNP seul sans expert-comptable en 2026</b><span>8 min de lecture</span></a><a href="/blog/categorie/fiscalite" class="bc-all">Tous les articles fiscalité →</a></div>
+<div class="bc-g" data-bp="conciergerie" hidden><a href="/blog/creer-societe-conciergerie-en-ligne-legalplace-2026" class="bc-c"><b>Créer la structure de ta conciergerie en ligne : micro-entreprise, SASU ou EURL, et comment faire avec LegalPlace (2026)</b><span>8 min de lecture</span></a><a href="/blog/co-hote-airbnb-6-regles-ajouter-cohote-annonce-sans-risque-2026" class="bc-c"><b>Co-hôte Airbnb : 6 règles pour ajouter un co-hôte à ton annonce sans risque juridique ni fiscal en 2026</b><span>7 min de lecture</span></a><a href="/blog/devenir-prestataire-menage-airbnb-se-lancer" class="bc-c"><b>Ménage Airbnb : se lancer comme prestataire en 2026 (marché, tarifs, premiers clients)</b><span>8 min de lecture</span></a><a href="/blog/categorie/conciergerie" class="bc-all">Tous les articles conciergerie →</a></div>
+<div class="bc-g" data-bp="automatisation" hidden><a href="/blog/synchronisation-ical-lcd-6-regles-eviter-double-reservation-airbnb-booking" class="bc-c"><b>Synchronisation iCal en LCD : 6 règles pour éviter la double réservation entre Airbnb, Booking et ton canal direct</b><span>7 min de lecture</span></a><a href="/blog/reseau-wifi-invite-lcd-6-etapes-isoler-securiser" class="bc-c"><b>Réseau Wi-Fi invité en LCD : 6 étapes pour isoler ton réseau et sécuriser tes voyageurs</b><span>7 min de lecture</span></a><a href="/blog/gerer-lcd-distance-7-piliers-hote-absent" class="bc-c"><b>Gérer sa LCD à distance : les 7 piliers pour héberger sans habiter sur place</b><span>8 min de lecture</span></a><a href="/blog/categorie/automatisation" class="bc-all">Tous les articles automatisation →</a></div>
+</div>
 <!-- /DERNIERS-ARTICLES -->
 </div>
 </section>
@@ -777,7 +809,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <p>Logiciel de réservation, banque, comptabilité, création d’entreprise : ceux que je recommande, avec une réduction quand j’ai pu en obtenir une.</p>
 <a href="/partenaires" class="btn btn-g">Tous les partenaires</a>
 </div>
-<div class="pa-g"><a href="/partenaires/lodgify" class="pa-c"><span class="pa-i">L</span><span class="pa-x"><b>Lodgify</b><span class="pa-s">-15 % avec le code JASON15</span></span><span class="pa-o">Offre</span></a><a href="/partenaires/indy" class="pa-c"><span class="pa-i">I</span><span class="pa-x"><b>Indy</b><span class="pa-s">Compta LMNP, 1er mois offert</span></span><span class="pa-o">Offre</span></a><a href="/partenaires/qonto" class="pa-c"><span class="pa-i">Q</span><span class="pa-x"><b>Qonto</b><span class="pa-s">Compte pro et facturation</span></span></a><a href="/partenaires/shine" class="pa-c"><span class="pa-i">S</span><span class="pa-x"><b>Shine</b><span class="pa-s">Compte pro, factures gratuites</span></span></a><a href="/partenaires/legalplace" class="pa-c"><span class="pa-i">L</span><span class="pa-x"><b>LegalPlace</b><span class="pa-s">Créer ta conciergerie</span></span></a><a href="/partenaires/airdna" class="pa-c"><span class="pa-i">A</span><span class="pa-x"><b>AirDNA</b><span class="pa-s">Les chiffres de ton marché</span></span></a></div>
+<div class="pa-r"><div class="pa-tabs hs" role="tablist" aria-label="Catégories de partenaires"><button type="button" role="tab" aria-selected="true" data-pt="gerer">Gérer et réserver</button><button type="button" role="tab" aria-selected="false" data-pt="banque">Banque</button><button type="button" role="tab" aria-selected="false" data-pt="compta">Comptabilité</button><button type="button" role="tab" aria-selected="false" data-pt="societe">Créer ta société</button><button type="button" role="tab" aria-selected="false" data-pt="marche">Marché et clients</button></div><div class="pa-g" data-pp="gerer"><div class="pa-c"><span class="pa-i">L</span><span class="pa-x"><b>Lodgify</b><span class="pa-o">-15 % avec JASON15</span><span class="pa-d">Ton propre site de réservation directe, relié à Airbnb, Booking.com et Vrbo, sans coder.</span><span class="pa-a"><a href="/partenaires/lodgify">Voir l’offre</a><a href="https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Lodgify →</a></span></span></div><div class="pa-c"><span class="pa-i">H</span><span class="pa-x"><b>Hospitable</b><span class="pa-o">-25 % pendant 3 mois</span><span class="pa-d">Messages automatiques et IA, codes de serrure et ménage gérés à chaque réservation. 14 jours d’essai gratuit.</span><span class="pa-a"><a href="/hospitable-avis">Voir l’offre</a><a href="https://hospitable.com/partners/refer?utm_source=affiliates&amp;utm_medium=blog&amp;utm_campaign=BASWTYN7" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Hospitable →</a></span></span></div></div><div class="pa-g" data-pp="banque" hidden><div class="pa-c"><span class="pa-i">S</span><span class="pa-x"><b>Shine</b><span class="pa-o">Compte pro dès 0 €</span><span class="pa-d">Néobanque pro et Shine Facture (devis et factures gratuits) pour séparer et facturer ton activité.</span><span class="pa-a"><a href="/partenaires/shine">Voir l’offre</a><a href="https://www.shine.fr/?utm_source=affiliation&amp;utm_medium=affilae&amp;utm_campaign=jason-marinho&amp;ae=2249" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Shine →</a></span></span></div><div class="pa-c"><span class="pa-i">Q</span><span class="pa-x"><b>Qonto</b><span class="pa-o">Compte pro + facturation</span><span class="pa-d">Compte pro très répandu chez les indépendants et les sociétés, facturation et lien avec le comptable.</span><span class="pa-a"><a href="/partenaires/qonto">Voir l’offre</a><a href="https://lb.affilae.com/r/?p=5ce4f2a2b6302009e29d84f3&amp;af=3386&amp;lp=https%3A%2F%2Fqonto.com%2Ffr%3Futm_medium%3Daffilaefr%26utm_source%3Daffiliate%26utm_campaign%3Djason-marinho" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Qonto →</a></span></span></div></div><div class="pa-g" data-pp="compta" hidden><div class="pa-c"><span class="pa-i">I</span><span class="pa-x"><b>Indy</b><span class="pa-o">1er mois offert</span><span class="pa-d">Compta LMNP, liasse fiscale 2031 et facture électronique (plateforme agréée) pour ta location meublée.</span><span class="pa-a"><a href="/partenaires/indy">Voir l’offre</a><a href="https://urlr.me/FEqNfy" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Indy →</a></span></span></div><div class="pa-c"><span class="pa-i">J</span><span class="pa-x"><b>JD2M</b><span class="pa-o">Compta LMNP accompagnée</span><span class="pa-d">Liasse LMNP au réel avec des spécialistes, ou entièrement faite par un expert-comptable.</span><span class="pa-a"><a href="/partenaires/jd2m">Voir l’offre</a><a href="https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&amp;utm_campaign=partenariat&amp;utm_content=244&amp;ae=244" target="_blank" rel="sponsored noopener" class="pa-s">Essayer JD2M →</a></span></span></div><div class="pa-c"><span class="pa-i">K</span><span class="pa-x"><b>Keobiz</b><span class="pa-o">1 mois offert</span><span class="pa-d">Expert-comptable sur devis : LMNP au réel, conciergerie, société ou SCI. 1 mois offert avec ce lien.</span><span class="pa-a"><a href="/partenaires/keobiz">Voir l’offre</a><a href="https://www.keobiz.fr/programme-affiliation-keobiz-2/?utm_campaign=affilie936&amp;utm_medium=lp&amp;utm_source=affilie&amp;ae=936" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Keobiz →</a></span></span></div><div class="pa-c"><span class="pa-i">T</span><span class="pa-x"><b>Tiime</b><span class="pa-o">Facturation gratuite</span><span class="pa-d">Devis, factures illimitées et facture électronique (plateforme agréée) gratuits. Compte pro en option.</span><span class="pa-a"><a href="/comparatif-indy-tiime-henrri">Voir l’offre</a><a href="https://lb.affilae.com/r/?p=651c0d1e40e2d575f87b3b27&amp;af=1127&amp;lp=https%3A%2F%2Fwww.tiime.fr%2Ffacturation-electronique-2026%3Futm_source%3Dother%26utm_medium%3Daffiliation%26utm_campaign%3DJason%2520Marinho%26ae%3D1127%26program_id%3D651c0d1e40e2d575f87b3b27%26program_name%3DTiime" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Tiime →</a></span></span></div></div><div class="pa-g" data-pp="societe" hidden><div class="pa-c"><span class="pa-i">L</span><span class="pa-x"><b>LegalPlace</b><span class="pa-o">Réduction avec JASON15</span><span class="pa-d">Création de SCI, SASU ou micro-entreprise, modification de statuts et domiciliation, en ligne.</span><span class="pa-a"><a href="/partenaires/legalplace">Voir l’offre</a><a href="https://creation.legalplace.fr/creation-entreprise-2?utm_source=affilae&amp;utm_medium=partner&amp;utm_campaign=Jason%20Marinho&amp;ae=1773" target="_blank" rel="sponsored noopener" class="pa-s">Essayer LegalPlace →</a></span></span></div></div><div class="pa-g" data-pp="marche" hidden><div class="pa-c"><span class="pa-i">A</span><span class="pa-x"><b>AirDNA</b><span class="pa-o">Données gratuites</span><span class="pa-d">Occupation, prix moyen et revenus de ta ville avant d’acheter ou de fixer tes prix.</span><span class="pa-a"><a href="/partenaires/airdna">Voir l’offre</a><a href="https://eur-invite.airdna.co/Jason-Marinho" target="_blank" rel="sponsored noopener" class="pa-s">Essayer AirDNA →</a></span></span></div><div class="pa-c"><span class="pa-i">B</span><span class="pa-x"><b>Brevo</b><span class="pa-o">300 e-mails/jour gratuits</span><span class="pa-d">Newsletter à tes voyageurs directs et CRM gratuit. Solution française, données en Europe.</span><span class="pa-a"><a href="/partenaires/brevo">Voir l’offre</a><a href="https://get.brevo.com/3mftm80uaemx-m7y3c" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Brevo →</a></span></span></div></div><small class="pa-aff">Liens affiliés : si tu t’abonnes par ces liens, le partenaire me verse une commission, sans surcoût pour toi.</small></div>
 </div>
 </div>
 </section>
@@ -857,6 +889,16 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
     pcs.forEach(function(x){x.setAttribute('aria-selected',x===t?'true':'false')});
     document.querySelectorAll('[data-pcimg]').forEach(function(i){i.hidden=i.getAttribute('data-pcimg')!==t.getAttribute('data-pc')});
   })});
+
+  // Blog et partenaires : onglets par catégorie
+  [['data-bt','data-bp'],['data-pt','data-pp']].forEach(function(c){
+    var ts=document.querySelectorAll('['+c[0]+']');
+    ts.forEach(function(t){t.addEventListener('click',function(){
+      var k=t.getAttribute(c[0]);
+      ts.forEach(function(x){x.setAttribute('aria-selected',x===t?'true':'false')});
+      document.querySelectorAll('['+c[1]+']').forEach(function(p){p.hidden=p.getAttribute(c[1])!==k});
+    })});
+  });
 
   // Formations : un thème à la fois
   var tabs=document.querySelectorAll('[data-th]');
