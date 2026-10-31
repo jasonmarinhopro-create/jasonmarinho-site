@@ -262,3 +262,8 @@ Mesure à vide (aucune requête de notre part) : environ 7 Mo de fichiers tempor
 ## Fonctions des pros du site regroupées (31/10/2026)
 
 `api/pro/[kind]/[action].js` est la seule fonction des pros (avant : 6, `api/photographer/*` et `api/cleaner/*`). Les traitements sont dans `scripts/api-pro/<métier>/<action>.cjs` ; les anciennes adresses (`/api/photographer/signup`, `/api/cleaner/track`…) sont réécrites dans `vercel.json` (`rewrites`). Le site passe de 10 à 5 fonctions sur 12 : un nouveau métier ajoute des modules et une entrée dans `HANDLERS`, jamais une fonction.
+
+## Droits des nouvelles tables (31/10/2026)
+
+- Le projet Supabase ne donne plus d'office les droits de lecture et d'écriture aux tables et vues créées par une migration : les tables du dépannage (migration 170) n'avaient aucun droit, `service_role` compris. Résultat : build du site en échec (`permission denied for view public_depannage_view`, l'ancien site est resté en ligne) et client service bloqué. Corrigé par la migration 173 (`grant` comme pour le ménage : service complet, utilisateur connecté limité par la RLS, rien pour anon).
+- **Règle** : toute `create table` ou `create view` dans une migration doit être suivie de ses `grant` (au moins `service_role`, puis `authenticated` si la RLS sert, `anon` seulement pour une vue publique). Garde-fou : `lib/admin/migration-grants.test.ts` (migrations à partir de la 170).
