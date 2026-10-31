@@ -55,7 +55,7 @@ Pas de fausse promesse. La plateforme ne te promet pas de doubler tes revenus en
 
 ## Qui est derrière la plateforme
 
-Jason Marinho est hôte LCD depuis 4 ans et co-fondateur de [Driing](https://www.driing.co). Il a accompagné plus de 250 hôtes et conciergeries dans le développement de leur activité.
+Jason Marinho est hôte LCD depuis 4 ans et co-fondateur de [Driing](https://www.driing.co). Il a accompagné plus de 500 hôtes et conciergeries dans le développement de leur activité.
 
 La plateforme est construite à partir de ce qu'il a lui-même cherché quand il débutait, et qu'il n'a pas trouvé ailleurs. Du contenu en français, adapté au marché LCD français, sans langue de bois et sans faux résultats.
 

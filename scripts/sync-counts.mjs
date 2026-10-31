@@ -211,4 +211,33 @@ if (VILLES_TOTAL > 0) {
   }
 }
 
+// ── 5. Nombre d'hôtes (31/10/2026, Jason : « Driing a maintenant plus de 500
+// hôtes, rends ce passage connecté »). Source : data/chiffres.json. Remplace
+// « N+ hôtes » et « plus de N hôtes » dans tout le site (pages, articles et
+// leurs sources). Les phrases de données (« Sur 250 hôtes suivis… ») décrivent
+// un échantillon : elles ne correspondent à aucun des deux motifs et restent,
+// comme les échantillons « 100+ hôtes » de certains articles (seuil à 200).
+try {
+  const HOTES = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/chiffres.json'), 'utf8')).hotes
+  if (Number.isInteger(HOTES) && HOTES >= 100) {
+    const SKIP = new Set(['node_modules', '.git', '.next', 'jason-app', 'data', '.vercel'])
+    const walk = dir => fs.readdirSync(dir, { withFileTypes: true }).flatMap(d => {
+      if (SKIP.has(d.name)) return []
+      const f = path.join(dir, d.name)
+      return d.isDirectory() ? walk(f) : /\.(html|md|mjs)$/.test(d.name) ? [f] : []
+    })
+    for (const file of walk(ROOT)) {
+      const before = fs.readFileSync(file, 'utf8')
+      const after = before
+        .replace(/\b(\d{3,5})\+ hôtes/g, (m, n) => (+n >= 200 ? `${HOTES}+ hôtes` : m))
+        .replace(/plus de (\d{3,5}) hôtes/g, (m, n) => (+n >= 200 ? `plus de ${HOTES} hôtes` : m))
+      if (after !== before) {
+        fs.writeFileSync(file, after)
+        totalEdits++
+        console.log(`[sync-counts] ✓ ${path.relative(ROOT, file)} (${HOTES} hôtes)`)
+      }
+    }
+  }
+} catch (e) { console.warn('[sync-counts] nombre d’hôtes non synchronisé :', e.message) }
+
 console.log(`[sync-counts] Done · ${totalEdits} fichier(s) mis à jour.`)

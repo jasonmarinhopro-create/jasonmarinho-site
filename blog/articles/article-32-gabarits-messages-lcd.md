@@ -74,7 +74,7 @@ L'accès aux gabarits est **gratuit**. Il suffit de créer un compte sur la plat
 3. Accède aux gabarits, filtre par catégorie ou situation
 4. Copie, personnalise les variables, envoie
 
-Tous les gabarits ont été rédigés par Jason à partir de ses propres hébergements, puis affinés avec les retours de 250+ hôtes accompagnés. Ce ne sont pas des templates génériques, ce sont des messages qui ont fonctionné sur des séjours réels.
+Tous les gabarits ont été rédigés par Jason à partir de ses propres hébergements, puis affinés avec les retours de 500+ hôtes accompagnés. Ce ne sont pas des templates génériques, ce sont des messages qui ont fonctionné sur des séjours réels.
 
 ---
 

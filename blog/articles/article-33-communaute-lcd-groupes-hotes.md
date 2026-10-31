@@ -78,6 +78,6 @@ L'accès à la liste complète des groupes, officiels et sélectionnés, est dis
 - La [base de vérification voyageurs](/services/securite) pour vérifier un profil avant d'accepter
 - Les [gabarits de messages](/ressources/gabarits-messages) pour tes communications voyageurs
 
-250+ hôtes font déjà partie de la communauté. Progresser seul, c'est lent. Ensemble, c'est plus rapide.
+500+ hôtes font déjà partie de la communauté. Progresser seul, c'est lent. Ensemble, c'est plus rapide.
 
 → [Rejoindre la communauté LCD](/services/communaute)

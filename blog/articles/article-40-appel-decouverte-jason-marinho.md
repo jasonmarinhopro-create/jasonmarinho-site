@@ -62,7 +62,7 @@ Si tu veux te préparer avant l'appel ou continuer à progresser après, la plat
 
 - Les [gabarits de messages](/ressources/gabarits-messages) pour tes communications voyageurs, accès immédiat après inscription
 - La [base de vérification voyageurs](/services/securite) pour vérifier un profil avant d'accepter une réservation
-- La [communauté LCD](/services/communaute) pour progresser avec 250+ hôtes actifs
+- La [communauté LCD](/services/communaute) pour progresser avec 500+ hôtes actifs
 - Les [formations](/formations) pour monter en compétence sur la visibilité et la réservation directe
 - Les [partenaires](/services/partenaires) pour les outils validés sur le terrain
 

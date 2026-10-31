@@ -44,3 +44,8 @@ Partie de la documentation interne (index : CLAUDE.md à la racine). Notes déta
 - Encadrés Hospitable/Shine injectés par `node scripts/inject-affiliate-boxes.mjs` (idempotent, marqueurs `AFF:<id>:START/END`) dans le comparatif Smoobu/Hospitable, 3 articles qui parlent d'Hospitable et l'article compte bancaire pro. À relancer si un de ces articles est régénéré. Pour un nouveau partenaire : ajouter une entrée dans `PLACEMENTS`.
 
 ---
+
+
+## Nombre d'hôtes affiché (31/10/2026)
+
+`data/chiffres.json` (`hotes`, 500 au 31/10/2026, Jason : « Driing a maintenant plus de 500 hôtes »). `scripts/sync-counts.mjs` remplace à chaque build « N+ hôtes » et « plus de N hôtes » (N ≥ 200) dans les pages, articles et leurs sources. Les phrases d'échantillon (« Sur 250 hôtes suivis… », « 100+ hôtes ») ne sont pas touchées : elles décrivent des données, pas le nombre d'hôtes.

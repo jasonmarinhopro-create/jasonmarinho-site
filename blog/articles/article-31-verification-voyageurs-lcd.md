@@ -77,4 +77,4 @@ C'est un cercle vertueux. Plus les hôtes contribuent, plus la base est fiable e
 - Pose toujours 2-3 questions avant d'accepter une réservation qui te semble douteuse.
 - La [base de vérification voyageurs](/services/securite) de la communauté Jason Marinho permet de savoir si un voyageur a déjà été signalé par d'autres hôtes, avant d'accepter.
 - Contribue après chaque séjour : ta saisie protège les hôtes qui recevront ce voyageur après toi.
-- L'accès est gratuit. [Crée ton compte](https://app.jasonmarinho.com/auth/register) et rejoins les 250+ hôtes qui utilisent déjà la base.
+- L'accès est gratuit. [Crée ton compte](https://app.jasonmarinho.com/auth/register) et rejoins les 500+ hôtes qui utilisent déjà la base.

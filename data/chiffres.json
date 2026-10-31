@@ -1,0 +1,4 @@
+{
+  "_note": "Chiffres affichés sur tout le site. Modifier ici, puis scripts/sync-counts.mjs (lancé à chaque build) les remplace partout. hotes = nombre d'hôtes, écrit « N+ hôtes » ou « plus de N hôtes ».",
+  "hotes": 500
+}

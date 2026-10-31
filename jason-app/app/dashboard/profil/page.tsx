@@ -3,6 +3,7 @@ import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import { getAuthUser } from '@/lib/supabase/auth-user'
 import { getSubscriptionDetails } from '@/lib/stripe/subscription-info'
+import { googleActif } from '@/lib/auth/google'
 import ProfilView, { type PlanLabel } from './ProfilView'
 
 // Chargement des données de « Mon compte » ; l'affichage est dans ProfilView.
@@ -22,9 +23,10 @@ export default async function ProfilPage() {
   ])
 
   // Abonnement Stripe (date de renouvellement, prix, statut) ; null si erreur
-  const subscription = pd?.stripe_subscription_id
-    ? await getSubscriptionDetails(pd.stripe_subscription_id)
-    : null
+  const [subscription, google] = await Promise.all([
+    pd?.stripe_subscription_id ? getSubscriptionDetails(pd.stripe_subscription_id) : Promise.resolve(null),
+    googleActif(),
+  ])
 
   const planLabel: PlanLabel = profile.role === 'admin' ? 'Administrateur'
     : profile.plan === 'driing'   ? 'Membre Driing'
@@ -41,6 +43,7 @@ export default async function ProfilPage() {
       subscription={subscription}
       autresRevenusPro={profile.autres_revenus_pro ?? null}
       pd={pd}
+      google={google}
     />
   )
 }

@@ -1,14 +1,51 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import type { UserIdentity } from '@supabase/supabase-js'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 import { createClient } from '@/lib/supabase/client'
 import { Check, EnvelopeSimple, PencilSimple, Warning, Lock, Eye, EyeSlash, Key } from '@phosphor-icons/react/dist/ssr'
 import { SectionCard, FieldRow, f } from './ProfilForm'
 
 // Connexion : e-mail et mot de passe (sept. 2026, sortis de la carte
-// « Identité », qui ne garde que ce qui figure sur les contrats).
+// « Identité », qui ne garde que ce qui figure sur les contrats), et compte
+// Google associé (31/10/2026). Un compte Google à la même adresse e-mail est
+// associé tout seul à la première connexion « Continuer avec Google » ; ici on
+// peut en associer un autre, ou le retirer (si un autre moyen de connexion reste).
 
-export default function AccountCard({ email }: { email: string }) {
+export default function AccountCard({ email, google = false }: { email: string; google?: boolean }) {
+  const { confirm, dialog } = useConfirm()
+  const [identities, setIdentities] = useState<UserIdentity[] | null>(null)
+  const [gBusy, setGBusy] = useState(false)
+  const [gError, setGError] = useState('')
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('google') === 'echec') {
+      setGError('L’association avec Google n’a pas abouti. Si ce compte Google sert déjà à un autre compte, connecte-toi avec lui ou écris-nous.')
+    }
+    createClient().auth.getUserIdentities().then(({ data }) => setIdentities(data?.identities ?? []))
+  }, [])
+
+  const googleId = identities?.find(i => i.provider === 'google') ?? null
+  const googleEmail = (googleId?.identity_data?.email as string | undefined) ?? null
+
+  async function associerGoogle() {
+    setGBusy(true); setGError('')
+    const { error } = await createClient().auth.linkIdentity({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent('/dashboard/profil#connexion')}` },
+    })
+    if (error) { setGBusy(false); setGError('Impossible d’ouvrir Google pour le moment. Réessaie dans quelques minutes.') }
+  }
+
+  async function retirerGoogle() {
+    if (!googleId) return
+    if (!(await confirm({ title: 'Retirer Google', message: 'Tu te connecteras ensuite avec ton e-mail et ton mot de passe.', confirmLabel: 'Retirer', danger: true }))) return
+    const avant = identities
+    setIdentities(ids => (ids ?? []).filter(i => i.identity_id !== googleId.identity_id))
+    const { error } = await createClient().auth.unlinkIdentity(googleId)
+    if (error) { setIdentities(avant); setGError('Impossible de retirer Google pour le moment.') }
+  }
   const [editPassword, setEditPassword] = useState(false)
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -92,7 +129,45 @@ export default function AccountCard({ email }: { email: string }) {
           </div>
         )}
       </FieldRow>
+
+      {(google || googleId) && (
+        <FieldRow label="Google" icon={<GoogleG />}>
+          {gError && <div style={f.errorBox}><Warning size={13} />{gError}</div>}
+          {identities === null ? (
+            <span style={{ ...f.value, color: 'var(--text-3)' }}>…</span>
+          ) : googleId ? (
+            <div style={f.valueRow}>
+              <span style={{ ...f.value, overflowWrap: 'anywhere' }}>
+                <Check size={13} weight="bold" color="var(--accent-text)" style={{ verticalAlign: '-2px', marginRight: 6 }} />
+                Associé{googleEmail ? ` : ${googleEmail}` : ''}
+              </span>
+              {identities.length > 1 && (
+                <button onClick={retirerGoogle} className="jm-profil-edit-btn" style={f.editBtn}>Retirer</button>
+              )}
+            </div>
+          ) : (
+            <div style={f.valueRow}>
+              <span style={{ ...f.value, color: 'var(--text-2)' }}>Connecte-toi en un clic avec ton compte Google.</span>
+              <button onClick={associerGoogle} disabled={gBusy} className="jm-profil-edit-btn" style={f.editBtn}>
+                {gBusy ? 'Ouverture…' : 'Associer Google'}
+              </button>
+            </div>
+          )}
+        </FieldRow>
+      )}
+      {dialog}
     </SectionCard>
+  )
+}
+
+function GoogleG() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 48 48" aria-hidden="true">
+      <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z" />
+      <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" />
+      <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z" />
+      <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z" />
+    </svg>
   )
 }
 

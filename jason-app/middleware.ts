@@ -95,6 +95,12 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse
   }
 
+  // Retour de Google : aussi quand on est déjà connecté (association d'un
+  // compte Google depuis Mon compte), sinon le code ne serait jamais échangé
+  if (path === '/auth/callback') {
+    return supabaseResponse
+  }
+
   // getClaims vérifie le JWT signé et évite l'aller-retour getUser() par route.
   // Si Auth tarde, on échoue vite et on conserve les cookies de session.
   const hasAuthCookie = request.cookies.getAll().some(

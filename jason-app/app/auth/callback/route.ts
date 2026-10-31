@@ -19,8 +19,13 @@ const NOUVEAU_MS = 10 * 60_000
 export async function GET(req: NextRequest) {
   const origin = req.nextUrl.origin
   const code = req.nextUrl.searchParams.get('code')
-  const echec = NextResponse.redirect(`${origin}/auth/login?google=echec`)
-  if (!code) return echec
+  // Destination après coup (association depuis Mon compte) : chemin interne seulement
+  const nextRaw = req.nextUrl.searchParams.get('next') ?? ''
+  const next = /^\/dashboard[\w\-/#?=&]*$/.test(nextRaw) ? nextRaw : null
+  const echec = NextResponse.redirect(next
+    ? `${origin}${next.split('#')[0]}${next.includes('?') ? '&' : '?'}google=echec`
+    : `${origin}/auth/login?google=echec`)
+  if (!code || req.nextUrl.searchParams.get('error')) return echec
 
   const supabase = await createClient()
   const { data, error } = await supabase.auth.exchangeCodeForSession(code)
@@ -55,7 +60,7 @@ export async function GET(req: NextRequest) {
     ])
   }
 
-  const res = NextResponse.redirect(`${origin}/ouverture`)
+  const res = NextResponse.redirect(`${origin}${next ?? '/ouverture'}`)
   res.cookies.set(COOKIE_INSCRIPTION, '', { path: '/', maxAge: 0 })
   return res
 }
