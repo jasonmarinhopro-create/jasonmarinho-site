@@ -1,6 +1,6 @@
 # Consignes de la routine « Rédaction article »
 
-Fichier lu à chaque exécution par la routine (lun / mer / ven 7 h). Le prompt
+Fichier lu à chaque exécution par la routine (lun / mer / ven, en fin de matinée). Le prompt
 de la routine ne fait que renvoyer ici : pour changer les règles, modifier ce
 fichier (pas besoin de toucher à la routine). Mis à jour le 17/10/2026.
 
