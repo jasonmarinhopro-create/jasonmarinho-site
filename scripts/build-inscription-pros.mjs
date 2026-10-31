@@ -22,6 +22,7 @@
 
 import { METIERS_VISUELS, OPTIONS_VISUELLES } from './lib/pro-visuel.mjs'
 import { CLIENTELES } from './lib/pro-clienteles.mjs'
+import { SPECIALITES_DEPANNAGE } from './lib/metiers.mjs'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -46,6 +47,7 @@ const cities = loadCities().map(c => c.name).filter(Boolean).sort((a, b) => a.lo
 // ph-check ph-check-circle ph-lightbulb ph-shield-check ph-sparkle ph-users ph-users-three
 // ph-user-circle ph-clock ph-calendar-check ph-broom ph-t-shirt ph-package ph-wrench ph-tree
 // ph-trash ph-recycle ph-translate ph-identification-card ph-spinner ph-caret-left ph-caret-right
+// ph-lightning ph-drop ph-thermometer ph-key ph-toolbox ph-frame-corners ph-washing-machine ph-car ph-siren
 
 const PHOTO = {
   key: 'photographe',
@@ -111,6 +113,46 @@ const MENAGE = {
     ['Comment arrêter ?', 'Ton abonnement est annuel et se résilie à tout moment depuis ton espace, sans frais.'],
   ],
 }
+
+// Dépannage et maintenance (31/10/2026, docs/claude/projet-maintenance.md) : même
+// parcours, questions du métier (spécialités, délai, disponibilités, tarif
+// horaire et déplacement). Aucun contrôle SIRET ni assurance (décision de Jason).
+const DEPANNAGE = {
+  key: 'depannage',
+  dir: 'depannage',
+  title: 'Inscription dépannage Airbnb : crée ta fiche pro',
+  desc: 'Plombier, électricien, serrurier, multiservice : crée ta fiche location courte durée. Site vitrine sur Google, demandes d’hôtes en direct, devis en ligne. Sans commission.',
+  metier: 'Dépannage',
+  eye: 'Annuaire · dépannage et maintenance location courte durée',
+  h1: 'Les hôtes de ta ville <em>ont besoin de toi</em>',
+  lead: 'Une fuite un samedi, une serrure bloquée le soir d’une arrivée : les hôtes et les conciergeries cherchent des pros qui interviennent entre deux voyageurs. Ta fiche sert de site vitrine sur Google, et leurs demandes arrivent chez toi.',
+  brd: ['/annuaires/depannage', 'Dépannage LCD'],
+  apiPath: '/api/pro/depannage/signup',
+  placesKey: 'depannage',
+  villePh: 'Nantes',
+  exemple: '/annuaires/depannage/exemple-fiche',
+  stats: null,
+  devenir: '/annuaires/depannage',
+  benefits: [
+    ['ph-globe', 'Un site vitrine sur Google', 'Ta fiche est indexée, avec un lien direct (dofollow) vers ton site.'],
+    ['ph-map-pin', 'Sur la page de ta ville', 'Les hôtes qui cherchent un plombier ou un électricien dans ta ville tombent sur toi.'],
+    ['ph-paper-plane-tilt', 'Les demandes viennent à toi', 'Quand un hôte de ta zone décrit sa panne, elle arrive chez les 3 pros les plus proches.'],
+    ['ph-file-text', 'Devis en ligne', 'Envoie un devis propre en 2 minutes, accepté en ligne par l’hôte.'],
+    ['ph-chart-line-up', 'Tes statistiques', 'Visiteurs, clics, demandes et recherches Google, avec un bilan chaque mois.'],
+  ],
+  bioPh: 'Ton métier, depuis quand, ce que tu répares le plus souvent, comment tu travailles quand l’hôte n’est pas sur place. Quelques lignes suffisent.',
+  faq: [
+    ['Y a-t-il une validation de mon profil ?', 'Non. Ta fiche est en ligne quelques minutes après le paiement, avec tout ce que tu as rempli. Tu la modifies ensuite quand tu veux depuis ton espace.'],
+    ['Je fais plusieurs métiers : comment je m’inscris ?', 'Coche toutes tes spécialités (plomberie, électricité, serrurerie…) : les hôtes filtrent l’annuaire avec, et ta fiche apparaît dans chacune.'],
+    ['Prenez-vous une commission sur mes interventions ?', 'Non, jamais. Les hôtes te contactent directement et le devis, l’intervention et le paiement se règlent entre vous.'],
+    ['Comment arrêter ?', 'Ton abonnement est annuel et se résilie à tout moment depuis ton espace, sans frais.'],
+  ],
+}
+// Listes du dépannage (mêmes valeurs que scripts/api-pro/depannage/signup.cjs et l'app)
+const SPECIALITES_DEP_ICONS = { electricite: 'ph-lightning', plomberie: 'ph-drop', chauffage: 'ph-thermometer', serrurerie: 'ph-key', multiservice: 'ph-toolbox', montage: 'ph-armchair', vitrerie: 'ph-frame-corners', electromenager: 'ph-washing-machine', exterieur: 'ph-tree' }
+const SPECIALITES_DEP = SPECIALITES_DEPANNAGE.map(sp => [sp.id, sp.label, SPECIALITES_DEP_ICONS[sp.id] || 'ph-wrench'])
+const DISPOS_DEP = [['semaine', 'En semaine'], ['soir', 'Le soir'], ['weekend', 'Le week-end'], ['urgence', 'Urgences']]
+const DELAIS_DEP = [['jour_meme', 'Le jour même'], ['24h', 'Sous 24 h'], ['48h', 'Sous 48 h'], ['semaine', 'Dans la semaine']]
 
 // Listes du ménage (mêmes valeurs que api/cleaner/signup.js)
 const PRESTATIONS_MENAGE = [['menage_standard', 'Ménage entre deux voyageurs', 'ph-broom'], ['gestion_linge', 'Gestion du linge', 'ph-t-shirt'], ['repassage', 'Repassage', 'ph-t-shirt'], ['reapprovisionnement', 'Réassort des consommables', 'ph-package'], ['etat_des_lieux_photo', 'État des lieux en photos', 'ph-camera'], ['petite_maintenance', 'Petite maintenance', 'ph-wrench'], ['nettoyage_exterieur', 'Extérieurs', 'ph-tree'], ['gestion_dechets', 'Déchets', 'ph-recycle']]
@@ -324,13 +366,14 @@ textarea.in{min-height:120px;resize:vertical;line-height:1.55}
 
 function page(cfg) {
   const url = `https://jasonmarinho.com/annuaires/${cfg.dir}/inscription`
-  const menage = cfg.key === 'menage'
+  const menage = cfg.key === 'menage' || cfg.key === 'depannage'
   const conf = {
     metier: cfg.key, api: cfg.apiPath, places: cfg.placesKey, dir: cfg.dir, villePh: cfg.villePh,
     metiers: METIERS_VISUELS.map(m => ({ k: m.key, l: m.label, ic: 'ph-' + m.icon, img: METIER_IMG[m.key], d: METIER_D[m.key] })),
     options: OPTIONS_VISUELLES.map(o => ({ k: o.key, l: o.label, ic: 'ph-' + o.icon })),
     specialites: SPECIALITES,
     prestations: PRESTATIONS_MENAGE, equipes: EQUIPES, delais: DELAIS, langues: LANGUES,
+    specialitesDep: SPECIALITES_DEP, disposDep: DISPOS_DEP, delaisDep: DELAIS_DEP,
     bioPh: cfg.bioPh, limits: PHOTO_LIMITS,
     clienteles: CLIENTELES.map(c => ({ k: c.key, l: c.pro, ic: 'ph-' + c.icon })),
   }
@@ -396,7 +439,7 @@ function page(cfg) {
     <div class="box card-box">
       <div class="box-eye">Ta carte dans l’annuaire</div>
       <div class="pc">
-        <div class="pc-media" id="pv-media"><span class="pc-ini" id="pv-ini">${menage ? 'BC' : 'MD'}</span><small id="pv-kind">${esc(cfg.metier)}</small></div>
+        <div class="pc-media" id="pv-media"><span class="pc-ini" id="pv-ini">${cfg.key === 'depannage' ? 'KB' : menage ? 'BC' : 'MD'}</span><small id="pv-kind">${esc(cfg.metier)}</small></div>
         <div class="pc-body">
           <div class="pc-name" id="pv-name">${menage ? 'Ton entreprise' : 'Ton nom'}</div>
           <div class="pc-meta" id="pv-meta">Ta ville</div>
@@ -416,7 +459,7 @@ function page(cfg) {
       <h3>Voir avant de t’inscrire</h3>
       <div class="links">
         <a href="${cfg.exemple}">Un exemple de fiche <i class="ph-bold ph-arrow-right"></i></a>
-        <a href="${cfg.stats}">Un exemple de statistiques <i class="ph-bold ph-arrow-right"></i></a>
+        ${cfg.stats ? `<a href="${cfg.stats}">Un exemple de statistiques <i class="ph-bold ph-arrow-right"></i></a>` : ''}
         <a href="/chiffres">La visibilité réelle du site <i class="ph-bold ph-arrow-right"></i></a>
         <a href="${cfg.devenir}">Tout sur l’annuaire <i class="ph-bold ph-arrow-right"></i></a>
       </div>
@@ -437,6 +480,9 @@ function page(cfg) {
 (function(){
   var C = ${JSON.stringify(conf)};
   var MENAGE = C.metier === 'menage';
+  var DEP = C.metier === 'depannage';
+  // Entreprise (nom commercial, site, SIRET) : ménage et dépannage
+  var BIZ = MENAGE || DEP;
   var KEY = 'jm-inscription-' + C.metier + '-v2';
   var L = C.limits;
   var t0 = Date.now();
@@ -447,10 +493,20 @@ function page(cfg) {
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
   function blank(){ return { metier:'', options:[], clienteles:['lcd'], specialite:'', ville:'', rayon:'', villes:[], tarifMin:'', tarifMax:'', formules:[], bio:'', portfolioUrl:'', videoUrl:'', instagramHandle:'',
     fullName:'', pseudo:'', telephone:'', telephonePublic:true, email:'', password:'',
-    equipeType:'', delaiReservation:'', prestations:[], tarifForfaitMin:'', tarifForfaitMax:'', tarifHeure:'', logementsGeres:'', langues:['fr'], siret:'', assuranceRcPro:false, siteUrl:'' }; }
+    equipeType:'', delaiReservation:'', prestations:[], tarifForfaitMin:'', tarifForfaitMax:'', tarifHeure:'', logementsGeres:'', langues:['fr'], siret:'', assuranceRcPro:false, siteUrl:'',
+    specialites:[], disponibilites:[], delaiIntervention:'', deplacementPrix:'' }; }
   var st = blank(), step = 0, photos = [], sending = false, finished = false;
 
-  var STEPS = MENAGE ? [
+  var STEPS = DEP ? [
+    { k:'specialites', l:'Tes spécialités' },
+    { k:'zone', l:'Où tu interviens' },
+    { k:'offre', l:'Tes disponibilités et tes prix' },
+    { k:'photos', l:'Tes photos', opt:true },
+    { k:'formules', l:'Tes formules', opt:true },
+    { k:'presentation', l:'Toi en quelques mots', opt:true },
+    { k:'contact', l:'Ton compte' },
+    { k:'recap', l:'Vérifier et payer' }
+  ] : MENAGE ? [
     { k:'equipe', l:'Ton équipe' },
     { k:'zone', l:'Où tu travailles' },
     { k:'offre', l:'Tes prestations et tes prix' },
@@ -496,8 +552,9 @@ function page(cfg) {
   function urlOk(v){ return /^https?:\\/\\/[^\\s\\/.]+(\\.[^\\s\\/.]+)+/i.test(v); }
   function validEmail(e){ return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(String(e).trim()); }
   function initials(s){ return String(s || '').split(/\\s+/).filter(function(w){ return /^[A-Za-zÀ-ÿ]/.test(w); }).map(function(w){ return w[0]; }).slice(0, 2).join('').toUpperCase(); }
-  function displayName(){ return (MENAGE && st.pseudo.trim()) || st.fullName.trim(); }
-  function metierLabel(){ var m = C.metiers.filter(function(x){ return x.k === st.metier; })[0]; return MENAGE ? 'Équipe de ménage' : (m ? m.l : 'Photographe'); }
+  function displayName(){ return (BIZ && st.pseudo.trim()) || st.fullName.trim(); }
+  function metierLabel(){ var m = C.metiers.filter(function(x){ return x.k === st.metier; })[0]; if (DEP) return st.specialites.length === 1 ? specLabel(st.specialites[0]) : 'Dépannage'; return MENAGE ? 'Équipe de ménage' : (m ? m.l : 'Photographe'); }
+  function specLabel(k){ var x = C.specialitesDep.filter(function(y){ return y[0] === k; })[0]; return x ? x[1] : ''; }
   function zoneText(){
     var v = st.ville.trim(); if (!v) return '';
     var t = st.rayon ? v + ' et ' + st.rayon + ' km autour' : v;
@@ -506,16 +563,16 @@ function page(cfg) {
   }
   function minPrice(){
     var ps = st.formules.map(function(f){ return parseInt(f.prix, 10); }).filter(function(n){ return n > 0; });
-    var base = parseInt(MENAGE ? st.tarifForfaitMin : st.tarifMin, 10);
+    var base = parseInt(DEP ? st.tarifHeure : MENAGE ? st.tarifForfaitMin : st.tarifMin, 10);
     if (base > 0) ps.push(base);
     return ps.length ? Math.min.apply(null, ps) : 0;
   }
   function completeness(){
     var pts = [
-      !!(MENAGE ? st.equipeType : st.metier), st.ville.trim().length >= 2, photos.length > 0, photos.length >= 3,
+      !!(DEP ? st.specialites.length : MENAGE ? st.equipeType : st.metier), st.ville.trim().length >= 2, photos.length > 0, photos.length >= 3,
       st.formules.length > 0 || minPrice() > 0, st.bio.trim().length >= 60,
-      MENAGE ? st.prestations.length > 0 : st.options.length > 0 || !!st.specialite,
-      MENAGE ? !!st.siteUrl || !!st.instagramHandle : !!st.portfolioUrl || !!st.videoUrl,
+      DEP ? !!st.delaiIntervention || st.disponibilites.length > 0 : MENAGE ? st.prestations.length > 0 : st.options.length > 0 || !!st.specialite,
+      BIZ ? !!st.siteUrl || !!st.instagramHandle : !!st.portfolioUrl || !!st.videoUrl,
       st.fullName.trim().length >= 2, !!st.telephone.trim()
     ];
     return Math.round(pts.filter(Boolean).length / pts.length * 100);
@@ -524,14 +581,16 @@ function page(cfg) {
   // ── Carte de l'annuaire (colonne de droite) ──
   function paintSide(){
     var name = displayName();
-    document.getElementById('pv-name').textContent = name || (MENAGE ? 'Ton entreprise' : 'Ton nom');
-    document.getElementById('pv-ini').textContent = photos.length ? '' : (initials(name) || (MENAGE ? 'BC' : 'MD'));
+    document.getElementById('pv-name').textContent = name || (BIZ ? 'Ton entreprise' : 'Ton nom');
+    document.getElementById('pv-ini').textContent = photos.length ? '' : (initials(name) || (DEP ? 'KB' : MENAGE ? 'BC' : 'MD'));
     var media = document.getElementById('pv-media');
     media.style.backgroundImage = photos.length ? 'url(' + photos[0].thumb + ')' : '';
     media.classList.toggle('has', photos.length > 0);
     document.getElementById('pv-kind').textContent = metierLabel();
     document.getElementById('pv-meta').textContent = zoneText() || 'Ta ville';
-    var extra = MENAGE
+    var extra = DEP
+      ? st.specialites.map(specLabel).filter(Boolean).slice(0, 2).join(' · ')
+      : MENAGE
       ? st.prestations.map(function(k){ var p = C.prestations.filter(function(x){ return x[0] === k; })[0]; return p ? p[1] : ''; }).filter(Boolean).slice(0, 2).join(' · ')
       : st.options.map(function(k){ var o = C.options.filter(function(x){ return x.k === k; })[0]; return o ? o.l : ''; }).filter(Boolean).slice(0, 2).join(' · ') || st.specialite;
     document.getElementById('pv-extra').textContent = extra;
@@ -597,13 +656,17 @@ function page(cfg) {
     fhR.textContent = step < STEPS.length - 2 ? 'Environ ' + Math.max(1, STEPS.length - 1 - step) + ' min' : 'Presque fini';
     bar.style.width = Math.round((step + 1) / STEPS.length * 100) + '%';
 
-    if (s.k === 'metier' || s.k === 'equipe') {
+    if (s.k === 'metier' || s.k === 'equipe' || s.k === 'specialites') {
       var draft = readDraft();
       h = draft ? '<div class="resume"><span>Tu avais commencé ta fiche' + (draft.st.ville ? ' (' + esc(draft.st.ville) + ')' : '') + '. On reprend là où tu t’étais arrêté ?</span><span class="r-b"><button type="button" id="resume">Reprendre</button><button type="button" id="fresh" style="color:var(--tl);font-weight:500">Recommencer</button></span></div>' : '';
       if (s.k === 'metier') {
         h += '<h2 class="q">Tu proposes quoi aux hôtes ?</h2><p class="sub">Les hôtes filtrent l’annuaire par photographe, vidéaste ou les deux.</p><div class="big">' +
           C.metiers.map(function(m){ return '<button type="button" class="bigc' + (st.metier === m.k ? ' on' : '') + '" data-m="' + m.k + '"><span class="im" style="background-image:url(' + m.img + ')"><span><i class="ph-bold ' + m.ic + '"></i>' + esc(m.l) + '</span></span><span class="bd"><span class="t">' + esc(m.l) + '</span><span class="d">' + esc(m.d) + '</span></span></button>'; }).join('') +
           '</div>' + tip('ph-sparkle', 'Tout se remplit ici en une fois : ta zone, tes photos, tes formules. Ta fiche est en ligne quelques minutes après le paiement, sans validation à attendre.');
+      } else if (s.k === 'specialites') {
+        h += '<h2 class="q">Tu répares quoi ?</h2><p class="sub">Touche tout ce que tu fais : les hôtes filtrent l’annuaire par spécialité.</p><div class="opts two">' +
+          C.specialitesDep.map(function(sp){ return '<button type="button" class="opt' + (st.specialites.indexOf(sp[0]) >= 0 ? ' on' : '') + '" data-spc="' + esc(sp[0]) + '" aria-pressed="' + (st.specialites.indexOf(sp[0]) >= 0) + '"><span class="ic"><i class="ph-bold ' + sp[2] + '"></i></span><span><span class="t">' + esc(sp[1]) + '</span></span><span class="ck"><i class="ph-bold ph-check"></i></span></button>'; }).join('') + '</div>' +
+          tip('ph-sparkle', 'Tout se remplit ici en une fois : ta zone, tes photos, tes formules. Ta fiche est en ligne quelques minutes après le paiement, sans validation à attendre.');
       } else {
         h += '<h2 class="q">Ton équipe, c’est…</h2><p class="sub">Les hôtes voient la taille de ton équipe sur ta fiche.</p><div class="opts two">' +
           C.equipes.map(function(e){ return optHtml(e[0], st.equipeType === e[0], e[3], e[1], e[2]); }).join('') + '</div>' +
@@ -619,7 +682,13 @@ function page(cfg) {
         '<div class="zonebox" id="zbox"' + (zoneText() ? '' : ' hidden') + '><i class="ph-bold ph-map-pin"></i><span>Sur ta fiche : <b id="ztext">' + esc(zoneText()) + '</b>. Une carte montre ton secteur aux hôtes.</span></div>';
     }
     else if (s.k === 'offre') {
-      if (MENAGE) {
+      if (DEP) {
+        h = '<h2 class="q">Tes disponibilités et tes prix</h2><p class="sub">Ce que l’hôte veut savoir tout de suite : quand tu peux venir, et combien coûte le déplacement.</p>' +
+          '<div class="sec"><span class="lab">Tu peux intervenir</span><div class="chips">' + C.delaisDep.map(function(d){ return chip('data-di', d[0], d[1], st.delaiIntervention === d[0], 'ph-clock'); }).join('') + '</div></div>' +
+          '<div class="sec"><span class="lab">Quand tu travailles <small>(plusieurs choix)</small></span><div class="chips">' + C.disposDep.map(function(d){ return chip('data-dp', d[0], d[1], st.disponibilites.indexOf(d[0]) >= 0, d[0] === 'urgence' ? 'ph-siren' : 'ph-calendar-check'); }).join('') + '</div></div>' +
+          '<div class="row2">' + input('tarifHeure', 'Tarif horaire (€/h)', { type:'number', ph:'45', attrs:' inputmode="numeric" min="0" max="500"', icon:'ph-tag' }) + input('deplacementPrix', 'Déplacement (€)', { type:'number', ph:'30', attrs:' inputmode="numeric" min="0" max="500"', icon:'ph-car', hint:'0 si le déplacement est offert.' }) + '</div>' +
+          '<div class="sec"><span class="lab">Tu travailles pour <small>(hôtels, conciergeries, gîtes : leurs demandes arrivent d’abord chez toi)</small></span><div class="chips">' + C.clienteles.map(function(c){ return chip('data-cl', c.k, c.l, st.clienteles.indexOf(c.k) >= 0, c.ic); }).join('') + '</div></div>';
+      } else if (MENAGE) {
         h = '<h2 class="q">Ce que fait ton équipe</h2><p class="sub">Touche tout ce que tu proposes, puis tes prix.</p>' +
           '<div class="chips">' + C.prestations.map(function(p){ return chip('data-pr', p[0], p[1], st.prestations.indexOf(p[0]) >= 0, p[2]); }).join('') + '</div>' +
           '<div class="row2">' + input('tarifForfaitMin', 'Prix d’un ménage, à partir de (€)', { type:'number', ph:'45', attrs:' inputmode="numeric" min="0" max="999"', icon:'ph-tag', hint:'Affiché « dès 45 € » sur ta carte.' }) + input('tarifForfaitMax', 'Jusqu’à (€)', { type:'number', ph:'120', attrs:' inputmode="numeric" min="0" max="999"' }) + '</div>' +
@@ -639,22 +708,22 @@ function page(cfg) {
       h = '<h2 class="q">Tes plus belles photos</h2><p class="sub">C’est ce que les hôtes regardent en premier. ' + L.max + ' au plus, la première est la photo principale. <b id="pcount">' + photos.length + ' / ' + L.max + ' photos</b></p>' +
         '<label class="drop" id="drop" tabindex="0"><i class="ph-bold ph-upload-simple"></i><b>Ajouter des photos</b><span>Touche ici ou glisse tes photos (JPEG ou PNG). Elles sont allégées automatiquement.</span><input type="file" id="pfile" accept="image/*" multiple hidden></label>' +
         '<div class="err" id="perr" role="alert"></div><div class="ph-grid" id="pgrid"></div>' +
-        tip('ph-lightbulb', MENAGE ? 'Un logement impeccable après ton passage, un lit bien fait, ton équipe au travail : des photos réelles rassurent les hôtes.' : 'Mets en premier ta photo la plus lumineuse : c’est elle qui apparaît sur ta carte dans l’annuaire.');
+        tip('ph-lightbulb', DEP ? 'Une installation propre, un avant / après, ton véhicule ou ton atelier : des photos réelles rassurent les hôtes.' : MENAGE ? 'Un logement impeccable après ton passage, un lit bien fait, ton équipe au travail : des photos réelles rassurent les hôtes.' : 'Mets en premier ta photo la plus lumineuse : c’est elle qui apparaît sur ta carte dans l’annuaire.');
     }
     else if (s.k === 'formules') {
-      h = '<h2 class="q">Tes formules</h2><p class="sub">' + (MENAGE ? 'Par exemple « Studio », « T2 », « Grand ménage ».' : 'Par exemple « Essentiel », « Premium », « Photo + vidéo ».') + ' 3 au plus, avec un prix « à partir de » si tu veux.</p><div id="flist" style="display:grid;gap:10px"></div>' +
+      h = '<h2 class="q">Tes formules</h2><p class="sub">' + (DEP ? 'Par exemple « Intervention », « Contrat d’entretien », « Mise en service d’un logement ».' : MENAGE ? 'Par exemple « Studio », « T2 », « Grand ménage ».' : 'Par exemple « Essentiel », « Premium », « Photo + vidéo ».') + ' 3 au plus, avec un prix « à partir de » si tu veux.</p><div id="flist" style="display:grid;gap:10px"></div>' +
         '<button type="button" class="addbtn" id="fadd"><i class="ph-bold ph-plus"></i>Ajouter une formule</button>' +
         tip('ph-tag', 'Les hôtes comparent les prix : une formule claire avec ce qu’elle comprend donne envie de te contacter.');
     }
     else if (s.k === 'presentation') {
-      h = '<h2 class="q">' + (MENAGE ? 'Ton équipe en quelques mots' : 'Toi en quelques mots') + '</h2><p class="sub">C’est ce que les hôtes lisent en premier sur ta fiche.</p>' +
+      h = '<h2 class="q">' + (MENAGE && !DEP ? 'Ton équipe en quelques mots' : 'Toi en quelques mots') + '</h2><p class="sub">C’est ce que les hôtes lisent en premier sur ta fiche.</p>' +
         '<div class="sec"><label for="bio">Présentation <small>(facultatif)</small></label><textarea class="in" id="bio" maxlength="600" placeholder="' + esc(C.bioPh) + '">' + esc(st.bio) + '</textarea><span class="hint" id="biocount">' + st.bio.length + ' / 600</span></div>' +
-        (MENAGE
+        (BIZ
           ? input('siteUrl', 'Ton site', { ph:'monsite.fr', max:300, attrs:' inputmode="url" autocapitalize="off" spellcheck="false"' }) +
-            input('instagramHandle', 'Instagram', { ph:'beeclean.lcd', max:50, hint:'Sans le @.' }) +
+            input('instagramHandle', 'Instagram', { ph: DEP ? 'kb.depannage' : 'beeclean.lcd', max:50, hint:'Sans le @.' }) +
             '<div class="sec"><span class="lab">Langues parlées <small>(facultatif)</small></span><div class="chips">' + C.langues.map(function(l){ return chip('data-lg', l[0], l[1], st.langues.indexOf(l[0]) >= 0, 'ph-translate'); }).join('') + '</div></div>' +
             input('siret', 'SIRET', { ph:'14 chiffres', max:14, attrs:' inputmode="numeric"', hint:'Affiché sur ta fiche : il rassure les hôtes.' }) +
-            '<label class="toggle"><input type="checkbox" id="assuranceRcPro"' + (st.assuranceRcPro ? ' checked' : '') + '><span>Mon équipe a une assurance responsabilité civile professionnelle</span></label>'
+            (DEP ? '' : '<label class="toggle"><input type="checkbox" id="assuranceRcPro"' + (st.assuranceRcPro ? ' checked' : '') + '><span>Mon équipe a une assurance responsabilité civile professionnelle</span></label>')
           : input('portfolioUrl', 'Ton site ou ton portfolio', { req: !photos.length, ph:'monsite.fr ou instagram.com/moncompte', max:300, attrs:' inputmode="url" autocapitalize="off" spellcheck="false"', hint: photos.length ? 'Facultatif : tes photos sont déjà sur ta fiche.' : 'Obligatoire sans photo : le bouton « Voir le portfolio » de ta fiche y mène.' }) +
             input('videoUrl', 'Lien vers tes vidéos', { ph:'youtube.com/watch?v=… ou ta chaîne, Vimeo, Instagram', max:300, attrs:' inputmode="url" autocapitalize="off" spellcheck="false"', hint:'Une vidéo YouTube ou Vimeo se lit directement en haut de ta fiche.' }) +
             input('instagramHandle', 'Instagram', { ph:'marie.photo', max:50, hint:'Sans le @.' })) +
@@ -662,17 +731,19 @@ function page(cfg) {
     }
     else if (s.k === 'contact') {
       h = '<h2 class="q">Ton compte</h2><p class="sub">Pour gérer ta fiche et recevoir les demandes des hôtes.</p>' +
-        input('fullName', 'Ton prénom et ton nom', { req:true, max:100, attrs:' autocomplete="name"', icon:'ph-user', hint: MENAGE ? '' : 'Affiché sur ta fiche.' }) +
-        (MENAGE ? input('pseudo', 'Nom de ton entreprise', { max:100, ph:'Bee Clean Marseille', hint:'C’est lui que verront les hôtes. Sinon, ton nom.' }) : '') +
+        input('fullName', 'Ton prénom et ton nom', { req:true, max:100, attrs:' autocomplete="name"', icon:'ph-user', hint: BIZ ? '' : 'Affiché sur ta fiche.' }) +
+        (BIZ ? input('pseudo', 'Nom de ton entreprise', { max:100, ph: DEP ? 'KB Dépannage' : 'Bee Clean Marseille', hint:'C’est lui que verront les hôtes. Sinon, ton nom.' }) : '') +
         input('telephone', 'Téléphone', { type:'tel', max:30, ph:'06 12 34 56 78', attrs:' autocomplete="tel"', icon:'ph-phone' }) +
         '<label class="toggle" id="telvis"' + (st.telephone.trim() ? '' : ' hidden') + '><input type="checkbox" id="telephonePublic"' + (st.telephonePublic ? ' checked' : '') + '><span>Afficher mon numéro sur ma fiche<small>Les hôtes peuvent t’appeler directement (bouton « Appeler »). Tu peux le retirer quand tu veux depuis ton espace.</small></span></label>' +
-        input('email', 'E-mail pro', { req:true, type:'email', max:200, ph: MENAGE ? 'contact@beeclean.fr' : 'marie@studio-photo.fr', attrs:' autocomplete="email" inputmode="email"', icon:'ph-envelope-simple', hint:'Les demandes des hôtes arrivent ici. C’est aussi ton identifiant.' }) +
+        input('email', 'E-mail pro', { req:true, type:'email', max:200, ph: DEP ? 'contact@kb-depannage.fr' : MENAGE ? 'contact@beeclean.fr' : 'marie@studio-photo.fr', attrs:' autocomplete="email" inputmode="email"', icon:'ph-envelope-simple', hint:'Les demandes des hôtes arrivent ici. C’est aussi ton identifiant.' }) +
         '<div class="sec"><label for="password">Mot de passe</label><div class="pw"><input class="in" type="password" id="password" minlength="8" autocomplete="new-password" placeholder="8 caractères minimum" value="' + esc(st.password) + '"><button type="button" class="pw-eye" id="pweye" aria-label="Afficher le mot de passe"><i class="ph-bold ph-eye"></i></button></div><span class="hint">Pour modifier ta fiche quand tu veux sur app.jasonmarinho.com.</span></div>' +
         '<div class="err" id="err" role="alert"></div>';
     }
     else if (s.k === 'recap') {
       var p = minPrice();
-      var tags = MENAGE
+      var tags = DEP
+        ? st.specialites.map(specLabel)
+        : MENAGE
         ? st.prestations.map(function(k){ var x = C.prestations.filter(function(y){ return y[0] === k; })[0]; return x ? x[1] : ''; })
         : st.options.map(function(k){ var o = C.options.filter(function(x){ return x.k === k; })[0]; return o ? o.l : ''; });
       var miss = [];
@@ -746,6 +817,7 @@ function page(cfg) {
     var k = STEPS[step].k;
     if (k === 'metier') return !!st.metier;
     if (k === 'equipe') return !!st.equipeType;
+    if (k === 'specialites') return st.specialites.length > 0;
     if (k === 'zone') return st.ville.trim().length >= 2;
     if (k === 'photos') return !photos.some(function(p){ return p.busy; });
     if (k === 'recap') return !sending;
@@ -755,13 +827,13 @@ function page(cfg) {
   function showErr(msg, focusId){ var e = document.getElementById('err'); if (e) { e.textContent = msg; e.classList.add('show'); } if (focusId) { var el = document.getElementById(focusId); if (el) el.focus(); } return false; }
   function check(){
     var k = STEPS[step].k;
-    if (k === 'presentation' && !MENAGE) {
+    if (k === 'presentation' && !BIZ) {
       st.portfolioUrl = normUrl(st.portfolioUrl); st.videoUrl = normUrl(st.videoUrl);
       if (!photos.length && !st.portfolioUrl) return showErr('Ajoute des photos à l’étape précédente, ou le lien de ton site ou de ton portfolio.', 'portfolioUrl');
       if (st.portfolioUrl && !urlOk(st.portfolioUrl)) return showErr('Ton site ou ton portfolio : ce lien ne ressemble pas à une adresse de site (exemple : monsite.fr ou instagram.com/moncompte).', 'portfolioUrl');
       if (st.videoUrl && !urlOk(st.videoUrl)) return showErr('Le lien vers tes vidéos ne ressemble pas à une adresse de site (exemple : youtube.com/@toncompte).', 'videoUrl');
     }
-    if (k === 'presentation' && MENAGE) {
+    if (k === 'presentation' && BIZ) {
       st.siteUrl = normUrl(st.siteUrl);
       if (st.siteUrl && !urlOk(st.siteUrl)) return showErr('Ton site : ce lien ne ressemble pas à une adresse de site (exemple : monsite.fr).', 'siteUrl');
       var si = st.siret.replace(/\\s+/g, ''); if (si && !/^\\d{14}$/.test(si)) return showErr('Le SIRET fait 14 chiffres (sans espaces).', 'siret');
@@ -817,9 +889,12 @@ function page(cfg) {
     bindChips('data-sp', function(v){ st.specialite = st.specialite === v ? '' : v; setOn('data-sp', function(x){ return x === st.specialite; }); });
     bindChips('data-pr', function(v){ toggleIn(st.prestations, v); setOn('data-pr', function(x){ return st.prestations.indexOf(x) >= 0; }); });
     bindChips('data-dl', function(v){ st.delaiReservation = st.delaiReservation === v ? '' : v; setOn('data-dl', function(x){ return x === st.delaiReservation; }); });
+    bindChips('data-spc', function(v){ toggleIn(st.specialites, v); setOn('data-spc', function(x){ return st.specialites.indexOf(x) >= 0; }); });
+    bindChips('data-di', function(v){ st.delaiIntervention = st.delaiIntervention === v ? '' : v; setOn('data-di', function(x){ return x === st.delaiIntervention; }); });
+    bindChips('data-dp', function(v){ toggleIn(st.disponibilites, v); setOn('data-dp', function(x){ return st.disponibilites.indexOf(x) >= 0; }); });
     bindChips('data-lg', function(v){ toggleIn(st.langues, v); setOn('data-lg', function(x){ return st.langues.indexOf(x) >= 0; }); });
     // Champs texte
-    ['tarifMin','tarifMax','tarifForfaitMin','tarifForfaitMax','tarifHeure','logementsGeres','portfolioUrl','videoUrl','instagramHandle','siteUrl','siret','fullName','pseudo','telephone','email','password'].forEach(function(id){
+    ['tarifMin','tarifMax','tarifForfaitMin','tarifForfaitMax','tarifHeure','deplacementPrix','logementsGeres','portfolioUrl','videoUrl','instagramHandle','siteUrl','siret','fullName','pseudo','telephone','email','password'].forEach(function(id){
       var el = document.getElementById(id); if (!el) return;
       el.oninput = function(){ st[id] = el.value; var e = document.getElementById('err'); if (e) e.classList.remove('show'); if (id === 'telephone') { var tv = document.getElementById('telvis'); if (tv) tv.hidden = !el.value.trim(); } paintSide(); refreshNext(); save(); };
       if (el.getAttribute('inputmode') === 'url') el.onblur = function(){ el.value = normUrl(el.value); st[id] = el.value; save(); };
@@ -852,7 +927,10 @@ function page(cfg) {
       ville: st.ville.trim(), zoneCouverte: zone, villesCouvertes: st.villes, instagramHandle: st.instagramHandle.trim().replace(/^@/, ''), bio: st.bio.trim(),
       formules: st.formules.filter(function(f){ return f.nom.trim(); }).map(function(f){ return { nom: f.nom.trim(), prix: parseInt(f.prix, 10) || null, detail: f.detail.trim() }; }),
       clienteles: st.clienteles, photoCount: photos.length };
-    if (MENAGE) {
+    if (DEP) {
+      d.pseudo = st.pseudo.trim(); d.specialites = st.specialites; d.disponibilites = st.disponibilites; d.delaiIntervention = st.delaiIntervention; d.langues = st.langues;
+      d.tarifHeure = st.tarifHeure; d.deplacementPrix = st.deplacementPrix; d.siteUrl = st.siteUrl; d.siret = st.siret.replace(/\\s+/g, '');
+    } else if (MENAGE) {
       d.pseudo = st.pseudo.trim(); d.equipeType = st.equipeType; d.delaiReservation = st.delaiReservation; d.prestations = st.prestations; d.langues = st.langues;
       d.tarifForfaitMin = st.tarifForfaitMin; d.tarifForfaitMax = st.tarifForfaitMax; d.tarifHeure = st.tarifHeure; d.logementsGeres = st.logementsGeres;
       d.siteUrl = st.siteUrl; d.siret = st.siret.replace(/\\s+/g, ''); d.assuranceRcPro = st.assuranceRcPro;
@@ -926,10 +1004,11 @@ function page(cfg) {
 `
 }
 
-for (const cfg of [PHOTO, MENAGE]) {
+for (const cfg of [PHOTO, MENAGE, DEPANNAGE]) {
   if (cfg.title.length > 60) throw new Error(`Titre trop long (${cfg.title.length}) : ${cfg.title}`)
   const html = page(cfg)
   if (html.includes('—')) throw new Error('Tiret cadratin dans la page ' + cfg.key)
+  fs.mkdirSync(path.join(ROOT, 'annuaires', cfg.dir, 'inscription'), { recursive: true })
   fs.writeFileSync(path.join(ROOT, 'annuaires', cfg.dir, 'inscription', 'index.html'), html, 'utf8')
   console.log(`[inscription-pros] annuaires/${cfg.dir}/inscription`)
 }

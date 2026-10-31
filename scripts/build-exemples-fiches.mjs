@@ -14,6 +14,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { buildFichePage as buildPhotographe } from './build-photographers.mjs'
 import { buildFichePage as buildMenage } from './build-cleaners.mjs'
+import { buildFichePage as buildDepannage } from './build-depannage.mjs'
 import { statsDemoHtml } from './lib/stats-demo.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -89,6 +90,36 @@ const ECLAT = {
   __photos: photos(['menage-1', 'photo-chambre-3', 'photo-sdb-1', 'photo-salon-4', 'photo-salon-3', 'photo-salon-2']),
 }
 
+// Dépannage et maintenance (31/10/2026) : pro fictif, photos d'intérieurs déjà sur le site
+const MARTIN = {
+  id: '00000000-0000-0000-0000-000000000002',
+  slug: 'exemple-fiche',
+  full_name: 'Karim Martin',
+  pseudo: 'Atelier Martin',
+  ville: 'Nantes',
+  zone_couverte: 'Nantes + 25 km',
+  tarif_heure: 45,
+  deplacement_prix: 30,
+  specialites: ['plomberie', 'electricite', 'chauffage', 'multiservice'],
+  disponibilites: ['semaine', 'soir', 'urgence'],
+  delai_intervention: '24h',
+  langues: ['fr', 'en'],
+  siret: '12345678901234',
+  site_url: 'https://site.example',
+  instagram_handle: 'atelier.martin.nantes',
+  reseaux: { google: 'https://www.google.com/maps' },
+  bio: 'Plombier et électricien depuis 12 ans à Nantes. Je travaille surtout pour des hôtes et des conciergeries : fuite sous un évier, chauffe-eau qui ne chauffe plus, disjoncteur qui saute la veille d’une arrivée. J’interviens avec la boîte à clés quand l’hôte n’est pas là, et j’envoie une photo et la facture après chaque passage. Contrat d’entretien possible pour les hôtes qui ont plusieurs logements.',
+  formules: [
+    { nom: 'Intervention', prix: 75, detail: 'Déplacement et première heure, photo après intervention.' },
+    { nom: 'Mise en service', prix: 150, detail: 'Vérification complète avant la première location : eau, électricité, chauffage.' },
+    { nom: 'Contrat d’entretien', prix: null, detail: 'Passages réguliers entre deux voyageurs, sur devis selon le nombre de logements.' },
+  ],
+  villes_couvertes: ['Rezé', 'Saint-Herblain', 'Vertou', 'Orvault'],
+  deroule: [],
+  clienteles: ['lcd', 'conciergerie'],
+  __photos: photos(['photo-sdb-1', 'photo-cuisine-2', 'photo-sdb-2', 'photo-interieur-1']),
+}
+
 const annot = label => `<span class="annot-tag"><i class="ph-bold ph-info" style="font-size:11px"></i>${label}</span>`
 
 const DEMO_CSS = `
@@ -141,7 +172,7 @@ function toDemo(html, m) {
   h = h.replace(/href="https:\/\/instagram\.com\/[\w.]+" target="_blank" rel="noopener"/g, 'href="#photos"')
   // À propos de la page, exemple de statistiques, appel à créer sa fiche
   h = h.replace(/<p class="disclaimer fx-disc">[\s\S]*?<\/p>/, `<p class="disclaimer fx-disc">
-  <strong>À propos de cette page.</strong> Ceci est un aperçu fidèle de la fiche que tu obtiens dans l’annuaire. Le contenu (nom, textes, tarifs, ville${m.metier === 'équipe de ménage' ? ', SIRET' : ''}) est fictif et sert à montrer la mise en page. Photos d’illustration : Unsplash. Lors de ton inscription, tu remplis tes vraies infos et tu ajoutes tes propres photos depuis ton espace pro.
+  <strong>À propos de cette page.</strong> Ceci est un aperçu fidèle de la fiche que tu obtiens dans l’annuaire. Le contenu (nom, textes, tarifs, ville${m.metier !== 'photographe' ? ', SIRET' : ''}) est fictif et sert à montrer la mise en page. Photos d’illustration : Unsplash. Lors de ton inscription, tu remplis tes vraies infos et tu ajoutes tes propres photos depuis ton espace pro.
 </p>`)
   h = replaceOnce(h, '\n<script>\nconst __slug', `
 <!-- STATSDEMO:START -->
@@ -203,9 +234,30 @@ const pages = [
       ],
     },
   },
+  {
+    file: 'annuaires/depannage/exemple-fiche/index.html',
+    html: buildDepannage(MARTIN),
+    meta: {
+      title: 'Exemple de fiche dépannage LCD · Aperçu',
+      desc: 'Aperçu de la fiche que tu obtiens dans l’annuaire dépannage et maintenance LCD de Jason Marinho : spécialités, délai d’intervention, formules, villes couvertes, contact direct.',
+      metier: 'dépannage', who: 'Atelier Martin', statsMetier: 'depannage',
+      inscription: '/annuaires/depannage/inscription', devenir: '/annuaires/depannage', devenirLabel: 'Dépannage LCD',
+      ctaLbl: 'Tu veux la même fiche pour toi ?', ctaH2: 'Crée ta fiche dépannage <em>en 2 minutes</em>',
+      annots: [
+        ['<div class="fx-car"', 'Jusqu’à 6 photos'],
+        ['<h2>Présentation</h2>', 'Bio que tu rédiges'],
+        ['<h2>Formules</h2>', 'Tes formules'],
+        ['<h2>Ce que je répare</h2>', 'Spécialités et disponibilités'],
+        ['<h2>En ligne</h2>', 'Tes liens'],
+        ['<h2>Où j’interviens</h2>', 'Tes villes'],
+        ['<div class="fx-card-id">', 'Contact en 2 étapes'],
+      ],
+    },
+  },
 ]
 
 for (const pg of pages) {
+  fs.mkdirSync(path.dirname(path.join(ROOT, pg.file)), { recursive: true })
   fs.writeFileSync(path.join(ROOT, pg.file), toDemo(pg.html, pg.meta), 'utf8')
   console.log(`[exemples-fiches] ${pg.file}`)
 }

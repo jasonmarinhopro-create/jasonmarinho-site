@@ -51,6 +51,28 @@ const DATA = {
       '4 demandes ce mois-ci, 3 de plus que le mois d\'avant : réponds dans la journée, c\'est souvent le premier qui répond qui décroche le client.',
     ],
   },
+  depannage: {
+    ville: 'Nantes',
+    page: 'Dépannage à Nantes',
+    tiles: [
+      ['ph-users', 'Visiteurs', '', '58', '+31 %'],
+      ['ph-eye', 'Vues de la fiche', '', '73', '+35 %'],
+      ['ph-timer', 'Temps de lecture', 'moyen par visiteur', '48 s', '+4 %'],
+      ['ph-cursor-click', 'Clics', 'site, Instagram', '11', '+37 %'],
+      ['ph-chat-circle', 'Demandes reçues', '', '5', '+3'],
+      ['ph-magnifying-glass', 'Vu sur Google', 'affichages', '340', '+52 %'],
+    ],
+    canaux: [['Google', 46], ['Page « Dépannage à Nantes »', 28], ['Accès direct', 13], ['Instagram', 7], ['IA (ChatGPT, Perplexity…)', 6]],
+    lieux: [['Nantes', 49], ['Rezé', 12], ['Saint-Herblain', 9], ['Paris', 6], ['Vertou', 5]],
+    google: [['plombier airbnb nantes', '6', '104', '4'], ['dépannage location saisonnière nantes', '8', '88', '3'], ['électricien conciergerie nantes', '11', '57', '1'], ['atelier martin nantes', '1', '14', '5']],
+    clics: [['Site', 7], ['Instagram', 4]],
+    cityPage: [['241', 'visiteurs de la page'], ['19', 'venus sur ta fiche depuis la page'], ['8,1', 'place moyenne Google']],
+    retenir: [
+      'La page « Dépannage à Nantes » t\'a amené 19 visiteurs : les hôtes de ta ville trouvent ta fiche au moment où ils ont une panne.',
+      'Tu es 6e sur « plombier airbnb nantes » : ajoute Rezé et Saint-Herblain à ta zone, des hôtes de là-bas te lisent déjà.',
+      '5 demandes ce mois-ci : en dépannage, l\'hôte appelle souvent le premier qui répond. Réponds vite, même pour dire quand tu peux passer.',
+    ],
+  },
 }
 
 // Courbe : 30 jours, période en cours et période d'avant (pointillés)
@@ -135,10 +157,10 @@ export const STATS_DEMO_CSS = `.sd{max-width:1080px;margin:0 auto;padding:0 16px
 .sd-foot i{color:#1e9d54}
 @media (max-width:520px){.sd-nums{grid-template-columns:1fr}.sd-tile-v{font-size:22px}.sd-bar{grid-template-columns:minmax(0,1.2fr) .8fr 38px}}`
 
-/** Bloc HTML (CSS inclus) de l'exemple de statistiques. metier : 'photographe' | 'menage' */
+/** Bloc HTML (CSS inclus) de l'exemple de statistiques. metier : 'photographe' | 'menage' | 'depannage' */
 export function statsDemoHtml(metier, { cta = null } = {}) {
   const d = DATA[metier]
-  const tu = metier === 'photographe' ? 'photographe' : 'équipe de ménage'
+  const tu = metier === 'photographe' ? 'photographe' : metier === 'depannage' ? 'pro du dépannage' : 'équipe de ménage'
   const tiles = d.tiles.map(([ic, l, h, v, delta], i) => `<div class="sd-tile${i === 0 ? ' on' : ''}"><div class="sd-tile-l"><i class="ph ${ic}"></i>${l}</div><div class="sd-tile-h">${h}</div><div class="sd-tile-v">${v}</div><span class="sd-tile-d">${delta}</span></div>`).join('')
   const google = d.google.map(([q, place, aff, clics]) => `<div class="sd-q"><span class="sd-q-n">${q}</span><span class="sd-q-p">${place === '1' ? '1re place' : place + 'e place'}</span><span class="sd-q-m">${aff} affichages · ${clics} clic${clics === '1' ? '' : 's'}</span></div>`).join('')
   const clicsMax = Math.max(...d.clics.map(c => c[1]))
