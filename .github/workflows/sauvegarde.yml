@@ -12,11 +12,11 @@ name: Sauvegarde de la base
 
 on:
   schedule:
-    - cron: '17 2 * * *'
-    # Rattrapage (29/10/2026) : GitHub lance souvent le passage de nuit vers 8 h 30 UTC,
-    # pendant les lenteurs de la base du matin ; ce passage ne fait rien si une
-    # sauvegarde a déjà réussi aujourd'hui.
+    # 30/10/2026 : plus de passage de nuit (GitHub le lançait vers 8 h 30 UTC, en pleine
+    # lenteur de la base). 13 h 17 puis 20 h 47 UTC ; le second ne fait rien si le
+    # premier a réussi.
     - cron: '17 13 * * *'
+    - cron: '47 20 * * *'
   workflow_dispatch:
   push:
     branches: ['claude/**']
@@ -60,11 +60,21 @@ jobs:
           node-version: 22
 
       - name: Exporter les tables
+        id: export
         if: steps.deja.outputs.skip != 'true'
-        run: node scripts/sauvegarde-base.mjs "$RUNNER_TEMP/sauvegarde"
+        run: |
+          # Passage de 13 h 17 en échec (base indisponible) : simple avertissement, celui de 20 h 47 reprend
+          if ! node scripts/sauvegarde-base.mjs "$RUNNER_TEMP/sauvegarde"; then
+            if [ "${{ github.event.schedule }}" = "17 13 * * *" ]; then
+              echo "::warning title=Sauvegarde reportée::export impossible pour le moment, nouvel essai à 20 h 47 UTC"
+              echo "reporte=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            exit 1
+          fi
 
       - name: pg_dump complet (si SUPABASE_DB_URL est configuré)
-        if: env.SUPABASE_DB_URL != '' && steps.deja.outputs.skip != 'true'
+        if: env.SUPABASE_DB_URL != '' && steps.deja.outputs.skip != 'true' && steps.export.outputs.reporte != 'true'
         run: |
           sudo apt-get install -y -qq postgresql-common >/dev/null
           sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y >/dev/null
@@ -75,7 +85,7 @@ jobs:
           echo "pg_dump : structure $(du -h "$RUNNER_TEMP/sauvegarde/schema.sql" | cut -f1), données $(du -h "$RUNNER_TEMP/sauvegarde/data.sql" | cut -f1)"
 
       - name: Chiffrer l'archive
-        if: steps.deja.outputs.skip != 'true'
+        if: steps.deja.outputs.skip != 'true' && steps.export.outputs.reporte != 'true'
         run: |
           if [ -z "$BACKUP_PASSPHRASE" ]; then
             rm -rf "$RUNNER_TEMP/sauvegarde"
@@ -92,7 +102,7 @@ jobs:
           echo "DAY=$DAY" >> "$GITHUB_ENV"
 
       - name: Garder l'archive 30 jours
-        if: steps.deja.outputs.skip != 'true'
+        if: steps.deja.outputs.skip != 'true' && steps.export.outputs.reporte != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: sauvegarde-${{ env.DAY }}

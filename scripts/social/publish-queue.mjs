@@ -193,7 +193,13 @@ if (process.argv[2] !== 'historique') {
     } catch (err) {
       failed++
       if (isTransient(err)) {
-        console.log(`::error title=Supabase indisponible (${f})::gardée dans la file, nouvel essai au prochain passage : ${err.message.slice(0, 120)}`)
+        // 30/10/2026 : la base décroche certains matins ; la publication reste dans la file et
+        // un passage suivant (11 h 05, 19 h 15 UTC) la reprend. Échec franc seulement si sa
+        // date de publication est déjà passée (elle ne partira plus à l'heure).
+        const jour = /^(\d{4}-\d{2}-\d{2})/.exec(f)?.[1]
+        const enRetard = !!jour && jour < new Date().toISOString().slice(0, 10)
+        if (!enRetard) failed--
+        console.log(`::${enRetard ? 'error' : 'warning'} title=Supabase indisponible (${f})::gardée dans la file, nouvel essai au prochain passage : ${err.message.slice(0, 120)}`)
         continue
       }
       console.log(`::error title=Publication refusée (${f})::${err.message}`)

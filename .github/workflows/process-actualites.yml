@@ -13,10 +13,10 @@ on:
     paths:
       - 'data/actualites-queue/**'
   schedule:
-    - cron: '40 6 * * *'
     # Rattrapage (29/10/2026) : la base a été très lente deux matins de suite (6 h à 9 h UTC) ;
     # un fichier resté dans la file part ici au lieu d'attendre le lendemain.
     - cron: '40 11 * * *'
+    - cron: '40 15 * * *'
   workflow_dispatch:
 
 permissions:
@@ -65,6 +65,14 @@ jobs:
               jq -r '.results[] | select(.status=="error") | "::error title=Actualité refusée (erreur)::\(.title) — \(.error)"' /tmp/api_response.json || true
               rm "$FILE"
             else
+              # 30/10/2026 : app ou base indisponible (5xx, réseau) sur un fichier du jour ou d'hier :
+              # il reste dans la file et le passage suivant (11 h 40 ou 15 h 40 UTC) le reprend.
+              # Échec franc pour une autre erreur, ou si le fichier attend depuis plus d'un jour.
+              DAYF=$(basename "$FILE" | cut -c1-8)
+              if [[ "$RESPONSE" =~ ^(5..|000)$ ]] && [[ "$DAYF" > "$(date -u -d '-2 day' +%Y%m%d)" ]]; then
+                echo "::warning title=Publication reportée::$FILE gardé dans la file (HTTP $RESPONSE), nouvel essai au prochain passage"
+                continue
+              fi
               echo "::error title=Publication impossible::$FILE rejeté (HTTP $RESPONSE)"
               exit 1
             fi

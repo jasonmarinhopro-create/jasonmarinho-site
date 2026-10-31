@@ -19,8 +19,8 @@ on:
     branches: [main, 'claude/**']
     paths: ['data/social-queue/**']
   schedule:
-    - cron: '50 6 * * *'
-    - cron: '10 9 * * *'
+    - cron: '5 10 * * *'
+    - cron: '40 9 * * *'
     - cron: '5 17 * * *'
     - cron: '50 17 * * *'
     - cron: '15 18 * * *'
@@ -57,8 +57,8 @@ jobs:
           case "${{ github.event_name }}:${{ github.event.schedule }}" in
             push:*) T="queue" ;;
             workflow_dispatch:*) T="${{ github.event.inputs.taches }}" ;;
-            "schedule:50 6 * * *"|"schedule:15 18 * * *") T="queue,sync,stats,historique" ;;  # queue : publications restées dans la file après une panne
-            "schedule:10 9 * * *"|"schedule:15 20 * * *") T="replies,historique" ;;
+            "schedule:5 10 * * *"|"schedule:15 18 * * *") T="queue,sync,stats,historique" ;;  # queue : publications restées dans la file après une panne
+            "schedule:40 9 * * *"|"schedule:15 20 * * *") T="replies,historique" ;;
             "schedule:5 17 * * *") T="dispatch" ;;
             "schedule:50 17 * * *") T="dispatch,historique" ;;
             *) T="" ;;

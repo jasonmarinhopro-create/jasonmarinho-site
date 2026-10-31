@@ -2,7 +2,8 @@ name: SEO indexation check
 
 on:
   schedule:
-    - cron: '0 6 * * *'
+    # 30/10/2026 : rien entre 6 h et 9 h 30 UTC, la base (offre gratuite) y décroche trois matins de suite
+    - cron: '13 12 * * *'
   workflow_dispatch: # déclenchement manuel pour tester
 
 jobs:

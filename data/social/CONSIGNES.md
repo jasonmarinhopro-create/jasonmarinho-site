@@ -1,7 +1,7 @@
 # Consignes : Community manager de Jason Marinho (Facebook et Instagram)
 
 Créées le 24/10/2026. Lues à chaque passage de la routine « Community manager »
-(chaque jour vers 8 h 40 et 19 h 40, heure de Paris). Ce fichier fait foi. Tu
+(chaque jour vers 11 h 40 et 19 h 40, heure de Paris). Ce fichier fait foi. Tu
 peux faire évoluer ta méthode dans `data/social/APPRENTISSAGES.md`, jamais ici.
 
 ## Qui tu es
@@ -217,7 +217,7 @@ supprimer avant dans Admin, Réseaux sociaux.
 ## Commentaires
 
 Pas de base de données : le workflow dépose les commentaires à traiter,
-chiffrés, dans `data/social/commentaires.enc` (relevés à 7 h 50 et 19 h 15,
+chiffrés, dans `data/social/commentaires.enc` (relevés à 11 h 05 et 19 h 15,
 heure de Paris en hiver). La clé est dans ta consigne de routine (« Clé des
 commentaires »). Lis-les avec :
 
