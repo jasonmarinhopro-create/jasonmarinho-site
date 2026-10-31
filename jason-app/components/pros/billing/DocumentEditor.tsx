@@ -1,7 +1,11 @@
 'use client'
 
-// Éditeur d'un devis (04/10/2026) : formulaire à gauche, aperçu en direct à
-// droite (au-delà de 1100 px ; bascule Modifier / Aperçu sur téléphone).
+// Éditeur d'un devis (04/10/2026) : saisie à gauche, feuille à droite (au-delà
+// de 1100 px ; bascule Modifier / Aperçu sur téléphone). Depuis le 31/10/2026
+// (Jason : « le visuel est très bien, change la manière de le remplir ») : un
+// pas à pas en 3 écrans (pour qui, quoi, dernières infos) et la feuille
+// elle-même modifiable d'un clic (DocumentPaper edit). Un brouillon déjà
+// rempli s'ouvre directement sur la feuille.
 // Enregistrement automatique du brouillon. Une fois envoyé, le devis ne se
 // modifie plus : place au suivi (envoi, acceptation, relance), puis la
 // facture se fait dans l'outil de facturation du pro (InvoicingCard).
@@ -10,9 +14,9 @@ import { CalendarInput } from '@/components/ui/CalendarInput'
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  ArrowLeft, Plus, Trash, ArrowUp, ArrowDown, PaperPlaneTilt, Check, Copy, DownloadSimple,
-  FileText, Eye, PencilSimple, CopySimple, Bell, X, Sparkle,
-  UserCircle, CalendarBlank, ListBullets, ChatText, CheckCircle, Clock, Gear,
+  ArrowLeft, Plus, Trash, PaperPlaneTilt, Check, Copy, DownloadSimple,
+  FileText, Eye, PencilSimple, CopySimple, Bell, X,
+  ListBullets, CheckCircle, Clock, Gear,
 } from '@phosphor-icons/react/dist/ssr'
 import DocumentPaper from './DocumentPaper'
 import BillingSettings from './BillingSettings'
@@ -43,6 +47,13 @@ interface Form {
   lines: DocLine[]
   vat_rate: number
   notes: string
+}
+
+const STEPS = ['Pour qui', 'Prestations', 'Envoi'] as const
+const OBJET_PH: Record<ProKind, string> = {
+  photographer: 'Ex. Shooting photo, Villa Les Pins',
+  cleaner: 'Ex. Ménages d\'octobre, Appartement Vieux-Port',
+  depannage: 'Ex. Fuite sous l\'évier, Appartement Les Halles',
 }
 
 const emptyLine = (): DocLine => ({ label: '', detail: null, qty: 1, unit: 'forfait', unit_price: 0 })
@@ -98,6 +109,10 @@ export default function DocumentEditor({
   }))
 
   const [keys, setKeys] = useState<string[]>(() => f.lines.map(newKey))
+  // Brouillon déjà rempli : on l'ouvre sur la feuille ; nouveau devis : pas à pas
+  const [mode, setMode] = useState<'steps' | 'sheet'>(() => (doc && f.client_name.trim() && f.lines.some(l => l.label.trim()) ? 'sheet' : 'steps'))
+  const [step, setStep] = useState(() => (f.client_name.trim() ? 1 : 0))
+  const [who, setWho] = useState('')
   const [focusKey, setFocusKey] = useState<string | null>(null)
   const vatMode = doc && !isDraft ? doc.vat_mode : profile.vat_mode
   const totals = useMemo(() => computeTotals(f.lines, vatMode, vatMode === 'tva' ? f.vat_rate : 0), [f.lines, f.vat_rate, vatMode])
@@ -167,14 +182,6 @@ export default function DocumentEditor({
     // Ligne vide : le curseur va dans sa désignation
     if (!l) setFocusKey(k)
     update({ lines: blank ? [next] : [...f.lines, next] })
-  }
-  const moveLine = (i: number, dir: -1 | 1) => {
-    const j = i + dir
-    if (j < 0 || j >= f.lines.length) return
-    const arr = [...f.lines]
-    ;[arr[i], arr[j]] = [arr[j], arr[i]]
-    setKeys(ks => { const a = [...ks]; [a[i], a[j]] = [a[j], a[i]]; return a })
-    update({ lines: arr })
   }
   const removeLine = (i: number) => {
     setKeys(ks => (f.lines.length > 1 ? ks.filter((_, j) => j !== i) : [newKey()]))
@@ -275,6 +282,42 @@ export default function DocumentEditor({
         notes: f.notes || null, accepted_at: null, accepted_name: null,
       }
   const st = doc ? displayStatus(doc, today) : 'brouillon'
+  const shownClients = (who.trim() ? clients.filter(c => `${c.nom} ${c.ville ?? ''} ${c.logement ?? ''}`.toLowerCase().includes(who.trim().toLowerCase())) : clients).slice(0, 9)
+  // Touche une prestation proposée : ajoutée, ou retirée si elle y est déjà
+  function toggleSuggestion(sg: { label: string; detail?: string | null; unit: string; qty?: number; unit_price?: number }) {
+    const k = f.lines.findIndex(l => l.label.trim().toLowerCase() === sg.label.toLowerCase())
+    if (k >= 0) removeLine(k)
+    else addLine({ label: sg.label, detail: sg.detail ?? null, unit: sg.unit, qty: sg.qty || 1, unit_price: sg.unit_price || 0 })
+  }
+  const paperEdit = isDraft ? {
+    setField: (k: 'client_name' | 'client_email' | 'client_address' | 'title' | 'notes', v: string) => update(k === 'client_name' ? { client_name: v, client_id: null } : { [k]: v }),
+    setLine, addLine: () => addLine(), removeLine, units: UNITS,
+  } : undefined
+  const totalsBlock = (
+    <div style={s.totals}>
+      {vatMode === 'tva' ? (
+        <>
+          <div style={s.totRow}><span>Total HT</span><span>{eur(totals.total_ht)}</span></div>
+          <div style={s.totRow}>
+            <span>TVA <select value={f.vat_rate} onChange={e => update({ vat_rate: Number(e.target.value) })} style={s.vatSel} aria-label="Taux de TVA"><option value={20}>20 %</option><option value={10}>10 %</option><option value={5.5}>5,5 %</option></select></span>
+            <span>{eur(totals.total_tva)}</span>
+          </div>
+        </>
+      ) : <div style={s.totNote}>TVA non applicable (franchise en base)</div>}
+      <div style={s.totBig}><span>{vatMode === 'tva' ? 'Total TTC' : 'Total'}</span><span>{eur(totals.total_ttc)}</span></div>
+    </div>
+  )
+  const datesBlock = (
+    <div style={s.grid2}>
+      <Field label="Date de la prestation">
+        <CalendarInput value={f.service_date} onChange={v => update({ service_date: v })} ariaLabel="Date de la prestation" />
+      </Field>
+      <Field label="Valable jusqu'au">
+        <CalendarInput value={f.valid_until} onChange={v => update({ valid_until: v })} ariaLabel="Valable jusqu'au" />
+        <Chips items={[[15, '15 j'], [30, '30 j'], [60, '60 j']]} onPick={d => update({ valid_until: addDays(today, d) })} />
+      </Field>
+    </div>
+  )
   const suggestions = [...recent.map(l => ({ ...l, recent: true })), ...SUGGESTIONS[kind].filter(sg => !recent.some(r => r.label.toLowerCase() === sg.label.toLowerCase())).map(sg => ({ ...sg, qty: 1, unit_price: 0, recent: false }))].slice(0, 9)
 
   return (
@@ -313,110 +356,131 @@ export default function DocumentEditor({
         <div className="billing-form" style={s.formCol}>
           {isDraft ? (
             <>
-              <Card icon={<UserCircle size={17} weight="bold" />} title="Client">
-                {clients.length > 0 && (
-                  <select className="input-field" style={s.input} value={f.client_id ?? ''} onChange={e => pickClient(e.target.value)}>
-                    <option value="">Nouveau client (ou choisis dans ton carnet)</option>
-                    {clients.map(c => <option key={c.id} value={c.id}>{c.nom}{c.ville ? ` · ${c.ville}` : ''}</option>)}
-                  </select>
-                )}
-                <div style={s.grid2}>
-                  <Field label="Nom du client">
-                    <input className="input-field" style={s.input} value={f.client_name} onChange={e => update({ client_name: e.target.value, client_id: null })} placeholder="Prénom Nom ou société" />
-                  </Field>
-                  <Field label="E-mail">
-                    <input className="input-field" style={s.input} type="email" value={f.client_email} onChange={e => update({ client_email: e.target.value })} placeholder="pour lui envoyer le devis" />
-                  </Field>
-                </div>
-                <Field label="Adresse">
-                  <textarea className="input-field" style={{ ...s.input, resize: 'vertical' as const }} rows={2} value={f.client_address} onChange={e => update({ client_address: e.target.value })} placeholder="Adresse du client" />
-                </Field>
-                <label style={s.check}>
-                  <input type="checkbox" checked={f.client_is_pro} onChange={e => update({ client_is_pro: e.target.checked })} />
-                  <span>Client professionnel (conciergerie, société, autre entrepreneur)</span>
-                </label>
-                {f.client_is_pro && (
-                  <Field label="SIREN du client" hint="Utile pour la facture : il sera obligatoire sur les factures entre pros à partir de septembre 2027.">
-                    <input className="input-field" style={s.input} value={f.client_siren} onChange={e => update({ client_siren: e.target.value })} inputMode="numeric" placeholder="9 chiffres" />
-                  </Field>
-                )}
-              </Card>
+              {mode === 'steps' ? (
+                <section style={s.card}>
+                  <div style={s.stepsHead}>
+                    {STEPS.map((label, i) => (
+                      <button key={label} type="button" onClick={() => setStep(i)} style={{ ...s.stepTab, ...(i === step ? s.stepTabOn : {}) }} aria-current={i === step ? 'step' : undefined}>
+                        <span style={{ ...s.stepBar, ...(i <= step ? s.stepBarOn : {}) }} />
+                        <span>{i + 1}. {label}</span>
+                      </button>
+                    ))}
+                  </div>
 
-              <Card icon={<CalendarBlank size={17} weight="bold" />} title="Détails">
-                <Field label="Objet (facultatif)">
-                  <input className="input-field" style={s.input} value={f.title} onChange={e => update({ title: e.target.value })} placeholder={kind === 'photographer' ? 'Ex. Shooting photo, Villa Les Pins' : 'Ex. Ménages d\'octobre, Appartement Vieux-Port'} />
-                </Field>
-                <div style={s.grid2}>
-                  <Field label="Date de la prestation">
-                    <CalendarInput value={f.service_date} onChange={v => update({ service_date: v })} ariaLabel="Date de la prestation" />
-                  </Field>
-                  <Field label="Valable jusqu'au">
-                    <CalendarInput value={f.valid_until} onChange={v => update({ valid_until: v })} ariaLabel="Valable jusqu'au" />
-                    <Chips items={[[15, '15 j'], [30, '30 j'], [60, '60 j']]} onPick={d => update({ valid_until: addDays(today, d) })} />
-                  </Field>
-                </div>
-              </Card>
-
-              <Card icon={<ListBullets size={17} weight="bold" />} title="Prestations">
-                <div style={s.sugg}>
-                  <span style={s.suggLabel}><Sparkle size={13} weight="fill" /> Ajout rapide</span>
-                  {suggestions.map((sg, i) => (
-                    <button key={i} onClick={() => addLine({ label: sg.label, detail: sg.detail ?? null, unit: sg.unit, qty: sg.qty || 1, unit_price: sg.unit_price || 0 })} style={s.suggChip} title={sg.recent ? 'Déjà chiffré dans un devis' : 'Suggestion'}>
-                      <Plus size={11} weight="bold" /> {sg.label}{sg.recent && sg.unit_price ? ` · ${eur(sg.unit_price)}` : ''}
-                    </button>
-                  ))}
-                </div>
-                <div style={s.lines}>
-                  {f.lines.map((l, i) => (
-                    <div key={keys[i] ?? i} className="fade-up" style={s.lineCard}>
-                      <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                        <input
-                          className="input-field" style={{ ...s.input, flex: 1, fontWeight: 600 }} value={l.label}
-                          onChange={e => setLine(i, { label: e.target.value })} placeholder="Désignation de la prestation" aria-label="Désignation"
-                          ref={el => { if (el && keys[i] === focusKey) { el.focus(); el.scrollIntoView({ block: 'center', behavior: 'smooth' }); setFocusKey(null) } }}
-                        />
-                        <div style={s.lineTools}>
-                          <button onClick={() => moveLine(i, -1)} disabled={i === 0} style={s.iconBtn} aria-label="Monter"><ArrowUp size={13} /></button>
-                          <button onClick={() => moveLine(i, 1)} disabled={i === f.lines.length - 1} style={s.iconBtn} aria-label="Descendre"><ArrowDown size={13} /></button>
-                          <button onClick={() => removeLine(i)} style={s.iconBtn} aria-label="Supprimer la ligne"><Trash size={13} /></button>
-                        </div>
+                  {step === 0 && (
+                    <div style={s.stepBody}>
+                      <h2 style={s.stepTitle}>Pour qui ?</h2>
+                      <p style={s.muted}>Choisis dans ton carnet ou écris un nouveau client.</p>
+                      {clients.length > 0 && (
+                        <>
+                          {clients.length > 6 && <input className="input-field" style={s.input} value={who} onChange={e => setWho(e.target.value)} placeholder="Chercher dans mon carnet" aria-label="Chercher un client" />}
+                          <div style={s.whoGrid}>
+                            {shownClients.map(c => (
+                              <button key={c.id} type="button" onClick={() => pickClient(c.id)} aria-pressed={f.client_id === c.id} style={{ ...s.whoBtn, ...(f.client_id === c.id ? s.whoBtnOn : {}) }}>
+                                <span style={{ fontWeight: 700 }}>{c.nom}</span>
+                                {(c.logement || c.ville) && <span style={s.whoSub}>{c.logement || c.ville}</span>}
+                              </button>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                      <div style={s.grid2}>
+                        <Field label={clients.length ? 'Ou un nouveau client' : 'Nom du client'}>
+                          <input className="input-field" style={s.input} value={f.client_name} onChange={e => update({ client_name: e.target.value, client_id: null })} placeholder="Prénom Nom ou société" />
+                        </Field>
+                        <Field label="E-mail">
+                          <input className="input-field" style={s.input} type="email" value={f.client_email} onChange={e => update({ client_email: e.target.value })} placeholder="pour lui envoyer le devis" />
+                        </Field>
                       </div>
-                      <input className="input-field" style={{ ...s.input, fontSize: 13 }} value={l.detail ?? ''} onChange={e => setLine(i, { detail: e.target.value })} placeholder="Détail (facultatif)" aria-label="Détail" />
-                      <div style={s.lineNums}>
-                        <label style={s.mini}><span>Quantité</span>
-                          <NumField value={l.qty} onChange={v => setLine(i, { qty: v })} ariaLabel="Quantité" />
-                        </label>
-                        <label style={s.mini}><span>Unité</span>
-                          <select className="input-field" style={s.input} value={l.unit} onChange={e => setLine(i, { unit: e.target.value })}>
-                            {UNITS.map(u => <option key={u} value={u}>{u}</option>)}
-                          </select>
-                        </label>
-                        <label style={s.mini}><span>Prix unitaire{vatMode === 'tva' ? ' HT' : ''}</span>
-                          <NumField value={l.unit_price} onChange={v => setLine(i, { unit_price: v })} ariaLabel="Prix unitaire" placeholder="0,00" emptyWhenZero />
-                        </label>
-                        <div style={{ ...s.mini, alignItems: 'flex-end' }}><span>Montant</span><strong style={s.lineTotal}>{eur(lineAmount(l))}</strong></div>
-                      </div>
+                      <Field label="Adresse">
+                        <textarea className="input-field" style={{ ...s.input, resize: 'vertical' as const }} rows={2} value={f.client_address} onChange={e => update({ client_address: e.target.value })} placeholder="Adresse du client ou du logement" />
+                      </Field>
+                      <label style={s.check}>
+                        <input type="checkbox" checked={f.client_is_pro} onChange={e => update({ client_is_pro: e.target.checked })} />
+                        <span>Client professionnel (conciergerie, société, autre entrepreneur)</span>
+                      </label>
+                      {f.client_is_pro && (
+                        <Field label="SIREN du client" hint="Utile pour la facture : il sera obligatoire sur les factures entre pros à partir de septembre 2027.">
+                          <input className="input-field" style={s.input} value={f.client_siren} onChange={e => update({ client_siren: e.target.value })} inputMode="numeric" placeholder="9 chiffres" />
+                        </Field>
+                      )}
                     </div>
-                  ))}
-                </div>
-                <button onClick={() => addLine()} style={s.addLine}><Plus size={14} weight="bold" /> Ajouter une ligne</button>
-                <div style={s.totals}>
-                  {vatMode === 'tva' ? (
-                    <>
-                      <div style={s.totRow}><span>Total HT</span><span>{eur(totals.total_ht)}</span></div>
-                      <div style={s.totRow}>
-                        <span>TVA <select value={f.vat_rate} onChange={e => update({ vat_rate: Number(e.target.value) })} style={s.vatSel}><option value={20}>20 %</option><option value={10}>10 %</option><option value={5.5}>5,5 %</option></select></span>
-                        <span>{eur(totals.total_tva)}</span>
-                      </div>
-                    </>
-                  ) : <div style={s.totNote}>TVA non applicable (franchise en base)</div>}
-                  <div style={s.totBig}><span>{vatMode === 'tva' ? 'Total TTC' : 'Total'}</span><span>{eur(totals.total_ttc)}</span></div>
-                </div>
-              </Card>
+                  )}
 
-              <Card icon={<ChatText size={17} weight="bold" />} title="Message au client (facultatif)">
-                <textarea className="input-field" style={{ ...s.input, resize: 'vertical' as const }} rows={3} value={f.notes} onChange={e => update({ notes: e.target.value })} placeholder="Ex. Merci pour ta confiance ! Acompte de 30 % à la signature, le solde le jour de la prestation." />
-              </Card>
+                  {step === 1 && (
+                    <div style={s.stepBody}>
+                      <h2 style={s.stepTitle}>Qu&apos;est-ce que tu proposes ?</h2>
+                      <p style={s.muted}>Touche une prestation pour l&apos;ajouter, puis règle la quantité et le prix.</p>
+                      <div style={s.tiles}>
+                        {suggestions.map((sg, i) => {
+                          const on = f.lines.some(l => l.label.trim().toLowerCase() === sg.label.toLowerCase())
+                          return (
+                            <button key={i} type="button" aria-pressed={on} onClick={() => toggleSuggestion(sg)} style={{ ...s.tile, ...(on ? s.tileOn : {}) }}>
+                              <span style={{ fontWeight: 700 }}>{on ? <Check size={12} weight="bold" style={{ marginRight: 4 }} /> : <Plus size={12} weight="bold" style={{ marginRight: 4 }} />}{sg.label}</span>
+                              <span style={s.whoSub}>{sg.recent && sg.unit_price ? `${eur(sg.unit_price)} / ${sg.unit}` : sg.recent ? 'déjà chiffré' : sg.unit}</span>
+                            </button>
+                          )
+                        })}
+                      </div>
+                      <div style={s.lines}>
+                        {f.lines.map((l, i) => (
+                          <div key={keys[i] ?? i} style={s.qRow}>
+                            <div style={{ flex: '1 1 200px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                              <input
+                                className="input-field" style={{ ...s.input, fontWeight: 600 }} value={l.label} onChange={e => setLine(i, { label: e.target.value })} placeholder="Désignation de la prestation" aria-label="Désignation"
+                                ref={el => { if (el && keys[i] === focusKey) { el.focus(); setFocusKey(null) } }}
+                              />
+                              <input className="input-field" style={{ ...s.input, fontSize: 13 }} value={l.detail ?? ''} onChange={e => setLine(i, { detail: e.target.value })} placeholder="Détail (facultatif)" aria-label="Détail" />
+                            </div>
+                            <div style={s.qNums}>
+                              <span style={s.stepper}>
+                                <button type="button" onClick={() => (l.qty <= 1 ? removeLine(i) : setLine(i, { qty: Math.round((l.qty - 1) * 100) / 100 }))} aria-label="Moins" style={s.stepperBtn}>−</button>
+                                <span style={{ width: 52 }}><NumField value={l.qty} onChange={v => setLine(i, { qty: v })} ariaLabel="Quantité" center /></span>
+                                <button type="button" onClick={() => setLine(i, { qty: Math.round((l.qty + 1) * 100) / 100 })} aria-label="Plus" style={s.stepperBtn}>+</button>
+                              </span>
+                              <select className="input-field" style={{ ...s.input, width: 'auto' }} value={l.unit} onChange={e => setLine(i, { unit: e.target.value })} aria-label="Unité">
+                                {UNITS.map(u => <option key={u} value={u}>{u}</option>)}
+                              </select>
+                              <span style={{ width: 96 }}><NumField value={l.unit_price} onChange={v => setLine(i, { unit_price: v })} ariaLabel={`Prix unitaire${vatMode === 'tva' ? ' HT' : ''}`} placeholder="Prix €" emptyWhenZero /></span>
+                              <strong style={s.lineTotal}>{eur(lineAmount(l))}</strong>
+                              <button type="button" onClick={() => removeLine(i)} style={s.iconBtn} aria-label="Retirer la ligne"><Trash size={13} /></button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <button type="button" onClick={() => addLine()} style={s.addLine}><Plus size={14} weight="bold" /> Ligne libre</button>
+                      {totalsBlock}
+                    </div>
+                  )}
+
+                  {step === 2 && (
+                    <div style={s.stepBody}>
+                      <h2 style={s.stepTitle}>Dernières infos</h2>
+                      <p style={s.muted}>Tout est déjà sur la feuille. Tu peux encore y corriger un nom ou un prix d&apos;un clic.</p>
+                      <Field label="Objet (facultatif)">
+                        <input className="input-field" style={s.input} value={f.title} onChange={e => update({ title: e.target.value })} placeholder={OBJET_PH[kind]} />
+                      </Field>
+                      {datesBlock}
+                      <Field label="Message au client (facultatif)">
+                        <textarea className="input-field" style={{ ...s.input, resize: 'vertical' as const }} rows={3} value={f.notes} onChange={e => update({ notes: e.target.value })} placeholder="Ex. Merci pour ta confiance ! Le paiement se règle le jour de la prestation." />
+                      </Field>
+                      {totalsBlock}
+                    </div>
+                  )}
+
+                  <div style={s.stepNav}>
+                    {step > 0 ? <button type="button" onClick={() => setStep(step - 1)} style={s.ghost}><ArrowLeft size={14} weight="bold" /> Retour</button> : <button type="button" onClick={() => setMode('sheet')} style={s.ghost}><PencilSimple size={14} weight="bold" /> Remplir sur la feuille</button>}
+                    {step < 2 && <button type="button" onClick={() => setStep(step + 1)} className="btn-primary">Continuer</button>}
+                  </div>
+                </section>
+              ) : (
+                <section style={s.card}>
+                  <div style={s.cardTitle}><span style={s.cardIcon}><PencilSimple size={17} weight="bold" /></span>Tu remplis directement sur la feuille</div>
+                  <p style={s.muted}>Clique sur un texte de la feuille pour le changer : client, prestations, quantités, prix, message. Les dates et la TVA se règlent ici.</p>
+                  {datesBlock}
+                  <button type="button" onClick={() => { setMode('steps'); setStep(0) }} style={{ ...s.secondary, alignSelf: 'flex-start' }}><ListBullets size={15} weight="bold" /> Reprendre pas à pas</button>
+                </section>
+              )}
 
               <div style={s.actionBar}>
                 {missingP.length > 0 && (
@@ -426,7 +490,7 @@ export default function DocumentEditor({
                   <button onClick={remove} style={s.dangerGhost}><Trash size={14} weight="bold" /> {id ? 'Supprimer' : 'Annuler'}</button>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginLeft: 'auto' }}>
                     <button onClick={() => finalize(false)} disabled={pending} style={s.secondary}><Check size={15} weight="bold" /> Finaliser sans envoyer</button>
-                    <button onClick={() => finalize(true)} disabled={pending} className="btn-primary"><PaperPlaneTilt size={15} weight="bold" /> Envoyer le devis</button>
+                    <button onClick={() => finalize(true)} disabled={pending} className="btn-primary"><PaperPlaneTilt size={15} weight="bold" /> Envoyer · {eur(totals.total_ttc)}</button>
                   </div>
                 </div>
               </div>
@@ -448,11 +512,11 @@ export default function DocumentEditor({
 
         <div className="billing-preview" style={s.previewCol}>
           <div style={s.previewHead}>
-            <span>Aperçu {isDraft ? 'en direct' : 'du devis envoyé'}</span>
+            <span>{isDraft ? 'Ta feuille de devis · clique pour modifier' : 'Le devis envoyé'}</span>
             {doc && !isDraft && <a href={`${publicUrl}?print=1`} target="_blank" rel="noopener noreferrer" style={s.previewLink}><DownloadSimple size={14} weight="bold" /> PDF</a>}
           </div>
           <div style={s.previewScroll}>
-            <DocumentPaper doc={paperDoc} seller={doc?.seller && !isDraft ? doc.seller : profile} logoUrl={logoUrl} today={today} />
+            <DocumentPaper doc={paperDoc} seller={doc?.seller && !isDraft ? doc.seller : profile} logoUrl={logoUrl} today={today} edit={paperEdit} />
           </div>
         </div>
       </div>
@@ -545,8 +609,8 @@ function FollowUp({ doc, st, pending, copied, publicUrl, copyLink, onSend, onSta
 
 // Champ nombre (31/10/2026) : accepte la virgule (clavier français), se vide
 // sans afficher 0 pendant la saisie, et garde ce qui est tapé (« 12, » …).
-function NumField({ value, onChange, ariaLabel, placeholder, emptyWhenZero = false }: {
-  value: number; onChange: (v: number) => void; ariaLabel: string; placeholder?: string; emptyWhenZero?: boolean
+function NumField({ value, onChange, ariaLabel, placeholder, emptyWhenZero = false, center = false }: {
+  value: number; onChange: (v: number) => void; ariaLabel: string; placeholder?: string; emptyWhenZero?: boolean; center?: boolean
 }) {
   const shown = (n: number) => (emptyWhenZero && !n ? '' : String(n).replace('.', ','))
   const [txt, setTxt] = useState(() => shown(value))
@@ -554,7 +618,7 @@ function NumField({ value, onChange, ariaLabel, placeholder, emptyWhenZero = fal
   useEffect(() => { if (!editing.current) setTxt(shown(value)) }, [value]) // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <input
-      className="input-field" style={s.input} inputMode="decimal" value={txt} placeholder={placeholder} aria-label={ariaLabel}
+      className="input-field" style={{ ...s.input, ...(center ? { textAlign: 'center' as const, padding: '8px 4px' } : {}) }} inputMode="decimal" value={txt} placeholder={placeholder} aria-label={ariaLabel}
       onFocus={() => { editing.current = true }}
       onBlur={() => { editing.current = false; setTxt(shown(value)) }}
       onChange={e => {
@@ -627,6 +691,25 @@ const s: Record<string, React.CSSProperties> = {
   input: { width: '100%', fontSize: 14 },
   check: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--text-2)', cursor: 'pointer' },
   dateChip: { padding: '3px 9px', borderRadius: 99, border: '1px solid var(--border)', background: 'transparent', fontSize: 11.5, fontWeight: 600, color: 'var(--text-2)', cursor: 'pointer' },
+  stepsHead: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 8 },
+  stepTab: { display: 'flex', flexDirection: 'column', gap: 6, padding: 0, border: 'none', background: 'none', textAlign: 'left', fontSize: 12.5, fontWeight: 600, color: 'var(--text-muted)', cursor: 'pointer', fontFamily: 'inherit' },
+  stepTabOn: { color: 'var(--text)' },
+  stepBar: { height: 4, borderRadius: 4, background: 'var(--border)' },
+  stepBarOn: { background: 'var(--accent-text)' },
+  stepBody: { display: 'flex', flexDirection: 'column', gap: 12 },
+  stepTitle: { fontFamily: 'var(--font-fraunces), serif', fontSize: 22, fontWeight: 500, color: 'var(--text)', margin: '4px 0 0' },
+  stepNav: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, flexWrap: 'wrap', paddingTop: 4 },
+  whoGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 170px), 1fr))', gap: 8 },
+  whoBtn: { display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'flex-start', textAlign: 'left', padding: '10px 12px', borderRadius: 12, border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)', fontSize: 14, cursor: 'pointer', fontFamily: 'inherit', minWidth: 0 },
+  whoBtnOn: { border: '2px solid var(--accent-text)', padding: '9px 11px', background: 'var(--accent-bg)' },
+  whoSub: { fontSize: 12, fontWeight: 400, color: 'var(--text-muted)', overflowWrap: 'anywhere' },
+  tiles: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 180px), 1fr))', gap: 8 },
+  tile: { display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'flex-start', textAlign: 'left', padding: '10px 12px', borderRadius: 12, border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)', fontSize: 13.5, cursor: 'pointer', fontFamily: 'inherit', minWidth: 0 },
+  tileOn: { border: '2px solid var(--accent-text)', padding: '9px 11px', background: 'var(--accent-bg)', color: 'var(--accent-text)' },
+  qRow: { display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'flex-start', padding: '12px 0', borderTop: '1px solid var(--border)' },
+  qNums: { display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' },
+  stepper: { display: 'inline-flex', alignItems: 'center', gap: 2, border: '1px solid var(--border)', borderRadius: 10, padding: 2, background: 'var(--surface)' },
+  stepperBtn: { width: 32, height: 34, border: 'none', borderRadius: 8, background: 'var(--bg)', color: 'var(--text)', fontSize: 18, cursor: 'pointer', fontFamily: 'inherit' },
   sugg: { display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' },
   suggLabel: { display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 700, color: '#B7791F', marginRight: 2 },
   suggChip: { display: 'inline-flex', alignItems: 'center', gap: 4, padding: '5px 10px', borderRadius: 99, border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--accent-text)', fontSize: 12, fontWeight: 600, cursor: 'pointer' },

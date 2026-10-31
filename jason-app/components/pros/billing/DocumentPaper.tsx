@@ -1,5 +1,7 @@
 // Feuille d'un devis (04/10/2026), partagée par l'aperçu en direct de
-// l'éditeur et la page du client (/doc/<jeton>).
+// l'éditeur et la page du client (/doc/<jeton>). Depuis le 31/10/2026, l'éditeur
+// passe `edit` : les textes deviennent des champs posés sur la feuille (même
+// rendu), la page du client reste en lecture seule.
 // Couleurs fixes, pas de variables de thème : c'est un document imprimé sur
 // fond blanc, identique en thème clair ou sombre. Composant pur (sans hook).
 
@@ -7,6 +9,17 @@ import {
   eur, frDate, legalMentions, lineAmount, sellerDisplayName,
   type BillingProfile, type DocLine, type VatMode,
 } from '@/lib/pros/billing'
+import { PaperText, PaperNumber, PAPER_INPUT_CSS } from './PaperInputs'
+import InlineStyle from '@/components/ui/InlineStyle'
+
+/** Édition sur la feuille (éditeur seulement) */
+export interface PaperEdit {
+  setField: (k: 'client_name' | 'client_email' | 'client_address' | 'title' | 'notes', v: string) => void
+  setLine: (i: number, patch: Partial<DocLine>) => void
+  addLine: () => void
+  removeLine: (i: number) => void
+  units: readonly string[]
+}
 
 export interface PaperDoc {
   number: string | null
@@ -36,21 +49,24 @@ const C = {
   border: '#D5E5DB', yellow: '#FFD56B', rust: '#9A3B26',
 }
 
-export default function DocumentPaper({ doc, seller, logoUrl, today }: {
+export default function DocumentPaper({ doc, seller, logoUrl, today, edit }: {
   doc: PaperDoc
   seller: BillingProfile
   logoUrl?: string | null
   today: string
+  edit?: PaperEdit
 }) {
   const draft = doc.status === 'brouillon'
   const issue = doc.issue_date ?? today
   const name = sellerDisplayName(seller) || 'Ton nom'
   const mentions = legalMentions({ ...doc, issue_date: issue }, seller)
-  const hasDetail = doc.lines.some(l => l.detail)
+  const hasDetail = !!edit || doc.lines.some(l => l.detail)
   const lines = doc.lines.length ? doc.lines : [{ label: '', qty: 1, unit: 'forfait', unit_price: 0 } as DocLine]
+  const E = edit
 
   return (
     <article style={s.paper} className="doc-paper">
+      {E && <InlineStyle css={PAPER_INPUT_CSS} />}
       {draft && <div style={s.draftBand}>Aperçu du brouillon : le numéro est attribué à l&apos;envoi</div>}
 
       <header style={s.head}>
@@ -83,10 +99,21 @@ export default function DocumentPaper({ doc, seller, logoUrl, today }: {
         </div>
         <div style={{ ...s.party, ...s.partyClient }}>
           <div style={s.partyLabel}>Pour</div>
-          <div style={s.partyName}>{doc.client_name || <span style={{ color: C.faint }}>Nom du client</span>}</div>
-          {doc.client_address && <div style={{ ...s.line, whiteSpace: 'pre-line' as const }}>{doc.client_address}</div>}
-          {doc.client_is_pro && doc.client_siren && <div style={s.line}>SIREN {doc.client_siren}</div>}
-          {doc.client_email && <div style={s.line}>{doc.client_email}</div>}
+          {E ? (
+            <>
+              <div style={s.partyName}><PaperText value={doc.client_name ?? ''} onChange={v => E.setField('client_name', v)} placeholder="Nom du client" /></div>
+              <div style={s.line}><PaperText multiline value={doc.client_address ?? ''} onChange={v => E.setField('client_address', v)} placeholder="Adresse" /></div>
+              {doc.client_is_pro && doc.client_siren && <div style={s.line}>SIREN {doc.client_siren}</div>}
+              <div style={s.line}><PaperText value={doc.client_email ?? ''} onChange={v => E.setField('client_email', v)} placeholder="E-mail, pour lui envoyer le devis" /></div>
+            </>
+          ) : (
+            <>
+              <div style={s.partyName}>{doc.client_name || <span style={{ color: C.faint }}>Nom du client</span>}</div>
+              {doc.client_address && <div style={{ ...s.line, whiteSpace: 'pre-line' as const }}>{doc.client_address}</div>}
+              {doc.client_is_pro && doc.client_siren && <div style={s.line}>SIREN {doc.client_siren}</div>}
+              {doc.client_email && <div style={s.line}>{doc.client_email}</div>}
+            </>
+          )}
         </div>
       </section>
 
@@ -97,7 +124,9 @@ export default function DocumentPaper({ doc, seller, logoUrl, today }: {
         <Meta k="Nature" v="Prestation de services" />
       </section>
 
-      {doc.title && <div style={s.objet}><span style={s.objetK}>Objet</span>{doc.title}</div>}
+      {E ? (
+        <div style={{ ...s.objet, display: 'flex', alignItems: 'baseline' }}><span style={s.objetK}>Objet</span><span style={{ flex: 1, minWidth: 0 }}><PaperText value={doc.title ?? ''} onChange={v => E.setField('title', v)} placeholder="Ex. Fuite sous l'évier, shooting de la villa…" /></span></div>
+      ) : doc.title && <div style={s.objet}><span style={s.objetK}>Objet</span>{doc.title}</div>}
 
       <div style={{ overflowX: 'auto' as const }}>
         <table style={s.table}>
@@ -110,7 +139,27 @@ export default function DocumentPaper({ doc, seller, logoUrl, today }: {
             </tr>
           </thead>
           <tbody>
-            {lines.map((l, i) => (
+            {lines.map((l, i) => E ? (
+              <tr key={i}>
+                <td style={{ ...s.td, textAlign: 'left' as const, whiteSpace: 'normal' as const, minWidth: 180 }}>
+                  <div style={{ fontWeight: 600 }}><PaperText value={l.label} onChange={v => E.setLine(i, { label: v })} placeholder="Désignation de la prestation" /></div>
+                  <div style={s.detail}><PaperText value={l.detail ?? ''} onChange={v => E.setLine(i, { detail: v || null })} placeholder="Détail (facultatif)" /></div>
+                </td>
+                <td style={s.td}>
+                  <span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 4 }}>
+                    <PaperNumber value={l.qty} onChange={v => E.setLine(i, { qty: v })} ariaLabel="Quantité" style={{ width: 44 }} />
+                    <select className="paper-unit" value={l.unit} onChange={e => E.setLine(i, { unit: e.target.value })} aria-label="Unité">
+                      {E.units.map(u => <option key={u} value={u}>{u}</option>)}
+                    </select>
+                  </span>
+                </td>
+                <td style={s.td}><span style={{ display: 'inline-flex', alignItems: 'baseline', gap: 2 }}><PaperNumber value={l.unit_price} onChange={v => E.setLine(i, { unit_price: v })} ariaLabel="Prix unitaire" placeholder="0,00" emptyWhenZero style={{ width: 72 }} /> €</span></td>
+                <td style={{ ...s.td, fontWeight: 600 }}>
+                  {eur(lineAmount(l))}
+                  <button type="button" onClick={() => E.removeLine(i)} aria-label="Retirer la ligne" style={s.del}>×</button>
+                </td>
+              </tr>
+            ) : (
               <tr key={i}>
                 <td style={{ ...s.td, textAlign: 'left' as const }}>
                   <div style={{ fontWeight: 600, color: l.label ? C.text : C.faint }}>{l.label || 'Désignation de la prestation'}</div>
@@ -121,13 +170,19 @@ export default function DocumentPaper({ doc, seller, logoUrl, today }: {
                 <td style={{ ...s.td, fontWeight: 600 }}>{eur(lineAmount(l))}</td>
               </tr>
             ))}
+            {E && (
+              <tr><td colSpan={4} style={{ padding: '10px 0 0' }}>
+                <button type="button" onClick={E.addLine} style={s.addLine}>+ Ajouter une prestation</button>
+              </td></tr>
+            )}
           </tbody>
         </table>
       </div>
 
       <section style={s.bottom}>
         <div style={{ flex: '1 1 260px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {doc.notes && <div style={s.notes}>{doc.notes}</div>}
+          {E ? <div style={s.notes}><PaperText multiline value={doc.notes ?? ''} onChange={v => E.setField('notes', v)} placeholder="Message au client (facultatif)" /></div>
+            : doc.notes && <div style={s.notes}>{doc.notes}</div>}
           {doc.accepted_at ? (
             <div style={s.stamp}>Bon pour accord, accepté en ligne le {frDate(doc.accepted_at.slice(0, 10))}{doc.accepted_name ? ` par ${doc.accepted_name}` : ''}</div>
           ) : (
@@ -213,5 +268,7 @@ const s: Record<string, React.CSSProperties> = {
   totals: { flex: '0 1 280px', marginLeft: 'auto', display: 'flex', flexDirection: 'column', gap: 6 },
   totalRow: { display: 'flex', justifyContent: 'space-between', gap: 16, fontSize: 13, color: C.muted, fontVariantNumeric: 'tabular-nums', padding: '0 4px' },
   totalBig: { display: 'flex', justifyContent: 'space-between', gap: 16, padding: '12px 14px', borderRadius: 10, background: C.green, color: '#fff', fontWeight: 700, fontSize: 16, fontVariantNumeric: 'tabular-nums' },
+  del: { marginLeft: 6, border: 'none', background: 'none', color: C.faint, cursor: 'pointer', fontSize: 15, lineHeight: 1, padding: 0 },
+  addLine: { width: '100%', padding: '8px 12px', borderRadius: 9, border: `1.5px dashed ${C.border}`, background: C.pale, color: C.green, fontWeight: 600, fontSize: 12.5, cursor: 'pointer', fontFamily: 'inherit' },
   foot: { marginTop: 26, paddingTop: 14, borderTop: `1px solid ${C.border}`, fontSize: 10.5, color: C.faint, lineHeight: 1.6, display: 'flex', flexDirection: 'column', gap: 3 },
 }
