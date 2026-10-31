@@ -26,6 +26,7 @@ describe('pages pros par ville', () => {
           { name: 'Vendéen', ville: 'La Roche-sur-Yon', zone: "Vendée, Les Sables-d'Olonne", slug: 'v', online: true, excluded: false },
         ],
         menage: [],
+        depannage: [],
       },
     })
     expect(d.photographe.items).toHaveLength(CITY_PAGE_SLUGS.length)

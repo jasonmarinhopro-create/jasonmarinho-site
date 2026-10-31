@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { Camera, Broom, ArrowSquareOut, PresentationChart, IdentificationCard } from '@phosphor-icons/react/dist/ssr'
+import { Camera, Broom, Wrench, ArrowSquareOut, PresentationChart, IdentificationCard } from '@phosphor-icons/react/dist/ssr'
 import { AMBER, BROWN } from '../_ui/theme'
 import { filterPros, fmtInt, type ProFilter, type ProSort, type ProBucket, type ProItem } from '@/lib/visibility/admin-rules'
 import type { FichesData } from '@/lib/visibility/admin-build'
@@ -14,7 +14,7 @@ const ALL_BUCKETS: ProBucket[] = ['1', '2-3', '4-10', '11-20', '21+', 'masked', 
 const PAGE = 50
 
 export default function FichesTab({ d }: { d: FichesData }) {
-  const [kind, setKind] = useState<'all' | 'photographe' | 'menage'>('all')
+  const [kind, setKind] = useState<'all' | 'photographe' | 'menage' | 'depannage'>('all')
   const [filter, setFilter] = useState<ProFilter>('toutes')
   const [sort, setSort] = useState<ProSort>('clics')
   const [q, setQ] = useState('')
@@ -31,7 +31,7 @@ export default function FichesTab({ d }: { d: FichesData }) {
   const firstPage = online.filter(p => p.main && p.main.place <= 10).length
   const list = useMemo(() => filterPros(d.items, { kind, filter, q, sort }), [d.items, kind, filter, q, sort])
 
-  const kindLabel = kind === 'photographe' ? 'fiches photographes' : kind === 'menage' ? 'fiches ménage' : 'fiches'
+  const kindLabel = kind === 'photographe' ? 'fiches photographes' : kind === 'menage' ? 'fiches ménage' : kind === 'depannage' ? 'fiches dépannage' : 'fiches'
 
   return (
     <>
@@ -44,6 +44,7 @@ export default function FichesTab({ d }: { d: FichesData }) {
           options={[
             { key: 'photographe', label: 'Photographes', count: d.counts.photographe },
             { key: 'menage', label: 'Équipes de ménage', count: d.counts.menage },
+            { key: 'depannage', label: 'Dépannage', count: d.counts.depannage ?? 0 },
             { key: 'all', label: 'Toutes', count: d.items.length },
           ]}
         />
@@ -99,9 +100,9 @@ export default function FichesTab({ d }: { d: FichesData }) {
 }
 
 function ProRow({ p, open, onToggle }: { p: ProItem; open: boolean; onToggle: () => void }) {
-  const space = p.kind === 'photographe' ? 'ma-fiche-photographe' : 'ma-fiche-menage'
-  const publicUrl = p.slug ? `https://jasonmarinho.com/annuaires/${p.kind === 'photographe' ? 'photographes' : 'menage'}/${p.slug}` : null
-  const Icon = p.kind === 'photographe' ? Camera : Broom
+  const space = `ma-fiche-${p.kind}`
+  const publicUrl = p.slug ? `https://jasonmarinho.com/annuaires/${p.kind === 'photographe' ? 'photographes' : p.kind}/${p.slug}` : null
+  const Icon = p.kind === 'photographe' ? Camera : p.kind === 'depannage' ? Wrench : Broom
   return (
     <div>
       <button type="button" className="vis-row" aria-expanded={open} onClick={onToggle}>

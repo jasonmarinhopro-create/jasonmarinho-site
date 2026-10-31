@@ -9,7 +9,7 @@
 import { isVideoQuery } from '@/lib/visibility/rules'
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { Camera, Broom, ArrowSquareOut, PaperPlaneTilt, CheckCircle } from '@phosphor-icons/react/dist/ssr'
+import { Camera, Broom, Wrench, ArrowSquareOut, PaperPlaneTilt, CheckCircle } from '@phosphor-icons/react/dist/ssr'
 import { fmtInt, matchesText } from '@/lib/visibility/admin-rules'
 import type { CityProPage, PagesProsData } from '@/lib/visibility/city-pros'
 import type { CityMetier } from '@/lib/visibility/city-page'
@@ -29,7 +29,8 @@ export default function PagesProsTab({ d }: { d: PagesProsData }) {
   const [filter, setFilter] = useState<Filter>('toutes')
   const [open, setOpen] = useState<string | null>(null)
   const [limit, setLimit] = useState(PAGE)
-  const side = d[metier]
+  // Données d'avant le dépannage (cache) : côté vide plutôt qu'une erreur
+  const side = d[metier] ?? { items: [], clicks: 0, impressions: 0, visitors: 0, toFiches: 0, firstPage: 0, toRecruit: 0, withPro: 0 }
   const online = (c: CityProPage) => c.pros.some(p => p.online)
 
   const list = useMemo(() => {
@@ -50,7 +51,7 @@ export default function PagesProsTab({ d }: { d: PagesProsData }) {
   }, [side.items, q, sort, filter])
 
   const seen = side.items.filter(c => c.impressions > 0).length
-  const word = metier === 'photographe' ? 'Photographe & vidéaste' : 'Ménage'
+  const word = metier === 'photographe' ? 'Photographe & vidéaste' : metier === 'depannage' ? 'Dépannage' : 'Ménage'
   // Recherches vidéo (vidéaste, drone…) qui montrent ces pages, 17/10/2026
   const video = useMemo(() => {
     const seenQ = new Map<string, number>()
@@ -65,18 +66,18 @@ export default function PagesProsTab({ d }: { d: PagesProsData }) {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px 40px', alignItems: 'flex-end' }}>
           <div style={{ flex: '1 1 420px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div style={{ display: 'inline-flex', gap: 6, flexWrap: 'wrap' }}>
-              {(['photographe', 'menage'] as const).map(m => (
+              {(['photographe', 'menage', 'depannage'] as const).map(m => (
                 <button key={m} type="button" onClick={() => { setMetier(m); setOpen(null); setLimit(PAGE) }}
                   style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 14px', borderRadius: 999, fontSize: 13.5, fontWeight: 700, cursor: 'pointer',
                     border: `1px solid ${metier === m ? ACCENT : 'var(--border)'}`, background: metier === m ? 'var(--accent-bg)' : 'var(--surface)', color: metier === m ? ACCENT : 'var(--text-2)' }}>
-                  {m === 'photographe' ? <Camera size={15} weight="bold" /> : <Broom size={15} weight="bold" />}
-                  {m === 'photographe' ? 'Photographe & vidéaste + ville' : 'Équipe de ménage + ville'}
+                  {m === 'photographe' ? <Camera size={15} weight="bold" /> : m === 'depannage' ? <Wrench size={15} weight="bold" /> : <Broom size={15} weight="bold" />}
+                  {m === 'photographe' ? 'Photographe & vidéaste + ville' : m === 'depannage' ? 'Dépannage + ville' : 'Équipe de ménage + ville'}
                 </button>
               ))}
             </div>
             <h2 style={v.title}>Les {side.items.length} pages « {word} à &lt;ville&gt; »</h2>
             <p style={v.text}>
-              Chaque page présente les {metier === 'photographe' ? 'photographes et vidéastes' : 'équipes de ménage'} inscrits de la ville. {fmtInt(seen)} sont déjà vues dans Google ;{' '}
+              Chaque page présente les {metier === 'photographe' ? 'photographes et vidéastes' : metier === 'depannage' ? 'pros du dépannage' : 'équipes de ménage'} inscrits de la ville. {fmtInt(seen)} sont déjà vues dans Google ;{' '}
               <strong style={{ color: 'var(--text)' }}>{fmtInt(side.toRecruit)}</strong> n&apos;ont encore aucun pro en ligne : ce sont les villes où recruter en priorité.
             </p>
             <Link href="/dashboard/admin/prospection" style={{ ...v.btnPrimary, alignSelf: 'flex-start' }}>

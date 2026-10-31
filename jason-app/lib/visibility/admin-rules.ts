@@ -64,7 +64,7 @@ export type ProBucket = PlaceBucket | 'masked' | 'never'
 
 export interface ProItem {
   id: string
-  kind: 'photographe' | 'menage'
+  kind: 'photographe' | 'menage' | 'depannage'
   name: string
   ville: string
   slug: string | null
@@ -116,7 +116,7 @@ export interface CityItem {
   best: QueryLite | null
   /** Places gagnées en moyenne (pondéré par les affichages) */
   delta: number | null
-  pros: { photographes: number; menage: number }
+  pros: { photographes: number; menage: number; depannage: number }
   themes: CityThemeItem[]
 }
 
@@ -239,7 +239,7 @@ export function bestQuery(list: QueryLite[]): QueryLite | null {
  */
 export function groupCities(
   pages: Array<{ path: string; clicks: number; impressions: number; pagePlace: number | null; delta: number | null; queries: QueryLite[] }>,
-  pros: Array<{ kind: 'photographe' | 'menage'; ville: string }>,
+  pros: Array<{ kind: 'photographe' | 'menage' | 'depannage'; ville: string }>,
 ): CityItem[] {
   const map = new Map<string, CityItem & { deltas: Array<{ delta: number | null; impressions: number }> }>()
   for (const p of pages) {
@@ -247,7 +247,7 @@ export function groupCities(
     if (!c) continue
     let item = map.get(c.slug)
     if (!item) {
-      item = { slug: c.slug, name: c.name, clicks: 0, impressions: 0, best: null, delta: null, pros: { photographes: 0, menage: 0 }, themes: [], deltas: [] }
+      item = { slug: c.slug, name: c.name, clicks: 0, impressions: 0, best: null, delta: null, pros: { photographes: 0, menage: 0, depannage: 0 }, themes: [], deltas: [] }
       map.set(c.slug, item)
     }
     item.clicks += p.clicks
@@ -255,7 +255,7 @@ export function groupCities(
     item.deltas.push({ delta: p.delta, impressions: p.impressions })
     item.themes.push({ theme: c.theme, label: CITY_THEME_LABEL[c.theme], path: p.path, clicks: p.clicks, impressions: p.impressions, place: p.pagePlace, queries: p.queries })
   }
-  const order: CityTheme[] = ['menage', 'photographe', 'hote']
+  const order: CityTheme[] = ['menage', 'photographe', 'depannage', 'hote']
   return [...map.values()].map(({ deltas, ...item }) => {
     item.themes.sort((a, b) => order.indexOf(a.theme) - order.indexOf(b.theme))
     item.best = bestQuery(item.themes.flatMap(t => t.queries))
@@ -263,6 +263,7 @@ export function groupCities(
     for (const pro of pros) {
       if (!cityMatches(pro.ville, item.name)) continue
       if (pro.kind === 'photographe') item.pros.photographes++
+      else if (pro.kind === 'depannage') item.pros.depannage++
       else item.pros.menage++
     }
     return item
@@ -286,7 +287,7 @@ const byPlace = (a: number | null | undefined, b: number | null | undefined) =>
 export type ProFilter = 'toutes' | 'payees' | 'fondateur' | 'jamais' | 'hors-ligne'
 export type ProSort = 'clics' | 'affichages' | 'place' | 'visiteurs' | 'nom'
 
-export function filterPros(items: ProItem[], o: { kind: 'all' | 'photographe' | 'menage'; filter: ProFilter; q: string; sort: ProSort }): ProItem[] {
+export function filterPros(items: ProItem[], o: { kind: 'all' | 'photographe' | 'menage' | 'depannage'; filter: ProFilter; q: string; sort: ProSort }): ProItem[] {
   const out = items.filter(p =>
     (o.kind === 'all' || p.kind === o.kind)
     && (o.filter === 'toutes'

@@ -62,7 +62,7 @@ export type PagesProsData = Record<CityMetier, CityProsSide>
 
 interface VisitLite { session_id: string; path: string; referrer: string | null }
 
-const FICHE_PREFIX: Record<CityMetier, string> = { photographe: '/annuaires/photographes/', menage: '/annuaires/menage/' }
+const FICHE_PREFIX: Record<CityMetier, string> = { photographe: '/annuaires/photographes/', menage: '/annuaires/menage/', depannage: '/annuaires/depannage/' }
 
 export function buildCityPros(input: {
   pages: Map<string, CityPageTruth>
@@ -111,5 +111,5 @@ export function buildCityPros(input: {
       withPro: items.filter(online).length,
     }
   }
-  return { photographe: side('photographe'), menage: side('menage') }
+  return { photographe: side('photographe'), menage: side('menage'), depannage: side('depannage') }
 }

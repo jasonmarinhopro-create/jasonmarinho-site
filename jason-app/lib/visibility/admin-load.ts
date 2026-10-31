@@ -20,9 +20,10 @@ const errMsg = (e: unknown) => String((e as Error)?.message ?? e).slice(0, 200)
 
 async function loadPros() {
   const db = getServiceClient()
-  const [ph, cl, admins] = await Promise.all([
+  const [ph, cl, dep, admins] = await Promise.all([
     db.from('photographers').select(PRO_COLUMNS),
     db.from('cleaners').select(PRO_COLUMNS),
+    db.from('depannage_pros').select(PRO_COLUMNS),
     adminUserIds(db),
   ])
   if (ph.error) throw new Error(ph.error.message)
@@ -31,6 +32,8 @@ async function loadPros() {
   return {
     photographers: splitDemo((ph.data ?? []) as Array<ProRow & { user_id?: string | null }>, admins).real,
     cleaners: splitDemo((cl.data ?? []) as Array<ProRow & { user_id?: string | null }>, admins).real,
+    // Dépannage (31/10/2026) : une table absente ou en panne ne bloque pas les 2 autres
+    depannage: dep.error ? [] : splitDemo((dep.data ?? []) as Array<ProRow & { user_id?: string | null }>, admins).real,
   }
 }
 
@@ -44,7 +47,7 @@ async function loadDemandes(start: string, end: string): Promise<Map<string, num
     if (error) return
     for (const r of (data ?? []) as unknown as Array<Record<string, string>>) out.set(r[col], (out.get(r[col]) ?? 0) + 1)
   }
-  await Promise.all([read('photographer_contacts', 'photographer_id'), read('cleaner_contacts', 'cleaner_id')])
+  await Promise.all([read('photographer_contacts', 'photographer_id'), read('cleaner_contacts', 'cleaner_id'), read('depannage_contacts', 'depannage_id')])
   return out
 }
 

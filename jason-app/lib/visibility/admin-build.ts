@@ -51,7 +51,7 @@ export interface FichesData {
   firstPage: number
   impressions: number
   clicks: number
-  counts: { photographe: number; menage: number }
+  counts: { photographe: number; menage: number; depannage: number }
 }
 
 export interface RecherchesData {
@@ -130,7 +130,7 @@ export interface VisibilityInput {
   truth: GscResult<{ cur: PageMetrics; prev: PageMetrics }>
   visitsRes: { ok: true; rows: VisitRow[] } | { ok: false; error: string }
   prevVisitsRes: { ok: true; rows: VisitRow[] } | { ok: false; rows: VisitRow[] }
-  prosRes: { ok: true; photographers: ProRow[]; cleaners: ProRow[] } | { ok: false; error: string }
+  prosRes: { ok: true; photographers: ProRow[]; cleaners: ProRow[]; depannage?: ProRow[] } | { ok: false; error: string }
   demandes: Map<string, number>
   /** Clics vers les liens affiliés du site (affiliate_clicks), période et période d'avant */
   affClicksRes: { ok: true; cur: ClickRow[]; prev: ClickRow[] } | { ok: false; error: string }
@@ -188,8 +188,8 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
   // ── Fiches pros ──
   const proItems: ProItem[] = []
   if (prosRes.ok) {
-    const add = (r: ProRow, kind: 'photographe' | 'menage') => {
-      const path = r.slug ? `/annuaires/${kind === 'photographe' ? 'photographes' : 'menage'}/${r.slug}` : null
+    const add = (r: ProRow, kind: 'photographe' | 'menage' | 'depannage') => {
+      const path = r.slug ? `/annuaires/${kind === 'photographe' ? 'photographes' : kind}/${r.slug}` : null
       const p = path ? pages.get(path) : undefined
       const queries = pageQueries(p)
       const main = queries[0] ?? null
@@ -217,6 +217,7 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
     }
     prosRes.photographers.forEach(r => add(r, 'photographe'))
     prosRes.cleaners.forEach(r => add(r, 'menage'))
+    ;(prosRes.depannage ?? []).forEach(r => add(r, 'depannage'))
   }
   const onlinePros = proItems.filter(p => p.online)
   const prosFirstPage = onlinePros.filter(p => p.main && isFirstPage(p.main.place)).length
@@ -234,7 +235,7 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
   const cities = groupCities(cityPages, proItems.filter(p => p.statusLabel !== 'Refusée' && p.statusLabel !== 'Annulée'))
 
   const otherPages: PageItem[] = pageList
-    .filter(({ path }) => { const k = pageKind(path); return k !== 'fiche-photographe' && k !== 'fiche-menage' && k !== 'ville' })
+    .filter(({ path }) => { const k = pageKind(path); return k !== 'fiche-photographe' && k !== 'fiche-menage' && k !== 'fiche-depannage' && k !== 'ville' })
     .map(({ path, p }) => {
       const queries = pageQueries(p)
       return {
@@ -254,7 +255,7 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
     visitors: visitsRes.ok ? summary.visitors : null,
     visitorsPct: visitsRes.ok && prevVisitsRes.ok ? pctChange(summary.visitors, prevSummary.visitors) : null,
   }
-  const cityProPaths = [...pages.entries()].filter(([path, p]) => /^\/(photographe|menage)-lcd-/.test(path) && p.impressions > 0)
+  const cityProPaths = [...pages.entries()].filter(([path, p]) => /^\/(photographe|menage|depannage)-lcd-/.test(path) && p.impressions > 0)
   const counts: Partial<Record<VisTab, number>> = {
     ...(prosRes.ok ? { fiches: proItems.length } : {}),
     ...(qp.ok ? { pagespros: cityProPaths.length } : {}),
@@ -296,14 +297,14 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
       firstPage: prosFirstPage,
       impressions: onlinePros.reduce((n, p) => n + p.impressions, 0),
       clicks: onlinePros.reduce((n, p) => n + p.clicks, 0),
-      counts: { photographe: proItems.filter(p => p.kind === 'photographe').length, menage: proItems.filter(p => p.kind === 'menage').length },
+      counts: { photographe: proItems.filter(p => p.kind === 'photographe').length, menage: proItems.filter(p => p.kind === 'menage').length, depannage: proItems.filter(p => p.kind === 'depannage').length },
     }
   }
 
   if (tab === 'pagespros') {
     const truthMap = new Map<string, CityPageTruth>()
     for (const [path, p] of pages) {
-      if (!/^\/(photographe|menage)-lcd-/.test(path)) continue
+      if (!/^\/(photographe|menage|depannage)-lcd-/.test(path)) continue
       const places = pagePlaces(p)
       truthMap.set(path, { clicks: p.clicks, impressions: p.impressions, pagePlace: places.pagePlace, prevPagePlace: places.prevPagePlace, queries: pageQueries(p) })
     }
@@ -315,7 +316,7 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
       pages: truthMap,
       visits: curRows,
       prevVisits: prevRows,
-      pros: prosRes.ok ? { photographe: rowsOf(prosRes.photographers), menage: rowsOf(prosRes.cleaners) } : { photographe: [], menage: [] },
+      pros: prosRes.ok ? { photographe: rowsOf(prosRes.photographers), menage: rowsOf(prosRes.cleaners), depannage: rowsOf(prosRes.depannage ?? []) } : { photographe: [], menage: [], depannage: [] },
     })
   }
 

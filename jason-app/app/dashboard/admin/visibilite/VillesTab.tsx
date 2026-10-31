@@ -20,7 +20,7 @@ export default function VillesTab({ d }: { d: VillesData }) {
 
   const list = useMemo(() => {
     const out = d.items.filter(c => matchesText(q, c.name, c.best?.query, ...c.themes.flatMap(t => t.queries.map(x => x.query))))
-    const pros = (c: CityItem) => c.pros.photographes + c.pros.menage
+    const pros = (c: CityItem) => c.pros.photographes + c.pros.menage + (c.pros.depannage ?? 0)
     const cmp: Record<CitySort, (a: CityItem, b: CityItem) => number> = {
       clics: (a, b) => b.clicks - a.clicks || b.impressions - a.impressions,
       affichages: (a, b) => b.impressions - a.impressions,
@@ -30,7 +30,7 @@ export default function VillesTab({ d }: { d: VillesData }) {
     }
     return out.sort((a, b) => cmp[sort](a, b) || a.name.localeCompare(b.name, 'fr'))
   }, [d.items, q, sort])
-  const withoutPros = d.items.filter(c => c.impressions > 0 && c.pros.photographes + c.pros.menage === 0).length
+  const withoutPros = d.items.filter(c => c.impressions > 0 && c.pros.photographes + c.pros.menage + (c.pros.depannage ?? 0) === 0).length
 
   return (
     <>
@@ -90,11 +90,11 @@ export default function VillesTab({ d }: { d: VillesData }) {
                   <Num label="Clics">{fmtInt(c.clicks)}</Num>
                   <Num label="Affichages">{fmtInt(c.impressions)}</Num>
                   <Num label="Pros inscrits">
-                    {c.pros.photographes + c.pros.menage === 0
+                    {c.pros.photographes + c.pros.menage + (c.pros.depannage ?? 0) === 0
                       ? <span style={{ color: 'var(--text-3)', fontWeight: 500 }}>aucun</span>
-                      : <span title={`${c.pros.photographes} photographe(s), ${c.pros.menage} équipe(s) de ménage`}>
-                          {fmtInt(c.pros.photographes + c.pros.menage)}
-                          <span style={{ fontSize: 11.5, fontWeight: 500, color: 'var(--text-3)' }}> ({c.pros.photographes} ph. · {c.pros.menage} mén.)</span>
+                      : <span title={`${c.pros.photographes} photographe(s), ${c.pros.menage} équipe(s) de ménage, ${c.pros.depannage ?? 0} pro(s) du dépannage`}>
+                          {fmtInt(c.pros.photographes + c.pros.menage + (c.pros.depannage ?? 0))}
+                          <span style={{ fontSize: 11.5, fontWeight: 500, color: 'var(--text-3)' }}> ({c.pros.photographes} ph. · {c.pros.menage} mén. · {c.pros.depannage ?? 0} dép.)</span>
                         </span>}
                   </Num>
                   <Num label="Évolution"><PlaceDelta delta={c.delta} /></Num>

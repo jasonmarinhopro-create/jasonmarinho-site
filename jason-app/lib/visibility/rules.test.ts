@@ -186,3 +186,12 @@ describe('conseils aux pros', () => {
     expect(proTakeaways({ ...base, ficheAgeDays: 5 })[0].title).toBe('Ta fiche démarre')
   })
 })
+
+describe('dépannage (31/10/2026)', () => {
+  it('reconnaît les fiches et les pages de ville du dépannage', () => {
+    expect(proSlugOf('/annuaires/depannage/atelier-martin')).toEqual({ kind: 'depannage', slug: 'atelier-martin' })
+    expect(proSlugOf('/annuaires/depannage/inscription')).toBeNull()
+    expect(pageKind('/annuaires/depannage/atelier-martin')).toBe('fiche-depannage')
+    expect(cityOf('/depannage-lcd-nantes')).toMatchObject({ slug: 'nantes', theme: 'depannage' })
+  })
+})

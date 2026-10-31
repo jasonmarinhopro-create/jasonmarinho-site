@@ -101,13 +101,14 @@ export const isFirstPage = (position: number) => placeOf(position) <= 10
 // ── Pages du site ─────────────────────────────────────────────────────────
 
 export type PageKind =
-  | 'accueil' | 'fiche-photographe' | 'fiche-menage' | 'annuaire' | 'ville' | 'blog'
+  | 'accueil' | 'fiche-photographe' | 'fiche-menage' | 'fiche-depannage' | 'annuaire' | 'ville' | 'blog'
   | 'simulateur' | 'service' | 'partenaire' | 'comparatif' | 'autre'
 
 export const PAGE_KIND_LABEL: Record<PageKind, string> = {
   accueil: 'Accueil',
   'fiche-photographe': 'Fiche photographe',
   'fiche-menage': 'Fiche ménage',
+  'fiche-depannage': 'Fiche dépannage',
   annuaire: 'Annuaire',
   ville: 'Ville',
   blog: 'Blog',
@@ -127,23 +128,27 @@ export function pathOf(url: string): string {
   return p || '/'
 }
 
-export function proSlugOf(path: string): { kind: 'photographe' | 'menage'; slug: string } | null {
-  const m = /^\/annuaires\/(photographes|menage)\/([^/]+)$/.exec(path)
-  if (!m) return null
-  return { kind: m[1] === 'photographes' ? 'photographe' : 'menage', slug: m[2] }
+export type ProKindVis = 'photographe' | 'menage' | 'depannage'
+
+export function proSlugOf(path: string): { kind: ProKindVis; slug: string } | null {
+  const m = /^\/annuaires\/(photographes|menage|depannage)\/([^/]+)$/.exec(path)
+  if (!m || m[2] === 'inscription' || m[2] === 'exemple-fiche') return null
+  return { kind: m[1] === 'photographes' ? 'photographe' : m[1] === 'depannage' ? 'depannage' : 'menage', slug: m[2] }
 }
 
-export type CityTheme = 'menage' | 'photographe' | 'hote'
+export type CityTheme = 'menage' | 'photographe' | 'depannage' | 'hote'
 
 export const CITY_THEME_LABEL: Record<CityTheme, string> = {
   menage: 'Ménage',
   photographe: 'Photographe',
+  depannage: 'Dépannage',
   hote: 'Devenir hôte',
 }
 
 const CITY_PATTERNS: Array<[RegExp, CityTheme]> = [
   [/^\/menage-lcd-([a-z0-9-]+)$/, 'menage'],
   [/^\/photographe-lcd-([a-z0-9-]+)$/, 'photographe'],
+  [/^\/depannage-lcd-([a-z0-9-]+)$/, 'depannage'],
   [/^\/devenir-hote-airbnb-([a-z0-9-]+)$/, 'hote'],
 ]
 
@@ -168,7 +173,7 @@ export function cityOf(path: string): { slug: string; name: string; theme: CityT
 export function pageKind(path: string): PageKind {
   if (path === '/' || path === '') return 'accueil'
   const pro = proSlugOf(path)
-  if (pro) return pro.kind === 'photographe' ? 'fiche-photographe' : 'fiche-menage'
+  if (pro) return pro.kind === 'photographe' ? 'fiche-photographe' : pro.kind === 'depannage' ? 'fiche-depannage' : 'fiche-menage'
   if (path.startsWith('/annuaires')) return 'annuaire'
   if (cityOf(path)) return 'ville'
   if (path.startsWith('/blog')) return 'blog'

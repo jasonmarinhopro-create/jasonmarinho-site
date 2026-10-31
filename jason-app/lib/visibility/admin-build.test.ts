@@ -64,8 +64,10 @@ describe('buildVisibility', () => {
   it('villes avec pros inscrits (fiche en validation comprise, refusée exclue)', () => {
     const d = buildVisibility(input({ tab: 'villes' }))
     expect(d.villes!.items[0]).toMatchObject({ name: 'Lyon', pros: { photographes: 1, menage: 2 } })
+    const dep = buildVisibility(input({ tab: 'villes', prosRes: { ok: true, photographers: [], cleaners: [], depannage: [pro({})] } }))
+    expect(dep.villes!.items[0].pros.depannage).toBe(1)
     const refusee = buildVisibility(input({ tab: 'villes', prosRes: { ok: true, photographers: [pro({ status: 'rejected' })], cleaners: [] } }))
-    expect(refusee.villes!.items[0].pros).toEqual({ photographes: 0, menage: 0 })
+    expect(refusee.villes!.items[0].pros).toEqual({ photographes: 0, menage: 0, depannage: 0 })
   })
   it('Google en panne : les visites restent', () => {
     const fail = { ok: false as const, error: 'x', auth: true }
