@@ -5,6 +5,7 @@ import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
 import { canResumePayment, founderSeatFilter, tierFor } from './founder-seats'
 import { checkoutCustomer } from '@/lib/stripe/customer'
+import { METIERS, type ProKind } from './metiers'
 
 // Reprendre un paiement abandonné (14/10/2026, Jason : « une personne qui a
 // tout rempli, arrive au paiement et quitte : s'il revient, a-t-il un endroit
@@ -15,24 +16,20 @@ import { checkoutCustomer } from '@/lib/stripe/customer'
 const log = logger('pros/resume-checkout')
 const APP_URL = 'https://app.jasonmarinho.com'
 
-const CONF = {
-  photographer: {
-    table: 'photographers',
-    metaKey: 'photographer_id',
-    page: '/dashboard/ma-fiche-photographe',
-    founderPrice: process.env.STRIPE_PHOTOGRAPHER_FOUNDER_PRICE_ID || '',
-    standardPrice: process.env.STRIPE_PHOTOGRAPHER_STANDARD_PRICE_ID || '',
-  },
-  cleaner: {
-    table: 'cleaners',
-    metaKey: 'cleaner_id',
-    page: '/dashboard/ma-fiche-menage',
-    founderPrice: process.env.STRIPE_CLEANER_FOUNDER_PRICE_ID || '',
-    standardPrice: process.env.STRIPE_CLEANER_STANDARD_PRICE_ID || '',
-  },
-} as const
+// Lu dans le registre des métiers (lib/pros/metiers.ts)
+function conf(kind: ProKind) {
+  const m = METIERS[kind]
+  return {
+    table: m.table,
+    metaKey: m.idColumn,
+    page: m.espace,
+    founderPrice: process.env[m.stripeFounder] || '',
+    standardPrice: process.env[m.stripeStandard] || '',
+  }
+}
 
-export type ProKind = keyof typeof CONF
+export type { ProKind }
+
 
 /**
  * `adminTargetId` : aperçu admin (« Voir la page de paiement ») : ouvre la même
@@ -40,7 +37,7 @@ export type ProKind = keyof typeof CONF
  * Si l'admin payait, c'est la fiche du pro qui serait activée : bouton prévenu.
  */
 export async function resumeProCheckout(kind: ProKind, adminTargetId?: string): Promise<{ checkoutUrl?: string; error?: string; info?: string }> {
-  const c = CONF[kind]
+  const c = conf(kind)
   const user = await getAuthUser()
   if (!user) return { error: 'Connecte-toi pour finaliser ton paiement.' }
   if (!c.founderPrice || !c.standardPrice) {
