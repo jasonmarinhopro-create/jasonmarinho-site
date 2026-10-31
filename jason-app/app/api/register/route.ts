@@ -5,8 +5,8 @@ import { buildEmail, emailBtn, emailP, emailNote, emailInfoBlock, emailAnnuaires
 import { rateLimit, getClientIp } from '@/lib/security/rate-limit'
 import { isEmail, isPassword, normalizeEmail } from '@/lib/security/validate'
 import { logger } from '@/lib/logger'
-import { cleanAcquisition, describeAcquisition } from '@/lib/acquisition/rules'
-import { NEWSLETTER_LISTS } from '@/lib/newsletter/lists'
+import { cleanAcquisition } from '@/lib/acquisition/rules'
+import { annoncerInscription, inscrireNewsletter, lienConfirmation } from '@/lib/auth/nouveau-membre'
 
 export const dynamic = 'force-dynamic'
 
@@ -181,7 +181,7 @@ export async function POST(req: NextRequest) {
               email: normalized,
               options: { redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/login` },
             })
-            if (linkError || !linkData?.properties?.action_link) {
+            if (linkError || !linkData?.properties?.hashed_token) {
               log.error('generateLink(resend)', { msg: linkError?.message })
               notifyJasonIssue('lien de renvoi non généré (Supabase)', { Email: normalized, 'Nom saisi': fullName, Erreur: linkError?.message })
               return NextResponse.json({ success: true, emailSent: false })
@@ -194,9 +194,9 @@ export async function POST(req: NextRequest) {
                 title: 'Confirme ton adresse email',
                 preview: 'Une dernière étape pour accéder à ton espace Jason Marinho.',
                 body: `
-                  ${emailP(`Bienvenue${fullName ? ` <strong style="color:#e8ede8;">${escHtml(fullName)}</strong>` : ''}&nbsp;! Voici un nouveau lien pour confirmer ton adresse et accéder à la plateforme.`)}
+                  ${emailP(`Bienvenue${fullName ? ` <strong style="color:#e8ede8;">${escHtml(fullName)}</strong>` : ''}&nbsp;! Voici un nouveau lien : un clic et tu arrives dans ton espace, déjà connecté.`)}
                   ${emailP(`Ce lien est valable <strong style="color:#FFD56B;">24&nbsp;heures</strong>.`)}
-                  ${emailBtn(linkData.properties.action_link, 'Confirmer mon compte', 'primary')}
+                  ${emailBtn(lienConfirmation(linkData.properties.hashed_token, 'magiclink'), 'Accéder à mon espace', 'primary')}
                   ${isInvestor ? '' : emailAnnuairesPromo()}
                   ${emailNote('Si tu n\'as pas créé de compte sur Jason Marinho, ignore simplement cet email. Aucune action n\'est requise.')}
                 `,
@@ -243,57 +243,10 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Notify Jason of new signup (fire-and-forget)
+    // E-mail à Jason et lettre Brevo, sans jamais bloquer l'inscription
     if (userData.user) {
-      const dateStr = new Date().toLocaleString('fr-FR', {
-        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
-        hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris',
-      })
-      const profilLabel = isInvestor ? 'Investisseur' : 'Hôte'
-      void getResend().emails.send({
-        from: 'Jason Marinho <noreply@jasonmarinho.com>',
-        to: 'contact@jasonmarinho.com',
-        subject: `Nouvelle inscription ${profilLabel} : ${fullName || normalized}`,
-        html: buildEmail({
-          title: 'Une nouvelle personne vient de rejoindre !',
-          preview: `${fullName || normalized} vient de créer un compte ${profilLabel.toLowerCase()} sur ta plateforme.`,
-          body: `
-            ${emailP(`<strong style="color:#e8ede8;">Bonne nouvelle !</strong> Une nouvelle personne vient de rejoindre ta communauté. C'est la preuve que ton travail attire et convainc, continue comme ça, tu construis quelque chose de solide.`)}
-            ${emailInfoBlock([
-              { label: 'Profil', value: isInvestor ? '💼 Investisseur' : '🏠 Hôte' },
-              { label: 'Prénom / Nom', value: escHtml(fullName || '-') },
-              { label: 'Email', value: escHtml(normalized) },
-              { label: 'Membre Driing', value: isDriingMember ? 'Oui ✓' : 'Non' },
-              { label: 'Provenance', value: escHtml((() => { const v = describeAcquisition(acquisition); return [v.label, v.detail, v.landing ? `arrivé sur ${v.landing}` : null].filter(Boolean).join(' · ') })()) },
-              { label: 'Inscription le', value: escHtml(dateStr) },
-            ])}
-            ${emailBtn(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard/admin/membres`, 'Voir les membres', 'secondary')}
-          `,
-        }),
-      }).catch(() => { /* never fail the registration */ })
-    }
-
-    // Add to Brevo newsletter list if consent given
-    if (newsletterConsent && userData.user && process.env.BREVO_API_KEY) {
-      try {
-        // Liste n° 3 : celle de la newsletter (la n° 2 n'existait pas, les
-        // inscriptions de l'app se perdaient sans erreur jusqu'au 11/10/2026)
-        const brevoRes = await fetch('https://api.brevo.com/v3/contacts', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'api-key': process.env.BREVO_API_KEY,
-          },
-          body: JSON.stringify({
-            email: normalized,
-            listIds: NEWSLETTER_LISTS,
-            updateEnabled: true,
-          }),
-        })
-        if (!brevoRes.ok) log.error('brevo newsletter', { status: brevoRes.status, body: (await brevoRes.text()).slice(0, 200) })
-      } catch (e) {
-        log.warn('brevo', { err: String(e) })
-      }
+      void annoncerInscription({ email: normalized, fullName: fullName || null, isInvestor: !!isInvestor, isDriingMember: !!isDriingMember, acquisition, via: 'formulaire' })
+      if (newsletterConsent) await inscrireNewsletter(normalized)
     }
 
     // Generate confirmation link
@@ -306,7 +259,7 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    if (linkError || !linkData?.properties?.action_link) {
+    if (linkError || !linkData?.properties?.hashed_token) {
       log.error('generateLink', { msg: linkError?.message })
       notifyJasonIssue('lien de confirmation non généré (Supabase)', { Email: normalized, 'Nom saisi': fullName, Erreur: linkError?.message })
       // User was created, just couldn't send email, let them know
@@ -322,9 +275,9 @@ export async function POST(req: NextRequest) {
         title: 'Confirme ton adresse email',
         preview: 'Une dernière étape pour accéder à ton espace Jason Marinho.',
         body: `
-          ${emailP(`Bienvenue${fullName ? ` <strong style="color:#e8ede8;">${escHtml(fullName)}</strong>` : ''}&nbsp;! Ton compte est prêt. Clique sur le bouton ci-dessous pour confirmer ton adresse et accéder à la plateforme.`)}
+          ${emailP(`Bienvenue${fullName ? ` <strong style="color:#e8ede8;">${escHtml(fullName)}</strong>` : ''}&nbsp;! Ton compte est prêt. Un clic sur le bouton ci-dessous confirme ton adresse et t'ouvre ton espace, déjà connecté.`)}
           ${emailP(`Ce lien est valable <strong style="color:#FFD56B;">24&nbsp;heures</strong>.`)}
-          ${emailBtn(linkData.properties.action_link, 'Confirmer mon compte', 'primary')}
+          ${emailBtn(lienConfirmation(linkData.properties.hashed_token, 'signup'), 'Accéder à mon espace', 'primary')}
           ${isInvestor ? '' : emailAnnuairesPromo()}
           ${emailNote('Si tu n\'as pas créé de compte sur Jason Marinho, ignore simplement cet email. Aucune action n\'est requise.')}
         `,

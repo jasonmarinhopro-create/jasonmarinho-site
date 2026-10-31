@@ -14,6 +14,12 @@ Partie de la documentation interne (index : CLAUDE.md à la racine). Notes déta
 - `getSession()` est autorisé seulement dans middleware.ts pour les routes publiques (économie de RTT)
 - Les routes admin vérifient `profile.role === 'admin'` après getUser()
 
+### Inscription (refonte du 31/10/2026)
+- **Profils** : une seule liste, `lib/auth/profils.ts` (groupe « Je loue » / « Je travaille pour les hôtes », pastille, panneau de gauche, lien d'inscription des pros). Nouveau métier = une entrée (`bientot: true` tant qu'il n'est pas ouvert : affiché grisé, non cliquable). Hôte et investisseur créent leur compte dans l'app ; les pros continuent sur l'inscription du site (fiche + paiement, compte créé au paiement, `/apres-paiement`).
+- **Parcours** : `app/auth/register/RegisterFlow.tsx` (Profil, Compte, Confirmation). `?role=host|investor|photographe|menage` et `?ref=` (invitation) ouvrent directement l'étape 2.
+- **Lien de l'e-mail = connexion directe** : `/api/register` envoie `/auth/confirmer?t=<hashed_token>&type=signup|magiclink` (`lienConfirmation`, `lib/auth/nouveau-membre.ts`). La page vérifie le jeton dans le navigateur (`verifyOtp`) puis ouvre `/ouverture` : les antivirus de messagerie qui ouvrent les liens ne consomment pas le jeton (pas de script exécuté). Les anciens liens (`/auth/login#access_token…`) marchent toujours.
+- **Google** : bouton affiché seulement si le fournisseur Google est activé dans Supabase (`googleActif()`, lit `/auth/v1/settings`, 10 min de cache), sur l'inscription (hôte, investisseur) et la connexion (hôtes). Retour : `/auth/callback` (échange du code, profil complété si compte créé il y a moins de 10 min grâce au cookie `jm_inscription` : investisseur, lettre, provenance ; e-mail à Jason). À activer par Jason : client OAuth Google (redirection `https://xwucstjxoehyjnlrzrky.supabase.co/auth/v1/callback`), puis Supabase > Authentication > Providers > Google, et `https://app.jasonmarinho.com/auth/callback` dans Authentication > URL Configuration > Redirect URLs.
+
 ### Clé service role (contourne la RLS)
 - **Point d'accès unique** : `getServiceClient()` de `@/lib/supabase/service` (`import 'server-only'` : le build échoue si un composant client l'importe). 52 copies locales de `getServiceClient()` ont été remplacées par cet import (sept. 2026).
 - **Préférer le client utilisateur** (`@/lib/supabase/server`) : la RLS protège même si une requête oublie un filtre. Pages « Demandes reçues » / « Mes clients » des pros déjà basculées (policies des migrations 062 et 069).
