@@ -163,6 +163,16 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .c2 .c-h,.c3 .c-h{font-size:26px;line-height:1.12}
 .c2 ol{list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14.5px;color:#4A4022;line-height:1.5}
 .c2 .btn{align-self:flex-start;height:46px;font-size:14.5px}
+.c2-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.c2-tabs button{padding:7px 12px;border-radius:99px;border:1px solid #EADBA6;background:#FFFBEA;font-family:inherit;font-size:13px;font-weight:500;color:#4A4022;cursor:pointer}
+.c2-tabs button[aria-selected="true"]{background:var(--g);border-color:var(--g);color:#fff}
+.c2-shot img{width:100%;height:auto;display:block;border-radius:14px;border:1px solid #EADBA6;background:#F7F5F0}
+.c2-shot img[hidden]{display:none}
+.price{display:flex;flex-direction:column;gap:10px}
+.price>div{display:flex;align-items:baseline;gap:14px;padding:12px 14px;border-radius:14px;background:var(--chip)}
+.price b{flex:none;min-width:84px;font-family:'Fraunces',serif;font-weight:400;font-size:24px;color:var(--g)}
+.price span{font-size:13.5px;line-height:1.45;color:var(--tl)}
+.price strong{color:var(--td);font-weight:600}
 .c3{border-radius:26px;background:#fff;border:1px solid var(--bd);padding:26px;display:flex;flex-direction:column;gap:12px}
 .c3 .c-eyb{color:var(--g)}
 .c3 .chips a{padding:8px 12px;border-radius:99px;background:var(--chip);font-size:13.5px;color:var(--tm);text-decoration:none}
@@ -423,14 +433,23 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <li><strong>2.</strong> Les 3 pros les plus proches qui font ce qu’il te faut la reçoivent.</li>
 <li><strong>3.</strong> Ceux qui sont libres te répondent. Contact direct, zéro commission.</li>
 </ol>
-<a href="/trouver-un-pro" class="btn btn-k">Faire une demande</a>
+<div class="c2-tabs" role="tablist" aria-label="Annuaires">
+<button type="button" role="tab" aria-selected="true" data-pc="photo">Photo, vidéo</button><button type="button" role="tab" aria-selected="false" data-pc="menage">Ménage</button><button type="button" role="tab" aria-selected="false" data-pc="depannage">Dépannage</button>
+</div>
+<div class="c2-shot">
+<img src="/img/pour-qui/photo-cartes.webp" alt="Fiches de photographes dans l’annuaire, exemples fictifs" width="1300" height="481" loading="lazy" decoding="async" data-pcimg="photo">
+<img src="/img/pour-qui/menage-cartes.webp" alt="Fiches d’équipes de ménage dans l’annuaire, exemples fictifs" width="1300" height="481" loading="lazy" decoding="async" data-pcimg="menage" hidden>
+<img src="/img/pour-qui/depannage-cartes.webp" alt="Fiches de pros du dépannage dans l’annuaire, exemples fictifs" width="1300" height="481" loading="lazy" decoding="async" data-pcimg="depannage" hidden>
+</div>
+<a href="/trouver-un-pro" class="btn btn-g">Faire une demande</a>
 </article>
 <article class="c3">
-<span class="c-eyb">03 · Apprendre</span>
-<h3 class="c-h">Les règles de ta ville, la fiscalité, ce qui change.</h3>
-<div class="chips">
-<a href="/villes">Guides par ville</a><a href="/services/guides-lcd">Fiscalité et règles</a><a href="/services/actualites">Actualités</a><a href="/blog">Blog</a>
+<span class="c-eyb">Combien ça coûte ?</span>
+<div class="price">
+<div><b>0 €</b><span><strong>Découverte</strong>, pour toujours : calendrier, planning ménage, simulateurs, 2 formations.</span></div>
+<div><b>38,98 €</b><span><strong>Standard</strong>, TTC par an : en plus, contrats, paiement en ligne et cautions.</span></div>
 </div>
+<a href="/tarifs" class="more" style="font-size:14.5px;min-height:36px">Voir les tarifs →</a>
 </article>
 </div>
 </div>
@@ -442,7 +461,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <div class="wrap fo-in">
 <div class="head" style="gap:20px">
 <div class="head-l" style="max-width:620px">
-<span class="eyb">Les formations</span>
+<span class="eyb">03 · Apprendre</span>
 <h2 class="h2">Tout ce que j’ai appris, <em>en 22 formations.</em></h2>
 <p class="lead2">Courtes, concrètes, sans blabla. 2 au choix offertes avec ton compte gratuit.</p>
 </div>
@@ -605,6 +624,13 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   // Les autres captures se chargent quand la carte approche de l'écran
   var box2=document.querySelector('.shot-box');
   if(box2&&'IntersectionObserver' in window){var io=new IntersectionObserver(function(es){if(es[0].isIntersecting){box2.querySelectorAll('img').forEach(function(i){var p=new Image();p.src=i.src});io.disconnect()}},{rootMargin:'400px'});io.observe(box2)}
+
+  // Carte Trouver : la capture suit le métier choisi
+  var pcs=document.querySelectorAll('[data-pc]');
+  pcs.forEach(function(t){t.addEventListener('click',function(){
+    pcs.forEach(function(x){x.setAttribute('aria-selected',x===t?'true':'false')});
+    document.querySelectorAll('[data-pcimg]').forEach(function(i){i.hidden=i.getAttribute('data-pcimg')!==t.getAttribute('data-pc')});
+  })});
 
   // Formations : un thème à la fois
   var tabs=document.querySelectorAll('[data-th]');
