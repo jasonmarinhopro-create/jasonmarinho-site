@@ -56,19 +56,28 @@ d'interagir.
 
 Le site sert d'abord les hôtes de location courte durée (Airbnb, Booking,
 Abritel), puis les pros qui travaillent pour eux (photographes, vidéastes,
-équipes de ménage), et depuis octobre 2026 les hôtels, résidences,
+équipes de ménage, et depuis le 31/10/2026 les pros du dépannage et de la
+maintenance : plombiers, électriciens, serruriers, multiservices), et depuis
+octobre 2026 les hôtels, résidences,
 conciergeries haut de gamme et gîtes qui cherchent un photographe.
 
 Alterne les piliers sur 10 posts : 6 hôtes, 2 pros, 2 hôtels et conciergeries
 ou villes. Pour chaque public, un sujet utile tout de suite :
 
 - **Hôtes** : fiscalité et règles (taxe de séjour, LMNP, numéro
-  d'enregistrement), revenus et prix, annonce et photos, ménage, voyageurs,
+  d'enregistrement), revenus et prix, annonce et photos, ménage, pannes et
+  entretien du logement (avoir son artisan avant la panne, devis obligatoire :
+  article `/blog/depannage-airbnb-trouver-artisan-fiable-avant-panne`), voyageurs,
   contrats et caution, réservations directes, outils de l'app (planning ménage,
   contrats en ligne, déclarations voyageurs, vérification voyageurs).
 - **Pros** : être trouvé par les hôtes, l'annuaire et la fiche vitrine, la
   page « Trouver un pro » (demandes envoyées aux pros de la zone), devenir
-  photographe ou équipe de ménage LCD.
+  photographe ou équipe de ménage LCD, et pour le dépannage : la page
+  `/pour-qui/depannage`, l'article `/blog/artisan-depannage-trouver-clients-hotes-airbnb`,
+  les pages `/depannage-lcd-<ville>`. Les 2 posts « pros » de 10 alternent
+  les 3 métiers (photo, ménage, dépannage) : regarde l'historique. Dépannage :
+  jamais de prix d'intervention sans source, ni de promesse de contrôle des
+  pros (l'annuaire ne vérifie ni SIRET ni assurance).
 - **Hôtels et conciergeries** : la page `/photographe-hotel`, l'article des
   7 points avant un shooting, les droits d'utilisation des photos.
 - **Villes** : un guide de ville (règles locales, taxe de séjour officielle)
@@ -155,6 +164,7 @@ tirets, unique ; jamais un slug déjà présent dans l'historique).
   `photo-chambre-3.jpg`, `photo-chambre-4.jpg`, `photo-cuisine-2.jpg`,
   `photo-sdb-1.jpg`, `photo-sdb-2.jpg`, `photo-maison-2.jpg`,
   `photo-interieur-1.jpg`, `menage-1.jpg` (toutes dans `img/exemple-fiches/`).
+  Pour le dépannage : `photo-sdb-1.jpg`, `photo-sdb-2.jpg` ou `photo-cuisine-2.jpg`.
   Sans photo : fond vert de la marque.
 - `lien` : une page du site qui existe (prends-la dans `llms.txt`).
 - `story` (depuis le 24/10/2026, demande de Jason) : chaque post part avec
