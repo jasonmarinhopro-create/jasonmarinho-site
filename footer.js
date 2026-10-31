@@ -184,12 +184,16 @@
     { href: '/calculateurs/revenu-lcd-wien', name: 'Vienne' }
   ];
   // Pages ville × métier pros LCD — générées par scripts/build-pages-pros-villes.mjs
-  // depuis CITIES : chaque ville du footer a ses 2 pages, on dérive directement.
+  // depuis CITIES : chaque ville du footer a ses pages pros, on dérive directement.
   var PHOTOGRAPHE_LINKS = CITIES.map(function (c) {
     return { href: '/photographe-lcd-' + c.slug, name: c.name };
   });
   var MENAGE_LINKS = CITIES.map(function (c) {
     return { href: '/menage-lcd-' + c.slug, name: c.name };
+  });
+  // Dépannage et maintenance (31/10/2026) : 4e page de chaque ville
+  var DEPANNAGE_LINKS = CITIES.map(function (c) {
+    return { href: '/depannage-lcd-' + c.slug, name: c.name };
   });
   var COMPARATIF_LINKS = [
     { href: '/comparatif-airdna-mashvisor', name: 'AirDNA vs Mashvisor' },
@@ -265,6 +269,7 @@
             + '<h2 class="ft-cat-t">Annuaires pros</h2>'
             + '<a href="/annuaires/photographes">Photographes et vidéastes LCD</a>'
             + '<a href="/annuaires/menage">Annuaire équipes de ménage</a>'
+            + '<a href="/annuaires/depannage">Dépannage et maintenance</a>'
             + '<a href="/devenir-photographe-lcd">Devenir photographe ou vidéaste</a>'
             + '<a href="/devenir-prestataire-menage-lcd">Devenir prestataire ménage</a>'
             + '<a href="/chiffres">La visibilité en chiffres</a>'
@@ -302,6 +307,7 @@
             + '<button class="ft-tab" data-panel="hote" role="tab" aria-selected="false">Devenir hôte</button>'
             + '<button class="ft-tab" data-panel="photographes" role="tab" aria-selected="false">Photographes &amp; vidéastes</button>'
             + '<button class="ft-tab" data-panel="menage" role="tab" aria-selected="false">Ménage</button>'
+            + '<button class="ft-tab" data-panel="depannage" role="tab" aria-selected="false">Dépannage</button>'
             + '<button class="ft-tab" data-panel="outils" role="tab" aria-selected="false">Comparatifs outils</button>'
           + '</div>'
         + '</div>'
@@ -325,6 +331,11 @@
             + '<div class="ft-panel-hint">Trouver une équipe de ménage turnover dans ta ville : tarifs locaux, checklist, annuaire des pros.</div>'
             + '<div class="ft-chips">' + panelHtml(MENAGE_LINKS) + '</div>'
             + '<a href="/annuaires/menage" class="ft-see-all">Voir l\'annuaire des équipes ménage <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
+          + '</div>'
+          + '<div class="ft-panel" data-panel="depannage" role="tabpanel">'
+            + '<div class="ft-panel-hint">Trouver un plombier, un électricien ou un serrurier qui intervient entre deux voyageurs dans ta ville : bons réflexes, questions à poser, annuaire des pros.</div>'
+            + '<div class="ft-chips">' + panelHtml(DEPANNAGE_LINKS) + '</div>'
+            + '<a href="/annuaires/depannage" class="ft-see-all">Voir l\'annuaire du dépannage <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
           + '</div>'
           + '<div class="ft-panel" data-panel="outils" role="tabpanel">'
             + '<div class="ft-panel-hint">Quel outil ou logiciel choisir ? Comparatifs honnêtes avec prix, forces, limites.</div>'

@@ -123,6 +123,8 @@
       '.n-mega a.n-ann-vc:hover{transform:translateY(-2px);color:#fff}',
       '.n-mega a.n-ann-photo,.n-mega a.n-ann-photo:hover{background:linear-gradient(160deg,#002a1f 0%,#00463a 100%);border:1px solid rgba(255,213,107,.18)}',
       '.n-mega a.n-ann-menage,.n-mega a.n-ann-menage:hover{background:linear-gradient(160deg,#3d4a22 0%,#56622c 100%);border:1px solid rgba(255,213,107,.18)}',
+      /* Dépannage et maintenance (31/10/2026) : 3e carte, même gabarit */
+      '.n-mega a.n-ann-dep,.n-mega a.n-ann-dep:hover{background:linear-gradient(160deg,#4a3520 0%,#6b4e2a 100%);border:1px solid rgba(255,213,107,.18)}',
       '.n-mega a.n-ann-vc:hover{border-color:rgba(255,213,107,.45)}',
       '.n-ann-mos{position:absolute;top:14px;left:14px;right:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px}',
       '.n-mega a.n-ann-vc .n-ann-mos i{display:block;width:auto;height:36px;border-radius:5px;background:linear-gradient(135deg,#4d7a5a,#2d6466)}',
@@ -341,6 +343,7 @@
       '.mob-menu a.mob-vc{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:2px;min-height:142px;padding:12px;border-radius:12px;border:1px solid rgba(255,213,107,.18);color:#fff}',
       '.mob-menu a.mob-vc-photo{background:linear-gradient(160deg,#002a1f 0%,#00463a 100%)}',
       '.mob-menu a.mob-vc-menage{background:linear-gradient(160deg,#3d4a22 0%,#56622c 100%)}',
+      '.mob-menu a.mob-vc-dep{background:linear-gradient(160deg,#4a3520 0%,#6b4e2a 100%);grid-column:1 / -1;min-height:112px}',
       '.mob-menu a.mob-vc-blog{background:linear-gradient(160deg,#FFD56B 0%,#ffe39a 100%);color:var(--gd);border-color:rgba(255,213,107,.6)}',
       '.mob-menu a.mob-vc-part{background:linear-gradient(160deg,#001a11 0%,#00463a 100%)}',
       '.mob-vc .n-ann-mos{top:12px;left:12px;right:12px;gap:4px}',
@@ -472,12 +475,22 @@
             + '<span class="n-ann-vt">Équipes de ménage</span>'
             + '<span class="n-ann-vs">Voir l\'annuaire <i class="ph-bold ph-arrow-right"></i></span>'
           + '</a>'
+          + '<a href="/annuaires/depannage" class="n-ann-vc n-ann-dep">'
+            + '<span class="n-ann-chk" aria-hidden="true">'
+              + '<span><i class="ph-bold ph-drop"></i>Plomberie<b>Sous 24 h</b></span>'
+              + '<span><i class="ph-bold ph-lightning"></i>Électricité<b>Urgence</b></span>'
+              + '<span><i class="ph-bold ph-key"></i>Serrurerie</span>'
+            + '</span>'
+            + '<span class="n-ann-vt">Dépannage et maintenance</span>'
+            + '<span class="n-ann-vs">Voir l\'annuaire <i class="ph-bold ph-arrow-right"></i></span>'
+          + '</a>'
           + '<div class="n-ann-side">'
             + '<div class="n-col-title">Pour les hôtes</div>'
             + '<a href="/trouver-un-pro" class="n-ann-need"><i class="ph-bold ph-paper-plane-tilt"></i><span><b>Décrire mon besoin</b><small>Les pros viennent à toi</small></span></a>'
             + '<div class="n-col-title n-ann-t2">Pour les pros</div>'
             + '<a href="/devenir-photographe-lcd"><i class="ph ph-camera"></i>Devenir photographe ou vidéaste</a>'
             + '<a href="/devenir-prestataire-menage-lcd"><i class="ph ph-sparkle"></i>Devenir équipe de ménage</a>'
+            + '<a href="/annuaires/depannage/inscription"><i class="ph ph-wrench"></i>Rejoindre le dépannage</a>'
             + '<a href="/tarifs#photographes"><i class="ph ph-tag"></i>Tarifs des fiches</a>'
             + '<a href="/chiffres"><i class="ph ph-chart-line-up"></i>La visibilité en chiffres</a>'
           + '</div>'
@@ -621,7 +634,7 @@
 
     /* Annuaire : même contenu que le menu ordinateur (proposition C) */
     + '<div class="mob-acc" id="acc-ann">'
-      + accBtn('ph-address-book', 'Annuaire', 'Photographes, vidéastes et équipes de ménage')
+      + accBtn('ph-address-book', 'Annuaire', 'Photo, ménage et dépannage')
       + '<div class="mob-acc-body mob-wide">'
         + '<div class="mob-vgrid">'
           + '<a href="/annuaires/photographes" class="mob-vc mob-vc-photo">'
@@ -637,6 +650,10 @@
             + '<span class="mob-vt">Équipes de ménage</span>'
             + '<span class="mob-vs">Voir l\'annuaire <i class="ph-bold ph-arrow-right"></i></span>'
           + '</a>'
+          + '<a href="/annuaires/depannage" class="mob-vc mob-vc-dep">'
+            + '<span class="mob-vt">Dépannage et maintenance</span>'
+            + '<span class="mob-vs">Plombiers, électriciens, serruriers <i class="ph-bold ph-arrow-right"></i></span>'
+          + '</a>'
         + '</div>'
         + '<span class="mob-stitle">Pour les hôtes</span>'
         + '<a href="/trouver-un-pro" class="mob-driing">'
@@ -649,6 +666,7 @@
         + '<span class="mob-stitle">Pour les pros</span>'
         + '<a href="/devenir-photographe-lcd"><i class="ph ph-camera"></i>Devenir photographe ou vidéaste</a>'
         + '<a href="/devenir-prestataire-menage-lcd"><i class="ph ph-sparkle"></i>Devenir équipe de ménage</a>'
+        + '<a href="/annuaires/depannage/inscription"><i class="ph ph-wrench"></i>Rejoindre le dépannage</a>'
         + '<a href="/tarifs#photographes"><i class="ph ph-tag"></i>Tarifs des fiches</a>'
         + '<a href="/chiffres"><i class="ph ph-chart-line-up"></i>La visibilité en chiffres</a>'
       + '</div>'
