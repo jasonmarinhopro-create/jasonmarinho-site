@@ -10,6 +10,7 @@ import { DOC_COLUMNS, normalizeDoc } from '@/lib/pros/billing-server'
 import { displayStatus, eur, frDate, sellerDisplayName, EMPTY_PROFILE } from '@/lib/pros/billing'
 import DocumentPaper from '@/components/pros/billing/DocumentPaper'
 import DocActions from './DocActions'
+import { METIERS, isProKind } from '@/lib/pros/metiers'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'Devis', robots: { index: false, follow: false } }
@@ -22,7 +23,8 @@ export default async function Page({ params }: { params: Promise<{ token: string
   const { data } = await db.from('pro_documents').select(`${DOC_COLUMNS}, owner_kind, owner_id`).eq('public_token', token).maybeSingle()
   if (!data || data.status === 'brouillon') notFound()
   const doc = normalizeDoc(data as Record<string, unknown>)
-  const table = data.owner_kind === 'cleaner' ? 'cleaners' : 'photographers'
+  // Table du pro d'après le registre des métiers (dépannage compris, 31/10/2026)
+  const table = isProKind(data.owner_kind) ? METIERS[data.owner_kind].table : 'photographers'
   const { data: pro } = await db.from(table).select('logo_url').eq('id', data.owner_id as string).maybeSingle()
   const today = parisToday()
   const seller = doc.seller ?? EMPTY_PROFILE

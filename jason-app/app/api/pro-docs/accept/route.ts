@@ -10,6 +10,7 @@ import { createNotification } from '@/lib/notifications/create'
 import { sendQuoteAcceptedToPro } from '@/lib/email/pro-documents'
 import { eur } from '@/lib/pros/billing'
 import { BILLING_BASE } from '@/lib/pros/billing-server'
+import { METIERS, isProKind, type ProKind } from '@/lib/pros/metiers'
 
 export async function POST(req: Request) {
   const rl = await rateLimit('proDocAccept', getClientIp(req), 10, 60 * 60 * 1000)
@@ -36,9 +37,10 @@ export async function POST(req: Request) {
   if (!updated) return NextResponse.json({ error: 'Acceptation impossible, réessaie.' }, { status: 409 })
 
   // Prévenir le pro (best-effort)
-  const table = doc.owner_kind === 'cleaner' ? 'cleaners' : 'photographers'
-  const { data: pro } = await db.from(table).select('user_id, email').eq('id', doc.owner_id).maybeSingle()
-  const href = `${BILLING_BASE[doc.owner_kind === 'cleaner' ? 'cleaner' : 'photographer']}/${doc.id}`
+  // Métier d'après le registre (dépannage compris, 31/10/2026 : un devis dépannage accepté ne prévenait personne)
+  const kind: ProKind = isProKind(doc.owner_kind) ? doc.owner_kind : 'photographer'
+  const { data: pro } = await db.from(METIERS[kind].table).select('user_id, email').eq('id', doc.owner_id).maybeSingle()
+  const href = `${BILLING_BASE[kind]}/${doc.id}`
   await Promise.allSettled([
     pro?.email ? sendQuoteAcceptedToPro({ to: pro.email, doc: { ...doc, total_ttc: Number(doc.total_ttc), accepted_name: name }, href: `${process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'}${href}` }) : Promise.resolve(),
     pro?.user_id ? createNotification({
