@@ -615,6 +615,8 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   });
   ville.addEventListener('input',maj);
   ville.addEventListener('change',maj);
+  // Ville remplie par le navigateur (retour arrière, saisie automatique) : bouton à jour
+  maj(); window.addEventListener('pageshow',maj);
 
   // Carte Gérer : les pastilles changent la capture sur place
   var sts=document.querySelectorAll('[data-shot]');
