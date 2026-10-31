@@ -232,17 +232,35 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .hg-steps i{font-style:normal;width:34px;height:34px;flex:none;border-radius:50%;background:var(--y);color:var(--gd);font-weight:600;display:flex;align-items:center;justify-content:center}
 .hg-steps span{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--tl);line-height:1.5}
 .hg-steps b{font-size:16px;color:var(--td);font-weight:600}
-.pub{display:flex;flex-wrap:wrap;align-items:center;gap:20px 32px;padding:26px 30px;border-radius:24px;background:var(--yw);border:1px solid var(--yb);text-decoration:none;color:var(--td);transition:transform .2s}
-.pub:hover{color:var(--td);transform:translateY(-2px)}
-.pub-t{flex:1 1 340px;display:flex;flex-direction:column;gap:6px}
+.pub{display:flex;flex-direction:column;gap:18px;padding:30px;border-radius:26px;background:var(--yw);border:1px solid var(--yb);color:var(--td)}
+.pub-h{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 28px}
+.pub-t{flex:1 1 420px;display:flex;flex-direction:column;gap:6px}
 .pub-t .eyb{color:#6B5200}
-.pub-t b{font-family:'Fraunces',serif;font-weight:400;font-size:26px;line-height:1.15}
-.pub-t>span:last-child{font-size:14.5px;color:#4A4022;line-height:1.5}
-.pub-n{flex:2 1 420px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.pub-n>span{display:flex;flex-direction:column;gap:2px;padding:14px 16px;border-radius:16px;background:#fff;font-size:12.5px;color:var(--tl);line-height:1.35}
-.pub-n b{font-family:'Fraunces',serif;font-weight:400;font-size:28px;color:var(--g);line-height:1.1}
-.pub-n[hidden]{display:none}
-.pub-go{flex:1 1 100%;font-size:14.5px;font-weight:600;color:var(--g)}
+.pub-t b{font-family:'Fraunces',serif;font-weight:400;font-size:30px;line-height:1.12}
+.pub-t>span:last-child{font-size:15px;color:#4A4022;line-height:1.5;max-width:620px}
+.pub-btn{height:46px;font-size:14.5px}
+.pub-n{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pub-n[hidden],.pub-x[hidden],.pub-x>div[hidden]{display:none}
+.pub-n>span{display:flex;flex-direction:column;gap:2px;padding:16px 18px;border-radius:18px;background:#fff;font-size:13px;color:var(--tl);line-height:1.35}
+.pub-n b{font-family:'Fraunces',serif;font-weight:400;font-size:32px;color:var(--g);line-height:1.1}
+.pub-n em{font-style:normal;font-size:12px;font-weight:600;margin-top:4px;color:var(--tf)}
+.pub-n em.up{color:#2F7A4F}.pub-n em.down{color:#8A6A1F}
+.pub-x{display:grid;grid-template-columns:1.2fr 1fr;gap:10px}
+.pub-x>div{padding:18px;border-radius:18px;background:#fff;display:flex;flex-direction:column;gap:12px}
+.pub-l{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#6B5200}
+.pub-bars{display:flex;align-items:flex-end;gap:8px;height:120px}
+.pub-bars div{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.pub-bars i{display:block;width:70%;max-width:34px;border-radius:6px 6px 2px 2px;background:var(--g)}
+.pub-bars div:last-child i{background:repeating-linear-gradient(135deg,var(--g) 0 5px,#2a7a69 5px 10px)}
+.pub-bars span{font-size:11.5px;color:var(--tf)}
+.pub-fil ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.pub-fil li{display:flex;align-items:center;gap:10px;font-size:14px}
+.pub-fil li b{flex:none;padding:4px 9px;border-radius:99px;font-size:12px;font-weight:600;background:#E8F1EC;color:var(--g)}
+.pub-fil li b.m-menage{background:#FFF4D2;color:#6B5200}
+.pub-fil li b.m-depannage{background:#F5E9DF;color:#7A4B2A}
+.pub-fil li span{flex:1;min-width:0;color:var(--td);font-weight:500}
+.pub-fil li small{color:var(--tf);font-size:12.5px}
+.pub-fil>small{font-size:12px;color:var(--tf)}
 
 /* Trois façons */
 .tri{display:flex;flex-wrap:wrap;gap:16px}
@@ -301,7 +319,31 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .fo .eyb{color:#9FD3B5}
 .fo .h2 em{color:#BFE3C9}
 .fo .lead2{color:rgba(255,255,255,.72)}
-.fo-in{display:flex;flex-direction:column;gap:26px}
+.fo{padding:120px 0}
+.fo-in{display:flex;flex-direction:column;gap:30px}
+.fo-app{display:grid;grid-template-columns:1.1fr 1fr;gap:16px}
+.fo-l{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9FD3B5}
+.fo-l em{font-style:normal;text-transform:none;letter-spacing:0;color:rgba(255,255,255,.5);font-weight:500}
+.fo-par{display:flex;flex-direction:column;gap:8px;padding:22px;border-radius:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.fo-par a{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 16px;border-radius:14px;background:rgba(255,255,255,.06);color:#fff;text-decoration:none;transition:background .2s}
+.fo-par a:hover{background:rgba(255,255,255,.12);color:#fff}
+.fo-par b{font-size:15px;font-weight:600}
+.fo-par span{flex:none;font-size:12.5px;color:rgba(255,255,255,.6)}
+.fo-mock{display:flex;flex-direction:column;gap:10px;padding:22px;border-radius:22px;background:#fff;color:var(--td)}
+.fo-mock .fo-l{color:var(--ol)}
+.fo-mock .fo-l em{color:var(--tf)}
+.fo-res{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:16px;background:#F4F6F2}
+.fo-res small,.fo-pt small{font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--g)}
+.fo-res b{font-family:'Fraunces',serif;font-weight:400;font-size:20px}
+.fo-res small:last-child{text-transform:none;letter-spacing:0;font-weight:500;color:var(--tf)}
+.fo-bar{display:block;height:8px;border-radius:99px;background:#E3E8E0;overflow:hidden}
+.fo-bar i{display:block;height:100%;border-radius:99px;background:var(--g)}
+.fo-pt{display:flex;flex-direction:column;gap:8px;padding:14px 16px;border-radius:16px;border:1px solid var(--bd)}
+.fo-pt span{display:flex;flex-direction:column;gap:1px}
+.fo-pt b{font-size:14.5px;font-weight:600}
+.fo-pt em{font-style:normal;font-size:12.5px;color:var(--tf)}
+.fo-feat{display:flex;flex-wrap:wrap;gap:6px}
+.fo-feat span{padding:6px 11px;border-radius:99px;background:#FFF4D2;color:#6B5200;font-size:12.5px;font-weight:600}
 .fo-k{display:flex;gap:8px;flex-wrap:wrap}
 .fo-k span{display:flex;flex-direction:column;gap:2px;padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);font-size:12.5px;color:rgba(255,255,255,.6)}
 .fo-k b{font-size:17px;font-weight:600;color:#fff}
@@ -321,6 +363,18 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .fc-t{font-family:'Fraunces',serif;font-size:19px;line-height:1.25}
 .fc-go{font-size:14px;color:var(--g);font-weight:600;margin-top:auto}
 .fo .btn-w{align-self:flex-start;height:48px}
+
+/* Pour qui */
+.pq{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.pq-c{display:flex;flex-direction:column;gap:8px;padding:22px 20px;border-radius:20px;background:#fff;border:1px solid var(--bd);text-decoration:none;color:var(--td);transition:transform .2s,border-color .2s}
+.pq-c:hover{color:var(--td);transform:translateY(-3px);border:1px solid var(--bd2)}
+.pq-i{width:44px;height:44px;border-radius:13px;background:#E8F1EC;color:var(--g);display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+.pq-c:nth-child(2) .pq-i{background:#FFF4D2;color:#6B5200}
+.pq-c:nth-child(3) .pq-i{background:#F5E9DF;color:#7A4B2A}
+.pq-c:nth-child(4) .pq-i{background:#EEF1EA;color:#3D5038}
+.pq-c b{font-family:'Fraunces',serif;font-weight:400;font-size:20px;line-height:1.2}
+.pq-c>span:not(.pq-i){font-size:13.5px;color:var(--tl);line-height:1.5}
+.pq-c em{font-style:normal;font-size:13.5px;font-weight:600;color:var(--g);margin-top:auto}
 
 /* Pros */
 .pros{display:flex;flex-wrap:wrap;gap:14px}
@@ -420,6 +474,8 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 
 @media(max-width:1024px){
   .h1{font-size:56px}
+  .pq{grid-template-columns:repeat(3,1fr)}
+  .pub-n{grid-template-columns:1fr 1fr}
   .hg-h1{font-size:52px}
   .hg-search{flex-direction:column}
   .hg-sep{display:none}
@@ -430,7 +486,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   .sec{padding:56px 0}
   .sec-top0{padding:0 0 56px}
   .hero{padding:92px 0 36px}
-  .hg{padding:84px 0 36px}
+  .hg{padding:108px 0 36px}
   .hg-in{align-items:stretch;text-align:left;gap:16px}
   .hg-by{align-self:flex-start;font-size:12.5px}
   .hg-h1{font-size:38px}
@@ -455,8 +511,11 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   .ex-c{flex-direction:row}
   .ex-img{aspect-ratio:auto;width:120px;flex:none}
   .pub{padding:22px 18px}
-  .pub-n{grid-template-columns:1fr}
-  .pub-n>span{flex-direction:row;align-items:baseline;gap:10px}
+  .pub-n{grid-template-columns:1fr 1fr}
+  .pub-n b{font-size:26px}
+  .pub-x{grid-template-columns:1fr}
+  .pub-t b{font-size:25px}
+  .pub-btn{width:100%}
   .hero-g{gap:28px}
   .h1{font-size:40px}
   .hero-p{font-size:16.5px}
@@ -473,6 +532,11 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   .pa-g{grid-template-columns:1fr}
   .tabs,.rail{margin-right:-16px;padding-right:16px}
   .fc{width:76%}
+  .fo{padding:64px 0}
+  .pq{grid-template-columns:1fr 1fr}
+  .pq-c{padding:16px}
+  .fo-app{grid-template-columns:1fr}
+  .fo-par a{flex-direction:column;align-items:flex-start;gap:2px}
   .pc{padding:18px;gap:8px}
   .pc-t{font-size:20px}
   .pros{gap:10px}
@@ -552,11 +616,22 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 
 <!-- COMMENT ÇA MARCHE + TRANSPARENCE -->
 <section class="wrap hg-after">
-<a href="/chiffres" class="pub">
-<span class="pub-t"><span class="eyb">Transparence totale</span><b>Tous les chiffres du site sont publics.</b><span>Visites, recherches Google, demandes d’hôtes : les vrais chiffres, consultables par tout le monde. Pas de vitrine gonflée.</span></span>
-<span class="pub-n"><span><b data-pub="vis">…</b>visiteurs sur 30 jours</span><span><b data-pub="imp">…</b>apparitions dans Google</span><span><b data-pub="dem">…</b>demandes d’hôtes reçues</span></span>
-<span class="pub-go">Voir tous les chiffres →</span>
-</a>
+<div class="pub">
+<div class="pub-h">
+<span class="pub-t"><span class="eyb">Transparence totale</span><b>Tous les chiffres du site sont publics.</b><span>Visites, recherches Google, demandes d’hôtes : les vrais chiffres, en direct, consultables par tout le monde. Pas de vitrine gonflée.</span></span>
+<a href="/chiffres" class="btn btn-g pub-btn">Voir tous les chiffres</a>
+</div>
+<div class="pub-n" data-pubbox>
+<span><b data-pub="vis">…</b>visiteurs sur 30 jours<em data-pubd="vis"></em></span>
+<span><b data-pub="imp">…</b>apparitions dans Google<em data-pubd="imp"></em></span>
+<span><b data-pub="clk">…</b>clics depuis Google<em data-pubd="clk"></em></span>
+<span><b data-pub="dem">…</b>demandes d’hôtes reçues<em data-pubs></em></span>
+</div>
+<div class="pub-x" data-pubbox>
+<div class="pub-chart"><span class="pub-l">Apparitions dans Google, mois par mois</span><div class="pub-bars" data-pubchart></div></div>
+<div class="pub-fil"><span class="pub-l">Les dernières demandes d’hôtes</span><ul data-pubfil></ul><small>Le métier, la ville et le mois, jamais rien sur l’hôte.</small></div>
+</div>
+</div>
 </section>
 
 <!-- FORMATIONS -->
@@ -570,6 +645,24 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 </div>
 <div class="fo-k"><span><b>22</b>formations</span><span><b>1h45 à 4h30</b>chacune</span><span><b>À vie</b>accès</span></div>
 </div>
+<div class="fo-app">
+<div class="fo-par"><span class="fo-l">5 parcours guidés, dans ton espace</span>
+<a href="/services/formations"><b>Démarrer en LCD en 30 jours</b><span>4 formations · environ 10 h</span></a>
+<a href="/services/formations"><b>Maximiser tes revenus</b><span>5 formations · environ 16 h</span></a>
+<a href="/services/formations"><b>Devenir conciergerie en 60 jours</b><span>5 formations · environ 17 h</span></a>
+<a href="/services/formations"><b>Booster ta visibilité hors plateformes</b><span>4 formations · environ 9 h</span></a>
+<a href="/services/formations"><b>Sécurité, conformité et sérénité</b><span>3 formations · environ 7 h</span></a>
+</div>
+<div class="fo-mock" aria-label="Aperçu de l’espace formations">
+<span class="fo-l">Ton espace formations <em>(aperçu)</em></span>
+<div class="fo-res"><small>Reprendre</small><b>Mettre le bon prix</b><span class="fo-bar"><i style="width:60%"></i></span><small>60 % terminé · une leçon à la fois</small></div>
+<div class="fo-pt"><small>Pour toi</small>
+<span><b>Louer en direct en toute sécurité</b><em>Tu as déjà des réservations en direct</em></span>
+<span><b>Fiscalité et réglementation 2026</b><em>Ton logement est en France</em></span>
+</div>
+<div class="fo-feat"><span>Ta progression enregistrée</span><span>Tes favoris</span><span>Accès à vie</span></div>
+</div>
+</div>
 <div class="tabs hs" role="tablist" aria-label="Thèmes des formations"><button type="button" role="tab" id="tab-visibilite" aria-controls="rail-visibilite" aria-selected="true" data-th="visibilite">Visibilité<span>8</span></button><button type="button" role="tab" id="tab-revenus" aria-controls="rail-revenus" aria-selected="false" data-th="revenus">Prix et revenus<span>3</span></button><button type="button" role="tab" id="tab-gestion" aria-controls="rail-gestion" aria-selected="false" data-th="gestion">Gestion<span>5</span></button><button type="button" role="tab" id="tab-juridique" aria-controls="rail-juridique" aria-selected="false" data-th="juridique">Fiscalité et règles<span>3</span></button><button type="button" role="tab" id="tab-avis" aria-controls="rail-avis" aria-selected="false" data-th="avis">Avis et litiges<span>2</span></button><button type="button" role="tab" id="tab-conciergerie" aria-controls="rail-conciergerie" aria-selected="false" data-th="conciergerie">Conciergerie<span>1</span></button></div>
 <div class="rail hs" role="tabpanel" id="rail-visibilite" aria-labelledby="tab-visibilite"><a href="/services/formations/optimiser-annonce-airbnb" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">2h30 · 5 modules</span><span class="fc-t">Optimiser son annonce Airbnb</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/maitriser-booking-com-algorithme-genius" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">3h15 · 7 modules</span><span class="fc-t">Maîtriser Booking.com et Genius</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/google-my-business-lcd" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">2h30 · 7 modules</span><span class="fc-t">Google My Business pour ta location</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/annonce-360" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">3h50 · 7 modules</span><span class="fc-t">Annonce 360° : être vu partout</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/annonce-directe" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">4h30 · 6 modules</span><span class="fc-t">Ton annonce en direct</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/audit-annonce" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">3h10 · 6 modules</span><span class="fc-t">Auditer ton annonce, score sur 100</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/photographie-lcd-smartphone" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">2h30 · 6 modules</span><span class="fc-t">Des photos qui donnent envie, au smartphone</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/reseaux-sociaux-lcd" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">1h45 · 4 modules</span><span class="fc-t">Les réseaux sociaux pour attirer des voyageurs</span><span class="fc-go">Voir la formation →</span></span></a></div>
 <div class="rail hs" role="tabpanel" id="rail-revenus" aria-labelledby="tab-revenus" hidden><a href="/services/formations/mettre-le-bon-prix-lcd" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span><span class="fc-th">Prix et revenus</span></span><span class="fc-b"><span class="fc-m">2h30 · 5 modules</span><span class="fc-t">Mettre le bon prix</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/tarification-dynamique" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span><span class="fc-th">Prix et revenus</span></span><span class="fc-b"><span class="fc-m">2h00 · 4 modules</span><span class="fc-t">La tarification dynamique</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/lcd-basse-saison" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span><span class="fc-th">Prix et revenus</span></span><span class="fc-b"><span class="fc-m">2h00 · 4 modules</span><span class="fc-t">Remplir en basse saison</span><span class="fc-go">Voir la formation →</span></span></a></div>
@@ -578,6 +671,20 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <div class="rail hs" role="tabpanel" id="rail-avis" aria-labelledby="tab-avis" hidden><a href="/services/formations/ecrire-avis-repondre-voyageurs" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span><span class="fc-th">Avis et litiges</span></span><span class="fc-b"><span class="fc-m">2h00 · 4 modules</span><span class="fc-t">Écrire et répondre aux avis</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/gerer-incidents-litiges-lcd" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span><span class="fc-th">Avis et litiges</span></span><span class="fc-b"><span class="fc-m">2h30 · 6 modules</span><span class="fc-t">Gérer les incidents et litiges</span><span class="fc-go">Voir la formation →</span></span></a></div>
 <div class="rail hs" role="tabpanel" id="rail-conciergerie" aria-labelledby="tab-conciergerie" hidden><a href="/services/formations/creer-conciergerie-lcd" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V9l9-6 9 6v12M9 21v-6h6v6"/></svg></span><span class="fc-th">Conciergerie</span></span><span class="fc-b"><span class="fc-m">3h00 · 6 modules</span><span class="fc-t">Créer et développer sa conciergerie</span><span class="fc-go">Voir la formation →</span></span></a></div>
 <a href="/services/formations" class="btn btn-w">Voir les 22 formations</a>
+</div>
+</section>
+
+<!-- POUR QUI -->
+<section class="sec" id="pour-qui">
+<div class="wrap" style="display:flex;flex-direction:column;gap:26px">
+<div class="head">
+<div class="head-l">
+<span class="eyb">Pour qui</span>
+<h2 class="h2">Gîte, chambres d’hôtes, conciergerie : <em>chacun son chemin.</em></h2>
+</div>
+<a href="/pour-qui" class="more">Toutes les situations →</a>
+</div>
+<div class="pq"><a href="/pour-qui/gites" class="pq-c"><span class="pq-i"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V9l9-6 9 6v12M9 21v-6h6v6"/></svg></span><b>Gîtes</b><span>Remplir ton calendrier, obtenir plus d’avis, développer les réservations directes.</span><em>Voir →</em></a><a href="/pour-qui/chambres-dhotes" class="pq-c"><span class="pq-i"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v-6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v6M3 18h18M7 9V6h10v3"/></svg></span><b>Chambres d’hôtes</b><span>Être trouvé sur Google et réserver en direct, sans dépendre d’Airbnb.</span><em>Voir →</em></a><a href="/pour-qui/conciergeries" class="pq-c"><span class="pq-i"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16v13H4zM9 7V4h6v3M4 12h16"/></svg></span><b>Conciergeries</b><span>Structurer, faire grandir et rentabiliser ta gestion de plusieurs logements.</span><em>Voir →</em></a><a href="/photographe-hotel" class="pq-c"><span class="pq-i"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5h10v16M14 9h6v12M7 9h4M7 13h4M7 17h4"/></svg></span><b>Hôtels et résidences</b><span>Trouver le photographe ou le vidéaste qu’il te faut près de ton établissement.</span><em>Voir →</em></a><a href="/pour-qui/investisseurs" class="pq-c"><span class="pq-i"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span><b>Investisseurs</b><span>Estimer les revenus d’un bien avant d’acheter, ville par ville.</span><em>Voir →</em></a></div>
 </div>
 </section>
 
@@ -655,7 +762,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <span class="eyb">Partenaires</span>
 <h2 class="h2">Les bons outils, <em>déjà triés.</em></h2>
 <p>Logiciel de réservation, banque, comptabilité, création d’entreprise : ceux que je recommande, avec une réduction quand j’ai pu en obtenir une.</p>
-<a href="/partenaires" class="btn btn-k">Tous les partenaires</a>
+<a href="/partenaires" class="btn btn-g">Tous les partenaires</a>
 </div>
 <div class="pa-g"><a href="/partenaires/lodgify" class="pa-c"><span class="pa-i">L</span><span class="pa-x"><b>Lodgify</b><span class="pa-s">-15 % avec le code JASON15</span></span><span class="pa-o">Offre</span></a><a href="/partenaires/indy" class="pa-c"><span class="pa-i">I</span><span class="pa-x"><b>Indy</b><span class="pa-s">Compta LMNP, 1er mois offert</span></span><span class="pa-o">Offre</span></a><a href="/partenaires/qonto" class="pa-c"><span class="pa-i">Q</span><span class="pa-x"><b>Qonto</b><span class="pa-s">Compte pro et facturation</span></span></a><a href="/partenaires/shine" class="pa-c"><span class="pa-i">S</span><span class="pa-x"><b>Shine</b><span class="pa-s">Compte pro, factures gratuites</span></span></a><a href="/partenaires/legalplace" class="pa-c"><span class="pa-i">L</span><span class="pa-x"><b>LegalPlace</b><span class="pa-s">Créer ta conciergerie</span></span></a><a href="/partenaires/airdna" class="pa-c"><span class="pa-i">A</span><span class="pa-x"><b>AirDNA</b><span class="pa-s">Les chiffres de ton marché</span></span></a></div>
 </div>
@@ -755,13 +862,27 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
     document.querySelectorAll('[data-gi]').forEach(function(p){p.hidden=p.getAttribute('data-gi')!==t.getAttribute('data-g')});
   })});
 
-  // Encart transparence : les vrais chiffres, en direct (rien d'affiché si l'API ne répond pas)
+  // Encart transparence : les vrais chiffres, en direct (encart réduit au texte si l'API ne répond pas)
   try{
-    var nf=new Intl.NumberFormat('fr-FR');
+    var nf=new Intl.NumberFormat('fr-FR'), MOIS=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+    var mois=function(m){var p=String(m||'').split('-');return p.length===2?MOIS[(+p[1])-1]+' '+p[0]:''};
+    var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
     fetch('https://app.jasonmarinho.com/api/public/chiffres').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
       var set=function(k,v){var e=document.querySelector('[data-pub="'+k+'"]');if(e)e.textContent=(v==null?'–':nf.format(v))};
-      set('vis',d.visitors?d.visitors.last30:null); set('imp',d.google?d.google.impressions:null); set('dem',d.demandes?d.demandes.total:null);
-    }).catch(function(){var n=document.querySelector('.pub-n');if(n)n.hidden=true});
+      var dl=function(k,v,p){var e=document.querySelector('[data-pubd="'+k+'"]');if(!e||v==null||!p)return;var x=Math.round((v-p)/p*100);e.textContent=(x>=0?'+':'')+x+' % sur la période d’avant';e.className=x>=0?'up':'down'};
+      var g=d.google||null, v=d.visitors||null, dm=d.demandes||null;
+      set('vis',v?v.last30:null); dl('vis',v&&v.last30,v&&v.prev30);
+      set('imp',g?g.impressions:null); dl('imp',g&&g.impressions,g&&g.prevImpressions);
+      set('clk',g?g.clicks:null); dl('clk',g&&g.clicks,g&&g.prevClicks);
+      set('dem',dm?dm.total:null); var ds=document.querySelector('[data-pubs]'); if(ds&&dm&&dm.since)ds.textContent='depuis '+mois(dm.since);
+      var ch=document.querySelector('[data-pubchart]');
+      if(ch&&g&&g.months&&g.months.length){var mx=Math.max.apply(null,g.months.map(function(m){return m.impressions}))||1;
+        ch.innerHTML=g.months.slice(-8).map(function(m){var h=Math.max(4,Math.round(m.impressions/mx*100));return '<div title="'+nf.format(m.impressions)+'"><i style="height:'+h+'%"></i><span>'+esc(mois(m.month).split(' ')[0])+'</span></div>'}).join('')}
+      else if(ch)ch.parentNode.hidden=true;
+      var fl=document.querySelector('[data-pubfil]'), NOM={photographe:'Photo, vidéo',menage:'Ménage',depannage:'Dépannage'};
+      if(fl&&dm&&dm.fil&&dm.fil.length){fl.innerHTML=dm.fil.slice(0,4).map(function(f){return '<li><b class="m-'+esc(f.metier)+'">'+esc(NOM[f.metier]||f.metier)+'</b><span>'+esc(f.label||'Autre ville')+'</span><small>'+esc(mois(f.month))+'</small></li>'}).join('')}
+      else if(fl)fl.parentNode.hidden=true;
+    }).catch(function(){document.querySelectorAll('[data-pubbox]').forEach(function(e){e.hidden=true})});
   }catch(e){}
 
   // Barre du bas sur téléphone, une fois le haut de page passé

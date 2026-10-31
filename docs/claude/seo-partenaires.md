@@ -62,6 +62,8 @@ Partie de la documentation interne (index : CLAUDE.md à la racine). Notes déta
 
 - **Mise à jour du 31/10/2026 (soir, Jason)** : 3 onglets seulement (Trouver un pro, Gérer ma location, Je suis un pro ; « Apprendre » retiré, la partie formations reste plus bas). Onglet Gérer : 7 besoins (ménages, contrat, caution, fiches de police, voyageurs, séjours, impôts), chacun avec sa réponse et sa capture (`img/accueil/hote-*.webp`, `data-gi`). La partie « Un seul endroit, trois façons de t'aider » est supprimée : elle faisait doublon avec les onglets.
 
+- **Encart transparence enrichi (31/10/2026)** : 4 chiffres en direct (visiteurs 30 j, apparitions Google, clics Google avec l'écart sur la période d'avant, demandes reçues depuis le premier mois), barres des apparitions Google sur 8 mois, 4 dernières demandes (métier, ville, mois, jamais l'hôte). Tout vient de `/api/public/chiffres` ; si l'API ne répond pas, seul le texte et le bouton restent. Formations : bloc « 5 parcours guidés » (titres et durées de `jason-app/lib/formations/parcours.ts`) + aperçu de l'espace (Reprendre, Pour toi, progression, favoris, accès à vie). Partie « Pour qui » : gîtes, chambres d'hôtes, conciergeries, hôtels et résidences (`/photographe-hotel`), investisseurs. Bouton des partenaires en vert.
+
 ## Black Friday Lodgify (code JASON65, e-mail de Lodgify du 30/10/2026)
 
 - -65 % sur Professional et Ultimate en annuel ou 2 ans, nouveaux clients, du 12/11 au 12/12/2026. Ventes suivies par le lien affilié, pas le code : toujours les deux ensemble. Commission majorée de 15 % sur les paiements du 1er au 30/11 (pour Jason, jamais affiché).
