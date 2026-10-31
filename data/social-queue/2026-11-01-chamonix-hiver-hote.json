@@ -1,0 +1,22 @@
+{
+  "slug": "chamonix-hiver-hote",
+  "format": "reel",
+  "public": "villes",
+  "photo": "img/exemple-fiches/photo-chambre-4.jpg",
+  "slides": [
+    { "type": "couverture", "kicker": "Chamonix", "titre": "Louer à Chamonix cet hiver : *ce qu’il faut savoir*", "sous_titre": "Avant les premières réservations de ski." },
+    { "type": "point", "titre": "Le *numéro d’enregistrement*", "texte": "Obligatoire pour tout meublé de tourisme à Chamonix. Il se demande sur le téléservice de la mairie." },
+    { "type": "chiffre", "kicker": "Taxe de séjour 2026", "valeur": "1,70 €", "label": "par personne et par nuit en meublé *3 étoiles*. Non classé : 5 % du prix HT par personne, plafonné.", "source": "DGFiP, données DELTA" },
+    { "type": "astuce", "kicker": "Clientèle ski", "titre": "Pense *international*", "texte": "Une annonce en anglais et la distance aux télécabines : c’est ce que cherchent les skieurs étrangers." },
+    { "type": "point", "titre": "Le *local à skis*", "texte": "Sèche-bottes et rangement chauffé : en montagne, c’est l’équipement qui fait la différence." }
+  ],
+  "legende": "Ton logement est à Chamonix ? La saison de ski arrive vite.\n\nAvant les premières réservations : vérifie ton numéro d’enregistrement, connais le bon tarif de taxe de séjour (il dépend du classement de ton meublé, et les mineurs ne la paient pas), et pense à la clientèle étrangère avec une annonce en anglais.\n\nLe guide de Chamonix détaille les règles, la taxe 2026 et le marché par secteur.\n\nEt toi, ton meublé est classé ou non classé ?",
+  "hashtags": ["#chamonix", "#airbnb", "#locationcourteduree", "#montagne", "#taxedesejour"],
+  "lien": "https://jasonmarinho.com/devenir-hote-airbnb-chamonix",
+  "story": {
+    "texte": "Chamonix : *3 vérifications* avant la saison de ski",
+    "frames": [
+      { "type": "question", "titre": "Ton meublé est *classé* ou non classé ?" }
+    ]
+  }
+}
