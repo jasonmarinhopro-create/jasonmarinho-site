@@ -19,7 +19,7 @@ export const METIERS = {
     kind: 'depannage', slug: 'depannage', table: 'depannage_pros', contactsTable: 'depannage_contacts', idColumn: 'depannage_id',
     nom: 'Dépannage et maintenance', pro: 'pro du dépannage', pros: 'pros du dépannage', leMetier: 'le dépannage',
     annuaire: '/annuaires/depannage', villePrefixe: 'depannage-lcd-', api: '/api/pro/depannage',
-    ouvert: false,
+    ouvert: true,
   },
 }
 

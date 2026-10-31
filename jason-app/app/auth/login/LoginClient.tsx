@@ -91,7 +91,7 @@ const PROFILES: Record<Profile, {
     formSub: 'Connecte-toi avec l\'email et le mot de passe choisis à l\'inscription',
     noAccountText: 'Pas encore de fiche dépannage ?',
     registerLabel: 'Créer ma fiche en 2 minutes',
-    registerHref: '/auth/register',
+    registerHref: 'https://jasonmarinho.com/annuaires/depannage/inscription',
     quote: '"Un mini-site pro hébergé sur jasonmarinho.com, vérifié, accessible à vie tant que ton abonnement reste actif."',
   },
 }

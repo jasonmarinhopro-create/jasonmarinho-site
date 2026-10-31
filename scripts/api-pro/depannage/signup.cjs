@@ -13,7 +13,7 @@ const FOUNDER_QUOTA = 20
 const FOUNDER_PRICE_ID = process.env.STRIPE_DEPANNAGE_FOUNDER_PRICE_ID || ''
 const STANDARD_PRICE_ID = process.env.STRIPE_DEPANNAGE_STANDARD_PRICE_ID || ''
 // Même valeur que METIERS.depannage.ouvert (scripts/lib/metiers.mjs, ESM non importable ici)
-const OUVERT = false
+const OUVERT = true
 const SITE_URL = 'https://jasonmarinho.com'
 
 const rateLimitMap = new Map()

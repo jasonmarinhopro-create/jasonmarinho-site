@@ -61,9 +61,10 @@ export const PROFILS: ProfilInscription[] = [
     inscriptionPro: 'https://jasonmarinho.com/annuaires/menage/inscription',
   },
   {
-    id: 'maintenance', groupe: 'pro', titre: 'Maintenance et dépannage', icone: 'cle', pastille: 'Bientôt', bientot: true,
+    id: 'maintenance', groupe: 'pro', titre: 'Maintenance et dépannage', icone: 'cle', pastille: 'Annuaire',
     ligne: 'Plomberie, électricité, petites réparations',
     accroche: 'Les hôtes de ta ville te trouvent.', points: POINTS_PRO,
+    inscriptionPro: 'https://jasonmarinho.com/annuaires/depannage/inscription',
   },
 ]
 
@@ -79,6 +80,7 @@ export function profilDepuisRole(role: string | null | undefined): ProfilId | nu
     case 'investor': case 'investisseur': return 'investor'
     case 'photo': case 'photographe': case 'videaste': return 'photo'
     case 'menage': return 'menage'
+    case 'maintenance': case 'depannage': return 'maintenance'
     default: return null
   }
 }

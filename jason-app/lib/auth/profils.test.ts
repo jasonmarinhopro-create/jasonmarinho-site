@@ -19,7 +19,8 @@ describe('profils d’inscription', () => {
     expect(profilDepuisRole('investor')).toBe('investor')
     expect(profilDepuisRole('photographe')).toBe('photo')
     expect(profilDepuisRole('menage')).toBe('menage')
-    expect(profilDepuisRole('maintenance')).toBeNull()
+    expect(profilDepuisRole('maintenance')).toBe('maintenance')
+    expect(profilDepuisRole('depannage')).toBe('maintenance')
     expect(profilDepuisRole(null)).toBeNull()
   })
 

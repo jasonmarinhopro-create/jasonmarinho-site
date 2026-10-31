@@ -156,6 +156,7 @@ const adminGroups: Array<{ key: string; label: string; items: AdminItem[]; colla
       { href: '/dashboard/admin/membres',       label: 'Membres',           Icon: UsersThree },
       { href: '/dashboard/admin/photographes',  label: 'Photo & vidéo',      Icon: Camera },
       { href: '/dashboard/admin/menage',        label: 'Équipes de ménage', Icon: Sparkle },
+      { href: '/dashboard/admin/depannage',     label: 'Dépannage',         Icon: Wrench },
       { href: '/dashboard/admin/investisseurs', label: 'Investisseurs',     Icon: Briefcase },
     ],
   },

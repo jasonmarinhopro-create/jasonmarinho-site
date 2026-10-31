@@ -63,7 +63,8 @@ export const METIERS: Record<ProKind, Metier> = {
     annuaire: '/annuaires/depannage', inscription: `${SITE}/annuaires/depannage/inscription`,
     pageVille: v => `/depannage-lcd-${v}`, fiche: s => `/annuaires/depannage/${s}`,
     stripeFounder: 'STRIPE_DEPANNAGE_FOUNDER_PRICE_ID', stripeStandard: 'STRIPE_DEPANNAGE_STANDARD_PRICE_ID',
-    ouvert: false,
+    // Ouvert le 31/10/2026 (feu vert de Jason)
+    ouvert: true,
   },
 }
 
