@@ -174,7 +174,7 @@ describe('hôtels, conciergeries et gîtes (24/10/2026)', () => {
     const site = await import('../../../scripts/lib/pro-clienteles.mjs')
     expect(site.CLIENTELES).toEqual(CLIENTELES)
     const { readFileSync } = await import('node:fs')
-    for (const api of ['photographer', 'cleaner']) {
+    for (const api of ['photographer', 'cleaner', 'depannage']) {
       const src = readFileSync(new URL(`../../../scripts/api-pro/${api}/signup.cjs`, import.meta.url), 'utf8')
       const m = src.match(/const CLIENTELE_KEYS = (\[[^\]]*\])/)
       expect(m && JSON.parse(m[1].replace(/'/g, '"'))).toEqual([...CLIENTELE_KEYS])

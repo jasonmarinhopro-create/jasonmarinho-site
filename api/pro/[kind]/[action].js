@@ -14,6 +14,11 @@ const HANDLERS = {
     signup: require('../../../scripts/api-pro/cleaner/signup.cjs'),
     track: require('../../../scripts/api-pro/cleaner/track.cjs'),
   },
+  depannage: {
+    contact: require('../../../scripts/api-pro/depannage/contact.cjs'),
+    signup: require('../../../scripts/api-pro/depannage/signup.cjs'),
+    track: require('../../../scripts/api-pro/depannage/track.cjs'),
+  },
 }
 
 module.exports = async function handler(req, res) {

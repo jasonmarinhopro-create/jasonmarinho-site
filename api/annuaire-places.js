@@ -44,9 +44,10 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Service indisponible' })
   }
 
-  const [photographers, cleaners] = await Promise.all([
+  const [photographers, cleaners, depannage] = await Promise.all([
     countFounders({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, table: 'photographers' }),
     countFounders({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, table: 'cleaners' }),
+    countFounders({ supabaseUrl: SUPABASE_URL, serviceKey: SERVICE_KEY, table: 'depannage_pros' }),
   ])
 
   // Cache CDN 5 min : le compteur n'a pas besoin d'être à la seconde,
@@ -56,5 +57,6 @@ module.exports = async function handler(req, res) {
     quota: FOUNDER_QUOTA,
     photographers: photographers == null ? null : Math.max(0, FOUNDER_QUOTA - photographers),
     cleaners: cleaners == null ? null : Math.max(0, FOUNDER_QUOTA - cleaners),
+    depannage: depannage == null ? null : Math.max(0, FOUNDER_QUOTA - depannage),
   })
 }

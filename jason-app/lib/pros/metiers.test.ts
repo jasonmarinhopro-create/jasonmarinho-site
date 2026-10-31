@@ -16,6 +16,19 @@ describe('registre des métiers', () => {
     expect(site.SPECIALITES_DEPANNAGE).toEqual(SPECIALITES_DEPANNAGE.map(x => ({ ...x })))
   })
 
+  it('inscription du site ouverte ou fermée comme le registre (dépannage)', async () => {
+    const { readFileSync } = await import('node:fs')
+    const src = readFileSync(new URL('../../../scripts/api-pro/depannage/signup.cjs', import.meta.url), 'utf8')
+    const m = src.match(/const OUVERT = (true|false)/)
+    expect(m?.[1]).toBe(String(METIERS.depannage.ouvert))
+  })
+
+  it('le routeur des pros du site connaît chaque métier', async () => {
+    const { readFileSync } = await import('node:fs')
+    const src = readFileSync(new URL('../../../api/pro/[kind]/[action].js', import.meta.url), 'utf8')
+    for (const k of KINDS) expect(src, k).toContain(`scripts/api-pro/${k}/signup.cjs`)
+  })
+
   it('slugs et tables uniques', () => {
     const vals = KINDS.map(k => METIERS[k])
     expect(new Set(vals.map(m => m.slug)).size).toBe(vals.length)

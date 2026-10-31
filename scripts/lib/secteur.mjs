@@ -592,7 +592,7 @@ export const SECTEUR_JS = `<script>
     if(D.po&&d<=15)return '<span class="ok">Oui.</span> '+where+' C’est un de ses secteurs.';
     var near=D.km?d<=D.km*1.25+8:d<=25;
     if(near)return '<span class="near">Juste à côté.</span> '+where+' Écris à '+e(D.p)+' : un déplacement est souvent possible.';
-    return '<span class="far">Un peu loin.</span> '+where+' Tu peux écrire à '+e(D.p)+' quand même, ou <a href="/trouver-un-pro?metier='+(D.m==='menage'?'menage':'photographe')+'&ville='+encodeURIComponent(c.nom)+'">décrire ton besoin aux pros proches de chez toi</a>.';
+    return '<span class="far">Un peu loin.</span> '+where+' Tu peux écrire à '+e(D.p)+' quand même, ou <a href="/trouver-un-pro?metier='+(D.m==='menage'||D.m==='depannage'?D.m:'photographe')+'&ville='+encodeURIComponent(c.nom)+'">décrire ton besoin aux pros proches de chez toi</a>.';
   }
   function pick(c){
     q.value=c.nom;sug.hidden=true;clear();

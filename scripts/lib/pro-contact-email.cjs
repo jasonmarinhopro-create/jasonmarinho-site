@@ -17,6 +17,7 @@ const SERIF = "Georgia,'Times New Roman',serif"
 const METIER = {
   photographe: { etiquette: 'Photo & vidéo', annuaire: 'des photographes et vidéastes', dir: 'photographes', dash: 'ma-fiche-photographe' },
   menage: { etiquette: 'Ménage', annuaire: 'des équipes de ménage', dir: 'menage', dash: 'ma-fiche-menage' },
+  depannage: { etiquette: 'Dépannage', annuaire: 'du dépannage et de la maintenance', dir: 'depannage', dash: 'ma-fiche-depannage' },
 }
 
 function esc(s) {
@@ -103,7 +104,7 @@ const personne = (nom, sous, fond, texte) => `<table role="presentation" width="
 </tr></table>`
 
 /**
- * @param {{ metier: 'photographe'|'menage', proPrenom: string, proNom: string, proVille: string|null, proSlug: string, contactName: string, contactEmail: string, contactPhone?: string, message: string }} o
+ * @param {{ metier: 'photographe'|'menage'|'depannage', proPrenom: string, proNom: string, proVille: string|null, proSlug: string, contactName: string, contactEmail: string, contactPhone?: string, message: string }} o
  */
 /** Téléphone facultatif de la demande (26/10/2026) : 8 à 15 chiffres, sinon '' ;
  *  un numéro français à 10 chiffres est écrit par paires (06 12 34 56 78). */

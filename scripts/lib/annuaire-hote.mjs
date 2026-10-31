@@ -101,6 +101,54 @@ export const ANNUAIRES = {
       exemple: '/annuaires/menage/exemple-fiche',
     },
   },
+  // Dépannage et maintenance (31/10/2026, docs/claude/projet-maintenance.md).
+  // Conseils seulement, aucun prix ni règle juridique : les tarifs viennent des fiches.
+  depannage: {
+    key: 'depannage',
+    prefix: 'depannage-lcd',
+    one: 'pro', many: 'pros du dépannage', unOne: 'un pro du dépannage',
+    villeLabel: 'dépannage',
+    villesIntro: 'Les bons réflexes en cas de panne et les questions à poser, ville par ville.',
+    prepareTitle: 'Ce qui fait gagner du temps <em>au pro</em>',
+    title: 'Dépannage Airbnb : plombier, électricien près de toi',
+    desc: 'Plombiers, électriciens, serruriers et multiservices pour la location courte durée : spécialités, délai d’intervention, villes couvertes. Contact direct, sans commission.',
+    h1: 'Un pro du dépannage <em>entre deux voyageurs</em>',
+    lead: 'Plombiers, électriciens, serruriers, multiservices : des pros qui savent qu’un logement doit être prêt pour le prochain voyageur. Regarde leurs spécialités, leur délai d’intervention et les villes où ils se déplacent, puis écris-leur directement. Sans commission, sans intermédiaire.',
+    icon: 'ph-wrench',
+    questions: [
+      ['Pouvez-vous intervenir entre deux voyageurs ?', 'Une fuite ou un chauffe-eau en panne ne peut pas attendre le séjour suivant : demande les délais réels, soirs et week-ends compris.'],
+      ['Combien coûtent le déplacement et la première heure ?', 'Fais-les préciser avant l’intervention, surtout en urgence : ce sont les deux lignes qui surprennent le plus sur une facture.'],
+      ['Me donnez-vous un devis écrit ?', 'Dès que la réparation dépasse le petit dépannage, un devis écrit évite les mauvaises surprises.'],
+      ['Pouvez-vous intervenir sans moi sur place ?', 'Boîte à clés, serrure à code, consignes d’accès : la plupart des hôtes ne sont pas sur place le jour de la panne.'],
+      ['M’envoyez-vous un compte rendu ?', 'Une photo après l’intervention et une facture claire te permettent de suivre ton logement à distance, et de refacturer un dégât si un voyageur en est la cause.'],
+    ],
+    prepare: [
+      'Où se trouvent le compteur, le disjoncteur et l’arrivée d’eau, noté dans ton guide',
+      'Les marques et modèles de tes appareils (chauffe-eau, chaudière, électroménager)',
+      'Un accès simple : boîte à clés ou serrure à code',
+      'Des photos de la panne envoyées avec ta demande',
+      'Les créneaux libres entre deux réservations',
+    ],
+    articles: [
+      ['/blog/galeres-location-courte-duree-comment-gerer-urgence', 'Urgences en location courte durée : les galères fréquentes'],
+      ['/blog/panne-courant-eau-internet-lcd-7-reflexes-coupure-sejour', 'Panne d’eau, de courant ou d’internet : 7 réflexes'],
+      ['/blog/refacturer-degat-voyageur-airbnb-procedure', 'Refacturer un dégât voyageur : la procédure'],
+    ],
+    faq: [
+      ['Combien coûte un dépannage ?', 'Chaque pro fixe ses tarifs : déplacement, heure de main-d’œuvre, pièces. Les fiches affichent le tarif horaire, le prix du déplacement ou des formules : demande un devis avant l’intervention.'],
+      ['Jason Marinho prend-il une commission ?', 'Non. Tu contactes le pro depuis sa fiche, et le devis, l’intervention et le paiement se règlent directement entre vous.'],
+      ['Comment savoir si un pro est sérieux ?', 'Chaque fiche est remplie par le pro lui-même. Demande un devis écrit et, pour des travaux, son attestation d’assurance, et vérifie l’entreprise gratuitement sur annuaire-entreprises.data.gouv.fr.'],
+      ['Et si la panne arrive pendant un séjour ?', 'Filtre « Urgences » ou « Le jour même » : ces pros ont indiqué pouvoir venir vite. Le mieux reste d’avoir deux ou trois contacts de côté avant d’en avoir besoin.'],
+      ['Il n’y a pas encore de pro dans ma ville, que faire ?', 'Décris ton besoin : ta demande part aux pros de ta zone dès qu’ils sont là. Repasse aussi : l’annuaire grandit chaque semaine.'],
+    ],
+    join: ['/annuaires/depannage/inscription', 'Tu es artisan ou multiservice ? Rejoins l’annuaire'],
+    joinBox: {
+      eyebrow: 'Pour les artisans et les multiservices',
+      title: 'Les hôtes de ta ville <em>ont besoin de toi</em>',
+      text: 'Une fiche qui sert de site vitrine sur Google, les demandes des hôtes et des conciergeries en direct, tes devis faits en deux minutes. Sans commission.',
+      exemple: '/annuaires/depannage/exemple-fiche',
+    },
+  },
 }
 
 /** Pages de ville du métier (slug) déduites du dossier du site */
@@ -245,7 +293,7 @@ export function guideHtml(cfg) {
     </div>
     <div class="guide-side">
       <div class="guide-card">
-        <h2 class="guide-h">${cfg.one === 'photographe' ? 'Prépare ton logement <em>avant la séance</em>' : 'Ce qui facilite <em>le travail de l’équipe</em>'}</h2>
+        <h2 class="guide-h">${cfg.prepareTitle ?? (cfg.one === 'photographe' ? 'Prépare ton logement <em>avant la séance</em>' : 'Ce qui facilite <em>le travail de l’équipe</em>')}</h2>
         <ul class="guide-list">${cfg.prepare.map(t => `<li><i class="ph-bold ph-check-circle"></i>${esc(t)}</li>`).join('')}</ul>
       </div>
       <div class="guide-card">
@@ -275,7 +323,7 @@ export function faqJsonLd(cfg) {
 /** Guides par ville : les villes où il y a des pros en tête, avec leur nombre */
 export function villesGuidesHtml(cfg, cities, counts) {
   if (!cities.length) return ''
-  const label = cfg.one === 'photographe' ? 'photographe' : 'ménage'
+  const label = cfg.villeLabel ?? (cfg.one === 'photographe' ? 'photographe' : 'ménage')
   const sorted = [...cities].sort((a, b) => (counts.get(b.slug) ?? 0) - (counts.get(a.slug) ?? 0))
   const chips = sorted.map(c => {
     const n = counts.get(c.slug) ?? 0
@@ -284,7 +332,7 @@ export function villesGuidesHtml(cfg, cities, counts) {
   return `<section class="villes-section" id="villes">
   <div class="villes-in">
     <h2 class="villes-h">Guide ${label} <em>de ta ville</em></h2>
-    <p class="villes-p">Tarifs constatés, checklist et questions à poser, ville par ville. Les villes en vert ont déjà des ${esc(cfg.many)} dans l’annuaire.</p>
+    <p class="villes-p">${esc(cfg.villesIntro ?? 'Tarifs constatés, checklist et questions à poser, ville par ville.')} Les villes en vert ont déjà des ${esc(cfg.many)} dans l’annuaire.</p>
     <div class="villes-chips">${chips}</div>
   </div>
 </section>`
