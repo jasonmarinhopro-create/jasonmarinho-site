@@ -413,6 +413,10 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
           <i class="ph-bold ph-sparkle"></i>
           <span class="tab-label-full">Ménage</span>
         </button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="depannage" onclick="switchTab('depannage')">
+          <i class="ph-bold ph-wrench"></i>
+          <span class="tab-label-full">Dépannage</span>
+        </button>
       </div>
     </div>
 
@@ -709,6 +713,65 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
       </div>
     </div><!-- /tab-panel menage -->
 
+    <!-- ───── PANEL DÉPANNAGE (31/10/2026) ───── -->
+    <div class="tab-panel" data-panel="depannage" style="display:none">
+      <div class="annuaire-intro">
+        <div class="lbl dk">Annuaire pros</div>
+        <h3 class="h2" style="margin:8px 0 12px">Annuaire <em>Dépannage et maintenance</em></h3>
+        <p style="font-size:15px;color:var(--tm);margin:0 auto;max-width:620px;line-height:1.7">Ta fiche fait office de site vitrine : indexée sur Google, avec un lien dofollow vers ton site et tes statistiques. Pour les hôtes : <strong>consultation et contact gratuits</strong>, inclus dans tous les plans.</p>
+      </div>
+
+      <div class="annuaire-grid">
+        <!-- Fondateur dépannage -->
+        <div class="annuaire-card featured">
+          <span class="annuaire-tag gold"><i class="ph-bold ph-star"></i> Fondateur · 20 places</span>
+          <h4 class="annuaire-name">Pro Fondateur</h4>
+          <div class="annuaire-price-row">
+            <span class="annuaire-price">39,98 €</span>
+            <span class="annuaire-period">/ an TTC à vie</span>
+          </div>
+          <p class="annuaire-mo">Soit ≈ 3,33 €/mois : verrouillé tant que ton abonnement reste actif</p>
+          <ul class="annuaire-feats">
+            <li><i class="ph-bold ph-check"></i>Ta fiche comme un site vitrine : 6 photos, formules, spécialités</li>
+            <li><i class="ph-bold ph-check"></i>Indexée sur Google, présente sur la page de ta ville</li>
+            <li><i class="ph-bold ph-check"></i>Lien dofollow vers ton site</li>
+            <li><i class="ph-bold ph-check"></i>Statistiques : visiteurs, clics, place sur Google, bilan mensuel</li>
+            <li><i class="ph-bold ph-check"></i>Les demandes des hôtes de ta zone, filtrées par spécialité et urgence</li>
+            <li><i class="ph-bold ph-check"></i>Devis en ligne, aucune commission · contact direct hôte</li>
+          </ul>
+        </div>
+        <!-- Standard dépannage -->
+        <div class="annuaire-card">
+          <span class="annuaire-tag">Standard · dès la 21e fiche</span>
+          <h4 class="annuaire-name">Standard</h4>
+          <div class="annuaire-price-row">
+            <span class="annuaire-price">79,98 €</span>
+            <span class="annuaire-period">/ an TTC</span>
+          </div>
+          <p class="annuaire-mo">Soit ≈ 6,67 €/mois : résiliable à tout moment</p>
+          <ul class="annuaire-feats">
+            <li><i class="ph-bold ph-check"></i>Ta fiche comme un site vitrine : 6 photos, formules, spécialités</li>
+            <li><i class="ph-bold ph-check"></i>Indexée sur Google, présente sur la page de ta ville</li>
+            <li><i class="ph-bold ph-check"></i>Lien dofollow vers ton site</li>
+            <li><i class="ph-bold ph-check"></i>Statistiques : visiteurs, clics, place sur Google, bilan mensuel</li>
+            <li><i class="ph-bold ph-check"></i>Les demandes des hôtes de ta zone, filtrées par spécialité et urgence</li>
+            <li><i class="ph-bold ph-check"></i>Devis en ligne, aucune commission · contact direct hôte</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="annuaire-cta-row">
+        <a href="/annuaires/depannage/inscription" class="btn-p"><i class="ph-bold ph-arrow-right"></i> Créer ma fiche dépannage</a>
+        <a href="/annuaires/depannage/exemple-fiche" class="btn-ol-dark"><i class="ph-bold ph-eye"></i> Voir un exemple</a>
+        <a href="/annuaires/depannage/exemple-fiche#exemple-stats" class="btn-ol-dark"><i class="ph-bold ph-chart-line-up"></i> Exemple de statistiques</a>
+        <a href="/chiffres" class="btn-ol-dark"><i class="ph-bold ph-google-logo"></i> La visibilité en chiffres</a>
+      </div>
+
+      <div class="legal-note">
+        <strong>Annuaire dépannage et maintenance :</strong> mini-site hébergé sur jasonmarinho.com, abonnement annuel via Stripe, résiliable à tout moment depuis ton espace pro. Tarif Fondateur garanti à vie tant que l'abonnement reste actif sans interruption. Côté hôte : accès consultation et contact <strong>gratuit</strong>, inclus dans tous les plans.
+      </div>
+    </div><!-- /tab-panel depannage -->
+
   </div>
 </section>
 
@@ -792,9 +855,9 @@ document.querySelectorAll('.faq-q').forEach(function(q){
   });
 });
 
-// Tab switcher : 3 services (hote / photographes / menage)
+// Tab switcher : 4 services (hote / photographes / menage / depannage)
 // Synchronise le hash URL pour permettre les liens directs : #hote, #photographes, #menage
-var VALID_TABS = ['hote','photographes','menage'];
+var VALID_TABS = ['hote','photographes','menage','depannage'];
 function switchTab(tab, keepHash){
   if (!VALID_TABS.includes(tab)) tab = 'hote';
   document.querySelectorAll('.tab-btn').forEach(function(b){
