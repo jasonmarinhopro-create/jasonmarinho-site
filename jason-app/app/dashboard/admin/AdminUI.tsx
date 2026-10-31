@@ -8,7 +8,7 @@ import {
   BookOpen, Newspaper, ShieldStar, ShieldCheck, TrendUp, Lightning,
   Sparkle, CurrencyEur, ChartLineUp, Percent, CheckCircle,
   UserPlus, Globe, Broadcast, Handshake, Bug, ShareNetwork, MagnifyingGlass,
-  Crown, Lifebuoy, Camera, Broom,
+  Crown, Lifebuoy, Camera, Broom, Wrench,
 } from '@phosphor-icons/react/dist/ssr'
 import { resolveAppErrorGroup } from './actions'
 import type { AffilaeOverview } from '@/lib/affiliation/affilae'
@@ -17,8 +17,8 @@ import HubHero, { HeroEm, heroCard, heroCta, heroLink } from '@/components/dashb
 
 interface RecentSignup {
   id: string; email: string; full_name: string | null; plan: string; created_at: string
-  /** Fiches pros du compte (photographe, ménage) */
-  pros?: Array<{ kind: 'photographe' | 'menage'; tier: string | null; paid: boolean; status: string | null }>
+  /** Fiches pros du compte (photographe, ménage, dépannage) */
+  pros?: Array<{ kind: 'photographe' | 'menage' | 'depannage'; tier: string | null; paid: boolean; status: string | null }>
 }
 interface MonthlySignup {
   month: string; total: number; paid: number
@@ -46,11 +46,12 @@ interface Stats {
   topFormation: { title: string; count: number } | null
   mrr: number
   revenue: {
-    annual: number; monthly: number; hostAnnual: number; photoAnnual: number; cleanAnnual: number
-    paidPhotographers: number; paidCleaners: number; subscriptions: number
+    annual: number; monthly: number; hostAnnual: number; photoAnnual: number; cleanAnnual: number; depAnnual: number
+    paidPhotographers: number; paidCleaners: number; paidDepannage: number; subscriptions: number
   }
   photographersCount: number
   cleanersCount: number
+  depannageCount: number
   completedFormations: number
 }
 
@@ -58,6 +59,7 @@ interface Stats {
 const AMBER = '#B7791F'
 const PINK = '#B83A7C'
 const BROWN = '#6E5446'
+const RUST = '#A4502A'
 const tint = (c: string, pct = 12) => `color-mix(in srgb, ${c} ${pct}%, transparent)`
 
 function formatEuro(amount: number, decimals = 2) {
@@ -107,7 +109,7 @@ export default function AdminUI({
   // Payants : Standard des hôtes + fiches photographes et ménage payées
   // (Driing = offert aux clients Driing)
   const rv = stats.revenue
-  const paidPros = rv.paidPhotographers + rv.paidCleaners
+  const paidPros = rv.paidPhotographers + rv.paidCleaners + rv.paidDepannage
   const payingUsers = rv.subscriptions
   const conversionRate = stats.totalUsers > 0 ? (payingUsers / stats.totalUsers) * 100 : 0
   const arpu = payingUsers > 0 ? stats.mrr / payingUsers : 0
@@ -116,6 +118,7 @@ export default function AdminUI({
     `${plural(stats.standardMembers, 'Standard', 'Standard')}`,
     rv.paidPhotographers > 0 ? plural(rv.paidPhotographers, 'photographe') : '',
     rv.paidCleaners > 0 ? plural(rv.paidCleaners, 'équipe ménage', 'équipes ménage') : '',
+    rv.paidDepannage > 0 ? plural(rv.paidDepannage, 'pro du dépannage', 'pros du dépannage') : '',
   ].filter(Boolean).join(' + ')
   const pct = (n: number) => stats.totalUsers > 0 ? Math.round((n / stats.totalUsers) * 100) : 0
 
@@ -129,7 +132,7 @@ export default function AdminUI({
 
   const kpis = [
     { label: 'Revenu mensuel', value: formatEuro(stats.mrr), sub: `${revenueSub}, annuel ÷ 12`, icon: CurrencyEur, color: 'var(--accent-text)' },
-    { label: 'Revenu annuel', value: formatEuro(arr, 2), sub: `hôtes ${formatEuro(rv.hostAnnual, 2)} · pros ${formatEuro(rv.photoAnnual + rv.cleanAnnual, 2)}`, icon: ChartLineUp, color: AMBER },
+    { label: 'Revenu annuel', value: formatEuro(arr, 2), sub: `hôtes ${formatEuro(rv.hostAnnual, 2)} · pros ${formatEuro(rv.photoAnnual + rv.cleanAnnual + rv.depAnnual, 2)}`, icon: ChartLineUp, color: AMBER },
     { label: 'Conversion', value: `${conversionRate.toFixed(1).replace('.', ',')} %`, sub: `${payingUsers} abonnement${payingUsers > 1 ? 's' : ''} payant${payingUsers > 1 ? 's' : ''} sur ${stats.totalUsers} comptes`, icon: Percent, color: 'var(--accent-text)' },
     { label: 'Par abonné', value: formatEuro(arpu), sub: 'par mois', icon: UserPlus, color: BROWN },
   ]
@@ -140,6 +143,7 @@ export default function AdminUI({
     { name: 'Driing', note: 'offert', count: stats.driingMembers, color: AMBER },
     { name: 'Photographes', note: `${rv.paidPhotographers} payée${rv.paidPhotographers > 1 ? 's' : ''}`, count: stats.photographersCount, color: PINK },
     { name: 'Équipes ménage', note: `${rv.paidCleaners} payée${rv.paidCleaners > 1 ? 's' : ''}`, count: stats.cleanersCount, color: BROWN },
+    { name: 'Dépannage', note: `${rv.paidDepannage} payée${rv.paidDepannage > 1 ? 's' : ''}`, count: stats.depannageCount, color: RUST },
   ]
 
   const content = [
@@ -310,11 +314,11 @@ export default function AdminUI({
                       <div style={s.recentRight}>
                         <span style={{ display: 'inline-flex', gap: 4, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                           {pros.map(p => {
-                            const c = p.kind === 'photographe' ? PINK : BROWN
-                            const Icon = p.kind === 'photographe' ? Camera : Broom
+                            const c = p.kind === 'photographe' ? PINK : p.kind === 'depannage' ? RUST : BROWN
+                            const Icon = p.kind === 'photographe' ? Camera : p.kind === 'depannage' ? Wrench : Broom
                             return (
                               <span key={p.kind} style={{ ...s.recentPlan, color: c, background: tint(c), display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                                <Icon size={11} weight="bold" />{p.kind === 'photographe' ? 'Photographe' : 'Ménage'}{p.paid ? (p.tier === 'fondateur' ? ' · fondateur' : ' · payé') : ' · à payer'}
+                                <Icon size={11} weight="bold" />{p.kind === 'photographe' ? 'Photographe' : p.kind === 'depannage' ? 'Dépannage' : 'Ménage'}{p.paid ? (p.tier === 'fondateur' ? ' · fondateur' : ' · payé') : ' · à payer'}
                               </span>
                             )
                           })}

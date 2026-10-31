@@ -13,7 +13,7 @@ import type { ProStatsData } from '@/lib/visibility/pro-stats'
 // que l'utilisateur est admin.
 
 export interface MemberProSpace {
-  kind: 'photographe' | 'menage'
+  kind: 'photographe' | 'menage' | 'depannage'
   id: string
   full_name: string | null
   pseudo: string | null
@@ -54,6 +54,18 @@ export async function loadMemberProStats(pro: Pick<MemberProSpace, 'kind' | 'id'
 }
 
 export async function loadMemberProfile(memberId: string) {
+  // Fiche dépannage (31/10/2026) : hors de admin_member_detail, lue à part dans la même vague
+  const [res, dep] = await Promise.all([
+    loadMemberProfileBase(memberId),
+    getServiceClient().from('depannage_pros')
+      .select('id, full_name, pseudo, ville, status, tier, slug, is_public, stripe_subscription_status, views_count, contacts_count, created_at')
+      .eq('user_id', memberId),
+  ])
+  if ('error' in res) return res
+  return { ...res, pros: [...res.pros, ...((dep.data ?? []).map(r => ({ ...r, kind: 'depannage' as const })) as MemberProSpace[])] }
+}
+
+async function loadMemberProfileBase(memberId: string) {
   const adminClient = getServiceClient()
 
   // Une seule requête (fonction admin_member_detail, migration 20261024_150),

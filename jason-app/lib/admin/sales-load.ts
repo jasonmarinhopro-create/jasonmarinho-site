@@ -55,13 +55,14 @@ async function lastSignIns() {
 /** Comptes avec leur activité, drapeaux et fiches pros (partagé avec l'envoi aux membres). */
 export async function loadMembers() {
   const db = getServiceClient()
-  const [profilesRes, logements, sejours, contracts, phRes, clRes, signIns, supRes] = await Promise.all([
+  const [profilesRes, logements, sejours, contracts, phRes, clRes, depRes, signIns, supRes] = await Promise.all([
     db.from('profiles').select('id, email, full_name, plan, role, driing_status, created_at, onboarding_completed_steps').limit(5000),
     allUserIds('logements'),
     allUserIds('sejours'),
     allUserIds('contracts', q => q.neq('statut', 'annule')),
     db.from('photographers').select('user_id, tier, status, stripe_subscription_status, created_at'),
     db.from('cleaners').select('user_id, tier, status, stripe_subscription_status, created_at'),
+    db.from('depannage_pros').select('user_id, tier, status, stripe_subscription_status, created_at'),
     lastSignIns().catch(() => new Map<string, string | null>()),
     db.from('outreach_suppressions').select('email_norm').limit(10000),
   ])
@@ -71,7 +72,8 @@ export async function loadMembers() {
   const admins = new Set(((profilesRes.data ?? []) as Array<{ id: string; role: string | null }>).filter(p => p.role === 'admin').map(p => p.id))
   const photographers = splitDemo((phRes.data ?? []) as ProFull[], admins).real
   const cleaners = splitDemo((clRes.data ?? []) as ProFull[], admins).real
-  const proUsers = new Set([...photographers, ...cleaners].map(r => r.user_id).filter(Boolean) as string[])
+  const depannage = splitDemo((depRes.data ?? []) as ProFull[], admins).real
+  const proUsers = new Set([...photographers, ...cleaners, ...depannage].map(r => r.user_id).filter(Boolean) as string[])
   const logCount = countBy(logements), sejCount = countBy(sejours), conCount = countBy(contracts)
   const suppressed = new Set((supRes.data ?? []).map(r => r.email_norm as string))
   const steps = new Map<string, string[]>()
@@ -102,14 +104,14 @@ export async function loadMembers() {
     }),
   }))
 
-  return { members, photographers, cleaners, mailTargets }
+  return { members, photographers, cleaners, depannage, mailTargets }
 }
 
 export async function loadSales() {
   const db = getServiceClient()
   const today = parisToday()
 
-  const [{ members, photographers, cleaners, mailTargets }, outreachRes] = await Promise.all([
+  const [{ members, photographers, cleaners, depannage, mailTargets }, outreachRes] = await Promise.all([
     loadMembers(),
     allRows<{ stage: string; audience: string }>((from, to) => db.from('outreach_contacts').select('stage, audience').order('id').range(from, to)).then(r => ({ data: r.rows, error: r.error })),
   ])
@@ -123,8 +125,8 @@ export async function loadSales() {
 
   // Revenu : Standard des hôtes + fiches pros payées (même règle que la Vue d'ensemble)
   const standardMembers = n('payant')
-  const revenue = computeRevenue({ standardMembers, photographers, cleaners })
-  const paidPros = [...photographers, ...cleaners].filter(isPaidPro)
+  const revenue = computeRevenue({ standardMembers, photographers, cleaners, depannage })
+  const paidPros = [...photographers, ...cleaners, ...depannage].filter(isPaidPro)
   const net = netAnnual([
     { price: PRICES.standard, count: standardMembers },
     { price: PRICES.proFondateur, count: paidPros.filter(r => r.tier === 'fondateur').length },
@@ -163,7 +165,7 @@ export async function loadSales() {
   }
 
   const outreach = outreachRes.error ? [] : (outreachRes.data ?? [])
-  const proFunnel = (kind: 'photographe' | 'menage', rows: ProFull[]) => ({
+  const proFunnel = (kind: 'photographe' | 'menage' | 'depannage', rows: ProFull[]) => ({
     pipeline: pipelineCounts(outreach, kind),
     fiches: rows.length,
     payees: rows.filter(isPaidPro).length,
@@ -179,6 +181,7 @@ export async function loadSales() {
     pros: {
       photographe: proFunnel('photographe', photographers),
       menage: proFunnel('menage', cleaners),
+      depannage: proFunnel('depannage', depannage),
     },
     outreachAvailable: !outreachRes.error,
     weekly: weeklyCounts(members.filter(m => m.role !== 'admin').map(m => m.createdAt), today),

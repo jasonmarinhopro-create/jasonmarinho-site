@@ -47,11 +47,13 @@ async function computeAdminOverview() {
   // Compteurs en une seule requête (fonction admin_overview, migration
   // 20261024_150) ; repli sur les 18 lectures si elle manque. Les pages vues,
   // clics affiliés et erreurs gardent leurs lectures (paginées).
-  const [base, topPages, affiliateClicks, appErrors] = await Promise.all([
+  const [base, topPages, affiliateClicks, appErrors, depRes] = await Promise.all([
     loadOverviewBase(admin, startOfMonth, twelveMonthsAgo),
     getTopPages(admin),
     getAffiliateClicks(admin),
     getAppErrors(admin),
+    // Dépannage (31/10/2026) : hors de la fonction admin_overview, lu à part
+    admin.from('depannage_pros').select('user_id, tier, status, stripe_subscription_status').limit(1000),
   ])
   const {
     totalUsers, driingMembers, standardMembers, standardRows, newThisMonth, templatesCount, formationsCount, groupsCount,
@@ -99,8 +101,9 @@ async function computeAdminOverview() {
   // Fiches d'exemple des comptes admin écartées (lib/pros/demo.ts)
   const phRows = splitDemo((photographers ?? []) as unknown as ProRow[], admins).real
   const clRows = splitDemo((cleaners ?? []) as unknown as ProRow[], admins).real
-  const revenue = computeRevenue({ standardMembers: standardMembers ?? 0, standardPriceIds: standardRows ? (standardRows as Array<{ stripe_price_id: string | null }>).map(r => r.stripe_price_id) : undefined, photographers: phRows, cleaners: clRows })
-  const spaces = proSpacesByUser(phRows, clRows)
+  const depRows = splitDemo((depRes.data ?? []) as ProRow[], admins).real
+  const revenue = computeRevenue({ standardMembers: standardMembers ?? 0, standardPriceIds: standardRows ? (standardRows as Array<{ stripe_price_id: string | null }>).map(r => r.stripe_price_id) : undefined, photographers: phRows, cleaners: clRows, depannage: depRows })
+  const spaces = proSpacesByUser(phRows, clRows, depRows)
 
   return {
     recentSignups: ((recentSignups ?? []) as Array<{ id: string; email: string; full_name: string | null; plan: string; created_at: string }>)
@@ -127,6 +130,7 @@ async function computeAdminOverview() {
       revenue,
       photographersCount: phRows.filter(r => r.user_id).length,
       cleanersCount: clRows.filter(r => r.user_id).length,
+      depannageCount: depRows.filter(r => r.user_id).length,
       completedFormations: completedFormations ?? 0,
     },
   }

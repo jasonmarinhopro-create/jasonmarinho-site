@@ -3,9 +3,10 @@
 // peut être hôte, photographe, équipe de ménage et investisseur à la fois.
 
 import Link from 'next/link'
-import { House, Camera, Broom, Briefcase, ArrowSquareOut, Eye } from '@phosphor-icons/react/dist/ssr'
+import { House, Camera, Broom, Wrench, Briefcase, ArrowSquareOut, Eye } from '@phosphor-icons/react/dist/ssr'
 import { PRICES, isPaidPro, proAnnualPrice } from '@/lib/admin/revenue'
 import type { MemberProSpace } from '@/lib/admin/member-profile'
+import { METIERS } from '@/lib/pros/metiers'
 
 const AMBER = '#B7791F'
 const PINK = '#B83A7C'
@@ -56,15 +57,16 @@ export default function MemberSpaces({ plan, host, sejours, voyageurs, pros, isI
 
         {pros.map(r => {
           const photo = r.kind === 'photographe'
+          const M = METIERS[r.kind === 'photographe' ? 'photographer' : r.kind === 'menage' ? 'cleaner' : 'depannage']
           const paid = isPaidPro(r)
           const online = r.status === 'active' && r.is_public && r.slug
           const name = (!photo && r.pseudo) || r.full_name
           return (
             <Card
               key={r.id}
-              icon={photo ? <Camera size={18} weight="duotone" /> : <Broom size={18} weight="duotone" />}
-              color={photo ? PINK : BROWN}
-              title={photo ? 'Fiche photographe' : 'Fiche équipe de ménage'}
+              icon={photo ? <Camera size={18} weight="duotone" /> : r.kind === 'depannage' ? <Wrench size={18} weight="duotone" /> : <Broom size={18} weight="duotone" />}
+              color={photo ? PINK : r.kind === 'depannage' ? '#A4502A' : BROWN}
+              title={photo ? 'Fiche photographe' : r.kind === 'depannage' ? 'Fiche dépannage' : 'Fiche équipe de ménage'}
               badge={FICHE[r.status ?? ''] ?? r.status ?? '?'}
               badgeOn={r.status === 'active'}
             >
@@ -73,9 +75,9 @@ export default function MemberSpaces({ plan, host, sejours, voyageurs, pros, isI
               <Line k="Résultats" v={`${r.views_count ?? 0} vue${(r.views_count ?? 0) > 1 ? 's' : ''} · ${r.contacts_count ?? 0} demande${(r.contacts_count ?? 0) > 1 ? 's' : ''}`} />
               <Line k="Créée le" v={date(r.created_at)} />
               <div style={s.actions}>
-                <Link href={`/dashboard/ma-fiche-${photo ? 'photographe' : 'menage'}?id=${r.id}`} style={s.btn}><Eye size={14} weight="bold" /> Voir sa fiche</Link>
+                <Link href={`${M.espace}?id=${r.id}`} style={s.btn}><Eye size={14} weight="bold" /> Voir sa fiche</Link>
                 {online && (
-                  <a href={`https://jasonmarinho.com/annuaires/${photo ? 'photographes' : 'menage'}/${r.slug}`} target="_blank" rel="noopener" style={s.btnGhost}>
+                  <a href={`https://jasonmarinho.com${M.fiche(r.slug as string)}`} target="_blank" rel="noopener" style={s.btnGhost}>
                     <ArrowSquareOut size={14} weight="bold" /> Sur le site
                   </a>
                 )}

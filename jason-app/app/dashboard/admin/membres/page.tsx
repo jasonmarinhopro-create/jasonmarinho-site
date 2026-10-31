@@ -18,7 +18,7 @@ export default async function MembresPage() {
 
   const adminClient = getServiceClient()
 
-  const [{ data: members }, { data: photographers }, { data: cleaners }, activity] = await Promise.all([
+  const [{ data: members }, { data: photographers }, { data: cleaners }, { data: depannage }, activity] = await Promise.all([
     adminClient
       .from('profiles')
       .select(`
@@ -34,6 +34,7 @@ export default async function MembresPage() {
     // profil pro se détecte par la présence d'une fiche photographers/cleaners.
     adminClient.from('photographers').select('user_id, tier, status, stripe_subscription_status'),
     adminClient.from('cleaners').select('user_id, tier, status, stripe_subscription_status'),
+    adminClient.from('depannage_pros').select('user_id, tier, status, stripe_subscription_status'),
     // Dernière visite et dernière action de chaque membre (une source en panne n'empêche rien)
     loadMemberActivity().catch(() => new Map()),
   ])
@@ -49,9 +50,11 @@ export default async function MembresPage() {
     standardPriceIds: (members ?? []).filter((m: { plan: string | null }) => m.plan === 'standard').map((m: { stripe_price_id?: string | null }) => m.stripe_price_id ?? null),
     photographers: splitDemo((photographers ?? []) as ProRow[], admins).real,
     cleaners: splitDemo((cleaners ?? []) as ProRow[], admins).real,
+    depannage: splitDemo((depannage ?? []) as ProRow[], admins).real,
   })
   const photographerIds = new Set((photographers ?? []).map(p => p.user_id))
   const cleanerIds = new Set((cleaners ?? []).map(c => c.user_id))
+  const depannageIds = new Set((depannage ?? []).map(c => c.user_id))
 
   // Normalize Supabase join result: formation relation comes as array from generic client
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -59,6 +62,7 @@ export default async function MembresPage() {
     ...m,
     is_photographer: photographerIds.has(m.id),
     is_cleaner: cleanerIds.has(m.id),
+    is_depannage: depannageIds.has(m.id),
     last_seen_at: activity.get(m.id)?.lastSeenAt ?? null,
     last_action: activity.get(m.id)?.lastAction ?? null,
     user_formations: (m.user_formations ?? []).map((uf: any) => ({

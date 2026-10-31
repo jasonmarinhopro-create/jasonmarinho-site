@@ -39,35 +39,42 @@ export function hostAnnualPrice(priceId: string | null | undefined): number {
   }
 }
 
-export function computeRevenue({ standardMembers, standardPriceIds, photographers, cleaners }: {
+export function computeRevenue({ standardMembers, standardPriceIds, photographers, cleaners, depannage = [] }: {
   standardMembers: number
   /** Prix Stripe de chaque abonné Standard, quand on les a : remplace standardMembers × 19,98 € */
   standardPriceIds?: Array<string | null>
   photographers: ProRow[]
   cleaners: ProRow[]
+  /** Fiches dépannage et maintenance (3e annuaire, 31/10/2026) */
+  depannage?: ProRow[]
 }) {
   if (standardPriceIds) standardMembers = standardPriceIds.length
   const paidPh = photographers.filter(isPaidPro)
   const paidCl = cleaners.filter(isPaidPro)
+  const paidDep = depannage.filter(isPaidPro)
   const hostAnnual = standardPriceIds ? standardPriceIds.reduce((n, id) => n + hostAnnualPrice(id), 0) : standardMembers * PRICES.standard
   const photoAnnual = paidPh.reduce((n, r) => n + proAnnualPrice(r.tier), 0)
   const cleanAnnual = paidCl.reduce((n, r) => n + proAnnualPrice(r.tier), 0)
-  const annual = hostAnnual + photoAnnual + cleanAnnual
-  const subscriptions = standardMembers + paidPh.length + paidCl.length
+  const depAnnual = paidDep.reduce((n, r) => n + proAnnualPrice(r.tier), 0)
+  const annual = hostAnnual + photoAnnual + cleanAnnual + depAnnual
+  const subscriptions = standardMembers + paidPh.length + paidCl.length + paidDep.length
   return {
     annual,
     monthly: annual / 12,
-    hostAnnual, photoAnnual, cleanAnnual,
+    hostAnnual, photoAnnual, cleanAnnual, depAnnual,
     paidPhotographers: paidPh.length,
     paidCleaners: paidCl.length,
+    paidDepannage: paidDep.length,
     subscriptions,
   }
 }
 
 /** Espaces pros d'un compte, pour les listes de membres */
-export function proSpacesByUser(photographers: ProRow[], cleaners: ProRow[]) {
-  const map = new Map<string, Array<{ kind: 'photographe' | 'menage'; tier: string | null; paid: boolean; status: string | null }>>()
-  const add = (r: ProRow, kind: 'photographe' | 'menage') => {
+export type ProSpaceKind = 'photographe' | 'menage' | 'depannage'
+
+export function proSpacesByUser(photographers: ProRow[], cleaners: ProRow[], depannage: ProRow[] = []) {
+  const map = new Map<string, Array<{ kind: ProSpaceKind; tier: string | null; paid: boolean; status: string | null }>>()
+  const add = (r: ProRow, kind: ProSpaceKind) => {
     if (!r.user_id) return
     const list = map.get(r.user_id) ?? []
     list.push({ kind, tier: r.tier, paid: isPaidPro(r), status: r.status })
@@ -75,5 +82,6 @@ export function proSpacesByUser(photographers: ProRow[], cleaners: ProRow[]) {
   }
   photographers.forEach(r => add(r, 'photographe'))
   cleaners.forEach(r => add(r, 'menage'))
+  depannage.forEach(r => add(r, 'depannage'))
   return map
 }

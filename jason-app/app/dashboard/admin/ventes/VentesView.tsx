@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import {
-  ChartLineUp, Target, HouseLine, Camera, Broom, EnvelopeSimple, ArrowRight, UserCircle, CalendarBlank, Info,
+  ChartLineUp, Target, HouseLine, Camera, Broom, Wrench, EnvelopeSimple, ArrowRight, UserCircle, CalendarBlank, Info,
 } from '@phosphor-icons/react/dist/ssr'
 import AdminHero, { adminAsideCard } from '../_ui/AdminHero'
 import { AMBER, BROWN, PINK, tint } from '../_ui/theme'
@@ -103,7 +103,7 @@ export default function VentesView({ data }: { data: SalesData }) {
             <span style={{ ...s.icon, background: tint(AMBER, 14), color: AMBER }}><Camera size={18} weight="fill" /></span>
             <h2 style={{ ...s.title, flex: 1 }}>Pros : de la prospection à la fiche payée</h2>
           </header>
-          {([['photographe', 'Photographes', Camera, AMBER], ['menage', 'Équipes de ménage', Broom, PINK]] as const).map(([key, label, Icon, color]) => {
+          {([['photographe', 'Photographes', Camera, AMBER], ['menage', 'Équipes de ménage', Broom, PINK], ['depannage', 'Dépannage et maintenance', Wrench, BROWN]] as const).map(([key, label, Icon, color]) => {
             const p = pros[key]
             return (
               <div key={key} style={s.proBlock}>

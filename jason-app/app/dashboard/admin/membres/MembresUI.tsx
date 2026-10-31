@@ -8,7 +8,7 @@ import {
   GraduationCap, Lightning, Users, X, Heart,
   House, BookmarkSimple, PencilSimple, Flag, Lightbulb,
   CalendarBlank, SpinnerGap, UsersFour, ArrowSquareOut,
-  Crown, Star, TextAa, CurrencyEur, DownloadSimple, Briefcase, Camera, Sparkle,
+  Crown, Star, TextAa, CurrencyEur, DownloadSimple, Briefcase, Camera, Sparkle, Wrench,
   UserPlus, SquaresFour, Rows,
 } from '@phosphor-icons/react/dist/ssr'
 import {
@@ -30,7 +30,7 @@ interface Member {
   id: string; email: string; full_name: string | null
   role: string; driing_status: string; plan: string
   is_contributor: boolean; is_investor: boolean | null
-  is_photographer?: boolean; is_cleaner?: boolean
+  is_photographer?: boolean; is_cleaner?: boolean; is_depannage?: boolean
   created_at: string
   user_formations: UserFormation[]
   /** Dernière visite (visite notée par l'app, connexion ou action) */
@@ -265,7 +265,8 @@ export default function MembresUI({ members, monthlyRevenue }: { members: Member
       (filterPlan === 'contrib'      && m.is_contributor) ||
       (filterPlan === 'investor'     && !!m.is_investor) ||
       (filterPlan === 'photographer' && !!m.is_photographer) ||
-      (filterPlan === 'cleaner'      && !!m.is_cleaner)
+      (filterPlan === 'cleaner'      && !!m.is_cleaner) ||
+      (filterPlan === 'depannage'    && !!m.is_depannage)
     return matchSearch && matchPlan
   })
   if (sortBy === 'visite') {
@@ -281,6 +282,7 @@ export default function MembresUI({ members, monthlyRevenue }: { members: Member
   const totalInvestors = members.filter(m => m.is_investor).length
   const totalPhotographers = members.filter(m => m.is_photographer).length
   const totalCleaners  = members.filter(m => m.is_cleaner).length
+  const totalDepannage = members.filter(m => m.is_depannage).length
 
   return (
     <div style={s.wrap}>
@@ -332,6 +334,7 @@ export default function MembresUI({ members, monthlyRevenue }: { members: Member
           { filter: 'investor',     icon: <Briefcase size={16} weight="fill" />,   value: totalInvestors,     label: 'investisseurs', color: '#6E5446' },
           { filter: 'photographer', icon: <Camera size={16} weight="fill" />,      value: totalPhotographers, label: 'photographes',  color: '#B7791F' },
           { filter: 'cleaner',      icon: <Sparkle size={16} weight="fill" />,     value: totalCleaners,      label: 'ménage',        color: 'var(--accent-text)' },
+          { filter: 'depannage',    icon: <Wrench size={16} weight="fill" />,      value: totalDepannage,     label: 'dépannage',     color: '#A4502A' },
           { filter: null,           icon: <CurrencyEur size={16} />,               value: `${monthlyRevenue.toFixed(2).replace('.', ',')} €`, label: 'par mois', color: 'var(--accent-text)' },
         ].map(({ filter: f, icon, value, label, color }) => {
           const active = f !== null && filterPlan === f && f !== 'all'
@@ -422,6 +425,7 @@ export default function MembresUI({ members, monthlyRevenue }: { members: Member
             { v: 'investor',     l: 'Investisseur',  count: totalInvestors },
             { v: 'photographer', l: 'Photographe',   count: totalPhotographers },
             { v: 'cleaner',      l: 'Ménage',        count: totalCleaners },
+            { v: 'depannage',    l: 'Dépannage',     count: totalDepannage },
           ].map(f => (
             <button
               key={f.v}
@@ -670,6 +674,9 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
         {m.is_cleaner && (
           <span style={s.cleanerChip}><Sparkle size={10} weight="fill" /> Ménage</span>
         )}
+        {m.is_depannage && (
+          <span style={s.depannageChip}><Wrench size={10} weight="fill" /> Dépannage</span>
+        )}
         {m.is_contributor && (
           <span style={s.contribChip}><Heart size={10} weight="fill" /> Contributeur</span>
         )}
@@ -679,7 +686,7 @@ function MemberCard({ member: m, isPending, feedback, onOpenPanel, onChangePlan,
             {formations} formation{formations > 1 ? 's' : ''}
           </button>
         )}
-        {formations === 0 && !m.is_contributor && !m.is_investor && !m.is_photographer && !m.is_cleaner && (
+        {formations === 0 && !m.is_contributor && !m.is_investor && !m.is_photographer && !m.is_cleaner && !m.is_depannage && (
           <span style={s.emptyChip}>Aucune formation commencée</span>
         )}
       </div>
@@ -827,6 +834,7 @@ function MemberListRow({ member: m, isPending, onOpenPanel, onDelete }: MemberLi
         {m.is_investor && <span style={s.investorChip}><Briefcase size={10} weight="fill" /></span>}
         {m.is_photographer && <span style={s.photographerChip}><Camera size={10} weight="fill" /></span>}
         {m.is_cleaner && <span style={s.cleanerChip}><Sparkle size={10} weight="fill" /></span>}
+        {m.is_depannage && <span style={s.depannageChip}><Wrench size={10} weight="fill" /></span>}
         {m.is_contributor && <span style={s.contribChip}><Heart size={10} weight="fill" /></span>}
         {formations > 0 && (
           <span style={s.formChip}><GraduationCap size={11} /> {formations}</span>
@@ -1333,6 +1341,12 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
     background: 'color-mix(in srgb, #B7791F 10%, transparent)', color: '#B7791F',
     border: '1px solid color-mix(in srgb, #B7791F 25%, transparent)',
+  },
+  depannageChip: {
+    display: 'inline-flex', alignItems: 'center', gap: '5px',
+    fontSize: '11px', fontWeight: 600, padding: '3px 9px', borderRadius: '100px',
+    background: 'color-mix(in srgb, #A4502A 10%, transparent)', color: '#A4502A',
+    border: '1px solid color-mix(in srgb, #A4502A 25%, transparent)',
   },
   cleanerChip: {
     display: 'inline-flex', alignItems: 'center', gap: '5px',

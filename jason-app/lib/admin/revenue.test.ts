@@ -26,6 +26,19 @@ describe('computeRevenue', () => {
     expect(r.subscriptions).toBe(2)
     expect(r.annual).toBeCloseTo(19.98 + 38.98, 5)
   })
+  it('compte les fiches dépannage payées (3e annuaire)', () => {
+    const r = computeRevenue({
+      standardMembers: 0, photographers: [], cleaners: [],
+      depannage: [
+        { user_id: 'd', tier: 'fondateur', status: 'active', stripe_subscription_status: 'active' },
+        { user_id: 'e', tier: 'standard', status: 'pending_payment', stripe_subscription_status: 'incomplete' },
+      ],
+    })
+    expect(r.paidDepannage).toBe(1)
+    expect(r.depAnnual).toBeCloseTo(39.98, 5)
+    expect(r.subscriptions).toBe(1)
+    expect(proSpacesByUser([], [], [{ user_id: 'd', tier: 'fondateur', status: 'active', stripe_subscription_status: 'active' }]).get('d')?.[0].kind).toBe('depannage')
+  })
   it('ignore les abonnements annulés', () => {
     const r = computeRevenue({ standardMembers: 0, photographers: [{ user_id: 'a', tier: 'fondateur', status: 'cancelled', stripe_subscription_status: 'canceled' }], cleaners: [] })
     expect(r.annual).toBe(0)

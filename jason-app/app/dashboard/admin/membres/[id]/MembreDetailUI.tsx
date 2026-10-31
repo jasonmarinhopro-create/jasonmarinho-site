@@ -237,8 +237,8 @@ export default function MembreDetailUI({ profile, formations, stats, community, 
               Hôte · {planCfg.label}
             </span>
             {pros.map(r => (
-              <span key={r.id} style={{ ...s.pill, background: `color-mix(in srgb, ${r.kind === 'photographe' ? '#B83A7C' : '#6E5446'} 12%, transparent)`, color: r.kind === 'photographe' ? '#B83A7C' : '#6E5446' }}>
-                {r.kind === 'photographe' ? 'Photographe' : 'Équipe de ménage'}{r.tier === 'fondateur' ? ' · fondateur' : ''}
+              <span key={r.id} style={{ ...s.pill, background: `color-mix(in srgb, ${r.kind === 'photographe' ? '#B83A7C' : r.kind === 'depannage' ? '#A4502A' : '#6E5446'} 12%, transparent)`, color: r.kind === 'photographe' ? '#B83A7C' : r.kind === 'depannage' ? '#A4502A' : '#6E5446' }}>
+                {r.kind === 'photographe' ? 'Photographe' : r.kind === 'depannage' ? 'Dépannage' : 'Équipe de ménage'}{r.tier === 'fondateur' ? ' · fondateur' : ''}
               </span>
             ))}
             {planCfg.mrr > 0 && (
