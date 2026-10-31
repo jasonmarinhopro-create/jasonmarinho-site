@@ -6,7 +6,23 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Fri, 30 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 31 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Plombier, électricien, multiservice : 6 façons de travailler avec les hôtes Airbnb de ta ville</title>
+      <link>https://jasonmarinho.com/blog/artisan-depannage-trouver-clients-hotes-airbnb</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/artisan-depannage-trouver-clients-hotes-airbnb</guid>
+      <pubDate>Sat, 31 Oct 2026 08:00:00 GMT</pubDate>
+      <description>Les hôtes Airbnb ont des pannes toute l&apos;année et peu de temps pour chercher. 6 façons concrètes pour un artisan du dépannage de devenir leur pro de confiance.</description>
+      <category>Ressources</category>
+    </item>
+    <item>
+      <title>Dépannage Airbnb : 7 réflexes pour trouver ton artisan avant la première panne</title>
+      <link>https://jasonmarinho.com/blog/depannage-airbnb-trouver-artisan-fiable-avant-panne</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/depannage-airbnb-trouver-artisan-fiable-avant-panne</guid>
+      <pubDate>Sat, 31 Oct 2026 08:00:00 GMT</pubDate>
+      <description>Fuite, panne de courant, serrure bloquée entre deux voyageurs : 7 réflexes pour choisir un plombier ou un électricien fiable avant l&apos;urgence, devis compris.</description>
+      <category>Expérience</category>
+    </item>
     <item>
       <title>Annulation de dernière minute en LCD : 7 actions pour relouer la période sous 48 heures sans brader</title>
       <link>https://jasonmarinho.com/blog/annulation-derniere-minute-lcd-7-actions-relouer-48h-sans-brader</link>
@@ -389,22 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/petit-dejeuner-lcd-6-formules-voyageurs-budget</guid>
       <pubDate>Wed, 22 Jul 2026 08:00:00 GMT</pubDate>
       <description>Panier essentiel, terroir régional, healthy, familial, gourmand ou pack à emporter : 6 formules concrètes de petit-déjeuner à tester en location courte durée, avec budget par personne et point de vigilance para-hôtellerie.</description>
-      <category>Expérience</category>
-    </item>
-    <item>
-      <title>Poubelles et tri sélectif en LCD : 7 règles pour éviter amendes, plaintes voisins et avis négatifs</title>
-      <link>https://jasonmarinho.com/blog/poubelles-tri-selectif-lcd-7-regles-eviter-amendes-plaintes</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/poubelles-tri-selectif-lcd-7-regles-eviter-amendes-plaintes</guid>
-      <pubDate>Mon, 20 Jul 2026 08:00:00 GMT</pubDate>
-      <description>Bio-déchets obligatoires, jours de collecte, horaires de sortie, tri des emballages : 7 règles concrètes pour gérer les poubelles de ta location courte durée sans amende, sans plainte et sans mauvaise surprise dans les avis.</description>
-      <category>Expérience</category>
-    </item>
-    <item>
-      <title>Louer une chambre chez toi en LCD : 7 règles pour cohabiter avec tes voyageurs sans stress</title>
-      <link>https://jasonmarinho.com/blog/louer-chambre-chez-habitant-lcd-7-regles-cohabiter-voyageurs</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/louer-chambre-chez-habitant-lcd-7-regles-cohabiter-voyageurs</guid>
-      <pubDate>Fri, 17 Jul 2026 08:00:00 GMT</pubDate>
-      <description>Résidence principale, espaces communs, règles de vie, fiscalité, plafond 120 jours : les 7 règles concrètes pour louer une chambre chez toi en location courte durée sans transformer ton quotidien en cauchemar.</description>
       <category>Expérience</category>
     </item>
   </channel>
