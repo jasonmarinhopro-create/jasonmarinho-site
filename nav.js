@@ -1115,3 +1115,53 @@
     if (membre) (window.requestIdleCallback || function (f) { setTimeout(f, 1200); })(warm);
   } catch (e) { /* fail-silent */ }
 }());
+
+/* ── Black Friday Lodgify (code JASON65, mail de Lodgify du 30/10/2026) ──
+   -65 % sur Professional et Ultimate en annuel ou 2 ans, nouveaux clients,
+   du 12/11 au 12/12/2026. Annoncé dès maintenant, actif à partir du 12/11,
+   retiré seul après le 12/12. Les ventes passent par le lien affilié, pas
+   par le code : le bouton porte toujours le lien. Encart posé avant la
+   première mention du code Lodgify JASON15 de la page (pas celle de LegalPlace). */
+(function () {
+  try {
+    var now = Date.now();
+    var DEBUT = Date.parse('2026-11-12T00:00:00+01:00');
+    var FIN = Date.parse('2026-12-13T00:00:00+01:00');
+    if (now >= FIN) return;
+    var actif = now >= DEBUT;
+    var LIEN = 'https://www.lodgify.com/fr/tarifs/?afmc=uhp';
+    function pose() {
+      if (document.getElementById('bf-lodgify')) return;
+      // Catalogue /partenaires : la carte Lodgify affiche le code du moment
+      if (actif) document.querySelectorAll('.mk-card').forEach(function (c) {
+        var o = c.querySelector('.mk-offre');
+        if (o && c.textContent.indexOf('Lodgify') !== -1 && o.textContent.indexOf('JASON15') !== -1) { o.textContent = '-65 % avec JASON65 (Black Friday)'; o.title = '-65 % avec JASON65, jusqu\u2019au 12 décembre'; }
+      });
+      var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      var cible = null, n;
+      while ((n = walker.nextNode())) {
+        if (n.nodeValue.indexOf('JASON15') === -1) continue;
+        var bloc = n.parentElement && n.parentElement.closest('p,li,div,section,aside,article');
+        if (!bloc || bloc.closest('#nav,#mob,footer,.bf-skip')) continue;
+        var t = bloc.textContent;
+        if (t.indexOf('Lodgify') === -1 && location.pathname.indexOf('lodgify') === -1) continue;
+        if (t.indexOf('LegalPlace') !== -1) continue;
+        cible = bloc; break;
+      }
+      if (!cible) return;
+      var box = document.createElement('aside');
+      box.id = 'bf-lodgify';
+      box.setAttribute('aria-label', 'Offre Black Friday Lodgify');
+      box.style.cssText = 'margin:0 0 18px;padding:16px 18px;border-radius:16px;background:#FFF4D2;border:1px solid #F2E2A8;color:#4A4022;font-family:Outfit,system-ui,sans-serif;font-size:14.5px;line-height:1.55;text-align:left;display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px';
+      var txt = actif
+        ? '<strong style="color:#0F1A0D">Black Friday Lodgify : -65 % avec le code JASON65</strong>, jusqu’au 12 décembre. Sur les abonnements Professional et Ultimate en annuel ou 2 ans, pour les nouveaux clients. Ajoute le code au paiement.'
+        : '<strong style="color:#0F1A0D">Black Friday Lodgify : -65 % avec le code JASON65</strong>, du 12 novembre au 12 décembre. Sur les abonnements Professional et Ultimate en annuel ou 2 ans, pour les nouveaux clients. D’ici là, le code JASON15 reste valable.';
+      var btn = actif
+        ? '<span style="display:flex;flex-direction:column;gap:4px;align-items:flex-start"><a href="' + LIEN + '" target="_blank" rel="sponsored noopener" style="display:inline-flex;align-items:center;height:42px;padding:0 16px;border-radius:10px;background:#0F1A0D;color:#fff;font-weight:600;text-decoration:none">Profiter de l’offre</a><span style="font-size:12px;color:#6B5F3A">Lien affilié</span></span>'
+        : '';
+      box.innerHTML = '<span style="flex:none;padding:4px 10px;border-radius:99px;background:#FFD56B;color:#3D2E00;font-size:12px;font-weight:600">' + (actif ? 'Black Friday' : 'Bientôt') + '</span><span style="flex:1 1 280px;min-width:0">' + txt + '</span>' + btn;
+      cible.parentNode.insertBefore(box, cible);
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', pose); else pose();
+  } catch (e) { /* fail-silent */ }
+}());

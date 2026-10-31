@@ -6,6 +6,7 @@
 // (veille quotidienne dédoublonnée), articles du blog (rss.xml), nouveautés de
 // l'app (CHANGELOG), plus les rubriques fixes en rotation (outil du mois, bon
 // plan partenaire, question du mois). Maquette : template.ts.
+import { promoPartner } from './promos'
 import { renderIssue, withUtm, monthIndex, NEWSLETTER_NAME, type IssueStory } from './template'
 import { EDITION_CONFIG, type Edition } from './editions'
 import { actusForEdition, concernsAudience } from '@/lib/actualites/audience'
@@ -174,7 +175,7 @@ export function buildNewsletter(input: { parisDate: string; actus: NlActu[]; art
 
   const tool = { ...cfg.tools[m % cfg.tools.length] }
   tool.url = withUtm(tool.url, campaign)
-  const partner = { ...cfg.partners[(m + 3) % cfg.partners.length] }
+  const partner = { ...(promoPartner(input.parisDate, cfg.partners) ?? cfg.partners[(m + 3) % cfg.partners.length]) }
   partner.url = withUtm(partner.url, campaign)
 
   const words = [lead.summary, ...more.map(s => s.summary), ...restArticles.map(a => a.description), ...changes.map(c => c.description)].join(' ').split(/\s+/).length
