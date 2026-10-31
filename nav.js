@@ -344,7 +344,14 @@
       '.mob-menu a.mob-vc{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:2px;min-height:142px;padding:12px;border-radius:12px;border:1px solid rgba(255,213,107,.18);color:#fff}',
       '.mob-menu a.mob-vc-photo{background:linear-gradient(160deg,#002a1f 0%,#00463a 100%)}',
       '.mob-menu a.mob-vc-menage{background:linear-gradient(160deg,#3d4a22 0%,#56622c 100%)}',
-      '.mob-menu a.mob-vc-dep{background:linear-gradient(160deg,#4a3520 0%,#6b4e2a 100%);grid-column:1 / -1;min-height:112px}',
+      '.mob-menu a.mob-vc-dep{background:linear-gradient(160deg,#4a3520 0%,#6b4e2a 100%);grid-column:1 / -1;min-height:124px}',
+      // Petit visuel de la carte Dépannage (31/10/2026) : pastilles qui passent à la ligne sur les petits écrans
+      '.mob-dep-tags{position:absolute;top:12px;left:12px;right:12px;display:flex;flex-wrap:wrap;gap:6px}',
+      '.mob-dep-tags>span{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:500;line-height:1;padding:6px 9px;border-radius:999px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.9);white-space:nowrap}',
+      '.mob-menu a.mob-vc .mob-dep-tags i{font-size:12px;width:auto;color:#FFD56B;opacity:1}',
+      '.mob-dep-tags>span.mob-dep-ok{background:rgba(255,213,107,.85);color:#3d3a10}',
+      '.mob-menu a.mob-vc .mob-dep-tags .mob-dep-ok i{color:#3d3a10}',
+      '@media(max-width:360px){.mob-dep-tags>span.mob-dep-ok{display:none}}',
       '.mob-menu a.mob-vc-blog{background:linear-gradient(160deg,#FFD56B 0%,#ffe39a 100%);color:var(--gd);border-color:rgba(255,213,107,.6)}',
       '.mob-menu a.mob-vc-part{background:linear-gradient(160deg,#001a11 0%,#00463a 100%)}',
       '.mob-vc .n-ann-mos{top:12px;left:12px;right:12px;gap:4px}',
@@ -662,6 +669,7 @@
             + '<span class="mob-vs">Voir l\'annuaire <i class="ph-bold ph-arrow-right"></i></span>'
           + '</a>'
           + '<a href="/annuaires/depannage" class="mob-vc mob-vc-dep">'
+            + '<span class="mob-dep-tags" aria-hidden="true"><span><i class="ph-bold ph-drop"></i>Fuite</span><span><i class="ph-bold ph-lightning"></i>Panne</span><span><i class="ph-bold ph-key"></i>Serrure</span><span class="mob-dep-ok"><i class="ph-bold ph-check"></i>Réparé</span></span>'
             + '<span class="mob-vt">Dépannage et maintenance</span>'
             + '<span class="mob-vs">Plombiers, électriciens, serruriers <i class="ph-bold ph-arrow-right"></i></span>'
           + '</a>'
