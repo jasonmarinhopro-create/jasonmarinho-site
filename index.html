@@ -276,6 +276,11 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .c2-tabs button[aria-selected="true"]{background:var(--g);border-color:var(--g);color:#fff}
 .c2-shot img{width:100%;height:auto;display:block;border-radius:14px;border:1px solid #EADBA6;background:#F7F5F0}
 .c2-shot img[hidden]{display:none}
+.c3-l{display:flex;flex-direction:column;gap:8px}
+.c3-l a{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--chip);text-decoration:none;color:var(--td);transition:background .2s}
+.c3-l a:hover{background:#E6ECE3;color:var(--td)}
+.c3-l b{font-size:14.5px;font-weight:600}
+.c3-l span{flex:none;font-size:12.5px;color:var(--tf)}
 .price{display:flex;flex-direction:column;gap:10px}
 .price>div{display:flex;align-items:baseline;gap:14px;padding:12px 14px;border-radius:14px;background:var(--chip)}
 .price b{flex:none;min-width:84px;font-family:'Fraunces',serif;font-weight:400;font-size:24px;color:var(--g)}
@@ -553,13 +558,13 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <div class="wrap" style="display:flex;flex-direction:column;gap:34px">
 <div class="head">
 <h2 class="h2" style="max-width:640px">Un seul endroit, <em>trois façons</em> de t’aider.</h2>
-<p class="lead2" style="max-width:360px">Commence par ce dont tu as besoin aujourd’hui. Le reste t’attend.</p>
+<p class="lead2" style="max-width:380px">Gère ta location, trouve tes pros, apprends le métier.</p>
 </div>
 <div class="tri">
 <article class="c1">
 <span class="c-eyb" style="color:var(--y)">01 · Gérer</span>
 <h3 class="c-h">Ton espace hôte se met à jour tout seul.</h3>
-<p>Relie ton calendrier Airbnb ou Booking : tes réservations arrivent seules, tes ménages se planifient, et contrats et fiches de police sont prêts quand il le faut.</p>
+<p>Tes réservations Airbnb et Booking arrivent seules, tes ménages se planifient, et contrats et fiches de police sont prêts quand il le faut.</p>
 <div class="chips shot-tabs hs" role="tablist" aria-label="Écrans de l’espace hôte"><button type="button" role="tab" id="sh-t-voyageurs" aria-controls="sh-voyageurs" aria-selected="true" data-shot="voyageurs">Carnet de voyageurs</button><button type="button" role="tab" id="sh-t-calendrier" aria-controls="sh-calendrier" aria-selected="false" data-shot="calendrier">Calendrier</button><button type="button" role="tab" id="sh-t-menage" aria-controls="sh-menage" aria-selected="false" data-shot="menage">Planning ménage</button><button type="button" role="tab" id="sh-t-contrats" aria-controls="sh-contrats" aria-selected="false" data-shot="contrats">Contrats et cautions</button><button type="button" role="tab" id="sh-t-declarations" aria-controls="sh-declarations" aria-selected="false" data-shot="declarations">Fiches de police</button><button type="button" role="tab" id="sh-t-simulateurs" aria-controls="sh-simulateurs" aria-selected="false" data-shot="simulateurs">Simulateurs</button></div>
 <div class="shot-box"><figure class="shot" role="tabpanel" id="sh-voyageurs" aria-labelledby="sh-t-voyageurs"><img src="/img/accueil/hote-voyageurs.webp" alt="Le carnet de voyageurs : coordonnées, séjours, nationalité, avec des données fictives" width="1400" height="995" loading="lazy" decoding="async"><figcaption><a href="/services/carnet-voyageurs">En savoir plus : carnet de voyageurs →</a></figcaption></figure><figure class="shot" role="tabpanel" id="sh-calendrier" aria-labelledby="sh-t-calendrier" hidden><img src="/img/accueil/hote-calendrier.webp" alt="Le calendrier : Airbnb, Booking et réservations directes sur une seule vue, avec des données fictives" width="1400" height="995" loading="lazy" decoding="async"><figcaption><a href="/services/calendrier">En savoir plus : calendrier →</a></figcaption></figure><figure class="shot" role="tabpanel" id="sh-menage" aria-labelledby="sh-t-menage" hidden><img src="/img/accueil/hote-menage.webp" alt="Le planning ménage, créé à chaque départ et partagé avec ton équipe, avec des données fictives" width="1400" height="995" loading="lazy" decoding="async"><figcaption><a href="/services/planning-menage">En savoir plus : planning ménage →</a></figcaption></figure><figure class="shot" role="tabpanel" id="sh-contrats" aria-labelledby="sh-t-contrats" hidden><img src="/img/accueil/hote-contrats.webp" alt="Les contrats signés en ligne, le loyer et la caution, avec des données fictives" width="1400" height="995" loading="lazy" decoding="async"><figcaption><a href="/services/contrats">En savoir plus : contrats et cautions →</a></figcaption></figure><figure class="shot" role="tabpanel" id="sh-declarations" aria-labelledby="sh-t-declarations" hidden><img src="/img/accueil/hote-declarations.webp" alt="Les fiches de police préparées pour les voyageurs étrangers, avec des données fictives" width="1400" height="995" loading="lazy" decoding="async"><figcaption><a href="/services/declarations-voyageurs">En savoir plus : fiches de police →</a></figcaption></figure><figure class="shot" role="tabpanel" id="sh-simulateurs" aria-labelledby="sh-t-simulateurs" hidden><img src="/img/accueil/hote-simulateurs.webp" alt="Les simulateurs : fiscalité, statut, rentabilité, taxe de séjour, avec des données fictives" width="1400" height="995" loading="lazy" decoding="async"><figcaption><a href="/services/simulateurs">En savoir plus : simulateurs →</a></figcaption></figure></div>
 <a href="https://app.jasonmarinho.com/auth/register" class="btn btn-y">Créer mon compte gratuit</a>
@@ -584,12 +589,14 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <a href="/trouver-un-pro" class="btn btn-g">Faire une demande</a>
 </article>
 <article class="c3">
-<span class="c-eyb">Combien ça coûte ?</span>
-<div class="price">
-<div><b>0 €</b><span><strong>Découverte</strong>, pour toujours : calendrier, planning ménage, simulateurs, 2 formations.</span></div>
-<div><b>38,98 €</b><span><strong>Standard</strong>, TTC par an : en plus, contrats, paiement en ligne et cautions.</span></div>
+<span class="c-eyb">03 · Apprendre</span>
+<h3 class="c-h">22 formations courtes, nées sur le terrain.</h3>
+<div class="c3-l">
+<a href="/services/formations/optimiser-annonce-airbnb"><b>Optimiser son annonce Airbnb</b><span>2h30</span></a>
+<a href="/services/formations/mettre-le-bon-prix-lcd"><b>Mettre le bon prix</b><span>2h30</span></a>
+<a href="/services/formations/fiscalite-reglementation-lcd-france-2026"><b>Fiscalité et réglementation 2026</b><span>2h30</span></a>
 </div>
-<a href="/tarifs" class="more" style="font-size:14.5px;min-height:36px">Voir les tarifs →</a>
+<a href="#formations" class="more" style="font-size:14.5px;min-height:36px">2 au choix offertes avec ton compte · Toutes les formations ↓</a>
 </article>
 </div>
 </div>
@@ -601,7 +608,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <div class="wrap fo-in">
 <div class="head" style="gap:20px">
 <div class="head-l" style="max-width:620px">
-<span class="eyb">03 · Apprendre</span>
+<span class="eyb">Les formations</span>
 <h2 class="h2">Tout ce que j’ai appris, <em>en 22 formations.</em></h2>
 <p class="lead2">Courtes, concrètes, sans blabla. 2 au choix offertes avec ton compte gratuit.</p>
 </div>
