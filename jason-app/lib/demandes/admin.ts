@@ -72,7 +72,7 @@ const JOIN: Record<DemandeMetier, string> = {
  */
 export function texteAPartager(d: Pick<DemandeAdminRow, 'metier' | 'ville' | 'logement' | 'quand' | 'frequence' | 'budget' | 'etablissement'>, tu = true): string {
   const besoin = anonymizedNeed({ ...d, etablissement: readEtablissement(d.etablissement) })
-  const pro = d.metier === 'photographe' ? 'photographes' : 'équipes de ménage'
+  const pro = d.metier === 'photographe' ? 'photographes' : d.metier === 'depannage' ? 'pros du dépannage' : 'équipes de ménage'
   return tu
     ? `Bonjour,\n\n${besoin}\n\nSi ça t’intéresse, crée ta fiche sur l’annuaire de Jason Marinho (sans commission) : les demandes des hôtes de ta ville arrivent directement aux ${pro} inscrits.\n${JOIN[d.metier]}`
     : `Bonjour,\n\n${besoin}\n\nSi cela vous intéresse, créez votre fiche sur l’annuaire de Jason Marinho (sans commission) : les demandes des hôtes de votre ville arrivent directement aux ${pro} inscrits.\n${JOIN[d.metier]}`

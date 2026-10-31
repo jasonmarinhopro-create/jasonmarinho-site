@@ -101,7 +101,7 @@ export function ficheInfo(metier: ProMetier, f: ProFicheRow, today: string): Pro
   const isActive = f.status === 'active'
   return {
     id: f.id,
-    name: (f.pseudo || f.full_name || '').trim() || (metier === 'photographe' ? 'Ta fiche photographe' : 'Ta fiche ménage'),
+    name: (f.pseudo || f.full_name || '').trim() || (metier === 'photographe' ? 'Ta fiche photographe' : metier === 'depannage' ? 'Ta fiche dépannage' : 'Ta fiche ménage'),
     ville: f.ville,
     slug: f.slug,
     publicUrl: isActive && f.slug ? proPublicUrl(metier, f.slug) : null,

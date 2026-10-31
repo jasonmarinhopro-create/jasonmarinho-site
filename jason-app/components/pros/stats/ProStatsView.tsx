@@ -8,7 +8,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import {
   Users, Eye, Timer, CursorClick, ChatCircle, MagnifyingGlass, ArrowSquareOut, FilePdf,
-  Compass, MapPin, DeviceMobile, CheckCircle, Lightbulb, Star, Camera, Broom, InstagramLogo, Globe, Images, CaretDown, CalendarBlank, Buildings,
+  Compass, MapPin, DeviceMobile, CheckCircle, Lightbulb, Star, Camera, Broom, Wrench, InstagramLogo, Globe, Images, CaretDown, CalendarBlank, Buildings,
 } from '@phosphor-icons/react/dist/ssr'
 import HubHero, { HeroEm, heroCard, heroCta } from '@/components/dashboard/HubHero'
 import InlineStyle from '@/components/ui/InlineStyle'
@@ -43,7 +43,7 @@ export default function ProStatsView({ data, basePath, previewId }: { data: ProS
   const photo = d.metier === 'photographe'
   const [metric, setMetric] = useState<MetricKey>('visitors')
   const href = (k: string) => `${basePath}?periode=${k}${previewId ? `&id=${previewId}` : ''}`
-  const fichePath = `/dashboard/ma-fiche-${photo ? 'photographe' : 'menage'}${previewId ? `?id=${previewId}` : ''}`
+  const fichePath = `/dashboard/ma-fiche-${d.metier}${previewId ? `?id=${previewId}` : ''}`
 
   const tiles: Array<{ key: MetricKey; label: string; hint?: string; Icon: typeof Users; fmt: (v: number) => string }> = [
     { key: 'visitors', label: 'Visiteurs', Icon: Users, fmt: nf },
@@ -67,13 +67,13 @@ export default function ProStatsView({ data, basePath, previewId }: { data: ProS
           <span><strong>Aperçu admin :</strong> statistiques de la fiche de <strong>{d.fiche.name}</strong>, telles que le pro les voit.</span>
           <span style={{ marginLeft: 'auto', display: 'inline-flex', gap: 14, flexWrap: 'wrap' }}>
             <Link href={fichePath} style={{ color: AMBER_DARK, textDecoration: 'underline' }}>Sa fiche</Link>
-            <Link href={photo ? '/dashboard/admin/photographes' : '/dashboard/admin/menage'} style={{ color: AMBER_DARK, textDecoration: 'underline' }}>Retour à l&apos;admin</Link>
+            <Link href={photo ? '/dashboard/admin/photographes' : `/dashboard/admin/${d.metier}`} style={{ color: AMBER_DARK, textDecoration: 'underline' }}>Retour à l&apos;admin</Link>
           </span>
         </div>
       )}
 
       <HubHero
-        eyebrowIcon={photo ? <Camera size={14} weight="fill" /> : <Broom size={14} weight="fill" />}
+        eyebrowIcon={photo ? <Camera size={14} weight="fill" /> : d.metier === 'depannage' ? <Wrench size={14} weight="fill" /> : <Broom size={14} weight="fill" />}
         eyebrow={`Tes statistiques · ${d.fiche.name}`}
         title={<>Qui voit ta fiche, <HeroEm>et d&apos;où</HeroEm></>}
         desc={<>
@@ -386,9 +386,9 @@ function GoogleCard({ d }: { d: ProStatsData }) {
 // photographe de la ville du client sur son profil »)
 export function CityPageCard({ d }: { d: ProStatsData }) {
   const c = d.cityPage!
-  const metierWord = d.metier === 'photographe' ? 'photographes' : 'équipes de ménage'
+  const metierWord = d.metier === 'photographe' ? 'photographes' : d.metier === 'depannage' ? 'pros du dépannage' : 'équipes de ménage'
   return (
-    <StatCard icon={<Buildings size={18} weight="duotone" />} title={`La page « ${d.metier === 'photographe' ? 'Photographe & vidéaste' : 'Ménage'} à ${c.label} »`}
+    <StatCard icon={<Buildings size={18} weight="duotone" />} title={`La page « ${d.metier === 'photographe' ? 'Photographe & vidéaste' : d.metier === 'depannage' ? 'Dépannage' : 'Ménage'} à ${c.label} »`}
       subtitle={c.listed ? `Ta fiche y est présentée aux hôtes qui cherchent des ${metierWord} à ${c.label}` : `Ta fiche y sera présentée dès qu'elle sera en ligne`}
       right={<a href={`https://jasonmarinho.com${c.path}`} target="_blank" rel="noopener noreferrer" style={s.heroLink} className="stats-noprint">Voir la page <ArrowSquareOut size={12} weight="bold" style={{ verticalAlign: '-1px' }} /></a>}>
       <div style={s.gTiles}>

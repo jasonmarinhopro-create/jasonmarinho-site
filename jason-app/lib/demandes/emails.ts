@@ -183,7 +183,7 @@ export function proEmail(d: DemandeMail, o: { proPrenom: string; manuel: boolean
   const intro = o.manuel
     ? `Un hôte a décrit son besoin sur jasonmarinho.com, et Jason Marinho te transmet sa demande.`
     : `Un hôte vient de décrire son besoin sur jasonmarinho.com. Tu fais partie des 3 pros les plus proches de son logement${o.filtre ? ', parmi ceux qui proposent ce qu’il demande' : ''}.`
-  const objet = `Ta demande ${d.metier === 'photographe' ? 'de photographe' : 'de ménage'} à ${d.ville}`
+  const objet = `Ta demande ${d.metier === 'photographe' ? 'de photographe' : d.metier === 'depannage' ? 'de dépannage' : 'de ménage'} à ${d.ville}`
   const mailto = `mailto:${d.email}?subject=${encodeURIComponent(objet)}`
   // « Je m'en occupe » (26/10/2026) : un clic, sans connexion, et la demande
   // ne part plus à d'autres pros (lib/demandes/prise.ts, /demande/prise/<jeton>)

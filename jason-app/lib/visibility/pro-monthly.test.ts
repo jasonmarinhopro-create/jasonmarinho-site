@@ -77,3 +77,11 @@ describe('bilan mensuel : texte', () => {
     expect(buildProMonthlyEmail({ ...base, best: { query: '<b>x</b>', place: 2 } }).html).toContain('&lt;b&gt;x&lt;/b&gt;')
   })
 })
+
+describe('bilan mensuel du dépannage (31/10/2026)', () => {
+  it('nomme la bonne fiche', () => {
+    const m = buildProMonthlyEmail({ ...base, metier: 'depannage' })
+    expect(m.html).toContain('ta fiche dépannage')
+    expect(m.html).not.toContain('équipe de ménage')
+  })
+})

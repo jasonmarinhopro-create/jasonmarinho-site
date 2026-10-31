@@ -104,7 +104,7 @@ export function buildProMonthlyEmail(i: MonthlyInput): { subject: string; previe
   const preview = `${plural(i.visitors, 'visiteur', 'visiteurs')}, ${plural(i.demandes, 'demande', 'demandes')} en ${i.month.label}.`
   const body = [
     emailP(hello),
-    emailP(`Voici le bilan ${de} de ta fiche ${i.metier === 'photographe' ? 'photographe' : 'équipe de ménage'} dans l’annuaire de Jason Marinho.`),
+    emailP(`Voici le bilan ${de} de ta fiche ${i.metier === 'photographe' ? 'photographe' : i.metier === 'depannage' ? 'dépannage' : 'équipe de ménage'} dans l’annuaire de Jason Marinho.`),
     emailInfoBlock(rows),
     i.best ? emailP(`Ta meilleure recherche sur Google : <strong>« ${escHtml(i.best.query)} »</strong>, où ta fiche est en moyenne ${i.best.place === 1 ? '1re' : `${i.best.place}e`}.`) : '',
     i.advice ? emailP(`<strong>Le conseil du mois : ${escHtml(i.advice.title)}.</strong> ${escHtml(i.advice.text)}`) : '',

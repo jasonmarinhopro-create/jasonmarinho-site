@@ -239,7 +239,7 @@ function Fiche({ d, pros, suiviOk, onBack, patch }: {
     navigator.clipboard?.writeText(partage).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000) }).catch(() => {})
   }
 
-  const sujet = `Un hôte cherche ${d.metier === 'photographe' ? 'un photographe' : 'une équipe de ménage'} à ${d.ville}`
+  const sujet = `Un hôte cherche ${d.metier === 'photographe' ? 'un photographe' : d.metier === 'depannage' ? 'un pro du dépannage' : 'une équipe de ménage'} à ${d.ville}`
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>

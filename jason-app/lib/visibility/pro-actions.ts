@@ -6,6 +6,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { invalidateProfileCache } from '@/lib/queries/profile'
 import { MONTHLY_OFF_FLAG } from './pro-stats'
+import { KINDS, METIERS } from '@/lib/pros/metiers'
 
 export async function setMonthlyReport(on: boolean): Promise<{ ok: true } | { error: string }> {
   const supabase = await createClient()
@@ -13,11 +14,9 @@ export async function setMonthlyReport(on: boolean): Promise<{ ok: true } | { er
   if (!user) return { error: 'Session expirée, reconnecte-toi.' }
 
   // Seulement pour un compte qui a une fiche pro (RLS : sa propre fiche)
-  const [{ data: photo }, { data: menage }] = await Promise.all([
-    supabase.from('photographers').select('id').eq('user_id', user.id).maybeSingle(),
-    supabase.from('cleaners').select('id').eq('user_id', user.id).maybeSingle(),
-  ])
-  if (!photo && !menage) return { error: 'Aucune fiche rattachée à ton compte.' }
+  // (les 3 annuaires : photographe, ménage, dépannage)
+  const fiches = await Promise.all(KINDS.map(k => supabase.from(METIERS[k].table).select('id').eq('user_id', user.id).maybeSingle()))
+  if (!fiches.some(f => f.data)) return { error: 'Aucune fiche rattachée à ton compte.' }
 
   // Lecture fraîche (pas le profil en cache) : d'autres drapeaux vivent dans ce tableau
   const { data: row, error: readError } = await supabase.from('profiles').select('onboarding_completed_steps').eq('id', user.id).maybeSingle()
