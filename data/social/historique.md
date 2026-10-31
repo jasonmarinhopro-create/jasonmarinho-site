@@ -4,7 +4,7 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-10-31 20:41 UTC.
+Mis à jour le 2026-10-31 21:39 UTC.
 
 - 2026-11-01 · reel · chamonix-hiver-hote · FB pending · IG pending · stories FB pending IG pending · « Ton logement est à Chamonix ? La saison de ski arrive vite. »
 - 2026-10-31 · stories (4 écrans) · stories-menage-lcd-turnover · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Ménage LCD ≠ ménage classique / Ce qu’un hôte attend / Affiche ton SIRET et ta RC pro / Ton équipe e »
