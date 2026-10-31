@@ -19,4 +19,13 @@ describe('droits des nouvelles tables (migrations)', () => {
     const sansDroit = [...new Set(crees)].filter(t => !new RegExp(`grant[^;]*\\bon\\s+(?:table\\s+)?public\\.${t}\\b[^;]*\\bservice_role\\b`, 'i').test(all))
     expect(sansDroit).toEqual([])
   })
+
+  it('chaque vue créée depuis la migration 170 tourne avec les droits de celui qui lit (alerte « Security Definer View »)', () => {
+    const files = readdirSync(DIR).filter(f => f.endsWith('.sql')).sort()
+    const all = files.map(f => readFileSync(join(DIR, f), 'utf8')).join('\n')
+    const recentes = files.filter(f => f >= DEPUIS).map(f => readFileSync(join(DIR, f), 'utf8')).join('\n')
+    const vues = [...recentes.matchAll(/create\s+(?:or\s+replace\s+)?view\s+public\.(\w+)/gi)].map(m => m[1])
+    const sansInvoker = [...new Set(vues)].filter(v => !new RegExp(`public\\.${v}\\b[^;]*security_invoker\\s*=\\s*true`, 'i').test(all))
+    expect(sansInvoker).toEqual([])
+  })
 })
