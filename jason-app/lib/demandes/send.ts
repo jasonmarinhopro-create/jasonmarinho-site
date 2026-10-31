@@ -33,6 +33,7 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
 const T = {
   photographe: { table: 'photographers', contacts: 'contacts' as const, contactTable: 'photographer_contacts', fk: 'photographer_id', rpc: 'increment_photographer_contacts', dir: 'photographes', dash: 'ma-fiche-photographe', label: 'photographe', labels: 'photographes', un: 'un photographe' },
   menage: { table: 'cleaners', contacts: 'contacts' as const, contactTable: 'cleaner_contacts', fk: 'cleaner_id', rpc: 'increment_cleaner_contacts', dir: 'menage', dash: 'ma-fiche-menage', label: 'équipe de ménage', labels: 'équipes de ménage', un: 'une équipe de ménage' },
+  depannage: { table: 'depannage_pros', contacts: 'contacts' as const, contactTable: 'depannage_contacts', fk: 'depannage_id', rpc: 'increment_depannage_contacts', dir: 'depannage', dash: 'ma-fiche-depannage', label: 'pro du dépannage', labels: 'pros du dépannage', un: 'un pro du dépannage' },
 } as const
 
 interface DemandeRow extends DemandeEtat {
@@ -54,8 +55,10 @@ async function loadPros(metier: DemandeMetier): Promise<Pro[]> {
   // Photographes : métier et options pour servir d'abord ceux qui font de la vidéo ou du drone (migration 136)
   // Photo et logo : cartes montrées à l'hôte avant l'envoi et dans son suivi (migration 131 pour les photos des équipes)
   const visuel = ', portfolio_photos, logo_url'
-  let res: { data: unknown; error: { message: string } | null } = await q(metier === 'photographe' ? `${cols}, metier, options${visuel}` : `${cols}${visuel}`)
-  if (res.error && /portfolio_photos|logo_url/.test(res.error.message)) res = await q(metier === 'photographe' ? `${cols}, metier, options` : cols)
+  // Dépannage : spécialités, pour servir d'abord ceux qui font ce que l'hôte demande
+  const extra = metier === 'photographe' ? ', metier, options' : metier === 'depannage' ? ', specialites' : ''
+  let res: { data: unknown; error: { message: string } | null } = await q(`${cols}${extra}${visuel}`)
+  if (res.error && /portfolio_photos|logo_url/.test(res.error.message)) res = await q(`${cols}${extra}`)
   if (res.error && /metier|options/.test(res.error.message)) res = await q(cols)
   if (res.error && /villes_couvertes/.test(res.error.message)) res = await q(cols.replace(' villes_couvertes,', ''))
   // Clientèles (hôtels, conciergeries, gîtes ; migration 154) : lues à part, sans bloquer si la colonne manque

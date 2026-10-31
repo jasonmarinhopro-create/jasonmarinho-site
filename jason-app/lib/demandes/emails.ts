@@ -17,7 +17,7 @@ const YELLOW = '#FFD56B'
 const SANS = "-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif"
 const SERIF = "Georgia,'Times New Roman',serif"
 
-export type DemandeMailMetier = 'photographe' | 'menage'
+export type DemandeMailMetier = 'photographe' | 'menage' | 'depannage'
 
 export interface DemandeMail {
   metier: DemandeMailMetier
@@ -39,6 +39,7 @@ export interface ProMail { nom: string; ville: string | null; url: string }
 const METIER = {
   photographe: { etiquette: 'Photo & vidéo', un: 'un photographe', labels: 'photographes' },
   menage: { etiquette: 'Ménage', un: 'une équipe de ménage', labels: 'équipes de ménage' },
+  depannage: { etiquette: 'Dépannage', un: 'un pro du dépannage', labels: 'pros du dépannage' },
 } as const
 
 const prenom = (nom: string) => (nom.trim().split(/\s+/)[0] || '').replace(/^./, c => c.toUpperCase())

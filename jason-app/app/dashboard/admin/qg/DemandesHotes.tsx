@@ -10,7 +10,7 @@ import { useEffect, useMemo, useState, useTransition } from 'react'
 import { etablissementLabel } from '@/lib/pros/clienteles'
 import {
   Camera, Sparkle, MagnifyingGlass, ArrowLeft, EnvelopeSimple, Phone, Copy, Check,
-  PaperPlaneTilt, WhatsappLogo, CheckCircle, ArrowCounterClockwise, Eye, Clock, ArrowSquareOut, Note,
+  Wrench, PaperPlaneTilt, WhatsappLogo, CheckCircle, ArrowCounterClockwise, Eye, Clock, ArrowSquareOut, Note,
 } from '@phosphor-icons/react/dist/ssr'
 import RelativeTime from '@/components/ui/RelativeTime'
 import InlineStyle from '@/components/ui/InlineStyle'
@@ -33,6 +33,7 @@ const ETAT_COLORS: Record<EtatAdmin, string> = {
 const METIER: Record<DemandeMetier, { label: string; Icon: typeof Camera; dir: string }> = {
   photographe: { label: 'Photographe', Icon: Camera, dir: 'photographes' },
   menage: { label: 'Ménage', Icon: Sparkle, dir: 'menage' },
+  depannage: { label: 'Dépannage', Icon: Wrench, dir: 'depannage' },
 }
 
 const CSS = `

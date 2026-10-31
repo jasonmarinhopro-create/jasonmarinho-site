@@ -3,7 +3,7 @@
 // fiches publiques montrent déjà. Mis en cache 2 min par le CDN.
 import { NextResponse } from 'next/server'
 import { apercuDemande } from '@/lib/demandes/send'
-import { PRESTATIONS_PHOTO, FREQUENCES } from '@/lib/demandes/rules'
+import { PRESTATIONS_PHOTO, FREQUENCES, BESOINS_DEPANNAGE } from '@/lib/demandes/rules'
 import { readEtablissement } from '@/lib/pros/clienteles'
 import { cors } from '../cors'
 
@@ -17,10 +17,11 @@ export async function OPTIONS(req: Request) {
 export async function GET(req: Request) {
   const headers = cors(req.headers.get('origin'), 'GET, OPTIONS')
   const u = new URL(req.url)
-  const metier = u.searchParams.get('metier') === 'menage' ? 'menage' : 'photographe'
+  const m = u.searchParams.get('metier')
+  const metier = m === 'menage' || m === 'depannage' ? m : 'photographe'
   const ville = (u.searchParams.get('ville') ?? '').replace(/\s+/g, ' ').trim().slice(0, 80)
   const b = u.searchParams.get('besoin')
-  const besoin = b && ([...PRESTATIONS_PHOTO, ...FREQUENCES] as readonly string[]).includes(b) ? b : null
+  const besoin = b && ([...PRESTATIONS_PHOTO, ...FREQUENCES, ...BESOINS_DEPANNAGE] as readonly string[]).includes(b) ? b : null
   if (ville.length < 2) return NextResponse.json({ pros: [], phrase: '' }, { headers })
   const res = await apercuDemande(metier, ville, besoin, readEtablissement(u.searchParams.get('etablissement')))
   return NextResponse.json(res, { headers: { ...headers, 'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600' } })

@@ -9,7 +9,7 @@ import { thumbPath, isLegacyPhoto, PORTFOLIO_BUCKET } from '@/lib/pros/fiche-vit
 import { convientAuBesoin, besoinPhoto, RELANCE_APRES_H, VAGUES_MAX, type Adequation, type DemandeMetier, type ProCandidat } from './rules'
 
 const SITE = 'https://jasonmarinho.com'
-const DIR: Record<DemandeMetier, string> = { photographe: 'photographes', menage: 'menage' }
+const DIR: Record<DemandeMetier, string> = { photographe: 'photographes', menage: 'menage', depannage: 'depannage' }
 
 export interface ProPublic extends ProCandidat {
   slug: string
@@ -43,6 +43,7 @@ export function photoDuPro(p: Pick<ProPublic, 'portfolio_photos' | 'logo_url'>, 
 
 export function metierLabel(metier: DemandeMetier, pro: Pick<ProPublic, 'metier'>): string {
   if (metier === 'menage') return 'Équipe de ménage'
+  if (metier === 'depannage') return 'Dépannage'
   return pro.metier === 'video' ? 'Vidéaste' : pro.metier === 'photo_video' ? 'Photographe et vidéaste' : 'Photographe'
 }
 
@@ -63,6 +64,7 @@ export function cartePro(p: ProPublic, metier: DemandeMetier, besoin: string | n
 export function apercuPhrase(metier: DemandeMetier, n: number, ville: string, besoin: string | null | undefined): string {
   const qui = metier === 'menage'
     ? (n > 1 ? 'équipes de ménage' : 'équipe de ménage')
+    : metier === 'depannage' ? (n > 1 ? 'pros du dépannage' : 'pro du dépannage')
     : besoinPhoto(besoin)?.video && !besoinPhoto(besoin)?.photo ? (n > 1 ? 'vidéastes' : 'vidéaste') : (n > 1 ? 'photographes' : 'photographe')
   if (!n) return `Pas encore de ${qui} inscrit${metier === 'menage' ? 'e' : ''} près de ${ville}. Tu peux envoyer quand même : ta demande est gardée 30 jours et part au premier pro qui s’inscrit dans ta zone. Jason la regarde aussi lui-même.`
   return n > 1
@@ -111,7 +113,7 @@ export interface SuiviVue {
 /** Vue de suivi, à partir de la demande, des statuts des lignes « Demandes reçues » et des fiches encore en ligne */
 export function suiviVue(r: SuiviRow, statuts: Map<string, string>, fiches: Map<string, Omit<CartePro, 'adequation'>>, now: Date): SuiviVue {
   const pros: SuiviPro[] = r.sent_to.map(s => {
-    const f = fiches.get(s.id) ?? { nom: 'Pro de l’annuaire', initiales: '?', photo: null, metier: r.metier === 'menage' ? 'Équipe de ménage' : 'Photographe', ville: '', href: `${SITE}/annuaires/${DIR[r.metier]}` }
+    const f = fiches.get(s.id) ?? { nom: 'Pro de l’annuaire', initiales: '?', photo: null, metier: r.metier === 'menage' ? 'Équipe de ménage' : r.metier === 'depannage' ? 'Dépannage' : 'Photographe', ville: '', href: `${SITE}/annuaires/${DIR[r.metier]}` }
     const st = s.contact_id ? statuts.get(s.contact_id) ?? 'nouvelle' : 'nouvelle'
     return { ...f, vague: s.round, recue: s.at ?? null, priseEnMain: st !== 'nouvelle' }
   })
@@ -144,7 +146,7 @@ export function suiviVue(r: SuiviRow, statuts: Map<string, string>, fiches: Map<
       : 'Les pros ont reçu ta demande par e-mail. Ils te répondent directement.'
   }
   const besoin: Array<[string, string]> = ([
-    ['Ville', r.ville], ['Logement', r.logement], [r.metier === 'menage' ? 'Besoin' : 'Prestation', r.frequence], ['Quand', r.quand], ['Budget', r.budget],
+    ['Ville', r.ville], ['Logement', r.logement], [r.metier === 'photographe' ? 'Prestation' : 'Besoin', r.frequence], ['Quand', r.quand], ['Budget', r.budget],
   ] as Array<[string, string | null]>).filter((x): x is [string, string] => !!x[1])
   return { prenom: r.nom.split(' ')[0], metier: r.metier, ville: r.ville, creee: r.created_at, besoin, etat, titre, texte, relais, pros }
 }

@@ -39,12 +39,12 @@ export interface DemandesQGData {
 }
 
 const BASE_COLS = 'id, created_at, metier, ville, logement, quand, frequence, budget, message, nom, email, telephone, source, acquisition, status, sent_to, last_round_at'
-const CONTACTS: Record<DemandeMetier, string> = { photographe: 'photographer_contacts', menage: 'cleaner_contacts' }
-const PROS: Record<DemandeMetier, string> = { photographe: 'photographers', menage: 'cleaners' }
+const CONTACTS: Record<DemandeMetier, string> = { photographe: 'photographer_contacts', menage: 'cleaner_contacts', depannage: 'depannage_contacts' }
+const PROS: Record<DemandeMetier, string> = { photographe: 'photographers', menage: 'cleaners', depannage: 'depannage_pros' }
 
 export async function loadDemandesQG(now = new Date()): Promise<DemandesQGData> {
   const db = getServiceClient()
-  const empty = { photographe: [], menage: [] }
+  const empty = { photographe: [], menage: [], depannage: [] }
   let suiviOk = true
   let res = await db.from('demandes_hotes').select(`${BASE_COLS}, admin_seen_at, admin_note, admin_done_at`).order('created_at', { ascending: false }).limit(300)
   if (res.error && /admin_/.test(res.error.message)) {
@@ -78,8 +78,8 @@ export async function loadDemandesQG(now = new Date()): Promise<DemandesQGData> 
   }
   const statuts = new Map<string, string>()
   const noms = new Map<string, { nom: string; slug: string | null; ville: string | null }>()
-  const [prosPhoto, prosMenage] = await Promise.all([listProsChoix('photographe'), listProsChoix('menage')])
-  for (const p of [...prosPhoto, ...prosMenage]) noms.set(p.id, { nom: p.nom, slug: p.slug, ville: p.ville })
+  const [prosPhoto, prosMenage, prosDepannage] = await Promise.all([listProsChoix('photographe'), listProsChoix('menage'), listProsChoix('depannage')])
+  for (const p of [...prosPhoto, ...prosMenage, ...prosDepannage]) noms.set(p.id, { nom: p.nom, slug: p.slug, ville: p.ville })
   await Promise.all((['photographe', 'menage'] as const).map(async metier => {
     const mine = rows.filter(r => r.metier === metier)
     const contactIds = mine.flatMap(r => (r.sent_to ?? []).map(s => s.contact_id)).filter(Boolean) as string[]
@@ -111,5 +111,5 @@ export async function loadDemandesQG(now = new Date()): Promise<DemandesQGData> 
       autresVilles: autres.get(r.id) ?? [],
     }
   })
-  return { demandes, pros: { photographe: prosPhoto, menage: prosMenage }, suiviOk, error: null }
+  return { demandes, pros: { photographe: prosPhoto, menage: prosMenage, depannage: prosDepannage }, suiviOk, error: null }
 }

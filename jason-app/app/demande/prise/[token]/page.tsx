@@ -13,8 +13,8 @@ import { memberMailSecret } from '@/lib/admin/member-mail-secret'
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'Je m’en occupe · Jason Marinho', robots: { index: false, follow: false } }
 
-const TABLE: Record<PriseMetier, string> = { photographe: 'photographer_contacts', menage: 'cleaner_contacts' }
-const DASH: Record<PriseMetier, string> = { photographe: 'ma-fiche-photographe', menage: 'ma-fiche-menage' }
+const TABLE: Record<PriseMetier, string> = { photographe: 'photographer_contacts', menage: 'cleaner_contacts', depannage: 'depannage_contacts' }
+const DASH: Record<PriseMetier, string> = { photographe: 'ma-fiche-photographe', menage: 'ma-fiche-menage', depannage: 'ma-fiche-depannage' }
 
 async function lire(token: string) {
   const v = verifyPriseToken(token, memberMailSecret())

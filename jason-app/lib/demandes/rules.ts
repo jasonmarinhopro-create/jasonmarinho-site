@@ -8,8 +8,9 @@
 
 import { citySlugOf } from '@/lib/visibility/city-page'
 import { readEtablissement, CLIENTELES, type Clientele } from '@/lib/pros/clienteles'
+import { SPECIALITES_DEPANNAGE } from '@/lib/pros/metiers'
 
-export type DemandeMetier = 'photographe' | 'menage'
+export type DemandeMetier = 'photographe' | 'menage' | 'depannage'
 
 export const PROS_PAR_VAGUE = 3
 /** Une demande peut viser plusieurs villes (29/10/2026, conciergerie multi-secteurs) : 5 au plus en tout */
@@ -31,6 +32,10 @@ export const QUAND = ['Au plus vite', 'Dans le mois', 'Dans 1 à 3 mois', 'Je me
 export const FREQUENCES = ['Des ménages réguliers entre deux voyageurs', 'Un ménage ponctuel (remise en état, fin de saison)'] as const
 /** Besoin d'un hôte qui cherche un photographe (17/10/2026 : vidéastes dans l'annuaire), rangé dans `frequence` */
 export const PRESTATIONS_PHOTO = ['Des photos', 'Une vidéo', 'Des photos et une vidéo', 'Des photos avec vues au drone', 'Une vidéo avec vues au drone'] as const
+/** Dépannage (31/10/2026) : la spécialité demandée, rangée dans `frequence` (libellés du registre) */
+export const BESOINS_DEPANNAGE = SPECIALITES_DEPANNAGE.map(s => s.label)
+/** Dépannage : délai, rangé dans `quand` (l'urgence compte plus que le mois) */
+export const QUAND_DEPANNAGE = ['En urgence', 'Dans la semaine', 'Dans le mois', 'Je me renseigne'] as const
 
 export interface DemandeInput {
   metier: DemandeMetier
@@ -72,8 +77,8 @@ export function cleanAutresVilles(raw: unknown, ville: string): string[] {
 
 /** Valide le formulaire. Erreur en clair pour l'hôte, sinon la demande propre. */
 export function cleanDemande(body: Record<string, unknown>): { value: DemandeInput } | { error: string } {
-  const metier = body.metier === 'menage' ? 'menage' : body.metier === 'photographe' ? 'photographe' : null
-  if (!metier) return { error: 'Choisis ce que tu cherches : un photographe ou une équipe de ménage.' }
+  const metier = body.metier === 'menage' || body.metier === 'photographe' || body.metier === 'depannage' ? body.metier : null
+  if (!metier) return { error: 'Choisis ce que tu cherches : un photographe, une équipe de ménage ou un pro du dépannage.' }
   const ville = txt(body.ville, 80)
   if (ville.length < 2) return { error: 'Indique la ville de ton logement.' }
   const nom = txt(body.nom, 80)
@@ -90,8 +95,8 @@ export function cleanDemande(body: Record<string, unknown>): { value: DemandeInp
       etablissement,
       ville,
       logement: oneOf(body.logement, taillesPour(etablissement)),
-      quand: oneOf(body.quand, QUAND),
-      frequence: oneOf(body.frequence, metier === 'menage' ? FREQUENCES : PRESTATIONS_PHOTO),
+      quand: oneOf(body.quand, metier === 'depannage' ? QUAND_DEPANNAGE : QUAND),
+      frequence: oneOf(body.frequence, metier === 'menage' ? FREQUENCES : metier === 'depannage' ? BESOINS_DEPANNAGE : PRESTATIONS_PHOTO),
       budget: txt(body.budget, 60) || null,
       message,
       nom,
@@ -117,7 +122,15 @@ export interface ProCandidat {
   options?: string[] | null
   /** Clientèles cochées sur la fiche (hôtels, conciergeries…) */
   clienteles?: string[] | null
+  /** Dépannage : spécialités cochées sur la fiche */
+  specialites?: string[] | null
 }
+
+/** Dépannage : identifiant de la spécialité demandée (« Plomberie » → plomberie), null sinon */
+export function specialiteDuBesoin(besoin: string | null | undefined): string | null {
+  return SPECIALITES_DEPANNAGE.find(s => s.label === besoin)?.id ?? null
+}
+const specLabel = (id: string) => SPECIALITES_DEPANNAGE.find(s => s.id === id)?.label.toLowerCase() ?? id
 
 /** 1 si le pro indique travailler pour ce type d'hébergement (hôtel, conciergerie, gîte) ; le logement Airbnb n'ordonne rien */
 export function clienteleDuPro(pro: ProCandidat, etablissement: string | null | undefined): 0 | 1 {
@@ -152,6 +165,12 @@ export type Adequation = 0 | 1 | 2
  * - 2 : tout ce qui est demandé ; sans besoin précis, 2 pour qui fait de la photo, 1 pour un vidéaste seul
  */
 export function convientAuBesoin(pro: ProCandidat, besoin: string | null | undefined): Adequation {
+  // Dépannage : la spécialité demandée, ou en partie un multiservice
+  const spec = specialiteDuBesoin(besoin)
+  if (spec) {
+    const s = pro.specialites ?? []
+    return s.includes(spec) ? 2 : s.includes('multiservice') ? 1 : 0
+  }
   const b = besoinPhoto(besoin)
   const f = faitPar(pro)
   if (!b) return f.photo ? 2 : 1
@@ -168,6 +187,8 @@ const liste = (xs: string[]) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1
 
 /** Ce que l'hôte demande et que le pro ne propose pas d'après sa fiche (vide si tout correspond) */
 export function manquesDuPro(pro: ProCandidat, besoin: string | null | undefined): string[] {
+  const spec = specialiteDuBesoin(besoin)
+  if (spec) return (pro.specialites ?? []).includes(spec) ? [] : [specLabel(spec)]
   const b = besoinPhoto(besoin)
   if (!b) return []
   const f = faitPar(pro)
@@ -176,6 +197,10 @@ export function manquesDuPro(pro: ProCandidat, besoin: string | null | undefined
 
 /** Phrase pour l'e-mail du pro : pourquoi il reçoit la demande, ou ce qui manque à sa fiche */
 export function pourquoiCePro(pro: ProCandidat, besoin: string | null | undefined): string | null {
+  const spec = specialiteDuBesoin(besoin)
+  if (spec) return (pro.specialites ?? []).includes(spec)
+    ? `L’hôte cherche quelqu’un pour : ${specLabel(spec)}, et ta fiche l’indique dans tes spécialités.`
+    : `L’hôte cherche quelqu’un pour : ${specLabel(spec)}. Ta fiche ne l’indique pas : dis-lui ce que tu peux faire.`
   const b = besoinPhoto(besoin)
   if (!b) return null
   const demande = liste((['photo', 'video', 'drone'] as const).filter(k => b[k]).map(k => QUOI[k]))
@@ -226,7 +251,7 @@ export function choisirPros<T extends ProCandidat>(pros: T[], ville: string, exc
 
 // ── Textes ──────────────────────────────────────────────────────────
 
-const LIBELLE: Record<DemandeMetier, string> = { photographe: 'un photographe', menage: 'une équipe de ménage' }
+const LIBELLE: Record<DemandeMetier, string> = { photographe: 'un photographe', menage: 'une équipe de ménage', depannage: 'un pro du dépannage' }
 /** Qui fait la demande, selon le type d'hébergement */
 export function demandeur(etablissement: string | null | undefined): string {
   return etablissement === 'hotel' ? 'un hôtel ou une résidence' : etablissement === 'conciergerie' ? 'une conciergerie' : etablissement === 'gite' ? 'un gîte ou une chambre d’hôtes' : 'un hôte'

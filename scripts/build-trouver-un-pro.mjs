@@ -14,6 +14,7 @@
 
 import { CLIENTELES } from './lib/pro-clienteles.mjs'
 import fs from 'node:fs'
+import { SPECIALITES_DEPANNAGE } from './lib/metiers.mjs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -37,6 +38,9 @@ const TAILLES_CONCIERGERIE = ['2 à 5 logements', '6 à 20 logements', 'Plus de 
 const QUAND = ['Au plus vite', 'Dans le mois', 'Dans 1 à 3 mois', 'Je me renseigne']
 const FREQUENCES = ['Des ménages réguliers entre deux voyageurs', 'Un ménage ponctuel (remise en état, fin de saison)']
 const PRESTATIONS_PHOTO = ['Des photos', 'Une vidéo', 'Des photos et une vidéo', 'Des photos avec vues au drone', 'Une vidéo avec vues au drone']
+// Dépannage (31/10/2026) : spécialités du registre et délai (BESOINS_DEPANNAGE, QUAND_DEPANNAGE de rules.ts)
+const BESOINS_DEPANNAGE = SPECIALITES_DEPANNAGE.map(s => s.label)
+const QUAND_DEPANNAGE = ['En urgence', 'Dans la semaine', 'Dans le mois', 'Je me renseigne']
 
 const cities = loadCities().map(c => c.name).filter(Boolean).sort((a, b) => a.localeCompare(b, 'fr'))
 const POPULAIRES = ['Paris', 'Lyon', 'Bordeaux', 'Nice', 'Marseille', 'Annecy'].filter(c => cities.includes(c))
@@ -98,7 +102,7 @@ h1 em{color:var(--y);font-style:italic;font-weight:300}
 .ghost{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:50px;padding:0 16px;border:1.5px solid var(--bd);border-radius:13px;background:#fff;color:var(--g);font-weight:600;font-size:15px;cursor:pointer;text-decoration:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}`
 
-const html = `${HEAD('Trouver un photographe, vidéaste ou ménage Airbnb', 'Décris ton besoin en 1 minute : tu vois tout de suite les photographes, vidéastes ou équipes de ménage de ta zone qui recevront ta demande. Gratuit, sans commission, ton contact n’est jamais vendu.', 'https://jasonmarinho.com/trouver-un-pro', 'index, follow')}
+const html = `${HEAD('Trouver un photographe, vidéaste ou ménage Airbnb', 'Décris ton besoin en 1 minute : tu vois tout de suite les photographes, vidéastes, équipes de ménage ou pros du dépannage de ta zone qui recevront ta demande. Gratuit, sans commission, ton contact n’est jamais vendu.', 'https://jasonmarinho.com/trouver-un-pro', 'index, follow')}
 <style>
 ${BASE_CSS}
 .wrap{max-width:1160px;margin:-70px auto 60px;padding:0 clamp(16px,5vw,40px);display:grid;gap:20px;position:relative}
@@ -127,7 +131,7 @@ ${BASE_CSS}
 .opt .ck{margin-left:auto;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--bd);flex-shrink:0;display:grid;place-items:center;font-size:12px;color:transparent}
 .opt.on .ck{background:var(--g);border-color:var(--g);color:#fff}
 .big{display:grid;gap:12px}
-@media(min-width:640px){.big{grid-template-columns:1fr 1fr}}
+@media(min-width:640px){.big{grid-template-columns:repeat(3,1fr)}}
 .bigc{display:flex;flex-direction:column;border:1.5px solid var(--bd);border-radius:18px;overflow:hidden;background:#fff;cursor:pointer;text-align:left;padding:0;color:var(--td);transition:border-color .15s,transform .1s}
 .bigc:hover{border-color:rgba(0,76,63,.4)}
 .bigc.on{border-color:var(--g);box-shadow:inset 0 0 0 1px var(--g)}
@@ -257,7 +261,7 @@ details.more a{color:var(--g)}
     <div class="brd"><a href="/">Accueil</a> · <span>Trouver un pro</span></div>
     <span class="lbl">Gratuit · sans commission</span>
     <h1>Décris ton besoin, <em>les pros viennent à toi</em></h1>
-    <p class="lead">Pour ton logement Airbnb, ton hôtel, ta conciergerie ou ton gîte : un photographe ou un vidéaste, une équipe de ménage. Réponds à quelques questions, tu vois tout de suite qui recevra ta demande.</p>
+    <p class="lead">Pour ton logement Airbnb, ton hôtel, ta conciergerie ou ton gîte : un photographe ou un vidéaste, une équipe de ménage, un pro du dépannage. Réponds à quelques questions, tu vois tout de suite qui recevra ta demande.</p>
     <div class="promises"><span><i class="ph-bold ph-users-three"></i>3 pros au plus</span><span><i class="ph-bold ph-lock-simple"></i>Ton contact n’est jamais vendu</span><span><i class="ph-bold ph-arrows-clockwise"></i>Relais au bout de 48 h</span></div>
   </div>
 </header>
@@ -289,6 +293,8 @@ details.more a{color:var(--g)}
   var QUAND = ${JSON.stringify(QUAND)};
   var FREQUENCES = ${JSON.stringify(FREQUENCES)};
   var PRESTATIONS = ${JSON.stringify(PRESTATIONS_PHOTO)};
+  var BESOINS_DEP = ${JSON.stringify(BESOINS_DEPANNAGE)};
+  var QUAND_DEP = ${JSON.stringify(QUAND_DEPANNAGE)};
   var POPULAIRES = ${JSON.stringify(POPULAIRES)};
   var t0 = Date.now();
   var fb = document.getElementById('fb'), ff = document.getElementById('ff'), bar = document.getElementById('bar');
@@ -299,6 +305,9 @@ details.more a{color:var(--g)}
   function blank(){ return { metier:'', etablissement:'', ville:'', logement:'', besoin:'', rythme:'', linge:'', quand:'', date:'', budget:'', details:[], message:'', nom:'', email:'', telephone:'', pref:'', consent:false, villes:[], mvOpen:false }; }
   var st = blank(), step = 0, apercu = null, apercuFor = '', apercuSeq = 0, sending = false, done = null;
   function menage(){ return st.metier === 'menage'; }
+  function dep(){ return st.metier === 'depannage'; }
+  // Dossier de l'annuaire du métier choisi
+  function annu(){ return menage() ? 'menage' : dep() ? 'depannage' : 'photographes'; }
   function who(n){ return menage() ? (n > 1 ? 'équipes' : 'équipe') : (n > 1 ? 'pros' : 'pro'); }
 
   // ── Contenu des étapes ──
@@ -321,7 +330,7 @@ details.more a{color:var(--g)}
       (full ? '<div class="mv-note">Tu as atteint ' + VILLES_MAX + ' villes. Pour plus de villes, écris à contact@jasonmarinho.com.</div>' :
         '<div class="mv-row"><input class="in" id="mv-in" list="villes" data-suggest="ville" autocomplete="off" enterkeyhint="done" maxlength="80" placeholder="Ajouter une ville" aria-label="Autre ville"><button type="button" class="mv-add" id="mv-add" disabled>Ajouter</button></div><div class="mv-msg" id="mv-msg" hidden></div>') +
       (a.length ? '<div class="mv-chips">' + a.map(function(v, i){ return '<span class="mv-chip"><i class="ph-bold ph-map-pin"></i>' + esc(v) + '<button type="button" data-mv-rm="' + i + '" aria-label="Retirer ' + esc(v) + '"><i class="ph-bold ph-x"></i></button></span>'; }).join('') + '</div>' : '') +
-      '<div class="mv-note">Une demande par ville : chacune part ' + (menage() ? 'aux équipes de ménage' : 'aux photographes et vidéastes') + ' de sa zone, 3 au plus. Tu suis les réponses ville par ville.</div></div>';
+      '<div class="mv-note">Une demande par ville : chacune part ' + (menage() ? 'aux équipes de ménage' : dep() ? 'aux pros du dépannage' : 'aux photographes et vidéastes') + ' de sa zone, 3 au plus. Tu suis les réponses ville par ville.</div></div>';
   }
   function paintMv(){ var w = document.getElementById('mv'); if (!w) return; w.innerHTML = mvHtml(); bindMv(); if (window.jmSuggest) window.jmSuggest.scan(w); }
   function addVille(v){
@@ -363,15 +372,20 @@ details.more a{color:var(--g)}
     'Des ménages réguliers entre deux voyageurs': ['ph-arrows-clockwise', 'Après chaque départ, linge et réassort compris si tu veux'],
     'Un ménage ponctuel (remise en état, fin de saison)': ['ph-paint-roller', 'Grand ménage, remise en état, fin de saison']
   };
+  var DEP_IC = { 'Électricité':'ph-lightning', 'Plomberie':'ph-drop', 'Chauffage et climatisation':'ph-thermometer', 'Serrurerie':'ph-key', 'Multiservice et petits travaux':'ph-toolbox', 'Montage de meubles':'ph-armchair', 'Vitrerie':'ph-frame-corners', 'Électroménager':'ph-washing-machine', 'Entretien extérieur (jardin, piscine)':'ph-tree' };
+  var QUAND_DEP_IC = { 'En urgence':'ph-siren', 'Dans la semaine':'ph-calendar-check', 'Dans le mois':'ph-calendar-blank', 'Je me renseigne':'ph-binoculars' };
+  var QUAND_DEP_D = { 'En urgence':'Aujourd’hui ou demain, entre deux voyageurs', 'Dans la semaine':'Avant les prochaines arrivées', 'Dans le mois':'Des travaux à prévoir', 'Je me renseigne':'Pas d’urgence, juste un devis' };
   var QUAND_IC = { 'Au plus vite':'ph-lightning', 'Dans le mois':'ph-calendar-check', 'Dans 1 à 3 mois':'ph-calendar-blank', 'Je me renseigne':'ph-binoculars' };
   var QUAND_D = { 'Au plus vite':'Dans les jours qui viennent', 'Dans le mois':'Les prochaines semaines', 'Dans 1 à 3 mois':'Pour préparer la saison', 'Je me renseigne':'Pas d’urgence, juste un devis' };
   var BUDGET = {
     photographe: ['Moins de 200 €', '200 à 400 €', 'Plus de 400 €', 'Je ne sais pas, conseille-moi'],
-    menage: ['Moins de 50 € par ménage', '50 à 90 € par ménage', 'Plus de 90 € par ménage', 'Je ne sais pas, conseille-moi']
+    menage: ['Moins de 50 € par ménage', '50 à 90 € par ménage', 'Plus de 90 € par ménage', 'Je ne sais pas, conseille-moi'],
+    depannage: ['Moins de 100 €', '100 à 300 €', 'Plus de 300 €', 'Je ne sais pas, conseille-moi']
   };
   var DETAILS = {
     photographe: [['ph-tree','Extérieur ou jardin'],['ph-swimming-pool','Piscine'],['ph-mountains','Belle vue'],['ph-bed','3 chambres ou plus'],['ph-paint-roller','Tout juste rénové'],['ph-star','Logement atypique']],
-    menage: [['ph-bathtub','Plusieurs salles de bain'],['ph-tree','Extérieur à entretenir'],['ph-paw-print','Animaux acceptés'],['ph-clock','Arrivée le jour même du départ'],['ph-key','Accès par boîte à clés'],['ph-swimming-pool','Piscine']]
+    menage: [['ph-bathtub','Plusieurs salles de bain'],['ph-tree','Extérieur à entretenir'],['ph-paw-print','Animaux acceptés'],['ph-clock','Arrivée le jour même du départ'],['ph-key','Accès par boîte à clés'],['ph-swimming-pool','Piscine']],
+    depannage: [['ph-users','Un voyageur est sur place'],['ph-key','Accès par boîte à clés'],['ph-camera','J’ai des photos de la panne'],['ph-calendar-check','Prochaine arrivée bientôt'],['ph-file-text','Il me faut un devis écrit'],['ph-arrows-clockwise','Plusieurs logements à suivre']]
   };
   var RYTHME = ['Moins de 4 départs par mois', '4 à 10 départs par mois', 'Plus de 10 départs par mois', 'Je ne sais pas encore'];
   var LINGE = ['Je fournis le linge', 'L’équipe gère le linge', 'À voir ensemble'];
@@ -433,11 +447,11 @@ details.more a{color:var(--g)}
   // ── Billet (ordinateur) et récapitulatif ──
   function rows(){
     var r = [
-      ['Pour', st.metier ? (menage() ? 'Une équipe de ménage' : 'Un photographe ou vidéaste') : ''],
+      ['Pour', st.metier ? (menage() ? 'Une équipe de ménage' : dep() ? 'Un pro du dépannage' : 'Un photographe ou vidéaste') : ''],
       ['Type', st.etablissement ? (ETABS.filter(function(e){ return e.k === st.etablissement; })[0] || {}).l : ''],
       [autres().length ? 'Villes' : 'Ville', villesTxt()],
       [grand() ? 'Taille' : 'Logement', st.logement],
-      [menage() ? 'Besoin' : 'Prestation', st.besoin],
+      [menage() || dep() ? 'Besoin' : 'Prestation', st.besoin],
       ['Quand', st.quand + (st.date ? ' (' + fmtDate(st.date) + ')' : '')],
       ['Budget', st.budget]
     ];
@@ -447,10 +461,10 @@ details.more a{color:var(--g)}
     return r;
   }
   function fmtDate(iso){ try { return new Date(iso + 'T12:00:00').toLocaleDateString('fr-FR', { day:'numeric', month:'long' }); } catch (e) { return iso; } }
-  function missing(){ var m = []; if (!st.logement) m.push(grand() ? 'la taille' : 'le logement'); if (!st.besoin) m.push(menage() ? 'le besoin' : 'la prestation'); if (!st.quand) m.push('le délai'); if (!st.budget) m.push('le budget'); return m; }
+  function missing(){ var m = []; if (!st.logement) m.push(grand() ? 'la taille' : 'le logement'); if (!st.besoin) m.push(menage() || dep() ? 'le besoin' : 'la prestation'); if (!st.quand) m.push('le délai'); if (!st.budget) m.push('le budget'); return m; }
   function titleLine(){
     if (!st.metier) return '<div class="tt empty">Ta demande se construit ici</div>';
-    var w = menage() ? 'Équipe de ménage' : (st.besoin || 'Photographe ou vidéaste');
+    var w = menage() ? 'Équipe de ménage' : dep() ? (st.besoin || 'Dépannage') : (st.besoin || 'Photographe ou vidéaste');
     var n = autres().length;
     return '<div class="tt">' + esc(w) + (st.ville.trim() ? ' à ' + esc(st.ville.trim()) + (n ? ' + ' + n + ' ville' + (n > 1 ? 's' : '') : '') : '') + '</div>';
   }
@@ -465,7 +479,7 @@ details.more a{color:var(--g)}
     // À l'étape de la ville et au récapitulatif, les destinataires sont déjà au centre : pas de doublon
     var k = STEPS[step] && STEPS[step].k;
     if (st.metier && st.ville.trim().length >= 2 && k !== 'ville' && k !== 'recap') { sd.innerHTML = '<h3>Elle partira à</h3><div id="szone">' + zoneHtml(false).replace('<h3>Qui recevra ta demande</h3>', '') + '</div>'; }
-    else sd.innerHTML = '<h3>Pourquoi passer par ici</h3><ul><li><i class="ph-bold ph-check-circle"></i><span>Des pros qui connaissent la location courte durée</span></li><li><i class="ph-bold ph-check-circle"></i><span>Tu vois qui reçoit ta demande avant de l’envoyer</span></li><li><i class="ph-bold ph-check-circle"></i><span>Gratuit, sans commission : devis et paiement se règlent avec le pro</span></li><li><i class="ph-bold ph-check-circle"></i><span>3 pros au plus : des réponses utiles, pas une avalanche d’appels</span></li></ul><p class="muted">Tu préfères choisir toi-même ? <a href="/annuaires/photographes" style="color:var(--g);font-weight:600">Photographes</a> · <a href="/annuaires/menage" style="color:var(--g);font-weight:600">Équipes de ménage</a></p>';
+    else sd.innerHTML = '<h3>Pourquoi passer par ici</h3><ul><li><i class="ph-bold ph-check-circle"></i><span>Des pros qui connaissent la location courte durée</span></li><li><i class="ph-bold ph-check-circle"></i><span>Tu vois qui reçoit ta demande avant de l’envoyer</span></li><li><i class="ph-bold ph-check-circle"></i><span>Gratuit, sans commission : devis et paiement se règlent avec le pro</span></li><li><i class="ph-bold ph-check-circle"></i><span>3 pros au plus : des réponses utiles, pas une avalanche d’appels</span></li></ul><p class="muted">Tu préfères choisir toi-même ? <a href="/annuaires/photographes" style="color:var(--g);font-weight:600">Photographes</a> · <a href="/annuaires/menage" style="color:var(--g);font-weight:600">Équipes de ménage</a> · <a href="/annuaires/depannage" style="color:var(--g);font-weight:600">Dépannage</a></p>';
   }
 
   // ── Brouillon ──
@@ -484,11 +498,12 @@ details.more a{color:var(--g)}
     bar.style.width = Math.round((step + 1) / STEPS.length * 100) + '%';
     if (s.k === 'metier') {
       var draft = readDraft();
-      h = (draft ? '<div class="resume"><span>Tu avais commencé une demande : <b>' + (draft.st.metier === 'menage' ? 'équipe de ménage' : 'photographe ou vidéaste') + (draft.st.ville ? ' à ' + esc(draft.st.ville) : '') + '</b>. On reprend là où tu t’étais arrêté ?</span><span class="r-b"><button type="button" id="resume">Reprendre</button><button type="button" id="fresh" style="color:var(--tl);font-weight:500">Recommencer</button></span></div>' : '') +
+      h = (draft ? '<div class="resume"><span>Tu avais commencé une demande : <b>' + (draft.st.metier === 'menage' ? 'équipe de ménage' : draft.st.metier === 'depannage' ? 'pro du dépannage' : 'photographe ou vidéaste') + (draft.st.ville ? ' à ' + esc(draft.st.ville) : '') + '</b>. On reprend là où tu t’étais arrêté ?</span><span class="r-b"><button type="button" id="resume">Reprendre</button><button type="button" id="fresh" style="color:var(--tl);font-weight:500">Recommencer</button></span></div>' : '') +
         '<h2 class="q">Tu cherches qui pour ton logement ?</h2>' +
         '<div class="big">' +
         '<button type="button" class="bigc' + (st.metier === 'photographe' ? ' on' : '') + '" data-m="photographe"><span class="im" style="background-image:url(/img/exemple-fiches/photo-salon-2-t.jpg)"><span><i class="ph-bold ph-camera"></i>Photo · vidéo · drone</span></span><span class="bd"><span class="t">Un photographe ou vidéaste</span><ul><li><i class="ph-bold ph-check"></i>Des photos qui donnent envie de réserver</li><li><i class="ph-bold ph-check"></i>Vidéo et vues au drone si tu veux</li></ul></span></button>' +
         '<button type="button" class="bigc' + (st.metier === 'menage' ? ' on' : '') + '" data-m="menage"><span class="im" style="background-image:url(/img/exemple-fiches/menage-1-t.jpg)"><span><i class="ph-bold ph-sparkle"></i>Entre deux voyageurs</span></span><span class="bd"><span class="t">Une équipe de ménage</span><ul><li><i class="ph-bold ph-check"></i>Ménages réguliers ou remise en état</li><li><i class="ph-bold ph-check"></i>Linge, réassort, arrivée le jour même</li></ul></span></button>' +
+        '<button type="button" class="bigc' + (st.metier === 'depannage' ? ' on' : '') + '" data-m="depannage"><span class="im" style="background-image:url(/img/exemple-fiches/photo-sdb-1-t.jpg)"><span><i class="ph-bold ph-wrench"></i>Panne ou petits travaux</span></span><span class="bd"><span class="t">Un pro du dépannage</span><ul><li><i class="ph-bold ph-check"></i>Plomberie, électricité, serrurerie…</li><li><i class="ph-bold ph-check"></i>En urgence, entre deux voyageurs</li></ul></span></button>' +
         '</div>' + tip('ph-handshake', 'Gratuit pour toi et sans commission : le devis et le paiement se règlent directement avec le pro. Ton contact ne va qu’aux pros qui reçoivent ta demande, il n’est jamais vendu.');
     }
     else if (s.k === 'etablissement') {
@@ -505,11 +520,14 @@ details.more a{color:var(--g)}
         tip('ph-map-pin', 'Toute ville est acceptée, même sans page sur le site : les pros qui indiquent couvrir ta zone la reçoivent aussi.');
     }
     else if (s.k === 'logement') {
-      h = '<h2 class="q">' + (st.etablissement === 'hotel' ? 'Ton établissement compte combien de chambres ?' : st.etablissement === 'conciergerie' ? 'Combien de logements à ' + (menage() ? 'entretenir' : 'photographier') + ' ?' : 'Ton logement, c’est plutôt…') + '</h2><p class="sub">La taille aide ' + (menage() ? 'l’équipe à estimer le temps de travail.' : 'le pro à estimer la durée de la séance.') + '</p>' +
+      h = '<h2 class="q">' + (st.etablissement === 'hotel' ? 'Ton établissement compte combien de chambres ?' : st.etablissement === 'conciergerie' ? 'Combien de logements à ' + (menage() ? 'entretenir' : dep() ? 'suivre' : 'photographier') + ' ?' : 'Ton logement, c’est plutôt…') + '</h2><p class="sub">La taille aide ' + (menage() ? 'l’équipe à estimer le temps de travail.' : dep() ? 'le pro à préparer son intervention.' : 'le pro à estimer la durée de la séance.') + '</p>' +
         '<div class="opts two">' + tailles().map(function(v){ return optHtml(v, st.logement === v, LOG_IC[v] || TAILLE_IC[v], LOG_D[v] || ''); }).join('') + '</div>';
     }
     else if (s.k === 'besoin') {
-      if (menage()) {
+      if (dep()) {
+        h = '<h2 class="q">Qu’est-ce qui ne va pas ?</h2><p class="sub">On envoie d’abord ta demande aux pros qui indiquent cette spécialité sur leur fiche.</p><div class="opts two">' + BESOINS_DEP.map(function(v){ return optHtml(v, st.besoin === v, DEP_IC[v] || 'ph-wrench', ''); }).join('') + '</div>' +
+          tip('ph-lightbulb', 'Une fuite ? Fais couper l’arrivée d’eau en attendant le pro. Un disjoncteur qui saute ? Débranche les appareils de la pièce.');
+      } else if (menage()) {
         h = '<h2 class="q">De quel ménage as-tu besoin ?</h2><div class="opts">' + FREQUENCES.map(function(v){ return optHtml(v, st.besoin === v, FREQ[v][0], FREQ[v][1]); }).join('') + '</div>' +
           '<div class="sec"><span class="lab">Combien de départs par mois, à peu près ? <small>(facultatif)</small></span>' + chipsHtml(RYTHME, st.rythme, 'data-ry') + '</div>' +
           '<div class="sec"><span class="lab">Et le linge ? <small>(facultatif)</small></span>' + chipsHtml(LINGE, st.linge, 'data-li') + '</div>';
@@ -519,19 +537,19 @@ details.more a{color:var(--g)}
       }
     }
     else if (s.k === 'quand') {
-      h = '<h2 class="q">Pour quand ?</h2><div class="opts two">' + QUAND.map(function(v){ return optHtml(v, st.quand === v, QUAND_IC[v], QUAND_D[v]); }).join('') + '</div>' +
+      h = '<h2 class="q">Pour quand ?</h2><div class="opts two">' + (dep() ? QUAND_DEP.map(function(v){ return optHtml(v, st.quand === v, QUAND_DEP_IC[v], QUAND_DEP_D[v]); }) : QUAND.map(function(v){ return optHtml(v, st.quand === v, QUAND_IC[v], QUAND_D[v]); })).join('') + '</div>' +
         '<div class="sec"><label for="date">Une date précise en tête ? <small>(facultatif)</small></label><input type="hidden" data-date id="date" min="' + new Date().toISOString().slice(0, 10) + '" placeholder="Choisir une date" aria-label="Date souhaitée" value="' + esc(st.date) + '" style="max-width:300px"></div>' +
-        tip('ph-calendar-check', menage() ? 'Si tu as déjà des réservations, indique la date du premier départ : l’équipe saura si elle peut la prendre.' : 'Avant la haute saison, les bons pros se réservent vite : un peu d’avance aide.');
+        tip('ph-calendar-check', dep() ? 'Indique la date de la prochaine arrivée : le pro saura s’il doit passer avant.' : menage() ? 'Si tu as déjà des réservations, indique la date du premier départ : l’équipe saura si elle peut la prendre.' : 'Avant la haute saison, les bons pros se réservent vite : un peu d’avance aide.');
     }
     else if (s.k === 'budget') {
       h = '<h2 class="q">Tu as une idée du budget ?</h2><p class="sub">Ce n’est pas un engagement : le pro t’envoie un devis. Ça l’aide juste à te proposer la bonne formule.</p>' +
         '<div class="opts two">' + BUDGET[st.metier || 'photographe'].map(function(v){ return optHtml(v, st.budget === v, v.indexOf('conseille') >= 0 ? 'ph-lightbulb' : 'ph-wallet', ''); }).join('') + '</div>' +
-        tip('ph-eye', 'Les tarifs de chaque pro sont sur sa fiche : <a href="/annuaires/' + (menage() ? 'menage' : 'photographes') + '" target="_blank" rel="noopener">voir l’annuaire</a>.');
+        tip('ph-eye', 'Les tarifs de chaque pro sont sur sa fiche : <a href="/annuaires/' + annu() + '" target="_blank" rel="noopener">voir l’annuaire</a>.');
     }
     else if (s.k === 'details') {
       h = '<h2 class="q">Ce qui aide ' + (menage() ? 'l’équipe' : 'le pro') + ' à te répondre juste</h2><p class="sub">Touche ce qui correspond, puis ajoute un mot si tu veux.</p>' +
         '<div class="chips">' + DETAILS[st.metier || 'photographe'].map(function(d){ var on = st.details.indexOf(d[1]) >= 0; return '<button type="button" class="chip' + (on ? ' on' : '') + '" data-d="' + esc(d[1]) + '" aria-pressed="' + on + '"><i class="ph-bold ' + d[0] + '"></i>' + esc(d[1]) + '</button>'; }).join('') + '</div>' +
-        '<div class="sec"><label for="message">Ton message <small>(facultatif)</small></label><textarea class="in" id="message" maxlength="1000" placeholder="' + (menage() ? 'Ex. 2 chambres, check-out 11 h, check-in 16 h, produits fournis…' : 'Ex. surface, nombre de chambres, ce qui fait le charme du logement…') + '">' + esc(st.message) + '</textarea></div>' +
+        '<div class="sec"><label for="message">Ton message <small>(facultatif)</small></label><textarea class="in" id="message" maxlength="1000" placeholder="' + (menage() ? 'Ex. 2 chambres, check-out 11 h, check-in 16 h, produits fournis…' : dep() ? 'Ex. la panne, depuis quand, la marque de l’appareil, l’accès au logement…' : 'Ex. surface, nombre de chambres, ce qui fait le charme du logement…') + '">' + esc(st.message) + '</textarea></div>' +
         tip('ph-lightbulb', 'Plus ta demande est précise, plus le devis est juste et rapide. Inutile d’écrire tes coordonnées ici, elles viennent à l’étape suivante.');
     }
     else if (s.k === 'contact') {
@@ -677,7 +695,9 @@ details.more a{color:var(--g)}
     fh.hidden = true; ff.innerHTML = ''; ff.style.display = 'none';
     document.body.setAttribute('data-step', 'done');
     var first = st.nom.trim().split(' ')[0];
-    var list = menage()
+    var list = dep()
+      ? ['Noter où sont le compteur, le disjoncteur et l’arrivée d’eau', 'Préparer l’accès : boîte à clés, code, parking', 'Prendre en photo la panne et la marque de l’appareil', 'Prévenir ton voyageur s’il est sur place']
+      : menage()
       ? ['Lister ce que l’équipe doit faire à chaque départ (lits, linge, réassort)', 'Prévoir où ranger le linge et les produits', 'Noter l’accès : boîte à clés, code, parking', 'Préparer tes horaires d’arrivée et de départ']
       : ['Faire le ménage à fond et ranger ce qui traîne', 'Mettre des draps et serviettes propres, lits faits', 'Changer les ampoules grillées, ouvrir rideaux et volets', 'Prévoir 2 ou 3 détails déco (fleurs, plaid, livres)'];
     fb.className = 'done';
@@ -689,15 +709,15 @@ details.more a{color:var(--g)}
         '<div class="np-rows"><div><i class="ph-bold ph-user-plus"></i><span>' + (menage() ? 'La première équipe de ménage' : 'Le premier pro') + ' qui s’inscrit près de chez toi la reçoit automatiquement.</span></div>' +
         '<div><i class="ph-bold ph-hand-heart"></i><span>Jason la regarde lui-même et cherche quelqu’un de son côté.</span></div>' +
         '<div><i class="ph-bold ph-envelope-simple"></i><span>Tu reçois un e-mail dès qu’un pro l’a entre les mains.</span></div></div>' +
-        '<div class="np-share">Tu connais ' + (menage() ? 'une équipe' : 'un pro') + ' dans ton coin ? <a href="/annuaires/' + (menage() ? 'menage' : 'photographes') + '/inscription" target="_blank" rel="noopener">Envoie-lui ce lien</a> : sa fiche la recevra.</div></div>') +
+        '<div class="np-share">Tu connais ' + (menage() ? 'une équipe' : 'un pro') + ' dans ton coin ? <a href="/annuaires/' + annu() + '/inscription" target="_blank" rel="noopener">Envoie-lui ce lien</a> : sa fiche la recevra.</div></div>') +
       '<div><div class="h2" style="margin-bottom:12px">Et maintenant ?</div><div class="tl">' +
       '<div><span class="dot on"><i class="ph-bold ph-check"></i></span><span><b>Maintenant</b>' + (n ? 'Les ' + who(2) + ' reçoivent ta demande par e-mail, avec tes coordonnées.' : 'Ta demande est gardée et Jason est prévenu.') + '</span></div>' +
       '<div><span class="dot"><i class="ph-bold ph-chat-circle-dots"></i></span><span><b>' + (n ? 'Sous 48 h' : 'Dans les 30 jours') + '</b>' + (n ? 'Ils te répondent directement, par e-mail ou par téléphone.' : 'Un pro de ta zone la reçoit (inscription ou transmission par Jason) et te répond directement.') + '</span></div>' +
       '<div><span class="dot"><i class="ph-bold ph-arrows-clockwise"></i></span><span><b>Sinon</b>' + (n ? 'D’autres pros de ta zone prennent le relais, sans rien à refaire.' : 'Au bout de 30 jours sans pro, ton lien de suivi te l’indique et tu peux refaire une demande.') + '</span></div>' +
       '</div></div>' +
-      '<div class="acts">' + (b.suivi ? '<a class="btn" href="/ma-demande?t=' + encodeURIComponent(b.suivi) + '"><i class="ph-bold ph-eye"></i>Suivre ma demande</a>' : '') + '<a class="ghost" href="/annuaires/' + (menage() ? 'menage' : 'photographes') + '">Voir l’annuaire</a></div>' +
+      '<div class="acts">' + (b.suivi ? '<a class="btn" href="/ma-demande?t=' + encodeURIComponent(b.suivi) + '"><i class="ph-bold ph-eye"></i>Suivre ma demande</a>' : '') + '<a class="ghost" href="/annuaires/' + annu() + '">Voir l’annuaire</a></div>' +
       (b.suivi ? '<p class="sub" style="margin-top:-6px;font-size:13.5px">Le lien de suivi est aussi dans ton e-mail. Tu y vois qui a pris ta demande en main.</p>' : '') +
-      '<div class="side-card" style="background:#FBFAF6"><div class="h2">En attendant, prépare ' + (menage() ? 'le premier passage' : 'la séance') + '</div><div class="check">' + list.map(function(t, i){ return '<label><input type="checkbox" id="prep' + i + '">' + esc(t) + '</label>'; }).join('') + '</div></div>';
+      '<div class="side-card" style="background:#FBFAF6"><div class="h2">En attendant, prépare ' + (menage() ? 'le premier passage' : dep() ? 'l’intervention' : 'la séance') + '</div><div class="check">' + list.map(function(t, i){ return '<label><input type="checkbox" id="prep' + i + '">' + esc(t) + '</label>'; }).join('') + '</div></div>';
     tk.innerHTML = ticketHtml(); sd.innerHTML = '<h3>Envoyée</h3><p class="muted">Garde le lien de suivi : il montre à qui ta demande est partie et qui l’a prise en main.</p>';
     var top = document.getElementById('flow').getBoundingClientRect().top + window.scrollY - 76;
     window.scrollTo({ top: top, behavior: 'smooth' });
@@ -714,7 +734,7 @@ details.more a{color:var(--g)}
       '<p class="sub" style="margin-top:-6px">Ta demande part dans ' + nv + ' villes, une demande par ville. ' + (n ? n + ' ' + who(n) + ' l’ont déjà reçue. ' : '') + 'Tu reçois un e-mail de confirmation par ville (pense aux indésirables).</p>' +
       villesRes(b) +
       '<p class="sub" style="font-size:13.5px">Touche une ville pour suivre sa demande. Dans une ville sans pro inscrit, le premier qui s’inscrit la reçoit, et Jason la regarde lui-même.</p>' +
-      '<div class="acts"><a class="ghost" href="/annuaires/' + (menage() ? 'menage' : 'photographes') + '">Voir l’annuaire</a></div>';
+      '<div class="acts"><a class="ghost" href="/annuaires/' + annu() + '">Voir l’annuaire</a></div>';
     tk.innerHTML = ticketHtml(); sd.innerHTML = '<h3>Envoyée</h3><p class="muted">Chaque ville a son lien de suivi, aussi dans son e-mail de confirmation.</p>';
     var top = document.getElementById('flow').getBoundingClientRect().top + window.scrollY - 76;
     window.scrollTo({ top: top, behavior: 'smooth' });
@@ -724,7 +744,7 @@ details.more a{color:var(--g)}
   try {
     var q = new URLSearchParams(location.search);
     var m = q.get('metier');
-    if (m === 'menage' || m === 'photographe') st.metier = m;
+    if (m === 'menage' || m === 'photographe' || m === 'depannage') st.metier = m;
     if (q.get('ville')) st.ville = q.get('ville').slice(0, 80);
     var ty = q.get('type');
     if (ty && ETABS.some(function(e){ return e.k === ty; })) st.etablissement = ty;
@@ -743,7 +763,7 @@ details.more a{color:var(--g)}
 `
 
 // ── Page de suivi /ma-demande ─────────────────────────────────────────
-const suivi = `${HEAD('Suivre ma demande', 'Où en est ta demande de photographe, vidéaste ou équipe de ménage.', '', 'noindex, nofollow')}
+const suivi = `${HEAD('Suivre ma demande', 'Où en est ta demande de photographe, vidéaste, équipe de ménage ou pro du dépannage.', '', 'noindex, nofollow')}
 <style>
 ${BASE_CSS}
 .wrap{max-width:860px;margin:-70px auto 60px;padding:0 clamp(16px,5vw,40px);display:grid;gap:16px;position:relative}
@@ -799,6 +819,7 @@ h3{font-family:'Fraunces',serif;font-weight:400;font-size:19px}
   if (!/^[a-f0-9]{32}$/.test(t)) return fail('Ce lien de suivi est incomplet. Ouvre-le depuis l’e-mail de confirmation de ta demande.');
   function render(v){
     var men = v.metier === 'menage';
+    var annuV = men ? 'menage' : v.metier === 'depannage' ? 'depannage' : 'photographes';
     document.getElementById('h1').innerHTML = esc(v.prenom) + ', voici où en est <em>ta demande</em>';
     var ic = { envoyee:'ph-paper-plane-tilt', prise_en_main:'ph-handshake', sans_pro:'ph-hourglass-medium', fermee:'ph-check-circle', terminee:'ph-hourglass-medium' }[v.etat] || 'ph-paper-plane-tilt';
     var wait = v.etat === 'sans_pro' || v.etat === 'terminee';
@@ -813,7 +834,7 @@ h3{font-family:'Fraunces',serif;font-weight:400;font-size:19px}
     }
     h += '<div class="card"><h3>Ta demande</h3><div class="rows">' + v.besoin.map(function(r){ return '<div><span>' + esc(r[0]) + '</span><span>' + esc(r[1]) + '</span></div>'; }).join('') + '<div><span>Envoyée le</span><span>' + esc(short(v.creee)) + '</span></div></div></div>';
     if (v.etat !== 'fermee') {
-      h += '<div class="card" id="close"><h3>Tu as trouvé ton ' + (men ? 'équipe' : 'pro') + ' ?</h3><p class="small">Dis-le ici : ta demande ne partira plus chez d’autres pros.</p><div class="acts"><button type="button" class="btn" id="found"><i class="ph-bold ph-check-circle"></i>J’ai trouvé mon ' + (men ? 'équipe' : 'pro') + '</button><a class="ghost" href="/annuaires/' + (men ? 'menage' : 'photographes') + '">Voir l’annuaire</a></div></div>';
+      h += '<div class="card" id="close"><h3>Tu as trouvé ton ' + (men ? 'équipe' : 'pro') + ' ?</h3><p class="small">Dis-le ici : ta demande ne partira plus chez d’autres pros.</p><div class="acts"><button type="button" class="btn" id="found"><i class="ph-bold ph-check-circle"></i>J’ai trouvé mon ' + (men ? 'équipe' : 'pro') + '</button><a class="ghost" href="/annuaires/' + annuV + '">Voir l’annuaire</a></div></div>';
     }
     h += '<p class="small">Garde ce lien, il est aussi dans ton e-mail de confirmation. Une question ? <a href="/contact">Écris à Jason</a>.</p>';
     app.innerHTML = h;

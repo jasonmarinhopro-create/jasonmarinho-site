@@ -63,6 +63,7 @@ export function aTraiter(d: DemandeAdminRow, statuts: Map<string, string>, now: 
 const JOIN: Record<DemandeMetier, string> = {
   photographe: 'https://jasonmarinho.com/devenir-photographe-lcd',
   menage: 'https://jasonmarinho.com/devenir-prestataire-menage-lcd',
+  depannage: 'https://jasonmarinho.com/annuaires/depannage/inscription',
 }
 
 /**

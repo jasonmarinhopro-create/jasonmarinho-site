@@ -128,7 +128,7 @@ describe('formulaire du site', () => {
     const { readFileSync } = await import('node:fs')
     const rules = await import('./rules')
     const src = readFileSync(new URL('../../../scripts/build-trouver-un-pro.mjs', import.meta.url), 'utf8')
-    for (const name of ['LOGEMENTS', 'QUAND', 'FREQUENCES', 'TAILLES_HOTEL', 'TAILLES_CONCIERGERIE'] as const) {
+    for (const name of ['LOGEMENTS', 'QUAND', 'FREQUENCES', 'TAILLES_HOTEL', 'TAILLES_CONCIERGERIE', 'QUAND_DEPANNAGE'] as const) {
       const m = src.match(new RegExp(`const ${name} = (\\[[^\\]]*\\])`))
       expect(m && JSON.parse(m[1].replace(/'/g, '"'))).toEqual([...rules[name]])
     }
@@ -193,5 +193,28 @@ describe('cleanAutresVilles (demande en plusieurs villes)', () => {
   it('passe par cleanDemande', () => {
     const r = cleanDemande({ metier: 'photographe', ville: 'Annecy', villes: ['Chambéry'], nom: 'Test Nom', email: 'a@b.fr', consent: true })
     expect('value' in r && r.value.autresVilles).toEqual(['Chambéry'])
+  })
+})
+
+describe('dépannage (31/10/2026)', () => {
+  it('accepte le métier, la spécialité et le délai du dépannage', async () => {
+    const { cleanDemande } = await import('./rules')
+    const r = cleanDemande({ metier: 'depannage', ville: 'Nantes', nom: 'Ana Test', email: 'ana@test.fr', consent: true, frequence: 'Plomberie', quand: 'En urgence' })
+    expect('value' in r && r.value.metier).toBe('depannage')
+    expect('value' in r && r.value.frequence).toBe('Plomberie')
+    expect('value' in r && r.value.quand).toBe('En urgence')
+    const bad = cleanDemande({ metier: 'depannage', ville: 'Nantes', nom: 'Ana Test', email: 'ana@test.fr', consent: true, frequence: 'Des photos' })
+    expect('value' in bad && bad.value.frequence).toBeNull()
+  })
+  it('sert d’abord les pros de la spécialité, puis les multiservices, jamais les autres', async () => {
+    const { choisirPros, convientAuBesoin, pourquoiCePro } = await import('./rules')
+    const plombier = { id: 'a', ville: 'Nantes', zone_couverte: null, specialites: ['plomberie'] }
+    const multi = { id: 'b', ville: 'Nantes', zone_couverte: null, specialites: ['multiservice'] }
+    const serrurier = { id: 'c', ville: 'Nantes', zone_couverte: null, specialites: ['serrurerie'] }
+    expect(convientAuBesoin(plombier, 'Plomberie')).toBe(2)
+    expect(convientAuBesoin(multi, 'Plomberie')).toBe(1)
+    expect(convientAuBesoin(serrurier, 'Plomberie')).toBe(0)
+    expect(choisirPros([serrurier, multi, plombier], 'Nantes', new Set(), 3, 'Plomberie').map(p => p.id)).toEqual(['a', 'b'])
+    expect(pourquoiCePro(multi, 'Plomberie')).toContain('ne l’indique pas')
   })
 })

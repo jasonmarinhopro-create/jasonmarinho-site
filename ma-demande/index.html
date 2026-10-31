@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Suivre ma demande</title>
-<meta name="description" content="Où en est ta demande de photographe, vidéaste ou équipe de ménage.">
+<meta name="description" content="Où en est ta demande de photographe, vidéaste, équipe de ménage ou pro du dépannage.">
 <meta name="robots" content="noindex, nofollow">
 
 <link rel="shortcut icon" href="/favicon.ico">
@@ -106,6 +106,7 @@ h3{font-family:'Fraunces',serif;font-weight:400;font-size:19px}
   if (!/^[a-f0-9]{32}$/.test(t)) return fail('Ce lien de suivi est incomplet. Ouvre-le depuis l’e-mail de confirmation de ta demande.');
   function render(v){
     var men = v.metier === 'menage';
+    var annuV = men ? 'menage' : v.metier === 'depannage' ? 'depannage' : 'photographes';
     document.getElementById('h1').innerHTML = esc(v.prenom) + ', voici où en est <em>ta demande</em>';
     var ic = { envoyee:'ph-paper-plane-tilt', prise_en_main:'ph-handshake', sans_pro:'ph-hourglass-medium', fermee:'ph-check-circle', terminee:'ph-hourglass-medium' }[v.etat] || 'ph-paper-plane-tilt';
     var wait = v.etat === 'sans_pro' || v.etat === 'terminee';
@@ -120,7 +121,7 @@ h3{font-family:'Fraunces',serif;font-weight:400;font-size:19px}
     }
     h += '<div class="card"><h3>Ta demande</h3><div class="rows">' + v.besoin.map(function(r){ return '<div><span>' + esc(r[0]) + '</span><span>' + esc(r[1]) + '</span></div>'; }).join('') + '<div><span>Envoyée le</span><span>' + esc(short(v.creee)) + '</span></div></div></div>';
     if (v.etat !== 'fermee') {
-      h += '<div class="card" id="close"><h3>Tu as trouvé ton ' + (men ? 'équipe' : 'pro') + ' ?</h3><p class="small">Dis-le ici : ta demande ne partira plus chez d’autres pros.</p><div class="acts"><button type="button" class="btn" id="found"><i class="ph-bold ph-check-circle"></i>J’ai trouvé mon ' + (men ? 'équipe' : 'pro') + '</button><a class="ghost" href="/annuaires/' + (men ? 'menage' : 'photographes') + '">Voir l’annuaire</a></div></div>';
+      h += '<div class="card" id="close"><h3>Tu as trouvé ton ' + (men ? 'équipe' : 'pro') + ' ?</h3><p class="small">Dis-le ici : ta demande ne partira plus chez d’autres pros.</p><div class="acts"><button type="button" class="btn" id="found"><i class="ph-bold ph-check-circle"></i>J’ai trouvé mon ' + (men ? 'équipe' : 'pro') + '</button><a class="ghost" href="/annuaires/' + annuV + '">Voir l’annuaire</a></div></div>';
     }
     h += '<p class="small">Garde ce lien, il est aussi dans ton e-mail de confirmation. Une question ? <a href="/contact">Écris à Jason</a>.</p>';
     app.innerHTML = h;
