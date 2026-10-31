@@ -142,7 +142,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .hg-h1 em{color:var(--y);font-weight:400}
 .hg-p{font-size:19px;line-height:1.55;color:rgba(255,255,255,.75);max-width:660px;min-height:2lh}
 .hg-box{width:100%;max-width:1000px;margin-top:8px;text-align:left}
-.hg-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:0 14px}
+.hg-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0 14px}
 .hg-tabs button{display:flex;align-items:center;justify-content:center;gap:9px;min-height:52px;padding:10px 12px;border:none;border-radius:16px 16px 0 0;background:rgba(255,255,255,.08);color:#fff;font-family:inherit;font-size:14.5px;font-weight:600;cursor:pointer;transition:background .2s}
 .hg-tabs button svg{color:var(--y)}
 .hg-tabs button:hover{background:rgba(255,255,255,.14)}
@@ -171,17 +171,22 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .hg-row-a{flex:0 1 280px;display:flex;flex-direction:column;gap:6px;text-align:center}
 .hg-row-a .hg-go{align-self:stretch;margin:0}
 .hg-row-a small{font-size:12.5px;color:var(--tf)}
-.hg-gerer{display:flex;flex-direction:column;gap:14px;padding:22px 24px}
+.hg-gerer{display:flex;align-items:center;gap:24px;padding:22px 24px}
+.hg-g-l{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:14px}
+.hg-g-shot{flex:0 0 340px;display:flex;flex-direction:column;gap:6px}
+.hg-g-shot img{width:100%;height:auto;display:block;border-radius:14px;border:1px solid var(--bd);box-shadow:0 10px 26px rgba(0,51,41,.12);background:#EEF4EF}
+.hg-g-shot img[hidden]{display:none}
+.hg-g-shot figcaption{font-size:11.5px;color:var(--tf);text-align:right}
 .hg-chips{display:flex;flex-wrap:wrap;gap:8px}
 .hg-chips button{padding:10px 14px;border-radius:99px;border:1.5px solid var(--bd);background:#fff;color:var(--td);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer}
 .hg-chips button:hover{border:1.5px solid var(--bd2)}
 .hg-chips button[aria-checked="true"]{background:var(--gd);border:1.5px solid var(--gd);color:#fff}
 .hg-g-q{display:flex;flex-direction:column;gap:10px}
-.hg-g-a{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;padding:16px 18px;border-radius:16px;background:#F4F6F2}
+.hg-g-a{padding:14px 16px;border-radius:14px;background:#F4F6F2}
 .hg-ans{flex:1 1 380px;font-size:15.5px;line-height:1.55;color:var(--td)}
 .hg-ans[hidden]{display:none}
 .hg-ans a{font-weight:600;white-space:nowrap}
-.hg-g-cta{display:flex;flex-direction:column;align-items:center;gap:4px}
+.hg-g-cta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .hg-g-cta .hg-go{margin:0;align-self:auto}
 .hg-g-cta small{font-size:12px;color:var(--tf)}
 .hg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:28px}
@@ -430,8 +435,11 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   .hg-by{align-self:flex-start;font-size:12.5px}
   .hg-h1{font-size:38px}
   .hg-p{font-size:16.5px;min-height:0}
-  .hg-tabs{grid-template-columns:1fr 1fr;padding:0;gap:6px}
-  .hg-tabs button{border-radius:14px;font-size:13.5px;min-height:48px}
+  .hg-tabs{grid-template-columns:1fr 1fr 1fr;padding:0;gap:6px}
+  .hg-tabs button{flex-direction:column;gap:4px;font-size:12.5px;padding:8px 4px}
+  .hg-gerer{flex-direction:column;align-items:stretch}
+  .hg-g-shot{flex:none}
+  .hg-tabs button{border-radius:14px;min-height:56px}
   .hg-tabs{margin-bottom:8px}
   .hg-card{border-radius:20px}
   .hg-seg button{font-size:13px;gap:5px;padding:0 4px}
@@ -495,7 +503,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <h1 class="hg-h1 hx" id="hg-h1">Les bons pros pour ta <em>location courte durée</em>, près de chez toi.</h1>
 <p class="hg-p hx" id="hg-p">Dis ce qu’il te faut et où : les 3 pros les plus proches qui le font reçoivent ta demande et te répondent en direct. Gratuit pour toi, sans commission.</p>
 <div class="hg-box hx2" id="intent">
-<div class="hg-tabs" role="tablist" aria-label="Qu’est-ce qui t’amène ?"><button type="button" role="tab" id="ht-pro" aria-controls="hp-pro" aria-selected="true" data-tab="pro"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3"/></svg><span>Trouver un pro</span></button><button type="button" role="tab" id="ht-gerer" aria-controls="hp-gerer" aria-selected="false" data-tab="gerer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span>Gérer ma location</span></button><button type="button" role="tab" id="ht-apprendre" aria-controls="hp-apprendre" aria-selected="false" data-tab="apprendre"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H4zM20 5h-6"/></svg><span>Apprendre</span></button><button type="button" role="tab" id="ht-metier" aria-controls="hp-metier" aria-selected="false" data-tab="metier"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v13H3zM8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg><span>Je suis un pro</span></button></div>
+<div class="hg-tabs" role="tablist" aria-label="Qu’est-ce qui t’amène ?"><button type="button" role="tab" id="ht-pro" aria-controls="hp-pro" aria-selected="true" data-tab="pro"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3"/></svg><span>Trouver un pro</span></button><button type="button" role="tab" id="ht-gerer" aria-controls="hp-gerer" aria-selected="false" data-tab="gerer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span>Gérer ma location</span></button><button type="button" role="tab" id="ht-metier" aria-controls="hp-metier" aria-selected="false" data-tab="metier"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v13H3zM8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg><span>Je suis un pro</span></button></div>
 <div class="hg-card">
 <div class="hg-panel hg-search" role="tabpanel" id="hp-pro" aria-labelledby="ht-pro">
 <div class="hg-f hg-f-m">
@@ -514,14 +522,13 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <a href="/trouver-un-pro?metier=photographe" class="hg-go" id="it-go"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3"/></svg><span>Trouver mes pros</span></a>
 </div>
 <div class="hg-panel hg-gerer" role="tabpanel" id="hp-gerer" aria-labelledby="ht-gerer" hidden>
+<div class="hg-g-l">
 <div class="hg-g-q"><span class="hg-l">Qu’est-ce qui te prend du temps ?</span>
-<div class="hg-chips" role="radiogroup" aria-label="Ce qui te prend du temps"><button type="button" role="radio" aria-checked="true" data-g="menage">Organiser les ménages</button><button type="button" role="radio" aria-checked="false" data-g="contrat">Faire signer un contrat</button><button type="button" role="radio" aria-checked="false" data-g="caution">Gérer la caution</button><button type="button" role="radio" aria-checked="false" data-g="police">Les fiches de police</button><button type="button" role="radio" aria-checked="false" data-g="verif">Vérifier un voyageur</button><button type="button" role="radio" aria-checked="false" data-g="revenus">Suivre mes revenus</button></div></div>
-<div class="hg-g-a"><p class="hg-ans" data-ga="menage">Un ménage est créé à chaque départ. Ton équipe voit son planning et le marque « terminé » avec photos. <a href="/services/planning-menage">En savoir plus</a></p><p class="hg-ans" data-ga="contrat" hidden>Le contrat part de la réservation, le voyageur le signe en ligne et paie son loyer par lien. <a href="/services/contrats">En savoir plus</a></p><p class="hg-ans" data-ga="caution" hidden>Elle est bloquée sur la carte du voyageur, tu la libères après son départ. <a href="/services/contrats">En savoir plus</a></p><p class="hg-ans" data-ga="police" hidden>Elles sont préparées pour chaque voyageur étranger, prêtes à imprimer. <a href="/services/declarations-voyageurs">En savoir plus</a></p><p class="hg-ans" data-ga="verif" hidden>Cherche son e-mail, son téléphone ou son nom dans les signalements des autres hôtes, avant d’accepter. <a href="/services/securite">En savoir plus</a></p><p class="hg-ans" data-ga="revenus" hidden>Virements, espèces, paiements en ligne au même endroit : ce qui est encaissé, ce qui est en attente. <a href="/services/revenus">En savoir plus</a></p><span class="hg-g-cta"><a href="https://app.jasonmarinho.com/auth/register" class="hg-go">Créer mon compte gratuit</a><small>Sans carte bancaire</small></span></div>
+<div class="hg-chips" role="radiogroup" aria-label="Ce qui te prend du temps"><button type="button" role="radio" aria-checked="true" data-g="menage">Organiser les ménages</button><button type="button" role="radio" aria-checked="false" data-g="contrat">Faire signer un contrat</button><button type="button" role="radio" aria-checked="false" data-g="caution">Gérer la caution</button><button type="button" role="radio" aria-checked="false" data-g="police">Les fiches de police</button><button type="button" role="radio" aria-checked="false" data-g="voyageurs">Retrouver mes voyageurs</button><button type="button" role="radio" aria-checked="false" data-g="calendrier">Voir tous mes séjours</button><button type="button" role="radio" aria-checked="false" data-g="simu">Calculer mes impôts</button></div></div>
+<div class="hg-g-a"><p class="hg-ans" data-ga="menage">Un ménage est créé à chaque départ. Ton équipe voit son planning et le marque « terminé » avec photos. <a href="/services/planning-menage">En savoir plus</a></p><p class="hg-ans" data-ga="contrat" hidden>Le contrat part de la réservation, le voyageur le signe en ligne et paie son loyer par lien. <a href="/services/contrats">En savoir plus</a></p><p class="hg-ans" data-ga="caution" hidden>Elle est bloquée sur la carte du voyageur, tu la libères après son départ. <a href="/services/contrats">En savoir plus</a></p><p class="hg-ans" data-ga="police" hidden>Elles sont préparées pour chaque voyageur étranger, prêtes à imprimer. <a href="/services/declarations-voyageurs">En savoir plus</a></p><p class="hg-ans" data-ga="voyageurs" hidden>Coordonnées, séjours et nationalité de chaque voyageur, au même endroit. <a href="/services/carnet-voyageurs">En savoir plus</a></p><p class="hg-ans" data-ga="calendrier" hidden>Airbnb, Booking, réservations directes et ménages sur une seule vue. <a href="/services/calendrier">En savoir plus</a></p><p class="hg-ans" data-ga="simu" hidden>Micro-BIC ou réel, statut, rentabilité, taxe de séjour : les simulateurs te donnent une estimation en quelques secondes. <a href="/services/simulateurs">En savoir plus</a></p></div>
+<span class="hg-g-cta"><a href="https://app.jasonmarinho.com/auth/register" class="hg-go">Créer mon compte gratuit</a><small>Sans carte bancaire. Avec ton e-mail ou Google.</small></span>
 </div>
-<div class="hg-panel hg-grid" role="tabpanel" id="hp-apprendre" aria-labelledby="ht-apprendre" hidden>
-<a href="/services/formations"><b>Formations</b><span>22 parcours, de 1h45 à 4h30</span></a>
-<a href="/villes"><b>Le guide de ta ville</b><span>Règles et marché</span></a>
-<a href="/services/actualites"><b>Actualités</b><span>Ce qui change pour toi</span></a>
+<figure class="hg-g-shot"><img src="/img/accueil/hote-menage.webp" alt="Le planning ménage de l’espace hôte, données fictives" width="1400" height="995" loading="lazy" decoding="async" data-gi="menage"><img src="/img/accueil/hote-contrats.webp" alt="Les contrats et paiements de l’espace hôte, données fictives" width="1400" height="995" loading="lazy" decoding="async" data-gi="contrat" hidden><img src="/img/accueil/hote-contrats.webp" alt="Les contrats et cautions de l’espace hôte, données fictives" width="1400" height="995" loading="lazy" decoding="async" data-gi="caution" hidden><img src="/img/accueil/hote-declarations.webp" alt="Les déclarations voyageurs de l’espace hôte, données fictives" width="1400" height="995" loading="lazy" decoding="async" data-gi="police" hidden><img src="/img/accueil/hote-voyageurs.webp" alt="Le carnet de voyageurs de l’espace hôte, données fictives" width="1400" height="995" loading="lazy" decoding="async" data-gi="voyageurs" hidden><img src="/img/accueil/hote-calendrier.webp" alt="Le calendrier de l’espace hôte, données fictives" width="1400" height="995" loading="lazy" decoding="async" data-gi="calendrier" hidden><img src="/img/accueil/hote-simulateurs.webp" alt="Les simulateurs de l’espace hôte, données fictives" width="1400" height="995" loading="lazy" decoding="async" data-gi="simu" hidden><figcaption>Données fictives</figcaption></figure>
 </div>
 <div class="hg-panel hg-grid" role="tabpanel" id="hp-metier" aria-labelledby="ht-metier" hidden>
 <a href="/devenir-photographe-lcd"><b>Photographe ou vidéaste</b><span>Créer ma fiche →</span></a>
@@ -531,7 +538,6 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 </div>
 </div>
 <div class="ex" data-only="metier" hidden><p class="ex-t">À quoi ressemblera ta fiche ? Ouvre un exemple :</p><div class="ex-g"><a href="/annuaires/photographes/exemple-fiche" class="ex-c"><span class="ex-img"><img src="/img/exemple-fiches/photo-interieur-1-t.jpg" alt="" width="600" height="400" loading="lazy" decoding="async"><em>Exemple</em></span><span class="ex-b"><small>Photographe et vidéaste</small><b>Camille Sénéchal</b><span>Lyon · dès 350 €</span><span class="ex-go">Voir la fiche d’exemple →</span></span></a><a href="/annuaires/menage/exemple-fiche" class="ex-c"><span class="ex-img"><img src="/img/exemple-fiches/menage-1-t.jpg" alt="" width="600" height="400" loading="lazy" decoding="async"><em>Exemple</em></span><span class="ex-b"><small>Équipe de ménage</small><b>Éclat Ménage Bordeaux</b><span>Bordeaux · dès 70 €</span><span class="ex-go">Voir la fiche d’exemple →</span></span></a><a href="/annuaires/depannage/exemple-fiche" class="ex-c"><span class="ex-img"><img src="/img/exemple-fiches/photo-sdb-1-t.jpg" alt="" width="600" height="400" loading="lazy" decoding="async"><em>Exemple</em></span><span class="ex-b"><small>Dépannage et maintenance</small><b>Atelier Martin</b><span>Nantes · dès 75 €</span><span class="ex-go">Voir la fiche d’exemple →</span></span></a></div></div>
-<p class="hg-note" data-only="apprendre" hidden>2 formations au choix offertes avec ton compte gratuit. Les 22 sont incluses dans la formule Standard.</p>
 <div class="hg-pro" data-only="pro">
 <div class="hg-often"><span>Souvent cherché :</span>
 <a href="/trouver-un-pro?metier=photographe&amp;ville=Lyon">Photographe à Lyon</a>
@@ -551,56 +557,6 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <span class="pub-n"><span><b data-pub="vis">…</b>visiteurs sur 30 jours</span><span><b data-pub="imp">…</b>apparitions dans Google</span><span><b data-pub="dem">…</b>demandes d’hôtes reçues</span></span>
 <span class="pub-go">Voir tous les chiffres →</span>
 </a>
-</section>
-
-<!-- UN SEUL ENDROIT, TROIS FAÇONS -->
-<section class="sec" id="services">
-<div class="wrap" style="display:flex;flex-direction:column;gap:34px">
-<div class="head">
-<h2 class="h2" style="max-width:640px">Un seul endroit, <em>trois façons</em> de t’aider.</h2>
-<p class="lead2" style="max-width:380px">Gère ta location, trouve tes pros, apprends le métier.</p>
-</div>
-<div class="tri">
-<article class="c1">
-<span class="c-eyb" style="color:var(--y)">01 · Gérer</span>
-<h3 class="c-h">Ton espace hôte se met à jour tout seul.</h3>
-<p>Tes réservations Airbnb et Booking arrivent seules, tes ménages se planifient, et contrats et fiches de police sont prêts quand il le faut.</p>
-<div class="chips shot-tabs hs" role="tablist" aria-label="Écrans de l’espace hôte"><button type="button" role="tab" id="sh-t-voyageurs" aria-controls="sh-voyageurs" aria-selected="true" data-shot="voyageurs">Carnet de voyageurs</button><button type="button" role="tab" id="sh-t-calendrier" aria-controls="sh-calendrier" aria-selected="false" data-shot="calendrier">Calendrier</button><button type="button" role="tab" id="sh-t-menage" aria-controls="sh-menage" aria-selected="false" data-shot="menage">Planning ménage</button><button type="button" role="tab" id="sh-t-contrats" aria-controls="sh-contrats" aria-selected="false" data-shot="contrats">Contrats et cautions</button><button type="button" role="tab" id="sh-t-declarations" aria-controls="sh-declarations" aria-selected="false" data-shot="declarations">Fiches de police</button><button type="button" role="tab" id="sh-t-simulateurs" aria-controls="sh-simulateurs" aria-selected="false" data-shot="simulateurs">Simulateurs</button></div>
-<div class="shot-box"><figure class="shot" role="tabpanel" id="sh-voyageurs" aria-labelledby="sh-t-voyageurs"><img src="/img/accueil/hote-voyageurs.webp" alt="Le carnet de voyageurs : coordonnées, séjours, nationalité, avec des données fictives" width="1400" height="995" loading="lazy" decoding="async"><figcaption><a href="/services/carnet-voyageurs">En savoir plus : carnet de voyageurs →</a></figcaption></figure><figure class="shot" role="tabpanel" id="sh-calendrier" aria-labelledby="sh-t-calendrier" hidden><img src="/img/accueil/hote-calendrier.webp" alt="Le calendrier : Airbnb, Booking et réservations directes sur une seule vue, avec des données fictives" width="1400" height="995" loading="lazy" decoding="async"><figcaption><a href="/services/calendrier">En savoir plus : calendrier →</a></figcaption></figure><figure class="shot" role="tabpanel" id="sh-menage" aria-labelledby="sh-t-menage" hidden><img src="/img/accueil/hote-menage.webp" alt="Le planning ménage, créé à chaque départ et partagé avec ton équipe, avec des données fictives" width="1400" height="995" loading="lazy" decoding="async"><figcaption><a href="/services/planning-menage">En savoir plus : planning ménage →</a></figcaption></figure><figure class="shot" role="tabpanel" id="sh-contrats" aria-labelledby="sh-t-contrats" hidden><img src="/img/accueil/hote-contrats.webp" alt="Les contrats signés en ligne, le loyer et la caution, avec des données fictives" width="1400" height="995" loading="lazy" decoding="async"><figcaption><a href="/services/contrats">En savoir plus : contrats et cautions →</a></figcaption></figure><figure class="shot" role="tabpanel" id="sh-declarations" aria-labelledby="sh-t-declarations" hidden><img src="/img/accueil/hote-declarations.webp" alt="Les fiches de police préparées pour les voyageurs étrangers, avec des données fictives" width="1400" height="995" loading="lazy" decoding="async"><figcaption><a href="/services/declarations-voyageurs">En savoir plus : fiches de police →</a></figcaption></figure><figure class="shot" role="tabpanel" id="sh-simulateurs" aria-labelledby="sh-t-simulateurs" hidden><img src="/img/accueil/hote-simulateurs.webp" alt="Les simulateurs : fiscalité, statut, rentabilité, taxe de séjour, avec des données fictives" width="1400" height="995" loading="lazy" decoding="async"><figcaption><a href="/services/simulateurs">En savoir plus : simulateurs →</a></figcaption></figure></div>
-<a href="https://app.jasonmarinho.com/auth/register" class="btn btn-y">Créer mon compte gratuit</a>
-</article>
-<div class="col">
-<article class="c2">
-<span class="c-eyb">02 · Trouver</span>
-<h3 class="c-h">Photo, ménage, dépannage : les bons pros de ta ville.</h3>
-<ol>
-<li><strong>1.</strong> Tu décris ton logement et ton besoin.</li>
-<li><strong>2.</strong> Les 3 pros les plus proches qui font ce qu’il te faut la reçoivent.</li>
-<li><strong>3.</strong> Ceux qui sont libres te répondent. Contact direct, zéro commission.</li>
-</ol>
-<div class="c2-tabs" role="tablist" aria-label="Annuaires">
-<button type="button" role="tab" aria-selected="true" data-pc="photo">Photo, vidéo</button><button type="button" role="tab" aria-selected="false" data-pc="menage">Ménage</button><button type="button" role="tab" aria-selected="false" data-pc="depannage">Dépannage</button>
-</div>
-<div class="c2-shot">
-<img src="/img/pour-qui/photo-cartes.webp" alt="Fiches de photographes dans l’annuaire, exemples fictifs" width="1300" height="481" loading="lazy" decoding="async" data-pcimg="photo">
-<img src="/img/pour-qui/menage-cartes.webp" alt="Fiches d’équipes de ménage dans l’annuaire, exemples fictifs" width="1300" height="481" loading="lazy" decoding="async" data-pcimg="menage" hidden>
-<img src="/img/pour-qui/depannage-cartes.webp" alt="Fiches de pros du dépannage dans l’annuaire, exemples fictifs" width="1300" height="481" loading="lazy" decoding="async" data-pcimg="depannage" hidden>
-</div>
-<a href="/trouver-un-pro" class="btn btn-g">Faire une demande</a>
-</article>
-<article class="c3">
-<span class="c-eyb">03 · Apprendre</span>
-<h3 class="c-h">22 formations courtes, nées sur le terrain.</h3>
-<div class="c3-l">
-<a href="/services/formations/optimiser-annonce-airbnb"><b>Optimiser son annonce Airbnb</b><span>2h30</span></a>
-<a href="/services/formations/mettre-le-bon-prix-lcd"><b>Mettre le bon prix</b><span>2h30</span></a>
-<a href="/services/formations/fiscalite-reglementation-lcd-france-2026"><b>Fiscalité et réglementation 2026</b><span>2h30</span></a>
-</div>
-<a href="#formations" class="more" style="font-size:14.5px;min-height:36px">2 au choix offertes avec ton compte · Toutes les formations ↓</a>
-</article>
-</div>
-</div>
-</div>
 </section>
 
 <!-- FORMATIONS -->
@@ -735,7 +691,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <script>
 (function(){
   // Haut de page : 4 onglets, le titre et la phrase changent avec l'onglet
-  var box=document.getElementById('intent'), TXT={"pro": {"h": "Les bons pros pour ta <em>location courte durée</em>, près de chez toi.", "p": "Dis ce qu’il te faut et où : les 3 pros les plus proches qui le font reçoivent ta demande et te répondent en direct. Gratuit pour toi, sans commission."}, "gerer": {"h": "Ta <em>location courte durée</em>, organisée sans y passer tes soirées.", "p": "Ménages planifiés, contrats signés en ligne, cautions, fiches de police : tout part de tes réservations. Gratuit pour commencer."}, "apprendre": {"h": "Apprends le métier d’hôte <em>avec quelqu’un qui le fait.</em>", "p": "22 formations courtes, le guide de ta ville et l’actualité qui te concerne, tirés de 4 ans de location courte durée."}, "metier": {"h": "Les hôtes de ta ville <em>te cherchent déjà.</em>", "p": "Photographe, équipe de ménage ou artisan : une fiche qui fait site vitrine, et les demandes des hôtes de ta ville arrivent chez toi. Zéro commission."}};
+  var box=document.getElementById('intent'), TXT={"pro": {"h": "Les bons pros pour ta <em>location courte durée</em>, près de chez toi.", "p": "Dis ce qu’il te faut et où : les 3 pros les plus proches qui le font reçoivent ta demande et te répondent en direct. Gratuit pour toi, sans commission."}, "gerer": {"h": "Ta <em>location courte durée</em>, organisée sans y passer tes soirées.", "p": "Ménages planifiés, contrats signés en ligne, cautions, fiches de police : tout part de tes réservations. Gratuit pour commencer."}, "metier": {"h": "Les hôtes de ta ville <em>te cherchent déjà.</em>", "p": "Photographe, équipe de ménage ou artisan : une fiche qui fait site vitrine, et les demandes des hôtes de ta ville arrivent chez toi. Zéro commission."}};
   var h1=document.getElementById('hg-h1'), hp=document.getElementById('hg-p');
   box.querySelectorAll('[data-tab]').forEach(function(t){
     t.addEventListener('click',function(){
@@ -796,6 +752,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   gs.forEach(function(t){t.addEventListener('click',function(){
     gs.forEach(function(x){x.setAttribute('aria-checked',x===t?'true':'false')});
     document.querySelectorAll('[data-ga]').forEach(function(p){p.hidden=p.getAttribute('data-ga')!==t.getAttribute('data-g')});
+    document.querySelectorAll('[data-gi]').forEach(function(p){p.hidden=p.getAttribute('data-gi')!==t.getAttribute('data-g')});
   })});
 
   // Encart transparence : les vrais chiffres, en direct (rien d'affiché si l'API ne répond pas)
