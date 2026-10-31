@@ -31,10 +31,15 @@ const SCENES = {
     { name: 'Propre & Net', ville: 'Arcachon', lieu: 'Bassin d’Arcachon', extra: 'Duo · linge compris', tarif: 'dès 48 €', photos: [] },
     { name: 'Les Clés du Lac', ville: 'Annecy', lieu: 'aussi à Talloires, Sévrier', extra: 'Solo · réassort des consommables', tarif: 'dès 45 €', photos: [img('photo-salon-5')] },
   ],
+  depannage: [
+    { name: 'Atelier Martin', ville: 'Nantes', lieu: 'aussi à Rezé, Saint-Herblain +2', extra: 'Plomberie, électricité · sous 24 h', tarif: 'dès 45 €/h', photos: [img('photo-sdb-1'), img('photo-cuisine-2')] },
+    { name: 'Clé Minute Lyon', ville: 'Lyon', lieu: 'Lyon et Villeurbanne', extra: 'Serrurerie · urgence', tarif: 'dès 60 €', photos: [] },
+    { name: 'Tout Fixe', ville: 'Bordeaux', lieu: 'aussi à Mérignac, Pessac', extra: 'Multiservice, montage de meubles', tarif: 'dès 40 €/h', photos: [img('photo-sdb-2')] },
+  ],
 }
 
 function scenePage(metier) {
-  const label = metier === 'menage' ? 'Équipe de ménage' : 'Photographe'
+  const label = metier === 'menage' ? 'Équipe de ménage' : metier === 'depannage' ? 'Dépannage' : 'Photographe'
   const cards = SCENES[metier].map(c => proCardHtml({ href: '#', metier: label, alt: c.name, ...c })).join('\n')
   return `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
 <link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60"><link rel="stylesheet" href="/fonts/phosphor-regular.css"><link rel="stylesheet" href="/fonts/phosphor-bold.css">
@@ -102,20 +107,27 @@ async function shot({ url, name, clip, selectors, pad = 16, maxHeight, viewport 
 }
 
 fs.mkdirSync(OUT, { recursive: true })
-for (const metier of ['photographe', 'menage']) {
-  const dir = metier === 'menage' ? 'menage' : 'photographes'
-  const k = metier === 'menage' ? 'menage' : 'photo'
+// node scripts/captures-pour-qui.mjs depannage : un seul métier
+const ONLY = process.argv[2]
+const CONF = {
+  photographe: { dir: 'photographes', k: 'photo', ville: '/photographe-lcd-lyon', villeNom: 'Lyon', formules: ['#formules', 'section:has(> h2:text("Comment ça se passe"))'] },
+  menage: { dir: 'menage', k: 'menage', ville: '/menage-lcd-bordeaux', villeNom: 'Bordeaux', formules: ['#formules', 'section:has(> h2:text("Comment ça se passe"))'] },
+  depannage: { dir: 'depannage', k: 'depannage', ville: '/depannage-lcd-nantes', villeNom: 'Nantes', formules: ['#formules', ':has(> h2:text("Ce que je répare"))'] },
+}
+for (const metier of Object.keys(CONF).filter(m => !ONLY || m === ONLY)) {
+  const { dir, k } = CONF[metier]
   const scene = path.join(ROOT, `_scene-cartes-${metier}.html`)
   fs.writeFileSync(scene, scenePage(metier))
   try {
     console.log(metier)
-    await shot({ url: `/annuaires/${dir}/exemple-fiche`, name: `${k}-fiche`, selectors: ['.demo-banner', 'header.hero'], pad: 0 })
+    await shot({ url: `/annuaires/${dir}/exemple-fiche`, name: `${k}-fiche`, selectors: ['.demo-banner', '.fx-top'], pad: 0 })
     await shot({ url: `/annuaires/${dir}/exemple-fiche`, name: `${k}-galerie`, selectors: ['.vt-gal, #photos, section:has(> h2:text("Photos"))'], pad: 8, width: 1200 })
-    await shot({ url: `/annuaires/${dir}/exemple-fiche`, name: `${k}-formules`, selectors: ['#formules', 'section:has(> h2:text("Comment ça se passe"))'], pad: 8, width: 1200 })
+    await shot({ url: `/annuaires/${dir}/exemple-fiche`, name: `${k}-formules`, selectors: CONF[metier].formules, pad: 8, width: 1200 })
     await shot({ url: `/annuaires/${dir}/exemple-fiche`, name: `${k}-stats`, selectors: ['.sd-app'], pad: 0, width: 1400 })
     await shot({ url: `/_scene-cartes-${metier}.html`, name: `${k}-cartes`, selectors: ['#scene'], pad: 14, viewport: { width: 1100, height: 700 }, width: 1300 })
-    await shot({ url: metier === 'menage' ? '/menage-lcd-bordeaux' : '/photographe-lcd-lyon', name: `${k}-ville`, selectors: ['header.hero'], pad: 0 })
-    await shot({ url: `/trouver-un-pro?metier=${metier}&ville=${metier === 'menage' ? 'Bordeaux' : 'Lyon'}`, name: `${k}-demande`, selectors: ['form'], pad: 28, maxHeight: 470, width: 1100 })
+    await shot({ url: CONF[metier].ville, name: `${k}-ville`, selectors: ['header.hero'], pad: 0 })
+    // Depuis le formulaire pas à pas (10 étapes), le <form> visible n'existe plus : on cadre le bloc principal
+    await shot({ url: `/trouver-un-pro?metier=${metier}&ville=${CONF[metier].villeNom}`, name: `${k}-demande`, selectors: [metier === 'depannage' ? 'main' : 'form'], pad: 28, maxHeight: 470, width: 1100 })
   } finally {
     fs.rmSync(scene, { force: true })
   }
