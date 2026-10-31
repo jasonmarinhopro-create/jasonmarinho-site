@@ -8,7 +8,6 @@
 
 import { CalendarInput } from '@/components/ui/CalendarInput'
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
   ArrowLeft, Plus, Trash, ArrowUp, ArrowDown, PaperPlaneTilt, Check, Copy, DownloadSimple,
@@ -47,6 +46,11 @@ interface Form {
 }
 
 const emptyLine = (): DocLine => ({ label: '', detail: null, qty: 1, unit: 'forfait', unit_price: 0 })
+
+// Clé stable par ligne (31/10/2026) : avec l'index comme clé, supprimer ou
+// déplacer une ligne laissait les champs afficher la valeur de la voisine.
+let lineSeq = 0
+const newKey = () => `l${++lineSeq}`
 
 export default function DocumentEditor({
   kind, base, guideHref, doc, profile: initialProfile, profileSaved, logoUrl, clients, prefill, recent, today, appUrl,
@@ -93,6 +97,8 @@ export default function DocumentEditor({
     ...(prefill ?? {}),
   }))
 
+  const [keys, setKeys] = useState<string[]>(() => f.lines.map(newKey))
+  const [focusKey, setFocusKey] = useState<string | null>(null)
   const vatMode = doc && !isDraft ? doc.vat_mode : profile.vat_mode
   const totals = useMemo(() => computeTotals(f.lines, vatMode, vatMode === 'tva' ? f.vat_rate : 0), [f.lines, f.vat_rate, vatMode])
 
@@ -104,21 +110,36 @@ export default function DocumentEditor({
   const idRef = useRef(id)
   idRef.current = id
 
+  // Un seul enregistrement à la fois (31/10/2026) : quand la base répondait
+  // lentement, un 2e enregistrement partait avant le retour du 1er et créait
+  // un 2e brouillon. Les changements faits pendant l'envoi repartent après.
+  const inFlight = useRef<Promise<string | null> | null>(null)
+  const again = useRef(false)
   const persist = useCallback(async (): Promise<string | null> => {
-    const cur = latest.current
-    const meaningful = cur.client_name.trim() || cur.lines.some(l => l.label.trim() || l.unit_price)
-    if (!idRef.current && !meaningful) return null
-    setSaveState('saving')
-    const r = await saveDocument(kind, { ...cur, id: idRef.current })
-    if (!r.ok) { setSaveState('error'); setMsg({ tone: 'err', text: r.error }); return null }
-    dirty.current = false
-    setSaveState('saved')
-    if (!idRef.current) {
-      setId(r.id)
-      idRef.current = r.id
-      window.history.replaceState(null, '', `${base}/${r.id}`)
+    if (inFlight.current) { again.current = true; return inFlight.current }
+    const run = async (): Promise<string | null> => {
+      const cur = latest.current
+      const meaningful = cur.client_name.trim() || cur.lines.some(l => l.label.trim() || l.unit_price)
+      if (!idRef.current && !meaningful) return null
+      setSaveState('saving')
+      const r = await saveDocument(kind, { ...cur, id: idRef.current })
+      if (!r.ok) { setSaveState('error'); setMsg({ tone: 'err', text: r.error }); return null }
+      if (!again.current) dirty.current = false
+      setSaveState('saved')
+      if (!idRef.current) {
+        setId(r.id)
+        idRef.current = r.id
+        window.history.replaceState(window.history.state, '', `${base}/${r.id}`)
+      }
+      return r.id
     }
-    return r.id
+    inFlight.current = run()
+    try {
+      return await inFlight.current
+    } finally {
+      inFlight.current = null
+      if (again.current) { again.current = false; void persist() }
+    }
   }, [kind, base])
 
   const update = useCallback((patch: Partial<Form>) => {
@@ -141,6 +162,10 @@ export default function DocumentEditor({
   const addLine = (l?: Partial<DocLine>) => {
     const blank = f.lines.length === 1 && !f.lines[0].label && !f.lines[0].unit_price
     const next = { ...emptyLine(), ...l }
+    const k = newKey()
+    setKeys(ks => (blank ? [k] : [...ks, k]))
+    // Ligne vide : le curseur va dans sa désignation
+    if (!l) setFocusKey(k)
     update({ lines: blank ? [next] : [...f.lines, next] })
   }
   const moveLine = (i: number, dir: -1 | 1) => {
@@ -148,9 +173,13 @@ export default function DocumentEditor({
     if (j < 0 || j >= f.lines.length) return
     const arr = [...f.lines]
     ;[arr[i], arr[j]] = [arr[j], arr[i]]
+    setKeys(ks => { const a = [...ks]; [a[i], a[j]] = [a[j], a[i]]; return a })
     update({ lines: arr })
   }
-  const removeLine = (i: number) => update({ lines: f.lines.length > 1 ? f.lines.filter((_, j) => j !== i) : [emptyLine()] })
+  const removeLine = (i: number) => {
+    setKeys(ks => (f.lines.length > 1 ? ks.filter((_, j) => j !== i) : [newKey()]))
+    update({ lines: f.lines.length > 1 ? f.lines.filter((_, j) => j !== i) : [emptyLine()] })
+  }
 
   function pickClient(cid: string) {
     if (!cid) { update({ client_id: null }); return }
@@ -253,7 +282,8 @@ export default function DocumentEditor({
       {dialog}
 
       <div style={s.top}>
-        <Link href={base} style={s.back}><ArrowLeft size={15} weight="bold" /> Mes devis</Link>
+        {/* Navigation complète : la liste se recharge avec le brouillon à jour */}
+        <a href={base} style={s.back}><ArrowLeft size={15} weight="bold" /> Mes devis</a>
         <div style={s.topMain}>
           <span style={s.kindBadge}><FileText size={18} weight="bold" /></span>
           <div style={{ minWidth: 0 }}>
@@ -338,9 +368,13 @@ export default function DocumentEditor({
                 </div>
                 <div style={s.lines}>
                   {f.lines.map((l, i) => (
-                    <div key={i} style={s.lineCard}>
+                    <div key={keys[i] ?? i} className="fade-up" style={s.lineCard}>
                       <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                        <input className="input-field" style={{ ...s.input, flex: 1, fontWeight: 600 }} value={l.label} onChange={e => setLine(i, { label: e.target.value })} placeholder="Désignation de la prestation" aria-label="Désignation" />
+                        <input
+                          className="input-field" style={{ ...s.input, flex: 1, fontWeight: 600 }} value={l.label}
+                          onChange={e => setLine(i, { label: e.target.value })} placeholder="Désignation de la prestation" aria-label="Désignation"
+                          ref={el => { if (el && keys[i] === focusKey) { el.focus(); el.scrollIntoView({ block: 'center', behavior: 'smooth' }); setFocusKey(null) } }}
+                        />
                         <div style={s.lineTools}>
                           <button onClick={() => moveLine(i, -1)} disabled={i === 0} style={s.iconBtn} aria-label="Monter"><ArrowUp size={13} /></button>
                           <button onClick={() => moveLine(i, 1)} disabled={i === f.lines.length - 1} style={s.iconBtn} aria-label="Descendre"><ArrowDown size={13} /></button>
@@ -350,7 +384,7 @@ export default function DocumentEditor({
                       <input className="input-field" style={{ ...s.input, fontSize: 13 }} value={l.detail ?? ''} onChange={e => setLine(i, { detail: e.target.value })} placeholder="Détail (facultatif)" aria-label="Détail" />
                       <div style={s.lineNums}>
                         <label style={s.mini}><span>Quantité</span>
-                          <input className="input-field" style={s.input} type="number" step="0.5" min="0" value={l.qty} onChange={e => setLine(i, { qty: Number(e.target.value) })} />
+                          <NumField value={l.qty} onChange={v => setLine(i, { qty: v })} ariaLabel="Quantité" />
                         </label>
                         <label style={s.mini}><span>Unité</span>
                           <select className="input-field" style={s.input} value={l.unit} onChange={e => setLine(i, { unit: e.target.value })}>
@@ -358,7 +392,7 @@ export default function DocumentEditor({
                           </select>
                         </label>
                         <label style={s.mini}><span>Prix unitaire{vatMode === 'tva' ? ' HT' : ''}</span>
-                          <input className="input-field" style={s.input} type="number" step="0.01" value={l.unit_price || ''} onChange={e => setLine(i, { unit_price: Number(e.target.value) })} placeholder="0,00" />
+                          <NumField value={l.unit_price} onChange={v => setLine(i, { unit_price: v })} ariaLabel="Prix unitaire" placeholder="0,00" emptyWhenZero />
                         </label>
                         <div style={{ ...s.mini, alignItems: 'flex-end' }}><span>Montant</span><strong style={s.lineTotal}>{eur(lineAmount(l))}</strong></div>
                       </div>
@@ -506,6 +540,30 @@ function FollowUp({ doc, st, pending, copied, publicUrl, copyLink, onSend, onSta
         </div>
       </div>
     </>
+  )
+}
+
+// Champ nombre (31/10/2026) : accepte la virgule (clavier français), se vide
+// sans afficher 0 pendant la saisie, et garde ce qui est tapé (« 12, » …).
+function NumField({ value, onChange, ariaLabel, placeholder, emptyWhenZero = false }: {
+  value: number; onChange: (v: number) => void; ariaLabel: string; placeholder?: string; emptyWhenZero?: boolean
+}) {
+  const shown = (n: number) => (emptyWhenZero && !n ? '' : String(n).replace('.', ','))
+  const [txt, setTxt] = useState(() => shown(value))
+  const editing = useRef(false)
+  useEffect(() => { if (!editing.current) setTxt(shown(value)) }, [value]) // eslint-disable-line react-hooks/exhaustive-deps
+  return (
+    <input
+      className="input-field" style={s.input} inputMode="decimal" value={txt} placeholder={placeholder} aria-label={ariaLabel}
+      onFocus={() => { editing.current = true }}
+      onBlur={() => { editing.current = false; setTxt(shown(value)) }}
+      onChange={e => {
+        const t = e.target.value.replace(/[^\d.,]/g, '')
+        setTxt(t)
+        const n = Number(t.replace(',', '.'))
+        onChange(Number.isFinite(n) ? n : 0)
+      }}
+    />
   )
 }
 

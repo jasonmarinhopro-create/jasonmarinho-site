@@ -131,13 +131,15 @@ export async function saveDocument(kind: ProKind, input: DocInput): Promise<Res<
     if (doc.status !== 'brouillon') return { ok: false, error: 'Ce devis est envoyé : il ne se modifie plus. Duplique-le pour en faire une nouvelle version.' }
     const { error } = await c.db.from('pro_documents').update(row).eq('id', doc.id)
     if (error) { log.error('saveDocument update', { err: error.message }); return { ok: false, error: 'Enregistrement impossible. Réessaie.' } }
-    refresh(kind, doc.id)
+    // Pas de revalidatePath ici (31/10/2026) : dans une action, il fait
+    // recharger la page de l'éditeur pendant la saisie (lignes vides retirées,
+    // champ qui perd la main). Les pages Devis sont dynamiques et l'éditeur
+    // revient à la liste par une navigation complète.
     return { ok: true, id: doc.id }
   }
   const { data, error } = await c.db.from('pro_documents')
     .insert({ ...row, owner_kind: kind, owner_id: c.owner.proId, status: 'brouillon' }).select('id').single()
   if (error || !data) { log.error('saveDocument insert', { err: error?.message }); return { ok: false, error: 'Enregistrement impossible. Réessaie.' } }
-  refresh(kind)
   return { ok: true, id: data.id as string }
 }
 
