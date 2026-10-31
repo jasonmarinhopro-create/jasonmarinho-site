@@ -11,8 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-01 · plateformes · Airbnb passe à 15,5 % de commission pour les hôtes dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
-- 2026-09-01 · marche · Été 2026 : la Bretagne cartonne, les grandes villes décrochent · masquée (https://presseagence.fr/paris-locations-saisonnieres-lete-2026-sourit-a-la-bretagne-les-grandes-villes-boudees/)
 - 2026-09-02 · plateformes · Airbnb passe à 15,5 % de commission hôte le 13 octobre : agis avant · masquée (https://www.locationcourteduree.fr/2026/07/22/commission-airbnb-2026/)
 - 2026-09-02 · marche · Été 2026 : 70 % des réservations Airbnb des Français restent en France (https://news.airbnb.com/fr/ete-2026-les-francais-voyagent-de-plus-en-en-plus-pres-de-chez-eux/)
 - 2026-09-03 · plateformes · Airbnb bascule aux frais hôte uniques à 15,5 % dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
