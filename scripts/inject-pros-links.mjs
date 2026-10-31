@@ -61,10 +61,11 @@ function blockHtml(c) {
 <section style="max-width:1100px;margin:0 auto;padding:clamp(28px,4vw,44px) clamp(16px,5vw,60px) 0">
   <div style="background:#F7F5F0;border:1px solid rgba(0,76,63,.09);border-radius:18px;padding:clamp(22px,3vw,32px)">
     <h2 style="font-family:'Fraunces',serif;font-size:clamp(19px,2.2vw,24px);font-weight:400;color:#0F1A0D;margin:0 0 6px;letter-spacing:-.3px">Ton équipe LCD <em style="color:#004C3F;font-style:italic;font-weight:300">${pre}</em></h2>
-    <p style="font-size:13.5px;color:#3D5038;margin:0 0 18px;line-height:1.65">Photos pro et ménage turnover : les deux prestataires qui font la différence sur tes avis et ton taux de clic. Tarifs locaux constatés ${pre} et annuaire des pros, sans commission.</p>
+    <p style="font-size:13.5px;color:#3D5038;margin:0 0 18px;line-height:1.65">Photos pro, ménage turnover et dépannage : les prestataires qui font la différence sur tes avis et ton taux de clic. Conseils ${pre} et annuaire des pros, sans commission.</p>
     <div style="display:flex;gap:14px;flex-wrap:wrap">
 ${card(`/photographe-lcd-${c.slug}`, 'ph-camera', 'Photographe', `Photographe &amp; vidéaste Airbnb ${pre}`, `Tarifs constatés ${pre}, les photos indispensables, comment briefer : et l'annuaire des pros.`)}
 ${card(`/menage-lcd-${c.slug}`, 'ph-sparkle', 'Ménage turnover', `Ménage Airbnb ${pre} : équipes LCD`, `Tarifs turnover ${pre}, checklist complète, questions à poser : et l'annuaire des pros.`)}
+${fs.existsSync(path.join(ROOT, `depannage-lcd-${c.slug}`, 'index.html')) ? card(`/depannage-lcd-${c.slug}`, 'ph-wrench', 'Dépannage', `Plombier, électricien et dépannage ${pre}`, `Les pannes fréquentes entre deux voyageurs, les questions à poser : et l'annuaire des pros.`) : ''}
     </div>
   </div>
 </section>

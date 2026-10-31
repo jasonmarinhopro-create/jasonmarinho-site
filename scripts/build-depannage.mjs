@@ -850,7 +850,8 @@ async function main() {
   const villesEnrichies = injectProsIntoVillePages({
     root: ROOT,
     prefix: 'depannage-lcd',
-    metier: 'pro du dépannage LCD',
+    metier: 'pro du dépannage',
+    pluriel: 'pros du dépannage',
     pros: items.map(c => ({
       ville: c.ville,
       zone: c.zone_couverte,

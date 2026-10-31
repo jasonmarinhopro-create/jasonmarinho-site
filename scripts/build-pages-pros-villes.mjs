@@ -27,6 +27,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { ANNUAIRES } from './lib/annuaire-hote.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
@@ -79,7 +80,10 @@ function toVille(c) {
 }
 
 // `node scripts/build-pages-pros-villes.mjs <slug> [<slug>…]` : seulement ces villes
-const ONLY = process.argv.slice(2)
+// --metier=depannage (ou photographe, menage) : seulement les pages de ce métier
+const ARGS = process.argv.slice(2)
+const METIER_SEUL = (ARGS.find(a => a.startsWith('--metier=')) ?? '').slice('--metier='.length) || null
+const ONLY = ARGS.filter(a => !a.startsWith('--'))
 const VILLES = loadCities().map(toVille).filter(v => !ONLY.length || ONLY.includes(v.slug))
 if (ONLY.length && VILLES.length !== ONLY.length) throw new Error(`Ville inconnue dans CITIES : ${ONLY.join(', ')}`)
 
@@ -255,7 +259,11 @@ function linksRow(v, metier) {
   const cards = []
   if (v.hote) cards.push(`<a class="link-card" href="/devenir-hote-airbnb-${v.slug}"><span class="lc-t">Guide local</span><span class="lc-h">Devenir hôte ${escHtml(v.pre)}</span><span class="lc-a">Lire le guide <i class="ph-bold ph-arrow-right"></i></span></a>`)
   if (v.revenu) cards.push(`<a class="link-card" href="${v.revenu}"><span class="lc-t">Étude de revenus</span><span class="lc-h">Combien rapporte la LCD ${escHtml(v.pre)} ?</span><span class="lc-a">Voir les chiffres <i class="ph-bold ph-arrow-right"></i></span></a>`)
-  if (metier === 'photographe') {
+  if (metier === 'depannage') {
+    cards.push(`<a class="link-card" href="/menage-lcd-${v.slug}"><span class="lc-t">Autre prestataire</span><span class="lc-h">Équipe de ménage LCD ${escHtml(v.pre)}</span><span class="lc-a">Voir le guide <i class="ph-bold ph-arrow-right"></i></span></a>`)
+    cards.push(`<a class="link-card" href="/photographe-lcd-${v.slug}"><span class="lc-t">Autre prestataire</span><span class="lc-h">Photographe &amp; vidéaste ${escHtml(v.pre)}</span><span class="lc-a">Voir le guide <i class="ph-bold ph-arrow-right"></i></span></a>`)
+    cards.push(`<a class="link-card" href="/annuaires/depannage"><span class="lc-t">Annuaire LCD</span><span class="lc-h">Tous les pros du dépannage</span><span class="lc-a">Voir l'annuaire <i class="ph-bold ph-arrow-right"></i></span></a>`)
+  } else if (metier === 'photographe') {
     cards.push(`<a class="link-card" href="/menage-lcd-${v.slug}"><span class="lc-t">Autre prestataire</span><span class="lc-h">Équipe de ménage LCD ${escHtml(v.pre)}</span><span class="lc-a">Voir le guide <i class="ph-bold ph-arrow-right"></i></span></a>`)
     cards.push(`<a class="link-card" href="/annuaires/photographes"><span class="lc-t">Annuaire LCD</span><span class="lc-h">Tous les photographes LCD</span><span class="lc-a">Voir l'annuaire <i class="ph-bold ph-arrow-right"></i></span></a>`)
   } else {
@@ -529,19 +537,143 @@ function buildMenagePage(v) {
   return pageShell({ title, desc, canonical: url, jsonLd, body })
 }
 
-// ── MAIN ────────────────────────────────────────────────────────────────────
-let count = 0
-for (const v of VILLES) {
-  const dirP = path.join(ROOT, `photographe-lcd-${v.slug}`)
-  fs.mkdirSync(dirP, { recursive: true })
-  fs.writeFileSync(path.join(dirP, 'index.html'), buildPhotographePage(v), 'utf8')
-  count++
+// ── PAGE DÉPANNAGE (31/10/2026, docs/claude/projet-maintenance.md) ───────────
+// Titre décidé par Jason : « Plombier, électricien et dépannage à <ville> ».
+// Aucun prix ni chiffre inventé : seulement les données de la ville déjà
+// publiées (occupation, annonces, description) et des conseils. Tutoiement.
+export function buildDepannagePage(v) {
+  const url = `https://jasonmarinho.com/depannage-lcd-${v.slug}`
+  const title = [`Plombier, électricien et dépannage ${v.pre}`, `Plombier et dépannage Airbnb ${v.pre}`, `Dépannage Airbnb ${v.pre}`]
+    .find(t => t.length <= 60) ?? `Dépannage ${v.pre}`
+  const desc = `Plombier, électricien, serrurier ou multiservice pour ta location courte durée ${v.pre} : les pannes fréquentes, les questions à poser et les pros qui interviennent vite. Sans commission.`
+  const rotations = Math.round((v.occ / 100) * 30 / 3)
+  const cfg = ANNUAIRES.depannage
+  const faqs = [
+    { q: `Comment trouver un plombier ou un électricien ${v.pre} pour un Airbnb ?`,
+      a: `Regarde les pros de l’annuaire qui couvrent ${escHtml(v.name)} : chaque fiche affiche ses spécialités, son délai d’intervention, ses disponibilités (soirs, week-ends, urgences) et ses tarifs. Tu peux aussi <strong>décrire ta panne</strong> : la demande part aux pros les plus proches de ton logement. Contact direct, sans commission.` },
+    { q: `Combien coûte un dépannage ${v.pre} ?`,
+      a: `Chaque pro fixe ses tarifs : prix du déplacement, heure de main-d’œuvre, pièces. Les fiches de l’annuaire affichent le tarif horaire, le prix du déplacement ou des formules. Fais toujours préciser le déplacement et la première heure avant l’intervention, et demande un devis écrit dès que la réparation dépasse le petit dépannage.` },
+    { q: `Un pro peut-il intervenir sans moi sur place ?`,
+      a: `Oui, c’est même le cas le plus courant en location courte durée : boîte à clés, serrure à code ou passage de ton équipe de ménage. Donne au pro les consignes d’accès et l’emplacement du compteur, du disjoncteur et de l’arrivée d’eau, et demande-lui une photo après l’intervention.` },
+    { q: `Que faire si la panne arrive pendant un séjour ?`,
+      a: `Rassure d’abord ton voyageur et, si besoin, fais-lui couper l’eau ou le courant. Puis appelle un pro qui accepte les urgences : dans l’annuaire, filtre « Urgences » ou « Le jour même ». Le plus sûr reste d’avoir deux ou trois contacts de côté ${escHtml(v.pre)} avant d’en avoir besoin.` },
+    { q: `Le voyageur a cassé quelque chose : comment me faire rembourser ?`,
+      a: `Garde la facture du pro et les photos avant et après : ce sont elles qui te permettent de demander le remboursement au voyageur ou à la plateforme. La marche à suivre est détaillée dans <a href="/blog/refacturer-degat-voyageur-airbnb-procedure">notre guide pour refacturer un dégât</a>.` },
+  ]
+  const jsonLd = [
+    serviceJsonLd({ name: `Dépannage et maintenance location courte durée ${v.pre}`, url, desc: desc.slice(0, 200), ville: v.name }),
+    faqJsonLd(faqs),
+    breadcrumbJsonLd([
+      { name: 'Accueil', item: 'https://jasonmarinho.com/' },
+      { name: 'Dépannage et maintenance LCD', item: 'https://jasonmarinho.com/annuaires/depannage' },
+      { name: `Dépannage ${v.pre}`, item: url },
+    ]),
+  ].join('\n')
+  const pannes = [
+    ['ph-drop', 'Fuite et plomberie', 'Fuite sous un évier, chasse d’eau qui coule, WC bouché, chauffe-eau qui ne chauffe plus.'],
+    ['ph-lightning', 'Électricité', 'Disjoncteur qui saute, prise ou éclairage en panne, radiateur électrique hors service.'],
+    ['ph-key', 'Serrurerie', 'Porte claquée, serrure qui force, boîte à clés ou serrure à code à remplacer.'],
+    ['ph-thermometer', 'Chauffage et climatisation', 'Chaudière en défaut, clim qui ne refroidit plus au plus fort de l’été.'],
+    ['ph-washing-machine', 'Électroménager', 'Lave-linge, four, plaques ou réfrigérateur : les appareils les plus sollicités.'],
+    ['ph-toolbox', 'Petits travaux', 'Meuble à monter, joint à refaire, store ou volet coincé, retouches entre deux séjours.'],
+  ]
+  const body = `
+<header class="hero">
+  <div class="s-in">
+    <div class="brd"><a href="/">Accueil</a> · <a href="/annuaires/depannage">Dépannage LCD</a> · <span>${escHtml(v.name)}</span></div>
+    <span class="lbl">Dépannage et maintenance · Airbnb, Booking &amp; réservation directe</span>
+    <h1>Plombier, électricien, dépannage <em>${escHtml(v.pre)}</em></h1>
+    <p class="lead">Avec <strong>${v.occ} % d’occupation moyenne</strong>, un logement ${escHtml(v.pre)} change de voyageur environ ${rotations} fois par mois. Une panne entre deux séjours ne peut pas attendre : voici les bons réflexes, les questions à poser, et les pros qui interviennent vite.</p>
+    <div class="hero-ctas">
+      <a href="/annuaires/depannage" class="btn-p"><i class="ph-bold ph-magnifying-glass"></i> Trouver un pro</a>
+      <a href="/annuaires/depannage/inscription" class="btn-ol"><i class="ph-bold ph-wrench"></i> Je suis artisan ${escHtml(v.pre)}</a>
+    </div>
+    <div class="stats">
+      <div><div class="stat-n">~${rotations}/mois</div><div class="stat-l">changements de voyageurs par logement</div></div>
+      <div><div class="stat-n">${v.occ} %</div><div class="stat-l">taux d’occupation moyen ${escHtml(v.pre)}</div></div>
+      <div><div class="stat-n">~${v.annonces}</div><div class="stat-l">annonces actives sur le marché</div></div>
+    </div>
+  </div>
+</header>
 
-  const dirM = path.join(ROOT, `menage-lcd-${v.slug}`)
-  fs.mkdirSync(dirM, { recursive: true })
-  fs.writeFileSync(path.join(dirM, 'index.html'), buildMenagePage(v), 'utf8')
-  count++
+<section class="sec">
+  <div class="s-in">
+    <span class="lbl dk">Le marché local</span>
+    <h2>La maintenance ${escHtml(v.pre)}, <em>entre deux voyageurs</em></h2>
+    <p>${escHtml(v.desc)}</p>
+    <p>En location courte durée, une panne n’a pas le même poids qu’à la maison : le prochain voyageur arrive dans quelques heures, et un chauffe-eau froid ou une serrure bloquée se paie en avis. Un pro qui connaît ces contraintes intervient sur un créneau serré, sans toi sur place, et t’envoie une photo quand c’est réparé.</p>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <span class="lbl dk">Les pannes fréquentes</span>
+    <h2>Ce qui casse le plus <em>en location courte durée</em></h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:22px">
+      ${pannes.map(([ic, t, d]) => `<div style="background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px"><i class="ph-bold ${ic}" style="font-size:22px;color:var(--g)"></i><h3 style="font-family:'Fraunces',serif;font-weight:400;font-size:18px;margin:8px 0 6px;color:var(--td)">${t}</h3><p style="font-size:14px;line-height:1.6;color:var(--tm);margin:0">${d}</p></div>`).join('\n      ')}
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="s-in">
+    <span class="lbl dk">Avant la panne</span>
+    <h2>${cfg.prepareTitle}</h2>
+    <ul class="check-list">
+      ${cfg.prepare.map(t => `<li><i class="ph-bold ph-check-circle"></i><span>${escHtml(t)}</span></li>`).join('\n      ')}
+    </ul>
+    <div class="note"><strong>Les ${cfg.questions.length} questions à poser avant d’appeler :</strong> ${cfg.questions.map(([q]) => escHtml(q)).join(' ')} Un pro sérieux répond à toutes sans hésiter.</div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <span class="lbl dk">FAQ</span>
+    <h2>Questions fréquentes <em>des hôtes ${escHtml(v.pre)}</em></h2>
+    ${faqHtml(faqs)}
+  </div>
+</section>
+
+<section class="sec">
+  <div class="s-in">
+    <div class="pro-band">
+      <div class="pro-band-txt">
+        <span class="lbl">Tu es artisan ou multiservice ${escHtml(v.pre)} ?</span>
+        <h2>Rejoins l’annuaire <em>dépannage et maintenance</em></h2>
+        <p>Une fiche pro sur jasonmarinho.com qui sert de site vitrine sur Google, les demandes des hôtes et des conciergeries ${escHtml(v.pre)} et dans ta zone, tes devis en ligne. Contact direct, sans commission sur tes interventions.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <a href="/annuaires/depannage/inscription" class="btn-p"><i class="ph-bold ph-wrench"></i> Créer ma fiche</a>
+        <a href="/annuaires/depannage/exemple-fiche" class="btn-ol">Voir un exemple de fiche</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec cr">
+  <div class="s-in">
+    <span class="lbl dk">Pour aller plus loin</span>
+    <h2>Ressources LCD <em>${escHtml(v.pre)}</em></h2>
+    ${linksRow(v, 'depannage')}
+  </div>
+</section>
+`
+  return pageShell({ title, desc, canonical: url, jsonLd, body })
 }
-console.log(`[build-pages-pros-villes] ✓ ${count} pages générées (${VILLES.length} villes × 2 métiers)`)
-console.log('[build-pages-pros-villes] footer.js dérive ses chips de CITIES automatiquement.')
-console.log('[build-pages-pros-villes] Vérifier que sitemap.xml contient bien 1 <url> par page.')
+
+// ── MAIN ────────────────────────────────────────────────────────────────────
+// Importé (tests, autres scripts) : rien n'est écrit.
+const BUILDERS = { photographe: buildPhotographePage, menage: buildMenagePage, depannage: buildDepannagePage }
+if (METIER_SEUL && !BUILDERS[METIER_SEUL]) throw new Error(`Métier inconnu : ${METIER_SEUL}`)
+const isMain = (() => { try { return fs.realpathSync(process.argv[1] ?? '') === fs.realpathSync(fileURLToPath(import.meta.url)) } catch { return false } })()
+let count = 0
+if (isMain) for (const v of VILLES) {
+  for (const [metier, build] of Object.entries(BUILDERS)) {
+    if (METIER_SEUL && metier !== METIER_SEUL) continue
+    const dir = path.join(ROOT, `${metier}-lcd-${v.slug}`)
+    fs.mkdirSync(dir, { recursive: true })
+    fs.writeFileSync(path.join(dir, 'index.html'), build(v), 'utf8')
+    count++
+  }
+}
+if (isMain) console.log(`[build-pages-pros-villes] ✓ ${count} pages générées (${VILLES.length} villes)`)

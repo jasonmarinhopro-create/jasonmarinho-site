@@ -20,7 +20,8 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8')
 const slugify = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 
-export const PAGE_PREFIXES = ['photographe-lcd', 'menage-lcd', 'devenir-hote-airbnb']
+// Une ville = 4 pages depuis le 31/10/2026 (dépannage et maintenance)
+export const PAGE_PREFIXES = ['photographe-lcd', 'menage-lcd', 'depannage-lcd', 'devenir-hote-airbnb']
 
 export function loadCities() {
   const src = read('footer.js')
@@ -37,7 +38,7 @@ export function checkVilles() {
   const problems = []
   for (const c of cities) {
     const miss = []
-    if (c.prosOnly) miss.push('marquée prosOnly (une ville = 3 pages)')
+    if (c.prosOnly) miss.push('marquée prosOnly (une ville = toutes ses pages)')
     for (const p of PAGE_PREFIXES) {
       if (!fs.existsSync(path.join(ROOT, `${p}-${c.slug}`, 'index.html'))) miss.push(`page ${p}-${c.slug}`)
       if (!sitemap.includes(`<loc>https://jasonmarinho.com/${p}-${c.slug}</loc>`)) miss.push(`sitemap ${p}-${c.slug}`)
@@ -73,5 +74,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     for (const p of problems) console.error(`  - ${p}`)
     process.exit(1)
   }
-  console.log(`Villes : ${count} villes, 3 pages chacune, tout est en ordre`)
+  console.log(`Villes : ${count} villes, ${PAGE_PREFIXES.length} pages chacune, tout est en ordre`)
 }

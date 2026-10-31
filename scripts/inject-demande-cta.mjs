@@ -20,6 +20,7 @@ const aVille = v => /^les\s/i.test(v) ? `aux ${v.slice(4)}` : /^le\s/i.test(v) ?
 const METIERS = {
   'photographe-lcd': { metier: 'photographe', annuaire: '/annuaires/photographes', voir: 'Voir les photographes', qui: 'photographes', un: 'un photographe' },
   'menage-lcd': { metier: 'menage', annuaire: '/annuaires/menage', voir: 'Voir les équipes de ménage', qui: 'équipes de ménage', un: 'une équipe de ménage' },
+  'depannage-lcd': { metier: 'depannage', annuaire: '/annuaires/depannage', voir: 'Voir les pros du dépannage', qui: 'pros du dépannage', un: 'un pro du dépannage', decris: 'Décris ta panne ou tes travaux en une minute' },
 }
 
 function block(prefix, slug) {
@@ -39,7 +40,7 @@ function block(prefix, slug) {
       <div style="flex:1 1 360px;min-width:0">
         <div style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.85);margin-bottom:8px">Gratuit · sans commission</div>
         <h2 style="font-family:'Fraunces',serif;font-weight:400;font-size:clamp(21px,2.6vw,28px);line-height:1.2;margin:0 0 8px;color:#fff">Pas le temps de chercher ? <em style="color:#FFD56B;font-weight:300">Les pros viennent à toi</em></h2>
-        <p style="margin:0;font-size:15px;line-height:1.65;color:rgba(255,255,255,.75)">Décris ton logement en une minute : ta demande part aux 3 ${m.qui} les plus proches ${esc(aVille(ville))}, qui te répondent directement. Sans réponse sous 48 h, d’autres prennent le relais.</p>
+        <p style="margin:0;font-size:15px;line-height:1.65;color:rgba(255,255,255,.75)">${m.decris ?? 'Décris ton logement en une minute'} : ta demande part aux 3 ${m.qui} les plus proches ${esc(aVille(ville))}, qui te répondent directement. Sans réponse sous 48 h, d’autres prennent le relais.</p>
       </div>
       <a href="${href}" style="display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:10px;background:#FFD56B;color:#003329;font-weight:700;font-size:15px;text-decoration:none;white-space:nowrap"><i class="ph-bold ph-paper-plane-tilt"></i> Décrire mon besoin</a>
     </div>

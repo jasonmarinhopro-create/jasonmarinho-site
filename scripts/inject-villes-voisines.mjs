@@ -32,6 +32,7 @@ const regionOf = slug => Object.entries(REGIONS).find(([, v]) => v.includes(slug
 const KINDS = [
   { prefix: 'photographe-lcd-', label: v => `Photographe Airbnb ${aVille(v)}`, titre: 'Photographes dans la région' },
   { prefix: 'menage-lcd-', label: v => `Ménage Airbnb ${aVille(v)}`, titre: 'Ménage Airbnb dans la région' },
+  { prefix: 'depannage-lcd-', label: v => `Dépannage ${aVille(v)}`, titre: 'Dépannage dans la région' },
   { prefix: 'devenir-hote-airbnb-', label: v => `Louer sur Airbnb ${aVille(v)}`, titre: 'Les guides des villes voisines' },
 ]
 

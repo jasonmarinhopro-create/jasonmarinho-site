@@ -53,13 +53,15 @@ const commune = communeArg || city.name
 // 1. Pages
 step('Pages photographe et ménage')
 // Jamais de régénération d'une page existante (elles reçoivent des injections et des retouches en place)
-if (['photographe-lcd', 'menage-lcd'].every(p => fs.existsSync(path.join(ROOT, `${p}-${slug}`, 'index.html')))) console.log('déjà présentes, gardées')
-else run('scripts/build-pages-pros-villes.mjs', slug)
+for (const metier of ['photographe', 'menage', 'depannage']) {
+  if (fs.existsSync(path.join(ROOT, `${metier}-lcd-${slug}`, 'index.html'))) console.log(`${metier}-lcd-${slug} déjà présente, gardée`)
+  else run('scripts/build-pages-pros-villes.mjs', slug, `--metier=${metier}`)
+}
 step('Guide devenir hôte')
 run('scripts/build-guide-hote.mjs', slug)
 
 // 2. Injections (toutes idempotentes, sur toutes les pages)
-for (const s of ['inject-local-villes', 'inject-taxe-villes', 'inject-estimate-cta', 'inject-pros-links', 'inject-villes-voisines', 'inject-chiffres-ville', 'inject-demande-cta', 'inject-hotel-villes']) {
+for (const s of ['inject-local-villes', 'inject-taxe-villes', 'inject-estimate-cta', 'inject-pros-links', 'inject-villes-voisines', 'inject-chiffres-ville', 'inject-demande-cta', 'inject-hotel-villes', 'inject-metiers-ville-links']) {
   step(s)
   run(`scripts/${s}.mjs`)
 }

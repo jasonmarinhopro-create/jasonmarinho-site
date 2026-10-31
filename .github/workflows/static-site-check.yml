@@ -9,7 +9,7 @@ name: Site statique
 on:
   push:
     branches: [main, 'claude/**']
-    paths: ['api/**', 'scripts/**', '*.js', '.github/workflows/static-site-check.yml', 'footer.js', 'sitemap.xml', 'scripts/data/villes-local.mjs', 'jason-app/lib/visibility/city-page.ts', '.github/workflows/prospection-reserve.yml', 'photographe-lcd-*/**', 'menage-lcd-*/**', 'devenir-hote-airbnb-*/**']
+    paths: ['api/**', 'scripts/**', '*.js', '.github/workflows/static-site-check.yml', 'footer.js', 'sitemap.xml', 'scripts/data/villes-local.mjs', 'jason-app/lib/visibility/city-page.ts', '.github/workflows/prospection-reserve.yml', 'photographe-lcd-*/**', 'menage-lcd-*/**', 'depannage-lcd-*/**', 'devenir-hote-airbnb-*/**']
   pull_request:
     paths: ['api/**']
 
@@ -36,7 +36,8 @@ jobs:
           fi
 
   villes:
-    # Une ville = 3 pages (photographe, ménage, devenir hôte), décision de
+    # Une ville = 4 pages (photographe, ménage, dépannage depuis le 31/10/2026,
+    # devenir hôte), décision de
     # Jason du 17/10/2026 : échoue s'il manque une page, une adresse du
     # sitemap, le contenu vérifié ou la place dans l'app. Créer une ville :
     # node scripts/creer-ville.mjs <slug> "<commune>".
@@ -45,5 +46,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
-      - name: Chaque ville a ses 3 pages
+      - name: Chaque ville a toutes ses pages
         run: node scripts/verifier-villes.mjs
