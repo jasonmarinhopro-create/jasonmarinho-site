@@ -263,5 +263,9 @@
       "destination": "https://app.jasonmarinho.com/auth/login",
       "permanent": false
     }
+  ],
+  "rewrites": [
+    { "source": "/api/photographer/:action", "destination": "/api/pro/photographer/:action" },
+    { "source": "/api/cleaner/:action", "destination": "/api/pro/cleaner/:action" }
   ]
 }

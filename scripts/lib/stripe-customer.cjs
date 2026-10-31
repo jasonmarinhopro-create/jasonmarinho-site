@@ -1,5 +1,5 @@
 // Un seul client Stripe par adresse e-mail, pour les inscriptions des pros du site
-// (api/photographer/signup.js, api/cleaner/signup.js). Même règle que
+// (scripts/api-pro/<métier>/signup.cjs, appelés par api/pro/[kind]/[action].js). Même règle que
 // jason-app/lib/stripe/customer.ts : client retrouvé par l'adresse (telle quelle
 // puis en minuscules), celui qui a une carte enregistrée d'abord, sinon le plus
 // ancien ; créé seulement s'il n'existe pas. Hors de api/ : pas une fonction de plus.

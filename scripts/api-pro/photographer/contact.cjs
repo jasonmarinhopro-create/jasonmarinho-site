@@ -3,7 +3,7 @@
 // Lookup du photographe via slug, log dans `photographer_contacts`,
 // email au photographe + accusé de réception au demandeur.
 
-const { contactEmails, cleanPhone } = require('../../scripts/lib/pro-contact-email.cjs')
+const { contactEmails, cleanPhone } = require('../../lib/pro-contact-email.cjs')
 
 const rateLimitMap = new Map()
 function isRateLimited(key, max, windowMs) {
