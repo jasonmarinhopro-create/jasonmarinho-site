@@ -162,14 +162,28 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .hg-in-w input{flex:1;min-width:0;border:none;background:transparent;font-family:inherit;font-size:16px;color:var(--td);outline:none}
 .hg-in-w input::placeholder{color:#7A8C80}
 .hg-in-w:focus-within{box-shadow:0 0 0 2px var(--g)}
-.hg-go{flex:none;display:flex;align-items:center;justify-content:center;gap:10px;min-width:210px;min-height:56px;padding:0 24px;border-radius:16px;background:var(--g);color:#fff;font-size:16px;font-weight:600;text-decoration:none;transition:background .2s}
+.hg-go{flex:none;align-self:flex-end;display:flex;align-items:center;justify-content:center;gap:8px;height:46px;margin:0 12px 8px 4px;padding:0 20px;border-radius:12px;background:var(--g);color:#fff;font-size:15px;font-weight:600;text-decoration:none;white-space:nowrap;transition:background .2s}
 .hg-go:hover{background:var(--gd);color:#fff}
 .hg-row{display:flex;flex-wrap:wrap;align-items:center;gap:18px;padding:28px}
 .hg-row-t{flex:1 1 420px;display:flex;flex-direction:column;gap:8px}
 .hg-row-t b{font-family:'Fraunces',serif;font-weight:400;font-size:24px;line-height:1.2}
 .hg-row-t span{font-size:14.5px;color:var(--tl);line-height:1.55}
 .hg-row-a{flex:0 1 280px;display:flex;flex-direction:column;gap:6px;text-align:center}
+.hg-row-a .hg-go{align-self:stretch;margin:0}
 .hg-row-a small{font-size:12.5px;color:var(--tf)}
+.hg-gerer{display:flex;flex-direction:column;gap:14px;padding:22px 24px}
+.hg-chips{display:flex;flex-wrap:wrap;gap:8px}
+.hg-chips button{padding:10px 14px;border-radius:99px;border:1.5px solid var(--bd);background:#fff;color:var(--td);font-family:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.hg-chips button:hover{border:1.5px solid var(--bd2)}
+.hg-chips button[aria-checked="true"]{background:var(--gd);border:1.5px solid var(--gd);color:#fff}
+.hg-g-q{display:flex;flex-direction:column;gap:10px}
+.hg-g-a{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;padding:16px 18px;border-radius:16px;background:#F4F6F2}
+.hg-ans{flex:1 1 380px;font-size:15.5px;line-height:1.55;color:var(--td)}
+.hg-ans[hidden]{display:none}
+.hg-ans a{font-weight:600;white-space:nowrap}
+.hg-g-cta{display:flex;flex-direction:column;align-items:center;gap:4px}
+.hg-g-cta .hg-go{margin:0;align-self:auto}
+.hg-g-cta small{font-size:12px;color:var(--tf)}
 .hg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:28px}
 .hg-grid a{display:flex;flex-direction:column;gap:4px;padding:18px;border-radius:16px;background:#F4F6F2;text-decoration:none;color:var(--td);transition:background .2s}
 .hg-grid a:hover{background:#EAF0E7;color:var(--td)}
@@ -188,6 +202,20 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .hg-prev img{width:100%;height:auto;display:block;border-radius:18px;border:1px solid rgba(255,255,255,.12)}
 .hg-prev img[hidden]{display:none}
 .hg-prev>span{position:absolute;top:12px;left:12px;padding:5px 10px;border-radius:99px;background:rgba(0,51,41,.85);color:#fff;font-size:12px;font-weight:600}
+.ex{width:100%;max-width:1000px;display:flex;flex-direction:column;gap:12px}
+.ex[hidden]{display:none}
+.ex-t{font-size:14.5px;color:rgba(255,255,255,.75);text-align:left}
+.ex-g{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.ex-c{display:flex;flex-direction:column;border-radius:18px;overflow:hidden;background:#fff;color:var(--td);text-decoration:none;text-align:left;transition:transform .2s,box-shadow .2s}
+.ex-c:hover{color:var(--td);transform:translateY(-3px);box-shadow:0 16px 36px rgba(0,0,0,.25)}
+.ex-img{position:relative;aspect-ratio:3/2;background:#E8F1EC}
+.ex-img img{width:100%;height:100%;object-fit:cover;display:block}
+.ex-img em{position:absolute;top:10px;left:10px;font-style:normal;padding:4px 9px;border-radius:99px;background:rgba(0,51,41,.85);color:#fff;font-size:11.5px;font-weight:600}
+.ex-b{padding:14px 16px 16px;display:flex;flex-direction:column;gap:3px}
+.ex-b small{font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ol)}
+.ex-b b{font-family:'Fraunces',serif;font-weight:400;font-size:19px}
+.ex-b>span{font-size:13.5px;color:var(--tl)}
+.ex-b .ex-go{margin-top:6px;font-size:13.5px;font-weight:600;color:var(--g)}
 .hg-after{display:flex;flex-direction:column;gap:16px;padding-top:40px;padding-bottom:8px}
 .hg-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .hg-steps[hidden]{display:none}
@@ -385,7 +413,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   .hg-h1{font-size:52px}
   .hg-search{flex-direction:column}
   .hg-sep{display:none}
-  .hg-go{min-width:0}
+  .hg-go{align-self:stretch;margin:4px 12px 8px}
 }
 @media(max-width:720px){
   .wrap{padding:0 16px}
@@ -402,11 +430,17 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   .hg-tabs{margin-bottom:8px}
   .hg-card{border-radius:20px}
   .hg-seg button{font-size:13px;gap:5px;padding:0 4px}
-  .hg-row,.hg-grid{padding:18px}
+  .hg-row,.hg-grid,.hg-gerer{padding:18px}
+  .hg-chips button{font-size:13.5px;padding:9px 12px}
+  .hg-g-cta{width:100%}
+  .hg-g-cta .hg-go{width:100%}
   .hg-grid{grid-template-columns:1fr}
   .hg-pro{align-items:stretch}
   .hg-often{justify-content:flex-start}
   .hg-steps{grid-template-columns:1fr}
+  .ex-g{grid-template-columns:1fr}
+  .ex-c{flex-direction:row}
+  .ex-img{aspect-ratio:auto;width:120px;flex:none}
   .pub{padding:22px 18px}
   .pub-n{grid-template-columns:1fr}
   .pub-n>span{flex-direction:row;align-items:baseline;gap:10px}
@@ -474,9 +508,10 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <datalist id="villes"><option value="Aix-en-Provence"><option value="Ajaccio"><option value="Angers"><option value="Annecy"><option value="Antibes"><option value="Arcachon"><option value="Avignon"><option value="Bastia"><option value="Bayonne"><option value="Beaune"><option value="Biarritz"><option value="Bordeaux"><option value="Brest"><option value="Caen"><option value="Cannes"><option value="Carcassonne"><option value="Chambéry"><option value="Chamonix"><option value="Clermont-Ferrand"><option value="Colmar"><option value="Deauville"><option value="Dijon"><option value="Dinard"><option value="Épernay"><option value="Étretat"><option value="Grenoble"><option value="Honfleur"><option value="La Baule"><option value="La Rochelle"><option value="Le Mans"><option value="Le Touquet"><option value="Les Sables-d'Olonne"><option value="Lille"><option value="Lyon"><option value="Marseille"><option value="Megève"><option value="Menton"><option value="Metz"><option value="Montpellier"><option value="Nancy"><option value="Nantes"><option value="Nice"><option value="Nîmes"><option value="Paris"><option value="Pau"><option value="Perpignan"><option value="Poitiers"><option value="Quimper"><option value="Reims"><option value="Rennes"><option value="Roanne"><option value="Rouen"><option value="Saint-Malo"><option value="Saint-Tropez"><option value="Sarlat"><option value="Sète"><option value="Strasbourg"><option value="Toulouse"><option value="Tours"><option value="Troyes"><option value="Vannes"><option value="Versailles"></datalist>
 <a href="/trouver-un-pro?metier=photographe" class="hg-go" id="it-go"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3"/></svg><span>Trouver mes pros</span></a>
 </div>
-<div class="hg-panel hg-row" role="tabpanel" id="hp-gerer" aria-labelledby="ht-gerer" hidden>
-<div class="hg-row-t"><b>Relie ton calendrier Airbnb ou Booking, le reste suit.</b><span>Carnet de voyageurs, planning ménage, contrats et cautions, fiches de police, simulateurs.</span></div>
-<div class="hg-row-a"><a href="https://app.jasonmarinho.com/auth/register" class="hg-go">Créer mon compte gratuit</a><small>Sans carte bancaire. Avec ton e-mail ou Google.</small></div>
+<div class="hg-panel hg-gerer" role="tabpanel" id="hp-gerer" aria-labelledby="ht-gerer" hidden>
+<div class="hg-g-q"><span class="hg-l">Qu’est-ce qui te prend du temps ?</span>
+<div class="hg-chips" role="radiogroup" aria-label="Ce qui te prend du temps"><button type="button" role="radio" aria-checked="true" data-g="menage">Organiser les ménages</button><button type="button" role="radio" aria-checked="false" data-g="contrat">Faire signer un contrat</button><button type="button" role="radio" aria-checked="false" data-g="caution">Gérer la caution</button><button type="button" role="radio" aria-checked="false" data-g="police">Les fiches de police</button><button type="button" role="radio" aria-checked="false" data-g="verif">Vérifier un voyageur</button><button type="button" role="radio" aria-checked="false" data-g="revenus">Suivre mes revenus</button></div></div>
+<div class="hg-g-a"><p class="hg-ans" data-ga="menage">Un ménage est créé à chaque départ. Ton équipe voit son planning et le marque « terminé » avec photos. <a href="/services/planning-menage">En savoir plus</a></p><p class="hg-ans" data-ga="contrat" hidden>Le contrat part de la réservation, le voyageur le signe en ligne et paie son loyer par lien. <a href="/services/contrats">En savoir plus</a></p><p class="hg-ans" data-ga="caution" hidden>Elle est bloquée sur la carte du voyageur, tu la libères après son départ. <a href="/services/contrats">En savoir plus</a></p><p class="hg-ans" data-ga="police" hidden>Elles sont préparées pour chaque voyageur étranger, prêtes à imprimer. <a href="/services/declarations-voyageurs">En savoir plus</a></p><p class="hg-ans" data-ga="verif" hidden>Cherche son e-mail, son téléphone ou son nom dans les signalements des autres hôtes, avant d’accepter. <a href="/services/securite">En savoir plus</a></p><p class="hg-ans" data-ga="revenus" hidden>Virements, espèces, paiements en ligne au même endroit : ce qui est encaissé, ce qui est en attente. <a href="/services/revenus">En savoir plus</a></p><span class="hg-g-cta"><a href="https://app.jasonmarinho.com/auth/register" class="hg-go">Créer mon compte gratuit</a><small>Sans carte bancaire</small></span></div>
 </div>
 <div class="hg-panel hg-grid" role="tabpanel" id="hp-apprendre" aria-labelledby="ht-apprendre" hidden>
 <a href="/services/formations"><b>Formations</b><span>22 parcours, de 1h45 à 4h30</span></a>
@@ -490,12 +525,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 </div>
 </div>
 </div>
-<figure class="hg-prev" data-only="metier" hidden><span>Ta fiche dans l’annuaire (exemples fictifs)</span>
-<img src="/img/pour-qui/photo-cartes.webp" alt="Fiches de photographes dans l’annuaire, exemples fictifs" width="1300" height="481" loading="lazy" decoding="async">
-</figure>
-<figure class="hg-prev" data-only="gerer" hidden><span>Ton espace hôte (données fictives)</span>
-<img src="/img/accueil/hote-calendrier.webp" alt="Le calendrier de l’espace hôte, avec des séjours fictifs" width="1400" height="995" loading="lazy" decoding="async">
-</figure>
+<div class="ex" data-only="metier" hidden><p class="ex-t">À quoi ressemblera ta fiche ? Ouvre un exemple :</p><div class="ex-g"><a href="/annuaires/photographes/exemple-fiche" class="ex-c"><span class="ex-img"><img src="/img/exemple-fiches/photo-interieur-1-t.jpg" alt="" width="600" height="400" loading="lazy" decoding="async"><em>Exemple</em></span><span class="ex-b"><small>Photographe et vidéaste</small><b>Camille Sénéchal</b><span>Lyon · dès 350 €</span><span class="ex-go">Voir la fiche d’exemple →</span></span></a><a href="/annuaires/menage/exemple-fiche" class="ex-c"><span class="ex-img"><img src="/img/exemple-fiches/menage-1-t.jpg" alt="" width="600" height="400" loading="lazy" decoding="async"><em>Exemple</em></span><span class="ex-b"><small>Équipe de ménage</small><b>Éclat Ménage Bordeaux</b><span>Bordeaux · dès 70 €</span><span class="ex-go">Voir la fiche d’exemple →</span></span></a><a href="/annuaires/depannage/exemple-fiche" class="ex-c"><span class="ex-img"><img src="/img/exemple-fiches/photo-sdb-1-t.jpg" alt="" width="600" height="400" loading="lazy" decoding="async"><em>Exemple</em></span><span class="ex-b"><small>Dépannage et maintenance</small><b>Atelier Martin</b><span>Nantes · dès 75 €</span><span class="ex-go">Voir la fiche d’exemple →</span></span></a></div></div>
 <p class="hg-note" data-only="apprendre" hidden>2 formations au choix offertes avec ton compte gratuit. Les 22 sont incluses dans la formule Standard.</p>
 <div class="hg-pro" data-only="pro">
 <div class="hg-often"><span>Souvent cherché :</span>
@@ -511,10 +541,6 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 
 <!-- COMMENT ÇA MARCHE + TRANSPARENCE -->
 <section class="wrap hg-after">
-<div class="hg-steps" data-only="pro"><div><i>1</i><span><b>Tu décris ton besoin</b>Ton logement, ce qu’il te faut, quand. Quelques questions, pas plus.</span></div><div><i>2</i><span><b>Les pros proches la reçoivent</b>Les 3 plus proches qui font ce que tu demandes, pas tout l’annuaire.</span></div><div><i>3</i><span><b>Tu choisis, en direct</b>Ils te répondent eux-mêmes. Aucune commission, ni pour toi ni pour eux.</span></div></div>
-<div class="hg-steps" data-only="gerer" hidden><div><i>1</i><span><b>Relie ton calendrier</b>Airbnb, Booking ou ton site : un lien suffit, tes réservations arrivent seules.</span></div><div><i>2</i><span><b>Les ménages suivent</b>Créés à chaque départ. Ton équipe voit son planning et le marque « terminé » avec photos.</span></div><div><i>3</i><span><b>Les papiers aussi</b>Contrats signés en ligne, loyer et caution, fiches de police pour les voyageurs étrangers.</span></div></div>
-<div class="hg-steps hg-links" data-only="apprendre" hidden><a href="/services/formations/optimiser-annonce-airbnb"><i>1</i><span><b>Optimiser son annonce Airbnb</b>Photos, titre, description, algorithme. 2h30, 5 modules.</span></a><a href="/services/formations/mettre-le-bon-prix-lcd"><i>2</i><span><b>Mettre le bon prix</b>Fixer et ajuster tes tarifs. 2h30, 5 modules.</span></a><a href="/services/formations/fiscalite-reglementation-lcd-france-2026"><i>3</i><span><b>Fiscalité et réglementation 2026</b>Ce que tu dois déclarer et respecter. 2h30, 5 modules.</span></a></div>
-<div class="hg-steps" data-only="metier" hidden><div><i>1</i><span><b>Crée ta fiche</b>Photos, formules, tarifs et villes couvertes : une fiche qui fait site vitrine.</span></div><div><i>2</i><span><b>Sois trouvé</b>Sur Google, sur la page de ta ville et dans l’annuaire de ton métier.</span></div><div><i>3</i><span><b>Reçois les demandes</b>Les hôtes de ta zone t’écrivent, tu réponds en direct. Zéro commission.</span></div></div>
 <a href="/chiffres" class="pub">
 <span class="pub-t"><span class="eyb">Transparence totale</span><b>Tous les chiffres du site sont publics.</b><span>Visites, recherches Google, demandes d’hôtes : les vrais chiffres, consultables par tout le monde. Pas de vitrine gonflée.</span></span>
 <span class="pub-n"><span><b data-pub="vis">…</b>visiteurs sur 30 jours</span><span><b data-pub="imp">…</b>apparitions dans Google</span><span><b data-pub="dem">…</b>demandes d’hôtes reçues</span></span>
@@ -702,7 +728,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <script>
 (function(){
   // Haut de page : 4 onglets, le titre et la phrase changent avec l'onglet
-  var box=document.getElementById('intent'), TXT={"pro": {"h": "Les bons pros pour ta <em>location courte durée</em>, près de chez toi.", "p": "Dis ce qu’il te faut et où : les 3 pros les plus proches qui le font reçoivent ta demande et te répondent en direct. Gratuit pour toi, sans commission."}, "gerer": {"h": "Ta <em>location courte durée</em>, organisée sans y passer tes soirées.", "p": "Relie ton calendrier Airbnb ou Booking : réservations, ménages, contrats et fiches de police suivent tout seuls. Gratuit pour commencer."}, "apprendre": {"h": "Apprends le métier d’hôte <em>avec quelqu’un qui le fait.</em>", "p": "22 formations courtes, le guide de ta ville et l’actualité qui te concerne, tirés de 4 ans de location courte durée."}, "metier": {"h": "Les hôtes de ta ville <em>te cherchent déjà.</em>", "p": "Photographe, équipe de ménage ou artisan : une fiche qui fait site vitrine, et les demandes des hôtes de ta ville arrivent chez toi. Zéro commission."}};
+  var box=document.getElementById('intent'), TXT={"pro": {"h": "Les bons pros pour ta <em>location courte durée</em>, près de chez toi.", "p": "Dis ce qu’il te faut et où : les 3 pros les plus proches qui le font reçoivent ta demande et te répondent en direct. Gratuit pour toi, sans commission."}, "gerer": {"h": "Ta <em>location courte durée</em>, organisée sans y passer tes soirées.", "p": "Ménages planifiés, contrats signés en ligne, cautions, fiches de police : tout part de tes réservations. Gratuit pour commencer."}, "apprendre": {"h": "Apprends le métier d’hôte <em>avec quelqu’un qui le fait.</em>", "p": "22 formations courtes, le guide de ta ville et l’actualité qui te concerne, tirés de 4 ans de location courte durée."}, "metier": {"h": "Les hôtes de ta ville <em>te cherchent déjà.</em>", "p": "Photographe, équipe de ménage ou artisan : une fiche qui fait site vitrine, et les demandes des hôtes de ta ville arrivent chez toi. Zéro commission."}};
   var h1=document.getElementById('hg-h1'), hp=document.getElementById('hg-p');
   box.querySelectorAll('[data-tab]').forEach(function(t){
     t.addEventListener('click',function(){
@@ -757,6 +783,13 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
       document.getElementById('rail-'+t.getAttribute('data-th')).scrollLeft=0;
     });
   });
+
+  // Onglet Gérer : la réponse suit ce qui prend du temps
+  var gs=document.querySelectorAll('[data-g]');
+  gs.forEach(function(t){t.addEventListener('click',function(){
+    gs.forEach(function(x){x.setAttribute('aria-checked',x===t?'true':'false')});
+    document.querySelectorAll('[data-ga]').forEach(function(p){p.hidden=p.getAttribute('data-ga')!==t.getAttribute('data-g')});
+  })});
 
   // Encart transparence : les vrais chiffres, en direct (rien d'affiché si l'API ne répond pas)
   try{
