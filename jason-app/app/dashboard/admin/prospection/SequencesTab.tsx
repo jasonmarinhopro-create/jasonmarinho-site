@@ -29,7 +29,7 @@ const GROUPS: Array<{ n: number; title: string; sub: string; match: (s: Sequence
   { n: 4, title: 'Il est client', sub: 'Ce qui arrive pendant l\'abonnement', match: s => s.trigger === 'etape' && s.trigger_stage === 'client' },
 ]
 
-const WHO: Record<Audience, string> = { photographe: 'd\'un photographe', menage: 'd\'une équipe de ménage', hote: 'd\'un hôte', autre: 'd\'un contact' }
+const WHO: Record<Audience, string> = { photographe: 'd\'un photographe', menage: 'd\'une équipe de ménage', depannage: 'd\'un pro du dépannage', hote: 'd\'un hôte', autre: 'd\'un contact' }
 
 let keySeq = 0
 const newKey = () => `k${++keySeq}`

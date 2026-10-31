@@ -41,6 +41,14 @@ export const NAF_BY_AUDIENCE: Record<Audience, Array<{ code: string; label: stri
     { code: '81.22Z', label: 'Autres nettoyages des bâtiments' },
     { code: '81.29B', label: 'Autres activités de nettoyage' },
   ],
+  depannage: [
+    { code: '43.22A', label: 'Installation d\'eau et de gaz (plomberie)' },
+    { code: '43.21A', label: 'Installation électrique' },
+    { code: '43.22B', label: 'Installation thermique et climatisation' },
+    { code: '43.32B', label: 'Menuiserie métallique et serrurerie' },
+    { code: '43.39Z', label: 'Autres travaux de finition (multiservice)' },
+    { code: '95.22Z', label: 'Réparation d\'électroménager' },
+  ],
   hote: [
     { code: '55.20Z', label: 'Hébergement touristique et de courte durée' },
     { code: '55.30Z', label: 'Terrains de camping' },

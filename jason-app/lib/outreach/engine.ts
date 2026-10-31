@@ -5,7 +5,7 @@
 
 import { isKnownFirstName } from './first-names'
 
-export type Audience = 'photographe' | 'menage' | 'hote' | 'autre'
+export type Audience = 'photographe' | 'menage' | 'depannage' | 'hote' | 'autre'
 export type Stage =
   | 'a_trouver' | 'a_contacter' | 'contacte' | 'a_repondu' | 'interesse'
   | 'inscrit' | 'client' | 'pas_interesse' | 'desinscrit' | 'invalide'
@@ -14,6 +14,7 @@ export type Source = 'manuel' | 'csv' | 'sirene' | 'google' | 'datatourisme' | '
 export const AUDIENCES: Record<Audience, { label: string; plural: string }> = {
   photographe: { label: 'Photographe', plural: 'Photographes' },
   menage:      { label: 'Équipe de ménage', plural: 'Équipes de ménage' },
+  depannage:   { label: 'Dépannage', plural: 'Pros du dépannage' },
   hote:        { label: 'Hôte', plural: 'Hôtes' },
   autre:       { label: 'Autre', plural: 'Autres' },
 }

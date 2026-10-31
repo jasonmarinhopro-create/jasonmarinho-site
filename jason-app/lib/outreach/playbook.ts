@@ -395,6 +395,130 @@ Tu y vois aussi combien d'hôtes ont consulté ta fiche ce mois-ci.`,
     ],
   },
 
+  // ─── Dépannage et maintenance (31/10/2026) ────────────────────────────────
+  // Textes à valider par Jason avant tout envoi. Déclencheur MANUEL (même pour
+  // le premier contact) : rien ne part tant que Jason n'ajoute pas lui-même des
+  // contacts à la séquence et ne l'active pas. Faits : demandes envoyées aux 3
+  // pros les plus proches qui font la spécialité, pages /depannage-lcd-<ville>,
+  // tarif Fondateur 39,98 € TTC/an pour les 20 premiers, sans commission.
+  {
+    key: 'depannage_premier_contact',
+    nom: 'Dépannage : premier contact',
+    audience: 'depannage',
+    description: 'Présente l\'annuaire dépannage aux plombiers, électriciens, serruriers et multiservices. 4 e-mails sur 2 semaines, lancés à la main.',
+    trigger: 'manuel',
+    then_key: 'depannage_relance_saison',
+    steps: [
+      {
+        delay_days: 0,
+        subject: 'Dépannages de locations Airbnb{ à ville}',
+        body: `Bonjour {prenom},
+
+Je m'appelle Jason Marinho. J'accompagne des hôtes Airbnb et Booking et je leur ai construit une app pour gérer leur location.
+
+Une de leurs grandes angoisses : la fuite, la panne de courant ou la serrure bloquée la veille d'une arrivée, sans artisan à appeler.
+
+J'ai ouvert un annuaire dépannage et maintenance pour eux : les hôtes{ de ville} y trouvent un pro près de leur logement et le contactent directement, sans commission. Quand un hôte décrit son besoin, sa demande part aux 3 pros les plus proches qui font la spécialité demandée.
+
+Est-ce que tu interviens déjà dans des locations de vacances ?`,
+      },
+      {
+        delay_days: 3,
+        subject: 'Dépannages de locations Airbnb{ à ville}',
+        body: `Bonjour {prenom},
+
+Je remonte mon message avec du concret. Une fiche dans l'annuaire, c'est :
+
+- une page à ton nom sur jasonmarinho.com : spécialités, délai d'intervention, zone, tarifs ;
+- les demandes des hôtes directement chez toi, sans commission ;
+- ta présence sur nos pages « dépannage » de ${VILLES_TOTAL} villes.
+
+Exemple de fiche : ${SITE}/annuaires/depannage/exemple-fiche?${utm('depannage_premier_contact')}
+
+Les 20 premiers pros gardent le tarif fondateur : 39,98 € par an, à vie.
+
+Tu veux que je t'en dise plus ?`,
+      },
+      {
+        delay_days: 4,
+        subject: 'Dépannages de locations Airbnb{ à ville}',
+        body: `{prenom}, une dernière question : je te garde une des places fondatrices ?
+
+L'inscription prend deux minutes : ${SITE}/annuaires/depannage/inscription?${utm('depannage_premier_contact')}
+
+Si ce n'est pas pour toi, un simple « non merci » me suffit, je ne te relancerai pas.`,
+      },
+      {
+        delay_days: 7,
+        subject: 'Dépannages de locations Airbnb{ à ville}',
+        body: `Bonjour {prenom},
+
+C'est mon dernier message, promis.
+
+Si un jour tu veux des clients hôtes{ à ville}, la porte reste ouverte : ${SITE}/annuaires/depannage?${utm('depannage_premier_contact')}
+
+Bonne continuation !`,
+      },
+    ],
+  },
+  {
+    key: 'depannage_relance_saison',
+    nom: 'Dépannage : relance de saison',
+    audience: 'depannage',
+    description: 'Un seul message, 3 mois après le premier contact resté sans réponse.',
+    trigger: 'manuel',
+    end_stage: 'pas_interesse',
+    steps: [
+      {
+        delay_days: 90,
+        subject: 'Des hôtes{ à ville} cherchent un pro du dépannage',
+        same_thread: false,
+        body: `Bonjour {prenom},
+
+Je t'avais écrit il y a quelques mois au sujet de l'annuaire dépannage et maintenance pour locations de vacances.
+
+Je reviens vers toi une seule fois : les hôtes continuent de chercher des artisans fiables{ à ville}, surtout avant la saison.
+
+La fiche se crée en deux minutes, contact direct et sans commission : ${SITE}/annuaires/depannage/inscription?${utm('depannage_relance_saison')}
+
+Sinon, aucun souci, tu n'auras plus de message de ma part.`,
+      },
+    ],
+  },
+  {
+    key: 'depannage_interesse',
+    nom: 'Dépannage : de l\'intérêt à la fiche',
+    audience: 'depannage',
+    description: 'Démarre quand tu passes un contact du dépannage en « Intéressé ». Boucle une fois après 30 jours.',
+    trigger: 'etape',
+    trigger_stage: 'interesse',
+    repeat_after_days: 30,
+    max_repeats: 1,
+    steps: [
+      {
+        delay_days: 2,
+        subject: 'Ta fiche dépannage, en deux minutes',
+        same_thread: false,
+        body: `Bonjour {prenom},
+
+Comme promis, voici le lien pour créer ta fiche : ${SITE}/annuaires/depannage/inscription?${utm('depannage_interesse')}
+
+Un conseil : coche bien tes spécialités, ton délai d'intervention et tes disponibilités (soir, week-end, urgence). Les demandes des hôtes partent d'abord aux pros qui font la spécialité demandée.
+
+Une question avant de te lancer ? Réponds simplement à ce message.`,
+      },
+      {
+        delay_days: 6,
+        subject: 'Ta fiche dépannage, en deux minutes',
+        body: `{prenom}, ta place au tarif fondateur (39,98 € par an, à vie) t'attend toujours.
+
+Le lien : ${SITE}/annuaires/depannage/inscription?${utm('depannage_interesse')}
+
+Si quelque chose te freine, dis-le-moi, je regarde avec toi.`,
+      },
+    ],
+  },
+
   // ─── Hôtes (gîtes et chambres d'hôtes, DATAtourisme) ─────────────────────
   {
     key: 'hote_premier_contact',

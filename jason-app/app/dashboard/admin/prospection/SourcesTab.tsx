@@ -21,12 +21,21 @@ const NAF: Record<Audience, Array<{ code: string; label: string }>> = {
     { code: '81.22Z', label: 'Autres nettoyages des bâtiments' },
     { code: '81.29B', label: 'Autres activités de nettoyage' },
   ],
+  depannage: [
+    { code: '43.22A', label: 'Installation d\'eau et de gaz (plomberie)' },
+    { code: '43.21A', label: 'Installation électrique' },
+    { code: '43.22B', label: 'Installation thermique et climatisation' },
+    { code: '43.32B', label: 'Menuiserie métallique et serrurerie' },
+    { code: '43.39Z', label: 'Autres travaux de finition (multiservice)' },
+    { code: '95.22Z', label: 'Réparation d\'électroménager' },
+  ],
   hote: [{ code: '55.20Z', label: 'Hébergement touristique et de courte durée' }],
   autre: [],
 }
 const QUERY_HINT: Record<Audience, string> = {
   photographe: 'photographe immobilier Annecy',
   menage: 'ménage location saisonnière Nice',
+  depannage: 'plombier dépannage Nantes',
   hote: 'gîte Dordogne',
   autre: '',
 }
