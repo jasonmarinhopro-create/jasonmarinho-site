@@ -866,6 +866,13 @@ h3{font-family:'Fraunces',serif;font-weight:400;font-size:19px}
 
 fs.mkdirSync(path.join(ROOT, 'trouver-un-pro'), { recursive: true })
 fs.writeFileSync(path.join(ROOT, 'trouver-un-pro', 'index.html'), html, 'utf8')
+// Accueil (31/10/2026) : même liste de villes pour le champ « Dans quelle ville ? » de la carte « Qu'est-ce qui t'amène ? »
+{
+  const idx = path.join(ROOT, 'index.html')
+  const home = fs.readFileSync(idx, 'utf8')
+  const dl = `<datalist id="villes">${cities.map(c => `<option value="${esc(c)}">`).join('')}</datalist>`
+  if (/<datalist id="villes">[\s\S]*?<\/datalist>/.test(home)) fs.writeFileSync(idx, home.replace(/<datalist id="villes">[\s\S]*?<\/datalist>/, dl), 'utf8')
+}
 fs.mkdirSync(path.join(ROOT, 'ma-demande'), { recursive: true })
 fs.writeFileSync(path.join(ROOT, 'ma-demande', 'index.html'), suivi, 'utf8')
 console.log(`[trouver-un-pro] pages écrites (${cities.length} villes proposées) : /trouver-un-pro, /ma-demande`)

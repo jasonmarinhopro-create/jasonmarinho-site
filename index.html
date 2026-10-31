@@ -378,7 +378,8 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <button type="button" role="radio" aria-checked="false" data-m="depannage">Dépannage</button>
 </div>
 <label class="fld">Dans quelle ville ?
-<input id="it-ville" type="text" placeholder="Annecy, Lyon, Bordeaux…" autocomplete="address-level2">
+<input id="it-ville" type="text" list="villes" data-suggest="ville" placeholder="Annecy, Lyon, Bordeaux…" autocomplete="off" enterkeyhint="go">
+<datalist id="villes"><option value="Aix-en-Provence"><option value="Ajaccio"><option value="Angers"><option value="Annecy"><option value="Antibes"><option value="Arcachon"><option value="Avignon"><option value="Bastia"><option value="Bayonne"><option value="Beaune"><option value="Biarritz"><option value="Bordeaux"><option value="Brest"><option value="Caen"><option value="Cannes"><option value="Carcassonne"><option value="Chambéry"><option value="Chamonix"><option value="Clermont-Ferrand"><option value="Colmar"><option value="Deauville"><option value="Dijon"><option value="Dinard"><option value="Épernay"><option value="Étretat"><option value="Grenoble"><option value="Honfleur"><option value="La Baule"><option value="La Rochelle"><option value="Le Mans"><option value="Le Touquet"><option value="Les Sables-d'Olonne"><option value="Lille"><option value="Lyon"><option value="Marseille"><option value="Megève"><option value="Menton"><option value="Metz"><option value="Montpellier"><option value="Nancy"><option value="Nantes"><option value="Nice"><option value="Nîmes"><option value="Paris"><option value="Pau"><option value="Perpignan"><option value="Poitiers"><option value="Quimper"><option value="Reims"><option value="Rennes"><option value="Roanne"><option value="Rouen"><option value="Saint-Malo"><option value="Saint-Tropez"><option value="Sarlat"><option value="Sète"><option value="Strasbourg"><option value="Toulouse"><option value="Tours"><option value="Troyes"><option value="Vannes"><option value="Versailles"></datalist>
 </label>
 <a href="/trouver-un-pro?metier=photographe" class="btn btn-y" id="it-go">Décrire mon besoin</a>
 <a href="/annuaires/photographes" class="btn-o" data-ann="photographe">Ou parcourir l’annuaire des photographes et vidéastes</a>
@@ -582,6 +583,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <a href="/trouver-un-pro">Trouver un pro</a>
 </nav>
 
+<script src="/suggestions.js" defer></script>
 <!-- FOOTER -->
 <script defer src="/footer.js"></script>
 <script>
@@ -612,7 +614,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
     });
   });
   ville.addEventListener('input',maj);
-  ville.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();location.href=go.href}});
+  ville.addEventListener('change',maj);
 
   // Carte Gérer : les pastilles changent la capture sur place
   var sts=document.querySelectorAll('[data-shot]');
