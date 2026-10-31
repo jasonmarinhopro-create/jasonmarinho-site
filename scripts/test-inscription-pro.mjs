@@ -144,9 +144,12 @@ for (const cas of CAS) {
       const el = sel.asElement()
       if (el) {
         await el.click(); await page.keyboard.press('End'); await page.keyboard.type(' Modifié.')
-        await page.waitForTimeout(3500)
-        const d = await (await fetch(`${SUPA}/rest/v1/${cas.table}?id=eq.${fiche.id}&select=fiche_draft,bio`, { headers: H })).json()
-        brouillon = !!d[0]?.fiche_draft && JSON.stringify(d[0].fiche_draft).includes('Modifié.') && d[0].bio === bio
+        // Enregistrement après une courte pause de saisie : jusqu'à 20 s si le serveur est lent
+        for (let t = 0; t < 10 && !brouillon; t++) {
+          await page.waitForTimeout(2000)
+          const d = await (await fetch(`${SUPA}/rest/v1/${cas.table}?id=eq.${fiche.id}&select=fiche_draft,bio`, { headers: H })).json()
+          brouillon = !!d[0]?.fiche_draft && JSON.stringify(d[0].fiche_draft).includes('Modifié.') && d[0].bio === bio
+        }
       }
     }
     ok('Ma fiche : modification gardée en brouillon, fiche en ligne inchangée', brouillon)
