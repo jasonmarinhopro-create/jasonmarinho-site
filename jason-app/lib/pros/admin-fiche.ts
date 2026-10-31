@@ -1,8 +1,7 @@
 // Actions admin communes aux 3 annuaires (31/10/2026, étape 4 du projet
 // « Dépannage et maintenance ») : masquer, réactiver, supprimer une
-// inscription jamais payée. Le dépannage s'en sert ; ménage et photographe
-// gardent pour l'instant leurs propres actions (même logique), à brancher ici
-// lors de leur passage sur fiche-core.ts.
+// inscription jamais payée. Les 3 annuaires s'en servent (ménage et
+// photographe branchés le 31/10/2026).
 import 'server-only'
 import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'

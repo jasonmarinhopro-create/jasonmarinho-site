@@ -1,224 +1,11 @@
 'use server'
 
-import type { SupabaseClient } from '@supabase/supabase-js'
 import { syncProSubscriptions } from '@/lib/pros/subscription-sync'
 import { getServiceClient } from '@/lib/supabase/service'
 import { adminUserIds, splitDemo } from '@/lib/pros/demo'
 import { isUnpaidFiche } from '@/lib/pros/paid'
-import { createClient } from '@/lib/supabase/server'
-import { Resend } from 'resend'
-import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
-import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
-import { logger } from '@/lib/logger'
-import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
-import { checkoutCustomer } from '@/lib/stripe/customer'
-
-const log = logger('admin/photographes/actions')
-const FROM_EMAIL = 'notifications@jasonmarinho.com'
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
-const SITE_URL = 'https://jasonmarinho.com'
-
-const FOUNDER_PRICE_ID = process.env.STRIPE_PHOTOGRAPHER_FOUNDER_PRICE_ID || ''
-const STANDARD_PRICE_ID = process.env.STRIPE_PHOTOGRAPHER_STANDARD_PRICE_ID || ''
-const FOUNDER_QUOTA = 20
-
-function getResend() { return new Resend(process.env.RESEND_API_KEY) }
-
-async function requireAdmin(): Promise<{ userId: string } | { error: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Non authentifié' }
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle()
-  if (profile?.role !== 'admin') return { error: 'Réservé administrateur' }
-  return { userId: user.id }
-}
-
-/**
- * Strip accents + lowercase + alphanumeric only.
- */
-function slugify(input: string): string {
-  return input
-    .normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 80)
-}
-
-async function generateUniqueSlug(admin: SupabaseClient, fullName: string, ville: string): Promise<string> {
-  const base = `${slugify(fullName)}-${slugify(ville)}`
-  let slug = base
-  let attempt = 1
-  while (true) {
-    const { data } = await admin
-      .from('photographers')
-      .select('id')
-      .eq('slug', slug)
-      .maybeSingle()
-    if (!data) return slug
-    attempt++
-    slug = `${base}-${attempt}`
-    if (attempt > 10) return `${base}-${Date.now().toString().slice(-6)}`
-  }
-}
-
-async function determineTier(admin: SupabaseClient): Promise<'fondateur' | 'standard'> {
-  const { count } = await admin
-    .from('photographers')
-    .select('id', { count: 'exact', head: true })
-    .eq('status', 'active')
-    .eq('tier', 'fondateur')
-  return (count ?? 0) < FOUNDER_QUOTA ? 'fondateur' : 'standard'
-}
-
-/**
- * Approuve un photographe pending → status='approved_pending_payment'.
- * Détermine le tier (fondateur si quota dispo). Envoie email avec lien
- * Stripe Checkout. Le photographe n'est pas encore visible publiquement,
- * il le devient au webhook 'checkout.session.completed'.
- */
-export async function approvePhotographer(photographerId: string): Promise<{ success?: boolean; error?: string }> {
-  const auth = await requireAdmin()
-  if ('error' in auth) return { error: auth.error }
-
-  const admin = getServiceClient()
-  const { data: ph, error: fetchErr } = await admin
-    .from('photographers')
-    .select('id, email, full_name, ville, status')
-    .eq('id', photographerId)
-    .maybeSingle()
-  if (fetchErr || !ph) return { error: 'Photographe introuvable' }
-  if (ph.status !== 'pending_validation') return { error: `Statut actuel : ${ph.status} (validation impossible)` }
-
-  const tier = await determineTier(admin)
-  const priceId = tier === 'fondateur' ? FOUNDER_PRICE_ID : STANDARD_PRICE_ID
-
-  if (!priceId) {
-    return { error: `STRIPE_PHOTOGRAPHER_${tier === 'fondateur' ? 'FOUNDER' : 'STANDARD'}_PRICE_ID non posé dans les env vars Vercel.` }
-  }
-
-  // Création Stripe Checkout Session (mode subscription)
-  let checkoutUrl: string | null = null
-  try {
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      ...(await checkoutCustomer({ email: ph.email })),
-      line_items: [{ price: priceId, quantity: 1 }],
-      metadata: {
-        photographer_id: ph.id,
-        tier,
-      },
-      subscription_data: {
-        metadata: {
-          photographer_id: ph.id,
-          tier,
-        },
-      },
-      success_url: `${SITE_URL}/annuaires/photographes/inscription/confirmation?status=paid`,
-      cancel_url: `${SITE_URL}/annuaires/photographes/inscription/confirmation?status=cancel`,
-      locale: 'fr',
-    })
-    checkoutUrl = session.url
-  } catch (e) {
-    log.error('stripe.checkout.create failed', e)
-    return { error: 'Erreur Stripe lors de la création du paiement. Vérifie les price_id dans les env vars.' }
-  }
-
-  await admin
-    .from('photographers')
-    .update({
-      status: 'approved_pending_payment',
-      tier,
-      validated_at: new Date().toISOString(),
-      validated_by: auth.userId,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', photographerId)
-
-  // Email au photographe
-  const annual = tier === 'fondateur' ? '39,98 €' : '79,98 €'
-  await getResend().emails.send({
-    from: FROM_EMAIL,
-    to: ph.email,
-    subject: `${ph.full_name}, ta candidature photographe LCD est validée 🎉`,
-    html: buildEmail({
-      title: `Bienvenue dans l'annuaire ${tier === 'fondateur' ? 'fondateur' : ''}`,
-      body: `
-        ${emailP(`Bonjour ${ph.full_name},`)}
-        ${emailP(`Excellente nouvelle : ta candidature pour rejoindre l'annuaire des photographes LCD de Jason Marinho a été <strong>validée</strong> 🎉`)}
-        ${tier === 'fondateur'
-          ? emailP(`Tu fais partie des <strong>20 premiers photographes fondateurs</strong>. Ton tarif est verrouillé à <strong>${annual} TTC / an à vie</strong>, tant que ton abonnement reste actif.`)
-          : emailP(`Ton abonnement annuel est de <strong>${annual} TTC / an</strong>, résiliable à tout moment depuis ton espace Stripe.`)
-        }
-        ${emailInfoBlock([
-          { label: 'Tier', value: tier === 'fondateur' ? '🌟 Fondateur (à vie)' : 'Standard' },
-          { label: 'Tarif', value: `${annual} TTC / an` },
-          { label: 'Ville principale', value: escHtml(ph.ville) },
-        ], '#63D683')}
-        ${emailP(`Dernière étape : finalise ton abonnement via le lien sécurisé ci-dessous. Ton profil sera visible dans l'annuaire dès la confirmation Stripe.`)}
-        ${emailBtn(checkoutUrl ?? '#', `Finaliser mon abonnement (${annual} / an)`, 'primary')}
-        ${emailNote('Lien sécurisé Stripe. Aucun paiement n\'est débité avant ta confirmation. Tu peux toujours te désister, mais ta place fondateur reste réservée 7 jours max.')}
-      `,
-    }),
-  }).catch(err => log.error('email approve send failed', err))
-
-  revalidatePath('/dashboard/admin/photographes')
-  return { success: true }
-}
-
-/**
- * Refuse un photographe pending. Envoie email d'explication. Pas de
- * paiement déclenché donc rien à refund.
- */
-export async function rejectPhotographer(photographerId: string, reason: string): Promise<{ success?: boolean; error?: string }> {
-  const auth = await requireAdmin()
-  if ('error' in auth) return { error: auth.error }
-  if (!reason || reason.trim().length < 10) return { error: 'Raison du refus obligatoire (≥10 chars).' }
-
-  const admin = getServiceClient()
-  const { data: ph } = await admin
-    .from('photographers')
-    .select('id, email, full_name, status')
-    .eq('id', photographerId)
-    .maybeSingle()
-  if (!ph) return { error: 'Photographe introuvable' }
-  if (ph.status !== 'pending_validation') return { error: `Statut actuel : ${ph.status}` }
-
-  await admin
-    .from('photographers')
-    .update({
-      status: 'rejected',
-      rejection_reason: reason.trim().slice(0, 500),
-      validated_at: new Date().toISOString(),
-      validated_by: auth.userId,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', photographerId)
-
-  await getResend().emails.send({
-    from: FROM_EMAIL,
-    to: ph.email,
-    subject: `Ta candidature photographe LCD : notre réponse`,
-    html: buildEmail({
-      title: 'Candidature non retenue',
-      body: `
-        ${emailP(`Bonjour ${ph.full_name},`)}
-        ${emailP(`Merci de ton intérêt pour rejoindre l'annuaire des photographes LCD de Jason Marinho.`)}
-        ${emailP(`Après examen de ton portfolio et de ta candidature, nous ne pouvons malheureusement pas la retenir pour le moment. Notre annuaire est curé manuellement pour préserver une qualité homogène, ce n'est en aucun cas un jugement sur ton travail.`)}
-        ${emailInfoBlock([{ label: 'Motif', value: escHtml(reason.trim()) }], '#F97583')}
-        ${emailP(`Tu peux re-postuler à tout moment si ta situation évolue (nouveaux référencements LCD au portfolio, élargissement de zone, etc.). Bonne continuation à toi.`)}
-      `,
-    }),
-  }).catch(err => log.error('email reject send failed', err))
-
-  revalidatePath('/dashboard/admin/photographes')
-  return { success: true }
-}
+import { requireAdmin, setFicheHidden, deleteUnpaidFiche, type AdminResult } from '@/lib/pros/admin-fiche'
 
 /**
  * Récupère les KPIs + listes pour la page admin photographes.
@@ -281,99 +68,24 @@ export async function getPhotographersQueue(): Promise<{
   }
 }
 
-/**
- * Masque une fiche active (post-modération) sans toucher à l'abonnement
- * Stripe. Le pro reste facturé mais sa fiche n'est plus dans l'annuaire
- * public. Utilisé en cas de signalement / problème à investiguer.
- */
-export async function hidePhotographer(photographerId: string): Promise<{ success?: boolean; error?: string }> {
-  const auth = await requireAdmin()
-  if ('error' in auth) return { error: auth.error }
+// Masquer, réactiver, supprimer une inscription jamais payée : code commun aux
+// 3 annuaires (lib/pros/admin-fiche.ts, 31/10/2026). Validation et refus à la
+// main retirés (inscription en libre-service depuis octobre 2026, plus appelés).
 
-  const admin = getServiceClient()
-  await admin
-    .from('photographers')
-    .update({
-      status: 'hidden',
-      is_public: false,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', photographerId)
-
-  await triggerSiteRebuild('admin photographes')
-
-  revalidatePath('/dashboard/admin/photographes')
-  return { success: true }
+export async function hidePhotographer(id: string): Promise<AdminResult> {
+  const r = await setFicheHidden('photographer', id, true)
+  if (r.success) revalidatePath('/dashboard/admin/photographes')
+  return r
 }
 
-/**
- * Réactive une fiche masquée. Le pro était toujours facturé pendant la
- * mise en sommeil donc retour immédiat dans l'annuaire.
- */
-export async function unhidePhotographer(photographerId: string): Promise<{ success?: boolean; error?: string }> {
-  const auth = await requireAdmin()
-  if ('error' in auth) return { error: auth.error }
-
-  const admin = getServiceClient()
-  await admin
-    .from('photographers')
-    .update({
-      status: 'active',
-      is_public: true,
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', photographerId)
-
-  await triggerSiteRebuild('admin photographes')
-
-  revalidatePath('/dashboard/admin/photographes')
-  return { success: true }
+export async function unhidePhotographer(id: string): Promise<AdminResult> {
+  const r = await setFicheHidden('photographer', id, false)
+  if (r.success) revalidatePath('/dashboard/admin/photographes')
+  return r
 }
 
-/**
- * Supprime un orphelin pending_payment qui ne s'est jamais converti.
- * Nettoie la row + le compte Supabase Auth.
- */
-export async function deleteOrphanPhotographer(photographerId: string): Promise<{ success?: boolean; error?: string }> {
-  const auth = await requireAdmin()
-  if ('error' in auth) return { error: auth.error }
-
-  const admin = getServiceClient()
-  const { data: ph } = await admin
-    .from('photographers')
-    .select('id, status, stripe_subscription_id, stripe_subscription_status, is_public, slug, user_id')
-    .eq('id', photographerId)
-    .maybeSingle()
-  if (!ph) return { error: 'Photographe introuvable' }
-  if (!isUnpaidFiche(ph)) {
-    return { error: 'Cette fiche a été payée : masque-la plutôt (son abonnement Stripe se gère à part).' }
-  }
-  // Abonnement jamais payé encore ouvert chez Stripe : on l'annule pour qu'il ne puisse plus être réglé
-  if (ph.stripe_subscription_id && ph.stripe_subscription_status !== 'incomplete_expired') {
-    await stripe.subscriptions.cancel(ph.stripe_subscription_id).catch(() => {})
-  }
-
-  await admin.from('photographers').delete().eq('id', photographerId)
-  // Elle a pu être publiée par erreur (bug du 20/10/2026) : le site retire sa page
-  if (ph.slug || ph.is_public) await triggerSiteRebuild('admin suppression')
-  // Compte supprimé seulement s'il ne sert qu'à cette inscription : jamais un
-  // compte hôte (logements) ni un compte qui a une autre fiche pro.
-  const [{ count: logs }, { count: others }] = ph.user_id
-    ? await Promise.all([
-        admin.from('logements').select('id', { count: 'exact', head: true }).eq('user_id', ph.user_id),
-        admin.from('cleaners').select('id', { count: 'exact', head: true }).eq('user_id', ph.user_id),
-      ])
-    : [{ count: 0 }, { count: 0 }]
-  if (ph.user_id && !logs && !others) {
-    await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/admin/users/${ph.user_id}`, {
-      method: 'DELETE',
-      headers: {
-        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY!}`,
-      },
-    }).catch(() => {})
-  }
-
-  revalidatePath('/dashboard/admin/photographes')
-  return { success: true }
+export async function deleteOrphanPhotographer(id: string): Promise<AdminResult> {
+  const r = await deleteUnpaidFiche('photographer', id)
+  if (r.success) revalidatePath('/dashboard/admin/photographes')
+  return r
 }

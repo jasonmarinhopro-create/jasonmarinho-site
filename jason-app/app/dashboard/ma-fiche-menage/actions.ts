@@ -2,15 +2,11 @@
 
 import { getServiceClient } from '@/lib/supabase/service'
 import { readClienteles } from '@/lib/pros/clienteles'
-import { createClient } from '@/lib/supabase/server'
-import { stripe } from '@/lib/stripe/client'
 import { revalidatePath } from 'next/cache'
 import { logger } from '@/lib/logger'
-import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
-import * as draftServer from '@/lib/pros/fiche-draft-server'
+import * as core from '@/lib/pros/fiche-core'
 import { cleanReseaux, instaHandle } from '@/lib/pros/reseaux'
-import { cleanFormules, cleanVilles, cleanDeroule, villeCasse } from '@/lib/pros/fiche-vitrine'
-import * as vitrine from '@/lib/pros/fiche-vitrine-server'
+import { cleanFormules, cleanVilles, cleanDeroule } from '@/lib/pros/fiche-vitrine'
 import { normSiteUrl, siteUrlOk, SITE_URL_ERROR } from '@/lib/pros/site-url'
 
 const log = logger('ma-fiche-menage/actions')
@@ -23,44 +19,11 @@ const ALLOWED_EQUIPE = new Set(['solo', 'duo', 'equipe_3_5', 'equipe_6_plus'])
 const ALLOWED_DELAI = new Set(['jour_meme', '24h', '48h', '72h'])
 const ALLOWED_LANGUES = new Set(['fr', 'en', 'es', 'it', 'de', 'pt', 'ar', 'zh'])
 
-/**
- * Cleaner connecté → sa propre fiche ; admin avec targetId → édition
- * pour le compte de l'équipe désignée.
- */
-async function resolveTargetFiche(targetId?: string): Promise<
-  { cleanerId: string; isAdminEdit: boolean } | { error: string }
-> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Non authentifié' }
-  const admin = getServiceClient()
-  const { data: profile } = await admin
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle()
-  const isAdmin = profile?.role === 'admin'
+const K = 'cleaner' as const
+// Tronc commun lib/pros/fiche-core.ts depuis le 31/10/2026 (comme le dépannage) :
+// seuls les champs propres au métier sont vérifiés ici (applyFiche).
 
-  if (targetId && isAdmin) {
-    const { data: target } = await admin
-      .from('cleaners')
-      .select('id')
-      .eq('id', targetId)
-      .maybeSingle()
-    if (!target) return { error: 'Équipe cible introuvable.' }
-    return { cleanerId: target.id, isAdminEdit: true }
-  }
-
-  const { data: cl } = await admin
-    .from('cleaners')
-    .select('id')
-    .eq('user_id', user.id)
-    .maybeSingle()
-  if (!cl) return { error: 'Aucune fiche équipe ménage rattachée à ce compte.' }
-  return { cleanerId: cl.id, isAdminEdit: false }
-}
-
-async function applyCleanerFiche(payload: {
+export type CleanerPayload = {
   targetId?: string
   full_name?: string
   pseudo?: string | null
@@ -86,9 +49,9 @@ async function applyCleanerFiche(payload: {
   formules?: unknown
   villes_couvertes?: unknown
   deroule?: unknown
-}): Promise<{ success?: boolean; error?: string; warning?: string; adminEdit?: boolean }> {
-  const target = await resolveTargetFiche(payload.targetId)
-  if ('error' in target) return { error: target.error }
+}
+
+async function applyCleanerFiche(payload: CleanerPayload, target: core.Target): Promise<core.ApplyResult> {
   // Réseaux et fiche Google : liens vérifiés (lib/pros/reseaux.ts)
   const reseaux = cleanReseaux(payload.reseaux)
   if (reseaux.errors.length) return { error: reseaux.errors[0] }
@@ -145,11 +108,11 @@ async function applyCleanerFiche(payload: {
   let { error: updateErr } = await admin
     .from('cleaners')
     .update({ ...fields, reseaux: reseaux.value, ...vitrineFields })
-    .eq('id', target.cleanerId)
+    .eq('id', target.proId)
   // Migration 125 pas encore appliquée : on enregistre le reste
   let warning: string | undefined
   if (updateErr && /reseaux|formules|villes_couvertes|deroule/.test(`${updateErr.message} ${updateErr.details ?? ''}`)) {
-    ({ error: updateErr } = await admin.from('cleaners').update(fields).eq('id', target.cleanerId))
+    ({ error: updateErr } = await admin.from('cleaners').update(fields).eq('id', target.proId))
     if (!updateErr) warning = 'Fiche enregistrée, sauf tes réseaux, formules, villes et étapes : ils arrivent dans quelques heures, réessaie plus tard.'
   }
 
@@ -159,394 +122,39 @@ async function applyCleanerFiche(payload: {
   }
 
   // Téléphone affiché sur la fiche (migration 153) : à part, sans bloquer si la colonne manque
-  await admin.from('cleaners').update({ telephone_public: !!payload.telephone_public && !!fields.telephone }).eq('id', target.cleanerId)
+  await admin.from('cleaners').update({ telephone_public: !!payload.telephone_public && !!fields.telephone }).eq('id', target.proId)
   // Clientèles (migration 154) : même principe
-  if (Array.isArray(payload.clienteles)) await admin.from('cleaners').update({ clienteles: readClienteles(payload.clienteles) }).eq('id', target.cleanerId)
+  if (Array.isArray(payload.clienteles)) await admin.from('cleaners').update({ clienteles: readClienteles(payload.clienteles) }).eq('id', target.proId)
 
-  revalidatePath('/dashboard/ma-fiche-menage')
   if (target.isAdminEdit) revalidatePath('/dashboard/admin/menage')
-  return { success: true, warning, adminEdit: target.isAdminEdit }
+  return { success: true, warning }
 }
 
-/** Enregistre et met en ligne tout de suite (ancien bouton « Enregistrer ») */
-export async function updateCleanerFiche(payload: Parameters<typeof applyCleanerFiche>[0]) {
-  const res = await applyCleanerFiche(payload)
-  if (res.success) await triggerSiteRebuild('fiche ménage')
-  return res
+/** Brouillon enregistré à chaque changement (atelier) */
+export async function saveFicheDraft(draft: unknown, targetId?: string) { return core.saveDraft(K, draft, targetId) }
+
+/** « Mettre en ligne » : champs vérifiés ici, brouillon vidé et site reconstruit par le tronc commun */
+export async function publishFiche(payload: CleanerPayload) {
+  return core.publish(K, target => applyCleanerFiche(payload, target), payload.targetId)
 }
 
-/**
- * Atelier de Ma fiche (27/10/2026) : brouillon enregistré à chaque changement,
- * sans toucher à la fiche publique ni reconstruire le site (lib/pros/fiche-draft-server.ts).
- */
-export async function saveFicheDraft(draft: unknown, targetId?: string): Promise<{ ok?: boolean; reason?: string; error?: string }> {
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-  const res = await draftServer.saveDraft('cleaners', target.cleanerId, draft)
-  return res.ok ? { ok: true } : { reason: res.reason }
-}
+export async function uploadCleanerLogo(formData: FormData) { return core.uploadLogo(K, formData) }
+export async function deleteCleanerLogo(targetId?: string) { return core.deleteLogo(K, targetId) }
 
-/**
- * « Mettre en ligne » : les champs passent sur la fiche publique (mêmes
- * vérifications qu'avant), le brouillon est vidé et le site reconstruit une
- * seule fois, photos et logo compris. Fiche pas encore active : rien à
- * reconstruire, elle apparaîtra au paiement.
- */
-export async function publishFiche(payload: Parameters<typeof applyCleanerFiche>[0]): Promise<{ success?: boolean; error?: string; warning?: string; adminEdit?: boolean; live?: boolean; rebuildFailed?: boolean }> {
-  const res = await applyCleanerFiche(payload)
-  if (!res.success) return res
-  const target = await resolveTargetFiche(payload.targetId)
-  if ('error' in target) return { error: target.error }
-  await draftServer.clearDraft('cleaners', target.cleanerId)
-  const { data } = await getServiceClient().from('cleaners').select('status').eq('id', target.cleanerId).maybeSingle()
-  const live = data?.status === 'active'
-  const rebuilt = live ? await triggerSiteRebuild('fiche ménage') : true
-  return { ...res, live, rebuildFailed: !rebuilt }
-}
+export async function prepareFichePhotos(count: number, targetId?: string) { return core.preparePhotos(K, count, targetId) }
+export async function addFichePhotos(paths: string[], targetId?: string) { return core.addPhotos(K, paths, targetId) }
+export async function removeFichePhoto(path: string, targetId?: string) { return core.removePhoto(K, path, targetId) }
+export async function moveFichePhoto(path: string, dir: -1 | 1, targetId?: string) { return core.movePhoto(K, path, dir, targetId) }
+export async function publishFichePhotos(targetId?: string) { return core.publishPhotos(K, targetId) }
 
-/**
- * Upload du logo de l'équipe ménage (carré, max 500 KB, JPEG/PNG/WebP).
- */
-export async function uploadCleanerLogo(formData: FormData): Promise<{ success?: boolean; url?: string; error?: string }> {
-  const targetId = formData.get('targetId') as string | null
-  const target = await resolveTargetFiche(targetId ?? undefined)
-  if ('error' in target) return { error: target.error }
+export async function createCustomerPortalSession(targetId?: string) { return core.portalSession(K, targetId) }
+export async function resumeFichePayment(targetId?: string) { return core.resumePayment(K, targetId) }
 
-  const file = formData.get('logo') as File | null
-  if (!file || file.size === 0) return { error: 'Aucun fichier.' }
-  if (file.size > 524288) return { error: 'Fichier trop lourd (max 500 KB).' }
-  const mime = file.type
-  const validExt: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }
-  if (!validExt[mime]) return { error: 'Format invalide. Accepté : JPEG, PNG, WebP.' }
-  const ext = validExt[mime]
+export async function updateContactStatus(contactId: string, status: string, targetId?: string) { return core.updateContactStatus(K, contactId, status, targetId) }
+export async function updateContactNotes(contactId: string, notes: string, targetId?: string) { return core.updateContactNotes(K, contactId, notes, targetId) }
+export async function deleteContact(contactId: string, targetId?: string) { return core.deleteContact(K, contactId, targetId) }
+export async function addClientFromContact(contactId: string, targetId?: string) { return core.clientFromContact(K, contactId, targetId) }
 
-  const admin = getServiceClient()
-  const path = `${target.cleanerId}/avatar.${ext}`
-  const { error: uploadErr } = await admin.storage
-    .from('pro-logos')
-    .upload(path, file, { contentType: mime, upsert: true })
-  if (uploadErr) {
-    log.error('upload logo failed', uploadErr)
-    return { error: 'Upload échoué.' }
-  }
-  const { data: pub } = admin.storage.from('pro-logos').getPublicUrl(path)
-  const url = `${pub.publicUrl}?v=${Date.now()}`
-
-  const { error: updateErr } = await admin
-    .from('cleaners')
-    .update({ logo_url: url, updated_at: new Date().toISOString() })
-    .eq('id', target.cleanerId)
-  if (updateErr) {
-    log.error('update logo_url failed', updateErr)
-    return { error: 'Erreur lors de la sauvegarde.' }
-  }
-
-  // Pas de reconstruction ici : le logo part avec « Mettre en ligne » (atelier, 27/10/2026)
-
-  revalidatePath('/dashboard/ma-fiche-menage')
-  return { success: true, url }
-}
-
-export async function deleteCleanerLogo(targetId?: string): Promise<{ success?: boolean; error?: string }> {
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-  const admin = getServiceClient()
-  await admin.from('cleaners').update({ logo_url: null, updated_at: new Date().toISOString() }).eq('id', target.cleanerId)
-  // Pas de reconstruction ici : le logo part avec « Mettre en ligne » (atelier, 27/10/2026)
-  revalidatePath('/dashboard/ma-fiche-menage')
-  return { success: true }
-}
-
-export async function createCustomerPortalSession(targetId?: string): Promise<{ url?: string; error?: string }> {
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-
-  const admin = getServiceClient()
-  const { data: cl } = await admin
-    .from('cleaners')
-    .select('stripe_customer_id')
-    .eq('id', target.cleanerId)
-    .maybeSingle()
-  if (!cl?.stripe_customer_id) return { error: 'Abonnement Stripe non encore initialisé.' }
-
-  try {
-    const session = await stripe.billingPortal.sessions.create({
-      customer: cl.stripe_customer_id,
-      return_url: 'https://app.jasonmarinho.com/dashboard/ma-fiche-menage',
-    })
-    return { url: session.url }
-  } catch (e) {
-    log.error('billing portal create failed', e)
-    return { error: 'Impossible de créer la session de gestion d\'abonnement.' }
-  }
-}
-
-/**
- * Demandes reçues : met à jour le statut pipeline d'une demande
- * (nouvelle → répondue → devis envoyé → gagnée/perdue).
- */
-export async function updateContactStatus(
-  contactId: string,
-  status: string,
-  targetId?: string,
-): Promise<{ success?: boolean; error?: string }> {
-  const VALID = ['nouvelle', 'repondue', 'devis_envoye', 'gagnee', 'perdue']
-  if (!VALID.includes(status)) return { error: 'Statut invalide.' }
-
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-
-  const admin = getServiceClient()
-  const { error } = await admin
-    .from('cleaner_contacts')
-    .update({ status })
-    .eq('id', contactId)
-    .eq('cleaner_id', target.cleanerId)
-  if (error) {
-    log.error('updateContactStatus failed', { error: error.message })
-    return { error: 'Mise à jour impossible. Réessaie.' }
-  }
-  revalidatePath('/dashboard/ma-fiche-menage')
-  return { success: true }
-}
-
-/**
- * Demandes reçues : notes privées du pro sur une demande (devis, relances…).
- */
-export async function updateContactNotes(
-  contactId: string,
-  notes: string,
-  targetId?: string,
-): Promise<{ success?: boolean; error?: string }> {
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-
-  const admin = getServiceClient()
-  const { error } = await admin
-    .from('cleaner_contacts')
-    .update({ pro_notes: String(notes ?? '').slice(0, 2000) || null })
-    .eq('id', contactId)
-    .eq('cleaner_id', target.cleanerId)
-  if (error) {
-    log.error('updateContactNotes failed', { error: error.message })
-    return { error: 'Enregistrement impossible. Réessaie.' }
-  }
-  revalidatePath('/dashboard/ma-fiche-menage')
-  return { success: true }
-}
-
-/**
- * Demandes reçues : suppression d'une demande par le pro.
- */
-export async function deleteContact(
-  contactId: string,
-  targetId?: string,
-): Promise<{ success?: boolean; error?: string }> {
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-
-  const admin = getServiceClient()
-  const { error } = await admin
-    .from('cleaner_contacts')
-    .delete()
-    .eq('id', contactId)
-    .eq('cleaner_id', target.cleanerId)
-  if (error) {
-    log.error('deleteContact failed', { error: error.message })
-    return { error: 'Suppression impossible. Réessaie.' }
-  }
-  revalidatePath('/dashboard/ma-fiche-menage/demandes')
-  return { success: true }
-}
-
-// ── Mini-CRM "Mes clients" ─────────────────────────────────────────
-
-type ProClientInput = {
-  nom: string
-  email?: string
-  telephone?: string
-  ville?: string
-  logement?: string
-  statut?: string
-  notes?: string
-}
-
-function sanitizeClientInput(data: ProClientInput) {
-  const statut = ['prospect', 'client', 'fidele'].includes(data.statut ?? '') ? data.statut : 'prospect'
-  return {
-    nom: String(data.nom ?? '').trim().slice(0, 120),
-    email: String(data.email ?? '').trim().slice(0, 200) || null,
-    telephone: String(data.telephone ?? '').trim().slice(0, 40) || null,
-    ville: villeCasse(String(data.ville ?? '').slice(0, 100)) || null,
-    logement: String(data.logement ?? '').trim().slice(0, 200) || null,
-    statut,
-    notes: String(data.notes ?? '').trim().slice(0, 3000) || null,
-  }
-}
-
-export async function createProClient(
-  data: ProClientInput,
-  targetId?: string,
-): Promise<{ id?: string; error?: string }> {
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-
-  const clean = sanitizeClientInput(data)
-  if (!clean.nom) return { error: 'Le nom est obligatoire.' }
-
-  const admin = getServiceClient()
-  const { data: row, error } = await admin
-    .from('pro_clients')
-    .insert({ owner_kind: 'cleaner', owner_id: target.cleanerId, ...clean })
-    .select('id')
-    .single()
-  if (error) {
-    log.error('createProClient failed', { error: error.message })
-    return { error: 'Enregistrement impossible. Réessaie.' }
-  }
-  revalidatePath('/dashboard/ma-fiche-menage/clients')
-  return { id: row.id }
-}
-
-export async function updateProClient(
-  clientId: string,
-  data: ProClientInput,
-  targetId?: string,
-): Promise<{ success?: boolean; error?: string }> {
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-
-  const clean = sanitizeClientInput(data)
-  if (!clean.nom) return { error: 'Le nom est obligatoire.' }
-
-  const admin = getServiceClient()
-  const { error } = await admin
-    .from('pro_clients')
-    .update(clean)
-    .eq('id', clientId)
-    .eq('owner_kind', 'cleaner')
-    .eq('owner_id', target.cleanerId)
-  if (error) {
-    log.error('updateProClient failed', { error: error.message })
-    return { error: 'Mise à jour impossible. Réessaie.' }
-  }
-  revalidatePath('/dashboard/ma-fiche-menage/clients')
-  return { success: true }
-}
-
-export async function deleteProClient(
-  clientId: string,
-  targetId?: string,
-): Promise<{ success?: boolean; error?: string }> {
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-
-  const admin = getServiceClient()
-  const { error } = await admin
-    .from('pro_clients')
-    .delete()
-    .eq('id', clientId)
-    .eq('owner_kind', 'cleaner')
-    .eq('owner_id', target.cleanerId)
-  if (error) {
-    log.error('deleteProClient failed', { error: error.message })
-    return { error: 'Suppression impossible. Réessaie.' }
-  }
-  revalidatePath('/dashboard/ma-fiche-menage/clients')
-  return { success: true }
-}
-
-/**
- * Convertit une demande reçue en client du carnet (nom + email repris,
- * lien source conservé). Dédupliqué par email si déjà présent.
- */
-export async function addClientFromContact(
-  contactId: string,
-  targetId?: string,
-): Promise<{ id?: string; already?: boolean; error?: string }> {
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-
-  const admin = getServiceClient()
-  const { data: contact } = await admin
-    .from('cleaner_contacts')
-    .select('id, contact_name, contact_email, contact_phone, message')
-    .eq('id', contactId)
-    .eq('cleaner_id', target.cleanerId)
-    .maybeSingle()
-  if (!contact) return { error: 'Demande introuvable.' }
-
-  // Déduplication par email dans le carnet du pro
-  if (contact.contact_email) {
-    const { data: existing } = await admin
-      .from('pro_clients')
-      .select('id')
-      .eq('owner_kind', 'cleaner')
-      .eq('owner_id', target.cleanerId)
-      .eq('email', contact.contact_email)
-      .maybeSingle()
-    if (existing) return { id: existing.id, already: true }
-  }
-
-  const { data: row, error } = await admin
-    .from('pro_clients')
-    .insert({
-      owner_kind: 'cleaner',
-      owner_id: target.cleanerId,
-      nom: contact.contact_name || contact.contact_email || 'Hôte',
-      email: contact.contact_email,
-      telephone: contact.contact_phone ?? null,
-      notes: contact.message ? `Demande initiale : ${String(contact.message).slice(0, 500)}` : null,
-      source_contact_id: contact.id,
-    })
-    .select('id')
-    .single()
-  if (error) {
-    log.error('addClientFromContact failed', { error: error.message })
-    return { error: 'Conversion impossible. Réessaie.' }
-  }
-  revalidatePath('/dashboard/ma-fiche-menage/clients')
-  return { id: row.id }
-}
-
-// ─── Photos de la fiche (migration 131, lib/pros/fiche-vitrine-server.ts) ───
-
-export async function prepareFichePhotos(count: number, targetId?: string) {
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-  return vitrine.preparePhotoUploads('cleaners', target.cleanerId, count)
-}
-
-export async function addFichePhotos(paths: string[], targetId?: string) {
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-  return vitrine.addPhotos('cleaners', target.cleanerId, paths)
-}
-
-export async function removeFichePhoto(path: string, targetId?: string) {
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-  return vitrine.removePhoto('cleaners', target.cleanerId, path)
-}
-
-export async function moveFichePhoto(path: string, dir: -1 | 1, targetId?: string) {
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-  return vitrine.movePhoto('cleaners', target.cleanerId, path, dir)
-}
-
-/** Met les photos en ligne : une seule reconstruction du site */
-export async function publishFichePhotos(targetId?: string) {
-  const target = await resolveTargetFiche(targetId)
-  if ('error' in target) return { error: target.error }
-  return vitrine.publishPhotos('cleaners')
-}
-
-/**
- * Paiement abandonné : rouvre Stripe Checkout pour la fiche déjà enregistrée
- * (bouton « Finaliser mon paiement », lib/pros/resume-checkout.ts).
- */
-export async function resumeFichePayment(targetId?: string): Promise<{ checkoutUrl?: string; error?: string; info?: string }> {
-  const { resumeProCheckout } = await import('@/lib/pros/resume-checkout')
-  return resumeProCheckout('cleaner', targetId)
-}
+export async function createProClient(data: core.ProClientInput, targetId?: string) { return core.createClientRow(K, data, targetId) }
+export async function updateProClient(clientId: string, data: core.ProClientInput, targetId?: string) { return core.updateClientRow(K, clientId, data, targetId) }
+export async function deleteProClient(clientId: string, targetId?: string) { return core.deleteClientRow(K, clientId, targetId) }
