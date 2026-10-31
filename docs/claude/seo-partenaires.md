@@ -49,3 +49,14 @@ Partie de la documentation interne (index : CLAUDE.md à la racine). Notes déta
 ## Nombre d'hôtes affiché (31/10/2026)
 
 `data/chiffres.json` (`hotes`, 500 au 31/10/2026, Jason : « Driing a maintenant plus de 500 hôtes »). `scripts/sync-counts.mjs` remplace à chaque build « N+ hôtes » et « plus de N hôtes » (N ≥ 200) dans les pages, articles et leurs sources. Les phrases d'échantillon (« Sur 250 hôtes suivis… », « 100+ hôtes ») ne sont pas touchées : elles décrivent des données, pas le nombre d'hôtes.
+
+## Accueil D (31/10/2026, validé par Jason)
+
+- Maquette sur le canevas « Nouvelle page d'accueil » (proposition D). Choix faits d'après les visites des 90 jours (61 % quittent l'accueil sans cliquer, 5 s en médiane, 1er clic vers l'annuaire) : carte « Qu'est-ce qui t'amène ? » à 4 entrées (Trouver un pro ouvert par défaut, 3 métiers, ville → `/trouver-un-pro?metier=&ville=` ; les annuaires n'acceptent pas de ville en paramètre), 3 garanties sous le titre, « Un seul endroit, trois façons » (sans captures de l'espace hôte : 3 étapes à la place), formations sur fond vert (22 cartes dans le code, un thème visible), « Tu es pro ? », questions (`<details>` + FAQPage), Jason (lien suivi vers driing.co), blog, partenaires, lettre du mois.
+- Refus de Jason à respecter : pas de pastille « Nouveau » à tenir à jour, pas de « c'est lui qui te répond », pas de grands numéros ni de jaune dans les formations, pas de liens annuaires dans la carte Trouver, formations mentionnées à un seul endroit.
+- Blog : `scripts/build-derniers-articles.mjs` réécrit les 3 derniers articles (rss.xml) entre `<!-- DERNIERS-ARTICLES -->` et `<!-- /DERNIERS-ARTICLES -->` à chaque déploiement.
+
+## Black Friday Lodgify (code JASON65, e-mail de Lodgify du 30/10/2026)
+
+- -65 % sur Professional et Ultimate en annuel ou 2 ans, nouveaux clients, du 12/11 au 12/12/2026. Ventes suivies par le lien affilié, pas le code : toujours les deux ensemble. Commission majorée de 15 % sur les paiements du 1er au 30/11 (pour Jason, jamais affiché).
+- `nav.js` (fin) : encart daté avant la 1re mention du code Lodgify JASON15 de la page (« Bientôt » jusqu'au 11/11, puis bouton affilié `rel="sponsored noopener"` + « Lien affilié »), carte du catalogue `/partenaires` changée pendant l'offre, rien après le 12/12. Lettre du mois : `jason-app/lib/newsletter/promos.ts` (testé) remplace le bon plan des éditions qui proposent Lodgify, du 01/11 au 12/12.

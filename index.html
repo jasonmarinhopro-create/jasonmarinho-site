@@ -14,7 +14,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jason Marinho, Expert LCD, formations et outils pour hôtes</title>
-<meta name="description" content="Formations, outils gratuits, annuaires de photographes, vidéastes, équipes ménage et dépannage LCD, estimateur pour investisseurs, fiche de police préparée automatiquement. Développe ton activité de location courte durée avec Jason Marinho.">
+<meta name="description" content="Un espace gratuit pour gérer ta location courte durée, les photographes, équipes de ménage et artisans du dépannage de ta ville, et 22 formations concrètes. Par Jason Marinho.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jasonmarinho.com/">
 <meta property="og:title" content="Jason Marinho - Expert Location Courte Durée | Formations, Ressources & Accompagnement">
@@ -58,801 +58,548 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --g:#004C3F;--gd:#003329;--gm:#005A4A;
-  --ol:#556B2F;--y:#FFD56B;--yw:#FFF8E1;
-  --cr:#F7F5F0;--w:#FDFCF9;
-  --td:#0F1A0D;--tm:#3D5038;--tl:#5A6B57;
-  --bd:rgba(0,76,63,.09);
+  --ol:#556B2F;--y:#FFD56B;--yw:#FFF4D2;--yb:#F2E2A8;
+  --cr:#F7F8F4;--w:#FFFFFF;--chip:#F1F4EF;
+  --td:#0F1A0D;--tm:#3D5038;--tl:#4A5A47;--tf:#6B7A68;
+  --bd:#E3E8E0;--bd2:#D6DBD3;
 }
 html{scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:'Outfit',system-ui,sans-serif;background:var(--w);color:var(--td);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:var(--g)}a:hover{color:var(--gd)}
+button,a,input,summary{-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--g);outline-offset:2px}
+.serif{font-family:'Fraunces',serif;font-weight:300}
+.wrap{max-width:1240px;margin:0 auto;padding:0 40px}
+.eyb{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ol)}
+.h2{font-family:'Fraunces',serif;font-weight:300;font-size:46px;line-height:1.08;letter-spacing:-.03em}
+.h2 em{color:var(--g)}
+.lead2{font-size:16px;color:var(--tl);line-height:1.55}
+.sec{padding:96px 0}
+.sec-top0{padding:0 0 96px}
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+.head-l{display:flex;flex-direction:column;gap:10px;max-width:660px}
+.more{font-size:15px;font-weight:600;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:50px;padding:0 22px;border-radius:12px;font-family:inherit;font-size:15.5px;font-weight:600;text-decoration:none;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn-y{background:var(--y);color:var(--gd)}.btn-y:hover{color:var(--gd);background:#ffe08f}
+.btn-g{background:var(--g);color:#fff}.btn-g:hover{color:#fff;background:var(--gd)}
+.btn-k{background:var(--td);color:#fff}.btn-k:hover{color:#fff}
+.btn-w{background:#fff;color:var(--gd)}.btn-w:hover{color:var(--gd)}
+.hs{scrollbar-width:none}.hs::-webkit-scrollbar{display:none}
 
+/* Haut de page */
+.hero{padding:136px 0 80px}
+.hero-g{display:flex;flex-wrap:wrap;align-items:center;gap:56px}
+.hero-l{flex:1 1 520px;min-width:0;display:flex;flex-direction:column;gap:22px}
+.h1{font-family:'Fraunces',serif;font-weight:300;font-size:70px;line-height:1.03;letter-spacing:-.035em}
+.h1 em{color:var(--g);font-weight:400}
+.hero-p{font-size:18.5px;line-height:1.6;color:var(--tl);max-width:540px}
+.gar{list-style:none;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14px;color:var(--tm)}
+.gar li{display:flex;align-items:center;gap:7px}
+.gar a{font-weight:600}
+.by{display:flex;align-items:center;gap:12px;font-size:14px;color:var(--tl)}
+.by img{width:42px;height:42px;border-radius:50%;object-fit:cover;object-position:center top;border:2px solid var(--y)}
+.by a{font-weight:600}
+.intent{flex:1 1 420px;min-width:0;max-width:480px;background:var(--gd);color:#fff;border-radius:24px;padding:10px;box-shadow:0 28px 70px rgba(0,51,41,.22)}
+.intent-t{padding:14px 14px 10px;font-family:'Fraunces',serif;font-size:22px}
+.it{border-radius:16px;margin-bottom:6px;transition:background .2s}
+.it.open{background:rgba(255,255,255,.07)}
+.it-b{width:100%;display:flex;align-items:center;gap:14px;padding:14px;border:none;background:none;font-family:inherit;text-align:left;cursor:pointer;color:#fff;min-height:64px}
+.it-i{width:40px;height:40px;flex:none;border-radius:12px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:var(--y);transition:background .2s,color .2s}
+.it.open .it-i{background:var(--y);color:var(--gd)}
+.it-tx{flex:1;display:flex;flex-direction:column;gap:2px}
+.it-tx b{font-size:16px;font-weight:600}
+.it-tx span{font-size:13.5px;color:rgba(255,255,255,.65)}
+.it-ch{color:var(--y);transition:transform .2s}
+.it.open .it-ch{transform:rotate(180deg)}
+.it-p{padding:0 14px 16px;display:flex;flex-direction:column;gap:10px}
+.it-p[hidden]{display:none}
+.it-p .btn{width:100%}
+.it-note{font-size:12.5px;color:rgba(255,255,255,.6);text-align:center}
+.it-note a{color:var(--y)}
+.seg{display:flex;gap:6px;background:rgba(255,255,255,.08);border-radius:12px;padding:4px}
+.seg button{flex:1;height:40px;border-radius:9px;border:none;font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;background:transparent;color:#fff}
+.seg button[aria-checked="true"]{background:#fff;color:var(--gd)}
+.fld{display:flex;flex-direction:column;gap:6px;font-size:13px;color:rgba(255,255,255,.75)}
+.fld input{height:48px;padding:0 14px;border-radius:12px;border:1px solid rgba(255,255,255,.22);font-family:inherit;font-size:16px;background:rgba(255,255,255,.06);color:#fff}
+.fld input::placeholder{color:rgba(255,255,255,.5)}
+.btn-o{height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.25);color:#fff;font-size:14.5px;font-weight:500;display:flex;align-items:center;justify-content:center;text-decoration:none}
+.btn-o:hover{color:#fff;background:rgba(255,255,255,.05)}
+.btn-o[hidden]{display:none}
+.lk{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);text-decoration:none;color:#fff;font-size:14.5px;min-height:44px}
+.lk:hover{color:#fff;background:rgba(255,255,255,.1)}
+.lk small{color:rgba(255,255,255,.55);font-size:13px}
+.lk em{font-style:normal;color:var(--y);font-size:13px;font-weight:600}
 
-.nav-logo-img {
-  width: 36px; height: 36px;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
-  opacity: 0.9;
-  flex-shrink: 0;
-}
+/* Trois façons */
+.tri{display:flex;flex-wrap:wrap;gap:16px}
+.c1{flex:1.35 1 440px;min-width:0;border-radius:26px;background:var(--g);color:#fff;padding:40px;display:flex;flex-direction:column;gap:16px}
+.c-eyb{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.c-h{font-family:'Fraunces',serif;font-weight:300;line-height:1.1}
+.c1 .c-h{font-size:32px}
+.c1 p{font-size:15.5px;line-height:1.55;color:rgba(255,255,255,.78)}
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:4px 0}
+.flow div{border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:16px;display:flex;flex-direction:column;gap:8px;font-size:13.5px;color:rgba(255,255,255,.75);line-height:1.45}
+.flow b{font-size:15px;color:#fff;font-weight:600}
+.flow i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--y);color:var(--gd);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.c1 .chips a{padding:8px 12px;border-radius:99px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);font-size:13.5px;color:#fff;text-decoration:none}
+.c1 .chips a:hover{background:rgba(255,255,255,.16)}
+.c1 .btn{align-self:flex-start;margin-top:auto}
+.col{flex:1 1 340px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.c2{border-radius:26px;background:var(--yw);padding:26px;display:flex;flex-direction:column;gap:12px}
+.c2 .c-eyb{color:#6B5200}
+.c2 .c-h,.c3 .c-h{font-size:26px;line-height:1.12}
+.c2 ol{list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14.5px;color:#4A4022;line-height:1.5}
+.c2 .btn{align-self:flex-start;height:46px;font-size:14.5px}
+.c3{border-radius:26px;background:#fff;border:1px solid var(--bd);padding:26px;display:flex;flex-direction:column;gap:12px}
+.c3 .c-eyb{color:var(--g)}
+.c3 .chips a{padding:8px 12px;border-radius:99px;background:var(--chip);font-size:13.5px;color:var(--tm);text-decoration:none}
+.c3 .chips a:hover{background:#E6ECE3}
 
-/* ── NAV ── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:200;
-  height:64px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 clamp(16px,5vw,60px);
-  background:rgba(0,51,41,.97);backdrop-filter:blur(20px);
-  border-bottom:1px solid rgba(255,213,107,.07);
-  transition:box-shadow .3s;
-}
-nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}
+/* Formations */
+.fo{background:var(--gd);color:#fff}
+.fo .eyb{color:#9FD3B5}
+.fo .h2 em{color:#BFE3C9}
+.fo .lead2{color:rgba(255,255,255,.72)}
+.fo-in{display:flex;flex-direction:column;gap:26px}
+.fo-k{display:flex;gap:8px;flex-wrap:wrap}
+.fo-k span{display:flex;flex-direction:column;gap:2px;padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);font-size:12.5px;color:rgba(255,255,255,.6)}
+.fo-k b{font-size:17px;font-weight:600;color:#fff}
+.tabs{display:flex;gap:8px;overflow-x:auto}
+.tabs button{flex:none;height:42px;padding:0 15px;border-radius:99px;border:1.5px solid rgba(255,255,255,.22);background:transparent;color:#fff;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.tabs button span{font-size:12px;opacity:.65}
+.tabs button[aria-selected="true"]{background:#fff;border-color:#fff;color:var(--gd)}
+.rail{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
+.rail[hidden]{display:none}
+.fc{flex:none;width:286px;scroll-snap-align:start;text-decoration:none;color:var(--td);background:#fff;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s}
+.fc:hover{color:var(--td);transform:translateY(-3px)}
+.fc-top{height:92px;background:#E8F1EC;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+.fc-ic{width:44px;height:44px;border-radius:13px;background:#fff;display:flex;align-items:center;justify-content:center;color:var(--g)}
+.fc-th{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tm)}
+.fc-b{padding:16px 18px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+.fc-m{font-size:12.5px;color:var(--tf)}
+.fc-t{font-family:'Fraunces',serif;font-size:19px;line-height:1.25}
+.fc-go{font-size:14px;color:var(--g);font-weight:600;margin-top:auto}
+.fo .btn-w{align-self:flex-start;height:48px}
 
-.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}
-.n-logo svg{width:34px;height:34px;flex-shrink:0}
-.n-brand{font-family:'Fraunces',serif;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.2px;white-space:nowrap}
-.n-brand em{color:var(--y);font-style:italic;font-weight:300}
+/* Pros */
+.pros{display:flex;flex-wrap:wrap;gap:14px}
+.pc{flex:1 1 300px;min-width:0;text-decoration:none;color:var(--td);background:#fff;border:1px solid var(--bd);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;transition:border-color .2s,transform .2s}
+.pc:hover{color:var(--td);border:1px solid var(--bd2);transform:translateY(-2px)}
+.pc-ic{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center}
+.pc-t{font-family:'Fraunces',serif;font-size:22px;line-height:1.2}
+.pc-s{font-size:14.5px;color:var(--tl);line-height:1.5}
+.pc-go{font-size:14px;color:var(--g);font-weight:600;margin-top:auto}
 
-.n-links{display:flex;align-items:center;gap:28px;list-style:none}
-.n-links a{color:rgba(255,255,255,.5);text-decoration:none;font-size:14px;transition:color .2s}
-.n-links a:hover{color:#fff}
+/* Questions */
+.faq{max-width:820px;margin:0 auto;padding:96px 40px;display:flex;flex-direction:column;gap:18px}
+.faq details{border-bottom:1px solid var(--bd)}
+.faq summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 0;font-size:17px;font-weight:500;cursor:pointer;min-height:56px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:'+';font-size:22px;color:var(--g);flex:none}
+.faq details[open] summary::after{content:'\2212'}
+.faq details p{margin:0 0 18px;font-size:15.5px;line-height:1.6;color:var(--tm)}
 
-.n-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.nb-o{font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.18);background:transparent;padding:8px 15px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:border-color .2s,color .2s,background .2s;white-space:nowrap}
-.nb-o:hover{border-color:rgba(255,255,255,.42);color:#fff;background:rgba(255,255,255,.05)}
-.nb-c{font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:var(--gd);background:var(--y);padding:8px 16px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:background .2s,transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;white-space:nowrap}
-.nb-c:hover{background:#ffe08f;transform:translateY(-1px);box-shadow:0 8px 22px rgba(255,213,107,.28)}
-.nb-c:active{transform:translateY(0)}
+/* Jason */
+.me{display:flex;flex-wrap:wrap;border-radius:28px;overflow:hidden;background:var(--gd);color:#fff}
+.me img{flex:1 1 300px;min-width:0;min-height:300px;max-height:460px;object-fit:cover;object-position:center top;display:block}
+.me-t{flex:1.4 1 420px;min-width:0;padding:40px;display:flex;flex-direction:column;gap:18px;justify-content:center}
+.me-t .c-eyb{color:var(--y)}
+.me-t p{font-size:16px;line-height:1.6;color:rgba(255,255,255,.75);max-width:520px}
+.me-t p a{color:#fff}
+.me-l{display:flex;gap:18px;flex-wrap:wrap}
+.me-l a{font-size:15px;font-weight:600;text-decoration:none;min-height:44px;display:flex;align-items:center;color:#fff}
+.me-l a:first-child{color:var(--y)}
 
-.hbg{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px}
-.hbg span{display:block;height:2px;background:rgba(255,255,255,.8);border-radius:2px;transition:.3s}
-.hbg span:nth-child(1){width:22px}
-.hbg span:nth-child(2){width:16px}
-.hbg span:nth-child(3){width:20px}
+/* Blog */
+.bl{display:flex;flex-wrap:wrap;gap:16px}
+.bl-une{flex:1.35 1 440px;min-width:0;border-radius:26px;background:var(--g);color:#fff;padding:40px;display:flex;flex-direction:column;gap:16px;text-decoration:none;min-height:380px}
+.bl-une:hover{color:#fff}
+.bl-une .c-eyb{color:var(--y)}
+.bl-une .c-h{font-size:36px;line-height:1.12;letter-spacing:-.02em}
+.bl-une p{font-size:15.5px;line-height:1.55;color:rgba(255,255,255,.75);max-width:520px}
+.bl-f{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:18px;border-top:1px solid rgba(255,255,255,.15);font-size:13.5px;color:rgba(255,255,255,.6)}
+.bl-f b{font-size:15px;font-weight:600;color:var(--y)}
+.bl-c{flex:1;border-radius:26px;background:#fff;border:1px solid var(--bd);padding:26px;display:flex;flex-direction:column;gap:10px;text-decoration:none;color:var(--td);transition:border-color .2s}
+.bl-c:hover{color:var(--td);border:1px solid var(--bd2)}
+.bl-c .c-eyb{color:var(--ol)}
+.bl-c .c-h{font-size:23px;line-height:1.18}
+.bl-c .bl-m{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13.5px;color:var(--tf)}
+.bl-c .bl-m b{color:var(--g);font-weight:600}
 
-.mob-menu{display:none;position:fixed;top:64px;left:0;right:0;background:var(--gd);border-bottom:1px solid rgba(255,213,107,.08);padding:16px clamp(16px,5vw,60px) 20px;z-index:199;flex-direction:column}
-.mob-menu.open{display:flex}
-.mob-menu a{font-size:15px;color:rgba(255,255,255,.55);text-decoration:none;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:10px;transition:color .2s}
-.mob-menu a:hover{color:#fff}
-.mob-menu a:last-of-type{border-bottom:none}
-.mob-ctas{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.05)}
-.mob-ctas a{flex:1;justify-content:center;font-size:14px;font-weight:500;text-decoration:none;padding:12px 0;border-radius:9px;display:flex;align-items:center;gap:5px}
-.mc-o{background:rgba(255,255,255,.05);color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.12)}
-.mc-c{background:var(--y);color:var(--gd)!important;font-weight:600}
+/* Partenaires */
+.pa{border-radius:28px;background:var(--yw);padding:40px;display:flex;flex-wrap:wrap;gap:56px;align-items:center}
+.pa-l{flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.pa-l .eyb{color:#6B5200}
+.pa-l p{font-size:16px;line-height:1.55;color:#4A4022;max-width:420px}
+.pa-l .btn{align-self:flex-start;height:48px}
+.pa-g{flex:1.5 1 460px;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pa-c{background:#fff;border-radius:18px;padding:16px;display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--td);min-height:44px;box-shadow:0 1px 2px rgba(74,64,34,.06);transition:transform .2s}
+.pa-c:hover{color:var(--td);transform:translateY(-2px)}
+.pa-i{width:44px;height:44px;flex:none;border-radius:50%;background:var(--chip);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:20px;color:var(--g)}
+.pa-x{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pa-x b{font-size:15.5px;font-weight:600}
+.pa-x span{font-size:13px;color:#6B5F3A;line-height:1.4}
+.pa-o{flex:none;padding:4px 9px;border-radius:99px;background:var(--y);color:#3D2E00;font-size:11.5px;font-weight:600}
 
-/* ── HERO ── */
-.hero{min-height:100svh;background:var(--gd);padding-top:64px;display:flex;flex-direction:column;position:relative;overflow:hidden}
-.h-g1{position:absolute;top:-8%;right:-12%;width:550px;height:550px;background:radial-gradient(circle,rgba(0,107,88,.3) 0%,transparent 65%);border-radius:50%;pointer-events:none}
-.h-g2{position:absolute;bottom:-12%;left:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(85,107,47,.18) 0%,transparent 65%);border-radius:50%;pointer-events:none}
-.h-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:56px 56px;pointer-events:none}
+/* Fin */
+.fin{padding:24px 0 96px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px}
+.fin .btn{height:54px;padding:0 28px;font-size:16px}
+.nl{margin-top:22px;width:100%;max-width:560px;border-radius:20px;background:var(--cr);padding:22px;display:flex;flex-direction:column;gap:12px;text-align:left}
+.nl b{font-size:16px}
+.nl p{font-size:14px;color:var(--tl);line-height:1.5}
+.nl-f{display:flex;gap:8px;position:relative}
+.nl-f input[type=email]{flex:1;min-width:0;height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--bd2);font-family:inherit;font-size:16px;background:#fff;color:var(--td)}
+.nl-f .btn{height:48px;font-size:15px;padding:0 18px}
+#brevo-msg{display:none;font-size:13.5px;color:var(--g)}
+.mbar{display:none}
 
-.h-inner{position:relative;z-index:2;flex:1;max-width:1200px;margin:0 auto;width:100%;padding:clamp(48px,8vw,80px) clamp(16px,5vw,60px) clamp(56px,8vw,80px);display:grid;grid-template-columns:1fr 380px;gap:52px;align-items:center}
+/* Entrée du haut de page (attend les polices et le menu, 700 ms au plus) */
+@keyframes fu{from{opacity:.01;transform:translateY(10px)}to{opacity:1;transform:none}}
+.hx{animation:fu .5s ease both}
+.hx2{animation:fu .5s .08s ease both}
+.fwait .hx,.fwait .hx2{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){.hx,.hx2{animation:none}.btn,.fc,.pc,.pa-c{transition:none}}
 
-.h-badge{display:inline-flex;align-items:center;gap:9px;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.22);color:var(--y);font-size:11px;font-weight:500;letter-spacing:1.3px;text-transform:uppercase;padding:7px 14px;border-radius:100px;margin-bottom:24px;width:fit-content;animation:fu .45s ease both}
-.h-dot{width:6px;height:6px;background:var(--y);border-radius:50%;animation:blink 2.5s ease-in-out infinite}
-
-.h-h1{font-family:'Fraunces',serif;font-size:clamp(40px,5.5vw,78px);font-weight:300;line-height:1.05;letter-spacing:-2px;color:#fff;margin-bottom:20px;animation:fu .45s .04s ease both}
-.h-h1 em{font-style:italic;color:var(--y)}
-
-.h-sub{font-size:clamp(15px,1.4vw,17px);font-weight:300;color:rgba(255,255,255,.46);line-height:1.75;max-width:480px;margin-bottom:36px;animation:fu .45s .08s ease both}
-
-.h-acts{display:flex;align-items:center;gap:12px;flex-wrap:wrap;animation:fu .45s .12s ease both}
-.btn-p{background:var(--y);color:var(--gd);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px 26px;border-radius:10px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:background .2s cubic-bezier(.4,0,.2,1),transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s cubic-bezier(.4,0,.2,1)}
-.btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,213,107,.32)}
-.btn-p:active{transform:translateY(0)}
-.btn-g{background:transparent;color:rgba(255,255,255,.62);font-family:'Outfit',sans-serif;font-size:15px;font-weight:400;padding:14px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.13);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
-.btn-g:hover{border-color:rgba(255,255,255,.32);color:#fff}
-
-/* Hero card */
-.h-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:28px;animation:fu .45s .14s ease both}
-.h-card-lbl{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:18px;display:flex;align-items:center;gap:8px}
-.h-card-lbl::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07)}
-
-.sr{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 0;border-bottom:1px solid rgba(255,255,255,.06)}
-.sr:first-of-type{padding-top:0}
-.sr:last-of-type{border-bottom:none;padding-bottom:0}
-.sr-v{font-family:'Fraunces',serif;font-size:30px;font-weight:600;color:#fff;line-height:1;letter-spacing:-1px;white-space:nowrap}
-.sr-v span{color:var(--y)}
-.sr-l{font-size:12px;font-weight:300;color:rgba(255,255,255,.36);line-height:1.45;text-align:right}
-
-.h-card-foot{margin-top:18px;padding:12px 14px;background:rgba(255,213,107,.07);border:1px solid rgba(255,213,107,.12);border-radius:10px;display:flex;align-items:flex-start;gap:10px}
-.h-card-foot i{color:var(--y);font-size:15px;margin-top:2px;flex-shrink:0}
-.h-card-foot p{font-size:12px;font-weight:300;color:rgba(255,255,255,.42);line-height:1.5}
-.h-card-foot strong{color:rgba(255,255,255,.72);font-weight:500}
-
-/* ── MARQUEE ── */
-.mq{background:var(--g);border-top:1px solid rgba(255,213,107,.06);border-bottom:1px solid rgba(255,213,107,.06);padding:13px 0;overflow:hidden}
-.mq-t{display:flex;white-space:nowrap;animation:mq 30s linear infinite;animation-play-state:paused;width:max-content;will-change:transform}
-.mq-i{display:flex;align-items:center;gap:26px;padding:0 26px;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:rgba(255,213,107,.35)}
-.mq-d{width:3px;height:3px;background:rgba(255,213,107,.2);border-radius:50%;flex-shrink:0}
-
-/* ── TRUST BAR ── */
-.trust{background:var(--w);padding:24px clamp(16px,5vw,60px);border-bottom:1px solid var(--bd)}
-.trust-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:clamp(20px,4vw,56px);flex-wrap:wrap}
-.trust-item{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--tm)}
-.trust-item i{font-size:18px;color:var(--g)}
-
-/* ── SECTIONS ── */
-.sec{padding:clamp(64px,9vw,104px) clamp(16px,5vw,60px)}
-.sec.cr{background:var(--cr)}
-.sec.gd{background:var(--gd)}
-.sec.wh{background:var(--w)}
-.s-in{max-width:1200px;margin:0 auto}
-
-.lbl{font-size:10.5px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--ol);margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.lbl.lt{color:rgba(255,213,107,.5)}
-.lbl.ct{justify-content:center}
-.lbl::before{content:'';width:18px;height:2px;background:currentColor;border-radius:2px}
-
-.h2{font-family:'Fraunces',serif;font-size:clamp(30px,3.8vw,50px);font-weight:300;line-height:1.1;letter-spacing:-1.5px;color:var(--td);margin-bottom:14px}
-.h2 em{font-style:italic;color:var(--g)}
-.h2.lt{color:#fff}.h2.lt em{color:var(--y)}
-.h2.ct{text-align:center}
-
-.sub{font-size:16px;font-weight:300;color:var(--tm);line-height:1.72;max-width:440px;margin-bottom:48px}
-.sub.lt{color:rgba(255,255,255,.38)}
-.sub.ct{text-align:center;margin-left:auto;margin-right:auto}
-
-/* ── SERVICES ── */
-.svc-g{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);border-radius:18px;overflow:hidden}
-.svc{display:block;padding:clamp(28px,3vw,44px) clamp(22px,2.5vw,36px);background:var(--w);position:relative;transition:background .22s;text-decoration:none;color:inherit}
-.svc:last-child{grid-column:1/-1}
-.svc:hover{background:var(--cr)}
-.svc:hover .sv-ico{background:var(--g)}.svc:hover .sv-ico i{color:var(--y)}
-.svc:hover .sv-arr{opacity:1;transform:translate(0,0)}
-.sv-arr{position:absolute;top:28px;right:28px;opacity:0;transform:translate(-5px,5px);transition:all .25s;color:var(--g)}
-.sv-arr i{font-size:18px}
-.sv-ico{width:46px;height:46px;background:var(--cr);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;transition:background .22s}
-.sv-ico i{font-size:22px;color:var(--g);transition:color .22s}
-.sv-t{font-family:'Fraunces',serif;font-size:19px;font-weight:400;color:var(--td);margin-bottom:9px;letter-spacing:-.3px}
-.sv-d{font-size:14px;font-weight:300;color:var(--tm);line-height:1.65}
-
-/* ── ABOUT ── */
-.ab-g{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,7vw,88px);align-items:center}
-.ph-wrap{position:relative}
-.ph-fr{width:100%;aspect-ratio:3/4;background:var(--gm);border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
-.ph-fr i{font-size:72px;color:rgba(255,255,255,.09)}
-.ph-fr p{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.15)}
-.fl-card{position:absolute;bottom:-16px;right:-16px;background:var(--y);border-radius:13px;padding:15px 20px;box-shadow:0 12px 32px rgba(0,0,0,.28)}
-.fl-card .fv{font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:var(--gd);line-height:1}
-.fl-card .fl{font-size:11px;font-weight:500;color:rgba(0,51,41,.6);margin-top:3px}
-
-.ab-list{list-style:none;display:flex;flex-direction:column;gap:12px;margin:26px 0 38px}
-.ab-list li{display:flex;align-items:flex-start;gap:11px;font-size:14.5px;font-weight:300;color:rgba(255,255,255,.6);line-height:1.5}
-.ab-list li span{flex:1;min-width:0;overflow-wrap:break-word;word-break:normal;hyphens:none}
-.chk{width:20px;height:20px;flex-shrink:0;background:rgba(255,213,107,.1);border:1px solid rgba(255,213,107,.22);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:1px}
-.chk i{font-size:11px;color:var(--y)}
-
-/* ── SUPPORT SECTION ── */
-.sup-g{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.sup-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px;transition:background .22s cubic-bezier(.4,0,.2,1),border-color .22s,transform .22s,box-shadow .22s}
-.sup-card:hover{background:rgba(255,255,255,.07);border-color:rgba(255,213,107,.18);transform:translateY(-3px);box-shadow:0 14px 40px rgba(0,0,0,.25)}
-.sup-ico{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
-.sup-ico i{font-size:22px}
-.sup-t{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:#fff;margin-bottom:8px;letter-spacing:-.3px}
-.sup-d{font-size:14px;font-weight:300;color:rgba(255,255,255,.38);line-height:1.65}
-.sup-tag{display:inline-flex;align-items:center;gap:5px;margin-top:14px;font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:5px 11px;border-radius:100px}
-
-/* ── FORMATIONS ── */
-.f-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;flex-wrap:wrap;gap:16px}
-.btn-ol{font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;color:var(--g);border:1.5px solid var(--g);background:transparent;padding:10px 20px;border-radius:9px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:background .2s cubic-bezier(.4,0,.2,1),color .2s cubic-bezier(.4,0,.2,1),transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s}
-.btn-ol:hover{background:var(--g);color:#fff;transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,76,63,.18)}
-.btn-ol:active{transform:translateY(0)}
-.f-gr{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.f-card{background:var(--w);border-radius:16px;overflow:hidden;border:1px solid var(--bd);transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s,border-color .25s}
-.f-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,76,63,.12);border-color:rgba(0,76,63,.18)}
-.f-th{height:158px;position:relative;display:flex;align-items:center;justify-content:center}
-.f-th i{font-size:52px;color:rgba(255,255,255,.11);position:relative;z-index:2}
-.f-th::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,.2))}
-.f-bge{position:absolute;top:12px;right:12px;z-index:3;font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:100px}
-.bge-s{background:rgba(255,213,107,.18);color:var(--y);border:1px solid rgba(255,213,107,.28)}
-.bge-i{background:rgba(85,107,47,.28);color:#b4d46e;border:1px solid rgba(85,107,47,.42)}
-.bge-w{background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.12)}
-.f-card.wip{opacity:.6;pointer-events:none}
-.f-card.wip .f-lk{display:none}
-.f-wip-tag{font-size:11px;color:rgba(255,255,255,.3);display:flex;align-items:center;gap:5px;font-weight:500}
-.f-bd{padding:22px}
-.f-cat{font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:7px}
-.f-tt{font-family:'Fraunces',serif;font-size:18px;font-weight:400;color:var(--td);line-height:1.3;letter-spacing:-.3px;margin-bottom:12px}
-.f-mt{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--tl);margin-bottom:18px}
-.f-mi{display:flex;align-items:center;gap:4px}
-.f-mi i{font-size:13px}
-.f-ft{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--bd)}
-.f-ac{font-size:11.5px;color:var(--tl);font-weight:300;display:flex;align-items:center;gap:4px}
-.f-ac i{font-size:13px;color:var(--ol)}
-.f-lk{font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px;transition:gap .2s}
-.f-card:hover .f-lk{gap:8px}
-
-/* ── CTA ── */
-.cta-s{background:var(--g);padding:clamp(64px,8vw,88px) clamp(16px,5vw,60px);text-align:center;position:relative;overflow:hidden}
-.cta-gw{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:640px;height:300px;background:radial-gradient(ellipse,rgba(255,213,107,.06) 0%,transparent 65%);pointer-events:none}
-.cta-in{max-width:520px;margin:0 auto;position:relative;z-index:2}
-.cta-fm{display:flex;gap:10px;margin:28px auto 0;max-width:420px}
-.cta-i{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:13px 16px;font-size:14.5px;font-weight:300;color:#fff;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s;min-width:0}
-.cta-i::placeholder{color:rgba(255,255,255,.28)}
-.cta-i:focus{border-color:rgba(255,213,107,.45)}
-.cta-n{font-size:11.5px;color:rgba(255,255,255,.62);margin-top:12px;font-weight:300;display:flex;align-items:center;justify-content:center;gap:5px}
-.cta-n i{font-size:12px}
-
-/* ── FOOTER ── */
-footer{background:var(--gd);padding:clamp(48px,7vw,72px) clamp(16px,5vw,60px) 28px;border-top:1px solid rgba(255,213,107,.05)}
-.ft-in{max-width:1200px;margin:0 auto}
-.ft-g{display:grid;grid-template-columns:1.7fr 1fr 1fr 1fr;gap:clamp(28px,4vw,48px);margin-bottom:48px}
-.ft-desc{font-size:13px;font-weight:300;color:rgba(255,255,255,.26);line-height:1.7;margin-top:14px;max-width:230px}
-.ft-ct{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,213,107,.28);margin-bottom:15px}
-.ft-ls{list-style:none;display:flex;flex-direction:column;gap:10px}
-.ft-ls a{font-size:13px;font-weight:300;color:rgba(255,255,255,.26);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s}
-.ft-ls a i{font-size:13px;opacity:.6}
-.ft-ls a:hover{color:rgba(255,255,255,.65)}
-.ft-bot{display:flex;justify-content:space-between;align-items:center;padding-top:22px;border-top:1px solid rgba(255,255,255,.04);flex-wrap:wrap;gap:12px}
-.ft-cp{font-size:12px;color:rgba(255,255,255,.16);font-weight:300}
-.socs{display:flex;gap:7px}
-.soc{width:40px;height:40px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:7px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:rgba(255,255,255,.3);transition:all .2s}
-.soc i{font-size:15px}
-.soc:hover{background:rgba(255,255,255,.09);color:#fff}
-
-/* ── ANIM ── */
-.fwait .h-badge,.fwait .h-h1,.fwait .h-sub,.fwait .h-acts,.fwait .h-card,.fwait .h-note{animation-play-state:paused}
-@keyframes fu{from{opacity:.01;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
-.rv.in{opacity:1;transform:translateY(0)}
-.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
-
-/* ── RESPONSIVE ── */
 @media(max-width:1024px){
-  .n-links,.n-right{display:none}
-  .hbg{display:flex}
-  .h-inner{grid-template-columns:1fr;gap:40px}
-  .h-card{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;background:transparent;border:none;padding:0}
-  .h-card-lbl,.h-card-foot{display:none}
-  .sr{flex-direction:column;align-items:flex-start;padding:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;gap:4px}
-  .sr:first-of-type,.sr:last-of-type{padding:18px;border-bottom:1px solid rgba(255,255,255,.08)}
-  .sr-l{text-align:left}
-  .ab-g{grid-template-columns:1fr;gap:52px}
-  .ph-wrap{max-width:360px}
-  .fl-card{right:0}
-  .svc-g{grid-template-columns:repeat(2,1fr)}
-  .sup-g{grid-template-columns:1fr 1fr}
-  .f-gr{grid-template-columns:repeat(2,1fr)}
-  .ft-g{grid-template-columns:1fr 1fr;gap:32px}
+  .h1{font-size:56px}
 }
-@media(max-width:768px){
-  .ft-g{grid-template-columns:1fr 1fr;gap:28px}
-  .trust-inner{flex-wrap:wrap;gap:14px}
-  .h-acts{flex-wrap:wrap}
+@media(max-width:720px){
+  .wrap{padding:0 16px}
+  .sec{padding:56px 0}
+  .sec-top0{padding:0 0 56px}
+  .hero{padding:92px 0 36px}
+  .hero-g{gap:28px}
+  .h1{font-size:40px}
+  .hero-p{font-size:16.5px}
+  .by{display:none}
+  .h2{font-size:32px}
+  .c1,.bl-une,.pa,.me-t{padding:24px 20px}
+  .c1 .c-h{font-size:27px}
+  .flow{grid-template-columns:1fr}
+  .flow div{flex-direction:row;align-items:center}
+  .bl-une{min-height:0}
+  .bl-une .c-h{font-size:27px}
+  .pa{gap:28px}
+  .pa-g{grid-template-columns:1fr}
+  .tabs,.rail{margin-right:-16px;padding-right:16px}
+  .fc{width:76%}
+  .pc{padding:18px;gap:8px}
+  .pc-t{font-size:20px}
+  .pros{gap:10px}
+  .faq{padding:56px 16px}
+  .fin{padding:8px 0 96px}
+  .nl-f{flex-direction:column}
+  .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:150;gap:8px;padding:10px 16px calc(14px + env(safe-area-inset-bottom));background:rgba(255,255,255,.97);border-top:1px solid var(--bd);transform:translateY(110%);transition:transform .25s}
+  .mbar.on{transform:none}
+  .mbar a{flex:1;height:48px;border-radius:12px;font-size:15px;display:flex;align-items:center;justify-content:center;text-decoration:none}
+  .mbar a:first-child{background:var(--g);color:#fff;font-weight:600}
+  .mbar a:last-child{border:1.5px solid var(--bd2);color:var(--td);font-weight:500}
 }
-@media(max-width:640px){
-  .ab-list li{font-size:13.5px}
-  .h-inner{padding:clamp(36px,8vw,56px) clamp(16px,5vw,60px) clamp(48px,8vw,64px)}
-  .h-h1{letter-spacing:-1.5px}
-  .h-acts{flex-direction:column;align-items:stretch}
-  .h-acts a{justify-content:center}
-  .h-card{grid-template-columns:1fr}
-  .svc-g{grid-template-columns:1fr}
-  .sup-g{grid-template-columns:1fr}
-  .f-gr{grid-template-columns:1fr}
-  .f-card-mob-hide{display:none!important}
-  .f-hd{flex-direction:column;align-items:flex-start}
-  .cta-fm{flex-direction:column}
-  .cta-fm .btn-p{justify-content:center}
-  .ft-g{grid-template-columns:1fr;gap:28px}
-  .ft-desc{max-width:100%}
-  .ft-bot{flex-direction:column;align-items:flex-start}
-  .trust-inner{gap:16px}
-  .trust-item{font-size:12px}
-}
-.h-note{margin-top:14px;font-size:13px;color:rgba(255,255,255,.55);animation:fu .45s .14s ease both}
-.cta-band{margin-top:40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:26px 30px;border-radius:18px;background:var(--gd);color:#fff}
-.cta-band-t{font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin-bottom:6px}
-.cta-band-d{margin:0;font-size:14px;line-height:1.6;color:rgba(255,255,255,.7);max-width:560px}
-@media(max-width:640px){.cta-band{padding:22px 20px}.cta-band .btn-p{width:100%;justify-content:center}}
 </style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "C'est vraiment gratuit ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui. Le compte Découverte est gratuit pour toujours, sans carte bancaire : calendrier, planning ménage, simulateurs, guides et 2 formations. La formule Standard (38,98 € TTC par an) ajoute les contrats, le paiement en ligne et les cautions."}}, {"@type": "Question", "name": "Je dois quitter Airbnb ou Booking ?", "acceptedAnswer": {"@type": "Answer", "text": "Non. Ton espace se relie à ton calendrier Airbnb et Booking. Tu gardes tes annonces, il t'aide pour tout ce qui se passe autour."}}, {"@type": "Question", "name": "Comment trouver un photographe, une équipe de ménage ou un artisan ?", "acceptedAnswer": {"@type": "Answer", "text": "Cherche ta ville dans l'annuaire, ou décris ton besoin : les 3 pros les plus proches qui font ce qu'il te faut reçoivent ta demande et te répondent en direct. Gratuit pour toi, sans commission."}}, {"@type": "Question", "name": "Une fuite ou une panne avant une arrivée ?", "acceptedAnswer": {"@type": "Answer", "text": "Décris ton besoin en choisissant Dépannage : plombiers, électriciens, serruriers et multiservices proches de ton logement reçoivent ta demande. L'annuaire dépannage vient d'ouvrir : s'il n'y a encore personne dans ta ville, Jason regarde ta demande et elle part aux artisans qui s'inscrivent."}}, {"@type": "Question", "name": "Je suis photographe, vidéaste, équipe de ménage ou artisan.", "acceptedAnswer": {"@type": "Answer", "text": "Tu crées ta fiche dans l'annuaire de ton métier : les hôtes de ta ville te trouvent sur Google et t'envoient leurs demandes. Abonnement annuel, sans commission sur tes prestations."}}]}</script>
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
 <script defer src="/nav.js"></script>
 </head>
 <body>
 
 <!-- NAV -->
-<!-- HERO -->
+<!-- HAUT DE PAGE (accueil D, validé par Jason le 31/10/2026) -->
+<main id="top">
 <section class="hero">
-  <div class="h-g1"></div><div class="h-g2"></div><div class="h-grid"></div>
-  <div class="h-inner">
-    <div>
-      <div class="h-badge"><div class="h-dot"></div> Outils · Formations · Annuaires</div>
-      <h1 class="h-h1">Développe ton activité<br>de <em>location<br>courte durée</em></h1>
-      <p class="h-sub">Une app gratuite pour le quotidien de ta location (contrats, planning ménage, fiches de police), des <a href="/services/formations" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.3);text-underline-offset:3px">formations pratiques</a> et des annuaires de <a href="/annuaires/photographes" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.3);text-underline-offset:3px">photographes et vidéastes</a>, d'<a href="/annuaires/menage" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.3);text-underline-offset:3px">équipes de ménage</a> et de <a href="/annuaires/depannage" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(255,255,255,.3);text-underline-offset:3px">pros du dépannage</a> près de chez toi.</p>
-      <div class="h-acts">
-        <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
-        <a href="#services" class="btn-g">Voir ce que fait l'app</a>
-      </div>
-      <p class="h-note">Gratuit pour commencer, sans carte bancaire.</p>
-    </div>
-
-    <div class="h-card">
-      <div class="h-card-lbl">Pourquoi Jason</div>
-      <div class="sr">
-        <div class="sr-v">4 <span>ans</span></div>
-        <div class="sr-l">dans le secteur<br>LCD en France</div>
-      </div>
-      <div class="sr">
-        <div class="sr-v"><i class="ph-bold ph-lightning" style="font-size:22px;color:var(--y)"></i></div>
-        <div class="sr-l">réponse rapide<br>garantie</div>
-      </div>
-      <div class="sr">
-        <div class="sr-v">100<span>%</span></div>
-        <div class="sr-l">indépendant<br>et transparent</div>
-      </div>
-      <div class="h-card-foot">
-        <i class="ph-bold ph-map-pin-line"></i>
-        <p><strong>Fait en France</strong>, conçu et maintenu par Jason Marinho, basé à Paris</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- MARQUEE -->
-<div class="mq">
-  <div class="mq-t">
-    <div class="mq-i">Airbnb<div class="mq-d"></div>Booking.com<div class="mq-d"></div>Tarification Dynamique<div class="mq-d"></div>Réservation Directe<div class="mq-d"></div>Check-in en Ligne<div class="mq-d"></div>Fiche de Police<div class="mq-d"></div>Annuaire Photographes<div class="mq-d"></div>Équipes Ménage<div class="mq-d"></div>Investissement LCD<div class="mq-d"></div>Conciergerie Pro<div class="mq-d"></div>LCD France<div class="mq-d"></div></div>
-    <div class="mq-i" aria-hidden="true">Airbnb<div class="mq-d"></div>Booking.com<div class="mq-d"></div>Tarification Dynamique<div class="mq-d"></div>Réservation Directe<div class="mq-d"></div>Check-in en Ligne<div class="mq-d"></div>Fiche de Police<div class="mq-d"></div>Annuaire Photographes<div class="mq-d"></div>Équipes Ménage<div class="mq-d"></div>Investissement LCD<div class="mq-d"></div>Conciergerie Pro<div class="mq-d"></div>LCD France<div class="mq-d"></div></div>
-  </div>
+<div class="wrap hero-g">
+<div class="hero-l hx">
+<h1 class="h1">Développe ton activité de <em>location courte durée</em></h1>
+<p class="hero-p">Un espace gratuit pour suivre tes réservations, tes ménages et tes contrats. Les photographes, équipes de ménage et artisans du dépannage de ta ville. Des formations qui vont droit au but.</p>
+<ul class="gar">
+<li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F9E5B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Gratuit pour commencer, sans carte</li>
+<li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F9E5B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>Zéro commission sur les pros</li>
+<li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F9E5B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><a href="/chiffres">Les chiffres du site sont publics</a></li>
+</ul>
+<p class="by"><img src="/jason-marinho.webp" alt="" width="42" height="42" decoding="async"><span>Créé par Jason, hôte depuis 4 ans et co-fondateur de <a href="https://driing.co">Driing</a>.</span></p>
 </div>
-<script>
-(function(){
-  var t=document.querySelector('.mq-t');
-  if(!t)return;
-  function go(){t.style.animationPlayState='running';}
-  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(go);}else{go();}
-})();
-</script>
-
-<!-- TRUST BAR -->
-<div class="trust">
-  <div class="trust-inner">
-    <div class="trust-item"><i class="ph-bold ph-map-pin-line"></i> Fait en France</div>
-    <div class="trust-item"><i class="ph-bold ph-chat-circle-text"></i> Réponse rapide, toujours</div>
-    <div class="trust-item"><i class="ph-bold ph-lock-simple"></i> 100% indépendant</div>
-    <div class="trust-item"><i class="ph-bold ph-hand-heart"></i> Accompagnement humain</div>
-    <div class="trust-item"><i class="ph-bold ph-certificate"></i> 4 ans dans le secteur LCD</div>
-  </div>
+<div class="intent hx2" id="intent">
+<p class="intent-t">Qu’est-ce qui t’amène ?</p>
+<div class="it" data-it="gerer">
+<button type="button" class="it-b" aria-expanded="false" aria-controls="it-gerer"><span class="it-i"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg></span><span class="it-tx"><b>Gérer ma location</b><span>Voyageurs, réservations, ménages, contrats</span></span><span class="it-ch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></button>
+<div class="it-p" id="it-gerer" hidden>
+<a href="https://app.jasonmarinho.com/auth/register" class="btn btn-y">Créer mon compte gratuit</a>
+<span class="it-note">Sans carte bancaire. Avec ton e-mail ou Google.</span>
 </div>
-
-<!-- SERVICES -->
-<section class="sec wh" id="services">
-  <div class="s-in">
-    <div class="lbl rv">Ce que je propose</div>
-    <h2 class="h2 rv">Tout pour développer<br><em>ton activité LCD</em></h2>
-    <p class="sub rv">Des outils pour le quotidien (contrats, ménage, formalités voyageurs), des formations pratiques et un accompagnement humain. Pas du contenu générique.</p>
-    <div class="svc-g rv">
-      <a href="/services/formations" class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-graduation-cap"></i></div>
-        <div class="sv-t">Formations en ligne</div>
-        <p class="sv-d">Des parcours concrets sur Airbnb, la tarification et l'automatisation. Accessibles à vie, à ton rythme.</p>
-      </a>
-      <a href="/services/planning-menage" class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-broom"></i></div>
-        <div class="sv-t">Planning ménage automatique</div>
-        <p class="sv-d">Les ménages se calculent à partir de tes réservations Airbnb, Booking et directes. Ton équipe reçoit son planning et t'envoie ses photos.</p>
-      </a>
-      <a href="/partenaires" class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-handshake"></i></div>
-        <div class="sv-t">Partenaires triés</div>
-        <p class="sv-d">PMS, channel managers, banque pro : une sélection d'outils validés, avec des offres pour les membres.</p>
-      </a>
-      <a href="/services/communaute" class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-users-four"></i></div>
-        <div class="sv-t">Groupes Facebook</div>
-        <p class="sv-d">Annuaire des meilleurs groupes Facebook LCD avec recommandations selon ta région. Étends ta visibilité commerciale en 1 clic.</p>
-      </a>
-      <a href="/services/contrats" class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-signature"></i></div>
-        <div class="sv-t">Contrats & paiements</div>
-        <p class="sv-d">Pour tes réservations en direct : contrat signé en ligne, loyer payé par carte, caution bloquée. Fiche de police préparée au passage.</p>
-      </a>
-      <a href="/services/actualites" class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-video-camera"></i></div>
-        <div class="sv-t">Actualités & contenus</div>
-        <p class="sv-d">Des actualités LCD à jour et du contenu pour rester dans le coup sur les tendances, outils et stratégies location courte durée.</p>
-      </a>
-      <a href="/services/entre-hotes" class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-chats"></i></div>
-        <div class="sv-t">Questions & réponses</div>
-        <p class="sv-d">Pose ta question sur la fiscalité, la mairie, tes voyageurs ou ton annonce : Jason ou un hôte expérimenté te répond sous 48 h.</p>
-      </a>
-      <a href="/services/simulateurs" class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-calculator"></i></div>
-        <div class="sv-t">Simulateurs LCD</div>
-        <p class="sv-d">Fiscalité micro-BIC, statut EI vs SASU, rentabilité d'un logement, taxe de séjour, franchise TVA : 5 simulateurs pour piloter avec des chiffres.</p>
-      </a>
-      <a href="/services/guides-lcd" class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-books"></i></div>
-        <div class="sv-t">Guides LCD</div>
-        <p class="sv-d">Des guides pratiques et complets sur les sujets clés : fiscalité, réglementation, tarification, plateformes. Toujours à jour pour 2026.</p>
-      </a>
-      <a href="/annuaires/photographes" class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-camera"></i></div>
-        <div class="sv-t">Photographes et vidéastes LCD</div>
-        <p class="sv-d">Des photographes et vidéastes spécialisés location courte durée, triés par ville, avec drone ou visite 3D. Contact direct, zéro commission : de meilleures photos, plus de clics sur ton annonce.</p>
-      </a>
-      <a href="/annuaires/menage" class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-sparkle"></i></div>
-        <div class="sv-t">Annuaire équipes ménage</div>
-        <p class="sv-d">Des équipes de ménage qui connaissent le turnover LCD (checklist, linge, délais serrés), près de chez toi. Prestations et tarifs affichés, contact direct.</p>
-      </a>
-      <a href="/annuaires/depannage" class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-wrench"></i></div>
-        <div class="sv-t">Annuaire dépannage et maintenance</div>
-        <p class="sv-d">Plombiers, électriciens, serruriers et multiservices habitués aux locations courte durée, près de chez toi. Spécialités, délais et zone affichés, contact direct.</p>
-      </a>
-      <a href="/investir-lcd" class="svc">
-        <div class="sv-arr"><i class="ph-bold ph-arrow-up-right"></i></div>
-        <div class="sv-ico"><i class="ph-light ph-chart-line-up"></i></div>
-        <div class="sv-t">Investir en LCD</div>
-        <p class="sv-d">Estime les revenus d'un bien AVANT de l'acheter : simulation par ville et type de logement, hypothèses de financement et prévisionnel PDF à présenter à ton banquier.</p>
-      </a>
-    </div>
-    <div class="cta-band rv">
-      <div>
-        <div class="cta-band-t">Essaie l'app avec ton logement</div>
-        <p class="cta-band-d">Ajoute ton logement, connecte ton calendrier Airbnb ou Booking : ton planning ménage se remplit tout seul. Gratuit, sans carte bancaire.</p>
-      </div>
-      <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
-    </div>
-  </div>
+</div>
+<div class="it open" data-it="pro">
+<button type="button" class="it-b" aria-expanded="true" aria-controls="it-pro"><span class="it-i"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3"/></svg></span><span class="it-tx"><b>Trouver un pro</b><span>Photo et vidéo, ménage, dépannage</span></span><span class="it-ch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></button>
+<div class="it-p" id="it-pro">
+<div class="seg" role="radiogroup" aria-label="Métier">
+<button type="button" role="radio" aria-checked="true" data-m="photographe">Photo, vidéo</button>
+<button type="button" role="radio" aria-checked="false" data-m="menage">Ménage</button>
+<button type="button" role="radio" aria-checked="false" data-m="depannage">Dépannage</button>
+</div>
+<label class="fld">Dans quelle ville ?
+<input id="it-ville" type="text" placeholder="Annecy, Lyon, Bordeaux…" autocomplete="address-level2">
+</label>
+<a href="/trouver-un-pro?metier=photographe" class="btn btn-y" id="it-go">Décrire mon besoin</a>
+<a href="/annuaires/photographes" class="btn-o" data-ann="photographe">Ou parcourir l’annuaire des photographes et vidéastes</a>
+<a href="/annuaires/menage" class="btn-o" data-ann="menage" hidden>Ou parcourir l’annuaire des équipes de ménage</a>
+<a href="/annuaires/depannage" class="btn-o" data-ann="depannage" hidden>Ou parcourir l’annuaire du dépannage</a>
+<span class="it-note" id="it-note">Les pros proches de ton logement te répondent. Gratuit, zéro commission.</span>
+</div>
+</div>
+<div class="it" data-it="apprendre">
+<button type="button" class="it-b" aria-expanded="false" aria-controls="it-apprendre"><span class="it-i"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h7a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H4zM20 5h-6"/></svg></span><span class="it-tx"><b>Apprendre</b><span>Formations, guides de ta ville, actualités</span></span><span class="it-ch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></button>
+<div class="it-p" id="it-apprendre" hidden>
+<a href="/services/formations" class="lk"><span>Formations</span><small>22 parcours</small></a>
+<a href="/villes" class="lk"><span>Le guide de ta ville</span><small>Règles et marché</small></a>
+<a href="/services/actualites" class="lk"><span>Actualités</span><small>Chaque jour</small></a>
+</div>
+</div>
+<div class="it" data-it="metier">
+<button type="button" class="it-b" aria-expanded="false" aria-controls="it-metier"><span class="it-i"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v13H3zM8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></svg></span><span class="it-tx"><b>Je suis un pro</b><span>Recevoir les demandes des hôtes de ma ville</span></span><span class="it-ch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></button>
+<div class="it-p" id="it-metier" hidden>
+<a href="/devenir-photographe-lcd" class="lk"><span>Photographe ou vidéaste</span><em>Créer ma fiche</em></a>
+<a href="/devenir-prestataire-menage-lcd" class="lk"><span>Équipe de ménage</span><em>Créer ma fiche</em></a>
+<a href="/annuaires/depannage/inscription" class="lk"><span>Dépannage et maintenance</span><em>Créer ma fiche</em></a>
+<span class="it-note">Une fiche sur Google, les demandes des hôtes de ta ville, zéro commission.</span>
+</div>
+</div>
+</div>
+</div>
 </section>
 
-<!-- SUPPORT / VALEURS, style Shine -->
-<section class="sec gd">
-  <div class="s-in">
-    <div style="text-align:center;margin-bottom:48px">
-      <div class="lbl lt ct rv">Pourquoi Jason</div>
-      <h2 class="h2 lt ct rv">Un accompagnement <em>humain</em><br>pas une usine à formations</h2>
-    </div>
-    <div class="sup-g rv">
-      <div class="sup-card">
-        <div class="sv-ico" style="background:rgba(255,213,107,.1);margin-bottom:18px"><i class="ph-light ph-chat-circle-text" style="color:var(--y)"></i></div>
-        <div class="sup-t">Réponse rapide, toujours</div>
-        <p class="sup-d">Tu envoies un message, Jason répond, pas un bot, pas une FAQ. Toujours le plus vite possible, parce que ton temps compte.</p>
-        <div class="sup-tag" style="background:rgba(255,213,107,.1);color:var(--y);border:1px solid rgba(255,213,107,.2)"><i class="ph-bold ph-lightning"></i> Réactif</div>
-      </div>
-      <div class="sup-card">
-        <div class="sv-ico" style="background:rgba(168,213,181,.08);margin-bottom:18px"><i class="ph-light ph-map-pin-line" style="color:#a8d5b5"></i></div>
-        <div class="sup-t">Fait en France</div>
-        <p class="sup-d">Conçu, maintenu et mis à jour depuis Paris. Contenu en français, adapté au marché LCD français et à ses spécificités réglementaires.</p>
-        <div class="sup-tag" style="background:rgba(168,213,181,.08);color:#a8d5b5;border:1px solid rgba(168,213,181,.15)"><i class="ph-bold ph-flag"></i> Paris, France</div>
-      </div>
-      <div class="sup-card">
-        <div class="sv-ico" style="background:rgba(255,255,255,.05);margin-bottom:18px"><i class="ph-light ph-shield-check" style="color:rgba(255,255,255,.5)"></i></div>
-        <div class="sup-t">Transparent et honnête</div>
-        <p class="sup-d">Pas de promesses inventées, pas de chiffres bidons. Du contenu basé sur 4 ans de terrain en LCD, avec les limites clairement assumées.</p>
-        <div class="sup-tag" style="background:rgba(255,255,255,.05);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.08)"><i class="ph-bold ph-check"></i> Sans bullshit</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section class="sec gd" id="about" style="padding-top:0">
-  <div class="s-in">
-    <div class="ab-g">
-      <div class="ph-wrap rv">
-        <div class="ph-fr" style="background:var(--gm);position:relative">
-          <img src="/jason-marinho.webp" alt="Jason Marinho, Expert LCD & Co-fondateur Driing" loading="lazy" decoding="async" width="540" height="640" style="width:100%;height:100%;object-fit:cover;object-position:center top;display:block;border-radius:18px">
-          <div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(to top,rgba(0,51,41,.55),transparent);border-radius:0 0 18px 18px;pointer-events:none"></div>
-        </div>
-        <div class="fl-card">
-          <div class="fv">Driing</div>
-          <div class="fl">Co-fondateur</div>
-        </div>
-      </div>
-      <div class="rv d1">
-        <div class="lbl lt">À propos</div>
-        <h2 class="h2 lt">Hôte avant d'être<br><em>formateur</em></h2>
-        <p class="sub lt">Je suis hôte et co-fondateur de Driing avant d'être formateur. Je partage ce que j'ai appris sur le terrain, les bonnes pratiques comme les erreurs à éviter. Pas de mise en scène, pas de faux résultats.</p>
-        <ul class="ab-list">
-          <li><div class="chk"><i class="ph-bold ph-check"></i></div><span>4 ans d'expérience terrain en <a href="/services/formations" style="color:var(--y);text-decoration:none;border-bottom:1px solid rgba(255,213,107,.35)">location courte durée</a></span></li>
-          <li><div class="chk"><i class="ph-bold ph-check"></i></div><span>Co&#8209;fondateur de <a href="https://driing.co" target="_blank" rel="noopener" style="color:var(--y);text-decoration:none;border-bottom:1px solid rgba(255,213,107,.35)">Driing</a>, plateforme de réservation et <a href="/services/formations/livret-accueil-digital" style="color:var(--y);text-decoration:none;border-bottom:1px solid rgba(255,213,107,.35)">livrets d'accueil digitaux</a></span></li>
-          <li><div class="chk"><i class="ph-bold ph-check"></i></div><span>500+ hôtes accompagnés dans leur développement LCD</span></li>
-          <li><div class="chk"><i class="ph-bold ph-check"></i></div><span>Support humain et réactif : <a href="/contact" style="color:var(--y);text-decoration:none;border-bottom:1px solid rgba(255,213,107,.35)">Jason répond lui-même</a> à chaque message</span></li>
-        </ul>
-        <a href="/contact" class="btn-p">Prendre contact <i class="ph-bold ph-arrow-right"></i></a>
-      </div>
-    </div>
-  </div>
+<!-- UN SEUL ENDROIT, TROIS FAÇONS -->
+<section class="sec" id="services">
+<div class="wrap" style="display:flex;flex-direction:column;gap:34px">
+<div class="head">
+<h2 class="h2" style="max-width:640px">Un seul endroit, <em>trois façons</em> de t’aider.</h2>
+<p class="lead2" style="max-width:360px">Commence par ce dont tu as besoin aujourd’hui. Le reste t’attend.</p>
+</div>
+<div class="tri">
+<article class="c1">
+<span class="c-eyb" style="color:var(--y)">01 · Gérer</span>
+<h3 class="c-h">Ton espace hôte se met à jour tout seul.</h3>
+<p>Relie ton calendrier Airbnb ou Booking : tes réservations arrivent seules, tes ménages se planifient, et contrats et fiches de police sont prêts quand il le faut.</p>
+<div class="flow">
+<div><i>1</i><span><b>Relie ton calendrier</b><br>Airbnb, Booking ou ton site.</span></div>
+<div><i>2</i><span><b>Les ménages suivent</b><br>Ton équipe reçoit son planning.</span></div>
+<div><i>3</i><span><b>Les papiers aussi</b><br>Contrats, cautions, fiches de police.</span></div>
+</div>
+<div class="chips">
+<a href="/services/carnet-voyageurs">Carnet de voyageurs</a><a href="/services/calendrier">Calendrier</a><a href="/services/planning-menage">Planning ménage</a><a href="/services/contrats">Contrats et cautions</a><a href="/services/declarations-voyageurs">Fiches de police</a><a href="/services/simulateurs">Simulateurs</a>
+</div>
+<a href="https://app.jasonmarinho.com/auth/register" class="btn btn-y">Créer mon compte gratuit</a>
+</article>
+<div class="col">
+<article class="c2">
+<span class="c-eyb">02 · Trouver</span>
+<h3 class="c-h">Photo, ménage, dépannage : les bons pros de ta ville.</h3>
+<ol>
+<li><strong>1.</strong> Tu décris ton logement et ton besoin.</li>
+<li><strong>2.</strong> Les 3 pros les plus proches qui font ce qu’il te faut la reçoivent.</li>
+<li><strong>3.</strong> Ceux qui sont libres te répondent. Contact direct, zéro commission.</li>
+</ol>
+<a href="/trouver-un-pro" class="btn btn-k">Faire une demande</a>
+</article>
+<article class="c3">
+<span class="c-eyb">03 · Apprendre</span>
+<h3 class="c-h">Les règles de ta ville, la fiscalité, ce qui change.</h3>
+<div class="chips">
+<a href="/villes">Guides par ville</a><a href="/services/guides-lcd">Fiscalité et règles</a><a href="/services/actualites">Actualités</a><a href="/blog">Blog</a>
+</div>
+</article>
+</div>
+</div>
+</div>
 </section>
 
 <!-- FORMATIONS -->
-<section class="sec cr" id="formations">
-  <div class="s-in">
-    <div class="f-hd">
-      <div>
-        <div class="lbl rv">Formations</div>
-        <h2 class="h2 rv" style="margin-bottom:0">Les formations <em>disponibles</em></h2>
-      </div>
-      <a href="/services/formations" class="btn-ol rv">Voir toutes les formations <i class="ph-bold ph-arrow-right"></i></a>
-    </div>
-    <div class="f-gr">
-      <div class="f-card rv">
-        <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
-          <i class="ph-light ph-map-trifold"></i>
-          <span class="f-bge bge-s">Débutant</span>
-        </div>
-        <div class="f-bd">
-          <div class="f-cat">Visibilité locale</div>
-          <h3 class="f-tt">Google My Business pour la Location Courte Durée</h3>
-          <div class="f-mt">
-            <div class="f-mi"><i class="ph ph-stack"></i> 7 modules</div>
-            <div class="f-mi"><i class="ph ph-clock"></i> 2h30</div>
-            <div class="f-mi"><i class="ph ph-play-circle"></i> 12 leçons</div>
-          </div>
-          <div class="f-ft">
-            <span class="f-ac"><i class="ph ph-infinity"></i> Accès à vie</span>
-            <a href="/services/formations/google-my-business-lcd" class="f-lk">Commencer <i class="ph-bold ph-arrow-right"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="f-card rv d1">
-        <div class="f-th" style="background:linear-gradient(135deg,#0d2e3a 0%,#1a5c6e 100%)">
-          <i class="ph-light ph-chart-line-up"></i>
-          <span class="f-bge bge-i">Intermédiaire</span>
-        </div>
-        <div class="f-bd">
-          <div class="f-cat">Tarification</div>
-          <h3 class="f-tt">Comprendre et utiliser la tarification dynamique</h3>
-          <div class="f-mt">
-            <div class="f-mi"><i class="ph ph-stack"></i> 4 modules</div>
-            <div class="f-mi"><i class="ph ph-clock"></i> 2h00</div>
-            <div class="f-mi"><i class="ph ph-play-circle"></i> 10 leçons</div>
-          </div>
-          <div class="f-ft">
-            <span class="f-ac"><i class="ph ph-infinity"></i> Accès à vie</span>
-            <a href="/services/formations/tarification-dynamique" class="f-lk">Commencer <i class="ph-bold ph-arrow-right"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="f-card rv d2">
-        <div class="f-th" style="background:linear-gradient(135deg,#1a3a2a 0%,#2d6e50 100%)">
-          <i class="ph-light ph-house-line"></i>
-          <span class="f-bge bge-s">Débutant</span>
-        </div>
-        <div class="f-bd">
-          <div class="f-cat">Annonce Airbnb</div>
-          <h3 class="f-tt">Optimiser son annonce Airbnb : photos, titre, description, algorithme</h3>
-          <div class="f-mt">
-            <div class="f-mi"><i class="ph ph-stack"></i> 5 modules</div>
-            <div class="f-mi"><i class="ph ph-clock"></i> 2h30</div>
-            <div class="f-mi"><i class="ph ph-play-circle"></i> 12 leçons</div>
-          </div>
-          <div class="f-ft">
-            <span class="f-ac"><i class="ph ph-infinity"></i> Accès à vie</span>
-            <a href="/services/formations/optimiser-annonce-airbnb" class="f-lk">Commencer <i class="ph-bold ph-arrow-right"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="f-card rv f-card-mob-hide">
-        <div class="f-th" style="background:linear-gradient(135deg,var(--gd) 0%,var(--g) 100%)">
-          <i class="ph-light ph-megaphone"></i>
-          <span class="f-bge bge-s">Débutant</span>
-        </div>
-        <div class="f-bd">
-          <div class="f-cat">Annonce directe</div>
-          <h3 class="f-tt">Créer une annonce directe qui convertit</h3>
-          <div class="f-mt">
-            <div class="f-mi"><i class="ph ph-stack"></i> 6 modules</div>
-            <div class="f-mi"><i class="ph ph-clock"></i> 4h30</div>
-            <div class="f-mi"><i class="ph ph-play-circle"></i> 14 leçons</div>
-          </div>
-          <div class="f-ft">
-            <span class="f-ac"><i class="ph ph-infinity"></i> Accès à vie</span>
-            <a href="/services/formations/annonce-directe" class="f-lk">Commencer <i class="ph-bold ph-arrow-right"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="f-card rv d1 f-card-mob-hide">
-        <div class="f-th" style="background:linear-gradient(135deg,#1a0d2e 0%,#3d1a6e 100%)">
-          <i class="ph-light ph-shield-check"></i>
-          <span class="f-bge bge-i">Intermédiaire</span>
-        </div>
-        <div class="f-bd">
-          <div class="f-cat">Sécurité</div>
-          <h3 class="f-tt">Sécuriser ses réservations et éviter les mauvais voyageurs</h3>
-          <div class="f-mt">
-            <div class="f-mi"><i class="ph ph-stack"></i> 4 modules</div>
-            <div class="f-mi"><i class="ph ph-clock"></i> 2h00</div>
-            <div class="f-mi"><i class="ph ph-play-circle"></i> 10 leçons</div>
-          </div>
-          <div class="f-ft">
-            <span class="f-ac"><i class="ph ph-infinity"></i> Accès à vie</span>
-            <a href="/services/formations/securiser-reservations-eviter-mauvais-voyageurs" class="f-lk">Commencer <i class="ph-bold ph-arrow-right"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="f-card rv d2 f-card-mob-hide">
-        <div class="f-th" style="background:linear-gradient(135deg,#0d1a2e 0%,#1a3d6e 100%)">
-          <i class="ph-light ph-robot"></i>
-          <span class="f-bge bge-i">Intermédiaire</span>
-        </div>
-        <div class="f-bd">
-          <div class="f-cat">Gestion</div>
-          <h3 class="f-tt">Gérer sa LCD comme un pro : automatisation et gain de temps</h3>
-          <div class="f-mt">
-            <div class="f-mi"><i class="ph ph-stack"></i> 4 modules</div>
-            <div class="f-mi"><i class="ph ph-clock"></i> 2h00</div>
-            <div class="f-mi"><i class="ph ph-play-circle"></i> 10 leçons</div>
-          </div>
-          <div class="f-ft">
-            <span class="f-ac"><i class="ph ph-infinity"></i> Accès à vie</span>
-            <a href="/services/formations/gerer-lcd-automatisation" class="f-lk">Commencer <i class="ph-bold ph-arrow-right"></i></a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<section class="sec fo" id="formations">
+<div class="wrap fo-in">
+<div class="head" style="gap:20px">
+<div class="head-l" style="max-width:620px">
+<span class="eyb">Les formations</span>
+<h2 class="h2">Tout ce que j’ai appris, <em>en 22 formations.</em></h2>
+<p class="lead2">Courtes, concrètes, sans blabla. 2 au choix offertes avec ton compte gratuit.</p>
+</div>
+<div class="fo-k"><span><b>22</b>formations</span><span><b>1h45 à 4h30</b>chacune</span><span><b>À vie</b>accès</span></div>
+</div>
+<div class="tabs hs" role="tablist" aria-label="Thèmes des formations"><button type="button" role="tab" id="tab-visibilite" aria-controls="rail-visibilite" aria-selected="true" data-th="visibilite">Visibilité<span>8</span></button><button type="button" role="tab" id="tab-revenus" aria-controls="rail-revenus" aria-selected="false" data-th="revenus">Prix et revenus<span>3</span></button><button type="button" role="tab" id="tab-gestion" aria-controls="rail-gestion" aria-selected="false" data-th="gestion">Gestion<span>5</span></button><button type="button" role="tab" id="tab-juridique" aria-controls="rail-juridique" aria-selected="false" data-th="juridique">Fiscalité et règles<span>3</span></button><button type="button" role="tab" id="tab-avis" aria-controls="rail-avis" aria-selected="false" data-th="avis">Avis et litiges<span>2</span></button><button type="button" role="tab" id="tab-conciergerie" aria-controls="rail-conciergerie" aria-selected="false" data-th="conciergerie">Conciergerie<span>1</span></button></div>
+<div class="rail hs" role="tabpanel" id="rail-visibilite" aria-labelledby="tab-visibilite"><a href="/services/formations/optimiser-annonce-airbnb" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">2h30 · 5 modules</span><span class="fc-t">Optimiser son annonce Airbnb</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/maitriser-booking-com-algorithme-genius" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">3h15 · 7 modules</span><span class="fc-t">Maîtriser Booking.com et Genius</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/google-my-business-lcd" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">2h30 · 7 modules</span><span class="fc-t">Google My Business pour ta location</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/annonce-360" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">3h50 · 7 modules</span><span class="fc-t">Annonce 360° : être vu partout</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/annonce-directe" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">4h30 · 6 modules</span><span class="fc-t">Ton annonce en direct</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/audit-annonce" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">3h10 · 6 modules</span><span class="fc-t">Auditer ton annonce, score sur 100</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/photographie-lcd-smartphone" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">2h30 · 6 modules</span><span class="fc-t">Des photos qui donnent envie, au smartphone</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/reseaux-sociaux-lcd" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></span><span class="fc-th">Visibilité</span></span><span class="fc-b"><span class="fc-m">1h45 · 4 modules</span><span class="fc-t">Les réseaux sociaux pour attirer des voyageurs</span><span class="fc-go">Voir la formation →</span></span></a></div>
+<div class="rail hs" role="tabpanel" id="rail-revenus" aria-labelledby="tab-revenus" hidden><a href="/services/formations/mettre-le-bon-prix-lcd" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span><span class="fc-th">Prix et revenus</span></span><span class="fc-b"><span class="fc-m">2h30 · 5 modules</span><span class="fc-t">Mettre le bon prix</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/tarification-dynamique" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span><span class="fc-th">Prix et revenus</span></span><span class="fc-b"><span class="fc-m">2h00 · 4 modules</span><span class="fc-t">La tarification dynamique</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/lcd-basse-saison" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></span><span class="fc-th">Prix et revenus</span></span><span class="fc-b"><span class="fc-m">2h00 · 4 modules</span><span class="fc-t">Remplir en basse saison</span><span class="fc-go">Voir la formation →</span></span></a></div>
+<div class="rail hs" role="tabpanel" id="rail-gestion" aria-labelledby="tab-gestion" hidden><a href="/services/formations/gerer-lcd-automatisation" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v4l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/></svg></span><span class="fc-th">Gestion</span></span><span class="fc-b"><span class="fc-m">2h00 · 4 modules</span><span class="fc-t">Automatiser et gagner du temps</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/louer-en-direct-securise" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v4l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/></svg></span><span class="fc-th">Gestion</span></span><span class="fc-b"><span class="fc-m">3h00 · 6 modules</span><span class="fc-t">Louer en direct en toute sécurité</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/securiser-reservations-eviter-mauvais-voyageurs" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v4l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/></svg></span><span class="fc-th">Gestion</span></span><span class="fc-b"><span class="fc-m">2h00 · 4 modules</span><span class="fc-t">Éviter les mauvais voyageurs</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/livret-accueil-digital" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v4l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/></svg></span><span class="fc-th">Gestion</span></span><span class="fc-b"><span class="fc-m">1h45 · 4 modules</span><span class="fc-t">Un livret d’accueil digital</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/decorer-amenager-logement-lcd" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v4l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/></svg></span><span class="fc-th">Gestion</span></span><span class="fc-b"><span class="fc-m">2h00 · 4 modules</span><span class="fc-t">Décorer et aménager pour les avis</span><span class="fc-go">Voir la formation →</span></span></a></div>
+<div class="rail hs" role="tabpanel" id="rail-juridique" aria-labelledby="tab-juridique" hidden><a href="/services/formations/fiscalite-reglementation-lcd-france-2026" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6"/></svg></span><span class="fc-th">Fiscalité et règles</span></span><span class="fc-b"><span class="fc-m">2h30 · 5 modules</span><span class="fc-t">Fiscalité et réglementation 2026</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/declarer-lmnp-seul-decla-fr" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6"/></svg></span><span class="fc-th">Fiscalité et règles</span></span><span class="fc-b"><span class="fc-m">2h50 · 4 modules</span><span class="fc-t">Déclarer ta LMNP seul</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/fiscalite-statut-conciergerie-tourisme" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6"/></svg></span><span class="fc-th">Fiscalité et règles</span></span><span class="fc-b"><span class="fc-m">2h30 · 5 modules</span><span class="fc-t">Le bon statut pour une conciergerie</span><span class="fc-go">Voir la formation →</span></span></a></div>
+<div class="rail hs" role="tabpanel" id="rail-avis" aria-labelledby="tab-avis" hidden><a href="/services/formations/ecrire-avis-repondre-voyageurs" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span><span class="fc-th">Avis et litiges</span></span><span class="fc-b"><span class="fc-m">2h00 · 4 modules</span><span class="fc-t">Écrire et répondre aux avis</span><span class="fc-go">Voir la formation →</span></span></a><a href="/services/formations/gerer-incidents-litiges-lcd" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span><span class="fc-th">Avis et litiges</span></span><span class="fc-b"><span class="fc-m">2h30 · 6 modules</span><span class="fc-t">Gérer les incidents et litiges</span><span class="fc-go">Voir la formation →</span></span></a></div>
+<div class="rail hs" role="tabpanel" id="rail-conciergerie" aria-labelledby="tab-conciergerie" hidden><a href="/services/formations/creer-conciergerie-lcd" class="fc"><span class="fc-top"><span class="fc-ic"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21V9l9-6 9 6v12M9 21v-6h6v6"/></svg></span><span class="fc-th">Conciergerie</span></span><span class="fc-b"><span class="fc-m">3h00 · 6 modules</span><span class="fc-t">Créer et développer sa conciergerie</span><span class="fc-go">Voir la formation →</span></span></a></div>
+<a href="/services/formations" class="btn btn-w">Voir les 22 formations</a>
+</div>
 </section>
 
-
-<!-- BLOG -->
-<section class="sec wh" id="blog">
-  <div class="s-in">
-    <div class="f-hd rv" style="justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px">
-      <div>
-        <div class="lbl rv">Blog LCD</div>
-        <h2 class="h2 rv" style="margin-bottom:0">Conseils et ressources <em>gratuits</em></h2>
-      </div>
-      <a href="/blog" class="btn-g rv" style="font-size:14px;padding:10px 18px">Voir tous les articles <i class="ph-bold ph-arrow-right"></i></a>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px" class="rv blog-grid">
-
-      <article style="background:var(--cr);border-radius:14px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s" class="blog-card">
-        <div style="height:10px;background:var(--g)"></div>
-        <div style="padding:22px">
-          <div style="font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:8px">Visibilité</div>
-          <h3 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Comment optimiser ton annonce Airbnb pour apparaître en premier dans les résultats</h3>
-          <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">Titre, photos, description et équipements : les 4 leviers concrets pour améliorer ton classement sur Airbnb sans dépenser un euro.</p>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--bd)">
-            <span style="font-size:11px;color:var(--tl)">5 min de lecture</span>
-            <a href="/blog/optimiser-annonce-airbnb" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
-          </div>
-        </div>
-      </article>
-
-      <article style="background:var(--cr);border-radius:14px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s" class="blog-card">
-        <div style="height:10px;background:var(--ol)"></div>
-        <div style="padding:22px">
-          <div style="font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:8px">Tarification</div>
-          <h3 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Tarification dynamique en location courte durée : par où commencer</h3>
-          <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">Pourquoi un prix fixe te fait perdre des réservations, et comment adapter tes tarifs à la demande sans y passer des heures chaque semaine.</p>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--bd)">
-            <span style="font-size:11px;color:var(--tl)">7 min de lecture</span>
-            <a href="/blog/tarification-dynamique-lcd" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
-          </div>
-        </div>
-      </article>
-
-      <article style="background:var(--cr);border-radius:14px;overflow:hidden;border:1px solid var(--bd);transition:transform .22s,box-shadow .22s" class="blog-card">
-        <div style="height:10px;background:#2A5C8A"></div>
-        <div style="padding:22px">
-          <div style="font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--ol);margin-bottom:8px">Automatisation</div>
-          <h3 style="font-family:'Fraunces',serif;font-size:17px;font-weight:400;color:var(--td);line-height:1.35;letter-spacing:-.2px;margin-bottom:10px">Les 5 messages Airbnb à automatiser absolument dès cette semaine</h3>
-          <p style="font-size:13px;font-weight:300;color:var(--tm);line-height:1.6;margin-bottom:16px">Confirmation de réservation, rappel check-in, bienvenue, check-out et demande d'avis : les 5 messages qui font gagner des heures chaque mois.</p>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--bd)">
-            <span style="font-size:11px;color:var(--tl)">4 min de lecture</span>
-            <a href="/blog/messages-airbnb-automatiser" style="font-size:13px;font-weight:600;color:var(--g);text-decoration:none;display:flex;align-items:center;gap:4px">Lire <i class="ph-bold ph-arrow-right"></i></a>
-          </div>
-        </div>
-      </article>
-
-    </div>
-    <style>
-      .blog-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,76,63,.1)}
-      @media(max-width:1024px){.blog-grid{grid-template-columns:repeat(2,1fr)!important}}
-      @media(max-width:640px){.blog-grid{grid-template-columns:1fr!important}}
-    </style>
-    <div style="text-align:center;margin-top:32px" class="rv">
-      <a href="/blog" class="btn-p">Voir tous les articles <i class="ph-bold ph-arrow-right"></i></a>
-    </div>
-  </div>
+<!-- TU ES PRO ? -->
+<section class="sec">
+<div class="wrap" style="display:flex;flex-direction:column;gap:26px">
+<div class="head">
+<div class="head-l">
+<span class="eyb">Tu es pro ?</span>
+<h2 class="h2">Les hôtes de ta ville <em>te cherchent déjà.</em></h2>
+<p class="lead2">Une fiche qui fait site vitrine, sur Google et sur la page de ta ville. Les demandes arrivent chez toi, tu réponds en direct, sans commission sur tes prestations.</p>
+</div>
+<a href="/chiffres" class="more">Les vrais chiffres du site →</a>
+</div>
+<div class="pros">
+<a href="/pour-qui/photographes" class="pc"><span class="pc-ic" style="background:#E8F1EC;color:#004C3F"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg></span><span class="pc-t">Photographes et vidéastes</span><span class="pc-s">Les hôtes qui lancent ou refont leur annonce, les hôtels et chambres d’hôtes de ta zone.</span><span class="pc-go">Voir l’offre photo →</span></a>
+<a href="/pour-qui/menage" class="pc"><span class="pc-ic" style="background:#FFF4D2;color:#6B5200"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9M7 12h10l2 9H5zM9 21v-4M15 21v-4"/></svg></span><span class="pc-t">Équipes de ménage</span><span class="pc-s">Des passages réguliers entre deux séjours, chez les hôtes et les conciergeries.</span><span class="pc-go">Voir l’offre ménage →</span></a>
+<a href="/pour-qui/depannage" class="pc"><span class="pc-ic" style="background:#F5E9DF;color:#7A4B2A"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></span><span class="pc-t">Dépannage et maintenance</span><span class="pc-s">Fuites, pannes, serrures, petits travaux : les hôtes appellent celui qu’ils connaissent.</span><span class="pc-go">Voir l’offre dépannage →</span></a>
+</div>
+</div>
 </section>
 
-<!-- VILLES -->
-<section class="sec wh" style="padding-top:0;padding-bottom:40px">
-  <div class="s-in">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;padding:28px 32px;background:var(--cr);border:1px solid var(--bd);border-radius:18px" class="rv">
-      <div>
-        <div style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--g);margin-bottom:8px">Guides par ville</div>
-        <p style="font-size:15px;font-weight:300;color:var(--tm);margin:0;line-height:1.6;max-width:500px">Réglementation locale, données marché et fiscalité spécifiques : j'ai réuni tout ce qu'il faut savoir pour se lancer dans <strong style="font-weight:600;color:var(--td)" class="villes-count">27</strong> villes françaises.</p>
-      </div>
-      <a href="/villes" class="btn-p rv" style="white-space:nowrap;flex-shrink:0">Explorer les villes <i class="ph-bold ph-arrow-right"></i></a>
-    </div>
-  </div>
+<!-- QUESTIONS -->
+<section class="faq" id="questions">
+<h2 class="h2">Tes questions, <em>nos réponses.</em></h2>
+<details open><summary>C’est vraiment gratuit ?</summary><p>Oui. Le compte Découverte est gratuit pour toujours, sans carte bancaire : calendrier, planning ménage, simulateurs, guides et 2 formations. La formule Standard (38,98 € TTC par an) ajoute les contrats, le paiement en ligne et les cautions.</p></details>
+<details><summary>Je dois quitter Airbnb ou Booking ?</summary><p>Non. Ton espace se relie à ton calendrier Airbnb et Booking. Tu gardes tes annonces, il t’aide pour tout ce qui se passe autour.</p></details>
+<details><summary>Comment trouver un photographe, une équipe de ménage ou un artisan ?</summary><p>Cherche ta ville dans l’annuaire, ou décris ton besoin : les 3 pros les plus proches qui font ce qu’il te faut reçoivent ta demande et te répondent en direct. Gratuit pour toi, sans commission.</p></details>
+<details><summary>Une fuite ou une panne avant une arrivée ?</summary><p>Décris ton besoin en choisissant Dépannage : plombiers, électriciens, serruriers et multiservices proches de ton logement reçoivent ta demande. L’annuaire dépannage vient d’ouvrir : s’il n’y a encore personne dans ta ville, Jason regarde ta demande et elle part aux artisans qui s’inscrivent.</p></details>
+<details><summary>Je suis photographe, vidéaste, équipe de ménage ou artisan.</summary><p>Tu crées ta fiche dans l’annuaire de ton métier : les hôtes de ta ville te trouvent sur Google et t’envoient leurs demandes. Abonnement annuel, sans commission sur tes prestations.</p></details>
 </section>
 
-<!-- CTA -->
-<section class="cta-s" id="contact">
-  <div class="cta-gw"></div>
-  <div class="cta-in">
-    <div class="lbl lt ct rv" style="justify-content:center">Newsletter</div>
-    <h2 class="h2 lt ct rv">Prêt à te lancer<br><em>sans prise de vague ?</em></h2>
-    <p class="sub lt ct rv" style="margin-bottom:0;max-width:380px">Une lettre par mois : ce qui change pour ta location, un outil, un bon plan. Rien d'autre.</p>
-    <div class="cta-fm rv" id="brevo-form">
-      <input type="email" id="brevo-email" class="cta-i" placeholder="ton@email.com" aria-label="Email" autocomplete="email">
-      <button class="btn-p" id="brevo-submit" onclick="subscriberBrevo(event)">S'inscrire <i class="ph-bold ph-arrow-right"></i></button>
-      <!-- Honeypot anti-bot : champ caché qu'un humain ne remplit jamais -->
-      <input type="text" id="brevo-website" name="website" tabindex="-1" autocomplete="off"
-        aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;height:0;width:0;border:0;padding:0;" />
-    </div>
-    <p id="brevo-msg" style="display:none;font-size:13px;margin-top:10px;color:var(--y)"></p>
-    <p class="cta-n"><i class="ph ph-lock"></i> Aucun spam. Désinscription en un clic.</p>
-  </div>
+<!-- JASON -->
+<section class="sec-top0">
+<div class="wrap">
+<div class="me">
+<img src="/jason-marinho.webp" alt="Jason Marinho" width="540" height="640" loading="lazy" decoding="async">
+<div class="me-t">
+<span class="c-eyb">Qui est derrière</span>
+<h2 class="h2">Hôte avant d’être formateur.</h2>
+<p>4 ans de location courte durée et co-fondateur de <a href="https://driing.co">Driing</a>, utilisé par plus de 500 hôtes. Quand tu m’écris, c’est moi qui réponds.</p>
+<span class="me-l"><a href="/qui-suis-je">Mon parcours →</a><a href="/contact">Écrire à Jason →</a></span>
+</div>
+</div>
+</div>
 </section>
+
+<!-- BLOG : les 3 derniers articles, réécrits à chaque déploiement par scripts/build-derniers-articles.mjs -->
+<section class="sec-top0" id="blog">
+<div class="wrap" style="display:flex;flex-direction:column;gap:30px">
+<div class="head">
+<div class="head-l" style="max-width:640px">
+<span class="eyb">Le blog</span>
+<h2 class="h2">Les derniers articles, <em>tirés du terrain.</em></h2>
+</div>
+<a href="/blog" class="more">Tout le blog →</a>
+</div>
+<!-- DERNIERS-ARTICLES -->
+<div class="bl">
+<a href="/blog/artisan-depannage-trouver-clients-hotes-airbnb" class="bl-une"><span class="c-eyb">À la une · Ressources</span><span class="c-h">Plombier, électricien, multiservice : 6 façons de travailler avec les hôtes Airbnb de ta ville</span><p>Les hôtes Airbnb ont des pannes toute l'année et peu de temps pour chercher. 6 façons concrètes pour un artisan du dépannage de devenir leur pro de confiance.</p><span class="bl-f"><span>7 min de lecture</span><b>Lire l’article →</b></span></a>
+<div class="col">
+<a href="/blog/depannage-airbnb-trouver-artisan-fiable-avant-panne" class="bl-c"><span class="c-eyb">Expérience</span><span class="c-h">Dépannage Airbnb : 7 réflexes pour trouver ton artisan avant la première panne</span><span class="bl-m"><span>7 min de lecture</span><b>Lire →</b></span></a>
+<a href="/blog/annulation-derniere-minute-lcd-7-actions-relouer-48h-sans-brader" class="bl-c"><span class="c-eyb">Revenus</span><span class="c-h">Annulation de dernière minute en LCD : 7 actions pour relouer la période sous 48 heures sans brader</span><span class="bl-m"><span>7 min de lecture</span><b>Lire →</b></span></a>
+</div>
+</div>
+<!-- /DERNIERS-ARTICLES -->
+</div>
+</section>
+
+<!-- PARTENAIRES -->
+<section class="sec-top0">
+<div class="wrap">
+<div class="pa">
+<div class="pa-l">
+<span class="eyb">Partenaires</span>
+<h2 class="h2">Les bons outils, <em>déjà triés.</em></h2>
+<p>Logiciel de réservation, banque, comptabilité, création d’entreprise : ceux que je recommande, avec une réduction quand j’ai pu en obtenir une.</p>
+<a href="/partenaires" class="btn btn-k">Tous les partenaires</a>
+</div>
+<div class="pa-g"><a href="/partenaires/lodgify" class="pa-c"><span class="pa-i">L</span><span class="pa-x"><b>Lodgify</b><span class="pa-s">-15 % avec le code JASON15</span></span><span class="pa-o">Offre</span></a><a href="/partenaires/indy" class="pa-c"><span class="pa-i">I</span><span class="pa-x"><b>Indy</b><span class="pa-s">Compta LMNP, 1er mois offert</span></span><span class="pa-o">Offre</span></a><a href="/partenaires/qonto" class="pa-c"><span class="pa-i">Q</span><span class="pa-x"><b>Qonto</b><span class="pa-s">Compte pro et facturation</span></span></a><a href="/partenaires/shine" class="pa-c"><span class="pa-i">S</span><span class="pa-x"><b>Shine</b><span class="pa-s">Compte pro, factures gratuites</span></span></a><a href="/partenaires/legalplace" class="pa-c"><span class="pa-i">L</span><span class="pa-x"><b>LegalPlace</b><span class="pa-s">Créer ta conciergerie</span></span></a><a href="/partenaires/airdna" class="pa-c"><span class="pa-i">A</span><span class="pa-x"><b>AirDNA</b><span class="pa-s">Les chiffres de ton marché</span></span></a></div>
+</div>
+</div>
+</section>
+
+<!-- FIN -->
+<section class="wrap fin" id="contact">
+<h2 class="h2">Prêt à te lancer <em>sans prise de tête ?</em></h2>
+<a href="https://app.jasonmarinho.com/auth/register" class="btn btn-g">Créer mon compte gratuit</a>
+<a href="/tarifs" class="more" style="font-size:14.5px">Voir les tarifs</a>
+<div class="nl" id="newsletter">
+<b>Le Check-in, une lettre par mois</b>
+<p>Ce qui change pour ta location, un outil, un bon plan. Rien d’autre, désinscription en un clic.</p>
+<div class="nl-f" id="brevo-form">
+<input type="email" id="brevo-email" placeholder="ton@email.com" aria-label="Ton e-mail" autocomplete="email">
+<button type="button" class="btn btn-g" id="brevo-submit">S’inscrire</button>
+<input type="text" id="brevo-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;height:0;width:0;border:0;padding:0">
+</div>
+<p id="brevo-msg" role="status"></p>
+</div>
+</section>
+</main>
+
+<nav class="mbar" id="mbar" aria-label="Raccourcis">
+<a href="https://app.jasonmarinho.com/auth/register">Créer mon compte</a>
+<a href="/trouver-un-pro">Trouver un pro</a>
+</nav>
 
 <!-- FOOTER -->
 <script defer src="/footer.js"></script>
-
-
 <script>
-const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>nav&&nav.classList.toggle('sc',scrollY>8),{passive:true});
-
-
-
-const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.08,rootMargin:'0px 0px -28px 0px'});
-document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
-</script>
-<script>
-// Timestamp d'ouverture du form pour détecter les bots ultra-rapides
-var brevoFormLoadedAt = Date.now();
-function subscriberBrevo(e) {
-  e.preventDefault();
-  var email = document.getElementById('brevo-email').value;
-  var website = (document.getElementById('brevo-website') || {}).value || '';
-  var msg = document.getElementById('brevo-msg');
-  var btn = document.getElementById('brevo-submit');
-  if (!email || !email.includes('@')) {
-    msg.textContent = 'Saisis une adresse email valide.';
-    msg.style.color = '#FFD56B';
-    msg.style.display = 'block';
-    return;
-  }
-  btn.textContent = 'Envoi...';
-  btn.disabled = true;
-  fetch('/api/newsletter/subscribe',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({email:email,website:website,ts:brevoFormLoadedAt})
-  }).then(function(r) {
-    if (r.ok || r.status === 204) {
-      msg.textContent = '\u2713 Bienvenue ! Vérifie ta boîte mail.';
-      msg.style.color = '#FFD56B';
-      msg.style.display = 'block';
-      document.getElementById('brevo-email').value = '';
-    } else {
-      msg.textContent = 'Déjà inscrit ou erreur, réessaie.';
-      msg.style.color = 'rgba(255,255,255,.6)';
-      msg.style.display = 'block';
-    }
-    btn.textContent = "S'inscrire";
-    btn.disabled = false;
-  }).catch(function() {
-    msg.textContent = 'Erreur réseau, réessaie.';
-    msg.style.color = 'rgba(255,255,255,.6)';
-    msg.style.display = 'block';
-    btn.textContent = "S'inscrire";
-    btn.disabled = false;
+(function(){
+  // Carte « Qu'est-ce qui t'amène ? » : une entrée ouverte à la fois
+  var box=document.getElementById('intent');
+  box.querySelectorAll('.it-b').forEach(function(b){
+    b.addEventListener('click',function(){
+      var it=b.parentNode, open=!it.classList.contains('open');
+      box.querySelectorAll('.it').forEach(function(x){x.classList.remove('open');x.querySelector('.it-b').setAttribute('aria-expanded','false');x.querySelector('.it-p').hidden=true});
+      if(open){it.classList.add('open');b.setAttribute('aria-expanded','true');it.querySelector('.it-p').hidden=false}
+    });
   });
-}
+  var metier='photographe', ville=document.getElementById('it-ville'), go=document.getElementById('it-go'), note=document.getElementById('it-note');
+  var NOTES={photographe:'Les pros proches de ton logement te répondent. Gratuit, zéro commission.',menage:'Les pros proches de ton logement te répondent. Gratuit, zéro commission.',depannage:'Annuaire tout neuf : plomberie, électricité, serrurerie, petits travaux.'};
+  function maj(){
+    var v=(ville.value||'').trim();
+    go.href='/trouver-un-pro?metier='+metier+(v?'&ville='+encodeURIComponent(v):'');
+    go.textContent=v?'Trouver un pro à '+v:'Décrire mon besoin';
+    note.textContent=NOTES[metier];
+    box.querySelectorAll('[data-ann]').forEach(function(a){a.hidden=a.getAttribute('data-ann')!==metier});
+  }
+  box.querySelectorAll('[data-m]').forEach(function(b){
+    b.addEventListener('click',function(){
+      metier=b.getAttribute('data-m');
+      box.querySelectorAll('[data-m]').forEach(function(x){x.setAttribute('aria-checked',x===b?'true':'false')});
+      maj();
+    });
+  });
+  ville.addEventListener('input',maj);
+  ville.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();location.href=go.href}});
+
+  // Formations : un thème à la fois
+  var tabs=document.querySelectorAll('[data-th]');
+  tabs.forEach(function(t){
+    t.addEventListener('click',function(){
+      tabs.forEach(function(x){var on=x===t;x.setAttribute('aria-selected',on?'true':'false');document.getElementById('rail-'+x.getAttribute('data-th')).hidden=!on});
+      document.getElementById('rail-'+t.getAttribute('data-th')).scrollLeft=0;
+    });
+  });
+
+  // Barre du bas sur téléphone, une fois le haut de page passé
+  var bar=document.getElementById('mbar'), hero=document.querySelector('.hero');
+  if(bar&&hero&&'IntersectionObserver' in window){
+    new IntersectionObserver(function(es){bar.classList.toggle('on',!es[0].isIntersecting)}).observe(hero);
+  }
+
+  // Lettre du mois (Brevo), champ piège et délai contre les robots
+  var t0=Date.now(), btn=document.getElementById('brevo-submit'), msg=document.getElementById('brevo-msg'), mail=document.getElementById('brevo-email');
+  function dit(t){msg.textContent=t;msg.style.display='block'}
+  function envoie(){
+    var email=(mail.value||'').trim(), website=(document.getElementById('brevo-website')||{}).value||'';
+    if(!email||email.indexOf('@')<1){dit('Saisis une adresse e-mail valide.');return}
+    btn.textContent='Envoi…';btn.disabled=true;
+    fetch('/api/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,website:website,ts:t0})})
+      .then(function(r){dit(r.ok||r.status===204?'Bienvenue ! Vérifie ta boîte mail.':'Déjà inscrit ou erreur, réessaie.');if(r.ok)mail.value=''})
+      .catch(function(){dit('Erreur réseau, réessaie.')})
+      .then(function(){btn.textContent='S’inscrire';btn.disabled=false});
+  }
+  btn.addEventListener('click',envoie);
+  mail.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();envoie()}});
+})();
 </script>
 <script src="/cookie-banner.js" defer></script>
 </body>
