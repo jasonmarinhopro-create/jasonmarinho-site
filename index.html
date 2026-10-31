@@ -142,6 +142,8 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .flow div{border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:16px;display:flex;flex-direction:column;gap:8px;font-size:13.5px;color:rgba(255,255,255,.75);line-height:1.45}
 .flow b{font-size:15px;color:#fff;font-weight:600}
 .flow i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--y);color:var(--gd);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.shots{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;align-items:start;margin:4px 0}
+.shots img{width:100%;height:auto;display:block;border-radius:14px;border:1px solid rgba(255,255,255,.18);box-shadow:0 14px 34px rgba(0,0,0,.22);background:#EEF4EF}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .c1 .chips a{padding:8px 12px;border-radius:99px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);font-size:13.5px;color:#fff;text-decoration:none}
 .c1 .chips a:hover{background:rgba(255,255,255,.16)}
@@ -246,7 +248,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 /* Fin */
 .fin{padding:24px 0 96px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px}
 .fin .btn{height:54px;padding:0 28px;font-size:16px}
-.nl{margin-top:22px;width:100%;max-width:560px;border-radius:20px;background:var(--cr);padding:22px;display:flex;flex-direction:column;gap:12px;text-align:left}
+/* .nl retiré */.nl-x{margin-top:22px;width:100%;max-width:560px;border-radius:20px;background:var(--cr);padding:22px;display:flex;flex-direction:column;gap:12px;text-align:left}
 .nl b{font-size:16px}
 .nl p{font-size:14px;color:var(--tl);line-height:1.5}
 .nl-f{display:flex;gap:8px;position:relative}
@@ -255,8 +257,25 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 #brevo-msg{display:none;font-size:13.5px;color:var(--g)}
 .mbar{display:none}
 
+/* Lettre du mois : bloc d'avant, styles limités à .cta-s */
+.cta-s{background:var(--g);padding:clamp(64px,8vw,88px) clamp(16px,5vw,60px);text-align:center;position:relative;overflow:hidden}
+.cta-gw{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:640px;height:300px;background:radial-gradient(ellipse,rgba(255,213,107,.06) 0%,transparent 65%);pointer-events:none}
+.cta-in{max-width:520px;margin:0 auto;position:relative;z-index:2}
+.cta-s .lbl{font-size:10.5px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,213,107,.5);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.cta-s .lbl::before{content:'';width:18px;height:2px;background:currentColor;border-radius:2px}
+.cta-s .h2{font-size:clamp(30px,3.8vw,50px);line-height:1.1;letter-spacing:-1.5px;color:#fff;margin-bottom:14px;text-align:center}
+.cta-s .h2 em{color:var(--y)}
+.cta-s .sub{font-size:16px;font-weight:300;color:rgba(255,255,255,.38);line-height:1.72;text-align:center;margin-left:auto;margin-right:auto}
+.cta-fm{display:flex;gap:10px;margin:28px auto 0;max-width:420px}
+.cta-i{flex:1;min-width:0;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:13px 16px;font-size:14.5px;font-weight:300;color:#fff;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s}
+.cta-i::placeholder{color:rgba(255,255,255,.28)}
+.cta-i:focus{border-color:rgba(255,213,107,.45)}
+.cta-s .btn-p{background:var(--y);color:var(--gd);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px 26px;border-radius:10px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:background .2s,transform .2s,box-shadow .2s}
+.cta-s .btn-p:hover{background:#ffe08f;transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,213,107,.32)}
+.cta-n{font-size:11.5px;color:rgba(255,255,255,.62);margin-top:12px;font-weight:300;display:flex;align-items:center;justify-content:center;gap:5px}
+
 /* Entrée du haut de page (attend les polices et le menu, 700 ms au plus) */
-@keyframes fu{from{opacity:.01;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .hx{animation:fu .5s ease both}
 .hx2{animation:fu .5s .08s ease both}
 .fwait .hx,.fwait .hx2{animation-play-state:paused}
@@ -277,7 +296,8 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   .h2{font-size:32px}
   .c1,.bl-une,.pa,.me-t{padding:24px 20px}
   .c1 .c-h{font-size:27px}
-  .flow{grid-template-columns:1fr}
+  .shots{grid-template-columns:1fr}
+  .shots img+img{display:none}
   .flow div{flex-direction:row;align-items:center}
   .bl-une{min-height:0}
   .bl-une .c-h{font-size:27px}
@@ -290,7 +310,9 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   .pros{gap:10px}
   .faq{padding:56px 16px}
   .fin{padding:8px 0 96px}
-  .nl-f{flex-direction:column}
+  .cta-fm{flex-direction:column}
+  .cta-fm .btn-p{justify-content:center}
+  body.mbar-on{padding-bottom:78px}
   .mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:150;gap:8px;padding:10px 16px calc(14px + env(safe-area-inset-bottom));background:rgba(255,255,255,.97);border-top:1px solid var(--bd);transform:translateY(110%);transition:transform .25s}
   .mbar.on{transform:none}
   .mbar a{flex:1;height:48px;border-radius:12px;font-size:15px;display:flex;align-items:center;justify-content:center;text-decoration:none}
@@ -379,10 +401,9 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <span class="c-eyb" style="color:var(--y)">01 · Gérer</span>
 <h3 class="c-h">Ton espace hôte se met à jour tout seul.</h3>
 <p>Relie ton calendrier Airbnb ou Booking : tes réservations arrivent seules, tes ménages se planifient, et contrats et fiches de police sont prêts quand il le faut.</p>
-<div class="flow">
-<div><i>1</i><span><b>Relie ton calendrier</b><br>Airbnb, Booking ou ton site.</span></div>
-<div><i>2</i><span><b>Les ménages suivent</b><br>Ton équipe reçoit son planning.</span></div>
-<div><i>3</i><span><b>Les papiers aussi</b><br>Contrats, cautions, fiches de police.</span></div>
+<div class="shots">
+<img src="/img/accueil/hote-voyageurs.webp" alt="Le carnet de voyageurs de l’espace hôte, avec des voyageurs fictifs" width="1400" height="1018" loading="lazy" decoding="async">
+<img src="/img/accueil/hote-calendrier.webp" alt="Le calendrier de l’espace hôte, avec des séjours fictifs" width="1400" height="1110" loading="lazy" decoding="async">
 </div>
 <div class="chips">
 <a href="/services/carnet-voyageurs">Carnet de voyageurs</a><a href="/services/calendrier">Calendrier</a><a href="/services/planning-menage">Planning ménage</a><a href="/services/contrats">Contrats et cautions</a><a href="/services/declarations-voyageurs">Fiches de police</a><a href="/services/simulateurs">Simulateurs</a>
@@ -515,21 +536,21 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 </div>
 </section>
 
-<!-- FIN -->
-<section class="wrap fin" id="contact">
-<h2 class="h2">Prêt à te lancer <em>sans prise de tête ?</em></h2>
-<a href="https://app.jasonmarinho.com/auth/register" class="btn btn-g">Créer mon compte gratuit</a>
-<a href="/tarifs" class="more" style="font-size:14.5px">Voir les tarifs</a>
-<div class="nl" id="newsletter">
-<b>Le Check-in, une lettre par mois</b>
-<p>Ce qui change pour ta location, un outil, un bon plan. Rien d’autre, désinscription en un clic.</p>
-<div class="nl-f" id="brevo-form">
-<input type="email" id="brevo-email" placeholder="ton@email.com" aria-label="Ton e-mail" autocomplete="email">
-<button type="button" class="btn btn-g" id="brevo-submit">S’inscrire</button>
-<input type="text" id="brevo-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;height:0;width:0;border:0;padding:0">
-</div>
-<p id="brevo-msg" role="status"></p>
-</div>
+<!-- LETTRE DU MOIS (bloc d'avant, remis à la demande de Jason le 31/10/2026) -->
+<section class="cta-s" id="contact">
+  <div class="cta-gw"></div>
+  <div class="cta-in">
+    <div class="lbl lt ct" style="justify-content:center">Newsletter</div>
+    <h2 class="h2 lt ct">Prêt à te lancer<br><em>sans prise de vague ?</em></h2>
+    <p class="sub lt ct" style="margin-bottom:0;max-width:380px">Une lettre par mois : ce qui change pour ta location, un outil, un bon plan. Rien d'autre.</p>
+    <div class="cta-fm" id="brevo-form">
+      <input type="email" id="brevo-email" class="cta-i" placeholder="ton@email.com" aria-label="Email" autocomplete="email">
+      <button type="button" class="btn-p" id="brevo-submit">S'inscrire <i class="ph-bold ph-arrow-right"></i></button>
+      <input type="text" id="brevo-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;height:0;width:0;border:0;padding:0;" />
+    </div>
+    <p id="brevo-msg" role="status" style="display:none;font-size:13px;margin-top:10px;color:var(--y)"></p>
+    <p class="cta-n"><i class="ph ph-lock"></i> Aucun spam. Désinscription en un clic.</p>
+  </div>
 </section>
 </main>
 
@@ -582,11 +603,11 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   // Barre du bas sur téléphone, une fois le haut de page passé
   var bar=document.getElementById('mbar'), hero=document.querySelector('.hero');
   if(bar&&hero&&'IntersectionObserver' in window){
-    new IntersectionObserver(function(es){bar.classList.toggle('on',!es[0].isIntersecting)}).observe(hero);
+    new IntersectionObserver(function(es){var on=!es[0].isIntersecting;bar.classList.toggle('on',on);document.body.classList.toggle('mbar-on',on)}).observe(hero);
   }
 
   // Lettre du mois (Brevo), champ piège et délai contre les robots
-  var t0=Date.now(), btn=document.getElementById('brevo-submit'), msg=document.getElementById('brevo-msg'), mail=document.getElementById('brevo-email');
+  var t0=Date.now(), btn=document.getElementById('brevo-submit'), btnHtml=btn.innerHTML, msg=document.getElementById('brevo-msg'), mail=document.getElementById('brevo-email');
   function dit(t){msg.textContent=t;msg.style.display='block'}
   function envoie(){
     var email=(mail.value||'').trim(), website=(document.getElementById('brevo-website')||{}).value||'';
@@ -595,7 +616,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
     fetch('/api/newsletter/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,website:website,ts:t0})})
       .then(function(r){dit(r.ok||r.status===204?'Bienvenue ! Vérifie ta boîte mail.':'Déjà inscrit ou erreur, réessaie.');if(r.ok)mail.value=''})
       .catch(function(){dit('Erreur réseau, réessaie.')})
-      .then(function(){btn.textContent='S’inscrire';btn.disabled=false});
+      .then(function(){btn.innerHTML=btnHtml;btn.disabled=false});
   }
   btn.addEventListener('click',envoie);
   mail.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();envoie()}});
