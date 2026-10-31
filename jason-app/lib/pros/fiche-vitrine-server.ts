@@ -22,7 +22,7 @@ import {
 
 const log = logger('pros/fiche-vitrine')
 
-export type ProTable = 'photographers' | 'cleaners'
+export type ProTable = 'photographers' | 'cleaners' | 'depannage_pros'
 export type PhotosResult = { photos?: string[]; error?: string }
 
 async function readPhotos(table: ProTable, proId: string): Promise<string[] | null> {
@@ -123,6 +123,6 @@ export async function movePhoto(table: ProTable, proId: string, path: string, di
 
 /** Reconstruit le site pour publier les photos (un seul déploiement) */
 export async function publishPhotos(table: ProTable): Promise<{ success?: boolean; error?: string }> {
-  const ok = await triggerSiteRebuild(table === 'photographers' ? 'photos fiche photographe' : 'photos fiche ménage')
+  const ok = await triggerSiteRebuild(table === 'photographers' ? 'photos fiche photographe' : table === 'cleaners' ? 'photos fiche ménage' : 'photos fiche dépannage')
   return ok ? { success: true } : { error: 'Mise en ligne impossible pour le moment, réessaie dans quelques minutes.' }
 }

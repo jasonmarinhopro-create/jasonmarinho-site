@@ -9,12 +9,13 @@ import { recentLines, type ProKind } from '@/lib/pros/billing'
 import {
   BILLING_BASE, DOC_COLUMNS, getProOwner, loadBillingProfile, loadClients, loadDocuments, normalizeDoc,
 } from '@/lib/pros/billing-server'
+import { METIERS, KINDS } from '@/lib/pros/metiers'
 import BillingHub from './BillingHub'
 import DocumentEditor from './DocumentEditor'
 
-const FICHE: Record<ProKind, string> = { photographer: '/dashboard/ma-fiche-photographe', cleaner: '/dashboard/ma-fiche-menage' }
-const GUIDE: Record<ProKind, string> = { photographer: '/dashboard/ma-fiche-photographe/facturation', cleaner: '/dashboard/ma-fiche-menage/facturation' }
-const LOGIN: Record<ProKind, string> = { photographer: '/auth/login?as=photographe', cleaner: '/auth/login?as=menage' }
+const FICHE = Object.fromEntries(KINDS.map(k => [k, METIERS[k].espace])) as Record<ProKind, string>
+const GUIDE = Object.fromEntries(KINDS.map(k => [k, `${METIERS[k].espace}/facturation`])) as Record<ProKind, string>
+const LOGIN = Object.fromEntries(KINDS.map(k => [k, `/auth/login?as=${METIERS[k].slug}`])) as Record<ProKind, string>
 
 export async function BillingHubPage({ kind }: { kind: ProKind }) {
   const owner = await getProOwner(kind)

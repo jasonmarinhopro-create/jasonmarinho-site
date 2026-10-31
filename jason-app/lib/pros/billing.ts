@@ -8,7 +8,8 @@
 // - Franchise en base : « TVA non applicable, art. 293 B du CGI » jusqu'au
 //   31/12/2026, puis « art. L. 233-3 du CIBS » (l'ancienne tolérée jusqu'au 30/06/2028).
 
-export type ProKind = 'photographer' | 'cleaner'
+export type { ProKind } from './metiers'
+import type { ProKind } from './metiers'
 export type DocKind = 'devis'
 export type DocStatus = 'brouillon' | 'envoye' | 'accepte' | 'refuse'
 export type VatMode = 'franchise' | 'tva'
@@ -78,7 +79,7 @@ export const EMPTY_PROFILE: BillingProfile = {
 }
 
 
-export const UNITS = ['forfait', 'heure', 'jour', 'photo', 'logement', 'lit', 'kg', 'km', 'unité'] as const
+export const UNITS = ['forfait', 'heure', 'jour', 'mois', 'photo', 'logement', 'lit', 'kg', 'km', 'unité'] as const
 
 // ─── Montants ───────────────────────────────────────────────────────
 
@@ -203,6 +204,14 @@ export const SUGGESTIONS: Record<ProKind, Array<{ label: string; unit: string; d
     { label: 'Ménage de fond', unit: 'heure' },
     { label: 'Accueil des voyageurs et remise des clés', unit: 'forfait' },
     { label: 'Frais de déplacement', unit: 'km' },
+  ],
+  depannage: [
+    { label: 'Déplacement', unit: 'forfait' },
+    { label: "Main-d'œuvre", unit: 'heure', detail: 'Diagnostic et intervention sur place' },
+    { label: 'Pièces et fournitures', unit: 'forfait' },
+    { label: 'Intervention en urgence (soir, week-end)', unit: 'forfait' },
+    { label: 'Contrat de maintenance du logement', unit: 'mois', detail: 'Passages réguliers et interventions entre deux voyageurs' },
+    { label: 'Compte rendu avec photos', unit: 'forfait' },
   ],
 }
 

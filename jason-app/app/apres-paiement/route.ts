@@ -12,21 +12,18 @@ import { stripe } from '@/lib/stripe/client'
 import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
 import { logger } from '@/lib/logger'
+import { METIERS, metierParSlug } from '@/lib/pros/metiers'
 
 export const dynamic = 'force-dynamic'
 const log = logger('apres-paiement')
 
-const KINDS = {
-  photographe: { table: 'photographers', meta: 'photographer_id', fiche: '/dashboard/ma-fiche-photographe', site: 'photographes' },
-  menage: { table: 'cleaners', meta: 'cleaner_id', fiche: '/dashboard/ma-fiche-menage', site: 'menage' },
-} as const
-
 const MAX_AGE_S = 3 * 3600
 
 export async function GET(req: NextRequest) {
-  const pro = req.nextUrl.searchParams.get('pro') === 'menage' ? 'menage' : 'photographe'
-  const k = KINDS[pro]
-  const fallback = NextResponse.redirect(`https://jasonmarinho.com/annuaires/${k.site}/inscription/confirmation?status=paid`)
+  // ?pro=photographe | menage | depannage (registre lib/pros/metiers.ts)
+  const m = metierParSlug(req.nextUrl.searchParams.get('pro')) ?? METIERS.photographer
+  const k = { table: m.table, meta: m.idColumn, fiche: m.espace }
+  const fallback = NextResponse.redirect(`https://jasonmarinho.com${m.annuaire}/inscription/confirmation?status=paid`)
   const sessionId = req.nextUrl.searchParams.get('session_id') ?? ''
   if (!/^cs_(test|live)_[A-Za-z0-9]{10,200}$/.test(sessionId)) return fallback
 

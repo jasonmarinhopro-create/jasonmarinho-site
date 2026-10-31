@@ -16,9 +16,10 @@ import {
   addDays, cleanLines, computeTotals, missingDocFields, missingProfileFields, sellerDisplayName,
   type BillingProfile, type DocLine, type ProDocument, type ProKind,
 } from './billing'
+import { METIERS, KINDS } from './metiers'
 import { BILLING_BASE, DOC_COLUMNS, getProOwner, loadBillingProfile, normalizeDoc, type ProOwner } from './billing-server'
 
-const FICHE: Record<ProKind, string> = { photographer: '/dashboard/ma-fiche-photographe', cleaner: '/dashboard/ma-fiche-menage' }
+const FICHE = Object.fromEntries(KINDS.map(k => [k, METIERS[k].espace])) as Record<ProKind, string>
 
 const log = logger('pros/billing-actions')
 

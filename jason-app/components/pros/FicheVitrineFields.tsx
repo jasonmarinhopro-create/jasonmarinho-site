@@ -39,6 +39,7 @@ export function vitrinePayload(v: VitrineForm) {
 const EXEMPLES: Record<ProMetier, { nom: string; prix: string; detail: string }> = {
   photographe: { nom: 'Essentielle', prix: '350', detail: 'Studio ou T2 : 20 photos retouchées, livrées sous 5 jours.' },
   menage: { nom: 'T2, T3', prix: '95', detail: 'Linge fourni et lavé, réassort des consommables, photo de fin de ménage.' },
+  depannage: { nom: 'Intervention', prix: '60', detail: 'Déplacement et première heure, photo après intervention.' },
 }
 
 export default function FicheVitrineFields({ value, onChange, metier, inputStyle, titleStyle, part }: {

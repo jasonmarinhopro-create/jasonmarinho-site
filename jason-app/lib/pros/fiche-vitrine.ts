@@ -9,7 +9,7 @@
 // JPEG), le bucket refuse plus de 600 Ko par fichier (migration 131), et
 // l'envoi est refusé bien avant la limite (`storageDecision`).
 
-export type ProMetier = 'photographe' | 'menage'
+export type ProMetier = 'photographe' | 'menage' | 'depannage'
 
 export const PHOTOS_MAX = 6
 export const PHOTO_FULL_SIDE = 1600
@@ -146,6 +146,11 @@ export const DEFAULT_DEROULE: Record<ProMetier, Etape[]> = {
     { titre: 'Tu m’envoies ta demande', texte: 'Ton logement, sa taille et le rythme des réservations : je te propose un tarif.' },
     { titre: 'Le premier passage', texte: 'On fait le point sur les clés, le linge et tes consignes.' },
     { titre: 'Les ménages entre deux voyageurs', texte: 'Je suis ton planning Airbnb et Booking et je te préviens quand c’est prêt.' },
+  ],
+  depannage: [
+    { titre: 'Tu m’envoies ta demande', texte: 'Le souci, le logement et l’accès : je te dis quand je peux passer et à quel prix.' },
+    { titre: 'L’intervention', texte: 'Je viens entre deux voyageurs, avec la boîte à clés si tu n’es pas là.' },
+    { titre: 'Le compte rendu', texte: 'Tu reçois une photo après l’intervention et ma facture.' },
   ],
 }
 

@@ -4,13 +4,11 @@
 import 'server-only'
 import { createClient } from '@/lib/supabase/server'
 import { getAuthUser } from '@/lib/supabase/auth-user'
+import { METIERS, KINDS, type Metier } from './metiers'
 import { EMPTY_PROFILE, type BillingProfile, type ProDocument, type ProKind } from './billing'
 
-export const PRO_TABLE: Record<ProKind, 'photographers' | 'cleaners'> = { photographer: 'photographers', cleaner: 'cleaners' }
-export const BILLING_BASE: Record<ProKind, string> = {
-  photographer: '/dashboard/ma-fiche-photographe/devis',
-  cleaner: '/dashboard/ma-fiche-menage/devis',
-}
+export const PRO_TABLE = Object.fromEntries(KINDS.map(k => [k, METIERS[k].table])) as Record<ProKind, Metier['table']>
+export const BILLING_BASE = Object.fromEntries(KINDS.map(k => [k, `${METIERS[k].espace}/devis`])) as Record<ProKind, string>
 
 export interface ProOwner {
   userId: string
@@ -32,7 +30,7 @@ export async function getProOwner(kind: ProKind): Promise<ProOwner | null> {
   const user = await getAuthUser()
   if (!user) return null
   const db = await createClient()
-  const cols = kind === 'cleaner'
+  const cols = kind !== 'photographer'
     ? 'id, email, full_name, pseudo, telephone, ville, logo_url, siret'
     : 'id, email, full_name, pseudo, telephone, ville, logo_url'
   const { data } = await db.from(PRO_TABLE[kind]).select(cols).eq('user_id', user.id).maybeSingle()

@@ -4,27 +4,26 @@
 // compte qui a une fiche photographe ou ménage ; une erreur donne 0.
 import 'server-only'
 import { createClient } from '@/lib/supabase/server'
+import { METIERS, KINDS, type ProKind } from './metiers'
 
-export interface ProNewDemandes { photographer: number; cleaner: number }
+export type ProNewDemandes = Record<ProKind, number>
 
-async function countFor(table: 'photographers' | 'cleaners', contacts: 'photographer_contacts' | 'cleaner_contacts', fk: 'photographer_id' | 'cleaner_id', userId: string): Promise<number> {
+async function countFor(kind: ProKind, userId: string): Promise<number> {
+  const m = METIERS[kind]
   try {
     const db = await createClient()
-    const { data: fiche } = await db.from(table).select('id').eq('user_id', userId).maybeSingle()
+    const { data: fiche } = await db.from(m.table).select('id').eq('user_id', userId).maybeSingle()
     if (!fiche?.id) return 0
-    const { count } = await db.from(contacts).select('id', { count: 'exact', head: true }).eq(fk, fiche.id).eq('status', 'nouvelle')
+    const { count } = await db.from(m.contactsTable).select('id', { count: 'exact', head: true }).eq(m.idColumn, fiche.id).eq('status', 'nouvelle')
     return count ?? 0
   } catch {
     return 0
   }
 }
 
-export async function loadProNewDemandes(userId: string, has: { photographer: boolean; cleaner: boolean }): Promise<ProNewDemandes> {
-  const [photographer, cleaner] = await Promise.all([
-    has.photographer ? countFor('photographers', 'photographer_contacts', 'photographer_id', userId) : 0,
-    has.cleaner ? countFor('cleaners', 'cleaner_contacts', 'cleaner_id', userId) : 0,
-  ])
-  return { photographer, cleaner }
+export async function loadProNewDemandes(userId: string, has: Partial<Record<ProKind, boolean>>): Promise<ProNewDemandes> {
+  const counts = await Promise.all(KINDS.map(k => has[k] ? countFor(k, userId) : 0))
+  return Object.fromEntries(KINDS.map((k, i) => [k, counts[i]])) as ProNewDemandes
 }
 
 /**

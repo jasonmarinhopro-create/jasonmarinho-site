@@ -10,7 +10,8 @@ import { Resend } from 'resend'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { logger } from '@/lib/logger'
 import { parisToday } from '@/lib/stripe/deposit-window'
-import { loadProStats, PRO_TABLE, proStatsPath, type ProFicheRow } from '@/lib/visibility/pro-load'
+import { METIERS, KINDS } from '@/lib/pros/metiers'
+import { loadProStats, PRO_TABLE, EXTRA_CLICK_COLUMN, proStatsPath, type ProFicheRow } from '@/lib/visibility/pro-load'
 import { mainSearch, monthlySentFlag, type ProMetier } from '@/lib/visibility/pro-stats'
 import { placeOf } from '@/lib/visibility/rules'
 import { buildProMonthlyEmail, isMonthlySendDay, isPaidActive, monthPeriod, previousMonth, shouldSendMonthly } from '@/lib/visibility/pro-monthly'
@@ -19,7 +20,6 @@ const log = logger('email/pro-monthly')
 const FROM = 'Jason Marinho <notifications@jasonmarinho.com>'
 const APP_URL = (process.env.NEXT_PUBLIC_APP_URL || 'https://app.jasonmarinho.com').replace(/\/$/, '')
 const COLUMNS = 'id, user_id, email, full_name, pseudo, ville, slug, status, is_public, created_at, validated_at, stripe_subscription_status, tier, views_count, contacts_count, instagram_clicks_count'
-const EXTRA: Record<ProMetier, string> = { photographe: 'portfolio_clicks_count', menage: 'site_clicks_count' }
 
 type Row = ProFicheRow & { email: string | null }
 
@@ -44,8 +44,8 @@ export async function sendProMonthlyReports(db: SupabaseClient, opts: { budgetMs
   const period = monthPeriod(month)
   const resend = new Resend(key)
 
-  const lists = await Promise.all((['photographe', 'menage'] as ProMetier[]).map(async metier => {
-    const { data } = await db.from(PRO_TABLE[metier]).select(`${COLUMNS}, ${EXTRA[metier]}`).eq('status', 'active')
+  const lists = await Promise.all(KINDS.map(k => METIERS[k].slug as ProMetier).map(async metier => {
+    const { data } = await db.from(PRO_TABLE[metier]).select(`${COLUMNS}, ${EXTRA_CLICK_COLUMN[metier]}`).eq('status', 'active')
     return ((data ?? []) as unknown as Row[]).filter(isPaidActive).map(f => ({ metier, f }))
   }))
   const queue = lists.flat().filter(x => x.f.user_id && x.f.email)

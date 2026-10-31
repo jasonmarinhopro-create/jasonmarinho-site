@@ -1,3 +1,4 @@
+import type { ProKind } from './metiers'
 // Vues des fiches pros par jour (table pro_fiche_views_daily, migration
 // 20260927_110) → « vues ce mois-ci », comparaison au mois dernier et
 // histogramme des 30 derniers jours, affichés dans l'espace pro.
@@ -34,7 +35,7 @@ export function summarizeDailyViews(rows: Array<{ day: string; views: number }>,
   return { thisMonth, lastMonth, daily }
 }
 
-export async function getViewsTrend(db: SupabaseClient, kind: 'photographer' | 'cleaner', proId: string): Promise<ViewsTrend> {
+export async function getViewsTrend(db: SupabaseClient, kind: ProKind, proId: string): Promise<ViewsTrend> {
   const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Paris' }) // YYYY-MM-DD, heure de Paris
   const since = isoDay(new Date(Date.now() - 65 * 86_400_000))
   const { data, error } = await db

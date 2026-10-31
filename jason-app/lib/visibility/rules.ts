@@ -588,7 +588,7 @@ export interface ProTakeawayInput {
   mobilePct: number | null
   /** Jours depuis la mise en ligne de la fiche */
   ficheAgeDays: number | null
-  metier: 'photographe' | 'menage'
+  metier: 'photographe' | 'menage' | 'depannage'
 }
 
 export interface Takeaway { title: string; text: string; tone: 'ok' | 'tip' }

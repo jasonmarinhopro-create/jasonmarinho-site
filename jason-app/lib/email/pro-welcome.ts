@@ -2,6 +2,7 @@
 // Envoyés depuis le webhook Stripe (customer.subscription.created) à
 // l'activation de la fiche.
 
+import { METIERS, type ProKind } from '@/lib/pros/metiers'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from './template'
 
@@ -9,10 +10,16 @@ const FROM_EMAIL = 'notifications@jasonmarinho.com'
 const APP_URL = 'https://app.jasonmarinho.com'
 const SITE_URL = 'https://jasonmarinho.com'
 
+const TEXTES: Record<ProKind, { annuaire: string; fiche: string; fondateurs: string }> = {
+  photographer: { annuaire: 'photographes LCD', fiche: 'ta fiche photographe', fondateurs: 'des 20 premiers photographes fondateurs' },
+  cleaner: { annuaire: 'équipes de ménage LCD', fiche: 'ta fiche équipe ménage', fondateurs: 'des 20 premières équipes fondatrices' },
+  depannage: { annuaire: 'pros du dépannage LCD', fiche: 'ta fiche dépannage', fondateurs: 'des 20 premiers pros du dépannage fondateurs' },
+}
+
 function getResend() { return new Resend(process.env.RESEND_API_KEY) }
 
 export interface ProWelcomeArgs {
-  pro: 'photographer' | 'cleaner'
+  pro: ProKind
   email: string
   fullName: string
   displayName: string
@@ -30,19 +37,14 @@ export interface ProWelcomeArgs {
  */
 export async function sendProWelcomeEmail(args: ProWelcomeArgs): Promise<void> {
   const { pro, email, fullName, displayName, ville, slug, tier } = args
-  const isPhotographer = pro === 'photographer'
+  const m = METIERS[pro]
   const isFondateur = tier === 'fondateur'
   const annual = isFondateur ? '39,98 €' : '79,98 €'
-  const publicUrl = isPhotographer
-    ? `${SITE_URL}/annuaires/photographes/${slug}`
-    : `${SITE_URL}/annuaires/menage/${slug}`
-  const dashboardPath = isPhotographer
-    ? '/dashboard/ma-fiche-photographe'
-    : '/dashboard/ma-fiche-menage'
-  const loginAsParam = isPhotographer ? 'photographe' : 'menage'
-  const loginUrl = `${APP_URL}/auth/login?as=${loginAsParam}`
-  const annuaireLabel = isPhotographer ? 'photographes LCD' : 'équipes de ménage LCD'
-  const fiche = isPhotographer ? 'ta fiche photographe' : 'ta fiche équipe ménage'
+  const publicUrl = `${SITE_URL}${m.fiche(slug)}`
+  const dashboardPath = m.espace
+  const loginUrl = `${APP_URL}/auth/login?as=${m.slug}`
+  const annuaireLabel = TEXTES[pro].annuaire
+  const fiche = TEXTES[pro].fiche
 
   const subject = `${displayName}, ${fiche} est en ligne`
 
@@ -53,7 +55,7 @@ export async function sendProWelcomeEmail(args: ProWelcomeArgs): Promise<void> {
       ${emailP(`Bonjour ${escHtml(fullName)},`)}
       ${emailP(`Excellente nouvelle : ton paiement Stripe est confirmé et ${fiche} est <strong>en ligne dans l'annuaire des ${annuaireLabel} de Jason Marinho</strong>.`)}
       ${isFondateur
-        ? emailP(`Tu fais partie ${isPhotographer ? 'des 20 premiers photographes fondateurs' : 'des 20 premières équipes fondatrices'} : ton tarif de <strong>${annual} TTC / an est verrouillé à vie</strong> tant que ton abonnement reste actif.`)
+        ? emailP(`Tu fais partie ${TEXTES[pro].fondateurs} : ton tarif de <strong>${annual} TTC / an est verrouillé à vie</strong> tant que ton abonnement reste actif.`)
         : emailP(`Ton abonnement annuel est de <strong>${annual} TTC / an</strong>, résiliable à tout moment sans engagement.`)
       }
       ${emailInfoBlock([

@@ -86,6 +86,15 @@ export function metierParSlug(slug: string | null | undefined): Metier | null {
   return KINDS.map(k => METIERS[k]).find(m => m.slug === slug) ?? null
 }
 
+/** Fiche pro désignée par les métadonnées Stripe (photographer_id, cleaner_id, depannage_id) */
+export function proFromMetadata(meta: Record<string, string> | null | undefined): { kind: ProKind; id: string } | null {
+  for (const k of KINDS) {
+    const id = meta?.[METIERS[k].idColumn]
+    if (id) return { kind: k, id }
+  }
+  return null
+}
+
 export function isProKind(v: unknown): v is ProKind {
   return typeof v === 'string' && (KINDS as string[]).includes(v)
 }

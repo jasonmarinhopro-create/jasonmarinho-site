@@ -23,6 +23,11 @@ export const DEFAULT_DEROULE = {
     { titre: 'Le premier passage', texte: 'On fait le point sur les clés, le linge et tes consignes.' },
     { titre: 'Les ménages entre deux voyageurs', texte: 'Je suis ton planning Airbnb et Booking et je te préviens quand c’est prêt.' },
   ],
+  depannage: [
+    { titre: 'Tu m’envoies ta demande', texte: 'Le souci, le logement et l’accès : je te dis quand je peux passer et à quel prix.' },
+    { titre: 'L’intervention', texte: 'Je viens entre deux voyageurs, avec la boîte à clés si tu n’es pas là.' },
+    { titre: 'Le compte rendu', texte: 'Tu reçois une photo après l’intervention et ma facture.' },
+  ],
 }
 
 const esc = s => s == null ? '' : String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')

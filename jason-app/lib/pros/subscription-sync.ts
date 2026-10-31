@@ -10,6 +10,7 @@ import { stripe } from '@/lib/stripe/client'
 import { logger } from '@/lib/logger'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
 import { applyProSubscription } from '@/lib/pros/activate'
+import { METIERS, KINDS } from '@/lib/pros/metiers'
 
 const log = logger('lib/pros/subscription-sync')
 const LIVE = new Set(['active', 'trialing'])
@@ -20,7 +21,8 @@ export interface ProSubSync { checked: number; fixed: number; nowPaid: number }
 export async function syncProSubscriptions(db: SupabaseClient, budgetMs = 6000): Promise<ProSubSync> {
   const out: ProSubSync = { checked: 0, fixed: 0, nowPaid: 0 }
   const started = Date.now()
-  for (const table of ['photographers', 'cleaners'] as const) {
+  for (const kind of KINDS) {
+    const table = METIERS[kind].table
     const { data, error } = await db.from(table)
       .select('id, status, is_public, stripe_subscription_id, stripe_subscription_status')
       .not('stripe_subscription_id', 'is', null)
@@ -32,7 +34,7 @@ export async function syncProSubscriptions(db: SupabaseClient, budgetMs = 6000):
       out.checked++
       try {
         const sub = await stripe.subscriptions.retrieve(r.stripe_subscription_id as string)
-        const done = await applyProSubscription(db, table === 'photographers' ? 'photographer' : 'cleaner', r.id, {
+        const done = await applyProSubscription(db, kind, r.id, {
           id: sub.id, status: sub.status, customer: typeof sub.customer === 'string' ? sub.customer : sub.customer?.id ?? null,
         }, { rebuild: false })
         if (done === 'rien') continue

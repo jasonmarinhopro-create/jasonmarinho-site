@@ -8,6 +8,7 @@ import { createNotification, sejourHref } from '@/lib/notifications/create'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
 import { applyProSubscription } from '@/lib/pros/activate'
+import { proFromMetadata, METIERS } from '@/lib/pros/metiers'
 import { stripe } from '@/lib/stripe/client'
 
 const log = logger('lib/stripe/dispatch')
@@ -221,15 +222,15 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
       const sub = event.data.object as Stripe.Subscription
       // Statut relu chez Stripe : « created » (incomplete) arrive parfois après
       // « updated » (active) ; écrire le statut du message écrasait le bon.
-      const liveStatus = (sub.metadata?.photographer_id || sub.metadata?.cleaner_id)
+      const proMeta = proFromMetadata(sub.metadata)
+      const liveStatus = proMeta
         ? await stripe.subscriptions.retrieve(sub.id).then(s => s.status).catch(() => sub.status)
         : sub.status
       // ── Fiches pros (photographe, ménage) : activées seulement une fois payées ──
       // 20/10/2026 : la fiche était activée et publiée dès la création de
       // l'abonnement, même « incomplete » (paiement pas fait). Voir lib/pros/activate.ts.
-      const proId = sub.metadata?.photographer_id || sub.metadata?.cleaner_id
-      if (proId) {
-        await applyProSubscription(db, sub.metadata?.photographer_id ? 'photographer' : 'cleaner', proId, {
+      if (proMeta) {
+        await applyProSubscription(db, proMeta.kind, proMeta.id, {
           id: sub.id, status: liveStatus, customer: typeof sub.customer === 'string' ? sub.customer : sub.customer?.id ?? null,
         })
         break
@@ -259,9 +260,9 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
     case 'customer.subscription.updated': {
       const sub = event.data.object as Stripe.Subscription
       // Fiches pros : même règle qu'à la création (activée au paiement, retirée si impayée)
-      const proId = sub.metadata?.photographer_id || sub.metadata?.cleaner_id
-      if (proId) {
-        await applyProSubscription(db, sub.metadata?.photographer_id ? 'photographer' : 'cleaner', proId, {
+      const proMeta = proFromMetadata(sub.metadata)
+      if (proMeta) {
+        await applyProSubscription(db, proMeta.kind, proMeta.id, {
           id: sub.id, status: sub.status, customer: typeof sub.customer === 'string' ? sub.customer : sub.customer?.id ?? null,
         })
         break
@@ -292,9 +293,10 @@ export async function dispatchStripeEvent(event: Stripe.Event, db: SupabaseClien
       // Fiches pros : retirées de l'annuaire. Une inscription jamais payée
       // (abonnement « incomplete » abandonné par Stripe) reste en attente de
       // paiement : « Finaliser mon paiement » doit continuer de marcher.
-      const proId = sub.metadata?.photographer_id || sub.metadata?.cleaner_id
-      if (proId) {
-        const table = sub.metadata?.photographer_id ? 'photographers' : 'cleaners'
+      const proMeta = proFromMetadata(sub.metadata)
+      if (proMeta) {
+        const proId = proMeta.id
+        const table = METIERS[proMeta.kind].table
         const { data: f } = await db.from(table).select('status').eq('id', proId).maybeSingle()
         const neverPaid = f?.status === 'pending_payment' || f?.status === 'approved_pending_payment'
         await db.from(table).update(neverPaid

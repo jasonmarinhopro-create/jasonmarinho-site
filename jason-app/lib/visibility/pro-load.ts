@@ -6,6 +6,7 @@
 // client du propriétaire (RLS) ou le service role pour l'admin ; les visites
 // du site (site_visits) ne s'ouvrent qu'au service role, d'où loadVisits,
 // appelé seulement APRÈS cette vérification.
+import { METIERS, KINDS, metierParSlug, type Metier } from '@/lib/pros/metiers'
 import 'server-only'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/server'
@@ -26,20 +27,19 @@ import {
   type MetricKey, type ProCityPage, type ProFicheInfo, type ProMetier, type ProMetric, type ProPeriod, type ProPeriodKey, type ProStatsData,
 } from './pro-stats'
 
-export const PRO_TABLE: Record<ProMetier, 'photographers' | 'cleaners'> = { photographe: 'photographers', menage: 'cleaners' }
-export const PRO_DAILY_KIND: Record<ProMetier, 'photographer' | 'cleaner'> = { photographe: 'photographer', menage: 'cleaner' }
-const CONTACTS: Record<ProMetier, { table: string; col: string }> = {
-  photographe: { table: 'photographer_contacts', col: 'photographer_id' },
-  menage: { table: 'cleaner_contacts', col: 'cleaner_id' },
-}
-const ANNUAIRE: Record<ProMetier, string> = { photographe: 'photographes', menage: 'menage' }
+// Tables, compteurs et adresses tirés du registre des métiers (lib/pros/metiers.ts)
+const M = (metier: ProMetier) => metierParSlug(metier)!
+const BY_SLUG = <T,>(f: (m: Metier) => T) => Object.fromEntries(KINDS.map(k => [METIERS[k].slug, f(METIERS[k])])) as Record<ProMetier, T>
+export const PRO_TABLE = BY_SLUG(m => m.table)
+export const PRO_DAILY_KIND = BY_SLUG(m => m.kind)
+const CONTACTS = BY_SLUG(m => ({ table: m.contactsTable, col: m.idColumn }))
 
-export const proStatsPath = (metier: ProMetier) => `/dashboard/ma-fiche-${metier === 'photographe' ? 'photographe' : 'menage'}/statistiques`
-export const proFichePath = (metier: ProMetier, slug: string) => `/annuaires/${ANNUAIRE[metier]}/${slug}`
+export const proStatsPath = (metier: ProMetier) => `${M(metier).espace}/statistiques`
+export const proFichePath = (metier: ProMetier, slug: string) => M(metier).fiche(slug)
 export const proPublicUrl = (metier: ProMetier, slug: string) => `${SITE_ORIGIN}${proFichePath(metier, slug)}`
 
 const FICHE_COLUMNS = 'id, user_id, full_name, pseudo, ville, zone_couverte, slug, status, is_public, created_at, validated_at, stripe_subscription_status, tier, views_count, contacts_count, instagram_clicks_count'
-const EXTRA_CLICK_COLUMN: Record<ProMetier, string> = { photographe: 'portfolio_clicks_count', menage: 'site_clicks_count' }
+export const EXTRA_CLICK_COLUMN = BY_SLUG(m => m.kind === 'photographer' ? 'portfolio_clicks_count' : 'site_clicks_count')
 
 export interface ProFicheRow {
   id: string

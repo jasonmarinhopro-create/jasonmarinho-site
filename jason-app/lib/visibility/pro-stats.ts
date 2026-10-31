@@ -242,7 +242,7 @@ export function bestPlaced(stats: SearchStat[]): SearchStat | null {
 
 // ── Écran ─────────────────────────────────────────────────────────────────
 
-export function screenAdvice(metier: 'photographe' | 'menage', mobilePct: number | null): string {
+export function screenAdvice(metier: ProMetier, mobilePct: number | null): string {
   if (mobilePct === null) {
     return metier === 'photographe'
       ? 'La plupart des hôtes cherchent au téléphone : tes photos doivent y être belles.'
@@ -255,7 +255,9 @@ export function screenAdvice(metier: 'photographe' | 'menage', mobilePct: number
   }
   return metier === 'photographe'
     ? 'Une bonne partie de tes visiteurs regarde sur ordinateur : un portfolio en grand format fait la différence.'
-    : 'Une bonne partie de tes visiteurs regarde sur ordinateur : une présentation complète (prestations, délais, assurance) les rassure.'
+    : metier === 'depannage'
+      ? 'Une bonne partie de tes visiteurs regarde sur ordinateur : une présentation complète (spécialités, délai d\'intervention, prix du déplacement) les rassure.'
+      : 'Une bonne partie de tes visiteurs regarde sur ordinateur : une présentation complète (prestations, délais, assurance) les rassure.'
 }
 
 /** Jours entiers entre deux dates AAAA-MM-JJ */
@@ -265,7 +267,7 @@ export function daysBetween(from: string, to: string): number {
 
 // ── Données de la page (calculées côté serveur, passées aux vues) ─────────
 
-export type ProMetier = 'photographe' | 'menage'
+export type ProMetier = 'photographe' | 'menage' | 'depannage'
 export type MetricKey = 'visitors' | 'views' | 'time' | 'clicks' | 'demandes' | 'google'
 
 export interface ProMetric {

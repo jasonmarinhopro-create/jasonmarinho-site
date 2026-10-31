@@ -74,8 +74,9 @@ export function citySlugOf(ville: string | null | undefined, zone?: string | nul
 
 export type CityMetier = 'photographe' | 'menage'
 
-export function cityPagePath(metier: CityMetier, slug: string): string {
-  return `/${metier === 'photographe' ? 'photographe' : 'menage'}-lcd-${slug}`
+/** Dépannage : pages /depannage-lcd-<ville> (projet maintenance, étape 3) */
+export function cityPagePath(metier: CityMetier | 'depannage', slug: string): string {
+  return `/${metier}-lcd-${slug}`
 }
 
 /**

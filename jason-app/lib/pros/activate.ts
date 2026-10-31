@@ -9,8 +9,8 @@ import { logger } from '@/lib/logger'
 import { subscriptionAction, isLiveSub } from './paid'
 
 const log = logger('lib/pros/activate')
-export type ProKind = 'photographer' | 'cleaner'
-const TABLE = { photographer: 'photographers', cleaner: 'cleaners' } as const
+import { METIERS, type ProKind } from './metiers'
+export type { ProKind }
 
 interface SubInfo { id: string; status: string; customer: string | null }
 
@@ -18,8 +18,8 @@ const slugBase = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLow
 
 /** Retourne ce qui a été fait (pour les compteurs de la synchro). Ne lève jamais. */
 export async function applyProSubscription(db: SupabaseClient, kind: ProKind, ficheId: string, sub: SubInfo, opts: { rebuild?: boolean } = {}): Promise<'activee' | 'en_attente' | 'suivie' | 'rien'> {
-  const table = TABLE[kind]
-  const cols = kind === 'cleaner' ? 'id, full_name, pseudo, ville, email, slug, tier, status, is_public, stripe_subscription_status' : 'id, full_name, ville, email, slug, tier, status, is_public, stripe_subscription_status'
+  const table = METIERS[kind].table
+  const cols = kind !== 'photographer' ? 'id, full_name, pseudo, ville, email, slug, tier, status, is_public, stripe_subscription_status' : 'id, full_name, ville, email, slug, tier, status, is_public, stripe_subscription_status'
   const { data, error } = await db.from(table).select(cols).eq('id', ficheId).maybeSingle()
   if (error || !data) { if (error) log.error('lecture de la fiche', { table, err: error.message }); return 'rien' }
   const f = data as unknown as { id: string; full_name: string; pseudo?: string | null; ville: string; email: string; slug: string | null; tier: string; status: string; is_public: boolean; stripe_subscription_status: string | null }
@@ -31,14 +31,14 @@ export async function applyProSubscription(db: SupabaseClient, kind: ProKind, fi
   if (action === 'activer') {
     let slug = f.slug
     if (!slug) {
-      const base = slugBase(`${(kind === 'cleaner' && f.pseudo) || f.full_name}-${f.ville}`)
+      const base = slugBase(`${(kind !== 'photographer' && f.pseudo) || f.full_name}-${f.ville}`)
       const { data: clash } = await db.from(table).select('id').eq('slug', base).neq('id', ficheId).maybeSingle()
       slug = clash ? `${base}-${ficheId.slice(0, 6)}` : base
     }
     await db.from(table).update({ ...stripeFields, status: 'active', is_public: true, slug, updated_at: now }).eq('id', ficheId)
     if (rebuild) await triggerSiteRebuild('stripe')
     await sendProWelcomeEmail({
-      pro: kind, email: f.email, fullName: f.full_name, displayName: (kind === 'cleaner' && f.pseudo) || f.full_name,
+      pro: kind, email: f.email, fullName: f.full_name, displayName: (kind !== 'photographer' && f.pseudo) || f.full_name,
       ville: f.ville, slug, tier: f.tier as never,
     }).catch(() => {})
     return 'activee'

@@ -7,7 +7,7 @@ import { logger } from '@/lib/logger'
 import { DRAFT_MAX_CHARS, readDraft } from './fiche-draft'
 
 const log = logger('pros/fiche-draft')
-type ProTable = 'photographers' | 'cleaners'
+type ProTable = 'photographers' | 'cleaners' | 'depannage_pros'
 
 export type DraftSaveResult = { ok: true } | { ok: false; reason: 'trop_long' | 'indisponible' | 'erreur' }
 
