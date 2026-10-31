@@ -58,6 +58,8 @@ Partie de la documentation interne (index : CLAUDE.md à la racine). Notes déta
 - Bas de page : le bloc newsletter d'avant (« Prêt à te lancer sans prise de vague ? », fond vert) a été remis à la demande de Jason (le blanc « sans prise de tête » ne lui plaisait pas) ; styles limités à `.cta-s`.
 - Blog : `scripts/build-derniers-articles.mjs` réécrit les 3 derniers articles (rss.xml) entre `<!-- DERNIERS-ARTICLES -->` et `<!-- /DERNIERS-ARTICLES -->` à chaque déploiement.
 
+- **Haut de page G (31/10/2026, validé par Jason, remplace la carte « Qu'est-ce qui t'amène ? »)** : fond vert, « Créé par Jason… Driing » en haut, titre et phrase qui changent selon l'onglet (`TABS` du générateur), 4 onglets posés sur une barre blanche (Trouver un pro ouvert : métier + ville avec suggestions + « Trouver mes pros » → `/trouver-un-pro?metier=&ville=`). Sous la barre, un « dessous » par onglet (`data-only`) : Trouver = recherches fréquentes + lien annuaire + 3 étapes ; Gérer = capture du calendrier + 3 étapes ; Apprendre = note sur les 2 formations offertes + 3 formations ; Je suis un pro = aperçu des fiches + 3 étapes. Refus de Jason : pas d'aperçu des fiches sous « Trouver un pro », pas de liste de 3 garanties. Encart « Tous les chiffres du site sont publics » (visiteurs 30 j, apparitions Google, demandes reçues, lus en direct sur `/api/public/chiffres`, cases masquées si l'API ne répond pas).
+
 ## Black Friday Lodgify (code JASON65, e-mail de Lodgify du 30/10/2026)
 
 - -65 % sur Professional et Ultimate en annuel ou 2 ans, nouveaux clients, du 12/11 au 12/12/2026. Ventes suivies par le lien affilié, pas le code : toujours les deux ensemble. Commission majorée de 15 % sur les paiements du 1er au 30/11 (pour Jason, jamais affiché).
