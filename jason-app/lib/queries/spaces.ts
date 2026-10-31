@@ -6,7 +6,7 @@ import { getAuthIdentity } from '@/lib/supabase/auth-user'
 const ADMIN_EMAIL = 'djason.marinho@gmail.com'
 
 export interface UserSpace {
-  key: 'host' | 'photographer' | 'cleaner' | 'investor'
+  key: 'host' | 'photographer' | 'cleaner' | 'depannage' | 'investor'
   label: string
   href: string
   subtitle?: string | null
@@ -40,14 +40,16 @@ export interface SpacesResult {
 const fetchSpacesDataForUser = (userId: string) => unstable_cache(
   async () => {
     const admin = getServiceClient()
-    const [{ count: logementsCount }, { data: ph }, { data: cl }, { data: prof }, { count: projectsCount }] = await Promise.all([
+    const [{ count: logementsCount }, { data: ph }, { data: cl }, { data: dp }, { data: prof }, { count: projectsCount }] = await Promise.all([
       admin.from('logements').select('id', { count: 'exact', head: true }).eq('user_id', userId),
       admin.from('photographers').select('full_name, pseudo, slug, status').eq('user_id', userId).maybeSingle(),
       admin.from('cleaners').select('full_name, pseudo, slug, status').eq('user_id', userId).maybeSingle(),
+      // Dépannage (migration 170) : une erreur (table absente) vaut « pas de fiche »
+      admin.from('depannage_pros').select('full_name, pseudo, slug, status').eq('user_id', userId).maybeSingle(),
       admin.from('profiles').select('is_investor').eq('id', userId).maybeSingle(),
       admin.from('investor_projects').select('id', { count: 'exact', head: true }).eq('user_id', userId),
     ])
-    return { logementsCount, ph, cl, isInvestor: !!prof?.is_investor, projectsCount: projectsCount ?? 0 }
+    return { logementsCount, ph, cl, dp, isInvestor: !!prof?.is_investor, projectsCount: projectsCount ?? 0 }
   },
   ['user-spaces-data', userId],
   { revalidate: 300, tags: [`spaces:${userId}`] },
@@ -62,14 +64,15 @@ export const getUserSpaces = cache(async (): Promise<SpacesResult> => {
   }
 
   const isAdmin = user.email === ADMIN_EMAIL
-  const { logementsCount, ph, cl, isInvestor, projectsCount } = await fetchSpacesDataForUser(user.id)
+  const { logementsCount, ph, cl, dp, isInvestor, projectsCount } = await fetchSpacesDataForUser(user.id)
 
   const hasLogements = (logementsCount ?? 0) > 0
   const hasPhoto = !!ph
   const hasCleaner = !!cl
+  const hasDepannage = !!dp
 
   // Host actif si admin, ou logements présents, ou aucun autre espace.
-  const hostActive = isAdmin || hasLogements || (!hasPhoto && !hasCleaner)
+  const hostActive = isAdmin || hasLogements || (!hasPhoto && !hasCleaner && !hasDepannage)
 
   const spaces: UserSpace[] = [
     {
@@ -95,6 +98,15 @@ export const getUserSpaces = cache(async (): Promise<SpacesResult> => {
       label: 'Équipe ménage',
       href: '/dashboard/ma-fiche-menage',
       subtitle: cl!.pseudo || cl!.full_name,
+      active: true,
+    })
+  }
+  if (hasDepannage) {
+    spaces.push({
+      key: 'depannage',
+      label: 'Dépannage',
+      href: '/dashboard/ma-fiche-depannage',
+      subtitle: dp!.pseudo || dp!.full_name,
       active: true,
     })
   }

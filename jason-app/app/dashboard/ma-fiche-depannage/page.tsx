@@ -1,0 +1,103 @@
+import Link from 'next/link'
+import { getServiceClient } from '@/lib/supabase/service'
+import { redirect } from 'next/navigation'
+import { getAuthIdentity } from '@/lib/supabase/auth-user'
+import { getProfile } from '@/lib/queries/profile'
+import { perfTimer } from '@/lib/perf/server-timing'
+import MaFicheDepannage from './MaFicheDepannage'
+import { getViewsTrend } from '@/lib/pros/views'
+import { Suspense } from 'react'
+import { ProStatsTeaser, StatsTeaserSkeleton } from '@/components/pros/stats/StatsTeaser'
+
+export const metadata = { title: 'Ma fiche dépannage' }
+export const dynamic = 'force-dynamic'
+
+interface PageProps {
+  searchParams?: Promise<{ id?: string; paid?: string; canceled?: string }>
+}
+
+export default async function Page({ searchParams }: PageProps) {
+  const sp = await searchParams
+  const previewId = sp?.id
+
+  const timer = perfTimer('page /dashboard/ma-fiche-depannage')
+  const user = await getAuthIdentity()
+  if (!user) redirect('/auth/login?as=depannage')
+
+  const admin = getServiceClient()
+  // Multi-espaces : pas de strict role gating. L'accès se vérifie via la
+  // présence d'une fiche rattachée au compte (sinon état vide). Seul l'aperçu
+  // admin (?id=) est gardé. Rôle lu par getProfile (déjà chargé par le
+  // layout) : avant, une requête profiles de plus avant la fiche.
+  const isAdmin = previewId ? (await getProfile())?.role === 'admin' : false
+  const isAdminPreview = !!previewId && isAdmin
+
+  let pro: any = null
+  let viewsTrend: Awaited<ReturnType<typeof getViewsTrend>> | undefined
+  if (isAdminPreview) {
+    // Aperçu admin : fiche et vues du mois en même temps (l'id est connu)
+    const [{ data }, trend] = await Promise.all([
+      admin.from('depannage_pros').select('*').eq('id', previewId).maybeSingle(),
+      getViewsTrend(admin, 'depannage', previewId!),
+    ])
+    pro = data
+    viewsTrend = trend
+  } else {
+    const { data } = await admin
+      .from('depannage_pros')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle()
+    pro = data
+  }
+  timer.mark('fiche')
+
+  if (!pro) {
+    return (
+      <div style={{ padding: 'clamp(20px,3vw,44px)', width: '100%', fontFamily: 'var(--font-outfit), sans-serif' }}>
+        <div style={{ maxWidth: 640, margin: '40px auto 0', padding: 32, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, textAlign: 'center' as const }}>
+          <h1 style={{ fontFamily: 'var(--font-fraunces), serif', fontSize: 22, marginBottom: 12 }}>
+            {previewId ? 'Fiche introuvable' : 'Aucune fiche dépannage'}
+          </h1>
+          <p style={{ color: 'var(--text-muted)', lineHeight: 1.7, fontSize: 14, marginBottom: 22 }}>
+            {previewId
+              ? `L'identifiant ${previewId} ne correspond à aucune fiche.`
+              : <>Aucune fiche dépannage n'est rattachée à ce compte. Cela peut arriver si le paiement Stripe a été annulé.</>
+            }
+          </p>
+          {!previewId && (
+            <Link href="/dashboard/creer-fiche-depannage" style={{ display: 'inline-block', padding: '10px 18px', background: 'var(--accent-text)', color: 'var(--bg)', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 13.5 }}>
+              Créer ma fiche
+            </Link>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  if (!viewsTrend) viewsTrend = await getViewsTrend(admin, 'depannage', pro.id)
+  timer.mark('vues du mois')
+  timer.done()
+  const createdAt = new Date(pro.created_at)
+  const daysActive = Math.max(1, Math.floor((Date.now() - createdAt.getTime()) / 86400000))
+
+  return (
+    <MaFicheDepannage
+      pro={pro}
+      kpis={{
+        views: pro.views_count ?? 0,
+        contacts: pro.contacts_count ?? 0,
+        clics: (pro.site_clicks_count ?? 0) + (pro.instagram_clicks_count ?? 0),
+        daysActive,
+      }}
+      isAdminPreview={isAdminPreview}
+      paymentNotice={isAdminPreview ? null : sp?.paid ? 'paid' : sp?.canceled ? 'canceled' : null}
+      viewsTrend={viewsTrend}
+      statsSlot={
+        <Suspense fallback={<StatsTeaserSkeleton />}>
+          <ProStatsTeaser metier="depannage" fiche={pro} db={admin} isAdminPreview={isAdminPreview} />
+        </Suspense>
+      }
+    />
+  )
+}

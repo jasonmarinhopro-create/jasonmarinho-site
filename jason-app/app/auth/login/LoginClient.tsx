@@ -1,5 +1,6 @@
 'use client'
 
+import { metierParSlug } from '@/lib/pros/metiers'
 import { Suspense, useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -13,7 +14,7 @@ import {
 import JmLogo from '@/components/JmLogo'
 import GoogleButton from '@/components/auth/GoogleButton'
 
-type Profile = 'host' | 'photographe' | 'menage'
+type Profile = 'host' | 'photographe' | 'menage' | 'depannage'
 
 const PROFILES: Record<Profile, {
   brandTitle: string
@@ -77,6 +78,22 @@ const PROFILES: Record<Profile, {
     registerHref: 'https://jasonmarinho.com/annuaires/menage/inscription',
     quote: '"Un mini-site pro hébergé sur jasonmarinho.com, vérifié, accessible à vie tant que ton abonnement reste actif."',
   },
+  depannage: {
+    brandTitle: 'Bon retour dans ton espace dépannage.',
+    brandDesc: 'Édite ta fiche, réponds aux demandes des hôtes et fais tes devis en quelques clics.',
+    perks: [
+      { icon: PencilSimple, label: 'Édite ta fiche à tout moment (spécialités, tarifs, zone, photos)' },
+      { icon: ChartBar,     label: 'Stats : vues de fiche, contacts reçus, ancienneté' },
+      { icon: Tag,          label: 'Affiche ton tarif horaire et le prix du déplacement' },
+      { icon: CreditCard,   label: 'Gère ton abonnement (factures, carte, résiliation) via le portail Stripe' },
+    ],
+    formTitle: 'Mon espace dépannage',
+    formSub: 'Connecte-toi avec l\'email et le mot de passe choisis à l\'inscription',
+    noAccountText: 'Pas encore de fiche dépannage ?',
+    registerLabel: 'Créer ma fiche en 2 minutes',
+    registerHref: '/auth/register',
+    quote: '"Un mini-site pro hébergé sur jasonmarinho.com, vérifié, accessible à vie tant que ton abonnement reste actif."',
+  },
 }
 
 const MAX_ATTEMPTS = 5
@@ -98,7 +115,7 @@ function LoginInner({ google }: { google: boolean }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const asParam = searchParams?.get('as') ?? ''
-  const profileKey: Profile = asParam === 'photographe' ? 'photographe' : asParam === 'menage' ? 'menage' : 'host'
+  const profileKey: Profile = asParam === 'photographe' || asParam === 'menage' || asParam === 'depannage' ? asParam : 'host'
   const ctx = PROFILES[profileKey]
 
   // NB : PAS de router.prefetch(/dashboard) ici. Prefetcher une route
@@ -112,10 +129,11 @@ function LoginInner({ google }: { google: boolean }) {
   // étant déjà connecté, on redirige directement vers l'espace ciblé
   // (le sélecteur d'espace du header lui permet ensuite de switcher).
   useEffect(() => {
-    if (asParam !== 'photographe' && asParam !== 'menage') return
+    const espace = metierParSlug(asParam)?.espace
+    if (!espace) return
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return
-      const target = asParam === 'photographe' ? '/dashboard/ma-fiche-photographe' : '/dashboard/ma-fiche-menage'
+      const target = espace
       // router.replace utilise le prefetch (client-side nav), pas de reload
       router.replace(target)
     })

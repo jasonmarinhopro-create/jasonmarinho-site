@@ -15,6 +15,7 @@ import { useTheme } from '@/components/ThemeProvider'
 import { changelogFor } from '@/lib/constants/changelog'
 import { CHANGELOG_IN_FEED } from '@/lib/notifications/present'
 import { subscribeDashboardTitle } from '@/lib/dashboard-title-store'
+import type { UserSpace } from '@/lib/queries/spaces'
 
 // Mapping pathname → titre du header (routes statiques)
 const PATH_TITLES: Record<string, string> = {
@@ -157,7 +158,7 @@ interface HeaderProps {
   /** Forwarded à la sidebar mobile : masque "Encaissements" si pas de Stripe. */
   hasStripeAccount?: boolean
   /** Espaces auxquels l'utilisateur a accès (multi-rôles). Si plus d'un, un sélecteur s'affiche dans le dropdown. */
-  spaces?: Array<{ key: 'host' | 'photographer' | 'cleaner' | 'investor'; label: string; href: string; subtitle?: string | null; active: boolean }>
+  spaces?: Array<{ key: UserSpace['key']; label: string; href: string; subtitle?: string | null; active: boolean }>
   /** Forwarded a la sidebar mobile — pour que le menu user affiche les bonnes infos */
   isContributor?: boolean
   /** Compteurs calculés côté serveur (comme hasNewActualites) — évite au badge
@@ -200,9 +201,10 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   // Espace courant dérivé du pathname côté client (cf. Sidebar : le layout
   // server est mémorisé par le router cache entre routes sœurs, un calcul
   // server-side resterait figé après un client-nav).
-  const currentSpaceKey: 'host' | 'photographer' | 'cleaner' | 'investor' =
+  const currentSpaceKey: UserSpace['key'] =
     pathname?.startsWith('/dashboard/ma-fiche-photographe') ? 'photographer'
     : pathname?.startsWith('/dashboard/ma-fiche-menage') ? 'cleaner'
+    : pathname?.startsWith('/dashboard/ma-fiche-depannage') ? 'depannage'
     : pathname?.startsWith('/dashboard/investir') ? 'investor'
     : 'host'
 

@@ -207,7 +207,7 @@ export default function ClientsCrm({ clients: initial, onCreate, onUpdate, onDel
           </div>
           <div style={s.field}>
             <label style={s.label}>Notes (préférences, historique, tarifs convenus…)</label>
-            <textarea className="input-field" style={{ ...s.input, resize: 'vertical' as const }} rows={2} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} placeholder={`Ex : shooting prévu en septembre, ${metier === 'équipe' ? 'turnover chaque samedi' : 'préfère la lumière du matin'}…`} />
+            <textarea className="input-field" style={{ ...s.input, resize: 'vertical' as const }} rows={2} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} placeholder={metier === 'équipe' ? 'Ex : ménage chaque samedi, linge fourni…' : metier === 'pro' ? 'Ex : chauffe-eau à vérifier, boîte à clés à l’entrée…' : 'Ex : shooting prévu en septembre, préfère la lumière du matin…'} />
           </div>
           {formError && <p style={s.error}>{formError}</p>}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>

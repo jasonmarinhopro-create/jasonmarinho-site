@@ -14,7 +14,7 @@ import {
   ChatsCircle, Calculator, Camera, Sparkle, Tray, AddressBook,
   CaretDoubleLeft, CaretDoubleRight, UserCircle, CreditCard, Question, ArrowUpRight, Star,
   ChartLineUp, HouseLine, Briefcase, ShareNetwork, PaperPlaneTilt, LinkSimple, MagnifyingGlass, CalendarCheck, Signature, Megaphone,
-  Broom, Check, Plus, ChatText, ArrowLeft, LockSimple, Receipt, Binoculars, PresentationChart,
+  Broom, Wrench, Check, Plus, ChatText, ArrowLeft, LockSimple, Receipt, Binoculars, PresentationChart,
   Lightbulb,
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
@@ -23,10 +23,14 @@ import type { PropertyLite } from '@/lib/queries/active-property'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import type { UserSpace } from '@/lib/queries/spaces'
+import { METIERS, KINDS, type ProKind } from '@/lib/pros/metiers'
+
+// Icône de « Ma fiche » selon le métier
+const PRO_ICONS: Record<ProKind, React.ElementType> = { photographer: Camera, cleaner: Sparkle, depannage: Wrench }
 
 // Icône de chaque espace dans le menu du compte
 const SPACE_ICONS: Record<UserSpace['key'], React.ElementType> = {
-  host: HouseSimple, photographer: Camera, cleaner: Broom, investor: ChartLineUp,
+  host: HouseSimple, photographer: Camera, cleaner: Broom, depannage: Wrench, investor: ChartLineUp,
 }
 
 // Sidebar refondue (Étape 2/7 du refactor — cf. docs/REFACTOR-DASHBOARD.md).
@@ -179,7 +183,7 @@ const adminGroups: Array<{ key: string; label: string; items: AdminItem[]; colla
 
 /** Menu des pros : demandes pas encore ouvertes et actualités du métier non vues */
 export interface ProNav {
-  demandes: { photographer: number; cleaner: number }
+  demandes: Partial<Record<ProKind, number>>
   newActus: { photographer: boolean; cleaner: boolean }
 }
 
@@ -209,7 +213,7 @@ interface SidebarProps {
   userId?: string
   /** Espaces multi-rôles (Hôte + Photographe + Ménage) — permet de switcher
    *  entre ses fiches pro depuis le menu user en bas-gauche. */
-  spaces?: Array<{ key: 'host' | 'photographer' | 'cleaner' | 'investor'; label: string; href: string; subtitle?: string | null; active: boolean }>
+  spaces?: Array<{ key: UserSpace['key']; label: string; href: string; subtitle?: string | null; active: boolean }>
   /** Menu des pros (17/10/2026) : compteur « Demandes reçues », point « du neuf » sur « Actualités » */
   proNav?: ProNav
   /** Menu hôte : éléments « À traiter » de Contrats & paiements */
@@ -222,10 +226,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   // mémorisé par le router cache entre routes sœurs, donc une prop calculée
   // depuis `headers()` reste figée après un client-nav. usePathname() lui
   // change à chaque navigation, ce qui garantit que la sidebar suit l'espace.
-  const proRole: 'photographer' | 'cleaner' | null =
-    pathname?.startsWith('/dashboard/ma-fiche-photographe') ? 'photographer'
-    : pathname?.startsWith('/dashboard/ma-fiche-menage') ? 'cleaner'
-    : null
+  const proRole: ProKind | null = KINDS.find(k => pathname?.startsWith(METIERS[k].espace)) ?? null
   // Espace investisseur : nav dédiée et DÉTACHÉE des opérations hôte
   // (pas de Calendrier/Réservations/Voyageurs). Pour les comptes qui ne
   // viennent que pour investir, on ne mélange pas les deux univers.
@@ -407,6 +408,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     '/dashboard/ma-fiche-menage/statistiques',
     '/dashboard/ma-fiche-menage/actualites',
     '/dashboard/ma-fiche-menage/idees',
+    ...['', '/demandes', '/clients', '/devis', '/facturation', '/statistiques'].map(p => `${METIERS.depannage.espace}${p}`),
     // Espace investisseur : idem, sinon "Accueil" reste actif sur /estimateur.
     '/dashboard/investir',
     '/dashboard/investir/estimateur',
@@ -574,13 +576,13 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
               {!collapsed && <div style={styles.sectionLabel}>Aperçu admin</div>}
               <div style={styles.navSection}>
                 <NavItem
-                  href={`${proRole === 'photographer' ? '/dashboard/ma-fiche-photographe' : '/dashboard/ma-fiche-menage'}?id=${encodeURIComponent(searchParams.get('id') ?? '')}`}
+                  href={`${METIERS[proRole].espace}?id=${encodeURIComponent(searchParams.get('id') ?? '')}`}
                   label="Fiche du pro"
-                  Icon={proRole === 'photographer' ? Camera : Sparkle}
+                  Icon={PRO_ICONS[proRole]}
                 />
                 <NavItem
-                  href={proRole === 'photographer' ? '/dashboard/admin/photographes' : '/dashboard/admin/menage'}
-                  label={proRole === 'photographer' ? 'Tous les photographes' : 'Toutes les équipes'}
+                  href={`/dashboard/admin/${proRole === 'photographer' ? 'photographes' : METIERS[proRole].slug}`}
+                  label={proRole === 'photographer' ? 'Tous les photographes' : proRole === 'cleaner' ? 'Toutes les équipes' : 'Tous les pros du dépannage'}
                   Icon={ArrowLeft}
                 />
               </div>
@@ -598,11 +600,13 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                demandes pas encore ouvertes), Rester informé (point « du neuf »
                sur les actualités du métier). */
             (() => {
-              const base = proRole === 'photographer' ? '/dashboard/ma-fiche-photographe' : '/dashboard/ma-fiche-menage'
+              const base = METIERS[proRole].espace
+              // Actualités et Idées du dépannage : arrivent avec la veille du métier (projet maintenance, étape 4)
+              const veille = proRole !== 'depannage'
               const groups: Array<{ label: string; items: React.ReactNode }> = [
                 ...(proRole === 'cleaner' ? [{ label: 'Au quotidien', items: <NavItem href={`${base}/planning`} label="Mes ménages" Icon={CalendarCheck} /> }] : []),
                 { label: 'Ma vitrine', items: <>
-                  <NavItem href={base} label="Ma fiche" Icon={proRole === 'photographer' ? Camera : Sparkle} />
+                  <NavItem href={base} label="Ma fiche" Icon={PRO_ICONS[proRole]} />
                   <NavItem href={`${base}/statistiques`} label="Mes statistiques" Icon={PresentationChart} />
                 </> },
                 { label: 'Mes clients', items: <>
@@ -610,10 +614,10 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                   <NavItem href={`${base}/clients`} label="Mes clients" Icon={AddressBook} />
                   <NavItem href={`${base}/devis`} label="Devis" Icon={Receipt} />
                 </> },
-                { label: 'Rester informé', items: <>
-                  <NavItem href={`${base}/actualites`} label="Actualités" Icon={Newspaper} notifDot={proNewActus[proRole]} />
+                ...(veille ? [{ label: 'Rester informé', items: <>
+                  <NavItem href={`${base}/actualites`} label="Actualités" Icon={Newspaper} notifDot={(proNewActus as Record<string, boolean>)[proRole] ?? false} />
                   <NavItem href={`${base}/idees`} label="Idées" Icon={Lightbulb} />
-                </> },
+                </> }] : []),
               ]
               return (
                 <div>
@@ -796,6 +800,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                           const isCurrent =
                             s.key === 'photographer' ? (pathname?.startsWith('/dashboard/ma-fiche-photographe') ?? false)
                             : s.key === 'cleaner'    ? (pathname?.startsWith('/dashboard/ma-fiche-menage') ?? false)
+                            : s.key === 'depannage'  ? (pathname?.startsWith('/dashboard/ma-fiche-depannage') ?? false)
                             : s.key === 'investor'   ? (pathname?.startsWith('/dashboard/investir') ?? false)
                             : !pathname?.startsWith('/dashboard/ma-fiche-') && !pathname?.startsWith('/dashboard/investir')
                           const SpaceIcon = SPACE_ICONS[s.key]

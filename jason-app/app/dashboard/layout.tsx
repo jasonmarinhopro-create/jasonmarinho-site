@@ -152,13 +152,13 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
 
   // Menu des pros (17/10/2026) : point « du neuf » sur les actualités de leur
   // métier et compteur des demandes pas encore ouvertes
-  const hasSpace = (k: 'photographer' | 'cleaner') => spacesResult.spaces.some(sp => sp.key === k && sp.active)
+  const hasSpace = (k: 'photographer' | 'cleaner' | 'depannage') => spacesResult.spaces.some(sp => sp.key === k && sp.active)
   // Une date de visite par espace pro (23/10/2026) : ouvrir les actualités des
   // hôtes effaçait le point des espaces photographe et ménage
-  const isPro = hasSpace('photographer') || hasSpace('cleaner')
+  const isPro = hasSpace('photographer') || hasSpace('cleaner') || hasSpace('depannage')
   const [proDemandes, proSeen] = isPro
     ? await Promise.all([
-        menu?.demandes ?? loadProNewDemandes(profile.userId, { photographer: hasSpace('photographer'), cleaner: hasSpace('cleaner') }),
+        menu?.demandes ?? loadProNewDemandes(profile.userId, { photographer: hasSpace('photographer'), cleaner: hasSpace('cleaner'), depannage: hasSpace('depannage') }),
         menu?.actusSeen ?? loadProActusSeen(profile.userId, profile.last_seen_actualites_at),
       ])
     : [null, null]

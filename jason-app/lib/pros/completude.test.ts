@@ -30,6 +30,13 @@ describe('jauge de complétude des fiches', () => {
     expect(r.pct).toBe(100)
     expect(r.next).toBeNull()
   })
+  it('dépannage : une spécialité suffit, libellés du métier', () => {
+    const r = completude({ ...vide, prestations: 1, capacite: true }, 'depannage')
+    const sp = r.points.find(p => p.key === 'prestations')!
+    expect(sp.label).toBe('Tes spécialités')
+    expect(sp.done).toBe(true)
+    expect(r.points.find(p => p.key === 'capacite')?.label).toBe('Tes disponibilités')
+  })
   it('les anciennes photos ne comptent pas', () => {
     const r = completude({ ...vide, photos: [`${P}/ancienne.jpg`, photo(1)] }, 'photographe')
     expect(r.points[0].hint).toContain('Encore 2 photos')

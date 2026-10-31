@@ -15,7 +15,7 @@ export interface CompletudeInput {
   /** Photographes : options cochées ou métier qui inclut la vidéo */
   options?: number
   metierVideo?: boolean
-  /** Ménage */
+  /** Ménage (prestations, capacité) ; dépannage (spécialités, disponibilités) */
   prestations?: number
   capacite?: boolean
 }
@@ -34,6 +34,7 @@ export function completude(f: CompletudeInput, metier: ProMetier): { pct: number
   const photos = f.photos.filter(p => !isLegacyPhoto(p)).length
   const prix = f.prixMin != null && f.prixMin > 0 || f.formules.some(x => Number(x.prix) > 0)
   const photo = metier === 'photographe'
+  const dep = metier === 'depannage'
   const points: CompletudePoint[] = [
     { key: 'photos', label: `Au moins ${PHOTOS_CONSEILLEES} photos`, done: photos >= PHOTOS_CONSEILLEES, weight: photo ? 30 : 25, anchor: 'mes-photos',
       hint: photos ? `Encore ${PHOTOS_CONSEILLEES - photos} photo${PHOTOS_CONSEILLEES - photos > 1 ? 's' : ''} : c’est ce que l’hôte regarde en premier.` : 'C’est ce que l’hôte regarde en premier. Sans photo, ta fiche reste un texte.' },
@@ -46,10 +47,15 @@ export function completude(f: CompletudeInput, metier: ProMetier): { pct: number
     photo
       ? { key: 'options', label: 'Ce que tu proposes', done: (f.options ?? 0) > 0 || !!f.metierVideo, weight: 10, anchor: 'activite',
           hint: 'Drone, visite 3D, vidéos courtes… : coche-les, l’hôte peut ensuite les demander dans le formulaire.' }
-      : { key: 'prestations', label: 'Tes prestations', done: (f.prestations ?? 0) >= 3, weight: 10, anchor: 'prestations',
-          hint: 'Linge, réassort, photo de fin de ménage… : coche tout ce que tu fais.' },
-    ...(!photo ? [{ key: 'capacite', label: 'Ta capacité', done: !!f.capacite, weight: 5, anchor: 'capacite',
-      hint: 'Taille de l’équipe et délai de réservation : l’hôte sait si tu peux suivre son rythme.' }] : []),
+      : dep
+        ? { key: 'prestations', label: 'Tes spécialités', done: (f.prestations ?? 0) >= 1, weight: 10, anchor: 'prestations',
+            hint: 'Plomberie, électricité, serrurerie… : coche ce que tu fais, les hôtes filtrent l’annuaire avec.' }
+        : { key: 'prestations', label: 'Tes prestations', done: (f.prestations ?? 0) >= 3, weight: 10, anchor: 'prestations',
+            hint: 'Linge, réassort, photo de fin de ménage… : coche tout ce que tu fais.' },
+    ...(!photo ? [{ key: 'capacite', label: dep ? 'Tes disponibilités' : 'Ta capacité', done: !!f.capacite, weight: 5, anchor: 'capacite',
+      hint: dep
+        ? 'Délai d’intervention, soirs, week-ends, urgences : l’hôte sait si tu peux venir entre deux voyageurs.'
+        : 'Taille de l’équipe et délai de réservation : l’hôte sait si tu peux suivre son rythme.' }] : []),
     { key: 'deroule', label: 'Ton déroulé en 3 étapes', done: derouleChanged(f.deroule, metier), weight: 10, anchor: 'deroule',
       hint: 'Le texte par défaut est le même sur toutes les fiches : écris le tien.' },
     { key: 'zone', label: 'Ta zone', done: f.villes.length > 0 || /\d\s?km/i.test(f.zone), weight: 5, anchor: 'villes',

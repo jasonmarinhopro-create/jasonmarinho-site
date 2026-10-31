@@ -7,7 +7,7 @@ export interface MenuState {
   chezNousUnread: number
   contracts: ContractTodoInput[]
   onboarding: OnboardingAutoFlags | null
-  demandes: { photographer: number; cleaner: number } | null
+  demandes: { photographer: number; cleaner: number; depannage: number } | null
   actusSeen: { photographer: string | null; cleaner: string | null } | null
 }
 
@@ -28,7 +28,7 @@ export function parseMenuState(raw: unknown): MenuState | null {
     chezNousUnread: num(r.chez_nous_unread),
     contracts: Array.isArray(r.contracts) ? r.contracts.filter(c => obj(c)) as ContractTodoInput[] : [],
     onboarding: ob ? Object.fromEntries(FLAGS.map(k => [k, ob[k] === true])) as OnboardingAutoFlags : null,
-    demandes: dem ? { photographer: num(dem.photographer), cleaner: num(dem.cleaner) } : null,
+    demandes: dem ? { photographer: num(dem.photographer), cleaner: num(dem.cleaner), depannage: num(dem.depannage) } : null,
     actusSeen: seen ? { photographer: str(seen.photographer), cleaner: str(seen.cleaner) } : (r.actus_seen === null && 'actus_seen' in r ? { photographer: null, cleaner: null } : null),
   }
 }

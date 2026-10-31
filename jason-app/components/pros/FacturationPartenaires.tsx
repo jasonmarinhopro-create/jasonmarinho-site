@@ -4,6 +4,7 @@
 // partenaires Tiime et Indy, repliés si le pro a déjà son outil
 // (has_invoicing_tool). Liens affiliés : rel="sponsored noopener" + mention.
 
+import { METIERS, type ProKind } from '@/lib/pros/metiers'
 import {
   Receipt, ArrowSquareOut, CalendarBlank, CheckCircle, Lightbulb, User, Buildings,
   FileText, Star, ListChecks,
@@ -18,9 +19,9 @@ const INDY_PAGE_URL = 'https://jasonmarinho.com/partenaires/indy'
 
 const eur = (n: number) => `${n.toLocaleString('fr-FR')} €`
 
-export default function FacturationPartenaires({ kind, hasTool = false, tool = null }: { kind: 'photographer' | 'cleaner'; hasTool?: boolean; tool?: string | null }) {
-  const devisHref = kind === 'photographer' ? '/dashboard/ma-fiche-photographe/devis' : '/dashboard/ma-fiche-menage/devis'
-  const metier = kind === 'photographer' ? 'photographe' : 'équipe de ménage'
+export default function FacturationPartenaires({ kind, hasTool = false, tool = null }: { kind: ProKind; hasTool?: boolean; tool?: string | null }) {
+  const devisHref = `${METIERS[kind].espace}/devis`
+  const metier = METIERS[kind].pro
   const pro = kind === 'photographer'
     ? 'une agence immobilière, une conciergerie ou une société'
     : 'une conciergerie ou une société'

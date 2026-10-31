@@ -7,7 +7,7 @@ describe('menu en une requête (menu_state)', () => {
       notif_unread: 3, chez_nous_unread: 1,
       contracts: [{ id: 'c1', statut: 'signe' }, null, 'x'],
       onboarding: { logement: true, sejour: false, affiche: 'oui' },
-      demandes: { photographer: 2, cleaner: 0 },
+      demandes: { photographer: 2, cleaner: 0, depannage: 1 },
       actus_seen: { photographer: '2026-10-23T10:00:00Z', cleaner: null },
     })
     expect(s?.notifUnread).toBe(3)
@@ -17,7 +17,7 @@ describe('menu en une requête (menu_state)', () => {
     expect(s?.onboarding?.sejour).toBe(false)
     expect(s?.onboarding?.affiche).toBe(false)
     expect(s?.onboarding?.menage_shared).toBe(false)
-    expect(s?.demandes).toEqual({ photographer: 2, cleaner: 0 })
+    expect(s?.demandes).toEqual({ photographer: 2, cleaner: 0, depannage: 1 })
     expect(s?.actusSeen).toEqual({ photographer: '2026-10-23T10:00:00Z', cleaner: null })
   })
   it('parties absentes quand non demandées', () => {
