@@ -19,7 +19,7 @@ export const FIRST_PAGE_MAX = 10
 export const QUERIES_PER_AUDIENCE = 25
 export const HOST_QUERY_MIN_IMPRESSIONS = 20
 
-export type Audience = 'photographe' | 'menage' | 'hote'
+export type Audience = 'photographe' | 'menage' | 'depannage' | 'hote'
 
 export interface PairRow { query: string; page: string; clicks: number; impressions: number; position: number }
 
@@ -44,6 +44,8 @@ export function audienceOf(q: string): Audience {
   const s = norm(q)
   if (/photo/.test(s) || isVideoQuery(s)) return 'photographe'
   if (/menage|nettoyage|femme de m|blanchisserie|linge/.test(s)) return 'menage'
+  // Dépannage et maintenance (31/10/2026)
+  if (/depann|plombi|electricien|serruri|chauffagiste|maintenance|multiservice|petits travaux|homme toutes mains/.test(s)) return 'depannage'
   return 'hote'
 }
 
@@ -92,7 +94,7 @@ const byPlaceThenImpressions = (a: PublicQuery, b: PublicQuery) =>
 
 /** Recherches en première page de Google, par public (hors recherches sur notre nom) */
 export function firstPageQueries(rows: PairRow[]): Record<Audience, PublicQuery[]> {
-  const out: Record<Audience, PublicQuery[]> = { photographe: [], menage: [], hote: [] }
+  const out: Record<Audience, PublicQuery[]> = { photographe: [], menage: [], depannage: [], hote: [] }
   for (const q of groupByQuery(rows)) {
     if (isBrand(q.q) || q.place > FIRST_PAGE_MAX) continue
     const a = audienceOf(q.q)
@@ -104,9 +106,11 @@ export function firstPageQueries(rows: PairRow[]): Record<Audience, PublicQuery[
   out.hote.sort((a, b) => b.impressions - a.impressions || a.place - b.place)
   out.photographe.sort(byPlaceThenImpressions)
   out.menage.sort(byPlaceThenImpressions)
+  out.depannage.sort(byPlaceThenImpressions)
   return {
     photographe: out.photographe.slice(0, QUERIES_PER_AUDIENCE),
     menage: out.menage.slice(0, QUERIES_PER_AUDIENCE),
+    depannage: out.depannage.slice(0, QUERIES_PER_AUDIENCE),
     hote: out.hote.slice(0, QUERIES_PER_AUDIENCE),
   }
 }
@@ -134,7 +138,7 @@ export function cityPageRanks(
   pages: Array<{ path: string; impressions: number; clicks: number; position: number }>,
   pairs: PairRow[],
 ): Record<Audience, CityRank[]> {
-  const out: Record<Audience, CityRank[]> = { photographe: [], menage: [], hote: [] }
+  const out: Record<Audience, CityRank[]> = { photographe: [], menage: [], depannage: [], hote: [] }
   const topQuery = new Map<string, { q: string; imp: number }>()
   for (const r of pairs) {
     const path = pathOf(r.page)
@@ -144,12 +148,13 @@ export function cityPageRanks(
   }
   for (const p of pages) {
     if (!isCityPage(p.path) || p.position > FIRST_PAGE_MAX || p.impressions < QUERY_MIN_IMPRESSIONS) continue
-    const kind: Audience = p.path.startsWith('/photographe-') ? 'photographe' : p.path.startsWith('/menage-') ? 'menage' : 'hote'
+    const kind: Audience = p.path.startsWith('/photographe-') ? 'photographe' : p.path.startsWith('/menage-') ? 'menage' : p.path.startsWith('/depannage-') ? 'depannage' : 'hote'
     out[kind].push({ path: p.path, place: r1(p.position), impressions: p.impressions, clicks: p.clicks, query: topQuery.get(p.path)?.q ?? null })
   }
   const sort = (a: CityRank, b: CityRank) => a.place - b.place || b.impressions - a.impressions
   out.photographe.sort(sort)
   out.menage.sort(sort)
+  out.depannage.sort(sort)
   out.hote.sort(sort)
   return out
 }
@@ -161,7 +166,7 @@ export function isCityPage(path: string): boolean {
 
 /** Pages de ville des pros (« /photographe-lcd-lyon », « /menage-lcd-bordeaux ») */
 export function isProCityPage(path: string): boolean {
-  return /^\/(photographe|menage)-lcd-[a-z0-9-]+$/.test(path)
+  return /^\/(photographe|menage|depannage)-lcd-[a-z0-9-]+$/.test(path)
 }
 
 export interface CityStats {

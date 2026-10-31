@@ -21,6 +21,7 @@ type Contact = { id: string; created_at: string; fiche_id: string; source_url: s
 const PROS = {
   photographe: { table: 'photographers', contacts: 'photographer_contacts', fk: 'photographer_id' },
   menage: { table: 'cleaners', contacts: 'cleaner_contacts', fk: 'cleaner_id' },
+  depannage: { table: 'depannage_pros', contacts: 'depannage_contacts', fk: 'depannage_id' },
 } as const
 
 async function compute(): Promise<PublicDemandes> {
@@ -35,18 +36,21 @@ async function compute(): Promise<PublicDemandes> {
   const items: DemandeItem[] = []
   const contactStatus = new Map<string, string | null>()
   const excluded = { test: 0, exemple: 0 }
-  const prosMaps = { photographe: new Map<string, number>(), menage: new Map<string, number>() }
+  const prosMaps = { photographe: new Map<string, number>(), menage: new Map<string, number>(), depannage: new Map<string, number>() }
 
-  for (const metier of ['photographe', 'menage'] as DemandeMetier[]) {
+  for (const metier of ['photographe', 'menage', 'depannage'] as DemandeMetier[]) {
     const t = PROS[metier]
     let fiches = await db.from(t.table).select('id, ville, zone_couverte, status, is_public, user_id, villes_couvertes')
     if (fiches.error) fiches = await db.from(t.table).select('id, ville, zone_couverte, status, is_public, user_id')
+    // Dépannage (31/10/2026) : une table en panne n'efface pas les chiffres des 2 autres métiers
+    if (fiches.error && metier === 'depannage') continue
     if (fiches.error) throw new Error(`fiches ${metier}`)
     const byId = new Map(((fiches.data ?? []) as Fiche[]).map(f => [f.id, f]))
     prosMaps[metier] = prosByCity([...byId.values()].filter(f => !isDemoFiche(f, admins)), anyCitySlugOf)
 
     const { rows, error } = await allRows<Record<string, unknown>>((from, to) =>
       db.from(t.contacts).select(`id, created_at, ${t.fk}, source_url, status, contact_email`).order('created_at').order('id').range(from, to))
+    if (error && metier === 'depannage') continue
     if (error) throw new Error(`demandes ${metier}`)
     for (const r of rows) {
       const c: Contact = {
@@ -76,7 +80,7 @@ async function compute(): Promise<PublicDemandes> {
   return buildPublicDemandes(items, { today: parisToday(), labelOf: cityLabel, pros: prosMaps, excluded })
 }
 
-const cached = unstable_cache(compute, ['public-demandes-v4'], { revalidate: 600, tags: ['public-demandes'] })
+const cached = unstable_cache(compute, ['public-demandes-v5'], { revalidate: 600, tags: ['public-demandes'] })
 
 export async function loadPublicDemandes(): Promise<PublicDemandes | null> {
   try {

@@ -21,8 +21,9 @@ export interface CityFull {
   slug: string
   label: string
   /** Fiches en ligne présentées sur la page (null si la lecture a échoué) */
-  pros: { photographe: number; menage: number } | null
-  pages: { photographe: PageFull; menage: PageFull | null; hote: PageFull | null }
+  pros: { photographe: number; menage: number; depannage?: number } | null
+  /** depannage : pages /depannage-lcd-<ville> depuis le 31/10/2026 (mêmes villes que le ménage) */
+  pages: { photographe: PageFull; menage: PageFull | null; depannage?: PageFull | null; hote: PageFull | null }
   /** Pays d'une ville hors de France (page photographe seulement) */
   pays?: string
 }
@@ -95,10 +96,13 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
     if (ph.error || cl.error) [ph, cl] = await lire('ville, zone_couverte, status, is_public, user_id')
     if (ph.error || cl.error) throw new Error('pros')
     type R = { ville: string | null; zone_couverte: string | null; status: string | null; is_public: boolean | null; user_id: string | null; villes_couvertes?: string[] | null }
+    // Dépannage lu à part : une panne de sa table n'efface pas les 2 autres
+    const dp = await db.from('depannage_pros').select(cols)
     // Fiches d'exemple des comptes admin jamais comptées
     return {
       photographe: prosByCity(splitDemo((ph.data ?? []) as R[], admins).real, anyCitySlugOf),
       menage: prosByCity(splitDemo((cl.data ?? []) as R[], admins).real, anyCitySlugOf),
+      depannage: dp.error ? new Map<string, number>() : prosByCity(splitDemo((dp.data ?? []) as unknown as R[], admins).real, anyCitySlugOf),
     }
   })().catch(() => null)
 
@@ -157,7 +161,7 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
     const pairsOf = new Map<string, PairRow[]>()
     for (const p of pairs) {
       const path = pathOf(p.page)
-      if (!/^\/(photographe-lcd|menage-lcd|devenir-hote-airbnb)-/.test(path)) continue
+      if (!/^\/(photographe-lcd|menage-lcd|depannage-lcd|devenir-hote-airbnb)-/.test(path)) continue
       pairsOf.set(path, [...(pairsOf.get(path) ?? []), p])
     }
     const full = (path: string) => pageFull(path, curTotals.get(path), prevByPage.get(path), pairsOf.get(path) ?? [], visitorsCur?.byPath.get(path) ?? 0)
@@ -166,10 +170,11 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
       cityFull[slug] = {
         slug,
         label: cityLabel(slug),
-        pros: pros ? { photographe: pros.photographe.get(slug) ?? 0, menage: pros.menage.get(slug) ?? 0 } : null,
+        pros: pros ? { photographe: pros.photographe.get(slug) ?? 0, menage: pros.menage.get(slug) ?? 0, depannage: pros.depannage.get(slug) ?? 0 } : null,
         pages: {
           photographe: full(`/photographe-lcd-${slug}`),
           menage: full(`/menage-lcd-${slug}`),
+          depannage: full(`/depannage-lcd-${slug}`),
           hote: NO_HOST_GUIDE.has(slug) ? null : full(`/devenir-hote-airbnb-${slug}`),
         },
       }
@@ -195,7 +200,7 @@ async function compute(): Promise<{ stats: PublicStatsFull; complete: boolean }>
       video,
       cities,
       cityRanks,
-      cityPages: CITY_PAGE_SLUGS.length * 2,
+      cityPages: CITY_PAGE_SLUGS.length * 3,
       threshold: CITY_TOTALS_MIN_IMPRESSIONS,
       villes: [
         ...CITY_PAGE_SLUGS.map(slug => ({ slug, label: cityLabel(slug) as string, pays: undefined as string | undefined })),
@@ -210,9 +215,9 @@ const cachedFull = unstable_cache(async () => {
   const r = await compute()
   if (!r.complete) throw new Error('incomplet')
   return r.stats
-}, ['public-stats-v7'], { revalidate: 6 * 3600, tags: ['public-stats'] })
+}, ['public-stats-v8'], { revalidate: 6 * 3600, tags: ['public-stats'] })
 
-const cachedPartial = unstable_cache(async () => (await compute()).stats, ['public-stats-partial-v5'], { revalidate: 3600, tags: ['public-stats'] })
+const cachedPartial = unstable_cache(async () => (await compute()).stats, ['public-stats-partial-v6'], { revalidate: 3600, tags: ['public-stats'] })
 
 export async function loadPublicStats(): Promise<PublicStatsFull> {
   try {

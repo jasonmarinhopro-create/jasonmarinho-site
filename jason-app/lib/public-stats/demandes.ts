@@ -12,7 +12,7 @@
 // reçoit sa page plus tard est rattachée toute seule ; sinon « Autre ville ».
 // Tests et fiches d'exemple écartés. Pur et testé (demandes.test.ts).
 
-export type DemandeMetier = 'photographe' | 'menage'
+export type DemandeMetier = 'photographe' | 'menage' | 'depannage'
 export type DemandeSource = 'formulaire' | 'fiche' | 'direct'
 /** ouverte : un pro l'a ouverte ou y a répondu ; transmise : envoyée, pas encore ouverte ; sans_pro : attend un pro dans la zone */
 export type DemandeEtat = 'ouverte' | 'transmise' | 'sans_pro'
@@ -31,8 +31,9 @@ export interface DemandeCity {
   total: number
   photographe: number
   menage: number
+  depannage: number
   /** Fiches en ligne de la ville (null : inconnu, ou « Autre ville ») */
-  pros: { photographe: number; menage: number } | null
+  pros: { photographe: number; menage: number; depannage: number } | null
 }
 
 export interface PublicDemandes {
@@ -112,12 +113,12 @@ export function buildPublicDemandes(
   opts: {
     today: string
     labelOf: (slug: string) => string
-    pros?: { photographe: Map<string, number>; menage: Map<string, number> } | null
+    pros?: { photographe: Map<string, number>; menage: Map<string, number>; depannage?: Map<string, number> } | null
     excluded?: { test: number; exemple: number }
   },
 ): PublicDemandes {
   const sorted = [...items].sort((a, b) => b.at.localeCompare(a.at))
-  const byMetier = { photographe: 0, menage: 0 }
+  const byMetier = { photographe: 0, menage: 0, depannage: 0 }
   const bySource = { formulaire: 0, fiche: 0, direct: 0 }
   const byEtat = { ouverte: 0, transmise: 0, sans_pro: 0 }
   const cityMap = new Map<string, DemandeCity>()
@@ -132,8 +133,8 @@ export function buildPublicDemandes(
       c = {
         slug: it.slug,
         label: it.slug ? opts.labelOf(it.slug) : OTHER_CITY,
-        total: 0, photographe: 0, menage: 0,
-        pros: it.slug && opts.pros ? { photographe: opts.pros.photographe.get(it.slug) ?? 0, menage: opts.pros.menage.get(it.slug) ?? 0 } : null,
+        total: 0, photographe: 0, menage: 0, depannage: 0,
+        pros: it.slug && opts.pros ? { photographe: opts.pros.photographe.get(it.slug) ?? 0, menage: opts.pros.menage.get(it.slug) ?? 0, depannage: opts.pros.depannage?.get(it.slug) ?? 0 } : null,
       }
       cityMap.set(key, c)
     }
@@ -168,7 +169,7 @@ export function buildPublicDemandes(
 }
 
 /** Demandes d'une ville (recherche « Ta ville ») : zéro compris */
-export function demandesOfCity(d: PublicDemandes, slug: string): { total: number; photographe: number; menage: number } {
+export function demandesOfCity(d: PublicDemandes, slug: string): { total: number; photographe: number; menage: number; depannage: number } {
   const c = d.cities.find(x => x.slug === slug)
-  return { total: c?.total ?? 0, photographe: c?.photographe ?? 0, menage: c?.menage ?? 0 }
+  return { total: c?.total ?? 0, photographe: c?.photographe ?? 0, menage: c?.menage ?? 0, depannage: c?.depannage ?? 0 }
 }
