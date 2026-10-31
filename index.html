@@ -321,7 +321,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .fo .lead2{color:rgba(255,255,255,.72)}
 .fo{padding:120px 0}
 .fo-in{display:flex;flex-direction:column;gap:30px}
-.fo-app{display:grid;grid-template-columns:1.1fr 1fr;gap:16px}
+.fo-app{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px}
 .fo-l{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9FD3B5}
 .fo-l em{font-style:normal;text-transform:none;letter-spacing:0;color:rgba(255,255,255,.5);font-weight:500}
 .fo-par{display:flex;flex-direction:column;gap:8px;padding:22px;border-radius:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
@@ -540,14 +540,6 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   .fo{padding:64px 0}
   .pq{grid-template-columns:1fr 1fr}
   .pq-c{padding:16px}
-}
-@media(max-width:380px){
-  .pq{grid-template-columns:1fr}
-  .pub-n{grid-template-columns:1fr}
-  .hg-seg button svg{display:none}
-  .hg-h1{font-size:33px}
-  .hg-p{font-size:15.5px}
-  .hg-by{font-size:12px}
   .fo-app{grid-template-columns:1fr}
   .fo-par a{flex-direction:column;align-items:flex-start;gap:2px}
   .pc{padding:18px;gap:8px}
@@ -564,6 +556,14 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   .mbar a:first-child{background:var(--g);color:#fff;font-weight:600}
   .mbar a:last-child{border:1.5px solid var(--bd2);color:var(--td);font-weight:500}
 }
+@media(max-width:380px){
+  .pq{grid-template-columns:1fr}
+  .pub-n{grid-template-columns:1fr}
+  .hg-seg button svg{display:none}
+  .hg-h1{font-size:33px}
+  .hg-p{font-size:15.5px}
+  .hg-by{font-size:12px}
+}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "C'est vraiment gratuit ?", "acceptedAnswer": {"@type": "Answer", "text": "Oui. Le compte Découverte est gratuit pour toujours, sans carte bancaire : calendrier, planning ménage, simulateurs, guides et 2 formations. La formule Standard (38,98 € TTC par an) ajoute les contrats, le paiement en ligne et les cautions."}}, {"@type": "Question", "name": "Je dois quitter Airbnb ou Booking ?", "acceptedAnswer": {"@type": "Answer", "text": "Non. Ton espace se relie à ton calendrier Airbnb et Booking. Tu gardes tes annonces, il t'aide pour tout ce qui se passe autour."}}, {"@type": "Question", "name": "Comment trouver un photographe, une équipe de ménage ou un artisan ?", "acceptedAnswer": {"@type": "Answer", "text": "Cherche ta ville dans l'annuaire, ou décris ton besoin : les 3 pros les plus proches qui font ce qu'il te faut reçoivent ta demande et te répondent en direct. Gratuit pour toi, sans commission."}}, {"@type": "Question", "name": "Une fuite ou une panne avant une arrivée ?", "acceptedAnswer": {"@type": "Answer", "text": "Décris ton besoin en choisissant Dépannage : plombiers, électriciens, serruriers et multiservices proches de ton logement reçoivent ta demande. L'annuaire dépannage vient d'ouvrir : s'il n'y a encore personne dans ta ville, Jason regarde ta demande et elle part aux artisans qui s'inscrivent."}}, {"@type": "Question", "name": "Je suis photographe, vidéaste, équipe de ménage ou artisan.", "acceptedAnswer": {"@type": "Answer", "text": "Tu crées ta fiche dans l'annuaire de ton métier : les hôtes de ta ville te trouvent sur Google et t'envoient leurs demandes. Abonnement annuel, sans commission sur tes prestations."}}]}</script>
 <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.js"></script>
@@ -576,7 +576,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <main id="top">
 <section class="hg">
 <div class="wrap hg-in">
-<p class="hg-by hx"><img src="/jason-marinho.webp" alt="" width="34" height="34" decoding="async"><span>Créé par Jason, hôte depuis 4 ans et co-fondateur de <a href="https://driing.co">Driing</a>.</span></p>
+<p class="hg-by hx"><img src="/jason-marinho.webp" alt="" width="34" height="34" decoding="async"><span>Créé par Jason, co-fondateur de <a href="https://driing.co">Driing</a>.</span></p>
 <h1 class="hg-h1 hx" id="hg-h1">Les bons pros pour ta <em>location courte durée</em>, près de chez toi.</h1>
 <p class="hg-p hx" id="hg-p">Dis ce qu’il te faut et où : les 3 pros les plus proches qui le font reçoivent ta demande et te répondent en direct. Gratuit pour toi, sans commission.</p>
 <div class="hg-box hx2" id="intent">
