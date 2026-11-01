@@ -4,7 +4,7 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-01 23:33 UTC.
+Mis à jour le 2026-11-01 23:48 UTC.
 
 - 2026-11-01 · carrousel · epingle-pros-annuaire · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · « Photographe, vidéaste, équipe de ménage, plombier, électricien, serrurier ou multiservices : les hôtes Airbnb  »
 - 2026-11-01 · carrousel · epingle-trouver-un-pro · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · « Un shooting avant la saison, une équipe de ménage fiable, un plombier la veille d’une arrivée : trouver le bon »
