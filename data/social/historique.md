@@ -4,10 +4,10 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-01 16:44 UTC.
+Mis à jour le 2026-11-01 21:23 UTC.
 
 - 2026-11-02 · carrousel · depannage-numero-que-l-hote-appelle · FB pending · IG pending · stories FB pending IG pending · « Quand le chauffe-eau lâche la veille d’une arrivée, un hôte appelle celui qu’il connaît déjà. »
-- 2026-11-01 · reel · chamonix-hiver-hote · FB pending · IG pending · stories FB pending IG pending · « Ton logement est à Chamonix ? La saison de ski arrive vite. »
+- 2026-11-01 · reel · chamonix-hiver-hote · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Ton logement est à Chamonix ? La saison de ski arrive vite. »
 - 2026-10-31 · stories (4 écrans) · stories-menage-lcd-turnover · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Ménage LCD ≠ ménage classique / Ce qu’un hôte attend / Affiche ton SIRET et ta RC pro / Ton équipe e »
 - 2026-10-30 · photo · photo-couverture-quelle-piece · FB published 0 j'aime 0 comm. · IG published 2 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Dans les résultats de recherche, le voyageur ne voit qu’une photo : la tienne doit se comprendre tout de suite »
 - 2026-10-28 · stories (4 écrans) · stories-demande-photographe-annecy · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Un photographe recherché à Annecy / Le besoin / Une conciergerie multi-secteurs / Les coordonnées so »
