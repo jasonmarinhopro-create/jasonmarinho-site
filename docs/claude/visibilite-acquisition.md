@@ -72,3 +72,10 @@ Partie de la documentation interne (index : CLAUDE.md à la racine). Notes déta
 ## Liens courts : ne jamais retenir le visiteur (28/10/2026)
 
 « Le lien ne marche pas sur téléphone, ça charge longtemps » (`/l/mp-photo-instagram`) : pendant la panne Supabase du matin, `app/l/[code]/route.ts` attendait la base sans limite. Désormais lecture du lien limitée à 1,5 s, comptage du clic à 0,8 s, liens déjà lus gardés en mémoire de l'instance, sinon liens d'office (`BUILTIN_LINKS`) ou accueil. Diagnostic multi-navigateurs (Safari, Chrome, Firefox, navigateur intégré d'Instagram iPhone et Android) : workflow « Diagnostic lien court » (`scripts/diag/lien-court.mjs`, lien à tester en paramètre). Mesure du 28/10 à 11 h : 12 essais OK, arrivée en 0,5 à 2,9 s.
+
+## /chiffres : ville en 2 × 2, détail des pages en première page, bouton Copier (01/11/2026)
+
+Demandes de Jason (« plus équilibré », « savoir comment c'est possible et non être redirigé », « un bouton copier pour vérifier sur Google avec mes yeux, on est à fond transparent »), dans `chiffres/index.html` seulement (aucune modification de l'API) :
+- **Recherche « Ta ville »** : cartes Photographe / Ménage / Dépannage / Guide hôte en 2 colonnes à partir de 760 px (`.vr-grid`), 1 au téléphone. « Recherches qui l'affichent » montre aussi les clics de chaque recherche et un bouton Copier.
+- **Tuiles « N pages de ville en première page »** : ce sont des boutons. Le clic ouvre sous la rangée de la tuile un détail « Comment <ville> sort en première page » (affichages, place, clics, recherche la plus vue, avertissement « peu d'affichages » sous 20), puis la carte de la page (`pageCard`, chargée par `?ville=<slug>`, gardée en mémoire), et seulement ensuite les liens « Voir la page » et « Tous les chiffres de <ville> ». Second clic ou croix : fermeture.
+- **Bouton Copier** (`copyBtn`, `data-copy`, presse-papiers avec repli `execCommand`) sur chaque recherche du tableau et des cartes de ville, avec la phrase : copie, colle dans Google, ta place peut différer (personne, lieu, appareil, moyenne sur 28 jours).
