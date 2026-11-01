@@ -189,6 +189,15 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .hg-g-cta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .hg-g-cta .hg-go{margin:0;align-self:auto}
 .hg-g-cta small{font-size:12px;color:var(--tf)}
+.hg-pros{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px}
+.hp-c{display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;border:1px solid var(--bd);background:#fff;text-decoration:none;color:var(--td);transition:border-color .2s,box-shadow .2s,transform .2s}
+.hp-c:hover{color:var(--td);border:1px solid var(--bd2);box-shadow:0 10px 26px rgba(0,51,41,.10);transform:translateY(-2px)}
+.hp-i{width:48px;height:48px;flex:none;border-radius:14px;display:flex;align-items:center;justify-content:center}
+.hp-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.hp-t b{font-size:15.5px;font-weight:600}
+.hp-t span{font-size:13px;color:var(--tf);line-height:1.4}
+.hp-go{width:32px;height:32px;flex:none;border-radius:50%;background:#F4F6F2;color:var(--g);display:flex;align-items:center;justify-content:center;font-weight:600;transition:background .2s,color .2s}
+.hp-c:hover .hp-go{background:var(--g);color:#fff}
 .hg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:28px}
 .hg-grid a{display:flex;flex-direction:column;gap:4px;padding:18px;border-radius:16px;background:#F4F6F2;text-decoration:none;color:var(--td);transition:background .2s}
 .hg-grid a:hover{background:#EAF0E7;color:var(--td)}
@@ -402,9 +411,14 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .me-t .c-eyb{color:var(--y)}
 .me-t p{font-size:16px;line-height:1.6;color:rgba(255,255,255,.75);max-width:520px}
 .me-t p a{color:#fff}
-.me-l{display:flex;gap:18px;flex-wrap:wrap}
+.me-l{display:flex;gap:10px 22px;flex-wrap:wrap;align-items:center}
+.me-tr{list-style:none;display:flex;flex-direction:column;gap:8px}
+.me-tr li{display:flex;align-items:center;gap:10px;font-size:15px;color:rgba(255,255,255,.85)}
+.me-tr li::before{content:'';width:18px;height:18px;flex:none;border-radius:50%;background:var(--y) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23003329' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/11px no-repeat}
+.me-cal{height:48px;font-size:15px}
+.me-t .h2 em{color:var(--y)}
 .me-l a{font-size:15px;font-weight:600;text-decoration:none;min-height:44px;display:flex;align-items:center;color:#fff}
-.me-l a:first-child{color:var(--y)}
+.me-l a{color:#fff}
 
 /* Blog */
 .bl{display:flex;flex-wrap:wrap;gap:16px}
@@ -522,7 +536,8 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   .hg-chips button{font-size:13.5px;padding:9px 12px}
   .hg-g-cta{width:100%}
   .hg-g-cta .hg-go{width:100%}
-  .hg-grid{grid-template-columns:1fr}
+  .hg-grid,.hg-pros{grid-template-columns:1fr}
+  .hg-pros{padding:12px}
   .hg-pro{align-items:stretch}
   .hg-often{justify-content:flex-start}
   .hg-steps{grid-template-columns:1fr}
@@ -628,10 +643,10 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 </div>
 <figure class="hg-g-shot"><img src="/img/accueil/hote-menage.webp" alt="Le planning ménage de l’espace hôte, données fictives" width="1400" height="995" loading="lazy" decoding="async" data-gi="menage"><img src="/img/accueil/hote-contrats.webp" alt="Les contrats et paiements de l’espace hôte, données fictives" width="1400" height="995" loading="lazy" decoding="async" data-gi="contrat" hidden><img src="/img/accueil/hote-contrats.webp" alt="Les contrats et cautions de l’espace hôte, données fictives" width="1400" height="995" loading="lazy" decoding="async" data-gi="caution" hidden><img src="/img/accueil/hote-declarations.webp" alt="Les déclarations voyageurs de l’espace hôte, données fictives" width="1400" height="995" loading="lazy" decoding="async" data-gi="police" hidden><img src="/img/accueil/hote-voyageurs.webp" alt="Le carnet de voyageurs de l’espace hôte, données fictives" width="1400" height="995" loading="lazy" decoding="async" data-gi="voyageurs" hidden><img src="/img/accueil/hote-calendrier.webp" alt="Le calendrier de l’espace hôte, données fictives" width="1400" height="995" loading="lazy" decoding="async" data-gi="calendrier" hidden><img src="/img/accueil/hote-simulateurs.webp" alt="Les simulateurs de l’espace hôte, données fictives" width="1400" height="995" loading="lazy" decoding="async" data-gi="simu" hidden><figcaption>Données fictives</figcaption></figure>
 </div>
-<div class="hg-panel hg-grid" role="tabpanel" id="hp-metier" aria-labelledby="ht-metier" hidden>
-<a href="/devenir-photographe-lcd"><b>Photographe ou vidéaste</b><span>Créer ma fiche →</span></a>
-<a href="/devenir-prestataire-menage-lcd"><b>Équipe de ménage</b><span>Créer ma fiche →</span></a>
-<a href="/annuaires/depannage/inscription"><b>Dépannage et maintenance</b><span>Créer ma fiche →</span></a>
+<div class="hg-panel hg-pros" role="tabpanel" id="hp-metier" aria-labelledby="ht-metier" hidden>
+<a href="/devenir-photographe-lcd" class="hp-c"><span class="hp-i" style="background:#E8F1EC;color:#004C3F"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg></span><span class="hp-t"><b>Photographe ou vidéaste</b><span>Annonces, hôtels, chambres d’hôtes</span></span><span class="hp-go" aria-hidden="true">→</span></a>
+<a href="/devenir-prestataire-menage-lcd" class="hp-c"><span class="hp-i" style="background:#FFF4D2;color:#6B5200"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9M7 12h10l2 9H5z"/></svg></span><span class="hp-t"><b>Équipe de ménage</b><span>Passages réguliers entre deux séjours</span></span><span class="hp-go" aria-hidden="true">→</span></a>
+<a href="/annuaires/depannage/inscription" class="hp-c"><span class="hp-i" style="background:#F5E9DF;color:#7A4B2A"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></span><span class="hp-t"><b>Dépannage et maintenance</b><span>Fuites, pannes, serrures, petits travaux</span></span><span class="hp-go" aria-hidden="true">→</span></a>
 </div>
 </div>
 </div>
@@ -757,10 +772,19 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <div class="me">
 <img src="/jason-marinho.webp" alt="Jason Marinho" width="540" height="640" loading="lazy" decoding="async">
 <div class="me-t">
-<span class="c-eyb">Qui est derrière</span>
-<h2 class="h2">Hôte avant d’être formateur.</h2>
-<p>4 ans de location courte durée et co-fondateur de <a href="https://driing.co">Driing</a>, utilisé par plus de 500 hôtes. Quand tu m’écris, c’est moi qui réponds.</p>
-<span class="me-l"><a href="/qui-suis-je">Mon parcours →</a><a href="/contact">Écrire à Jason →</a></span>
+<span class="c-eyb">Une vraie personne derrière</span>
+<h2 class="h2">Pas de robot, pas de vitrine. <em>Juste moi, en toute transparence.</em></h2>
+<p>Je suis Jason, co-fondateur de <a href="https://driing.co">Driing</a>, utilisé par plus de 500 hôtes, et je loue en courte durée depuis 4 ans. Je construis ce site au grand jour, et quand tu m’écris, c’est moi qui réponds.</p>
+<ul class="me-tr">
+<li>Les chiffres du site sont publics</li>
+<li>Les liens affiliés sont toujours signalés</li>
+<li>30 minutes pour faire le point, gratuites</li>
+</ul>
+<span class="me-l">
+<button type="button" class="btn btn-y me-cal" id="me-cal">Réserver 30 min avec moi</button>
+<a href="/contact">M’écrire →</a>
+<a href="/qui-suis-je">Mon parcours →</a>
+</span>
 </div>
 </div>
 </div>
@@ -916,6 +940,15 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
     document.querySelectorAll('[data-ga]').forEach(function(p){p.hidden=p.getAttribute('data-ga')!==t.getAttribute('data-g')});
     document.querySelectorAll('[data-gi]').forEach(function(p){p.hidden=p.getAttribute('data-gi')!==t.getAttribute('data-g')});
   })});
+
+  // Rendez-vous : Cal.com (appel découverte de 30 min, comme /contact), chargé au premier clic
+  var mc=document.getElementById('me-cal');
+  if(mc)mc.addEventListener('click',function(){
+    if(!window.Cal){(function (C, A, L) { var p = function (a, ar) { a.q.push(ar); }; var d = C.document; C.Cal = C.Cal || function () { var cal = C.Cal; var ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { var api = function () { p(api, arguments); }; var namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { (cal.ns[namespace] = api) && p(api, ar); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+      Cal("init","appel-decouverte",{origin:"https://cal.com"});
+      Cal.ns["appel-decouverte"]("ui",{"cssVarsPerTheme":{"light":{"cal-brand":"#003229"}},"hideEventTypeDetails":false,"layout":"month_view"});}
+    Cal.ns["appel-decouverte"]("modal",{calLink:"jason-marinho/appel-decouverte",config:{layout:"month_view",useSlotsViewOnSmallScreen:"true"}});
+  });
 
   // Encart transparence : les vrais chiffres, en direct (encart réduit au texte si l'API ne répond pas)
   try{
