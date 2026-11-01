@@ -396,17 +396,18 @@ Tu y vois aussi combien d'hôtes ont consulté ta fiche ce mois-ci.`,
   },
 
   // ─── Dépannage et maintenance (31/10/2026) ────────────────────────────────
-  // Textes à valider par Jason avant tout envoi. Déclencheur MANUEL (même pour
-  // le premier contact) : rien ne part tant que Jason n'ajoute pas lui-même des
-  // contacts à la séquence et ne l'active pas. Faits : demandes envoyées aux 3
+  // Textes validés par Jason le 31/10/2026, lancement donné le 01/11/2026
+  // (« lance la prospection dépannage ») : premier contact automatique comme
+  // pour les photographes et le ménage (tout contact « À contacter » y entre,
+  // au rythme du plafond). Faits : demandes envoyées aux 3
   // pros les plus proches qui font la spécialité, pages /depannage-lcd-<ville>,
   // tarif Fondateur 39,98 € TTC/an pour les 20 premiers, sans commission.
   {
     key: 'depannage_premier_contact',
     nom: 'Dépannage : premier contact',
     audience: 'depannage',
-    description: 'Présente l\'annuaire dépannage aux plombiers, électriciens, serruriers et multiservices. 4 e-mails sur 2 semaines, lancés à la main.',
-    trigger: 'manuel',
+    description: 'Présente l\'annuaire dépannage aux plombiers, électriciens, serruriers et multiservices. 4 e-mails sur 2 semaines.',
+    trigger: 'nouveau_contact',
     then_key: 'depannage_relance_saison',
     steps: [
       {
