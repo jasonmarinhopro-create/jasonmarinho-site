@@ -437,26 +437,34 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 .bl-c .bl-m b{color:var(--g);font-weight:600}
 
 /* Partenaires */
-.pa{border-radius:28px;background:var(--yw);padding:40px;display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start}
-.pa-l{flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:14px}
-.pa-l .eyb{color:#6B5200}
-.pa-l p{font-size:16px;line-height:1.55;color:#4A4022;max-width:420px}
-.pa-l .btn{align-self:flex-start;height:48px}
-.pa-r{flex:1.6 1 520px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.pa{border-radius:28px;background:var(--yw);padding:40px;display:flex;flex-direction:column;gap:24px}
+.pa-l{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 32px}
+.pa-h{flex:1 1 420px;display:flex;flex-direction:column;gap:12px}
+.pa-h .eyb{color:#6B5200}
+.pa-h p{font-size:16px;line-height:1.55;color:#4A4022;max-width:420px}
+.pa-l .btn{height:48px}
+.pa-r{min-width:0;display:flex;flex-direction:column;gap:14px}
 .pa-tabs,.bc-tabs{display:flex;gap:8px;overflow-x:auto}
 .pa-tabs button,.bc-tabs button{flex:none;height:40px;padding:0 15px;border-radius:99px;border:1.5px solid #EADBA6;background:#FFFBEA;color:#4A4022;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap}
 .pa-tabs button[aria-selected="true"],.bc-tabs button[aria-selected="true"]{background:var(--g);border-color:var(--g);color:#fff}
-.pa-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.pa-g[hidden]{display:none}
-.pa-c{background:#fff;border-radius:18px;padding:16px;display:flex;align-items:flex-start;gap:14px;color:var(--td);box-shadow:0 1px 2px rgba(74,64,34,.06)}
+.pa-g{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:1fr;gap:12px}
+.pa-c[hidden]{display:none!important}
+.pa-top{display:flex;align-items:center;gap:12px}
+.pa-top>span:last-child{display:flex;flex-direction:column;gap:1px}
+.pa-top small{font-size:12px;color:var(--tf)}
+.pa-c{background:#fff;border-radius:18px;padding:18px;display:flex;flex-direction:column;align-items:flex-start;gap:12px;height:100%;color:var(--td);box-shadow:0 1px 2px rgba(74,64,34,.06)}
 .pa-i{width:44px;height:44px;flex:none;border-radius:50%;background:var(--chip);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:20px;color:var(--g)}
-.pa-x{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
-.pa-x b{font-size:16px;font-weight:600}
+.pa-x{flex:1;min-width:0;width:100%;display:flex;flex-direction:column;gap:6px}
+.pa-top b{font-size:16px;font-weight:600}
 .pa-o{align-self:flex-start;padding:3px 9px;border-radius:99px;background:var(--y);color:#3D2E00;font-size:12px;font-weight:600}
 .pa-d{font-size:13.5px;color:#5C5233;line-height:1.45}
-.pa-a{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:4px;font-size:13.5px;font-weight:600}
+.pa-a{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:auto;padding-top:6px;font-size:13.5px;font-weight:600}
 .pa-a a{text-decoration:none;color:var(--g)}
 .pa-a a:hover{text-decoration:underline}
+.pa-more{background:var(--gd)!important;color:#fff!important;text-decoration:none;justify-content:center}
+.pa-more b{font-family:'Fraunces',serif;font-weight:400;font-size:24px}
+.pa-more>span:not(.pa-a){font-size:14px;color:rgba(255,255,255,.75);line-height:1.5}
+.pa-more .pa-a span{color:var(--y)}
 .pa-aff{font-size:12px;color:#6B5F3A}
 /* Blog par catégorie */
 .bc{display:flex;flex-direction:column;gap:12px;margin-top:6px}
@@ -508,6 +516,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 @media(max-width:1024px){
   .h1{font-size:56px}
   .pq{grid-template-columns:repeat(2,1fr)}
+  .pa-g{grid-template-columns:repeat(2,1fr)}
   .pub-n{grid-template-columns:1fr 1fr}
   .hg-h1{font-size:52px}
   .hg-search{flex-direction:column}
@@ -567,7 +576,7 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   .bl-une{min-height:0}
   .bl-une .c-h{font-size:27px}
   .pa{gap:28px}
-  .pa-g{grid-template-columns:1fr}
+  .pa-g{grid-template-columns:1fr;grid-auto-rows:auto}
   .bc-g{grid-template-columns:1fr}
   .bc-all{align-self:flex-start;padding:4px 0}
   .pa-tabs,.bc-tabs{margin-right:-16px;padding-right:16px}
@@ -737,6 +746,21 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 </div>
 </section>
 
+<!-- PARTENAIRES -->
+<section class="sec-top0">
+<div class="wrap">
+<div class="pa bf-skip">
+<div class="pa-l">
+<div class="pa-h"><span class="eyb">Partenaires</span>
+<h2 class="h2">Les bons outils, <em>déjà triés.</em></h2>
+<p>Logiciel de réservation, banque, comptabilité, création d’entreprise : ceux que je recommande, avec une réduction quand j’ai pu en obtenir une.</p></div>
+<a href="/partenaires" class="btn btn-g">Tous les partenaires</a>
+</div>
+<div class="pa-r"><div class="pa-tabs hs" role="tablist" aria-label="Catégories de partenaires"><button type="button" role="tab" aria-selected="true" data-pf="tous">Tous</button><button type="button" role="tab" aria-selected="false" data-pf="gerer">Gérer et réserver</button><button type="button" role="tab" aria-selected="false" data-pf="banque">Banque</button><button type="button" role="tab" aria-selected="false" data-pf="compta">Comptabilité</button><button type="button" role="tab" aria-selected="false" data-pf="societe">Créer ta société</button><button type="button" role="tab" aria-selected="false" data-pf="marche">Marché et clients</button></div><div class="pa-g"><div class="pa-c" data-pc="gerer"><span class="pa-top"><span class="pa-i">L</span><span><b>Lodgify</b><small>Gérer et réserver</small></span></span><span class="pa-o">-15 % avec JASON15</span><span class="pa-d">Ton propre site de réservation directe, relié à Airbnb, Booking.com et Vrbo, sans coder.</span><span class="pa-a"><a href="/partenaires/lodgify">Voir l’offre</a><a href="https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv" target="_blank" rel="sponsored noopener">Essayer →</a></span></div><div class="pa-c" data-pc="gerer"><span class="pa-top"><span class="pa-i">H</span><span><b>Hospitable</b><small>Gérer et réserver</small></span></span><span class="pa-o">-25 % pendant 3 mois</span><span class="pa-d">Messages automatiques et IA, codes de serrure et ménage gérés à chaque réservation. 14 jours d’essai gratuit.</span><span class="pa-a"><a href="/hospitable-avis">Voir l’offre</a><a href="https://hospitable.com/partners/refer?utm_source=affiliates&amp;utm_medium=blog&amp;utm_campaign=BASWTYN7" target="_blank" rel="sponsored noopener">Essayer →</a></span></div><div class="pa-c" data-pc="banque"><span class="pa-top"><span class="pa-i">S</span><span><b>Shine</b><small>Banque</small></span></span><span class="pa-o">Compte pro dès 0 €</span><span class="pa-d">Néobanque pro et Shine Facture (devis et factures gratuits) pour séparer et facturer ton activité.</span><span class="pa-a"><a href="/partenaires/shine">Voir l’offre</a><a href="https://www.shine.fr/?utm_source=affiliation&amp;utm_medium=affilae&amp;utm_campaign=jason-marinho&amp;ae=2249" target="_blank" rel="sponsored noopener">Essayer →</a></span></div><div class="pa-c" data-pc="banque"><span class="pa-top"><span class="pa-i">Q</span><span><b>Qonto</b><small>Banque</small></span></span><span class="pa-o">Compte pro + facturation</span><span class="pa-d">Compte pro très répandu chez les indépendants et les sociétés, facturation et lien avec le comptable.</span><span class="pa-a"><a href="/partenaires/qonto">Voir l’offre</a><a href="https://lb.affilae.com/r/?p=5ce4f2a2b6302009e29d84f3&amp;af=3386&amp;lp=https%3A%2F%2Fqonto.com%2Ffr%3Futm_medium%3Daffilaefr%26utm_source%3Daffiliate%26utm_campaign%3Djason-marinho" target="_blank" rel="sponsored noopener">Essayer →</a></span></div><div class="pa-c" data-pc="compta"><span class="pa-top"><span class="pa-i">I</span><span><b>Indy</b><small>Comptabilité</small></span></span><span class="pa-o">1er mois offert</span><span class="pa-d">Compta LMNP, liasse fiscale 2031 et facture électronique (plateforme agréée) pour ta location meublée.</span><span class="pa-a"><a href="/partenaires/indy">Voir l’offre</a><a href="https://urlr.me/FEqNfy" target="_blank" rel="sponsored noopener">Essayer →</a></span></div><div class="pa-c" data-pc="compta"><span class="pa-top"><span class="pa-i">J</span><span><b>JD2M</b><small>Comptabilité</small></span></span><span class="pa-o">Compta LMNP accompagnée</span><span class="pa-d">Liasse LMNP au réel avec des spécialistes, ou entièrement faite par un expert-comptable.</span><span class="pa-a"><a href="/partenaires/jd2m">Voir l’offre</a><a href="https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&amp;utm_campaign=partenariat&amp;utm_content=244&amp;ae=244" target="_blank" rel="sponsored noopener">Essayer →</a></span></div><div class="pa-c" data-pc="compta"><span class="pa-top"><span class="pa-i">K</span><span><b>Keobiz</b><small>Comptabilité</small></span></span><span class="pa-o">1 mois offert</span><span class="pa-d">Expert-comptable sur devis : LMNP au réel, conciergerie, société ou SCI. 1 mois offert avec ce lien.</span><span class="pa-a"><a href="/partenaires/keobiz">Voir l’offre</a><a href="https://www.keobiz.fr/programme-affiliation-keobiz-2/?utm_campaign=affilie936&amp;utm_medium=lp&amp;utm_source=affilie&amp;ae=936" target="_blank" rel="sponsored noopener">Essayer →</a></span></div><div class="pa-c" data-pc="compta"><span class="pa-top"><span class="pa-i">T</span><span><b>Tiime</b><small>Comptabilité</small></span></span><span class="pa-o">Facturation gratuite</span><span class="pa-d">Devis, factures illimitées et facture électronique (plateforme agréée) gratuits. Compte pro en option.</span><span class="pa-a"><a href="/comparatif-indy-tiime-henrri">Voir l’offre</a><a href="https://lb.affilae.com/r/?p=651c0d1e40e2d575f87b3b27&amp;af=1127&amp;lp=https%3A%2F%2Fwww.tiime.fr%2Ffacturation-electronique-2026%3Futm_source%3Dother%26utm_medium%3Daffiliation%26utm_campaign%3DJason%2520Marinho%26ae%3D1127%26program_id%3D651c0d1e40e2d575f87b3b27%26program_name%3DTiime" target="_blank" rel="sponsored noopener">Essayer →</a></span></div><div class="pa-c" data-pc="societe"><span class="pa-top"><span class="pa-i">L</span><span><b>LegalPlace</b><small>Créer ta société</small></span></span><span class="pa-o">Réduction avec JASON15</span><span class="pa-d">Création de SCI, SASU ou micro-entreprise, modification de statuts et domiciliation, en ligne.</span><span class="pa-a"><a href="/partenaires/legalplace">Voir l’offre</a><a href="https://creation.legalplace.fr/creation-entreprise-2?utm_source=affilae&amp;utm_medium=partner&amp;utm_campaign=Jason%20Marinho&amp;ae=1773" target="_blank" rel="sponsored noopener">Essayer →</a></span></div><div class="pa-c" data-pc="marche"><span class="pa-top"><span class="pa-i">A</span><span><b>AirDNA</b><small>Marché et clients</small></span></span><span class="pa-o">Données gratuites</span><span class="pa-d">Occupation, prix moyen et revenus de ta ville avant d’acheter ou de fixer tes prix.</span><span class="pa-a"><a href="/partenaires/airdna">Voir l’offre</a><a href="https://eur-invite.airdna.co/Jason-Marinho" target="_blank" rel="sponsored noopener">Essayer →</a></span></div><div class="pa-c" data-pc="marche"><span class="pa-top"><span class="pa-i">B</span><span><b>Brevo</b><small>Marché et clients</small></span></span><span class="pa-o">300 e-mails/jour gratuits</span><span class="pa-d">Newsletter à tes voyageurs directs et CRM gratuit. Solution française, données en Europe.</span><span class="pa-a"><a href="/partenaires/brevo">Voir l’offre</a><a href="https://get.brevo.com/3mftm80uaemx-m7y3c" target="_blank" rel="sponsored noopener">Essayer →</a></span></div><a href="/partenaires" class="pa-c pa-more" data-pc="tous-seul"><b>Tout le catalogue</b><span>Plus de 30 outils pour la location courte durée, rangés par catégorie.</span><span class="pa-a"><span>Voir les partenaires →</span></span></a></div><small class="pa-aff">Liens affiliés : si tu t’abonnes par ces liens, le partenaire me verse une commission, sans surcoût pour toi.</small></div>
+</div>
+</div>
+</section>
+
 <!-- TU ES PRO ? -->
 <section class="sec">
 <div class="wrap" style="display:flex;flex-direction:column;gap:26px">
@@ -754,16 +778,6 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 <a href="/pour-qui/depannage" class="pc"><span class="pc-ic" style="background:#F5E9DF;color:#7A4B2A"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></span><span class="pc-t">Dépannage et maintenance</span><span class="pc-s">Fuites, pannes, serrures, petits travaux : les hôtes appellent celui qu’ils connaissent.</span><span class="pc-go">Voir l’offre dépannage →</span></a>
 </div>
 </div>
-</section>
-
-<!-- QUESTIONS -->
-<section class="faq" id="questions">
-<h2 class="h2">Tes questions, <em>nos réponses.</em></h2>
-<details open><summary>C’est vraiment gratuit ?</summary><p>Oui. Le compte Découverte est gratuit pour toujours, sans carte bancaire : calendrier, planning ménage, simulateurs, guides et 2 formations. La formule Standard (38,98 € TTC par an) ajoute les contrats, le paiement en ligne et les cautions.</p></details>
-<details><summary>Je dois quitter Airbnb ou Booking ?</summary><p>Non. Ton espace se relie à ton calendrier Airbnb et Booking. Tu gardes tes annonces, il t’aide pour tout ce qui se passe autour.</p></details>
-<details><summary>Comment trouver un photographe, une équipe de ménage ou un artisan ?</summary><p>Cherche ta ville dans l’annuaire, ou décris ton besoin : les 3 pros les plus proches qui font ce qu’il te faut reçoivent ta demande et te répondent en direct. Gratuit pour toi, sans commission.</p></details>
-<details><summary>Une fuite ou une panne avant une arrivée ?</summary><p>Décris ton besoin en choisissant Dépannage : plombiers, électriciens, serruriers et multiservices proches de ton logement reçoivent ta demande. L’annuaire dépannage vient d’ouvrir : s’il n’y a encore personne dans ta ville, Jason regarde ta demande et elle part aux artisans qui s’inscrivent.</p></details>
-<details><summary>Je suis photographe, vidéaste, équipe de ménage ou artisan.</summary><p>Tu crées ta fiche dans l’annuaire de ton métier : les hôtes de ta ville te trouvent sur Google et t’envoient leurs demandes. Abonnement annuel, sans commission sur tes prestations.</p></details>
 </section>
 
 <!-- JASON -->
@@ -823,19 +837,14 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
 </div>
 </section>
 
-<!-- PARTENAIRES -->
-<section class="sec-top0">
-<div class="wrap">
-<div class="pa">
-<div class="pa-l">
-<span class="eyb">Partenaires</span>
-<h2 class="h2">Les bons outils, <em>déjà triés.</em></h2>
-<p>Logiciel de réservation, banque, comptabilité, création d’entreprise : ceux que je recommande, avec une réduction quand j’ai pu en obtenir une.</p>
-<a href="/partenaires" class="btn btn-g">Tous les partenaires</a>
-</div>
-<div class="pa-r"><div class="pa-tabs hs" role="tablist" aria-label="Catégories de partenaires"><button type="button" role="tab" aria-selected="true" data-pt="gerer">Gérer et réserver</button><button type="button" role="tab" aria-selected="false" data-pt="banque">Banque</button><button type="button" role="tab" aria-selected="false" data-pt="compta">Comptabilité</button><button type="button" role="tab" aria-selected="false" data-pt="societe">Créer ta société</button><button type="button" role="tab" aria-selected="false" data-pt="marche">Marché et clients</button></div><div class="pa-g" data-pp="gerer"><div class="pa-c"><span class="pa-i">L</span><span class="pa-x"><b>Lodgify</b><span class="pa-o">-15 % avec JASON15</span><span class="pa-d">Ton propre site de réservation directe, relié à Airbnb, Booking.com et Vrbo, sans coder.</span><span class="pa-a"><a href="/partenaires/lodgify">Voir l’offre</a><a href="https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Lodgify →</a></span></span></div><div class="pa-c"><span class="pa-i">H</span><span class="pa-x"><b>Hospitable</b><span class="pa-o">-25 % pendant 3 mois</span><span class="pa-d">Messages automatiques et IA, codes de serrure et ménage gérés à chaque réservation. 14 jours d’essai gratuit.</span><span class="pa-a"><a href="/hospitable-avis">Voir l’offre</a><a href="https://hospitable.com/partners/refer?utm_source=affiliates&amp;utm_medium=blog&amp;utm_campaign=BASWTYN7" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Hospitable →</a></span></span></div></div><div class="pa-g" data-pp="banque" hidden><div class="pa-c"><span class="pa-i">S</span><span class="pa-x"><b>Shine</b><span class="pa-o">Compte pro dès 0 €</span><span class="pa-d">Néobanque pro et Shine Facture (devis et factures gratuits) pour séparer et facturer ton activité.</span><span class="pa-a"><a href="/partenaires/shine">Voir l’offre</a><a href="https://www.shine.fr/?utm_source=affiliation&amp;utm_medium=affilae&amp;utm_campaign=jason-marinho&amp;ae=2249" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Shine →</a></span></span></div><div class="pa-c"><span class="pa-i">Q</span><span class="pa-x"><b>Qonto</b><span class="pa-o">Compte pro + facturation</span><span class="pa-d">Compte pro très répandu chez les indépendants et les sociétés, facturation et lien avec le comptable.</span><span class="pa-a"><a href="/partenaires/qonto">Voir l’offre</a><a href="https://lb.affilae.com/r/?p=5ce4f2a2b6302009e29d84f3&amp;af=3386&amp;lp=https%3A%2F%2Fqonto.com%2Ffr%3Futm_medium%3Daffilaefr%26utm_source%3Daffiliate%26utm_campaign%3Djason-marinho" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Qonto →</a></span></span></div></div><div class="pa-g" data-pp="compta" hidden><div class="pa-c"><span class="pa-i">I</span><span class="pa-x"><b>Indy</b><span class="pa-o">1er mois offert</span><span class="pa-d">Compta LMNP, liasse fiscale 2031 et facture électronique (plateforme agréée) pour ta location meublée.</span><span class="pa-a"><a href="/partenaires/indy">Voir l’offre</a><a href="https://urlr.me/FEqNfy" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Indy →</a></span></span></div><div class="pa-c"><span class="pa-i">J</span><span class="pa-x"><b>JD2M</b><span class="pa-o">Compta LMNP accompagnée</span><span class="pa-d">Liasse LMNP au réel avec des spécialistes, ou entièrement faite par un expert-comptable.</span><span class="pa-a"><a href="/partenaires/jd2m">Voir l’offre</a><a href="https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_source=affilae&amp;utm_campaign=partenariat&amp;utm_content=244&amp;ae=244" target="_blank" rel="sponsored noopener" class="pa-s">Essayer JD2M →</a></span></span></div><div class="pa-c"><span class="pa-i">K</span><span class="pa-x"><b>Keobiz</b><span class="pa-o">1 mois offert</span><span class="pa-d">Expert-comptable sur devis : LMNP au réel, conciergerie, société ou SCI. 1 mois offert avec ce lien.</span><span class="pa-a"><a href="/partenaires/keobiz">Voir l’offre</a><a href="https://www.keobiz.fr/programme-affiliation-keobiz-2/?utm_campaign=affilie936&amp;utm_medium=lp&amp;utm_source=affilie&amp;ae=936" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Keobiz →</a></span></span></div><div class="pa-c"><span class="pa-i">T</span><span class="pa-x"><b>Tiime</b><span class="pa-o">Facturation gratuite</span><span class="pa-d">Devis, factures illimitées et facture électronique (plateforme agréée) gratuits. Compte pro en option.</span><span class="pa-a"><a href="/comparatif-indy-tiime-henrri">Voir l’offre</a><a href="https://lb.affilae.com/r/?p=651c0d1e40e2d575f87b3b27&amp;af=1127&amp;lp=https%3A%2F%2Fwww.tiime.fr%2Ffacturation-electronique-2026%3Futm_source%3Dother%26utm_medium%3Daffiliation%26utm_campaign%3DJason%2520Marinho%26ae%3D1127%26program_id%3D651c0d1e40e2d575f87b3b27%26program_name%3DTiime" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Tiime →</a></span></span></div></div><div class="pa-g" data-pp="societe" hidden><div class="pa-c"><span class="pa-i">L</span><span class="pa-x"><b>LegalPlace</b><span class="pa-o">Réduction avec JASON15</span><span class="pa-d">Création de SCI, SASU ou micro-entreprise, modification de statuts et domiciliation, en ligne.</span><span class="pa-a"><a href="/partenaires/legalplace">Voir l’offre</a><a href="https://creation.legalplace.fr/creation-entreprise-2?utm_source=affilae&amp;utm_medium=partner&amp;utm_campaign=Jason%20Marinho&amp;ae=1773" target="_blank" rel="sponsored noopener" class="pa-s">Essayer LegalPlace →</a></span></span></div></div><div class="pa-g" data-pp="marche" hidden><div class="pa-c"><span class="pa-i">A</span><span class="pa-x"><b>AirDNA</b><span class="pa-o">Données gratuites</span><span class="pa-d">Occupation, prix moyen et revenus de ta ville avant d’acheter ou de fixer tes prix.</span><span class="pa-a"><a href="/partenaires/airdna">Voir l’offre</a><a href="https://eur-invite.airdna.co/Jason-Marinho" target="_blank" rel="sponsored noopener" class="pa-s">Essayer AirDNA →</a></span></span></div><div class="pa-c"><span class="pa-i">B</span><span class="pa-x"><b>Brevo</b><span class="pa-o">300 e-mails/jour gratuits</span><span class="pa-d">Newsletter à tes voyageurs directs et CRM gratuit. Solution française, données en Europe.</span><span class="pa-a"><a href="/partenaires/brevo">Voir l’offre</a><a href="https://get.brevo.com/3mftm80uaemx-m7y3c" target="_blank" rel="sponsored noopener" class="pa-s">Essayer Brevo →</a></span></span></div></div><small class="pa-aff">Liens affiliés : si tu t’abonnes par ces liens, le partenaire me verse une commission, sans surcoût pour toi.</small></div>
-</div>
-</div>
+<!-- QUESTIONS -->
+<section class="faq" id="questions">
+<h2 class="h2">Tes questions, <em>nos réponses.</em></h2>
+<details open><summary>C’est vraiment gratuit ?</summary><p>Oui. Le compte Découverte est gratuit pour toujours, sans carte bancaire : calendrier, planning ménage, simulateurs, guides et 2 formations. La formule Standard (38,98 € TTC par an) ajoute les contrats, le paiement en ligne et les cautions.</p></details>
+<details><summary>Je dois quitter Airbnb ou Booking ?</summary><p>Non. Ton espace se relie à ton calendrier Airbnb et Booking. Tu gardes tes annonces, il t’aide pour tout ce qui se passe autour.</p></details>
+<details><summary>Comment trouver un photographe, une équipe de ménage ou un artisan ?</summary><p>Cherche ta ville dans l’annuaire, ou décris ton besoin : les 3 pros les plus proches qui font ce qu’il te faut reçoivent ta demande et te répondent en direct. Gratuit pour toi, sans commission.</p></details>
+<details><summary>Une fuite ou une panne avant une arrivée ?</summary><p>Décris ton besoin en choisissant Dépannage : plombiers, électriciens, serruriers et multiservices proches de ton logement reçoivent ta demande. L’annuaire dépannage vient d’ouvrir : s’il n’y a encore personne dans ta ville, Jason regarde ta demande et elle part aux artisans qui s’inscrivent.</p></details>
+<details><summary>Je suis photographe, vidéaste, équipe de ménage ou artisan.</summary><p>Tu crées ta fiche dans l’annuaire de ton métier : les hôtes de ta ville te trouvent sur Google et t’envoient leurs demandes. Abonnement annuel, sans commission sur tes prestations.</p></details>
 </section>
 
 <!-- LETTRE DU MOIS (bloc d'avant, remis à la demande de Jason le 31/10/2026) -->
@@ -915,7 +924,13 @@ button,a,input,summary{-webkit-tap-highlight-color:transparent}
   })});
 
   // Blog et partenaires : onglets par catégorie
-  [['data-bt','data-bp'],['data-pt','data-pp']].forEach(function(c){
+  var pfs=document.querySelectorAll('[data-pf]');
+  pfs.forEach(function(t){t.addEventListener('click',function(){
+    var k=t.getAttribute('data-pf');
+    pfs.forEach(function(x){x.setAttribute('aria-selected',x===t?'true':'false')});
+    document.querySelectorAll('[data-pc]').forEach(function(c){c.hidden=c.getAttribute('data-pc')==='tous-seul'?k!=='tous':(k!=='tous'&&c.getAttribute('data-pc')!==k)});
+  })});
+  [['data-bt','data-bp']].forEach(function(c){
     var ts=document.querySelectorAll('['+c[0]+']');
     ts.forEach(function(t){t.addEventListener('click',function(){
       var k=t.getAttribute(c[0]);

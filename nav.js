@@ -1141,8 +1141,8 @@
     function pose() {
       if (document.getElementById('bf-lodgify')) return;
       // Catalogue /partenaires : la carte Lodgify affiche le code du moment
-      if (actif) document.querySelectorAll('.mk-card').forEach(function (c) {
-        var o = c.querySelector('.mk-offre');
+      if (actif) document.querySelectorAll('.mk-card,.pa-c').forEach(function (c) {
+        var o = c.querySelector('.mk-offre,.pa-o');
         if (o && c.textContent.indexOf('Lodgify') !== -1 && o.textContent.indexOf('JASON15') !== -1) { o.textContent = '-65 % avec JASON65 (Black Friday)'; o.title = '-65 % avec JASON65, jusqu\u2019au 12 décembre'; }
       });
       var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
