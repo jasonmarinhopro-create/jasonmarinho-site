@@ -4,9 +4,9 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-01 22:06 UTC.
+Mis à jour le 2026-11-01 23:33 UTC.
 
-- 2026-11-01 · carrousel · epingle-pros-annuaire · FB published 0 j'aime 0 comm. · IG pending · « Photographe, vidéaste, équipe de ménage, plombier, électricien, serrurier ou multiservices : les hôtes Airbnb  »
+- 2026-11-01 · carrousel · epingle-pros-annuaire · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · « Photographe, vidéaste, équipe de ménage, plombier, électricien, serrurier ou multiservices : les hôtes Airbnb  »
 - 2026-11-01 · carrousel · epingle-trouver-un-pro · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · « Un shooting avant la saison, une équipe de ménage fiable, un plombier la veille d’une arrivée : trouver le bon »
 - 2026-11-01 · carrousel · epingle-hotes-jason-marinho · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · « Tu loues en courte durée ? Voici tout ce que tu trouves sur jasonmarinho.com. »
 - 2026-11-02 · carrousel · depannage-numero-que-l-hote-appelle · FB pending · IG pending · stories FB pending IG pending · « Quand le chauffe-eau lâche la veille d’une arrivée, un hôte appelle celui qu’il connaît déjà. »
