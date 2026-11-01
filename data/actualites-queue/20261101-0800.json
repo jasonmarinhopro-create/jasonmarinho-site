@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Taxe foncière 2027 : passe au prélèvement mensuel avant le 15 décembre",
+    "summary": "Si tu paies la taxe foncière en une seule fois chaque automne, tu peux opter pour le prélèvement mensuel 2027 avant le 15 décembre 2026. Les prélèvements s'étalent de janvier à octobre et évitent un gros débit en automne. Pour t'inscrire, rends-toi dans ton espace sur impots.gouv.fr, rubrique « Mensualiser ma taxe foncière ». Pratique si tu es propriétaire du logement que tu loues en courte durée.",
+    "category": "fiscalite",
+    "audience": ["hote"],
+    "source_url": "https://www.impots.gouv.fr/particulier/questions/quelle-date-vais-je-recevoir-mon-avis-de-taxe-fonciere-et-quand-dois-je-la",
+    "read_time_minutes": 2
+  },
+  {
+    "title": "Logement loué : entretien annuel de la chaudière avant fin 2026",
+    "summary": "La réglementation impose un entretien annuel à toute chaudière de 4 à 400 kW dans un logement loué : gaz, fioul, bois, pompe à chaleur. Avec la saison froide qui commence, les hôtes qui n'ont pas encore fait intervenir un professionnel en 2026 vont te solliciter. Dis-leur qu'en cas de sinistre, l'absence d'attestation d'entretien peut entraîner un refus de prise en charge par leur assureur. C'est le bon moment pour proposer tes services aux hôtes qui louent en courte durée.",
+    "category": "reglementation",
+    "audience": ["depannage"],
+    "source_url": "https://www.service-public.fr/particuliers/vosdroits/F20760",
+    "read_time_minutes": 2
+  }
+]
