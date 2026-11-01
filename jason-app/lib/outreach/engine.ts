@@ -275,6 +275,17 @@ export function textToHtml(text: string, footer: string, signature?: string, pho
 
 const EMAIL_RE = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,24}/gi
 const JUNK_RE = /(\.(png|jpe?g|gif|webp|svg|css|js)$)|(^|@)(example|exemple|domain|email|votre|your|test)\.|sentry|wixpress|noreply|no-reply|donotreply|u003e|@2x|@3x/i
+// Domaines d'exemple laissés dans les modèles de site (« contact@domaine.com »,
+// « vous@yourcompany.example.com ») ou réservés (RFC 2606 / 6761) : ils ne
+// reçoivent rien, et le serveur répond 554 5.7.1, compté à tort comme un refus
+// pour spam (01/11/2026 : la montée en charge est restée bloquée 2 semaines).
+const PLACEHOLDER_DOMAIN_RE = /(^|\.)(example|exemple|domain|domaine|email|votre|votresite|votredomaine|yourcompany|yourdomain|mondomaine|monsite|test)\.[a-z]{2,}$|\.(example|test|invalid|localhost|local)$/i
+
+/** Adresse factice ou sur un domaine qui ne reçoit pas de courrier. */
+export function isPlaceholderEmail(email: string): boolean {
+  const domain = String(email).toLowerCase().split('@')[1] ?? ''
+  return !domain || PLACEHOLDER_DOMAIN_RE.test(domain)
+}
 
 /** Adresses e-mail d'une page (mailto et texte), sans doublon ni adresse technique. */
 export function extractEmails(html: string): string[] {
@@ -284,7 +295,7 @@ export function extractEmails(html: string): string[] {
   const found = new Set<string>()
   for (const m of decoded.matchAll(EMAIL_RE)) {
     const e = m[0].toLowerCase().replace(/^mailto:/, '').replace(/\.+$/, '')
-    if (!JUNK_RE.test(e) && e.length <= 80) found.add(e)
+    if (!JUNK_RE.test(e) && !isPlaceholderEmail(e) && e.length <= 80) found.add(e)
   }
   return Array.from(found)
 }

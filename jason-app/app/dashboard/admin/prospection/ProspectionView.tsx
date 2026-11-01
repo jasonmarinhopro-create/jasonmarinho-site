@@ -1,11 +1,11 @@
 'use client'
 
-// Page Admin → Prospection : audience (photographes, ménage, hôtes) puis 4
+// Page Admin → Prospection : audience (photographes, ménage, dépannage, hôtes) puis 4
 // onglets. Données chargées par page.tsx (service role après vérification
 // du rôle admin), prévisualisable avec des données fictives.
 
 import { useState } from 'react'
-import { Camera, Broom, House, Lightning, AddressBook, MagnifyingGlass, Gear, WarningCircle, PaperPlaneTilt } from '@phosphor-icons/react/dist/ssr'
+import { Camera, Broom, Wrench, House, Lightning, AddressBook, MagnifyingGlass, Gear, WarningCircle, PaperPlaneTilt } from '@phosphor-icons/react/dist/ssr'
 import type { Audience } from '@/lib/outreach/engine'
 import SequencesTab from './SequencesTab'
 import ContactsTab from './ContactsTab'
@@ -19,6 +19,7 @@ type Tab = 'sequences' | 'contacts' | 'envois' | 'sources' | 'reglages'
 const AUD: Array<{ key: Audience; label: string; Icon: React.ElementType }> = [
   { key: 'photographe', label: 'Photographes', Icon: Camera },
   { key: 'menage', label: 'Équipes de ménage', Icon: Broom },
+  { key: 'depannage', label: 'Dépannage', Icon: Wrench },
   { key: 'hote', label: 'Hôtes', Icon: House },
 ]
 const TABS: Array<{ key: Tab; label: string; Icon: React.ElementType }> = [

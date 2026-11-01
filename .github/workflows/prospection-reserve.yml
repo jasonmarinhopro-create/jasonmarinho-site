@@ -3,7 +3,7 @@
 # toujours sous la main »).
 #   1. Relit la boîte sur 14 jours (réponses reconnues par adresse, fil de
 #      discussion ou domaine pro) : une réponse manquée passe en « Ont répondu ».
-#   2. Pour chaque audience (photographes, ménage) dont il reste moins de
+#   2. Pour chaque audience (photographes, ménage, dépannage) dont il reste moins de
 #      SEUIL contacts « À contacter », importe depuis OpenStreetMap les pros
 #      de 10 villes de nos pages, en tournant sur toutes les villes de la liste.
 # Chaque lundi, à la main, ou par un push de .github/prospection-trigger
@@ -63,7 +63,7 @@ jobs:
           start=$(( (week * n) % ${#CITIES[@]} ))
           status=$(call '{"op":"status"}')
           total=0
-          for a in photographe menage; do
+          for a in photographe menage depannage; do
             have=$(echo "$status" | jq -r --arg a "$a" '.contacts[$a].a_contacter // 0')
             echo "$a : $have contacts « À contacter » (seuil $SEUIL)"
             if [ "$have" -ge "$SEUIL" ] && [ "${{ github.event_name }}" != push ]; then echo "  réserve suffisante"; continue; fi
@@ -88,5 +88,5 @@ jobs:
             total=$((total + added_a))
             echo "::notice title=Réserve $a::$have à contacter avant, $added_a ajoutés ($n villes à partir de ${CITIES[$start]})"
           done
-          after=$(call '{"op":"status"}' | jq -c '{photographe: .contacts.photographe.a_contacter, menage: .contacts.menage.a_contacter}')
+          after=$(call '{"op":"status"}' | jq -c '{photographe: .contacts.photographe.a_contacter, menage: .contacts.menage.a_contacter, depannage: .contacts.depannage.a_contacter}')
           echo "::notice title=Réserve après import::$total ajoutés · à contacter : $after"

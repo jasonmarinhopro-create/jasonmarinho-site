@@ -2,7 +2,7 @@
 // progressivement l'envoi si tout se passe bien, pour éviter la zone spam »).
 // Une fois par jour d'envoi, avant les envois, l'app regarde les 7 derniers
 // jours : rebonds, refus du serveur, désinscriptions, plaintes. Tout va bien
-// et le plafond est vraiment utilisé : +5 par jour, au plus tous les 2 jours,
+// et le plafond est vraiment utilisé : +5 à chaque jour d'envoi (tous les 2 jours avant le 01/11/2026),
 // jusqu'au plafond maximum. Signaux moyens : on garde. Mauvais signaux : on
 // baisse nettement et on attend 7 jours avant de remonter.
 // Règles pures (testées) ; lecture et écriture en base : service.ts.
@@ -14,8 +14,8 @@ export const WARMUP = {
   defaultCeiling: 70,
   maxCeiling: 90,
   step: 5,
-  /** Jours entre deux hausses */
-  minDaysBetweenRaises: 2,
+  /** Jours entre deux hausses (1 depuis le 01/11/2026 : +5 chaque jour d'envoi quand tout va bien) */
+  minDaysBetweenRaises: 1,
   /** Jours de prudence après une baisse */
   coolDownAfterCut: 7,
   windowDays: 7,
@@ -78,6 +78,8 @@ const ADDRESS_RE = /user|mailbox|recipient|address|unknown|exist/i
 /** Nature d'une erreur d'envoi gardée en base (message SMTP). */
 export function classifyError(message: string | null | undefined): 'adresse' | 'blocage' | 'autre' {
   const m = message ?? ''
+  // Domaine qui ne reçoit pas de courrier (adresse d'exemple, domaine réservé) : problème d'adresse, pas de réputation
+  if (/reserved for documentation|cannot receive mail|does not accept mail|null mx|no mx|domain not found|host not found/i.test(m)) return 'adresse'
   if (/\b55[0-3]\b/.test(m) && ADDRESS_RE.test(m) && !BLOCK_RE.test(m)) return 'adresse'
   if (BLOCK_RE.test(m)) return 'blocage'
   return 'autre'
@@ -137,7 +139,7 @@ export function decideWarmup(input: WarmupInput): WarmupDecision {
     return { level: 'vert', action: 'garder', cap, reasons: [good, `prudence après la baisse du ${frDate(input.lastCut)}`] }
   }
   if (input.lastChange && daysBetween(input.lastChange, today) < WARMUP.minDaysBetweenRaises) {
-    return { level: 'vert', action: 'garder', cap, reasons: [good, 'dernier changement trop récent, prochaine hausse possible demain'] }
+    return { level: 'vert', action: 'garder', cap, reasons: [good, 'plafond déjà changé aujourd’hui, prochaine hausse possible au prochain jour d’envoi'] }
   }
   const higher = Math.min(ceiling, cap + WARMUP.step)
   return { level: 'vert', action: 'monter', cap: higher, reasons: [good, `plafond monté de ${cap} à ${higher}`] }

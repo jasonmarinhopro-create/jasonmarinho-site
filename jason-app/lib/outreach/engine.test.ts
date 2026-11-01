@@ -163,3 +163,12 @@ describe('reconnaître une réponse', () => {
     expect(proDomainOf('x@orange.fr')).toBeNull()
   })
 })
+
+describe('isPlaceholderEmail', () => {
+  it('écarte les adresses d’exemple des modèles de site et les domaines réservés', async () => {
+    const { isPlaceholderEmail, extractEmails } = await import('./engine')
+    for (const e of ['contact@domaine.com', 'info@domaine.fr', 'vous@yourcompany.example.com', 'a@example.org', 'b@site.test', 'c@x.invalid']) expect(isPlaceholderEmail(e)).toBe(true)
+    for (const e of ['contact@plomberie-dupont.fr', 'jean@gmail.com', 'hello@domainedesvignes.fr', 'info@email-pro.fr']) expect(isPlaceholderEmail(e)).toBe(false)
+    expect(extractEmails('<a href="mailto:contact@domaine.com">x</a> contact@plomberie-dupont.fr')).toEqual(['contact@plomberie-dupont.fr'])
+  })
+})

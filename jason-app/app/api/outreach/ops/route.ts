@@ -22,7 +22,7 @@ import { parisToday } from '@/lib/stripe/deposit-window'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
-const AUDIENCES: Audience[] = ['photographe', 'menage', 'hote']
+const AUDIENCES: Audience[] = ['photographe', 'menage', 'depannage', 'hote']
 const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
 function authorized(req: Request): boolean {
@@ -158,14 +158,21 @@ async function importFromMaps(db: Db, audience: Audience | undefined, query: str
  * OSM), pour que la mention d'origine du premier e-mail reste exacte.
  */
 async function importFromOsm(db: Db, audience: Audience | undefined, ville: string | undefined) {
-  if (!audience || !['photographe', 'menage'].includes(audience)) throw new Error('audience photographe ou menage')
+  if (!audience || !['photographe', 'menage', 'depannage'].includes(audience)) throw new Error('audience photographe, menage ou depannage')
   const city = (ville ?? '').replace(/["\\]/g, '').trim()
   if (city.length < 2) throw new Error('ville manquante')
   const started = Date.now()
   const re = 'ménage|menage|nettoyage|conciergerie|cleaning|propreté|proprete'
   // 01/10/2026 : élargi à tout lieu qui a un site et un nom parlant (avant :
   // seulement quelques étiquettes, d'où 7 équipes de ménage pour 20 villes)
-  const sel = audience === 'photographe'
+  // Dépannage (01/11/2026) : artisans indépendants (étiquettes craft d'OSM :
+  // plombier, électricien, serrurier, chauffagiste, multiservice) et noms qui
+  // parlent de dépannage. Pas les magasins de bricolage ni les grandes
+  // entreprises du bâtiment : ceux qui interviennent vite chez un hôte.
+  const dep = 'd[ée]pann|multi.?services?|plomb|[ée]lectric|serrur|chauffag|bricolage [àa] domicile|petits travaux'
+  const sel = audience === 'depannage'
+    ? `nwr["craft"~"^(plumber|electrician|locksmith|hvac|handyman|heating_engineer)$"]["website"](area.a);nwr["craft"~"^(plumber|electrician|locksmith|hvac|handyman|heating_engineer)$"]["contact:website"](area.a);nwr["shop"="locksmith"]["website"](area.a);nwr["name"~"${dep}",i]["website"][!"shop"][!"amenity"](area.a);nwr["name"~"${dep}",i]["contact:website"][!"shop"][!"amenity"](area.a);`
+    : audience === 'photographe'
     // 17/10/2026 : vidéastes aussi (nom parlant + site, sans les cinémas)
     ? `nwr["craft"="photographer"](area.a);nwr["shop"="photo"](area.a);nwr["name"~"photograph",i]["website"](area.a);nwr["name"~"photograph",i]["contact:website"](area.a);nwr["name"~"vid[eé]aste|vid[eé]o|drone",i]["website"][!"amenity"](area.a);nwr["name"~"vid[eé]aste|vid[eé]o|drone",i]["contact:website"][!"amenity"](area.a);`
     : `nwr["craft"="cleaning"](area.a);nwr["office"]["name"~"${re}",i](area.a);nwr["craft"]["name"~"${re}",i](area.a);nwr["shop"]["name"~"conciergerie|ménage|menage",i](area.a);nwr["name"~"${re}|airbnb|location saisonnière|gestion locative",i]["website"](area.a);nwr["name"~"${re}|airbnb|gestion locative",i]["contact:website"](area.a);`

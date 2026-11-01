@@ -9,6 +9,8 @@ describe('erreurs SMTP', () => {
   it('distingue adresse inconnue, blocage et le reste', () => {
     expect(classifyError('550 5.1.1 <x@y.fr>: Recipient address rejected: User unknown')).toBe('adresse')
     expect(classifyError('554 5.7.1 Message rejected as spam')).toBe('blocage')
+    // Adresse d'exemple (RFC 2606) : 554 5.7.1 aussi, mais c'est l'adresse, pas la réputation
+    expect(classifyError('Message failed: 554 5.7.1 Recipient domain is reserved for documentation (RFC 2606) and cannot receive mail')).toBe('adresse')
     expect(classifyError('421 Too many messages, try later')).toBe('blocage')
     expect(classifyError('550 5.7.1 Sender blocked: poor reputation')).toBe('blocage')
     expect(classifyError('Connection timeout')).toBe('autre')
@@ -26,9 +28,9 @@ describe('montée en charge', () => {
     expect(input({ busiestDay: 12 })).toMatchObject({ action: 'garder', cap: 25 })
   })
 
-  it('attend 2 jours entre deux hausses et 7 jours après une baisse', () => {
-    expect(input({}, { lastChange: '2026-10-13' }).action).toBe('garder')
-    expect(input({}, { lastChange: '2026-10-12' }).action).toBe('monter')
+  it('une hausse par jour au plus, et 7 jours d’attente après une baisse', () => {
+    expect(input({}, { lastChange: '2026-10-14' }).action).toBe('garder')
+    expect(input({}, { lastChange: '2026-10-13' }).action).toBe('monter')
     expect(input({}, { lastCut: '2026-10-10', lastChange: '2026-10-10' }).action).toBe('garder')
     expect(input({}, { lastCut: '2026-10-06', lastChange: '2026-10-06' }).action).toBe('monter')
   })

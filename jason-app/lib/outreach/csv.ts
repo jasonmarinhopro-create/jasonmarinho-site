@@ -1,3 +1,4 @@
+import { isPlaceholderEmail } from './engine'
 // Import de contacts depuis un fichier CSV (export DATAtourisme, tableur,
 // autre outil) : lecture tolérante (virgule ou point-virgule, guillemets) et
 // reconnaissance automatique des colonnes. Pur, testé dans csv.test.ts.
@@ -84,7 +85,7 @@ export function rowsToContacts(rows: string[][], mapping: Array<CsvField | null>
       const v = (r[i] ?? '').trim()
       if (!field || !v) return
       if (field === 'email') {
-        const first = v.split(/[;,\s|]+/).find(x => EMAIL_OK.test(x))
+        const first = v.split(/[;,\s|]+/).find(x => EMAIL_OK.test(x) && !isPlaceholderEmail(x))
         if (first) c.email = first.toLowerCase()
       } else if (field === 'departement') {
         const m = v.match(/\b(2[AB]|\d{2})\d{0,3}\b/i)
