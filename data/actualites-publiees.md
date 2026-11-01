@@ -11,8 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-02 · plateformes · Airbnb passe à 15,5 % de commission hôte le 13 octobre : agis avant · masquée (https://www.locationcourteduree.fr/2026/07/22/commission-airbnb-2026/)
-- 2026-09-02 · marche · Été 2026 : 70 % des réservations Airbnb des Français restent en France (https://news.airbnb.com/fr/ete-2026-les-francais-voyagent-de-plus-en-en-plus-pres-de-chez-eux/)
 - 2026-09-03 · plateformes · Airbnb bascule aux frais hôte uniques à 15,5 % dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-03 · marche · Été 2026 : Bretagne-Manche à 77 % d'occupation, grandes villes à la peine · masquée (https://presseagence.fr/paris-locations-saisonnieres-lete-2026-sourit-a-la-bretagne-les-grandes-villes-boudees/)
 - 2026-09-04 · plateformes · Airbnb : commission unique de 15,5 % pour les hôtes dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
@@ -89,3 +87,5 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-10-28 · photo-video · Fin d'année chez les hôtes : propose des séances photos d'hiver maintenant · pour photographe
 - 2026-10-29 · plateformes · Airbnb interdit les corvées de départ imposées aux voyageurs dès le 20 novembre · pour menage (https://selectra.info/assurance/actualites/marche/airbnb-20-novembre-regles-hote-degats)
 - 2026-10-30 · entreprise · TVA auto-entrepreneur : si tes recettes 2026 dépassent 37 500 euros, tu la dois dès janvier · pour photographe, menage (https://entreprendre.service-public.fr/professionnels/artisans-commercants/fiscalite-d-entreprise/tva/franchise-en-base-de-tva)
+- 2026-11-01 · fiscalite · Taxe foncière 2027 : passe au prélèvement mensuel avant le 15 décembre (https://www.impots.gouv.fr/particulier/questions/quelle-date-vais-je-recevoir-mon-avis-de-taxe-fonciere-et-quand-dois-je-la)
+- 2026-11-01 · reglementation · Logement loué : entretien annuel de la chaudière avant fin 2026 · pour depannage (https://www.service-public.fr/particuliers/vosdroits/F20760)
