@@ -71,3 +71,7 @@ Constat : les passages programmés GitHub arrivent avec 2 à 5 h de retard (17 h
 ## Stories du 27/10/2026 avec « undefined » dans le numéro (correctif)
 
 Les écrans `point` d'une série de stories affichaient « undefined » à la place du numéro : `slide.num` n'était calculé que pour les carrousels (`normalizeSlides`), pas pour `storyFrameHtml`. Correctif : `numberPoints()` numérote les écrans `point` des deux côtés. **Garde-fou** : `assertNoBlank()` (appelé par `load()` dans `render.mjs`) refuse tout visuel dont le texte contient `undefined`, `null` ou `NaN` ; le rendu échoue donc avant toute publication. Test : `jason-app/lib/social/templates.test.ts` (chaque type d'écran rendu avec ses seuls champs minimaux). Une story Instagram déjà publiée ne peut pas être supprimée par l'API : à retirer à la main dans l'app Instagram.
+
+## Posts épinglés du 01/11/2026 et champ « maintenant »
+
+Jason voulait remplacer ses 3 posts épinglés (images faites avec ChatGPT, qui dénotaient) par 3 carrousels du gabarit maison, en comptant le nouvel annuaire du dépannage : 1 Hôtes (tout Jason Marinho), 2 Trouver un pro, 3 Pros (les 3 annuaires). Validés par Jason avant publication, publiés le jour même sur Facebook et Instagram ; c'est lui qui les épingle. Champ facultatif `"maintenant": true` dans un fichier de la file (`checkSpec`, testé) : le post part au passage suivant (une minute après la programmation, puis `select social_dispatch_ping()`), hors calendrier, sans prendre de créneau. Réservé aux posts validés par Jason ; la routine ne s'en sert pas.

@@ -1,0 +1,65 @@
+{
+  "slug": "epingle-hotes-jason-marinho",
+  "format": "carrousel",
+  "public": "hotes",
+  "photo": "img/exemple-fiches/photo-maison-2.jpg",
+  "slides": [
+    {
+      "type": "couverture",
+      "kicker": "Hôtes en location courte durée",
+      "titre": "Tout pour ta location, *au même endroit*",
+      "sous_titre": "Des pros près de chez toi, une app pour t’organiser, 22 formations. Gratuit pour commencer."
+    },
+    {
+      "type": "liste",
+      "kicker": "Trouver un pro",
+      "titre": "Les bons pros, *près de chez toi*",
+      "items": [
+        "Photographes et vidéastes",
+        "Équipes de ménage",
+        "Dépannage et maintenance",
+        "Ta demande part aux *3 pros les plus proches*"
+      ]
+    },
+    {
+      "type": "liste",
+      "kicker": "L’app",
+      "titre": "Ta location, *organisée*",
+      "items": [
+        "Ménages planifiés depuis tes réservations",
+        "Contrats signés en ligne et cautions",
+        "Fiches de police et déclarations",
+        "Simulateurs de revenus et de fiscalité"
+      ]
+    },
+    {
+      "type": "chiffre",
+      "kicker": "Formations",
+      "valeur": "22",
+      "label": "formations pour lancer, gérer et faire grandir ta location, tirées *du terrain*."
+    },
+    {
+      "type": "astuce",
+      "kicker": "Transparence totale",
+      "titre": "Tous les chiffres sont *publics*",
+      "texte": "Visites, recherches Google, demandes d’hôtes : tout est en ligne, en direct, sur jasonmarinho.com/chiffres."
+    },
+    {
+      "type": "fin",
+      "titre": "Commence *gratuitement*",
+      "texte": "Trouve un pro, organise ta location, apprends à ton rythme.",
+      "bouton": "Lien en bio"
+    }
+  ],
+  "legende": "Tu loues en courte durée ? Voici tout ce que tu trouves sur jasonmarinho.com.\n\nDes pros près de chez toi : photographes et vidéastes, équipes de ménage, et maintenant le dépannage. Tu décris ton besoin une fois, les 3 pros les plus proches te répondent en direct.\n\nUne app pour t’organiser : ménages planifiés depuis tes réservations, contrats signés en ligne, cautions, fiches de police et déclarations.\n\n22 formations pour lancer et faire grandir ta location.\n\nEt tous les chiffres du site sont publics, parce qu’on n’a rien à cacher.\n\nGratuit pour commencer.",
+  "hashtags": [
+    "#airbnb",
+    "#locationcourteduree",
+    "#hoteairbnb",
+    "#conciergerie",
+    "#locationsaisonniere"
+  ],
+  "lien": "https://jasonmarinho.com",
+  "story": false,
+  "maintenant": true
+}

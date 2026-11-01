@@ -85,6 +85,8 @@ export function checkSpec(spec, { exists = (_p) => true } = {}) {
   if (all.includes('—')) errs.push('tiret cadratin interdit')
   if (EMOJI.test(all)) errs.push('emoji interdit')
   if (spec.lien && !/^https:\/\/(app\.)?jasonmarinho\.com(\/|$)/.test(spec.lien)) errs.push('le lien doit pointer vers jasonmarinho.com')
+  // Post validé par Jason à publier tout de suite (posts épinglés du 01/11/2026), hors calendrier
+  if (spec.maintenant !== undefined && spec.maintenant !== true) errs.push('maintenant : true ou absent')
   if (spec.photo && (!/^img\/[\w/.-]+\.(jpg|jpeg|png|webp)$/.test(spec.photo) || !exists(spec.photo))) errs.push('photo introuvable dans img/')
   const tags = spec.hashtags ?? []
   if (!Array.isArray(tags) || tags.length > 8 || tags.some(t => !/^#[\p{L}\p{N}_]{2,40}$/u.test(t))) errs.push('hashtags : 8 au plus, de la forme #mot')

@@ -22,6 +22,8 @@ describe('fichier de publication des réseaux', () => {
     expect(checkSpec({ ...ok, legende: ok.legende + ' — fin' })).toContain('tiret cadratin interdit')
     expect(checkSpec({ ...ok, legende: ok.legende + ' 🔥' })).toContain('emoji interdit')
     expect(checkSpec({ ...ok, lien: 'https://exemple.com' })).toContain('le lien doit pointer vers jasonmarinho.com')
+    expect(checkSpec({ ...ok, maintenant: true })).toEqual([])
+    expect(checkSpec({ ...ok, maintenant: 'oui' })).toContain('maintenant : true ou absent')
     expect(checkSpec({ ...ok, format: 'story' }).length).toBeGreaterThan(0)
     expect(checkSpec({ ...ok, slides: ok.slides.slice(1) })).toContain('la première diapositive doit être une couverture')
     expect(checkSpec({ ...ok, photo: 'img/absente.jpg' }, { exists: () => false })).toContain('photo introuvable dans img/')

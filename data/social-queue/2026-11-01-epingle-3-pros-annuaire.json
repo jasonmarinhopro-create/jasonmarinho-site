@@ -1,0 +1,59 @@
+{
+  "slug": "epingle-pros-annuaire",
+  "format": "carrousel",
+  "public": "pros",
+  "photo": "img/exemple-fiches/photo-salon-4.jpg",
+  "slides": [
+    {
+      "type": "couverture",
+      "kicker": "Photographes, ménage, dépannage",
+      "titre": "Les hôtes de ta ville *te cherchent déjà*",
+      "sous_titre": "Une fiche qui fait site vitrine, sur Google et sur la page de ta ville. Zéro commission."
+    },
+    {
+      "type": "liste",
+      "kicker": "3 annuaires",
+      "titre": "Pour *qui*",
+      "items": [
+        "*Photographes et vidéastes* immobiliers",
+        "*Équipes de ménage* et conciergeries",
+        "*Dépannage et maintenance* : plombiers, électriciens, serruriers, multiservices"
+      ]
+    },
+    {
+      "type": "liste",
+      "kicker": "Ton espace",
+      "titre": "Tout pour *travailler*",
+      "items": [
+        "Ta fiche : photos, formules, prix, zone",
+        "Les demandes des hôtes de ta zone",
+        "Devis, factures et carnet clients",
+        "Tes statistiques : vues, clics, demandes"
+      ]
+    },
+    {
+      "type": "chiffre",
+      "kicker": "Sans intermédiaire",
+      "valeur": "0 %",
+      "label": "de commission sur tes prestations. Les hôtes te contactent *en direct*, ce que tu factures reste à toi."
+    },
+    {
+      "type": "fin",
+      "titre": "Rejoins *l’annuaire*",
+      "texte": "Crée ta fiche en quelques minutes.",
+      "bouton": "Lien en bio"
+    }
+  ],
+  "legende": "Photographe, vidéaste, équipe de ménage, plombier, électricien, serrurier ou multiservices : les hôtes Airbnb et Booking de ta ville cherchent quelqu’un de fiable.\n\nSur jasonmarinho.com, ta fiche fait site vitrine : photos, formules, prix et zone. Elle apparaît dans l’annuaire de ton métier et sur la page de ta ville.\n\nLes demandes arrivent chez toi, tu réponds en direct. Devis, factures, carnet clients et statistiques sont dans ton espace.\n\nZéro commission sur tes prestations.\n\nLe dépannage vient de rejoindre l’annuaire : c’est le moment de prendre ta place.",
+  "hashtags": [
+    "#photographeimmobilier",
+    "#menage",
+    "#plombier",
+    "#electricien",
+    "#airbnb",
+    "#conciergerie"
+  ],
+  "lien": "https://jasonmarinho.com/tarifs",
+  "story": false,
+  "maintenant": true
+}

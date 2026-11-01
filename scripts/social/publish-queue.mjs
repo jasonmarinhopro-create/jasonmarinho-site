@@ -93,7 +93,8 @@ async function publishOne(file) {
 
   const [admin] = await rest('profiles?select=id&role=eq.admin&limit=1')
   const upcoming = await rest(`social_posts?select=scheduled_at&status=eq.scheduled&platforms=cs.{facebook}&scheduled_at=gte.${new Date().toISOString()}`)
-  const slot = nextSlot(new Date(), upcoming.map(p => String(p.scheduled_at).slice(0, 10)))
+  // « maintenant » : post validé par Jason, publié au prochain passage (hors calendrier, ne prend pas de créneau)
+  const slot = spec.maintenant ? new Date(Date.now() + 60000) : nextSlot(new Date(), upcoming.map(p => String(p.scheduled_at).slice(0, 10)))
   const c = captions(spec)
   const [post] = await rest('social_posts', { method: 'POST', body: JSON.stringify({
     created_by: admin.id, body: c.facebook, media_urls: media, platforms: ['facebook', 'instagram'], scheduled_at: slot.toISOString(), status: 'scheduled',
