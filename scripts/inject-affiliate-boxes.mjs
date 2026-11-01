@@ -30,6 +30,8 @@ const JD2M = 'https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_s
 // Keobiz (Affilae, numéro d'affilié 936, 27/10/2026) : cabinet d'expertise comptable
 const KEOBIZ = 'https://www.keobiz.fr/programme-affiliation-keobiz-2/?utm_campaign=affilie936&utm_medium=lp&utm_source=affilie&ae=936'
 // LegalPlace (partenariat du 30/09/2026, numéro d'affilié 1773)
+// Sport Découverte (Affilae, numéro d'affilié 410, 01/11/2026) : aucun avantage pour l'hôte
+const SPORT_DECOUVERTE = 'https://sport-decouverte.com/?utm_source=affilae&utm_medium=affiliate&utm_campaign=Jason%20Marinho&ae=410'
 const LP = 'utm_source=affilae&utm_medium=partner&utm_campaign=Jason%20Marinho&ae=1773'
 const LP_SOCIETE = `https://creation.legalplace.fr/creation-entreprise-2?${LP}`
 const LP_MICRO = `https://www.legalplace.fr/contrats/creation-micro-entreprise/?${LP}`
@@ -146,6 +148,21 @@ const brevoCrm = box('brevo-crm',
   btn(BREVO_CRM, 'Essayer le CRM Brevo gratuit') + ' ' + brevoOffre,
   "Lien affilié : si tu t'inscris via ce lien, Brevo me verse une commission, sans aucun surcoût pour toi.")
 
+// Sport Découverte : jamais présenté comme un gain pour l'hôte (il n'y en a pas)
+const sportNote = "Lien affilié : Sport Découverte me verse une commission sur les réservations faites via ce lien, sans surcoût pour toi mais sans réduction non plus. Si tu mets ce lien dans ton livret, la commission est pour moi, pas pour toi. <a href=\"/partenaires/sport-decouverte\" style=\"color:#004c3f\">Voir ma présentation de Sport Découverte, limites comprises</a>."
+const sportLocal = box('sport-local',
+  "<strong>Pas de prestataire d'activités à démarcher près de chez toi ?</strong> Sport Découverte regroupe des activités de loisirs en France et en Belgique (sensations, nature, bien-être, sorties en famille), assurées par des prestataires partenaires. Pratique pour repérer ce qui existe autour du logement avant d'aller négocier en direct, ou pour compléter ta liste.",
+  btn(SPORT_DECOUVERTE, 'Voir les activités autour du logement'),
+  sportNote)
+const sportLivret = box('sport-livret',
+  "<strong>Une idée pour la partie « que faire autour » :</strong> parcours les activités proposées par Sport Découverte près de ton logement (sorties nature, sensations, bien-être, activités en famille) et garde les 3 ou 4 qui collent à tes voyageurs. Décris-les avec tes mots, à côté de tes adresses à toi.",
+  btn(SPORT_DECOUVERTE, 'Voir les activités autour du logement'),
+  sportNote)
+const sportEquipe = box('sport-equipe',
+  "<strong>Un cadeau de fin d'année pour ton équipe :</strong> un bon cadeau Sport Découverte (une activité au choix, valable 1 an à compter de l'achat) est un geste qui marque plus qu'une prime noyée dans la paie. Vérifie avant qu'il existe des activités près de chez la personne, et dis-lui de réserver sans attendre : une prolongation est payante.",
+  btn(SPORT_DECOUVERTE, 'Voir les bons cadeaux'),
+  "Lien affilié : Sport Découverte me verse une commission sur les achats faits via ce lien, sans surcoût pour toi mais sans réduction non plus. <a href=\"/partenaires/sport-decouverte\" style=\"color:#004c3f\">Voir ma présentation de Sport Découverte, limites comprises</a>.")
+
 // [fichier, id, texte avant lequel insérer l'encadré, contenu]
 const PLACEMENTS = [
   ['comparatif-smoobu-hospitable/index.html', 'hospitable-vous', '</section>\n\n<section id="verdict">', hospitableVous],
@@ -191,6 +208,10 @@ const PLACEMENTS = [
   ['blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026/index.html', 'shine-tu', '<ul class="art-ul"><li>Ouverture 100 % en ligne recommandée', shineTu],
   // Après l'encadré Shine (même ancre, placé ensuite : ordre stable à chaque relance)
   ['blog/compte-bancaire-pro-hote-lcd-6-raisons-choisir-2026/index.html', 'qonto-tu', '<ul class="art-ul"><li>Ouverture 100 % en ligne recommandée', qontoTu],
+  ['blog/partenariats-locaux-hotes-lcd-restaurants-activites/index.html', 'sport-local', '<h2 class="art-h2">3. Boulangerie partenaire', sportLocal],
+  ['blog/livret-accueil-digital-creer-location-courte-duree/index.html', 'sport-livret', '<h2 class="art-h2">Les outils pour créer ton livret digital', sportLivret],
+  ['blog/livret-accueil-digital-hotes-lcd/index.html', 'sport-livret', '<h2 class="art-h2">Les outils pour le créer', sportLivret],
+  ['blog/equipe-menage-conciergerie-recruter-fideliser/index.html', 'sport-equipe', '<div class="art-cta-box"><p>Tu veux structurer ta conciergerie de A à Z', sportEquipe],
 ]
 
 let n = 0

@@ -37,6 +37,7 @@ export const PARTNERS: Record<string, PartnerInfo> = {
   indy: { name: 'Indy', reward: 'De 10 € HT (inscription) à 250 € HT (société), selon le compte ouvert', salesWhere: 'Affilae', affilae: true },
   jd2m: { name: 'JD2M', reward: 'Jusqu\'à 10 % des ventes, premier clic, cookie 30 jours, paiement dès 100 € (conditions relevées en octobre 2026)', salesWhere: 'Affilae', affilae: true },
   keobiz: { name: 'Keobiz', reward: '110 € par client signé (lettre de mission signée et payée), dernier clic, 30 jours (conditions relevées en octobre 2026)', salesWhere: 'Affilae', affilae: true },
+  'sport-decouverte': { name: 'Sport Découverte', reward: '8 % des réservations, premier clic, suivi de plus de 30 jours (conditions relevées en novembre 2026)', salesWhere: 'Affilae', affilae: true },
   legalplace: { name: 'LegalPlace', reward: 'Jusqu\'à 150 € par vente', salesWhere: 'Affilae', affilae: true },
   tiime: { name: 'Tiime', reward: 'Commission Affilae', salesWhere: 'Affilae', affilae: true },
   brevo: { name: 'Brevo', reward: '5 € par inscription gratuite, 100 € par abonnement payant (conditions relevées en octobre 2026, à vérifier dans PartnerStack)', salesWhere: 'PartnerStack', affilae: false, partnerstack: true },
@@ -398,6 +399,12 @@ export const PARTNER_SEO: Array<{ key: string; name: string; paths: string[]; ma
     paths: ['/partenaires/keobiz', '/blog/regime-reel-vs-micro-bic-decision-2026', '/blog/lmnp-vs-lmp-changement-2026-impact', '/blog/cloture-comptable-lcd-2026-7-actions-avant-31-decembre', '/blog/tva-location-courte-duree-2026', '/blog/creer-conciergerie-airbnb-2025'],
     match: /keobiz/,
     targets: ['keobiz', 'keobiz avis', 'keobiz lmnp', 'expert comptable conciergerie', 'expert comptable location meublee', 'expert comptable sci lmnp'],
+  },
+  {
+    key: 'sport-decouverte', name: 'Sport Découverte',
+    paths: ['/partenaires/sport-decouverte', '/blog/partenariats-locaux-hotes-lcd-restaurants-activites', '/blog/livret-accueil-digital-creer-location-courte-duree', '/blog/livret-accueil-digital-hotes-lcd', '/blog/equipe-menage-conciergerie-recruter-fideliser'],
+    match: /sport-decouverte/,
+    targets: ['sport decouverte', 'sport decouverte avis', 'bon cadeau sport decouverte', 'activites autour location', 'idee cadeau equipe menage'],
   },
   {
     key: 'qonto', name: 'Qonto',

@@ -20,10 +20,11 @@ export const CATEGORIES = [
   { id: 'photo', label: 'Photo & visite virtuelle', icon: 'camera' },
   { id: 'marche', label: 'Étude de marché', icon: 'chart-bar' },
   { id: 'marketing', label: 'Marketing & email', icon: 'megaphone' },
+  { id: 'experiences', label: 'Activités & cadeaux', icon: 'gift' },
 ]
 
 // Catégories mises en avant dans la rangée d'icônes (desktop)
-export const RACCOURCIS = ['gestion', 'messagerie', 'direct', 'banque', 'acces', 'compta', 'juridique', 'marketing']
+export const RACCOURCIS = ['gestion', 'messagerie', 'direct', 'banque', 'acces', 'compta', 'juridique', 'marketing', 'experiences']
 
 const LODGIFY_DEMO = 'https://app.lodgify.com/signup/book-demo/fr/?afmc=uhv'
 const HOSPITABLE = 'https://hospitable.com/partners/refer?utm_source=affiliates&utm_medium=blog&utm_campaign=BASWTYN7'
@@ -46,6 +47,9 @@ export const LEGALPLACE_AE = 'utm_source=affilae&utm_medium=partner&utm_campaign
 const LEGALPLACE_SOCIETE = `https://creation.legalplace.fr/creation-entreprise-2?${LEGALPLACE_AE}`
 // Tiime (partenariat Affilae accepté le 01/10/2026, numéro d'affilié 1127)
 // Brevo (partenariat PartnerStack du 06/10/2026) : lien « plateforme » fourni par Brevo
+// Sport Découverte (Affilae, numéro d'affilié 410, 01/11/2026) : 8 % des
+// réservations, premier clic, plus de 30 jours. Aucun avantage pour l'hôte.
+const SPORT_DECOUVERTE = 'https://sport-decouverte.com/?utm_source=affilae&utm_medium=affiliate&utm_campaign=Jason%20Marinho&ae=410'
 const BREVO = 'https://get.brevo.com/3mftm80uaemx-m7y3c'
 const TIIME = 'https://lb.affilae.com/r/?p=651c0d1e40e2d575f87b3b27&af=1127&lp=https%3A%2F%2Fwww.tiime.fr%2Ffacturation-electronique-2026%3Futm_source%3Dother%26utm_medium%3Daffiliation%26utm_campaign%3DJason%2520Marinho%26ae%3D1127%26program_id%3D651c0d1e40e2d575f87b3b27%26program_name%3DTiime'
 
@@ -157,6 +161,15 @@ export const OUTILS = [
     liens: [
       { label: 'Créer un compte', href: BREVO, sponsored: true },
       { label: "Voir l'offre", href: '/partenaires/brevo' },
+    ],
+  },
+  {
+    nom: 'Sport Découverte', mono: 'S', couleur: '#E85D04', cats: ['experiences'],
+    badge: 'affilie', offre: 'Activités et bons cadeaux',
+    desc: "Activités de loisirs en France et en Belgique, à conseiller à tes voyageurs ou à offrir à ton équipe.",
+    liens: [
+      { label: 'Voir les activités', href: SPORT_DECOUVERTE, sponsored: true },
+      { label: 'Mon avis', href: '/partenaires/sport-decouverte' },
     ],
   },
   {

@@ -56,6 +56,14 @@ const JD2M = 'https://www.jedeclaremonmeuble.com/offres-comptabilite-lmnp/?utm_s
 // + 10 € par bien » ou 89 / 109 € HT/mois ; 17 000 ou 18 000 clients).
 const KEOBIZ = 'https://www.keobiz.fr/programme-affiliation-keobiz-2/?utm_campaign=affilie936&utm_medium=lp&utm_source=affilie&ae=936'
 
+// ── Sport Découverte (Affilae, numéro d'affilié 410, 01/11/2026) ──
+// 8 % des réservations, premier clic, plus de 30 jours. Aucun avantage pour
+// l'hôte (Jason le sait) : page voulue par Jason pour présenter le site.
+// sport-decouverte.com n'est pas lisible depuis l'environnement de Claude :
+// faits d'après les extraits de recherche (CGV, page coffret, avis), aucun
+// chiffre de taille ni de note repris (site et Trustpilot se contredisent).
+const SPORT_DECOUVERTE = 'https://sport-decouverte.com/?utm_source=affilae&utm_medium=affiliate&utm_campaign=Jason%20Marinho&ae=410'
+
 export const PAGES = [
   {
     slug: 'lodgify',
@@ -928,6 +936,103 @@ export const PAGES = [
       ['Keobiz : LMNP et comptabilité en 2026', 'https://www.keobiz.fr/le-mag/lmnp-comptabilite/'],
       ['Meilleurtaux : fin de la réduction pour frais de comptabilité', 'https://placement.meilleurtaux.com/placement-financier/actualites/2026-mai/impots-2025-fin-de-la-reduction-comptabilite-oga.html'],
       ['Régimes d\'imposition', 'https://www.impots.gouv.fr/particulier/les-regimes-dimposition'],
+    ],
+  },
+  {
+    slug: 'sport-decouverte',
+    releve: 'novembre 2026',
+    nom: 'Sport Découverte',
+    mono: 'S',
+    couleur: '#E85D04',
+    title: 'Sport Découverte : activités autour de ta location',
+    description: "Sport Découverte avec Jason Marinho : des activités de loisirs à conseiller à tes voyageurs ou à offrir à ton équipe. Pour qui, bons cadeaux, limites.",
+    eyebrow: 'Partenaire · Activités et cadeaux',
+    h1: 'Sport Découverte : des activités <em>autour de ta location</em>',
+    lead: "Sport Découverte est un site français de réservation d'activités de loisirs : sensations, nature, bien-être, sorties en famille, en France et en Belgique. Les activités sont assurées par des prestataires partenaires, Sport Découverte vend et réserve. Je le présente pour deux usages : trouver des idées à glisser dans ton livret d'accueil, et offrir une activité à ton équipe ou à un voyageur fidèle.",
+    offre: {
+      titre: 'Des activités à réserver ou à offrir',
+      sous: 'Pas de réduction avec mon lien : le prix est le même que sur le site',
+      points: [
+        "Activités en France et en Belgique, assurées par des prestataires partenaires",
+        "Bon cadeau valable 1 an à compter de l'achat",
+        "Si l'activité choisie coûte moins cher que le bon, la différence devient un avoir",
+        "Aucun avantage particulier pour toi avec mon lien, je préfère le dire",
+      ],
+      cta: { label: 'Voir les activités', href: SPORT_DECOUVERTE },
+      note: "Lien affilié : Sport Découverte me verse une commission sur les réservations faites via ce lien, sans aucun surcoût pour toi.",
+    },
+    pourquoi: {
+      titre: 'Pourquoi je le <em>présente</em>',
+      items: [
+        { icon: 'map-pin', t: 'Des idées près du logement', d: "Pour compléter la partie « que faire autour » de ton livret d'accueil, surtout les jours de pluie ou avec des enfants." },
+        { icon: 'gift', t: 'Un cadeau qui marque', d: "Pour remercier ton équipe de ménage, ton co-hôte, un propriétaire que tu gères, ou un voyageur qui revient chaque année." },
+        { icon: 'calendar-check', t: 'Réservé en ligne', d: "Le voyageur ou la personne qui reçoit le bon choisit sa date avec le prestataire, tu n'as rien à organiser." },
+      ],
+    },
+    fonctions: {
+      titre: 'Ce que tu peux en faire <em>comme hôte</em>',
+      items: [
+        { icon: 'book-open', t: "Livret d'accueil", d: "Repère 3 ou 4 activités proches du logement et décris-les avec tes mots, en plus de tes adresses." },
+        { icon: 'users-three', t: 'Familles et groupes', d: "Des sorties à proposer aux familles et aux groupes d'amis, qui cherchent quoi faire avant d'arriver." },
+        { icon: 'hand-heart', t: 'Fidéliser ton équipe', d: "Un bon cadeau en fin d'année pour l'équipe de ménage : un geste qui compte quand le turnover coûte cher." },
+        { icon: 'house-line', t: 'Remercier un propriétaire', d: "En conciergerie, un cadeau pour un propriétaire qui te confie son logement depuis longtemps." },
+        { icon: 'users', t: 'Voyageur fidèle', d: "Une activité offerte à un voyageur qui revient ou qui t'a envoyé des amis, en réservation directe." },
+        { icon: 'magnifying-glass', t: 'Connaître ta région', d: "Parcourir ce qui existe autour de toi pour mieux conseiller tes voyageurs, même sans rien réserver." },
+      ],
+    },
+    etapes: [
+      { t: 'Cherche autour du logement', d: "via le lien : filtre par lieu et par type d'activité, et regarde les avis de chaque activité." },
+      { t: 'Choisis ce que tu en fais', d: "une liste d'idées pour ton livret, ou un bon cadeau à offrir (vérifie qu'il existe des activités près de chez la personne)." },
+      { t: 'Lis les conditions', d: "durée de validité, prolongation, annulation météo : elles changent d'une activité à l'autre." },
+    ],
+    tableau: {
+      titre: 'Sport Découverte ou un partenaire local : <em>selon ton objectif</em>',
+      entete: ['Ton objectif', 'Mon conseil'],
+      lignes: [
+        ["Gagner quelque chose sur les activités de tes voyageurs", '<span class="partial">Partenariat local</span> : négocie en direct avec un prestataire près de chez toi, voir <a href="/blog/partenariats-locaux-hotes-lcd-restaurants-activites">mon article</a>'],
+        ["Trouver vite des idées d'activités autour du logement", '<span class="yes">Sport Découverte</span> : parcours ce qui existe, puis choisis ce que tu conseilles'],
+        ["Offrir un cadeau à ton équipe, un co-hôte ou un propriétaire", '<span class="yes">Sport Découverte</span> : un bon cadeau, à condition qu\'il y ait des activités près de chez la personne'],
+        ["Réserver une activité précise à la dernière minute", '<span class="partial">En direct</span> : le prestataire connaît ses disponibilités du jour'],
+      ],
+      note: "Si tu mets mon lien dans ton livret, c'est moi qui touche la commission, pas toi. Pour gagner quelque chose sur les activités de tes voyageurs, un partenariat direct avec un prestataire local reste la meilleure option.",
+    },
+    cout: {
+      titre: 'Ce que ça <em>coûte</em>',
+      paras: [
+        "Le prix dépend de chaque activité. Mon lien ne change rien au prix : tu paies la même chose qu'en allant directement sur le site.",
+        "Un bon cadeau est valable 1 an à compter de l'achat. D'après les conditions de vente, une prolongation est possible une fois, payante, à demander avant la fin de validité ; après l'expiration, le bon n'est pas remboursé. Si tu offres un bon, dis-le à la personne pour qu'elle réserve sans attendre.",
+      ],
+    },
+    limites: [
+      "Aucun avantage pour toi avec mon lien : ni réduction, ni commission reversée.",
+      "Sport Découverte n'est pas l'opérateur des activités : en cas de souci sur place, c'est le prestataire qui gère, Sport Découverte fait l'intermédiaire.",
+      "Les avis sont contrastés : bonne note sur le site, plus partagée sur Trustpilot et les forums de consommateurs, surtout sur les bons cadeaux (validité, prolongation, dates disponibles).",
+      "Un bon cadeau oblige à réserver dans l'année : vérifie qu'il y a des créneaux près de chez la personne avant de l'offrir.",
+    ],
+    liens: [
+      { href: '/blog/partenariats-locaux-hotes-lcd-restaurants-activites', t: 'Partenariats locaux', d: 'Restaurants, activités, vélos : négocier en direct.' },
+      { href: '/blog/livret-accueil-digital-creer-location-courte-duree', t: "Livret d'accueil digital", d: 'Ce qu\'il doit contenir et comment le créer.' },
+      { href: '/blog/equipe-menage-conciergerie-recruter-fideliser', t: 'Fidéliser ton équipe de ménage', d: 'Recruter, former et garder les bonnes personnes.' },
+      { href: '/blog/programme-parrainage-voyageurs-fidelisation-lcd', t: 'Parrainage voyageurs', d: 'Faire revenir tes voyageurs et leurs amis.' },
+    ],
+    faq: [
+      { q: "Qu'est-ce que Sport Découverte ?", a: "Un site français de réservation d'activités de loisirs et de sport en France et en Belgique : sensations, nature, bien-être, sorties en famille. Les activités sont assurées par des prestataires partenaires ; Sport Découverte vend les activités et les bons cadeaux, et fait l'intermédiaire." },
+      { q: "Y a-t-il une réduction avec le lien de Jason Marinho ?", a: "Non. Mon lien est un lien affilié : Sport Découverte me verse une commission sur les réservations, sans surcoût pour toi, mais sans réduction non plus." },
+      { q: "Combien de temps un bon cadeau Sport Découverte est-il valable ?", a: "1 an à compter de l'achat. D'après les conditions de vente, la prolongation est possible une fois, payante, à demander avant la fin de validité ; un bon expiré n'est pas remboursé. Si l'activité choisie coûte moins cher que le bon, la différence devient un avoir." },
+      { q: "Puis-je mettre Sport Découverte dans mon livret d'accueil ?", a: "Oui, comme n'importe quelle adresse que tu conseilles. Si tu utilises mon lien, la commission est pour moi, pas pour toi. Pour gagner quelque chose sur les activités de tes voyageurs, signe plutôt un partenariat direct avec un prestataire local." },
+      { q: "Les avis sur Sport Découverte sont-ils bons ?", a: "Ils sont contrastés. Les activités sont bien notées sur le site, l'avis global est plus partagé sur Trustpilot et sur les forums de consommateurs, surtout à propos des bons cadeaux (validité d'un an, prolongation payante, dates disponibles). Lis les avis de l'activité précise avant de réserver ou d'offrir." },
+      { q: "Que faire si l'activité est annulée à cause de la météo ?", a: "Ça arrive surtout pour les activités de plein air (vol, parapente, montgolfière). Ce qui se passe dépend de l'activité et du prestataire : Sport Découverte l'explique dans sa page d'engagements. Lis ces conditions avant de réserver ou d'offrir." },
+    ],
+    cta: {
+      titre: 'Ton livret d\'accueil, <em>en ligne</em>',
+      texte: "Pour partager tes activités et tes adresses avec tes voyageurs, Driing propose un livret d'accueil digital, avec la réservation directe sans commission. Driing est co-fondée par Jason.",
+      btn: { label: 'Découvrir Driing', href: 'https://driing.co' },
+    },
+    sources: [
+      ['Sport Découverte : conditions de vente', 'https://www.sport-decouverte.com/cgv.html'],
+      ['Sport Découverte : coffret cadeau', 'https://www.sport-decouverte.com/coffret-cadeau.html'],
+      ['Sport Découverte : nos engagements', 'https://www.sport-decouverte.com/magazine/nos-engagements-en-toute-transparence/'],
+      ['Avis sur Trustpilot', 'https://fr.trustpilot.com/review/www.sport-decouverte.com'],
     ],
   },
 ]

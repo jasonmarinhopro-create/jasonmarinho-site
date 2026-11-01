@@ -59,6 +59,11 @@
       "id": "marketing",
       "label": "Marketing & email",
       "icon": "megaphone"
+    },
+    {
+      "id": "experiences",
+      "label": "Activités & cadeaux",
+      "icon": "gift"
     }
   ],
   "outils": [
@@ -324,6 +329,28 @@
         {
           "label": "Voir l'offre",
           "href": "https://jasonmarinho.com/partenaires/brevo"
+        }
+      ]
+    },
+    {
+      "nom": "Sport Découverte",
+      "mono": "S",
+      "couleur": "#E85D04",
+      "cats": [
+        "experiences"
+      ],
+      "badge": "affilie",
+      "offre": "Activités et bons cadeaux",
+      "desc": "Activités de loisirs en France et en Belgique, à conseiller à tes voyageurs ou à offrir à ton équipe.",
+      "liens": [
+        {
+          "label": "Voir les activités",
+          "href": "https://sport-decouverte.com/?utm_source=affilae&utm_medium=affiliate&utm_campaign=Jason%20Marinho&ae=410",
+          "sponsored": true
+        },
+        {
+          "label": "Mon avis",
+          "href": "https://jasonmarinho.com/partenaires/sport-decouverte"
         }
       ]
     },

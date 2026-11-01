@@ -35,6 +35,12 @@ describe('partenaires', () => {
     expect(affilaeSalesFor('Shine Facture', two)?.conversions).toBe(5)
     expect(partnerInfo('shine-facture')).toMatchObject({ name: 'Shine Facture', affilae: true })
   })
+  it('Sport Découverte retrouvé malgré les accents et les majuscules du programme Affilae', () => {
+    const prog = { ...affilae.summary.programs[0], id: 's', name: 'SPORT DECOUVERTE', conversions: 3 }
+    const ov: AffilaeOverview = { ...affilae, summary: { ...affilae.summary, programs: [prog] } }
+    expect(affilaeSalesFor(partnerInfo('sport-decouverte').name, ov)?.conversions).toBe(3)
+    expect(partnerInfo('sport-decouverte').affilae).toBe(true)
+  })
 
   it('clics par partenaire et par page, taux, provenance de ceux qui cliquent', () => {
     const d = buildPartners({
