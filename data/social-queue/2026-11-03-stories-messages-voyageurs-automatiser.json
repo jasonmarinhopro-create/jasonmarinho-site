@@ -1,0 +1,11 @@
+{
+  "format": "stories",
+  "slug": "stories-messages-voyageurs-automatiser",
+  "jour": "2026-11-03",
+  "frames": [
+    { "type": "point", "titre": "Tu tapes encore *chaque message* à la main ?", "texte": "Les mêmes reviennent à chaque réservation : programme-les une fois." },
+    { "type": "liste", "titre": "Les moments *à programmer*", "items": ["Dès la réservation : merci et prochaines étapes", "48 h avant : codes, adresse, Wi-Fi", "La veille du départ : heure et consignes", "Après le départ : demande d’avis"] },
+    { "type": "astuce", "kicker": "Le test", "titre": "Relis tes instructions *comme un voyageur*", "texte": "Quelqu’un qui n’est jamais venu. Si une étape te semble floue, elle l’est aussi pour lui." },
+    { "type": "question", "titre": "Tes messages, *programmés* ou à la main ?" }
+  ]
+}
