@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Sat, 31 Oct 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 02 Nov 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Hivernage de ton logement LCD : 7 règles pour couper proprement si tu arrêtes la location cet hiver</title>
+      <link>https://jasonmarinho.com/blog/hivernage-logement-lcd-7-regles-couper-proprement-arreter-location-hiver</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/hivernage-logement-lcd-7-regles-couper-proprement-arreter-location-hiver</guid>
+      <pubDate>Mon, 02 Nov 2026 08:00:00 GMT</pubDate>
+      <description>Eau, chauffage, assurance, visites : 7 règles concrètes pour hiverner ton logement LCD si tu coupes la location cet hiver, sans sinistre ni mauvaise surprise.</description>
+      <category>Ressources</category>
+    </item>
     <item>
       <title>Plombier, électricien, multiservice : 6 façons de travailler avec les hôtes Airbnb de ta ville</title>
       <link>https://jasonmarinho.com/blog/artisan-depannage-trouver-clients-hotes-airbnb</link>
@@ -397,14 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/tv-streaming-lcd-6-regles-equiper-compte-pirate-voyageur</guid>
       <pubDate>Fri, 24 Jul 2026 08:00:00 GMT</pubDate>
       <description>Smart TV, Netflix, Chromecast, TNT, réinitialisation : 6 règles concrètes pour équiper la TV de ta location courte durée sans risque de compte piraté ni voyageur frustré devant un écran figé.</description>
-      <category>Expérience</category>
-    </item>
-    <item>
-      <title>Petit-déjeuner en LCD : 6 formules à proposer à tes voyageurs sans plomber ton budget</title>
-      <link>https://jasonmarinho.com/blog/petit-dejeuner-lcd-6-formules-voyageurs-budget</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/petit-dejeuner-lcd-6-formules-voyageurs-budget</guid>
-      <pubDate>Wed, 22 Jul 2026 08:00:00 GMT</pubDate>
-      <description>Panier essentiel, terroir régional, healthy, familial, gourmand ou pack à emporter : 6 formules concrètes de petit-déjeuner à tester en location courte durée, avec budget par personne et point de vigilance para-hôtellerie.</description>
       <category>Expérience</category>
     </item>
   </channel>
