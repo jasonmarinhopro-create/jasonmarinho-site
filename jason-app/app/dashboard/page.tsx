@@ -25,6 +25,7 @@ import DeclarationsWidget from '@/components/dashboard/DeclarationsWidget'
 import OnboardingTour from './OnboardingTour'
 import { icalReservationsForDisplay } from '@/lib/ical/display'
 import { parisToday } from '@/lib/stripe/deposit-window'
+import { samePeriodLastMonth, pctChange } from '@/lib/finances/month-compare'
 import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
 // CategoryId retiré (utilisé uniquement par ChezNousWidget, désormais dans /entre-hotes)
 
@@ -583,7 +584,10 @@ export default async function DashboardPage() {
   })
   const monthEnd = (ym: string) => new Date(Date.UTC(Number(ym.slice(0, 4)), Number(ym.slice(5, 7)), 0)).toISOString().slice(0, 10)
   const revenusThisMois = finTotaux(finLines, [], [], `${monthPfx}-01`, monthEnd(monthPfx), today).revenus
-  const revenusPrevMois = finTotaux(finLines, [], [], `${prevMPfx}-01`, monthEnd(prevMPfx), today).revenus
+  // Même période du mois dernier (rien les 7 premiers jours) : lib/finances/month-compare.ts
+  const prevPeriod = samePeriodLastMonth(today)
+  const revenusPrevPeriode = prevPeriod ? finTotaux(finLines, [], [], prevPeriod.start, prevPeriod.end, today).revenus : 0
+  const ecartMois = prevPeriod ? pctChange(revenusThisMois, revenusPrevPeriode) : null
 
   // ── Revenu annuel YTD + objectif
   const revenuYTD = finTotaux(finLines, [], [], `${yearPfx}-01-01`, `${yearPfx}-12-31`, today).revenus
@@ -774,9 +778,9 @@ export default async function DashboardPage() {
                 <Link href="/dashboard/finances/revenus" style={s.asideStat}>
                   <span style={s.asideNum}>{fmtEur(revenusThisMois)}</span>
                   <span style={s.asideLbl}>
-                    encaissés{revenusPrevMois > 0 && (
-                      <span style={{ color: revenusThisMois >= revenusPrevMois ? 'var(--accent-text)' : 'var(--danger)', fontWeight: 600 }}>
-                        {' '}{revenusThisMois >= revenusPrevMois ? '+' : ''}{Math.round(((revenusThisMois - revenusPrevMois) / revenusPrevMois) * 100)} % vs mois dernier
+                    encaissés{ecartMois !== null && prevPeriod && (
+                      <span style={{ color: ecartMois >= 0 ? 'var(--accent-text)' : 'var(--danger)', fontWeight: 600 }}>
+                        {' '}{ecartMois >= 0 ? '+' : ''}{ecartMois} % {prevPeriod.label}
                       </span>
                     )}
                   </span>
