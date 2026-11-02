@@ -171,6 +171,29 @@ export async function createCharge(input: ChargeInput) {
   return { charge: data }
 }
 
+/** Frais des plateformes d'un import CSV (Airbnb, Booking) : une charge « Commission de plateforme » par séjour, sans doublon. */
+export async function bulkImportPlatformFees(fees: Array<{ logement_nom: string; logement_id: string | null; montant: number; date_charge: string; description: string }>) {
+  if (!fees.length) return { inserted: 0, skipped: 0 }
+  if (fees.length > 500) return { error: 'Maximum 500 lignes par import' }
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
+  const { data: existing } = await supabase
+    .from('revenus_charges')
+    .select('logement_nom, montant, date_charge')
+    .eq('user_id', user.id)
+    .eq('categorie', 'commissions_plateforme')
+  const keys = new Set((existing ?? []).map(e => `${e.logement_nom}|${e.date_charge}|${Number(e.montant)}`))
+  const toInsert = fees
+    .filter(f => f.montant > 0 && !keys.has(`${f.logement_nom}|${f.date_charge}|${f.montant}`))
+    .map(f => ({ ...f, user_id: user.id, categorie: 'commissions_plateforme', deductible: true }))
+  if (!toInsert.length) return { inserted: 0, skipped: fees.length }
+  const { data, error } = await supabase.from('revenus_charges').insert(toInsert).select('id')
+  if (error) return { error: error.message }
+  revalidatePath('/dashboard/finances', 'layout')
+  return { inserted: data?.length ?? 0, skipped: fees.length - (data?.length ?? 0) }
+}
+
 export async function updateCharge(id: string, input: Partial<ChargeInput>) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

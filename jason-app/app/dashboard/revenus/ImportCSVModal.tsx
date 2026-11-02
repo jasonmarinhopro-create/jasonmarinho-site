@@ -1,544 +1,286 @@
 'use client'
 
-import { useState, useRef, useTransition } from 'react'
-import { CloudArrowUp, Check, X, Warning, FileCsv, ArrowRight } from '@phosphor-icons/react/dist/ssr'
-import { bulkImportRevenusEntries } from './actions'
+// Import d'un export CSV Airbnb (Recettes) ou Booking.com (Réservations) dans
+// les finances. Lecture et calculs : lib/finances/csv-import.ts (testé).
+// 02/11/2026 : refait après le message d'une hôte (dates Airbnb mois/jour
+// refusées, fond transparent, lignes de versement vides, nom de l'annonce
+// remplacé par « Airbnb ») : un séjour par ligne, brut / frais / versé, choix
+// du logement, frais de la plateforme ajoutés aux charges.
 
-// ── Types ────────────────────────────────────────────────────────────────────
-
-interface ParsedRow {
-  raw: Record<string, string>
-  date_paiement: string | null  // ISO YYYY-MM-DD
-  logement_nom: string
-  montant: number | null
-  voyageur: string
-  status: 'ok' | 'cancelled' | 'payout' | 'invalid'
-  reason?: string
-}
-
-type Platform = 'airbnb' | 'booking' | 'unknown'
+import { useMemo, useRef, useState, useTransition } from 'react'
+import { CloudArrowUp, Check, X, Warning, FileCsv, Info } from '@phosphor-icons/react/dist/ssr'
+import { bulkImportRevenusEntries, bulkImportPlatformFees } from './actions'
+import { importPlatformCsv, matchLogement, type ImportResult } from '@/lib/finances/csv-import'
 
 interface Props {
   open: boolean
   onClose: () => void
   onImported: (count: number) => void
+  /** Logements de l'app, pour rattacher chaque annonce */
+  logements?: Array<{ id: string; nom: string }>
 }
 
-// ── CSV parsing ──────────────────────────────────────────────────────────────
+const eur = (n: number) => n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'
+const frDate = (iso: string | null) => iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}` : '–'
+const KEEP = '__annonce__'
 
-function detectDelimiter(firstLine: string): string {
-  const semis  = (firstLine.match(/;/g) ?? []).length
-  const commas = (firstLine.match(/,/g) ?? []).length
-  const tabs   = (firstLine.match(/\t/g) ?? []).length
-  if (tabs >= semis && tabs >= commas) return '\t'
-  return semis > commas ? ';' : ','
-}
-
-function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
-  // Strip UTF-8 BOM
-  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1)
-
-  const firstLineEnd = text.indexOf('\n')
-  const firstLine    = firstLineEnd === -1 ? text : text.slice(0, firstLineEnd)
-  const delim        = detectDelimiter(firstLine)
-
-  const rowsRaw: string[][] = []
-  let cur: string[] = []
-  let cell = ''
-  let inQuotes = false
-
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i]
-    if (inQuotes) {
-      if (c === '"') {
-        if (text[i + 1] === '"') { cell += '"'; i++ } else { inQuotes = false }
-      } else { cell += c }
-    } else {
-      if (c === '"')      { inQuotes = true }
-      else if (c === delim) { cur.push(cell); cell = '' }
-      else if (c === '\n')  { cur.push(cell); rowsRaw.push(cur); cur = []; cell = '' }
-      else if (c === '\r')  { /* skip */ }
-      else                  { cell += c }
-    }
-  }
-  if (cell.length > 0 || cur.length > 0) { cur.push(cell); rowsRaw.push(cur) }
-
-  if (rowsRaw.length === 0) return { headers: [], rows: [] }
-
-  const headers = rowsRaw[0].map(h => h.trim())
-  const rows = rowsRaw.slice(1)
-    .filter(r => r.some(c => c.trim() !== ''))
-    .map(r => {
-      const obj: Record<string, string> = {}
-      headers.forEach((h, i) => { obj[h] = (r[i] ?? '').trim() })
-      return obj
-    })
-
-  return { headers, rows }
-}
-
-// ── Platform detection ───────────────────────────────────────────────────────
-
-function detectPlatform(headers: string[]): Platform {
-  const set = new Set(headers.map(h => h.toLowerCase()))
-  const has = (...keys: string[]) => keys.some(k => set.has(k.toLowerCase()))
-
-  // Airbnb signals
-  if (has('confirmation code', 'code de confirmation', 'listing', 'annonce', 'gross earnings', 'recettes brutes')) {
-    return 'airbnb'
-  }
-  // Booking signals
-  if (has('book number', 'numéro de réservation', 'commission amount', 'montant de la commission', 'booker country')) {
-    return 'booking'
-  }
-  return 'unknown'
-}
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-
-function findCol(row: Record<string, string>, candidates: string[]): string {
-  const keys = Object.keys(row)
-  for (const c of candidates) {
-    const k = keys.find(k => k.toLowerCase() === c.toLowerCase())
-    if (k && row[k]) return row[k]
-  }
-  return ''
-}
-
-function parseAmount(s: string): number | null {
-  if (!s) return null
-  // Remove currency symbols, spaces, replace comma with dot
-  const cleaned = s.replace(/[€$£\s]/g, '').replace(/\./g, '').replace(',', '.')
-  // ^^ for FR format "1.234,56" → "1234.56" ; for "1,234.56" first replace "." (none after comma) leaves the dot
-  // safer approach: detect format
-  let n: number
-  if (/,\d{1,2}$/.test(s.replace(/\s/g, ''))) {
-    // FR format: "1.234,56" or "1234,56"
-    n = parseFloat(s.replace(/[€$£\s]/g, '').replace(/\./g, '').replace(',', '.'))
-  } else {
-    // EN format: "1,234.56" or "1234.56"
-    n = parseFloat(s.replace(/[€$£\s,]/g, ''))
-  }
-  if (isNaN(n)) return null
-  return Math.round(n * 100) / 100
-}
-
-function parseDate(s: string): string | null {
-  if (!s) return null
-  const trimmed = s.trim()
-
-  // ISO YYYY-MM-DD or YYYY/MM/DD
-  let m = trimmed.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/)
-  if (m) {
-    const [, y, mo, d] = m
-    return `${y}-${mo.padStart(2, '0')}-${d.padStart(2, '0')}`
-  }
-  // DD/MM/YYYY or DD-MM-YYYY
-  m = trimmed.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/)
-  if (m) {
-    const [, d, mo, y] = m
-    return `${y}-${mo.padStart(2, '0')}-${d.padStart(2, '0')}`
-  }
-  // MM/DD/YYYY (US fallback) - only if first part > 12 it's DD, else assume DD/MM (FR)
-  // Already handled above as DD/MM
-  // Try Date parser as last resort
-  const dt = new Date(trimmed)
-  if (!isNaN(dt.getTime())) {
-    return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`
-  }
-  return null
-}
-
-// ── Mapping per platform ─────────────────────────────────────────────────────
-
-function mapAirbnbRow(row: Record<string, string>): ParsedRow {
-  const type   = findCol(row, ['Type']).toLowerCase()
-  const status = findCol(row, ['Status', 'Statut']).toLowerCase()
-
-  // Skip payout lines (already counted in reservation lines)
-  if (type.includes('payout') || type.includes('versement') || type.includes('paiement')) {
-    return { raw: row, date_paiement: null, logement_nom: '', montant: null, voyageur: '', status: 'payout', reason: 'Versement Airbnb (déjà compté dans les réservations)' }
-  }
-  // Skip cancellations
-  if (status.includes('cancel') || status.includes('annul') || type.includes('cancel') || type.includes('refund')) {
-    return { raw: row, date_paiement: null, logement_nom: '', montant: null, voyageur: '', status: 'cancelled', reason: 'Réservation annulée' }
-  }
-
-  const dateStr = findCol(row, ['Start Date', 'Date d\'arrivée', "Date d'arrivée", 'Booking date', 'Date'])
-  const date    = parseDate(dateStr)
-
-  const logement = findCol(row, ['Listing', 'Annonce', 'Property']) || 'Airbnb'
-  const guest    = findCol(row, ['Guest', 'Voyageur', 'Guest name'])
-
-  // Prefer net Earnings, fallback to Gross Earnings, then Amount
-  const amountStr = findCol(row, ['Earnings', 'Recettes', 'Net earnings', 'Gross Earnings', 'Recettes brutes', 'Amount', 'Montant'])
-  const montant   = parseAmount(amountStr)
-
-  if (!date || montant === null || montant <= 0) {
-    return { raw: row, date_paiement: date, logement_nom: logement, montant, voyageur: guest, status: 'invalid', reason: !date ? 'Date manquante' : !montant ? 'Montant manquant' : 'Montant ≤ 0' }
-  }
-
-  return { raw: row, date_paiement: date, logement_nom: logement, montant, voyageur: guest, status: 'ok' }
-}
-
-function mapBookingRow(row: Record<string, string>): ParsedRow {
-  const status = findCol(row, ['Status', 'Statut']).toLowerCase()
-
-  if (status.includes('cancel') || status.includes('annul') || status === 'no_show' || status === 'no-show') {
-    return { raw: row, date_paiement: null, logement_nom: '', montant: null, voyageur: '', status: 'cancelled', reason: `Réservation ${status}` }
-  }
-
-  const dateStr  = findCol(row, ['Check-in', 'Arrivée', 'Date d\'arrivée', "Date d'arrivée", 'Arrival'])
-  const date     = parseDate(dateStr)
-  const logement = findCol(row, ['Property', 'Logement', 'Listing', 'Hébergement']) || 'Booking.com'
-  const guest    = findCol(row, ['Guest name', 'Nom du voyageur', 'Guest', 'Voyageur'])
-  const amountStr= findCol(row, ['Price', 'Prix total', 'Total price', 'Total', 'Montant', 'Revenue'])
-  const montant  = parseAmount(amountStr)
-
-  if (!date || montant === null || montant <= 0) {
-    return { raw: row, date_paiement: date, logement_nom: logement, montant, voyageur: guest, status: 'invalid', reason: !date ? 'Date manquante' : 'Montant manquant ou ≤ 0' }
-  }
-
-  return { raw: row, date_paiement: date, logement_nom: logement, montant, voyageur: guest, status: 'ok' }
-}
-
-// ── Component ────────────────────────────────────────────────────────────────
-
-export default function ImportCSVModal({ open, onClose, onImported }: Props) {
-  const [platform, setPlatform] = useState<Platform>('unknown')
-  const [rows, setRows]         = useState<ParsedRow[]>([])
+export default function ImportCSVModal({ open, onClose, onImported, logements = [] }: Props) {
+  const [result, setResult] = useState<ImportResult | null>(null)
   const [fileName, setFileName] = useState('')
-  const [error, setError]       = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const [feedback, setFeedback] = useState<string | null>(null)
-  const [pending, startT]       = useTransition()
+  const [mapping, setMapping] = useState<Record<string, string>>({})
+  const [withFees, setWithFees] = useState(true)
+  const [pending, startT] = useTransition()
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const listings = useMemo(() => Array.from(new Set((result?.stays ?? []).map(s => s.logement))), [result])
+  const totals = useMemo(() => (result?.stays ?? []).reduce((a, s) => ({ brut: a.brut + s.brut, frais: a.frais + s.frais, verse: a.verse + s.verse, regul: a.regul + s.regularisation }), { brut: 0, frais: 0, verse: 0, regul: 0 }), [result])
 
   if (!open) return null
 
-  function reset() {
-    setPlatform('unknown'); setRows([]); setFileName(''); setError(null); setFeedback(null)
-    if (inputRef.current) inputRef.current.value = ''
+  const platformLabel = result?.platform === 'airbnb' ? 'Airbnb' : result?.platform === 'booking' ? 'Booking.com' : 'Inconnue'
+  const nomFor = (listing: string) => {
+    const v = mapping[listing]
+    return !v || v === KEEP ? (listing || platformLabel) : v
   }
 
-  function handleClose() {
-    reset(); onClose()
+  function reset() {
+    setResult(null); setFileName(''); setError(null); setFeedback(null); setMapping({}); setWithFees(true)
+    if (inputRef.current) inputRef.current.value = ''
   }
+  function handleClose() { reset(); onClose() }
 
   async function handleFile(file: File) {
     setError(null); setFeedback(null)
-    if (file.size > 5 * 1024 * 1024) { setError('Fichier trop lourd (max 5 Mo).'); return }
-    if (!/\.csv$/i.test(file.name) && file.type !== 'text/csv') {
-      setError('Format de fichier non supporté. Utilise un .csv exporté depuis Airbnb ou Booking.')
-      return
-    }
-
+    if (file.size > 5 * 1024 * 1024) { setError('Fichier trop lourd (5 Mo au plus).'); return }
+    if (!/\.csv$/i.test(file.name) && file.type !== 'text/csv') { setError('Choisis un fichier .csv exporté depuis Airbnb ou Booking.com.'); return }
     let text: string
     try { text = await file.text() } catch { setError('Impossible de lire le fichier.'); return }
-
-    const { headers, rows: rawRows } = parseCSV(text)
-    if (headers.length === 0 || rawRows.length === 0) {
-      setError('Le CSV semble vide ou mal formé.')
-      return
-    }
-
-    const detected = detectPlatform(headers)
-    setPlatform(detected)
-
-    const parsed: ParsedRow[] = rawRows.map(r =>
-      detected === 'booking' ? mapBookingRow(r) : mapAirbnbRow(r),
-    )
-
-    if (detected === 'unknown') {
-      const okRows = parsed.filter(p => p.status === 'ok')
-      if (okRows.length === 0) {
-        setError(
-          'Format non reconnu. Le CSV doit provenir d\'Airbnb (export Recettes) ou Booking.com (export Réservations).',
-        )
-        return
-      }
-    }
-
+    const r = importPlatformCsv(text)
+    if (!r.headers.length) { setError('Le fichier semble vide.'); return }
+    if (r.platform === 'unknown') { setError('Format non reconnu : le fichier doit venir d’Airbnb (Recettes) ou de Booking.com (Réservations).'); return }
+    if (!r.stays.length) { setError('Aucun séjour à importer dans ce fichier.'); return }
+    const names = logements.map(l => l.nom)
+    const m: Record<string, string> = {}
+    for (const listing of new Set(r.stays.map(s => s.logement))) m[listing] = matchLogement(listing, names) ?? KEEP
+    setMapping(m)
     setFileName(file.name)
-    setRows(parsed)
+    setResult(r)
   }
 
   function handleImport() {
-    const okRows = rows.filter(r => r.status === 'ok')
-    if (okRows.length === 0) return
-
-    const platformLabel = platform === 'airbnb' ? 'Airbnb' : platform === 'booking' ? 'Booking.com' : 'CSV'
-
+    if (!result?.stays.length) return
+    const label = platformLabel
     startT(async () => {
-      const res = await bulkImportRevenusEntries(
-        okRows.map(r => ({
-          logement_nom: r.logement_nom || platformLabel,
-          montant: r.montant!,
-          date_paiement: r.date_paiement!,
-          mode_paiement: platform === 'booking' ? 'virement' : 'stripe',
-          type_paiement: 'loyer',
-          description: r.voyageur ? `Import ${platformLabel}, ${r.voyageur}` : `Import ${platformLabel}`,
-        })),
-      )
-
+      const entries = result.stays.map(s => ({
+        logement_nom: nomFor(s.logement),
+        montant: s.brut,
+        date_paiement: s.date,
+        mode_paiement: 'virement',
+        type_paiement: 'loyer',
+        description: [label, s.voyageur, s.nuits ? `${s.nuits} nuit${s.nuits > 1 ? 's' : ''}${s.arrivee ? ` dès le ${frDate(s.arrivee)}` : ''}` : null, s.code || null].filter(Boolean).join(' · '),
+      }))
+      const res = await bulkImportRevenusEntries(entries)
       if ('error' in res && res.error) { setError(res.error); return }
-
       const inserted = ('inserted' in res ? res.inserted : 0) ?? 0
-      const skipped  = ('skipped'  in res ? res.skipped  : 0) ?? 0
-
-      setFeedback(
-        inserted > 0
-          ? `✓ ${inserted} ligne${inserted > 1 ? 's' : ''} importée${inserted > 1 ? 's' : ''}${skipped > 0 ? ` · ${skipped} doublon${skipped > 1 ? 's' : ''} ignoré${skipped > 1 ? 's' : ''}` : ''}`
-          : `Toutes les lignes existaient déjà (${skipped} ignorée${skipped > 1 ? 's' : ''}).`,
-      )
+      const skipped = ('skipped' in res ? res.skipped : 0) ?? 0
+      let feesMsg = ''
+      if (withFees) {
+        const fees = result.stays.filter(s => s.frais > 0).map(s => {
+          const nom = nomFor(s.logement)
+          return { logement_nom: nom, logement_id: logements.find(l => l.nom === nom)?.id ?? null, montant: s.frais, date_charge: s.date, description: `Frais ${label}${s.voyageur ? ` · ${s.voyageur}` : ''}${s.code ? ` · ${s.code}` : ''}` }
+        })
+        const fr = await bulkImportPlatformFees(fees)
+        if ('error' in fr && fr.error) { setError(`Séjours importés, mais pas les frais : ${fr.error}`); return }
+        const fi = ('inserted' in fr ? fr.inserted : 0) ?? 0
+        if (fi) feesMsg = ` et ${fi} frais ${label} ajoutés à tes charges`
+      }
+      setFeedback(inserted > 0
+        ? `${inserted} séjour${inserted > 1 ? 's' : ''} importé${inserted > 1 ? 's' : ''}${feesMsg}${skipped ? ` (${skipped} déjà présent${skipped > 1 ? 's' : ''}, ignoré${skipped > 1 ? 's' : ''})` : ''}.`
+        : `Ces séjours étaient déjà dans tes finances (${skipped} ignoré${skipped > 1 ? 's' : ''}).`)
       onImported(inserted)
-
-      // Auto-close after 2s
-      setTimeout(handleClose, 2000)
+      setTimeout(handleClose, 2500)
     })
   }
 
-  const okCount      = rows.filter(r => r.status === 'ok').length
-  const cancCount    = rows.filter(r => r.status === 'cancelled').length
-  const payoutCount  = rows.filter(r => r.status === 'payout').length
-  const invalidCount = rows.filter(r => r.status === 'invalid').length
-
-  const platformLabel = platform === 'airbnb' ? 'Airbnb' : platform === 'booking' ? 'Booking.com' : 'Inconnu'
-
+  const r = result
   return (
     <div style={s.overlay} onClick={handleClose}>
-      <div style={s.modal} onClick={e => e.stopPropagation()}>
-
+      <div style={s.modal} onClick={e => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="csv-title">
         <div style={s.head}>
           <div>
-            <h2 style={s.title}>Importer un CSV</h2>
-            <p style={s.subtitle}>
-              Exporte tes recettes depuis Airbnb ou tes réservations depuis Booking.com
-            </p>
+            <h2 id="csv-title" style={s.title}>Importer un fichier CSV</h2>
+            <p style={s.subtitle}>Les recettes d’Airbnb ou les réservations de Booking.com, séjour par séjour.</p>
           </div>
-          <button onClick={handleClose} style={s.closeBtn} aria-label="Fermer">
-            <X size={16} weight="bold" />
-          </button>
+          <button onClick={handleClose} style={s.closeBtn} aria-label="Fermer"><X size={16} weight="bold" /></button>
         </div>
 
-        {/* Empty state, file picker */}
-        {rows.length === 0 && !feedback && (
+        {!r && !feedback && (
           <>
-            <div style={s.dropZone} onClick={() => inputRef.current?.click()}>
-              <CloudArrowUp size={36} weight="duotone" style={{ color: 'var(--accent-text)' }} />
-              <p style={s.dropTitle}>Sélectionne ton fichier .csv</p>
-              <p style={s.dropSub}>
-                Airbnb : Hôte → Performance → Recettes → <em>Télécharger CSV</em><br />
-                Booking : Extranet → Réservations → <em>Exporter</em> (XLS → enregistrer en .csv)
-              </p>
-              <input
-                ref={inputRef} type="file" accept=".csv,text/csv"
-                style={{ display: 'none' }}
-                onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f) }}
-              />
-            </div>
-            {error && (
-              <div style={s.errBox}>
-                <Warning size={14} weight="fill" /> {error}
-              </div>
-            )}
+            <button type="button" style={s.dropZone} onClick={() => inputRef.current?.click()}>
+              <CloudArrowUp size={34} weight="duotone" style={{ color: 'var(--accent-text)' }} />
+              <span style={s.dropTitle}>Choisis ton fichier .csv</span>
+              <span style={s.dropSub}>
+                Airbnb : depuis la page Revenus de ton compte hôte, export CSV des paiements<br />
+                Booking.com : depuis l’Extranet, page Réservations, export enregistré en .csv
+              </span>
+            </button>
+            <input ref={inputRef} type="file" accept=".csv,text/csv" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f) }} />
+            {error && <div style={s.errBox}><Warning size={15} weight="fill" style={{ flexShrink: 0 }} /> {error}</div>}
           </>
         )}
 
-        {/* Preview */}
-        {rows.length > 0 && !feedback && (
+        {r && !feedback && (
           <>
             <div style={s.metaRow}>
-              <div style={s.metaChip}>
-                <FileCsv size={13} weight="fill" />
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{fileName}</span>
-              </div>
-              <div style={{ ...s.metaChip, ...(platform === 'unknown' ? s.metaWarn : s.metaOk) }}>
-                Plateforme&nbsp;: <strong>{platformLabel}</strong>
-              </div>
+              <span style={s.metaChip}><FileCsv size={13} weight="fill" /><span style={s.ellipsis}>{fileName}</span></span>
+              <span style={{ ...s.metaChip, ...s.metaOk }}>Plateforme : <strong>{platformLabel}</strong></span>
             </div>
 
-            <div style={s.statsRow}>
-              <Stat label="Importables"  value={okCount}      color="#16a34a" />
-              <Stat label="Annulées"     value={cancCount}    color="var(--text-muted)" />
-              <Stat label="Versements"   value={payoutCount}  color="var(--text-muted)" />
-              <Stat label="Invalides"    value={invalidCount} color="#fb923c" />
+            <div style={s.stats}>
+              <Stat value={String(r.stays.length)} label={`séjour${r.stays.length > 1 ? 's' : ''}`} />
+              <Stat value={eur(totals.brut)} label="recettes brutes" hint="ce que tu déclares" strong />
+              <Stat value={eur(totals.frais)} label={`frais ${platformLabel}`} hint="en charges" />
+              <Stat value={eur(totals.verse)} label="versé sur ton compte" />
             </div>
+
+            <div style={s.notes}>
+              {r.payouts > 0 && <Note>{r.payouts} ligne{r.payouts > 1 ? 's' : ''} « Payout » ignorée{r.payouts > 1 ? 's' : ''} : ce sont les virements de ces mêmes séjours, ils ne comptent pas deux fois.</Note>}
+              {totals.regul !== 0 && <Note>{eur(totals.regul)} de régularisation (centre de résolution) déduit{Math.abs(totals.regul) > 1 ? 's' : ''} du séjour concerné.</Note>}
+              {r.cancelled > 0 && <Note>{r.cancelled} réservation{r.cancelled > 1 ? 's' : ''} annulée{r.cancelled > 1 ? 's' : ''}, non importée{r.cancelled > 1 ? 's' : ''}.</Note>}
+              {r.orphanAdjustments.map((a, i) => <Note key={i} warn>Régularisation de {eur(a.montant)}{a.code ? ` (${a.code})` : ''} sans séjour dans ce fichier : non importée, ajoute-la à la main si besoin.</Note>)}
+              {r.problems.map((p, i) => <Note key={`p${i}`} warn>Ligne {p.ligne} non importée : {p.raison}.</Note>)}
+            </div>
+
+            {listings.length > 0 && (
+              <div style={s.mapBox}>
+                <span style={s.label}>Rattacher à quel logement ?</span>
+                {listings.map(listing => (
+                  <label key={listing} style={s.mapRow}>
+                    <span style={{ ...s.ellipsis, flex: '1 1 200px', minWidth: 0 }} title={listing}>{listing || `Sans nom (${platformLabel})`}</span>
+                    <select value={mapping[listing] ?? KEEP} onChange={e => setMapping(m => ({ ...m, [listing]: e.target.value }))} style={s.select}>
+                      <option value={KEEP}>Garder le nom de l’annonce</option>
+                      {logements.map(l => <option key={l.id} value={l.nom}>{l.nom}</option>)}
+                    </select>
+                  </label>
+                ))}
+              </div>
+            )}
 
             <div style={s.tableWrap}>
               <table style={s.table}>
                 <thead>
                   <tr>
-                    <th style={s.th}></th>
-                    <th style={s.th}>Date</th>
-                    <th style={s.th}>Logement</th>
+                    <th style={s.th}>Séjour</th>
                     <th style={s.th}>Voyageur</th>
-                    <th style={{ ...s.th, textAlign: 'right' }}>Montant</th>
+                    <th style={{ ...s.th, textAlign: 'right' }}>Brut</th>
+                    <th style={{ ...s.th, textAlign: 'right' }}>Frais</th>
+                    <th style={{ ...s.th, textAlign: 'right' }}>Versé</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {rows.slice(0, 50).map((r, i) => (
-                    <tr key={i} style={r.status !== 'ok' ? s.trMuted : undefined}>
+                  {r.stays.map((st, i) => (
+                    <tr key={`${st.code}-${i}`}>
                       <td style={s.td}>
-                        {r.status === 'ok' ? <Check size={13} color="#16a34a" weight="bold" />
-                          : r.status === 'cancelled' ? <X size={13} color="var(--text-muted)" />
-                          : r.status === 'payout'    ? <ArrowRight size={13} color="var(--text-muted)" />
-                          : <Warning size={13} color="#fb923c" />}
+                        <span style={{ display: 'block', color: 'var(--text)', fontWeight: 600 }}>{frDate(st.arrivee ?? st.date)}</span>
+                        <span style={s.sub}>{st.nuits ? `${st.nuits} nuit${st.nuits > 1 ? 's' : ''}` : ''}{st.regularisation ? ` · régularisation ${eur(st.regularisation)}` : ''}</span>
                       </td>
-                      <td style={s.td}>{r.date_paiement ?? '–'}</td>
-                      <td style={{ ...s.td, ...s.tdEllipsis }}>{r.logement_nom || '–'}</td>
-                      <td style={{ ...s.td, ...s.tdEllipsis, color: 'var(--text-muted)' }}>{r.voyageur || '–'}</td>
-                      <td style={{ ...s.td, textAlign: 'right', fontWeight: r.status === 'ok' ? 600 : 400 }}>
-                        {r.montant != null ? `${r.montant.toFixed(2)} €` : '–'}
-                      </td>
+                      <td style={{ ...s.td, ...s.ellipsis, maxWidth: 170 }} title={st.voyageur}>{st.voyageur || '–'}</td>
+                      <td style={{ ...s.td, ...s.num, color: 'var(--text)', fontWeight: 600 }}>{eur(st.brut)}</td>
+                      <td style={{ ...s.td, ...s.num }}>{st.frais ? eur(st.frais) : '–'}</td>
+                      <td style={{ ...s.td, ...s.num }}>{eur(st.verse)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              {rows.length > 50 && (
-                <p style={s.tableNote}>+ {rows.length - 50} lignes non affichées (toutes seront traitées à l'import)</p>
-              )}
             </div>
 
-            {error && (
-              <div style={s.errBox}>
-                <Warning size={14} weight="fill" /> {error}
-              </div>
+            {totals.frais > 0 && (
+              <label style={s.check}>
+                <input type="checkbox" checked={withFees} onChange={e => setWithFees(e.target.checked)} style={{ accentColor: 'var(--accent-text)' }} />
+                <span>Ajouter les frais {platformLabel} à mes charges (commission de plateforme), pour un bénéfice juste.</span>
+              </label>
             )}
 
+            {error && <div style={s.errBox}><Warning size={15} weight="fill" style={{ flexShrink: 0 }} /> {error}</div>}
+
             <div style={s.actions}>
-              <button onClick={reset} style={s.btnGhost} disabled={pending}>
-                Choisir un autre fichier
-              </button>
-              <button
-                onClick={handleImport}
-                disabled={okCount === 0 || pending}
-                style={{ ...s.btnPrimary, opacity: okCount === 0 || pending ? 0.4 : 1 }}
-              >
-                {pending ? 'Import en cours…' : `Importer ${okCount} ligne${okCount > 1 ? 's' : ''}`}
+              <button onClick={reset} style={s.btnGhost} disabled={pending}>Choisir un autre fichier</button>
+              <button onClick={handleImport} disabled={pending} style={{ ...s.btnPrimary, opacity: pending ? 0.5 : 1 }}>
+                {pending ? 'Import en cours…' : `Importer ${r.stays.length} séjour${r.stays.length > 1 ? 's' : ''}`}
               </button>
             </div>
           </>
         )}
 
-        {/* Feedback */}
         {feedback && (
           <div style={s.successBox}>
-            <Check size={20} weight="fill" style={{ color: '#16a34a' }} />
-            <p style={{ margin: 0, fontSize: '14px' }}>{feedback}</p>
+            <Check size={20} weight="bold" style={{ color: 'var(--accent-text)', flexShrink: 0 }} />
+            <p style={{ margin: 0, fontSize: 14 }}>{feedback}</p>
           </div>
         )}
-
       </div>
     </div>
   )
 }
 
-function Stat({ label, value, color }: { label: string; value: number; color: string }) {
+function Stat({ value, label, hint, strong }: { value: string; label: string; hint?: string; strong?: boolean }) {
   return (
-    <div style={s.stat}>
-      <span style={{ ...s.statValue, color }}>{value}</span>
+    <div style={{ ...s.stat, ...(strong ? s.statStrong : {}) }}>
+      <span style={{ ...s.statValue, ...(strong ? { color: 'var(--accent-text)' } : {}) }}>{value}</span>
       <span style={s.statLabel}>{label}</span>
+      {hint && <span style={s.statHint}>{hint}</span>}
     </div>
   )
 }
 
-// ── Styles ───────────────────────────────────────────────────────────────────
+function Note({ children, warn }: { children: React.ReactNode; warn?: boolean }) {
+  return (
+    <p style={{ ...s.note, ...(warn ? { color: 'var(--danger)' } : {}) }}>
+      {warn ? <Warning size={14} weight="fill" style={{ flexShrink: 0, marginTop: 2 }} /> : <Info size={14} weight="bold" style={{ flexShrink: 0, marginTop: 2, color: 'var(--accent-text)' }} />}
+      <span>{children}</span>
+    </p>
+  )
+}
 
 const s: Record<string, React.CSSProperties> = {
-  overlay: {
-    position: 'fixed', inset: 0, zIndex: 100,
-    background: 'rgba(0,0,0,0.6)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    padding: '20px', backdropFilter: 'blur(3px)',
-  },
-  modal: {
-    background: 'var(--card-bg)', border: '1px solid var(--border)',
-    borderRadius: '16px', padding: '24px',
-    width: '100%', maxWidth: '720px',
-    maxHeight: '90vh', overflowY: 'auto',
-    display: 'flex', flexDirection: 'column', gap: '18px',
-    boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
-  },
-  head:     { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px' },
-  title:    { fontSize: '18px', fontWeight: 600, color: 'var(--text)', margin: 0 },
-  subtitle: { fontSize: '13px', color: 'var(--text-muted)', margin: '4px 0 0 0', lineHeight: 1.5 },
-  closeBtn: {
-    width: '32px', height: '32px', borderRadius: '8px',
-    border: '1px solid var(--border)', background: 'var(--surface)',
-    color: 'var(--text-2)', cursor: 'pointer',
-    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-  },
-
-  dropZone: {
-    border: '2px dashed var(--border-2)', borderRadius: '14px',
-    padding: '40px 20px', textAlign: 'center', cursor: 'pointer',
-    background: 'var(--surface)',
-    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',
-    transition: 'border-color 0.15s, background 0.15s',
-  },
-  dropTitle: { fontSize: '14px', fontWeight: 600, color: 'var(--text)', margin: 0 },
-  dropSub:   { fontSize: '12px', color: 'var(--text-muted)', margin: 0, lineHeight: 1.7 },
-
-  errBox: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-    padding: '10px 14px', borderRadius: '10px',
-    background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
-    color: 'var(--danger)', fontSize: '13px',
-  },
-
-  metaRow: { display: 'flex', gap: '8px', flexWrap: 'wrap' },
-  metaChip: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    fontSize: '12px', padding: '5px 10px', borderRadius: '8px',
-    background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--text-2)',
-    maxWidth: '300px',
-  },
-  metaOk:   { borderColor: 'rgba(22,163,74,0.3)', color: '#16a34a' },
-  metaWarn: { borderColor: 'rgba(251,146,60,0.3)', color: '#fb923c' },
-
-  statsRow: {
-    display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px',
-  },
-  stat: {
-    background: 'var(--surface)', border: '1px solid var(--border)',
-    borderRadius: '10px', padding: '12px',
-    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px',
-  },
-  statValue: { fontSize: '20px', fontWeight: 700, lineHeight: 1 },
-  statLabel: { fontSize: '11px', color: 'var(--text-muted)' },
-
-  tableWrap: {
-    border: '1px solid var(--border)', borderRadius: '10px', overflow: 'hidden',
-    maxHeight: '300px', overflowY: 'auto',
-  },
-  table:   { width: '100%', borderCollapse: 'collapse', fontSize: '12px' },
-  th: {
-    padding: '8px 10px', textAlign: 'left', fontWeight: 600,
-    color: 'var(--text-muted)', borderBottom: '1px solid var(--border)',
-    background: 'var(--surface)', position: 'sticky' as const, top: 0,
-    fontSize: '11px', textTransform: 'uppercase' as const, letterSpacing: '0.4px',
-  },
-  td:        { padding: '8px 10px', borderBottom: '1px solid var(--border)', color: 'var(--text-2)' },
-  tdEllipsis:{ maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-  trMuted:   { opacity: 0.5 },
-  tableNote: { fontSize: '11px', color: 'var(--text-muted)', textAlign: 'center', padding: '8px', margin: 0, background: 'var(--surface)' },
-
-  actions:  { display: 'flex', justifyContent: 'flex-end', gap: '8px' },
-  btnGhost: {
-    fontSize: '13px', fontWeight: 500, padding: '9px 16px', borderRadius: '8px',
-    border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)',
-    cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
-  },
-  btnPrimary: {
-    fontSize: '13px', fontWeight: 600, padding: '9px 18px', borderRadius: '8px',
-    border: '1px solid var(--accent)', background: 'rgba(0,76,63,0.2)', color: 'var(--accent-text)',
-    cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif',
-  },
-
-  successBox: {
-    display: 'flex', alignItems: 'center', gap: '12px',
-    padding: '20px', borderRadius: '12px',
-    background: 'rgba(22,163,74,0.07)', border: '1px solid rgba(22,163,74,0.25)',
-    color: 'var(--text)',
-  },
+  overlay: { position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 },
+  // Fond opaque : --surface est transparent en thème sombre (voir globals.css)
+  modal: { background: 'var(--floating-surface)', border: '1px solid var(--floating-border)', borderRadius: 18, padding: 22, width: '100%', maxWidth: 760, maxHeight: '92vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 16, boxShadow: '0 24px 70px rgba(0,0,0,0.35)' },
+  head: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 },
+  title: { fontFamily: 'var(--font-fraunces), serif', fontSize: 22, fontWeight: 400, color: 'var(--text)', margin: 0 },
+  subtitle: { fontSize: 13.5, color: 'var(--text-2)', margin: '4px 0 0', lineHeight: 1.5 },
+  closeBtn: { width: 34, height: 34, borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text-2)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  dropZone: { border: '2px dashed var(--border-2)', borderRadius: 14, padding: '36px 20px', textAlign: 'center', cursor: 'pointer', background: 'var(--bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, fontFamily: 'inherit', width: '100%' },
+  dropTitle: { fontSize: 15, fontWeight: 600, color: 'var(--text)' },
+  dropSub: { fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.7 },
+  errBox: { display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', borderRadius: 10, background: 'rgba(220,38,38,0.08)', border: '1px solid rgba(220,38,38,0.25)', color: 'var(--danger)', fontSize: 13 },
+  metaRow: { display: 'flex', gap: 8, flexWrap: 'wrap' },
+  metaChip: { display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12.5, padding: '5px 10px', borderRadius: 8, background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--text-2)', maxWidth: 300 },
+  metaOk: { border: '1px solid var(--accent-border)', color: 'var(--accent-text)' },
+  ellipsis: { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  stats: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 8 },
+  stat: { background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 12, padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 2 },
+  statStrong: { border: '1px solid var(--accent-border)', background: 'var(--accent-bg)' },
+  statValue: { fontFamily: 'var(--font-fraunces), serif', fontSize: 21, fontWeight: 400, color: 'var(--text)', lineHeight: 1.15 },
+  statLabel: { fontSize: 12.5, color: 'var(--text-2)' },
+  statHint: { fontSize: 11.5, color: 'var(--text-3)' },
+  notes: { display: 'flex', flexDirection: 'column', gap: 6 },
+  note: { display: 'flex', gap: 8, alignItems: 'flex-start', margin: 0, fontSize: 13, lineHeight: 1.5, color: 'var(--text-2)' },
+  mapBox: { display: 'flex', flexDirection: 'column', gap: 8, padding: 14, borderRadius: 12, background: 'var(--bg)', border: '1px solid var(--border)' },
+  label: { fontSize: 12, fontWeight: 700, letterSpacing: '0.4px', textTransform: 'uppercase', color: 'var(--text-3)' },
+  mapRow: { display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', fontSize: 13.5, color: 'var(--text)' },
+  select: { flex: '1 1 220px', padding: '8px 10px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--floating-surface)', color: 'var(--text)', fontSize: 13.5, fontFamily: 'inherit' },
+  tableWrap: { border: '1px solid var(--border)', borderRadius: 12, overflow: 'auto', maxHeight: 320, minHeight: 180, flexShrink: 0 },
+  table: { width: '100%', borderCollapse: 'collapse', fontSize: 13 },
+  th: { padding: '9px 12px', textAlign: 'left', fontWeight: 700, color: 'var(--text-3)', borderBottom: '1px solid var(--border)', background: 'var(--bg)', position: 'sticky', top: 0, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.4px', whiteSpace: 'nowrap' },
+  td: { padding: '9px 12px', borderBottom: '1px solid var(--border)', color: 'var(--text-2)', verticalAlign: 'top' },
+  sub: { display: 'block', fontSize: 11.5, color: 'var(--text-3)', marginTop: 1 },
+  num: { textAlign: 'right', whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' },
+  check: { display: 'flex', gap: 9, alignItems: 'flex-start', fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.5, cursor: 'pointer' },
+  actions: { display: 'flex', justifyContent: 'flex-end', gap: 8, flexWrap: 'wrap' },
+  btnGhost: { fontSize: 13.5, fontWeight: 500, padding: '10px 16px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text-2)', cursor: 'pointer', fontFamily: 'inherit' },
+  btnPrimary: { fontSize: 13.5, fontWeight: 600, padding: '10px 18px', borderRadius: 10, border: '1px solid var(--accent-text)', background: 'var(--accent-text)', color: 'var(--bg)', cursor: 'pointer', fontFamily: 'inherit' },
+  successBox: { display: 'flex', alignItems: 'center', gap: 12, padding: 18, borderRadius: 12, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--text)' },
 }

@@ -244,7 +244,7 @@ export default function JournalView({ rows, logementNoms, logements, defaultLoge
       {modal?.kind === 'charge' && (
         <ChargeModal logementNoms={logementNoms} logements={logements} defaultLogement={defaultLogement} row={modal.row} onClose={() => setModal(null)} />
       )}
-      <ImportCSVModal open={modal?.kind === 'import'} onClose={() => setModal(null)} onImported={() => setModal(null)} />
+      <ImportCSVModal open={modal?.kind === 'import'} onClose={() => setModal(null)} onImported={() => {}} logements={logements} />
     </>
   )
 }
@@ -477,7 +477,7 @@ const s: Record<string, React.CSSProperties> = {
   menu: { position: 'absolute', right: 0, top: 34, zIndex: 20, minWidth: 220, background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-lg)', padding: 6, display: 'flex', flexDirection: 'column' },
   menuItem: { textAlign: 'left', padding: '9px 10px', borderRadius: 8, border: 'none', background: 'transparent', fontSize: 13, color: 'var(--text-2)', cursor: 'pointer', fontFamily: 'inherit', textDecoration: 'none' },
   overlay: { position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 },
-  modal: { width: '100%', maxWidth: 460, maxHeight: '90vh', overflowY: 'auto', background: 'var(--surface)', borderRadius: 18, padding: 22, boxShadow: 'var(--shadow-xl)' },
+  modal: { width: '100%', maxWidth: 460, maxHeight: '90vh', overflowY: 'auto', background: 'var(--floating-surface)', border: '1px solid var(--floating-border)', borderRadius: 18, padding: 22, boxShadow: 'var(--shadow-xl)' },
   form: { display: 'flex', flexDirection: 'column', gap: 12 },
   formRow: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12 },
   input: { padding: '9px 11px', borderRadius: 10, border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text)', fontSize: 14, fontFamily: 'inherit', fontWeight: 400, width: '100%', boxSizing: 'border-box' },
