@@ -4,13 +4,13 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-02 10:40 UTC.
+Mis à jour le 2026-11-02 19:44 UTC.
 
 - 2026-11-03 · stories (4 écrans) · stories-messages-voyageurs-automatiser · FB - · IG - · stories FB pending IG pending · « Stories : Tu tapes encore chaque message à la main ? / Les moments à programmer / Relis tes instructions comme »
 - 2026-11-01 · carrousel · epingle-pros-annuaire · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · « Photographe, vidéaste, équipe de ménage, plombier, électricien, serrurier ou multiservices : les hôtes Airbnb  »
 - 2026-11-01 · carrousel · epingle-trouver-un-pro · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · « Un shooting avant la saison, une équipe de ménage fiable, un plombier la veille d’une arrivée : trouver le bon »
 - 2026-11-01 · carrousel · epingle-hotes-jason-marinho · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · « Tu loues en courte durée ? Voici tout ce que tu trouves sur jasonmarinho.com. »
-- 2026-11-02 · carrousel · depannage-numero-que-l-hote-appelle · FB pending · IG pending · stories FB pending IG pending · « Quand le chauffe-eau lâche la veille d’une arrivée, un hôte appelle celui qu’il connaît déjà. »
+- 2026-11-02 · carrousel · depannage-numero-que-l-hote-appelle · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Quand le chauffe-eau lâche la veille d’une arrivée, un hôte appelle celui qu’il connaît déjà. »
 - 2026-11-01 · reel · chamonix-hiver-hote · FB published 0 j'aime 0 comm. · IG published 1 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Ton logement est à Chamonix ? La saison de ski arrive vite. »
 - 2026-10-31 · stories (4 écrans) · stories-menage-lcd-turnover · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Ménage LCD ≠ ménage classique / Ce qu’un hôte attend / Affiche ton SIRET et ta RC pro / Ton équipe e »
 - 2026-10-30 · photo · photo-couverture-quelle-piece · FB published 0 j'aime 0 comm. · IG published 3 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Dans les résultats de recherche, le voyageur ne voit qu’une photo : la tienne doit se comprendre tout de suite »
