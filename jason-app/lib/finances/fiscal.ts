@@ -46,12 +46,27 @@ export const PLAFOND_MICRO = MB.classe.plafond
 export const SEUIL_LMP = FISCAL_PARAMS_2026.ei.seuilLmp
 export const PRELEVEMENTS_SOCIAUX = FISCAL_PARAMS_2026.societe.prelevementsSociauxLmnp
 
-/** Dotation d'amortissement d'une année (montant / durée, sur les années couvertes) */
+/**
+ * Dotation d'amortissement d'une année, linéaire et au prorata du temps
+ * (02/11/2026) : l'amortissement part de la date saisie (mise en service :
+ * fin des travaux, achat du mobilier, début de la location), la première
+ * année ne compte que les jours restants, et le reste passe sur l'année qui
+ * suit la dernière année pleine. Le total amorti égale toujours le montant.
+ * Source : BOFiP, BOI-BIC-AMT-20-10 (point de départ : mise en service).
+ */
 export function dotationAnnuelle(c: ChargeLine, year: number): number {
   if (c.categorie !== 'amortissement' || !c.dureeAmortissement || c.dureeAmortissement <= 0) return 0
   const debut = Number(c.date.slice(0, 4))
-  if (year < debut || year >= debut + c.dureeAmortissement) return 0
-  return c.montant / c.dureeAmortissement
+  const annuite = c.montant / c.dureeAmortissement
+  const joursAn = (y: number) => (new Date(Date.UTC(y + 1, 0, 1)).getTime() - new Date(Date.UTC(y, 0, 1)).getTime()) / 86_400_000
+  const restants = (new Date(Date.UTC(debut + 1, 0, 1)).getTime() - Date.parse(`${c.date.slice(0, 10)}T00:00:00Z`)) / 86_400_000
+  const premiere = annuite * Math.min(1, restants / joursAn(debut))
+  if (year < debut) return 0
+  if (year === debut) return Math.round(premiere * 100) / 100
+  const deja = premiere + annuite * (year - debut - 1)
+  const reste = c.montant - deja
+  if (reste <= 0.005) return 0
+  return Math.round(Math.min(annuite, reste) * 100) / 100
 }
 
 export interface FiscalLogement {

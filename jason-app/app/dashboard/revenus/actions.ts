@@ -25,6 +25,10 @@ export interface ChargeInput {
   // bien immobilier hors terrain ~20-30 ans). Alimente le tableau
   // d'amortissement et la dotation annuelle utilisée dans l'estimation fiscale.
   duree_amortissement_annees?: number | null
+  /** Charge récurrente : 'mensuelle' | 'trimestrielle' | 'annuelle', null = une fois */
+  frequence?: string | null
+  /** Dernière échéance (facultatif) */
+  date_fin?: string | null
 }
 
 export async function createRevenusEntry(input: EntryInput) {
@@ -144,6 +148,13 @@ export async function bulkImportRevenusEntries(entries: EntryInput[]) {
 
 // ─── Charges & dépenses ──────────────────────────────────────────────────────
 
+/** Colonnes de récurrence, seulement si renseignées (code tolérant tant que la migration 176 manque) */
+function recurrence(input: Partial<ChargeInput>) {
+  const freq = input.categorie === 'amortissement' ? null : (input.frequence ?? null)
+  if (input.frequence === undefined && input.date_fin === undefined) return {}
+  return { frequence: freq, date_fin: freq ? (input.date_fin || null) : null }
+}
+
 export async function createCharge(input: ChargeInput) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -161,6 +172,7 @@ export async function createCharge(input: ChargeInput) {
       description: input.description ?? null,
       deductible: input.deductible ?? true,
       duree_amortissement_annees: input.categorie === 'amortissement' ? (input.duree_amortissement_annees ?? null) : null,
+      ...recurrence(input),
     })
     .select()
     .single()
@@ -199,7 +211,7 @@ export async function updateCharge(id: string, input: Partial<ChargeInput>) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Non authentifié' }
 
-  const patch: any = { ...input, updated_at: new Date().toISOString() }
+  const patch: any = { ...input, ...recurrence(input), updated_at: new Date().toISOString() }
   delete patch.id
 
   const { error } = await supabase

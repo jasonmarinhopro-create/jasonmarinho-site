@@ -85,11 +85,7 @@ export const loadFinances = cache(async (): Promise<FinanceData | null> => {
       .eq('user_id', userId)
       .gte('date_paiement', since)
       .limit(3000),
-    supabase
-      .from('revenus_charges')
-      .select('id, logement_nom, logement_id, montant, date_charge, categorie, description, deductible, duree_amortissement_annees')
-      .eq('user_id', userId)
-      .limit(3000),
+    loadCharges(supabase, userId),
     supabase.from('revenus_objectifs').select('objectif_ca_annuel').eq('user_id', userId).maybeSingle(),
     supabase.from('ical_feeds').select('id, url, name').eq('user_id', userId),
     supabase
@@ -117,7 +113,7 @@ export const loadFinances = cache(async (): Promise<FinanceData | null> => {
     voyageur_source: s.voyageurs?.source ?? null,
   }))
   const allLines = buildRevenueLines({ sejours, contracts: contractsRes.data ?? [], entries: entriesRes.data ?? [], today })
-  const allCharges = buildChargeLines(chargesRes.data ?? [])
+  const allCharges = buildChargeLines(chargesRes.data ?? [], today)
   const ical = icalReservationsForDisplay(rawLogements as any, feedsRes.data ?? [], eventsRes.data ?? [])
   const allOccupation = buildOccupation(allLines, ical.map(r => ({ id: r.id, logementName: r.logementName, dateArrivee: r.dateArrivee, dateDepart: r.dateDepart, platform: r.platform })))
 
@@ -160,3 +156,12 @@ export const loadFinances = cache(async (): Promise<FinanceData | null> => {
     objectif, objectifParLogement,
   }
 })
+
+// Charges récurrentes (migration 20261102_176 : frequence, date_fin). Tant
+// que la migration manque, relecture sans ces colonnes (charges ponctuelles).
+async function loadCharges(supabase: Awaited<ReturnType<typeof createClient>>, userId: string) {
+  const cols = 'id, logement_nom, logement_id, montant, date_charge, categorie, description, deductible, duree_amortissement_annees'
+  const res = await supabase.from('revenus_charges').select(`${cols}, frequence, date_fin`).eq('user_id', userId).limit(3000)
+  if (!res.error) return res
+  return supabase.from('revenus_charges').select(cols).eq('user_id', userId).limit(3000)
+}

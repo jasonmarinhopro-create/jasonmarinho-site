@@ -8,6 +8,8 @@ import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
 import {
   Plus, Minus, UploadSimple, DownloadSimple, MagnifyingGlass, DotsThree, X, Warning,
+  Broom, Lightning, Percent, House, Receipt, ShieldCheck, HandCoins, Hammer, Couch, ArrowsClockwise,
+  Calculator, Bank, Buildings, DotsThreeCircle, Repeat, CalendarCheck, Info, Check,
 } from '@phosphor-icons/react/dist/ssr'
 import {
   createRevenusEntry, deleteRevenusEntry, cancelSejourRevenus, cancelContractRevenus,
@@ -15,7 +17,8 @@ import {
 } from '@/app/dashboard/revenus/actions'
 import ImportCSVModal from '@/app/dashboard/revenus/ImportCSVModal'
 import { CHARGE_CATEGORIES, chargeCategory } from '@/lib/finances/categories'
-import { monthLabel } from '@/lib/finances/engine'
+import { monthLabel, buildChargeLines, echeances, type Frequence } from '@/lib/finances/engine'
+import { dotationAnnuelle } from '@/lib/finances/fiscal'
 import { Card, COLORS, dateCourte, eur, eurPrecis, ui } from '../_ui/ui'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 
@@ -40,6 +43,12 @@ export interface JournalRow {
   categorie?: string
   deductible?: boolean
   dureeAmortissement?: number | null
+  frequence?: Frequence | null
+  /** Échéance future d'une charge récurrente */
+  prevue?: boolean
+  /** Première et dernière échéance de la série */
+  debut?: string
+  dateFin?: string | null
 }
 
 type Filter = 'tout' | 'revenus' | 'charges' | 'a_encaisser' | 'a_venir'
@@ -214,7 +223,8 @@ export default function JournalView({ rows, logementNoms, logements, defaultLoge
                         else if (action === 'cancel-contract') { if (await ask({ message: 'Annuler ce contrat ? Il pourra être réactivé depuis Contrats & paiements.', confirmLabel: 'Annuler le contrat', cancelLabel: 'Garder', danger: true })) run(r.key, () => cancelContractRevenus(r.sourceId)); else setMenu(null) }
                         else if (action === 'toggle-declarer') run(r.key, () => setEntryADeclarer(r.sourceId, r.kind === 'sejour' ? 'sejour' : 'entry', r.aDeclarer === false), false)
                         else if (action === 'edit-charge') { setMenu(null); setModal({ kind: 'charge', row: r }) }
-                        else if (action === 'delete-charge') { if (await ask({ message: 'Supprimer cette charge ?', confirmLabel: 'Supprimer', danger: true })) run(r.key, () => deleteCharge(r.sourceId)); else setMenu(null) }
+                        else if (action === 'delete-charge') { if (await ask({ message: r.frequence ? 'Supprimer cette charge récurrente ? Toutes ses échéances, passées et à venir, disparaissent du journal. Pour garder les échéances déjà payées, choisis plutôt « Arrêter à partir d’aujourd’hui ».' : 'Supprimer cette charge ?', confirmLabel: r.frequence ? 'Supprimer la série' : 'Supprimer', danger: true })) run(r.key, () => deleteCharge(r.sourceId)); else setMenu(null) }
+                        else if (action === 'stop-charge') { if (await ask({ message: 'Arrêter cette charge récurrente ? Les échéances déjà passées restent dans le journal, les suivantes disparaissent.', confirmLabel: 'Arrêter', cancelLabel: 'Garder' })) run(r.key, () => updateCharge(r.sourceId, { frequence: r.frequence, date_fin: today() }), false); else setMenu(null) }
                       }}
                     />
                   ))}
@@ -265,7 +275,8 @@ function Row({ r, showLogement, menuOpen, onMenu, onAction }: {
   if (r.kind === 'saisie') actions.push({ key: 'toggle-declarer', label: r.aDeclarer === false ? 'Compter dans la fiscalité' : 'Ne pas compter dans la fiscalité' }, { key: 'delete-entry', label: 'Supprimer', danger: true })
   if (r.kind === 'sejour') actions.push({ key: 'toggle-declarer', label: r.aDeclarer === false ? 'Compter dans la fiscalité' : 'Ne pas compter dans la fiscalité' }, { key: 'cancel-sejour', label: 'Annuler le séjour', danger: true })
   if (r.kind === 'contrat') actions.push({ key: 'cancel-contract', label: 'Annuler le contrat', danger: true })
-  if (isCharge) actions.push({ key: 'edit-charge', label: 'Modifier' }, { key: 'delete-charge', label: 'Supprimer', danger: true })
+  if (isCharge && r.frequence) actions.push({ key: 'edit-charge', label: 'Modifier la série' }, ...(r.dateFin && r.dateFin <= today() ? [] : [{ key: 'stop-charge', label: "Arrêter à partir d'aujourd'hui" }]), { key: 'delete-charge', label: 'Supprimer toute la série', danger: true })
+  else if (isCharge) actions.push({ key: 'edit-charge', label: 'Modifier' }, { key: 'delete-charge', label: 'Supprimer', danger: true })
 
   return (
     <div style={s.row}>
@@ -277,6 +288,8 @@ function Row({ r, showLogement, menuOpen, onMenu, onAction }: {
           {r.statut === 'a_venir' && <span style={{ ...s.badge, background: 'var(--accent-bg)', color: 'var(--accent-text)' }}>Réservé</span>}
           {r.statut === 'a_encaisser' && <span style={{ ...s.badge, background: 'rgba(255,213,107,0.2)', color: COLORS.commissions }}>À encaisser</span>}
           {r.aDeclarer === false && <span style={{ ...s.badge, background: 'var(--bg-2)', color: 'var(--text-3)' }}>Hors fiscalité</span>}
+          {isCharge && r.frequence && <Repeat size={13} weight="bold" style={{ color: 'var(--text-3)', flexShrink: 0 }} aria-label="Charge récurrente" />}
+          {r.prevue && <span style={{ ...s.badge, background: 'var(--bg-2)', color: 'var(--text-3)', border: '1px dashed var(--border-2)' }}>Prévue</span>}
         </div>
         {sub && <div style={s.sub}>{sub}</div>}
       </div>
@@ -312,10 +325,10 @@ function Row({ r, showLogement, menuOpen, onMenu, onAction }: {
 
 // ─── Saisie ───────────────────────────────────────────────────────────────
 
-function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
+function Modal({ title, onClose, children, width }: { title: string; onClose: () => void; children: React.ReactNode; width?: number }) {
   return (
     <div style={s.overlay} onClick={onClose} role="dialog" aria-modal="true" aria-label={title}>
-      <div style={s.modal} onClick={e => e.stopPropagation()}>
+      <div style={{ ...s.modal, ...(width ? { maxWidth: width } : null) }} onClick={e => e.stopPropagation()}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
           <h2 style={{ ...ui.cardTitle, fontSize: 19 }}>{title}</h2>
           <button type="button" onClick={onClose} style={s.more} aria-label="Fermer"><X size={18} /></button>
@@ -351,8 +364,10 @@ function RevenuModal({ logementNoms, defaultLogement, onClose }: { logementNoms:
   const [pending, start] = useTransition()
 
   function save() {
-    const m = Number(montant.replace(',', '.'))
-    if (!logement.trim() || !(m > 0) || !date) { setError('Logement, montant et date sont obligatoires.'); return }
+    const m = Number(montant.replace(/\s/g, '').replace(',', '.'))
+    if (!(m > 0)) { setError('Indique le montant reçu.'); return }
+    if (!logement.trim()) { setError('Indique le logement concerné.'); return }
+    if (!date) { setError('Indique la date du paiement.'); return }
     start(async () => {
       const res = await createRevenusEntry({ logement_nom: logement.trim(), montant: m, date_paiement: date, type_paiement: type, mode_paiement: mode, description: description.trim() || null })
       if (res?.error) setError(res.error)
@@ -360,40 +375,103 @@ function RevenuModal({ logementNoms, defaultLogement, onClose }: { logementNoms:
     })
   }
 
+  const TYPES = [
+    { key: 'loyer', label: 'Loyer', Icon: House },
+    { key: 'frais_menage', label: 'Frais de ménage', Icon: Broom },
+    { key: 'caution', label: 'Caution', Icon: ShieldCheck },
+    { key: 'autre', label: 'Autre', Icon: DotsThreeCircle },
+  ]
+  const MODES = [
+    { key: 'virement', label: 'Virement' },
+    { key: 'especes', label: 'Espèces' },
+    { key: 'cheque', label: 'Chèque' },
+    { key: 'autre', label: 'Autre' },
+  ]
+
   return (
-    <Modal title="Saisir un revenu" onClose={onClose}>
+    <Modal title="Nouveau revenu" onClose={onClose} width={500}>
       <div style={s.form}>
-        <Field label="Logement">
-          <SuggestInput value={logement} onChange={setLogement} options={logementNoms} ariaLabel="Logement" style={s.input} />
-        </Field>
+        <div style={cm.amountBox} className="amount-box">
+          <span style={cm.amountLabel}>Montant reçu</span>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+            <input inputMode="decimal" value={montant} onChange={e => setMontant(e.target.value)} placeholder="0" aria-label="Montant reçu en euros" className="amount-input no-ring" style={cm.amountInput} autoFocus />
+            <span style={cm.amountEuro}>€</span>
+          </div>
+        </div>
+        <div style={cm.block}>
+          <span style={cm.label}>Type</span>
+          <div style={cm.cats} className="grid-4" role="radiogroup" aria-label="Type">
+            {TYPES.map(t => {
+              const on = type === t.key
+              return (
+                <button key={t.key} type="button" role="radio" aria-checked={on} onClick={() => setType(t.key)}
+                  style={{ ...cm.cat, ...(on ? { border: '1.5px solid var(--accent-border-2)', background: 'var(--accent-bg)', color: 'var(--text)' } : null) }}>
+                  <span style={{ ...cm.catIcon, background: on ? 'var(--accent-text)' : 'var(--accent-bg)', color: on ? 'var(--bg)' : 'var(--accent-text)' }}><t.Icon size={15} weight={on ? 'fill' : 'regular'} /></span>
+                  {t.label}
+                </button>
+              )
+            })}
+          </div>
+          {type === 'caution' && <p style={cm.hint}><Info size={14} style={{ flexShrink: 0, marginTop: 1 }} />Une caution n'est jamais un revenu : elle apparaît dans le journal sans compter dans ton chiffre d'affaires ni dans la fiscalité.</p>}
+        </div>
         <div style={s.formRow}>
-          <Field label="Montant reçu (€)"><input inputMode="decimal" value={montant} onChange={e => setMontant(e.target.value)} style={s.input} /></Field>
           <Field label="Date du paiement"><CalendarInput value={date} onChange={setDate} ariaLabel="Date du paiement" /></Field>
-        </div>
-        <div style={s.formRow}>
-          <Field label="Type">
-            <select value={type} onChange={e => setType(e.target.value)} style={s.input}>
-              <option value="loyer">Loyer</option>
-              <option value="frais_menage">Frais de ménage</option>
-              <option value="caution">Caution (hors revenus)</option>
-              <option value="autre">Autre</option>
-            </select>
-          </Field>
-          <Field label="Moyen de paiement">
-            <select value={mode} onChange={e => setMode(e.target.value)} style={s.input}>
-              <option value="virement">Virement</option>
-              <option value="especes">Espèces</option>
-              <option value="cheque">Chèque</option>
-              <option value="autre">Autre</option>
-            </select>
+          <Field label="Logement">
+            <SuggestInput value={logement} onChange={setLogement} options={logementNoms} ariaLabel="Logement" style={s.input} />
           </Field>
         </div>
-        <Field label="Description (facultatif)"><input value={description} onChange={e => setDescription(e.target.value)} placeholder="ex. Réservation directe famille Martin" style={s.input} /></Field>
-        {error && <p style={{ margin: 0, fontSize: 12.5, color: COLORS.charges }}>{error}</p>}
-        <button type="button" onClick={save} disabled={pending} style={{ ...ui.btn, justifyContent: 'center' }}>{pending ? 'Enregistrement…' : 'Enregistrer le revenu'}</button>
+        <div style={cm.block}>
+          <span style={cm.label}>Reçu par</span>
+          <div style={cm.segment} className="grid-4" role="radiogroup" aria-label="Moyen de paiement">
+            {MODES.map(x => (
+              <button key={x.key} type="button" role="radio" aria-checked={mode === x.key} onClick={() => setMode(x.key)} style={{ ...cm.segBtn, ...(mode === x.key ? cm.segOn : null) }}>{x.label}</button>
+            ))}
+          </div>
+        </div>
+        <Field label="Note (facultatif)"><input value={description} onChange={e => setDescription(e.target.value)} placeholder="ex. Réservation directe famille Martin" style={s.input} /></Field>
+        {error && <p style={{ margin: 0, fontSize: 12.5, color: COLORS.charges, display: 'flex', gap: 6, alignItems: 'center' }}><Warning size={14} weight="fill" />{error}</p>}
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap-reverse' }}>
+          <button type="button" onClick={onClose} style={{ ...ui.btn, flex: '1 1 120px', justifyContent: 'center', background: 'var(--surface)', color: 'var(--text-2)', border: '1px solid var(--border)' }}>Annuler</button>
+          <button type="button" onClick={save} disabled={pending} style={{ ...ui.btn, flex: '2 1 180px', justifyContent: 'center', opacity: pending ? 0.7 : 1 }}>
+            <Check size={15} weight="bold" />{pending ? 'Enregistrement…' : 'Ajouter le revenu'}
+          </button>
+        </div>
       </div>
     </Modal>
   )
+}
+
+const CAT_ICON: Record<string, typeof Broom> = {
+  menage: Broom, energie: Lightning, commissions_plateforme: Percent, taxe_fonciere: House, taxe_sejour: Receipt,
+  assurance: ShieldCheck, credit: HandCoins, travaux: Hammer, equipement: Couch, abonnement: ArrowsClockwise,
+  comptabilite: Calculator, banque: Bank, amortissement: Buildings, autre: DotsThreeCircle,
+}
+
+const FREQS: Array<{ key: '' | Frequence; label: string; short: string }> = [
+  { key: '', label: 'Une fois', short: '' },
+  { key: 'mensuelle', label: 'Chaque mois', short: 'par mois' },
+  { key: 'trimestrielle', label: 'Chaque trimestre', short: 'par trimestre' },
+  { key: 'annuelle', label: 'Chaque année', short: 'par an' },
+]
+
+/** Catégories qui se répètent d'habitude : la fréquence est proposée d'office */
+const FREQ_SUGGEREE: Record<string, Frequence> = { assurance: 'mensuelle', credit: 'mensuelle', abonnement: 'mensuelle', energie: 'mensuelle', banque: 'mensuelle', taxe_fonciere: 'annuelle', comptabilite: 'annuelle' }
+
+const DUREES = [
+  { ans: 7, label: 'Mobilier' },
+  { ans: 10, label: 'Travaux' },
+  { ans: 15, label: 'Gros travaux' },
+  { ans: 25, label: 'Achat du bien' },
+]
+
+const CAT_HINT: Record<string, string> = {
+  credit: "Seuls les intérêts et l'assurance de l'emprunt se déduisent au régime réel, pas le capital remboursé : indique ici la part d'intérêts et d'assurance de ta mensualité.",
+  taxe_fonciere: "Saisis-la une fois avec « Chaque année » : elle revient toute seule chaque automne.",
+  travaux: "Petites réparations et entretien. Pour de gros travaux qui durent des années, choisis plutôt « Investissement amorti ».",
+}
+
+function dateLongue(iso: string) {
+  return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${iso}T00:00:00Z`))
 }
 
 function ChargeModal({ logementNoms, logements, defaultLogement, row, onClose }: {
@@ -401,25 +479,58 @@ function ChargeModal({ logementNoms, logements, defaultLogement, row, onClose }:
 }) {
   const [logement, setLogement] = useState(row?.logementNom ?? defaultLogement)
   const [montant, setMontant] = useState(row ? String(row.montant).replace('.', ',') : '')
-  const [date, setDate] = useState(row?.date ?? today())
-  const [categorie, setCategorie] = useState(row?.categorie ?? 'menage')
+  const [date, setDate] = useState(row?.debut ?? row?.date ?? today())
+  const [categorie, setCategorie] = useState(row?.categorie ?? '')
   const [description, setDescription] = useState(row?.label ?? '')
   const [deductible, setDeductible] = useState(row?.deductible ?? true)
   const [duree, setDuree] = useState(row?.dureeAmortissement ? String(row.dureeAmortissement) : '')
+  const [frequence, setFrequence] = useState<'' | Frequence>(row?.frequence ?? '')
+  const [freqTouched, setFreqTouched] = useState(!!row)
+  const [dateFin, setDateFin] = useState(row?.dateFin ?? '')
   const [error, setError] = useState<string | null>(null)
   const [pending, start] = useTransition()
   const amort = categorie === 'amortissement'
+  const m = Number(montant.replace(/\s/g, '').replace(',', '.'))
+  const d = Number(duree)
+  const freq = amort ? '' : frequence
+
+  function pickCategorie(slug: string) {
+    setCategorie(slug)
+    setError(null)
+    if (!freqTouched) setFrequence(FREQ_SUGGEREE[slug] ?? '')
+  }
+
+  // Aperçu : combien la charge pèse d'ici la fin de l'année, ou la dotation annuelle d'un investissement
+  const apercu = useMemo(() => {
+    if (!(m > 0) || !date) return null
+    if (amort) {
+      if (!(d >= 1 && d <= 50)) return null
+      const line = buildChargeLines([{ id: 'apercu', logement_nom: '', montant: m, date_charge: date, categorie: 'amortissement', duree_amortissement_annees: d }])[0]
+      const an = Number(date.slice(0, 4))
+      const premiere = dotationAnnuelle(line, an)
+      return { amort: true as const, annuite: m / d, premiere, an }
+    }
+    if (!freq) return null
+    const fin = `${today().slice(0, 4)}-12-31`
+    const dates = echeances(date, freq, fin, dateFin || null)
+    const futures = dates.filter(x => x > today()).length
+    return { amort: false as const, n: dates.length, total: dates.length * m, futures, fin: fin.slice(0, 4) }
+  }, [m, d, date, amort, freq, dateFin])
 
   function save() {
-    const m = Number(montant.replace(',', '.'))
-    const d = Number(duree)
-    if (!logement.trim() || !(m > 0) || !date) { setError('Logement, montant et date sont obligatoires.'); return }
+    if (!categorie) { setError('Choisis une catégorie.'); return }
+    if (!(m > 0)) { setError('Indique un montant.'); return }
+    if (!logement.trim()) { setError('Indique le logement concerné.'); return }
+    if (!date) { setError('Indique une date.'); return }
     if (amort && !(d >= 1 && d <= 50)) { setError("Indique sur combien d'années l'amortir (entre 1 et 50)."); return }
+    if (freq && dateFin && dateFin < date) { setError('La dernière échéance doit venir après la première.'); return }
     const input = {
       logement_nom: logement.trim(),
       logement_id: logements.find(l => l.nom.trim().toLowerCase() === logement.trim().toLowerCase())?.id ?? null,
       montant: m, date_charge: date, categorie, description: description.trim() || null, deductible,
       duree_amortissement_annees: amort ? d : null,
+      frequence: freq || null,
+      date_fin: freq ? (dateFin || null) : null,
     }
     start(async () => {
       const res = row ? await updateCharge(row.sourceId, input) : await createCharge(input)
@@ -428,35 +539,173 @@ function ChargeModal({ logementNoms, logements, defaultLogement, row, onClose }:
     })
   }
 
+  const dateLabel = amort ? 'Mise en service' : freq ? 'Première échéance' : 'Date'
+  const freqLabel = FREQS.find(f => f.key === freq)
+
   return (
-    <Modal title={row ? 'Modifier la charge' : 'Saisir une charge'} onClose={onClose}>
+    <Modal title={row ? (row.frequence ? 'Modifier la charge récurrente' : 'Modifier la charge') : 'Nouvelle charge'} onClose={onClose} width={540}>
       <div style={s.form}>
-        <Field label="Logement">
-          <SuggestInput value={logement} onChange={setLogement} options={logementNoms} ariaLabel="Logement" style={s.input} />
-        </Field>
-        <div style={s.formRow}>
-          <Field label="Montant (€)"><input inputMode="decimal" value={montant} onChange={e => setMontant(e.target.value)} style={s.input} /></Field>
-          <Field label="Date"><CalendarInput value={date} onChange={setDate} ariaLabel="Date" /></Field>
+        {/* Montant */}
+        <div style={cm.amountBox} className="amount-box">
+          <span style={cm.amountLabel}>{amort ? 'Montant total payé' : 'Montant'}</span>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+            <input
+              inputMode="decimal" value={montant} onChange={e => setMontant(e.target.value)} placeholder="0" aria-label="Montant en euros"
+              className="amount-input no-ring" style={cm.amountInput} autoFocus={!row}
+            />
+            <span style={cm.amountEuro}>€</span>
+            {freqLabel?.short && <span style={{ fontSize: 14, color: 'var(--text-3)', whiteSpace: 'nowrap' }}>{freqLabel.short}</span>}
+          </div>
         </div>
-        <Field label="Catégorie">
-          <select value={categorie} onChange={e => setCategorie(e.target.value)} style={s.input}>
-            {CHARGE_CATEGORIES.map(c => <option key={c.slug} value={c.slug}>{c.label}</option>)}
-          </select>
-        </Field>
+
+        {/* Catégorie */}
+        <div style={cm.block}>
+          <span style={cm.label}>Catégorie</span>
+          <div style={cm.cats} role="radiogroup" aria-label="Catégorie">
+            {CHARGE_CATEGORIES.filter(c => c.slug !== 'commissions_plateforme' || categorie === 'commissions_plateforme').map(c => {
+              const Icon = CAT_ICON[c.slug] ?? DotsThreeCircle
+              const on = categorie === c.slug
+              return (
+                <button
+                  key={c.slug} type="button" role="radio" aria-checked={on} onClick={() => pickCategorie(c.slug)}
+                  style={{ ...cm.cat, ...(on ? { border: `1.5px solid ${c.color}`, background: `${c.color}1A`, color: 'var(--text)' } : null) }}
+                >
+                  <span style={{ ...cm.catIcon, background: on ? c.color : `${c.color}1F`, color: on ? '#fff' : c.color }}><Icon size={15} weight={on ? 'fill' : 'regular'} /></span>
+                  <span>{c.label}</span>
+                </button>
+              )
+            })}
+          </div>
+          {CAT_HINT[categorie] && <p style={cm.hint}><Info size={14} style={{ flexShrink: 0, marginTop: 1 }} />{CAT_HINT[categorie]}</p>}
+        </div>
+
+        {/* Fréquence */}
+        {categorie && !amort && (
+          <div style={cm.block}>
+            <span style={cm.label}>Elle revient</span>
+            <div style={cm.segment} className="grid-4" role="radiogroup" aria-label="Fréquence">
+              {FREQS.map(f => (
+                <button
+                  key={f.key || 'once'} type="button" role="radio" aria-checked={frequence === f.key}
+                  onClick={() => { setFrequence(f.key); setFreqTouched(true) }}
+                  style={{ ...cm.segBtn, ...(frequence === f.key ? cm.segOn : null) }}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Investissement amorti */}
         {amort && (
-          <Field label="Amorti sur (années)" hint="Achat du bien hors terrain : 25 à 30 ans. Mobilier : 5 à 10 ans. Gros travaux : 10 à 15 ans. Sert à comparer le micro-BIC et le régime réel dans l'onglet Fiscalité.">
-            <input inputMode="numeric" value={duree} onChange={e => setDuree(e.target.value)} style={s.input} />
+          <div style={cm.amortBox}>
+            <p style={{ margin: 0, fontSize: 13, lineHeight: 1.5, color: 'var(--text-2)' }}>
+              Saisis <strong>le montant total</strong> (toutes factures réunies) à la date où les travaux sont <strong>terminés</strong> et le logement de nouveau louable, ou à la date d'achat du mobilier. L'amortissement démarre à cette date.
+            </p>
+            <span style={cm.label}>Amorti sur</span>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              {DUREES.map(x => (
+                <button key={x.ans} type="button" onClick={() => setDuree(String(x.ans))} style={{ ...cm.pill, ...(d === x.ans ? cm.pillOn : null) }}>
+                  {x.label} <span style={{ opacity: 0.7 }}>{x.ans} ans</span>
+                </button>
+              ))}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <input inputMode="numeric" value={duree} onChange={e => setDuree(e.target.value.replace(/\D/g, ''))} aria-label="Durée en années" style={{ ...s.input, width: 64, textAlign: 'center', padding: '7px 8px' }} />
+                <span style={{ fontSize: 13, color: 'var(--text-3)' }}>ans</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Date(s) et logement */}
+        <div style={s.formRow}>
+          <Field label={dateLabel}><CalendarInput value={date} onChange={setDate} ariaLabel={dateLabel} /></Field>
+          {freq ? (
+            <Field label="Dernière échéance" hint="Facultatif : laisse vide si elle continue.">
+              <CalendarInput value={dateFin} onChange={setDateFin} ariaLabel="Dernière échéance" min={date} placeholder="Sans fin" />
+            </Field>
+          ) : (
+            <Field label="Logement">
+              <SuggestInput value={logement} onChange={setLogement} options={logementNoms} ariaLabel="Logement" style={s.input} />
+            </Field>
+          )}
+        </div>
+        {freq && (
+          <Field label="Logement">
+            <SuggestInput value={logement} onChange={setLogement} options={logementNoms} ariaLabel="Logement" style={s.input} />
           </Field>
         )}
-        <Field label="Description (facultatif)"><input value={description} onChange={e => setDescription(e.target.value)} style={s.input} /></Field>
-        <label style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13, color: 'var(--text-2)' }}>
-          <input type="checkbox" checked={deductible} onChange={e => setDeductible(e.target.checked)} /> Déductible au régime réel
-        </label>
-        {error && <p style={{ margin: 0, fontSize: 12.5, color: COLORS.charges }}>{error}</p>}
-        <button type="button" onClick={save} disabled={pending} style={{ ...ui.btn, justifyContent: 'center' }}>{pending ? 'Enregistrement…' : row ? 'Enregistrer' : 'Enregistrer la charge'}</button>
+
+        {apercu && (
+          <div style={cm.apercu}>
+            {apercu.amort ? (
+              <>
+                <CalendarCheck size={18} weight="duotone" style={{ color: 'var(--accent-text)', flexShrink: 0 }} />
+                <span>
+                  Soit <strong>{eur(apercu.annuite)} par an</strong> pendant {d} an{d > 1 ? 's' : ''}.
+                  {apercu.premiere < apercu.annuite - 0.5 && <> En {apercu.an}, année de mise en service, seulement <strong>{eur(apercu.premiere)}</strong> (au prorata à partir du {dateLongue(date)}).</>}
+                </span>
+              </>
+            ) : (
+              <>
+                <Repeat size={18} weight="bold" style={{ color: 'var(--accent-text)', flexShrink: 0 }} />
+                <span>
+                  Tu la saisis une seule fois : <strong>{apercu.n} échéance{apercu.n > 1 ? 's' : ''}</strong> en {apercu.fin} pour l'instant, soit <strong>{eur(apercu.total)}</strong>
+                  {apercu.futures > 0 && <>, dont {apercu.futures} à venir marquée{apercu.futures > 1 ? 's' : ''} « Prévue »</>}. Les années suivantes s'ajoutent toutes seules.
+                </span>
+              </>
+            )}
+          </div>
+        )}
+
+        <Field label="Note (facultatif)">
+          <input value={description} onChange={e => setDescription(e.target.value)} placeholder={amort ? 'ex. Rénovation salle de bain' : freq ? 'ex. Assurance PNO Hiscox' : 'ex. Facture du plombier'} style={s.input} />
+        </Field>
+
+        <button type="button" role="switch" aria-checked={deductible} onClick={() => setDeductible(v => !v)} style={cm.toggleRow}>
+          <span style={{ textAlign: 'left' }}>
+            <span style={{ display: 'block', fontSize: 13.5, fontWeight: 600, color: 'var(--text)' }}>Déductible au régime réel</span>
+            <span style={{ display: 'block', fontSize: 12, color: 'var(--text-3)', marginTop: 2 }}>Compte dans la comparaison micro-BIC et réel de l'onglet Fiscalité</span>
+          </span>
+          <span style={{ ...cm.switch, background: deductible ? 'var(--accent-text)' : 'var(--border-2)' }}>
+            <span style={{ ...cm.knob, transform: deductible ? 'translateX(18px)' : 'translateX(0)' }} />
+          </span>
+        </button>
+
+        {error && <p style={{ margin: 0, fontSize: 12.5, color: COLORS.charges, display: 'flex', gap: 6, alignItems: 'center' }}><Warning size={14} weight="fill" />{error}</p>}
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap-reverse' }}>
+          <button type="button" onClick={onClose} style={{ ...ui.btn, flex: '1 1 120px', justifyContent: 'center', background: 'var(--surface)', color: 'var(--text-2)', border: '1px solid var(--border)' }}>Annuler</button>
+          <button type="button" onClick={save} disabled={pending} style={{ ...ui.btn, flex: '2 1 180px', justifyContent: 'center', opacity: pending ? 0.7 : 1 }}>
+            <Check size={15} weight="bold" />{pending ? 'Enregistrement…' : row ? 'Enregistrer' : freq ? 'Ajouter la charge récurrente' : amort ? "Ajouter l'investissement" : 'Ajouter la charge'}
+          </button>
+        </div>
       </div>
     </Modal>
   )
+}
+
+const cm: Record<string, React.CSSProperties> = {
+  amountBox: { display: 'flex', flexDirection: 'column', gap: 4, padding: '14px 16px', borderRadius: 14, background: 'var(--bg-2)', border: '1px solid var(--border)' },
+  amountLabel: { fontSize: 12, fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: 0.4 },
+  amountInput: { flex: 1, minWidth: 0, border: 'none', outline: 'none', boxShadow: 'none', background: 'transparent', color: 'var(--text)', fontSize: 30, fontWeight: 700, fontFamily: 'var(--font-fraunces), Georgia, serif', padding: 0 },
+  amountEuro: { fontSize: 24, fontWeight: 600, color: 'var(--text-3)' },
+  block: { display: 'flex', flexDirection: 'column', gap: 7 },
+  label: { fontSize: 12.5, fontWeight: 600, color: 'var(--text-2)' },
+  cats: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(128px, 1fr))', gap: 6 },
+  cat: { display: 'flex', alignItems: 'center', gap: 8, padding: '7px 9px', borderRadius: 11, border: '1.5px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', fontSize: 12.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left', lineHeight: 1.2, minHeight: 42, minWidth: 0, transition: 'background 0.15s, border 0.15s' },
+  catIcon: { width: 26, height: 26, borderRadius: 8, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'background 0.15s' },
+  hint: { margin: 0, display: 'flex', gap: 7, fontSize: 12.5, lineHeight: 1.45, color: 'var(--text-3)', padding: '8px 10px', borderRadius: 10, background: 'var(--bg-2)' },
+  segment: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))', gap: 4, padding: 4, borderRadius: 12, background: 'var(--bg-2)', border: '1px solid var(--border)' },
+  segBtn: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '8px 6px', borderRadius: 9, border: '1px solid transparent', background: 'transparent', color: 'var(--text-3)', fontSize: 12.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' },
+  segOn: { background: 'var(--surface)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' },
+  amortBox: { display: 'flex', flexDirection: 'column', gap: 9, padding: 14, borderRadius: 14, background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.45)' },
+  pill: { padding: '7px 11px', borderRadius: 999, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', fontSize: 12.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' },
+  pillOn: { border: '1px solid var(--accent-border)', background: 'var(--accent-bg)', color: 'var(--accent-text)' },
+  apercu: { display: 'flex', gap: 10, alignItems: 'flex-start', padding: '11px 13px', borderRadius: 12, background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', fontSize: 13, lineHeight: 1.5, color: 'var(--text-2)' },
+  toggleRow: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '11px 13px', borderRadius: 12, border: '1px solid var(--border)', background: 'var(--surface)', cursor: 'pointer', fontFamily: 'inherit', width: '100%' },
+  switch: { position: 'relative', width: 40, height: 22, borderRadius: 999, flexShrink: 0, transition: 'background 0.15s' },
+  knob: { position: 'absolute', top: 2, left: 2, width: 18, height: 18, borderRadius: 999, background: '#fff', boxShadow: '0 1px 3px rgba(0,0,0,0.25)', transition: 'transform 0.15s' },
 }
 
 const s: Record<string, React.CSSProperties> = {

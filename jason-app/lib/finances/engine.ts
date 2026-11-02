@@ -186,7 +186,20 @@ export interface ChargeLine {
   /** Investissement amorti (catégorie amortissement) : durée en années */
   dureeAmortissement: number | null
   description: string | null
+  /** Charge saisie (une charge récurrente donne une ligne par échéance, même serieId) */
+  serieId: string
+  /** Fréquence d'une charge récurrente, null pour une charge ponctuelle */
+  frequence: Frequence | null
+  /** Échéance après aujourd'hui (charge récurrente) : prévue, pas encore payée */
+  prevue: boolean
+  /** Première échéance de la série (date saisie) */
+  debut: string
+  /** Dernière échéance prévue par l'hôte, null = sans fin */
+  dateFin: string | null
 }
+
+export type Frequence = 'mensuelle' | 'trimestrielle' | 'annuelle'
+export const FREQUENCE_MOIS: Record<Frequence, number> = { mensuelle: 1, trimestrielle: 3, annuelle: 12 }
 
 export interface OccupationStay {
   logementNom: string
@@ -252,6 +265,9 @@ export interface ChargeIn {
   description?: string | null
   deductible?: boolean | null
   duree_amortissement_annees?: number | null
+  /** Charge récurrente (migration 176) : une échéance par mois, trimestre ou an depuis date_charge */
+  frequence?: string | null
+  date_fin?: string | null
 }
 
 export interface IcalIn {
@@ -375,21 +391,59 @@ export function buildRevenueLines(input: {
   return out.sort((a, b) => b.date.localeCompare(a.date))
 }
 
-export function buildChargeLines(charges: ChargeIn[]): ChargeLine[] {
-  return charges
-    .filter(c => c.date_charge && Number(c.montant) > 0)
-    .map(c => ({
-      id: c.id,
+/** Date + n mois, jour gardé si possible (31 janvier + 1 mois = 28 ou 29 février). */
+export function addMonthsIso(iso: string, n: number): string {
+  const y = Number(iso.slice(0, 4)), m = Number(iso.slice(5, 7)) - 1 + n, d = Number(iso.slice(8, 10))
+  const yy = y + Math.floor(m / 12), mm = ((m % 12) + 12) % 12
+  const last = new Date(Date.UTC(yy, mm + 1, 0)).getUTCDate()
+  return `${yy}-${String(mm + 1).padStart(2, '0')}-${String(Math.min(d, last)).padStart(2, '0')}`
+}
+
+/** Échéances d'une charge récurrente, de date_charge jusqu'à « until » (et date_fin si elle est plus tôt). */
+export function echeances(start: string, frequence: Frequence, until: string, fin?: string | null): string[] {
+  const out: string[] = []
+  const stop = fin && fin < until ? fin : until
+  for (let i = 0; i < 600; i++) {
+    const d = addMonthsIso(start, i * FREQUENCE_MOIS[frequence])
+    if (d > stop) break
+    out.push(d)
+  }
+  return out
+}
+
+/**
+ * Lignes de charges. Une charge récurrente (assurance, crédit, abonnement)
+ * est saisie une fois et donne une ligne par échéance jusqu'à la fin de
+ * l'année de « today » (les échéances après aujourd'hui sont « prévues » :
+ * comptées dans l'estimation fiscale de l'année, pas dans le bénéfice déjà
+ * réalisé). Sans « today » : une seule ligne, comme avant.
+ */
+export function buildChargeLines(charges: ChargeIn[], today?: string): ChargeLine[] {
+  const until = today ? `${today.slice(0, 4)}-12-31` : null
+  const out: ChargeLine[] = []
+  for (const c of charges) {
+    if (!c.date_charge || !(Number(c.montant) > 0)) continue
+    const amort = c.categorie === 'amortissement'
+    const freq = !amort && c.frequence && c.frequence in FREQUENCE_MOIS ? c.frequence as Frequence : null
+    const base = {
       logementNom: (c.logement_nom ?? '').trim(),
       logementId: c.logement_id ?? null,
-      date: c.date_charge as string,
       montant: Number(c.montant),
       categorie: c.categorie ?? 'autre',
       deductible: c.deductible ?? true,
-      dureeAmortissement: c.categorie === 'amortissement' ? (c.duree_amortissement_annees ?? null) : null,
+      dureeAmortissement: amort ? (c.duree_amortissement_annees ?? null) : null,
       description: c.description ?? null,
-    }))
-    .sort((a, b) => b.date.localeCompare(a.date))
+      serieId: c.id,
+      frequence: freq,
+      debut: c.date_charge,
+      dateFin: freq ? (c.date_fin ?? null) : null,
+    }
+    if (!freq || !until) { out.push({ ...base, id: c.id, date: c.date_charge, prevue: false }); continue }
+    echeances(c.date_charge, freq, until, c.date_fin).forEach((d, i) => {
+      out.push({ ...base, id: i === 0 ? c.id : `${c.id}~${i}`, date: d, prevue: !!today && d > today })
+    })
+  }
+  return out.sort((a, b) => b.date.localeCompare(a.date))
 }
 
 /**

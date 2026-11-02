@@ -78,11 +78,16 @@ describe('estimerFR', () => {
     expect(f.exclues).toBe(1)
   })
 
-  it('amortissement : dotation sur la durée seulement', () => {
+  it('amortissement : au prorata la première année, le reste après la dernière année pleine', () => {
     const [c] = buildChargeLines([{ id: 'x', logement_nom: 'S', montant: 1000, date_charge: '2024-05-01', categorie: 'amortissement', duree_amortissement_annees: 2 }])
-    expect(dotationAnnuelle(c, 2024)).toBe(500)
+    // 245 jours restants sur 366 en 2024
+    expect(dotationAnnuelle(c, 2023)).toBe(0)
+    expect(dotationAnnuelle(c, 2024)).toBe(334.7)
     expect(dotationAnnuelle(c, 2025)).toBe(500)
-    expect(dotationAnnuelle(c, 2026)).toBe(0)
+    expect(dotationAnnuelle(c, 2026)).toBe(165.3)
+    expect(dotationAnnuelle(c, 2027)).toBe(0)
+    const [j] = buildChargeLines([{ id: 'j', logement_nom: 'S', montant: 1000, date_charge: '2025-01-01', categorie: 'amortissement', duree_amortissement_annees: 2 }])
+    expect([2025, 2026, 2027].map(y => dotationAnnuelle(j, y))).toEqual([500, 500, 0])
   })
 
   it('impôt estimé = base × (tranche + 18,6 %)', () => {

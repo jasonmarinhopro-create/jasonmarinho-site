@@ -36,11 +36,25 @@ Revenus, Journal et Fiscalité sont inclus dans toutes les formules. Dans Perfor
 Les séjours avec un montant et les contrats signés y arrivent tout seuls. Pour le reste :
 
 - **+ Revenu** : un virement, des espèces, un chèque
-- **+ Charge** : ménage, énergie, assurance, taxe foncière… et les **investissements amortis** (achat du bien hors terrain, mobilier, gros travaux) avec leur durée
+- **+ Charge** : ménage, énergie, assurance, crédit, taxe foncière… et les **investissements amortis** (achat du bien hors terrain, mobilier, gros travaux) avec leur durée
 - **Importer** : l'export de tes paiements Airbnb ou Booking
 - **Exporter** : un fichier CSV pour ton comptable
 
 Le menu **…** d'une ligne permet de la sortir de la fiscalité (cadeau, remboursement), de supprimer une saisie ou d'annuler un séjour ou un contrat (avec confirmation : c'est le séjour ou le contrat lui-même qui est annulé).
+
+## Les charges qui reviennent
+
+Assurance, intérêts du crédit, abonnements, taxe foncière : choisis **Chaque mois**, **Chaque trimestre** ou **Chaque année** dans le formulaire de la charge. Tu la saisis une seule fois, l'app ajoute une ligne à chaque échéance. Les échéances à venir de l'année portent l'étiquette **Prévue** : elles comptent dans l'estimation fiscale de l'année, pas encore dans ton bénéfice. La **dernière échéance** est facultative.
+
+Depuis le menu **…** d'une échéance : **Modifier la série** (montant, date, fréquence), **Arrêter à partir d'aujourd'hui** (les échéances passées restent) ou **Supprimer toute la série**.
+
+Pour un crédit, seuls les intérêts et l'assurance de l'emprunt se déduisent au régime réel, pas le capital remboursé : saisis cette part-là.
+
+## Les travaux et les achats amortis
+
+Choisis **Investissement amorti** et saisis le **montant total** des travaux (toutes factures réunies) à la date où ils sont terminés et le logement de nouveau louable (la mise en service), ou à la date d'achat du mobilier. Indique la durée (mobilier 5 à 10 ans, travaux 10 à 15 ans, achat du bien hors terrain 25 à 30 ans). La première année compte au prorata des jours restants après la mise en service, et le reste passe sur l'année qui suit la dernière année pleine.
+
+> Source : BOFiP, BOI-BIC-AMT-20-10 (point de départ de l'amortissement : la date de mise en service).
 
 ## Les réservations importées sans montant
 

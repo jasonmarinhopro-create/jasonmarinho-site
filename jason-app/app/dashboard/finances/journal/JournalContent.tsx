@@ -4,6 +4,8 @@ import PeriodPicker from '../_ui/PeriodPicker'
 import { ui } from '../_ui/ui'
 import JournalView, { type JournalRow } from './JournalView'
 
+const FREQUENCE_LABEL = { mensuelle: 'Chaque mois', trimestrielle: 'Chaque trimestre', annuelle: 'Chaque année' } as const
+
 
 export default function JournalContent({ data, searchParams }: { data: FinanceData; searchParams: { periode?: string } }) {
   const period = periodOf(parsePeriod(searchParams.periode), data.today)
@@ -34,10 +36,18 @@ export default function JournalContent({ data, searchParams }: { data: FinanceDa
         key: `c:${c.id}`,
         type: 'charge' as const,
         kind: 'charge' as const,
-        sourceId: c.id,
+        sourceId: c.serieId,
         date: c.date,
         label: c.description || '',
-        detail: c.dureeAmortissement ? `Amorti sur ${c.dureeAmortissement} an${c.dureeAmortissement > 1 ? 's' : ''}` : (c.deductible ? null : 'Non déductible'),
+        detail: [
+          c.frequence ? FREQUENCE_LABEL[c.frequence] : null,
+          c.dureeAmortissement ? `Amorti sur ${c.dureeAmortissement} an${c.dureeAmortissement > 1 ? 's' : ''}` : null,
+          c.deductible ? null : 'Non déductible',
+        ].filter(Boolean).join(' · ') || null,
+        frequence: c.frequence,
+        prevue: c.prevue,
+        debut: c.debut,
+        dateFin: c.dateFin,
         logementNom: c.logementNom,
         montant: c.montant,
         categorie: c.categorie,

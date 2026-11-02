@@ -1732,3 +1732,15 @@ a { color: inherit; }
     margin: 0 auto;
   }
 }
+
+/* Champ « montant » des formulaires du Journal (Mes finances) : gros
+ * chiffres, déjà au-dessus de 16 px donc sans zoom iOS ; le cadre parent
+ * s'allume au focus à la place de l'anneau du champ. */
+@media (max-width: 767px) {
+  input.amount-input { font-size: 28px !important; }
+}
+.amount-box { transition: border 0.15s, box-shadow 0.15s; }
+.amount-box:focus-within { border: 1px solid var(--accent-border-2) !important; box-shadow: var(--ring); }
+/* Choix en 4 colonnes (fréquence, type de revenu), 2 × 2 sur téléphone */
+.grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+@media (max-width: 520px) { .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }

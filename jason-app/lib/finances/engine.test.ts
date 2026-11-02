@@ -147,3 +147,26 @@ describe('nuitsParJour', () => {
     expect(r).toEqual([1, 1, 1, 0, 0, 0, 0])
   })
 })
+
+describe('charges récurrentes', () => {
+  it('une ligne par échéance jusqu’à la fin de l’année, les futures marquées prévues', async () => {
+    const { buildChargeLines } = await import('./engine')
+    const lines = buildChargeLines([{ id: 'a', logement_nom: 'Studio', montant: 30, date_charge: '2026-09-15', categorie: 'assurance', frequence: 'mensuelle' }], '2026-11-02')
+    expect(lines.map(l => l.date)).toEqual(['2026-12-15', '2026-11-15', '2026-10-15', '2026-09-15'])
+    expect(lines.filter(l => l.prevue).map(l => l.date)).toEqual(['2026-12-15', '2026-11-15'])
+    expect(new Set(lines.map(l => l.serieId))).toEqual(new Set(['a']))
+    expect(new Set(lines.map(l => l.id)).size).toBe(4)
+  })
+  it('respecte la date de fin, le trimestre et l’année, garde la fin de mois', async () => {
+    const { buildChargeLines, addMonthsIso } = await import('./engine')
+    expect(addMonthsIso('2026-01-31', 1)).toBe('2026-02-28')
+    const t = buildChargeLines([{ id: 't', logement_nom: 'S', montant: 90, date_charge: '2026-01-10', categorie: 'abonnement', frequence: 'trimestrielle', date_fin: '2026-07-31' }], '2026-11-02')
+    expect(t.map(l => l.date).sort()).toEqual(['2026-01-10', '2026-04-10', '2026-07-10'])
+    const y = buildChargeLines([{ id: 'y', logement_nom: 'S', montant: 800, date_charge: '2024-10-15', categorie: 'taxe_fonciere', frequence: 'annuelle' }], '2026-11-02')
+    expect(y.map(l => l.date).sort()).toEqual(['2024-10-15', '2025-10-15', '2026-10-15'])
+  })
+  it('un amortissement ne se répète jamais', async () => {
+    const { buildChargeLines } = await import('./engine')
+    expect(buildChargeLines([{ id: 'm', logement_nom: 'S', montant: 5000, date_charge: '2026-03-01', categorie: 'amortissement', duree_amortissement_annees: 10, frequence: 'mensuelle' }], '2026-11-02')).toHaveLength(1)
+  })
+})

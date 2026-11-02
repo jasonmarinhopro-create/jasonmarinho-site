@@ -6,6 +6,7 @@ export const CHARGE_CATEGORIES: Array<{ slug: string; label: string; color: stri
   { slug: 'taxe_fonciere',          label: 'Taxe foncière',           color: '#8B6D5E' },
   { slug: 'taxe_sejour',            label: 'Taxe de séjour',          color: '#8B6D5E' },
   { slug: 'assurance',              label: 'Assurance',               color: '#4D7C5E' },
+  { slug: 'credit',                 label: 'Crédit (intérêts)',       color: '#8B6D5E' },
   { slug: 'travaux',                label: 'Travaux',                 color: '#C2410C' },
   { slug: 'equipement',             label: 'Équipement',              color: '#6B8E23' },
   { slug: 'abonnement',             label: 'Abonnement',              color: '#6B8E23' },
