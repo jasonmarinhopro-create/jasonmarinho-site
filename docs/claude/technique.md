@@ -274,3 +274,21 @@ Jason : « le mode admin prend beaucoup trop de temps à charger », « 60 hôte
 - **Mesures (journaux `route = 'perf'`)** : Vue d'ensemble admin 17 à 33 s, Membres 7 à 19 s, État de santé 10 s, Accueil 3 à 10 s. Dans un même chargement, tous les appels finissent ensemble (ex. 9 appels entre 17 et 19 s), quelle que soit la table. Les mêmes requêtes lancées seules dans la base : `admin_overview` 82 ms, `menu_state` 71 ms (rôle authenticated), tout en mémoire (taux de cache 100 %). PostgREST : environ 850 « Thread killed by timeout manager » par 24 h pour environ 7 000 requêtes. Fichiers temporaires : plus aucune hausse depuis le correctif du 31/10 (`temp_bytes` figé). Checkpoints : 2 à 60 pages. Conclusion inchangée depuis le 05/10 : ce n'est ni le volume (faible) ni une requête lente, c'est la petite machine gratuite (0,5 Go, mémoire et disque partagés avec tous les services Supabase) qui fait attendre toutes les requêtes en même temps.
 - **Correctif dans le code** : la Vue d'ensemble admin n'est plus recalculée à chaque minute (la minute faisait partie de la clé du cache, donc presque chaque passage en mode admin relançait toutes les lectures) : `unstable_cache` sans minute, `revalidate: 180` = valeur servie tout de suite et recalculée en arrière-plan au-delà de 3 minutes, vidée par les actions admin (tag `admin-overview`). Reste lent : la toute première ouverture après un déploiement (cache vide) et quand la base est saturée.
 - **Le vrai remède** : Supabase Pro (25 $ par mois) : machine Micro de 1 Go incluse, plus de mise en pause, sauvegardes quotidiennes, budget disque plus large. Tant que l'app reste sur l'offre gratuite, chaque page qui lit 10 à 20 choses en même temps peut attendre plusieurs secondes aux heures chargées.
+
+## Fiche membre de l'admin refaite (02/11/2026)
+
+- Demande de Jason : « mieux comprendre tout ce qu'elle fait, où elle en est… ce qui peut bloquer ; les notes prennent trop de place ».
+- **Ordre** (`app/dashboard/admin/membres/[id]/MembreDetailUI.tsx`) :
+  - en-tête : identité, pastille d'activité `activityLevel`, puis 5 cases : dernière visite, dernière action, ancienneté, provenance `describeAcquisition`, formule ;
+  - « Où en est X » : 7 étapes du parcours hôte et l'encadré « Ce qui peut bloquer » avec une idée pour aider ;
+  - « Utilisation de l'espace hôte » en 4 modules ;
+  - « Ses espaces » (`MemberSpaces`), seulement s'il y a une fiche pro ou un profil investisseur ;
+  - formations : en cours d'abord, 6 visibles ;
+  - colonne de droite : notes compactes (repliées au-delà de 280 caractères), fil d'activité (8 dernières actions), communauté et outils.
+- **Mise en page** : classe `member-layout` dans `globals.css`, 360 px à droite dès 1100 px. Elle remplace le `isDesktop` en JavaScript, qui faisait sauter la page.
+- **Données** : `lib/admin/member-host-load.ts` (`loadMemberHost`).
+  - Pour chaque table, un count plus la dernière date, filtrés par `user_id`, avec une tolérance par table.
+  - Rien d'autre n'est lu : jamais un montant, un nom ni un contenu.
+  - Stripe vient de `profiles.stripe_account_id` / `stripe_onboarding_complete`.
+- **Logique** : `lib/admin/host-journey.ts` (`hostJourney`, `hostFeed`), fonctions pures testées. Le blocage retenu est le premier dans cet ordre : pas de logement, synchro en erreur, pas de calendrier ni de réservation, contrat non signé, Stripe pas terminé.
+- **Textes neutres** : jamais d'accord au féminin ou au masculin (« Vu cette semaine », « Inscription le »).

@@ -2,6 +2,8 @@ import { redirect, notFound } from 'next/navigation'
 import { getProfile } from '@/lib/queries/profile'
 import { loadMemberProfile } from '@/lib/admin/member-profile'
 import { loadMemberActivity } from '@/lib/admin/activity-load'
+import { loadMemberHost } from '@/lib/admin/member-host-load'
+import { describeAcquisition } from '@/lib/acquisition/rules'
 import MembreDetailUI from './MembreDetailUI'
 import { perfTimer } from '@/lib/perf/server-timing'
 import { Suspense } from 'react'
@@ -18,9 +20,10 @@ export default async function MembreDetailPage({ params }: { params: { id: strin
   if (!/^[0-9a-f-]{36}$/i.test(params.id)) notFound()
 
   timer.mark('session')
-  const [result, activityMap] = await Promise.all([
+  const [result, activityMap, hostData] = await Promise.all([
     loadMemberProfile(params.id),
     loadMemberActivity([params.id]).catch(() => null),
+    loadMemberHost(params.id).catch(() => null),
   ])
   timer.mark('fiche membre')
   timer.done()
@@ -55,6 +58,9 @@ export default async function MembreDetailPage({ params }: { params: { id: strin
           host={result.host}
           proStats={proStats}
           activity={activityMap?.get(params.id) ?? { lastSeenAt: null, lastAction: null }}
+          hostUsage={hostData?.usage ?? null}
+          provenance={hostData?.acquisition ? describeAcquisition(hostData.acquisition) : null}
+          newsletter={hostData?.newsletter ?? false}
         />
       </div>
     </>

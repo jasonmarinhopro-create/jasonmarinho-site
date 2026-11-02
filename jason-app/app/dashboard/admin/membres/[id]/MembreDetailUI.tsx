@@ -1,14 +1,21 @@
 'use client'
 
-import { useState, useTransition, useEffect } from 'react'
+// Fiche membre de l'admin, refaite le 02/11/2026 (demande de Jason : « mieux
+// comprendre tout ce qu'elle fait, où elle en est, ce qui peut bloquer…
+// les notes ont beaucoup de place »). Ordre de lecture : qui est-ce et est-ce
+// qu'elle revient (en-tête), où elle en est (parcours hôte et blocage), ce
+// qu'elle utilise (modules), puis le reste (formations, espaces pros, notes,
+// fil d'activité, communauté). Usage en nombres et dates seulement.
+
+import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { sinceLabel } from '@/lib/admin/activity'
+import { sinceLabel, activityLevel } from '@/lib/admin/activity'
+import { hostJourney, hostFeed, type HostUsage, type JourneyStep, type FeedItem } from '@/lib/admin/host-journey'
 import {
-  ArrowLeft, GraduationCap, UsersFour, CalendarBlank,
-  BookmarkSimple, PencilSimple, Flag, Lightbulb, Lightning,
-  Pencil, Check, X, Note, SpinnerGap, EnvelopeSimple,
-  ArrowClockwise, FacebookLogo, MagnifyingGlass, Trophy, Briefcase,
-  MapPin, FolderOpen,
+  ArrowLeft, GraduationCap, Check, X, Note, EnvelopeSimple, ArrowClockwise, FacebookLogo,
+  MagnifyingGlass, Briefcase, MapPin, FolderOpen, House, CalendarBlank, UsersThree, FileText,
+  CreditCard, ChartLineUp, Warning, CheckCircle, Circle, CircleHalf, Lightbulb, Pencil, Copy,
+  ClockCounterClockwise, BookmarkSimple, Flag, Bell, Compass, Sparkle, Lightning,
 } from '@phosphor-icons/react/dist/ssr'
 import { updateAdminNotes, changeUserPlan } from '../../actions'
 import type { MemberProSpace } from '@/lib/admin/member-profile'
@@ -32,13 +39,7 @@ interface UserFormation {
   progress: number
   enrolled_at: string
   completed_at: string | null
-  formation: {
-    id: string
-    title: string
-    slug: string
-    duration: string | null
-    level: string | null
-  } | null
+  formation: { id: string; title: string; slug: string; duration: string | null; level: string | null } | null
 }
 
 interface MemberStats {
@@ -55,30 +56,9 @@ interface MemberStats {
   auditsBestScore: number
 }
 
-interface CommunityGroup {
-  id: string
-  name: string | null
-  member_count: number
-}
-
-interface AuditSession {
-  id: string
-  business_name: string | null
-  started_at: string
-  completed_at: string | null
-  score_global: number | null
-}
-
-interface InvestorProject {
-  id: string
-  nom: string
-  ville: string | null
-  pays: string
-  type_logement: string
-  prix_achat: number | null
-  mensualite: number | null
-  created_at: string
-}
+interface CommunityGroup { id: string; name: string | null; member_count: number }
+interface AuditSession { id: string; business_name: string | null; started_at: string; completed_at: string | null; score_global: number | null }
+interface InvestorProject { id: string; nom: string; ville: string | null; pays: string; type_logement: string; prix_achat: number | null; mensualite: number | null; created_at: string }
 
 interface Props {
   profile: MemberProfile
@@ -88,718 +68,594 @@ interface Props {
   audits?: AuditSession[]
   investorProjects?: InvestorProject[]
   pros?: MemberProSpace[]
-  /** Statistiques de chaque fiche pro (par id), chargées à part par la page */
   proStats?: Record<string, React.ReactNode>
   host?: { logements: number; contrats: number }
-  /** Dernière visite et dernière action (lib/admin/activity-load.ts) */
   activity?: { lastSeenAt: string | null; lastAction: { at: string; label: string } | null }
+  /** Usage de l'espace hôte (lib/admin/member-host-load.ts), null si la lecture a échoué */
+  hostUsage?: HostUsage | null
+  /** Provenance lisible (« Google », « Instagram »…) et page d'arrivée */
+  provenance?: { label: string; detail: string | null; landing: string | null } | null
+  newsletter?: boolean
 }
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('fr-FR', {
-    day: '2-digit', month: 'long', year: 'numeric',
-  })
+const TZ = { timeZone: 'Europe/Paris' } as const
+const dateLong = (iso: string) => new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', ...TZ })
+const dateShort = (iso: string) => new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', ...TZ })
+const fmtEur = (n: number) => n.toLocaleString('fr-FR') + ' €'
+const since = (iso: string | null) => sinceLabel(iso, new Date())
+const lower = (t: string) => t.charAt(0).toLowerCase() + t.slice(1)
+const formatReach = (n: number) => n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1).replace('.', ',')} M` : n >= 1_000 ? `${Math.round(n / 1_000)} k` : String(n)
+
+const PLAN_CFG: Record<string, { label: string; color: string; bg: string; perYear: number }> = {
+  driing:     { label: 'Membre Driing', color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 12%, transparent)', perYear: 0 },
+  standard:   { label: 'Standard',      color: 'var(--accent-text)', bg: 'var(--accent-bg)', perYear: 19.98 },
+  decouverte: { label: 'Découverte',    color: 'var(--text-3)',      bg: 'var(--surface-2)', perYear: 0 },
 }
 
-function formatDateShort(iso: string) {
-  return new Date(iso).toLocaleDateString('fr-FR', {
-    day: 'numeric', month: 'short', year: 'numeric',
-  })
-}
+const LEVEL = {
+  actif:   { label: 'Vu cette semaine', color: '#2F9E5B' },
+  tiede:   { label: 'À relancer', color: '#B7791F' },
+  endormi: { label: 'Plus vu depuis 30 jours', color: '#A4502A' },
+} as const
 
-const PLAN_CFG: Record<string, { label: string; color: string; bg: string; mrr: number }> = {
-  driing:     { label: 'Membre Driing', color: '#B7791F', bg: 'color-mix(in srgb, #B7791F 12%, transparent)', mrr: 0 },
-  // Standard vendu à l'année : 19,98 € TTC, soit 1,665 € par mois
-  standard:   { label: 'Standard',      color: 'var(--accent-text)', bg: 'var(--accent-bg)', mrr: 19.98 / 12 },
-  decouverte: { label: 'Découverte',    color: 'var(--text-3)',      bg: 'var(--surface-2)',   mrr: 0 },
+const STEP_ICON: Record<JourneyStep['key'], typeof House> = {
+  logement: House, calendrier: CalendarBlank, reservations: ClockCounterClockwise, voyageurs: UsersThree,
+  contrats: FileText, paiements: CreditCard, finances: ChartLineUp,
 }
-
-function formatReach(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace('.', ',')} M`
-  if (n >= 1_000) return `${Math.round(n / 1_000)} k`
-  return String(n)
-}
-
-function fmtEur(n: number): string {
-  return n.toLocaleString('fr-FR') + ' €'
+const STATE_STYLE: Record<JourneyStep['state'], { color: string; bg: string; border: string; label: string }> = {
+  fait:     { color: 'var(--accent-text)', bg: 'var(--accent-bg)', border: '1px solid var(--accent-border-2)', label: 'Fait' },
+  en_cours: { color: '#B7791F', bg: 'rgba(255,213,107,0.14)', border: '1px solid rgba(255,213,107,0.45)', label: 'En cours' },
+  probleme: { color: '#A4502A', bg: 'color-mix(in srgb, #A4502A 9%, transparent)', border: '1px solid color-mix(in srgb, #A4502A 35%, transparent)', label: 'Problème' },
+  a_faire:  { color: 'var(--text-muted)', bg: 'var(--surface)', border: '1px dashed var(--border-2)', label: 'À faire' },
 }
 
 // ── Main component ──────────────────────────────────────────────────────────
-export default function MembreDetailUI({ profile, formations, stats, community, audits, investorProjects, pros = [], host = { logements: 0, contrats: 0 }, proStats, activity }: Props) {
+export default function MembreDetailUI({
+  profile, formations, stats, community, audits, investorProjects, pros = [], host = { logements: 0, contrats: 0 },
+  proStats, activity, hostUsage, provenance, newsletter,
+}: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
-
-  // Coaching notes
-  const [editingNotes, setEditingNotes] = useState(false)
-  const [notes, setNotes] = useState(profile.admin_notes ?? '')
-  const [notesSaved, setNotesSaved] = useState(false)
-  const [notesError, setNotesError] = useState('')
-
-  // Plan change feedback
   const [planFeedback, setPlanFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
-
-  // Desktop detection for 2-column layout
-  const [isDesktop, setIsDesktop] = useState(false)
-  useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 1100)
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [])
+  const [copied, setCopied] = useState(false)
 
   const planCfg = PLAN_CFG[profile.plan ?? 'decouverte'] ?? PLAN_CFG.decouverte
-
+  const name = profile.full_name || profile.email
+  const firstName = (profile.full_name ?? '').split(' ')[0] || 'ce membre'
   const initials = profile.full_name
-    ? profile.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
+    ? profile.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
     : profile.email[0].toUpperCase()
+  const level = LEVEL[activityLevel(activity?.lastSeenAt ?? null, new Date())]
+  const memberDays = Math.max(0, Math.round((Date.now() - Date.parse(profile.created_at)) / 86_400_000))
 
-  function saveNotes() {
-    setNotesError('')
-    startTransition(async () => {
-      const res = await updateAdminNotes(profile.id, notes)
-      if (res.error) {
-        setNotesError(String(res.error))
-        return
-      }
-      setEditingNotes(false)
-      setNotesSaved(true)
-      setTimeout(() => setNotesSaved(false), 3000)
-    })
-  }
-
-  function cancelNotes() {
-    setNotes(profile.admin_notes ?? '')
-    setEditingNotes(false)
-    setNotesError('')
-  }
+  const journey = hostUsage ? hostJourney(hostUsage) : null
+  const feedExtra: FeedItem[] = [
+    ...formations.map(f => ({ label: `Formation : ${f.formation?.title ?? 'sans titre'}`, at: f.enrolled_at })),
+    ...(audits ?? []).map(a => ({ label: 'Audit de fiche Google', at: a.started_at })),
+  ]
+  const feed = hostUsage ? hostFeed(hostUsage, feedExtra).slice(0, 8) : feedExtra.sort((a, b) => b.at.localeCompare(a.at)).slice(0, 8)
+  const showSpaces = pros.length > 0 || !!profile.is_investor
 
   function handlePlanChange(newPlan: string) {
     startTransition(async () => {
       const res = await changeUserPlan(profile.id, newPlan)
-      if (res.error) {
-        setPlanFeedback({ type: 'err', msg: String(res.error) })
-      } else {
-        setPlanFeedback({ type: 'ok', msg: 'Plan mis à jour' })
-        router.refresh()
-      }
+      if (res.error) setPlanFeedback({ type: 'err', msg: String(res.error) })
+      else { setPlanFeedback({ type: 'ok', msg: 'Formule mise à jour' }); router.refresh() }
       setTimeout(() => setPlanFeedback(null), 3000)
     })
   }
 
-  const completedFormations = formations.filter(f => f.progress === 100)
-  const inProgressFormations = formations.filter(f => f.progress > 0 && f.progress < 100)
-  const notStartedFormations = formations.filter(f => f.progress === 0)
-
-  const statTiles = [
-    { icon: <UsersFour size={16} />, value: stats.voyageurs,      label: 'Voyageurs',       color: '#6E5446' },
-    { icon: <CalendarBlank size={16} />, value: stats.sejours,    label: 'Séjours',          color: 'var(--accent-text)' },
-    { icon: <BookmarkSimple size={16} />, value: stats.favorites,  label: 'Modèles favoris', color: '#B7791F' },
-    { icon: <PencilSimple size={16} />, value: stats.customizations, label: 'Modèles perso.', color: '#B7791F' },
-    { icon: <Flag size={16} />, value: stats.signalements,        label: 'Signalements',     color: 'var(--danger-text)' },
-    { icon: <Lightbulb size={16} />, value: stats.suggestions,    label: 'Suggestions',      color: '#B7791F' },
-    { icon: <FacebookLogo size={16} />, value: stats.communityGroupsCount, label: 'Groupes FB rejoints', color: '#6E5446' },
-    { icon: <MagnifyingGlass size={16} />, value: stats.auditsCount, label: 'Audits fiche Google', color: '#B7791F' },
-  ]
-
-  const joinedGroups = community?.joinedGroups ?? []
-  const auditList = audits ?? []
-  const projectList = investorProjects ?? []
+  function copyEmail() {
+    navigator.clipboard?.writeText(profile.email).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1500) }).catch(() => {})
+  }
 
   return (
     <div style={s.page}>
-
-      {/* ── Back button ── */}
       <button onClick={() => router.push('/dashboard/admin/membres')} style={s.backBtn}>
-        <ArrowLeft size={16} />
-        Tous les membres
+        <ArrowLeft size={15} /> Tous les membres
       </button>
 
-      {/* ── Profile card ── */}
-      <div style={s.profileCard} className="fade-up">
-        <div style={s.bigAvatar}>
-          <span style={s.bigAvatarText}>{initials}</span>
-        </div>
-        <div style={s.profileInfo}>
-          <div style={s.profileNameRow}>
-            <h1 style={s.profileName}>{profile.full_name || '-'}</h1>
-            {profile.role === 'admin' && (
-              <span style={{ ...s.pill, background: 'color-mix(in srgb, #B7791F 12%, transparent)', color: '#B7791F' }}>Admin</span>
-            )}
+      {/* ── En-tête : qui, comment elle est arrivée, est-ce qu'elle revient ── */}
+      <header style={s.hero} className="fade-up">
+        <div style={s.heroMain}>
+          <div style={s.avatar}>
+            <span style={s.avatarText}>{initials}</span>
+            <i style={{ ...s.levelDot, background: level.color }} aria-hidden />
           </div>
-          <a href={`mailto:${profile.email}`} style={s.emailLink}>
-            <EnvelopeSimple size={13} />
-            {profile.email}
-          </a>
-          <div style={s.profileMeta}>
-            <span style={{ ...s.pill, background: planCfg.bg, color: planCfg.color }}>
-              <Lightning size={11} weight="fill" />
-              Hôte · {planCfg.label}
-            </span>
-            {pros.map(r => (
-              <span key={r.id} style={{ ...s.pill, background: `color-mix(in srgb, ${r.kind === 'photographe' ? '#B83A7C' : r.kind === 'depannage' ? '#A4502A' : '#6E5446'} 12%, transparent)`, color: r.kind === 'photographe' ? '#B83A7C' : r.kind === 'depannage' ? '#A4502A' : '#6E5446' }}>
-                {r.kind === 'photographe' ? 'Photographe' : r.kind === 'depannage' ? 'Dépannage' : 'Équipe de ménage'}{r.tier === 'fondateur' ? ' · fondateur' : ''}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+              <h1 style={s.name}>{name}</h1>
+              <span style={{ ...s.pill, background: `color-mix(in srgb, ${level.color} 13%, transparent)`, color: level.color }}>
+                <i style={{ width: 6, height: 6, borderRadius: 99, background: level.color, display: 'inline-block' }} /> {level.label}
               </span>
-            ))}
-            {planCfg.mrr > 0 && (
-              <span style={{ ...s.pill, background: 'color-mix(in srgb, var(--accent-text) 10%, transparent)', color: 'var(--accent-text)' }}>
-                + {planCfg.mrr.toFixed(2).replace('.', ',')} € / mois
-              </span>
-            )}
-            {profile.is_investor && (
-              <span style={{ ...s.pill, background: 'color-mix(in srgb, #6E5446 12%, transparent)', color: '#6E5446' }}>
-                <Briefcase size={11} weight="fill" />
-                Investisseur
-              </span>
-            )}
-            <span style={s.memberSince}>Membre depuis le {formatDate(profile.created_at)}</span>
-          </div>
-          {activity && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 16px', marginTop: 8, fontSize: 13, color: 'var(--text-2)' }}>
-              <span suppressHydrationWarning>
-                <strong style={{ color: 'var(--text)' }}>Dernière visite :</strong>{' '}
-                {activity.lastSeenAt ? `${sinceLabel(activity.lastSeenAt, new Date()).toLowerCase()} (${formatDate(activity.lastSeenAt)})` : 'jamais revenu'}
-              </span>
-              <span suppressHydrationWarning>
-                <strong style={{ color: 'var(--text)' }}>Dernière action :</strong>{' '}
-                {activity.lastAction ? `${activity.lastAction.label.toLowerCase()}, ${formatDate(activity.lastAction.at)}` : 'aucune dans l’app'}
-              </span>
+              {profile.role === 'admin' && <span style={{ ...s.pill, background: 'color-mix(in srgb, #B7791F 12%, transparent)', color: '#B7791F' }}>Admin</span>}
             </div>
-          )}
+            <div style={s.emailRow}>
+              <a href={`mailto:${profile.email}`} style={s.emailLink}><EnvelopeSimple size={13} /> {profile.email}</a>
+              <button type="button" onClick={copyEmail} style={s.iconBtn} aria-label="Copier l’adresse e-mail">
+                {copied ? <Check size={13} weight="bold" /> : <Copy size={13} />}
+              </button>
+            </div>
+            <div style={s.badges}>
+              <span style={{ ...s.pill, background: planCfg.bg, color: planCfg.color }}><Lightning size={11} weight="fill" /> Hôte · {planCfg.label}</span>
+              {pros.map(r => {
+                const c = r.kind === 'photographe' ? '#B83A7C' : r.kind === 'depannage' ? '#A4502A' : '#6E5446'
+                return (
+                  <span key={r.id} style={{ ...s.pill, background: `color-mix(in srgb, ${c} 12%, transparent)`, color: c }}>
+                    {r.kind === 'photographe' ? 'Photographe' : r.kind === 'depannage' ? 'Dépannage' : 'Équipe de ménage'}{r.tier === 'fondateur' ? ' · fondateur' : ''}
+                  </span>
+                )
+              })}
+              {profile.is_investor && <span style={{ ...s.pill, background: 'color-mix(in srgb, #6E5446 12%, transparent)', color: '#6E5446' }}><Briefcase size={11} weight="fill" /> Investisseur</span>}
+              {newsletter && <span style={{ ...s.pill, background: 'var(--surface)', color: 'var(--text-3)', border: '1px solid var(--border)' }}>Lettre Le Check-in</span>}
+            </div>
+          </div>
+        </div>
 
-        {/* Formule de l'espace hôte (sous l'identité : sur téléphone, à côté
-            du nom, elle écrasait le nom sur 2 lignes) */}
-        <div style={s.planSelector}>
-          <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-2)' }}>Formule hôte</span>
-          {planFeedback ? (
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: '5px',
-              padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 500,
-              color: planFeedback.type === 'ok' ? 'var(--accent-text)' : 'var(--danger)',
-              background: planFeedback.type === 'ok' ? 'color-mix(in srgb, var(--accent-text) 10%, transparent)' : 'color-mix(in srgb, var(--danger) 10%, transparent)',
-            }}>
-              {planFeedback.msg}
+        <div style={s.heroFacts}>
+          <Fact label="Dernière visite" value={activity?.lastSeenAt ? since(activity.lastSeenAt) : 'Aucune visite'} sub={activity?.lastSeenAt ? dateShort(activity.lastSeenAt) : null} />
+          <Fact label="Dernière action" value={activity?.lastAction ? activity.lastAction.label : 'Aucune'} sub={activity?.lastAction ? lower(since(activity.lastAction.at)) : null} />
+          <Fact label="Membre depuis" value={memberDays < 1 ? 'Aujourd’hui' : `${memberDays} jour${memberDays > 1 ? 's' : ''}`} sub={dateShort(profile.created_at)} />
+          <Fact
+            label="Arrivée par"
+            value={provenance?.label ?? 'Pas encore mesuré'}
+            sub={[provenance?.detail, provenance?.landing ? `page ${provenance.landing}` : null].filter(Boolean).join(' · ') || null}
+          />
+          <div style={s.fact}>
+            <span style={s.factLabel}>Formule hôte</span>
+            {planFeedback ? (
+              <span style={{ fontSize: 13, fontWeight: 600, color: planFeedback.type === 'ok' ? 'var(--accent-text)' : 'var(--danger)' }}>{planFeedback.msg}</span>
+            ) : (
+              <select
+                value={profile.plan || 'decouverte'}
+                disabled={isPending || profile.role === 'admin'}
+                onChange={e => handlePlanChange(e.target.value)}
+                style={{ ...s.planSelect, color: planCfg.color, opacity: profile.role === 'admin' ? 0.5 : 1 }}
+                aria-label="Formule hôte"
+              >
+                <option value="decouverte">Découverte</option>
+                <option value="standard">Standard · 19,98 € / an</option>
+                <option value="driing">Membre Driing</option>
+              </select>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* ── Où elle en est : parcours hôte ── */}
+      {journey && (
+        <section style={s.card} className="fade-up">
+          <div style={s.cardHead}>
+            <div>
+              <h2 style={s.h2}>Où en est {firstName === 'ce membre' ? 'ce membre' : firstName}</h2>
+              <p style={s.lead}>{journey.niveau} · {journey.done} étape{journey.done > 1 ? 's' : ''} sur {journey.steps.length} du parcours hôte</p>
+            </div>
+            <div style={s.progressOuter} aria-label={`${journey.done} sur ${journey.steps.length}`}>
+              <div style={{ ...s.progressInner, width: `${(journey.done / journey.steps.length) * 100}%` }} />
+            </div>
+          </div>
+
+          <ol style={s.steps}>
+            {journey.steps.map(st => {
+              const Icon = STEP_ICON[st.key]
+              const ss = STATE_STYLE[st.state]
+              const StateIcon = st.state === 'fait' ? CheckCircle : st.state === 'probleme' ? Warning : st.state === 'en_cours' ? CircleHalf : Circle
+              return (
+                <li key={st.key} style={{ ...s.step, background: ss.bg, border: ss.border }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6 }}>
+                    <Icon size={18} weight="duotone" style={{ color: st.state === 'a_faire' ? 'var(--text-muted)' : ss.color }} />
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 10.5, fontWeight: 700, color: ss.color, textTransform: 'uppercase', letterSpacing: 0.3 }}>
+                      <StateIcon size={12} weight={st.state === 'a_faire' ? 'regular' : 'fill'} /> {ss.label}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: st.state === 'a_faire' ? 'var(--text-3)' : 'var(--text)', marginTop: 8 }}>{st.title}</div>
+                  <div style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 2, lineHeight: 1.35 }}>{st.detail}</div>
+                  {st.at && <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }} suppressHydrationWarning>{since(st.at)}</div>}
+                </li>
+              )
+            })}
+          </ol>
+
+          {journey.blocage ? (
+            <div style={s.blocker}>
+              <Warning size={20} weight="fill" style={{ color: '#B7791F', flexShrink: 0, marginTop: 1 }} />
+              <div>
+                <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text)' }}>Ce qui peut bloquer</div>
+                <div style={{ fontSize: 13, color: 'var(--text-2)', marginTop: 2 }}>{journey.blocage.message}</div>
+                <div style={{ display: 'flex', gap: 6, alignItems: 'flex-start', fontSize: 12.5, color: 'var(--text-3)', marginTop: 6 }}>
+                  <Lightbulb size={14} style={{ flexShrink: 0, marginTop: 1, color: 'var(--accent-text)' }} /> {journey.blocage.conseil}
+                </div>
+              </div>
             </div>
           ) : (
-            <select
-              value={profile.plan || 'decouverte'}
-              disabled={isPending || profile.role === 'admin'}
-              onChange={e => handlePlanChange(e.target.value)}
-              style={{
-                background: planCfg.bg, color: planCfg.color,
-                border: `1px solid color-mix(in srgb, ${planCfg.color} 19%, transparent)`,
-                borderRadius: '10px', padding: '8px 12px',
-                fontSize: '13px', fontWeight: 600,
-                cursor: (isPending || profile.role === 'admin') ? 'not-allowed' : 'pointer',
-                outline: 'none', fontFamily: 'var(--font-outfit), sans-serif',
-                opacity: profile.role === 'admin' ? 0.4 : 1,
-              }}
-            >
-              <option value="decouverte" style={{ background: 'var(--surface)', color: 'var(--text)' }}>Découverte</option>
-              <option value="standard" style={{ background: 'var(--surface)', color: 'var(--accent-text)' }}>Standard</option>
-              <option value="driing" style={{ background: 'var(--surface)', color: '#B7791F' }}>Membre Driing</option>
-            </select>
-          )}
-        </div>
-        </div>
-      </div>
-
-      <MemberSpaces
-        plan={profile.plan || 'decouverte'}
-        host={host}
-        sejours={stats.sejours}
-        voyageurs={stats.voyageurs}
-        pros={pros}
-        proStats={proStats}
-        isInvestor={!!profile.is_investor}
-        projects={(investorProjects ?? []).length}
-      />
-
-      {/* ── 2-column desktop layout ── */}
-      <div style={isDesktop ? s.twoColGrid : s.singleCol}>
-        <div style={s.leftColumn}>
-
-      {/* ── Coaching notes ── */}
-      <div style={s.section} className="fade-up">
-        <div style={s.sectionHeader}>
-          <div style={s.sectionTitle}>
-            <Note size={16} color="var(--accent-text)" />
-            Notes de coaching
-            <span style={s.sectionSubtitle}>Privé, visible uniquement par toi</span>
-          </div>
-          {!editingNotes && (
-            <button onClick={() => setEditingNotes(true)} style={s.editBtn}>
-              <Pencil size={13} />
-              Modifier
-            </button>
-          )}
-        </div>
-
-        {editingNotes ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <textarea
-              value={notes}
-              onChange={e => setNotes(e.target.value)}
-              style={s.notesTextarea}
-              rows={6}
-              placeholder={`Objectifs de ${profile.full_name || 'ce membre'}, points de suivi, prochaines étapes, conseils personnalisés…`}
-              autoFocus
-            />
-            {notesError && <p style={{ fontSize: '13px', color: 'var(--danger)', margin: 0 }}>{notesError}</p>}
-            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-              <button onClick={cancelNotes} style={s.ghostBtn} disabled={isPending}>
-                <X size={13} />
-                Annuler
-              </button>
-              <button onClick={saveNotes} style={s.primaryBtn} disabled={isPending}>
-                {isPending
-                  ? <><ArrowClockwise size={13} style={{ animation: 'spin 0.8s linear infinite' }} /> Enregistrement…</>
-                  : <><Check size={13} /> Sauvegarder</>
-                }
-              </button>
+            <div style={{ ...s.blocker, background: 'var(--accent-bg)', border: '1px solid var(--accent-border-2)' }}>
+              <CheckCircle size={20} weight="fill" style={{ color: 'var(--accent-text)', flexShrink: 0 }} />
+              <div style={{ fontSize: 13, color: 'var(--text-2)' }}><strong style={{ color: 'var(--text)' }}>Rien ne bloque.</strong> Les étapes clés sont en place.</div>
             </div>
-          </div>
-        ) : (
-          <div>
-            {notesSaved && (
-              <div style={s.savedBanner}>
-                <Check size={13} weight="bold" />
-                Notes sauvegardées
-              </div>
-            )}
-            {notes ? (
-              <p style={s.notesText}>{notes}</p>
+          )}
+        </section>
+      )}
+
+      <div className="member-layout">
+        {/* ── Colonne principale ── */}
+        <div style={s.col}>
+          {hostUsage && <HostModules u={hostUsage} />}
+
+          {showSpaces && (
+            <MemberSpaces
+              plan={profile.plan || 'decouverte'}
+              host={host}
+              sejours={stats.sejours}
+              voyageurs={stats.voyageurs}
+              pros={pros}
+              proStats={proStats}
+              isInvestor={!!profile.is_investor}
+              projects={(investorProjects ?? []).length}
+            />
+          )}
+
+          <Formations formations={formations} />
+
+          {profile.is_investor && <Investor projects={investorProjects ?? []} />}
+        </div>
+
+        {/* ── Colonne de droite ── */}
+        <aside style={s.col}>
+          <CoachingNotes memberId={profile.id} firstName={firstName} initial={profile.admin_notes ?? ''} />
+
+          <section style={s.card} className="fade-up">
+            <h2 style={{ ...s.h3, marginBottom: 12 }}><ClockCounterClockwise size={16} /> Fil d’activité</h2>
+            {feed.length === 0 ? (
+              <p style={s.empty}>Aucune action enregistrée pour le moment.</p>
             ) : (
-              <button onClick={() => setEditingNotes(true)} style={s.emptyNotesBtn}>
-                <Pencil size={14} />
-                Ajouter des notes sur {profile.full_name || 'ce membre'}…
-              </button>
+              <ol style={s.feed}>
+                {feed.map((f, i) => (
+                  <li key={`${f.label}-${i}`} style={s.feedItem}>
+                    <i style={{ ...s.feedDot, background: i === 0 ? 'var(--accent-text)' : 'var(--border-2)' }} />
+                    <span style={{ flex: 1, minWidth: 0, fontSize: 13, color: 'var(--text-2)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.label}</span>
+                    <span style={{ fontSize: 12, color: 'var(--text-muted)', whiteSpace: 'nowrap' }} suppressHydrationWarning>{since(f.at)}</span>
+                  </li>
+                ))}
+              </ol>
             )}
+          </section>
+
+          <Community
+            stats={stats}
+            groups={community?.joinedGroups ?? []}
+            audits={audits ?? []}
+            notifications={hostUsage?.notifications ?? null}
+          />
+        </aside>
+      </div>
+    </div>
+  )
+}
+
+// ── Petits blocs ────────────────────────────────────────────────────────────
+
+function Fact({ label, value, sub }: { label: string; value: string; sub: string | null }) {
+  return (
+    <div style={s.fact}>
+      <span style={s.factLabel}>{label}</span>
+      <span style={s.factValue} suppressHydrationWarning>{value}</span>
+      {sub && <span style={s.factSub} suppressHydrationWarning>{sub}</span>}
+    </div>
+  )
+}
+
+function Metric({ label, n, last, hint, warn }: { label: string; n: number | string; last?: string | null; hint?: string | null; warn?: boolean }) {
+  const zero = n === 0 || n === 'Non'
+  return (
+    <div style={s.metric}>
+      <span style={{ fontSize: 13, color: zero ? 'var(--text-muted)' : 'var(--text-2)', flex: 1, minWidth: 0 }}>
+        {label}
+        {hint && <span style={{ display: 'block', fontSize: 11.5, color: warn ? '#A4502A' : 'var(--text-muted)', marginTop: 1 }}>{hint}</span>}
+      </span>
+      <span style={{ textAlign: 'right' }}>
+        <span style={{ display: 'block', fontFamily: 'var(--font-fraunces), serif', fontSize: 19, color: zero ? 'var(--text-muted)' : warn ? '#A4502A' : 'var(--text)', lineHeight: 1.1 }}>{n}</span>
+        {last && <span style={{ display: 'block', fontSize: 11, color: 'var(--text-muted)' }} suppressHydrationWarning>{lower(since(last))}</span>}
+      </span>
+    </div>
+  )
+}
+
+function Module({ icon, title, color, children }: { icon: React.ReactNode; title: string; color: string; children: React.ReactNode }) {
+  return (
+    <div style={s.module}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+        <span style={{ ...s.moduleIcon, color, background: `color-mix(in srgb, ${color} 12%, transparent)` }}>{icon}</span>
+        <span style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--text)' }}>{title}</span>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+function HostModules({ u }: { u: HostUsage }) {
+  return (
+    <section style={s.card} className="fade-up">
+      <div style={{ ...s.cardHead, marginBottom: 14 }}>
+        <h2 style={s.h3}><House size={16} /> Utilisation de l’espace hôte</h2>
+        <span style={s.privacy}>Nombres et dates seulement, jamais le contenu</span>
+      </div>
+      <div style={s.modules}>
+        <Module icon={<House size={16} weight="duotone" />} title="Logements et calendrier" color="var(--accent-text)">
+          <Metric label="Logements" n={u.logements.n} last={u.logements.last} />
+          <Metric label="Calendriers connectés" n={u.calendriers.n} last={u.calendriers.last} hint={u.calendriers.enErreur > 0 ? `${u.calendriers.enErreur} en erreur de synchro` : null} warn={u.calendriers.enErreur > 0} />
+          <Metric label="Réservations importées" n={u.reservationsImportees} />
+          <Metric label="Événements ajoutés" n={u.evenements.n} last={u.evenements.last} />
+        </Module>
+        <Module icon={<UsersThree size={16} weight="duotone" />} title="Réservations et voyageurs" color="#6E5446">
+          <Metric label="Séjours avec montant" n={u.sejours.n} last={u.sejours.last} />
+          <Metric label="Fiches voyageurs" n={u.voyageurs.n} last={u.voyageurs.last} />
+          <Metric label="Déclarations de voyageurs" n={u.declarations.n} last={u.declarations.last} />
+        </Module>
+        <Module icon={<FileText size={16} weight="duotone" />} title="Contrats et paiements" color="#B7791F">
+          <Metric label="Contrats" n={u.contrats.n} last={u.contrats.last} hint={u.contrats.n > 0 ? `${u.contrats.signes} signé${u.contrats.signes > 1 ? 's' : ''}` : null} />
+          <Metric
+            label="Paiements en ligne"
+            n={u.paiementsEnLigne === 'actif' ? 'Oui' : u.paiementsEnLigne === 'commence' ? 'En cours' : 'Non'}
+            hint={u.paiementsEnLigne === 'commence' ? 'Inscription Stripe à terminer' : null}
+            warn={u.paiementsEnLigne === 'commence'}
+          />
+        </Module>
+        <Module icon={<ChartLineUp size={16} weight="duotone" />} title="Mes finances" color="#2F9E5B">
+          <Metric label="Revenus saisis" n={u.revenus.n} last={u.revenus.last} />
+          <Metric label="Charges saisies" n={u.charges.n} last={u.charges.last} hint={u.charges.recurrentes > 0 ? `dont ${u.charges.recurrentes} récurrente${u.charges.recurrentes > 1 ? 's' : ''}` : null} />
+          <Metric label="Objectif annuel" n={u.objectif ? 'Oui' : 'Non'} />
+        </Module>
+      </div>
+    </section>
+  )
+}
+
+function Formations({ formations }: { formations: UserFormation[] }) {
+  const [all, setAll] = useState(false)
+  const done = formations.filter(f => f.progress >= 100).length
+  const doing = formations.filter(f => f.progress > 0 && f.progress < 100).length
+  const todo = formations.length - done - doing
+  const avg = formations.length ? Math.round(formations.reduce((n, f) => n + Math.min(100, f.progress), 0) / formations.length) : 0
+  // En cours d'abord (la plus avancée en premier), puis pas commencées, puis terminées
+  const rank = (p: number) => p > 0 && p < 100 ? 0 : p === 0 ? 1 : 2
+  const sorted = [...formations].sort((a, b) => rank(a.progress) - rank(b.progress) || b.progress - a.progress)
+  const shown = all ? sorted : sorted.slice(0, 6)
+
+  return (
+    <section style={s.card} className="fade-up">
+      <div style={{ ...s.cardHead, marginBottom: 14 }}>
+        <h2 style={s.h3}><GraduationCap size={16} /> Formations</h2>
+        {formations.length > 0 && (
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            <span style={{ ...s.pill, background: 'var(--accent-bg)', color: 'var(--accent-text)' }}>{done} terminée{done > 1 ? 's' : ''}</span>
+            <span style={{ ...s.pill, background: 'rgba(255,213,107,0.16)', color: '#B7791F' }}>{doing} en cours</span>
+            {todo > 0 && <span style={{ ...s.pill, background: 'var(--surface-2)', color: 'var(--text-3)' }}>{todo} pas commencée{todo > 1 ? 's' : ''}</span>}
+            <span style={{ ...s.pill, background: 'var(--surface-2)', color: 'var(--text-2)' }}>{avg} % en moyenne</span>
           </div>
         )}
       </div>
-
-        </div>
-        {/* ── Right column : stats + community + audits ── */}
-        <aside style={isDesktop ? s.rightColumnSticky : s.rightColumn}>
-
-      {/* ── Espace investisseur : ce que fait réellement un compte marqué
-          investisseur — un investisseur pur n'a ni logement, ni séjour, ni
-          voyageur, donc "Activité sur la plateforme" plus bas n'affiche que
-          des zéros pour lui. Ce qu'il fait vraiment, ce sont les projets
-          d'acquisition sauvegardés depuis l'estimateur (même donnée que
-          /dashboard/admin/investisseurs). ── */}
-      {profile.is_investor && (
-        <div style={s.section} className="fade-up">
-          <div style={s.sectionHeader}>
-            <div style={s.sectionTitle}>
-              <Briefcase size={16} color="#6E5446" weight="fill" />
-              Espace investisseur ({projectList.length} projet{projectList.length > 1 ? 's' : ''})
-            </div>
-          </div>
-          {projectList.length === 0 ? (
-            <div style={{ fontSize: '13px', color: 'var(--text-muted)', padding: '14px 0' }}>
-              N&apos;a pas encore sauvegardé de projet d&apos;acquisition depuis l&apos;estimateur.
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {projectList.map(p => (
-                <div key={p.id} style={s.commItem}>
-                  <FolderOpen size={14} color="#6E5446" weight="fill" style={{ flexShrink: 0 }} />
+      {formations.length === 0 ? (
+        <p style={s.empty}>Aucune formation commencée.</p>
+      ) : (
+        <>
+          <div style={s.formGrid}>
+            {shown.map(uf => {
+              const p = Math.min(100, uf.progress)
+              const fini = p >= 100
+              return (
+                <div key={uf.id} style={s.formItem}>
+                  <span style={{ ...s.formIcon, background: fini ? 'var(--accent-bg)' : 'rgba(255,213,107,0.14)' }}>
+                    {fini ? <Check size={14} weight="bold" color="var(--accent-text)" /> : <GraduationCap size={14} color="#B7791F" />}
+                  </span>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: '13px', color: 'var(--text)', fontWeight: 600 }}>{p.nom}</div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11.5px', color: 'var(--text-2)', marginTop: '2px', flexWrap: 'wrap' }}>
-                      {p.ville && <><MapPin size={10} weight="fill" /> {p.ville} ·</>}
-                      {p.type_logement.toUpperCase()}
-                      {p.prix_achat != null && <> · {fmtEur(p.prix_achat)}</>}
-                      {p.mensualite != null && <> · {fmtEur(p.mensualite)}/mois</>}
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={uf.formation?.title ?? ''}>{uf.formation?.title ?? 'Formation inconnue'}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
+                      <div style={s.bar}><div style={{ height: '100%', width: `${p}%`, borderRadius: 99, background: fini ? 'var(--accent-text)' : 'linear-gradient(90deg, var(--accent-text), #FFD56B)' }} /></div>
+                      <span style={{ fontSize: 11.5, fontWeight: 700, color: p === 0 ? 'var(--text-muted)' : 'var(--accent-text)', minWidth: 32, textAlign: 'right' }}>{p} %</span>
                     </div>
-                    <div style={{ fontSize: '11px', color: 'var(--text-3)', marginTop: '2px' }}>
-                      {formatDateShort(p.created_at)}
+                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 3 }}>
+                      Inscription le {dateShort(uf.enrolled_at)}{uf.formation?.duration ? ` · ${uf.formation.duration}` : ''}
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              )
+            })}
+          </div>
+          {sorted.length > 6 && (
+            <button type="button" onClick={() => setAll(v => !v)} style={s.linkBtn}>
+              {all ? 'Voir moins' : `Voir les ${sorted.length} formations`}
+            </button>
           )}
-        </div>
+        </>
       )}
+    </section>
+  )
+}
 
-      {/* ── Activité stats ── */}
-      <div style={s.section} className="fade-up">
-        <div style={s.sectionHeader}>
-          <div style={s.sectionTitle}>
-            <UsersFour size={16} color="var(--text-3)" />
-            Activité dans l&apos;espace hôte
+function CoachingNotes({ memberId, firstName, initial }: { memberId: string; firstName: string; initial: string }) {
+  const [editing, setEditing] = useState(false)
+  const [notes, setNotes] = useState(initial)
+  const [draft, setDraft] = useState(initial)
+  const [error, setError] = useState('')
+  const [saved, setSaved] = useState(false)
+  const [expanded, setExpanded] = useState(false)
+  const [pending, start] = useTransition()
+  const long = notes.length > 280
+
+  function save() {
+    setError('')
+    const prev = notes
+    setNotes(draft); setEditing(false)
+    start(async () => {
+      const res = await updateAdminNotes(memberId, draft)
+      if (res.error) { setNotes(prev); setDraft(draft); setEditing(true); setError(String(res.error)); return }
+      setSaved(true); setTimeout(() => setSaved(false), 2500)
+    })
+  }
+
+  return (
+    <section style={{ ...s.card, padding: 18 }} className="fade-up">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: notes || editing ? 10 : 0 }}>
+        <h2 style={s.h3}><Note size={16} /> Notes <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-muted)' }}>visibles par toi seul</span></h2>
+        {!editing && (
+          <button type="button" onClick={() => { setDraft(notes); setEditing(true) }} style={s.smallBtn}>
+            <Pencil size={12} /> {notes ? 'Modifier' : 'Ajouter'}
+          </button>
+        )}
+      </div>
+      {saved && <div style={{ fontSize: 12, color: 'var(--accent-text)', marginBottom: 6, display: 'flex', gap: 4, alignItems: 'center' }}><Check size={12} weight="bold" /> Enregistré</div>}
+      {editing ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <textarea
+            value={draft} onChange={e => setDraft(e.target.value)} rows={4} autoFocus style={s.textarea}
+            placeholder={`Objectifs de ${firstName}, ce qui a été dit, prochaine relance…`}
+          />
+          {error && <p style={{ fontSize: 12.5, color: 'var(--danger)', margin: 0 }}>{error}</p>}
+          <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
+            <button type="button" onClick={() => { setEditing(false); setError('') }} style={s.smallBtn} disabled={pending}><X size={12} /> Annuler</button>
+            <button type="button" onClick={save} style={{ ...s.smallBtn, background: 'var(--accent-text)', color: 'var(--bg)', border: '1px solid var(--accent-text)' }} disabled={pending}>
+              {pending ? <ArrowClockwise size={12} /> : <Check size={12} weight="bold" />} Enregistrer
+            </button>
           </div>
         </div>
-        <div style={s.statsGrid}>
-          {statTiles.map(tile => (
-            <div key={tile.label} style={{ ...s.statTile, borderColor: `color-mix(in srgb, ${tile.color} 15%, transparent)`, background: `color-mix(in srgb, ${tile.color} 3%, transparent)` }}>
-              <span style={{ color: tile.color }}>{tile.icon}</span>
-              <span style={{
-                fontFamily: 'var(--font-fraunces), serif', fontSize: '26px', fontWeight: 400,
-                color: tile.value > 0 ? 'var(--text)' : 'var(--text-muted)', lineHeight: 1,
-              }}>
-                {tile.value}
+      ) : notes ? (
+        <>
+          <p style={{ ...s.notesText, ...(long && !expanded ? { display: '-webkit-box', WebkitLineClamp: 5, WebkitBoxOrient: 'vertical', overflow: 'hidden' } : null) }}>{notes}</p>
+          {long && <button type="button" onClick={() => setExpanded(v => !v)} style={s.linkBtn}>{expanded ? 'Réduire' : 'Tout lire'}</button>}
+        </>
+      ) : null}
+    </section>
+  )
+}
+
+function Community({ stats, groups, audits, notifications }: { stats: MemberStats; groups: CommunityGroup[]; audits: AuditSession[]; notifications: number | null }) {
+  const rows: Array<{ icon: React.ReactNode; label: string; value: string; zero: boolean }> = [
+    { icon: <FacebookLogo size={15} weight="fill" />, label: 'Groupes Facebook', value: stats.communityGroupsCount > 0 ? `${stats.communityGroupsCount} · ${formatReach(stats.communityTotalReach)} membres` : '0', zero: stats.communityGroupsCount === 0 },
+    { icon: <MagnifyingGlass size={15} />, label: 'Audits fiche Google', value: stats.auditsCount > 0 ? `${stats.auditsCompleted}/${stats.auditsCount} finis${stats.auditsBestScore > 0 ? ` · ${stats.auditsBestScore}/100` : ''}` : '0', zero: stats.auditsCount === 0 },
+    { icon: <BookmarkSimple size={15} />, label: 'Modèles de messages', value: `${stats.favorites} favori${stats.favorites > 1 ? 's' : ''} · ${stats.customizations} perso`, zero: stats.favorites + stats.customizations === 0 },
+    { icon: <Flag size={15} />, label: 'Voyageurs signalés', value: String(stats.signalements), zero: stats.signalements === 0 },
+    { icon: <Sparkle size={15} />, label: 'Idées proposées', value: String(stats.suggestions), zero: stats.suggestions === 0 },
+    ...(notifications != null ? [{ icon: <Bell size={15} />, label: 'Notifications activées', value: notifications > 0 ? `${notifications} appareil${notifications > 1 ? 's' : ''}` : 'Non', zero: notifications === 0 }] : []),
+  ]
+  return (
+    <section style={s.card} className="fade-up">
+      <h2 style={{ ...s.h3, marginBottom: 10 }}><Compass size={16} /> Communauté et outils</h2>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {rows.map(r => (
+          <div key={r.label} style={s.toolRow}>
+            <span style={{ color: r.zero ? 'var(--text-muted)' : 'var(--accent-text)', display: 'inline-flex' }}>{r.icon}</span>
+            <span style={{ flex: 1, fontSize: 13, color: r.zero ? 'var(--text-muted)' : 'var(--text-2)' }}>{r.label}</span>
+            <span style={{ fontSize: 12.5, fontWeight: 600, color: r.zero ? 'var(--text-muted)' : 'var(--text)', textAlign: 'right' }}>{r.value}</span>
+          </div>
+        ))}
+      </div>
+      {(groups.length > 0 || audits.length > 0) && (
+        <details style={{ marginTop: 10 }}>
+          <summary style={{ fontSize: 12.5, color: 'var(--text-3)', cursor: 'pointer' }}>Détail des groupes et des audits</summary>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
+            {groups.map(g => (
+              <div key={g.id} style={s.detailRow}><FacebookLogo size={13} weight="fill" color="#6E5446" /><span style={{ flex: 1 }}>{g.name ?? 'Groupe sans nom'}</span><span style={{ color: 'var(--text-muted)' }}>{formatReach(g.member_count ?? 0)}</span></div>
+            ))}
+            {audits.map(a => (
+              <div key={a.id} style={s.detailRow}><MagnifyingGlass size={13} color="#B7791F" /><span style={{ flex: 1 }}>{a.business_name ?? 'Sans nom'} · {dateShort(a.started_at)}</span><span style={{ color: 'var(--text-muted)' }}>{a.completed_at ? `${a.score_global}/100` : 'Brouillon'}</span></div>
+            ))}
+          </div>
+        </details>
+      )}
+    </section>
+  )
+}
+
+function Investor({ projects }: { projects: InvestorProject[] }) {
+  return (
+    <section style={s.card} className="fade-up">
+      <h2 style={{ ...s.h3, marginBottom: 12 }}><Briefcase size={16} /> Espace investisseur ({projects.length} projet{projects.length > 1 ? 's' : ''})</h2>
+      {projects.length === 0 ? (
+        <p style={s.empty}>N’a pas encore sauvegardé de projet d’acquisition depuis l’estimateur.</p>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {projects.map(p => (
+            <div key={p.id} style={s.detailRow}>
+              <FolderOpen size={14} color="#6E5446" weight="fill" />
+              <span style={{ flex: 1, minWidth: 0 }}>
+                <strong style={{ color: 'var(--text)' }}>{p.nom}</strong>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--text-3)', flexWrap: 'wrap', marginTop: 2 }}>
+                  {p.ville && <><MapPin size={10} weight="fill" /> {p.ville} ·</>} {p.type_logement.toUpperCase()}
+                  {p.prix_achat != null && <> · {fmtEur(p.prix_achat)}</>}{p.mensualite != null && <> · {fmtEur(p.mensualite)}/mois</>}
+                </span>
               </span>
-              <span style={{ fontSize: '11px', color: 'var(--text-3)', lineHeight: '1.3' }}>{tile.label}</span>
+              <span style={{ color: 'var(--text-muted)' }}>{dateShort(p.created_at)}</span>
             </div>
           ))}
         </div>
-      </div>
-
-      {/* ── Communauté Facebook ── */}
-      <div style={s.section} className="fade-up">
-        <div style={s.sectionHeader}>
-          <div style={s.sectionTitle}>
-            <FacebookLogo size={16} color="#6E5446" weight="fill" />
-            Communauté Facebook ({stats.communityGroupsCount} groupe{stats.communityGroupsCount > 1 ? 's' : ''})
-          </div>
-          {stats.communityTotalReach > 0 && (
-            <span style={{ ...s.pill, background: 'color-mix(in srgb, #6E5446 10%, transparent)', color: '#6E5446' }}>
-              <Lightning size={11} weight="fill" />
-              Portée {formatReach(stats.communityTotalReach)} membres
-            </span>
-          )}
-        </div>
-        {joinedGroups.length === 0 ? (
-          <div style={{ fontSize: '13px', color: 'var(--text-muted)', padding: '14px 0' }}>
-            N'a rejoint aucun groupe Facebook pour le moment.
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {joinedGroups.map(g => (
-              <div key={g.id} style={s.commItem}>
-                <FacebookLogo size={14} color="#6E5446" weight="fill" />
-                <span style={{ flex: 1, fontSize: '13.5px', color: 'var(--text)' }}>
-                  {g.name ?? 'Groupe sans nom'}
-                </span>
-                <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>
-                  {formatReach(g.member_count ?? 0)} membres
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* ── Audits GBP ── */}
-      <div style={s.section} className="fade-up">
-        <div style={s.sectionHeader}>
-          <div style={s.sectionTitle}>
-            <MagnifyingGlass size={16} color="#B7791F" weight="fill" />
-            Audits GBP ({stats.auditsCount} dont {stats.auditsCompleted} complété{stats.auditsCompleted > 1 ? 's' : ''})
-          </div>
-          {stats.auditsBestScore > 0 && (
-            <span style={{ ...s.pill, background: 'color-mix(in srgb, #B7791F 10%, transparent)', color: '#B7791F' }}>
-              <Trophy size={11} weight="fill" />
-              Meilleur score : {stats.auditsBestScore}/100
-            </span>
-          )}
-        </div>
-        {auditList.length === 0 ? (
-          <div style={{ fontSize: '13px', color: 'var(--text-muted)', padding: '14px 0' }}>
-            N'a pas encore lancé d'audit GBP.
-          </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {auditList.map(a => (
-              <div key={a.id} style={s.commItem}>
-                <MagnifyingGlass size={14} color="#B7791F" weight="fill" />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: '13px', color: 'var(--text)' }}>
-                    {a.business_name ?? 'Sans nom'}
-                  </div>
-                  <div style={{ fontSize: '11px', color: 'var(--text-3)', marginTop: '2px' }}>
-                    {formatDateShort(a.started_at)}
-                  </div>
-                </div>
-                {a.completed_at ? (
-                  <span style={{ ...s.pill, background: 'color-mix(in srgb, #B7791F 12%, transparent)', color: '#B7791F' }}>
-                    {a.score_global}/100
-                  </span>
-                ) : (
-                  <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic' }}>
-                    Brouillon
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-        </aside>
-      </div>
-
-      {/* ── Formations (full-width) ── */}
-      <div style={s.section} className="fade-up">
-        <div style={s.sectionHeader}>
-          <div style={s.sectionTitle}>
-            <GraduationCap size={16} color="var(--text-3)" />
-            Formations ({formations.length})
-          </div>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            {completedFormations.length > 0 && (
-              <span style={{ ...s.pill, background: 'color-mix(in srgb, var(--accent-text) 10%, transparent)', color: 'var(--accent-text)' }}>
-                {completedFormations.length} terminée{completedFormations.length > 1 ? 's' : ''}
-              </span>
-            )}
-            {inProgressFormations.length > 0 && (
-              <span style={{ ...s.pill, background: 'rgba(255,213,107,0.1)', color: '#B7791F' }}>
-                {inProgressFormations.length} en cours
-              </span>
-            )}
-          </div>
-        </div>
-
-        {formations.length === 0 ? (
-          <p style={{ fontSize: '14px', color: 'var(--text-muted)', margin: 0, fontStyle: 'italic' }}>
-            Aucune formation commencée.
-          </p>
-        ) : (
-          <div style={s.formationsList}>
-            {formations.map(uf => (
-              <div key={uf.id} style={s.formationItem}>
-                <div style={{
-                  width: '36px', height: '36px', flexShrink: 0, borderRadius: '10px',
-                  background: uf.progress === 100 ? 'var(--accent-bg)' : 'rgba(255,213,107,0.08)',
-                  border: `1px solid ${uf.progress === 100 ? 'var(--accent-border)' : 'rgba(255,213,107,0.15)'}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  {uf.progress === 100
-                    ? <Check size={16} color="var(--accent-text)" weight="bold" />
-                    : <GraduationCap size={16} color="var(--accent-text)" />
-                  }
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={s.formationTitle}>{uf.formation?.title ?? 'Formation inconnue'}</div>
-                  <div style={s.formationMeta}>
-                    <span>Inscrit le {formatDateShort(uf.enrolled_at)}</span>
-                    {uf.formation?.level && (
-                      <span style={s.levelBadge}>{uf.formation.level}</span>
-                    )}
-                    {uf.formation?.duration && (
-                      <span style={{ color: 'var(--text-muted)' }}>{uf.formation.duration}</span>
-                    )}
-                  </div>
-                  <div style={s.progressWrap}>
-                    <div style={s.progressBar}>
-                      <div style={{
-                        height: '100%', borderRadius: '100px',
-                        width: `${uf.progress}%`,
-                        background: uf.progress === 100
-                          ? 'linear-gradient(90deg, var(--accent-text), var(--accent-text))'
-                          : 'linear-gradient(90deg, var(--accent-text), #FFD56B)',
-                        transition: 'width 0.4s ease',
-                      }} />
-                    </div>
-                    <span style={{
-                      fontSize: '12px', fontWeight: 600, minWidth: '36px', textAlign: 'right',
-                      color: uf.progress === 100 ? 'var(--accent-text)' : 'var(--accent-text)',
-                    }}>
-                      {uf.progress}%
-                    </span>
-                    {uf.progress === 100 && (
-                      <span style={{ ...s.pill, background: 'var(--accent-bg)', color: 'var(--accent-text)', fontSize: '10px', padding: '2px 7px' }}>
-                        Terminée
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-    </div>
+      )}
+    </section>
   )
 }
 
 // ── Styles ──────────────────────────────────────────────────────────────────
 const s: Record<string, React.CSSProperties> = {
-  page: { display: 'flex', flexDirection: 'column', gap: '16px' },
+  page: { display: 'flex', flexDirection: 'column', gap: 16 },
+  col: { display: 'flex', flexDirection: 'column', gap: 16, minWidth: 0 },
+  backBtn: { display: 'inline-flex', alignItems: 'center', gap: 6, alignSelf: 'flex-start', background: 'none', border: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--text-3)', padding: '4px 0', fontFamily: 'inherit' },
 
-  // 2-column desktop layout
-  twoColGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'minmax(0, 1fr) 380px',
-    gap: '20px',
-    alignItems: 'start',
-  },
-  singleCol: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '16px',
-  },
-  leftColumn: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '16px',
-    minWidth: 0,
-  },
-  rightColumn: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '16px',
-  },
-  rightColumnSticky: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '16px',
-    position: 'sticky' as const,
-    top: '20px',
-  },
-
-  backBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    background: 'none', border: 'none', cursor: 'pointer',
-    fontSize: '13px', color: 'var(--text-3)', padding: '4px 0',
-    transition: 'color 0.15s', fontFamily: 'var(--font-outfit), sans-serif',
-  },
-
-  profileCard: {
-    display: 'flex', alignItems: 'flex-start', gap: 'var(--s-5)',
-    padding: 'var(--s-6)', borderRadius: 'var(--r-xl)',
-    flexWrap: 'wrap' as const,
-    // En-tête vert, même fond que HubHero (DA 28/09/2026)
+  hero: {
+    display: 'flex', flexDirection: 'column', gap: 18, padding: 'clamp(18px, 2.4vw, 28px)', borderRadius: 22,
     background: 'linear-gradient(135deg, var(--accent-bg) 0%, rgba(99,214,131,0.10) 55%, rgba(255,213,107,0.14) 100%)',
     border: '1px solid var(--accent-border)',
   },
-  bigAvatar: {
-    width: '68px', height: '68px', flexShrink: 0, borderRadius: '50%',
-    background: 'var(--surface)',
-    border: '2px solid var(--accent-border)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center',
-    boxShadow: '0 0 0 4px var(--accent-bg)',
-  },
-  bigAvatarText: {
-    fontFamily: 'var(--font-fraunces), serif', fontSize: '22px', fontWeight: 600, color: 'var(--accent-text)',
-  },
-  profileInfo: { flex: 1, minWidth: 0 },
-  profileNameRow: {
-    display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px',
-  },
-  profileName: {
-    fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(20px,2.5vw,28px)',
-    fontWeight: 400, color: 'var(--text)', margin: 0,
-  },
-  emailLink: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    fontSize: '13px', color: 'var(--text-3)', textDecoration: 'none',
-    marginBottom: '10px',
-  },
-  profileMeta: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' },
-  memberSince: { fontSize: '12px', color: 'var(--text-muted)', fontStyle: 'italic' },
-  planSelector: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginTop: '14px' },
+  heroMain: { display: 'flex', alignItems: 'flex-start', gap: 16 },
+  avatar: { position: 'relative', width: 64, height: 64, flexShrink: 0, borderRadius: '50%', background: 'var(--surface)', border: '2px solid var(--accent-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 0 4px var(--accent-bg)' },
+  avatarText: { fontFamily: 'var(--font-fraunces), serif', fontSize: 21, fontWeight: 600, color: 'var(--accent-text)' },
+  levelDot: { position: 'absolute', right: 1, bottom: 1, width: 14, height: 14, borderRadius: 99, border: '2.5px solid var(--surface)' },
+  name: { fontFamily: 'var(--font-fraunces), serif', fontSize: 'clamp(22px, 2.6vw, 30px)', fontWeight: 400, color: 'var(--text)', margin: 0, lineHeight: 1.15, overflowWrap: 'anywhere' },
+  emailRow: { display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 },
+  emailLink: { display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, color: 'var(--text-3)', textDecoration: 'none', overflowWrap: 'anywhere' },
+  iconBtn: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 26, height: 26, borderRadius: 8, border: 'none', background: 'transparent', color: 'var(--text-3)', cursor: 'pointer' },
+  badges: { display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 },
+  heroFacts: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 8 },
+  fact: { display: 'flex', flexDirection: 'column', gap: 2, padding: '10px 12px', borderRadius: 14, background: 'var(--surface)', border: '1px solid var(--border)', minWidth: 0 },
+  factLabel: { fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.4 },
+  factValue: { fontSize: 14, fontWeight: 700, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  factSub: { fontSize: 11.5, color: 'var(--text-3)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  planSelect: { marginTop: 2, background: 'transparent', border: 'none', padding: 0, fontSize: 14, fontWeight: 700, cursor: 'pointer', outline: 'none', fontFamily: 'inherit' },
 
-  pill: {
-    display: 'inline-flex', alignItems: 'center', gap: '4px',
-    fontSize: '11px', fontWeight: 600,
-    padding: '3px 9px', borderRadius: '100px',
-    whiteSpace: 'nowrap' as const,
-  },
+  pill: { display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 11.5, fontWeight: 600, padding: '3px 10px', borderRadius: 999, whiteSpace: 'nowrap' },
 
-  section: {
-    background: 'var(--surface)', border: '1px solid var(--surface-2)',
-    borderRadius: '18px', padding: '22px',
-  },
-  sectionHeader: {
-    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-    marginBottom: '18px', flexWrap: 'wrap', gap: '8px',
-  },
-  sectionTitle: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-    fontSize: '14px', fontWeight: 500, color: 'var(--text-2)',
-  },
-  sectionSubtitle: {
-    fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400, fontStyle: 'italic',
-  },
-  editBtn: {
-    display: 'flex', alignItems: 'center', gap: '5px',
-    background: 'none', border: 'none', cursor: 'pointer',
-    fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-outfit), sans-serif',
-    transition: 'color 0.15s',
-  },
+  card: { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 18, padding: 'clamp(16px, 2vw, 22px)' },
+  cardHead: { display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', marginBottom: 16 },
+  h2: { fontFamily: 'var(--font-fraunces), serif', fontSize: 21, fontWeight: 400, color: 'var(--text)', margin: 0 },
+  h3: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 14.5, fontWeight: 700, color: 'var(--text)', margin: 0 },
+  lead: { margin: '4px 0 0', fontSize: 13, color: 'var(--text-3)' },
+  privacy: { fontSize: 11.5, color: 'var(--text-muted)' },
+  empty: { fontSize: 13, color: 'var(--text-muted)', margin: 0 },
 
-  notesTextarea: {
-    width: '100%', boxSizing: 'border-box',
-    background: 'var(--bg)', border: '1px solid var(--border)',
-    borderRadius: '12px', padding: '14px 16px',
-    fontSize: '14px', color: 'var(--text)', lineHeight: '1.7',
-    fontFamily: 'var(--font-outfit), sans-serif', resize: 'vertical',
-    outline: 'none',
-  } as React.CSSProperties,
-  notesText: {
-    fontSize: '14px', color: 'var(--text-2)', lineHeight: '1.8', margin: 0,
-    whiteSpace: 'pre-wrap' as const,
-  },
-  emptyNotesBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '8px',
-    background: 'none',
-    border: '1px dashed var(--border)',
-    borderRadius: '10px', padding: '10px 16px',
-    fontSize: '13px', color: 'var(--text-muted)', cursor: 'pointer',
-    fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
-  },
-  savedBanner: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    fontSize: '12px', color: 'var(--accent-text)', marginBottom: '12px',
-  },
+  progressOuter: { width: 'min(220px, 100%)', height: 8, borderRadius: 99, background: 'var(--surface-2)', border: '1px solid var(--border)', overflow: 'hidden' },
+  progressInner: { height: '100%', borderRadius: 99, background: 'linear-gradient(90deg, var(--accent-text), #FFD56B)' },
+  steps: { listStyle: 'none', margin: 0, padding: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 8 },
+  step: { padding: '12px 12px 11px', borderRadius: 14, minWidth: 0 },
+  blocker: { display: 'flex', gap: 12, alignItems: 'flex-start', marginTop: 14, padding: '13px 15px', borderRadius: 14, background: 'rgba(255,213,107,0.14)', border: '1px solid rgba(255,213,107,0.5)' },
 
-  primaryBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    background: 'rgba(255,213,107,0.12)', border: '1px solid rgba(255,213,107,0.25)',
-    borderRadius: '10px', padding: '8px 16px',
-    fontSize: '13px', fontWeight: 600, color: 'var(--accent-text)',
-    cursor: 'pointer', fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
-  },
-  ghostBtn: {
-    display: 'inline-flex', alignItems: 'center', gap: '6px',
-    background: 'none', border: '1px solid var(--border)',
-    borderRadius: '10px', padding: '8px 14px',
-    fontSize: '13px', color: 'var(--text-3)', cursor: 'pointer',
-    fontFamily: 'var(--font-outfit), sans-serif', transition: 'all 0.15s',
-  },
+  modules: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 10 },
+  module: { padding: '12px 14px', borderRadius: 14, background: 'var(--bg-2)', border: '1px solid var(--border)' },
+  moduleIcon: { width: 28, height: 28, borderRadius: 9, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' },
+  metric: { display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', borderTop: '1px solid var(--border)' },
 
-  statsGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '10px',
-  },
-  statTile: {
-    display: 'flex', flexDirection: 'column', gap: '5px',
-    padding: '14px 12px', border: '1px solid',
-    borderRadius: '12px',
-  },
-  commItem: {
-    display: 'flex', alignItems: 'center', gap: '10px',
-    padding: '10px 12px',
-    background: 'var(--surface-2, rgba(255,255,255,0.02))',
-    border: '1px solid var(--border)',
-    borderRadius: '10px',
-  },
+  formGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 10 },
+  formItem: { display: 'flex', gap: 10, alignItems: 'flex-start', padding: '11px 12px', borderRadius: 12, border: '1px solid var(--border)', background: 'var(--bg-2)', minWidth: 0 },
+  formIcon: { width: 28, height: 28, borderRadius: 8, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  bar: { flex: 1, height: 5, borderRadius: 99, background: 'var(--border)', overflow: 'hidden' },
+  linkBtn: { marginTop: 10, background: 'none', border: 'none', padding: 0, fontSize: 12.5, fontWeight: 600, color: 'var(--accent-text)', cursor: 'pointer', fontFamily: 'inherit' },
 
-  formationsList: { display: 'flex', flexDirection: 'column', gap: '16px' },
-  formationItem: { display: 'flex', alignItems: 'flex-start', gap: '12px' },
-  formationTitle: {
-    fontSize: '14px', fontWeight: 500, color: 'var(--text)', marginBottom: '4px',
-    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const,
-  },
-  formationMeta: {
-    display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap',
-    fontSize: '12px', color: 'var(--text-3)', marginBottom: '8px',
-  },
-  levelBadge: {
-    background: 'var(--surface-2)', border: '1px solid var(--border)',
-    borderRadius: '100px', padding: '1px 7px',
-    fontSize: '11px', color: 'var(--text-muted)',
-  },
-  progressWrap: {
-    display: 'flex', alignItems: 'center', gap: '8px',
-  },
-  progressBar: {
-    flex: 1, height: '5px', background: 'var(--border)',
-    borderRadius: '100px', overflow: 'hidden',
-  },
+  smallBtn: { display: 'inline-flex', alignItems: 'center', gap: 5, padding: '5px 10px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-2)', fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' },
+  textarea: { width: '100%', boxSizing: 'border-box', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 10, padding: '10px 12px', fontSize: 13.5, color: 'var(--text)', lineHeight: 1.6, fontFamily: 'inherit', resize: 'vertical', outline: 'none' },
+  notesText: { fontSize: 13.5, color: 'var(--text-2)', lineHeight: 1.65, margin: 0, whiteSpace: 'pre-wrap' },
+
+  feed: { listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column' },
+  feedItem: { display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', borderBottom: '1px solid var(--border)' },
+  feedDot: { width: 8, height: 8, borderRadius: 99, flexShrink: 0 },
+
+  toolRow: { display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '1px solid var(--border)' },
+  detailRow: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 12.5, color: 'var(--text-2)', padding: '7px 10px', borderRadius: 10, background: 'var(--bg-2)', border: '1px solid var(--border)' },
 }
