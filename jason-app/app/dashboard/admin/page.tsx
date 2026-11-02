@@ -19,14 +19,16 @@ import { adminUserIds, splitDemo } from '@/lib/pros/demo'
 export const metadata = { title: 'Administration, Jason Marinho' }
 
 // Chiffres de la Vue d'ensemble : 4 lectures (compteurs en une requête depuis
-// le 24/10/2026, avant ~20), gardées en cache le temps
-// de la minute en cours. Avant, chaque passage en mode admin les relançait
-// toutes (écran de chargement de plusieurs secondes). La minute fait partie
-// de la clé : unstable_cache sert sinon l'ancienne valeur à la première
-// visite après expiration (04/10/2026 : nouveau membre absent des chiffres).
-// Le trafic « en direct » reste calculé à chaque fois (rafraîchi toutes les
-// 25 s par LiveTraffic).
-const getAdminOverview = () => unstable_cache(computeAdminOverview, ['admin-overview-v2', String(Math.floor(Date.now() / 60_000))], { revalidate: 120, tags: ['admin-overview'] })()
+// le 24/10/2026, avant ~20). 02/11/2026 (Jason : « le mode admin prend
+// beaucoup trop de temps à charger », mesuré 17 à 33 s) : la minute en cours
+// faisait partie de la clé, donc presque chaque passage en mode admin
+// recalculait tout pendant que la base était lente. Maintenant : valeur
+// gardée et servie tout de suite, recalculée en arrière-plan au-delà de
+// 3 minutes (« stale-while-revalidate » de unstable_cache) ; les actions
+// admin vident le cache (tag admin-overview). Un nouveau membre apparaît donc
+// au plus tard au passage suivant. Le trafic « en direct » reste calculé à
+// chaque fois (rafraîchi toutes les 25 s par LiveTraffic).
+const getAdminOverview = unstable_cache(computeAdminOverview, ['admin-overview-v3'], { revalidate: 180, tags: ['admin-overview'] })
 
 async function computeAdminOverview() {
   // Début du mois courant
