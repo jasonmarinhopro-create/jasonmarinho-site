@@ -19,6 +19,16 @@ interface Props {
 export default function ShareFicheBlock({ url, displayName, compact }: Props) {
   const [copied, setCopied] = useState(false)
   const [showQr, setShowQr] = useState(false)
+  const popRef = useRef<HTMLDivElement>(null)
+  // Clic en dehors ou Échap : le panneau du QR se ferme
+  useEffect(() => {
+    if (!showQr) return
+    const onDown = (e: MouseEvent) => { if (popRef.current && !popRef.current.contains(e.target as Node)) setShowQr(false) }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setShowQr(false) }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => { document.removeEventListener('mousedown', onDown); document.removeEventListener('keydown', onKey) }
+  }, [showQr])
   const qrContainerRef = useRef<HTMLDivElement>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const qrRef = useRef<any>(null)
@@ -78,13 +88,18 @@ export default function ShareFicheBlock({ url, displayName, compact }: Props) {
             {copied ? <><Check size={13} weight="bold" /> Copié</> : <><Copy size={13} /> Copier</>}
           </span>
         </button>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <div ref={popRef} style={{ position: 'relative', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <button onClick={share} style={s.primaryBtn}><ShareNetwork size={13} weight="bold" /> Partager</button>
-          <button onClick={() => setShowQr(v => !v)} style={s.ghostBtn} aria-expanded={showQr}><QrCode size={13} weight="bold" /> QR code</button>
-        </div>
-        <div style={{ display: showQr ? 'flex' : 'none', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-          <div style={s.qrWrap}><div ref={qrContainerRef} style={{ lineHeight: 0 }} /></div>
-          <button onClick={downloadQr} style={s.ghostBtn}><DownloadSimple size={13} weight="bold" /> Télécharger le QR</button>
+          <button onClick={() => setShowQr(v => !v)} style={{ ...s.ghostBtn, ...(showQr ? { border: '1px solid var(--accent-border-2)', color: 'var(--accent-text)' } : null) }} aria-expanded={showQr}><QrCode size={13} weight="bold" /> QR code</button>
+          {/* Panneau flottant : ouvrir le QR ne change plus la hauteur des cartes voisines */}
+          <div role="dialog" aria-label="QR code de ta fiche" style={{ ...s.qrPop, display: showQr ? 'flex' : 'none' }}>
+            <div style={s.qrWrap}><div ref={qrContainerRef} style={{ lineHeight: 0 }} /></div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 150 }}>
+              <span style={{ fontSize: 12.5, color: 'var(--text-2)', lineHeight: 1.45 }}>Scanné avec un téléphone, il ouvre ta fiche.</span>
+              <button onClick={downloadQr} style={s.primaryBtn}><DownloadSimple size={13} weight="bold" /> Télécharger</button>
+              <button onClick={() => setShowQr(false)} style={s.ghostBtn}>Fermer</button>
+            </div>
+          </div>
         </div>
         <p style={{ ...s.hint, margin: 0 }}>Sur ta carte de visite, ton Instagram, tes devis, dans les groupes Facebook d’hôtes : chaque visite peut devenir un client, sans commission.</p>
       </div>
@@ -169,6 +184,12 @@ const s: Record<string, React.CSSProperties> = {
     fontSize: 12.5, fontWeight: 500,
     color: 'var(--text-2)', background: 'transparent',
     border: '1px solid var(--border)', cursor: 'pointer', fontFamily: 'inherit',
+  },
+  qrPop: {
+    position: 'absolute', top: 'calc(100% + 8px)', left: 0, zIndex: 40,
+    alignItems: 'center', gap: 14, padding: 14, borderRadius: 14,
+    background: 'var(--floating-surface)', border: '1px solid var(--floating-border, var(--border))',
+    boxShadow: '0 16px 40px rgba(0,26,17,.18)',
   },
   qrWrap: {
     flexShrink: 0, padding: 8, borderRadius: 12,
