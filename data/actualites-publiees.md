@@ -11,9 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-04 · plateformes · Airbnb : commission unique de 15,5 % pour les hôtes dès le 13 octobre · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
-- 2026-09-04 · marche · Été 2026 : les côtes cartonnent, les grandes villes reculent · masquée (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
-- 2026-09-04 · plateformes · Airbnb se mue en super-app : transport, courses et expériences intégrés · masquée (https://blog.elloha.com/2026/08/16/un-nouvel-ete-offensif-pour-airbnb/)
 - 2026-09-05 · reglementation · Facture électronique : l'obligation est en vigueur depuis le 1er septembre · masquée (https://blog.elloha.com/2026/08/07/facturation-electronique-une-rentree-sportive-pour-les-loueurs-saisonniers/)
 - 2026-09-05 · fiscalite · LMNP : les prélèvements sociaux passent à 18,6 % sur tes revenus 2026 (https://www.nopillo.com/blog/lmnp-prelevements-sociaux)
 - 2026-09-06 · communes · Nice : dépôt des dossiers de quotas rouvert jusqu'au 31 décembre (https://www.nicecotedazur.org/services/logement/autorisations-de-changements-dusage/logements-en-meubles-touristiques/)
@@ -89,3 +86,4 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-11-01 · reglementation · Logement loué : entretien annuel de la chaudière avant fin 2026 · pour depannage (https://www.service-public.fr/particuliers/vosdroits/F20760)
 - 2026-11-02 · marche · Vacances de Noël 2026 : mets ton calendrier à jour pour la vague de réservations (https://www.service-public.fr/particuliers/vosdroits/F31952)
 - 2026-11-02 · reglementation · Logement loué : le détecteur de fumée doit être fonctionnel avant l'hiver · pour depannage
+- 2026-11-03 · plateformes · Airbnb : place tes règles de séjour dans l'annonce avant le 20 novembre (https://selectra.info/telecom/actualites/marche/airbnb-message-hote-regle-apres-reservation)
