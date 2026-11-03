@@ -170,3 +170,24 @@ Jason : « c'est forcément -100 % quand on commence un nouveau mois ». Le déb
 - **Amortissement** (`fiscal.ts`, `dotationAnnuelle`) : prorata temporis depuis la date saisie = mise en service (BOFiP BOI-BIC-AMT-20-10), reliquat sur l'année après la dernière année pleine.
 - **Journal** : échéances avec icône de répétition et pastille « Prévue » ; menu « … » d'une échéance = Modifier la série, Arrêter à partir d'aujourd'hui (`date_fin` = aujourd'hui), Supprimer toute la série. `sourceId` des lignes de charge = `serieId`.
 - **Formulaires refaits** (`JournalView.tsx`) : `ChargeModal` = gros montant (Fraunces, classes `amount-box` / `amount-input` dans `globals.css`, 28 px sur mobile malgré la règle iOS 16 px), catégories en tuiles avec icône et couleur, « Elle revient » (Une fois / Chaque mois / trimestre / année, proposé d'office selon la catégorie via `FREQ_SUGGEREE`), dernière échéance facultative, aperçu (« N échéances en 2026, soit X € »), bloc amortissement (montant total, date de fin des travaux, durées types 7 / 10 / 15 / 25 ans, aperçu de la dotation et du prorata), interrupteur « Déductible ». `RevenuModal` au même style (type en tuiles, moyen de paiement en segments). Classe `grid-4` : 4 colonnes, 2 × 2 sous 520 px.
+
+## Repères fiscaux sourcés dans Mes finances (03/11/2026)
+
+- Jason : « tout doit être sourcé pour bien justifier ce qu'on dit ».
+- **Une seule liste** : `lib/finances/fiscal-guide.ts` (`FISCAL_RULES`), avec une source officielle par règle (impots.gouv.fr ou BOFiP). Le test `fiscal-guide.test.ts` refuse toute source hors des domaines officiels.
+- **Les règles** :
+  - micro-BIC sans charges ;
+  - recettes en brut (avant commission) ;
+  - charges déductibles ;
+  - crédit : intérêts, pas le capital (BOI-BIC-CHG-50-20-10) ;
+  - petit équipement ≤ 500 € HT, mais pas l'équipement complet de départ (BOI-BIC-CHG-20-30-10) ;
+  - éléments amortissables (BOI-BIC-AMT-10-20) ;
+  - mise en service et prorata (BOI-BIC-AMT-20-10) ;
+  - durée normale d'utilisation, non fixée par la loi (BOI-BIC-AMT-10-40-30).
+- **Affichage** : `components/finances/FiscalGuide.tsx` (liste dépliable et `RuleSource`) dans :
+  - le formulaire de charge : conseils par catégorie avec leur source, et la liste « Déductible ou amortissable ? Les règles » ;
+  - le bloc amortissement ;
+  - « Ajouter le voyageur » d'une réservation importée (`QuickSejourModal`) et le séjour de la fiche voyageur : « montant brut, avant la commission ».
+- **Aide** `suivre-revenus.md` : sections « Les réservations importées sans montant » et « Déductible ou amortissable ? », avec des lignes `> Source :` et des liens.
+- **Assurance de l'emprunt** retirée du conseil « Crédit » : aucune source officielle trouvée pour la dire déductible.
+- **Réseau** : la session Claude n'atteint pas impots.gouv.fr. Les liens ont été vérifiés par la recherche web (identifiants BOFiP relevés dans les résultats).

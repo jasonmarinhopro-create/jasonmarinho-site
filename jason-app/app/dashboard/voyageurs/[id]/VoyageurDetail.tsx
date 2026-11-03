@@ -1,5 +1,6 @@
 'use client'
 
+import { RuleSource } from '@/components/finances/FiscalGuide'
 import Link from 'next/link'
 import { useState, useTransition, useRef, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -2480,6 +2481,9 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                   <CurrencyEur size={15} color="var(--text-muted)" />
                   <input className="no-ring" style={s.input} type="number" min="0" step="0.01" value={sejourForm.montant ?? ''} onChange={e => setSejourForm(f => ({ ...f, montant: e.target.value ? Number(e.target.value) : null }))} placeholder="450" />
                 </div>
+                <span style={{ display: 'block', fontSize: '11px', color: 'var(--text-muted)', marginTop: '5px', lineHeight: 1.45 }}>
+                  Montant brut : nuits et frais de ménage, avant la commission de la plateforme (elle se saisit à part). <RuleSource k="brut" style={{ fontSize: '11px' }} />
+                </span>
               </div>
               <div style={s.field}>
                 <label style={s.label}>Statut contrat</label>

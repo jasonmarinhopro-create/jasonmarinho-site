@@ -1,5 +1,6 @@
 'use client'
 
+import { RuleSource } from '@/components/finances/FiscalGuide'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
@@ -397,6 +398,11 @@ export default function QuickSejourModal({ logementNom: fixedLogementNom, logeme
                 </div>
                 {Number.isFinite(montantNum) && montantNum > 0 && nights > 0 && (
                   <p style={{ ...hintText, margin: '6px 0 0' }}>Soit {eur(Math.round(montantNum / nights * 100) / 100)} € la nuit.</p>
+                )}
+                {platform && (
+                  <p style={{ ...hintText, margin: '6px 0 0' }}>
+                    Indique le <strong>montant brut</strong> : le prix des nuits et les frais de ménage, avant la commission de la plateforme. C’est ce qui se déclare. <RuleSource k="brut" />
+                  </p>
                 )}
               </Field>
             </section>

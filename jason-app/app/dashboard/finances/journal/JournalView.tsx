@@ -21,6 +21,7 @@ import { monthLabel, buildChargeLines, echeances, type Frequence } from '@/lib/f
 import { dotationAnnuelle } from '@/lib/finances/fiscal'
 import { Card, COLORS, dateCourte, eur, eurPrecis, ui } from '../_ui/ui'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
+import FiscalGuide, { RuleSource } from '@/components/finances/FiscalGuide'
 
 export interface JournalRow {
   key: string
@@ -464,10 +465,14 @@ const DUREES = [
   { ans: 25, label: 'Achat du bien' },
 ]
 
+/** Règle sourcée (lib/finances/fiscal-guide.ts) qui justifie chaque conseil */
+const CAT_HINT_RULE: Record<string, string> = { credit: 'credit', travaux: 'amortissables', equipement: 'petit', taxe_fonciere: 'deductibles' }
+
 const CAT_HINT: Record<string, string> = {
-  credit: "Seuls les intérêts et l'assurance de l'emprunt se déduisent au régime réel, pas le capital remboursé : indique ici la part d'intérêts et d'assurance de ta mensualité.",
+  credit: "Au régime réel, les intérêts de l'emprunt se déduisent, pas le capital remboursé : indique ici la part d'intérêts de ta mensualité (ton tableau d'amortissement de prêt la donne).",
   taxe_fonciere: "Saisis-la une fois avec « Chaque année » : elle revient toute seule chaque automne.",
   travaux: "Petites réparations et entretien. Pour de gros travaux qui durent des années, choisis plutôt « Investissement amorti ».",
+  equipement: "Petit matériel jusqu'à 500 € HT pièce (bouilloire, aspirateur…). Au-delà, ou pour l'équipement complet du logement au départ, choisis « Investissement amorti ».",
 }
 
 function dateLongue(iso: string) {
@@ -576,7 +581,13 @@ function ChargeModal({ logementNoms, logements, defaultLogement, row, onClose }:
               )
             })}
           </div>
-          {CAT_HINT[categorie] && <p style={cm.hint}><Info size={14} style={{ flexShrink: 0, marginTop: 1 }} />{CAT_HINT[categorie]}</p>}
+          {CAT_HINT[categorie] && (
+            <p style={cm.hint}>
+              <Info size={14} style={{ flexShrink: 0, marginTop: 1 }} />
+              <span>{CAT_HINT[categorie]}{CAT_HINT_RULE[categorie] && <><br /><RuleSource k={CAT_HINT_RULE[categorie]} /></>}</span>
+            </p>
+          )}
+          <FiscalGuide />
         </div>
 
         {/* Fréquence */}
@@ -603,7 +614,8 @@ function ChargeModal({ logementNoms, logements, defaultLogement, row, onClose }:
             <p style={{ margin: 0, fontSize: 13, lineHeight: 1.5, color: 'var(--text-2)' }}>
               Saisis <strong>le montant total</strong> (toutes factures réunies) à la date où les travaux sont <strong>terminés</strong> et le logement de nouveau louable, ou à la date d'achat du mobilier. L'amortissement démarre à cette date.
             </p>
-            <span style={cm.label}>Amorti sur</span>
+            <span style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}><RuleSource k="depart" /><RuleSource k="amortissables" /></span>
+            <span style={cm.label}>Amorti sur <span style={{ fontWeight: 400, color: 'var(--text-3)' }}>(la loi ne fixe pas de durée : c’est la durée normale d’utilisation)</span></span>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {DUREES.map(x => (
                 <button key={x.ans} type="button" onClick={() => setDuree(String(x.ans))} style={{ ...cm.pill, ...(d === x.ans ? cm.pillOn : null) }}>
@@ -615,6 +627,7 @@ function ChargeModal({ logementNoms, logements, defaultLogement, row, onClose }:
                 <span style={{ fontSize: 13, color: 'var(--text-3)' }}>ans</span>
               </div>
             </div>
+            <RuleSource k="duree" />
           </div>
         )}
 
