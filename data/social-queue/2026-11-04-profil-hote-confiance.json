@@ -1,0 +1,18 @@
+{
+  "slug": "profil-hote-confiance",
+  "format": "photo",
+  "public": "hotes",
+  "photo": "img/exemple-fiches/photo-interieur-1.jpg",
+  "slides": [
+    { "type": "couverture", "kicker": "Ton profil hôte", "titre": "Avant de réserver, le voyageur *regarde qui tu es*", "sous_titre": "Ta photo et ta bio, ou un profil vide ?" }
+  ],
+  "legende": "Ton annonce donne envie. Ton profil, lui, doit donner confiance.\n\nLa photo : ton visage bien visible, en lumière naturelle, sans lunettes de soleil, et pas une photo de groupe.\n\nLa bio : courte, en quatre temps. Qui tu es, ton expérience de l’accueil, ce qui compte pour toi, et ce que tu promets (par exemple, répondre vite).\n\nEt garde la même photo et le même prénom sur toutes tes plateformes.\n\nEt toi, ta bio d’hôte, elle fait plus ou moins de trois lignes ?",
+  "hashtags": ["#airbnb", "#locationcourteduree", "#hoteairbnb", "#superhost", "#lcd"],
+  "lien": "https://jasonmarinho.com/blog/profil-hote-airbnb-bio-photo-confiance",
+  "story": {
+    "texte": "La bio d’hôte en *4 temps*, qui rassure",
+    "frames": [
+      { "type": "question", "titre": "Ta bio d’hôte, *plus ou moins* de trois lignes ?" }
+    ]
+  }
+}
