@@ -65,6 +65,38 @@ export function isPhotoPath(path: unknown, proId: string): path is string {
   const m = V2_RE.exec(path)
   return !!m && m[1].toLowerCase() === proId.toLowerCase()
 }
+/**
+ * Photo retirée d'une fiche : son fichier reste tant que la fiche publique
+ * (site statique) peut encore la montrer. Effacé 1 h après une mise en ligne
+ * faite depuis le retrait (`pub`), ou au bout de 7 jours (le site est
+ * reconstruit plusieurs fois par jour pour d'autres raisons).
+ */
+export const RETIRED_AFTER_PUBLISH_MS = 3600_000
+export const RETIRED_MAX_MS = 7 * 24 * 3600_000
+
+export interface RetiredPhoto { path: string; at: string; pub?: string }
+
+export function splitRetired(list: unknown, now: number): { purge: string[]; keep: RetiredPhoto[] } {
+  const purge: string[] = []
+  const keep: RetiredPhoto[] = []
+  for (const r of Array.isArray(list) ? list : []) {
+    const x = r as RetiredPhoto
+    if (typeof x?.path !== 'string' || !x.path) continue
+    const at = Date.parse(x.at)
+    const pub = x.pub ? Date.parse(x.pub) : NaN
+    if (Number.isNaN(at) || now - at >= RETIRED_MAX_MS || (!Number.isNaN(pub) && now - pub >= RETIRED_AFTER_PUBLISH_MS)) purge.push(x.path)
+    else keep.push(x.pub ? { path: x.path, at: x.at, pub: x.pub } : { path: x.path, at: x.at })
+  }
+  return { purge, keep }
+}
+
+/** À la mise en ligne : les photos retirées jusque-là pourront être effacées dans une heure */
+export function markRetiredPublished(list: unknown, nowIso: string): RetiredPhoto[] {
+  return (Array.isArray(list) ? list : [])
+    .filter((r): r is RetiredPhoto => typeof (r as RetiredPhoto)?.path === 'string')
+    .map(r => ({ path: r.path, at: r.at, pub: r.pub ?? nowIso }))
+}
+
 export function isLegacyPhoto(path: string): boolean {
   return !V2_RE.test(path)
 }

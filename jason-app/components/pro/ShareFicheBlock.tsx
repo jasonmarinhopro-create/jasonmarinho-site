@@ -12,10 +12,13 @@ interface Props {
   url: string
   /** Nom affiché dans le partage natif */
   displayName: string
+  /** En tête de Ma fiche (03/11/2026) : lien et boutons d'abord, QR code sur demande */
+  compact?: boolean
 }
 
-export default function ShareFicheBlock({ url, displayName }: Props) {
+export default function ShareFicheBlock({ url, displayName, compact }: Props) {
   const [copied, setCopied] = useState(false)
+  const [showQr, setShowQr] = useState(false)
   const qrContainerRef = useRef<HTMLDivElement>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const qrRef = useRef<any>(null)
@@ -60,6 +63,32 @@ export default function ShareFicheBlock({ url, displayName }: Props) {
   async function downloadQr() {
     if (!qrRef.current) return
     await qrRef.current.download({ name: 'qr-ma-fiche', extension: 'png' })
+  }
+
+  if (compact) {
+    return (
+      <div style={{ ...s.card, flexDirection: 'column', alignItems: 'stretch', gap: 12, flexWrap: 'nowrap' }}>
+        <h3 style={{ ...s.title, margin: 0 }}>
+          <ShareNetwork size={15} weight="fill" color="var(--accent-text)" />
+          Ton lien de fiche
+        </h3>
+        <button type="button" onClick={copy} style={{ ...s.urlRow, maxWidth: 'none', margin: 0, cursor: 'pointer', fontFamily: 'inherit', textAlign: 'left' }} title="Copier le lien">
+          <span style={s.urlText}>{url.replace('https://', '')}</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12, fontWeight: 600, color: copied ? 'var(--accent-text)' : 'var(--text-3)', flexShrink: 0 }}>
+            {copied ? <><Check size={13} weight="bold" /> Copié</> : <><Copy size={13} /> Copier</>}
+          </span>
+        </button>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <button onClick={share} style={s.primaryBtn}><ShareNetwork size={13} weight="bold" /> Partager</button>
+          <button onClick={() => setShowQr(v => !v)} style={s.ghostBtn} aria-expanded={showQr}><QrCode size={13} weight="bold" /> QR code</button>
+        </div>
+        <div style={{ display: showQr ? 'flex' : 'none', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+          <div style={s.qrWrap}><div ref={qrContainerRef} style={{ lineHeight: 0 }} /></div>
+          <button onClick={downloadQr} style={s.ghostBtn}><DownloadSimple size={13} weight="bold" /> Télécharger le QR</button>
+        </div>
+        <p style={{ ...s.hint, margin: 0 }}>Sur ta carte de visite, ton Instagram, tes devis, dans les groupes Facebook d’hôtes : chaque visite peut devenir un client, sans commission.</p>
+      </div>
+    )
   }
 
   return (

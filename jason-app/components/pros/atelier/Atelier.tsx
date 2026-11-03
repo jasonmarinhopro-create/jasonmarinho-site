@@ -50,6 +50,8 @@ export interface AtelierProps {
   stats: Array<[number, string]>
   headerActions?: ReactNode
   banners?: ReactNode
+  /** Lien de la fiche et statistiques, sous l'en-tête (FicheOverview) */
+  overview?: ReactNode
   sections: AtelierSection[]
   active: string
   onActive: (id: string) => void
@@ -196,20 +198,22 @@ export default function Atelier(p: AtelierProps) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, flex: '1 1 340px', minWidth: 0 }}>
           <span style={{ ...a.avatar, ...(p.logoUrl ? { backgroundImage: `url('${p.logoUrl}')`, backgroundSize: 'cover', backgroundPosition: 'center', color: 'transparent' } : {}) }} aria-hidden="true">{initials(p.displayName)}</span>
           <div style={{ minWidth: 0 }}>
-            <div style={a.headEyebrow}>{p.eyebrow}</div>
+            <div style={a.headEyebrow}>{p.eyebrow} · l’atelier de ta fiche</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-              <h1 style={a.h1}>L’atelier de ta fiche</h1>
+              <h1 style={a.h1}>{p.displayName || 'Ta fiche'}</h1>
               <span style={{ ...a.pill, ...(p.isActive ? {} : a.pillWait) }}>
                 <span style={{ ...a.pillDot, background: p.isActive ? '#1F8A5B' : '#B7791F' }} />{p.statusLabel}
               </span>
             </div>
           </div>
         </div>
-        <div style={a.stats}>
-          {p.stats.map(([v, l]) => (
-            <div key={l} style={a.stat}><span style={a.statV}>{v}</span><span style={a.statL}>{l}</span></div>
-          ))}
-        </div>
+        {!p.overview && (
+          <div style={a.stats}>
+            {p.stats.map(([v, l]) => (
+              <div key={l} style={a.stat}><span style={a.statV}>{v}</span><span style={a.statL}>{l}</span></div>
+            ))}
+          </div>
+        )}
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
           {p.headerActions}
           {p.isActive && p.publicUrl && (
@@ -220,6 +224,7 @@ export default function Atelier(p: AtelierProps) {
         </div>
       </header>}
 
+      {!fullScreen && p.overview}
       {!narrow && bar}
       {!fullScreen && p.banners}
 
@@ -373,7 +378,7 @@ function ReviewDialog({ sections, onClose, onRevert, onPublish }: {
 const a: Record<string, React.CSSProperties> = {
   wrap: { padding: 'clamp(16px, 3vw, 36px)', width: '100%', boxSizing: 'border-box' },
   header: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '16px 24px', marginBottom: 18 },
-  avatar: { width: 52, height: 52, borderRadius: 16, background: 'var(--accent-text)', color: '#FFD56B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-fraunces), serif', fontSize: 20, flexShrink: 0, border: '1px solid var(--border)' },
+  avatar: { width: 52, height: 52, borderRadius: 16, background: 'var(--accent-bg)', color: 'var(--accent-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-fraunces), serif', fontSize: 20, flexShrink: 0, border: '1px solid var(--border)' },
   headEyebrow: { fontSize: 12.5, color: 'var(--text-3)', letterSpacing: '.02em' },
   h1: { margin: 0, fontFamily: 'var(--font-fraunces), serif', fontWeight: 400, fontSize: 'clamp(24px, 3vw, 30px)', letterSpacing: '-.4px', color: 'var(--text)' },
   pill: { display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 11px', borderRadius: 999, background: 'var(--accent-bg)', color: 'var(--accent-text)', fontSize: 12.5, fontWeight: 600 },

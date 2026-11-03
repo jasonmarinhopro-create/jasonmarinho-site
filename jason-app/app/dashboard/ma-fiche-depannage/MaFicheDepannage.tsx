@@ -8,7 +8,7 @@
 import ClientelesFields from '@/components/pros/ClientelesFields'
 import { readClienteles, type Clientele } from '@/lib/pros/clienteles'
 import Link from 'next/link'
-import ViewsTrend from '@/components/pros/ViewsTrend'
+import FicheOverview from '@/components/pros/atelier/FicheOverview'
 import FicheCompletude from '@/components/pros/FicheCompletude'
 import FacturationTeaser from '@/components/pros/FacturationTeaser'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
@@ -17,7 +17,6 @@ import { Images, Tag, Wrench, Clock, MapPin, PencilSimpleLine, ListNumbers, Link
 import { publishFiche, saveFicheDraft, createCustomerPortalSession, resumeFichePayment, uploadDepannageLogo, deleteDepannageLogo, prepareFichePhotos, addFichePhotos, removeFichePhoto, moveFichePhoto, publishFichePhotos } from './actions'
 import PortfolioManager from '@/components/pros/PortfolioManager'
 import FicheVitrineFields, { initialVitrineForm, vitrinePayload, type VitrineForm } from '@/components/pros/FicheVitrineFields'
-import ShareFicheBlock from '@/components/pro/ShareFicheBlock'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 import ReseauxFields, { emptyReseauxForm, type ReseauxForm } from '@/components/pros/ReseauxFields'
 import { DEFAULT_DEROULE, PHOTOS_MAX, isLegacyPhoto } from '@/lib/pros/fiche-vitrine'
@@ -561,6 +560,7 @@ export default function MaFicheDepannage({ pro, kpis, isAdminPreview = false, vi
           )}
         </>}
         banners={banners}
+        overview={<FicheOverview publicUrl={publicUrl} isActive={isActive} displayName={displayName} statsSlot={statsSlot} viewsTrend={viewsTrend} metier="dépannage" />}
         sections={sections}
         active={active}
         onActive={setActive}
@@ -584,9 +584,6 @@ export default function MaFicheDepannage({ pro, kpis, isAdminPreview = false, vi
             deroule: st.vitrine.deroule, villes: st.vitrine.villes, zone: f.zone_couverte, logo: !!logoUrl,
             prestations: f.specialites.length, capacite: !!(f.delai_intervention || f.disponibilites.length),
           }} />
-          {isActive && publicUrl && <ShareFicheBlock url={publicUrl} displayName={displayName} />}
-          {statsSlot}
-          {viewsTrend && <ViewsTrend trend={viewsTrend} metier="dépannage" style={{ margin: 0 }} />}
         </>}
       />
     </>

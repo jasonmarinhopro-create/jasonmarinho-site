@@ -27,3 +27,13 @@ describe('summarizeDailyViews', () => {
     expect(r.daily.find(d => d.day === '2026-09-10')?.views).toBe(0)
   })
 })
+
+describe('comparaison au mois dernier', () => {
+  it('compare à la même période du mois dernier, rien les 7 premiers jours', () => {
+    const rows = [{ day: '2026-10-02', views: 10 }, { day: '2026-10-20', views: 42 }, { day: '2026-11-02', views: 8 }]
+    expect(summarizeDailyViews(rows, '2026-11-03').samePeriod).toBeNull()
+    const r = summarizeDailyViews([...rows, { day: '2026-11-10', views: 5 }], '2026-11-12')
+    expect(r.samePeriod).toEqual({ views: 10, label: 'vs même période en octobre' })
+    expect(r.lastMonth).toBe(52)
+  })
+})

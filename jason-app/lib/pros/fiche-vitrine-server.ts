@@ -17,7 +17,7 @@ import { logger } from '@/lib/logger'
 import { triggerSiteRebuild } from '@/lib/pros/site-rebuild'
 import {
   PHOTOS_MAX, PHOTO_FULL_MAX_BYTES, PHOTO_THUMB_MAX_BYTES, PORTFOLIO_BUCKET,
-  storageDecision, newPhotoPath, thumbPath, isPhotoPath, type StorageUsageRow,
+  storageDecision, newPhotoPath, thumbPath, isPhotoPath, splitRetired, markRetiredPublished, type StorageUsageRow,
 } from './fiche-vitrine'
 
 const log = logger('pros/fiche-vitrine')
@@ -93,6 +93,7 @@ export async function addPhotos(table: ProTable, proId: string, paths: string[])
 
   const current = await readPhotos(table, proId)
   if (current === null) return { error: 'Enregistrement impossible.' }
+  await retirePhotos(table, proId, []) // efface les fichiers que la fiche publique ne montre plus
   const photos = [...current, ...ok.filter(p => !current.includes(p))].slice(0, PHOTOS_MAX)
   if (!(await writePhotos(table, proId, photos))) return { error: 'Enregistrement impossible.' }
   if (tooBig.length) return { photos, error: 'Une photo était trop lourde et n’a pas été gardée.' }
@@ -105,8 +106,30 @@ export async function removePhoto(table: ProTable, proId: string, path: string):
   if (current === null) return { error: 'Suppression impossible.' }
   const photos = current.filter(p => p !== path)
   if (!(await writePhotos(table, proId, photos))) return { error: 'Suppression impossible.' }
-  await getServiceClient().storage.from(PORTFOLIO_BUCKET).remove(isPhotoPath(path, proId) ? [path, thumbPath(path)] : [path])
+  // Le fichier reste : la fiche publique le montre jusqu'à la mise en ligne suivante
+  const files = isPhotoPath(path, proId) ? [path, thumbPath(path)] : [path]
+  if (!(await retirePhotos(table, proId, files))) await getServiceClient().storage.from(PORTFOLIO_BUCKET).remove(files)
   return { photos }
+}
+
+/**
+ * Note les fichiers retirés et efface ceux que la fiche publique ne montre plus (splitRetired).
+ * Faux si la colonne manque (migration 177) : l'appelant efface alors tout de suite, comme avant.
+ */
+async function retirePhotos(table: ProTable, proId: string, add: string[]): Promise<boolean> {
+  const db = getServiceClient()
+  const { data, error } = await db.from(table).select('portfolio_retired, portfolio_photos').eq('id', proId).maybeSingle()
+  if (error || !data) return false
+  const { purge, keep } = splitRetired((data as { portfolio_retired: unknown }).portfolio_retired, Date.now())
+  // Une photo remise sur la fiche entre-temps n'est jamais effacée
+  const live = new Set(((data as { portfolio_photos: string[] | null }).portfolio_photos ?? []).flatMap(p => [p, thumbPath(p)]))
+  const toPurge = purge.filter(p => !live.has(p))
+  const now = new Date().toISOString()
+  const next = [...keep.filter(r => !add.includes(r.path)), ...add.map(path => ({ path, at: now }))]
+  const { error: upErr } = await db.from(table).update({ portfolio_retired: next }).eq('id', proId)
+  if (upErr) return false
+  if (toPurge.length) await db.storage.from(PORTFOLIO_BUCKET).remove(toPurge)
+  return true
 }
 
 /** Déplace une photo d'un cran (la première est la photo principale) */
@@ -122,7 +145,18 @@ export async function movePhoto(table: ProTable, proId: string, path: string, di
 }
 
 /** Reconstruit le site pour publier les photos (un seul déploiement) */
-export async function publishPhotos(table: ProTable): Promise<{ success?: boolean; error?: string }> {
+/** Après une reconstruction du site : les photos retirées jusque-là ne sont plus montrées (effacées une heure plus tard) */
+export async function markPhotosPublished(table: ProTable, proId: string): Promise<void> {
+  const db = getServiceClient()
+  const { data, error } = await db.from(table).select('portfolio_retired').eq('id', proId).maybeSingle()
+  if (error || !data) return
+  const list = (data as { portfolio_retired: unknown }).portfolio_retired
+  if (!Array.isArray(list) || list.length === 0) return
+  await db.from(table).update({ portfolio_retired: markRetiredPublished(list, new Date().toISOString()) }).eq('id', proId)
+}
+
+export async function publishPhotos(table: ProTable, proId?: string): Promise<{ success?: boolean; error?: string }> {
   const ok = await triggerSiteRebuild(table === 'photographers' ? 'photos fiche photographe' : table === 'cleaners' ? 'photos fiche ménage' : 'photos fiche dépannage')
+  if (ok && proId) await markPhotosPublished(table, proId)
   return ok ? { success: true } : { error: 'Mise en ligne impossible pour le moment, réessaie dans quelques minutes.' }
 }

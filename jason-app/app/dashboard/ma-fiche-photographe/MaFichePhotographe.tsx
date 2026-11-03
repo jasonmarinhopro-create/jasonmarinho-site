@@ -5,7 +5,7 @@
 // brouillon : lib/pros/fiche-draft.ts. Les champs, leurs vérifications et ce
 // qui part sur la fiche publique sont ceux d'avant (actions.ts).
 import Link from 'next/link'
-import ViewsTrend from '@/components/pros/ViewsTrend'
+import FicheOverview from '@/components/pros/atelier/FicheOverview'
 import FicheCompletude from '@/components/pros/FicheCompletude'
 import FacturationTeaser from '@/components/pros/FacturationTeaser'
 import type { ViewsTrend as ViewsTrendData } from '@/lib/pros/views'
@@ -14,7 +14,6 @@ import { Images, Tag, Camera, MapPin, PencilSimpleLine, ListNumbers, LinkSimple,
 import { publishFiche, saveFicheDraft, createCustomerPortalSession, resumeFichePayment, uploadPhotographerLogo, deletePhotographerLogo, prepareFichePhotos, addFichePhotos, removeFichePhoto, moveFichePhoto, publishFichePhotos } from './actions'
 import PortfolioManager from '@/components/pros/PortfolioManager'
 import FicheVitrineFields, { initialVitrineForm, vitrinePayload, type VitrineForm } from '@/components/pros/FicheVitrineFields'
-import ShareFicheBlock from '@/components/pro/ShareFicheBlock'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 import ReseauxFields, { emptyReseauxForm, type ReseauxForm } from '@/components/pros/ReseauxFields'
 import VisuelFields, { type VisuelForm } from '@/components/pros/VisuelFields'
@@ -508,6 +507,7 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
           )}
         </>}
         banners={banners}
+        overview={<FicheOverview publicUrl={publicUrl} isActive={isActive} displayName={f.full_name || photographer.full_name} statsSlot={statsSlot} viewsTrend={viewsTrend} metier="photographe" />}
         sections={sections}
         active={active}
         onActive={setActive}
@@ -531,9 +531,6 @@ export default function MaFichePhotographe({ photographer, kpis, isAdminPreview 
             deroule: st.vitrine.deroule, villes: st.vitrine.villes, zone: f.zone_couverte, logo: !!logoUrl,
             options: st.visuel.options.length, metierVideo: st.visuel.metier !== 'photo',
           }} />
-          {isActive && publicUrl && <ShareFicheBlock url={publicUrl} displayName={f.full_name || photographer.full_name} />}
-          {statsSlot}
-          {viewsTrend && <ViewsTrend trend={viewsTrend} metier="photographe" style={{ margin: 0 }} />}
         </>}
       />
     </>

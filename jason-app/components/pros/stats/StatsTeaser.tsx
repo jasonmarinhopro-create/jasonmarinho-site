@@ -48,7 +48,29 @@ export function StatsTeaserCard({ data, href }: { data: ProStatsData | null; hre
       ) : (
         <p style={{ fontSize: 13, color: 'var(--text-2)', margin: 0, lineHeight: 1.55 }}>Qui voit ta fiche, d&apos;où, et ce que Google en montre.</p>
       )}
+      {data && <Provenance sources={data.visits.sources} />}
       <Link href={href} style={s.link}>Voir mes statistiques <ArrowRight size={14} weight="bold" /></Link>
+    </div>
+  )
+}
+
+// Noms courts des provenances (03/11/2026, Jason : « je ne vois que Google alors
+// que je dis aux pros de poster dans les groupes Facebook ») : Facebook toujours
+// affiché, même à 0, pour que le pro voie que ses publications sont comptées.
+const SHORT: Record<string, string> = {
+  interne: 'Annuaire', direct: 'Lien direct', google: 'Google', facebook: 'Facebook', instagram: 'Instagram',
+  'autre-reseau': 'Autres réseaux', 'e-mail': 'E-mail', ia: 'IA', 'autre-moteur': 'Autres moteurs', 'autre-site': 'Autres sites',
+}
+
+function Provenance({ sources }: { sources: Array<{ key: string; count: number }> }) {
+  const top = [...sources].filter(x => x.count > 0).sort((a, b) => b.count - a.count).slice(0, 4)
+  if (!top.some(x => x.key === 'facebook')) top.push({ key: 'facebook', count: sources.find(x => x.key === 'facebook')?.count ?? 0 })
+  return (
+    <div style={{ fontSize: 12.5, color: 'var(--text-3)', lineHeight: 1.5 }}>
+      <span style={{ fontWeight: 600, color: 'var(--text-2)' }}>D&apos;où ils viennent : </span>
+      {top.map((x, i) => (
+        <span key={x.key}>{i > 0 && ' · '}{SHORT[x.key] ?? x.key} <strong style={{ color: x.count ? 'var(--text)' : 'var(--text-muted)' }}>{x.count}</strong></span>
+      ))}
     </div>
   )
 }

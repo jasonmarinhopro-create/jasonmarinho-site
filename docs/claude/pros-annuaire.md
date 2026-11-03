@@ -160,3 +160,22 @@ Demande de Jason après l'échange avec une conciergerie multi-secteurs (photogr
 - QG : sous chaque demande d'un envoi groupé, « Envoi en N villes, aussi : … ».
 - **E-mails regroupés (29/10/2026, décision laissée par Jason : « je te laisse peser les pour et les contre »)** : avec plusieurs villes, les pros de chaque ville reçoivent leur e-mail habituel tout de suite (seulement leur ville) ; l'hôte reçoit **un seul** e-mail (`hoteMultiEmail` : une partie par ville, ses pros ou « En file d'attente », son lien de suivi) et Jason **un seul** (`adminMultiEmail` : état de chaque ville, lien QG par ville, objet « … SANS PRO » s'il en manque). Une seule ville : e-mails inchangés. Relances 48 h, nouveaux pros et transmissions à la main restent envoyés ville par ville (chaque ville vit sa vie). Moins d'e-mails pour l'hôte et pour le quota Resend (100 par jour).
 - **QG** : une ligne par ville gardée (chaque ville se traite à part : pro à trouver, transmission), avec la mention des autres villes. **Chiffres publics** : une ligne par ville (une demande à Chambéry compte pour la page de Chambéry).
+
+## Haut de Ma fiche et photos retirées (03/11/2026)
+
+- **En-tête de l'atelier**
+  - Demande de Jason : « mettre le prénom ou le titre de sa fiche », « pour chercher son lien de fiche il faut descendre ».
+  - Le titre est maintenant le nom de la fiche ; « l'atelier de ta fiche » passe en petit au-dessus.
+  - Juste sous l'en-tête, avant la barre de mise en ligne : `components/pros/atelier/FicheOverview.tsx`, prop `overview` d'`Atelier`, pour les 3 métiers. Il contient :
+    - `ShareFicheBlock compact` : lien cliquable « Copier », Partager, QR code à la demande ;
+    - « Tes statistiques » ;
+    - « Vues ce mois-ci » (`ViewsTrend compact`).
+  - Ces cartes ont quitté le bas de la colonne de droite. Les compteurs cumulés de l'en-tête (vues, demandes, clics) ne s'affichent plus quand `overview` est fourni.
+- **« Tes statistiques »** : nouvelle ligne « D'où ils viennent » (`Provenance` dans `StatsTeaser.tsx`) avec les 4 premières sources. Facebook est toujours affiché, même à 0, parce que Jason conseille aux pros de poster dans les groupes. Les visites Facebook sont reconnues par le référent (`l.facebook.com`…) et par `fbclid` (`nav.js`, `utm_source=facebook`).
+- **Vues ce mois-ci** : comparaison avec la même période du mois dernier (`samePeriod` dans `lib/pros/views.ts`, via `samePeriodLastMonth`). Rien les 7 premiers jours : avant, on lisait « -85 % » le 3 du mois.
+- **Photos retirées**
+  - Bug : le fichier était effacé tout de suite, alors que la fiche publique (statique) le montrait jusqu'à la reconstruction. Résultat : bloc gris puis image cassée.
+  - Maintenant, le fichier est noté dans `portfolio_retired` (`{ path, at, pub? }`, migration `20261103_177_photos_retirees.sql`, sonde santé) et gardé.
+  - `pub` est posé à la mise en ligne (`publish` de `fiche-core`, `publishPhotos`, `markPhotosPublished`).
+  - Le fichier est effacé 1 h après une mise en ligne, ou au bout de 7 jours. L'effacement se fait à la prochaine action sur les photos (`splitRetired`, testé). Une photo remise sur la fiche n'est jamais effacée.
+  - Sans la migration, le fichier est effacé tout de suite, comme avant.

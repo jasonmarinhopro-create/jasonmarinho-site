@@ -93,6 +93,7 @@ export interface MigrationProbe {
 
 /** Migrations récentes à vérifier : une table ou une colonne qu'elles créent. */
 export const MIGRATION_PROBES: MigrationProbe[] = [
+  { file: '20261103_177_photos_retirees.sql', what: 'Photo retirée d’une fiche pro gardée un jour (plus de photo cassée sur la fiche publique)', table: 'photographers', column: 'portfolio_retired' },
   { file: '20261102_176_charges_recurrentes.sql', what: 'Charges récurrentes (assurance, crédit, abonnements) dans Mes finances', table: 'revenus_charges', column: 'frequence' },
   { file: '20261031_170_depannage_pros.sql', what: 'Annuaire Dépannage et maintenance (fiches et demandes reçues)', table: 'depannage_pros', column: 'specialites' },
   { file: '20261029_168_demandes_groupe.sql', what: 'Demandes d’hôtes en plusieurs villes (liées entre elles)', table: 'demandes_hotes', column: 'groupe' },

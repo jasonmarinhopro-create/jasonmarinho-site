@@ -83,6 +83,8 @@ export async function publish(
   const { data } = await getServiceClient().from(m.table).select('status').eq('id', target.proId).maybeSingle()
   const live = data?.status === 'active'
   const rebuilt = live ? await triggerSiteRebuild(`fiche ${m.slug}`) : true
+  // Fiche en ligne reconstruite, ou fiche hors ligne (aucune page publique) : les photos retirées peuvent partir
+  if (rebuilt) await vitrine.markPhotosPublished(m.table, target.proId)
   revalidateEspace(kind)
   return { ...res, adminEdit: target.isAdminEdit, live, rebuildFailed: !rebuilt }
 }
@@ -152,7 +154,7 @@ export async function movePhoto(kind: ProKind, path: string, dir: -1 | 1, target
 export async function publishPhotos(kind: ProKind, targetId?: string) {
   const target = await resolveTarget(kind, targetId)
   if ('error' in target) return { error: target.error }
-  return vitrine.publishPhotos(METIERS[kind].table)
+  return vitrine.publishPhotos(METIERS[kind].table, target.proId)
 }
 
 // ─── Abonnement ─────────────────────────────────────────────────────

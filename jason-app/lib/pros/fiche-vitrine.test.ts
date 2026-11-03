@@ -93,3 +93,24 @@ describe('formules, villes, déroulé', () => {
     expect(SITE_PHOTOS_MAX).toBe(PHOTOS_MAX)
   })
 })
+
+describe('photos retirées', () => {
+  it('garde le fichier tant qu’il n’y a pas eu de mise en ligne, puis l’efface une heure après', async () => {
+    const { splitRetired, markRetiredPublished } = await import('./fiche-vitrine')
+    const now = Date.parse('2026-11-03T12:00:00Z')
+    const list = [
+      { path: 'a/1.jpg', at: '2026-11-01T08:00:00Z' },
+      { path: 'a/2.jpg', at: '2026-11-03T08:00:00Z', pub: '2026-11-03T10:30:00Z' },
+      { path: 'a/3.jpg', at: '2026-11-03T08:00:00Z', pub: '2026-11-03T11:30:00Z' },
+      { path: 'a/4.jpg', at: '2026-10-20T08:00:00Z' },
+      { path: 'a/5.jpg', at: 'pas une date' },
+      { nope: true },
+    ]
+    const r = splitRetired(list, now)
+    expect(r.purge).toEqual(['a/2.jpg', 'a/4.jpg', 'a/5.jpg'])
+    expect(r.keep.map(x => x.path)).toEqual(['a/1.jpg', 'a/3.jpg'])
+    expect(splitRetired(null, now)).toEqual({ purge: [], keep: [] })
+    const m = markRetiredPublished(r.keep, '2026-11-03T12:00:00Z')
+    expect(m).toEqual([{ path: 'a/1.jpg', at: '2026-11-01T08:00:00Z', pub: '2026-11-03T12:00:00Z' }, { path: 'a/3.jpg', at: '2026-11-03T08:00:00Z', pub: '2026-11-03T11:30:00Z' }])
+  })
+})
