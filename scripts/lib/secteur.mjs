@@ -447,19 +447,20 @@ export function secteurHtml({ ville, zone, villes, prenom, metier, annot = '', c
     ...(sec.multi ? { po: sec.poles.map(p => ({ n: p.a.code === sec.centre.code ? sec.nom : p.a.nom, c: [p.a.c[0] / Q, p.a.c[1] / Q] })) } : {}),
   }
   // Version compacte des fiches v3 (24/10/2026, Jason : « la partie demande est un peu
-  // chiante, il y en a trop ») : 2 chiffres, sans le champ « Ton logement est à… »
+  // chiante, il y en a trop ») : 2 chiffres. Le champ « Ton logement est à… » avait
+  // été retiré avec ; remis le 03/11/2026 (Jason : « c'était génial, pourquoi tu l'as enlevé ? »).
   return `<section class="card vt-sec sct${compact ? ' sct-c' : ''}" id="zone" style="position:relative">${annot}
   <h2>${esc(title)}</h2>
   ${stats.length ? `<div class="sct-stats">${stats.slice(0, compact ? 2 : 3).map(([a, b]) => `<div><div class="sct-v">${esc(a)}</div><div class="sct-l">${esc(b)}</div></div>`).join('')}</div>` : ''}
   <div class="sct-map">${svg}${pills}${sec.france || sec.multi ? '' : insetHtml(v)}<div class="sct-tip" hidden></div></div>
   ${chips ? `<div class="sct-chips">${chips}</div>` : ''}
-  ${compact ? '' : `<div class="sct-find">
+  ${`<div class="sct-find">
     <label for="sct-q">Ton logement est à…</label>
     <div class="sct-in"><i class="ph-bold ph-magnifying-glass" aria-hidden="true"></i><input id="sct-q" type="text" autocomplete="off" spellcheck="false" placeholder="Tape ta commune" aria-describedby="sct-r"></div>
     <div class="sct-sug" role="listbox" hidden></div>
     <p class="sct-r" id="sct-r" aria-live="polite"></p>
   </div>`}
-  <p class="sct-cap">${compact ? 'Un peu plus loin ? Demande quand même : beaucoup de pros se déplacent. Contours IGN (Licence Ouverte).' : 'Distances à vol d’oiseau. Ton logement est un peu plus loin ? Demande quand même : beaucoup de pros se déplacent. Contours : IGN Admin Express (Licence Ouverte).'}</p>
+  <p class="sct-cap">${compact ? 'Distances à vol d’oiseau. Contours IGN (Licence Ouverte).' : 'Distances à vol d’oiseau. Ton logement est un peu plus loin ? Demande quand même : beaucoup de pros se déplacent. Contours : IGN Admin Express (Licence Ouverte).'}</p>
   <script type="application/json" class="sct-data">${JSON.stringify(data).replace(/</g, '\\u003c')}</script>
 </section>`
 }
