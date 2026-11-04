@@ -150,10 +150,10 @@ export default function PortfolioManager({ initial, targetId, ficheUrl, onPrepar
           </button>
         )}
       </div>
-      {dirty && !busy && !onChanged && <div style={{ fontSize: 12.5, color: 'var(--text-3)', marginTop: 8 }}>Tes photos sont enregistrées. Clique sur « Mettre en ligne » quand tu as fini : ta fiche publique se met à jour en 2 à 3 minutes.</div>}
+      {dirty && !busy && !onChanged && <div style={{ fontSize: 12.5, color: 'var(--text-3)', marginTop: 8 }}>Tes photos sont enregistrées. Clique sur « Mettre en ligne » quand tu as fini : ta fiche publique se met à jour d’ici quelques minutes.</div>}
       {published && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5, color: 'var(--accent-text)', marginTop: 8 }}>
-          <CheckCircle size={13} weight="fill" /> C’est parti : ta fiche publique affiche tes photos d’ici 2 à 3 minutes.
+          <CheckCircle size={13} weight="fill" /> C’est parti : ta fiche publique affiche tes photos d’ici quelques minutes.
           {ficheUrl && <a href={ficheUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-text)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>Voir ma fiche <ArrowSquareOut size={12} /></a>}
         </div>
       )}

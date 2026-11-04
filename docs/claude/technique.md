@@ -292,3 +292,27 @@ Jason : « le mode admin prend beaucoup trop de temps à charger », « 60 hôte
   - Stripe vient de `profiles.stripe_account_id` / `stripe_onboarding_complete`.
 - **Logique** : `lib/admin/host-journey.ts` (`hostJourney`, `hostFeed`), fonctions pures testées. Le blocage retenu est le premier dans cet ordre : pas de logement, synchro en erreur, pas de calendrier ni de réservation, contrat non signé, Stripe pas terminé.
 - **Textes neutres** : jamais d'accord au féminin ou au masculin (« Vu cette semaine », « Inscription le »).
+
+## Montée en charge (04/11/2026)
+
+- **Objectif de Jason :** plus de 1 000 pros dans les annuaires, et beaucoup d'hôtes qui synchronisent Airbnb, Booking…
+- **Mesures du 04/11**
+  - Base de 35 Mo, `site_visits` 6 300 lignes.
+  - Depuis le redémarrage de la nuit, quelques secondes de temps de requête au total, 0,2 s au plus en moyenne.
+  - Les volumes ne sont pas le problème. Ce qui pèse : les arrêts de la base gratuite (28/10, 29/10, nuit du 03 au 04/11 : 00:32 à 01:28 heure de Paris), le quota de calcul de Vercel Hobby (4 h de CPU actif par mois, atteint le 04/11, Jason passe en Pro), et les pages qui recalculent tout à l'ouverture (statistiques des pros, admin Indexation et Provenance).
+- **Migration `20261104_178_montee_en_charge.sql`**, appliquée par le workflow, avec une sonde santé.
+  - Index `user_id` manquants : `ical_feeds`, `revenus_entries` (avec la date), `suggestions`, `user_facebook_posts`.
+  - Table `site_rebuild_state`.
+  - La tâche pg_cron `social-dispatch-10min` appelle désormais `app_jobs_ping()`. Celle-ci fait le même contrôle des réseaux sociaux qu'avant, puis appelle `/api/cron/jobs` **seulement s'il y a du travail** :
+    - `site=1` : une reconstruction du site est en attente ;
+    - `ical=1` : un flux iCal n'a pas été synchronisé depuis 1 h (les flux en échec 3 fois ou plus attendent 6 h).
+  - Le secret est le même que pour `social-dispatch` (`social_settings.cron_secret`).
+- **Reconstructions regroupées** : `triggerSiteRebuild` (`lib/pros/site-rebuild.ts`, règle pure `site-rebuild-rules.ts`, testée).
+  - Si une reconstruction est partie il y a moins de 4 min, la demande est notée et part au passage suivant (10 min au plus).
+  - Textes de Ma fiche : « d'ici quelques minutes (15 au plus) ».
+  - Sans la migration : reconstruction immédiate, comme avant.
+- **Synchro iCal horaire** : `syncStaleFeeds(..., { skipFailing: true })` par `/api/cron/jobs`, budget de 45 s, 6 en parallèle, 120 flux par passage. Le cron quotidien `notifications-engine` reste en filet de sécurité.
+- **Suite prévue**
+  - Statistiques des pros et pages admin lourdes préparées la nuit dans des tables de résumé.
+  - Mesure par fonction du CPU Vercel une fois en Pro.
+  - Supabase Pro.

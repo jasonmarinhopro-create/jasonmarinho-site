@@ -24,7 +24,7 @@ export interface BackgroundSyncResult {
 
 export async function syncStaleFeeds(
   supabase: SupabaseClient,
-  opts: { userId?: string; staleMinutes: number; budgetMs: number; concurrency?: number; limit?: number },
+  opts: { userId?: string; staleMinutes: number; budgetMs: number; concurrency?: number; limit?: number; skipFailing?: boolean },
 ): Promise<BackgroundSyncResult> {
   const t0 = Date.now()
   const cutoff = new Date(Date.now() - opts.staleMinutes * 60_000).toISOString()
@@ -36,6 +36,11 @@ export async function syncStaleFeeds(
     .order('last_synced', { ascending: true, nullsFirst: true })
     .limit(opts.limit ?? 200)
   if (opts.userId) q = q.eq('user_id', opts.userId)
+  // Tâche des 10 minutes : un flux en échec répété (3 fois et plus) n'est réessayé que toutes les 6 h
+  if (opts.skipFailing) {
+    const sixHours = new Date(Date.now() - 6 * 3600_000).toISOString()
+    q = q.or(`consecutive_failures.is.null,consecutive_failures.lt.3,last_sync_error_at.is.null,last_sync_error_at.lt.${sixHours}`)
+  }
 
   const { data: feeds, error } = await q
   const res: BackgroundSyncResult = { attempted: 0, synced: 0, failed: 0, skippedForBudget: 0 }

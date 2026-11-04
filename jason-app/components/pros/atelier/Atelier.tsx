@@ -297,7 +297,7 @@ function PublishBar({ narrow, count, names, saveStatus, saveError, publish, isAc
           {publish.rebuildFailed
             ? <><strong>Enregistré.</strong> La mise à jour du site n’a pas pu partir : réessaie dans quelques minutes.</>
             : publish.live
-              ? <><strong>C’est parti.</strong> Ta fiche publique change dans 2 à 3 minutes.</>
+              ? <><strong>C’est parti.</strong> Ta fiche publique change d’ici quelques minutes (15 au plus).</>
               : <><strong>Enregistré.</strong> Ta fiche apparaîtra avec ces informations dès qu’elle sera en ligne.</>}
           {publish.warning && <span style={{ display: 'block', fontSize: 12.5, color: 'var(--text-2)' }}>{publish.warning}</span>}
         </span>
