@@ -4,10 +4,10 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-04 10:39 UTC.
+Mis à jour le 2026-11-04 17:27 UTC.
 
 - 2026-11-05 · stories (4 écrans) · stories-artisan-avant-la-panne · FB - · IG - · stories FB pending IG pending · « Stories : Fuite à 15 h, voyageurs à 17 h / Au premier appel, demande / Devis / Ton plombier, tu l’as déjà dans »
-- 2026-11-04 · photo · profil-hote-confiance · FB pending · IG pending · stories FB pending IG pending · « Ton annonce donne envie. Ton profil, lui, doit donner confiance. »
+- 2026-11-04 · photo · profil-hote-confiance · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Ton annonce donne envie. Ton profil, lui, doit donner confiance. »
 - 2026-11-03 · stories (4 écrans) · stories-messages-voyageurs-automatiser · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Tu tapes encore chaque message à la main ? / Les moments à programmer / Relis tes instructions comme »
 - 2026-11-01 · carrousel · epingle-pros-annuaire · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · « Photographe, vidéaste, équipe de ménage, plombier, électricien, serrurier ou multiservices : les hôtes Airbnb  »
 - 2026-11-01 · carrousel · epingle-trouver-un-pro · FB published 0 j'aime 0 comm. · IG published 4 j'aime 0 comm. · « Un shooting avant la saison, une équipe de ménage fiable, un plombier la veille d’une arrivée : trouver le bon »
