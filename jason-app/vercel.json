@@ -1,5 +1,6 @@
 {
   "buildCommand": "node ../scripts/sync-counts.mjs && next build",
+  "ignoreCommand": "bash scripts/ignore-build.sh",
   "regions": [
     "lhr1"
   ],

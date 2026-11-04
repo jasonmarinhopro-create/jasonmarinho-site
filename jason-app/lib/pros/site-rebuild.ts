@@ -63,6 +63,13 @@ export async function triggerSiteRebuild(reason: string): Promise<boolean> {
   return ok
 }
 
+/** Reconstruction forcée (bouton de l'admin) : part tout de suite, et reste visible du garde-fou du site (scripts/ignore-build-site.sh) */
+export async function forceSiteRebuild(reason: string): Promise<boolean> {
+  const ok = await callHook(reason)
+  if (ok) await writeState({ triggered_at: new Date().toISOString(), requested_at: null })
+  return ok
+}
+
 /** Passage de la tâche des 10 minutes : envoie la reconstruction en attente */
 export async function flushPendingRebuild(): Promise<'sent' | 'none' | 'wait' | 'failed'> {
   const state = await readState()

@@ -1,5 +1,7 @@
 'use server'
 
+import { triggerSiteRebuild, forceSiteRebuild } from '@/lib/pros/site-rebuild'
+
 import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
@@ -29,21 +31,8 @@ async function requireAdmin(): Promise<{ userId: string } | { error: string }> {
  * Le webhook est créé dans Vercel → Settings → Git → Deploy Hooks.
  */
 async function triggerStaticRebuild() {
-  const url = process.env.VERCEL_DEPLOY_HOOK_URL
-  if (!url) {
-    console.warn('[triggerStaticRebuild] VERCEL_DEPLOY_HOOK_URL non posé — site statique ne se rebuild pas auto. Pose la var dans Vercel Settings → Environment Variables.')
-    return
-  }
-  try {
-    const res = await fetch(url, { method: 'POST' })
-    if (!res.ok) {
-      console.error(`[triggerStaticRebuild] Webhook a répondu ${res.status}`)
-    } else {
-      console.log('[triggerStaticRebuild] ✓ Rebuild déclenché sur le site statique')
-    }
-  } catch (err) {
-    console.error('[triggerStaticRebuild] Fetch échoué:', err)
-  }
+  // Même chemin que les fiches pros (regroupement + garde-fou du site, 04/11/2026)
+  await triggerSiteRebuild('moderation signalement')
 }
 
 /**
@@ -61,13 +50,8 @@ export async function forceStaticRebuild(): Promise<{ ok?: boolean; error?: stri
       hookConfigured: false,
     }
   }
-  try {
-    const res = await fetch(url, { method: 'POST' })
-    if (!res.ok) return { error: `Webhook a répondu ${res.status}`, hookConfigured: true }
-    return { ok: true, hookConfigured: true }
-  } catch (err) {
-    return { error: err instanceof Error ? err.message : 'Erreur réseau', hookConfigured: true }
-  }
+  const ok = await forceSiteRebuild('admin reconstruction manuelle')
+  return ok ? { ok: true, hookConfigured: true } : { error: 'Reconstruction refusée ou injoignable (voir Erreurs de l’app).', hookConfigured: true }
 }
 
 /**

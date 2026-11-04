@@ -1,5 +1,6 @@
 {
   "buildCommand": "bash scripts/build-site.sh",
+  "ignoreCommand": "bash scripts/ignore-build-site.sh",
   "outputDirectory": ".",
   "regions": ["lhr1"],
   "git": { "deploymentEnabled": { "claude/**": false } },

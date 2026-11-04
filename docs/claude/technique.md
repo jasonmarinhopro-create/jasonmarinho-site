@@ -316,3 +316,14 @@ Jason : « le mode admin prend beaucoup trop de temps à charger », « 60 hôte
   - Statistiques des pros et pages admin lourdes préparées la nuit dans des tables de résumé.
   - Mesure par fonction du CPU Vercel une fois en Pro.
   - Supabase Pro.
+
+## Déploiements ignorés quand rien ne change (04/11/2026)
+
+- **Mesure :** 97 déploiements du site en 7,7 jours (et autant pour l'app). 47 venaient de robots : 37 du commit « chore: réseaux sociaux, historique à jour » (`reseaux-sociaux.yml`, `process-actualites.yml`), qui n'écrit que dans `data/social/` et `data/social-queue/`, 6 d'articles, 4 de stories.
+- **Durées d'une construction :** environ 3 min 30 pour l'app et 27 s pour le site. Une seule construction à la fois : les autres attendent leur tour.
+- **App :** `jason-app/vercel.json` → `ignoreCommand: bash scripts/ignore-build.sh`. L'app ne se construit que si `jason-app/` ou `scripts/sync-counts.mjs` a changé depuis `VERCEL_GIT_PREVIOUS_SHA`.
+- **Site :** `vercel.json` → `ignoreCommand: bash scripts/ignore-build-site.sh`.
+  - La construction n'est sautée que si tous les fichiers changés sont dans `data/social/`, `data/social-queue/`, `docs/` ou `.github/`.
+  - Elle est toujours faite si `site_rebuild_state.triggered_at` date de moins de 30 min, c'est-à-dire si l'app a demandé une reconstruction (fiche pro, signalement).
+- **Dans le doute, on construit :** déploiement précédent inconnu, commit introuvable, même commit (deploy hook), base injoignable.
+- **Signalements :** la modération passe désormais par `triggerSiteRebuild` / `forceSiteRebuild` (`lib/pros/site-rebuild.ts`), pour que le garde-fou voie ces reconstructions.
