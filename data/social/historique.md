@@ -4,7 +4,7 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-03 23:26 UTC.
+Mis à jour le 2026-11-04 00:34 UTC.
 
 - 2026-11-04 · photo · profil-hote-confiance · FB pending · IG pending · stories FB pending IG pending · « Ton annonce donne envie. Ton profil, lui, doit donner confiance. »
 - 2026-11-03 · stories (4 écrans) · stories-messages-voyageurs-automatiser · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Tu tapes encore chaque message à la main ? / Les moments à programmer / Relis tes instructions comme »
