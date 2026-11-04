@@ -140,6 +140,11 @@ export async function fetchAndUpsertIcalFeed(
 
 const EMPTY_FEED = 'Aucun événement dans ce flux iCal'
 
+/** Le texte est-il un calendrier iCal (même vide) et pas une page d'erreur ? */
+export function isCalendarText(raw: string): boolean {
+  return /^\s*(﻿)?BEGIN:VCALENDAR/i.test(raw) && /END:VCALENDAR\s*$/i.test(raw)
+}
+
 async function recordSyncFailure(supabase: SupabaseClient, feedId: string, message: string) {
   try {
     const { data } = await supabase.from('ical_feeds').select('consecutive_failures').eq('id', feedId).maybeSingle()
@@ -168,7 +173,17 @@ async function doSync(
     // Adresse saisie par l'hôte : jamais de Brotli (faille Node, untrusted-fetch.ts)
     const text = await untrustedText(res)
     const parsed = parseIcalText(text)
-    if (parsed.length === 0) return { error: EMPTY_FEED }
+    if (parsed.length === 0) {
+      // Calendrier valide mais sans réservation (04/11/2026 : un flux Driing
+      // vide, jamais marqué comme lu, était relu toutes les 10 min). On note
+      // l'heure de lecture : il est relu à l'heure suivante, comme les autres,
+      // et ses réservations futures arrivent par le chemin normal. Un contenu
+      // qui n'est pas un calendrier (page d'erreur) n'est pas marqué.
+      if (isCalendarText(text)) {
+        await supabase.from('ical_feeds').update({ last_synced: new Date().toISOString() }).eq('id', feedId)
+      }
+      return { error: EMPTY_FEED }
+    }
 
     // Contenu avant la synchro : sert au nettoyage et à repérer les
     // réservations nouvelles, modifiées ou annulées (notifications).
