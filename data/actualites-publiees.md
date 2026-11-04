@@ -11,8 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-05 · reglementation · Facture électronique : l'obligation est en vigueur depuis le 1er septembre · masquée (https://blog.elloha.com/2026/08/07/facturation-electronique-une-rentree-sportive-pour-les-loueurs-saisonniers/)
-- 2026-09-05 · fiscalite · LMNP : les prélèvements sociaux passent à 18,6 % sur tes revenus 2026 (https://www.nopillo.com/blog/lmnp-prelevements-sociaux)
 - 2026-09-06 · communes · Nice : dépôt des dossiers de quotas rouvert jusqu'au 31 décembre (https://www.nicecotedazur.org/services/logement/autorisations-de-changements-dusage/logements-en-meubles-touristiques/)
 - 2026-09-06 · reglementation · Enregistrement meublé tourisme : le téléservice national arrive au T4 · masquée (https://kohenavocats.fr/2026/09/02/numero-enregistrement-airbnb-2026-teleservice-national-quatrieme-trimestre-recours/)
 - 2026-09-06 · marche · Été 2026 : le littoral à 77% d'occupation, les villes en retrait · masquée (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
