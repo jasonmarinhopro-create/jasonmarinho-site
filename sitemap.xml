@@ -2430,7 +2430,7 @@
   <!-- ── Blog ── -->
   <url>
     <loc>https://jasonmarinho.com/blog</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -2454,7 +2454,7 @@
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/categorie/ressources</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -2487,6 +2487,12 @@
     <lastmod>2025-03-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://jasonmarinho.com/blog/videaste-lcd-6-regles-vendre-visite-video-hotes-airbnb</loc>
+    <lastmod>2026-11-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/blog/hivernage-logement-lcd-7-regles-couper-proprement-arreter-location-hiver</loc>

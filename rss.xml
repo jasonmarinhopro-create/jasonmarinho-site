@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Mon, 02 Nov 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 04 Nov 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Vidéaste pour la LCD : 6 règles pour vendre ta visite vidéo aux hôtes Airbnb</title>
+      <link>https://jasonmarinho.com/blog/videaste-lcd-6-regles-vendre-visite-video-hotes-airbnb</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/videaste-lcd-6-regles-vendre-visite-video-hotes-airbnb</guid>
+      <pubDate>Wed, 04 Nov 2026 08:00:00 GMT</pubDate>
+      <description>Offre, tarifs, portfolio, visibilité, devis, fidélisation : 6 règles concrètes pour vendre ta visite vidéo aux hôtes Airbnb sans passer par une plateforme.</description>
+      <category>Ressources</category>
+    </item>
     <item>
       <title>Hivernage de ton logement LCD : 7 règles pour couper proprement si tu arrêtes la location cet hiver</title>
       <link>https://jasonmarinho.com/blog/hivernage-logement-lcd-7-regles-couper-proprement-arreter-location-hiver</link>
@@ -397,14 +405,6 @@
       <guid isPermaLink="true">https://jasonmarinho.com/blog/machine-a-cafe-lcd-6-modeles-ravir-voyageurs-sans-exploser-budget</guid>
       <pubDate>Mon, 27 Jul 2026 08:00:00 GMT</pubDate>
       <description>Cafetière filtre, Nespresso, machine à grains, dosettes : 6 modèles testés en location courte durée avec coût réel, entretien et impact sur les avis voyageurs en 2026.</description>
-      <category>Expérience</category>
-    </item>
-    <item>
-      <title>TV et streaming en LCD : 6 règles pour équiper ton logement sans compte piraté ni voyageur frustré</title>
-      <link>https://jasonmarinho.com/blog/tv-streaming-lcd-6-regles-equiper-compte-pirate-voyageur</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/tv-streaming-lcd-6-regles-equiper-compte-pirate-voyageur</guid>
-      <pubDate>Fri, 24 Jul 2026 08:00:00 GMT</pubDate>
-      <description>Smart TV, Netflix, Chromecast, TNT, réinitialisation : 6 règles concrètes pour équiper la TV de ta location courte durée sans risque de compte piraté ni voyageur frustré devant un écran figé.</description>
       <category>Expérience</category>
     </item>
   </channel>
