@@ -4,7 +4,7 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-04 23:42 UTC.
+Mis à jour le 2026-11-05 00:52 UTC.
 
 - 2026-11-05 · stories (4 écrans) · stories-artisan-avant-la-panne · FB - · IG - · stories FB pending IG pending · « Stories : Fuite à 15 h, voyageurs à 17 h / Au premier appel, demande / Devis / Ton plombier, tu l’as déjà dans »
 - 2026-11-04 · photo · profil-hote-confiance · FB published 0 j'aime 0 comm. · IG published 2 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Ton annonce donne envie. Ton profil, lui, doit donner confiance. »
