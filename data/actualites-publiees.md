@@ -11,9 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-06 · communes · Nice : dépôt des dossiers de quotas rouvert jusqu'au 31 décembre (https://www.nicecotedazur.org/services/logement/autorisations-de-changements-dusage/logements-en-meubles-touristiques/)
-- 2026-09-06 · reglementation · Enregistrement meublé tourisme : le téléservice national arrive au T4 · masquée (https://kohenavocats.fr/2026/09/02/numero-enregistrement-airbnb-2026-teleservice-national-quatrieme-trimestre-recours/)
-- 2026-09-06 · marche · Été 2026 : le littoral à 77% d'occupation, les villes en retrait · masquée (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
 - 2026-09-07 · plateformes · Airbnb bascule à 15,5 % de commission le 13 octobre : réajuste tes prix · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
 - 2026-09-07 · marche · Été 2026 : le littoral explose, les grandes villes perdent 9 points d'occupation · masquée (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
 - 2026-09-07 · reglementation · API Meublés : la plateforme nationale d'enregistrement ouvre au 4e trimestre 2026 (https://www.immomatin.com/franchise/reseaux-franchise/meubles-de-tourisme-deux-decrets-mettent-en-place-la-plateforme-nationale-d-enregistrement.html)
@@ -85,3 +82,4 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-11-02 · marche · Vacances de Noël 2026 : mets ton calendrier à jour pour la vague de réservations (https://www.service-public.fr/particuliers/vosdroits/F31952)
 - 2026-11-02 · reglementation · Logement loué : le détecteur de fumée doit être fonctionnel avant l'hiver · pour depannage
 - 2026-11-03 · plateformes · Airbnb : place tes règles de séjour dans l'annonce avant le 20 novembre (https://selectra.info/telecom/actualites/marche/airbnb-message-hote-regle-apres-reservation)
+- 2026-11-05 · reglementation · Résidence principale : vérifie ton compteur de nuitées avant le 31 décembre (https://www.service-public.fr/particuliers/vosdroits/F2043)
