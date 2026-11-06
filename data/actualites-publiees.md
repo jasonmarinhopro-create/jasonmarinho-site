@@ -11,9 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-07 · plateformes · Airbnb bascule à 15,5 % de commission le 13 octobre : réajuste tes prix · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
-- 2026-09-07 · marche · Été 2026 : le littoral explose, les grandes villes perdent 9 points d'occupation · masquée (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
-- 2026-09-07 · reglementation · API Meublés : la plateforme nationale d'enregistrement ouvre au 4e trimestre 2026 (https://www.immomatin.com/franchise/reseaux-franchise/meubles-de-tourisme-deux-decrets-mettent-en-place-la-plateforme-nationale-d-enregistrement.html)
 - 2026-09-08 · reglementation · Facturation électronique LMNP : l'obligation de réception est active (https://www.jedeclaremonmeuble.com/facturation-electronique-lmnp-obligations/)
 - 2026-09-08 · plateformes · Airbnb passe à 15,5% de frais hôte exclusifs dès le 13 octobre · masquée (https://www.meilleurtaux.com/credit-immobilier/actualites/2026-septembre/airbnb-frais-uniques-des-le-13-octobre-2026.html)
 - 2026-09-08 · marche · Été 2026 : le littoral cartonne, les grandes villes en repli · masquée (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
@@ -83,3 +80,5 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-11-02 · reglementation · Logement loué : le détecteur de fumée doit être fonctionnel avant l'hiver · pour depannage
 - 2026-11-03 · plateformes · Airbnb : place tes règles de séjour dans l'annonce avant le 20 novembre (https://selectra.info/telecom/actualites/marche/airbnb-message-hote-regle-apres-reservation)
 - 2026-11-05 · reglementation · Résidence principale : vérifie ton compteur de nuitées avant le 31 décembre (https://www.service-public.fr/particuliers/vosdroits/F2043)
+- 2026-11-06 · fiscalite · Mise à jour PLF 2027 : vote solennel reporté, l'amortissement LMNP en suspens (https://lcp.fr/dossiers/budget-2027-440523)
+- 2026-11-06 · entreprise · Urssaf : si tu déclares chaque mois, le 30 novembre est ta prochaine échéance · pour photographe, menage, depannage (https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut/declarer-et-payer-mes-cotisations.html)
