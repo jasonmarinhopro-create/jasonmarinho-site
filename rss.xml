@@ -6,7 +6,15 @@
     <atom:link href="https://jasonmarinho.com/rss.xml" rel="self" type="application/rss+xml"/>
     <description>Conseils pratiques pour hôtes et conciergeries LCD : revenus, visibilité, réservation directe, fiscalité, expérience voyageur. Par Jason Marinho, expert LCD et co-fondateur de Driing.</description>
     <language>fr-FR</language>
-    <lastBuildDate>Wed, 04 Nov 2026 08:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 06 Nov 2026 08:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Marchés de Noël 2026 en LCD : 6 règles pour capter les voyageurs qui viennent pour les illuminations</title>
+      <link>https://jasonmarinho.com/blog/marches-de-noel-2026-lcd-6-regles-capter-voyageurs-illuminations</link>
+      <guid isPermaLink="true">https://jasonmarinho.com/blog/marches-de-noel-2026-lcd-6-regles-capter-voyageurs-illuminations</guid>
+      <pubDate>Fri, 06 Nov 2026 08:00:00 GMT</pubDate>
+      <description>Dates, tarifs, durée minimum, livret, canaux directs, fidélisation : 6 règles pour capter les voyageurs qui viennent pour les marchés de Noël 2026.</description>
+      <category>Revenus</category>
+    </item>
     <item>
       <title>Vidéaste pour la LCD : 6 règles pour vendre ta visite vidéo aux hôtes Airbnb</title>
       <link>https://jasonmarinho.com/blog/videaste-lcd-6-regles-vendre-visite-video-hotes-airbnb</link>
@@ -398,14 +406,6 @@
       <pubDate>Wed, 29 Jul 2026 08:00:00 GMT</pubDate>
       <description>Audit des avis, ajustement tarifaire, séjours longs, Google My Business, relance carnet voyageurs, Toussaint 2026, fiscalité : 7 actions concrètes à mener maintenant pour ne pas subir la basse saison en location courte durée.</description>
       <category>Revenus</category>
-    </item>
-    <item>
-      <title>Machine à café en LCD : 6 modèles à comparer pour ravir tes voyageurs sans exploser ton budget</title>
-      <link>https://jasonmarinho.com/blog/machine-a-cafe-lcd-6-modeles-ravir-voyageurs-sans-exploser-budget</link>
-      <guid isPermaLink="true">https://jasonmarinho.com/blog/machine-a-cafe-lcd-6-modeles-ravir-voyageurs-sans-exploser-budget</guid>
-      <pubDate>Mon, 27 Jul 2026 08:00:00 GMT</pubDate>
-      <description>Cafetière filtre, Nespresso, machine à grains, dosettes : 6 modèles testés en location courte durée avec coût réel, entretien et impact sur les avis voyageurs en 2026.</description>
-      <category>Expérience</category>
     </item>
   </channel>
 </rss>
