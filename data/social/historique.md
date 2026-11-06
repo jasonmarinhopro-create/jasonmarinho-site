@@ -4,7 +4,7 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-05 23:40 UTC.
+Mis à jour le 2026-11-06 00:57 UTC.
 
 - 2026-11-06 · reel · strasbourg-marches-de-noel · FB pending · IG pending · stories FB pending IG pending · « Ton logement est à Strasbourg ? Les marchés de Noël arrivent. »
 - 2026-11-05 · stories (4 écrans) · stories-artisan-avant-la-panne · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Fuite à 15 h, voyageurs à 17 h / Au premier appel, demande / Devis / Ton plombier, tu l’as déjà dans »
