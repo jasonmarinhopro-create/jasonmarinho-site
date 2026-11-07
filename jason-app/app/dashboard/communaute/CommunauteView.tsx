@@ -9,6 +9,7 @@ import {
 import { setGroupMembership, restoreAllDismissed } from './actions'
 import FacebookTemplatesSection from './FacebookTemplatesSection'
 import HubHero, { HeroEm, heroCard } from '@/components/dashboard/HubHero'
+import { groupOpenUrl } from '@/lib/pros/groupes-clients'
 
 interface Group {
   id: string
@@ -291,7 +292,7 @@ export default function CommunauteView({
         {/* Actions */}
         <div style={s.actions}>
           <a
-            href={g.url} target="_blank" rel="noopener noreferrer"
+            href={groupOpenUrl(g.id, 'hote')} target="_blank" rel="noopener noreferrer"
             style={{ ...s.joinLink, ...(featured ? s.joinLinkFeatured : {}) }}
           >
             Rejoindre <ArrowUpRight size={12} />

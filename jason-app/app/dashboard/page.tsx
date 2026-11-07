@@ -27,6 +27,7 @@ import { icalReservationsForDisplay } from '@/lib/ical/display'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import { samePeriodLastMonth, pctChange } from '@/lib/finances/month-compare'
 import { getCachedCommunityGroups, getCachedPublishedActualites } from '@/lib/queries/cache'
+import { groupsFor } from '@/lib/pros/groupes-clients'
 // CategoryId retiré (utilisé uniquement par ChezNousWidget, désormais dans /entre-hotes)
 
 function getGreeting() {
@@ -103,7 +104,8 @@ export default async function DashboardPage() {
   // listes partagées (actualités, groupes) restent en cache. null tant que la
   // migration 149 manque : on reprend alors les anciennes requêtes.
   const actusPromise = getCachedPublishedActualites()
-  const groupsPromise = getCachedCommunityGroups()
+  // Groupes des hôtes seulement (migration 180 : groupes des pros et de recrutement à part)
+  const groupsPromise = getCachedCommunityGroups().then(gs => groupsFor(gs, 'hote'))
   const caStartDate = `${prevMPfx < `${yearPfx}-01` ? prevMPfx : yearPfx + '-01'}-01`
   const home = userId
     ? await loadHomeState(supabase, { today, caStart: caStartDate, yearStart: `${yearPfx}-01-01`, yearEnd: `${parseInt(yearPfx) + 1}-01-01` })

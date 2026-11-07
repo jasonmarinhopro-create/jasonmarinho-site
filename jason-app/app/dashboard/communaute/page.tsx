@@ -1,6 +1,7 @@
 import { getProfile } from '@/lib/queries/profile'
 import { createClient } from '@/lib/supabase/server'
 import { getCachedCommunityGroups, getCachedTemplatesCatalog } from '@/lib/queries/cache'
+import { groupsFor } from '@/lib/pros/groupes-clients'
 import CommunauteView from './CommunauteView'
 
 // Liste des groupes Facebook + templates — données quasi-statiques (admin
@@ -31,7 +32,8 @@ export default async function CommunautePage() {
   const [profile, supabase, groups, templates] = await Promise.all([
     getProfile(),
     createClient(),
-    getCachedCommunityGroups(),
+    // Groupes des hôtes seulement (migration 180 : groupes des pros et de recrutement à part)
+    getCachedCommunityGroups().then(gs => groupsFor(gs, 'hote')),
     getCachedTemplatesCatalog(),
   ])
 

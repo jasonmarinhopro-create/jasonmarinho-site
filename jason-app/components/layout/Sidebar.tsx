@@ -395,6 +395,8 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     '/dashboard/ma-fiche-photographe',
     '/dashboard/ma-fiche-photographe/demandes',
     '/dashboard/ma-fiche-photographe/clients',
+    '/dashboard/ma-fiche-photographe/trouver-des-clients',
+    '/dashboard/ma-fiche-menage/trouver-des-clients',
     '/dashboard/ma-fiche-photographe/devis',
     '/dashboard/ma-fiche-photographe/facturation',
     '/dashboard/ma-fiche-photographe/statistiques',
@@ -409,7 +411,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
     '/dashboard/ma-fiche-menage/statistiques',
     '/dashboard/ma-fiche-menage/actualites',
     '/dashboard/ma-fiche-menage/idees',
-    ...['', '/demandes', '/clients', '/devis', '/facturation', '/statistiques'].map(p => `${METIERS.depannage.espace}${p}`),
+    ...['', '/demandes', '/clients', '/trouver-des-clients', '/devis', '/facturation', '/statistiques'].map(p => `${METIERS.depannage.espace}${p}`),
     // Espace investisseur : idem, sinon "Accueil" reste actif sur /estimateur.
     '/dashboard/investir',
     '/dashboard/investir/estimateur',
@@ -611,6 +613,8 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
                   <NavItem href={`${base}/statistiques`} label="Mes statistiques" Icon={PresentationChart} />
                 </> },
                 { label: 'Mes clients', items: <>
+                  {/* Groupes Facebook où trouver des clients (07/11/2026, comme « Trouver des voyageurs » des hôtes) */}
+                  <NavItem href={`${base}/trouver-des-clients`} label="Trouver des clients" Icon={Megaphone} />
                   <NavItem href={`${base}/demandes`} label="Demandes reçues" Icon={Tray} count={proNav?.demandes[proRole] ?? 0} />
                   <NavItem href={`${base}/clients`} label="Mes clients" Icon={AddressBook} />
                   <NavItem href={`${base}/devis`} label="Devis" Icon={Receipt} />

@@ -36,15 +36,14 @@ function getServiceClient() {
 export const getCachedCommunityGroups = unstable_cache(
   async () => {
     const db = getServiceClient()
-    const { data } = await db
-      .from('community_groups')
-      .select('id, name, platform, description, members_count, url, category, tag, sort_order')
-      .order('category')
-      .order('sort_order')
-      .order('name')
-    return data ?? []
+    const base = 'id, name, platform, description, members_count, url, category, tag, sort_order'
+    // audiences (migration 180, 07/11/2026) : à qui s'adresse le groupe (hôtes, pros, recrutement)
+    const run = (cols: string) => db.from('community_groups').select(cols).order('category').order('sort_order').order('name')
+    let res = await run(`${base}, audiences`)
+    if (res.error) res = await run(base)
+    return (res.data ?? []) as unknown as Array<{ id: string; name: string; platform: 'facebook' | 'whatsapp'; description: string; members_count: number; url: string; category: string; tag: string | null; sort_order: number; audiences?: string[] | null }>
   },
-  ['community-groups-v1'],
+  ['community-groups-v2'],
   { tags: [CACHE_TAGS.COMMUNITY_GROUPS], revalidate: 600 },
 )
 

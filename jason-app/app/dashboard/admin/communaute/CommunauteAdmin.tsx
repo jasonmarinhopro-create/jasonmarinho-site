@@ -9,8 +9,11 @@ import {
 import { addGroup, updateGroup, deleteGroup, updateGroupMembersCount } from './actions'
 import AdminHero from '../_ui/AdminHero'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
+import { GROUP_AUDIENCES, audiencesOf, type GroupAudience } from '@/lib/pros/groupes-clients'
 
-interface Group {
+const AUD_SHORT: Record<GroupAudience, string> = { hote: 'Hôtes', photographe: 'Photographes', menage: 'Ménage', depannage: 'Dépannage', recrutement: 'Recrutement' }
+
+export interface Group {
   id: string
   name: string
   description: string
@@ -20,6 +23,10 @@ interface Group {
   category: string
   tag: string | null
   sort_order: number
+  /** Publics du groupe (migration 180) : hote, photographe, menage, depannage, recrutement */
+  audiences?: string[] | null
+  /** Ouvertures depuis l'app (bouton Rejoindre, liens suivis) */
+  clicks?: number
 }
 
 interface GroupFormProps {
@@ -93,6 +100,18 @@ function GroupForm({ initial, existingCategories, onSubmit, onCancel, submitLabe
           </div>
         </div>
       </div>
+
+      <fieldset style={{ border: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <legend style={{ ...s.label, marginBottom: '8px' }}>Pour qui *</legend>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 18px' }}>
+          {GROUP_AUDIENCES.map(a => (
+            <label key={a.key} style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '13px', color: 'var(--text-2)', cursor: 'pointer' }}>
+              <input type="checkbox" name="audiences" value={a.key} defaultChecked={audiencesOf(initial ?? {}).includes(a.key)} />
+              {a.label}
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
       <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
         <button type="button" onClick={onCancel} style={s.cancelBtn}>Annuler</button>
@@ -297,6 +316,12 @@ export default function CommunauteAdmin({ groups: initialGroups }: { groups: Gro
                             {g.tag}
                           </span>
                         )}
+                        {audiencesOf(g).map(a => (
+                          <span key={a} style={s.audPill}>{AUD_SHORT[a]}</span>
+                        ))}
+                        {(g.clicks ?? 0) > 0 && (
+                          <span style={s.audPill} title="Ouvertures depuis l’app (bouton Rejoindre)">{g.clicks} ouverture{(g.clicks ?? 0) > 1 ? 's' : ''}</span>
+                        )}
                       </div>
                       {g.description && (
                         <div style={{ fontSize: '12px', color: 'var(--text-3)', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '400px' }}>
@@ -410,6 +435,7 @@ const s: Record<string, React.CSSProperties> = {
     background: 'var(--surface)', color: 'var(--text-muted)',
     borderRadius: '100px', padding: '1px 7px',
   },
+  audPill: { display: 'inline-flex', alignItems: 'center', fontSize: '10.5px', fontWeight: 600, padding: '2px 8px', borderRadius: '99px', background: 'var(--accent-bg)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' },
   tagPill: {
     display: 'inline-flex', alignItems: 'center', gap: '3px',
     fontSize: '10px', fontWeight: 500,

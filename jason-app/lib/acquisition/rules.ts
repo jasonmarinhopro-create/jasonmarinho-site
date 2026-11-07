@@ -72,6 +72,7 @@ export type LinkChannel =
   | 'facebook_groupe' | 'facebook_page' | 'google_fiche' | 'instagram' | 'linkedin' | 'tiktok' | 'youtube'
   | 'whatsapp' | 'email' | 'signature' | 'prospection' | 'qr' | 'autre'
   | 'prive_instagram' | 'prive_facebook' | 'prive_linkedin' | 'prive_whatsapp'
+  | 'groupe_sortie'
 
 export const LINK_CHANNELS: Array<{ key: LinkChannel; label: string; source: string; medium: string }> = [
   { key: 'facebook_groupe', label: 'Groupe Facebook', source: 'facebook', medium: 'groupe' },
@@ -90,6 +91,8 @@ export const LINK_CHANNELS: Array<{ key: LinkChannel; label: string; source: str
   { key: 'prive_facebook', label: 'Message privé Facebook', source: 'facebook', medium: 'prive' },
   { key: 'prive_linkedin', label: 'Message privé LinkedIn', source: 'linkedin', medium: 'prive' },
   { key: 'prive_whatsapp', label: 'Message WhatsApp ou SMS', source: 'whatsapp', medium: 'prive' },
+  // Clics « Rejoindre » d'un groupe Facebook depuis l'app (07/11/2026) : sortie, pas une visite du site
+  { key: 'groupe_sortie', label: 'Groupe Facebook ouvert depuis l’app', source: 'app', medium: 'sortie' },
   { key: 'autre', label: 'Autre', source: 'lien', medium: 'autre' },
 ]
 

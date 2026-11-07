@@ -4,6 +4,16 @@ import { createClient } from '@/lib/supabase/server'
 import { createClient as createSupabaseAdmin } from '@supabase/supabase-js'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { CACHE_TAGS } from '@/lib/queries/cache'
+import { GROUP_AUDIENCES } from '@/lib/pros/groupes-clients'
+
+const AUD_KEYS = new Set<string>(GROUP_AUDIENCES.map(a => a.key))
+/** Publics cochés dans le formulaire (au moins « hôtes » si rien n'est coché) */
+function audiencesFrom(formData: FormData): string[] {
+  const list = formData.getAll('audiences').map(String).filter(a => AUD_KEYS.has(a))
+  return list.length ? [...new Set(list)] : ['hote']
+}
+/** Migration 180 absente : on enregistre sans la colonne audiences */
+const missingAudiences = (msg?: string) => !!msg && /audiences/.test(msg)
 
 function getServiceClient() {
   return createSupabaseAdmin(
@@ -27,6 +37,7 @@ function revalidate() {
   revalidatePath('/dashboard/admin/communaute')
   revalidatePath('/dashboard/communaute')
   revalidatePath('/dashboard')
+  for (const m of ['photographe', 'menage', 'depannage']) revalidatePath(`/dashboard/ma-fiche-${m}/trouver-des-clients`)
 }
 
 export async function addGroup(formData: FormData) {
@@ -44,9 +55,9 @@ export async function addGroup(formData: FormData) {
 
   if (!name || !url || !platform) return { success: false, error: 'Champs manquants' }
 
-  const { error: dbError } = await adminClient.from('community_groups').insert({
-    name, description, platform, url, members_count, category, tag, sort_order,
-  })
+  const row = { name, description, platform, url, members_count, category, tag, sort_order }
+  let { error: dbError } = await adminClient.from('community_groups').insert({ ...row, audiences: audiencesFrom(formData) })
+  if (dbError && missingAudiences(dbError.message)) ({ error: dbError } = await adminClient.from('community_groups').insert(row))
 
   if (dbError) return { success: false, error: dbError.message }
   revalidate()
@@ -68,10 +79,9 @@ export async function updateGroup(groupId: string, formData: FormData) {
 
   if (!name || !url || !platform) return { success: false, error: 'Champs manquants' }
 
-  const { error: dbError } = await adminClient
-    .from('community_groups')
-    .update({ name, description, platform, url, members_count, category, tag, sort_order })
-    .eq('id', groupId)
+  const row = { name, description, platform, url, members_count, category, tag, sort_order }
+  let { error: dbError } = await adminClient.from('community_groups').update({ ...row, audiences: audiencesFrom(formData) }).eq('id', groupId)
+  if (dbError && missingAudiences(dbError.message)) ({ error: dbError } = await adminClient.from('community_groups').update(row).eq('id', groupId))
 
   if (dbError) return { success: false, error: dbError.message }
   revalidate()

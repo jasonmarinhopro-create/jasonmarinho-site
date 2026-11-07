@@ -93,6 +93,7 @@ export interface MigrationProbe {
 
 /** Migrations récentes à vérifier : une table ou une colonne qu'elles créent. */
 export const MIGRATION_PROBES: MigrationProbe[] = [
+  { file: '20261107_180_groupes_pros.sql', what: 'Groupes Facebook par public (hôtes, photographes, ménage, dépannage, recrutement) : page Trouver des clients des pros', table: 'community_groups', column: 'audiences' },
   { file: '20261104_178_montee_en_charge.sql', what: 'Reconstructions du site regroupées et calendriers synchronisés toutes les heures', table: 'site_rebuild_state', column: 'requested_at' },
   { file: '20261103_177_photos_retirees.sql', what: 'Photo retirée d’une fiche pro gardée un jour (plus de photo cassée sur la fiche publique)', table: 'photographers', column: 'portfolio_retired' },
   { file: '20261102_176_charges_recurrentes.sql', what: 'Charges récurrentes (assurance, crédit, abonnements) dans Mes finances', table: 'revenus_charges', column: 'frequence' },
