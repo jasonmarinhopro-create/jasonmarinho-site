@@ -492,6 +492,32 @@
       ':where(nav#nav.nv-light) .n-mega a.n-sub-link{color:var(--g);border-top-color:#EDF2EF}',
       ':where(nav#nav.nv-light) .n-mega a.n-sub-link:hover{color:var(--gd)}',
 
+      /* Menu téléphone blanc quand la barre est blanche (07/11/2026, Jason : « sur téléphone le reste est toujours en vert »). Le menu #mob suit #nav dans la page. */
+      ':where(nav#nav.nv-light)~.mob-menu{background:#fff;border-top-color:#EDF2EF}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-stitle{color:#556B2F}',
+      ':where(nav#nav.nv-light)~.mob-menu a{color:#2A3A27;border-bottom-color:#EDF2EF}',
+      ':where(nav#nav.nv-light)~.mob-menu a:hover,:where(nav#nav.nv-light)~.mob-menu a:active{color:var(--g)}',
+      ':where(nav#nav.nv-light)~.mob-menu a i{color:var(--g)}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-acc{border-bottom-color:#EDF2EF}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-acc-btn{color:#0F1A0D}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-acc-ico{background:#EEF5F1;color:var(--g)}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-acc-txt small{color:#4A5C47}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-acc-arrow{stroke:#4A5C47}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-acc.open .mob-acc-ico{background:var(--g);color:#fff}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-acc.open .mob-acc-txt b{color:var(--g)}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-acc.open .mob-acc-arrow{stroke:var(--g)}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-sublink{color:var(--g)!important}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-sublink i{color:var(--g)!important}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-driing{background:#FFF8E1!important;border-color:#F1DE9C!important}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-driing i{color:var(--g)!important}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-driing-name{color:var(--gd)}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-driing-sub{color:#5C5338}',
+      ':where(nav#nav.nv-light)~.mob-menu .mob-ctas{background:#fff;border-top-color:#EDF2EF}',
+      ':where(nav#nav.nv-light)~.mob-menu .mc-o{color:#0F1A0D!important;border:1px solid #DCE5E0!important}',
+      ':where(nav#nav.nv-light)~.mob-menu .mc-c{background:var(--g);color:#fff!important}',
+      ':where(nav#nav.nv-light)~.mob-menu .mc-c:hover{background:var(--gd)}',
+      ':where(nav#nav.nv-light)~.mob-menu .mc-c i{color:var(--y)!important}',
+
       /* Responsive */
       '@media(max-width:960px){.n-links,.n-right .nb-c,.n-right .nb-o{display:none}.hbg{display:flex}.n-right{margin-left:auto;margin-right:2px}}'
     ].join('');
