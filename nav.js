@@ -63,6 +63,10 @@
          le script plus bas). Finit à 64 px du haut comme l'ancienne barre : rien ne bouge dans les pages. */
       'nav#nav{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 clamp(14px,2vw,22px);position:fixed;top:8px;left:0;right:0;margin:0 auto;width:calc(100% - 2 * clamp(8px,2.5vw,32px));max-width:1440px;z-index:200;animation:navIn .25s ease both;background:var(--gd);border:1px solid rgba(255,213,107,.1);border-radius:18px;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 10px 30px rgba(0,0,0,.18);transition:background .3s,border-color .3s,box-shadow .3s}',
       'nav#nav.sc{box-shadow:0 12px 34px rgba(0,0,0,.28)}',
+      /* Bande verte de secours des pages (body::before fixe, 64 px, pleine largeur, posée avant le
+         chargement du menu) : cachée sous l'ancienne barre, elle dépassait autour de la barre
+         flottante (07/11/2026, Jason : « un fond bizarre qui suit partout le menu »). */
+      'html body::before{display:none!important}',
       'nav#nav.nv-light{background:#fff;border-color:#E3EAE6;box-shadow:0 12px 34px rgba(0,0,0,.2)}',
       'nav#nav.nv-light .n-brand{color:#0F1A0D}',
       'nav#nav.nv-light .n-brand em{color:var(--g)}',
