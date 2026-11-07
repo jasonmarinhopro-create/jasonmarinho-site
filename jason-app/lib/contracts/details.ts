@@ -46,6 +46,8 @@ export interface ContractDetails {
   charges_incluses?: boolean
   regime?: RegimeAvance
   delai_caution_jours?: number
+  /** Arrivée autonome : pas de pièce d'identité demandée sur place (article Arrivée) */
+  arrivee_autonome?: boolean
 }
 
 /** Réglages du contrat propres à un logement (logements.contrat_options) */
@@ -53,9 +55,10 @@ export interface ContratOptions {
   regime?: RegimeAvance
   delai_caution_jours?: number
   charges_incluses?: boolean
+  arrivee_autonome?: boolean
 }
 
-export const DEFAULT_OPTIONS: Required<ContratOptions> = { regime: 'arrhes', delai_caution_jours: 7, charges_incluses: true }
+export const DEFAULT_OPTIONS: Required<ContratOptions> = { regime: 'arrhes', delai_caution_jours: 7, charges_incluses: true, arrivee_autonome: false }
 
 export function contratOptions(raw: unknown): Required<ContratOptions> {
   const o = (raw && typeof raw === 'object' ? raw : {}) as ContratOptions
@@ -64,6 +67,7 @@ export function contratOptions(raw: unknown): Required<ContratOptions> {
     regime: o.regime === 'acompte' ? 'acompte' : 'arrhes',
     delai_caution_jours: Number.isFinite(delai) && delai >= 1 && delai <= 60 ? Math.round(delai) : DEFAULT_OPTIONS.delai_caution_jours,
     charges_incluses: o.charges_incluses !== false,
+    arrivee_autonome: o.arrivee_autonome === true,
   }
 }
 
@@ -246,8 +250,28 @@ export function bailleurCancelText(regime: RegimeAvance, lang: Lang, pays: strin
   return refund + extra + retract + force
 }
 
-/** Pièce d'identité et déclaration à l'arrivée */
-export function arriveeText(lang: Lang, pays: string): string {
+/**
+ * Pièce d'identité et déclaration à l'arrivée. Montrer une pièce n'est pas
+ * une obligation légale : l'hôte peut choisir l'arrivée autonome (07/11/2026,
+ * demande d'une hôte qui ne demande pas de pièce). La fiche individuelle de
+ * police des voyageurs étrangers (France) et la communication SIBA (Portugal)
+ * restent dues : elles se font alors à distance.
+ */
+export function arriveeText(lang: Lang, pays: string, autonome = false): string {
+  if (autonome && pays === 'PT') {
+    return {
+      fr: "Les arrivées se font en autonomie, sans remise de clés en main propre. Avant l'arrivée, le locataire transmet au bailleur les données de chaque voyageur majeur nécessaires à la déclaration SIBA, sans conservation de copie au-delà de ce qu'exige la loi.",
+      pt: 'As chegadas são autónomas, sem entrega de chaves em mão. Antes da chegada, o hóspede envia ao anfitrião os dados de cada hóspede adulto necessários à comunicação SIBA, sem conservação de cópia além do exigido por lei.',
+      en: 'Check-in is self-service, with no key handover in person. Before arrival, the guest sends the host the data of each adult guest required for the SIBA declaration, with no copy kept beyond what the law requires.',
+    }[lang]
+  }
+  if (autonome) {
+    return {
+      fr: "Les arrivées se font en autonomie : aucune pièce d'identité n'est demandée sur place. Les voyageurs de nationalité étrangère remplissent et signent une fiche individuelle de police (articles R814-1 à R814-3 du CESEDA), transmise au bailleur avant ou à l'arrivée, y compris par voie électronique, et conservée six mois.",
+      pt: 'As chegadas são autónomas: não é pedido nenhum documento de identificação no local. Os hóspedes de nacionalidade estrangeira preenchem e assinam uma ficha individual de polícia (art. R814-1 a R814-3 do CESEDA francês), enviada ao senhorio antes ou à chegada, incluindo por via eletrónica, e conservada durante seis meses.',
+      en: 'Check-in is self-service: no identity document is requested on site. Guests of foreign nationality fill in and sign an individual police form (Art. R814-1 to R814-3 of the French CESEDA), sent to the landlord before or on arrival, including electronically, and kept for six months.',
+    }[lang]
+  }
   if (pays === 'PT') {
     return {
       fr: "À son arrivée, le locataire présente une pièce d'identité en cours de validité pour chaque voyageur majeur. Les données nécessaires à la déclaration SIBA sont relevées, sans conservation de copie au-delà de ce qu'exige la loi.",

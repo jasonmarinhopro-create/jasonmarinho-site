@@ -87,6 +87,7 @@ export function previewFromLogement(l: PreviewLogement, bailleur: PreviewBailleu
     charges_incluses: opts.charges_incluses,
     regime: opts.regime,
     delai_caution_jours: opts.delai_caution_jours,
+    arrivee_autonome: opts.arrivee_autonome,
   }
   const arrivee = addDays(today, 30)
   return {

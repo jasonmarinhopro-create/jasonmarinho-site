@@ -333,6 +333,7 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
   const [draftRegime, setDraftRegime] = useState<RegimeAvance>(contratOpts.regime)
   const [draftDelaiCaution, setDraftDelaiCaution] = useState(contratOpts.delai_caution_jours)
   const [draftCharges, setDraftCharges] = useState(contratOpts.charges_incluses)
+  const [draftAutonome, setDraftAutonome] = useState(contratOpts.arrivee_autonome)
   const [draftClauses, setDraftClauses] = useState(l.clauses_particulieres ?? '')
   const [draftClausesPt, setDraftClausesPt] = useState(l.clauses_particulieres_pt ?? '')
   const [draftClausesEn, setDraftClausesEn] = useState(l.clauses_particulieres_en ?? '')
@@ -404,13 +405,13 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
     reglement_interieur_en: draftReglementEn || null,
   })
   const saveContrat = () => updateLogement(l.id, {
-    contrat_options: { regime: draftRegime, delai_caution_jours: draftDelaiCaution, charges_incluses: draftCharges },
+    contrat_options: { regime: draftRegime, delai_caution_jours: draftDelaiCaution, charges_incluses: draftCharges, arrivee_autonome: draftAutonome },
     clauses_particulieres: draftClauses.trim() || null,
     clauses_particulieres_pt: draftClausesPt.trim() || null,
     clauses_particulieres_en: draftClausesEn.trim() || null,
   })
   const resetContrat = () => {
-    setDraftRegime(contratOpts.regime); setDraftDelaiCaution(contratOpts.delai_caution_jours); setDraftCharges(contratOpts.charges_incluses)
+    setDraftRegime(contratOpts.regime); setDraftDelaiCaution(contratOpts.delai_caution_jours); setDraftCharges(contratOpts.charges_incluses); setDraftAutonome(contratOpts.arrivee_autonome)
     setDraftClauses(l.clauses_particulieres ?? ''); setDraftClausesPt(l.clauses_particulieres_pt ?? ''); setDraftClausesEn(l.clauses_particulieres_en ?? '')
   }
   const saveTarifs = () => updateLogement(l.id, {
@@ -1165,6 +1166,10 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
                     <span style={s.tileLabel}>Charges</span>
                     <span style={s.tileValue}>{contratOpts.charges_incluses ? 'Comprises' : 'En plus'}</span>
                   </div>
+                  <div style={s.tile}>
+                    <span style={s.tileLabel}>Arrivée</span>
+                    <span style={s.tileValue}>{contratOpts.arrivee_autonome ? 'Autonome' : 'Pièce d\u2019identité montrée'}</span>
+                  </div>
                 </div>
                 {l.clauses_particulieres
                   ? <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -1199,6 +1204,12 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
                     <select style={s.editInput} value={draftCharges ? 'oui' : 'non'} onChange={e => setDraftCharges(e.target.value === 'oui')}>
                       <option value="oui">Comprises dans le prix</option>
                       <option value="non">En plus du prix</option>
+                    </select>
+                  </Field>
+                  <Field label="Arrivée des voyageurs">
+                    <select style={s.editInput} value={draftAutonome ? 'autonome' : 'piece'} onChange={e => setDraftAutonome(e.target.value === 'autonome')}>
+                      <option value="piece">Le voyageur montre une pièce d&apos;identité à l&apos;arrivée</option>
+                      <option value="autonome">Arrivée autonome : pas de pièce d&apos;identité demandée sur place</option>
                     </select>
                   </Field>
                 </div>

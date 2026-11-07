@@ -98,7 +98,7 @@ interface Props {
   preview?: { title: string; note: string; editLinks?: Partial<Record<EditKey, string>>; backHref?: string; backLabel?: string }
 }
 
-export type EditKey = 'parties' | 'bien' | 'duree' | 'prix' | 'caution' | 'annulation' | 'reglement' | 'clauses'
+export type EditKey = 'parties' | 'bien' | 'duree' | 'prix' | 'caution' | 'annulation' | 'reglement' | 'clauses' | 'arrivee'
 
 const LANG_OPTIONS: UiLang[] = ['fr', 'pt', 'en']
 const LANG_FLAG: Record<UiLang, string> = { fr: '🇫🇷', pt: '🇵🇹', en: '🇬🇧' }
@@ -432,8 +432,8 @@ export default function ContractView({
           {d && (
             <>
               <section style={contractSection}>
-                <h2 style={sectionTitle}>{art(ex.arriveeTitle)}{edit()}</h2>
-                <p style={contractText}>{arriveeText(lang, contractPays)}</p>
+                <h2 style={sectionTitle}>{art(ex.arriveeTitle)}{edit('arrivee')}</h2>
+                <p style={contractText}>{arriveeText(lang, contractPays, d?.arrivee_autonome === true)}</p>
               </section>
               <div style={divider} />
             </>

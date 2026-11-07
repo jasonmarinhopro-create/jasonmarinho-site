@@ -96,6 +96,7 @@ function contractFieldsFromLogement(l: LogementOption | null) {
     regime: o.regime as RegimeAvance,
     delai_caution_jours: o.delai_caution_jours,
     charges_incluses: o.charges_incluses,
+    arrivee_autonome: o.arrivee_autonome,
     clauses_particulieres: l?.clauses_particulieres ?? '',
     clauses_particulieres_pt: l?.clauses_particulieres_pt ?? '',
     clauses_particulieres_en: l?.clauses_particulieres_en ?? '',
@@ -410,6 +411,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
         charges_incluses: form.charges_incluses,
         regime: form.regime,
         delai_caution_jours: form.delai_caution_jours,
+        arrivee_autonome: form.arrivee_autonome,
       },
       clauses_particulieres: form.clauses_particulieres.trim() || undefined,
       clauses_particulieres_pt: form.clauses_particulieres_pt.trim() || undefined,
@@ -456,6 +458,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
         taxe_sejour: form.taxe_sejour > 0 ? form.taxe_sejour : null,
         taxe_sejour_mode: form.taxe_sejour_mode, charges_incluses: form.charges_incluses,
         regime: form.regime, delai_caution_jours: form.delai_caution_jours,
+        arrivee_autonome: form.arrivee_autonome,
       },
       clauses_particulieres: form.clauses_particulieres || null,
       clauses_particulieres_pt: form.clauses_particulieres_pt || null, clauses_particulieres_en: form.clauses_particulieres_en || null,
@@ -857,6 +860,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                 </div>
               </div>
               <ToggleField label="Charges comprises (eau, électricité, chauffage, internet)" value={form.charges_incluses} onChange={v => set('charges_incluses', v)} />
+              <ToggleField label="Arrivée autonome : pas de pièce d'identité demandée sur place" value={form.arrivee_autonome} onChange={v => set('arrivee_autonome', v)} />
 
               {/* Arrhes ou acompte : sans précision, la loi présume des arrhes (L214-1 Code de la consommation) */}
               {(logements.find(l => l.id === selectedLogementId)?.pays ?? 'FR') === 'FR' && (

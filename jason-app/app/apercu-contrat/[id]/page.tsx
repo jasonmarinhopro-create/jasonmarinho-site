@@ -75,6 +75,7 @@ export default async function ApercuContratPage({ params }: { params: Promise<{ 
           annulation: `${fiche}#modifier-annulation`,
           reglement: `${fiche}#modifier-reglement`,
           clauses: `${fiche}#modifier-contrat`,
+          arrivee: `${fiche}#modifier-contrat`,
         },
       }}
     />

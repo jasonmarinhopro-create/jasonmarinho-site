@@ -26,7 +26,7 @@ describe('état descriptif', () => {
 
 describe('règles juridiques', () => {
   it('arrhes par défaut, acompte sur demande', () => {
-    expect(contratOptions(null)).toEqual({ regime: 'arrhes', delai_caution_jours: 7, charges_incluses: true })
+    expect(contratOptions(null)).toEqual({ regime: 'arrhes', delai_caution_jours: 7, charges_incluses: true, arrivee_autonome: false })
     expect(contratOptions({ regime: 'acompte', delai_caution_jours: 200 }).delai_caution_jours).toBe(7)
     expect(regimeText('arrhes', 'fr', 'FR')).toContain('L214-1')
     expect(regimeText('acompte', 'fr', 'FR')).toContain('acompte')
@@ -41,6 +41,13 @@ describe('règles juridiques', () => {
     expect(arriveeText('fr', 'FR')).toContain('sans en conserver de copie')
     expect(arriveeText('fr', 'FR')).toContain('R814-1')
     expect(arriveeText('en', 'PT')).toContain('SIBA')
+    // Arrivée autonome : plus de pièce demandée sur place, fiche de police et SIBA toujours dues
+    expect(arriveeText('fr', 'FR', true)).toContain("aucune pièce d'identité n'est demandée")
+    expect(arriveeText('fr', 'FR', true)).toContain('R814-1')
+    expect(arriveeText('fr', 'FR', true)).not.toContain('présente une pièce')
+    expect(arriveeText('pt', 'PT', true)).toContain('SIBA')
+    expect(contratOptions({}).arrivee_autonome).toBe(false)
+    expect(contratOptions({ arrivee_autonome: true }).arrivee_autonome).toBe(true)
   })
 })
 
@@ -58,7 +65,7 @@ describe('prix détaillé', () => {
 describe('textes', () => {
   it('pas de tiret cadratin', () => {
     const all = JSON.stringify(EXTRA_UI) + (['fr', 'pt', 'en'] as const).flatMap(l => [
-      regimeText('arrhes', l, 'FR'), regimeText('acompte', l, 'FR'), bailleurCancelText('arrhes', l, 'FR'), bailleurCancelText('acompte', l, 'PT'), arriveeText(l, 'FR'), arriveeText(l, 'PT'),
+      regimeText('arrhes', l, 'FR'), regimeText('acompte', l, 'FR'), bailleurCancelText('arrhes', l, 'FR'), bailleurCancelText('acompte', l, 'PT'), arriveeText(l, 'FR'), arriveeText(l, 'PT'), arriveeText(l, 'FR', true), arriveeText(l, 'PT', true),
       EXTRA_UI[l].cautionText('300 €', 7),
     ]).join(' ')
     expect(all).not.toContain('—')
