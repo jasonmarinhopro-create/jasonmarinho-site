@@ -58,12 +58,27 @@
 
       /* Nav */
       '@keyframes navIn{from{opacity:0}to{opacity:1}}',
-      'nav#nav{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(16px,5vw,60px);position:fixed;top:0;left:0;right:0;z-index:200;animation:navIn .25s ease both;background:var(--gd);transition:box-shadow .3s}',
-      'nav#nav.sc{box-shadow:0 4px 32px rgba(0,0,0,.3)}',
+      /* Barre flottante qui s'adapte au fond (07/11/2026, Jason, maquette « Nouveau menu ») :
+         verte sur un fond clair, blanche sur un fond vert ou une photo (classe nv-light posée par
+         le script plus bas). Finit à 64 px du haut comme l'ancienne barre : rien ne bouge dans les pages. */
+      'nav#nav{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 clamp(14px,2vw,22px);position:fixed;top:8px;left:0;right:0;margin:0 auto;width:calc(100% - 2 * clamp(8px,2.5vw,32px));max-width:1440px;z-index:200;animation:navIn .25s ease both;background:var(--gd);border:1px solid rgba(255,213,107,.1);border-radius:18px;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 10px 30px rgba(0,0,0,.18);transition:background .3s,border-color .3s,box-shadow .3s}',
+      'nav#nav.sc{box-shadow:0 12px 34px rgba(0,0,0,.28)}',
+      'nav#nav.nv-light{background:#fff;border-color:#E3EAE6;box-shadow:0 12px 34px rgba(0,0,0,.2)}',
+      'nav#nav.nv-light .n-brand{color:#0F1A0D}',
+      'nav#nav.nv-light .n-brand em{color:var(--g)}',
+      'nav#nav.nv-light .n-logo-mk{background:var(--g);opacity:1}',
+      'nav#nav.nv-light .n-link,nav#nav.nv-light .n-btn{color:#2A3A27}',
+      'nav#nav.nv-light .n-link:hover,nav#nav.nv-light .n-link.active,nav#nav.nv-light .n-btn:hover,nav#nav.nv-light .n-drop:hover .n-btn,nav#nav.nv-light .n-drop.open .n-btn{color:var(--g);background:#EEF4F1}',
+      'nav#nav.nv-light .nb-o{color:#0F1A0D;border-color:#DCE5E0}',
+      'nav#nav.nv-light .nb-o:hover{border-color:#9DB8AC;color:var(--g)}',
+      'nav#nav.nv-light .nb-c{background:var(--g);color:#fff}',
+      'nav#nav.nv-light .nb-c i{color:var(--y)}',
+      'nav#nav.nv-light .nb-c:hover{background:var(--gd)}',
+      'nav#nav.nv-light .hbg span{background:#0F1A0D}',
 
       /* Logo */
       '.n-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0}',
-      '.nav-logo-img{width:34px;height:34px;flex-shrink:0;border-radius:4px;filter:brightness(0) invert(1);opacity:.9}',
+      '.n-logo-mk{display:block;width:32px;height:32px;flex-shrink:0;background:#fff;opacity:.92;-webkit-mask:url(/logo-nav.webp) center/contain no-repeat;mask:url(/logo-nav.webp) center/contain no-repeat;transition:background .3s}',
       '.n-brand{font-family:\'Fraunces\',serif;font-size:16px;font-weight:600;color:#fff;letter-spacing:-.2px;white-space:nowrap}',
       '.n-brand em{color:var(--y);font-style:italic;font-weight:300}',
 
@@ -203,7 +218,8 @@
       '.n-links>li{display:flex;align-items:center;align-self:stretch}',
       '.n-drop-wide{position:static}',
       '.n-drop-wide::after{display:none}',
-      '.n-drop-wide>.n-mega{top:100%}',
+      '.n-drop-wide>.n-mega{top:calc(100% + 8px)}',
+      '.n-drop-wide>.n-mega::after{content:"";position:absolute;left:0;right:0;top:-22px;height:22px}',
       '.n-drop-wide>.n-mega::before{display:none}',
       /* Services (proposition A validée par Jason le 13/10/2026, « trop chargé ») :
          3 colonnes de 4 ou 5 liens essentiels, barre d'inscription en bas */
@@ -288,6 +304,43 @@
       '.nb-o:hover{border-color:rgba(255,255,255,.4);color:#fff}',
       '.nb-c{font-family:\'Outfit\',sans-serif;font-size:13px;font-weight:600;color:var(--gd);background:var(--y);padding:10px 16px;border-radius:8px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap;min-height:40px}',
       '.nb-c:hover{background:#ffe08f}',
+
+      /* Le site en chiffres (07/11/2026, idée reprise de Hospia) : bouton graphique + panneau
+         lu sur app.jasonmarinho.com/api/public/chiffres à la première ouverture (cache CDN 1 h) */
+      '.nb-st{position:relative;width:40px;height:40px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:transparent;color:rgba(255,255,255,.85);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;padding:0}',
+      '.nb-st:hover{color:#fff;border-color:rgba(255,255,255,.4)}',
+      '.nb-st[aria-expanded="true"]{background:var(--y);border-color:var(--y);color:var(--gd)}',
+      '.nb-st-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:99px;background:#2BB673;box-shadow:0 0 0 2px var(--gd)}',
+      'nav#nav.nv-light .nb-st{color:var(--g);border-color:#DCE5E0}',
+      'nav#nav.nv-light .nb-st:hover{border-color:#9DB8AC}',
+      'nav#nav.nv-light .nb-st[aria-expanded="true"]{background:var(--g);border-color:var(--g);color:#fff}',
+      'nav#nav.nv-light .nb-st-dot{box-shadow:0 0 0 2px #fff}',
+      '.nst{position:absolute;top:calc(100% + 10px);right:0;width:min(420px,calc(100vw - 16px));background:#fff;border:1px solid #E3EAE6;border-radius:20px;box-shadow:0 30px 70px rgba(0,0,0,.32);padding:20px;display:none;flex-direction:column;gap:14px;z-index:310;color:#0F1A0D;font-family:\'Outfit\',sans-serif;text-align:left;cursor:default}',
+      '.nst.open{display:flex}',
+      '.nst-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}',
+      '.nst-t{font:500 20px/1.2 \'Fraunces\',serif;color:#0F1A0D}',
+      '.nst-s{display:flex;align-items:center;gap:6px;margin-top:3px;font-size:12.5px;color:#4A5C47}',
+      '.nst-s:before{content:"";width:7px;height:7px;border-radius:99px;background:#2BB673}',
+      '.nst-b{flex-shrink:0;font-size:11.5px;font-weight:600;color:var(--g);background:#E8F0EC;border-radius:99px;padding:4px 10px;white-space:nowrap}',
+      '.nst-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}',
+      '.nst-c{border-radius:14px;background:#F5F8F6;padding:12px 14px;display:flex;flex-direction:column;gap:3px;min-width:0}',
+      '.nst-c span{font-size:11px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:#4A5C47}',
+      '.nst-c b{font:500 26px/1.1 \'Fraunces\',serif;color:#0F1A0D;font-variant-numeric:tabular-nums}',
+      '.nst-c em{font-style:normal;font-size:12px;font-weight:600;color:#0B6B4F}',
+      '.nst-c em.nst-n{color:#4A5C47;font-weight:500}',
+      '.nst-ch{border:1px solid #E5ECE8;border-radius:14px;padding:12px 14px 10px}',
+      '.nst-ch-h{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:600;color:#4A5C47;margin-bottom:8px}',
+      '.nst-ch-h b{color:var(--g)}',
+      '.nst-bars{height:64px;display:flex;align-items:flex-end;gap:8px}',
+      '.nst-bars i{flex:1;border-radius:5px 5px 2px 2px;background:#B9D3C8;min-height:3px}',
+      '.nst-bars i:last-child{background:var(--g)}',
+      '.nst-m{display:flex;gap:8px;margin-top:5px;font-size:11px;color:#4A5C47}',
+      '.nst-m span{flex:1;text-align:center}',
+      '.nst-f{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}',
+      '.nst-f small{font-size:11.5px;color:#4A5C47}',
+      'nav#nav .nst a.nst-go{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;color:var(--g);text-decoration:none;padding:0;background:none}',
+      '.nst-msg{font-size:14px;color:#4A5C47;padding:6px 0}',
+      '@media(max-width:560px){.nst{right:-1px;left:-1px;width:auto;padding:16px}.nst-c b{font-size:22px}}',
 
       /* Hamburger */
       '.hbg{display:none;background:none;border:none;cursor:pointer;padding:10px;flex-direction:column;gap:5px;z-index:201;min-width:40px;min-height:40px;justify-content:center;align-items:center}',
@@ -399,7 +452,7 @@
       'html.mob-lock,html.mob-lock body{overflow:hidden}',
 
       /* Responsive */
-      '@media(max-width:960px){.n-links,.n-right .nb-c,.n-right .nb-o{display:none}.hbg{display:flex}}'
+      '@media(max-width:960px){.n-links,.n-right .nb-c,.n-right .nb-o{display:none}.hbg{display:flex}.n-right{margin-left:auto;margin-right:2px}}'
     ].join('');
     document.head.appendChild(style);
   }
@@ -417,7 +470,7 @@
   /* ── NAV HTML ── */
   var h = '<nav id="nav">'
     + '<a href="/" class="n-logo">'
-      + '<img src="/logo-nav.webp" alt="" class="nav-logo-img" width="34" height="34" loading="eager">'
+      + '<span class="n-logo-mk" aria-hidden="true"></span>'
       + '<span class="n-brand">Jason <em>Marinho</em></span>'
     + '</a>'
     + '<ul class="n-links">'
@@ -615,10 +668,15 @@
 
     + '</ul>'
     + '<div class="n-right">'
+      + '<button type="button" class="nb-st" id="nb-st" aria-label="Le site en chiffres" aria-expanded="false" aria-controls="nst">'
+        + '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 20h16"/><path d="M7 16v-4"/><path d="M12 16V7"/><path d="M17 16v-7"/></svg>'
+        + '<span class="nb-st-dot"></span>'
+      + '</button>'
       + '<a href="https://app.jasonmarinho.com/ouverture" class="nb-o"><i class="ph ph-user"></i> Mon espace</a>'
       + '<a href="https://app.jasonmarinho.com/auth/register" class="nb-c">Commencer <i class="ph-bold ph-arrow-right"></i></a>'
     + '</div>'
     + '<button class="hbg" id="hbg" aria-label="Menu" aria-expanded="false" aria-controls="mob"><span></span><span></span><span></span></button>'
+    + '<div class="nst" id="nst" role="dialog" aria-label="Le site en chiffres"></div>'
   + '</nav>'
 
   /* ── MOBILE MENU, ordre identique au desktop ── */
@@ -800,6 +858,131 @@
     window.addEventListener('scroll', function () {
       nav.classList.toggle('sc', window.scrollY > 10);
     }, { passive: true });
+
+    /* Couleur de la barre selon le fond qu'elle survole (07/11/2026) : on lit le fond juste
+       sous la barre (là où commence le contenu : derrière elle, beaucoup de pages n'ont que le
+       fond clair du body) en 5 points ; fond foncé (vert, photo) = barre blanche, sinon verte. */
+    function lum(c) {
+      var a = [c.r, c.g, c.b].map(function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+      return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+    }
+    function rgbOf(str) {
+      var m = /rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:\s*[,\/]\s*([\d.]+)(%?))?/.exec(str || '');
+      if (!m) return null;
+      var a = m[4] === undefined ? 1 : parseFloat(m[4]) / (m[5] ? 100 : 1);
+      return { r: +m[1], g: +m[2], b: +m[3], a: a };
+    }
+    /* true = fond foncé, false = fond clair, null = rien trouvé */
+    function darkBehind(el) {
+      for (; el && el.nodeType === 1; el = el.parentElement) {
+        var cs = getComputedStyle(el);
+        var c = rgbOf(cs.backgroundColor);
+        if (c && c.a >= 0.5) return lum(c) < 0.3;
+        var bi = cs.backgroundImage;
+        if (bi && bi !== 'none') {
+          /* Dégradés : la première couleur bien opaque (les halos transparents sont ignorés) */
+          var parts = bi.match(/rgba?\([^)]*\)/g) || [];
+          for (var k = 0; k < parts.length; k++) {
+            var gc = rgbOf(parts[k]);
+            if (gc && gc.a >= 0.5) return lum(gc) < 0.3;
+          }
+          if (bi.indexOf('url(') > -1) return true;
+        }
+      }
+      return null;
+    }
+    function applyTheme() {
+      if (!document.elementsFromPoint) return;
+      var r = nav.getBoundingClientRect(), y = r.bottom + 12, dark = 0, light = 0;
+      [0.06, 0.3, 0.5, 0.7, 0.94].forEach(function (f) {
+        var els = document.elementsFromPoint(window.innerWidth * f, y);
+        for (var i = 0; i < els.length; i++) {
+          var e = els[i];
+          if (e === nav || nav.contains(e) || (e.closest && e.closest('#mob'))) continue;
+          if (darkBehind(e)) dark++; else light++;
+          break;
+        }
+      });
+      nav.classList.toggle('nv-light', dark > light);
+    }
+    var themeTick = false;
+    function queueTheme() {
+      if (themeTick) return;
+      themeTick = true;
+      requestAnimationFrame(function () { themeTick = false; applyTheme(); });
+    }
+    applyTheme();
+    window.addEventListener('scroll', queueTheme, { passive: true });
+    window.addEventListener('resize', queueTheme);
+    window.addEventListener('load', queueTheme);
+
+    /* Le site en chiffres : panneau rempli à la première ouverture */
+    var st = document.getElementById('nb-st');
+    var nst = document.getElementById('nst');
+    var stLoaded = false;
+    var MOIS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+    function fmtN(n) { return typeof n === 'number' ? n.toLocaleString('fr-FR') : '-'; }
+    function deltaTxt(cur, prev, suffix) {
+      if (typeof cur !== 'number' || typeof prev !== 'number' || prev <= 0) return '';
+      var p = Math.round((cur - prev) / prev * 100);
+      return (p >= 0 ? '+' : '') + p + ' %' + (suffix || '');
+    }
+    function renderSt(d) {
+      var g = d.google || {}, v = d.visitors || {};
+      var months = (g.months || []).filter(function (m) { return !m.partial; }).slice(-6);
+      var max = Math.max.apply(null, months.map(function (m) { return m.impressions; }).concat([1]));
+      var trend = '';
+      if (months.length > 1 && months[0].impressions > 0) {
+        var x = months[months.length - 1].impressions / months[0].impressions;
+        if (x >= 2) trend = 'x' + Math.round(x) + ' depuis ' + MOIS[+months[0].month.slice(5, 7) - 1];
+      }
+      var tile = function (label, value, em, neutral) {
+        return '<div class="nst-c"><span>' + label + '</span><b>' + value + '</b>' + (em ? '<em' + (neutral ? ' class="nst-n"' : '') + '>' + em + '</em>' : '') + '</div>';
+      };
+      nst.innerHTML =
+        '<div class="nst-h"><div><div class="nst-t">Le site en chiffres</div><div class="nst-s">Mis à jour chaque jour</div></div><span class="nst-b">28 derniers jours</span></div>'
+        + '<div class="nst-g">'
+          + tile('Visiteurs', fmtN(v.last30), deltaTxt(v.last30, v.prev30, ' sur 30 jours'))
+          + tile('Vus dans Google', fmtN(g.impressions), deltaTxt(g.impressions, g.prevImpressions))
+          + tile('Clics depuis Google', fmtN(g.clicks), deltaTxt(g.clicks, g.prevClicks))
+          + tile('Recherches en 1re page', fmtN(g.firstPageCount), typeof g.pagesSeen === 'number' ? 'sur ' + fmtN(g.pagesSeen) + ' pages vues' : '', true)
+        + '</div>'
+        + (months.length > 1
+          ? '<div class="nst-ch"><div class="nst-ch-h"><span>Affichages Google par mois</span><b>' + trend + '</b></div>'
+            + '<div class="nst-bars">' + months.map(function (m) { return '<i style="height:' + Math.max(4, Math.round(m.impressions / max * 100)) + '%" title="' + fmtN(m.impressions) + '"></i>'; }).join('') + '</div>'
+            + '<div class="nst-m">' + months.map(function (m) { return '<span>' + MOIS[+m.month.slice(5, 7) - 1] + '</span>'; }).join('') + '</div></div>'
+          : '')
+        + '<div class="nst-f"><small>Google Search Console et mesures du site</small><a class="nst-go" href="/chiffres">Voir tous les chiffres <i class="ph-bold ph-arrow-right"></i></a></div>';
+    }
+    function loadSt() {
+      nst.innerHTML = '<div class="nst-t">Le site en chiffres</div><p class="nst-msg">Chargement des chiffres…</p>';
+      fetch('https://app.jasonmarinho.com/api/public/chiffres')
+        .then(function (r) { if (!r.ok) throw new Error('http'); return r.json(); })
+        .then(renderSt)
+        .catch(function () {
+          stLoaded = false;
+          nst.innerHTML = '<div class="nst-t">Le site en chiffres</div><p class="nst-msg">Chiffres indisponibles pour le moment.</p><div class="nst-f"><span></span><a class="nst-go" href="/chiffres">Voir la page des chiffres <i class="ph-bold ph-arrow-right"></i></a></div>';
+        });
+    }
+    function closeSt() {
+      if (!nst || !nst.classList.contains('open')) return;
+      nst.classList.remove('open');
+      st.setAttribute('aria-expanded', 'false');
+    }
+    if (st && nst) {
+      st.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (nst.classList.contains('open')) { closeSt(); return; }
+        if (mob && mob.classList.contains('open') && hbg) hbg.click();
+        nst.classList.add('open');
+        st.setAttribute('aria-expanded', 'true');
+        if (!stLoaded) { stLoaded = true; loadSt(); }
+      });
+      nst.addEventListener('click', function (e) { e.stopPropagation(); });
+      document.addEventListener('click', closeSt);
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSt(); });
+      if (hbg) hbg.addEventListener('click', closeSt);
+    }
 
     /* Ferme tous les accordéons mobile */
     function closeAccordions() {
