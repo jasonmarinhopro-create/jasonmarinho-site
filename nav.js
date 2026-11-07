@@ -106,7 +106,7 @@
       '@media(hover:hover){.n-drop:hover>.n-mega{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);pointer-events:auto}}',
       '.n-drop.open>.n-mega{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);pointer-events:auto}',
       '.n-col{display:flex;flex-direction:column;gap:1px;min-width:180px}',
-      '.n-col-title{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.45);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.05);white-space:nowrap}',
+      '.n-col-title{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,213,107,.75);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.05);white-space:nowrap}',
       '.n-mega a{display:flex;align-items:center;gap:9px;color:rgba(255,255,255,.65);font-size:13.5px;font-family:\'Outfit\',sans-serif;text-decoration:none;padding:8px 9px;border-radius:7px;transition:color .15s,background .15s;white-space:nowrap}',
       '.n-mega a:hover{color:#fff;background:rgba(255,255,255,.05)}',
       '.n-mega a.active{color:var(--y)}',
@@ -235,7 +235,7 @@
       '.n-svc3-col{display:flex;flex-direction:column;gap:1px;min-width:0}',
       '.n-svc3-h{display:flex;align-items:center;gap:9px;font-family:\'Fraunces\',serif;font-size:16px;font-weight:500;color:#fff;margin:0 0 3px}',
       '.n-svc3-h i{color:var(--y);font-size:17px}',
-      '.n-svc3-cap{font-size:12px;color:rgba(255,255,255,.45);margin:0 0 8px}',
+      '.n-svc3-cap{font-size:12px;color:rgba(255,255,255,.6);margin:0 0 8px}',
       '.n-mega .n-svc3-col a{padding:7px 8px;margin:0 -8px;white-space:normal;line-height:1.3}',
       '.n-mega .n-svc3-col a.n-svc3-all{color:rgba(255,213,107,.8);font-size:12.5px;margin-top:4px}',
       '.n-mega .n-svc3-col a.n-svc3-all:hover{color:var(--y)}',
@@ -881,7 +881,11 @@
     }
     /* true = fond foncé, false = fond clair, null = rien trouvé */
     function darkBehind(el) {
+      /* Seuls les fonds de section (toute la largeur) comptent : une carte blanche qui passe
+         sous la barre (« Trouver un pro » de l'accueil) la faisait clignoter vert puis blanc. */
+      var full = window.innerWidth * 0.97;
       for (; el && el.nodeType === 1; el = el.parentElement) {
+        if (el !== document.body && el !== document.documentElement && el.getBoundingClientRect().width < full) continue;
         var cs = getComputedStyle(el);
         var c = rgbOf(cs.backgroundColor);
         if (c && c.a >= 0.5) return lum(c) < 0.3;
