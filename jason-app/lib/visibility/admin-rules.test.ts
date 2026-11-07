@@ -90,6 +90,32 @@ describe('villes', () => {
     expect(cities[0].best?.query).toBe('menage airbnb lyon')
     expect(cities[0].themes.map(t => t.label)).toEqual(['Ménage', 'Photographe'])
   })
+
+  it('montre les 4 pages d’une ville, avec visiteurs, pros et demandes par métier', () => {
+    const cities = groupCities([
+      { path: '/photographe-lcd-lyon', clicks: 5, impressions: 57, pagePlace: 6, delta: 2, queries: [q('photographe airbnb lyon', 6, 37)] },
+      { path: '/devenir-hote-airbnb-lyon', clicks: 1, impressions: 220, pagePlace: 19, delta: 5, queries: [] },
+    ], [
+      { kind: 'photographe', ville: 'Lyon', demandes: 2 }, { kind: 'depannage', ville: 'Lyon 7e', demandes: 1 }, { kind: 'photographe', ville: 'Paris', demandes: 9 },
+    ], {
+      visitorsByPath: new Map([['/photographe-lcd-lyon', 12], ['/depannage-lcd-lyon', 3]]),
+      hasAllPages: slug => slug === 'lyon',
+    })
+    const lyon = cities[0]
+    expect(lyon.themes.map(t => t.label)).toEqual(['Ménage', 'Photographe', 'Dépannage', 'Devenir hôte'])
+    const by = Object.fromEntries(lyon.themes.map(t => [t.theme, t]))
+    expect(by.depannage).toMatchObject({ path: '/depannage-lcd-lyon', clicks: 0, impressions: 0, place: null, visitors: 3, pros: 1, demandes: 1 })
+    expect(by.photographe).toMatchObject({ visitors: 12, pros: 1, demandes: 2 })
+    expect(by.menage).toMatchObject({ path: '/menage-lcd-lyon', pros: 0, demandes: 0 })
+    expect(by.hote).toMatchObject({ pros: null, demandes: null })
+    expect(lyon.clicks).toBe(6)
+    expect(lyon.pros).toEqual({ photographes: 1, menage: 0, depannage: 1 })
+  })
+
+  it('une ville sans ses 4 pages ne montre que les pages de Google', () => {
+    const cities = groupCities([{ path: '/menage-lcd-ailleurs', clicks: 0, impressions: 3, pagePlace: 40, delta: null, queries: [] }], [], { hasAllPages: () => false })
+    expect(cities[0].themes.map(t => t.theme)).toEqual(['menage'])
+  })
 })
 
 describe('filtres et tris', () => {

@@ -51,7 +51,7 @@ export default function FichesTab({ d }: { d: FichesData }) {
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px 40px', alignItems: 'flex-end' }}>
           <div style={{ flex: '1 1 420px', minWidth: 0, display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div>
-              <h2 style={v.title}>Les {fmtInt(online.length)} {kindLabel} en ligne, selon leur recherche principale</h2>
+              <h2 style={v.title}>Les {fmtInt(online.length)} {kindLabel} payées en ligne, selon leur recherche principale</h2>
               <p style={{ ...v.sub, marginTop: 3 }}>La recherche principale est celle qui amène le plus de clics à la fiche (à égalité, le plus d&apos;affichages).</p>
             </div>
             <BucketBar counts={buckets} keys={ALL_BUCKETS} height={16} />
@@ -73,7 +73,7 @@ export default function FichesTab({ d }: { d: FichesData }) {
           ]} />
         </div>
         <ChipGroup label="Filtre" value={filter} onChange={f => { setFilter(f); setLimit(PAGE) }} options={[
-          { key: 'toutes', label: 'Toutes' }, { key: 'payees', label: 'Payées' }, { key: 'fondateur', label: 'Fondateur' },
+          { key: 'toutes', label: 'Toutes' }, { key: 'fondateur', label: 'Fondateur' },
           { key: 'jamais', label: 'Jamais montrées' }, { key: 'hors-ligne', label: 'Pas en ligne' },
         ]} />
 
@@ -116,7 +116,6 @@ function ProRow({ p, open, onToggle }: { p: ProItem; open: boolean; onToggle: ()
               <span style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 5, marginTop: 2 }}>
                 {p.ville && <span style={{ fontSize: 12, color: 'var(--text-3)', marginRight: 2 }}>{p.ville}</span>}
                 {p.founder && <span style={badge(AMBER)}>Fondateur</span>}
-                {p.paid && <span style={badge(ACCENT)}>payée</span>}
                 {!p.online && <span style={badge(BROWN)}>{p.statusLabel ?? 'pas en ligne'}</span>}
               </span>
             </span>

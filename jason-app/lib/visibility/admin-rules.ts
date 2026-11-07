@@ -106,6 +106,11 @@ export interface CityThemeItem {
   impressions: number
   place: number | null
   queries: QueryLite[]
+  /** Visiteurs de la page sur la période (mesurés par le site) */
+  visitors: number
+  /** Pros du métier inscrits dans la ville, et leurs demandes ; null pour « Devenir hôte » */
+  pros: number | null
+  demandes: number | null
 }
 
 export interface CityItem {
@@ -233,13 +238,27 @@ export function bestQuery(list: QueryLite[]): QueryLite | null {
   return best
 }
 
+/** Début de l'adresse de chaque page de ville */
+export const CITY_THEME_PREFIX: Record<CityTheme, string> = {
+  menage: '/menage-lcd-',
+  photographe: '/photographe-lcd-',
+  depannage: '/depannage-lcd-',
+  hote: '/devenir-hote-airbnb-',
+}
+const CITY_THEME_ORDER: CityTheme[] = ['menage', 'photographe', 'depannage', 'hote']
+
 /**
  * Pages villes regroupées par ville, avec les pros inscrits de cette ville.
  * `pages` : pages de Google (déjà agrégées), `pros` : villes des fiches.
+ * 07/11/2026 (Jason : « quand je clique sur une ville il y a que 3 infos ») :
+ * une ville qui a ses 4 pages (`hasAllPages`) les montre toutes, même celles
+ * que Google n'a pas encore affichées (dépannage, ouvert le 31/10/2026), avec
+ * les visiteurs de chaque page et les pros du métier et leurs demandes.
  */
 export function groupCities(
   pages: Array<{ path: string; clicks: number; impressions: number; pagePlace: number | null; delta: number | null; queries: QueryLite[] }>,
-  pros: Array<{ kind: 'photographe' | 'menage' | 'depannage'; ville: string }>,
+  pros: Array<{ kind: 'photographe' | 'menage' | 'depannage'; ville: string; demandes?: number }>,
+  opts: { visitorsByPath?: Map<string, number>; hasAllPages?: (slug: string) => boolean } = {},
 ): CityItem[] {
   const map = new Map<string, CityItem & { deltas: Array<{ delta: number | null; impressions: number }> }>()
   for (const p of pages) {
@@ -253,18 +272,28 @@ export function groupCities(
     item.clicks += p.clicks
     item.impressions += p.impressions
     item.deltas.push({ delta: p.delta, impressions: p.impressions })
-    item.themes.push({ theme: c.theme, label: CITY_THEME_LABEL[c.theme], path: p.path, clicks: p.clicks, impressions: p.impressions, place: p.pagePlace, queries: p.queries })
+    item.themes.push({ theme: c.theme, label: CITY_THEME_LABEL[c.theme], path: p.path, clicks: p.clicks, impressions: p.impressions, place: p.pagePlace, queries: p.queries, visitors: 0, pros: null, demandes: null })
   }
-  const order: CityTheme[] = ['menage', 'photographe', 'depannage', 'hote']
   return [...map.values()].map(({ deltas, ...item }) => {
-    item.themes.sort((a, b) => order.indexOf(a.theme) - order.indexOf(b.theme))
+    if (opts.hasAllPages?.(item.slug)) {
+      for (const theme of CITY_THEME_ORDER) {
+        if (item.themes.some(t => t.theme === theme)) continue
+        item.themes.push({ theme, label: CITY_THEME_LABEL[theme], path: `${CITY_THEME_PREFIX[theme]}${item.slug}`, clicks: 0, impressions: 0, place: null, queries: [], visitors: 0, pros: null, demandes: null })
+      }
+    }
+    item.themes.sort((a, b) => CITY_THEME_ORDER.indexOf(a.theme) - CITY_THEME_ORDER.indexOf(b.theme))
     item.best = bestQuery(item.themes.flatMap(t => t.queries))
     item.delta = weightedDelta(deltas)
+    const byKind = { photographe: { n: 0, d: 0 }, menage: { n: 0, d: 0 }, depannage: { n: 0, d: 0 } }
     for (const pro of pros) {
       if (!cityMatches(pro.ville, item.name)) continue
-      if (pro.kind === 'photographe') item.pros.photographes++
-      else if (pro.kind === 'depannage') item.pros.depannage++
-      else item.pros.menage++
+      byKind[pro.kind].n++
+      byKind[pro.kind].d += pro.demandes ?? 0
+    }
+    item.pros = { photographes: byKind.photographe.n, menage: byKind.menage.n, depannage: byKind.depannage.n }
+    for (const t of item.themes) {
+      t.visitors = opts.visitorsByPath?.get(t.path) ?? 0
+      if (t.theme !== 'hote') { t.pros = byKind[t.theme].n; t.demandes = byKind[t.theme].d }
     }
     return item
   }).sort((a, b) => b.clicks - a.clicks || b.impressions - a.impressions || a.name.localeCompare(b.name))

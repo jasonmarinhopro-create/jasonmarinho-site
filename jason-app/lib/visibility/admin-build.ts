@@ -9,6 +9,7 @@ import type { PartnerStackOverview } from '@/lib/affiliation/partnerstack'
 import { buildPartners, buildPartnerSeo, type ClickRow, type PartnersData } from './partners'
 import { buildCityPros, type CityPageTruth, type PagesProsData } from './city-pros'
 import { isPaidPro } from '@/lib/admin/revenue'
+import { CITY_PAGE_SLUGS } from './city-page'
 import {
   pctChange, aggregateQueries, aggregatePages, bucketCounts, topRanked, nearlyFirstPage,
   isBrandQuery, isFirstPage, placeOf, pathOf, pageKind, pageLabel, cityOf, summarizeVisits, granularityFor, bucketKeys,
@@ -220,6 +221,9 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
     ;(prosRes.depannage ?? []).forEach(r => add(r, 'depannage'))
   }
   const onlinePros = proItems.filter(p => p.online)
+  // Onglet Fiches pros : seulement les fiches payées (07/11/2026, Jason : « ça
+  // ne m'intéresse pas de voir les gens avec des paiements attendus »)
+  const paidPros = proItems.filter(p => p.paid)
   const prosFirstPage = onlinePros.filter(p => p.main && isFirstPage(p.main.place)).length
 
   // ── Villes et autres pages ──
@@ -232,7 +236,11 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
       queries: pageQueries(p),
     }
   })
-  const cities = groupCities(cityPages, proItems.filter(p => p.statusLabel !== 'Refusée' && p.statusLabel !== 'Annulée'))
+  const citySlugs = new Set<string>(CITY_PAGE_SLUGS)
+  const cities = groupCities(cityPages, proItems.filter(p => p.statusLabel !== 'Refusée' && p.statusLabel !== 'Annulée'), {
+    visitorsByPath,
+    hasAllPages: slug => citySlugs.has(slug),
+  })
 
   const otherPages: PageItem[] = pageList
     .filter(({ path }) => { const k = pageKind(path); return k !== 'fiche-photographe' && k !== 'fiche-menage' && k !== 'fiche-depannage' && k !== 'ville' })
@@ -257,7 +265,7 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
   }
   const cityProPaths = [...pages.entries()].filter(([path, p]) => /^\/(photographe|menage|depannage)-lcd-/.test(path) && p.impressions > 0)
   const counts: Partial<Record<VisTab, number>> = {
-    ...(prosRes.ok ? { fiches: proItems.length } : {}),
+    ...(prosRes.ok ? { fiches: paidPros.length } : {}),
     ...(qp.ok ? { pagespros: cityProPaths.length } : {}),
     ...(qp.ok ? { recherches: queryStats.length, villes: cities.length, pages: otherPages.length } : {}),
     ...(visitsRes.ok ? { visiteurs: summary.visitors } : {}),
@@ -291,13 +299,13 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
     const buckets = { '1': 0, '2-3': 0, '4-10': 0, '11-20': 0, '21+': 0, masked: 0, never: 0 } as Record<ProBucket, number>
     for (const p of onlinePros) buckets[p.bucket]++
     data.fiches = {
-      items: proItems,
+      items: paidPros,
       online: onlinePros.length,
       buckets,
       firstPage: prosFirstPage,
       impressions: onlinePros.reduce((n, p) => n + p.impressions, 0),
       clicks: onlinePros.reduce((n, p) => n + p.clicks, 0),
-      counts: { photographe: proItems.filter(p => p.kind === 'photographe').length, menage: proItems.filter(p => p.kind === 'menage').length, depannage: proItems.filter(p => p.kind === 'depannage').length },
+      counts: { photographe: paidPros.filter(p => p.kind === 'photographe').length, menage: paidPros.filter(p => p.kind === 'menage').length, depannage: paidPros.filter(p => p.kind === 'depannage').length },
     }
   }
 
