@@ -327,3 +327,10 @@ Jason : « le mode admin prend beaucoup trop de temps à charger », « 60 hôte
   - Elle est toujours faite si `site_rebuild_state.triggered_at` date de moins de 30 min, c'est-à-dire si l'app a demandé une reconstruction (fiche pro, signalement).
 - **Dans le doute, on construit :** déploiement précédent inconnu, commit introuvable, même commit (deploy hook), base injoignable.
 - **Signalements :** la modération passe désormais par `triggerSiteRebuild` / `forceSiteRebuild` (`lib/pros/site-rebuild.ts`), pour que le garde-fou voie ces reconstructions.
+
+## Déconnexions surprises et double écran à la connexion (07/11/2026)
+
+- **Cause des déconnexions** (journaux Auth du 07/11, 02 h 59 Paris) : au retour sur un onglet ouvert depuis plus d'une heure, une douzaine de requêtes (préchargements de la Vue d'ensemble admin, chacune sur un serveur Vercel différent, plus le navigateur) renouvellent la session avec le même jeton. Supabase répond 409 « Too many concurrent token refresh » aux doublons, et `auth-js` efface alors la session (`_removeSession`, erreur non « retryable »). Le navigateur a perdu : cookies effacés, déconnexion.
+- **Correctif** : `lib/supabase/client.ts` n'efface les cookies de session qu'à une déconnexion voulue (`signOutHere()`, utilisé par Header et Sidebar) ; le middleware n'efface plus rien via l'adaptateur `remove`, retente une fois sur un 409, et purge une session vraiment invalide par `clearAuthCookies(request, …)` (avant, la purge lisait les cookies de la réponse, vide sur une redirection). Règles pures : `lib/supabase/session-cookies.ts` (+ test).
+- **Ne jamais** remettre `supabase.auth.signOut()` directement côté navigateur : passer par `signOutHere()`.
+- **Connexion** : un seul chargement, directement vers `/dashboard` ou `/dashboard/admin` (mode admin) via `goToApp()` (`lib/launch.ts`). Avant : `/ouverture`, puis `/dashboard`, puis redirection admin, donc l'écran au logo affiché trois fois. `/ouverture` (lancement de l'app installée) va aussi directement à la Vue d'ensemble en mode admin.
