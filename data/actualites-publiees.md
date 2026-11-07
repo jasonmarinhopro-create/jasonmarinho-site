@@ -11,9 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-08 · reglementation · Facturation électronique LMNP : l'obligation de réception est active (https://www.jedeclaremonmeuble.com/facturation-electronique-lmnp-obligations/)
-- 2026-09-08 · plateformes · Airbnb passe à 15,5% de frais hôte exclusifs dès le 13 octobre · masquée (https://www.meilleurtaux.com/credit-immobilier/actualites/2026-septembre/airbnb-frais-uniques-des-le-13-octobre-2026.html)
-- 2026-09-08 · marche · Été 2026 : le littoral cartonne, les grandes villes en repli · masquée (https://www.jds.fr/actu/location-saisonniere-en-france-le-bilan-du-marche-pour-l-ete-2026-1694050_A)
 - 2026-09-09 · communes · Cassel plafonne les Airbnb à 30 : délai jusqu'au 30 septembre (https://france3-regions.franceinfo.fr/hauts-de-france/pas-calais/saint-omer/on-n-est-pas-contre-les-touristes-mais-dans-ce-village-prefere-des-francais-la-limitation-des-locations-airbnb-divise-3398158.html)
 - 2026-09-09 · plateformes · Airbnb intègre hôtels et voitures : ce que ça change pour toi · masquée (https://blog.elloha.com/2026/08/16/un-nouvel-ete-offensif-pour-airbnb/)
 - 2026-09-10 · communes · Nice revient à 120 jours pour les résidences principales (https://pm.joyloc.com/villes/nice)
