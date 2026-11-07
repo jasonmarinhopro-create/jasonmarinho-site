@@ -93,9 +93,12 @@
 
       /* Mega menu */
       '.n-drop{position:relative}',
-      '.n-drop::after{content:"";position:absolute;bottom:-10px;left:0;right:0;height:12px}',
+      '.n-drop::after{content:"";position:absolute;bottom:-16px;left:0;right:0;height:18px}',
       '.n-mega{position:absolute;top:calc(100% + 2px);left:50%;transform:translateX(-50%) translateY(6px);opacity:0;visibility:hidden;transition:opacity .18s,transform .18s,visibility .18s;background:#001f16;border:1px solid rgba(255,213,107,.1);border-radius:14px;padding:20px;z-index:300;box-shadow:0 24px 64px rgba(0,0,0,.55);display:flex;gap:24px;pointer-events:none;min-width:200px}',
       '.n-mega::before{content:"";position:absolute;top:-5px;left:50%;transform:translateX(-50%) rotate(45deg);width:10px;height:10px;background:#001f16;border-top:1px solid rgba(255,213,107,.1);border-left:1px solid rgba(255,213,107,.1)}',
+      /* Petit écart sous la barre flottante, sans flèche, coins comme la barre (07/11/2026, Jason, d'après Hospia) */
+      '.n-drop>.n-mega{top:calc(100% + 11px);border-radius:18px}',
+      '.n-mega::before{display:none}',
       '@media(hover:hover){.n-drop:hover>.n-mega{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);pointer-events:auto}}',
       '.n-drop.open>.n-mega{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);pointer-events:auto}',
       '.n-col{display:flex;flex-direction:column;gap:1px;min-width:180px}',
@@ -218,7 +221,7 @@
       '.n-links>li{display:flex;align-items:center;align-self:stretch}',
       '.n-drop-wide{position:static}',
       '.n-drop-wide::after{display:none}',
-      '.n-drop-wide>.n-mega{top:calc(100% + 8px)}',
+      '.n-drop-wide>.n-mega{top:calc(100% + 11px)}',
       '.n-drop-wide>.n-mega::after{content:"";position:absolute;left:0;right:0;top:-22px;height:22px}',
       '.n-drop-wide>.n-mega::before{display:none}',
       /* Services (proposition A validée par Jason le 13/10/2026, « trop chargé ») :
