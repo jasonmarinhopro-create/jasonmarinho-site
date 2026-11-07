@@ -956,6 +956,42 @@
       themeTick = true;
       requestAnimationFrame(function () { themeTick = false; applyTheme(); });
     }
+    /* Bandeau du haut prolongé jusqu'en haut de la page (07/11/2026, Jason : « sur la page
+       chiffres il y a une barre blanche tout en haut ») : beaucoup de pages commencent leur
+       premier bandeau à 64 px (place de l'ancienne barre) ; au-dessus, le fond clair du body
+       se voyait autour de la barre flottante (avant : caché par la bande verte de secours).
+       Si le premier bloc visible a son propre fond et commence entre 1 et 140 px, il remonte
+       jusqu'en haut (marge négative + même hauteur de plus en haut) : le contenu ne bouge pas. */
+    function ownBg(cs) {
+      var c = rgbOf(cs.backgroundColor);
+      return (c && c.a >= 0.5) || (cs.backgroundImage && cs.backgroundImage !== 'none');
+    }
+    function fillTop() {
+      var el = document.body, sy = window.scrollY || 0;
+      for (var depth = 0; depth < 5 && el; depth++) {
+        var next = null, kids = el.children;
+        for (var i = 0; i < kids.length; i++) {
+          var k = kids[i];
+          if (k === nav || k.id === 'mob' || /^(SCRIPT|STYLE|LINK|NOSCRIPT|TEMPLATE)$/.test(k.tagName)) continue;
+          var ks = getComputedStyle(k);
+          if (ks.position === 'fixed' || ks.position === 'absolute' || ks.display === 'none') continue;
+          if (k.getBoundingClientRect().height < 1) continue;
+          next = k; break;
+        }
+        if (!next) return;
+        var cs = getComputedStyle(next), r = next.getBoundingClientRect();
+        if (ownBg(cs) && r.width >= window.innerWidth * 0.97) {
+          var gap = Math.round(r.top + sy);
+          if (gap >= 1 && gap <= 140) {
+            next.style.marginTop = (parseFloat(cs.marginTop) - gap) + 'px';
+            next.style.paddingTop = (parseFloat(cs.paddingTop) + gap) + 'px';
+          }
+          return;
+        }
+        el = next;
+      }
+    }
+    fillTop();
     applyTheme();
     window.addEventListener('scroll', queueTheme, { passive: true });
     window.addEventListener('resize', queueTheme);
