@@ -9,7 +9,7 @@ import Link from 'next/link'
 import Sidebar, { type ProNav } from './Sidebar'
 import NotificationPanel, { prefetchNotificationFeed, refreshNotificationFeed } from './NotificationPanel'
 import SOSModal from '@/components/sos/SOSModal'
-import { createClient } from '@/lib/supabase/client'
+import { signOutHere } from '@/lib/supabase/client'
 import { useRouter, usePathname } from 'next/navigation'
 import { useTheme } from '@/components/ThemeProvider'
 import { changelogFor } from '@/lib/constants/changelog'
@@ -316,8 +316,7 @@ export default function Header({ title: titleOverrideProp, userName: initialUser
   }, [dropdownOpen])
 
   async function handleSignOut() {
-    const supabase = createClient()
-    await supabase.auth.signOut()
+    await signOutHere()
     // Redirection DURE (pas router.push) : force le rechargement complet pour
     // purger la session côté serveur + le router cache. Un router.push laissait
     // le layout authentifié en cache → il fallait cliquer plusieurs fois.

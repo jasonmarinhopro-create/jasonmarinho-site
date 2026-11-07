@@ -1,13 +1,15 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { isTransientAuthError } from '@/lib/supabase/session-cookies'
 
 // Purge les cookies Supabase quand une session est corrompue (décodable
 // localement mais refusée par le serveur). Sans ça → boucle infinie de
 // redirections, l'utilisateur doit clear ses cookies manuellement.
-function clearAuthCookies(response: NextResponse) {
+function clearAuthCookies(request: NextRequest, response: NextResponse) {
   // Supabase SSR : cookies préfixés sb-<project-ref>-auth-token, parfois
   // fragmentés en .0 / .1 / .2 quand le token est trop gros pour un seul cookie.
-  response.cookies.getAll().forEach(c => {
+  // Lus sur la requête (ceux du navigateur) : la réponse n'en porte aucun.
+  request.cookies.getAll().forEach(c => {
     if (c.name.startsWith('sb-') && c.name.includes('auth-token')) {
       response.cookies.set({ name: c.name, value: '', maxAge: 0, path: '/' })
     }
@@ -79,11 +81,12 @@ export async function middleware(request: NextRequest) {
           supabaseResponse = NextResponse.next({ request })
           supabaseResponse.cookies.set({ name, value, ...options } as any)
         },
-        remove(name: string, options: CookieOptions) {
-          request.cookies.set({ name, value: '', ...options } as any)
-          supabaseResponse = NextResponse.next({ request })
-          supabaseResponse.cookies.set({ name, value: '', ...options } as any)
-        },
+        // Jamais d'effacement ici (07/11/2026) : la bibliothèque efface la
+        // session dès qu'un renouvellement échoue, y compris quand Supabase
+        // refuse un doublon (409, plusieurs préchargements en même temps) ou
+        // tarde. Une session vraiment invalide est purgée plus bas
+        // (clearAuthCookies + redirection vers la connexion).
+        remove() {},
       },
     }
   )
@@ -112,9 +115,19 @@ export async function middleware(request: NextRequest) {
   let authTimedOut = false
   let authTimer: ReturnType<typeof setTimeout> | undefined
 
+  // Doublon refusé (409) : un autre renouvellement de la même session vient
+  // de passer, Supabase accepte l'ancien jeton quelques secondes. Un second
+  // essai, court, évite la page « Connexion indisponible ».
+  const checkClaims = async () => {
+    const first = await supabase.auth.getClaims()
+    if (!first.error || !isTransientAuthError(first.error) || Date.now() - authStart > 4_000) return first
+    await new Promise(r => setTimeout(r, 300))
+    return supabase.auth.getClaims()
+  }
+
   try {
     const result = await Promise.race([
-      supabase.auth.getClaims(),
+      checkClaims(),
       new Promise<null>(resolve => {
         authTimer = setTimeout(() => resolve(null), AUTH_CHECK_TIMEOUT_MS)
       }),
@@ -143,13 +156,13 @@ export async function middleware(request: NextRequest) {
   // Ne purge que les sessions explicitement invalides, jamais sur une panne.
   if (!isAuthed && hasAuthCookie && invalidSession) {
     if (path.startsWith('/auth')) {
-      clearAuthCookies(supabaseResponse)
+      clearAuthCookies(request, supabaseResponse)
       return supabaseResponse
     }
     const url = request.nextUrl.clone()
     url.pathname = '/auth/login'
     const res = NextResponse.redirect(url)
-    clearAuthCookies(res)
+    clearAuthCookies(request, res)
     return res
   }
 

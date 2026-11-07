@@ -13,6 +13,7 @@ import {
 } from '@phosphor-icons/react/dist/ssr'
 import JmLogo from '@/components/JmLogo'
 import GoogleButton from '@/components/auth/GoogleButton'
+import { goToApp } from '@/lib/launch'
 
 type Profile = 'host' | 'photographe' | 'menage' | 'depannage'
 
@@ -159,7 +160,7 @@ function LoginInner({ google }: { google: boolean }) {
       // Navigation document : bypasse le Router Cache (pas de pollution
       // possible) et l'aiguillage pro/investisseur est fait côté serveur
       // par la page /dashboard.
-      window.location.assign('/ouverture')
+      goToApp()
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
@@ -281,9 +282,10 @@ function LoginInner({ google }: { google: boolean }) {
     // Router Cache (la pollution que refresh() devait purger n'existe plus
     // par construction). L'aiguillage pro/investisseur est désormais fait
     // CÔTÉ SERVEUR par la page /dashboard (redirect immédiat, zéro flash).
-    // Via /ouverture (page statique) : écran de chargement vert tout de
-    // suite au lieu d'une page blanche pendant le calcul du tableau de bord.
-    window.location.assign('/ouverture')
+    // Un seul chargement, directement vers la page d'arrivée (lib/launch.ts,
+    // 07/11/2026 : l'étape /ouverture faisait disparaître puis réapparaître
+    // l'écran au logo). Le bouton reste sur « Connexion... » jusque-là.
+    goToApp()
   }
 
   async function handleResendConfirmation() {

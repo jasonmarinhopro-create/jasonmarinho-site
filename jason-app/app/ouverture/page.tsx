@@ -17,7 +17,9 @@ export const metadata: Metadata = {
 // Laisse le temps d'afficher l'écran (deux images) avant de partir
 // Cookie court « jm-launch » : le dashboard enchaîne alors le même écran sans
 // délai puis l'efface en fondu (app/dashboard/layout.tsx).
-const GO = `document.cookie='jm-launch=1; Path=/; Max-Age=20; SameSite=Lax; Secure';requestAnimationFrame(function(){setTimeout(function(){location.replace('/dashboard'+location.search)},30)})`
+// Mode admin resté actif : directement vers la Vue d'ensemble (07/11/2026),
+// sans le détour /dashboard puis redirection (un chargement de moins).
+const GO = `document.cookie='jm-launch=1; Path=/; Max-Age=20; SameSite=Lax; Secure';var t=/(^|; )jm-admin-mode=1(;|$)/.test(document.cookie)?'/dashboard/admin':'/dashboard'+location.search;requestAnimationFrame(function(){setTimeout(function(){location.replace(t)},30)})`
 
 export default function Ouverture() {
   return (

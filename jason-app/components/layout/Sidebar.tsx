@@ -20,7 +20,7 @@ import {
 import JmLogo from '@/components/JmLogo'
 import PropertySelector from '@/components/layout/PropertySelector'
 import type { PropertyLite } from '@/lib/queries/active-property'
-import { createClient } from '@/lib/supabase/client'
+import { signOutHere } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import type { UserSpace } from '@/lib/queries/spaces'
 import { METIERS, KINDS, type ProKind } from '@/lib/pros/metiers'
@@ -233,7 +233,6 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   // viennent que pour investir, on ne mélange pas les deux univers.
   const investorMode = pathname?.startsWith('/dashboard/investir') ?? false
   const router = useRouter()
-  const supabase = createClient()
   const [hasNewActualites, setHasNewActualites] = useState(initialHasNewActualites)
   const [proNewActus, setProNewActus] = useState<Record<string, boolean>>(proNav?.newActus ?? { photographer: false, cleaner: false })
   // Le menu reste monté d'une page à l'autre : on suit les nouvelles valeurs du
@@ -374,7 +373,7 @@ export default function Sidebar({ mobileOpen, onClose, isAdmin, isContributor, l
   }, [pathname])
 
   async function handleSignOut() {
-    await supabase.auth.signOut()
+    await signOutHere()
     // Redirection DURE (pas router.push) : force le rechargement complet pour
     // purger la session côté serveur + le router cache. Un router.push laissait
     // le layout authentifié en cache → il fallait cliquer plusieurs fois.
