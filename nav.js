@@ -360,8 +360,10 @@
          peu lisibles, Annuaire trop gros) : rubriques avec icône + sous-titre,
          un seul accordéon ouvert, Annuaire et Ressources en cartes compactes,
          boutons du bas toujours visibles, page derrière bloquée. */
-      '.mob-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:var(--gd);border-top:1px solid rgba(255,213,107,.08);padding:6px clamp(16px,5vw,32px) 0;z-index:199;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;opacity:0;transform:translateY(-8px);transition:opacity .2s,transform .2s}',
-      '.mob-menu.open{opacity:1;transform:translateY(0)}',
+      /* Le menu couvre tout l'écran, haut compris (07/11/2026, Jason : « en haut on voit le site derrière ») : il part de top:0 et une bande fixe de sa couleur cache ce qui défile autour de la barre. */
+      '.mob-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--gd);padding:70px clamp(16px,5vw,32px) 0;z-index:199;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;opacity:0;transition:opacity .2s}',
+      '.mob-menu::before{content:"";position:fixed;top:0;left:0;right:0;height:70px;background:inherit;z-index:3;pointer-events:none}',
+      '.mob-menu.open{opacity:1}',
       '.mob-stitle{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,213,107,.6);padding:18px 0 6px;display:block}',
       '.mob-menu a{font-size:15px;color:rgba(255,255,255,.78);text-decoration:none;padding:11px 0;display:flex;align-items:center;gap:12px;transition:color .15s;border-bottom:1px solid rgba(255,255,255,.04)}',
       '.mob-menu a:hover,.mob-menu a:active{color:#fff}',
@@ -493,7 +495,7 @@
       ':where(nav#nav.nv-light) .n-mega a.n-sub-link:hover{color:var(--gd)}',
 
       /* Menu téléphone blanc quand la barre est blanche (07/11/2026, Jason : « sur téléphone le reste est toujours en vert »). Le menu #mob suit #nav dans la page. */
-      ':where(nav#nav.nv-light)~.mob-menu{background:#fff;border-top-color:#EDF2EF}',
+      ':where(nav#nav.nv-light)~.mob-menu{background:#fff}',
       ':where(nav#nav.nv-light)~.mob-menu .mob-stitle{color:#556B2F}',
       ':where(nav#nav.nv-light)~.mob-menu a{color:#2A3A27;border-bottom-color:#EDF2EF}',
       ':where(nav#nav.nv-light)~.mob-menu a:hover,:where(nav#nav.nv-light)~.mob-menu a:active{color:var(--g)}',
@@ -1110,6 +1112,9 @@
       hbg.classList.add('open');
       hbg.setAttribute('aria-expanded', 'true');
       document.documentElement.classList.add('mob-lock');
+      /* Barre du navigateur du téléphone de la couleur du menu ouvert */
+      var tc = document.querySelector('meta[name="theme-color"]');
+      if (tc) { if (tc.dataset.base == null) tc.dataset.base = tc.content; tc.content = nav.classList.contains('nv-light') ? '#ffffff' : '#003329'; }
     }
     function closeMob() {
       if (!mob.classList.contains('open')) return;
@@ -1117,6 +1122,8 @@
       hbg.classList.remove('open');
       hbg.setAttribute('aria-expanded', 'false');
       document.documentElement.classList.remove('mob-lock');
+      var tc = document.querySelector('meta[name="theme-color"]');
+      if (tc && tc.dataset.base != null) tc.content = tc.dataset.base;
       setTimeout(function () {
         if (!mob.classList.contains('open')) { mob.style.display = ''; closeAccordions(); mob.scrollTop = 0; }
       }, 220);
