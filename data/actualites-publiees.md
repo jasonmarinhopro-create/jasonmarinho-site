@@ -11,8 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-09 · communes · Cassel plafonne les Airbnb à 30 : délai jusqu'au 30 septembre (https://france3-regions.franceinfo.fr/hauts-de-france/pas-calais/saint-omer/on-n-est-pas-contre-les-touristes-mais-dans-ce-village-prefere-des-francais-la-limitation-des-locations-airbnb-divise-3398158.html)
-- 2026-09-09 · plateformes · Airbnb intègre hôtels et voitures : ce que ça change pour toi · masquée (https://blog.elloha.com/2026/08/16/un-nouvel-ete-offensif-pour-airbnb/)
 - 2026-09-10 · communes · Nice revient à 120 jours pour les résidences principales (https://pm.joyloc.com/villes/nice)
 - 2026-09-10 · plateformes · Abritel lance les annonces sponsorisées pour les hôtes (https://www.tom.travel/2026/09/01/expedia-dote-abritel-de-nouvelles-fonctionnalites-pour-les-partenaires/)
 - 2026-09-11 · reglementation · Bruxelles propose d'interdire les achats LCD en zones tendues · masquée (https://www.lechotouristique.com/article/contre-la-crise-du-logement-bruxelles-veut-faciliter-les-mesures-anti-airbnb)
