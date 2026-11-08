@@ -4,10 +4,10 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-08 21:23 UTC.
+Mis à jour le 2026-11-08 22:10 UTC.
 
 - 2026-11-09 · reel · menage-lcd-equipe-fiable · FB pending · IG pending · stories FB pending IG pending · « Un hôte change rarement d’équipe de ménage quand elle est fiable. »
-- 2026-11-08 · carrousel · frais-menage-prix-total · FB published 0 j'aime 0 comm. · IG published 0 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Ton prix nuitée est bien placé. Mais le voyageur, lui, voit le prix total. »
+- 2026-11-08 · carrousel · frais-menage-prix-total · FB published 0 j'aime 0 comm. · IG published 1 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Ton prix nuitée est bien placé. Mais le voyageur, lui, voit le prix total. »
 - 2026-11-07 · stories (4 écrans) · stories-conciergerie-premier-mandat · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Ta conciergerie attend son premier mandat ? / Où trouver des propriétaires / Aide avant de vendre /  »
 - 2026-11-06 · reel · strasbourg-marches-de-noel · FB published 0 j'aime 0 comm. · IG published 3 j'aime 0 comm. · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Ton logement est à Strasbourg ? Les marchés de Noël arrivent. »
 - 2026-11-05 · stories (4 écrans) · stories-artisan-avant-la-panne · FB - · IG - · stories FB published 0 j'aime 0 comm. IG published 0 j'aime 0 comm. · « Stories : Fuite à 15 h, voyageurs à 17 h / Au premier appel, demande / Devis / Ton plombier, tu l’as déjà dans »
