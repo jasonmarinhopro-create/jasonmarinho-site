@@ -4,7 +4,7 @@ Réécrit par le workflow « Réseaux sociaux » depuis la base (ne pas modifier
 Format : date prévue · format · sujet (slug) · Facebook · Instagram · première ligne de la légende.
 
 Commentaires des 30 derniers jours : 0 (nouveaux 0, réponses en attente d'envoi 0, envoyées 0, ignorés 0, échecs 0).
-Mis à jour le 2026-11-08 10:40 UTC.
+Mis à jour le 2026-11-08 16:16 UTC.
 
 - 2026-11-09 · reel · menage-lcd-equipe-fiable · FB pending · IG pending · stories FB pending IG pending · « Un hôte change rarement d’équipe de ménage quand elle est fiable. »
 - 2026-11-08 · carrousel · frais-menage-prix-total · FB pending · IG pending · stories FB pending IG pending · « Ton prix nuitée est bien placé. Mais le voyageur, lui, voit le prix total. »
