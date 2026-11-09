@@ -116,3 +116,27 @@ if (mode === 'relever') {
   const h = await get(cl.accessURLParquet, 'buf')
   console.log('logement : HTTP', h.status, h.ct, 'taille', h.body?.length, 'début', h.body?.subarray?.(0, 8)?.toString('hex'), 'fin', h.body?.subarray?.(-8)?.toString('hex'))
 }
+
+// Logements (résidences secondaires) : fichier téléchargé par curl dans le
+// workflow (logement.parquet), le fetch de Node le recevait tronqué.
+async function parquetFichier(chemin) {
+  const { readFileSync } = await import('node:fs')
+  const { parquetMetadata, parquetReadObjects } = await import('hyparquet')
+  const b = readFileSync(chemin)
+  const ab = b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength)
+  const meta = parquetMetadata(ab)
+  return { n: Number(meta.num_rows), cols: meta.schema.slice(1).map(c => c.name),
+    async *rows(step = 200000) { for (let i = 0; i < Number(meta.num_rows); i += step) yield* await parquetReadObjects({ file: ab, rowStart: i, rowEnd: Math.min(i + step, Number(meta.num_rows)) }) } }
+}
+
+if (mode === 'logement-structure') {
+  const pq = await parquetFichier('logement.parquet')
+  console.log('lignes :', pq.n, '| colonnes :', pq.cols.join(', '))
+  const vals = Object.fromEntries(pq.cols.map(c => [c, new Set()]))
+  let shown = 0
+  for await (const row of pq.rows()) {
+    for (const c of pq.cols) if (vals[c].size < 80) vals[c].add(String(row[c]))
+    if (row.GEO === '42187' && shown < 80) { console.log('ROANNE', JSON.stringify(row, (k, v) => typeof v === 'bigint' ? Number(v) : v)); shown++ }
+  }
+  for (const c of pq.cols) if (!/OBS_VALUE|^GEO$/.test(c)) console.log(`  ${c} : ${[...vals[c]].join(' | ')}`)
+}

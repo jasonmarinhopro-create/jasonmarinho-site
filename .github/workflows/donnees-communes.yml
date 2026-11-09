@@ -23,6 +23,12 @@ jobs:
         with: { node-version: 22 }
       - name: Lecteur Parquet (sans toucher package.json)
         run: npm install --no-save --no-audit --no-fund hyparquet@1.33.0
+      - name: Fichier logements Insee (curl, reprises)
+        if: startsWith(hashFiles('.github/communes-trigger'), '') && contains(github.event.head_commit.message, 'logement')
+        run: |
+          curl -sSL --retry 5 --retry-all-errors -o logement.parquet https://api.insee.fr/melodi/file/DS_RP_LOGEMENT_PRINC_2023/PARQUET
+          ls -l logement.parquet
+          head -c 4 logement.parquet | xxd; tail -c 4 logement.parquet | xxd
       - name: Relever
         run: node scripts/donnees-communes.mjs $(head -1 .github/communes-trigger)
       - name: Enregistrer
