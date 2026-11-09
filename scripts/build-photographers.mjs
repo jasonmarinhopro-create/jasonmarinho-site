@@ -24,6 +24,7 @@ import { secteurHtml, SECTEUR_CSS, SECTEUR_JS } from './lib/secteur.mjs'
 import { ficheV3Html, ficheV3Js, FICHE_V3_CSS, telHref } from './lib/fiche-v3.mjs'
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
 import { jsonLdMere, MERES } from './lib/fil-ariane.mjs'
+import { writeRegionPages, sitemapAvec } from './lib/annuaire-region.mjs'
 
 // Options en version courte pour « En bref »
 const OPTION_COURTE = { drone: 'drone', visite_3d: 'visite 3D', reels: 'vidéos courtes', crepuscule: 'crépuscule', mise_en_scene: 'mise en scène' }
@@ -653,6 +654,7 @@ ${items.length > 0 ? `<div class="search-empty" id="search-empty">
   <p><a href="/trouver-un-pro?metier=photographe" id="search-demande" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;border-radius:10px;background:var(--g);color:#fff;font-weight:600;text-decoration:none"><i class="ph-bold ph-paper-plane-tilt"></i>Décrire mon besoin</a></p>
   <button type="button" id="search-reset"><i class="ph-bold ph-arrow-counter-clockwise"></i>Voir tous les photographes et vidéastes</button>
 </div>` : ''}
+<!-- REGION-SLOT -->
 <section style="margin:40px auto 0;max-width:1100px;padding:26px clamp(18px,4vw,30px);border-radius:18px;background:#F2F8F4;border:1px solid rgba(0,76,63,.14);display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between">
   <div style="flex:1 1 320px;min-width:0">
     <div style="font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#004C3F;margin-bottom:8px"><i class="ph-bold ph-house-line"></i> Tu es hôte ?</div>
@@ -913,10 +915,21 @@ async function main() {
 
   // Génère l'annuaire directement sur /annuaires/photographes (index du hub).
   // L'ancienne URL /annuaires/photographes/annuaire redirige en 301 (vercel.json).
+  // Pages région (09/11/2026, étape 7 de la feuille de route) : écrites AVANT
+  // l'annuaire pour que ses intertitres de région renvoient vers elles
+  const regionCfg = ANNUAIRES.photographe
+  const { counts: regionCounts } = cityCoverage(ROOT, regionCfg.prefix, items)
+  const villesAnn = new Map(loadCities().map(c => [c.slug, c.ann]))
+  const regionPages = writeRegionPages({
+    root: ROOT, kind: 'photographe', items, buildList: buildAnnuaireListPage, counts: regionCounts,
+    annonces: slug => villesAnn.get(slug) ?? null, skipSlugs: new Set(items.map(p => p.slug)),
+  })
+  console.log(`[régions] ${regionPages.ecrites} page(s) région, ${regionPages.indexables.length} visible(s) pour Google`)
+
   fs.writeFileSync(path.join(FICHES_DIR, 'index.html'), buildAnnuaireListPage(items), 'utf8')
 
   // Sitemap dédié
-  fs.writeFileSync(path.join(ROOT, 'sitemap-photographes.xml'), buildSitemap(items), 'utf8')
+  fs.writeFileSync(path.join(ROOT, 'sitemap-photographes.xml'), sitemapAvec(buildSitemap(items), regionPages.indexables), 'utf8')
 
   // Injecte les pros actifs dans leurs pages ville SEO (/photographe-lcd-{ville})
   const villesEnrichies = injectProsIntoVillePages({

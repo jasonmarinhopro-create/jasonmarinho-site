@@ -24,6 +24,7 @@ import { ficheV3Html, ficheV3Js, FICHE_V3_CSS, telHref } from './lib/fiche-v3.mj
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, zoneCardHtml, CONTACT_JS } from './lib/fiche-signature.mjs'
 import { METIERS, SPECIALITES_DEPANNAGE } from './lib/metiers.mjs'
 import { jsonLdMere, MERES } from './lib/fil-ariane.mjs'
+import { writeRegionPages, sitemapAvec } from './lib/annuaire-region.mjs'
 
 const M = METIERS.depannage
 const API = M.api // /api/pro/depannage
@@ -607,6 +608,7 @@ ${items.length > 0 ? `<div class="search-empty" id="search-empty">
   <p><a href="/trouver-un-pro?metier=depannage" id="search-demande" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;border-radius:10px;background:var(--g);color:#fff;font-weight:600;text-decoration:none"><i class="ph-bold ph-paper-plane-tilt"></i>Décrire mon besoin</a></p>
   <button type="button" id="search-reset"><i class="ph-bold ph-arrow-counter-clockwise"></i>Voir tous les pros</button>
 </div>` : ''}
+<!-- REGION-SLOT -->
 </main>
 
 ${items.length > 0 ? `<script>
@@ -846,9 +848,30 @@ async function main() {
     fs.writeFileSync(path.join(dir, 'index.html'), buildFichePage(c), 'utf8')
   }
 
+  // Pages région (09/11/2026, étape 7 de la feuille de route) : écrites AVANT
+
+  // l'annuaire pour que ses intertitres de région renvoient vers elles
+
+  const regionCfg = ANNUAIRES.depannage
+
+  const { counts: regionCounts } = cityCoverage(ROOT, regionCfg.prefix, items)
+
+  const villesAnn = new Map(loadCities().map(c => [c.slug, c.ann]))
+
+  const regionPages = writeRegionPages({
+
+    root: ROOT, kind: 'depannage', items, buildList: buildAnnuaireListPage, counts: regionCounts,
+
+    annonces: slug => villesAnn.get(slug) ?? null, skipSlugs: new Set(items.map(p => p.slug)),
+
+  })
+
+  console.log(`[régions] ${regionPages.ecrites} page(s) région, ${regionPages.indexables.length} visible(s) pour Google`)
+
+
   fs.writeFileSync(path.join(FICHES_DIR, 'index.html'), buildAnnuaireListPage(items), 'utf8')
 
-  fs.writeFileSync(path.join(ROOT, 'sitemap-depannage.xml'), buildSitemap(items), 'utf8')
+  fs.writeFileSync(path.join(ROOT, 'sitemap-depannage.xml'), sitemapAvec(buildSitemap(items), regionPages.indexables), 'utf8')
 
   // Pros actifs dans les pages de leur ville (/depannage-lcd-{ville})
   const villesEnrichies = injectProsIntoVillePages({
