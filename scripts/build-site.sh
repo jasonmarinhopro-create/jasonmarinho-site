@@ -11,6 +11,7 @@ node scripts/build-depannage.mjs
 node scripts/build-exemples-fiches.mjs
 node scripts/build-trouver-un-pro.mjs
 node scripts/build-derniers-articles.mjs
+node scripts/inject-photos-villes.mjs
 node scripts/inject-font-loading.mjs
 node scripts/build-phosphor-subset.mjs
 # Pied de page écrit dans chaque page (liens lisibles sans JavaScript, 09/11/2026)
