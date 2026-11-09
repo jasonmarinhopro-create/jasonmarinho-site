@@ -9,6 +9,7 @@
 
 import fs from 'node:fs'
 import { villePageSlug, villeLabel } from './inject-ville-pros.mjs'
+import { groupesVilles } from './villes-hub.mjs'
 
 const esc = s => s == null ? '' : String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
 
@@ -320,20 +321,35 @@ export function faqJsonLd(cfg) {
   })
 }
 
-/** Guides par ville : les villes où il y a des pros en tête, avec leur nombre */
+/**
+ * Guides par ville, rangés par région (09/11/2026) : la page de l'annuaire
+ * porte la liste complète des villes, le pied de page n'en montre plus
+ * qu'une sélection. Dans chaque région, les villes où il y a des pros en
+ * tête, avec leur nombre. Villes lues dans le registre géographique
+ * (Québec compris pour les photographes) ; `cities` reste accepté pour
+ * compatibilité mais n'est plus lu.
+ */
 export function villesGuidesHtml(cfg, cities, counts) {
-  if (!cities.length) return ''
+  const kind = { 'photographe-lcd': 'photographe', 'menage-lcd': 'menage', 'depannage-lcd': 'depannage' }[cfg.prefix]
+  const groupes = kind ? groupesVilles(kind) : []
+  if (!groupes.length) return ''
   const label = cfg.villeLabel ?? (cfg.one === 'photographe' ? 'photographe' : 'ménage')
-  const sorted = [...cities].sort((a, b) => (counts.get(b.slug) ?? 0) - (counts.get(a.slug) ?? 0))
-  const chips = sorted.map(c => {
-    const n = counts.get(c.slug) ?? 0
-    return `<a href="/${cfg.prefix}-${c.slug}"${n ? ' class="has"' : ''}>${esc(c.name)}${n ? ` <span>${n} ${n > 1 ? esc(cfg.many) : esc(cfg.one)}</span>` : ''}</a>`
-  }).join('')
+  const total = groupes.reduce((n, g) => n + g.villes.length, 0)
+  const html = groupes.map(g => {
+    const sorted = [...g.villes].sort((a, b) => (counts.get(b.slug) ?? 0) - (counts.get(a.slug) ?? 0) || a.nom.localeCompare(b.nom, 'fr'))
+    const chips = sorted.map(v => {
+      const n = counts.get(v.slug) ?? 0
+      return `<a href="${v.pages[kind]}"${n ? ' class="has"' : ''}>${esc(v.nom)}${n ? ` <span>${n} ${n > 1 ? esc(cfg.many) : esc(cfg.one)}</span>` : ''}</a>`
+    }).join('')
+    return `<div class="vh-group${g.villes.length > 12 ? ' vh-group-wide' : ''}" id="${g.id}"><h3 class="vh-group-t">${esc(g.nom)}</h3><div class="villes-chips">${chips}</div></div>`
+  }).join('\n      ')
   return `<section class="villes-section" id="villes">
   <div class="villes-in">
     <h2 class="villes-h">Guide ${label} <em>de ta ville</em></h2>
-    <p class="villes-p">${esc(cfg.villesIntro ?? 'Tarifs constatés, checklist et questions à poser, ville par ville.')} Les villes en vert ont déjà des ${esc(cfg.many)} dans l’annuaire.</p>
-    <div class="villes-chips">${chips}</div>
+    <p class="villes-p">${esc(cfg.villesIntro ?? 'Tarifs constatés, checklist et questions à poser, ville par ville.')} ${total} villes, rangées par région. Les villes en vert ont déjà des ${esc(cfg.many)} dans l’annuaire.</p>
+    <div class="vh-groups">
+      ${html}
+    </div>
   </div>
 </section>`
 }
@@ -446,6 +462,10 @@ export const ANNUAIRE_CSS = `
 .faq-it summary i{color:var(--g);transition:transform .2s;flex-shrink:0}
 .faq-it[open] summary i{transform:rotate(180deg)}
 .faq-it p{font-size:14px;color:var(--tm);line-height:1.7;margin-top:10px}
+.vh-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:22px 32px;margin-top:6px}
+.vh-group{min-width:0}
+.vh-group-wide{grid-column:1/-1}
+.vh-group-t{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--tl,#5A6B57);margin:0 0 9px}
 .villes-chips a.has{background:rgba(0,76,63,.09);color:var(--g);font-weight:600;border-color:rgba(0,76,63,.2)}
 .villes-chips a span{font-size:11px;font-weight:600;opacity:.8}
 .join-box{max-width:1100px;margin:8px auto 64px;padding:0 clamp(16px,5vw,40px)}

@@ -59,22 +59,22 @@ const COMPARATIFS = [
 export const PANELS = [
   { key: 'revenus', tab: 'Études de revenus', titre: 'Combien rapporte la LCD <em>dans ta ville</em>',
     hint: 'Prix moyen par nuit, taux d’occupation et revenu net estimé, ville par ville.',
-    kind: 'revenus', grouper: 'pays', all: ['/calculateurs', 'Tous les calculateurs'] },
+    kind: 'revenus', all: ['/calculateurs', n => `Les ${n} études de revenus`] },
   { key: 'hote', tab: 'Devenir hôte', titre: 'Devenir hôte <em>près de chez toi</em>',
     hint: 'Réglementation locale, numéro d’enregistrement, taxe de séjour officielle et saisons : le guide pour démarrer en règle dans ta ville.',
-    kind: 'hote', grouper: 'region', all: ['/villes', 'Tous les guides hôte'] },
+    kind: 'hote', all: ['/villes', n => `Les ${n} guides hôte par ville`] },
   { key: 'photographes', tab: 'Photographes & vidéastes', titre: 'Trouver un photographe <em>près de chez toi</em>',
     hint: 'Des photographes et vidéastes qui connaissent la location courte durée : tarifs locaux, conseils pour ton annonce, demande de devis gratuite.',
-    kind: 'photographe', grouper: 'region', all: ['/annuaires/photographes', 'L’annuaire des photographes et vidéastes'] },
+    kind: 'photographe', all: ['/annuaires/photographes#villes', n => `Les ${n} villes et l’annuaire des photographes`] },
   { key: 'menage', tab: 'Ménage', titre: 'Trouver une équipe de ménage <em>près de chez toi</em>',
     hint: 'Des équipes habituées aux rotations entre deux voyageurs : tarifs locaux, checklist et demande de devis gratuite.',
-    kind: 'menage', grouper: 'region', all: ['/annuaires/menage', 'L’annuaire du ménage'] },
+    kind: 'menage', all: ['/annuaires/menage#villes', n => `Les ${n} villes et l’annuaire du ménage`] },
   { key: 'depannage', tab: 'Dépannage', titre: 'Trouver un artisan <em>près de chez toi</em>',
     hint: 'Plombier, électricien, serrurier : des pros qui interviennent entre deux voyageurs, et les bons réflexes avant d’appeler.',
-    kind: 'depannage', grouper: 'region', all: ['/annuaires/depannage', 'L’annuaire du dépannage'] },
+    kind: 'depannage', all: ['/annuaires/depannage#villes', n => `Les ${n} villes et l’annuaire du dépannage`] },
   { key: 'outils', tab: 'Comparatifs outils', titre: 'Bien choisir <em>tes outils</em>',
     hint: 'Logiciels, serrures, tarification, comptabilité : des comparatifs avec les prix, les forces et les limites de chaque outil.',
-    liens: COMPARATIFS, all: ['/partenaires', 'Tous les partenaires'] },
+    liens: COMPARATIFS, all: ['/partenaires', () => 'Tous les partenaires'] },
 ]
 
 /** Onglet ouvert d'office selon la page (les liens de tous les onglets restent dans le HTML) */
@@ -94,33 +94,65 @@ const chip = (href, label, current) => current === href
   ? `<a href="${href}" class="on" aria-current="page">${esc(label)}</a>`
   : `<a href="${href}">${esc(label)}</a>`
 
-function groupes(panel) {
-  const villes = villesRegistre().filter(v => v.pages[panel.kind])
-  const by = new Map()
-  for (const v of villes) {
-    const g = panel.grouper === 'pays' ? v.paysNom : (v.region?.nom ?? v.paysNom)
-    if (!by.has(g)) by.set(g, [])
-    by.get(g).push(v)
+// Villes mises en avant : les plus grands marchés (nombre d'annonces de CITIES,
+// footer.js), 18 au plus par ligne. La liste complète est sur la page mère.
+export const PAR_LIGNE = 18
+let _ann = null
+const annonces = slug => {
+  if (!_ann) {
+    const s = fs.readFileSync(path.join(ROOT, 'footer.js'), 'utf8')
+    const open = s.indexOf('[', s.indexOf('var CITIES = ['))
+    _ann = Object.fromEntries(new Function('return ' + s.slice(open, s.indexOf('];', open) + 1))().map(c => [c.slug, Number(String(c.ann).replace(/[^0-9]/g, '')) || 0]))
   }
-  const fr = (a, b) => a.localeCompare(b, 'fr')
-  // France d'abord (études de revenus), puis ordre alphabétique ; villes par nom
-  return [...by.entries()]
-    .sort(([a], [b]) => (a === 'France' ? -1 : b === 'France' ? 1 : fr(a, b)))
-    .map(([nom, vs]) => ({ nom, villes: vs.sort((a, b) => fr(a.nom, b.nom)) }))
+  return _ann[slug] ?? 0
+}
+const parTaille = (a, b) => annonces(b.slug) - annonces(a.slug) || a.nom.localeCompare(b.nom, 'fr')
+
+/**
+ * Page d'une région pour un type de page, si elle existe (étape 7 de la
+ * feuille de route) : la ligne « Par région » n'apparaît qu'avec de vraies pages.
+ */
+export function cheminRegion(kind, regionNom) {
+  const slug = regionNom.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  const base = { photographe: '/annuaires/photographes', menage: '/annuaires/menage', depannage: '/annuaires/depannage', hote: '/villes' }[kind]
+  if (!base) return null
+  const url = `${base}/${slug}`
+  return fs.existsSync(path.join(ROOT, url.slice(1), 'index.html')) ? url : null
+}
+
+/** Lignes d'un onglet : [titre, [[lien, nom], …]] */
+function lignes(panel) {
+  if (panel.liens) {
+    return [
+      ['Comparatifs', panel.liens.filter(([h]) => !h.startsWith('/partenaires/'))],
+      ['Partenaires', panel.liens.filter(([h]) => h.startsWith('/partenaires/'))],
+    ]
+  }
+  const villes = villesRegistre().filter(v => v.pages[panel.kind])
+  if (panel.kind === 'revenus') {
+    return [
+      ['En France', villes.filter(v => v.pays === 'FR').sort(parTaille).slice(0, PAR_LIGNE).map(v => [v.pages.revenus, v.nom])],
+      ['En Europe', villes.filter(v => v.pays !== 'FR').slice(0, PAR_LIGNE).map(v => [v.pages.revenus, v.nom])],
+    ]
+  }
+  const rows = [['Par ville', villes.filter(v => v.pays === 'FR').sort(parTaille).slice(0, PAR_LIGNE).map(v => [v.pages[panel.kind], v.nom])]]
+  const regions = [...new Map(villes.filter(v => v.region).map(v => [v.region.code, v.region.nom])).values()]
+    .sort((a, b) => a.localeCompare(b, 'fr'))
+    .map(nom => [cheminRegion(panel.kind, nom), nom]).filter(([h]) => h)
+  if (regions.length) rows.push(['Par région', regions])
+  const etranger = villes.filter(v => v.pays !== 'FR').map(v => [v.pages[panel.kind], v.nom])
+  if (etranger.length) rows.push(['Hors de France', etranger])
+  return rows.filter(([, xs]) => xs.length)
 }
 
 function panelHtml(panel, on, current) {
-  let body
-  if (panel.liens) {
-    body = `<div class="ft-chips">${panel.liens.map(([h, l]) => chip(h, l, current)).join('')}</div>`
-  } else {
-    body = `<div class="ft-groups">${groupes(panel).map(g =>
-      `<div class="ft-group${g.villes.length > 12 ? ' ft-group-wide' : ''}"><div class="ft-group-t">${esc(g.nom)}</div><div class="ft-chips">${g.villes.map(v => chip(v.pages[panel.kind], v.nom, current)).join('')}</div></div>`,
-    ).join('')}</div>`
-  }
+  const total = panel.liens ? panel.liens.length : villesRegistre().filter(v => v.pages[panel.kind]).length
+  const rows = lignes(panel).map(([t, xs]) =>
+    `<div class="ft-row"><p class="ft-row-t">${esc(t)}</p><div class="ft-chips">${xs.map(([h, l]) => chip(h, l, current)).join('')}</div></div>`,
+  ).join('')
   return `<div class="ft-panel${on ? ' on' : ''}" data-panel="${panel.key}" role="tabpanel">`
-    + `<p class="ft-panel-hint">${esc(panel.hint)}</p>${body}`
-    + `<a href="${panel.all[0]}" class="ft-see-all">${esc(panel.all[1])} <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>`
+    + `<p class="ft-panel-hint">${esc(panel.hint)}</p><div class="ft-rows">${rows}</div>`
+    + `<a href="${panel.all[0]}" class="ft-see-all">${esc(panel.all[1](total))} <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>`
     + `</div>`
 }
 
