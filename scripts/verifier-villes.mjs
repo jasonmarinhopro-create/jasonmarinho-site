@@ -4,7 +4,7 @@
 // CITIES (footer.js) doit avoir ses 3 pages (photographe, ménage, devenir
 // hôte), ses 3 adresses dans le sitemap, son contenu vérifié dans
 // scripts/data/villes-local.mjs, sa place dans la liste de l'app
-// (CITY_PAGE_SLUGS) et dans la réserve de prospection. Lancé par le workflow
+// (registre géographique, d'où l'app tire CITY_PAGE_SLUGS) et dans la réserve de prospection. Lancé par le workflow
 // « Site statique » : échoue s'il manque quelque chose.
 // Pour créer une ville : node scripts/creer-ville.mjs <slug> "<commune>".
 //   node scripts/verifier-villes.mjs
@@ -14,6 +14,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { VILLES_LOCAL } from './data/villes-local.mjs'
 import { VILLES_INTERNATIONAL } from './data/villes-international.mjs'
+import { VILLES as VILLES_REGISTRE, LES_4 } from './data/registre-geo.mjs'
 import { VILLE_COORDS } from './lib/fiche-signature.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -32,7 +33,8 @@ export function loadCities() {
 export function checkVilles() {
   const cities = loadCities()
   const sitemap = read('sitemap.xml')
-  const appSlugs = [...read('jason-app/lib/visibility/city-page.ts').matchAll(/'([a-z0-9-]+)'/g)].map(m => m[1])
+  // L'app lit ses villes dans le registre géographique (copie générée), depuis le 09/11/2026
+  const registre = new Map(VILLES_REGISTRE.map(v => [v.slug, v]))
   const reserve = read('.github/workflows/prospection-reserve.yml')
   const reserveSlugs = [...(reserve.match(/CITIES=\(([\s\S]*?)\)\n/)?.[1] ?? '').matchAll(/"([^"]+)"/g)].map(m => slugify(m[1]))
   const problems = []
@@ -44,7 +46,7 @@ export function checkVilles() {
       if (!sitemap.includes(`<loc>https://jasonmarinho.com/${p}-${c.slug}</loc>`)) miss.push(`sitemap ${p}-${c.slug}`)
     }
     if (!VILLES_LOCAL[c.slug]) miss.push('contenu vérifié (villes-local.mjs)')
-    if (!appSlugs.includes(c.slug)) miss.push('CITY_PAGE_SLUGS (app)')
+    if (!LES_4.every(k => registre.get(c.slug)?.pages.includes(k))) miss.push('registre géographique avec ses 4 pages (scripts/data/registre-geo.mjs)')
     if (!VILLE_COORDS[c.slug]) miss.push('position sur la carte des fiches (VILLE_COORDS, scripts/lib/fiche-signature.mjs)')
     if (!reserveSlugs.some(r => r === c.slug || r.startsWith(`${c.slug}-`) || c.slug.startsWith(r))) miss.push('réserve de prospection')
     if (miss.length) problems.push(`${c.slug} : ${miss.join(', ')}`)

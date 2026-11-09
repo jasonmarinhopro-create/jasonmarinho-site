@@ -18,7 +18,7 @@
 //  - relance toutes les injections (idempotentes) : contenu local, taxe de
 //    séjour, estimation, liens entre les 3 pages, chiffres Google, demande
 //    inversée ;
-//  - ajoute la ville au sitemap, à l'app (CITY_PAGE_SLUGS, libellé), aux
+//  - ajoute la ville au sitemap (l'app la lit dans le registre géographique), aux
 //    libellés des fiches pros, à la réserve de prospection, et met à jour les
 //    compteurs « N villes » ;
 //  - régénère les pages Pour qui (compteur de villes) ;
@@ -84,24 +84,8 @@ for (const p of PAGE_PREFIXES) {
 }
 write('sitemap.xml', sitemap)
 
-// 4. App : liste des villes et libellé
-step('App et fiches pros')
-const simple = slug.charAt(0).toUpperCase() + slug.slice(1)
-let cp = read('jason-app/lib/visibility/city-page.ts')
-if (!cp.includes(`'${slug}'`)) {
-  cp = cp.replace(/\n\] as const/, `\n  '${slug}',\n] as const`)
-  if (city.name !== simple) cp = cp.replace(/(const special: Record<string, string> = \{\n)/, `$1    '${slug}': ${JSON.stringify(city.name)},\n`)
-  write('jason-app/lib/visibility/city-page.ts', cp)
-  console.log('+ CITY_PAGE_SLUGS')
-}
-if (city.name !== simple) {
-  let iv = read('scripts/lib/inject-ville-pros.mjs')
-  if (!iv.includes(`'${slug}':`)) {
-    iv = iv.replace(/(const VILLE_LABELS = \{\n)/, `$1  '${slug}': ${JSON.stringify(city.name)},\n`)
-    write('scripts/lib/inject-ville-pros.mjs', iv)
-    console.log('+ VILLE_LABELS')
-  }
-}
+// 4. App et fiches : villes et noms lus dans le registre géographique
+// (copie de l'app écrite par build-registre-geo.mjs à l'étape 7)
 
 // 5. Réserve de prospection
 step('Réserve de prospection')

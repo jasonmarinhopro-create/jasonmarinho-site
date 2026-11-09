@@ -5,16 +5,14 @@
 // ville y est présentée (scripts/build-photographers.mjs, build-cleaners.mjs).
 // Pur et testé : city-page.test.ts (vérifie aussi la liste contre le site).
 
-export const CITY_PAGE_SLUGS = [
-  'aix-en-provence', 'ajaccio', 'angers', 'annecy', 'antibes', 'arcachon', 'avignon', 'bastia', 'bayonne', 'beaune',
-  'biarritz', 'bordeaux', 'brest', 'caen', 'cannes', 'carcassonne', 'chambery', 'chamonix', 'clermont-ferrand', 'colmar',
-  'deauville', 'dijon', 'dinard', 'epernay', 'etretat', 'grenoble', 'honfleur', 'la-baule', 'la-rochelle', 'le-mans',
-  'le-touquet', 'lille', 'lyon', 'marseille', 'megeve', 'menton', 'metz', 'montpellier', 'nancy', 'nantes',
-  'nice', 'nimes', 'paris', 'pau', 'perpignan', 'poitiers', 'quimper', 'reims', 'rennes', 'rouen',
-  'saint-malo', 'saint-tropez', 'sarlat', 'sete', 'strasbourg', 'toulouse', 'tours', 'troyes', 'vannes', 'versailles',
-  'les-sables-d-olonne',
-  'roanne',
-] as const
+import { VILLES_GEO, PAYS_GEO } from '@/lib/geo/registre'
+
+// Depuis le 09/11/2026 : lu dans le registre géographique unique
+// (scripts/data/registre-geo.mjs, copie générée lib/geo/registre.ts). Une
+// ville française qui a ses pages pros.
+export const CITY_PAGE_SLUGS: readonly string[] = VILLES_GEO
+  .filter(v => v.pays === 'FR' && v.pages.photographe)
+  .map(v => v.slug)
 
 /**
  * Autres façons d'écrire une ville qui a sa page : nom court, anciennes
@@ -81,12 +79,14 @@ export function cityPagePath(metier: CityMetier, slug: string): string {
 
 /**
  * Villes hors de France (17/10/2026) : page photographe seulement, contenu
- * propre au pays (même liste que scripts/data/villes-international.mjs).
+ * propre au pays (lues dans le registre géographique).
  * Hors de CITY_PAGE_SLUGS, qui suppose les 2 pages pros et le droit français.
  */
-export const INTL_CITY_PAGES: Record<string, { label: string; pays: string }> = {
-  quebec: { label: 'Québec', pays: 'Canada' },
-}
+export const INTL_CITY_PAGES: Record<string, { label: string; pays: string }> = Object.fromEntries(
+  VILLES_GEO
+    .filter(v => v.pays !== 'FR' && (v.pages.photographe || v.pages.menage || v.pages.depannage || v.pages.hote))
+    .map(v => [v.slug, { label: v.nom, pays: PAYS_GEO[v.pays] }]),
+)
 
 /** « Québec », « Ville de Québec », « Québec, QC » → quebec ; sinon null */
 export function intlCitySlugOf(ville: string | null | undefined): string | null {
@@ -101,13 +101,7 @@ export function anyCitySlugOf(ville: string | null | undefined, zone?: string | 
 
 /** Nom d'affichage : saint-malo → Saint-Malo, la-rochelle → La Rochelle, aix-en-provence → Aix-en-Provence */
 export function cityLabel(slug: string): string {
-  const special: Record<string, string> = {
-    'aix-en-provence': 'Aix-en-Provence', 'clermont-ferrand': 'Clermont-Ferrand', 'la-baule': 'La Baule', 'la-rochelle': 'La Rochelle',
-    'le-mans': 'Le Mans', 'le-touquet': 'Le Touquet', 'saint-malo': 'Saint-Malo', 'saint-tropez': 'Saint-Tropez',
-    chambery: 'Chambéry', epernay: 'Épernay', etretat: 'Étretat', megeve: 'Megève', nimes: 'Nîmes', sete: 'Sète',
-    'les-sables-d-olonne': "Les Sables-d'Olonne",
-  }
-  return special[slug] ?? INTL_CITY_PAGES[slug]?.label ?? slug.charAt(0).toUpperCase() + slug.slice(1)
+  return VILLES_GEO.find(v => v.slug === slug)?.nom ?? slug.charAt(0).toUpperCase() + slug.slice(1)
 }
 
 /** Chemin d'une adresse de référent interne (https://jasonmarinho.com/x?y → /x), sinon null */

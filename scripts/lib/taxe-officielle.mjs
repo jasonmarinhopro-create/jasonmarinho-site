@@ -11,7 +11,7 @@ const FILE = new URL('../data/taxe-sejour-officielle.json', import.meta.url)
 export const TAXE_SOURCE_URL = 'https://data.economie.gouv.fr/explore/dataset/delta_deliberation_ts_tarif0/'
 
 // slug de nos pages → clé du relevé et libellé exact de la commune dans DELTA
-const COMMUNES = {
+export const COMMUNES = {
   lyon: ['Lyon|69', 'LYON'], bordeaux: ['Bordeaux|33', 'BORDEAUX'], annecy: ['Annecy|74', 'ANNECY'],
   nice: ['Nice|06', 'NICE'], strasbourg: ['Strasbourg|67', 'STRASBOURG VILLE'], biarritz: ['Biarritz|64', 'BIARRITZ'],
   'la-rochelle': ['La Rochelle|17', 'LA ROCHELLE'], marseille: ['Marseille|13', 'MARSEILLE'], toulouse: ['Toulouse|31', 'TOULOUSE'],

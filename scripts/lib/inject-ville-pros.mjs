@@ -5,6 +5,7 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
+import { VILLES as VILLES_REGISTRE } from '../data/registre-geo.mjs'
 
 const START = '<!-- annuaire-live:start -->'
 const END = '<!-- annuaire-live:end -->'
@@ -24,15 +25,9 @@ function slugifyVille(v) {
     .replace(/^-+|-+$/g, '')
 }
 
-// Noms affichés des villes dont le slug ne suffit pas (même liste que
-// cityLabel de jason-app/lib/visibility/city-page.ts)
-const VILLE_LABELS = {
-  'aix-en-provence': 'Aix-en-Provence', 'clermont-ferrand': 'Clermont-Ferrand', 'la-baule': 'La Baule', 'la-rochelle': 'La Rochelle',
-  'le-mans': 'Le Mans', 'le-touquet': 'Le Touquet', 'saint-malo': 'Saint-Malo', 'saint-tropez': 'Saint-Tropez',
-  chambery: 'Chambéry', epernay: 'Épernay', etretat: 'Étretat', megeve: 'Megève', nimes: 'Nîmes', sete: 'Sète',
-  'les-sables-d-olonne': "Les Sables-d'Olonne",
-  quebec: 'Québec',
-}
+// Noms affichés des villes : registre géographique unique (09/11/2026,
+// scripts/data/registre-geo.mjs), comme cityLabel de l'app
+const VILLE_LABELS = Object.fromEntries(VILLES_REGISTRE.map(v => [v.slug, v.nom]))
 // « à Lyon », « au Mans », « aux Sables-d'Olonne »
 const aVille = v => /^Les\s/.test(v) ? `aux ${v.slice(4)}` : /^Le\s/.test(v) ? `au ${v.slice(3)}` : `à ${v}`
 export const villeLabel = slug => VILLE_LABELS[slug] ?? slug.charAt(0).toUpperCase() + slug.slice(1)

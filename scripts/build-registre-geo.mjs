@@ -6,19 +6,20 @@
 //   node scripts/build-registre-geo.mjs --check   → contrôle seulement, échoue si la
 //                                                   copie de l'app n'est pas à jour
 //
-// Contrôles : chaque ville du registre a ses pages sur le disque ; le registre
-// et les listes existantes (CITIES de footer.js, VILLES_INTERNATIONAL, études
-// de revenus de /calculateurs, CITY_PAGE_SLUGS de l'app) disent la même chose.
-// Tant que ces listes existent (étape 3 : elles seront lues dans le registre),
-// ce contrôle empêche qu'elles divergent.
+// Contrôles : chaque ville du registre a ses pages sur le disque, son code
+// INSEE désigne bien la ville, CITIES de footer.js (textes du pied de page,
+// jusqu'à l'étape 4) a les mêmes villes et les mêmes noms, et chaque étude de
+// revenus de /calculateurs est rattachée à une ville. Depuis l'étape 3
+// (09/11/2026), l'app, les fiches, VILLES_INTERNATIONAL, les villes voisines
+// et les suggestions lisent le registre directement.
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { villesRegistre, regionsRegistre } from './lib/registre-geo.mjs'
 import { PAYS, LES_4 } from './data/registre-geo.mjs'
-import { VILLES_INTERNATIONAL } from './data/villes-international.mjs'
 import { loadCities } from './verifier-villes.mjs'
 import { normNom } from './lib/secteur.mjs'
+import { COMMUNES } from './lib/taxe-officielle.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const APP_FILE = path.join(ROOT, 'jason-app', 'lib', 'geo', 'registre.ts')
@@ -56,26 +57,16 @@ export function checkRegistre() {
   }
   for (const v of reseau) if (!cities.some(c => c.slug === v.slug)) problems.push(`${v.slug} : 4 pages dans le registre mais absente de CITIES`)
 
-  // 3. Villes hors de France à pages (Québec)
-  for (const [slug, intl] of Object.entries(VILLES_INTERNATIONAL)) {
-    const v = bySlug.get(slug)
-    if (!v) { problems.push(`${slug} : dans VILLES_INTERNATIONAL mais pas dans le registre`); continue }
-    const kinds = intl.pages.map(p => ({ 'photographe-lcd': 'photographe', 'menage-lcd': 'menage', 'depannage-lcd': 'depannage', 'devenir-hote-airbnb': 'hote' })[p])
-    const reg = Object.keys(v.pages).filter(k => k !== 'revenus')
-    if (kinds.sort().join() !== reg.sort().join()) problems.push(`${slug} : pages ${reg.join(', ')} dans le registre, ${kinds.join(', ')} dans VILLES_INTERNATIONAL`)
-    if (PAYS[v.pays] !== intl.pays) problems.push(`${slug} : pays ${v.paysNom} dans le registre, ${intl.pays} dans VILLES_INTERNATIONAL`)
-  }
-
   // 4. Toutes les études de revenus de /calculateurs sont rattachées à une ville
   const etudes = fs.readdirSync(path.join(ROOT, 'calculateurs')).filter(d => /^revenus?-(lcd|airbnb)-/.test(d) && pageExists(`/calculateurs/${d}`))
   const rattachees = new Set(villes.map(v => v.pages.revenus).filter(Boolean).map(u => u.split('/').pop()))
   for (const d of etudes) if (!rattachees.has(d)) problems.push(`/calculateurs/${d} : étude de revenus sans ville dans le registre`)
 
-  // 5. L'app connaît les mêmes villes à pages pros
-  const appSlugs = [...read('jason-app/lib/visibility/city-page.ts').split('] as const')[0].matchAll(/'([a-z0-9-]+)'/g)].map(m => m[1])
-  const fr = villes.filter(v => v.pays === 'FR' && v.pages.photographe).map(v => v.slug)
-  for (const s of fr) if (!appSlugs.includes(s)) problems.push(`${s} : absente de CITY_PAGE_SLUGS (app)`)
-  for (const s of appSlugs) if (!fr.includes(s)) problems.push(`${s} : dans CITY_PAGE_SLUGS (app) mais pas ville française à pages dans le registre`)
+  // 5. Taxe de séjour officielle : libellés DELTA (« STRASBOURG VILLE ») propres
+  // à la base de la DGFiP, gardés dans COMMUNES, mais pour des villes du registre
+  for (const slug of Object.keys(COMMUNES)) {
+    if (bySlug.get(slug)?.pays !== 'FR') problems.push(`${slug} : dans COMMUNES (taxe-officielle.mjs) mais pas ville française du registre`)
+  }
 
   return { villes, problems }
 }

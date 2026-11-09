@@ -41,7 +41,7 @@ export function villesRegistre() {
   const communeNom = (dep, insee) => {
     if (!communes.has(dep)) {
       const f = path.join(GEO, 'communes', `${dep}.json`)
-      communes.set(dep, new Map(fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')).map(c => [c[0], c[1]]) : []))
+      communes.set(dep, new Map(fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')).map(c => [c[0], { nom: c[1], centre: [c[2], c[3]] }]) : []))
     }
     return communes.get(dep).get(insee) ?? null
   }
@@ -55,7 +55,7 @@ export function villesRegistre() {
     if (pays === 'FR') {
       dep = depOfInsee(v.insee)
       if (!dep || !deps.has(dep)) throw new Error(`${v.slug} : département introuvable pour le code ${v.insee}`)
-      if (!communeNom(dep, v.insee)) throw new Error(`${v.slug} : commune ${v.insee} absente des données IGN`)
+      if (!communeNom(dep, v.insee)?.nom) throw new Error(`${v.slug} : commune ${v.insee} absente des données IGN`)
       const r = regionOfDep.get(dep)
       if (!r) throw new Error(`${v.slug} : région introuvable pour le département ${dep}`)
       region = { code: r.code, nom: r.nom }
@@ -67,7 +67,9 @@ export function villesRegistre() {
       pays,
       paysNom: PAYS[pays],
       insee: v.insee ?? null,
-      communeIgn: pays === 'FR' ? communeNom(dep, v.insee) : null,
+      communeIgn: pays === 'FR' ? communeNom(dep, v.insee).nom : null,
+      /** Centre de la commune [longitude, latitude] en millièmes de degré (IGN) */
+      centre: pays === 'FR' ? communeNom(dep, v.insee).centre : null,
       departement: dep ? { code: dep, nom: deps.get(dep) } : null,
       region,
       province: v.province ?? null,
