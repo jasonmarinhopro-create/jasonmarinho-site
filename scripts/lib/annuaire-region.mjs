@@ -21,6 +21,7 @@ import { jsonLd, MERES, SITE } from './fil-ariane.mjs'
 import { slugRegion } from './villes-hub.mjs'
 import { VILLES_LOCAL } from '../data/villes-local.mjs'
 import { officialGrid, fmtTarif, TAXE_SOURCE_URL } from './taxe-officielle.mjs'
+import { tourismeSection, chiffres } from './communes-donnees.mjs'
 
 const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 const plain = s => String(s ?? '').replace(/<[^>]+>/g, '')
@@ -246,7 +247,8 @@ function zonePage({ t, kind, buildList, zone, pros, proches, villes, villesProch
   const proches_html = !pros.length && proches.length
     ? `<div class="zs-near"><i class="ph-bold ph-navigation-arrow"></i><span>Aucun ${esc(t.one)} n’est encore inscrit ${esc(en)}. Voici les plus proches : ${proches.map(x => `${esc(x.p.pseudo || x.p.full_name || '')} (${x.km} km)`).join(', ')}.</span></div>`
     : ''
-  const sections = [villesHtml, extra, marcheSection(de, lieuVilles, cities, kind), calendrierSection(de, lieuVilles, kind), conseilsSection(t, lieuVilles), reglesSection(de, lieuVilles), taxeSection(de, lieuVilles), faq.html, `<style>${ZONE_CSS}</style>`].join('\n')
+  const tourisme = zone.insee ? tourismeSection(zone.commune ? zone.en : de, 'COM', zone.insee) : zone.depCode ? tourismeSection(de, 'DEP', zone.depCode) : tourismeSection(de, 'REG', zone.regionCode)
+  const sections = [villesHtml, extra, tourisme, marcheSection(de, lieuVilles, cities, kind), calendrierSection(de, lieuVilles, kind), conseilsSection(t, lieuVilles), reglesSection(de, lieuVilles), taxeSection(de, lieuVilles), faq.html, `<style>${ZONE_CSS}</style>`].join('\n')
 
   let html = buildList(liste)
   html = html
@@ -310,6 +312,7 @@ export function communesDesPros(items, villesAvecPage) {
 function enBrefCommune({ t, e, dep, depUrl, reg, regUrl, proche, cities, kind }) {
   const c = proche && cities[proche.slug]
   const items = [
+    ...(chiffres('COM', e.c.code)?.population ? [`<li>${chiffres('COM', e.c.code).population.toLocaleString('fr-FR').replace(/\u202f|\u00a0/g, ' ')} habitants (population légale Insee).</li>`] : []),
     `<li>Département : <a href="${depUrl}">${esc(dep.nom)}</a> (${esc(dep.code)}), région <a href="${regUrl}">${esc(reg.nom)}</a>.</li>`,
     `<li>${e.pros.length} ${esc(e.pros.length > 1 ? t.many : t.one)} ${e.pros.length > 1 ? 'y interviennent' : 'y intervient'} : ${e.pros.map(p => esc(p.pseudo || p.full_name || '')).filter(Boolean).join(', ')}.</li>`,
   ]
@@ -378,7 +381,7 @@ export function writeRegionPages({ root, kind, items, buildList, counts = new Ma
         const { html: cHtml } = zonePage({
           t, kind, buildList, cities, counts,
           chemin: [...chRegion, { nom: d.nom, url: dUrl }, { nom: e.nom, url: e.url }],
-          zone: { url: e.url, nom: e.nom, en: aCommune(e.nom), de: `autour ${deCommune(e.nom)}`, regionCode: reg.code, depCode: d.code, commune: true },
+          zone: { url: e.url, nom: e.nom, en: aCommune(e.nom), de: `autour ${deCommune(e.nom)}`, regionCode: reg.code, depCode: d.code, commune: true, insee: e.c.code },
           pros: e.pros, proches: [], villes: [], villesProches: proches6,
           extra: enBrefCommune({ t, e, dep: d, depUrl: dUrl, reg, regUrl: rUrl, proche: proches6[0], cities, kind }),
         })
