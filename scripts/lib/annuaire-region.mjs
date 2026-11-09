@@ -36,11 +36,14 @@ export const deRegion = nom => `${DE_REGION[nom] ?? (voyelle(nom) ? 'd’' : 'de
 const DANS_LES = new Set(['04', '05', '06', '08', '13', '22', '40', '64', '65', '66', '78', '79', '88', '92'])
 const DANS_LE = new Set(['14', '15', '18', '25', '29', '30', '32', '39', '41', '45', '46', '47', '49', '56', '59', '62', '63', '67', '68', '69', '81', '82', '83', '84', '90', '94', '95'])
 const DANS_L = new Set(['01', '02', '03', '10', '11', '12', '27', '34', '36', '60', '61', '89'])
+// « dans la Loire », « dans la Somme » (les autres départements féminins prennent « en »)
+const DANS_LA = new Set(['23', '26', '42', '50', '51', '55', '58', '72', '80', '86'])
 export function enDep(code, nom) {
   if (code === '75') return 'à Paris'
   if (DANS_LES.has(code)) return `dans les ${nom}`
   if (DANS_LE.has(code)) return `dans le ${nom}`
   if (DANS_L.has(code)) return `dans l’${nom}`
+  if (DANS_LA.has(code)) return `dans la ${nom}`
   return `en ${nom}`
 }
 export function deDep(code, nom) {
@@ -48,7 +51,8 @@ export function deDep(code, nom) {
   if (DANS_LES.has(code)) return `des ${nom}`
   if (DANS_LE.has(code)) return `du ${nom}`
   if (DANS_L.has(code)) return `de l’${nom}`
-  return voyelle(nom) ? `d’${nom}` : `de ${nom}`
+  // Les autres sont féminins : « de la Gironde », « de l’Isère »
+  return voyelle(nom) ? `de l’${nom}` : `de la ${nom}`
 }
 
 // ── Textes par métier ─────────────────────────────────────────────────

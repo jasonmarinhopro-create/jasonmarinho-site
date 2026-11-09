@@ -45,7 +45,7 @@ export function tourismeSection(zoneDe, niveau, code) {
   const cartes = [
     c.population ? ['ph-users-three', nb(c.population), 'habitants'] : null,
     ['ph-buildings', nb(c.hotels), `hôtel${c.hotels > 1 ? 's' : ''}${c.chambres ? `, ${nb(c.chambres)} chambres` : ''}`],
-    ['ph-tent', nb(c.campings), `camping${c.campings > 1 ? 's' : ''}${c.emplacements ? `, ${nb(c.emplacements)} emplacements` : ''}`],
+    ['ph-tree-evergreen', nb(c.campings), `camping${c.campings > 1 ? 's' : ''}${c.emplacements ? `, ${nb(c.emplacements)} emplacements` : ''}`],
     c.autres ? ['ph-house-line', nb(c.autres), `résidence${c.autres > 1 ? 's' : ''} de tourisme, village${c.autres > 1 ? 's' : ''} vacances ou auberge${c.autres > 1 ? 's' : ''}${c.lits ? ` (${nb(c.lits)} lits)` : ''}`] : null,
   ].filter(Boolean)
   let lecture = ''

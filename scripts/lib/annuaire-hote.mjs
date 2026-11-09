@@ -373,7 +373,7 @@ export function villesGuidesHtml(cfg, cities, counts) {
       ${ligne('Par région', z.regions, 'régions')}
       ${ligne('Par département', z.departements, 'départements')}
       ${ligne('Hors de France', z.etranger.map(([u, n]) => [u, n]), 'villes')}
-      <details class="vz-all" id="toutes-villes"><summary><span><i class="ph-bold ph-list-bullets"></i> Toutes les villes, de A à Z <small>${villes.length}</small></span><i class="ph-bold ph-caret-down vz-car"></i></summary><div class="villes-chips">${aZ}</div></details>
+      <details class="vz-all" id="toutes-villes"><summary><span><i class="ph-bold ph-list-checks"></i> Toutes les villes, de A à Z <small>${villes.length}</small></span><i class="ph-bold ph-caret-down vz-car"></i></summary><div class="villes-chips">${aZ}</div></details>
     </div>
   </div>
 </section>
