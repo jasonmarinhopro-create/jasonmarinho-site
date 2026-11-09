@@ -16,7 +16,7 @@ import { villesParRegionHtml } from './lib/villes-hub.mjs'
 import { villesRegistre } from './lib/registre-geo.mjs'
 import { cheminRegion } from './lib/footer-html.mjs'
 import { loadCities } from './verifier-villes.mjs'
-import { PHOTOS_VILLES } from './data/photos-villes.mjs'
+import { aPhoto } from './data/photos-villes.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const FOOTER_JS = path.join(ROOT, 'footer.js')
@@ -54,7 +54,7 @@ const escH = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace
 function villesGridHtml() {
   return loadCities().filter(c => !c.prosOnly).map(c => '<a class="city-card" href="/devenir-hote-airbnb-' + c.slug + '">'
     // Photo de la ville (Pexels, 10/11/2026) quand elle existe
-    + (PHOTOS_VILLES[c.slug] ? '<div style="aspect-ratio:16/9;overflow:hidden;background:#0b3b31"><img src="/img/villes/' + c.slug + '.webp" alt="' + escH(c.name) + '" width="560" height="700" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block"></div>' : '')
+    + (aPhoto(c.slug) ? '<div style="aspect-ratio:16/9;overflow:hidden;background:#0b3b31"><img src="/img/villes/' + c.slug + '.webp" alt="' + escH(c.name) + '" width="560" height="700" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;display:block"></div>' : '')
     + '<div class="city-card-body">'
     + '<span class="city-tag"><i class="ph ph-map-pin"></i> ' + escH(c.name) + '</span>'
     + '<div class="city-name">Devenir hôte <em>à ' + escH(c.name) + '</em></div>'

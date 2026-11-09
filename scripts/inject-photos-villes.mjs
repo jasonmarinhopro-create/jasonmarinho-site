@@ -12,7 +12,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { villesRegistre } from './lib/registre-geo.mjs'
-import { PHOTOS_VILLES } from './data/photos-villes.mjs'
+import { aPhoto, creditPhoto } from './data/photos-villes.mjs'
 import { annonces } from './lib/footer-html.mjs'
 import { slugRegion } from './lib/villes-hub.mjs'
 
@@ -28,7 +28,7 @@ const CSS = '.hero{position:relative;overflow:hidden;isolation:isolate}.hero-pho
 
 function bloc(slug, alt) {
   return `<!-- PHOTO-VILLE:START --><figure class="hero-photo"><img src="/img/villes/large/${slug}.webp" alt="${esc(alt)}" width="1440" height="576" decoding="async" fetchpriority="low">`
-    + `<figcaption>Photo : <a href="https://www.pexels.com/photo/${PHOTOS_VILLES[slug]}/" target="_blank" rel="noopener">Pexels</a></figcaption></figure><style>${CSS}</style><!-- PHOTO-VILLE:END -->\n`
+    + `<figcaption>Photo : ${creditPhoto(slug)}</figcaption></figure><style>${CSS}</style><!-- PHOTO-VILLE:END -->\n`
 }
 
 /** Ajoute (ou remplace) la photo juste après l'ouverture de l'en-tête */
@@ -49,11 +49,11 @@ const villes = villesRegistre()
 let n = 0, pages = 0
 // Pages de ville
 for (const v of villes) {
-  const slug = PHOTOS_VILLES[v.slug] ? v.slug : null
+  const slug = aPhoto(v.slug) ? v.slug : null
   for (const url of Object.values(v.pages)) { pages++; n += poser(url.slice(1), slug, `${v.nom}${v.pays === 'FR' ? '' : `, ${v.paysNom}`}`) }
 }
 // Pages région et département : la plus grande ville de la zone qui a une photo
-const parTaille = xs => [...xs].filter(v => PHOTOS_VILLES[v.slug]).sort((a, b) => annonces(b.slug) - annonces(a.slug))[0]
+const parTaille = xs => [...xs].filter(v => aPhoto(v.slug)).sort((a, b) => annonces(b.slug) - annonces(a.slug))[0]
 const fr = villes.filter(v => v.pays === 'FR' && v.region)
 const regions = new Map(fr.map(v => [v.region.code, v.region.nom]))
 for (const [code, nom] of regions) {

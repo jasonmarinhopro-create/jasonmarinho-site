@@ -43,3 +43,27 @@ export const PHOTOS_VILLES = {
   'versailles': 15546889,
 }
 export const pexelsUrl = id => `https://www.pexels.com/photo/${id}/`
+
+// Photos Wikimedia Commons (10/11/2026) pour les villes sans photo Pexels :
+// licence libre avec attribution, auteur et licence affichés sous la photo.
+// Relevées par le workflow « Photos Commons » (scripts/photos-commons.mjs).
+export const PHOTOS_COMMONS = {}
+
+/** La ville a-t-elle une photo (Pexels ou Commons) ? */
+export const aPhoto = slug => !!(PHOTOS_VILLES[slug] || PHOTOS_COMMONS[slug])
+
+const escC = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+function licenceUrl(l) {
+  const m = String(l).match(/^CC (BY(?:-SA)?) ([0-9.]+)/i)
+  if (m) return `https://creativecommons.org/licenses/${m[1].toLowerCase()}/${m[2]}/`
+  if (/^CC0/i.test(l)) return 'https://creativecommons.org/publicdomain/zero/1.0/'
+  return null
+}
+/** Crédit HTML d'une photo : « Pexels » ou « Auteur, CC BY-SA 4.0, Wikimedia Commons » */
+export function creditPhoto(slug) {
+  if (PHOTOS_VILLES[slug]) return `<a href="https://www.pexels.com/photo/${PHOTOS_VILLES[slug]}/" target="_blank" rel="noopener">Pexels</a>`
+  const c = PHOTOS_COMMONS[slug]
+  if (!c) return ''
+  const lu = licenceUrl(c.licence)
+  return `${c.auteur ? `${escC(c.auteur)}, ` : ''}${lu ? `<a href="${lu}" target="_blank" rel="noopener">${escC(c.licence)}</a>` : escC(c.licence)}, <a href="${escC(c.page)}" target="_blank" rel="noopener">Wikimedia Commons</a>`
+}

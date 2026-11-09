@@ -11,7 +11,7 @@ import fs from 'node:fs'
 import { villePageSlug, villeLabel } from './inject-ville-pros.mjs'
 import { zonesLiens, chipsRepliables } from './footer-html.mjs'
 import { villesRegistre } from './registre-geo.mjs'
-import { PHOTOS_VILLES } from '../data/photos-villes.mjs'
+import { aPhoto, PHOTOS_COMMONS, creditPhoto } from '../data/photos-villes.mjs'
 
 const esc = s => s == null ? '' : String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
 
@@ -343,10 +343,10 @@ export function villesGuidesHtml(cfg, cities, counts) {
   const label = cfg.villeLabel ?? (cfg.one === 'photographe' ? 'photographe' : 'ménage')
   const proLabel = n => `${n} ${n > 1 ? cfg.many : cfg.one}`
   // Pros d'abord, puis les villes avec photo, puis l'ordre des marchés (tri stable)
-  const ordre = [...villes].sort((a, b) => (b.n - a.n) || ((PHOTOS_VILLES[b.slug] ? 1 : 0) - (PHOTOS_VILLES[a.slug] ? 1 : 0)))
+  const ordre = [...villes].sort((a, b) => (b.n - a.n) || ((aPhoto(b.slug) ? 1 : 0) - (aPhoto(a.slug) ? 1 : 0)))
   const carte = c => {
     const lieu = c.v?.pays === 'FR' ? c.v?.region?.nom : c.v?.paysNom
-    const media = PHOTOS_VILLES[c.slug]
+    const media = aPhoto(c.slug)
       ? `<img src="/img/villes/${c.slug}.webp" alt="${esc(c.nom)}" width="560" height="700" loading="lazy" decoding="async">`
       : `<span class="vc-ph" aria-hidden="true"><span>${esc(c.nom.charAt(0))}</span></span>`
     return `<a class="vc-card" href="${c.url}">${media}<span class="vc-shade"></span>`
@@ -368,7 +368,7 @@ export function villesGuidesHtml(cfg, cities, counts) {
     <div class="vc-track" role="list">
       ${ordre.map(carte).join('\n      ')}
     </div>
-    <p class="vc-credit">Photos des villes : <a href="https://www.pexels.com/license/" target="_blank" rel="noopener">Pexels</a>, licence gratuite.</p>
+    <p class="vc-credit">Photos des villes : <a href="https://www.pexels.com/license/" target="_blank" rel="noopener">Pexels</a>, licence gratuite${villes.some(c => PHOTOS_COMMONS[c.slug]) ? ` ; ${villes.filter(c => PHOTOS_COMMONS[c.slug]).map(c => `${esc(c.nom)} : ${creditPhoto(c.slug)}`).join(' · ')}` : ''}.</p>
     <div class="vz">
       ${ligne('Par région', z.regions, 'régions')}
       ${ligne('Par département', z.departements, 'départements')}
