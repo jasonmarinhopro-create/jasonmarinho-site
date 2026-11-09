@@ -218,7 +218,7 @@ function loadCitiesData(root) {
   return Object.fromEntries(new Function('return ' + s.slice(open, s.indexOf('];', open) + 1))().map(c => [c.slug, c]))
 }
 
-function zonePage({ t, kind, buildList, zone, pros, proches, villes, villesProches, counts, cities, chemin, sousZones }) {
+function zonePage({ t, kind, buildList, zone, pros, proches, villes, villesProches, counts, cities, chemin, sousZones, communes = [], extra = '' }) {
   const { url, nom, en, de } = zone
   const title = t.title(en)
   const fullTitle = `${title} · Jason Marinho`.length <= 60 ? `${title} · Jason Marinho` : title
@@ -231,11 +231,12 @@ function zonePage({ t, kind, buildList, zone, pros, proches, villes, villesProch
   <div class="villes-in">
     <div class="rg-grid">
       <div>
-        <h2 class="villes-h">${villes.length ? `Les villes <em>${esc(de)}</em>` : `Les villes <em>les plus proches</em>`}</h2>
-        <p class="villes-p">${esc(villes.length ? t.guide : `Aucune ville ${de.replace(/^(de |d’|du |des )/, m => m === 'de ' ? 'de ' : m)} n’a encore son guide. Voici les plus proches, avec leur distance. ${t.guide}`)}</p>
+        <h2 class="villes-h">${zone.commune ? `Les guides <em>les plus proches</em>` : villes.length ? `Les villes <em>${esc(de)}</em>` : `Les villes <em>les plus proches</em>`}</h2>
+        <p class="villes-p">${esc(zone.commune ? `Les villes voisines qui ont leur guide, avec leur distance. ${t.guide}` : villes.length ? t.guide : `Aucune ville ${de.replace(/^(de |d’|du |des )/, m => m === 'de ' ? 'de ' : m)} n’a encore son guide. Voici les plus proches, avec leur distance. ${t.guide}`)}</p>
         <div class="rg-list">
           ${lieuVilles.map(v => { const n = counts.get(v.slug) ?? 0; const c = cities[v.slug]; return `<a href="${v.pages[kind]}"><i class="ph-bold ph-map-pin"></i><span class="rg-v">${esc(v.nom)}${v.km != null ? ` <small>${v.km} km</small>` : v.departement.nom !== v.nom ? ` <small>${esc(v.departement.nom)}</small>` : ''}</span>${c ? `<span class="rg-a">${esc(c.ann)}</span>` : ''}${n ? `<span class="rg-n">${n} pro${n > 1 ? 's' : ''}</span>` : ''}<i class="ph-bold ph-arrow-right"></i></a>` }).join('\n          ')}
         </div>
+        ${communes.length ? `<p class="villes-p" style="margin:18px 0 6px">Les communes où des ${esc(t.many)} interviennent :</p><div class="zs-deps">${communes.map(c => `<a href="${c.url}">${esc(c.nom)} <small>${c.n} pro${c.n > 1 ? 's' : ''}</small></a>`).join('')}</div>` : ''}
         ${sousZones?.length ? `<p class="villes-p" style="margin:18px 0 6px">Par département :</p><div class="zs-deps">${sousZones.map(d => `<a href="${d.url}">${esc(d.nom)} <small>${d.n ? `${d.n} pro${d.n > 1 ? 's' : ''}` : esc(d.code)}</small></a>`).join('')}</div>` : ''}
       </div>
       <div class="rg-map">${carteSvg(zone.regionCode, zone.depCode, lieuVilles.filter(v => v.region?.code === zone.regionCode), kind, counts)}<p>Fond de carte : IGN, Licence Ouverte</p></div>
@@ -245,7 +246,7 @@ function zonePage({ t, kind, buildList, zone, pros, proches, villes, villesProch
   const proches_html = !pros.length && proches.length
     ? `<div class="zs-near"><i class="ph-bold ph-navigation-arrow"></i><span>Aucun ${esc(t.one)} n’est encore inscrit ${esc(en)}. Voici les plus proches : ${proches.map(x => `${esc(x.p.pseudo || x.p.full_name || '')} (${x.km} km)`).join(', ')}.</span></div>`
     : ''
-  const sections = [villesHtml, marcheSection(de, lieuVilles, cities, kind), calendrierSection(de, lieuVilles, kind), conseilsSection(t, lieuVilles), reglesSection(de, lieuVilles), taxeSection(de, lieuVilles), faq.html, `<style>${ZONE_CSS}</style>`].join('\n')
+  const sections = [villesHtml, extra, marcheSection(de, lieuVilles, cities, kind), calendrierSection(de, lieuVilles, kind), conseilsSection(t, lieuVilles), reglesSection(de, lieuVilles), taxeSection(de, lieuVilles), faq.html, `<style>${ZONE_CSS}</style>`].join('\n')
 
   let html = buildList(liste)
   html = html
@@ -277,6 +278,45 @@ function plusProches(centre, items, centres) {
 }
 const centreDe = codes => { const ds = departements().filter(d => codes.includes(d.code)); return [Math.round(ds.reduce((n, d) => n + d.c[0], 0) / ds.length), Math.round(ds.reduce((n, d) => n + d.c[1], 0) / ds.length)] }
 
+// ── Pages de ville automatiques (10/11/2026) ───────────────────────────
+// Jason : « go pour la création automatique des villes ». Une commune a sa
+// page dès qu'un pro la nomme (ville principale ou ville couverte) et
+// qu'elle n'a pas déjà sa page de ville ; elle disparaît avec le dernier pro.
+// Adresse : /<annuaire>/<région>/<département>/<commune>.
+export const aCommune = n => /^Les /.test(n) ? `aux ${n.slice(4)}` : /^Le /.test(n) ? `au ${n.slice(3)}` : `à ${n}`
+export const deCommune = n => /^Les /.test(n) ? `des ${n.slice(4)}` : /^Le /.test(n) ? `du ${n.slice(3)}` : /^[AEIOUYÉÈÊÎÔÂH]/i.test(n) ? `d’${n}` : `de ${n}`
+
+/** Communes nommées par les pros (hors villes qui ont déjà leur page) : code → { c, nom, pros } */
+export function communesDesPros(items, villesAvecPage) {
+  const dejaPage = new Set(villesAvecPage.map(v => v.insee).filter(Boolean))
+  const out = new Map()
+  for (const p of items) {
+    // Un seul secteur : les villes couvertes se lisent depuis la ville principale
+    // (« Neuilly » écrit par un pro de Paris = Neuilly-sur-Seine, pas Neuilly dans l'Eure)
+    let sec = null
+    try { sec = resolveSecteur({ ville: p.ville, zone: p.zone_couverte ?? '', villes: Array.isArray(p.villes_couvertes) ? p.villes_couvertes : [] }) } catch { /* ville inconnue */ }
+    if (!sec?.centre) continue
+    for (const [c, nom] of [[sec.centre, sec.nom], ...sec.communes.map(x => [x, x.nom])]) {
+      if (!c?.dep || dejaPage.has(c.code)) continue
+      const e = out.get(c.code) ?? { c, nom: nom || c.nom, pros: [] }
+      if (!e.pros.includes(p)) e.pros.push(p)
+      out.set(c.code, e)
+    }
+  }
+  return out
+}
+
+/** Encadré « <commune> en bref » : où elle est, le guide le plus proche et son marché */
+function enBrefCommune({ t, e, dep, depUrl, reg, regUrl, proche, cities, kind }) {
+  const c = proche && cities[proche.slug]
+  const items = [
+    `<li>Département : <a href="${depUrl}">${esc(dep.nom)}</a> (${esc(dep.code)}), région <a href="${regUrl}">${esc(reg.nom)}</a>.</li>`,
+    `<li>${e.pros.length} ${esc(e.pros.length > 1 ? t.many : t.one)} ${e.pros.length > 1 ? 'y interviennent' : 'y intervient'} : ${e.pros.map(p => esc(p.pseudo || p.full_name || '')).filter(Boolean).join(', ')}.</li>`,
+  ]
+  if (proche) items.push(`<li>Ville guide la plus proche : <a href="${proche.pages[kind]}">${esc(proche.nom)}</a>, à ${proche.km} km${c ? ` (marché estimé à ${esc(String(c.ann).replace('~', 'environ '))}, ${esc(c.adr.replace('/nuit', ' par nuit'))} en moyenne, ${esc(c.occ)})` : ''}.</li>`)
+  return `<section class="zs"><h2>${esc(e.nom)} <em>en bref</em></h2><div class="zs-cards"><div class="zs-card"><h3><i class="ph-bold ph-map-pin"></i>${esc(e.nom)}</h3><ul>${items.join('')}</ul></div></div></section>`
+}
+
 /** Adresse d'une page département : /<base>/<région>/<département> */
 export const cheminDepartementPage = (kind, regionNom, depNom) => `${TEXTES[kind].base}/${slugRegion(regionNom)}/${slugRegion(depNom)}`
 
@@ -296,6 +336,7 @@ export function writeRegionPages({ root, kind, items, buildList, counts = new Ma
   }
   const prosDansDeps = codes => items.filter(p => [...(depsDe.get(p.id) ?? [])].some(d => codes.includes(d)))
   const urls = []
+  const communes = communesDesPros(items, villesDuMetier)
   for (const reg of regions()) {
     const rslug = slugRegion(reg.nom)
     if (skipSlugs.has(rslug)) { console.warn(`[zone] ${t.base}/${rslug} : une fiche porte déjà ce nom, page région non écrite`); continue }
@@ -318,13 +359,31 @@ export function writeRegionPages({ root, kind, items, buildList, counts = new Ma
       const dUrl = cheminDepartementPage(kind, reg.nom, d.nom)
       const dVilles = rVilles.filter(v => v.departement?.code === d.code)
       const dPros = prosDansDeps([d.code])
+      // Pages de ville automatiques (10/11/2026) : chaque commune nommée par un pro
+      // de ce département qui n'a pas encore de page de ville
+      const vus = new Set()
+      const dCommunes = [...communes.values()].filter(e => e.c.dep === d.code)
+        .sort((a, b) => b.pros.length - a.pros.length || a.nom.localeCompare(b.nom, 'fr'))
+        .map(e => { let sl = slugRegion(e.nom); if (vus.has(sl)) sl = `${sl}-${e.c.code}`; vus.add(sl); return { ...e, url: `${dUrl}/${sl}`, n: e.pros.length } })
       const dProches = dVilles.length ? [] : villesDuMetier.map(v => ({ ...v, km: Math.round(distKm(d.c, v.centre)) })).sort((a, b) => a.km - b.km).slice(0, 6)
       const { html: dHtml } = zonePage({
         t, kind, buildList, cities, counts, chemin: [...chRegion, { nom: d.nom, url: dUrl }],
         zone: { url: dUrl, nom: d.nom, en: enDep(d.code, d.nom), de: deDep(d.code, d.nom), regionCode: reg.code, depCode: d.code },
         pros: dPros, proches: dPros.length ? [] : plusProches(d.c, items, centres), villes: dVilles, villesProches: dProches,
+        communes: dCommunes,
       })
       write(root, dUrl, dHtml); urls.push(dUrl)
+      for (const e of dCommunes) {
+        const proches6 = villesDuMetier.map(v => ({ ...v, km: Math.round(distKm(e.c.c, v.centre)) })).sort((a, b) => a.km - b.km).slice(0, 6)
+        const { html: cHtml } = zonePage({
+          t, kind, buildList, cities, counts,
+          chemin: [...chRegion, { nom: d.nom, url: dUrl }, { nom: e.nom, url: e.url }],
+          zone: { url: e.url, nom: e.nom, en: aCommune(e.nom), de: `autour ${deCommune(e.nom)}`, regionCode: reg.code, depCode: d.code, commune: true },
+          pros: e.pros, proches: [], villes: [], villesProches: proches6,
+          extra: enBrefCommune({ t, e, dep: d, depUrl: dUrl, reg, regUrl: rUrl, proche: proches6[0], cities, kind }),
+        })
+        write(root, e.url, cHtml); urls.push(e.url)
+      }
     }
   }
   return { ecrites: urls.length, indexables: urls }
