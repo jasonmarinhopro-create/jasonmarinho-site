@@ -108,6 +108,8 @@ step('Vérification')
 run('scripts/build-registre-geo.mjs')
 run('scripts/build-villes-regions.mjs')
 run('scripts/inject-fil-ariane.mjs')
+run('scripts/inject-chiffres-villes.mjs')
+run('scripts/inject-photos-villes.mjs')
 run('scripts/build-footer.mjs')
 const { count, problems } = checkVilles()
 if (problems.length) { console.error(problems.join('\n')); process.exit(1) }
