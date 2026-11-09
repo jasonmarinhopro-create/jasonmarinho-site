@@ -31,6 +31,7 @@ import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { VILLES_LOCAL } from './data/villes-local.mjs'
 import { loadCities, checkVilles, PAGE_PREFIXES } from './verifier-villes.mjs'
+import { VILLES as VILLES_REGISTRE } from './data/registre-geo.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const [slug, communeArg] = process.argv.slice(2)
@@ -45,6 +46,9 @@ const step = s => console.log(`\n── ${s}`)
 const city = loadCities().find(c => c.slug === slug)
 if (!city) throw new Error(`${slug} : ajoute d'abord la ville au tableau CITIES de footer.js`)
 if (city.prosOnly) throw new Error(`${slug} : retire « prosOnly » dans footer.js (une ville = 3 pages)`)
+// Registre géographique (09/11/2026) : code INSEE vérifié, d'où viennent le département et la région
+const reg = VILLES_REGISTRE.find(v => v.slug === slug)
+if (!reg) throw new Error(`${slug} : ajoute d'abord la ville au registre scripts/data/registre-geo.mjs (slug, nom, code INSEE, pages: LES_4)`)
 const L = VILLES_LOCAL[slug]
 if (!L) throw new Error(`${slug} : ajoute d'abord son bloc vérifié dans scripts/data/villes-local.mjs`)
 if (!L.marche?.sources?.length) throw new Error(`${slug} : indique dans villes-local.mjs la source des chiffres du marché (marche.sources, marche.releve)`)
@@ -117,6 +121,7 @@ run('scripts/build-pour-qui-pros.mjs')
 
 // 7. Vérification
 step('Vérification')
+run('scripts/build-registre-geo.mjs')
 const { count, problems } = checkVilles()
 if (problems.length) { console.error(problems.join('\n')); process.exit(1) }
 console.log(`\n${city.name} créée : 3 pages, ${count} villes en tout. Reste à lancer les tests de l'app (npx vitest run) et à relire les pages.`)

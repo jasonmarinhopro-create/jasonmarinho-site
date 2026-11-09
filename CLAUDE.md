@@ -89,6 +89,7 @@ Next.js 14 · Supabase (PostgreSQL + RLS) · Stripe Connect (loyer + caution) ·
 | `prospection.md` | Prospection par e-mail : séquences, pipeline, envois, montée en charge, imports, règles CNIL |
 | `paiements-stripe.md` | Stripe : loyer, acompte, caution (calendrier, retenue), comptes connectés, frais, webhooks |
 | `reseaux-sociaux.md` | Publication Facebook / Instagram programmée, réponses automatiques, routine « Community manager » (Reels, carrousels, réponses aux commentaires, rapport du dimanche) |
+| `geographie.md` | **Ouvert le 09/11/2026** : registre géographique unique (pays, région, département, ville), pied de page, fil d'Ariane, statistiques par région, pages région ; feuille de route en 8 étapes validée par Jason et état de chaque étape |
 | `projet-maintenance.md` | **Ouvert le 31/10/2026** : 3e métier de l'annuaire « Dépannage et maintenance » (registre `lib/pros/metiers.ts` + `scripts/lib/metiers.mjs`, tronc commun `lib/pros/fiche-core.ts`, une ville = 4 pages), ce qui reste (étape 4) (décisions de Jason, fondations, liste de tous les endroits à modifier, Stripe, pages de ville, blog, prospection) |
 
 Autres documents : `scripts/articles/CONSIGNES.md` (routine Rédaction article), `data/CONSIGNES-ACTUALITES.md` (routine Actualités), `docs/AUDIT-PAGES-A-FUSIONNER.md`, `docs/REFACTOR-DASHBOARD.md`.

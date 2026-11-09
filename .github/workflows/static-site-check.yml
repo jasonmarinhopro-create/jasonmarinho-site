@@ -48,3 +48,9 @@ jobs:
         with: { node-version: 22 }
       - name: Chaque ville a toutes ses pages
         run: node scripts/verifier-villes.mjs
+      # Registre géographique unique (09/11/2026) : pays, région, département
+      # de chaque ville, cohérent avec les pages et les listes existantes.
+      - name: Registre géographique
+        run: node scripts/build-registre-geo.mjs --check
+      - name: Fil d'Ariane (relevé, sans échec)
+        run: node scripts/audit-fil-ariane.mjs
