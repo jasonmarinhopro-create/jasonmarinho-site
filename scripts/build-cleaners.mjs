@@ -914,7 +914,7 @@ async function main() {
     root: ROOT, kind: 'menage', items, buildList: buildAnnuaireListPage, counts: regionCounts,
     annonces: slug => villesAnn.get(slug) ?? null, skipSlugs: new Set(items.map(p => p.slug)),
   })
-  console.log(`[régions] ${regionPages.ecrites} page(s) région, ${regionPages.indexables.length} visible(s) pour Google`)
+  console.log(`[zones] ${regionPages.ecrites} page(s) région et département`)
 
   fs.writeFileSync(path.join(FICHES_DIR, 'index.html'), buildAnnuaireListPage(items), 'utf8')
 
@@ -928,6 +928,7 @@ async function main() {
     pros: items.map(c => ({
       ville: c.ville,
       zone: c.zone_couverte,
+      villes: c.villes_couvertes,
       url: `/annuaires/menage/${c.slug}`,
       name: nomAffiche(c.pseudo || c.full_name),
       sub: fmtForfait(c) ? `Forfait ${fmtForfait(c)}` : null,

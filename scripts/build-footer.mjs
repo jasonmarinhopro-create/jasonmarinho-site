@@ -13,6 +13,8 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { footerHtml, footerCss, PANEL_RULES } from './lib/footer-html.mjs'
 import { villesParRegionHtml } from './lib/villes-hub.mjs'
+import { villesRegistre } from './lib/registre-geo.mjs'
+import { cheminRegion } from './lib/footer-html.mjs'
 import { loadCities } from './verifier-villes.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -73,7 +75,18 @@ function etudesHtml() {
     + '</div>'
 }
 
+/** Liens vers les pages région des guides hôte, en tête de /villes (09/11/2026) */
+function villesRegionsHtml() {
+  const regs = [...new Map(villesRegistre().filter(v => v.pages.hote && v.region).map(v => [v.region.code, v.region.nom])).values()]
+    .sort((a, b) => a.localeCompare(b, 'fr'))
+    .map(nom => [cheminRegion('hote', nom), nom]).filter(([u]) => u)
+  if (!regs.length) return ''
+  return '<div style="margin:0 0 28px"><p style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--tl);margin:0 0 10px">Par région</p>'
+    + '<div style="display:flex;flex-wrap:wrap;gap:8px">' + regs.map(([u, nom]) => `<a href="${u}" style="font-size:13.5px;padding:8px 14px;border-radius:999px;background:#fff;border:1px solid var(--bd);color:var(--g);font-weight:600;text-decoration:none">${escH(nom)}</a>`).join('') + '</div></div>'
+}
+
 const HUBS = [
+  { file: 'villes/index.html', marker: 'VILLES-REGIONS', before: /(\s*<div class="cities-grid" id="cities-grid">)/, html: () => villesRegionsHtml() },
   { file: 'villes/index.html', re: /(<div class="cities-grid" id="cities-grid">)[\s\S]*?(<\/div>\s*\n\s*<div class="no-results")/, html: () => villesGridHtml() },
   { file: 'calculateurs/index.html', marker: 'ETUDES', after: /(Études par ville<\/div>[\s\S]*?<\/a>\n  <\/div>\n)/, html: () => etudesHtml() },
 ]
@@ -91,7 +104,10 @@ export function syncHubs() {
       const block = `<!-- ${h.marker}:START -->\n${h.html()}\n<!-- ${h.marker}:END -->\n`
       const re = new RegExp(`<!-- ${h.marker}:START -->[\\s\\S]*?<!-- ${h.marker}:END -->\\n?`)
       if (re.test(src)) next = src.replace(re, block)
-      else {
+      else if (h.before) {
+        if (!h.before.test(src)) throw new Error(`${h.file} : emplacement introuvable`)
+        next = src.replace(h.before, (m, a) => '\n' + block + a.replace(/^\s*/, ''))
+      } else {
         if (!h.after.test(src)) throw new Error(`${h.file} : emplacement introuvable`)
         next = src.replace(h.after, (m, a) => a + block)
       }

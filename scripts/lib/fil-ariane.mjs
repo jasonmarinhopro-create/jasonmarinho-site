@@ -6,7 +6,13 @@
 // vraie page ; le fil s'allonge tout seul quand une page région est créée.
 // Aucune adresse ne change.
 import { villesRegistre } from './registre-geo.mjs'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { cheminRegion } from './footer-html.mjs'
+import { slugRegion } from './villes-hub.mjs'
+
+const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 
 export const SITE = 'https://jasonmarinho.com'
 
@@ -26,7 +32,12 @@ export function cheminVille(kind, slug) {
   const out = [{ nom: 'Accueil', url: '/' }, MERES[kind]]
   if (v.region && kind !== 'revenus') {
     const r = cheminRegion(kind, v.region.nom)
-    if (r) out.push({ nom: v.region.nom, url: r })
+    if (r) {
+      out.push({ nom: v.region.nom, url: r })
+      // Page département (09/11/2026) : /<annuaire>/<région>/<département>
+      const d = v.departement && `${r}/${slugRegion(v.departement.nom)}`
+      if (d && v.departement.nom !== v.nom && fs.existsSync(path.join(ROOT, d.slice(1), 'index.html'))) out.push({ nom: v.departement.nom, url: d })
+    }
   }
   out.push({ nom: v.nom, url: v.pages[kind] })
   return out

@@ -65,7 +65,7 @@ step('Guide devenir hôte')
 run('scripts/build-guide-hote.mjs', slug)
 
 // 2. Injections (toutes idempotentes, sur toutes les pages)
-for (const s of ['inject-local-villes', 'inject-taxe-villes', 'inject-estimate-cta', 'inject-pros-links', 'inject-villes-voisines', 'inject-fil-ariane', 'inject-chiffres-ville', 'inject-demande-cta', 'inject-hotel-villes', 'inject-metiers-ville-links']) {
+for (const s of ['inject-local-villes', 'inject-taxe-villes', 'inject-estimate-cta', 'inject-pros-links', 'inject-villes-voisines', 'inject-chiffres-ville', 'inject-demande-cta', 'inject-hotel-villes', 'inject-metiers-ville-links']) {
   step(s)
   run(`scripts/${s}.mjs`)
 }
@@ -106,6 +106,8 @@ run('scripts/build-pour-qui-pros.mjs')
 // 7. Vérification
 step('Vérification')
 run('scripts/build-registre-geo.mjs')
+run('scripts/build-villes-regions.mjs')
+run('scripts/inject-fil-ariane.mjs')
 run('scripts/build-footer.mjs')
 const { count, problems } = checkVilles()
 if (problems.length) { console.error(problems.join('\n')); process.exit(1) }

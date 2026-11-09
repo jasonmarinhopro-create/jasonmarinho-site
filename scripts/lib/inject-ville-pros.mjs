@@ -83,17 +83,26 @@ export function villeGuide(root, prefix, ville, zone) {
  * @param {string} opts.root       Racine du site statique
  * @param {string} opts.prefix     'photographe-lcd' | 'menage-lcd'
  * @param {string} opts.metier     Libellé affiché (ex: 'photographe LCD')
- * @param {Array<{ville: string, zone?: string|null, url: string, name: string, sub: string|null}>} opts.pros
+ * @param {Array<{ville: string, zone?: string|null, villes?: string[], url: string, name: string, sub: string|null}>} opts.pros
  * @returns {number} nombre de pages ville enrichies
  */
 export function injectProsIntoVillePages({ root, prefix, metier, pluriel = `${metier}s`, pros }) {
   const villeSlugs = fs.readdirSync(root).filter(d => d.startsWith(`${prefix}-`)).map(d => d.slice(prefix.length + 1))
   const byVille = new Map()
   for (const p of pros) {
-    const slug = villePageSlug(p.ville, villeSlugs, p.zone)
-    if (!slug) continue
-    if (!byVille.has(slug)) byVille.set(slug, [])
-    byVille.get(slug).push(p)
+    // Ville principale, puis chaque ville couverte qui a sa page (09/11/2026,
+    // Jason : une équipe présente dans 8 villes doit être sur chacune)
+    const slugs = new Set()
+    const main = villePageSlug(p.ville, villeSlugs, p.zone)
+    if (main) slugs.add(main)
+    for (const v of Array.isArray(p.villes) ? p.villes : []) {
+      const s = villePageSlug(v, villeSlugs)
+      if (s) slugs.add(s)
+    }
+    for (const slug of slugs) {
+      if (!byVille.has(slug)) byVille.set(slug, [])
+      byVille.get(slug).push(p)
+    }
   }
 
   let injected = 0

@@ -112,6 +112,8 @@ const parTaille = (a, b) => annonces(b.slug) - annonces(a.slug) || a.nom.localeC
  * Page d'une région pour un type de page, si elle existe (étape 7 de la
  * feuille de route) : la ligne « Par région » n'apparaît qu'avec de vraies pages.
  */
+const slugZone = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+
 export function cheminRegion(kind, regionNom) {
   const slug = regionNom.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
   const base = { photographe: '/annuaires/photographes', menage: '/annuaires/menage', depannage: '/annuaires/depannage', hote: '/villes' }[kind]
@@ -140,6 +142,18 @@ function lignes(panel) {
     .sort((a, b) => a.localeCompare(b, 'fr'))
     .map(nom => [cheminRegion(panel.kind, nom), nom]).filter(([h]) => h)
   if (regions.length) rows.push(['Par région', regions])
+  // Par département (09/11/2026) : les plus grands marchés, quand leur page existe
+  const depAnn = new Map()
+  for (const v of villes.filter(x => x.departement && x.region)) {
+    const k = v.departement.code
+    const cur = depAnn.get(k) ?? { nom: v.departement.nom, region: v.region.nom, ann: 0 }
+    cur.ann += annonces(v.slug)
+    depAnn.set(k, cur)
+  }
+  const depLinks = [...depAnn.values()].sort((a, b) => b.ann - a.ann || a.nom.localeCompare(b.nom, 'fr'))
+    .map(d => { const r = cheminRegion(panel.kind, d.region); const u = r && `${r}/${slugZone(d.nom)}`; return u && fs.existsSync(path.join(ROOT, u.slice(1), 'index.html')) ? [u, d.nom] : null })
+    .filter(Boolean).slice(0, PAR_LIGNE)
+  if (depLinks.length) rows.push(['Par département', depLinks])
   const etranger = villes.filter(v => v.pays !== 'FR').map(v => [v.pages[panel.kind], v.nom])
   if (etranger.length) rows.push(['Hors de France', etranger])
   return rows.filter(([, xs]) => xs.length)
