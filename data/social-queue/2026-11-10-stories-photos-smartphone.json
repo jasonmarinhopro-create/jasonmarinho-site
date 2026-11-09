@@ -1,0 +1,12 @@
+{
+  "format": "stories",
+  "slug": "stories-photos-smartphone",
+  "jour": "2026-11-10",
+  "photo": "img/exemple-fiches/photo-salon-4.jpg",
+  "frames": [
+    { "type": "point", "titre": "Tes photos *au smartphone* ?", "texte": "C’est possible, avec de la lumière, un logement préparé et le bon angle." },
+    { "type": "liste", "titre": "Avant de *déclencher*", "items": ["Rideaux et volets grands ouverts", "Rien qui traîne, aucun objet perso", "Une touche de vie : livre, plante, plaid"] },
+    { "type": "astuce", "kicker": "Le bon angle", "titre": "Place-toi *dans un coin*", "texte": "Vise le coin opposé, à hauteur de poitrine : la pièce paraît plus grande." },
+    { "type": "question", "titre": "Tes photos, *toi-même* ou un pro ?" }
+  ]
+}
