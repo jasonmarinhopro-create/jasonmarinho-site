@@ -63,6 +63,11 @@
          le script plus bas). Finit à 64 px du haut comme l'ancienne barre : rien ne bouge dans les pages. */
       'nav#nav{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 clamp(14px,2vw,22px);position:fixed;top:8px;left:0;right:0;margin:0 auto;width:calc(100% - 2 * clamp(8px,2.5vw,32px));max-width:1440px;z-index:200;animation:navIn .25s ease both;background:var(--gd);border:1px solid rgba(255,213,107,.1);border-radius:18px;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 10px 30px rgba(0,0,0,.18);transition:background .3s,border-color .3s,box-shadow .3s}',
       'nav#nav.sc{box-shadow:0 12px 34px rgba(0,0,0,.28)}',
+      /* Ouverture de page (10/11/2026, Jason : « un zoom pas très beau sur le menu à l'ouverture ») :
+         la barre reste invisible et sans transition tant que sa couleur (verte ou blanche) n'est pas
+         choisie ; elle apparaît ensuite une seule fois, déjà dans la bonne couleur. */
+      'nav#nav.n-boot{opacity:0!important;animation:none!important}',
+      'nav#nav.n-boot,nav#nav.n-boot *{transition:none!important}',
       /* Bande verte de secours des pages (body::before fixe, 64 px, pleine largeur, posée avant le
          chargement du menu) : cachée sous l'ancienne barre, elle dépassait autour de la barre
          flottante (07/11/2026, Jason : « un fond bizarre qui suit partout le menu »). */
@@ -543,7 +548,7 @@
   }
 
   /* ── NAV HTML ── */
-  var h = '<nav id="nav">'
+  var h = '<nav id="nav" class="n-boot">'
     + '<a href="/" class="n-logo">'
       + '<span class="n-logo-mk" aria-hidden="true"></span>'
       + '<span class="n-brand">Jason <em>Marinho</em></span>'
@@ -926,6 +931,8 @@
   /* ── INTERACTIONS ── */
   document.addEventListener('DOMContentLoaded', function () {
     var nav = document.getElementById('nav');
+    /* Filet : la barre apparaît au plus tard après 1,5 s */
+    if (nav) setTimeout(function () { nav.classList.remove('n-boot'); }, 1500);
     var hbg = document.getElementById('hbg');
     var mob = document.getElementById('mob');
 
@@ -1027,6 +1034,8 @@
     }
     fillTop();
     applyTheme();
+    /* Couleur choisie sur la page mise en page (deux images plus tard), puis la barre apparaît */
+    requestAnimationFrame(function () { requestAnimationFrame(function () { applyTheme(); nav.classList.remove('n-boot'); }); });
     window.addEventListener('scroll', queueTheme, { passive: true });
     window.addEventListener('resize', queueTheme);
     window.addEventListener('load', queueTheme);
