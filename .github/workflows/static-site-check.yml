@@ -58,5 +58,7 @@ jobs:
         run: node scripts/build-villes-regions.mjs --check
       - name: Fil d'Ariane des pages de ville à jour
         run: node scripts/inject-fil-ariane.mjs --check
+      - name: Photos des villes dans les en-têtes à jour
+        run: node scripts/inject-photos-villes.mjs --check
       - name: Fil d'Ariane (relevé, sans échec)
         run: node scripts/audit-fil-ariane.mjs

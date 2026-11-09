@@ -148,9 +148,12 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   for (const { url, html } of buildVillesRegions()) {
     const file = path.join(ROOT, url.slice(1), 'index.html')
     const cur = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : ''
-    if (cur === html) continue
+    // La photo d'en-tête est posée ensuite par inject-photos-villes.mjs : on la garde
+    const photo = (cur.match(/<!-- PHOTO-VILLE:START -->[\s\S]*?<!-- PHOTO-VILLE:END -->\n?/) || [''])[0]
+    const voulu = photo ? html.replace(/(<header class="hero">\n?)/, `$1${photo}`) : html
+    if (cur === voulu) continue
     changed++
-    if (!check) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, html) }
+    if (!check) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, voulu) }
   }
   console.log(`Guides hôte par région : ${changed} page(s) ${check ? 'à mettre à jour' : 'écrites'}`)
   if (check && changed) process.exitCode = 1
