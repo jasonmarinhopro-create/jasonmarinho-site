@@ -18,11 +18,12 @@ import { fileURLToPath } from 'node:url'
 import { villesRegistre, regionsRegistre } from './lib/registre-geo.mjs'
 import { PAYS, LES_4 } from './data/registre-geo.mjs'
 import { loadCities } from './verifier-villes.mjs'
-import { normNom } from './lib/secteur.mjs'
+import { normNom, departements, regions as regionsIgn } from './lib/secteur.mjs'
 import { COMMUNES } from './lib/taxe-officielle.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const APP_FILE = path.join(ROOT, 'jason-app', 'lib', 'geo', 'registre.ts')
+const COMMUNES_FILE = path.join(ROOT, 'jason-app', 'lib', 'geo', 'communes.json')
 const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8')
 const pageExists = url => fs.existsSync(path.join(ROOT, url.slice(1), 'index.html'))
 
@@ -118,10 +119,43 @@ ${rows.map(r => `  ${j(r)},`).join('\n')}
 `
 }
 
+/**
+ * Index des communes pour l'app (étape 6, 09/11/2026) : retrouver le
+ * département et la région de n'importe quelle ville saisie (fiche d'un pro,
+ * demande), même sans page. Lu côté serveur seulement (lib/geo/localiser.ts).
+ * Noms normalisés comme normNom (sans article de tête), séparés par « | ».
+ */
+export function communesSource() {
+  const deps = departements()
+  const regs = regionsIgn()
+  const regionOf = new Map(regs.flatMap(r => r.deps.map(d => [d, r.code])))
+  const norm = s => normNom(s).replace(/^(la|le|les|l) /, '')
+  const communes = {}
+  for (const d of deps) {
+    const f = path.join(ROOT, 'scripts', 'data', 'geo', 'communes', `${d.code}.json`)
+    if (!fs.existsSync(f)) continue
+    communes[d.code] = [...new Set(JSON.parse(fs.readFileSync(f, 'utf8')).map(c => norm(c[1])))].sort().join('|')
+  }
+  return JSON.stringify({
+    source: 'IGN Admin Express 2018 (Licence Ouverte), scripts/data/geo, via scripts/build-registre-geo.mjs',
+    departements: Object.fromEntries(deps.map(d => [d.code, [d.nom, regionOf.get(d.code)]])),
+    regions: Object.fromEntries(regs.map(r => [r.code, r.nom])),
+    communes,
+  }) + '\n'
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
   const { villes, problems } = checkRegistre()
   const src = appSource(villes)
   const current = fs.existsSync(APP_FILE) ? fs.readFileSync(APP_FILE, 'utf8') : ''
+  const communes = communesSource()
+  const currentCommunes = fs.existsSync(COMMUNES_FILE) ? fs.readFileSync(COMMUNES_FILE, 'utf8') : ''
+  if (process.argv.includes('--check')) {
+    if (currentCommunes !== communes) problems.push('jason-app/lib/geo/communes.json pas à jour : lancer node scripts/build-registre-geo.mjs')
+  } else if (currentCommunes !== communes) {
+    fs.writeFileSync(COMMUNES_FILE, communes)
+    console.log('Index des communes écrit : jason-app/lib/geo/communes.json')
+  }
   if (process.argv.includes('--check')) {
     if (current !== src) problems.push('jason-app/lib/geo/registre.ts pas à jour : lancer node scripts/build-registre-geo.mjs')
   } else if (current !== src) {

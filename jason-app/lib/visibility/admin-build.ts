@@ -19,8 +19,9 @@ import {
 } from './rules'
 import {
   liteOf, mainPageByQuery, queryItems, fillDays, sessionsByPath, topVisitedPages, proBucketOf, groupCities,
-  type VisTab, type QueryItem, type ProItem, type PageItem, type CityItem, type ProBucket,
+  type VisTab, type QueryItem, type ProItem, type PageItem, type CityItem, type ProBucket, type ZoneItem,
 } from './admin-rules'
+import { groupZones } from './admin-zones'
 
 export type SourceState = { ok: true } | { ok: false; error: string; auth?: boolean }
 
@@ -64,7 +65,11 @@ export interface RecherchesData {
   brand: number
 }
 
-export interface VillesData { items: CityItem[]; clicks: number; impressions: number }
+export interface VillesData {
+  items: CityItem[]; clicks: number; impressions: number
+  /** Regroupements par département et par région (09/11/2026), pros sans page compris */
+  departements?: ZoneItem[]; regions?: ZoneItem[]
+}
 
 export interface PagesData { items: PageItem[]; kinds: Array<{ kind: PageKind; count: number }> }
 
@@ -340,7 +345,12 @@ export function buildVisibility(input: VisibilityInput): VisibilityData {
   }
 
   if (tab === 'villes') {
-    data.villes = { items: cities, clicks: cities.reduce((n, c) => n + c.clicks, 0), impressions: cities.reduce((n, c) => n + c.impressions, 0) }
+    const zonePros = proItems.filter(p => p.statusLabel !== 'Refusée' && p.statusLabel !== 'Annulée')
+    data.villes = {
+      items: cities, clicks: cities.reduce((n, c) => n + c.clicks, 0), impressions: cities.reduce((n, c) => n + c.impressions, 0),
+      departements: groupZones(cities, zonePros, 'departement'),
+      regions: groupZones(cities, zonePros, 'region'),
+    }
   }
 
   if (tab === 'pages') {

@@ -125,6 +125,24 @@ export interface CityItem {
   themes: CityThemeItem[]
 }
 
+/** Département ou région (onglet Villes de l'admin, 09/11/2026) : villes du site et pros localisés */
+export interface ZoneItem {
+  code: string
+  nom: string
+  niveau: 'departement' | 'region'
+  /** Région du département */
+  regionNom?: string
+  /** Villes du site (avec leurs pages) dans la zone */
+  villes: Array<{ slug: string; name: string }>
+  clicks: number
+  impressions: number
+  visitors: number
+  pros: { photographes: number; menage: number; depannage: number }
+  /** Pros de la zone dont la ville n'a pas de page */
+  prosHorsPages: number
+  demandes: number
+}
+
 // ── Petites aides ─────────────────────────────────────────────────────────
 
 const MONTHS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']

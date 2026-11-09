@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { PaperPlaneTilt, ArrowSquareOut, MapPin, Broom, Camera, Wrench, House } from '@phosphor-icons/react/dist/ssr'
 import InlineStyle from '@/components/ui/InlineStyle'
-import { fmtInt, matchesText, type CityItem, type CityThemeItem } from '@/lib/visibility/admin-rules'
+import { fmtInt, matchesText, type CityItem, type CityThemeItem, type ZoneItem } from '@/lib/visibility/admin-rules'
 import type { VillesData } from '@/lib/visibility/admin-build'
 import { v, Figure, PlacePill, PlaceDelta, ACCENT } from './ui'
 import { ListStyles, Num, Caret, MainQuery, QueryTable, SearchBox, SortSelect, MoreButton } from './ListParts'
@@ -12,12 +12,15 @@ import { ListStyles, Num, Caret, MainQuery, QueryTable, SearchBox, SortSelect, M
 const COLS = 'minmax(0,1.1fr) minmax(0,1.8fr) 64px 90px 140px 100px 18px'
 const PAGE = 50
 type CitySort = 'clics' | 'affichages' | 'place' | 'pros' | 'nom'
+type Niveau = 'ville' | 'departement' | 'region'
 
 export default function VillesTab({ d }: { d: VillesData }) {
   const [q, setQ] = useState('')
   const [sort, setSort] = useState<CitySort>('clics')
   const [open, setOpen] = useState<string | null>(null)
   const [limit, setLimit] = useState(PAGE)
+  const [niveau, setNiveau] = useState<Niveau>('ville')
+  const zones = niveau === 'departement' ? d.departements : niveau === 'region' ? d.regions : null
 
   const list = useMemo(() => {
     const out = d.items.filter(c => matchesText(q, c.name, c.best?.query, ...c.themes.flatMap(t => t.queries.map(x => x.query))))
@@ -58,12 +61,14 @@ export default function VillesTab({ d }: { d: VillesData }) {
 
       <section style={{ ...v.card, gap: 14 }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, alignItems: 'center' }}>
-          <SearchBox value={q} onChange={s => { setQ(s); setLimit(PAGE) }} placeholder="Chercher une ville ou une recherche" />
-          <SortSelect value={sort} onChange={setSort} options={[
+          <NiveauSwitch value={niveau} onChange={n => { setNiveau(n); setOpen(null) }} hasZones={!!d.regions} />
+          <SearchBox value={q} onChange={s => { setQ(s); setLimit(PAGE) }} placeholder={niveau === 'ville' ? 'Chercher une ville ou une recherche' : niveau === 'departement' ? 'Chercher un département' : 'Chercher une région'} />
+          {niveau === 'ville' && <SortSelect value={sort} onChange={setSort} options={[
             { key: 'clics', label: 'Clics' }, { key: 'affichages', label: 'Affichages' }, { key: 'place', label: 'Meilleure place' },
             { key: 'pros', label: 'Pros inscrits' }, { key: 'nom', label: 'Nom' },
-          ]} />
+          ]} />}
         </div>
+        {zones ? <ZoneList zones={zones} q={q} /> : <>
         <div>
           <div className="vis-grid vis-head" style={{ ['--cols' as string]: COLS }}>
             <span style={v.colHead}>Ville</span>
@@ -112,8 +117,85 @@ export default function VillesTab({ d }: { d: VillesData }) {
           ))}
         </div>
         <MoreButton shown={limit} total={list.length} onMore={() => setLimit(l => l + PAGE)} />
+        </>}
       </section>
     </>
+  )
+}
+
+// ── Départements et régions (09/11/2026, étape 6 de la feuille de route) ──
+// Les villes du site additionnées, et les pros rangés par leur ville saisie,
+// même quand elle n'a pas de page : une zone « sans page » avec des pros est
+// une bonne candidate pour la prochaine ville à créer.
+
+function NiveauSwitch({ value, onChange, hasZones }: { value: Niveau; onChange: (n: Niveau) => void; hasZones: boolean }) {
+  if (!hasZones) return null
+  const opts: Array<{ key: Niveau; label: string }> = [{ key: 'ville', label: 'Villes' }, { key: 'departement', label: 'Départements' }, { key: 'region', label: 'Régions' }]
+  return (
+    <div role="tablist" aria-label="Regrouper par" style={{ display: 'inline-flex', padding: 3, gap: 3, borderRadius: 12, background: 'var(--surface-2)', border: '1px solid var(--border)' }}>
+      {opts.map(o => {
+        const on = o.key === value
+        return (
+          <button key={o.key} type="button" role="tab" aria-selected={on} onClick={() => onChange(o.key)} style={{
+            padding: '7px 13px', borderRadius: 9, fontSize: 13, fontWeight: on ? 700 : 500, cursor: 'pointer', fontFamily: 'inherit',
+            background: on ? 'var(--surface)' : 'transparent', color: on ? ACCENT : 'var(--text-2)',
+            border: on ? '1px solid var(--border)' : '1px solid transparent',
+          }}>{o.label}</button>
+        )
+      })}
+    </div>
+  )
+}
+
+const ZONE_COLS = 'minmax(0,1.1fr) minmax(0,1.6fr) 64px 90px 90px 140px'
+
+function ZoneList({ zones, q }: { zones: ZoneItem[]; q: string }) {
+  const list = zones.filter(z => matchesText(q, z.nom, z.regionNom, z.code, ...z.villes.map(x => x.name)))
+  const sansPage = zones.filter(z => z.villes.length === 0).length
+  const total = (z: ZoneItem) => z.pros.photographes + z.pros.menage + z.pros.depannage
+  return (
+    <div>
+      {sansPage > 0 && (
+        <p style={{ ...v.text, margin: '0 0 10px' }}>
+          <strong style={{ color: 'var(--text)' }}>{fmtInt(sansPage)}</strong> {zones[0]?.niveau === 'region' ? 'région(s)' : 'département(s)'} sans aucune page mais avec des pros inscrits : de bonnes candidates pour une prochaine ville.
+        </p>
+      )}
+      <div className="vis-grid vis-head" style={{ ['--cols' as string]: ZONE_COLS }}>
+        <span style={v.colHead}>{zones[0]?.niveau === 'region' ? 'Région' : 'Département'}</span>
+        <span style={v.colHead}>Villes du site</span>
+        <span style={{ ...v.colHead, textAlign: 'right' }}>Clics</span>
+        <span style={{ ...v.colHead, textAlign: 'right' }}>Affichages</span>
+        <span style={{ ...v.colHead, textAlign: 'right' }}>Visiteurs</span>
+        <span style={{ ...v.colHead, textAlign: 'right' }}>Pros inscrits</span>
+      </div>
+      {list.length === 0 && <p style={v.empty}>Aucune zone ne correspond.</p>}
+      {list.map(z => (
+        <div key={z.code} className="vis-row" style={{ cursor: 'default' }}>
+          <span className="vis-grid" style={{ ['--cols' as string]: ZONE_COLS }}>
+          <span className="vis-main" style={{ minWidth: 0 }}>
+            <span style={{ display: 'block', fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>{z.nom}{z.niveau === 'departement' && <span style={{ color: 'var(--text-3)', fontWeight: 500 }}> ({z.code})</span>}</span>
+            {z.regionNom && <span style={{ display: 'block', fontSize: 12, color: 'var(--text-3)' }}>{z.regionNom}</span>}
+          </span>
+          <span style={{ minWidth: 0, fontSize: 13, color: 'var(--text-2)', lineHeight: 1.45 }}>
+            {z.villes.length
+              ? z.villes.map(x => x.name).join(', ')
+              : <span style={{ display: 'inline-block', padding: '2px 9px', borderRadius: 999, fontSize: 12, fontWeight: 700, background: 'var(--surface-2)', border: '1px solid var(--border)', color: 'var(--text-2)' }}>Sans page</span>}
+          </span>
+          <Num label="Clics">{fmtInt(z.clicks)}</Num>
+          <Num label="Affichages">{fmtInt(z.impressions)}</Num>
+          <Num label="Visiteurs">{fmtInt(z.visitors)}</Num>
+          <Num label="Pros inscrits">
+            {total(z) === 0
+              ? <span style={{ color: 'var(--text-3)', fontWeight: 500 }}>aucun</span>
+              : <span title={`${z.pros.photographes} photographe(s), ${z.pros.menage} équipe(s) de ménage, ${z.pros.depannage} pro(s) du dépannage`} style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.25 }}>
+                  {fmtInt(total(z))}
+                  <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--text-3)', whiteSpace: 'nowrap' }}>{z.prosHorsPages > 0 ? `dont ${z.prosHorsPages} hors des villes à page` : `${z.pros.photographes} ph. · ${z.pros.menage} mén. · ${z.pros.depannage} dép.`}</span>
+                </span>}
+          </Num>
+          </span>
+        </div>
+      ))}
+    </div>
   )
 }
 
