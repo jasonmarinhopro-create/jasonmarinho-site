@@ -16,6 +16,8 @@ import { getProfile } from '@/lib/queries/profile'
 import { gscQuery, safeGsc } from '@/lib/google/search-analytics'
 import { loadGscQueryPages, loadVisits, SITE_ORIGIN } from './load'
 import { cityLabel, cityPagePath, citySlugOf, internalReferrerPath } from './city-page'
+import { localiser } from '@/lib/geo/localiser'
+import { VILLES_GEO } from '@/lib/geo/registre'
 import {
   aggregateQueries, GSC_LAG_DAYS, isFirstPage, proTakeaways, summarizeVisits,
   type VisitRow,
@@ -24,7 +26,7 @@ import {
   avgSecondsPerVisitor, bestNearly, clickEventsOf, countByParisDay, dailySeries, daysBetween, DETAILS_SINCE,
   fairPct, lastBucketIncomplete, MONTHLY_OFF_FLAG, proPeriodRange, startedDuring, sumBetween, timeSeries,
   visitorSeries, visitsBetween, VIEWS_DAILY_SINCE, VISITS_SINCE,
-  type MetricKey, type ProCityPage, type ProFicheInfo, type ProMetier, type ProMetric, type ProPeriod, type ProPeriodKey, type ProStatsData,
+  type MetricKey, type ProCityPage, type ProZone, type ProFicheInfo, type ProMetier, type ProMetric, type ProPeriod, type ProPeriodKey, type ProStatsData,
 } from './pro-stats'
 
 // Tables, compteurs et adresses tirés du registre des métiers (lib/pros/metiers.ts)
@@ -337,6 +339,23 @@ export async function loadProStats(o: LoadOptions): Promise<ProStatsData> {
     }
   }
 
+  // ── Ville sans page : les pages du métier dans le département ou la région ──
+  let zone: ProZone | null = null
+  if (!citySlug) {
+    const lieu = localiser(f.ville) ?? localiser(f.zone_couverte)
+    if (lieu) {
+      const kind = metier === 'photographe' ? 'photographe' : metier === 'depannage' ? 'depannage' : 'menage'
+      const pages = (f2: (v: (typeof VILLES_GEO)[number]) => boolean) => VILLES_GEO
+        .filter(v => v.pays === 'FR' && v.pages[kind] && f2(v))
+        .sort((a, b) => a.nom.localeCompare(b.nom, 'fr'))
+        .map(v => ({ label: v.nom, url: `${SITE_ORIGIN}${v.pages[kind]}` }))
+      let villes = lieu.departement ? pages(v => v.departement === lieu.departement) : []
+      const portee: ProZone['portee'] = villes.length ? 'departement' : 'region'
+      if (!villes.length) villes = pages(v => v.region === lieu.region)
+      zone = { ville: (f.ville ?? '').trim(), departementNom: lieu.departementNom, regionNom: lieu.regionNom, portee, villes: villes.slice(0, 12) }
+    }
+  }
+
   return {
     metier,
     fiche: info,
@@ -372,5 +391,6 @@ export async function loadProStats(o: LoadOptions): Promise<ProStatsData> {
     takeaways,
     monthlyReport: { on: !steps.includes(MONTHLY_OFF_FLAG), canEdit: !o.isAdminPreview },
     cityPage,
+    zone,
   }
 }

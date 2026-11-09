@@ -341,6 +341,21 @@ export interface ProStatsData {
   monthlyReport: { on: boolean; canEdit: boolean }
   /** Page de la ville du pro (/photographe-lcd-<ville>, /menage-lcd-<ville>), null si sa ville n'en a pas (06/10/2026) */
   cityPage: ProCityPage | null
+  /** Ville sans page : sa zone (département ou région), sinon null */
+  zone?: ProZone | null
+}
+
+/**
+ * Zone d'un pro dont la ville n'a pas de page (09/11/2026, étape 6 de la
+ * feuille de route « géographie ») : les pages de son métier dans son
+ * département, ou sa région s'il n'y en a pas.
+ */
+export interface ProZone {
+  ville: string
+  departementNom: string | null
+  regionNom: string
+  portee: 'departement' | 'region'
+  villes: Array<{ label: string; url: string }>
 }
 
 export interface ProCityPage {

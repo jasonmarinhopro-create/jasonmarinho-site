@@ -183,6 +183,7 @@ export default function ProStatsView({ data, basePath, previewId }: { data: ProS
           <SourcesCard d={d} />
           <GoogleCard d={d} />
           {d.cityPage && <CityPageCard d={d} />}
+          {!d.cityPage && d.zone && d.zone.villes.length > 0 && <ZoneCard d={d} />}
         </div>
         <div style={s.col}>
           <PlacesCard d={d} />
@@ -378,6 +379,32 @@ function GoogleCard({ d }: { d: ProStatsData }) {
           </MeasureNote>
         </>
       )}
+    </StatCard>
+  )
+}
+
+// Ville sans page (09/11/2026, étape 6 de la feuille de route « géographie ») :
+// les pages du métier dans le département (ou la région), et la demande de
+// page pour sa ville. Aucune promesse sur la présence de la fiche sur ces pages.
+export function ZoneCard({ d }: { d: ProStatsData }) {
+  const z = d.zone!
+  const lieu = z.portee === 'departement' ? `dans ton département (${z.departementNom})` : `en ${z.regionNom}`
+  const metierWord = d.metier === 'photographe' ? 'photographes et vidéastes' : d.metier === 'depannage' ? 'dépannage' : 'ménage'
+  const ask = `https://jasonmarinho.com/chiffres?ville=${encodeURIComponent(z.ville)}#ta-ville`
+  return (
+    <StatCard icon={<Buildings size={18} weight="duotone" />} title={z.ville ? `${z.ville} n’a pas encore sa page` : 'Ta ville n’a pas encore sa page'}
+      subtitle={`Les pages ${metierWord} les plus proches de toi, ${lieu}`}
+      right={<a href={ask} target="_blank" rel="noopener noreferrer" style={s.heroLink} className="stats-noprint">Demander la page de ma ville <ArrowSquareOut size={12} weight="bold" style={{ verticalAlign: '-1px' }} /></a>}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+        {z.villes.map(v => (
+          <a key={v.url} href={v.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 5, padding: '7px 12px', borderRadius: 10, fontSize: 13, fontWeight: 600, color: 'var(--accent-text)', background: 'var(--accent-bg)', border: '1px solid var(--border)', textDecoration: 'none' }}>
+            {v.label} <ArrowSquareOut size={11} weight="bold" />
+          </a>
+        ))}
+      </div>
+      <MeasureNote>
+        Chaque demande est comptée pour choisir les prochaines villes. Laisse ton e-mail dans la demande pour être prévenu quand la page de ta ville sera en ligne.
+      </MeasureNote>
     </StatCard>
   )
 }
