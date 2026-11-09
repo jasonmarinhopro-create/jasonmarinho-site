@@ -131,8 +131,8 @@ function ProRow({ p, open, onToggle }: { p: ProItem; open: boolean; onToggle: ()
       </button>
       {open && (
         <QueriesDetail queries={p.queries} pagePlace={p.pagePlace} prevPagePlace={p.prevPagePlace} subject="la fiche">
-          <Link href={`/dashboard/${space}?id=${p.id}`} style={v.btnPrimary}><IdentificationCard size={15} weight="bold" /> Fiche du pro</Link>
-          <Link href={`/dashboard/${space}/statistiques?id=${p.id}`} style={v.btn}><PresentationChart size={15} weight="bold" /> Statistiques</Link>
+          <Link prefetch={false} href={`/dashboard/${space}?id=${p.id}`} style={v.btnPrimary}><IdentificationCard size={15} weight="bold" /> Fiche du pro</Link>
+          <Link prefetch={false} href={`/dashboard/${space}/statistiques?id=${p.id}`} style={v.btn}><PresentationChart size={15} weight="bold" /> Statistiques</Link>
           {publicUrl && p.online && (
             <a href={publicUrl} target="_blank" rel="noopener noreferrer" style={v.btn}><ArrowSquareOut size={15} weight="bold" /> Voir la fiche</a>
           )}

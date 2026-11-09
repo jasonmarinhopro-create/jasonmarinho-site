@@ -202,7 +202,7 @@ export default function DemandesRecues({ contacts: initial, onUpdateStatus, onUp
                         </a>
                       )}
                       {quoteBase && (
-                        <Link href={`${quoteBase}/nouveau?contact=${c.id}`} style={s.copyBtn}>
+                        <Link prefetch={false} href={`${quoteBase}/nouveau?contact=${c.id}`} style={s.copyBtn}>
                           <Receipt size={14} weight="bold" /> Faire un devis
                         </Link>
                       )}

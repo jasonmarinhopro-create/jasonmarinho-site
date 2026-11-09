@@ -711,7 +711,7 @@ function ReservationDrawer({ r, today, logementId, onClose, onAttachGuest }: {
               </button>
             )}
             {canCreateContract && (
-              <Link href={`/dashboard/voyageurs/${r.voyageur_id}?contract=${r.sourceId}`} style={d.actionPrimary}>
+              <Link prefetch={false} href={`/dashboard/voyageurs/${r.voyageur_id}?contract=${r.sourceId}`} style={d.actionPrimary}>
                 <FileText size={15} weight="bold" /> Créer le contrat
               </Link>
             )}
@@ -726,7 +726,7 @@ function ReservationDrawer({ r, today, logementId, onClose, onAttachGuest }: {
                   <ArrowSquareOut size={14} weight="bold" /> Contrats et paiements
                 </Link>
               )}
-              <Link href={`/dashboard/calendrier${logementId ? `?logement=${encodeURIComponent(r.logement_name)}` : ''}`} style={{ ...d.actionSecondary, flex: '1 1 160px' }}>
+              <Link prefetch={false} href={`/dashboard/calendrier${logementId ? `?logement=${encodeURIComponent(r.logement_name)}` : ''}`} style={{ ...d.actionSecondary, flex: '1 1 160px' }}>
                 <CalendarBlank size={14} weight="bold" /> Voir au calendrier
               </Link>
             </div>

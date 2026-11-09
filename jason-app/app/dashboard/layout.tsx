@@ -23,6 +23,7 @@ import InstallAppWidget from '@/components/InstallAppWidget'
 import DashboardLoading from './loading'
 import PageFadeWrapper from '@/components/dashboard/PageFadeWrapper'
 import ShellFallback from '@/components/layout/ShellFallback'
+import LaunchSplashOut from '@/components/layout/LaunchSplashOut'
 import PerfReporter from '@/components/perf/PerfReporter'
 import LastSeenPing from '@/components/layout/LastSeenPing'
 import { perfTimer } from '@/lib/perf/server-timing'
@@ -238,7 +239,7 @@ async function DashboardShell({ children, launch = false }: { children: React.Re
         <InstallAppWidget />
         <PerfReporter />
         <LastSeenPing />
-        {launch && <ShellFallback variant="out" message="Ouverture de ton espace…" />}
+        {launch && <LaunchSplashOut />}
       </div>
     </ThemeProvider>
   )

@@ -79,7 +79,7 @@ export default function FiscalContextCard({ initialValue }: Props) {
         </div>
       </div>
 
-      <Link href="/dashboard?tour=1" style={s.tourLink}>
+      <Link prefetch={false} href="/dashboard?tour=1" style={s.tourLink}>
         <Compass size={13} weight="duotone" />
         Refaire la visite guidée du dashboard
       </Link>

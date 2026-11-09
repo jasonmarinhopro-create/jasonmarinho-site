@@ -2,7 +2,7 @@
 // squelette de l'Accueil hôte (app/dashboard/loading.tsx) pendant le chargement.
 export default function AdminLoading() {
   return (
-    <div style={styles.page} aria-busy="true" aria-label="Chargement">
+    <div style={styles.page} data-page-skel="" aria-busy="true" aria-label="Chargement">
       <div style={styles.hero}>
         <div style={{ ...styles.bar, width: '110px', height: '12px' }} />
         <div style={{ ...styles.bar, width: '260px', height: '30px' }} />

@@ -163,7 +163,7 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
                 <br/><span style={s.cellSub}>actif depuis {fmtAge(c.created_at)}</span>
               </div>
               <div style={s.actions}>
-                <Link href={`/dashboard/ma-fiche-menage?id=${c.id}`} style={s.linkBtn} title="Voir le dashboard exact de l'équipe">
+                <Link prefetch={false} href={`/dashboard/ma-fiche-menage?id=${c.id}`} style={s.linkBtn} title="Voir le dashboard exact de l'équipe">
                   <Sparkle size={11} weight="bold" /> Dashboard
                 </Link>
                 {c.slug && (
@@ -202,7 +202,7 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
                 <div style={s.cellMid}>{c.email}</div>
                 <div style={s.cellMid}>il y a {fmtAge(c.created_at)}</div>
                 <div style={s.actions}>
-                  <Link href={`/dashboard/ma-fiche-menage?id=${c.id}`} style={s.linkBtn} title="Ouvrir son espace et sa page de paiement">
+                  <Link prefetch={false} href={`/dashboard/ma-fiche-menage?id=${c.id}`} style={s.linkBtn} title="Ouvrir son espace et sa page de paiement">
                     <Eye size={11} weight="bold" /> Voir sa fiche
                   </Link>
                   <button onClick={() => handleDeleteOrphan(c)} disabled={busy} style={s.btnDanger}>
@@ -230,7 +230,7 @@ export default function CleanersAdmin({ active, pendingPayment, hidden, cancelle
                 <div style={s.cellMid}>Exemple</div>
                 <div style={s.cellMid}>créée il y a {fmtAge(c.created_at)}</div>
                 <div style={s.actions}>
-                  <Link href={`/dashboard/ma-fiche-menage?id=${c.id}`} style={s.linkBtn} title="Ouvrir l'espace pro de cet exemple">
+                  <Link prefetch={false} href={`/dashboard/ma-fiche-menage?id=${c.id}`} style={s.linkBtn} title="Ouvrir l'espace pro de cet exemple">
                     <Sparkle size={11} weight="bold" /> Dashboard
                   </Link>
                 </div>

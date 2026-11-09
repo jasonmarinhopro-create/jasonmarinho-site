@@ -668,13 +668,13 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
             <button type="button" onClick={() => setQuick({})} style={s.btnPrimary}>
               <Plus size={15} weight="bold" /> Nouvelle réservation
             </button>
-            <Link href={`/dashboard/calendrier?logement=${encodeURIComponent(l.nom)}`} style={s.btnGhost}>
+            <Link prefetch={false} href={`/dashboard/calendrier?logement=${encodeURIComponent(l.nom)}`} style={s.btnGhost}>
               <CalendarBlank size={15} weight="bold" /> Calendrier
             </Link>
             <Link href="/dashboard/calendrier/menage" style={s.btnGhost}>
               <Broom size={15} weight="bold" /> Ménages
             </Link>
-            <Link href={`/dashboard/gabarits?logement=${l.id}`} style={s.btnGhost}>
+            <Link prefetch={false} href={`/dashboard/gabarits?logement=${l.id}`} style={s.btnGhost}>
               <ChatText size={15} weight="bold" /> Messages
             </Link>
             <Link href={`/dashboard/finances/logement/${l.id}`} style={s.btnGhost}>
@@ -817,7 +817,7 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
                   )
                 })}
                 {upcoming.length > 6 && (
-                  <Link href={`/dashboard/calendrier?logement=${encodeURIComponent(l.nom)}`} style={s.moreLink}>
+                  <Link prefetch={false} href={`/dashboard/calendrier?logement=${encodeURIComponent(l.nom)}`} style={s.moreLink}>
                     {upcoming.length - 6} autre{upcoming.length - 6 > 1 ? 's' : ''} dans le calendrier <ArrowRight size={11} weight="bold" />
                   </Link>
                 )}
@@ -1045,7 +1045,7 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
                     {l.methodes_paiement.split(',').map(m => m.trim()).filter(Boolean).map(m => <span key={m} style={s.pill}>{m}</span>)}
                   </div>
                 )}
-                <Link href={`/dashboard/calculateurs?logement=${l.id}#mes-prix`} style={s.linkRow}>
+                <Link prefetch={false} href={`/dashboard/calculateurs?logement=${l.id}#mes-prix`} style={s.linkRow}>
                   <TrendUp size={16} weight="bold" />
                   <span style={{ flex: 1 }}>Prix par plateforme et par saison</span>
                   <ArrowRight size={13} weight="bold" />

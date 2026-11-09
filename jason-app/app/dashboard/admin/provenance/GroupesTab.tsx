@@ -143,7 +143,7 @@ export default function GroupesTab({ stats, live, initial = null }: { stats: Gro
         <div style={g.stat}>
           <span style={g.statLabel}>Clics sur tes réponses aujourd&apos;hui</span>
           <strong style={g.statBig}>{stats.clicksToday}</strong>
-          <span style={g.statSub}>{stats.clicksWeek} visiteurs sur 7 jours · {stats.signupsWeek ? `${stats.signupsWeek} inscription${stats.signupsWeek > 1 ? 's' : ''} venue${stats.signupsWeek > 1 ? 's' : ''} des groupes cette semaine` : 'aucune inscription venue des groupes cette semaine'} · <Link href="/dashboard/admin/provenance?onglet=resultats" style={g.link}>Résultats</Link></span>
+          <span style={g.statSub}>{stats.clicksWeek} visiteurs sur 7 jours · {stats.signupsWeek ? `${stats.signupsWeek} inscription${stats.signupsWeek > 1 ? 's' : ''} venue${stats.signupsWeek > 1 ? 's' : ''} des groupes cette semaine` : 'aucune inscription venue des groupes cette semaine'} · <Link prefetch={false} href="/dashboard/admin/provenance?onglet=resultats" style={g.link}>Résultats</Link></span>
         </div>
         <div style={g.stat}>
           <span style={g.statLabel}>Pages proposables</span>

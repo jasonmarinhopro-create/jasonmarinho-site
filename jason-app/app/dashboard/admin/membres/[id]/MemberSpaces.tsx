@@ -75,7 +75,7 @@ export default function MemberSpaces({ plan, host, sejours, voyageurs, pros, isI
               <Line k="Résultats" v={`${r.views_count ?? 0} vue${(r.views_count ?? 0) > 1 ? 's' : ''} · ${r.contacts_count ?? 0} demande${(r.contacts_count ?? 0) > 1 ? 's' : ''}`} />
               <Line k="Créée le" v={date(r.created_at)} />
               <div style={s.actions}>
-                <Link href={`${M.espace}?id=${r.id}`} style={s.btn}><Eye size={14} weight="bold" /> Voir sa fiche</Link>
+                <Link prefetch={false} href={`${M.espace}?id=${r.id}`} style={s.btn}><Eye size={14} weight="bold" /> Voir sa fiche</Link>
                 {online && (
                   <a href={`https://jasonmarinho.com${M.fiche(r.slug as string)}`} target="_blank" rel="noopener" style={s.btnGhost}>
                     <ArrowSquareOut size={14} weight="bold" /> Sur le site

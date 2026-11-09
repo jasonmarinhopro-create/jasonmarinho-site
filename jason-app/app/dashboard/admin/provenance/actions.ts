@@ -1,6 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { invalidateAcquisitionCache } from '@/lib/acquisition/load'
 import { getProfile } from '@/lib/queries/profile'
 import { getServiceClient } from '@/lib/supabase/service'
 import { isMissingRelation } from '@/lib/admin/health'
@@ -33,6 +34,7 @@ export async function createTrackedLink(input: { label: string; channel: string;
     const code = makeLinkCode(label, Math.random().toString(36).slice(2, 8))
     const { error } = await db.from('tracked_links').insert({ code, label, channel, destination })
     if (!error) {
+      invalidateAcquisitionCache()
       revalidatePath('/dashboard/admin/provenance')
       return { ok: true, url: shortLinkUrl(code), code }
     }
@@ -45,7 +47,7 @@ export async function createTrackedLink(input: { label: string; channel: string;
 export async function setTrackedLinkArchived(id: string, archived: boolean): Promise<{ ok: boolean }> {
   if (!(await isAdmin())) return { ok: false }
   const { error } = await getServiceClient().from('tracked_links').update({ archived }).eq('id', id)
-  if (!error) revalidatePath('/dashboard/admin/provenance')
+  if (!error) { invalidateAcquisitionCache(); revalidatePath('/dashboard/admin/provenance') }
   return { ok: !error }
 }
 

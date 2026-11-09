@@ -69,7 +69,7 @@ export default async function ScenarioPage({
           return (
             <Link
               key={ch}
-              href={supported ? `/dashboard/sos/${scenario}?canal=${ch}` : '#'}
+              prefetch={false} href={supported ? `/dashboard/sos/${scenario}?canal=${ch}` : '#'}
               style={{
                 ...s.channelChip,
                 ...(active ? s.channelChipActive : {}),

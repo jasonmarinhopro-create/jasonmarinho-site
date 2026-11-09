@@ -28,6 +28,8 @@ const CSS = `
 .jm-splash--out{pointer-events:none;animation:jmVanish .35s ease .05s forwards}
 @keyframes jmAppear{from{opacity:0}to{opacity:1}}
 @keyframes jmVanish{to{opacity:0;visibility:hidden}}
+.dash-main:has([data-page-skel]) ~ * .jm-splash--out{animation:jmHold 15s linear forwards}
+@keyframes jmHold{0%,97%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden}}
 @media (prefers-reduced-motion: reduce){.jm-splash img,.jm-splash-bar span{animation:none}}
 `
 
@@ -36,6 +38,12 @@ const CSS = `
 // - instant : visible tout de suite (suite de l'écran de /ouverture) ;
 // - delayed : n'apparaît qu'après 0,45 s, donc jamais quand la page est rapide ;
 // - out : posé par-dessus la page arrivée, s'efface en fondu (0,35 s).
+//   09/11/2026 (Jason : « des sauts d'images quand je me connecte ») : il
+//   s'effaçait dès l'arrivée du menu, on voyait donc le logo, puis le
+//   squelette gris, puis la page. Il reste maintenant affiché tant que la
+//   page montre son squelette (attribut data-page-skel des loading.tsx) et
+//   ne s'efface qu'une fois, sur la page finie (15 s au plus). Sans :has()
+//   (vieux navigateurs), comportement d'avant.
 export type SplashVariant = 'instant' | 'delayed' | 'out'
 
 export default function ShellFallback({

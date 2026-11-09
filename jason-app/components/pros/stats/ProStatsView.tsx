@@ -86,7 +86,7 @@ export default function ProStatsView({ data, basePath, previewId }: { data: ProS
               {PRO_PERIODS.map(p => {
                 const on = p.key === d.period.key
                 return (
-                  <Link key={p.key} href={href(p.key)} scroll={false} aria-current={on ? 'page' : undefined} style={{ ...s.periodBtn, ...(on ? s.periodOn : {}) }}>
+                  <Link key={p.key} href={href(p.key)} prefetch={false} scroll={false} aria-current={on ? 'page' : undefined} style={{ ...s.periodBtn, ...(on ? s.periodOn : {}) }}>
                     {p.label}
                   </Link>
                 )

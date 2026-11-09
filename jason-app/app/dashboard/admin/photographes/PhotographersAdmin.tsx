@@ -150,7 +150,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
                 <br/><span style={s.cellSub}>actif depuis {fmtAge(p.created_at)}</span>
               </div>
               <div style={s.actions}>
-                <Link href={`/dashboard/ma-fiche-photographe?id=${p.id}`} style={s.linkBtn} title="Voir le dashboard exact du photographe">
+                <Link prefetch={false} href={`/dashboard/ma-fiche-photographe?id=${p.id}`} style={s.linkBtn} title="Voir le dashboard exact du photographe">
                   <Camera size={11} weight="bold" /> Dashboard
                 </Link>
                 {p.slug && (
@@ -190,7 +190,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
                 <div style={s.cellMid}>{p.email}</div>
                 <div style={s.cellMid}>il y a {fmtAge(p.created_at)}</div>
                 <div style={s.actions}>
-                  <Link href={`/dashboard/ma-fiche-photographe?id=${p.id}`} style={s.linkBtn} title="Ouvrir son espace et sa page de paiement">
+                  <Link prefetch={false} href={`/dashboard/ma-fiche-photographe?id=${p.id}`} style={s.linkBtn} title="Ouvrir son espace et sa page de paiement">
                     <Eye size={11} weight="bold" /> Voir sa fiche
                   </Link>
                   <button onClick={() => handleDeleteOrphan(p)} disabled={busy} style={s.btnDanger}>
@@ -219,7 +219,7 @@ export default function PhotographersAdmin({ active, pendingPayment, hidden, can
                 <div style={s.cellMid}>Exemple</div>
                 <div style={s.cellMid}>créée il y a {fmtAge(p.created_at)}</div>
                 <div style={s.actions}>
-                  <Link href={`/dashboard/ma-fiche-photographe?id=${p.id}`} style={s.linkBtn} title="Ouvrir l'espace pro de cet exemple">
+                  <Link prefetch={false} href={`/dashboard/ma-fiche-photographe?id=${p.id}`} style={s.linkBtn} title="Ouvrir l'espace pro de cet exemple">
                     <Sparkle size={11} weight="bold" /> Dashboard
                   </Link>
                 </div>

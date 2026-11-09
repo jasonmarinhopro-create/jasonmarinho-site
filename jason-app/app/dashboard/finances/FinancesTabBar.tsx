@@ -26,7 +26,7 @@ export default function FinancesTabBar() {
         return (
           <Link
             key={href}
-            href={keep && periode ? `${href}?periode=${periode}` : href}
+            prefetch={false} href={keep && periode ? `${href}?periode=${periode}` : href}
             style={{ ...s.tab, ...(active ? s.tabActive : {}) }}
             aria-current={active ? 'page' : undefined}
           >

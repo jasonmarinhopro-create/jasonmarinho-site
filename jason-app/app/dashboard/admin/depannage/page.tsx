@@ -73,7 +73,7 @@ export default async function Page() {
                   </div>
                   <div style={{ fontSize: 12.5, color: 'var(--text-3)' }}>Inscrit le {date(r.created_at)} · {r.views_count} vues · {r.contacts_count} demandes</div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                    <Link href={`${M.espace}?id=${r.id}`} style={btn}><Eye size={14} weight="bold" /> Fiche</Link>
+                    <Link prefetch={false} href={`${M.espace}?id=${r.id}`} style={btn}><Eye size={14} weight="bold" /> Fiche</Link>
                     {r.slug && r.status === 'active' && <a href={`https://jasonmarinho.com${M.fiche(r.slug)}`} target="_blank" rel="noopener noreferrer" style={btn}><ArrowSquareOut size={14} weight="bold" /> En ligne</a>}
                     {r.status === 'active' && <FicheAction id={r.id} name={r.pseudo || r.full_name} mode="hide" />}
                     {r.status === 'hidden' && <FicheAction id={r.id} name={r.pseudo || r.full_name} mode="unhide" />}
@@ -88,7 +88,7 @@ export default async function Page() {
       {demo.length > 0 && (
         <p style={{ fontSize: 13, color: 'var(--text-3)', margin: '8px 0 0' }}>
           Fiches d’exemple (ton compte admin, jamais publiées ni comptées) :{' '}
-          {demo.map((d, i) => <span key={d.id}>{i > 0 && ', '}<Link href={`${M.espace}?id=${d.id}`} style={{ color: 'var(--accent-text)' }}>{d.pseudo || d.full_name}</Link></span>)}
+          {demo.map((d, i) => <span key={d.id}>{i > 0 && ', '}<Link prefetch={false} href={`${M.espace}?id=${d.id}`} style={{ color: 'var(--accent-text)' }}>{d.pseudo || d.full_name}</Link></span>)}
         </p>
       )}
       {!rows.length && !error && <p style={{ color: 'var(--text-2)' }}>Aucune inscription pour l’instant. Les places Fondateur (20) sont toutes libres.</p>}

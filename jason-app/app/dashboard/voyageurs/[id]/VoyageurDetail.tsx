@@ -1038,7 +1038,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
           <div>
             <strong>Ce voyageur est signalé par d&apos;autres hôtes.</strong>{' '}
             Lis les faits avant d&apos;accepter une réservation :{' '}
-            <Link href={`/dashboard/securite?q=${encodeURIComponent(voyageur.email || voyageur.telephone || `${voyageur.prenom} ${voyageur.nom}`)}`} style={{ color: 'var(--danger)', fontWeight: 600 }}>voir dans Sécurité voyageur</Link>.
+            <Link prefetch={false} href={`/dashboard/securite?q=${encodeURIComponent(voyageur.email || voyageur.telephone || `${voyageur.prenom} ${voyageur.nom}`)}`} style={{ color: 'var(--danger)', fontWeight: 600 }}>voir dans Sécurité voyageur</Link>.
           </div>
         </div>
       )}
@@ -1604,7 +1604,7 @@ export default function VoyageurDetail({ voyageur, sejours, isFlagged, bailleur,
                 <span style={{ fontSize: 13.5, fontWeight: 600, color: c.tone === 'danger' ? 'var(--danger)' : c.ok ? 'var(--text)' : 'var(--text-2)' }}>{c.label}</span>
                 {c.hint && <span style={{ display: 'block', fontSize: 12, color: 'var(--text-3)' }}>
                   {c.tone === 'danger'
-                    ? <Link href={`/dashboard/securite?q=${encodeURIComponent(voyageur.email || voyageur.telephone || `${voyageur.prenom} ${voyageur.nom}`)}`} style={{ color: 'var(--danger)', fontWeight: 600 }}>{c.hint}</Link>
+                    ? <Link prefetch={false} href={`/dashboard/securite?q=${encodeURIComponent(voyageur.email || voyageur.telephone || `${voyageur.prenom} ${voyageur.nom}`)}`} style={{ color: 'var(--danger)', fontWeight: 600 }}>{c.hint}</Link>
                     : c.hint}
                 </span>}
               </span>

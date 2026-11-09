@@ -1,6 +1,6 @@
 export default function DashboardLoading() {
   return (
-    <div style={styles.page}>
+    <div style={styles.page} data-page-skel="">
       {/* Header skeleton */}
       <div style={styles.headerSkel} />
 

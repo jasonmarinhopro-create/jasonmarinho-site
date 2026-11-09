@@ -275,7 +275,7 @@ function ParLogement({ data, period }: { data: FinanceData; period: ReturnType<t
           <tbody>
             {rows.map(r => (
               <tr key={r.id}>
-                <td style={{ ...ui.td, fontWeight: 600, color: 'var(--text)' }}><Link href={`/dashboard/finances/logement/${encodeURIComponent(r.id)}?onglet=performances`} style={{ color: 'inherit', textDecoration: 'none' }}>{r.nom}</Link></td>
+                <td style={{ ...ui.td, fontWeight: 600, color: 'var(--text)' }}><Link prefetch={false} href={`/dashboard/finances/logement/${encodeURIComponent(r.id)}?onglet=performances`} style={{ color: 'inherit', textDecoration: 'none' }}>{r.nom}</Link></td>
                 <td style={{ ...ui.td, textAlign: 'right' }}>{pct(r.st.occupation)}</td>
                 <td style={{ ...ui.td, textAlign: 'right' }}>{r.st.adr > 0 ? eur(r.st.adr) : '-'}</td>
                 <td style={{ ...ui.td, textAlign: 'right', fontWeight: 700, color: 'var(--text)' }}>{r.st.revpar > 0 ? eur(r.st.revpar) : '-'}</td>

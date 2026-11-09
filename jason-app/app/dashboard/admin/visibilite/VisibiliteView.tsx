@@ -72,7 +72,7 @@ export default function VisibiliteView({ data, tab }: { data: VisibilityData; ta
       >
         <div role="group" aria-label="Période" style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
           {SHOWN_PERIODS.map(p => (
-            <Link key={p.key} href={href({ periode: p.key })} scroll={false} style={p.key === periodKey ? v.chipOn : v.chip} aria-current={p.key === periodKey ? 'true' : undefined}>
+            <Link key={p.key} href={href({ periode: p.key })} prefetch={false} scroll={false} style={p.key === periodKey ? v.chipOn : v.chip} aria-current={p.key === periodKey ? 'true' : undefined}>
               {p.label}
             </Link>
           ))}
@@ -85,7 +85,7 @@ export default function VisibiliteView({ data, tab }: { data: VisibilityData; ta
           const on = t.key === tab
           const n = data.counts[t.key]
           return (
-            <Link key={t.key} href={href({ onglet: t.key })} scroll={false} style={on ? tabOn : tabOff} aria-current={on ? 'page' : undefined}>
+            <Link key={t.key} href={href({ onglet: t.key })} prefetch={false} scroll={false} style={on ? tabOn : tabOff} aria-current={on ? 'page' : undefined}>
               {TAB_ICON[t.key]} {t.label}
               {n !== undefined && <span style={{ ...count, ...(on ? countOn : {}) }}>{fmtInt(n)}</span>}
             </Link>
@@ -285,7 +285,7 @@ function QueryList({ icon, title, sub, list, empty, tone, moreHref }: { icon: Re
           ))}
         </ol>
       )}
-      <Link href={moreHref} style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 700, color: ACCENT, textDecoration: 'none' }}>
+      <Link href={moreHref} prefetch={false} style={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 700, color: ACCENT, textDecoration: 'none' }}>
         Toutes les recherches <ArrowRight size={13} weight="bold" />
       </Link>
     </section>

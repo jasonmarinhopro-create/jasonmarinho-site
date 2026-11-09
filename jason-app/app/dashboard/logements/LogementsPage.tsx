@@ -666,7 +666,7 @@ export default function LogementsPage({ logements: initial }: Props) {
                     <td style={tableTd}>
                       <div style={{ display: 'flex', gap: '4px', justifyContent: 'flex-end' }}>
                         <Link
-                          href={`/dashboard/calculateurs?logement=${l.id}#mes-prix`}
+                          prefetch={false} href={`/dashboard/calculateurs?logement=${l.id}#mes-prix`}
                           onClick={(e) => e.stopPropagation()}
                           style={{ ...iconBtn, textDecoration: 'none', color: 'var(--accent-text)' }}
                           title="Stratégie prix par plateforme & saison"

@@ -124,7 +124,7 @@ export default async function AidePage() {
           <section style={s.sideCard}>
             <div style={s.sideTitleRow}><ChatCircleDots size={16} weight="fill" style={{ color: 'var(--accent-text)' }} /> Une question de métier ?</div>
             <p style={s.sideDesc}>Fiscalité, règles, voyageurs, prix : pose-la dans Questions &amp; réponses, Jason ou un hôte te répond sous 48 h.</p>
-            <Link href="/dashboard/entre-hotes/forum?ask=1" style={s.sideLink}>
+            <Link prefetch={false} href="/dashboard/entre-hotes/forum?ask=1" style={s.sideLink}>
               <ChatsCircle size={14} weight="bold" /> Poser ma question
             </Link>
           </section>

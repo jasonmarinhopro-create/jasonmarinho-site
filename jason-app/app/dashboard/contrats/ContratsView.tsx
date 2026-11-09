@@ -148,7 +148,7 @@ export default function ContratsView({ tab = 'contrats', paiements, contracts, c
         {tabs.map(t => {
           const on = t.key === tab
           return (
-            <Link key={t.key} href={t.key === 'contrats' ? '/dashboard/contrats' : `/dashboard/contrats?onglet=${t.key}`} scroll={false}
+            <Link key={t.key} href={t.key === 'contrats' ? '/dashboard/contrats' : `/dashboard/contrats?onglet=${t.key}`} prefetch={false} scroll={false}
               style={{ ...s.tab, ...(on ? s.tabOn : {}) }} aria-current={on ? 'page' : undefined}>
               {t.icon}
               <span>{t.label}</span>
@@ -210,7 +210,7 @@ export default function ContratsView({ tab = 'contrats', paiements, contracts, c
                       <span style={s.itemSub}>
                         {c.stripe_payment_status === 'failed' ? <span style={{ color: 'var(--danger)', fontWeight: 600 }}>paiement échoué</span> : fmtEur(c.montant_loyer)}
                       </span>
-                      <Link href="/dashboard/contrats?onglet=paiements" scroll={false} style={s.itemBtn}>Relancer</Link>
+                      <Link prefetch={false} href="/dashboard/contrats?onglet=paiements" scroll={false} style={s.itemBtn}>Relancer</Link>
                     </>
                   )}
                 />
@@ -229,7 +229,7 @@ export default function ContratsView({ tab = 'contrats', paiements, contracts, c
                           ? <span style={{ color: AMBER, fontWeight: 600 }}>expirée : renvoie le lien</span>
                           : <>{fmtEur(c.montant_caution)} · {c.date_depart && c.date_depart <= today ? 'départ' : 'sur place, départ'} {fmtShort(c.date_depart)}</>}
                       </span>
-                      <Link href="/dashboard/contrats?onglet=cautions" scroll={false} style={s.itemBtn}>{c.stripe_deposit_status === 'expired' ? 'Renvoyer' : 'Gérer'}</Link>
+                      <Link prefetch={false} href="/dashboard/contrats?onglet=cautions" scroll={false} style={s.itemBtn}>{c.stripe_deposit_status === 'expired' ? 'Renvoyer' : 'Gérer'}</Link>
                     </>
                   )}
                 />
@@ -277,7 +277,7 @@ function NewContractMenu({ candidates, onNewReservation }: {
             <ul style={s.menuList}>
               {candidates.slice(0, 8).map(c => (
                 <li key={c.sejourId}>
-                  <Link href={`/dashboard/voyageurs/${c.voyageurId}?contract=${c.sejourId}`} style={s.menuItem} role="menuitem">
+                  <Link prefetch={false} href={`/dashboard/voyageurs/${c.voyageurId}?contract=${c.sejourId}`} style={s.menuItem} role="menuitem">
                     <span style={s.menuGuest}>{c.guest}</span>
                     <span style={s.menuSub}>
                       {c.logement && <><House size={11} weight="fill" /> {c.logement} · </>}

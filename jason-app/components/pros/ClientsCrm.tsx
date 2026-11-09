@@ -299,7 +299,7 @@ export default function ClientsCrm({ clients: initial, onCreate, onUpdate, onDel
                     </div>
                     <div style={s.rowActions}>
                       {quoteBase && (
-                        <Link href={`${quoteBase}/nouveau?client=${c.id}`} style={s.quoteBtn}>
+                        <Link prefetch={false} href={`${quoteBase}/nouveau?client=${c.id}`} style={s.quoteBtn}>
                           <Receipt size={13} weight="bold" /> Faire un devis
                         </Link>
                       )}

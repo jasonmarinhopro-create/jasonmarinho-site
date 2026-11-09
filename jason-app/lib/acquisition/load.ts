@@ -27,7 +27,27 @@ interface Base {
   missingMigration: boolean
 }
 
-async function loadBase(opts: { visitDays: number; gscDays: number }): Promise<Base> {
+// Mémoire courte (10/11/2026, Jason : « la page Provenance consomme énormément ») :
+// la base lue ici (membres, liens, clics, visites, Google) est la même pour tous
+// les admins. Gardée 60 s par instance et partagée entre les rendus en cours :
+// changer d'onglet ou de période ne relit plus 7 tables à chaque clic. Vidée
+// par invalidateAcquisitionCache() quand un lien suivi est créé ou archivé.
+const BASE_TTL_MS = 60_000
+const baseCache = new Map<string, { at: number; p: Promise<Base> }>()
+export function invalidateAcquisitionCache() { baseCache.clear() }
+
+function loadBase(opts: { visitDays: number; gscDays: number }): Promise<Base> {
+  const key = `${opts.visitDays}:${opts.gscDays}`
+  const hit = baseCache.get(key)
+  if (hit && Date.now() - hit.at < BASE_TTL_MS) return hit.p
+  const p = loadBaseFresh(opts)
+  baseCache.set(key, { at: Date.now(), p })
+  // Un échec ne reste pas en mémoire
+  p.catch(() => { if (baseCache.get(key)?.p === p) baseCache.delete(key) })
+  return p
+}
+
+async function loadBaseFresh(opts: { visitDays: number; gscDays: number }): Promise<Base> {
   const db = getServiceClient()
   const today = parisDay(new Date().toISOString())
   let missingMigration = false

@@ -18,6 +18,7 @@ export default function PeriodPicker({ current, options }: { current: PeriodKey;
             href={o.key === 'annee' ? pathname : `${pathname}?periode=${o.key}`}
             role="tab"
             aria-selected={active}
+            prefetch={false}
             scroll={false}
             style={{ ...s.item, ...(active ? s.itemActive : {}) }}
           >

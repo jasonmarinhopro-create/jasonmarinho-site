@@ -49,7 +49,7 @@ export default function FiscaliteContent({ data, searchParams, einvoicing }: {
         </p>
         <div style={{ display: 'inline-flex', gap: 2, padding: 3, borderRadius: 12, background: 'var(--bg-2)', border: '1px solid var(--border)' }}>
           {[current, current - 1].map(y => (
-            <Link key={y} href={y === current ? '/dashboard/finances/fiscalite' : `/dashboard/finances/fiscalite?annee=${y}`} scroll={false}
+            <Link key={y} href={y === current ? '/dashboard/finances/fiscalite' : `/dashboard/finances/fiscalite?annee=${y}`} prefetch={false} scroll={false}
               style={{ padding: '6px 12px', borderRadius: 9, fontSize: 13, textDecoration: 'none', fontWeight: y === year ? 600 : 500, background: y === year ? 'var(--surface)' : 'transparent', color: y === year ? 'var(--accent-text)' : 'var(--text-3)' }}>
               {y}
             </Link>

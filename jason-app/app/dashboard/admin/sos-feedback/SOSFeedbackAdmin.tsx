@@ -172,7 +172,7 @@ export default function SOSFeedbackAdmin({ items: initial }: { items: FeedbackIt
                       {TYPE_LABELS[item.feedback_type]}
                     </div>
                     <span style={s.metaSep}>·</span>
-                    <Link href={`/dashboard/sos/${item.scenario}?canal=${item.channel}`} style={s.scenarioLink}>
+                    <Link prefetch={false} href={`/dashboard/sos/${item.scenario}?canal=${item.channel}`} style={s.scenarioLink}>
                       {item.scenario}
                     </Link>
                     <span style={s.metaSep}>·</span>

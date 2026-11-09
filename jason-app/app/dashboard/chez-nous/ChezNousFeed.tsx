@@ -603,7 +603,7 @@ function PostRow({ post, author, currentUserId, authorsMap }: { post: Post; auth
           <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
             {isAuthor && (
               <Link
-                href={`/dashboard/chez-nous/${post.id}?edit=1`}
+                prefetch={false} href={`/dashboard/chez-nous/${post.id}?edit=1`}
                 style={s.replyBtn}
                 title="Modifier ce post"
                 onClick={e => e.stopPropagation()}

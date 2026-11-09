@@ -1691,7 +1691,7 @@ export default function CalendrierView({
                   const lid = logementOptions.find(l => l.nom === alert.logement)?.id
                   return (
                     <Link
-                      href={`/dashboard/gabarits?cat=${tpl.cat}${lid ? `&logement=${lid}` : ''}`}
+                      prefetch={false} href={`/dashboard/gabarits?cat=${tpl.cat}${lid ? `&logement=${lid}` : ''}`}
                       onClick={e => e.stopPropagation()}
                       style={s.alertGabaritBtn}
                       title={`Ouvrir mes messages : ${tpl.label}`}

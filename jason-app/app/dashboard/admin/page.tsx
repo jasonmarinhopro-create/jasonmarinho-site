@@ -168,7 +168,7 @@ export default async function AdminPage() {
         affiliateClicks={overview.affiliateClicks}
         appErrors={overview.appErrors}
         affilaeSlot={<Suspense fallback={<AffilaeSkeleton />}><AffilaeSection /></Suspense>}
-        acquisitionSlot={<Suspense fallback={<AffilaeSkeleton />}><AcquisitionSection /></Suspense>}
+        acquisitionSlot={<Suspense fallback={<AffilaeSkeleton height={232} />}><AcquisitionSection /></Suspense>}
         stats={overview.stats}
       />
     </div>
@@ -185,16 +185,33 @@ async function AffilaeSection() {
 
 // Provenance des visiteurs (visites, inscriptions, liens suivis, Google
 // Search Console gardé 6 h) : diffusée à part comme Affilae
+//
+// 09/11/2026 (Jason : « des sauts d'images à la connexion, la page prend
+// beaucoup de temps ») : cette carte relisait 14 jours de visites à chaque
+// ouverture de la Vue d'ensemble, puis arrivait après coup en poussant le
+// reste de la page. Résumé gardé 5 minutes et servi tout de suite ; au-delà
+// d'un quart d'heure (première visite de la journée), on recalcule plutôt
+// que d'afficher les chiffres « aujourd'hui » de la veille.
+const getCachedAcquisitionSnapshot = unstable_cache(
+  async () => ({ snap: await loadAcquisitionSnapshot(), at: Date.now() }),
+  ['admin-acquisition-snapshot-v1'],
+  { revalidate: 300 },
+)
+const SNAPSHOT_MAX_AGE_MS = 15 * 60_000
+
 async function AcquisitionSection() {
   try {
-    return <AcquisitionCard snap={await loadAcquisitionSnapshot()} />
+    const cached = await getCachedAcquisitionSnapshot()
+    const snap = Date.now() - cached.at > SNAPSHOT_MAX_AGE_MS ? await loadAcquisitionSnapshot() : cached.snap
+    return <AcquisitionCard snap={snap} />
   } catch {
     return null
   }
 }
 
-function AffilaeSkeleton() {
-  return <div style={{ height: 150, borderRadius: 14, background: 'var(--surface)', border: '1px solid var(--border)' }} aria-busy="true" />
+// Hauteur proche de la carte finale : la page ne bouge pas quand elle arrive
+function AffilaeSkeleton({ height = 150 }: { height?: number }) {
+  return <div style={{ height, borderRadius: 14, background: 'var(--surface)', border: '1px solid var(--border)' }} aria-busy="true" />
 }
 
 type Db = ReturnType<typeof getServiceClient>

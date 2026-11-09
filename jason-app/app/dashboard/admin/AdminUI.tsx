@@ -591,7 +591,7 @@ export function AffiliationCard({ af, ps }: { af: AffilaeOverview; ps: PartnerSt
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, marginTop: 10 }}>
             <a href="https://affilae.com" target="_blank" rel="noopener noreferrer" style={extLink}>Ouvrir Affilae</a>
             <a href="https://dash.partnerstack.com" target="_blank" rel="noopener noreferrer" style={extLink}>Ouvrir PartnerStack</a>
-            <Link href="/dashboard/admin/visibilite?onglet=partenaires" style={extLink}>Détail par partenaire</Link>
+            <Link prefetch={false} href="/dashboard/admin/visibilite?onglet=partenaires" style={extLink}>Détail par partenaire</Link>
           </div>
         </div>
       </div>

@@ -119,7 +119,7 @@ export default function MenageHostView({ slots, teams, icalToken, appUrl, today 
             Ton équipe voit le même planning et le marque « terminé » avec photos.
           </p>
         </div>
-        <Link href="/dashboard/calendrier?menage=1" style={s.ghostBtn}>
+        <Link prefetch={false} href="/dashboard/calendrier?menage=1" style={s.ghostBtn}>
           <FilePdf size={14} weight="bold" /> PDF, WhatsApp, horaires
         </Link>
       </div>

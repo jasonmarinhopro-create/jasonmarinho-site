@@ -50,7 +50,7 @@ export default function NewsletterTab({ data, edition, periode }: { data: Newsle
               <h2 style={s.title}>{data.viewing.subject}</h2>
               <p style={s.sub}>La lettre telle qu&apos;elle est partie ({labelOfKey(data.viewing.key)}).</p>
             </div>
-            <Link href={base} style={s.btn}>Fermer</Link>
+            <Link href={base} prefetch={false} style={s.btn}>Fermer</Link>
           </header>
           <iframe title="Lettre envoyée" srcDoc={data.viewing.html} sandbox="" style={s.frame} />
         </section>
@@ -86,7 +86,7 @@ export default function NewsletterTab({ data, edition, periode }: { data: Newsle
         </header>
         <div style={s.chips}>
           {EDITIONS.map(e => (
-            <Link key={e} href={`${base}&edition=${e}`} style={e === edition ? { ...s.chipOn, background: EDITION_COLOR[e], borderColor: EDITION_COLOR[e] } : s.chip}>
+            <Link key={e} href={`${base}&edition=${e}`} prefetch={false} style={e === edition ? { ...s.chipOn, background: EDITION_COLOR[e], borderColor: EDITION_COLOR[e] } : s.chip}>
               {EDITION_CONFIG[e].label}{data.subscribers.byEdition ? ` · ${data.subscribers.byEdition[e]}` : ''}
             </Link>
           ))}
@@ -118,7 +118,7 @@ function IssueRowView({ r, base }: { r: IssueReport; base: string }) {
           <span style={s.rowDetail}>{monthFr(r.month)}{r.scheduledAt ? ` · ${r.sent ? 'envoyée le' : 'programmée pour le'} ${dayFr(r.scheduledAt)}` : ''}</span>
         </span>
         <span style={s.rowName}>{r.subject}</span>
-        <Link href={`${base}&voir=${encodeURIComponent(r.key)}`} style={s.action}>Voir le contenu <ArrowRight size={13} weight="bold" /></Link>
+        <Link href={`${base}&voir=${encodeURIComponent(r.key)}`} prefetch={false} style={s.action}>Voir le contenu <ArrowRight size={13} weight="bold" /></Link>
         {r.links.length > 0 && (
           <details>
             <summary style={s.more}>Liens les plus cliqués</summary>

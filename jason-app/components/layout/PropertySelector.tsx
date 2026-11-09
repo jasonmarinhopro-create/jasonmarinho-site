@@ -47,7 +47,7 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
   if (allProperties.length === 0) {
     return (
       <div style={styles.wrap}>
-        <Link href="/dashboard/logements?new=1" style={{ ...styles.trigger, cursor: 'pointer', textDecoration: 'none' }} title="Ajouter un logement">
+        <Link prefetch={false} href="/dashboard/logements?new=1" style={{ ...styles.trigger, cursor: 'pointer', textDecoration: 'none' }} title="Ajouter un logement">
           <span style={styles.ico}><House size={15} weight="duotone" /></span>
           {!collapsed && (
             <span style={styles.info}>
@@ -140,7 +140,7 @@ export default function PropertySelector({ allProperties, currentId, collapsed =
             <span style={styles.itemIco}><Gear size={13} /></span>
             <span style={styles.itemLabel}>Gérer mes logements</span>
           </Link>
-          <Link href="/dashboard/logements?new=1" style={{ ...styles.item, color: 'var(--accent-text)' }} onClick={() => setOpen(false)}>
+          <Link prefetch={false} href="/dashboard/logements?new=1" style={{ ...styles.item, color: 'var(--accent-text)' }} onClick={() => setOpen(false)}>
             <span style={{ ...styles.itemIco, color: 'var(--accent-text)' }}><Plus size={13} weight="bold" /></span>
             <span style={styles.itemLabel}>Ajouter un logement</span>
           </Link>
