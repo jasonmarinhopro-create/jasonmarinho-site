@@ -21,6 +21,7 @@ import { CLIENTELES, readClienteles } from './lib/pro-clienteles.mjs'
 import { secteurHtml, SECTEUR_CSS, SECTEUR_JS } from './lib/secteur.mjs'
 import { ficheV3Html, ficheV3Js, FICHE_V3_CSS, telHref } from './lib/fiche-v3.mjs'
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
+import { jsonLdMere, MERES } from './lib/fil-ariane.mjs'
 
 // Taille de l'équipe en version courte pour « En bref »
 const EQUIPE_COURTE = { solo: ['Solo', 'une seule personne'], duo: ['Duo', 'deux personnes'], equipe_3_5: ['3 à 5', 'personnes dans l’équipe'], equipe_6_plus: ['6 et plus', 'personnes dans l’équipe'] }
@@ -546,12 +547,15 @@ ${JSON.stringify({
 <script type="application/ld+json">
 ${faqJsonLd(cfg)}
 </script>
+<script type="application/ld+json">
+${jsonLdMere('menage')}
+</script>
 <script defer src="/nav.js"></script>
 </head>
 <body>
 <header class="hero">
   <div class="s-in">
-    ${heroInnerHtml(cfg, '<a href="/">Accueil</a> · <span>Ménage Airbnb</span>')}
+    ${heroInnerHtml(cfg, `<a href="/">Accueil</a> · <span>${MERES.menage.nom}</span>`)}
   </div>
 </header>
 

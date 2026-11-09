@@ -49,14 +49,7 @@
 </script>
 
 <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://jasonmarinho.com" },
-    { "@type": "ListItem", "position": 2, "name": "Devenir hôte Airbnb à Annecy", "item": "https://jasonmarinho.com/devenir-hote-airbnb-annecy" }
-  ]
-}
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Guides hôte par ville","item":"https://jasonmarinho.com/villes"},{"@type":"ListItem","position":3,"name":"Annecy","item":"https://jasonmarinho.com/devenir-hote-airbnb-annecy"}]}
 </script>
 
 <script type="application/ld+json">
@@ -193,10 +186,12 @@ body::before{content:'';position:fixed;top:0;left:0;right:0;height:64px;backgrou
 
 <section class="hero">
   <div class="hero-in">
-    <nav class="breadcrumb" aria-label="Fil d'ariane">
+    <nav class="breadcrumb" aria-label="Fil d'Ariane">
       <a href="/">Accueil</a>
       <i class="ph ph-caret-right"></i>
-      <span>Devenir hôte Airbnb à Annecy</span>
+      <a href="/villes">Guides hôte par ville</a>
+      <i class="ph ph-caret-right"></i>
+      <span>Annecy</span>
     </nav>
     <span class="lbl">Guide local · Annecy</span>
     <h1 class="h1">Devenir hôte <em>Airbnb à Annecy</em> en 2026, le guide complet</h1>

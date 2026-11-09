@@ -65,7 +65,7 @@ step('Guide devenir hôte')
 run('scripts/build-guide-hote.mjs', slug)
 
 // 2. Injections (toutes idempotentes, sur toutes les pages)
-for (const s of ['inject-local-villes', 'inject-taxe-villes', 'inject-estimate-cta', 'inject-pros-links', 'inject-villes-voisines', 'inject-chiffres-ville', 'inject-demande-cta', 'inject-hotel-villes', 'inject-metiers-ville-links']) {
+for (const s of ['inject-local-villes', 'inject-taxe-villes', 'inject-estimate-cta', 'inject-pros-links', 'inject-villes-voisines', 'inject-fil-ariane', 'inject-chiffres-ville', 'inject-demande-cta', 'inject-hotel-villes', 'inject-metiers-ville-links']) {
   step(s)
   run(`scripts/${s}.mjs`)
 }

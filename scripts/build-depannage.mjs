@@ -23,6 +23,7 @@ import { secteurHtml, SECTEUR_CSS, SECTEUR_JS } from './lib/secteur.mjs'
 import { ficheV3Html, ficheV3Js, FICHE_V3_CSS, telHref } from './lib/fiche-v3.mjs'
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, zoneCardHtml, CONTACT_JS } from './lib/fiche-signature.mjs'
 import { METIERS, SPECIALITES_DEPANNAGE } from './lib/metiers.mjs'
+import { jsonLdMere, MERES } from './lib/fil-ariane.mjs'
 
 const M = METIERS.depannage
 const API = M.api // /api/pro/depannage
@@ -518,12 +519,15 @@ ${JSON.stringify({
 <script type="application/ld+json">
 ${faqJsonLd(cfg)}
 </script>
+<script type="application/ld+json">
+${jsonLdMere('depannage')}
+</script>
 <script defer src="/nav.js"></script>
 </head>
 <body>
 <header class="hero">
   <div class="s-in">
-    ${heroInnerHtml(cfg, '<a href="/">Accueil</a> · <span>Dépannage LCD</span>')}
+    ${heroInnerHtml(cfg, `<a href="/">Accueil</a> · <span>${MERES.depannage.nom}</span>`)}
   </div>
 </header>
 

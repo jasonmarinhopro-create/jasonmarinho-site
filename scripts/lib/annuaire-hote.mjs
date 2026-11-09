@@ -232,7 +232,7 @@ export function cardLieu(villes, zone, verbe) {
 }
 
 export function heroInnerHtml(cfg, breadcrumb) {
-  return `<div class="brd">${breadcrumb}</div>
+  return `<nav class="brd" aria-label="Fil d'Ariane">${breadcrumb}</nav>
     <span class="lbl">Annuaire · contact direct, sans commission</span>
     <h1>${cfg.h1}</h1>
     <p class="lead">${esc(cfg.lead)}</p>`

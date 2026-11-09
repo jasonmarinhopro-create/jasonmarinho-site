@@ -60,7 +60,7 @@ export function jsonLdCrumbs(html) {
 
 /** Fil visible : un <nav>, <div> ou <ol> marqué « breadcrumb » ou « fil d'Ariane » */
 export function visibleCrumbs(html) {
-  const m = html.match(/<(nav|div|ol)\b[^>]*(?:class="(?:[^"]*\s)?(?:breadcrumb|crumbs?|ariane)[\s"]|aria-label="[^"]*(?:ariane|breadcrumb)[^"]*")[^>]*>([\s\S]*?)<\/\1>/i)
+  const m = html.match(/<(nav|div|ol)\b[^>]*(?:class="(?:[^"]*\s)?(?:breadcrumb|crumbs?|ariane|brd)[\s"]|aria-label="[^"]*(?:ariane|breadcrumb)[^"]*")[^>]*>([\s\S]*?)<\/\1>/i)
   if (!m) return null
   const parts = []
   for (const t of m[2].matchAll(/<(a|span)\b[^>]*>([\s\S]*?)<\/\1>/gi)) {

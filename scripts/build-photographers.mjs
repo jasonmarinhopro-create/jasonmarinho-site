@@ -23,6 +23,7 @@ import { vitrinePhotos, photoLimitFromViews, heroActionsHtml, heroCoverHtml, her
 import { secteurHtml, SECTEUR_CSS, SECTEUR_JS } from './lib/secteur.mjs'
 import { ficheV3Html, ficheV3Js, FICHE_V3_CSS, telHref } from './lib/fiche-v3.mjs'
 import { nomAffiche, initiales, aVille, deVille, prixDepuis, zoneFact, trustFact, briefHtml, zoneCardHtml, workLinksHtml, contactFormHtml, CONTACT_JS, SIGNATURE_CSS } from './lib/fiche-signature.mjs'
+import { jsonLdMere, MERES } from './lib/fil-ariane.mjs'
 
 // Options en version courte pour « En bref »
 const OPTION_COURTE = { drone: 'drone', visite_3d: 'visite 3D', reels: 'vidéos courtes', crepuscule: 'crépuscule', mise_en_scene: 'mise en scène' }
@@ -600,12 +601,15 @@ ${JSON.stringify({
 <script type="application/ld+json">
 ${faqJsonLd(cfg)}
 </script>
+<script type="application/ld+json">
+${jsonLdMere('photographe')}
+</script>
 <script defer src="/nav.js"></script>
 </head>
 <body>
 <header class="hero">
   <div class="s-in">
-    ${heroInnerHtml(cfg, '<a href="/">Accueil</a> · <span>Photographes et vidéastes Airbnb</span>')}
+    ${heroInnerHtml(cfg, `<a href="/">Accueil</a> · <span>${MERES.photographe.nom}</span>`)}
   </div>
 </header>
 

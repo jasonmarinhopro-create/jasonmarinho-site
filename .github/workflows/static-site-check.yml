@@ -54,5 +54,7 @@ jobs:
         run: node scripts/build-registre-geo.mjs --check
       - name: Pied de page à jour (footer.js)
         run: node scripts/build-footer.mjs --check
+      - name: Fil d'Ariane des pages de ville à jour
+        run: node scripts/inject-fil-ariane.mjs --check
       - name: Fil d'Ariane (relevé, sans échec)
         run: node scripts/audit-fil-ariane.mjs
