@@ -47,7 +47,143 @@ export const pexelsUrl = id => `https://www.pexels.com/photo/${id}/`
 // Photos Wikimedia Commons (10/11/2026) pour les villes sans photo Pexels :
 // licence libre avec attribution, auteur et licence affichés sous la photo.
 // Relevées par le workflow « Photos Commons » (scripts/photos-commons.mjs).
-export const PHOTOS_COMMONS = {}
+export const PHOTOS_COMMONS = {
+  "amsterdam": {
+    "page": "https://commons.wikimedia.org/wiki/File:Amsterdam_Canals_-_July_2006.jpg",
+    "auteur": "Diliff",
+    "licence": "CC BY 2.5"
+  },
+  "angers": {
+    "page": "https://commons.wikimedia.org/wiki/File:Ch%C3%A2teau_d%27Angers,_South_view_20170611_1.jpg",
+    "auteur": "DXR",
+    "licence": "CC BY-SA 4.0"
+  },
+  "bastia": {
+    "page": "https://commons.wikimedia.org/wiki/File:Panorama_-_Vieux_port_(Bastia).jpg",
+    "auteur": "Gzen92",
+    "licence": "CC BY-SA 4.0"
+  },
+  "berlin": {
+    "page": "https://commons.wikimedia.org/wiki/File:Berlin_Mitte_June_2023_01.jpg",
+    "auteur": "ArildV",
+    "licence": "CC BY-SA 4.0"
+  },
+  "bruxelles": {
+    "page": "https://commons.wikimedia.org/wiki/File:Grand-Place,_Brussels_-_panorama,_June_2018.jpg",
+    "auteur": "Celuici",
+    "licence": "CC BY-SA 4.0"
+  },
+  "chambery": {
+    "page": "https://commons.wikimedia.org/wiki/File:Panorama_Chamb%C3%A9ry_-_Rotonde_%2B_TGV.JPG",
+    "auteur": "Florian Pépellin",
+    "licence": "CC BY-SA 3.0"
+  },
+  "courchevel": {
+    "page": "https://commons.wikimedia.org/wiki/File:Altiport_de_Courchevel_et_panorama.jpg",
+    "auteur": "Piponwa",
+    "licence": "CC BY-SA 3.0"
+  },
+  "dinard": {
+    "page": "https://commons.wikimedia.org/wiki/File:Dinard_Beach_Panorama,_Brittany,_France_-_July_2011.jpg",
+    "auteur": "Diliff",
+    "licence": "CC BY-SA 3.0"
+  },
+  "epernay": {
+    "page": "https://commons.wikimedia.org/wiki/File:%C3%89pernay,_h%C3%B4tel_de_ville_(01).jpg",
+    "auteur": "",
+    "licence": "Public domain"
+  },
+  "florence": {
+    "page": "https://commons.wikimedia.org/wiki/File:Ponte_Vecchio_at_dusk_1.JPG",
+    "auteur": "Martin Falbisoner",
+    "licence": "CC BY-SA 3.0"
+  },
+  "honfleur": {
+    "page": "https://commons.wikimedia.org/wiki/File:Honfleur_panorama_at_night.jpg",
+    "auteur": "Andrés Nieto Porras",
+    "licence": "CC BY-SA 2.0"
+  },
+  "la-rochelle": {
+    "page": "https://commons.wikimedia.org/wiki/File:Entrance_La_Rochelle_old_harbor.jpg",
+    "auteur": "Jebulon",
+    "licence": "CC0"
+  },
+  "le-mans": {
+    "page": "https://commons.wikimedia.org/wiki/File:Le_Mans_-_Cite_Plantagenet_01.jpg",
+    "auteur": "Selbymay",
+    "licence": "CC BY-SA 3.0"
+  },
+  "le-touquet": {
+    "page": "https://commons.wikimedia.org/wiki/File:%C3%89glise_Sainte-Jeanne-d%27Arc_(Le_Touquet-Paris-Plage).jpg",
+    "auteur": "Gzen92",
+    "licence": "CC BY-SA 4.0"
+  },
+  "les-sables-d-olonne": {
+    "page": "https://commons.wikimedia.org/wiki/File:Gare_des_Sables_d%27Olonne_(a%C3%A9rien_2010).JPG",
+    "auteur": "Florian Pépellin",
+    "licence": "CC BY-SA 3.0"
+  },
+  "lisbonne": {
+    "page": "https://commons.wikimedia.org/wiki/File:Convento_do_Carmo_-_Lisbon_-_Portugal_-_02.jpg",
+    "auteur": "NorbertNagel",
+    "licence": "CC BY-SA 4.0"
+  },
+  "madrid": {
+    "page": "https://commons.wikimedia.org/wiki/File:Palacio_de_Comunicaciones_-_47.jpg",
+    "auteur": "Carlos Delgado",
+    "licence": "CC BY-SA 3.0"
+  },
+  "metz": {
+    "page": "https://commons.wikimedia.org/wiki/File:20201017_Porte_des_Allemands_Metz_03.jpg",
+    "auteur": "Flocci Nivis",
+    "licence": "CC BY 4.0"
+  },
+  "munich": {
+    "page": "https://commons.wikimedia.org/wiki/File:Nymphenburger_Schloss_at_sunset.JPG",
+    "auteur": "Martin Falbisoner",
+    "licence": "CC BY-SA 3.0"
+  },
+  "nancy": {
+    "page": "https://commons.wikimedia.org/wiki/File:Nancy_Porte_Here_BW_2015-07-18_13-45-47.jpg",
+    "auteur": "Berthold Werner",
+    "licence": "CC BY-SA 3.0"
+  },
+  "perpignan": {
+    "page": "https://commons.wikimedia.org/wiki/File:Place_de_la_R%C3%A9publique_Pano_2.jpg",
+    "auteur": "Christophe Marcheux",
+    "licence": "CC BY-SA 3.0"
+  },
+  "poitiers": {
+    "page": "https://commons.wikimedia.org/wiki/File:Poitiers_ND_Tympan_2012.jpg",
+    "auteur": "",
+    "licence": "CC BY-SA 3.0"
+  },
+  "rome": {
+    "page": "https://commons.wikimedia.org/wiki/File:Forum_romanum_6k_(5760x2097).jpg",
+    "auteur": "BeBo86",
+    "licence": "CC BY-SA 3.0"
+  },
+  "sete": {
+    "page": "https://commons.wikimedia.org/wiki/File:Sete_pano_port.jpg",
+    "auteur": "Velvet",
+    "licence": "CC BY-SA 3.0"
+  },
+  "troyes": {
+    "page": "https://commons.wikimedia.org/wiki/File:Troyes_rue_Emile_Zola_maisons_pans_de_bois.jpg",
+    "auteur": "Myrabella",
+    "licence": "CC BY-SA 4.0"
+  },
+  "valence": {
+    "page": "https://commons.wikimedia.org/wiki/File:Hemispheric_Twilight_-_Valencia,_Spain_-_Jan_2007.jpg",
+    "auteur": "Diliff",
+    "licence": "CC BY-SA 3.0"
+  },
+  "vienne": {
+    "page": "https://commons.wikimedia.org/wiki/File:Palacio_Belvedere,_Viena,_Austria,_2020-02-01,_DD_93-95_HDR.jpg",
+    "auteur": "Diego Delso",
+    "licence": "CC BY-SA 4.0"
+  }
+}
 
 /** La ville a-t-elle une photo (Pexels ou Commons) ? */
 export const aPhoto = slug => !!(PHOTOS_VILLES[slug] || PHOTOS_COMMONS[slug])
