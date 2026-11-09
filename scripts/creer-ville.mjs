@@ -106,6 +106,7 @@ run('scripts/build-pour-qui-pros.mjs')
 // 7. Vérification
 step('Vérification')
 run('scripts/build-registre-geo.mjs')
+run('scripts/build-footer.mjs')
 const { count, problems } = checkVilles()
 if (problems.length) { console.error(problems.join('\n')); process.exit(1) }
 console.log(`\n${city.name} créée : 3 pages, ${count} villes en tout. Reste à lancer les tests de l'app (npx vitest run) et à relire les pages.`)

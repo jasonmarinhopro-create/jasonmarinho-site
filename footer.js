@@ -135,6 +135,13 @@
       '.ft-panel{display:none;flex-direction:column;gap:10px}',
       '.ft-panel.on{display:flex}',
       '.ft-panel-hint{font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.5;max-width:720px}',
+      '.ft-panel-hint{margin:0}',
+      /* Villes rangées par région, études de revenus par pays (09/11/2026) */
+      '.ft-groups{margin-top:6px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px 28px}',
+      '.ft-group{display:flex;flex-direction:column;gap:8px;min-width:0}',
+      '.ft-group-wide{grid-column:1/-1}',
+      '.ft-group-t{font-size:10.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.45)}',
+      '.ft-chips a.on{color:#FFD56B;border-color:rgba(255,213,107,.30);background:rgba(255,213,107,.08)}',
       '.ft-chips{display:flex;flex-wrap:wrap;gap:7px}',
       '.ft-chips a{font-size:12.5px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.035);color:rgba(255,255,255,.65);text-decoration:none;border:1px solid transparent;transition:all .18s;line-height:1.3;white-space:nowrap}',
       '.ft-chips a:hover{color:#FFD56B;border-color:rgba(255,213,107,.20);background:rgba(255,213,107,.06)}',
@@ -158,218 +165,51 @@
     document.head.appendChild(style);
   }
 
-  // Études de revenus par ville (22 pages publiées)
-  var REVENU_LINKS = [
-    { href: '/calculateurs/revenu-airbnb-paris', name: 'Paris' },
-    { href: '/calculateurs/revenu-lcd-lyon', name: 'Lyon' },
-    { href: '/calculateurs/revenu-lcd-bordeaux', name: 'Bordeaux' },
-    { href: '/calculateurs/revenu-lcd-marseille', name: 'Marseille' },
-    { href: '/calculateurs/revenu-lcd-nice', name: 'Nice' },
-    { href: '/calculateurs/revenu-lcd-annecy', name: 'Annecy' },
-    { href: '/calculateurs/revenu-lcd-strasbourg', name: 'Strasbourg' },
-    { href: '/calculateurs/revenu-lcd-honfleur', name: 'Honfleur' },
-    { href: '/calculateurs/revenu-lcd-lisbonne', name: 'Lisbonne' },
-    { href: '/calculateurs/revenu-lcd-porto', name: 'Porto' },
-    { href: '/calculateurs/revenu-lcd-funchal', name: 'Funchal' },
-    { href: '/calculateurs/revenu-lcd-barcelona', name: 'Barcelone' },
-    { href: '/calculateurs/revenu-lcd-madrid', name: 'Madrid' },
-    { href: '/calculateurs/revenu-lcd-sevilla', name: 'Séville' },
-    { href: '/calculateurs/revenu-lcd-valencia', name: 'Valence' },
-    { href: '/calculateurs/revenu-lcd-rome', name: 'Rome' },
-    { href: '/calculateurs/revenu-lcd-firenze', name: 'Florence' },
-    { href: '/calculateurs/revenu-lcd-bruxelles', name: 'Bruxelles' },
-    { href: '/calculateurs/revenu-lcd-amsterdam', name: 'Amsterdam' },
-    { href: '/calculateurs/revenu-lcd-berlin', name: 'Berlin' },
-    { href: '/calculateurs/revenu-lcd-munich', name: 'Munich' },
-    { href: '/calculateurs/revenu-lcd-wien', name: 'Vienne' }
-  ];
-  // Pages ville × métier pros LCD — générées par scripts/build-pages-pros-villes.mjs
-  // depuis CITIES : chaque ville du footer a ses pages pros, on dérive directement.
-  var PHOTOGRAPHE_LINKS = CITIES.map(function (c) {
-    return { href: '/photographe-lcd-' + c.slug, name: c.name };
-  });
-  var MENAGE_LINKS = CITIES.map(function (c) {
-    return { href: '/menage-lcd-' + c.slug, name: c.name };
-  });
-  // Dépannage et maintenance (31/10/2026) : 4e page de chaque ville
-  var DEPANNAGE_LINKS = CITIES.map(function (c) {
-    return { href: '/depannage-lcd-' + c.slug, name: c.name };
-  });
-  var COMPARATIF_LINKS = [
-    { href: '/comparatif-airdna-mashvisor', name: 'AirDNA vs Mashvisor' },
-    { href: '/comparatif-driing-airbnb-booking', name: 'Driing vs Airbnb vs Booking' },
-    { href: '/comparatif-hostfully-guesty', name: 'Hostfully vs Guesty' },
-    { href: '/comparatif-hostfully-guidebook-driing-touchstay', name: 'Guidebook vs Driing vs Touch Stay' },
-    { href: '/comparatif-igloohome-ttlock', name: 'igloohome vs TTLock' },
-    { href: '/comparatif-indy-tiime-henrri', name: 'Indy vs Tiime vs Henrri' },
-    { href: '/comparatif-lodgify-smoobu', name: 'Lodgify vs Smoobu' },
-    { href: '/lodgify-avis', name: 'Lodgify : avis 2026' },
-    { href: '/lodgify-prix', name: 'Lodgify : prix 2026' },
-    { href: '/code-promo-lodgify', name: 'Code promo Lodgify' },
-    { href: '/partenaires/brevo', name: 'Brevo : newsletter et CRM' },
-    { href: '/partenaires/airdna', name: 'AirDNA : étude de marché' },
-    { href: '/partenaires/shine', name: 'Shine : compte pro et factures' },
-    { href: '/partenaires/qonto', name: 'Qonto : compte pro en ligne' },
-    { href: '/partenaires/jd2m', name: 'JD2M : comptable LMNP' },
-    { href: '/partenaires/keobiz', name: 'Keobiz : expert-comptable' },
-    { href: '/partenaires/sport-decouverte', name: 'Sport Découverte : activités' },
-    { href: '/comparatif-matterport-cubicasa', name: 'Matterport vs CubiCasa' },
-    { href: '/comparatif-pricelabs-beyond-wheelhouse', name: 'PriceLabs vs Beyond vs Wheelhouse' },
-    { href: '/comparatif-ring-eufy-reolink', name: 'Ring vs Eufy vs Reolink' },
-    { href: '/comparatif-smoobu-hospitable', name: 'Smoobu vs Hospitable' },
-    { href: '/hospitable-avis', name: 'Hospitable : avis 2026' },
-    { href: '/comparatif-superhote-welkeys', name: 'Superhote vs Welkeys' },
-    { href: '/comparatif-turnoverbnb-properly', name: 'Turno vs Properly' },
-    { href: '/comparatif-welkeys-guestready', name: 'Welkeys vs GuestReady' }
-  ];
+  // ── HTML du pied de page (09/11/2026, étape 4 de la feuille de route) ──
+  // Généré par scripts/build-footer.mjs depuis scripts/lib/footer-html.mjs et
+  // le registre géographique : ne pas modifier ici. Au déploiement, le même
+  // HTML est écrit dans chaque page (footer.ft-static) : ce script ne l'insère
+  // alors pas une deuxième fois, il ne fait que gérer les onglets.
+  var FOOTER_HTML = /*FOOTER_HTML:START*/"<footer><div class=\"ft-in\"><div class=\"ft-hero\"><div class=\"ft-brand\"><a class=\"ft-brand-logo\" href=\"/\"><img src=\"/logo-nav.webp\" alt=\"\" width=\"36\" height=\"36\" loading=\"lazy\"><span class=\"ft-brand-name\">Jason <em>Marinho</em></span></a><p class=\"ft-brand-desc\">Expert LCD et co-fondateur de Driing. J'aide les hôtes et conciergeries à piloter leur activité avec des chiffres clairs, honnêtement et efficacement.</p><div class=\"ft-socs\"><a href=\"https://www.linkedin.com/in/jason-driing-location-sanscommission/\" target=\"_blank\" rel=\"noopener\" class=\"ft-soc\" aria-label=\"LinkedIn\"><i class=\"ph ph-linkedin-logo\"></i></a><a href=\"https://instagram.com/jason_marinho\" target=\"_blank\" rel=\"noopener\" class=\"ft-soc\" aria-label=\"Instagram\"><i class=\"ph ph-instagram-logo\"></i></a><a href=\"https://www.facebook.com/jasonmarinholcd\" target=\"_blank\" rel=\"noopener\" class=\"ft-soc\" aria-label=\"Facebook\"><i class=\"ph ph-facebook-logo\"></i></a><a href=\"https://wa.me/33630212592\" target=\"_blank\" rel=\"noopener\" class=\"ft-soc\" aria-label=\"WhatsApp\"><i class=\"ph ph-whatsapp-logo\"></i></a></div></div><div class=\"ft-cols\"><div class=\"ft-cat\"><h2 class=\"ft-cat-t\">Plateforme hôte</h2><a href=\"/services/contrats\">Contrats &amp; paiements</a><a href=\"/services/planning-menage\">Planning ménage</a><a href=\"/services/declarations-voyageurs\">Déclarations voyageurs</a><a href=\"/services/calendrier\">Calendrier &amp; check-list</a><a href=\"/services/performances\">Performances LCD</a><a href=\"/services/carnet-voyageurs\">Carnet voyageurs</a><a href=\"/services/securite\">Vérification voyageurs</a><a href=\"/services/simulateurs\">Simulateurs &amp; calculateurs</a><a href=\"/investir-lcd\">Investir en LCD</a><a href=\"/services\" class=\"ft-cat-more\">Tous les services →</a></div><div class=\"ft-cat\"><h2 class=\"ft-cat-t\">Annuaires pros</h2><a href=\"/annuaires/photographes\">Photographes et vidéastes LCD</a><a href=\"/annuaires/menage\">Annuaire équipes de ménage</a><a href=\"/annuaires/depannage\">Dépannage et maintenance</a><a href=\"/devenir-photographe-lcd\">Devenir photographe ou vidéaste</a><a href=\"/devenir-prestataire-menage-lcd\">Devenir prestataire ménage</a><a href=\"/pour-qui/depannage\">Rejoindre le dépannage</a><a href=\"/chiffres\">La visibilité en chiffres</a><a href=\"https://app.jasonmarinho.com/ouverture\" class=\"ft-cat-more\">Mon espace pro →</a></div><div class=\"ft-cat\"><h2 class=\"ft-cat-t\">Ressources</h2><a href=\"/blog\">Blog LCD</a><a href=\"/services/guides-lcd\">Guides LCD</a><a href=\"/services/formations\">Formations</a><a href=\"/services/actualites\">Actualités LCD</a><a href=\"/services/entre-hotes\">Questions &amp; réponses</a><a href=\"/lexique-lcd\">Lexique LCD</a><a href=\"/partenaires\">Partenaires</a><a href=\"/sos-hote\">SOS Hôte (urgences)</a></div><div class=\"ft-cat\"><h2 class=\"ft-cat-t\">Entreprise</h2><a href=\"/qui-suis-je\">Qui suis-je</a><a href=\"/tarifs\">Tarifs</a><a href=\"/contact\">Contact</a><a href=\"https://driing.co\" target=\"_blank\" rel=\"noopener\">Driing<span class=\"ft-ext\"><i class=\"ph ph-arrow-up-right\"></i></span></a><a href=\"https://app.jasonmarinho.com\">Espace membre</a><a href=\"https://app.jasonmarinho.com/installer\">Installer l'app</a></div></div></div><div class=\"ft-explore\"><div class=\"ft-explore-head\"><h3 class=\"ft-explore-h\"><i class=\"ph ph-compass\"></i><span class=\"ft-explore-h-text\">Combien rapporte la LCD <em>dans ta ville</em></span></h3><div class=\"ft-explore-tabs\" role=\"tablist\"><button class=\"ft-tab on\" data-panel=\"revenus\" data-title=\"Combien rapporte la LCD &lt;em&gt;dans ta ville&lt;/em&gt;\" role=\"tab\" aria-selected=\"true\">Études de revenus</button><button class=\"ft-tab\" data-panel=\"hote\" data-title=\"Devenir hôte &lt;em&gt;près de chez toi&lt;/em&gt;\" role=\"tab\" aria-selected=\"false\">Devenir hôte</button><button class=\"ft-tab\" data-panel=\"photographes\" data-title=\"Trouver un photographe &lt;em&gt;près de chez toi&lt;/em&gt;\" role=\"tab\" aria-selected=\"false\">Photographes &amp; vidéastes</button><button class=\"ft-tab\" data-panel=\"menage\" data-title=\"Trouver une équipe de ménage &lt;em&gt;près de chez toi&lt;/em&gt;\" role=\"tab\" aria-selected=\"false\">Ménage</button><button class=\"ft-tab\" data-panel=\"depannage\" data-title=\"Trouver un artisan &lt;em&gt;près de chez toi&lt;/em&gt;\" role=\"tab\" aria-selected=\"false\">Dépannage</button><button class=\"ft-tab\" data-panel=\"outils\" data-title=\"Bien choisir &lt;em&gt;tes outils&lt;/em&gt;\" role=\"tab\" aria-selected=\"false\">Comparatifs outils</button></div></div><div class=\"ft-panels\"><div class=\"ft-panel on\" data-panel=\"revenus\" role=\"tabpanel\"><p class=\"ft-panel-hint\">Prix moyen par nuit, taux d’occupation et revenu net estimé, ville par ville.</p><div class=\"ft-groups\"><div class=\"ft-group ft-group-wide\"><div class=\"ft-group-t\">France</div><div class=\"ft-chips\"><a href=\"/calculateurs/revenu-lcd-aix-en-provence\">Aix-en-Provence</a><a href=\"/calculateurs/revenu-lcd-annecy\">Annecy</a><a href=\"/calculateurs/revenu-lcd-avignon\">Avignon</a><a href=\"/calculateurs/revenu-lcd-biarritz\">Biarritz</a><a href=\"/calculateurs/revenu-lcd-bordeaux\">Bordeaux</a><a href=\"/calculateurs/revenu-lcd-cannes\">Cannes</a><a href=\"/calculateurs/revenu-lcd-carcassonne\">Carcassonne</a><a href=\"/calculateurs/revenu-lcd-cassis\">Cassis</a><a href=\"/calculateurs/revenu-lcd-chamonix\">Chamonix</a><a href=\"/calculateurs/revenu-lcd-courchevel\">Courchevel</a><a href=\"/calculateurs/revenu-lcd-deauville\">Deauville</a><a href=\"/calculateurs/revenu-lcd-honfleur\">Honfleur</a><a href=\"/calculateurs/revenu-lcd-la-baule\">La Baule</a><a href=\"/calculateurs/revenu-lcd-la-rochelle\">La Rochelle</a><a href=\"/calculateurs/revenu-lcd-le-touquet\">Le Touquet</a><a href=\"/calculateurs/revenu-lcd-lyon\">Lyon</a><a href=\"/calculateurs/revenu-lcd-marseille\">Marseille</a><a href=\"/calculateurs/revenu-lcd-megeve\">Megève</a><a href=\"/calculateurs/revenu-lcd-montpellier\">Montpellier</a><a href=\"/calculateurs/revenu-lcd-nice\">Nice</a><a href=\"/calculateurs/revenu-airbnb-paris\">Paris</a><a href=\"/calculateurs/revenu-lcd-saint-malo\">Saint-Malo</a><a href=\"/calculateurs/revenu-lcd-saint-tropez\">Saint-Tropez</a><a href=\"/calculateurs/revenu-lcd-strasbourg\">Strasbourg</a><a href=\"/calculateurs/revenu-lcd-toulouse\">Toulouse</a><a href=\"/calculateurs/revenu-lcd-val-d-isere\">Val-d'Isère</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Allemagne</div><div class=\"ft-chips\"><a href=\"/calculateurs/revenu-lcd-berlin\">Berlin</a><a href=\"/calculateurs/revenu-lcd-munich\">Munich</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Autriche</div><div class=\"ft-chips\"><a href=\"/calculateurs/revenu-lcd-wien\">Vienne</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Belgique</div><div class=\"ft-chips\"><a href=\"/calculateurs/revenu-lcd-bruxelles\">Bruxelles</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Espagne</div><div class=\"ft-chips\"><a href=\"/calculateurs/revenu-lcd-barcelona\">Barcelone</a><a href=\"/calculateurs/revenu-lcd-madrid\">Madrid</a><a href=\"/calculateurs/revenu-lcd-sevilla\">Séville</a><a href=\"/calculateurs/revenu-lcd-valencia\">Valence</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Italie</div><div class=\"ft-chips\"><a href=\"/calculateurs/revenu-lcd-firenze\">Florence</a><a href=\"/calculateurs/revenu-lcd-rome\">Rome</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Pays-Bas</div><div class=\"ft-chips\"><a href=\"/calculateurs/revenu-lcd-amsterdam\">Amsterdam</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Portugal</div><div class=\"ft-chips\"><a href=\"/calculateurs/revenu-lcd-funchal\">Funchal</a><a href=\"/calculateurs/revenu-lcd-lisbonne\">Lisbonne</a><a href=\"/calculateurs/revenu-lcd-porto\">Porto</a></div></div></div><a href=\"/calculateurs\" class=\"ft-see-all\">Tous les calculateurs <i class=\"ph-bold ph-arrow-right\" style=\"font-size:11px\"></i></a></div><div class=\"ft-panel\" data-panel=\"hote\" role=\"tabpanel\"><p class=\"ft-panel-hint\">Réglementation locale, numéro d’enregistrement, taxe de séjour officielle et saisons : le guide pour démarrer en règle dans ta ville.</p><div class=\"ft-groups\"><div class=\"ft-group\"><div class=\"ft-group-t\">Auvergne-Rhône-Alpes</div><div class=\"ft-chips\"><a href=\"/devenir-hote-airbnb-annecy\">Annecy</a><a href=\"/devenir-hote-airbnb-chambery\">Chambéry</a><a href=\"/devenir-hote-airbnb-chamonix\">Chamonix</a><a href=\"/devenir-hote-airbnb-clermont-ferrand\">Clermont-Ferrand</a><a href=\"/devenir-hote-airbnb-grenoble\">Grenoble</a><a href=\"/devenir-hote-airbnb-lyon\">Lyon</a><a href=\"/devenir-hote-airbnb-megeve\">Megève</a><a href=\"/devenir-hote-airbnb-roanne\">Roanne</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Bourgogne-Franche-Comté</div><div class=\"ft-chips\"><a href=\"/devenir-hote-airbnb-beaune\">Beaune</a><a href=\"/devenir-hote-airbnb-dijon\">Dijon</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Bretagne</div><div class=\"ft-chips\"><a href=\"/devenir-hote-airbnb-brest\">Brest</a><a href=\"/devenir-hote-airbnb-dinard\">Dinard</a><a href=\"/devenir-hote-airbnb-quimper\">Quimper</a><a href=\"/devenir-hote-airbnb-rennes\">Rennes</a><a href=\"/devenir-hote-airbnb-saint-malo\">Saint-Malo</a><a href=\"/devenir-hote-airbnb-vannes\">Vannes</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Centre-Val de Loire</div><div class=\"ft-chips\"><a href=\"/devenir-hote-airbnb-tours\">Tours</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Corse</div><div class=\"ft-chips\"><a href=\"/devenir-hote-airbnb-ajaccio\">Ajaccio</a><a href=\"/devenir-hote-airbnb-bastia\">Bastia</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Grand Est</div><div class=\"ft-chips\"><a href=\"/devenir-hote-airbnb-colmar\">Colmar</a><a href=\"/devenir-hote-airbnb-epernay\">Épernay</a><a href=\"/devenir-hote-airbnb-metz\">Metz</a><a href=\"/devenir-hote-airbnb-nancy\">Nancy</a><a href=\"/devenir-hote-airbnb-reims\">Reims</a><a href=\"/devenir-hote-airbnb-strasbourg\">Strasbourg</a><a href=\"/devenir-hote-airbnb-troyes\">Troyes</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Hauts-de-France</div><div class=\"ft-chips\"><a href=\"/devenir-hote-airbnb-le-touquet\">Le Touquet</a><a href=\"/devenir-hote-airbnb-lille\">Lille</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Île-de-France</div><div class=\"ft-chips\"><a href=\"/devenir-hote-airbnb-paris\">Paris</a><a href=\"/devenir-hote-airbnb-versailles\">Versailles</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Normandie</div><div class=\"ft-chips\"><a href=\"/devenir-hote-airbnb-caen\">Caen</a><a href=\"/devenir-hote-airbnb-deauville\">Deauville</a><a href=\"/devenir-hote-airbnb-etretat\">Étretat</a><a href=\"/devenir-hote-airbnb-honfleur\">Honfleur</a><a href=\"/devenir-hote-airbnb-rouen\">Rouen</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Nouvelle-Aquitaine</div><div class=\"ft-chips\"><a href=\"/devenir-hote-airbnb-arcachon\">Arcachon</a><a href=\"/devenir-hote-airbnb-bayonne\">Bayonne</a><a href=\"/devenir-hote-airbnb-biarritz\">Biarritz</a><a href=\"/devenir-hote-airbnb-bordeaux\">Bordeaux</a><a href=\"/devenir-hote-airbnb-la-rochelle\">La Rochelle</a><a href=\"/devenir-hote-airbnb-pau\">Pau</a><a href=\"/devenir-hote-airbnb-poitiers\">Poitiers</a><a href=\"/devenir-hote-airbnb-sarlat\">Sarlat</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Occitanie</div><div class=\"ft-chips\"><a href=\"/devenir-hote-airbnb-carcassonne\">Carcassonne</a><a href=\"/devenir-hote-airbnb-montpellier\">Montpellier</a><a href=\"/devenir-hote-airbnb-nimes\">Nîmes</a><a href=\"/devenir-hote-airbnb-perpignan\">Perpignan</a><a href=\"/devenir-hote-airbnb-sete\">Sète</a><a href=\"/devenir-hote-airbnb-toulouse\">Toulouse</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Pays de la Loire</div><div class=\"ft-chips\"><a href=\"/devenir-hote-airbnb-angers\">Angers</a><a href=\"/devenir-hote-airbnb-la-baule\">La Baule</a><a href=\"/devenir-hote-airbnb-le-mans\">Le Mans</a><a href=\"/devenir-hote-airbnb-les-sables-d-olonne\">Les Sables-d'Olonne</a><a href=\"/devenir-hote-airbnb-nantes\">Nantes</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Provence-Alpes-Côte d'Azur</div><div class=\"ft-chips\"><a href=\"/devenir-hote-airbnb-aix-en-provence\">Aix-en-Provence</a><a href=\"/devenir-hote-airbnb-antibes\">Antibes</a><a href=\"/devenir-hote-airbnb-avignon\">Avignon</a><a href=\"/devenir-hote-airbnb-cannes\">Cannes</a><a href=\"/devenir-hote-airbnb-marseille\">Marseille</a><a href=\"/devenir-hote-airbnb-menton\">Menton</a><a href=\"/devenir-hote-airbnb-nice\">Nice</a><a href=\"/devenir-hote-airbnb-saint-tropez\">Saint-Tropez</a></div></div></div><a href=\"/villes\" class=\"ft-see-all\">Tous les guides hôte <i class=\"ph-bold ph-arrow-right\" style=\"font-size:11px\"></i></a></div><div class=\"ft-panel\" data-panel=\"photographes\" role=\"tabpanel\"><p class=\"ft-panel-hint\">Des photographes et vidéastes qui connaissent la location courte durée : tarifs locaux, conseils pour ton annonce, demande de devis gratuite.</p><div class=\"ft-groups\"><div class=\"ft-group\"><div class=\"ft-group-t\">Auvergne-Rhône-Alpes</div><div class=\"ft-chips\"><a href=\"/photographe-lcd-annecy\">Annecy</a><a href=\"/photographe-lcd-chambery\">Chambéry</a><a href=\"/photographe-lcd-chamonix\">Chamonix</a><a href=\"/photographe-lcd-clermont-ferrand\">Clermont-Ferrand</a><a href=\"/photographe-lcd-grenoble\">Grenoble</a><a href=\"/photographe-lcd-lyon\">Lyon</a><a href=\"/photographe-lcd-megeve\">Megève</a><a href=\"/photographe-lcd-roanne\">Roanne</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Bourgogne-Franche-Comté</div><div class=\"ft-chips\"><a href=\"/photographe-lcd-beaune\">Beaune</a><a href=\"/photographe-lcd-dijon\">Dijon</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Bretagne</div><div class=\"ft-chips\"><a href=\"/photographe-lcd-brest\">Brest</a><a href=\"/photographe-lcd-dinard\">Dinard</a><a href=\"/photographe-lcd-quimper\">Quimper</a><a href=\"/photographe-lcd-rennes\">Rennes</a><a href=\"/photographe-lcd-saint-malo\">Saint-Malo</a><a href=\"/photographe-lcd-vannes\">Vannes</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Canada</div><div class=\"ft-chips\"><a href=\"/photographe-lcd-quebec\">Québec</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Centre-Val de Loire</div><div class=\"ft-chips\"><a href=\"/photographe-lcd-tours\">Tours</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Corse</div><div class=\"ft-chips\"><a href=\"/photographe-lcd-ajaccio\">Ajaccio</a><a href=\"/photographe-lcd-bastia\">Bastia</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Grand Est</div><div class=\"ft-chips\"><a href=\"/photographe-lcd-colmar\">Colmar</a><a href=\"/photographe-lcd-epernay\">Épernay</a><a href=\"/photographe-lcd-metz\">Metz</a><a href=\"/photographe-lcd-nancy\">Nancy</a><a href=\"/photographe-lcd-reims\">Reims</a><a href=\"/photographe-lcd-strasbourg\">Strasbourg</a><a href=\"/photographe-lcd-troyes\">Troyes</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Hauts-de-France</div><div class=\"ft-chips\"><a href=\"/photographe-lcd-le-touquet\">Le Touquet</a><a href=\"/photographe-lcd-lille\">Lille</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Île-de-France</div><div class=\"ft-chips\"><a href=\"/photographe-lcd-paris\">Paris</a><a href=\"/photographe-lcd-versailles\">Versailles</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Normandie</div><div class=\"ft-chips\"><a href=\"/photographe-lcd-caen\">Caen</a><a href=\"/photographe-lcd-deauville\">Deauville</a><a href=\"/photographe-lcd-etretat\">Étretat</a><a href=\"/photographe-lcd-honfleur\">Honfleur</a><a href=\"/photographe-lcd-rouen\">Rouen</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Nouvelle-Aquitaine</div><div class=\"ft-chips\"><a href=\"/photographe-lcd-arcachon\">Arcachon</a><a href=\"/photographe-lcd-bayonne\">Bayonne</a><a href=\"/photographe-lcd-biarritz\">Biarritz</a><a href=\"/photographe-lcd-bordeaux\">Bordeaux</a><a href=\"/photographe-lcd-la-rochelle\">La Rochelle</a><a href=\"/photographe-lcd-pau\">Pau</a><a href=\"/photographe-lcd-poitiers\">Poitiers</a><a href=\"/photographe-lcd-sarlat\">Sarlat</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Occitanie</div><div class=\"ft-chips\"><a href=\"/photographe-lcd-carcassonne\">Carcassonne</a><a href=\"/photographe-lcd-montpellier\">Montpellier</a><a href=\"/photographe-lcd-nimes\">Nîmes</a><a href=\"/photographe-lcd-perpignan\">Perpignan</a><a href=\"/photographe-lcd-sete\">Sète</a><a href=\"/photographe-lcd-toulouse\">Toulouse</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Pays de la Loire</div><div class=\"ft-chips\"><a href=\"/photographe-lcd-angers\">Angers</a><a href=\"/photographe-lcd-la-baule\">La Baule</a><a href=\"/photographe-lcd-le-mans\">Le Mans</a><a href=\"/photographe-lcd-les-sables-d-olonne\">Les Sables-d'Olonne</a><a href=\"/photographe-lcd-nantes\">Nantes</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Provence-Alpes-Côte d'Azur</div><div class=\"ft-chips\"><a href=\"/photographe-lcd-aix-en-provence\">Aix-en-Provence</a><a href=\"/photographe-lcd-antibes\">Antibes</a><a href=\"/photographe-lcd-avignon\">Avignon</a><a href=\"/photographe-lcd-cannes\">Cannes</a><a href=\"/photographe-lcd-marseille\">Marseille</a><a href=\"/photographe-lcd-menton\">Menton</a><a href=\"/photographe-lcd-nice\">Nice</a><a href=\"/photographe-lcd-saint-tropez\">Saint-Tropez</a></div></div></div><a href=\"/annuaires/photographes\" class=\"ft-see-all\">L’annuaire des photographes et vidéastes <i class=\"ph-bold ph-arrow-right\" style=\"font-size:11px\"></i></a></div><div class=\"ft-panel\" data-panel=\"menage\" role=\"tabpanel\"><p class=\"ft-panel-hint\">Des équipes habituées aux rotations entre deux voyageurs : tarifs locaux, checklist et demande de devis gratuite.</p><div class=\"ft-groups\"><div class=\"ft-group\"><div class=\"ft-group-t\">Auvergne-Rhône-Alpes</div><div class=\"ft-chips\"><a href=\"/menage-lcd-annecy\">Annecy</a><a href=\"/menage-lcd-chambery\">Chambéry</a><a href=\"/menage-lcd-chamonix\">Chamonix</a><a href=\"/menage-lcd-clermont-ferrand\">Clermont-Ferrand</a><a href=\"/menage-lcd-grenoble\">Grenoble</a><a href=\"/menage-lcd-lyon\">Lyon</a><a href=\"/menage-lcd-megeve\">Megève</a><a href=\"/menage-lcd-roanne\">Roanne</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Bourgogne-Franche-Comté</div><div class=\"ft-chips\"><a href=\"/menage-lcd-beaune\">Beaune</a><a href=\"/menage-lcd-dijon\">Dijon</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Bretagne</div><div class=\"ft-chips\"><a href=\"/menage-lcd-brest\">Brest</a><a href=\"/menage-lcd-dinard\">Dinard</a><a href=\"/menage-lcd-quimper\">Quimper</a><a href=\"/menage-lcd-rennes\">Rennes</a><a href=\"/menage-lcd-saint-malo\">Saint-Malo</a><a href=\"/menage-lcd-vannes\">Vannes</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Centre-Val de Loire</div><div class=\"ft-chips\"><a href=\"/menage-lcd-tours\">Tours</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Corse</div><div class=\"ft-chips\"><a href=\"/menage-lcd-ajaccio\">Ajaccio</a><a href=\"/menage-lcd-bastia\">Bastia</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Grand Est</div><div class=\"ft-chips\"><a href=\"/menage-lcd-colmar\">Colmar</a><a href=\"/menage-lcd-epernay\">Épernay</a><a href=\"/menage-lcd-metz\">Metz</a><a href=\"/menage-lcd-nancy\">Nancy</a><a href=\"/menage-lcd-reims\">Reims</a><a href=\"/menage-lcd-strasbourg\">Strasbourg</a><a href=\"/menage-lcd-troyes\">Troyes</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Hauts-de-France</div><div class=\"ft-chips\"><a href=\"/menage-lcd-le-touquet\">Le Touquet</a><a href=\"/menage-lcd-lille\">Lille</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Île-de-France</div><div class=\"ft-chips\"><a href=\"/menage-lcd-paris\">Paris</a><a href=\"/menage-lcd-versailles\">Versailles</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Normandie</div><div class=\"ft-chips\"><a href=\"/menage-lcd-caen\">Caen</a><a href=\"/menage-lcd-deauville\">Deauville</a><a href=\"/menage-lcd-etretat\">Étretat</a><a href=\"/menage-lcd-honfleur\">Honfleur</a><a href=\"/menage-lcd-rouen\">Rouen</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Nouvelle-Aquitaine</div><div class=\"ft-chips\"><a href=\"/menage-lcd-arcachon\">Arcachon</a><a href=\"/menage-lcd-bayonne\">Bayonne</a><a href=\"/menage-lcd-biarritz\">Biarritz</a><a href=\"/menage-lcd-bordeaux\">Bordeaux</a><a href=\"/menage-lcd-la-rochelle\">La Rochelle</a><a href=\"/menage-lcd-pau\">Pau</a><a href=\"/menage-lcd-poitiers\">Poitiers</a><a href=\"/menage-lcd-sarlat\">Sarlat</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Occitanie</div><div class=\"ft-chips\"><a href=\"/menage-lcd-carcassonne\">Carcassonne</a><a href=\"/menage-lcd-montpellier\">Montpellier</a><a href=\"/menage-lcd-nimes\">Nîmes</a><a href=\"/menage-lcd-perpignan\">Perpignan</a><a href=\"/menage-lcd-sete\">Sète</a><a href=\"/menage-lcd-toulouse\">Toulouse</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Pays de la Loire</div><div class=\"ft-chips\"><a href=\"/menage-lcd-angers\">Angers</a><a href=\"/menage-lcd-la-baule\">La Baule</a><a href=\"/menage-lcd-le-mans\">Le Mans</a><a href=\"/menage-lcd-les-sables-d-olonne\">Les Sables-d'Olonne</a><a href=\"/menage-lcd-nantes\">Nantes</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Provence-Alpes-Côte d'Azur</div><div class=\"ft-chips\"><a href=\"/menage-lcd-aix-en-provence\">Aix-en-Provence</a><a href=\"/menage-lcd-antibes\">Antibes</a><a href=\"/menage-lcd-avignon\">Avignon</a><a href=\"/menage-lcd-cannes\">Cannes</a><a href=\"/menage-lcd-marseille\">Marseille</a><a href=\"/menage-lcd-menton\">Menton</a><a href=\"/menage-lcd-nice\">Nice</a><a href=\"/menage-lcd-saint-tropez\">Saint-Tropez</a></div></div></div><a href=\"/annuaires/menage\" class=\"ft-see-all\">L’annuaire du ménage <i class=\"ph-bold ph-arrow-right\" style=\"font-size:11px\"></i></a></div><div class=\"ft-panel\" data-panel=\"depannage\" role=\"tabpanel\"><p class=\"ft-panel-hint\">Plombier, électricien, serrurier : des pros qui interviennent entre deux voyageurs, et les bons réflexes avant d’appeler.</p><div class=\"ft-groups\"><div class=\"ft-group\"><div class=\"ft-group-t\">Auvergne-Rhône-Alpes</div><div class=\"ft-chips\"><a href=\"/depannage-lcd-annecy\">Annecy</a><a href=\"/depannage-lcd-chambery\">Chambéry</a><a href=\"/depannage-lcd-chamonix\">Chamonix</a><a href=\"/depannage-lcd-clermont-ferrand\">Clermont-Ferrand</a><a href=\"/depannage-lcd-grenoble\">Grenoble</a><a href=\"/depannage-lcd-lyon\">Lyon</a><a href=\"/depannage-lcd-megeve\">Megève</a><a href=\"/depannage-lcd-roanne\">Roanne</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Bourgogne-Franche-Comté</div><div class=\"ft-chips\"><a href=\"/depannage-lcd-beaune\">Beaune</a><a href=\"/depannage-lcd-dijon\">Dijon</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Bretagne</div><div class=\"ft-chips\"><a href=\"/depannage-lcd-brest\">Brest</a><a href=\"/depannage-lcd-dinard\">Dinard</a><a href=\"/depannage-lcd-quimper\">Quimper</a><a href=\"/depannage-lcd-rennes\">Rennes</a><a href=\"/depannage-lcd-saint-malo\">Saint-Malo</a><a href=\"/depannage-lcd-vannes\">Vannes</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Centre-Val de Loire</div><div class=\"ft-chips\"><a href=\"/depannage-lcd-tours\">Tours</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Corse</div><div class=\"ft-chips\"><a href=\"/depannage-lcd-ajaccio\">Ajaccio</a><a href=\"/depannage-lcd-bastia\">Bastia</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Grand Est</div><div class=\"ft-chips\"><a href=\"/depannage-lcd-colmar\">Colmar</a><a href=\"/depannage-lcd-epernay\">Épernay</a><a href=\"/depannage-lcd-metz\">Metz</a><a href=\"/depannage-lcd-nancy\">Nancy</a><a href=\"/depannage-lcd-reims\">Reims</a><a href=\"/depannage-lcd-strasbourg\">Strasbourg</a><a href=\"/depannage-lcd-troyes\">Troyes</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Hauts-de-France</div><div class=\"ft-chips\"><a href=\"/depannage-lcd-le-touquet\">Le Touquet</a><a href=\"/depannage-lcd-lille\">Lille</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Île-de-France</div><div class=\"ft-chips\"><a href=\"/depannage-lcd-paris\">Paris</a><a href=\"/depannage-lcd-versailles\">Versailles</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Normandie</div><div class=\"ft-chips\"><a href=\"/depannage-lcd-caen\">Caen</a><a href=\"/depannage-lcd-deauville\">Deauville</a><a href=\"/depannage-lcd-etretat\">Étretat</a><a href=\"/depannage-lcd-honfleur\">Honfleur</a><a href=\"/depannage-lcd-rouen\">Rouen</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Nouvelle-Aquitaine</div><div class=\"ft-chips\"><a href=\"/depannage-lcd-arcachon\">Arcachon</a><a href=\"/depannage-lcd-bayonne\">Bayonne</a><a href=\"/depannage-lcd-biarritz\">Biarritz</a><a href=\"/depannage-lcd-bordeaux\">Bordeaux</a><a href=\"/depannage-lcd-la-rochelle\">La Rochelle</a><a href=\"/depannage-lcd-pau\">Pau</a><a href=\"/depannage-lcd-poitiers\">Poitiers</a><a href=\"/depannage-lcd-sarlat\">Sarlat</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Occitanie</div><div class=\"ft-chips\"><a href=\"/depannage-lcd-carcassonne\">Carcassonne</a><a href=\"/depannage-lcd-montpellier\">Montpellier</a><a href=\"/depannage-lcd-nimes\">Nîmes</a><a href=\"/depannage-lcd-perpignan\">Perpignan</a><a href=\"/depannage-lcd-sete\">Sète</a><a href=\"/depannage-lcd-toulouse\">Toulouse</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Pays de la Loire</div><div class=\"ft-chips\"><a href=\"/depannage-lcd-angers\">Angers</a><a href=\"/depannage-lcd-la-baule\">La Baule</a><a href=\"/depannage-lcd-le-mans\">Le Mans</a><a href=\"/depannage-lcd-les-sables-d-olonne\">Les Sables-d'Olonne</a><a href=\"/depannage-lcd-nantes\">Nantes</a></div></div><div class=\"ft-group\"><div class=\"ft-group-t\">Provence-Alpes-Côte d'Azur</div><div class=\"ft-chips\"><a href=\"/depannage-lcd-aix-en-provence\">Aix-en-Provence</a><a href=\"/depannage-lcd-antibes\">Antibes</a><a href=\"/depannage-lcd-avignon\">Avignon</a><a href=\"/depannage-lcd-cannes\">Cannes</a><a href=\"/depannage-lcd-marseille\">Marseille</a><a href=\"/depannage-lcd-menton\">Menton</a><a href=\"/depannage-lcd-nice\">Nice</a><a href=\"/depannage-lcd-saint-tropez\">Saint-Tropez</a></div></div></div><a href=\"/annuaires/depannage\" class=\"ft-see-all\">L’annuaire du dépannage <i class=\"ph-bold ph-arrow-right\" style=\"font-size:11px\"></i></a></div><div class=\"ft-panel\" data-panel=\"outils\" role=\"tabpanel\"><p class=\"ft-panel-hint\">Logiciels, serrures, tarification, comptabilité : des comparatifs avec les prix, les forces et les limites de chaque outil.</p><div class=\"ft-chips\"><a href=\"/comparatif-airdna-mashvisor\">AirDNA vs Mashvisor</a><a href=\"/comparatif-driing-airbnb-booking\">Driing vs Airbnb vs Booking</a><a href=\"/comparatif-hostfully-guesty\">Hostfully vs Guesty</a><a href=\"/comparatif-hostfully-guidebook-driing-touchstay\">Guidebook vs Driing vs Touch Stay</a><a href=\"/comparatif-igloohome-ttlock\">igloohome vs TTLock</a><a href=\"/comparatif-indy-tiime-henrri\">Indy vs Tiime vs Henrri</a><a href=\"/comparatif-lodgify-smoobu\">Lodgify vs Smoobu</a><a href=\"/lodgify-avis\">Lodgify : avis 2026</a><a href=\"/lodgify-prix\">Lodgify : prix 2026</a><a href=\"/code-promo-lodgify\">Code promo Lodgify</a><a href=\"/partenaires/brevo\">Brevo : newsletter et CRM</a><a href=\"/partenaires/airdna\">AirDNA : étude de marché</a><a href=\"/partenaires/shine\">Shine : compte pro et factures</a><a href=\"/partenaires/qonto\">Qonto : compte pro en ligne</a><a href=\"/partenaires/jd2m\">JD2M : comptable LMNP</a><a href=\"/partenaires/keobiz\">Keobiz : expert-comptable</a><a href=\"/partenaires/sport-decouverte\">Sport Découverte : activités</a><a href=\"/comparatif-matterport-cubicasa\">Matterport vs CubiCasa</a><a href=\"/comparatif-pricelabs-beyond-wheelhouse\">PriceLabs vs Beyond vs Wheelhouse</a><a href=\"/comparatif-ring-eufy-reolink\">Ring vs Eufy vs Reolink</a><a href=\"/comparatif-smoobu-hospitable\">Smoobu vs Hospitable</a><a href=\"/hospitable-avis\">Hospitable : avis 2026</a><a href=\"/comparatif-superhote-welkeys\">Superhote vs Welkeys</a><a href=\"/comparatif-turnoverbnb-properly\">Turno vs Properly</a><a href=\"/comparatif-welkeys-guestready\">Welkeys vs GuestReady</a></div><a href=\"/partenaires\" class=\"ft-see-all\">Tous les partenaires <i class=\"ph-bold ph-arrow-right\" style=\"font-size:11px\"></i></a></div></div></div><div class=\"ft-baseline\"><div class=\"ft-cp\">© 2026 Jason Marinho · Fait avec soin à Paris</div><div class=\"ft-legal\"><a href=\"/mentions-legales\">Mentions légales</a><a href=\"/politique-de-confidentialite\">Confidentialité</a><a href=\"/cgvu\">CGV / CGU</a><a href=\"#\" onclick=\"if(window.openCookieSettings){openCookieSettings();}return false;\">Cookies</a></div></div></div></footer>"/*FOOTER_HTML:END*/;
+  var PANEL_RULES = /*FOOTER_PANELS:START*/[["photographes","^/(photographe-lcd-|annuaires/photographes|devenir-photographe-lcd|photographe-)"],["menage","^/(menage-lcd-|annuaires/menage|devenir-prestataire-menage-lcd)"],["depannage","^/(depannage-lcd-|annuaires/depannage|pour-qui/depannage)"],["hote","^/(devenir-hote-airbnb-|villes(/|$))"],["outils","^/(comparatif-|partenaires|code-promo-|[a-z-]+-(avis|prix)(/|$))"]]/*FOOTER_PANELS:END*/;
 
-  function panelHtml(items) {
-    return items.map(function (i) {
-      return '<a href="' + i.href + '">' + i.name + '</a>';
-    }).join('');
+  function selectPanel(panelName) {
+    var tabs = document.querySelectorAll('.ft-tab');
+    var panels = document.querySelectorAll('.ft-panel');
+    var title = null;
+    for (var t = 0; t < tabs.length; t++) {
+      var on = tabs[t].getAttribute('data-panel') === panelName;
+      tabs[t].classList.toggle('on', on);
+      tabs[t].setAttribute('aria-selected', on ? 'true' : 'false');
+      if (on) title = tabs[t].getAttribute('data-title');
+    }
+    for (var p = 0; p < panels.length; p++) {
+      panels[p].classList.toggle('on', panels[p].getAttribute('data-panel') === panelName);
+    }
+    var hText = document.querySelector('.ft-explore-h-text');
+    if (hText && title) hText.innerHTML = title;
   }
 
-  var hostPanel = HOST_CITIES.map(function (c) {
-    return '<a href="/devenir-hote-airbnb-' + c.slug + '">' + c.name + '</a>';
-  }).join('');
-
-  var FOOTER_HTML = '<footer>'
-    + '<div class="ft-in">'
-
-      /* ── Brand + 3 colonnes ── */
-      + '<div class="ft-hero">'
-        + '<div class="ft-brand">'
-          + '<a class="ft-brand-logo" href="/">'
-            + '<img src="/logo-nav.webp" alt="" width="36" height="36" loading="lazy">'
-            + '<span class="ft-brand-name">Jason <em>Marinho</em></span>'
-          + '</a>'
-          + '<p class="ft-brand-desc">Expert LCD et co-fondateur de Driing. J\'aide les hôtes et conciergeries à piloter leur activité avec des chiffres clairs, honnêtement et efficacement.</p>'
-          + '<div class="ft-socs">'
-            + '<a href="https://www.linkedin.com/in/jason-driing-location-sanscommission/" target="_blank" rel="noopener" class="ft-soc" aria-label="LinkedIn"><i class="ph ph-linkedin-logo"></i></a>'
-            + '<a href="https://instagram.com/jason_marinho" target="_blank" rel="noopener" class="ft-soc" aria-label="Instagram"><i class="ph ph-instagram-logo"></i></a>'
-            + '<a href="https://www.facebook.com/jasonmarinholcd" target="_blank" rel="noopener" class="ft-soc" aria-label="Facebook"><i class="ph ph-facebook-logo"></i></a>'
-            + '<a href="https://wa.me/33630212592" target="_blank" rel="noopener" class="ft-soc" aria-label="WhatsApp"><i class="ph ph-whatsapp-logo"></i></a>'
-          + '</div>'
-        + '</div>'
-
-        + '<div class="ft-cols">'
-          + '<div class="ft-cat">'
-            + '<h2 class="ft-cat-t">Plateforme hôte</h2>'
-            + '<a href="/services/contrats">Contrats &amp; paiements</a>'
-            + '<a href="/services/planning-menage">Planning ménage</a>'
-            + '<a href="/services/declarations-voyageurs">Déclarations voyageurs</a>'
-            + '<a href="/services/calendrier">Calendrier &amp; check-list</a>'
-            + '<a href="/services/performances">Performances LCD</a>'
-            + '<a href="/services/carnet-voyageurs">Carnet voyageurs</a>'
-            + '<a href="/services/securite">Vérification voyageurs</a>'
-            + '<a href="/services/simulateurs">Simulateurs &amp; calculateurs</a>'
-            + '<a href="/investir-lcd">Investir en LCD</a>'
-            + '<a href="/services" class="ft-cat-more">Tous les services →</a>'
-          + '</div>'
-          + '<div class="ft-cat">'
-            + '<h2 class="ft-cat-t">Annuaires pros</h2>'
-            + '<a href="/annuaires/photographes">Photographes et vidéastes LCD</a>'
-            + '<a href="/annuaires/menage">Annuaire équipes de ménage</a>'
-            + '<a href="/annuaires/depannage">Dépannage et maintenance</a>'
-            + '<a href="/devenir-photographe-lcd">Devenir photographe ou vidéaste</a>'
-            + '<a href="/devenir-prestataire-menage-lcd">Devenir prestataire ménage</a>'
-            + '<a href="/pour-qui/depannage">Rejoindre le dépannage</a>'
-            + '<a href="/chiffres">La visibilité en chiffres</a>'
-            + '<a href="https://app.jasonmarinho.com/ouverture" class="ft-cat-more">Mon espace pro →</a>'
-          + '</div>'
-          + '<div class="ft-cat">'
-            + '<h2 class="ft-cat-t">Ressources</h2>'
-            + '<a href="/blog">Blog LCD</a>'
-            + '<a href="/services/guides-lcd">Guides LCD</a>'
-            + '<a href="/services/formations">Formations</a>'
-            + '<a href="/services/actualites">Actualités LCD</a>'
-            + '<a href="/services/entre-hotes">Questions &amp; réponses</a>'
-            + '<a href="/lexique-lcd">Lexique LCD</a>'
-            + '<a href="/partenaires">Partenaires</a>'
-            + '<a href="/sos-hote">SOS Hôte (urgences)</a>'
-          + '</div>'
-          + '<div class="ft-cat">'
-            + '<h2 class="ft-cat-t">Entreprise</h2>'
-            + '<a href="/qui-suis-je">Qui suis-je</a>'
-            + '<a href="/tarifs">Tarifs</a>'
-            + '<a href="/contact">Contact</a>'
-            + '<a href="https://driing.co" target="_blank" rel="noopener">Driing<span class="ft-ext"><i class="ph ph-arrow-up-right"></i></span></a>'
-            + '<a href="https://app.jasonmarinho.com">Espace membre</a>'
-            + '<a href="https://app.jasonmarinho.com/installer">Installer l\'app</a>'
-          + '</div>'
-        + '</div>'
-      + '</div>'
-
-      /* ── Bloc Explorer : 3 onglets, tous les liens en HTML ── */
-      + '<div class="ft-explore">'
-        + '<div class="ft-explore-head">'
-          + '<h3 class="ft-explore-h"><i class="ph ph-compass"></i><span class="ft-explore-h-text">Explorer par <em>ville</em></span></h3>'
-          + '<div class="ft-explore-tabs" role="tablist">'
-            + '<button class="ft-tab on" data-panel="revenus" role="tab" aria-selected="true">Études de revenus</button>'
-            + '<button class="ft-tab" data-panel="hote" role="tab" aria-selected="false">Devenir hôte</button>'
-            + '<button class="ft-tab" data-panel="photographes" role="tab" aria-selected="false">Photographes &amp; vidéastes</button>'
-            + '<button class="ft-tab" data-panel="menage" role="tab" aria-selected="false">Ménage</button>'
-            + '<button class="ft-tab" data-panel="depannage" role="tab" aria-selected="false">Dépannage</button>'
-            + '<button class="ft-tab" data-panel="outils" role="tab" aria-selected="false">Comparatifs outils</button>'
-          + '</div>'
-        + '</div>'
-        + '<div class="ft-panels">'
-          + '<div class="ft-panel on" data-panel="revenus" role="tabpanel">'
-            + '<div class="ft-panel-hint">Combien rapporte la LCD dans ces villes ? Tarif moyen, occupation, revenu net.</div>'
-            + '<div class="ft-chips">' + panelHtml(REVENU_LINKS) + '</div>'
-            + '<a href="/calculateurs" class="ft-see-all">Voir tous les calculateurs <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
-          + '</div>'
-          + '<div class="ft-panel" data-panel="hote" role="tabpanel">'
-            + '<div class="ft-panel-hint">Guides locaux pour démarrer ton activité de loueur dans la ville.</div>'
-            + '<div class="ft-chips">' + hostPanel + '</div>'
-            + '<a href="/villes" class="ft-see-all">Voir tous les guides hôte <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
-          + '</div>'
-          + '<div class="ft-panel" data-panel="photographes" role="tabpanel">'
-            + '<div class="ft-panel-hint">Trouver un photographe ou un vidéaste spécialisé LCD dans ta ville : tarifs locaux, checklist photos, annuaire des pros.</div>'
-            + '<div class="ft-chips">' + panelHtml(PHOTOGRAPHE_LINKS) + '</div>'
-            + '<a href="/annuaires/photographes" class="ft-see-all">Voir l\'annuaire des photographes et vidéastes <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
-          + '</div>'
-          + '<div class="ft-panel" data-panel="menage" role="tabpanel">'
-            + '<div class="ft-panel-hint">Trouver une équipe de ménage turnover dans ta ville : tarifs locaux, checklist, annuaire des pros.</div>'
-            + '<div class="ft-chips">' + panelHtml(MENAGE_LINKS) + '</div>'
-            + '<a href="/annuaires/menage" class="ft-see-all">Voir l\'annuaire des équipes ménage <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
-          + '</div>'
-          + '<div class="ft-panel" data-panel="depannage" role="tabpanel">'
-            + '<div class="ft-panel-hint">Trouver un plombier, un électricien ou un serrurier qui intervient entre deux voyageurs dans ta ville : bons réflexes, questions à poser, annuaire des pros.</div>'
-            + '<div class="ft-chips">' + panelHtml(DEPANNAGE_LINKS) + '</div>'
-            + '<a href="/annuaires/depannage" class="ft-see-all">Voir l\'annuaire du dépannage <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>'
-          + '</div>'
-          + '<div class="ft-panel" data-panel="outils" role="tabpanel">'
-            + '<div class="ft-panel-hint">Quel outil ou logiciel choisir ? Comparatifs honnêtes avec prix, forces, limites.</div>'
-            + '<div class="ft-chips">' + panelHtml(COMPARATIF_LINKS) + '</div>'
-          + '</div>'
-        + '</div>'
-      + '</div>'
-
-      /* ── Baseline ── */
-      + '<div class="ft-baseline">'
-        + '<div class="ft-cp">© 2026 Jason Marinho · Fait avec soin à Paris</div>'
-        + '<div class="ft-legal">'
-          + '<a href="/mentions-legales">Mentions légales</a>'
-          + '<a href="/politique-de-confidentialite">Confidentialité</a>'
-          + '<a href="/cgvu">CGV / CGU</a>'
-          + '<a href="#" onclick="if(window.openCookieSettings){openCookieSettings();}return false;">Cookies</a>'
-        + '</div>'
-      + '</div>'
-    + '</div>'
-  + '</footer>';
-
-  var tmp = document.createElement('div');
-  tmp.innerHTML = FOOTER_HTML;
-  var frag = document.createDocumentFragment();
-  while (tmp.firstChild) frag.appendChild(tmp.firstChild);
-  if (document.body) {
+  // Secours : page sans pied de page écrit au déploiement (copie locale, page
+  // ajoutée après le build). Onglet ouvert selon la page, comme au build.
+  function insertFooter() {
+    if (document.querySelector('footer.ft-static')) return;
+    var tmp = document.createElement('div');
+    tmp.innerHTML = FOOTER_HTML;
+    var frag = document.createDocumentFragment();
+    while (tmp.firstChild) frag.appendChild(tmp.firstChild);
     document.body.appendChild(frag);
-  } else {
-    document.addEventListener('DOMContentLoaded', function () {
-      document.body.appendChild(frag);
-    });
+    var path = location.pathname.replace(/\/$/, '') || '/';
+    var panel = 'revenus';
+    for (var r = 0; r < PANEL_RULES.length; r++) {
+      if (new RegExp(PANEL_RULES[r][1]).test(path)) { panel = PANEL_RULES[r][0]; break; }
+    }
+    selectPanel(panel);
+    var cur = document.querySelectorAll('.ft-chips a[href="' + path + '"]');
+    for (var c = 0; c < cur.length; c++) { cur[c].classList.add('on'); cur[c].setAttribute('aria-current', 'page'); }
   }
+  if (document.body) insertFooter();
+  else document.addEventListener('DOMContentLoaded', insertFooter);
 
   // ── Mises à jour dynamiques post-insertion ───────────────────────────────
 
@@ -391,34 +231,12 @@
     villesLead.textContent = HOST_CITIES.length;
   }
 
-  // ── Onglets footer "Explorer" (visuel seulement, liens déjà en HTML) ─────
-  // Délégation pour fonctionner même si footer injecté plus tard.
-  var HEADING_BY_PANEL = {
-    revenus:      'Explorer par <em>ville</em>',
-    hote:         'Explorer par <em>ville</em>',
-    photographes: 'Explorer par <em>ville</em>',
-    menage:       'Explorer par <em>ville</em>',
-    outils:       'Explorer les <em>outils</em>'
-  };
+  // ── Onglets du pied de page (visuel seulement, liens déjà en HTML) ─────
+  // Délégation pour fonctionner même si le pied de page arrive plus tard.
+  // Le titre de chaque onglet est dans son data-title.
   document.addEventListener('click', function (e) {
     var tab = e.target.closest && e.target.closest('.ft-tab');
     if (!tab) return;
-    var panelName = tab.getAttribute('data-panel');
-    var tabs = document.querySelectorAll('.ft-tab');
-    var panels = document.querySelectorAll('.ft-panel');
-    for (var t = 0; t < tabs.length; t++) {
-      var on = tabs[t].getAttribute('data-panel') === panelName;
-      tabs[t].classList.toggle('on', on);
-      tabs[t].setAttribute('aria-selected', on ? 'true' : 'false');
-    }
-    for (var p = 0; p < panels.length; p++) {
-      panels[p].classList.toggle('on', panels[p].getAttribute('data-panel') === panelName);
-    }
-    // Titre dynamique : reflète l'onglet actif pour rendre le switch
-    // plus parlant ("Explorer par ville" vs "Explorer les outils").
-    var hText = document.querySelector('.ft-explore-h-text');
-    if (hText && HEADING_BY_PANEL[panelName]) {
-      hText.innerHTML = HEADING_BY_PANEL[panelName];
-    }
+    selectPanel(tab.getAttribute('data-panel'));
   });
 }());

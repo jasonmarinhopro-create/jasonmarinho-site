@@ -52,5 +52,7 @@ jobs:
       # de chaque ville, cohérent avec les pages et les listes existantes.
       - name: Registre géographique
         run: node scripts/build-registre-geo.mjs --check
+      - name: Pied de page à jour (footer.js)
+        run: node scripts/build-footer.mjs --check
       - name: Fil d'Ariane (relevé, sans échec)
         run: node scripts/audit-fil-ariane.mjs
