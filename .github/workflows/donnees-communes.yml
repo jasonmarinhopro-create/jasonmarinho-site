@@ -1,0 +1,34 @@
+# Données publiques par commune (population, hébergement touristique,
+# résidences secondaires) pour les pages de ville et de zone (10/11/2026).
+# Push de .github/communes-trigger sur claude/** : 1re ligne = « explorer » ou
+# « relever <url-tourisme> <url-logement> ». Résultat (chiffres publics)
+# enregistré dans la branche. Journal : nombres et liens publics seulement.
+name: Données communes
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['claude/**']
+    paths: ['.github/communes-trigger']
+
+permissions:
+  contents: write
+
+jobs:
+  communes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Relever
+        run: node scripts/donnees-communes.mjs $(head -1 .github/communes-trigger)
+      - name: Enregistrer
+        run: |
+          [ -f scripts/data/communes-donnees.json ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/data/communes-donnees.json
+          git commit -m "data: chiffres publics par commune" || exit 0
+          git pull --rebase origin ${GITHUB_REF_NAME}
+          git push origin HEAD:${GITHUB_REF_NAME}
