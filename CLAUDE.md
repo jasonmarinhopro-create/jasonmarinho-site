@@ -62,6 +62,7 @@ Next.js 14 · Supabase (PostgreSQL + RLS) · Stripe Connect (loyer + caution) ·
 - Seul `main` déploie (branches `claude/**` désactivées) : 100 déploiements par jour au plus, regrouper les pushes. Vérifier : statuts du commit, contextes « Vercel – jasonmarinho-dashboard » et « Vercel – jasonmarinho-site ».
 - Site statique : 12 fonctions au plus sous `api/` (compter avant d'en ajouter ; code partagé hors de `api/`).
 - Ne jamais lancer `build-pages-pros-villes.mjs` sans relancer toutes les injections ensuite (voir `docs/claude/villes.md`).
+- Journaux Supabase (`query_logs`, `get_logs`) : toujours une fenêtre de temps courte, une source et un `limit` ; une lecture sans borne parcourt tout l'historique et vide le quota « Log Query » (`docs/claude/technique.md`).
 - Rester dans les offres gratuites (Supabase Free, Vercel Hobby, Google Places sous 900 appels par mois via `takePlacesCall`, Resend 100 e-mails par jour).
 
 **Données et confidentialité**
