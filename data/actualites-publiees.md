@@ -11,8 +11,6 @@ Réécrit automatiquement depuis la base par `scripts/actualites-historique.mjs`
 publication) : les 60 derniers jours, actualités ajoutées par la routine ou
 depuis l'admin, masquées comprises. Ne pas éditer à la main.
 
-- 2026-09-10 · communes · Nice revient à 120 jours pour les résidences principales (https://pm.joyloc.com/villes/nice)
-- 2026-09-10 · plateformes · Abritel lance les annonces sponsorisées pour les hôtes (https://www.tom.travel/2026/09/01/expedia-dote-abritel-de-nouvelles-fonctionnalites-pour-les-partenaires/)
 - 2026-09-11 · reglementation · Bruxelles propose d'interdire les achats LCD en zones tendues · masquée (https://www.lechotouristique.com/article/contre-la-crise-du-logement-bruxelles-veut-faciliter-les-mesures-anti-airbnb)
 - 2026-09-11 · juridique · Copropriété : ton AG peut voter l'interdiction d'Airbnb cet automne (https://kohenavocats.fr/2026/09/08/copropriete-meubles-tourisme-interdiction-assemblee/)
 - 2026-09-12 · plateformes · Airbnb bascule à 15,5 % de frais hôte le 13 octobre : recalcule tes tarifs · masquée (https://meuble-de-tourisme.fr/actualites/airbnb-frais-hote-15-5-octobre-2026/)
@@ -77,3 +75,5 @@ depuis l'admin, masquées comprises. Ne pas éditer à la main.
 - 2026-11-05 · reglementation · Résidence principale : vérifie ton compteur de nuitées avant le 31 décembre (https://www.service-public.fr/particuliers/vosdroits/F2043)
 - 2026-11-06 · fiscalite · Mise à jour PLF 2027 : vote solennel reporté, l'amortissement LMNP en suspens (https://lcp.fr/dossiers/budget-2027-440523)
 - 2026-11-06 · entreprise · Urssaf : si tu déclares chaque mois, le 30 novembre est ta prochaine échéance · pour photographe, menage, depannage (https://www.autoentrepreneur.urssaf.fr/portail/accueil/sinformer-sur-le-statut/lessentiel-du-statut/declarer-et-payer-mes-cotisations.html)
+- 2026-11-09 · fiscalite · Mise à jour PLF 2027 : amortissement LMNP, le Sénat examine dès le 20 novembre (https://www.legifiscal.fr/actualites-fiscales/4722-plf-2027-rejete-assemblee-amendements-pourraient-revenir-senat.html)
+- 2026-11-09 · entreprise · Facture électronique : l'émission devient obligatoire en septembre 2027 · pour photographe, menage, depannage (https://www.journaldunet.com/fintech/1557199-facture-electronique-ce-que-les-auto-entrepreneurs-devront-vraiment-faire-en-septembre-2027/)
