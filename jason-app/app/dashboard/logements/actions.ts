@@ -80,7 +80,7 @@ export type LogementData = {
   reglement_interieur_pt?: string | null
   reglement_interieur_en?: string | null
   /** Réglages du contrat (migration 118, lib/contracts/details.ts) */
-  contrat_options?: { regime: 'arrhes' | 'acompte'; delai_caution_jours: number; charges_incluses: boolean; arrivee_autonome?: boolean } | null
+  contrat_options?: { regime: 'arrhes' | 'acompte'; delai_caution_jours: number; charges_incluses: boolean; arrivee_autonome?: boolean; solde_avant_heures?: number } | null
   clauses_particulieres?: string | null
   clauses_particulieres_pt?: string | null
   clauses_particulieres_en?: string | null

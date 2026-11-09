@@ -335,6 +335,7 @@ type BailleurProfile = {
   bic: string | null
   adresse?: string | null
   stripeReady?: boolean
+  cgv?: string | null
 }
 
 type LogementOption = {

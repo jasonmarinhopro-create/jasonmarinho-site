@@ -5,7 +5,7 @@ import { useState, useTransition, useRef, useEffect } from 'react'
 import { X, FileText, Check, Copy, Envelope, CalendarBlank, Clock, Warning, House, Lock, Eye, ArrowRight } from '@phosphor-icons/react/dist/ssr'
 import { createContract, type ContractData } from '../contract-actions'
 import { DEFAULT_ANNULATION as DEFAULT_ANNULATION_I18N, DEFAULT_REGLEMENT as DEFAULT_REGLEMENT_I18N } from '@/lib/contract-default-clauses'
-import { buildEtatDescriptif, contratOptions, type RegimeAvance } from '@/lib/contracts/details'
+import { buildEtatDescriptif, contratOptions, soldeDelai, soldeDelaiLabel, SOLDE_DELAIS, type RegimeAvance } from '@/lib/contracts/details'
 import { showsIban, WIZARD_PREVIEW_KEY } from '@/lib/contracts/preview'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 import InlineStyle from '@/components/ui/InlineStyle'
@@ -44,6 +44,8 @@ type BailleurProfile = {
   iban?: string | null
   bic?: string | null
   stripeReady?: boolean
+  /** Conditions générales de vente (Mon compte), jointes au contrat si l'hôte le veut */
+  cgv?: string | null
 }
 
 export type LogementOption = {
@@ -97,6 +99,7 @@ function contractFieldsFromLogement(l: LogementOption | null) {
     delai_caution_jours: o.delai_caution_jours,
     charges_incluses: o.charges_incluses,
     arrivee_autonome: o.arrivee_autonome,
+    solde_avant_heures: o.solde_avant_heures,
     clauses_particulieres: l?.clauses_particulieres ?? '',
     clauses_particulieres_pt: l?.clauses_particulieres_pt ?? '',
     clauses_particulieres_en: l?.clauses_particulieres_en ?? '',
@@ -237,6 +240,8 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
 
     // Prix détaillé, arrhes ou acompte, caution, clauses particulières
     ...contractFieldsFromLogement(initialLogement),
+    // CGV de Mon compte jointes par défaut quand l'hôte en a (10/11/2026)
+    joindre_cgv: !!bailleur.cgv,
     taxe_sejour: 0,
     taxe_sejour_mode: 'incluse' as 'incluse' | 'en_sus',
   })
@@ -412,6 +417,8 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
         regime: form.regime,
         delai_caution_jours: form.delai_caution_jours,
         arrivee_autonome: form.arrivee_autonome,
+        solde_avant_heures: form.acompte_percent < 100 ? form.solde_avant_heures : 0,
+        cgv: form.joindre_cgv && bailleur.cgv ? bailleur.cgv : undefined,
       },
       clauses_particulieres: form.clauses_particulieres.trim() || undefined,
       clauses_particulieres_pt: form.clauses_particulieres_pt.trim() || undefined,
@@ -459,6 +466,8 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
         taxe_sejour_mode: form.taxe_sejour_mode, charges_incluses: form.charges_incluses,
         regime: form.regime, delai_caution_jours: form.delai_caution_jours,
         arrivee_autonome: form.arrivee_autonome,
+        solde_avant_heures: form.acompte_percent < 100 ? form.solde_avant_heures : 0,
+        cgv: form.joindre_cgv && bailleur.cgv ? bailleur.cgv : undefined,
       },
       clauses_particulieres: form.clauses_particulieres || null,
       clauses_particulieres_pt: form.clauses_particulieres_pt || null, clauses_particulieres_en: form.clauses_particulieres_en || null,
@@ -829,7 +838,7 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                           transition: 'all 0.15s',
                         }}
                       >
-                        {pct === 100 ? '100 %, solde intégral à la signature' : '50 % maintenant, 50 % à l’arrivée'}
+                        {pct === 100 ? '100 %, solde intégral à la signature' : `50 % maintenant, 50 % ${soldeDelaiLabel(form.solde_avant_heures).replace(/^À/, 'à')}`}
                       </button>
                     )
                   })}
@@ -837,8 +846,17 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                 {form.acompte_percent < 100 && form.montant_loyer > 0 && (
                   <p style={{ fontSize: '12px', color: 'var(--text-2)', margin: '8px 0 0' }}>
                     Acompte&nbsp;: <strong>{(form.montant_loyer * form.acompte_percent / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</strong>
-                    {' · '}Solde à l&apos;arrivée&nbsp;: <strong>{(form.montant_loyer * (100 - form.acompte_percent) / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</strong>
+                    {' · '}Solde&nbsp;: <strong>{(form.montant_loyer * (100 - form.acompte_percent) / 100).toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</strong>
                   </p>
+                )}
+                {form.acompte_percent < 100 && (
+                  <div style={{ marginTop: '10px' }}>
+                    <label style={fieldLabel}>Échéance du solde</label>
+                    <select style={inputStyle} value={form.solde_avant_heures} onChange={e => set('solde_avant_heures', soldeDelai(e.target.value))}>
+                      {SOLDE_DELAIS.map(h => <option key={h} value={h}>{soldeDelaiLabel(h)}</option>)}
+                    </select>
+                    <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '4px 0 0' }}>Écrit sur le contrat et rappelé au voyageur dans le paiement. Pratique en arrivée autonome.</p>
+                  </div>
                 )}
               </div>
               {/* Détail du prix (Code du tourisme L324-2 : le prix figure au contrat) */}
@@ -991,6 +1009,24 @@ export default function ContractModal({ sejour, voyageur, bailleur, logements = 
                 />
                 <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '4px 0 0' }}>Ajoutées au contrat dans un article à part. Elles ne peuvent pas retirer au voyageur un droit que la loi lui donne.</p>
               </div>
+              {/* Conditions générales de vente (Mon compte), reproduites dans le contrat :
+                  la signature vaut acceptation (10/11/2026) */}
+              {bailleur.cgv ? (
+                <div>
+                  <ToggleField
+                    label="Joindre mes conditions générales de vente (la signature du contrat vaut acceptation)"
+                    value={form.joindre_cgv}
+                    onChange={v => set('joindre_cgv', v)}
+                  />
+                  <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '4px 0 0' }}>
+                    Reproduites dans un article du contrat, avec la case de consentement que le voyageur coche avant de signer. <a href="/dashboard/profil#cgv" target="_blank" rel="noopener" style={{ color: 'var(--accent-text)' }}>Modifier mes CGV</a>
+                  </p>
+                </div>
+              ) : (
+                <p style={{ fontSize: '12px', color: 'var(--text-2)', margin: 0 }}>
+                  Tu as des conditions générales de vente ? <a href="/dashboard/profil#cgv" target="_blank" rel="noopener" style={{ color: 'var(--accent-text)', fontWeight: 600 }}>Ajoute-les dans Mon compte</a> : elles seront jointes à tes contrats et acceptées à la signature.
+                </p>
+              )}
               <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' as const }}>
                 <ToggleField
                   label="Animaux admis"

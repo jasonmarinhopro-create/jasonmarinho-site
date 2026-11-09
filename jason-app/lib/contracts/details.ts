@@ -48,6 +48,11 @@ export interface ContractDetails {
   delai_caution_jours?: number
   /** Arrivée autonome : pas de pièce d'identité demandée sur place (article Arrivée) */
   arrivee_autonome?: boolean
+  /** Échéance du solde, en heures avant l'arrivée (0 = à l'arrivée), voir SOLDE_DELAIS */
+  solde_avant_heures?: number
+  /** Conditions générales de vente du bailleur, figées sur le contrat à sa création :
+   *  la signature du contrat vaut acceptation (article dédié et case de consentement) */
+  cgv?: string
 }
 
 /** Réglages du contrat propres à un logement (logements.contrat_options) */
@@ -56,9 +61,64 @@ export interface ContratOptions {
   delai_caution_jours?: number
   charges_incluses?: boolean
   arrivee_autonome?: boolean
+  solde_avant_heures?: number
 }
 
-export const DEFAULT_OPTIONS: Required<ContratOptions> = { regime: 'arrhes', delai_caution_jours: 7, charges_incluses: true, arrivee_autonome: false }
+export const DEFAULT_OPTIONS: Required<ContratOptions> = { regime: 'arrhes', delai_caution_jours: 7, charges_incluses: true, arrivee_autonome: false, solde_avant_heures: 0 }
+
+// ── Échéance du solde (10/11/2026, demande d'une hôte en arrivée autonome :
+//    « je souhaite que ce soit réglé 72 h avant ») ─────────────────────────
+/** Échéances proposées, en heures avant l'arrivée (0 = à l'arrivée) */
+export const SOLDE_DELAIS = [0, 24, 48, 72, 168, 336, 720] as const
+
+/** Échéance valide (une des SOLDE_DELAIS), 0 sinon */
+export function soldeDelai(raw: unknown): number {
+  const n = Number(raw)
+  return (SOLDE_DELAIS as readonly number[]).includes(n) ? n : 0
+}
+
+const enJours = (h: number) => h >= 168 && h % 24 === 0
+
+/** Libellé de l'échéance pour l'hôte (réglages) */
+export function soldeDelaiLabel(h: number): string {
+  if (!h) return "À l'arrivée"
+  return enJours(h) ? `${h / 24} jours avant l'arrivée` : `${h} h avant l'arrivée`
+}
+
+/** « à régler à l'arrivée » / « à régler 72 h avant l'arrivée » (sous le montant du solde) */
+export function soldeHint(lang: Lang, h: number): string {
+  if (!h) return { fr: "à régler à l'arrivée", pt: 'a pagar na chegada', en: 'to be paid on arrival' }[lang]
+  const n = enJours(h) ? h / 24 : h
+  if (enJours(h)) return { fr: `à régler ${n} jours avant l'arrivée`, pt: `a pagar ${n} dias antes da chegada`, en: `to be paid ${n} days before arrival` }[lang]
+  return { fr: `à régler ${n} h avant l'arrivée`, pt: `a pagar ${n} h antes da chegada`, en: `to be paid ${n} hours before arrival` }[lang]
+}
+
+/** Fin de phrase : « à votre arrivée » / « 72 h avant votre arrivée » */
+export function soldeQuand(lang: Lang, h: number): string {
+  if (!h) return { fr: 'à votre arrivée', pt: 'na sua chegada', en: 'on arrival' }[lang]
+  const n = enJours(h) ? h / 24 : h
+  if (enJours(h)) return { fr: `${n} jours avant votre arrivée`, pt: `${n} dias antes da sua chegada`, en: `${n} days before arrival` }[lang]
+  return { fr: `${n} h avant votre arrivée`, pt: `${n} h antes da sua chegada`, en: `${n} hours before arrival` }[lang]
+}
+
+// ── Conditions générales de vente jointes au contrat (10/11/2026, même hôte :
+//    « intégrer mes CGV dans le contrat, la signature vaut acceptation ») ──
+export const CGV_MAX = 30000
+
+/** Texte des CGV nettoyé (espaces, longueur), null si vide */
+export function cleanCgv(raw: unknown): string | null {
+  const t = String(raw ?? '').replace(/\r\n?/g, '\n').replace(/\n{3,}/g, '\n\n').trim()
+  return t ? t.slice(0, CGV_MAX) : null
+}
+
+/** Article « Conditions générales de vente » : la signature vaut acceptation */
+export function cgvClause(lang: Lang): { title: string; text: string } {
+  return {
+    fr: { title: 'Conditions générales de vente', text: "Les conditions générales de vente du bailleur, reproduites ci-dessous, font partie intégrante du présent contrat. En signant le contrat, le locataire reconnaît en avoir pris connaissance et les accepter sans réserve. En cas de contradiction, les stipulations du contrat l'emportent sur les conditions générales." },
+    pt: { title: 'Condições gerais de venda', text: 'As condições gerais de venda do senhorio, reproduzidas abaixo, fazem parte integrante do presente contrato. Ao assinar o contrato, o hóspede reconhece ter tomado conhecimento das mesmas e aceitá-las sem reservas. Em caso de contradição, prevalecem as cláusulas do contrato.' },
+    en: { title: 'General terms and conditions', text: "The landlord's general terms and conditions, reproduced below, form an integral part of this contract. By signing the contract, the guest acknowledges having read them and accepts them without reservation. In the event of any conflict, the terms of the contract prevail over the general terms." },
+  }[lang]
+}
 
 export function contratOptions(raw: unknown): Required<ContratOptions> {
   const o = (raw && typeof raw === 'object' ? raw : {}) as ContratOptions
@@ -68,6 +128,7 @@ export function contratOptions(raw: unknown): Required<ContratOptions> {
     delai_caution_jours: Number.isFinite(delai) && delai >= 1 && delai <= 60 ? Math.round(delai) : DEFAULT_OPTIONS.delai_caution_jours,
     charges_incluses: o.charges_incluses !== false,
     arrivee_autonome: o.arrivee_autonome === true,
+    solde_avant_heures: soldeDelai(o.solde_avant_heures),
   }
 }
 

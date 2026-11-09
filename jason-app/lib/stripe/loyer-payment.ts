@@ -17,6 +17,8 @@ import { loyerChargeCents } from '@/lib/stripe/loyer-amount'
 import { logger } from '@/lib/logger'
 
 const log = logger('lib/stripe/loyer-payment')
+import { soldeHint, soldeDelai } from '@/lib/contracts/details'
+
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com'
 
 /**
@@ -24,7 +26,7 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://app.jasonmarinho.com
  * la ligne contient l'image de la signature (base64, lourde) qui ne sert pas ici.
  */
 export const LOYER_CONTRACT_COLUMNS =
-  'id, token, user_id, statut, created_at, montant_loyer, acompte_percent, date_arrivee, date_depart, logement_adresse, locataire_email, stripe_payment_enabled, stripe_payment_status, stripe_payment_checkout_id, checklist_status'
+  'id, token, user_id, statut, created_at, montant_loyer, acompte_percent, date_arrivee, date_depart, logement_adresse, locataire_email, stripe_payment_enabled, stripe_payment_status, stripe_payment_checkout_id, checklist_status, details'
 
 export interface LoyerContract {
   id: string
@@ -38,6 +40,8 @@ export interface LoyerContract {
   locataire_email?: string | null
   stripe_payment_status?: string | null
   checklist_status?: Record<string, boolean> | null
+  /** Mentions figées du contrat : échéance du solde (solde_avant_heures) */
+  details?: { solde_avant_heures?: number } | null
 }
 
 const frDate = (d: string) => new Date(d).toLocaleDateString('fr-FR', { timeZone: 'Europe/Paris' })
@@ -60,7 +64,7 @@ export async function createLoyerCheckout(contract: LoyerContract, stripeAccount
           unit_amount: amountCents,
           product_data: {
             name: isPartial ? `Acompte (${pct} %), ${contract.logement_adresse ?? 'réservation'}` : `Réservation, ${contract.logement_adresse ?? ''}`.trim(),
-            description: isPartial ? `${dates}. Solde de ${solde} € à régler à l'arrivée.` : dates,
+            description: isPartial ? `${dates}. Solde de ${solde} € ${soldeHint('fr', soldeDelai(contract.details?.solde_avant_heures))}.` : dates,
           },
         },
         quantity: 1,

@@ -14,6 +14,7 @@ import { SIGN_UI, formatDateLang, type UiLang } from '@/lib/sign-ui-i18n'
 import { DEFAULT_ANNULATION, DEFAULT_REGLEMENT, LEGACY_DEFAULT_ANNULATION_FR, resolveClauseText } from '@/lib/contract-default-clauses'
 import {
   EXTRA_UI, etatDescriptifLines, regimeText, bailleurCancelText, arriveeText, priceLines, type ContractDetails,
+  soldeHint, soldeQuand, soldeDelai, cgvClause,
 } from '@/lib/contracts/details'
 
 interface ContractRow {
@@ -98,7 +99,7 @@ interface Props {
   preview?: { title: string; note: string; editLinks?: Partial<Record<EditKey, string>>; backHref?: string; backLabel?: string }
 }
 
-export type EditKey = 'parties' | 'bien' | 'duree' | 'prix' | 'caution' | 'annulation' | 'reglement' | 'clauses' | 'arrivee'
+export type EditKey = 'parties' | 'bien' | 'duree' | 'prix' | 'caution' | 'annulation' | 'reglement' | 'clauses' | 'arrivee' | 'cgv'
 
 const LANG_OPTIONS: UiLang[] = ['fr', 'pt', 'en']
 const LANG_FLAG: Record<UiLang, string> = { fr: '🇫🇷', pt: '🇵🇹', en: '🇬🇧' }
@@ -131,6 +132,9 @@ export default function ContractView({
   // détaillé, caution, annulation par le bailleur, identité, assurance.
   const d = contract.details ?? null
   const ex = EXTRA_UI[lang]
+  // Échéance du solde et CGV figées sur le contrat (10/11/2026)
+  const soldeH = soldeDelai(d?.solde_avant_heures)
+  const cgv = typeof d?.cgv === 'string' && d.cgv.trim() ? d.cgv : null
   const regime = d?.regime ?? 'arrhes'
   const money = (v: number) => `${v.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`
   const etatLines = d ? etatDescriptifLines(d.etat, lang, contractPays) : []
@@ -351,7 +355,7 @@ export default function ContractView({
                 <div style={priceBox}>
                   <p style={priceLabel}>{t.solde}</p>
                   <p style={priceValue}>{montantSolde.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</p>
-                  <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>{t.soldeHint}</p>
+                  <p style={{ fontSize: '11px', color: 'var(--text-muted, #6b9a7e)', marginTop: '2px' }}>{soldeHint(lang, soldeH)}</p>
                 </div>
               </div>
             )}
@@ -477,6 +481,21 @@ export default function ContractView({
             </>
           )}
 
+          {/* Conditions générales de vente du bailleur, figées sur le contrat (10/11/2026) :
+              la signature du contrat vaut acceptation (article + case de consentement) */}
+          {cgv && (
+            <>
+              <section style={contractSection}>
+                <h2 style={sectionTitle}>{art(cgvClause(lang).title)}{edit('cgv')}</h2>
+                <p style={contractText}>{cgvClause(lang).text}</p>
+                <div style={{ marginTop: '12px', padding: '14px 16px', borderRadius: '10px', border: '1px solid rgba(255,213,107,0.18)', background: 'rgba(255,255,255,0.03)' }}>
+                  <p style={{ ...contractText, fontSize: '13px', whiteSpace: 'pre-line', margin: 0 }}>{cgv}</p>
+                </div>
+              </section>
+              <div style={divider} />
+            </>
+          )}
+
           {/* Art. 8, RGPD */}
           <section style={contractSection}>
             <h2 style={sectionTitle}>{art(t.art8)}{edit()}</h2>
@@ -521,7 +540,7 @@ export default function ContractView({
                 </div>
               </div>
             ) : (
-              <SignaturePage token={token} contractId={contract.id} locataireName={`${contract.locataire_prenom} ${contract.locataire_nom}`} />
+              <SignaturePage token={token} contractId={contract.id} locataireName={`${contract.locataire_prenom} ${contract.locataire_nom}`} withCgv={!!cgv} />
             )}
           </div>
         )}
@@ -544,6 +563,7 @@ export default function ContractView({
                       paymentParam={paymentParam}
                       alreadyPaid={paymentAlreadyDone}
                       lang={lang}
+                      soldeQuand={soldeQuand(lang, soldeH)}
                     />
                   </div>
                 )}
@@ -577,6 +597,7 @@ export default function ContractView({
                 reference={`LOC-${contract.id.slice(0, 8).toUpperCase()}`}
                 beneficiary={`${contract.bailleur_prenom} ${contract.bailleur_nom}`}
                 lang={lang}
+                soldeQuand={soldeQuand(lang, soldeH)}
               />
             )}
           </div>

@@ -54,7 +54,7 @@ export interface PreviewLogement extends LogementForContract {
   telephone?: string | null
 }
 
-export interface PreviewBailleur { prenom: string; nom: string; email: string; adresse?: string | null }
+export interface PreviewBailleur { prenom: string; nom: string; email: string; adresse?: string | null; cgv?: string | null }
 
 /** Données passées à ContractView pour un aperçu */
 export interface ContractPreviewData {
@@ -88,6 +88,8 @@ export function previewFromLogement(l: PreviewLogement, bailleur: PreviewBailleu
     regime: opts.regime,
     delai_caution_jours: opts.delai_caution_jours,
     arrivee_autonome: opts.arrivee_autonome,
+    solde_avant_heures: opts.solde_avant_heures,
+    ...(bailleur.cgv?.trim() ? { cgv: bailleur.cgv } : {}),
   }
   const arrivee = addDays(today, 30)
   return {

@@ -17,9 +17,11 @@ export default async function ApercuContratPage({ params }: { params: Promise<{ 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const [{ data: logement }, { data: profile }] = await Promise.all([
+  const [{ data: logement }, { data: profile }, cgvRes] = await Promise.all([
     supabase.from('logements').select('*').eq('id', id).eq('user_id', user.id).maybeSingle(),
     supabase.from('profiles').select('adresse, iban, bic').eq('id', user.id).maybeSingle(),
+    // CGV (migration 181) : requête à part, l'aperçu s'affiche même sans la colonne
+    supabase.from('profiles').select('cgv').eq('id', user.id).maybeSingle(),
   ])
   if (!logement) notFound()
 
@@ -30,6 +32,7 @@ export default async function ApercuContratPage({ params }: { params: Promise<{ 
     nom: String(meta.nom ?? meta.last_name ?? parts.slice(1).join(' ')),
     email: user.email ?? '',
     adresse: profile?.adresse ?? null,
+    cgv: cgvRes.error ? null : ((cgvRes.data as { cgv?: string | null } | null)?.cgv ?? null),
   }
   const p = previewFromLogement(logement as PreviewLogement, bailleur, parisToday())
   const c = p.contract
@@ -76,6 +79,7 @@ export default async function ApercuContratPage({ params }: { params: Promise<{ 
           reglement: `${fiche}#modifier-reglement`,
           clauses: `${fiche}#modifier-contrat`,
           arrivee: `${fiche}#modifier-contrat`,
+          cgv: '/dashboard/profil#cgv',
         },
       }}
     />

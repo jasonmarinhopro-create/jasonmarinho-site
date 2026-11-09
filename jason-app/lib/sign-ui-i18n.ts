@@ -54,7 +54,8 @@ export type SignUiStrings = {
   amountLabel: string
   amountPartialLabel: string
   referenceLabel: string
-  soldeRemainingNote: (amount: string) => string
+  /** quand : soldeQuand() de lib/contracts/details (« à votre arrivée », « 72 h avant votre arrivée ») */
+  soldeRemainingNote: (amount: string, quand?: string) => string
   transferNotice: string
   depositRegistered: string
   depositRegisteredHint: (amount: string) => string
@@ -90,13 +91,13 @@ export type SignUiStrings = {
   networkError: string
   paymentError: string
   paymentDoneTitle: (isPartial: boolean) => string
-  paymentDoneHint: (amount: string, isPartial: boolean) => string
+  paymentDoneHint: (amount: string, isPartial: boolean, quand?: string) => string
   paymentCancelledTitle: string
   paymentProcessingTitle: string
   paymentProcessingHint: string
   paymentCancelledHint: (isPartial: boolean) => string
   payTitle: (isPartial: boolean) => string
-  payHint1: (amount: string, isPartial: boolean) => string
+  payHint1: (amount: string, isPartial: boolean, quand?: string) => string
   payHint2: string
   payButton: (amount: string, isPartial: boolean) => string
   art5: string
@@ -172,7 +173,7 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     amountLabel: 'Montant',
     amountPartialLabel: 'Montant (acompte)',
     referenceLabel: 'Référence',
-    soldeRemainingNote: amount => `Solde restant de ${amount} à régler directement au propriétaire à votre arrivée.`,
+    soldeRemainingNote: (amount, quand = 'à votre arrivée') => `Solde restant de ${amount} à régler directement au propriétaire ${quand}.`,
     transferNotice: 'Une fois le virement effectué, prévenez le propriétaire par email ou téléphone. Les virements peuvent prendre 1 à 3 jours ouvrés selon votre banque.',
     depositRegistered: 'Caution enregistrée',
     depositRegisteredHint: amount => `${amount} bloqués sur votre carte, rien n'a été débité. Après votre séjour, le propriétaire lève le blocage s'il n'y a pas de dommage.`,
@@ -207,13 +208,13 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     networkError: 'Erreur réseau. Réessayez.',
     paymentError: 'Erreur lors du paiement.',
     paymentDoneTitle: isPartial => isPartial ? 'Acompte réglé' : 'Réservation réglée',
-    paymentDoneHint: (amount, isPartial) => `${amount} reçus par le propriétaire. Votre réservation est confirmée${isPartial ? ', le solde reste à régler à votre arrivée' : ''}.`,
+    paymentDoneHint: (amount, isPartial, quand = 'à votre arrivée') => `${amount} reçus par le propriétaire. Votre réservation est confirmée${isPartial ? `, le solde reste à régler ${quand}` : ''}.`,
     paymentCancelledTitle: 'Paiement annulé',
     paymentProcessingTitle: 'Paiement en cours de confirmation',
     paymentProcessingHint: 'Votre paiement a bien été transmis. La confirmation peut prendre quelques minutes : inutile de payer à nouveau. Rechargez cette page un peu plus tard.',
     paymentCancelledHint: isPartial => `Vous pouvez régler ${isPartial ? 'votre acompte' : 'votre réservation'} ci-dessous pour la finaliser.`,
     payTitle: isPartial => isPartial ? 'Réglez votre acompte' : 'Réglez votre réservation',
-    payHint1: (amount, isPartial) => `Pour confirmer votre séjour, réglez en ligne ${amount} directement par carte bancaire.${isPartial ? ' Le solde restant est à régler directement au propriétaire à votre arrivée.' : ''}`,
+    payHint1: (amount, isPartial, quand = 'à votre arrivée') => `Pour confirmer votre séjour, réglez en ligne ${amount} directement par carte bancaire.${isPartial ? ` Le solde restant est à régler directement au propriétaire ${quand}.` : ''}`,
     payHint2: 'Le paiement est sécurisé par Stripe et votre carte est débitée immédiatement. Vous recevrez une confirmation par email.',
     payButton: (amount, isPartial) => `Payer ${isPartial ? "l'acompte" : 'la réservation'}, ${amount} →`,
     art5: "Article 5, Conditions d'annulation",
@@ -284,7 +285,7 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     amountLabel: 'Valor',
     amountPartialLabel: 'Valor (sinal)',
     referenceLabel: 'Referência',
-    soldeRemainingNote: amount => `Saldo remanescente de ${amount} a pagar diretamente ao proprietário na sua chegada.`,
+    soldeRemainingNote: (amount, quand = 'na sua chegada') => `Saldo remanescente de ${amount} a pagar diretamente ao proprietário ${quand}.`,
     transferNotice: 'Depois de efetuar a transferência, avise o proprietário por e-mail ou telefone. As transferências podem demorar de 1 a 3 dias úteis, consoante o seu banco.',
     depositRegistered: 'Caução registada',
     depositRegisteredHint: amount => `${amount} bloqueados no seu cartão, nada foi debitado. Depois da estadia, o proprietário levanta o bloqueio se não houver danos.`,
@@ -319,13 +320,13 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     networkError: 'Erro de rede. Tente novamente.',
     paymentError: 'Erro no pagamento.',
     paymentDoneTitle: isPartial => isPartial ? 'Sinal pago' : 'Reserva paga',
-    paymentDoneHint: (amount, isPartial) => `${amount} recebidos pelo proprietário. A sua reserva está confirmada${isPartial ? ', o saldo fica a pagar na sua chegada' : ''}.`,
+    paymentDoneHint: (amount, isPartial, quand = 'na sua chegada') => `${amount} recebidos pelo proprietário. A sua reserva está confirmada${isPartial ? `, o saldo fica a pagar ${quand}` : ''}.`,
     paymentCancelledTitle: 'Pagamento cancelado',
     paymentProcessingTitle: 'Pagamento em confirmação',
     paymentProcessingHint: 'O seu pagamento foi transmitido. A confirmação pode demorar alguns minutos: não é preciso pagar novamente. Recarregue esta página um pouco mais tarde.',
     paymentCancelledHint: isPartial => `Pode pagar ${isPartial ? 'o seu sinal' : 'a sua reserva'} abaixo para a finalizar.`,
     payTitle: isPartial => isPartial ? 'Pague o seu sinal' : 'Pague a sua reserva',
-    payHint1: (amount, isPartial) => `Para confirmar a sua estadia, pague online ${amount} diretamente por cartão bancário.${isPartial ? ' O saldo restante é pago diretamente ao proprietário na sua chegada.' : ''}`,
+    payHint1: (amount, isPartial, quand = 'na sua chegada') => `Para confirmar a sua estadia, pague online ${amount} diretamente por cartão bancário.${isPartial ? ` O saldo restante é pago diretamente ao proprietário ${quand}.` : ''}`,
     payHint2: 'O pagamento é seguro através do Stripe e o seu cartão é debitado de imediato. Receberá uma confirmação por e-mail.',
     payButton: (amount, isPartial) => `Pagar ${isPartial ? 'o sinal' : 'a reserva'}, ${amount} →`,
     art5: 'Artigo 5, Condições de cancelamento',
@@ -396,7 +397,7 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     amountLabel: 'Amount',
     amountPartialLabel: 'Amount (deposit)',
     referenceLabel: 'Reference',
-    soldeRemainingNote: amount => `Remaining balance of ${amount} to be paid directly to the owner on arrival.`,
+    soldeRemainingNote: (amount, quand = 'on arrival') => `Remaining balance of ${amount} to be paid directly to the owner ${quand}.`,
     transferNotice: 'Once the transfer is done, let the owner know by email or phone. Transfers can take 1 to 3 business days depending on your bank.',
     depositRegistered: 'Security deposit registered',
     depositRegisteredHint: amount => `${amount} held on your card, nothing was charged. After your stay, the owner releases the hold if there is no damage.`,
@@ -431,13 +432,13 @@ export const SIGN_UI: Record<UiLang, SignUiStrings> = {
     networkError: 'Network error. Please try again.',
     paymentError: 'Payment error.',
     paymentDoneTitle: isPartial => isPartial ? 'Deposit paid' : 'Booking paid',
-    paymentDoneHint: (amount, isPartial) => `${amount} received by the owner. Your booking is confirmed${isPartial ? ', the balance remains to be paid on arrival' : ''}.`,
+    paymentDoneHint: (amount, isPartial, quand = 'on arrival') => `${amount} received by the owner. Your booking is confirmed${isPartial ? `, the balance remains to be paid ${quand}` : ''}.`,
     paymentCancelledTitle: 'Payment cancelled',
     paymentProcessingTitle: 'Payment being confirmed',
     paymentProcessingHint: 'Your payment has been sent. Confirmation can take a few minutes: there is no need to pay again. Reload this page a little later.',
     paymentCancelledHint: isPartial => `You can pay ${isPartial ? 'your deposit' : 'your booking'} below to finalise it.`,
     payTitle: isPartial => isPartial ? 'Pay your deposit' : 'Pay your booking',
-    payHint1: (amount, isPartial) => `To confirm your stay, pay ${amount} online directly by card.${isPartial ? ' The remaining balance is to be paid directly to the owner on arrival.' : ''}`,
+    payHint1: (amount, isPartial, quand = 'on arrival') => `To confirm your stay, pay ${amount} online directly by card.${isPartial ? ` The remaining balance is to be paid directly to the owner ${quand}.` : ''}`,
     payHint2: 'Payment is secured by Stripe and your card is charged immediately. You will receive a confirmation email.',
     payButton: (amount, isPartial) => `Pay ${isPartial ? 'the deposit' : 'the booking'}, ${amount} →`,
     art5: 'Article 5, Cancellation terms',

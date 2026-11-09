@@ -11,9 +11,11 @@ interface Props {
   paymentParam?: string
   alreadyPaid: boolean
   lang: UiLang
+  /** « à votre arrivée » / « 72 h avant votre arrivée » (soldeQuand) */
+  soldeQuand?: string
 }
 
-export default function PaymentSection({ token, amount, isPartial, paymentParam, alreadyPaid, lang }: Props) {
+export default function PaymentSection({ token, amount, isPartial, paymentParam, alreadyPaid, lang, soldeQuand }: Props) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const t = SIGN_UI[lang]
@@ -51,7 +53,7 @@ export default function PaymentSection({ token, amount, isPartial, paymentParam,
             <strong style={{ color: 'var(--success-1)', display: 'block', marginBottom: '4px' }}>
               {t.paymentDoneTitle(!!isPartial)}
             </strong>
-            <p style={hint}>{t.paymentDoneHint(amountLabel, !!isPartial)}</p>
+            <p style={hint}>{t.paymentDoneHint(amountLabel, !!isPartial, soldeQuand)}</p>
           </div>
         </div>
       </div>
@@ -93,7 +95,7 @@ export default function PaymentSection({ token, amount, isPartial, paymentParam,
         <strong style={{ color: '#f0ebe1', display: 'block', marginBottom: '6px', fontSize: '16px' }}>
           {t.payTitle(!!isPartial)}
         </strong>
-        <p style={hint}>{t.payHint1(amountLabel, !!isPartial)}</p>
+        <p style={hint}>{t.payHint1(amountLabel, !!isPartial, soldeQuand)}</p>
         <p style={{ ...hint, marginTop: '8px' }}>{t.payHint2}</p>
       </div>
       {error && <p style={errStyle}>{error}</p>}

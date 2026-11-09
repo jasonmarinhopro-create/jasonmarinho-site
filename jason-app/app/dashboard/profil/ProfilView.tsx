@@ -5,6 +5,7 @@ import ProfilForm, { DangerZone } from './ProfilForm'
 import AccountCard from './AccountCard'
 import ChezNousIdentity from './ChezNousIdentity'
 import FiscalContextCard from './FiscalContextCard'
+import CgvCard from './CgvCard'
 import AbonnementCard from './AbonnementCard'
 import NewsletterCard from './NewsletterCard'
 import type { getSubscriptionDetails } from '@/lib/stripe/subscription-info'
@@ -29,6 +30,8 @@ export type ProfilData = {
   autresRevenusPro: number | null
   /** Connexion Google activée dans Supabase */
   google?: boolean
+  /** Conditions générales de vente (migration 181), vide si absentes */
+  cgv?: string
   pd: {
     stripe_account_id: string | null
     stripe_onboarding_complete: boolean | null
@@ -49,7 +52,7 @@ function fmtMemberSince(iso: string): string {
   try { return new Date(iso).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', timeZone: 'Europe/Paris' }) } catch { return '' }
 }
 
-export default function ProfilView({ userId, email, createdAt, fullName, planLabel, subscription, autresRevenusPro, pd, google = false }: ProfilData) {
+export default function ProfilView({ userId, email, createdAt, fullName, planLabel, subscription, autresRevenusPro, pd, google = false, cgv = '' }: ProfilData) {
   const initials = fullName
     ? fullName.split(/\s+/).map(n => n[0]).join('').toUpperCase().slice(0, 2)
     : email.charAt(0).toUpperCase()
@@ -129,6 +132,7 @@ export default function ProfilView({ userId, email, createdAt, fullName, planLab
             initialEntrepriseNumero={pd?.entreprise_numero ?? ''}
             initialMentionTva={pd?.mention_tva ?? ''}
           />
+          <CgvCard initialValue={cgv} />
           <FiscalContextCard initialValue={autresRevenusPro} />
         </div>
         <div className="profil-col">

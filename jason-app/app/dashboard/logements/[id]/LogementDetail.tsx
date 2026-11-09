@@ -22,7 +22,7 @@ import {
 import { EditableCard } from './EditableCard'
 import IcalSyncSection, { SOURCE_FG } from './IcalSyncSection'
 import type { VoyageurOption } from './QuickSejourModal'
-import { contratOptions, type RegimeAvance } from '@/lib/contracts/details'
+import { contratOptions, soldeDelai, soldeDelaiLabel, SOLDE_DELAIS, type RegimeAvance } from '@/lib/contracts/details'
 import { updateLogement, type LogementIcalFeedStatus } from '../actions'
 
 const QuickSejourModal = dynamic(() => import('./QuickSejourModal'), { ssr: false })
@@ -334,6 +334,7 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
   const [draftDelaiCaution, setDraftDelaiCaution] = useState(contratOpts.delai_caution_jours)
   const [draftCharges, setDraftCharges] = useState(contratOpts.charges_incluses)
   const [draftAutonome, setDraftAutonome] = useState(contratOpts.arrivee_autonome)
+  const [draftSolde, setDraftSolde] = useState(contratOpts.solde_avant_heures)
   const [draftClauses, setDraftClauses] = useState(l.clauses_particulieres ?? '')
   const [draftClausesPt, setDraftClausesPt] = useState(l.clauses_particulieres_pt ?? '')
   const [draftClausesEn, setDraftClausesEn] = useState(l.clauses_particulieres_en ?? '')
@@ -405,13 +406,13 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
     reglement_interieur_en: draftReglementEn || null,
   })
   const saveContrat = () => updateLogement(l.id, {
-    contrat_options: { regime: draftRegime, delai_caution_jours: draftDelaiCaution, charges_incluses: draftCharges, arrivee_autonome: draftAutonome },
+    contrat_options: { regime: draftRegime, delai_caution_jours: draftDelaiCaution, charges_incluses: draftCharges, arrivee_autonome: draftAutonome, solde_avant_heures: draftSolde },
     clauses_particulieres: draftClauses.trim() || null,
     clauses_particulieres_pt: draftClausesPt.trim() || null,
     clauses_particulieres_en: draftClausesEn.trim() || null,
   })
   const resetContrat = () => {
-    setDraftRegime(contratOpts.regime); setDraftDelaiCaution(contratOpts.delai_caution_jours); setDraftCharges(contratOpts.charges_incluses); setDraftAutonome(contratOpts.arrivee_autonome)
+    setDraftRegime(contratOpts.regime); setDraftDelaiCaution(contratOpts.delai_caution_jours); setDraftCharges(contratOpts.charges_incluses); setDraftAutonome(contratOpts.arrivee_autonome); setDraftSolde(contratOpts.solde_avant_heures)
     setDraftClauses(l.clauses_particulieres ?? ''); setDraftClausesPt(l.clauses_particulieres_pt ?? ''); setDraftClausesEn(l.clauses_particulieres_en ?? '')
   }
   const saveTarifs = () => updateLogement(l.id, {
@@ -1170,6 +1171,10 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
                     <span style={s.tileLabel}>Arrivée</span>
                     <span style={s.tileValue}>{contratOpts.arrivee_autonome ? 'Autonome' : 'Pièce d\u2019identité montrée'}</span>
                   </div>
+                  <div style={s.tile}>
+                    <span style={s.tileLabel}>Solde à régler</span>
+                    <span style={s.tileValue}>{soldeDelaiLabel(contratOpts.solde_avant_heures)}</span>
+                  </div>
                 </div>
                 {l.clauses_particulieres
                   ? <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -1210,6 +1215,11 @@ export default function LogementDetail({ logement: l, sejours, icalStatus, voyag
                     <select style={s.editInput} value={draftAutonome ? 'autonome' : 'piece'} onChange={e => setDraftAutonome(e.target.value === 'autonome')}>
                       <option value="piece">Le voyageur montre une pièce d&apos;identité à l&apos;arrivée</option>
                       <option value="autonome">Arrivée autonome : pas de pièce d&apos;identité demandée sur place</option>
+                    </select>
+                  </Field>
+                  <Field label="Échéance du solde (après l'acompte ou les arrhes)">
+                    <select style={s.editInput} value={draftSolde} onChange={e => setDraftSolde(soldeDelai(e.target.value))}>
+                      {SOLDE_DELAIS.map(h => <option key={h} value={h}>{soldeDelaiLabel(h)}</option>)}
                     </select>
                   </Field>
                 </div>

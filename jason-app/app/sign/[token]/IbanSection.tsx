@@ -12,9 +12,11 @@ interface Props {
   reference: string
   beneficiary: string
   lang: UiLang
+  /** « à votre arrivée » / « 72 h avant votre arrivée » (soldeQuand) */
+  soldeQuand?: string
 }
 
-export default function IbanSection({ iban, bic, amount, soldeAmount, reference, beneficiary, lang }: Props) {
+export default function IbanSection({ iban, bic, amount, soldeAmount, reference, beneficiary, lang, soldeQuand }: Props) {
   const [copiedField, setCopiedField] = useState<string | null>(null)
   const t = SIGN_UI[lang]
 
@@ -51,7 +53,7 @@ export default function IbanSection({ iban, bic, amount, soldeAmount, reference,
 
       {soldeAmount != null && (
         <p style={{ ...hint, marginTop: '10px' }}>
-          {t.soldeRemainingNote(`${soldeAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`)}
+          {t.soldeRemainingNote(`${soldeAmount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`, soldeQuand)}
         </p>
       )}
 

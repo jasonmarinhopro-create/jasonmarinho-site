@@ -8,6 +8,8 @@ interface Props {
   token: string
   contractId: string
   locataireName: string
+  /** Le contrat reproduit les CGV du bailleur : la case de consentement les vise aussi */
+  withCgv?: boolean
 }
 
 // ── i18n du bloc de signature ──────────────────────────────────────────
@@ -28,6 +30,7 @@ const SIGN_T: Record<SLang, Record<string, string>> = {
     natHint: 'Utilisée par votre hôte pour la déclaration réglementaire de votre séjour (obligation légale dans la plupart des pays européens).',
     consentPrefix: 'Je, soussigné(e)',
     consentBody: ", reconnais avoir lu l'intégralité du contrat de location ci-dessus et accepte ses termes. Je consens à sa signature électronique, valide au sens du règlement eIDAS (UE) 910/2014. Cette signature a la même valeur juridique qu'une signature manuscrite.",
+    consentCgv: " J'ai lu et j'accepte les conditions générales de vente du bailleur reproduites dans le contrat.",
     submitting: 'Signature en cours…',
     submit: 'Signer le contrat définitivement',
     legalNote: "En signant, vous confirmez votre identité par votre adresse email. Votre adresse IP, l'horodatage et les caractéristiques de votre navigateur sont enregistrés à des fins probatoires (audit trail eIDAS). Ces données sont conservées 5 ans.",
@@ -53,6 +56,7 @@ const SIGN_T: Record<SLang, Record<string, string>> = {
     natHint: 'Used by your host for the mandatory guest declaration of your stay (a legal requirement in most European countries).',
     consentPrefix: 'I, the undersigned',
     consentBody: ', acknowledge that I have read the entire rental contract above and accept its terms. I consent to its electronic signature, valid under the eIDAS Regulation (EU) 910/2014. This signature has the same legal value as a handwritten one.',
+    consentCgv: " I have read and accept the landlord's general terms and conditions reproduced in the contract.",
     submitting: 'Signing…',
     submit: 'Sign the contract definitively',
     legalNote: 'By signing, you confirm your identity through your email address. Your IP address, timestamp and browser characteristics are recorded for evidentiary purposes (eIDAS audit trail). This data is kept for 5 years.',
@@ -78,6 +82,7 @@ const SIGN_T: Record<SLang, Record<string, string>> = {
     natHint: 'Su anfitrión la utiliza para la declaración obligatoria de viajeros de su estancia (obligación legal en la mayoría de los países europeos).',
     consentPrefix: 'Yo, el/la abajo firmante',
     consentBody: ', reconozco haber leído íntegramente el contrato de alquiler anterior y acepto sus términos. Consiento su firma electrónica, válida según el Reglamento eIDAS (UE) 910/2014. Esta firma tiene el mismo valor jurídico que una firma manuscrita.',
+    consentCgv: ' He leído y acepto las condiciones generales de venta del arrendador reproducidas en el contrato.',
     submitting: 'Firmando…',
     submit: 'Firmar el contrato definitivamente',
     legalNote: 'Al firmar, confirma su identidad mediante su correo electrónico. Su dirección IP, la fecha/hora y las características de su navegador se registran con fines probatorios (auditoría eIDAS). Estos datos se conservan 5 años.',
@@ -103,6 +108,7 @@ const SIGN_T: Record<SLang, Record<string, string>> = {
     natHint: 'Utilizada pelo seu anfitrião para a declaração obrigatória de alojamento da sua estadia (obrigação legal na maioria dos países europeus).',
     consentPrefix: 'Eu, abaixo assinado(a)',
     consentBody: ', reconheço ter lido integralmente o contrato de arrendamento acima e aceito os seus termos. Consinto na sua assinatura eletrónica, válida nos termos do Regulamento eIDAS (UE) 910/2014. Esta assinatura tem o mesmo valor jurídico que uma assinatura manuscrita.',
+    consentCgv: ' Li e aceito as condições gerais de venda do senhorio reproduzidas no contrato.',
     submitting: 'A assinar…',
     submit: 'Assinar o contrato definitivamente',
     legalNote: 'Ao assinar, confirma a sua identidade através do seu e-mail. O seu endereço IP, a data/hora e as características do seu navegador são registados para fins probatórios (auditoria eIDAS). Estes dados são conservados durante 5 anos.',
@@ -128,6 +134,7 @@ const SIGN_T: Record<SLang, Record<string, string>> = {
     natHint: 'Wird von Ihrem Gastgeber für die gesetzliche Gästemeldung Ihres Aufenthalts verwendet (Pflicht in den meisten europäischen Ländern).',
     consentPrefix: 'Ich, der/die Unterzeichnende',
     consentBody: ', bestätige, den gesamten obigen Mietvertrag gelesen zu haben, und akzeptiere seine Bedingungen. Ich stimme der elektronischen Signatur zu, gültig gemäß der eIDAS-Verordnung (EU) 910/2014. Diese Unterschrift hat denselben rechtlichen Wert wie eine handschriftliche.',
+    consentCgv: ' Ich habe die im Vertrag wiedergegebenen Allgemeinen Geschäftsbedingungen des Vermieters gelesen und akzeptiere sie.',
     submitting: 'Wird signiert…',
     submit: 'Vertrag endgültig unterschreiben',
     legalNote: 'Mit Ihrer Unterschrift bestätigen Sie Ihre Identität über Ihre E-Mail-Adresse. Ihre IP-Adresse, der Zeitstempel und Ihre Browser-Merkmale werden zu Beweiszwecken gespeichert (eIDAS-Audit-Trail). Diese Daten werden 5 Jahre aufbewahrt.',
@@ -144,7 +151,7 @@ const SIGN_T: Record<SLang, Record<string, string>> = {
   },
 }
 
-export default function SignaturePage({ token, locataireName }: Props) {
+export default function SignaturePage({ token, locataireName, withCgv = false }: Props) {
   const router = useRouter()
   // Langue de l'interface de signature (auto-détectée, modifiable)
   const [slang, setSlang] = useState<SLang>('fr')
@@ -418,7 +425,7 @@ export default function SignaturePage({ token, locataireName }: Props) {
           style={consentCheckbox}
         />
         <span style={consentText}>
-          {t.consentPrefix} <strong style={{ color: '#f0ebe1' }}>{locataireName}</strong>{t.consentBody}
+          {t.consentPrefix} <strong style={{ color: '#f0ebe1' }}>{locataireName}</strong>{t.consentBody}{withCgv ? t.consentCgv : ''}
         </span>
       </label>
 

@@ -17,6 +17,8 @@ export const CONTRACT_EMAIL_I18N: Record<EmailLang, {
   invitePreview: (host: string, property: string) => string
   inviteGreeting: (guest: string) => string
   inviteBody: (host: string) => string
+  /** Le contrat reproduit les CGV du bailleur (contracts.details.cgv) */
+  inviteCgv: string
   labelLogement: string
   labelAdresse: string
   labelArrivee: string
@@ -69,6 +71,7 @@ export const CONTRACT_EMAIL_I18N: Record<EmailLang, {
     invitePreview: (host, property) => `${host} vous invite à signer votre contrat pour ${property}.`,
     inviteGreeting: guest => `Bonjour <strong style="color:#e8ede8;">${guest}</strong>,`,
     inviteBody: host => `<strong style="color:#e8ede8;">${host}</strong> vous invite à lire et signer votre contrat de location.`,
+    inviteCgv: 'Les conditions générales de vente du propriétaire sont jointes au contrat : en le signant, vous les acceptez.',
     labelLogement: 'Logement',
     labelAdresse: 'Adresse',
     labelArrivee: 'Arrivée',
@@ -119,6 +122,7 @@ export const CONTRACT_EMAIL_I18N: Record<EmailLang, {
     invitePreview: (host, property) => `${host} convida-o(a) a assinar o seu contrato para ${property}.`,
     inviteGreeting: guest => `Olá <strong style="color:#e8ede8;">${guest}</strong>,`,
     inviteBody: host => `<strong style="color:#e8ede8;">${host}</strong> convida-o(a) a ler e assinar o seu contrato de arrendamento.`,
+    inviteCgv: 'As condições gerais de venda do proprietário estão anexadas ao contrato: ao assiná-lo, aceita-as.',
     labelLogement: 'Alojamento',
     labelAdresse: 'Endereço',
     labelArrivee: 'Chegada',

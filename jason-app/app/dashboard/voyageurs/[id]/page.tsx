@@ -30,11 +30,12 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
       .eq('user_id', profile.userId)
       .order('date_arrivee', { ascending: false }),
     getAuthIdentity(),
-    supabase
-      .from('profiles')
-      .select('iban, bic, adresse, stripe_account_id, stripe_onboarding_complete')
-      .eq('id', profile.userId)
-      .single(),
+    // CGV (migration 181) : repli sans elles si elle n'est pas encore appliquée
+    (async () => {
+      const full = await supabase.from('profiles').select('iban, bic, adresse, stripe_account_id, stripe_onboarding_complete, cgv').eq('id', profile.userId).single()
+      if (!full.error) return full
+      return supabase.from('profiles').select('iban, bic, adresse, stripe_account_id, stripe_onboarding_complete').eq('id', profile.userId).single()
+    })(),
     // Réglages du contrat (migration 118) : repli sans eux si elle n'est pas appliquée
     (async () => {
       const base = 'id, nom, adresse, telephone, description, description_pt, description_en, capacite_max, heure_arrivee, heure_depart, reglement_interieur, conditions_annulation, conditions_annulation_pt, conditions_annulation_en, reglement_interieur_pt, reglement_interieur_en, animaux_acceptes, fumeur_accepte, methodes_paiement, pays, numero_al, proprietaire_nom, proprietaire_email, proprietaire_telephone, frais_menage, caution, type_logement, surface_m2, nb_chambres, nb_lits, nb_sdb, equipements, classement_etoiles, numero_enregistrement'
@@ -86,6 +87,7 @@ export default async function VoyageurPage({ params }: { params: Promise<{ id: s
     bic:         profileData?.bic ?? null,
     adresse:     profileData?.adresse ?? null,
     stripeReady: !!(profileData?.stripe_account_id && profileData?.stripe_onboarding_complete),
+    cgv:         ((profileData as { cgv?: string | null } | null)?.cgv ?? null),
   }
 
   return (

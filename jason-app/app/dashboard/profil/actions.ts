@@ -281,3 +281,22 @@ export async function setNewsletterSubscription(on: boolean): Promise<{ status?:
     return { error: 'Ton choix n’a pas pu être enregistré. Réessaie dans un instant.' }
   }
 }
+
+
+// ─── Conditions générales de vente (10/11/2026) ─────────────────────────
+// Jointes aux contrats au choix de l'hôte (assistant de contrat), figées dans
+// contracts.details.cgv à l'envoi ; la signature du contrat vaut acceptation.
+export async function saveCgv(texte: string): Promise<{ error?: string }> {
+  const { cleanCgv, CGV_MAX } = await import('@/lib/contracts/details')
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Non authentifié' }
+  if (String(texte ?? '').length > CGV_MAX + 2000) return { error: `Texte trop long (${CGV_MAX.toLocaleString('fr-FR')} caractères au plus)` }
+  const { error } = await supabase.from('profiles').update({ cgv: cleanCgv(texte) }).eq('id', user.id)
+  if (error) {
+    if (/cgv/.test(error.message)) return { error: 'Les CGV arrivent dans quelques minutes (mise à jour en cours). Réessaie un peu plus tard.' }
+    return { error: error.message }
+  }
+  revalidatePath('/dashboard/profil')
+  return {}
+}

@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   buildEtatDescriptif, etatDescriptifLines, regimeText, bailleurCancelText, arriveeText, priceLines, contratOptions, EXTRA_UI,
+  soldeDelai, soldeHint, soldeQuand, soldeDelaiLabel, cleanCgv, cgvClause, CGV_MAX,
 } from './details'
 
 const fmt = (n: number) => `${n} €`
@@ -26,7 +27,7 @@ describe('état descriptif', () => {
 
 describe('règles juridiques', () => {
   it('arrhes par défaut, acompte sur demande', () => {
-    expect(contratOptions(null)).toEqual({ regime: 'arrhes', delai_caution_jours: 7, charges_incluses: true, arrivee_autonome: false })
+    expect(contratOptions(null)).toEqual({ regime: 'arrhes', delai_caution_jours: 7, charges_incluses: true, arrivee_autonome: false, solde_avant_heures: 0 })
     expect(contratOptions({ regime: 'acompte', delai_caution_jours: 200 }).delai_caution_jours).toBe(7)
     expect(regimeText('arrhes', 'fr', 'FR')).toContain('L214-1')
     expect(regimeText('acompte', 'fr', 'FR')).toContain('acompte')
@@ -69,5 +70,39 @@ describe('textes', () => {
       EXTRA_UI[l].cautionText('300 €', 7),
     ]).join(' ')
     expect(all).not.toContain('—')
+  })
+})
+
+describe('échéance du solde', () => {
+  it('garde seulement les échéances proposées, à l’arrivée sinon', () => {
+    expect(soldeDelai(72)).toBe(72)
+    expect(soldeDelai('168')).toBe(168)
+    expect(soldeDelai(50)).toBe(0)
+    expect(soldeDelai(undefined)).toBe(0)
+    expect(contratOptions({ solde_avant_heures: 72 }).solde_avant_heures).toBe(72)
+    expect(contratOptions({}).solde_avant_heures).toBe(0)
+  })
+  it('libellés en heures puis en jours, dans les 3 langues', () => {
+    expect(soldeHint('fr', 0)).toBe("à régler à l'arrivée")
+    expect(soldeHint('fr', 72)).toBe("à régler 72 h avant l'arrivée")
+    expect(soldeHint('fr', 168)).toBe("à régler 7 jours avant l'arrivée")
+    expect(soldeHint('en', 48)).toBe('to be paid 48 hours before arrival')
+    expect(soldeHint('pt', 720)).toBe('a pagar 30 dias antes da chegada')
+    expect(soldeQuand('fr', 0)).toBe('à votre arrivée')
+    expect(soldeQuand('fr', 72)).toBe('72 h avant votre arrivée')
+    expect(soldeDelaiLabel(336)).toBe("14 jours avant l'arrivée")
+  })
+})
+
+describe('conditions générales de vente', () => {
+  it('nettoie le texte collé et le borne', () => {
+    expect(cleanCgv('  \r\n ')).toBeNull()
+    expect(cleanCgv('Art. 1\r\n\r\n\r\n\r\nArt. 2')).toBe('Art. 1\n\nArt. 2')
+    expect(cleanCgv('x'.repeat(CGV_MAX + 50))?.length).toBe(CGV_MAX)
+  })
+  it('la signature vaut acceptation, dans chaque langue', () => {
+    expect(cgvClause('fr').text).toMatch(/En signant le contrat, le locataire reconnaît/)
+    expect(cgvClause('pt').title).toBe('Condições gerais de venda')
+    expect(cgvClause('en').text).toMatch(/By signing the contract/)
   })
 })

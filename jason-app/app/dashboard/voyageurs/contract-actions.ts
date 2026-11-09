@@ -2,7 +2,7 @@
 
 import { hasStandardAccess, CONTRACTS_STANDARD_ONLY_MESSAGE } from '@/lib/plans/access'
 import { revalidatePath } from 'next/cache'
-import { buildEtatDescriptif, type ContractDetails, type LogementForContract } from '@/lib/contracts/details'
+import { buildEtatDescriptif, cleanCgv, soldeDelai, type ContractDetails, type LogementForContract } from '@/lib/contracts/details'
 import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { buildEmail, emailBtn, emailInfoBlock, emailNote, emailP, escHtml } from '@/lib/email/template'
@@ -116,6 +116,12 @@ export async function createContract(data: ContractData): Promise<{
   // État descriptif des lieux (Code du tourisme L324-2) : repris de la fiche
   // logement au moment de la création, figé sur le contrat.
   let details: ContractDetails | undefined = data.details
+  // Échéance du solde et CGV (10/11/2026) : valeurs bornées, CGV figées telles que signées
+  if (details) {
+    const cgv = cleanCgv(details.cgv)
+    details = { ...details, solde_avant_heures: soldeDelai(details.solde_avant_heures), cgv: cgv ?? undefined }
+    if (!cgv) delete details.cgv
+  }
   if (data.logement_id) {
     const { data: lg } = await supabase.from('logements')
       .select('type_logement, surface_m2, nb_chambres, nb_lits, nb_sdb, equipements, classement_etoiles, numero_enregistrement, numero_al, pays')
@@ -165,6 +171,7 @@ export async function createContract(data: ContractData): Promise<{
         body: `
           ${emailP(et.inviteGreeting(escHtml(guestName)))}
           ${emailP(et.inviteBody(escHtml(hostName)))}
+          ${details?.cgv ? emailP(et.inviteCgv) : ''}
           ${emailInfoBlock([
             { label: et.labelLogement, value: escHtml(propertyLabel) },
             ...(data.logement_nom ? [{ label: et.labelAdresse, value: escHtml(data.logement_adresse) }] : []),
