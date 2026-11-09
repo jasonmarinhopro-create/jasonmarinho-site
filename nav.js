@@ -521,6 +521,12 @@
       ':where(nav#nav.nv-light)~.mob-menu .mc-c i{color:var(--y)!important}',
 
       /* Responsive */
+      /* Proposition A (10/11/2026, Jason : « grossir un peu la barre, moins de vide entre les extrémités ») :
+         ordinateur seulement, la barre mobile ne change pas */
+      '@media(min-width:961px){nav#nav{height:64px;max-width:1180px;border-radius:20px;padding:0 10px 0 22px}.n-logo-mk{width:36px;height:36px}}',
+      '@media(min-width:1180px){.n-link,.n-btn{font-size:15px;padding:8px 13px}.n-brand{font-size:17.5px}}',
+      /* Écrans étroits d'ordinateur : la barre débordait déjà à 980 px (bouton « Commencer » coupé) */
+      '@media(min-width:961px) and (max-width:1099px){.n-links{gap:0}.n-link,.n-btn{padding:6px 8px}}',
       '@media(max-width:960px){.n-links,.n-right .nb-c,.n-right .nb-o{display:none}.hbg{display:flex}.n-right{margin-left:auto;margin-right:2px}}'
     ].join('');
     document.head.appendChild(style);
