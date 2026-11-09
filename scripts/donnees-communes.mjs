@@ -140,3 +140,18 @@ if (mode === 'logement-structure') {
   }
   for (const c of pq.cols) if (!/OBS_VALUE|^GEO$/.test(c)) console.log(`  ${c} : ${[...vals[c]].join(' | ')}`)
 }
+
+// API Melodi (données filtrées, sans gros fichier) : dimensions puis un exemple
+if (mode === 'logement-api') {
+  const r = await get('https://api.insee.fr/melodi/range/DS_RP_LOGEMENT_PRINC')
+  console.log('range :', r.status)
+  try {
+    const j = JSON.parse(r.body)
+    for (const d of (j.range ?? j)) console.log(`  ${d.id ?? d.code} : ${(d.values ?? []).slice(0, 40).map(v => `${v.code ?? v.id}=${(v.label?.[0]?.content ?? v.label ?? '').toString().slice(0, 40)}`).join(' | ')}`)
+  } catch { console.log(String(r.body).slice(0, 3000)) }
+  for (const q of ['GEO=COM-42187', 'GEO=2025-COM-42187', 'GEO=COM-42187&OCS=DW_SEC']) {
+    const d = await get(`https://api.insee.fr/melodi/data/DS_RP_LOGEMENT_PRINC?${q}&maxResult=40`)
+    console.log(`\n== data ${q} : ${d.status}`)
+    console.log(String(d.body).slice(0, 2500))
+  }
+}
