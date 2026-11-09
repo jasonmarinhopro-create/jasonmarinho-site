@@ -67,3 +67,52 @@ if (mode === 'structure') {
     for (const c of pq.cols) if (!/OBS_VALUE|GEO$/.test(c)) console.log(`  ${c} : ${[...vals[c].keys()].slice(0, 60).join(' | ')}`)
   }
 }
+
+// ── Relevé (10/11/2026) ───────────────────────────────────────────────
+// Par commune, département et région : [population, hôtels, chambres d'hôtel,
+// campings, emplacements, autres hébergements collectifs, lits de ces autres].
+// Insee DS_TOUR_CAP : ACTIVITY I551 hôtels (PLACE = chambres), I553 campings
+// (PLACE = emplacements), I552 autres hébergements collectifs (BEDPLACE = lits) ;
+// UNIT_LOC = nombre d'établissements ; L_STAY et UNIT_LOC_RANKING au total (_T).
+if (mode === 'relever') {
+  const { writeFileSync } = await import('node:fs')
+  const cat = JSON.parse((await get('https://api.insee.fr/melodi/catalog/DS_TOUR_CAP')).body)
+  const pq = await parquet(cat.accessURLParquet)
+  const out = { COM: {}, DEP: {}, REG: {} }
+  const slot = { 'I551|UNIT_LOC': 1, 'I551|PLACE': 2, 'I553|UNIT_LOC': 3, 'I553|PLACE': 4, 'I552|UNIT_LOC': 5, 'I552|BEDPLACE': 6 }
+  let annee = null
+  for await (const r of pq.rows()) {
+    if (!out[r.GEO_OBJECT] || r.L_STAY !== '_T' || r.UNIT_LOC_RANKING !== '_T') continue
+    const i = slot[`${r.ACTIVITY}|${r.TOUR_MEASURE}`]
+    if (!i) continue
+    const a = (out[r.GEO_OBJECT][r.GEO] ||= [0, 0, 0, 0, 0, 0, 0])
+    a[i] = Number(r.OBS_VALUE) || 0
+    annee ||= String(r.TIME_PERIOD instanceof Date ? r.TIME_PERIOD.toISOString() : r.TIME_PERIOD).slice(0, 4)
+  }
+  console.log('tourisme :', Object.keys(out.COM).length, 'communes,', Object.keys(out.DEP).length, 'départements,', Object.keys(out.REG).length, 'régions, année', annee)
+  // Population légale (geo.api.gouv.fr, Insee)
+  const g = await get('https://geo.api.gouv.fr/communes?fields=code,population,codeDepartement,codeRegion&format=json')
+  const communes = JSON.parse(g.body)
+  let nPop = 0
+  for (const c of communes) {
+    if (!c.population) continue
+    nPop++
+    ;(out.COM[c.code] ||= [0, 0, 0, 0, 0, 0, 0])[0] = c.population
+    if (c.codeDepartement) (out.DEP[c.codeDepartement] ||= [0, 0, 0, 0, 0, 0, 0])[0] += c.population
+    if (c.codeRegion) (out.REG[c.codeRegion] ||= [0, 0, 0, 0, 0, 0, 0])[0] += c.population
+  }
+  console.log('population :', nPop, 'communes')
+  if (Object.keys(out.COM).length < 30000 || nPop < 30000) { console.log('::error::relevé incomplet, fichier non écrit'); process.exit(1) }
+  // Communes sans hôtel ni camping ni population : inutile de les garder
+  for (const k of Object.keys(out.COM)) if (out.COM[k].every(x => !x)) delete out.COM[k]
+  writeFileSync('scripts/data/communes-donnees.json', JSON.stringify({
+    releve: new Date().toISOString().slice(0, 10), tourismeAnnee: annee,
+    sources: { tourisme: 'https://www.insee.fr/fr/statistiques/2021703', population: 'https://geo.api.gouv.fr' },
+    champs: ['population', 'hotels', 'chambres', 'campings', 'emplacements', 'autres', 'lits_autres'], ...out,
+  }))
+  // Exploration du fichier logements (résidences secondaires) pour la suite
+  const cl = JSON.parse((await get('https://api.insee.fr/melodi/catalog/DS_RP_LOGEMENT_PRINC')).body)
+  console.log('\nlogement, champs du catalogue :', Object.entries(cl).filter(([k, v]) => /url|access|distribution/i.test(k)).map(([k, v]) => `${k}=${JSON.stringify(v).slice(0, 300)}`).join('\n'))
+  const h = await get(cl.accessURLParquet, 'buf')
+  console.log('logement : HTTP', h.status, h.ct, 'taille', h.body?.length, 'début', h.body?.subarray?.(0, 8)?.toString('hex'), 'fin', h.body?.subarray?.(-8)?.toString('hex'))
+}
