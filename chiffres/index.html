@@ -370,11 +370,11 @@ a.dm-city:hover{border-color:var(--g)}
       <p>Tape le nom de ta ville : tu vois tout ce que Google montre pour ses pages (photographes, ménage, guide des hôtes), même quand les chiffres sont petits. Rien n’est caché ni arrondi.</p>
     </div>
     <form class="vs" data-vs role="search" autocomplete="off">
-      <div class="vs-in"><i class="ph-bold ph-magnifying-glass"></i><input type="text" name="ville" list="villes-list" data-suggest="ville" data-suggest-anchor=".vs-in" data-suggest-submit maxlength="60" placeholder="Ex. Lyon, Annecy, Biarritz…" aria-label="Nom de ta ville" required></div>
+      <div class="vs-in"><i class="ph-bold ph-magnifying-glass"></i><input type="text" name="ville" list="villes-list" data-suggest="ville" data-suggest-anchor=".vs-in" data-suggest-submit maxlength="60" placeholder="Ex. Lyon, Gironde, Bretagne…" aria-label="Ta ville, ton département ou ta région" required></div>
       <button type="submit"><i class="ph-bold ph-chart-line-up"></i>Voir les chiffres</button>
     </form>
     <datalist id="villes-list"></datalist>
-    <p class="vs-hint"><span data-vcount>62</span> villes ont déjà leurs pages<span data-vintl></span>. La tienne n’y est pas ? Tu pourras me demander de la créer.</p>
+    <p class="vs-hint"><span data-vcount>62</span> villes ont déjà leurs pages<span data-vintl></span>. La tienne n’y est pas ? Tu pourras me demander de la créer. Tu peux aussi chercher ton département ou ta région.</p>
     <div class="vs-picks" data-picks></div>
     <div class="vr" data-vres aria-live="polite"></div>
   </div>
@@ -888,11 +888,11 @@ a.dm-city:hover{border-color:var(--g)}
   }
   // Villes hors de France avec une seule page (17/10/2026 : Québec, photographes et vidéastes)
   var INTL = [{ key: 'quebec', label: 'Québec', href: '/photographe-lcd-quebec', what: 'photographes et vidéastes' }];
-  function renderRequest(q, fromCity){
+  function renderRequest(q, fromCity, before){
     var sug = fromCity ? [] : suggestions(q);
     var tq = normT(q).replace(/^ville de /, '');
     var intl = fromCity ? null : INTL.filter(function(v){ return tq === v.key || tq.indexOf(v.key + ' ') === 0; })[0];
-    vres.innerHTML = (intl ? '<div class="vf" style="margin-bottom:14px"><h3>' + esc(intl.label) + ' a sa page ' + esc(intl.what) + '</h3><p>Ouverte en octobre 2026 : ses chiffres Google apparaîtront ici quand elle aura quelques semaines. Les pages ménage et hôtes ne sont pas encore ouvertes : tu peux les demander ci-dessous.</p><p><a href="' + intl.href + '" style="color:#004C3F;font-weight:600">Voir la page ' + esc(intl.what) + ' à ' + esc(intl.label) + ' →</a></p></div>' : '') +
+    vres.innerHTML = (before || '') + (intl ? '<div class="vf" style="margin-bottom:14px"><h3>' + esc(intl.label) + ' a sa page ' + esc(intl.what) + '</h3><p>Ouverte en octobre 2026 : ses chiffres Google apparaîtront ici quand elle aura quelques semaines. Les pages ménage et hôtes ne sont pas encore ouvertes : tu peux les demander ci-dessous.</p><p><a href="' + intl.href + '" style="color:#004C3F;font-weight:600">Voir la page ' + esc(intl.what) + ' à ' + esc(intl.label) + ' →</a></p></div>' : '') +
       '<div class="vf"><h3>' + (fromCity ? 'Une autre page pour ' + esc(q) + ' ?' : 'Pas encore de page pour « ' + esc(q) + ' »') + '</h3>' +
       '<p>Les pages existent pour ' + (VILLES.filter(function(v){ return !v.pays; }).length || 62) + ' villes. Je peux créer celle de ta ville : photographes, ménage et guide pour les hôtes. Dis-moi juste qui tu es.</p>' +
       (sug.length ? '<div class="vf-sug">Tu cherchais peut-être : ' + sug.map(function(v){ return '<button type="button" data-pick="' + esc(v.label) + '">' + esc(v.label) + '</button>'; }).join('') + '</div>' : '') +
@@ -911,6 +911,19 @@ a.dm-city:hover{border-color:var(--g)}
       '</form></div>';
     setUrl(null);
   }
+  // Commune sans page, code postal, département ou région (09/11/2026) : les
+  // villes du site de la zone, cliquables, avec leurs pros en ligne
+  function renderZone(q, z){
+    var titre, intro;
+    if (z.via === 'region') { titre = esc(z.regionNom); intro = z.villes.length + ' ville' + (z.villes.length > 1 ? 's ont' : ' a') + ' déjà leurs pages dans la région.'; }
+    else if (z.via === 'departement') { titre = esc(z.departementNom) + ' <small style="font-size:14px;color:var(--tl)">' + esc(z.regionNom) + '</small>'; intro = z.portee === 'departement' ? z.villes.length + ' ville' + (z.villes.length > 1 ? 's du département ont' : ' du département a') + ' déjà leurs pages.' : 'Aucune ville du département n’a encore ses pages. Les plus proches, en ' + esc(z.regionNom) + ' :'; }
+    else { titre = 'Près de « ' + esc(q) + ' »'; intro = (z.portee === 'departement' ? 'Dans ton département (' + esc(z.departementNom) + '), ' : 'Dans ta région (' + esc(z.regionNom) + '), ') + z.villes.length + ' ville' + (z.villes.length > 1 ? 's ont' : ' a') + ' déjà leurs pages.'; }
+    var html = '<div class="vf" style="margin-bottom:14px"><h3>' + titre + '</h3><p>' + intro + (z.pros > 0 ? ' <strong>' + z.pros + ' pro' + (z.pros > 1 ? 's' : '') + '</strong> en ligne dans ces villes.' : '') + '</p>' +
+      (z.villes.length ? '<div class="vf-sug">' + z.villes.map(function(v){ return '<button type="button" data-pick="' + esc(v.label) + '">' + esc(v.label) + (v.pros ? ' · ' + v.pros + ' pro' + (v.pros > 1 ? 's' : '') : '') + '</button>'; }).join('') + '</div>' : '') +
+      '</div>';
+    if (z.via === 'commune' || z.via === 'code-postal') renderRequest(q, false, html);
+    else { vres.innerHTML = html; setUrl(null); }
+  }
   function searchCity(q, scroll){
     q = String(q || '').trim().slice(0, 60);
     if (!q || !vres) return;
@@ -920,6 +933,7 @@ a.dm-city:hover{border-color:var(--g)}
     fetch(API + '?ville=' + encodeURIComponent(q)).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){
       if (d.found && d.city) renderCity(d);
       else if (d.found) vres.innerHTML = '<p class="empty">Les chiffres de cette ville ne sont pas disponibles pour le moment. Réessaie dans quelques minutes.</p>';
+      else if (d.zone) renderZone(q, d.zone);
       else renderRequest(q);
     }).catch(function(){ vres.innerHTML = '<p class="empty">Chiffres indisponibles pour le moment. Réessaie dans quelques minutes.</p>'; });
   }

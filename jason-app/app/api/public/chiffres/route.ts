@@ -9,6 +9,7 @@ import { loadPublicDemandes } from '@/lib/public-stats/demandes-load'
 import { demandesOfCity } from '@/lib/public-stats/demandes'
 import { isProCityPage } from '@/lib/public-stats/rules'
 import { anyCitySlugOf } from '@/lib/visibility/city-page'
+import { zoneDeRecherche } from '@/lib/public-stats/zone'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -73,6 +74,8 @@ export async function GET(req: Request) {
         period: s.google ? { start: s.google.start, end: s.google.end } : null,
         city,
         demandes: demandes && slug ? demandesOfCity(demandes, slug) : null,
+        // Commune sans page, code postal, département ou région (09/11/2026)
+        zone: slug ? null : zoneDeRecherche(ville.slice(0, 80), s.cityFull),
       }, { headers: headers(origin) })
     }
     const { cityFull: _full, ...rest } = s
