@@ -9,6 +9,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { villesRegistre } from './registre-geo.mjs'
+import { departements, regions } from './secteur.mjs'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -65,13 +66,13 @@ export const PANELS = [
     kind: 'hote', all: ['/villes', n => `Les ${n} guides hôte par ville`] },
   { key: 'photographes', tab: 'Photographes & vidéastes', titre: 'Trouver un photographe <em>près de chez toi</em>',
     hint: 'Des photographes et vidéastes qui connaissent la location courte durée : tarifs locaux, conseils pour ton annonce, demande de devis gratuite.',
-    kind: 'photographe', all: ['/annuaires/photographes#villes', n => `Les ${n} villes et l’annuaire des photographes`] },
+    kind: 'photographe', all: ['/annuaires/photographes', () => 'Tout l’annuaire des photographes'], az: ['/annuaires/photographes#toutes-villes', n => `Les ${n} villes, de A à Z`] },
   { key: 'menage', tab: 'Ménage', titre: 'Trouver une équipe de ménage <em>près de chez toi</em>',
     hint: 'Des équipes habituées aux rotations entre deux voyageurs : tarifs locaux, checklist et demande de devis gratuite.',
-    kind: 'menage', all: ['/annuaires/menage#villes', n => `Les ${n} villes et l’annuaire du ménage`] },
+    kind: 'menage', all: ['/annuaires/menage', () => 'Tout l’annuaire du ménage'], az: ['/annuaires/menage#toutes-villes', n => `Les ${n} villes, de A à Z`] },
   { key: 'depannage', tab: 'Dépannage', titre: 'Trouver un artisan <em>près de chez toi</em>',
     hint: 'Plombier, électricien, serrurier : des pros qui interviennent entre deux voyageurs, et les bons réflexes avant d’appeler.',
-    kind: 'depannage', all: ['/annuaires/depannage#villes', n => `Les ${n} villes et l’annuaire du dépannage`] },
+    kind: 'depannage', all: ['/annuaires/depannage', () => 'Tout l’annuaire du dépannage'], az: ['/annuaires/depannage#toutes-villes', n => `Les ${n} villes, de A à Z`] },
   { key: 'outils', tab: 'Comparatifs outils', titre: 'Bien choisir <em>tes outils</em>',
     hint: 'Logiciels, serrures, tarification, comptabilité : des comparatifs avec les prix, les forces et les limites de chaque outil.',
     liens: COMPARATIFS, all: ['/partenaires', () => 'Tous les partenaires'] },
@@ -98,7 +99,7 @@ const chip = (href, label, current) => current === href
 // footer.js), 18 au plus par ligne. La liste complète est sur la page mère.
 export const PAR_LIGNE = 18
 let _ann = null
-const annonces = slug => {
+export const annonces = slug => {
   if (!_ann) {
     const s = fs.readFileSync(path.join(ROOT, 'footer.js'), 'utf8')
     const open = s.indexOf('[', s.indexOf('var CITIES = ['))
@@ -122,51 +123,78 @@ export function cheminRegion(kind, regionNom) {
   return fs.existsSync(path.join(ROOT, url.slice(1), 'index.html')) ? url : null
 }
 
-/** Lignes d'un onglet : [titre, [[lien, nom], …]] */
+/**
+ * Liens géographiques d'un type de page (10/11/2026), communs au pied de page
+ * et aux pages mères des annuaires : villes de France (plus grands marchés
+ * d'abord), départements (ceux qui ont des villes d'abord, puis les autres),
+ * régions (ordre alphabétique) et villes hors de France. Chaque lien :
+ * [adresse, nom, slug de la ville]. Une zone n'apparaît que si sa page existe.
+ */
+export function zonesLiens(kind) {
+  const villes = villesRegistre().filter(v => v.pages[kind])
+  const fr = villes.filter(v => v.pays === 'FR').sort(parTaille).map(v => [v.pages[kind], v.nom, v.slug])
+  const etranger = villes.filter(v => v.pays !== 'FR').map(v => [v.pages[kind], v.nom, v.slug])
+  const regs = regions().map(r => [cheminRegion(kind, r.nom), r.nom]).filter(([h]) => h).sort((a, b) => a[1].localeCompare(b[1], 'fr'))
+  // Poids d'un département : annonces de ses villes (+1 par ville, pour passer
+  // devant les départements sans ville même quand les annonces manquent)
+  const poids = new Map()
+  for (const v of villes.filter(x => x.departement)) poids.set(v.departement.code, (poids.get(v.departement.code) ?? 0) + annonces(v.slug) + 1)
+  const deps = []
+  for (const r of regions()) {
+    const base = cheminRegion(kind, r.nom)
+    if (!base) continue
+    for (const d of departements().filter(x => r.deps.includes(x.code))) {
+      const u = `${base}/${slugZone(d.nom)}`
+      if (fs.existsSync(path.join(ROOT, u.slice(1), 'index.html'))) deps.push([u, d.nom, poids.get(d.code) ?? 0])
+    }
+  }
+  deps.sort((a, b) => b[2] - a[2] || a[1].localeCompare(b[1], 'fr'))
+  return { villes: fr, regions: regs, departements: deps.map(([u, n]) => [u, n]), etranger }
+}
+
+/** Lignes d'un onglet : [titre, [[lien, nom], …], nom du reste (« villes »…)] */
 function lignes(panel) {
   if (panel.liens) {
     return [
-      ['Comparatifs', panel.liens.filter(([h]) => !h.startsWith('/partenaires/'))],
-      ['Partenaires', panel.liens.filter(([h]) => h.startsWith('/partenaires/'))],
+      ['Comparatifs', panel.liens.filter(([h]) => !h.startsWith('/partenaires/')), 'comparatifs'],
+      ['Partenaires', panel.liens.filter(([h]) => h.startsWith('/partenaires/')), 'partenaires'],
     ]
   }
-  const villes = villesRegistre().filter(v => v.pages[panel.kind])
-  if (panel.kind === 'revenus') {
-    return [
-      ['En France', villes.filter(v => v.pays === 'FR').sort(parTaille).slice(0, PAR_LIGNE).map(v => [v.pages.revenus, v.nom])],
-      ['En Europe', villes.filter(v => v.pays !== 'FR').slice(0, PAR_LIGNE).map(v => [v.pages.revenus, v.nom])],
-    ]
-  }
-  const rows = [['Par ville', villes.filter(v => v.pays === 'FR').sort(parTaille).slice(0, PAR_LIGNE).map(v => [v.pages[panel.kind], v.nom])]]
-  const regions = [...new Map(villes.filter(v => v.region).map(v => [v.region.code, v.region.nom])).values()]
-    .sort((a, b) => a.localeCompare(b, 'fr'))
-    .map(nom => [cheminRegion(panel.kind, nom), nom]).filter(([h]) => h)
-  if (regions.length) rows.push(['Par région', regions])
-  // Par département (09/11/2026) : les plus grands marchés, quand leur page existe
-  const depAnn = new Map()
-  for (const v of villes.filter(x => x.departement && x.region)) {
-    const k = v.departement.code
-    const cur = depAnn.get(k) ?? { nom: v.departement.nom, region: v.region.nom, ann: 0 }
-    cur.ann += annonces(v.slug)
-    depAnn.set(k, cur)
-  }
-  const depLinks = [...depAnn.values()].sort((a, b) => b.ann - a.ann || a.nom.localeCompare(b.nom, 'fr'))
-    .map(d => { const r = cheminRegion(panel.kind, d.region); const u = r && `${r}/${slugZone(d.nom)}`; return u && fs.existsSync(path.join(ROOT, u.slice(1), 'index.html')) ? [u, d.nom] : null })
-    .filter(Boolean).slice(0, PAR_LIGNE)
-  if (depLinks.length) rows.push(['Par département', depLinks])
-  const etranger = villes.filter(v => v.pays !== 'FR').map(v => [v.pages[panel.kind], v.nom])
-  if (etranger.length) rows.push(['Hors de France', etranger])
-  return rows.filter(([, xs]) => xs.length)
+  const z = zonesLiens(panel.kind)
+  if (panel.kind === 'revenus') return [['En France', z.villes, 'villes'], ['En Europe', z.etranger, 'villes']].filter(([, xs]) => xs.length)
+  return [
+    ['Par ville', z.villes, 'villes'],
+    ['Par département', z.departements, 'départements'],
+    ['Par région', z.regions, 'régions'],
+    ['Hors de France', z.etranger, 'villes'],
+  ].filter(([, xs]) => xs.length)
+}
+
+/**
+ * Puces d'une ligne : les PAR_LIGNE premières visibles, le reste replié dans
+ * un <details> (dans le HTML, donc lu par Google ; ouvert si la page en cours
+ * s'y trouve). Même principe que les sites qui listent des centaines de villes.
+ */
+export function chipsRepliables(xs, reste, current, { cls = 'ft-chips', more = 'ft-more', max = PAR_LIGNE } = {}) {
+  const c = ([h, l]) => chip(h, l, current)
+  const vis = xs.slice(0, max), hid = xs.slice(max)
+  if (!hid.length) return `<div class="${cls}">${vis.map(c).join('')}</div>`
+  const open = hid.some(([h]) => h === current) ? ' open' : ''
+  return `<div class="${cls}">${vis.map(c).join('')}</div>`
+    + `<details class="${more}"${open}><summary><span class="${more}-o">Voir ${hid.length} autre${hid.length > 1 ? 's' : ''} ${esc(reste)} +</span><span class="${more}-c">Réduire −</span></summary>`
+    + `<div class="${cls}">${hid.map(c).join('')}</div></details>`
 }
 
 function panelHtml(panel, on, current) {
   const total = panel.liens ? panel.liens.length : villesRegistre().filter(v => v.pages[panel.kind]).length
-  const rows = lignes(panel).map(([t, xs]) =>
-    `<div class="ft-row"><p class="ft-row-t">${esc(t)}</p><div class="ft-chips">${xs.map(([h, l]) => chip(h, l, current)).join('')}</div></div>`,
+  const rows = lignes(panel).map(([t, xs, reste]) =>
+    `<div class="ft-row"><p class="ft-row-t">${esc(t)}</p><div>${chipsRepliables(xs, reste, current)}</div></div>`,
   ).join('')
   return `<div class="ft-panel${on ? ' on' : ''}" data-panel="${panel.key}" role="tabpanel">`
     + `<p class="ft-panel-hint">${esc(panel.hint)}</p><div class="ft-rows">${rows}</div>`
-    + `<a href="${panel.all[0]}" class="ft-see-all">${esc(panel.all[1](total))} <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>`
+    + `<div class="ft-see-row"><a href="${panel.all[0]}" class="ft-see-all">${esc(panel.all[1](total))} <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>`
+    + (panel.az ? `<a href="${panel.az[0]}" class="ft-see-all">${esc(panel.az[1](total))} <i class="ph-bold ph-arrow-right" style="font-size:11px"></i></a>` : '')
+    + '</div>'
     + `</div>`
 }
 

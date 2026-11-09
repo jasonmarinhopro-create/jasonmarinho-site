@@ -9,8 +9,9 @@
 
 import fs from 'node:fs'
 import { villePageSlug, villeLabel } from './inject-ville-pros.mjs'
-import { groupesVilles } from './villes-hub.mjs'
-import { cheminRegion } from './footer-html.mjs'
+import { zonesLiens, chipsRepliables } from './footer-html.mjs'
+import { villesRegistre } from './registre-geo.mjs'
+import { PHOTOS_VILLES } from '../data/photos-villes.mjs'
 
 const esc = s => s == null ? '' : String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
 
@@ -323,38 +324,93 @@ export function faqJsonLd(cfg) {
 }
 
 /**
- * Guides par ville, rangés par région (09/11/2026) : la page de l'annuaire
- * porte la liste complète des villes, le pied de page n'en montre plus
- * qu'une sélection. Dans chaque région, les villes où il y a des pros en
- * tête, avec leur nombre. Villes lues dans le registre géographique
- * (Québec compris pour les photographes) ; `cities` reste accepté pour
- * compatibilité mais n'est plus lu.
+ * Section « Guide … de ta ville » (10/11/2026, refaite à la demande de Jason :
+ * « plus visuel, une sorte de carrousel mignon ») :
+ * - un carrousel de cartes photo, les villes où il y a des pros en tête, puis
+ *   les plus grands marchés ; photo Pexels vérifiée (scripts/data/photos-villes.mjs)
+ *   ou carte graphique tant qu'il n'y en a pas ;
+ * - puis les zones, comme le pied de page : par région, par département
+ *   (18 visibles, le reste replié), hors de France, et toutes les villes de A à Z
+ *   (repliées, ancre #toutes-villes). Tous les liens restent dans le HTML.
  */
 export function villesGuidesHtml(cfg, cities, counts) {
   const kind = { 'photographe-lcd': 'photographe', 'menage-lcd': 'menage', 'depannage-lcd': 'depannage' }[cfg.prefix]
-  const groupes = kind ? groupesVilles(kind) : []
-  if (!groupes.length) return ''
+  if (!kind) return ''
+  const z = zonesLiens(kind)
+  const reg = new Map(villesRegistre().map(v => [v.slug, v]))
+  const villes = [...z.villes, ...z.etranger].map(([url, nom, slug]) => ({ url, nom, slug, v: reg.get(slug), n: counts.get(slug) ?? 0 }))
+  if (!villes.length) return ''
   const label = cfg.villeLabel ?? (cfg.one === 'photographe' ? 'photographe' : 'ménage')
-  const total = groupes.reduce((n, g) => n + g.villes.length, 0)
-  const html = groupes.map(g => {
-    const sorted = [...g.villes].sort((a, b) => (counts.get(b.slug) ?? 0) - (counts.get(a.slug) ?? 0) || a.nom.localeCompare(b.nom, 'fr'))
-    const chips = sorted.map(v => {
-      const n = counts.get(v.slug) ?? 0
-      return `<a href="${v.pages[kind]}"${n ? ' class="has"' : ''}>${esc(v.nom)}${n ? ` <span>${n} ${n > 1 ? esc(cfg.many) : esc(cfg.one)}</span>` : ''}</a>`
-    }).join('')
-    const regionUrl = g.france ? cheminRegion(kind, g.nom) : null
-    return `<div class="vh-group${g.villes.length > 12 ? ' vh-group-wide' : ''}" id="${g.id}"><h3 class="vh-group-t">${regionUrl ? `<a href="${regionUrl}">${esc(g.nom)} <i class="ph-bold ph-arrow-right"></i></a>` : esc(g.nom)}</h3><div class="villes-chips">${chips}</div></div>`
-  }).join('\n      ')
+  const proLabel = n => `${n} ${n > 1 ? cfg.many : cfg.one}`
+  // Pros d'abord, puis les villes avec photo, puis l'ordre des marchés (tri stable)
+  const ordre = [...villes].sort((a, b) => (b.n - a.n) || ((PHOTOS_VILLES[b.slug] ? 1 : 0) - (PHOTOS_VILLES[a.slug] ? 1 : 0)))
+  const carte = c => {
+    const lieu = c.v?.pays === 'FR' ? c.v?.region?.nom : c.v?.paysNom
+    const media = PHOTOS_VILLES[c.slug]
+      ? `<img src="/img/villes/${c.slug}.webp" alt="${esc(c.nom)}" width="560" height="700" loading="lazy" decoding="async">`
+      : `<span class="vc-ph" aria-hidden="true"><span>${esc(c.nom.charAt(0))}</span></span>`
+    return `<a class="vc-card" href="${c.url}">${media}<span class="vc-shade"></span>`
+      + (c.n ? `<span class="vc-badge"><i class="ph-bold ph-check-circle"></i>${esc(proLabel(c.n))}</span>` : '')
+      + `<span class="vc-txt">${lieu ? `<span class="vc-reg">${esc(lieu)}</span>` : ''}<span class="vc-name">${esc(c.nom)}</span><span class="vc-go">Voir le guide <i class="ph-bold ph-arrow-right"></i></span></span></a>`
+  }
+  const aZ = [...villes].sort((a, b) => a.nom.localeCompare(b.nom, 'fr')).map(c => `<a href="${c.url}"${c.n ? ' class="has"' : ''}>${esc(c.nom)}${c.n ? ` <span>${esc(proLabel(c.n))}</span>` : ''}</a>`).join('')
+  const ligne = (t, xs, reste) => xs.length ? `<div class="vz-row"><p class="vz-t">${t}</p><div>${chipsRepliables(xs, reste, '', { cls: 'villes-chips', more: 'vz-more' })}</div></div>` : ''
+  const avecPros = villes.filter(c => c.n).length
   return `<section class="villes-section" id="villes">
   <div class="villes-in">
-    <h2 class="villes-h">Guide ${label} <em>de ta ville</em></h2>
-    <p class="villes-p">${esc(cfg.villesIntro ?? 'Tarifs constatés, checklist et questions à poser, ville par ville.')} ${total} villes, rangées par région. Les villes en vert ont déjà des ${esc(cfg.many)} dans l’annuaire.</p>
-    <div class="vh-groups">
-      ${html}
+    <div class="vc-head">
+      <div>
+        <h2 class="villes-h">Guide ${label} <em>de ta ville</em></h2>
+        <p class="villes-p">${esc(cfg.villesIntro ?? 'Tarifs constatés, checklist et questions à poser, ville par ville.')} ${villes.length} villes${avecPros ? `, dont ${avecPros} avec des ${esc(cfg.many)} déjà inscrits (en tête)` : ''}.</p>
+      </div>
+      <div class="vc-arrows"><button type="button" class="vc-btn" data-d="-1" aria-label="Villes précédentes" disabled><i class="ph-bold ph-caret-left"></i></button><button type="button" class="vc-btn" data-d="1" aria-label="Villes suivantes"><i class="ph-bold ph-caret-right"></i></button></div>
+    </div>
+    <div class="vc-track" role="list">
+      ${ordre.map(carte).join('\n      ')}
+    </div>
+    <p class="vc-credit">Photos des villes : <a href="https://www.pexels.com/license/" target="_blank" rel="noopener">Pexels</a>, licence gratuite.</p>
+    <div class="vz">
+      ${ligne('Par région', z.regions, 'régions')}
+      ${ligne('Par département', z.departements, 'départements')}
+      ${ligne('Hors de France', z.etranger.map(([u, n]) => [u, n]), 'villes')}
+      <details class="vz-all" id="toutes-villes"><summary><span><i class="ph-bold ph-list-bullets"></i> Toutes les villes, de A à Z <small>${villes.length}</small></span><i class="ph-bold ph-caret-down vz-car"></i></summary><div class="villes-chips">${aZ}</div></details>
     </div>
   </div>
-</section>`
+</section>
+<style>${VC_CSS}</style>
+<script>${VC_JS}</script>`
 }
+
+const VC_CSS = '.vc-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}.vc-head .villes-p{margin-bottom:0}'
+  + '.vc-arrows{display:flex;gap:8px;flex-shrink:0}.vc-btn{width:42px;height:42px;border-radius:50%;border:1px solid rgba(0,76,63,.18);background:#fff;color:var(--g);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;transition:background .2s,color .2s}.vc-btn:hover:not(:disabled){background:var(--g);color:#fff}.vc-btn:disabled{opacity:.35;cursor:default}'
+  + '.vc-track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:2px;padding:4px 2px 14px;scrollbar-width:thin;scrollbar-color:rgba(0,76,63,.25) transparent;overscroll-behavior-x:contain}'
+  + '.vc-card{position:relative;flex:0 0 clamp(170px,22vw,210px);aspect-ratio:4/5;border-radius:18px;overflow:hidden;scroll-snap-align:start;text-decoration:none;color:#fff;background:#0b3b31;box-shadow:0 6px 18px rgba(0,40,30,.10);transition:transform .25s,box-shadow .25s}'
+  + '.vc-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,40,30,.18)}'
+  + '.vc-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}.vc-card:hover img{transform:scale(1.05)}'
+  + '.vc-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 20% 18%,rgba(255,213,107,.28),transparent 45%),radial-gradient(circle at 85% 85%,rgba(99,214,131,.22),transparent 50%),linear-gradient(155deg,#003d31,#00594a 60%,#0b6b57)}'
+  + '.vc-ph span{font-family:Fraunces,serif;font-style:italic;font-weight:300;font-size:92px;line-height:1;color:rgba(255,213,107,.55);margin-top:-34px}'
+  + '.vc-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,20,14,.78))}'
+  + '.vc-badge{position:absolute;top:10px;left:10px;display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;background:#FFD56B;color:#003d31;padding:5px 10px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.15)}'
+  + '.vc-txt{position:absolute;left:14px;right:14px;bottom:13px;display:flex;flex-direction:column;gap:2px}'
+  + '.vc-reg{font-size:10.5px;font-weight:700;letter-spacing:1.1px;text-transform:uppercase;color:rgba(255,255,255,.75)}'
+  + '.vc-name{font-family:Fraunces,serif;font-size:22px;line-height:1.15}'
+  + '.vc-go{font-size:12px;font-weight:600;color:#FFD56B;display:inline-flex;align-items:center;gap:4px;margin-top:4px;opacity:.9}'
+  + '.vc-credit{font-size:11.5px;color:var(--tl);margin:4px 0 0;text-align:right}.vc-credit a{color:inherit}'
+  + '.vz{margin-top:22px;border-top:1px solid rgba(0,76,63,.1)}'
+  + '.vz-row{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid rgba(0,76,63,.1)}'
+  + '.vz-t{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--tl);margin:0;padding-top:7px}'
+  + '.vz-more{margin-top:8px}.vz-more>summary,.vz-all>summary{list-style:none;cursor:pointer}.vz-more>summary::-webkit-details-marker,.vz-all>summary::-webkit-details-marker{display:none}'
+  + '.vz-more>summary{display:inline-flex;font-size:12.5px;font-weight:600;color:var(--g);padding:2px 0}.vz-more-c{display:none}.vz-more[open]>summary .vz-more-o{display:none}.vz-more[open]>summary .vz-more-c{display:inline}.vz-more .villes-chips{margin-top:9px}'
+  + '.vz-all>summary{display:flex;align-items:center;justify-content:space-between;padding:16px 0;font-weight:600;color:var(--td)}.vz-all>summary span{display:inline-flex;align-items:center;gap:8px}.vz-all>summary i{color:var(--g)}.vz-all>summary small{font-size:11.5px;font-weight:700;color:var(--g);background:rgba(0,76,63,.08);border-radius:999px;padding:2px 8px}'
+  + '.vz-car{transition:transform .2s}.vz-all[open] .vz-car{transform:rotate(180deg)}.vz-all .villes-chips{padding-bottom:12px}'
+  + '.villes-chips a.has{background:rgba(0,76,63,.08);color:var(--g);font-weight:600;border-color:rgba(0,76,63,.18)}.villes-chips a span{font-size:11px;font-weight:600;opacity:.8}'
+  + '@media(max-width:640px){.vz-row{grid-template-columns:1fr;gap:10px}.vz-t{padding-top:0}.vc-arrows{display:none}.vc-card{flex-basis:62vw;max-width:240px}}'
+
+const VC_JS = '(function(){var s=document.getElementById("villes");if(!s)return;var t=s.querySelector(".vc-track"),b=s.querySelectorAll(".vc-btn");'
+  + 'function u(){b[0].disabled=t.scrollLeft<4;b[1].disabled=t.scrollLeft+t.clientWidth>=t.scrollWidth-4}'
+  + 'b.forEach(function(x){x.addEventListener("click",function(){t.scrollBy({left:+x.dataset.d*t.clientWidth*.85,behavior:"smooth"})})});'
+  + 't.addEventListener("scroll",u,{passive:true});u();'
+  + 'function h(){if(location.hash==="#toutes-villes"){var d=document.getElementById("toutes-villes");d.open=true;d.scrollIntoView()}}h();addEventListener("hashchange",h)})()'
 
 export function joinLineHtml(cfg) {
   const b = cfg.joinBox
