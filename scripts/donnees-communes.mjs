@@ -155,3 +155,39 @@ if (mode === 'logement-api') {
     console.log(String(d.body).slice(0, 2500))
   }
 }
+
+// Résidences secondaires et logements (recensement Insee, API Melodi, 10/11/2026).
+// Ajoute à chaque zone de communes-donnees.json : [7] résidences secondaires et
+// logements occasionnels (OCS=DW_SEC_DW_OCC), [8] logements (OCS=_T). Pages de
+// 10 000 lignes, pause entre deux appels (30 appels par minute au plus sans clé).
+if (mode === 'logement') {
+  const { readFileSync, writeFileSync } = await import('node:fs')
+  const FILE = 'scripts/data/communes-donnees.json'
+  const d = JSON.parse(readFileSync(FILE, 'utf8'))
+  const base = 'TIME_PERIOD=2023&RP_MEASURE=DWELLINGS&TDW=_T&BUILD_END=_T&CARS=_T&NRG_SRC=_T&TSH=_T&CARPARK=_T&NOR=_T&L_STAY=_T'
+  const vu = { COM: 0, DEP: 0, REG: 0 }
+  for (const niveau of ['COM', 'DEP', 'REG']) {
+    for (const [ocs, i] of [['DW_SEC_DW_OCC', 7], ['_T', 8]]) {
+      for (let page = 1; page < 20; page++) {
+        const r = await get(`https://api.insee.fr/melodi/data/DS_RP_LOGEMENT_PRINC?${base}&OCS=${ocs}&GEO=${niveau}&maxResult=10000&page=${page}`)
+        if (r.status !== 200) { console.log(`::error::${niveau} ${ocs} page ${page} : HTTP ${r.status}`); process.exit(1) }
+        const obs = JSON.parse(r.body).observations ?? []
+        for (const o of obs) {
+          const code = String(o.dimensions.GEO).split('-').pop()
+          const a = (d[niveau][code] ||= [0, 0, 0, 0, 0, 0, 0])
+          while (a.length < 9) a.push(0)
+          a[i] = Math.round(Number(o.measures?.OBS_VALUE_NIVEAU?.value) || 0)
+          if (i === 7) vu[niveau]++
+        }
+        await new Promise(res => setTimeout(res, 2500))
+        if (obs.length < 10000) break
+      }
+    }
+  }
+  console.log('résidences secondaires :', JSON.stringify(vu))
+  if (vu.COM < 30000 || vu.DEP < 90) { console.log('::error::relevé incomplet, fichier non écrit'); process.exit(1) }
+  d.champs = [...d.champs.slice(0, 7), 'residences_secondaires', 'logements']
+  d.logementAnnee = '2023'
+  d.sources.logement = 'https://www.insee.fr/fr/statistiques/8202349'
+  writeFileSync(FILE, JSON.stringify(d))
+}
