@@ -2,7 +2,7 @@
 // devenir-hote-airbnb-<ville> (11/10/2026, audit de Jason : ces pages sont les
 // premières portes d'entrée du site, 287 visites sur 30 jours, mais ne menaient
 // qu'à un bouton générique). Lien vers l'estimateur de la ville (page dédiée
-// /calculateurs/revenu-lcd-<ville> si elle existe, sinon l'estimateur général
+// /services/simulateurs/revenus-lcd/<ville> si elle existe, sinon l'estimateur général
 // avec ?ville=), puis vers le compte gratuit.
 // Idempotent : marqueurs ESTIMATE:START/END, relancer après une régénération.
 //   node scripts/inject-estimate-cta.mjs
@@ -13,9 +13,8 @@ const ROOT = new URL('..', import.meta.url).pathname
 const REGISTER = 'https://app.jasonmarinho.com/auth/register'
 
 function estimatorUrl(slug, ville) {
-  if (slug === 'paris' && existsSync(join(ROOT, 'calculateurs/revenu-airbnb-paris'))) return '/calculateurs/revenu-airbnb-paris'
-  if (existsSync(join(ROOT, `calculateurs/revenu-lcd-${slug}`))) return `/calculateurs/revenu-lcd-${slug}`
-  return `/calculateurs/revenus-lcd?ville=${encodeURIComponent(ville)}`
+  if (existsSync(join(ROOT, `services/simulateurs/revenus-lcd/${slug}/index.html`))) return `/services/simulateurs/revenus-lcd/${slug}`
+  return `/services/simulateurs/revenus-lcd?ville=${encodeURIComponent(ville)}`
 }
 
 function block(slug, prep, ville) {

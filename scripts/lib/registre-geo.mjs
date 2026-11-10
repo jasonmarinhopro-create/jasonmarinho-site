@@ -25,7 +25,7 @@ export function cheminPage(kind, v) {
     case 'menage': return `/menage-lcd-${v.slug}`
     case 'depannage': return `/depannage-lcd-${v.slug}`
     case 'hote': return `/devenir-hote-airbnb-${v.slug}`
-    case 'revenus': return v.revenus ? `/calculateurs/${v.revenus}` : null
+    case 'revenus': return v.revenus ? `/services/simulateurs/revenus-lcd/${v.revenus}` : null
     default: throw new Error(`Type de page inconnu : ${kind}`)
   }
 }

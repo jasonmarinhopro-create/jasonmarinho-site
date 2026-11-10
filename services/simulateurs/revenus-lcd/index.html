@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Revenus location courte durée : estimateur 2026</title>
+  <meta name="description" content="Estimateur gratuit de revenus en location courte durée : brut, net après frais et impôts, comparaison avec une location classique. plus de 80 villes en Europe, sources publiques, chiffres 2026.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/simulateurs/revenus-lcd">
+  <meta property="og:title" content="Combien rapporterait ton logement en location courte durée ?">
+  <meta property="og:description" content="Brut, net après frais et impôts, et comparaison avec une location classique. Gratuit, sans inscription.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/simulateurs/revenus-lcd">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="shortcut icon" href="/favicon.ico">
+<link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
+<link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png?v=2026-06">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=2026-06">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=2026-06">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
+<link rel="manifest" href="/manifest.json?v=2026-06">
+<meta name="theme-color" content="#004C3F">
+  <link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<!-- FONTLOAD:START -->
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/outfit-normal-300-latin.woff2" crossorigin>
+<!-- FONTLOAD:END -->
+  <link rel="stylesheet" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
+  <link rel="stylesheet" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
+  <link rel="stylesheet" href="/services/simulateurs/outil.css?v=1">
+
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Estimateur de revenus en location courte durée", "applicationCategory": "FinanceApplication", "operatingSystem": "Web", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "description": "Estimateur gratuit de revenus en location courte durée : brut, net après frais et impôts, comparaison avec une location classique. plus de 80 villes en Europe, sources publiques, chiffres 2026.", "url": "https://jasonmarinho.com/services/simulateurs/revenus-lcd", "provider": {"@type": "Person", "name": "Jason Marinho"}}</script>
+  <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Services","item":"https://jasonmarinho.com/services"},{"@type":"ListItem","position":3,"name":"Simulateurs LCD","item":"https://jasonmarinho.com/services/simulateurs"},{"@type":"ListItem","position":4,"name":"Estimateur de revenus","item":"https://jasonmarinho.com/services/simulateurs/revenus-lcd"}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Comment est calculée l'estimation ?", "acceptedAnswer": {"@type": "Answer", "text": "On part de l'occupation moyenne et du prix moyen par nuit de ta ville, issus de sources publiques (offices de tourisme, instituts statistiques). On ajuste selon la taille du logement et ta période de location, puis on déduit frais, ménage, charges et impôt avec des valeurs que tu peux modifier."}}, {"@type": "Question", "name": "Pourquoi une fourchette plutôt qu'un chiffre exact ?", "acceptedAnswer": {"@type": "Answer", "text": "Parce que le revenu d'une location courte durée dépend de ce qu'un calculateur ne voit pas : tes photos, ta note, ton quartier, tes prix face aux concurrents directs. La fourchette va d'une annonce qui démarre aux meilleures annonces de la ville."}}, {"@type": "Question", "name": "Classé ou non classé, quelle différence sur mon revenu ?", "acceptedAnswer": {"@type": "Answer", "text": "En micro-BIC, un meublé de tourisme classé bénéficie d'un abattement de 50 % jusqu'à 83 600 € de recettes (revenus 2026), contre 30 % jusqu'à 15 000 € pour un meublé non classé. Au-delà de ces plafonds, le régime réel s'impose."}}, {"@type": "Question", "name": "La location courte durée rapporte-t-elle plus qu'une location classique ?", "acceptedAnswer": {"@type": "Answer", "text": "Pas toujours. Le comparatif calcule l'occupation minimale à atteindre pour faire mieux qu'une location vide à l'année, avec tes réglages. Dans les villes à faible demande ou avec beaucoup de frais, la location classique peut rester plus intéressante."}}, {"@type": "Question", "name": "Les règles de ma ville changent-elles le calcul ?", "acceptedAnswer": {"@type": "Answer", "text": "Le calcul ne tient pas compte des règles locales : numéro d'enregistrement, limite de 120 nuits pour une résidence principale, changement d'usage pour une résidence secondaire dans certaines villes. Vérifie-les auprès de ta mairie avant de te lancer."}}]}</script>
+  <script defer src="/nav.js"></script>
+  <script defer src="/services/simulateurs/engine.js"></script>
+  <script defer src="/services/simulateurs/outil.js?v=1"></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","@id":"https://jasonmarinho.com/#organization","name":"Jason Marinho","url":"https://jasonmarinho.com","logo":{"@type":"ImageObject","url":"https://jasonmarinho.com/logo.webp","width":1600,"height":1600},"sameAs":["https://instagram.com/jason_marinho","https://www.linkedin.com/in/jason-driing-location-sanscommission"]}
+</script>
+</head>
+<body>
+<main>
+<header class="t-hero">
+  <div class="t-in">
+    <div class="hero-brd" aria-label="Fil d'Ariane"><a href="/">Accueil</a><span>›</span><a href="/services">Services</a><span>›</span><a href="/services/simulateurs">Simulateurs LCD</a><span>›</span><span>Estimateur de revenus</span></div>
+    <div class="lbl"><b>Sans compte</b>Outil gratuit · Revenus</div>
+    <h1>Combien rapporterait <em>ton logement</em> ?</h1>
+    <p class="sentence" id="sentence">
+      J'ai un <span class="pill"><select id="f-type" aria-label="Type de logement">
+        <option value="studio">studio</option>
+        <option value="t2" selected>T2</option>
+        <option value="t3">T3</option>
+        <option value="t4">T4 ou plus</option>
+        <option value="maison">maison</option>
+      </select></span> à <span class="pill pill-in"><input id="f-ville-in" type="text" placeholder="ta ville" aria-label="Ville (écris pour chercher)"><input type="hidden" id="f-ville" value="FR|Paris"></span>,<br>
+      loué <span class="pill"><select id="f-mode" aria-label="Période de location">
+        <option value="toute-annee" selected>toute l'année</option>
+        <option value="saisonnier-ete">l'été seulement</option>
+        <option value="saisonnier-hiver">l'hiver seulement</option>
+        <option value="weekends">les week-ends</option>
+        <option value="rp120">120 nuits (ma résidence principale)</option>
+      </select></span>.
+    </p>
+
+  </div>
+</header>
+<div class="t-body">
+    <div class="result" aria-live="polite">
+      <div class="tag">Revenu brut estimé sur 12 mois</div>
+      <div class="big"><span id="r-brut">…</span><small>par an</small></div>
+      <div class="range">Entre <b id="r-low">…</b> et <b id="r-high">…</b> selon ta note, tes photos et tes prix</div>
+      <div class="gauge" aria-hidden="true"><i></i><b id="r-dot" style="left:50%"></b></div>
+      <div class="gauge-l"><span>Annonce qui démarre</span><span id="r-level">Annonce correcte</span><span>Superhost</span></div>
+      <div class="trio">
+        <div><div class="k">Nuits louées</div><div class="v" id="r-nights">…</div><div class="d" id="r-occ">…</div></div>
+        <div><div class="k">Prix moyen par nuit</div><div class="v" id="r-adr">…</div><div class="d">prix moyen du marché, ajusté à ton logement</div></div>
+        <div><div class="k">Ce qu'il te reste</div><div class="v" id="r-net">…</div><div class="d">après frais, ménage et impôts</div></div>
+      </div>
+      <div class="months" id="r-months" aria-hidden="true"></div>
+      <div class="ml"><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
+      <div class="r-foot">
+        <div class="src">Données du marché : <span id="r-src">…</span>. Mois en vert foncé : haute saison. <a href="#methode">Comment c'est calculé</a></div>
+        <a class="btn" href="#detail">Voir le détail <i class="ph-bold ph-arrow-down"></i></a>
+      </div>
+    </div>
+    <p class="note">Une estimation, pas une promesse : les chiffres de marché sont des moyennes publiques. Ton revenu réel dépend de ton annonce, de ton quartier et de tes prix.</p>
+</div>
+
+<section class="sec" id="detail">
+  <div class="wrap">
+    <div class="tag">Pour aller plus loin</div>
+    <h2>Du brut au net, <em>réglage par réglage</em></h2>
+    <p class="lede">Chaque ligne se règle là où elle compte : touche une valeur en vert pour la changer, tout se recalcule.</p>
+    <div class="b-grid">
+      <div class="card">
+        <div class="row">
+          <div class="lab">Nuitées encaissées
+            <select class="ctl" id="f-level" aria-label="Niveau de ton annonce">
+              <option value="0.85">annonce qui démarre</option>
+              <option value="1" selected>annonce correcte</option>
+              <option value="1.1">très bien notée</option>
+              <option value="1.18">Superhost</option>
+            </select>
+            <span class="why" id="w-brut">…</span></div>
+          <div class="amt" id="a-brut">…</div>
+        </div>
+        <div class="row">
+          <div class="lab">Frais de plateforme
+            <select class="ctl" id="f-canal" aria-label="Canal de réservation">
+              <option value="0.155" selected>Airbnb 15,5 %</option>
+              <option value="0.15">Booking, environ 15 %</option>
+              <option value="0.12">les deux et du direct</option>
+              <option value="0.03">réservation directe 3 %</option>
+            </select>
+            <span class="why">Airbnb prélève 15,5 % à l'hôte depuis le 13/10/2026 en Europe, plus la TVA sur ces frais selon ton statut (<a href="https://www.moneyvox.fr/immobilier/actualites/110230/airbnb-et-impots-ce-qui-change-des-le-13-octobre-pour-la-location-meublee-de-courte-duree" target="_blank" rel="noopener">MoneyVox</a>). En direct, il reste les frais de paiement.</span></div>
+          <div class="amt neg" id="a-canal">…</div>
+        </div>
+        <div class="row">
+          <div class="lab">Gestion
+            <select class="ctl" id="f-gestion" aria-label="Gestion du logement">
+              <option value="0" selected>je gère moi-même</option>
+              <option value="0.2">conciergerie à 20 %</option>
+              <option value="0.25">conciergerie à 25 %</option>
+            </select>
+            <span class="why">Commission calculée sur ce que la plateforme te reverse.</span></div>
+          <div class="amt neg" id="a-gestion">…</div>
+        </div>
+        <div class="row">
+          <div class="lab">Ménage et linge
+            <span class="num"><input id="f-menage" type="number" inputmode="numeric" min="0" max="500" value="40" aria-label="Coût du ménage par séjour">€</span> par séjour, séjour moyen de
+            <select class="ctl" id="f-sejour" aria-label="Durée moyenne d'un séjour">
+              <option value="2">2 nuits</option>
+              <option value="3" selected>3 nuits</option>
+              <option value="4">4 nuits</option>
+              <option value="7">une semaine</option>
+            </select>
+            <span class="why" id="w-menage">…</span></div>
+          <div class="amt neg" id="a-menage">…</div>
+        </div>
+        <div class="row">
+          <div class="lab">Énergie, internet, assurance
+            <span class="num"><input id="f-charges" type="number" inputmode="numeric" min="0" max="2000" value="120" aria-label="Charges par mois">€</span> par mois
+            <span class="why" id="w-charges">Ce qu'un locataire à l'année paierait lui-même.</span></div>
+          <div class="amt neg" id="a-charges">…</div>
+        </div>
+        <div class="row">
+          <div class="lab">Impôt sur le revenu
+            <select class="ctl" id="f-classe" aria-label="Classement du meublé">
+              <option value="classe" selected>meublé classé</option>
+              <option value="non">meublé non classé</option>
+            </select>
+            <select class="ctl" id="f-tmi" aria-label="Ta tranche d'imposition">
+              <option value="0">tranche 0 %</option>
+              <option value="0.11" selected>tranche 11 %</option>
+              <option value="0.3">tranche 30 %</option>
+              <option value="0.41">tranche 41 %</option>
+            </select>
+            <span class="why" id="w-impot">…</span></div>
+          <div class="amt neg" id="a-impot">…</div>
+        </div>
+        <div class="row">
+          <div class="lab">Prélèvements sociaux
+            <span class="why">18,6 % du revenu imposable en location meublée depuis la loi de financement de la Sécurité sociale 2026.</span></div>
+          <div class="amt neg" id="a-ps">…</div>
+        </div>
+        <div class="tot"><span>Ce qu'il te reste sur l'année</span><b id="a-net">…</b></div>
+        <div class="warn" id="w-regime"></div>
+      </div>
+
+      <div>
+        <div class="card">
+          <div class="tag">Face à une location classique</div>
+          <p class="src" style="margin:8px 0 0">Loyer d'une location vide à l'année :
+            <span class="num"><input id="f-loyer" type="number" inputmode="numeric" min="0" max="20000" value="750" aria-label="Loyer mensuel d'une location classique">€</span> par mois hors charges</p>
+          <div class="cmp" aria-hidden="true"><div id="c-classic" style="background:#B9CFC2">…</div><div id="c-lcd" style="background:var(--g)">…</div></div>
+          <div class="cmp-l"><span>Location à l'année</span><span>Location courte durée</span></div>
+          <p class="verdict" id="c-verdict">…</p>
+          <p class="src" style="margin-top:10px">Location vide : abattement de 30 %, 17,2 % de prélèvements sociaux. Remplace le loyer par celui de ton quartier.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="trends">
+      <div class="card"><div class="tag">Tendance fin 2026</div><div class="t">Les prix montent, l'occupation recule</div><div class="src">En Europe en août 2026 : prix moyen par nuit +7,5 %, occupation −2,1 points. En France, revenu par logement +5,1 %. <a href="https://www.airdna.co/blog/european-review-august-2026" target="_blank" rel="noopener">AirDNA, revue européenne d'août 2026</a></div></div>
+      <div class="card"><div class="tag">Été 2026</div><div class="t">71,4 % d'occupation en août</div><div class="src">63,3 % en juillet, prix moyen d'environ 199 € la nuit sur les communes étudiées. <a href="https://presseagence.fr/paris-tourisme-estival-2026-le-littoral-grand-gagnant-de-la-location-courte-duree/" target="_blank" rel="noopener">Guestadom, été 2026</a></div></div>
+      <div class="card"><div class="tag">Fiscalité 2026</div><div class="t">30 % ou 50 % d'abattement</div><div class="src">Meublé non classé : 30 % jusqu'à 15 000 € de recettes. Classé : 50 % jusqu'à 83 600 € (revenus 2026). <a href="/blog/micro-bic-abattement-2026-airbnb">Le guide micro-BIC 2026</a></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="methode">
+  <div class="wrap">
+    <div class="tag">Méthode</div>
+    <h2>D'où viennent <em>ces chiffres</em></h2>
+    <div class="method">
+      <div class="card"><div class="k">Le marché</div><p>Occupation et prix moyen par nuit de ta ville, issus des offices de tourisme et instituts statistiques publics (source affichée sous le résultat). Ville absente : moyenne du pays.</p></div>
+      <div class="card"><div class="k">Ton logement</div><p>Le prix est ajusté à la taille (du studio à la maison), l'occupation à ta période de location. La fourchette de ±20 % couvre l'écart entre une annonce qui démarre et les meilleures.</p></div>
+      <div class="card"><div class="k">Le net</div><p>Frais de plateforme, ménage et charges sont des valeurs de départ que tu peux changer. L'impôt suit le régime micro-BIC, sans les cotisations Urssaf ni le régime réel.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap faq">
+    <div class="tag">Questions fréquentes</div>
+    <h2>À <em>savoir</em></h2>
+    <details><summary>Comment est calculée l'estimation ?</summary><p>On part de l'occupation moyenne et du prix moyen par nuit de ta ville, issus de sources publiques (offices de tourisme, instituts statistiques). On ajuste selon la taille du logement et ta période de location, puis on déduit frais, ménage, charges et impôt avec des valeurs que tu peux modifier.</p></details>
+    <details><summary>Pourquoi une fourchette plutôt qu'un chiffre exact ?</summary><p>Parce que le revenu d'une location courte durée dépend de ce qu'un calculateur ne voit pas : tes photos, ta note, ton quartier, tes prix face aux concurrents directs. La fourchette va d'une annonce qui démarre aux meilleures annonces de la ville.</p></details>
+    <details><summary>Classé ou non classé, quelle différence sur mon revenu ?</summary><p>En micro-BIC, un meublé de tourisme classé bénéficie d'un abattement de 50 % jusqu'à 83 600 € de recettes (revenus 2026), contre 30 % jusqu'à 15 000 € pour un meublé non classé. Au-delà de ces plafonds, le régime réel s'impose.</p></details>
+    <details><summary>La location courte durée rapporte-t-elle plus qu'une location classique ?</summary><p>Pas toujours. Le comparatif ci-dessus calcule l'occupation minimale à atteindre pour faire mieux qu'une location vide à l'année, avec tes réglages. Dans les villes à faible demande ou avec beaucoup de frais, la location classique peut rester plus intéressante.</p></details>
+    <details><summary>Les règles de ma ville changent-elles le calcul ?</summary><p>Le calcul ne tient pas compte des règles locales : numéro d'enregistrement, limite de 120 nuits pour une résidence principale, changement d'usage pour une résidence secondaire dans certaines villes. Vérifie-les auprès de ta mairie avant de te lancer.</p></details>
+  </div>
+</section>
+
+<section class="end">
+  <h2>Compare cette estimation à <em style="color:var(--y)">tes vrais chiffres</em></h2>
+  <p>Avec un compte gratuit, tu suis tes réservations, ton occupation et tes revenus réels, mois par mois.</p>
+  <a class="btn" href="https://app.jasonmarinho.com/auth/register">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+</section>
+</main>
+
+<script src="/footer.js"></script>
+<script>
+(function () {
+  'use strict'
+  var $ = function (id) { return document.getElementById(id) }
+  var COUNTRIES = { FR: 'France', PT: 'Portugal', ES: 'Espagne', IT: 'Italie', BE: 'Belgique', DE: 'Allemagne', NL: 'Pays-Bas', AT: 'Autriche', CH: 'Suisse' }
+  // Taille du logement → réglages du moteur (type, chambres)
+  var TYPES = { studio: ['studio', 0], t2: ['t2', 1], t3: ['t3', 2], t4: ['t3', 3], maison: ['maison', 3] }
+  // Loyer de départ d'une location vide (hypothèse à remplacer par celui du quartier)
+  var LOYER = { studio: 550, t2: 750, t3: 950, t4: 1200, maison: 1300 }
+  var LEVELS = { '0.85': 'Annonce qui démarre', '1': 'Annonce correcte', '1.1': 'Très bien notée', '1.18': 'Superhost' }
+  var loyerTouched = false
+
+  function eur (n) { return window.JMOutil.eur(n) }
+  function num (id, def) { var v = parseFloat($(id).value); return isFinite(v) && v >= 0 ? v : def }
+
+  // Ville : champ où l'on écrit (/services/simulateurs/outil.js, liste de /suggestions.js)
+  var city = null
+  function fillCities () {
+    city = window.JMOutil.cityField($('f-ville-in'), function (c) { $('f-ville').value = c.pays + '|' + c.ville; render() })
+    // Ville demandée dans l'adresse (?ville=Lyon&pays=FR), sinon Paris
+    var q = new URLSearchParams(location.search)
+    var hit = window.JMOutil.find(q.get('ville') || 'Paris') || { pays: 'FR', ville: 'Paris' }
+    city.set(hit.pays, hit.ville)
+    $('f-ville').value = hit.pays + '|' + hit.ville
+    var t = (q.get('type') || '').toLowerCase()
+    if (TYPES[t]) $('f-type').value = t
+  }
+
+  // Revenu net pour une occupation et un prix donnés (mêmes réglages)
+  function netFor (brut, nights, s) {
+    var platform = brut * s.canal
+    var gestion = (brut - platform) * s.gestion
+    var stays = s.sejour > 0 ? nights / s.sejour : 0
+    var menage = stays * s.menage
+    var charges = s.mode === 'rp120' ? 0 : s.charges * 12
+    var abatt = s.classe === 'classe' ? 0.5 : 0.3
+    var imposable = brut * (1 - abatt)
+    var impot = imposable * s.tmi
+    var ps = imposable * 0.186
+    return { platform: platform, gestion: gestion, stays: stays, menage: menage, charges: charges, impot: impot, ps: ps, net: brut - platform - gestion - menage - charges - impot - ps }
+  }
+
+  function read () {
+    var v = $('f-ville').value.split('|')
+    return {
+      pays: v[0], ville: v[1], type: $('f-type').value, mode: $('f-mode').value,
+      level: parseFloat($('f-level').value), canal: parseFloat($('f-canal').value), gestion: parseFloat($('f-gestion').value),
+      menage: num('f-menage', 40), sejour: parseFloat($('f-sejour').value), charges: num('f-charges', 120),
+      classe: $('f-classe').value, tmi: parseFloat($('f-tmi').value), loyer: num('f-loyer', 750),
+    }
+  }
+
+  function fit () { window.JMOutil.fit() }
+
+  function render () {
+    if (!window.JMCalc) return
+    fit()
+    var s = read()
+    if (!loyerTouched) { $('f-loyer').value = LOYER[s.type]; s.loyer = LOYER[s.type] }
+    var t = TYPES[s.type]
+    var res = window.JMCalc.estimateRevenue({ pays: s.pays, ville: s.ville, typeLogement: t[0], nbChambres: t[1], mode: s.mode === 'rp120' ? 'toute-annee' : s.mode })
+    // Niveau de l'annonce : réparti entre occupation et prix
+    var k = Math.sqrt(s.level)
+    var occ = Math.min(0.95, res.occupation / 100 * k)
+    if (s.mode === 'rp120') occ = Math.min(occ, 120 / 365)
+    var adr = res.adr * k
+    var nights = Math.round(365 * occ)
+    // Même chiffre que le moteur (pages de ville, comparateur) tant qu'aucun plafond ne s'applique
+    var brut = (s.mode !== 'rp120' && occ < 0.95) ? res.revenuAnnuel * s.level : nights * adr
+    var low = brut / s.level * 0.8, high = brut / s.level * 1.2
+    var n = netFor(brut, nights, s)
+
+    $('r-brut').textContent = eur(brut)
+    $('r-low').textContent = eur(low)
+    $('r-high').textContent = eur(high)
+    $('r-dot').style.left = Math.max(4, Math.min(96, 20 + (brut - low) / (high - low) * 60)) + '%'
+    $('r-level').textContent = LEVELS[String(s.level)] || ''
+    $('r-nights').textContent = nights
+    $('r-occ').textContent = Math.round(occ * 100) + ' % d\'occupation'
+    $('r-adr').textContent = eur(adr)
+    $('r-net').textContent = eur(n.net)
+    $('r-src').textContent = res.source
+
+    // Saisonnalité : même répartition que le moteur, à l'échelle du revenu affiché
+    var max = Math.max.apply(null, res.monthly.map(function (m) { return m.revenu }))
+    $('r-months').innerHTML = res.monthly.map(function (m, i) {
+      var h = max > 0 ? Math.max(6, m.revenu / max * 100) : 6
+      return '<span class="' + (m.isHigh ? 'h' : '') + '" style="height:' + h + '%" title="' + window.JMCalc.MONTHS[i] + ' : ' + eur(m.revenu * brut / Math.max(1, res.revenuAnnuel)) + '"></span>'
+    }).join('')
+
+    // Détail
+    $('w-brut').textContent = nights + ' nuits × ' + eur(adr) + ' en moyenne'
+    $('a-brut').textContent = eur(brut)
+    $('a-canal').textContent = '− ' + eur(n.platform)
+    $('a-gestion').textContent = n.gestion > 0 ? '− ' + eur(n.gestion) : '0 €'
+    $('w-menage').textContent = 'Environ ' + Math.round(n.stays) + ' séjours dans l\'année.'
+    $('a-menage').textContent = '− ' + eur(n.menage)
+    $('w-charges').textContent = s.mode === 'rp120' ? 'Ta résidence principale : tu paies déjà ces charges, rien en plus.' : 'Ce qu\'un locataire à l\'année paierait lui-même.'
+    $('a-charges').textContent = n.charges > 0 ? '− ' + eur(n.charges) : '0 €'
+    $('w-impot').textContent = 'Micro-BIC : abattement de ' + (s.classe === 'classe' ? '50 %' : '30 %') + ', impôt sur ' + eur(brut * (s.classe === 'classe' ? 0.5 : 0.7)) + '.'
+    $('a-impot').textContent = n.impot > 0 ? '− ' + eur(n.impot) : '0 €'
+    $('a-ps').textContent = '− ' + eur(n.ps)
+    $('a-net').textContent = eur(n.net)
+
+    var warn = []
+    if (s.classe === 'non' && brut > 15000) warn.push('Au-delà de 15 000 € de recettes, un meublé non classé passe au régime réel : l\'impôt réel peut être très différent de ce calcul.')
+    if (s.classe === 'classe' && brut > 83600) warn.push('Au-delà de 83 600 € de recettes, le régime réel s\'impose.')
+    if (brut > 23000) warn.push('Au-delà de 23 000 € de recettes, des cotisations Urssaf s\'ajoutent, non comptées ici.')
+    $('w-regime').textContent = warn.join(' ')
+    $('w-regime').classList.toggle('on', warn.length > 0)
+
+    // Location classique (vide) : abattement 30 %, prélèvements sociaux 17,2 %
+    var rentYear = s.loyer * 12
+    var classic = rentYear - rentYear * 0.7 * (s.tmi + 0.172)
+    var top = Math.max(classic, n.net, 1)
+    $('c-classic').style.height = Math.max(18, classic / top * 100) + '%'
+    $('c-lcd').style.height = Math.max(18, Math.max(0, n.net) / top * 100) + '%'
+    $('c-classic').textContent = eur(classic)
+    $('c-lcd').textContent = eur(n.net)
+    // Occupation minimale pour faire mieux (même prix, mêmes réglages)
+    var need = null
+    for (var o = 0.05; o <= 0.95001; o += 0.01) {
+      var ni = Math.round(365 * o)
+      if (netFor(ni * adr, ni, s).net >= classic) { need = o; break }
+    }
+    var v
+    if (need === null) v = 'Même à 95 % d\'occupation, la location classique reste plus rentable avec ces réglages.'
+    else if (s.mode === 'rp120' && need > 120 / 365) v = 'Avec 120 nuits par an, la location courte durée ne dépasse pas une location classique ici. Elle reste un complément pour ta résidence principale.'
+    else v = 'Il te faut <b>' + Math.round(need * 100) + ' % d\'occupation</b> (' + Math.round(need * 365) + ' nuits) pour faire mieux qu\'une location classique. ' + (occ >= need ? 'Ton estimation est au-dessus.' : 'Ton estimation est en dessous.')
+    $('c-verdict').innerHTML = v
+  }
+
+  function boot () {
+    if (!window.JMCalc || !window.JMOutil) { setTimeout(boot, 50); return }
+    fillCities()
+    ;['f-type', 'f-mode', 'f-level', 'f-canal', 'f-gestion', 'f-sejour', 'f-classe', 'f-tmi'].forEach(function (id) { $(id).addEventListener('change', render) })
+    ;['f-menage', 'f-charges', 'f-loyer'].forEach(function (id) { $(id).addEventListener('input', function () { if (id === 'f-loyer') loyerTouched = true; render() }) })
+    render()
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot)
+  else boot()
+})()
+</script>
+<script src="/suggestions.js" defer></script>
+</body>
+</html>

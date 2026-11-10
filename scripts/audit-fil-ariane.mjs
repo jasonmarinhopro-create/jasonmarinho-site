@@ -97,7 +97,7 @@ export function audit() {
 function summary(rows) {
   const idx = rows.filter(r => !r.noindex)
   const kind = u => (u.match(/^\/(photographe-lcd|menage-lcd|depannage-lcd|devenir-hote-airbnb)-/) || [])[1]
-    || (u.startsWith('/blog/') ? 'blog' : u.startsWith('/calculateurs/') ? 'calculateurs' : 'autres')
+    || (u.startsWith('/blog/') ? 'blog' : u.startsWith('/services/simulateurs/') ? 'simulateurs' : 'autres')
   const by = {}
   for (const r of idx) {
     const k = kind(r.url)

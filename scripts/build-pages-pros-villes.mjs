@@ -60,9 +60,7 @@ function toVille(c) {
   const occM = c.occ.match(/(\d+)/)
   const annM = c.ann.match(/~?\s*([\d  ]+)\s*annonces/)
   if (!adrM || !occM || !annM) throw new Error(`Données illisibles pour ${c.slug} (adr="${c.adr}" occ="${c.occ}" ann="${c.ann}")`)
-  const revenuPath = c.slug === 'paris'
-    ? '/calculateurs/revenu-airbnb-paris'
-    : `/calculateurs/revenu-lcd-${c.slug}`
+  const revenuPath = `/services/simulateurs/revenus-lcd/${c.slug}`
   const revenu = fs.existsSync(path.join(ROOT, revenuPath.slice(1), 'index.html')) ? revenuPath : null
   const hote = fs.existsSync(path.join(ROOT, `devenir-hote-airbnb-${c.slug}`, 'index.html'))
   return {

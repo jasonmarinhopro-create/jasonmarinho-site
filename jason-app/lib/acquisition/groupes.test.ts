@@ -128,7 +128,7 @@ describe('message à deux questions', () => {
 
 describe('suivi et prompt', () => {
   it('ajoute le suivi aux pages du site, pas à Driing', () => {
-    expect(trackUrl('/calculateurs/revenus-lcd?ville=Nice', 'gabc234')).toBe('https://jasonmarinho.com/calculateurs/revenus-lcd?ville=Nice&utm_source=facebook&utm_medium=groupe&utm_campaign=gabc234')
+    expect(trackUrl('/services/simulateurs/revenus-lcd?ville=Nice', 'gabc234')).toBe('https://jasonmarinho.com/services/simulateurs/revenus-lcd?ville=Nice&utm_source=facebook&utm_medium=groupe&utm_campaign=gabc234')
     expect(trackUrl('https://app.jasonmarinho.com/auth/register', 'gx')).toContain('app.jasonmarinho.com/auth/register?utm_source=facebook')
     expect(trackUrl('https://www.driing.co', 'gx')).toBe('https://www.driing.co')
   })

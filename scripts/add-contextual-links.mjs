@@ -201,25 +201,25 @@ const INSERTIONS = [
   // fixer-prix-minimum-airbnb-lcd → calculateur de prix
   { file: 'blog/fixer-prix-minimum-airbnb-lcd/index.html',
     phrase: 'rentabilité',
-    newSlug: '/calculateurs/prix-lcd',
+    newSlug: '/services/simulateurs/prix-lcd',
     xrefId: 'calc-prix-min' },
 
   // tarification-dynamique-lcd → calculateur prix
   { file: 'blog/tarification-dynamique-lcd/index.html',
     phrase: 'saison',
-    newSlug: '/calculateurs/prix-lcd',
+    newSlug: '/services/simulateurs/prix-lcd',
     xrefId: 'calc-prix-dyn' },
 
   // tarification-dynamique-pricelabs-wheelhouse-beyond-comparatif → calc prix
   { file: 'blog/tarification-dynamique-pricelabs-wheelhouse-beyond-comparatif/index.html',
     phrase: 'recommandation',
-    newSlug: '/calculateurs/prix-lcd',
+    newSlug: '/services/simulateurs/prix-lcd',
     xrefId: 'calc-prix-comparatif' },
 
   // erreurs-debutant → estimateur revenus
   { file: 'blog/erreurs-debutant-location-courte-duree-premier-logement/index.html',
     phrase: 'revenu',
-    newSlug: '/calculateurs/revenus-lcd',
+    newSlug: '/services/simulateurs/revenus-lcd',
     xrefId: 'calc-revenus-erreurs' },
 
   // reservation-directe-sans-commission → calc prix (déjà fait via 'commission')
@@ -227,25 +227,25 @@ const INSERTIONS = [
   // location-courte-duree-impots-france → estimateur revenus
   { file: 'blog/location-courte-duree-impots-france/index.html',
     phrase: 'CA',
-    newSlug: '/calculateurs/revenus-lcd',
+    newSlug: '/services/simulateurs/revenus-lcd',
     xrefId: 'calc-revenus-impots' },
 
   // creer-conciergerie-airbnb-2025 → estimateur revenus (pour ses prospects)
   { file: 'blog/creer-conciergerie-airbnb-2025/index.html',
     phrase: 'estimation',
-    newSlug: '/calculateurs/revenus-lcd',
+    newSlug: '/services/simulateurs/revenus-lcd',
     xrefId: 'calc-revenus-conc' },
 
   // optimiser-annonce-airbnb → calc prix
   { file: 'blog/optimiser-annonce-airbnb/index.html',
     phrase: 'saison',
-    newSlug: '/calculateurs/prix-lcd',
+    newSlug: '/services/simulateurs/prix-lcd',
     xrefId: 'calc-prix-saison' },
 
   // basse-saison-strategies → calc prix
   { file: 'blog/basse-saison-location-courte-duree-strategies-reservations/index.html',
     phrase: 'tarif',
-    newSlug: '/calculateurs/prix-lcd',
+    newSlug: '/services/simulateurs/prix-lcd',
     xrefId: 'calc-prix-bs' },
 
   // location-directe-pourquoi-saffranchir-plateformes → calc prix direct (déjà fait via 'prix')
@@ -253,7 +253,7 @@ const INSERTIONS = [
   // photographier-logement-smartphone → estimateur revenus (vérifier ROI avant invest photos)
   { file: 'blog/photographier-logement-location-courte-duree-smartphone/index.html',
     phrase: 'revenus',
-    newSlug: '/calculateurs/revenus-lcd',
+    newSlug: '/services/simulateurs/revenus-lcd',
     xrefId: 'calc-revenus-photo' },
 ];
 

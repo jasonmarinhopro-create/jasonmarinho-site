@@ -4,7 +4,7 @@
  * vers /photographe-lcd-{ville} et /menage-lcd-{ville}) dans :
  *
  *   - les 60 guides /devenir-hote-airbnb-{ville}/  (avant le CTA final)
- *   - les études /calculateurs/revenu-lcd-{ville}/ + /revenu-airbnb-paris
+ *   - les études /services/simulateurs/revenus-lcd/{ville}
  *     (avant la section CTA finale) : uniquement les villes françaises
  *     qui ont leurs pages pros
  *
@@ -107,9 +107,8 @@ for (const c of cities) {
   )) hote++
 
   // Études de revenus : avant la section CTA sombre finale (ou avant footer)
-  const revenuDir = c.slug === 'paris' ? 'revenu-airbnb-paris' : `revenu-lcd-${c.slug}`
   if (inject(
-    path.join(ROOT, 'calculateurs', revenuDir, 'index.html'), c,
+    path.join(ROOT, 'services/simulateurs/revenus-lcd', c.slug, 'index.html'), c,
     ['<section style="background:var(--g);color:#fff', '<script src="/footer.js"'],
   )) revenu++
 }

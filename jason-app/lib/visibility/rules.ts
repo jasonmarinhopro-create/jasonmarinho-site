@@ -177,7 +177,7 @@ export function pageKind(path: string): PageKind {
   if (path.startsWith('/annuaires')) return 'annuaire'
   if (cityOf(path)) return 'ville'
   if (path.startsWith('/blog')) return 'blog'
-  if (path.startsWith('/calculateurs') || path.startsWith('/services/simulateurs')) return 'simulateur'
+  if (path.startsWith('/services/simulateurs') || path.startsWith('/calculateurs')) return 'simulateur'
   if (path.startsWith('/partenaires') || /-avis$|-prix$|^\/code-promo-/.test(path)) return 'partenaire'
   if (path.startsWith('/comparatif-')) return 'comparatif'
   if (path.startsWith('/services') || path.startsWith('/pour-qui') || path === '/tarifs') return 'service'

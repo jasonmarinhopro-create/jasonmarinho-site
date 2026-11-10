@@ -175,7 +175,7 @@ export const TOPICS: TopicDef[] = [
     key: 'prix', label: 'Prix et remplissage',
     words: ['prix', 'tarif', 'taux d occupation', 'occupation', 'remplir', 'basse saison', 'pas de reservation', 'aucune reservation', 'peu de reservation', 'rentab', 'revenu', 'chiffre d affaires', 'pricelabs', 'prix dynamique', 'calendrier vide'],
     slugHints: ['prix', 'tarif', 'basse-saison', 'occupation', 'revenu'],
-    service: { url: '/calculateurs/revenus-lcd', title: 'Estimateur de revenus en location courte durée' },
+    service: { url: '/services/simulateurs/revenus-lcd', title: 'Estimateur de revenus en location courte durée' },
     facts: [AIRBNB_FEES],
   },
   {
@@ -208,7 +208,7 @@ export const TOPICS: TopicDef[] = [
     key: 'investir', label: 'Investissement',
     words: ['investir', 'investissement', 'acheter un', 'achat d un', 'projet d achat', 'emprunt', 'rendement'],
     slugHints: ['acheter', 'rentabilite', 'point-mort', 'investir'],
-    service: { url: '/calculateurs/revenus-lcd', title: 'Estimateur de revenus en location courte durée' },
+    service: { url: '/services/simulateurs/revenus-lcd', title: 'Estimateur de revenus en location courte durée' },
     facts: [],
   },
 ]
@@ -399,7 +399,7 @@ export function finalLink(profile: GroupProfile, topics: TopicKey[]): { url: str
       ? { url: '/devenir-photographe-lcd', label: 'rejoindre l\'annuaire des photographes', instruction: 'la page pour rejoindre l\'annuaire des photographes (fiche vue par les hôtes de sa ville, sans commission)' }
       : { url: '/devenir-prestataire-menage-lcd', label: 'rejoindre l\'annuaire des équipes de ménage', instruction: 'la page pour rejoindre l\'annuaire des équipes de ménage (fiche vue par les hôtes de sa ville, sans commission)' }
   }
-  if (profile === 'investisseur') return { url: '/calculateurs/revenus-lcd', label: 'l\'estimateur de revenus', instruction: 'l\'estimateur de revenus, pour chiffrer le projet avant d\'acheter' }
+  if (profile === 'investisseur') return { url: '/services/simulateurs/revenus-lcd', label: 'l\'estimateur de revenus', instruction: 'l\'estimateur de revenus, pour chiffrer le projet avant d\'acheter' }
   return { url: REGISTER_URL, label: 'l\'app gratuite pour commencer', instruction: 'l\'app gratuite pour commencer (contrats signés en ligne, planning ménage calculé depuis Airbnb et Booking, fiches de police), seulement si elle règle son problème' }
 }
 

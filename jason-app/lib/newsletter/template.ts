@@ -49,7 +49,7 @@ export interface IssueData {
 /** Outil du mois : pages publiques du site (lisibles sans compte) */
 export const TOOLS: IssueData['tool'][] = [
   { name: 'Simulateur de taxe de séjour', desc: 'Ce que tu dois collecter par nuit et par voyageur, selon ton classement et ta commune, plafonds 2026 compris.', url: 'https://jasonmarinho.com/services/simulateurs/taxe-de-sejour', cta: 'Faire le calcul' },
-  { name: 'Calculateur de prix', desc: 'Un prix par nuit de départ selon ta ville, la saison et la plateforme, commission Airbnb comprise.', url: 'https://jasonmarinho.com/calculateurs/prix-lcd', cta: 'Calculer mon prix' },
+  { name: 'Calculateur de prix', desc: 'Un prix par nuit de départ selon ta ville, la saison et la plateforme, commission Airbnb comprise.', url: 'https://jasonmarinho.com/services/simulateurs/prix-lcd', cta: 'Calculer mon prix' },
   { name: 'Planning ménage automatique', desc: 'Tes ménages calculés depuis Airbnb, Booking et tes réservations directes, avec un lien agenda pour ton équipe.', url: 'https://jasonmarinho.com/services/planning-menage', cta: 'Voir comment ça marche' },
   { name: 'Contrats signés en ligne', desc: 'Pour tes réservations directes : contrat en français, anglais ou portugais, loyer payé en ligne, caution par empreinte.', url: 'https://jasonmarinho.com/services/contrats', cta: 'Découvrir les contrats' },
   { name: 'Simulateur micro-BIC', desc: 'Micro-BIC ou réel : ce que tu paies vraiment avec les plafonds et abattements 2026.', url: 'https://jasonmarinho.com/services/simulateurs/fiscalite-micro-bic', cta: 'Simuler mon impôt' },

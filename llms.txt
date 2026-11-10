@@ -56,6 +56,14 @@ Jason Marinho est un expert en location courte durée (LCD) basé en France. Il 
 
 - [Gabarits de messages](https://jasonmarinho.com/ressources/gabarits-messages/): Templates de messages pour hôtes (check-in, check-out, relances...)
 
+## Simulateurs gratuits
+
+- [Simulateurs LCD](https://jasonmarinho.com/services/simulateurs) : 8 simulateurs gratuits pour la location courte durée.
+- [Estimateur de revenus](https://jasonmarinho.com/services/simulateurs/revenus-lcd) : revenu brut et net d'un logement dans plus de 80 villes en Europe, sans compte.
+- [Prix par nuit](https://jasonmarinho.com/services/simulateurs/prix-lcd) : prix conseillé selon la ville, le mois et la plateforme, sans compte.
+- [Comparer des villes](https://jasonmarinho.com/services/simulateurs/comparer-villes) : jusqu'à 4 villes côte à côte, sans compte.
+- [Études de revenus par ville](https://jasonmarinho.com/services/simulateurs/revenus-lcd/paris) : une étude par ville (exemple : Paris), sous /services/simulateurs/revenus-lcd/<ville>.
+
 ## Blog — Sujets principaux
 
 Le blog de jasonmarinho.com couvre une large palette de sujets pour les hôtes LCD :

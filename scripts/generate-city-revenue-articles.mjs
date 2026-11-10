@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Génère 7 articles SEO "Combien rapporte une LCD à [ville]" calqués sur
-// le pilote /calculateurs/revenu-airbnb-paris/. Pattern uniforme, données
+// le pilote /services/simulateurs/revenus-lcd/paris/. Pattern uniforme, données
 // ville-spécifiques (quartiers, événements, réglementation locale).
 //
 // Idempotent : ré-exécutable, écrase à chaque run. Source de vérité = ce
@@ -17,8 +17,30 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
 
 // ─── Données par ville (sourcées) ───────────────────────────────────────
-// Tous les chiffres alignés sur calculateurs/engine.js (benchmark central).
+// Tous les chiffres alignés sur services/simulateurs/engine.js (benchmark central).
 export const CITIES = [
+  {
+    slug: 'revenu-lcd-paris', urlSegment: 'revenu-lcd-paris',
+    ville: 'Paris', pays: 'FR', flag: '',
+    source: 'CRT Île-de-France 2024',
+    saisonDetails: [
+      { period: 'Mai-juin', note: 'Printemps et congrès : la demande monte, les prix aussi.' },
+      { period: 'Juillet-août', note: 'Tourisme international, une demande soutenue tout l\'été.' },
+      { period: 'Septembre', note: 'Fashion Week et rentrée des affaires : souvent le pic de l\'année.' },
+      { period: 'Décembre', note: 'Fêtes de fin d\'année, une belle demande avant les vacances.' },
+      { period: 'Janvier-février', note: 'Le creux de l\'année : prix plus doux, séjours plus longs.' },
+    ],
+    quartiers: [
+      { nom: 'Marais (3e, 4e)', adr: '160-180 €', occ: '75 %', note: 'Le plus demandé, touristes du monde entier' },
+      { nom: 'Saint-Germain-des-Prés (6e)', adr: '170-200 €', occ: '70 %', note: 'Très demandé, clientèle haut de gamme' },
+      { nom: 'Champs-Élysées (8e)', adr: '150-220 €', occ: '68 %', note: 'Voyageurs d\'affaires' },
+      { nom: 'Montmartre (18e)', adr: '130-160 €', occ: '72 %', note: 'Vue et charme, très touristique' },
+      { nom: 'Bastille (11e)', adr: '110-140 €', occ: '70 %', note: 'Vie nocturne, clientèle jeune' },
+      { nom: '12e, 13e, 19e, 20e', adr: '90-110 €', occ: '65 %', note: 'Bon rapport entre prix d\'achat et demande' },
+    ],
+    legalNote: '120 nuits par an au plus pour une résidence principale meublée. Pour une résidence secondaire ou au-delà de 120 nuits, il faut un changement d\'usage, soumis à compensation à Paris (transformer un local commercial en logement), ce qui coûte très cher. Numéro d\'enregistrement obligatoire sur chaque annonce. À 120 nuits, le revenu d\'une résidence principale est donc plafonné bien en dessous des chiffres ci-dessus.',
+  },
+
   {
     slug: 'revenu-lcd-lyon', urlSegment: 'revenu-lcd-lyon',
     ville: 'Lyon', pays: 'FR', flag: '🇫🇷',
@@ -963,27 +985,30 @@ export const CITIES = [
 const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
 
 // Gabarit : scripts/lib/revenu-ville-html.mjs (format « rapport de ta ville »,
-// 10/11/2026). Les chiffres viennent de calculateurs/engine.js, comme
-// l'estimateur, pour ne jamais contredire /calculateurs/revenus-lcd.
+// 10/11/2026). Les chiffres viennent de services/simulateurs/engine.js, comme
+// l'estimateur, pour ne jamais contredire /services/simulateurs/revenus-lcd.
 function loadEngine () {
   globalThis.window = globalThis.window || {}
-  const src = fs.readFileSync(path.join(ROOT, 'calculateurs', 'engine.js'), 'utf8')
+  const src = fs.readFileSync(path.join(ROOT, 'services', 'simulateurs', 'engine.js'), 'utf8')
   new Function(src)()
   return globalThis.window.JMCalc
 }
 
+/** Adresse d'une étude : /services/simulateurs/revenus-lcd/<ville> (10/11/2026) */
+export const etudeUrl = c => `/services/simulateurs/revenus-lcd/${c.urlSegment.replace(/^revenu-lcd-/, '')}`
+
 function buildHtml (city, J, reg) {
-  const me = reg.find(v => v.pages.revenus === `/calculateurs/${city.slug}`)
+  const me = reg.find(v => v.pages.revenus === etudeUrl(city))
   const t2 = c => J.estimateRevenue({ pays: c.pays, ville: c.ville, typeLogement: 't2', nbChambres: 1, mode: 'toute-annee' }).revenuAnnuel
   const others = CITIES.filter(c => c !== city).map(c => {
-    const r = reg.find(v => v.pages.revenus === `/calculateurs/${c.slug}`)
+    const r = reg.find(v => v.pages.revenus === etudeUrl(c))
     const b = J.findCity(c.ville, c.pays)
     let d = Infinity
     if (me?.centre && r?.centre) d = Math.hypot(me.centre[0] - r.centre[0], (me.centre[1] - r.centre[1]) * 1.4)
     else if (c.pays === city.pays) d = 1e6
-    return { ville: c.ville, url: `/calculateurs/${c.slug}`, occ: b.occ, adr: b.adr, t2: t2(c), d }
+    return { ville: c.ville, url: etudeUrl(c), occ: b.occ, adr: b.adr, t2: t2(c), d }
   }).filter(n => Number.isFinite(n.d)).sort((x, y) => x.d - y.d).slice(0, 4)
-  return buildRevenuVille(city, { J, photo: aPhoto(me?.slug ?? '') ? me.slug : null, neighbours: others })
+  return buildRevenuVille(city, { url: etudeUrl(city), J, photo: aPhoto(me?.slug ?? '') ? me.slug : null, neighbours: others })
 }
 
 // ─── Génération ───────────────────────────────────────────────────────────
@@ -993,7 +1018,7 @@ let count = 0
 const J = loadEngine()
 const reg = villesRegistre()
 for (const city of CITIES) {
-  const dir = path.join(ROOT, 'calculateurs', city.urlSegment)
+  const dir = path.join(ROOT, etudeUrl(city).slice(1))
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
   const html = buildHtml(city, J, reg)
   fs.writeFileSync(path.join(dir, 'index.html'), html, 'utf8')
@@ -1001,6 +1026,6 @@ for (const city of CITIES) {
   count++
 }
 
-console.log(`\n🎉 ${count} articles SEO ville générés dans /calculateurs/`)
+console.log(`\n🎉 ${count} articles SEO ville générés dans /services/simulateurs/revenus-lcd/`)
 console.log('   Sitemap à mettre à jour ensuite.\n')
 }

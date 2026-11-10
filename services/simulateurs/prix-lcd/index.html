@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prix par nuit en location courte durée : simulateur</title>
+  <meta name="description" content="Combien afficher par nuit sur Airbnb, Booking ou en direct ? Prix conseillé selon ta ville, ton logement et le mois, prix semaine et week-end, calendrier sur 12 mois. Gratuit, sans inscription.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/simulateurs/prix-lcd">
+  <meta property="og:title" content="Combien afficher par nuit en location courte durée ?">
+  <meta property="og:description" content="Prix conseillé selon ta ville, ton logement, le mois et la plateforme. Gratuit, sans inscription.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/simulateurs/prix-lcd">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
+  <link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png?v=2026-06">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=2026-06">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=2026-06">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
+  <link rel="manifest" href="/manifest.json?v=2026-06">
+  <meta name="theme-color" content="#004C3F">
+  <link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<!-- FONTLOAD:START -->
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/outfit-normal-300-latin.woff2" crossorigin>
+<!-- FONTLOAD:END -->
+  <link rel="stylesheet" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
+  <link rel="stylesheet" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
+  <link rel="stylesheet" href="/services/simulateurs/outil.css?v=1">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Simulateur de prix par nuit en location courte durée","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"url":"https://jasonmarinho.com/services/simulateurs/prix-lcd"}</script>
+  <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Services","item":"https://jasonmarinho.com/services"},{"@type":"ListItem","position":3,"name":"Simulateurs LCD","item":"https://jasonmarinho.com/services/simulateurs"},{"@type":"ListItem","position":4,"name":"Prix par nuit","item":"https://jasonmarinho.com/services/simulateurs/prix-lcd"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Pourquoi le prix conseillé change selon Airbnb, Booking ou le direct ?","acceptedAnswer":{"@type":"Answer","text":"Les commissions ne sont pas les mêmes : Airbnb prélève 15,5 % à l'hôte depuis le 13 octobre 2026 en Europe, Booking environ 15 %, et en direct il ne reste que les frais de paiement. Pour garder le même montant à la fin, le prix affiché doit être un peu plus haut sur les plateformes. Le simulateur le fait pour toi."}},{"@type":"Question","name":"Comment est calculé le prix conseillé ?","acceptedAnswer":{"@type":"Answer","text":"On part du prix moyen par nuit de ta ville, issu de sources publiques (offices de tourisme, instituts statistiques). On l'ajuste à la taille du logement, au mois (haute saison +25 %, mois creux -15 %) et à la plateforme pour compenser sa commission."}},{"@type":"Question","name":"Faut-il un prix différent le week-end ?","acceptedAnswer":{"@type":"Answer","text":"Oui, le vendredi et le samedi sont les nuits les plus demandées. Le simulateur ajoute 20 % le week-end et retire 8 % en semaine. Ajuste ces écarts en regardant les annonces proches de la tienne."}},{"@type":"Question","name":"Le prix conseillé tient-il compte de mon quartier ?","acceptedAnswer":{"@type":"Answer","text":"Non, c'est une moyenne de la ville. Un quartier très demandé, une vue, un parking ou d'excellents avis justifient un prix plus haut. Compare toujours avec 5 à 10 annonces proches de la tienne avant de fixer ton prix."}}]}</script>
+  <script defer src="/nav.js"></script>
+  <script defer src="/services/simulateurs/engine.js"></script>
+  <script defer src="/services/simulateurs/outil.js?v=1"></script>
+</head>
+<body>
+<main>
+<header class="t-hero">
+  <div class="t-in">
+    <div class="hero-brd" aria-label="Fil d'Ariane"><a href="/">Accueil</a><span>›</span><a href="/services">Services</a><span>›</span><a href="/services/simulateurs">Simulateurs LCD</a><span>›</span><span>Prix par nuit</span></div>
+    <div class="lbl"><b>Sans compte</b>Outil gratuit · Prix</div>
+    <h1>Combien afficher <em>par nuit</em> ?</h1>
+    <p class="sentence">
+      Mon <span class="pill"><select id="f-type" aria-label="Type de logement">
+        <option value="studio">studio</option>
+        <option value="t2" selected>T2</option>
+        <option value="t3">T3</option>
+        <option value="t4">T4 ou plus</option>
+        <option value="maison">maison</option>
+      </select></span> à <span class="pill pill-in"><input id="f-ville" type="text" placeholder="ta ville" aria-label="Ville (écris pour chercher)"></span>,<br>
+      une nuit en <span class="pill"><select id="f-month" aria-label="Mois">
+        <option value="1">janvier</option><option value="2">février</option><option value="3">mars</option><option value="4">avril</option>
+        <option value="5">mai</option><option value="6">juin</option><option value="7" selected>juillet</option><option value="8">août</option>
+        <option value="9">septembre</option><option value="10">octobre</option><option value="11">novembre</option><option value="12">décembre</option>
+      </select></span> <span class="pill"><select id="f-channel" aria-label="Plateforme">
+        <option value="airbnb" selected>sur Airbnb</option>
+        <option value="booking">sur Booking</option>
+        <option value="direct">en direct</option>
+        <option value="mix">sur plusieurs sites</option>
+      </select></span>.
+    </p>
+  </div>
+</header>
+
+<div class="t-body">
+  <div class="result" aria-live="polite">
+    <div class="tag" id="r-tag">Prix conseillé</div>
+    <div class="big"><span id="r-price">…</span><small>par nuit</small></div>
+    <div class="range">Reste entre <b id="r-min">…</b> et <b id="r-max">…</b> selon tes dates, tes avis et la demande</div>
+    <div class="trio">
+      <div><div class="k">Du dimanche au jeudi</div><div class="v" id="r-week">…</div><div class="d">8 % sous le prix conseillé</div></div>
+      <div><div class="k">Vendredi et samedi</div><div class="v" id="r-wkend">…</div><div class="d">20 % au-dessus, les nuits les plus demandées</div></div>
+      <div><div class="k">Ce que tu encaisses</div><div class="v" id="r-net">…</div><div class="d" id="r-net-d">…</div></div>
+    </div>
+    <div class="months pick" id="r-months" role="group" aria-label="Prix conseillé mois par mois"></div>
+    <div class="ml"><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
+    <div class="r-foot">
+      <div class="src">Prix moyen de <span id="r-city">…</span> : <b id="r-market">…</b> par nuit (<span id="r-src">…</span>). Touche un mois pour le voir. En vert foncé : haute saison.</div>
+      <a class="btn" id="r-rev" href="/services/simulateurs/revenus-lcd">Ce que ça rapporte sur l'année <i class="ph-bold ph-arrow-right"></i></a>
+    </div>
+  </div>
+  <p class="note">Un point de départ, pas un prix imposé : compare toujours avec les annonces proches de la tienne avant de publier.</p>
+</div>
+
+<section class="sec" id="calendrier">
+  <div class="wrap">
+    <div class="tag">Ton calendrier</div>
+    <h2>Tes prix, <em>mois par mois</em></h2>
+    <p class="lede">Les prix à recopier dans ton calendrier Airbnb ou Booking : semaine et week-end, pour chaque mois de l'année.</p>
+    <div class="cal" id="cal"></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="tag">Les bons réflexes</div>
+    <h2>Trois réglages qui <em>changent tout</em></h2>
+    <div class="trends">
+      <div class="card"><div class="k">La commission</div><div class="t">Affiche plus haut sur les plateformes</div><p class="src" style="margin:0">Airbnb prélève 15,5 % à l'hôte depuis le 13/10/2026 en Europe, et le prix affiché au voyageur est désormais le prix payé (<a href="https://www.moneyvox.fr/immobilier/actualites/110230/airbnb-et-impots-ce-qui-change-des-le-13-octobre-pour-la-location-meublee-de-courte-duree" target="_blank" rel="noopener">MoneyVox</a>). Le simulateur compense la commission de chaque plateforme.</p></div>
+      <div class="card"><div class="k">Le week-end</div><div class="t">Deux prix plutôt qu'un</div><p class="src" style="margin:0">Un prix plus haut le vendredi et le samedi, plus doux en semaine pour remplir les nuits creuses. Les plateformes permettent de régler les deux en quelques clics.</p></div>
+      <div class="card"><div class="k">Les mois creux</div><div class="t">Mise sur les longs séjours</div><p class="src" style="margin:0">Hors saison, une réduction à la semaine ou au mois attire les voyageurs en déplacement ou en télétravail, et réduit le nombre de ménages à payer.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="methode">
+  <div class="wrap">
+    <div class="tag">Méthode</div>
+    <h2>D'où vient <em>ce prix</em></h2>
+    <div class="method">
+      <div class="card"><div class="k">Le marché</div><p>Prix moyen par nuit de ta ville, issu des offices de tourisme et instituts statistiques publics (source affichée sous le résultat). Ville absente : moyenne de la France.</p></div>
+      <div class="card"><div class="k">Ton logement et le mois</div><p>Ajusté à la taille, du studio à la maison. Haute saison de ta ville : +25 %. Mois les plus creux : -15 %.</p></div>
+      <div class="card"><div class="k">La plateforme</div><p>Le prix affiché compense la commission : tu gardes à peu près la même somme, que le voyageur réserve sur Airbnb, sur Booking ou chez toi.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap faq">
+    <div class="tag">Questions fréquentes</div>
+    <h2>À <em>savoir</em></h2>
+    <details><summary>Pourquoi le prix conseillé change selon Airbnb, Booking ou le direct ?</summary><p>Les commissions ne sont pas les mêmes : Airbnb prélève 15,5 % à l'hôte depuis le 13 octobre 2026 en Europe, Booking environ 15 %, et en direct il ne reste que les frais de paiement. Pour garder le même montant à la fin, le prix affiché doit être un peu plus haut sur les plateformes. Le simulateur le fait pour toi.</p></details>
+    <details><summary>Comment est calculé le prix conseillé ?</summary><p>On part du prix moyen par nuit de ta ville, issu de sources publiques (offices de tourisme, instituts statistiques). On l'ajuste à la taille du logement, au mois (haute saison +25 %, mois creux -15 %) et à la plateforme pour compenser sa commission.</p></details>
+    <details><summary>Faut-il un prix différent le week-end ?</summary><p>Oui, le vendredi et le samedi sont les nuits les plus demandées. Le simulateur ajoute 20 % le week-end et retire 8 % en semaine. Ajuste ces écarts en regardant les annonces proches de la tienne.</p></details>
+    <details><summary>Le prix conseillé tient-il compte de mon quartier ?</summary><p>Non, c'est une moyenne de la ville. Un quartier très demandé, une vue, un parking ou d'excellents avis justifient un prix plus haut. Compare toujours avec 5 à 10 annonces proches de la tienne avant de fixer ton prix.</p></details>
+  </div>
+</section>
+
+<section class="end">
+  <h2>Des prix calés sur <em style="color:var(--y)">ta vraie occupation</em></h2>
+  <p>Avec un compte gratuit, tu suis tes réservations et ton occupation réelle, et tu vois quand monter ou baisser tes prix.</p>
+  <a class="btn" href="https://app.jasonmarinho.com/auth/register">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+</section>
+</main>
+
+<script src="/footer.js"></script>
+<script>
+(function () {
+  'use strict'
+  function $ (id) { return document.getElementById(id) }
+  var TYPES = { studio: ['studio', 0], t2: ['t2', 1], t3: ['t3', 2], t4: ['t3', 3], maison: ['maison', 3] }
+  // Part prélevée par canal (mêmes valeurs que l'estimateur de revenus)
+  var FEES = { airbnb: [0.155, 'après les 15,5 % d\'Airbnb'], booking: [0.15, 'après les 15 % environ de Booking'], direct: [0.03, 'après 3 % de frais de paiement'], mix: [0.12, 'après 12 % de frais en moyenne'] }
+  var MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
+  var city = null, cur = { pays: 'FR', ville: 'Paris' }
+  function eur (n) { return window.JMOutil.eur(n) }
+
+  function render () {
+    window.JMOutil.fit()
+    var t = TYPES[$('f-type').value], month = parseInt($('f-month').value, 10), channel = $('f-channel').value
+    var r = window.JMCalc.calculatePrice({ pays: cur.pays, ville: cur.ville, typeLogement: t[0], nbChambres: t[1], month: month, channel: channel })
+    var fee = FEES[channel]
+    var high = r.yearPricing[month - 1].isHigh
+    $('r-tag').textContent = 'Prix conseillé pour une nuit en ' + MONTHS[month - 1] + (high ? ', haute saison' : '')
+    $('r-price').textContent = eur(r.basePrice)
+    $('r-min').textContent = eur(r.minPrice)
+    $('r-max').textContent = eur(r.maxPrice)
+    $('r-week').textContent = eur(r.weekPrice)
+    $('r-wkend').textContent = eur(r.weekendPrice)
+    $('r-net').textContent = eur(r.basePrice * (1 - fee[0]))
+    $('r-net-d').textContent = fee[1]
+    $('r-city').textContent = window.JMOutil.shown(cur.ville)
+    $('r-market').textContent = eur(r.marketAdr)
+    $('r-src').textContent = r.source
+    var max = Math.max.apply(null, r.yearPricing.map(function (p) { return p.price }))
+    $('r-months').innerHTML = r.yearPricing.map(function (p, i) {
+      return '<button type="button" data-m="' + p.month + '" class="' + (p.isHigh ? 'h' : '') + (p.month === month ? ' sel' : '') + '" style="height:' + Math.max(8, Math.round(p.price / max * 100)) + '%" aria-label="' + MONTHS[i] + ' : ' + eur(p.price) + '" aria-pressed="' + (p.month === month) + '"><em>' + eur(p.price) + '</em></button>'
+    }).join('')
+    $('cal').innerHTML = r.yearPricing.map(function (p, i) {
+      return '<div class="card' + (p.isHigh ? ' hi' : '') + '"><div class="k">' + MONTHS[i] + (p.isHigh ? ' <span>haute saison</span>' : '') + '</div><div class="v">' + eur(Math.round(p.price * 0.92)) + '</div><div class="d">' + eur(p.weekend) + ' le week-end</div></div>'
+    }).join('')
+    $('r-rev').href = '/services/simulateurs/revenus-lcd?pays=' + cur.pays + '&ville=' + encodeURIComponent(cur.ville) + '&type=' + $('f-type').value
+  }
+
+  function boot () {
+    if (!window.JMCalc || !window.JMOutil) { setTimeout(boot, 50); return }
+    city = window.JMOutil.cityField($('f-ville'), function (c) { cur = c; render() })
+    var q = new URLSearchParams(location.search)
+    var hit = window.JMOutil.find(q.get('ville') || 'Paris') || { pays: 'FR', ville: 'Paris' }
+    cur = hit
+    city.set(hit.pays, hit.ville)
+    var t = (q.get('type') || '').toLowerCase()
+    if (TYPES[t]) $('f-type').value = t
+    var m = parseInt(q.get('mois') || '', 10)
+    if (m >= 1 && m <= 12) $('f-month').value = String(m)
+    ;['f-type', 'f-month', 'f-channel'].forEach(function (id) { $(id).addEventListener('change', render) })
+    $('r-months').addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-m]')
+      if (!b) return
+      $('f-month').value = b.getAttribute('data-m')
+      render()
+    })
+    render()
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot)
+  else boot()
+})()
+</script>
+<script src="/suggestions.js" defer></script>
+</body>
+</html>

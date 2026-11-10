@@ -105,7 +105,7 @@ jobs:
               return 'autre site'
           def kind(p):
               p = p or '/'
-              for k in ('/blog', '/devenir-hote-airbnb', '/menage-lcd', '/photographe-lcd', '/annuaires', '/services', '/partenaires', '/tarifs', '/comparatif', '/calculateurs', '/l/'):
+              for k in ('/blog', '/devenir-hote-airbnb', '/menage-lcd', '/photographe-lcd', '/annuaires', '/services', '/partenaires', '/tarifs', '/comparatif', '/services/simulateurs', '/l/'):
                   if p.startswith(k): return k
               return 'accueil' if p == '/' else 'autre'
           days = Counter(v['created_at'][:10] for v in first.values())

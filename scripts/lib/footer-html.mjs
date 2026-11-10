@@ -20,7 +20,7 @@ const COLONNES = [
     ['/services/contrats', 'Contrats & paiements'], ['/services/planning-menage', 'Planning ménage'],
     ['/services/declarations-voyageurs', 'Déclarations voyageurs'], ['/services/calendrier', 'Calendrier & check-list'],
     ['/services/performances', 'Performances LCD'], ['/services/carnet-voyageurs', 'Carnet voyageurs'],
-    ['/services/securite', 'Vérification voyageurs'], ['/services/simulateurs', 'Simulateurs & calculateurs'],
+    ['/services/securite', 'Vérification voyageurs'], ['/services/simulateurs', 'Simulateurs'],
     ['/investir-lcd', 'Investir en LCD'],
   ], plus: ['/services', 'Tous les services →'] },
   { titre: 'Annuaires pros', liens: [
@@ -60,7 +60,7 @@ const COMPARATIFS = [
 export const PANELS = [
   { key: 'revenus', tab: 'Études de revenus', titre: 'Combien rapporte la LCD <em>dans ta ville</em>',
     hint: 'Prix moyen par nuit, taux d’occupation et revenu net estimé, ville par ville.',
-    kind: 'revenus', all: ['/calculateurs', n => `Les ${n} études de revenus`] },
+    kind: 'revenus', all: ['/services/simulateurs', n => `Les ${n} études de revenus`] },
   { key: 'hote', tab: 'Devenir hôte', titre: 'Devenir hôte <em>près de chez toi</em>',
     hint: 'Réglementation locale, numéro d’enregistrement, taxe de séjour officielle et saisons : le guide pour démarrer en règle dans ta ville.',
     kind: 'hote', all: ['/villes', n => `Les ${n} guides hôte par ville`] },

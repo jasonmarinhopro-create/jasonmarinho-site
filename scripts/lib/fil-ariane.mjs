@@ -22,14 +22,19 @@ export const MERES = {
   menage: { nom: 'Équipes de ménage LCD', url: '/annuaires/menage' },
   depannage: { nom: 'Dépannage et maintenance', url: '/annuaires/depannage' },
   hote: { nom: 'Guides hôte par ville', url: '/villes' },
-  revenus: { nom: 'Calculateurs', url: '/calculateurs' },
+  revenus: { nom: 'Estimateur de revenus', url: '/services/simulateurs/revenus-lcd' },
+}
+
+/** Niveaux au-dessus de la page mère (simulateurs : Services, Simulateurs) */
+export const AVANT_MERE = {
+  revenus: [{ nom: 'Services', url: '/services' }, { nom: 'Simulateurs', url: '/services/simulateurs' }],
 }
 
 /** Chemin d'une page de ville : [{ nom, url }], de l'accueil à la page */
 export function cheminVille(kind, slug) {
   const v = villesRegistre().find(x => x.slug === slug)
   if (!v?.pages[kind]) return null
-  const out = [{ nom: 'Accueil', url: '/' }, MERES[kind]]
+  const out = [{ nom: 'Accueil', url: '/' }, ...(AVANT_MERE[kind] || []), MERES[kind]]
   if (v.region && kind !== 'revenus') {
     const r = cheminRegion(kind, v.region.nom)
     if (r) {
@@ -71,5 +76,5 @@ export function visible(chemin, style) {
 
 /** Fil balisé d'une page mère (annuaires) : Accueil › page */
 export function jsonLdMere(kind) {
-  return jsonLd([{ nom: 'Accueil', url: '/' }, MERES[kind]])
+  return jsonLd([{ nom: 'Accueil', url: '/' }, ...(AVANT_MERE[kind] || []), MERES[kind]])
 }

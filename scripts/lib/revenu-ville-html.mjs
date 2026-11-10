@@ -1,8 +1,8 @@
 // Page « Louer en courte durée à <ville> en 2026 » (étude de revenus), format
 // « rapport de ta ville » validé par Jason le 10/11/2026 (proposition C).
 // Gabarit seul : données dans scripts/generate-city-revenue-articles.mjs,
-// chiffres du marché lus dans calculateurs/engine.js (mêmes nombres que
-// l'estimateur /calculateurs/revenus-lcd).
+// chiffres du marché lus dans services/simulateurs/engine.js (mêmes nombres que
+// l'estimateur /services/simulateurs/revenus-lcd).
 //
 // Repères laissés aux scripts d'injection (à relancer après génération) :
 //   <header class="hero">              photo de la ville (inject-photos-villes)
@@ -44,7 +44,7 @@ function saisonText(months) {
 
 export function buildRevenuVille(city, ctx) {
   const { J, photo, neighbours } = ctx
-  const canonicalUrl = `https://jasonmarinho.com/calculateurs/${city.slug}`
+  const canonicalUrl = `https://jasonmarinho.com${ctx.url}`
   const bench = J.findCity(city.ville, city.pays)
   const rows = TYPES.map(t => {
     const r = J.estimateRevenue({ pays: city.pays, ville: city.ville, typeLogement: t.engine[0], nbChambres: t.engine[1], mode: 'toute-annee' })
@@ -55,7 +55,7 @@ export function buildRevenuVille(city, ctx) {
   const nights = Math.round(365 * bench.occ / 100)
   const saison = saisonText(bench.saisonHaute)
   const source = bench.source
-  const calcUrl = `/calculateurs/revenus-lcd?pays=${city.pays}&ville=${encodeURIComponent(city.ville)}`
+  const calcUrl = `/services/simulateurs/revenus-lcd?pays=${city.pays}&ville=${encodeURIComponent(city.ville)}`
   const title = `Louer en courte durée à ${city.ville} : revenus 2026`
   const description = `${city.ville} : ${bench.occ} % d'occupation, ${bench.adr} € la nuit en moyenne (${source}). Revenus par type de logement, saisons, règles locales et tendances 2026.`
   const max = Math.max(...base.monthly.map(m => m.revenu))
@@ -113,8 +113,10 @@ ${neighbours.map(n => `        <tr><td><a href="${n.url}">${esc(n.ville)}</a></t
     '@context': 'https://schema.org', '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://jasonmarinho.com/' },
-      { '@type': 'ListItem', position: 2, name: 'Calculateurs', item: 'https://jasonmarinho.com/calculateurs' },
-      { '@type': 'ListItem', position: 3, name: `Revenu LCD ${city.ville}`, item: canonicalUrl },
+      { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://jasonmarinho.com/services' },
+      { '@type': 'ListItem', position: 3, name: 'Simulateurs', item: 'https://jasonmarinho.com/services/simulateurs' },
+      { '@type': 'ListItem', position: 4, name: 'Estimateur de revenus', item: 'https://jasonmarinho.com/services/simulateurs/revenus-lcd' },
+      { '@type': 'ListItem', position: 5, name: city.ville, item: canonicalUrl },
     ],
   })
 
@@ -228,7 +230,7 @@ ${neighbours.map(n => `        <tr><td><a href="${n.url}">${esc(n.ville)}</a></t
 </head>
 <body>
 <header class="hero">
-  <nav class="breadcrumb lt" aria-label="Fil d'Ariane"><a href="/">Accueil</a><span>/</span><a href="/calculateurs">Calculateurs</a><span>/</span><span>${esc(city.ville)}</span></nav>
+  <nav class="breadcrumb lt" aria-label="Fil d'Ariane"><a href="/">Accueil</a><span>/</span><a href="/services">Services</a><span>/</span><a href="/services/simulateurs">Simulateurs</a><span>/</span><a href="/services/simulateurs/revenus-lcd">Revenus</a><span>/</span><span>${esc(city.ville)}</span></nav>
   <div class="tag">Étude de revenus 2026</div>
   <h1>Louer en courte durée à <em>${esc(city.ville)}</em> en 2026</h1>
   <p class="lede">Ce que rapporte un logement, mois par mois et par taille, ce qui a changé cette année et les règles à connaître avant de te lancer.</p>
@@ -259,7 +261,7 @@ ${rows.map(r => `      <a href="${calcUrl}&amp;type=${r.key}"${r.key === 't2' ? 
     <p class="src" style="margin-top:10px">Revenus d'un T2 par mois. En vert foncé, la haute saison${saison ? ` : ${saison}` : ''}.</p>
     <div class="actions">
       <a class="btn" href="${calcUrl}">Calculer mon revenu net <i class="ph-bold ph-arrow-right"></i></a>
-      <a class="btn o" href="/calculateurs/prix-lcd?pays=${city.pays}&amp;ville=${encodeURIComponent(city.ville)}">Quel prix afficher par nuit</a>
+      <a class="btn o" href="/services/simulateurs/prix-lcd?pays=${city.pays}&amp;ville=${encodeURIComponent(city.ville)}">Quel prix afficher par nuit</a>
     </div>
   </div>
 </section>

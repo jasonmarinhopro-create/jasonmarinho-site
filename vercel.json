@@ -2,8 +2,14 @@
   "buildCommand": "bash scripts/build-site.sh",
   "ignoreCommand": "bash scripts/ignore-build-site.sh",
   "outputDirectory": ".",
-  "regions": ["lhr1"],
-  "git": { "deploymentEnabled": { "claude/**": false } },
+  "regions": [
+    "lhr1"
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "claude/**": false
+    }
+  },
   "cleanUrls": true,
   "trailingSlash": false,
   "headers": [
@@ -56,7 +62,12 @@
     },
     {
       "source": "/(nav|footer|cookie-banner)\\.js",
-      "has": [{ "type": "query", "key": "v" }],
+      "has": [
+        {
+          "type": "query",
+          "key": "v"
+        }
+      ],
       "headers": [
         {
           "key": "Cache-Control",
@@ -84,6 +95,31 @@
     }
   ],
   "redirects": [
+    {
+      "source": "/calculateurs",
+      "destination": "/services/simulateurs",
+      "permanent": true
+    },
+    {
+      "source": "/calculateurs/revenu-airbnb-paris",
+      "destination": "/services/simulateurs/revenus-lcd/paris",
+      "permanent": true
+    },
+    {
+      "source": "/calculateurs/revenu-lcd-:ville",
+      "destination": "/services/simulateurs/revenus-lcd/:ville",
+      "permanent": true
+    },
+    {
+      "source": "/calculateurs/:outil(revenus-lcd|prix-lcd|comparer-villes|engine.js)",
+      "destination": "/services/simulateurs/:outil",
+      "permanent": true
+    },
+    {
+      "source": "/calculateurs/:rest*",
+      "destination": "/services/simulateurs",
+      "permanent": true
+    },
     {
       "source": "/l/:code",
       "destination": "https://app.jasonmarinho.com/l/:code",
@@ -121,7 +157,7 @@
     },
     {
       "source": "/blog/simulateur-revenus-location-courte-duree",
-      "destination": "/calculateurs/revenus-lcd",
+      "destination": "/services/simulateurs/revenus-lcd",
       "permanent": true
     },
     {
@@ -266,7 +302,13 @@
     }
   ],
   "rewrites": [
-    { "source": "/api/photographer/:action", "destination": "/api/pro/photographer/:action" },
-    { "source": "/api/cleaner/:action", "destination": "/api/pro/cleaner/:action" }
+    {
+      "source": "/api/photographer/:action",
+      "destination": "/api/pro/photographer/:action"
+    },
+    {
+      "source": "/api/cleaner/:action",
+      "destination": "/api/pro/cleaner/:action"
+    }
   ]
 }

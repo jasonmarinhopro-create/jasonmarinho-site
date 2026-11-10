@@ -139,7 +139,7 @@ Pages existantes à utiliser :
   `/services/declarations-voyageurs`, `/services/calendrier`,
   `/services/annonce-directe`, `/services/simulateurs`, `/services/actualites`,
   `/services/formations`, `/services/entre-hotes`, `/services/securite`,
-  `/services/gmb`, `/services/revenus`, `/services/guides-lcd`, `/calculateurs`.
+  `/services/gmb`, `/services/revenus`, `/services/guides-lcd`, `/services/simulateurs`.
 - Hôtes, sujet photo / vidéo / ménage / dépannage : `/annuaires/photographes`,
   `/annuaires/menage`, `/annuaires/depannage`, `/trouver-un-pro`, et la page de
   la ville quand l'article en parle (`/photographe-lcd-<ville>`,

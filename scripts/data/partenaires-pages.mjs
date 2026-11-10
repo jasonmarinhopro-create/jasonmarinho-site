@@ -487,7 +487,7 @@ export const PAGES = [
     etapes: [
       { t: 'Crée ton compte gratuit', d: 'puis cherche ta ville ou ton quartier : tu vois tout de suite l\'occupation et le prix moyen du marché.' },
       { t: 'Teste ton adresse dans le Rentalizer', d: 'avec le bon nombre de chambres et de voyageurs. Compare l\'estimation à tes propres chiffres ou au loyer d\'une location classique.' },
-      { t: 'Recoupe avec nos outils gratuits', d: 'le <a href="/calculateurs/revenus-lcd">simulateur de revenus</a> et la <a href="/services/actualites">réglementation de ta ville</a> (90 jours, changement d\'usage) avant toute décision.' },
+      { t: 'Recoupe avec nos outils gratuits', d: 'le <a href="/services/simulateurs/revenus-lcd">simulateur de revenus</a> et la <a href="/services/actualites">réglementation de ta ville</a> (90 jours, changement d\'usage) avant toute décision.' },
     ],
     tableau: {
       titre: 'AirDNA est-il fait <em>pour toi</em> ?',
@@ -519,7 +519,7 @@ export const PAGES = [
       { href: '/blog/airdna-mode-emploi-hote-lcd-debutant', t: 'AirDNA, mode d\'emploi', d: 'Fixer ton prix de départ avec les données du marché.' },
       { href: '/comparatif-airdna-mashvisor', t: 'AirDNA ou Mashvisor ?', d: 'Le comparatif complet des deux outils d\'étude de marché.' },
       { href: '/blog/acheter-appartement-lcd-7-criteres-rentabilite-avant-signer', t: 'Acheter pour la courte durée', d: 'Les 7 critères à vérifier avant de signer.' },
-      { href: '/calculateurs/revenus-lcd', t: 'Simulateur de revenus', d: 'Une première estimation gratuite, ville par ville.' },
+      { href: '/services/simulateurs/revenus-lcd', t: 'Simulateur de revenus', d: 'Une première estimation gratuite, ville par ville.' },
     ],
     faq: [
       { q: 'AirDNA est-il gratuit ?', a: 'Oui pour démarrer : l\'offre gratuite permet d\'explorer les chiffres des marchés et de tester des adresses, avec des limites. Les formules payantes ajoutent l\'historique complet, plus d\'estimations et les analyses détaillées.' },

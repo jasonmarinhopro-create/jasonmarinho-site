@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparer des villes en location courte durée</title>
+  <meta name="description" content="Compare jusqu'à 4 villes pour ta location courte durée : revenu d'un logement, occupation, prix par nuit et haute saison, côte à côte. Plus de 80 villes en Europe, sources publiques. Gratuit, sans inscription.">
+  <link rel="canonical" href="https://jasonmarinho.com/services/simulateurs/comparer-villes">
+  <meta property="og:title" content="Où ton logement rapporterait le plus ?">
+  <meta property="og:description" content="Compare jusqu'à 4 villes côte à côte pour ta location courte durée. Gratuit, sans inscription.">
+  <meta property="og:url" content="https://jasonmarinho.com/services/simulateurs/comparer-villes">
+  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jason Marinho">
+  <meta name="robots" content="index, follow">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
+  <link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png?v=2026-06">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=2026-06">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=2026-06">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
+  <link rel="manifest" href="/manifest.json?v=2026-06">
+  <meta name="theme-color" content="#004C3F">
+  <link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
+<!-- FONTLOAD:START -->
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-italic-300-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/fonts/gf/outfit-normal-300-latin.woff2" crossorigin>
+<!-- FONTLOAD:END -->
+  <link rel="stylesheet" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
+  <link rel="stylesheet" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
+  <link rel="stylesheet" href="/services/simulateurs/outil.css?v=1">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Comparateur de villes pour la location courte durée","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"url":"https://jasonmarinho.com/services/simulateurs/comparer-villes"}</script>
+  <script type="application/ld+json" data-schema-bc>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Services","item":"https://jasonmarinho.com/services"},{"@type":"ListItem","position":3,"name":"Simulateurs LCD","item":"https://jasonmarinho.com/services/simulateurs"},{"@type":"ListItem","position":4,"name":"Comparer des villes","item":"https://jasonmarinho.com/services/simulateurs/comparer-villes"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Quel chiffre regarder en premier pour choisir une ville ?","acceptedAnswer":{"@type":"Answer","text":"Le revenu sur l'année d'un même logement, qui combine l'occupation et le prix par nuit. Une ville très remplie mais bon marché peut rapporter moins qu'une ville un peu moins remplie mais plus chère. Regarde ensuite la durée de la haute saison : plus elle est longue, plus tes revenus sont réguliers."}},{"@type":"Question","name":"Ces chiffres suffisent-ils pour investir ?","acceptedAnswer":{"@type":"Answer","text":"Non. Il faut aussi le prix d'achat au mètre carré, les règles locales (numéro d'enregistrement, limite de 120 nuits pour une résidence principale, changement d'usage dans certaines villes), la fiscalité du pays et la concurrence dans le quartier visé."}},{"@type":"Question","name":"D'où viennent les chiffres ?","acceptedAnswer":{"@type":"Answer","text":"Des offices de tourisme et instituts statistiques publics de chaque pays. La source de chaque ville est affichée sous la comparaison. Ce sont des moyennes : ton propre logement peut faire mieux ou moins bien."}}]}</script>
+  <script defer src="/nav.js"></script>
+  <script defer src="/services/simulateurs/engine.js"></script>
+  <script defer src="/services/simulateurs/outil.js?v=1"></script>
+</head>
+<body>
+<main>
+<header class="t-hero">
+  <div class="t-in">
+    <div class="hero-brd" aria-label="Fil d'Ariane"><a href="/">Accueil</a><span>›</span><a href="/services">Services</a><span>›</span><a href="/services/simulateurs">Simulateurs LCD</a><span>›</span><span>Comparer des villes</span></div>
+    <div class="lbl"><b>Sans compte</b>Outil gratuit · Comparer</div>
+    <h1>Où ton logement <em>rapporterait le plus</em> ?</h1>
+    <p class="sentence">
+      Un <span class="pill"><select id="f-type" aria-label="Type de logement">
+        <option value="studio">studio</option>
+        <option value="t2" selected>T2</option>
+        <option value="t3">T3</option>
+        <option value="t4">T4 ou plus</option>
+        <option value="maison">maison</option>
+      </select></span> à <span id="f-villes"></span>
+    </p>
+  </div>
+</header>
+
+<div class="t-body">
+  <div class="result" aria-live="polite">
+    <div class="tag" id="r-tag">…</div>
+    <div class="big"><span id="r-best">…</span><small id="r-best-d">…</small></div>
+    <div class="range" id="r-gap">…</div>
+    <div class="rank" id="r-rank"></div>
+    <div class="tbl-wrap"><table class="cmp-t" id="r-table"></table></div>
+    <div class="k" style="margin-top:28px">Haute saison, mois par mois</div>
+    <div class="seas" id="r-seas"></div>
+    <div class="r-foot">
+      <div class="src" id="r-src">…</div>
+      <a class="btn" id="r-rev" href="/services/simulateurs/revenus-lcd">Le détail pour <span id="r-rev-v">…</span> <i class="ph-bold ph-arrow-right"></i></a>
+    </div>
+  </div>
+  <p class="note">Mêmes calculs pour chaque ville : un logement loué toute l'année avec une annonce correcte. Les chiffres sont des moyennes publiques.</p>
+</div>
+
+<section class="sec" id="etudes-sec">
+  <div class="wrap">
+    <div class="tag">Pour aller plus loin</div>
+    <h2>Les études <em>de ces villes</em></h2>
+    <p class="lede">Saisons, quartiers, règles locales et revenus par taille de logement, ville par ville.</p>
+    <div class="etudes" id="etudes"></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="tag">Avant de choisir</div>
+    <h2>Ce que la comparaison <em>ne dit pas</em></h2>
+    <div class="trends">
+      <div class="card"><div class="k">Le prix d'achat</div><div class="t">Un revenu se rapporte à un prix</div><p class="src" style="margin:0">Une ville qui rapporte 20 % de plus mais coûte 50 % plus cher au mètre carré est moins rentable. Divise le revenu net par le prix total du projet.</p></div>
+      <div class="card"><div class="k">Les règles locales</div><div class="t">Ce qui est permis change tout</div><p class="src" style="margin:0">Numéro d'enregistrement, limite de 120 nuits pour une résidence principale, changement d'usage pour une résidence secondaire dans certaines villes : vérifie-les avant d'acheter.</p></div>
+      <div class="card"><div class="k">La saison</div><div class="t">Régulier ou concentré</div><p class="src" style="margin:0">Une station de ski ou une ville balnéaire fait l'essentiel de son revenu en quelques mois. Une grande ville remplit plus régulièrement, avec moins de nuits très chères.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap faq">
+    <div class="tag">Questions fréquentes</div>
+    <h2>À <em>savoir</em></h2>
+    <details><summary>Quel chiffre regarder en premier pour choisir une ville ?</summary><p>Le revenu sur l'année d'un même logement, qui combine l'occupation et le prix par nuit. Une ville très remplie mais bon marché peut rapporter moins qu'une ville un peu moins remplie mais plus chère. Regarde ensuite la durée de la haute saison : plus elle est longue, plus tes revenus sont réguliers.</p></details>
+    <details><summary>Ces chiffres suffisent-ils pour investir ?</summary><p>Non. Il faut aussi le prix d'achat au mètre carré, les règles locales (numéro d'enregistrement, limite de 120 nuits pour une résidence principale, changement d'usage dans certaines villes), la fiscalité du pays et la concurrence dans le quartier visé.</p></details>
+    <details><summary>D'où viennent les chiffres ?</summary><p>Des offices de tourisme et instituts statistiques publics de chaque pays. La source de chaque ville est affichée sous la comparaison. Ce sont des moyennes : ton propre logement peut faire mieux ou moins bien.</p></details>
+  </div>
+</section>
+
+<section class="end">
+  <h2>Tu as déjà un logement ? <em style="color:var(--y)">Compare-le au marché</em></h2>
+  <p>Avec un compte gratuit, tu suis ton occupation et tes revenus réels face aux moyennes de ta ville.</p>
+  <a class="btn" href="https://app.jasonmarinho.com/auth/register">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+</section>
+</main>
+
+<script src="/footer.js"></script>
+<script>
+(function () {
+  'use strict'
+  function $ (id) { return document.getElementById(id) }
+  var TYPES = { studio: ['studio', 0], t2: ['t2', 1], t3: ['t3', 2], t4: ['t3', 3], maison: ['maison', 3] }
+  var TYPE_LABEL = { studio: 'un studio', t2: 'un T2', t3: 'un T3', t4: 'un T4', maison: 'une maison' }
+  // Études détaillées existantes : ville du moteur -> /services/simulateurs/revenus-lcd/<dossier>
+  var ETUDES = {"Paris":"paris","Lyon":"lyon","Bordeaux":"bordeaux","Marseille":"marseille","Nice":"nice","Lisboa":"lisbonne","Barcelona":"barcelona","Bruxelles":"bruxelles","Madrid":"madrid","Roma":"rome","Firenze":"firenze","Funchal":"funchal","Annecy":"annecy","Amsterdam":"amsterdam","Wien":"wien","München":"munich","Porto":"porto","Sevilla":"sevilla","Valencia":"valencia","Strasbourg":"strasbourg","Honfleur":"honfleur","Berlin":"berlin","Saint-Tropez":"saint-tropez","Cassis":"cassis","Carcassonne":"carcassonne","La Baule":"la-baule","Le Touquet":"le-touquet","Megève":"megeve","Courchevel":"courchevel","Val d'Isère":"val-d-isere","La Rochelle":"la-rochelle","Saint-Malo":"saint-malo","Deauville":"deauville","Biarritz":"biarritz","Aix-en-Provence":"aix-en-provence","Avignon":"avignon","Cannes":"cannes","Chamonix":"chamonix","Toulouse":"toulouse","Montpellier":"montpellier"}
+  var M = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']
+  var state = [{ pays: 'FR', ville: 'Paris' }, { pays: 'FR', ville: 'Lyon' }]
+  function eur (n) { return window.JMOutil.eur(n) }
+  function name (v) { return window.JMOutil.shown(v) }
+  function esc (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] }) }
+
+  // Phrase : « Un T2 à [Paris], [Lyon] ou [Nice] » + bouton pour ajouter (4 villes au plus)
+  function drawFields () {
+    var box = $('f-villes'), html = ''
+    state.forEach(function (c, i) {
+      var sep = i === 0 ? '' : (i === state.length - 1 ? ' ou ' : ', ')
+      html += sep + '<span class="pill pill-in pill-x"><input type="text" data-i="' + i + '" placeholder="une ville" aria-label="Ville ' + (i + 1) + ' (écris pour chercher)">' +
+        (state.length > 2 ? '<button type="button" class="x" data-rm="' + i + '" aria-label="Retirer ' + esc(name(c.ville)) + '">×</button>' : '') + '</span>'
+    })
+    html += state.length < 4 ? ' <button type="button" class="add" id="f-add"><i class="ph-bold ph-plus"></i> une ville</button>' : ''
+    box.innerHTML = html + ' ?'
+    Array.prototype.forEach.call(box.querySelectorAll('input[data-i]'), function (el) {
+      var i = +el.getAttribute('data-i')
+      var f = window.JMOutil.cityField(el, function (c) { state[i] = c; save(); render() })
+      f.set(state[i].pays, state[i].ville)
+    })
+    window.JMOutil.fit(box)
+  }
+
+  function save () {
+    try { history.replaceState(null, '', '?villes=' + state.map(function (c) { return encodeURIComponent(name(c.ville)) }).join(',') + '&type=' + $('f-type').value) } catch (e) {}
+  }
+
+  function render () {
+    var tk = $('f-type').value, t = TYPES[tk]
+    var rows = state.map(function (c) {
+      var r = window.JMCalc.estimateRevenue({ pays: c.pays, ville: c.ville, typeLogement: t[0], nbChambres: t[1], mode: 'toute-annee' })
+      var b = r.bench
+      return { c: c, nom: name(c.ville), rev: r.revenuAnnuel, occ: r.occupation, adr: r.adr, nights: Math.round(365 * r.occupation / 100), hs: b ? b.saisonHaute : [], src: r.source }
+    })
+    var sorted = rows.slice().sort(function (a, b) { return b.rev - a.rev })
+    var top = sorted[0], second = sorted[1]
+    $('r-tag').textContent = 'Le plus rentable pour ' + TYPE_LABEL[tk] + ' loué toute l\'année'
+    $('r-best').textContent = top.nom
+    $('r-best-d').textContent = eur(top.rev) + ' par an'
+    var gap = top.rev - second.rev
+    $('r-gap').innerHTML = gap > 0 ? 'Soit <b>' + eur(gap) + ' de plus par an</b> qu\'à ' + esc(second.nom) + ' (' + Math.round(gap / second.rev * 100) + ' %)' : 'À égalité avec ' + esc(second.nom)
+    var max = top.rev
+    $('r-rank').innerHTML = sorted.map(function (r, i) {
+      return '<div class="rk' + (i === 0 ? ' top' : '') + '"><div class="rk-n">' + esc(r.nom) + '</div><div class="rk-bar"><i style="width:' + Math.max(6, Math.round(r.rev / max * 100)) + '%"></i></div><div class="rk-v">' + eur(r.rev) + '</div></div>'
+    }).join('')
+    function best (key) { var m = Math.max.apply(null, rows.map(function (r) { return r[key] })); return function (r) { return r[key] === m ? ' class="b"' : '' } }
+    var bOcc = best('occ'), bAdr = best('adr'), bN = best('nights')
+    var hsLen = rows.map(function (r) { return r.hs.length })
+    $('r-table').innerHTML = '<thead><tr><th></th>' + rows.map(function (r) { return '<th>' + esc(r.nom) + '</th>' }).join('') + '</tr></thead><tbody>' +
+      '<tr><td>Occupation</td>' + rows.map(function (r) { return '<td' + bOcc(r) + '>' + r.occ + ' %</td>' }).join('') + '</tr>' +
+      '<tr><td>Prix moyen par nuit</td>' + rows.map(function (r) { return '<td' + bAdr(r) + '>' + eur(r.adr) + '</td>' }).join('') + '</tr>' +
+      '<tr><td>Nuits louées par an</td>' + rows.map(function (r) { return '<td' + bN(r) + '>' + r.nights + '</td>' }).join('') + '</tr>' +
+      '<tr><td>Mois de haute saison</td>' + rows.map(function (r, i) { return '<td' + (hsLen[i] === Math.max.apply(null, hsLen) && hsLen[i] ? ' class="b"' : '') + '>' + (r.hs.length || '…') + '</td>' }).join('') + '</tr>' +
+      '</tbody>'
+    $('r-seas').innerHTML = '<div class="sz-h"><span></span>' + M.map(function (m) { return '<span>' + m + '</span>' }).join('') + '</div>' + rows.map(function (r) {
+      var cells = ''
+      for (var m = 1; m <= 12; m++) cells += '<i class="' + (r.hs.indexOf(m) !== -1 ? 'h' : '') + '"></i>'
+      return '<div class="sz"><span>' + esc(r.nom) + '</span>' + cells + '</div>'
+    }).join('')
+    var srcs = {}
+    rows.forEach(function (r) { srcs[r.src] = (srcs[r.src] || []).concat(r.nom) })
+    $('r-src').textContent = 'Sources : ' + Object.keys(srcs).map(function (s) { return srcs[s].join(', ') + ' : ' + s }).join(' ; ') + '.'
+    $('r-rev').href = '/services/simulateurs/revenus-lcd?pays=' + top.c.pays + '&ville=' + encodeURIComponent(top.c.ville) + '&type=' + tk
+    $('r-rev-v').textContent = top.nom
+    var et = rows.filter(function (r) { return ETUDES[r.c.ville] })
+    $('etudes-sec').style.display = et.length ? '' : 'none'
+    $('etudes').innerHTML = et.map(function (r) {
+      return '<a class="card" href="/services/simulateurs/revenus-lcd/' + ETUDES[r.c.ville] + '"><div class="k">Étude de revenus 2026</div><div class="t">' + esc(r.nom) + '</div><div class="d">' + r.occ + ' % d\'occupation, ' + eur(r.adr) + ' la nuit <i class="ph-bold ph-arrow-right"></i></div></a>'
+    }).join('')
+    window.JMOutil.fit()
+  }
+
+  function boot () {
+    if (!window.JMCalc || !window.JMOutil) { setTimeout(boot, 50); return }
+    var q = new URLSearchParams(location.search)
+    var asked = (q.get('villes') || '').split(',').map(function (v) { return window.JMOutil.find(decodeURIComponent(v)) }).filter(Boolean).slice(0, 4)
+    if (asked.length >= 2) state = asked
+    var t = (q.get('type') || '').toLowerCase()
+    if (TYPES[t]) $('f-type').value = t
+    $('f-type').addEventListener('change', function () { save(); render() })
+    $('f-villes').addEventListener('click', function (e) {
+      var rm = e.target.closest('[data-rm]')
+      if (rm) { state.splice(+rm.getAttribute('data-rm'), 1); drawFields(); save(); render(); return }
+      if (e.target.closest('#f-add')) {
+        var used = state.map(function (c) { return c.ville })
+        var next = ['Nice', 'Bordeaux', 'Lisboa', 'Annecy', 'Marseille', 'Biarritz'].filter(function (v) { return used.indexOf(v) === -1 })[0] || 'Toulouse'
+        state.push(window.JMOutil.find(next))
+        drawFields(); save(); render()
+        var last = $('f-villes').querySelector('input[data-i="' + (state.length - 1) + '"]')
+        if (last && !window.matchMedia('(max-width: 640px)').matches) last.focus()
+      }
+    })
+    drawFields()
+    render()
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot)
+  else boot()
+})()
+</script>
+<script src="/suggestions.js" defer></script>
+</body>
+</html>

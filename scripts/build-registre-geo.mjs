@@ -9,7 +9,7 @@
 // Contrôles : chaque ville du registre a ses pages sur le disque, son code
 // INSEE désigne bien la ville, CITIES de footer.js (textes du pied de page,
 // jusqu'à l'étape 4) a les mêmes villes et les mêmes noms, et chaque étude de
-// revenus de /calculateurs est rattachée à une ville. Depuis l'étape 3
+// revenus de /services/simulateurs est rattachée à une ville. Depuis l'étape 3
 // (09/11/2026), l'app, les fiches, VILLES_INTERNATIONAL, les villes voisines
 // et les suggestions lisent le registre directement.
 import fs from 'node:fs'
@@ -58,10 +58,10 @@ export function checkRegistre() {
   }
   for (const v of reseau) if (!cities.some(c => c.slug === v.slug)) problems.push(`${v.slug} : 4 pages dans le registre mais absente de CITIES`)
 
-  // 4. Toutes les études de revenus de /calculateurs sont rattachées à une ville
-  const etudes = fs.readdirSync(path.join(ROOT, 'calculateurs')).filter(d => /^revenus?-(lcd|airbnb)-/.test(d) && pageExists(`/calculateurs/${d}`))
+  // 4. Toutes les études de revenus de /services/simulateurs sont rattachées à une ville
+  const etudes = fs.readdirSync(path.join(ROOT, 'services/simulateurs/revenus-lcd')).filter(d => pageExists(`/services/simulateurs/revenus-lcd/${d}`))
   const rattachees = new Set(villes.map(v => v.pages.revenus).filter(Boolean).map(u => u.split('/').pop()))
-  for (const d of etudes) if (!rattachees.has(d)) problems.push(`/calculateurs/${d} : étude de revenus sans ville dans le registre`)
+  for (const d of etudes) if (!rattachees.has(d)) problems.push(`/services/simulateurs/revenus-lcd/${d} : étude de revenus sans ville dans le registre`)
 
   // 5. Taxe de séjour officielle : libellés DELTA (« STRASBOURG VILLE ») propres
   // à la base de la DGFiP, gardés dans COMMUNES, mais pour des villes du registre

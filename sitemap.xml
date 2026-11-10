@@ -1688,37 +1688,37 @@
   </url>
   <url>
     <loc>https://jasonmarinho.com/services/simulateurs</loc>
-    <lastmod>2026-05-17</lastmod>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/services/simulateurs/fiscalite-micro-bic</loc>
-    <lastmod>2026-05-17</lastmod>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/services/simulateurs/choisir-statut-ei-sasu</loc>
-    <lastmod>2026-05-17</lastmod>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/services/simulateurs/rentabilite-location-courte-duree</loc>
-    <lastmod>2026-05-17</lastmod>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/services/simulateurs/taxe-de-sejour</loc>
-    <lastmod>2026-05-17</lastmod>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://jasonmarinho.com/services/simulateurs/franchise-tva-lcd</loc>
-    <lastmod>2026-05-17</lastmod>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -1729,266 +1729,260 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenus-lcd</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/prix-lcd</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/prix-lcd</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/comparer-villes</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/comparer-villes</loc>
-    <lastmod>2026-05-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-airbnb-paris</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/paris</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-lyon</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/lyon</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-bordeaux</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/bordeaux</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-marseille</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/marseille</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-nice</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/nice</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-lisbonne</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/lisbonne</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-barcelona</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/barcelona</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-bruxelles</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/bruxelles</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-madrid</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/madrid</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-rome</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/rome</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-firenze</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/firenze</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-funchal</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/funchal</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-annecy</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/annecy</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-amsterdam</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/amsterdam</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-berlin</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/berlin</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-saint-tropez</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/saint-tropez</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-cassis</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/cassis</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-carcassonne</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/carcassonne</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-la-baule</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/la-baule</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-le-touquet</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/le-touquet</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-megeve</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/megeve</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-courchevel</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/courchevel</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-val-d-isere</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/val-d-isere</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-la-rochelle</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/la-rochelle</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-saint-malo</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/saint-malo</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-deauville</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/deauville</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-biarritz</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/biarritz</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-aix-en-provence</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/aix-en-provence</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-avignon</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/avignon</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-cannes</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/cannes</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-chamonix</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/chamonix</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-toulouse</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/toulouse</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-montpellier</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/montpellier</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-wien</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/wien</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-munich</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/munich</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-porto</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/porto</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-sevilla</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/sevilla</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-valencia</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/valencia</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-strasbourg</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/strasbourg</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://jasonmarinho.com/calculateurs/revenu-lcd-honfleur</loc>
-    <lastmod>2026-05-17</lastmod>
+    <loc>https://jasonmarinho.com/services/simulateurs/revenus-lcd/honfleur</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>

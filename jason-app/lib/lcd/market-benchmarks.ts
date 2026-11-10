@@ -240,7 +240,7 @@ export const SUPPORTED_COUNTRIES: Array<{ code: MarketBenchmark['pays']; flag: s
   { code: 'CH', flag: '🇨🇭', label: 'Suisse' },
 ]
 
-// ─── Multipliers (synchronisés avec /calculateurs/engine.js public) ─────────
+// ─── Multipliers (synchronisés avec /services/simulateurs/engine.js public) ─────────
 const TYPE_MULT: Record<string, number> = { studio: 0.75, t1: 0.85, t2: 1.00, t3: 1.15, maison: 1.30 }
 const CHAMBRES_MULT: Record<number, number> = { 0: 0.85, 1: 0.90, 2: 1.00, 3: 1.15, 4: 1.30 }
 const MODE_MULT: Record<string, number> = {

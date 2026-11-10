@@ -1,5 +1,5 @@
 // Liste complète des villes d'un type de page, rangées par région (France)
-// ou par pays, pour les pages « mères » : annuaires, /villes, /calculateurs
+// ou par pays, pour les pages « mères » : annuaires, /villes, /services/simulateurs
 // (09/11/2026). Depuis que le pied de page ne montre plus qu'une sélection
 // de villes (Jason : « pas scalable quand j'aurai des centaines de villes »),
 // ce sont ces pages qui portent tous les liens. Registre géographique unique.

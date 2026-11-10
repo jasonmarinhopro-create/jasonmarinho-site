@@ -65,8 +65,8 @@ const DEPANNAGE_TOOLS: IssueData['tool'][] = [
 ]
 
 const INVESTOR_TOOLS: IssueData['tool'][] = [
-  { name: 'Estimateur de revenus', desc: 'Revenus, occupation et prix moyen estimés ville par ville, avant de faire une offre.', url: `${SITE}/calculateurs/revenus-lcd`, cta: 'Estimer un bien' },
-  { name: 'Comparateur de villes', desc: 'Deux villes côte à côte : prix, occupation, revenus et règles locales.', url: `${SITE}/calculateurs/comparer-villes`, cta: 'Comparer des villes' },
+  { name: 'Estimateur de revenus', desc: 'Revenus, occupation et prix moyen estimés ville par ville, avant de faire une offre.', url: `${SITE}/services/simulateurs/revenus-lcd`, cta: 'Estimer un bien' },
+  { name: 'Comparateur de villes', desc: 'Deux villes côte à côte : prix, occupation, revenus et règles locales.', url: `${SITE}/services/simulateurs/comparer-villes`, cta: 'Comparer des villes' },
   { name: 'Simulateur de rentabilité', desc: 'Revenus, charges, crédit et cash-flow mois par mois.', url: `${SITE}/services/simulateurs/rentabilite-location-courte-duree`, cta: 'Lancer la simulation' },
   { name: 'EI ou SASU ?', desc: 'Le statut le plus adapté selon tes revenus et ce que tu veux en faire.', url: `${SITE}/services/simulateurs/choisir-statut-ei-sasu`, cta: 'Comparer les statuts' },
   { name: 'Simulateur micro-BIC', desc: 'Micro-BIC ou réel : ce que tu paies vraiment avec les plafonds 2026.', url: `${SITE}/services/simulateurs/fiscalite-micro-bic`, cta: 'Simuler mon impôt' },

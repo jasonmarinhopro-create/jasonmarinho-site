@@ -68,14 +68,9 @@ function villesGridHtml() {
     + '</div></a>').join('')
 }
 
-/** Toutes les études de revenus de /calculateurs, par pays */
+/** Toutes les études de revenus de /services/simulateurs, par pays */
 function etudesHtml() {
-  return '<div style="margin-top:44px">'
-    + '<h3 style="font-family:\'Fraunces\',serif;font-size:20px;font-weight:400;color:var(--td);margin:0 0 6px">Toutes les études de revenus</h3>'
-    + '<p style="font-size:14px;font-weight:300;color:var(--tm);margin:0 0 18px">Rangées par pays, chaque ville a son étude détaillée.</p>'
-    + '<style>.vh-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:22px 32px}.vh-group{min-width:0}.vh-group-wide{grid-column:1/-1}.vh-group-t{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--tl);margin:0 0 9px}.vh-chips{display:flex;flex-wrap:wrap;gap:7px}.vh-chips a{font-size:12.5px;padding:6px 12px;border-radius:8px;background:rgba(0,76,63,.05);color:var(--tm);text-decoration:none;border:1px solid transparent;white-space:nowrap}.vh-chips a:hover{color:var(--g);border-color:rgba(0,76,63,.2)}</style>'
-    + `<div class="vh-groups">${villesParRegionHtml('revenus', { parPays: true, chipsClass: 'vh-chips' })}</div>`
-    + '</div>'
+  return `<div class="vh-groups">${villesParRegionHtml('revenus', { parPays: true, chipsClass: 'vh-chips' })}</div>`
 }
 
 /** Liens vers les pages région des guides hôte, en tête de /villes (09/11/2026) */
@@ -91,7 +86,7 @@ function villesRegionsHtml() {
 const HUBS = [
   { file: 'villes/index.html', marker: 'VILLES-REGIONS', before: /(\s*<div class="cities-grid" id="cities-grid">)/, html: () => villesRegionsHtml() },
   { file: 'villes/index.html', re: /(<div class="cities-grid" id="cities-grid">)[\s\S]*?(<\/div>\s*\n\s*<div class="no-results")/, html: () => villesGridHtml() },
-  { file: 'calculateurs/index.html', marker: 'ETUDES', after: /(Études par ville<\/div>[\s\S]*?<\/a>\n  <\/div>\n)/, html: () => etudesHtml() },
+  { file: 'services/simulateurs/index.html', marker: 'ETUDES', after: /(<summary>Toutes les études, par pays<\/summary>\n)/, html: () => etudesHtml() },
 ]
 
 export function syncHubs() {
