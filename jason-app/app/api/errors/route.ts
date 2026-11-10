@@ -48,9 +48,7 @@ export async function POST(req: Request) {
     user_id: userId,
   })
 
-  // Purge opportuniste (~1 % des requêtes) des erreurs de plus de 30 jours.
-  if (Math.random() < 0.01) {
-    await db.from('app_errors').delete().lt('created_at', new Date(Date.now() - 30 * 86400_000).toISOString())
-  }
+  // Purge des erreurs de plus de 30 jours : chaque nuit dans la base
+  // (jm_maintenance_nuit, migration 185), plus pendant une requête.
   return NextResponse.json({ ok: true })
 }

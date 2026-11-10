@@ -9,6 +9,11 @@ import { slowMessage, slowestCalls } from './format'
 import { queryLog } from './query-log'
 
 const SLOW_MS = 1500
+// Une mesure par page et par minute au plus sur une même instance (10/11/2026) :
+// quand la base ralentit, chaque page lente écrivait sa ligne dans app_errors
+// (≈5 000 en un mois, souvent par rafales), une écriture de plus au pire moment.
+const WRITE_EVERY_MS = 60_000
+const lastWrite = new Map<string, number>()
 
 // Laisse l'écriture finir après l'envoi de la réponse (contexte de requête
 // Vercel, celui qu'utilise waitUntil de @vercel/functions) ; sinon rien.
@@ -46,6 +51,11 @@ export function perfTimer(label: string, extra: Array<[string, number]> = []) {
       const total = Date.now() - t0 + extra.reduce((n, [, ms]) => n + ms, 0)
       if (total < SLOW_MS) return
       steps.push(['serveur bloqué au plus', Math.max(0, lagMax)])
+      const key = label.replace(/\/[0-9a-f-]{36}/gi, '/<id>')
+      const now = Date.now()
+      if (now - (lastWrite.get(key) ?? 0) < WRITE_EVERY_MS) return
+      lastWrite.set(key, now)
+      if (lastWrite.size > 500) lastWrite.clear()
       try {
         const db = getServiceClient()
         const calls = queryLog() ?? []
