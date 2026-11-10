@@ -2,6 +2,7 @@
 // (licences CC BY, CC BY-SA, CC0 ou domaine public ; auteur et licence cités sous la photo).
 // Lancé par le workflow « Photos Commons » : l'environnement de Claude est limité par Commons.
 //   node scripts/photos-commons.mjs chercher "slug|Nom,slug|Nom…"   → planches de 4 candidates par ville
+//   node scripts/photos-commons.mjs chercher "slug|Nom|requête;requête,…" → 8 candidates sur ces requêtes
 //   node scripts/photos-commons.mjs prendre "slug|Fichier.jpg,…"     → télécharge en 1600 px + crédits
 // Sortie : .github/photos-commons/ (planches à regarder, puis photos retenues et credits.json).
 import fs from 'node:fs'
@@ -38,8 +39,10 @@ const info = p => {
 
 if (mode === 'chercher') {
   for (const item of liste.split(',').filter(Boolean)) {
-    const [slug, nom] = item.split('|')
-    const recherches = [`incategory:"Quality images of ${nom}"`, `"${nom}" panorama filew:>2000`, `"${nom}" ville vue filew:>2000`]
+    // « slug|Nom » ou « slug|Nom|requête 1;requête 2 » (requêtes précises : monuments, vues)
+    const [slug, nom, propres] = item.split('|')
+    const max = propres ? 8 : 4
+    const recherches = propres ? propres.split(';') : [`incategory:"Quality images of ${nom}"`, `"${nom}" panorama filew:>2000`, `"${nom}" ville vue filew:>2000`]
     const vus = new Map()
     for (const q of recherches) {
       const j = await api({ action: 'query', generator: 'search', gsrnamespace: '6', gsrlimit: '15', gsrsearch: q, prop: 'imageinfo', iiprop: 'url|size|extmetadata', iiurlwidth: '480' })
@@ -48,10 +51,10 @@ if (mode === 'chercher') {
         if (!x || vus.has(x.titre) || x.w < 1600 || x.w < x.h * 1.2 || !LIBRE.test(x.licence) || !/\.jpe?g$/i.test(x.titre)) continue
         vus.set(x.titre, x)
       }
-      if (vus.size >= 4) break
+      if (vus.size >= max) break
       await wait(1500)
     }
-    const c = [...vus.values()].slice(0, 4)
+    const c = [...vus.values()].slice(0, max)
     console.log(`${slug} : ${c.length} candidate(s)`)
     const files = []
     for (const [k, x] of c.entries()) {
