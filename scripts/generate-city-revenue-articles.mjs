@@ -8,14 +8,17 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+import { buildRevenuVille } from './lib/revenu-ville-html.mjs'
+import { villesRegistre } from './lib/registre-geo.mjs'
+import { aPhoto } from './data/photos-villes.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, '..')
 
 // ─── Données par ville (sourcées) ───────────────────────────────────────
 // Tous les chiffres alignés sur calculateurs/engine.js (benchmark central).
-const CITIES = [
+export const CITIES = [
   {
     slug: 'revenu-lcd-lyon', urlSegment: 'revenu-lcd-lyon',
     ville: 'Lyon', pays: 'FR', flag: '🇫🇷',
@@ -155,7 +158,7 @@ const CITIES = [
       { nom: 'Gràcia', adr: '105-130 €', occ: '72 %', note: 'Authentique, prix plus doux' },
       { nom: 'Barceloneta', adr: '120-150 €', occ: '82 %', note: 'Plage, ultra-demandé été' },
     ],
-    legalNote: '⚠️ Licence HUTB obligatoire (Habitatge d\'Ús Turístic de Barcelona). Moratoire total sur les nouvelles licences depuis 2017. Le marché AL est en numerus clausus : il faut acheter un bien AVEC sa licence existante (prime de 30-80 k€ sur le prix). Plan municipal 2024 : suppression de toutes les licences AL prévue d\'ici 2028. Anticipe le risque réglementaire.',
+    legalNote: 'Licence HUTB obligatoire (Habitatge d\'Ús Turístic de Barcelona). Moratoire total sur les nouvelles licences depuis 2017. Le marché AL est en numerus clausus : il faut acheter un bien AVEC sa licence existante (prime de 30-80 k€ sur le prix). Plan municipal 2024 : suppression de toutes les licences AL prévue d\'ici 2028. Anticipe le risque réglementaire.',
     annoncesEstim: '~20 000 HUTB actifs (numerus clausus)',
     scenarios: { studio: 21300, t1: 25100, t2: 31500, t3: 36200, maison: 41000 },
   },
@@ -228,7 +231,7 @@ const CITIES = [
       { nom: 'Prati (Vatican)', adr: '115-145 €', occ: '76 %', note: 'Calme, près Vatican' },
       { nom: 'Testaccio', adr: '100-125 €', occ: '70 %', note: 'Authentique, marchés' },
     ],
-    legalNote: '⚠️ CIN (Codice Identificativo Nazionale) obligatoire depuis 2024 : sans CIN, pas de droit de louer. Roma Capitale applique aussi un code régional Lazio + imposta di soggiorno (4 à 7 €/personne/nuit selon catégorie). Cedolare secca 21 % pour <30 jours.',
+    legalNote: 'CIN (Codice Identificativo Nazionale) obligatoire depuis 2024 : sans CIN, pas de droit de louer. Roma Capitale applique aussi un code régional Lazio + imposta di soggiorno (4 à 7 €/personne/nuit selon catégorie). Cedolare secca 21 % pour <30 jours.',
     annoncesEstim: '~30 000 annonces CAV actives à Roma',
     scenarios: { studio: 20600, t1: 24300, t2: 30600, t3: 35200, maison: 39800 },
   },
@@ -324,7 +327,7 @@ const CITIES = [
       { nom: 'Oost', adr: '120-150 €', occ: '72 %', note: 'Émergent, prix plus doux' },
       { nom: 'Noord', adr: '115-140 €', occ: '68 %', note: 'Industriel reconverti, art' },
     ],
-    legalNote: '⚠️ Restriction TRÈS stricte : maximum 30 nuits par an pour un particulier louant sa résidence principale (depuis 2019). Au-delà : licence professionnelle (Hotelvergunning) obligatoire et très contrôlée. Plan municipal de limiter encore davantage les locations courtes pour 2026. Ce marché est plus accessible aux exploitants pros qu\'aux particuliers.',
+    legalNote: 'Restriction TRÈS stricte : maximum 30 nuits par an pour un particulier louant sa résidence principale (depuis 2019). Au-delà : licence professionnelle (Hotelvergunning) obligatoire et très contrôlée. Plan municipal de limiter encore davantage les locations courtes pour 2026. Ce marché est plus accessible aux exploitants pros qu\'aux particuliers.',
     annoncesEstim: '~15 000 listings dont ~3 000 avec licence pro',
     scenarios: { studio: 25700, t1: 30300, t2: 38100, t3: 43800, maison: 49500 },
   },
@@ -362,7 +365,7 @@ const CITIES = [
     saisonHaute: 'avril-octobre + décembre + Oktoberfest',
     saisonDetails: [
       { period: 'Avril-août', note: 'Tourisme régulier + Tollwood Festival. Occupation 72 %, ADR +12 %.' },
-      { period: 'Mi-septembre à début octobre', note: '🍺 Oktoberfest : pic absolu mondial. Occupation 95 %, ADR ×2-3 sur 2 semaines.' },
+      { period: 'Mi-septembre à début octobre', note: 'Oktoberfest : pic absolu mondial. Occupation 95 %, ADR ×2-3 sur 2 semaines.' },
       { period: 'Novembre', note: 'Calme. Occupation 60 %, ADR -10 %.' },
       { period: 'Décembre', note: 'Christkindlmarkt + sports d\'hiver (Alpes proches). Occupation 75 %, ADR +18 %.' },
     ],
@@ -373,7 +376,7 @@ const CITIES = [
       { nom: 'Haidhausen', adr: '110-140 €', occ: '68 %', note: 'Bavarois authentique' },
       { nom: 'Au-Haidhausen (Oktoberfest)', adr: '130-160 €', occ: '78 %', note: 'Proche Theresienwiese' },
     ],
-    legalNote: '⚠️ Comme Berlin : Zweckentfremdungsverbot (interdiction de transformer un logement résidentiel en LCD sans permis). Maximum 8 semaines/an pour résidence principale sans permis. Genehmigung très difficile à obtenir. Amendes jusqu\'à 500 000 €. Régime fiscal Allemagne : barème impôt revenu + USt 7 %.',
+    legalNote: 'Comme Berlin : Zweckentfremdungsverbot (interdiction de transformer un logement résidentiel en LCD sans permis). Maximum 8 semaines/an pour résidence principale sans permis. Genehmigung très difficile à obtenir. Amendes jusqu\'à 500 000 €. Régime fiscal Allemagne : barème impôt revenu + USt 7 %.',
     annoncesEstim: '~10 000 listings à München (en chute depuis 2018)',
     scenarios: { studio: 20600, t1: 24400, t2: 30700, t3: 35300, maison: 39900 },
   },
@@ -459,7 +462,7 @@ const CITIES = [
     saisonDetails: [
       { period: 'Juin-août', note: 'Tourisme régulier. Occupation 68 %, ADR +12 %.' },
       { period: 'Novembre', note: 'Pré-Noël, congrès UE. Occupation 65 %, ADR +10 %.' },
-      { period: 'Fin novembre - 24 décembre', note: '🎄 Marché de Noël (Christkindelsmärik, le plus ancien d\'Europe, 1570). Pic : occupation 92 %, ADR ×2,5 sur 5 semaines.' },
+      { period: 'Fin novembre - 24 décembre', note: 'Marché de Noël (Christkindelsmärik, le plus ancien d\'Europe, 1570). Pic : occupation 92 %, ADR ×2,5 sur 5 semaines.' },
       { period: 'Janvier-mars', note: 'Creux. Occupation 45 %, ADR -20 %.' },
     ],
     quartiers: [
@@ -517,7 +520,7 @@ const CITIES = [
       { nom: 'Friedrichshain', adr: '90-115 €', occ: '65 %', note: 'Techno, alternatif' },
       { nom: 'Charlottenburg', adr: '100-130 €', occ: '60 %', note: 'Bourgeois, shopping Ku\'damm' },
     ],
-    legalNote: '⚠️ Zweckentfremdungsverbot : interdiction de transformer un logement en location courte durée sans permis. Le permis (Genehmigung) est extrêmement difficile à obtenir à Berlin. Maximum 90 nuits par an pour résidence secondaire sans permis. Amendes jusqu\'à 500 000 €. Régime fiscal Allemagne : barème impôt revenu + USt (TVA) 7 % si applicable.',
+    legalNote: 'Zweckentfremdungsverbot : interdiction de transformer un logement en location courte durée sans permis. Le permis (Genehmigung) est extrêmement difficile à obtenir à Berlin. Maximum 90 nuits par an pour résidence secondaire sans permis. Amendes jusqu\'à 500 000 €. Régime fiscal Allemagne : barème impôt revenu + USt (TVA) 7 % si applicable.',
     annoncesEstim: '~20 000 listings actifs à Berlin (en chute libre depuis le permis 2018)',
     scenarios: { studio: 15100, t1: 17900, t2: 22500, t3: 25900, maison: 29300 },
   },
@@ -959,333 +962,45 @@ const CITIES = [
 
 const MONTHS_FR = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre']
 
-function buildHtml (city) {
-  const canonicalUrl = `https://jasonmarinho.com/calculateurs/${city.slug}`
-  const title = `Combien rapporte une location courte durée à ${city.ville} ?`
-  const description = `Estime gratuitement les revenus d'une location courte durée (Airbnb, Booking, en direct) à ${city.ville} en 2026. Données ${city.source.split(' + ')[0]} : ${city.occ} % d'occupation, ${city.adr} €/nuit. Calculateur préfilé par type de bien.`
+// Gabarit : scripts/lib/revenu-ville-html.mjs (format « rapport de ta ville »,
+// 10/11/2026). Les chiffres viennent de calculateurs/engine.js, comme
+// l'estimateur, pour ne jamais contredire /calculateurs/revenus-lcd.
+function loadEngine () {
+  globalThis.window = globalThis.window || {}
+  const src = fs.readFileSync(path.join(ROOT, 'calculateurs', 'engine.js'), 'utf8')
+  new Function(src)()
+  return globalThis.window.JMCalc
+}
 
-  const scenariosHtml = [
-    { name: 'Studio (15-25 m²)', value: city.scenarios.studio, adr: Math.round(city.adr * 0.75) },
-    { name: 'T1 (1 chambre)', value: city.scenarios.t1, adr: Math.round(city.adr * 0.85) },
-    { name: 'T2 (2 pièces)', value: city.scenarios.t2, adr: city.adr, highlight: true },
-    { name: 'T3 (3 pièces)', value: city.scenarios.t3, adr: Math.round(city.adr * 1.15) },
-    { name: 'Maison/loft', value: city.scenarios.maison, adr: Math.round(city.adr * 1.30) },
-  ].map(s => `
-    <div class="scenario-card${s.highlight ? '' : ''}"${s.highlight ? ' style="border-color:var(--g);background:linear-gradient(135deg,#fff 0%,rgba(0,76,63,.04) 100%)"' : ''}>
-      <div class="name">${s.name}${s.highlight ? ' <span style="font-size:10px;background:var(--y);color:var(--gd);padding:2px 6px;border-radius:8px;font-weight:700;vertical-align:middle">le plus courant</span>' : ''}</div>
-      <div class="revenue">${s.value.toLocaleString('fr-FR')} €/an</div>
-      <div class="meta">±20 % · ADR ~${s.adr} €</div>
-    </div>
-  `).join('')
-
-  const saisonHtml = city.saisonDetails.map(p => `
-    <li><strong>${p.period} :</strong> ${p.note}</li>
-  `).join('')
-
-  const quartiersHtml = city.quartiers.map(q => `
-    <li><strong>${q.nom} :</strong> ADR ${q.adr}, occupation ${q.occ}. ${q.note}.</li>
-  `).join('')
-
-  // Préfill URL params (passés au calculateur)
-  const calcPrefillUrl = `/calculateurs/revenus-lcd?pays=${city.pays}&ville=${encodeURIComponent(city.ville)}`
-  const priceCalcUrl = `/calculateurs/prix-lcd?pays=${city.pays}&ville=${encodeURIComponent(city.ville)}`
-
-  const faqQuestions = [
-    {
-      q: `Combien rapporte une location courte durée à ${city.ville} en moyenne ?`,
-      a: `En moyenne marché 2024 (${city.source}) : ${city.occ} % d'occupation à ${city.adr} € la nuit, tous canaux confondus (Airbnb, Booking, Vrbo, en direct), soit environ ${city.revpar.toLocaleString('fr-FR')} € de RevPAR annuel. Un studio rapporte ~${city.scenarios.studio.toLocaleString('fr-FR')} €/an, un T2 ~${city.scenarios.t2.toLocaleString('fr-FR')} €, un T3 ~${city.scenarios.t3.toLocaleString('fr-FR')} €. Ces chiffres supposent un bien bien équipé et bien positionné.`,
-    },
-    {
-      q: `Quels sont les quartiers les plus rentables à ${city.ville} ?`,
-      a: `Les quartiers premium à ${city.ville} : ${city.quartiers.slice(0, 3).map(q => `${q.nom} (ADR ${q.adr})`).join(', ')}. Pour un meilleur rapport prix d'achat / revenus, regarde aussi les quartiers émergents listés dans l'article.`,
-    },
-    {
-      q: `Faut-il être déclaré pour louer en LCD à ${city.ville} ?`,
-      a: `Oui, dès la première nuit. ${city.legalNote.split('.')[0]}. Consulte les simulateurs fiscaux Jason Marinho pour estimer ton imposition exacte.`,
-    },
-  ]
-  const faqSchema = JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqQuestions.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
-  })
-  const articleSchema = JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: `Combien rapporte une location courte durée à ${city.ville} en 2026 ? Calcul gratuit + chiffres marché`,
-    description,
-    datePublished: '2026-05-17',
-    dateModified: '2026-05-17',
-    author: { '@type': 'Person', name: 'Jason Marinho', url: 'https://jasonmarinho.com' },
-    publisher: { '@type': 'Organization', name: 'Jason Marinho', logo: { '@type': 'ImageObject', url: 'https://jasonmarinho.com/logo.webp' } },
-    image: 'https://jasonmarinho.com/couverture-jason.webp',
-    mainEntityOfPage: canonicalUrl,
-  })
-  const bcSchema = JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://jasonmarinho.com/' },
-      { '@type': 'ListItem', position: 2, name: 'Calculateurs', item: 'https://jasonmarinho.com/calculateurs' },
-      { '@type': 'ListItem', position: 3, name: `Revenu LCD ${city.ville}`, item: canonicalUrl },
-    ],
-  })
-
-  const faqHtml = faqQuestions.map(f => `
-  <details class="faq-item">
-    <summary>${f.q}</summary>
-    <p>${f.a}</p>
-  </details>`).join('')
-
-  return `<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title}</title>
-  <meta name="description" content="${description}">
-  <link rel="canonical" href="${canonicalUrl}">
-  <meta property="og:title" content="Combien rapporte une location courte durée à ${city.ville} en 2026 ?">
-  <meta property="og:description" content="Calculateur gratuit + chiffres marché 2024 (${city.source.split(' + ')[0]}). Tous canaux : Airbnb, Booking, direct.">
-  <meta property="og:url" content="${canonicalUrl}">
-  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="Jason Marinho">
-  <meta name="robots" content="index, follow">
-  <link rel="icon" href="/favicon.ico" sizes="32x32">
-  <link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
-  <link rel="stylesheet" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
-  <link rel="stylesheet" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
-  <style>
-    :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--yd:#FFC845;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#5A6B57;--bd:rgba(0,76,63,0.10);--ok:#34D399}
-    *{box-sizing:border-box}
-    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);line-height:1.7}
-    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,3rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 18px;font-weight:400;color:#fff}
-    .h2{font-family:'Fraunces',serif;font-size:clamp(1.5rem,2.6vw,2.1rem);line-height:1.2;margin:0 0 14px;font-weight:400;color:var(--td);letter-spacing:-.015em}
-    .h3{font-family:'Fraunces',serif;font-size:clamp(1.2rem,1.8vw,1.4rem);font-weight:500;margin:24px 0 10px;color:var(--td)}
-    .lbl{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--g);margin-bottom:12px}
-    .lbl.lt{color:rgba(255,255,255,.7)}
-    .breadcrumb{font-size:12.5px;color:var(--tl);margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap}
-    .breadcrumb a{color:var(--g);text-decoration:none;font-weight:500}
-    .breadcrumb.lt a,.breadcrumb.lt{color:rgba(255,255,255,.7)}
-
-    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);color:#fff;padding:clamp(48px,7vw,80px) clamp(16px,5vw,60px) clamp(40px,6vw,72px);position:relative;overflow:hidden}
-    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 78% 50%,rgba(255,213,107,.06),transparent 70%);pointer-events:none}
-    .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 20% 100%,rgba(0,76,63,.5),transparent 70%);pointer-events:none}
-    .hero-in,.hero > *{position:relative;z-index:1}
-    .hero-in{max-width:920px;margin:0 auto}
-    .hero p.sub{font-size:clamp(1rem,1.4vw,1.15rem);font-weight:300;color:rgba(255,255,255,.85);max-width:740px;margin:0;line-height:1.65}
-
-    .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:920px;margin:0 auto;padding:0 16px 0;position:relative;z-index:2}
-    @media(max-width:680px){.stats-strip{grid-template-columns:repeat(2,1fr)}}
-    .stat-card{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px 20px;box-shadow:0 8px 24px rgba(0,76,63,.06)}
-    .stat-card .sc-label{font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--tl);margin-bottom:6px}
-    .stat-card .sc-value{font-family:'Fraunces',serif;font-size:26px;font-weight:400;color:var(--g);letter-spacing:-.01em}
-    .stat-card .sc-sub{font-size:11.5px;color:var(--tm);margin-top:2px;font-weight:300}
-
-    .section{padding:clamp(40px,6vw,72px) clamp(16px,5vw,60px);max-width:920px;margin:0 auto}
-    .section p{font-size:15.5px;font-weight:300;color:var(--tm);line-height:1.75;margin:0 0 14px}
-    .section ul{padding-left:24px;font-size:15px;font-weight:300;color:var(--tm);line-height:1.8;margin:0 0 14px}
-    .section ul li{margin-bottom:6px}
-    .section strong{font-weight:600;color:var(--td)}
-    .section a{color:var(--g);font-weight:500}
-    .section.cr{background:var(--cr);max-width:none}
-    .section.cr .in{max-width:920px;margin:0 auto}
-
-    .scenarios-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:18px 0 22px}
-    .scenario-card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:18px 20px;text-align:center}
-    .scenario-card .name{font-family:'Fraunces',serif;font-size:16px;font-weight:500;color:var(--td);margin-bottom:8px}
-    .scenario-card .revenue{font-family:'Fraunces',serif;font-size:24px;font-weight:400;color:var(--g);letter-spacing:-.01em}
-    .scenario-card .meta{font-size:11.5px;color:var(--tl);margin-top:6px;font-weight:300}
-
-    .source-box{background:#fff;border-left:3px solid var(--y);padding:14px 18px;border-radius:8px;font-size:13.5px;color:var(--tm);line-height:1.7;margin:18px 0}
-    .source-box strong{color:var(--g)}
-
-    .cta-embed{background:linear-gradient(135deg,var(--g) 0%,var(--gd) 100%);color:#fff;border-radius:18px;padding:28px 32px;margin:24px 0;text-align:center}
-    .cta-embed h3{color:#fff;font-family:'Fraunces',serif;font-size:22px;font-weight:400;margin:0 0 8px}
-    .cta-embed p{color:rgba(255,255,255,.85);font-size:14px;font-weight:300;margin:0 0 18px}
-    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:14px;padding:13px 24px;border-radius:10px;text-decoration:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s cubic-bezier(.4,0,.2,1)}
-    .btn-p:hover{background:var(--yd);transform:translateY(-2px);box-shadow:0 12px 28px rgba(255,213,107,.32)}
-
-    .faq-item{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px 22px;margin-bottom:10px}
-    .faq-item summary{font-family:'Fraunces',serif;font-size:16px;font-weight:400;color:var(--td);cursor:pointer;list-style:none;position:relative;padding-right:24px}
-    .faq-item summary::-webkit-details-marker{display:none}
-    .faq-item summary::after{content:'+';position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:22px;color:var(--g);font-weight:300}
-    .faq-item[open] summary::after{content:'−'}
-    .faq-item p{margin:12px 0 0;font-size:14px;color:var(--tm);line-height:1.7;font-weight:300}
-
-    .related-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:22px}
-    .related-row a{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px 18px;text-decoration:none;color:inherit;transition:transform .2s,border-color .2s}
-    .related-row a:hover{transform:translateY(-2px);border-color:var(--g)}
-    .related-row .rt{font-family:'Fraunces',serif;font-size:15px;color:var(--td);font-weight:500;margin-bottom:4px}
-    .related-row .rs{font-size:12.5px;color:var(--tl);font-weight:300}
-    /* ─── Design refresh 2026 : accent vert + gradients subtils ─────── */
-    body{background:linear-gradient(180deg,#fff 0%,var(--cr) 100%)}
-    .scenario-card,.stat-card,.faq-item,.related-row a{border-top:2px solid transparent;transition:border-color .25s,box-shadow .3s,transform .25s}
-    .scenario-card:hover,.stat-card:hover,.faq-item:hover,.related-row a:hover{border-top-color:var(--g)}
-    .btn-p{background:linear-gradient(135deg,var(--y) 0%,#FFE08A 50%,var(--y) 100%);background-size:200% 100%;transition:background-position .35s,transform .2s,box-shadow .2s}
-    .btn-p:hover{background-position:100% 0}
-    .lbl{position:relative;padding-left:18px}
-    .lbl::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:10px;height:2px;background:currentColor;border-radius:2px;opacity:.65}
-  </style>
-  <script type="application/ld+json">${articleSchema}</script>
-  <script type="application/ld+json" data-schema-bc>${bcSchema}</script>
-  <script type="application/ld+json">${faqSchema}</script>
-  <script defer src="/nav.js"></script>
-</head>
-<body>
-<header class="hero">
-  <div class="hero-in">
-    <div class="breadcrumb lt">
-      <a href="/">Accueil</a> /
-      <a href="/calculateurs">Calculateurs</a> /
-      <span>Revenu LCD ${city.ville}</span>
-    </div>
-    <div class="lbl lt"><i class="ph ph-chart-line-up"></i> Calculateur gratuit ${city.flag} ${city.ville}</div>
-    <h1 class="h1">Combien rapporte une <em style="color:var(--y)">location courte durée</em> à ${city.ville} en 2026 ?</h1>
-    <p class="sub">Calcul gratuit, sans inscription, basé sur les chiffres marché 2024 (${city.source}). Tous canaux confondus : Airbnb, Booking, Vrbo, en direct. Estimation par type de bien et fourchette ±20 %.</p>
-  </div>
-</header>
-
-<div style="max-width:920px;margin:-26px auto 28px;padding:0 16px;position:relative;z-index:5">
-  <a href="https://app.jasonmarinho.com/dashboard/simulateurs" style="display:flex;align-items:center;gap:14px;padding:16px 20px;background:#fff;border:1px solid rgba(255,213,107,.50);border-radius:16px;box-shadow:0 14px 40px rgba(0,76,63,.12),0 2px 6px rgba(0,0,0,.04);text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s">
-    <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--y) 0%,var(--yd) 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gd);font-size:18px"><i class="ph-bold ph-house"></i></div>
-    <div style="flex:1">
-      <div style="font-family:'Fraunces',serif;font-size:15px;color:var(--td);font-weight:500;line-height:1.3">💡 Tu loues déjà à ${city.ville} ?</div>
-      <div style="font-size:12.5px;color:var(--tm);font-weight:300;margin-top:2px;line-height:1.4">Dans ton espace membre, l&apos;estimateur compare <strong style="color:var(--g);font-weight:600">ton ADR et ton occupation réels</strong> à ces chiffres marché. Compte gratuit.</div>
-    </div>
-    <div style="font-size:13px;font-weight:600;color:var(--g);white-space:nowrap;flex-shrink:0">Ouvrir →</div>
-  </a>
-</div>
-
-<div class="stats-strip">
-  <div class="stat-card">
-    <div class="sc-label">Occupation moyenne</div>
-    <div class="sc-value">${city.occ} %</div>
-    <div class="sc-sub">soit ~${Math.round(365 * city.occ / 100)} nuits/an</div>
-  </div>
-  <div class="stat-card">
-    <div class="sc-label">Prix moyen / nuit (ADR)</div>
-    <div class="sc-value">${city.adr} €</div>
-    <div class="sc-sub">médian LCD ${city.ville}</div>
-  </div>
-  <div class="stat-card">
-    <div class="sc-label">RevPAR annuel</div>
-    <div class="sc-value">~${city.revpar.toLocaleString('fr-FR')} €</div>
-    <div class="sc-sub">par bien moyen</div>
-  </div>
-  <div class="stat-card">
-    <div class="sc-label">Haute saison</div>
-    <div class="sc-value" style="font-size:18px">${city.saisonHaute}</div>
-    <div class="sc-sub">saison locale</div>
-  </div>
-</div>
-
-<section class="section">
-  <h2 class="h2">Les revenus moyens par type de bien à ${city.ville}</h2>
-  <p>
-    Voici les estimations indicatives pour ${city.ville} en 2026, calculées à partir des données 2024 (${city.source}).
-    Ces chiffres reflètent un bien <strong>correctement équipé, classé, avec photos pro et 50+ avis</strong>. Un bien moins bien positionné peut être 30 à 40 % en dessous.
-  </p>
-
-  <div class="scenarios-grid">${scenariosHtml}</div>
-
-  <div class="source-box">
-    <strong>📊 Source méthodologie :</strong> ${city.source}. Agrégation et mise à jour annuelle dès publication des rapports T1 N+1.
-  </div>
-
-  <h3 class="h3">Affine ton estimation avec le calculateur</h3>
-  <p>Le calculateur ci-dessous prend en compte ton type de bien, le nombre de chambres et ton mode d'exploitation pour te donner une estimation personnalisée.</p>
-
-  <div class="cta-embed">
-    <h3>Calcule ton revenu exact pour ton bien à ${city.ville}</h3>
-    <p>Préfilé sur ${city.ville}. Modifie le type de bien et le mode d'exploitation pour ta situation.</p>
-    <a href="${calcPrefillUrl}" class="btn-p">Lancer le calculateur <i class="ph-bold ph-arrow-right"></i></a>
-  </div>
-</section>
-
-<section class="section cr">
-  <div class="in">
-    <h2 class="h2">Le marché LCD à ${city.ville} en détail</h2>
-
-    <h3 class="h3">Saisonnalité : les vrais pics</h3>
-    <p>${city.ville} n'a pas une seule haute saison, mais <strong>plusieurs pics</strong> :</p>
-    <ul>${saisonHtml}</ul>
-
-    <h3 class="h3">Quartiers : où ça rapporte le plus</h3>
-    <ul>${quartiersHtml}</ul>
-
-    <h3 class="h3">Cadre légal et réglementation</h3>
-    <p>${city.legalNote}</p>
-
-    <h3 class="h3">Concurrence et positionnement</h3>
-    <p>${city.annoncesEstim}. La compétition est forte. Pour sortir du lot :</p>
-    <ul>
-      <li>Photos professionnelles (différentiel +20 % de clics)</li>
-      <li>Classement / certification du bien (abattement fiscal favorable selon pays)</li>
-      <li>Pricing dynamique (gain 15-25 % de RevPAR vs prix fixe)</li>
-      <li>Réservations en direct (gagner 15-20 % sur les commissions OTAs)</li>
-    </ul>
-  </div>
-</section>
-
-<section class="section">
-  <h2 class="h2">Questions fréquentes</h2>
-${faqHtml}
-</section>
-
-<section class="section cr">
-  <div class="in">
-    <h2 class="h2">Outils complémentaires</h2>
-    <p>Plus loin que la simple estimation de revenus :</p>
-    <div class="related-row">
-      <a href="${priceCalcUrl}">
-        <div class="rt">Calculateur de prix à ${city.ville}</div>
-        <div class="rs">Combien afficher par nuit selon le mois et le canal</div>
-      </a>
-      <a href="${calcPrefillUrl}">
-        <div class="rt">Estimateur personnalisé</div>
-        <div class="rs">Ajuste avec ton type de bien et ton mode d'exploitation</div>
-      </a>
-      <a href="/calculateurs/comparer-villes">
-        <div class="rt">Comparer ${city.ville} avec d'autres villes</div>
-        <div class="rs">Mets ${city.ville} face à 3 autres villes en 1 clic</div>
-      </a>
-      <a href="/services/simulateurs">
-        <div class="rt">Simulateurs fiscaux</div>
-        <div class="rs">Impôts, statut, rentabilité d'investissement</div>
-      </a>
-    </div>
-  </div>
-</section>
-
-<section style="background:var(--g);color:#fff;padding:clamp(50px,7vw,90px) clamp(16px,5vw,60px);text-align:center">
-  <h2 class="h2" style="color:#fff">Tu loues déjà à ${city.ville} ? <em style="color:var(--y)">Va plus loin</em></h2>
-  <p style="color:rgba(255,255,255,.85);font-size:15px;font-weight:300;max-width:520px;margin:0 auto 22px">
-    Avec un compte gratuit, suis ton calendrier, tes revenus réels, ton occupation. Compare ta vraie activité au marché ${city.ville.toLowerCase()} en un coup d'œil.
-  </p>
-  <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
-</section>
-
-<script src="/footer.js"></script>
-</body>
-</html>
-`
+function buildHtml (city, J, reg) {
+  const me = reg.find(v => v.pages.revenus === `/calculateurs/${city.slug}`)
+  const t2 = c => J.estimateRevenue({ pays: c.pays, ville: c.ville, typeLogement: 't2', nbChambres: 1, mode: 'toute-annee' }).revenuAnnuel
+  const others = CITIES.filter(c => c !== city).map(c => {
+    const r = reg.find(v => v.pages.revenus === `/calculateurs/${c.slug}`)
+    const b = J.findCity(c.ville, c.pays)
+    let d = Infinity
+    if (me?.centre && r?.centre) d = Math.hypot(me.centre[0] - r.centre[0], (me.centre[1] - r.centre[1]) * 1.4)
+    else if (c.pays === city.pays) d = 1e6
+    return { ville: c.ville, url: `/calculateurs/${c.slug}`, occ: b.occ, adr: b.adr, t2: t2(c), d }
+  }).filter(n => Number.isFinite(n.d)).sort((x, y) => x.d - y.d).slice(0, 4)
+  return buildRevenuVille(city, { J, photo: aPhoto(me?.slug ?? '') ? me.slug : null, neighbours: others })
 }
 
 // ─── Génération ───────────────────────────────────────────────────────────
+// Seulement quand le script est lancé directement (CITIES est aussi importé)
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
 let count = 0
+const J = loadEngine()
+const reg = villesRegistre()
 for (const city of CITIES) {
   const dir = path.join(ROOT, 'calculateurs', city.urlSegment)
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
-  const html = buildHtml(city)
+  const html = buildHtml(city, J, reg)
   fs.writeFileSync(path.join(dir, 'index.html'), html, 'utf8')
-  console.log(`  ✓ ${city.urlSegment}/index.html (${city.ville} ${city.flag})`)
+  console.log(`  ok ${city.urlSegment}/index.html (${city.ville})`)
   count++
 }
 
 console.log(`\n🎉 ${count} articles SEO ville générés dans /calculateurs/`)
 console.log('   Sitemap à mettre à jour ensuite.\n')
+}

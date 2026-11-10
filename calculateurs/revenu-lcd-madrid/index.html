@@ -3,27 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Combien rapporte une location courte durée à Madrid ?</title>
-  <meta name="description" content="Estime gratuitement les revenus d'une location courte durée (Airbnb, Booking, en direct) à Madrid en 2026. Données INE Encuesta de Ocupación Apartamentos Turísticos : 68 % d'occupation, 110 €/nuit. Calculateur préfilé par type de bien.">
+  <title>Louer en courte durée à Madrid : revenus 2026</title>
+  <meta name="description" content="Madrid : 68 % d'occupation, 110 € la nuit en moyenne (INE EOAT + Turismo Madrid 2024). Revenus par type de logement, saisons, règles locales et tendances 2026.">
   <link rel="canonical" href="https://jasonmarinho.com/calculateurs/revenu-lcd-madrid">
-  <meta property="og:title" content="Combien rapporte une location courte durée à Madrid en 2026 ?">
-  <meta property="og:description" content="Calculateur gratuit + chiffres marché 2024 (INE Encuesta de Ocupación Apartamentos Turísticos). Tous canaux : Airbnb, Booking, direct.">
+  <meta property="og:title" content="Louer en courte durée à Madrid en 2026">
+  <meta property="og:description" content="Revenus par type de logement, saisons, règles locales et tendances 2026 à Madrid.">
   <meta property="og:url" content="https://jasonmarinho.com/calculateurs/revenu-lcd-madrid">
-  <meta property="og:image" content="https://jasonmarinho.com/couverture-jason.webp">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
+  <meta property="og:image" content="https://jasonmarinho.com/img/villes/large/madrid.webp">
   <meta name="twitter:card" content="summary_large_image">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Jason Marinho">
   <meta name="robots" content="index, follow">
   <link rel="shortcut icon" href="/favicon.ico">
-<link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
-<link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png?v=2026-06">
-<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=2026-06">
-<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png?v=2026-06">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
-<link rel="manifest" href="/manifest.json?v=2026-06">
-<meta name="theme-color" content="#004C3F">
+  <link rel="icon" href="/favicon.ico?v=2026-06" sizes="any">
+  <link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png?v=2026-06">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png?v=2026-06">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2026-06">
+  <link rel="manifest" href="/manifest.json?v=2026-06">
+  <meta name="theme-color" content="#004C3F">
   <link rel="stylesheet" href="/fonts/site-fonts.css?v=ce727d0a60">
 <!-- FONTLOAD:START -->
 <link rel="preload" as="font" type="font/woff2" href="/fonts/gf/fraunces-normal-300-latin.woff2" crossorigin>
@@ -33,279 +30,233 @@
   <link rel="stylesheet" href="/fonts/phosphor-regular-subset.css?v=868073a0d4">
   <link rel="stylesheet" href="/fonts/phosphor-bold-subset.css?v=29999e9550">
   <style>
-    :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--yd:#FFC845;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#5A6B57;--bd:rgba(0,76,63,0.10);--ok:#34D399}
+    :root{--g:#004C3F;--gd:#003329;--y:#FFD56B;--yd:#FFC845;--cr:#F7F5F0;--w:#FDFCF9;--td:#0F1A0D;--tm:#3D5038;--tl:#5F6F5C;--bd:rgba(0,76,63,.10);--bd2:rgba(0,76,63,.18)}
     *{box-sizing:border-box}
-    body{margin:0;padding-top:64px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);line-height:1.7}
-    .h1{font-family:'Fraunces',serif;font-size:clamp(2rem,4vw,3rem);line-height:1.15;letter-spacing:-.02em;margin:0 0 18px;font-weight:400;color:#fff}
-    .h2{font-family:'Fraunces',serif;font-size:clamp(1.5rem,2.6vw,2.1rem);line-height:1.2;margin:0 0 14px;font-weight:400;color:var(--td);letter-spacing:-.015em}
-    .h3{font-family:'Fraunces',serif;font-size:clamp(1.2rem,1.8vw,1.4rem);font-weight:500;margin:24px 0 10px;color:var(--td)}
-    .lbl{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--g);margin-bottom:12px}
-    .lbl.lt{color:rgba(255,255,255,.7)}
-    .breadcrumb{font-size:12.5px;color:var(--tl);margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap}
-    .breadcrumb a{color:var(--g);text-decoration:none;font-weight:500}
-    .breadcrumb.lt a,.breadcrumb.lt{color:rgba(255,255,255,.7)}
-
-    .hero{background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);color:#fff;padding:clamp(48px,7vw,80px) clamp(16px,5vw,60px) clamp(40px,6vw,72px);position:relative;overflow:hidden}
-    .hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 78% 50%,rgba(255,213,107,.06),transparent 70%);pointer-events:none}
-    .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 50% 60% at 20% 100%,rgba(0,76,63,.5),transparent 70%);pointer-events:none}
-    .hero-in,.hero > *{position:relative;z-index:1}
-    .hero-in{max-width:920px;margin:0 auto}
-    .hero p.sub{font-size:clamp(1rem,1.4vw,1.15rem);font-weight:300;color:rgba(255,255,255,.85);max-width:740px;margin:0;line-height:1.65}
-
-    .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:920px;margin:0 auto;padding:0 16px 0;position:relative;z-index:2}
-    @media(max-width:680px){.stats-strip{grid-template-columns:repeat(2,1fr)}}
-    .stat-card{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:18px 20px;box-shadow:0 8px 24px rgba(0,76,63,.06)}
-    .stat-card .sc-label{font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--tl);margin-bottom:6px}
-    .stat-card .sc-value{font-family:'Fraunces',serif;font-size:26px;font-weight:400;color:var(--g);letter-spacing:-.01em}
-    .stat-card .sc-sub{font-size:11.5px;color:var(--tm);margin-top:2px;font-weight:300}
-
-    .section{padding:clamp(40px,6vw,72px) clamp(16px,5vw,60px);max-width:920px;margin:0 auto}
-    .section p{font-size:15.5px;font-weight:300;color:var(--tm);line-height:1.75;margin:0 0 14px}
-    .section ul{padding-left:24px;font-size:15px;font-weight:300;color:var(--tm);line-height:1.8;margin:0 0 14px}
-    .section ul li{margin-bottom:6px}
-    .section strong{font-weight:600;color:var(--td)}
-    .section a{color:var(--g);font-weight:500}
-    .section.cr{background:var(--cr);max-width:none}
-    .section.cr .in{max-width:920px;margin:0 auto}
-
-    .scenarios-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:18px 0 22px}
-    .scenario-card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:18px 20px;text-align:center}
-    .scenario-card .name{font-family:'Fraunces',serif;font-size:16px;font-weight:500;color:var(--td);margin-bottom:8px}
-    .scenario-card .revenue{font-family:'Fraunces',serif;font-size:24px;font-weight:400;color:var(--g);letter-spacing:-.01em}
-    .scenario-card .meta{font-size:11.5px;color:var(--tl);margin-top:6px;font-weight:300}
-
-    .source-box{background:#fff;border-left:3px solid var(--y);padding:14px 18px;border-radius:8px;font-size:13.5px;color:var(--tm);line-height:1.7;margin:18px 0}
-    .source-box strong{color:var(--g)}
-
-    .cta-embed{background:linear-gradient(135deg,var(--g) 0%,var(--gd) 100%);color:#fff;border-radius:18px;padding:28px 32px;margin:24px 0;text-align:center}
-    .cta-embed h3{color:#fff;font-family:'Fraunces',serif;font-size:22px;font-weight:400;margin:0 0 8px}
-    .cta-embed p{color:rgba(255,255,255,.85);font-size:14px;font-weight:300;margin:0 0 18px}
-    .btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:14px;padding:13px 24px;border-radius:10px;text-decoration:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s cubic-bezier(.4,0,.2,1)}
-    .btn-p:hover{background:var(--yd);transform:translateY(-2px);box-shadow:0 12px 28px rgba(255,213,107,.32)}
-
-    .faq-item{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px 22px;margin-bottom:10px}
-    .faq-item summary{font-family:'Fraunces',serif;font-size:16px;font-weight:400;color:var(--td);cursor:pointer;list-style:none;position:relative;padding-right:24px}
-    .faq-item summary::-webkit-details-marker{display:none}
-    .faq-item summary::after{content:'+';position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:22px;color:var(--g);font-weight:300}
-    .faq-item[open] summary::after{content:'−'}
-    .faq-item p{margin:12px 0 0;font-size:14px;color:var(--tm);line-height:1.7;font-weight:300}
-
-    .related-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:22px}
-    .related-row a{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px 18px;text-decoration:none;color:inherit;transition:transform .2s,border-color .2s}
-    .related-row a:hover{transform:translateY(-2px);border-color:var(--g)}
-    .related-row .rt{font-family:'Fraunces',serif;font-size:15px;color:var(--td);font-weight:500;margin-bottom:4px}
-    .related-row .rs{font-size:12.5px;color:var(--tl);font-weight:300}
-    /* ─── Design refresh 2026 : accent vert + gradients subtils ─────── */
-    body{background:linear-gradient(180deg,#fff 0%,var(--cr) 100%)}
-    .scenario-card,.stat-card,.faq-item,.related-row a{border-top:2px solid transparent;transition:border-color .25s,box-shadow .3s,transform .25s}
-    .scenario-card:hover,.stat-card:hover,.faq-item:hover,.related-row a:hover{border-top-color:var(--g)}
-    .btn-p{background:linear-gradient(135deg,var(--y) 0%,#FFE08A 50%,var(--y) 100%);background-size:200% 100%;transition:background-position .35s,transform .2s,box-shadow .2s}
-    .btn-p:hover{background-position:100% 0}
-    .lbl{position:relative;padding-left:18px}
-    .lbl::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:10px;height:2px;background:currentColor;border-radius:2px;opacity:.65}
+    html{scroll-behavior:smooth}
+    body{margin:0;padding-top:76px;font-family:'Outfit',sans-serif;background:var(--w);color:var(--td);line-height:1.65;-webkit-font-smoothing:antialiased}
+    em{font-style:italic;color:var(--g)}
+    .wrap{max-width:900px;margin:0 auto;padding:0 16px}
+    @media(min-width:760px){.wrap{padding:0 24px}}
+    .tag{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--g)}
+    .hero{max-width:1100px;margin:8px auto 0;border-radius:28px;background:linear-gradient(160deg,#001a11 0%,var(--gd) 55%,#00463a 100%);color:#fff;padding:clamp(28px,4vw,48px) clamp(20px,4vw,48px) clamp(84px,9vw,110px)}
+    @media(max-width:1130px){.hero{margin:8px 12px 0}}
+    .breadcrumb{font-size:12.5px;display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+    .breadcrumb.lt,.breadcrumb.lt a{color:rgba(255,255,255,.72);text-decoration:none}
+    .hero .tag{color:var(--y)}
+    .hero h1{font-family:'Fraunces',serif;font-weight:300;letter-spacing:-.03em;font-size:clamp(34px,5.2vw,58px);line-height:1.04;margin:12px 0 14px;max-width:820px}
+    .hero h1 em{color:var(--y)}
+    .hero .lede{font-size:clamp(15px,1.4vw,17px);font-weight:300;color:rgba(255,255,255,.85);max-width:640px;margin:0}
+    .est{margin-top:28px}
+    .est .k{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.7);font-weight:600}
+    .est .big{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(44px,7vw,78px);letter-spacing:-.04em;line-height:1;margin-top:6px;font-variant-numeric:tabular-nums}
+    .est .big small{font-family:'Outfit',sans-serif;font-size:16px;letter-spacing:0;color:rgba(255,255,255,.7);margin-left:8px}
+    .est .r{font-size:14px;color:rgba(255,255,255,.78);margin-top:8px}
+    .facts{position:relative;z-index:2;max-width:1000px;margin:-58px auto 0;display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-radius:22px;box-shadow:0 22px 60px rgba(0,40,30,.12);border:1px solid var(--bd)}
+    @media(max-width:1030px){.facts{margin:-58px 16px 0}}
+    .facts>div{padding:20px 22px}
+    .facts>div+div{border-left:1px solid var(--bd)}
+    .facts .v{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(24px,2.8vw,32px);font-variant-numeric:tabular-nums;line-height:1.1}
+    .facts .l{font-size:12.5px;color:var(--tl);margin-top:4px}
+    .src{font-size:12.5px;color:var(--tl);line-height:1.6}
+    .src a{color:var(--g);text-decoration:none;border-bottom:1px solid rgba(0,76,63,.25)}
+    .facts-src{max-width:1000px;margin:12px auto 0;padding:0 24px;text-align:center}
+    .sec{padding:clamp(48px,7vw,80px) 0 0}
+    .sec h2{font-family:'Fraunces',serif;font-weight:300;letter-spacing:-.025em;font-size:clamp(26px,3.4vw,38px);line-height:1.12;margin:10px 0 14px}
+    .sec p{color:var(--tm);font-weight:300;font-size:16px;line-height:1.75;margin:0 0 14px}
+    .types{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:6px}
+    .types a{display:block;background:#fff;border:1px solid var(--bd);border-radius:18px;padding:16px;text-decoration:none;color:inherit;transition:border-color .2s,transform .2s}
+    .types a:hover{border-color:var(--g);transform:translateY(-2px)}
+    .types a.hl{border-color:var(--g);box-shadow:0 10px 30px rgba(0,76,63,.08)}
+    .types .n{font-size:13px;color:var(--tl);font-weight:500}
+    .types .v{font-family:'Fraunces',serif;font-weight:300;font-size:24px;margin-top:4px;font-variant-numeric:tabular-nums}
+    .types .s{font-size:12px;color:var(--tl)}
+    .months{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;align-items:end;height:90px;margin-top:22px}
+    .months span{display:block;border-radius:7px 7px 3px 3px;background:#DCE9E0;min-height:4px}
+    .months span.h{background:var(--g)}
+    .ml{display:grid;grid-template-columns:repeat(12,1fr);gap:6px;font-size:11px;color:var(--tl);text-align:center;margin-top:6px}
+    .seasons{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:10px}
+    .seasons li{background:#fff;border:1px solid var(--bd);border-radius:16px;padding:14px 18px;font-size:15px;color:var(--tm);line-height:1.6}
+    .seasons li b{color:var(--td);font-weight:600;display:block;margin-bottom:2px}
+    .cite{border-left:3px solid var(--y);padding:4px 0 4px 18px;margin:18px 0}
+    .cite .t{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(21px,2.4vw,26px);line-height:1.25}
+    .changes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+    .card{background:#fff;border:1px solid var(--bd);border-radius:18px;padding:18px 20px}
+    .card .t{font-family:'Fraunces',serif;font-weight:300;font-size:20px;line-height:1.25;margin:6px 0 8px}
+    .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:520px}
+    th,td{padding:12px 10px;border-bottom:1px solid var(--bd);text-align:left;font-variant-numeric:tabular-nums}
+    th{font-size:11.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--tl);font-weight:600}
+    td:last-child,th:last-child{text-align:right}
+    tr.me td{background:#F1F7F3;font-weight:600}
+    td a{color:var(--g);text-decoration:none;font-weight:500}
+    .quartiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:10px;margin-top:6px}
+    .quartiers .card b{font-weight:600;display:block}
+    .quartiers .card span{font-size:13.5px;color:var(--tm);line-height:1.55;display:block;margin-top:4px}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+    .btn{display:inline-flex;align-items:center;gap:8px;background:var(--y);color:var(--gd);font-weight:600;font-size:14.5px;padding:13px 20px;border-radius:12px;text-decoration:none;border:0;font-family:inherit;cursor:pointer;transition:transform .2s,box-shadow .2s}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(255,200,69,.35)}
+    .btn.o{background:#fff;border:1px solid var(--bd2);color:var(--g)}
+    .faq details{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:16px 22px;margin-bottom:10px}
+    .faq summary{font-family:'Fraunces',serif;font-size:17px;font-weight:400;cursor:pointer;list-style:none;position:relative;padding-right:28px}
+    .faq summary::-webkit-details-marker{display:none}
+    .faq summary::after{content:'+';position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:22px;color:var(--g);font-weight:300}
+    .faq details[open] summary::after{content:'\2212'}
+    .faq p{margin:10px 0 0;font-size:14.5px}
+    @media(max-width:860px){.facts{grid-template-columns:repeat(2,1fr)}.facts>div:nth-child(3){border-left:0}.facts>div:nth-child(n+3){border-top:1px solid var(--bd)}.types{grid-template-columns:repeat(2,1fr)}.changes{grid-template-columns:1fr}}
+    @media(max-width:640px){.months{gap:4px;height:72px}.ml{gap:4px}}
+    @media print{#nav,nav#nav,.actions,footer,#footer-mount{display:none!important}body{padding-top:0}}
   </style>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Combien rapporte une location courte durée à Madrid en 2026 ? Calcul gratuit + chiffres marché","description":"Estime gratuitement les revenus d'une location courte durée (Airbnb, Booking, en direct) à Madrid en 2026. Données INE Encuesta de Ocupación Apartamentos Turísticos : 68 % d'occupation, 110 €/nuit. Calculateur préfilé par type de bien.","datePublished":"2026-05-17","dateModified":"2026-05-17","author":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"},"publisher":{"@type":"Organization","name":"Jason Marinho","logo":{"@type":"ImageObject","url":"https://jasonmarinho.com/logo.webp"}},"image":"https://jasonmarinho.com/couverture-jason.webp","mainEntityOfPage":"https://jasonmarinho.com/calculateurs/revenu-lcd-madrid"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Louer en courte durée à Madrid en 2026 : revenus, saisons et règles","description":"Madrid : 68 % d'occupation, 110 € la nuit en moyenne (INE EOAT + Turismo Madrid 2024). Revenus par type de logement, saisons, règles locales et tendances 2026.","datePublished":"2026-05-17","dateModified":"2026-11-10","author":{"@type":"Person","name":"Jason Marinho","url":"https://jasonmarinho.com"},"publisher":{"@type":"Organization","name":"Jason Marinho","logo":{"@type":"ImageObject","url":"https://jasonmarinho.com/logo.webp"}},"image":"https://jasonmarinho.com/img/villes/large/madrid.webp","mainEntityOfPage":"https://jasonmarinho.com/calculateurs/revenu-lcd-madrid"}</script>
   <script type="application/ld+json" data-schema-bc>
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://jasonmarinho.com/"},{"@type":"ListItem","position":2,"name":"Calculateurs","item":"https://jasonmarinho.com/calculateurs"},{"@type":"ListItem","position":3,"name":"Madrid","item":"https://jasonmarinho.com/calculateurs/revenu-lcd-madrid"}]}
 </script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Combien rapporte une location courte durée à Madrid en moyenne ?","acceptedAnswer":{"@type":"Answer","text":"En moyenne marché 2024 (INE Encuesta de Ocupación Apartamentos Turísticos + Turismo Madrid 2024) : 68 % d'occupation à 110 € la nuit, tous canaux confondus (Airbnb, Booking, Vrbo, en direct), soit environ 27 300 € de RevPAR annuel. Un studio rapporte ~18 400 €/an, un T2 ~27 300 €, un T3 ~31 400 €. Ces chiffres supposent un bien bien équipé et bien positionné."}},{"@type":"Question","name":"Quels sont les quartiers les plus rentables à Madrid ?","acceptedAnswer":{"@type":"Answer","text":"Les quartiers premium à Madrid : Centro / Sol (ADR 120-150 €), Malasaña / Chueca (ADR 110-140 €), Salamanca (ADR 130-180 €). Pour un meilleur rapport prix d'achat / revenus, regarde aussi les quartiers émergents listés dans l'article."}},{"@type":"Question","name":"Faut-il être déclaré pour louer en LCD à Madrid ?","acceptedAnswer":{"@type":"Answer","text":"Oui, dès la première nuit. Enregistrement obligatoire (Vivienda de Uso Turístico). Consulte les simulateurs fiscaux Jason Marinho pour estimer ton imposition exacte."}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Combien rapporte une location courte durée à Madrid ?","acceptedAnswer":{"@type":"Answer","text":"Avec les chiffres de marché (INE EOAT + Turismo Madrid 2024) : 68 % d'occupation et 110 € la nuit en moyenne. Un T2 loué toute l'année rapporte environ 24 572 € de revenus bruts, entre 19 658 € et 29 486 € selon l'annonce. L'estimateur gratuit calcule aussi le net après frais et impôts."}},{"@type":"Question","name":"Quand est la haute saison à Madrid ?","acceptedAnswer":{"@type":"Answer","text":"Les mois les plus demandés à Madrid vont de mars à mai, septembre à novembre. Mars-mai : Printemps idéal, ARCO (foire d'art), Madrid Fashion Week. Occupation 78 %, ADR +18 %."}},{"@type":"Question","name":"Faut-il déclarer sa location courte durée à Madrid ?","acceptedAnswer":{"@type":"Answer","text":"Oui. Enregistrement obligatoire (Vivienda de Uso Turístico). Les règles détaillées sont dans la section « Les règles à Madrid »."}},{"@type":"Question","name":"Qu'est-ce qui change en 2026 pour les hôtes ?","acceptedAnswer":{"@type":"Answer","text":"Airbnb prélève 15,5 % à l'hôte depuis le 13 octobre 2026 en Europe : les frais voyageur disparaissent et le prix affiché est le prix payé. Si tu es résident fiscal français, tes revenus de location à l'étranger se déclarent aussi en France."}}]}</script>
   <script defer src="/nav.js"></script>
 </head>
 <body>
 <header class="hero">
 <!-- PHOTO-VILLE:START --><figure class="hero-photo"><img src="/img/villes/large/madrid.webp" alt="Madrid, Espagne" width="1440" height="576" decoding="async" fetchpriority="low"><figcaption>Photo : Carlos Delgado, <a href="https://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener">CC BY-SA 3.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Palacio_de_Comunicaciones_-_47.jpg" target="_blank" rel="noopener">Wikimedia Commons</a></figcaption></figure><style>.hero{position:relative;overflow:hidden;isolation:isolate}.hero-photo{position:absolute;inset:0;z-index:-1;margin:0}.hero-photo img{width:100%;height:100%;object-fit:cover;display:block}.hero-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(0,26,17,.94) 0%,rgba(0,40,32,.86) 45%,rgba(0,51,41,.55) 100%)}.hero-photo figcaption{position:absolute;right:12px;bottom:8px;z-index:1;font-size:10.5px;color:rgba(255,255,255,.55)}.hero-photo figcaption a{color:inherit}@media(max-width:720px){.hero-photo:after{background:linear-gradient(180deg,rgba(0,26,17,.9),rgba(0,40,32,.82))}}</style><!-- PHOTO-VILLE:END -->
-  <div class="hero-in">
-    <nav class="breadcrumb lt" aria-label="Fil d'Ariane">
+  <nav class="breadcrumb lt" aria-label="Fil d'Ariane">
       <a href="/">Accueil</a> /
       <a href="/calculateurs">Calculateurs</a> /
       <span>Madrid</span>
     </nav>
-    <div class="lbl lt"><i class="ph ph-chart-line-up"></i> Calculateur gratuit 🇪🇸 Madrid</div>
-    <h1 class="h1">Combien rapporte une <em style="color:var(--y)">location courte durée</em> à Madrid en 2026 ?</h1>
-    <p class="sub">Calcul gratuit, sans inscription, basé sur les chiffres marché 2024 (INE Encuesta de Ocupación Apartamentos Turísticos + Turismo Madrid 2024). Tous canaux confondus : Airbnb, Booking, Vrbo, en direct. Estimation par type de bien et fourchette ±20 %.</p>
+  <div class="tag">Étude de revenus 2026</div>
+  <h1>Louer en courte durée à <em>Madrid</em> en 2026</h1>
+  <p class="lede">Ce que rapporte un logement, mois par mois et par taille, ce qui a changé cette année et les règles à connaître avant de te lancer.</p>
+  <div class="est">
+    <div class="k">Un T2 loué toute l'année</div>
+    <div class="big">24 572 €<small>de revenus bruts par an</small></div>
+    <div class="r">Entre 19 658 € et 29 486 € selon ton annonce, tes photos et tes prix</div>
   </div>
 </header>
-
-<div style="max-width:920px;margin:-26px auto 28px;padding:0 16px;position:relative;z-index:5">
-  <a href="https://app.jasonmarinho.com/dashboard/simulateurs" style="display:flex;align-items:center;gap:14px;padding:16px 20px;background:#fff;border:1px solid rgba(255,213,107,.50);border-radius:16px;box-shadow:0 14px 40px rgba(0,76,63,.12),0 2px 6px rgba(0,0,0,.04);text-decoration:none;color:inherit;transition:transform .2s,box-shadow .2s">
-    <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--y) 0%,var(--yd) 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--gd);font-size:18px"><i class="ph-bold ph-house"></i></div>
-    <div style="flex:1">
-      <div style="font-family:'Fraunces',serif;font-size:15px;color:var(--td);font-weight:500;line-height:1.3">💡 Tu loues déjà à Madrid ?</div>
-      <div style="font-size:12.5px;color:var(--tm);font-weight:300;margin-top:2px;line-height:1.4">Dans ton espace membre, l&apos;estimateur compare <strong style="color:var(--g);font-weight:600">ton ADR et ton occupation réels</strong> à ces chiffres marché. Compte gratuit.</div>
-    </div>
-    <div style="font-size:13px;font-weight:600;color:var(--g);white-space:nowrap;flex-shrink:0">Ouvrir →</div>
-  </a>
+<div class="facts">
+  <div><div class="v">68 %</div><div class="l">d'occupation sur 12 mois</div></div>
+  <div><div class="v">110 €</div><div class="l">par nuit en moyenne</div></div>
+  <div><div class="v">248</div><div class="l">nuits louées par an</div></div>
+  <div><div class="v">6 mois</div><div class="l">de haute saison</div></div>
 </div>
+<p class="src facts-src">Chiffres du marché : INE EOAT + Turismo Madrid 2024. Moyennes tous canaux (Airbnb, Booking, en direct).</p>
 
-<div class="stats-strip">
-  <div class="stat-card">
-    <div class="sc-label">Occupation moyenne</div>
-    <div class="sc-value">68 %</div>
-    <div class="sc-sub">soit ~248 nuits/an</div>
-  </div>
-  <div class="stat-card">
-    <div class="sc-label">Prix moyen / nuit (ADR)</div>
-    <div class="sc-value">110 €</div>
-    <div class="sc-sub">médian LCD Madrid</div>
-  </div>
-  <div class="stat-card">
-    <div class="sc-label">RevPAR annuel</div>
-    <div class="sc-value">~27 300 €</div>
-    <div class="sc-sub">par bien moyen</div>
-  </div>
-  <div class="stat-card">
-    <div class="sc-label">Haute saison</div>
-    <div class="sc-value" style="font-size:18px">mars-mai, septembre-novembre</div>
-    <div class="sc-sub">saison locale</div>
-  </div>
-</div>
-
-<section class="section">
-  <h2 class="h2">Les revenus moyens par type de bien à Madrid</h2>
-  <p>
-    Voici les estimations indicatives pour Madrid en 2026, calculées à partir des données 2024 (INE Encuesta de Ocupación Apartamentos Turísticos + Turismo Madrid 2024).
-    Ces chiffres reflètent un bien <strong>correctement équipé, classé, avec photos pro et 50+ avis</strong>. Un bien moins bien positionné peut être 30 à 40 % en dessous.
-  </p>
-
-  <div class="scenarios-grid">
-    <div class="scenario-card">
-      <div class="name">Studio (15-25 m²)</div>
-      <div class="revenue">18 400 €/an</div>
-      <div class="meta">±20 % · ADR ~83 €</div>
+<section class="sec">
+  <div class="wrap">
+    <div class="tag">Par taille de logement</div>
+    <h2>Ce que rapporte <em>ton logement</em></h2>
+    <p>Revenus bruts sur 12 mois, loué toute l'année avec une annonce correcte. Touche une taille pour calculer ton net après frais et impôts.</p>
+    <div class="types">
+      <a href="/calculateurs/revenus-lcd?pays=ES&ville=Madrid&amp;type=studio"><div class="n">Studio</div><div class="v">17 405 €</div><div class="s">70 € la nuit</div></a>
+      <a href="/calculateurs/revenus-lcd?pays=ES&ville=Madrid&amp;type=t2" class="hl"><div class="n">T2</div><div class="v">24 572 €</div><div class="s">99 € la nuit</div></a>
+      <a href="/calculateurs/revenus-lcd?pays=ES&ville=Madrid&amp;type=t3"><div class="n">T3</div><div class="v">31 397 €</div><div class="s">126 € la nuit</div></a>
+      <a href="/calculateurs/revenus-lcd?pays=ES&ville=Madrid&amp;type=t4"><div class="n">T4 ou plus</div><div class="v">36 107 €</div><div class="s">145 € la nuit</div></a>
+      <a href="/calculateurs/revenus-lcd?pays=ES&ville=Madrid&amp;type=maison"><div class="n">Maison</div><div class="v">40 816 €</div><div class="s">164 € la nuit</div></a>
     </div>
-  
-    <div class="scenario-card">
-      <div class="name">T1 (1 chambre)</div>
-      <div class="revenue">21 700 €/an</div>
-      <div class="meta">±20 % · ADR ~94 €</div>
+    <div class="months" aria-hidden="true"><span class="" style="height:54%" title="Janvier : 1 303 €"></span><span class="" style="height:77%" title="Février : 1 862 €"></span><span class="h" style="height:100%" title="Mars : 2 420 €"></span><span class="h" style="height:100%" title="Avril : 2 420 €"></span><span class="h" style="height:100%" title="Mai : 2 420 €"></span><span class="" style="height:77%" title="Juin : 1 862 €"></span><span class="" style="height:77%" title="Juillet : 1 862 €"></span><span class="" style="height:77%" title="Août : 1 862 €"></span><span class="h" style="height:100%" title="Septembre : 2 420 €"></span><span class="h" style="height:100%" title="Octobre : 2 420 €"></span><span class="h" style="height:100%" title="Novembre : 2 420 €"></span><span class="" style="height:54%" title="Décembre : 1 303 €"></span></div>
+    <div class="ml"><span>J</span><span>F</span><span>M</span><span>A</span><span>M</span><span>J</span><span>J</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
+    <p class="src" style="margin-top:10px">Revenus d'un T2 par mois. En vert foncé, la haute saison : mars à mai, septembre à novembre.</p>
+    <div class="actions">
+      <a class="btn" href="/calculateurs/revenus-lcd?pays=ES&ville=Madrid">Calculer mon revenu net <i class="ph-bold ph-arrow-right"></i></a>
+      <a class="btn o" href="/calculateurs/prix-lcd?pays=ES&amp;ville=Madrid">Quel prix afficher par nuit</a>
     </div>
-  
-    <div class="scenario-card" style="border-color:var(--g);background:linear-gradient(135deg,#fff 0%,rgba(0,76,63,.04) 100%)">
-      <div class="name">T2 (2 pièces) <span style="font-size:10px;background:var(--y);color:var(--gd);padding:2px 6px;border-radius:8px;font-weight:700;vertical-align:middle">le plus courant</span></div>
-      <div class="revenue">27 300 €/an</div>
-      <div class="meta">±20 % · ADR ~110 €</div>
-    </div>
-  
-    <div class="scenario-card">
-      <div class="name">T3 (3 pièces)</div>
-      <div class="revenue">31 400 €/an</div>
-      <div class="meta">±20 % · ADR ~126 €</div>
-    </div>
-  
-    <div class="scenario-card">
-      <div class="name">Maison/loft</div>
-      <div class="revenue">35 500 €/an</div>
-      <div class="meta">±20 % · ADR ~143 €</div>
-    </div>
-  </div>
-
-  <div class="source-box">
-    <strong>📊 Source méthodologie :</strong> INE Encuesta de Ocupación Apartamentos Turísticos + Turismo Madrid 2024. Agrégation et mise à jour annuelle dès publication des rapports T1 N+1.
-  </div>
-
-  <h3 class="h3">Affine ton estimation avec le calculateur</h3>
-  <p>Le calculateur ci-dessous prend en compte ton type de bien, le nombre de chambres et ton mode d'exploitation pour te donner une estimation personnalisée.</p>
-
-  <div class="cta-embed">
-    <h3>Calcule ton revenu exact pour ton bien à Madrid</h3>
-    <p>Préfilé sur Madrid. Modifie le type de bien et le mode d'exploitation pour ta situation.</p>
-    <a href="/calculateurs/revenus-lcd?pays=ES&ville=Madrid" class="btn-p">Lancer le calculateur <i class="ph-bold ph-arrow-right"></i></a>
   </div>
 </section>
 
-<section class="section cr">
-  <div class="in">
-    <h2 class="h2">Le marché LCD à Madrid en détail</h2>
+<section class="sec">
+  <div class="wrap">
+    <div class="tag">Fin 2026</div>
+    <h2>Ce qui a <em>changé cette année</em></h2>
+    <div class="cite"><div class="t">Les prix montent, l'occupation recule</div>
+      <p class="src" style="margin:6px 0 0">En Europe en août 2026, le prix moyen par nuit a progressé de 7,5 % et l'occupation a perdu 2,1 points. En France, le revenu par logement disponible a gagné 5,1 %. Source : <a href="https://www.airdna.co/blog/european-review-august-2026" target="_blank" rel="noopener">AirDNA, revue européenne d'août 2026</a>.</p></div>
+    <p>Pour toi, ça veut dire moins de nuits mais mieux payées. Les hôtes qui gardent leur occupation sont ceux qui ajustent leurs prix chaque semaine et soignent leurs photos.</p>
+    <div class="changes" style="grid-template-columns:1fr">
+      <div class="card"><div class="tag">Airbnb</div><div class="t">15,5 % de frais pour l'hôte</div><p class="src" style="margin:0">Depuis le 13/10/2026 en Europe, plus de frais voyageur : le prix affiché est le prix payé. <a href="https://www.moneyvox.fr/immobilier/actualites/110230/airbnb-et-impots-ce-qui-change-des-le-13-octobre-pour-la-location-meublee-de-courte-duree" target="_blank" rel="noopener">MoneyVox</a></p></div>
+    </div>
+  </div>
+</section>
 
-    <h3 class="h3">Saisonnalité : les vrais pics</h3>
-    <p>Madrid n'a pas une seule haute saison, mais <strong>plusieurs pics</strong> :</p>
-    <ul>
-    <li><strong>Mars-mai :</strong> Printemps idéal, ARCO (foire d'art), Madrid Fashion Week. Occupation 78 %, ADR +18 %.</li>
-  
-    <li><strong>Septembre-novembre :</strong> Reprise business + automne doux. Occupation 80 %, ADR +20 %.</li>
-  
-    <li><strong>Juillet-août :</strong> Chaleur intense, Madrilènes en vacances. Occupation 55 %, ADR -15 %. Cible workation et air conditionné.</li>
-  
-    <li><strong>Décembre :</strong> Pic Noël + Reyes (3-5 janvier). Occupation 75 %, ADR +15 %.</li>
-  </ul>
-
-    <h3 class="h3">Quartiers : où ça rapporte le plus</h3>
-    <ul>
-    <li><strong>Centro / Sol :</strong> ADR 120-150 €, occupation 78 %. Touristes, animation continue.</li>
-  
-    <li><strong>Malasaña / Chueca :</strong> ADR 110-140 €, occupation 74 %. Vie nocturne, bobo, design.</li>
-  
-    <li><strong>Salamanca :</strong> ADR 130-180 €, occupation 70 %. Luxe, shopping, ambassades.</li>
-  
-    <li><strong>La Latina :</strong> ADR 105-135 €, occupation 72 %. Tapas, jeune, dimanche brunch.</li>
-  
-    <li><strong>Chamberí :</strong> ADR 100-130 €, occupation 68 %. Résidentiel chic, abordable.</li>
-  </ul>
-
-    <h3 class="h3">Cadre légal et réglementation</h3>
-    <p>Enregistrement obligatoire (Vivienda de Uso Turístico). À Madrid, la mairie applique un plafond strict de jours/an dans le centro depuis le Plan Especial 2019. Régime fiscal : Estimación objetiva (módulos) ou directa selon volume. IVA 10 % si services hôteliers.</p>
-
-    <h3 class="h3">Concurrence et positionnement</h3>
-    <p>~18 000 annonces LCD actives à Madrid. La compétition est forte. Pour sortir du lot :</p>
-    <ul>
-      <li>Photos professionnelles (différentiel +20 % de clics)</li>
-      <li>Classement / certification du bien (abattement fiscal favorable selon pays)</li>
-      <li>Pricing dynamique (gain 15-25 % de RevPAR vs prix fixe)</li>
-      <li>Réservations en direct (gagner 15-20 % sur les commissions OTAs)</li>
+<section class="sec">
+  <div class="wrap">
+    <div class="tag">Saisons</div>
+    <h2>Les temps forts <em>à Madrid</em></h2>
+    <ul class="seasons">
+      <li><b>Mars-mai</b>Printemps idéal, ARCO (foire d'art), Madrid Fashion Week. Occupation 78 %, ADR +18 %.</li>
+      <li><b>Septembre-novembre</b>Reprise business + automne doux. Occupation 80 %, ADR +20 %.</li>
+      <li><b>Juillet-août</b>Chaleur intense, Madrilènes en vacances. Occupation 55 %, ADR -15 %. Cible workation et air conditionné.</li>
+      <li><b>Décembre</b>Pic Noël + Reyes (3-5 janvier). Occupation 75 %, ADR +15 %.</li>
     </ul>
   </div>
 </section>
 
-<section class="section">
-  <h2 class="h2">Questions fréquentes</h2>
-
-  <details class="faq-item">
-    <summary>Combien rapporte une location courte durée à Madrid en moyenne ?</summary>
-    <p>En moyenne marché 2024 (INE Encuesta de Ocupación Apartamentos Turísticos + Turismo Madrid 2024) : 68 % d'occupation à 110 € la nuit, tous canaux confondus (Airbnb, Booking, Vrbo, en direct), soit environ 27 300 € de RevPAR annuel. Un studio rapporte ~18 400 €/an, un T2 ~27 300 €, un T3 ~31 400 €. Ces chiffres supposent un bien bien équipé et bien positionné.</p>
-  </details>
-  <details class="faq-item">
-    <summary>Quels sont les quartiers les plus rentables à Madrid ?</summary>
-    <p>Les quartiers premium à Madrid : Centro / Sol (ADR 120-150 €), Malasaña / Chueca (ADR 110-140 €), Salamanca (ADR 130-180 €). Pour un meilleur rapport prix d'achat / revenus, regarde aussi les quartiers émergents listés dans l'article.</p>
-  </details>
-  <details class="faq-item">
-    <summary>Faut-il être déclaré pour louer en LCD à Madrid ?</summary>
-    <p>Oui, dès la première nuit. Enregistrement obligatoire (Vivienda de Uso Turístico). Consulte les simulateurs fiscaux Jason Marinho pour estimer ton imposition exacte.</p>
-  </details>
-</section>
-
-<section class="section cr">
-  <div class="in">
-    <h2 class="h2">Outils complémentaires</h2>
-    <p>Plus loin que la simple estimation de revenus :</p>
-    <div class="related-row">
-      <a href="/calculateurs/prix-lcd?pays=ES&ville=Madrid">
-        <div class="rt">Calculateur de prix à Madrid</div>
-        <div class="rs">Combien afficher par nuit selon le mois et le canal</div>
-      </a>
-      <a href="/calculateurs/revenus-lcd?pays=ES&ville=Madrid">
-        <div class="rt">Estimateur personnalisé</div>
-        <div class="rs">Ajuste avec ton type de bien et ton mode d'exploitation</div>
-      </a>
-      <a href="/calculateurs/comparer-villes">
-        <div class="rt">Comparer Madrid avec d'autres villes</div>
-        <div class="rs">Mets Madrid face à 3 autres villes en 1 clic</div>
-      </a>
-      <a href="/services/simulateurs">
-        <div class="rt">Simulateurs fiscaux</div>
-        <div class="rs">Impôts, statut, rentabilité d'investissement</div>
-      </a>
+<section class="sec">
+  <div class="wrap">
+    <div class="tag">Quartiers</div>
+    <h2>Où ça <em>rapporte le plus</em></h2>
+    <div class="quartiers">
+      <div class="card"><b>Centro / Sol</b><span>120-150 € la nuit, 78 % d'occupation. Touristes, animation continue.</span></div>
+      <div class="card"><b>Malasaña / Chueca</b><span>110-140 € la nuit, 74 % d'occupation. Vie nocturne, bobo, design.</span></div>
+      <div class="card"><b>Salamanca</b><span>130-180 € la nuit, 70 % d'occupation. Luxe, shopping, ambassades.</span></div>
+      <div class="card"><b>La Latina</b><span>105-135 € la nuit, 72 % d'occupation. Tapas, jeune, dimanche brunch.</span></div>
+      <div class="card"><b>Chamberí</b><span>100-130 € la nuit, 68 % d'occupation. Résidentiel chic, abordable.</span></div>
     </div>
   </div>
 </section>
 
-<section style="background:var(--g);color:#fff;padding:clamp(50px,7vw,90px) clamp(16px,5vw,60px);text-align:center">
-  <h2 class="h2" style="color:#fff">Tu loues déjà à Madrid ? <em style="color:var(--y)">Va plus loin</em></h2>
-  <p style="color:rgba(255,255,255,.85);font-size:15px;font-weight:300;max-width:520px;margin:0 auto 22px">
-    Avec un compte gratuit, suis ton calendrier, tes revenus réels, ton occupation. Compare ta vraie activité au marché madrid en un coup d'œil.
-  </p>
-  <a href="https://app.jasonmarinho.com/auth/register" class="btn-p">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
+<section class="sec">
+  <div class="wrap">
+    <div class="tag">Réglementation</div>
+    <h2>Les règles <em>à Madrid</em></h2>
+    <p>Enregistrement obligatoire (Vivienda de Uso Turístico). À Madrid, la mairie applique un plafond strict de jours/an dans le centro depuis le Plan Especial 2019. Régime fiscal : Estimación objetiva (módulos) ou directa selon volume. IVA 10 % si services hôteliers.</p>
+    <p class="src">Les règles changent souvent : vérifie-les auprès de la ville avant de publier ton annonce.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="tag">Comparer</div>
+    <h2>Madrid face aux <em>villes proches</em></h2>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Ville</th><th>Occupation</th><th>Prix par nuit</th><th>Revenu d'un T2</th></tr></thead>
+      <tbody>
+        <tr class="me"><td>Madrid</td><td>68 %</td><td>110 €</td><td>24 572 €</td></tr>
+        <tr><td><a href="/calculateurs/revenu-lcd-barcelona">Barcelona</a></td><td>72 %</td><td>120 €</td><td>28 382 €</td></tr>
+        <tr><td><a href="/calculateurs/revenu-lcd-sevilla">Sevilla</a></td><td>62 %</td><td>85 €</td><td>17 312 €</td></tr>
+        <tr><td><a href="/calculateurs/revenu-lcd-valencia">Valencia</a></td><td>60 %</td><td>80 €</td><td>15 768 €</td></tr>
+      </tbody>
+    </table></div>
+    <p class="src">Mêmes calculs pour chaque ville : T2 loué toute l'année, annonce correcte. Sources de chaque ville sur sa page.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap faq">
+    <h2 class="faq-h">Questions fréquentes</h2>
+    <details><summary>Combien rapporte une location courte durée à Madrid ?</summary><p>Avec les chiffres de marché (INE EOAT + Turismo Madrid 2024) : 68 % d'occupation et 110 € la nuit en moyenne. Un T2 loué toute l'année rapporte environ 24 572 € de revenus bruts, entre 19 658 € et 29 486 € selon l'annonce. L'estimateur gratuit calcule aussi le net après frais et impôts.</p></details>
+    <details><summary>Quand est la haute saison à Madrid ?</summary><p>Les mois les plus demandés à Madrid vont de mars à mai, septembre à novembre. Mars-mai : Printemps idéal, ARCO (foire d'art), Madrid Fashion Week. Occupation 78 %, ADR +18 %.</p></details>
+    <details><summary>Faut-il déclarer sa location courte durée à Madrid ?</summary><p>Oui. Enregistrement obligatoire (Vivienda de Uso Turístico). Les règles détaillées sont dans la section « Les règles à Madrid ».</p></details>
+    <details><summary>Qu'est-ce qui change en 2026 pour les hôtes ?</summary><p>Airbnb prélève 15,5 % à l'hôte depuis le 13 octobre 2026 en Europe : les frais voyageur disparaissent et le prix affiché est le prix payé. Si tu es résident fiscal français, tes revenus de location à l'étranger se déclarent aussi en France.</p></details>
+    <div class="actions">
+      <button class="btn o" type="button" onclick="window.print()">Enregistrer en PDF</button>
+      <button class="btn o" type="button" id="share">Partager cette page</button>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--g);color:#fff;padding:clamp(48px,7vw,84px) 16px;text-align:center;margin-top:clamp(48px,7vw,80px)">
+  <h2 style="font-family:'Fraunces',serif;font-weight:300;font-size:clamp(26px,3.4vw,38px);letter-spacing:-.02em;margin:0 auto 12px;max-width:620px;line-height:1.15">Tu loues déjà à Madrid ? <em style="color:var(--y)">Compare tes vrais chiffres</em></h2>
+  <p style="color:rgba(255,255,255,.8);max-width:540px;margin:0 auto 22px;font-weight:300">Avec un compte gratuit, tu suis tes réservations, ton occupation et tes revenus réels face au marché de Madrid.</p>
+  <a class="btn" href="https://app.jasonmarinho.com/auth/register">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
 </section>
 
 <script src="/footer.js"></script>
+<script>
+(function () {
+  var b = document.getElementById('share')
+  if (!b) return
+  b.addEventListener('click', function () {
+    var data = { title: document.title, url: location.href }
+    if (navigator.share) { navigator.share(data).catch(function () {}); return }
+    try { navigator.clipboard.writeText(location.href); b.textContent = 'Lien copié' } catch (e) {}
+  })
+})()
+</script>
 </body>
 </html>

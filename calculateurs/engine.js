@@ -35,6 +35,16 @@
     { ville: 'Saint-Tropez',    pays: 'FR', occ: 52, adr: 280, revpar: 53100, saisonHaute: [6,7,8,9],       source: "CRT Côte d'Azur 2024" },
     { ville: 'Chamonix',        pays: 'FR', occ: 70, adr: 165, revpar: 42100, saisonHaute: [12,1,2,3,7,8],  source: 'Office Tourisme Chamonix 2024' },
     { ville: 'Antibes',         pays: 'FR', occ: 60, adr: 115, revpar: 25100, saisonHaute: [5,6,7,8,9],     source: "CRT Côte d'Azur 2024" },
+    // 10/11/2026 : villes qui avaient une étude de revenus mais pas de place
+    // ici (l'estimateur leur donnait la moyenne nationale). Chiffres et sources
+    // repris de leur page (scripts/generate-city-revenue-articles.mjs).
+    { ville: 'Cassis',          pays: 'FR', occ: 60, adr: 145, revpar: 31800, saisonHaute: [4,5,6,7,8,9,10],  source: 'Office Tourisme Cassis + CRT PACA 2024' },
+    { ville: 'Carcassonne',     pays: 'FR', occ: 58, adr: 78,  revpar: 16500, saisonHaute: [5,6,7,8,9],       source: 'Office Tourisme Carcassonne Agglo + CRT Occitanie 2024' },
+    { ville: 'La Baule',        pays: 'FR', occ: 55, adr: 135, revpar: 27100, saisonHaute: [6,7,8,9],         source: "Office Tourisme La Baule Presqu'île de Guérande + CRT Pays de la Loire 2024" },
+    { ville: 'Le Touquet',      pays: 'FR', occ: 58, adr: 145, revpar: 30700, saisonHaute: [4,5,6,7,8,9,10],  source: 'Office Tourisme Le Touquet-Paris-Plage + CRT Hauts-de-France 2024' },
+    { ville: 'Megève',          pays: 'FR', occ: 60, adr: 230, revpar: 50400, saisonHaute: [12,1,2,3,7,8],    source: 'Office Tourisme Megève + Savoie Mont Blanc 2024' },
+    { ville: 'Courchevel',      pays: 'FR', occ: 50, adr: 380, revpar: 69400, saisonHaute: [12,1,2,3,4],      source: 'Office Tourisme Courchevel + Les 3 Vallées 2024' },
+    { ville: "Val d'Isère",     pays: 'FR', occ: 55, adr: 270, revpar: 54200, saisonHaute: [12,1,2,3,4,7,8],  source: "Office Tourisme Val d'Isère + Savoie Mont Blanc 2024" },
     // Portugal
     { ville: 'Lisboa',          pays: 'PT', occ: 72, adr: 115, revpar: 30200, saisonHaute: [4,5,6,7,8,9,10],    source: 'Turismo de Portugal RNAL 2024' },
     { ville: 'Porto',           pays: 'PT', occ: 70, adr: 95,  revpar: 24300, saisonHaute: [4,5,6,7,8,9,10],    source: 'Turismo de Portugal RNAL 2024' },
