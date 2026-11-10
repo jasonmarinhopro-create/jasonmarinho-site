@@ -4,6 +4,7 @@
 // donne un bloc « indisponible », jamais une page en erreur.
 import 'server-only'
 import { unstable_cache } from 'next/cache'
+import { slowPagesCheck } from './slow-pages'
 import { getServiceClient } from '@/lib/supabase/service'
 import { storageUsage } from '@/lib/pros/fiche-vitrine-server'
 import { stripe } from '@/lib/stripe/client'
@@ -395,9 +396,18 @@ export async function loadHealth(): Promise<{ checks: HealthCheck[]; at: number 
   return { checks: await loadHealthFresh(), at: Date.now() }
 }
 
+// Pages lentes : mesures « Serveur lent » des 7 derniers jours (une lecture)
+async function slowPagesHealth(): Promise<HealthCheck> {
+  const since = new Date(Date.now() - 7 * 86400_000).toISOString()
+  const { data, error } = await getServiceClient().from('app_errors').select('message')
+    .eq('route', 'perf').eq('source', 'server').gte('created_at', since).limit(3000)
+  if (error) throw new Error(error.message)
+  return slowPagesCheck(((data ?? []) as Array<{ message: string }>).map(r => r.message))
+}
+
 async function loadHealthFresh(): Promise<HealthCheck[]> {
   const guard = <T,>(key: string, title: string, p: Promise<T>) => p.catch(e => unavailable(key, title, e) as unknown as T)
-  const [payments, stripeC, ical, emails, workflows, migrations, quotas] = await Promise.all([
+  const [payments, stripeC, ical, emails, workflows, migrations, quotas, slow] = await Promise.all([
     guard('paiements', 'Paiements', paymentsCheck()),
     guard('stripe', 'Comptes Stripe des hôtes', stripeCheck()),
     guard('ical', 'Calendriers Airbnb / Booking', icalCheck()),
@@ -405,7 +415,8 @@ async function loadHealthFresh(): Promise<HealthCheck[]> {
     guard('taches', 'Tâches automatiques', workflowsCheck()),
     guard('migrations', 'Migrations de la base', migrationsCheckCached()),
     guard('quotas', 'Offres gratuites (Supabase)', quotasCheck()),
+    guard('pages-lentes', 'Pages lentes (7 jours)', slowPagesHealth()),
   ])
   const flat = (x: HealthCheck | HealthCheck[]) => (Array.isArray(x) ? x : [x])
-  return [...flat(payments), stripeC, ...flat(ical), ...flat(emails), workflows, quotas, migrations, configCheck()]
+  return [...flat(payments), stripeC, ...flat(ical), ...flat(emails), workflows, quotas, slow, migrations, configCheck()]
 }

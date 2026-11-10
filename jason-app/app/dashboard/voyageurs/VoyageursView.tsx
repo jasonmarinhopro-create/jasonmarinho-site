@@ -899,7 +899,7 @@ export default function VoyageursView({ voyageurs, tableReady, pendingDeclaratio
                         {signaleAlert.motifs && signaleAlert.motifs.length > 0 && (
                           <> Motifs : <strong>{signaleAlert.motifs.join(', ')}</strong>.</>
                         )} Lis les faits avant d&apos;accepter une réservation :{' '}
-                        <Link href={`/dashboard/securite?q=${encodeURIComponent(form.email?.trim() || form.telephone?.trim() || '')}`} target="_blank" style={{ color: 'var(--accent-text)', fontWeight: 600 }}>voir dans Sécurité voyageur</Link>.
+                        <Link prefetch={false} href={`/dashboard/securite?q=${encodeURIComponent(form.email?.trim() || form.telephone?.trim() || '')}`} target="_blank" style={{ color: 'var(--accent-text)', fontWeight: 600 }}>voir dans Sécurité voyageur</Link>.
                       </p>
                     </div>
                   </div>
