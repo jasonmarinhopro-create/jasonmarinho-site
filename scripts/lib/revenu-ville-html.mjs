@@ -328,7 +328,7 @@ ${faq.map(f => `    <details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></d
   <a class="btn" href="https://app.jasonmarinho.com/auth/register">Créer mon compte gratuit <i class="ph-bold ph-arrow-right"></i></a>
 </section>
 
-<script src="/footer.js"></script>
+<script defer src="/footer.js"></script>
 <script>
 (function () {
   var b = document.getElementById('share')

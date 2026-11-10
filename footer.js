@@ -220,10 +220,18 @@
     var cur = document.querySelectorAll('.ft-chips a[href="' + path + '"]');
     for (var c = 0; c < cur.length; c++) { cur[c].classList.add('on'); cur[c].setAttribute('aria-current', 'page'); }
   }
-  if (document.body) insertFooter();
-  else document.addEventListener('DOMContentLoaded', insertFooter);
+  // Attendre la fin de la lecture de la page : chargé sans « defer », le script
+  // passait avant le pied de page écrit au déploiement (plus bas dans la page)
+  // et en ajoutait un deuxième (10/11/2026, 162 pages dont le blog).
+  function whenReady(fn) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
+  whenReady(insertFooter);
+  whenReady(majCompteurs);
 
   // ── Mises à jour dynamiques post-insertion ───────────────────────────────
+  function majCompteurs() {
 
   // Compteur de villes sur toutes les pages (.villes-count)
   var countEls = document.querySelectorAll('.villes-count');
@@ -242,6 +250,7 @@
   var villesLead = document.getElementById('villes-lead-count');
   if (villesLead) {
     villesLead.textContent = HOST_CITIES.length;
+  }
   }
 
   // ── Onglets du pied de page (visuel seulement, liens déjà en HTML) ─────
