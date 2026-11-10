@@ -36,6 +36,15 @@ describe('pages admin', () => {
   })
 })
 
+describe('pages du dashboard', () => {
+  it('aucune page ni layout du dashboard ne refait getUser() (getAuthIdentity ou getProfile)', () => {
+    // Même raison que pour l'admin : le layout a déjà vérifié la session
+    const files = [...walk(path.join(ROOT, 'app/dashboard'), ['page.tsx', 'layout.tsx'])]
+    const offenders = files.filter(f => /auth\.getUser\(\)/.test(fs.readFileSync(f, 'utf8'))).map(rel)
+    expect(offenders).toEqual([])
+  })
+})
+
 describe('préchargement des liens', () => {
   it('tout <Link> vers une adresse à paramètres porte prefetch={false}', () => {
     // Next 14 calcule la page entière pour précharger une adresse à « ? » :

@@ -21,38 +21,47 @@ export default async function ContratsPage({ searchParams }: { searchParams: Pro
   if (!profile) return null
   const tab: ContratsTab = sp.onglet === 'paiements' || sp.onglet === 'cautions' ? sp.onglet : 'contrats'
 
-  const { data } = await supabase
-    .from('contracts')
-    .select('id, statut, signature_date, created_at, locataire_prenom, locataire_nom, locataire_email, logement_nom, logement_adresse, date_arrivee, date_depart, montant_loyer, montant_caution, stripe_payment_enabled, stripe_payment_status, stripe_deposit_status, sejour_id, token, modalites_paiement, acompte_percent, logement_id')
-    .eq('user_id', profile.userId)
-    .order('created_at', { ascending: false })
-    .limit(500)
-
-  const rows = (data ?? []) as Omit<ContractRow, 'voyageur_id'>[]
-
-  // « Nouveau contrat » : séjours à venir (ou en cours) sans contrat actif.
-  // Un contrat est toujours rattaché à un séjour : on propose directement la
-  // liste plutôt que d'expliquer où aller (le lien ouvre l'assistant de
-  // contrat sur la fiche voyageur via ?contract=<séjour>).
-  // Date du jour à Paris (le serveur tourne en UTC), passée aussi à la vue
+  // Toutes les lectures en même temps (10/11/2026) : avant, 4 à 5 allers-retours
+  // l'un après l'autre (12,8 s en médiane sur 14 jours). La fiche voyageur de
+  // chaque contrat vient avec le contrat (séjour lié, clé étrangère).
   const today = parisToday()
-  const withContract = new Set(rows.filter(c => c.statut !== 'annule' && c.sejour_id).map(c => c.sejour_id as string))
-  // Pour « Nouvelle réservation directe » (séjour pas encore saisi) :
-  // voyageurs existants + logements, même modale que la fiche logement.
-  const [{ data: voyageurOptions }, { data: logementOptions }, { data: payProfile }] = await Promise.all([
+  const [{ data }, { data: voyageurOptions }, { data: logementOptions }, { data: payProfile }, { data: upcoming }] = await Promise.all([
+    supabase
+      .from('contracts')
+      .select('id, statut, signature_date, created_at, locataire_prenom, locataire_nom, locataire_email, logement_nom, logement_adresse, date_arrivee, date_depart, montant_loyer, montant_caution, stripe_payment_enabled, stripe_payment_status, stripe_deposit_status, sejour_id, token, modalites_paiement, acompte_percent, logement_id, sejour:sejours(voyageur_id)')
+      .eq('user_id', profile.userId)
+      .order('created_at', { ascending: false })
+      .limit(500),
+    // Pour « Nouvelle réservation directe » (séjour pas encore saisi) :
+    // voyageurs existants + logements, même modale que la fiche logement.
     supabase.from('voyageurs').select('id, prenom, nom, email, telephone').eq('user_id', profile.userId).order('updated_at', { ascending: false }).limit(300),
     supabase.from('logements').select('id, nom').eq('user_id', profile.userId).order('nom'),
     // Encaissement : Stripe connecté (paiement par lien + caution) ou IBAN (virement)
     supabase.from('profiles').select('stripe_account_id, stripe_onboarding_complete, iban').eq('id', profile.userId).maybeSingle(),
+    // « Nouveau contrat » : séjours à venir (ou en cours) sans contrat actif.
+    // Un contrat est toujours rattaché à un séjour : on propose directement la
+    // liste plutôt que d'expliquer où aller (le lien ouvre l'assistant de
+    // contrat sur la fiche voyageur via ?contract=<séjour>).
+    supabase
+      .from('sejours')
+      .select('id, voyageur_id, logement, date_arrivee, date_depart, voyageurs(prenom, nom)')
+      .eq('user_id', profile.userId)
+      .is('annule_at', null)
+      .gte('date_depart', today)
+      .order('date_arrivee')
+      .limit(60),
   ])
-  const { data: upcoming } = await supabase
-    .from('sejours')
-    .select('id, voyageur_id, logement, date_arrivee, date_depart, voyageurs(prenom, nom)')
-    .eq('user_id', profile.userId)
-    .is('annule_at', null)
-    .gte('date_depart', today)
-    .order('date_arrivee')
-    .limit(60)
+
+  type Joined = Omit<ContractRow, 'voyageur_id'> & { sejour?: { voyageur_id: string | null } | Array<{ voyageur_id: string | null }> | null }
+  const joined = (data ?? []) as unknown as Joined[]
+  const voyageurBySejour = new Map<string, string>()
+  const rows = joined.map(({ sejour, ...c }) => {
+    const sj = Array.isArray(sejour) ? sejour[0] : sejour
+    if (c.sejour_id && sj?.voyageur_id) voyageurBySejour.set(c.sejour_id, sj.voyageur_id)
+    return c as Omit<ContractRow, 'voyageur_id'>
+  })
+
+  const withContract = new Set(rows.filter(c => c.statut !== 'annule' && c.sejour_id).map(c => c.sejour_id as string))
   const candidates: ContractCandidate[] = (upcoming ?? [])
     .filter(sj => sj.voyageur_id && !withContract.has(sj.id))
     .map(sj => {
@@ -67,19 +76,6 @@ export default async function ContratsPage({ searchParams }: { searchParams: Pro
       }
     })
 
-  // Fiche voyageur de chaque contrat (via le séjour lié) : c'est là que se
-  // trouvent les actions (relancer, caution, facture).
-  const sejourIds = Array.from(new Set(rows.map(c => c.sejour_id).filter(Boolean))) as string[]
-  const voyageurBySejour = new Map<string, string>()
-  if (sejourIds.length > 0) {
-    const { data: sejours } = await supabase
-      .from('sejours')
-      .select('id, voyageur_id')
-      .eq('user_id', profile.userId)
-      .in('id', sejourIds)
-    ;(sejours ?? []).forEach(sj => { if (sj.voyageur_id) voyageurBySejour.set(sj.id, sj.voyageur_id) })
-  }
-
   const contracts: ContractRow[] = rows.map(c => ({
     ...c,
     voyageur_id: c.sejour_id ? voyageurBySejour.get(c.sejour_id) ?? null : null,
@@ -89,8 +85,7 @@ export default async function ContratsPage({ searchParams }: { searchParams: Pro
   // l'onglet est ouvert (appel externe)
   let paiements: React.ReactNode = null
   if (tab === 'paiements') {
-    const { data: acct } = await supabase.from('profiles').select('stripe_account_id').eq('id', profile.userId).maybeSingle()
-    const summary = await getEncaissementsSummary(acct?.stripe_account_id ?? null)
+    const summary = await getEncaissementsSummary(payProfile?.stripe_account_id ?? null)
     const actifs = rows.filter(c => c.statut !== 'annule').map(c => ({
       ...c, acompte_percent: (c as { acompte_percent?: number | null }).acompte_percent ?? 100,
     }))

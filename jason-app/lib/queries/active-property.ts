@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
 import { getAuthIdentity } from '@/lib/supabase/auth-user'
+import { fetchUserShell } from './user-shell'
 
 export const ACTIVE_PROPERTY_COOKIE = 'active-property-id'
 export const ALL_PROPERTIES = 'all' as const
@@ -87,11 +88,33 @@ export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {
     return { propertyId: ALL_PROPERTIES, property: null, allProperties: [] }
   }
 
-  // Les 3 queries de base ET le matching par nom (namesToFetch plus bas)
-  // sont tous les deux en cache Next.js (revalidate 5 min).
+  const allProperties: PropertyLite[] = []
+  const shell = await fetchUserShell(user.id)
+  if (shell) {
+    // Une lecture (migration 186) : logements possédés, noms vus dans les
+    // séjours et contrats, et logements retrouvés pour ces noms
+    const seen = new Set<string>()
+    const found = new Set<string>()
+    for (const r of [...shell.owned, ...shell.matched]) {
+      if (seen.has(r.id)) continue
+      seen.add(r.id)
+      allProperties.push({ id: r.id, nom: r.nom ?? 'Sans nom', ville: null })
+      if (r.nom) found.add(r.nom.trim().toLowerCase())
+    }
+    for (const nom of shell.names) {
+      const virtualId = `virtual:${nom}`
+      if (!found.has(nom.toLowerCase()) && !seen.has(virtualId)) {
+        seen.add(virtualId)
+        allProperties.push({ id: virtualId, nom, ville: null })
+      }
+    }
+    return pickActive(allProperties)
+  }
+
+  // Ancien chargement (migration 186 absente) : les 3 queries de base ET le
+  // matching par nom (namesToFetch plus bas), en cache Next.js (5 min).
   const { ownedRes, sejoursRes, contractsRes } = await fetchAllPropertiesForUser(user.id)
 
-  const allProperties: PropertyLite[] = []
   const seenIds = new Set<string>()
   const addLogement = (r: { id: string; nom: string | null }) => {
     if (seenIds.has(r.id)) return
@@ -137,6 +160,10 @@ export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {
     }
   })
 
+  return pickActive(allProperties)
+})
+
+async function pickActive(allProperties: PropertyLite[]): Promise<ActiveProperty> {
   const cookieStore = await cookies()
   const cookieVal = cookieStore.get(ACTIVE_PROPERTY_COOKIE)?.value ?? ALL_PROPERTIES
 
@@ -153,4 +180,4 @@ export const getActiveProperty = cache(async (): Promise<ActiveProperty> => {
   }
   // Cookie invalide → fallback silencieux sur 'all'
   return { propertyId: ALL_PROPERTIES, property: null, allProperties }
-})
+}

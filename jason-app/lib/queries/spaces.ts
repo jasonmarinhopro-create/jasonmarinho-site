@@ -2,6 +2,7 @@ import { getServiceClient } from '@/lib/supabase/service'
 import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
 import { getAuthIdentity } from '@/lib/supabase/auth-user'
+import { fetchUserShell } from './user-shell'
 
 const ADMIN_EMAIL = 'djason.marinho@gmail.com'
 
@@ -64,7 +65,10 @@ export const getUserSpaces = cache(async (): Promise<SpacesResult> => {
   }
 
   const isAdmin = user.email === ADMIN_EMAIL
-  const { logementsCount, ph, cl, dp, isInvestor, projectsCount } = await fetchSpacesDataForUser(user.id)
+  const shell = await fetchUserShell(user.id)
+  const { logementsCount, ph, cl, dp, isInvestor, projectsCount } = shell
+    ? { logementsCount: shell.logements_count, ph: shell.ph, cl: shell.cl, dp: shell.dp, isInvestor: shell.is_investor, projectsCount: shell.projects_count }
+    : await fetchSpacesDataForUser(user.id)
 
   const hasLogements = (logementsCount ?? 0) > 0
   const hasPhoto = !!ph

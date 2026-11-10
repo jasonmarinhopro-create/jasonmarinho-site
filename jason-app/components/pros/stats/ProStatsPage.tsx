@@ -2,6 +2,7 @@
 // ménage (05/10/2026). Accès : propriétaire, ou admin avec ?id=.
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { unstable_cache } from 'next/cache'
 import { ChartLineUp } from '@phosphor-icons/react/dist/ssr'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import { perfTimer } from '@/lib/perf/server-timing'
@@ -21,15 +22,32 @@ export default async function ProStatsPage({ metier, searchParams }: {
   if (resolved.status === 'redirect') redirect(resolved.to)
   if (resolved.status === 'none') return <NoFiche metier={metier} preview={!!previewId} />
 
-  const data = await loadProStats({
+  // Gardé 5 min par fiche, période et jour (10/11/2026) : la page faisait ~14
+  // lectures (visites de la fiche et de sa ville, vues, clics, demandes,
+  // Google) à chaque ouverture et à chaque changement de période. Accès vérifié
+  // juste avant (propriétaire ou admin) ; un résultat incomplet (Google ou
+  // visites en erreur) n'est jamais gardé.
+  const periodKey = parseProPeriod(searchParams?.periode)
+  const today = parisToday()
+  const run = () => loadProStats({
     metier,
     fiche: resolved.fiche,
     db: resolved.db,
-    periodKey: parseProPeriod(searchParams?.periode),
-    today: parisToday(),
+    periodKey,
+    today,
     isAdminPreview: resolved.isAdminPreview,
     isAdmin: resolved.isAdmin,
   })
+  let partial: Awaited<ReturnType<typeof loadProStats>> | null = null
+  const data = await unstable_cache(
+    async () => {
+      const d = await run()
+      if (d.google.status === 'error' || d.visits.adminError || d.google.adminError) { partial = d; throw new Error('stats-partielles') }
+      return d
+    },
+    ['pro-stats-v1', metier, resolved.fiche.id, periodKey, today, String(resolved.isAdminPreview), String(resolved.isAdmin)],
+    { revalidate: 300, tags: [`pro-stats:${resolved.fiche.id}`] },
+  )().catch(async () => partial ?? run())
   timer.mark('statistiques')
   timer.done()
 

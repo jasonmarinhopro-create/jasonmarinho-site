@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getServiceClient } from '@/lib/supabase/service'
 import { createClient } from '@/lib/supabase/server'
+import { getAuthIdentity } from '@/lib/supabase/auth-user'
 import { parisToday } from '@/lib/stripe/deposit-window'
 import { flaggedVoyageurs } from '@/lib/securite/lookup'
 import { POSITIVE_TYPES, isPositive } from '@/lib/securite/identifiers'
@@ -20,7 +21,9 @@ export default async function SecuritePage({ searchParams }: {
   searchParams: { q?: string; signaler?: string; email?: string; tel?: string; nom?: string }
 }) {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  // Session lue par le layout (getClaims, signature vérifiée) : pas de
+  // nouvel aller-retour vers le serveur d'authentification (10/11/2026)
+  const user = await getAuthIdentity()
   if (!user) redirect('/auth/login')
 
   const today = parisToday()
