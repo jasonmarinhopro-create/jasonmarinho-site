@@ -417,7 +417,7 @@ export function villesGuidesHtml(cfg, cities, counts) {
     <div class="vc-track" role="list">
       ${ordre.map(carte).join('\n      ')}
     </div>
-    <p class="vc-credit">Photos des villes : <a href="https://www.pexels.com/license/" target="_blank" rel="noopener">Pexels</a>, licence gratuite${villes.some(c => PHOTOS_COMMONS[c.slug]) ? ` ; ${villes.filter(c => PHOTOS_COMMONS[c.slug]).map(c => `${esc(c.nom)} : ${creditPhoto(c.slug)}`).join(' · ')}` : ''}.</p>
+    <details class="vc-credit"><summary>Photos des villes : Pexels et Wikimedia Commons <i class="ph-bold ph-caret-down"></i></summary><p><a href="https://www.pexels.com/license/" target="_blank" rel="noopener">Pexels</a>, licence gratuite${villes.some(c => PHOTOS_COMMONS[c.slug]) ? ` ; ${villes.filter(c => PHOTOS_COMMONS[c.slug]).map(c => `${esc(c.nom)} : ${creditPhoto(c.slug)}`).join(' · ')}` : ''}.</p></details>
     <div class="vz">
       ${ligne('Par région', z.regions, 'régions')}
       ${ligne('Par département', z.departements, 'départements')}
@@ -445,6 +445,9 @@ const VC_CSS = '.vc-head{display:flex;align-items:flex-end;justify-content:space
   + '.vc-name{font-family:Fraunces,serif;font-size:22px;line-height:1.15}'
   + '.vc-go{font-size:12px;font-weight:600;color:#FFD56B;display:inline-flex;align-items:center;gap:4px;margin-top:4px;opacity:.9}'
   + '.vc-credit{font-size:11.5px;color:var(--tl);margin:4px 0 0;text-align:right}.vc-credit a{color:inherit}'
+  // Crédits repliés (10/11/2026, Jason) : une ligne, le détail au clic sur le chevron
+  + '.vc-credit summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:5px}.vc-credit summary::-webkit-details-marker{display:none}'
+  + '.vc-credit summary i{font-size:11px;transition:transform .2s}.vc-credit[open] summary i{transform:rotate(180deg)}.vc-credit p{margin:8px 0 0;line-height:1.6}'
   + '.vz{margin-top:22px;border-top:1px solid rgba(0,76,63,.1)}'
   + '.vz-row{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid rgba(0,76,63,.1)}'
   + '.vz-t{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--tl);margin:0;padding-top:7px}'

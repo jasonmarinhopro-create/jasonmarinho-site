@@ -48,7 +48,7 @@ export function etudesCarrouselHtml() {
   <div class="ec-track">
     ${villes.map(carte).join('\n    ')}
   </div>
-  <details class="ec-credit"><summary>Revenus bruts d'un T2 loué toute l'année, mêmes calculs que l'estimateur. Photos : Pexels et Wikimedia Commons <span>(crédits)</span></summary><p><a href="https://www.pexels.com/license/" target="_blank" rel="noopener">Pexels</a>, licence gratuite${commons.length ? ` ; ${commons.map(x => `${esc(x.v.nom)} : ${creditPhoto(x.v.slug)}`).join(' · ')}` : ''}.</p></details>
+  <details class="ec-credit"><summary>Revenus bruts d'un T2 loué toute l'année, mêmes calculs que l'estimateur. Photos : Pexels et Wikimedia Commons <span>(crédits)</span> <i class="ph-bold ph-caret-down"></i></summary><p><a href="https://www.pexels.com/license/" target="_blank" rel="noopener">Pexels</a>, licence gratuite${commons.length ? ` ; ${commons.map(x => `${esc(x.v.nom)} : ${creditPhoto(x.v.slug)}`).join(' · ')}` : ''}.</p></details>
 </div>
 <script>
 (function () {

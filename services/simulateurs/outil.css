@@ -252,3 +252,5 @@ em{font-style:italic;color:var(--g)}
 .ec-credit summary::-webkit-details-marker{display:none}
 .ec-credit summary span{text-decoration:underline;text-underline-offset:2px}
 .ec-credit p{margin:8px 0 0;line-height:1.6}
+.ec-credit summary i{font-size:11px;transition:transform .2s;vertical-align:middle}
+.ec-credit[open] summary i{transform:rotate(180deg)}
