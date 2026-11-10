@@ -1,0 +1,38 @@
+{
+ "barcelone": {
+  "titre": "File:Barcelona Skyline as seen from Parc Güell.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Barcelona_Skyline_as_seen_from_Parc_G%C3%BCell.jpg",
+  "licence": "CC BY 2.0",
+  "auteur": "Chris Koerner from St. Louis, USA"
+ },
+ "seville": {
+  "titre": "File:Plaza de España - Seville, Spain - DSC07654.JPG",
+  "page": "https://commons.wikimedia.org/wiki/File:Plaza_de_Espa%C3%B1a_-_Seville,_Spain_-_DSC07654.JPG",
+  "licence": "CC0",
+  "auteur": "Daderot"
+ },
+ "cassis": {
+  "titre": "File:Cassis-Port.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Cassis-Port.jpg",
+  "licence": "CC BY 3.0",
+  "auteur": "Jean-Christophe BENOIST"
+ },
+ "la-baule": {
+  "titre": "File:Plage Baule - La Baule-Escoublac (FR44) - 2022-09-17 - 3.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Plage_Baule_-_La_Baule-Escoublac_(FR44)_-_2022-09-17_-_3.jpg",
+  "licence": "CC BY-SA 4.0",
+  "auteur": "Chabe01"
+ },
+ "val-d-isere": {
+  "titre": "File:Place des Dolomites à Val-d'Isère en été (juillet 2022).JPG",
+  "page": "https://commons.wikimedia.org/wiki/File:Place_des_Dolomites_%C3%A0_Val-d%27Is%C3%A8re_en_%C3%A9t%C3%A9_(juillet_2022).JPG",
+  "licence": "CC BY-SA 4.0",
+  "auteur": "Florian Pépellin"
+ },
+ "funchal": {
+  "titre": "File:Funchal, Jardim Botânico da Madeira (View of Funchal from Jardim Botânico).jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Funchal,_Jardim_Bot%C3%A2nico_da_Madeira_(View_of_Funchal_from_Jardim_Bot%C3%A2nico).jpg",
+  "licence": "CC BY-SA 4.0",
+  "auteur": "Dr. Thomas Liptak"
+ }
+}
