@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/admin/require-admin'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import InvestisseursAdmin, { type InvestorRow, type InvestorProject } from './InvestisseursAdmin'
 
@@ -8,14 +9,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function InvestisseursAdminPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle()
-  if (profile?.role !== 'admin') redirect('/dashboard')
+  await requireAdmin()
 
   // Service role : investor_projects est en RLS "own only", l'admin doit tout voir
   const admin = createAdminClient(

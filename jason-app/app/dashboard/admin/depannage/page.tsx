@@ -5,6 +5,7 @@
 // Fiches d'exemple (comptes admin) à part, hors chiffres et places Fondateur.
 // Rien des demandes reçues ni du carnet clients d'un pro (confidentialité).
 import Link from 'next/link'
+import { requireAdmin } from '@/lib/admin/require-admin'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getServiceClient } from '@/lib/supabase/service'
@@ -27,10 +28,7 @@ type Row = { id: string; user_id: string | null; full_name: string; pseudo: stri
 
 export default async function Page() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
-  if (profile?.role !== 'admin') redirect('/dashboard')
+  await requireAdmin()
 
   const db = getServiceClient()
   // Statut des abonnements relu chez Stripe avant d'afficher (3 s au plus)

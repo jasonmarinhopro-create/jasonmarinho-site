@@ -1,21 +1,13 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/admin/require-admin'
 import SOSFeedbackAdmin from './SOSFeedbackAdmin'
 
 export const metadata = { title: 'SOS Feedback, Admin, Jason Marinho' }
 
 export default async function AdminSOSFeedbackPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
-
-  if (profile?.role !== 'admin') redirect('/dashboard')
+  await requireAdmin()
 
   const { data: feedback } = await supabase
     .from('sos_feedback')

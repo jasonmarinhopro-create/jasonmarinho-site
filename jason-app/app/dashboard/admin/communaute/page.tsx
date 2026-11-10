@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/admin/require-admin'
 import CommunauteAdmin, { type Group } from './CommunauteAdmin'
 import { getServiceClient } from '@/lib/supabase/service'
 import { allRows } from '@/lib/supabase/all-rows'
@@ -9,16 +10,7 @@ export const metadata = { title: 'Communauté, Admin, Jason Marinho' }
 
 export default async function AdminCommunautePage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role, full_name')
-    .eq('id', user.id)
-    .single()
-
-  if (profile?.role !== 'admin') redirect('/dashboard')
+  await requireAdmin()
 
   // audiences : migration 180 (07/11/2026), lecture tolérante tant qu'elle manque
   const base = 'id, name, description, platform, members_count, url, category, tag, sort_order'

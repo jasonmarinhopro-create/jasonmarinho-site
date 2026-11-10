@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/admin/require-admin'
 import Link from 'next/link'
 import AdminHero from '../_ui/AdminHero'
 import {
@@ -54,16 +55,7 @@ const GUIDE_CARDS: {
 
 export default async function AdminGuidesPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role, full_name')
-    .eq('id', user.id)
-    .single()
-
-  if (profile?.role !== 'admin') redirect('/dashboard')
+  await requireAdmin()
 
   // Actualités par profil-catégorie
   const { data: actuData } = await supabase

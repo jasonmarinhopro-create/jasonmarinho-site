@@ -1,5 +1,6 @@
 import { getServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
+import { requireAdmin } from '@/lib/admin/require-admin'
 import { createClient } from '@/lib/supabase/server'
 import AdminQG, { type QGTab } from './AdminQG'
 import { loadDemandesQG } from './demandes-load'
@@ -12,15 +13,7 @@ const TABS: QGTab[] = ['hotes', 'driing', 'reports', 'suggestions']
 
 export default async function AdminQGPage({ searchParams }: { searchParams: { onglet?: string; demande?: string } }) {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
-  if (profile?.role !== 'admin') redirect('/dashboard')
+  await requireAdmin()
 
   // 4 fetchs en parallèle (service role bypass RLS) + getModerationQueue
   // pour la file de modération des signalements publics anonymisés.

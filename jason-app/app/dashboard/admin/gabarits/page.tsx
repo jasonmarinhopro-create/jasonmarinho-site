@@ -1,21 +1,13 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/admin/require-admin'
 import GabaritsAdmin from './GabaritsAdmin'
 
 export const metadata = { title: 'Gabarits, Admin, Jason Marinho' }
 
 export default async function AdminGabaritsPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role, full_name')
-    .eq('id', user.id)
-    .single()
-
-  if (profile?.role !== 'admin') redirect('/dashboard')
+  await requireAdmin()
 
   const { data: templates } = await supabase
     .from('templates')

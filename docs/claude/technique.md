@@ -357,3 +357,26 @@ Jason : « la connexion a pris au moins 1 minute, chaque clic dans l'admin est l
 - **Cause : `middleware.ts` perdait la moitié du cookie de session.** Le cookie est coupé en deux morceaux (`.0` et `.1`) et `@supabase/ssr` 0.3 appelle `set()` une fois par morceau ; la réponse était recréée à chaque appel et ne portait que le dernier. Après le premier renouvellement (jeton expiré au bout d'une heure), le navigateur gardait l'ancien jeton et **chaque requête** (page, préchargements, API) redemandait un renouvellement à Supabase : 46 en 20 secondes dans les journaux Auth, 0,4 à 4,7 s chacun, ce qui étouffait le petit serveur gratuit (PostgREST : `statement timeout`, « Thread killed by timeout manager »). Explique aussi des déconnexions inexpliquées (morceaux dépareillés). Corrigé : tous les morceaux sont gardés (`pendingCookies`) et reposés sur la réponse. **Ne jamais recréer la réponse dans `set()` sans y reposer tous les cookies déjà reçus.**
 - État de santé : 57 lectures à chaque ouverture. Résultat gardé 2 minutes (recalculé s'il a plus de 10 minutes) ; la vérification des migrations est gardée une heure tant que tout est appliqué.
 - Pour diagnostiquer une lenteur : `app_errors` (route `perf`) puis journaux Auth sur une fenêtre de quelques minutes (compter les `token_refreshed` par tranche de 5 s).
+
+## Fondations Supabase : diagnostic et plan (10/11/2026)
+
+Jason : « je ne peux pas me permettre d'avoir des pics, il faut que tout soit solidement construit ».
+
+**Diagnostic (mesures du 10/11)**
+- La base est minuscule (36 Mo, 99,98 % des lectures servies depuis la mémoire, ~3 000 requêtes par demi-journée) : ce n'est ni le volume de données ni le nombre de visiteurs.
+- Les lenteurs viennent de la **machine gratuite** (0,5 Go de mémoire partagée entre la base, l'API et l'authentification) : la première page après ~30 min sans visite attend 11 à 16 s **chez Supabase** (`response.origin_time` des journaux edge ; la requête elle-même prend ~1 s dans la base), l'authentification 4 à 8 s ; les pages suivantes sont rapides. Toute rafale d'appels (une page à 20-50 lectures, des préchargements, la boucle de renouvellement de session) aggrave l'attente.
+- Ouvrir l'onglet Advisors du tableau de bord Supabase lance une analyse de ~24 s sur la même machine.
+
+**Règles (à respecter pour toute nouvelle page)**
+1. Une page = le moins d'allers-retours possible : compter et agréger **dans la base** (fonction SQL appelée par `rpc`) plutôt que télécharger des lignes pour les compter en JavaScript.
+2. Pages admin : `requireAdmin()` (`lib/admin/require-admin.ts`), jamais `getUser()` + relecture de `profiles` (le layout a déjà tout lu).
+3. Données qui changent peu : `unstable_cache` avec un tag, vidé par les actions qui écrivent.
+4. Pas de `<Link>` préchargé vers une URL à paramètres (`prefetch={false}`), pas de relecture au montage de ce que le serveur vient de calculer.
+5. Toute nouvelle page lourde se vérifie dans `app_errors` (route `perf`) : nombre d'appels et durée.
+
+**Plan**
+- Étape 1 (faite le 10/11) : boucle de renouvellement de session corrigée (middleware), préchargements coupés, État de santé et Vue d'ensemble en cache, 17 pages admin sur `requireAdmin()` (2 allers-retours de moins chacune, dont l'authentification), relecture des compteurs de l'en-tête supprimée, cron `/api/cron/warm` toutes les 5 min (authentification + API + lecture minuscule) pour éviter le réveil lent.
+- Étape 2 : Prospection (~20 appels et 3 300 contacts téléchargés à chaque affichage et après chaque action) : chiffres et statistiques par e-mail dans une fonction SQL, contacts chargés à la demande. Puis Provenance / Visibilité (visites agrégées en SQL au lieu de télécharger les lignes) et Membres.
+- Étape 3 : garde-fou automatique (test qui signale une page admin sans `requireAdmin`, page État de santé qui liste les pages au-delà de 15 appels ou 5 s sur 7 jours).
+- Étape 4 : ménage de la base (purge des mesures `perf` de plus de 30 jours, index des clés étrangères utiles).
+- Si le trafic grandit malgré tout : l'offre Supabase Pro (25 $/mois, machine à 1 Go, sauvegardes quotidiennes) est l'étape suivante. **Décision de Jason, pas avant son accord.**

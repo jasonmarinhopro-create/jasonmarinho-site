@@ -1,5 +1,6 @@
 import { getServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
+import { requireAdmin } from '@/lib/admin/require-admin'
 import { createClient } from '@/lib/supabase/server'
 import FormationsAdmin from './FormationsAdmin'
 
@@ -7,16 +8,7 @@ export const metadata = { title: 'Formations, Admin, Jason Marinho' }
 
 export default async function AdminFormationsPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role, full_name')
-    .eq('id', user.id)
-    .single()
-
-  if (profile?.role !== 'admin') redirect('/dashboard')
+  await requireAdmin()
 
   // Use service role to bypass RLS and see ALL formations (including drafts)
   const adminClient = getServiceClient()

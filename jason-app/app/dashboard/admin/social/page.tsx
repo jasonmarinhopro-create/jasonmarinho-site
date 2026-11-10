@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { requireAdmin } from '@/lib/admin/require-admin'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import SocialAdmin, { type SocialAccountRow, type SocialPostRow } from './SocialAdmin'
 import type { SocialCommentRow } from './SocialAutopilot'
@@ -14,10 +15,7 @@ export const maxDuration = 60
 
 export default async function SocialAdminPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-  const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
-  if (profile?.role !== 'admin') redirect('/dashboard')
+  await requireAdmin()
 
   const admin = createAdminClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

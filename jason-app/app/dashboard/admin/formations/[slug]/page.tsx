@@ -1,5 +1,6 @@
 import { getServiceClient } from '@/lib/supabase/service'
 import { redirect, notFound } from 'next/navigation'
+import { requireAdmin } from '@/lib/admin/require-admin'
 import { createClient } from '@/lib/supabase/server'
 import dynamic from 'next/dynamic'
 import DashboardSkeleton from '@/components/ui/DashboardSkeleton'
@@ -19,16 +20,7 @@ export default async function AdminFormationEditorPage({ params }: PageProps) {
   const { slug } = params
 
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role, full_name')
-    .eq('id', user.id)
-    .single()
-
-  if (profile?.role !== 'admin') redirect('/dashboard')
+  await requireAdmin()
 
   const adminClient = getServiceClient()
 
