@@ -1,0 +1,18 @@
+{
+  "slug": "conciergerie-sortir-mauvais-client",
+  "format": "photo",
+  "public": "conciergeries",
+  "photo": "img/exemple-fiches/photo-maison-2.jpg",
+  "slides": [
+    { "type": "couverture", "kicker": "Conciergeries", "titre": "Quand faut-il *sortir* un propriétaire de ton portefeuille ?", "sous_titre": "Certains signaux ne s’arrangent jamais seuls." }
+  ],
+  "legende": "Garder un mauvais client coûte souvent plus cher que d’en trouver un nouveau.\n\nLes signaux : retards de paiement répétés, demandes hors contrat à chaque séjour, critiques sans proposition, ta commission renégociée en permanence.\n\nLa méthode : un seul rendez-vous pour remettre le cadre à plat, des faits concrets, un délai. Si rien ne change, une lettre recommandée qui respecte le préavis du contrat, et une transition propre pour les voyageurs déjà réservés.\n\nEt toi, tu as déjà mis fin à un mandat : oui ou non ?",
+  "hashtags": ["#conciergerie", "#conciergerieairbnb", "#locationcourteduree", "#gestionlocative", "#airbnb"],
+  "lien": "https://jasonmarinho.com/blog/sortir-mauvais-client-conciergerie-procedure",
+  "story": {
+    "texte": "Les signaux qui disent qu’un mandat *ne s’arrangera pas*",
+    "frames": [
+      { "type": "question", "titre": "Tu as déjà mis fin *à un mandat* ?" }
+    ]
+  }
+}
