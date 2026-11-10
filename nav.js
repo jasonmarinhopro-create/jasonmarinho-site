@@ -153,6 +153,8 @@
       /* Dépannage et maintenance (31/10/2026) : 3e carte, même gabarit */
       '.n-mega a.n-ann-dep,.n-mega a.n-ann-dep:hover{background:linear-gradient(160deg,#4a3520 0%,#6b4e2a 100%);border:1px solid rgba(255,213,107,.18)}',
       '.n-mega a.n-ann-vc:hover{border-color:rgba(255,213,107,.45)}',
+      // Annuaire de la page en cours : texte blanc gardé (la règle « active » du menu clair le passait en vert, illisible sur la carte), repère jaune
+      '.n-mega a.n-ann-vc.active,.n-mega a.n-ann-vc.active:hover{color:#fff;border-color:rgba(255,213,107,.75);box-shadow:0 0 0 2px rgba(255,213,107,.3)}',
       '.n-ann-mos{position:absolute;top:14px;left:14px;right:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px}',
       '.n-mega a.n-ann-vc .n-ann-mos i{display:block;width:auto;height:36px;border-radius:5px;background:linear-gradient(135deg,#4d7a5a,#2d6466)}',
       '.n-mega a.n-ann-vc .n-ann-mos i:nth-child(2n){background:linear-gradient(135deg,#2d6466,#55785a)}',
